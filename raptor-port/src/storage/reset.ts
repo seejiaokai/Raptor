@@ -9,14 +9,19 @@
    than migrated. The migration proper happens once, server-side, at the DB step. */
 import type { Backend, Collection, Snapshot } from './backend'
 
-/* bumped whenever a persisted shape changes incompatibly. 1 = step 1A.
-   Pre-1A data is unstamped, which reads as 0. */
-export const SCHEMA_VERSION = 1
+/* bumped whenever a persisted shape changes incompatibly. 1 = step 1A;
+   2 = step 1C (who→personId): ground/programme `who` now store the stable
+   person ID, not the callsign string, so a pre-1C week persisted with cs-form
+   `who` must be cleared — once renameCallsign stops rewriting rows, a rename on
+   such a week would drop the person from the row (owner-confirmed reset, not
+   migrate). Pre-1A data is unstamped, which reads as 0. */
+export const SCHEMA_VERSION = 2
 const STAMP: [Collection, string] = ['settings', 'schema']
 
-/* the collections carrying a 1A-incompatible shape: `weeks` holds the days
-   (old note strings, content-key ground.src) AND the nested publish
-   snapshots/drafts; `inputs` holds accept state whose landing lived on a week.
+/* the collections carrying an incompatible shape: `weeks` holds the days
+   (pre-1A: note strings + content-key ground.src; pre-1C: cs-form ground/
+   programme `who`) AND the nested publish snapshots/drafts; `inputs` holds
+   accept state whose landing lived on a week.
    Cleared together so an accepted input can never survive without its landing.
    people/settings/leavewar/tracker carry no 1A shape and are kept; day templates
    are coerced on load (daytpl.sanitiseBlob), so they need no reset. */

@@ -558,6 +558,22 @@ so the live day, its drafts and its issued document share ONE `rid`-space.
   `dl:/dr:` duty · `sr:` sim · `gr:` ground · `st:` stores ·
   `ar:/at:` area/area-time · `tr:` traffic.
 
+**Person identity is a stable hidden id (who→personId, ARCH-STACK 1C, 14 Sep
+26).** Every crew reference stores the PEOPLE key (`bane`), never the display
+callsign (`cs`): flying seats, duty `id`, sim `p/w/pax`, `more[]` and INPUTS
+`.person` always did; ground and Common-Programme `who` now do too
+(`setSlotVal`/`acceptInput` store the id). `whoId(v)` (engine/people.ts) is the
+ONE id-first resolver every ground/programme consumer shares
+(`PEOPLE[v]?v:nameToId(v)` — a stored id wins, a legacy callsign still
+resolves; free text like 'EXT SQN' stays text). So **renaming is a label change
+that moves nothing** (`renameCallsign` sets `cs` + remaps `ID_BY_CS`; the old
+DAYS-walk that rewrote row strings — and missed snapshots/drafts/other weeks —
+is gone), and no reused callsign can cross two people. `addPerson` refuses a
+callsign that resolves to any existing person by id OR callsign (the closed
+add back-door). Sim `who` is FREE TEXT only now — never resolved to a person.
+Parity holds byte-for-byte: `data-person` and the printed name both derive from
+the resolved id, so an id-form `who` renders identically to a callsign one.
+
 **The mutation funnel — bypassing it is always a bug.** All schedule
 writes go through `slotVal`/`setSlotVal`/`fillSlot`/`txtGet`/`txtSet` →
 `noteChange(key)` → `afterSchedMutate()`. A write that skips it is
@@ -663,9 +679,53 @@ takes the id, `nameOf`/`byName`/`pidOf`/`linkedPerson` read the entry, and the
 `v3:links` record is gone (folded into `pid` by `migrateIds`, once per course,
 resumable and read-back-verified — `app/ids.js` is the one converter, shared
 with Import). Same person or same name on the course = the same enrolment
-(`findEnrolment`, course-wide, hidden charts included). Course, syllabus and
-chart names refuse a colon (they are storage-key segments); a student name is a
-label and may carry one. The pencil on each Students-card chip renames that
+(`findEnrolment`, course-wide, hidden charts included). **A COURSE is a
+COURSE ID too (stable ids, 13 Sep 26 — ARCH-STACK 1B-i)**: `COURSES` is
+`{ id, name }[]`, `course` is the current course's id, every per-course key
+files under the id (`v3:<courseId>:…`), so **renaming a course is a label
+change that moves nothing** (`renCourse` sets the entry's name; the old
+copy-verify-delete apparatus is gone). `app/courseIds.js` is the one converter
+(mint/upgrade/reconcile), and `migrateCourseIds` re-bases a name-keyed browser
+once — resumable, read-back-verified, a `storage.list()` prefix-move with an
+explicit reserved-namespace skiplist (`courses`/`links`/`master`/`lay`/`SYLLABUS
+EDIT`) and a fail-closed preflight (a reserved or colon-bearing legacy course
+name stops the boot: `bootError` → App's reload panel, no board, no writers). It
+also translates the `v3:links` payload (keyed by course name) to the id. Import
+carries `{id,name}` courses (file v2), reconciles a file's course ids to the
+store's by name (store id wins, conflicts refused), and refuses a reserved name
+or a non-`^c[0-9a-z]+$` id at the file boundary. **A SYLLABUS is a SYLLABUS ID too
+(stable ids, 13 Sep 26 — `[TRK-CSID]` 1B-ii, DONE).** The global chart catalogue
+is `SYLS` = `{id,name,base?,userNamed?}[]` (`v3:master:sylcat`); built-ins carry a
+DETERMINISTIC shipped id from the `BUILTIN_SYL` table in `app/sylIds.js`
+(`sb2024`/`sb2026`/`sbtx2026`/`sbagaa2026`, the same on every browser — so an
+imported built-in matches by id with no reconcile), user charts a minted `sc…`
+id; grammar `^s[bc][0-9a-z]+$`. `base` (the canonical shipped SYLLABI key a
+built-in draws its def/layout/event-info from) is AUTHORITATIVE from the table,
+never trusted from a file. So **renaming a syllabus is a label change that moves
+nothing** (`renSyl` sets the entry name + `userNamed`; the old moveSylData /
+tombstone-and-shadow / SYL_ALIAS apparatus is gone), delete is a real sweep
+(records under the id removed in every course + every course's plan repaired;
+built-in tombstoned so the boot reconcile never re-offers it; hidden ≠ deleted),
+and duplicate copies the flow+layout under a fresh id with an EMPTY student layer.
+The conversion is **"keep charts, reset marks"** (owner): `migrateSylIds` (one
+converter, `app/sylIds.js` shared with Import) converts the global catalogue IN
+PLACE via a durable **payload journal** (compute-once, whole-object writes,
+`purge = sources ∖ destinations`, verify after all purges; two flags
+`kSylCatMig`/`kSylReset`) — every hand-drawn chart + layout kept, legacy layout
+event-ids translated onto the shipped ids (`padId`/`SPECIAL`, incl. `__font`) —
+and RESETS the per-(course,syllabus) student layer (rosters/marks/dates/pace/lulls
+cleared, plan `sylName→sylId`, demo pair re-seeded). Boot reconcile
+(`reconcileBuiltins`, also in `reloadFromStore`) adds newly-shipped built-ins,
+repoints `base` on a shipped rename, respects `userNamed`. `plan.sylId` replaces
+`plan.sylName`; `curSylId()` keys `kMarks`/`kDates`/`kLayout`. **Import guardrail
+(owner, §19):** charts import from ANY backup (v1/v2 name-keyed upgrade to ids on
+read, v3 reconcile by id/name); **student marks/dates/rosters/plan pointers import
+ONLY from an id-native v3 file carrying a `sylcat`** — a pre-v3 or unresolved
+student block is REFUSED with a plain message (no name→built-in guessing in the
+file path; charts still import). File version → 3. **Colon relaxed (owner):
+syllabus and chart names MAY contain a colon now** (a label, like a student name);
+COURSE names keep the refusal. A student name is a label and may carry one. The
+pencil on each Students-card chip renames that
 label (`core.js:renameStudent`, 10 Sep 26 — everyone may, like + Add and
 Remove; refuses a name another enrolment on the course already holds; the id
 and every id-keyed record are untouched). **The Tracker will be

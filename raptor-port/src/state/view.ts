@@ -592,6 +592,69 @@ export function toggleWarnMuted(di:any){ if(WMOPEN.has(+di))WMOPEN.delete(+di); 
 export const NOTEPUB=new Set<string>()
 export function notePub(key:any){ return NOTEPUB.has(String(key)) }
 export function toggleNotePub(key:any){ if(!canEditSched())return false; const k=String(key); if(NOTEPUB.has(k)){NOTEPUB.delete(k);return false} NOTEPUB.add(k); return true }
+
+/* ---- THE SESSION-STATE RESET REGISTRY (ARCH-STACK 1b, RC6/ARCH-06) ---------
+   The transient view-state above is cleared in TWO places — resetSession (a
+   login/logout, store.ts) and loadWeek (a week swap, store.ts) — and those two
+   were hand-maintained lists that drifted: every new panel Set had to be added
+   to the right one(s) by memory, and a miss leaks the previous session's or
+   week's state into the next (the "stale-pointer" class RC6 names). This is the
+   ONE declared home for that policy. Each entry says which resets clear it:
+     · 'session' — cleared on every login/logout (a new user inherits nothing);
+     · 'week'    — cleared on every week swap (no pointer into a row/day that
+                   the new week does not have).
+   resetSession and loadWeek now iterate this list instead of hand-listing the
+   clears, so a new field is registered ONCE and both paths pick it up — and the
+   drift-guard test (view-reset.test.ts) fails if a session/week Set is added
+   without a policy here or an explicit exemption.
+
+   NOT in this list, on purpose: the navigation/selection/identity work each
+   reset does around these clears — setPage, setBoardDay, selDrop, clearOtherHL,
+   armDrop, the View-as identity, the Leave War / Tracker role seams, the edit
+   log — stays spelled out at each call site, because it is ordered, side-
+   effecting and specific to login vs week-swap, not a flat "clear this" list.
+   WARNOFF is cleared here but loadWeek RESTORES it from the week's stash right
+   after (a scheduler's muted checks survive looking away and back). */
+type ResetScope = 'session' | 'week'
+export const VIEW_RESET: { name: string; scopes: ResetScope[]; reset: () => void }[] = [
+  /* per-day / per-week panel and preview sets — both a new session and a new
+     week must start from their defaults, or a fold/preview points at a day or
+     row that is no longer there */
+  { name:'DPREV',   scopes:['session','week'], reset:()=>DPREV.clear() },
+  { name:'VWORK',   scopes:['session','week'], reset:()=>VWORK.clear() },
+  { name:'AVSHUT',  scopes:['session','week'], reset:()=>AVSHUT.clear() },
+  { name:'PIOPEN',  scopes:['session','week'], reset:()=>PIOPEN.clear() },
+  { name:'LATEOFF', scopes:['session','week'], reset:()=>LATEOFF.clear() },
+  { name:'BELLLIT', scopes:['session','week'], reset:()=>BELLLIT.clear() },
+  { name:'WARNOFF', scopes:['session','week'], reset:()=>WARNOFF.clear() },
+  { name:'WMOPEN',  scopes:['session','week'], reset:()=>WMOPEN.clear() },
+  { name:'NOTEPUB', scopes:['session','week'], reset:()=>NOTEPUB.clear() },
+  { name:'HISTMODE',scopes:['session','week'], reset:()=>setHistMode(false) },
+  { name:'CARRYDAY',scopes:['session','week'], reset:()=>setCarryDay(null) },
+  /* session-only: the Inputs-page view and the highlight-strip fold are page
+     state that SURVIVES a week swap on purpose (a cross-week scrub must not
+     refold the strip mid-gesture), and only reset when the user changes */
+  { name:'HLOPEN',  scopes:['session'], reset:()=>setHlOpen(false) },
+  { name:'HLGROUP', scopes:['session'], reset:()=>setHlGroup('') },
+  { name:'INPVIEW', scopes:['session'], reset:()=>setInpView('table') },
+  { name:'CALMONTH',scopes:['session'], reset:()=>setCalMonth(null) },
+  { name:'MEDASOF', scopes:['session'], reset:()=>setMedAsOf(null) },
+  /* the two-tap "Load onto working copy" confirm. Its own doctrine is "any
+     navigation cancels it" (it clears in setDayPreview), and a login/logout or
+     week swap is navigation — so it belongs here too. Two leaks (this and
+     HLGROUP above) the registry surfaced: both were documented session/nav-
+     scoped but were missing from the old hand-lists, so they carried across a
+     session (harmless-but-wrong) until now. */
+  { name:'RESTARM', scopes:['session','week'], reset:()=>setRestArm(null, null) },
+  /* week-only: the palette day and the "set default?" offer are keyed to the
+     week being left; resetSession clears the offer through setPage instead */
+  { name:'ROSDAY',     scopes:['week'], reset:()=>setRosDay(0) },
+  { name:'SECDEFOFFER',scopes:['week'], reset:()=>setSecDefOffer(null) },
+]
+/* clear every field whose policy includes `scope`. Order within a scope does
+   not matter — each entry clears an independent field — so resetSession and
+   loadWeek can call this at the point their old clear-block sat. */
+export function resetViewState(scope: ResetScope){ for(const e of VIEW_RESET) if(e.scopes.includes(scope)) e.reset() }
 /* RESTARM — the one deliberate confirm in the app (owner, 16 Aug 26). "Load
    onto working copy" (the reworded restore) discards any unpublished edits on
    the day, so when there ARE some it takes two taps: the first arms this flag,

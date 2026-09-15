@@ -197,15 +197,61 @@ Astra says the original Bug 2 may **not** reproduce (EditWeek `ed=false`; SchedB
 - **Model:** Fable, high — short, focused verification.
 
 ### [ARCH-STACK] The architectural root-cause stack — the backbone (both providers, 13 Sep 26)
+**STEP 1A DONE + LIVE (13 Sep 26, PR #396):** stable ids on the scheduler side — input filing by
+`iid` (`[INP-CSID]` done), day notes as `{rid,t}` objects, coordinated storage-format reset;
+plus a history-ordering determinism fix and a cross-week accepted-input edit/delete guard. Both
+providers inspected the built code; all findings fixed. Remaining in step 1: **1B** (`[TRK-CSID]`,
+Tracker ids — split 13 Sep 26: **1B-i COURSE ids DONE + LIVE**; **1B-ii SYLLABUS ids DONE + LIVE**
+(14 Sep 26 — incl. a Fable review, then an independent Codex re-review that found RR-01/02/03 +
+owner-requested RR-03b, all fixed and merged via PR #402)) and **1C** (`who→personId`,
+parity-sensitive). **1C DONE + LIVE (14 Sep 26, PR #403, merged to `main`, deployed & live-verified).**
+Ground/Common-Programme `who` now store the stable person id (flying/duty/sim/inputs already did);
+rename is label-only (the DAYS-walk is gone); sim `who` is free text only; `addPerson` refuses an
+id-colliding callsign; coordinated storage reset (SCHEMA_VERSION 1→2). Process: design →
+cross-provider plan red-team (Claude + Codex, both REVISE → fixes folded) → Opus 4.8 build →
+independent cross-provider code inspection (Claude SHIP-READY; Codex REVISE → test-strength + a
+peek regression fixed + locked; two-tab reset limitation acknowledged as [DB-STEP]-owned). Gates:
+tfin.js 728/0, vitest 4728/4728, smoke 425/0, build; live-verified (ground/programme names resolve
+id→cs, sim `who` shows as text, all assets 200, no console errors). *(Deploy note: the first two
+publish runs hit the known `addStudent` smoke flake — deploy skipped; a fresh workflow_dispatch run
+was green and published, exactly the #398 pattern.)* Spec + dispositions:
+`raptor-port/docs/superpowers/specs/2026-09-14-arch-stack-1c-personid-spec.md` (§§12–13 binding).
+**With 1C, step 1 (stable ids everywhere) is COMPLETE.**
+
+**STEP 1b — PARTIAL, in review (14 Sep 26, PR #404, held for "merge live").** The two
+GENUINE quick wins of 1b are built on `claude/arch-stack-1b-quickwins`: (a) the `mod:'now'`
+late-mark freeze — input write paths stored the literal 'now' and re-resolved it to
+read-time "today", so an on-time input silently read LATE once re-read on a later day
+(latent until INPUTS persist at the DB step); now frozen to today's ISO at the write
+(`nowStamp()`, all 7 sites), display still reads "now" same-day. (b) A **SessionState reset
+registry** (`view.ts` `VIEW_RESET`) — `resetSession`/`loadWeek` hand-clear-lists had drifted;
+one declared per-field policy both iterate, plus a drift-guard test; closed two leaks it
+surfaced (HLGROUP, RESTARM). Gates: vitest 4737/4737, build, tfin 728/0 (e2e's 2 phone-width
+fails + tracker smoke `addStudent` timeout are pre-existing on `main`, verified). **The other
+two 1b items were NOT quick wins on inspection and are SPLIT OUT (owner-approved, 14 Sep 26):**
+**ISO dates** is a parity-sensitive record-shape change across ~20 files (`date`+`yr`+`endDate`
+→ ISO, Leave War sync, medical, quarantine, storage reset) — promote to its own item with a
+design + cross-provider red-team before building; **landing-on-the-row** is largely delivered
+by 1A (ground row `src`→stable iid) and its remainder is owned by **step 4** (one Absence
+record) — no separate 1b work.
+
+Deferred
+follow-ups: (finding 2, orphaned `Other` hard-grade) noted below; and a
+**pre-existing** peek-preview cache nit surfaced by the 1C code inspection
+(Codex PID-R03) — the ViewWeek preview cache keys on the week only, so a person
+rename isn't reflected in the cached preview until a week change. Predates 1C
+(perf-cache-adjacent); fix by adding a roster-revision to the preview cache key
+when convenient (low priority, cosmetic).
 A whole-app architectural review by BOTH Astra and Fable (read-only) converged on one story:
 the app is **one store-pattern built three times** (Scheduler / Leave War / Tracker), and it
 knows only THAT something changed, never WHAT. The fix is a **record-level change stream over
 stable ids** that undo, persistence, sync and the database all consume — build once, not four
 times. Several existing items are STEPS of this stack. **Full plan (root causes, order, effort,
 what to stop):** `raptor-port/docs/superpowers/specs/2026-09-13-architecture-rootcause-plan.md`.
-- **Order:** (1) stable ids everywhere [INP-CSID]/[TRK-CSID] + `who→personId`/note-ids/`iid`→UUID;
-  (1b) quick wins — landing-on-row, a session-reset registry, ISO dates, the `mod:'now'`
-  late-mark fix; (2) ONE write/command layer (all 3 modules, PEOPLE/settings included);
+- **Order:** (1) stable ids everywhere [INP-CSID]/[TRK-CSID] + `who→personId`/note-ids/`iid`→UUID
+  — DONE; (1b) quick wins — the `mod:'now'` late-mark fix + a session-reset registry DONE (PR #404,
+  in review); landing-on-row folded into step 4, ISO dates split to its own item (see 1b status
+  above); (2) ONE write/command layer (all 3 modules, PEOPLE/settings included);
   (3) global per-session undo as inverse-patch [GLOBAL-UNDO]; (4) ONE Absence record (design NOW,
   before the Dataverse tables freeze); (5) record-oriented storage door → Dataverse [DB-STEP];
   (6) remove the quarantine/legacy machinery.
@@ -215,6 +261,15 @@ what to stop):** `raptor-port/docs/superpowers/specs/2026-09-13-architecture-roo
   crux) → build → inspect → gates → hold for "merge live". Start with (1) — cheap, independent.
 - **Context:** the plan doc above (synthesises both reviews); memories
   `architectural-root-cause-before-minute-fixes`, `future-undo-semantics-multiuser`.
+- **Sequence re-review (Astra/GPT-6 high, 13 Sep 26) — REVISE, backbone SOUND.** Adds a
+  **split/incremental invariant + property-testing layer** (small harness now → grown per step →
+  property tests at the command layer → persistence fault tests at the DB step; NOT big-bang, NOT
+  DB-eve). Invariants must be CLASSIFIED first (hard-enforce vs advisory-detect vs frozen-issued) —
+  don't enforce example rules literally (double-booking is intentionally warn-not-block; only the
+  ISSUED snapshot is immutable). Order refinements: undo (3) must respect the amendment publish
+  boundary; pull the transaction/conflict contract + storage test-double ahead of undo (into 2);
+  do one-Absence (4) before retiring the 3 undo stacks. Full dispositions in the plan doc's
+  "Sequence re-review" section.
 - **1A follow-ups (post-build inspection, 13 Sep 26):** two faces of the cross-week accepted-input
   LANDING model that step (4) "one Absence record" dissolves. (a) **DONE now (owner: guard):** editing/
   deleting an accepted input whose ground row is on a non-loaded week is refused with "Load the week
@@ -285,22 +340,61 @@ person move between squadrons with data intact.
 - **Context:** memory `multi-squadron-and-person-transfer`; ties to
   `docs/architecture-direction.md` and [DB-STEP].
 
-### [INP-CSID] Stable ids for personal inputs — OPEN (rides the stable-id work)
-Two inputs that share the content key `inpKey` can cross filing/deletion — deleting one can
-remove the other's landing. Give inputs a stable hidden id (sibling of the schedule `rid`
-and the Tracker [TRK-CSID] work) so filing/accept/delete address identity, not a shared
-content key.
-- **Context:** the sync spec, finding J (`DU-007`).
+### [INP-CSID] Stable ids for personal inputs — DONE (13 Sep 2026, ARCH-STACK 1A item 1)
+Delivered by ARCH-STACK step 1A: personal inputs are filed/accepted/undone/edited by their
+stable opaque `iid` (`newId('i')`), not the content key `inpKey`. Twins file independently and
+the accept guard is a same-input idempotency check; `inpKey` stays only as a display/dedup hint.
+Merged live in PR #396. Finding J (`DU-007`) closed.
 
-### [TRK-CSID] Give courses & syllabuses their own hidden ids — OPEN (medium)
-Students and schedule rows now carry stable hidden ids (rename/reorder-safe);
-**courses and syllabuses do not** — they're still keyed by name, so renaming a
-course/syllabus still moves data by name and is not as safe as renaming a student.
-Give them their own ids so a rename becomes identity-stable too. (Verified open:
-no course/syllabus id in `tracker/app/core.js`/`ids.js`; CLAUDE.md still treats
-their names as storage-key segments.)
-- **Model:** build on Opus (multi-file plumbing); a Fable-high final review
-  (persisted data, silent-defect risk).
+### [TRK-CSID] Give courses & syllabuses their own hidden ids — SPLIT (owner, 13 Sep 26)
+Two passes (courses first — clean; syllabuses second — the tangled global/built-in half).
+
+**1B-i — COURSE ids — DONE + LIVE (13 Sep 26; PR #398 code + #399 docs, merged to `main`, deployed & live-verified).**
+*(Deploy note: #398's first publish failed on the known `addStudent` smoke flake so it was NOT live despite an earlier handoff saying so; re-published via workflow_dispatch — green — and live-verified this session.)*
+`COURSES` is `{id,name}[]`, `course` is the current course id, every per-course key
+files under the id, so **renaming a course is a label change that moves nothing**
+(the old copy-verify-delete apparatus in `renCourse` is gone). New `app/courseIds.js`
+(mint/upgrade/reconcile) + `migrateCourseIds` (resumable, read-back-verified,
+`list()`-prefix move with a reserved skiplist + fail-closed preflight, translates
+`v3:links`). Fail-closed boot (`bootError` → App reload panel). Import carries
+`{id,name}` courses (file v2), reconciles to the store's ids by name, refuses a
+reserved name / bad id. Spec + 4-round Astra red-team (APPROVED):
+`raptor-port/docs/superpowers/specs/2026-09-13-trk-csid-course-ids-spec.md`.
+Known limitation (inherited, NOT new): the migration's durability + two-tab safety
+match the shipped enrolment migration (read-back proves the in-memory whiteboard,
+not the backend) — this is `[TRK-DISK]`, owned by `[DB-STEP]` (RC5); no interim
+patch built. Fable-high final review of the built diff before merge.
+
+**1B-ii — SYLLABUS ids — DONE + LIVE (14 Sep 26; PR #400 build → #401 Fable-review fixes → #402 Codex re-review fixes).**
+*(Finished via an independent Codex re-review of the merged Fable fix: it found RR-01 an
+order-dependent layout-conflict brick, RR-02 raw-text layout equality + one-sided empty
+guard, RR-03 a suppressed legacy def resurrected as a visible custom; plus owner-requested
+RR-03b a hidden built-in's edited def vanishing. All fixed with fail-first tests and merged
+in PR #402; gates green, deployed.)*
+Syllabuses now carry stable hidden ids: built-ins get **deterministic shipped ids**
+from a `BUILTIN_SYL` table (`app/sylIds.js` — `sb2024`/`sb2026`/`sbtx2026`/
+`sbagaa2026`), user charts a minted `sc…`; grammar `^s[bc][0-9a-z]+$`. The global
+catalogue is `SYLS`=`{id,name,base?,userNamed?}[]` (`v3:master:sylcat`), `base`
+authoritative from the table. **Renaming a syllabus is a label change that moves
+nothing** (`renSyl` = set name + `userNamed`; `moveSylData`/`purgeLegacySyl`/
+`SYL_ALIAS`/`SYL_RENAME` all deleted). Conversion = **"keep charts, reset marks"**
+(owner): `migrateSylIds` converts the global catalogue IN PLACE via a durable
+**payload journal** (compute-once, whole-object writes, `purge = sources ∖
+destinations`, verify after all purges; two flags `kSylCatMig`/`kSylReset`; legacy
+layout event-ids translated via `padId`/`SPECIAL` incl. `__font`) and RESETS the
+per-(course,syllabus) student layer. Boot reconcile `reconcileBuiltins` (also in
+`reloadFromStore`). `plan.sylId` replaces `plan.sylName`. **Import guardrail
+(owner, §19):** charts import from any version; student marks/dates/rosters import
+ONLY from an id-native v3 file with a `sylcat` (pre-v3 / unresolved → refused, plain
+message; charts still import). File version → 3. **Colon relaxed** on syllabus/
+chart names (course names keep the refusal). One converter `app/sylIds.js` shared
+with Import. Spec + 7-round Astra red-team (APPROVED):
+`raptor-port/docs/superpowers/specs/2026-09-13-trk-csid-syllabus-ids-spec.md` (§§14–19 binding).
+Tests: `app/sylIds.test.ts` (pure), `app/sylIds.migration.test.ts` (KEEP/RESET
+journal harness), tracker.test.tsx re-baselined (rename/reorder/delete/dup/guardrail),
+smoke fixtures → ids + v3. Inherited `[TRK-DISK]` durability limitation stands.
+- **Done:** merged and live 14 Sep 26 (PR #402). The inherited `[TRK-DISK]` durability
+  limitation still stands (owned by `[DB-STEP]`).
 
 ### [TRK-ATTEMPTS] Keep a student's attempt history — OPEN (small, feature)
 Remember a student's *earlier* tries at an event, not just the latest grade. More a

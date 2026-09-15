@@ -436,9 +436,19 @@ another person, is refused with a message). The 9 Sep 26 record
 the migration, folded into `pid`, and deleted; a file's `links` block is
 read the same way on Import and never written by Export.
 
-Course, syllabus and chart names are storage-key segments joined by `:`,
-so a name containing a colon is refused at every entry point and by the
-file check. A student name is a label, not a key, and may contain one.
+**A syllabus is a syllabus id since 1B-ii (`[TRK-CSID]`, 13 Sep 26).** The
+`<syl>` segment above is a syllabus id: built-ins carry a deterministic
+shipped id from `app/sylIds.js:BUILTIN_SYL` (`sb…`), user charts a minted
+`sc…`; the global catalogue is `v3:master:sylcat` (`{id,name,base?,userNamed?}[]`),
+definitions `v3:master:syls` and layouts `v3:master:lay:<sylId>` are id-keyed,
+and `plan.sylId` replaces `plan.sylName`. `migrateSylIds` converts the
+catalogue in place (payload journal, flags `v3:sylcatmig`/`v3:sylreset`) and
+RESETS the per-(course,syllabus) student layer ("keep charts, reset marks").
+File version → 3; student marks import only from an id-native v3 file with a
+`sylcat` (the §19 guardrail). A COURSE name is still a storage-key segment
+shown in name reconcile, so a course name containing a colon is refused at
+every entry point and by the file check; a SYLLABUS, CHART or STUDENT name is
+a label now and may contain a colon.
 
 ### The syllabus file
 

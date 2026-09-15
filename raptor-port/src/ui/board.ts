@@ -4,7 +4,7 @@
 import { DAYS } from '../engine/data'
 import { mkNote, noteText } from '../engine/note'
 import { INPUTS, inputCoversDate, inpById, inpTimeText } from '../engine/inputs'
-import { PEOPLE, nameToId, isSpecial } from '../engine/people'
+import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { waveInTime } from '../engine/events'
 import { WARN, validate, WCODE, wlbl } from '../engine/validate'
@@ -664,7 +664,7 @@ const timeSpan = (str: any, end: any) => (str || end) ? [str, end].filter(Boolea
    overflow) collapsed to "Bane +3" once there is more than one, the same
    shorthand the board itself has no room to spell out in full either */
 const whoText = (row: any) => {
-  const ids = [...whoArr(row), ...((row && row.more) || [])].map((v: any) => nameToId(v) || v).filter(Boolean)
+  const ids = [...whoArr(row), ...((row && row.more) || [])].map((v: any) => whoId(v) || v).filter(Boolean)
   if (!ids.length) return ''
   const names = ids.map((id: any) => PEOPLE[id]?.cs || id)
   return names.length > 1 ? `${names[0]} +${names.length - 1}` : names[0]

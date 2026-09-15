@@ -1,88 +1,35 @@
-# Session handoff — [AMEND] plans selector redesign BUILT (holding for "merge live")
+# Session handoff — [AMEND] plans-selector follow-ups DONE + reconciled with main
 
-## Branch (select THIS in the new-chat picker)
-`claude/amendment-engine-core` — in-flight, **NOT merged**, no "merge live" given.
-Base is `main` @ ee78a69. Do not start from `main`.
+## Where it is
+Branch `claude/amendment-engine-core` (PR #405). The plans-selector redesign AND the
+7 owner follow-ups (+ 2 refinements) are BUILT, cross-provider bug-checked (Codex +
+Fable), and the branch has been **merged up to `main`** (main had advanced 52 commits
+with ARCH-STACK person-ids + TRK-CSID syllabus-ids; those are now in the branch).
+All gates re-run green after the reconciliation. Merging live on the owner's word.
 
-## Done this session (committed + pushed) — the plans selector redesign
-Built test-first on Opus, to the LOCKED spec
-`docs/superpowers/specs/2026-09-15-plans-selector-redteam.md`. What changed:
-- **ONE white selector button per day** (`planSelectorHTML`, `html.ts`), shared by the
-  week day head (`.dhtpl`) AND the board sign strip (`.sb-pub`) — one builder, A5.
-  Label = what you're viewing: "Live working copy" / the plan name ("Plan B") /
-  amber "👁 AL2" while previewing. Opens ONE menu (`planMenu`, `board.ts`): editable
-  copies on top (tap = switch instantly via `switchDraft`, A4) → "Issued · read-only"
-  (tap = preview) → "+ Alt Plan" at the bottom (`draftDup`).
-- **Green title tag** (`verTagHTML`) beside the day title names the issued version
-  (ORIG/ALn); dashed "DRAFT" while unpublished. It REPLACED the "✓ Published · ALn"
-  stamp. Edit-surface only (the view page keeps its own pickers).
-- **"Draft" → "Plan", lettered A/B/C** (`drafts.ts` `nextName`, C1) — lowest unused
-  letter, so renaming frees a letter to reuse. `DraftsModal` text + toasts renamed (C5).
-- **Removals**: the "Drafts" button, the grouped `<select data-dver>` on edit surfaces,
-  the green "Live copy" pill, the "✓ Published · ALn" stamp, and the **week-status
-  banner text** (DRAFT/PART-PUBLISHED/APPROVED) — the per-day tags carry it now; the
-  banner keeps only the AL roll (`Shell.tsx`). **← Back to live** moved into the
-  read-only preview bar on BOTH surfaces (A2).
-- **Must-fix A1–A8 all in**: A1 two-tap discard confirm kept; A3 "Publish AL" hidden
-  under preview; A6 selector renders inside the excised `.dhtpl` (byte-parity held via a
-  balanced-span `noDhTpl`); A7 `.wavemenu` scroll ceiling; A8 label clamp.
-- **B1 (owner option a)**: deleting plans down to ONE clears the day's plans → back to
-  "Live working copy" (`draftDelete`).
-- **New test**: `src/ui/planselector.test.tsx` — the five-state matrix + menu behaviours.
+## What shipped in the follow-ups (see docs/plans-selector-followups-plan.md for detail)
+1. Signatures are PER PLAN + display-follows-validity — a content change clears the
+   sign-offs (owner R1). 2. Week AL-roll banner removed (banner only hosts the RULES
+   MODIFIED stamp now). 3. Version tag coloured by AL number (data-alc). 4. Tag moved
+   to a `.dhver` span immediately left of the 4X4 badge. 5. Tag shows on view-only too.
+   6. Warnings already show on view live faces (frozen issued face stays clean by the
+   snapshot rule). 7. Sign-off status line publish-aware + "no changes to publish"
+   bubble (owner R2). Plus Codex/Fable fixes: restampRev (sign-offs survive dup/delete),
+   tag-adjacency CSS, R2 re-fire guard, ALNaN guard, and PSF-001 (signatures now bind
+   to the filing axis — a leave/Other filing on a published day clears the sign-offs).
 
-## Cross-provider bug-check (Codex + Fable) — DONE, findings fixed
-Both reviewers inspected commit `43edb04`. They converged; a second commit fixed the real
-findings:
-- **HIGH (Codex PS-001):** `ALPanel.tsx`'s per-day "Publish AL" was NOT guarded under a
-  preview — a third publish surface I'd missed. Now locked while `DPREV.has(di)`, plus a
-  guard in the `data-alpub` handler.
-- **A3 pending-chip (both):** under an active preview the "N pending" chip read the previewed
-  snapshot's delta, not the live count. Now uses PVND (agrees with the restore bar); the
-  frozen issued-default face (PVQ) still shows nothing.
-- **nextName past-Z (both):** beyond 26 plans the numeric fallback could repeat "Plan 27".
-  Now a whole-name walk — always unique.
-- **PS-002 / Fable #3:** the view page's `d:` preview could bleed onto the edit surfaces.
-  `viewVerSelHTML` now gated `!ed&&!vsel`; `setPage` clears `d:` previews entering the edit page.
-- **PS-004:** "+ Alt Plan" during a preview now clears the preview.
-- **Fable #4:** the read-only bar's "← Back to live" is now edit-surface only (`vsel`).
-- **A8 (both):** the selector tooltip now carries the full plan name.
-- **Cleanup:** removed dead `.livebtn`/`.ddraft`/`.sb-dver` CSS + stale comments.
-- **DEFERRED / flag to owner (Codex PS-003):** the board hides its whole sign strip (and so
-  the selector) under a preview — long-standing behaviour; "← Back to live" is still in the
-  board's warn bar. Fable validated the current behaviour. Left as-is; confirm if you want the
-  selector kept visible under a board preview too.
+## PARKED — the owner's next ask (crew-rest on published + the 7-day rule)
+Not built. The owner wants the CURRENT published day to show forward crew-rest
+warnings (dotted lines + CR) driven by the NEXT day's plan, i.e. warnings on the
+frozen published face — which reverses the settled "never validate a snapshot / the
+issued face is byte-frozen" rule (pubsweep.test.tsx pins it). The forward crew-rest
+TRACE already exists on the live/edit view (validate.ts `crewRestDay`, weekctx.ts
+`nextMondaySeed`, the "Breaks <tomorrow>" box, `boxdash`). He is also unsure about the
+max-consecutive-workday rule (VCONF.maxRun / DAYS_RUN). This is a HEAVY rules-engine
+feature — scope it properly: drive the app to show current behaviour, agree the exact
+change, red-team the plan across BOTH providers before building, then bug-check across
+both after. Its own branch/session.
 
-## Gates (re-run after the fixes)
-- `npm test` **4664/4664** ✓ · `node reference/tfin.js` **728/0** ✓ · `npm run build` clean ✓
-- `npm run test:e2e`: **2 failures, both PRE-EXISTING and unrelated** (proven by a clean
-  `git stash -u` run on the base commit — they fail without any of this work; e2e had not
-  been run since Phase 3): `geometry.spec.ts:1976` (board flying-line brief inline at phone
-  width — board grid CSS I never touched) and `leavewar.spec.ts:2241` (the Leave War tab,
-  a separate app I never touched). **Flag to owner; spin off separately — NOT part of [AMEND].**
-- `npm run smoke:tracker`: run this session (see the report).
-
-## NEXT — owner follow-ups (15 Sep 26), BEFORE merge
-The owner tested PR #405 on Vercel and asked for **7 changes, incl. a real BUG**
-(sign-offs leak across plans — day-level, not per-plan). **Do these next, same branch,
-Opus high, test-first, then Codex+Fable bug-check.** **Do NOT merge #405 until they land.**
-**Full spec (READ FIRST): `docs/plans-selector-followups.md`.** In brief:
-1. BUG: signatures are per-DAY, not per-plan — Plan B's green sign-offs show on unsigned
-   Plan A. Design call: per-plan signatures (recommended) vs clear-on-switch. Ask the owner.
-2. Remove the amber AL-roll banner entirely (the whole week banner goes).
-3. Colour the version tag by AL number (AL1 cyan / AL2 amber / AL3 green…), not flat green.
-4. Move the version tag to the LEFT of the "4 X 4" wave-count badge.
-5. Show the version tag on the VIEW-only schedule too (watch byte-parity).
-6. Show warnings on the VIEW-only schedule, like edit schedule.
-7. Board publish control: the "Signed — this day can be published" line isn't
-   publish-aware — no button shows on a published day with no changes (correct), but the
-   wording misleads. Make it publish-aware; ask owner if he wants the control always shown.
-
-Then hold for the owner's explicit **"merge live"**. The two pre-existing e2e failures
-(geometry board flying-line; Leave War tab) still want their own separate fix session.
-
-## After merge — [AMEND] merging unblocks ARCH-STACK step 2 increment 2
-Scheduler adoption of the command layer — branch `claude/arch-stack-2-command-core`,
-spec `docs/superpowers/specs/2026-09-14-arch-stack-2-command-layer-spec.md` §7.
-Also still open from the amendment brief: Phase 3 leftovers (AM-04 frozen availability in
-the digest; the publish-entry hard-block-vs-acknowledge matrix) and Phase 7 (crew live-draft
-badge). Confirm scope with the owner; don't assume.
+## The done-means-live chain (on the owner's "merge live")
+merge PR #405 on green → wait for Pages → load the live page and look → one "it's live"
+notification. Do NOT watch the PR.

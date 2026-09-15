@@ -232,7 +232,7 @@ describe('gap (g): reassigning an accepted input to another person', () => {
     INPUTS.push({ person: 'split', date: 'Jul 15', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'audit', mod: '' })
     const r = INPUTS[INPUTS.length - 1]
     expect(acceptInput(2, r, 'g')).toBe(true)
-    expect(groundRowsWith(inpId(r))[0].r.who).toBe('Vandal')
+    expect(groundRowsWith(inpId(r))[0].r.who).toBe('split')   // the stable id (1C), cs 'Vandal'
     const d = draftOf(r)
     d.person = 'plasma'
     expect(commitInputEdit(r, d)).toBe(true)
@@ -240,7 +240,7 @@ describe('gap (g): reassigning an accepted input to another person', () => {
     expect(r.person).toBe('plasma')
     const rows = groundRowsWith(inpId(r))
     expect(rows.length).toBe(1)                         // no orphan under the old key
-    expect(rows[0].r.who).toBe('Fable')
+    expect(rows[0].r.who).toBe('plasma')               // the stable id (1C), cs 'Fable'
     // no ground row anywhere still points at the OLD content key
     const oldKey = `split|Jul 15|Meeting|600`
     expect(groundRowsWith(oldKey)).toEqual([])

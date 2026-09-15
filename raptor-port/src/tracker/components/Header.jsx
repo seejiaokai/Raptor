@@ -151,9 +151,10 @@ function HeaderSearch() {
 }
 
 export default function Header() {
-  const sylNames = core.ready ? core.orderedSylNames() : [];
-  const sylValue = (core.plan && core.plan.sylName) || core.DEFAULT_SYL_NAME;
-  const sylOptions = sylNames.includes(sylValue) ? sylNames : [...sylNames, sylValue];
+  /* the dropdown carries syllabus IDS (option value) and shows the label (§9) */
+  const sylIds = core.ready ? core.orderedSylIds() : [];
+  const sylValue = (core.plan && core.plan.sylId) || '';
+  const sylOptions = (sylValue && !sylIds.includes(sylValue)) ? [...sylIds, sylValue] : sylIds;
   /* Unsaved FLOW edits only. Until 9 Sep 26 this also watched the user's file
      (`fileDirty`), so a mark lit the button and pressing it opened a save-file
      dialog; the store is the record now, marks save themselves, and the File
@@ -169,7 +170,7 @@ export default function Header() {
   return (
     <header>
       <div>
-        <h1 id="courseTitle">{core.course || ''} PROGRESS TRACKER</h1>
+        <h1 id="courseTitle">{core.courseName(core.course) || ''} PROGRESS TRACKER</h1>
         <div className="sub sub-strap">Multi-student · single platform · <span id="evCount">{core.SYL.length} events</span></div>
       </div>
       <div className="controls">
@@ -189,7 +190,7 @@ export default function Header() {
             menu became an edit icon that sits right after its dropdown). */}
         <label className="sub"><span className="lbltx">Course</span>{' '}
           <select id="courseSel" value={core.course || ''} onChange={e => core.switchCourse(e.target.value)}>
-            {core.COURSES.map(c => <option key={c} value={c}>{c}</option>)}
+            {core.COURSES.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
         </label>
         <Menu id="course" label="✎" icon title="Edit courses — add, rename, reorder or delete">
@@ -208,7 +209,7 @@ export default function Header() {
             even though the toolbar below the bar also shows it. */}
         <label className="sub"><span className="lbltx">Syllabus</span>{' '}
           <select id="sylSel" value={sylValue} onChange={e => core.switchSyllabus(e.target.value)}>
-            {sylOptions.map(n => <option key={n} value={n}>{n + (core.CUSTOMS[n] ? ' ✎' : '')}</option>)}
+            {sylOptions.map(id => <option key={id} value={id}>{core.sylName(id) + (core.sylHasOwnDef(id) ? ' ✎' : '')}</option>)}
           </select>
         </label>
         <Menu id="syl" label="✎" icon active={core.arrangeMode} title="Edit the syllabus — chart layout, duplicate, rename, reorder or delete">

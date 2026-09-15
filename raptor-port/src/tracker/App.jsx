@@ -64,15 +64,18 @@ export default function App({ active = true }) {
   const [tab, setTab] = useState('flow');
   const [sideZoom, setSideZoom] = useState(1);
 
-  /* First mount boots the engine; a LATER mount redraws. core.init() runs
-     once per page load and is guarded against a second run — but the Shell
-     that holds this tab is unmounted by a LOGOUT (ui/App.tsx renders the
-     login screen in its place), so the next login mounts the Tracker again
-     with a fresh, empty #board and nothing would draw into it (found by the
-     7 Sep 26 bug sweep: log out from the Tracker, log back in, open it —
-     no chart). The engine's state is intact in that case; only the DOM is
-     new, so ask it to render again. */
-  useEffect(() => { if (core.ready) { core.renderBoard(); core.notify(); } else core.init(); }, []);
+  /* KICKOFF: first mount boots the engine once (guarded against a second run).
+     If the boot FAILS the course-id upgrade it sets core.bootError and never
+     sets core.ready (fail-closed, review CSID-04/R2-03): the render below shows a
+     reload panel with no board and no writers. */
+  useEffect(() => { if (!core.ready && !core.bootError) core.init(); }, []);
+  /* DRAW when ready: a mount-only effect would not re-run when `ready` flips
+     from the async boot (review CSID-R2-03), so key this on core.ready. It draws
+     the imperative board once #board has mounted (the same render that sees
+     ready renders the board div), and it also covers the LOGOUT→LOGIN remount
+     where the engine's state is intact and ready is already true on mount (the
+     7 Sep 26 "no chart after re-login" case). */
+  useEffect(() => { if (core.ready && !core.bootError) { core.renderBoard(); core.notify(); } }, [core.ready]);
 
   /* Which tab is showing is React state, but the search has to reach it: on the
      Info tab the board is display:none, so scrolling to a found event would be
@@ -80,7 +83,9 @@ export default function App({ active = true }) {
   useEffect(() => { core.setTabSink(setTab); return () => core.setTabSink(null); }, []);
 
   useEffect(() => {
-    if (!active) return;
+    /* no document handlers until the boot has succeeded (review CSID-R2-03) —
+       nothing to drive while the fail-closed panel or the loading state is up */
+    if (!active || !core.ready || core.bootError) return;
     const esc = e => core.handleEscapeKey(e);
     const del = e => core.handleDeleteKey(e);
     /* Ctrl/⌘+Z, Ctrl+Y, Ctrl/⌘+Shift+Z — the bar's ↶ ↷ from the keyboard
@@ -101,7 +106,7 @@ export default function App({ active = true }) {
       document.removeEventListener('click', clickAway);
       window.removeEventListener('beforeunload', unload);
     };
-  }, [active]);
+  }, [active, core.ready]);
 
   /* The phone's Flow / Info switch (was a class on <body>) rides the .tr-root
      div's className — never the page section above it. The section's className
@@ -110,6 +115,20 @@ export default function App({ active = true }) {
      toggled onto it by hand: on the owner's iPhone that showed the chart AND
      the side panel stacked (7 Sep 26). React owns this div, so the class
      survives. */
+  /* FAIL-CLOSED BOOT (review CSID-04/R2-03): all hooks above run every render
+     (rules of hooks), so these gates come after them. bootError → a plain
+     reload panel, no board, no writers; not-yet-ready → a light placeholder. */
+  if (core.bootError)
+    return (
+      <div className="tr-root" style={{ padding: 24, maxWidth: 520, margin: '10vh auto', textAlign: 'center', lineHeight: 1.5 }}>
+        <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 8 }}>Couldn’t finish upgrading your Tracker data</div>
+        <div style={{ fontSize: 13, opacity: 0.85 }}>{core.bootError}</div>
+      </div>
+    );
+  if (!core.ready)
+    return (
+      <div className="tr-root" style={{ padding: 24, textAlign: 'center', opacity: 0.7 }}>Loading…</div>
+    );
   return (
     <div className={'tr-root tab-' + tab}>
       {/* The bar hides on demand to hand the chart the whole column (owner

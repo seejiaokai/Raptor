@@ -215,31 +215,18 @@ export function resetSession(s: any) {
   view.selDrop()                  // SELID, SELSEEN, SELPREV, PFOCUS, WFOCUS, DWOPEN
   view.clearOtherHL()             // HLSET, SEARCH (and SELID again — harmless)
   view.armDrop()                  // ARM (belt-and-braces: setBoardDay only disarms if ARM was already set)
-  view.DPREV.clear()              // day-preview map — same in-place-mutation pattern as DWOPEN/HLSET
-  view.VWORK.clear()              // view-page working-copy choices — back to the issued default
-  view.AVSHUT.clear()             // Available-crew panels return to their open default
-  view.PIOPEN.clear()             // Personal-Inputs panels fold back too
-  /* the carried day too: setPage above captures whatever week the OUTGOING
-     session was parked on, and a new session must open on the week's own
-     opening position — on a phone that is today's column, which initPan
-     scrolls to and a stale carry would immediately undo. */
-  view.setCarryDay(null)
-  view.setHistMode(false)         // the board's History toggle is a per-session view mode
-  view.setHlOpen(false)           // the phone's Highlight fold shuts for the next session too
-  view.LATEOFF.clear()            // dropped LATE marks come back for the next session, like every other view mode
-  view.BELLLIT.clear()            // notification glows never carry across a login/logout
-  view.WARNOFF.clear()            // muted board warnings come back for the next session
-  view.WMOPEN.clear()
-  view.NOTEPUB.clear()            // "public" scheduler-note flags reset with the session
-  /* the Inputs-calendar VIEW (which month is open, table or calendar) is
-     per session and resets. The planning layer's pucks and remarks
-     themselves do NOT clear any more: since the storage seam they are saved
-     squadron data like INPUTS (spec §Collections, `plan`), and clearing them
-     in memory here wiped the saved copy for good on the next history step
+  /* every transient view-state field with a 'session' policy — the panel and
+     preview sets, the board's History toggle, the carried day, the Inputs-page
+     view (table/calendar/medical, its open month, its as-of date) and the
+     Highlight-strip fold. The list and the reason each resets live in ONE place
+     now, view.ts's VIEW_RESET, so this path and loadWeek can never drift apart.
+     Runs AFTER setPage, which may itself have written CARRYDAY (closing the
+     board carries its day) — the registry then clears it, matching the old
+     order. The planning layer's pucks and remarks are deliberately NOT in the
+     registry: since the storage seam they are saved squadron data like INPUTS,
+     and clearing them here wiped the saved copy on the next history step
      (8 Sep 26 bug pass). */
-  view.setInpView('table')
-  view.setCalMonth(null)
-  view.setMedAsOf(null)
+  view.resetViewState('session')
   /* the "View as" IDENTITY goes back to the boot default too. It is what
      every member-own gate keys on — the Inputs page's person filter and
      edit/delete reach, the Leave War's own-row rule (mirrored into its
@@ -571,23 +558,19 @@ export function loadWeek(v: any) {
     view.armDrop()
     view.selDrop()
     view.clearOtherHL()
-    view.setSecDefOffer(null)   // a "set default?" offer keyed by day index must not outlive its week
-    view.DPREV.clear()
-    view.VWORK.clear()
-    view.AVSHUT.clear()
-    view.PIOPEN.clear()
-    view.BELLLIT.clear()
-    /* the muted-warnings set is the one view-state field a stash restores
-       (weekStashSnap) — a scheduler who quieted a check on this week should
-       not have it reappear just because they looked away and came back. */
-    view.WARNOFF.clear()
+    /* every transient view-state field with a 'week' policy — declared once in
+       view.ts's VIEW_RESET and shared with resetSession, so the two clear-lists
+       cannot drift. Includes the "set default?" offer (keyed by day index, so it
+       must not outlive its week), the palette day, the panel and preview sets,
+       the History toggle and the carried day. The Inputs-page view and the
+       Highlight fold are session-only and deliberately survive a week swap, so
+       they are NOT in the 'week' scope. */
+    view.resetViewState('week')
+    /* WARNOFF is the one field a stash RESTORES: a scheduler who quieted a check
+       on this week should not have it reappear just because they looked away and
+       came back — re-add the stashed mutes right after the registry cleared them
+       (weekStashSnap collected them on the way out). */
     if (s) (s.wo || []).forEach((k: any) => view.WARNOFF.add(k))
-    view.WMOPEN.clear()
-    view.NOTEPUB.clear()
-    view.setCarryDay(null)
-    view.setHistMode(false)
-    view.setRosDay(0)
-    view.LATEOFF.clear()
     /* stable row ids (engine/rowids.ts) BEFORE the baseline — same trap as
        initStore's: a mint after the yardstick would read a just-loaded,
        untouched week as edited and get it persisted.

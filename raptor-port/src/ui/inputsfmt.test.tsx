@@ -10,7 +10,7 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { InputsPage } from './InputsPage'
 import { initStore, setSession, notify, writeInputs } from '../state/store'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, nowStamp } from '../engine/inputs'
 import { fmtDay, fmtDMY } from './inputedit'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -23,10 +23,13 @@ describe('the Inputs page date helpers', () => {
     expect(fmtDay('2027-01-03')).toBe('3 Jan 2027')
     expect(fmtDay('')).toBe('')
   })
-  it('fmtDMY is day-month-two-digit-year, and passes "now" and blanks through', () => {
+  it('fmtDMY is day-month-two-digit-year, reads a today stamp as "now", passes legacy "now" and blanks through', () => {
     expect(fmtDMY('2026-07-06')).toBe('6 Jul 26')
     expect(fmtDMY('2026-11-20')).toBe('20 Nov 26')
-    expect(fmtDMY('now')).toBe('now')
+    /* a this-session edit is now stored as today's ISO, not the literal 'now'
+       (ARCH-STACK 1b), and the Last-modified column still reads "now" for it */
+    expect(fmtDMY(nowStamp())).toBe('now')
+    expect(fmtDMY('now')).toBe('now')     // legacy fallback, still honoured
     expect(fmtDMY('')).toBe('')
     expect(fmtDMY(undefined)).toBe('')
   })

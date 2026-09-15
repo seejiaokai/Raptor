@@ -1,6 +1,6 @@
 import { DAYS } from '../engine/data'
 import { noteText } from '../engine/note'
-import { PEOPLE, isSpecial, nameToId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
+import { PEOPLE, isSpecial, whoId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
 import { INPUTS, inputCoversDate, inpLabel, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
@@ -1148,7 +1148,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
              as an empty .itxt each gap became a zero-width flex item that still ate
              the cell's 4px gap, walking every later puck to the right: four gaps put
              a puck 16px out of line with the rest of its row. */
-          const inner=arr.map((nm:any,k:any)=>{const id=nameToId(nm);
+          const inner=arr.map((nm:any,k:any)=>{const id=whoId(nm);
             if(id&&PEOPLE[id])return lSeat(di,id,`a:${di}.${ri}.${k}`,ed);
             return String(nm||'').trim()?`<span class="itxt">${esc(nm)}</span>`:'';}).join('');
           const ppl=lCell(inner,`a:${di}.${ri}.+`,ed,arr.length===1?'one':'');
@@ -1378,7 +1378,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
          the reference carries the qualifier and html.test.ts normalises both to
          "GRND", tolerating its absence. */
       h+=`<div class="sub plist one sec sec-grnd"><div class="sub-h">Ground Programme</div>`+(grd.length?plCols():'');
-      groundOrder(grd,d.gman).forEach(({row:x,ri}:any)=>{const id=nameToId(x.who), key=`g:${di}.${ri}`;
+      groundOrder(grd,d.gman).forEach(({row:x,ri}:any)=>{const id=whoId(x.who), key=`g:${di}.${ri}`;
         const inner=((id&&PEOPLE[id])?lSeat(di,id,key,ed):(x.who?`<span class="itxt">${esc(x.who)}</span>`:''))+moreSeats(di,key,ed);
         const n=rowCrew('g',[di,ri]).filter(Boolean).length;
         h+=plRow(x.prog,x.str,x.end,lCell(inner,key+'.+',ed,n<=1?'one':''),`gr:${di}.${ri}`,'prog',ed,x);});

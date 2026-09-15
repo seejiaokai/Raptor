@@ -8,7 +8,7 @@
    · `links` — course → student name → Raptor person id — rides beside charts
      and students, is checked like them, and survives the round trip. */
 import { describe, expect, it } from 'vitest'
-import { buildFile, readFile } from './fileFormat.js'
+import { buildFile, readFile, FILE_VERSION } from './fileFormat.js'
 
 const chart = (name: string) => ({ order: [name], syllabi: { [name]: [{ id: 'ST-01', type: 'acad', prereqs: [] }] }, layouts: {}, eventInfo: {} })
 const people = (course: string, syl: string, who: string) => ({
@@ -17,22 +17,22 @@ const people = (course: string, syl: string, who: string) => ({
 })
 const file = (parts: any): any => buildFile({ savedAt: 'x', ...parts })
 
-describe('a name with a colon is refused, naming the part (fileFormat.js)', () => {
-  it('a chart name', () => {
-    expect(() => readFile(file({ charts: chart('A:B') }))).toThrow(/chart .*“A:B”.*colon/)
+describe('colon relaxation (§8, [TRK-CSID] 1B-ii): chart/syllabus names MAY contain a colon; course names still refuse', () => {
+  it('a chart name MAY contain a colon — it is a label now, not a key segment', () => {
+    expect(() => readFile(file({ charts: chart('A/G: A/A'), version: 2 }))).not.toThrow()
   })
-  it('a course name', () => {
+  it('a course name is STILL refused (its id is the key segment, but reconcile shows the name)', () => {
     expect(() => readFile(file({ students: people('26:A', '2026', 'STUDENT A') }))).toThrow(/course .*“26:A”.*colon/)
   })
-  it('a syllabus name on a course', () => {
-    expect(() => readFile(file({ students: people('26ABSG', 'x:y', 'STUDENT A') }))).toThrow(/syllabus .*“x:y”.*colon/)
+  it('a syllabus name on a course MAY contain a colon', () => {
+    expect(() => readFile(file({ students: people('26ABSG', 'x:y', 'STUDENT A') }))).not.toThrow()
   })
   it('a crew member MAY contain a colon — the name is a label now, not a key (stable ids, 10 Sep 26)', () => {
     const s = people('26ABSG', '2026', 'A: B'); (s.byCourse['26ABSG'] as any).pace = { 'P:Q': {} }
     expect(() => readFile(file({ students: s }))).not.toThrow()
   })
   it('plain names still pass', () => {
-    const f = file({ charts: chart('A/G - A/A 2026'), students: people('26ABSG', 'A/G - A/A 2026', "O'BRIEN J") })
+    const f = file({ version: 2, charts: chart('A/G - A/A 2026'), students: people('26ABSG', 'A/G - A/A 2026', "O'BRIEN J") })
     expect(() => readFile(f)).not.toThrow()
   })
 })
@@ -80,7 +80,7 @@ describe('the links block (fileFormat.js)', () => {
   })
 
   it('an older file with no links reads as none', () => {
-    const f = file({ charts: chart('2026') })
+    const f = file({ charts: chart('2026'), version: 2 })
     expect('links' in f).toBe(false)
     expect(f.contains.links).toBe(false)
     const r = readFile(f)
@@ -98,5 +98,61 @@ describe('the links block (fileFormat.js)', () => {
   it('refuses a colon in a linked course or crew member name too', () => {
     expect(() => readFile(file({ links: { 'A:B': { 'STUDENT A': 'bane' } } }))).toThrow(/course .*“A:B”.*colon/)
     expect(() => readFile(file({ links: { '26ABSG': { 'A:B': 'bane' } } }))).toThrow(/crew member .*“A:B”.*colon/)
+  })
+})
+
+/* course ids (ARCH-STACK 1B-i, 13 Sep 26): a v2 file keys courses by id; the
+   reader accepts either shape but refuses reserved names, bad ids and dups. */
+const v2 = (courses: any[], byCourse: any = {}) => ({ courses, byCourse })
+describe('the course shape (course ids, 1B-i)', () => {
+  it('accepts a v1 string course list and a v2 { id, name } entry list, but not a mix', () => {
+    expect(() => readFile(file({ students: v2(['ALPHA'], { ALPHA: { plan: {}, bySyllabus: {} } }) }))).not.toThrow()
+    expect(() => readFile(file({ students: v2([{ id: 'c1a', name: 'ALPHA' }], { c1a: { plan: {}, bySyllabus: {} } }) }))).not.toThrow()
+    expect(() => readFile(file({ students: v2(['ALPHA', { id: 'c1a', name: 'BRAVO' }]) }))).toThrow(/list of courses .*damaged/)
+  })
+  it('refuses a reserved course name (either shape, case-insensitive) — it would collide with a global on import', () => {
+    for (const n of ['master', 'LINKS', 'Lay', 'courses', 'Syllabus Edit'])
+      expect(() => readFile(file({ students: v2([n]) })), n).toThrow(/reserves/)
+    expect(() => readFile(file({ students: v2([{ id: 'c1a', name: 'MASTER' }]) }))).toThrow(/reserves/)
+  })
+  it('refuses a v2 course id that is not a valid minted id (a separator would clobber a global — CSID-07)', () => {
+    expect(() => readFile(file({ students: v2([{ id: 'master:lay', name: 'ALPHA' }]) }))).toThrow(/invalid id/)
+    expect(() => readFile(file({ students: v2([{ id: 'ALPHA', name: 'ALPHA' }]) }))).toThrow(/invalid id/)
+  })
+  it('refuses a duplicate course id or name', () => {
+    expect(() => readFile(file({ students: v2([{ id: 'c1a', name: 'A' }, { id: 'c1a', name: 'B' }]) }))).toThrow(/id c1a twice/)
+    expect(() => readFile(file({ students: v2([{ id: 'c1a', name: 'A' }, { id: 'c2b', name: 'A' }]) }))).toThrow(/“A” is listed twice/)
+    expect(() => readFile(file({ students: v2(['A', 'A']) }))).toThrow(/“A” is listed twice/)
+  })
+  it('refuses a byCourse key that is a reserved name or a colon', () => {
+    expect(() => readFile(file({ students: v2(['ALPHA'], { master: { plan: {}, bySyllabus: {} } }) }))).toThrow(/reserves/)
+    expect(() => readFile(file({ students: v2(['ALPHA'], { 'A:B': { plan: {}, bySyllabus: {} } }) }))).toThrow(/colon/)
+  })
+  it('refuses a file written by a newer version', () => {
+    const f = file({ students: v2(['ALPHA']) })
+    f.version = FILE_VERSION + 1
+    expect(() => readFile(f)).toThrow(/newer version/)
+  })
+})
+
+describe('v3 reference completeness is against the UNION of both catalogues (§15, review CSID-IR-03)', () => {
+  /* a v3 file may describe a syllabus identity in the students block while the
+     charts block references it — that is resolvable across the file, not a
+     malformed reference, so it must NOT be refused at the boundary. */
+  it('accepts a chart reference described only in students.sylcat', () => {
+    const obj: any = {
+      format: 'ocu-tracker', version: 3,
+      charts: { order: ['sc0aa'], syllabi: { sc0aa: [{ id: 'X-1', type: 'acad', prereqs: [] }] }, layouts: {}, eventInfo: {}, sylcat: [] },
+      students: { sylcat: [{ id: 'sc0aa', name: 'MY CHART' }], courses: [], byCourse: {} },
+    }
+    expect(() => readFile(obj)).not.toThrow()
+  })
+  it('still refuses a chart reference described in NEITHER catalogue', () => {
+    const obj: any = {
+      format: 'ocu-tracker', version: 3,
+      charts: { order: ['sc0aa'], syllabi: { sc0aa: [{ id: 'X-1', type: 'acad', prereqs: [] }] }, layouts: {}, eventInfo: {}, sylcat: [] },
+      students: { sylcat: [], courses: [], byCourse: {} },
+    }
+    expect(() => readFile(obj)).toThrow(/do not describe/)
   })
 })

@@ -69,3 +69,45 @@ shared DB) are correct — this is about the SHAPE and ORDER so nothing is built
 - The UI/rendering layer (string builders, perf contracts) is deliberately OUT of scope.
 - This plan supersedes the piecemeal ordering; `[GLOBAL-UNDO]`, `[INP-CSID]`, `[TRK-CSID]`,
   `[DB-STEP]` are parts of it. See OUTSTANDING `[ARCH-STACK]`.
+
+## Sequence re-review + testing-layer placement (Astra/GPT-6 high, 13 Sep 26)
+A follow-up independent review (host=Claude, reviewer=Codex/GPT-6 Astra, high) re-checked the
+1→6 ORDER and placed a proposed **formal invariant + property-based testing layer** (a second
+adviser's idea). Verdict **REVISE** — the backbone (identity → commands → undo → persistence →
+cleanup) is **sound**; four refinements accepted, all touching steps 2–5 (none blocks the
+in-progress stable-id work). Log: session `01a09ac9-e818-7442-af81-e48c5a8a6afc`.
+
+**Testing layer — DECISION: split/incremental, not big-bang, not DB-eve.**
+- A **small deterministic invariant harness now**, grown one increment per architectural step;
+  **stateful property tests** at the command layer (step 2); **persistence fault tests**
+  (interrupted/partial/lost-ack saves, retries, competing clients) at step 5. Building it all
+  just before the DB move misses most development-phase risk; building the whole generator first
+  encodes models that haven't settled yet.
+- **The invariants must be CLASSIFIED before any are coded (SEQ-001, high).** Do NOT enforce the
+  adviser's example rules literally — several contradict the product: overlapping assignments are
+  *intentionally allowed with a warning* (`engine/avail.ts:519`; the picker shows the reason and
+  the drop proceeds), and it is the **issued snapshot** that is immutable, not the editable
+  published working copy. Three classes: (a) **hard** structural-integrity + authorization →
+  enforce unconditionally; (b) **advisory** scheduling rules → test *detection / severity /
+  exemptions / cross-consumer agreement*, never hard-refuse; (c) **frozen** issued records →
+  immutability + signature-binding. Generate both valid AND deliberately-conflicting schedules.
+
+**Order refinements (accepted):**
+- **SEQ-002 (high):** step 3 (global undo) must carry the **amendment publication boundary** —
+  undo cannot cross a signed-off publish (see amendment phase-2 plan L251–262: publish AL1 → undo
+  its creation → republish can reuse the immutable `iso#1` identity). Issued amendments/sign-offs
+  are irreversible history; restored signature bindings revalidated. Actor/session scoping alone
+  is insufficient. Carry this contract into the command design *before* building undo.
+- **SEQ-003 (high):** pull the **transaction / conflict contract + a storage test-double** ahead
+  of global undo (into step 2's prerequisites). Undo must **detect conflicting later edits** (A:X→Y,
+  B:→Z, then A undoes must not clobber B), and multi-record commands must apply **atomically**
+  (an approval must not save its bid change while its Absence write fails). The concrete Dataverse
+  adapter can still land late (step 5/7).
+- **SEQ-004 (medium):** do the **one-Absence-record (step 4) before retiring the three undo
+  stacks**; in the command layer distinguish **remote events vs derived projections vs causal
+  writes** — causal authoritative changes reverse together, projections recompute deterministically
+  and are never separate undo entries.
+
+**Confirmed immediate move (both advisers + this review):** finish stable ids — 1B-ii syllabuses,
+then 1C `who→personId` — and ship each conversion with rename/reorder/delete/copy behaviour tests
+as the first harness increment. Do **not** postpone stable-id work for a comprehensive framework.
