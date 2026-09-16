@@ -7,12 +7,12 @@ import { slotVal, acceptInput, unacceptInput, txtSet } from '../engine/slots'
 import { INPUTS, DATES, withRemarksTail, inpId, defaultAllday } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
-import { dayApproved, setDayApproved, publishALDay, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek } from '../engine/publish'
+import { dayApproved, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek } from '../engine/publish'
 import { draftSelect, draftVerLabel, loadVersionToWorkingCopy } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
-import { notify, loadWeek } from '../state/store'
+import { notify, loadWeek, commitSetDayApproved, commitPublishALDay } from '../state/store'
 import { scrollToWarnFocus, queueHold, warnWeekId } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
 import { logAction } from '../engine/editlog'
@@ -769,7 +769,7 @@ export function routeClick(e: MouseEvent) {
     /* §9: the beak only ever FIRST-approves — html.ts emits data-beak only on a
        never-published day (a published day shows an inert stamp). setDayApproved
        is itself a no-op on an already-published day, so this is safe regardless. */
-    const di = +beak.dataset.beak!; setDayApproved(di, true); notify(); return
+    const di = +beak.dataset.beak!; commitSetDayApproved(di, true); notify(); return
   }
   /* per-day AL publish — same gate */
   const alp = t.closest('button[data-alpub]') as HTMLElement | null
@@ -780,7 +780,7 @@ export function routeClick(e: MouseEvent) {
        copy, not what's on screen (A3, Codex PS-001); the button is hidden under a
        preview, this guards a stale click. */
     if (view.DPREV.has(+alp.dataset.alpub!)) return
-    publishALDay(+alp.dataset.alpub!); notify(); return
+    commitPublishALDay(+alp.dataset.alpub!); notify(); return
   }
   /* Back to live copy — the home button on the version cluster (owner, 16 Aug
      26). Pure view state, like the dropdown change: it clears the preview, no

@@ -35,11 +35,12 @@ import {
 } from '../command'
 import { DAYS } from '../engine/data'
 import { INPUTS, inpId } from '../engine/inputs'
-import { SCHED } from '../engine/publish'
+import { SCHED, setDayApproved, publishALDay, discardPending } from '../engine/publish'
 import { CURWEEK } from '../engine/waves'
 import { WARNOFF } from './view'
 import { PLANPUCKS, DAYRMK } from './plan'
 import { HIST, histSnap, histRestore } from './history'
+import { issuedDisclosed, discloseIssued } from './disclosure'
 
 /* ---- the scheduler EnlistableStore (the histSnap world, decomposed) ------- */
 function schedRecords(): Map<string, RecordEntry> {
@@ -97,6 +98,10 @@ export const SCHED_TYPES = {
   sectionReorder: 'sched.section.reorder',
   inputsWrite: 'inputs.write',
   inputsBatch: 'inputs.batch',
+  // phase 2b — the publish path (design §3.4)
+  approve: 'sched.approve',
+  publishAL: 'sched.publishAL',
+  discard: 'sched.discard',
 } as const
 
 const schedScope = (): Scope => ({ module: 'sched', weekId: CURWEEK })
@@ -120,6 +125,75 @@ export function commitInputs<T>(type: string, fn: () => T): T {
 }
 export function commitSchedValue<T>(type: string, fn: () => T): T {
   return commitSched(type, schedScope(), fn).value
+}
+
+/* ---- phase 2b: the PUBLISH path (design §3.4) ---------------------------- */
+/* the set of issued verIds currently on the loaded week's book — orig[di].id +
+   every als[n].id. The disclosure signal keys off these (currentIssuedIds). */
+function issuedIdSet(): Set<string> {
+  const s = new Set<string>()
+  const orig: any = SCHED.orig || {}
+  for (const di of Object.keys(orig)) { const id = orig[di] && orig[di].id; if (id) s.add(String(id)) }
+  for (const a of ((SCHED.als as any[]) || [])) { if (a && a.id) s.add(String(a.id)) }
+  return s
+}
+/* the loaded week's issued verIds — what a disclosing path (export/print/session
+   -end) reports to the disclosure registry (design §3.4). */
+export function currentIssuedIds(): string[] {
+  return [...issuedIdSet()]
+}
+
+/* a disclosing path (PDF export/print, CSV export, the issuing session ending)
+   reports the loaded week's issued versions as having left the machine, flipping
+   their `crossable` for the Step-3 undo/withdrawal decision (design §3.4). At
+   Step 2 this only RECORDS the signal — nothing reads it to change behaviour. */
+export function discloseCurrentIssued(): void {
+  discloseIssued(currentIssuedIds())
+}
+
+/* run a publish writer `fn` inside a command: enlist the scheduler store, run the
+   existing in-place publish (its histPush/notify latch + release in phase 8 as
+   today; toast stays inline), then — if the write actually MINTED a new issued
+   version — declare the publish boundary carrying the new ids (design §3.4). A
+   refused/no-op publish mints nothing, so no boundary is declared and (with no
+   record change) the commit emits nothing. `crossable` is true while none of the
+   new ids has been disclosed; the monotonic disclosure registry flips it for the
+   Step-3 undo/withdrawal decision. */
+function commitPublish(type: string, fn: () => void): CommitResult {
+  const cmd: Command = {
+    type, scope: schedScope(),
+    apply: (txn) => {
+      txn.enlist(schedStore)
+      const before = issuedIdSet()
+      fn()
+      const added: string[] = []
+      for (const id of issuedIdSet()) if (!before.has(id)) added.push(id)
+      if (added.length) {
+        txn.boundary({ kind: 'publish', ids: added, crossable: !added.some(issuedDisclosed) })
+      }
+    },
+  }
+  return commit(cmd)
+}
+
+/* first-publish a day (stamps its frozen Original — a sched.orig record + the
+   publish boundary). Routed additively: the engine setDayApproved runs unchanged
+   inside the command. */
+export function commitSetDayApproved(di: number, on: any): CommitResult {
+  return commitPublish(SCHED_TYPES.approve, () => setDayApproved(di, on))
+}
+
+/* publish one day's changes as its next per-day AL (appends a sched.als record +
+   the publish boundary). */
+export function commitPublishALDay(di: number): CommitResult {
+  return commitPublish(SCHED_TYPES.publishAL, () => publishALDay(di))
+}
+
+/* clear a never-published day's draft marks. Not a publish (mints no issued id,
+   declares no boundary) — routed through commit only so the pending-book change
+   reaches the stream. */
+export function commitDiscardPending(): CommitResult {
+  return commitSchedVoid(SCHED_TYPES.discard, () => discardPending())
 }
 
 /* ---- one-time registration (called from initStore) ----------------------- */

@@ -38,7 +38,7 @@ import { setRole as lwSetRole } from '../leavewar/state/store'
 import { setFileLocked as trSetFileLocked } from '../tracker/role.js'
 import { isHydrated, weekSwapBegin, weekSwapEnd } from './persist'
 import { deferEffect } from '../command'
-import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, SCHED_TYPES } from './sched-commit'
+import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, SCHED_TYPES, discloseCurrentIssued } from './sched-commit'
 
 let VERSION = 0
 const listeners = new Set<() => void>()
@@ -225,6 +225,10 @@ export function moveSectionTo(di: number, fromKey: string, toKey: string): boole
    land on. Every login and logout now routes through here so a session
    change always drags the whole view back to a safe, page-1 default. */
 export function resetSession(s: any) {
+  /* [ARCH-STACK] 2b: the issuing session is ending — its issued days can no longer
+     be silently reversed by the next session, so record them as disclosed (§3.4).
+     Records-only at Step 2; Step 3 reads it. Runs before the session swaps. */
+  discloseCurrentIssued()
   authSetSession(s)
   view.bumpNav()                  // a session change invalidates a pending day-template-apply confirm (P2-REV2-07)
   view.setPage('viewsched')
@@ -805,8 +809,15 @@ export function initStore() {
 wireStore()
 
 /* the store's public surface: the writes above, plus the engine's publish
-   actions and the history verbs, re-exported so the UI has one import */
-export { setDayApproved, publishALDay, discardPending, markEdit } from '../engine/publish'
+   actions and the history verbs, re-exported so the UI has one import.
+   markEdit stays the raw engine action; the publish verbs the UI calls are the
+   command-routed wrappers (phase 2b — additive: they run the SAME engine
+   setDayApproved/publishALDay/discardPending inside commit()). */
+export { markEdit } from '../engine/publish'
+export {
+  commitSetDayApproved, commitPublishALDay, commitDiscardPending,
+  currentIssuedIds, discloseCurrentIssued,
+} from './sched-commit'
 /* the quarantine classifier lives in the engine (so the engine's filing
    primitives share it) but the UI imports it from here, its established home.
    protectedDates is imported above for internal use (runInputWrite) and

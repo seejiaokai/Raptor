@@ -148,8 +148,14 @@ function runPipeline(cmd: Command, actor: Actor, origin: Origin, causedBy?: numb
     }
     const bad = checkHardInvariants(txn.env)
     if (bad) throw new CmdError('invalid', bad)
-    // phase 7 — emit
-    finalize(txn)
+    // phase 7 — emit, UNLESS the command changed no record. An empty-change
+    // commit (a refused/no-op write — e.g. an unsigned publish that toasted and
+    // returned) records NO envelope: no seq, nothing on the stream, no revision
+    // advance, no subscriber delivery — but its latched repaints STILL release
+    // below, so a no-op that repainted looks exactly as it did pre-Step-2
+    // (design approach decision #5). A reducer THROW is the separate path above
+    // (rollback + emit nothing); this is the clean, non-throwing no-op.
+    if (txn.env.changes.length) finalize(txn)
   } catch (e) {
     // phase 6 — rollback: restore snapshots, discard latched effects, emit nothing
     rollback(txn)
@@ -158,11 +164,13 @@ function runPipeline(cmd: Command, actor: Actor, origin: Origin, causedBy?: numb
   }
 
   // phases 8 + subscriber delivery run at 'post' so a reaction enqueues
+  const emitted = txn.env.changes.length > 0
   phase = 'post'
-  releaseLatch(txn)          // phase 8 — legacy effects, with suppression tokens
-  deliver(txn.env)           // stream consumers (in order); reactions enqueue
+  releaseLatch(txn)          // phase 8 — legacy effects, with suppression tokens (always)
+  if (emitted) deliver(txn.env)   // stream consumers (in order); reactions enqueue
   active = null
-  return { ok: true, seq: txn.env.seq, envelope: txn.env }
+  // an un-emitted no-op returns ok with seq -1 (nothing was recorded)
+  return { ok: true, seq: emitted ? txn.env.seq : -1, envelope: txn.env }
 }
 
 function finalize(txn: TxnState): void {
