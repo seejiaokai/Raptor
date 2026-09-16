@@ -1,100 +1,87 @@
-# Session handoff — [ARCH-STACK] Step 2 (the one write/command layer) — BUILD IN PROGRESS
+# Session handoff — [ARCH-STACK] Step 2 (the one write/command layer) — BUILD COMPLETE (all 5 phases + inspection)
 
-## RESUME HERE (handoff, 17 Sep 26 — PHASES 1 + 2a BUILT & COMMITTED, gates green; finish 2b→5 + inspection)
+## RESUME HERE (handoff, 17 Sep 26 — STEP 2 BUILT, GATED, INSPECTED; NOT merged, awaiting "merge live")
 
-**Branch:** `claude/arch-stack-2-command-core-design` (off `main`, NOT merged, NOT pushed).
-Commits: `e11d122` (phase 1 core), `a9fddd4` (phase 2a scheduler edit funnel), plus this
-handoff. **Read the build spec** `docs/superpowers/specs/2026-09-16-arch-stack-2-command-layer-design.md`
-(Rev 5) and this block before continuing.
+**Branch:** `claude/arch-stack-2-command-core-design` (off `main`, NOT merged). Select THIS branch
+in the new-chat picker.
+**Commits (newest last):** `e11d122` p1 core · `a9fddd4` p2a scheduler funnel · `4db7c66` **2b
+publish** · `72aa477` **3 people+settings** · `0e69a42` **4 Leave War** · `8fbf0ae` **5 Tracker**
+· `05a1215` **cross-provider inspection fixes**.
 
-### DONE (committed, all gates green)
-- **Phase 1 — the command core** (`src/command/`): `commit`/`commitAs`/`onCommit`/`txn`
-  (enlist + in-reducer JOIN + post-commit queue drain), derived `Change[]`, `CommitEnvelope`,
-  actor-from-SESSION+ME, per-type permission gate, HIST.lock-style suppression contexts, the
-  invariant harness (hard/advisory/frozen — only hard enforced now), `LOGICAL_TO_BLOB` + derived
-  registry, `MemoryDoor` + conflict hook, per-record revision map. 27 property tests (§7 a–g).
-  Undo/redo NOT routed through commit() (design §0). commitAs NOT re-exported (internal only).
-- **Phase 2a — scheduler EDIT funnel** (`src/state/sched-commit.ts` + `store.ts`): the scheduler
-  is ONE `EnlistableStore` whose `capture()/restore()` ARE `histSnap()/histRestore()` (rollback
-  reuses the tested undo primitive) and whose `records()` decomposes that world into logical
-  records. `writeSlot/Fill/Text/Delete`, `moveSection/moveSectionTo`, `writeInputs/writeInputsBatch`
-  now run their IDENTICAL body inside `commit()`. `notify()` + `HOOKS.histPush` LATCH while a
-  commit is in flight (release phase 8, carrying the HIST.lock token). 7 wiring tests.
+### WHAT IS DONE — the whole of Step 2 is built additively and green
+All five rollout phases are routed through `commit()` **alongside** today's machinery (persistAll /
+histPush / the three snapshot undo stacks all stay and behave exactly as today), each with its own
+tests, and a full cross-provider code inspection (Codex GPT + Fable 5.1, both high) has been folded
+in. Per-phase design: `docs/superpowers/specs/2026-09-16-arch-stack-2-command-layer-design.md` (Rev 5).
+- **2b — publish path:** setDayApproved/publishALDay/discardPending route through commit with a
+  `txn.boundary({kind:'publish',ids,crossable})`; `state/disclosure.ts` is the monotonic issued-id
+  disclosure registry (PDF/CSV/session-end report to it). Emits `sched.orig`/`sched.als`. Test:
+  `state/publish-commit.test.ts` (+ completeness reconstruct-vs-histSnap).
+- **3 — people + full settings inventory:** intercepted at the ONE persist seam each — the
+  `store.set` write-hook in `engine/hooks.ts` (11 settings keys) and the wrapped `persistPeople`
+  (`state/people-settings-commit.ts`). ~30 UI call sites untouched. Test:
+  `state/people-settings-commit.test.ts`.
+- **4 — Leave War:** the `persist()` router in `leavewar/state/store.ts` routes standalone USER
+  edits through commit (records `lw.cell/lw.bid/lw.war/ledger/balances/oilpolicy/postouts/current/
+  config`); every LOCKED path (the 4 sync reconcilers + undo) and boot stay raw (LW_READY gate).
+  Test: `leavewar/state/lw-commit.test.ts`. **DEFERRED here:** sync-as-projection + the causal
+  input-delete→bid-delete JOIN (they need live-scenario sign-off on the delicate sync loop).
+- **5 — Tracker:** the `sSet`/`delKey` router in `tracker/app/core.js` (the sync mem write inside
+  commit, async storage OUTSIDE); a segment-precise allowlist maps keys to the 10 collections +
+  `trk.courses`; migration flags stay raw. Test: `tracker/trk-commit.test.ts`.
 
-### APPROACH DECISIONS — do NOT relitigate (they keep it additive + 728/0)
-1. **Additive everywhere.** The interim `persistAll`/`HOOKS.histPush`/the 3 snapshot undo stacks
-   STAY and behave exactly as today. commit() only ADDS the auth gate + the change stream around
-   the existing writers. Prove additivity by re-running the FULL suite: the count only INCREASES by
-   the phase's new tests; every existing test stays green (4806 baseline → 4833 after p1 → 4840 after p2).
-2. **One EnlistableStore per snapshot boundary**, mapped onto the module's EXISTING whole-world
-   snapshot/restore (scheduler = histSnap/histRestore). Don't author a second rollback mechanism.
-3. **Permissions permissive at Step 2** (`anyone`) — the real gate (canEditSched/editMode, LW role,
-   tracker fileLocked, admin gates) is UNCHANGED and authoritative. A tighter command permission
-   could only ADD a refusal and regress a legit write. Real auth is Step 5; stream-driven undo
-   re-check is Step 3. The gate MECHANISM (adminOnly/ownOrAdmin) is built + unit-proven.
-4. **Latch only what corrupts on rollback** at Step 2: the MODEL (via enlist snapshot), `notify()`
-   and `HOOKS.histPush` (via `deferEffect`). Edit-log/toast/`logAction` left INLINE (engine-layer,
-   append-only, order-insensitive; live scheduler writes don't roll back at Step 2 — the only
-   rollbacks are the reducer-internal quarantine backstop, which restores itself, and a
-   guard/hard-invariant failure well-formed writes never hit). Full effect latching = Step 3.
-5. **Empty-change commits emit nothing** (a refused/no-op write records no envelope) but still
-   release latched repaints. Reducer THROW → engine rolls the model back + emits nothing (this now
-   also covers the no-quarantine throw path runInputWrite left half-written — a strict improvement).
+### GATES (all green as of this handoff, from `raptor-port/`)
+`npx vitest run` **4863/4863** · `npm run build` clean · `node reference/tfin.js` **728/0** ·
+`npm run test:e2e` only the 2 known pre-existing failures · `npm run smoke:tracker` **425/0**.
+NB: the vitest full run and smoke are **load-flaky** (a jsdom file can time out; smoke's `addStudent`
+randomly times out AND a stray gate server on :4173/:4179 causes a spawn failure) — **kill stray
+servers by PORT and re-run** before trusting a red (`lsof -ti :4179 | xargs -r kill`). Both go
+green on a clean re-run.
 
-### TODO (finish these, in order; each its own commit)
-- **2b — scheduler PUBLISH path** (`engine/publish.ts`: `setDayApproved`/`publishALDay`/
-  `discardPending`; first approval writes `sched.orig`, publish appends `sched.als`). Route via
-  state-layer command wrappers. Declare `txn.boundary({kind:'publish',ids,crossable})` (design §3.4;
-  owner semantics already RESOLVED — silent-reverse before sent, forward-withdrawal after; put-once
-  ENFORCEMENT is Step 3, record SHAPE only now). Add the monotonic per-issued-id disclosure signal
-  (send/export/print/CSV/session-end) that flips `crossable=false` (Codex R4-003) — record it; Step 3
-  reads it. Prove: publish emits orig/als changes; completeness (reconstruct-and-compare vs the legacy
-  week serializer, §7/R4-004).
-- **3 — PEOPLE + VCONF + full SETTINGS inventory** (design §5.2): `people.*` commands
-  (people/<personId>); route EVERY durable settings writer (rules, day/duty/wave templates, stores,
-  cxreasons, qualcols, lookahead, defaults) through named commands; forbid the raw settingsAdapter
-  back door. New EnlistableStore(s) for people + settings (their own persist seams).
-- **4 — LEAVE WAR** (design §5.3, `src/leavewar/`): wrap causal writers; per-cell/per-bid records
-  (`lw.cell`/`lw.bid`) + `lw.ledger/balances/oilpolicy/postouts/config`; the sync reconcilers become
-  `origin:'projection'` via `commitAs`; the causal input-delete→bid-delete runs IN the originating
-  command's transaction (JOIN — `commitInputEdit`→`retractLwRow`→`withdrawLeaveCell`, already in one
-  reducer). LW enlists by capturing its immutable `state` ref. Register the LW suppression context
-  (its own lock) + effect latch. NOTE: LW has its OWN vitest project (`src/leavewar/**`, jsdom, TZ).
-- **5 — TRACKER** (design §5.4, `src/tracker/`): synchronous reducers (async prompts/reads OUTSIDE
-  commit; causally-related mutations in ONE reducer); register `trk.marks/dates/roster/layout/syls/
-  plan/pace/lulls/eventinfo/catalogue`; `renCourse`/`renSyl` label-only commands; staging by purpose
-  (only the unsaved chart editor stages `trk.syls`). Plain JS/JSX module.
-- **Cross-provider CODE inspection** (BOTH Codex + Fable, high) over the whole Step-2 diff — the
-  standing post-build gate. Use `claudex-loop`/`codex-review` (host=claude, reviewer=codex) + a Fable
-  pass. FIX findings test-first (reviewer gives exact fix specs; escalate a survivor to the fixer).
-  Fable budget is lifted — use both freely.
+### FOLLOW-UPS the inspection surfaced (NOT live bugs — the writes work via the legacy path; these
+are stream-completeness / robustness items a future session should pick up, ranked):
+1. **[HIGH] Route the remaining scheduler writes (Fable-3 / Codex-2).** ~55 board/draft structural
+   edits (`ui/board.ts` add/delete/flag/sort/move, `ui/rowdrag.ts`, inline text via `ui/textedit.ts`
+   + `interactions.ts:677` — note `store.ts writeText` is currently DEAD, zero callers), plus
+   `setSign`/`signClear`/warn-mute/draft rename+delete, mutate DAYS/SCHED then call
+   `view.afterSchedMutate()` directly, so they emit no envelope. FIX: make `afterSchedMutate` the
+   seam (a `schedWrite(type, fn)` wrapper) + give schedStore a BASELINE (records/capture read the
+   last-committed histSnap, advanced at each command's apply-end AND re-synced on loadWeek/undo/
+   restore — the same pattern people/LW use). Keep byte-identical bodies (tfin 728/0). This is a
+   moderate rework of committed phase-2a code and wants the owner's live-scenario sign-off.
+2. **[MED-HIGH] Latch persistAll with histPush (Fable-4/6).** `persist.ts:138` wraps the already-
+   latched `HOOKS.histPush` so `push()` defers but `persistAll()` runs INLINE in the reducer → the
+   durable write precedes the guard/invariant AND the phase-8 `ensureRowIds` mint (a routed write
+   that adds a row persists it id-less and its stream `days` change lacks the rid → the
+   reconstruct-and-compare would fail on that path). FIX: in `wirePersist`, install ONE latched
+   step `() => { histPush(); persistAll() }` (import raw histPush + deferEffect; do NOT re-wrap the
+   store.ts latched hook); call `ensureRowIds(DAYS)` at the top of `schedRecords()`.
+3. **[MED] LW sync-as-projection + the causal JOIN (design §5.3).** Wrap the 4 sync reconcilers to
+   emit `commitAs(origin:'projection')`; make the causal `withdrawLeaveCell` inside a Raptor input
+   command JOIN that transaction (it currently runs raw under `locked`). Needs the delicate-sync
+   live drive.
+4. **[MED] Tracker/LW/people durable-write atomicity on rollback (Fable-6).** The durable persist
+   runs in/after apply, so a (rare, no-conflict-checker-in-prod) rollback leaves storage ahead of
+   memory; LW additionally gets a phantom undo entry. FIX: defer the backend writes to phase 8 /
+   check the CommitResult before the async persist.
+5. **[MED] Cross-week session-end disclosure (Fable-10):** `discloseCurrentIssued` only walks the
+   loaded week; also walk the week stash on session end.
+6. **[MED/LOW] Guard per-write cost (Fable-11):** the whole-world guard serializes histSnap ×~3 +
+   settings ×2 per routed write; cache histSnap per-txn and skip guardSnapshot for declared-enlist
+   stores. Run `npm run perf` before/after.
+7. **[LOW] Origin is always 'user' (Fable-13):** settings writes at boot, and sync-driven
+   writeInputsBatch/persistPeople, stamp 'user'; Step 3 will otherwise mint undo entries for them
+   (tie to follow-up 3).
 
-### PER-PHASE GATES (run ALL each phase; from `raptor-port/`)
-`npx vitest run` (full — additive proof: existing count unchanged) · `npm run build` · `node
-reference/tfin.js` (MUST stay **728/0**) · `npm run test:e2e` · `npm run smoke:tracker` (425/0).
-**Two e2e failures are PRE-EXISTING on this branch, NOT this work** (proven: bundle byte-identical
-before phase 2) — allow ONLY these two, treat any third as a regression:
-`geometry.spec.ts:1976 "brief inline between MSN and TO at phone width"` and
-`leavewar.spec.ts:2241 "a finger behind an open sheet scrolls the grid itself"`.
-
-### STANDING RULES
+### STANDING RULES for the next session
 Opus 4.8, HEAVY, test-first. **Do NOT merge until the owner says "merge live."** Do NOT watch/open
-a PR (commit to the branch only). Plain language to the owner. Run automatically through 2b→5 +
-inspection; stop only on a RED gate you cannot fix, or a genuine product-direction question (park it
-with a clear note for the morning — the design's owner decisions are already resolved, so most
-choices are yours to make). task-observer log lives at the stable project path
-`~/.claude/projects/<id>/skill-observations/log.md` (obs #47/#48 this build).
+a PR. Plain language to the owner. Full review log lives in the two subagent transcripts (this
+session) + the commit messages. task-observer obs #49 logged.
 
-### OPENING PROMPT for the fresh chat
-> Continuing Raptor. Select branch `claude/arch-stack-2-command-core-design`. FINISH [ARCH-STACK]
-> Step 2. Read `raptor-port/docs/session-state.md` (the top BUILD-IN-PROGRESS block) then the build
-> spec `…/2026-09-16-arch-stack-2-command-layer-design.md` (Rev 5). Phases 1 + 2a are DONE and
-> committed. Build the rest AUTOMATICALLY and additively, test-first, Opus heavy, in order: 2b
-> publish path → 3 people+settings → 4 Leave War → 5 Tracker → then a fresh Codex + Fable code
-> inspection, fixing findings. Keep `tfin.js` 728/0 and run ALL gates + the additive regression
-> proof each phase (only the 2 known pre-existing e2e failures allowed). Commit each phase. Do NOT
-> merge until I say "merge live"; don't watch the PR. I'm asleep — run to completion, stop only on a
-> red gate you can't fix or a genuine product question, and leave me a plain-language summary.
+### (superseded) earlier build-in-progress note
+**Branch:** `claude/arch-stack-2-command-core-design`. **The build spec** is
+`docs/superpowers/specs/2026-09-16-arch-stack-2-command-layer-design.md` (Rev 5).
+
 
 ---
 
