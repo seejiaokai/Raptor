@@ -1,32 +1,66 @@
-# Session handoff — crew-rest / flagging on the PUBLISHED schedule: BUILD IN PROGRESS
+# Session handoff — [CRP-FLAG] flagging + [FLAG-EXPORT] export, COMBINED on one branch
 
-## RESUME HERE (overnight autonomous run finished, 16 Sep 26)
-**[CRP-FLAG] is BUILT + GATED + BUG-CHECKED on branch `claude/crewrest-published-flagging`,
-holding for "merge live" (NOT merged).** All 7 phases done + 3 rounds of Codex code review.
-- **Design + phase table:** `…/2026-09-15-crewrest-flagging-build-context.md`.
-- **Bug-check log + the flagged "phase 8" owner decisions:** `…/2026-09-15-crewrest-flagging-code-review.md` — READ THIS to decide what's next on the feature.
-- **Gates (all green):** vitest 4785/4785 · build · tfin 728/0 · smoke 425/0 · e2e 423
-  (2 pre-existing phone-width fails). Live-verified desktop + phone.
-- **Codex (GPT-6 Astra high) rounds 1–3:** fixed all the tractable/safe findings test-first;
-  FLAGGED a coherent phase 8 (none a safety gap): (1) the filing-membership model — an
-  AMENDMENT-ENGINE decision that intersects `[AMEND-SEL-FOLLOWUPS]`; (2) the pre-existing xweek
-  dedup; (3) accessor-completeness UI (day-detail modal, person-select, trace-world id).
-- **Fable is RECONNECTED and working (16 Sep 26)** — the standalone `claude` CLI's OAuth was
-  refreshed; a connectivity check ran as `claude-fable-5-1` (observed_models confirmed), completed
-  clean. Fable allowance is high again. **A Fable cross-provider pass has NOT been run yet** — it is
-  the FIRST thing for the next chat: run it via the claudex-loop runner
-  (`review --host codex --model claude-fable-5-1 --repo <root> --plan <brief>`), aim it at (a) an
-  independent check of the Codex fixes and (b) the flagged filing-membership / amendment-engine
-  decision. A ready brief: `…/scratchpad/crp-flag-fable.md` was one-off (temp, may be gone); write a
-  fresh brief from the code-review doc.
-- **Commits:** d650a32 89703c2 d72634a ec14acc c663bc7 7f130a3 (phases 1–6) · efa4611 89e9d22
-  3a59e66 (Codex fix rounds 1–3) + docs.
+## RESUME HERE (handoff to a fresh chat, 16 Sep 26)
 
-**Next on the feature:** the owner decides the phase-8 items (esp. the filing-membership model,
-best done WITH [AMEND-SEL-FOLLOWUPS]). Everything else is done, holding for "merge live".
+**Branch to select: `claude/crewrest-published-flagging`.** It now carries BOTH features
+(FLAG-EXPORT was merged into it, owner's call, so they ship together). Off `main`, NOT pushed,
+NOT merged — holds for the owner's testing + "merge live". Combined gates all green:
+**vitest 4789/4789 · build clean · tfin 728/0** (+ smoke 425/0 & e2e 423/2-pre-existing from the
+last full run before the merge). Local live-drive verified the flagging feature (desktop + phone).
 
-**Second overnight task:** [FLAG-EXPORT] — export the PUBLISHED version + a nicer report-grade PDF
-(owner direction 16 Sep, samples for him to pick). See OUTSTANDING.md [FLAG-EXPORT].
+### DONE this work (all committed on the branch)
+- **[CRP-FLAG] live flagging on the published schedule — 7 phases, test-first.** Published days
+  show their flags again (crew rest incl. cross-day, 7-day run, clashes) computed against the
+  SIGNED version, content byte-frozen; "Not Yet Signed" marker (everyone) + in-list "goes away /
+  new once signed" markings; click/focus + neighbour-week + filing all world-resolved.
+  Design + phases: `docs/superpowers/specs/2026-09-15-crewrest-flagging-build-context.md`.
+- **3 rounds of Codex (GPT-6 Astra high) code review** — all tractable/safe findings fixed
+  test-first; the rest FLAGGED (see below). Log: `…/2026-09-15-crewrest-flagging-code-review.md`.
+- **§4 immediate-flag behaviour pinned:** medical, quals, and rule (VCONF) changes flag the
+  published face immediately (unversioned); LEAVE is versioned (not immediate).
+- **[FLAG-EXPORT]** — functional half done: the PDF/CSV export now outputs the PUBLISHED version
+  per day (`publishedDays()`), with a per-day "Published/Working" stamp. Report-grade PDF redesign
+  is a DRAFT sample for the owner to pick: `docs/img/flag-export-sample-new.html`. Doc:
+  `…/2026-09-16-flag-export.md`.
+
+### OUTSTANDING — on THIS branch (do in order, next chat)
+1. **Run the Fable cross-provider pass** on the fixed flagging code (Fable is reconnected + working;
+   allowance high). claudex-loop runner: `review --host codex --model claude-fable-5-1 --repo <root>
+   --plan <brief>`; write a fresh brief from the code-review doc. Aim: independently check the Codex
+   fixes + judge the flagged filing-membership decision. Fix anything safe test-first; flag
+   amendment-engine calls.
+2. **DECIDE the filing-membership question (phase-8 item #1, owner's call).** The amendment engine
+   treats an input absent-at-sign and present-with-empty-acc identically (filingDelta/filingKey), but
+   the flagging OFFICIAL gate now treats them as different. For a fresh unaccepted commitment on a
+   published day, OFFICIAL correctly excludes it, but the amendment engine sees "no change" (no
+   Not-Yet-Signed, not publishable). Full consistency changes publish-eligibility + signature binding
+   → **best done WITH `[AMEND-SEL-FOLLOWUPS]`** (the signature workstream). Details in the review doc.
+3. **The other flagged phase-8 items (optional / owner priority):** (a) the pre-existing xweek
+   seed-dedup bug (CRPF-006/R2-004 — its own careful test-first pass); (b) accessor-completeness UI
+   — the day-detail modal, person-select highlight, and trace cross-world identity (medium, UI-focus,
+   the flags themselves are correct). All in the review doc's "OWNER DECISIONS / remaining work".
+4. **[FLAG-EXPORT] — pick/adjust the PDF design** (owner's call): denser/airier, a signature block
+   (Planned/Approved by), include duties/sims/ground rows (currently flying-only), a logo, portrait
+   vs landscape. Then finalise. Plus the deferred next-week-peek working-vs-signed labelling.
+5. **Push → Vercel test → "merge live"** when the owner is happy (do-not-watch-PR still holds).
+
+### OUTSTANDING — the wider backlog (other branches/tasks; full detail in `OUTSTANDING.md`)
+- **[AMEND-SEL-FOLLOWUPS]** — on `claude/amendment-engine-core` (PR #405); the plans-selector
+  follow-ups incl. the per-plan signature work. Overlaps phase-8 #2 above.
+- **[REPO-CLEANUP]** — delete consumed screenshots + dead-code sweep (needs owner sign-off per file).
+- **[ARCH-STACK]** backbone: step 2 (one write/command layer, branch `claude/arch-stack-2-command-core`),
+  step 3 `[GLOBAL-UNDO]`, step 4 (one Absence record), then `[DB-STEP]` (Dataverse).
+- **[SYNC-INTEG]** (small leave guardrails), **[EOD]**, **[OIL]**, **[TRK-ATTEMPTS]**, **[RECALL]**,
+  **[XFER]**, **[TRK-DISK]** — see OUTSTANDING.md for scope/priority.
+
+### Opening prompt for the fresh chat
+> Continuing Raptor. Select branch `claude/crewrest-published-flagging` — it carries BOTH the
+> published-schedule flagging ([CRP-FLAG]) and the export follow-up ([FLAG-EXPORT]), combined.
+> **Read `raptor-port/docs/session-state.md` first**, then the code-review doc
+> `…/2026-09-15-crewrest-flagging-code-review.md`. Combined gates are green (4789/4789, tfin 728/0).
+> Fable is reconnected + working. Do the "OUTSTANDING — on THIS branch" list in order: (1) run a
+> Fable pass over the flagging fixes + the flagged filing-membership decision; (2) bring me that
+> decision; (4) let me pick the export design. Don't merge until I say "merge live". Speak plainly.
 
 ---
 
