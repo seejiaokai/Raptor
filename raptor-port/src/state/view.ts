@@ -4,8 +4,8 @@ import { PEOPLE } from '../engine/people'
 import { keyDay } from '../engine/keys'
 import { slotVal, setSlotVal, fillSlot, armTargetExists } from '../engine/slots'
 import { popReorderedDay } from '../engine/reorder'
-import { slotBar, personCount, personWarnDays } from '../engine/avail'
-import { validate, WARN, traceOf, officialWarn } from '../engine/validate'
+import { slotBar, personCount } from '../engine/avail'
+import { validate, WARN, officialWarn } from '../engine/validate'
 import { markEdit, daySnapOf, dayApproved } from '../engine/publish'
 import { curDraftId, reconcileIssuedMarks, isDraftVer } from '../engine/drafts'
 import { isLead, isInstr, isOcu } from '../engine/people'
@@ -427,14 +427,22 @@ export function selectPerson(id:any,inWeek?:any){
     WFOCUS=null; DWOPEN.clear(); PFOCUS=null;
     if(inWeek){
       if(!WARN.byDay.length)validate();
-      const days=personWarnDays(id);
-      /* days that carry this person's cross-day TRACE count too (23 Aug 26):
-         a Sunday whose late finish busts NEXT week's Monday rings the puck
-         with no warning anywhere in the loaded week — personWarnDays alone
-         left that click a dead end, an unexplainable ring. Within a week the
-         breach day was always in the list already, so this only ever ADDS
-         the forward-trace case. */
-      for(let di=0;di<7;di++)if(traceOf(di,id)&&days.indexOf(di)<0)days.push(di);
+      /* light his warning days in the DISPLAYED world, per day (Item 3 / R3-004): on the
+         view page a published-only breach lands on the OFFICIAL bundle, so reading WORKING
+         (personWarnDays/traceOf) left that puck's click a dead end. Resolve each day through
+         displayedByDay + the matching-world trace — the SAME dayDisplaysOfficial mirror the
+         render and the warning-list click use, so the puck, its ring and its box agree. This
+         lives in view.ts on purpose: personWarnDays is engine-side (avail.ts) and cannot read
+         the view's world without a cycle. Off the view page every day resolves WORKING, so the
+         behaviour is unchanged there (and a cross-day TRACE with no warning still counts, the
+         forward-Monday-bust case, 23 Aug 26). */
+      const days:any[]=[];
+      for(let di=0;di<7;di++){
+        const g=displayedByDay(di);
+        const tr=(dayDisplaysOfficial(di)?officialWarn():WARN).trace;
+        const hasWarn=!!(g&&g.warns&&g.warns.some((w:any)=>(w.who||[]).includes(id)));
+        if(hasWarn||(tr&&tr[di]&&tr[di][id]))days.push(di);
+      }
       if(days.length){ PFOCUS={id,days}; days.forEach((di:any)=>DWOPEN.add(di)); }
     }
     SELSEEN=personCount(id);

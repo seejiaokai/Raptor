@@ -150,7 +150,11 @@ export function dayIssuedHTML(di:any){
 }
 /* THE VIEW-ONLY WEEK'S per-day render (owner, 16 Sep 26 — [CRP-FLAG] Item 2).
    Extracted from ViewWeek.tsx so the view page and its pins share ONE dispatch,
-   not a mirror that can drift (the drift-seam doctrine). Per day:
+   not a mirror that can drift (the drift-seam doctrine). ASSUMES THE VIEW PAGE:
+   ViewWeek gates on CURPAGE==='viewsched' before calling this, so it needs no page
+   check of its own — but state/view.ts:dayDisplaysOfficial (the mirror the click and
+   details consumers read) DOES add that page gate. Don't reuse viewDayHTML off the
+   view page, or the render and the click-world mirrors diverge (Fable CRP-I2-R3-001). Per day:
    · a PUBLISHED day → its ISSUED face (dayIssuedHTML), unless the viewer has
      peeked the working copy (VWORK) — then the live working render, which carries
      its own "Working draft" stamp.

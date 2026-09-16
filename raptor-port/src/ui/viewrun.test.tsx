@@ -14,7 +14,7 @@ import { DAYS } from '../engine/data'
 import { validate, withOfficialWarn } from '../engine/validate'
 import { SCHED, signOf, setDayApproved } from '../engine/publish'
 import { dayHTML, viewDayHTML, dayInfoHTML } from './html'
-import { DWOPEN, WFOCUS, VWORK, displayedByDay, dayDisplaysOfficial, focusWarn, setPage } from '../state/view'
+import { DWOPEN, WFOCUS, VWORK, PFOCUS, SELID, displayedByDay, dayDisplaysOfficial, focusWarn, selectPerson, setPage } from '../state/view'
 
 /* @vitest-environment jsdom */
 
@@ -119,6 +119,29 @@ describe('view-only shows a published-truth run breach on a draft day', () => {
       expect(viewDayHTML(6), 'viewDayHTML agrees — still the breach').toMatch(RUN)
       expect((displayedByDay(6).warns as any[]).some((w: any) => w.code === 'DAYS_RUN' && (w.who || []).includes(WARDEN)), 'click resolves official too').toBe(true)
     } finally { VWORK.delete(6); setPage('editsched') }
+  })
+
+  /* ITEM 3 (R3-004): clicking the PUCK to select the person must light his warning days
+     in the DISPLAYED world too. On the view page selecting Warden should light Sunday (the
+     official run breach) — the working world (which the edit page shows) has no breach there. */
+  it('selecting the man on the VIEW page lights his OFFICIAL breach day (Sunday)', () => {
+    setup()
+    setPage('viewsched')
+    try {
+      if (SELID === WARDEN) selectPerson(WARDEN, true)   // ensure deselected
+      selectPerson(WARDEN, true)
+      expect(PFOCUS && (PFOCUS as any).days.includes(6), 'the official run breach day is lit').toBe(true)
+    } finally { if (SELID === WARDEN) selectPerson(WARDEN, true); setPage('editsched') }
+  })
+
+  it('selecting the man on the EDIT page does NOT light Sunday — working has no breach (the pending fix)', () => {
+    setup()
+    setPage('editsched')
+    try {
+      if (SELID === WARDEN) selectPerson(WARDEN, true)
+      selectPerson(WARDEN, true)
+      expect(PFOCUS && (PFOCUS as any).days.includes(6), 'edit resolves working — Sunday not lit').toBe(false)
+    } finally { if (SELID === WARDEN) selectPerson(WARDEN, true) }
   })
 
   it('with nothing published/diverging, the view render is unchanged (aliased no-op)', () => {
