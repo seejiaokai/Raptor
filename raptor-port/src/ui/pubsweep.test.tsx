@@ -46,7 +46,7 @@ import { validate } from '../engine/validate'
 import { initStore, writeText, writeSlot, writeFill } from '../state/store'
 import { setSession } from '../state/auth'
 import { setPage, DPREV, VWORK, toggleViewWork, afterSchedMutate } from '../state/view'
-import { dayHTML, dayIssuedHTML, dayStatHTML } from './html'
+import { dayHTML, dayStatHTML, viewDayHTML } from './html'
 import { boardSignHTML, boardMbtn, addWave } from './board'
 import { dayDrafts, draftDup, draftSelect, loadVersionToWorkingCopy } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
@@ -98,7 +98,7 @@ const boardStrip = (di: number) => { setPage('editsched'); return boardSignHTML(
    so the page is flipped for the build and put back. */
 const weekView = (di: number) => {
   setPage('viewsched')
-  try { return dayApproved(di) ? (VWORK.has(di) ? dayHTML(di, false) : dayIssuedHTML(di)) : dayHTML(di, false) }
+  try { return viewDayHTML(di) }   // the SAME dispatch ViewWeek.tsx calls (no mirror to drift)
   finally { setPage('editsched') }
 }
 

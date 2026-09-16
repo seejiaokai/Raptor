@@ -148,6 +148,33 @@ export function dayIssuedHTML(di:any){
   try{ return withDaySnap(di,ver,(ok:any)=>withOfficialWarn(()=>ok?dayHTML(di,false):dayHTML(di,false))) }
   finally{ PVQ=false; OFW=false }
 }
+/* THE VIEW-ONLY WEEK'S per-day render (owner, 16 Sep 26 — [CRP-FLAG] Item 2).
+   Extracted from ViewWeek.tsx so the view page and its pins share ONE dispatch,
+   not a mirror that can drift (the drift-seam doctrine). Per day:
+   · a PUBLISHED day → its ISSUED face (dayIssuedHTML), unless the viewer has
+     peeked the working copy (VWORK) — then the live working render, which carries
+     its own "Working draft" stamp.
+   · a DRAFT day → the live working render, but with its FLAGS resolved in the
+     OFFICIAL world (withOfficialWarn). A draft has no issued content of its own,
+     so its CONTENT is the working draft either way; but a CROSS-DAY rule (the
+     7-day run, crew rest over a week/day boundary) must reference a PUBLISHED
+     neighbour at its ISSUED version. Without this, an unpublished working-copy fix
+     to that neighbour — e.g. taking a man off a published Monday's live copy —
+     silences a breach the issued schedule still carries, on the very day it lands
+     (a draft Sunday). When nothing published in the dependency window diverges,
+     OFFICIAL aliases WORKING and this wrap is a no-op, so the ordinary week stays
+     byte-identical (parity untouched). The EDIT week deliberately does NOT wrap:
+     there the working copy IS the truth, so the scheduler sees their pending fix
+     clear the breach — their live preview. A DPREV draft PREVIEW keeps its
+     content-swapped render as-is (its flags were computed on the live day, not
+     the previewed snapshot), so it is left un-wrapped. */
+export function viewDayHTML(di:any){
+  if(dayApproved(di)) return VWORK.has(di)?dayHTML(di,false):dayIssuedHTML(di)
+  const ver=DPREV.get(di)
+  if(!isDraftVer(ver)) return withOfficialWarn(()=>dayHTML(di,false))
+  if(!daySnapOf(di,ver)){ DPREV.delete(di); return withOfficialWarn(()=>dayHTML(di,false)) }
+  return withDaySnap(di,ver,()=>dayHTML(di,false))
+}
 /* THE PLANS SELECTOR (owner, 15 Sep 26 — the day-head redesign, LOCKED spec
    docs/superpowers/specs/2026-09-15-plans-selector-redteam.md). ONE white
    button per day whose LABEL is what you are looking at, opening a menu
