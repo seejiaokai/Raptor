@@ -21,6 +21,7 @@ import { verId, dayIso } from './verid'
 import { setWorld, setFiling, clearFiling } from './world'
 import { seedRunIn } from './weekctx'
 import { VCONF } from './rules'
+import { PEOPLE } from './people'
 
 const { MOCKS, weekBundleMock } = vi.hoisted(() => {
   const MOCKS: Record<string, any> = {}
@@ -293,6 +294,51 @@ describe('Phase 6 — "Not Yet Signed" marker', () => {
     flyMonday('waldo', '06:00', '07:25')
     validate()
     expect(dayHTML(0, true), 'a draft day has no signed version to diverge from').not.toContain('Not yet signed')
+  })
+})
+
+/* §4 — CURRENT SAFETY FACTS are never versioned: they flag OFFICIAL immediately,
+   with no re-publish. CRPF-001 (above) pins MEDICAL. These pin the other two:
+   QUALIFICATIONS and RULE (VCONF) changes — both live during the official pass
+   because PEOPLE and VCONF are not part of the frozen day snapshot. (LEAVE, by
+   contrast, IS versioned — proven by the phase-4 'file r after publish keeps the
+   OFFICIAL warning' test: you apply for leave, so it rides the signed document.) */
+describe('§4 — quals and rules flag OFFICIAL immediately (unversioned); leave does not', () => {
+  const qual = (b: any, id: string) => b.all.find((x: any) => x.code === 'QUAL' && (x.who || []).includes(id) && x.di === 0)
+  const cr = (b: any, id: string) => b.all.find((x: any) => x.code === 'CREW_REST' && (x.who || []).includes(id) && x.di === 0)
+
+  it('a QUALIFICATION change flags a frozen published seat immediately', () => {
+    const WK = wkFor(70)
+    setCurWeek(WK)
+    const dt = (DAYS[0] as any).dt
+    const PILOT = 'stiff'                                 // a seed IP pilot — legal in a front seat
+    ;(DAYS[0] as any) = { ...blankDay('Monday', dt), waves: [{ kind: 'fly', formations: [{ to: '08:00', ld: '10:00', br: '', aircraft: [{ p: PILOT, w: '' }] }] }] }
+    expect(qual(validate(), PILOT), 'legal at publish — no QUAL').toBeFalsy()
+    sign(0); setDayApproved(0, true)                      // freeze the (legal) seat
+    ;(DAYS[0] as any).waves[0].formations[0].msn = 'XREF' // unrelated amendment → force a separate official pass
+    const savedPers = (PEOPLE as any)[PILOT].pers
+    ;(PEOPLE as any)[PILOT].pers = true                   // "qual lapse": now ground crew — cannot fly a front seat
+    try {
+      const w = validate()
+      expect(qual(w, PILOT), 'WORKING flags the illegal seat').toBeTruthy()
+      expect(qual(officialWarn(), PILOT), 'OFFICIAL flags the qual change immediately — no re-publish').toBeTruthy()
+    } finally { (PEOPLE as any)[PILOT].pers = savedPers }
+  })
+
+  it('a RULE (crew-rest threshold) change re-flags a frozen published day immediately', () => {
+    const WK = wkFor(71)
+    MOCKS[shiftWeekKey(WK, -1)] = weekOf(weekDateLabels(shiftWeekKey(WK, -1)), { 6: dutyRow('waldo', '0800', '1520') })
+    setCurWeek(WK)
+    flyMonday('waldo', '06:00', '07:25')                 // report 03:40 vs clear 03:20 at 12h → clear
+    expect(cr(validate(), 'waldo'), 'clear at the default 12h rule').toBeFalsy()
+    sign(0); setDayApproved(0, true)                      // freeze the (clear) day
+    ;(DAYS[0] as any).waves[0].formations[0].msn = 'XREF' // unrelated amendment → force a separate official pass
+    const savedRest = VCONF.crewRest
+    VCONF.crewRest = 14 * 60                              // squadron raises crew rest 12h → 14h (clear now 05:20)
+    try {
+      expect(cr(validate(), 'waldo'), 'WORKING now breaches under the new rule').toBeTruthy()
+      expect(cr(officialWarn(), 'waldo'), 'OFFICIAL re-checks the frozen day against the live rule immediately').toBeTruthy()
+    } finally { VCONF.crewRest = savedRest }
   })
 })
 
