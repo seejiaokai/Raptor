@@ -518,6 +518,18 @@ code and docs still runs everything.
 
 ## Architecture rules (apply to nearly every task)
 
+**NEW modules follow the ONE command layer, never a fourth store-pattern** (owner,
+16 Sep 26). The app is deliberately being unified onto a single write/command layer
+over stable ids — every change a recorded, worded command that undo, persistence,
+sync and the database all consume ([ARCH-STACK] step 2,
+`docs/superpowers/specs/2026-09-16-arch-stack-2-command-layer-design.md`;
+`docs/architecture-direction.md`). Do NOT build a new app/tab/module with its own
+store/notify + own storage seam + own undo the way Scheduler / Leave War / Tracker
+each did — that "one pattern built three times" is the root cause the stack is
+undoing. Any new module routes writes through the shared command layer (or, until
+step 2 lands, is built so it can adopt it with no rework: writes through one funnel,
+stable ids, no bespoke undo). Raise this in the design step, not after.
+
 **The store.** `notify()` bumps a version; components subscribe via
 `useVersion()` (useSyncExternalStore) and re-read the singletons.
 `state/view.ts` holds UI state the engine reads (CURPAGE, SBDAY, ARM,
