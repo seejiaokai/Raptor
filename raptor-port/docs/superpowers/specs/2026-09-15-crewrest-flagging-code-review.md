@@ -30,6 +30,40 @@ Two root-cause clusters (owner's "guardrail over a bug cascade"):
 **Confirmed sound by the reviewer:** the synchronous official-pass finally block restores all
 validator globals/DAYS/SCHED/world/filing; no new editing capability; dependency window correct.
 
+## FABLE PASS (Fable 5.1, high, via claudex-loop `review --host codex --model claude-fable-5-1`, 16 Sep 26).
+**Verdict:** REVISE — 6 findings (2 medium, 4 low). Independent cross-provider check of the Codex
+fixes + judgement on the flagged filing-membership decision. Runner result: `scratchpad/fable-review`.
+Fable independently CONFIRMED the two-document machinery sound (globals + world + filing restored in
+finally; PROTECT strips + installs empty filing on both loaded and cross-week paths; year-normalised
+address correct; downchit reads live so a cancelled 'r' medical is not resurrected) and the six Codex
+fixes. It found 2 real defects Codex missed + confirmed the deferral of decision #1.
+
+| id | sev | one-line | disposition |
+|----|-----|----------|-------------|
+| FR-001 | med | inpShow folds DORMANCY through the frozen filing but the accepted-row deferral (inputFlags/acceptedDay) still reads LIVE acc → a sign-time 'g' whose working row was later unaccepted ('r'/spliced) is shown AGAIN beside its frozen snapshot row → a duplicate clash on the issued face | **FIXED** — inpShow computes the effective acc ONCE on the official run and runs the whole gate (dormancy + deferral) on it; the deferral scans the swapped DAYS by row src, live-acc-agnostic. Test (official-flags Phase 4b, unit-level on inpShow). |
+| FR-002 | med | the cross-week alias gate compares a neighbour's frozen 'g' against LIVE acc, which navigation clears → any published neighbour week with an accepted input forces the second validate() pass on EVERY keystroke (correctness fine — fileAcc uses the frozen 'g' — but the "zero-cost alias" guarantee is lost) | **FIXED** — filingDiffers gains an xweek flag; cross-week it treats 'g' and '' as the same signed state ('r'/'u' kept exact). Test (official-flags Phase 3b). |
+| FR-003 | low | withIssuedWeek installs DAYS/SCHED + setWorld/setFiling BEFORE the try — a throw in that window (none today) would skip the restore | **FIXED** — d0 captured (pure reads) before the try; the install + setWorld/setFiling moved inside it, so the finally always covers them. No behaviour change. |
+| FR-004 | low | a legacy/pre-Phase-2 neighbour week (dayOK set, version ids unresolvable) is PROTECTed on the official world → a real cross-day breach shows on WORKING but never on the issued face, silently | **FLAGGED (owner)** — by design under §14.1; a migration-only state that CANNOT arise with today's demo data (no real signed pre-Phase-2 books). Note it; surface a "prev week's signed version unavailable" cue only if the owner wants it. |
+| FR-005 | low | fileAcc(dt, inpId(inp), …) called inpId, which MINTS inp.iid → the official run could write INPUTS | **FIXED** — inpShow's official branch reads inp.iid directly (no id ⇒ absent from every frozen fingerprint ⇒ 'r'); folded into the FR-001 fix. |
+| FR-006 | low | judgement on the flagged decision (CRPF-003/R3-002) | **CONFIRMED DEFER** — traced both directions, no wrong/missing published-FACE flag from the membership inconsistency itself; only the marker/eligibility gap, correctly the signature workstream's call. Caveats: the official face already follows LIVE input VALUES (per the "values not frozen" decision), and case (b) forces the pass every keystroke (same class as FR-002). **SUPERSEDED by owner 16 Sep 26** — see below. |
+
+### OWNER RESOLUTION of the filing-membership decision (16 Sep 26) — supersedes phase-8 #1 + FR-006
+The owner settled it in conversation, reversing the 26 Aug "don't auto-churn a published day" clause
+for the WORKING copy only:
+- A **freshly-filed request is AUTO-ACCEPTED** onto the LIVE WORKING COPY as a **pending amendment**,
+  and it **increases the pending (changes) count** — the scheduler's cue that something changed. Only
+  if the scheduler REMOVES it does it stop counting ('r', dormant). Same for leave inputs.
+- The **published/issued face stays FROZEN** — it does not change automatically; the amendment is
+  published (or removed) by the scheduler. (So the OFFICIAL-face freeze — fileAcc — is unchanged.)
+- The **"Not Yet Signed" marker is a WORKING-COPY affordance ONLY** — it must NOT show on the issued
+  face (confusing: the published schedule is TRUE until published). **DONE this session** (html.ts:
+  `!PV&&notYetSigned(di)`; tests: official-flags Phase 6, pubsweep issued-frozen).
+- **REMAINING amendment-engine work (own careful test-first pass, overlaps `[AMEND-SEL-FOLLOWUPS]`):**
+  make a fresh input on a PUBLISHED day auto-land on the working copy as a pending amendment
+  (relax autoAcceptInput's `dayApproved` guard for the INTERACTIVE path WITHOUT churning the
+  boot/week-load seed pass — the one real design fork). This makes the fresh input publishable via the
+  normal content-delta path, so `filingDelta`/`filingKey` need NOT change (acc becomes a real 'g').
+
 ## ROUND 3 (Codex GPT-6 Astra, high) — verify the round-2 completions. Verdict REVISE, 4 findings.
 | id | sev | one-line | disposition |
 |----|-----|----------|-------------|

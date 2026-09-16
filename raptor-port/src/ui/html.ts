@@ -51,10 +51,6 @@ let PV=false, PVV:any=null, PVQ=false
    shows none. The write surfaces (data-slot / data-drag) stay gated on PV alone —
    OFW never re-enables editing. */
 let OFW=false
-/* the LIVE "Not Yet Signed" value captured BEFORE a withDaySnap swap (§14.5 — inside
-   the swap the day diffs against itself and reads clean). dayIssuedHTML sets it from
-   the live day; dayHTML reads it under PV, and computes live off the day otherwise. */
-let NYS=false
 /* the LIVE unpublished-edit count captured by withDaySnap BEFORE it zeroes
    pending — what the discard-confirm button must show (P2-IMPL-09). Read only
    under PV; withDaySnap sets it before the swap and restores it in finally. */
@@ -144,9 +140,13 @@ export function dayIssuedHTML(di:any){
      warning reads at the OFFICIAL bundle — the version validated against this very
      snapshot — so the flags match the frozen text. Content stays byte-frozen (PV) and
      the write surfaces stay stripped (PV alone gates those). */
-  PVQ=true; OFW=true; NYS=notYetSigned(di)   // captured on the LIVE day, before the swap (§14.5)
+  /* the "Not Yet Signed" marker is a WORKING-COPY affordance only (owner, 16 Sep 26):
+     the published/issued face stays TRUE until the working copy is published, so marking
+     it "not yet signed" was confusing. dayHTML renders it only when !PV (the edit/working
+     face); the issued face (PV, here) never does — so nothing is captured across the swap. */
+  PVQ=true; OFW=true
   try{ return withDaySnap(di,ver,(ok:any)=>withOfficialWarn(()=>ok?dayHTML(di,false):dayHTML(di,false))) }
-  finally{ PVQ=false; OFW=false; NYS=false }
+  finally{ PVQ=false; OFW=false }
 }
 /* THE PLANS SELECTOR (owner, 15 Sep 26 — the day-head redesign, LOCKED spec
    docs/superpowers/specs/2026-09-15-plans-selector-redteam.md). ONE white
@@ -1147,7 +1147,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
     let h=`<section class="day ${d.today?'today':''} ${ok?'dok':''}${PV?(PVQ?' issued':' preview'):''}" data-day="${di}">
       <div class="day-head">${ed
         ? `<span class="dow crewday" data-crewday="${di}" title="Show this day's crew in the aircrew panel">${d.dow}</span><span class="dt sb-open" data-sbday="${di}" title="Open scheduler board">${d.dt}${d.today?' · Today':''}</span>`
-        : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}${(ed||vsel)?`<span class="dhtpl">${ed?`<button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button>`:''}${planSelectorHTML(di)}</span>`:''}<span class="dhver">${verTagHTML(di)}${(PV?NYS:notYetSigned(di))?`<span class="nysmark" title="This day has edits that have not been signed and published yet — everyone sees the signed version until it is">Not yet signed</span>`:''}</span>
+        : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}${(ed||vsel)?`<span class="dhtpl">${ed?`<button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button>`:''}${planSelectorHTML(di)}</span>`:''}<span class="dhver">${verTagHTML(di)}${(!PV&&notYetSigned(di))?`<span class="nysmark" title="This working copy has edits that have not been signed and published yet — the published schedule stays as-is until you publish">Not yet signed</span>`:''}</span>
       <span class="badge" title="Aircraft per wave · standalone lines after the slash">${dayCount(d)}</span>
       <span class="dstat">${(!ed&&!vsel)?viewVerSelHTML(di):''}${dayStatHTML(di,ed)}</span></div>`
       +pvBar

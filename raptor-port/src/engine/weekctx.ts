@@ -252,13 +252,25 @@ function liveFilingAt(dt:any){
    Exported so the LOADED-week gate uses the same comparator (Codex R2-001), not the
    coarse filingDelta (which treats absent == present-empty). */
 export function filingDivergesAt(snapFil:any,dt:any){ return filingDiffers(snapFil,dt); }
-function filingDiffers(snapFil:any,dt:any){
+function filingDiffers(snapFil:any,dt:any,xweek?:any){
   const now=liveFilingAt(dt), was=snapFil||{};
   const ids=new Set([...Object.keys(now),...Object.keys(was)]);
   for(const id of ids){
     const inNow=Object.prototype.hasOwnProperty.call(now,id), inWas=Object.prototype.hasOwnProperty.call(was,id);
     if(inNow!==inWas)return true;
-    if((now[id]||'')!==(was[id]||''))return true;
+    let a=now[id]||'', b=was[id]||'';
+    /* CROSS-WEEK ONLY (Fable FR-002): 'g' — an activity landed on a ground row — is
+       PER-WEEK landing state. Navigation clears the live acc of every input not on the
+       loaded week (store.ts applyWeekModel reconcileLandedAcc), so a neighbour signed at
+       'g' reads live '' while its frozen fingerprint still holds 'g'. Left exact, that
+       forces the second validate() pass on EVERY keystroke for any published neighbour
+       carrying an accepted input — with no amendment anywhere. Treat 'g' and '' as the
+       same signed state for the alias decision (fileAcc still honours the frozen 'g'
+       during the pass, so correctness is untouched). 'r' (removed) and 'u' (filed) are
+       real filing decisions that survive navigation — kept exact. The LOADED-week gate
+       (filingDivergesAt) passes no xweek: there the live acc is authoritative. */
+    if(xweek){ if(a==='g')a=''; if(b==='g')b=''; }
+    if(a!==b)return true;
   }
   return false;
 }
@@ -277,7 +289,7 @@ export function windowDiverges(curWeek:any,maxRun:any){
          new one added) changes no DAYS content, so a content-only gate would alias and
          drop the signed input's contribution from OFFICIAL. */
       const dt=days.days[di]&&days.days[di].dt;
-      if(dt!=null&&filingDiffers(snap.fil,dt))return true;
+      if(dt!=null&&filingDiffers(snap.fil,dt,true))return true;   // xweek: a navigation-cleared 'g' is not a divergence (Fable FR-002)
     }
     return false;
   });

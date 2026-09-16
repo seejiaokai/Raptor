@@ -17,6 +17,8 @@ import { SCHED, signOf, setDayApproved, dayCurVer } from './publish'
 import { dayIssuedHTML, dayHTML } from '../ui/html'
 import { DWOPEN, WFOCUS, focusWarn, setPage } from '../state/view'
 import { stashPut, stashClear } from './weekstash'
+import { inpShow } from './events'
+import { windowDiverges } from './weekctx'
 import { verId, dayIso } from './verid'
 import { setWorld, setFiling, clearFiling } from './world'
 import { seedRunIn } from './weekctx'
@@ -207,6 +209,44 @@ describe('Phase 3 — cross-week: OFFICIAL judges the loaded Monday against the 
   })
 })
 
+/* PHASE 3b (Fable FR-002). The cross-week alias gate compares each neighbour approved
+   day's FROZEN filing against the LIVE input acc — but navigation clears the live acc of
+   every input not on the loaded week (store.ts applyWeekModel), so a published neighbour
+   carrying an accepted activity ('g', now live '') would read as diverging on EVERY
+   keystroke, forcing the second validate() pass with no amendment anywhere. A 'g' is
+   per-week landing state; treat it as the same signed state as a navigation-cleared ''
+   for the cross-week comparison (a real removal 'r' still diverges). */
+describe('Phase 3b — a navigation-cleared neighbour landing does not force the official pass', () => {
+  afterEach(() => stashClear())
+
+  const stashSignedTraining = (prevKey: string, liveAcc: string) => {
+    const labels = weekDateLabels(prevKey)
+    const row = { prog: 'TRAINING', str: '08:00', end: '10:00', who: 'waldo', rmks: '', src: 'iTRN' }
+    const working = DOWS.map((dow, i) => ({ ...blankDay(dow, labels[i]) })) as any[]
+    working[6] = { ...blankDay('Sunday', labels[6]), ground: [row] }
+    const id = verId(dayIso(prevKey, 6), 0)
+    const issued = { ...blankDay('Sunday', labels[6]), ground: [row] }   // working == signed (no content delta)
+    const sc = { dayOK: { 6: 1 }, cur: { 6: id }, als: [], orig: { 6: { id, d: issued, c: {}, fil: { iTRN: 'g' } } }, drafts: {} }
+    stashPut(prevKey, JSON.stringify({ d: working, ok: sc.dayOK, cv: sc.cur, a: sc.als, o: sc.orig, dr: sc.drafts }))
+    // the GLOBAL input still covers the Sunday; navigation has cleared its acc to `liveAcc`
+    INPUTS.push({ person: 'waldo', date: labels[6], allday: false, s: 480, e: 600, type: 'Training', acc: liveAcc, remarks: '', mod: '', iid: 'iTRN' })
+  }
+
+  it("a signed 'g' read live as '' (navigation-cleared) does NOT diverge — the pass aliases", () => {
+    const WK = wkFor(60)
+    stashSignedTraining(shiftWeekKey(WK, -1), '')
+    setCurWeek(WK)
+    expect(windowDiverges(WK, VCONF.maxRun), 'same signed state → no cross-week divergence').toBe(false)
+  })
+
+  it("a signed 'g' genuinely removed to 'r' still diverges — the pass runs", () => {
+    const WK = wkFor(61)
+    stashSignedTraining(shiftWeekKey(WK, -1), 'r')
+    setCurWeek(WK)
+    expect(windowDiverges(WK, VCONF.maxRun), 'a real removal is a real filing change').toBe(true)
+  })
+})
+
 /* PHASE 4 (spec §14.3, Codex V2-002/003). Filing (an input's acc) is a fourth
    publication axis that day content does not carry. The OFFICIAL run must read each
    approved date's FROZEN filing (snapshot.fil), so marking an input 'r' (removed)
@@ -244,6 +284,37 @@ describe('Phase 4 — the OFFICIAL run honours the SIGNED filing state', () => {
   })
 })
 
+/* PHASE 4b (Fable FR-001). The accepted-row deferral (a timed accepted input speaks
+   as its landed ground row, NOT twice) must run on the FROZEN acc during the official
+   pass, not the live one. Sequence: a timed input was accepted 'g' onto an approved day
+   and SIGNED (its ground row + fil='g' frozen into the snapshot), then UNACCEPTED on the
+   working copy (row spliced, acc→'r'). On the official pass DAYS is the snapshot (row
+   present), so the input must still defer to that frozen row. The bug: the deferral read
+   the LIVE 'r' — acceptedDay returned -1 — so the input was ALSO shown in day.input,
+   double-speaking against the sortie (INPUT_FLY / brief clash) on a face that carried
+   only the row's DOUBLE_BOOK at sign time. Tested at the unit boundary (inpShow) because
+   the exact downstream symptom depends on the input's window; the defect is the input
+   wrongly entering day.input on the official face. */
+describe('Phase 4b — the accepted-row deferral honours the FROZEN row, not the live acc', () => {
+  const groundRow = { prog: 'MEETING', str: '12:00', end: '13:00', who: 'waldo', rmks: '', src: 'iMTG1' }
+  const inp = (): any => ({ person: 'waldo', date: (DAYS[0] as any).dt, allday: false, s: 720, e: 780, type: 'Meeting', acc: 'r', remarks: '', mod: '', iid: 'iMTG1' })
+
+  afterEach(() => { setWorld('working'); clearFiling() })
+
+  it("the frozen 'g' row a working unaccept spliced still DEFERS its input on the official pass", () => {
+    ;(DAYS[0] as any).ground = [groundRow]                 // the official pass runs against the snapshot: the row is present
+    const dt = (DAYS[0] as any).dt
+    setWorld('official'); setFiling({ [dt]: { iMTG1: 'g' } }) // signed at 'g'; working has since removed it (live acc 'r')
+    expect(inpShow(inp(), dt), 'signed as a landed row → deferred to that row, not shown again').toBe(false)
+  })
+
+  it("off the official pass the same live 'r' is dormant (unchanged behaviour)", () => {
+    ;(DAYS[0] as any).ground = [groundRow]
+    const dt = (DAYS[0] as any).dt
+    expect(inpShow(inp(), dt), 'a removed input is dormant on the working copy').toBe(false)
+  })
+})
+
 /* PHASE 5 (spec §14.4, F-3/CRP-007, test #9). The click/focus path must resolve a
    clicked warning against the SAME bundle its rendered list came from: a view-page
    tap on a published-only warning opens THAT (official) warning, and a stale index
@@ -270,22 +341,24 @@ describe('Phase 5 — a view-page tap on a published-only warning focuses the OF
   })
 })
 
-/* PHASE 6 (spec §6/§14.5). Two divergence affordances, shown to everyone: the
-   "Not Yet Signed" day marker (a published day whose working copy diverges from the
-   signed version), and the in-list "goes away / new once signed" markings on the
-   working view. The marker is computed on the LIVE day, before the snapshot swap. */
-describe('Phase 6 — "Not Yet Signed" marker', () => {
-  it('shows on a published day with an unpublished amendment, on the issued face and the working face; absent when clean', () => {
+/* PHASE 6 (spec §6/§14.5, refined by owner 16 Sep 26). The "Not Yet Signed" marker is a
+   WORKING-COPY affordance ONLY: the published/issued face stays TRUE until the working
+   copy is published, so marking the published face "not yet signed" was confusing — it
+   belongs on the live working copy, where the divergence actually lives. (The in-list
+   "goes away / new once signed" markings on the working view are the companion cue.) */
+describe('Phase 6 — "Not Yet Signed" marker (working copy only)', () => {
+  it('shows on the working face of a published day with an unpublished amendment; the ISSUED face never shows it; absent when clean', () => {
     const WK = wkFor(50)
     setCurWeek(WK)
     flyMonday('waldo', '14:00', '15:25')
     validate()
     sign(0); setDayApproved(0, true)                     // published, clean
-    expect(dayIssuedHTML(0), 'clean published day: no marker').not.toContain('Not yet signed')
+    expect(dayHTML(0, false), 'clean published day: no marker on the working copy').not.toContain('Not yet signed')
+    expect(dayIssuedHTML(0), 'clean published day: no marker on the issued face').not.toContain('Not yet signed')
     ;(DAYS[0] as any).waves[0].formations[0].to = '06:00'  // unpublished amendment
     validate()
-    expect(dayIssuedHTML(0), 'issued face warns that newer unsigned edits exist').toContain('Not yet signed')
-    expect(dayHTML(0, false), 'the working face too').toContain('Not yet signed')
+    expect(dayHTML(0, false), 'the working copy warns that newer unsigned edits exist').toContain('Not yet signed')
+    expect(dayIssuedHTML(0), 'the published/issued face stays TRUE — no marker').not.toContain('Not yet signed')
   })
 
   it('is absent on a never-published (draft) day', () => {

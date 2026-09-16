@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { INPUTS, inputCoversDate, inputFlags, inputDormant, inpWin, isSansAvail, inpMeta, shiftHardInput, shiftHardLabel, inpById, inpId, isDownchit } from './inputs'
+import { INPUTS, inputCoversDate, inputFlags, inputDormant, inpWin, isSansAvail, inpMeta, shiftHardInput, shiftHardLabel, inpById, isDownchit, isUpchit } from './inputs'
 import { fileAcc, filingActive } from './world'
 import { PEOPLE, isSpecial, whoId, aarNeed } from './people'
 import { toMin, parseHM, win, overlap } from './time'
@@ -37,8 +37,26 @@ export const inpShow=(inp:any,dt:any,xweek?:any)=>{
      EXCEPTION — CURRENT SAFETY FACTS are never versioned (§4, Codex CRPF-001): a
      medical downchit (grp 'med') flags the OFFICIAL programme the instant it is filed
      and clears the instant it is lifted, with no publish. So medical inputs always
-     read their LIVE acc, never the frozen filing — you don't "publish" going unfit. */
-  if((filingActive()&&!isDownchit(inp.type))?fileAcc(dt,inpId(inp),inp.acc)==='r':inputDormant(inp))return false;
+     read their LIVE acc, never the frozen filing — you don't "publish" going unfit.
+     On the official run compute the effective acc ONCE and run the WHOLE gate on it —
+     dormancy AND the accepted-row deferral (Fable FR-001). Folding only the dormancy
+     check through the frozen filing but leaving the deferral (inputFlags/acceptedDay)
+     on the LIVE acc let a sign-time 'g' whose working row was later spliced (acc→'r')
+     be SHOWN again beside its still-frozen snapshot row — double-speaking on the issued
+     face. inp.iid is read directly, never minted (Fable FR-005): the official pass must
+     not write INPUTS, and an input with no id cannot be in any frozen fingerprint. */
+  if(filingActive()&&!isDownchit(inp.type)){
+    const eff=inp.iid?fileAcc(dt,inp.iid,inp.acc):'r';
+    if(eff==='r')return false;                    // dormant, or absent when this date was signed
+    if(xweek)return true;
+    if(!isUpchit(inp.type)&&!(eff==='g'&&!inp.allday))return true;   // not a timed accepted input → a live flag
+    /* a timed accept speaks as its landed ground row: find that row on the SWAPPED DAYS
+       by its source id (live-acc-agnostic — acceptedDay's own 'g' guard reads the working
+       acc, now 'r'), and defer only on the row's OWN day (per-day carve-out, 12 Aug 26). */
+    let di=-1; for(let i=0;i<DAYS.length;i++){ const g=(DAYS[i]||{}).ground; if(g&&g.some((r:any)=>r.src===inp.iid)){di=i;break;} }
+    return di<0||(DAYS[di]||{}).dt!==dt;
+  }
+  if(inputDormant(inp))return false;
   /* CROSS-WEEK SEED READS BYPASS THE ACCEPTED-ROW DEDUP (weekctx.ts, via
      buildDay's xweek flag). acceptedDay(inp) below finds the row on the
      LOADED week's live DAYS — it has no idea a non-loaded day even exists,

@@ -1191,22 +1191,32 @@ function withIssuedWeek(fn:any){
      first (windowFiling), then the loaded week's own approved days override — a date
      belongs to exactly one week, so there is no real collision, loaded simply wins. */
   const filing:any=windowFiling(CURWEEK,VCONF.maxRun);
-  if(days.length){
-    days.forEach(({di,snap}:any)=>{ d0[di]=DAYS[di];
-      if(snap){ DAYS[di]=snap.d; Object.assign(changes,snap.c||{}); if(snap.d.dt!=null)filing[snap.d.dt]=snap.fil||{}; }
-      /* PROTECT: content stripped AND an EMPTY filing map installed for the date
-         (Codex R2-002) — stripping the programme alone left global INPUTS still
-         contributing via buildDay's day.input (fileAcc fell back to live acc). An
-         empty frozen filing makes fileAcc return 'r' for every input on the date, so
-         no schedule OR commitment-input flag is derived from unavailable evidence.
-         (A current medical fact still reads live, but with the seats stripped there is
-         nothing for it to clash with.) */
-      else { const sdt=(DAYS[di]||{}).dt; DAYS[di]={...DAYS[di],waves:[],dutywaves:[],sims:{amt:[],oft:[]},ground:[],allhands:[]}; if(sdt!=null)filing[sdt]={}; }
-    });
-    SCHED.changes=changes; SCHED.pending={};
+  /* capture every approved day's ORIGINAL entry (pure reads) BEFORE the try, so the
+     finally can always restore what it needs to. The install itself (below) runs
+     INSIDE the try (Fable FR-003): if any step there ever threw — today only
+     setFiling→dateOrd and Object.assign are in that window, both effectively
+     non-throwing — the restore would otherwise be skipped, leaving DAYS pointing at
+     frozen snapshots and SCHED.pending emptied. */
+  days.forEach(({di}:any)=>{ d0[di]=DAYS[di]; });
+  const g=snapGlobals();
+  try{
+    if(days.length){
+      days.forEach(({di,snap}:any)=>{
+        if(snap){ DAYS[di]=snap.d; Object.assign(changes,snap.c||{}); if(snap.d.dt!=null)filing[snap.d.dt]=snap.fil||{}; }
+        /* PROTECT: content stripped AND an EMPTY filing map installed for the date
+           (Codex R2-002) — stripping the programme alone left global INPUTS still
+           contributing via buildDay's day.input (fileAcc fell back to live acc). An
+           empty frozen filing makes fileAcc return 'r' for every input on the date, so
+           no schedule OR commitment-input flag is derived from unavailable evidence.
+           (A current medical fact still reads live, but with the seats stripped there is
+           nothing for it to clash with.) */
+        else { const sdt=(DAYS[di]||{}).dt; DAYS[di]={...DAYS[di],waves:[],dutywaves:[],sims:{amt:[],oft:[]},ground:[],allhands:[]}; if(sdt!=null)filing[sdt]={}; }
+      });
+      SCHED.changes=changes; SCHED.pending={};
+    }
+    setWorld('official'); setFiling(filing);
+    return fn();
   }
-  const g=snapGlobals(); setWorld('official'); setFiling(filing);
-  try{ return fn(); }
   finally{
     setWorld('working'); clearFiling();
     days.forEach(({di}:any)=>{ DAYS[di]=d0[di]; });
