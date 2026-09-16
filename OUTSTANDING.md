@@ -313,9 +313,20 @@ stores' history, which the DB step needs anyway), NOT as a mid-fix patch now.
   your own actions; a role/viewer PREVIEW must not wipe an admin's undo.
 - **Gate:** must be done before promulgation / real users (the interim bugs are tolerable only
   because it's demo data).
+- **Clean input+leave undo lands at step 4, NOT before (owner, 16 Sep 26).** A schedule undo that
+  also reverses an accepted LEAVE input's Leave War cell reaches its fully-clean form only once an
+  approved absence is ONE record (ARCH-STACK step 4, one-Absence). Until then the command carries
+  the leave effect in its own inverse data so it can't drift, but the cleanest version is a step-4
+  payoff — don't try to fully solve input+leave undo before step 4.
+- **Undo-of-publish semantics SETTLED (owner, 16 Sep 26):** silent reverse BEFORE a publish is
+  sent/witnessed; an on-the-record forward withdrawal (a correcting amendment — append-only, unique
+  never-reused version ids, derived credits recompute) AFTER. Undo is per-user + per-session
+  (logout clears; never touches another user's actions; won't clobber a later edit). Roster/settings
+  edits ARE undoable. See step-2 design §3.4 + memory `undo-of-publish-semantics`.
 - **Context:** the sync spec (findings A/C/D/E/F/I + the red-team on why the two-system patch
   is the wrong approach); memories `future-undo-semantics-multiuser` (architecture direction),
-  `multi-squadron-and-person-transfer`; ties to `docs/architecture-direction.md` + [DB-STEP].
+  `undo-of-publish-semantics`, `multi-squadron-and-person-transfer`; ties to
+  `docs/architecture-direction.md` + [DB-STEP].
 
 ### [RECALL] Fresh recall from archive — FUTURE FEATURE
 An admin recalls an archived person back into Quals. **Behaviour (owner, 13 Sep 26):**
