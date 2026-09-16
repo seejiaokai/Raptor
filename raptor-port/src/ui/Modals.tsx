@@ -7,10 +7,10 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { dayCount } from '../engine/waves'
 import { lgT } from '../engine/time'
-import { validate, WARN, WCODE, wlbl } from '../engine/validate'
+import { validate, WARN, WCODE, wlbl, withOfficialWarn } from '../engine/validate'
 import { computeInsights } from '../engine/insights'
 import { markEdit } from '../engine/publish'
-import { esc, afterSchedMutate } from '../state/view'
+import { esc, afterSchedMutate, dayDisplaysOfficial } from '../state/view'
 import { SESSION } from '../state/auth'
 import { notify } from '../state/store'
 import { dayInfoHTML } from './html'
@@ -32,8 +32,13 @@ export function DayPop() {
             button was landing in the middle of a long issues list). maxHeight
             without overflow lets the content paint straight through the footer;
             overflow:auto keeps the list scrolling and the footer pinned below. */}
+        {/* resolve the day's warnings in the SAME world the week/view renders them
+            (Codex CRP-I2-002): a view-page day that shows OFFICIAL flags — a published
+            day, or a draft day carrying a published-neighbour breach — must not have its
+            details panel report "clean" off the working copy. Content still reads live
+            DAYS (a draft shows its working content, unchanged). Aliased = a no-op. */}
         <div className="airpop-body" id="dayPopBody" style={{ maxHeight: '62vh', overflow: 'auto', overscrollBehavior: 'contain' }}
-          dangerouslySetInnerHTML={{ __html: dayInfoHTML(DAYPOP) }} />
+          dangerouslySetInnerHTML={{ __html: dayDisplaysOfficial(DAYPOP) ? withOfficialWarn(() => dayInfoHTML(DAYPOP)) : dayInfoHTML(DAYPOP) }} />
         <div className="airpop-foot"><span style={{ flex: 1 }}></span><button className="abtn primary" id="dayPopDone" onClick={close}>Close</button></div>
       </div>
     </div>

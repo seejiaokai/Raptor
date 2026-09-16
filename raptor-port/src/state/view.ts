@@ -7,7 +7,7 @@ import { popReorderedDay } from '../engine/reorder'
 import { slotBar, personCount, personWarnDays } from '../engine/avail'
 import { validate, WARN, traceOf, officialWarn } from '../engine/validate'
 import { markEdit, daySnapOf, dayApproved } from '../engine/publish'
-import { curDraftId, reconcileIssuedMarks } from '../engine/drafts'
+import { curDraftId, reconcileIssuedMarks, isDraftVer } from '../engine/drafts'
 import { isLead, isInstr, isOcu } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched, ME } from './auth'
@@ -463,13 +463,28 @@ export function toggleDayWarn(di:any){
    never a throw (§14.4). */
 export function displayedByDay(di:any){
   di=+di
-  /* mirror ViewWeek.tsx's own render selection EXACTLY (Codex CRPF-009): an approved
-     view day shows its issued (OFFICIAL) face unless VWORK'd — and an edit-page 'd:'
-     preview left in DPREV is IGNORED for approved days, so it must NOT reroute the
-     click here either. Every other surface (edit page, VWORK, unapproved) is WORKING;
-     a preview renders no flags, so there is nothing to resolve there. */
-  const official=CURPAGE==='viewsched'&&dayApproved(di)&&!VWORK.has(di)
-  return (official?officialWarn():WARN).byDay[di]
+  /* mirror viewDayHTML's render selection EXACTLY (Codex CRPF-009; extended for
+     [CRP-FLAG] Item 2, Codex CRP-I2-001). The view page renders OFFICIAL flags for an
+     approved day (unless VWORK'd) AND for a LIVE DRAFT day (withOfficialWarn) — only a
+     VWORK'd approved day or an active draft PREVIEW ('d:<id>' in DPREV whose snapshot
+     resolves) render WORKING. A clicked/focused warning MUST resolve against the same
+     world, or an official-only warning's severity-sorted index would land on an unrelated
+     WORKING warning at that index (the missing-index guard cannot catch a collision).
+     An edit-page 'd:' preview is ignored for APPROVED days, so draftPreview gates on
+     !dayApproved; VWORK never holds a draft, so it only bites the approved case. */
+  return (dayDisplaysOfficial(di)?officialWarn():WARN).byDay[di]
+}
+/* Does the VIEW page render THIS day's flags from the OFFICIAL world? The single
+   source of truth for "which world day di is showing", so displayedByDay (the click/
+   focus/highlight accessor) and the day-details modal (Codex CRP-I2-002) can never
+   drift from viewDayHTML's own render selection. Official for an approved day (unless
+   VWORK'd) AND for a live DRAFT day; WORKING for a VWORK'd approved day or an active
+   draft preview, and everywhere off the view page. */
+export function dayDisplaysOfficial(di:any){
+  di=+di
+  const ver=DPREV.get(di)
+  const draftPreview=!dayApproved(di)&&isDraftVer(ver)&&!!daySnapOf(di,ver)
+  return CURPAGE==='viewsched'&&!VWORK.has(di)&&!draftPreview
 }
 /* one warning → focus + snap (reference 3997-4003, verbatim) */
 export function focusWarn(di:any,ix:any){

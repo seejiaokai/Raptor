@@ -11,10 +11,10 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { initStore, loadWeek } from '../state/store'
 import { DAYS } from '../engine/data'
-import { validate } from '../engine/validate'
+import { validate, withOfficialWarn } from '../engine/validate'
 import { SCHED, signOf, setDayApproved } from '../engine/publish'
-import { dayHTML, viewDayHTML } from './html'
-import { DWOPEN } from '../state/view'
+import { dayHTML, viewDayHTML, dayInfoHTML } from './html'
+import { DWOPEN, WFOCUS, displayedByDay, dayDisplaysOfficial, focusWarn, setPage } from '../state/view'
 
 /* @vitest-environment jsdom */
 
@@ -65,6 +65,46 @@ describe('view-only shows a published-truth run breach on a draft day', () => {
     DWOPEN.add(1)
     expect(viewDayHTML(1), 'view-only Tuesday still flags crew rest off the published Monday').toMatch(/crew rest/i)
     expect(dayHTML(1, true, true), 'edit Tuesday is clear — the working fix removed the duty').not.toMatch(/crew rest/i)
+  })
+
+  /* CRP-I2-001 (Codex): the CLICK/FOCUS accessor must resolve against the SAME world
+     the day renders, or an official-only warning's severity-sorted index lands on an
+     unrelated WORKING warning at that index. */
+  it('displayedByDay mirrors viewDayHTML: the view-page draft Sunday resolves the OFFICIAL run breach, and focus lands on Warden', () => {
+    setup()
+    setPage('viewsched')
+    try {
+      const g = displayedByDay(6)
+      const ix = (g.warns as any[]).findIndex((w: any) => w.code === 'DAYS_RUN' && (w.who || []).includes(WARDEN))
+      expect(ix, 'the view-page draft Sunday resolves the OFFICIAL run breach').toBeGreaterThanOrEqual(0)
+      focusWarn(6, ix)
+      expect(WFOCUS && (WFOCUS as any).ids.includes(WARDEN), 'focus lands on Warden, not a working-index collision').toBe(true)
+    } finally { setPage('editsched') }
+  })
+
+  it('on the EDIT page the same draft Sunday resolves WORKING (no run breach) — the pending fix', () => {
+    setup()
+    setPage('editsched')
+    const g = displayedByDay(6)
+    expect((g.warns as any[]).some((w: any) => w.code === 'DAYS_RUN' && (w.who || []).includes(WARDEN)), 'edit resolves the working world').toBe(false)
+  })
+
+  /* CRP-I2-002 (Codex): the day-details modal (dayInfoHTML) must resolve warnings in the
+     displayed world, or the view-page draft Sunday's details say "clean" while the week
+     flags the breach. The modal calls: dayDisplaysOfficial(di) ? withOfficialWarn(...) : ... */
+  const modalBody = (di: number) => dayDisplaysOfficial(di) ? withOfficialWarn(() => dayInfoHTML(di)) : dayInfoHTML(di)
+  it('the day-details panel for the view-page draft Sunday shows the breach, not "clean"', () => {
+    setup()
+    setPage('viewsched')
+    try {
+      expect(modalBody(6), 'details show the official run breach').toMatch(RUN)
+      expect(modalBody(6), 'not the clean line').not.toContain('this day is clean')
+    } finally { setPage('editsched') }
+  })
+  it('on the EDIT page the same details panel reads WORKING (clean — the pending fix)', () => {
+    setup()
+    setPage('editsched')
+    expect(modalBody(6), 'edit details reflect the working fix').not.toMatch(RUN)
   })
 
   it('with nothing published/diverging, the view render is unchanged (aliased no-op)', () => {
