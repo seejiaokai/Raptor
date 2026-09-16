@@ -37,6 +37,8 @@ import { setSession as authSetSession, canEditSched, SESSION, ACCOUNTS, canToggl
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { setFileLocked as trSetFileLocked } from '../tracker/role.js'
 import { isHydrated, weekSwapBegin, weekSwapEnd } from './persist'
+import { deferEffect } from '../command'
+import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, SCHED_TYPES } from './sched-commit'
 
 let VERSION = 0
 const listeners = new Set<() => void>()
@@ -45,7 +47,13 @@ const boardListeners = new Set<() => void>()
 
 export function subscribe(fn: () => void) { listeners.add(fn); return () => { listeners.delete(fn) } }
 export function getVersion() { return VERSION }
-export function notify() { VERSION++; listeners.forEach(f => f()) }
+/* [ARCH-STACK] Step 2 (additive): while a commit() is in flight, the repaint is
+   LATCHED and released in phase 8 so a rolled-back command leaves no repaint of a
+   state that never happened. OUTSIDE a commit — every path not yet routed through
+   the gate (loadWeek, initStore, toggleRole, …) — deferEffect returns false and
+   notify runs inline exactly as before, so behaviour is unchanged. */
+export function notify() { if (deferEffect(realNotify)) return; realNotify() }
+function realNotify() { VERSION++; listeners.forEach(f => f()) }
 /* Day-to-day board navigation is view-only. Give the board a narrow repaint
    lane so a swipe does not wake every mounted store consumer (most notably
    EditWeek's seven large dayHTML calculations) while ordinary mutations still
@@ -61,21 +69,24 @@ export function notifyBoard() { BOARD_VERSION++; boardListeners.forEach(f => f()
    itself opens with, repeated here so the epilogue is skipped too. */
 export function writeSlot(key: any, id: any) {
   if (slotVal(key) === (id || '')) return     // no-op — nothing moved
-  setSlotVal(key, id)
-  afterSchedMutate()
+  /* [ARCH-STACK] Step 2 (additive): the identical write, now inside commit() —
+     enlist snapshot, run setSlotVal+afterSchedMutate exactly as before, emit the
+     record-level change. The legacy histPush/persistAll/undo stack still run. */
+  commitSchedVoid(SCHED_TYPES.slot, () => { setSlotVal(key, id); afterSchedMutate() })
 }
 
 /* a people cell ("first free seat, else add one more") */
 export function writeFill(key: any, id: any) {
-  fillSlot(key, id)
-  afterSchedMutate()
+  commitSchedVoid(SCHED_TYPES.fill, () => { fillSlot(key, id); afterSchedMutate() })
 }
 
 /* an inline text field; txtSet reports whether the model actually moved */
 export function writeText(path: any, v: any) {
-  const moved = txtSet(path, v)
-  if (moved) afterSchedMutate()
-  return moved
+  return commitSchedValue(SCHED_TYPES.text, () => {
+    const moved = txtSet(path, v)
+    if (moved) afterSchedMutate()
+    return moved
+  })
 }
 
 /* a structural delete. The caller does the splice + shiftKeys inside `fn`;
@@ -83,9 +94,11 @@ export function writeText(path: any, v: any) {
    address now occupied by a shifted row. afterSchedMutate supplies the usual
    revalidate/history epilogue. */
 export function writeDelete(fn: () => void, di?: number, kind: any = 'programme') {
-  fn()
-  if (di != null) markDeletion(di, kind)
-  afterSchedMutate()
+  commitSchedVoid(SCHED_TYPES.delete, () => {
+    fn()
+    if (di != null) markDeletion(di, kind)
+    afterSchedMutate()
+  })
 }
 
 /* ---- THE INPUT QUARANTINE CHOKE-POINT (P2-REV2-04, quarantine redesign) ----
@@ -157,7 +170,7 @@ function runInputWrite(fn: () => void, suppressHist: boolean): boolean {
 /* personal inputs (the Inputs page): mutate INPUTS, then the reference's
    add/delete epilogue — renderInputs(); reflow(); histPush(); */
 export function writeInputs(fn: () => void): boolean {
-  return runInputWrite(fn, false)
+  return commitInputs(SCHED_TYPES.inputsWrite, () => runInputWrite(fn, false))
 }
 
 /* Same as writeInputs, but for an action that calls engine helpers which push
@@ -165,7 +178,7 @@ export function writeInputs(fn: () => void): boolean {
    snapshots, so the first Undo landed the user in a half-applied state they
    never created — old fields, but already un-accepted. One action, one step. */
 export function writeInputsBatch(fn: () => void): boolean {
-  return runInputWrite(fn, true)
+  return commitInputs(SCHED_TYPES.inputsBatch, () => runInputWrite(fn, true))
 }
 
 /* THE SCHEDULE SECTION ORDER — its one write path (owner, 29 Aug 26). Re-arrange
@@ -180,7 +193,9 @@ export function moveSection(di: number, key: string, dir: number) {
   if (!canEditSched()) return
   /* HOOKS.histPush, not the raw histPush: the storage seam's persist wrapper
      rides the hook, and the raw call left a reorder unsaved (8 Sep 26 bug pass) */
-  if (moveSectionModel(DAYS[di], key, dir)) { HOOKS.histPush(); notify() }
+  commitSchedVoid(SCHED_TYPES.sectionMove, () => {
+    if (moveSectionModel(DAYS[di], key, dir)) { HOOKS.histPush(); notify() }
+  })
 }
 
 /* THE SECTION DISPLAY ORDER, dragged (owner, 29 Aug 26 pt.3 — the in-place drag
@@ -192,8 +207,10 @@ export function moveSection(di: number, key: string, dir: number) {
    ±1 step. Gated at the write path per the role doctrine. */
 export function moveSectionTo(di: number, fromKey: string, toKey: string): boolean {
   if (!canEditSched()) return false
-  if (reorderSectionTo(DAYS[di], fromKey, toKey)) { HOOKS.histPush(); notify(); return true }
-  return false
+  return commitSchedValue(SCHED_TYPES.sectionReorder, () => {
+    if (reorderSectionTo(DAYS[di], fromKey, toKey)) { HOOKS.histPush(); notify(); return true }
+    return false
+  })
 }
 
 /* the ONE session-reset path. Login.tsx and Shell.tsx's logout both called
@@ -613,6 +630,9 @@ export function loadWeek(v: any) {
 
 /* ---- wiring ---- */
 export function wireStore() {
+  /* [ARCH-STACK] Step 2: register the scheduler's command layer (permissions,
+     records, guarded store, the HIST.lock suppression context). Idempotent. */
+  registerSchedCommandLayer()
   /* the reference's editMode(): the edit page is open. The reference also
      ANDed its #editToggle switch here; that toggle was removed 9 Aug 26
      (owner) — being on Edit Schedule is the intent to edit, and View-only
@@ -631,7 +651,12 @@ export function wireStore() {
   HOOKS.editMode = () => canEditSched() && view.CURPAGE === 'editsched' && !protectedWeek()
   HOOKS.reflow = () => { validate(); notify() }
   HOOKS.renderStatus = () => notify()
-  HOOKS.histPush = () => histPush()
+  /* [ARCH-STACK] Step 2 (additive): latch histPush while a commit is in flight,
+     so a rolled-back command takes no undo snapshot; the deferred call carries
+     the HIST.lock token captured at raise time (registerEffectContext), so a
+     lock-wrapped batch still records exactly as today. Outside a commit it runs
+     inline, unchanged. */
+  HOOKS.histPush = () => { if (!deferEffect(histPush)) histPush() }
   HOOKS.syncHistBtns = () => notify()
   HOOKS.paintArm = () => notify()
   HOOKS.renderRosters = () => notify()
