@@ -19,6 +19,8 @@ import { DWOPEN, WFOCUS, focusWarn, setPage } from '../state/view'
 import { stashPut, stashClear } from './weekstash'
 import { inpShow } from './events'
 import { windowDiverges } from './weekctx'
+import { autoAcceptInput } from './slots'
+import { notYetSigned, dayHasChanges } from './publish'
 import { verId, dayIso } from './verid'
 import { setWorld, setFiling, clearFiling } from './world'
 import { seedRunIn } from './weekctx'
@@ -312,6 +314,34 @@ describe('Phase 4b — the accepted-row deferral honours the FROZEN row, not the
     ;(DAYS[0] as any).ground = [groundRow]
     const dt = (DAYS[0] as any).dt
     expect(inpShow(inp(), dt), 'a removed input is dormant on the working copy').toBe(false)
+  })
+})
+
+/* DECISION #1 (owner 16 Sep 26 — supersedes the flagged filing-membership question).
+   A request filed LIVE on a PUBLISHED day auto-accepts onto the WORKING COPY as a
+   pending amendment (the pending/changes count goes up), so the scheduler sees that
+   something changed and can publish or remove it. The published/ISSUED face stays
+   FROZEN until published: the new request does NOT appear on it, and it carries no
+   "Not Yet Signed" marker (that is a working-copy affordance only). */
+describe('Decision #1 — a request filed on a published day is a working-copy pending amendment', () => {
+  it('auto-lands on the working copy (pending + Not-Yet-Signed there) while the issued face stays frozen', () => {
+    const WK = wkFor(70)
+    setCurWeek(WK)
+    const dt = (DAYS[0] as any).dt
+    flyMonday('waldo', '12:00', '13:25')
+    validate()
+    sign(0); setDayApproved(0, true)                     // published, clean
+    expect(notYetSigned(0), 'clean at publish').toBe(false)
+    const inp: any = { person: 'waldo', date: dt, allday: false, s: 900, e: 960, type: 'Meeting', remarks: 'LATEASK42', mod: 'now', iid: 'iLATE1' }
+    INPUTS.push(inp)
+    expect(autoAcceptInput(inp, true), 'the interactive filing lands it on the published day').toBe(true)
+    validate()
+    expect(dayHasChanges(0), 'it registers as a pending change — the count goes up').toBe(true)
+    expect(notYetSigned(0), 'the working copy is now Not Yet Signed').toBe(true)
+    expect(dayHTML(0, false), 'the working face carries the new request').toContain('LATEASK42')
+    expect(dayHTML(0, false), 'and the working-copy marker').toContain('Not yet signed')
+    expect(dayIssuedHTML(0), 'the issued face is FROZEN — the new request is not on it').not.toContain('LATEASK42')
+    expect(dayIssuedHTML(0), 'and no marker on the published face').not.toContain('Not yet signed')
   })
 })
 

@@ -403,24 +403,30 @@ export function acceptInput(di:any,inp:any,dest:any){
    commitment in place and the crew picker's busy-check warns BEFORE a plant,
    not after. Leave, medical, OD and SANS are not activity types (isPersonal
    is false), so they never promote — they stay in the Unavailable block, and
-   acceptInput's own isUnavail gate is the backstop. A day already PUBLISHED is
-   left alone (owner's call): a late input there stays under Personal Inputs
-   and the input-aware busy-check (avail.ts) still warns, without churning the
-   issued document with a surprise amendment. This is the ONE decision "should
-   a new/seed input auto-land, and do it" — every creation path (the two + Add
-   dialogs, the Inputs page, the boot/week-load pass) calls it, so they cannot
-   drift. It fires ONLY at creation and at boot, never on a repaint, so a
-   scheduler who then REMOVES the row (unaccept → acc 'r') keeps it in
-   Personal Inputs — DORMANT, flagging nothing, per the owner's 26 Aug 26 rule
-   (see unacceptInput) — and the truthy-acc guard below is what stops a week
-   load from silently re-landing it. Returns true when it promoted the row. */
-export function autoAcceptInput(row:any):boolean{
+   acceptInput's own isUnavail gate is the backstop.
+
+   A DAY ALREADY PUBLISHED — the two callers now split (owner 16 Sep 26, refining the
+   26 Aug 26 call). A request filed LIVE by a person (the INTERACTIVE creation paths —
+   the two + Add dialogs, the Inputs page) auto-lands on the WORKING COPY as a pending
+   amendment: it increases the pending/changes count so the scheduler sees something
+   changed, and removes it if unwanted; the ISSUED face stays frozen until published (the
+   OFFICIAL pass reads the signed snapshot + fileAcc, so the new input never leaks there).
+   The SEED / week-LOAD passes (autoAcceptSeedInputs, and store.ts's restore-landing loop
+   which runs AFTER dayOK is restored) must NOT churn a published day with a surprise
+   amendment at load — they pass no onApproved, so the guard still holds for them. This is
+   the ONE decision "should a new/seed input auto-land, and do it", so the two paths cannot
+   drift. It fires ONLY at creation and at boot, never on a repaint, so a scheduler who then
+   REMOVES the row (unaccept → acc 'r') keeps it in Personal Inputs — DORMANT, flagging
+   nothing (see unacceptInput) — and the truthy-acc guard below is what stops a week load
+   from silently re-landing it. Returns true when it promoted the row. */
+export function autoAcceptInput(row:any,onApproved?:boolean):boolean{
   if(!row||row.acc||!isPersonal(row.type))return false;
   /* dateIx, not DATES.indexOf (24 Aug 26): the index must come from the DATE
      the row means, or a 2026 input landed on the identically-worded day of a
      loaded 2027 week. */
   const di=dateIx(row.date,row.yr);
-  if(di<0||dayApproved(di))return false;
+  if(di<0)return false;
+  if(dayApproved(di)&&!onApproved)return false;   // seed/restore: leave a published day alone
   return acceptInput(di,row,'g');
 }
 /* THE BOOT / WEEK-LOAD PASS (owner, Aug 26). Land every activity input already

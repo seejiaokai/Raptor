@@ -132,11 +132,23 @@ describe('autoAcceptInput — the one gate', () => {
     expect(r.acc).toBeFalsy()
   })
 
-  it('refuses an already-published day (the late input stays under Personal Inputs)', () => {
+  it('the SEED / RESTORE pass leaves an already-published day alone (no surprise amendment at load)', () => {
     SCHED.dayOK[0] = 1                                // day 0 is published (what dayApproved reads)
     const m = fileMeeting(freePilot(), 600, 700)
-    expect(autoAcceptInput(m)).toBe(false)
+    expect(autoAcceptInput(m)).toBe(false)           // default caller = the seed/restore pass
     expect(m.acc).toBeFalsy()
+  })
+
+  /* owner 16 Sep 26: a request filed LIVE on a published day IS an amendment — it
+     auto-lands on the working copy as a pending change (the scheduler removes it if
+     unwanted). Only the INTERACTIVE filing paths pass onApproved; the seed/restore
+     passes do not, so a week load never churns a published day (test above). */
+  it('the INTERACTIVE filing path (onApproved) lands a request on a published day as a working-copy change', () => {
+    SCHED.dayOK[0] = 1
+    const m = fileMeeting(freePilot(), 600, 700)
+    expect(autoAcceptInput(m, true)).toBe(true)
+    expect(m.acc).toBe('g')
+    expect(DAYS[0].ground.some((row: any) => row.src === inpId(m)), 'a ground row now exists on the working copy').toBe(true)
   })
 })
 
