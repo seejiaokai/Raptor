@@ -238,14 +238,26 @@ forever once issued"). **Live `SCHED.sign[di]`/`signBind[di]` stay ordinary muta
 signing/`signClear` change them; freezing them would refuse those commands. **Reopen does not
 exist** (correct §2.1's stale history.ts comment); a *forward* un-approve is already a no-op.
 
-**The one owner-facing decision (Q):** may you **undo your own first-publish** before it is
-witnessed? SEQ-002's own example permits it (undo AL creation → republish reuses the immutable
-`iso#N` identity). Proposal: a publish that has been **durably persisted / seen remotely** is
-committed history the boundary blocks; a **session-local undo of a not-yet-drained own publish**
-is allowed and may reuse the identity (matching SEQ-002 + today's snapshot undo). **Recovery**
-(load an old version → republish) copies old *content* into working state and publishes under a
-**NEW** `nextSeq` id (`publish.ts:578`); the source issued record + its signatures are untouched.
-Step 2 records `boundary` + freezes the listed ids; Step 3 enforces the crossing rule.
+**Owner decision (16 Sep 26 — RESOLVED, do not relitigate).** Undo always works from the
+Undo button; its *mechanism* switches at the send-to-shared-record boundary:
+- **Before the publish has been sent** (session-local, not yet drained/witnessed): Undo
+  **silently reverses** it via the snapshot mechanism — no issued record has left the machine, so
+  there is nothing to withdraw and none of the DB integrity bugs can arise.
+- **Once it has been sent**: the snapshot-undo does **NOT** cross the boundary (SEQ-002 / Codex
+  R3-005 upheld — never erase or overwrite an issued record). Instead the Undo affordance issues a
+  **forward withdrawal command** — an append-only, on-the-record reversal (a correcting amendment)
+  that flows to everyone like any change, after a one-line heads-up that it will be visible. This
+  is bug-free by construction: **never erase**; issued versions carry **unique, never-reused** ids;
+  derived leave credits **recompute** from the current published set. It is the same mechanism as
+  "supersede with an amendment". Recovery likewise publishes under a **NEW** `nextSeq` id
+  (`publish.ts:578`); issued records + their signatures are never overwritten.
+
+Step 2 records `boundary` on the envelope with a **`crossable`** flag — crossable (silent-undoable)
+only for the issuing session until a `remote` envelope references the id or the session ends;
+Step 3 reads it to choose silent-reverse vs forward-withdrawal. Frozen artefacts (`sched.als/…`,
+`sched.orig/…`, own append-only records — Fable R3-6) are put-once at phase 5. **Also resolved:
+roster/settings edits ARE undoable** (in the global undo timeline as `user` commands; never
+amendments).
 
 ### 3.5 Authorization (ARCH-01 · Codex R2 · Fable R2-5/R2-6)
 
@@ -369,12 +381,10 @@ its persistAll retires (Fable R2-2); (g) a slot edit serializes the world **once
    persistAll **per collection**, only once its histPush sites are wrapped and the weeks invariants
    pass against the subscriber alone. Snapshot stacks retire at Step 3 (after Step 4), not here.
 
-## 9. Open questions for round 3
-1. **Undo of your own not-yet-witnessed first-publish** (§3.4) — confirm the SEQ-002-aligned
-   "allowed, reuses identity" reading is what we want, and that `orig[di]`/`als[n]` freeze only
-   once the publish is committed history (durably persisted / remote-seen).
-2. **Roster/settings undoability** (§5.2) — owner behaviour call.
-3. **Split a mega-blob at Step 2 vs Step 5?** Rev 3 keeps the fold (collection-granular version,
+## 9. Open questions
+1. **RESOLVED (owner, 16 Sep 26):** undo-of-publish semantics — silent before sent, forward
+   on-the-record withdrawal after sent (§3.4). **RESOLVED:** roster/settings ARE undoable (§5.2).
+2. **Split a mega-blob at Step 2 vs Step 5?** Rev 3 keeps the fold (collection-granular version,
    single-tab no-op). Is a minimal `leavewar/wars`/`inputs/all` split worth pulling forward so
    per-record conflict is real pre-Dataverse? (Codex Q3.)
 4. **Parallel-undo interim proof** (§5.3) — prove the old per-module snapshot stacks + the new
