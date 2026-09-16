@@ -243,3 +243,74 @@ append-only) — so the boundary/freeze list is corrected.
 - **Fact fixes**: setFont auto-persists; switchCourse has a confirm (Fable R2-8). §2.4.
 
 Back to both reviewers for round 3 on Rev 3.
+
+---
+
+## Round 3 — Codex (Astra, high) REVISE (7) + Fable 5.1 (high) REVISE (2H/4M/1L) — CONVERGED, narrowing
+
+Both credit Rev 3 with fixing the round-2 transaction-composition, revision, staging and
+Tracker-identity items (Fable verified `retractLwRow` is inside the `writeInputsBatch` reducer,
+`inputedit.tsx:907-927`; Tracker ids stable; no async LW writer). Results:
+`scratchpad/rev-codex-r3/…` (~196s), `scratchpad/rev-fable-r3/…` (~238s). Plan SHA `c48bcb75…`.
+
+The residual is a tight, coherent cluster on the transaction model + record completeness +
+publish-artefact modelling. **Host arbitration: accept all; several are Rev-3 over-reaches to
+walk back.** The unifying insight: several items (per-record conflict granularity, durable
+atomicity, publish-witness observability, interim-history correctness) are entangled with Steps
+3/5 — Step 2 should be **ADDITIVE** (build the gate + stream + in-memory transaction; keep
+`persistAll` and the three per-module snapshot undo stacks running untouched; defer the cutover of
+persistence/undo/conflict to their proper steps). This dissolves the recurring "once persistAll is
+retired…" class and is the correct strangler sequencing.
+
+### Round-3 dispositions → Rev 4 plan
+- **"Join the open transaction" primitive** (Fable R3-1 / Codex R3-002/007): a `commit`/`commitAs`
+  called while a transaction is open **and the caller is on the reducer stack** JOINS it (a
+  `txn.child(cmd)` API / open-txn flag) — extends the snapshot set to the child's blobs, shares the
+  envelope, appends the child's changes; **only** commits raised from notify/onCommit subscribers
+  (phase 9) enqueue. Test: input-delete with an lw row → one envelope with both changes; a phase-5
+  failure leaves the bid untouched.
+- **Interim per-module undo stacks key on `scope.module` AND `origin`** (Fable R3-2): a stack pushes
+  only when `envelope.scope.module` is its own module and `origin==='user'`; a foreign module's
+  command touching this module never pushes its stack (Raptor-driven from LW's view). State
+  precedence with `locked()`. This is cleanest under the ADDITIVE framing (the stacks stay as-is;
+  the command stream just derives changes alongside).
+- **Do NOT reuse the pre-apply blob snapshot as the interim histPush** (Codex R3-001 / Fable R3-3):
+  keep the interim `histPush` on its own post-apply whole-world `histSnap()` until Step 3 retires
+  it (the ADDITIVE framing keeps it untouched); the phase-2 snapshot is purely the rollback copy;
+  serialize-once is a later concern (per-blob string cache by revision) not a Step-2 requirement.
+- **Snapshot the full transitive write set via dynamic enlistment** (Codex R3-002): copy-on-first-
+  write per store; the complete set drives derive/validate/rollback/fold (a command's write set
+  isn't known statically — `commitInputEdit` also touches DAYS + amendment bookkeeping).
+- **Complete the record registry** (Codex R3-003): add LW `ledger`/`balances`/`oilpolicy`/`postouts`
+  /config and Tracker `pace`/`lulls`/`event-info`/catalogue; every durable writer + hydration key
+  must yield a Change.
+- **Causally-related mutations = ONE reducer, not a command sequence** (Codex R3-004): move async
+  prep out, keep `popGrade`'s marks+dates together (one undo step) in one reducer/envelope.
+- **Publish artefacts + boundary** (Codex R3-005 / Fable R3-5/R3-6): (a) correct the SEQ-002 reading
+  — undo cannot cross a signed publish; a reversible unpublished preview is a distinct un-issued
+  state (do NOT assert identity reuse is permitted). (b) `boundary` gets a `crossable` flag Step 3
+  evaluates; "committed history" defined observably (own publish crossable for the issuing session
+  until a `remote` envelope references its id or the session ends). (c) **Split `als[n]`/`orig[di]`
+  into their own append-only records** (`sched.als/<wk>:<verId>`, `sched.orig/<wk>:<di>`, put-once
+  at phase 5), separate from the mutable `sched.book/<wk>`, so immutability is gate-enforceable.
+- **`personId` from the ME/viewer binding, not SESSION** (Codex R3-006): the prototype actor adapter
+  = account from `SESSION.user`, effective role from `SESSION.role`, ownership id from ME/viewer.
+- **Queue extends through phase-9 notify delivery; a queued command returns a handle/promise, not a
+  synchronous final result** (Codex R3-007): keep the dispatcher busy through notify; separate sync
+  execution from a scheduling API.
+- **Rows nested inside the day record** (Fable R3-6): the day Change carries order/`secOrder`; row
+  Changes are its children (day owns the inverse) — avoid double-counting a slot edit.
+- **Coarse `lw.war` conflict** (Fable R3-4): keep an in-memory per-logical-record (per-cell/per-
+  input) revision map in the command layer even while the blob is one; OR state plainly that until
+  Step 5 a drained projection on a coarse record refuses a later undo and Step 3 must rebase.
+- **Latch `HOOKS.toast` + the edit-log append** too (Fable R3-7), release/​discard with the rest.
+
+### Owner-facing decisions surfaced (his calls, gate parts of the design)
+1. **May Undo reverse a signed-off publish?** Today it technically can; reviewers flag it's risky
+   once a day is officially issued. (Lean: once published it's locked — matches the app already
+   refusing un-approve.)
+2. **Should Undo also cover roster/settings edits** (quals, rename, rule values)? (Lean: yes.)
+
+**Host decision (stop the loop here):** 3 rounds done; design sound + hardened; residual is a clear
+Rev-4 fix list + a scoping call (ADDITIVE Step 2) + 2 owner decisions. Checkpoint the owner rather
+than run round 4 unprompted.
