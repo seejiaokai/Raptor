@@ -110,3 +110,33 @@ predates this feature; it is the right thing to fix in a dedicated, careful pass
 dedup · 010 modal · 011 person-select) + two deferred design halves (009-trace-world, 012 cross-day
 attribution). **Next:** re-run Codex + a Fable pass on the FIXED code; re-gate. The flagged items are
 UI-focus or need the owner's call — none is a safety-critical gap in the published flags themselves.
+
+## ITEM 2 — the REAL bug the owner reproduced (16 Sep 26). NOT the seed dedup — a VIEW-page world gap.
+The owner's "7-day breach on the wrong day" turned out NOT to be the seed double-count (CRPF-006):
+every faithful reproduction of a clean prior week lands the breach correctly. The actual bug (owner's
+live repro): a man on the programme all 7 days; Mon+Tue PUBLISHED with him; then he's removed from
+Monday's WORKING copy. The issued schedule still runs 7 straight → busts SUNDAY, but Sunday is a DRAFT,
+and the view-only page rendered a draft day from the WORKING world, where the unpublished Monday removal
+had "cleared" it — an unpublished change hid a published breach. It is NOT run-specific: the same gap
+hits crew rest / overnight over any published→draft boundary. Root cause: the view page drew draft-day
+flags from WORKING instead of the OFFICIAL (published-where-available) world.
+
+**Fix (commits a82d64b + 4bc14d2, gates: vitest 4803/0 · build · parity 728/0 · e2e 2 pre-existing).**
+- `viewDayHTML(di)` (html.ts) — the view page's per-day dispatch, extracted from ViewWeek (drift-seam
+  removed from pubsweep's mirror). A live DRAFT day renders `withOfficialWarn(()=>dayHTML(di,false))`,
+  so ALL its cross-day flags resolve in the OFFICIAL world. Aliased = no-op ⇒ parity untouched. Edit
+  week unchanged (working copy is the truth — a pending fix previews as solved).
+- **Codex GPT-6 Astra bug-check (a82d64b) → REVISE, 2 medium, both FIXED in 4bc14d2:**
+  - **CRP-I2-001** — displayedByDay selected OFFICIAL only for approved days ⇒ a clicked draft-day
+    official-only warning resolved against WORKING (wrong-index focus); warnFocusMap shared it. FIXED:
+    extracted `dayDisplaysOfficial(di)` (the single mirror of viewDayHTML) and routed displayedByDay
+    through it. Test: displayedByDay resolves the official run breach + focusWarn lands on the man.
+  - **CRP-I2-002** — the DayPop day-details panel (dayInfoHTML) read WARN directly ⇒ "this day is clean"
+    while the week flagged the breach. FIXED: DayPop resolves through `dayDisplaysOfficial` +
+    `withOfficialWarn` (content still reads live DAYS). Test: details show the breach on view, clean on edit.
+  - One predicate (`dayDisplaysOfficial`), three consumers (render / click / details) — no drift seam.
+- **STILL DEFERRED to Item 3 (unchanged by this):** R3-004 selectPerson/personWarnDays (the puck-select
+  highlight still reads WORKING — the flagged avail↔view cycle risk), CRPF-009 trace-world identity,
+  R3-003's remaining modal polish. These are the puck/hover click-jump refinements, not the flag itself.
+- **CRPF-006 / R2-004 (the cross-week seed dedup) remains genuinely open** — a separate pre-existing
+  crew-rest seed double-count, not this bug. Still owner-flagged for its own careful pass.

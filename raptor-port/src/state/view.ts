@@ -482,9 +482,15 @@ export function displayedByDay(di:any){
    draft preview, and everywhere off the view page. */
 export function dayDisplaysOfficial(di:any){
   di=+di
+  if(CURPAGE!=='viewsched')return false
+  /* mirror viewDayHTML branch-for-branch (Codex CRP-I2-R2-001): VWORK is an
+     APPROVED-day affordance only — viewDayHTML checks it solely on the approved
+     branch, and a DRAFT day renders OFFICIAL regardless of VWORK (a stale VWORK
+     entry can outlive an undo past publication onto a now-draft day). So gate VWORK
+     inside the approved branch; a live draft is official unless an active 'd:' preview. */
+  if(dayApproved(di))return !VWORK.has(di)
   const ver=DPREV.get(di)
-  const draftPreview=!dayApproved(di)&&isDraftVer(ver)&&!!daySnapOf(di,ver)
-  return CURPAGE==='viewsched'&&!VWORK.has(di)&&!draftPreview
+  return !(isDraftVer(ver)&&!!daySnapOf(di,ver))
 }
 /* one warning → focus + snap (reference 3997-4003, verbatim) */
 export function focusWarn(di:any,ix:any){

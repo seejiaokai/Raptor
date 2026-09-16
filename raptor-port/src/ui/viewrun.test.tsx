@@ -14,7 +14,7 @@ import { DAYS } from '../engine/data'
 import { validate, withOfficialWarn } from '../engine/validate'
 import { SCHED, signOf, setDayApproved } from '../engine/publish'
 import { dayHTML, viewDayHTML, dayInfoHTML } from './html'
-import { DWOPEN, WFOCUS, displayedByDay, dayDisplaysOfficial, focusWarn, setPage } from '../state/view'
+import { DWOPEN, WFOCUS, VWORK, displayedByDay, dayDisplaysOfficial, focusWarn, setPage } from '../state/view'
 
 /* @vitest-environment jsdom */
 
@@ -105,6 +105,20 @@ describe('view-only shows a published-truth run breach on a draft day', () => {
     setup()
     setPage('editsched')
     expect(modalBody(6), 'edit details reflect the working fix').not.toMatch(RUN)
+  })
+
+  /* CRP-I2-R2-001 (Codex re-inspect): VWORK is an approved-day affordance; a DRAFT day
+     renders OFFICIAL regardless of VWORK (a stale entry can outlive an undo past
+     publication). dayDisplaysOfficial must mirror viewDayHTML, not reject VWORK wholesale. */
+  it('a stale VWORK entry on a DRAFT day stays OFFICIAL — displayedByDay mirrors viewDayHTML', () => {
+    setup()
+    setPage('viewsched')
+    try {
+      VWORK.add(6)
+      expect(dayDisplaysOfficial(6), 'a draft day ignores VWORK, stays official').toBe(true)
+      expect(viewDayHTML(6), 'viewDayHTML agrees — still the breach').toMatch(RUN)
+      expect((displayedByDay(6).warns as any[]).some((w: any) => w.code === 'DAYS_RUN' && (w.who || []).includes(WARDEN)), 'click resolves official too').toBe(true)
+    } finally { VWORK.delete(6); setPage('editsched') }
   })
 
   it('with nothing published/diverging, the view render is unchanged (aliased no-op)', () => {
