@@ -11,8 +11,14 @@ holding for "merge live" (NOT merged).** All 7 phases done + 3 rounds of Codex c
   FLAGGED a coherent phase 8 (none a safety gap): (1) the filing-membership model — an
   AMENDMENT-ENGINE decision that intersects `[AMEND-SEL-FOLLOWUPS]`; (2) the pre-existing xweek
   dedup; (3) accessor-completeness UI (day-detail modal, person-select, trace-world id).
-- **Fable pass could NOT run** — the standalone Claude CLI's OAuth session is expired
-  ("could not be refreshed"); re-auth the `claude` CLI to run a Fable cross-provider pass.
+- **Fable is RECONNECTED and working (16 Sep 26)** — the standalone `claude` CLI's OAuth was
+  refreshed; a connectivity check ran as `claude-fable-5-1` (observed_models confirmed), completed
+  clean. Fable allowance is high again. **A Fable cross-provider pass has NOT been run yet** — it is
+  the FIRST thing for the next chat: run it via the claudex-loop runner
+  (`review --host codex --model claude-fable-5-1 --repo <root> --plan <brief>`), aim it at (a) an
+  independent check of the Codex fixes and (b) the flagged filing-membership / amendment-engine
+  decision. A ready brief: `…/scratchpad/crp-flag-fable.md` was one-off (temp, may be gone); write a
+  fresh brief from the code-review doc.
 - **Commits:** d650a32 89703c2 d72634a ec14acc c663bc7 7f130a3 (phases 1–6) · efa4611 89e9d22
   3a59e66 (Codex fix rounds 1–3) + docs.
 
