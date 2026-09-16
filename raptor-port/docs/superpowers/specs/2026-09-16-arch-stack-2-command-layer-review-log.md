@@ -197,3 +197,49 @@ CMD-008/009↔F8 (staged), CMD-010 (retire-after-one-Absence, unique to Codex), 
 inventory, unique to Codex); F7/F9/F10/F11/F12/F13 unique to Fable. All folded into **Rev 2** of
 the design (dispositions embodied in the Rev 2 change-list at the top of the design doc). Revised
 plan goes back to BOTH reviewers for round 2.
+
+---
+
+## Round 2 — Codex (Astra, high) REVISE (7) + Fable 5.1 (high) REVISE (9) — CONVERGED
+
+Both: Rev 2 resolves most of round 1; residual is one coherent cluster (transaction/undo/
+version interaction) + precise record-granularity + boundary precision + async Tracker + a
+few fact corrections. Results: `scratchpad/rev-codex-r2/claudex-xocfc4co/` (~227s),
+`scratchpad/rev-fable-r2/…/` (~322s). Plan SHA `48999480…`.
+
+Host verification (read the code, not the reviewers): confirmed **Codex R2-005 right / Fable
+F12 wrong** — Tracker COURSES are `{id,name}`, `course` is the stable id, `renCourse` is
+label-only (`core.js:3743`, `courseIds.js` exists); Rev 2's delete-old/put-new claim is
+reverted. Confirmed **first-publish is irreversible** (`publish.ts:180-201` "a published day
+can NEVER be un-approved"; reissueReopened removed) and `SCHED.orig[di]` is the frozen
+Original; live `SCHED.sign/signBind` are MUTABLE working sigs (only the copy in `als[n]` is
+append-only) — so the boundary/freeze list is corrected.
+
+### Combined round-2 findings → all accepted (with the F12 reversal), folded into Rev 3:
+- **Transaction must suppress legacy side-effects + enclose causal children synchronously; only
+  independent reactions queue after; revision advances on every authoritative write; undo pins
+  the causal RESULT** (Codex R2-002/003/007 + Fable R2-1/R2-4). The Rev-2 commit-queue drained
+  projections outside `HIST.lock` → killed redo (Fable R2-1); mid-apply `notify` let sync write
+  the whiteboard before rollback (Fable R2-4); Rev-2 "don't bump on projection" caused lost
+  updates (Codex R2-007). Fix in §3.2/§3.3.
+- **Change granularity is per-logical-record deep-equal, NOT "by rid"** — `days/<wk>:<date>`
+  (whole day incl secOrder), `sched.book/<wk>` (schedFields), `sched.mutes/<wk>` (WARNOFF),
+  `plan/all`; each listed writer must yield ≥1 Change before its persistAll retires
+  (Fable R2-2 / Codex CMD-006). §3.1/§5.1.
+- **Publish boundary precise**: freeze `als[n]` + its sign copy + `orig[di]`; keep live
+  `SCHED.sign[di]` ordinary; reopen doesn't exist; undo-of-own-unwitnessed-first-publish is the
+  case to decide (SEQ-002 permits identity reuse) (Codex R2-001 / Fable R2-3). §3.4.
+- **Undo permission** = permission(originating type) for every inverse change vs the CURRENT
+  actor + ownership; system actor never for user restore (Fable R2-5). §3.5.
+- **Async Tracker**: reducer is synchronous mutation only, saves in the subscriber, async
+  prompts/reads outside commit, await-interleaved chains become command sequences (Codex R2-004
+  / Fable R2-7). §3.2/§5.4.
+- **Staging by purpose** not just collection: only interactive unsaved chart edits stage;
+  Save/dup/add/import/revert/delete commit immediately (Codex R2-006). §3.8.
+- **Public API** exports only `commit(cmd)`; internal `commitAs` for sync/seed/restore; document
+  `main`→`member` role mapping (Fable R2-6). §3.2/§3.5.
+- **Perf**: snapshot/diff only the touched blob; reuse the phase-2 string as the interim
+  histPush snapshot (serialize once) (Fable R2-9). §3.2/§5.1.
+- **Fact fixes**: setFont auto-persists; switchCourse has a confirm (Fable R2-8). §2.4.
+
+Back to both reviewers for round 3 on Rev 3.
