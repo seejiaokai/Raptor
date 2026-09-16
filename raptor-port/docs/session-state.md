@@ -1,4 +1,62 @@
-# Session handoff — [CRP-FLAG] flagging + [FLAG-EXPORT] export, COMBINED on one branch
+# Session handoff — [ARCH-STACK] Step 2 (the one write/command layer) — DESIGN DONE + BUILD-READY
+
+## RESUME HERE (handoff, 16 Sep 26 — DESIGN COMPLETE, ready to BUILD)
+
+**What this is:** Step 2 of the architecture backbone — the ONE write/command layer over stable
+ids that undo, persistence, sync and the database all consume. **The DESIGN is finished and
+build-ready.** It was red-teamed across BOTH providers over **four rounds** (Codex GPT-6 Astra +
+Fable 5.1, high; findings 11→7→7→5 / 13→9→7→7, both converged and both affirm the strategy is
+sound). NOT built yet.
+
+**Branch to select in the new-chat picker:** `claude/arch-stack-2-command-core-design` (pushed;
+off `main`; DOCS ONLY so far — no code, nothing merged). Do NOT start from `main` — the design doc
++ review log live on this branch.
+
+**Read first, in order:**
+1. `raptor-port/docs/superpowers/specs/2026-09-16-arch-stack-2-command-layer-design.md` — **Rev 5,
+   the build spec.** §0 (the ADDITIVE framing — the key decision), §3 (the command model), §5
+   (per-module adoption), §7 (tests), §8 (rollout order). The Rev-5 change-list at the top maps
+   every red-team fix to its section.
+2. `…-2026-09-16-arch-stack-2-command-layer-review-log.md` — the 4-round transcript + dispositions.
+3. `docs/superpowers/specs/2026-09-13-architecture-rootcause-plan.md` — the parent plan (RC4 = this
+   step; SEQ-001..004 binding).
+
+**The build, in one line:** ADD the command gate + change stream **alongside** today's machinery
+(`persistAll`, `HOOKS.histPush`, the three snapshot undo stacks all STAY and behave exactly as
+today); route every FORWARD write through `commit()`; prove the stream captures every durable write
+and that a command is all-or-nothing in memory. **No cutover of persistence or undo happens here** —
+those are Steps 3/5. Undo/redo are NOT routed through `commit()` at Step 2.
+
+**Build rules (owner):** Opus 4.8, **HEAVY, test-first**; keep parity `reference/tfin.js` **728/0**
+(the layer changes no rendered byte); run all gates each phase; **additive regression proof** that
+persistence + undo behave identically to pre-Step-2; **per-phase parity gate** (rollout §8 order:
+core → scheduler → PEOPLE/VCONF/settings → Leave War → Tracker). After building, a **fresh
+cross-provider CODE inspection** (Codex + Fable). **No merge without the owner's "merge live."**
+Don't watch the PR.
+
+**Settled decisions baked into the spec (do not relitigate):**
+- **Undo of a publish** — silent BEFORE it's sent/disclosed; an on-the-record forward withdrawal (a
+  correcting amendment) AFTER. Undo is per-user + per-session, never touches another user's actions,
+  won't clobber a later edit. Memory `undo-of-publish-semantics`; spec §3.4.
+- **Roster/settings edits ARE undoable** (user commands, never amendments).
+- **New modules must use this command layer**, never a 4th store-pattern. Memory
+  `new-modules-follow-command-layer`; `CLAUDE.md` §Architecture rules + `docs/architecture-direction.md`.
+- **Step-3 deferrals** (NOT this build): undo-authorization, put-once enforcement on issued records,
+  the crossable-boundary enforcement, retiring the snapshot undo stacks. **Step-4 deferral:** the
+  fully-clean input+leave undo (one-Absence record). See OUTSTANDING [GLOBAL-UNDO].
+
+**Opening prompt for the fresh chat:**
+> Continuing Raptor. Select branch `claude/arch-stack-2-command-core-design`. BUILD [ARCH-STACK]
+> Step 2 — the one write/command layer. The design is DONE and 4-round cross-provider red-teamed —
+> read `raptor-port/docs/session-state.md` then the build spec
+> `raptor-port/docs/superpowers/specs/2026-09-16-arch-stack-2-command-layer-design.md` (Rev 5;
+> esp. §0 additive framing, §3 model, §5 adoption, §8 rollout). Build it **additively**, test-first,
+> Opus heavy, keep `tfin.js` 728/0, run all gates + the additive regression proof per phase, then a
+> fresh Codex + Fable code inspection. Do NOT merge until I say "merge live." Speak plainly.
+
+---
+
+# (earlier handoff, kept for reference) — [CRP-FLAG] flagging + [FLAG-EXPORT] export
 
 ## RESUME HERE (handoff, 16 Sep 26 — ITEM 2 + 3(a) MERGED LIVE)
 
