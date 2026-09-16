@@ -1,66 +1,95 @@
 # Session handoff — [CRP-FLAG] flagging + [FLAG-EXPORT] export, COMBINED on one branch
 
-## RESUME HERE (handoff to a fresh chat, 16 Sep 26)
+## RESUME HERE (handoff to a fresh chat, 16 Sep 26 — end of the Fable + Decision-#1 session)
 
-**Branch to select: `claude/crewrest-published-flagging`.** It now carries BOTH features
-(FLAG-EXPORT was merged into it, owner's call, so they ship together). Off `main`, NOT pushed,
-NOT merged — holds for the owner's testing + "merge live". Combined gates all green:
-**vitest 4789/4789 · build clean · tfin 728/0** (+ smoke 425/0 & e2e 423/2-pre-existing from the
-last full run before the merge). Local live-drive verified the flagging feature (desktop + phone).
+**Branch to select: `claude/crewrest-published-flagging`.** Off `main`, NOT pushed, NOT merged.
+Three clean commits since the last handoff, ALL green (**vitest 4795/4795 · build clean · tfin
+728/0 · e2e browser gate green**):
+- `e10d231` — the Fable cross-provider pass: FR-001/002/003/005 fixed test-first + the
+  "Not Yet Signed" marker moved to WORKING-COPY ONLY.
+- `055847c` — Decision #1: a request filed live on a PUBLISHED day is a working-copy pending
+  amendment.
+- (handoff commit for this doc.)
 
-### DONE this work (all committed on the branch)
-- **[CRP-FLAG] live flagging on the published schedule — 7 phases, test-first.** Published days
-  show their flags again (crew rest incl. cross-day, 7-day run, clashes) computed against the
-  SIGNED version, content byte-frozen; "Not Yet Signed" marker (everyone) + in-list "goes away /
-  new once signed" markings; click/focus + neighbour-week + filing all world-resolved.
-  Design + phases: `docs/superpowers/specs/2026-09-15-crewrest-flagging-build-context.md`.
-- **3 rounds of Codex (GPT-6 Astra high) code review** — all tractable/safe findings fixed
-  test-first; the rest FLAGGED (see below). Log: `…/2026-09-15-crewrest-flagging-code-review.md`.
-- **§4 immediate-flag behaviour pinned:** medical, quals, and rule (VCONF) changes flag the
-  published face immediately (unversioned); LEAVE is versioned (not immediate).
-- **[FLAG-EXPORT]** — functional half done: the PDF/CSV export now outputs the PUBLISHED version
-  per day (`publishedDays()`), with a per-day "Published/Working" stamp. Report-grade PDF redesign
-  is a DRAFT sample for the owner to pick: `docs/img/flag-export-sample-new.html`. Doc:
-  `…/2026-09-16-flag-export.md`.
+### DONE THIS SESSION (all committed)
+- **Fable 5.1 independent pass** (`claudex-loop review --host codex --model claude-fable-5-1`,
+  artifacts in scratchpad). Verdict REVISE, 6 findings; log appended to
+  `…/2026-09-15-crewrest-flagging-code-review.md` ("FABLE PASS"). Fixed test-first:
+  - **FR-001** (med, real bug Codex missed): `inpShow` ran the accepted-row deferral on the LIVE
+    acc during the official pass → a sign-time 'g' whose working row was unaccepted showed twice on
+    the issued face. Now computes the effective acc once and runs the whole gate on it.
+  - **FR-002** (med): the cross-week alias gate compared a neighbour's frozen 'g' to the
+    navigation-cleared live acc → forced the 2nd validate() pass every keystroke. `filingDiffers`
+    gains an `xweek` flag ('g'=='' cross-week; 'r'/'u' exact). Zero-cost alias restored.
+  - **FR-003 / FR-005** (low): withIssuedWeek install moved inside the try; inpShow reads `inp.iid`
+    directly (no mint on the official pass).
+- **"Not Yet Signed" marker = WORKING COPY ONLY** (owner 16 Sep 26): the published/issued face
+  stays TRUE until published, so it never renders under PV (`html.ts`: `!PV&&notYetSigned`).
+- **Decision #1 (owner 16 Sep 26)** — a request filed LIVE on a published day auto-accepts on the
+  WORKING copy as a pending amendment (pending count rises); issued face frozen; scheduler removes
+  if unwanted. `autoAcceptInput(row, onApproved)` splits the callers — interactive paths pass
+  onApproved, seed/restore do NOT (no churn at load). filingDelta/filingKey untouched. See memory
+  `published-day-input-is-pending-amendment`.
 
 ### OUTSTANDING — on THIS branch (do in order, next chat)
-1. **Run the Fable cross-provider pass** on the fixed flagging code (Fable is reconnected + working;
-   allowance high). claudex-loop runner: `review --host codex --model claude-fable-5-1 --repo <root>
-   --plan <brief>`; write a fresh brief from the code-review doc. Aim: independently check the Codex
-   fixes + judge the flagged filing-membership decision. Fix anything safe test-first; flag
-   amendment-engine calls.
-2. **DECIDE the filing-membership question (phase-8 item #1, owner's call).** The amendment engine
-   treats an input absent-at-sign and present-with-empty-acc identically (filingDelta/filingKey), but
-   the flagging OFFICIAL gate now treats them as different. For a fresh unaccepted commitment on a
-   published day, OFFICIAL correctly excludes it, but the amendment engine sees "no change" (no
-   Not-Yet-Signed, not publishable). Full consistency changes publish-eligibility + signature binding
-   → **best done WITH `[AMEND-SEL-FOLLOWUPS]`** (the signature workstream). Details in the review doc.
-3. **The other flagged phase-8 items (optional / owner priority):** (a) the pre-existing xweek
-   seed-dedup bug (CRPF-006/R2-004 — its own careful test-first pass); (b) accessor-completeness UI
-   — the day-detail modal, person-select highlight, and trace cross-world identity (medium, UI-focus,
-   the flags themselves are correct). All in the review doc's "OWNER DECISIONS / remaining work".
-4. **[FLAG-EXPORT] — pick/adjust the PDF design** (owner's call): denser/airier, a signature block
-   (Planned/Approved by), include duties/sims/ground rows (currently flying-only), a logo, portrait
-   vs landscape. Then finalise. Plus the deferred next-week-peek working-vs-signed labelling.
-5. **Push → Vercel test → "merge live"** when the owner is happy (do-not-watch-PR still holds).
+
+1. **ITEM 2 — the cross-week 7-day-run bug (CRPF-006/R2-004). HIGHEST RISK, do it FIRST with care.**
+   **Owner's confirmed repro (16 Sep 26):** the week of Jul 13–19, Warden works Mon→Sun (7 straight);
+   Mon+Tue published, Wed–Sun draft; and **NOBODY works the prior week (Jul 6–12 — all ground days)**.
+   The 7-day breach (maxRun=6, so breach on the 7th day) should land on **SUNDAY** — instead it lands
+   ONLY on **TUESDAY**. The cross-week seed (`seedRunIn`/`workedSet`/`prevSundaySeed`, weekctx.ts) is
+   inventing ~5 phantom prior-week days for Warden and mis-placing the breach. This is the flagged
+   seed double-count, and it is an ORDINARY case, NOT "narrow". **Also required (owner):** the 7-day
+   check must be truly CONTINUOUS across ANY 7 consecutive days incl. cross-week (e.g. Tue→Mon), not
+   tied to Mon–Sun. Root fix direction (from the review): make the accepted-row / seed dedup
+   DAY-LOCAL (defer to a row on the day BEING BUILT, `d.ground`), replacing the blanket
+   `if(xweek)return true` bypass in `inpShow`; thread it through buildDay for loaded/neighbour/
+   midnight-tail. HIGH regression risk across every seed read — parity 728/0 + full suite are the net.
+   **TEST-FIRST, SCENARIO-BASED (owner mandate — see below).** Then a cross-provider bug-check
+   (BOTH Fable + Codex).
+2. **ITEM 3 — the three click/hover fixes (R3-003 / R3-004 / CRPF-009), medium, UI-focus.** The flags
+   are CORRECT and visible; only click-to-jump is off. (a) DayPop day-detail modal reads live
+   DAYS + WORKING WARN → resolve its displayed version (withDaySnap + withOfficialWarn for an
+   approved view day); (b) selectPerson/personWarnDays read WORKING → a published-only breach's puck
+   opens no box (avail↔view world-resolution, cycle risk); (c) trace/warning refs need a
+   `data-world` + stable id so a cross-world click is a defined no-op. Details in the review doc.
+3. **[FLAG-EXPORT] — owner picks the PDF design** (sample `docs/img/flag-export-sample-new.html`):
+   denser/airier, a signature block, include duties/sims/ground rows, logo, portrait vs landscape.
+   Then finalise + the deferred next-week-peek working-vs-signed labelling.
+4. **Live-drive Decision #1** (standing UI instruction — not yet done this session) + the 7-day
+   scenario, on the built bundle. Then **Push → Vercel → "merge live"** when the owner is happy
+   (do-not-watch-PR holds).
+
+### OWNER MANDATE — SCENARIO-BASED RULE TESTING (16 Sep 26, why Item 2's bug slipped)
+The bug slipped because the tests checked the two-world MACHINERY (one input, one day, one flag),
+never a realistic scheduler SCENARIO — and a reviewer-flagged rules bug was wrongly filed as "rare".
+For Item 2 (and any rules-engine work): **build a real week AND its neighbours, plant a real
+situation (e.g. "Warden works Mon→Sun, nothing before"), and assert the warnings land on the RIGHT
+DAYS** — the outcome a scheduler eyeballs, not the internal return value. Enumerate alternate
+scenarios first ("what if this happens?"): empty/full neighbour weeks, cross-boundary runs,
+published-vs-working splits. Never defer a flagged rules bug as "rare" without a scenario proving it.
+Memory: `scenario-based-rule-testing`.
 
 ### OUTSTANDING — the wider backlog (other branches/tasks; full detail in `OUTSTANDING.md`)
-- **[AMEND-SEL-FOLLOWUPS]** — on `claude/amendment-engine-core` (PR #405); the plans-selector
-  follow-ups incl. the per-plan signature work. Overlaps phase-8 #2 above.
-- **[REPO-CLEANUP]** — delete consumed screenshots + dead-code sweep (needs owner sign-off per file).
-- **[ARCH-STACK]** backbone: step 2 (one write/command layer, branch `claude/arch-stack-2-command-core`),
-  step 3 `[GLOBAL-UNDO]`, step 4 (one Absence record), then `[DB-STEP]` (Dataverse).
-- **[SYNC-INTEG]** (small leave guardrails), **[EOD]**, **[OIL]**, **[TRK-ATTEMPTS]**, **[RECALL]**,
-  **[XFER]**, **[TRK-DISK]** — see OUTSTANDING.md for scope/priority.
+- **[AMEND-SEL-FOLLOWUPS]** — on `claude/amendment-engine-core` (PR #405); the per-plan signature
+  work. (Decision #1 was done WITHOUT touching signatures, so no longer blocks on it.)
+- **[REPO-CLEANUP]** — delete consumed screenshots + dead-code sweep (owner sign-off per file).
+- **[ARCH-STACK]** backbone: step 2 (`claude/arch-stack-2-command-core`), step 3 `[GLOBAL-UNDO]`,
+  step 4 (one Absence record), then `[DB-STEP]` (Dataverse).
+- **[SYNC-INTEG]**, **[EOD]**, **[OIL]**, **[TRK-ATTEMPTS]**, **[RECALL]**, **[XFER]**,
+  **[TRK-DISK]** — see OUTSTANDING.md.
 
 ### Opening prompt for the fresh chat
-> Continuing Raptor. Select branch `claude/crewrest-published-flagging` — it carries BOTH the
-> published-schedule flagging ([CRP-FLAG]) and the export follow-up ([FLAG-EXPORT]), combined.
+> Continuing Raptor. Select branch `claude/crewrest-published-flagging` (off main, NOT merged).
 > **Read `raptor-port/docs/session-state.md` first**, then the code-review doc
-> `…/2026-09-15-crewrest-flagging-code-review.md`. Combined gates are green (4789/4789, tfin 728/0).
-> Fable is reconnected + working. Do the "OUTSTANDING — on THIS branch" list in order: (1) run a
-> Fable pass over the flagging fixes + the flagged filing-membership decision; (2) bring me that
-> decision; (4) let me pick the export design. Don't merge until I say "merge live". Speak plainly.
+> `…/2026-09-15-crewrest-flagging-code-review.md`. Gates are green (vitest 4795/4795, build,
+> tfin 728/0, e2e). Fable + Codex both available. Do the "OUTSTANDING — on THIS branch" list:
+> **ITEM 2 first** — the cross-week 7-day-run bug. Repro: Warden works Mon→Sun (Jul 13–19), Mon+Tue
+> published / Wed–Sun draft, NOBODY works the prior week → the 7-day breach should land on Sunday
+> but shows ONLY on Tuesday; also make the 7-day run truly continuous cross-week (Tue→Mon etc.).
+> **Test-first and SCENARIO-BASED** (build real weeks, assert warnings land on the right days — see
+> the "OWNER MANDATE" section), then a bug-check across BOTH Fable and Codex. Then ITEM 3 (the three
+> click/hover fixes). Opus, heavy, test-first. Don't merge until I say "merge live". Speak plainly.
 
 ---
 
