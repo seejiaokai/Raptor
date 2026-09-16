@@ -11,7 +11,9 @@ import { HOOKS } from '../engine/hooks'
 import { SESSION } from '../state/auth'
 import { esc } from '../state/view'
 import { notify } from '../state/store'
-import { persistPeople } from '../state/persist'
+/* [ARCH-STACK] phase 3: the command-routed persistPeople (a roster write now
+   emits a people/<personId> change). Same behaviour + the change stream. */
+import { persistPeople } from '../state/people-settings-commit'
 import { DEFAULT_QUAL_COLS, qualCols, setQualCols } from '../engine/qualcols'
 import { useVersion } from './useStore'
 /* ONE LIFT, EVERY DRAG (owner, 6 Sep 26) — the shared drag decoration every

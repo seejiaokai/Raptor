@@ -86,6 +86,20 @@ export const storeBackend: {
   impl: { getItem(k: string): string | null; setItem(k: string, v: string): void } | null
 } = { impl: null }
 
+/* [ARCH-STACK] Step 2 phase 3: a dependency-free write seam. The state layer
+   installs a hook so every durable settings write (store.set) routes through the
+   command gate + change stream, WITHOUT the engine depending on the command
+   layer (it stays DOM-/dependency-free) and WITHOUT touching the ~30 UI call
+   sites. Null by default => the raw write runs exactly as before (parity/tfin
+   728/0 unchanged); the hook, when installed, receives (key, value, raw) and
+   decides whether to open a named command or write raw (re-entrancy/unknown
+   keys). Only store.set is hooked — reads never open a command. */
+type SettingsWriteHook = (k: string, v: any, raw: (k: string, v: any) => void) => void
+let SETTINGS_WRITE_HOOK: SettingsWriteHook | null = null
+export function setSettingsWriteHook(fn: SettingsWriteHook | null) { SETTINGS_WRITE_HOOK = fn }
+function rawStoreSet(k: any, v: any) {
+  try { if (storeBackend.impl) storeBackend.impl.setItem('sqn142_' + k, JSON.stringify(v)) } catch (e) {}
+}
 export const store = {
   get(k: any, d: any) {
     try {
@@ -94,6 +108,7 @@ export const store = {
     } catch (e) { return d }
   },
   set(k: any, v: any) {
-    try { if (storeBackend.impl) storeBackend.impl.setItem('sqn142_' + k, JSON.stringify(v)) } catch (e) {}
+    if (SETTINGS_WRITE_HOOK) SETTINGS_WRITE_HOOK(k, v, rawStoreSet)
+    else rawStoreSet(k, v)
   },
 }

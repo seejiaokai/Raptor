@@ -39,6 +39,7 @@ import { setFileLocked as trSetFileLocked } from '../tracker/role.js'
 import { isHydrated, weekSwapBegin, weekSwapEnd } from './persist'
 import { deferEffect } from '../command'
 import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, SCHED_TYPES, discloseCurrentIssued } from './sched-commit'
+import { registerPeopleSettingsCommandLayer } from './people-settings-commit'
 
 let VERSION = 0
 const listeners = new Set<() => void>()
@@ -637,6 +638,9 @@ export function wireStore() {
   /* [ARCH-STACK] Step 2: register the scheduler's command layer (permissions,
      records, guarded store, the HIST.lock suppression context). Idempotent. */
   registerSchedCommandLayer()
+  /* phase 3: the PEOPLE + SETTINGS command layer (their own enlistable stores,
+     record registry, permissions). Idempotent. */
+  registerPeopleSettingsCommandLayer()
   /* the reference's editMode(): the edit page is open. The reference also
      ANDed its #editToggle switch here; that toggle was removed 9 Aug 26
      (owner) — being on Edit Schedule is the intent to edit, and View-only
