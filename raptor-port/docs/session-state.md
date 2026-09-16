@@ -60,15 +60,19 @@ Three clean commits since the last handoff, ALL green (**vitest 4795/4795 · bui
    scenario, on the built bundle. Then **Push → Vercel → "merge live"** when the owner is happy
    (do-not-watch-PR holds).
 
-### OWNER MANDATE — SCENARIO-BASED RULE TESTING (16 Sep 26, why Item 2's bug slipped)
+### OWNER MANDATE — SCENARIO-BASED BUG TESTING, STANDING FOR ALL BUG TESTS (16 Sep 26)
 The bug slipped because the tests checked the two-world MACHINERY (one input, one day, one flag),
 never a realistic scheduler SCENARIO — and a reviewer-flagged rules bug was wrongly filed as "rare".
-For Item 2 (and any rules-engine work): **build a real week AND its neighbours, plant a real
-situation (e.g. "Warden works Mon→Sun, nothing before"), and assert the warnings land on the RIGHT
-DAYS** — the outcome a scheduler eyeballs, not the internal return value. Enumerate alternate
-scenarios first ("what if this happens?"): empty/full neighbour weeks, cross-boundary runs,
-published-vs-working splits. Never defer a flagged rules bug as "rare" without a scenario proving it.
-Memory: `scenario-based-rule-testing`.
+Henceforth (owner: "Henceforth all bug tests will be done this way") EVERY bug test is BOTH:
+1. **Machinery + scenario unit tests** — build a real week AND its neighbours (empty/full prior
+   week, published/draft mix, a cross-boundary run like Tue→Mon), plant a concrete situation ("Warden
+   works Mon→Sun, nothing before"), assert the warnings land on the RIGHT DAYS (wrong ones clean).
+2. **A LIVE-APP scenario drive** (owner: "test scenario by literally setting on the app and see if it
+   happens to what u want. That is the real bug test on top of the machinery") — build + `vite
+   preview`, log in, recreate the EXACT scenario in the app (the `window.setPage/addWave/
+   openScheduler` bridges + real edits/publishes), and CONFIRM the behaviour visually. A green vitest
+   is necessary but not sufficient. Enumerate alternate scenarios first. Never defer a flagged bug as
+   "rare" without a scenario proving it. Memory: `scenario-based-rule-testing`.
 
 ### OUTSTANDING — the wider backlog (other branches/tasks; full detail in `OUTSTANDING.md`)
 - **[AMEND-SEL-FOLLOWUPS]** — on `claude/amendment-engine-core` (PR #405); the per-plan signature
