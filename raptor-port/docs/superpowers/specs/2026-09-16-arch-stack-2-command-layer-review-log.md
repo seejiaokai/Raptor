@@ -314,3 +314,58 @@ retired…" class and is the correct strangler sequencing.
 **Host decision (stop the loop here):** 3 rounds done; design sound + hardened; residual is a clear
 Rev-4 fix list + a scoping call (ADDITIVE Step 2) + 2 owner decisions. Checkpoint the owner rather
 than run round 4 unprompted.
+
+---
+
+## Round 4 (confirming) — Codex (Astra, high) REVISE (5) + Fable 5.1 (high) REVISE (7) — CONVERGED; strategy affirmed
+
+Both: the **additive framing is sound** and dissolves the round-3 items; the residual is
+final-precision + a few over-scoped claims to walk back into Step 3. (Codex's run tripped the
+runner's schema validator on a trailing empty-string in `limitations` — content recovered from the
+raw stream; verdict REVISE, 5 findings.) Results: `scratchpad/rev-codex-r4/…` (recovered),
+`scratchpad/rev-fable-r4/…`. Plan SHA `80debc8a…`.
+
+### Combined round-4 dispositions → Rev 5 (all accepted):
+- **Walk back "Step 2 closes the undo-auth hole"** (Fable R4-1): the snapshot stacks are bare JSON
+  with no actor/type; undo-auth can't be evaluated on them and gating them is a behaviour change.
+  Step 2's auth deliverable is **forward writes only**; undo-auth moves to Step 3. Drop the claim
+  from §0.
+- **Undo/redo is NOT routed through `commit()` at Step 2** (Fable R4-2 / Codex R4-001): the latch
+  defers the sync reaction past `HIST.lock`, so a scheduler-driven projection after an undo pushes
+  a phantom LW step + splices the redo tail. Fix: undo/restore runs **exactly as today** (untouched);
+  and any latched/queued effect carries a **suppression-context token** (HIST.lock / LW-lock /
+  SYNCING captured at raise, re-applied at release) so lock-wrapped forward batches (e.g. board
+  `sortDay`) stay identical. Regression test: undo that removes an lw row → `canRedo()` true, stack
+  length unchanged.
+- **Defer put-once ENFORCEMENT on orig/als to Step 3** (Codex R4-002): today's `histRestore` replaces
+  `SCHED.als`/`orig` on an undo, which a hard put-once gate would reject — contradicting the permitted
+  silent-undo-before-sent. Keep the **record shape** (orig/als as own append-only-intended records);
+  the immutability **enforcement** lands with the Step-3 boundary cutover.
+- **Explicit disclosure transition for `crossable`** (Codex R4-003): remote-reference/session-end
+  don't capture sending. The **PDF export** (`printpdf.ts`) discloses an issued day with no remote
+  envelope. Define a monotonic per-issued-id disclosure signal that send/export/print all report;
+  `crossable=false` once disclosed by ANY path.
+- **Registry: add `SCHED.changes`; derive from code; completeness = reconstruct-and-compare**
+  (Codex R4-004 / Fable R4-4): the hand-list omitted `SCHED.changes` (+ Tracker kSyl/kSylOrder/
+  kSylHidden/kSylTomb/kLast/migration-flags/seedstamp, LW `current`+config keys). Build the registry
+  by enumerating every `sSet`/`persist()` key builder, classify each record / boot-migration(seed,
+  exempt) / view-pref(exempt-listed); the completeness test **reconstructs persisted state from the
+  envelope and compares to the legacy serializer**, not "≥1 Change".
+- **Finer LW logical records** (Codex R4-005 / Fable R3-4 residual): `lw.war` as one whole-grid record
+  makes the per-record revision map fail the different-cell case. Use **per-cell / per-bid** logical
+  records (physical blob stays `leavewar/wars`); MemoryDoor coverage: two different cells in one war.
+- **Explicit `txn.enlist(store)`** (Fable R4-3): in-place singleton mutation has no write seam, so
+  "snapshot on first write" can't auto-hook; each wrapped writer calls `txn.enlist(store)` before
+  mutating (LW captures the immutable `state` ref), with a debug/test guard that whole-world before/
+  after finds no change in an un-enlisted store.
+- **Synchronous drain** (Fable R4-5): the phase-9 drain runs to completion **inside** the outermost
+  `commit()` (reducers are synchronous), preserving today's synchronous convergence that tests assert;
+  the "handle" is an already-resolved `{queued,result}`.
+- **ME is defense-in-depth parity; headless `personId` undefined** (Fable R4-6). **Child permission =
+  the parent command's declared permission; children are never caller-selected** (Fable R4-7).
+
+**Host decision:** Rev 5 folds all of the above. Several items are explicitly **Step-3 deferrals**
+(undo-auth, put-once enforcement), consistent with the additive framing. Both providers affirm the
+strategy; the residual is precision the **test-first build + its post-build cross-provider CODE
+inspection** (a standard step in this repo's process) will validate far better than a 5th paper
+round. Judged **BUILD-READY**; not running round 5 (owner asked for one confirming review — done).

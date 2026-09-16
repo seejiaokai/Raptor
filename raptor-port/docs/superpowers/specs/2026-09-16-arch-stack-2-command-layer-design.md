@@ -1,10 +1,35 @@
-# [ARCH-STACK] Step 2 — the one write/command layer — DESIGN (Rev 4, 16 Sep 26)
+# [ARCH-STACK] Step 2 — the one write/command layer — DESIGN (Rev 5, 16 Sep 26 — BUILD-READY)
 
-**Status:** Rev 4 — after three cross-provider red-team rounds (Codex GPT-6 Astra + Fable 5.1,
-all converged, findings narrowing 11→7→7 / 13→9→7). Owner-facing decisions RESOLVED (§3.4).
-This revision reorganizes around the **additive** framing (below) that dissolves the round-3
-residual, and folds the remaining mechanism fixes. Going to both reviewers for a confirming
-round 4, then build.
+**Status:** Rev 5 — after FOUR cross-provider red-team rounds (Codex GPT-6 Astra + Fable 5.1, all
+converged; findings 11→7→7→5 / 13→9→7→7; both affirm the **additive** strategy is sound). Owner
+decisions RESOLVED (§3.4). Round-4 confirming review folded (final precision + explicit Step-3
+deferrals). **Judged BUILD-READY** — the remaining validation is the test-first build's per-phase
+parity gates + its post-build cross-provider CODE inspection (a standard step here). Build off
+branch `claude/arch-stack-2-command-core-design`.
+
+## Rev 5 change-list (round-4 dispositions — all accepted)
+- **Step 2 authorizes FORWARD writes only; undo-auth is Step 3** (Fable R4-1): dropped the "closes
+  the member-undoes-admin hole" claim from §0 — the bare-JSON snapshot stacks carry no actor/type to
+  evaluate, and gating them would be a behaviour change the additive framing forbids.
+- **Undo/redo is NOT routed through `commit()` at Step 2** (Fable R4-2 / Codex R4-001): it runs
+  exactly as today. Any latched/queued effect carries a **suppression-context token** (HIST.lock /
+  LW-lock / SYNCING captured at raise, re-applied at release) so lock-wrapped forward batches stay
+  byte-identical. §0/§3.2.
+- **Put-once ENFORCEMENT on orig/als deferred to Step 3** (Codex R4-002): record *shape* stays
+  (own append-only-intended records); a hard gate now would reject the permitted silent-undo-before-
+  sent (today's `histRestore` replaces orig/als). §3.4.
+- **Explicit disclosure transition for `crossable`** (Codex R4-003): the PDF export discloses an
+  issued day with no remote envelope, so define a monotonic per-issued-id disclosure signal that
+  send/export/print all report; `crossable=false` once disclosed by ANY path. §3.4.
+- **Registry: add `SCHED.changes`; derive from code; completeness = reconstruct-and-compare**
+  (Codex R4-004 / Fable R4-4). §3.1/§7.
+- **Finer LW logical records — per-cell / per-bid**, not whole-war, so the revision map works
+  (Codex R4-005 / Fable R3-4). §3.1/§3.3.
+- **Explicit `txn.enlist(store)`** before mutating (no write seam for auto-enlist) + a whole-world
+  debug guard (Fable R4-3). §3.2.
+- **Synchronous drain** inside the outermost `commit()` (Fable R4-5). §3.2.
+- **ME = defense-in-depth parity, headless `personId` undefined** (Fable R4-6); **child permission =
+  the parent's declared permission, never caller-selected** (Fable R4-7). §3.5.
 **Depends on:** Step 1 (stable ids everywhere) — DONE + live (rows, inputs, people, courses,
 syllabuses, students all carry stable ids).
 **Feeds:** Step 3 [GLOBAL-UNDO], Step 4 (one Absence record), Step 5 [DB-STEP].
@@ -26,11 +51,16 @@ existing machinery. It does **NOT** cut anything over:
   **explicitly out of Step 2.**
 
 **What Step 2 delivers on its own (real, shippable value):** (1) one authorization gate every
-write passes (closes the "member undoes an admin decision" hole at the gate); (2) in-memory
-**transactional atomicity** — a multi-step write either fully applies or fully rolls back
-(today it can half-apply); (3) a **complete, correct record-level change stream** proven to
-capture every durable write, ready for Steps 3/5. Nothing it does changes a rendered byte
-(`tfin.js` 728/0) or how persistence/undo currently behave.
+**forward** write passes (undo/redo stay ungated as today — undo-authorization lands with Step 3
+when undo becomes stream-driven; §3.5); (2) in-memory **transactional atomicity** — a multi-step
+write either fully applies or fully rolls back (today it can half-apply); (3) a **complete,
+correct record-level change stream** proven to capture every durable write, ready for Steps 3/5.
+Nothing it does changes a rendered byte (`tfin.js` 728/0) or how persistence/undo currently behave.
+
+**Undo/redo are NOT routed through `commit()` at Step 2** — the Undo buttons keep calling today's
+`undo()`/`redo()`/`lwUndo()`/`lwRedo()` exactly as now. Routing them would change *when* their
+sync reactions run relative to `HIST.lock` and revive the redo-tail-splice bug (Codex R4-001 /
+Fable R4-2). Only forward writes go through `commit()`; Step 3 rebuilds undo from the stream.
 
 This framing is why the round-3 "once persistAll is retired…" findings no longer apply: **persistAll
 is not retired at Step 2.** The stream is validated against the still-authoritative legacy path.
@@ -126,19 +156,23 @@ are **nested in the day record** — the `days/<wk>:<date>` Change carries the d
 `secOrder`; a slot edit yields ONE day Change (the day owns the inverse), not a day + a row Change
 (R3-6).
 
-**The registry is COMPLETE** — every durable writer + hydration key has a logical record + a
-`LOGICAL_TO_BLOB` entry; a writer that changes durable state MUST yield ≥1 Change (R3-003):
+**The registry is DERIVED FROM CODE, not hand-listed** (Codex R4-004 / Fable R4-4): build it by
+enumerating every `sSet`/`persist()`/`store.set` key builder and classifying each as **record** /
+**boot-migration** (seed origin, exempt) / **view-preference** (exempt but listed, e.g. Tracker
+`kLast`/`kLastStudent`, LW `current`). Completeness is proven by **reconstructing the persisted
+state from the envelope and comparing it to the legacy serializer** — NOT "≥1 Change", which misses
+an omitted field (e.g. `SCHED.changes`). The table is illustrative; the enumeration is authoritative:
 
 | module | logical records | owning blob |
 |---|---|---|
-| scheduler | `days/<wk>:<date>` (day incl. rows+secOrder); `sched.book/<wk>` (mutable book: pending/added/al/dayOK/cur/drafts/curDraft/ridV/amV **and** live `sign`/`signBind`); `sched.mutes/<wk>` (WARNOFF) | `weeks/<wk>` |
-| scheduler-issued (append-only, put-once) | `sched.orig/<wk>:<di>`; `sched.als/<wk>:<verId>` (incl. its frozen sign copy) | `weeks/<wk>` |
+| scheduler | `days/<wk>:<date>` (day incl. rows+secOrder); `sched.book/<wk>` (mutable book: **`changes`**/pending/added/al/dayOK/cur/drafts/curDraft/ridV/amV **and** live `sign`/`signBind`); `sched.mutes/<wk>` (WARNOFF) | `weeks/<wk>` |
+| scheduler-issued (append-only-INTENDED; enforcement Step 3, §3.4) | `sched.orig/<wk>:<di>`; `sched.als/<wk>:<verId>` (incl. its frozen sign copy) | `weeks/<wk>` |
 | inputs | `inputs/<iid>` | `inputs/all` |
 | plan | `plan/all` (PLANPUCKS+DAYRMK) | `plan/all` |
 | people | `people/<personId>` | `people/all` |
 | settings | `settings/<key>` — **every** durable settings writer (rules, day/duty/wave templates, stores, cxreasons, qualcols, lookahead, defaults) | `settings/<key>` |
-| leave war | `lw.war/<warId>` (grid+states); **`lw.ledger`, `lw.balances`, `lw.oilpolicy`, `lw.postouts`, `lw.config`** (each its own record) | `leavewar/<key>` |
-| tracker | `trk.marks`/`dates`/`roster`/`layout`/`syls`/`plan`/**`pace`/`lulls`/`eventinfo`/`catalogue`** (the `v3:` keys) | `tracker/<key>` |
+| leave war | **`lw.cell/<warId>:<personId>:<date>`** + **`lw.bid/<warId>:<personId>:<date>`** (per-cell / per-bid, so the revision map is cell-granular — Codex R4-005); plus `lw.ledger`/`lw.balances`/`lw.oilpolicy`/`lw.postouts`/`lw.current`/`lw.config` (config = the explicit remaining war-settings key list: eventdefs/figorder/rosterorder/perslabels/manning*/group*/showsans/personedits) | `leavewar/wars` (+ its own keys) |
+| tracker | `trk.marks`/`dates`/`roster`/`layout`/`syls`/`plan`/`pace`/`lulls`/`eventinfo`/`catalogue` + the `kSyl`/`kSylOrder`/`kSylHidden`/`kSylTomb` def+catalogue keys (the `v3:` keys); migration flags + `seedstamp` are seed-exempt | `tracker/<key>` |
 
 ### 3.2 The transaction (additive; latch + dynamic-enlistment rollback + join + post-commit queue)
 
@@ -146,9 +180,12 @@ are **nested in the day record** — the `days/<wk>:<date>` Change carries the d
 `recordHistory`/`HOOKS.toast`/`logEdit`/`logAction` are LATCHED** for phases 2–8 and released on
 success in phase 9 (discarded on rollback — R3-7):
 1. **Derive actor+origin internally** (§3.5); authorize `cmd.type`. Reject → nothing applied.
-2. **Snapshot by dynamic enlistment** (R3-002): the transaction copies each store's affected slice
-   **on its first write**, so the snapshot covers the *full transitive* write set — including causal
-   children in other modules — without predeclaring it. (This is the generalized `runInputWrite`.)
+2. **Snapshot by EXPLICIT enlistment** (Fable R4-3 — in-place singleton mutation has no write seam
+   to auto-hook): each wrapped writer calls `txn.enlist(store)` before mutating (LW enlists by
+   capturing the immutable `state` ref); the snapshot covers the full transitive write set incl.
+   causal children. A **debug/test guard** compares whole-world before/after (`histSnap` + LW
+   `historySnap` + the touched Tracker slices) and fails the commit when a change appears in an
+   un-enlisted store, so an omitted enlistment can't silently escape rollback.
 3. **Apply the reducer** (synchronous). **A `commit`/`commitAs` called from inside the reducer JOINS
    this transaction** (`txn.child(cmd)` / an open-txn flag checked before enqueueing) — shared
    snapshot set (its blobs enlisted too), shared rollback, ONE envelope, its changes appended.
@@ -157,8 +194,11 @@ success in phase 9 (discarded on rollback — R3-7):
    confirms, `await sSet`) are moved OUTSIDE `commit`; the synchronous mutations they used to
    interleave (e.g. `popGrade`'s grade + Last-Flown date) run together in one reducer/envelope.
 4. **Derive `Change[]`** by per-record deep-equal over every enlisted record.
-5. **Conflict + invariant checks** (`protectedTouched`; structural integrity; **put-once** on the
-   append-only `sched.orig`/`sched.als` records so immutability is gate-enforceable — R3-6).
+5. **Conflict + invariant checks** (`protectedTouched`; structural integrity). NB: **put-once
+   immutability on `sched.orig`/`sched.als` is NOT hard-enforced at Step 2** — deferred to Step 3
+   (Codex R4-002): today's `histRestore` legitimately replaces them on a silent-undo-before-sent, so
+   a hard gate here would reject a permitted undo. Their record *shape* is recorded now; enforcement
+   lands with the Step-3 boundary cutover.
 6. **On any failure: restore the enlisted snapshots, discard the latched effects, emit nothing**,
    return `conflict`/`invalid`. Rollback is real even with legacy `persistAll` installed, because
    the side-effects were latched, not executed.
@@ -166,12 +206,16 @@ success in phase 9 (discarded on rollback — R3-7):
 8. **Release the latch** → today's `histPush`/`persistAll`/`notify`/`toast` run **as they always
    did** (additive: the interim `histPush` keeps its **own** post-apply whole-world snapshot; the
    phase-2 snapshot was only the rollback copy — R3-001/R3-3).
-9. **Drain the post-commit queue THROUGH notify delivery** (R3-007): the dispatcher stays busy while
-   phase-8 notify runs; any `commit` a subscriber raises during delivery is enqueued (not nested)
-   and drained after, `seq` at drain, subscribers seeing envelopes strictly in order. **A queued
-   command returns a handle/promise, not a synchronous final result** (its `seq`/outcome aren't
-   known until drain). Independent reactions (a sync recompute) run here as
-   `commitAs(...,{origin:'projection', causedBy:seq})`.
+9. **Drain the post-commit queue synchronously, inside the outermost `commit()`** (Fable R4-5 —
+   reducers are synchronous, so today's synchronous convergence that tests assert is preserved): the
+   dispatcher stays busy while phase-8 notify runs; any `commit` a subscriber raises during delivery
+   is enqueued (not nested) and drained after, `seq` at drain, subscribers seeing envelopes strictly
+   in order. A queued command returns an already-resolved `{queued:true, result}` (populated by the
+   time the outer `commit()` returns). Independent reactions (a sync recompute) run here as
+   `commitAs(...,{origin:'projection', causedBy:seq})`. **Every latched/queued effect carries a
+   suppression-context token** — `HIST.lock` / LW-lock / `SYNCING` captured at raise time, re-applied
+   for the duration of the released call — so a lock-wrapped forward batch (board `sortDay`) or any
+   deferred `histPush`/`recordHistory` records exactly as today (Codex R4-001 / Fable R4-2).
 
 **API:** `export function commit(cmd): CommitResult` (public; actor+origin internal) ·
 `commitAs(cmd,{actor,origin})` (internal: sync/seed/restore) · `onCommit(fn)` · `txn.child(cmd)`
@@ -188,27 +232,39 @@ of the user command (fixes R3-4's coarse-`lw.war` case). At Step 2 this map is s
 conflict check is exercised only by `MemoryDoor`; real cross-client conflict is Step 5.
 
 ### 3.4 Publish boundary + owner decision (RESOLVED — as Rev 3 §3.4, unchanged)
-Frozen issued artefacts are their **own append-only, put-once records** (`sched.orig/<wk>:<di>`,
-`sched.als/<wk>:<verId>` incl. its sign copy) — separate from the mutable `sched.book`, so the gate
-enforces immutability at phase 5. Live `sign[di]`/`signBind[di]` stay ordinary.
+Frozen issued artefacts are their **own append-only-INTENDED records** (`sched.orig/<wk>:<di>`,
+`sched.als/<wk>:<verId>` incl. its sign copy) — separate from the mutable `sched.book`. **Their
+put-once immutability is ENFORCED at Step 3** (with the undo/boundary cutover), not hard-gated at
+Step 2, because today's silent-undo-before-sent legitimately reverses a just-issued Original via
+`histRestore` (Codex R4-002). Live `sign[di]`/`signBind[di]` stay ordinary mutable records.
 **Owner decision (16 Sep 26):** Undo always works from the Undo button; **silent reverse BEFORE the
 publish is sent/witnessed** (nothing has left the machine — none of the DB bugs can arise);
 **an on-the-record forward withdrawal (a correcting amendment) AFTER** — append-only, unique
 never-reused ids, derived credits recompute, with a one-line heads-up. The snapshot-undo never
-crosses a sent publish. Recorded as `boundary.crossable` — crossable (silent-undoable) only for the
-issuing session until a `remote` envelope references the id or the session ends; Step 3 reads it.
+crosses a sent publish. Recorded as `boundary.crossable`, which flips to false on an **explicit,
+monotonic disclosure signal keyed by the issued id** — reported by EVERY path that lets an issued
+day leave the machine: a shared-DB send, a change-feed reference from another client, a **PDF
+export/print** (`printpdf.ts`), a CSV export, or the issuing session ending (Codex R4-003; do not
+infer disclosure only from an incoming remote change). Step 3 reads `crossable` to choose
+silent-reverse vs forward-withdrawal.
 Recovery publishes under a NEW id; issued records + signatures never overwritten. **Roster/settings
 edits ARE undoable** (`user` commands, never amendments).
 
 ### 3.5 Authorization (actor from SESSION + ME; headless actor)
 `Actor = { id; role:'admin'|'member'|'system'; personId?; session }` — account id + effective role
 from `SESSION` (`SESSION.role` `main`→`member`), **ownership `personId` from the ME/viewer binding**
-(`auth.ts:28-29`), not `SESSION` (R3-006). Snapshot the actor when the command is created. The
+(`auth.ts:28-29`), not `SESSION` (R3-006) — ownership-from-ME is **defense-in-depth parity only**
+(ME is the user-selectable View-as binding; real identity arrives with Step 5 sign-in), and the
+**system/headless actor's `personId` is undefined** (Fable R4-6). Snapshot the actor at command creation. The
 **system actor** (`session:null`) is used only for `seed`/`projection`/`loadWeek` and — under a test
 flag — the `SESSION=null` parity harness (keeps 728/0); never for a user restore. **Undo/redo
 permission** = for every change in the inverse, `permission(originating type)` vs the CURRENT
-effective actor + ownership (admin→member→undo-own-admin-decision is REFUSED). `commitAs` is not
-exported. Client gate = defense-in-depth; real auth at Step 5.
+effective actor + ownership (admin→member→undo-own-admin-decision is REFUSED) — **this rule applies
+once undo is stream-driven at Step 3; at Step 2 undo stays ungated as today** (§0). `commitAs` is
+not exported. **A joined child's permission is the PARENT command's declared permission** —
+composition is part of the command's definition; child types are never caller-selected (Fable
+R4-7), so a member-permitted root can't smuggle an admin-only child. Client gate = defense-in-depth;
+real auth at Step 5.
 
 ### 3.6 Atomicity/conflict/test-double — as Rev 3 (in-memory rollback real; durable cross-blob
 atomicity + real conflict deferred to Step 5; `MemoryDoor` models the faults now).
