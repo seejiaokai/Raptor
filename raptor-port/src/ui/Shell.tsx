@@ -31,7 +31,7 @@ import { DayPop, InsightsModal, AirPop } from './Modals'
 import { WeekCal } from './WeekCal'
 import { setInsights, setDrawer, setWeekCal, setHistList, setInpEdit, setOilAsk } from './pops'
 import { Drawer } from './Drawer'
-import { exportCSV, schedRows } from './export'
+import { exportCSV, schedRows, publishedDays } from './export'
 import { printSchedPDF } from './printpdf'
 import { InputsPage } from './InputsPage'
 import { LogicPage } from './LogicPage'
@@ -498,7 +498,7 @@ export function Shell() {
                 on desktop, so this page needs no separate control. */}
             <button className="abtn" id="exportSched" title="Export to Excel (CSV)" aria-label="Export to Excel (CSV)"
               onClick={() => {
-                exportCSV('142-schedule.csv', schedRows())
+                exportCSV('142-schedule.csv', schedRows(publishedDays()))   /* the PUBLISHED version ([FLAG-EXPORT]) */
                 /* same reason as the Inputs page's export: a phone shows nothing
                    when a download lands, so the tap otherwise reads as dead */
                 HOOKS.toast('CSV downloaded', 'ok')
