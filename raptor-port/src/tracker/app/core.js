@@ -23,6 +23,13 @@ import {
   builtinSylById, builtinIdByName, builtinIdByAlias, builtinBaseOf,
   classifyDefinedName, upgradeSyllabi, buildUnionSylcat, reconcileSylIds,
 } from './sylIds.js';
+/* [ARCH-STACK] Step 2 phase 5 — the shared command layer (see the sSet router
+   below). A Tracker durable write now joins the SAME change stream + auth gate
+   every module funnels through. */
+import {
+  commit as cmdCommit, isCommitting as cmdIsCommitting, definePermission as cmdDefinePermission,
+  anyone as cmdAnyone, registerRecord as cmdRegisterRecord,
+} from '../../command';
 
 export { SYLLABI, SYL_NAMES, DEFAULT_SYL_NAME, DEFAULT_SYL_ORDER, DEFAULT_LAYOUTS, EVENT_INFO };
 export { mintId };
@@ -145,7 +152,83 @@ function sParse(r, fallback, want) {
     return v;
   } catch (_) { return fallback; }
 }
-async function sSet(k, v) { mem[k] = v; setSaveStatus('', 'saving'); try { await storage.set(k, v); setSaveStatus('', 'ok'); } catch (e) { setSaveStatus('local only', 'ok'); } }
+/* [ARCH-STACK] Step 2 phase 5 — the Tracker COMMAND LAYER (ADDITIVE, §5.4).
+   Every durable Tracker write funnels through sSet, which synchronously mirrors
+   the value into `mem` (the persisted representation) and then AWAITS the async
+   storage.set. The SYNCHRONOUS mem write now runs inside commit() (the reducer is
+   synchronous; the async persist stays OUTSIDE it, exactly as the design mandates
+   — §5.4), emitting the record-level change stream. The async storage.set is
+   unchanged (the legacy persist, left running — no cutover).
+
+   ALLOWLIST by design: only keys whose grammar matches one of the 10 record
+   collections route through a command (always a VALID collection). Anything else
+   — the one-shot migration flags, view-preferences, the seed stamp, any unknown
+   key — writes RAW, exactly as today (migration flags + seedstamp are seed-exempt,
+   §3.1). So a key that fails to match can never hit the well-formed-change
+   invariant; the worst case is a durable write that stays off the stream, never a
+   corrupted migration. Command routing is OFF until init() enables it (after all
+   boot migrations + loads), so no boot/seed write is ever commanded and every
+   existing Tracker unit test (which drives init but registers no subscriber) is
+   behaviour-identical. */
+let TRK_COMMANDS = false;
+let TRK_REGISTERED = false;
+/* map a storage key to its logical collection by GRAMMAR (segment-precise, so a
+   migration flag like `…:rostermig` never matches `…:roster`), or null = exempt. */
+function trkCollectionOf(k) {
+  const p = String(k).split(':');
+  const last = p[p.length - 1], last2 = p[p.length - 2];
+  if (last2 === 'm') return 'trk.marks';
+  if (last2 === 'd') return 'trk.dates';
+  if (last2 === 'pace') return 'trk.pace';
+  if (last2 === 'lulls') return 'trk.lulls';
+  if (last === 'roster') return 'trk.roster';
+  if (last === 'plan') return 'trk.plan';
+  if (last === 'syls') return 'trk.syls';
+  if (last === 'sylcat') return 'trk.catalogue';
+  if (last === 'eventinfo') return 'trk.eventinfo';
+  if (p.indexOf('lay') >= 0) return 'trk.layout';   // v3:master:lay:<syl> or v3:lay:<c>:<name>
+  return null;
+}
+/* the record source is `mem` (the persisted mirror). The mem write happens INSIDE
+   the command's apply (the scheduler pattern), so enlist captures the pre-write
+   mem and the diff is exactly the touched key. */
+const trkStore = {
+  key: 'tracker',
+  capture: () => JSON.stringify(mem),
+  restore: (snap) => { const o = JSON.parse(snap); for (const kk of Object.keys(mem)) delete mem[kk]; Object.assign(mem, o); },
+  records: () => {
+    const m = new Map();
+    for (const kk of Object.keys(mem)) {
+      const col = trkCollectionOf(kk);
+      if (!col) continue;
+      m.set(col + '/' + kk, { collection: col, id: kk, value: mem[kk] });
+    }
+    return m;
+  },
+};
+function trkRegisterCommands() {
+  if (TRK_REGISTERED) return; TRK_REGISTERED = true;
+  const cols = ['trk.marks', 'trk.dates', 'trk.roster', 'trk.layout', 'trk.syls', 'trk.plan', 'trk.pace', 'trk.lulls', 'trk.eventinfo', 'trk.catalogue'];
+  for (const c of cols) {
+    cmdDefinePermission(c, cmdAnyone);   // permissive at Step 2 (the real file/role gates are unchanged)
+    cmdRegisterRecord({ key: 'tracker:' + c, cls: 'record', collection: c, module: 'tracker' });
+  }
+}
+/* the synchronous durable-record write: routed through a named command when
+   enabled + the key is a known record + we're not already committing; else raw. */
+function trkWrite(k, v) {
+  const col = TRK_COMMANDS ? trkCollectionOf(k) : null;
+  if (col && !cmdIsCommitting()) {
+    cmdCommit({
+      type: col,
+      scope: { module: 'trk', courseId: course, sylId: curSylId() },
+      apply: (txn) => { txn.enlist(trkStore); mem[k] = v; },
+    });
+  } else {
+    mem[k] = v;
+  }
+}
+async function sSet(k, v) { trkWrite(k, v); setSaveStatus('', 'saving'); try { await storage.set(k, v); setSaveStatus('', 'ok'); } catch (e) { setSaveStatus('local only', 'ok'); } }
 
 /* ---------- this browser's own preferences ----------
    Which course and which crew member you were last on is a view preference,
@@ -4824,6 +4907,11 @@ export async function init() {
   await loadCourse((__want && COURSES.some(c => isCourseEntry(c) && c.id === __want)) ? __want : (COURSES[0] && COURSES[0].id), true);
   await loadEventInfo();
   ready = true;
+  /* [ARCH-STACK] phase 5: enable command routing now that every boot migration
+     and load has run its raw seed/migration writes. Post-boot user edits emit the
+     change stream; boot writes above stayed raw. */
+  trkRegisterCommands();
+  TRK_COMMANDS = true;
   notify();   /* the boot gate (App) subscribes to getVersion — flip it off BootLoading */
   refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
   /* After the first paint, so the balls exist to measure. No last mark → the
