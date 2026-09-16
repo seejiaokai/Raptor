@@ -1,15 +1,29 @@
 # Session handoff — [CRP-FLAG] flagging + [FLAG-EXPORT] export, COMBINED on one branch
 
-## RESUME HERE (handoff to a fresh chat, 16 Sep 26 — end of the Fable + Decision-#1 session)
+## RESUME HERE (handoff, 16 Sep 26 — end of the ITEM 2 session)
 
-**Branch to select: `claude/crewrest-published-flagging`.** Off `main`, NOT pushed, NOT merged.
-Three clean commits since the last handoff, ALL green (**vitest 4795/4795 · build clean · tfin
-728/0 · e2e browser gate green**):
-- `e10d231` — the Fable cross-provider pass: FR-001/002/003/005 fixed test-first + the
-  "Not Yet Signed" marker moved to WORKING-COPY ONLY.
-- `055847c` — Decision #1: a request filed live on a PUBLISHED day is a working-copy pending
-  amendment.
-- (handoff commit for this doc.)
+**Branch to select: `claude/crewrest-published-flagging`.** Off `main`, PUSHED, NOT merged
+(hold for the owner's "merge live"). **ITEM 2 IS DONE** (the run-on-a-draft-day bug), gated,
+cross-provider bug-checked and live-confirmed. NEXT = **ITEM 3** (the three click/hover fixes),
+below. Gates all green: **vitest 4804/4804 · build clean · tfin 728/0 · e2e** (only 3 PRE-EXISTING
+unrelated failures — geometry board-phone-brief 1976, LW-phone finger-scroll 2241, LW-phone
+month-button 589 — all confirmed failing on the base commit 4669da6 too).
+
+**ITEM 2 — DONE (commits a82d64b · 4bc14d2 · e01d6fb).** The owner's "7-day breach on the wrong
+day" was NOT the seed dedup — every clean-prior-week reproduction lands it correctly. The real bug:
+the view-only page drew DRAFT days from the WORKING world, so a cross-day breach (7-day run, crew
+rest / overnight over a boundary) that lands on a draft day vanished whenever an unpublished
+working-copy fix to a PUBLISHED neighbour cleared it. Fix: view-page live-draft days render their
+flags in the OFFICIAL world (`viewDayHTML` wraps `dayHTML` in `withOfficialWarn`); one predicate
+`dayDisplaysOfficial(di)` mirrors that render for the click/focus accessor (`displayedByDay`) and
+the DayPop details modal — render, click and details now agree in ONE world. Aliased = no-op ⇒
+parity untouched; the edit week is unchanged (working copy is the truth, so a pending fix previews
+as solved). Codex GPT-6 Astra bug-check CONVERGED: REVISE(2: displayedByDay + DayPop) → REVISE(1:
+VWORK mirror) → APPROVED(0). Full write-up + dispositions: the code-review doc's "ITEM 2" section.
+Pins: `src/ui/viewrun.test.tsx`. **STILL genuinely open: CRPF-006/R2-004 the cross-week SEED dedup**
+(a separate pre-existing crew-rest seed double-count — its own careful pass; NOT what Item 2 was).
+
+### Earlier commits (green): `e10d231` Fable pass · `055847c` Decision #1 · handoff.
 
 ### DONE THIS SESSION (all committed)
 - **Fable 5.1 independent pass** (`claudex-loop review --host codex --model claude-fable-5-1`,
@@ -33,26 +47,22 @@ Three clean commits since the last handoff, ALL green (**vitest 4795/4795 · bui
 
 ### OUTSTANDING — on THIS branch (do in order, next chat)
 
-1. **ITEM 2 — the cross-week 7-day-run bug (CRPF-006/R2-004). HIGHEST RISK, do it FIRST with care.**
-   **Owner's confirmed repro (16 Sep 26):** the week of Jul 13–19, Warden works Mon→Sun (7 straight);
-   Mon+Tue published, Wed–Sun draft; and **NOBODY works the prior week (Jul 6–12 — all ground days)**.
-   The 7-day breach (maxRun=6, so breach on the 7th day) should land on **SUNDAY** — instead it lands
-   ONLY on **TUESDAY**. The cross-week seed (`seedRunIn`/`workedSet`/`prevSundaySeed`, weekctx.ts) is
-   inventing ~5 phantom prior-week days for Warden and mis-placing the breach. This is the flagged
-   seed double-count, and it is an ORDINARY case, NOT "narrow". **Also required (owner):** the 7-day
-   check must be truly CONTINUOUS across ANY 7 consecutive days incl. cross-week (e.g. Tue→Mon), not
-   tied to Mon–Sun. Root fix direction (from the review): make the accepted-row / seed dedup
-   DAY-LOCAL (defer to a row on the day BEING BUILT, `d.ground`), replacing the blanket
-   `if(xweek)return true` bypass in `inpShow`; thread it through buildDay for loaded/neighbour/
-   midnight-tail. HIGH regression risk across every seed read — parity 728/0 + full suite are the net.
-   **TEST-FIRST, SCENARIO-BASED (owner mandate — see below).** Then a cross-provider bug-check
-   (BOTH Fable + Codex).
-2. **ITEM 3 — the three click/hover fixes (R3-003 / R3-004 / CRPF-009), medium, UI-focus.** The flags
-   are CORRECT and visible; only click-to-jump is off. (a) DayPop day-detail modal reads live
-   DAYS + WORKING WARN → resolve its displayed version (withDaySnap + withOfficialWarn for an
-   approved view day); (b) selectPerson/personWarnDays read WORKING → a published-only breach's puck
-   opens no box (avail↔view world-resolution, cycle risk); (c) trace/warning refs need a
-   `data-world` + stable id so a cross-world click is a defined no-op. Details in the review doc.
+1. **ITEM 2 — DONE (16 Sep 26).** See the RESUME block above. It turned out NOT to be the seed dedup:
+   the real bug was the view-only page drawing DRAFT days from the WORKING world, so a published-truth
+   cross-day breach landing on a draft day was hidden by an unpublished working-copy fix. Fixed +
+   gated + Codex-APPROVED + live-confirmed. (The cross-week SEED dedup CRPF-006/R2-004 is a SEPARATE
+   still-open pre-existing bug — do it in its own careful pass, it is not what the owner was seeing.)
+2. **ITEM 3 — NEXT. The remaining click/hover world-resolution (R3-004 / CRPF-009), medium, UI-focus.**
+   The flags are CORRECT and visible; only puck/trace click-to-jump is off. Item 2 already did the
+   DayPop modal's WARNING world (CRP-I2-002: dayInfoHTML now resolves through `dayDisplaysOfficial` +
+   `withOfficialWarn`) and the `displayedByDay` click accessor. REMAINING: (a) `selectPerson`/
+   `personWarnDays` (avail.ts) still read WORKING → clicking a published-only breach's PUCK to select
+   the person doesn't light their official warning days (the flagged avail↔view world-resolution,
+   CYCLE RISK — route through `dayDisplaysOfficial`, watch the import graph); (b) trace/warning refs
+   need a `data-world` + stable id so a cross-world click is a defined no-op (CRPF-009); (c) optional:
+   the DayPop modal's CONTENT for an approved view day (withDaySnap) — the WARNINGS half is done, the
+   frozen-content half is the R3-003 remainder. Reuse `dayDisplaysOfficial` (one predicate, already
+   the single source of truth). Details in the review doc's ITEM 2 + ROUND 3 sections.
 3. **[FLAG-EXPORT] — owner picks the PDF design** (sample `docs/img/flag-export-sample-new.html`):
    denser/airier, a signature block, include duties/sims/ground rows, logo, portrait vs landscape.
    Then finalise + the deferred next-week-peek working-vs-signed labelling.
