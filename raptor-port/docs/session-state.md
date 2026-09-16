@@ -1,13 +1,21 @@
 # Session handoff — [CRP-FLAG] flagging + [FLAG-EXPORT] export, COMBINED on one branch
 
-## RESUME HERE (handoff, 16 Sep 26 — end of the ITEM 2 session)
+## RESUME HERE (handoff, 16 Sep 26 — ITEM 2 + 3(a) MERGED LIVE)
 
-**Branch to select: `claude/crewrest-published-flagging`.** Off `main`, PUSHED, NOT merged
-(hold for the owner's "merge live"). **ITEM 2 IS DONE** (the run-on-a-draft-day bug), gated,
-cross-provider bug-checked and live-confirmed. NEXT = **ITEM 3** (the three click/hover fixes),
-below. Gates all green: **vitest 4804/4804 · build clean · tfin 728/0 · e2e** (only 3 PRE-EXISTING
-unrelated failures — geometry board-phone-brief 1976, LW-phone finger-scroll 2241, LW-phone
-month-button 589 — all confirmed failing on the base commit 4669da6 too).
+**ITEM 2 + ITEM 3(a) ARE MERGED TO `main` AND LIVE** (PR #406, merge commit `a02f83e`, deployed to
+seejiaokai.github.io/Raptor and verified on the real page: the view-only Sunday shows the 7-day breach
+chip "7" + the details modal, edit stays clean). Do NOT re-merge. **For the NEXT chunk, start a FRESH
+branch OFF `main`** (main now contains all this work) — do NOT reuse `claude/crewrest-published-flagging`
+(merged/stale). Both were cross-provider APPROVED (Codex GPT-6 Astra + Fable 5.1). Gates on the merge
+were green (vitest 4806, build, tfin 728/0, all 3 browser gates; the only CI red was the KNOWN-FLAKY
+`tracker (smoke)` addStudent-timeout gate — a separate app, unrelated, deploy does not depend on it).
+
+**NEXT = ITEM 3 remainder (minor polish) or [FLAG-EXPORT] (recommended).** See the outstanding list below.
+Item 3(a) (puck-select displayed-world highlight, commit `c976f31`) is DONE + live. Item 3 remainder is
+(b) a `data-world` tag on trace refs (cross-world click is already a defined no-op, Fable-confirmed) and
+(c) the DayPop modal CONTENT snapshot for an approved view day (its warnings are already world-resolved)
+— both genuinely minor. **[FLAG-EXPORT]** (owner picks the PDF design) is the recommended next build;
+note `raptor-port/src/ui/export-published.test.ts` already exists on main (prior [FLAG-EXPORT] groundwork).
 
 **ITEM 2 — DONE (commits a82d64b · 4bc14d2 · e01d6fb).** The owner's "7-day breach on the wrong
 day" was NOT the seed dedup — every clean-prior-week reproduction lands it correctly. The real bug:
