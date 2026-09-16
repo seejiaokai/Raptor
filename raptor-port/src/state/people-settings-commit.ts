@@ -177,7 +177,13 @@ export function registerPeopleSettingsCommandLayer(): void {
   }
 }
 
-/* test-only: re-sync the people baseline to the current PEOPLE (a test that
-   restores the roster out-of-band must resync, or the next command's before-image
-   is stale). Never called in production — persistPeople keeps the baseline live. */
-export function _resetPeopleBaseline(): void { PEOPLE_BASELINE = JSON.stringify(PEOPLE) }
+/* re-sync the people baseline to the CURRENT PEOPLE. MUST run after any path that
+   replaces the roster out-of-band — above all persist.ts hydrate() at boot, which
+   rewrites PEOPLE in place with the STORED roster AFTER this module's registration
+   captured the seed at import time (Fable-5). Without this the first post-boot
+   people command's before-image is the seed, so it emits a bogus diff for every
+   edited person, and a rollback would rebuild PEOPLE from the seed and the next
+   persistAll would write that seed to storage — losing every roster edit.
+   initStore() calls this after hydrate; a unit test that restores the roster calls
+   it too. persistPeople keeps the baseline live thereafter. */
+export function resyncPeopleBaseline(): void { PEOPLE_BASELINE = JSON.stringify(PEOPLE) }

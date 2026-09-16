@@ -93,12 +93,21 @@ function dispatch(cmd: Command, actor: Actor, origin: Origin): CommitResult {
   if (phase === 'post') {
     return enqueue(cmd, actor, origin, deliveringSeq)
   }
-  /* outermost: run the pipeline, then drain everything it queued, synchronously */
-  const result = runPipeline(cmd, actor, origin, undefined)
-  drainQueue()
-  phase = 'idle'
-  active = null
-  return result
+  /* outermost: run the pipeline, then drain everything it queued, synchronously.
+     The finally is load-bearing (Fable-1): if a deferred legacy effect or a
+     subscriber throws during phase 8/9 (a sync pass on odd data, a whiteboard
+     quota error, a listener bug — things that today just log and let the edit
+     stick), the exception must NOT leave the dispatcher wedged in 'post'/'reducer'
+     — otherwise every later commit() enqueues into a dead txn (never applies) and
+     every notify() defers into it (repaints stop). Reset unconditionally. */
+  try {
+    const result = runPipeline(cmd, actor, origin, undefined)
+    drainQueue()
+    return result
+  } finally {
+    phase = 'idle'
+    active = null
+  }
 }
 
 function enqueue(cmd: Command, actor: Actor, origin: Origin, causedBy?: number): CommitResult {
@@ -109,10 +118,14 @@ function enqueue(cmd: Command, actor: Actor, origin: Origin, causedBy?: number):
 }
 
 function drainQueue(): void {
-  /* strictly in enqueue order; each drained item may itself enqueue more */
+  /* strictly in enqueue order; each drained item may itself enqueue more. A
+     throwing queued pipeline resolves as invalid rather than starving the rest
+     of the queue (Fable-1). */
   while (queue.length) {
     const q = queue.shift()!
-    const res = runPipeline(q.cmd, q.actor, q.origin, q.causedBy)
+    let res: CommitResult
+    try { res = runPipeline(q.cmd, q.actor, q.origin, q.causedBy) }
+    catch (e) { res = errResult(e) }
     q.resolve(res)
   }
 }
@@ -166,9 +179,16 @@ function runPipeline(cmd: Command, actor: Actor, origin: Origin, causedBy?: numb
   // phases 8 + subscriber delivery run at 'post' so a reaction enqueues
   const emitted = txn.env.changes.length > 0
   phase = 'post'
-  releaseLatch(txn)          // phase 8 — legacy effects, with suppression tokens (always)
-  if (emitted) deliver(txn.env)   // stream consumers (in order); reactions enqueue
-  active = null
+  let firstErr: unknown = undefined
+  const take = (e: unknown) => { if (e !== undefined && firstErr === undefined) firstErr = e }
+  try {
+    take(releaseLatch(txn))              // phase 8 — legacy effects, with suppression tokens (always)
+    if (emitted) take(deliver(txn.env))  // phase 9 — stream consumers (in order); reactions enqueue
+    take(releaseLatch(txn))              // any effect a subscriber deferred DURING delivery (Fable-9)
+  } finally {
+    active = null                        // never leave a dead txn active (dispatch's finally also guards)
+  }
+  if (firstErr !== undefined) throw firstErr   // surface it AFTER the phase/active reset (Fable-1)
   // an un-emitted no-op returns ok with seq -1 (nothing was recorded)
   return { ok: true, seq: emitted ? txn.env.seq : -1, envelope: txn.env }
 }
@@ -190,13 +210,19 @@ function finalize(txn: TxnState): void {
   stream.push(txn.env)
 }
 
-function deliver(env: CommitEnvelope): void {
+function deliver(env: CommitEnvelope): unknown {
   deliveringSeq = env.seq
+  let firstErr: unknown = undefined
   try {
-    for (const fn of subscribers.slice()) fn(env)
+    /* isolate each subscriber so one throwing consumer does not stop the others
+       from seeing the envelope (Fable-1); return the first error afterwards. */
+    for (const fn of subscribers.slice()) {
+      try { fn(env) } catch (e) { if (firstErr === undefined) firstErr = e; console.error('[commit] subscriber threw', e) }
+    }
   } finally {
     deliveringSeq = undefined
   }
+  return firstErr
 }
 
 /* ---- the transaction API handed to reducers ------------------------------ */
@@ -257,29 +283,51 @@ function storeSignature(s: EnlistableStore): string {
   parts.sort()
   return parts.join('')
 }
-function guardSnapshot(): Map<string, string> {
-  const m = new Map<string, string>()
-  for (const s of guardedStores) m.set(s.key, storeSignature(s))
+interface GuardEntry { sig: string; snap: unknown; store: EnlistableStore }
+function guardSnapshot(): Map<string, GuardEntry> {
+  const m = new Map<string, GuardEntry>()
+  for (const s of guardedStores) {
+    /* capture the restorable snapshot; for a string-snapshot store (all the ones
+       we register: schedStore/settings/people, whose capture() === signature())
+       the snapshot IS the signature, so this costs no extra serialization. */
+    const snap = s.capture()
+    const sig = typeof snap === 'string' ? snap : storeSignature(s)
+    m.set(s.key, { sig, snap, store: s })
+  }
   return m
 }
-function guardCheck(before: Map<string, string>, txn: TxnState): void {
+function guardCheck(before: Map<string, GuardEntry>, txn: TxnState): void {
+  /* a change in an un-enlisted registered store is a missing txn.enlist() (a
+     programming bug). Restore the offending store from its snapshot BEFORE
+     throwing so the guard failure is all-or-nothing (Codex-1) — otherwise the
+     un-enlisted store stays mutated while the commit returns invalid, defeating
+     the guard and the atomicity contract. The throw then rolls back the enlisted
+     stores too. */
+  let bad: string | null = null
   for (const s of guardedStores) {
     if (txn.enlisted.has(s.key)) continue // enlisted stores are allowed to change
-    const b = before.get(s.key)
-    const a = storeSignature(s)
-    if (b !== a) {
-      throw new CmdError('invalid', `un-enlisted store "${s.key}" changed during ${txn.cmd.type} — a txn.enlist() is missing`)
+    const rec = before.get(s.key)
+    if (rec && rec.sig !== storeSignature(s)) {
+      rec.store.restore(rec.snap)
+      if (!bad) bad = s.key
     }
   }
+  if (bad) throw new CmdError('invalid', `un-enlisted store "${bad}" changed during ${txn.cmd.type} — a txn.enlist() is missing`)
 }
 
 /* ---- latch release + rollback -------------------------------------------- */
-function releaseLatch(txn: TxnState): void {
-  for (const d of txn.deferred) {
+function releaseLatch(txn: TxnState): unknown {
+  /* run EVERY deferred effect even if one throws (Fable-1): one bad subscriber
+     must not starve the others (histPush/persistAll/notify all need to run).
+     Return the first error (the tail aggregates + rethrows once, after the phase
+     reset) to preserve today's error visibility without wedging the dispatcher. */
+  let firstErr: unknown = undefined
+  const batch = txn.deferred.splice(0)   // effects deferred DURING this drain re-queue onto txn.deferred
+  for (const d of batch) {
     const restore = installContexts(d.snaps)
-    try { d.fn() } finally { restore() }
+    try { d.fn() } catch (e) { if (firstErr === undefined) firstErr = e; console.error('[commit] deferred effect threw', e) } finally { restore() }
   }
-  txn.deferred.length = 0
+  return firstErr
 }
 function rollback(txn: TxnState): void {
   for (const { store, snap } of txn.enlisted.values()) store.restore(snap)
@@ -295,7 +343,10 @@ class CmdError extends Error {
 }
 function errResult(e: unknown): CommitResult {
   if (e instanceof CmdError) return { ok: false, reason: e.kind, message: e.message }
-  // a reducer that threw mid-way is a rolled-back, invalid command (property (a))
+  // a reducer that threw mid-way is a rolled-back, invalid command (property (a)).
+  // Surface it — the {ok:false} is not read by today's call sites, so without this
+  // a reducer bug that used to reach the console goes silent (Fable-12).
+  console.error('[commit] reducer threw (rolled back)', e)
   return { ok: false, reason: 'invalid', message: (e as any)?.message || String(e) }
 }
 

@@ -34,6 +34,11 @@ export interface Door {
 
 export class MemoryDoor implements Door {
   private map = new Map<string, DoorRecord>()
+  /* per-key version high-water-mark, kept across a delete so a recreate does NOT
+     reuse a version a stale writer still holds `expect` for (Codex-5): otherwise
+     delete v1 → blind recreate → v1 again → a stale expect:1 writer overwrites the
+     new record without a conflict. */
+  private tomb = new Map<string, number>()
   private subs: Array<(rec: any) => void> = []
   /* test knob: force the NEXT put/delete to conflict, to exercise the re-read
      path without a second live writer. */
@@ -54,9 +59,12 @@ export class MemoryDoor implements Door {
       const curV = cur ? cur.version : 0
       if (curV !== expect) return { ok: false, reason: 'conflict', current: curV }
     }
-    const version = (cur ? cur.version : 0) + 1
+    // a recreate continues PAST the deleted version (the high-water-mark), never
+    // restarting at 1 (Codex-5).
+    const version = (cur ? cur.version : (this.tomb.get(key) ?? 0)) + 1
     const rec: DoorRecord = { collection, id, value: deepClone(value), version }
     this.map.set(key, rec)
+    this.tomb.set(key, version)
     this.subs.forEach(f => f(deepClone(rec)))
     return { ok: true, version }
   }
@@ -69,6 +77,7 @@ export class MemoryDoor implements Door {
       const curV = cur ? cur.version : 0
       if (curV !== expect) return { ok: false, reason: 'conflict', current: curV }
     }
+    if (cur) this.tomb.set(key, cur.version)   // remember the version a recreate must exceed
     this.map.delete(key)
     this.subs.forEach(f => f({ deleted: true, collection, id }))
     return { ok: true, version: cur ? cur.version : 0 }

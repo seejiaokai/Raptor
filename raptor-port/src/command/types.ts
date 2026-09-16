@@ -33,11 +33,11 @@ export type LogicalCollection =
   // the other scheduler-side stores
   | 'inputs' | 'plan' | 'people' | 'settings'
   // leave war (per-cell / per-bid so the revision map is cell-granular — R4-005)
-  | 'lw.cell' | 'lw.bid'
+  | 'lw.cell' | 'lw.bid' | 'lw.war'
   | 'lw.ledger' | 'lw.balances' | 'lw.oilpolicy' | 'lw.postouts' | 'lw.current' | 'lw.config'
   // tracker (the v3: keys)
   | 'trk.marks' | 'trk.dates' | 'trk.roster' | 'trk.layout' | 'trk.syls'
-  | 'trk.plan' | 'trk.pace' | 'trk.lulls' | 'trk.eventinfo' | 'trk.catalogue'
+  | 'trk.plan' | 'trk.pace' | 'trk.lulls' | 'trk.eventinfo' | 'trk.catalogue' | 'trk.courses'
 
 export type Module = 'sched' | 'inputs' | 'plan' | 'people' | 'settings' | 'lw' | 'trk'
 

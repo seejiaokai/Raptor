@@ -33,4 +33,8 @@ describe('a Tracker durable write emits a record envelope (property c)', () => {
     expect(caught.some(e => e.changes.some(c => c.collection === 'trk.marks'))).toBe(true)
     expect(caught.every(e => (e.scope as any).module === 'trk')).toBe(true)
   })
+
+  /* NB: delKey routing (Codex-4) is exercised end-to-end by the smoke suite's
+     student/syllabus/course deletions; a unit test of removeStudent hangs headless
+     on its confirm dialog, so it is not repeated here. */
 })

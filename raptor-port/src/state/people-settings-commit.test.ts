@@ -11,7 +11,7 @@ import { PEOPLE, ID_BY_CS } from '../engine/people'
 import { STORE_CFG, addStore, storesSave, storesReset, storesAreStandard } from '../engine/stores'
 import { CXR_CFG, cxReasonsSave, cxReasonsReset } from '../engine/cxreasons'
 import {
-  persistPeople, registerPeopleSettingsCommandLayer, SETTINGS_KEYS, _resetPeopleBaseline,
+  persistPeople, registerPeopleSettingsCommandLayer, SETTINGS_KEYS, resyncPeopleBaseline,
 } from './people-settings-commit'
 import { onCommit, setConflictChecker } from '../command'
 import type { CommitEnvelope } from '../command'
@@ -40,7 +40,7 @@ beforeEach(() => {
     const cs = (PEOPLE as any)[id].cs
     if (typeof cs === 'string') (ID_BY_CS as any)[cs.toLowerCase()] = id
   }
-  _resetPeopleBaseline()
+  resyncPeopleBaseline()
   caught = []
   unsub = onCommit(e => caught.push(e))
 })
@@ -84,6 +84,20 @@ describe('a people write emits a people/<personId> envelope (property c)', () =>
     expect(caught[0].scope).toEqual({ module: 'people' })
     expect(caught[0].changes.some(c => c.collection === 'people' && c.id === id)).toBe(true)
     expect(caught[0].changes.find(c => c.id === id)!.after).toMatchObject({ initials: 'ZZ' })
+  })
+
+  it('resyncPeopleBaseline picks up an out-of-band roster so the next edit diffs against it, not the seed (Fable-5)', () => {
+    // simulate persist.ts hydrate() replacing PEOPLE AFTER registration captured
+    // the seed baseline; initStore() calls resyncPeopleBaseline() to correct it.
+    const id = Object.keys(PEOPLE)[0]
+    ;(PEOPLE as any)[id].initials = 'HYDRATED'
+    resyncPeopleBaseline()
+    caught = []
+    ;(PEOPLE as any)[id].initials = 'EDIT'
+    persistPeople()
+    const ch = caught[0].changes.filter(c => c.collection === 'people')
+    expect(ch.length).toBe(1)                                   // only the ONE edited person
+    expect((ch[0].before as any).initials).toBe('HYDRATED')     // before = hydrated roster, not the seed
   })
 
   it('a rejected people write rolls the roster back (atomicity)', () => {

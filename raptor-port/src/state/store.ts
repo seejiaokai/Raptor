@@ -39,7 +39,7 @@ import { setFileLocked as trSetFileLocked } from '../tracker/role.js'
 import { isHydrated, weekSwapBegin, weekSwapEnd } from './persist'
 import { deferEffect } from '../command'
 import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, SCHED_TYPES, discloseCurrentIssued } from './sched-commit'
-import { registerPeopleSettingsCommandLayer } from './people-settings-commit'
+import { registerPeopleSettingsCommandLayer, resyncPeopleBaseline } from './people-settings-commit'
 
 let VERSION = 0
 const listeners = new Set<() => void>()
@@ -713,6 +713,12 @@ export function setToast(fn: (...a: any[]) => any) { HOOKS.toast = fn }
    reload — caught by the audit2 probe (#6 "the override reloaded"). */
 export function initStore() {
   wireStore()
+  /* [ARCH-STACK] Fable-5: the people command layer captured its baseline from the
+     SEED roster when this module was imported (wireStore runs at eval, before boot);
+     hydrate() has since replaced PEOPLE with the stored roster. Re-sync now — this
+     runs after hydrate() in main.tsx's boot — so the first people command diffs
+     against the real roster, not the seed. */
+  resyncPeopleBaseline()
   rulesLoad()
   storesLoad()
   lookaheadLoad()

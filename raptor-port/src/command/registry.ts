@@ -33,6 +33,7 @@ export const LOGICAL_TO_BLOB: Record<LogicalCollection, string> = {
   // leave war
   'lw.cell': 'leavewar/wars',
   'lw.bid': 'leavewar/wars',
+  'lw.war': 'leavewar/wars',
   'lw.ledger': 'leavewar/ledger',
   'lw.balances': 'leavewar/balances',
   'lw.oilpolicy': 'leavewar/oilpolicy',
@@ -50,6 +51,7 @@ export const LOGICAL_TO_BLOB: Record<LogicalCollection, string> = {
   'trk.lulls': 'tracker/lulls',
   'trk.eventinfo': 'tracker/eventinfo',
   'trk.catalogue': 'tracker/catalogue',
+  'trk.courses': 'tracker/courses',
 }
 
 export type RegistryClass = 'record' | 'boot-migration' | 'view-preference'

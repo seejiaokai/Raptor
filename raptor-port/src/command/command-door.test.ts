@@ -41,6 +41,16 @@ describe('MemoryDoor', () => {
     expect(seen[0]).toMatchObject({ id: 'k', version: 1 })
     expect(seen[1]).toMatchObject({ deleted: true, id: 'k' })
   })
+
+  it('a recreate after delete does NOT reuse the deleted version, so a stale writer conflicts (Codex-5)', () => {
+    const d = new MemoryDoor()
+    expect(d.put('settings', 'k', { v: 1 }).ok).toBe(true)      // version 1
+    expect(d.delete('settings', 'k').ok).toBe(true)
+    const re = d.put('settings', 'k', { v: 2 })                 // blind recreate
+    expect(re).toEqual({ ok: true, version: 2 })               // 2, not 1 — past the high-water-mark
+    // a stale writer still holding expect:1 (from before the delete) now CONFLICTS
+    expect(d.put('settings', 'k', { v: 999 }, 1)).toEqual({ ok: false, reason: 'conflict', current: 2 })
+  })
 })
 
 describe('the commit-gate conflict check (SEQ-003)', () => {

@@ -183,10 +183,16 @@ function trkCollectionOf(k) {
   if (last2 === 'lulls') return 'trk.lulls';
   if (last === 'roster') return 'trk.roster';
   if (last === 'plan') return 'trk.plan';
-  if (last === 'syls') return 'trk.syls';
-  if (last === 'sylcat') return 'trk.catalogue';
+  if (last === 'syls' || last === 'syl') return 'trk.syls';   // kSyls (catalogue defs) + kSyl (per-course flow def)
+  if (last === 'sylcat' || last === 'sylorder' || last === 'sylhidden' || last === 'syltomb') return 'trk.catalogue';
   if (last === 'eventinfo') return 'trk.eventinfo';
+  if (last === 'courses') return 'trk.courses';       // v3:courses — the course list
   if (p.indexOf('lay') >= 0) return 'trk.layout';   // v3:master:lay:<syl> or v3:lay:<c>:<name>
+  // NB: the one-shot migration flags (…:sylreset / …:sylcatmig / …:syljournal /
+  // …:idmig / …:rostermig / …:courseidmig / …:idmap), the view-prefs (…:last /
+  // …:lastStudent) and the seed stamp all fall through to raw here, exactly as
+  // intended (seed-exempt, §3.1); every match above is a valid collection, so the
+  // well-formed-change invariant can never roll back a migration write.
   return null;
 }
 /* the record source is `mem` (the persisted mirror). The mem write happens INSIDE
@@ -208,7 +214,7 @@ const trkStore = {
 };
 function trkRegisterCommands() {
   if (TRK_REGISTERED) return; TRK_REGISTERED = true;
-  const cols = ['trk.marks', 'trk.dates', 'trk.roster', 'trk.layout', 'trk.syls', 'trk.plan', 'trk.pace', 'trk.lulls', 'trk.eventinfo', 'trk.catalogue'];
+  const cols = ['trk.marks', 'trk.dates', 'trk.roster', 'trk.layout', 'trk.syls', 'trk.plan', 'trk.pace', 'trk.lulls', 'trk.eventinfo', 'trk.catalogue', 'trk.courses'];
   for (const c of cols) {
     cmdDefinePermission(c, cmdAnyone);   // permissive at Step 2 (the real file/role gates are unchanged)
     cmdRegisterRecord({ key: 'tracker:' + c, cls: 'record', collection: c, module: 'tracker' });
@@ -3680,7 +3686,30 @@ async function loadSylCat() {
   for (const e of SYLS) { if (isBuiltinSylId(e.id)) e.base = builtinBaseOf(e.id); else if (e.base) delete e.base; }
 }
 async function saveSylCat() { await sSet(kSylCat(), JSON.stringify(SYLS)); }
-async function delKey(k) { try { if (storage && storage.delete) { await storage.delete(k); } else { await sSet(k, ''); } } catch (_) { try { await sSet(k, ''); } catch (e) {} } }
+/* the synchronous durable-record DELETE: drop mem[k] (so the persisted mirror
+   stays in sync — leaving a stale value made a later same-value write read as a
+   no-op and drop it) and, when routing is on for a known key, emit a `delete`
+   Change (Codex-4/Fable-8). Then the async storage removal, OUTSIDE the command
+   (the legacy persist, unchanged). */
+function trkDelete(k) {
+  const col = TRK_COMMANDS ? trkCollectionOf(k) : null;
+  if (col && !cmdIsCommitting() && (k in mem)) {
+    cmdCommit({
+      type: col,
+      scope: { module: 'trk', courseId: course, sylId: curSylId() },
+      apply: (txn) => { txn.enlist(trkStore); delete mem[k]; },
+    });
+  } else {
+    delete mem[k];
+  }
+}
+async function delKey(k) {
+  trkDelete(k);
+  try {
+    if (storage && storage.delete) { await storage.delete(k); }
+    else { await storage.set(k, ''); }   // soft-delete fallback; mem already dropped above
+  } catch (_) { try { await storage.set(k, ''); } catch (e) {} }
+}
 
 /* BOOT RECONCILE (§5a, CSID2-R2-06/R3-03). Deterministic ids remove per-boot
    MINTING for built-ins but not catalogue MAINTENANCE: after the one-shot

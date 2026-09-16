@@ -183,6 +183,36 @@ describe('the whole-world debug guard', () => {
     expect(isOk(r)).toBe(false)
     expect((r as any).message).toMatch(/un-enlisted store/)
     expect(a.get('x')).toBe(1) // the enlisted store IS rolled back
+    expect(b.get('p1')).toEqual({ n: 'a' }) // Codex-1: the OFFENDING un-enlisted store is restored too
+  })
+})
+
+describe('an exception in a released effect does not wedge the engine (Fable-1)', () => {
+  it('a throwing subscriber still lets the NEXT commit apply and notify run', () => {
+    const a = makeStore('A', 'settings')
+    registerGuardedStore(a.store)
+    let boom = true
+    onCommit(() => { if (boom) throw new Error('subscriber boom') })
+    // first commit: the subscriber throws AFTER the edit applied + emitted
+    expect(() => commit(put({ module: 'settings' }, (txn) => { txn.enlist(a.store); a.set('x', 1) }))).toThrow('subscriber boom')
+    expect(a.get('x')).toBe(1) // the edit stuck (the throw was post-facto)
+    boom = false
+    // the engine is NOT wedged in 'post' — the next commit applies normally
+    const r = commit(put({ module: 'settings' }, (txn) => { txn.enlist(a.store); a.set('y', 2) }))
+    expect(isOk(r)).toBe(true)
+    expect(a.get('y')).toBe(2)
+  })
+
+  it('a throwing deferred effect (histPush/notify) still lets the next commit apply', () => {
+    const a = makeStore('A', 'settings')
+    registerGuardedStore(a.store)
+    let boom = true
+    const effect = () => { if (boom) throw new Error('deferred boom') }
+    expect(() => commit(put({ module: 'settings' }, (txn) => { txn.enlist(a.store); a.set('x', 1); deferEffect(effect) }))).toThrow('deferred boom')
+    boom = false
+    const r = commit(put({ module: 'settings' }, (txn) => { txn.enlist(a.store); a.set('y', 2) }))
+    expect(isOk(r)).toBe(true)
+    expect(a.get('y')).toBe(2)
   })
 })
 

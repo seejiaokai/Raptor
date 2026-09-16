@@ -1030,6 +1030,10 @@ function lwDecompose(s: State): Map<string, CmdRecordEntry> {
   const m = new Map<string, CmdRecordEntry>()
   for (const w of s.wars) {
     const warId = w.period.id
+    /* the war's own period record — id/name/stage/bidFrom/bidTo/days (events/PH/
+       blocked). Without this a stage advance, bidding-window change, war rename or
+       a brand-new (cell-less) war produces an empty diff and is dropped (Fable-2). */
+    m.set(`lw.war/${warId}`, { collection: 'lw.war', id: warId, value: w.period })
     const grid = (w.grid || {}) as Record<string, Record<string, string>>
     for (const pid of Object.keys(grid)) {
       const row = grid[pid] || {}
@@ -1078,7 +1082,7 @@ function lwRegisterCommands(): void {
   if (LW_REGISTERED) return
   LW_REGISTERED = true
   cmdDefinePermission('lw.edit', cmdAnyone)   // permissive at Step 2 (the real role gates are unchanged)
-  const cols = ['lw.cell', 'lw.bid', 'lw.ledger', 'lw.balances', 'lw.oilpolicy', 'lw.postouts', 'lw.current', 'lw.config'] as const
+  const cols = ['lw.cell', 'lw.bid', 'lw.war', 'lw.ledger', 'lw.balances', 'lw.oilpolicy', 'lw.postouts', 'lw.current', 'lw.config'] as const
   for (const c of cols) cmdRegisterRecord({ key: `leavewar:${c}`, cls: 'record', collection: c, module: 'leavewar' })
 }
 
