@@ -801,12 +801,12 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
       if (di >= 0 && !isUnavail(row.type) && !acceptInput(di, row, 'g'))
         HOOKS.toast('An identical row is already on the Ground Programme — added under Personal Inputs instead', 'warn')
     } else {
-      /* every OTHER add auto-lands an activity input on an EDITABLE day (owner,
-         Aug 26 — the default is now "on the programme"). autoAcceptInput is the
-         one gate: leave/medical/SANS and already-published days are silent
-         no-ops, leaving the row under Personal Inputs where the input-aware
-         busy-check still warns. */
-      autoAcceptInput(row)
+      /* every OTHER add auto-lands an activity input (owner, Aug 26 — the default is
+         "on the programme"). autoAcceptInput is the one gate: leave/medical/SANS stay
+         silent no-ops. onApproved=true: a request filed LIVE on a PUBLISHED day lands as
+         a pending amendment on the working copy (owner 16 Sep 26) — the issued face stays
+         frozen; the scheduler sees the pending count rise and removes it if unwanted. */
+      autoAcceptInput(row, true)
     }
   })
   /* the funnel backstop rolled the batch back (a protected date slipped the

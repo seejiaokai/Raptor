@@ -46,7 +46,7 @@ import { validate } from '../engine/validate'
 import { initStore, writeText, writeSlot, writeFill } from '../state/store'
 import { setSession } from '../state/auth'
 import { setPage, DPREV, VWORK, toggleViewWork, afterSchedMutate } from '../state/view'
-import { dayHTML, dayIssuedHTML, dayStatHTML } from './html'
+import { dayHTML, dayStatHTML, viewDayHTML } from './html'
 import { boardSignHTML, boardMbtn, addWave } from './board'
 import { dayDrafts, draftDup, draftSelect, loadVersionToWorkingCopy } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
@@ -98,7 +98,7 @@ const boardStrip = (di: number) => { setPage('editsched'); return boardSignHTML(
    so the page is flipped for the build and put back. */
 const weekView = (di: number) => {
   setPage('viewsched')
-  try { return dayApproved(di) ? (VWORK.has(di) ? dayHTML(di, false) : dayIssuedHTML(di)) : dayHTML(di, false) }
+  try { return viewDayHTML(di) }   // the SAME dispatch ViewWeek.tsx calls (no mirror to drift)
   finally { setPage('editsched') }
 }
 
@@ -179,15 +179,19 @@ describe('1 · lifecycle: unpublished day → sign → publish the Original', ()
   it('the view week defaults to the FROZEN issued face, with no pending anywhere', () => {
     publishDay(DI)
     /* the issued default is not dressed as a preview: section class `issued`,
-       no banner, no write control, and no warnings list (a snapshot is never
-       validated — the standing preview rule). */
+       no banner, no write control. Since the published-schedule flagging build
+       (§5.4/§8) it DOES carry the warning overlay: a published day shows the flags
+       of its OFFICIAL (signed) version on top of byte-frozen content — reversing
+       the old "a snapshot is never validated" rule at the render layer. The seed
+       Monday's issued content carries warnings, so the header renders here; the
+       byte-frozen guarantee is pinned by the next test. */
     const v = el(weekView(DI))
     const sec = v.querySelector('section.day')!
     expect(sec.className).toContain('issued')
     expect(sec.className).not.toContain('preview')
     expect(v.querySelector('.dprev-bar')).toBeNull()
     expect(v.querySelector('[data-restore]')).toBeNull()
-    expect(v.querySelector('.daywarn')).toBeNull()
+    expect(v.querySelector('.daywarn'), 'the OFFICIAL flags now overlay the frozen face').not.toBeNull()
     /* the viewer's one control is the two-option issued/working picker */
     const sel = v.querySelector('select[data-vwork="0"]') as HTMLSelectElement
     expect([...sel.options].map(o => [o.value, o.text])).toEqual([
@@ -222,17 +226,22 @@ describe('2 · editing after publish: pending on the edit surfaces, frozen for t
     expect(cell.getAttribute('data-alc')).toBeNull()
   })
 
-  it('the ISSUED face is byte-identical before and after that edit', () => {
-    /* the strongest form of "the viewer does not see the scheduler's work in
-       progress": not "the text is absent" but "not one byte of the issued
-       document moved". withDaySnap swaps DAYS/changes/pending for the frozen
-       snapshot, so even the pending count in the day head cannot leak. */
+  it('the ISSUED FACE is byte-identical after an edit — no content and no "Not Yet Signed" marker leak', () => {
+    /* the strong guarantee: the viewer does not see the scheduler's work in progress —
+       not one byte of the issued face moves (withDaySnap swaps DAYS/changes/pending for
+       the frozen snapshot, so even the pending count in the day head cannot leak). Since
+       16 Sep 26 the "Not Yet Signed" marker is a WORKING-COPY affordance only (owner: the
+       published schedule stays TRUE until it is published), so it never appears on the
+       issued face either — the two renders are byte-for-byte identical. */
     publishDay(DI)
     const before = weekView(DI)
+    expect(before).not.toContain('Not yet signed')          // clean at publish
     writeText('dn:0.0', 'SCHEDULER WIP')
-    expect(weekView(DI)).toBe(before)
-    expect(el(weekView(DI)).textContent).not.toContain('SCHEDULER WIP')
-    expect(el(weekView(DI)).querySelector('[data-alp]')).toBeNull()
+    const after = weekView(DI)
+    expect(el(after).textContent).not.toContain('SCHEDULER WIP')   // the edit never leaks
+    expect(el(after).querySelector('[data-alp]')).toBeNull()       // no pending marks on the issued face
+    expect(after).not.toContain('Not yet signed')                  // the marker is working-copy only
+    expect(after, 'the issued face is byte-identical — the viewer sees the published truth').toBe(before)
   })
 
   it('the WORKING choice shows the edit, under a banner and an amber Working-draft stamp', () => {

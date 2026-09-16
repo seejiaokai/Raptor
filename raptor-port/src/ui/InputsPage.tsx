@@ -456,10 +456,11 @@ export function InputsPage() {
         if (removals.length)
           applyMedPlan(removals.map((lr: any) => ({ row: lr, action: 'delete', why: 'removed with the upchit' })))
         /* an ACTIVITY input files straight onto the Ground Programme (owner, Aug
-           26 — "by default all inputs are accepted"); leave/medical/SANS and a
-           published day are silent no-ops. Inside the SAME write so add-plus-land
-           is one undo step, exactly as commitNewInput's toGround already is. */
-        autoAcceptInput(INPUTS[0])
+           26 — "by default all inputs are accepted"); leave/medical/SANS stay silent
+           no-ops. onApproved=true: filed on a PUBLISHED day it lands as a pending
+           amendment on the working copy (owner 16 Sep 26), issued face frozen. Inside the
+           SAME write so add-plus-land is one undo step, as commitNewInput's toGround is. */
+        autoAcceptInput(INPUTS[0], true)
       })
       if (ok) finishAdd()   // don't flash/clear the form if the funnel rolled the add back (P2-QREV-04)
     }
@@ -502,7 +503,7 @@ export function InputsPage() {
                 withRemarksTail(remarks.trim(), ordISO(g0.startOrd), ordISO(g0.endOrd), 'till')))
               applyMedPlan(newMedTrimPlan(INPUTS[0].person, type, g0.startOrd, g0.endOrd, INPUTS[0], keepTail, bOrd))
               mintMedSegments(INPUTS[0], segs.slice(1), keepTail, bOrd)
-              autoAcceptInput(INPUTS[0])
+              autoAcceptInput(INPUTS[0], true)   // interactive filing: land on a published day as a pending amendment (owner 16 Sep 26)
             })
             if (ok) finishAdd()
           },

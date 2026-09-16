@@ -9,9 +9,9 @@ import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef } from '../engine/sl
 /* RANK left with the focus-scoped trace: ranking the CR chip against the day's
    own worst is traceLeads' job now, in the engine, so both the chip and the
    click that follows it read one test */
-import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal } from '../engine/validate'
+import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
-import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek } from '../engine/publish'
+import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned } from '../engine/publish'
 import { verSeq } from '../engine/verid'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
@@ -41,11 +41,21 @@ const editMode=()=>HOOKS.editMode()
    labelling) and the section class reads `issued`, not `preview`, so the
    preview dimming and its CSS never apply to the page's default face. */
 let PV=false, PVV:any=null, PVQ=false
+/* OFW — the OFFICIAL-FLAGS overlay (published-schedule flagging, §5.4/§8). A
+   published day's frozen face renders under PV (content frozen, write surfaces
+   stripped) but must now SHOW the flags of its issued version. OFW says "show the
+   flags on this frozen face"; dayIssuedHTML pairs it with withOfficialWarn so the
+   flags read are the OFFICIAL bundle's, matching the frozen text under them. The
+   PV null-gates below become `PV&&!OFW` so the frozen face flags while every other
+   preview (an old AL, a parked draft: a past version is read, not checked) still
+   shows none. The write surfaces (data-slot / data-drag) stay gated on PV alone —
+   OFW never re-enables editing. */
+let OFW=false
 /* the LIVE unpublished-edit count captured by withDaySnap BEFORE it zeroes
    pending — what the discard-confirm button must show (P2-IMPL-09). Read only
    under PV; withDaySnap sets it before the swap and restores it in finally. */
 let PVND=0
-const sev=(di:any,id:any)=>PV?null:sevOf(di,id)
+const sev=(di:any,id:any)=>(PV&&!OFW)?null:sevOf(di,id)
 /* THE PREVIOUS-DAY TRACE (owner, 6 Aug 26; made a standing mark 6 Aug 26).
    A crew-rest breach is raised on the day the man is told to report, but the
    day a scheduler can still FIX is the one before — so that day carries the
@@ -55,14 +65,14 @@ const sev=(di:any,id:any)=>PV?null:sevOf(di,id)
    Model state now (validate() files every breach against its previous day and
    publishes it as WARN.trace), so this re-derives nothing — and PV still gets
    nothing at all, because a frozen snapshot must not read live WARN. */
-const traceHit=(di:any,id:any)=>PV?null:traceOf(di,id)
+const traceHit=(di:any,id:any)=>(PV&&!OFW)?null:traceOf(di,id)
 /* the flag the puck prints: the day's own worst chip, or CR where this day
    caused tomorrow's breach and the man carries nothing louder of his own.
    traceLeads applies exactly that test, and interactions.ts routes the click
    by the same call, so the chip and the warning it opens cannot disagree. */
-const chip=(di:any,id:any)=>{ if(PV)return null
+const chip=(di:any,id:any)=>{ if(PV&&!OFW)return null
   const t=traceLeads(di,id); return t?traceChip(t):chipOf(di,id) }
-const dsh=(di:any,id:any)=>PV?false:dashOf(di,id)
+const dsh=(di:any,id:any)=>(PV&&!OFW)?false:dashOf(di,id)
 /* the ONE place the snapshot may stand in for the live model. finally is not
    optional: a throw mid-build with the swap live would leave the old day
    installed as the real schedule — a silent history rewrite on the next
@@ -125,9 +135,49 @@ export function dayIssuedHTML(di:any){
        A never-approved day (not reached from ViewWeek) keeps the plain render. */
     return dayApproved(di)?dayUnsupportedHTML(di):dayHTML(di,false)
   }
-  PVQ=true
-  try{ return withDaySnap(di,ver,(ok:any)=>ok?dayHTML(di,false):dayHTML(di,false)) }
-  finally{ PVQ=false }
+  /* the issued face now OVERLAYS the OFFICIAL flags (§5.4/§8): OFW un-suppresses the
+     flag helpers + warning list on this frozen face, and withOfficialWarn points the
+     warning reads at the OFFICIAL bundle — the version validated against this very
+     snapshot — so the flags match the frozen text. Content stays byte-frozen (PV) and
+     the write surfaces stay stripped (PV alone gates those). */
+  /* the "Not Yet Signed" marker is a WORKING-COPY affordance only (owner, 16 Sep 26):
+     the published/issued face stays TRUE until the working copy is published, so marking
+     it "not yet signed" was confusing. dayHTML renders it only when !PV (the edit/working
+     face); the issued face (PV, here) never does — so nothing is captured across the swap. */
+  PVQ=true; OFW=true
+  try{ return withDaySnap(di,ver,(ok:any)=>withOfficialWarn(()=>ok?dayHTML(di,false):dayHTML(di,false))) }
+  finally{ PVQ=false; OFW=false }
+}
+/* THE VIEW-ONLY WEEK'S per-day render (owner, 16 Sep 26 — [CRP-FLAG] Item 2).
+   Extracted from ViewWeek.tsx so the view page and its pins share ONE dispatch,
+   not a mirror that can drift (the drift-seam doctrine). ASSUMES THE VIEW PAGE:
+   ViewWeek gates on CURPAGE==='viewsched' before calling this, so it needs no page
+   check of its own — but state/view.ts:dayDisplaysOfficial (the mirror the click and
+   details consumers read) DOES add that page gate. Don't reuse viewDayHTML off the
+   view page, or the render and the click-world mirrors diverge (Fable CRP-I2-R3-001). Per day:
+   · a PUBLISHED day → its ISSUED face (dayIssuedHTML), unless the viewer has
+     peeked the working copy (VWORK) — then the live working render, which carries
+     its own "Working draft" stamp.
+   · a DRAFT day → the live working render, but with its FLAGS resolved in the
+     OFFICIAL world (withOfficialWarn). A draft has no issued content of its own,
+     so its CONTENT is the working draft either way; but a CROSS-DAY rule (the
+     7-day run, crew rest over a week/day boundary) must reference a PUBLISHED
+     neighbour at its ISSUED version. Without this, an unpublished working-copy fix
+     to that neighbour — e.g. taking a man off a published Monday's live copy —
+     silences a breach the issued schedule still carries, on the very day it lands
+     (a draft Sunday). When nothing published in the dependency window diverges,
+     OFFICIAL aliases WORKING and this wrap is a no-op, so the ordinary week stays
+     byte-identical (parity untouched). The EDIT week deliberately does NOT wrap:
+     there the working copy IS the truth, so the scheduler sees their pending fix
+     clear the breach — their live preview. A DPREV draft PREVIEW keeps its
+     content-swapped render as-is (its flags were computed on the live day, not
+     the previewed snapshot), so it is left un-wrapped. */
+export function viewDayHTML(di:any){
+  if(dayApproved(di)) return VWORK.has(di)?dayHTML(di,false):dayIssuedHTML(di)
+  const ver=DPREV.get(di)
+  if(!isDraftVer(ver)) return withOfficialWarn(()=>dayHTML(di,false))
+  if(!daySnapOf(di,ver)){ DPREV.delete(di); return withOfficialWarn(()=>dayHTML(di,false)) }
+  return withDaySnap(di,ver,()=>dayHTML(di,false))
 }
 /* THE PLANS SELECTOR (owner, 15 Sep 26 — the day-head redesign, LOCKED spec
    docs/superpowers/specs/2026-09-15-plans-selector-redteam.md). ONE white
@@ -348,7 +398,7 @@ export function plCols(){return `<div class="pl-cols"><span class="h-nm">Name</s
 export function exemptDeskOwn(di:any,key:any,id:any){
   const m=/^d:(\d+)\.(\d+)\.(\d+)/.exec(String(key||'')); if(!m)return undefined;
   const dw=((DAYS[+m[1]]||{}).dutywaves||[])[+m[2]]; if(!dw||!dw.noconf)return undefined;
-  if(PV||!id)return null;
+  if((PV&&!OFW)||!id)return null;   /* official face shows these flags too (§8, Codex CRPF-008) */
   const rk=`d:${m[1]}.${m[2]}.${m[3]}`, g=WARN.byDay[di];
   const hit=((g&&g.warns)||[]).find((x:any)=>(x.code==='DNIF_FLY'||x.code==='LEAVE_FLY'||x.code==='DOUBLE_BOOK')
     &&(x.who||[]).includes(id)&&(x.key===rk||x.also===rk));
@@ -609,7 +659,7 @@ export function storesView(o:any){
    itself revealed the cause, so you had to already know; now the day tells
    you where to look, and opening the list is enough to be told. */
 function dayTraceHTML(di:any,pf:any){
-  if(PV)return '';
+  if(PV&&!OFW)return '';
   if(!pf&&!DWOPEN.has(di))return '';
   /* one trace object can carry TWO rows since 5 Sep 26: the crew-rest
      fields (top level) and the run trace (`run`) — each resolves its own
@@ -678,29 +728,52 @@ const soloTrace=(di:any,pf:any)=>{
 };
 export function dayWarnHTML(di:any){
   const all=(WARN.byDay[di]&&WARN.byDay[di].warns)||[];
-  /* the strip stands on its own: a day with no issues of its own can still be
-     the day that wrecks tomorrow, and that is exactly the case worth seeing */
-  if(!all.length)return soloTrace(di,PFOCUS&&PFOCUS.id);
   /* When a puck is clicked the box narrows to that person's issues on this day
      — every other day they are flagged on opens the same way, so a cause that
      sits on the day before is right there next to the effect. */
   const pf=PFOCUS&&PFOCUS.id;
+  /* THE "GOES AWAY / NEW ONCE SIGNED" DIFF (published-schedule flagging, §6/§14.5).
+     On the WORKING view of a published day whose working copy diverges from the
+     signed version, mark each warning the unpublished edit will ADD ("new once
+     signed") and, struck through, each one it will CLEAR ("goes away once signed").
+     Gated hard so a non-diverged / unapproved / official-face render is byte-identical
+     (parity): OFF the official face (!OFW), the day is published, and OFFICIAL is a
+     DISTINCT bundle from WORKING (the alias means no divergence anywhere). Keyed by
+     code + who + flag-day + cause-day, message EXCLUDED so a within-threshold edit
+     does not mark spuriously (§14.5). Computed BEFORE the empty-list early return
+     (Codex CRPF-012) so a hidden fix that clears the LAST warning still shows its
+     "goes away" row; person-filtered so a pf-focused box shows only that person's. */
+  const diffMode=!OFW&&dayApproved(di)&&officialWarn()!==WARN;
+  const inPf=(w:any)=>!pf||(w.who||[]).includes(pf);
+  const wkey=(w:any)=>`${w.code}|${(w.who||[]).slice().sort().join(',')}|${w.di}|${w.prevDi==null?'':w.prevDi}`;
+  const offW:any[]=diffMode?((officialWarn().byDay[di]&&officialWarn().byDay[di].warns)||[]).filter(inPf):[];
+  const workKeys=new Set(all.filter(inPf).map(wkey));
+  const offKeys=new Set(offW.map(wkey));
+  const goneW=diffMode?offW.filter((w:any)=>!workKeys.has(wkey(w))):[];
+  const sigNew=(w:any)=>diffMode&&!offKeys.has(wkey(w))?`<span class="wsig new" title="This warning is not on the signed version — publishing this day adds it">new once signed</span>`:'';
   const items=pf?personWarns(di,pf):all.map((w:any,ix:any)=>({w,ix}));
-  if(pf&&!items.length)return soloTrace(di,pf);
+  /* the strip stands on its own: a day with no issues of its own can still be the
+     day that wrecks tomorrow, or one whose only issues clear once signed — both
+     worth seeing. Only bail when there is genuinely nothing to show. */
+  if(!items.length&&!goneW.length)return soloTrace(di,pf);
   const dw=items.map((x:any)=>x.w);
   /* the header count stays the TRUE total — muting a check declutters the
      list, it does not change what the day is (the board does the same). So
      worst / nh / the issue count all read `dw`, the full set including any
-     muted rows; only the LIST below drops them. */
-  const worst=dw.some((w:any)=>w.sev==='hard')?'hard':dw.some((w:any)=>w.sev==='adv')?'adv':'note';
+     muted rows; only the LIST below drops them. When the working day is clean but
+     signed warnings remain to clear, the header names those instead. */
+  const sevOfList=(ls:any[])=>ls.some((w:any)=>w.sev==='hard')?'hard':ls.some((w:any)=>w.sev==='adv')?'adv':'note';
+  const worst=dw.length?sevOfList(dw):sevOfList(goneW);
   const nh=dw.filter((w:any)=>w.sev==='hard').length;
   const open=DWOPEN.has(di);
   const cs=pf&&PEOPLE[pf]?PEOPLE[pf].cs:'';
   let h=`<div class="dwbox ${open?'open':''}${pf?' pfoc':''}" data-dwbox="${di}">`
    +`<div class="daywarn ${worst}" data-daywarn="${di}">`
    +`${pf?`<span class="dwwho">${esc(cs)}</span>`:''}`
-   +`<b>⚠ ${dw.length} issue${dw.length>1?'s':''}</b>`
-   +`${nh?` · ${nh} warning`:''} · <span class="dwcue">${open?'tap to collapse':'tap to review'}</span>`
+   +(dw.length
+      ? `<b>⚠ ${dw.length} issue${dw.length>1?'s':''}</b>${nh?` · ${nh} warning`:''}`
+      : `<b>⚠ ${goneW.length} to clear once signed</b>`)
+   +` · <span class="dwcue">${open?'tap to collapse':'tap to review'}</span>`
    +`<span class="dwcar">${open?'▲':'▼'}</span></div>`;
   if(open){
     /* MUTING A CHECK IS AVAILABLE ON EDIT SCHEDULE TOO (owner, 29 Aug 26 —
@@ -721,9 +794,18 @@ export function dayWarnHTML(di:any){
       const on=WFOCUS&&WFOCUS.di===di&&WFOCUS.ix===ix;
       return `<div class="witem ${w.sev}${on?' on':''}${muted?' muted':''}" data-wdi="${di}" data-wix="${ix}" title="Jump to the puck that caused this">`
         +`<span class="wbar"></span><span${ed?' class="wtx"':''}><span class="wcode">${esc(wlbl(WCODE[w.code]||w.code))}</span>`
-        +`<b>${esc(names)}</b>${names?' — ':''}${esc(w.msg||'')}</span>`
+        +`<b>${esc(names)}</b>${names?' — ':''}${esc(w.msg||'')}${sigNew(w)}</span>`
         +(ed?`<button class="witem-mute" data-woff="${di}.${ix}" title="${muted?'Show this check again':'Hide this check — it comes back if the situation changes'}">${muted?'↺':'✕'}</button>`:'')
         +`</div>`;
+    };
+    /* an OFFICIAL-only warning (it clears once the day is signed): struck through,
+       non-interactive (its index belongs to the official bundle, not this working
+       list), ranked by its own severity among the shown rows. */
+    const goneRow=(w:any)=>{
+      const names=(w.who||[]).map((id:any)=>PEOPLE[id]?PEOPLE[id].cs:id).join(', ');
+      return `<div class="witem ${w.sev} gone" title="On the signed version — publishing this day removes it">`
+        +`<span class="wbar"></span><span${ed?' class="wtx"':''}><s><span class="wcode">${esc(wlbl(WCODE[w.code]||w.code))}</span> `
+        +`<b>${esc(names)}</b></s> <span class="wsig gone">goes away once signed</span></span></div>`;
     };
     /* split the muted checks out of the visible list (edit only). warnShown
        reads the shared WARNOFF; the hidden ones gather under a "N hidden"
@@ -740,6 +822,7 @@ export function dayWarnHTML(di:any){
     h+=`<div class="dwlist">`+hards.map((x:any)=>row(x)).join('')
      +dayTraceHTML(di,pf)
      +rest.map((x:any)=>row(x)).join('')
+     +goneW.map(goneRow).join('')
      +(hidden.length
         ? `<div class="wmuted-h${mopen?' open':''}" data-wmtog="${di}" title="Show or hide the checks you have muted">`
           +`<span class="dwcar">${mopen?'▲':'▼'}</span>${hidden.length} hidden</div>`
@@ -1095,7 +1178,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
     let h=`<section class="day ${d.today?'today':''} ${ok?'dok':''}${PV?(PVQ?' issued':' preview'):''}" data-day="${di}">
       <div class="day-head">${ed
         ? `<span class="dow crewday" data-crewday="${di}" title="Show this day's crew in the aircrew panel">${d.dow}</span><span class="dt sb-open" data-sbday="${di}" title="Open scheduler board">${d.dt}${d.today?' · Today':''}</span>`
-        : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}${(ed||vsel)?`<span class="dhtpl">${ed?`<button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button>`:''}${planSelectorHTML(di)}</span>`:''}<span class="dhver">${verTagHTML(di)}</span>
+        : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}${(ed||vsel)?`<span class="dhtpl">${ed?`<button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button>`:''}${planSelectorHTML(di)}</span>`:''}<span class="dhver">${verTagHTML(di)}${(!PV&&notYetSigned(di))?`<span class="nysmark" title="This working copy has edits that have not been signed and published yet — the published schedule stays as-is until you publish">Not yet signed</span>`:''}</span>
       <span class="badge" title="Aircraft per wave · standalone lines after the slash">${dayCount(d)}</span>
       <span class="dstat">${(!ed&&!vsel)?viewVerSelHTML(di):''}${dayStatHTML(di,ed)}</span></div>`
       +pvBar
@@ -1125,7 +1208,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       +(ed?`<div class="signoff day-sign" data-signbar="${di}">${signoffHTML(di,false)}</div>`:'')
       +`<div class="day-body">`;
     /* warnings are live-model state — a snapshot is never validated */
-    if(!PV)h+=dayWarnHTML(di);
+    if(!PV||OFW)h+=dayWarnHTML(di);
     /* THE SCHEDULE SECTIONS are captured by slicing `h` at these boundary marks
        and re-emitted in the day's own order (owner, 29 Aug 26 — engine/order.ts
        secOrder), so a re-arrange costs no churn in the dense builders below and
@@ -1279,7 +1362,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
              rings, with no special case — until 7 Sep 26, when BB became
              AVALON's twin and anchors the same codes. */
           const chk=!saExempt(w,f,a), fkey=`${di}.${gi}.${li}`;
-          const own=(id:any)=>{ if(PV||!id)return null;
+          const own=(id:any)=>{ if((PV&&!OFW)||!id)return null;   /* official face shows these flags too (Codex CRPF-008) */
             const g=WARN.byDay[di];
             const hit=((g&&g.warns)||[]).find((x:any)=>(x.code==='DNIF_FLY'||x.code==='LEAVE_FLY'||x.code==='SC_QUAL'||x.code==='DOUBLE_BOOK'||x.code==='QUAL')
               /* also `x.also`, so the SECOND place of a one-man-two-places pair

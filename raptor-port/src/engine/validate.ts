@@ -5,10 +5,12 @@ import { overlap, hm24, lgT } from './time'
 import { collectEvents, shiftEvHard, scSeatHits, avSeatHits } from './events'
 import { HOOKS } from './hooks'
 import { sansGate, SANS_LABEL } from './avail'
-import { seedRunIn, prevSundaySeed, nextMondaySeed, nextMondayWorked } from './weekctx'
+import { seedRunIn, prevSundaySeed, nextMondaySeed, nextMondayWorked, windowDiverges, windowFiling, filingDivergesAt } from './weekctx'
+import { setWorld, setFiling, clearFiling } from './world'
 import { CURWEEK } from './waves'
 import { DAYS } from './data'
 import { keyDay } from './keys'
+import { SCHED, approvedDays, dayDelta, dayCurVer, daySnapOf } from './publish'
 
 /* the reference guards its header counters with $() lookups; the engine takes
    $ from the hooks (null outside a browser) so the guarded lines stay verbatim */
@@ -114,7 +116,7 @@ export function workSpan(evs:any){
   return {s,e,span:e-s,ef};
 }
 export function dayEvents(di:any,id:any){const m=EVD[di]; return (m&&m[id])||[];}
-export function validate(){
+function validateCore(){
   const ev=collectEvents(), all:any[]=[], byDay:any[]=[], sev:any={}, chip:any={}, dash:any={}, trace:any={};
   REST={}; EVD={};
   /* ring precedence: red beats orange beats grey, so a person carrying both a
@@ -1105,13 +1107,128 @@ export function validate(){
   CREWREST_BODY=crewRestDay;
   XD_CACHE=new Map();
   WARN={all,byDay,sev,chip,dash,trace};
-  const hard=all.filter((w:any)=>w.sev==='hard').length;
-  const note=all.filter((w:any)=>w.sev==='note').length;
-  if($('nHard'))$('nHard').textContent=hard;
-  if($('nAdv'))$('nAdv').textContent=all.length-hard-note;
-  if($('nNote'))$('nNote').textContent=note;
   return WARN;
 }
+/* ---- THE TWO DOCUMENTS (published-schedule flagging, spec §5) ---------------
+   validate() computes the WORKING bundle exactly as before — validateCore() above
+   writes every module global (WARN/REST/EVD/RUNLEN/RUNSEED/NEXTON/EVDAYS/PREVSUN/
+   NEXTMON/CREWREST_BODY/XD_CACHE), which every EDIT surface and the crew-picker/
+   drop probes read — then computes the OFFICIAL bundle: each APPROVED day judged
+   at its ISSUED (signed) version. The OFFICIAL run leaves NO global behind: it is a
+   snapshot/restore around a second validateCore() run, exactly as withDaySnap does
+   for a single day, widened to the whole week and to the validator's own globals.
+   When no approved day carries an unpublished amendment, OFFICIAL is the SAME object
+   as WORKING (the alias — drift-proof by construction, zero cost). The DOM counters
+   are emitted from WORKING only. [F-1/CRP-002, CRP-004] */
+export let OFFICIAL:any = WARN;
+export function officialWarn(){ return OFFICIAL; }
+/* THE ONE SURFACE-RESOLVED ACCESSOR (spec §5.4, F-3/CRP-007). Every warning
+   reader — sevOf/chipOf/dashOf/traceOf/traceLeads/traceIx/tracesOn, dayWarnHTML,
+   personWarns — reads the module WARN by name. Rendering a published day's frozen
+   face wraps the build in this, which points WARN at the OFFICIAL bundle for the
+   duration (the same swap-and-restore trick withDaySnap uses for DAYS), so the
+   whole surface resolves to the displayed day's version with no per-reader change.
+   Synchronous, restored in finally — never left swapped. REST/EVD are NOT swapped:
+   they feed the edit-page crew picker / drop probes only, never the issued face. */
+export function withOfficialWarn(fn:any){ const w=WARN; WARN=OFFICIAL; try{ return fn(); } finally{ WARN=w; } }
+export function validate(){
+  const w = validateCore();          // WORKING — writes the module globals
+  OFFICIAL = officialFor(w);         // aliased, or a snapshot/restore OFFICIAL run
+  const hard=w.all.filter((x:any)=>x.sev==='hard').length;
+  const note=w.all.filter((x:any)=>x.sev==='note').length;
+  if($('nHard'))$('nHard').textContent=hard;
+  if($('nAdv'))$('nAdv').textContent=w.all.length-hard-note;
+  if($('nNote'))$('nNote').textContent=note;
+  return w;
+}
+/* SOME approved day carries an unpublished amendment (a non-empty publication
+   delta against its issued version). Phase 1: the loaded week only; the cross-week
+   dependency window (§14.1) and the stashed-day delta (§14.2) arrive with the
+   cross-week phase. dayDelta already gates on dayApproved + a resolvable issued
+   snapshot, so an unresolvable snapshot never reads as "no delta". */
+function officialDiverges(){
+  /* the loaded week's own approved-day amendments, plus the cross-week half of the
+     dependency window (§14.1): a published neighbour Sunday/Monday whose stashed
+     working copy carries an unpublished amendment. Either forces the second pass;
+     otherwise OFFICIAL aliases WORKING (zero cost, cannot drift). */
+  /* per loaded approved day, force the official pass when its evidence is UNAVAILABLE
+     (no version / snapshot / snapshot.d → protect, Codex CRPF-005/R2-003), when its
+     content diverges (dayDelta), or when its FILING diverges membership-aware
+     (Codex R2-001 — the coarse dayDelta filingDelta treats absent == present-empty, so
+     a fresh unaccepted commitment on an approved day would otherwise alias). */
+  if(approvedDays().some((di:any)=>{
+    const ver=dayCurVer(di), snap=ver!=null?daySnapOf(di,ver):null;
+    if(!snap||!snap.d)return true;
+    if(dayDelta(di).length>0)return true;
+    return filingDivergesAt(snap.fil,(DAYS[di]||{}).dt);
+  }))return true;
+  return windowDiverges(CURWEEK,VCONF.maxRun);
+}
+function officialFor(working:any){
+  if(!officialDiverges())return working;   // ALIAS — the exact same object, cannot drift
+  return withIssuedWeek(()=>validateCore());
+}
+/* Install EVERY approved day's issued snapshot at once (F-4/CRP-006 — a
+   Tuesday-issued day must be judged against a Monday-issued day, not Monday-
+   working), run fn against it, then restore DAYS, SCHED and every validate()
+   global. Mirrors withDaySnap's swap+finally, widened to the whole week and to the
+   validator's own globals. Filing overrides (§14.3) and the world-aware cross-week
+   seeds (§5.3) are added in later phases. */
+function withIssuedWeek(fn:any){
+  /* every approved day: its issued snapshot when resolvable, else null → PROTECT it
+     (Codex CRPF-005 — an unresolvable approved day must NOT be left as its live draft
+     for the official pass to judge neighbours against). */
+  const days=approvedDays().map((di:any)=>{
+    const ver=dayCurVer(di); const snap=ver!=null?daySnapOf(di,ver):null;
+    return {di,snap:(snap&&snap.d)?snap:null};
+  });
+  const d0:any={}, ch0=SCHED.changes, pd0=SCHED.pending, changes:any={};
+  /* install the loaded week's approved days at their issued snapshot (F-4/CRP-006).
+     Even with NONE to install, the pass still runs: world='official' makes the
+     cross-week seeds resolve neighbour weeks at their signed version (§5.3), which is
+     the whole point of the delta-free-loaded-week case (§14.1). */
+  /* the signed filing to honour during the official pass (§14.3): neighbour weeks
+     first (windowFiling), then the loaded week's own approved days override — a date
+     belongs to exactly one week, so there is no real collision, loaded simply wins. */
+  const filing:any=windowFiling(CURWEEK,VCONF.maxRun);
+  /* capture every approved day's ORIGINAL entry (pure reads) BEFORE the try, so the
+     finally can always restore what it needs to. The install itself (below) runs
+     INSIDE the try (Fable FR-003): if any step there ever threw — today only
+     setFiling→dateOrd and Object.assign are in that window, both effectively
+     non-throwing — the restore would otherwise be skipped, leaving DAYS pointing at
+     frozen snapshots and SCHED.pending emptied. */
+  days.forEach(({di}:any)=>{ d0[di]=DAYS[di]; });
+  const g=snapGlobals();
+  try{
+    if(days.length){
+      days.forEach(({di,snap}:any)=>{
+        if(snap){ DAYS[di]=snap.d; Object.assign(changes,snap.c||{}); if(snap.d.dt!=null)filing[snap.d.dt]=snap.fil||{}; }
+        /* PROTECT: content stripped AND an EMPTY filing map installed for the date
+           (Codex R2-002) — stripping the programme alone left global INPUTS still
+           contributing via buildDay's day.input (fileAcc fell back to live acc). An
+           empty frozen filing makes fileAcc return 'r' for every input on the date, so
+           no schedule OR commitment-input flag is derived from unavailable evidence.
+           (A current medical fact still reads live, but with the seats stripped there is
+           nothing for it to clash with.) */
+        else { const sdt=(DAYS[di]||{}).dt; DAYS[di]={...DAYS[di],waves:[],dutywaves:[],sims:{amt:[],oft:[]},ground:[],allhands:[]}; if(sdt!=null)filing[sdt]={}; }
+      });
+      SCHED.changes=changes; SCHED.pending={};
+    }
+    setWorld('official'); setFiling(filing);
+    return fn();
+  }
+  finally{
+    setWorld('working'); clearFiling();
+    days.forEach(({di}:any)=>{ DAYS[di]=d0[di]; });
+    SCHED.changes=ch0; SCHED.pending=pd0;
+    restoreGlobals(g);
+  }
+}
+/* the complete set of module state validateCore() reassigns — snapshotted before
+   the OFFICIAL run and restored after, so WORKING's globals (which every edit
+   surface reads) survive the second run untouched. */
+function snapGlobals(){ return {WARN,REST,EVD,RUNLEN,RUNSEED,NEXTON,EVDAYS,PREVSUN,NEXTMON,CREWREST_BODY,XD_CACHE}; }
+function restoreGlobals(g:any){ WARN=g.WARN;REST=g.REST;EVD=g.EVD;RUNLEN=g.RUNLEN;RUNSEED=g.RUNSEED;NEXTON=g.NEXTON;EVDAYS=g.EVDAYS;PREVSUN=g.PREVSUN;NEXTMON=g.NEXTMON;CREWREST_BODY=g.CREWREST_BODY;XD_CACHE=g.XD_CACHE; }
 export const sevOf=(di:any,id:any)=>WARN.sev[di]&&WARN.sev[di][id];
 export const chipOf=(di:any,id:any)=>WARN.chip&&WARN.chip[di]&&WARN.chip[di][id];
 /* the ring STROKE, published per person like the ring colour above it: true

@@ -29,9 +29,12 @@
    not off the bundle.) */
 import { weekBundle, shiftWeekKey } from './weeks-data'
 import { buildDay } from './events'
-import { INPUTS, inputCoversDate, isPersonal, inputDormant, baseYear } from './inputs'
+import { INPUTS, inputCoversDate, isPersonal, inputDormant, baseYear, inpId } from './inputs'
 import { PEOPLE, isSpecial } from './people'
-import { stashDays } from './weekstash'
+import { stashDays, stashSched } from './weekstash'
+import { getWorld, filingActive, filingHas } from './world'
+import { dayCurVerIn, daySnapIn } from './publish'
+import { canonicalDiff } from './canonical'
 
 /* weekBundle(v) is a pure function of v for the two authored weeks and a
    fresh-but-identical blank for everything else (weeks-data.ts) — so caching
@@ -49,12 +52,42 @@ import { stashDays } from './weekstash'
    stashDays hands back a fresh copy every time (never itself cached), because
    unlike the seed it keeps changing while the scheduler is still editing it. */
 const bundleCache:any={};
+/* ONE DAY of a stashed week resolved to its OFFICIAL (signed) version
+   (published-schedule flagging, §5.3). An unapproved day has no other version, so
+   its working copy IS official. An approved day resolves through the SAME resolver
+   OIL uses — dayCurVerIn/daySnapIn against the stash's own SCHED and week key — so a
+   member's programme and their OIL credit can never disagree about "which version is
+   official". An approved day whose issued snapshot cannot be resolved is PROTECTED
+   (§14.1): its content is stripped so no cross-week flag is DERIVED from unavailable
+   evidence — never a fall-back to the unpublished draft. */
+function issuedDayIn(sc:any,di:number,v:any,working:any){
+  if(!(sc.dayOK||{})[di])return working;
+  const ver=dayCurVerIn(sc,di,v), snap=ver!=null?daySnapIn(sc,di,ver,v):null;
+  /* the frozen CONTENT, but the NORMALIZED date from the stashed working day (Codex
+     CRPF-004): a snapshot froze its dt under the year that was loaded when it was
+     signed, so returning snap.d raw would re-introduce that label and, at a New Year
+     boundary, address the wrong year in inputCoversDate/fileAcc. Never mutate the
+     stored snapshot — spread a fresh object. */
+  if(snap&&snap.d)return {...snap.d,dt:working.dt};
+  return {...working,waves:[],dutywaves:[],sims:{amt:[],oft:[]},ground:[],allhands:[]};
+}
 function bundle(v:any){
   /* stashDays, not stashHas-then-trust: a persisted blob that fails to parse
      comes back null and the read falls through to the pure seed — a corrupt
      localStorage entry must degrade to "as if never edited", never crash a
      validate() that runs on every keystroke. */
-  const st=stashDays(v); if(st)return st;
+  const st=stashDays(v);
+  if(st){
+    /* THE OFFICIAL WORLD (validate.ts's second pass) reads each stashed day at its
+       SIGNED version, so an unpublished amendment to a neighbour week cannot leak
+       into the loaded week's official flags. A never-stashed (pure-seed) week has no
+       publication state and no divergence, so working IS official for it. */
+    if(getWorld()==='official'){
+      const sc=stashSched(v);
+      if(sc)return {days:st.days.map((d:any,di:number)=>issuedDayIn(sc,di,v,d)),dates:st.dates};
+    }
+    return st;
+  }
   /* keyed by v AND the loaded year (24 Aug 26): a blank week's labels leave
      the CURRENT baseYear() implicit (weeks-data.ts weekLabels), so the same
      v generated under one loaded year reads wrong under another — real at a
@@ -86,21 +119,29 @@ function bundle(v:any){
    for a non-loaded week. xweek:true on buildDay bypasses the accepted-row dedup in inpShow
    (events.ts) — irrelevant to workedSet, which never reads day.input, but
    passed for the one buildDay contract every caller here shares. */
-function workedSet(day:any,ix:any){
+function workedSet(day:any,ix:any,approved?:any){
   const built=buildDay(day,ix,null,null,true);
   const ids=new Set<any>();
   (built.events||[]).forEach((e:any)=>{ if(e.id&&PEOPLE[e.id]&&!isSpecial(e.id))ids.add(e.id); });
-  INPUTS.forEach((inp:any)=>{
-    if(!isPersonal(inp.type))return;
-    /* a REMOVED input (acc 'r' — dormant, owner 26 Aug 26) is the one acc
-       state this scan does honour: the mark rides the input itself and
-       survives week switches (loadWeek's clear skips it), so "would have
-       auto-landed" is genuinely false for it — autoAcceptInput refuses it. */
-    if(inputDormant(inp))return;
-    if(!inputCoversDate(inp,day.dt))return;
-    const id=inp.person;
-    if(id&&PEOPLE[id]&&!isSpecial(id))ids.add(id);
-  });
+  /* the hypothetical auto-landing of a personal ACTIVITY input models an UNSIGNED
+     seed date: loadWeek would land it as a ground row, but a non-loaded week never
+     does. An APPROVED date never auto-lands a working input at all (autoAcceptInput's
+     own approved-day guard), and its frozen/selected document already reflects exactly
+     what landed — so its events ARE the work in BOTH worlds (Codex CRPF-007/R2-005),
+     matching validateCore's own RUNLEN on-set (day.events only). Skip the re-add for
+     an approved date (from the stash) or a signed official date; a cancelled/unlanded
+     activity must never be counted off its input. */
+  const signed=approved||(filingActive()&&filingHas(day.dt));
+  if(!signed){
+    INPUTS.forEach((inp:any)=>{
+      if(!isPersonal(inp.type))return;
+      /* a REMOVED input (acc 'r' — dormant, owner 26 Aug 26) never auto-lands. */
+      if(inputDormant(inp))return;
+      if(!inputCoversDate(inp,day.dt))return;
+      const id=inp.person;
+      if(id&&PEOPLE[id]&&!isSpecial(id))ids.add(id);
+    });
+  }
   return ids;
 }
 
@@ -120,15 +161,17 @@ export function seedRunIn(curWeek:any,maxRun:any){
   let prevPrevBundle:any=null;
   const counts:any={};
   const done=new Set<any>();
+  const prevSc=stashSched(prevKey); let prevPrevSc:any=undefined;
   for(let k=1;k<=maxRun;k++){
-    let day:any,ix:any;
-    if(k<=7){ ix=7-k; day=prevBundle.days[ix]; }
+    let day:any,ix:any,sc:any;
+    if(k<=7){ ix=7-k; day=prevBundle.days[ix]; sc=prevSc; }
     else{
-      if(!prevPrevBundle)prevPrevBundle=bundle(shiftWeekKey(curWeek,-2));
-      ix=14-k; day=prevPrevBundle.days[ix];
+      if(!prevPrevBundle){prevPrevBundle=bundle(shiftWeekKey(curWeek,-2)); prevPrevSc=stashSched(shiftWeekKey(curWeek,-2));}
+      ix=14-k; day=prevPrevBundle.days[ix]; sc=prevPrevSc;
     }
     if(!day)break;
-    const worked=workedSet(day,ix);
+    /* an APPROVED seed date counts events only, in both worlds (R2-005) */
+    const worked=workedSet(day,ix,!!((sc&&sc.dayOK)||{})[ix]);
     if(k===1){
       worked.forEach((id:any)=>{ counts[id]=1; });
     }else{
@@ -176,11 +219,103 @@ export function prevSundaySeed(curWeek:any){
    seed, so an edited next week (the stash) is what Sunday is judged
    against. Bounded to Monday — one lookahead day, like the crew-rest trace. */
 export function nextMondayWorked(curWeek:any){
-  const nextBundle=bundle(shiftWeekKey(curWeek,1));
-  return workedSet(nextBundle.days[0],0);
+  const nextKey=shiftWeekKey(curWeek,1), nextBundle=bundle(nextKey), sc=stashSched(nextKey);
+  return workedSet(nextBundle.days[0],0,!!((sc&&sc.dayOK)||{})[0]);
 }
 export function nextMondaySeed(curWeek:any){
   const nextBundle=bundle(shiftWeekKey(curWeek,1));
   const built=buildDay(nextBundle.days[0],0,null,null,true);
   return {fly:built.fly,events:built.events,input:built.input,dow:built.dow,di:null};
+}
+/* THE ALIAS GATE'S CROSS-WEEK HALF (published-schedule flagging, §14.1/§14.2).
+   validate() aliases OFFICIAL=WORKING (skips the second pass) only when NOTHING in
+   the dependency window diverges. The loaded week's own approved-day deltas are
+   checked by validate() directly; this answers the NEIGHBOUR half — a prior Sunday
+   or next Monday that is PUBLISHED but carries an unpublished amendment in its
+   stash. Without it, a delta-free loaded week would alias and a neighbour's
+   amendment would silently drive the loaded week's official flags. Reads the
+   STASHED days (§14.2 — dayDeltaIn reads the LIVE DAYS and cannot diff a non-loaded
+   week) and diffs each approved day's signed snapshot against its stashed working
+   copy. An UNRESOLVABLE approved snapshot forces the official pass (so that week is
+   protected there), never an alias. Bounded to the same window the seeds read:
+   prev week (crew rest + run), next Monday, and the week-before when maxRun>7. */
+/* the LIVE filing (acc) for one date, keyed by input id — dayFilingFingerprint
+   parameterized on a date instead of a loaded DAYS index (Codex CRPF-002/§14.2). */
+function liveFilingAt(dt:any){
+  const f:any={};
+  (INPUTS||[]).forEach((inp:any)=>{ if(inputCoversDate(inp,dt))f[inpId(inp)]=inp.acc||''; });
+  return f;
+}
+/* a filing divergence between a frozen fingerprint and the live filing for its date.
+   MEMBERSHIP-aware (Codex CRPF-003 half): an input present now but absent when signed
+   (or vice versa) is a divergence regardless of its acc value; so is a changed acc.
+   Exported so the LOADED-week gate uses the same comparator (Codex R2-001), not the
+   coarse filingDelta (which treats absent == present-empty). */
+export function filingDivergesAt(snapFil:any,dt:any){ return filingDiffers(snapFil,dt); }
+function filingDiffers(snapFil:any,dt:any,xweek?:any){
+  const now=liveFilingAt(dt), was=snapFil||{};
+  const ids=new Set([...Object.keys(now),...Object.keys(was)]);
+  for(const id of ids){
+    const inNow=Object.prototype.hasOwnProperty.call(now,id), inWas=Object.prototype.hasOwnProperty.call(was,id);
+    if(inNow!==inWas)return true;
+    let a=now[id]||'', b=was[id]||'';
+    /* CROSS-WEEK ONLY (Fable FR-002): 'g' — an activity landed on a ground row — is
+       PER-WEEK landing state. Navigation clears the live acc of every input not on the
+       loaded week (store.ts applyWeekModel reconcileLandedAcc), so a neighbour signed at
+       'g' reads live '' while its frozen fingerprint still holds 'g'. Left exact, that
+       forces the second validate() pass on EVERY keystroke for any published neighbour
+       carrying an accepted input — with no amendment anywhere. Treat 'g' and '' as the
+       same signed state for the alias decision (fileAcc still honours the frozen 'g'
+       during the pass, so correctness is untouched). 'r' (removed) and 'u' (filed) are
+       real filing decisions that survive navigation — kept exact. The LOADED-week gate
+       (filingDivergesAt) passes no xweek: there the live acc is authoritative. */
+    if(xweek){ if(a==='g')a=''; if(b==='g')b=''; }
+    if(a!==b)return true;
+  }
+  return false;
+}
+export function windowDiverges(curWeek:any,maxRun:any){
+  const keys=[shiftWeekKey(curWeek,-1),shiftWeekKey(curWeek,1)];
+  if(maxRun>7)keys.push(shiftWeekKey(curWeek,-2));
+  return keys.some((v:any)=>{
+    const days=stashDays(v), sc=stashSched(v);
+    if(!days||!sc)return false;                     // never edited → no unpublished amendment
+    for(let di=0;di<7;di++){
+      if(!(sc.dayOK||{})[di])continue;
+      const ver=dayCurVerIn(sc,di,v), snap=ver!=null?daySnapIn(sc,di,ver,v):null;
+      if(!snap||!snap.d)return true;                // unresolvable → compute official (protect), never alias
+      if(canonicalDiff(snap.d,days.days[di],di).length>0)return true;
+      /* FILING divergence too (Codex CRPF-002): a signed input removed to 'r' (or a
+         new one added) changes no DAYS content, so a content-only gate would alias and
+         drop the signed input's contribution from OFFICIAL. */
+      const dt=days.days[di]&&days.days[di].dt;
+      if(dt!=null&&filingDiffers(snap.fil,dt,true))return true;   // xweek: a navigation-cleared 'g' is not a divergence (Fable FR-002)
+    }
+    return false;
+  });
+}
+/* THE SIGNED FILING of each stashed neighbour approved day, keyed by date
+   (published-schedule flagging, §14.3 trap a). The loaded week's own filing is
+   installed by validate.ts:withIssuedWeek off the live snapshots; this is its
+   cross-week half, so the official run's 7-day count and neighbour seed reads read
+   the SIGNED filing there too. Same window and resolver as windowDiverges. */
+export function windowFiling(curWeek:any,maxRun:any){
+  const out:any={};
+  const keys=[shiftWeekKey(curWeek,-1),shiftWeekKey(curWeek,1)];
+  if(maxRun>7)keys.push(shiftWeekKey(curWeek,-2));
+  keys.forEach((v:any)=>{
+    const days=stashDays(v), sc=stashSched(v);
+    if(!days||!sc)return;
+    for(let di=0;di<7;di++){
+      if(!(sc.dayOK||{})[di])continue;
+      const ver=dayCurVerIn(sc,di,v), snap=ver!=null?daySnapIn(sc,di,ver,v):null;
+      const dt=days.days[di]&&days.days[di].dt;
+      /* ALWAYS install a filing entry for an approved adjacent date (Codex R3-001):
+         its signed fingerprint when resolvable, else {} to PROTECT it — issuedDayIn
+         strips such a day's programme, but without an empty filing here fileAcc would
+         fall back to live acc and let a live commitment input leak into the seed. */
+      if(dt!=null)out[dt]=(snap&&snap.d)?(snap.fil||{}):{};
+    }
+  });
+  return out;
 }

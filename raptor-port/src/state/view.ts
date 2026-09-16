@@ -4,10 +4,10 @@ import { PEOPLE } from '../engine/people'
 import { keyDay } from '../engine/keys'
 import { slotVal, setSlotVal, fillSlot, armTargetExists } from '../engine/slots'
 import { popReorderedDay } from '../engine/reorder'
-import { slotBar, personCount, personWarnDays } from '../engine/avail'
-import { validate, WARN, traceOf } from '../engine/validate'
-import { markEdit, daySnapOf } from '../engine/publish'
-import { curDraftId, reconcileIssuedMarks } from '../engine/drafts'
+import { slotBar, personCount } from '../engine/avail'
+import { validate, WARN, officialWarn } from '../engine/validate'
+import { markEdit, daySnapOf, dayApproved } from '../engine/publish'
+import { curDraftId, reconcileIssuedMarks, isDraftVer } from '../engine/drafts'
 import { isLead, isInstr, isOcu } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched, ME } from './auth'
@@ -427,14 +427,22 @@ export function selectPerson(id:any,inWeek?:any){
     WFOCUS=null; DWOPEN.clear(); PFOCUS=null;
     if(inWeek){
       if(!WARN.byDay.length)validate();
-      const days=personWarnDays(id);
-      /* days that carry this person's cross-day TRACE count too (23 Aug 26):
-         a Sunday whose late finish busts NEXT week's Monday rings the puck
-         with no warning anywhere in the loaded week — personWarnDays alone
-         left that click a dead end, an unexplainable ring. Within a week the
-         breach day was always in the list already, so this only ever ADDS
-         the forward-trace case. */
-      for(let di=0;di<7;di++)if(traceOf(di,id)&&days.indexOf(di)<0)days.push(di);
+      /* light his warning days in the DISPLAYED world, per day (Item 3 / R3-004): on the
+         view page a published-only breach lands on the OFFICIAL bundle, so reading WORKING
+         (personWarnDays/traceOf) left that puck's click a dead end. Resolve each day through
+         displayedByDay + the matching-world trace — the SAME dayDisplaysOfficial mirror the
+         render and the warning-list click use, so the puck, its ring and its box agree. This
+         lives in view.ts on purpose: personWarnDays is engine-side (avail.ts) and cannot read
+         the view's world without a cycle. Off the view page every day resolves WORKING, so the
+         behaviour is unchanged there (and a cross-day TRACE with no warning still counts, the
+         forward-Monday-bust case, 23 Aug 26). */
+      const days:any[]=[];
+      for(let di=0;di<7;di++){
+        const g=displayedByDay(di);
+        const tr=(dayDisplaysOfficial(di)?officialWarn():WARN).trace;
+        const hasWarn=!!(g&&g.warns&&g.warns.some((w:any)=>(w.who||[]).includes(id)));
+        if(hasWarn||(tr&&tr[di]&&tr[di][id]))days.push(di);
+      }
       if(days.length){ PFOCUS={id,days}; days.forEach((di:any)=>DWOPEN.add(di)); }
     }
     SELSEEN=personCount(id);
@@ -453,10 +461,49 @@ export function toggleDayWarn(di:any){
   if(DWOPEN.has(di)){DWOPEN.delete(di); if(WFOCUS&&WFOCUS.di===di)WFOCUS=null;}
   else {DWOPEN.add(di); WFOCUS=null; clearOtherHL();}
 }
+/* WHICH warning bundle a day is currently DISPLAYING (published-schedule flagging,
+   §5.4/§14.4). The click/focus path must read the SAME bundle the day's rendered
+   list came from, or a tap on a published-only warning would resolve against the
+   working copy and open the wrong thing (or nothing). The view page's published,
+   non-VWORK, non-preview day shows the OFFICIAL flags (dayIssuedHTML, phase 2);
+   every other surface — the edit page, a VWORK'd "Working draft" day — shows
+   WORKING. A stale/foreign index then simply resolves to nothing (a defined no-op),
+   never a throw (§14.4). */
+export function displayedByDay(di:any){
+  di=+di
+  /* mirror viewDayHTML's render selection EXACTLY (Codex CRPF-009; extended for
+     [CRP-FLAG] Item 2, Codex CRP-I2-001). The view page renders OFFICIAL flags for an
+     approved day (unless VWORK'd) AND for a LIVE DRAFT day (withOfficialWarn) — only a
+     VWORK'd approved day or an active draft PREVIEW ('d:<id>' in DPREV whose snapshot
+     resolves) render WORKING. A clicked/focused warning MUST resolve against the same
+     world, or an official-only warning's severity-sorted index would land on an unrelated
+     WORKING warning at that index (the missing-index guard cannot catch a collision).
+     An edit-page 'd:' preview is ignored for APPROVED days, so draftPreview gates on
+     !dayApproved; VWORK never holds a draft, so it only bites the approved case. */
+  return (dayDisplaysOfficial(di)?officialWarn():WARN).byDay[di]
+}
+/* Does the VIEW page render THIS day's flags from the OFFICIAL world? The single
+   source of truth for "which world day di is showing", so displayedByDay (the click/
+   focus/highlight accessor) and the day-details modal (Codex CRP-I2-002) can never
+   drift from viewDayHTML's own render selection. Official for an approved day (unless
+   VWORK'd) AND for a live DRAFT day; WORKING for a VWORK'd approved day or an active
+   draft preview, and everywhere off the view page. */
+export function dayDisplaysOfficial(di:any){
+  di=+di
+  if(CURPAGE!=='viewsched')return false
+  /* mirror viewDayHTML branch-for-branch (Codex CRP-I2-R2-001): VWORK is an
+     APPROVED-day affordance only — viewDayHTML checks it solely on the approved
+     branch, and a DRAFT day renders OFFICIAL regardless of VWORK (a stale VWORK
+     entry can outlive an undo past publication onto a now-draft day). So gate VWORK
+     inside the approved branch; a live draft is official unless an active 'd:' preview. */
+  if(dayApproved(di))return !VWORK.has(di)
+  const ver=DPREV.get(di)
+  return !(isDraftVer(ver)&&!!daySnapOf(di,ver))
+}
 /* one warning → focus + snap (reference 3997-4003, verbatim) */
 export function focusWarn(di:any,ix:any){
   di=+di; ix=+ix;
-  const g=WARN.byDay[di], w=g&&g.warns&&g.warns[ix]; if(!w)return;
+  const g=displayedByDay(di), w=g&&g.warns&&g.warns[ix]; if(!w)return;
   if(WFOCUS&&WFOCUS.di===di&&WFOCUS.ix===ix)WFOCUS=null;
   /* keep PFOCUS across clearOtherHL: picking one of a person's warnings must
      not widen their box back out to the whole day's list */
@@ -764,7 +811,7 @@ export function warnFocusMap(){
   if(PFOCUS)return null;          // a clicked puck alone uses the ordinary selection highlight
   if(!DWOPEN.size)return null;
   const m=new Map();
-  DWOPEN.forEach((di:any)=>{const g=WARN.byDay[di]; if(!g||!g.warns||!g.warns.length)return;
+  DWOPEN.forEach((di:any)=>{const g=displayedByDay(di); if(!g||!g.warns||!g.warns.length)return;   /* per displayed version (Codex R3-004) */
     const ids=new Set(); let sev='adv';
     g.warns.forEach((w:any)=>{(w.who||[]).forEach((id:any)=>ids.add(id)); if(w.sev==='hard')sev='hard';});
     if(ids.size)m.set(di,{ids,sev});});

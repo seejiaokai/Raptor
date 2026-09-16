@@ -12,17 +12,20 @@ import { schedPrintHTML } from './printpdf'
 beforeAll(() => { initStore() })
 
 describe('schedPrintHTML', () => {
-  it('is a complete standalone document carrying every schedule row', () => {
+  it('is a complete standalone report, grouped by day, carrying every flying line', () => {
     const rows = schedRows()
     const html = schedPrintHTML(rows, 'wk')
     expect(html.startsWith('<!doctype')).toBe(true)
     expect(html.endsWith('</html>')).toBe(true)
     expect(html).toContain('142 SQN — Flying Programme')
     expect(html).toContain('wk')
-    /* header cells ride a <thead>, one <tr> per schedRows() row overall */
-    expect(html).toContain('<th>Day</th>')
+    expect(html).toContain('RESTRICTED')                 // the agency-report marking (owner, 16 Sep 26)
+    expect(html).toContain('<th>Remarks</th>')           // the report's own column headers
     expect(html).toContain('<th>Stores</th>')
-    expect((html.match(/<tr/g) || []).length).toBe(rows.length)
+    /* one tbody <tr> per flying line (every schedRows row except the header),
+       spread across the per-day tables */
+    const bodyTrs = (html.match(/<tbody>[\s\S]*?<\/tbody>/g) || []).join('').match(/<tr>/g) || []
+    expect(bodyTrs.length).toBe(rows.length - 1)
   })
 
   it('escapes every cell — markup in a remark prints as text, never runs', () => {

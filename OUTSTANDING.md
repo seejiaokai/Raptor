@@ -419,6 +419,39 @@ save signal) and the Tracker's dropped SharePoint/Dataverse/Firebase layers.
 - **Model:** design review on Fable, high (the expensive-to-get-wrong decision);
   build volume on Opus.
 
+### [CRP-FLAG] Live flagging on the PUBLISHED schedule — DESIGNED + RED-TEAMED, ready to build (15 Sep 26)
+Show live warnings (crew rest incl. cross-day/past-midnight, the 7-day work rule, timing
+clashes) on the published/signed schedule again — today publishing a day hides them. Model:
+two checked versions (signed + working); each screen flags the version it shows; check a day
+against each surrounding day's **published version if it has one, else its working copy**; the
+day being amended drives the scheduler's own preview. Content byte-frozen; "Not Yet Signed"
+marker (everyone). Clock-free; NOT coupled to EOD.
+- **Fully scoped + cross-provider red-teamed** (2 rounds + a confirmation, Codex + Fable). On
+  branch `claude/crewrest-published-flagging`. **Build spec:**
+  `raptor-port/docs/superpowers/specs/2026-09-15-crewrest-flagging-plan-v2.md` (§5 mechanism,
+  §11 tests, §14 tricky build spots); review log alongside it.
+- **HEAVY**, test-first, Opus; keep `tfin.js` 728/0; fresh Codex+Fable CODE inspection after
+  build; no merge without "merge live". Owner decisions locked in session-state.md.
+
+### [FLAG-EXPORT] PDF export — print the PUBLISHED version + a nicer agency-facing redesign — OPEN (follow-up of [CRP-FLAG])
+TWO halves (owner, 15–16 Sep 26):
+- **Functional (not a design call — safe to build):** exports (`schedRows`→export.ts/printpdf.ts)
+  read the live working `DAYS`; export the **published** version instead, and label the
+  next-week peek working-vs-signed.
+- **Visual redesign (owner direction, 16 Sep 26 — "your call on the design"):** the PDF is a
+  REPORTING tool to an agency next time, not a planning tool. So:
+  - **DROP the right-hand personnel / "Aircrew Available" roster columns** (planning-only, not
+    needed for the report).
+  - **White background** (not the app's dark theme).
+  - **Make the format nicer / cleaner — NOT multiple grids** (a single clean layout).
+  - Similar to Raptor style is fine; it need NOT match the sheet exactly. Initials-vs-callsign
+    doesn't matter.
+  - **Sample of the current sheet:** `raptor-port/docs/img/flag-export-sample-current.png`
+    (the "16 Sep 2026 Schedule AL0" export the squadron sends today).
+  - **Process:** produce 1–2 rendered sample PDFs for the owner to PICK before finalizing
+    (his "show a picture before product code" rule); nothing merges without "merge live".
+- Separate gated PR after [CRP-FLAG]. Context: [CRP-FLAG]'s review log + the sample image.
+
 ---
 
 ## Done

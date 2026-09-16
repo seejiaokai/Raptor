@@ -7,10 +7,8 @@
    surfaces. */
 import { useEffect, useRef } from 'react'
 import { DAYS } from '../engine/data'
-import { CARRYDAY, CURPAGE, DPREV, PEEKLAND, VWORK, WEEKJUMP, setCarryDay, setPeekLand, setWeekJump, scrollWeekToDay, scrollWeekToLanding } from '../state/view'
-import { daySnapOf, dayApproved } from '../engine/publish'
-import { isDraftVer } from '../engine/drafts'
-import { dayHTML, dayIssuedHTML, withDaySnap } from './html'
+import { CARRYDAY, CURPAGE, PEEKLAND, WEEKJUMP, setCarryDay, setPeekLand, setWeekJump, scrollWeekToDay, scrollWeekToLanding } from '../state/view'
+import { viewDayHTML } from './html'
 import { refreshHighlights } from './highlights'
 import { beginGlide } from './weekglide'
 import { weekScrollMax, panHold } from './pan'
@@ -54,13 +52,7 @@ export function ViewWeek() {
          armed on the edit page stays the edit page's business. Same lazy
          orphan prune as EditWeek — a deleted or undone-away draft renders
          the live day, not a ghost. */
-    const html = DAYS.map((_: any, di: number) => {
-      if (dayApproved(di)) return VWORK.has(di) ? dayHTML(di, false) : dayIssuedHTML(di)
-      const ver = DPREV.get(di)
-      if (!isDraftVer(ver)) return dayHTML(di, false)
-      if (!daySnapOf(di, ver)) { DPREV.delete(di); return dayHTML(di, false) }
-      return withDaySnap(di, ver, () => dayHTML(di, false))
-    })
+    const html = DAYS.map((_: any, di: number) => viewDayHTML(di))
     const p = prev.current
     const sl = root.scrollLeft
     /* capture the outgoing week for the cross-week glide BEFORE the DOM is

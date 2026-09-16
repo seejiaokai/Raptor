@@ -266,6 +266,14 @@ export function dayDelta(di:any):DeltaEntry[]{return dayDeltaIn(SCHED,di,CURWEEK
    then offered no way to publish. dayDelta already gates on dayApproved + a
    resolvable issued snapshot, so this reads straight through it. */
 export function dayHasChanges(di:any):boolean{di=+di;return dayDelta(di).length>0;}
+/* THE "NOT YET SIGNED" MARKER (published-schedule flagging, §6/§14.5). Shown to
+   EVERYONE on a published day whose live working copy diverges from its signed
+   version — i.e. an unpublished amendment exists. Derived from the canonical delta
+   (dayHasChanges), NEVER from SCHED.pending marks (which survive a file-then-unfile
+   round trip), and MUST be read on the LIVE day, before any withDaySnap swap (inside
+   the swap the day diffs against itself and reads clean). A never-published day has
+   no signed version to diverge from, so the marker is a published-day thing only. */
+export function notYetSigned(di:any):boolean{di=+di;return dayApproved(di)&&dayHasChanges(di);}
 /* the number of unpublished edits a "Load onto working copy" would DISCARD — the
    count the recovery confirm shows and the recovery handler acts on. ONE authority
    (P2-IMPL-09): the two button renderers (ui/html.ts week, ui/SchedBoard.tsx board)

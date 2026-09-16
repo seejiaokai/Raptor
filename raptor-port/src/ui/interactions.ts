@@ -35,7 +35,7 @@ import { shiftWeek } from './weeknav'
    no way to clear them short of hunting for blank space. This mirrors the
    day-detail panel's [data-adv] branch, which had the same problem to solve. */
 function jumpToWarn(di: number, ix: number) {
-  const g = WARN.byDay[di], w = g && g.warns && g.warns[ix]
+  const g = view.displayedByDay(di), w = g && g.warns && g.warns[ix]
   if (!w) return                       // a stale index — validate() rebuilds WARN wholesale
   view.DWOPEN.clear(); view.DWOPEN.add(di)
   /* code/prevDi/leaveBy ride along exactly as focusWarn sets them — the
@@ -992,7 +992,7 @@ export function routeClick(e: MouseEvent) {
     e.stopPropagation()
     if (!canEditSched()) { HOOKS.toast('Only a scheduler can mute a check', 'warn'); return }
     const [di, ix] = (wo.dataset.woff || '').split('.').map(Number)
-    const g = WARN.byDay[di], w = g && g.warns && g.warns[ix]
+    const g = view.displayedByDay(di), w = g && g.warns && g.warns[ix]
     if (w) {
       const shown = view.toggleWarnOff(view.warnMuteKey(w))
       HOOKS.toast(shown ? 'Check shown again' : 'Check hidden — it returns if the day changes', 'ok')
@@ -1105,7 +1105,7 @@ export function routeClick(e: MouseEvent) {
   const adv = t.closest('[data-adv]') as HTMLElement | null
   if (adv) {
     const a = String(adv.dataset.adv).split('.'), di = +a[0]!, ix = +a[1]!
-    const g = WARN.byDay[di], w = g && g.warns && g.warns[ix]; if (!w) return
+    const g = view.displayedByDay(di), w = g && g.warns && g.warns[ix]; if (!w) return
     setDayPop(null)
     view.DWOPEN.clear(); view.DWOPEN.add(di)
     /* code/prevDi/leaveBy ride along exactly as focusWarn sets them — the
