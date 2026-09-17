@@ -21,7 +21,7 @@
  * present (see CLAUDE.md), else Playwright's own download (CI).
  */
 import { chromium } from '@playwright/test';
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 
 const PORT = process.env.SMOKE_PORT || 4179;
@@ -53,9 +53,58 @@ if (OWN_SERVER) {
   await run('npm', ['run', 'build']);
   server = spawn('npx', ['vite', 'preview', '--port', String(PORT), '--strictPort'],
     { stdio: 'ignore', shell: process.platform === 'win32' });
-  if (!await waitForServer(URL)) { console.error(`preview server never came up at ${URL}`); server.kill(); process.exit(1); }
+  if (!await waitForServer(URL)) { console.error(`preview server never came up at ${URL}`); killServer(); process.exit(1); }
 }
-const stopServer = () => { if (server && !KEEP) server.kill(); };
+/* Kill the WHOLE server tree, not just the immediate child. On Windows the
+   preview runs under a shell (shell:true), so server.kill() ends only the shell
+   and leaves `vite preview` still holding the strict port — an orphan that made
+   the NEXT run fail to bind on clean code, which is the "stray :4179" the
+   handoffs kept hitting on the desktop. taskkill /T /F takes the tree down. */
+function killServer() {
+  if (!server) return;
+  if (process.platform === 'win32') {
+    /* spawnSync does NOT throw for a bad pid or a missing taskkill — it reports
+       through .error / .status — so test those, or the server.kill() fallback
+       below is dead code and a failed taskkill leaves the server up. */
+    const r = spawnSync('taskkill', ['/pid', String(server.pid), '/T', '/F'], { stdio: 'ignore' });
+    if (!r.error && r.status === 0) return;
+  }
+  try { server.kill(); } catch (_) {}
+}
+const stopServer = () => { if (server && !KEEP) killServer(); };
+
+/* Tear down however the run ends, and REGISTER THIS BEFORE launching the
+   browser: a check that times out throws before the teardown at the foot of
+   this file runs, and so does a failing chromium.launch()/newPage() — either
+   used to ABANDON the vite preview still holding the strict port (and the
+   browser). The next `npm run smoke:tracker` then could not bind that port and
+   failed on clean code (the "stray :4179" the handoffs kept hitting), and a
+   pile-up of leaked servers starved later runs into more timeouts, which leaked
+   more servers. These handlers close both on any crash, then exit non-zero, so
+   one failure can no longer cascade into the next run. A timed-out check
+   surfaces as `uncaughtException` (a rejected top-level await in an entry
+   module); `unhandledRejection` covers a stray rejection with no awaiter — both
+   are registered. `b` is filled in below; the teardown guards for the window
+   where the browser has not launched yet. */
+let b = null, pg = null;
+/* MEMOISE the in-flight teardown (not a boolean flag): a SECOND failure arriving
+   while the first teardown is still awaiting b.close() must await the SAME
+   close-then-stop, not return early and race process.exit ahead of stopServer —
+   which would orphan the server this whole thing exists to kill. b.close() is
+   also bounded, so a wedged browser can't hang the crash path forever. */
+let tearing = null;
+const teardown = () => (tearing ||= (async () => {
+  try { if (b) await Promise.race([b.close(), new Promise(r => setTimeout(r, 10000))]); } catch (_) {}
+  stopServer();
+})());
+for (const sig of ['unhandledRejection', 'uncaughtException']) {
+  process.on(sig, async e => {
+    console.error(`\nsmoke aborted (${sig}):`, (e && e.stack) || e);
+    await teardown();
+    if (KEEP && server) console.log(`preview left running at ${URL} (pid ${server.pid})`);
+    process.exit(1);
+  });
+}
 
 /* The one adaptation (see the header): Raptor's login, then the Tracker tab.
    The app remembers nothing of a session across a reload, so every reload the
@@ -92,8 +141,8 @@ const idOf = name => pg.evaluate(n => { const e = window.__coreForTests.byName(n
 
 const execPath = process.env.CHROMIUM_PATH
   || (existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : undefined);
-const b = await chromium.launch(execPath ? { executablePath: execPath } : {});
-const pg = await b.newPage({ viewport: { width: 1500, height: 950 } });
+b = await chromium.launch(execPath ? { executablePath: execPath } : {});
+pg = await b.newPage({ viewport: { width: 1500, height: 950 } });
 
 const errs = [], bad4xx = [];
 pg.on('pageerror', e => errs.push(e.message));
@@ -4091,7 +4140,6 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
 }
 
 console.log(`\n${pass} passed, ${fail} failed\n`);
-await b.close();
-stopServer();
+await teardown();
 if (KEEP && server) console.log(`preview left running at ${URL} (pid ${server.pid})`);
 process.exit(fail ? 1 : 0);

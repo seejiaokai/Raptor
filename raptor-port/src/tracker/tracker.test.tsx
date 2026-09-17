@@ -817,6 +817,68 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     expect(C.roster.length, 'cancel adds nobody').toBe(n + 1)
   })
 
+  it('the + Add box shows its default on the FIRST render, so a fast type is never wiped by the open-reset (TRK-SMOKE)', async () => {
+    /* The dialog used to clear its field to the default in a POST-PAINT effect,
+       which ran a beat AFTER the box was already on screen and fillable. So on
+       the first render the field still showed the PREVIOUS value, and anything
+       put into it in that gap — a fast paste, a password manager, or the tracker
+       smoke suite typing at machine speed — was overwritten when the reset
+       finally ran, leaving OK to submit a blank. That is what made "+ Add"
+       silently drop a student once the app was busy enough for the reset to land
+       after the type (the smoke's back-to-back adds failed ~5 runs in 6).
+       The reset now runs DURING render, so the field already holds the default
+       before it is ever shown. useSyncExternalStore commits synchronously while
+       an effect is always deferred, so reading the field the instant the box
+       opens — before any effect could run — distinguishes the two: it must read
+       the default, never the stale previous value. */
+    const { fireEvent } = await import('@testing-library/react')
+    const Live = () => { useSyncExternalStore(C.subscribe, C.getVersion); return <DlgModal /> }
+    const host = document.createElement('div'); host.className = 'host'; document.body.appendChild(host)
+    const root = createRoot(host)
+    await act(async () => { root.render(<Live />) })
+    /* Leave a stale value behind: open + Add, type a name, cancel. */
+    let p: Promise<any>
+    await act(async () => { p = C.addStudent(); await tick() })
+    await act(async () => { fireEvent.change($('#dlgInput')!, { target: { value: 'STALE NAME' } }) })
+    expect(($('#dlgInput') as HTMLInputElement).value).toBe('STALE NAME')
+    await act(async () => { C.dlgClose(null) }); await p!
+    /* Reopen and read the field after the render has COMMITTED (one microtask)
+       but before the deferred effect could run (that runs on a later macrotask):
+       with the bug the field still reads 'STALE NAME' at that point; with the
+       fix it already reads blank, because the reset ran during render. */
+    let vAtOpen: string | undefined
+    await act(async () => {
+      p = C.addStudent()
+      await Promise.resolve()                  // let the open render commit
+      vAtOpen = ($('#dlgInput') as HTMLInputElement | null)?.value
+    })
+    expect(vAtOpen, 'the field is reset during render, not a beat later in an effect').toBe('')
+    await act(async () => { C.dlgClose(null) }); await p!
+    await act(async () => { root.unmount() }); host.remove()
+  })
+
+  it('the box keeps the cursor even if the screen refreshes just after it opens (TRK-SMOKE review, P2-2)', async () => {
+    /* Focus is armed on open with a short timer. The old effect had no
+       dependency array and cleared that timer on EVERY re-render, so any
+       background refresh (a hint flash, an async save finishing, a re-fit)
+       landing in the window cancelled the focus and never re-armed it — the box
+       opened without the cursor and the first keystrokes went to the page (which
+       owns Escape and Ctrl+Z). Keyed on the dialog serial, an incidental
+       re-render no longer disturbs it. */
+    const Live = () => { useSyncExternalStore(C.subscribe, C.getVersion); return <DlgModal /> }
+    const host = document.createElement('div'); host.className = 'host'; document.body.appendChild(host)
+    const root = createRoot(host)
+    await act(async () => { root.render(<Live />) })
+    let p: Promise<any>
+    await act(async () => { p = C.uiPrompt('Name:', ''); await tick() })   // open; the focus timer is armed
+    await act(async () => { (C as any).notify() })                         // a background refresh, mid-window
+    await act(async () => { await new Promise(r => setTimeout(r, 80)) })   // let the timer fire
+    expect(document.activeElement && (document.activeElement as HTMLElement).id,
+      'the text box still took the cursor after an incidental re-render').toBe('dlgInput')
+    await act(async () => { C.dlgClose(null) }); await p!
+    await act(async () => { root.unmount() }); host.remove()
+  })
+
   it('colon relaxation (§8): course names still refuse; syllabus + student names accept a colon', async () => {
     /* [TRK-CSID] 1B-ii: a syllabus is an id now and its name is a LABEL, so a
        colon is allowed (as a student name already is). Course names keep the
