@@ -30,7 +30,7 @@
 */
 import type { EnlistableStore, RecordEntry, Scope, CommitResult, Command } from '../command'
 import {
-  commit, isCommitting, definePermission, anyone, registerRecord, registerGuardedStore,
+  commit, definePermission, anyone, registerRecord, registerGuardedStore,
   registerEffectContext, installBaselineInvariants,
 } from '../command'
 import { DAYS } from '../engine/data'
@@ -39,7 +39,7 @@ import { ensureRowIds } from '../engine/rowids'
 import { SCHED, setDayApproved, publishALDay, discardPending } from '../engine/publish'
 import { CURWEEK } from '../engine/waves'
 import { HIST, histSnap, histRestore, setSchedResync } from './history'
-import { setSchedEpilogueHook } from '../engine/hooks'
+import { setSchedEpilogueHook, HOOKS } from '../engine/hooks'
 import { issuedDisclosed, discloseIssued } from './disclosure'
 
 /* ---- the scheduler EnlistableStore (a LAGGING BASELINE, decomposed) --------
@@ -181,8 +181,23 @@ export function commitSchedValue<T>(type: string, fn: () => T): T {
    a raw branch that skipped enlist would trip the whole-world guard when the
    parent is a NON-scheduler command. schedWriteValue captures the return value
    the toasts read (a draft rename/delete label, toggleWarnOff's bool — R2-11). */
-export function schedWrite(type: string, fn: () => void): void { commitSchedVoid(type, fn) }
-export function schedWriteValue<T>(type: string, fn: () => T): T { return commitSchedValue(type, fn) }
+/* a rejected command (a conflict/guard rollback) reverted the model while the
+   caller's own notify/toast may already have fired — so surface it (design §6
+   risk 6). Inert at Step 2 (no conflict checker in production; a well-formed
+   scheduler write never rolls back), so the toast never fires today; it is the
+   Step-3 safety net. Only an explicit ok:false is a failure (a queued post-phase
+   result carries no ok and is left alone). */
+function toastFail(r: CommitResult): boolean {
+  if ((r as any).ok === false) { HOOKS.toast("Couldn’t save that — try again", 'warn'); return true }
+  return false
+}
+export function schedWrite(type: string, fn: () => void): void { toastFail(commitSchedVoid(type, fn)) }
+export function schedWriteValue<T>(type: string, fn: () => T): T {
+  const { result, value } = commitSched(type, schedScope(), fn)
+  // on a rollback the captured value is stale — return a falsy default so a
+  // rename/mute that was reverted does not report success (F-04)
+  return toastFail(result) ? (undefined as any) : value
+}
 
 /* ---- phase 2b: the PUBLISH path (design §3.4) ---------------------------- */
 /* the set of issued verIds currently on the loaded week's book — orig[di].id +
@@ -270,13 +285,14 @@ export function registerSchedCommandLayer(): void {
   setSchedResync(resyncSchedBaseline)
   // the afterSchedMutate BACKSTOP (rows A/A2/B): when the board epilogue runs
   // OUTSIDE a command, wrap it so the preceding in-place mutation is captured.
-  // isCommitting => already inside a command (a scheduler reducer, or delivery),
-  // run raw so nothing double-opens; the enclosing scheduler command's applyEnd
-  // advances the baseline. Idle => open the backstop command.
-  setSchedEpilogueHook((raw) => {
-    if (isCommitting()) raw()
-    else commitSchedVoid(SCHED_TYPES.mutate, raw)
-  })
+  // ALWAYS commitSchedVoid — never a raw branch (SR-I-001/F-03, the same reason
+  // schedWrite drops it): dispatch child-joins a reducer-time call (enlisting
+  // schedStore into the parent, even a NON-scheduler one, so the guard is not
+  // tripped) and ENQUEUES a post-phase one (isCommitting() is true in phase 8/9
+  // too, so a raw branch there would apply + advance the baseline while emitting
+  // nothing). No current caller reaches those cases, but the safe form costs
+  // nothing and removes the trap.
+  setSchedEpilogueHook((raw) => { toastFail(commitSchedVoid(SCHED_TYPES.mutate, raw)) })
   // permissive gate at Step 2 (see the file header) — the real gate is unchanged
   for (const t of Object.values(SCHED_TYPES)) definePermission(t, anyone)
   registerGuardedStore(schedStore)

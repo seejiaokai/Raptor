@@ -107,6 +107,32 @@ ACCEPTED — the reviews were high-signal and grounded in quoted code.** Converg
 | R2-10 (Codex + Fable F7/F8) | LOW | §1 table/counts wrong: `board.ts` has **39** `afterSchedMutate` CALLS (46 matches = 1 def + 6 comments + 39), not 43; `drag.ts` has 1 call not 2; the right-click clear is `Shell.tsx:onCtx`, not `interactions.ts` (Shell.tsx absent from row A2); and `writeSlot`/`writeFill`/`writeDelete` are DORMANT like `writeText` — every live slot/fill/delete path is a backstop path, so "routed today" is only `writeInputs*`, `moveSection*`, the publish trio. | **ACCEPT.** Rebuild the table + counts; P1's "funnel write emits identical change" test drives `writeInputsBatch`/`moveSectionTo`; slot/fill/delete assertions move to P2 (via `placeArmed` + the drag drop). |
 | R2-11 (Fable F11) | LOW | Build notes: `toggleWarnOff`/`draftRename`/`draftDelete` return values the toasts read — `schedWrite: () => void` can't return them (add `schedWriteValue` or capture via closure). `Shell.tsx` reads `daySigned(di)` before `setSign` — keep that read outside the wrapper. `_resetPermissions` in a future signed-in test would leave the backstop rejected (the `registered` flag blocks re-registration) — worth a comment. | **ACCEPT.** Add `schedWriteValue<T>`; keep pre-reads outside wrappers; comment `_resetPermissions`. |
 
+## P5 — cross-provider CODE inspection of the BUILT diff (both providers: REVISE → all fixed)
+
+The Rev-3 build (`d8ec03b`, base `3a565c2`) was inspected by Codex GPT-6 Astra high (`inspect --base`)
+and a Fable 5.1 agent, both read-only against the real diff. **Both affirmed the mechanism matches the
+plan in every load-bearing place** (decompose keys == `schedFields`; `applyEnd` in both reducers;
+`signAt` at every read site; the guard edit exactly as approved; popups no longer write on open; no
+write captured twice). Both returned REVISE with a small, convergent finding set. All fixed in the
+follow-up commit; gates re-run green.
+
+| ID | Sev | Issue | Fix (commit after `d8ec03b`) |
+|----|-----|-------|------|
+| **F-01** (Fable; Codex missed) | MED | `histInit` calls `syncHistBtns()` (→ `notify()`) BEFORE it re-synced the baseline, and `loadWeek`'s landing pass notifies mid-swap. A notify-listener command (the Leave War sync's `writeInputsBatch` is a real one) would then diff the OLD week against the new → a spurious WHOLE-WEEK envelope (and a rollback would restore the old week under the new id). | `histInit` re-syncs BEFORE `syncHistBtns`; `applyWeekModel` re-syncs after the id-mint (before the landing pass) AND before return. Pinned: `sched-routing.test.ts` F-01 (a listener command fired during `loadWeek` never diffs the old week) — verified to FAIL without the fix. |
+| **SR-I-001 / F-03** (both) | MED/LOW | The `afterSchedMutate` backstop used `isCommitting() ? raw() : …`; `isCommitting()` is true in phase 8/9 too, and the raw branch never enlists `schedStore` inside a non-scheduler parent → guard-reject, or silent loss in post. No current caller, but latent. | Backstop is now ALWAYS `commitSchedVoid(SCHED_TYPES.mutate, raw)` (same fix as `schedWrite`, R2-03); dispatch child-joins / enqueues. |
+| **SR-I-003 / F-02** (both) | MED/LOW | The bombs (stores TEXT) focusout branch still did `a.opts = a.opts || {}` on blur — the R2-05 escape class the popup fix missed. | Read through a local `o = a.opts || {}`; init `a.opts` only inside the command when the value changes; guard the `heal`. |
+| **SR-I-002 / F-05** (Codex MED, Fable INFO) | MED | The synchronous `sched.text` command wrapped `markEdit` but left `reconcileIssuedMarks` in the deferred backstop — so restoring a published day's issued value emitted a SECOND envelope (the deferred step was not the promised no-op). | New `commitText()` helper runs `reconcileIssuedMarks()` INSIDE each text command before `markEdit`; the deferred backstop is then a true no-op. |
+| **F-04** (Fable) | LOW | `schedWriteValue` returned the reducer's value even after a rollback; plan §6 risk 6's "couldn't save" toast was not built. Inert at Step 2 (no prod rollback path). | `toastFail()` in `schedWrite`/`schedWriteValue`/backstop toasts on `ok:false`; `schedWriteValue` returns a falsy default on failure. |
+| **F-06** (Fable) | DOC | Plan §3.3 still said `assertBaselineClean()` "at command entry" (contradicting the corrected §3.2c) and used the wrong name. | Corrected to `schedBaselineClean()`, asserted in tests after each gesture/re-sync. |
+
+**Noted, not fixed (out of scope / inert):** Fable flagged a PRE-EXISTING quirk — `SCHED` has no
+`drafts`/`curDraft` own-keys, so the first `histRestore` of a session flips `dr`/`cd` `undefined`→`{}`
+and a quarantine rollback then emits a spurious `sched.book`; unchanged by this work and now a one-time
+flip. Left for a separate pass.
+
+Gates after the fix round: **vitest 4878/4878** (10 routing tests incl. the F-01 pin) · **parity 728/0**
+· build green · live drive re-run (text→`sched.text`, board→`sched.mutate`, baseline clean, no errors).
+
 ### Round-2 outcome
 Approach affirmed a second time by both providers; both settled owner decisions respected. Two NEW
 HIGH completeness defects (R2-01 wrong SR-008 fix, R2-02 two escaping stores writes), one MED elevated

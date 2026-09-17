@@ -530,6 +530,14 @@ function applyWeekModel(v: any): any {
   INPUTS.forEach((r: any) => { if (r.acc && r.acc !== 'r' && r.acc !== 'u' && !inputProtected(r)) delete r.acc })
   reconcileLandedAcc()
   mintInpIds()
+  /* [ARCH-STACK] f/u#1 (F-01): advance the command-layer baseline to the
+     freshly-swapped week BEFORE the landing pass below, whose autoAccept ->
+     markEdit -> renderStatus -> notify() fires listeners MID-pass (the Leave War
+     sync opens a writeInputsBatch command). Without this, that command would diff
+     the OLD week's model against the new one and emit a spurious whole-week
+     envelope. Advanced again before return so the fully-landed week is the
+     baseline the caller (loadWeek/initStore) is left holding. */
+  resyncSchedBaseline()
   if (s) {
     /* a row this week deliberately unaccepted before must NOT be auto-landed
        again on the way back in (see unacceptedKeys) — everything else lands,
@@ -549,6 +557,7 @@ function applyWeekModel(v: any): any {
   } else {
     autoAcceptSeedInputs()      // land activity inputs on ground (dayApproved now clean)
   }
+  resyncSchedBaseline()   // the fully-landed week is the baseline the caller leaves with (F-01)
   return s
 }
 

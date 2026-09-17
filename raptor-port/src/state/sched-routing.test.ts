@@ -16,7 +16,7 @@ import { INPUTS } from '../engine/inputs'
 import { SCHED, signOf, daySigned, signShown, signNames, markEdit } from '../engine/publish'
 import { txtGet, txtSet } from '../engine/slots'
 import { CURWEEK } from '../engine/waves'
-import { initStore, loadWeek, resetSession, writeInputsBatch } from './store'
+import { initStore, loadWeek, resetSession, subscribe } from './store'
 import { undo } from './history'
 import * as view from './view'
 import {
@@ -152,6 +152,26 @@ describe('the guard + the guardrail', () => {
     DAYS[0].waves[0].formations[0].aircraft[0].cs = 'ESCAPED'   // raw, no command
     expect(schedBaselineClean()).toBe(false)                    // the guardrail catches it
     resyncSchedBaseline()
+    expect(schedBaselineClean()).toBe(true)
+  })
+
+  it('F-01: a command a listener fires DURING loadWeek does not diff the old week against the new', () => {
+    // the Leave War sync is a real notify-listener that opens a scheduler command;
+    // if it runs while the baseline still holds the previous week, its envelope
+    // would carry a spurious WHOLE-WEEK diff (book/orig/als only differ ACROSS weeks;
+    // a load-time landing delta touches only 'days').
+    loadWeek('20/07/2026')      // start on week 2 (its days read 'Jul 20'..)
+    caught = []
+    let fired = false
+    const un = subscribe(() => { if (fired) return; fired = true; commitSchedVoid(SCHED_TYPES.mutate, () => {}) })
+    loadWeek('13/07/2026')      // swap back to week 1 — the listener fires mid-load
+    un()
+    // the bug: a command whose BEFORE-image is the OLD week (dt 'Jul 20') because the
+    // baseline still lagged a whole week. A load-time landing delta diffs the NEW week
+    // (before.dt 'Jul 13'), so it never trips this.
+    const oldWeekLeak = caught.flatMap(e => e.changes).some((c: any) =>
+      c.collection === 'days' && c.before && c.before.dt === 'Jul 20')
+    expect(oldWeekLeak, 'no load-time command diffed against the OLD week').toBe(false)
     expect(schedBaselineClean()).toBe(true)
   })
 })

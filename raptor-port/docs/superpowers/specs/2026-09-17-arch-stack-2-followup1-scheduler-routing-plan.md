@@ -286,7 +286,9 @@ Still correct from Rev 2 (unchanged):
 - **One wrapper, every reducer (SR-001).** `commitPublish` builds its own `Command`, so `applyEnd()`
   is appended to its apply body too (after `fn()`, before/after the boundary is immaterial — the
   boundary reads `issuedIdSet` which `applyEnd` doesn't touch).
-- `assertBaselineClean()` (§3.2c) is called at command entry so a missed escape site fails a test.
+- the guardrail is the exported `schedBaselineClean()` helper (§3.2c), asserted in TESTS after each
+  gesture and re-sync (NOT at command entry — that would misfire on every backstop command, which
+  mutates before it opens).
 
 ### 3.4 THE DESIGN FORK — RESOLVED (round 1: both reviewers, hybrid)
 

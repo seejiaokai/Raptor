@@ -60,7 +60,13 @@ export function setSchedResync(cb:(()=>void)|null){SCHED_RESYNC=cb;}
 export function histSnap(){return JSON.stringify({d:DAYS,i:INPUTS,...schedFields(),wo:[...WARNOFF],pp:PLANPUCKS,dm:DAYRMK});}
 /* the stable-ids walk (engine/rowids.ts) runs before EVERY snapshot so undo
    never hands back an id-less row */
-export function histInit(){ensureRowIds(DAYS);HIST.stack=[histSnap()];HIST.ix=0;syncHistBtns();SCHED_RESYNC&&SCHED_RESYNC();}
+/* RE-SYNC BEFORE syncHistBtns (F-01): syncHistBtns() -> HOOKS.syncHistBtns ->
+   notify(), which runs every listener synchronously — the Leave War sync opens a
+   real writeInputsBatch command. If that command runs while the baseline is still
+   the PREVIOUS world (loadWeek has already swapped DAYS/SCHED), it would diff the
+   old week against the new and emit a spurious whole-week envelope. Advance the
+   baseline first so the notify's listeners see baseline === live. */
+export function histInit(){ensureRowIds(DAYS);HIST.stack=[histSnap()];HIST.ix=0;SCHED_RESYNC&&SCHED_RESYNC();syncHistBtns();}
 export function histPush(){
   if(HIST.lock)return;
   ensureRowIds(DAYS);
