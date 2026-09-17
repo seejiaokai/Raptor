@@ -297,6 +297,26 @@ export function commitInputsProjection<T>(type: string, fn: () => T): T {
   commitProjection(cmd)
   return value
 }
+/* [CMDL-FINISH] §6 — an input batch that also enlists EXTRA stores (the off-week
+   weekstash), so a reducer throw (a protected-week refusal) rolls back the whole
+   set atomically. Returns the CommitResult so the wrapper can map a refusal (a
+   CmdRefused → ok:false) to false, rather than reading a value the throw skipped. */
+export function commitInputsWith(stores: EnlistableStore[], type: string, fn: () => void): CommitResult {
+  const cmd: Command = {
+    type, scope: inputsScope(),
+    apply: (txn) => {
+      // [CMDL-FINISH] §6 — resync the baseline to LIVE before enlisting, so the
+      // captured rollback snapshot reflects any out-of-band (bare) INPUTS write
+      // that reached the model before this command (the quarantine funnel's whole
+      // reason to exist). A no-op in the normal case (baseline === live between
+      // commands); it makes a protected-week refusal's phase-6 rollback restore the
+      // true pre-batch state instead of a stale baseline that drops the bare row.
+      resyncSchedBaseline()
+      txn.enlist(schedStore); for (const s of stores) txn.enlist(s); fn(); applyEnd()
+    },
+  }
+  return commit(cmd)
+}
 export function commitSchedValue<T>(type: string, fn: () => T): T {
   return commitSched(type, schedScope(), fn).value
 }

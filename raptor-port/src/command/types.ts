@@ -32,6 +32,9 @@ export type LogicalCollection =
   | 'sched.orig' | 'sched.als'
   // the other scheduler-side stores
   | 'inputs' | 'plan' | 'people' | 'settings'
+  // off-week session memory (the weekstash) — one record per stashed week, so a
+  // protected-week clear that drops it rolls back atomically ([CMDL-FINISH] §6)
+  | 'weekstash'
   // leave war (per-cell / per-bid so the revision map is cell-granular — R4-005)
   | 'lw.cell' | 'lw.bid' | 'lw.war'
   | 'lw.ledger' | 'lw.balances' | 'lw.oilpolicy' | 'lw.postouts' | 'lw.current' | 'lw.config'

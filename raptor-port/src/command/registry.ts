@@ -30,6 +30,8 @@ export const LOGICAL_TO_BLOB: Record<LogicalCollection, string> = {
   'people': 'people',
   // settings — one blob per key
   'settings': 'settings',
+  // off-week session memory — stored per week under the weeks blob ([CMDL-FINISH] §6)
+  'weekstash': 'weeks',
   // leave war
   'lw.cell': 'leavewar/wars',
   'lw.bid': 'leavewar/wars',

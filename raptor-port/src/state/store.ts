@@ -37,8 +37,10 @@ import { setSession as authSetSession, canEditSched, SESSION, ACCOUNTS, canToggl
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { setFileLocked as trSetFileLocked } from '../tracker/role.js'
 import { isHydrated, weekSwapBegin, weekSwapEnd } from './persist'
-import { deferEffect } from '../command'
-import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, commitInputsProjection, SCHED_TYPES, resyncSchedBaseline } from './sched-commit'
+import { deferEffect, CmdRefused } from '../command'
+import type { EnlistableStore, RecordEntry, CommitResult } from '../command'
+import { snapshotStash, restoreStash, stashEntries } from '../engine/weekstash'
+import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, commitInputsProjection, commitInputsWith, SCHED_TYPES, resyncSchedBaseline } from './sched-commit'
 import { registerPeopleSettingsCommandLayer, resyncPeopleBaseline } from './people-settings-commit'
 
 let VERSION = 0
@@ -155,23 +157,32 @@ function runInputWrite(fn: () => void, suppressHist: boolean): boolean {
   catch (e) { if (snap) { histRestore(snap); view.armDrop() } HOOKS.histPush = push; HOOKS.renderInputs(); HOOKS.reflow(); throw e }
   finally { if (suppressHist) HOOKS.histPush = push }
   if (snap && protectedTouched(JSON.parse(snap), prot)) {
-    /* roll the model back to before the batch and repaint it — an engine helper
-       (markEdit → renderStatus) may have notified mid-batch — but push NO history
-       step and persist nothing. armDrop: a slot armed on a now-restored row. */
-    histRestore(snap)
-    view.armDrop()
+    /* [CMDL-FINISH] §6/N5 — THROW (a silent CmdRefused) instead of a soft return:
+       commit's phase-6 rollback then restores EVERY enlisted store — the scheduler
+       AND the weekstash a clear enlists — not just the scheduler runInputWrite
+       could restore on its own (the C11 gap where the input batch rolled back but
+       the stash drop, done outside it, stuck). The toast fires now (HOOKS.toast is
+       not latched, so it survives the rollback); the wrapper repaints the reverted
+       model. NO history step, nothing persisted — the write never happened. */
     HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
-    HOOKS.renderInputs(); HOOKS.reflow()
-    return false
+    throw new CmdRefused('protected-week write refused')
   }
   HOOKS.renderInputs(); HOOKS.reflow(); HOOKS.histPush()
+  return true
+}
+
+/* map a batch command's result to the caller's boolean. A refusal/rejection
+   (ok:false, incl. the silent CmdRefused) reverted the model in phase-6 but ran
+   no latched repaint, so repaint the reverted grid here and report false. */
+function batchResult(r: CommitResult): boolean {
+  if ((r as any).ok === false) { view.armDrop(); HOOKS.renderInputs(); HOOKS.reflow(); return false }
   return true
 }
 
 /* personal inputs (the Inputs page): mutate INPUTS, then the reference's
    add/delete epilogue — renderInputs(); reflow(); histPush(); */
 export function writeInputs(fn: () => void): boolean {
-  return commitInputs(SCHED_TYPES.inputsWrite, () => runInputWrite(fn, false))
+  return batchResult(commitInputsWith([], SCHED_TYPES.inputsWrite, () => { runInputWrite(fn, false) }))
 }
 
 /* Same as writeInputs, but for an action that calls engine helpers which push
@@ -179,8 +190,28 @@ export function writeInputs(fn: () => void): boolean {
    snapshots, so the first Undo landed the user in a half-applied state they
    never created — old fields, but already un-accepted. One action, one step. */
 export function writeInputsBatch(fn: () => void): boolean {
-  return commitInputs(SCHED_TYPES.inputsBatch, () => runInputWrite(fn, true))
+  return batchResult(commitInputsWith([], SCHED_TYPES.inputsBatch, () => { runInputWrite(fn, true) }))
 }
+
+/* [CMDL-FINISH] §6 — the off-week session-memory store, enlisted in an input
+   batch (not a guarded store): a protected-week clear that drops a stashed week
+   does so INSIDE the batch, so a phase-6 refusal rolls the drop back with it. */
+const weekstashStore: EnlistableStore = {
+  key: 'weekstash',
+  capture: () => snapshotStash(),
+  restore: (snap) => restoreStash(snap as any),
+  records: () => {
+    const m = new Map<string, RecordEntry>()
+    for (const [wk, blob] of stashEntries()) m.set(`weekstash/${wk}`, { collection: 'weekstash', id: wk, value: blob })
+    return m
+  },
+}
+/* run an input batch that ALSO enlists extra stores (the weekstash), rolling
+   every enlisted store back together on a refusal (§6, C11/N5). */
+export function writeInputsBatchWith(stores: EnlistableStore[], fn: () => void): boolean {
+  return batchResult(commitInputsWith(stores, SCHED_TYPES.inputsBatch, () => { runInputWrite(fn, true) }))
+}
+export { weekstashStore }
 /* [CMDL-FINISH] §2.2 — the PROJECTION variant, for the LW-originated reconciler
    (sync.ts runOutbound) so its Raptor input mint/retract chains causally to the
    Leave War edit that triggered it, instead of standing as an orphan user edit. */

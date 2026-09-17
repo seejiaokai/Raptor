@@ -25,7 +25,7 @@ import { PEOPLE, isSpecial } from '../engine/people'
 import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { logAction, elogSweep } from '../engine/editlog'
-import { writeInputsBatch, notify, protectedDates, inputProtected } from '../state/store'
+import { writeInputsBatch, writeInputsBatchWith, weekstashStore, notify, protectedDates, inputProtected } from '../state/store'
 /* The Leave War seam (sync.ts is the one crossing point, CLAUDE.md §The Leave
    War tab): retracting a synced row's war cells when it is edited or deleted
    here — not a new seam, a Raptor-side caller of the existing one. */
@@ -1322,16 +1322,22 @@ export function clearHistoryData(mode: ClearMode, a: string, b?: string, dry?: b
     HOOKS.toast('Some of those records are on a locked week and can’t be cleared', 'warn')
     return 0
   }
-  writeInputsBatch(() => {
+  /* [CMDL-FINISH] §6 (C11/N5) — drop the stashed weeks INSIDE the enlisted batch
+     (weekstashStore), so if runInputWrite refuses a protected week the phase-6
+     rollback undoes the stash drop too, instead of leaving it done while the input
+     batch reverts (the old partial-destructive gap the preflight above only
+     band-aided). A refusal returns ok:false → skip the success log + report 0. */
+  const ok = writeInputsBatchWith([weekstashStore], () => {
     doomed.forEach((r: any) => dropInputRow(r))
     oldPucks.forEach((s: any) => { const ix = PLANPUCKS.indexOf(s); if (ix >= 0) PLANPUCKS.splice(ix, 1) })
     oldRmk.forEach(k => { delete DAYRMK[k] })
+    oldWeeks.forEach(k => stashDrop(k))
   })
-  oldWeeks.forEach(k => stashDrop(k))
   /* a stash drop is not a history step, so file it now — persistAll deletes
      the stored copy of every week no longer stashed (8 Sep 26 bug pass: the
-     cleared weeks were all back after a reload) */
-  if (oldWeeks.length) persistAll()
+     cleared weeks were all back after a reload). Kept unconditional (§6). */
+  persistAll()
+  if (!ok) return 0   // refused + rolled back — do NOT report a clear that did not happen
   logAction(null, `Cleared ${n} record${n === 1 ? '' : 's'} ${w.said}`)
   return n
 }
