@@ -1,6 +1,71 @@
-# Session handoff — [ARCH-STACK] Step 2 (the one write/command layer) — BUILD COMPLETE (all 5 phases + inspection)
+# Session handoff — [ARCH-STACK] Step 2 — BUILT (not merged) + follow-up #1 PLAN red-teamed
 
-## RESUME HERE (handoff, 17 Sep 26 — STEP 2 BUILT, GATED, INSPECTED; NOT merged, awaiting "merge live")
+## RESUME HERE (handoff, 17 Sep 26 pt.2 — FOLLOW-UP #1 PLAN written + round-1 red-teamed; NO CODE WRITTEN)
+
+**Branch to select in the new-chat picker:** `claude/arch-stack-2-command-core-design` (same branch;
+Step 2 still NOT merged — the owner chose to finish follow-up #1 BEFORE merging, so the whole thing
+merges once). Do NOT start from `main`.
+
+**Where we got to.** The owner picked option 2 (do the top follow-up first, keep Step 2 unmerged).
+Follow-up #1 = route the REMAINING scheduler writes (board/drag/text/sign/mute/draft) through
+`commit()`. **The PLAN is written and has had ROUND 1 of the cross-provider red-team. NO production
+code has been touched.**
+- Plan: `docs/superpowers/specs/2026-09-17-arch-stack-2-followup1-scheduler-routing-plan.md` (Rev 1).
+- Review log + every finding and host disposition:
+  `…-2026-09-17-arch-stack-2-followup1-scheduler-routing-review-log.md`.
+
+**Round-1 result: BOTH reviewers REVISE, converged.** Codex GPT-6 Astra (high) + Fable 5.1 both
+AFFIRM the approach (lagging baseline + hybrid: explicit `schedWrite` for sign/mute/draft, an
+`afterSchedMutate` backstop for the board/drag/text bulk — Fable calls the hybrid "the right fork"
+and shows a per-call-site-only approach would MISS ≥5 callers). They found **12 concrete defects,
+ALL ACCEPTED** (2 as documented Step-2 limitations). The big three:
+1. **SR-005/F1 (HIGH)** — setting BOTH `capture()` and `signature()` to the baseline BLINDS the
+   whole-world guard. Fix: keep `signature()` = live `histSnap()` AND fix `commit.ts guardSnapshot`
+   to take `sig` from `storeSignature(s)`, not the capture string. **This edits committed Step-2
+   engine code.**
+2. **SR-001 (HIGH)** — `commitPublish` builds its own command and never advances the baseline →
+   publish would emit nothing. Fix: one shared apply-end wrapper across EVERY scheduler reducer.
+3. **SR-006/F2/F6 (HIGH/MED)** — `histPush`'s `ensureRowIds` mint is deferred to phase 8, i.e. AFTER
+   the baseline advance. Fix: `ensureRowIds(DAYS)` + `mintInpIds()` inside the seam before advancing;
+   decomposition reads `r.iid` directly, never the minting `inpId`.
+   (Full table of all 12 + dispositions is in the review log — read it, don't re-derive.)
+
+### THE TWO OWNER DECISIONS STILL OPEN (ask him first thing)
+1. **OK to edit the small piece of committed Step-2 core** (`commit.ts` guardSnapshot) to un-blind
+   the guard? It is necessary and well-scoped.
+2. **OK to accept SR-003/F5 as a documented Step-2 limitation** — in a rare error path a rejected
+   edit may not fully rewind, because the legacy histPush/persist already saw it. Inert today (the
+   layer only RECORDS; prod has no rollback path). Full fix = open the txn before the first mark at
+   ~40 sites = belongs with follow-up #2 / Step 3. **Recommendation: accept + document, fix later.**
+
+### NEXT STEPS, in order
+1. Get the owner's answer on the two decisions above.
+2. Revise the plan to **Rev 2** addressing all 12 ACCEPTs (the review log's table is the checklist).
+3. **Round 2 re-review** of the changed plan — resume BOTH reviewers with a host-authored feedback
+   file of the dispositions (runner: `claudex-loop` skill, `scripts/runner.py`,
+   `review --host claude` = Codex, `review --host codex --model claude-fable-5-1` = Fable;
+   artifacts go to the scratchpad, NOT the repo).
+4. Only then BUILD, test-first, landing **P1–P4 as ONE gated change** (F9: gating P1 alone is not
+   stream-neutral). Gates + parity 728/0 each step.
+5. **The owner asked me to do the LIVE testing myself** (not hand it to him): build + `vite preview`,
+   drive it headless, recreate each edit scenario AND assert the change stream captured it. His
+   Vercel check is optional now. Live-drive list must include the backstop-only paths: palette-tap
+   plant, right-click clear, airspace edit, drag-drop, input accept.
+
+### Runner gotcha (Windows)
+The claudex runner's final stdout print dies on a unicode arrow (`charmap` codec) — harmless, the
+run still completes. Read `result.json` from the artifact subdir and note **the verdict/findings are
+nested under the `response` key**. Dump to a utf-8 FILE and read that; printing to the console
+crashes on `→`.
+
+### STANDING RULES (unchanged)
+Opus, HEAVY, test-first. **Do NOT merge until the owner says "merge live."** Do NOT watch/open a PR.
+Plain language to the owner. NB: the session reported a switch from Opus 4.8 to **Opus 5** partway —
+flagged to the owner, no work was redone.
+
+---
+
+## (earlier, same day) STEP 2 BUILT, GATED, INSPECTED; NOT merged, awaiting "merge live"
 
 **Branch:** `claude/arch-stack-2-command-core-design` (off `main`, NOT merged). Select THIS branch
 in the new-chat picker.
