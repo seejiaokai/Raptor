@@ -31,9 +31,21 @@ tree) and `leavewar.spec.ts:2241` (lw-phone CDP touch-tap timing — passed with
 under load). They are the branch's known "2 pre-existing e2e failures". They are RED, so a green-CI
 merge needs them fixed or re-run — a SEPARATE job from the scheduler change.
 
-**IN FLIGHT at handoff:** the P5 cross-provider CODE inspection (Codex `inspect --base 3a565c2` + a Fable
-agent) of the `d8ec03b` diff is running. When it returns: fix any real findings, then it waits for the
-owner's explicit "merge live". Do NOT merge before that.
+- `12b527f` — **P5 code inspection findings FIXED.** Codex GPT-6 Astra + Fable both inspected the built
+  `d8ec03b` diff (read-only), affirmed the mechanism, and returned REVISE with a small convergent set,
+  all fixed: **F-01** (Fable, the real one — `histInit` notified before re-syncing + `loadWeek`'s
+  landing-pass mid-swap notify → a listener command diffed the OLD week; fixed by re-syncing before the
+  notify in `histInit` and at the week-swap, pinned by a test verified to fail without the fix); the
+  backstop now always opens a command (SR-I-001); the bombs stores-text box no longer inits `a.opts` on
+  blur (SR-I-003); `commitText()` runs the issued-mark reconcile inside each text command (SR-I-002);
+  a "couldn't save" toast on a rejected command (F-04, inert at Step 2); a doc fix (F-06). Full table:
+  the review-log's **P5** section.
+  Gates after fixes: **vitest 4878/4878** · **parity 728/0** · build green · live drive re-run clean.
+
+**STATUS: DONE + gated, awaiting the owner's explicit "merge live".** The scheduler routing change is
+complete — plan twice red-teamed, code inspected by both providers, every finding fixed, all gates
+green, driven live on the real bundle. Do NOT merge before the owner says "merge live". Do NOT open/
+watch a PR.
 
 **[TRK-SMOKE] earlier context (still true):** FIXED + MERGED LIVE 17 Sep (PR #408, squash `93deab7` on
 `main`). This branch was synced with `main` after that, so it contains the fix; `fa85422` above only
