@@ -235,13 +235,18 @@ the WRITE sites. Test: open each popup, close it, run a no-op command → nothin
 
 The pattern across rounds (round 1 missed row A2; round 2 found rows G and the two on-open mutations)
 is that a hand-built inventory of durable-write sites keeps being incomplete, and the whole-world
-guard does NOT catch a stale baseline (§3.1 corrected). So add the structural detector: a dev/test
-invariant `assertBaselineClean()` that asserts `SCHED_BASELINE === histSnap()`, called at command
-ENTRY (before the reducer) and after every re-sync. A missed escape site then FAILS A TEST loudly
-(the baseline is dirty at the next command) instead of being absorbed silently. Gated to dev/test
-(a no-op in production, like the whole-world guard's spirit) so it never costs a prod serialization
-beyond the one the guard already does. This is the guardrail that makes the site enumeration
-self-checking rather than a completeness promise.
+guard does NOT catch a stale baseline (§3.1 corrected). So add the structural detector: a helper
+`schedBaselineClean()` = `SCHED_BASELINE === histSnap()`.
+
+**Placement (corrected during the build): NOT at command entry.** A legitimate backstop command
+(row A/B/C/G) mutates the model BEFORE it opens, so at its entry `baseline ≠ live` by design — an
+entry assertion would misfire on every board edit. The invariant that actually distinguishes a
+missed escape from a legitimate edit is: **AFTER a gesture completes, `baseline === live`** (a routed
+gesture's command ran `applyEnd`; an escaped write left the baseline behind). So `schedBaselineClean()`
+is asserted **in tests after each gesture and after each re-sync**, and exposed on the probe bridge
+for the live drive. A missed escape site fails that assertion loudly instead of being absorbed
+silently. This is the guardrail that makes the site enumeration self-checking rather than a
+completeness promise.
 
 ### 3.3 The seam (SIMPLIFIED in Rev 3, R2-03)
 

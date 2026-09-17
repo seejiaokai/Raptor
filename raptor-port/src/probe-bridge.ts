@@ -29,6 +29,8 @@ import { keyDay, shiftKeys, shiftAircraft, shiftFormation, shiftWave, uniqDays, 
 import { applyMove, moveWave, waveInsertSlot, waveDefault, waveDefaultView, setWaveDefault, moveWaveDefault } from './engine/reorder'
 import { hhmm, parseHM, hmOK, minus, overlap, hm24 } from './engine/time'
 import { HIST, histApply, histSnap, histPush } from './state/history'
+import { commandStream } from './command'
+import { resyncSchedBaseline, schedBaselineClean } from './state/sched-commit'
 import { HOOKS } from './engine/hooks'
 import * as view from './state/view'
 import { setLgEdit } from './state/auth'
@@ -66,6 +68,17 @@ export function installProbeBridge() {
   w.validate = validate; w.collectEvents = collectEvents; w.slotBar = slotBar
   w.markEdit = markEdit; w.publishALDay = publishALDay; w.setDayApproved = setDayApproved; w.signOf = signOf
   w.afterSchedMutate = () => { view.afterSchedMutate(); notify() }
+  /* [ARCH-STACK] follow-up #1 (R2-09): the command layer is wired at module-eval,
+     long before this bridge installs, so w.afterSchedMutate() now OPENS a command.
+     For e2e FIXTURE setup that must not pollute the stream, expose the RAW epilogue
+     (no command) plus a baseline re-sync so the next real command isn't dirtied by
+     the fixture. And expose a read-only stream reader for the P5 live proof: the
+     length, a copy of the last envelope, and the baseline-clean guardrail. */
+  w.afterSchedMutateRaw = () => { view.rawSchedEpilogue(); resyncSchedBaseline(); notify() }
+  w.resyncSchedBaseline = () => resyncSchedBaseline()
+  w.commandStreamLen = () => commandStream().length
+  w.lastEnvelope = () => { const s = commandStream(); return s.length ? JSON.parse(JSON.stringify(s[s.length - 1])) : null }
+  w.schedBaselineClean = () => schedBaselineClean()
   /* week navigation — the per-week stash work (23 Aug 26) made cross-week
      round trips part of the engine's observable behaviour, so probes/demos
      can now drive them the same way the week chips do */

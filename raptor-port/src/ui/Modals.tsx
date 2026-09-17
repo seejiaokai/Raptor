@@ -124,10 +124,16 @@ export function AirPop() {
      wires #airBody (a React-controlled list would repaint under the caret) */
   useEffect(() => {
     if (!g) return
-    g.traffic = g.traffic || []
+    /* [ARCH-STACK] follow-up #1 (§3.2b/R2-05): read into a LOCAL — do NOT write
+       g.traffic on open. Initialising it here was a live DAYS write outside any
+       command, so the next command would emit a bogus days put for a Go nobody
+       edited. The write sites (Add row, and airEdit on blur — a routed backstop
+       command) init/mutate it themselves; an input/del row only renders when
+       traffic already exists. */
+    const traffic = (g.traffic || []) as any[]
     const admin = SESSION && SESSION.role === 'admin', body = bodyRef.current!
     if (admin) {
-      body.innerHTML = g.traffic.map((a: any, i: number) => `<div class="airrow"><span class="adot"></span>
+      body.innerHTML = traffic.map((a: any, i: number) => `<div class="airrow"><span class="adot"></span>
       <input value="${esc(a)}" data-airi="${i}" aria-label="Airspace line ${i + 1}"><button class="del" data-airdel="${i}">✕</button></div>`).join('')
         || `<div style="color:var(--ink-3);font-size:12px">No traffic booked yet — add a row.</div>`
     } else {
@@ -135,7 +141,7 @@ export function AirPop() {
          free text and airspace shorthand really does contain bare `<`
          ("<090 inbound"), which silently swallowed the rest of the list for
          every member reading it */
-      body.innerHTML = `<div class="airview">` + (g.traffic.length ? g.traffic.map((a: any) => `<div><span class="adot"></span>${esc(a)}</div>`).join('') : '<span style="color:var(--ink-3)">No traffic booked.</span>') + `</div>`
+      body.innerHTML = `<div class="airview">` + (traffic.length ? traffic.map((a: any) => `<div><span class="adot"></span>${esc(a)}</div>`).join('') : '<span style="color:var(--ink-3)">No traffic booked.</span>') + `</div>`
     }
   })
   if (!open) return <div className="airpop" id="airpop" hidden />

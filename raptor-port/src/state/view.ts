@@ -9,7 +9,7 @@ import { validate, WARN, officialWarn } from '../engine/validate'
 import { markEdit, daySnapOf, dayApproved } from '../engine/publish'
 import { curDraftId, reconcileIssuedMarks, isDraftVer } from '../engine/drafts'
 import { isLead, isInstr, isOcu } from '../engine/people'
-import { HOOKS } from '../engine/hooks'
+import { HOOKS, runSchedEpilogue } from '../engine/hooks'
 import { canEditSched, ME } from './auth'
 import { flagDrop } from './dropflag'
 
@@ -936,7 +936,15 @@ export function slotTitle(key:any){
   }catch(_){}
   return 'Assign crew';
 }
-export function afterSchedMutate(){
+/* [ARCH-STACK] follow-up #1: afterSchedMutate is the durable-write epilogue for
+   the ~40 board sites that mutate the model in place then repaint (rows A/A2/B).
+   It now runs THROUGH the injected backstop (runSchedEpilogue): outside a command
+   the layer self-wraps this body in a `sched.mutate` command so the preceding
+   board mutation reaches the change stream; unwired (headless / pre-boot) it runs
+   raw exactly as before. The RAW body is exported for the probe bridge (R2-09),
+   which needs a path that does NOT open a command for fixture setup. */
+export function afterSchedMutate(){ runSchedEpilogue(rawSchedEpilogue); }
+export function rawSchedEpilogue(){
   /* an edit that restored a field to its issued value must not keep its dotted
      "changed" mark (owner, 16 Aug 26). noteChange raised the mark before the
      value landed; this drops it now the write is in, BEFORE markEdit's histPush

@@ -47,13 +47,14 @@ beforeEach(() => {
   setSession({ user: 'ad', role: 'admin' })
   view.selDrop(); view.armDrop()
   initStore()
-  /* warm the per-day sign objects, exactly as rendering the edit page's sign
-     strip does before any publish button exists: signOf()/daySigned() lazily
-     materialize an empty SCHED.sign[di] the first time they read it, so on a
-     COLD test model a refused (unsigned) publish would "change" the book only by
-     that lazy-init. Warming here matches the live app, where the strip is always
-     rendered first — so a refused publish truly records nothing (decision #5). */
-  DAYS.forEach((_: any, di: number) => signOf(di))
+  /* [ARCH-STACK] follow-up #1 (R2-01): the old warming of per-day sign objects
+     (DAYS.forEach(signOf)) is GONE. It modelled rendering the sign strip lazily
+     inserting SCHED.sign[di] — but the readers are non-mutating now (signAt), so
+     the live app no longer materializes signs by rendering, and warming here would
+     leave the command layer's baseline stale (SCHED.sign populated out-of-band
+     after initStore's histInit set the baseline). With no warming, SCHED.sign is
+     empty exactly as it is in the booted app before any sign action, so a refused
+     publish truly records nothing (decision #5). */
   _resetDisclosure()
   caught = []
   unsub = onCommit(e => caught.push(e))
@@ -114,7 +115,11 @@ describe('an amendment (publishALDay) appends a sched.als record + boundary', ()
     sign(0)
     commitSetDayApproved(0, true)
     caught = []
-    sign(0)
+    /* [ARCH-STACK] follow-up #1: NO out-of-band re-sign here. A no-changes AL is
+       refused regardless of signing, and under the lagging-baseline model a raw
+       (uncommitted) re-sign would be an uncaptured change the next command
+       absorbs — in the real app signing is its own command (P3). So the no-op
+       publish runs against a clean baseline and truly emits nothing. */
     commitPublishALDay(0)                // nothing changed since the Original
     expect(caught.length).toBe(0)
   })

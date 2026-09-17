@@ -23,6 +23,21 @@ const syncHistBtns=()=>HOOKS.syncHistBtns()
    byte-identical to before this existed. */
 export function schedFields(){return {c:SCHED.changes,p:SCHED.pending,ad:SCHED.added,a:SCHED.als,al:SCHED.al,ok:SCHED.dayOK,sg:SCHED.sign,sb:SCHED.signBind,o:SCHED.orig,cv:SCHED.cur,dr:SCHED.drafts,cd:SCHED.curDraft,v:SCHED.ridV,am:SCHED.amV}}
 export const HIST:any={stack:[],ix:-1,lock:false,cap:60};
+/* [ARCH-STACK] follow-up #1 (R2-07): the scheduler command layer's lagging
+   baseline (state/sched-commit.ts SCHED_BASELINE) must be re-synced to the live
+   world after ANY out-of-band replacement of DAYS/SCHED/INPUTS/WARNOFF that does
+   not go through a command. histInit (boot + loadWeek) and histRestore (undo,
+   redo, the input-quarantine rollback, a command rollback) are the choke points
+   for all of those, so a callback registered here fires from BOTH — covering
+   every restore path BY CONSTRUCTION rather than by a hand-kept enumeration.
+   history.ts cannot import sched-commit.ts (cycle: sched-commit imports history),
+   so the layer registers the callback at module-eval (registerSchedCommandLayer).
+   Null before that = no-op. The callback always sets the baseline to histSnap()
+   AFTER the restore, never to the raw snapshot string — histRestore re-installs
+   fields with ||{}/||[] defaults, so histSnap() can differ from the raw string by
+   a byte and only the post-restore live snapshot is the true baseline. */
+let SCHED_RESYNC:(()=>void)|null=null;
+export function setSchedResync(cb:(()=>void)|null){SCHED_RESYNC=cb;}
 /* `ok` carries SCHED.dayOK — the per-day publish state. It replaced the old
    week-wide ap/dr pair, so publishing or reopening a single day is an ordinary
    undo step. */
@@ -45,7 +60,7 @@ export const HIST:any={stack:[],ix:-1,lock:false,cap:60};
 export function histSnap(){return JSON.stringify({d:DAYS,i:INPUTS,...schedFields(),wo:[...WARNOFF],pp:PLANPUCKS,dm:DAYRMK});}
 /* the stable-ids walk (engine/rowids.ts) runs before EVERY snapshot so undo
    never hands back an id-less row */
-export function histInit(){ensureRowIds(DAYS);HIST.stack=[histSnap()];HIST.ix=0;syncHistBtns();}
+export function histInit(){ensureRowIds(DAYS);HIST.stack=[histSnap()];HIST.ix=0;syncHistBtns();SCHED_RESYNC&&SCHED_RESYNC();}
 export function histPush(){
   if(HIST.lock)return;
   ensureRowIds(DAYS);
@@ -89,6 +104,9 @@ export function histRestore(snapStr:any){
   PLANPUCKS.length=0; (s.pp||[]).forEach((x:any)=>PLANPUCKS.push(x));
   for(const k of Object.keys(DAYRMK))delete DAYRMK[k];
   Object.assign(DAYRMK,s.dm||{});
+  /* the command layer's baseline follows every restore (see setSchedResync). It
+     reads histSnap() itself, so it runs AFTER the whole model is back in place. */
+  SCHED_RESYNC&&SCHED_RESYNC();
   return s;
 }
 export function histApply(i:any){

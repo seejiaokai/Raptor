@@ -12,6 +12,7 @@
    one is committed, and a refusal says why in a toast. */
 import { useEffect, useState } from 'react'
 import { notify } from '../state/store'
+import { schedWriteValue, SCHED_TYPES } from '../state/sched-commit'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
 import { dayApproved } from '../engine/publish'
@@ -52,10 +53,18 @@ export function DraftsModal() {
   const commitName = () => {
     if (!t || nm == null) return
     if (nm.trim() === t.name) { setNm(null); return }
-    if (draftRename(di, t.id, nm)) {
+    /* [ARCH-STACK] follow-up #1 (row F): route the rename through a
+       sched.draft.rename command (was HOOKS.histPush direct). schedWriteValue
+       carries back the success bool the toast branch reads (R2-11); the rename +
+       histPush run inside so the command captures the draft-blob change. */
+    if (schedWriteValue(SCHED_TYPES.draftRename, () => {
+      const ok = draftRename(di, t.id, nm)
       /* renaming is schedule bookkeeping the undo stack should carry — the
          blobs ride histSnap, so one push makes it one ordinary undo step */
-      HOOKS.histPush()
+      if (ok) HOOKS.histPush()
+      return ok
+    })) {
+      /* renamed — nothing more */
     } else {
       HOOKS.toast(nm.trim() ? 'Another plan on this day already has that name' : 'A plan needs a name', 'warn')
     }
@@ -103,14 +112,22 @@ export function DraftsModal() {
           <button className="abtn danger" style={{ marginRight: 'auto' }} disabled={!t || isLive}
             title={isLive ? 'This plan is the live day — switch to another plan first' : 'Delete this plan'}
             onClick={() => {
-              if (!t || !draftDelete(di, t.id)) return
+              if (!t) return
+              /* [ARCH-STACK] follow-up #1 (row F): route the delete through a
+                 sched.draft.delete command (was HOOKS.histPush direct). The delete
+                 + histPush run inside; the UI updates below stay outside. */
+              const tid = t.id
+              if (!schedWriteValue(SCHED_TYPES.draftDelete, () => {
+                const ok = draftDelete(di, tid)
+                /* deletion rides the undo stack like the rename above; any frozen
+                   preview of the deleted plan falls out through prunePreviews'
+                   daySnapOf test on the next paint. Deleting down to one clears the
+                   day's plans (engine B1), so dayDrafts may now be empty — setSel
+                   falls back to null and the modal shows its empty state. */
+                if (ok) HOOKS.histPush()
+                return ok
+              })) return
               const name = t.name
-              /* deletion rides the undo stack like the rename above; any frozen
-                 preview of the deleted plan falls out through prunePreviews'
-                 daySnapOf test on the next paint. Deleting down to one clears the
-                 day's plans (engine B1), so dayDrafts may now be empty — setSel
-                 falls back to null and the modal shows its empty state. */
-              HOOKS.histPush()
               setSel(dayDrafts(di)[0] ? dayDrafts(di)[0].id : null)
               setNm(null)
               notify()

@@ -287,11 +287,17 @@ interface GuardEntry { sig: string; snap: unknown; store: EnlistableStore }
 function guardSnapshot(): Map<string, GuardEntry> {
   const m = new Map<string, GuardEntry>()
   for (const s of guardedStores) {
-    /* capture the restorable snapshot; for a string-snapshot store (all the ones
-       we register: schedStore/settings/people, whose capture() === signature())
-       the snapshot IS the signature, so this costs no extra serialization. */
+    /* capture the restorable snapshot AND, separately, the guard signature.
+       [ARCH-STACK] follow-up #1 (SR-005): the signature must come from
+       storeSignature(s) (i.e. s.signature()), NOT the capture() string. The old
+       `typeof snap==='string' ? snap : …` shortcut was only valid while
+       capture()===signature(); the scheduler store now returns a LAGGING BASELINE
+       from capture() while signature() stays LIVE (histSnap()), so reading the
+       signature off capture() would compare the stale baseline before and after
+       and blind the whole-world guard. guardCheck below also compares against
+       storeSignature(s), so both ends must use the same (live) function. */
     const snap = s.capture()
-    const sig = typeof snap === 'string' ? snap : storeSignature(s)
+    const sig = storeSignature(s)
     m.set(s.key, { sig, snap, store: s })
   }
   return m

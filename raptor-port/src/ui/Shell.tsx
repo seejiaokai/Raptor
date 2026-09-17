@@ -21,6 +21,7 @@ import { canEditSched } from '../state/auth'
 import { slotVal, setSlotVal } from '../engine/slots'
 import { afterSchedMutate } from '../state/view'
 import { undo, redo } from '../state/store'
+import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
 import { HIST } from '../state/history'
 import { useVersion } from './useStore'
 import { ViewWeek } from './ViewWeek'
@@ -155,8 +156,16 @@ export function Shell() {
       const sel = (e.target as HTMLElement).closest('select[data-sign]') as HTMLSelectElement | null
       if (!sel) return
       const di = +sel.dataset.signday!
-      const wasSigned = daySigned(di)             // capture BEFORE, so the note fires only on COMPLETING the set
-      setSign(di, sel.dataset.sign!, sel.value)   // AM-06: binds the signature to the content it signed
+      const wasSigned = daySigned(di)             // capture BEFORE, so the note fires only on COMPLETING the set (kept OUTSIDE the command, R2-11)
+      /* [ARCH-STACK] follow-up #1 (row D): route the sign write through a
+         sched.sign command. setSign mutates SCHED.sign/signBind and histPush
+         persists — both inside so the command captures the change and the legacy
+         persist still runs (latched, phase 8). The daySigned reads and reflow
+         stay outside (they read, they don't write). */
+      schedWrite(SCHED_TYPES.sign, () => {
+        setSign(di, sel.dataset.sign!, sel.value)   // AM-06: binds the signature to the content it signed
+        HOOKS.histPush()
+      })
       /* R2 (owner, 15 Sep 26): completing the four sign-offs on an ALREADY-published
          day with nothing pending correctly shows NO publish button — which reads like
          a bug ("I signed everything, where's publish?"). Say so, once, only on the
@@ -167,7 +176,7 @@ export function Shell() {
          line reads). */
       if (!wasSigned && daySigned(di) && dayApproved(di) && !dayHasChanges(di))
         HOOKS.toast('All signed — no changes to publish right now')
-      HOOKS.histPush(); HOOKS.reflow()
+      HOOKS.reflow()   // histPush moved INSIDE the sched.sign command above
     }
     /* right-click a filled slot in edit mode → clear it (reference verbatim,
        gated on the role and on being on the edit page) */

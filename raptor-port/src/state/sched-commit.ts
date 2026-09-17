@@ -30,62 +30,101 @@
 */
 import type { EnlistableStore, RecordEntry, Scope, CommitResult, Command } from '../command'
 import {
-  commit, definePermission, anyone, registerRecord, registerGuardedStore,
+  commit, isCommitting, definePermission, anyone, registerRecord, registerGuardedStore,
   registerEffectContext, installBaselineInvariants,
 } from '../command'
 import { DAYS } from '../engine/data'
-import { INPUTS, inpId } from '../engine/inputs'
+import { mintInpIds } from '../engine/inputs'
+import { ensureRowIds } from '../engine/rowids'
 import { SCHED, setDayApproved, publishALDay, discardPending } from '../engine/publish'
 import { CURWEEK } from '../engine/waves'
-import { WARNOFF } from './view'
-import { PLANPUCKS, DAYRMK } from './plan'
-import { HIST, histSnap, histRestore } from './history'
+import { HIST, histSnap, histRestore, setSchedResync } from './history'
+import { setSchedEpilogueHook } from '../engine/hooks'
 import { issuedDisclosed, discloseIssued } from './disclosure'
 
-/* ---- the scheduler EnlistableStore (the histSnap world, decomposed) ------- */
-function schedRecords(): Map<string, RecordEntry> {
+/* ---- the scheduler EnlistableStore (a LAGGING BASELINE, decomposed) --------
+   [ARCH-STACK] follow-up #1: copy the People pattern. The unrouted board/text/
+   stores paths mutate the model IN PLACE and then reach the epilogue, so reading
+   LIVE DAYS/SCHED as the before-image would show no diff. Instead records()/
+   capture() decompose a lagging BASELINE snapshot string (the last-persisted
+   world), advanced to the live world at each command's apply-end (applyEnd) and
+   re-synced whenever the world is replaced out-of-band (setSchedResync, via
+   history.ts). signature() stays LIVE (histSnap) so the whole-world guard still
+   fires (SR-005) — capture()/signature() are DIFFERENT functions now, which is
+   why commit.ts guardSnapshot was fixed to read signature(), not the capture
+   string. Invariant between commands: SCHED_BASELINE === histSnap(). */
+let SCHED_BASELINE: string | null = null
+function baseline(): string { return SCHED_BASELINE ?? histSnap() }
+/* re-sync the baseline to the CURRENT live world. MUST run after any out-of-band
+   replacement of DAYS/SCHED/INPUTS/WARNOFF that does not go through a command:
+   registered as the history.ts callback (undo/redo/quarantine/loadWeek/boot BY
+   construction) and called explicitly from resetSession + the demo overlay. */
+export function resyncSchedBaseline(): void { SCHED_BASELINE = histSnap() }
+/* dev/test guardrail (R2-06): between commands the baseline must equal live. An
+   escape site (a durable write that opened no command) leaves it dirty, so a test
+   asserting this after each gesture catches a missed route loudly. The whole-world
+   guard does NOT catch this (it only sees changes DURING a command). */
+export function schedBaselineClean(): boolean { return baseline() === histSnap() }
+
+/* decompose a histSnap() STRING (the baseline), the same fields history.ts
+   serialises (schedFields + d/i/wo/pp/dm). Reads each input row's r.iid DIRECTLY
+   — never inpId(r), which MINTS an id as a side effect of being read (SR-006), a
+   write to the live world during derivation. A row with no iid yet is skipped
+   (R2-07): applyEnd mints them before advancing, so a real baseline never has
+   any, and a transient un-minted row must not enter the stream half-formed. */
+function decompose(snapStr: string): Map<string, RecordEntry> {
+  const s = JSON.parse(snapStr)
   const m = new Map<string, RecordEntry>()
   const wk = CURWEEK
-  // days — the whole day, incl rows + secOrder (rows are NESTED, design §3.1)
-  for (let di = 0; di < DAYS.length; di++) {
+  const days = s.d || []
+  for (let di = 0; di < days.length; di++) {
     const id = `${wk}#${di}`
-    m.set(`days/${id}`, { collection: 'days', id, value: DAYS[di] })
+    m.set(`days/${id}`, { collection: 'days', id, value: days[di] })
   }
   // the mutable book (excludes the issued orig/als, which are their own records)
   const book = {
-    c: SCHED.changes, p: SCHED.pending, ad: SCHED.added, al: SCHED.al, ok: SCHED.dayOK,
-    sg: SCHED.sign, sb: SCHED.signBind, cv: SCHED.cur, dr: SCHED.drafts, cd: SCHED.curDraft,
-    v: SCHED.ridV, am: SCHED.amV,
+    c: s.c, p: s.p, ad: s.ad, al: s.al, ok: s.ok,
+    sg: s.sg, sb: s.sb, cv: s.cv, dr: s.dr, cd: s.cd, v: s.v, am: s.am,
   }
   m.set(`sched.book/${wk}`, { collection: 'sched.book', id: wk, value: book })
-  // muted checks (WARNOFF)
-  m.set(`sched.mutes/${wk}`, { collection: 'sched.mutes', id: wk, value: [...WARNOFF] })
-  // issued records — append-only-INTENDED (put-once enforcement is Step 3, §3.4)
-  for (const di of Object.keys(SCHED.orig || {})) {
+  m.set(`sched.mutes/${wk}`, { collection: 'sched.mutes', id: wk, value: (s.wo || []) })
+  const orig = s.o || {}
+  for (const di of Object.keys(orig)) {
     const id = `${wk}:${di}`
-    m.set(`sched.orig/${id}`, { collection: 'sched.orig', id, value: (SCHED.orig as any)[di] })
+    m.set(`sched.orig/${id}`, { collection: 'sched.orig', id, value: orig[di] })
   }
-  const als = (SCHED.als as any[]) || []
+  const als = (s.a as any[]) || []
   for (let n = 0; n < als.length; n++) {
     const id = `${wk}:${n}`
     m.set(`sched.als/${id}`, { collection: 'sched.als', id, value: als[n] })
   }
-  // inputs are GLOBAL and ride the same histSnap world (own scope in the envelope)
-  for (const r of INPUTS as any[]) {
-    const id = inpId(r)
+  for (const r of ((s.i as any[]) || [])) {
+    const id = r && r.iid
+    if (!id) continue
     m.set(`inputs/${id}`, { collection: 'inputs', id, value: r })
   }
-  // the Inputs-calendar planning layer
-  m.set('plan/all', { collection: 'plan', id: 'all', value: { pp: PLANPUCKS, dm: DAYRMK } })
+  m.set('plan/all', { collection: 'plan', id: 'all', value: { pp: s.pp || [], dm: s.dm || {} } })
   return m
 }
+function schedRecords(): Map<string, RecordEntry> { return decompose(baseline()) }
 
 export const schedStore: EnlistableStore = {
   key: 'scheduler',
-  capture: () => histSnap(),
-  restore: (snap) => { histRestore(snap as string) },
+  capture: () => baseline(),                          // the before-image + rollback source (lagging)
+  restore: (snap) => { histRestore(snap as string) }, // histRestore re-syncs the baseline itself
   records: schedRecords,
-  signature: () => histSnap(),
+  signature: () => histSnap(),                        // LIVE — keeps the whole-world guard (SR-005)
+}
+
+/* the ONE shared apply-end: mint the ids histPush would mint in phase 8 (but it
+   is LATCHED until then, AFTER the baseline would advance — SR-006), then advance
+   the baseline to the new live world. Folded into BOTH commitSched and
+   commitPublish (SR-001), and idempotent so a nested child-join re-running it is
+   harmless. materializeSigns is GONE — the sign readers are non-mutating now. */
+function applyEnd(): void {
+  ensureRowIds(DAYS)
+  mintInpIds()
+  SCHED_BASELINE = histSnap()
 }
 
 /* ---- command types + the commit helper ----------------------------------- */
@@ -102,6 +141,15 @@ export const SCHED_TYPES = {
   approve: 'sched.approve',
   publishAL: 'sched.publishAL',
   discard: 'sched.discard',
+  // follow-up #1 — the previously-unrouted paths (rows A–G). Auto-registered by
+  // the definePermission loop below. `mutate` is the afterSchedMutate backstop.
+  mutate: 'sched.mutate',
+  stores: 'sched.stores',
+  sign: 'sched.sign',
+  signClear: 'sched.signClear',
+  warnMute: 'sched.warnMute',
+  draftRename: 'sched.draft.rename',
+  draftDelete: 'sched.draft.delete',
 } as const
 
 const schedScope = (): Scope => ({ module: 'sched', weekId: CURWEEK })
@@ -113,7 +161,7 @@ const inputsScope = (): Scope => ({ module: 'inputs' })
    value (writeInputs returns a boolean) which is captured and returned. */
 function commitSched<T>(type: string, scope: Scope, fn: () => T): { result: CommitResult; value: T } {
   let value!: T
-  const cmd: Command = { type, scope, apply: (txn) => { txn.enlist(schedStore); value = fn() } }
+  const cmd: Command = { type, scope, apply: (txn) => { txn.enlist(schedStore); value = fn(); applyEnd() } }
   const result = commit(cmd)
   return { result, value }
 }
@@ -126,6 +174,15 @@ export function commitInputs<T>(type: string, fn: () => T): T {
 export function commitSchedValue<T>(type: string, fn: () => T): T {
   return commitSched(type, schedScope(), fn).value
 }
+
+/* the seam for the previously-unrouted paths. schedWrite is JUST commitSchedVoid
+   — no isInReducer branch (R2-03): dispatch already child-joins a reducer-time
+   commit (enlisting schedStore into the parent) and enqueues a post-phase one, so
+   a raw branch that skipped enlist would trip the whole-world guard when the
+   parent is a NON-scheduler command. schedWriteValue captures the return value
+   the toasts read (a draft rename/delete label, toggleWarnOff's bool — R2-11). */
+export function schedWrite(type: string, fn: () => void): void { commitSchedVoid(type, fn) }
+export function schedWriteValue<T>(type: string, fn: () => T): T { return commitSchedValue(type, fn) }
 
 /* ---- phase 2b: the PUBLISH path (design §3.4) ---------------------------- */
 /* the set of issued verIds currently on the loaded week's book — orig[di].id +
@@ -174,6 +231,7 @@ function commitPublish(type: string, fn: () => void): CommitResult {
       if (added.length) {
         txn.boundary({ kind: 'publish', ids: added, crossable: !added.some(issuedDisclosed) })
       }
+      applyEnd()   // SR-001: commitPublish builds its OWN Command, so it needs the shared advance too
     },
   }
   return commit(cmd)
@@ -205,6 +263,20 @@ export function registerSchedCommandLayer(): void {
   if (registered) return
   registered = true
   installBaselineInvariants()
+  SCHED_BASELINE = histSnap()   // the seed/hydrated world is the first baseline (mirrors People)
+  // the re-sync callback fires from history.ts histInit/histRestore, covering
+  // undo/redo/quarantine/loadWeek/boot by construction (R2-07: registered at
+  // module-eval via wireStore, so a loadWeek/histInit without initStore is covered)
+  setSchedResync(resyncSchedBaseline)
+  // the afterSchedMutate BACKSTOP (rows A/A2/B): when the board epilogue runs
+  // OUTSIDE a command, wrap it so the preceding in-place mutation is captured.
+  // isCommitting => already inside a command (a scheduler reducer, or delivery),
+  // run raw so nothing double-opens; the enclosing scheduler command's applyEnd
+  // advances the baseline. Idle => open the backstop command.
+  setSchedEpilogueHook((raw) => {
+    if (isCommitting()) raw()
+    else commitSchedVoid(SCHED_TYPES.mutate, raw)
+  })
   // permissive gate at Step 2 (see the file header) — the real gate is unchanged
   for (const t of Object.values(SCHED_TYPES)) definePermission(t, anyone)
   registerGuardedStore(schedStore)

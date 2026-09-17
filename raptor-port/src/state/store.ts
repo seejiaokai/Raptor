@@ -38,7 +38,7 @@ import { setRole as lwSetRole } from '../leavewar/state/store'
 import { setFileLocked as trSetFileLocked } from '../tracker/role.js'
 import { isHydrated, weekSwapBegin, weekSwapEnd } from './persist'
 import { deferEffect } from '../command'
-import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, SCHED_TYPES } from './sched-commit'
+import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, SCHED_TYPES, resyncSchedBaseline } from './sched-commit'
 import { registerPeopleSettingsCommandLayer, resyncPeopleBaseline } from './people-settings-commit'
 
 let VERSION = 0
@@ -248,6 +248,11 @@ export function resetSession(s: any) {
      and clearing them here wiped the saved copy on the next history step
      (8 Sep 26 bug pass). */
   view.resetViewState('session')
+  /* [ARCH-STACK] follow-up #1 (SR-007): resetViewState('session') just CLEARED
+     WARNOFF, which rides the baseline. This is an out-of-band world change with
+     no snapshot restore, so histInit/histRestore never fire — re-sync explicitly,
+     or a mute → logout → login → edit would emit a bogus mute-clear. */
+  resyncSchedBaseline()
   /* the "View as" IDENTITY goes back to the boot default too. It is what
      every member-own gate keys on — the Inputs page's person filter and
      edit/delete reach, the Leave War's own-row rule (mirrored into its

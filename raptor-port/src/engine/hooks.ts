@@ -100,6 +100,19 @@ export function setSettingsWriteHook(fn: SettingsWriteHook | null) { SETTINGS_WR
 function rawStoreSet(k: any, v: any) {
   try { if (storeBackend.impl) storeBackend.impl.setItem('sqn142_' + k, JSON.stringify(v)) } catch (e) {}
 }
+/* [ARCH-STACK] follow-up #1: the SCHEDULER backstop seam. state/view.ts's
+   afterSchedMutate() is the durable-write epilogue for the ~40 board sites that
+   mutate the model in place and then repaint. The command layer installs a hook
+   here so that epilogue self-wraps in a `sched.mutate` command (capturing the
+   preceding board mutation into the change stream), WITHOUT view.ts importing
+   the command layer (state/view.ts <- state/sched-commit.ts would be a cycle;
+   sched-commit already imports view). Null by default => run raw exactly as
+   before (parity/tfin 728/0 unchanged). Same shape as SETTINGS_WRITE_HOOK. */
+type SchedEpilogueHook = (raw: () => void) => void
+let SCHED_EPILOGUE_HOOK: SchedEpilogueHook | null = null
+export function setSchedEpilogueHook(fn: SchedEpilogueHook | null) { SCHED_EPILOGUE_HOOK = fn }
+export function runSchedEpilogue(raw: () => void) { if (SCHED_EPILOGUE_HOOK) SCHED_EPILOGUE_HOOK(raw); else raw() }
+
 export const store = {
   get(k: any, d: any) {
     try {
