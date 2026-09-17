@@ -1,46 +1,69 @@
-# Session handoff — [CMDL-FINISH] design LOCKED, build handed to a fresh session
+# Session handoff — [CMDL-FINISH] BUILT (P1–P6), held for cross-provider inspection + "merge live"
 
-## Where it started
-Owner asked to take **[CMDL-FINISH]** (ARCH-STACK step 2 completion — finish the one
-command layer for Leave War + Tracker) on the HEAVY path: design → red-team BOTH
-providers → build (Opus 4.8 high) → cross-provider code inspection → gates → hold for
-"merge live". It **gates [GLOBAL-UNDO]**.
+## Where it is
+The **build is done** on branch `claude/cmdl-finish` (off `main`). Five of six phases are
+COMPLETE with full gates green and committed+pushed; the sixth (P4, Tracker gestures) is the
+mechanism + the high-value gestures, with the delicate remainder deliberately deferred (below).
+**Nothing merged.** Waiting on: (1) the cross-provider CODE inspection (Codex + Fable) of the built
+code, (2) the owner's mandatory live-scenario pass for P3, (3) the owner's "merge live".
 
-## Shipped
-- Nothing to production. Design is docs-only on branch `claude/cmdl-finish`
-  (commit `8235c19`). No PR opened.
+## Commits (on `claude/cmdl-finish`, after `8235c19` the design lock)
+- `aef0ff2` P1 — command-core enabling changes (§2.1): causalSeq per-pipeline, causedBy non-user,
+  drain-on-throw, queued-commit context capture, commitProjection/isInReducer/commitPhase/CmdRefused,
+  scoped expectedRevs.
+- `684cd59` P2 — batch delete-aware write() seam for all 5 stores + Tracker mem hydration + settings
+  reset-rehydrator (R3-001) + lw/trk signatures.
+- `1202504` P3 — the F1 Leave War causal both-side envelope: notify restructure, coalescing router
+  (+ F4-1 idle lwSyncTurn), LW_RESTORING, OUTBOUND_PENDING, writeInputsBatchProjection, People-side,
+  lwStore registered guarded.
+- `dd39593` P5 — key sched.als by stable verId not array index (C14).
+- `2e142f4` P6 — off-week weekstash store + CmdRefused routing (§6): atomic protected-week clear.
+- `86fa196` P4 (PARTIAL) — trkGesture mechanism + Class A marks + addStudent + applyLullCopy + addCourse.
 
-## Unfinished
-- The **BUILD (phases P1–P6) has not started** — deliberately stopped here to hand off
-  to a fresh session. The design is build-ready: FOUR cross-provider red-team rounds
-  (Codex/GPT-6 Astra + Fable 5.1), converged — **Fable APPROVED/SHIP-READY**, Codex
-  confirmed all round-3 folds closed. The three agreed **LOCK patches** are folded into
-  the design's "LOCK patches" section; 9 build-advice notes are in the review log's
-  round-4 entry. Do NOT re-open the design; build it.
+## Gates (each run ALONE — see the lesson below)
+Every phase: build/typecheck clean, `node reference/tfin.js` 728/0. Full unit 4905/4905 (the only
+intermittent miss is the PRE-EXISTING `inputscal.test.tsx` pointer-event flake — 39/39 in isolation).
+`test:e2e` 425 passed / 33 skipped / 0 (the year-wide-scrubber leavewar geometry test flakes under
+load but passes alone). `smoke:tracker` 425/0.
+- **LESSON:** do NOT run the full unit suite and `test:e2e` concurrently — it over-subscribes the CPU
+  and times out slow LW-UI / geometry test files (a harness artifact, not a regression). Run them
+  one at a time.
 
-## Branch state
-- Designated branch: `claude/cmdl-finish` (pushed, tracks origin, off `main` at
-  `8235c19`). No PR. NOT merged. Build continues on THIS branch — do NOT reset to main.
+## P4 — what is DONE vs what remains
+DONE: the `trkGesture` mechanism (one gesture = one envelope; sSet is now sync + defers storage via a
+boundary flush), `trk.gesture` permission, and these gestures grouped: popGrade, popFail, setDoneDate,
+setFailDate, addStudent (interleaved reads hoisted), applyLullCopy, addCourse.
 
-## Gates
-- **None run this session — DOCS-ONLY** (design spec + review log + an OUTSTANDING.md
-  note + the skill-observation log). Nothing code changed, so nothing to gate.
-- The build runs the full gate set per phase from `raptor-port/` (fresh container:
-  `npm ci` first): `npm test` · `npm run build` · `node reference/tfin.js` ·
-  `npm run test:e2e` · `npm run smoke:tracker`, plus `probes:adapted`/`perf` for
-  UI-visible work, and the live-view drive.
+REMAINING (a focused follow-up; the mechanism is proven, the app behaves identically with per-write
+envelopes so this is safe to leave — envelope grouping is latent foundation for [GLOBAL-UNDO], not
+live behaviour):
+- **addSyl / dupSyl** — have a try/catch storage-error rollback + (dupSyl) an interleaved
+  `await snapshotLayout` read; converting changes their error-rollback semantics, do it carefully.
+- **renameStudent / removeStudentNow / delSyl** — reads AND writes interleaved across MULTIPLE syllabi
+  in a loop (storeSylIds → sGet kRosterFor → sSet); needs an all-reads-first restructure + a sync
+  delKey variant.
+- **restoreHiddenSyl** — async `reconcileBuiltins` mid-sequence.
+- **importClick** — multi-part (design §4 Class C: one trkGesture per resolved chart + one for the
+  student block).
+- **TRK_RESTORING (N7)** — the legacy Tracker undo (applyHist/applyMarkHist → saveMarks/saveLayout)
+  still emits forward envelopes; scope a raw/off-stream flag to the SYNCHRONOUS trkWrite (not across
+  the awaited step()).
+- **Register trkStore GUARDED** — only once EVERY gesture routes (P4-END).
 
-## Open questions
-- None blocking. import-undo-granularity, the off-week FULL weekstash store, and
-  GU-005 are deferred to [GLOBAL-UNDO] BY DESIGN (stated in the spec), not session
-  leftovers.
-- Owner offered, not yet taken up: a versioned backup of the machine-local memory
-  files into the repo (his ~22 memory facts live only in the Claude home folder,
-  outside git). Optional, non-blocking.
+The pattern for the remainder: hoist every `await` read/prompt BEFORE `trkGesture(() => …)`, then do
+the synchronous mem + live-let writes inside it (call the save helpers WITHOUT await — their mem write
+is synchronous, storage is flushed at the boundary). Watch multi-write helpers whose two writes are
+sequenced by an await (like the de-asynced `noteLastEdit`). Run `smoke:tracker` after each gesture.
 
-## Pick up here
-Build **[CMDL-FINISH] P1** on `claude/cmdl-finish`, test-first, per
-`raptor-port/docs/superpowers/specs/2026-09-17-arch-stack-cmdl-finish-design.md` §7
-(fold each phase's "LOCK patches" as you build it). Read that design + its
-`…-cmdl-finish-review-log.md` first. Full gates per phase; cross-provider CODE
-inspection of the built code after the build; NO merge without "merge live".
+## Pick up here (next session)
+1. Run the **cross-provider CODE inspection** (Codex + Fable) on the built diff `main..claude/cmdl-finish`,
+   focused on: the command core (P1 causalSeq/queue), the LW router (P3 §2.3 + lwSyncTurn), the
+   write() seams (P2), the Tracker trkGesture + mem hydration (P4). Fix confirmed bugs, re-gate.
+2. Do the owner's **live-scenario pass** for P3 (a real multi-day leave = ONE envelope; the idle
+   week-nav reconcile = ONE projection) in the running app.
+3. Finish P4's remaining gestures + TRK_RESTORING + register trk guarded (optional before merge —
+   it is latent foundation).
+4. On the owner's **"merge live"**: full gate set once, PR merge on green, Pages rollover, live-verify,
+   one notification.
+
+Design of record: `docs/superpowers/specs/2026-09-17-arch-stack-cmdl-finish-design.md` (+ its review-log).
