@@ -1,43 +1,33 @@
-# Session handoff — [ARCH-STACK] Step 2 BUILT (not merged); follow-up #1 plan red-teamed
+# Session handoff — [ARCH-STACK] Step 2 BUILT (not merged); follow-up #1 plan at Rev 2
 
-## THE NEXT TASK (owner decided 17 Sep 26): a SCOPED CORRECTNESS SWEEP, then the build
+## THE NEXT TASK (17 Sep 26): round-2 red-team of the Rev-2 plan, then BUILD
 
-**Do NOT start the ARCH-STACK build yet.** The owner weighed "build now" vs "clean the repo
-first" and chose a NARROW correctness sweep of the documents the build depends on. The deciding
-argument: the build's own spec
-(`docs/superpowers/specs/2026-09-16-arch-stack-2-command-layer-design.md`, Rev 5) was written
-on 16 Sep — BEFORE the 17 Sep discovery that several always-loaded documents were wrong — and
-two of those wrong things sit in exactly the machinery follow-up #1 touches (the mutation
-funnel's claim about what reaches the next AL, and the whole persistence story). Building from
-that spec risks baking in the same false premises, silently.
+**The correctness sweep the owner ordered is DONE** (commit `94b1d37`, same branch, not merged).
+Do not redo it. What it produced:
 
-### Scope — IN
-1. **The Rev-5 design spec itself, first.** Re-check every factual claim against the CODE, and
-   against the 17 Sep corrections (CLAUDE.md §Architecture rules "WHAT ACTUALLY PERSISTS"; the
-   corrected mutation-funnel wording; `docs/data-schema.md`).
-2. **The follow-up #1 plan** (`2026-09-17-arch-stack-2-followup1-scheduler-routing-plan.md`) —
-   it still needs its **Rev 2** folding in the 12 accepted round-1 findings (the review log's
-   table is the checklist), PLUS anything the spec sweep changes. Note Fable's F8 listed
-   factual errors in its §1 table that were never fixed.
-3. **The other build-critical docs:** `engine-rules.md` (validation, publishing/AL, auth),
-   `feature-impact.md` (flows + drift seams), `performance.md`, `data-model.md`, and the rest of
-   `data-schema.md` (only its Tracker-id and persistence halves were corrected on 17 Sep).
+- **`docs/superpowers/specs/2026-09-17-doc-correctness-sweep.md`** — the claims → evidence table
+  (22 findings, each naming the code file that proves it), the two mechanical passes that found the
+  worst of them, and an explicit list of what was set aside. **Read this before touching any doc.**
+- The Rev-5 design spec carries a **Rev 5.1** block: nine wrong facts fixed, plus four places the
+  BUILD knowingly diverged from the design (toast/edit-log latching never wired, permissions
+  permissive, the LW store unguarded, the LW join deferred). Believe the code over the prose there.
+- **The follow-up #1 plan is now Rev 2**, folding all 12 accepted round-1 findings, with a table
+  mapping each finding to the section that answers it. It also carries one defect the round-1
+  reviewers missed: `ui/textedit.ts:txtCommit` defers `afterSchedMutate()` by a `setTimeout(0)`, so
+  a command landing in that gap mis-attributes the text change (plan §6 risk 5).
+- Biggest single find: `engine-rules.md` described **`restoreDayVersion`** as live in nine places.
+  It was REMOVED at Phase 2 and its replacement inverts the key behaviour. Quoted dead in place.
 
-### Scope — OUT (explicitly; do not drift into it)
-Deleting dead code, unused CSS, orphaned files, general optimisation. That is `[REPO-CLEANUP]`
-in OUTSTANDING.md, it is the RISKY kind of cleaning (this repo deliberately keeps dead-looking
-code — CLAUDE.md §Stable decisions), and it is far lower value than correctness.
+### Next steps, in order
+1. **The owner still owes two answers** (plan §9): may Rev 2 edit committed Step-2 core
+   (`commit.ts guardSnapshot`)? and accept SR-003 as a documented Step-2 limitation?
+2. **Round-2 cross-provider red-team** of the Rev-2 plan — and, separately and cheaply, hand BOTH
+   providers the sweep's claims table with the instruction in its §D: *open the code and tell me
+   which rows I got wrong*. Never "review these documents" — that is the method that already failed.
+3. Then BUILD test-first, **P1–P4 as ONE gated change** (F9), parity 728/0, live drive by the session.
 
-### THE METHOD THAT WORKS (learned the hard way on 17 Sep)
-Fable's own diagnosis of why it missed the persistence bug first time: *"I checked text against
-text, and all three files agreed with each other while disagreeing with the source."* So:
-**check every dated decision against the CODE it describes, never against another document.**
-That found four more stale claims in minutes. A document agreeing with another document is
-evidence of nothing.
-
-### Then, and only then
-Rev-2 plan → round-2 cross-provider red-team → build follow-up #1 test-first (P1–P4 as ONE
-gated change), parity 728/0, with the live drive done by the session itself.
+Gates at the sweep's commit: vitest 4865/4865 · parity 728/0 · build green.
+**Not merged. Do not merge until the owner says "merge live." Do not watch or open a PR.**
 
 ---
 
