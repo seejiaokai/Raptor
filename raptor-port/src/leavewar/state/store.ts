@@ -843,16 +843,20 @@ export function initStore(b?: StorageBackend): void {
   state = blank()
 
   const wars = readStored('wars', readWars) ?? migrateSingleWar() ?? seedWars()
-  const storedCurrent = backend.read('current')
-  // A remembered choice wins (a returning session put the reader back where
-  // they were); otherwise open on the war that is open for bidding — else
-  // closed, else published (owner, 7 Sep 26). Since the storage seam (8 Sep
-  // 26) `current` IS stored per browser, so after the first war switch the
-  // tab reopens on the remembered war and the stage pick decides only for a
-  // browser that never chose.
-  const currentId = wars.some(w => w.period.id === storedCurrent)
-    ? (storedCurrent as string)
-    : (pickDefaultPeriodId(wars.map(w => w.period)) || wars[0].period.id)
+  /* THE TAB ALWAYS OPENS ON THE WAR BEING WORKED (owner, 7 Sep 26, restated
+     and reaffirmed 17 Sep 26): open for bidding first, else bidding-closed,
+     else published, else draft. A remembered choice does NOT override it.
+
+     This deliberately IGNORES the stored `current`. It used to win here, and
+     that was a REGRESSION nobody made on purpose: before the storage seam
+     (8 Sep 26) nothing was ever stored, so this stage pick ran on every load
+     and the owner's rule held by accident. Once the Leave War persisted, the
+     remembered war started winning from the second visit — so a squadron that
+     had glanced at the DRAFT 2027 year would reopen there instead of on the
+     year actually open for bidding. `current` is still RECORDED (below, at
+     every switch) because it is the reader's last choice and the shared
+     database may yet want it per user; it is simply not honoured at boot. */
+  const currentId = pickDefaultPeriodId(wars.map(w => w.period)) || wars[0].period.id
 
   const openings = readStored('openings', readOpenings) ?? seedOpenings()
   const ledger = readStored('ledger', readLedger) ?? seedLedger()
@@ -961,6 +965,10 @@ function notify(): void {
 // the states that have to agree with it.
 function rawPersist(): void {
   backend.write('wars', JSON.stringify(state.wars))
+  // Recorded, but deliberately NOT read back at boot — initStore always opens
+  // on the war being worked (owner, 17 Sep 26; see the stage-pick comment
+  // there). Kept because it is the reader's last choice and the shared
+  // database may want it per user. Do not "restore" it as the boot default.
   backend.write('current', state.currentId)
   backend.write('openings', JSON.stringify(state.openings))
   backend.write('ledger', JSON.stringify(state.ledger))

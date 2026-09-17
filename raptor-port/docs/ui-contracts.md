@@ -6100,12 +6100,13 @@ followed by published." Two halves:
   published→draft, same-stage ties to the earliest bidding start) decides the
   boot `currentId` in `state/store.ts` — but only when nothing is remembered:
   a stored `current` (the reader's own pick, from the shared database to come)
-  always wins. **CORRECTED 17 Sep 26:** the old note here said "Leave War is
-  session-only today, so the stage pick decides on every load" — it persists
-  since the 8 Sep 26 storage seam, so after the first visit the REMEMBERED war
-  wins and the stage pick applies on a first-ever boot only. The owner has ruled
-  (17 Sep 26) that it should ALWAYS open on the war being bid on; until that
-  code change lands, this describes current behaviour, not intended behaviour.
+  is recorded on every switch — but **it is NOT honoured at boot** (owner
+  reaffirmed 17 Sep 26): the stage pick runs on EVERY load, so the tab always
+  opens on the war being worked. A picker switch holds for the rest of that
+  session only. History: the stage pick used to run every load by accident
+  (nothing was stored before the 8 Sep 26 storage seam); once the tab persisted,
+  the remembered war started winning from the second visit and the squadron
+  would reopen on whatever year was last glanced at. Fixed 17 Sep 26.
 - **Where in it.** The grid lands on the START of that war's bidding window —
   `engine/period.ts defaultFocusDate` = `bidFrom ?? start` (a war with no
   window set has no narrower start than its first day). `bidFrom` is kept

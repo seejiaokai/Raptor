@@ -1368,7 +1368,13 @@ ledger). Read it before any layout/render/drag-touching change.
   (owner, 7 Sep 26 — "the default view … is always the start of the period in which
   it is opened for bidding, followed by bidding closed, followed by published"). Boot
   picks `currentId` by STAGE (open→closed→published→draft, `stages.ts
-  pickDefaultPeriodId`) unless a `current` is remembered; the grid lands on
+  pickDefaultPeriodId`) on EVERY load — a remembered `current` is recorded but
+  deliberately NOT honoured at boot (owner reaffirmed 17 Sep 26; it briefly WAS
+  honoured after the 8 Sep storage seam made the tab persist, which silently
+  reopened the squadron on whatever war was last glanced at. A picker switch
+  still holds for the rest of that session). Pinned by
+  `state/store.test.ts` "records the chosen war but does NOT reopen on it".
+  The grid lands on
   `period.ts defaultFocusDate` (`bidFrom ?? start`) once on first show
   (`LeaveWarPage.tsx` → `focusDay` → `Matrix jumpTo`, the under-manned jump path — so
   it preloads the target months and scrolls there), and `selectWar` lands the same way
