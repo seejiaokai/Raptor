@@ -55,15 +55,47 @@ the synchronous mem + live-let writes inside it (call the save helpers WITHOUT a
 is synchronous, storage is flushed at the boundary). Watch multi-write helpers whose two writes are
 sequenced by an await (like the de-asynced `noteLastEdit`). Run `smoke:tracker` after each gesture.
 
+## Cross-provider CODE inspection — DONE (Codex/GPT-6-Astra + Fable 5.1)
+Both ran on the built diff `main...claude/cmdl-finish`. Fable's verdict: the core mechanisms
+(P1 command core, P3 router logic, P2 seams, P6, P4 conversions) all trace CLEAN; only the items
+below. Codex: REVISE with a converging set. The two agree closely.
+
+FIXED this session (commit after the inspection):
+- **CMDLF-001 (HIGH, LIVE bug)** — no `lw.hist` effect context was registered (design §2.1(4) missed),
+  so a Raptor-driven LW reconcile's queued lw.sync projection pushed a spurious Leave War UNDO step
+  (and truncated redo). Registered it in `lwRegisterCommands`. **Pinned** by a new discriminating test
+  in `causal-envelope.test.ts` (verified it fails without the fix).
+- **CMDLF-003 (MED)** — `trkStore.write()` wrote only `mem`, never storage → a Tracker restore lost on
+  reload. Added a boundary storage flush of every applied record.
+- **CMDLF-007 (LOW-MED)** — `write()`/`restore()` didn't bump the sGet generation map. Added the bumps.
+- Verified (empirically) the P6 `resyncSchedBaseline()` in `commitInputsWith` IS needed — quarantine
+  bare-write rollback FAILS without it (Fable's "unnecessary" claim tested the wrong file, weekstash).
+
+DEFERRED to the [GLOBAL-UNDO] / P4-completion follow-up (ALL latent — the write()/expectedRevs seams
+have NO production caller at this step; they are the foundation the step-3 undo consumes, best
+implemented + verified there with real undo scenarios; both providers pinned them precisely):
+- **CMDLF-002** LW `write()` restoring `lw.postouts` doesn't rebuild the people posting windows (needs
+  a reproject before the boundary reconcile).
+- **CMDLF-004** Tracker `write()` re-derive doesn't hydrate the GLOBAL catalogue lets (SYLS / SYL_ORDER
+  / SYL_HIDDEN / SYL_TOMB / eventInfo) from mem — a restored syllabus-delete leaves a blank board until
+  reload. (Fable gives the precise side-effect-free re-parse.)
+- **CMDLF-005 / CMDLF-006 / Fable#9** Tracker capture/restore don't snapshot the unsaved SYL/byid draft
+  + course/COURSES pointer, don't reset undoStack/redoStack/sylDirty on a pointer-change restore, and
+  restore() rebuilds the dirty draft from the persisted def (rejected-gesture path only).
+- **CMDLF-010** the `inputs/__order` record is accepted by write() but not emitted by records() (a
+  front/back reorder on delete→restore isn't recoverable).
+- **CMDLF-011 / Fable#6** a pre-verId (legacy) `sched.als` key doesn't round-trip in write() (matches
+  the "reset demo data, don't migrate" rule — likely acceptable).
+- **CMDLF-012** a joined-CHILD command's `expectedRevs` is discarded (only the root's is checked).
+- **Fable#7** write() installs envelope objects by reference (clone-on-write before the undo consumer).
+- **Fable#8** `applyLwRecord` drops cells for an absent war (apply lw.war entries first).
+
 ## Pick up here (next session)
-1. Run the **cross-provider CODE inspection** (Codex + Fable) on the built diff `main..claude/cmdl-finish`,
-   focused on: the command core (P1 causalSeq/queue), the LW router (P3 §2.3 + lwSyncTurn), the
-   write() seams (P2), the Tracker trkGesture + mem hydration (P4). Fix confirmed bugs, re-gate.
-2. Do the owner's **live-scenario pass** for P3 (a real multi-day leave = ONE envelope; the idle
+1. Do the owner's **live-scenario pass** for P3 (a real multi-day leave = ONE envelope; the idle
    week-nav reconcile = ONE projection) in the running app.
-3. Finish P4's remaining gestures + TRK_RESTORING + register trk guarded (optional before merge —
-   it is latent foundation).
-4. On the owner's **"merge live"**: full gate set once, PR merge on green, Pages rollover, live-verify,
-   one notification.
+2. On the owner's **"merge live"**: full gate set once, PR (#412) merge on green, Pages rollover,
+   live-verify, one notification.
+3. In a focused follow-up (with [GLOBAL-UNDO] step 3): finish P4's remaining gestures + TRK_RESTORING
+   + register trk guarded, and clear the DEFERRED inspection punch-list above (all latent foundation).
 
 Design of record: `docs/superpowers/specs/2026-09-17-arch-stack-cmdl-finish-design.md` (+ its review-log).

@@ -253,8 +253,13 @@ export const trkStore = {
      gesture must restore them, and pushMarkUndo clears redo before a grade). */
   capture: () => ({ mem: Object.assign({}, mem), undo: undoStack.slice(), redo: redoStack.slice(), active, sylDirty }),
   restore: (snap) => {
+    // [CMDL-FINISH] CMDLF-007 — bump the sGet generation for every key that
+    // changes shape across the restore (both the outgoing and incoming key sets),
+    // so an sGet begun before the restore cannot mirror a stale value back in.
+    for (const kk of Object.keys(mem)) bumpMemGen(kk);
     for (const kk of Object.keys(mem)) delete mem[kk];
     Object.assign(mem, snap.mem);
+    for (const kk of Object.keys(mem)) bumpMemGen(kk);
     undoStack = snap.undo.slice(); redoStack = snap.redo.slice(); active = snap.active; sylDirty = snap.sylDirty;
     TRK_SIG++;
     /* re-derive the current course's live lets from the restored mem, then repaint
@@ -335,7 +340,7 @@ function trkLoadStudentsFromMem() {
 function trkWriteRecords(entries) {
   const beforeSyl = curSylId();
   const beforeDef = JSON.stringify(customDefs && customDefs[beforeSyl]);
-  for (const e of entries) { if (e.op === 'delete') delete mem[e.id]; else mem[e.id] = e.value; }
+  for (const e of entries) { if (e.op === 'delete') delete mem[e.id]; else mem[e.id] = e.value; bumpMemGen(e.id); }
   // the globals that steer the pointers, always re-read from mem
   COURSES = sParse(memGet(kCourses), [], 'array');
   const courseGone = COURSES.length > 0 && !COURSES.some(c => isCourseEntry(c) && c.id === course);
@@ -372,7 +377,18 @@ function trkWriteRecords(entries) {
     }
   }
   TRK_SIG++;
-  cmdDeferEffect(() => { renderBoard(); renderSide(); notify(); });
+  cmdDeferEffect(() => {
+    // [CMDL-FINISH] CMDLF-003 — mem is the in-session mirror; a reload re-reads
+    // storage, so a restore that touched only mem would be lost. Flush every
+    // applied record (incl. those for unloaded courses) to durable storage at the
+    // transaction boundary. Fire-and-forget with the save-status idiom, as sSet.
+    setSaveStatus('', 'saving');
+    Promise.all(entries.map(e => e.op === 'delete'
+      ? (storage.delete ? storage.delete(e.id) : storage.set(e.id, ''))
+      : storage.set(e.id, e.value)))
+      .then(() => setSaveStatus('', 'ok'), () => setSaveStatus('local only', 'ok'));
+    renderBoard(); renderSide(); notify();
+  });
 }
 
 /* the synchronous durable-record write: routed through a named command when

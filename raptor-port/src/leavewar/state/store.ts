@@ -100,7 +100,8 @@ import {
   commit as cmdCommit, isCommitting as cmdIsCommitting, deferEffect as cmdDeferEffect,
   definePermission as cmdDefinePermission, anyone as cmdAnyone, registerRecord as cmdRegisterRecord,
   commitProjection as cmdCommitProjection, isInReducer as cmdIsInReducer,
-  registerGuardedStore as cmdRegisterGuardedStore, isQueued, isOk,
+  registerGuardedStore as cmdRegisterGuardedStore, registerEffectContext as cmdRegisterEffectContext,
+  isQueued, isOk,
 } from '../../command'
 import type { EnlistableStore as CmdEnlistableStore, RecordEntry as CmdRecordEntry, Scope as CmdScope } from '../../command'
 
@@ -1194,6 +1195,17 @@ function lwRegisterCommands(): void {
   // never nested inside another command), lwStore is safe to guard. The guard
   // uses the cheap durable-version signature(), not a whole-state serialise.
   cmdRegisterGuardedStore(lwStore)
+  // [CMDL-FINISH] §2.1(4)/CMDLF-002 — the LW HIST.lock is a DIFFERENT object than
+  // the scheduler's 'HIST.lock'. A Raptor-driven LW reconcile enqueues an lw.sync
+  // projection under LW's locked(); that lock unwinds before drainQueue runs the
+  // projection's rawPersist→recordHistory, so without capturing THIS lock the
+  // reconcile would record as a spurious LW undo step (and truncate redo). The
+  // queued projection captures + re-installs it (commit.ts enqueue/drain).
+  cmdRegisterEffectContext({
+    key: 'lw.hist',
+    capture: () => HIST.lock,
+    install: (snap) => { const prev = HIST.lock; HIST.lock = snap as boolean; return () => { HIST.lock = prev } },
+  })
 }
 
 /* [CMDL-FINISH] §2.3 (Rev 4 + F4-1) — the persist+notify ROUTER. Every durable LW

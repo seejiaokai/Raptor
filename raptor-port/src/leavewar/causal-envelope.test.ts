@@ -10,10 +10,12 @@ import { initStore as raptorInitStore } from '../state/store'
 import { projectPeople } from './state/raptorRoster'
 import {
   getState, initStore as lwInitStore, setCell, setCellRange, setBidState, setPeople, setRole, advanceStage,
+  ingestFromRaptor, lwCanUndo,
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { wireLeaveWarSync } from './sync'
-import { onCommit } from '../command'
+import { schedStore } from '../state/sched-commit'
+import { onCommit, commit, deferEffect, definePermission, anyone } from '../command'
 import type { CommitEnvelope } from '../command'
 
 const ISNAP = JSON.stringify(INPUTS)
@@ -56,6 +58,23 @@ describe('F1 — an LW approval mints its Raptor input as a chained projection',
     expect(cause).toBeDefined()
     // the mint is system-driven, not a stray user envelope (C10)
     expect(mint!.actor.role).toBe('system')
+  })
+
+  it('a Raptor-driven LW reconcile pushes NO Leave War undo step (lw.hist effect context — CMDLF-001)', () => {
+    definePermission('test.raptor', anyone)
+    const pid = getState().people[0].id
+    // a Raptor command whose phase-8 effect lands an LW cell via the inbound sync
+    // writer (under LW locked()). The queued lw.sync projection runs at drain,
+    // AFTER the lock unwound — without the lw.hist context its recordHistory would
+    // push a spurious LW undo step. With the fix it must not.
+    commit({
+      type: 'test.raptor', scope: { module: 'sched', weekId: 'X' } as any,
+      apply: (txn) => {
+        txn.enlist(schedStore)
+        deferEffect(() => { ingestFromRaptor(pid, '2026-02-02', 'LL') })
+      },
+    })
+    expect(lwCanUndo()).toBe(false)
   })
 
   it('a multi-cell LW edit (setCellRange) is ONE envelope listing every cell (N1)', () => {
