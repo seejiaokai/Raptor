@@ -71,3 +71,12 @@ build green.
 ### Still to do
 Round 2 re-review of the Rev-2 SHA, both providers, with a host-authored feedback file of these
 dispositions. Then build.
+
+### Owner decisions (17 Sep 26) — both RESOLVED
+1. **Editing committed Step-2 core is APPROVED**, scoped to `commit.ts guardSnapshot` only
+   (SR-005/F1). Nothing else rides on this permission.
+2. **SR-003 ACCEPTED as a documented Step-2 limitation** (plan §7). Re-open it at Step 3 when undo
+   becomes stream-driven — do not inherit it silently.
+
+Round 2 is therefore a review of the Rev-2 plan with both decisions already settled; reviewers should
+not re-litigate them, only judge whether Rev 2 actually delivers what it claims.

@@ -351,9 +351,13 @@ MORE writes through the reducer, so it slightly widens #2's exposure. It does no
 materially (the durable write still precedes the guard as today). Keep #2 separate; note the ordering in
 the P5 inspection. If round 2 judges #2 a prerequisite, promote it ahead of P3.
 
-## 9. The two decisions the owner must make before the build
+## 9. The two owner decisions — BOTH RESOLVED (owner, 17 Sep 26)
 
 1. **May we edit the small piece of committed Step-2 core** (`commit.ts guardSnapshot`, §3.6) to
-   un-blind the whole-world guard? It is necessary and well-scoped.
+   un-blind the whole-world guard? — **YES, APPROVED.** Keep it to exactly that: `guardSnapshot`
+   takes `sig` from `storeSignature(s)` instead of the `capture()` string. No other Step-2 core
+   change rides along on this permission; anything else needs its own ask.
 2. **Accept SR-003 (§7) as a documented Step-2 limitation**, fixed with follow-up #2 / Step 3?
-   Recommendation: yes.
+   — **YES, ACCEPTED.** It stays documented in §7 and inert (the command layer only RECORDS at
+   Step 2 and production has no rollback path). It must be re-opened, not quietly inherited, when
+   Step 3 makes undo stream-driven.
