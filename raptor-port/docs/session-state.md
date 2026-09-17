@@ -1,6 +1,28 @@
 # Session handoff — [ARCH-STACK] Step 2 BUILT (not merged); follow-up #1 plan at Rev 2
 
-## THE NEXT TASK (17 Sep 26): round-2 red-team of the Rev-2 plan, then BUILD
+## THE NEXT TASK (owner, 17 Sep 26): FIX THE TRACKER CHECK ([TRK-SMOKE]) — then the plan review, then the build
+
+**Branch to select in the new-chat picker:** `claude/arch-stack-2-command-core-design`.
+NOT `main`. Everything below is committed and pushed on it; nothing is merged.
+
+**Do this first: `[TRK-SMOKE]` in OUTSTANDING.md (priority 1b).** The `addStudent` tracker smoke
+check keeps failing on clean code — three times running on the desktop on 17 Sep. The owner asked
+for it to be fixed rather than excused. Read the item; it records why (a check that always fails
+has stopped being a check, and it once failed a publish so a change never went live while a
+handoff claimed it had), and it names the question the diagnosis must answer FIRST: **is it a
+flake at all, or a real failure that has been sitting there?** Do not assume timing.
+
+**Then, in order:** round-2 cross-provider red-team of the follow-up #1 plan (Rev 2, both owner
+decisions now settled — reviewers should not re-litigate them), then BUILD test-first with
+P1–P4 as ONE gated change.
+
+**PLAIN LANGUAGE — the owner raised this explicitly on 17 Sep 26.** He had to ask three times for a
+reply to be re-explained without jargon, said it read as possibly made up, and switched model over
+it. `.claude/rules/plain-language.md` now ends with a mechanical pre-send check — **run it on every
+message.** The drift is worst in long, dense replies late in a session. It is not his
+comprehension; it is our writing.
+
+## (done 17 Sep 26) The correctness sweep — TWO ROUNDS, plus three owner rulings
 
 **The correctness sweep the owner ordered is DONE, and has had its own cross-provider round 2**
 (commits `94b1d37`, `fb4250e`, `e9a11d8`; same branch, not merged). Do not redo it.
