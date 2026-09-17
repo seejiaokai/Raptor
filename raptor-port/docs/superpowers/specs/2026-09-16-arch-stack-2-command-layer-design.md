@@ -310,10 +310,17 @@ Frozen issued artefacts are their **own append-only-INTENDED records** (`sched.o
 put-once immutability is ENFORCED at Step 3** (with the undo/boundary cutover), not hard-gated at
 Step 2, because today's silent-undo-before-sent legitimately reverses a just-issued Original via
 `histRestore` (Codex R4-002). Live `sign[di]`/`signBind[di]` stay ordinary mutable records.
-**Owner decision (16 Sep 26):** Undo always works from the Undo button; **silent reverse BEFORE the
-publish is sent/witnessed** (nothing has left the machine — none of the DB bugs can arise);
-**an on-the-record forward withdrawal (a correcting amendment) AFTER** — append-only, unique
-never-reused ids, derived credits recompute, with a one-line heads-up. The snapshot-undo never
+**Owner decision (16 Sep 26, AMENDED 17 Sep 26):** Undo always works from the Undo button;
+**silent reverse while the shared record has NOT registered the publish** (nothing is on the
+record anywhere — none of the DB bugs can arise); **once it HAS been registered, the undo goes
+through and a LINE IN THE HISTORY records that it was undone** (owner, 17 Sep 26 —
+*"it will be recorded as this was undone in the history to prevent silent bugs"*).
+~~an on-the-record forward withdrawal (a correcting amendment) AFTER … with a one-line
+heads-up~~ is **SET ASIDE**: the artefact is a history entry, not a new numbered document the
+squadron receives. Newest instruction wins; the earlier form is named here rather than dropped.
+Unchanged and still binding: **never erase or overwrite an issued record, never reuse a version
+id**, unique never-reused ids, derived credits recompute. Accepted knowingly: a history line
+pushes nothing to anyone, so others are not actively told — it is discoverable, not announced. The snapshot-undo never
 crosses a publish the shared record has registered.
 
 **OWNER RULING, 17 Sep 26 — THE BOUNDARY IS THE DATABASE, AND NOTHING ELSE.** This SUPERSEDES
@@ -345,10 +352,8 @@ true and the reporting seam is unwired. Its one intended caller is the Step-5 da
 a write the backend has acknowledged. Step 3 reads `crossable` to choose silent-reverse vs
 on-the-record undo.
 
-**One narrow question still open for the owner** (§9.4): on the registered side, the 16 Sep wording
-was a *correcting amendment* — a new numbered document the squadron receives — while the 17 Sep
-wording is "recorded as this was undone in the history". Those may be the same thing said two ways,
-or the lighter one. It changes what Step 3 builds, not anything now.
+**Answered the same day** (§9.5): the artefact is **a line in the history**, not a correcting
+amendment. See the amended owner-decision paragraph above.
 Recovery publishes under a NEW id; issued records + signatures never overwritten. **Roster/settings
 edits ARE undoable** (`user` commands, never amendments).
 
@@ -445,7 +450,7 @@ byte-identical to today (additive regression).
    itself holds — it cannot be lost to a reload, and needs no local registry to survive one. The
    three reporting call sites are gone. *A worked example of the standing rule: when several defects
    trace back to one decision, question the decision before patching the defects.*
-5. **NARROW, still open (17 Sep 26):** on the REGISTERED side of §3.4, is the artefact a
-   **correcting amendment** — a new numbered document the squadron receives, per the 16 Sep wording
-   — or just an **entry in the history** saying it was undone, per the 17 Sep wording? Same thing in
-   two voices, or two different things. Affects only what Step 3 builds.
+5. **RESOLVED (owner, 17 Sep 26):** on the REGISTERED side of §3.4 the artefact is **just a line
+   in the history saying it was undone** — NOT a correcting amendment. The 16 Sep "forward
+   withdrawal / correcting amendment" wording is set aside (§3.4 names it). Read as: the undo
+   HAPPENS and is logged, not refused-and-logged. Build record: `[GLOBAL-UNDO]` in OUTSTANDING.md.

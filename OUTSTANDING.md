@@ -60,6 +60,11 @@ in-flight and risk-reducing** first.
      (CLAUDE.md §Stable decisions — `WEEKS`, `restoreDayVersion`, `openWarns`, etc.); grep for
      refs and confirm before removing anything. Own gated PR, in batches. See the "SECOND
      TASK" section of `raptor-port/docs/plans-selector-followups.md`.
+1b. **[TRK-SMOKE] (owner asked, 17 Sep 26) — DO BEFORE THE NEXT BUILD.** The `addStudent`
+   tracker smoke check keeps failing on clean code and has already caused a deploy to be
+   skipped while a handoff claimed it was live. Placed here, ahead of the feature backlog,
+   for one reason only: it is a GATE, and the follow-up #1 build runs the gate set per phase.
+   Cheap relative to what it protects; fix it or record an explicit waiver.
 2. **[SYNC-INTEG]** — now just the small NON-undo guardrails (medical member-filed,
    clutter-only clear-data, Quals ✕ confirm, doc fix). Low urgency (pre-live); cheap batch.
    *The undo/permission half was pulled out into [GLOBAL-UNDO] (owner, 13 Sep 26).*
@@ -278,6 +283,32 @@ what to stop):** `raptor-port/docs/superpowers/specs/2026-09-13-architecture-roo
   grade (orphaned row → `shiftHardGround` can't resolve the type; narrow — Fable inspect #2). Fix
   when landings become the one Absence record, or a cheap `srcType` on the ground row if it surfaces.
 
+### [TRK-SMOKE] The `addStudent` tracker smoke check keeps failing — OPEN (owner asked, 17 Sep 26)
+**Why this is its own item now.** It has been treated as "the known flake" and mentioned in
+passing four times in this file, but it has never had an owner or a diagnosis, and it has
+already cost something real: a publish run failed on it, so a change was **NOT live despite a
+handoff saying it was** (see the deploy note under [TRK-CSID]). On 17 Sep it failed three
+times running on the desktop, on clean code.
+
+**Why fix rather than excuse it.** A check that always fails has stopped being a check — red
+now reads as "that's just the tracker again", which is exactly how a genuine failure gets
+waved through. And there is no third option: the ARCH-STACK spec §1 makes smoke green a
+per-phase non-negotiable, so it is either fixed or **permanently** excused, and permanently
+excusing a gate is worse than not having it.
+
+**Open question the diagnosis must answer FIRST: is it a flake at all?** It may be a real
+failure that has been sitting there since something changed. Do not assume timing.
+Start at the `addStudent` smoke fixture; it has timed out rather than asserted-false in every
+report so far, which points at a wait/ordering problem rather than wrong behaviour — but that
+is a hypothesis, not a finding.
+
+**Blocks:** the follow-up #1 build's per-phase gate set. Do this BEFORE that build, or get an
+explicit owner waiver recorded here.
+**Effort:** unknown until diagnosed; assume small-to-medium. Opus (investigative — if it turns
+out to be a real break, switching models mid-way loses the thread).
+
+---
+
 ### [SYNC-INTEG] Leave War ↔ inputs guardrails (NON-undo part) — small, ready
 A read-only cross-provider audit (Codex + Fable, 13 Sep 26) of DELETE/UNDO across the
 Leave War ↔ inputs ↔ documents seams found a family of data-integrity + permission
@@ -299,6 +330,24 @@ having two separate undo systems over shared data — remove the root, don't pat
 - **Context:** the spec/record above (findings, dispositions).
 
 ### [GLOBAL-UNDO] One global per-session undo — a step BEFORE the database
+**OWNER DECISION 17 Sep 26 — what an on-the-record undo IS. SUPERSEDES the 16 Sep wording.**
+The boundary was settled first: undo is silent while the shared database has NOT registered
+the publish, and goes on the record once it HAS (an export is NOT a boundary event). The
+remaining question was what the on-the-record form is — and the answer is:
+**just a line in the history saying it was undone.**
+
+- **NOT** a correcting amendment. The 16 Sep record said "an on-the-record forward withdrawal
+  (= a correcting amendment) — append-only, unique never-reused ids, derived credits
+  recompute, with a one-line heads-up". That is SET ASIDE; newest instruction wins.
+- The owner's stated purpose is traceability — "to prevent silent bugs" — not notifying the
+  squadron. A history line satisfies that purpose.
+- **What it deliberately does NOT do, so nobody re-derives it as a gap:** nothing is pushed to
+  anyone. If the publish had already reached the shared record, others are not actively told
+  it was undone — the undo is discoverable in the history, not announced. The owner's call,
+  made knowingly.
+- STILL BINDING from before: **never erase or reuse an issued version id.** The history line
+  is additive; the issued record stays immutable.
+
 **Decision (owner, 13 Sep 26):** replace the current SEPARATE per-section undo stacks
 (schedule / Leave War / Tracker) with ONE global, per-session, per-user undo timeline. The
 whole delete/undo weird-behaviour family exists BECAUSE two independent undo systems sit over
@@ -444,8 +493,19 @@ marker (everyone). Clock-free; NOT coupled to EOD.
 - **HEAVY**, test-first, Opus; keep `tfin.js` 728/0; fresh Codex+Fable CODE inspection after
   build; no merge without "merge live". Owner decisions locked in session-state.md.
 
-### [FLAG-EXPORT] PDF export — print the PUBLISHED version + a nicer agency-facing redesign — OPEN (follow-up of [CRP-FLAG])
-TWO halves (owner, 15–16 Sep 26):
+### [FLAG-EXPORT] PDF export — print the PUBLISHED version, CURRENT DAY only + a nicer agency-facing redesign — OPEN (follow-up of [CRP-FLAG])
+THREE halves now (owner, 15–17 Sep 26):
+- **SCOPE — CURRENT DAY ONLY (owner, 17 Sep 26): "my end goal is to export the current day
+  only's published schedule … its only purpose is to export the snapshot of the current
+  schedule."** Today `ui/printpdf.ts:printSchedPDF` exports the WHOLE loaded week
+  (`publishedDays()` + a Mon–Sun label). Narrow it to the one day. Same ruling also settled
+  two other things worth keeping together: the export is a **scheduler-only** function ("they
+  know what's the latest copy to use"), and it is **NOT** a publication boundary — exporting
+  does not constrain undo, which is why the three export/print/session-end "disclosure" call
+  sites were removed on 17 Sep (see `docs/superpowers/specs/2026-09-16-arch-stack-2-command-layer-design.md`
+  §3.4 and `src/state/disclosure.ts`). Flagged during the 17 Sep correctness sweep and
+  deliberately NOT changed there — it is a real behaviour change needing its own gate and a
+  live check. Context: that sweep doc's §G.
 - **Functional (not a design call — safe to build):** exports (`schedRows`→export.ts/printpdf.ts)
   read the live working `DAYS`; export the **published** version instead, and label the
   next-week peek working-vs-signed.

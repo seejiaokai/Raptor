@@ -224,9 +224,11 @@ whether the code matched it, which is a question about correctness, not about wh
 should exist. **A correctness review cannot tell you a mechanism is unnecessary.** That judgement
 needs whoever owns the intent.
 
-**One narrow question left with the owner** (spec §9.5): on the registered side, is the artefact a
-correcting amendment — a new numbered document the squadron receives, per the 16 Sep wording — or an
-entry in the history saying it was undone, per the 17 Sep wording? Affects only what Step 3 builds.
+**Answered the same day (owner, 17 Sep 26):** on the registered side the artefact is **just a line
+in the history saying it was undone** — NOT a correcting amendment. That sets aside the 16 Sep
+"forward withdrawal" wording, which is named as superseded in spec §3.4 rather than deleted. The
+never-erase / never-reuse-an-issued-id rule is untouched. Build record: `[GLOBAL-UNDO]` in
+OUTSTANDING.md.
 
 ## G. Flagged, not fixed — the PDF export's scope
 
@@ -234,4 +236,6 @@ The owner stated the intent: *"export the current day only's published schedule.
 `ui/printpdf.ts:printSchedPDF` exports **the whole loaded week** — `publishedDays()` with a
 Monday-to-Sunday label. That is a product gap, not a documentation defect, so it is recorded here
 and NOT changed: narrowing it is a deliberate behaviour change with its own live check, and it is
-not part of this sweep or of follow-up #1.
+not part of this sweep or of follow-up #1. **QUEUED** on `[FLAG-EXPORT]` in OUTSTANDING.md — per
+the owner's standing rule of 17 Sep 26, a deferred task goes into that file in the same pass and
+takes its place in the priority order, because a note anywhere else gets lost.
