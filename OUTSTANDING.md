@@ -449,6 +449,11 @@ stores' history, which the DB step needs anyway), NOT as a mid-fix patch now.
   is the wrong approach); memories `future-undo-semantics-multiuser` (architecture direction),
   `undo-of-publish-semantics`, `multi-squadron-and-person-transfer`; ties to
   `docs/architecture-direction.md` + [DB-STEP].
+- **READ FIRST — the front-door doc `raptor-port/docs/undo-contract.md`** (written at CMDL-FINISH
+  completion): the durable, plain summary of the whole command layer — the change stream, the
+  per-store `write()` seam this undo build consumes, and the checklist a new undo feature must
+  satisfy. It condenses the three ARCH-STACK step-2/3 designs into one so this build reads ONE
+  doc, not four. Any future undo development (per-person, whole-import, global) follows it.
 
 ### [RECALL] Fresh recall from archive — FUTURE FEATURE
 An admin recalls an archived person back into Quals. **Behaviour (owner, 13 Sep 26):**
