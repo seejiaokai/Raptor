@@ -131,6 +131,32 @@ One line each, no jargon:
 
 ## Items
 
+### [LW-OPEN] Leave War must open on the war being WORKED, not the one last viewed — SMALL, CODE, READY
+**Owner ruling, 17 Sep 26** (restating and reaffirming his 7 Sep rule under the
+newest-instruction-wins principle): the tab always opens on the war currently
+being worked — **open for bidding first, then bidding-closed, then published,
+then draft**. What the reader last looked at must NOT override that.
+
+**Why it regressed (nobody changed this on purpose):** the 8 Sep 26 storage seam
+made the Leave War persist. `leavewar/state/store.ts` reads a stored `current`
+(~:846) and only falls back to `pickDefaultPeriodId` when none is stored (~:855),
+writing `current` on every switch (~:964). Before persistence nothing was ever
+stored, so the stage pick ran on every load and the rule held by accident. Now
+the remembered war wins from the second visit onward. Surfaced by Fable while
+checking the persistence corrections; `docs/ui-contracts.md` §Which war it opens
+on carries a CORRECTED note describing current-vs-intended behaviour.
+
+**The shape (host's implementation call, owner invited to correct):** a FRESH
+LOAD always picks by stage, ignoring the stored `current`; switching wars with
+the picker still holds for the rest of that session, it just doesn't carry to
+the next load — otherwise the picker would fight the user every time.
+
+**Process:** small but it is CODE, so the full treatment — test first, all five
+gates, parity 728/0, and a LIVE scenario drive in the built app (the owner's
+standing scenario-testing mandate), not just a green unit test. Pins:
+`leavewar/state/stages.test.ts`, `period.test.ts`, `leavewarpage.test.tsx`.
+Update the `ui-contracts.md` CORRECTED note to plain contract once it lands.
+
 ### [AMEND] Amendment engine redesign — CORE BUILDING (decisions resolved)
 Rebuild the publish/amend/version model: per-day isolated numbering (never
 week-wide), published = immutable, every change a new AL, supersede-never-retract,
