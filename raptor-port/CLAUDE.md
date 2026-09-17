@@ -199,7 +199,10 @@ barely more than one.
   idle waiting on a rollout. Note the preview sits behind Vercel SSO, so HE can
   open it but your headless browser cannot (it 302s to `vercel.com/sso-api`) —
   your own fast surface stays `npm run build && vite preview` driven locally,
-  the same bundle Vercel serves. "Do NOT watch PRs" still holds: unsubscribe
+  the same bundle Vercel serves — **so Vercel is HIS surface, never your drive
+  target** (this beats the older "point a browser drive at Vercel" line below;
+  newest wins). "Do NOT watch PRs" still holds (§Stable decisions has the
+  mechanism and the dated reason): unsubscribe
   after opening; reading the preview URL off the PR once is not watching.
 - **Delegate frugally, by judgment.** The main session plans, reviews
   diffs and runs the gates first-hand. **SUPERSEDED for the claudex loop
@@ -338,13 +341,12 @@ in what this repo actually has rather than a generic checklist:
   blocks; the ghost rides its own transform layer; no inherited/custom property
   toggled on body or a grid ancestor; the Leave War window engine; etc.), so a
   later change cannot quietly undo them and let the app rot back into lag.
-  The perf gate's law is the DOM CEILINGS in
-  `probes/perf-port.cjs`, re-measured, never quoted. A feature that grows
-  the DOM raises its ceiling as a deliberate, argued edit in the same PR.
-  The three per-node TIMING budgets are no longer assertions (owner, 10 Aug
-  26 — they caught nothing in the life of the repo and went red on unchanged
-  code); they are still measured and printed, so read them, but a wandering
-  number is not a gate failure. Reasoning: `docs/probe-sweep.md`. Dense surfaces stay string-built (§Architecture).
+  The gate's law is `docs/performance.md` §The perf gate: DOM ceilings
+  re-measured in `probes/perf-port.cjs` (never copied into prose), raised only
+  as a deliberate, argued edit in the same PR; the three per-node TIMING budgets
+  stopped being assertions on 10 Aug 26 (owner — they caught nothing in the life
+  of the repo and went red on unchanged code), so read them but never gate on
+  them. Reasoning: `docs/probe-sweep.md`. Dense surfaces stay string-built (§Architecture).
   True scaling — shared data, real accounts — is server work (`HANDOFF.md`
   §Standing constraints); until then every write goes through the mutation funnel
   and storage through `HOOKS.storeBackend`, which is precisely what keeps
@@ -371,13 +373,19 @@ in what this repo actually has rather than a generic checklist:
 
 Run from `raptor-port/`, not the repo root. All FIVE, after any change:
 
+> **ENVIRONMENT (owner, 17 Sep 26): the WINDOWS DESKTOP is the only place work
+> happens.** He remote-controls that same session from his phone — the phone is
+> a remote control, not a second environment. The container paths below
+> (`/home/user/Raptor`, `/opt/pw-browsers/chromium`, the agent proxy) are
+> LEGACY, kept only for their measured traps; do not follow them literally here.
+
 > **Background commands start at the REPO ROOT, not `raptor-port/`.** A
 > foreground command inherits the session's `raptor-port/` cwd, but a
-> `run_in_background` job launches a fresh shell at `/home/user/Raptor`, where
+> `run_in_background` job launches a fresh shell at the repo root, where
 > there is no `package.json` — so a bare `npm run test:e2e` (or any `npm`
 > script) fails INSTANTLY with `ENOENT … package.json`, and the wrapper's own
-> exit code can read 0, masking it. ALWAYS prefix a backgrounded gate with
-> `cd /home/user/Raptor/raptor-port && …`. This bit twice (test:e2e, 30 Aug 26)
+> exit code can read 0, masking it. ALWAYS `cd` into `raptor-port/` inside a
+> backgrounded gate. This bit twice (test:e2e, 30 Aug 26)
 > and each miss wastes a full ~10-minute re-run.
 
 
@@ -427,19 +435,24 @@ UI-visible work also needs the wider browser path:
 probes), `npm run perf` (the DOM ceilings and two behavioural checks, with
 the reference-vs-port timings printed alongside) — all against that same
 preview.
-A fresh container needs `npm ci` first — `node_modules/` is not in the image.
+A fresh checkout needs `npm ci` first.
 **Stopping a stray preview server: kill by PORT, never by a command-line
-pattern** — `lsof -ti :4173 | xargs -r kill` (or `:4179` for the smoke suite's).
-`pkill -f "vite preview"` / `pgrep -f … | xargs kill` inside a compound command
-matches the CALLER's own shell (its command line carries the pattern) and kills
-it — exit 144, the rest of the line never runs. It happened three times in one
-day (9 Sep 26) despite two logged warnings; the port form cannot express the
-mistake.
-Any NEW Playwright script must pass `executablePath:'/opt/pw-browsers/chromium'`
-(a stable symlink): the pinned Playwright looks for a browser build the image
-doesn't ship, so a bare `chromium.launch()` dies with "Executable doesn't
-exist … run npx playwright install" — do NOT run that, it re-downloads for
-nothing. Every probe in `reference/probes/` already hardcodes the path.
+pattern.** On WINDOWS: `Get-NetTCPConnection -LocalPort 4173` → `Stop-Process`
+(`:4179` for the smoke suite's). The legacy container form was
+`lsof -ti :4173 | xargs -r kill`. Never `pkill -f "vite preview"` /
+`pgrep -f … | xargs kill` inside a compound command: it matches the CALLER's own
+shell (its command line carries the pattern) and kills it — exit 144, the rest
+of the line never runs. It happened three times in one day (9 Sep 26) despite
+two logged warnings; the port form cannot express the mistake.
+**A NEW Playwright script uses the repo's own fallback, NOT a hardcoded path**
+(corrected 17 Sep 26 — the old rule said every script "must pass
+`executablePath:'/opt/pw-browsers/chromium'`", which on the Windows desktop
+fails with the very "Executable doesn't exist" error it warned about).
+`playwright.config.ts` and `scripts/tracker/smoke.mjs` both do
+`existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {}` — copy that: the
+container symlink when it is there, Playwright's own browser otherwise. IN THE
+CONTAINER ONLY, never run `npx playwright install` — it re-downloads for
+nothing. The probes in `reference/probes/` still hardcode the container path.
 Login is `ad`/`a` (admin) or `us`/`us` (squadron member — NOT view-only
 since 5 Aug 26: a member edits their own Inputs and ticks their own quals;
 the split is in `docs/engine-rules.md` §Auth / roles). The account names
@@ -461,6 +474,11 @@ only thing that can show a fault introduced between the build and the browser
 — a stale CDN cache, a base path wrong as served, an asset that 404s only
 under the `/Raptor/` sub-path. Sequence is: preview while building, gates,
 merge, then the live page once Pages has rolled over.
+
+**The next two blocks (reachability + the Chromium launch recipe) are
+CONTAINER-ONLY legacy** — on the Windows desktop there is no agent proxy, and
+Playwright uses its own browser via the `existsSync` fallback above. Kept for
+the measured failure signatures, which are worth recognising on sight.
 
 Reachability, and the reason if it ever closes again:
 
@@ -521,9 +539,10 @@ trip felt like ~20 min per change and was unsustainable):
 - **Vercel is the FAST per-branch preview** — `vercel.json` at the repo root
   builds `raptor-port` and every push to any branch/PR gets its own live URL
   in ~1 min, no test gate in the way. This is the channel the owner taps on
-  his phone/laptop to review a change mid-session, and the one to point a
-  browser drive at while iterating (same recipe as the deployed page — it is
-  a real hosted build, base path and all). It is NOT gated, so a red preview
+  his phone/laptop to review a change mid-session. **You cannot drive it
+  yourself** — it sits behind Vercel SSO (24 Aug 26, above; this supersedes the
+  older "point a browser drive at it" clause). Your drive surface is the local
+  `vite preview`, which is the same bundle. It is NOT gated, so a red preview
   is still just a preview; correctness still rides the five gates below.
 - **GitHub Pages stays the OFFICIAL site** — the gated `deploy.yml`, published
   only on merge to `main`. Slower (the gates, then a Pages rollout that has
@@ -533,12 +552,9 @@ trip felt like ~20 min per change and was unsustainable):
 
 So the loop is: iterate against the local `vite preview` (instant, what you
 drive), let the owner eyeball the Vercel preview when he wants to tap it
-himself, and ship to Pages once at the end. The CI gate itself was sped up
-15 Aug 26 (the browser download is cached and the geometry suite runs 3
-workers with one CI retry — NOT all cores; '100%' starved the preview server
-and flaked a carry-day test on its first main run, see playwright.config.ts —
-deploy.yml + playwright.config.ts) and again 3 Sep 26 (the suites had grown
-to a 17-min serial run; they now run as parallel jobs, ~5–6 min end to end).
+himself, and ship to Pages once at the end. The CI gate was sped up on 15 Aug 26
+and again 3 Sep 26 (now parallel jobs, ~5–6 min end to end) — the numbers, the
+worker counts and the flake that set them are in HANDOFF §Deploy.
 **Docs-only changes skip the gates entirely** (`paths-ignore` in deploy.yml:
 `**.md` + `.claude/**` — verified nothing there reaches the bundle), so a
 handoff PR has NO CHECKS to wait for. **That is an exemption from the GATES,
@@ -621,8 +637,12 @@ the resolved id, so an id-form `who` renders identically to a callsign one.
 **The mutation funnel — bypassing it is always a bug.** All schedule
 writes go through `slotVal`/`setSlotVal`/`fillSlot`/`txtGet`/`txtSet` →
 `noteChange(key)` → `afterSchedMutate()`. A write that skips it is
-invisible to the amendment machinery: not marked pending, absent from the
-next AL, never re-validated. Deletes renumber the live key space first, then
+never re-validated, never persisted, wears no amendment mark and leaves no
+edit-log entry. **CORRECTED 17 Sep 26:** it is NOT "absent from the next AL" —
+since the amendment core, `publish.ts` derives eligibility, the panel counts and
+the stored diff from the canonical `dayDelta`, "never from the accumulated
+pending marks", so a funnel-bypassing write DOES surface in the next AL as an
+unmarked, unexplained change. That is worse than being absent, not better. Deletes renumber the live key space first, then
 call `markDeletion(di, kind)`: its inert `del:di.seq.kind` tombstone reaches
 the AL without re-marking the address now occupied by a shifted row. On an
 already-published day, compare the removed structure with the current issued
@@ -718,7 +738,10 @@ subscribers.
 `src/tracker/`, from `seejiaokai/Tracker` — plain JavaScript/JSX, `allowJs`,
 bodies are verbatim ports like `src/engine/`). Its state is module `let`s in
 `tracker/app/core.js` with its own subscribe/notify; its storage goes through
-ONE doorway, `tracker/storage.js` (localStorage under `ocu:` keys — the
+ONE doorway, `tracker/storage.js` (inside Raptor it goes through the whiteboard
+under `raptor:tracker/…`; the bare `ocu:` localStorage path is the standalone/
+no-target fallback, and legacy `ocu:` keys are imported once — corrected
+17 Sep 26, see `docs/data-schema.md` §World 3 — the
 standalone app's SharePoint/Dataverse/Firebase layers were dropped; the shared
 database replaces this file when it arrives). **The store is the record; the
 .json file is a FORMAT, not a store** (owner, 9 Sep 26 — "I thought it should
@@ -838,15 +861,10 @@ with the owner's chart file: `scripts/tracker/bake-user-charts.mjs`.
   read at the start of most sessions and every line costs every session; the
   history is frozen in `../HANDOFF-ARCHIVE.md` (search it, never append to
   it). Stale is worse than absent — the next session trusts it.
-- **Walk every non-trivial change against `docs/feature-impact.md`** (owner,
-  12 Aug 26). Before building, and again before calling it done, ask which of
-  the surfaces there it touches — warnings, layout, history, the board, edit
-  vs view-only, desktop vs mobile, quals, availability, publishing, export,
-  roles — and whether the touch is wired or missing. That file also holds the
-  generic FLOWS (how one edit travels from a keystroke to the screen) and the
-  drift-seams where two copies of one rule fall out of step, which is where
-  this app's recurring bugs come from. **Keep it true in the same PR**: a
-  feature that adds a surface, a flow, or a new drift-seam adds a line there.
+- **Keep `docs/feature-impact.md` true in the same PR** (owner, 12 Aug 26 — the
+  WALK itself is the 28 Aug standing order at the top of this file, which holds
+  the surface list, the flows and the drift-seams): a feature that adds a
+  surface, a flow, or a new drift-seam adds a line there.
 
 ## Stable decisions (do not relitigate)
 
@@ -1367,7 +1385,8 @@ ledger). Read it before any layout/render/drag-touching change.
   year (scrollbar slides); desktop off-screen = capped `HIDDEN_MONTHS`, drawn only
   while idle (`state/idle.ts`). Shrinks on leave (dropped months → measured-width
   placeholders, scroll kept), rebuilds on return; pre-warmed hidden after login
-  (`Shell.tsx`, idle-gated). Load-bearing invariants (don't undo): a drawn month keeps
+  (`Shell.tsx`, idle-gated). Load-bearing invariants: `docs/performance.md`
+  §Leave War window engine holds them in full — the short form (don't undo): a drawn month keeps
   its MEASURED width in the placeholder (`monthPxRef`); never draw/prune an
   estimated-width month left of the view mid-scroll; placeholder widths are INLINE
   styles, never a CSS custom property on `.mx-outer` or ANY grid ancestor (restyles

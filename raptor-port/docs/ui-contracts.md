@@ -4390,8 +4390,10 @@ calendar. The z-ladder, documented here because the overlays stack: calendar
 input-edit dialog that can open on top of a row).
 
 **Storage semantics.** Day titles (`DAYRMK`) and the note/pucks sections
-(`PLANPUCKS`) live in `state/plan.ts`: SESSION-ONLY by the owner's explicit
-choice (scratch-pad, like INPUTS itself — a reload starts clean), gated to
+(`PLANPUCKS`) live in `state/plan.ts`: **PERSISTED since the 8 Sep 26 storage
+seam** (`persistAll` writes the `plan` collection; the old "SESSION-ONLY by the
+owner's explicit choice — a reload starts clean" note, and its comparison to a
+then session-only INPUTS, was superseded — corrected 17 Sep 26), gated to
 schedulers at the write path, cleared on login/logout, and riding the undo
 snapshot (`pp`/`dm` in histSnap) so Ctrl+Z walks a planning session back
 step by step.
@@ -6098,8 +6100,12 @@ followed by published." Two halves:
   published→draft, same-stage ties to the earliest bidding start) decides the
   boot `currentId` in `state/store.ts` — but only when nothing is remembered:
   a stored `current` (the reader's own pick, from the shared database to come)
-  always wins. Leave War is session-only today, so the stage pick decides on
-  every load.
+  always wins. **CORRECTED 17 Sep 26:** the old note here said "Leave War is
+  session-only today, so the stage pick decides on every load" — it persists
+  since the 8 Sep 26 storage seam, so after the first visit the REMEMBERED war
+  wins and the stage pick applies on a first-ever boot only. The owner has ruled
+  (17 Sep 26) that it should ALWAYS open on the war being bid on; until that
+  code change lands, this describes current behaviour, not intended behaviour.
 - **Where in it.** The grid lands on the START of that war's bidding window —
   `engine/period.ts defaultFocusDate` = `bidFrom ?? start` (a war with no
   window set has no narrower start than its first day). `bidFrom` is kept

@@ -364,8 +364,11 @@ is lost.
 ## World 3 — the Tracker
 
 Vendored JavaScript, shapes fixed in `src/tracker/app/fileFormat.js`.
-Course, syllabus and student names are free text and are used as object
-keys on purpose (nested objects, never joined strings).
+Course, syllabus and student names are free text LABELS. **CORRECTED
+17 Sep 26:** they are no longer used as keys — courses, syllabi and students all
+carry stable ids (13 Sep / 10 Sep 26), so renaming any of them moves nothing. A
+colon is allowed in a syllabus, chart or student name; a COURSE name still
+refuses one.
 
 ### Keys (`raptor:tracker/*` on the built site; legacy `ocu:*`) and prefs (`ocuLocal:*`)
 
@@ -395,8 +398,10 @@ students = { courses: string[],
 
 **A student is an enrolment id since 10 Sep 26 (stable ids).** A roster entry
 is `{ id, name, pid? }` — `id` opaque (`s` + base-36 time + random, minted
-when the student is added), `name` the typed callsign (a label, renamable
-in principle, no control for it yet), `pid` the Raptor `PEOPLE` id when the
+when the student is added), `name` the typed callsign (a label; the pencil on
+each Students-card chip renames it — `core.js:renameStudent`, 10 Sep 26,
+everyone may, refused if another enrolment on the course holds that name; the id
+and every id-keyed record are untouched), `pid` the Raptor `PEOPLE` id when the
 student was picked off the roster. Every per-student record files under the
 id: `v3:<course>:<syl>:m:<id>`, `:d:<id>`, `v3:<course>:pace:<id>`,
 `lulls:<id>`, `last:<id>`, and `lastStudent` holds an id. The same name on
@@ -412,9 +417,18 @@ map is deleted with the flag. A course whose conversion did not finish
 (the roster still a string list after the retry) refuses roster writes
 until a later load converts it. `migrateAllCourses()` at init converts
 courses nobody has opened; a course still waiting for the older roster
-split (`rostermig`) converts on its first open. A course rename MOVES every
-key (written, read back, then the old deleted); if any record could not be
-carried the old course stays listed beside the new so nothing is stranded.
+split (`rostermig`) converts on its first open. **CORRECTED 17 Sep 26 — a course
+rename MOVES NOTHING.** Since course ids (13 Sep 26) every per-course key files
+under the id (`v3:<courseId>:…`), so `renCourse` just sets the entry's name; the
+old copy-verify-delete apparatus described here (write, read back, delete the
+old; the old course left listed beside the new) is GONE. `app/courseIds.js` is
+the one converter (mint/upgrade/reconcile); `migrateCourseIds` re-bases a
+name-keyed browser once — resumable, read-back-verified, a `storage.list()`
+prefix-move with a reserved-namespace skiplist
+(`courses`/`links`/`master`/`lay`/`SYLLABUS EDIT`) and a fail-closed preflight:
+a reserved or colon-bearing legacy course name stops the boot (`bootError` → the
+reload panel, no board, no writers). Course-id grammar `^c[0-9a-z]+$`; Import
+refuses a reserved name or a non-matching id at the file boundary.
 
 A mark record is `{ g, f, fd, d, by?, at? }` — grade code, failure count,
 one ISO date per failure (oldest first, null when undated), the done date,
