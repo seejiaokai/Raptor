@@ -11,6 +11,16 @@ routes to where the detail lives; don't duplicate that detail back here.
 
 ## How to work here
 
+**THE NEWEST OWNER INSTRUCTION WINS (owner, 17 Sep 26 — "most probably the
+latest instructions I gave is usually the most correct one to follow").** This
+file is full of dated rulings, and some reverse earlier ones. When two rules
+conflict, follow the one with the LATER date, and say out loud which one you
+followed and which you set aside. A rule with no date loses to a dated one.
+If the newer ruling doesn't clearly cover the case, ask rather than pick.
+This exists because a superseded rule that still read as live got a fix merged
+without him on 9 Sep 26 — when you notice that shape, fix the stale text in the
+same PR instead of just working around it.
+
 **Reach 95% confidence before building.** If the request could reasonably
 mean two different things, or a choice would materially change the result,
 ask follow-up questions until it wouldn't. Small, unambiguous asks clear
@@ -104,7 +114,8 @@ barely more than one.
   chain** (owner, 12 Aug 26 — "ok let me know when it's live always and do
   these steps automatically next time till it's live"). A green gate is not
   done, a merged PR is not done, and neither is worth a notification of its
-  own. Carry it the whole way without being asked and without checking in at
+  own. **Once he has said "merge live"** (the 2 Sep 26 rule below — never
+  before), carry it the whole way without checking in at
   each step: gates → PR → merge when green → wait for Pages → **load the real
   page and look at the thing you changed** (the 7 Aug standing instruction,
   §Build & verify) → then ONE notification saying it is live. The only reasons
@@ -123,7 +134,8 @@ barely more than one.
   deployed page only adds a DELIVERY check (a stale cache, a path wrong as
   served), which is real but rare.
   MEASURED, which is why this rule changed: each shipment costs ~3 min of CI
-  plus 4–10 min of Pages rollout plus the live check — about 10 minutes of
+  plus the Pages rollout (HANDOFF §Deploy for the range and the ten-minute
+  ceiling) plus the live check — about 10 minutes of
   pure waiting, three times over in one session. Batching is worth more
   again on the build side: fifteen changes in one pass ran ~6 min each, where
   a single change shipped alone took an hour and a half.
@@ -154,8 +166,16 @@ barely more than one.
   HARD-REASONING work — the verify pass on findings, tricky design calls,
   a focused bug check — on Fable. A session running on Fable keeps its own
   turns few and short. For subagents, OMIT the model override so
-  they INHERIT the session's model: the bare `opus` alias is resolved by the
-  harness and may not land on 4.8.
+  they INHERIT the session's model, and NEVER write the bare `opus` alias — the
+  harness resolves it and it may not land on 4.8.
+  **WHILE THE CLAUDEX LOOP IS THE WORK (owner, 17 Sep 26): Opus is the
+  workhorse and nothing is handed to a cheaper model — no sonnet, no haiku.**
+  Fable and Astra (Codex) review on their top models; Opus builds; the model
+  that wrote a thing never reviews it. A subagent may still take a READ-ONLY
+  sweep, but it inherits Opus — a helper is never a downgrade. The
+  implementation itself never leaves the main session
+  (`../.claude/rules/raptor-executor.md`). This settles the old conflict with
+  the Delegate-frugally bullet below.
 - **Always hand him the Vercel preview link; auto-merge WAS the default until
   2 Sep 26 (see above)** (owner, 24 Aug 26 — "always let me know once vercel
   is ready to be tested so i can test it" → "u can auto merge unless u feel
@@ -165,13 +185,16 @@ barely more than one.
   i can still hand u more work"). So on EVERY change, once the branch's Vercel
   preview is Ready (the `vercel[bot]` PR comment carries the `…vercel.app`
   Preview URL — it is stable per branch), send him that link. It is his fast
-  feedback surface — Vercel is up in ~1–2 min where a Pages rollout is 12–15.
-  Giving the link does NOT gate the merge: for the ordinary change keep running
-  the "Done MEANS LIVE" chain unprompted (merge on green → Pages → live-verify
-  → one notification), and his feedback can land after merge — cheap to re-cut.
-  Only when you judge a change critical/risky (a large or subtle UI change,
-  anything touching the rules engine's output, anything a green gate does not
-  prove) do you STOP before merging and wait for his go-ahead on the preview.
+  feedback surface — Vercel is up in ~1–2 min where the gates plus a Pages
+  rollout run 12–15 min end to end (HANDOFF §Deploy for the rollout range and
+  the ten-minute ceiling).
+  **SUPERSEDED 2 Sep 26 — the link never gates the merge, because NOTHING merges
+  without his explicit "merge live"** (the no-auto-merge rule above). The clause
+  that stood here told you to run the "Done MEANS LIVE" chain unprompted for an
+  ordinary change and to stop only for a risky one. That applies to NO change
+  now. It was still being followed on 9 Sep 26 and got a fix merged live without
+  him (HANDOFF §Gate status) — which is why it is quoted dead rather than left
+  readable. Hand him the link, then WAIT.
   While a preview or deploy cooks he will hand you more work — take it; do not
   idle waiting on a rollout. Note the preview sits behind Vercel SSO, so HE can
   open it but your headless browser cannot (it 302s to `vercel.com/sso-api`) —
@@ -179,9 +202,12 @@ barely more than one.
   the same bundle Vercel serves. "Do NOT watch PRs" still holds: unsubscribe
   after opening; reading the preview URL off the PR once is not watching.
 - **Delegate frugally, by judgment.** The main session plans, reviews
-  diffs and runs the gates first-hand. Scanning/exploration goes to
-  Explore on **haiku**; multi-file or mechanical code-writing goes to
-  general-purpose on **sonnet**, handed a precise spec (files, expected
+  diffs and runs the gates first-hand. **SUPERSEDED for the claudex loop
+  (owner, 17 Sep 26 — see §MODELS above): no haiku, no sonnet; a subagent
+  inherits Opus and takes read-only sweeps only, and the implementation never
+  leaves the main session.** The old split — exploration on haiku, mechanical
+  code-writing on sonnet — stands only if he later reopens cheaper helpers.
+  Whoever is delegated to is handed a precise spec (files, expected
   shape, which tests to run) so it never explores. Agents return diffs
   and conclusions, never file dumps. Small precise work stays inline —
   spawning an agent costs more than a one-file fix.
@@ -243,17 +269,19 @@ loading any skill, also check the observation log for OPEN observations tagged
 to it and apply their insights even if the skill file has not been updated yet.
 A vendored `SessionStart` hook (`.claude/hooks/task-observer-session-start.sh`,
 wired in `.claude/settings.json`) is the enforceable half of this; this line is
-the structural half that survives compaction. This repo's web sessions are
-ephemeral, so the observation log does not persist on its own — use the skill's
-handoff-doc mode, or commit the log into the repo if it should last. Provenance
-and opt-out: `.claude/skills/TASK-OBSERVER-VENDORED.md`.
+the structural half that survives compaction. The skill is vendored at
+`../.claude/skills/task-observer/` and its observation log IS committed, at
+`../.claude/skill-observations/log.md` — read it, append to it, and do not
+treat it as session-only. Provenance and opt-out:
+`../.claude/skills/TASK-OBSERVER-VENDORED.md`.
 
 ## Product bar & ideation (owner, 7 Aug 26)
 
 Distilled from the owner's product-standards brief; this section IS the
 standard — the full brief is deliberately not kept. Autonomy is unchanged:
-the confidence rule above still decides when to ask, and green gates still
-ship without waiting to be asked.
+the confidence rule above still decides when to ask, and green gates ship on
+his explicit "merge live" (§the Vercel/no-auto-merge rule, 2 Sep 26) — never
+unprompted.
 
 - **Ideate before building non-trivial UX.** Restate the problem BEHIND the
   literal ask, then offer 2–3 directions — the conventional one, a more
@@ -332,8 +360,8 @@ in what this repo actually has rather than a generic checklist:
   the prototype auth as security: the site is public, accounts are
   hard-coded, and anything genuinely sensitive stays out of the demo data.
 - **Future development & DevOps.** Ship through the gated pipeline only —
-  four gates in CI on every PR and push, plus the two local-only gates for
-  UI work; nothing deploys red. Write for the next session: comments say
+  five gates in CI on every PR and push (the Tracker smoke is one of them),
+  plus the two local-only gates for UI work; nothing deploys red. Write for the next session: comments say
   WHY, `HANDOFF.md` stays true in the same PR, decisions that must not be
   relitigated go to §Stable decisions, and the deploy traps (OIDC re-runs,
   the ten-minute Pages ceiling, dispatch-cancels-push) are documented in
@@ -341,7 +369,7 @@ in what this repo actually has rather than a generic checklist:
 
 ## Build & verify
 
-Run from `raptor-port/`, not the repo root. All four, after any change:
+Run from `raptor-port/`, not the repo root. All FIVE, after any change:
 
 > **Background commands start at the REPO ROOT, not `raptor-port/`.** A
 > foreground command inherits the session's `raptor-port/` cwd, but a
@@ -361,7 +389,7 @@ npm run test:e2e            # geometry in a real browser — builds & serves its
 npm run smoke:tracker       # the Tracker tab's vendored 345-check browser suite — builds & serves itself
 ```
 
-`test:e2e` is the fourth gate because jsdom has no layout engine: a puck that
+`test:e2e` is a gate of its own because jsdom has no layout engine: a puck that
 had silently grown to 90px passes `npm test` all day. It runs in CI too.
 
 **Stand up the live view for any UI-visible task, every session** (owner ask,
@@ -483,7 +511,7 @@ element in question and LOOK at it.
 Push to `main` → `.github/workflows/deploy.yml` reruns the gates and
 publishes to **https://seejiaokai.github.io/Raptor/**. Nothing deploys red.
 Since 3 Sep 26 the gates run as PARALLEL jobs (build+parity, unit ×2 by
-vitest project, geometry ×3 by Playwright project) and `deploy` waits on all
+vitest project, geometry ×3 by Playwright project, tracker smoke) and `deploy` waits on all
 of them, so merge-to-live is bounded by the slowest leg (Leave War units,
 ~5 min), not the sum (~17 min). Numbers and the why: HANDOFF §Deploy.
 
@@ -496,7 +524,7 @@ trip felt like ~20 min per change and was unsustainable):
   his phone/laptop to review a change mid-session, and the one to point a
   browser drive at while iterating (same recipe as the deployed page — it is
   a real hosted build, base path and all). It is NOT gated, so a red preview
-  is still just a preview; correctness still rides the four gates below.
+  is still just a preview; correctness still rides the five gates below.
 - **GitHub Pages stays the OFFICIAL site** — the gated `deploy.yml`, published
   only on merge to `main`. Slower (the gates, then a Pages rollout that has
   ranged from 5 s to 10 min and is outside our control), so it is paid ONCE
@@ -597,6 +625,15 @@ already-published day, compare the removed structure with the current issued
 snapshot and its remapped draft-add identity first: add, reorder, then delete
 before the AL is a net no-op, not a removal. The bare
 `markEdit()` after it remains only the render/history epilogue.
+
+**The persistence funnel — a write that ends anywhere else is LOST on reload**
+(owner's 8 Sep 26 bug pass; moved here 17 Sep 26 from the §Where things live
+Storage row, where nobody scanning for rules would find it). Every mutation of
+`DAYS`/`SCHED`/`INPUTS`/`PEOPLE`/`PLAN` must end in **`HOOKS.histPush`** (never
+the raw `histPush`), undo/redo, `loadWeek`, or an explicit `persistPeople()`.
+Anything else is silently unsaved after a reload — no error, no clue, the edit
+just isn't there next time. Leave War: whatever it owns about a person beyond
+the projection goes in a persisted record laid back on by `setPeople`.
 
 **React owns chrome, strings own density.** The dense surfaces (week,
 board, palette) are built by verbatim HTML-string builders and swapped via
@@ -773,7 +810,9 @@ with the owner's chart file: `scripts/tracker/bake-user-charts.mjs`.
   the structured doc, its story to the commit message — never a "RESOLVED"
   narrative left in the file); a change that creates one adds a 1–3 line
   entry; a change that adds, removes or renames a file edits its file map.
-  `HANDOFF.md` was cut from 3,882 to ~550 lines on 4 Sep 26 because it is
+  `HANDOFF.md` was cut from 3,882 to ~550 lines on 4 Sep 26 and is MEANT to
+  stay near that (it had drifted back to 868 by 17 Sep 26 — trim it when you
+  touch it) because it is
   read at the start of most sessions and every line costs every session; the
   history is frozen in `../HANDOFF-ARCHIVE.md` (search it, never append to
   it). Stale is worse than absent — the next session trusts it.
@@ -1349,7 +1388,7 @@ ledger). Read it before any layout/render/drag-touching change.
 | **The designed data model for the database step** (entities, ids, Person ↔ Enrolment ↔ Attempt, migration recipe — the technical team's document) | `docs/data-model.md`; the scheduler's declared record types `src/engine/schema.ts` (pinned to the seeds by `schema.test.ts`) |
 | **The Dataverse handover** — the technical expert designs the tables himself (owner, 10 Sep 26); this is what he reads, what we need from him, the non-negotiables, and what we do on our side (stable ids first, then ONE adapter to HIS tables — never pre-built) | `docs/handover-dataverse.md` |
 | **The architecture direction** — modular apps on a common data source: what the recommendation means here (a modular monolith front end, ONE backend, ONE database, an API contract per module, feature flags), the target shape, the order of work, the practices to hold to (read before any backend / server / API work, and before proposing to split a module out) | `docs/architecture-direction.md` |
-| **Storage: the whiteboard, postman, backends, boot gate** | `src/storage/` — the ONE route to a backend (whiteboard → postman → Memory/Browser backend); `src/state/persist.ts` hydrates/persists live scheduler state. **The rule (8 Sep 26 bug pass):** every mutation of DAYS/SCHED/INPUTS/PEOPLE/PLAN must end in `HOOKS.histPush` (never the raw `histPush`), undo/redo, `loadWeek`, or an explicit `persistPeople()` — anything else is silently unsaved after a reload. Leave War: whatever it owns about a person beyond the projection goes in a persisted record laid back on by `setPeople`. **Medical documents (photos/PDFs) are too big for that text seam, so they get their OWN per-browser drawer** — IndexedDB `raptor-docs` (`src/storage/docstore.ts`), wired by `docBoot` from `main.tsx` on the browser backend only; `state/docs`' in-memory map is the sync read path, `docAdd` writes through, `docBoot` hydrates it at boot (8 Sep 26). |
+| **Storage: the whiteboard, postman, backends, boot gate** | `src/storage/` — the ONE route to a backend (whiteboard → postman → Memory/Browser backend); `src/state/persist.ts` hydrates/persists live scheduler state. **The persistence rule itself now lives in §Architecture rules ("The persistence funnel") — read it there.** **Medical documents (photos/PDFs) are too big for that text seam, so they get their OWN per-browser drawer** — IndexedDB `raptor-docs` (`src/storage/docstore.ts`), wired by `docBoot` from `main.tsx` on the browser backend only; `state/docs`' in-memory map is the sync read path, `docAdd` writes through, `docBoot` hydrates it at boot (8 Sep 26). What is stored: `docs/data-schema.md`. |
 | Rendering, drag & drop, text editing, AL marks | `docs/ui-contracts.md` |
 | **Which surfaces a feature touches + how one edit flows** | `docs/feature-impact.md` |
 | Open work, known gaps, the deploy traps, full file map | `../HANDOFF.md` (a short current-state doc — keep it that way) |
