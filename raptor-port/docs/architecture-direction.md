@@ -27,7 +27,11 @@ work. It is the standing direction; `CLAUDE.md` routes here.
 > NEW app/tab/module must plug into that shared command layer, not re-invent the
 > pattern a fourth time. Until step 2 lands, build a new module so it can adopt
 > the command layer with no rework: writes through one funnel, stable ids, no
-> bespoke undo stack. This is a design-step decision, raised up front.
+> bespoke undo stack. This is a design-step decision, raised up front. **The
+> front-door doc for HOW — the change stream, the per-store `write()` seam, and the
+> checklist a new module or a new undo feature must satisfy — is
+> `docs/undo-contract.md`. Read it before designing any new module that writes data,
+> or any new undo capability.**
 
 ## 1. Where RAPTOR stands today
 
