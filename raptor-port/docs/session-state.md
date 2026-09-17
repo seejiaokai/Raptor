@@ -2,8 +2,27 @@
 
 ## THE NEXT TASK (17 Sep 26): round-2 red-team of the Rev-2 plan, then BUILD
 
-**The correctness sweep the owner ordered is DONE** (commit `94b1d37`, same branch, not merged).
-Do not redo it. What it produced:
+**The correctness sweep the owner ordered is DONE, and has had its own cross-provider round 2**
+(commits `94b1d37`, `fb4250e`, `e9a11d8`; same branch, not merged). Do not redo it.
+
+**Round 2 result:** both providers REVISE. 21 of 22 claims confirmed, **16 further defects found
+and fixed**. The worst: the engine-rules §Version snapshots section that round 1 edited still
+described THREE more removed functions (`reissueReopened`, `unpublishAL`, `publishAL`) as live,
+plus two superseded record shapes — one of which would have made a database serializer quarantine
+every week it wrote. **Standing lesson, now in the sweep doc: when a sweep finds deleted machinery
+described as live, the unit of repair is the SECTION, not the sentence.**
+
+**TWO OWNER DECISIONS ARE OPEN (ask first thing):**
+1. **The disclosure gap** (design spec §9 question 4, sweep doc §F). The set of issued versions
+   that have LEFT the machine is in memory, so an amendment exported as a PDF reads as
+   never-disclosed after a reload — and Step 3 chooses silent-reverse vs on-the-record withdrawal
+   from exactly that signal. Inert today. Recommendation: fail safe (treat every issued id
+   hydrated from storage as disclosed).
+2. **The tracker smoke gate.** It has failed three times running on clean code. Spec §1 makes
+   smoke green non-negotiable per phase, so before the follow-up #1 build it needs diagnosing or
+   an explicit owner waiver. Do NOT wave it through.
+
+What the sweep produced:
 
 - **`docs/superpowers/specs/2026-09-17-doc-correctness-sweep.md`** — the claims → evidence table
   (22 findings, each naming the code file that proves it), the two mechanical passes that found the
