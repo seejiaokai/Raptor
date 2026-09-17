@@ -25,11 +25,13 @@ Everything below is committed on it and NOT merged.
   session was pure machine CONTENTION (smoke run straight after the e2e suite); smoke is 425/0 in
   isolation ×3 and 425/0 run right after e2e now.
 
-**Two PRE-EXISTING e2e failures (NOT from this work, unrelated to the scheduler change):**
-`geometry.spec.ts:1976` (board brief-inline at phone width — PROVEN to fail identically on the clean
-tree) and `leavewar.spec.ts:2241` (lw-phone CDP touch-tap timing — passed with this code then flaked
-under load). They are the branch's known "2 pre-existing e2e failures". They are RED, so a green-CI
-merge needs them fixed or re-run — a SEPARATE job from the scheduler change.
+**The two pre-existing e2e failures are now FIXED** (`c44bc7b`, owner asked, Fable-diagnosed +
+verified/owned here — TEST-side only, source untouched, both were tests measuring the wrong thing for
+a CORRECT layout/gesture): `geometry.spec.ts:1976` now compares the brief input's BOTTOM to the
+callsign's (the real bottom-aligned baseline contract, not the stale top-to-top <12 that failed by 1px
+off a font metric); `leavewar.spec.ts:2241` now brings the synthetic finger to REST before lifting (a
+zero-velocity scroll end) so Chromium doesn't read a never-ending FLING that eats the following tap.
+**Full e2e suite is now 425 passed / 0 failed / 33 skipped.** ALL FIVE GATES GREEN.
 
 - `12b527f` — **P5 code inspection findings FIXED.** Codex GPT-6 Astra + Fable both inspected the built
   `d8ec03b` diff (read-only), affirmed the mechanism, and returned REVISE with a small convergent set,
@@ -42,10 +44,11 @@ merge needs them fixed or re-run — a SEPARATE job from the scheduler change.
   the review-log's **P5** section.
   Gates after fixes: **vitest 4878/4878** · **parity 728/0** · build green · live drive re-run clean.
 
-**STATUS: DONE + gated, awaiting the owner's explicit "merge live".** The scheduler routing change is
-complete — plan twice red-teamed, code inspected by both providers, every finding fixed, all gates
-green, driven live on the real bundle. Do NOT merge before the owner says "merge live". Do NOT open/
-watch a PR.
+**STATUS: DONE + ALL FIVE GATES GREEN, awaiting the owner's explicit "merge live".** The scheduler
+routing change is complete — plan twice red-teamed, code inspected by both providers, every finding
+fixed, driven live on the real bundle — AND the two pre-existing e2e failures that blocked a green CI
+merge are now fixed. Gate table: vitest 4878/4878 · build green · parity 728/0 · e2e 425/0 · tracker
+smoke 425/0. Nothing merged. Do NOT merge before the owner says "merge live". Do NOT open/watch a PR.
 
 **[TRK-SMOKE] earlier context (still true):** FIXED + MERGED LIVE 17 Sep (PR #408, squash `93deab7` on
 `main`). This branch was synced with `main` after that, so it contains the fix; `fa85422` above only
