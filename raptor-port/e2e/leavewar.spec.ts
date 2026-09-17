@@ -2272,6 +2272,23 @@ test('a finger behind an open sheet scrolls the grid itself; a tap on a cell clo
     await page.waitForTimeout(10)
   }
   const mid = await gridX()
+  // The finger comes to REST before it lifts (17 Sep 26). Lifted straight off
+  // the last move it leaves at ~2,500px/s, which Chromium reads as a FLING —
+  // and this headless Chromium runs no fling animation (the grid's scroll
+  // trace after the lift is flat), so on Windows the fling never ENDS either:
+  // the gesture stays "coasting" for good, and the next touch, however long
+  // after, is read as "stop the coast" and fires no click. Measured: a tap
+  // 1.5s after the lift produced touchstart/touchend and nothing else, the
+  // sheet stayed up; a second tap clicked and closed it. The Linux runner
+  // happened not to get stuck, which is why this only failed on the desktop.
+  // A resting finger lifts at zero velocity — a plain scroll end, no fling —
+  // which is also the gesture the claim below is about: a tap once the grid
+  // has SETTLED, not a tap that stops a coast (that one rightly opens
+  // nothing, on a real phone too). Two rests either side of a stationary move
+  // keep Chromium's ~100ms velocity window empty of motion.
+  await page.waitForTimeout(150)
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x0 - 250, y }] })
+  await page.waitForTimeout(150)
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
   // The grid moved WITH the finger (250px dragged left; the browser's own
   // touch slop eats a little) — the browser's own scroll of the grid.

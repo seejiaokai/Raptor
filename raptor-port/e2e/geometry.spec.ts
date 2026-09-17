@@ -1986,15 +1986,32 @@ test('the board flying line carries the brief inline between MSN and TO at phone
     const line = document.querySelector('#schedBoard .sb-line') as HTMLElement
     const cs = line.querySelector('.lin') as HTMLElement
     const bcell = line.querySelector('.sb-bcell') as HTMLElement
-    const y = (el: HTMLElement) => Math.round(el.getBoundingClientRect().top)
+    const yb = (el: HTMLElement) => Math.round(el.getBoundingClientRect().bottom)
     const cx = (el: HTMLElement) => Math.round(el.getBoundingClientRect().left)
     const msn = line.querySelector('.msn') as HTMLElement
     // the two visible time inputs after the brief input are TO then LD
     const times = [...line.querySelectorAll('.tm')] as HTMLElement[]
     const to = times[1], ld = times[2]   // times[0] is the brief's own .tm input
+    const binp = times[0]
     return {
       heads,
-      briefInlineWithCs: Math.abs(y(bcell) - y(cs)) < 12,
+      /* Read off the brief BOX, by its BOTTOM (17 Sep 26). This used to compare
+         the wrapper's TOP to the callsign's (`< 12`), written in #230 while the
+         row was still centre-aligned. Two commits later (#232, owner) the five
+         boxes were BOTTOM-aligned with the blue suggested brief stacked ABOVE
+         the brief box — so the wrapper's top now sits a whole suggestion line
+         above the callsign's top by design, and that line is as tall as
+         `line-height: normal` makes an 8px run of whatever font the machine
+         falls back to (the app ships none). Measured at 390px on Windows:
+         wrapper top 1876.22 vs callsign top 1889.22 — Δ13 (suggestion 11px +
+         1px gap + the brief input 1px taller than the callsign box) — while
+         both BOTTOMS read 1913.22, Δ0. The old check passed on the Linux
+         runner only because its fallback font draws that line ~2px shorter,
+         and failed here by one pixel on a correct layout. #232's own contract
+         is "the boxes share one baseline", so that is what is read now; the
+         strip-below layout this pins against would land the box a full
+         40px row lower and still fails it by a wide margin. */
+      briefInlineWithCs: Math.abs(yb(binp) - yb(cs)) < 12,
       order: cx(msn) < cx(bcell) && cx(bcell) < cx(to) && cx(to) < cx(ld),
     }
   })
