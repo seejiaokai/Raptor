@@ -1,28 +1,43 @@
-# Session handoff — [TRK-SMOKE] MERGED LIVE; [ARCH-STACK] Step 2 BUILT (not merged); follow-up #1 plan at Rev 2
+# Session handoff — [ARCH-STACK] f/u #1 scheduler routing BUILT + gated + live-driven (Rev 3, NOT merged); P5 code inspection running
 
-## THE NEXT TASK (owner, 17 Sep 26): follow-up #1 plan review, then the build ([TRK-SMOKE] is DONE + LIVE)
+## THE STATE (owner session, 17 Sep 26 pt.4): follow-up #1 is BUILT — round 2 done, Rev 3, P1–P4 landed as one change, awaiting "merge live"
 
-**Branch to select in the new-chat picker:** `claude/arch-stack-2-command-core-design`.
-NOT `main`. The Step-2 backbone build and the follow-up #1 plan below are committed on it and
-NOT merged. (This branch was synced with `main` after the TRK-SMOKE merge, so it already
-contains that fix — no reconciliation needed.)
+**Branch to select in the new-chat picker:** `claude/arch-stack-2-command-core-design`. NOT `main`.
+Everything below is committed on it and NOT merged.
 
-**`[TRK-SMOKE]` is FIXED and MERGED LIVE (17 Sep 26, PR #408, code-only cherry-pick — squash
-`93deab7` on `main`, deployed to Pages).** The owner said "merge live" but only the tracker fix
-went out; the rest of this branch (the whole command-layer backbone) was deliberately NOT merged,
-per his plan to ship it later in one go with follow-up #1. It was NOT a flake: two real causes —
-(a) the add-student box cleared its field a beat after it opened, so a machine-speed fill was wiped
-and the add silently no-op'd (shipped dialog bug, `src/tracker/components/Modals.jsx`); (b) a failed
-run abandoned its preview server, and on Windows even a passing run did (`server.kill()` killed only
-the shell wrapper), so the next run couldn't bind the port and failed on clean code
-(`scripts/tracker/smoke.mjs`). Both fixed with regression tests, cross-provider reviewed
-(Codex + Fable), all gates green. Full write-up: the [TRK-SMOKE] Done entry in OUTSTANDING.md.
-The stale "tracker smoke is flaky / re-run and trust CI" notes in HANDOFF.md and this file were
-corrected in the same work.
+**What was done this session (commits on the branch):**
+- `3a565c2` — plan → **Rev 3**: folded all 11 round-2 findings (Codex GPT-6 Astra + Fable 5.1, both
+  REVISE, approach affirmed a SECOND time). Two NEW HIGH (SR-008 fix was wrong → non-mutating `signAt`
+  readers; two stores-loadout writes escaped the backstop) + a wrong `isInReducer` fork + text-drop +
+  exactness/doc items. Full disposition table in the review-log's Round-2 section.
+- `d8ec03b` — **the BUILD (Rev 3, P1–P4 as one gated change).** Lagging `SCHED_BASELINE` (copy the
+  People pattern); `decompose(snapshot)`; `signature()` stays live; `applyEnd` folded into commitSched
+  AND commitPublish; re-sync callback in `history.ts` (histInit/histRestore) + explicit `resetSession`
+  + demo-overlay calls; the approved `commit.ts guardSnapshot` edit; non-mutating `signAt`; explicit
+  `schedWrite` at text/sign/warn/draft/stores; the `afterSchedMutate` backstop via `HOOKS.schedEpilogue`;
+  popup lazy-init fixed; `schedBaselineClean()` guardrail; probe-bridge stream reader.
+  Gates: **vitest 4877/4877** (9 new routing tests, `src/state/sched-routing.test.ts`) · **parity 728/0**
+  · build green. **Live drive on the real bundle PASSED**: a real inline text edit emitted one
+  `sched.text`, a real board add emitted one `sched.mutate`, baseline clean throughout, no console/HTTP
+  errors, board renders correctly.
+- `fa85422` — **[TRK-SMOKE] hardened** the add-student smoke step (test-only): confirm the typed name
+  landed before OK (no silent-blank submit) + raise the after-OK wait 15s→30s. The earlier "flake" this
+  session was pure machine CONTENTION (smoke run straight after the e2e suite); smoke is 425/0 in
+  isolation ×3 and 425/0 run right after e2e now.
 
-**Next, in order:** round-2 cross-provider red-team of the follow-up #1 plan (Rev 2, both owner
-decisions now settled — reviewers should not re-litigate them), then BUILD test-first with
-P1–P4 as ONE gated change.
+**Two PRE-EXISTING e2e failures (NOT from this work, unrelated to the scheduler change):**
+`geometry.spec.ts:1976` (board brief-inline at phone width — PROVEN to fail identically on the clean
+tree) and `leavewar.spec.ts:2241` (lw-phone CDP touch-tap timing — passed with this code then flaked
+under load). They are the branch's known "2 pre-existing e2e failures". They are RED, so a green-CI
+merge needs them fixed or re-run — a SEPARATE job from the scheduler change.
+
+**IN FLIGHT at handoff:** the P5 cross-provider CODE inspection (Codex `inspect --base 3a565c2` + a Fable
+agent) of the `d8ec03b` diff is running. When it returns: fix any real findings, then it waits for the
+owner's explicit "merge live". Do NOT merge before that.
+
+**[TRK-SMOKE] earlier context (still true):** FIXED + MERGED LIVE 17 Sep (PR #408, squash `93deab7` on
+`main`). This branch was synced with `main` after that, so it contains the fix; `fa85422` above only
+adds test-robustness on top.
 
 **PLAIN LANGUAGE — the owner raised this explicitly on 17 Sep 26.** He had to ask three times for a
 reply to be re-explained without jargon, said it read as possibly made up, and switched model over
