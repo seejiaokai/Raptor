@@ -189,25 +189,49 @@ that file has NOT been swept, and the tightened symbol pass shows ~20 more unres
 in it. **Flagged, not done** — sweeping it is its own task, and expanding into it now would be the
 scope creep the owner explicitly ruled out.
 
-## F. The one finding that is more than a documentation defect
+## F. The finding that turned out to be a wrong PREMISE, not a bug (owner, 17 Sep 26)
 
-`state/disclosure.ts` records which issued versions have LEFT the machine (a send, a PDF or CSV
-export, the session ending). Step 3 reads that signal to choose between silently reversing an
-amendment and putting a correction on the record — the owner's 16 Sep ruling.
+Round 2 (Fable F8) raised this as the one finding bigger than a documentation defect:
+`state/disclosure.ts` recorded which issued versions had "left the machine" — a send, a PDF or CSV
+export, the session ending — in memory only. Step 3 reads that signal to choose between silently
+reversing an amendment and putting a correction on the record. So an amendment exported as a PDF
+would read as never-disclosed after a reload, and Step 3 would erase it quietly.
 
-The registry is in memory, and its stated reason was that this "matches the app's session-only
-INPUTS/stash persistence". That reason is false: the issued records themselves persist. So an
-amendment exported as a PDF, after a reload, reads as **never disclosed** — and Step 3 would then
-silently erase something that had already left the machine, which is the exact thing the ruling
-forbids.
+**The owner rejected the premise rather than the persistence, and he was right.**
 
-**Inert today** — nothing reads the signal at Step 2. **Not inert at Step 3.** Two ways out, and
-this one is the owner's because it is about what the squadron is told, not about code:
-1. **Persist the disclosure set** with the week record. Exact, more moving parts.
-2. **Fail safe:** treat every issued id that came back from storage as already disclosed. Simple,
-   and errs toward putting a correction on the record rather than erasing quietly — which is the
-   direction the owner's ruling already leans.
+His ruling: *"as long as if I publish and undo and it didn't hit the database there isn't a need to
+put it in the records history, but if it's published and the database registers and I undo, it will
+be recorded as this was undone in the history to prevent silent bugs."* And on the export:
+*"my end goal is to export the current day only's published schedule … it's only purpose is to
+export the snapshot of the current schedule … this is a scheduler only function and they know
+what's the latest copy to use. Don't need to be so complicated."*
 
-**Recommendation: option 2**, with option 1 folded into the database step when real disclosure
-crosses machines anyway. Recorded as an open question on the Step-2 design (§9) so Step 3 cannot
-inherit it silently.
+So the boundary is ONE fact — **has the shared database registered this issued version?** An export
+is a scheduler's own snapshot, not a publication to the squadron, and does not constrain undo.
+
+**This dissolves the finding.** There is no local record whose loss could matter: the database holds
+the fact, and a fact the database holds cannot be lost to a reload. **Done:** the three reporting
+call sites (`printpdf.ts`, the Shell's CSV button, `resetSession`) are removed, `state/disclosure.ts`
+now carries the database rule and names the superseded one, spec §3.4 is rewritten, and
+`publish-commit.test.ts` pins the new contract. It also SUPERSEDES an accepted round-4 review
+finding (Codex R4-003), quoted dead in the Rev-5 change-list rather than deleted.
+
+**Worth recording as method.** Two reviewers and I all treated a fragile mechanism as something to
+make robust. The owner asked why it existed. The standing rule — *when several defects trace back to
+one decision, question the decision before patching the defects* — applied here and none of the
+three of us reached for it. The reviewers could not have: they were handed a claims table and asked
+whether the code matched it, which is a question about correctness, not about whether the feature
+should exist. **A correctness review cannot tell you a mechanism is unnecessary.** That judgement
+needs whoever owns the intent.
+
+**One narrow question left with the owner** (spec §9.5): on the registered side, is the artefact a
+correcting amendment — a new numbered document the squadron receives, per the 16 Sep wording — or an
+entry in the history saying it was undone, per the 17 Sep wording? Affects only what Step 3 builds.
+
+## G. Flagged, not fixed — the PDF export's scope
+
+The owner stated the intent: *"export the current day only's published schedule."* Today
+`ui/printpdf.ts:printSchedPDF` exports **the whole loaded week** — `publishedDays()` with a
+Monday-to-Sunday label. That is a product gap, not a documentation defect, so it is recorded here
+and NOT changed: narrowing it is a deliberate behaviour change with its own live check, and it is
+not part of this sweep or of follow-up #1.

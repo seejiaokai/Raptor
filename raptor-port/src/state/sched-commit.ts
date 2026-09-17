@@ -129,7 +129,8 @@ export function commitSchedValue<T>(type: string, fn: () => T): T {
 
 /* ---- phase 2b: the PUBLISH path (design §3.4) ---------------------------- */
 /* the set of issued verIds currently on the loaded week's book — orig[di].id +
-   every als[n].id. The disclosure signal keys off these (currentIssuedIds). */
+   every als[n].id. The Step-5 database adapter reports these ids as ON THE RECORD
+   once the backend acknowledges their write (state/disclosure.ts). */
 function issuedIdSet(): Set<string> {
   const s = new Set<string>()
   const orig: any = SCHED.orig || {}
@@ -143,10 +144,12 @@ export function currentIssuedIds(): string[] {
   return [...issuedIdSet()]
 }
 
-/* a disclosing path (PDF export/print, CSV export, the issuing session ending)
-   reports the loaded week's issued versions as having left the machine, flipping
-   their `crossable` for the Step-3 undo/withdrawal decision (design §3.4). At
-   Step 2 this only RECORDS the signal — nothing reads it to change behaviour. */
+/* report the loaded week's issued versions as ON THE SHARED RECORD.
+   OWNER RULING 17 Sep 26: the ONLY caller of this is the Step-5 database adapter,
+   on a write the backend has acknowledged. Exports, printing and the session
+   ending are NOT boundary events and no longer call it (state/disclosure.ts names
+   the superseded rule). Unwired at Step 2: with no shared database, nothing can be
+   registered, so every issued version stays freely reversible. */
 export function discloseCurrentIssued(): void {
   discloseIssued(currentIssuedIds())
 }
@@ -157,8 +160,8 @@ export function discloseCurrentIssued(): void {
    version — declare the publish boundary carrying the new ids (design §3.4). A
    refused/no-op publish mints nothing, so no boundary is declared and (with no
    record change) the commit emits nothing. `crossable` is true while none of the
-   new ids has been disclosed; the monotonic disclosure registry flips it for the
-   Step-3 undo/withdrawal decision. */
+   new ids is on the shared record yet — which at Step 2 is always, there being no
+   shared database. Step 3 reads it to choose silent-reverse vs on-the-record undo. */
 function commitPublish(type: string, fn: () => void): CommitResult {
   const cmd: Command = {
     type, scope: schedScope(),

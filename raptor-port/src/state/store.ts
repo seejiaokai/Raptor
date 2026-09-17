@@ -38,7 +38,7 @@ import { setRole as lwSetRole } from '../leavewar/state/store'
 import { setFileLocked as trSetFileLocked } from '../tracker/role.js'
 import { isHydrated, weekSwapBegin, weekSwapEnd } from './persist'
 import { deferEffect } from '../command'
-import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, SCHED_TYPES, discloseCurrentIssued } from './sched-commit'
+import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, SCHED_TYPES } from './sched-commit'
 import { registerPeopleSettingsCommandLayer, resyncPeopleBaseline } from './people-settings-commit'
 
 let VERSION = 0
@@ -226,10 +226,9 @@ export function moveSectionTo(di: number, fromKey: string, toKey: string): boole
    land on. Every login and logout now routes through here so a session
    change always drags the whole view back to a safe, page-1 default. */
 export function resetSession(s: any) {
-  /* [ARCH-STACK] 2b: the issuing session is ending — its issued days can no longer
-     be silently reversed by the next session, so record them as disclosed (§3.4).
-     Records-only at Step 2; Step 3 reads it. Runs before the session swaps. */
-  discloseCurrentIssued()
+  /* OWNER RULING 17 Sep 26: a session ending is NOT a boundary event — only the
+     shared database registering a publish is. The old discloseCurrentIssued()
+     call here is gone; see state/disclosure.ts. */
   authSetSession(s)
   view.bumpNav()                  // a session change invalidates a pending day-template-apply confirm (P2-REV2-07)
   view.setPage('viewsched')
@@ -833,7 +832,6 @@ wireStore()
 export { markEdit } from '../engine/publish'
 export {
   commitSetDayApproved, commitPublishALDay, commitDiscardPending,
-  currentIssuedIds, discloseCurrentIssued,
 } from './sched-commit'
 /* the quarantine classifier lives in the engine (so the engine's filing
    primitives share it) but the UI imports it from here, its established home.

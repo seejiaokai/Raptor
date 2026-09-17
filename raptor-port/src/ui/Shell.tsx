@@ -10,7 +10,7 @@ import { weekWindow } from './weeknav'
 import { CalIcon, XlsIcon, PdfIcon, HistIcon, HlIcon, SrchIcon } from './icons'
 import { rulesOffCount } from '../engine/rules'
 import { SESSION, ME, setMe, canToggleRole } from '../state/auth'
-import { resetSession, toggleRole, notify, setPage, discloseCurrentIssued } from '../state/store'
+import { resetSession, toggleRole, notify, setPage } from '../state/store'
 import { HLSET, SEARCH, HLOPEN, toggleHlOpen, HLGROUP, setSearch, CURPAGE, setDayPreview, toggleViewWork, bellLit, clearBell } from '../state/view'
 import { HlChips } from './hlchips'
 import { initDrag } from './drag'
@@ -499,7 +499,6 @@ export function Shell() {
             <button className="abtn" id="exportSched" title="Export to Excel (CSV)" aria-label="Export to Excel (CSV)"
               onClick={() => {
                 exportCSV('142-schedule.csv', schedRows(publishedDays()))   /* the PUBLISHED version ([FLAG-EXPORT]) */
-                discloseCurrentIssued()   /* [ARCH-STACK] 2b: a CSV export discloses the issued days (§3.4) */
                 /* same reason as the Inputs page's export: a phone shows nothing
                    when a download lands, so the tap otherwise reads as dead */
                 HOOKS.toast('CSV downloaded', 'ok')

@@ -4,7 +4,7 @@
    this proves the publish path now
      - emits the issued records (sched.orig on first publish, sched.als on an AL),
      - declares the publish boundary {kind:'publish', ids, crossable} (§3.4),
-     - records the monotonic disclosure signal that flips `crossable` for Step 3,
+     - records the monotonic on-the-record signal that flips `crossable` for Step 3,
      - and that the envelope stream RECONSTRUCTS the persisted week byte-for-byte
        vs the legacy serializer (completeness, §7 / Codex R4-004).
    A refused/no-op publish mints nothing → no boundary, no envelope. */
@@ -131,17 +131,32 @@ describe('discardPending routes through commit with no boundary', () => {
   })
 })
 
-describe('the disclosure signal flips crossable for Step 3 (§3.4)', () => {
-  it('an export/print/session-end discloses the issued ids the publish recorded', () => {
+/* OWNER RULING 17 Sep 26 — the boundary is the SHARED DATABASE registering the
+   publish, and nothing else. A PDF/print export, a CSV export and the session
+   ending are NOT boundary events (they were, under Codex R4-003, until this
+   ruling); the export is a scheduler-only snapshot of the current published
+   schedule. So the reporting function has ONE future caller, the Step-5 database
+   adapter, and is unwired today. These tests pin the SEAM's contract plus the
+   Step-2 fact that nothing is ever on the record yet. */
+describe('the on-the-record signal flips crossable for Step 3 (§3.4, owner 17 Sep 26)', () => {
+  it('with no shared database, a fresh publish is never on the record — crossable', () => {
     sign(0)
     commitSetDayApproved(0, true)
     const issuedId = caught[0].boundary!.ids[0]
-    expect(issuedDisclosed(issuedId)).toBe(false)   // fresh publish: crossable
+    expect(issuedDisclosed(issuedId)).toBe(false)
+    expect(caught[0].boundary!.crossable).toBe(true)
     expect(currentIssuedIds()).toContain(issuedId)
-    discloseCurrentIssued()                          // the export/print/session-end path
-    expect(issuedDisclosed(issuedId)).toBe(true)     // Step 3 would now forbid a silent reverse
-    // monotonic: it never un-discloses
+  })
+
+  it('once the backend acknowledges the write, the id is on the record, monotonically', () => {
+    sign(0)
+    commitSetDayApproved(0, true)
+    const issuedId = caught[0].boundary!.ids[0]
+    /* stands in for the Step-5 database adapter's acknowledgement — the ONLY
+       caller this seam is ever meant to have. */
     discloseCurrentIssued()
+    expect(issuedDisclosed(issuedId)).toBe(true)     // Step 3 must not silently reverse it
+    discloseCurrentIssued()                          // monotonic: never taken back off the record
     expect(issuedDisclosed(issuedId)).toBe(true)
   })
 })

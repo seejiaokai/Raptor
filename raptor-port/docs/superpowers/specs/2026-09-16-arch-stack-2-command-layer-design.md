@@ -70,9 +70,10 @@ branch `claude/arch-stack-2-command-core-design`.
 - **Put-once ENFORCEMENT on orig/als deferred to Step 3** (Codex R4-002): record *shape* stays
   (own append-only-intended records); a hard gate now would reject the permitted silent-undo-before-
   sent (today's `histRestore` replaces orig/als). §3.4.
-- **Explicit disclosure transition for `crossable`** (Codex R4-003): the PDF export discloses an
-  issued day with no remote envelope, so define a monotonic per-issued-id disclosure signal that
-  send/export/print all report; `crossable=false` once disclosed by ANY path. §3.4.
+- ~~**Explicit disclosure transition for `crossable`** (Codex R4-003): the PDF export discloses an
+  issued day … `crossable=false` once disclosed by ANY path.~~ **SUPERSEDED by the owner,
+  17 Sep 26** — the boundary is the shared DATABASE registering the publish, and nothing else. An
+  export is a scheduler-only snapshot. §3.4.
 - **Registry: add `SCHED.changes`; derive from code; completeness = reconstruct-and-compare**
   (Codex R4-004 / Fable R4-4). §3.1/§7.
 - **Finer LW logical records — per-cell / per-bid**, not whole-war, so the revision map works
@@ -313,12 +314,41 @@ Step 2, because today's silent-undo-before-sent legitimately reverses a just-iss
 publish is sent/witnessed** (nothing has left the machine — none of the DB bugs can arise);
 **an on-the-record forward withdrawal (a correcting amendment) AFTER** — append-only, unique
 never-reused ids, derived credits recompute, with a one-line heads-up. The snapshot-undo never
-crosses a sent publish. Recorded as `boundary.crossable`, which flips to false on an **explicit,
-monotonic disclosure signal keyed by the issued id** — reported by EVERY path that lets an issued
-day leave the machine: a shared-DB send, a change-feed reference from another client, a **PDF
-export/print** (`printpdf.ts`), a CSV export, or the issuing session ending (Codex R4-003; do not
-infer disclosure only from an incoming remote change). Step 3 reads `crossable` to choose
-silent-reverse vs forward-withdrawal.
+crosses a publish the shared record has registered.
+
+**OWNER RULING, 17 Sep 26 — THE BOUNDARY IS THE DATABASE, AND NOTHING ELSE.** This SUPERSEDES
+Codex R4-003 (accepted 16 Sep), which is quoted dead in the Rev-5 change-list above. Newest
+instruction wins; the earlier one is named, not quietly dropped.
+
+In the owner's words: *"as long as if I publish and undo and it didn't hit the database there
+isn't a need to put it in the records history, but if it's published and the database registers
+and I undo, it will be recorded as this was undone in the history to prevent silent bugs."*
+
+So `boundary.crossable` turns on ONE checkable fact — **has the shared database registered this
+issued version?** Not registered → undo reverses it silently, nothing being on the record
+anywhere. Registered → the undo goes on the record, so the change cannot happen silently.
+
+**NOT boundary events** (dropped 17 Sep 26): a PDF export or print, a CSV export, or the issuing
+session ending. The owner's reason: the export is a **scheduler-only snapshot of the current
+published schedule** — its purpose is to hand the scheduler the latest copy, and schedulers know
+which copy is latest. It is not a publication to the squadron and it does not constrain undo. The
+three call sites that reported it (`printpdf.ts`, the Shell's CSV button, `resetSession`) have been
+REMOVED; `state/disclosure.ts` carries the rule and names the superseded one.
+
+This is also the more reliable design, not merely the simpler one: "the backend acknowledged the
+write" is a fact the app can check, whereas the old model had to INFER disclosure from
+human-facing paths it could never fully enumerate — every future export button would have been
+another one to remember.
+
+**At Step 2 there is no shared database**, so nothing can be registered, so `crossable` is always
+true and the reporting seam is unwired. Its one intended caller is the Step-5 database adapter, on
+a write the backend has acknowledged. Step 3 reads `crossable` to choose silent-reverse vs
+on-the-record undo.
+
+**One narrow question still open for the owner** (§9.4): on the registered side, the 16 Sep wording
+was a *correcting amendment* — a new numbered document the squadron receives — while the 17 Sep
+wording is "recorded as this was undone in the history". Those may be the same thing said two ways,
+or the lighter one. It changes what Step 3 builds, not anything now.
 Recovery publishes under a NEW id; issued records + signatures never overwritten. **Roster/settings
 edits ARE undoable** (`user` commands, never amendments).
 
@@ -406,16 +436,16 @@ byte-identical to today (additive regression).
 2. **Split a mega-blob at Step 2 vs Step 5?** Rev 4 keeps the per-record revision map in memory over
    the coarse blob (no split), conflict a Step-2 no-op. Confirm this is enough pre-Dataverse.
 3. **Cross-backend atomicity** with the append-only docstore — Rev 4 leans forbid-until-Step-5.
-4. **NEW (17 Sep 26, correctness sweep round 2 / Fable F8) — the disclosure registry does not
-   survive a reload, and Step 3 reads it.** `state/disclosure.ts` keeps the set of issued versions
-   that have LEFT the machine (a send, a PDF/CSV export, the session ending) in memory. Its stated
-   reason was that this matched "the app's session-only INPUTS/stash persistence" — which is FALSE:
-   the issued records themselves persist (`schedFields` → `weekStashSnap` → `weeks/<wk>`), and
-   nothing re-reports persisted issued ids at boot. So an amendment exported as a PDF reads as
-   NEVER DISCLOSED after a reload. Inert at Step 2 (nothing reads it), but §3.4 has Step 3 choose
-   silent-reverse vs on-the-record withdrawal from exactly this signal — so Step 3 would silently
-   erase something that had already left the machine, the one thing the owner's 16 Sep ruling
-   forbids. **Two options: (a) persist the disclosure set with the week record; (b) fail safe —
-   treat every issued id hydrated from storage as already disclosed. Recommendation: (b) now,
-   folding (a) into Step 5 when disclosure crosses machines anyway. OWNER DECISION — it is about
-   what the squadron is told, not about code.** Must be answered BEFORE Step 3 reads `crossable`.
+4. **CLOSED by the owner, 17 Sep 26 — and the problem dissolved with the premise.** Round 2 of the
+   correctness sweep (Fable F8) raised that the disclosure registry does not survive a reload, so an
+   amendment exported as a PDF would read as never-disclosed afterwards, and Step 3 would silently
+   reverse something already out. **The owner's answer was to reject the premise, not to fix the
+   persistence:** an export is not a boundary event at all, so there is nothing whose loss could
+   matter. The boundary is the database registering the publish (§3.4), which is a fact the database
+   itself holds — it cannot be lost to a reload, and needs no local registry to survive one. The
+   three reporting call sites are gone. *A worked example of the standing rule: when several defects
+   trace back to one decision, question the decision before patching the defects.*
+5. **NARROW, still open (17 Sep 26):** on the REGISTERED side of §3.4, is the artefact a
+   **correcting amendment** — a new numbered document the squadron receives, per the 16 Sep wording
+   — or just an **entry in the history** saying it was undone, per the 17 Sep wording? Same thing in
+   two voices, or two different things. Affects only what Step 3 builds.

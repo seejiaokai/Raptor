@@ -15,7 +15,6 @@
 import { esc } from '../state/view'
 import { DAYS } from '../engine/data'
 import { schedRows, publishedDays, dayIssuedLabel } from './export'
-import { discloseCurrentIssued } from '../state/sched-commit'
 
 const HEAD = ['Day', 'Date', 'Wave', 'CS', 'Mission', 'Brief', 'TO', 'Land', 'FCP', 'FCP lvl', 'RCP', 'RCP lvl', 'Area', 'Area time', 'Rmks', 'Stores']
 /* column index by header name, so the report reads by meaning not position */
@@ -103,9 +102,10 @@ ${blocks}
 
 export function printSchedPDF(): void {
   if (typeof document === 'undefined') return
-  /* [ARCH-STACK] 2b: exporting the issued schedule is a DISCLOSURE — it flips the
-     printed days' `crossable` for the Step-3 undo/withdrawal decision (§3.4). */
-  discloseCurrentIssued()
+  /* OWNER RULING 17 Sep 26: an export is NOT a boundary event. This is a
+     scheduler-only snapshot of the current published schedule — it does not
+     constrain undo, so it reports nothing. The old discloseCurrentIssued() call
+     here is gone; see state/disclosure.ts. */
   /* "Mon 13 Jul – Sun 19 Jul" from the loaded week's first and last day —
      dow is the full word ('Monday'), dt is 'Jul 13', so flip dt to day-first */
   const lbl = (d: any) => {
