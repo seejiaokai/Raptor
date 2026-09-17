@@ -1,18 +1,24 @@
-# Session handoff — [ARCH-STACK] Step 2 BUILT (not merged); follow-up #1 plan at Rev 2
+# Session handoff — [TRK-SMOKE] MERGED LIVE; [ARCH-STACK] Step 2 BUILT (not merged); follow-up #1 plan at Rev 2
 
-## THE NEXT TASK (owner, 17 Sep 26): [TRK-SMOKE] DONE — next is the follow-up #1 plan review, then the build
+## THE NEXT TASK (owner, 17 Sep 26): follow-up #1 plan review, then the build ([TRK-SMOKE] is DONE + LIVE)
 
 **Branch to select in the new-chat picker:** `claude/arch-stack-2-command-core-design`.
-NOT `main`. Everything below is committed and pushed on it; nothing is merged.
+NOT `main`. The Step-2 backbone build and the follow-up #1 plan below are committed on it and
+NOT merged. (This branch was synced with `main` after the TRK-SMOKE merge, so it already
+contains that fix — no reconciliation needed.)
 
-**`[TRK-SMOKE]` is FIXED (17 Sep 26), committed on this branch, NOT merged — holding for
-"merge live".** It was NOT a flake: two real causes — (a) the add-student box cleared its field a
-beat after it opened, so a machine-speed fill was wiped and the add silently no-op'd (shipped
-dialog bug, `src/tracker/components/Modals.jsx`); (b) a failed run abandoned its preview server,
-and on Windows even a passing run did (`server.kill()` killed only the shell wrapper), so the next
-run couldn't bind the port and failed on clean code (`scripts/tracker/smoke.mjs`). Both fixed with
-regression tests, cross-provider reviewed (Codex + Fable), all gates green. Full write-up: the
-[TRK-SMOKE] Done entry in OUTSTANDING.md.
+**`[TRK-SMOKE]` is FIXED and MERGED LIVE (17 Sep 26, PR #408, code-only cherry-pick — squash
+`93deab7` on `main`, deployed to Pages).** The owner said "merge live" but only the tracker fix
+went out; the rest of this branch (the whole command-layer backbone) was deliberately NOT merged,
+per his plan to ship it later in one go with follow-up #1. It was NOT a flake: two real causes —
+(a) the add-student box cleared its field a beat after it opened, so a machine-speed fill was wiped
+and the add silently no-op'd (shipped dialog bug, `src/tracker/components/Modals.jsx`); (b) a failed
+run abandoned its preview server, and on Windows even a passing run did (`server.kill()` killed only
+the shell wrapper), so the next run couldn't bind the port and failed on clean code
+(`scripts/tracker/smoke.mjs`). Both fixed with regression tests, cross-provider reviewed
+(Codex + Fable), all gates green. Full write-up: the [TRK-SMOKE] Done entry in OUTSTANDING.md.
+The stale "tracker smoke is flaky / re-run and trust CI" notes in HANDOFF.md and this file were
+corrected in the same work.
 
 **Next, in order:** round-2 cross-provider red-team of the follow-up #1 plan (Rev 2, both owner
 decisions now settled — reviewers should not re-litigate them), then BUILD test-first with

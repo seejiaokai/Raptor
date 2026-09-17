@@ -60,8 +60,9 @@ in-flight and risk-reducing** first.
      (CLAUDE.md §Stable decisions — `WEEKS`, `restoreDayVersion`, `openWarns`, etc.); grep for
      refs and confirm before removing anything. Own gated PR, in batches. See the "SECOND
      TASK" section of `raptor-port/docs/plans-selector-followups.md`.
-1b. **[TRK-SMOKE] — DONE (17 Sep 26, committed on `claude/arch-stack-2-command-core-design`,
-   NOT merged).** It was NOT a flake: two real causes. See the Done section entry for the
+1b. **[TRK-SMOKE] — DONE + MERGED LIVE (17 Sep 26, PR #408, squash `93deab7` on `main`).**
+   Code-only cherry-pick; the rest of this branch stayed unmerged. It was NOT a flake: two real
+   causes. See the Done section entry for the
    full diagnosis; in short — (a) the add-student box cleared its field a beat after it
    opened, so a machine-speed fill was wiped and the add silently no-op'd; (b) a failing run
    abandoned its preview server, and on Windows even a passing run did, so the next run
@@ -314,7 +315,8 @@ time. Two independent causes, both fixed:
 regression tests) · `npm run smoke:tracker` 425/0 repeatedly with the server confirmed torn
 down, and a forced browser-launch failure now cleans up too. Cross-provider bug-check: Codex
 (found the teardown-before-launch gap, fixed) + Fable (found the focus regression + a concurrent-
-teardown leak, both fixed). **Not merged — holding for the owner's "merge live".**
+teardown leak, both fixed). **MERGED LIVE 17 Sep 26 (PR #408, code-only cherry-pick, squash
+`93deab7` on `main`).** Only the tracker fix went live; the rest of the branch stayed unmerged.
 NB the app itself is fast (Tracker tab opens in ~0.4s, instant thereafter); the slowness during
 this work was the leaked servers, not the app.
 
