@@ -551,6 +551,13 @@ items are meant to be resolved here — notably **[TRK-DISK]** (the memory-not-d
 save signal) and the Tracker's dropped SharePoint/Dataverse/Firebase layers.
 - **Model:** design review on Fable, high (the expensive-to-get-wrong decision);
   build volume on Opus.
+- **Tooling to revisit HERE (owner asked 17 Sep 26; Opus + Fable both advised defer):** when the
+  Dataverse adapter/API + auth are being built, reconsider a **cross-layer (frontend↔backend↔DB)
+  reviewer** and a **security-audit skill** — both premature until a backend/login exist. NOT worth
+  installing now: generic PR-review / systematic-debugging / test-generation / Playwright skills
+  duplicate the current pipeline (cross-provider red-team, the 6-gate suite, vendored
+  systematic-debugging / test-driven-development / `/code-review` / `/security-review`); and any
+  Postgres-specific tuning tool does NOT apply — the DB is Dataverse, not Postgres.
 
 ### [CRP-FLAG] Live flagging on the PUBLISHED schedule — DESIGNED + RED-TEAMED, ready to build (15 Sep 26)
 Show live warnings (crew rest incl. cross-day/past-midnight, the 7-day work rule, timing
