@@ -38,7 +38,7 @@ import { setRole as lwSetRole } from '../leavewar/state/store'
 import { setFileLocked as trSetFileLocked } from '../tracker/role.js'
 import { isHydrated, weekSwapBegin, weekSwapEnd } from './persist'
 import { deferEffect } from '../command'
-import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, SCHED_TYPES, resyncSchedBaseline } from './sched-commit'
+import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, commitInputsProjection, SCHED_TYPES, resyncSchedBaseline } from './sched-commit'
 import { registerPeopleSettingsCommandLayer, resyncPeopleBaseline } from './people-settings-commit'
 
 let VERSION = 0
@@ -180,6 +180,12 @@ export function writeInputs(fn: () => void): boolean {
    never created — old fields, but already un-accepted. One action, one step. */
 export function writeInputsBatch(fn: () => void): boolean {
   return commitInputs(SCHED_TYPES.inputsBatch, () => runInputWrite(fn, true))
+}
+/* [CMDL-FINISH] §2.2 — the PROJECTION variant, for the LW-originated reconciler
+   (sync.ts runOutbound) so its Raptor input mint/retract chains causally to the
+   Leave War edit that triggered it, instead of standing as an orphan user edit. */
+export function writeInputsBatchProjection(fn: () => void): boolean {
+  return commitInputsProjection(SCHED_TYPES.inputsBatch, () => runInputWrite(fn, true))
 }
 
 /* THE SCHEDULE SECTION ORDER — its one write path (owner, 29 Aug 26). Re-arrange

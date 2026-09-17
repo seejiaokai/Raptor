@@ -99,6 +99,8 @@ import { localBackend, memoryBackend, type StorageBackend } from './storage'
 import {
   commit as cmdCommit, isCommitting as cmdIsCommitting, deferEffect as cmdDeferEffect,
   definePermission as cmdDefinePermission, anyone as cmdAnyone, registerRecord as cmdRegisterRecord,
+  commitProjection as cmdCommitProjection, isInReducer as cmdIsInReducer,
+  registerGuardedStore as cmdRegisterGuardedStore, isQueued, isOk,
 } from '../../command'
 import type { EnlistableStore as CmdEnlistableStore, RecordEntry as CmdRecordEntry, Scope as CmdScope } from '../../command'
 
@@ -958,10 +960,16 @@ export function subscribe(fn: () => void): () => void {
   return () => void listeners.delete(fn)
 }
 
-function notify(): void {
+/* [CMDL-FINISH] §2.2 — the pure repaint primitive. The user/reconciler write
+   paths repaint through persistNotify (which defers this into the command so the
+   cross-side reconcile it wakes runs in phase 8 with the causal seq live); the
+   view-only setters (setRole/setViewer/focusDay/setPeople/…) call the bare
+   notify() alias below — a repaint with no durable write and no envelope. */
+function rawNotify(): void {
   version += 1
   for (const fn of listeners) fn()
 }
+function notify(): void { rawNotify() }
 
 // One writer for all three keys, so no write path can save a grid and forget
 // the states that have to agree with it.
@@ -1037,8 +1045,28 @@ let LW_REGISTERED = false
 /* [CMDL-FINISH] C9 — a monotonic DURABLE-version counter, bumped only where the
    backend actually changes (rawPersist / restore). signature() returns it so the
    whole-world guard asks "changed?" cheaply, instead of serialising the world
-   every commit. Only meaningful once lwStore is registered guarded (end of P3). */
+   every commit. Registered guarded at the END of P3 (once routing is complete). */
 let LW_SIG = 0
+/* [CMDL-FINISH] F1 (§2.2/§2.3) — the causal-envelope router state.
+   - LW_RESTORING: the legacy LW undo/redo (historyApply) persists OFF-STREAM —
+     it is not a new edit, so it must emit no projection and wake no reconcile as
+     a command (C4). Checked FIRST in persistNotify.
+   - LW_PROJ_PENDING: coalesces a multi-cell reconcile to ONE lw.sync projection
+     per turn (N1/C5) — armed on the first cell, every later cell takes the raw
+     branch and does NOT advance LW_BASELINE, so the one projection still diffs
+     every cell against the pre-reconcile baseline.
+   - LW_SYNC_TURN: F4-1 — an IDLE reconcile (week-nav loadWeek→runOilPass) is
+     wrapped in lwSyncTurn, which arms LW_PROJ_PENDING and holds it across the
+     turn; this counter stops the defensive idle reset from clearing the flag the
+     wrapper just armed. */
+let LW_RESTORING = false
+let LW_PROJ_PENDING = false
+let LW_SYNC_TURN = 0
+/* did a DURABLE LW write actually go through the router during the current idle
+   turn? lwSyncTurn's trailing projection fires ONLY if so — a view-only setter
+   (setRole/setViewer/focusDay) that wakes the reconcilers but changes no cell
+   must not trigger a spurious durable persist. */
+let LW_TURN_WROTE = false
 
 /* decompose a durable State into its logical records (design §3.1): one record
    per POPULATED grid cell / bid (sparse), plus the coarse side records. */
@@ -1161,20 +1189,81 @@ function lwRegisterCommands(): void {
   cmdDefinePermission('lw.edit', cmdAnyone)   // permissive at Step 2 (the real role gates are unchanged)
   const cols = ['lw.cell', 'lw.bid', 'lw.war', 'lw.ledger', 'lw.balances', 'lw.oilpolicy', 'lw.postouts', 'lw.current', 'lw.config'] as const
   for (const c of cols) cmdRegisterRecord({ key: `leavewar:${c}`, cls: 'record', collection: c, module: 'leavewar' })
+  // [CMDL-FINISH] C9/P3-END — now that every LW write routes through the command
+  // layer (the only post-boot raw path is LW_RESTORING, which runs at idle and is
+  // never nested inside another command), lwStore is safe to guard. The guard
+  // uses the cheap durable-version signature(), not a whole-state serialise.
+  cmdRegisterGuardedStore(lwStore)
 }
 
-/* the persist ROUTER (replaces the old direct persist body, now rawPersist). */
-function persist(): void {
-  if (!LW_READY || HIST.lock || cmdIsCommitting()) {
-    // sync reconcile / undo-redo / a nested causal write / boot-seed -> raw, exactly as today
-    rawPersist(); LW_BASELINE = state; return
+/* [CMDL-FINISH] §2.3 (Rev 4 + F4-1) — the persist+notify ROUTER. Every durable LW
+   write path (the ~48 former `persist(); notify()` sites) calls this. It replaces
+   the old persist() (whose raw body is rawPersist) AND the following notify(), so
+   a user edit's repaint DEFERS into the command (phase 8, causal seq live) and the
+   cross-side reconciler it wakes chains to the edit instead of orphaning (C1). */
+function persistNotify(): void {
+  const scope = { module: 'lw', warId: state.currentId } as CmdScope
+  if (!LW_READY)    { rawPersist(); LW_BASELINE = state; rawNotify(); return }   // boot/seed
+  if (LW_RESTORING) { rawPersist(); LW_BASELINE = state; rawNotify(); return }   // legacy undo — off-stream (C4)
+  // defensive: at idle with no turn armed, nothing is pending (M3 + F4-1: the
+  // !LW_SYNC_TURN guard keeps lwSyncTurn's armed flag from being cleared here).
+  if (!cmdIsCommitting() && !LW_SYNC_TURN) LW_PROJ_PENDING = false
+  if (HIST.lock || cmdIsCommitting()) {                                          // reconciler OR nested causal
+    if (cmdIsCommitting() && cmdIsInReducer()) {                                 // nested causal child (Gap 2) — JOINs the parent
+      cmdCommitProjection({ type: 'lw.sync', scope, apply: (t) => { t.enlist(lwStore); rawPersist(); LW_BASELINE = state } })
+    } else if (!LW_PROJ_PENDING) {                                               // first cell of a turn — ONE projection
+      LW_PROJ_PENDING = true
+      const r = cmdCommitProjection({ type: 'lw.sync', scope, apply: (t) => { LW_PROJ_PENDING = false; t.enlist(lwStore); rawPersist(); LW_BASELINE = state } })
+      if (isQueued(r)) r.done.then(x => { if (!isOk(x)) rawNotify() })           // a rejected drained projection → re-read the grid (Q1)
+    } else {
+      rawPersist()                                                               // COALESCED — raw only, do NOT advance LW_BASELINE (N1)
+      if (LW_SYNC_TURN) LW_TURN_WROTE = true                                     // this idle turn actually wrote — arm the trailing projection
+    }
+    rawNotify()                                                                  // inline (the SYNCING loop-breaker needs it firing now)
+    return
   }
-  // a standalone USER edit -> its identical body, inside a command that emits the change stream
-  cmdCommit({
-    type: 'lw.edit',
-    scope: { module: 'lw', warId: state.currentId } as CmdScope,
-    apply: (txn) => { txn.enlist(lwStore); rawPersist(); LW_BASELINE = state },
+  // a standalone USER edit -> the identical durable body inside a command that
+  // emits the change stream; the repaint defers to phase 8 (causal seq live).
+  const r = cmdCommit({
+    type: 'lw.edit', scope,
+    apply: (txn) => { txn.enlist(lwStore); rawPersist(); LW_BASELINE = state; cmdDeferEffect(rawNotify) },
   })
+  if ((r as any).ok === false) rawNotify()   // a rejected edit reverted the model; re-read the grid + toast idiom
+}
+
+/* [CMDL-FINISH] F4-1/M3 — coalesce an IDLE multi-cell reconcile (week-nav
+   loadWeek→runOilPass crediting K cells, a view-only setter that wakes the
+   reconcilers) into ONE lw.sync projection. Arm LW_PROJ_PENDING so every cell
+   inside `fn` takes the coalesced raw branch (each rawPersists but does not
+   advance LW_BASELINE), then emit ONE trailing projection UNDER THE LOCK — else
+   recordHistory would push an LW undo step for an idle reconcile. A no-op when
+   already committing (the phase-8 lane coalesces on its own). */
+export function lwSyncTurn<T>(fn: () => T): T {
+  // Already committing (phase-8 lane coalesces on its own) or already inside an
+  // outer turn (the outermost turn emits the ONE projection) — just run fn.
+  if (cmdIsCommitting() || LW_SYNC_TURN > 0) return fn()
+  LW_SYNC_TURN++
+  LW_TURN_WROTE = false
+  LW_PROJ_PENDING = true
+  try {
+    return fn()
+  } finally {
+    LW_SYNC_TURN--
+    // ONE trailing projection for the whole turn — but ONLY if a durable LW write
+    // happened (else a view-only setter that woke the reconcilers would persist
+    // spuriously). Under the lock so recordHistory pushes no undo step for a
+    // reconcile. Its before-image is the pre-turn baseline (the coalesced cells
+    // never advanced it), so the one envelope diffs every cell.
+    if (LW_TURN_WROTE) {
+      locked(() => {
+        cmdCommitProjection({
+          type: 'lw.sync', scope: { module: 'lw', warId: state.currentId } as CmdScope,
+          apply: (t) => { LW_PROJ_PENDING = false; t.enlist(lwStore); rawPersist(); LW_BASELINE = state },
+        })
+      })
+    }
+    LW_PROJ_PENDING = false
+  }
 }
 
 /* =====================================================================
@@ -1298,8 +1387,11 @@ function historyApply(i: number): void {
     // withCurrent republishes period/grid/states from the restored wars and
     // the CURRENT currentId — the war on screen does not change, only its data.
     state = withCurrent({ ...state, ...snap })
-    persist()
-    notify()
+    // [CMDL-FINISH] C4 — a legacy LW undo/redo is NOT a new edit: persist it
+    // OFF-STREAM (rawPersist, no projection, wakes no reconcile as a command).
+    // The reconcilers still converge the Raptor side via the rawNotify inside.
+    const was = LW_RESTORING; LW_RESTORING = true
+    try { persistNotify() } finally { LW_RESTORING = was }
   })
 }
 
@@ -1339,8 +1431,7 @@ function updateWar(id: string, fn: (war: LeaveWar) => LeaveWar): void {
   const wars = state.wars.map((w: LeaveWar) => (w.period.id === id ? fn(w) : w))
   state = withCurrent({ ...state, wars })
   if (quiet) return
-  persist()
-  notify()
+  persistNotify()
 }
 
 /**
@@ -1368,8 +1459,7 @@ export function setPerson(id: string, patch: Partial<Pick<Person, 'seat' | 'band
     // snap this deliberate local edit straight back to the projected value.
     personEdits: { ...state.personEdits, [id]: { ...state.personEdits[id], ...patch } },
   })
-  persist()
-  notify()
+  persistNotify()
   return true
 }
 
@@ -1417,8 +1507,7 @@ export function setPostOut(id: string, fromDate: string | null, archive = true):
   if (fromDate) postOuts[id] = people.find(p => p.id === id)!
   else delete postOuts[id]
   state = withCurrent({ ...state, people, postOuts })
-  persist()
-  notify()
+  persistNotify()
   return true
 }
 
@@ -1559,8 +1648,7 @@ export function setGroupDefs(defs: GroupDef[]): void {
   const cleaned = defs.filter(d => d.id !== SANS_GROUP_ID)
   const groupDefs = pruneGroups(cleaned, state.qualCatalog)
   state = withCurrent({ ...state, groupDefs, groupColors: colorsFor(groupDefs, state.groupColors) })
-  persist()
-  notify()
+  persistNotify()
 }
 
 /** A picked colour lives and dies with its group: keep only the entries whose
@@ -1581,8 +1669,7 @@ export function setGroupColor(id: string, hex: string): void {
   if (!groupsInOrder().some(d => d.id === id)) return
   if (state.groupColors[id] === hex) return
   state = withCurrent({ ...state, groupColors: { ...state.groupColors, [id]: hex } })
-  persist()
-  notify()
+  persistNotify()
 }
 
 /**
@@ -1617,8 +1704,7 @@ export function addGroup(d: GroupDef): void {
     priority = pAt < 0 ? [...pr, d.id] : [...pr.slice(0, pAt), d.id, ...pr.slice(pAt)]
   }
   state = withCurrent({ ...state, groupDefs: merged, groupPriority: priority })
-  persist()
-  notify()
+  persistNotify()
 }
 
 /** Move one group before another in the DISPLAY order (the grid drag, in
@@ -1658,8 +1744,7 @@ export function moveGroupPriorityTo(id: string, beforeId: string | null): void {
   const at = target ? ids.indexOf(target) : ids.length
   ids.splice(at < 0 ? ids.length : at, 0, id)
   state = withCurrent({ ...state, groupPriority: ids, groupPriorityCustom: true })
-  persist()
-  notify()
+  persistNotify()
 }
 
 /** Drop a custom who-wins order and go back to following the page order (owner,
@@ -1669,8 +1754,7 @@ export function clearGroupPriority(): void {
   if (state.role !== 'admin') return
   if (!state.groupPriorityCustom && state.groupPriority.length === 0) return
   state = withCurrent({ ...state, groupPriority: [], groupPriorityCustom: false })
-  persist()
-  notify()
+  persistNotify()
 }
 
 /** Put the roster grouping back to the seven built-ins, following the page order.
@@ -1678,8 +1762,7 @@ export function clearGroupPriority(): void {
 export function resetGroups(): void {
   if (state.role !== 'admin') return
   state = withCurrent({ ...state, groupDefs: [...DEFAULT_GROUPS], groupPriority: [], groupPriorityCustom: false, groupColors: {} })
-  persist()
-  notify()
+  persistNotify()
 }
 
 /** A ground-crew body's label: the admin's override if set, else the projected
@@ -1695,8 +1778,7 @@ export function personLabel(p: Person): string {
 export function setRosterOrder(order: string[]): void {
   if (state.role !== 'admin') return
   state = withCurrent({ ...state, rosterOrder: order })
-  persist()
-  notify()
+  persistNotify()
 }
 
 /** The categorised default order against the ADMIN's live grouping — each group
@@ -1750,8 +1832,7 @@ export function setPersLabel(id: string, label: string): void {
   if (clean) persLabels[id] = clean
   else delete persLabels[id]
   state = withCurrent({ ...state, persLabels })
-  persist()
-  notify()
+  persistNotify()
 }
 
 /**
@@ -1940,8 +2021,7 @@ export function setCellRange(
   }
 
   if (written > 0) {
-    persist()
-    notify()
+    persistNotify()
   }
   return { written, skipped }
 }
@@ -1990,7 +2070,7 @@ export function setCells(cells: { personId: string; date: string }[], code: stri
   } finally {
     quiet = wasQuiet
   }
-  if (written > 0 && !quiet) { persist(); notify() }
+  if (written > 0 && !quiet) { persistNotify() }
   return { written, skipped }
 }
 
@@ -2019,7 +2099,7 @@ export function setBidStates(cells: { personId: string; date: string }[], bid: B
   } finally {
     quiet = wasQuiet
   }
-  if (decided > 0 && !quiet) { persist(); notify() }
+  if (decided > 0 && !quiet) { persistNotify() }
   return { decided, skipped }
 }
 
@@ -2287,8 +2367,7 @@ export function addEventRow(): boolean {
   if (state.role !== 'admin') return false
   if (state.eventRows >= MAX_EVENT_ROWS) return false
   state = withCurrent({ ...state, eventRows: state.eventRows + 1 })
-  persist()
-  notify()
+  persistNotify()
   return true
 }
 
@@ -2305,8 +2384,7 @@ export function setShowSans(on: boolean): boolean {
   if (state.role !== 'admin') return false
   if (state.showSans === !!on) return true
   state = withCurrent({ ...state, showSans: !!on })
-  persist()
-  notify()
+  persistNotify()
   return true
 }
 
@@ -2335,8 +2413,7 @@ export function removeEventRow(): RemoveEventRowResult {
   if (state.eventRows <= DEFAULT_EVENT_ROWS) return 'min'
   if (eventRowUsed(state.eventRows - 1)) return 'nonempty'
   state = withCurrent({ ...state, eventRows: state.eventRows - 1 })
-  persist()
-  notify()
+  persistNotify()
   return 'removed'
 }
 
@@ -2348,8 +2425,7 @@ export function removeEventRow(): RemoveEventRowResult {
 function commitEventDefs(result: EventDef[] | string): string | null {
   if (typeof result === 'string') return result
   state = withCurrent({ ...state, eventDefs: result })
-  persist()
-  notify()
+  persistNotify()
   return null
 }
 
@@ -2368,16 +2444,14 @@ export function removeEventType(index: number): boolean {
   const next = removeEventDef(state.eventDefs, index)
   if (next === state.eventDefs) return false
   state = withCurrent({ ...state, eventDefs: next })
-  persist()
-  notify()
+  persistNotify()
   return true
 }
 
 export function resetEventTypes(): void {
   if (state.role !== 'admin') return
   state = withCurrent({ ...state, eventDefs: seedEventDefs() })
-  persist()
-  notify()
+  persistNotify()
 }
 
 /* THE OIL TRACKER writers (owner, 2 Sep 26 — "admin can only edit the list,
@@ -2412,8 +2486,7 @@ export function setOilPolicy(patch: Partial<OilPolicy>): boolean {
   const next = readOilPolicy({ ...state.oilPolicy, ...patch })
   if (!next) return false
   state = withCurrent({ ...state, oilPolicy: next })
-  persist()
-  notify()
+  persistNotify()
   return true
 }
 
@@ -2484,8 +2557,7 @@ export function grantTo(personIds: string[], counter: CounterName, amount: numbe
     ...(by ? { givenBy: by } : {}),
   }))
   state = withCurrent({ ...state, ledger: [...state.ledger, ...entries] })
-  persist()
-  notify()
+  persistNotify()
   return null
 }
 
@@ -2521,8 +2593,7 @@ export function updateLedgerEntry(id: string, patch: { amount?: number; date?: s
       return { ...rest, amount, date, reason: reason.trim(), ...(givenBy ? { givenBy } : {}) }
     }),
   })
-  persist()
-  notify()
+  persistNotify()
   return null
 }
 
@@ -2530,8 +2601,7 @@ export function removeLedgerEntry(id: string): boolean {
   if (state.role !== 'admin') return false
   if (!state.ledger.some(e => e.id === id)) return false
   state = withCurrent({ ...state, ledger: state.ledger.filter(e => e.id !== id) })
-  persist()
-  notify()
+  persistNotify()
   return true
 }
 
@@ -2556,8 +2626,7 @@ export function setBalance(personId: string, counter: CounterName, target: numbe
     ...state,
     openings: { ...state.openings, [personId]: { ...state.openings[personId], [counter]: Math.round(opening * 1e6) / 1e6 || 0 } },
   })
-  persist()
-  notify()
+  persistNotify()
   return true
 }
 
@@ -2591,8 +2660,7 @@ export function moveFigure(id: string, dir: -1 | 1): boolean {
   if (j < 0 || j >= ids.length) return false
   ;[ids[i], ids[j]] = [ids[j], ids[i]]
   state = withCurrent({ ...state, figureOrder: ids })
-  persist()
-  notify()
+  persistNotify()
   return true
 }
 
@@ -2603,8 +2671,7 @@ export function resetFigureOrder(): void {
   // Same gate as moveFigure — a reset rewrites the arrangement too.
   if (state.role !== 'admin') return
   state = withCurrent({ ...state, figureOrder: [...DEFAULT_FIGURE_ORDER], figureHidden: [] })
-  persist()
-  notify()
+  persistNotify()
 }
 
 /** The figures the column cycles and the drawer shows: the admin's order,
@@ -2634,8 +2701,7 @@ export function toggleFigure(id: string): boolean {
     hidden.add(id)
   }
   state = withCurrent({ ...state, figureHidden: [...hidden] })
-  persist()
-  notify()
+  persistNotify()
   return true
 }
 
@@ -2680,8 +2746,7 @@ export function moveManningRow(id: string, dir: -1 | 1): boolean {
   if (j < 0 || j >= ids.length) return false
   ;[ids[i], ids[j]] = [ids[j], ids[i]]
   state = withCurrent({ ...state, manningOrder: ids })
-  persist()
-  notify()
+  persistNotify()
   return true
 }
 
@@ -2704,8 +2769,7 @@ export function moveManningRowTo(id: string, beforeId: string | null): void {
   const at = beforeId ? ids.indexOf(beforeId) : ids.length
   ids.splice(at < 0 ? ids.length : at, 0, id)
   state = withCurrent({ ...state, manningOrder: ids })
-  persist()
-  notify()
+  persistNotify()
 }
 
 /** Hide or show one manning row. ADMIN-gated. */
@@ -2714,16 +2778,14 @@ export function toggleManningRow(id: string): void {
   const hidden = new Set(state.manningHidden)
   hidden.has(id) ? hidden.delete(id) : hidden.add(id)
   state = withCurrent({ ...state, manningHidden: [...hidden] })
-  persist()
-  notify()
+  persistNotify()
 }
 
 /** Put every manning row back — natural order, nothing hidden. ADMIN-gated. */
 export function resetManning(): void {
   if (state.role !== 'admin') return
   state = withCurrent({ ...state, manningOrder: [], manningHidden: [] })
-  persist()
-  notify()
+  persistNotify()
 }
 
 /**
@@ -2742,8 +2804,7 @@ export function setManningThreshold(id: string, amber: number, red: number): boo
   if (!rules.some(r => r.id === id)) return false
   const next = rules.map(r => (r.id === id ? { ...r, threshold: { amber, red } } : r))
   state = withCurrent({ ...state, requirements: { ...state.requirements, default: { rules: next } } })
-  persist()
-  notify()
+  persistNotify()
   return true
 }
 
@@ -2773,8 +2834,7 @@ export function saveManningRule(rule: ManningRule): boolean {
     ? rules.map(r => (r.id === clean.id ? clean : r))
     : [...rules, clean]
   state = withCurrent({ ...state, requirements: { ...state.requirements, default: { rules: next } } })
-  persist()
-  notify()
+  persistNotify()
   return true
 }
 
@@ -2792,8 +2852,7 @@ export function deleteManningRule(id: string): boolean {
     manningOrder: state.manningOrder.filter(x => x !== id),
     manningHidden: state.manningHidden.filter(x => x !== id),
   })
-  persist()
-  notify()
+  persistNotify()
   return true
 }
 
@@ -2804,8 +2863,7 @@ export function deleteManningRule(id: string): boolean {
 export function resetManningRules(): void {
   if (state.role !== 'admin') return
   state = withCurrent({ ...state, requirements: seedRequirements(), manningOrder: [], manningHidden: [] })
-  persist()
-  notify()
+  persistNotify()
 }
 
 /** Install Raptor's live qualification catalogue for the counter form's
@@ -2822,8 +2880,9 @@ export function setQualCatalog(catalog: QualDef[]): void {
   const changed = groupDefs.length !== state.groupDefs.length
   // A pruned group takes its picked colour with it, as a removed one does.
   state = withCurrent({ ...state, qualCatalog: catalog, ...(changed ? { groupDefs, groupColors: colorsFor(groupDefs, state.groupColors) } : {}) })
-  if (changed) persist()
-  notify()
+  // a durable group prune persists+notifies; a pure catalogue reprojection just
+  // repaints (qualCatalog is a projection, not a persisted field).
+  if (changed) persistNotify(); else notify()
 }
 
 /** Walk the period to its next stage. A no-op at the end of the cycle —
@@ -3308,8 +3367,7 @@ export function selectWar(id: string): void {
     focusDate: defaultFocusDate(picked.period),
     focusSeq: state.focusSeq + 1,
   })
-  persist()
-  notify()
+  persistNotify()
   // Undo is scoped to the war on screen: switching wars starts a fresh stack,
   // so an undo can never reach back and silently rewrite the war just left
   // (the same per-context re-baseline the scheduler does on loadWeek). The
@@ -3395,7 +3453,6 @@ export function createWar(name: string, start: string, end: string): CreateWarRe
   if (state.wars.some(w => overlapping(w.period, war.period))) return 'overlap'
 
   state = withCurrent({ ...state, wars: [...state.wars, war] })
-  persist()
-  notify()
+  persistNotify()
   return 'created'
 }

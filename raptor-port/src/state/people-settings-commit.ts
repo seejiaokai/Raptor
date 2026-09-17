@@ -38,7 +38,7 @@
    registered (the registry refuses an unregistered type). Real auth is Step 5. */
 import type { EnlistableStore, RecordEntry, Scope, CommitResult, Command } from '../command'
 import {
-  commit, isCommitting, definePermission, anyone, registerRecord, registerGuardedStore,
+  commit, commitProjection, isCommitting, definePermission, anyone, registerRecord, registerGuardedStore,
   cmdDeferEffect,
 } from '../command'
 import { PEOPLE, ID_BY_CS } from '../engine/people'
@@ -194,14 +194,31 @@ function commitPeople(type: string, fn: () => void): CommitResult {
   const cmd: Command = { type, scope: peopleScope(), apply: (txn) => { txn.enlist(peopleStore); fn() } }
   return commit(cmd)
 }
+function commitPeopleProjectionCmd(type: string, fn: () => void): CommitResult {
+  const cmd: Command = { type, scope: peopleScope(), apply: (txn) => { txn.enlist(peopleStore); fn() } }
+  return commitProjection(cmd)
+}
+const advancePeople = () => { rawPersistPeople(); PEOPLE_BASELINE = JSON.stringify(PEOPLE) }
 
-/* the wrapped persistPeople the people writers (QualsPage, Leave War sync) call
-   instead of the raw one: a durable roster write, routed through a command. When
-   already inside a command (a rollback, or a future people child) it just does
-   the raw persist + baseline advance, so nothing nests. */
+/* [CMDL-FINISH] C10 — a durable roster write, ALWAYS through a command (never the
+   old raw branch). A raw persist while a command is in flight changes PEOPLE
+   WITHOUT enlisting peopleStore, and now that peopleStore is a guarded store the
+   whole-world guard rolls that commit back. Routed: nested in a reducer it
+   child-joins the parent; at phase 8 it enqueues; at idle it runs immediately. */
 export function persistPeople(): void {
-  if (isCommitting()) { rawPersistPeople(); PEOPLE_BASELINE = JSON.stringify(PEOPLE); return }
-  commitPeople(PEOPLE_TYPES.edit, () => { rawPersistPeople(); PEOPLE_BASELINE = JSON.stringify(PEOPLE) })
+  commitPeople(PEOPLE_TYPES.edit, advancePeople)
+}
+/* the RECONCILER (auto-archive) people write — a causally-chained PROJECTION, not
+   a stray `user` envelope (C10): raised at phase 8 by a reconcile it enqueues with
+   the triggering command's seq as its cause. */
+export function persistPeopleProjection(): void {
+  commitPeopleProjectionCmd(PEOPLE_TYPES.edit, advancePeople)
+}
+/* wrap a user roster action (its mutations + the persist) in ONE command so a
+   cross-seam gesture is a SINGLE envelope — restoreArchivedPerson's setPostOut
+   (LW, child-joins) + archived flip + persist (C10). */
+export function commitPeopleEdit(fn: () => void): void {
+  commitPeople(PEOPLE_TYPES.edit, () => { fn(); advancePeople() })
 }
 
 /* ---- one-time registration (called from initStore, after the scheduler) --- */

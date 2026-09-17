@@ -30,7 +30,7 @@
 */
 import type { EnlistableStore, RecordEntry, Scope, CommitResult, Command } from '../command'
 import {
-  commit, definePermission, anyone, registerRecord, registerGuardedStore,
+  commit, commitProjection, definePermission, anyone, registerRecord, registerGuardedStore,
   registerEffectContext, installBaselineInvariants, cmdDeferEffect, CmdRefused,
 } from '../command'
 import { DAYS } from '../engine/data'
@@ -260,6 +260,17 @@ export function commitSchedVoid(type: string, fn: () => void): CommitResult {
 }
 export function commitInputs<T>(type: string, fn: () => T): T {
   return commitSched(type, inputsScope(), fn).value
+}
+/* [CMDL-FINISH] §2.2 — the PROJECTION sibling of commitInputs: the LW-originated
+   reconciler (runOutbound) mints/retracts Raptor inputs as a causally-chained
+   projection, not a user edit. Raised at phase 8 (woken by the LW edit's deferred
+   notify) it ENQUEUEs with the edit's seq as its cause; raised at idle (inside
+   lwSyncTurn) it runs as a top-level projection. Same enlist + applyEnd body. */
+export function commitInputsProjection<T>(type: string, fn: () => T): T {
+  let value!: T
+  const cmd: Command = { type, scope: inputsScope(), apply: (txn) => { txn.enlist(schedStore); value = fn(); applyEnd() } }
+  commitProjection(cmd)
+  return value
 }
 export function commitSchedValue<T>(type: string, fn: () => T): T {
   return commitSched(type, schedScope(), fn).value
