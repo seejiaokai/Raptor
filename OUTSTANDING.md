@@ -38,8 +38,17 @@ tricky design call → **Fable 5.1, high**; mechanical / low-risk → a cheaper 
 providers) reframed much of the backlog as ONE ordered stack (stable ids → one write/command
 layer → global undo → one-Absence-record → storage door/DB → remove quarantine). Owner's rule:
 **fix the architecture first, then individual bugs.** `[GLOBAL-UNDO]`, `[INP-CSID]`, `[TRK-CSID]`,
-`[DB-STEP]` are STEPS of it. The immediate next build is **stable ids (step 1)** — cheap,
-independent. STOP: interim two-system undo patches + further quarantine rounds.
+`[CMDL-FINISH]`, `[DB-STEP]` are STEPS of it. STOP: interim two-system undo patches + further
+quarantine rounds.
+
+**STACK PROGRESS (updated 17 Sep 26):** step 1 (stable ids) DONE; step 1b quick wins DONE;
+**step 2 (the one command/commit layer) + follow-up #1 (routing every scheduler write through
+it) DONE + LIVE (PR #409/#410).** **NEXT = `[CMDL-FINISH]`** — the 17 Sep design-and-red-team of
+step 3 (global undo) discovered step 2 is genuinely finished only for the SCHEDULER; the causal
+join / projection origins / one-envelope-per-gesture / a per-record write seam were deferred or
+never built for **Leave War and Tracker**. Owner (17 Sep 26): finish the command layer for those
+two as its **own gated step FIRST**, then build global undo. Global undo is now DESIGNED (Rev 1)
+and both-provider red-teamed (REVISE, converged); its build is gated behind `[CMDL-FINISH]`.
 
 Below is the older item ordering (kept for the non-stack items); land what's **cheap, done, or
 in-flight and risk-reducing** first.
@@ -78,8 +87,14 @@ in-flight and risk-reducing** first.
    schedule personal inputs); independent, medium, not urgent.
 6. **[TRK-ATTEMPTS]** — small new feature, low urgency.
 7. **[RECALL]** — future feature (fresh recall from archive); design when reached.
+7a. **[CMDL-FINISH] — ARCH-STACK step 2 completion (owner, 17 Sep 26) — the next ARCH-STACK
+   build.** Finish the one command layer for **Leave War + Tracker** (causal both-side envelope
+   via projection origins + `causedBy`; per-record write seam; one-envelope-per-Tracker-gesture;
+   off-week/stash capture or keep the refusal; re-key `sched.als` by id). Design-first, both-provider
+   red-team, then build. **Gates [GLOBAL-UNDO].**
 8. **[GLOBAL-UNDO]** — the one-global-undo re-architecture; a step **before** [DB-STEP]
    (must land before going live). Absorbs [XWEEK-UNDO] and the whole delete/undo bug family.
+   **DESIGNED (Rev 1) + red-teamed 17 Sep 26; build GATED behind [CMDL-FINISH].**
 9. **[DB-STEP]** / **[XFER]** — the future database milestone and multi-squadron
    transfer; **[TRK-DISK]** (Decision A) is fixed inside [DB-STEP].
 
@@ -108,6 +123,11 @@ One line each, no jargon:
   member (not created on the Leave War); the "clear old data" button only clears clutter and
   never touches leave/balances; a warning on the Quals ✕; a doc fix. (The bigger delete/undo
   fixes moved to [GLOBAL-UNDO].) Low urgency — we're not live yet.
+- **[CMDL-FINISH] — Finish the shared foundation for Leave War + Tracker (next architecture step).**
+  The "command layer" (the app's one proper doorway for changes) was finished for the main schedule
+  but only half-done for Leave War and the Tracker — some of it was quietly left for later. Global
+  undo can't be built safely until it's finished. Found by red-teaming the undo design on paper
+  before building. This is the next build; global undo comes right after.
 - **[GLOBAL-UNDO] — One undo for the whole app, before the database step.** Today each
   section has its own separate undo, and that's the root of the weird delete/undo bugs. One
   shared undo (per login session, never touching another user) removes that whole class of
@@ -342,7 +362,47 @@ having two separate undo systems over shared data — remove the root, don't pat
   gates, no merge without "merge live".
 - **Context:** the spec/record above (findings, dispositions).
 
-### [GLOBAL-UNDO] One global per-session undo — a step BEFORE the database
+### [CMDL-FINISH] Finish the command layer for Leave War + Tracker — ARCH-STACK step 2 completion — NEXT (owner, 17 Sep 26)
+The 17 Sep design + dual red-team (Codex + Fable, both REVISE, converged) of `[GLOBAL-UNDO]`
+found that ARCH-STACK step 2 is genuinely finished only for the **scheduler**. Building global
+undo requires the command stream to carry the FULL ripple of one user action as one causal unit,
+and to have a real per-record write-back seam — neither exists yet for Leave War or Tracker.
+Owner decision (17 Sep 26): do this as its **own gated step FIRST**, then build global undo.
+- **What to build (concrete, from the red-team fix specs — see the review log below):**
+  - **The causal both-side envelope (F1/GU-001) — the load-bearing item.** Route the Leave War
+    sync reconcilers as `origin:'projection'` (`commitInputsAs`/`commitSchedAs`/`cmdCommitAs`);
+    route LW `persist()`'s locked/committing branch through a projection commit so a causal write
+    raised inside a reducer JOINS its envelope and a reconciler write raised from a notify becomes
+    a `projection` with `causedBy`; fix `causalSeq` so phase-8 subscriber commits chain `causedBy`.
+  - **Per-record write seam (F8/GU-007):** add `write(entry)` to `EnlistableStore` per store (rebuild
+    live state + derived indexes + baselines, then persist+notify); a scoped per-commit conflict
+    checker reading `expectedRevs`.
+  - **One Tracker gesture = one envelope (GU-004):** group each gesture's synchronous model changes
+    (`popGrade` mark + Last-Flown; add/delete/import) into one transaction before async persistence.
+  - **Off-week capture (GU-003/F6):** register the weekstash as an `EnlistableStore`, OR keep the
+    current off-week edit refusal until it exists (don't claim finding I solved).
+  - **Re-key `sched.als/<id>` by id (F5):** a Step-1 stable-id leak (array-index keys) surfaced here.
+  - **Tracker unsaved structural edits (GU-005):** scope a stream-visible undoable draft so the
+    structural history can eventually retire (may extend into [GLOBAL-UNDO]).
+- **Process:** HEAVY, design-first → cross-provider red-team (both) → Opus build → cross-provider
+  code inspection → gates → hold for "merge live". Note the earlier queued "follow-up #2 latch
+  persist with histPush" folds in here (same command-layer-completion territory).
+- **Model:** design + build on Opus 4.8 (high); red-team + code-inspect on Codex + Fable.
+- **Context (READ FIRST):** the review log `raptor-port/docs/superpowers/specs/2026-09-17-arch-stack-3-global-undo-review-log.md`
+  (all 9+10 findings with exact file:line + step-by-step fix specs) and the Step-2 design
+  `2026-09-16-arch-stack-2-command-layer-design.md`. Global-undo design (gated behind this):
+  `2026-09-17-arch-stack-3-global-undo-design.md` §12.
+
+### [GLOBAL-UNDO] One global per-session undo — DESIGNED (Rev 1) + red-teamed; build GATED behind [CMDL-FINISH]
+**DESIGN STATUS (17 Sep 26):** first design written and both-provider red-teamed (Codex + Fable,
+both REVISE, converged). Design + §12 reshaped plan: `raptor-port/docs/superpowers/specs/2026-09-17-arch-stack-3-global-undo-design.md`;
+findings + fix specs: `…-2026-09-17-arch-stack-3-global-undo-review-log.md`. Rev 2 is deliberately
+deferred until `[CMDL-FINISH]` lands (the foundation build re-bases the exact code undo sits on).
+The durable undo-engine corrections to fold into Rev 2 are captured in the design's §12-B
+(record-derived reversal authorization; closure-idempotence as the guarantee + the finding-A
+forward fix; live publish-boundary resolution; dormant-stacks-must-be-UNREACHABLE + single
+dispatcher; cross-week `acc` handling).
+
 **OWNER DECISION 17 Sep 26 — what an on-the-record undo IS. SUPERSEDES the 16 Sep wording.**
 The boundary was settled first: undo is silent while the shared database has NOT registered
 the publish, and goes on the record once it HAS (an export is NOT a boundary event). The
