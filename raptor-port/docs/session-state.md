@@ -1,4 +1,20 @@
-# Session handoff — [ARCH-STACK] f/u #1 scheduler routing BUILT + gated + live-driven (Rev 3, NOT merged); P5 code inspection running
+# Session handoff — [ARCH-STACK] Step 2 + follow-up #1 MERGED LIVE (PR #409, 17 Sep 26)
+
+## MERGED LIVE (owner said "merge live", 17 Sep 26)
+
+**PR #409 merged to `main` (merge commit `6f37703`) and deployed to
+https://seejiaokai.github.io/Raptor/.** All five gates re-passed on main (build, geometry ×3,
+unit ×3, tracker smoke) and the Pages deploy succeeded. VERIFIED on the real deployed page: the app
+loads clean (no console/HTTP errors), the new command-layer bundle is live (the probe-bridge stream
+readers are present), and a real inline text edit on the live site recorded exactly one `sched.text`
+envelope with the baseline clean. This shipped the WHOLE accumulated branch in one go (owner's plan):
+the ARCH-STACK Step 2 command-layer backbone + follow-up #1 scheduler routing + [TRK-SMOKE] hardening
++ [LW-OPEN] + the disclosure ruling + the plain-language rules + the doc-correctness sweep + the two
+pre-existing e2e test fixes. **Nothing is in flight; the branch is synced with main.**
+
+---
+
+## (historical — this is what got shipped) f/u #1 scheduler routing: BUILT + gated + live-driven (Rev 3)
 
 ## THE STATE (owner session, 17 Sep 26 pt.4): follow-up #1 is BUILT — round 2 done, Rev 3, P1–P4 landed as one change, awaiting "merge live"
 
