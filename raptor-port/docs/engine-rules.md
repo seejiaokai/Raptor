@@ -1206,7 +1206,10 @@ could not clear): an ordinary INPUTS row whose OWN standard
 reduced to flags — `{ f?: true, o?: true, a?: true }`, `f`/`o`/`a` for
 Fly/OFT/AMT (`SANS_KEY` in `avail.ts`), absent meaning NOT OFFERED. The one
 window applies to every ticked event. No migration for the old per-event
-`{s,e}` shape: inputs are session-only and the seed carries zero SANS
+`{s,e}` shape — **CORRECTED 17 Sep 26:** INPUTS are NOT session-only (they persist on a
+built site, `inputs/all`; CLAUDE.md §Architecture rules "WHAT ACTUALLY PERSISTS"). The
+reason there is no migration is the owner's dev-phase rule (pre-promulgation demo data —
+reset, don't migrate; `storage/reset.ts` SCHEMA_VERSION), and the seed carries zero SANS
 records. `sansAvailOn(id,dt)` is the one place that finds the record covering
 a day and returns the WHOLE row; `sansWindow(rec)` reads the window off it
 (`allday`→[0,1439], `am`→[0,720], `pm`→[721,1439] — the same halves
@@ -1319,7 +1322,9 @@ day: "only SANS can input the availability"), and an empty tick set with
 — set at boot from `SANS_IDS` (`people.ts`) and, since the bug-test fix,
 editable on the Quals page: the `san` column's tick writes `p.san` directly
 (not just the one-way-derived `p.quals.san`, which no gate reads — before the
-fix the tick was a no-op), session-only like every qual tick. **A second
+fix the tick was a no-op). **CORRECTED 17 Sep 26:** a qual tick is NOT session-only — the
+Quals page calls `persistPeople()` on every write, so `PEOPLE` (and `p.san` with it)
+survives a reload on a built site. **A second
 guard, `sansOverlapRefusal(person,date,endDate,except)`, refuses a record whose
 date range overlaps an existing SANS record for the same person** (`except` is
 the row being edited): SANS is one window per record, and two records on one
@@ -1386,8 +1391,9 @@ funnel:
   in `who` like every other ground write, `hhmm(s)`/`hhmm(e)`, blank for
   all-day). Since 15 Aug 26 it marks through `markStructuralAdd` — not the
   bare `trackStructuralAdd`+`noteChange` pair the promotion used before —
-  so it is pending, reaches the next AL, AND wears the same ~6s blue box
-  every other fresh board row gets (owner audit: every other new row got
+  so it is pending, wears the same ~6s blue box
+  every other fresh board row gets, AND — because the landed row is a real change
+  `dayDelta` can see — reaches the next AL (owner audit: every other new row got
   one, an accepted input's did not; `docs/ui-contracts.md` §Selection
   highlight). The key is the row's first FIELD, `gr:di.ri.prog` — matching
   what `board.ts`'s own "+ Item" mints, and the address `paintFreshAdds` can
@@ -1547,8 +1553,11 @@ silent new-wins default, documented.
 **The mandatory document.** `needsDoc(t)` (= downchit or upchit, ONE body in
 `engine/inputs.ts`) decides both the upload control's visibility and the
 refusal: a NEW medical input (or a row retyped INTO the group) does not go in
-without a stored document (`state/docs.ts` — session-only blobs, id-only on
-the record, append-only so undo finds its paperwork). Rows that were already
+without a stored document (`state/docs.ts` — id-only on the record, append-only so undo
+finds its paperwork. **CORRECTED 17 Sep 26:** the blobs are NOT session-only — since
+8 Sep 26 an in-memory cache sits over a per-browser IndexedDB drawer
+(`storage/docstore.ts`), so a reload finds the file still there; memory-only remains the
+dev/test path). Rows that were already
 medical keep whatever they have — pre-feature records are not bricked.
 Everyone may VIEW any document; edit stays own-puck/admin at the write path.
 
@@ -1919,9 +1928,12 @@ the address it just vacated; a move's row still exists and its position is
 what changed, so it marks its own new address — `ff:di.gi.to.cs`,
 `dr:di.wi.to.role`, `gr:di.to.prog`, `ap:di.to.prog`, `sr:di.kind.to.label`,
 `dn:di.to`, `fr:di.gi.li.to`. That is the same idiom every add already
-uses, it is what puts the day into the next AL (mechanically, what "a move
-counts as an amendment" has to mean), and it tints the row that actually
-moved. Re-marking a row that already carried a pending mark is idempotent.
+uses and it tints the row that actually moved. **CORRECTED 17 Sep 26:** the mark is NOT
+what puts the day into the next AL — since the amendment core, `dayHasChanges` reads
+straight through the canonical `dayDelta`, which is "the one authority for eligibility, the
+panel counts and the stored diff". The mark drives the pending TINT and the edit log. So a
+move is an amendment because the delta sees it moved, and a mark on a change the delta
+cannot see puts nothing in the AL. Re-marking a row that already carried a pending mark is idempotent.
 
 **Ground Programme's manual flag.** Ground renders in start-time order
 (`groundOrder`, `engine/order.ts`) on both the week and the board, so a move
@@ -2056,7 +2068,8 @@ a row on screen while its amendment stayed addressed at the OLD index —
 silently re-labelling an old amendment onto whatever sortie now sits
 there. Like a move, a sorter marks the row now sitting at index 0 of the
 section it touched (the same "mark the NEW address" idiom, not the old
-one) — that single mark is what puts the day into the next AL.
+one). **CORRECTED 17 Sep 26:** that mark tints the row; it is `dayDelta` that decides
+whether the day reaches the next AL (see the move rule above).
 
 **Ground's Auto sort (`sortGround`) also owns the day's manual flag, and
 reports honestly when the flag is the only thing that moved.** Every
@@ -2230,8 +2243,9 @@ a second time**, so it still freezes the Original the moment it is first
 issued. Pinned in `publish.test.ts`.
 
 **The current version.** `SCHED.cur = {di: 'orig'|n}` — which version each
-day is showing. Stamped only by `alIssue` (cur = n for covered days) and
-`restoreDayVersion` (cur = the restored version). Read through
+day is showing. **CORRECTED 17 Sep 26:** stamped only by `alIssue` (cur = n for covered
+days) — and by `setDayApproved`, which stamps the Original on first publish. The old second
+stamper, `restoreDayVersion`, NO LONGER EXISTS (see the correction below). Read through
 `dayCurVer(di)`: the stamp counts only while its snapshot still exists,
 else it falls back to the newest **issue** with a snap for the day (array
 order — `publishAL` can issue a lower number after a higher was freed),
@@ -2241,20 +2255,30 @@ The day-head shows ONE chip from it (grey ORIG when rolled back to the
 Original while ALs exist; no chip on a published day no AL ever touched);
 the ⓘ panel keeps the full historical AL list.
 
-`restoreDayVersion(di, ver)` (engine/restore.ts — its own module because
-slots.ts already imports publish.ts) is a **ROLLBACK**, owner decision
-Aug 26: the version becomes the live document immediately. It replaces
-`DAYS[di]` with a clone of the snapshot (live `today` flag kept), wipes
-the day's `changes` slice and installs the snapshot's own (`snap.c`) so
-the day wears exactly its issued marks, **discards** the day's pending
-edits, and stamps `SCHED.cur[di]`. Nothing pends; no sign-off is needed
-or spent; `dayOK`/`orig`/`als` are untouched, so later ALs keep their
-dropdown entries and `nextAL()` keeps counting up. Returns false for a
-missing version, else the number of pending edits discarded (0 is the
-common case, and the toast reports the count). It pushes NO history and
-calls NO reflow — the UI caller's `afterSchedMutate()` is the single undo
-step. New edits after a rollback are ordinary pending and publish as
-`nextAL()`. Corner case: unpublishing the AL a day was rolled back TO
+> **DEAD — corrected 17 Sep 26. `restoreDayVersion` was REMOVED at Phase 2** and the
+> paragraph that described it is quoted dead below rather than deleted, so nobody
+> re-derives it. `engine/restore.ts` now says so in its own header: "the only supported way
+> to pull an old version forward is `loadVersionToWorkingCopy` → publish the next AL".
+>
+> ~~`restoreDayVersion(di, ver)` is a ROLLBACK, owner decision Aug 26: the version becomes
+> the live document immediately … and stamps `SCHED.cur[di]`.~~
+>
+> **What actually happens now** (`engine/drafts.ts:loadVersionToWorkingCopy`, owner,
+> 16 Aug 26 — "the view only schedule should still see AL1, it shouldn't go to Original
+> without me publishing the working copy"). "Load onto working copy" installs the version's
+> content as the live WORKING day and rebases the day's pending set as the true diff against
+> the STILL-ISSUED document, exactly as `draftSelect` does on a published day. The critical
+> difference from the old rollback: it deliberately does **NOT** touch `SCHED.cur`. The
+> issued version the view page shows is unchanged, **nothing reaches viewers until a new AL
+> is published**, and publishing the loaded-then-edited copy becomes that next AL. It
+> refuses (returns false) an unknown version and a quarantined week, and — unchanged from
+> the old body — pushes NO history and calls NO reflow: the UI caller's
+> `afterSchedMutate()` is the single undo step. The count the confirm dialog shows is
+> `dayDiscardCount(di)`, read on the live day BEFORE the swap.
+>
+> The name `restoreDayVersion` still appears further down this file as the NAME OF A SHAPE
+> (the direct-write / reinstall-the-marks idiom that `applyDayTpl` and `draftSelect` share).
+> That usage is fine; treat it as a pattern name, never as a function you can call. Corner case: unpublishing the AL a day was rolled back TO
 orphans its snapshot — `dayCurVer` falls back and that AL's keys on the
 day return to pending (self-describing on screen: fallback chip plus a
 pending count, one undo away). Unpublishing a LATER AL does not re-pend a
@@ -2307,8 +2331,9 @@ for. A template apply has no such rebase, which is why this guard stays; if
 it is ever wanted on published days, reuse the rebase rather than just
 dropping the guard.
 
-**Applying mirrors `restoreDayVersion`'s direct-write shape** (§Version
-snapshots / restore above, `engine/restore.ts:90-110`): build the new day
+**Applying mirrors the `restoreDayVersion` direct-write SHAPE** (§Version snapshots /
+restore above — the function itself is gone; the live body carrying this shape is
+`engine/drafts.ts:loadVersionToWorkingCopy`): build the new day
 object, write `DAYS[di]` straight (keeping the live `dow`/`dt`/`today`/
 `wc`), then retire the day's WHOLE mark state — `SCHED.pending`,
 `SCHED.added` AND `SCHED.changes` — the same three slices
@@ -2452,7 +2477,10 @@ undone away) AND when its draft IS now the selected one — an undo can
 restore that selection under an open preview, which would otherwise freeze
 a stale stowed blob while the live day already is that draft.
 
-`SCHED.drafts`/`SCHED.curDraft` are session-only, exactly like the AL list.
+**CORRECTED 17 Sep 26:** `SCHED.drafts`/`SCHED.curDraft` are NOT session-only — and
+neither is the AL list. Both ride `schedFields()`, which `weekStashSnap()` serialises into
+the week's `weeks/<wk>` record, so on a built site a reload brings back the parked plans,
+the Originals and every AL. (The earlier sentence here said the opposite.)
 
 ## Auth / roles
 
@@ -2629,10 +2657,11 @@ reason the AL records do — a duplicate or a draft switch is one ordinary
 undo step, and undoing past it brings the stowed blobs back too. Undo is
 refused while focus is in an editable field.
 
-The snapshot also carries the Inputs-calendar's two session-only planning
-stores (`state/plan.ts`) — `PLANPUCKS` (`pp`) and `DAYRMK` (`dm`), the
-scheduler's month-calendar to-dos and day remarks. Neither persists to
-storage, but both ride undo/redo like any other edit; an older snapshot
+The snapshot also carries the Inputs-calendar's two planning stores
+(`state/plan.ts`) — `PLANPUCKS` (`pp`) and `DAYRMK` (`dm`), the scheduler's
+month-calendar to-dos and day remarks. **CORRECTED 17 Sep 26:** both DO persist
+(`persistAll` writes them as the `plan/all` record); the old "neither persists to storage"
+was written before the 8 Sep 26 storage work. They also ride undo/redo like any other edit; an older snapshot
 taken before this feature landed carries neither field and restores both to
 empty rather than throwing.
 
@@ -2702,7 +2731,7 @@ cannot diff, so each says its own toast to the log through `logAction`:
 |---|---|---|
 | Accepting an input to the ground programme (and undoing it) | `interactions.ts`, the `[data-acc]` branch | the row did not exist a moment ago, so there is no "before" |
 | Cancelling with a reason, and restoring | `cxCommit`, `board.ts` | `cx`/`cxr` are not addressed by any slot key |
-| Rolling a day back to a published version | `interactions.ts`, the `[data-restore]` branch | `restoreDayVersion` swaps the whole day object — not one key passes through the funnel |
+| Loading a published version onto the working copy | `interactions.ts`, the `[data-restore]` branch | `engine/drafts.ts:loadVersionToWorkingCopy` swaps the whole day object — not one key passes through the funnel. Corrected 17 Sep 26: this is no longer a rollback and does NOT move `SCHED.cur`; the issued document viewers see is unchanged until the next AL is published |
 
 Accepting through `inputedit.tsx`'s relink (an accepted input edited onto
 another person or date) is deliberately NOT logged: it is one user action that

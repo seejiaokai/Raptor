@@ -1,4 +1,56 @@
-# [ARCH-STACK] Step 2 — the one write/command layer — DESIGN (Rev 5, 16 Sep 26 — BUILD-READY)
+# [ARCH-STACK] Step 2 — the one write/command layer — DESIGN (Rev 5, 16 Sep 26 — BUILT; Rev 5.1 corrections 17 Sep 26)
+
+> ## Rev 5.1 — CORRECTNESS SWEEP (17 Sep 26), checked against the CODE, not against other docs
+>
+> Rev 5 was written on 16 Sep, BEFORE the 17 Sep discovery that several always-loaded documents
+> were wrong about this very machinery, and before Step 2 was actually built. Every factual claim
+> below was re-checked by opening the file it describes. **The design decisions are unchanged** —
+> what changed is a set of wrong facts and four places where the BUILD deliberately diverged from
+> the design. Method (learned 17 Sep): a document agreeing with another document is evidence of
+> nothing; only the code counts.
+>
+> **Facts that were WRONG in Rev 5 and are fixed in place below:**
+> 1. §2.1 said `markEdit` fires a **toast**. It does not. `engine/publish.ts:markEdit` runs
+>    `logEdit` → `renderStatus()` → `histPush()` and nothing else; every toast at a board site is
+>    the CALLER's. This matters: §5.1's "latch the mid-reducer notify/toast/logEdit" was latching
+>    an effect that is not there.
+> 2. §2.1 cited `store.ts:131-155` for `runInputWrite`. The file is `state/store.ts` and the body
+>    is `runInputWrite` (line numbers rot — the function name is the durable reference).
+> 3. §2.1a cited `publish.ts:180-201` for `setDayApproved`. It is `engine/publish.ts:setDayApproved`.
+> 4. §2.1's "≥11 writers reach `HOOKS.histPush` without `afterSchedMutate`" is now stated exactly:
+>    **12 production sites**, listed in §2.1.
+> 5. §2.3's "~22 keys" for the Leave War `persist()` is **21**, listed in §2.3.
+> 6. §3.1 named the day record `days/<wk>:<date>`. The built id is `<wk>#<di>` — week key, day
+>    INDEX. Likewise `sched.als` is keyed `<wk>:<n>` (the array index), not `<wk>:<verId>`.
+> 7. §3.1's Leave War row omitted the **`lw.war`** record (the per-war period: id/name/stage/
+>    bidFrom/bidTo/days). Without it a stage advance, a rename, a bidding-window change or a
+>    brand-new cell-less war produces an empty diff — found during the build (Fable-2) and added.
+> 8. §3.1's `lw.config` field list omitted `figureHidden`, `requirements` and `eventRows`.
+> 9. §3.1's Tracker row omitted **`trk.courses`** (11 registered collections, not 10).
+>
+> **Where the BUILD knowingly diverges from this design — believe the code, not the prose:**
+> - **Toast and edit-log latching were NOT wired** (`state/sched-commit.ts` header states why:
+>   they are engine-layer, append-only and order-insensitive, and no scheduler write rolls back in
+>   live flow at Step 2). The MODEL and the repaint/history effects ARE latched. Full effect
+>   latching lands with Step 3. §3.2 phase 1 and §5.1 describe the INTENT; the build is narrower.
+> - **Permissions are permissive (`anyone`) everywhere at Step 2**, deliberately — the real edit
+>   gate (`canEditSched`) is untouched and still authoritative. §3.5 describes the mechanism, which
+>   is in place and tested; it is not yet tightened. Unchanged intent, narrower build.
+> - **Leave War's store is deliberately NOT a guarded store** (a causal Raptor→LW write is locked
+>   and legitimately changes it outside any LW command, which the whole-world guard would wrongly
+>   flag). §3.2 phase 2's guard covers the scheduler and people/settings, not LW.
+> - **Undo/redo, the sync reconcilers and boot/seed writes all run RAW**, as §0 says, and the LW
+>   join for a causal Raptor→LW write is **deferred**, not built (`store.ts` LW header).
+>
+> **Persistence — the 17 Sep ledger applies here too.** Nothing in this spec claimed session-only
+> behaviour, but the neighbouring code did and was wrong: `SCHED.orig` and the AL list DO survive a
+> reload on a built site (they ride `schedFields()` → `weekStashSnap()` → the `weeks/<wk>` record),
+> as do `SCHED.drafts`/`curDraft`, `WARNOFF`, INPUTS and the planning layer. The authority is
+> CLAUDE.md §Architecture rules "WHAT ACTUALLY PERSISTS". §3.1's treatment of `sched.orig`/
+> `sched.als` as durable records is therefore correct as written.
+>
+> **Still open, unchanged:** §9's three questions. **Not swept:** §4/§6/§7/§8 are forward-looking
+> (Steps 3/5) and describe nothing that exists yet, so there was nothing to check them against.
 
 **Status:** Rev 5 — after FOUR cross-provider red-team rounds (Codex GPT-6 Astra + Fable 5.1, all
 converged; findings 11→7→7→5 / 13→9→7→7; both affirm the **additive** strategy is sound). Owner
@@ -115,20 +167,32 @@ persistence and undo behave identically to today** (additive — no behaviour ch
 
 ---
 
-## 2. Current state (first-hand; abbreviated — full map in the review log / earlier revs)
-- **2.1 Scheduler**: funnel → marks → `afterSchedMutate`; `runInputWrite` (`store.ts:131-155`)
-  already snapshots→applies→post-checks→rolls back — the pattern to generalize. ≥11 writers reach
-  `HOOKS.histPush` without `afterSchedMutate`. `markEdit` fires `renderStatus`(=`notify`) + `toast`
-  + `logEdit` **inside** the reducer. `actor`=display label; `SESSION.role`∈`admin|main`;
-  person-identity is the separate **ME** binding, not `SESSION`.
-- **2.1a Publish is irreversible in code** (`setDayApproved`, `publish.ts:180-201`; reopen removed);
+## 2. Current state (as of 16 Sep, pre-build; re-verified against the code 17 Sep — see Rev 5.1)
+- **2.1 Scheduler**: funnel → marks → `afterSchedMutate`; `state/store.ts:runInputWrite` already
+  snapshots→applies→post-checks→rolls back — the pattern to generalize. **12 production sites reach
+  `HOOKS.histPush` without `afterSchedMutate`** (17 Sep count): `state/store.ts` ×3 (the
+  `runInputWrite` epilogue, `moveSection`, `moveSectionTo`), `engine/publish.ts` ×4 (`markEdit`'s
+  own epilogue, `setDayApproved`, `publishALDay`, `discardPending`), `ui/interactions.ts` ×2
+  (`signClear`, the warning-mute toggle), `ui/DraftsModal.tsx` ×2 (draft rename, draft delete),
+  `ui/Shell.tsx` ×1 (`setSign`). `markEdit` fires `logEdit` + `renderStatus`(=`notify`) +
+  `histPush` **inside** the reducer — **it does NOT toast** (Rev 5.1 fix 1); the toast at a board
+  site belongs to the caller. `actor`=display label (`HOOKS.whoami` → the ACCOUNTS label, a
+  placeholder until real accounts); `SESSION.role`∈`admin|main`; person-identity is the separate
+  **ME** binding, not `SESSION`.
+- **2.1a Publish is irreversible in code** (`engine/publish.ts:setDayApproved`; reopen removed);
   first approval writes the frozen Original `orig[di]`; live `sign[di]`/`signBind[di]` are mutable
   (only the copy in `als[n]` is append-only).
-- **2.2** PEOPLE + VCONF + many settings writers bypass the funnel.
-- **2.3 Leave War**: funnel → `persist()` (~22 keys) → notify; per-war snapshot undo; sync
-  reconcilers under `locked()` tag `{source:'raptor'}`; **`retractLwRow` runs inside the
-  `writeInputsBatch` reducer** (verified — the in-transaction-child claim matches the code); LW
-  ledger/balances/oilpolicy/postouts/config are **separate durable keys** outside `wars`.
+  **NB (17 Sep):** eligibility, the panel counts and the stored diff all derive from the canonical
+  `dayDelta`, **never** from the accumulated `SCHED.pending` marks (`dayHasChanges` reads straight
+  through `dayDelta`). A funnel-bypassing write therefore still reaches the next AL — unmarked and
+  unexplained — which is worse than being absent, not better.
+- **2.2** PEOPLE + VCONF + many settings writers bypass the funnel. *(Routed in the build, phase 3
+  — `state/people-settings-commit.ts`.)*
+- **2.3 Leave War**: funnel → `persist()` (**21 keys**, `state/store.ts:rawPersist`) → notify;
+  per-war snapshot undo; sync reconcilers under `locked()` tag `{source:'raptor'}`;
+  **`retractLwRow` runs inside the `writeInputsBatch` reducer** (re-verified 17 Sep —
+  `ui/inputedit.tsx:commitInputEdit` opens `writeInputsBatch` and calls `retractLwRow` inside it);
+  LW ledger/balances/oilpolicy/postouts/config are **separate durable keys** outside `wars`.
 - **2.4 Tracker**: no funnel; async `sSet`; courses+syllabuses+students carry stable ids; `renCourse`
   label-only; `setFont` auto-persists; `switchCourse` confirms; undo exists (per course/syl, mark
   entries per student) and its `applyHist`/`applyMarkHist` DO save; writers chain awaits.
@@ -165,14 +229,14 @@ an omitted field (e.g. `SCHED.changes`). The table is illustrative; the enumerat
 
 | module | logical records | owning blob |
 |---|---|---|
-| scheduler | `days/<wk>:<date>` (day incl. rows+secOrder); `sched.book/<wk>` (mutable book: **`changes`**/pending/added/al/dayOK/cur/drafts/curDraft/ridV/amV **and** live `sign`/`signBind`); `sched.mutes/<wk>` (WARNOFF) | `weeks/<wk>` |
-| scheduler-issued (append-only-INTENDED; enforcement Step 3, §3.4) | `sched.orig/<wk>:<di>`; `sched.als/<wk>:<verId>` (incl. its frozen sign copy) | `weeks/<wk>` |
+| scheduler | `days/<wk>#<di>` (day incl. rows+secOrder; keyed by week key + day INDEX — Rev 5.1 fix 6); `sched.book/<wk>` (mutable book: **`changes`**/pending/added/al/dayOK/cur/drafts/curDraft/ridV/amV **and** live `sign`/`signBind`); `sched.mutes/<wk>` (WARNOFF) | `weeks/<wk>` |
+| scheduler-issued (append-only-INTENDED; enforcement Step 3, §3.4) | `sched.orig/<wk>:<di>`; `sched.als/<wk>:<n>` (the AL array INDEX, not the verId — Rev 5.1 fix 6; incl. its frozen sign copy) | `weeks/<wk>` |
 | inputs | `inputs/<iid>` | `inputs/all` |
 | plan | `plan/all` (PLANPUCKS+DAYRMK) | `plan/all` |
 | people | `people/<personId>` | `people/all` |
 | settings | `settings/<key>` — **every** durable settings writer (rules, day/duty/wave templates, stores, cxreasons, qualcols, lookahead, defaults) | `settings/<key>` |
-| leave war | **`lw.cell/<warId>:<personId>:<date>`** + **`lw.bid/<warId>:<personId>:<date>`** (per-cell / per-bid, so the revision map is cell-granular — Codex R4-005); plus `lw.ledger`/`lw.balances`/`lw.oilpolicy`/`lw.postouts`/`lw.current`/`lw.config` (config = the explicit remaining war-settings key list: eventdefs/figorder/rosterorder/perslabels/manning*/group*/showsans/personedits) | `leavewar/wars` (+ its own keys) |
-| tracker | `trk.marks`/`dates`/`roster`/`layout`/`syls`/`plan`/`pace`/`lulls`/`eventinfo`/`catalogue` + the `kSyl`/`kSylOrder`/`kSylHidden`/`kSylTomb` def+catalogue keys (the `v3:` keys); migration flags + `seedstamp` are seed-exempt | `tracker/<key>` |
+| leave war | **`lw.cell/<warId>:<personId>:<date>`** + **`lw.bid/<warId>:<personId>:<date>`** (per-cell / per-bid, so the revision map is cell-granular — Codex R4-005); **`lw.war/<warId>`** (the war’s own period record — id/name/stage/bidFrom/bidTo/days; without it a stage advance, rename, bidding-window change or a brand-new cell-less war diffs to nothing — Rev 5.1 fix 7); plus `lw.ledger`/`lw.balances`/`lw.oilpolicy`/`lw.postouts`/`lw.current`/`lw.config` (config = eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, **figureHidden**, groupDefs, groupPriority, groupPriorityCustom, groupColors, **requirements**, **eventRows**, showSans, personEdits — Rev 5.1 fix 8) | `leavewar/wars` (+ its own keys) |
+| tracker | `trk.marks`/`dates`/`roster`/`layout`/`syls`/`plan`/`pace`/`lulls`/`eventinfo`/`catalogue`/**`courses`** (11 registered collections — Rev 5.1 fix 9) + the `kSyl`/`kSylOrder`/`kSylHidden`/`kSylTomb` def+catalogue keys (the `v3:` keys); migration flags + `seedstamp` are seed-exempt | `tracker/<key>` |
 
 ### 3.2 The transaction (additive; latch + dynamic-enlistment rollback + join + post-commit queue)
 
@@ -233,7 +297,7 @@ conflict check is exercised only by `MemoryDoor`; real cross-client conflict is 
 
 ### 3.4 Publish boundary + owner decision (RESOLVED — as Rev 3 §3.4, unchanged)
 Frozen issued artefacts are their **own append-only-INTENDED records** (`sched.orig/<wk>:<di>`,
-`sched.als/<wk>:<verId>` incl. its sign copy) — separate from the mutable `sched.book`. **Their
+`sched.als/<wk>:<n>` — the AL array index, incl. its sign copy) — separate from the mutable `sched.book`. **Their
 put-once immutability is ENFORCED at Step 3** (with the undo/boundary cutover), not hard-gated at
 Step 2, because today's silent-undo-before-sent legitimately reverses a just-issued Original via
 `histRestore` (Codex R4-002). Live `sign[di]`/`signBind[di]` stay ordinary mutable records.
@@ -253,7 +317,7 @@ edits ARE undoable** (`user` commands, never amendments).
 ### 3.5 Authorization (actor from SESSION + ME; headless actor)
 `Actor = { id; role:'admin'|'member'|'system'; personId?; session }` — account id + effective role
 from `SESSION` (`SESSION.role` `main`→`member`), **ownership `personId` from the ME/viewer binding**
-(`auth.ts:28-29`), not `SESSION` (R3-006) — ownership-from-ME is **defense-in-depth parity only**
+(`state/auth.ts` — `ME`/`setMe`), not `SESSION` (R3-006) — ownership-from-ME is **defense-in-depth parity only**
 (ME is the user-selectable View-as binding; real identity arrives with Step 5 sign-in), and the
 **system/headless actor's `personId` is undefined** (Fable R4-6). Snapshot the actor at command creation. The
 **system actor** (`session:null`) is used only for `seed`/`projection`/`loadWeek` and — under a test
@@ -292,7 +356,9 @@ held for Save); Save/duplicate/add/import/revert/delete commit their definition 
 
 ## 5. Adoption per module (strangler; parity gate after each)
 - **5.1 Scheduler (first):** route writes through `commit`; derive by per-record deep-equal; **wrap
-  every `HOOKS.histPush` site** (checklist); latch the mid-reducer `notify`/`toast`/`logEdit`. The
+  every `HOOKS.histPush` site** (checklist); latch the mid-reducer `notify`. *(Rev 5.1: `markEdit`
+  raises no toast — the toast is the caller's — and the BUILD deliberately did not latch toast or
+  the edit log at all; see the Rev 5.1 divergence list.)* The
   interim `histPush`/`persistAll`/snapshot stack are **left running** (additive). `origin`
   board/drag=`user`, validate marks=`projection`, loadWeek/undo=`restore`, seed=`seed`.
 - **5.2 PEOPLE + VCONF + full settings inventory:** `people.*` commands; route **every** durable

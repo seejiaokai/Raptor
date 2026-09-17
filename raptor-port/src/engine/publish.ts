@@ -209,7 +209,11 @@ export function setDayApproved(di:any,on:any){
    moment of issue — it reproduces the day "as issued, wearing its marks". An AL
    snapshot lives ON the AL record (rec.snap = {d,c,fil}) and the Original in
    SCHED.orig, so both ride the undo stack with the state they belong to.
-   Nothing here persists past the session — neither does the AL list itself. */
+   CORRECTED 17 Sep 26: the old line here said none of this persists past the
+   session. It does. SCHED.orig and SCHED.als ride schedFields(), which
+   weekStashSnap() serialises into the week's `weeks/<wk>` record, so on a built
+   site the Originals and the whole AL list come back after a reload. Memory-only
+   is the dev/test path (MemoryBackend). See CLAUDE.md, WHAT ACTUALLY PERSISTS. */
 export function daySnap(di:any){di=+di;
   const c:any={}; Object.keys(SCHED.changes).forEach((k:any)=>{if(keyDay(k)===di)c[k]=SCHED.changes[k];});
   return {d:JSON.parse(JSON.stringify(DAYS[di])),c,fil:dayFilingFingerprint(di)};}

@@ -93,7 +93,7 @@ truth for what each type means; the fields below are what a record carries.
 
 | Field | Type | Meaning |
 |---|---|---|
-| `iid` | string | minted `'i' + n`, monotonic; the stable handle (never address by index). At boot the counter is seeded past the highest stored id (`src/state/persist.ts:55`), so a reload never re-mints one |
+| `iid` | string | **CORRECTED 17 Sep 26** — it is NOT `'i' + n` and there is NO counter. Since ARCH-STACK 1A it is the shared OPAQUE id `newId('i')` = `'i'` + a base-36 timestamp + 6 random base-36 chars (`src/engine/newid.ts`), minted by `inpId` on first read and by `mintInpIds` at boot. Opaque precisely so two devices cannot both mint `i5`. The stable handle — never address an input by index. `state/persist.ts` says so in place: "no counter to seed past stored ids" |
 | `person` | string | a PEOPLE id |
 | `date` | string | day, display form (`'Jul 13'`) |
 | `endDate` | string? | last day of a multi-day input |
@@ -164,9 +164,9 @@ seed-walking check never sees them; each with its writer:
 
 | Where | Field | Writer |
 |---|---|---|
-| wave | `standalone`, `kind` (`sc \| avalon \| bb`), `noconf` | `makeStandalone` (`src/engine/waves.ts:43`), the + Wave picker (`src/ui/board.ts:994`), a placed template (`src/engine/wavetpl.ts:239-240`) |
+| wave | `standalone`, `kind` (`sc \| avalon \| bb`), `noconf` | `makeStandalone` (`src/engine/waves.ts`), the + Wave picker (`src/ui/board.ts`), a placed template (`src/engine/wavetpl.ts`) |
 | formation | `shift` | `makeStandalone` (`src/engine/waves.ts:51`), a standby template (`src/engine/wavetpl.ts:225`) |
-| formation | `br` (typed SC in-time) | the board's B box (`src/ui/board.ts:195`) through the `ff:…br` text key (`src/engine/slots.ts:252`) |
+| formation | `br` (typed SC in-time) | the board's B box (`src/ui/board.ts`) through the `ff:…br` text key (`src/engine/slots.ts`) |
 | formation | `area`, `atime` (the typed-over area strip) | `src/ui/textedit.ts:184`, `:194` |
 | seat pair | `spare`, `role` | `saCrewRow` (`src/engine/waves.ts:40`), a standby template (`src/engine/wavetpl.ts:190`), the MAIN/SPARE badge flip |
 | duty block | `sa` (which standalone wave the desk serves), `noconf` | `waveDutyBlock` (`src/engine/waves.ts:96`), `blockFromTpl` (`src/engine/dutytpl.ts:184`) |
@@ -181,11 +181,11 @@ Everything about a week's publication state, keyed by day index 0..6.
 |---|---|---|
 | `al` | number | amendment counter |
 | `pending` | `{ key: 1 }` | edits made since the last publish |
-| `changes` | `{ key: alNumber }` | **issued** keys → the AL number that issued them (`src/engine/publish.ts:359`); a key edited again is deleted from here as it goes pending (`:294`) |
+| `changes` | `{ key: alNumber }` | **issued** keys → the AL number that issued them (written by `src/engine/publish.ts:publishAL`); a key edited again is deleted from here as it goes pending (`publish.ts:markEdit`) |
 | `added` | `{ key: 1 }` | structural adds (a new line/wave/row) |
 | `als` | `[{ n, keys[], sign, days[], n0, adds, structAdds, snap }]` | every published amendment (AL), newest last; `sign` here is the four **callsigns** frozen at issue, `snap` the covered days as issued |
 | `dayOK` | `{ di: 1 }` | which days are **published — approval is per day, not per week** |
-| `sign` | `{ di: { cur, sked, plan, appr } }` | the four sign-off slots per day; each value is a **PEOPLE id** when signed (the picker's options are ids, `src/ui/html.ts:1538-1539`, written by `src/ui/Shell.tsx:169`) and `''` when unsigned |
+| `sign` | `{ di: { cur, sked, plan, appr } }` | the four sign-off slots per day; each value is a **PEOPLE id** when signed (the picker's options are ids, `src/ui/html.ts`, written by `src/engine/publish.ts:setSign` from the Shell's sign-picker handler) and `''` when unsigned |
 | `orig` | `{ di: snapshot }` | the day as first published |
 | `cur` | `{ di: 'orig' \| n }` | which version each day currently shows |
 | `drafts`, `curDraft` | `{ di: [{id,name,d,sign?,signBind?}] }`, `{ di }` | per-day alternate plans and which is live; each blob carries its OWN sign-offs + AM-06 bindings since 15 Sep 26 (item 1a) |
@@ -195,10 +195,10 @@ Synthetic keys ride the same book: `del:<day>.<n>.<kind>` (a deletion),
 
 ### The week record — `weekStashSnap()` / the week stash
 
-Two snapshots share one field list (`schedFields()`, `src/state/history.ts:22`),
+Two snapshots share one field list (`schedFields()`, `src/state/history.ts` — **14 fields**),
 and only one of them is stored.
 
-**The week record** is `weekStashSnap()` (`src/state/store.ts:300-302`) —
+**The week record** is `weekStashSnap()` (`src/state/store.ts:weekStashSnap`) —
 what the stash holds for every visited week and what `raptor:weeks/<week>`
 persists:
 
@@ -212,16 +212,16 @@ persists:
 
 It carries **no inputs and no planning layer** — those are global, and
 their own records (`raptor:inputs/all`, `raptor:plan/all`, written
-separately in `src/state/persist.ts:89-91`).
+separately in `src/state/persist.ts:persistAll`).
 
-**The undo snapshot** is `histSnap()` (`src/state/history.ts:43`): the same
+**The undo snapshot** is `histSnap()` (`src/state/history.ts:histSnap`): the same
 fields plus `i: INPUTS`, `pp: PLANPUCKS`, `dm: DAYRMK`. It is the undo
 stack's unit only and is never stored.
 
 The week stash (`src/engine/weekstash.ts`) keys week records by week-start
 `'dd/mm/yyyy'` with a per-week change counter, and **it persists**: at
 boot every `weeks/*` record is put back into the stash
-(`src/state/persist.ts:80-83`), and every history step writes every stashed
+(`src/state/persist.ts:hydrate`), and every history step writes every stashed
 week plus the loaded one — the loaded one only once it has changed since
 load, so a pristine seed week is never written (`:96-105`). The record id
 is the key with `/` replaced by `-` (`raptor:weeks/13-07-2026`). This is

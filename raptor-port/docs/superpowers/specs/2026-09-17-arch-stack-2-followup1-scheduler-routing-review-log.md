@@ -36,3 +36,38 @@ Approach affirmed; 12 concrete defects, all accepted (2 as documented Step-2 lim
 Rev-2 addressing every ACCEPT, then a round-2 re-review of the changed SHA. Two items need the owner's
 nod: (a) Rev-2 now edits committed Step-2 engine code (`commit.ts` guard) — small + scoped; (b) accept
 SR-003/F5 as a Step-2 limitation vs expand scope to full rollback atomicity now.
+
+## Rev 2 written (17 Sep 26) — every round-1 ACCEPT folded, plus the correctness sweep
+
+The plan is now **Rev 2**. Its change-list table maps each of the 12 findings to the section that
+answers it; the bodies are not repeated here. Two items still need the owner's word before the
+build starts — they are restated in the plan's §9:
+1. may Rev 2 edit committed Step-2 core (`commit.ts guardSnapshot`, plan §3.6)?
+2. accept SR-003 (plan §7) as a documented Step-2 limitation?
+
+**F8 was re-derived independently against the code, not taken on trust.** Confirmed: `state/plan.ts`
+does not own the draft writers (`engine/drafts.ts` + `ui/DraftsModal.tsx` do), there is no "park"
+verb, and the §1 table omitted `state/view.ts:placeArmed`, `ui/drag.ts` (the puck drop) and
+`ui/Modals.tsx:airEdit`. Exact 17 Sep counts now in the plan: **43** `afterSchedMutate()` calls in
+`ui/board.ts`, **7** in `ui/interactions.ts`, 1 each in `ui/rowdrag.ts`, `ui/textedit.ts`,
+`ui/Modals.tsx`, `ui/Shell.tsx`, 2 in `ui/drag.ts`, 2 in `state/view.ts`; the one non-forward caller
+is `probe-bridge.ts`.
+
+**One defect the round-1 reviewers did not find** (plan §6 risk 5): `ui/textedit.ts:txtCommit` runs
+`afterSchedMutate()` inside a **`setTimeout(0)`**, so the inline-text epilogue is separated from its
+own mutation by a macrotask. A command landing in that gap advances the baseline over the text
+change and folds it into ITS envelope under the wrong type; the deferred backstop then finds no diff.
+Nothing is lost from the stream — it is mis-attributed. Documented and accepted at Step 2; a test
+drives the boundary.
+
+**Verified while writing Rev 2** (so the plan cannot name a primitive that does not exist):
+`commit.ts` already carries `phase === 'reducer' && active` for `isInReducer()`; `mintInpIds`,
+`resyncPeopleBaseline` and `setSettingsWriteHook` all exist; `signOf` does lazily insert
+`SCHED.sign[di]`, confirming SR-008 against the code rather than against the review.
+
+**Gates after the sweep** (docs + one corrected code comment): vitest 4865/4865 · parity 728/0 ·
+build green.
+
+### Still to do
+Round 2 re-review of the Rev-2 SHA, both providers, with a host-authored feedback file of these
+dispositions. Then build.
