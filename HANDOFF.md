@@ -50,18 +50,19 @@ verify** — this section holds only the current baseline and the ways the gates
 mislead. Restate a count only from a run you watched — this file's history twice
 recorded a count that was wrong.
 
-**Current main baseline — PR #398 (course ids 1B-i) CI all ten jobs green at
-merge, 13 Sep 26:** `npm test` 4670 across 275 files; `tfin.js` 728/0; build
-clean; `test:e2e` 423 passed / 0 failed (33 skipped by project gate; 2 specs
-fail only on a loaded local Windows box — geometry + lw-phone — and pass in CI);
-`smoke:tracker` 427/0 in CI (its `addStudent` step WAS treated as a
-slow-machine flake; DIAGNOSED + FIXED 17 Sep 26 — see [TRK-SMOKE] in
-OUTSTANDING.md — it was a real dialog field-reset race plus a leaked preview
-server, not a flake). `perf` / `probes:adapted` unchanged (this
-PR is Tracker-only, no scheduler/UI/perf touch). Counts recorded from the runs
-watched on this tree as #373 was built. **The per-gate table and traps below
-were captured on the earlier #368 tree — the trap descriptions all still
-stand; only its raw counts predate #373.**
+**Current main baseline — PR #409 ([ARCH-STACK] Step 2 command layer + follow-up #1
+scheduler routing) MERGED LIVE 17 Sep 26**, all ten CI jobs green at merge, deploy
+succeeded, verified on the live page: `npm test` **4878** (2 vitest projects; +9 in
+`src/state/sched-routing.test.ts` this ship); `tfin.js` **728/0**; build clean;
+`test:e2e` **425 passed / 0 failed** (33 skipped) — the two long-standing local
+failures (`geometry.spec.ts:1976` brief-inline, `leavewar.spec.ts:2241` touch-tap)
+were FIXED this ship, test-side, as tests that measured the wrong thing for a
+correct layout/gesture (commit `c44bc7b`); `smoke:tracker` **425/0** (the
+`addStudent` step was hardened against machine load, `fa85422`). `perf` /
+`probes:adapted` unchanged (byte-invariant additive change, parity held 728/0).
+Counts recorded from runs watched on this tree. **The per-gate table and traps
+below predate this baseline — the trap descriptions still stand; only their raw
+counts are older.**
 
 **Earlier tree the table below was captured on — the 5–6 Sep 26 batch, PR #368
 (CI head `8b269df` plus a docs-only handoff commit, squash-merged on the
@@ -175,8 +176,22 @@ None of these gate a tracker- or storage-only change.
 
 ## In flight
 
-**In flight — the storage seam, stage 1 (draft PR #377, branch
-`claude/storage-seam`).** The whole app now boots through one storage door.
+**Nothing in flight as of 17 Sep 26.** The big thread this section grew around —
+the storage seam and everything after it — culminated in **[ARCH-STACK] Step 2
+(the one command/commit layer over stable ids) + follow-up #1 (routing every
+remaining scheduler write through it), MERGED LIVE in PR #409.** Design + build
+record: `raptor-port/docs/superpowers/specs/2026-09-16-arch-stack-2-command-layer-design.md`
+and `2026-09-17-arch-stack-2-followup1-scheduler-routing-{plan,review-log}.md`
+(twice plan-red-teamed, then a cross-provider code inspection, all findings fixed).
+The queued next steps (follow-up #2 latch persist with histPush; Steps 3/5 undo/
+persistence cutover + real auth) live in OUTSTANDING.md, NOT here. The historical
+storage-seam detail below is kept for its still-true persistence facts (what
+survives a reload), superseded only where the command layer now owns the write.
+
+---
+
+**Historical — the storage seam, stage 1 (was draft PR #377, branch
+`claude/storage-seam`; long since merged and built on by ARCH-STACK).** The whole app now boots through one storage door.
 Three parts: a **whiteboard** (in-memory, synchronous — every existing door
 reads and writes it), a **postman** (write-behind: coalesces changes and
 retries, so saving can be slow without the engine, undo or the Leave War sync
