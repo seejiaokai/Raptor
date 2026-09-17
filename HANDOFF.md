@@ -597,9 +597,12 @@ routing every look through the gated Pages deploy.
 - **Docs-only PRs and pushes skip the workflow entirely** (`paths-ignore`:
   `**.md` + `.claude/**`, added the same day — nothing under those patterns
   is imported into the bundle, verified by grep). A session-handoff commit
-  therefore has NO checks and merges immediately; do not sit waiting for a
-  "build" check that will never appear on such a PR. A mixed code+docs PR
-  still runs the full gates.
+  therefore has NO checks to wait for — do not sit waiting for a "build" check
+  that will never appear on such a PR. **It does NOT merge itself: that is an
+  exemption from the GATES, never from the owner's explicit "merge live"**
+  (corrected 17 Sep 26; the old wording said "merges immediately", the same
+  stale exemption that got a fix merged without him on 9 Sep). A mixed
+  code+docs PR still runs the full gates.
 - **Known cosmetic warning, deliberately deferred (15 Aug 26):** the runner
   logs "actions/checkout@v4, setup-node@v4, cache@v4 target Node 20, forced
   onto Node 24". A warning, not a failure — every run passes with it. Bump
