@@ -164,7 +164,14 @@ export function rulesLoad(){
      string coercion of SHIFT_HARD would have thrown. Only reachable by hand-
      editing storage, which is exactly the input a LOAD path has to survive. */
   Object.keys(r.s||{}).forEach((k:any)=>{if(Object.prototype.hasOwnProperty.call(KIND_LABEL,k))SHIFT_HARD[k]=!!r.s[k];});}
-export function rulesReset(){
+/* [CMDL-FINISH] R3-001 — reset VCONF/SHIFT_HARD to the squadron standard IN
+   MEMORY ONLY (no storage write). rulesLoad only OVERLAYS overrides, so the
+   settings write()/rollback rehydrator must reset to defaults FIRST (else
+   restoring an older/smaller rules record leaves a dropped override live).
+   rulesReset keeps its storage clear for the Logic-tab "reset to standard". */
+export function rulesResetMem(){
   Object.keys(RULE_STD.v).forEach((k:any)=>VCONF[k]=RULE_STD.v[k]);
-  Object.keys(RULE_STD.s).forEach((k:any)=>SHIFT_HARD[k]=RULE_STD.s[k]);
+  Object.keys(RULE_STD.s).forEach((k:any)=>SHIFT_HARD[k]=RULE_STD.s[k]);}
+export function rulesReset(){
+  rulesResetMem();
   store.set('rules',null);}

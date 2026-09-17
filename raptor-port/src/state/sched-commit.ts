@@ -30,17 +30,19 @@
 */
 import type { EnlistableStore, RecordEntry, Scope, CommitResult, Command } from '../command'
 import {
-  commit, definePermission, anyone, registerRecord, registerGuardedStore,
-  registerEffectContext, installBaselineInvariants,
+  commit, commitProjection, definePermission, anyone, registerRecord, registerGuardedStore,
+  registerEffectContext, installBaselineInvariants, cmdDeferEffect, CmdRefused,
 } from '../command'
 import { DAYS } from '../engine/data'
-import { mintInpIds } from '../engine/inputs'
+import { INPUTS, mintInpIds } from '../engine/inputs'
 import { ensureRowIds } from '../engine/rowids'
 import { SCHED, setDayApproved, publishALDay, discardPending } from '../engine/publish'
 import { CURWEEK } from '../engine/waves'
 import { HIST, histSnap, histRestore, setSchedResync } from './history'
 import { setSchedEpilogueHook, HOOKS } from '../engine/hooks'
 import { issuedDisclosed, discloseIssued } from './disclosure'
+import { PLANPUCKS, DAYRMK } from './plan'
+import { WARNOFF } from './view'
 
 /* ---- the scheduler EnlistableStore (a LAGGING BASELINE, decomposed) --------
    [ARCH-STACK] follow-up #1: copy the People pattern. The unrouted board/text/
@@ -93,10 +95,15 @@ function decompose(snapStr: string): Map<string, RecordEntry> {
     const id = `${wk}:${di}`
     m.set(`sched.orig/${id}`, { collection: 'sched.orig', id, value: orig[di] })
   }
+  // [CMDL-FINISH] §5/C14 — key each AL by its STABLE verId (al.id = verId(iso,seq)),
+  // NOT its array index, so a delete or reorder never renumbers another AL's stored
+  // key (the same rid-anchoring the rest of the book uses). A pre-verId legacy book
+  // has no al.id, so it falls back to the index (avoids a `:undefined` collision).
   const als = (s.a as any[]) || []
   for (let n = 0; n < als.length; n++) {
-    const id = `${wk}:${n}`
-    m.set(`sched.als/${id}`, { collection: 'sched.als', id, value: als[n] })
+    const al = als[n]
+    const id = `${wk}:${(al && al.id) ?? n}`
+    m.set(`sched.als/${id}`, { collection: 'sched.als', id, value: al })
   }
   for (const r of ((s.i as any[]) || [])) {
     const id = r && r.iid
@@ -108,12 +115,120 @@ function decompose(snapStr: string): Map<string, RecordEntry> {
 }
 function schedRecords(): Map<string, RecordEntry> { return decompose(baseline()) }
 
+/* [CMDL-FINISH] §3 — a write() entry with this reserved id (collection 'inputs')
+   reorders INPUTS to the carried iid[] sequence (C11/CMDLF-011). records() does
+   NOT emit it — array order round-trips as-is on an in-place re-apply; the undo
+   step synthesises it only when restoring an order that changed. */
+const INPUT_ORDER_ID = '__order'
+
+/* apply a decomposed `sched.book` record value back onto the live SCHED book —
+   the exact inverse of decompose()'s book projection (schedFields minus o/a,
+   which are their own records). */
+function applyBook(v: any): void {
+  SCHED.changes = v.c || {}; SCHED.pending = v.p || {}; SCHED.added = v.ad || {}
+  SCHED.al = v.al || 0; SCHED.dayOK = v.ok || {}
+  SCHED.sign = v.sg || {}; SCHED.signBind = v.sb || {}
+  SCHED.cur = v.cv || {}; SCHED.drafts = v.dr || {}; SCHED.curDraft = v.cd || {}
+  SCHED.ridV = v.v; SCHED.amV = v.am
+}
+
+/* [CMDL-FINISH] §3 (F8/GU-007) — the batch, delete-aware, per-collection record
+   write for the undo seam. Apply EVERY record back into the live world first,
+   THEN one ensureRowIds/mintInpIds + advance the baseline (applyEnd), and defer
+   validate + persist (HOOKS.histPush) + notify to the transaction boundary — so
+   a multi-store restore never re-validates or persists on a half-applied world.
+   A FOREIGN-week write is refused for every week-scoped collection (R2-011); an
+   issued record (sched.orig/sched.als) is refused unless the restore path passes
+   {allowIssued:true} (C7). Called only from a reducer that already enlisted
+   schedStore. */
+function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolean }): void {
+  const wk = CURWEEK
+  let orderIds: string[] | null = null
+  let alsTouched = false
+  const foreign = (id: string, sep: string) => id.slice(0, id.indexOf(sep)) !== wk
+  for (const e of entries) {
+    switch (e.collection) {
+      case 'days': {
+        if (foreign(e.id, '#')) throw new CmdRefused(`scheduler write: foreign week ${e.id}`)
+        if (e.op !== 'delete') DAYS[Number(e.id.slice(e.id.indexOf('#') + 1))] = e.value
+        break
+      }
+      case 'sched.book':
+        if (e.id !== wk) throw new CmdRefused(`scheduler write: foreign week ${e.id}`)
+        applyBook(e.value)
+        break
+      case 'sched.mutes':
+        if (e.id !== wk) throw new CmdRefused(`scheduler write: foreign week ${e.id}`)
+        WARNOFF.clear(); ((e.value as any[]) || []).forEach(k => WARNOFF.add(k))
+        break
+      case 'sched.orig': {
+        if (foreign(e.id, ':')) throw new CmdRefused(`scheduler write: foreign week ${e.id}`)
+        if (!opts?.allowIssued) throw new CmdRefused(`scheduler write: issued record ${e.id} needs allowIssued`)
+        const di = e.id.slice(e.id.indexOf(':') + 1)
+        if (e.op === 'delete') delete (SCHED.orig as any)[di]; else (SCHED.orig as any)[di] = e.value
+        break
+      }
+      case 'sched.als': {
+        if (foreign(e.id, ':')) throw new CmdRefused(`scheduler write: foreign week ${e.id}`)
+        if (!opts?.allowIssued) throw new CmdRefused(`scheduler write: issued record ${e.id} needs allowIssued`)
+        // [CMDL-FINISH] §5 — the id-part is the AL's verId (or a legacy index).
+        // Match the existing AL by its stable id and update/delete/insert it, then
+        // (after the loop) re-sort the book by iso/seq — never index-assign, which
+        // the old array-index key did.
+        const alId = e.id.slice(e.id.indexOf(':') + 1)
+        const arr = SCHED.als as any[]
+        const ix = arr.findIndex(a => String((a && a.id) ?? '') === alId)
+        if (e.op === 'delete') { if (ix >= 0) arr.splice(ix, 1) }
+        else if (ix >= 0) arr[ix] = e.value
+        else arr.push(e.value)
+        alsTouched = true
+        break
+      }
+      case 'inputs': {
+        if (e.id === INPUT_ORDER_ID) { orderIds = (e.value as string[]) || null; break }
+        const ix = INPUTS.findIndex((r: any) => r.iid === e.id)
+        if (e.op === 'delete') { if (ix >= 0) INPUTS.splice(ix, 1) }
+        else if (ix >= 0) INPUTS[ix] = e.value
+        else INPUTS.push(e.value)
+        break
+      }
+      case 'plan': {
+        const v = e.value as any
+        PLANPUCKS.length = 0; ((v && v.pp) || []).forEach((x: any) => PLANPUCKS.push(x))
+        for (const k of Object.keys(DAYRMK)) delete DAYRMK[k]
+        Object.assign(DAYRMK, (v && v.dm) || {})
+        break
+      }
+      default:
+        throw new CmdRefused(`scheduler write: unexpected collection ${e.collection}`)
+    }
+  }
+  if (orderIds) {
+    const pos = new Map(orderIds.map((id, i) => [id, i]))
+    INPUTS.sort((a: any, b: any) => (pos.get(a.iid) ?? 1e9) - (pos.get(b.iid) ?? 1e9))
+  }
+  if (alsTouched) {
+    // [CMDL-FINISH] §5 — order the reconstructed book by iso then seq (chronological
+    // AL order), the same order the index key used to encode positionally.
+    (SCHED.als as any[]).sort((a: any, b: any) => {
+      const ai = String(a?.iso ?? ''), bi = String(b?.iso ?? '')
+      if (ai !== bi) return ai < bi ? -1 : 1
+      return (Number(a?.seq) || 0) - (Number(b?.seq) || 0)
+    })
+  }
+  applyEnd()   // one ensureRowIds/mintInpIds + advance SCHED_BASELINE
+  // HOOKS.reflow = validate() + notify(); HOOKS.histPush persists — both released
+  // at the transaction boundary (never on a half-applied multi-store world).
+  cmdDeferEffect(() => { HOOKS.reflow(); HOOKS.histPush() })
+}
+
 export const schedStore: EnlistableStore = {
   key: 'scheduler',
   capture: () => baseline(),                          // the before-image + rollback source (lagging)
   restore: (snap) => { histRestore(snap as string) }, // histRestore re-syncs the baseline itself
   records: schedRecords,
   signature: () => histSnap(),                        // LIVE — keeps the whole-world guard (SR-005)
+  write: schedWriteRecords,
 }
 
 /* the ONE shared apply-end: mint the ids histPush would mint in phase 8 (but it
@@ -170,6 +285,37 @@ export function commitSchedVoid(type: string, fn: () => void): CommitResult {
 }
 export function commitInputs<T>(type: string, fn: () => T): T {
   return commitSched(type, inputsScope(), fn).value
+}
+/* [CMDL-FINISH] §2.2 — the PROJECTION sibling of commitInputs: the LW-originated
+   reconciler (runOutbound) mints/retracts Raptor inputs as a causally-chained
+   projection, not a user edit. Raised at phase 8 (woken by the LW edit's deferred
+   notify) it ENQUEUEs with the edit's seq as its cause; raised at idle (inside
+   lwSyncTurn) it runs as a top-level projection. Same enlist + applyEnd body. */
+export function commitInputsProjection<T>(type: string, fn: () => T): T {
+  let value!: T
+  const cmd: Command = { type, scope: inputsScope(), apply: (txn) => { txn.enlist(schedStore); value = fn(); applyEnd() } }
+  commitProjection(cmd)
+  return value
+}
+/* [CMDL-FINISH] §6 — an input batch that also enlists EXTRA stores (the off-week
+   weekstash), so a reducer throw (a protected-week refusal) rolls back the whole
+   set atomically. Returns the CommitResult so the wrapper can map a refusal (a
+   CmdRefused → ok:false) to false, rather than reading a value the throw skipped. */
+export function commitInputsWith(stores: EnlistableStore[], type: string, fn: () => void): CommitResult {
+  const cmd: Command = {
+    type, scope: inputsScope(),
+    apply: (txn) => {
+      // [CMDL-FINISH] §6 — resync the baseline to LIVE before enlisting, so the
+      // captured rollback snapshot reflects any out-of-band (bare) INPUTS write
+      // that reached the model before this command (the quarantine funnel's whole
+      // reason to exist). A no-op in the normal case (baseline === live between
+      // commands); it makes a protected-week refusal's phase-6 rollback restore the
+      // true pre-batch state instead of a stale baseline that drops the bare row.
+      resyncSchedBaseline()
+      txn.enlist(schedStore); for (const s of stores) txn.enlist(s); fn(); applyEnd()
+    },
+  }
+  return commit(cmd)
 }
 export function commitSchedValue<T>(type: string, fn: () => T): T {
   return commitSched(type, schedScope(), fn).value
@@ -309,7 +455,7 @@ export function registerSchedCommandLayer(): void {
   registerRecord({ key: 'weeks:sched.book/<wk>', cls: 'record', collection: 'sched.book', module: 'scheduler' })
   registerRecord({ key: 'weeks:sched.mutes/<wk>', cls: 'record', collection: 'sched.mutes', module: 'scheduler' })
   registerRecord({ key: 'weeks:sched.orig/<wk>:<di>', cls: 'record', collection: 'sched.orig', module: 'scheduler' })
-  registerRecord({ key: 'weeks:sched.als/<wk>:<n>', cls: 'record', collection: 'sched.als', module: 'scheduler' })
+  registerRecord({ key: 'weeks:sched.als/<wk>:<verId>', cls: 'record', collection: 'sched.als', module: 'scheduler' })
   registerRecord({ key: 'inputs:<iid>', cls: 'record', collection: 'inputs', module: 'inputs' })
   registerRecord({ key: 'plan:all', cls: 'record', collection: 'plan', module: 'plan' })
 }

@@ -29,7 +29,7 @@ import type {
   Command, CommitEnvelope, CommitResult, Actor, Origin, Change, Boundary,
   EnlistableStore, RecordEntry, Txn,
 } from './types'
-import { deriveActor } from './actor'
+import { deriveActor, systemActor } from './actor'
 import { authorize } from './permissions'
 import { deepClone, deepEqual } from './util'
 import { captureContexts, installContexts } from './latch'
@@ -41,6 +41,14 @@ type Phase = 'idle' | 'reducer' | 'post'
 let phase: Phase = 'idle'
 let active: TxnState | null = null
 let deliveringSeq: number | undefined = undefined
+/* [CMDL-FINISH] §2.1(1) — the CAUSE a phase-8/9-raised commit chains to. Unlike
+   deliveringSeq (live only during phase-9 subscriber delivery), causalSeq is live
+   across BOTH phase 8 (deferred legacy effects — the LW notify that wakes the
+   reconciler) AND phase 9. Set to a pipeline's OWN seq at finalize; a no-op
+   pipeline (nothing finalized) keeps its inherited cause so `N → no-op projection
+   → changing projection` still chains to N (R2-009). Saved/restored around every
+   runPipeline; never −1. */
+let causalSeq: number | undefined = undefined
 
 const stream: CommitEnvelope[] = []
 const subscribers: Array<(env: CommitEnvelope) => void> = []
@@ -63,6 +71,12 @@ interface TxnState {
 }
 interface QueuedCommit {
   cmd: Command; actor: Actor; origin: Origin; causedBy?: number
+  /* [CMDL-FINISH] §2.1(4) / CMDLF-002 — the suppression contexts captured when
+     this commit was enqueued (HIST.lock / lw.hist / …). Re-installed for the
+     duration of its drained pipeline so a Raptor-driven LW projection's
+     recordHistory sees the lock exactly as it did at raise time and pushes NO
+     stray undo step. */
+  snaps: unknown[]
   resolve: (r: CommitResult) => void
 }
 const queue: QueuedCommit[] = []
@@ -80,6 +94,17 @@ export function commitAs(cmd: Command, opts: { actor: Actor; origin: Origin }): 
   return dispatch(cmd, opts.actor, opts.origin)
 }
 
+/* [CMDL-FINISH] §2.1(5) — a projection commit: the SYSTEM actor + `projection`
+   origin. This is how a reconciler (LW sync, People auto-archive, Tracker) emits
+   its causally-related child write: raised from inside a reducer it JOINS the
+   parent (ONE envelope); raised at phase 8/9 it ENQUEUEs with the parent's seq as
+   its cause. `commitAs` stays unexported — reconcilers use this narrow door. No
+   `definePermission` is needed for projection types: the system actor
+   short-circuits authorize (permissions.ts:49). */
+export function commitProjection(cmd: Command): CommitResult {
+  return dispatch(cmd, systemActor(), 'projection')
+}
+
 function dispatch(cmd: Command, actor: Actor, origin: Origin): CommitResult {
   /* a commit raised from INSIDE a running reducer JOINS the open transaction */
   if (phase === 'reducer' && active) {
@@ -91,7 +116,7 @@ function dispatch(cmd: Command, actor: Actor, origin: Origin): CommitResult {
   /* a commit raised while delivering envelopes (a subscriber reaction) is
      ENQUEUED, never nested (design §3.2 ph.9). */
   if (phase === 'post') {
-    return enqueue(cmd, actor, origin, deliveringSeq)
+    return enqueue(cmd, actor, origin)
   }
   /* outermost: run the pipeline, then drain everything it queued, synchronously.
      The finally is load-bearing (Fable-1): if a deferred legacy effect or a
@@ -99,33 +124,49 @@ function dispatch(cmd: Command, actor: Actor, origin: Origin): CommitResult {
      quota error, a listener bug — things that today just log and let the edit
      stick), the exception must NOT leave the dispatcher wedged in 'post'/'reducer'
      — otherwise every later commit() enqueues into a dead txn (never applies) and
-     every notify() defers into it (repaints stop). Reset unconditionally. */
+     every notify() defers into it (repaints stop). Reset unconditionally.
+     [CMDL-FINISH] §2.1(3) / C6 — drainQueue runs in the finally, so a throw in
+     phase 8/9 still drains the items an earlier subscriber enqueued (each drained
+     pipeline is isolated), instead of leaving them to fire on the next unrelated
+     commit with their stale captured cause. The pipeline's throw is rethrown
+     AFTER the drain + reset. */
+  let result!: CommitResult
   try {
-    const result = runPipeline(cmd, actor, origin, undefined)
-    drainQueue()
-    return result
+    result = runPipeline(cmd, actor, origin, undefined)
   } finally {
-    phase = 'idle'
-    active = null
+    try { drainQueue() } finally { phase = 'idle'; active = null }
   }
+  return result
 }
 
-function enqueue(cmd: Command, actor: Actor, origin: Origin, causedBy?: number): CommitResult {
+function enqueue(cmd: Command, actor: Actor, origin: Origin): CommitResult {
   let resolve!: (r: CommitResult) => void
   const done = new Promise<CommitResult>(r => { resolve = r })
-  queue.push({ cmd, actor, origin, causedBy, resolve })
+  /* [CMDL-FINISH] §2.1(2) / C10 — chain a cause to NON-`user` origins only. A
+     projection/restore/seed raised in phase 8/9 belongs to the causal closure of
+     the pipeline that raised it; a `user` commit raised then (a member editing
+     their own row from a reaction) is its OWN undo entry, independent — never
+     folded into another envelope's closure. causalSeq is the phase-8/9-live
+     cause (fallback deliveringSeq for the phase-9 delivery window). */
+  const causedBy = origin === 'user' ? undefined : (causalSeq ?? deliveringSeq)
+  /* CMDLF-002 — capture the ambient suppression contexts NOW; drainQueue
+     re-installs them so the drained pipeline records as it would have inline. */
+  queue.push({ cmd, actor, origin, causedBy, snaps: captureContexts(), resolve })
   return { queued: true, done }
 }
 
 function drainQueue(): void {
   /* strictly in enqueue order; each drained item may itself enqueue more. A
      throwing queued pipeline resolves as invalid rather than starving the rest
-     of the queue (Fable-1). */
+     of the queue (Fable-1). Each item's captured suppression contexts are
+     installed for the duration of its pipeline (CMDLF-002). */
   while (queue.length) {
     const q = queue.shift()!
+    const restore = installContexts(q.snaps)
     let res: CommitResult
     try { res = runPipeline(q.cmd, q.actor, q.origin, q.causedBy) }
     catch (e) { res = errResult(e) }
+    finally { restore() }
     q.resolve(res)
   }
 }
@@ -140,8 +181,16 @@ function runPipeline(cmd: Command, actor: Actor, origin: Origin, causedBy?: numb
   txn.api = makeTxnApi(txn)
   active = txn
   phase = 'reducer'
-
+  /* [CMDL-FINISH] §2.1(1) — this pipeline's causal context. INHERIT the cause it
+     was raised with (a queued projection's captured causedBy); finalize replaces
+     it with this pipeline's OWN seq once it emits. A no-op keeps the inherited
+     cause so a no-op projection that raises a changing projection still chains to
+     N (R2-009). Restored to the enclosing value in the finally — a drained
+     pipeline never leaks its cause into the next drained item. */
+  const savedCausal = causalSeq
+  causalSeq = causedBy
   try {
+   try {
     // phase 1 — authorize
     if (!authorize(cmd.type, actor, cmd.meta)) {
       throw new CmdError('unauthorized', `type ${cmd.type} not permitted for ${actor.role}`)
@@ -155,6 +204,19 @@ function runPipeline(cmd: Command, actor: Actor, origin: Origin, causedBy?: numb
     // phase 4 — derive Change[] by per-record deep-equal over enlisted records
     txn.env.changes = deriveChanges(txn)
     // phase 5 — conflict + hard invariants
+    // [CMDL-FINISH] §3 (F8) — the SCOPED, per-command optimistic-concurrency
+    // guard: each expectedRevs entry must still match the current revision, else
+    // the base the caller staged against has moved and this commit is a stale
+    // conflict (rolled back, emits nothing). Checked against the PRE-finalize
+    // revision map (finalize bumps them). The undo step is the consumer at Step 3.
+    if (cmd.expectedRevs) {
+      for (const key of Object.keys(cmd.expectedRevs)) {
+        const have = revisions.get(key) || 0
+        if (have !== cmd.expectedRevs[key]) {
+          throw new CmdError('conflict', `stale revision for ${key}: expected ${cmd.expectedRevs[key]}, have ${have}`)
+        }
+      }
+    }
     if (conflictChecker) {
       const c = conflictChecker(txn.env.changes)
       if (c) throw new CmdError('conflict', c)
@@ -191,10 +253,17 @@ function runPipeline(cmd: Command, actor: Actor, origin: Origin, causedBy?: numb
   if (firstErr !== undefined) throw firstErr   // surface it AFTER the phase/active reset (Fable-1)
   // an un-emitted no-op returns ok with seq -1 (nothing was recorded)
   return { ok: true, seq: emitted ? txn.env.seq : -1, envelope: txn.env }
+  } finally {
+    causalSeq = savedCausal   // restore the enclosing cause (§2.1(1))
+  }
 }
 
 function finalize(txn: TxnState): void {
   txn.env.seq = SEQ++
+  // [CMDL-FINISH] §2.1(1) — this pipeline now HAS a seq; a commit its phase-8/9
+  // effects raise chains to it (a no-op that never reached here keeps the cause
+  // it inherited — R2-009).
+  causalSeq = txn.env.seq
   txn.env.at = new Date().toISOString()
   if (txn.boundary) txn.env.boundary = txn.boundary
   // per-record revision map (§3.3): every authoritative write advances the
@@ -341,11 +410,21 @@ function rollback(txn: TxnState): void {
 }
 
 /* ---- errors -------------------------------------------------------------- */
+type CmdErrorKind = 'conflict' | 'invalid' | 'unauthorized' | 'refused'
 class CmdError extends Error {
-  kind: 'conflict' | 'invalid' | 'unauthorized'
-  constructor(kind: 'conflict' | 'invalid' | 'unauthorized', message: string) {
+  kind: CmdErrorKind
+  constructor(kind: CmdErrorKind, message: string) {
     super(message); this.kind = kind
   }
+}
+/* [CMDL-FINISH] §6 / R3-003 — a DELIBERATE refusal (a protected-week clear, an
+   off-week edit), NOT a bug. Thrown from a reducer it triggers the same phase-6
+   rollback as any CmdError (every enlisted store is restored), but it is SILENT:
+   errResult maps it to `{ok:false, reason:'refused'}` and — being a CmdError —
+   it never hits the bug-shaped console.error below. The wrapper reads the result
+   and maps `ok:false`→false rather than surfacing a scary log. */
+export class CmdRefused extends CmdError {
+  constructor(message: string) { super('refused', message) }
 }
 function errResult(e: unknown): CommitResult {
   if (e instanceof CmdError) return { ok: false, reason: e.kind, message: e.message }
@@ -370,6 +449,13 @@ export function deferEffect(fn: () => void): boolean {
 export function isCommitting(): boolean {
   return active != null && (phase === 'reducer' || phase === 'post')
 }
+/* [CMDL-FINISH] §2.1(5) — a reconciler router needs to tell a NESTED causal child
+   (raised while the reducer is still running → child-joins the parent) from a
+   phase-8/9 raise (→ enqueues). `isInReducer()` is true only during phase 3. */
+export function isInReducer(): boolean {
+  return active != null && phase === 'reducer'
+}
+export function commitPhase(): 'idle' | 'reducer' | 'post' { return phase }
 
 /* ---- stream + subscriptions ---------------------------------------------- */
 export function onCommit(fn: (env: CommitEnvelope) => void): () => void {

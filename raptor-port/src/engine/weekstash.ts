@@ -74,6 +74,23 @@ export function setPreservedBlob(v:any,json:any){ PRESERVED[String(v)]=String(js
 export function preservedBlob(v:any){ return Object.prototype.hasOwnProperty.call(PRESERVED,String(v))?PRESERVED[String(v)]:null; }
 export function isPreservedWeek(v:any){ return Object.prototype.hasOwnProperty.call(PRESERVED,String(v)); }
 export function clearPreservedBlob(v:any){ delete PRESERVED[String(v)]; }
+/* [CMDL-FINISH] §6 — snapshot/restore BOTH maps for the enlisted weekstashStore
+   (an off-week clear that drops a stash must roll back atomically with its input
+   batch). restore bumps GEN for every affected key so ui/peek.ts's (week,gen)
+   preview cache cannot re-serve a stale preview after a rollback. */
+export function snapshotStash():{w:Record<string,string>;p:Record<string,string>}{
+  return { w:{...WEEKSTASH}, p:{...PRESERVED} };
+}
+export function restoreStash(snap:{w:Record<string,string>;p:Record<string,string>}):void{
+  const touched=new Set<string>([...Object.keys(WEEKSTASH),...Object.keys(snap.w||{})]);
+  for(const k in WEEKSTASH)delete WEEKSTASH[k];
+  Object.assign(WEEKSTASH,snap.w||{});
+  for(const k in PRESERVED)delete PRESERVED[k];
+  Object.assign(PRESERVED,snap.p||{});
+  for(const k of touched)GEN[k]=(GEN[k]||0)+1;
+}
+/* the stashed weeks as [key, blob] pairs — the record source for weekstashStore. */
+export function stashEntries():Array<[string,string]>{ return Object.entries(WEEKSTASH); }
 /* A FRESH deep copy, in weekBundle's {days,dates} shape, for engine readers
    (weekctx.ts's bundle()) — NEVER cached, unlike the pure seed bundle it
    stands in for: stash content changes as the user keeps editing the week it

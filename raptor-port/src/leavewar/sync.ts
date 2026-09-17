@@ -27,7 +27,7 @@ import { inputProtected, protectedDates } from '../engine/quarantine'
 import { ME, SESSION } from '../state/auth'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (the cross-seam roster
    writers — PO-archive, restore — emit a people change too). */
-import { persistPeople } from '../state/people-settings-commit'
+import { persistPeopleProjection, commitPeopleEdit } from '../state/people-settings-commit'
 import { docFields, rowDocIds } from '../state/docs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
@@ -36,7 +36,8 @@ import { dayOilWork, inputOilAmt, envMin, uniformOil, oilWorkWhy, type OilWork }
 import { stashKeys, stashGet, isPreservedWeek } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
-import { notify as raptorNotify, subscribe as raptorSubscribe, writeInputsBatch } from '../state/store'
+import { notify as raptorNotify, subscribe as raptorSubscribe, writeInputsBatch, writeInputsBatchProjection } from '../state/store'
+import { lwSyncTurn } from './state/store'
 import {
   addDays,
   inSquadron,
@@ -67,6 +68,12 @@ import { projectPeople, qualCatalogue } from './state/raptorRoster'
    mid-write. One flag over both means those nested calls return at the door;
    the wiring below re-runs the counterpart pass once the writer finishes. */
 let SYNCING = false
+/* [CMDL-FINISH] N6 — a queued outbound mint is not yet applied when a SECOND
+   runOutbound fires in the same post-phase window (the lwSubscribe pending-OIL
+   tail raptorNotify()s, waking a second pass before the queue drains). Without
+   this latch the second pass sees the mint still missing and queues a DUPLICATE
+   lw-tagged row. Set before the (maybe-queued) write, cleared first-in-apply. */
+let OUTBOUND_PENDING = false
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
@@ -238,7 +245,7 @@ export function rowSig(row: any): string | null {
 }
 
 export function runOutbound(): void {
-  if (SYNCING) return
+  if (SYNCING || OUTBOUND_PENDING) return   // N6: a queued mint is still pending — do not re-mint
   SYNCING = true
   try {
     const want = new Map(desiredRuns().map(r => [runSig(r), r]))
@@ -278,7 +285,9 @@ export function runOutbound(): void {
        leave: the epilogue (re-render, reflow, snapshot) comes free. NOT
        acceptInput — leave is isUnavail and that path hard-refuses it by
        design; the input existing is what reaches every schedule surface. */
-    writeInputsBatch(() => {
+    OUTBOUND_PENDING = true   // N6: latch before the (possibly queued) projection mint
+    writeInputsBatchProjection(() => {
+      OUTBOUND_PENDING = false   // cleared first-in-apply (at drain for a queued mint, inline otherwise)
       /* When a leave's DATES change (an admin extends it in Leave War), its
          old row is stale and a new run is missing — a remove-then-mint. Carry
          the member's own remark detail across that gap keyed on the unchanging
@@ -1080,7 +1089,10 @@ export function runPoArchive(): void {
     // A body leaving the roster can change what the warnings say about the
     // lines it was on — the same reason the Quals ✕ re-validates.
     validate()
-    persistPeople()   // not a history step: file the roster, as the Quals ✕ and Restore do
+    // [CMDL-FINISH] C10 — a RECONCILER write: a causally-chained projection, not a
+    // stray user envelope (peopleStore's lagging baseline captures the flag flip
+    // set just above when the projection advances it).
+    persistPeopleProjection()
     raptorNotify()
   } finally {
     SYNCING = false
@@ -1106,10 +1118,14 @@ export function restoreArchivedPerson(id: string): boolean {
   if (SESSION && SESSION.role !== 'admin') return false
   const body = (PEOPLE as any)[id]
   if (!body || !body.archived || body.special) return false
-  setPostOut(id, null)
-  body.archived = false
-  validate()
-  persistPeople()
+  // [CMDL-FINISH] C10 — ONE command for the whole cross-seam gesture: setPostOut
+  // (an LW write that child-joins) + the archived flip + the people persist, so a
+  // single click is a single envelope, not a stray lw.edit + a stray people.edit.
+  commitPeopleEdit(() => {
+    setPostOut(id, null)
+    body.archived = false
+    validate()
+  })
   raptorNotify()
   return true
 }
@@ -1140,10 +1156,10 @@ export function wireLeaveWarSync(): void {
     // Before the passes: a body added on the Quals page must be on the roster
     // before inbound tries to land any of its leave (owner, 18 Aug 26).
     reprojectRoster()
-    runPoArchive()
-    runInbound()
-    runOilPass()
-    runOutbound()
+    // [CMDL-FINISH] M3 — coalesce an IDLE multi-cell reconcile (week-nav
+    // loadWeek→runOilPass crediting K cells) into ONE lw.sync projection. A no-op
+    // when this callback runs at phase 8 (the committing lane coalesces on its own).
+    lwSyncTurn(() => { runPoArchive(); runInbound(); runOilPass(); runOutbound() })
   })
   lwSubscribe(() => {
     /* The showSans switch (store.ts:setShowSans) is a Leave War write, so the
@@ -1155,14 +1171,19 @@ export function wireLeaveWarSync(): void {
     reprojectRoster()
     /* A post-out placed just now (setPostOut is a Leave War write) archives on
        this lane too, so a PO dated in the past takes effect the moment it is
-       set rather than waiting for a Raptor edit to happen along. */
-    runPoArchive()
-    runOutbound()
-    runInbound()
-    /* The OIL pass reads Leave War too — a PH flag set, an event word tagged
-       "off day", a war created over the loaded week — so a Leave War change
-       can change what a published Saturday earns. */
-    runOilPass()
+       set rather than waiting for a Raptor edit to happen along.
+       [CMDL-FINISH] M3 — coalesced into ONE lw.sync projection when this lane runs
+       at idle (a view-only setter waking the reconcilers writes nothing and emits
+       nothing; a setShowSans that changes OIL cells emits one envelope). */
+    lwSyncTurn(() => {
+      runPoArchive()
+      runOutbound()
+      runInbound()
+      /* The OIL pass reads Leave War too — a PH flag set, an event word tagged
+         "off day", a war created over the loaded week — so a Leave War change
+         can change what a published Saturday earns. */
+      runOilPass()
+    })
     /* And the same change can create a PENDING OIL QUESTION out of thin air
        (owner, 28 Aug 26): mark a PH after an input already covers that day
        and the applicable user must be told. Nothing on the RAPTOR side
