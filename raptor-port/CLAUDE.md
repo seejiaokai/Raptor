@@ -541,7 +541,11 @@ deploy.yml + playwright.config.ts) and again 3 Sep 26 (the suites had grown
 to a 17-min serial run; they now run as parallel jobs, ~5–6 min end to end).
 **Docs-only changes skip the gates entirely** (`paths-ignore` in deploy.yml:
 `**.md` + `.claude/**` — verified nothing there reaches the bundle), so a
-handoff PR has NO checks to wait for: push, merge at once, done. A PR mixing
+handoff PR has NO CHECKS to wait for. **That is an exemption from the GATES,
+never from his approval: a docs-only change still merges ONLY on his explicit
+"merge live"** (corrected 17 Sep 26 — the old wording said "push, merge at once,
+done", which handed docs an approval exception he never granted). Push it and
+tell him it is ready; merging is still his call. A PR mixing
 code and docs still runs everything.
 
 ## Architecture rules (apply to nearly every task)
@@ -635,6 +639,20 @@ Anything else is silently unsaved after a reload — no error, no clue, the edit
 just isn't there next time. Leave War: whatever it owns about a person beyond
 the projection goes in a persisted record laid back on by `setPeople`.
 
+**WHAT ACTUALLY PERSISTS (verified 17 Sep 26 — read this before believing any
+"session-only" sentence elsewhere in this file).** A BUILT SITE runs on the
+Browser backend (`storage/boot.ts chooseBackend`), and across a reload it KEEPS:
+`INPUTS`, `PEOPLE`, the `plan` layer (PLANPUCKS/DAYRMK), every stashed week AND
+the live week (`persistAll`), the 11 durable settings keys (incl. `qualcols`),
+the whole Leave War world, the Tracker's `ocu:` data, and medical documents
+(IndexedDB). MEMORY-ONLY is now just the `vite` dev server, `MODE==='test'`,
+`?fresh=1`, or a browser whose storage cannot be touched. Genuinely still
+session-only, by design: **undo/redo history, the edit log, and the view-state
+registries (`LATEOFF`, the armed slot, selection)** — none is in `persistAll`.
+Several August "session-only / a reload forgets" rules elsewhere in this file
+were written before the 8 Sep 26 storage work and are marked superseded where
+they sit; if you find another, it is stale — fix it, don't obey it.
+
 **React owns chrome, strings own density.** The dense surfaces (week,
 board, palette) are built by verbatim HTML-string builders and swapped via
 innerHTML with string-diffing — that is what preserves scroll, carets and
@@ -643,14 +661,18 @@ the phone perf budget. Don't convert them to components.
 **The Leave War tab is a SECOND app with a SECOND store** (vendored 16 Aug
 26, `src/leavewar/`). It keeps its own store/notify/useVersion, its own
 `state/storage.ts` seam (NOT `HOOKS.storeBackend`), and its own vitest project
-(fixed TZ + jsdom + 20s timeout — see vite.config.ts). **It is session-only
-since 17 Aug 26** — `main.tsx` boots it on `memoryBackend()`, so a reload
-forgets the war and returns to the seed, deliberately matching Raptor's own
-session-only `INPUTS` (before this it persisted to `leavewar:`-prefixed
-localStorage while Raptor did not, and a synced cell reverse-cleared or
-reappeared across a reload; both forget in lockstep now). `localBackend` still
-lives in the seam for reference/tests; the future shared database backend
-replaces the seam. Four seams cross the boundary, and only
+(fixed TZ + jsdom + 20s timeout — see vite.config.ts). **IT PERSISTS — the
+17 Aug 26 "session-only" decision was SUPERSEDED by the 8 Sep 26 storage work
+(corrected here 17 Sep 26 after both reviewers found this reading as live).**
+`main.tsx` boots it on the WHITEBOARD (`lwInitStore(leavewarAdapter(wb))`), so
+on a built site a world that came back from storage keeps its wars, its OIL
+story and its inputs; `installDemoWorld` overlays the demo only on a
+first-ever boot. `memoryBackend` is now the DEV/TEST path only (`vite` dev,
+`MODE==='test'`, `?fresh=1`, or a browser whose storage can't be touched —
+`storage/boot.ts chooseBackend`). **Do not "restore" session-only behaviour or
+delete this persistence as unintended — it is deliberate.** The seam interface
+(`state/storage.ts`, `memoryBackend`/`localBackend`) stays; the shared database
+replaces the implementation behind it. What is stored: `docs/data-schema.md`. Four seams cross the boundary, and only
 four: `main.tsx` boots it once (`lwInitStore` → `installDemoWorld` →
 `wireLeaveWarSync` → a `histInit` re-baseline, in that order), `resetSession`
 derives its role from the Raptor login (`store.ts:toggleRole` — the admin's
@@ -952,7 +974,9 @@ decision + a pointer. Owner + date establish authority; keep them.
 - **The qual catalogue is Raptor's LoX column list, not the holders.** Column list
   lives in `engine/qualcols.ts`; `qualCatalogue` takes keys+headings from it,
   appending any key someone still holds after a removed column (ticks survive).
-  Known gap (not fixed): like the ticks, the column list isn't saved across reload.
+  (The old "known gap — the column list isn't saved across reload" was SUPERSEDED
+  by the 8 Sep 26 storage work: `qualcols` is one of the durable settings keys,
+  saved and reloaded by `engine/qualcols.ts`. Corrected 17 Sep 26.)
 - **Show SANS = SANS as their own counted group at the foot.** Injects `SANS_GROUP`
   (auto-managed, never stored) LAST on the page / FIRST in who-wins, so shown SANS
   draw together; they still count in manning by seat+band (a group never moves a
@@ -1258,10 +1282,13 @@ Contract: `docs/ui-contracts.md` §Dragging sections and waves, §Dense row reor
 - **Weeks remember their edits — the per-week stash** (owner, 23 Aug 26).
   `engine/weekstash.ts` remembers, per week-start key, the last snapshot `loadWeek`
   handed it on the way OUT — decided parts:
-  - **Session memory only — a reload forgets**, in lockstep with `INPUTS` and Leave
-    War's own session-only decision. A localStorage envelope was built and removed the
-    same day; don't re-add a browser-local one for just this piece — real persistence
-    is the future shared server, for all this state at once.
+  - **SUPERSEDED 17 Sep 26 — stashed weeks PERSIST.** The 23 Aug "session memory
+    only, a reload forgets" decision (and its reasoning that `INPUTS` and Leave War
+    forget in lockstep) was overtaken by the 8 Sep 26 storage work: `persistAll`
+    writes `inputs`, `people`, the `plan` layer AND every stashed week to the
+    whiteboard, and a built site runs on the Browser backend. A reload KEEPS them.
+    Memory-only is now just dev/tests/`?fresh=1`. Don't "fix" this by removing the
+    persistence — it is deliberate; see `docs/data-schema.md`.
   - **Pristine weeks are deliberately NOT stashed** (a persisted byte-copy of the seed
     would outrank a later demo-week update forever). Stashed on the way out only if
     changed since load or already carrying an entry. Don't re-add the unconditional

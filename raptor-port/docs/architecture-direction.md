@@ -37,7 +37,7 @@ with its own store, its own tests and its own storage keys:
 | Module | Code | Store | Storage seam |
 |---|---|---|---|
 | Scheduler (the flying programme, validation engine, publishing) | `src/engine`, `src/state`, `src/ui` | `state/store.ts` | `HOOKS.storeBackend` → `src/storage/` |
-| Leave War (leave bidding and the OIL ledger) | `src/leavewar/` | its own | `leavewar/state/storage.ts` (session-only today) |
+| Leave War (leave bidding and the OIL ledger) | `src/leavewar/` | its own | `leavewar/state/storage.ts` — booted on the whiteboard via `leavewarAdapter`, so it PERSISTS on the built site (the "session-only" note here was superseded by the 8 Sep 26 storage seam; corrected 17 Sep 26) |
 | Tracker (OCU syllabus progress) | `src/tracker/` | `tracker/app/core.js` | `tracker/storage.js` (localStorage under `raptor:tracker/`) |
 
 The boundaries between them are enforced, not merely intended: the seams into
