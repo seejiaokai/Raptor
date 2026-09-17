@@ -153,6 +153,13 @@ export interface Command {
   scope: Scope
   meta?: any
   apply: (txn: Txn) => void
+  /* OPTIONAL per-command optimistic-concurrency guard ([CMDL-FINISH] §3, F8):
+     keyed `${collection}/${id}` → the revision the caller read before staging
+     this command. Checked at phase 5 — a mismatch REJECTS as `conflict` and
+     rolls back. The undo step (Step 3) is the consumer that pins these; at this
+     step no production path sets it (the only checker in use is MemoryDoor in
+     tests), so it is latent. */
+  expectedRevs?: Record<string, number>
 }
 
 /* commit() outcome. A queued (subscriber-raised) commit returns
@@ -161,7 +168,7 @@ export interface Command {
    Fable R4-5). */
 export type CommitResult =
   | { ok: true; seq: number; envelope: CommitEnvelope }
-  | { ok: false; reason: 'conflict' | 'invalid' | 'unauthorized'; message?: string }
+  | { ok: false; reason: 'conflict' | 'invalid' | 'unauthorized' | 'refused'; message?: string }
   | { queued: true; done: Promise<CommitResult> }
 
 export function isOk(r: CommitResult): r is { ok: true; seq: number; envelope: CommitEnvelope } {

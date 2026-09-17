@@ -13,6 +13,14 @@ export { isOk, isQueued } from './types'
 export {
   commit, onCommit, commandStream, revisionOf,
   deferEffect, isCommitting, registerGuardedStore, setConflictChecker,
+  commitProjection, isInReducer, commitPhase, CmdRefused,
+} from './commit'
+/* [CMDL-FINISH] §2.3 — the reconciler/gesture wiring (LW router, Tracker
+   trkGesture) reads the engine through these `cmd*` names. Aliases, not new
+   behaviour: cmdCommit is the public forward-write, cmdIsCommitting/cmdDeferEffect
+   the phase-8/9 latch primitives. */
+export {
+  commit as cmdCommit, isCommitting as cmdIsCommitting, deferEffect as cmdDeferEffect,
 } from './commit'
 
 export { deriveActor, systemActor } from './actor'
