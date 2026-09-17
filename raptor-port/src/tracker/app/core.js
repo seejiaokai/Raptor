@@ -146,6 +146,10 @@ let TRK_SIG = 0;
    tombstone). bumpMemGen fires wherever mem changes through trkWrite/trkDelete. */
 const memGen = new Map();
 function bumpMemGen(k) { memGen.set(k, (memGen.get(k) || 0) + 1); }
+/* [CMDL-FINISH] §4 (GU-004) — while a gesture is open this holds the keys it
+   wrote (key→value), so their storage flush can be deferred to ONE boundary
+   effect. Non-null ⇒ sSet records instead of persisting inline. */
+let TRK_GESTURE_PENDING = null;
 /* the persisted mirror, read SYNCHRONOUSLY — the record source once hydrated
    (used by the §3 write()/restore re-derive; nothing on it awaits or calls
    loadCourse — build-advice #5). */
@@ -277,6 +281,7 @@ function trkRegisterCommands() {
     cmdDefinePermission(c, cmdAnyone);   // permissive at Step 2 (the real file/role gates are unchanged)
     cmdRegisterRecord({ key: 'tracker:' + c, cls: 'record', collection: c, module: 'tracker' });
   }
+  cmdDefinePermission('trk.gesture', cmdAnyone);   // [CMDL-FINISH] §4 — a multi-collection gesture's envelope
 }
 /* [CMDL-FINISH] §3 — re-derive the CURRENT course's live lets from `mem`
    SYNCHRONOUSLY (the id-native happy path: no migrations, no async sGet, no
@@ -384,7 +389,44 @@ function trkWrite(k, v) {
     mem[k] = v; bumpMemGen(k); TRK_SIG++;
   }
 }
-async function sSet(k, v) { trkWrite(k, v); setSaveStatus('', 'saving'); try { await storage.set(k, v); setSaveStatus('', 'ok'); } catch (e) { setSaveStatus('local only', 'ok'); } }
+/* [CMDL-FINISH] §4 — no longer `async`, so a call inside a gesture completes its
+   mem write SYNCHRONOUSLY (no await sequences a later write into a microtask that
+   would escape the gesture's reducer). Returns a promise so `await sSet(...)`
+   still works outside a gesture. Inside a gesture: mem write (trkWrite takes its
+   raw branch while committing) + record the key; the storage flush is deferred by
+   trkGesture to the transaction boundary. */
+function sSet(k, v) {
+  trkWrite(k, v);
+  if (TRK_GESTURE_PENDING) { TRK_GESTURE_PENDING.set(k, v); return Promise.resolve(); }
+  setSaveStatus('', 'saving');
+  return storage.set(k, v).then(() => setSaveStatus('', 'ok'), () => setSaveStatus('local only', 'ok'));
+}
+/* flush a gesture's pending storage writes at the transaction boundary (M4: via
+   cmdDeferEffect, so a rejected gesture never persists and a queued one flushes at
+   drain). The mem records are already written; this is only the durable copy. */
+function flushGesture(pending) {
+  if (!pending || !pending.size) return;
+  setSaveStatus('', 'saving');
+  Promise.all([...pending].map(([k, v]) => storage.set(k, v)))
+    .then(() => setSaveStatus('', 'ok'), () => setSaveStatus('local only', 'ok'));
+}
+/* [CMDL-FINISH] §4 (GU-004) — run a gesture's SYNCHRONOUS mem + live-let
+   mutations inside ONE command, so a multi-write gesture is ONE envelope (ONE
+   undo step at Step 3). The caller HOISTS every async read/prompt BEFORE this and
+   passes a sync fn. Nested (or already committing) ⇒ just run, joining the open
+   transaction. The storage flush is raised as a boundary effect (M4). */
+function trkGesture(fn) {
+  if (TRK_GESTURE_PENDING || cmdIsCommitting() || !TRK_COMMANDS) { fn(); return; }
+  const pending = new Map();
+  TRK_GESTURE_PENDING = pending;
+  try {
+    cmdCommit({
+      type: 'trk.gesture',
+      scope: { module: 'trk', courseId: course, sylId: curSylId() },
+      apply: (txn) => { txn.enlist(trkStore); fn(); cmdDeferEffect(() => flushGesture(pending)); },
+    });
+  } finally { TRK_GESTURE_PENDING = null; }
+}
 
 /* ---------- this browser's own preferences ----------
    Which course and which crew member you were last on is a view preference,
@@ -3271,7 +3313,10 @@ export function toggleLullCopy(s, on) {
 export async function applyLullCopy() {
   if (!lullCopy) return;
   const src = (lulls[lullCopy.from] || []).map(l => ({ start: l.start, end: l.end }));
-  for (const s of lullCopy.picked) { lulls[s] = src.map(l => ({ ...l })); await saveLulls(s); }
+  const picked = lullCopy.picked;
+  // [CMDL-FINISH] §4 (Class B, R3-002) — copying the lull periods to every picked
+  // student is ONE gesture = ONE envelope, not one save per student.
+  trkGesture(() => { for (const s of picked) { lulls[s] = src.map(l => ({ ...l })); saveLulls(s); } });
   lullCopy = null; renderSide();
 }
 
@@ -3333,11 +3378,16 @@ export function ballTap(id, ev) {
 }
 
 /* ---------- where each student was last marking ---------- */
-async function noteLastEdit(s, id) {
+/* [CMDL-FINISH] §4 — no longer async: called inside popGrade's gesture reducer,
+   so both writes must land SYNCHRONOUSLY (an await between them would sequence the
+   second into a microtask that escapes the gesture's envelope). sSet's mem write
+   is synchronous; its storage goes through the gesture's deferred flush. Only
+   popGrade calls this. */
+function noteLastEdit(s, id) {
   if (!s || !id) return;
   lastEdit[s] = { syl: curSyl(), event: id };
-  await sSet(kLast(course, s), JSON.stringify(lastEdit[s]));
-  await sSet(kLastStudent(course), s);
+  sSet(kLast(course, s), JSON.stringify(lastEdit[s]));
+  sSet(kLastStudent(course), s);
 }
 /* Scrolls the board so an event sits in the middle. The browser clamps to the
    real scroll range, so an event near an edge simply comes as close as it can. */
@@ -3427,17 +3477,22 @@ export async function popGrade(v) {
      on marks[null][id]. Clicking an event on an empty course should do nothing,
      not break the page. */
   if (!s) { closePop(); return; }
-  pushMarkUndo(s, 'the mark on ' + popId);
-  await noteLastEdit(s, popId);
-  marks[s] = marks[s] || {};
-  const m = marks[s][popId] = marks[s][popId] || { g: 0, f: 0 }; m.g = v === '0' ? 0 : v;
-  /* A grade that means "accomplished" is dated the day it is pressed (the box
-     in the pop-up, today unless changed first); Not done and N.A. carry no
-     day, so the date goes with the grade. */
-  if (DONE.has(v)) m.d = popDoneDate || isoToday(); else delete m.d;
-  stamp(m);
-  await saveMarks(s);
-  if (byid[popId] && byid[popId].type === 'flight' && DONE.has(v)) await flownOn(s, m.d);
+  /* [CMDL-FINISH] §4 (Class A) — the whole grade (last-edit note, the mark, and a
+     flight's Last-Flown) is ONE gesture = ONE envelope. No reads to hoist; every
+     write's mem mutation is synchronous inside the reducer, storage deferred. */
+  trkGesture(() => {
+    pushMarkUndo(s, 'the mark on ' + popId);
+    noteLastEdit(s, popId);
+    marks[s] = marks[s] || {};
+    const m = marks[s][popId] = marks[s][popId] || { g: 0, f: 0 }; m.g = v === '0' ? 0 : v;
+    /* A grade that means "accomplished" is dated the day it is pressed (the box
+       in the pop-up, today unless changed first); Not done and N.A. carry no
+       day, so the date goes with the grade. */
+    if (DONE.has(v)) m.d = popDoneDate || isoToday(); else delete m.d;
+    stamp(m);
+    saveMarks(s);
+    if (byid[popId] && byid[popId].type === 'flight' && DONE.has(v)) flownOn(s, m.d);
+  });
   redrawKeepView(); closePop();
 }
 export async function popFail(delta) {
@@ -3449,15 +3504,18 @@ export async function popFail(delta) {
      N/A colour. Existing counts are kept, not wiped — mark it back to a real
      grade and the history is still there. */
   if (delta > 0 && gradeOf(s, popId) === 'na') { flashHint('“' + popId + '” is marked N.A., so it cannot be failed.'); return; }
-  pushMarkUndo(s, 'the failure count on ' + popId);
-  /* + records a failure on the pop-up's failure day; − takes the LATEST one
-     back. The count and the list of days are kept in step. */
-  const fd = failDates(s, popId);
-  for (let k = 0; k < delta; k++) fd.push(popFailDate || isoToday());
-  for (let k = 0; k < -delta && fd.length; k++) fd.pop();
-  m.f = fd.length; m.fd = fd;
-  stamp(m);
-  await saveMarks(s); redrawKeepView();
+  trkGesture(() => {   // [CMDL-FINISH] §4 (Class A) — the count + day list as ONE envelope
+    pushMarkUndo(s, 'the failure count on ' + popId);
+    /* + records a failure on the pop-up's failure day; − takes the LATEST one
+       back. The count and the list of days are kept in step. */
+    const fd = failDates(s, popId);
+    for (let k = 0; k < delta; k++) fd.push(popFailDate || isoToday());
+    for (let k = 0; k < -delta && fd.length; k++) fd.pop();
+    m.f = fd.length; m.fd = fd;
+    stamp(m);
+    saveMarks(s);
+  });
+  redrawKeepView();
 }
 /* The pop-up's "Failed on" box: only where the NEXT + lands. Nothing is saved
    until a failure is recorded on that day. */
@@ -3474,21 +3532,25 @@ export async function popDoneChanged(v) {
 }
 export async function setDoneDate(s, id, iso) {
   if (!s || !marks[s] || !marks[s][id] || !DONE.has(gradeOf(s, id))) return;
-  pushMarkUndo(s, 'the date on ' + id, 'doneDate:' + id);
-  marks[s][id].d = iso || isoToday();
-  stamp(marks[s][id]);
-  await saveMarks(s); renderSide();
-  if (byid[id] && byid[id].type === 'flight') await flownOn(s, marks[s][id].d);
+  trkGesture(() => {   // [CMDL-FINISH] §4 (Class A) — re-date + a flight's Last-Flown as ONE envelope
+    pushMarkUndo(s, 'the date on ' + id, 'doneDate:' + id);
+    marks[s][id].d = iso || isoToday();
+    stamp(marks[s][id]);
+    saveMarks(s); renderSide();
+    if (byid[id] && byid[id].type === 'flight') flownOn(s, marks[s][id].d);
+  });
 }
 /* Re-date ONE failure — the i-th (oldest first) on an event — from the full
    lowdown. An emptied box leaves the failure undated, not deleted. */
 export async function setFailDate(s, id, i, iso) {
   if (!s || !marks[s] || !marks[s][id]) return;
   const fd = failDates(s, id); if (i < 0 || i >= fd.length) return;
-  pushMarkUndo(s, 'the date of ' + failLabel(id, i), 'failDate:' + id + ':' + i);
-  fd[i] = iso || null; marks[s][id].fd = fd;
-  stamp(marks[s][id]);
-  await saveMarks(s); renderSide();
+  trkGesture(() => {   // [CMDL-FINISH] §4 (Class A)
+    pushMarkUndo(s, 'the date of ' + failLabel(id, i), 'failDate:' + id + ':' + i);
+    fd[i] = iso || null; marks[s][id].fd = fd;
+    stamp(marks[s][id]);
+    saveMarks(s); renderSide();
+  });
 }
 /* The full lowdown of one student's failures, opened from the Failures title
    on the side panel (owner, 9 Sep 26: "if the user clicks on the title
@@ -3658,23 +3720,28 @@ export async function addStudent() {
      switch starting mid-way would re-key the saves below */
   await onChain(async () => {
     let r = src ? roster.find(x => x.id === src.id) : null;
-    if (!r) {
+    const isNew = !r;
+    /* [CMDL-FINISH] §4 (Class B) — HOIST the reused-enrolment reads (an enrolment
+       REUSED from another chart of this course already has a pace and lull periods,
+       both hanging off the course not the syllabus — loadStudent only fills those
+       for the roster it loaded) BEFORE the sync gesture, so the mem they mirror is
+       in the gesture's before-image. Then the roster/marks/dates writes are ONE
+       envelope. */
+    let paceRead = null, lullsRead = null;
+    if (isNew) {
       r = src ? { id: src.id, name: src.name } : { id: mintId(), name: v };
       const pid = (src && src.pid) || link; if (pid) r.pid = pid;
-      roster.push(r); marks[r.id] = {}; dates[r.id] = { lastSyll: null, lastCurr: null };
-      /* An enrolment REUSED from another chart of this course already has a
-         pace and lull periods, and both hang off the course rather than the
-         syllabus — but loadStudent only fills those maps for the roster it
-         loaded, so without this read the panel offered the same person the
-         default two events a week, and the first touch of that box would have
-         saved it over the real one. One enrolment, one pace. */
-      if (src) {
-        const pr = await sGet(kPace(course, r.id)); if (pr) { try { pace[r.id] = JSON.parse(pr); } catch (_) {} }
-        const l = await sGet(kLulls(course, r.id)); if (l) { try { lulls[r.id] = JSON.parse(l); } catch (_) {} }
-      }
-      await saveRoster(); await saveMarks(r.id); await saveDates(r.id);
-    } else if (link && !r.pid) { r.pid = link; await saveRoster(); }
-    active = r.id; refreshActive(); renderBoard(); renderSide();
+      if (src) { paceRead = await sGet(kPace(course, r.id)); lullsRead = await sGet(kLulls(course, r.id)); }
+    }
+    trkGesture(() => {
+      if (isNew) {
+        roster.push(r); marks[r.id] = {}; dates[r.id] = { lastSyll: null, lastCurr: null };
+        if (paceRead) { try { pace[r.id] = JSON.parse(paceRead); } catch (_) {} }
+        if (lullsRead) { try { lulls[r.id] = JSON.parse(lullsRead); } catch (_) {} }
+        saveRoster(); saveMarks(r.id); saveDates(r.id);
+      } else if (link && !r.pid) { r.pid = link; saveRoster(); }
+      active = r.id; refreshActive(); renderBoard(); renderSide();
+    });
   });
 }
 export async function removeStudent(v) {
@@ -3996,12 +4063,17 @@ export async function addCourse() {
      Front, not back: the newest course is the one being set up, so it should be
      the one the dropdown offers first and the one the app falls back to. */
   const id = mintCourseId();
-  COURSES.unshift({ id, name: v }); await saveCourses();
   const chosen = curSylId(); const useId = allSylIds().indexOf(chosen) >= 0 ? chosen : firstSylId();
-  await sSet(kPlan(id), JSON.stringify({ lulls: [], mode: 'pace', epw: 2, target: null, sylId: useId }));
-  for (const sid of allSylIds()) await sSet(kRosterFor(id, sid), JSON.stringify([]));
-  await sSet(kRosterMig(id), '1');   /* clean start: add students yourself, no marks carried over */
-  await sSet(kIdMig(id), '1');       /* born id-keyed — there is nothing to convert */
+  // [CMDL-FINISH] §4 (Class B) — the whole course creation (entry + plan + empty
+  // rosters + migration flags) is ONE gesture = ONE envelope; the load after is a
+  // separate async read.
+  trkGesture(() => {
+    COURSES.unshift({ id, name: v }); saveCourses();
+    sSet(kPlan(id), JSON.stringify({ lulls: [], mode: 'pace', epw: 2, target: null, sylId: useId }));
+    for (const sid of allSylIds()) sSet(kRosterFor(id, sid), JSON.stringify([]));
+    sSet(kRosterMig(id), '1');   /* clean start: add students yourself, no marks carried over */
+    sSet(kIdMig(id), '1');       /* born id-keyed — there is nothing to convert */
+  });
   await loadCourse(id); refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
   setSaveStatus('course ' + v + ' created on the ' + sylName(useId) + ' syllabus — add students to begin', 'ok');
 }

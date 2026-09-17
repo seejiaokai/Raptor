@@ -8,8 +8,8 @@
    suite is the comprehensive behaviour check. */
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import * as core from './app/core.js'
-import { commit, definePermission, anyone, isOk } from '../command'
-import type { RecordEntry, CommitResult } from '../command'
+import { commit, definePermission, anyone, isOk, onCommit } from '../command'
+import type { RecordEntry, CommitResult, CommitEnvelope } from '../command'
 
 let board: HTMLDivElement
 
@@ -61,5 +61,20 @@ describe('Tracker capture/restore — selection + signature (R3-005/C9)', () => 
     const c = (core as any).course, syl = (core as any).curSylId(), st = (core as any).active
     restore([{ collection: 'trk.marks', id: `v3:${c}:${syl}:m:${st}`, value: JSON.stringify({ 'ST-02': { g: 1 } }), op: 'put' }])
     expect(store.signature()).not.toBe(s0)
+  })
+})
+
+describe('Tracker gesture grouping — one gesture = one envelope (§4, Class A)', () => {
+  it('popGrade emits ONE trk.gesture envelope for the whole grade', async () => {
+    const ev = (core as any).SYL[0] && (core as any).SYL[0].id
+    expect(ev).toBeTruthy()
+    const caught: CommitEnvelope[] = []
+    const unsub = onCommit(e => caught.push(e))
+    ;(core as any).openPop(ev, { clientX: 1, clientY: 1 })
+    await (core as any).popGrade('1')
+    unsub()
+    expect(caught.length).toBe(1)                                          // ONE envelope, not one per write
+    expect(caught[0].type).toBe('trk.gesture')
+    expect(caught[0].changes.some(c => c.collection === 'trk.marks')).toBe(true)
   })
 })
