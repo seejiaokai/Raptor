@@ -176,7 +176,19 @@ None of these gate a tracker- or storage-only change.
 
 ## In flight
 
-**Nothing in flight as of 17 Sep 26.** The big thread this section grew around —
+**[CMDL-FINISH] — ARCH-STACK step 2 completion (finish the one command layer for Leave
+War + Tracker) — DESIGN LOCKED, BUILD PENDING (17 Sep 26).** On branch
+`claude/cmdl-finish` (docs-only, no PR yet). Design-first + FOUR cross-provider red-team
+rounds (Codex/GPT-6 Astra + Fable 5.1) → converged build-ready: **Fable APPROVED/
+SHIP-READY**; Codex confirmed all round-3 folds closed. Three agreed LOCK patches folded
+into the spec; 9 build-advice notes in the review log. **Build P1–P6 on Opus 4.8 high,
+test-first; full gates per phase; cross-provider CODE inspection after build; NO merge
+without "merge live".** Gates `[GLOBAL-UNDO]`. Design + record:
+`docs/superpowers/specs/2026-09-17-arch-stack-cmdl-finish-design.md` (see its "LOCK
+patches" section + §7 phasing) and `…-cmdl-finish-review-log.md`; task in `OUTSTANDING.md`.
+Session leftover detail: `docs/session-state.md`.
+
+**Historical (merged):** the big thread this section grew around —
 the storage seam and everything after it — culminated in **[ARCH-STACK] Step 2
 (the one command/commit layer over stable ids) + follow-up #1 (routing every
 remaining scheduler write through it), MERGED LIVE in PR #409.** Design + build
