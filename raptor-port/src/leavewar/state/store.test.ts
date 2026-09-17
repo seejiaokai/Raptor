@@ -924,6 +924,47 @@ describe('more than one leave war', () => {
     expect(getState().wars.some(w => w.period.stage === 'draft')).toBe(true)
   })
 
+  /* [LW-OPEN] (owner, 17 Sep 26, restating his 7 Sep rule under the
+     newest-instruction-wins principle): the tab ALWAYS opens on the war being
+     worked — open for bidding, else closed, else published, else draft — and a
+     remembered choice must NOT override it.
+     This is a REGRESSION GUARD, not a new feature. Before the 8 Sep 26 storage
+     seam nothing was ever stored, so the stage pick ran on every load and the
+     rule held by accident. Once the Leave War persisted, the stored `current`
+     started winning from the second visit onward and the squadron would reopen
+     on whatever war was last looked at — a DRAFT year, say, instead of the one
+     actually open for bidding. */
+  it('ignores a remembered war and still opens on the one being worked', () => {
+    const backend = memoryBackend()
+    initStore(backend)
+    const draft = getState().wars.find(w => w.period.stage === 'draft')!.period.id
+    const worked = getState().wars.find(w => w.period.stage === 'open')!.period.id
+    expect(draft).not.toBe(worked)
+
+    // the reader switches to the draft war; that choice IS recorded
+    selectWar(draft)
+    expect(getState().currentId).toBe(draft)
+    expect(backend.read('current')).toBe(draft)   // recorded raw, not JSON-wrapped
+
+    // ...but the next load opens on the war being worked, not the remembered one
+    initStore(backend)
+    expect(getState().currentId).toBe(worked)
+    expect(getState().period.stage).toBe('open')
+  })
+
+  /* The other half of the same ruling (the host's implementation call, owner
+     approved 17 Sep 26): the picker must still work. A switch holds for the
+     REST OF THAT SESSION — it just does not carry to the next load. Without
+     this the picker would fight the user on every repaint. */
+  it('keeps a switched war for the rest of the session', () => {
+    const backend = memoryBackend()
+    initStore(backend)
+    const draft = getState().wars.find(w => w.period.stage === 'draft')!.period.id
+    selectWar(draft)
+    expect(getState().currentId).toBe(draft)
+    expect(getState().period.stage).toBe('draft')
+  })
+
   it('switches to another war, and the grid on screen switches with it', () => {
     const other = getState().wars[1].period.id
     selectWar(other)
@@ -945,13 +986,23 @@ describe('more than one leave war', () => {
     expect(getVersion()).toBe(before)
   })
 
-  it('remembers which war was on screen across a reload', () => {
+  /* REVERSED 17 Sep 26 by owner ruling. This test used to be "remembers which
+     war was on screen across a reload" and asserted that a reload returned to
+     the war last chosen. That behaviour was itself an unintended side-effect of
+     the 8 Sep 26 storage seam (see the regression note above), and the owner
+     has ruled the tab must always open on the war being WORKED. The choice is
+     still recorded to storage — it is simply not honoured at boot — so this now
+     pins the opposite, deliberately. Do not restore the old assertion without a
+     newer owner ruling. */
+  it('records the chosen war but does NOT reopen on it', () => {
     const backend = memoryBackend()
     initStore(backend)
-    selectWar(getState().wars[1].period.id)
-    const chosen = getState().currentId
+    const chosen = getState().wars[1].period.id
+    selectWar(chosen)
+    expect(backend.read('current')).toBe(chosen)     // still written down
     initStore(backend)
-    expect(getState().currentId).toBe(chosen)
+    expect(getState().currentId).not.toBe(chosen)    // but not reopened on
+    expect(getState().period.stage).toBe('open')     // the war being worked
   })
 
   // Writes land in the war on screen and nowhere else. A cell written while

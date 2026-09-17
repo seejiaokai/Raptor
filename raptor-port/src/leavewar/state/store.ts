@@ -93,6 +93,14 @@ import {
 } from '../engine'
 import { counterLabel } from '../engine/counters'
 import { localBackend, memoryBackend, type StorageBackend } from './storage'
+/* [ARCH-STACK] Step 2 phase 4 — the shared command layer (see the persist()
+   router below). Imported here so a Leave War user edit joins the SAME change
+   stream + auth gate every module funnels through. */
+import {
+  commit as cmdCommit, isCommitting as cmdIsCommitting,
+  definePermission as cmdDefinePermission, anyone as cmdAnyone, registerRecord as cmdRegisterRecord,
+} from '../../command'
+import type { EnlistableStore as CmdEnlistableStore, RecordEntry as CmdRecordEntry, Scope as CmdScope } from '../../command'
 
 interface State {
   people: Person[]
@@ -727,9 +735,11 @@ function readWar(x: unknown): LeaveWar | null {
      and strand dead grid strings neither reverse sweep can collect, and
      `ingestDutyCredit` would clash on those dates forever. Renamed in place
      at the one load door (the seedGrid HO→*OIL migration precedent). No
-     live path hits this today — main.tsx boots the memory backend — but the
-     DB era makes this load path real, and the migration must already be
-     standing when it does. */
+     live path hits this today. CORRECTED 17 Sep 26: the old reason — "main.tsx
+     boots the memory backend" — is FALSE since 8 Sep 26; main.tsx boots Leave War
+     on the WHITEBOARD, so on a built site this load path IS live and a returning
+     browser does come through here. The migration is therefore not
+     standing-in-advance for the DB era: it is load-bearing now. */
   if (isPlainObject(grid)) {
     for (const row of Object.values(grid as Record<string, unknown>)) {
       if (!isPlainObject(row)) continue
@@ -835,16 +845,20 @@ export function initStore(b?: StorageBackend): void {
   state = blank()
 
   const wars = readStored('wars', readWars) ?? migrateSingleWar() ?? seedWars()
-  const storedCurrent = backend.read('current')
-  // A remembered choice wins (a returning session put the reader back where
-  // they were); otherwise open on the war that is open for bidding — else
-  // closed, else published (owner, 7 Sep 26). Since the storage seam (8 Sep
-  // 26) `current` IS stored per browser, so after the first war switch the
-  // tab reopens on the remembered war and the stage pick decides only for a
-  // browser that never chose.
-  const currentId = wars.some(w => w.period.id === storedCurrent)
-    ? (storedCurrent as string)
-    : (pickDefaultPeriodId(wars.map(w => w.period)) || wars[0].period.id)
+  /* THE TAB ALWAYS OPENS ON THE WAR BEING WORKED (owner, 7 Sep 26, restated
+     and reaffirmed 17 Sep 26): open for bidding first, else bidding-closed,
+     else published, else draft. A remembered choice does NOT override it.
+
+     This deliberately IGNORES the stored `current`. It used to win here, and
+     that was a REGRESSION nobody made on purpose: before the storage seam
+     (8 Sep 26) nothing was ever stored, so this stage pick ran on every load
+     and the owner's rule held by accident. Once the Leave War persisted, the
+     remembered war started winning from the second visit — so a squadron that
+     had glanced at the DRAFT 2027 year would reopen there instead of on the
+     year actually open for bidding. `current` is still RECORDED (below, at
+     every switch) because it is the reader's last choice and the shared
+     database may yet want it per user; it is simply not honoured at boot. */
+  const currentId = pickDefaultPeriodId(wars.map(w => w.period)) || wars[0].period.id
 
   const openings = readStored('openings', readOpenings) ?? seedOpenings()
   const ledger = readStored('ledger', readLedger) ?? seedLedger()
@@ -951,8 +965,12 @@ function notify(): void {
 
 // One writer for all three keys, so no write path can save a grid and forget
 // the states that have to agree with it.
-function persist(): void {
+function rawPersist(): void {
   backend.write('wars', JSON.stringify(state.wars))
+  // Recorded, but deliberately NOT read back at boot — initStore always opens
+  // on the war being worked (owner, 17 Sep 26; see the stage-pick comment
+  // there). Kept because it is the reader's last choice and the shared
+  // database may want it per user. Do not "restore" it as the boot default.
   backend.write('current', state.currentId)
   backend.write('openings', JSON.stringify(state.openings))
   backend.write('ledger', JSON.stringify(state.ledger))
@@ -984,6 +1002,112 @@ function persist(): void {
   // holds it (the UNDO / REDO block below). Skipped while a restore or a
   // sync-driven write holds the lock, and a no-op when nothing durable moved.
   recordHistory()
+}
+
+/* =====================================================================
+   [ARCH-STACK] Step 2 phase 4 — the Leave War COMMAND LAYER (ADDITIVE, §5.3)
+   ---------------------------------------------------------------------
+   Every durable LW write funnels through persist(). A STANDALONE USER edit now
+   runs its identical body (rawPersist) inside commit(), emitting the record-level
+   change stream — per-populated-cell `lw.cell` / `lw.bid` records plus the coarse
+   ledger / balances / oilpolicy / postouts / current / config records (§3.1).
+
+   Everything else runs RAW, exactly as today, so no delicate path changes:
+   - LOCKED writes — the four sync reconcilers and undo/redo (historyApply) — the
+     lock is the sync loop-breaker, and undo is NOT routed through commit at Step 2
+     (§0);
+   - a write NESTED in another command (a causal Raptor->LW write) — deferred JOIN;
+   - boot/seed persists (before LW_READY, set at the end of the boot lwHistInit).
+
+   The immutable `state` ref IS the snapshot (capture is O(1)); a rollback simply
+   reassigns it. LW's snapshot undo stack is left running. lwStore is deliberately
+   NOT a guarded store: a causal Raptor->LW write (locked) legitimately changes it
+   outside any LW command, and the whole-world guard would wrongly flag that.
+
+   DEFERRED (a documented follow-up; they need the owner's live-scenario sign-off
+   on the delicate Raptor<->LW sync loop, which a headless run can't perform):
+   sync-reconcilers-as-projection (commitAs) and the causal input-delete->bid-
+   delete JOIN into the originating Raptor command's transaction. Until then those
+   writes stay raw — additive and behaviour-identical to today.
+   ===================================================================== */
+let LW_BASELINE: State = state   // the last-persisted state ref — the record source
+let LW_READY = false             // enabled after boot (lwHistInit), so seed persists stay raw
+let LW_REGISTERED = false
+
+/* decompose a durable State into its logical records (design §3.1): one record
+   per POPULATED grid cell / bid (sparse), plus the coarse side records. */
+function lwDecompose(s: State): Map<string, CmdRecordEntry> {
+  const m = new Map<string, CmdRecordEntry>()
+  for (const w of s.wars) {
+    const warId = w.period.id
+    /* the war's own period record — id/name/stage/bidFrom/bidTo/days (events/PH/
+       blocked). Without this a stage advance, bidding-window change, war rename or
+       a brand-new (cell-less) war produces an empty diff and is dropped (Fable-2). */
+    m.set(`lw.war/${warId}`, { collection: 'lw.war', id: warId, value: w.period })
+    const grid = (w.grid || {}) as Record<string, Record<string, string>>
+    for (const pid of Object.keys(grid)) {
+      const row = grid[pid] || {}
+      for (const date of Object.keys(row)) {
+        if (row[date] === undefined) continue
+        const id = `${warId}:${pid}:${date}`
+        m.set(`lw.cell/${id}`, { collection: 'lw.cell', id, value: row[date] })
+      }
+    }
+    const states = (w.states || {}) as Record<string, Record<string, unknown>>
+    for (const pid of Object.keys(states)) {
+      const row = states[pid] || {}
+      for (const date of Object.keys(row)) {
+        if (row[date] === undefined) continue
+        const id = `${warId}:${pid}:${date}`
+        m.set(`lw.bid/${id}`, { collection: 'lw.bid', id, value: row[date] })
+      }
+    }
+  }
+  m.set('lw.ledger/all', { collection: 'lw.ledger', id: 'all', value: s.ledger })
+  m.set('lw.balances/all', { collection: 'lw.balances', id: 'all', value: s.openings })
+  m.set('lw.oilpolicy/all', { collection: 'lw.oilpolicy', id: 'all', value: s.oilPolicy })
+  m.set('lw.postouts/all', { collection: 'lw.postouts', id: 'all', value: s.postOuts })
+  m.set('lw.current/all', { collection: 'lw.current', id: 'all', value: s.currentId })
+  m.set('lw.config/all', {
+    collection: 'lw.config', id: 'all', value: {
+      eventDefs: s.eventDefs, figureOrder: s.figureOrder, rosterOrder: s.rosterOrder,
+      persLabels: s.persLabels, manningOrder: s.manningOrder, manningHidden: s.manningHidden,
+      figureHidden: s.figureHidden, groupDefs: s.groupDefs, groupPriority: s.groupPriority,
+      groupPriorityCustom: s.groupPriorityCustom, groupColors: s.groupColors,
+      requirements: s.requirements, eventRows: s.eventRows, showSans: s.showSans,
+      personEdits: s.personEdits,
+    },
+  })
+  return m
+}
+
+const lwStore: CmdEnlistableStore = {
+  key: 'leavewar',
+  capture: () => LW_BASELINE,                                  // the immutable ref IS the snapshot
+  restore: (snap) => { state = snap as State; LW_BASELINE = snap as State },
+  records: () => lwDecompose(LW_BASELINE),
+}
+
+function lwRegisterCommands(): void {
+  if (LW_REGISTERED) return
+  LW_REGISTERED = true
+  cmdDefinePermission('lw.edit', cmdAnyone)   // permissive at Step 2 (the real role gates are unchanged)
+  const cols = ['lw.cell', 'lw.bid', 'lw.war', 'lw.ledger', 'lw.balances', 'lw.oilpolicy', 'lw.postouts', 'lw.current', 'lw.config'] as const
+  for (const c of cols) cmdRegisterRecord({ key: `leavewar:${c}`, cls: 'record', collection: c, module: 'leavewar' })
+}
+
+/* the persist ROUTER (replaces the old direct persist body, now rawPersist). */
+function persist(): void {
+  if (!LW_READY || HIST.lock || cmdIsCommitting()) {
+    // sync reconcile / undo-redo / a nested causal write / boot-seed -> raw, exactly as today
+    rawPersist(); LW_BASELINE = state; return
+  }
+  // a standalone USER edit -> its identical body, inside a command that emits the change stream
+  cmdCommit({
+    type: 'lw.edit',
+    scope: { module: 'lw', warId: state.currentId } as CmdScope,
+    apply: (txn) => { txn.enlist(lwStore); rawPersist(); LW_BASELINE = state },
+  })
 }
 
 /* =====================================================================
@@ -1062,6 +1186,13 @@ export function lwHistInit(): void {
   HIST.stack = [historySnap()]
   HIST.ix = 0
   HIST.lock = false
+  /* [ARCH-STACK] phase 4: enable command routing now that the boot sequence
+     (demo world + first sync pass) has finished its raw seed persists, and
+     baseline the record source to the state on screen. Also called on selectWar
+     (re-baseline), which harmlessly re-syncs the baseline to the switched war. */
+  lwRegisterCommands()
+  LW_BASELINE = state
+  LW_READY = true
 }
 
 export function lwCanUndo(): boolean {
@@ -3128,11 +3259,14 @@ export function selectWar(id: string): void {
  * as a persisted war did — returns false and changes nothing if it does not
  * pass. It does not persist: this is a live injection, not a save.
  *
- * Its one caller is the e2e probe bridge. Leave War is session-only now (a
- * memory backend, see main.tsx), so the under-manned fixtures — which used to
- * inject a red-day war by writing `leavewar:wars` into localStorage before
- * boot — can no longer reach the store that way. They boot the app, then push
- * the same war object in through here. Not a production path.
+ * Its one caller is the e2e probe bridge. The under-manned fixtures — which used
+ * to inject a red-day war by writing `leavewar:wars` into localStorage before
+ * boot — cannot reach the store that way, so they boot the app and then push the
+ * same war object in through here. Not a production path.
+ * CORRECTED 17 Sep 26: the old reason given was "Leave War is session-only now (a
+ * memory backend)". It is not — Leave War persists on a built site; the memory
+ * backend is the dev/test path, which is what the e2e run uses. The bridge is
+ * still the right seam because it does not depend on which backend is mounted.
  */
 export function loadWars(raw: unknown, currentId: string): boolean {
   const wars = readWars(raw)

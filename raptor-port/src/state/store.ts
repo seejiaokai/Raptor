@@ -37,6 +37,9 @@ import { setSession as authSetSession, canEditSched, SESSION, ACCOUNTS, canToggl
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { setFileLocked as trSetFileLocked } from '../tracker/role.js'
 import { isHydrated, weekSwapBegin, weekSwapEnd } from './persist'
+import { deferEffect } from '../command'
+import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, SCHED_TYPES, resyncSchedBaseline } from './sched-commit'
+import { registerPeopleSettingsCommandLayer, resyncPeopleBaseline } from './people-settings-commit'
 
 let VERSION = 0
 const listeners = new Set<() => void>()
@@ -45,7 +48,13 @@ const boardListeners = new Set<() => void>()
 
 export function subscribe(fn: () => void) { listeners.add(fn); return () => { listeners.delete(fn) } }
 export function getVersion() { return VERSION }
-export function notify() { VERSION++; listeners.forEach(f => f()) }
+/* [ARCH-STACK] Step 2 (additive): while a commit() is in flight, the repaint is
+   LATCHED and released in phase 8 so a rolled-back command leaves no repaint of a
+   state that never happened. OUTSIDE a commit — every path not yet routed through
+   the gate (loadWeek, initStore, toggleRole, …) — deferEffect returns false and
+   notify runs inline exactly as before, so behaviour is unchanged. */
+export function notify() { if (deferEffect(realNotify)) return; realNotify() }
+function realNotify() { VERSION++; listeners.forEach(f => f()) }
 /* Day-to-day board navigation is view-only. Give the board a narrow repaint
    lane so a swipe does not wake every mounted store consumer (most notably
    EditWeek's seven large dayHTML calculations) while ordinary mutations still
@@ -61,21 +70,24 @@ export function notifyBoard() { BOARD_VERSION++; boardListeners.forEach(f => f()
    itself opens with, repeated here so the epilogue is skipped too. */
 export function writeSlot(key: any, id: any) {
   if (slotVal(key) === (id || '')) return     // no-op — nothing moved
-  setSlotVal(key, id)
-  afterSchedMutate()
+  /* [ARCH-STACK] Step 2 (additive): the identical write, now inside commit() —
+     enlist snapshot, run setSlotVal+afterSchedMutate exactly as before, emit the
+     record-level change. The legacy histPush/persistAll/undo stack still run. */
+  commitSchedVoid(SCHED_TYPES.slot, () => { setSlotVal(key, id); afterSchedMutate() })
 }
 
 /* a people cell ("first free seat, else add one more") */
 export function writeFill(key: any, id: any) {
-  fillSlot(key, id)
-  afterSchedMutate()
+  commitSchedVoid(SCHED_TYPES.fill, () => { fillSlot(key, id); afterSchedMutate() })
 }
 
 /* an inline text field; txtSet reports whether the model actually moved */
 export function writeText(path: any, v: any) {
-  const moved = txtSet(path, v)
-  if (moved) afterSchedMutate()
-  return moved
+  return commitSchedValue(SCHED_TYPES.text, () => {
+    const moved = txtSet(path, v)
+    if (moved) afterSchedMutate()
+    return moved
+  })
 }
 
 /* a structural delete. The caller does the splice + shiftKeys inside `fn`;
@@ -83,9 +95,11 @@ export function writeText(path: any, v: any) {
    address now occupied by a shifted row. afterSchedMutate supplies the usual
    revalidate/history epilogue. */
 export function writeDelete(fn: () => void, di?: number, kind: any = 'programme') {
-  fn()
-  if (di != null) markDeletion(di, kind)
-  afterSchedMutate()
+  commitSchedVoid(SCHED_TYPES.delete, () => {
+    fn()
+    if (di != null) markDeletion(di, kind)
+    afterSchedMutate()
+  })
 }
 
 /* ---- THE INPUT QUARANTINE CHOKE-POINT (P2-REV2-04, quarantine redesign) ----
@@ -157,7 +171,7 @@ function runInputWrite(fn: () => void, suppressHist: boolean): boolean {
 /* personal inputs (the Inputs page): mutate INPUTS, then the reference's
    add/delete epilogue — renderInputs(); reflow(); histPush(); */
 export function writeInputs(fn: () => void): boolean {
-  return runInputWrite(fn, false)
+  return commitInputs(SCHED_TYPES.inputsWrite, () => runInputWrite(fn, false))
 }
 
 /* Same as writeInputs, but for an action that calls engine helpers which push
@@ -165,7 +179,7 @@ export function writeInputs(fn: () => void): boolean {
    snapshots, so the first Undo landed the user in a half-applied state they
    never created — old fields, but already un-accepted. One action, one step. */
 export function writeInputsBatch(fn: () => void): boolean {
-  return runInputWrite(fn, true)
+  return commitInputs(SCHED_TYPES.inputsBatch, () => runInputWrite(fn, true))
 }
 
 /* THE SCHEDULE SECTION ORDER — its one write path (owner, 29 Aug 26). Re-arrange
@@ -180,7 +194,9 @@ export function moveSection(di: number, key: string, dir: number) {
   if (!canEditSched()) return
   /* HOOKS.histPush, not the raw histPush: the storage seam's persist wrapper
      rides the hook, and the raw call left a reorder unsaved (8 Sep 26 bug pass) */
-  if (moveSectionModel(DAYS[di], key, dir)) { HOOKS.histPush(); notify() }
+  commitSchedVoid(SCHED_TYPES.sectionMove, () => {
+    if (moveSectionModel(DAYS[di], key, dir)) { HOOKS.histPush(); notify() }
+  })
 }
 
 /* THE SECTION DISPLAY ORDER, dragged (owner, 29 Aug 26 pt.3 — the in-place drag
@@ -192,8 +208,10 @@ export function moveSection(di: number, key: string, dir: number) {
    ±1 step. Gated at the write path per the role doctrine. */
 export function moveSectionTo(di: number, fromKey: string, toKey: string): boolean {
   if (!canEditSched()) return false
-  if (reorderSectionTo(DAYS[di], fromKey, toKey)) { HOOKS.histPush(); notify(); return true }
-  return false
+  return commitSchedValue(SCHED_TYPES.sectionReorder, () => {
+    if (reorderSectionTo(DAYS[di], fromKey, toKey)) { HOOKS.histPush(); notify(); return true }
+    return false
+  })
 }
 
 /* the ONE session-reset path. Login.tsx and Shell.tsx's logout both called
@@ -208,6 +226,9 @@ export function moveSectionTo(di: number, fromKey: string, toKey: string): boole
    land on. Every login and logout now routes through here so a session
    change always drags the whole view back to a safe, page-1 default. */
 export function resetSession(s: any) {
+  /* OWNER RULING 17 Sep 26: a session ending is NOT a boundary event — only the
+     shared database registering a publish is. The old discloseCurrentIssued()
+     call here is gone; see state/disclosure.ts. */
   authSetSession(s)
   view.bumpNav()                  // a session change invalidates a pending day-template-apply confirm (P2-REV2-07)
   view.setPage('viewsched')
@@ -227,6 +248,11 @@ export function resetSession(s: any) {
      and clearing them here wiped the saved copy on the next history step
      (8 Sep 26 bug pass). */
   view.resetViewState('session')
+  /* [ARCH-STACK] follow-up #1 (SR-007): resetViewState('session') just CLEARED
+     WARNOFF, which rides the baseline. This is an out-of-band world change with
+     no snapshot restore, so histInit/histRestore never fire — re-sync explicitly,
+     or a mute → logout → login → edit would emit a bogus mute-clear. */
+  resyncSchedBaseline()
   /* the "View as" IDENTITY goes back to the boot default too. It is what
      every member-own gate keys on — the Inputs page's person filter and
      edit/delete reach, the Leave War's own-row rule (mirrored into its
@@ -301,15 +327,17 @@ export function toggleRole() {
    switch, which silently discarded any edit made to a week once you left it
    — reported bug: a duty added on the Sunday of an unauthored week vanished
    after scrolling one week forward and back. weekstash.ts is the dumb
-   per-week store (keyed by week-start; SESSION-ONLY on purpose — see its
-   header: the owner keeps the whole app's forget-on-exit rule, this fix is
-   about navigation, not reloads); these two helpers are the state-layer
+   per-week store (keyed by week-start. CORRECTED 17 Sep 26: it is NOT
+   session-only — the 8 Sep 26 storage work SUPERSEDED the forget-on-exit rule
+   and persistAll now files every stash entry under weeks/<wk>. A week persists
+   once it has CHANGED since load, or already had an entry; a pristine seed copy
+   is still deliberately never written); these two helpers are the state-layer
    half that knows what belongs in a snapshot, because WARNOFF lives in
    state/view.ts and the engine may not import state/. */
 
-/* Everything a week's own stash entry needs — DAYS plus the eleven SCHED
+/* Everything a week's own stash entry needs — DAYS plus the FOURTEEN SCHED
    fields (schedFields, shared with history.ts's histSnap so the two cannot
-   drift) plus WARNOFF. Deliberately NOT `i:INPUTS`/`pp:PLANPUCKS`/`dm:DAYRMK`
+   drift; corrected 17 Sep 26 — it said eleven) plus WARNOFF. Deliberately NOT `i:INPUTS`/`pp:PLANPUCKS`/`dm:DAYRMK`
    the way histSnap's whole-history snapshot is — those three are GLOBAL, not
    week-scoped (CLAUDE.md's "Personal INPUTS are GLOBAL" decision), and
    restoring them here would roll back edits made to them while the user was
@@ -339,8 +367,13 @@ function unacceptedKeys(): string[] {
        dormant after a week round-trip: an input no scheduler ever removed
        silently stopped flagging (26 Aug 26 bug pass). Nothing is lost by the
        narrowing — every removal this build writes is 'r', the acc-clear on
-       week entry deliberately preserves 'r' (below), and the stash is
-       session-memory only, so no older shape can reach this function. */
+       week entry deliberately preserves 'r' (below). CORRECTED 17 Sep 26: the
+       old clause "and the stash is session-memory only, so no older shape can
+       reach this function" is FALSE — the stash persists, so an older shape CAN
+       arrive from storage. What actually guards this is storage/reset.ts:
+       SCHEMA_VERSION clears `inputs`+`weeks` whenever a persisted shape changes
+       incompatibly, under the owner's dev-phase reset-don't-migrate rule. A
+       future shape change here must bump that version. */
     if (!isPersonal(r.type) || r.acc !== 'r') return
     const di = dateIx(r.date, r.yr)
     if (di < 0 || dayApproved(di)) return
@@ -497,6 +530,14 @@ function applyWeekModel(v: any): any {
   INPUTS.forEach((r: any) => { if (r.acc && r.acc !== 'r' && r.acc !== 'u' && !inputProtected(r)) delete r.acc })
   reconcileLandedAcc()
   mintInpIds()
+  /* [ARCH-STACK] f/u#1 (F-01): advance the command-layer baseline to the
+     freshly-swapped week BEFORE the landing pass below, whose autoAccept ->
+     markEdit -> renderStatus -> notify() fires listeners MID-pass (the Leave War
+     sync opens a writeInputsBatch command). Without this, that command would diff
+     the OLD week's model against the new one and emit a spurious whole-week
+     envelope. Advanced again before return so the fully-landed week is the
+     baseline the caller (loadWeek/initStore) is left holding. */
+  resyncSchedBaseline()
   if (s) {
     /* a row this week deliberately unaccepted before must NOT be auto-landed
        again on the way back in (see unacceptedKeys) — everything else lands,
@@ -516,6 +557,7 @@ function applyWeekModel(v: any): any {
   } else {
     autoAcceptSeedInputs()      // land activity inputs on ground (dayApproved now clean)
   }
+  resyncSchedBaseline()   // the fully-landed week is the baseline the caller leaves with (F-01)
   return s
 }
 
@@ -613,6 +655,12 @@ export function loadWeek(v: any) {
 
 /* ---- wiring ---- */
 export function wireStore() {
+  /* [ARCH-STACK] Step 2: register the scheduler's command layer (permissions,
+     records, guarded store, the HIST.lock suppression context). Idempotent. */
+  registerSchedCommandLayer()
+  /* phase 3: the PEOPLE + SETTINGS command layer (their own enlistable stores,
+     record registry, permissions). Idempotent. */
+  registerPeopleSettingsCommandLayer()
   /* the reference's editMode(): the edit page is open. The reference also
      ANDed its #editToggle switch here; that toggle was removed 9 Aug 26
      (owner) — being on Edit Schedule is the intent to edit, and View-only
@@ -631,7 +679,12 @@ export function wireStore() {
   HOOKS.editMode = () => canEditSched() && view.CURPAGE === 'editsched' && !protectedWeek()
   HOOKS.reflow = () => { validate(); notify() }
   HOOKS.renderStatus = () => notify()
-  HOOKS.histPush = () => histPush()
+  /* [ARCH-STACK] Step 2 (additive): latch histPush while a commit is in flight,
+     so a rolled-back command takes no undo snapshot; the deferred call carries
+     the HIST.lock token captured at raise time (registerEffectContext), so a
+     lock-wrapped batch still records exactly as today. Outside a commit it runs
+     inline, unchanged. */
+  HOOKS.histPush = () => { if (!deferEffect(histPush)) histPush() }
   HOOKS.syncHistBtns = () => notify()
   HOOKS.paintArm = () => notify()
   HOOKS.renderRosters = () => notify()
@@ -680,6 +733,12 @@ export function setToast(fn: (...a: any[]) => any) { HOOKS.toast = fn }
    reload — caught by the audit2 probe (#6 "the override reloaded"). */
 export function initStore() {
   wireStore()
+  /* [ARCH-STACK] Fable-5: the people command layer captured its baseline from the
+     SEED roster when this module was imported (wireStore runs at eval, before boot);
+     hydrate() has since replaced PEOPLE with the stored roster. Re-sync now — this
+     runs after hydrate() in main.tsx's boot — so the first people command diffs
+     against the real roster, not the seed. */
+  resyncPeopleBaseline()
   rulesLoad()
   storesLoad()
   lookaheadLoad()
@@ -780,8 +839,14 @@ export function initStore() {
 wireStore()
 
 /* the store's public surface: the writes above, plus the engine's publish
-   actions and the history verbs, re-exported so the UI has one import */
-export { setDayApproved, publishALDay, discardPending, markEdit } from '../engine/publish'
+   actions and the history verbs, re-exported so the UI has one import.
+   markEdit stays the raw engine action; the publish verbs the UI calls are the
+   command-routed wrappers (phase 2b — additive: they run the SAME engine
+   setDayApproved/publishALDay/discardPending inside commit()). */
+export { markEdit } from '../engine/publish'
+export {
+  commitSetDayApproved, commitPublishALDay, commitDiscardPending,
+} from './sched-commit'
 /* the quarantine classifier lives in the engine (so the engine's filing
    primitives share it) but the UI imports it from here, its established home.
    protectedDates is imported above for internal use (runInputWrite) and

@@ -102,6 +102,10 @@ ${blocks}
 
 export function printSchedPDF(): void {
   if (typeof document === 'undefined') return
+  /* OWNER RULING 17 Sep 26: an export is NOT a boundary event. This is a
+     scheduler-only snapshot of the current published schedule — it does not
+     constrain undo, so it reports nothing. The old discloseCurrentIssued() call
+     here is gone; see state/disclosure.ts. */
   /* "Mon 13 Jul – Sun 19 Jul" from the loaded week's first and last day —
      dow is the full word ('Monday'), dt is 'Jul 13', so flip dt to day-first */
   const lbl = (d: any) => {

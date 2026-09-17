@@ -1976,14 +1976,26 @@ ok('the lull calendar is shut until it is asked for', await pg.locator('#lullCal
 const addStudent = async name => {
   await pg.click('#addStu'); await pg.waitForSelector('#dlgInput');
   await pg.fill('#dlgInput', name);
+  /* CONFIRM the value actually LANDED before clicking OK. The dialog input is a
+     controlled field; a store notify (an async save, a hint flash) landing between
+     the fill and the click can re-render it back to stale React state, submitting a
+     BLANK and making the add a silent no-op — the residual behind the intermittent
+     TRK-SMOKE timeout after the reset-on-render fix closed the open-time clear.
+     Waiting on the DOM value closes that window deterministically: if it were ever
+     wiped, this fails HERE (proving the app clear) rather than 15s later at the
+     option wait with no clue why. */
+  await pg.waitForFunction(v => document.querySelector('#dlgInput')?.value === v, name, { timeout: 5000 });
   await pg.click('#dlgOk');
   /* wait for the roster to SHOW the name, not a fixed 700ms: the add itself now
      waits for any syllabus load still in flight, and on a slow runner that took
      longer than the pause (9 Sep 26 — one student where two were added).
+     30s, raised from 15s: on a machine already loaded (e.g. the smoke run straight
+     after the e2e suite) that in-flight load can exceed 15s and lose a good run to
+     pure contention. The add still completes — give it the room rather than flake.
      The name is the option's TEXT since stable ids — its value is the minted
      enrolment id, which this helper cannot know and would never match. */
   await pg.waitForFunction(n => [...document.querySelectorAll('#activeSel option')].some(o => o.textContent === n),
-    name.trim().toUpperCase(), { timeout: 15000 });
+    name.trim().toUpperCase(), { timeout: 30000 });
   await pg.waitForTimeout(300);
 };
 

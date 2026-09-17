@@ -25,7 +25,9 @@
 import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isDownchit, isLeave, oilAsks, withRemarksTail, inputCoversDate, nowStamp } from '../engine/inputs'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { ME, SESSION } from '../state/auth'
-import { persistPeople } from '../state/persist'
+/* [ARCH-STACK] phase 3: the command-routed persistPeople (the cross-seam roster
+   writers — PO-archive, restore — emit a people change too). */
+import { persistPeople } from '../state/people-settings-commit'
 import { docFields, rowDocIds } from '../state/docs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'

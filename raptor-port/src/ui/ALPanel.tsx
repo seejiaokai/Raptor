@@ -5,9 +5,9 @@
    exactly that day (publishALDay). The issued-AL list below is READ-ONLY
    history (no unpublish ✕ — take-backs are gone), its counts from the frozen
    diff. The week-wide AL-number dropdown is gone. */
-import { SCHED, pendCount, pendingPublishDays, publishALDay, discardPending, nextSeq, daySigned, signMissing, dowShort, diffCounts, dayDelta, verLabel, alCount, SIGN_ROLES } from '../engine/publish'
+import { SCHED, pendCount, pendingPublishDays, nextSeq, daySigned, signMissing, dowShort, diffCounts, dayDelta, verLabel, alCount, SIGN_ROLES } from '../engine/publish'
 import { esc, DPREV } from '../state/view'
-import { notify } from '../state/store'
+import { notify, commitPublishALDay, commitDiscardPending } from '../state/store'
 import { useVersion } from './useStore'
 
 export function ALPanel() {
@@ -24,7 +24,7 @@ export function ALPanel() {
             ? `${pubDays.length} day${pubDays.length > 1 ? 's' : ''} with changes to publish`
             : (np ? 'Changes are on unpublished days — publish the day first' : 'No pending changes')}
         </span>
-        <button className="abtn ghost" id="alDrop" disabled={!np} onClick={() => { discardPending(); notify() }}>Discard marks</button>
+        <button className="abtn ghost" id="alDrop" disabled={!np} onClick={() => { commitDiscardPending(); notify() }}>Discard marks</button>
       </div>
       {pubDays.length
         ? <div className="al-pubdays">
@@ -45,7 +45,7 @@ export function ALPanel() {
                   <span className="al-pd-lbl"><b>{dowShort(di)}</b> · {bits.join(' · ')}</span>
                   <button className={'abtn primary' + (signed && !previewing ? '' : ' locked')} disabled={!signed || previewing}
                     title={previewing ? `Return to the live copy of ${dowShort(di)} before publishing — you're viewing a past version` : signed ? `Publish AL${seq} — ${c.total} change${c.total === 1 ? '' : 's'} on ${dowShort(di)} only` : `Sign off ${signMissing(di).join(', ')} before publishing AL${seq}`}
-                    onClick={() => { if (DPREV.has(di)) return; publishALDay(di); notify() }}>Publish AL{seq}</button>
+                    onClick={() => { if (DPREV.has(di)) return; commitPublishALDay(di); notify() }}>Publish AL{seq}</button>
                 </div>
               )
             })}

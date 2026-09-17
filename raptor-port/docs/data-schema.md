@@ -93,7 +93,7 @@ truth for what each type means; the fields below are what a record carries.
 
 | Field | Type | Meaning |
 |---|---|---|
-| `iid` | string | minted `'i' + n`, monotonic; the stable handle (never address by index). At boot the counter is seeded past the highest stored id (`src/state/persist.ts:55`), so a reload never re-mints one |
+| `iid` | string | **CORRECTED 17 Sep 26** — it is NOT `'i' + n` and there is NO counter. Since ARCH-STACK 1A it is the shared OPAQUE id `newId('i')` = `'i'` + a base-36 timestamp + 6 random base-36 chars (`src/engine/newid.ts`), minted by `inpId` on first read and by `mintInpIds` at boot. Opaque precisely so two devices cannot both mint `i5`. The stable handle — never address an input by index. `state/persist.ts` says so in place: "no counter to seed past stored ids" |
 | `person` | string | a PEOPLE id |
 | `date` | string | day, display form (`'Jul 13'`) |
 | `endDate` | string? | last day of a multi-day input |
@@ -164,9 +164,9 @@ seed-walking check never sees them; each with its writer:
 
 | Where | Field | Writer |
 |---|---|---|
-| wave | `standalone`, `kind` (`sc \| avalon \| bb`), `noconf` | `makeStandalone` (`src/engine/waves.ts:43`), the + Wave picker (`src/ui/board.ts:994`), a placed template (`src/engine/wavetpl.ts:239-240`) |
+| wave | `standalone`, `kind` (`sc \| avalon \| bb`), `noconf` | `makeStandalone` (`src/engine/waves.ts`), the + Wave picker (`src/ui/board.ts`), a placed template (`src/engine/wavetpl.ts`) |
 | formation | `shift` | `makeStandalone` (`src/engine/waves.ts:51`), a standby template (`src/engine/wavetpl.ts:225`) |
-| formation | `br` (typed SC in-time) | the board's B box (`src/ui/board.ts:195`) through the `ff:…br` text key (`src/engine/slots.ts:252`) |
+| formation | `br` (typed SC in-time) | the board's B box (`src/ui/board.ts`) through the `ff:…br` text key (`src/engine/slots.ts`) |
 | formation | `area`, `atime` (the typed-over area strip) | `src/ui/textedit.ts:184`, `:194` |
 | seat pair | `spare`, `role` | `saCrewRow` (`src/engine/waves.ts:40`), a standby template (`src/engine/wavetpl.ts:190`), the MAIN/SPARE badge flip |
 | duty block | `sa` (which standalone wave the desk serves), `noconf` | `waveDutyBlock` (`src/engine/waves.ts:96`), `blockFromTpl` (`src/engine/dutytpl.ts:184`) |
@@ -181,11 +181,11 @@ Everything about a week's publication state, keyed by day index 0..6.
 |---|---|---|
 | `al` | number | amendment counter |
 | `pending` | `{ key: 1 }` | edits made since the last publish |
-| `changes` | `{ key: alNumber }` | **issued** keys → the AL number that issued them (`src/engine/publish.ts:359`); a key edited again is deleted from here as it goes pending (`:294`) |
+| `changes` | `{ key: alNumber }` | **issued** keys → the AL number that issued them (written by `src/engine/publish.ts:publishAL`); a key edited again is deleted from here as it goes pending (`publish.ts:markEdit`) |
 | `added` | `{ key: 1 }` | structural adds (a new line/wave/row) |
 | `als` | `[{ n, keys[], sign, days[], n0, adds, structAdds, snap }]` | every published amendment (AL), newest last; `sign` here is the four **callsigns** frozen at issue, `snap` the covered days as issued |
 | `dayOK` | `{ di: 1 }` | which days are **published — approval is per day, not per week** |
-| `sign` | `{ di: { cur, sked, plan, appr } }` | the four sign-off slots per day; each value is a **PEOPLE id** when signed (the picker's options are ids, `src/ui/html.ts:1538-1539`, written by `src/ui/Shell.tsx:169`) and `''` when unsigned |
+| `sign` | `{ di: { cur, sked, plan, appr } }` | the four sign-off slots per day; each value is a **PEOPLE id** when signed (the picker's options are ids, `src/ui/html.ts`, written by `src/engine/publish.ts:setSign` from the Shell's sign-picker handler) and `''` when unsigned |
 | `orig` | `{ di: snapshot }` | the day as first published |
 | `cur` | `{ di: 'orig' \| n }` | which version each day currently shows |
 | `drafts`, `curDraft` | `{ di: [{id,name,d,sign?,signBind?}] }`, `{ di }` | per-day alternate plans and which is live; each blob carries its OWN sign-offs + AM-06 bindings since 15 Sep 26 (item 1a) |
@@ -195,33 +195,58 @@ Synthetic keys ride the same book: `del:<day>.<n>.<kind>` (a deletion),
 
 ### The week record — `weekStashSnap()` / the week stash
 
-Two snapshots share one field list (`schedFields()`, `src/state/history.ts:22`),
+Two snapshots share one field list (`schedFields()`, `src/state/history.ts` — **14 fields**),
 and only one of them is stored.
 
-**The week record** is `weekStashSnap()` (`src/state/store.ts:300-302`) —
+**The week record** is `weekStashSnap()` (`src/state/store.ts:weekStashSnap`) —
 what the stash holds for every visited week and what `raptor:weeks/<week>`
 persists:
 
+**CORRECTED 17 Sep 26 — the old example listed ELEVEN SCHED fields and mislabelled `un`.**
+Three fields were missing: `sb` (signature BINDINGS), `v` (`ridV`) and `am` (`amV`, the
+amendment-format stamp). That matters beyond tidiness: `engine/publish.ts` classifies a
+published book with no `amV` as UNSUPPORTED and read-only-quarantines the week, so a
+serializer built from the old list would freeze every week it wrote, and every signature
+binding would be lost (a signature is content-valid only while its binding still matches).
+
 ```
-{ d: DAYS,
-  c, p, ad, a, al, ok, sg, o, cv, dr, cd,   // the SCHED fields, short names
-  wo: string[],                             // muted warning ids
-  un: string[] }                            // content keys (inpKey) of inputs a
+{ d: DAYS,                                  // the seven day objects
+  c, p, ad, a, al, ok, sg, sb, o, cv, dr, cd, v, am,   // the FOURTEEN SCHED fields,
+                                            //   short names, from schedFields()
+  wo: string[],                             // muted warning ids (view.WARNOFF)
+  un: string[] }                            // stable input IDs (inpId) of inputs a
                                             //   scheduler removed on this week
 ```
 
+| short | `SCHED` field | what it is |
+|---|---|---|
+| `c` | `changes` | issued key → the AL seq that issued it |
+| `p` | `pending` | keys edited since the last issue (the TINT; not AL eligibility) |
+| `ad` | `added` | outstanding draft structural-add identities |
+| `a` | `als` | the AL records, one per issue, single-day |
+| `al` | `al` | the week's AL bookkeeping |
+| `ok` | `dayOK` | per-day published state |
+| `sg` | `sign` | the four live sign-off slots per day |
+| **`sb`** | **`signBind`** | **what each signature signed — digest, date, issued base id, plan revision. A signature is valid only while all four still match** |
+| `o` | `orig` | the frozen Original per day |
+| `cv` | `cur` | which version each day shows (a verId) |
+| `dr` | `drafts` | the parked alternate plans per day |
+| `cd` | `curDraft` | which plan the live day is |
+| **`v`** | **`ridV`** | **row-id version stamp** |
+| **`am`** | **`amV`** | **amendment-format stamp — a published book WITHOUT this reads as unsupported and is quarantined** |
+
 It carries **no inputs and no planning layer** — those are global, and
 their own records (`raptor:inputs/all`, `raptor:plan/all`, written
-separately in `src/state/persist.ts:89-91`).
+separately in `src/state/persist.ts:persistAll`).
 
-**The undo snapshot** is `histSnap()` (`src/state/history.ts:43`): the same
+**The undo snapshot** is `histSnap()` (`src/state/history.ts:histSnap`): the same
 fields plus `i: INPUTS`, `pp: PLANPUCKS`, `dm: DAYRMK`. It is the undo
 stack's unit only and is never stored.
 
 The week stash (`src/engine/weekstash.ts`) keys week records by week-start
 `'dd/mm/yyyy'` with a per-week change counter, and **it persists**: at
 boot every `weeks/*` record is put back into the stash
-(`src/state/persist.ts:80-83`), and every history step writes every stashed
+(`src/state/persist.ts:hydrate`), and every history step writes every stashed
 week plus the loaded one — the loaded one only once it has changed since
 load, so a pristine seed week is never written (`:96-105`). The record id
 is the key with `/` replaced by `-` (`raptor:weeks/13-07-2026`). This is
@@ -364,8 +389,11 @@ is lost.
 ## World 3 — the Tracker
 
 Vendored JavaScript, shapes fixed in `src/tracker/app/fileFormat.js`.
-Course, syllabus and student names are free text and are used as object
-keys on purpose (nested objects, never joined strings).
+Course, syllabus and student names are free text LABELS. **CORRECTED
+17 Sep 26:** they are no longer used as keys — courses, syllabi and students all
+carry stable ids (13 Sep / 10 Sep 26), so renaming any of them moves nothing. A
+colon is allowed in a syllabus, chart or student name; a COURSE name still
+refuses one.
 
 ### Keys (`raptor:tracker/*` on the built site; legacy `ocu:*`) and prefs (`ocuLocal:*`)
 
@@ -395,8 +423,10 @@ students = { courses: string[],
 
 **A student is an enrolment id since 10 Sep 26 (stable ids).** A roster entry
 is `{ id, name, pid? }` — `id` opaque (`s` + base-36 time + random, minted
-when the student is added), `name` the typed callsign (a label, renamable
-in principle, no control for it yet), `pid` the Raptor `PEOPLE` id when the
+when the student is added), `name` the typed callsign (a label; the pencil on
+each Students-card chip renames it — `core.js:renameStudent`, 10 Sep 26,
+everyone may, refused if another enrolment on the course holds that name; the id
+and every id-keyed record are untouched), `pid` the Raptor `PEOPLE` id when the
 student was picked off the roster. Every per-student record files under the
 id: `v3:<course>:<syl>:m:<id>`, `:d:<id>`, `v3:<course>:pace:<id>`,
 `lulls:<id>`, `last:<id>`, and `lastStudent` holds an id. The same name on
@@ -412,9 +442,18 @@ map is deleted with the flag. A course whose conversion did not finish
 (the roster still a string list after the retry) refuses roster writes
 until a later load converts it. `migrateAllCourses()` at init converts
 courses nobody has opened; a course still waiting for the older roster
-split (`rostermig`) converts on its first open. A course rename MOVES every
-key (written, read back, then the old deleted); if any record could not be
-carried the old course stays listed beside the new so nothing is stranded.
+split (`rostermig`) converts on its first open. **CORRECTED 17 Sep 26 — a course
+rename MOVES NOTHING.** Since course ids (13 Sep 26) every per-course key files
+under the id (`v3:<courseId>:…`), so `renCourse` just sets the entry's name; the
+old copy-verify-delete apparatus described here (write, read back, delete the
+old; the old course left listed beside the new) is GONE. `app/courseIds.js` is
+the one converter (mint/upgrade/reconcile); `migrateCourseIds` re-bases a
+name-keyed browser once — resumable, read-back-verified, a `storage.list()`
+prefix-move with a reserved-namespace skiplist
+(`courses`/`links`/`master`/`lay`/`SYLLABUS EDIT`) and a fail-closed preflight:
+a reserved or colon-bearing legacy course name stops the boot (`bootError` → the
+reload panel, no board, no writers). Course-id grammar `^c[0-9a-z]+$`; Import
+refuses a reserved name or a non-matching id at the file boundary.
 
 A mark record is `{ g, f, fd, d, by?, at? }` — grade code, failure count,
 one ISO date per failure (oldest first, null when undated), the done date,

@@ -153,8 +153,11 @@ export function addPuckPeople(id: string, personIds: string[]) {
    the space that was empty will remain empty"): the slot is blanked to ''
    so every surviving puck keeps its grid position, and only TRAILING blanks
    are trimmed so the row never carries dead cells past its last puck. A blank
-   is skipped by every reader (`ids.filter(Boolean)`), never persisted (this
-   state is session-only), and never reaches the engine. Adds still append. */
+   is skipped by every reader (`ids.filter(Boolean)`) and never reaches the
+   engine. CORRECTED 17 Sep 26: the old "never persisted (this state is
+   session-only)" is wrong — the planning layer IS persisted, as the plan/all
+   record. A trailing blank is trimmed before it can be stored; an interior blank
+   does persist, and must, or surviving pucks would shift position on reload. Adds still append. */
 export function togglePuckPerson(id: string, personId: string) {
   if (!canEditSched()) return false
   const p = PLANPUCKS.find((x: any) => x.id === id)

@@ -7,12 +7,13 @@ import { slotVal, acceptInput, unacceptInput, txtSet } from '../engine/slots'
 import { INPUTS, DATES, withRemarksTail, inpId, defaultAllday } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
-import { dayApproved, setDayApproved, publishALDay, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek } from '../engine/publish'
+import { dayApproved, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek } from '../engine/publish'
 import { draftSelect, draftVerLabel, loadVersionToWorkingCopy } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
-import { notify, loadWeek } from '../state/store'
+import { notify, loadWeek, commitSetDayApproved, commitPublishALDay } from '../state/store'
+import { schedWrite, schedWriteValue, SCHED_TYPES } from '../state/sched-commit'
 import { scrollToWarnFocus, queueHold, warnWeekId } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
 import { logAction } from '../engine/editlog'
@@ -185,7 +186,10 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
   })
   const [di, gi, li, ai] = key.split('.')
   const a = DAYS[+di!].waves[+gi!].formations[+li!].aircraft[+ai!]
-  a.opts = a.opts || {}
+  /* [ARCH-STACK] follow-up #1 (§3.2b/R2-05): do NOT init a.opts on OPEN — that
+     was a live DAYS write outside any command, so the next command would emit a
+     bogus days put for a jet nobody edited. Reads below use (a.opts || {}); the
+     toggle write inits a.opts inside its own sched.stores command. */
   const box = document.createElement('div')
   box.className = 'stmenu wavemenu'
   /* ANCHOR TO THE SURFACE THE BUTTON WAS ACTUALLY PRESSED ON (regression —
@@ -223,7 +227,7 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
           + `<div class="wm-note">The list is the squadron's, not this jet's — it survives a reload. Removing one keeps every jet that carries it.</div>`
         : `<div class="wm-row">`
           + STORE_CFG.map(([k, lab]) =>
-            `<button class="wm${a.opts[k] ? ' on' : ''}" data-cfg="${k}">${esc(lab)}</button>`).join('')
+            `<button class="wm${(a.opts || {})[k] ? ' on' : ''}" data-cfg="${k}">${esc(lab)}</button>`).join('')
           + `</div>`)
   }
   /* notify() rebuilds the remarks cell, so the captured `anchor` node may be
@@ -321,12 +325,20 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
 
     const b = T.closest('[data-cfg]') as HTMLElement | null; if (!b) return
     const key2 = b.dataset.cfg!
-    /* the load either side of the toggle, so History can say what this jet was
+    /* [ARCH-STACK] follow-up #1 (row G, R2-02): this loadout toggle mutates DAYS
+       and pushes history via markEdit but NEVER calls afterSchedMutate, so it
+       escaped the backstop entirely. Route it through a sched.stores command; the
+       init lives inside so opening the menu stays a no-op write (§3.2b). paint/
+       queueHold/notify stay outside — they repaint, they don't write.
+       The load either side of the toggle, so History can say what this jet was
        carrying and what it carries now — one row per jet, matching the single
        amendment mark the `st:` key stands for (stores.ts's storesText) */
-    const stWas = storesText(a.opts)
-    a.opts[key2] = !a.opts[key2]
-    markEdit(`st:${di}.${gi}.${li}.${ai}`, stWas, storesText(a.opts))
+    schedWrite(SCHED_TYPES.stores, () => {
+      a.opts = a.opts || {}
+      const stWas = storesText(a.opts)
+      a.opts[key2] = !a.opts[key2]
+      markEdit(`st:${di}.${gi}.${li}.${ai}`, stWas, storesText(a.opts))
+    })
     paint()
     /* queueHold, not setTimeout: the week repaints via EditWeek's effect,
        which calls refreshHighlights() once the DOM swap is done — draining
@@ -769,7 +781,7 @@ export function routeClick(e: MouseEvent) {
     /* §9: the beak only ever FIRST-approves — html.ts emits data-beak only on a
        never-published day (a published day shows an inert stamp). setDayApproved
        is itself a no-op on an already-published day, so this is safe regardless. */
-    const di = +beak.dataset.beak!; setDayApproved(di, true); notify(); return
+    const di = +beak.dataset.beak!; commitSetDayApproved(di, true); notify(); return
   }
   /* per-day AL publish — same gate */
   const alp = t.closest('button[data-alpub]') as HTMLElement | null
@@ -780,7 +792,7 @@ export function routeClick(e: MouseEvent) {
        copy, not what's on screen (A3, Codex PS-001); the button is hidden under a
        preview, this guards a stale click. */
     if (view.DPREV.has(+alp.dataset.alpub!)) return
-    publishALDay(+alp.dataset.alpub!); notify(); return
+    commitPublishALDay(+alp.dataset.alpub!); notify(); return
   }
   /* Back to live copy — the home button on the version cluster (owner, 16 Aug
      26). Pure view state, like the dropdown change: it clears the preview, no
@@ -924,7 +936,11 @@ export function routeClick(e: MouseEvent) {
        loaded week's SCHED and pushes history — inert on a frozen week, and the
        button can render from stale DOM after a role/preview change, so gate it. */
     if (!canEditSched() || protectedWeek()) return
-    signClear(+sc.dataset.signclear!); HOOKS.histPush(); HOOKS.reflow(); return
+    /* [ARCH-STACK] follow-up #1 (row D): route the sign-clear through a
+       sched.signClear command (was HOOKS.histPush direct). histPush stays inside
+       so the legacy persist runs; reflow outside. */
+    schedWrite(SCHED_TYPES.signClear, () => { signClear(+sc.dataset.signclear!); HOOKS.histPush() })
+    HOOKS.reflow(); return
   }
 
   /* an EMPTY slot arms itself in edit mode; a FILLED puck falls through to
@@ -984,8 +1000,10 @@ export function routeClick(e: MouseEvent) {
 
   /* MUTE a specific check (owner, Aug 26 — "turn off that specific warning
      advisory … but if things change that warning will appear again"). Admin-only,
-     session-only, keyed by the warning's CONTENT (view.warnMuteKey) so it comes
-     back on its own when validate() next rebuilds a different warning. Caught
+     keyed by the warning's CONTENT (view.warnMuteKey) so it comes back on its own
+     when validate() next rebuilds a different warning. CORRECTED 17 Sep 26: NOT
+     session-only — WARNOFF rides histSnap AND weekStashSnap (`wo`), so a mute
+     persists with its week and survives a reload. Caught
      ABOVE the .wln jump so muting a row never also pans to its puck. */
   const wo = t.closest('[data-woff]') as HTMLElement | null
   if (wo) {
@@ -994,7 +1012,11 @@ export function routeClick(e: MouseEvent) {
     const [di, ix] = (wo.dataset.woff || '').split('.').map(Number)
     const g = view.displayedByDay(di), w = g && g.warns && g.warns[ix]
     if (w) {
-      const shown = view.toggleWarnOff(view.warnMuteKey(w))
+      /* [ARCH-STACK] follow-up #1 (row E): route the mute toggle through a
+         sched.warnMute command. schedWriteValue carries back the `shown` bool the
+         toast reads (R2-11). WARNOFF rides the baseline, so the command captures
+         the mute as a sched.mutes change. histPush kept below, in its old spot. */
+      const shown = schedWriteValue(SCHED_TYPES.warnMute, () => view.toggleWarnOff(view.warnMuteKey(w)))
       HOOKS.toast(shown ? 'Check shown again' : 'Check hidden — it returns if the day changes', 'ok')
       /* a mute is an undo step now (owner, Aug 26 — "when I click undo I should
          revert my hidden warning changes"): WARNOFF rides the history snapshot,
@@ -1180,9 +1202,14 @@ export function routeClick(e: MouseEvent) {
   if (st && HOOKS.editMode()) {
     const [di, gi, li, ai, k] = st.dataset.store!.split('.')
     const a = DAYS[+di!].waves[+gi!].formations[+li!].aircraft[+ai!]
-    a.opts = a.opts || {}
-    const stWas = storesText(a.opts)                  // before the toggle — see the popup's own branch
-    a.opts[k!] = !a.opts[k!]; markEdit(`st:${di}.${gi}.${li}.${ai}`, stWas, storesText(a.opts))
+    /* [ARCH-STACK] follow-up #1 (row G, R2-02): route this loadout write through
+       a sched.stores command — same escape as the popup toggle above. notify()
+       stays outside. */
+    schedWrite(SCHED_TYPES.stores, () => {
+      a.opts = a.opts || {}
+      const stWas = storesText(a.opts)                  // before the toggle — see the popup's own branch
+      a.opts[k!] = !a.opts[k!]; markEdit(`st:${di}.${gi}.${li}.${ai}`, stWas, storesText(a.opts))
+    })
     notify()
   }
 

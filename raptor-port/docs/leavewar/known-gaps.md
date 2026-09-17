@@ -49,11 +49,18 @@ Everything is built to make that change small: all persistence goes through one
 module (`src/state/storage.ts`), and every write goes through one function
 (`setCell`). Nothing else in the codebase touches either.
 
-**Since the Raptor merge (17 Aug 26) the app boots on the seam's `memoryBackend`,
-not `localBackend`** — so a leave war lasts the session and resets on reload,
-deliberately matching Raptor's session-only `INPUTS` (the paragraphs below that
-describe data surviving a reload are the standalone app's behaviour, superseded
-by this). `localBackend` is still in `storage.ts` for reference and tests; the
+**SUPERSEDED 8 Sep 26 (corrected here 17 Sep 26) — THE LEAVE WAR PERSISTS.**
+The 17 Aug 26 rule below is kept for its history only: it said the app boots on
+the seam's `memoryBackend`, so a war lasted the session and reset on reload,
+deliberately matching Raptor's then session-only `INPUTS`. The storage seam
+changed that. `main.tsx` now boots `lwInitStore(leavewarAdapter(wb))` — the
+WHITEBOARD — so on a built site a world that came back from storage keeps its
+wars, its OIL story and its inputs, and `installDemoWorld` overlays the demo
+only on a first-ever boot. `memoryBackend` is the dev/test path (`vite` dev,
+`MODE==='test'`, `?fresh=1`, or unusable browser storage). **Do not "restore"
+session-only behaviour on the strength of the old rule.** Authoritative:
+`../data-schema.md`, and CLAUDE.md §Architecture rules "WHAT ACTUALLY PERSISTS".
+`localBackend` is still in `storage.ts` for reference and tests; the
 future shared backend that "pushes, not just persists" replaces the seam.
 
 Storage now holds five keys, not one: `wars` (each carrying its own period,

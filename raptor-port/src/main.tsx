@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './ui/scheduler.css'
 import { initStore, setToast, histInit, weekStashSnap, weekDirty } from './state/store'
+import { resyncSchedBaseline } from './state/sched-commit'
 import { storeBackend } from './engine/hooks'
 import { toast } from './ui/toast'
 import { App } from './ui/App'
@@ -55,6 +56,12 @@ async function boot(): Promise<void> {
   const hadStoredWars = wb.has('leavewar', 'wars')
   lwInitStore(leavewarAdapter(wb))
   installDemoWorld(hadStoredWars)
+
+  /* [ARCH-STACK] follow-up #1 (R2-08): installDemoWorld pushed INPUTS raw (no
+     command), so the scheduler baseline is now stale. Re-sync BEFORE the leave-war
+     boot sync runs its writeInputsBatch command, or that command's envelope would
+     absorb the demo rows as its own puts on a first-ever boot. */
+  resyncSchedBaseline()
 
   /* same order as before the seam: the boot sync's writes are the world the
      session STARTS in, and both history baselines are taken after it */

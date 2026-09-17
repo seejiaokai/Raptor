@@ -54,8 +54,10 @@ recorded a count that was wrong.
 merge, 13 Sep 26:** `npm test` 4670 across 275 files; `tfin.js` 728/0; build
 clean; `test:e2e` 423 passed / 0 failed (33 skipped by project gate; 2 specs
 fail only on a loaded local Windows box — geometry + lw-phone — and pass in CI);
-`smoke:tracker` 427/0 in CI (its `addStudent` step is the documented
-slow-local-machine flake — trust CI). `perf` / `probes:adapted` unchanged (this
+`smoke:tracker` 427/0 in CI (its `addStudent` step WAS treated as a
+slow-machine flake; DIAGNOSED + FIXED 17 Sep 26 — see [TRK-SMOKE] in
+OUTSTANDING.md — it was a real dialog field-reset race plus a leaked preview
+server, not a flake). `perf` / `probes:adapted` unchanged (this
 PR is Tracker-only, no scheduler/UI/perf touch). Counts recorded from the runs
 watched on this tree as #373 was built. **The per-gate table and traps below
 were captured on the earlier #368 tree — the trap descriptions all still
@@ -87,10 +89,10 @@ inline between MSN and TO at phone width" (raptor) and `leavewar.spec.ts` "a
 finger behind an open sheet scrolls the grid itself…" (lw-phone). Both reproduce
 on clean `main` and both pass in CI on Linux (a merged-green PR's own checks
 confirm it), so they are a Windows browser/layout/touch-emulation quirk — trust
-CI for them, don't chase them locally. Also `smoke:tracker`'s `addStudent` step
-can hit a Playwright timeout near the end of the run on Windows — re-run before
-treating it as a finding (it passed 426/0 on the re-run). None of these gate a
-tracker- or storage-only change.
+CI for them, don't chase them locally. (`smoke:tracker`'s `addStudent` timeout
+that used to sit beside these was a REAL bug, not a Windows quirk — DIAGNOSED +
+FIXED 17 Sep 26, see [TRK-SMOKE] in OUTSTANDING.md; no longer re-run-and-hope.)
+None of these gate a tracker- or storage-only change.
 
 **How the gates lie — the durable traps, worth more than any count:**
 
@@ -530,11 +532,16 @@ wearing a different hat.
 - **One dataset.** The schedule is the demo week (Mon 13 – Sun 19 Jul 26; the
   weekend is non-flying, duty crew only). Week chips re-label but every week
   shows the same data.
-- **Only `rules` and `stores` survive a reload.** Everything a scheduler types
-  is session-only — the whole schedule, the Quals page's ticks/initials/FLIGHT,
-  a personnel body added on the Quals page and its Remarks note, the EDIT QUALS
-  column set, and the whole Leave War including its manning counter definitions
-  (owner, 19 Aug 26: that configuration lives in the database when it arrives).
+- **SUPERSEDED 17 Sep 26 — on the built site nearly everything survives a
+  reload.** The old rule here ("only `rules` and `stores` survive; everything a
+  scheduler types is session-only — the schedule, the Quals ticks/initials/
+  FLIGHT, a body added on the Quals page, the EDIT QUALS column set, the whole
+  Leave War", owner 19 Aug 26) was overtaken by the 8 Sep 26 storage seam. A
+  built site runs on the Browser backend and keeps the schedule, inputs, roster,
+  planning layer, stashed weeks, all 11 settings keys (incl. `qualcols`), the
+  whole Leave War and the Tracker. Memory-only is now dev, tests and `?fresh=1`.
+  Still session-only by design: undo/redo, the edit log and the view-state
+  registries. Authoritative table: `raptor-port/docs/data-schema.md`.
 
 ## Deploy — the traps, all still live
 
@@ -592,9 +599,12 @@ routing every look through the gated Pages deploy.
 - **Docs-only PRs and pushes skip the workflow entirely** (`paths-ignore`:
   `**.md` + `.claude/**`, added the same day — nothing under those patterns
   is imported into the bundle, verified by grep). A session-handoff commit
-  therefore has NO checks and merges immediately; do not sit waiting for a
-  "build" check that will never appear on such a PR. A mixed code+docs PR
-  still runs the full gates.
+  therefore has NO checks to wait for — do not sit waiting for a "build" check
+  that will never appear on such a PR. **It does NOT merge itself: that is an
+  exemption from the GATES, never from the owner's explicit "merge live"**
+  (corrected 17 Sep 26; the old wording said "merges immediately", the same
+  stale exemption that got a fix merged without him on 9 Sep). A mixed
+  code+docs PR still runs the full gates.
 - **Known cosmetic warning, deliberately deferred (15 Aug 26):** the runner
   logs "actions/checkout@v4, setup-node@v4, cache@v4 target Node 20, forced
   onto Node 24". A warning, not a failure — every run passes with it. Bump
@@ -752,7 +762,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `SecDefaultSnackbar.tsx` | The **"Set default order?"** snackbar (30 Aug 26) — an actionable bottom bar (`SECDEFOFFER` in `pops.ts`) the section-drag opens after a real move (`rowdrag.ts`). "Set as default" makes that day's section order the squadron house default (`engine/order.ts setSecDefault`/`secDefaultSave`, the same default the Admin panel edits, so the two can't drift); "Not now" / a 7 s timer dismisses. Admin-only by construction (the drag that opens it is `canEditSched`). Built as a bar, not a `toast()`, because the toast is a fading, un-clickable bubble. Replaced `ArrangeSections.tsx` (the per-day Arrange sheet, deleted 30 Aug 26 with the in-place drag). Contract: `docs/ui-contracts.md` §Dragging sections and waves. |
 | `DraftsModal.tsx` | The **drafts manager** (15 Aug 26) — opened from the Drafts picker's pencils (`DRAFTSEDIT` in `pops.ts`, carrying the day since drafts are per-day), scoped to the one day whose menu opened it. Tabs per draft (selected one marked ●), a name field that commits on blur/Enter (`draftRename` refuses empty/duplicate names, and refusing mid-keystroke would fight the typist), Select (make it live) / Delete (disabled on the selected entry, with a title saying why) / Done. |
 | `InputsPage.tsx` / `QualsPage.tsx` / `LogicPage.tsx` | The three secondary pages (inputs CRUD + CSV, quals grid, rules doc + admin editing). The Inputs table carries a date window and heading sort, so **its DOM row order is not `INPUTS` order** — address a row by the model index its buttons carry (`data-edit`/`data-inx`/`data-save`), never by position. Its dates read **day-first** and Last-modified reads **day month year** (21 Aug 26, `fmtDay`/`fmtDMY` in `inputedit.tsx`; a same-day timed span sits in one cell, the `✎ ✕` actions are pinned so every card is one compact shape). **The phone card is a grid of ALIGNED columns since 22 Aug 26** (callsign / type / date at fixed x on every card, remarks below the callsign — `scheduler.css` ≤820px block, CSS-only so td order holds) and the two spaceless chips wear `.bl` split-span short forms there (SANS AVAIL / APPOINT); the desktop table carries per-column `th` widths. Contracts: `docs/ui-contracts.md` §The Inputs table's view state, §The Inputs page speaks one day-first date voice. |
-| `InputsCal.tsx` / `caldrag.ts` / `state/plan.ts` | **The Inputs month calendar (22 Aug 26; cell + popover REDESIGNED the same evening)** — the page's full-screen Google-style month view (`INPVIEW`/`CALMONTH` in `state/view.ts`). The CELL reads title-first (owner: sections outrank inputs): the free-text **day TITLE** (`DAYRMK`, bold, wraps, both widths), the note/pucks **sections** in full, then the inputs as SIDE-BY-SIDE mini chips off `inputTone` (callsign + type, no times; a SANS chip prints its F/O/A letters, never the words), capped at `MAX_CHIPS` (6, inputs only) → `+N more`. The DAY POPOVER: the title edited beside the date in the head (`#icRmkEdit`), small `+ Note`/`+ Pucks` buttons (scheduler), full-width sections with an admin ⠿ **drag-reorder** (`movePlanSection`, same-day, half-rule), and the inputs at the BOTTOM led by a small `+ Input` (everyone). `state/plan.ts` holds `PLANPUCKS` (notes + `kind:'pucks'` person-rows: `addPuckRow`/`togglePuckPerson`/`movePlanSection`) and `DAYRMK`: session-only by owner choice, scheduler-gated at the write path, riding the undo snapshot (`pp`/`dm`). `caldrag.ts` is the calendar's OWN chip-drag machine — `commitChipMove` slides a span by the day-delta from the GRABBED cell through `commitInputEdit`; it moves sections between days too. Contract: `docs/ui-contracts.md` §The Inputs month calendar; the copied-filter drift-seam is named in `docs/feature-impact.md` §4. |
+| `InputsCal.tsx` / `caldrag.ts` / `state/plan.ts` | **The Inputs month calendar (22 Aug 26; cell + popover REDESIGNED the same evening)** — the page's full-screen Google-style month view (`INPVIEW`/`CALMONTH` in `state/view.ts`). The CELL reads title-first (owner: sections outrank inputs): the free-text **day TITLE** (`DAYRMK`, bold, wraps, both widths), the note/pucks **sections** in full, then the inputs as SIDE-BY-SIDE mini chips off `inputTone` (callsign + type, no times; a SANS chip prints its F/O/A letters, never the words), capped at `MAX_CHIPS` (6, inputs only) → `+N more`. The DAY POPOVER: the title edited beside the date in the head (`#icRmkEdit`), small `+ Note`/`+ Pucks` buttons (scheduler), full-width sections with an admin ⠿ **drag-reorder** (`movePlanSection`, same-day, half-rule), and the inputs at the BOTTOM led by a small `+ Input` (everyone). `state/plan.ts` holds `PLANPUCKS` (notes + `kind:'pucks'` person-rows: `addPuckRow`/`togglePuckPerson`/`movePlanSection`) and `DAYRMK`: PERSISTED since the 8 Sep 26 storage seam (`persistAll` writes the `plan` collection; the old "session-only by owner choice" note was superseded — corrected 17 Sep 26), scheduler-gated at the write path, riding the undo snapshot (`pp`/`dm`). `caldrag.ts` is the calendar's OWN chip-drag machine — `commitChipMove` slides a span by the day-delta from the GRABBED cell through `commitInputEdit`; it moves sections between days too. Contract: `docs/ui-contracts.md` §The Inputs month calendar; the copied-filter drift-seam is named in `docs/feature-impact.md` §4. |
 | `inputedit.tsx` | Editing ONE personal input AND adding one, shared by the Inputs page, the week and the board: the AM/PM halves (`HALF_AM`/`HALF_PM`), the span picker, the draft shape, **`normalizeInputDraft`** (every input write's shared refusals+derivations, extracted so add and edit cannot drift), `commitInputEdit` (including the accepted-row relink), **`commitNewInput`** (the board's + Add — unshifts a new row through the one funnel, Aug 26), `removeInput`, `setInpField` (one cell typed in place, and the clear-a-time-means-all-day rule), `firstPersonalType`/`firstUnavailType` (the panel defaults the board's + Add seeds), `InputEditor` itself (an `_new` seed row opens it in add mode), and the Inputs-page date display helpers **`fmtDay`** (ISO → day-first '13 Jul') and **`fmtDMY`** (ISO → '6 Jul 26'; `fmt`/`unfmt` still round-trip the stored month-first labels — these are display only). Three editors over one list is how they drift apart. |
 | `RangeCal.tsx` | The Inputs date picker: ONE calendar taking a range in two clicks, Monday-first grid, `yyyy-mm-dd` strings so the add/edit paths are unchanged. Used by the add form, the edit form, the table's `#inRangeBtn` window, and OilConfirm's `OilDayCal`. Its header carries a **"Go to today" button** (`.rc-today`, the same design-B calendar-page glyph as WeekCal, owner 1 Sep 26) that pages the view to the notional today's month and rings that day (`.rc-d.today`) — it does NOT pick, so jumping the view never wipes a range being built or a consumer's filter. (Not added to the Leave War pickers: today falls outside the leave-war cycle, so it would land on an empty month. MedicalView already has its own text "Today" button.) |
 | `MedicalView.tsx` / `DocViewer.tsx` / `UpchitConfirm.tsx` / `MedClashConfirm.tsx` / `engine/medical.ts` | **The medical tracker (27 Aug 26)** — the Inputs page's third view (`INPVIEW 'med'`, `#inMedBtn` on the title row with a down+pending count badge). Three DERIVED sections over `INPUTS` + an as-of ordinal (`MEDASOF`, null = the notional `weeknav.TODAY`): Medically Down / Pending Upchit / Upchit Complete (trailing 30 days), all from `engine/medical.ts` (`medDownAsOf`/`pendingUpchits`/`upchitsWithin` — pure, nothing stored, nothing runs at boot) plus the two TRIM planners (`upchitTrimPlan`, `newMedTrimPlan`) applied by `inputedit.tsx:applyMedPlan` inside the caller's batch. The new `Upchit` type (grp `'upchit'`, the SANS marker pattern) closes a down period; same-type overlaps are REFUSED (`medOverlapRefusal`), different-type overlaps trim the older row, and every medical input demands a document (`needsDoc` + `DocField` + `state/docs.ts`). `DocViewer.tsx` (`DOCVIEW` in `pops.ts`) shows any row's paperwork to EVERYONE; its footer carries the gated Edit/Upchit actions (ctx `'up'` in the shared editor). Rules: `docs/engine-rules.md` §The medical tracker; on screen: `docs/ui-contracts.md` §The Medical view. **The upchit day is a FIT day since 27 Aug 26 (owner)** — `upchitTrimPlan` cuts covering rows to end the day BEFORE the upchit — and an upchit is never saved silently: every form path gates through `UpchitConfirm.tsx` (the save-time summary off `upchitEffects`, forced Keep/Remove on each later-dated leftover, one-batch commit). A DIFFERENT-type overlap is asked about the same way (`MedClashConfirm.tsx` off `medClashes`; the per-clash pills read "<new> replaces" / "Keep <old> till <end>" since 28 Aug 26 — keeping files the new entry around the kept status via `medKeptSegments`/`mintMedSegments`, splitting where needed — one status per person per day, always; the sheet's rows are FLAT, un-boxed, owner's 28 Aug ask, scoped CSS so the upchit sheet keeps its cards). **A clash whose row covers the WHOLE new entry offers no keep button** (28 Aug 26) — keeping it would swallow the entry ("nothing left to file", now a commit-side backstop only), so replace is forced/pre-lit and the leftover row is the decision. **When replacing leaves a tail past the new entry (28 Aug 26), the sheet asks a per-leftover Remove (default) / Keep** — `medTailBeyond` is the one body it and `newMedTrimPlan` read, the answer riding `keepTail` into the write; direct callers omit it and keep every tail (the safety default). Pinned in `medical.test.ts`, `medwrite.test.ts`, `medclash.test.tsx`, `upchit.test.ts`, `upconfirm.test.tsx`, `docs.test.ts`, `docviewer.test.tsx`, `medicalview.test.tsx`, `demomed.test.ts`, `e2e/medical.spec.ts`. |

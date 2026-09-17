@@ -209,7 +209,11 @@ export function setDayApproved(di:any,on:any){
    moment of issue — it reproduces the day "as issued, wearing its marks". An AL
    snapshot lives ON the AL record (rec.snap = {d,c,fil}) and the Original in
    SCHED.orig, so both ride the undo stack with the state they belong to.
-   Nothing here persists past the session — neither does the AL list itself. */
+   CORRECTED 17 Sep 26: the old line here said none of this persists past the
+   session. It does. SCHED.orig and SCHED.als ride schedFields(), which
+   weekStashSnap() serialises into the week's `weeks/<wk>` record, so on a built
+   site the Originals and the whole AL list come back after a reload. Memory-only
+   is the dev/test path (MemoryBackend). See CLAUDE.md, WHAT ACTUALLY PERSISTS. */
 export function daySnap(di:any){di=+di;
   const c:any={}; Object.keys(SCHED.changes).forEach((k:any)=>{if(keyDay(k)===di)c[k]=SCHED.changes[k];});
   return {d:JSON.parse(JSON.stringify(DAYS[di])),c,fil:dayFilingFingerprint(di)};}
@@ -629,6 +633,15 @@ export function discardPending(){
 /* re-validate + repaint every visible surface */
 export const SIGN_ROLES:any[]=[['cur','CUR CK',false],['sked','SKED CK',true],['plan','PLANNED BY',true],['appr','APPROVED BY',true]];
 export function signOf(di:any){SCHED.sign=SCHED.sign||{}; return (SCHED.sign[+di]=SCHED.sign[+di]||{cur:'',sked:'',plan:'',appr:''});}
+/* [ARCH-STACK] follow-up #1 (R2-01): a NON-MUTATING sign reader. signOf lazily
+   INSERTS SCHED.sign[di] on first read, and the sign strip is read on every day
+   paint (view week included) — a live write outside any command, so the command
+   layer's next diff would emit a spurious sched.book sign record for a day nobody
+   signed. The read sites (signRoleOk/signShown/signNames, hence daySigned/
+   signMissing) use signAt instead; only the WRITE path (setSign) keeps signOf. A
+   frozen shared empty is safe because every reader only READS g[role]. */
+const EMPTY_SIGN:any=Object.freeze({cur:'',sked:'',plan:'',appr:''});
+export function signAt(di:any){return ((SCHED.sign||{})[+di])||EMPTY_SIGN;}
 /* AM-06 — signatures bound to CONTENT (brief §5/§9). Beside the signer name in
    SCHED.sign, each role that is signed through the sanctioned path (setSign)
    records, in SCHED.signBind[di][role], the exact content it signed: the
@@ -654,7 +667,11 @@ export function setSign(di:any,role:any,who:any){di=+di; signOf(di)[role]=who;
 function signBoundOk(di:any,role:any,cur?:any){const b=(SCHED.signBind||{})[+di]; const x=b&&b[role];
   if(!x)return true; const c=cur||currentBind(di);
   /* a binding written before the filing axis existed (x.fil undefined) must re-sign —
-     it cannot prove the filing was approved (dev-phase; sign state is session-scoped) */
+     it cannot prove the filing was approved. CORRECTED 17 Sep 26: the old
+     "(dev-phase; sign state is session-scoped)" was wrong — sign and signBind ride
+     schedFields into the persisted week record, so a pre-filing binding CAN come
+     back from storage. Re-signing is therefore the real guard, not a dev-phase
+     convenience. */
   return x.dg===c.dg&&x.iso===c.iso&&x.base===c.base&&x.rev===c.rev&&x.fil===c.fil;}
 /* a name only counts while it is still appointed — withdrawing someone's
    Scheduler qual after they signed used to leave the day looking signed — AND
@@ -667,7 +684,7 @@ function signBoundOk(di:any,role:any,cur?:any){const b=(SCHED.signBind||{})[+di]
    sign" text and the greened sign-off selects can never drift. `cur` is the
    caller's once-per-day currentBind; pass it to avoid recomputing the digest. */
 export function signRoleOk(di:any,role:any,cur?:any){
-  const g=signOf(di),who=g[role]; if(!who)return false;
+  const g=signAt(di),who=g[role]; if(!who)return false;
   const rr=SIGN_ROLES.find((r:any)=>r[0]===role); if(rr&&rr[2]&&!isScheduler(who))return false;
   const b=(SCHED.signBind||{})[+di];
   if(b&&b[role]){const c=cur||currentBind(di); if(!signBoundOk(di,role,c))return false;}
@@ -688,12 +705,12 @@ export function daySigned(di:any){return signMissing(di).length===0;}
    unappointed-but-signed name still shows (signPeople keeps it offered) — that
    path is unchanged, so this never silently blanks a name on an appointment change. */
 export function signShown(di:any){const b=(SCHED.signBind||{})[+di]; const cur=signCur(di);
-  const g=signOf(di),o:any={};
+  const g=signAt(di),o:any={};
   SIGN_ROLES.forEach((r:any)=>{const k=r[0],who=g[k];
     o[k]=(who&&b&&b[k]&&!signBoundOk(di,k,cur))?'':who;});
   return o;}
 export function signClear(di:any){SCHED.sign[+di]={cur:'',sked:'',plan:'',appr:''}; if(SCHED.signBind)SCHED.signBind[+di]={};}
-export function signNames(di:any){const g=signOf(di),o:any={};SIGN_ROLES.forEach((r:any)=>{const p=PEOPLE[g[r[0]]];o[r[0]]=p?p.cs:'';});return o;}
+export function signNames(di:any){const g=signAt(di),o:any={};SIGN_ROLES.forEach((r:any)=>{const p=PEOPLE[g[r[0]]];o[r[0]]=p?p.cs:'';});return o;}
 export function signPeople(schedOnly:any,keep?:any){
   const ids=Object.keys(PEOPLE).filter((id:any)=>!PEOPLE[id].special&&!PEOPLE[id].archived
       &&(!schedOnly||isScheduler(id)));

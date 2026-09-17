@@ -681,8 +681,11 @@ working copy and rebases the pending set as the diff vs the still-issued
 document, **without touching `SCHED.cur`** — so `dayIssuedHTML`/the view page
 keep showing the issued AL until a new AL is published; the loaded-then-edited
 copy becomes that AL. Same shape as `draftSelect`'s published-day path.
-`restoreDayVersion` (the old instant rollback that DID set `SCHED.cur`) stays in
-`engine/restore.ts` for probe-bridge only — nothing in the app calls it now.
+**CORRECTED 17 Sep 26:** `restoreDayVersion` (the old instant rollback that DID set
+`SCHED.cur`) was **REMOVED at Phase 2** — it is not in `src` at all, not even for the probe
+bridge, which exposes `loadVersionToWorkingCopy` instead. `engine/restore.ts` now holds only
+the `dayKeys` slot-key walker, and says so in its own header. A probe or e2e author calling
+`window.restoreDayVersion` gets `undefined`.
 Because loading replaces the working-copy edits, **with unpublished edits on the
 day it takes a confirming second tap**: the first arms `RESTARM` (state/view.ts),
 the button becomes amber "Discard N edits — confirm" beside a "Keep editing"
@@ -4390,8 +4393,10 @@ calendar. The z-ladder, documented here because the overlays stack: calendar
 input-edit dialog that can open on top of a row).
 
 **Storage semantics.** Day titles (`DAYRMK`) and the note/pucks sections
-(`PLANPUCKS`) live in `state/plan.ts`: SESSION-ONLY by the owner's explicit
-choice (scratch-pad, like INPUTS itself — a reload starts clean), gated to
+(`PLANPUCKS`) live in `state/plan.ts`: **PERSISTED since the 8 Sep 26 storage
+seam** (`persistAll` writes the `plan` collection; the old "SESSION-ONLY by the
+owner's explicit choice — a reload starts clean" note, and its comparison to a
+then session-only INPUTS, was superseded — corrected 17 Sep 26), gated to
 schedulers at the write path, cleared on login/logout, and riding the undo
 snapshot (`pp`/`dm` in histSnap) so Ctrl+Z walks a planning session back
 step by step.
@@ -6098,8 +6103,13 @@ followed by published." Two halves:
   published→draft, same-stage ties to the earliest bidding start) decides the
   boot `currentId` in `state/store.ts` — but only when nothing is remembered:
   a stored `current` (the reader's own pick, from the shared database to come)
-  always wins. Leave War is session-only today, so the stage pick decides on
-  every load.
+  is recorded on every switch — but **it is NOT honoured at boot** (owner
+  reaffirmed 17 Sep 26): the stage pick runs on EVERY load, so the tab always
+  opens on the war being worked. A picker switch holds for the rest of that
+  session only. History: the stage pick used to run every load by accident
+  (nothing was stored before the 8 Sep 26 storage seam); once the tab persisted,
+  the remembered war started winning from the second visit and the squadron
+  would reopen on whatever year was last glanced at. Fixed 17 Sep 26.
 - **Where in it.** The grid lands on the START of that war's bidding window —
   `engine/period.ts defaultFocusDate` = `bidFrom ?? start` (a war with no
   window set has no narrower start than its first day). `bidFrom` is kept

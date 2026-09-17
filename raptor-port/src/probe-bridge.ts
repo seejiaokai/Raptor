@@ -29,6 +29,8 @@ import { keyDay, shiftKeys, shiftAircraft, shiftFormation, shiftWave, uniqDays, 
 import { applyMove, moveWave, waveInsertSlot, waveDefault, waveDefaultView, setWaveDefault, moveWaveDefault } from './engine/reorder'
 import { hhmm, parseHM, hmOK, minus, overlap, hm24 } from './engine/time'
 import { HIST, histApply, histSnap, histPush } from './state/history'
+import { commandStream } from './command'
+import { resyncSchedBaseline, schedBaselineClean } from './state/sched-commit'
 import { HOOKS } from './engine/hooks'
 import * as view from './state/view'
 import { setLgEdit } from './state/auth'
@@ -66,6 +68,17 @@ export function installProbeBridge() {
   w.validate = validate; w.collectEvents = collectEvents; w.slotBar = slotBar
   w.markEdit = markEdit; w.publishALDay = publishALDay; w.setDayApproved = setDayApproved; w.signOf = signOf
   w.afterSchedMutate = () => { view.afterSchedMutate(); notify() }
+  /* [ARCH-STACK] follow-up #1 (R2-09): the command layer is wired at module-eval,
+     long before this bridge installs, so w.afterSchedMutate() now OPENS a command.
+     For e2e FIXTURE setup that must not pollute the stream, expose the RAW epilogue
+     (no command) plus a baseline re-sync so the next real command isn't dirtied by
+     the fixture. And expose a read-only stream reader for the P5 live proof: the
+     length, a copy of the last envelope, and the baseline-clean guardrail. */
+  w.afterSchedMutateRaw = () => { view.rawSchedEpilogue(); resyncSchedBaseline(); notify() }
+  w.resyncSchedBaseline = () => resyncSchedBaseline()
+  w.commandStreamLen = () => commandStream().length
+  w.lastEnvelope = () => { const s = commandStream(); return s.length ? JSON.parse(JSON.stringify(s[s.length - 1])) : null }
+  w.schedBaselineClean = () => schedBaselineClean()
   /* week navigation — the per-week stash work (23 Aug 26) made cross-week
      round trips part of the engine's observable behaviour, so probes/demos
      can now drive them the same way the week chips do */
@@ -104,10 +117,13 @@ export function installProbeBridge() {
      the Raptor "View as" picker from the Leave War tab. Same precedent as
      w.lwSetRole. */
   w.lwSetViewer = (id: string | null) => lwSetViewer(id)
-  /* Inject a full war set into the live store. Same reason as w.lwSetRole:
-     Leave War is session-only now (a memory backend, see main.tsx), so the
-     under-manned e2e fixtures can no longer seed a red-day war through
-     localStorage before boot — they boot, then push it in through here. */
+  /* Inject a full war set into the live store. Same reason as w.lwSetRole: the
+     under-manned e2e fixtures cannot seed a red-day war through localStorage
+     before boot — they boot, then push it in through here. CORRECTED 17 Sep 26:
+     the old reason given was "Leave War is session-only now (a memory backend)".
+     It is not — Leave War persists on a built site; the memory backend is the
+     dev/test path, which is what the e2e run actually uses. The bridge is still
+     the right seam, for a different reason: it does not depend on the backend. */
   w.lwLoadWars = (raw: unknown, currentId: string) => lwLoadWars(raw, currentId)
   /* the board — loaded lazily to keep module order simple */
   /* the id-getter every probe leans on, and the wider engine surface */

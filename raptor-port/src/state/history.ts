@@ -13,15 +13,31 @@ const syncHistBtns=()=>HOOKS.syncHistBtns()
 /* =====================================================================
    UNDO / REDO — snapshot stack over DAYS + the amendment bookkeeping
    ===================================================================== */
-/* the eleven SCHED fields, pulled out so histSnap (the whole-history undo
-   snapshot, below) and the per-week session stash (state/store.ts's
-   weekStashSnap, engine/weekstash.ts) build the identical object rather than
-   two hand-copied field lists drifting apart the day a twelfth field is
-   added. Same key ORDER as histSnap always wrote them in, so splicing this
+/* the FOURTEEN SCHED fields (corrected 17 Sep 26 — this said eleven), pulled
+   out so histSnap (the whole-history undo snapshot, below) and the per-week
+   stash (state/store.ts's weekStashSnap, engine/weekstash.ts — it PERSISTS since
+   8 Sep 26, so "session stash" here was wrong too) build the identical object
+   rather than two hand-copied field lists drifting apart the day another field
+   is added. Same key ORDER as histSnap always wrote them in, so splicing this
    in with `...schedFields()` leaves histSnap's JSON.stringify output
    byte-identical to before this existed. */
 export function schedFields(){return {c:SCHED.changes,p:SCHED.pending,ad:SCHED.added,a:SCHED.als,al:SCHED.al,ok:SCHED.dayOK,sg:SCHED.sign,sb:SCHED.signBind,o:SCHED.orig,cv:SCHED.cur,dr:SCHED.drafts,cd:SCHED.curDraft,v:SCHED.ridV,am:SCHED.amV}}
 export const HIST:any={stack:[],ix:-1,lock:false,cap:60};
+/* [ARCH-STACK] follow-up #1 (R2-07): the scheduler command layer's lagging
+   baseline (state/sched-commit.ts SCHED_BASELINE) must be re-synced to the live
+   world after ANY out-of-band replacement of DAYS/SCHED/INPUTS/WARNOFF that does
+   not go through a command. histInit (boot + loadWeek) and histRestore (undo,
+   redo, the input-quarantine rollback, a command rollback) are the choke points
+   for all of those, so a callback registered here fires from BOTH — covering
+   every restore path BY CONSTRUCTION rather than by a hand-kept enumeration.
+   history.ts cannot import sched-commit.ts (cycle: sched-commit imports history),
+   so the layer registers the callback at module-eval (registerSchedCommandLayer).
+   Null before that = no-op. The callback always sets the baseline to histSnap()
+   AFTER the restore, never to the raw snapshot string — histRestore re-installs
+   fields with ||{}/||[] defaults, so histSnap() can differ from the raw string by
+   a byte and only the post-restore live snapshot is the true baseline. */
+let SCHED_RESYNC:(()=>void)|null=null;
+export function setSchedResync(cb:(()=>void)|null){SCHED_RESYNC=cb;}
 /* `ok` carries SCHED.dayOK — the per-day publish state. It replaced the old
    week-wide ap/dr pair, so publishing or reopening a single day is an ordinary
    undo step. */
@@ -37,14 +53,20 @@ export const HIST:any={stack:[],ix:-1,lock:false,cap:60};
    in the snapshot — the rest (folds, previews, late marks) are not undoable and
    stay out on purpose. */
 /* `pp`/`dm` carry the Inputs-calendar planning layer (state/plan.ts) —
-   PLANPUCKS and DAYRMK. Session-only like the rest of that module, but still
-   worth an undo step: a scheduler dragging pucks around a month wants the
+   PLANPUCKS and DAYRMK. CORRECTED 17 Sep 26: NOT session-only — persistAll
+   writes them as the plan/all record. Worth an undo step as well: a scheduler dragging pucks around a month wants the
    same Ctrl+Z safety net as every other edit, and riding the ordinary
    snapshot is free — it is already whole-state JSON. */
 export function histSnap(){return JSON.stringify({d:DAYS,i:INPUTS,...schedFields(),wo:[...WARNOFF],pp:PLANPUCKS,dm:DAYRMK});}
 /* the stable-ids walk (engine/rowids.ts) runs before EVERY snapshot so undo
    never hands back an id-less row */
-export function histInit(){ensureRowIds(DAYS);HIST.stack=[histSnap()];HIST.ix=0;syncHistBtns();}
+/* RE-SYNC BEFORE syncHistBtns (F-01): syncHistBtns() -> HOOKS.syncHistBtns ->
+   notify(), which runs every listener synchronously — the Leave War sync opens a
+   real writeInputsBatch command. If that command runs while the baseline is still
+   the PREVIOUS world (loadWeek has already swapped DAYS/SCHED), it would diff the
+   old week against the new and emit a spurious whole-week envelope. Advance the
+   baseline first so the notify's listeners see baseline === live. */
+export function histInit(){ensureRowIds(DAYS);HIST.stack=[histSnap()];HIST.ix=0;SCHED_RESYNC&&SCHED_RESYNC();syncHistBtns();}
 export function histPush(){
   if(HIST.lock)return;
   ensureRowIds(DAYS);
@@ -88,6 +110,9 @@ export function histRestore(snapStr:any){
   PLANPUCKS.length=0; (s.pp||[]).forEach((x:any)=>PLANPUCKS.push(x));
   for(const k of Object.keys(DAYRMK))delete DAYRMK[k];
   Object.assign(DAYRMK,s.dm||{});
+  /* the command layer's baseline follows every restore (see setSchedResync). It
+     reads histSnap() itself, so it runs AFTER the whole model is back in place. */
+  SCHED_RESYNC&&SCHED_RESYNC();
   return s;
 }
 export function histApply(i:any){

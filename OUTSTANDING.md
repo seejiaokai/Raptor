@@ -60,6 +60,14 @@ in-flight and risk-reducing** first.
      (CLAUDE.md §Stable decisions — `WEEKS`, `restoreDayVersion`, `openWarns`, etc.); grep for
      refs and confirm before removing anything. Own gated PR, in batches. See the "SECOND
      TASK" section of `raptor-port/docs/plans-selector-followups.md`.
+1b. **[TRK-SMOKE] — DONE + MERGED LIVE (17 Sep 26, PR #408, squash `93deab7` on `main`).**
+   Code-only cherry-pick; the rest of this branch stayed unmerged. It was NOT a flake: two real
+   causes. See the Done section entry for the
+   full diagnosis; in short — (a) the add-student box cleared its field a beat after it
+   opened, so a machine-speed fill was wiped and the add silently no-op'd; (b) a failing run
+   abandoned its preview server, and on Windows even a passing run did, so the next run
+   couldn't bind the port and failed on clean code. Both fixed, cross-provider reviewed
+   (Codex + Fable), gates green. The follow-up #1 build can run its per-phase gate set.
 2. **[SYNC-INTEG]** — now just the small NON-undo guardrails (medical member-filed,
    clutter-only clear-data, Quals ✕ confirm, doc fix). Low urgency (pre-live); cheap batch.
    *The undo/permission half was pulled out into [GLOBAL-UNDO] (owner, 13 Sep 26).*
@@ -278,6 +286,42 @@ what to stop):** `raptor-port/docs/superpowers/specs/2026-09-13-architecture-roo
   grade (orphaned row → `shiftHardGround` can't resolve the type; narrow — Fable inspect #2). Fix
   when landings become the one Absence record, or a cheap `srcType` on the ground row if it surfaces.
 
+### [TRK-SMOKE] The `addStudent` tracker smoke check — DONE 17 Sep 26 (committed, NOT merged)
+**Answer to the mandated first question: NOT a flake.** It failed deterministically at one spot
+(the second of two back-to-back adds) and, when the machine was clean, a specific race — proven
+by instrumenting the running app at the failing add and reading the value the box held at submit
+time. Two independent causes, both fixed:
+
+1. **The add-student box wiped the typed name (shipped bug).** The shared in-page dialog cleared
+   its text field to the default in a POST-PAINT step that ran a beat AFTER the box was already
+   fillable. A human types later than that, so a person never hit it — but a machine-speed fill
+   (the smoke suite, a fast paste, a password manager) landed the name before the clear, which
+   then wiped it, so OK submitted a blank and the add silently no-op'd → the roster option never
+   appeared → 15s timeout. FIX (`src/tracker/components/Modals.jsx`): clear the field DURING
+   render, before it is ever shown, so nothing typed can be clobbered. Focus moved to its own
+   effect keyed on the dialog serial (a Fable-review fix — the interim version cancelled the
+   cursor when any background refresh landed within 30ms of opening). Two regression tests pin
+   both, each proven to fail on the pre-fix code.
+2. **Failed runs (and, on Windows, ALL runs) abandoned the preview server.** The harness only
+   tore down at the end-of-file; a timed-out check threw before that and left the vite server
+   holding the strict port, and on Windows even a passing run leaked it because `server.kill()`
+   killed only the shell wrapper, not the vite child. An orphan on the port makes the NEXT run
+   fail to bind — the "stray :4179" and "fails three times running on clean code". FIX
+   (`scripts/tracker/smoke.mjs`): register a teardown (close browser + kill server) BEFORE the
+   browser launches and on any crash, memoised so a second failure can't race ahead of it, with
+   a Windows tree-kill (`taskkill /T /F`) and a bounded browser close.
+
+**Verification.** vitest 4868/0 · build clean · parity 728/0 · tracker units 76/76 (2 new
+regression tests) · `npm run smoke:tracker` 425/0 repeatedly with the server confirmed torn
+down, and a forced browser-launch failure now cleans up too. Cross-provider bug-check: Codex
+(found the teardown-before-launch gap, fixed) + Fable (found the focus regression + a concurrent-
+teardown leak, both fixed). **MERGED LIVE 17 Sep 26 (PR #408, code-only cherry-pick, squash
+`93deab7` on `main`).** Only the tracker fix went live; the rest of the branch stayed unmerged.
+NB the app itself is fast (Tracker tab opens in ~0.4s, instant thereafter); the slowness during
+this work was the leaked servers, not the app.
+
+---
+
 ### [SYNC-INTEG] Leave War ↔ inputs guardrails (NON-undo part) — small, ready
 A read-only cross-provider audit (Codex + Fable, 13 Sep 26) of DELETE/UNDO across the
 Leave War ↔ inputs ↔ documents seams found a family of data-integrity + permission
@@ -299,6 +343,24 @@ having two separate undo systems over shared data — remove the root, don't pat
 - **Context:** the spec/record above (findings, dispositions).
 
 ### [GLOBAL-UNDO] One global per-session undo — a step BEFORE the database
+**OWNER DECISION 17 Sep 26 — what an on-the-record undo IS. SUPERSEDES the 16 Sep wording.**
+The boundary was settled first: undo is silent while the shared database has NOT registered
+the publish, and goes on the record once it HAS (an export is NOT a boundary event). The
+remaining question was what the on-the-record form is — and the answer is:
+**just a line in the history saying it was undone.**
+
+- **NOT** a correcting amendment. The 16 Sep record said "an on-the-record forward withdrawal
+  (= a correcting amendment) — append-only, unique never-reused ids, derived credits
+  recompute, with a one-line heads-up". That is SET ASIDE; newest instruction wins.
+- The owner's stated purpose is traceability — "to prevent silent bugs" — not notifying the
+  squadron. A history line satisfies that purpose.
+- **What it deliberately does NOT do, so nobody re-derives it as a gap:** nothing is pushed to
+  anyone. If the publish had already reached the shared record, others are not actively told
+  it was undone — the undo is discoverable in the history, not announced. The owner's call,
+  made knowingly.
+- STILL BINDING from before: **never erase or reuse an issued version id.** The history line
+  is additive; the issued record stays immutable.
+
 **Decision (owner, 13 Sep 26):** replace the current SEPARATE per-section undo stacks
 (schedule / Leave War / Tracker) with ONE global, per-session, per-user undo timeline. The
 whole delete/undo weird-behaviour family exists BECAUSE two independent undo systems sit over
@@ -313,9 +375,20 @@ stores' history, which the DB step needs anyway), NOT as a mid-fix patch now.
   your own actions; a role/viewer PREVIEW must not wipe an admin's undo.
 - **Gate:** must be done before promulgation / real users (the interim bugs are tolerable only
   because it's demo data).
+- **Clean input+leave undo lands at step 4, NOT before (owner, 16 Sep 26).** A schedule undo that
+  also reverses an accepted LEAVE input's Leave War cell reaches its fully-clean form only once an
+  approved absence is ONE record (ARCH-STACK step 4, one-Absence). Until then the command carries
+  the leave effect in its own inverse data so it can't drift, but the cleanest version is a step-4
+  payoff — don't try to fully solve input+leave undo before step 4.
+- **Undo-of-publish semantics SETTLED (owner, 16 Sep 26):** silent reverse BEFORE a publish is
+  sent/witnessed; an on-the-record forward withdrawal (a correcting amendment — append-only, unique
+  never-reused version ids, derived credits recompute) AFTER. Undo is per-user + per-session
+  (logout clears; never touches another user's actions; won't clobber a later edit). Roster/settings
+  edits ARE undoable. See step-2 design §3.4 + memory `undo-of-publish-semantics`.
 - **Context:** the sync spec (findings A/C/D/E/F/I + the red-team on why the two-system patch
   is the wrong approach); memories `future-undo-semantics-multiuser` (architecture direction),
-  `multi-squadron-and-person-transfer`; ties to `docs/architecture-direction.md` + [DB-STEP].
+  `undo-of-publish-semantics`, `multi-squadron-and-person-transfer`; ties to
+  `docs/architecture-direction.md` + [DB-STEP].
 
 ### [RECALL] Fresh recall from archive — FUTURE FEATURE
 An admin recalls an archived person back into Quals. **Behaviour (owner, 13 Sep 26):**
@@ -433,8 +506,19 @@ marker (everyone). Clock-free; NOT coupled to EOD.
 - **HEAVY**, test-first, Opus; keep `tfin.js` 728/0; fresh Codex+Fable CODE inspection after
   build; no merge without "merge live". Owner decisions locked in session-state.md.
 
-### [FLAG-EXPORT] PDF export — print the PUBLISHED version + a nicer agency-facing redesign — OPEN (follow-up of [CRP-FLAG])
-TWO halves (owner, 15–16 Sep 26):
+### [FLAG-EXPORT] PDF export — print the PUBLISHED version, CURRENT DAY only + a nicer agency-facing redesign — OPEN (follow-up of [CRP-FLAG])
+THREE halves now (owner, 15–17 Sep 26):
+- **SCOPE — CURRENT DAY ONLY (owner, 17 Sep 26): "my end goal is to export the current day
+  only's published schedule … its only purpose is to export the snapshot of the current
+  schedule."** Today `ui/printpdf.ts:printSchedPDF` exports the WHOLE loaded week
+  (`publishedDays()` + a Mon–Sun label). Narrow it to the one day. Same ruling also settled
+  two other things worth keeping together: the export is a **scheduler-only** function ("they
+  know what's the latest copy to use"), and it is **NOT** a publication boundary — exporting
+  does not constrain undo, which is why the three export/print/session-end "disclosure" call
+  sites were removed on 17 Sep (see `docs/superpowers/specs/2026-09-16-arch-stack-2-command-layer-design.md`
+  §3.4 and `src/state/disclosure.ts`). Flagged during the 17 Sep correctness sweep and
+  deliberately NOT changed there — it is a real behaviour change needing its own gate and a
+  live check. Context: that sweep doc's §G.
 - **Functional (not a design call — safe to build):** exports (`schedRows`→export.ts/printpdf.ts)
   read the live working `DAYS`; export the **published** version instead, and label the
   next-week peek working-vs-signed.
@@ -455,6 +539,25 @@ TWO halves (owner, 15–16 Sep 26):
 ---
 
 ## Done
+
+### [LW-OPEN] Leave War opens on the war being WORKED — DONE 17 Sep 26
+Owner ruling (17 Sep 26, restating his 7 Sep rule under newest-instruction-wins):
+the tab always opens on the war open for bidding, else closed, else published,
+else draft — never on the one last viewed. Was a REGRESSION, not a missing
+feature: the 8 Sep storage seam made the tab persist, so the stored `current`
+started winning from the second visit; before that nothing was stored and the
+stage pick ran every load, so the rule held by accident.
+**Resolved:** `state/store.ts initStore` now always stage-picks and ignores the
+stored `current` (still recorded at every switch, for the shared database and
+so a switch holds for the rest of the session). Pinned by three tests in
+`state/store.test.ts`, one of which REPLACES an older test that asserted the
+opposite ("remembers which war was on screen across a reload") — reversed by
+owner ruling, noted in place. Gates: vitest 4865/4865, parity 728/0, build,
+e2e (only the 2 known pre-existing failures, proved pre-existing by re-running
+them against a stashed tree), tracker smoke. LIVE-DRIVEN on the built bundle:
+opened on JAN-DEC 26 -> switched to the 27 draft -> switch held -> reload came
+back on JAN-DEC 26 with the bidding border showing, no console errors.
+
 
 ### [TRK-IMPORT] Tracker import-conflict refusal — DONE (12 Sep 2026)
 Import now refuses when a file names a *different person* under a callsign already
