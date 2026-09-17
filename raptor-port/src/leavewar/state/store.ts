@@ -97,7 +97,7 @@ import { localBackend, memoryBackend, type StorageBackend } from './storage'
    router below). Imported here so a Leave War user edit joins the SAME change
    stream + auth gate every module funnels through. */
 import {
-  commit as cmdCommit, isCommitting as cmdIsCommitting,
+  commit as cmdCommit, isCommitting as cmdIsCommitting, deferEffect as cmdDeferEffect,
   definePermission as cmdDefinePermission, anyone as cmdAnyone, registerRecord as cmdRegisterRecord,
 } from '../../command'
 import type { EnlistableStore as CmdEnlistableStore, RecordEntry as CmdRecordEntry, Scope as CmdScope } from '../../command'
@@ -998,6 +998,7 @@ function rawPersist(): void {
      are kept instead: they are the admin's arrangement of that projection,
      keyed by id, so they survive a roster that gains or loses a body. */
 
+  LW_SIG++   // [CMDL-FINISH] C9 — the durable version advanced
   // A save IS an undo step: record the durable snapshot now that the backend
   // holds it (the UNDO / REDO block below). Skipped while a restore or a
   // sync-driven write holds the lock, and a no-op when nothing durable moved.
@@ -1033,6 +1034,11 @@ function rawPersist(): void {
 let LW_BASELINE: State = state   // the last-persisted state ref — the record source
 let LW_READY = false             // enabled after boot (lwHistInit), so seed persists stay raw
 let LW_REGISTERED = false
+/* [CMDL-FINISH] C9 — a monotonic DURABLE-version counter, bumped only where the
+   backend actually changes (rawPersist / restore). signature() returns it so the
+   whole-world guard asks "changed?" cheaply, instead of serialising the world
+   every commit. Only meaningful once lwStore is registered guarded (end of P3). */
+let LW_SIG = 0
 
 /* decompose a durable State into its logical records (design §3.1): one record
    per POPULATED grid cell / bid (sparse), plus the coarse side records. */
@@ -1081,11 +1087,72 @@ function lwDecompose(s: State): Map<string, CmdRecordEntry> {
   return m
 }
 
-const lwStore: CmdEnlistableStore = {
+/* [CMDL-FINISH] §3 — apply ONE decomposed LW record onto a MUTABLE state clone
+   (write() clones first, so mutating in place here never touches the captured
+   baseline). Cell/bid ids are `${warId}:${pid}:${date}`; warId may itself carry
+   colons, so the two trailing segments (pid, date) are split from the RIGHT. */
+function applyLwRecord(s: State, e: CmdRecordEntry): void {
+  const coll = e.collection
+  if (coll === 'lw.war') {
+    const ix = s.wars.findIndex(w => w.period.id === e.id)
+    if (e.op === 'delete') { if (ix >= 0) s.wars.splice(ix, 1) }
+    else if (ix >= 0) s.wars[ix].period = e.value as any
+    else s.wars.push({ period: e.value as any, grid: {}, states: {} } as any)
+    return
+  }
+  if (coll === 'lw.cell' || coll === 'lw.bid') {
+    const iDate = e.id.lastIndexOf(':'); const date = e.id.slice(iDate + 1)
+    const rest = e.id.slice(0, iDate); const iPid = rest.lastIndexOf(':')
+    const pid = rest.slice(iPid + 1); const warId = rest.slice(0, iPid)
+    const war = s.wars.find(w => w.period.id === warId)
+    if (!war) return
+    const map: Record<string, Record<string, string>> = (coll === 'lw.cell' ? war.grid : war.states) as any
+    if (e.op === 'delete') { if (map[pid]) delete map[pid][date] }
+    else { (map[pid] || (map[pid] = {}))[date] = e.value as any }
+    return
+  }
+  switch (coll) {
+    case 'lw.ledger': (s as any).ledger = e.value; return
+    case 'lw.balances': (s as any).openings = e.value; return
+    case 'lw.oilpolicy': (s as any).oilPolicy = e.value; return
+    case 'lw.postouts': (s as any).postOuts = e.value; return
+    case 'lw.current': (s as any).currentId = e.value; return
+    case 'lw.config': {
+      const v = e.value as any
+      Object.assign(s as any, {
+        eventDefs: v.eventDefs, figureOrder: v.figureOrder, rosterOrder: v.rosterOrder,
+        persLabels: v.persLabels, manningOrder: v.manningOrder, manningHidden: v.manningHidden,
+        figureHidden: v.figureHidden, groupDefs: v.groupDefs, groupPriority: v.groupPriority,
+        groupPriorityCustom: v.groupPriorityCustom, groupColors: v.groupColors,
+        requirements: v.requirements, eventRows: v.eventRows, showSans: v.showSans,
+        personEdits: v.personEdits,
+      })
+      return
+    }
+  }
+}
+
+/* exported for the [CMDL-FINISH] write()-seam unit tests (the two-store round-trip
+   Q2); production wiring uses it only through this module. */
+export const lwStore: CmdEnlistableStore = {
   key: 'leavewar',
   capture: () => LW_BASELINE,                                  // the immutable ref IS the snapshot
-  restore: (snap) => { state = snap as State; LW_BASELINE = snap as State },
+  restore: (snap) => { state = snap as State; LW_BASELINE = snap as State; LW_SIG++ },
   records: () => lwDecompose(LW_BASELINE),
+  signature: () => String(LW_SIG),                             // [CMDL-FINISH] C9
+  /* [CMDL-FINISH] §3 (F8/GU-007) — batch, delete-aware record write for the undo
+     seam. Clone the current state (preserving the NON-record fields the decompose
+     omits — people/role/viewer/focus), apply every entry, republish the derived
+     top-level fields (withCurrent), advance the baseline, then persist + notify at
+     the transaction boundary under the lock (a restore must push NO LW undo step).
+     Called only from a reducer that already enlisted lwStore. */
+  write(entries: CmdRecordEntry[]): void {
+    const next = JSON.parse(JSON.stringify(state)) as State   // fields are all JSON-durable (rawPersist proves it)
+    for (const e of entries) applyLwRecord(next, e)
+    state = withCurrent(next)
+    LW_BASELINE = state
+    cmdDeferEffect(() => { locked(() => rawPersist()); notify() })
+  },
 }
 
 function lwRegisterCommands(): void {

@@ -39,10 +39,11 @@
 import type { EnlistableStore, RecordEntry, Scope, CommitResult, Command } from '../command'
 import {
   commit, isCommitting, definePermission, anyone, registerRecord, registerGuardedStore,
+  cmdDeferEffect,
 } from '../command'
 import { PEOPLE, ID_BY_CS } from '../engine/people'
-import { store, setSettingsWriteHook } from '../engine/hooks'
-import { rulesLoad } from '../engine/rules'
+import { store, setSettingsWriteHook, HOOKS } from '../engine/hooks'
+import { rulesLoad, rulesResetMem } from '../engine/rules'
 import { lookaheadLoad } from '../engine/lookahead'
 import { qualColsLoad } from '../engine/qualcols'
 import {
@@ -77,14 +78,25 @@ function captureSettings(): string {
   for (const k of SETTINGS_KEYS) o[k] = store.get(k, null)
   return JSON.stringify(o)
 }
-/* rollback: restore each key's persisted value, then re-derive every module CFG
-   from the store (undoes a CFG mutation whose save had already run — or one whose
-   save had NOT run, since the CFG is rebuilt from the unchanged store). Writes go
-   through the raw setter (the hook is inert while committing) so nothing nests. */
+/* [CMDL-FINISH] R3-001 — the side-effect-free RESET-then-overlay rehydrator,
+   shared by restore() and write(). rulesLoad only OVERLAYS overrides, so a plain
+   loader pass would leave a dropped override live when an OLDER/smaller rules
+   record is restored (or `rules` is deleted). Reset VCONF/SHIFT_HARD to the
+   squadron standard IN MEMORY first (rulesResetMem — no storage write), THEN run
+   every loader (each of the other nine already reset-then-overlays from a module
+   constant, so re-running them is a full re-derive). The store is ALREADY at the
+   target values here, so the loaders read the restored records. */
+function rehydrateSettings(): void {
+  rulesResetMem()
+  for (const load of SETTINGS_LOADERS) load()
+}
+/* rollback: restore each key's persisted value, then the reset-then-overlay
+   re-derive. Writes go through the raw setter (the hook is inert while
+   committing) so nothing nests. */
 function restoreSettings(snap: string): void {
   const o = JSON.parse(snap)
   for (const k of SETTINGS_KEYS) store.set(k, k in o ? o[k] : null)
-  for (const load of SETTINGS_LOADERS) load()
+  rehydrateSettings()
 }
 export const settingsStore: EnlistableStore = {
   key: 'settings',
@@ -92,6 +104,22 @@ export const settingsStore: EnlistableStore = {
   restore: (snap) => restoreSettings(snap as string),
   records: settingsRecords,
   signature: captureSettings,
+  /* [CMDL-FINISH] §3 — batch record write for the undo seam. store.set is the
+     record source AND the persist (the hook writes raw while committing, so
+     nothing nests); a `delete` clears the key to null (records() reads
+     get(k,null), so absent === null). One reset-then-overlay re-derive after ALL
+     entries, then a boundary-deferred re-validate + repaint (a restored `rules`
+     record changed the thresholds the warnings ride on). */
+  write(entries: RecordEntry[]): void {
+    for (const e of entries) {
+      if (e.op === 'delete') store.set(e.id, null)
+      else store.set(e.id, e.value)
+    }
+    rehydrateSettings()
+    // HOOKS.reflow = validate() + notify(), released at the transaction boundary
+    // (a restored `rules` record changed the thresholds the warnings ride on).
+    cmdDeferEffect(HOOKS.reflow)
+  },
 }
 
 /* ---- the PEOPLE EnlistableStore ------------------------------------------ */
@@ -120,12 +148,35 @@ function restorePeople(snap: string): void {
     if (typeof cs === 'string') (ID_BY_CS as any)[cs.toLowerCase()] = id
   }
 }
+/* rebuild ID_BY_CS from the whole live PEOPLE (a delete must drop the old cs
+   mapping, so a touched-ids-only pass would leave a stale entry — full rebuild is
+   the same work restorePeople does). */
+function rebuildIdByCs(): void {
+  for (const k of Object.keys(ID_BY_CS)) delete (ID_BY_CS as any)[k]
+  for (const id of Object.keys(PEOPLE)) {
+    const cs = (PEOPLE as any)[id] && (PEOPLE as any)[id].cs
+    if (typeof cs === 'string') (ID_BY_CS as any)[cs.toLowerCase()] = id
+  }
+}
 export const peopleStore: EnlistableStore = {
   key: 'people',
   capture: () => baseline(),
   restore: (snap) => restorePeople(snap as string),
   records: peopleRecords,
   signature: () => baseline(),
+  /* [CMDL-FINISH] §3 — batch record write for the undo seam. Apply every
+     people/<id> into PEOPLE (delete removes it), rebuild the callsign index once,
+     advance the baseline in the apply, and persist at the boundary. */
+  write(entries: RecordEntry[]): void {
+    for (const e of entries) {
+      if (e.op === 'delete') delete (PEOPLE as any)[e.id]
+      else (PEOPLE as any)[e.id] = e.value
+    }
+    rebuildIdByCs()
+    PEOPLE_BASELINE = JSON.stringify(PEOPLE)
+    cmdDeferEffect(rawPersistPeople)   // persist at the boundary
+    cmdDeferEffect(HOOKS.reflow)       // re-validate + repaint (roster feeds the warnings)
+  },
 }
 
 /* ---- command types + the commit helpers ---------------------------------- */

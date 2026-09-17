@@ -31,16 +31,18 @@
 import type { EnlistableStore, RecordEntry, Scope, CommitResult, Command } from '../command'
 import {
   commit, definePermission, anyone, registerRecord, registerGuardedStore,
-  registerEffectContext, installBaselineInvariants,
+  registerEffectContext, installBaselineInvariants, cmdDeferEffect, CmdRefused,
 } from '../command'
 import { DAYS } from '../engine/data'
-import { mintInpIds } from '../engine/inputs'
+import { INPUTS, mintInpIds } from '../engine/inputs'
 import { ensureRowIds } from '../engine/rowids'
 import { SCHED, setDayApproved, publishALDay, discardPending } from '../engine/publish'
 import { CURWEEK } from '../engine/waves'
 import { HIST, histSnap, histRestore, setSchedResync } from './history'
 import { setSchedEpilogueHook, HOOKS } from '../engine/hooks'
 import { issuedDisclosed, discloseIssued } from './disclosure'
+import { PLANPUCKS, DAYRMK } from './plan'
+import { WARNOFF } from './view'
 
 /* ---- the scheduler EnlistableStore (a LAGGING BASELINE, decomposed) --------
    [ARCH-STACK] follow-up #1: copy the People pattern. The unrouted board/text/
@@ -108,12 +110,100 @@ function decompose(snapStr: string): Map<string, RecordEntry> {
 }
 function schedRecords(): Map<string, RecordEntry> { return decompose(baseline()) }
 
+/* [CMDL-FINISH] §3 — a write() entry with this reserved id (collection 'inputs')
+   reorders INPUTS to the carried iid[] sequence (C11/CMDLF-011). records() does
+   NOT emit it — array order round-trips as-is on an in-place re-apply; the undo
+   step synthesises it only when restoring an order that changed. */
+const INPUT_ORDER_ID = '__order'
+
+/* apply a decomposed `sched.book` record value back onto the live SCHED book —
+   the exact inverse of decompose()'s book projection (schedFields minus o/a,
+   which are their own records). */
+function applyBook(v: any): void {
+  SCHED.changes = v.c || {}; SCHED.pending = v.p || {}; SCHED.added = v.ad || {}
+  SCHED.al = v.al || 0; SCHED.dayOK = v.ok || {}
+  SCHED.sign = v.sg || {}; SCHED.signBind = v.sb || {}
+  SCHED.cur = v.cv || {}; SCHED.drafts = v.dr || {}; SCHED.curDraft = v.cd || {}
+  SCHED.ridV = v.v; SCHED.amV = v.am
+}
+
+/* [CMDL-FINISH] §3 (F8/GU-007) — the batch, delete-aware, per-collection record
+   write for the undo seam. Apply EVERY record back into the live world first,
+   THEN one ensureRowIds/mintInpIds + advance the baseline (applyEnd), and defer
+   validate + persist (HOOKS.histPush) + notify to the transaction boundary — so
+   a multi-store restore never re-validates or persists on a half-applied world.
+   A FOREIGN-week write is refused for every week-scoped collection (R2-011); an
+   issued record (sched.orig/sched.als) is refused unless the restore path passes
+   {allowIssued:true} (C7). Called only from a reducer that already enlisted
+   schedStore. */
+function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolean }): void {
+  const wk = CURWEEK
+  let orderIds: string[] | null = null
+  const foreign = (id: string, sep: string) => id.slice(0, id.indexOf(sep)) !== wk
+  for (const e of entries) {
+    switch (e.collection) {
+      case 'days': {
+        if (foreign(e.id, '#')) throw new CmdRefused(`scheduler write: foreign week ${e.id}`)
+        if (e.op !== 'delete') DAYS[Number(e.id.slice(e.id.indexOf('#') + 1))] = e.value
+        break
+      }
+      case 'sched.book':
+        if (e.id !== wk) throw new CmdRefused(`scheduler write: foreign week ${e.id}`)
+        applyBook(e.value)
+        break
+      case 'sched.mutes':
+        if (e.id !== wk) throw new CmdRefused(`scheduler write: foreign week ${e.id}`)
+        WARNOFF.clear(); ((e.value as any[]) || []).forEach(k => WARNOFF.add(k))
+        break
+      case 'sched.orig': {
+        if (foreign(e.id, ':')) throw new CmdRefused(`scheduler write: foreign week ${e.id}`)
+        if (!opts?.allowIssued) throw new CmdRefused(`scheduler write: issued record ${e.id} needs allowIssued`)
+        const di = e.id.slice(e.id.indexOf(':') + 1)
+        if (e.op === 'delete') delete (SCHED.orig as any)[di]; else (SCHED.orig as any)[di] = e.value
+        break
+      }
+      case 'sched.als': {
+        if (foreign(e.id, ':')) throw new CmdRefused(`scheduler write: foreign week ${e.id}`)
+        if (!opts?.allowIssued) throw new CmdRefused(`scheduler write: issued record ${e.id} needs allowIssued`)
+        if (e.op !== 'delete') (SCHED.als as any[])[Number(e.id.slice(e.id.indexOf(':') + 1))] = e.value
+        break
+      }
+      case 'inputs': {
+        if (e.id === INPUT_ORDER_ID) { orderIds = (e.value as string[]) || null; break }
+        const ix = INPUTS.findIndex((r: any) => r.iid === e.id)
+        if (e.op === 'delete') { if (ix >= 0) INPUTS.splice(ix, 1) }
+        else if (ix >= 0) INPUTS[ix] = e.value
+        else INPUTS.push(e.value)
+        break
+      }
+      case 'plan': {
+        const v = e.value as any
+        PLANPUCKS.length = 0; ((v && v.pp) || []).forEach((x: any) => PLANPUCKS.push(x))
+        for (const k of Object.keys(DAYRMK)) delete DAYRMK[k]
+        Object.assign(DAYRMK, (v && v.dm) || {})
+        break
+      }
+      default:
+        throw new CmdRefused(`scheduler write: unexpected collection ${e.collection}`)
+    }
+  }
+  if (orderIds) {
+    const pos = new Map(orderIds.map((id, i) => [id, i]))
+    INPUTS.sort((a: any, b: any) => (pos.get(a.iid) ?? 1e9) - (pos.get(b.iid) ?? 1e9))
+  }
+  applyEnd()   // one ensureRowIds/mintInpIds + advance SCHED_BASELINE
+  // HOOKS.reflow = validate() + notify(); HOOKS.histPush persists — both released
+  // at the transaction boundary (never on a half-applied multi-store world).
+  cmdDeferEffect(() => { HOOKS.reflow(); HOOKS.histPush() })
+}
+
 export const schedStore: EnlistableStore = {
   key: 'scheduler',
   capture: () => baseline(),                          // the before-image + rollback source (lagging)
   restore: (snap) => { histRestore(snap as string) }, // histRestore re-syncs the baseline itself
   records: schedRecords,
   signature: () => histSnap(),                        // LIVE — keeps the whole-world guard (SR-005)
+  write: schedWriteRecords,
 }
 
 /* the ONE shared apply-end: mint the ids histPush would mint in phase 8 (but it

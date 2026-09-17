@@ -109,7 +109,14 @@ export interface CommitEnvelope {
 export interface RecordEntry {
   collection: LogicalCollection
   id: string
-  value: unknown
+  /* OPTIONAL only so a write() DELETE entry can omit it; a store's records()
+     output and every 'put' entry always carry it. */
+  value?: unknown
+  /* [CMDL-FINISH] §3 — only meaningful in a write() ENTRY (the inverse record-set
+     an undo applies): 'delete' REMOVES the record, 'put' (the default) creates or
+     overwrites it. A store's records() output leaves it undefined (records are
+     just current state). */
+  op?: 'put' | 'delete'
 }
 export interface EnlistableStore {
   /* identity for the enlisted-set map (one per physical store) */
@@ -129,6 +136,17 @@ export interface EnlistableStore {
      every registered store on every commit (keeps the perf ceilings). Falls
      back to a records()-derived signature when absent. */
   signature?(): string
+  /* OPTIONAL batch, delete-aware, per-collection record write ([CMDL-FINISH] §3,
+     F8/GU-007). Applies ALL entries to live state first, THEN one derived-index
+     rebuild; persist + HOOKS.histPush + notify release at the TRANSACTION
+     boundary (phase 8) via cmdDeferEffect, NEVER inline — so a multi-store
+     restore never reconciles on a half-applied world. Called ONLY from a reducer
+     that already enlisted this store, and never opens its own command. The undo
+     step (Step 3) is the consumer; at CMDL-FINISH it is built + unit-tested but
+     has no production caller (no stream-driven undo yet). `opts.allowIssued`
+     lets the restore path write append-only-intended issued records
+     (sched.orig/sched.als); a normal write refuses them (C7). */
+  write?(entries: RecordEntry[], opts?: { allowIssued?: boolean }): void
 }
 
 /* The reducer's handle onto the open transaction (design §3.2). */

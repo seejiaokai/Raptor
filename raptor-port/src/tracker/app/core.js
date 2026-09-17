@@ -28,7 +28,7 @@ import {
    every module funnels through. */
 import {
   commit as cmdCommit, isCommitting as cmdIsCommitting, definePermission as cmdDefinePermission,
-  anyone as cmdAnyone, registerRecord as cmdRegisterRecord,
+  anyone as cmdAnyone, registerRecord as cmdRegisterRecord, deferEffect as cmdDeferEffect,
 } from '../../command';
 
 export { SYLLABI, SYL_NAMES, DEFAULT_SYL_NAME, DEFAULT_SYL_ORDER, DEFAULT_LAYOUTS, EVENT_INFO };
@@ -136,7 +136,47 @@ export const BUCKETS = [
 
 /* ---------- storage ---------- */
 const mem = {};
-async function sGet(k) { try { const r = await storage.get(k); return r ? r.value : null; } catch (e) { return mem[k] ?? null; } }
+/* [CMDL-FINISH] C9 — the Tracker's monotonic DURABLE-version counter. signature()
+   (trkStore below) returns it so the whole-world guard asks "changed?" cheaply.
+   Bumped only where mem changes durably (trkWrite / trkDelete / trkStore.restore). */
+let TRK_SIG = 0;
+/* [CMDL-FINISH] R3-004 — per-key MUTATION generations, so the sGet read-back
+   mirror never resurrects a key a write/delete changed DURING the async read. A
+   key in the map has been mutated at least once (its count survives a delete as a
+   tombstone). bumpMemGen fires wherever mem changes through trkWrite/trkDelete. */
+const memGen = new Map();
+function bumpMemGen(k) { memGen.set(k, (memGen.get(k) || 0) + 1); }
+/* the persisted mirror, read SYNCHRONOUSLY — the record source once hydrated
+   (used by the §3 write()/restore re-derive; nothing on it awaits or calls
+   loadCourse — build-advice #5). */
+function memGet(k) { return (k in mem) ? mem[k] : null; }
+async function sGet(k) {
+  const gen = memGen.get(k);
+  try {
+    const r = await storage.get(k);
+    /* C2 — mirror the read into mem so a later before-image / cross-course delete
+       is correct. R3-004 — but ONLY if no write/delete landed during the await
+       (the gen is unchanged): otherwise the live mem is newer and must win, and a
+       key deleted mid-read stays dropped rather than being resurrected. A read is
+       not a mutation, so it never bumps the gen. */
+    if (memGen.get(k) === gen && r) mem[k] = r.value;
+    return r ? r.value : null;
+  } catch (e) { return mem[k] ?? null; }
+}
+/* [CMDL-FINISH] C2 — seed `mem` from every known-collection storage key before
+   command routing is enabled, so a delete or a cross-course write has a real
+   before-image (an un-hydrated key would emit no change on delete / no before on
+   edit). Runs once in init(), after the boot loads, before TRK_COMMANDS. */
+async function trkHydrateMem() {
+  try {
+    const { keys } = await storage.list();
+    for (const k of keys) {
+      if (!trkCollectionOf(k)) continue;
+      const r = await storage.get(k);
+      if (r) mem[k] = r.value;
+    }
+  } catch (_) {}
+}
 /* A stored record that is not the JSON shape its reader expects reads as
    ABSENT (the storage seam, 8 Sep 26 bug pass): one corrupt key must not take
    the whole tab down with an uncaught parse error on every visit. `want` is
@@ -198,10 +238,26 @@ function trkCollectionOf(k) {
 /* the record source is `mem` (the persisted mirror). The mem write happens INSIDE
    the command's apply (the scheduler pattern), so enlist captures the pre-write
    mem and the diff is exactly the touched key. */
-const trkStore = {
+/* exported for the [CMDL-FINISH] write()-seam + capture/restore unit tests;
+   production wiring uses it only through this module. */
+export const trkStore = {
   key: 'tracker',
-  capture: () => JSON.stringify(mem),
-  restore: (snap) => { const o = JSON.parse(snap); for (const kk of Object.keys(mem)) delete mem[kk]; Object.assign(mem, o); },
+  /* [CMDL-FINISH] N2 — a SHALLOW mem copy (string values are immutable), not
+     JSON.stringify: capture() runs on every guarded commit once trk is registered.
+     R3-005/build-advice #6 — also snapshot the transaction-mutated history +
+     selection + dirty flag, which are NOT derivable from mem (a rejected grouped
+     gesture must restore them, and pushMarkUndo clears redo before a grade). */
+  capture: () => ({ mem: Object.assign({}, mem), undo: undoStack.slice(), redo: redoStack.slice(), active, sylDirty }),
+  restore: (snap) => {
+    for (const kk of Object.keys(mem)) delete mem[kk];
+    Object.assign(mem, snap.mem);
+    undoStack = snap.undo.slice(); redoStack = snap.redo.slice(); active = snap.active; sylDirty = snap.sylDirty;
+    TRK_SIG++;
+    /* re-derive the current course's live lets from the restored mem, then repaint
+       (N4). notify is plain, so a repaint raised inside rollback is not discarded. */
+    trkReloadCurrentFromMem(true);
+    renderBoard(); renderSide(); notify();
+  },
   records: () => {
     const m = new Map();
     for (const kk of Object.keys(mem)) {
@@ -211,6 +267,8 @@ const trkStore = {
     }
     return m;
   },
+  signature: () => String(TRK_SIG),               // [CMDL-FINISH] C9
+  write: (entries) => trkWriteRecords(entries),    // [CMDL-FINISH] §3 (M1/R4-003/R4-004)
 };
 function trkRegisterCommands() {
   if (TRK_REGISTERED) return; TRK_REGISTERED = true;
@@ -220,6 +278,98 @@ function trkRegisterCommands() {
     cmdRegisterRecord({ key: 'tracker:' + c, cls: 'record', collection: c, module: 'tracker' });
   }
 }
+/* [CMDL-FINISH] §3 — re-derive the CURRENT course's live lets from `mem`
+   SYNCHRONOUSLY (the id-native happy path: no migrations, no async sGet, no
+   storage writes — build-advice #5). Mirrors loadCourseNow's tail + loadLayout +
+   loadStudent, reading mem. `rebuildSyl` gates the SYL/byid rebuild: skip it to
+   PRESERVE an unsaved flow draft when the current syllabus's def did not change
+   (R4-003). */
+function trkReloadCurrentFromMem(rebuildSyl) {
+  const c = course;
+  plan = sParse(memGet(kPlan(c)), null, 'object') || { lulls: [], mode: 'pace', epw: 2, target: null, sylId: firstSylId() };
+  if (!plan.sylId) plan.sylId = firstSylId();
+  customDefs = sParse(memGet(kSyls(c)), {}, 'object');
+  if (rebuildSyl) {
+    let __src = sylSource(plan.sylId);
+    if (!__src) { plan.sylId = firstSylId(); __src = sylSource(plan.sylId) || DEFAULT_SYLLABUS; }
+    SYL = __src ? JSON.parse(JSON.stringify(__src)) : [];
+    byid = {}; SYL.forEach(e => byid[e.id] = e);
+  }
+  roster = sParse(memGet(kRosterFor(c, plan.sylId)), [], 'array').filter(isEntry);
+  const onRoster = id => !!id && roster.some(r => r.id === id);
+  if (!onRoster(active)) active = roster[0] ? roster[0].id : null;
+  layout = sParse(memGet(kLayout()), {}, 'object'); loadLineDefaults(); loadEdgeMeta();
+  trkLoadStudentsFromMem();
+}
+function trkLoadStudentsFromMem() {
+  marks = {}; dates = {}; lulls = {}; lastEdit = {}; pace = {};
+  for (const { id: s } of roster) {
+    marks[s] = sParse(memGet(kMarks(course, s)), {}, 'object');
+    dates[s] = sParse(memGet(kDates(course, s)), null, 'object') || { lastSyll: null, lastCurr: null };
+    try { lastEdit[s] = JSON.parse(memGet(kLast(course, s)) || 'null') || null; } catch (_) { lastEdit[s] = null; }
+    let pr = null; try { pr = JSON.parse(memGet(kPace(course, s)) || 'null'); } catch (_) {}
+    pace[s] = pr || { epw: plan.epw ?? 2, target: plan.target ?? null, target2: plan.target2 ?? null };
+    const l = memGet(kLulls(course, s));
+    if (l == null || l === '') lulls[s] = (plan.lulls || []).map(x => ({ start: x.start, end: x.end }));
+    else { try { lulls[s] = JSON.parse(l); } catch (_) { lulls[s] = []; } }
+  }
+}
+/* [CMDL-FINISH] §3 (F8/GU-007, M1/R4-003/R4-004) — the batch, delete-aware,
+   per-collection record write for the undo seam, driven by the key-grammar→scope
+   table. Apply every entry to mem, then reconcile the LIVE lets:
+   - a course/syllabus POINTER change (a restored `courses` dropping the current
+     course, or a restored `plan` changing sylId) → full synchronous re-derive of
+     the whole per-syllabus layer from mem, so a repointed key never writes the OLD
+     chart's layer under new keys (R4-004);
+   - otherwise re-apply only the touched records that belong to the LOADED
+     course+syllabus into the live lets (others are storage/mem only), and rebuild
+     SYL/byid ONLY if the current syllabus's def actually changed (R4-003 — a dirty
+     flow draft survives an unrelated restore).
+   Repaint releases at the transaction boundary via cmdDeferEffect (Q2). Called
+   only from a reducer that already enlisted trkStore. */
+function trkWriteRecords(entries) {
+  const beforeSyl = curSylId();
+  const beforeDef = JSON.stringify(customDefs && customDefs[beforeSyl]);
+  for (const e of entries) { if (e.op === 'delete') delete mem[e.id]; else mem[e.id] = e.value; }
+  // the globals that steer the pointers, always re-read from mem
+  COURSES = sParse(memGet(kCourses), [], 'array');
+  const courseGone = COURSES.length > 0 && !COURSES.some(c => isCourseEntry(c) && c.id === course);
+  if (courseGone) { const first = COURSES.find(isCourseEntry); course = first ? first.id : course; }
+  customDefs = sParse(memGet(kSyls(course)), {}, 'object');
+  const memPlan = sParse(memGet(kPlan(course)), null, 'object');
+  const newSyl = (memPlan && memPlan.sylId) || firstSylId();
+  if (courseGone || newSyl !== beforeSyl) {
+    trkReloadCurrentFromMem(true);   // whole per-syllabus layer (SYL/byid rebuilt — the old draft is abandoned by design)
+  } else {
+    const c = course, syl = curSylId();
+    let rosterTouched = false, studentsTouched = false;
+    for (const e of entries) {
+      const p = String(e.id).split(':');
+      if (e.collection === 'trk.roster' && p[1] === c && p[2] === syl) rosterTouched = true;
+      else if ((e.collection === 'trk.marks' || e.collection === 'trk.dates') && p[1] === c && p[2] === syl) studentsTouched = true;
+      else if ((e.collection === 'trk.pace' || e.collection === 'trk.lulls') && p[1] === c) studentsTouched = true;
+      else if (e.collection === 'trk.plan' && p[1] === c) plan = sParse(memGet(e.id), null, 'object') || plan;
+      else if (e.collection === 'trk.layout' && p[p.length - 1] === syl) { layout = sParse(memGet(e.id), {}, 'object'); loadLineDefaults(); loadEdgeMeta(); }
+    }
+    if (rosterTouched) {
+      roster = sParse(memGet(kRosterFor(c, syl)), [], 'array').filter(isEntry);
+      const onR = id => !!id && roster.some(r => r.id === id);
+      if (!onR(active)) active = roster[0] ? roster[0].id : null;
+      trkLoadStudentsFromMem();
+    } else if (studentsTouched) {
+      trkLoadStudentsFromMem();
+    }
+    const afterDef = JSON.stringify(customDefs && customDefs[curSylId()]);
+    if (afterDef !== beforeDef) {
+      const __src = sylSource(curSylId());
+      SYL = __src ? JSON.parse(JSON.stringify(__src)) : [];
+      byid = {}; SYL.forEach(e => byid[e.id] = e);
+    }
+  }
+  TRK_SIG++;
+  cmdDeferEffect(() => { renderBoard(); renderSide(); notify(); });
+}
+
 /* the synchronous durable-record write: routed through a named command when
    enabled + the key is a known record + we're not already committing; else raw. */
 function trkWrite(k, v) {
@@ -228,10 +378,10 @@ function trkWrite(k, v) {
     cmdCommit({
       type: col,
       scope: { module: 'trk', courseId: course, sylId: curSylId() },
-      apply: (txn) => { txn.enlist(trkStore); mem[k] = v; },
+      apply: (txn) => { txn.enlist(trkStore); mem[k] = v; bumpMemGen(k); TRK_SIG++; },
     });
   } else {
-    mem[k] = v;
+    mem[k] = v; bumpMemGen(k); TRK_SIG++;
   }
 }
 async function sSet(k, v) { trkWrite(k, v); setSaveStatus('', 'saving'); try { await storage.set(k, v); setSaveStatus('', 'ok'); } catch (e) { setSaveStatus('local only', 'ok'); } }
@@ -3693,14 +3843,17 @@ async function saveSylCat() { await sSet(kSylCat(), JSON.stringify(SYLS)); }
    (the legacy persist, unchanged). */
 function trkDelete(k) {
   const col = TRK_COMMANDS ? trkCollectionOf(k) : null;
-  if (col && !cmdIsCommitting() && (k in mem)) {
+  /* [CMDL-FINISH] R3-004 — the `(k in mem)` gate is GONE: with mem hydrated, a
+     delete of a stored-but-unwritten-this-session key must still route through a
+     command so it emits a delete change with a real before-image. */
+  if (col && !cmdIsCommitting()) {
     cmdCommit({
       type: col,
       scope: { module: 'trk', courseId: course, sylId: curSylId() },
-      apply: (txn) => { txn.enlist(trkStore); delete mem[k]; },
+      apply: (txn) => { txn.enlist(trkStore); delete mem[k]; bumpMemGen(k); TRK_SIG++; },
     });
   } else {
-    delete mem[k];
+    delete mem[k]; bumpMemGen(k); TRK_SIG++;
   }
 }
 async function delKey(k) {
@@ -4938,7 +5091,10 @@ export async function init() {
   ready = true;
   /* [ARCH-STACK] phase 5: enable command routing now that every boot migration
      and load has run its raw seed/migration writes. Post-boot user edits emit the
-     change stream; boot writes above stayed raw. */
+     change stream; boot writes above stayed raw.
+     [CMDL-FINISH] C2 — hydrate mem from every known-collection storage key FIRST,
+     so a cross-course delete/edit has a real before-image before any command runs. */
+  await trkHydrateMem();
   trkRegisterCommands();
   TRK_COMMANDS = true;
   notify();   /* the boot gate (App) subscribes to getVersion — flip it off BootLoading */
