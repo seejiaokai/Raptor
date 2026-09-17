@@ -1,4 +1,49 @@
-# Session handoff — [ARCH-STACK] Step 2 — BUILT (not merged) + follow-up #1 PLAN red-teamed
+# Session handoff — [ARCH-STACK] Step 2 BUILT (not merged); follow-up #1 plan red-teamed
+
+## READ THIS FIRST (17 Sep 26 pt.3 — what the rest of that day did, so you don't redo it)
+
+**The MAIN job is unchanged and is the block below: [ARCH-STACK] follow-up #1, plan written,
+round 1 of the red-team done, needs a Rev-2 + round 2 and then the build. NO production code
+for it has been written.** After the pt.2 handoff the owner diverted onto instruction/config
+work; all of it is committed and pushed on the same branch. Do not re-derive it:
+
+- **Two rules files added** (`.claude/rules/`, which Claude Code DOES auto-load — verified
+  against the changelog; an earlier claim that it does not was wrong):
+  `plain-language.md` (unscoped → loads every session; the owner's no-jargon rules) and
+  `raptor-executor.md` (`paths:`-scoped to raptor-port src/e2e/probes/scripts → loads while
+  implementing; approved-spec discipline, verification without self-approval, review integrity,
+  the Status/Changes/Checks/Open-items closing report). Both are pointed at from CLAUDE.md's
+  "Where things live". Commits `519cc77`, `a1f97e3`.
+- **CLAUDE.md + HANDOFF + routed docs: three correctness passes** (`ade901b`, `be88259`,
+  `1753e33`, `2f12b86`) from a Fable + Codex cross-provider review of the instruction files.
+  Highlights: the SUPERSEDED auto-merge chain that got a fix merged without the owner on
+  9 Sep was still reading as LIVE in three places (plus a fourth in HANDOFF) and is now quoted
+  dead; a whole family of stale "session-only / a reload forgets" claims was corrected in
+  CLAUDE.md, HANDOFF.md, architecture-direction.md, leavewar/known-gaps.md, ui-contracts.md and
+  data-schema.md (the app PERSISTS on a built site — CLAUDE.md §Architecture rules now carries
+  one authoritative "WHAT ACTUALLY PERSISTS" ledger); the browser-testing instructions were
+  actively WRONG for the owner's only environment and were rewritten.
+- **NEW STANDING RULE, first rule in CLAUDE.md: THE NEWEST OWNER INSTRUCTION WINS** (owner,
+  17 Sep 26). When two dated rulings conflict, follow the later one, say which you set aside,
+  and FIX the stale text in the same PR rather than working around it. Memory:
+  `newest-instruction-wins`.
+- **ENVIRONMENT (owner, 17 Sep 26): the Windows desktop is the ONLY place work happens**; the
+  phone remote-controls that same session. Container paths (`/home/user/Raptor`,
+  `/opt/pw-browsers/chromium`, the agent proxy) are LEGACY — a new Playwright script uses the
+  repo's `existsSync` fallback; kill a stray preview by PORT with `Get-NetTCPConnection`.
+- **MODELS while the claudex loop is the work (owner, 17 Sep 26): Opus is the workhorse, no
+  sonnet and no haiku.** Fable and Astra review on their top models; a subagent may take a
+  READ-ONLY sweep but inherits Opus; the implementation never leaves the main session.
+- **[LW-OPEN] BUILT, gated and live-driven** (`d50b219`): the Leave War now always opens on the
+  war being WORKED (open → closed → published → draft), never the one last viewed. It was a
+  REGRESSION caused by the 8 Sep persistence, found by a reviewer, not a bug report. One
+  existing test was DELIBERATELY REVERSED by owner ruling (noted in place). Gates: vitest
+  4865/4865, parity 728/0, build; the e2e ×2 and the tracker smoke reds were each PROVED
+  pre-existing by re-running them against a stashed tree — do the same before trusting a red.
+- **Known, not chased:** the tracker smoke gate failed three times running on the desktop, on
+  clean code too. Worth its own look; blocks nothing.
+
+---
 
 ## RESUME HERE (handoff, 17 Sep 26 pt.2 — FOLLOW-UP #1 PLAN written + round-1 red-teamed; NO CODE WRITTEN)
 
