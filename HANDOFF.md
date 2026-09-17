@@ -54,8 +54,10 @@ recorded a count that was wrong.
 merge, 13 Sep 26:** `npm test` 4670 across 275 files; `tfin.js` 728/0; build
 clean; `test:e2e` 423 passed / 0 failed (33 skipped by project gate; 2 specs
 fail only on a loaded local Windows box — geometry + lw-phone — and pass in CI);
-`smoke:tracker` 427/0 in CI (its `addStudent` step is the documented
-slow-local-machine flake — trust CI). `perf` / `probes:adapted` unchanged (this
+`smoke:tracker` 427/0 in CI (its `addStudent` step WAS treated as a
+slow-machine flake; DIAGNOSED + FIXED 17 Sep 26 — see [TRK-SMOKE] in
+OUTSTANDING.md — it was a real dialog field-reset race plus a leaked preview
+server, not a flake). `perf` / `probes:adapted` unchanged (this
 PR is Tracker-only, no scheduler/UI/perf touch). Counts recorded from the runs
 watched on this tree as #373 was built. **The per-gate table and traps below
 were captured on the earlier #368 tree — the trap descriptions all still
@@ -87,10 +89,10 @@ inline between MSN and TO at phone width" (raptor) and `leavewar.spec.ts` "a
 finger behind an open sheet scrolls the grid itself…" (lw-phone). Both reproduce
 on clean `main` and both pass in CI on Linux (a merged-green PR's own checks
 confirm it), so they are a Windows browser/layout/touch-emulation quirk — trust
-CI for them, don't chase them locally. Also `smoke:tracker`'s `addStudent` step
-can hit a Playwright timeout near the end of the run on Windows — re-run before
-treating it as a finding (it passed 426/0 on the re-run). None of these gate a
-tracker- or storage-only change.
+CI for them, don't chase them locally. (`smoke:tracker`'s `addStudent` timeout
+that used to sit beside these was a REAL bug, not a Windows quirk — DIAGNOSED +
+FIXED 17 Sep 26, see [TRK-SMOKE] in OUTSTANDING.md; no longer re-run-and-hope.)
+None of these gate a tracker- or storage-only change.
 
 **How the gates lie — the durable traps, worth more than any count:**
 

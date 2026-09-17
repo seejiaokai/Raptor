@@ -1,18 +1,20 @@
 # Session handoff — [ARCH-STACK] Step 2 BUILT (not merged); follow-up #1 plan at Rev 2
 
-## THE NEXT TASK (owner, 17 Sep 26): FIX THE TRACKER CHECK ([TRK-SMOKE]) — then the plan review, then the build
+## THE NEXT TASK (owner, 17 Sep 26): [TRK-SMOKE] DONE — next is the follow-up #1 plan review, then the build
 
 **Branch to select in the new-chat picker:** `claude/arch-stack-2-command-core-design`.
 NOT `main`. Everything below is committed and pushed on it; nothing is merged.
 
-**Do this first: `[TRK-SMOKE]` in OUTSTANDING.md (priority 1b).** The `addStudent` tracker smoke
-check keeps failing on clean code — three times running on the desktop on 17 Sep. The owner asked
-for it to be fixed rather than excused. Read the item; it records why (a check that always fails
-has stopped being a check, and it once failed a publish so a change never went live while a
-handoff claimed it had), and it names the question the diagnosis must answer FIRST: **is it a
-flake at all, or a real failure that has been sitting there?** Do not assume timing.
+**`[TRK-SMOKE]` is FIXED (17 Sep 26), committed on this branch, NOT merged — holding for
+"merge live".** It was NOT a flake: two real causes — (a) the add-student box cleared its field a
+beat after it opened, so a machine-speed fill was wiped and the add silently no-op'd (shipped
+dialog bug, `src/tracker/components/Modals.jsx`); (b) a failed run abandoned its preview server,
+and on Windows even a passing run did (`server.kill()` killed only the shell wrapper), so the next
+run couldn't bind the port and failed on clean code (`scripts/tracker/smoke.mjs`). Both fixed with
+regression tests, cross-provider reviewed (Codex + Fable), all gates green. Full write-up: the
+[TRK-SMOKE] Done entry in OUTSTANDING.md.
 
-**Then, in order:** round-2 cross-provider red-team of the follow-up #1 plan (Rev 2, both owner
+**Next, in order:** round-2 cross-provider red-team of the follow-up #1 plan (Rev 2, both owner
 decisions now settled — reviewers should not re-litigate them), then BUILD test-first with
 P1–P4 as ONE gated change.
 
@@ -215,10 +217,11 @@ in. Per-phase design: `docs/superpowers/specs/2026-09-16-arch-stack-2-command-la
 ### GATES (all green as of this handoff, from `raptor-port/`)
 `npx vitest run` **4863/4863** · `npm run build` clean · `node reference/tfin.js` **728/0** ·
 `npm run test:e2e` only the 2 known pre-existing failures · `npm run smoke:tracker` **425/0**.
-NB: the vitest full run and smoke are **load-flaky** (a jsdom file can time out; smoke's `addStudent`
-randomly times out AND a stray gate server on :4173/:4179 causes a spawn failure) — **kill stray
-servers by PORT and re-run** before trusting a red (`lsof -ti :4179 | xargs -r kill`). Both go
-green on a clean re-run.
+NB (SUPERSEDED 17 Sep 26): the smoke `addStudent` timeout and the stray-server-on-:4179 spawn
+failure were NOT flakes — both were fixed in [TRK-SMOKE] (dialog field-reset race + a harness that
+leaked its preview server; the harness now tree-kills its server on every exit). A jsdom file in
+the full vitest run can still time out under heavy load — kill stray servers by PORT and re-run
+before trusting a red only for THAT.
 
 ### FOLLOW-UPS the inspection surfaced (NOT live bugs — the writes work via the legacy path; these
 are stream-completeness / robustness items a future session should pick up, ranked):
@@ -483,8 +486,8 @@ Full gates before the PR. After building, a **fresh cross-provider CODE inspecti
   repo-wide dead-code/space sweep following the CAUTION list in
   `raptor-port/docs/plans-selector-followups.md` (some dead-looking code is kept on
   purpose). Report what's removed; ask before anything load-bearing.
-- Tracker smoke gate is flaky (random `addStudent` timeout, no auto-retry) — Tracker
-  workstream, not this task.
+- Tracker smoke gate `addStudent` timeout — DIAGNOSED + FIXED 17 Sep 26 ([TRK-SMOKE]); it was a
+  real dialog race + a leaked preview server, not a flake.
 
 ## Opening prompt for the fresh chat
 > Picking up Raptor on branch `claude/crewrest-published-flagging`. BUILD the "live flagging

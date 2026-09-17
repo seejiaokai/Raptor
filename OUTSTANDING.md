@@ -60,11 +60,13 @@ in-flight and risk-reducing** first.
      (CLAUDE.md §Stable decisions — `WEEKS`, `restoreDayVersion`, `openWarns`, etc.); grep for
      refs and confirm before removing anything. Own gated PR, in batches. See the "SECOND
      TASK" section of `raptor-port/docs/plans-selector-followups.md`.
-1b. **[TRK-SMOKE] (owner asked, 17 Sep 26) — DO BEFORE THE NEXT BUILD.** The `addStudent`
-   tracker smoke check keeps failing on clean code and has already caused a deploy to be
-   skipped while a handoff claimed it was live. Placed here, ahead of the feature backlog,
-   for one reason only: it is a GATE, and the follow-up #1 build runs the gate set per phase.
-   Cheap relative to what it protects; fix it or record an explicit waiver.
+1b. **[TRK-SMOKE] — DONE (17 Sep 26, committed on `claude/arch-stack-2-command-core-design`,
+   NOT merged).** It was NOT a flake: two real causes. See the Done section entry for the
+   full diagnosis; in short — (a) the add-student box cleared its field a beat after it
+   opened, so a machine-speed fill was wiped and the add silently no-op'd; (b) a failing run
+   abandoned its preview server, and on Windows even a passing run did, so the next run
+   couldn't bind the port and failed on clean code. Both fixed, cross-provider reviewed
+   (Codex + Fable), gates green. The follow-up #1 build can run its per-phase gate set.
 2. **[SYNC-INTEG]** — now just the small NON-undo guardrails (medical member-filed,
    clutter-only clear-data, Quals ✕ confirm, doc fix). Low urgency (pre-live); cheap batch.
    *The undo/permission half was pulled out into [GLOBAL-UNDO] (owner, 13 Sep 26).*
@@ -283,29 +285,38 @@ what to stop):** `raptor-port/docs/superpowers/specs/2026-09-13-architecture-roo
   grade (orphaned row → `shiftHardGround` can't resolve the type; narrow — Fable inspect #2). Fix
   when landings become the one Absence record, or a cheap `srcType` on the ground row if it surfaces.
 
-### [TRK-SMOKE] The `addStudent` tracker smoke check keeps failing — OPEN (owner asked, 17 Sep 26)
-**Why this is its own item now.** It has been treated as "the known flake" and mentioned in
-passing four times in this file, but it has never had an owner or a diagnosis, and it has
-already cost something real: a publish run failed on it, so a change was **NOT live despite a
-handoff saying it was** (see the deploy note under [TRK-CSID]). On 17 Sep it failed three
-times running on the desktop, on clean code.
+### [TRK-SMOKE] The `addStudent` tracker smoke check — DONE 17 Sep 26 (committed, NOT merged)
+**Answer to the mandated first question: NOT a flake.** It failed deterministically at one spot
+(the second of two back-to-back adds) and, when the machine was clean, a specific race — proven
+by instrumenting the running app at the failing add and reading the value the box held at submit
+time. Two independent causes, both fixed:
 
-**Why fix rather than excuse it.** A check that always fails has stopped being a check — red
-now reads as "that's just the tracker again", which is exactly how a genuine failure gets
-waved through. And there is no third option: the ARCH-STACK spec §1 makes smoke green a
-per-phase non-negotiable, so it is either fixed or **permanently** excused, and permanently
-excusing a gate is worse than not having it.
+1. **The add-student box wiped the typed name (shipped bug).** The shared in-page dialog cleared
+   its text field to the default in a POST-PAINT step that ran a beat AFTER the box was already
+   fillable. A human types later than that, so a person never hit it — but a machine-speed fill
+   (the smoke suite, a fast paste, a password manager) landed the name before the clear, which
+   then wiped it, so OK submitted a blank and the add silently no-op'd → the roster option never
+   appeared → 15s timeout. FIX (`src/tracker/components/Modals.jsx`): clear the field DURING
+   render, before it is ever shown, so nothing typed can be clobbered. Focus moved to its own
+   effect keyed on the dialog serial (a Fable-review fix — the interim version cancelled the
+   cursor when any background refresh landed within 30ms of opening). Two regression tests pin
+   both, each proven to fail on the pre-fix code.
+2. **Failed runs (and, on Windows, ALL runs) abandoned the preview server.** The harness only
+   tore down at the end-of-file; a timed-out check threw before that and left the vite server
+   holding the strict port, and on Windows even a passing run leaked it because `server.kill()`
+   killed only the shell wrapper, not the vite child. An orphan on the port makes the NEXT run
+   fail to bind — the "stray :4179" and "fails three times running on clean code". FIX
+   (`scripts/tracker/smoke.mjs`): register a teardown (close browser + kill server) BEFORE the
+   browser launches and on any crash, memoised so a second failure can't race ahead of it, with
+   a Windows tree-kill (`taskkill /T /F`) and a bounded browser close.
 
-**Open question the diagnosis must answer FIRST: is it a flake at all?** It may be a real
-failure that has been sitting there since something changed. Do not assume timing.
-Start at the `addStudent` smoke fixture; it has timed out rather than asserted-false in every
-report so far, which points at a wait/ordering problem rather than wrong behaviour — but that
-is a hypothesis, not a finding.
-
-**Blocks:** the follow-up #1 build's per-phase gate set. Do this BEFORE that build, or get an
-explicit owner waiver recorded here.
-**Effort:** unknown until diagnosed; assume small-to-medium. Opus (investigative — if it turns
-out to be a real break, switching models mid-way loses the thread).
+**Verification.** vitest 4868/0 · build clean · parity 728/0 · tracker units 76/76 (2 new
+regression tests) · `npm run smoke:tracker` 425/0 repeatedly with the server confirmed torn
+down, and a forced browser-launch failure now cleans up too. Cross-provider bug-check: Codex
+(found the teardown-before-launch gap, fixed) + Fable (found the focus regression + a concurrent-
+teardown leak, both fixed). **Not merged — holding for the owner's "merge live".**
+NB the app itself is fast (Tracker tab opens in ~0.4s, instant thereafter); the slowness during
+this work was the leaked servers, not the app.
 
 ---
 

@@ -14,18 +14,39 @@ export function DlgModal() {
      free-text box the fallback. An empty list draws nothing — the dialog is
      then the old prompt to the byte. */
   const list = (d && Array.isArray(d.list) && d.list.length) ? d.list : null;
+  /* Clear the fields to the new dialog's defaults DURING render, not in a
+     post-paint effect. The effect version ran a beat AFTER the box was already
+     on screen and fillable, so a value put into the field in that gap — a fast
+     paste, a password manager, or the smoke suite typing at machine speed — was
+     wiped by the reset a moment later, and OK then submitted a blank. That is
+     exactly what made "+ Add" silently drop a student when the app was busy
+     enough for the reset to land after the type (TRK-SMOKE, 17 Sep 26).
+     Resetting during render (a supported React pattern for adjusting state when
+     the source changes) means the field already holds the right value before it
+     is ever shown, so nothing typed afterwards can be clobbered. Safe with a ref
+     here rather than the docs' state-based form because notify() drives this
+     through useSyncExternalStore, which renders synchronously — no discarded
+     render can leave serialRef bumped without this reset committing. */
+  if (d && serialRef.current !== core.dlgSerial) {
+    serialRef.current = core.dlgSerial;
+    setVal(d.def || ''); setQ('');
+  }
+  /* Focus after paint (it touches the DOM); the search box takes it when there
+     is a list to search, the text box otherwise. KEYED ON THE DIALOG SERIAL so
+     it arms exactly once per open: without a dependency array the cleanup ran on
+     every incidental re-render, and a store notify landing inside the 30ms
+     window (a hint flash, a re-fit, an async save) cleared the timer and never
+     re-armed it — so the first keystrokes went to the page, which owns Escape
+     and Ctrl+Z, until the user clicked into the box (TRK-SMOKE review). */
   useEffect(() => {
-    if (d && serialRef.current !== core.dlgSerial) {
-      serialRef.current = core.dlgSerial;
-      setVal(d.def || ''); setQ('');
-      /* the search box takes the focus when there is a list to search — the
-         text box otherwise, as always */
-      setTimeout(() => {
-        const el = (list && d.filter) ? filterRef.current : inputRef.current;
-        if (el) { el.focus(); el.select(); }
-      }, 30);
-    }
-  });
+    if (!d) return;
+    const t = setTimeout(() => {
+      const el = (list && d.filter) ? filterRef.current : inputRef.current;
+      if (el) { el.focus(); el.select(); }
+    }, 30);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [core.dlgSerial]);
   if (!d) return null;
   const ok = () => core.dlgClose(d.input ? val : true);
   const cancel = () => core.dlgClose(d.input ? null : false);

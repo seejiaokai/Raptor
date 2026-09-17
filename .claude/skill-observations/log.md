@@ -2426,3 +2426,37 @@ Checkpoint (tasks #59, #60 complete): no further observations.
 **Suggested improvement:** verification-before-completion should say: when a failing gate lies OUTSIDE the change's blast radius, don't stop at a local re-run (deterministic-locally ≠ real). Confirm against an independent runner — the parent branch's CI conclusion and/or the same test on the pre-change baseline — before either blocking on it or dismissing it. State the blast-radius reasoning explicitly.
 
 **Principle:** A failing check outside the diff's reach is triaged by cross-checking an independent environment (CI, baseline), not by local repetition; local determinism does not distinguish a real failure from a local-environment artifact.
+
+---
+
+## 2026-09-17
+
+### Observation 160: A "flaky" gate that fails deterministically at one spot is a real bug, not a flake — prove the mechanism before labelling it timing
+
+**Status:** OPEN
+**Date:** 2026-09-17
+**Session context:** [TRK-SMOKE] — the tracker smoke gate's addStudent step had been dismissed as "the known flake" for weeks. Owner ordered: is it a flake at all, or a real failure sitting there? Don't assume timing.
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** characterising an intermittent-looking failure before hypothesising a cause
+
+**Issue:** The failure was labelled a random timing flake in four prior handoffs. Running it 3× showed it dying at the EXACT same line every time (the second of two back-to-back UI adds) — deterministic, not wandering. A first plausible hypothesis (a form field being cleared by an async reset) was tested directly on a clean fast start and did NOT reproduce, which would have been mislabelled "confirmed" if asserted from reading alone. Only an instrumented replay against the accumulated late-suite state captured the decisive fact (the field was empty at submit time), confirming the reset-clobber mechanism AND explaining why clean-state repro failed (timing shifts with app load).
+
+**Suggested improvement:** systematic-debugging should carry an explicit step: (1) before accepting an "intermittent/flaky" label, run N times and check whether failures cluster at ONE location — same-spot-every-time means deterministic/state-dependent, which is a real bug, not a flake; (2) never confirm a mechanism from code-reading or a clean-state repro alone — instrument the ACTUAL failing state and capture the discriminating value. A clean-environment probe that passes does not refute a state-dependent bug.
+
+**Principle:** "Flaky" is a hypothesis, not a diagnosis. A check that fails at the same point every run is deterministic; reproduce the real (often accumulated) state and capture the one value that distinguishes competing causes, rather than trusting a clean-state probe or static reading.
+
+### Observation 161: A "flaky gate" can be a self-reinforcing environment leak, not just a code bug — check for abandoned servers/processes
+
+**Status:** OPEN
+**Date:** 2026-09-17
+**Session context:** [TRK-SMOKE] — after fixing the functional cause, runs still wandered. The machine had 8 leaked preview servers; even a SUCCESSFUL run left its server holding the strict port.
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** diagnosing an intermittent integration/e2e gate
+
+**Issue:** Two distinct leaks compounded the "flake": (1) a run that throws before its teardown line abandons its server and browser, and (2) on Windows the server was spawned under a shell (shell:true), so the harness's `child.kill()` ended only the shell and left the real server orphaned on the port — even on a passing run. Orphaned servers on a fixed strict port make the NEXT run fail to bind on clean code, and a pile-up starves later runs into more timeouts that leak more servers: a self-reinforcing cascade that reads as "randomly flaky." The functional fix alone did not stop it; the environment had to be reset and the teardown made unconditional (try/finally-equivalent via process handlers) AND tree-killing (taskkill /T on Windows).
+
+**Suggested improvement:** systematic-debugging should include, when triaging a flaky integration/e2e gate: inspect for leaked processes/servers (listening ports, orphaned children) BEFORE and between runs; verify the harness tears down on FAILURE, not just success; and on Windows verify the kill reaches the whole process tree, since shell-wrapped children survive a parent kill. Reset the environment to a known-clean state before drawing conclusions about "flakiness".
+
+**Principle:** An intermittent gate failure may be an environment cascade (leaked servers/ports/processes), not a code defect. Confirm teardown runs on every exit path and reaches the whole process tree; reset to a clean environment before concluding it is random.
