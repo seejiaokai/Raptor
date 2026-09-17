@@ -169,12 +169,17 @@ persistence and undo behave identically to today** (additive — no behaviour ch
 
 ## 2. Current state (as of 16 Sep, pre-build; re-verified against the code 17 Sep — see Rev 5.1)
 - **2.1 Scheduler**: funnel → marks → `afterSchedMutate`; `state/store.ts:runInputWrite` already
-  snapshots→applies→post-checks→rolls back — the pattern to generalize. **12 production sites reach
-  `HOOKS.histPush` without `afterSchedMutate`** (17 Sep count): `state/store.ts` ×3 (the
-  `runInputWrite` epilogue, `moveSection`, `moveSectionTo`), `engine/publish.ts` ×4 (`markEdit`'s
-  own epilogue, `setDayApproved`, `publishALDay`, `discardPending`), `ui/interactions.ts` ×2
-  (`signClear`, the warning-mute toggle), `ui/DraftsModal.tsx` ×2 (draft rename, draft delete),
-  `ui/Shell.tsx` ×1 (`setSign`). `markEdit` fires `logEdit` + `renderStatus`(=`notify`) +
+  snapshots→applies→post-checks→rolls back — the pattern to generalize. **12 `HOOKS.histPush`
+  call sites** (17 Sep count): `state/store.ts` ×3 (the `runInputWrite` epilogue, `moveSection`,
+  `moveSectionTo`), `engine/publish.ts` ×4 (`markEdit`, `setDayApproved`, **`alIssue`** — reached
+  via `publishALDay`, which has no `histPush` of its own — and `discardPending`),
+  `ui/interactions.ts` ×2 (`signClear`, the warning-mute toggle), `ui/DraftsModal.tsx` ×2 (draft
+  rename, draft delete), `ui/Shell.tsx` ×1 (`setSign`).
+  **Rev 5.1 fix 11 — do not read all 12 as "bypasses `afterSchedMutate`".** `markEdit`'s site is
+  `afterSchedMutate`'s OWN epilogue (`state/view.ts:afterSchedMutate` calls `markEdit()`), so it is
+  a bypass only when `markEdit` is called directly — `markStructuralAdd`, `markDeletion`,
+  `markMove`, `markInputFiling`. The true bypass set for the §5.1 wrap checklist is therefore
+  **11 sites plus those four direct `markEdit` callers**. `markEdit` fires `logEdit` + `renderStatus`(=`notify`) +
   `histPush` **inside** the reducer — **it does NOT toast** (Rev 5.1 fix 1); the toast at a board
   site belongs to the caller. `actor`=display label (`HOOKS.whoami` → the ACCOUNTS label, a
   placeholder until real accounts); `SESSION.role`∈`admin|main`; person-identity is the separate
@@ -188,7 +193,7 @@ persistence and undo behave identically to today** (additive — no behaviour ch
   unexplained — which is worse than being absent, not better.
 - **2.2** PEOPLE + VCONF + many settings writers bypass the funnel. *(Routed in the build, phase 3
   — `state/people-settings-commit.ts`.)*
-- **2.3 Leave War**: funnel → `persist()` (**21 keys**, `state/store.ts:rawPersist`) → notify;
+- **2.3 Leave War**: funnel → `persist()` (**21 keys**, `leavewar/state/store.ts:rawPersist`) → notify;
   per-war snapshot undo; sync reconcilers under `locked()` tag `{source:'raptor'}`;
   **`retractLwRow` runs inside the `writeInputsBatch` reducer** (re-verified 17 Sep —
   `ui/inputedit.tsx:commitInputEdit` opens `writeInputsBatch` and calls `retractLwRow` inside it);
@@ -216,7 +221,7 @@ interface CommitEnvelope {
 }
 ```
 `Change` is a **derived output** (per-record deep-equal after apply), never a Command input. Rows
-are **nested in the day record** — the `days/<wk>:<date>` Change carries the day incl. row order +
+are **nested in the day record** — the `days/<wk>#<di>` Change carries the day incl. row order +
 `secOrder`; a slot edit yields ONE day Change (the day owns the inverse), not a day + a row Change
 (R3-6).
 
@@ -274,8 +279,11 @@ success in phase 9 (discarded on rollback — R3-7):
    reducers are synchronous, so today's synchronous convergence that tests assert is preserved): the
    dispatcher stays busy while phase-8 notify runs; any `commit` a subscriber raises during delivery
    is enqueued (not nested) and drained after, `seq` at drain, subscribers seeing envelopes strictly
-   in order. A queued command returns an already-resolved `{queued:true, result}` (populated by the
-   time the outer `commit()` returns). Independent reactions (a sync recompute) run here as
+   in order. A queued command returns **`{queued:true, done: Promise<CommitResult>}`** (Rev 5.1
+   fix 10 — the earlier `{queued:true, result}` here contradicted both the API paragraph below and
+   `command/types.ts`; the promise is already resolved by the time the outer `commit()` returns).
+   NB for follow-up #1: `commitSchedValue`/`commitInputs` read `.value` SYNCHRONOUSLY, so they
+   assume a non-queued commit — one raised on the reducer stack or as the outermost call. Independent reactions (a sync recompute) run here as
    `commitAs(...,{origin:'projection', causedBy:seq})`. **Every latched/queued effect carries a
    suppression-context token** — `HIST.lock` / LW-lock / `SYNCING` captured at raise time, re-applied
    for the duration of the released call — so a lock-wrapped forward batch (board `sortDay`) or any
@@ -398,3 +406,16 @@ byte-identical to today (additive regression).
 2. **Split a mega-blob at Step 2 vs Step 5?** Rev 4 keeps the per-record revision map in memory over
    the coarse blob (no split), conflict a Step-2 no-op. Confirm this is enough pre-Dataverse.
 3. **Cross-backend atomicity** with the append-only docstore — Rev 4 leans forbid-until-Step-5.
+4. **NEW (17 Sep 26, correctness sweep round 2 / Fable F8) — the disclosure registry does not
+   survive a reload, and Step 3 reads it.** `state/disclosure.ts` keeps the set of issued versions
+   that have LEFT the machine (a send, a PDF/CSV export, the session ending) in memory. Its stated
+   reason was that this matched "the app's session-only INPUTS/stash persistence" — which is FALSE:
+   the issued records themselves persist (`schedFields` → `weekStashSnap` → `weeks/<wk>`), and
+   nothing re-reports persisted issued ids at boot. So an amendment exported as a PDF reads as
+   NEVER DISCLOSED after a reload. Inert at Step 2 (nothing reads it), but §3.4 has Step 3 choose
+   silent-reverse vs on-the-record withdrawal from exactly this signal — so Step 3 would silently
+   erase something that had already left the machine, the one thing the owner's 16 Sep ruling
+   forbids. **Two options: (a) persist the disclosure set with the week record; (b) fail safe —
+   treat every issued id hydrated from storage as already disclosed. Recommendation: (b) now,
+   folding (a) into Step 5 when disclosure crosses machines anyway. OWNER DECISION — it is about
+   what the squadron is told, not about code.** Must be answered BEFORE Step 3 reads `crossable`.

@@ -202,13 +202,38 @@ and only one of them is stored.
 what the stash holds for every visited week and what `raptor:weeks/<week>`
 persists:
 
+**CORRECTED 17 Sep 26 — the old example listed ELEVEN SCHED fields and mislabelled `un`.**
+Three fields were missing: `sb` (signature BINDINGS), `v` (`ridV`) and `am` (`amV`, the
+amendment-format stamp). That matters beyond tidiness: `engine/publish.ts` classifies a
+published book with no `amV` as UNSUPPORTED and read-only-quarantines the week, so a
+serializer built from the old list would freeze every week it wrote, and every signature
+binding would be lost (a signature is content-valid only while its binding still matches).
+
 ```
-{ d: DAYS,
-  c, p, ad, a, al, ok, sg, o, cv, dr, cd,   // the SCHED fields, short names
-  wo: string[],                             // muted warning ids
-  un: string[] }                            // content keys (inpKey) of inputs a
+{ d: DAYS,                                  // the seven day objects
+  c, p, ad, a, al, ok, sg, sb, o, cv, dr, cd, v, am,   // the FOURTEEN SCHED fields,
+                                            //   short names, from schedFields()
+  wo: string[],                             // muted warning ids (view.WARNOFF)
+  un: string[] }                            // stable input IDs (inpId) of inputs a
                                             //   scheduler removed on this week
 ```
+
+| short | `SCHED` field | what it is |
+|---|---|---|
+| `c` | `changes` | issued key → the AL seq that issued it |
+| `p` | `pending` | keys edited since the last issue (the TINT; not AL eligibility) |
+| `ad` | `added` | outstanding draft structural-add identities |
+| `a` | `als` | the AL records, one per issue, single-day |
+| `al` | `al` | the week's AL bookkeeping |
+| `ok` | `dayOK` | per-day published state |
+| `sg` | `sign` | the four live sign-off slots per day |
+| **`sb`** | **`signBind`** | **what each signature signed — digest, date, issued base id, plan revision. A signature is valid only while all four still match** |
+| `o` | `orig` | the frozen Original per day |
+| `cv` | `cur` | which version each day shows (a verId) |
+| `dr` | `drafts` | the parked alternate plans per day |
+| `cd` | `curDraft` | which plan the live day is |
+| **`v`** | **`ridV`** | **row-id version stamp** |
+| **`am`** | **`amV`** | **amendment-format stamp — a published book WITHOUT this reads as unsupported and is quarantined** |
 
 It carries **no inputs and no planning layer** — those are global, and
 their own records (`raptor:inputs/all`, `raptor:plan/all`, written

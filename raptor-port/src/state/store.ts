@@ -323,15 +323,17 @@ export function toggleRole() {
    switch, which silently discarded any edit made to a week once you left it
    — reported bug: a duty added on the Sunday of an unauthored week vanished
    after scrolling one week forward and back. weekstash.ts is the dumb
-   per-week store (keyed by week-start; SESSION-ONLY on purpose — see its
-   header: the owner keeps the whole app's forget-on-exit rule, this fix is
-   about navigation, not reloads); these two helpers are the state-layer
+   per-week store (keyed by week-start. CORRECTED 17 Sep 26: it is NOT
+   session-only — the 8 Sep 26 storage work SUPERSEDED the forget-on-exit rule
+   and persistAll now files every stash entry under weeks/<wk>. A week persists
+   once it has CHANGED since load, or already had an entry; a pristine seed copy
+   is still deliberately never written); these two helpers are the state-layer
    half that knows what belongs in a snapshot, because WARNOFF lives in
    state/view.ts and the engine may not import state/. */
 
-/* Everything a week's own stash entry needs — DAYS plus the eleven SCHED
+/* Everything a week's own stash entry needs — DAYS plus the FOURTEEN SCHED
    fields (schedFields, shared with history.ts's histSnap so the two cannot
-   drift) plus WARNOFF. Deliberately NOT `i:INPUTS`/`pp:PLANPUCKS`/`dm:DAYRMK`
+   drift; corrected 17 Sep 26 — it said eleven) plus WARNOFF. Deliberately NOT `i:INPUTS`/`pp:PLANPUCKS`/`dm:DAYRMK`
    the way histSnap's whole-history snapshot is — those three are GLOBAL, not
    week-scoped (CLAUDE.md's "Personal INPUTS are GLOBAL" decision), and
    restoring them here would roll back edits made to them while the user was
@@ -361,8 +363,13 @@ function unacceptedKeys(): string[] {
        dormant after a week round-trip: an input no scheduler ever removed
        silently stopped flagging (26 Aug 26 bug pass). Nothing is lost by the
        narrowing — every removal this build writes is 'r', the acc-clear on
-       week entry deliberately preserves 'r' (below), and the stash is
-       session-memory only, so no older shape can reach this function. */
+       week entry deliberately preserves 'r' (below). CORRECTED 17 Sep 26: the
+       old clause "and the stash is session-memory only, so no older shape can
+       reach this function" is FALSE — the stash persists, so an older shape CAN
+       arrive from storage. What actually guards this is storage/reset.ts:
+       SCHEMA_VERSION clears `inputs`+`weeks` whenever a persisted shape changes
+       incompatibly, under the owner's dev-phase reset-don't-migrate rule. A
+       future shape change here must bump that version. */
     if (!isPersonal(r.type) || r.acc !== 'r') return
     const di = dateIx(r.date, r.yr)
     if (di < 0 || dayApproved(di)) return

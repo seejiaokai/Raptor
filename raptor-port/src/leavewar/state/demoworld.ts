@@ -9,13 +9,14 @@
 // people onto Raptor aircrew of the SAME seat and band, so every demo cell
 // still means what it meant.
 //
-// It runs only on a FRESH boot, and since Leave War went session-only (a
-// memory backend, matching Raptor's own INPUTS — see main.tsx) EVERY boot is
-// a fresh one: nothing survives a reload to be corrupted, so the caller always
-// passes hadStoredWars=false and the demo world is always re-keyed. The
-// `hadStoredWars=true` branch (people projection only, wars left alone) is kept
-// for the shared database backend to come: once real war data can outlive a
-// reload, "this squadron already has its own data" becomes meaningful again
+// It runs only on a FRESH boot. CORRECTED 17 Sep 26: the old paragraph here said
+// Leave War "went session-only (a memory backend)" so EVERY boot is fresh and the
+// caller "always passes hadStoredWars=false". Both halves are false since the
+// 8 Sep 26 storage work. Leave War boots on the WHITEBOARD, and main.tsx passes
+// the REAL flag: `wb.has('leavewar','wars')`. So on a built site a returning
+// browser takes the `hadStoredWars=true` branch — people projection only, wars
+// left alone — and that branch is LIVE today, not reserved for the shared
+// database to come. The memory backend is now the dev/test path only
 // and re-keying it would corrupt it.
 
 import { INPUTS, inpId } from '../../engine/inputs'

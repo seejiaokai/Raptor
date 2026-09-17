@@ -13,11 +13,12 @@ const syncHistBtns=()=>HOOKS.syncHistBtns()
 /* =====================================================================
    UNDO / REDO — snapshot stack over DAYS + the amendment bookkeeping
    ===================================================================== */
-/* the eleven SCHED fields, pulled out so histSnap (the whole-history undo
-   snapshot, below) and the per-week session stash (state/store.ts's
-   weekStashSnap, engine/weekstash.ts) build the identical object rather than
-   two hand-copied field lists drifting apart the day a twelfth field is
-   added. Same key ORDER as histSnap always wrote them in, so splicing this
+/* the FOURTEEN SCHED fields (corrected 17 Sep 26 — this said eleven), pulled
+   out so histSnap (the whole-history undo snapshot, below) and the per-week
+   stash (state/store.ts's weekStashSnap, engine/weekstash.ts — it PERSISTS since
+   8 Sep 26, so "session stash" here was wrong too) build the identical object
+   rather than two hand-copied field lists drifting apart the day another field
+   is added. Same key ORDER as histSnap always wrote them in, so splicing this
    in with `...schedFields()` leaves histSnap's JSON.stringify output
    byte-identical to before this existed. */
 export function schedFields(){return {c:SCHED.changes,p:SCHED.pending,ad:SCHED.added,a:SCHED.als,al:SCHED.al,ok:SCHED.dayOK,sg:SCHED.sign,sb:SCHED.signBind,o:SCHED.orig,cv:SCHED.cur,dr:SCHED.drafts,cd:SCHED.curDraft,v:SCHED.ridV,am:SCHED.amV}}
@@ -37,8 +38,8 @@ export const HIST:any={stack:[],ix:-1,lock:false,cap:60};
    in the snapshot — the rest (folds, previews, late marks) are not undoable and
    stay out on purpose. */
 /* `pp`/`dm` carry the Inputs-calendar planning layer (state/plan.ts) —
-   PLANPUCKS and DAYRMK. Session-only like the rest of that module, but still
-   worth an undo step: a scheduler dragging pucks around a month wants the
+   PLANPUCKS and DAYRMK. CORRECTED 17 Sep 26: NOT session-only — persistAll
+   writes them as the plan/all record. Worth an undo step as well: a scheduler dragging pucks around a month wants the
    same Ctrl+Z safety net as every other edit, and riding the ordinary
    snapshot is free — it is already whole-state JSON. */
 export function histSnap(){return JSON.stringify({d:DAYS,i:INPUTS,...schedFields(),wo:[...WARNOFF],pp:PLANPUCKS,dm:DAYRMK});}

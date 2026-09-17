@@ -681,15 +681,21 @@ export function inputOwnDueISO(inp:any){ return dueOfWeekISO(inputWeekStartISO(i
    `mod`, FROZEN at the moment of the edit (ARCH-STACK 1b). The literal 'now'
    used to be stored instead and re-resolved to whatever "today" was at read
    time, so an input filed on time silently grew a LATE tag once the record was
-   read back on a later day (harmless while INPUTS are session-only and reset
-   each reload; a real bug the moment they persist — the DB step). Freezing the
-   stamp at write time makes the mark judge the day the input was actually last
+   read back on a later day. CORRECTED 17 Sep 26: the old parenthesis called this
+   "harmless while INPUTS are session-only and reset each reload; a real bug the
+   moment they persist — the DB step". INPUTS ALREADY persist (inputs/all, since
+   8 Sep 26), so that moment has passed and the freeze is load-bearing now, not
+   pre-emptive. Freezing the stamp at write time makes the mark judge the day the input was actually last
    touched, wherever and whenever it is later read. */
 export function nowStamp(){ const d=new Date(); return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
 /* The stamp the late-mark measures. `mod` is now always a frozen ISO date, so
    this is a plain read; the legacy 'now' branch stays as a defensive fallback
-   for any record minted before the freeze (none persist today — INPUTS are
-   session-only and demo data resets — but the guard costs nothing). */
+   for any record minted before the freeze. CORRECTED 17 Sep 26: the old reason
+   given ("none persist today — INPUTS are session-only and demo data resets") was
+   wrong on the first half; INPUTS persist. What keeps a pre-freeze record out is
+   storage/reset.ts's SCHEMA_VERSION clearing `inputs` on an incompatible shape
+   change, under the dev-phase reset-don't-migrate rule. The guard still costs
+   nothing, so it stays. */
 export function inputStampISO(inp:any){
   const m=inp&&inp.mod;
   if(m==='now')return nowStamp();

@@ -735,9 +735,11 @@ function readWar(x: unknown): LeaveWar | null {
      and strand dead grid strings neither reverse sweep can collect, and
      `ingestDutyCredit` would clash on those dates forever. Renamed in place
      at the one load door (the seedGrid HO→*OIL migration precedent). No
-     live path hits this today — main.tsx boots the memory backend — but the
-     DB era makes this load path real, and the migration must already be
-     standing when it does. */
+     live path hits this today. CORRECTED 17 Sep 26: the old reason — "main.tsx
+     boots the memory backend" — is FALSE since 8 Sep 26; main.tsx boots Leave War
+     on the WHITEBOARD, so on a built site this load path IS live and a returning
+     browser does come through here. The migration is therefore not
+     standing-in-advance for the DB era: it is load-bearing now. */
   if (isPlainObject(grid)) {
     for (const row of Object.values(grid as Record<string, unknown>)) {
       if (!isPlainObject(row)) continue
@@ -3257,11 +3259,14 @@ export function selectWar(id: string): void {
  * as a persisted war did — returns false and changes nothing if it does not
  * pass. It does not persist: this is a live injection, not a save.
  *
- * Its one caller is the e2e probe bridge. Leave War is session-only now (a
- * memory backend, see main.tsx), so the under-manned fixtures — which used to
- * inject a red-day war by writing `leavewar:wars` into localStorage before
- * boot — can no longer reach the store that way. They boot the app, then push
- * the same war object in through here. Not a production path.
+ * Its one caller is the e2e probe bridge. The under-manned fixtures — which used
+ * to inject a red-day war by writing `leavewar:wars` into localStorage before
+ * boot — cannot reach the store that way, so they boot the app and then push the
+ * same war object in through here. Not a production path.
+ * CORRECTED 17 Sep 26: the old reason given was "Leave War is session-only now (a
+ * memory backend)". It is not — Leave War persists on a built site; the memory
+ * backend is the dev/test path, which is what the e2e run uses. The bridge is
+ * still the right seam because it does not depend on which backend is mounted.
  */
 export function loadWars(raw: unknown, currentId: string): boolean {
   const wars = readWars(raw)

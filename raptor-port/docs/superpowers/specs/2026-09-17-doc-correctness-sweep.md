@@ -13,7 +13,26 @@ nothing.
 **Out of scope, deliberately:** dead code, unused CSS, orphaned files, general optimisation
 (`[REPO-CLEANUP]` in OUTSTANDING.md). Nothing here deletes code.
 
-**Gates after the sweep:** vitest 4865/4865 · parity `tfin.js` 728/0 · build green.
+**ROUND 2 (17 Sep 26, later the same day).** The 22-row table below went to Codex/GPT-6 Astra
+and Fable 5.1 with one instruction: *open the code and tell me which rows I got wrong.* Both
+returned **REVISE**. They confirmed 21 rows (Fable did not open the `loadVersionToWorkingCopy`
+body, so it confirmed only the removal half of row 14) and found **16 further defects between
+them, converging independently on the same worst one**. All 16 are accepted and fixed; §E
+records them. Reviewer cost: Fable $4.36 / 253s, Astra 285s (cost not reported).
+
+**The lesson, stated plainly:** round 1 fixed the instance it found and did not sweep OUTWARD
+from it. Finding row 14's deleted function should immediately have prompted "what else did that
+same phase delete, and what else does this same section describe?" — the answer was three more
+removed functions and two wrong record shapes, in the paragraphs either side of the one edited.
+**When a sweep finds deleted machinery described as live, the unit of repair is the SECTION, not
+the sentence.**
+
+**Gates:** vitest 4865/4865 · parity `tfin.js` 728/0 · build green — re-run after round 2.
+**Gates NOT run, and why:** e2e, tracker smoke and `npm run perf`. This change is documentation
+plus comment-only source edits (no executable line altered), so the three suites cannot be
+affected by it; vitest + parity + build are the ones that would catch an accidental code edit.
+That is an argument for THIS change only — see §C.5 for the smoke gate's own unresolved red,
+which is the follow-up #1 build's problem and needs an owner decision, not a wave-through.
 
 ---
 
@@ -21,11 +40,23 @@ nothing.
 
 Both are cheap and both found things a careful claim-by-claim read missed.
 
-1. **Symbol-existence pass.** Extract every backticked code identifier the docs name and assert it
-   still resolves somewhere in `src/`. 743 distinct identifiers checked; 136 unresolved, of which
-   **all but three were expected** — `docs/data-model.md` is the *designed target* schema and
-   `docs/data-schema.md` §Suggested first cut of tables is a proposal, so their names are supposed
-   not to exist yet. The three real hits are findings 12, 13 and 16 below.
+1. **Symbol-existence pass. CORRECTED after round 2 (Fable F3) — the first version of this pass
+   was broken, and that is why the worst findings slipped past it.** It asserted only that an
+   identifier appeared as TEXT somewhere in `src/`. A removed function whose name survives in a
+   tombstone comment (*"Phase 2 removed reissueReopened"*) or in a test asserting its removal
+   therefore counted as **still existing**. `restoreDayVersion`, `unpublishAL`, `reissueReopened`
+   and `publishAL` all passed a check designed to catch exactly them.
+
+   **The pass must require a DEFINITION, with comments stripped and tests excluded.** Re-run that
+   way: 884 identifiers checked, 43 unresolved. Triaged, the 43 are the future-database names
+   (`data-model.md`, and `data-schema.md`'s proposed table list), browser and DevTools terms
+   (`MutationObserver`, `LayerTree`), test helpers correctly attributed to their test file, names
+   sitting inside sentences that already say they were removed, and `schedWrite` — the function
+   the follow-up #1 plan proposes and has not built yet. **No further deleted-machinery case
+   remains in the in-scope documents.**
+
+   The original pass's conclusion — "136 unresolved, all but three expected" — was unsound and
+   should not be quoted.
 2. **Citation-landing pass.** For every `file.ts:NNN` reference, print the line it actually lands
    on. A citation landing on a closing brace or an unrelated comment is a reliable tripwire for a
    section that has drifted — that is exactly how finding 14 (a function deleted from the codebase
@@ -113,3 +144,70 @@ Not "review these documents" — that repeats the failure mode. Ask exactly this
 > failed here on 17 Sep.
 
 Both providers, on the table only (a page, not 7,000 lines).
+
+**This worked.** Both reviewers opened source files, both returned REVISE, both independently
+identified the same highest-severity gap, and each found material defects the other missed
+(Fable: the surviving `restoreDayVersion` claims in two other documents, the broken symbol pass,
+the queued-commit return shape; Astra: the week-record field list, the person-reference section,
+the day-template refusal, and an over-correction of mine). Neither could run a gate, and both
+said so in their limitations — so the host must run them, which is the division of labour the
+runner intends.
+
+---
+
+## E. Round-2 findings (both reviewers) — all 16 accepted and fixed
+
+**The one they both found, independently, and rated highest.** §Version snapshots / restore in
+`engine-rules.md` — the section round 1 edited — still described **three more removed functions**
+(`reissueReopened`, `unpublishAL`, `publishAL`) and a replaced version-id format, as live. Fixed
+by rewriting the section against `engine/publish.ts`: the verId identity, the SINGLE-DAY AL
+record `{id,di,iso,seq,snap:{d,c,fil},diff,sign}`, the descending-seq fallback, no reopen, no
+re-issue, no unpublish, the Original frozen forever — with each dead paragraph quoted dead rather
+than deleted. **Round 1's own replacement sentence was wrong too** (`SCHED.cur` holds a version
+IDENTITY for one day, not an AL number for several); corrected.
+
+| ID | Reviewer | Sev | What was still wrong | Fixed |
+|---|---|---|---|---|
+| F1 / DOC-002 | both | high | §Version snapshots still described `reissueReopened`, `unpublishAL`, `publishAL` and `'orig'\|n` version ids as live; round 1's own `SCHED.cur` correction was also wrong | `engine-rules.md` §Version snapshots rewritten; §Publishing/amendments record shapes rewritten; the two earlier "unpublish" clauses quoted dead |
+| F2 | Fable | high | `restoreDayVersion` still claimed to EXIST for the probe bridge in `feature-impact.md` Flow D and `ui-contracts.md` — a probe author following it gets `undefined` | both corrected; Flow D now names `loadVersionToWorkingCopy` |
+| DOC-003 | Astra | high | `data-schema.md`'s week-record example listed **11** SCHED fields, omitting `sb` (signature bindings), `v` and `am`. A book persisted without `amV` is quarantined as unsupported, so a serializer built from it would freeze every week it wrote; `un` was mislabelled as content keys | example corrected to 14 fields, with a field-by-field table; `un` = stable input ids (`inpId`) |
+| DOC-001 | Astra | high | Sweep row 11 named toast and the edit log as the un-latched effects. **Saving is a third.** `persist.ts` wraps the deferred `histPush` with an immediate `persistAll()`, so a rolled-back command leaves the whiteboard and the Postman queue written — a rejected edit can return after a reload | recorded as a third latching gap; it is follow-up #2's target and the plan's §7/§8 now carry it |
+| DOC-004 | Astra | med | §Who a row stores still said `ground[].who`/`allhands[].who` hold CALLSIGN STRINGS and that `renameCallsign` must rewrite rows. ARCH-STACK 1C made both the opposite | rewritten: stable ids on the write side, `whoId` id-first on the read side, rename moves nothing, sim `.who` is free text only |
+| DOC-005 | Astra | med | `applyDayTpl` documented (twice) as REFUSING a published day and directing the user to "Reopen the day first" | quoted dead; the guard was replaced by the rebase it pointed at — a template on a published day is a working-draft edit, issued records untouched, published as the next AL |
+| F8 | Fable | med | The same false persistence premise remained in **13 code comments**, three load-bearing. Worst: `state/disclosure.ts`, a Step-2 file, justified its in-memory registry with "it matches the app's session-only INPUTS/stash persistence" | all 13 corrected in place, comment-only. The disclosure one carries a real Step-3 consequence — see §F |
+| F9 / DOC-006 | both | med | Residual `feature-impact.md` text contradicting rows 15, 17 and 18 — and **round 1 over-corrected**: "a built site brings every visited week back" is too broad, a week merely looked at and never changed is deliberately never stored | all corrected, including the over-correction, with the exact rule (`stashHas \|\| weekDirty`) |
+| F3 | Fable | med | The symbol-existence pass counted tombstone comments and tests as existence | §A.1 rewritten and the pass re-run properly |
+| F4 | Fable | med | Spec §3.1's normative prose still carried `days/<wk>:<date>` 15 lines above the table Rev 5.1 fixed — and the prose is what defines the Change semantics Step 3 keys on | corrected |
+| F5 | Fable | low | The 12-site `histPush` list mislabelled `alIssue` as `publishALDay`, and listed `markEdit`'s site under "without `afterSchedMutate`" when it IS that epilogue | relabelled; the true bypass set is 11 sites plus the four direct `markEdit` callers |
+| F6 | Fable | low | Rev 5.1 cited `state/store.ts:rawPersist`; it is `leavewar/state/store.ts` — the same wrong-file class as row 2 | corrected |
+| F7 | Fable | low | Spec §3.2 said a queued commit returns `{queued:true, result}`; the API paragraph and `command/types.ts` say `{queued:true, done: Promise}` | corrected, with a note that follow-up #1's synchronous `.value` helpers assume a non-queued commit |
+| F10 | Fable | low | Gates were reported as vitest/parity/build with no statement of what was NOT run, and §C.5 waved off a red smoke gate | the gate line now says which suites were not run and why; §C.5 no longer claims it blocks nothing |
+
+**Not accepted as stated — one scope boundary.** Fable's F2 also surfaces that `ui-contracts.md`
+(~6,400 lines) was never in this sweep's scope. The one false claim it named there is fixed, but
+that file has NOT been swept, and the tightened symbol pass shows ~20 more unresolved identifiers
+in it. **Flagged, not done** — sweeping it is its own task, and expanding into it now would be the
+scope creep the owner explicitly ruled out.
+
+## F. The one finding that is more than a documentation defect
+
+`state/disclosure.ts` records which issued versions have LEFT the machine (a send, a PDF or CSV
+export, the session ending). Step 3 reads that signal to choose between silently reversing an
+amendment and putting a correction on the record — the owner's 16 Sep ruling.
+
+The registry is in memory, and its stated reason was that this "matches the app's session-only
+INPUTS/stash persistence". That reason is false: the issued records themselves persist. So an
+amendment exported as a PDF, after a reload, reads as **never disclosed** — and Step 3 would then
+silently erase something that had already left the machine, which is the exact thing the ruling
+forbids.
+
+**Inert today** — nothing reads the signal at Step 2. **Not inert at Step 3.** Two ways out, and
+this one is the owner's because it is about what the squadron is told, not about code:
+1. **Persist the disclosure set** with the week record. Exact, more moving parts.
+2. **Fail safe:** treat every issued id that came back from storage as already disclosed. Simple,
+   and errs toward putting a correction on the record rather than erasing quietly — which is the
+   direction the owner's ruling already leans.
+
+**Recommendation: option 2**, with option 1 folded into the database step when real disclosure
+crosses machines anyway. Recorded as an open question on the Step-2 design (§9) so Step 3 cannot
+inherit it silently.

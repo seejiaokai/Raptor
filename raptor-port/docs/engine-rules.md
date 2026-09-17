@@ -2123,21 +2123,29 @@ Two different things live in the model and mixing them up breaks rows silently:
 
 - **Person IDs** — flying seats (`a.p`/`a.w`), duty rows (`r.id`), sim
   `p`/`w`/`pax[]`, the `more[]` overflow on every row, and `INPUTS[].person`.
-- **Callsign STRINGS** — `ground[].who`, `allhands[].who` (a string or an
-  array of them) and sim `.who`, all resolved through
-  `nameToId` → `ID_BY_CS`, case-insensitively. `setSlotVal` writes
-  `PEOPLE[id].cs` into them; a row may also hold free text that is nobody
-  (`'149'`, `'ALL PILOTS'`), which simply fails to resolve and renders as
-  plain text.
+- **CORRECTED 17 Sep 26 — `ground[].who` and `allhands[].who` store the stable
+  PERSON ID now, not a callsign string.** ARCH-STACK 1C (14 Sep 26) changed the write side:
+  `setSlotVal` stores the id (`d.ground[ri].who = id`), and the `allhands` arm holds its
+  index rather than splicing, so an amendment mark — and the key stored on a published AL —
+  cannot come to point at the wrong person. The read side is ONE id-first resolver,
+  `whoId(v)` (`engine/people.ts`): a stored id wins, a LEGACY callsign string still
+  resolves, and free text that is nobody (`'149'`, `'ALL PILOTS'`, `'EXT SQN'`) stays plain
+  text. **Sim `.who` is FREE TEXT only now** — never resolved to a person at all. The
+  printed byte is unchanged either way, because the renderers resolve id → cs.
+  Writing a callsign into these fields would reintroduce exactly the bug 1C closed: a
+  renamed-and-reused callsign resolving to a different person.
 
 `rowCrew`/`slotVal` read the callsign rows back as IDs, so snapshots, AL diffs
 and published days are all ID-based.
 
-**Renaming a callsign** (`renameCallsign(id, cs)`, owner Aug 26) therefore has
-to rewrite all three string fields as well as remapping `ID_BY_CS` — changing
-`PEOPLE[id].cs` alone leaves those rows pointing at a name nobody answers to,
-and the puck collapses to free text. It refuses a blank, a no-op and a
-duplicate (`ID_BY_CS` can only point one way). It deliberately marks **nothing
+**Renaming a callsign** (`renameCallsign(id, cs)`, owner Aug 26). **CORRECTED
+17 Sep 26 — it no longer rewrites any row.** Since 1C a rename is a LABEL CHANGE THAT
+MOVES NOTHING: it sets `PEOPLE[id].cs` and remaps `ID_BY_CS`, full stop. The old
+DAYS-walk that rewrote row strings is GONE — and it was not merely redundant, it was
+wrong: it missed snapshots, parked drafts and every other week. `addPerson` refuses a
+callsign that resolves to any existing person by id OR callsign, which closes the reuse
+back-door. Rename still refuses a blank, a no-op and a duplicate (`ID_BY_CS` can only
+point one way), and it deliberately marks **nothing
 pending**: the person in the seat has not changed, only the spelling, and
 `rowCrew` diffs identically — an AL full of spelling would be noise. Published
 day snapshots keep the spelling they were issued with, which is correct for a
@@ -2145,12 +2153,23 @@ historical document.
 
 ## Publishing / amendments
 
-`SCHED = {al, pending, changes, als, dayOK, sign, orig, cur}`. Four sign-offs per day
-(`SIGN_ROLES`) → "Publish day" clears that day's pending and spends its
-signatures. Later edits become pending; "Publish AL n" stamps `{n, keys,
-sign, days, n0}` — `days`/`n0` are stamped at issue time and NEVER
-recalculated. `unpublishAL(n)` returns changes to pending. Publishing is
-per-day; there is deliberately no "publish all days".
+**CORRECTED 17 Sep 26 — both record shapes here were stale and the third sentence
+described a removed function.** `SCHED` carries **14** fields, the set
+`state/history.ts:schedFields()` serialises: `changes`, `pending`, `added`, `als`, `al`,
+`dayOK`, `sign`, `signBind`, `orig`, `cur`, `drafts`, `curDraft`, `ridV`, `amV`. The old
+eight-field list omitted the structural-add marks, the signature BINDINGS, the parked
+plans and the format/rid stamps — and a book persisted without `amV` is classified
+UNSUPPORTED and read-only-quarantined (`engine/publish.ts`), so a serializer built from
+the old list would freeze every week it wrote.
+
+Four sign-offs per day (`SIGN_ROLES`) → "Publish day" clears that day's pending and spends
+its signatures. Later edits become pending; "Publish AL" appends a **single-day** record
+`{id, di, iso, seq, snap:{d,c,fil}, diff, sign:{[di]:names}}` — not the old
+`{n, keys, sign, days, n0}`, and there is no week-wide `days`/`n0` pair to recalculate
+because an AL covers exactly one day. `diff` is the canonical `dayDelta` at issue time.
+**There is no `unpublishAL`** — an issued AL is never withdrawn and never returns its
+changes to pending; a correction is the NEXT AL. Publishing is per-day; there is
+deliberately no "publish all days".
 
 Edits only become AL changes on a day that is already published — edits to
 a draft day are folded in when the day is first published, with no AL mark.
@@ -2194,7 +2213,8 @@ displacement being the add's own business. Pinned both ways in
 `audit-d-published.test.ts`.
 
 Draft structural additions carry an identity key that is remapped with the row
-through drag, nudge and Sort. Issue clears that identity; unpublish restores it.
+through drag, nudge and Sort. Issue clears that identity. (The old clause "unpublish restores it" is DEAD — corrected
+17 Sep 26: there is no `unpublishAL`.)
 Therefore a row added after issue, reordered, and deleted again before its AL is
 a net no-op: its pending add key is removed and no false removal is published.
 The issued snapshot is the legacy fallback; accepted Ground inputs also carry
@@ -2204,53 +2224,73 @@ extra rule (audit, 12 Aug 26): a row that is NOT an outstanding draft add,
 whose index runs past the issued section's tail while the live section is
 longer than the issued one, IS issued — the surplus is exactly the draft
 adds, so an issued row a sort pushed past the snapshot's row count still
-publishes its removal instead of silently vanishing from the AL. A later AL keeps ownership if an older one is
-unpublished even when it changed a different field on the row: AL snapshots
-carry the live structural-add identities separately from field keys. Restoring
-a frozen day clears draft identities along with the
-draft rows it discards, so reused addresses cannot suppress a real removal.
+publishes its removal instead of silently vanishing from the AL. AL snapshots carry the live structural-add identities separately from field keys.
+(The old sentence here turned on an older AL being *unpublished*; that path is DEAD —
+corrected 17 Sep 26 — so what the separation now buys is that an undo past an issue cannot
+confuse a later AL's ownership.) Loading a frozen version onto the working copy clears
+draft identities along with the draft rows it discards, so reused addresses cannot suppress
+a real removal.
 
 ## Version snapshots / restore
 
-`daySnap(di)` = `{d: deep clone of DAYS[di], c: that day's slice of
-SCHED.changes}` — the day "as issued, wearing its marks". Stamped at the
-two issue moments: `setDayApproved(di, true)` → `SCHED.orig[di]`
-(**first publish stamps the Original**) and `alIssue` → `rec.snap[di]` per
-covered day. Snapshots live on the AL record / `SCHED.orig`, so they ride
-`histSnap` (`a` / `o`) and `unpublishAL` with the state they belong to.
-`daySnapOf(di, ver)` (`'orig'` | AL number) and `dayVersions(di)` derive
-options from live records — orphan-safe by construction. Session-only, like
-the AL list.
+**CORRECTED 17 Sep 26 — this whole section was written before Phase 2 and described
+three functions that no longer exist (`reissueReopened`, `unpublishAL`, `publishAL`) plus a
+version-id format that was replaced. Re-checked against `engine/publish.ts`.**
 
-**Re-publishing a reopened day re-issues the current version in place**
-(owner, 15 Aug 26). `setDayApproved(di, true)` on a day that already has a
-`SCHED.orig[di]` (i.e. you came back through **reopen**) does NOT stamp a
-new Original — it calls `reissueReopened(di)`, which refreshes the snapshot
-`dayCurVer(di)` resolves to (`SCHED.orig[di]` when the day is at the
-Original, `rec.snap[di]` when it is at an AL) with a fresh `daySnap`. The
-view page reads the issued document through `daySnapOf(dayCurVer)`, so
-without this a viewer would keep seeing the pre-reopen content while the
-scheduler's live view moved on — reproduced with a plain note edit as much
-as with a whole-day template swap. The version LABEL is unchanged (a
-reopen+republish is a deliberate re-issue of that version, not a fresh AL
-number appearing unasked). This is the ONE case where the Original is not
-frozen forever: an explicit reopen+republish of a never-amended day
-re-issues its Original — the earlier "never restamp, a rewrite could
-masquerade as the Original" guard is overridden here because the re-issue is
-deliberate. The **ordinary amendment flow — edit a published day, then
-Publish AL, without reopening — never comes through `setDayApproved(true)`
-a second time**, so it still freezes the Original the moment it is first
-issued. Pinned in `publish.test.ts`.
+`daySnap(di)` = `{d: deep clone of DAYS[di], c: that day's slice of SCHED.changes,
+fil: dayFilingFingerprint(di)}` — the day "as issued, wearing its marks". Stamped at the
+two issue moments: `setDayApproved(di, true)` → `SCHED.orig[di]` (**first publish stamps the
+Original**) and `alIssue` → the AL record's own `snap`. **An AL record is SINGLE-DAY**:
+`{id, di, iso, seq, snap:{d,c,fil}, diff, sign:{[di]:names}}`, pushed onto `SCHED.als`. It is
+NOT a multi-day record with a `snap[di]` map per covered day — a serializer built on that
+shape would lose the filing fingerprint and the per-day identity.
 
-**The current version.** `SCHED.cur = {di: 'orig'|n}` — which version each
-day is showing. **CORRECTED 17 Sep 26:** stamped only by `alIssue` (cur = n for covered
-days) — and by `setDayApproved`, which stamps the Original on first publish. The old second
-stamper, `restoreDayVersion`, NO LONGER EXISTS (see the correction below). Read through
-`dayCurVer(di)`: the stamp counts only while its snapshot still exists,
-else it falls back to the newest **issue** with a snap for the day (array
-order — `publishAL` can issue a lower number after a higher was freed),
-then `'orig'`, then `null`. That derivation is the orphan guard — a stale
-`cur` after `unpublishAL` or an undo is inert, no cleanup pass exists.
+Snapshots live on the AL record / `SCHED.orig`, so they ride `histSnap` (`a` / `o`) with the
+state they belong to. **They also PERSIST** — `schedFields()` → `weekStashSnap()` → the
+`weeks/<wk>` record — so on a built site the Originals and the whole AL list survive a
+reload. The old "Session-only, like the AL list" line here was wrong twice over: neither is.
+
+`daySnapOf(di, ver)` takes a **verId**, never a bare `'orig'` or an AL number —
+`daySnapIn` re-validates the identity and the week key and REJECTS anything else (it also
+resolves a `'d:<id>'` draft blob, which is why the whole preview machinery needs no second
+code path). `dayVersions(di)` returns `['live', <the Original's id>, …each AL's id by
+ascending seq]`, derived from live records — orphan-safe by construction.
+
+> **DEAD — corrected 17 Sep 26. There is no REOPEN and no `reissueReopened`.** Quoted
+> dead rather than deleted so nobody re-derives it. `engine/publish.ts` says so in place:
+> *"Phase 2 (§9) removed reissueReopened: a published version is FROZEN — it is never
+> re-issued in place."*
+>
+> ~~Re-publishing a reopened day re-issues the current version in place (owner, 15 Aug 26)
+> … This is the ONE case where the Original is not frozen forever.~~
+>
+> **What actually happens now.** `setDayApproved` returns immediately on `!on ||
+> SCHED.dayOK[di]`, so an `on=false` (un-approve) and a repeat approve are BOTH no-ops. The
+> function only ever FIRST-approves a draft day. **An issued version is frozen forever**,
+> with no exception: changing a published day means editing its working copy and publishing
+> the next AL, which supersedes the old one while the old one stays immutable in history.
+> The Original is stamped once, at first publish, and never restamped — the "a rewrite
+> could masquerade as the Original" guard now has no override. Pinned in `publish.test.ts`,
+> which itself carries a "Phase 2 removed" note.
+
+**The current version. CORRECTED 17 Sep 26 — the old text had the shape, the stampers and
+the fallback rule all wrong, and the first correction attempt here got the shape wrong
+too.** `SCHED.cur = {di: verId}` — a **version IDENTITY**, not `'orig'` and not an AL
+number. It is stamped in exactly two places, each for ONE day: `setDayApproved` stamps the
+Original's id at first publish, and `alIssue` stamps the new AL's id
+(`SCHED.cur[di] = id`, "issuing makes it current"). The old text's third stamper,
+`restoreDayVersion`, no longer exists (see below).
+
+Read through `dayCurVer(di)`: the stamp counts only while its snapshot still validates,
+else `dayCurVerIn` walks that day's issued records by **DESCENDING `seq`** and returns the
+highest that validates through `daySnapIn` — so a higher-seq record filed under the wrong
+week or with an inconsistent identity is skipped in favour of a valid LOWER AL rather than
+abandoned to the Original. Only then the Original, then `null`. (The old "array order —
+`publishAL` can issue a lower number after a higher was freed" was wrong on both counts:
+the walk is by descending seq, and there is no `publishAL`; `nextSeq(di)` is max-plus-one
+per day over positive safe-integer seqs, so a fresh AL cannot collide with an existing one.)
+That derivation is the orphan guard — a stale `cur` after an undo is inert and no cleanup
+pass exists.
 The day-head shows ONE chip from it (grey ORIG when rolled back to the
 Original while ALs exist; no chip on a published day no AL ever touched);
 the ⓘ panel keeps the full historical AL list.
@@ -2278,11 +2318,13 @@ the ⓘ panel keeps the full historical AL list.
 >
 > The name `restoreDayVersion` still appears further down this file as the NAME OF A SHAPE
 > (the direct-write / reinstall-the-marks idiom that `applyDayTpl` and `draftSelect` share).
-> That usage is fine; treat it as a pattern name, never as a function you can call. Corner case: unpublishing the AL a day was rolled back TO
-orphans its snapshot — `dayCurVer` falls back and that AL's keys on the
-day return to pending (self-describing on screen: fallback chip plus a
-pending count, one undo away). Unpublishing a LATER AL does not re-pend a
-rolled-back day: the rollback already overwrote its `changes` slice.
+> That usage is fine; treat it as a pattern name, never as a function you can call.
+>
+> **The two "unpublishing an AL" corner cases that used to sit here are DEAD too**
+> (corrected 17 Sep 26): there is no `unpublishAL` in the codebase — the name survives only
+> in tombstone comments and in tests that assert its removal. An issued AL is never
+> withdrawn; a correction is the NEXT AL. The orphan-fallback machinery above still matters,
+> because an UNDO past an issue can still orphan a `cur` stamp.
 
 The `dayKeys` walker is LOAD-BEARING again since 15 Aug 26: the rollback no
 longer diffs, but `rebaseDayPending` (§Drafts below) diffs the live day
@@ -2319,17 +2361,26 @@ day the template was captured from. A ground row's `src` is stripped too —
 the accepted-input token is an identity reference to a specific personal
 input, exactly like a crewed seat, not part of the row's shape.
 
-**`applyDayTpl(di, id)` refuses a published day** (`dayApproved(di)` is
-`true` → returns `false`, caller toasts "Reopen the day first"): a
-whole-day swap under an issued document would let the day silently diverge
-from what the squadron holds, with no AL trail. A template replaces the
-DRAFT, not the record. **`draftDup`/`draftSelect` used to share this
-refusal and no longer do (15 Aug 26)** — a draft switch on a published day
-runs `rebaseDayPending` (§Drafts below), which re-marks the day against the
-issued snapshot and so closes the silent-divergence hole the refusal exists
-for. A template apply has no such rebase, which is why this guard stays; if
-it is ever wanted on published days, reuse the rebase rather than just
-dropping the guard.
+> **DEAD — corrected 17 Sep 26. `applyDayTpl` ACCEPTS a published day.** The old
+> refusal, and the "Reopen the day first" toast it named, are both gone, along with the
+> reopen flow itself.
+>
+> ~~`applyDayTpl(di, id)` refuses a published day (`dayApproved(di)` is `true` → returns
+> `false`, caller toasts "Reopen the day first") … A template apply has no such rebase,
+> which is why this guard stays.~~
+>
+> **What actually happens now** (`engine/daytpl.ts`, P2-R3-04). The advice above was
+> followed, not dropped: the guard was replaced by the rebase it pointed at. On a PUBLISHED
+> day, applying a template is just a large WORKING-DRAFT edit — the template becomes the
+> live working draft, **the issued records and the current-version pointer are UNTOUCHED**,
+> and `rebaseDayPending(di)` recomputes the day's pending set as the true diff against the
+> still-issued version, exactly as `loadVersionToWorkingCopy` and `draftSelect` do.
+> Publishing it then becomes the next AL, so there is no silent divergence and there IS an
+> AL trail — the two things the old refusal existed to protect. `ui/board.ts` implements the
+> flow with a confirmation when it would replace unpublished edits. On a NEVER-PUBLISHED
+> day, behaviour is as before: no issued baseline, so the day's whole mark state retires.
+> Applying always mints fresh row ids (`stripRowIds`) so a copy is never the source's row,
+> and `reconcileDayFiling` runs on every replacement, approved or not.
 
 **Applying mirrors the `restoreDayVersion` direct-write SHAPE** (§Version snapshots /
 restore above — the function itself is gone; the live body carrying this shape is
@@ -2435,8 +2486,8 @@ selected), so whatever was already pending stays exactly as it was.
 
 **Refusal rules.** `draftSelect` refuses the already-selected id (nothing
 to do, and "stow then reload yourself" would clobber live edits with a
-stale stow). `applyDayTpl` still refuses a published day — a template
-apply has no rebase and keeps the reopen-first flow. `draftDelete`
+stale stow). **CORRECTED 17 Sep 26:** `applyDayTpl` does NOT refuse a published day — it rebases
+like `draftSelect`, and there is no reopen-first flow to keep (see §Day templates). `draftDelete`
 refuses the SELECTED entry only — the selected draft IS the live day, and
 deleting the thing being edited from underneath itself is exactly the
 ambiguity the refusal exists to prevent; a list holding one entry is legal,

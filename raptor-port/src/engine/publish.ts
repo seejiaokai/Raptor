@@ -658,7 +658,11 @@ export function setSign(di:any,role:any,who:any){di=+di; signOf(di)[role]=who;
 function signBoundOk(di:any,role:any,cur?:any){const b=(SCHED.signBind||{})[+di]; const x=b&&b[role];
   if(!x)return true; const c=cur||currentBind(di);
   /* a binding written before the filing axis existed (x.fil undefined) must re-sign —
-     it cannot prove the filing was approved (dev-phase; sign state is session-scoped) */
+     it cannot prove the filing was approved. CORRECTED 17 Sep 26: the old
+     "(dev-phase; sign state is session-scoped)" was wrong — sign and signBind ride
+     schedFields into the persisted week record, so a pre-filing binding CAN come
+     back from storage. Re-signing is therefore the real guard, not a dev-phase
+     convenience. */
   return x.dg===c.dg&&x.iso===c.iso&&x.base===c.base&&x.rev===c.rev&&x.fil===c.fil;}
 /* a name only counts while it is still appointed — withdrawing someone's
    Scheduler qual after they signed used to leave the day looking signed — AND

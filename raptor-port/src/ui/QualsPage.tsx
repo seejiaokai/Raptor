@@ -430,16 +430,19 @@ export function QualsPage() {
            availability, who the palette strikes, or who sansGate judges (owner,
            15 Aug 26 — the tick was a no-op). Wire it through to p.san so it
            actually grants/removes SANS, and mint the currency counters the boot
-           SANS loop gives a member so sanStatus has its numbers. Session-only,
-           like every qual tick — PEOPLE is rebuilt from source and SANS_IDS
-           re-applied at boot. */
+           SANS loop gives a member so sanStatus has its numbers.
+           CORRECTED 17 Sep 26: a qual tick is NOT session-only — this handler
+           calls persistPeople(), so PEOPLE (and p.san with it) is stored and
+           hydrated at boot; the seed roster and SANS_IDS only stand in when
+           nothing was stored. */
         if (k === 'san') { p.san = !!next; if (next) p.sanQ = p.sanQ || { flown: 0, carry: 0, missedQtrs: 0 } }
         /* SXO is the SAME one-way-copy trap as SANS above: deriveQuals copies
            p.sxo -> quals.sxo, so the tick set only the derived flag and left the
            RAW p.sxo untouched. Leave War's roster projection reads p.sxo, so a
            man marked SXO here never showed as SXO there (owner, 18 Aug 26).
            Wire it through so the projection — and anything else reading the raw
-           flag — sees it. Session-only, like every qual tick. */
+           flag — sees it. (Persisted, like every qual tick — corrected
+           17 Sep 26; see the SANS note above.) */
         if (k === 'sxo') p.sxo = !!next
         if (k === 'daar' && !next && p.quals.naar) { p.quals.naar = false; HOOKS.toast(`${p.cs} — NAAR removed too, it cannot stand without DAAR`) }
         /* DEMOTED, not removed: withdrawing the day instructor mark costs him

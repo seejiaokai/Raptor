@@ -104,10 +104,13 @@ export function installProbeBridge() {
      the Raptor "View as" picker from the Leave War tab. Same precedent as
      w.lwSetRole. */
   w.lwSetViewer = (id: string | null) => lwSetViewer(id)
-  /* Inject a full war set into the live store. Same reason as w.lwSetRole:
-     Leave War is session-only now (a memory backend, see main.tsx), so the
-     under-manned e2e fixtures can no longer seed a red-day war through
-     localStorage before boot — they boot, then push it in through here. */
+  /* Inject a full war set into the live store. Same reason as w.lwSetRole: the
+     under-manned e2e fixtures cannot seed a red-day war through localStorage
+     before boot — they boot, then push it in through here. CORRECTED 17 Sep 26:
+     the old reason given was "Leave War is session-only now (a memory backend)".
+     It is not — Leave War persists on a built site; the memory backend is the
+     dev/test path, which is what the e2e run actually uses. The bridge is still
+     the right seam, for a different reason: it does not depend on the backend. */
   w.lwLoadWars = (raw: unknown, currentId: string) => lwLoadWars(raw, currentId)
   /* the board — loaded lazily to keep module order simple */
   /* the id-getter every probe leans on, and the wider engine surface */

@@ -984,8 +984,10 @@ export function routeClick(e: MouseEvent) {
 
   /* MUTE a specific check (owner, Aug 26 — "turn off that specific warning
      advisory … but if things change that warning will appear again"). Admin-only,
-     session-only, keyed by the warning's CONTENT (view.warnMuteKey) so it comes
-     back on its own when validate() next rebuilds a different warning. Caught
+     keyed by the warning's CONTENT (view.warnMuteKey) so it comes back on its own
+     when validate() next rebuilds a different warning. CORRECTED 17 Sep 26: NOT
+     session-only — WARNOFF rides histSnap AND weekStashSnap (`wo`), so a mute
+     persists with its week and survives a reload. Caught
      ABOVE the .wln jump so muting a row never also pans to its puck. */
   const wo = t.closest('[data-woff]') as HTMLElement | null
   if (wo) {

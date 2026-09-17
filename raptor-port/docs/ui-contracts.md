@@ -681,8 +681,11 @@ working copy and rebases the pending set as the diff vs the still-issued
 document, **without touching `SCHED.cur`** — so `dayIssuedHTML`/the view page
 keep showing the issued AL until a new AL is published; the loaded-then-edited
 copy becomes that AL. Same shape as `draftSelect`'s published-day path.
-`restoreDayVersion` (the old instant rollback that DID set `SCHED.cur`) stays in
-`engine/restore.ts` for probe-bridge only — nothing in the app calls it now.
+**CORRECTED 17 Sep 26:** `restoreDayVersion` (the old instant rollback that DID set
+`SCHED.cur`) was **REMOVED at Phase 2** — it is not in `src` at all, not even for the probe
+bridge, which exposes `loadVersionToWorkingCopy` instead. `engine/restore.ts` now holds only
+the `dayKeys` slot-key walker, and says so in its own header. A probe or e2e author calling
+`window.restoreDayVersion` gets `undefined`.
 Because loading replaces the working-copy edits, **with unpublished edits on the
 day it takes a confirming second tap**: the first arms `RESTARM` (state/view.ts),
 the button becomes amber "Discard N edits — confirm" beside a "Keep editing"
