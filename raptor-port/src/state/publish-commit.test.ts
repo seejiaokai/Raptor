@@ -180,13 +180,20 @@ describe('completeness — the stream reconstructs the persisted week (§7 / R4-
     const inputs: any[] = []
     for (const [k, e] of m) {
       if (k.startsWith('sched.orig/')) orig[k.slice(k.lastIndexOf(':') + 1)] = e.value
-      else if (k.startsWith('sched.als/')) als[+k.slice(k.lastIndexOf(':') + 1)] = e.value
+      // [CMDL-FINISH] §5 — the als key is now the verId, not the array index, so
+      // collect the values and order the book by iso/seq (chronological AL order).
+      else if (k.startsWith('sched.als/')) als.push(e.value)
       else if (k.startsWith('inputs/')) inputs.push(e.value)
     }
+    als.sort((a, b) => {
+      const ai = String(a?.iso ?? ''), bi = String(b?.iso ?? '')
+      if (ai !== bi) return ai < bi ? -1 : 1
+      return (Number(a?.seq) || 0) - (Number(b?.seq) || 0)
+    })
     const plan: any = m.get('plan/all')!.value
     return {
       d, i: inputs,
-      c: book.c, p: book.p, ad: book.ad, a: als.filter(x => x !== undefined), al: book.al,
+      c: book.c, p: book.p, ad: book.ad, a: als, al: book.al,
       ok: book.ok, sg: book.sg, sb: book.sb, o: orig, cv: book.cv, dr: book.dr, cd: book.cd,
       v: book.v, am: book.am, wo: mutes, pp: plan.pp, dm: plan.dm,
     }

@@ -95,10 +95,15 @@ function decompose(snapStr: string): Map<string, RecordEntry> {
     const id = `${wk}:${di}`
     m.set(`sched.orig/${id}`, { collection: 'sched.orig', id, value: orig[di] })
   }
+  // [CMDL-FINISH] §5/C14 — key each AL by its STABLE verId (al.id = verId(iso,seq)),
+  // NOT its array index, so a delete or reorder never renumbers another AL's stored
+  // key (the same rid-anchoring the rest of the book uses). A pre-verId legacy book
+  // has no al.id, so it falls back to the index (avoids a `:undefined` collision).
   const als = (s.a as any[]) || []
   for (let n = 0; n < als.length; n++) {
-    const id = `${wk}:${n}`
-    m.set(`sched.als/${id}`, { collection: 'sched.als', id, value: als[n] })
+    const al = als[n]
+    const id = `${wk}:${(al && al.id) ?? n}`
+    m.set(`sched.als/${id}`, { collection: 'sched.als', id, value: al })
   }
   for (const r of ((s.i as any[]) || [])) {
     const id = r && r.iid
@@ -139,6 +144,7 @@ function applyBook(v: any): void {
 function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolean }): void {
   const wk = CURWEEK
   let orderIds: string[] | null = null
+  let alsTouched = false
   const foreign = (id: string, sep: string) => id.slice(0, id.indexOf(sep)) !== wk
   for (const e of entries) {
     switch (e.collection) {
@@ -165,7 +171,17 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
       case 'sched.als': {
         if (foreign(e.id, ':')) throw new CmdRefused(`scheduler write: foreign week ${e.id}`)
         if (!opts?.allowIssued) throw new CmdRefused(`scheduler write: issued record ${e.id} needs allowIssued`)
-        if (e.op !== 'delete') (SCHED.als as any[])[Number(e.id.slice(e.id.indexOf(':') + 1))] = e.value
+        // [CMDL-FINISH] §5 — the id-part is the AL's verId (or a legacy index).
+        // Match the existing AL by its stable id and update/delete/insert it, then
+        // (after the loop) re-sort the book by iso/seq — never index-assign, which
+        // the old array-index key did.
+        const alId = e.id.slice(e.id.indexOf(':') + 1)
+        const arr = SCHED.als as any[]
+        const ix = arr.findIndex(a => String((a && a.id) ?? '') === alId)
+        if (e.op === 'delete') { if (ix >= 0) arr.splice(ix, 1) }
+        else if (ix >= 0) arr[ix] = e.value
+        else arr.push(e.value)
+        alsTouched = true
         break
       }
       case 'inputs': {
@@ -190,6 +206,15 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
   if (orderIds) {
     const pos = new Map(orderIds.map((id, i) => [id, i]))
     INPUTS.sort((a: any, b: any) => (pos.get(a.iid) ?? 1e9) - (pos.get(b.iid) ?? 1e9))
+  }
+  if (alsTouched) {
+    // [CMDL-FINISH] §5 — order the reconstructed book by iso then seq (chronological
+    // AL order), the same order the index key used to encode positionally.
+    (SCHED.als as any[]).sort((a: any, b: any) => {
+      const ai = String(a?.iso ?? ''), bi = String(b?.iso ?? '')
+      if (ai !== bi) return ai < bi ? -1 : 1
+      return (Number(a?.seq) || 0) - (Number(b?.seq) || 0)
+    })
   }
   applyEnd()   // one ensureRowIds/mintInpIds + advance SCHED_BASELINE
   // HOOKS.reflow = validate() + notify(); HOOKS.histPush persists — both released
@@ -410,7 +435,7 @@ export function registerSchedCommandLayer(): void {
   registerRecord({ key: 'weeks:sched.book/<wk>', cls: 'record', collection: 'sched.book', module: 'scheduler' })
   registerRecord({ key: 'weeks:sched.mutes/<wk>', cls: 'record', collection: 'sched.mutes', module: 'scheduler' })
   registerRecord({ key: 'weeks:sched.orig/<wk>:<di>', cls: 'record', collection: 'sched.orig', module: 'scheduler' })
-  registerRecord({ key: 'weeks:sched.als/<wk>:<n>', cls: 'record', collection: 'sched.als', module: 'scheduler' })
+  registerRecord({ key: 'weeks:sched.als/<wk>:<verId>', cls: 'record', collection: 'sched.als', module: 'scheduler' })
   registerRecord({ key: 'inputs:<iid>', cls: 'record', collection: 'inputs', module: 'inputs' })
   registerRecord({ key: 'plan:all', cls: 'record', collection: 'plan', module: 'plan' })
 }
