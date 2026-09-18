@@ -33,7 +33,7 @@ import { commandStream } from './command'
 import { resyncSchedBaseline, schedBaselineClean } from './state/sched-commit'
 import { HOOKS } from './engine/hooks'
 import * as view from './state/view'
-import { setLgEdit } from './state/auth'
+import { setLgEdit, setEffectiveRole } from './state/auth'
 import { notify, undo, redo, loadWeek, moveSection, moveSectionTo } from './state/store'
 import { globalUndo, globalRedo } from './undo'
 import { secOrder, SECTIONS, secDefault, setSecDefault, moveSecDefault } from './engine/order'
@@ -117,6 +117,12 @@ export function installProbeBridge() {
      needs mid-test member↔admin switches that no click path reaches since
      the standalone app's on-screen toggle was removed at the merge. */
   w.lwSetRole = (r: 'admin' | 'member') => lwSetRole(r)
+  /* [GLOBAL-UNDO] the RAPTOR effective role — what deriveActor()/mayReverse read to
+     gate a global undo. Production sets it from the login (resetSession) + the admin's
+     view-as-member flip; the e2e needs to make its LOGIN actor an admin mid-test the
+     same way w.lwSetRole makes the Leave War store admin, so a global undo of an
+     owned cell is authorized. Same precedent as w.lwSetRole. */
+  w.raptorRole = (r: 'admin' | 'member') => { setEffectiveRole(r); notify() }
   /* the Leave War VIEWER — the "View as" person the war scopes a member to
      (canEditRow). Production mirrors Raptor's ME onto it through the sync; the
      e2e needs to pin the member's identity to the row it edits without driving
