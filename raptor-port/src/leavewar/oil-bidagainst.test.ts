@@ -50,4 +50,16 @@ describe('oilCreditBidAgainst — the §6.6 warn', () => {
   it('is FALSE for a still-draft day (no credit to withdraw)', () => {
     expect(oilCreditBidAgainst(SAT_DI)).toBe(false)
   })
+
+  it('is FALSE when a manual cell CLASHED the credit so it never landed (Fable#5/GU-P2-009)', () => {
+    // a manual LL on the Saturday blocks the FO credit — runOilPass leaves it unlanded.
+    setCell('plasma', '2026-07-18', 'LL')
+    setBidState('plasma', '2026-07-18', 'approved')
+    sign(SAT_DI); setDayApproved(SAT_DI, true)
+    runOilPass()
+    expect(getState().wars[0].grid['plasma']?.['2026-07-18']).toBe('LL')   // FO did NOT land
+    // plasma's OIL balance is 0 (LL draws annual, not oil), so the OLD balance−credit<0
+    // rule would have falsely warned; there is no landed credit to withdraw, so FALSE.
+    expect(oilCreditBidAgainst(SAT_DI)).toBe(false)
+  })
 })

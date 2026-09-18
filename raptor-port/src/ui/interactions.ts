@@ -813,7 +813,12 @@ export function routeClick(e: MouseEvent) {
       notify(); return
     }
     view.setUnpubArm(null)
-    commitUnpublish(di); notify(); return
+    // Fable#4 — commitUnpublish refuses (silent CmdRefused) if the day has no
+    // retractable latest version (e.g. an orphaned approved day whose snapshot won't
+    // resolve). The gate can't see that, so surface the refusal rather than no-op.
+    const r = commitUnpublish(di)
+    if ((r as any).ok === false) HOOKS.toast('That day can’t be unpublished right now.', 'warn')
+    notify(); return
   }
   /* Back to live copy — the home button on the version cluster (owner, 16 Aug
      26). Pure view state, like the dropdown change: it clears the preview, no

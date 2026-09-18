@@ -305,7 +305,16 @@ function publishDayOf(entry: any): number | null {
 export function schedPostRestore(entry: any, dir: 'undo' | 'redo'): void {
   if (dir !== 'undo' || !entry?.boundary || entry.boundary.kind !== 'publish') return
   const di = publishDayOf(entry)
-  if (di != null) signClear(di)
+  if (di == null) return
+  signClear(di)
+  /* [GLOBAL-UNDO] Fable#1 / Codex GU-P2-004 — signClear runs AFTER schedWriteRecords'
+     applyEnd() already advanced SCHED_BASELINE, so without this the lagging baseline
+     stays SIGNED while live is cleared. The restore envelope still captures the clear
+     (its diff reads LIVE at finalize), but the NEXT unrelated scheduler edit would
+     diff against the stale signed baseline and ABSORB the sign-clear into its own
+     entry — and undoing that edit would silently re-sign the pulled-back day. Advance
+     the baseline to the sign-cleared live state so the next edit derives cleanly. */
+  resyncSchedBaseline()
 }
 
 export const schedStore: EnlistableStore = {

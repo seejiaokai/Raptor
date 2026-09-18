@@ -11,7 +11,7 @@ import { INPUTS } from '../engine/inputs'
 import { SCHED, dayApproved, signOf, daySigned } from '../engine/publish'
 import { txtGet } from '../engine/slots'
 import { initStore, writeText } from './store'
-import { commitSetDayApproved } from './sched-commit'
+import { commitSetDayApproved, schedBaselineClean } from './sched-commit'
 import { setSession } from './auth'
 import * as view from './view'
 import { _resetDisclosure } from './disclosure'
@@ -66,6 +66,20 @@ describe('installGlobalUndo() wires the live cutover', () => {
     expect(dayApproved(0)).toBe(false)                 // back to a draft
     expect((SCHED.orig as any)[0]).toBeUndefined()
     expect(daySigned(0)).toBe(false)                   // postRestore was wired, so signs are cleared
+  })
+
+  it('undo of a publish leaves the baseline clean — a later unrelated edit does NOT re-sign the day (Fable#1/GU-P2-004)', () => {
+    sign(0)
+    commitSetDayApproved(0, true)
+    globalUndo()                                       // undo the publish → day 0 back to a draft, signs cleared
+    expect(daySigned(0)).toBe(false)
+    // the sign-clear must be in the baseline, not lagging behind it
+    expect(schedBaselineClean()).toBe(true)
+    // a LATER unrelated edit on a DIFFERENT day must not absorb the sign-clear
+    writeText('dn:1.0', 'AN UNRELATED NOTE')
+    globalUndo()                                       // undo that note edit
+    expect(txtGet('dn:1.0')).not.toBe('AN UNRELATED NOTE')
+    expect(daySigned(0)).toBe(false)                   // day 0 stays UNSIGNED — the bug would re-sign it here
   })
 
   it('globalUndo/Redo drive ONLY the timeline — the legacy HIST stack is untouched (E3 unreachability)', () => {

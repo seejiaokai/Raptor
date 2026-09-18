@@ -940,9 +940,15 @@ export function oilCreditBidAgainst(di: number): boolean {
     const bar = key.indexOf('|')
     if (key.slice(bar + 1) !== iso) continue
     const person = key.slice(0, bar)
+    /* [GLOBAL-UNDO] Fable#5 / Codex GU-P2-009 — only a credit that ACTUALLY LANDED as
+       a Raptor-owned FO/HO cell can be withdrawn. A desired credit blocked by an
+       existing manual cell (runOilPass returns a clash) never landed and is not in the
+       balance, so counting it would falsely warn for anyone at a low balance. */
+    const landed = wars.some(w => (w as any).grid?.[person]?.[iso] === d.code && (w as any).states?.[person]?.[iso]?.source === 'raptor')
+    if (!landed) continue
     const credit = d.code === 'FO' ? 1 : 0.5
-    // balanceOf already counts this day's credit (the grid cell), so balance − credit
-    // is the balance AFTER the withdrawal; below zero means a bid was spent against it.
+    // balanceOf counts that landed cell, so balance − credit is the balance AFTER the
+    // withdrawal; below zero means a bid was spent against it.
     if (balanceOf(openings, ledger, wars, person, 'oil') - credit < 0) return true
   }
   return false

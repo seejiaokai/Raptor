@@ -120,8 +120,15 @@ function ingest(env: CommitEnvelope): void {
     case 'projection': {
       const root = resolveRoot(env)
       if (root != null) foldProjection(root, env)   // a tracked causal child
-      // else an ORPHAN projection: out-of-band; do NOT update `expected` (the
-      // barrier catches it at the next tracked update — §4.1).
+      else if (causedByRestoreOrSeed(env)) advanceExpectedNoBarrier(env)
+      // ^ §3.4/C8 (Codex GU-P2-007): a projection a RESTORE (our own undo/redo) woke —
+      // e.g. undoing a Leave War edit wakes the OIL/sync reconciler. It is out-of-band
+      // for FOLDING (E1 stops resolveRoot at the restore, so it never splices into the
+      // reversed entry), but its revision bump is REAL and legitimate, so `expected`
+      // must advance to it WITHOUT a barrier. Without this, an immediate redo whose
+      // closure shares that key pins a stale expected revision and is wrongly refused.
+      // A TRUE orphan (chained to nothing) still updates nothing — the barrier catches
+      // it at the next tracked update (§4.1).
       break
     }
     case 'restore':
@@ -170,6 +177,32 @@ function findEnv(seq: number): CommitEnvelope | undefined {
   const s = commandStream()
   for (let i = s.length - 1; i >= 0; i--) if (s[i].seq === seq) return s[i]
   return undefined
+}
+
+/* §3.4/C8 — does this projection's causal chain reach a restore/seed envelope (vs a
+   tracked user entry, or nothing at all)? resolveRoot returns null both for a
+   restore-descended projection and for a true orphan; this tells the two apart so the
+   former can advance `expected` while the latter is left for the barrier. */
+function causedByRestoreOrSeed(env: CommitEnvelope): boolean {
+  let cause = env.causedBy
+  const guard = new Set<number>()
+  while (cause != null && !guard.has(cause)) {
+    guard.add(cause)
+    if (bySeq.has(cause) || rootOfSeq.has(cause)) return false   // a tracked entry — not restore-descended
+    const env2 = findEnv(cause)
+    if (!env2) return false
+    if (env2.origin === 'restore' || env2.origin === 'seed') return true
+    cause = env2.causedBy
+  }
+  return false
+}
+/* advance `expected` for every touched record WITHOUT the barrier check — the caller
+   has established the change is legitimate (restore-caused), so it is accounted for,
+   not out-of-band. */
+function advanceExpectedNoBarrier(env: CommitEnvelope): void {
+  const revs = env.revs
+  if (!revs) return
+  for (const key of Object.keys(revs)) expected.set(key, revs[key])
 }
 
 /* record a fresh user action as a new entry (its projection children fold in as
@@ -426,7 +459,12 @@ function snap(entry: UndoEntry, dir: 'undo' | 'redo'): void {
 /* §4/N11 — the restore reducer's own refusals (a stale-revision conflict, a
    missing store) are technical strings; the owner never reads them. Any
    applyRestore ok:false maps to plain words here. */
-function plainRestoreReason(_reason?: string): string {
+function plainRestoreReason(reason?: string): string {
+  // Fable#2 — an off-week change captured on the week's SAVED COPY (weekstash) can't
+  // be undone while that week is the one loaded (its live copy is authoritative, so
+  // the stash write is refused). Say what to do, not "something changed".
+  if (reason && /weekstash write to the loaded week/.test(reason))
+    return 'That change is on the saved copy of this week. Open a different week first, then undo it.'
   return 'That couldn’t be completed just now — something else changed on this week. Try again.'
 }
 

@@ -28,13 +28,13 @@ import * as waves from './engine/waves'
 import { keyDay, shiftKeys, shiftAircraft, shiftFormation, shiftWave, uniqDays, permuteKeys, moveKeys } from './engine/keys'
 import { applyMove, moveWave, waveInsertSlot, waveDefault, waveDefaultView, setWaveDefault, moveWaveDefault } from './engine/reorder'
 import { hhmm, parseHM, hmOK, minus, overlap, hm24 } from './engine/time'
-import { HIST, histApply, histSnap, histPush } from './state/history'
+import { HIST, histSnap } from './state/history'
 import { commandStream } from './command'
 import { resyncSchedBaseline, schedBaselineClean } from './state/sched-commit'
 import { HOOKS } from './engine/hooks'
 import * as view from './state/view'
-import { setLgEdit, setEffectiveRole } from './state/auth'
-import { notify, undo, redo, loadWeek, moveSection, moveSectionTo } from './state/store'
+import { setLgEdit } from './state/auth'
+import { notify, loadWeek, moveSection, moveSectionTo } from './state/store'
 import { globalUndo, globalRedo } from './undo'
 import { secOrder, SECTIONS, secDefault, setSecDefault, moveSecDefault } from './engine/order'
 import { setRole as lwSetRole, setViewer as lwSetViewer, loadWars as lwLoadWars } from './leavewar/state/store'
@@ -88,12 +88,13 @@ export function installProbeBridge() {
   w.armSlot = (k: any, el: any) => { view.armSlot(k, el); notify() }
   w.disarmSlot = () => { view.disarmSlot(); notify() }
   w.selectPerson = (id: any, inWeek?: any) => { view.selectPerson(id, inWeek); notify() }
-  /* [GLOBAL-UNDO] §13 phase 2 — the production Undo/Redo entry points drive the
-     ONE timeline now (§9). The legacy undo()/redo() and histApply/histPush stay
-     exposed below for the adapted probe's own legacy-stack checks, but no user-
-     facing path reaches them. */
+  /* [GLOBAL-UNDO] §13 phase 2 (§9 / E3, Codex GU-P2-001) — the Undo/Redo entry points
+     drive the ONE timeline. The legacy scheduler RESTORE (histApply) and its
+     record/push (histPush) are NOT exposed: they mutate scheduler state with no
+     command envelope or revision bump, so a console call could desync the timeline
+     and let a later globalUndo apply a stale inverse. The read-only histSnap stays
+     (state inspection only). The adapted probe drives undo through w.undo now. */
   w.undo = () => { globalUndo(); notify() }; w.redo = () => { globalRedo(); notify() }
-  w.legacyUndo = undo; w.legacyRedo = redo
   w.toast = (...a: any[]) => HOOKS.toast(...a)
   /* the renderers all collapse to the store's notify in React */
   w.renderSchedule = () => notify()
@@ -117,12 +118,6 @@ export function installProbeBridge() {
      needs mid-test member↔admin switches that no click path reaches since
      the standalone app's on-screen toggle was removed at the merge. */
   w.lwSetRole = (r: 'admin' | 'member') => lwSetRole(r)
-  /* [GLOBAL-UNDO] the RAPTOR effective role — what deriveActor()/mayReverse read to
-     gate a global undo. Production sets it from the login (resetSession) + the admin's
-     view-as-member flip; the e2e needs to make its LOGIN actor an admin mid-test the
-     same way w.lwSetRole makes the Leave War store admin, so a global undo of an
-     owned cell is authorized. Same precedent as w.lwSetRole. */
-  w.raptorRole = (r: 'admin' | 'member') => { setEffectiveRole(r); notify() }
   /* the Leave War VIEWER — the "View as" person the war scopes a member to
      (canEditRow). Production mirrors Raptor's ME onto it through the sync; the
      e2e needs to pin the member's identity to the row it edits without driving
@@ -229,7 +224,7 @@ export function installProbeBridge() {
   w.lgSetEdit = (on: any) => { setLgEdit(on); notify() }
   w.daysLabel = daysLabel
   w.findGo = (key: any) => { const [di, gi] = String(key).split('|'); return DAYS[+di!] && DAYS[+di!].waves[+gi!] }
-  w.histApply = histApply; w.histSnap = histSnap; w.histPush = histPush
+  w.histSnap = histSnap   // read-only state snapshot for inspection; histApply/histPush NOT exposed (E3, above)
   w.dayEngaged = dayEngaged; w.scShiftKind = scShiftKind; w.hm24 = hm24; w.rowRef = rowRef
   w.scSeatHit = scSeatHit; w.avSeatHit = avSeatHit
   w.armedKey = () => view.armedKey()
