@@ -56,19 +56,17 @@ in-flight and risk-reducing** first.
 1. **[AMEND]** — the main project. Decisions resolved; brief re-frozen & re-reviewed;
    **CORE built + round-3 in progress** on `claude/amendment-engine-core`. **[BUG2]**
    folds in here.
-   - **[AMEND-SEL-FOLLOWUPS] (owner, 15 Sep 26) — DO NEXT, blocks merge of PR #405.**
-     After testing the plans-selector redesign the owner asked for 7 changes, incl. a
-     real BUG (signatures leak across plans — day-level, not per-plan). Same branch
-     `claude/amendment-engine-core` (PR #405), Opus high, test-first, Codex+Fable
-     bug-check. **Do NOT merge #405 until these land.**
-     **Context (READ FIRST):** `raptor-port/docs/plans-selector-followups.md`.
-   - **[REPO-CLEANUP] (owner, 15 Sep 26) — SECOND task, AFTER the follow-ups merge.**
-     Delete the handoff screenshots (`raptor-port/docs/img/plans-selector-followups/`), then
-     do a repo-wide space/redundancy sweep (orphaned files, dead CSS, unused exports, stale
-     docs, build cruft). **CAUTION:** the repo deliberately keeps some dead-looking code
-     (CLAUDE.md §Stable decisions — `WEEKS`, `restoreDayVersion`, `openWarns`, etc.); grep for
-     refs and confirm before removing anything. Own gated PR, in batches. See the "SECOND
-     TASK" section of `raptor-port/docs/plans-selector-followups.md`.
+   - **[AMEND-SEL-FOLLOWUPS] — DONE + LIVE (merged 15 Sep 26, PR #405).** See the Done
+     section for the resolution. The 7 changes (incl. the signature-leak bug, taken the
+     per-plan way) were built, cross-provider bug-checked, and merged to `main`.
+   - **[REPO-CLEANUP] (owner, 15 Sep 26) — SECOND task; screenshots DONE, sweep HELD.**
+     Step 1 (delete the handoff screenshots `raptor-port/docs/img/plans-selector-followups/`)
+     is DONE (18 Sep 26). Step 2, the repo-wide space/redundancy sweep (orphaned files, dead
+     CSS, unused exports, stale docs, build cruft), is **HELD until `[CMDL-FINISH]` merges**
+     so two chats don't edit the same files at once. **CAUTION:** the repo deliberately keeps
+     some dead-looking code (CLAUDE.md §Stable decisions — `WEEKS`, `restoreDayVersion`,
+     `openWarns`, etc.); grep for refs and confirm before removing anything. Own gated PR, in
+     batches. See the "SECOND TASK" section of `raptor-port/docs/plans-selector-followups.md`.
 1b. **[TRK-SMOKE] — DONE + MERGED LIVE (17 Sep 26, PR #408, squash `93deab7` on `main`).**
    Code-only cherry-pick; the rest of this branch stayed unmerged. It was NOT a flake: two real
    causes. See the Done section entry for the
@@ -620,6 +618,20 @@ THREE halves now (owner, 15–17 Sep 26):
 ---
 
 ## Done
+
+### [AMEND-SEL-FOLLOWUPS] Plans-selector 7 follow-ups (incl. the signature-leak bug) — DONE + LIVE 15 Sep 26
+The owner's 15 Sep batch of 7 changes to the plans-selector redesign, all built test-first on
+`claude/amendment-engine-core` and merged as **PR #405** (merge commit `9ba253c`), which the
+branch is now fully inside. Resolutions: (1) the signature-leak bug — signatures are now
+**per-plan** (owner's option a): each saved plan carries its own four sign-offs, so signing one
+plan never fills another; a plan whose content moved out from under a signature reads empty; a
+later Codex finding (PSF-001) bound signatures to the filing axis too. (2) the amber week banner
+removed entirely. (3) version tag coloured by AL number off the shared palette. (4) tag moved
+left of the 4X4 badge. (5) tag shown on the view-only schedule too. (6) no change needed —
+view-only live faces already show warnings. (7) the board sign-off line is publish-aware.
+Cross-provider bug-checked (Codex + Fable); gates green (unit 4671/0, tfin 728/0, e2e, tracker
+smoke). Housekeeping follow-on tracked under **[REPO-CLEANUP]** above (screenshots deleted
+18 Sep 26; the space sweep is held pending [CMDL-FINISH]).
 
 ### [LW-OPEN] Leave War opens on the war being WORKED — DONE 17 Sep 26
 Owner ruling (17 Sep 26, restating his 7 Sep rule under newest-instruction-wins):

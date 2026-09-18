@@ -1,18 +1,26 @@
 # Plans selector redesign — owner follow-ups (batch, 15 Sep 26)
 
+> **STATUS — the seven follow-ups are DONE and LIVE (merged 15 Sep 26, PR #405,
+> merge commit `9ba253c`).** All seven items below (including item 1, the
+> signature-leak bug, taken the per-plan way) were built test-first,
+> cross-provider bug-checked (Codex + Fable), and merged to `main`. Item 6
+> needed no change (the view page's live faces already show warnings). Nothing
+> here is outstanding except the SECOND TASK (housekeeping) at the bottom, and
+> its step 1 (delete the handoff screenshots) is now done too — only the
+> repo-wide space sweep remains. This section is kept as the record of what was
+> asked and how it was resolved; do NOT rebuild it.
+
 After testing the redesign on the Vercel preview of PR #405 (branch
-`claude/amendment-engine-core`), the owner asked for seven changes. **Do these in a
-fresh chat, on the SAME branch (PR #405 accumulates), test-first.** Until they are
-done, **PR #405 must NOT be merged** — item 1 is a real bug.
+`claude/amendment-engine-core`), the owner asked for seven changes. Built on the
+SAME branch (PR #405 accumulated), test-first. Item 1 was a real bug.
 
 Companion: `docs/superpowers/specs/2026-09-15-plans-selector-redteam.md` (the locked
-spec) and `docs/session-state.md`. The redesign itself is built + bug-checked (commits
-`43edb04`, `6337b02`).
+spec) and the build record `docs/plans-selector-followups-plan.md`. The redesign
+itself was built + bug-checked (commits `43edb04`, `6337b02`).
 
-**Owner's screenshots (in the repo — no need to re-paste):**
-`docs/img/plans-selector-followups/01-amber-bar-and-signoff-bug.jpg` (items 1 + 2),
-`.../02-tag-colour-and-position.jpg` (items 3 + 4), `.../03-board-no-publish-button.png`
-(item 7). Read them to see exactly what the owner circled.
+*(The owner's annotated screenshots that once lived in
+`docs/img/plans-selector-followups/` have been deleted — they existed only for this
+handoff and are no longer needed now the work has landed.)*
 
 ## Model / approach
 Opus high, test-first. Item 1 is HEAVY (it touches the Phase-3 signature machinery /
@@ -146,10 +154,12 @@ Bug-check across Codex + Fable. Then hold for the owner's "merge live".
 
 ## SECOND TASK (housekeeping) — owner ask, 15 Sep 26, AFTER the fixes merge
 Do this only once the seven fixes above are merged; it is not part of the feature.
-1. **Delete the handoff screenshots** — `raptor-port/docs/img/plans-selector-followups/`
-   (three images) exist only for THIS handoff; remove the folder once the fixes are done.
-   Also drop their reference lines from this doc (or delete this doc if fully consumed).
-2. **Repo-wide space / redundancy sweep.** Find genuinely dead or redundant material that
+1. ~~**Delete the handoff screenshots**~~ — **DONE (18 Sep 26).** The three images in
+   `raptor-port/docs/img/plans-selector-followups/` were removed and their reference
+   lines dropped from this doc. The doc itself is kept because step 2 below is still open.
+2. **Repo-wide space / redundancy sweep — STILL OPEN (held, 18 Sep 26).** Deferred until
+   the parallel `[CMDL-FINISH]` command-layer/Tracker work is merged, so two chats aren't
+   editing the same files at once. Find genuinely dead or redundant material that
    can be safely removed to save space: orphaned files, unreferenced assets/images, dead
    CSS, unused exports/functions, stale docs, duplicated content, build cruft.
    **CAUTION — this repo deliberately KEEPS some dead-looking code** (CLAUDE.md §Stable
