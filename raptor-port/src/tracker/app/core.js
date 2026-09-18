@@ -29,6 +29,7 @@ import {
 import {
   commit as cmdCommit, isCommitting as cmdIsCommitting, definePermission as cmdDefinePermission,
   anyone as cmdAnyone, registerRecord as cmdRegisterRecord, deferEffect as cmdDeferEffect,
+  registerGuardedStore as cmdRegisterGuardedStore,
 } from '../../command';
 
 export { SYLLABI, SYL_NAMES, DEFAULT_SYL_NAME, DEFAULT_SYL_ORDER, DEFAULT_LAYOUTS, EVENT_INFO };
@@ -300,6 +301,15 @@ function trkRegisterCommands() {
     cmdRegisterRecord({ key: 'tracker:' + c, cls: 'record', collection: c, module: 'tracker' });
   }
   cmdDefinePermission('trk.gesture', cmdAnyone);   // [CMDL-FINISH] §4 — a multi-collection gesture's envelope
+  /* [CMDL-FINISH] §3 (C9) / P4-END — now that EVERY post-boot Tracker write routes
+     through the command layer (per-write via trkWrite/trkDelete, or grouped via
+     trkGesture), guard trkStore: its cheap durable-version signature() is checked
+     on every commit, app-wide, so a write that skips txn.enlist() is caught. The
+     only post-boot raw path is TRK_RESTORING (legacy undo), which runs standalone
+     from a keypress and is never nested inside another module's command, so it is
+     baked into the next commit's pre-snapshot, not flagged. Registered here, at
+     the end of init (after trkHydrateMem), so the first capture sees the full mem. */
+  cmdRegisterGuardedStore(trkStore);
 }
 /* [CMDL-FINISH] §3 — re-derive the CURRENT course's live lets from `mem`
    SYNCHRONOUSLY (the id-native happy path: no migrations, no async sGet, no
