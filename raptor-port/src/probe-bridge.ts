@@ -35,6 +35,7 @@ import { HOOKS } from './engine/hooks'
 import * as view from './state/view'
 import { setLgEdit } from './state/auth'
 import { notify, undo, redo, loadWeek, moveSection, moveSectionTo } from './state/store'
+import { globalUndo, globalRedo } from './undo'
 import { secOrder, SECTIONS, secDefault, setSecDefault, moveSecDefault } from './engine/order'
 import { setRole as lwSetRole, setViewer as lwSetViewer, loadWars as lwLoadWars } from './leavewar/state/store'
 
@@ -87,7 +88,12 @@ export function installProbeBridge() {
   w.armSlot = (k: any, el: any) => { view.armSlot(k, el); notify() }
   w.disarmSlot = () => { view.disarmSlot(); notify() }
   w.selectPerson = (id: any, inWeek?: any) => { view.selectPerson(id, inWeek); notify() }
-  w.undo = undo; w.redo = redo
+  /* [GLOBAL-UNDO] §13 phase 2 — the production Undo/Redo entry points drive the
+     ONE timeline now (§9). The legacy undo()/redo() and histApply/histPush stay
+     exposed below for the adapted probe's own legacy-stack checks, but no user-
+     facing path reaches them. */
+  w.undo = () => { globalUndo(); notify() }; w.redo = () => { globalRedo(); notify() }
+  w.legacyUndo = undo; w.legacyRedo = redo
   w.toast = (...a: any[]) => HOOKS.toast(...a)
   /* the renderers all collapse to the store's notify in React */
   w.renderSchedule = () => notify()

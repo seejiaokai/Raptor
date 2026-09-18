@@ -1,7 +1,10 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { advanceStage, getState, initStore, setBidState, setCell, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
+import { setSession } from '../../state/auth'
+import { installGlobalUndo } from '../../state/undo-wire'
+import { _resetTimeline } from '../../undo/timeline'
 import { StageBar, Topbar } from './Chrome'
 
 beforeEach(() => {
@@ -189,6 +192,16 @@ describe('the leave war picker', () => {
 })
 
 describe('the undo / redo buttons', () => {
+  // [GLOBAL-UNDO] §13 phase 2 — the pair drives the ONE global timeline now, so the
+  // test installs the production cutover (registers lwStore, cuts LW over) and an
+  // admin session (mayReverse gate) — the same world the button runs in live.
+  beforeEach(() => {
+    setSession({ user: 'ad', role: 'admin' })
+    _resetTimeline()
+    installGlobalUndo()
+  })
+  afterEach(() => { _resetTimeline() })
+
   it('sit disabled with nothing to undo, then drive undo and redo', () => {
     render(<Topbar />)
     const undo = screen.getByTestId('lw-undo') as HTMLButtonElement

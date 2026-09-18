@@ -22,13 +22,16 @@ import { canEditSched } from '../state/auth'
 import { refreshHighlights } from './highlights'
 import { wireRowDrag } from './rowdrag'
 import { editingText } from './textedit'
-import { useBoardVersion, useVersion } from './useStore'
-import { HIST } from '../state/history'
-import { undo, redo } from '../state/store'
+import { useBoardVersion, useVersion, useUndoVersion } from './useStore'
+import { globalUndo, globalRedo, undoState } from '../undo'
 
 export function SchedBoard() {
   const version = useVersion()
   const boardVersion = useBoardVersion()
+  /* [GLOBAL-UNDO] §13 phase 2 — the board's Undo/Redo pair drives the ONE timeline
+     and refreshes on its version (label/disabled from undoState). */
+  useUndoVersion()
+  const us = undoState()
   const boardRef = useRef<HTMLDivElement>(null)
   const signRef = useRef<HTMLDivElement>(null)
   const rosterRef = useRef<HTMLDivElement>(null)
@@ -341,13 +344,14 @@ export function SchedBoard() {
           {/* Undo / redo on the board itself (owner, 11 Aug 26). The board is
               a full-screen modal over the shell, so the shell's own pair is
               unreachable while it is open — every board edit had to be undone
-              after closing it. Same two calls and the same disabled tests as
-              Shell.tsx's pair; HIST is global, so this undoes the last edit
-              wherever it was made, which is what Undo has always meant here. */}
-          <button className="abtn hbtn" id="sbUndo" title="Undo" disabled={HIST.ix <= 0}
-            onClick={() => { undo(); notify() }}><span className="bi">↶</span><span className="bl"> Undo</span></button>
-          <button className="abtn hbtn" id="sbRedo" title="Redo" disabled={HIST.ix >= HIST.stack.length - 1}
-            onClick={() => { redo(); notify() }}><span className="bi">↷</span><span className="bl"> Redo</span></button>
+              after closing it. Since the [GLOBAL-UNDO] cutover this drives the ONE
+              timeline (globalUndo/globalRedo), disabled + labelled from undoState()
+              — so it undoes the last edit wherever it was made (scheduler or Leave
+              War), which is what Undo has always meant here. */}
+          <button className="abtn hbtn" id="sbUndo" title={us.undoLabel ? `Undo — ${us.undoLabel}` : 'Undo'} disabled={!us.canUndo}
+            onClick={() => { const r = globalUndo(); if (!r.ok && r.reason) HOOKS.toast(r.reason, 'warn'); notify() }}><span className="bi">↶</span><span className="bl"> Undo</span></button>
+          <button className="abtn hbtn" id="sbRedo" title={us.redoLabel ? `Redo — ${us.redoLabel}` : 'Redo'} disabled={!us.canRedo}
+            onClick={() => { const r = globalRedo(); if (!r.ok && r.reason) HOOKS.toast(r.reason, 'warn'); notify() }}><span className="bi">↷</span><span className="bl"> Redo</span></button>
           {/* HISTORY (owner, 11 Aug 26) — a VIEW mode, so unlike Sort all and
               + Wave it carries no editMode() gate: reading who changed a
               detail is not editing it, and a scheduler looking at a read-only

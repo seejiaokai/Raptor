@@ -205,7 +205,7 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
       addWave(0, 'fly'); afterSchedMutate()
       const gi = DAYS[0].waves.length - 1
       armSlot(`0.${gi}.0.0.p`)
-      histApply(HIST.ix - 1)
+      undo()   // [GLOBAL-UNDO] production path — globalUndo; its restore epilogue drops the armed slot
       out.i15a = ARM ? 'still armed' : 'disarmed'
       out.i15b = DAYS[0].waves.length <= before ? 'gone' : 'still there'
     }
@@ -287,11 +287,11 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
     const n0 = await p.evaluate(() => INPUTS.length), r0 = await rows()
     await p.evaluate(() => {
       INPUTS.unshift({ person: 'bane', date: 'Jul 13', allday: true, type: 'LL', remarks: 'probe', mod: '2026-07-28' })
-      renderInputs(); histPush()
+      afterSchedMutate()   // [GLOBAL-UNDO] route the add through the command layer so the ONE timeline records it
     })
     await p.waitForTimeout(400)
     const r1 = await rows()
-    await p.evaluate(() => histApply(HIST.ix - 1)); await p.waitForTimeout(400)
+    await p.evaluate(() => undo()); await p.waitForTimeout(400)   // production undo (globalUndo) removes it
     const n2 = await p.evaluate(() => INPUTS.length), r2 = await rows()
     console.log(`   12 · inputs ${n0}/${r0} → ${n0 + 1}/${r1} → ${n2}/${r2}`)
     T('12 · the added row really appears', r1, r0 + 1)

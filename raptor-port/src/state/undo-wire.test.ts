@@ -18,6 +18,7 @@ import { _resetDisclosure } from './disclosure'
 import { globalUndo, globalRedo, undoState } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
 import { installGlobalUndo } from './undo-wire'
+import { HIST } from './history'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
@@ -65,6 +66,25 @@ describe('installGlobalUndo() wires the live cutover', () => {
     expect(dayApproved(0)).toBe(false)                 // back to a draft
     expect((SCHED.orig as any)[0]).toBeUndefined()
     expect(daySigned(0)).toBe(false)                   // postRestore was wired, so signs are cleared
+  })
+
+  it('globalUndo/Redo drive ONLY the timeline — the legacy HIST stack is untouched (E3 unreachability)', () => {
+    // the buttons now call globalUndo/globalRedo; this proves that path does NOT
+    // also drive the legacy scheduler restore (a legacy undo() would move HIST.ix).
+    // If reinstallLocks + the effect-context replay failed, the restore's deferred
+    // histPush would append a spurious legacy step and this would catch it.
+    const before = note0()
+    writeText('dn:0.0', 'ONE')
+    const ixAfterEdit = HIST.ix
+    expect(ixAfterEdit).toBeGreaterThan(0)     // the edit pushed a legacy step (persistence funnel)
+
+    globalUndo()
+    expect(note0()).toBe(before)               // reverted BY THE TIMELINE
+    expect(HIST.ix).toBe(ixAfterEdit)          // legacy stack NOT driven — no double-restore
+
+    globalRedo()
+    expect(note0()).toBe('ONE')
+    expect(HIST.ix).toBe(ixAfterEdit)          // still untouched
   })
 
   it('the edit is eligible — the four modules are cut over, not just recorded', () => {
