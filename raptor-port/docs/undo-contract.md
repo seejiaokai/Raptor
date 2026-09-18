@@ -221,8 +221,10 @@ latent.
 
 `capture()`/`restore()` are the rollback pair the transaction uses in phases 2 and 6; they must
 snapshot **everything a command can mutate**, not just the record map. Tracker's `capture` is
-`Object.assign({}, mem)` PLUS a snapshot of `undoStack`/`redoStack`/`active`/`sylDirty` (gesture
-state not derivable from `mem`); Leave War's `capture` is the immutable `state` ref. `signature()`
+`Object.assign({}, mem)` PLUS a snapshot of `undoStack`/`redoStack`/`active`/`sylDirty`, the course
+pointer (`course`/`COURSES`) and the unsaved in-editor flow draft (`SYL`) — all state not derivable
+from `mem`, so a rejected gesture restores the exact draft rather than rebuilding it from the
+persisted def; Leave War's `capture` is the immutable `state` ref. `signature()`
 is an optional cheap monotonic durable-version counter (bumped only in the real persist/restore
 paths) so the whole-world debug guard compares a string instead of deep-cloning every store's
 `records()` on every commit — which keeps the perf ceilings. Register a store as guarded with
