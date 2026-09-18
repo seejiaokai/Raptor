@@ -264,8 +264,14 @@ export const trkStore = {
      JSON.stringify: capture() runs on every guarded commit once trk is registered.
      R3-005/build-advice #6 — also snapshot the transaction-mutated history +
      selection + dirty flag, which are NOT derivable from mem (a rejected grouped
-     gesture must restore them, and pushMarkUndo clears redo before a grade). */
-  capture: () => ({ mem: Object.assign({}, mem), undo: undoStack.slice(), redo: redoStack.slice(), active, sylDirty }),
+     gesture must restore them, and pushMarkUndo clears redo before a grade).
+     CMDLF-005/006/Fable#9 — and the course POINTER (course + COURSES) plus the
+     in-editor flow DRAFT (SYL, byid rebuildable from it). All cheap references /
+     small slices, so capture() stays O(1)-ish and safe to run every commit: no
+     gesture mutates SYL or COURSES in place (structural flow edits are the sylDirty
+     draft, saved separately, never a gesture). */
+  capture: () => ({ mem: Object.assign({}, mem), undo: undoStack.slice(), redo: redoStack.slice(), active, sylDirty,
+    syl: SYL, course, courses: COURSES.slice() }),
   restore: (snap) => {
     // [CMDL-FINISH] CMDLF-007 — bump the sGet generation for every key that
     // changes shape across the restore (both the outgoing and incoming key sets),
@@ -275,10 +281,16 @@ export const trkStore = {
     Object.assign(mem, snap.mem);
     for (const kk of Object.keys(mem)) bumpMemGen(kk);
     undoStack = snap.undo.slice(); redoStack = snap.redo.slice(); active = snap.active; sylDirty = snap.sylDirty;
+    // [CMDL-FINISH] CMDLF-005/006/Fable#9 — restore the course POINTER and the exact
+    // in-editor flow DRAFT (SYL/byid). A rejected gesture must leave an unsaved flow
+    // draft untouched; the old rebuild-from-mem (rebuildSyl=true) rebuilt SYL from
+    // the persisted def and discarded the draft. Re-derive the REST of the course
+    // layer (plan/roster/marks/dates/layout) from the restored mem with
+    // rebuildSyl=false, so SYL/byid survive.
+    course = snap.course; COURSES = snap.courses.slice();
+    SYL = snap.syl; byid = {}; SYL.forEach(e => byid[e.id] = e);
     TRK_SIG++;
-    /* re-derive the current course's live lets from the restored mem, then repaint
-       (N4). notify is plain, so a repaint raised inside rollback is not discarded. */
-    trkReloadCurrentFromMem(true);
+    trkReloadCurrentFromMem(false);
     renderBoard(); renderSide(); notify();
   },
   records: () => {
@@ -347,6 +359,26 @@ function trkLoadStudentsFromMem() {
     else { try { lulls[s] = JSON.parse(l); } catch (_) { lulls[s] = []; } }
   }
 }
+/* [CMDL-FINISH] §3 (CMDLF-004) — re-derive the GLOBAL catalogue + event-info live
+   lets from mem. A restore that changed a global record (a syllabus delete/restore
+   touches sylcat/sylorder/sylhidden/syltomb; an event-detail edit touches
+   eventinfo) updated mem but not these lets, so the board went blank/stale until a
+   reload. Synchronous, reads mem only — the id-native happy path; boot's
+   fail-closed id validation (loadSylCat) already ran on this data. */
+function trkReloadGlobalsFromMem() {
+  const cat = sParse(memGet(kSylCat()), [], 'array').filter(isSylEntry);
+  const seen = new Set();
+  SYLS = cat.filter(e => !seen.has(e.id) && seen.add(e.id));
+  for (const e of SYLS) { if (isBuiltinSylId(e.id)) e.base = builtinBaseOf(e.id); else if (e.base) delete e.base; }
+  const ord = sParse(memGet(kSylOrder()), null, 'array');
+  SYL_ORDER = (Array.isArray(ord) && ord.length) ? ord.filter(isSylId) : DEFAULT_SYL_ID_ORDER.slice();
+  if (!SYL_ORDER.length) SYL_ORDER = DEFAULT_SYL_ID_ORDER.slice();
+  const hid = sParse(memGet(kSylHidden()), [], 'array');
+  SYL_HIDDEN = Array.isArray(hid) ? hid.filter(isSylId) : [];
+  const tomb = sParse(memGet(kSylTomb()), {}, 'object');
+  SYL_TOMB = (tomb && typeof tomb === 'object') ? tomb : {};
+  eventInfo = sParse(memGet('v3:eventinfo'), {}, 'object') || {};
+}
 /* [CMDL-FINISH] §3 (F8/GU-007, M1/R4-003/R4-004) — the batch, delete-aware,
    per-collection record write for the undo seam, driven by the key-grammar→scope
    table. Apply every entry to mem, then reconcile the LIVE lets:
@@ -364,6 +396,10 @@ function trkWriteRecords(entries) {
   const beforeSyl = curSylId();
   const beforeDef = JSON.stringify(customDefs && customDefs[beforeSyl]);
   for (const e of entries) { if (e.op === 'delete') delete mem[e.id]; else mem[e.id] = e.value; bumpMemGen(e.id); }
+  // [CMDL-FINISH] CMDLF-004 — re-derive the global catalogue/event-info lets first
+  // (a delete/restore of a syllabus changes them, and the pointer logic below reads
+  // SYLS/SYL_ORDER via firstSylId/sylSource).
+  if (entries.some(e => e.collection === 'trk.catalogue' || e.collection === 'trk.eventinfo')) trkReloadGlobalsFromMem();
   // the globals that steer the pointers, always re-read from mem
   COURSES = sParse(memGet(kCourses), [], 'array');
   const courseGone = COURSES.length > 0 && !COURSES.some(c => isCourseEntry(c) && c.id === course);

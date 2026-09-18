@@ -55,6 +55,21 @@ describe('Tracker capture/restore — selection + signature (R3-005/C9)', () => 
     expect((core as any).active).toBe(before)   // selection restored (R3-005)
   })
 
+  it('restore() preserves an unsaved flow DRAFT (SYL), not a rebuild from the persisted def (CMDLF-005/006)', async () => {
+    const store = (core as any).trkStore
+    // an unsaved structural edit: SYL diverges from the persisted def, dirty flag up
+    await (core as any).saveSylText(JSON.stringify([{ id: 'DRAFT-EV', type: 'flight' }]))
+    expect((core as any).SYL.map((e: any) => e.id)).toEqual(['DRAFT-EV'])
+    const snap = store.capture()
+    // the draft moves on (as a rejected gesture's interim state might)
+    await (core as any).saveSylText(JSON.stringify([{ id: 'OTHER-EV', type: 'flight' }]))
+    expect((core as any).SYL.map((e: any) => e.id)).toEqual(['OTHER-EV'])
+    // rollback restores the EXACT draft, not the def rebuilt from mem
+    store.restore(snap)
+    expect((core as any).SYL.map((e: any) => e.id)).toEqual(['DRAFT-EV'])
+    expect((core as any).byid['DRAFT-EV']).toBeTruthy()
+  })
+
   it('the durable-version signature advances on a write', () => {
     const store = (core as any).trkStore
     const s0 = store.signature()
