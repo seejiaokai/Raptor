@@ -78,3 +78,19 @@ describe('Tracker gesture grouping — one gesture = one envelope (§4, Class A)
     expect(caught[0].changes.some(c => c.collection === 'trk.marks')).toBe(true)
   })
 })
+
+describe('Tracker gesture grouping — a cross-syllabus relabel is ONE envelope (§4, Class C)', () => {
+  it('renameStudent emits ONE trk.gesture envelope for the whole relabel', async () => {
+    const id = (core as any).active
+    expect(id).toBeTruthy()
+    const caught: CommitEnvelope[] = []
+    const unsub = onCommit(e => caught.push(e))
+    const p = (core as any).renameStudent(id)          // opens the rename prompt synchronously
+    ;(core as any).dlgClose('RENAMED ' + Date.now())   // answer it (unique — no name clash)
+    await p
+    unsub()
+    const gestures = caught.filter(e => e.type === 'trk.gesture')
+    expect(gestures.length).toBe(1)                    // the whole relabel, not one write per roster
+    expect(gestures[0].changes.some(c => c.collection === 'trk.roster')).toBe(true)
+  })
+})

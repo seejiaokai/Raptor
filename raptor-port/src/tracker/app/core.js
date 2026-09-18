@@ -148,8 +148,21 @@ const memGen = new Map();
 function bumpMemGen(k) { memGen.set(k, (memGen.get(k) || 0) + 1); }
 /* [CMDL-FINISH] §4 (GU-004) — while a gesture is open this holds the keys it
    wrote (key→value), so their storage flush can be deferred to ONE boundary
-   effect. Non-null ⇒ sSet records instead of persisting inline. */
+   effect. Non-null ⇒ sSet records instead of persisting inline. A key whose
+   pending value is TRK_DEL is a DELETE (delKey inside a gesture), flushed as a
+   storage.delete at the boundary — so a gesture that removes records (a student
+   or syllabus delete) still lands as ONE envelope, storage and all. */
 let TRK_GESTURE_PENDING = null;
+const TRK_DEL = Symbol('trk.del');
+/* [CMDL-FINISH] §4 (N7) — the Tracker's own legacy undo (applyHist/applyMarkHist)
+   RESTORES earlier state; its saves must not emit a FORWARD command envelope (a
+   global-undo consumer would read a legacy undo as a new change, and today it
+   pushes a spurious step). While this is set, trkWrite/trkDelete take their raw
+   branch: mem + storage, off the command stream. It is scoped to the SYNCHRONOUS
+   trkWrite alone (via trkRestoring), never held across the awaited step() — a
+   click landing inside that await must still record normally. */
+let TRK_RESTORING = false;
+function trkRestoring(fn) { const prev = TRK_RESTORING; TRK_RESTORING = true; try { return fn(); } finally { TRK_RESTORING = prev; } }
 /* the persisted mirror, read SYNCHRONOUSLY — the record source once hydrated
    (used by the §3 write()/restore re-derive; nothing on it awaits or calls
    loadCourse — build-advice #5). */
@@ -394,7 +407,7 @@ function trkWriteRecords(entries) {
 /* the synchronous durable-record write: routed through a named command when
    enabled + the key is a known record + we're not already committing; else raw. */
 function trkWrite(k, v) {
-  const col = TRK_COMMANDS ? trkCollectionOf(k) : null;
+  const col = (TRK_COMMANDS && !TRK_RESTORING) ? trkCollectionOf(k) : null;
   if (col && !cmdIsCommitting()) {
     cmdCommit({
       type: col,
@@ -423,7 +436,9 @@ function sSet(k, v) {
 function flushGesture(pending) {
   if (!pending || !pending.size) return;
   setSaveStatus('', 'saving');
-  Promise.all([...pending].map(([k, v]) => storage.set(k, v)))
+  Promise.all([...pending].map(([k, v]) => v === TRK_DEL
+    ? (storage.delete ? storage.delete(k) : storage.set(k, ''))
+    : storage.set(k, v)))
     .then(() => setSaveStatus('', 'ok'), () => setSaveStatus('local only', 'ok'));
 }
 /* [CMDL-FINISH] §4 (GU-004) — run a gesture's SYNCHRONOUS mem + live-let
@@ -2511,7 +2526,7 @@ function pushMarkUndo(s, what, field) {
   const e = markSnap(s, what); if (field) e.field = field;
   undoStack.push(e); trimUndo(); redoStack = []; notify();
 }
-function applyHist(u) { SYL = JSON.parse(u.syl); byid = {}; SYL.forEach(e => byid[e.id] = e); layout = JSON.parse(u.lay); loadEdgeMeta(); selEdge = null; markDirty(); saveLayout(); renderBoard(); renderSide(); }
+function applyHist(u) { SYL = JSON.parse(u.syl); byid = {}; SYL.forEach(e => byid[e.id] = e); layout = JSON.parse(u.lay); loadEdgeMeta(); selEdge = null; markDirty(); trkRestoring(() => saveLayout()); renderBoard(); renderSide(); }
 async function applyMarkHist(u) {
   const s = u.who;
   marks[s] = JSON.parse(u.m);
@@ -2520,7 +2535,7 @@ async function applyMarkHist(u) {
      when the picker is about to move, somebody else's. */
   if (pop) closePop();
   if (active !== s) { active = s; prefSet('lastCrew:' + course, s); refreshActive(); }
-  await saveMarks(s); if (dates[s]) await saveDates(s);
+  await trkRestoring(() => saveMarks(s)); if (dates[s]) await trkRestoring(() => saveDates(s));
   renderBoard(); renderSide();
 }
 /* The snapshot that a step's reverse pushes onto the other stack: the SAME
@@ -3766,33 +3781,41 @@ export async function removeStudent(v) {
   await onChain(() => removeStudentNow(v));
 }
 async function removeStudentNow(v) {
-  roster = roster.filter(x => x.id !== v); delete marks[v]; delete dates[v];
-  /* Their undo steps go with them: an Undo that brought a removed student's
-     mark back would put a mark on nobody's chart. */
-  undoStack = undoStack.filter(e => e.who !== v); redoStack = redoStack.filter(e => e.who !== v);
-  await saveRoster();
-  /* Deleting the roster entry alone left their name and every mark sitting in
-     storage — and on a shared tracker, in the file the whole team reads. Worse,
-     adding the same callsign back handed them the old pace and lull periods
-     while the marks started clean, which is the most confusing outcome of all. */
-  await delKey(kMarksFor(course, curSylId(), v));
-  await delKey(kDatesFor(course, curSylId(), v));
-  await delKey(kDatesOld(course, v));
-  await delKey(kLast(course, v));
-  /* Pace and lulls belong to the course; only drop them once this person is
-     off every syllabus in it, or removing them from one chart would wipe the
-     pacing they still need on another. */
+  const c = course, syl = curSylId();
+  /* [CMDL-FINISH] §4 (Class C) — HOIST every async read BEFORE the gesture: the
+     other syllabi's rosters that decide whether this person's course-level pace
+     and lull periods are still needed elsewhere, and the last-marked pointer.
+     Then the removal and all its deletes are ONE synchronous envelope. */
   let elsewhere = false;
-  for (const sn of await storeSylIds(course)) {
-    if (sn === curSylId()) continue;
-    const rr = await sGet(kRosterFor(course, sn));
+  for (const sn of await storeSylIds(c)) {
+    if (sn === syl) continue;
+    const rr = await sGet(kRosterFor(c, sn));
     if (sParse(rr, [], 'array').some(x => isEntry(x) && x.id === v)) { elsewhere = true; break; }
   }
-  if (!elsewhere) { await delKey(kPace(course, v)); await delKey(kLulls(course, v)); delete pace[v]; delete lulls[v]; }
-  if ((await sGet(kLastStudent(course))) === v) await delKey(kLastStudent(course));
-  if (prefGet('lastCrew:' + course) === v) prefSet('lastCrew:' + course, '');
-  if (active === v) active = roster[0] ? roster[0].id : null;
-  refreshActive(); renderBoard(); renderSide();
+  const wasLastStudent = (await sGet(kLastStudent(c))) === v;
+  trkGesture(() => {
+    roster = roster.filter(x => x.id !== v); delete marks[v]; delete dates[v];
+    /* Their undo steps go with them: an Undo that brought a removed student's
+       mark back would put a mark on nobody's chart. */
+    undoStack = undoStack.filter(e => e.who !== v); redoStack = redoStack.filter(e => e.who !== v);
+    saveRoster();
+    /* Deleting the roster entry alone left their name and every mark sitting in
+       storage — and on a shared tracker, in the file the whole team reads. Worse,
+       adding the same callsign back handed them the old pace and lull periods
+       while the marks started clean, which is the most confusing outcome of all. */
+    delKey(kMarksFor(c, syl, v));
+    delKey(kDatesFor(c, syl, v));
+    delKey(kDatesOld(c, v));
+    delKey(kLast(c, v));
+    /* Pace and lulls belong to the course; only drop them once this person is
+       off every syllabus in it, or removing them from one chart would wipe the
+       pacing they still need on another. */
+    if (!elsewhere) { delKey(kPace(c, v)); delKey(kLulls(c, v)); delete pace[v]; delete lulls[v]; }
+    if (wasLastStudent) delKey(kLastStudent(c));
+    if (prefGet('lastCrew:' + c) === v) prefSet('lastCrew:' + c, '');
+    if (active === v) active = roster[0] ? roster[0].id : null;
+    refreshActive(); renderBoard(); renderSide();
+  });
 }
 /* RENAME A STUDENT (10 Sep 26). A student IS an enrolment id and the name is
    only a label (stable ids), so a rename touches ONE thing — the entry's
@@ -3815,24 +3838,30 @@ export async function renameStudent(id) {
   const { byNm } = await findEnrolment(null, v);
   if (byNm && byNm.id !== id) { await uiAlert('A student named ' + v + ' is already on this course. Pick a different name.'); return; }
   await onChain(async () => {
-    /* The name is the enrolment's ONE label, and findEnrolment relies on every
-       chart of the course agreeing on it (a person can sit on several syllabi
-       under the same id). So set it on every roster the id appears in — the
-       live roster here plus each other syllabus's stored one — not just the
-       visible chart. No per-student record moves: they are keyed by the id. */
-    let hit = false;
-    const r = roster.find(x => x.id === id); if (r) { r.name = v; hit = true; await saveRoster(); }
-    /* the SAME breadth findEnrolment uses for the duplicate check above, so a
-       chart the refusal counts as part of the course is a chart the rename
-       reaches — no syllabus is left reading the old label */
-    for (const sn of await storeSylIds(course)) {
-      if (sn === curSylId()) continue;
-      const rr = sParse(await sGet(kRosterFor(course, sn)), [], 'array');
-      let changed = false;
-      for (const e of rr) { if (isEntry(e) && e.id === id && e.name !== v) { e.name = v; changed = true; } }
-      if (changed) { await sSet(kRosterFor(course, sn), JSON.stringify(rr)); hit = true; }
-    }
-    if (hit) { refreshActive(); renderBoard(); renderSide(); }
+    /* [CMDL-FINISH] §4 (Class C) — HOIST the other syllabi's stored rosters (read
+       across the whole course, the SAME breadth findEnrolment used for the clash
+       check above) BEFORE the gesture, so relabelling every roster the id sits on
+       lands as ONE envelope. */
+    const c = course, syl = curSylId();
+    const otherSyls = (await storeSylIds(c)).filter(sn => sn !== syl);
+    const otherRosters = new Map();
+    for (const sn of otherSyls) otherRosters.set(sn, sParse(await sGet(kRosterFor(c, sn)), [], 'array'));
+    trkGesture(() => {
+      /* The name is the enrolment's ONE label, and findEnrolment relies on every
+         chart of the course agreeing on it (a person can sit on several syllabi
+         under the same id). So set it on every roster the id appears in — the
+         live roster here plus each other syllabus's stored one — not just the
+         visible chart. No per-student record moves: they are keyed by the id. */
+      let hit = false;
+      const r = roster.find(x => x.id === id); if (r) { r.name = v; hit = true; saveRoster(); }
+      for (const sn of otherSyls) {
+        const rr = otherRosters.get(sn);
+        let changed = false;
+        for (const e of rr) { if (isEntry(e) && e.id === id && e.name !== v) { e.name = v; changed = true; } }
+        if (changed) { sSet(kRosterFor(c, sn), JSON.stringify(rr)); hit = true; }
+      }
+      if (hit) { refreshActive(); renderBoard(); renderSide(); }
+    });
   });
 }
 export function setActive(v, opts) {
@@ -3925,7 +3954,7 @@ async function saveSylCat() { await sSet(kSylCat(), JSON.stringify(SYLS)); }
    Change (Codex-4/Fable-8). Then the async storage removal, OUTSIDE the command
    (the legacy persist, unchanged). */
 function trkDelete(k) {
-  const col = TRK_COMMANDS ? trkCollectionOf(k) : null;
+  const col = (TRK_COMMANDS && !TRK_RESTORING) ? trkCollectionOf(k) : null;
   /* [CMDL-FINISH] R3-004 — the `(k in mem)` gate is GONE: with mem hydrated, a
      delete of a stored-but-unwritten-this-session key must still route through a
      command so it emits a delete change with a real before-image. */
@@ -3941,6 +3970,10 @@ function trkDelete(k) {
 }
 async function delKey(k) {
   trkDelete(k);
+  /* [CMDL-FINISH] §4 — inside a gesture the mem drop above is synchronous (the
+     trkDelete raw branch while committing); record the DELETE so its storage
+     flush rides the gesture's ONE boundary effect, exactly as sSet does. */
+  if (TRK_GESTURE_PENDING) { TRK_GESTURE_PENDING.set(k, TRK_DEL); return; }
   try {
     if (storage && storage.delete) { await storage.delete(k); }
     else { await storage.set(k, ''); }   // soft-delete fallback; mem already dropped above
@@ -3954,7 +3987,11 @@ async function delKey(k) {
    user relabel. Idempotent, runs every boot after the catalogue loads AND inside
    reloadFromStore. Never mints (built-in ids are deterministic), never touches a
    custom entry. */
-async function reconcileBuiltins() {
+/* the SYNCHRONOUS catalogue mutations of the boot reconcile — returns whether the
+   catalogue changed (the caller persists). Split out ([CMDL-FINISH] §4) so
+   restoreHiddenSyl can run it INSIDE its gesture; the async wrapper keeps the
+   boot/reload callers unchanged. */
+function reconcileBuiltinsSync() {
   let changed = false;
   for (const e of SYLS) {
     if (!isBuiltinSylId(e.id)) continue;
@@ -3967,7 +4004,10 @@ async function reconcileBuiltins() {
     if (SYLS.some(e => e.id === b.id)) continue;
     SYLS.push({ id: b.id, name: ensureUniqueLabel(b.id, b.name), base: b.name }); changed = true;
   }
-  if (changed) await saveSylCat();
+  return changed;
+}
+async function reconcileBuiltins() {
+  if (reconcileBuiltinsSync()) await saveSylCat();
 }
 /* Unsaved flow edits belong to the chart on screen, and loadCourse replaces
    that chart from storage. Switching SYLLABUS asked before doing so; switching
@@ -4046,13 +4086,17 @@ export async function saveCrewOrder(list) {
 }
 export async function restoreHiddenSyl(id) {
   /* takes an ID (§9 CSID2-09). A deleted built-in was swept + tombstoned +
-     dropped from the catalogue; clear both flags, then reconcileBuiltins re-adds
-     its entry (empty student layer, shipped def) so it is offered again. */
-  SYL_HIDDEN = SYL_HIDDEN.filter(x => x !== id);
-  delete SYL_TOMB[id];
-  await saveSylPrefs();
-  await reconcileBuiltins();
-  if (sylEntry(id) && !SYL_ORDER.includes(id)) { SYL_ORDER.push(id); await saveSylOrder(); }
+     dropped from the catalogue; clear both flags, then the reconcile re-adds its
+     entry (empty student layer, shipped def) so it is offered again.
+     [CMDL-FINISH] §4 (Class B): the flag clears + reconcile + order add are ONE
+     synchronous envelope (reconcileBuiltinsSync has no async step). */
+  trkGesture(() => {
+    SYL_HIDDEN = SYL_HIDDEN.filter(x => x !== id);
+    delete SYL_TOMB[id];
+    saveSylPrefs();
+    reconcileBuiltinsSync(); saveSylCat();
+    if (sylEntry(id) && !SYL_ORDER.includes(id)) { SYL_ORDER.push(id); saveSylOrder(); }
+  });
   refreshSyl();
   setSaveStatus('restored built-in “' + sylName(id) + '”', 'ok');
 }
@@ -4196,25 +4240,32 @@ async function allCourseNamespaces() {
   return [...out];
 }
 /* sweep every per-course student record filed under a syllabus id (delete). */
-async function sweepSylRecords(c, sylId) {
-  const pre = 'v3:' + c + ':' + sylId + ':';
-  for (const k of ((await storage.list(pre)).keys || [])) await delKey(k);
-  /* clear this course's last-edit pointers that name the deleted syllabus, and
-     lastStudent when it points at one — else loadCourseNow's restore reopens the
-     (deleted, maybe later restored-empty) chart (§15 CSID2-R2-04, review CSID-B06). */
-  const lastS = await sGet(kLastStudent(c));
-  for (const k of ((await storage.list('v3:' + c + ':last:')).keys || [])) {
-    try { const rec = JSON.parse((await sGet(k)) || 'null'); if (rec && rec.syl === sylId) { await delKey(k); if (lastS && k === kLast(c, lastS)) await delKey(kLastStudent(c)); } } catch (_) {}
+/* [CMDL-FINISH] §4 (Class C) — the READ phase of a syllabus delete: gather every
+   stored key to remove and every plan pointer to repoint, across EVERY course
+   namespace (not just the live one, so no dangling pointer is left — §15
+   CSID2-R2-04, review CSID-B05/B06). delSyl then applies the whole sweep
+   synchronously as ONE envelope. Replaces the old sweepSylRecords/repairPlanSyl
+   pair, whose deletes and plan writes were interleaved with these reads. */
+async function planSylSweep(sylId, fallback) {
+  const dels = [];            // stored keys to delete
+  const planFixes = [];       // { c, key, value, plan } plan records to repoint
+  for (const c of await allCourseNamespaces()) {
+    const pre = 'v3:' + c + ':' + sylId + ':';
+    for (const k of ((await storage.list(pre)).keys || [])) dels.push(k);
+    /* clear this course's last-edit pointers that name the deleted syllabus, and
+       lastStudent when it points at one — else loadCourseNow's restore reopens the
+       (deleted, maybe later restored-empty) chart. */
+    const lastS = await sGet(kLastStudent(c));
+    for (const k of ((await storage.list('v3:' + c + ':last:')).keys || [])) {
+      try { const rec = JSON.parse((await sGet(k)) || 'null'); if (rec && rec.syl === sylId) { dels.push(k); if (lastS && k === kLast(c, lastS)) dels.push(kLastStudent(c)); } } catch (_) {}
+    }
+    /* repoint any course's plan.sylId that names the deleted id. */
+    try {
+      const pr = await sGet(kPlan(c));
+      if (pr) { const p = JSON.parse(pr); if (p && p.sylId === sylId) { p.sylId = fallback; planFixes.push({ c, key: kPlan(c), value: JSON.stringify(p), plan: p }); } }
+    } catch (_) {}
   }
-}
-/* repoint any course's plan.sylId that names the deleted id (§15 CSID2-R2-04) —
-   every course namespace, not just the live one, so no dangling pointer is left. */
-async function repairPlanSyl(c, sylId, fallback) {
-  try {
-    const pr = await sGet(kPlan(c)); if (!pr) return;
-    const p = JSON.parse(pr);
-    if (p && p.sylId === sylId) { p.sylId = fallback; await sSet(kPlan(c), JSON.stringify(p)); if (c === course) plan = p; }
-  } catch (_) {}
+  return { dels, planFixes };
 }
 /* dupSyl / addSyl are catalogue-only now: mint an sc… id, file the def+layout
    under it, add the entry. NO mark copy — the student layer starts EMPTY on the
@@ -4224,20 +4275,29 @@ export async function dupSyl() {
   const nm = ((await uiPrompt('Name for the duplicated syllabus:', sylName(srcId) + ' copy')) || '').trim();
   if (!nm) return;
   if (SYLS.some(e => e.name === nm)) { await uiAlert('A syllabus with that name already exists.'); return; }
-  let id = null;
+  /* [CMDL-FINISH] §4 (Class B) — HOIST the layout snapshot read (and the live-def
+     copy, which captures unsaved arrange edits) BEFORE the gesture; the catalogue
+     + def + layout writes then land as ONE envelope. The switch + reload after is
+     a separate async step (as addCourse's load is). A storage error no longer
+     surfaces here synchronously — the writes are atomic to memory and their flush
+     is best-effort at the gesture boundary (the status line shows "local only" on
+     failure), so the old mid-sequence rollback is neither reachable nor needed. */
+  const id = mintSylId();
+  const defCopy = JSON.parse(JSON.stringify(SYL));
+  const layoutSnap = await snapshotLayout(srcId);
+  trkGesture(() => {
+    customDefs[id] = defCopy;
+    sSet(kSyls(course), JSON.stringify(customDefs));
+    sSet(kLayoutFor(course, id), JSON.stringify(layoutSnap));
+    SYLS.push({ id, name: ensureUniqueLabel(id, nm) }); saveSylCat();
+    if (!SYL_ORDER.includes(id)) { SYL_ORDER.push(id); saveSylOrder(); }
+  });
   try {
-    id = mintSylId();
-    customDefs[id] = JSON.parse(JSON.stringify(SYL));      /* capture unsaved arrange edits too */
-    await sSet(kSyls(course), JSON.stringify(customDefs));
-    await sSet(kLayoutFor(course, id), JSON.stringify(await snapshotLayout(srcId)));
-    SYLS.push({ id, name: ensureUniqueLabel(id, nm) }); await saveSylCat();
-    if (!SYL_ORDER.includes(id)) { SYL_ORDER.push(id); await saveSylOrder(); }
     await switchSylNow(id);
     refreshSyl(); refreshActive(); renderBoard(); renderSide();
     setSaveStatus('duplicated as “' + nm + '”', 'ok');
   } catch (err) {
-    if (id) { delete customDefs[id]; SYLS = SYLS.filter(e => e.id !== id); }
-    await uiAlert('Could not duplicate the syllabus — nothing was changed.\n\n' + ((err && err.message) || err));
+    await uiAlert('The syllabus was duplicated, but switching to it failed — reloading.\n\n' + ((err && err.message) || err));
     await loadCourse(course); refreshSyl(); refreshActive(); renderBoard(); renderSide();
   }
 }
@@ -4247,21 +4307,24 @@ export async function addSyl() {
   const nm = ((await uiPrompt('Name for the new (empty) syllabus:', 'New syllabus')) || '').trim();
   if (!nm) return;
   if (SYLS.some(e => e.name === nm)) { await uiAlert('A syllabus with that name already exists.'); return; }
-  let id = null;
-  try {
-    id = mintSylId();
+  /* [CMDL-FINISH] §4 (Class B) — the new empty chart's catalogue + def + blank
+     layout are ONE envelope; the switch + reload after is a separate async step.
+     (See dupSyl for why the old storage-error rollback is gone.) */
+  const id = mintSylId();
+  trkGesture(() => {
     customDefs[id] = [];                                   /* empty event list */
-    await sSet(kSyls(course), JSON.stringify(customDefs));
-    await sSet(kLayoutFor(course, id), JSON.stringify({}));  /* blank canvas */
-    SYLS.push({ id, name: ensureUniqueLabel(id, nm) }); await saveSylCat();
-    if (!SYL_ORDER.includes(id)) { SYL_ORDER.push(id); await saveSylOrder(); }
+    sSet(kSyls(course), JSON.stringify(customDefs));
+    sSet(kLayoutFor(course, id), JSON.stringify({}));      /* blank canvas */
+    SYLS.push({ id, name: ensureUniqueLabel(id, nm) }); saveSylCat();
+    if (!SYL_ORDER.includes(id)) { SYL_ORDER.push(id); saveSylOrder(); }
+  });
+  try {
     await switchSylNow(id);
     refreshSyl(); refreshActive(); renderBoard(); renderSide();
     setSaveStatus('added empty syllabus “' + nm + '”', 'ok');
     if (!arrangeMode) flashHint('Empty sheet ready — hit “✎ Edit”, then use + Flight / + Acad / + Test / + Sim / + CFT to add events.');
   } catch (err) {
-    if (id) { delete customDefs[id]; SYLS = SYLS.filter(e => e.id !== id); }
-    await uiAlert('Could not add the syllabus — nothing was changed.\n\n' + ((err && err.message) || err));
+    await uiAlert('The syllabus was added, but switching to it failed — reloading.\n\n' + ((err && err.message) || err));
     await loadCourse(course); refreshSyl(); refreshActive(); renderBoard(); renderSide();
   }
 }
@@ -4320,14 +4383,21 @@ export async function delSyl() {
     (isB ? '\n\nIt is a built-in — you can bring it back later from ⇅ Reorder.' : '\nThis cannot be undone.'))) return;
   try {
     const fallback = firstOtherSylId(id);
-    for (const cid of await allCourseNamespaces()) { await sweepSylRecords(cid, id); await repairPlanSyl(cid, id, fallback); }
-    SYLS = SYLS.filter(e => e.id !== id);
-    if (isB) { if (!isHidden(id)) SYL_HIDDEN.push(id); SYL_TOMB[id] = 1; }
-    delete customDefs[id];
-    await sSet(kSyls(course), JSON.stringify(customDefs));
-    await delKey(kLayoutFor(course, id));
-    SYL_ORDER = SYL_ORDER.filter(x => x !== id);
-    await saveSylCat(); await saveSylPrefs(); await saveSylOrder();
+    /* [CMDL-FINISH] §4 (Class C) — gather the whole sweep (all the async storage
+       scans + reads) FIRST, then apply deletes + catalogue drop + plan repairs as
+       ONE synchronous envelope. The switch + reload after is a separate step. */
+    const { dels, planFixes } = await planSylSweep(id, fallback);
+    trkGesture(() => {
+      for (const k of dels) delKey(k);
+      for (const f of planFixes) { sSet(f.key, f.value); if (f.c === course) plan = f.plan; }
+      SYLS = SYLS.filter(e => e.id !== id);
+      if (isB) { if (!isHidden(id)) SYL_HIDDEN.push(id); SYL_TOMB[id] = 1; }
+      delete customDefs[id];
+      sSet(kSyls(course), JSON.stringify(customDefs));
+      delKey(kLayoutFor(course, id));
+      SYL_ORDER = SYL_ORDER.filter(x => x !== id);
+      saveSylCat(); saveSylPrefs(); saveSylOrder();
+    });
     await switchSylNow(fallback);
     refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
     setSaveStatus('deleted syllabus “' + nm + '”', 'ok');
