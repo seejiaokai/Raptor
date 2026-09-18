@@ -2472,3 +2472,18 @@ Checkpoint (tasks #59, #60 complete): no further observations.
 **Suggested improvement:** claudex-loop's runtime/usage guidance should state: on Windows, an exit-1 whose stdout ends with a `charmap`/`UnicodeEncodeError` is a CONSOLE-PRINT failure, NOT a failed review — read `result.json` directly (its `response` holds the structured verdict/findings) and only treat the run as failed when `result.json` lacks a `response` or carries an `error`. The runner itself should force UTF-8 (or ASCII-safe) encoding on its console writer so a non-ASCII finding cannot make a successful review look failed. The host should always parse `result.json` rather than inferring success/failure from the runner's exit code (the runtime reference already warns "exit code zero ≠ APPROVED"; the inverse — "exit 1 ≠ failed run" on Windows — deserves the same explicit note).
 
 **Principle:** A tool's process exit code can misreport a successful operation when a post-success side effect (console rendering, cleanup) fails. Judge success from the tool's STRUCTURED OUTPUT artifact, not its exit code; and a CLI that renders model output to a console must encode defensively (UTF-8/ASCII-safe) so ordinary non-ASCII content cannot masquerade as an operational failure.
+
+### Observation 163: Handed-off build task was already merged; git/PR state check caught it before rebuild
+
+**Status:** OPEN
+**Date:** 2026-09-18
+**Session context:** Task said "finish the 7 plans-selector follow-ups blocking PR #405; the branch is behind main, rebase it." Before touching code, checked branch/PR state: origin/claude/amendment-engine-core was 0-ahead/fully-merged into main, PR #405 state MERGED (2026-09-15), and all 7 items (incl. the signature-leak bug) were present in main. The task premise was stale by ~3 days.
+**Skill:** executing-plans (and session-start orientation generally)
+**Type:** open-source
+**Phase/Area:** pre-build orientation / verification-before-work
+
+**Issue:** A build/handoff task's stated premise (branch behind main, work pending, PR blocked) can be stale when the work was completed in a parallel session and merged after the task was drafted. Starting the "rebase + build" as instructed would have redone or conflicted with already-merged work.
+
+**Suggested improvement:** Add an explicit pre-flight to executing-plans / session-start orientation: before starting any handed-off build or rebase, verify the target branch's ahead/behind vs main and the target PR's merge state; if merge-base(main,branch)==branch tip or the PR is MERGED, STOP and report "already landed" instead of building. Cheap (two git commands) and prevents rework.
+
+**Principle:** Trust the repository's live state over the task's narrative. A handoff describes the world when it was written; verify the world now before acting on it, especially for anything the description says is "pending", "blocked" or "behind".
