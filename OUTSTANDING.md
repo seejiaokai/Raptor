@@ -41,14 +41,18 @@ layer → global undo → one-Absence-record → storage door/DB → remove quar
 `[CMDL-FINISH]`, `[DB-STEP]` are STEPS of it. STOP: interim two-system undo patches + further
 quarantine rounds.
 
-**STACK PROGRESS (updated 17 Sep 26):** step 1 (stable ids) DONE; step 1b quick wins DONE;
-**step 2 (the one command/commit layer) + follow-up #1 (routing every scheduler write through
-it) DONE + LIVE (PR #409/#410).** **NEXT = `[CMDL-FINISH]`** — the 17 Sep design-and-red-team of
-step 3 (global undo) discovered step 2 is genuinely finished only for the SCHEDULER; the causal
-join / projection origins / one-envelope-per-gesture / a per-record write seam were deferred or
-never built for **Leave War and Tracker**. Owner (17 Sep 26): finish the command layer for those
-two as its **own gated step FIRST**, then build global undo. Global undo is now DESIGNED (Rev 1)
-and both-provider red-teamed (REVISE, converged); its build is gated behind `[CMDL-FINISH]`.
+**STACK PROGRESS (updated 18 Sep 26):** step 1 (stable ids) DONE; step 1b quick wins DONE;
+**step 2 (the one command/commit layer) DONE + LIVE** — follow-up #1 (routing every scheduler
+write, PR #409/#410) AND **`[CMDL-FINISH]`** (finishing the command layer for Leave War + Tracker:
+the causal both-side envelope, the per-record write seam, one-envelope-per-Tracker-gesture, guarded
+lw/trk stores, `TRK_RESTORING`, `sched.als` re-key, and the cross-provider inspection punch-list)
+both merged and live — PR #412 (build) + PR #415 (finish), plus the undo front-door doc #413.
+**step 3 (`[GLOBAL-UNDO]`) — PHASE 1 + PHASE 2 BUILT + MERGED LIVE (18 Sep 26).** The one global
+undo timeline is live: every Undo/Redo (scheduler/board/Leave War) drives it, plus the Unpublish
+button and off-week undo. Built test-first (Opus high), driven in the app, dual-reviewed (Fable +
+Codex) and folded in. Two `[CMDL-FINISH]` items were deferred INTO it and remain open (the Leave War
+posting-window rebuild on a postouts restore = CMDLF-002; grouping a whole Import as one undo step),
+plus the phase-2 review deferrals under the item below. **NEXT = step 4 (one Absence record) / [DB-STEP].**
 
 Below is the older item ordering (kept for the non-stack items); land what's **cheap, done, or
 in-flight and risk-reducing** first.
@@ -87,14 +91,15 @@ in-flight and risk-reducing** first.
    schedule personal inputs); independent, medium, not urgent.
 6. **[TRK-ATTEMPTS]** — small new feature, low urgency.
 7. **[RECALL]** — future feature (fresh recall from archive); design when reached.
-7a. **[CMDL-FINISH] — ARCH-STACK step 2 completion (owner, 17 Sep 26) — the next ARCH-STACK
-   build.** Finish the one command layer for **Leave War + Tracker** (causal both-side envelope
-   via projection origins + `causedBy`; per-record write seam; one-envelope-per-Tracker-gesture;
-   off-week/stash capture or keep the refusal; re-key `sched.als` by id). Design-first, both-provider
-   red-team, then build. **Gates [GLOBAL-UNDO].**
-8. **[GLOBAL-UNDO]** — the one-global-undo re-architecture; a step **before** [DB-STEP]
-   (must land before going live). Absorbs [XWEEK-UNDO] and the whole delete/undo bug family.
-   **DESIGNED (Rev 1) + red-teamed 17 Sep 26; build GATED behind [CMDL-FINISH].**
+7a. **[CMDL-FINISH] — DONE + LIVE (18 Sep 26, PR #412 build + PR #415 finish).** The one command
+   layer is finished for **Leave War + Tracker** (causal both-side envelope, per-record write seam,
+   one-envelope-per-Tracker-gesture, guarded lw/trk stores, `TRK_RESTORING`, `sched.als` re-key,
+   cross-provider punch-list). See the item below / the Done section. Its two deferred items fold
+   into `[GLOBAL-UNDO]`.
+8. **[GLOBAL-UNDO] — PHASE 1 + PHASE 2 BUILT + MERGED LIVE (18 Sep 26).** The one-global-undo
+   re-architecture; absorbs [XWEEK-UNDO] and the whole delete/undo bug family. Live cutover done
+   (scheduler/board/Leave War undo + Unpublish + off-week). Deferred review items + the two inherited
+   [CMDL-FINISH] deferrals under the item below; the multi-user/per-session refinements land at [DB-STEP].
 9. **[DB-STEP]** / **[XFER]** — the future database milestone and multi-squadron
    transfer; **[TRK-DISK]** (Decision A) is fixed inside [DB-STEP].
 
@@ -362,15 +367,17 @@ having two separate undo systems over shared data — remove the root, don't pat
   gates, no merge without "merge live".
 - **Context:** the spec/record above (findings, dispositions).
 
-### [CMDL-FINISH] Finish the command layer for Leave War + Tracker — ARCH-STACK step 2 completion — BUILT, HELD FOR "MERGE LIVE" (18 Sep 26)
-**STATUS (18 Sep 26):** P1–P6 (P4 partial) BUILT + MERGED LIVE (PR #412), undo front-door doc live
-(PR #413, `docs/undo-contract.md`). The FINISH work — the remaining P4 Tracker gestures,
-`TRK_RESTORING`, registering trkStore guarded, and the cross-provider inspection punch-list — is BUILT
-on `claude/cmdl-finish-p4`, all five gates green, **held for "merge live"**. Punch-list: 6 fixed
-(CMDLF-004/005/006/010/012, Fable#7/#8), 2 deferred with reasons (CMDLF-002 postouts-reproject →
-[GLOBAL-UNDO]; CMDLF-011 legacy sched.als → reset-demo-data); importClick left per-write (grouping is
-the [GLOBAL-UNDO] import-undo-granularity question). Detail: `docs/session-state.md`. Coordinate the
-merge with the parallel [AMEND] chat (PR #405) — one at a time; CMDL-FINISH first (foundation).
+### [CMDL-FINISH] Finish the command layer for Leave War + Tracker — ARCH-STACK step 2 completion — DONE + LIVE (18 Sep 26)
+**STATUS (18 Sep 26):** DONE + LIVE. P1–P6 (P4 partial) merged as PR #412; the undo front-door doc
+as PR #413 (`docs/undo-contract.md`); the FINISH work — the remaining P4 Tracker gestures,
+`TRK_RESTORING`, registering trkStore guarded, and the cross-provider inspection punch-list — merged
+as **PR #415** (`7889ff5` on `main`), deployed and live-verified (Tracker renders, no console errors).
+All five gates green. Punch-list: 6 fixed (CMDLF-004/005/006/010/012, Fable#7/#8), 2 deferred with
+reasons (**CMDLF-002** postouts-reproject → [GLOBAL-UNDO], marker in `leavewar/state/store.ts`;
+**CMDLF-011** legacy sched.als → reset-demo-data, no fix); importClick left per-write (grouping the
+whole Import is the [GLOBAL-UNDO] import-undo-granularity question). Both deferrals + the seams this
+built are [GLOBAL-UNDO]'s to consume/complete. Detail: `docs/session-state.md`; front-door doc
+`docs/undo-contract.md`.
 
 The 17 Sep design + dual red-team (Codex + Fable, both REVISE, converged) of `[GLOBAL-UNDO]`
 found that ARCH-STACK step 2 is genuinely finished only for the **scheduler**. Building global
@@ -402,13 +409,17 @@ Owner decision (17 Sep 26): do this as its **own gated step FIRST**, then build 
   `2026-09-16-arch-stack-2-command-layer-design.md`. Global-undo design (gated behind this):
   `2026-09-17-arch-stack-3-global-undo-design.md` §12.
 
-### [GLOBAL-UNDO] One global per-session undo — PHASE 1 + PHASE 2 BUILT (live cutover done); holding for "merge live"
+### [GLOBAL-UNDO] One global per-session undo — PHASE 1 + PHASE 2 BUILT + MERGED LIVE (18 Sep 26)
 **BUILD STATUS (18 Sep 26): phase 1 (engine) + phase 2 (LIVE cutover 2.3–2.6) BUILT, all five gates
-green, driven in the app, dual-reviewed (Fable + Codex) and folded in.** On `claude/global-undo`,
-holding for "merge live". Every Undo/Redo (scheduler/board/Leave War) drives the ONE timeline; the
-Unpublish button + off-week undo are live. Detail + the review dispositions: `docs/session-state.md`.
+green, driven in the app, dual-reviewed (Fable + Codex) and folded in; MERGED LIVE on owner's "merge
+live".** Every Undo/Redo (scheduler/board/Leave War) drives the ONE timeline; the Unpublish button +
+off-week undo are live. Detail + the review dispositions: `docs/session-state.md`.
 
-**DEFERRED by the phase-2 dual review (not blocking; land at the multi-user / DB step):**
+**DEFERRED (not blocking; land at the multi-user / DB step):**
+- **inherited [CMDL-FINISH] deferrals** — CMDLF-002 (rebuild the Leave War posting-out windows on a
+  `lw.postouts` restore) and whole-Import undo granularity. These were deferred INTO global-undo when
+  the command layer landed; phase 2 keeps `lw.postouts` a deferred collection (its entries are
+  ineligible for undo), so both remain open for a later phase.
 - **[GU-C3] reland conflict/auth coverage (Codex GU-P2-005)** — the restore's `reconcileDayFiling`
   re-derives `acc` for inputs beyond the entry's closure without expanding the conflict/auth/
   expectedRevs set. Inert in the synchronous single-user prototype (re-derive-only, never lands a
@@ -440,9 +451,7 @@ REVISE with 6 contained §6 findings, all folded into Rev 6.** The engine took n
 two rounds and was hand-verified twice. Design of record:
 `raptor-port/docs/superpowers/specs/2026-09-17-arch-stack-3-global-undo-design.md` **Rev 6**; transcript
 `…-global-undo-review-log.md`; front-door `raptor-port/docs/undo-contract.md`; build handoff
-`raptor-port/docs/session-state.md`. Work is on branch **`claude/global-undo`** (docs only, pushed).
-**NEXT: build phase 1 (design §13), test-first, Opus high, in a FRESH chat; standing post-build dual
-CODE inspection; no merge without "merge live".** The 18 Sep owner reframe (undo-of-publish = UNPUBLISH
+`raptor-port/docs/session-state.md`. The 18 Sep owner reframe (undo-of-publish = UNPUBLISH
 + same-label quiet correction) is captured below and in memory `undo-of-publish-semantics`.
 
 **OWNER DECISION 17 Sep 26 — what an on-the-record undo IS. SUPERSEDES the 16 Sep wording.**
@@ -676,7 +685,7 @@ left of the 4X4 badge. (5) tag shown on the view-only schedule too. (6) no chang
 view-only live faces already show warnings. (7) the board sign-off line is publish-aware.
 Cross-provider bug-checked (Codex + Fable); gates green (unit 4671/0, tfin 728/0, e2e, tracker
 smoke). Housekeeping follow-on tracked under **[REPO-CLEANUP]** above (screenshots deleted
-18 Sep 26; the space sweep is held pending [CMDL-FINISH]).
+18 Sep 26; the space sweep is now READY — the [CMDL-FINISH] hold lifted when it merged, 18 Sep 26).
 
 ### [LW-OPEN] Leave War opens on the war being WORKED — DONE 17 Sep 26
 Owner ruling (17 Sep 26, restating his 7 Sep rule under newest-instruction-wins):
