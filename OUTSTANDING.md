@@ -41,14 +41,17 @@ layer → global undo → one-Absence-record → storage door/DB → remove quar
 `[CMDL-FINISH]`, `[DB-STEP]` are STEPS of it. STOP: interim two-system undo patches + further
 quarantine rounds.
 
-**STACK PROGRESS (updated 17 Sep 26):** step 1 (stable ids) DONE; step 1b quick wins DONE;
-**step 2 (the one command/commit layer) + follow-up #1 (routing every scheduler write through
-it) DONE + LIVE (PR #409/#410).** **NEXT = `[CMDL-FINISH]`** — the 17 Sep design-and-red-team of
-step 3 (global undo) discovered step 2 is genuinely finished only for the SCHEDULER; the causal
-join / projection origins / one-envelope-per-gesture / a per-record write seam were deferred or
-never built for **Leave War and Tracker**. Owner (17 Sep 26): finish the command layer for those
-two as its **own gated step FIRST**, then build global undo. Global undo is now DESIGNED (Rev 1)
-and both-provider red-teamed (REVISE, converged); its build is gated behind `[CMDL-FINISH]`.
+**STACK PROGRESS (updated 18 Sep 26):** step 1 (stable ids) DONE; step 1b quick wins DONE;
+**step 2 (the one command/commit layer) DONE + LIVE** — follow-up #1 (routing every scheduler
+write, PR #409/#410) AND **`[CMDL-FINISH]`** (finishing the command layer for Leave War + Tracker:
+the causal both-side envelope, the per-record write seam, one-envelope-per-Tracker-gesture, guarded
+lw/trk stores, `TRK_RESTORING`, `sched.als` re-key, and the cross-provider inspection punch-list)
+both merged and live — PR #412 (build) + PR #415 (finish), plus the undo front-door doc #413.
+**NEXT = `[GLOBAL-UNDO]`** — its build gate is now LIFTED. Global undo is DESIGNED (Rev 1) +
+both-provider red-teamed (REVISE, converged); Rev 2 was deferred until `[CMDL-FINISH]` landed (it
+has), so Rev 2 → build is the next step. It is the CONSUMER of the write()/capture/restore seams
+just finished, and two `[CMDL-FINISH]` items were deliberately deferred INTO it (the Leave War
+posting-window rebuild on a postouts restore = CMDLF-002; grouping a whole Import as one undo step).
 
 Below is the older item ordering (kept for the non-stack items); land what's **cheap, done, or
 in-flight and risk-reducing** first.
@@ -87,12 +90,12 @@ in-flight and risk-reducing** first.
    schedule personal inputs); independent, medium, not urgent.
 6. **[TRK-ATTEMPTS]** — small new feature, low urgency.
 7. **[RECALL]** — future feature (fresh recall from archive); design when reached.
-7a. **[CMDL-FINISH] — ARCH-STACK step 2 completion (owner, 17 Sep 26) — the next ARCH-STACK
-   build.** Finish the one command layer for **Leave War + Tracker** (causal both-side envelope
-   via projection origins + `causedBy`; per-record write seam; one-envelope-per-Tracker-gesture;
-   off-week/stash capture or keep the refusal; re-key `sched.als` by id). Design-first, both-provider
-   red-team, then build. **Gates [GLOBAL-UNDO].**
-8. **[GLOBAL-UNDO]** — the one-global-undo re-architecture; a step **before** [DB-STEP]
+7a. **[CMDL-FINISH] — DONE + LIVE (18 Sep 26, PR #412 build + PR #415 finish).** The one command
+   layer is finished for **Leave War + Tracker** (causal both-side envelope, per-record write seam,
+   one-envelope-per-Tracker-gesture, guarded lw/trk stores, `TRK_RESTORING`, `sched.als` re-key,
+   cross-provider punch-list). See the item below / the Done section. Its two deferred items fold
+   into `[GLOBAL-UNDO]`.
+8. **[GLOBAL-UNDO] — NEXT (gate lifted).** The one-global-undo re-architecture; a step **before** [DB-STEP]
    (must land before going live). Absorbs [XWEEK-UNDO] and the whole delete/undo bug family.
    **DESIGNED (Rev 1) + red-teamed 17 Sep 26; build GATED behind [CMDL-FINISH].**
 9. **[DB-STEP]** / **[XFER]** — the future database milestone and multi-squadron
@@ -362,15 +365,17 @@ having two separate undo systems over shared data — remove the root, don't pat
   gates, no merge without "merge live".
 - **Context:** the spec/record above (findings, dispositions).
 
-### [CMDL-FINISH] Finish the command layer for Leave War + Tracker — ARCH-STACK step 2 completion — BUILT, HELD FOR "MERGE LIVE" (18 Sep 26)
-**STATUS (18 Sep 26):** P1–P6 (P4 partial) BUILT + MERGED LIVE (PR #412), undo front-door doc live
-(PR #413, `docs/undo-contract.md`). The FINISH work — the remaining P4 Tracker gestures,
-`TRK_RESTORING`, registering trkStore guarded, and the cross-provider inspection punch-list — is BUILT
-on `claude/cmdl-finish-p4`, all five gates green, **held for "merge live"**. Punch-list: 6 fixed
-(CMDLF-004/005/006/010/012, Fable#7/#8), 2 deferred with reasons (CMDLF-002 postouts-reproject →
-[GLOBAL-UNDO]; CMDLF-011 legacy sched.als → reset-demo-data); importClick left per-write (grouping is
-the [GLOBAL-UNDO] import-undo-granularity question). Detail: `docs/session-state.md`. Coordinate the
-merge with the parallel [AMEND] chat (PR #405) — one at a time; CMDL-FINISH first (foundation).
+### [CMDL-FINISH] Finish the command layer for Leave War + Tracker — ARCH-STACK step 2 completion — DONE + LIVE (18 Sep 26)
+**STATUS (18 Sep 26):** DONE + LIVE. P1–P6 (P4 partial) merged as PR #412; the undo front-door doc
+as PR #413 (`docs/undo-contract.md`); the FINISH work — the remaining P4 Tracker gestures,
+`TRK_RESTORING`, registering trkStore guarded, and the cross-provider inspection punch-list — merged
+as **PR #415** (`7889ff5` on `main`), deployed and live-verified (Tracker renders, no console errors).
+All five gates green. Punch-list: 6 fixed (CMDLF-004/005/006/010/012, Fable#7/#8), 2 deferred with
+reasons (**CMDLF-002** postouts-reproject → [GLOBAL-UNDO], marker in `leavewar/state/store.ts`;
+**CMDLF-011** legacy sched.als → reset-demo-data, no fix); importClick left per-write (grouping the
+whole Import is the [GLOBAL-UNDO] import-undo-granularity question). Both deferrals + the seams this
+built are [GLOBAL-UNDO]'s to consume/complete. Detail: `docs/session-state.md`; front-door doc
+`docs/undo-contract.md`.
 
 The 17 Sep design + dual red-team (Codex + Fable, both REVISE, converged) of `[GLOBAL-UNDO]`
 found that ARCH-STACK step 2 is genuinely finished only for the **scheduler**. Building global
@@ -402,11 +407,13 @@ Owner decision (17 Sep 26): do this as its **own gated step FIRST**, then build 
   `2026-09-16-arch-stack-2-command-layer-design.md`. Global-undo design (gated behind this):
   `2026-09-17-arch-stack-3-global-undo-design.md` §12.
 
-### [GLOBAL-UNDO] One global per-session undo — DESIGNED (Rev 1) + red-teamed; build GATED behind [CMDL-FINISH]
-**DESIGN STATUS (17 Sep 26):** first design written and both-provider red-teamed (Codex + Fable,
+### [GLOBAL-UNDO] One global per-session undo — DESIGNED (Rev 1) + red-teamed; build GATE LIFTED — NEXT (18 Sep 26)
+**DESIGN STATUS (18 Sep 26):** first design written and both-provider red-teamed (Codex + Fable,
 both REVISE, converged). Design + §12 reshaped plan: `raptor-port/docs/superpowers/specs/2026-09-17-arch-stack-3-global-undo-design.md`;
-findings + fix specs: `…-2026-09-17-arch-stack-3-global-undo-review-log.md`. Rev 2 is deliberately
-deferred until `[CMDL-FINISH]` lands (the foundation build re-bases the exact code undo sits on).
+findings + fix specs: `…-2026-09-17-arch-stack-3-global-undo-review-log.md`. **`[CMDL-FINISH]` has
+now landed (18 Sep 26), so the gate is LIFTED and Rev 2 → build is the next step.** Rev 2 had been
+deferred until then (the foundation build re-bases the exact code undo sits on). It also inherits the
+two `[CMDL-FINISH]` deferrals (CMDLF-002 postouts reproject; whole-Import undo granularity).
 The durable undo-engine corrections to fold into Rev 2 are captured in the design's §12-B
 (record-derived reversal authorization; closure-idempotence as the guarantee + the finding-A
 forward fix; live publish-boundary resolution; dormant-stacks-must-be-UNREACHABLE + single
@@ -633,7 +640,7 @@ left of the 4X4 badge. (5) tag shown on the view-only schedule too. (6) no chang
 view-only live faces already show warnings. (7) the board sign-off line is publish-aware.
 Cross-provider bug-checked (Codex + Fable); gates green (unit 4671/0, tfin 728/0, e2e, tracker
 smoke). Housekeeping follow-on tracked under **[REPO-CLEANUP]** above (screenshots deleted
-18 Sep 26; the space sweep is held pending [CMDL-FINISH]).
+18 Sep 26; the space sweep is now READY — the [CMDL-FINISH] hold lifted when it merged, 18 Sep 26).
 
 ### [LW-OPEN] Leave War opens on the war being WORKED — DONE 17 Sep 26
 Owner ruling (17 Sep 26, restating his 7 Sep rule under newest-instruction-wins):
