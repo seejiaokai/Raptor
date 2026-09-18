@@ -30,6 +30,15 @@ export function makeStore(key: string, coll: LogicalCollection): FakeStore {
       parts.sort()
       return parts.join('|')
     },
+    /* the undo/restore seam ([CMDL-FINISH] §3): apply every entry, delete-aware,
+       then done. Enough for the Step-3 timeline tests to drive a real restore. */
+    write: (entries: RecordEntry[]) => {
+      for (const e of entries) {
+        const k = rk(e.id)
+        if (e.op === 'delete') data.delete(k)
+        else data.set(k, { collection: coll, id: e.id, value: deepClone(e.value) })
+      }
+    },
   }
   return {
     store,

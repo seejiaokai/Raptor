@@ -30,6 +30,11 @@ export type LogicalCollection =
   | 'days' | 'sched.book' | 'sched.mutes'
   // scheduler — issued (append-only-INTENDED; enforcement is Step 3, §3.4)
   | 'sched.orig' | 'sched.als'
+  // scheduler — the append-only retired-issuance log (Step 3, §6.1): every
+  // issuance kept as its own immutable snapshot, keyed `<wk>:<id>~<n>`, so a
+  // same-label reissue never collapses the prior one. Read only by the history
+  // panel; never by daySnapIn/dayVersions/nextSeq/issuedIdSet.
+  | 'sched.retired'
   // the other scheduler-side stores
   | 'inputs' | 'plan' | 'people' | 'settings'
   // off-week session memory (the weekstash) — one record per stashed week, so a
@@ -82,7 +87,10 @@ export interface Change {
    forward-withdrawal (design §3.4). `crossable` flips to false on an explicit,
    monotonic disclosure signal keyed by the issued id. */
 export interface Boundary {
-  kind: 'publish'
+  /* 'publish' — a day was issued (an Original or an AL). 'unpublish' (Step 3,
+     §6.5) — an issued day was retracted back to a working copy. Both carry the
+     issued id(s) in `ids`; the derived publication barrier (§6.3) reads them. */
+  kind: 'publish' | 'unpublish'
   ids: string[]
   crossable: boolean
 }

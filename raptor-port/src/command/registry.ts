@@ -24,6 +24,7 @@ export const LOGICAL_TO_BLOB: Record<LogicalCollection, string> = {
   'sched.mutes': 'weeks',
   'sched.orig': 'weeks',
   'sched.als': 'weeks',
+  'sched.retired': 'weeks',
   // inputs / plan / people
   'inputs': 'inputs',
   'plan': 'plan',

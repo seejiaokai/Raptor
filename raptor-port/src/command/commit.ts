@@ -93,9 +93,17 @@ export function commit(cmd: Command): CommitResult {
 }
 
 /* internal: sync/seed/restore/projection supply actor+origin explicitly.
-   NOT exported from the module index. */
-export function commitAs(cmd: Command, opts: { actor: Actor; origin: Origin }): CommitResult {
-  return dispatch(cmd, opts.actor, opts.origin)
+   NOT exported from the module index. A restore (Step 3 undo/redo) also supplies
+   `causedBy` = the seq of the user entry it reverses (design §3.2), so the
+   restore's own projection children chain to it and the reconciler-fixpoint
+   assertion (§3.4) can name the restore. Only meaningful for a top-level raise
+   (a restore is always dispatched outside any reducer); a reducer-join or a
+   phase-8/9 enqueue derive their own cause and ignore this. */
+export function commitAs(
+  cmd: Command,
+  opts: { actor: Actor; origin: Origin; causedBy?: number },
+): CommitResult {
+  return dispatch(cmd, opts.actor, opts.origin, opts.causedBy)
 }
 
 /* [CMDL-FINISH] §2.1(5) — a projection commit: the SYSTEM actor + `projection`
@@ -109,7 +117,7 @@ export function commitProjection(cmd: Command): CommitResult {
   return dispatch(cmd, systemActor(), 'projection')
 }
 
-function dispatch(cmd: Command, actor: Actor, origin: Origin): CommitResult {
+function dispatch(cmd: Command, actor: Actor, origin: Origin, causedBy?: number): CommitResult {
   /* a commit raised from INSIDE a running reducer JOINS the open transaction */
   if (phase === 'reducer' && active) {
     active.api.child(cmd)
@@ -136,7 +144,7 @@ function dispatch(cmd: Command, actor: Actor, origin: Origin): CommitResult {
      AFTER the drain + reset. */
   let result!: CommitResult
   try {
-    result = runPipeline(cmd, actor, origin, undefined)
+    result = runPipeline(cmd, actor, origin, causedBy)
   } finally {
     try { drainQueue() } finally { phase = 'idle'; active = null }
   }
