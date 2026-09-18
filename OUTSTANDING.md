@@ -62,9 +62,9 @@ in-flight and risk-reducing** first.
    - **[REPO-CLEANUP] (owner, 15 Sep 26) — SECOND task; screenshots DONE, sweep READY — DO NEXT.**
      Step 1 (delete the handoff screenshots `raptor-port/docs/img/plans-selector-followups/`)
      is DONE (18 Sep 26). Step 2, the repo-wide space/redundancy sweep (orphaned files, dead
-     CSS, unused exports, stale docs, build cruft), is **READY to start (owner, 18 Sep 26 —
-     the earlier hold is lifted; the parallel `[CMDL-FINISH]` follow-up work will NOT be run
-     in parallel, so there is no collision risk).** Do it in a FRESH chat off `main` as its
+     CSS, unused exports, stale docs, build cruft), is **READY to start (18 Sep 26 — the hold
+     is cleared: `[CMDL-FINISH]` is now MERGED to `main` (PR #415), so nothing is editing the
+     command-layer / Tracker files in parallel).** Do it in a FRESH chat off `main` as its
      own gated PR, in batches. **CAUTION:** the repo deliberately keeps
      some dead-looking code (CLAUDE.md §Stable decisions — `WEEKS`, `restoreDayVersion`,
      `openWarns`, etc.); grep for refs and confirm before removing anything. Own gated PR, in
@@ -362,7 +362,16 @@ having two separate undo systems over shared data — remove the root, don't pat
   gates, no merge without "merge live".
 - **Context:** the spec/record above (findings, dispositions).
 
-### [CMDL-FINISH] Finish the command layer for Leave War + Tracker — ARCH-STACK step 2 completion — NEXT (owner, 17 Sep 26)
+### [CMDL-FINISH] Finish the command layer for Leave War + Tracker — ARCH-STACK step 2 completion — BUILT, HELD FOR "MERGE LIVE" (18 Sep 26)
+**STATUS (18 Sep 26):** P1–P6 (P4 partial) BUILT + MERGED LIVE (PR #412), undo front-door doc live
+(PR #413, `docs/undo-contract.md`). The FINISH work — the remaining P4 Tracker gestures,
+`TRK_RESTORING`, registering trkStore guarded, and the cross-provider inspection punch-list — is BUILT
+on `claude/cmdl-finish-p4`, all five gates green, **held for "merge live"**. Punch-list: 6 fixed
+(CMDLF-004/005/006/010/012, Fable#7/#8), 2 deferred with reasons (CMDLF-002 postouts-reproject →
+[GLOBAL-UNDO]; CMDLF-011 legacy sched.als → reset-demo-data); importClick left per-write (grouping is
+the [GLOBAL-UNDO] import-undo-granularity question). Detail: `docs/session-state.md`. Coordinate the
+merge with the parallel [AMEND] chat (PR #405) — one at a time; CMDL-FINISH first (foundation).
+
 The 17 Sep design + dual red-team (Codex + Fable, both REVISE, converged) of `[GLOBAL-UNDO]`
 found that ARCH-STACK step 2 is genuinely finished only for the **scheduler**. Building global
 undo requires the command stream to carry the FULL ripple of one user action as one causal unit,

@@ -349,6 +349,24 @@ describe('scoped expectedRevs conflict guard (§3, F8)', () => {
     expect(a.get('x')).toEqual({ v: 2 })   // rolled back, the v:9 never landed
     expect(commandStream().length).toBe(1) // only the bump emitted
   })
+
+  it('rejects when a JOINED CHILD has a stale expectedRev (CMDLF-012)', () => {
+    const a = makeStore('A', 'settings'); a.set('x', { v: 1 })
+    bump(a)                                // settings/x revision now 1
+    const b = makeStore('B', 'people'); b.set('p1', { n: 'a' })
+    const child: Command = {
+      type: 'test.put', scope: { module: 'settings' }, expectedRevs: { 'settings/x': 0 }, // stale base
+      apply: (txn) => { txn.enlist(a.store); a.set('x', { v: 5 }) },
+    }
+    const r = commit({
+      type: 'test.put', scope: { module: 'people' },
+      apply: (txn) => { txn.enlist(b.store); b.set('p1', { n: 'z' }); commit(child) }, // child joins
+    })
+    expect(isOk(r)).toBe(false)
+    expect((r as any).reason).toBe('conflict')   // the child's stale rev fails the whole txn
+    expect(a.get('x')).toEqual({ v: 2 })         // child write rolled back
+    expect(b.get('p1')).toEqual({ n: 'a' })      // parent write rolled back too
+  })
 })
 
 describe('CmdRefused — a silent deliberate refusal (§6)', () => {

@@ -1144,6 +1144,16 @@ function applyLwRecord(s: State, e: CmdRecordEntry): void {
     case 'lw.ledger': (s as any).ledger = e.value; return
     case 'lw.balances': (s as any).openings = e.value; return
     case 'lw.oilpolicy': (s as any).oilPolicy = e.value; return
+    /* [CMDL-FINISH] CMDLF-002 — DEFERRED to [GLOBAL-UNDO]. Restoring postOuts sets
+       the record, but the people posting-WINDOWS on the roster are a projection:
+       reprojectRoster carries each window from the CURRENT person (ex.from/to), not
+       from postOuts, so a postouts-only restore is invisible to it. Rebuilding them
+       correctly means re-laying the restored postOuts over the CLEAN Raptor
+       projection (setPeople(projectPeople)) — which crosses the LW↔Raptor projection
+       boundary sync.ts owns and, fired at this write() boundary, re-enters the
+       reconcilers. That orchestration belongs to the undo consumer (with the
+       clean-projection context), not to a bare record apply. Latent: no production
+       path restores postOuts at this step. */
     case 'lw.postouts': (s as any).postOuts = e.value; return
     case 'lw.current': (s as any).currentId = e.value; return
     case 'lw.config': {
@@ -1177,7 +1187,19 @@ export const lwStore: CmdEnlistableStore = {
      Called only from a reducer that already enlisted lwStore. */
   write(entries: CmdRecordEntry[]): void {
     const next = JSON.parse(JSON.stringify(state)) as State   // fields are all JSON-durable (rawPersist proves it)
-    for (const e of entries) applyLwRecord(next, e)
+    /* [CMDL-FINISH] Fable#8 — apply lw.war entries FIRST: a cell/bid record whose
+       war does not exist yet is dropped by applyLwRecord, so a restore set that
+       lists a war and its cells in any order would lose the cells. Wars first
+       guarantees the war exists before its cells land. */
+    const ordered = entries.slice().sort((a, b) => (a.collection === 'lw.war' ? 0 : 1) - (b.collection === 'lw.war' ? 0 : 1))
+    for (const e of ordered) {
+      /* [CMDL-FINISH] Fable#7 — clone-on-write: an entry's value comes from the
+         record set / an undo snapshot; installing an object BY REFERENCE would let
+         a later in-place live edit corrupt that snapshot. Cell/bid values are
+         strings (primitives, no aliasing), so clone only object values. */
+      const val = e.value
+      applyLwRecord(next, (val && typeof val === 'object') ? { ...e, value: JSON.parse(JSON.stringify(val)) } : e)
+    }
     state = withCurrent(next)
     LW_BASELINE = state
     cmdDeferEffect(() => { locked(() => rawPersist()); notify() })
