@@ -402,8 +402,38 @@ Owner decision (17 Sep 26): do this as its **own gated step FIRST**, then build 
   `2026-09-16-arch-stack-2-command-layer-design.md`. Global-undo design (gated behind this):
   `2026-09-17-arch-stack-3-global-undo-design.md` §12.
 
-### [GLOBAL-UNDO] One global per-session undo — DESIGNED (Rev 6) + red-teamed to close; BUILD-READY, not built
-**DESIGN STATUS (18 Sep 26): DONE — Rev 6, build-ready.** `[CMDL-FINISH]` foundation is merged + live.
+### [GLOBAL-UNDO] One global per-session undo — PHASE 1 + PHASE 2 BUILT (live cutover done); holding for "merge live"
+**BUILD STATUS (18 Sep 26): phase 1 (engine) + phase 2 (LIVE cutover 2.3–2.6) BUILT, all five gates
+green, driven in the app, dual-reviewed (Fable + Codex) and folded in.** On `claude/global-undo`,
+holding for "merge live". Every Undo/Redo (scheduler/board/Leave War) drives the ONE timeline; the
+Unpublish button + off-week undo are live. Detail + the review dispositions: `docs/session-state.md`.
+
+**DEFERRED by the phase-2 dual review (not blocking; land at the multi-user / DB step):**
+- **[GU-C3] reland conflict/auth coverage (Codex GU-P2-005)** — the restore's `reconcileDayFiling`
+  re-derives `acc` for inputs beyond the entry's closure without expanding the conflict/auth/
+  expectedRevs set. Inert in the synchronous single-user prototype (re-derive-only, never lands a
+  row, `acc` self-heals on loadWeek); real once there are concurrent users / a shared DB. Fix with
+  the per-session undo work below.
+- **[GU-MAYREV] mayReverse button state (Fable#3) — PRODUCT QUESTION for the owner.** `undoState()`
+  enables Undo on the newest ELIGIBLE entry regardless of the actor, and the timeline isn't cleared
+  on logout, so a member behind an admin's edit sees an enabled-but-refused Undo and can't reach
+  their own older entries. Options: grey the button for a non-reversible newest entry, OR skip past
+  non-reversible entries (safe only where keys don't overlap — `undoConflict` guards the rest).
+  Low impact now (effectively one admin user); ties to the future per-session/per-user undo
+  (memory `future-undo-semantics-multiuser`) — clearing the timeline on `resetSession` is the
+  near-term direction.
+- **[GU-E5] input-only undo doesn't snap to its week (Codex GU-P2-006)** — E5 was deliberately
+  dropped in phase 2 (subsumed by the reland). Minor UX (an input-only undo relands on the loaded
+  week; the record restores correctly, only the view doesn't jump).
+- **[GU-LWLOCK] LW lock through notify (Codex GU-P2-008)** — a restore-caused LW projection can push
+  a vestigial legacy-LW history step. No user-facing effect (buttons drive global undo, not the
+  legacy LW stack). Cosmetic; tidy when the legacy LW stack is retired.
+- **[GU-COSMETIC]** resolvePublishDay binds an AL barrier to CURWEEK → a jump-then-refuse on another
+  week (Fable#6, correct outcome); postRestore view-effects (armDrop/prunePreviews) aren't rolled
+  back on a failed restore (Fable#7, drops the armed puck on a rare refusal). Both LOW.
+
+### [GLOBAL-UNDO] design record (Rev 6) — for reference
+`[CMDL-FINISH]` foundation is merged + live.
 The design was hardened over **6 revisions with a dual cross-provider red-team every round** (Codex/
 Astra + Fable, both high): **Rev 5 → Fable APPROVED (build-ready, no further design round); Codex
 REVISE with 6 contained §6 findings, all folded into Rev 6.** The engine took no finding in the last
