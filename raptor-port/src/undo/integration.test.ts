@@ -6,18 +6,18 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest'
 import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
-import { SCHED, dayApproved, signOf } from '../engine/publish'
+import { SCHED, dayApproved, signOf, daySigned } from '../engine/publish'
 import { txtGet } from '../engine/slots'
 import { CURWEEK } from '../engine/waves'
 import { initStore, writeText, writeInputsBatch, weekstashStore } from '../state/store'
 import { acceptInput } from '../engine/slots'
 import { inpId } from '../engine/inputs'
-import { schedStore, commitSetDayApproved, commitUnpublish, resyncSchedBaseline } from '../state/sched-commit'
+import { schedStore, commitSetDayApproved, commitUnpublish, resyncSchedBaseline, schedPostRestore } from '../state/sched-commit'
 import { setSession } from '../state/auth'
 import * as view from '../state/view'
 import { _resetDisclosure } from '../state/disclosure'
 import {
-  installUndo, globalUndo, globalRedo, registerUndoStore, setCutoverModules, undoState,
+  installUndo, globalUndo, globalRedo, registerUndoStore, setCutoverModules, setUndoHooks, undoState,
 } from './index'
 import { _resetTimeline } from './timeline'
 
@@ -39,6 +39,7 @@ beforeEach(() => {
   _resetDisclosure()
   _resetTimeline()
   installUndo()
+  setUndoHooks({ postRestore: schedPostRestore })
   registerUndoStore(schedStore, SCHED_COLLS)
   registerUndoStore(weekstashStore, ['weekstash'])
   setCutoverModules(['sched', 'inputs', 'plan'])
@@ -122,8 +123,9 @@ describe('undo of a real input filing round-trips the landing (reland in restore
 })
 
 describe('undo of a real publish, driven by the timeline, retracts the day', () => {
-  it('reverses the issued Original back to a draft', () => {
+  it('reverses the issued Original back to a draft AND clears the sign-offs (§6.2/GU5-005)', () => {
     sign(0)
+    expect(daySigned(0)).toBe(true)
     commitSetDayApproved(0, true)
     expect(dayApproved(0)).toBe(true)
     // undo the publish entry: the timeline replays its recorded inverse (delete the
@@ -132,5 +134,24 @@ describe('undo of a real publish, driven by the timeline, retracts the day', () 
     expect(u.ok).toBe(true)
     expect(dayApproved(0)).toBe(false)          // the Original is gone; day is a draft again
     expect((SCHED.orig as any)[0]).toBeUndefined()
+    // the plain inverse would restore the pre-publish SIGNED book; postRestore clears it
+    // so the day must be re-signed before it can be republished.
+    expect(daySigned(0)).toBe(false)
+  })
+
+  it('a LOGGED (disclosed) retired audit line survives an undo of the unpublish (Codex GU-P2-001)', () => {
+    sign(0); commitSetDayApproved(0, true)
+    const id = (SCHED.orig as any)[0].id
+    commitUnpublish(0)                                   // retract → retired entry appended
+    // model dissemination: mark the just-written retired line logged
+    const rk0 = Object.keys(SCHED.retired).find(k => k.startsWith(id + '~'))!
+    ;(SCHED.retired as any)[rk0].logged = true
+    resyncSchedBaseline()                                // fold the logged flag into the baseline
+    // now undo the unpublish: its inverse would delete the retired line — the guard keeps it
+    const u = globalUndo()
+    expect(u.ok).toBe(true)
+    expect(dayApproved(0)).toBe(true)                    // republished (unpublish undone)
+    expect((SCHED.retired as any)[rk0]).toBeDefined()    // the audit line was NOT erased
+    expect((SCHED.retired as any)[rk0].logged).toBe(true)
   })
 })

@@ -37,7 +37,7 @@ import { DAYS } from '../engine/data'
 import { INPUTS, mintInpIds } from '../engine/inputs'
 import { reconcileDayFiling } from '../engine/slots'
 import { ensureRowIds } from '../engine/rowids'
-import { SCHED, setDayApproved, publishALDay, discardPending, unpublishDay, dayCurVer } from '../engine/publish'
+import { SCHED, setDayApproved, publishALDay, discardPending, unpublishDay, dayCurVer, signClear } from '../engine/publish'
 import { CURWEEK } from '../engine/waves'
 import { HIST, histSnap, histRestore, setSchedResync } from './history'
 import { setSchedEpilogueHook, HOOKS } from '../engine/hooks'
@@ -230,12 +230,14 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
       case 'sched.retired': {
         // [GLOBAL-UNDO] §6.1 — the append-only issuance log. Append-only-INTENDED,
         // so no allowIssued gate: an undo of an UNLOGGED unpublish removes the just-
-        // added entry (op:'delete'); a LOGGED (disseminated) entry is never removed
-        // by an inverse (§6.2 GU4-003, enforced by the timeline, not here).
+        // added entry (op:'delete'); a LOGGED (disseminated) entry is NEVER removed by
+        // an inverse (§6.2 GU4-003 / Codex GU-P2-001) — the audit line survives, an
+        // undo of a disseminated unpublish records a compensating transition instead.
         if (foreign(e.id, ':')) throw new CmdRefused(`scheduler write: foreign week ${e.id}`)
         const idn = e.id.slice(e.id.indexOf(':') + 1)
         SCHED.retired = SCHED.retired || {}
-        if (e.op === 'delete') delete SCHED.retired[idn]; else SCHED.retired[idn] = cw(e.value)
+        if (e.op === 'delete') { if (!(SCHED.retired[idn] as any)?.logged) delete SCHED.retired[idn] }
+        else SCHED.retired[idn] = cw(e.value)
         break
       }
       case 'inputs': {
@@ -282,6 +284,28 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
   // HOOKS.reflow = validate() + notify(); HOOKS.histPush persists — both released
   // at the transaction boundary (never on a half-applied multi-store world).
   cmdDeferEffect(() => { HOOKS.reflow(); HOOKS.histPush() })
+}
+
+/* [GLOBAL-UNDO] §6.2/C5 — the scheduler's postRestore adjustment (wired via
+   setUndoHooks). Undo of a PUBLISH boundary is an unpublish: the plain inverse
+   restored the pre-publish SIGNED book, but a pulled-back published day must
+   re-sign on republish (GU5-005), so clear the sign-offs LAST (after the book
+   put). Redo re-publishes via the forward image, whose book already carries the
+   cleared signs (setDayApproved signClears at publish) — so redo needs nothing.
+   The disclosed audit-line append is Step-5 (nothing is disseminated at Step 3);
+   the FORWARD unpublish button already writes it (retireIssued), and a logged
+   line is protected append-only in schedWriteRecords above. */
+function publishDayOf(entry: any): number | null {
+  for (const ch of (entry.forward || [])) {
+    if (ch.collection === 'sched.orig') return Number(ch.id.slice(ch.id.indexOf(':') + 1))
+    if (ch.collection === 'sched.als' && ch.after && (ch.after as any).di != null) return Number((ch.after as any).di)
+  }
+  return null
+}
+export function schedPostRestore(entry: any, dir: 'undo' | 'redo'): void {
+  if (dir !== 'undo' || !entry?.boundary || entry.boundary.kind !== 'publish') return
+  const di = publishDayOf(entry)
+  if (di != null) signClear(di)
 }
 
 export const schedStore: EnlistableStore = {

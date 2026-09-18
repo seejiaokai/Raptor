@@ -45,6 +45,11 @@ export interface UndoHooks {
   /* §6.3 — resolve a publish boundary's issued verId to its day, when the
      closure carries no days/sched.orig key to read it from. */
   resolvePublishDay?(id: string): { weekId: string; di: number } | null
+  /* §6.2/C5 — a per-entry scheduler adjustment run INSIDE the restore reducer (so
+     its mutation is enlisted/derived into the envelope), AFTER the inverse writes.
+     Undo of a PUBLISH boundary clears the day's sign-offs (re-sign on republish,
+     GU5-005) rather than restoring the pre-publish signed state the inverse carries. */
+  postRestore?(entry: UndoEntry, dir: 'undo' | 'redo'): void
   /* the CURRENT effective actor for mayReverse (§5); defaults to deriveActor(). */
   currentActor?(): Actor
 }
@@ -367,7 +372,7 @@ function toRecordEntry(ch: Change): RecordEntry {
     ? { collection: ch.collection, id: ch.id, op: 'delete' }
     : { collection: ch.collection, id: ch.id, value: ch.after, op: 'put' }
 }
-function applyRestore(entry: UndoEntry, changes: Change[]): { ok: boolean; reason?: string } {
+function applyRestore(entry: UndoEntry, changes: Change[], dir: 'undo' | 'redo'): { ok: boolean; reason?: string } {
   // group the write entries by their owning store
   const byStore = new Map<EnlistableStore, RecordEntry[]>()
   const missing: string[] = []
@@ -394,7 +399,11 @@ function applyRestore(entry: UndoEntry, changes: Change[]): { ok: boolean; reaso
       apply: (txn) => {
         const relock = hooks.reinstallLocks ? hooks.reinstallLocks() : undefined
         try {
-          for (const [store, list] of byStore) { txn.enlist(store); store.write!(list, { allowIssued: true, restore: true }) }
+          // C5 — enlist EVERY store in the closure FIRST, so a later store's refusal
+          // rolls back every earlier store's snapshot (publish closures are multi-store).
+          for (const [store] of byStore) txn.enlist(store)
+          for (const [store, list] of byStore) store.write!(list, { allowIssued: true, restore: true })
+          if (hooks.postRestore) hooks.postRestore(entry, dir)
         } finally { if (relock) relock() }
       },
     },
@@ -433,7 +442,7 @@ export function globalUndo(): UndoResult {
   const conflict = undoConflict(entry)
   if (conflict) return { ok: false, reason: conflict }
   snap(entry, 'undo')
-  const r = applyRestore(entry, entry.inverse)
+  const r = applyRestore(entry, entry.inverse, 'undo')
   if (!r.ok) return { ok: false, reason: r.reason || 'That couldn’t be undone — try again.' }
   entry.undone = true
   entry.undoneAt = ++stamp
@@ -449,7 +458,7 @@ export function globalRedo(): UndoResult {
   const conflict = redoConflict(entry)
   if (conflict) return { ok: false, reason: conflict }
   snap(entry, 'redo')
-  const r = applyRestore(entry, entry.forward)
+  const r = applyRestore(entry, entry.forward, 'redo')
   if (!r.ok) return { ok: false, reason: r.reason || 'That couldn’t be redone — try again.' }
   entry.undone = false
   entry.undoneAt = undefined
