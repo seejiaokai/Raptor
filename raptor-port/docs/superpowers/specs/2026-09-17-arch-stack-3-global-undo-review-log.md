@@ -181,3 +181,35 @@ quiet-correct republishes as the **same version LABEL** (id-reuse rule set aside
 day header; **undo bubble** added. This DISSOLVES GU3-002 (no AL2 recovery) and GU3-003/R3-01 (undo
 never reaches behind a publish; you unpublish). Rev 4 folds everything + the reframe; **final dual
 re-review of Rev 4 next** (owner asked for both providers given the size of the change).
+
+---
+
+## Round 4 — Rev 4 reviewed (18 Sep 26) — BOTH REVISE, CONVERGED; engine ACCEPTED, all findings on §6
+
+Both accepted the engine (§3–§5, §8–§11) outright — every new finding is on the just-introduced
+UNPUBLISH reframe (§6). Fable: "once these rule-statements are made, Rev 5 is build-ready without a
+further design round."
+
+### Round 4 — Codex / GPT-6 Astra (high) — REVISE (4 high, 3 med). Runner `claudex-fe21sgne`
+GU4-001 undo-dispatches-the-forward-unpublish never marks the publish undone (button ping-pongs) ·
+GU4-002 reused-label model has no issuance identity — `als`/`orig` resolvers key by verId and
+pick/collapse the wrong record · GU4-003 correction history in the reversible book is erased by
+undoing the unpublish · GU4-004 `layRoster` preserves the window that undoing a first posting-out must
+remove · GU4-005 barriers only on tracked entries; nav/restore overwrite expected without a barrier ·
+GU4-006 "undo can't reach behind a publish" relies on write-key overlap a second same-area edit need
+not have · GU4-007 correction-log wiring omits hydration/rollback.
+
+### Round 4 — Fable 5.1 (high, in-session) — REVISE (2 high + full specs). Code-verified every claim.
+R4-01(=GU4-002) append-only `sched.retired` collection as the immutable issuance identity + log; drop
+`wd`. R4-02(=GU4-001) undo of a publish = its ORDINARY INVERSE (marked undone) via `retireIssued`; a
+`logged` retired entry is append-only. R4-03 quiet-vs-amendment choice is by ACTION at the start.
+R4-04 full `sched.unpublish` reducer spec. R4-05 unpublish withdraws that day's OIL credits
+(squadron-visible). R4-06 explicit publication refusal, not write-key-based. R4-07 stale text. R4-08
+`Boundary.kind` `'unpublish'`. R4-09 member-vs-member identity weak at Step 3.
+
+### Round-4 disposition (coordinator) → Rev 5
+Accept all; the providers converge (GU4-002=R4-01, GU4-001=R4-02, GU4-006=R4-06). Rev 5 folds Fable's
+specs (the `sched.retired` collection, `retireIssued`, the §6.5 reducer, the day-keyed publication
+barrier, barrier-on-nav) + Codex's GU4-007 full-codec wiring + the OIL side effect flagged to the
+owner (default: warn if the day has credits bid against). Engine untouched, twice hand-verified.
+**Final dual re-review of Rev 5 next** (Codex `--resume`, Fable fresh).

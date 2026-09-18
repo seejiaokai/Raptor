@@ -1,16 +1,17 @@
-# [ARCH-STACK] Step 3 — one global undo — DESIGN (Rev 4, 18 Sep 26)
+# [ARCH-STACK] Step 3 — one global undo — DESIGN (Rev 5, 18 Sep 26)
 
-> **Status:** Rev 4 — **BUILD-READY pending a final dual cross-provider re-review** of THIS
-> revision. Rev 3 was returned REVISE by both providers (Codex GU3-001..009 + Fable R3-01..09),
-> BUT Fable independently hand-verified the core engine works (the N-edits→N-undos→N-redos walk and
-> the reconciler-fixpoint traces all pass) and said Rev 4 should be build-ready once the specific
-> rule-statements are fixed. Rev 4 folds in every round-3 finding AND a significant owner reframing
-> of the publish path (18 Sep 26): **undoing a publish is an explicit "unpublish", the retract →
-> quiet-correct → reissue-as-the-same-version flow is a first-class model, and the old "never reuse
-> a version id" rule is deliberately set aside** in favour of "reuse the version LABEL, keep every
-> issuance as an immutable snapshot, write a history line" (§6). It also adds the **undo bubble**
-> (§8.2) and the **Unpublish button** (§6). No code ships until this revision is red-teamed clean
-> and the owner says "merge live".
+> **Status:** Rev 5 — **BUILD-READY pending a final dual cross-provider re-review** of THIS
+> revision. Round-4 (Codex GU4-001..007 + Fable R4-01..09) returned REVISE but **converged that the
+> ENGINE is done** (both accepted §3–§5, §8–§11; Fable re-confirmed the hand-walks) — **every new
+> finding was on the just-introduced publish reframe (§6)**, and the reviewers handed exact fix
+> specs. Rev 5 folds them: the reused-label model gets a real **issuance identity** (an append-only
+> `sched.retired` collection, §6.1) so a corrected version never overwrites the one people saw; undo
+> of a publish is its **ordinary inverse** (marked undone), not a forward dispatch (§6.2); an explicit
+> **publication barrier** replaces the write-key-overlap assumption (§6.3); the reducer is fully
+> specified (§6.5); and the barrier check runs on nav/restore too (§4.1). It keeps the **undo bubble**
+> (§8.2) and the **Unpublish button** on the day header (§6.4). Fable's round-4 verdict: once these
+> rule-statements are made, build-ready without a further design round. No code ships until this
+> revision is red-teamed clean and the owner says "merge live".
 >
 > **Method (still binding):** claims about existing machinery are checked against CODE with
 > `file:line`; round-3 fix specs are cited. A doc agreeing with a doc is evidence of nothing.
@@ -35,8 +36,9 @@
      squadron; a quiet line in the history records the correction.
    - **A real amendment is a separate, deliberate act:** edit the **live working copy** and publish
      the changes **as the next AL** (AL1, AL2…), because they concern the squadron.
-   - **The scheduler chooses at republish:** "correct quietly (same version)" vs "publish amendment
-     (new AL)".
+   - **The choice is made by WHICH ACTION, not at republish** (round-4 R4-03): **Unpublish = correct
+     quietly** (republish always reissues the SAME label); **a real amendment = don't unpublish** —
+     edit the working copy and Publish the next AL.
    - **Unpublish is a first-class BUTTON** at the top of each day, beside sign-off and publish, shown
      only when applicable. It is a standing action (NOT session-scoped like undo). Undo of a
      just-published day simply runs the same unpublish.
@@ -151,11 +153,14 @@ The timeline keeps `expected: Map<key, rev>` (seeded from each recorded entry's 
 issued restore/nav's `revs`) — updated **only for keys present in that envelope's `revs`** (a record
 an inverse leaves unchanged keeps its old expectation — round-3 Fable note). PLUS a
 `barrier: Map<key, seq>`:
-- **When recording a tracked entry E, for each key**, if the record's revision *before* E ran ≠
-  `expected[key]`, an **out-of-band change** slipped in (an orphan projection, a still-reachable
-  legacy stack, later a `remote`) → set `barrier[key] = E.seq`.
-- This closes GU3-001: the single expectation value used to be *overwritten* by the next tracked
-  edit, erasing the memory that an unaccounted change happened. The barrier is sticky.
+- **Before EVERY expectation update — a tracked entry, a restore, OR a navigation write** (round-4
+  GU4-005: nav/restore also overwrite `expected`, so checking only on tracked entries let a
+  nav-between-the-out-of-band-change-and-the-undo erase the barrier chance; `trk.plan` is a concrete
+  mixed record, `core.js:1727,4074`): for each key, if the record's revision *before* this envelope
+  ran ≠ `expected[key]`, an **out-of-band change** slipped in (an orphan projection, a still-reachable
+  legacy stack, later a `remote`) → set `barrier[key] = seq`. Then update `expected[key]`.
+- This closes GU3-001/GU4-005: the single expectation value used to be *overwritten* (by a tracked
+  edit OR a nav), erasing the memory that an unaccounted change happened. The barrier is sticky.
 
 ### 4.2 Out-of-band conflict (the SEQ-003 hazard)
 To undo/redo `E`, refuse if for any key in `E`'s closure `barrier[key]` exists and `barrier[key] >
@@ -208,62 +213,107 @@ Login/logout/role-change segregates the timeline (Step 5 clears on logout; captu
 
 ## 6. UNPUBLISH & quiet correction — the reframed publish path (Rev 4, owner 18 Sep 26)
 
-This REPLACES Rev 3's "registered → new-id AL2 recovery" §6, which the round-3 review showed was
-both hard (GU3-002: a plain publish's inverse has no content delta, so it can't produce an AL2) and
-not what the owner wants.
+This REPLACES Rev 3's "new-id AL2 recovery". Round-4 (Codex GU4-001..007 + Fable R4-01..09) showed
+the reframe is the right product model AND expressible on the current book — but only with an
+explicit **issuance identity** and undo handled as a real reversal. Rev 5 folds those specs.
 
-### 6.1 Unpublish is a first-class forward command
-`sched.unpublish` (a normal `cmdCommit`, recorded on the stream, itself undoable within the session):
-it retracts the **most recent issued version** of a day back to an **editable working copy**. Gated
-to scheduler/admin (`canEditSched`). A **button at the top of each day**, beside sign-off and
-publish, shown **only when applicable** (the day has a published version, the actor may edit, and it
-is the latest version). Because it is a standing button it survives logout — unlike undo.
+### 6.1 A separate immutable ISSUANCE IDENTITY (round-4 GU4-002 / R4-01)
+"Reuse the label, keep every issuance as an immutable snapshot" CANNOT live in `SCHED.als`/
+`SCHED.orig`: `daySnapIn` resolves an AL by `.find(a=>a.id===ver)` (first match wins,
+`publish.ts:337`), `SCHED.orig[di]` is a single object (`:199`), `decompose` keys AL records by
+`sched.als/<wk>:<al.id>` (`sched-commit.ts:105`) so two records with one verId **collapse**, and
+`commitPublish` derives the boundary from `issuedIdSet()` set-difference (`:397`) so a still-present
+old record means **no boundary fires**. So Rev 5 adds ONE new **append-only** collection:
+```ts
+type RetiredIssue = { id; n; di; iso; seq; snap; diff; sign; at; by; restoreSeq?; logged:boolean }
+// keyed  sched.retired/<wk>:<id>~<n>  (individually addressable, n = 1,2… per id)
+```
+- New book field `SCHED.retired` (short key `rt`) wired into `schedFields()` (`history.ts:24`),
+  `histRestore` (`:94`), `applyWeekModel`/boot hydration (`store.ts:528`, `:839`), `weekStashSnap`
+  (`store.ts:428`), and a `case 'sched.retired'` in `applyBook`/`schedWriteRecords` (same foreign-week
+  guard; append-only, no `allowIssued` needed) — the FULL hydration/rollback set (round-4 GU4-007/
+  R4-07), via one shared scheduler-state codec so a reload/week-switch/refused-txn keeps it right.
+- `daySnapIn`/`dayCurVerIn`/`dayVersions`/`nextSeq`/`issuedIdSet` **never read `retired`**; only the
+  history panel does (and `dayVersions` at `board.ts:1427` excludes it). So **same-label reissue falls
+  out of existing code:** once AL n's record is moved to `retired`, `nextSeq` returns n again
+  (`publish.ts:725`), `setDayApproved` stamps `verId(iso,0)` again (`:199`), and the boundary fires
+  because the id is absent from `before`. **The `retired` list IS the correction log** — the separate
+  `wd` field from Rev 4 is dropped.
 
-### 6.2 Undo-of-a-publish = run unpublish
-When the newest entry is a publish, Undo simply dispatches `sched.unpublish` for that day. There is
-**no special "undo across a publish" machinery** — the general timeline never reaches *behind* a
-publish: an earlier edit now baked into a published version shares that day's records with the later
-publish entry, so §4.3 **refuses** undoing it directly. To change a published day you unpublish it
-first (explicit) — which is exactly the owner's mental model ("go to the working copy"). This
-dissolves round-3 R3-01/GU3-003 (the "undo a preceding edit rewinds the issued face" hazard): you
-can't; you unpublish.
+### 6.2 Undo of a publish = its ORDINARY INVERSE (round-4 GU4-001 / R4-02) — NOT a forward dispatch
+Rev 4 said "undo dispatches the forward `sched.unpublish`". That is wrong: a forward command never
+marks the publish entry `undone`, so the timeline can never walk past a publish and the button
+ping-pongs. Instead:
+- **In-session undo of a publish entry = the plain inverse restore, marked `undone` like any entry:**
+  the `sched.book` before-image (c/p/ad/ok/sg/sb/cv back) + a `delete` of the `sched.orig/<wk>:<di>`
+  or `sched.als/<wk>:<id>` record via `write({allowIssued:true})` (already supported,
+  `sched-commit.ts:173-195`) + a `put` of a `retired` entry **when `issuedDisclosed(id)`**. One helper
+  `retireIssued(di,id,{clearSigns})` appends to `retired` with `logged = issuedDisclosed(id)`. Redo =
+  the forward image. Sign-offs come back on an in-session undo of a just-made publish (the before-image
+  has `sg/sb`; the bindings re-validate — `publish.ts:650-675`).
+- **The standalone Unpublish button** (§6.4) is the forward `sched.unpublish` command used AFTER the
+  session, or once the publish is no longer the newest entry — the only path when §6.3 refuses the
+  inverse. It runs `retireIssued(di,id,{clearSigns:true})`.
+- **Undoing an unpublish** = its inverse (book before-image + `sched.als` put via `allowIssued` +
+  `sched.retired` delete of the just-added entry). **Exception (round-4 GU4-003):** a `logged`
+  (disseminated) retired entry is **append-only and never removed by an inverse** — undoing a
+  disseminated unpublish records a compensating transition, it does not erase the audit line; only an
+  UNLOGGED (silent, pre-dissemination) retired entry is removed by the inverse.
 
-### 6.3 Quiet correction vs amendment (the scheduler's choice at republish)
-After unpublish → edit → **republish**, the scheduler chooses:
-- **Correct quietly** → republish as the **SAME version label** (Original→Original, AL1→AL1). Not
-  highlighted to the squadron. A quiet **history line** records the correction.
-- **Publish amendment** → the working-copy changes go out as the **next AL** — the existing amendment
-  path, highlighted to the squadron.
+### 6.3 The publication BARRIER — undo cannot reach behind a publish (round-4 GU4-006 / R4-06)
+Rev 4 leaned on write-key sharing (an edit shares `sched.book/<wk>` with the publish). That is NOT
+guaranteed: a second edit to the same area writes only `days` when its pending mark is already set
+(`markEdit`, `publish.ts:524`), so its closure need not intersect the publish's write set. So Rev 5
+adds an **explicit publication barrier keyed by day**: when a day is published, the timeline records
+`pubBar[di] = publishSeq`. §4.3 refuses undoing ANY entry whose `contexts` include a day with a
+`pubBar` newer than that entry, independent of write-key overlap. Clearing the day (unpublish) clears
+`pubBar[di]`. This is the honest form of "to change a published day you unpublish it first". (The
+week-wide `sched.book` linearity of §4.4 still applies on top; the refusal message names the day:
+"A day on this week was published after that change — unpublish it, or edit the working copy.")
 
-### 6.4 The reused-label rule — label reused, snapshots immutable, trail append-only
-The version LABEL is reused, but **each issuance is kept as its own immutable snapshot** under that
-label, and a durable **correction log** records `{ label, at, by, restoreSeq }`. Concretely, reusing
-the durable `wd`-style book field (round-2 R2-04) — wired into `schedFields()` (`history.ts:24`),
-`weekStashSnap` (`store.ts:428`), `decompose()`/`applyBook()`, and the day's history panel. So
-nothing is erased (the "never erase" half of the old rule STANDS); only the "never reuse the id" half
-is set aside, deliberately, and replaced by "reuse the label, keep the snapshots, log the
-correction".
+### 6.4 The button + the quiet-vs-amendment choice is at the START, not at republish (round-4 R4-03)
+Rev 4's "choose quiet vs next-AL at republish" contradicts `nextSeq` (after AL n is retired `nextSeq`
+returns n, so a "new AL" choice can't fire without a numbering gap). The choice is made by WHICH
+action you take:
+- **Unpublish = "correct quietly."** The **Unpublish button** sits at the **top of each day**, beside
+  sign-off and publish, shown **only when applicable** (day published, actor may edit, it is the
+  latest version). After it, editing and republishing always reissue the **same label** (the existing
+  `data-beak`/`data-alpub` republish paths, `html.ts:1093/1108` — no new republish code).
+- **A real amendment = do NOT unpublish** — edit the live working copy and Publish AL n+1 (the
+  existing amendment path). So §0.4's "choose at republish" is removed.
 
-### 6.5 The dissemination boundary still governs SILENT vs LOGGED
-Read LIVE via `issuedDisclosed(id)` (`disclosure.ts:51`), modelled by `MemoryDoor` now, real DB at
-Step 5:
-- **Not disseminated** → unpublish/correct is fully silent; the label is freely reusable.
-- **Disseminated** → the correction is **allowed** (owner, 18 Sep) but writes the history line, so a
-  changed official version is traceable and never a silent bug. An export/print is NOT a boundary
-  event (`disclosure.ts`).
+### 6.5 The `sched.unpublish` reducer (round-4 R4-04 — spec it so the builder can't re-discover the trap)
+- **Gate:** `canEditSched()` ∧ `!protectedWeek()` ∧ `dayApproved(di)` ∧ target id `=== dayCurVer(di)`
+  ∧ `verSeq(id) === max(dayALs(di) ∪ {0})` ∧ `!DPREV.has(di)`.
+- **Latest = AL n (record r):** move r → `retired`; for each `k` with `keyDay(k)===di &&
+  changes[k]===n`: `delete changes[k]`, and set `pending[k]=1` only if it is a delete/move/`^inp:` key
+  OR still resolves (`posKey(k,DAYS)!==null`); write `cur[di]` explicitly = AL n−1's id else
+  `orig[di].id`; `signClear(di)`; restore the AL's stored `added` slice (add `rec.added` at issue,
+  `publish.ts:589`) so a row added-then-deleted in the retracted AL does not mint a spurious `del:`.
+- **Latest = Original:** move `orig[di]` → `retired`; `delete dayOK[di]`, `delete cur[di]`; assert
+  `changes` for the day is empty; `signClear(di)`; the day becomes a plain draft.
+- **Boundary:** extend `Boundary.kind` to `'publish'|'unpublish'` (`types.ts:85`), `ids:[id]`.
+- Post-apply: the deferred `reflow` + `prunePreviews` (`history.ts:129`) so a day previewing the
+  retracted version drops the preview. Implement issued-record immutability (undo-contract §2.5) as
+  "an issued record is deleted only by `sched.unpublish` or a `restore`", never a blanket refusal.
 
-At Step 3 nothing is ever disseminated (no DB) → the silent path is what runs live; the logged path
-is unit-modelled via `MemoryDoor`.
+### 6.6 Dissemination governs SILENT vs LOGGED, and the OIL side effect (round-4 R4-05)
+`issuedDisclosed(id)` (`disclosure.ts:51`) chooses: **not disseminated** → fully silent, label freely
+reusable, retired entry `logged:false`; **disseminated** → allowed (owner) but the retired entry is
+`logged:true` and the history panel prints it. At Step 3 nothing is disseminated (no DB) → silent path
+live; logged path via `MemoryDoor`. An export/print is NOT a boundary event.
+- **KNOWN squadron-visible side effect (round-4 R4-05 — flagged to the owner):** unpublishing a day
+  **withdraws that day's OIL/leave credits on the Leave War** (`desiredOilCells` skips a day whose
+  `dayOK` is unset, `sync.ts:880`; the reverse pass clears no-longer-earned FO/HO cells, `:949`).
+  Republish re-credits. The gap is momentary (retract→fix→republish in one sitting), but a bid spent
+  against the balance in between surfaces as a clash. **Default (owner may override):** unpublish
+  **warns** if the day has credits already bid against.
 
-### 6.6 Guardrails
-- **Scheduler/admin only** (`sched.unpublish` permission = `canEditSched`).
-- **Unpublish clears that day's sign-offs** — re-sign on republish (a signature vouches for exact
-  content). This is the round-3 signature question, settled the safe way.
-- **Only the most recent version may be unpublished** — an AL1 on top of the Original comes off
-  first. Enforced at the command gate; the button hides otherwise.
-- **Amendment numbering integrity holds:** a quiet correction does not create an AL, so it never
-  perturbs AL numbering; unpublishing the latest AL removes exactly that AL (memory
-  `amendment-per-day-isolated`).
+### 6.7 Guardrails
+Scheduler/admin only; unpublish clears that day's sign-offs (re-sign on republish — the round-3
+signature question, settled safe); only the **most recent** version is unpublishable (an AL on top
+comes off first; enforced at the gate, the button hides otherwise); a quiet correction creates no AL
+so it never perturbs numbering (memory `amendment-per-day-isolated`).
 
 ---
 
@@ -333,9 +383,19 @@ before `withCurrent(next)` — carrying `from/to/poArchive` from `current` for a
 `postOuts` and appending any current person absent from the projection with `to!==null` (round-3
 R3-07, mirroring `sync.ts:1012-1031` so a demo-overlay window isn't dropped). No reconciler
 involvement; the deferred boundary notify finds the signature unchanged. Remove the CMDLF-002 marker.
-Test: approve/retract a posting-out → undo → `postOuts` AND every roster window deep-equal pre-state;
-a past-dated `poArchive:true` window's re-archive is a forward-closure child, so undo produces NO
-projection — assert it.
+- **The REMOVAL case (round-4 GU4-004 — R3-07's carry-current over-corrected):** carrying `current`'s
+  window for a person absent from the restored `postOuts` is WRONG when undoing the person's FIRST
+  posting-out — `setPostOut` installs both `postOuts[id]` AND the person's `to`/`poArchive`
+  (`store.ts:1535`), so on undo the window must be REMOVED, but `current` still has it (write() clones
+  current). The fix: the postout forward closure must **record the affected person's `to`/`poArchive`
+  before-image** (enlist the people record, so the window is real recorded data in the inverse, not
+  re-derived); `layRoster` then carries a `current` window **only for a person whose window has
+  independent provenance** (a demo overlay / `personEdits`, not a `postOuts`-supplied one). So the
+  inverse of "add a posting-out" removes the window; the inverse never keeps a window the reversed
+  `postOuts` supplied.
+- Test: add a person's FIRST posting-out → undo → window GONE (`to===null`); approve/retract with an
+  independent demo window present → that window survives; a past-dated `poArchive:true` re-archive is
+  a forward-closure child so undo produces NO projection — assert each.
 
 ### 10.2 Whole-import = ONE undo, three phases (round-3 R2-07 + GU3-008/009)
 - **A (async, zero writes):** parse, collect every prompt answer + `sGet`, run reconcile/migration
@@ -374,12 +434,18 @@ production-diagnostic path (R3-02); **N edits→N undos→N redos** (§4); out-o
 undo through an unaccounted change (GU3-001) and non-linear refusal (§4.3); redo LIFO pick (R3-06);
 `mayReverse` — admin-decides→view-as-member→undo REFUSED, member CAN undo own input create+delete
 (incl auto-landed `days`/`sched.book`) + own Tracker mark + own qual tick, redo same gate (R3-03);
-**unpublish** — retract to working copy, quiet correct → same label, sign-offs cleared, immutable
-snapshot kept, history line written, republish; **only latest version unpublishable**; disseminated
-correction logs, undisseminated is silent (`MemoryDoor`); whole-import ONE envelope incl migration
-flags + catalogue reload (GU3-008/009); off-week via `weekstash.write()` or refuse; weekstash
-key-family sharing (R3-05); strangler unreachability per phase; regression A/C/D/E/F/I in the running
-app.
+**unpublish (round-4)** — retract to working copy; quiet correct → **same label resolves to the NEW
+snapshot** (`dayDelta` empty, Not-yet-signed clears, OIL credits from the corrected content — the
+GU4-002 failure); the retired record is individually addressable and readers never pick it; **undo of
+a publish = its inverse, marked undone, the timeline walks past it** and the button doesn't ping-pong
+(GU4-001); a `logged` retired entry survives an undo-of-unpublish (GU4-003); the **publication barrier**
+refuses undoing an edit behind a publish even when write-sets don't overlap (GU4-006); the `retired`
+field round-trips reload/week-switch/refused-txn (GU4-007); the OIL credit withdraw→republish cycle
+nets zero projections (GU4-005 barrier-on-nav; R4-05); **only latest version unpublishable**;
+disseminated correction logs, undisseminated silent (`MemoryDoor`); postout FIRST-posting-out undo
+REMOVES the window (GU4-004); whole-import ONE envelope incl migration flags + catalogue reload
+(GU3-008/009); off-week via `weekstash.write()` or refuse; weekstash key-family sharing (R3-05);
+strangler unreachability per phase; regression A/C/D/E/F/I in the running app.
 
 ---
 
@@ -390,9 +456,13 @@ cross-provider CODE inspection after the build)
 filter/nav-not-entry (R2-10/R3-09); inverse + `restore` via `write()` + clone-on-write; expectation
 map + **barriers** + non-linear + redo-LIFO (§4); `mayReverse` actor-identity + ownership (§5);
 snap-to-context + `contexts` + weekstash key-family (§8.1); the **describer + bubble** (§8.2); single
-dispatcher (§9); **the unpublish command + reused-label snapshot/log + live boundary** (§6); the
-small foundation adds: `weekstashStore.write()`, `commitAs` `causedBy` + `undo.restore` permission,
-`layRoster`/`relandInputs` extraction, durable correction-log book field; `MemoryDoor` + harness.
+dispatcher (§9); **the `sched.unpublish` command + the `retireIssued` helper + the append-only
+`sched.retired` collection (the issuance-identity + correction log, §6.1/6.5) + the day-keyed
+publication barrier (§6.3) + live boundary** (§6); the small foundation adds: `weekstashStore.write()`,
+`commitAs` `causedBy` + `undo.restore` permission, `Boundary.kind` `'unpublish'` (`types.ts:85`),
+`layRoster`/`relandInputs` extraction, the `SCHED.retired` book field wired through the FULL
+scheduler-state codec (schedFields/histRestore/applyWeekModel/boot/weekStashSnap/applyBook);
+`MemoryDoor` + harness.
 **Phase 2 — Scheduler + Leave War cutover together** (forced by `retractLwRow`; LW legacy restore
 unreachable here); `acc` strip+reland (§11), off-week/weekstash (finding I), the **Unpublish button**
 UI on the day header (§6.1).
@@ -426,7 +496,25 @@ history. **Round-3 → Rev 4:**
 | R3-08 — inputs delete owner from `before` | §5 `(after ?? before).person` |
 | R3-09 — `lw.current` live registration is `cls:'record'` | §3.1 re-register as view-preference + drop from decompose/apply |
 
+**Round-4 → Rev 5** (all on the NEW unpublish reframe; the engine took only GU4-005):
+
+| round-4 | closed in Rev 5 |
+|---|---|
+| GU4-002 / R4-01 — reused label can't live in `als`/`orig` (resolvers collapse/pick wrong) | §6.1 append-only `sched.retired` collection = the immutable issuance identity + the correction log; same-label reissue falls out of `nextSeq`/`setDayApproved` |
+| GU4-001 / R4-02 — undo=forward dispatch never marks the publish undone; button ping-pongs | §6.2 undo of a publish = its ordinary INVERSE (marked undone), via `retireIssued`; the standalone button is the forward command for after-session |
+| GU4-003 — audit line in the reversible book is erased by undoing the unpublish | §6.2 a `logged` retired entry is append-only, never removed by an inverse (compensating transition) |
+| R4-03 — "choose quiet vs AL at republish" contradicts `nextSeq` | §0.4/§6.4 the choice is by ACTION at the start (unpublish = quiet; amendment = don't unpublish) |
+| R4-04 — `sched.unpublish` reducer unspecified (stale-key trap) | §6.5 full reducer spec (AL-n and Original cases, gate, `added` slice, boundary kind, prunePreviews) |
+| GU4-005 — barrier only on tracked entries; nav/restore erase it | §4.1 barrier check before EVERY expectation update (nav/restore too) |
+| GU4-006 / R4-06 — "undo can't reach behind a publish" relies on write-key overlap, not guaranteed | §6.3 explicit day-keyed **publication barrier** `pubBar[di]`, independent of write-set overlap |
+| GU4-007 — correction-log wiring omits hydration/rollback | §6.1/§13 the `retired` field goes through the FULL scheduler-state codec (applyWeekModel/boot/histRestore/rollback) |
+| GU4-004 — `layRoster` carry-current keeps a window undoing a first posting-out must remove | §10.1 record the person's window before-image in the inverse; carry `current` only for independent-provenance windows |
+| R4-05 — unpublish withdraws that day's OIL credits (squadron-visible) | §6.6 flagged to the owner; default = warn if credits were bid against; §12 zero-net-projection test |
+| R4-07 — stale text (`undo-contract` §5, memory) | fixed in this PR |
+| R4-08 — `Boundary.kind` needs `'unpublish'`; `commitAs` `causedBy` | §13 phase-1 foundation list |
+| R4-09 — member-vs-member identity weak at Step 3 (`ME` shared) | §5 note; property test scoped to admin-vs-member + view-as |
+
 **Revision history:** Rev 1 → REVISE. Rev 2 (on live `[CMDL-FINISH]`) → REVISE. Rev 3 (engine
-hand-validated by Fable) → REVISE with contained fixes. Rev 4 (18 Sep) folds all round-3 findings +
-the owner's unpublish/quiet-correction reframe + the bubble. **Next: final dual re-review of Rev 4,
-then build (Opus, high, test-first).**
+hand-validated by Fable) → REVISE, contained. Rev 4 → REVISE, all new findings on the just-introduced
+publish reframe. Rev 5 (18 Sep) folds every round-4 finding; the engine is unchanged and twice
+hand-verified. **Next: final dual re-review of Rev 5, then build (Opus, high, test-first).**

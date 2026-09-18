@@ -300,13 +300,19 @@ on the same seam — never a new stack.
   `before`/`after` (reverse order; a `put` with no `before` inverts to `delete`, a `delete` to a
   `put` of its `before`). Apply it as ONE `restore`-origin commit whose reducer enlists exactly
   those records and calls each store's `write()`. Never re-run a reconciler as a guessing pass.
-- **A `restore` commit must suppress the sync reconcilers** (it carries both sides' before-images
-  already; the reconciler must not re-derive). Reuse the suppression-context token; assert the
-  reconciler reaches a fixpoint as the safety net (step-3 §3.4).
-- **Authorize at reversal time** against the current actor + per-record ownership (§4); redo carries
-  the same gate.
-- **Honour the publish boundary** (§4): read `crossable` per issued id; silent pre-registration,
-  on-the-record post-registration; never erase or reuse an issued id.
+- **A `restore` commit LETS the sync reconcilers run and proves they converge** (step-3 design §3.4,
+  Rev 3+): the inverse carries both sides' before-images, so a reconciler pass over the fully-restored
+  world derives nothing. Do NOT add a reconciler-suppression token (it would hide a non-fixpoint and
+  chain drift to a later wrong cause); the property tests assert zero restore-caused projections for
+  isolated scenarios, production logs a diagnostic (never throws). Re-install `HIST.lock`/`lw.hist`
+  only to stop a legacy step being pushed.
+- **Authorize at reversal time** against the CURRENT actor + the FORWARD actor's role + per-record
+  ownership (`mayReverse`, step-3 §5); redo carries the same gate.
+- **Honour the publish boundary — the UNPUBLISH model** (step-3 §6): undo of a publish is an explicit
+  unpublish back to a working copy; a quiet correction republishes as the SAME version LABEL, keeping
+  each issuance as an immutable snapshot (never ERASE) and, once disseminated, writing a history line
+  (the reuse-the-id half of the old rule is deliberately set aside — see memory
+  `undo-of-publish-semantics`).
 - **Conflict = refuse-whole** at first (step 3): if any target record's revision advanced past what
   the timeline expects, roll back the whole inverse and report plainly.
 - **Scope drives snap-to-context**: `scope` on every entry lets an off-screen undo navigate to where
