@@ -224,8 +224,22 @@ function moduleOfColl(collection: string): Module {
   if (collection.startsWith('trk.')) return 'trk'
   return 'sched'
 }
+/* Collections whose MODULE is cut over but which cannot be restored yet, so an
+   entry whose closure touches one is ineligible until its phase lands (§7, C2).
+   `lw.postouts`: restoring the record does not rebuild the roster posting-out
+   windows (that reproject is §10.1 / phase 5), so an undo would leave a person
+   visibly posted-out with the record removed. `lw.config` is deliberately NOT
+   here — it restores cleanly (applyLwRecord + reprojectRoster re-reads it), and
+   LW's settings undo depends on it. `people`/`settings`/`trk.*` need no entry
+   here: their modules aren't cut over, so module-level eligibility already
+   excludes them. Remove `lw.postouts` when §10.1 lands (phase 5). */
+const deferredCollections = new Set<string>(['lw.postouts'])
+function touchesDeferred(entry: UndoEntry): boolean {
+  return entry.forward.some(ch => deferredCollections.has(ch.collection))
+}
 function isEligible(entry: UndoEntry): boolean {
   for (const m of modulesOf(entry)) if (!cutover.has(m)) return false
+  if (touchesDeferred(entry)) return false
   return true
 }
 function keySet(entry: UndoEntry): Set<string> {
@@ -305,10 +319,17 @@ function undoConflict(entry: UndoEntry): string | null {
     const pb = pubBar.get(dk)
     if (pb != null && pb > entry.seq) return 'A day on this week was published after that change — take the published day back first, or edit the working copy.'
   }
-  // non-linear: a newer not-undone entry shares a key (§4.3)
+  // non-linear: a newer not-undone entry shares a key (§4.3). An INELIGIBLE newer
+  // entry (a deferred-collection closure) is still a hard barrier — refuse whole,
+  // never skip it (skipping would let this older before-image overwrite the newer
+  // value, the SEQ-003 stale-inverse hazard) — but the refusal must not tell the
+  // owner to "undo that first" when they can't (C1).
   for (const o of entries) {
     if (o === entry || o.undone || o.seq <= entry.seq) continue
-    if (sharesKeys(keySet(o), keys)) return 'A later change touches the same thing — undo that first.'
+    if (sharesKeys(keySet(o), keys))
+      return isEligible(o)
+        ? 'A later change touches the same thing — undo that first.'
+        : 'A later change touches the same thing and can’t be undone yet.'
   }
   return null
 }

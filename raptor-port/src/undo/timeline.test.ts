@@ -200,6 +200,40 @@ describe('causal closure — a user action + its projection child = ONE undo (§
   })
 })
 
+describe('deferred collections: non-undoable but still conflict barriers (§7, C1/C2)', () => {
+  it('an lw.postouts closure is NOT undoable even though lw is cut over; lw.config IS', () => {
+    const po = makeStore('PO', 'lw.postouts')
+    const cfg = makeStore('CFG', 'lw.config')
+    registerUndoStore(po.store, ['lw.postouts']); registerUndoStore(cfg.store, ['lw.config'])
+    setCutoverModules(['lw'])
+    definePermission('lw.edit', anyone)
+    // a post-out edit — ineligible (its roster reproject is deferred to phase 5)
+    commit({ type: 'lw.edit', scope: { module: 'lw' }, apply: (txn) => { txn.enlist(po.store); po.set('all', { x: 1 }) } })
+    expect(undoState().canUndo).toBe(false)
+    expect(globalUndo().ok).toBe(false)
+    // a config edit (figure-hide, colours, order) — eligible, restores cleanly
+    commit({ type: 'lw.edit', scope: { module: 'lw' }, apply: (txn) => { txn.enlist(cfg.store); cfg.set('all', { hidden: ['f1'] }) } })
+    expect(undoState().canUndo).toBe(true)
+  })
+
+  it('an ineligible newer entry sharing a key still BLOCKS undoing an eligible earlier one (C1 — no stale inverse)', () => {
+    const s = makeStore('S', 'settings')
+    const po = makeStore('PO', 'lw.postouts')
+    registerUndoStore(s.store, ['settings']); registerUndoStore(po.store, ['lw.postouts'])
+    setCutoverModules(['settings', 'lw'])
+    definePermission('mix', anyone)
+    s.set('x', { v: 1 })
+    edit(s.store, { module: 'settings' }, () => s.set('x', { v: 2 }))               // E1 eligible, key x
+    const e1 = _timelineEntries()[0]
+    // E2 touches settings/x AND lw.postouts → ineligible (deferred), shares key x
+    commit({ type: 'mix', scope: { module: 'settings' }, apply: (txn) => { txn.enlist(s.store); txn.enlist(po.store); s.set('x', { v: 3 }); po.set('all', { y: 1 }) } })
+    expect(_undoConflict(e1)).toBeTruthy()          // refuse-whole, never a silent stale apply
+    const r = globalUndo()                          // selection skips E2, lands E1, but conflict refuses
+    expect(r.ok).toBe(false)
+    expect(s.get('x')).toEqual({ v: 3 })            // nothing was overwritten
+  })
+})
+
 describe('a restore-caused projection is out-of-band, NOT folded into the entry (§3.4)', () => {
   it('a reconciler that fires during undo does not become part of the entry or its redo', () => {
     const s = makeStore('S', 'settings')
