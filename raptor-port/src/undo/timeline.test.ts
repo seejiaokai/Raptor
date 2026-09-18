@@ -200,6 +200,35 @@ describe('causal closure — a user action + its projection child = ONE undo (§
   })
 })
 
+describe('a restore-caused projection is out-of-band, NOT folded into the entry (§3.4)', () => {
+  it('a reconciler that fires during undo does not become part of the entry or its redo', () => {
+    const s = makeStore('S', 'settings')
+    registerUndoStore(s.store, ['settings']); setCutoverModules(['settings'])
+    definePermission('proj.put', anyone)
+    // a user edit to x — ONE entry, forward = [x]
+    edit(s.store, { module: 'settings' }, () => s.set('x', { v: 2 }))
+    const entry = _timelineEntries()[0]
+    expect(entry.forward.length).toBe(1)
+    // a subscriber mimics a reconciler that writes a DIFFERENT record y whenever a
+    // restore is applied (this is what LW sync does once cut over)
+    const off = onCommit((env) => {
+      if (env.origin === 'restore') {
+        commitProjection({ type: 'proj.put', scope: { module: 'settings' }, apply: (txn) => { txn.enlist(s.store); s.set('y', { v: 100 }) } })
+      }
+    })
+    expect(globalUndo().ok).toBe(true)
+    off()
+    // the reconciler DID run (out-of-band effect), but it is NOT folded into the entry:
+    expect(s.get('y')).toEqual({ v: 100 })
+    expect(entry.forward.length).toBe(1)                 // still just [x] — not corrupted
+    // and redo replays ONLY the original forward, never the reconciler's write
+    s.set('y', { v: 0 })
+    expect(globalRedo().ok).toBe(true)
+    expect(s.get('x')).toEqual({ v: 2 })
+    expect(s.get('y')).toEqual({ v: 0 })                 // redo did not re-apply the folded projection
+  })
+})
+
 describe('navigation is not an entry (§3.1 R2-10)', () => {
   it('an lw.current-only user envelope creates no undo entry', () => {
     const s = makeStore('LW', 'lw.current')

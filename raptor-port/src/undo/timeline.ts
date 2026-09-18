@@ -133,6 +133,14 @@ function resolveRoot(env: CommitEnvelope): number | null {
     if (parent != null) return parent
     const env2 = findEnv(cause)
     if (!env2) return null
+    // §3.4 — a restore/seed in the chain is a HARD STOP. A projection caused by our
+    // own undo/redo (or by the seed) is out-of-band; it must NOT fold into the entry
+    // the restore was reversing. applyRestore commits the restore with causedBy =
+    // entry.seq, so without this stop resolveRoot would walk restoreSeq → env2(restore)
+    // → entry.seq → the original entry, and foldProjection would splice the reconciler's
+    // write into that entry's closure — corrupting its redo and its eligibility. Invisible
+    // in phase 1 (restores wake no reconciler); fires the moment Leave War is cut over.
+    if (env2.origin === 'restore' || env2.origin === 'seed') return null
     cause = env2.causedBy
   }
   return null
