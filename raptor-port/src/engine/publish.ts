@@ -46,7 +46,15 @@ const renderStatus=()=>HOOKS.renderStatus();
    book WITHOUT it that still carries publication content is a PRE-Phase-2 book the
    new verId resolvers cannot re-key — see amFormatOf below. */
 export const AMBOOK_VERSION=1;
-export let SCHED:any={al:0, pending:{}, changes:{}, added:{}, als:[], dayOK:{}, sign:{}, signBind:{}, orig:{}, cur:{}, ridV:RID_BOOK_VERSION, amV:AMBOOK_VERSION};
+export let SCHED:any={al:0, pending:{}, changes:{}, added:{}, als:[], dayOK:{}, sign:{}, signBind:{}, orig:{}, cur:{}, ridV:RID_BOOK_VERSION, amV:AMBOOK_VERSION, retired:{}, correcting:{}};
+/* [GLOBAL-UNDO] §6.1 — `retired` is the APPEND-ONLY issuance log: every issued
+   version, once retracted by an unpublish, is kept here as its own immutable
+   snapshot, keyed `<verId>~<n>` (n = 1,2… per id, so a same-label reissue never
+   collapses the prior one). Read only by the history panel — never by
+   daySnapIn/dayVersions/nextSeq/issuedIdSet — so same-label reissue falls out of
+   the existing resolvers. `correcting[di]` = a verId flag set by sched.unpublish
+   that lets publishALDay/the button reissue the SAME label even on an EMPTY delta
+   (a pure round-trip correction), cleared on reissue (§6.1 GU5-001). */
 /* Reset ALL of SCHED in place. Every field is keyed by day INDEX (0..6), so
    loading a different week without this would let one week's approvals, pending
    edits, AL colouring and per-day drafts bleed onto the next week's identical
@@ -57,6 +65,7 @@ export function resetSched(){
   SCHED.al=0; SCHED.pending={}; SCHED.changes={}; SCHED.added={};
   SCHED.als=[]; SCHED.dayOK={}; SCHED.sign={}; SCHED.signBind={}; SCHED.orig={};
   SCHED.cur={}; SCHED.drafts={}; SCHED.curDraft={};
+  SCHED.retired={}; SCHED.correcting={};   // [GLOBAL-UNDO] §6.1 — per-week, index-keyed like the rest
   SCHED.ridV=RID_BOOK_VERSION;   // a fresh book is modern — never re-migrated
   SCHED.amV=AMBOOK_VERSION;      // and carries the Phase-2 amendment-record format
 }
@@ -198,6 +207,7 @@ export function setDayApproved(di:any,on:any){
   const iso=dayIso(CURWEEK,di);
   SCHED.orig[di]={id:verId(iso,0),...daySnap(di)};
   SCHED.cur=SCHED.cur||{}; SCHED.cur[di]=verId(iso,0);
+  if(SCHED.correcting)delete SCHED.correcting[di];   // [GLOBAL-UNDO] §6.1 — reissuing the Original closes any correction
   reflow(); histPush();
   toast(`${DAYS[di].dow} published — APPROVED`);
 }
@@ -587,12 +597,16 @@ export function alIssue(di:any){di=+di;
   /* a still-outstanding draft add on this day becomes part of the frozen
      snapshot, so it wears this AL's colour and its live-only marker is cleared. */
   Object.keys(SCHED.added||{}).forEach((k:any)=>{if(keyDay(k)===di&&!keys.includes(k))keys.push(k);});
+  /* [GLOBAL-UNDO] §6.5 — remember which of this day's `added` structural marks this
+     AL consumed, so an unpublish can restore them: a row added-then-deleted inside
+     the retracted AL must not mint a spurious `del:` mark when the AL comes off. */
+  const added=Object.keys(SCHED.added||{}).filter((k:any)=>keyDay(k)===di);
   keys.forEach((k:any)=>{SCHED.changes[k]=seq; delete SCHED.pending[k];});
   Object.keys(SCHED.added||{}).forEach((k:any)=>{if(keyDay(k)===di)delete SCHED.added[k];});
   const sign=signNames(di);
   /* freeze the day AFTER its marks are on — this is the document */
   const snap=daySnap(di);
-  SCHED.als.push({id,di,iso,seq,snap,diff,sign:{[di]:sign}});
+  SCHED.als.push({id,di,iso,seq,snap,diff,sign:{[di]:sign},added});
   SCHED.cur=SCHED.cur||{}; SCHED.cur[di]=id;   // issuing makes it current
   signClear(di);
   reflow(); histPush();   // publishing is its own undo step, not a silent baseline shift
@@ -610,10 +624,15 @@ export function publishALDay(di:any){
      writeback would otherwise discard the issue on reload (a silent lost AL). */
   if(protectedWeek())return toast(`${(DAYS[di]||{}).dow||'This day'} is locked — it was published by an older version and can’t be amended here`);
   if(!dayApproved(di))return toast(`${DAYS[di].dow} is still draft — publish the day before publishing its changes`);
-  if(!dayHasChanges(di))return toast(`No changes to publish on ${DAYS[di].dow}`);
+  /* [GLOBAL-UNDO] §6.1 GU5-001 — a day being CORRECTED (unpublished, then edited)
+     may reissue its SAME label even if the correction nets to no delta; an ordinary
+     amendment still needs a real change. */
+  const correcting=!!(SCHED.correcting&&SCHED.correcting[di]);
+  if(!dayHasChanges(di)&&!correcting)return toast(`No changes to publish on ${DAYS[di].dow}`);
   const seq=nextSeq(di);
   if(!daySigned(di))return toast(`Sign off ${signMissing(di).join(', ')} before publishing AL${seq}`);
   const {sign,count}=alIssue(di);
+  if(SCHED.correcting)delete SCHED.correcting[di];   // reissued — the correction is closed
   const who=sign||{};
   const held=pendingPublishDays().length;
   toast(`Published AL${seq} · ${count} item${count===1?'':'s'} on ${dowShort(di)} only`
@@ -630,6 +649,80 @@ export function discardPending(){
   Object.keys(SCHED.pending).forEach((k:any)=>{ if(!orig[keyDay(k)])delete SCHED.pending[k]; });
   reflow(); histPush(); toast('Pending marks cleared');
 }
+/* ---- [GLOBAL-UNDO] §6.5 — UNPUBLISH: retract a published day to a working copy
+   ---------------------------------------------------------------------------
+   The engine behind the Unpublish button (§6.4 "correct quietly"). A retracted
+   version is kept forever as its own immutable snapshot in the append-only
+   `retired` log (retireIssued), and the day drops back to an editable working
+   copy so it can be corrected and re-issued under the SAME label. Undo of a
+   just-published day runs this same retract (wired at the scheduler cutover). */
+function nextRetiredN(id:any):number{let mx=0;const rt=SCHED.retired||{};
+  for(const k of Object.keys(rt)){const c=String(k).lastIndexOf('~');
+    if(c<0)continue; if(k.slice(0,c)!==String(id))continue;
+    const n=+k.slice(c+1); if(Number.isSafeInteger(n)&&n>mx)mx=n;}
+  return mx+1;}
+/* the id of the version that becomes current once `seq` comes off day `di`: the
+   highest remaining AL, else the Original. */
+function priorVerId(di:any,seq:any):any{di=+di;
+  let top=0; (SCHED.als||[]).forEach((a:any)=>{if(+a.di===di){const s=+a.seq; if(s!==+seq&&Number.isSafeInteger(s)&&s>top)top=s;}});
+  if(top>0){const a=(SCHED.als||[]).find((x:any)=>+x.di===di&&+x.seq===top); return a&&a.id;}
+  const o=(SCHED.orig||{})[di]; return o&&o.id;}
+/* append the issued version `id` to the retired log as its own immutable snapshot
+   (keyed `<id>~<n>`) and remove the live issued record. `logged` = whether the
+   version was disseminated (the history panel prints only logged entries); at Step
+   3 always false (no shared database). Returns the retired key. */
+export function retireIssued(di:any,id:any,opts:any={}):string{di=+di;
+  const seq=verSeq(id);
+  const rec=seq===0?(SCHED.orig||{})[di]:(SCHED.als||[]).find((a:any)=>String(a&&a.id)===String(id));
+  SCHED.retired=SCHED.retired||{};
+  const key=`${id}~${nextRetiredN(id)}`;
+  if(opts.append!==false){
+    SCHED.retired[key]={id,n:+key.slice(key.lastIndexOf('~')+1),di,iso:parseVerId(id).iso,seq,
+      snap:rec?(rec.snap||{d:rec.d,c:rec.c,fil:rec.fil}):null,
+      diff:(rec&&rec.diff)||[],sign:(rec&&rec.sign)||{},
+      at:new Date().toISOString(),by:opts.by??null,
+      restoreSeq:opts.restoreSeq,logged:!!opts.logged};
+  }
+  if(seq===0){ if(SCHED.orig)delete SCHED.orig[di]; }
+  else { const ix=(SCHED.als||[]).findIndex((a:any)=>String(a&&a.id)===String(id)); if(ix>=0)SCHED.als.splice(ix,1); }
+  if(opts.clearSigns)signClear(di);
+  return key;}
+/* retract the LATEST issued version of a published day. Book-only mutation; the
+   command wrapper (state/sched-commit.ts) adds canEditSched + the DPREV gate and
+   prunePreviews. Returns the retracted id, or null when the gate refuses. */
+export function unpublishDay(di:any,opts:any={}):any{di=+di;
+  if(protectedWeek())return null;
+  if(!dayApproved(di))return null;
+  const id=dayCurVer(di);
+  if(id==null)return null;
+  const seq=verSeq(id), top=Math.max(0,...dayALs(di));
+  if(seq!==top)return null;                 // only the most recent version comes off
+  const rec=seq===0?null:(SCHED.als||[]).find((a:any)=>String(a&&a.id)===String(id));
+  const added:any[]=(rec&&rec.added)||[];
+  retireIssued(di,id,{clearSigns:true,append:opts.append!==false,logged:!!opts.disclosed,by:opts.by});
+  if(seq===0){
+    // retract the Original → a plain draft (its build marks were consumed at issue)
+    delete SCHED.dayOK[di];
+    if(SCHED.cur)delete SCHED.cur[di];
+  }else{
+    // retract AL n → re-open its marks on the working copy as pending
+    Object.keys(SCHED.changes).forEach((k:any)=>{
+      if(keyDay(k)!==di||+SCHED.changes[k]!==seq)return;
+      delete SCHED.changes[k];
+      // a delete/move/input mark, or a field mark whose row still resolves, re-opens
+      // as pending; a mark whose row no longer exists is dropped (it can't be edited).
+      if(isDeleteKey(k)||isMoveKey(k)||String(k).startsWith('inp:')||posKey(k,DAYS)!==null)SCHED.pending[k]=1;
+    });
+    // restore this AL's structural additions so a row added-then-deleted inside the
+    // retracted AL does not mint a spurious del: mark (§6.5).
+    SCHED.added=SCHED.added||{}; added.forEach((k:any)=>{SCHED.added[k]=1;});
+    SCHED.cur=SCHED.cur||{}; const prior=priorVerId(di,seq);
+    if(prior)SCHED.cur[di]=prior; else delete SCHED.cur[di];
+  }
+  // §6.1 GU5-001 — mark the day as CORRECTING this label, so publishALDay / the
+  // button may reissue the SAME label even if the correction nets to no delta.
+  SCHED.correcting=SCHED.correcting||{}; SCHED.correcting[di]=id;
+  return id;}
 /* re-validate + repaint every visible surface */
 export const SIGN_ROLES:any[]=[['cur','CUR CK',false],['sked','SKED CK',true],['plan','PLANNED BY',true],['appr','APPROVED BY',true]];
 export function signOf(di:any){SCHED.sign=SCHED.sign||{}; return (SCHED.sign[+di]=SCHED.sign[+di]||{cur:'',sked:'',plan:'',appr:''});}

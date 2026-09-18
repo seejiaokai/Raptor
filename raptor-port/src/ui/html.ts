@@ -16,7 +16,7 @@ import { verSeq } from '../engine/verid'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
 import { VCONF } from '../engine/rules'
-import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWORK, CURPAGE, lateShown, restArmed, notePub, stSavedOn, warnShown, WMOPEN } from '../state/view'
+import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWORK, CURPAGE, lateShown, restArmed, unpubArmed, notePub, stSavedOn, warnShown, WMOPEN } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
@@ -1109,13 +1109,27 @@ export function dayStatHTML(di:any,ed:any){
           ?`Publish AL${alN} — ${nd} change${nd>1?'s':''} on ${d.dow} only`
           :`Sign off ${signMissing(di).join(', ')} before publishing AL${alN}`}">Publish AL${alN}</button>`
       :'';
+    /* [GLOBAL-UNDO] §6.4/§6.5 — the UNPUBLISH button. Retracts the latest issued
+       version of a published day back to a working copy (a "quiet correction":
+       editing then republishing reissues the SAME label). Shown ONLY on the edit
+       surface, on a published day, not while previewing an older version, and not on
+       a quarantined week (C10 — never show only to refuse; the command re-checks all
+       of this). Two-tap ONLY when the day's OIL credits are bid against (§6.6): the
+       first tap arms + warns via the click handler, the armed state paints the
+       confirm face here; a day with no clash unpublishes on the single tap. */
+    const cv=ok?dayCurVer(di):null;
+    const unpub=(ed&&ok&&!DPREV.has(+di)&&!protectedWeek())
+      ? (unpubArmed(+di)
+          ? `<button class="dbeak dunpub warn" data-unpub="${di}" title="Withdraw ${esc(verLabel(cv))} on ${d.dow} — its OIL credits are bid against on the Leave War; republish to restore them. Tap to confirm.">Withdraw — confirm</button>`
+          : `<button class="dbeak dunpub" data-unpub="${di}" title="Unpublish ${d.dow} — pull ${esc(verLabel(cv))} back to a working copy to correct it; republishing reissues the same version">Unpublish</button>`)
+      : '';
     /* the ⓘ chip is the ONLY way into the day panel on the view page, and it opens a
        read-only panel — clicking a day in view mode must never lead into editing. */
     const infoChip=`<button class="dinfobtn" data-dayinfo="${di}" title="${d.dow} — approval, AL versions, advisories">i</button>`;
     /* the "Publishes Plan B" chip is RETIRED (owner, 15 Sep 26): the plans
        selector's own label already names the live plan, so a second chip saying
        the same thing is the clutter the redesign removes. */
-    return `${pendChip}${infoChip}${beak}${alpub}`;
+    return `${pendChip}${infoChip}${beak}${alpub}${unpub}`;
 }
 export function dayHTML(di:any,ed:any,vsel?:any){
   /* A QUARANTINED (unreadable / preserved / unsupported) LOADED week is read-only,

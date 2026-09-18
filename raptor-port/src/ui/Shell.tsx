@@ -20,10 +20,11 @@ import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import { slotVal, setSlotVal } from '../engine/slots'
 import { afterSchedMutate } from '../state/view'
-import { undo, redo } from '../state/store'
+import { globalUndo, globalRedo, undoState } from '../undo'
+import { toast } from './toast'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
 import { HIST } from '../state/history'
-import { useVersion } from './useStore'
+import { useVersion, useUndoVersion } from './useStore'
 import { ViewWeek } from './ViewWeek'
 import { legendHTML } from './html'
 import { routeClick } from './interactions'
@@ -75,6 +76,11 @@ import { bugAlert, unseenReports } from '../state/reports'
 
 export function Shell() {
   useVersion()
+  /* [GLOBAL-UNDO] §13 phase 2 — the Undo/Redo pair now reads the ONE timeline
+     (undoState) and re-renders on its own version, so a Leave War undo greys the
+     scheduler pair correctly and vice-versa. */
+  const uv = useUndoVersion()
+  const us = undoState()
   /* the current page IS view.CURPAGE — the reference's global, one source of
      truth. A nav click writes it and notifies; this component re-reads it on
      every store tick, so no parallel React state is needed. */
@@ -307,8 +313,9 @@ export function Shell() {
           {/* Undo / redo live at the TOP now (owner, Aug 26 — "so I'll always
               see it when I'm editing to undo if needed"), in the sticky bar
               rather than the filters row that scrolls away. Only while editing;
-              the board carries its own pair in its own top bar. Same undo()/
-              redo()/HIST wiring — no new stack. BOTH widths since 23 Aug 26
+              the board carries its own pair in its own top bar. Since the
+              [GLOBAL-UNDO] cutover these drive the ONE timeline (globalUndo/
+              globalRedo), disabled + labelled from undoState(). BOTH widths since 23 Aug 26
               (owner): the phone bar shows the trio icon-only, pinned at the
               scrolling bar's right edge — the board's .bi/.bl split, so one
               markup path serves both and the accessible name stays the words.
@@ -316,8 +323,8 @@ export function Shell() {
               list) from the shell itself, so the log is reachable without
               opening the board first. */}
           {page === 'editsched' && <div className="tb-hist">
-            <button className="abtn hbtn" id="undoBtn" title="Undo" disabled={HIST.ix <= 0} onClick={() => { undo(); notify() }}><span className="bi">↶</span><span className="bl"> Undo</span></button>
-            <button className="abtn hbtn" id="redoBtn" title="Redo" disabled={HIST.ix >= HIST.stack.length - 1} onClick={() => { redo(); notify() }}><span className="bi">↷</span><span className="bl"> Redo</span></button>
+            <button className="abtn hbtn" id="undoBtn" title={us.undoLabel ? `Undo — ${us.undoLabel}` : 'Undo'} disabled={!us.canUndo} onClick={() => { const r = globalUndo(); if (!r.ok && r.reason) toast(r.reason, 'warn'); notify() }}><span className="bi">↶</span><span className="bl"> Undo</span></button>
+            <button className="abtn hbtn" id="redoBtn" title={us.redoLabel ? `Redo — ${us.redoLabel}` : 'Redo'} disabled={!us.canRedo} onClick={() => { const r = globalRedo(); if (!r.ok && r.reason) toast(r.reason, 'warn'); notify() }}><span className="bi">↷</span><span className="bl"> Redo</span></button>
             <button className="abtn" id="histBtn" title="Edit history — every change this session"
               onClick={() => { setHistList('all'); notify() }}><span className="bi"><HistIcon /></span><span className="bl"> Edit history</span></button>
           </div>}
@@ -409,7 +416,7 @@ export function Shell() {
             : <span className={'abtn rolechip' + (admin ? ' admin' : '')} id="roleBadge">{admin ? 'Admin' : 'Member'}</span>}
         </div>
       </div>
-  ), [page, admin, ME, fast, HIST.ix, HIST.stack.length, bellLit(), bugAlert(), oilPend])
+  ), [page, admin, ME, fast, uv, us.canUndo, us.canRedo, us.undoLabel, us.redoLabel, bellLit(), bugAlert(), oilPend])
 
   const viewPage = useMemo(() => (
       <section className={'page' + (page === 'viewsched' ? ' on' : '')} id="page-viewsched">

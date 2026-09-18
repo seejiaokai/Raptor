@@ -91,6 +91,18 @@ export function restoreStash(snap:{w:Record<string,string>;p:Record<string,strin
 }
 /* the stashed weeks as [key, blob] pairs — the record source for weekstashStore. */
 export function stashEntries():Array<[string,string]>{ return Object.entries(WEEKSTASH); }
+/* [GLOBAL-UNDO] §13 phase 1 — the undo/restore write() seam for the weekstash. A
+   weekstash record is a whole-week blob STRING keyed by week, so an off-week edit
+   captured on the stream (finding I) round-trips: op 'put' sets the blob, 'delete'
+   drops it, and GEN bumps so ui/peek.ts's (week,gen) preview cache cannot re-serve a
+   stale preview. Strings are immutable, so no clone-on-write is needed here. */
+export function writeStashRecords(entries:Array<{id:string;value?:any;op?:string}>):void{
+  for(const e of entries){
+    if(e.op==='delete')delete WEEKSTASH[e.id];
+    else WEEKSTASH[e.id]=e.value as string;
+    GEN[e.id]=(GEN[e.id]||0)+1;
+  }
+}
 /* A FRESH deep copy, in weekBundle's {days,dates} shape, for engine readers
    (weekctx.ts's bundle()) — NEVER cached, unlike the pure seed bundle it
    stands in for: stash content changes as the user keeps editing the week it

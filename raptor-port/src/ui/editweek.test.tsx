@@ -7,6 +7,7 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, writeSlot, setPage } from '../state/store'
+import { installGlobalUndo } from '../state/undo-wire'
 import { SCHED, dayApproved } from '../engine/publish'
 import { slotVal } from '../engine/slots'
 import { isScheduler, PEOPLE } from '../engine/people'
@@ -39,6 +40,9 @@ const dayBtn = (di: number) => $(`#eWeek button.dbeak[data-beak="${di}"]`) as HT
 
 beforeAll(async () => {
   initStore()
+  // [GLOBAL-UNDO] §13 phase 2 — the Undo/Redo buttons drive the ONE timeline now,
+  // so install the production cutover (as main.tsx does) or the buttons stay inert.
+  installGlobalUndo()
   host = document.createElement('div')
   document.body.appendChild(host)
   root = createRoot(host)

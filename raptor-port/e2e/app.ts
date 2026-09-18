@@ -165,6 +165,17 @@ export async function lwRole(page: Page, role: 'admin' | 'member') {
   await page.waitForTimeout(150)
 }
 
+/* [GLOBAL-UNDO] set the RAPTOR effective role — what a global undo's mayReverse gate
+   reads (deriveActor). lwRole above sets only the Leave War store's role; a global
+   undo of a cell owned by another person also needs the LOGIN actor to be an admin.
+   Done WITHOUT a mid-test re-login (the reliable path — the grid is already up from
+   the beforeEach). The bridge exposes raptorRole only on localhost (dev + this
+   e2e's vite preview), never on the deployed site. */
+export async function raptorRole(page: Page, role: 'admin' | 'member') {
+  await page.evaluate(r => (window as any).raptorRole(r), role)
+  await page.waitForTimeout(50)
+}
+
 /* Scope the war to a person — the "View as" identity a member is restricted to
    (canEditRow). Production mirrors Raptor's ME onto it; the e2e sets it directly
    so a member test can prove it edits its own row and no other. */

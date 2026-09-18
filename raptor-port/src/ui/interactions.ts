@@ -13,7 +13,8 @@ import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { notify, loadWeek, commitSetDayApproved, commitPublishALDay } from '../state/store'
-import { schedWrite, schedWriteValue, SCHED_TYPES } from '../state/sched-commit'
+import { schedWrite, schedWriteValue, SCHED_TYPES, commitUnpublish } from '../state/sched-commit'
+import { oilCreditBidAgainst } from '../leavewar/sync'
 import { scrollToWarnFocus, queueHold, warnWeekId } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
 import { logAction } from '../engine/editlog'
@@ -793,6 +794,31 @@ export function routeClick(e: MouseEvent) {
        preview, this guards a stale click. */
     if (view.DPREV.has(+alp.dataset.alpub!)) return
     commitPublishALDay(+alp.dataset.alpub!); notify(); return
+  }
+  /* [GLOBAL-UNDO] §6.4/§6.6 — the Unpublish button: retract the latest issued version
+     to a working copy (a quiet correction). Same edit gate as publish; never while
+     previewing (the button is hidden there, this guards a stale click). §6.6: if the
+     day's OIL credits are already bid against, the FIRST tap arms + warns and the
+     SECOND commits — so an admin can't silently strand a bid; a day with no clash
+     unpublishes on one tap. commitUnpublish re-checks the role/preview gate itself. */
+  const unp = t.closest('button[data-unpub]') as HTMLElement | null
+  if (unp) {
+    e.stopPropagation()
+    if (!canEditSched() || view.CURPAGE !== 'editsched') return
+    const di = +unp.dataset.unpub!
+    if (view.DPREV.has(di)) return
+    if (oilCreditBidAgainst(di) && !view.unpubArmed(di)) {
+      view.setUnpubArm(di)
+      HOOKS.toast(`Heads up — ${DAYS[di]?.dow || 'this day'}’s OIL credits are bid against on the Leave War. Unpublishing withdraws them until you republish. Tap again to confirm.`, 'warn')
+      notify(); return
+    }
+    view.setUnpubArm(null)
+    // Fable#4 — commitUnpublish refuses (silent CmdRefused) if the day has no
+    // retractable latest version (e.g. an orphaned approved day whose snapshot won't
+    // resolve). The gate can't see that, so surface the refusal rather than no-op.
+    const r = commitUnpublish(di)
+    if ((r as any).ok === false) HOOKS.toast('That day can’t be unpublished right now.', 'warn')
+    notify(); return
   }
   /* Back to live copy — the home button on the version cluster (owner, 16 Aug
      26). Pure view state, like the dropdown change: it clears the preview, no

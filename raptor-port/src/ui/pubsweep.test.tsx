@@ -113,7 +113,9 @@ const weekView = (di: number) => {
 const pubState = (html: string) => {
   const r = el(html)
   const btn = r.querySelector('.dalpub')
-  const nonAlBeak = r.querySelector('.dbeak:not(.dalpub)')
+  // `beak` is the publish-day button/stamp — NOT the AL-publish button (.dalpub) and
+  // NOT the [GLOBAL-UNDO] Unpublish button (.dunpub), which are separate controls.
+  const nonAlBeak = r.querySelector('.dbeak:not(.dalpub):not(.dunpub)')
   return {
     plan: r.querySelector('.planselbtn .psl')?.textContent ?? null,
     ver: r.querySelector('.verchip')?.textContent ?? null,

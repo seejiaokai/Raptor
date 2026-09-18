@@ -21,7 +21,7 @@ const syncHistBtns=()=>HOOKS.syncHistBtns()
    is added. Same key ORDER as histSnap always wrote them in, so splicing this
    in with `...schedFields()` leaves histSnap's JSON.stringify output
    byte-identical to before this existed. */
-export function schedFields(){return {c:SCHED.changes,p:SCHED.pending,ad:SCHED.added,a:SCHED.als,al:SCHED.al,ok:SCHED.dayOK,sg:SCHED.sign,sb:SCHED.signBind,o:SCHED.orig,cv:SCHED.cur,dr:SCHED.drafts,cd:SCHED.curDraft,v:SCHED.ridV,am:SCHED.amV}}
+export function schedFields(){return {c:SCHED.changes,p:SCHED.pending,ad:SCHED.added,a:SCHED.als,al:SCHED.al,ok:SCHED.dayOK,sg:SCHED.sign,sb:SCHED.signBind,o:SCHED.orig,cv:SCHED.cur,dr:SCHED.drafts,cd:SCHED.curDraft,v:SCHED.ridV,am:SCHED.amV,rt:SCHED.retired,cr:SCHED.correcting}}
 export const HIST:any={stack:[],ix:-1,lock:false,cap:60};
 /* [ARCH-STACK] follow-up #1 (R2-07): the scheduler command layer's lagging
    baseline (state/sched-commit.ts SCHED_BASELINE) must be re-synced to the live
@@ -100,6 +100,7 @@ export function histRestore(snapStr:any){
   SCHED.drafts=s.dr||{}; SCHED.curDraft=s.cd||{};
   SCHED.ridV=s.v;   // absent (undefined) on a foundation-era snapshot → migrateLegacyIds runs
   SCHED.amV=s.am;   // absent (undefined) on a PRE-Phase-2 snapshot → amFormatOf flags it unsupported
+  SCHED.retired=s.rt||{}; SCHED.correcting=s.cr||{};   // [GLOBAL-UNDO] §6.1 — the issuance log + correction flags ride the snapshot
   WARNOFF.clear(); (s.wo||[]).forEach((k:any)=>WARNOFF.add(k));   // muted checks are an undo step
   /* PLANPUCKS/DAYRMK restored IN PLACE, the same live-binding idiom DAYS and
      INPUTS use above — every reader (the calendar UI) holds these two array

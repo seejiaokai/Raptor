@@ -11,15 +11,17 @@ import {
   advanceStage,
   clearBidWindow,
   focusDay,
-  lwCanRedo,
-  lwCanUndo,
-  lwRedo,
-  lwUndo,
   reopenStage,
   getState,
   selectWar,
   setBidWindow,
 } from '../state/store'
+/* [GLOBAL-UNDO] §13 phase 2 — the Leave War Undo/Redo pair drives the ONE global
+   timeline now, not lwUndo/lwRedo. It reads undoState() and refreshes on the
+   timeline's own version, so undoing a Leave War change and undoing a schedule
+   change share one history in one order. Refusals surface on the shared toast. */
+import { globalUndo, globalRedo, undoState, subscribeUndo, getUndoVersion } from '../../undo'
+import { toast } from '../../ui/toast'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
 import { shortDate, shortSpan } from './dates'
@@ -38,6 +40,8 @@ const LEGEND_WIDTH = 312
 
 export function Topbar() {
   useVersion()
+  useSyncExternalStore(subscribeUndo, getUndoVersion, getUndoVersion)   // refresh the pair on the timeline's version (C4)
+  const us = undoState()
   const { period, wars, role, people, viewer } = getState()
   const [making, setMaking] = useState(false)
   // WHOSE view this is (owner, 28 Aug 26 — "make it obvious that im viewing as
@@ -97,25 +101,26 @@ export function Topbar() {
             button). Shown to everyone: a member undoes their own bids, an admin
             anything. The .bi/.bl split matches the schedule's pair so the label
             drops to an icon on a narrow phone; the accessible name stays the
-            word. Disabled state reads the store, and this bar re-renders on
-            every store change (useVersion above), so the buttons grey out the
-            instant there is nothing left to undo. */}
+            word. Disabled state and labels read the ONE timeline (undoState); this
+            bar re-renders on the timeline's own version (subscribeUndo above), so
+            the buttons grey out the instant there is nothing left to undo, whether
+            the last change was here or on the schedule. */}
         <div className="lw-hist" data-testid="lw-hist">
           <button
             className="lw-hbtn"
             data-testid="lw-undo"
-            title="Undo the last change"
-            disabled={!lwCanUndo()}
-            onClick={lwUndo}
+            title={us.undoLabel ? `Undo — ${us.undoLabel}` : 'Undo the last change'}
+            disabled={!us.canUndo}
+            onClick={() => { const r = globalUndo(); if (!r.ok && r.reason) toast(r.reason, 'warn') }}
           >
             <span className="bi" aria-hidden="true">↶</span><span className="bl"> Undo</span>
           </button>
           <button
             className="lw-hbtn"
             data-testid="lw-redo"
-            title="Redo"
-            disabled={!lwCanRedo()}
-            onClick={lwRedo}
+            title={us.redoLabel ? `Redo — ${us.redoLabel}` : 'Redo'}
+            disabled={!us.canRedo}
+            onClick={() => { const r = globalRedo(); if (!r.ok && r.reason) toast(r.reason, 'warn') }}
           >
             <span className="bi" aria-hidden="true">↷</span><span className="bl"> Redo</span>
           </button>

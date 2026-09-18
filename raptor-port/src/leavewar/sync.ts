@@ -40,6 +40,7 @@ import { notify as raptorNotify, subscribe as raptorSubscribe, writeInputsBatch,
 import { lwSyncTurn } from './state/store'
 import {
   addDays,
+  balanceOf,
   inSquadron,
   isNonWorkingDay,
   localToday,
@@ -920,6 +921,37 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
     if (amt) out.set(k, { code: amt === 1 ? 'FO' : 'HO', why: oilWorkWhy(spans) })
   }
   return { desired: out, protectedDates }
+}
+
+/* [GLOBAL-UNDO] §6.6 — the Unpublish button's warn. Unpublishing a loaded-week day
+   withdraws that day's weekend/holiday OIL credits on the Leave War (desiredOilCells
+   skips an unapproved day); republish re-credits, so the gap is momentary. But if a
+   person the day credits has already SPENT enough OIL that losing this credit would
+   put their balance negative, a bid placed against it surfaces as a clash in the gap.
+   True when withdrawing di's credit would push any credited person's OIL balance
+   below zero — the "credits already bid against" case the button warns on. Read-only:
+   safe to call from the click handler before running the forward unpublish. */
+export function oilCreditBidAgainst(di: number): boolean {
+  const iso = labelToISO(DATES[di])
+  if (!iso) return false
+  const { openings, ledger, wars } = getState()
+  const { desired } = desiredOilCells()
+  for (const [key, d] of desired) {
+    const bar = key.indexOf('|')
+    if (key.slice(bar + 1) !== iso) continue
+    const person = key.slice(0, bar)
+    /* [GLOBAL-UNDO] Fable#5 / Codex GU-P2-009 — only a credit that ACTUALLY LANDED as
+       a Raptor-owned FO/HO cell can be withdrawn. A desired credit blocked by an
+       existing manual cell (runOilPass returns a clash) never landed and is not in the
+       balance, so counting it would falsely warn for anyone at a low balance. */
+    const landed = wars.some(w => (w as any).grid?.[person]?.[iso] === d.code && (w as any).states?.[person]?.[iso]?.source === 'raptor')
+    if (!landed) continue
+    const credit = d.code === 'FO' ? 1 : 0.5
+    // balanceOf counts that landed cell, so balance − credit is the balance AFTER the
+    // withdrawal; below zero means a bid was spent against it.
+    if (balanceOf(openings, ledger, wars, person, 'oil') - credit < 0) return true
+  }
+  return false
 }
 
 export function runOilPass(): void {

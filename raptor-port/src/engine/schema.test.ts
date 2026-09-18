@@ -121,8 +121,15 @@ const DAYSNAP: Spec = { d: DAY, c: { $map: 'number' }, fil: { $opt: { $map: 'str
    `diff` replaces the old `keys` list, and there is no n/days/n0/adds/structAdds. */
 const ANYV: Spec = { $or: ['string', 'number', 'boolean'] }
 const ALDIFF: Spec = { addr: 'string', kind: { $lit: ['add', 'delete', 'change', 'move', 'input'] }, from: { $opt: ANYV }, to: { $opt: ANYV } }
-const AL: Spec = { id: 'string', di: 'number', iso: 'string', seq: 'number', snap: DAYSNAP, diff: [ALDIFF], sign: { $map: SIGNSET } }
+const AL: Spec = { id: 'string', di: 'number', iso: 'string', seq: 'number', snap: DAYSNAP, diff: [ALDIFF], sign: { $map: SIGNSET }, added: { $opt: ['string'] } }
 const ONE: Spec = { $lit: [1] }
+/* [GLOBAL-UNDO] §6.1 — a retired-issuance snapshot (the append-only log, keyed
+   `<verId>~<n>`). snap/by may be null when the retracted record was absent. */
+const RETIRED: Spec = { $map: {
+  id: 'string', n: 'number', di: 'number', iso: 'string', seq: 'number',
+  snap: { $or: [DAYSNAP, { $lit: [null] }] }, diff: [ALDIFF], sign: { $map: SIGNSET },
+  at: 'string', by: { $or: ['string', { $lit: [null] }] }, restoreSeq: 'number?', logged: 'boolean',
+} }
 /* Phase 2: cur is a verId STRING per day (Original = `iso#0`); orig carries an id. */
 const SCHED_SPEC: Spec = {
   al: 'number', pending: { $map: ONE }, changes: { $map: 'number' }, added: { $map: ONE }, als: [AL], dayOK: { $map: ONE },
@@ -130,6 +137,7 @@ const SCHED_SPEC: Spec = {
   drafts: { $opt: { $map: [{ id: 'string', name: 'string', d: DAY }] } }, curDraft: { $opt: { $map: 'string' } },
   ridV: 'number',   // the addressing-by-rid book-format version (engine/rowids.ts)
   amV: { $opt: 'number' },   // the Phase-2 amendment-record format version (§5); absent on a PRE-Phase-2 book
+  retired: { $opt: RETIRED }, correcting: { $opt: { $map: 'string' } },   // [GLOBAL-UNDO] §6.1
 }
 const SCHED_FIELDS = {
   c: { $map: 'number' }, p: { $map: ONE }, ad: { $map: ONE }, a: [AL], al: 'number', ok: { $map: ONE }, sg: { $map: SIGNSET },
@@ -137,6 +145,7 @@ const SCHED_FIELDS = {
   dr: { $opt: { $map: [{ id: 'string', name: 'string', d: DAY }] } }, cd: { $opt: { $map: 'string' } },
   v: { $opt: 'number' },   // book-format version; ABSENT on a foundation-era snapshot (triggers migrateLegacyIds)
   am: { $opt: 'number' },  // Phase-2 amendment-record format version; ABSENT on a PRE-Phase-2 snapshot
+  rt: { $opt: RETIRED }, cr: { $opt: { $map: 'string' } },   // [GLOBAL-UNDO] §6.1 — the issuance log + correction flags ride the snapshot
 }
 const PUCK: Spec = { $or: [
   { id: 'string', date: 'string', kind: { $opt: { $lit: ['note'] } }, text: 'string' },

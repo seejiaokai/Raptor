@@ -35,14 +35,17 @@ import {
 } from '../command'
 import { DAYS } from '../engine/data'
 import { INPUTS, mintInpIds } from '../engine/inputs'
+import { reconcileDayFiling } from '../engine/slots'
 import { ensureRowIds } from '../engine/rowids'
-import { SCHED, setDayApproved, publishALDay, discardPending } from '../engine/publish'
+import { SCHED, setDayApproved, publishALDay, discardPending, unpublishDay, dayCurVer, signClear } from '../engine/publish'
 import { CURWEEK } from '../engine/waves'
 import { HIST, histSnap, histRestore, setSchedResync } from './history'
 import { setSchedEpilogueHook, HOOKS } from '../engine/hooks'
 import { issuedDisclosed, discloseIssued } from './disclosure'
 import { PLANPUCKS, DAYRMK } from './plan'
-import { WARNOFF } from './view'
+import { WARNOFF, DPREV, prunePreviews } from './view'
+import { canEditSched } from './auth'
+import { deriveActor } from '../command'
 
 /* ---- the scheduler EnlistableStore (a LAGGING BASELINE, decomposed) --------
    [ARCH-STACK] follow-up #1: copy the People pattern. The unrouted board/text/
@@ -83,10 +86,12 @@ function decompose(snapStr: string): Map<string, RecordEntry> {
     const id = `${wk}#${di}`
     m.set(`days/${id}`, { collection: 'days', id, value: days[di] })
   }
-  // the mutable book (excludes the issued orig/als, which are their own records)
+  // the mutable book (excludes the issued orig/als/retired, which are their own
+  // records). [GLOBAL-UNDO] §6.1 — `cr` (the per-day correction flags) rides the
+  // book like curDraft; `retired` is a separate append-only collection below.
   const book = {
     c: s.c, p: s.p, ad: s.ad, al: s.al, ok: s.ok,
-    sg: s.sg, sb: s.sb, cv: s.cv, dr: s.dr, cd: s.cd, v: s.v, am: s.am,
+    sg: s.sg, sb: s.sb, cv: s.cv, dr: s.dr, cd: s.cd, v: s.v, am: s.am, cr: s.cr,
   }
   m.set(`sched.book/${wk}`, { collection: 'sched.book', id: wk, value: book })
   m.set(`sched.mutes/${wk}`, { collection: 'sched.mutes', id: wk, value: (s.wo || []) })
@@ -104,6 +109,14 @@ function decompose(snapStr: string): Map<string, RecordEntry> {
     const al = als[n]
     const id = `${wk}:${(al && al.id) ?? n}`
     m.set(`sched.als/${id}`, { collection: 'sched.als', id, value: al })
+  }
+  // [GLOBAL-UNDO] §6.1 — the append-only retired-issuance log, one record per
+  // `<verId>~<n>` entry, so a same-label reissue keeps every prior issuance as its
+  // own immutable, individually-addressable snapshot.
+  const retired = (s.rt as any) || {}
+  for (const idn of Object.keys(retired)) {
+    const id = `${wk}:${idn}`
+    m.set(`sched.retired/${id}`, { collection: 'sched.retired', id, value: retired[idn] })
   }
   const inpOrder: string[] = []
   for (const r of ((s.i as any[]) || [])) {
@@ -130,15 +143,24 @@ function schedRecords(): Map<string, RecordEntry> { return decompose(baseline())
    round-trips the position rather than pushing the row to the end. */
 const INPUT_ORDER_ID = '__order'
 
+/* [GLOBAL-UNDO] GU2-009 — CLONE-ON-WRITE. write() applies an undo entry's RECORDED
+   inverse image; assigning that image into live state BY REFERENCE would alias the
+   entry's stored `after` with the live record, so a later in-place edit would mutate
+   the recorded image and corrupt a re-undo (or the history line). Deep-clone at
+   every assignment site so live state and the recorded image never share an object.
+   Restore is not a hot path, so the clone costs nothing that matters. */
+const cw = <T>(v: T): T => (v == null ? v : JSON.parse(JSON.stringify(v)))
+
 /* apply a decomposed `sched.book` record value back onto the live SCHED book —
    the exact inverse of decompose()'s book projection (schedFields minus o/a,
-   which are their own records). */
+   which are their own records). Clone-on-write (GU2-009). */
 function applyBook(v: any): void {
-  SCHED.changes = v.c || {}; SCHED.pending = v.p || {}; SCHED.added = v.ad || {}
-  SCHED.al = v.al || 0; SCHED.dayOK = v.ok || {}
-  SCHED.sign = v.sg || {}; SCHED.signBind = v.sb || {}
-  SCHED.cur = v.cv || {}; SCHED.drafts = v.dr || {}; SCHED.curDraft = v.cd || {}
+  SCHED.changes = cw(v.c) || {}; SCHED.pending = cw(v.p) || {}; SCHED.added = cw(v.ad) || {}
+  SCHED.al = v.al || 0; SCHED.dayOK = cw(v.ok) || {}
+  SCHED.sign = cw(v.sg) || {}; SCHED.signBind = cw(v.sb) || {}
+  SCHED.cur = cw(v.cv) || {}; SCHED.drafts = cw(v.dr) || {}; SCHED.curDraft = cw(v.cd) || {}
   SCHED.ridV = v.v; SCHED.amV = v.am
+  SCHED.correcting = cw(v.cr) || {}   // [GLOBAL-UNDO] §6.1 — the correction flags ride the book record
 }
 
 /* [CMDL-FINISH] §3 (F8/GU-007) — the batch, delete-aware, per-collection record
@@ -150,16 +172,28 @@ function applyBook(v: any): void {
    issued record (sched.orig/sched.als) is refused unless the restore path passes
    {allowIssued:true} (C7). Called only from a reducer that already enlisted
    schedStore. */
-function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolean }): void {
+function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolean; restore?: boolean }): void {
   const wk = CURWEEK
   let orderIds: string[] | null = null
   let alsTouched = false
+  /* [GLOBAL-UNDO] §11/C3 — on a RESTORE, the derived per-week input landing (acc)
+     must be re-reconciled against the restored day records, not trusted from the
+     inverse: 'g' is week-relative, and a days-only inverse can drop or add a ground
+     row without an accompanying inputs record. So on restore we (1) strip a stored
+     'g' from each restored input (on the CLONE, never the recorded inverse — GU2-009),
+     and (2) run reconcileDayFiling per touched day AFTER the apply — two-way, so it
+     clears a dangling 'g' and re-files a row the day image restored, and NEVER pushes
+     a new row (which would land another person's input outside auth/revisions). */
+  const restore = !!opts?.restore
+  const touchedDays = new Set<number>()
   const foreign = (id: string, sep: string) => id.slice(0, id.indexOf(sep)) !== wk
   for (const e of entries) {
     switch (e.collection) {
       case 'days': {
         if (foreign(e.id, '#')) throw new CmdRefused(`scheduler write: foreign week ${e.id}`)
-        if (e.op !== 'delete') DAYS[Number(e.id.slice(e.id.indexOf('#') + 1))] = e.value
+        const di = Number(e.id.slice(e.id.indexOf('#') + 1))
+        if (e.op !== 'delete') DAYS[di] = cw(e.value)
+        if (restore) touchedDays.add(di)
         break
       }
       case 'sched.book':
@@ -174,7 +208,7 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
         if (foreign(e.id, ':')) throw new CmdRefused(`scheduler write: foreign week ${e.id}`)
         if (!opts?.allowIssued) throw new CmdRefused(`scheduler write: issued record ${e.id} needs allowIssued`)
         const di = e.id.slice(e.id.indexOf(':') + 1)
-        if (e.op === 'delete') delete (SCHED.orig as any)[di]; else (SCHED.orig as any)[di] = e.value
+        if (e.op === 'delete') delete (SCHED.orig as any)[di]; else (SCHED.orig as any)[di] = cw(e.value)
         break
       }
       case 'sched.als': {
@@ -188,21 +222,38 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
         const arr = SCHED.als as any[]
         const ix = arr.findIndex(a => String((a && a.id) ?? '') === alId)
         if (e.op === 'delete') { if (ix >= 0) arr.splice(ix, 1) }
-        else if (ix >= 0) arr[ix] = e.value
-        else arr.push(e.value)
+        else if (ix >= 0) arr[ix] = cw(e.value)
+        else arr.push(cw(e.value))
         alsTouched = true
+        break
+      }
+      case 'sched.retired': {
+        // [GLOBAL-UNDO] §6.1 — the append-only issuance log. Append-only-INTENDED,
+        // so no allowIssued gate: an undo of an UNLOGGED unpublish removes the just-
+        // added entry (op:'delete'); a LOGGED (disseminated) entry is NEVER removed by
+        // an inverse (§6.2 GU4-003 / Codex GU-P2-001) — the audit line survives, an
+        // undo of a disseminated unpublish records a compensating transition instead.
+        if (foreign(e.id, ':')) throw new CmdRefused(`scheduler write: foreign week ${e.id}`)
+        const idn = e.id.slice(e.id.indexOf(':') + 1)
+        SCHED.retired = SCHED.retired || {}
+        if (e.op === 'delete') { if (!(SCHED.retired[idn] as any)?.logged) delete SCHED.retired[idn] }
+        else SCHED.retired[idn] = cw(e.value)
         break
       }
       case 'inputs': {
         if (e.id === INPUT_ORDER_ID) { orderIds = (e.value as string[]) || null; break }
         const ix = INPUTS.findIndex((r: any) => r.iid === e.id)
         if (e.op === 'delete') { if (ix >= 0) INPUTS.splice(ix, 1) }
-        else if (ix >= 0) INPUTS[ix] = e.value
-        else INPUTS.push(e.value)
+        else {
+          const v = cw(e.value) as any
+          // strip the DERIVED 'g' landing on a restore; reconcileDayFiling re-derives it
+          if (restore && v && v.acc === 'g') delete v.acc
+          if (ix >= 0) INPUTS[ix] = v; else INPUTS.push(v)
+        }
         break
       }
       case 'plan': {
-        const v = e.value as any
+        const v = cw(e.value) as any   // [GLOBAL-UNDO] GU2-009 — clone-on-write
         PLANPUCKS.length = 0; ((v && v.pp) || []).forEach((x: any) => PLANPUCKS.push(x))
         for (const k of Object.keys(DAYRMK)) delete DAYRMK[k]
         Object.assign(DAYRMK, (v && v.dm) || {})
@@ -225,10 +276,45 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
       return (Number(a?.seq) || 0) - (Number(b?.seq) || 0)
     })
   }
+  /* [GLOBAL-UNDO] §11/C3 — reland BEFORE applyEnd so the re-derived landings are in
+     the baseline snapshot and the emitted envelope (never a stale envelope the next
+     forward edit would absorb). Two-way, per touched day; never auto-lands a row. */
+  if (restore) for (const di of touchedDays) reconcileDayFiling(di)
   applyEnd()   // one ensureRowIds/mintInpIds + advance SCHED_BASELINE
   // HOOKS.reflow = validate() + notify(); HOOKS.histPush persists — both released
   // at the transaction boundary (never on a half-applied multi-store world).
   cmdDeferEffect(() => { HOOKS.reflow(); HOOKS.histPush() })
+}
+
+/* [GLOBAL-UNDO] §6.2/C5 — the scheduler's postRestore adjustment (wired via
+   setUndoHooks). Undo of a PUBLISH boundary is an unpublish: the plain inverse
+   restored the pre-publish SIGNED book, but a pulled-back published day must
+   re-sign on republish (GU5-005), so clear the sign-offs LAST (after the book
+   put). Redo re-publishes via the forward image, whose book already carries the
+   cleared signs (setDayApproved signClears at publish) — so redo needs nothing.
+   The disclosed audit-line append is Step-5 (nothing is disseminated at Step 3);
+   the FORWARD unpublish button already writes it (retireIssued), and a logged
+   line is protected append-only in schedWriteRecords above. */
+function publishDayOf(entry: any): number | null {
+  for (const ch of (entry.forward || [])) {
+    if (ch.collection === 'sched.orig') return Number(ch.id.slice(ch.id.indexOf(':') + 1))
+    if (ch.collection === 'sched.als' && ch.after && (ch.after as any).di != null) return Number((ch.after as any).di)
+  }
+  return null
+}
+export function schedPostRestore(entry: any, dir: 'undo' | 'redo'): void {
+  if (dir !== 'undo' || !entry?.boundary || entry.boundary.kind !== 'publish') return
+  const di = publishDayOf(entry)
+  if (di == null) return
+  signClear(di)
+  /* [GLOBAL-UNDO] Fable#1 / Codex GU-P2-004 — signClear runs AFTER schedWriteRecords'
+     applyEnd() already advanced SCHED_BASELINE, so without this the lagging baseline
+     stays SIGNED while live is cleared. The restore envelope still captures the clear
+     (its diff reads LIVE at finalize), but the NEXT unrelated scheduler edit would
+     diff against the stale signed baseline and ABSORB the sign-clear into its own
+     entry — and undoing that edit would silently re-sign the pulled-back day. Advance
+     the baseline to the sign-cleared live state so the next edit derives cleanly. */
+  resyncSchedBaseline()
 }
 
 export const schedStore: EnlistableStore = {
@@ -265,6 +351,8 @@ export const SCHED_TYPES = {
   approve: 'sched.approve',
   publishAL: 'sched.publishAL',
   discard: 'sched.discard',
+  // [GLOBAL-UNDO] §6.5 — retract a published day to a working copy (the Unpublish button)
+  unpublish: 'sched.unpublish',
   // follow-up #1 — the previously-unrouted paths (rows A–G). Auto-registered by
   // the definePermission loop below. `mutate` is the afterSchedMutate backstop.
   mutate: 'sched.mutate',
@@ -427,6 +515,30 @@ export function commitDiscardPending(): CommitResult {
   return commitSchedVoid(SCHED_TYPES.discard, () => discardPending())
 }
 
+/* [GLOBAL-UNDO] §6.5 — retract the latest issued version of a published day back
+   to a working copy. Declares an `unpublish` boundary carrying the retracted id
+   (the publication barrier §6.3 reads it). Scheduler/admin only, and refused while
+   the day is previewing an older version (DPREV). Defers reflow + prunePreviews +
+   persistence to the transaction boundary, like the write() seam. */
+export function commitUnpublish(di: number): CommitResult {
+  const cmd: Command = {
+    type: SCHED_TYPES.unpublish, scope: schedScope(),
+    apply: (txn) => {
+      txn.enlist(schedStore)
+      if (!canEditSched() || DPREV.has(+di)) throw new CmdRefused(`unpublish: not permitted for day ${di}`)
+      const id0 = dayCurVer(di)
+      const disclosed = id0 != null && issuedDisclosed(id0)
+      const actor = deriveActor()
+      const id = unpublishDay(di, { by: actor.personId ?? actor.id, disclosed })
+      if (!id) throw new CmdRefused(`unpublish: day ${di} has no retractable latest version`)
+      txn.boundary({ kind: 'unpublish', ids: [id], crossable: !disclosed })
+      applyEnd()
+      cmdDeferEffect(() => { prunePreviews(); HOOKS.reflow(); HOOKS.histPush() })
+    },
+  }
+  return commit(cmd)
+}
+
 /* ---- one-time registration (called from initStore) ----------------------- */
 let registered = false
 export function registerSchedCommandLayer(): void {
@@ -465,6 +577,7 @@ export function registerSchedCommandLayer(): void {
   registerRecord({ key: 'weeks:sched.mutes/<wk>', cls: 'record', collection: 'sched.mutes', module: 'scheduler' })
   registerRecord({ key: 'weeks:sched.orig/<wk>:<di>', cls: 'record', collection: 'sched.orig', module: 'scheduler' })
   registerRecord({ key: 'weeks:sched.als/<wk>:<verId>', cls: 'record', collection: 'sched.als', module: 'scheduler' })
+  registerRecord({ key: 'weeks:sched.retired/<wk>:<verId>~<n>', cls: 'record', collection: 'sched.retired', module: 'scheduler' })
   registerRecord({ key: 'inputs:<iid>', cls: 'record', collection: 'inputs', module: 'inputs' })
   registerRecord({ key: 'plan:all', cls: 'record', collection: 'plan', module: 'plan' })
 }
