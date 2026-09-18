@@ -33,7 +33,7 @@ import { commandStream } from './command'
 import { resyncSchedBaseline, schedBaselineClean } from './state/sched-commit'
 import { HOOKS } from './engine/hooks'
 import * as view from './state/view'
-import { setLgEdit } from './state/auth'
+import { setLgEdit, setEffectiveRole } from './state/auth'
 import { notify, loadWeek, moveSection, moveSectionTo } from './state/store'
 import { globalUndo, globalRedo } from './undo'
 import { secOrder, SECTIONS, secDefault, setSecDefault, moveSecDefault } from './engine/order'
@@ -118,6 +118,14 @@ export function installProbeBridge() {
      needs mid-test member↔admin switches that no click path reaches since
      the standalone app's on-screen toggle was removed at the merge. */
   w.lwSetRole = (r: 'admin' | 'member') => lwSetRole(r)
+  /* [GLOBAL-UNDO] the RAPTOR effective role — what deriveActor()/mayReverse read to
+     gate a global undo. The e2e sets its LOGIN actor to admin this way (the reliable
+     path: no mid-test re-login — the grid is already up). GATED TO LOCALHOST (dev +
+     the e2e's vite-preview) so it is NOT present on the deployed public site: unlike
+     w.lwSetRole (LW role only), raptorRole('admin') would also open scheduler editing
+     via canEditSched, so keep that reach off any real surface (Codex GU-P2-002). */
+  if (typeof location !== 'undefined' && (location.hostname === 'localhost' || location.hostname === '127.0.0.1'))
+    w.raptorRole = (r: 'admin' | 'member') => { setEffectiveRole(r); notify() }
   /* the Leave War VIEWER — the "View as" person the war scopes a member to
      (canEditRow). Production mirrors Raptor's ME onto it through the sync; the
      e2e needs to pin the member's identity to the row it edits without driving
