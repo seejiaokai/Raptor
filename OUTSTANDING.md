@@ -59,11 +59,13 @@ in-flight and risk-reducing** first.
    - **[AMEND-SEL-FOLLOWUPS] — DONE + LIVE (merged 15 Sep 26, PR #405).** See the Done
      section for the resolution. The 7 changes (incl. the signature-leak bug, taken the
      per-plan way) were built, cross-provider bug-checked, and merged to `main`.
-   - **[REPO-CLEANUP] (owner, 15 Sep 26) — SECOND task; screenshots DONE, sweep HELD.**
+   - **[REPO-CLEANUP] (owner, 15 Sep 26) — SECOND task; screenshots DONE, sweep READY — DO NEXT.**
      Step 1 (delete the handoff screenshots `raptor-port/docs/img/plans-selector-followups/`)
      is DONE (18 Sep 26). Step 2, the repo-wide space/redundancy sweep (orphaned files, dead
-     CSS, unused exports, stale docs, build cruft), is **HELD until `[CMDL-FINISH]` merges**
-     so two chats don't edit the same files at once. **CAUTION:** the repo deliberately keeps
+     CSS, unused exports, stale docs, build cruft), is **READY to start (owner, 18 Sep 26 —
+     the earlier hold is lifted; the parallel `[CMDL-FINISH]` follow-up work will NOT be run
+     in parallel, so there is no collision risk).** Do it in a FRESH chat off `main` as its
+     own gated PR, in batches. **CAUTION:** the repo deliberately keeps
      some dead-looking code (CLAUDE.md §Stable decisions — `WEEKS`, `restoreDayVersion`,
      `openWarns`, etc.); grep for refs and confirm before removing anything. Own gated PR, in
      batches. See the "SECOND TASK" section of `raptor-port/docs/plans-selector-followups.md`.

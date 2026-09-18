@@ -157,9 +157,11 @@ Do this only once the seven fixes above are merged; it is not part of the featur
 1. ~~**Delete the handoff screenshots**~~ — **DONE (18 Sep 26).** The three images in
    `raptor-port/docs/img/plans-selector-followups/` were removed and their reference
    lines dropped from this doc. The doc itself is kept because step 2 below is still open.
-2. **Repo-wide space / redundancy sweep — STILL OPEN (held, 18 Sep 26).** Deferred until
-   the parallel `[CMDL-FINISH]` command-layer/Tracker work is merged, so two chats aren't
-   editing the same files at once. Find genuinely dead or redundant material that
+2. **Repo-wide space / redundancy sweep — STILL OPEN, READY to start (owner, 18 Sep 26).**
+   The earlier hold (waiting on the parallel `[CMDL-FINISH]` chat) is LIFTED — the owner
+   confirmed that follow-up work will not be run in parallel, so there is no collision risk.
+   Do it in a fresh chat off `main` as its own gated PR, in batches. Find genuinely dead or
+   redundant material that
    can be safely removed to save space: orphaned files, unreferenced assets/images, dead
    CSS, unused exports/functions, stale docs, duplicated content, build cruft.
    **CAUTION — this repo deliberately KEEPS some dead-looking code** (CLAUDE.md §Stable
