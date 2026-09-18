@@ -18,6 +18,7 @@ import { settingsAdapter, leavewarAdapter, trackerTarget } from './storage/adapt
 import { useStorageImpl } from './tracker/storage.js'
 import { hydrate, wirePersist } from './state/persist'
 import { setSaveStatusSource } from './ui/SaveStatus'
+import { installGlobalUndo } from './state/undo-wire'
 
 /* THE BOOT (storage seam, 8 Sep 26 — docs/superpowers/specs/2026-09-08-
    storage-seam-design.md). The ONE place the app waits: fetch everything
@@ -68,6 +69,14 @@ async function boot(): Promise<void> {
   wireLeaveWarSync()
   histInit()
   lwHistInit()
+
+  /* [GLOBAL-UNDO] §13 phase 2 — turn on the ONE global undo timeline (state/
+     undo-wire.ts). AFTER both legacy baselines are taken (so the timeline's own
+     seed/expectation state lines up with the world the session starts in) and
+     BEFORE the probe bridge (whose w.undo/redo now point at globalUndo/Redo). This
+     is the line that makes undo/redo, the Unpublish button and off-week undo live;
+     with it absent the engine records but drives nothing. */
+  installGlobalUndo()
 
   /* every history step, undo/redo and week swap now re-persists; the
      indicator and the unload guard hang off the postman */

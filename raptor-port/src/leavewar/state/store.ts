@@ -1206,12 +1206,18 @@ export const lwStore: CmdEnlistableStore = {
   },
 }
 
+/* [GLOBAL-UNDO] §13 phase 2 (Codex GU-P2-009) — the AUTHORITATIVE list of the
+   nine collections lwStore owns. ONE exported source, used for BOTH the command-
+   layer record registration below AND the undo-store registration (undo-wire.ts):
+   an omitted collection would fail the restore reducer with "no restore target".
+   `lw.current` is in the list (harmless — nav is never restored). */
+export const LW_COLLS = ['lw.cell', 'lw.bid', 'lw.war', 'lw.ledger', 'lw.balances', 'lw.oilpolicy', 'lw.postouts', 'lw.current', 'lw.config'] as const
+
 function lwRegisterCommands(): void {
   if (LW_REGISTERED) return
   LW_REGISTERED = true
   cmdDefinePermission('lw.edit', cmdAnyone)   // permissive at Step 2 (the real role gates are unchanged)
-  const cols = ['lw.cell', 'lw.bid', 'lw.war', 'lw.ledger', 'lw.balances', 'lw.oilpolicy', 'lw.postouts', 'lw.current', 'lw.config'] as const
-  for (const c of cols) cmdRegisterRecord({ key: `leavewar:${c}`, cls: 'record', collection: c, module: 'leavewar' })
+  for (const c of LW_COLLS) cmdRegisterRecord({ key: `leavewar:${c}`, cls: 'record', collection: c, module: 'leavewar' })
   // [CMDL-FINISH] C9/P3-END — now that every LW write routes through the command
   // layer (the only post-boot raw path is LW_RESTORING, which runs at idle and is
   // never nested inside another command), lwStore is safe to guard. The guard
@@ -1404,6 +1410,12 @@ let historyEpoch = 0
 export function lwHistEpoch(): number {
   return historyEpoch
 }
+/* [GLOBAL-UNDO] §13 phase 2 (Fable N5) — bump the epoch from the GLOBAL restore
+   path too. The legacy historyApply bumps it inside itself so the matrix drops an
+   in-flight drag/select; a globalUndo/globalRedo restores LW through the write()
+   seam, which does NOT run historyApply, so the undo consumer bumps it explicitly
+   (in the restore epilogue) to get the same "drop the gesture" signal. */
+export function bumpLwHistEpoch(): void { historyEpoch++ }
 
 /** Restore snapshot `i`. Locked across the whole apply so neither the restore
  *  itself nor the sync reconcilers `notify()` wakes push a new step; the

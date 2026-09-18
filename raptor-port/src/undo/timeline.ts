@@ -32,8 +32,12 @@ import { describeEntry, bubbleText } from './describe'
 /* ---- pluggable app hooks (snap, bubble, locks, publish-day resolve) ------- */
 export interface UndoHooks {
   /* snap-to-context: bring an off-screen week/war/course into view before the
-     inverse applies (§8.1). Multi-context loads happen before any write. */
-  loadContext?(ctx: RecordCtx): void
+     inverse applies (§8.1). Multi-context loads happen before any write. `entry`
+     is passed so the consumer can tell a week context that is weekstash-ONLY (an
+     off-week edit whose only records are the stash blob) from one carrying loaded-
+     week records — the former must NOT loadWeek, or the target week becomes CURWEEK
+     and the CURWEEK stash-write guard then refuses the off-week apply (C7). */
+  loadContext?(ctx: RecordCtx, entry: UndoEntry): void
   /* the view-only snap after contexts are loaded (scroll/select the record). */
   snapView?(entry: UndoEntry, dir: 'undo' | 'redo'): void
   /* pop the undo/redo bubble (§8.2). */
@@ -415,8 +419,15 @@ function applyRestore(entry: UndoEntry, changes: Change[], dir: 'undo' | 'redo')
 
 /* ---- snap-to-context (§8.1) ---------------------------------------------- */
 function snap(entry: UndoEntry, dir: 'undo' | 'redo'): void {
-  if (hooks.loadContext) for (const ctx of entry.contexts) hooks.loadContext(ctx)
+  if (hooks.loadContext) for (const ctx of entry.contexts) hooks.loadContext(ctx, entry)
   if (hooks.snapView) hooks.snapView(entry, dir)
+}
+
+/* §4/N11 — the restore reducer's own refusals (a stale-revision conflict, a
+   missing store) are technical strings; the owner never reads them. Any
+   applyRestore ok:false maps to plain words here. */
+function plainRestoreReason(_reason?: string): string {
+  return 'That couldn’t be completed just now — something else changed on this week. Try again.'
 }
 
 /* ---- the dispatcher: globalUndo / globalRedo (§9) ------------------------ */
@@ -442,8 +453,14 @@ export function globalUndo(): UndoResult {
   const conflict = undoConflict(entry)
   if (conflict) return { ok: false, reason: conflict }
   snap(entry, 'undo')
+  // N11 — loadContext's loadWeek can emit orphan projections that bump revisions
+  // AFTER the pre-check, so re-run the conflict check now that the target week is
+  // on screen; a fresh barrier here refuses cleanly instead of applyRestore failing
+  // phase-5 with a technical "stale revision" string.
+  const postConflict = undoConflict(entry)
+  if (postConflict) return { ok: false, reason: postConflict }
   const r = applyRestore(entry, entry.inverse, 'undo')
-  if (!r.ok) return { ok: false, reason: r.reason || 'That couldn’t be undone — try again.' }
+  if (!r.ok) return { ok: false, reason: plainRestoreReason(r.reason) }
   entry.undone = true
   entry.undoneAt = ++stamp
   bumpUndo()
@@ -458,8 +475,11 @@ export function globalRedo(): UndoResult {
   const conflict = redoConflict(entry)
   if (conflict) return { ok: false, reason: conflict }
   snap(entry, 'redo')
+  // N11 — see globalUndo: re-check after the view-snap loaded the target week.
+  const postConflict = redoConflict(entry)
+  if (postConflict) return { ok: false, reason: postConflict }
   const r = applyRestore(entry, entry.forward, 'redo')
-  if (!r.ok) return { ok: false, reason: r.reason || 'That couldn’t be redone — try again.' }
+  if (!r.ok) return { ok: false, reason: plainRestoreReason(r.reason) }
   entry.undone = false
   entry.undoneAt = undefined
   bumpUndo()
