@@ -1,74 +1,45 @@
-# Session handoff — [GLOBAL-UNDO] phase 1 BUILT (engine + foundation); phase 2 next
+# Session handoff — [GLOBAL-UNDO] phase 2 IN PROGRESS (engine+adapter layer BUILT; live cutover next)
 
 ## Where it is
-[ARCH-STACK] step 3, **[GLOBAL-UNDO]** — one global per-session undo. **Phase 1 (design §13) is
-BUILT, test-first, all five gates green**, on branch `claude/global-undo` (NOT merged — awaiting the
-owner's "merge live"). Design of record: `docs/superpowers/specs/2026-09-17-arch-stack-3-global-undo-design.md`
-Rev 6. Front-door contract: `docs/undo-contract.md`.
+[ARCH-STACK] step 3, **[GLOBAL-UNDO]**, **phase 2** (scheduler + Leave War cutover). Branch
+`claude/global-undo` (NOT merged — awaiting the owner's "merge live"). Opus, high, test-first.
 
-**Phase 1 is invisible by design:** the undo engine is built and tested but no module is cut over
-(`setCutoverModules` is empty in production) and nothing imports the `src/undo/` module in a
-production path, so it tree-shakes out of the shipped bundle — **zero rendered bytes change.** The
-Vercel preview looks identical to before. The first VISIBLE change (the Unpublish button on the day
-header, and undo/redo actually driving the buttons) is **phase 2**.
+- Design of record: `docs/superpowers/specs/2026-09-17-arch-stack-3-global-undo-design.md` Rev 6 §6/§7/§11/§13.
+- **The phase-2 build plan + the dual red-team dispositions: `docs/superpowers/specs/2026-09-18-global-undo-phase2-cutover-plan.md`.** Rev 3 (the bottom section) is the DEFINITIVE build spec — its corrections C1–C8 supersede Rev 1/2. Read it before continuing.
+- Front-door contract: `docs/undo-contract.md`.
 
-## What phase 1 delivered (all with tests)
-- **`src/undo/`** — the engine:
-  - `derive.ts` — pure record→context, record→owner (§5), invert() (§3.2), the §4.3/§8.1 weekstash
-    key-family test. (derive.test.ts, 13)
-  - `timeline.ts` — the stream-driven timeline: transitive causal-closure fold (R2-13), expectation
-    map + sticky out-of-band barriers (§4.1), non-linear + redo-LIFO (§4.3/R3-06), mayReverse (§5),
-    snap hooks + contexts (§8.1), the DERIVED publication barrier (§6.3), single globalUndo/globalRedo
-    dispatcher (§9). (timeline.test.ts, 14)
-  - `describe.ts` — the ONE central describer + bubble (§8.2), generic fallback.
-  - `integration.test.ts` (3) — the timeline driving the REAL schedStore.write(): real text edits
-    round-trip N→N→N and a real publish is reversed. **This is the phase-2 cutover in miniature.**
-- **§6 unpublish subsystem** (the Unpublish button's engine; the BUTTON UI itself is phase 2):
-  - `SCHED.retired` (append-only issuance log, keyed `<verId>~<n>`) + `SCHED.correcting` threaded
-    through the FULL scheduler-state codec (SCHED init/resetSched, schedFields/histRestore,
-    applyWeekModel, decompose/applyBook/schedWriteRecords/registry).
-  - `retireIssued` + `unpublishDay` (publish.ts §6.5); `alIssue` stores the AL's `added` slice;
-    `commitUnpublish` (sched-commit.ts) declares `Boundary.kind:'unpublish'`; the correcting-flag
-    empty-delta reissue (§6.1 GU5-001). (unpublish-commit.test.ts, 8)
-- **Foundation adds:** clone-on-write at the 6 scheduler+people write() sites (GU2-009);
-  `weekstashStore.write()` (finding I); `commitAs` `causedBy`; `undo.restore` permission;
-  `Boundary.kind` `'unpublish'`; `sched.retired` LogicalCollection + registry.
+**The plan was red-teamed TWICE across BOTH providers (Fable 5.1 + Codex/Astra), both rounds REVISE→converged.** Round 1 found a blocker + many issues; round 2 found four more in the revision. Everything below folds their findings in. If you re-open the design, re-read the plan's Rev 2/Rev 3 dispositions first.
 
-## Deliberately deferred (flagged, not forgotten)
-- **`layRoster` (§10.1, needed phase 5) + `relandInputs` (§11, needed phase 2) extraction** — the
-  design lists them in the phase-1 foundation, but they have NO phase-1 consumer or test, so
-  extracting them now is untested dead code. Deferred to the phase where each is consumed and can be
-  tested against its real caller. Do them at the START of phases 2 (reland) and 5 (layRoster).
-- **MemoryDoor "harness increment":** MemoryDoor already exists; the disseminated-vs-silent path is
-  modelled via `issuedDisclosed` in unpublish-commit.test.ts. No new hard invariant was added (a
-  hard gate on issued-record deletion would reject the legitimate unpublish/restore); the engine
-  property tests ARE the Step-3 increment.
+## What is BUILT this phase (all committed, all tested, all still DORMANT = zero rendered-byte change)
+Nothing is cut over in production yet (`setCutoverModules` is still empty in the shipped bundle), so the app is byte-identical and the Vercel/live page looks unchanged. Commits on `claude/global-undo`:
 
-## Gates (from raptor-port/) — all green after phase 1
-`npm test` · `npm run build` · `node reference/tfin.js` (728/0) · `npm run test:e2e` ·
-`npm run smoke:tracker`. Test-file changes that were EXTENSIONS not weakenings: publish-commit
-completeness reconstruction (covers rt/cr), schema.test.ts (RETIRED spec + rt/cr/AL-added).
+- **2.0e-1 (E1)** — `resolveRoot` hard-stops at an `origin==='restore'|'seed'` envelope, so a reconciler that fires during undo/redo is out-of-band, never folded into the entry being reversed. THE round-1 BLOCKER (verified against `commit.ts:163` + `timeline.ts:358`); invisible in phase 1, fires the moment LW is cut over. Test in `timeline.test.ts`.
+- **2.0e-2 (E2/C1/C2)** — collection-level eligibility: `deferredCollections = {'lw.postouts'}` in `timeline.ts` makes an lw.postouts closure ineligible (its roster reproject is phase 5). Ineligible entries are removed from SELECTION only; `undoConflict`/`redoConflict` STILL see them as refuse-whole barriers (skipping was the SEQ-003 hazard). `lw.config` is NOT deferred (restores fine, LW settings undo needs it). people/settings/trk already excluded by module-level.
+- **2.0e-3 (C4)** — the timeline's own version store: `subscribeUndo()`/`getUndoVersion()` (bumped on record/undo/redo/cutover), for the buttons to subscribe to WITHOUT a domain notify (which would run reconcilers mid-delivery). E5 (inputs-scope weekId) was DROPPED as subsumed by C3.
+- **2.1 (C3)** — reland inside the restore: `schedWriteRecords(opts.restore)` strips `acc==='g'` from each restored input (on the clone) and runs `reconcileDayFiling(di)` (TWO-WAY, never auto-lands) per touched day BEFORE `applyEnd`. Timeline's `applyRestore` passes `{restore:true}`. Closes the cross-owner unauthorized-land hazard + the dangling-'g' case. Tests in `integration.test.ts`.
+- **2.2 (C5)** — undo-of-a-publish: new `UndoHooks.postRestore` (run inside the reducer after the writes, mutation derived into the envelope). `schedPostRestore` (`sched-commit.ts`) `signClear`s the day on undo of a `boundary.kind==='publish'` (GU5-005 — the plain inverse restored the pre-publish SIGNED book). `applyRestore` now enlists EVERY closure store first (C5 rollback safety) + takes explicit `dir`. `schedWriteRecords` refuses to delete a `logged` `sched.retired` record (append-only, Codex GU-P2-001). Per-issuance `id~n` disclosure DEFERRED to Step 5 (nothing disseminated at Step 3 — C6). Tests in `integration.test.ts`.
+- **2.3 (partial) (C7)** — `weekstashStore.write` refuses `id===CURWEEK` (a stale-stash write would be lost by persistAll).
 
-## Phase 2 — the scheduler + Leave War cutover (design §13 phase 2)
-1. **FIRST extract `relandInputs`** (§11) with a test, then the `acc` strip+reland in the restore.
-2. Cut the scheduler + Leave War over together (forced by `retractLwRow`; LW legacy restore is
-   unreachable at the scheduler cutover): `installUndo()` at boot, `registerUndoStore` for schedStore
-   + the LW store, `setCutoverModules(['sched','lw', ...])`, retarget the legacy Undo/Redo entry
-   points (Shell/board/LW buttons + the keyboard shortcut) at globalUndo/globalRedo (§9), set the
-   snap/bubble/reinstallLocks hooks.
-3. The **undo-of-a-publish** special restore (§6.2): sign-offs CLEAR (not restore), retired entry
-   only if disclosed — wire it where the scheduler is cut over.
-4. The **Unpublish button** UI on the day header (§6.1), + the OIL-credit warn (§6.6 R4-05).
-5. off-week/weekstash (finding I) via the now-wired weekstashStore.write().
-Then phase 3 (people+settings), phase 4 (Tracker + whole-import), phase 5 (LW postouts + layRoster +
-finding-A splice), phase 6 (delete the three dormant stacks, after step 4).
+**Gates run this session:** `npm test` (4962 green after each core change) · `npm run build` (clean) · `node reference/tfin.js` (728/0, verified after the extraction). NOT yet re-run this phase: `npm run test:e2e`, `npm run smoke:tracker` — run the full five before the PR (the cutover must keep tfin 728/0). `relandInputs` extraction commit `3dcecd3` already had all five green.
+
+## What is LEFT (the live cutover — this is where behaviour changes; verify by DRIVING THE APP)
+Do these in order; each test-first; then all five gates; then the standing dual post-build CODE inspection. **All the detail + the exact hook contracts are in the plan's Rev 3 build order (steps 7–10).**
+
+- **2.3 remaining — the cutover wiring** (`src/main.tsx`, after `histInit()/lwHistInit()` ~:70, before `installProbeBridge()` :78). Best as a new `src/state/undo-wire.ts` (`installGlobalUndo()`), called from main.tsx. It must:
+  - `installUndo()`; `registerUndoStore(schedStore, SCHED_COLLS)` (the 8: days, sched.book, sched.mutes, sched.orig, sched.als, sched.retired, inputs, plan); `registerUndoStore(lwStore, LW_COLLS)`; `registerUndoStore(weekstashStore, ['weekstash'])`; `setCutoverModules(['sched','lw','inputs','plan'])`; `setUndoHooks({...})`.
+  - **LW_COLLS = the AUTHORITATIVE nine** (Codex GU-P2-009): `lw.war, lw.cell, lw.bid, lw.postouts, lw.current, lw.config, lw.ledger, lw.balances, lw.oilpolicy` — verify against `lwStore`'s register list (`leavewar/state/store.ts:1213`); define ONE exported list used for both command registration and undo registration. An omitted collection fails `applyRestore` with "no restore target".
+  - **Hooks:** `postRestore: schedPostRestore` (built). `showBubble`: `toast(bubbleText(entry,dir))`. `reinstallLocks`: set the scheduler `HIST.lock=true` (state/history.ts) for the restore's duration so the deferred `histPush` (captured by `cmdDeferEffect`) no-ops (Fable N9 — the LW half is redundant, lwStore.write already `locked()`s). `loadContext(ctx, entry)`: `week`→`loadWeek(wk)` **but NOT when the entry's week-records are weekstash-ONLY** (C7 — else it makes the week CURWEEK and the guard refuses); `war`→`selectWar(id)`. **Change the hook signature to pass `entry`** so it can tell weekstash-only from a real loaded-week closure. `snapView`: scheduler `jumpToChange(key,di)` (`ui/interactions.ts:74`); LW `focusDay`. `resolvePublishDay(id)`: `parseVerId(id).iso`→ di (best-effort; only needed for AL-publish barriers whose closure has no sched.orig/days key). OMIT `currentActor` (defaults to `deriveActor()`).
+  - **Restore epilogue (Fable N5):** the legacy `histApply` runs `armDrop()`+`prunePreviews()` (`history.ts:127-130`) and LW `historyApply` bumps `historyEpoch` (`store.ts:1419`); the write seam does neither, so an undo mid-arm crashes on the next tap and an undo mid-LW-move strands the grid. Run these in the restore's deferred effects (or in `snapView`/`postRestore`). Order them BEFORE `HOOKS.reflow` as `histApply` does.
+  - **Post-snap conflict re-check (Fable N11):** `loadWeek` inside the snap can emit orphan projections that bump revisions after the pre-check, so `applyRestore` fails phase-5 with a technical "stale revision" string. Re-run `undoConflict`/`redoConflict` AFTER `snap` in `globalUndo`/`globalRedo`, and map any `ok:false` reason to plain words.
+- **2.4 — retarget the entry points (§9)** at `Shell.tsx:318-323`, `SchedBoard.tsx:347-350`, `leavewar/ui/Chrome.tsx:104-121` → `globalUndo()`/`globalRedo()`; disabled/label from `undoState()`, subscribing to the timeline version (C4) via `useSyncExternalStore`. `probe-bridge.ts:90` `w.undo/w.redo`→global; ALSO retarget `w.histApply/w.histPush` (:220) or make `histRestore` emit a system restore envelope, and update `probes/adapted/audit-async.cjs:208,290,294` (the only legacy-stack driver — E3/Codex GU-P2-005). Tracker (`Header.jsx:238-239`, keyboard `App.jsx:94/99`) is UNTOUCHED (phase 4). Add a per-phase unreachability test. e2e: no e2e drives scheduler undo; LW undo specs (`e2e/leavewar.spec.ts:138,1697-1740,1986-2027`) should stay green under `globalUndo`.
+- **2.5 — the Unpublish button UI** (§6.4): day-header button, shown only when `dayApproved(di) ∧ canEditSched() ∧ id===dayCurVer(di) ∧ latest version ∧ !DPREV.has(di) ∧ !protectedWeek()` (C10). Runs the forward `sched.unpublish` command (`commitUnpublish`, already built) — `retireIssued(clearSigns:true)`. + the OIL-credit warn (§6.6) if the day's credits were bid against.
+- **2.6 — off-week apply** (C7): the off-week inverse applies to the stash while the week is off screen (loadContext skips the weekstash-only context; the CURWEEK guard is the safety net). + the weekstash key-family test.
+
+## Confirmed SAFE by the red-team (don't re-investigate)
+LW leave-approval double-sided fold is correct (one undo reverses both the lw cells and the minted Raptor input). `reinstallLocks` doesn't double-apply. settings/Tracker never appear in a phase-2 closure. `computePubBar` clears the day after undo-of-publish. E1 stop-at-restore loses no legitimate projection.
 
 ## How to work it
-Opus, high, test-first. NO merge without the owner's explicit "merge live". Push to
-`claude/global-undo`. Owner is non-technical — plain-language reports only
-(`.claude/rules/plain-language.md`). After the whole build: the standing dual cross-provider CODE
-inspection of the diff.
+Opus, high, test-first. NO merge without the owner's explicit "merge live". Owner is non-technical — plain-language reports only (`.claude/rules/plain-language.md`). **Drive the built bundle (`npm run build && npx vite preview`) and LOOK at undo/redo + the Unpublish button before calling the cutover done** (the standing live-view rule). After the whole build: the standing dual cross-provider CODE inspection of the diff.
 
 ## Pick up here (fresh chat)
-Select branch **`claude/global-undo`**. Read design Rev 6 §6/§7/§13 + this file, then start phase 2
-at step 1 above (extract `relandInputs` first).
+Select branch **`claude/global-undo`**. Read the plan doc Rev 3 (the build spec) + this file, then start at **2.3 remaining** (the `installGlobalUndo()` wiring + hooks) above.
