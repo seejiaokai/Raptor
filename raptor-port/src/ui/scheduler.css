@@ -992,6 +992,14 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .dbeak.dprev-restore.warn{color:#20180a;background:#E5B34A;border-color:#E5B34A}
 .dbeak.dprev-restore.warn:hover{filter:brightness(1.05)}
 .dprev-bar .dprev-cancel{margin-left:6px}
+/* [GLOBAL-UNDO] §6.4 — the Unpublish button reads as a QUIET secondary action, not
+   a primary publish: transparent, muted ink, plain edge — pulling a day back is a
+   correction, not the headline control beside it. Its confirm face (§6.6, OIL
+   credits bid against) borrows the same amber as the Load confirm. */
+.dbeak.dunpub{background:transparent;color:var(--ink-2);border-color:var(--edge-2);font-size:10.5px;font-weight:600;padding:3px 9px}
+.dbeak.dunpub:hover{filter:none;color:var(--ink);border-color:var(--edge)}
+.dbeak.dunpub.warn{color:#20180a;background:#E5B34A;border-color:#E5B34A;font-weight:700}
+.dbeak.dunpub.warn:hover{filter:brightness(1.05)}
 .dprev-bar .dprev-switch{margin-left:auto}
 .dver option{color:var(--ink);font-weight:600}
 .day.dok{border-color:rgba(87,201,122,.34)}

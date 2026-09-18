@@ -693,6 +693,10 @@ export const VIEW_RESET: { name: string; scopes: ResetScope[]; reset: () => void
      scoped but were missing from the old hand-lists, so they carried across a
      session (harmless-but-wrong) until now. */
   { name:'RESTARM', scopes:['session','week'], reset:()=>setRestArm(null, null) },
+  /* [GLOBAL-UNDO] §6.6 — the Unpublish confirm arm. Like RESTARM it is a one-shot
+     confirm cleared by any navigation (login/logout, week swap), so it never carries
+     a stale "confirm" across a week. */
+  { name:'UNPUBARM', scopes:['session','week'], reset:()=>setUnpubArm(null) },
   /* week-only: the palette day and the "set default?" offer are keyed to the
      week being left; resetSession clears the offer through setPage instead */
   { name:'ROSDAY',     scopes:['week'], reset:()=>setRosDay(0) },
@@ -712,7 +716,14 @@ export function resetViewState(scope: ResetScope){ for(const e of VIEW_RESET) if
 export let RESTARM:any=null
 export function setRestArm(di:any,ver:any){ RESTARM = di==null?null:{di:+di,ver} }
 export function restArmed(di:any,ver:any){ return !!RESTARM && RESTARM.di===+di && String(RESTARM.ver)===String(ver) }
-export function setDayPreview(di:any,ver:any){ RESTARM=null; if(ver==null||ver==='live')DPREV.delete(+di); else DPREV.set(+di,ver) }
+export function setDayPreview(di:any,ver:any){ RESTARM=null; UNPUBARM=null; if(ver==null||ver==='live')DPREV.delete(+di); else DPREV.set(+di,ver) }
+/* [GLOBAL-UNDO] §6.6 — the Unpublish confirm arm (see the registry entry above). A
+   day whose OIL credits are bid against takes two taps to unpublish: the first arms
+   this + warns, the second (while armed) commits. A day with no clash unpublishes on
+   one tap and never arms. */
+export let UNPUBARM:any=null
+export function setUnpubArm(di:any){ UNPUBARM = di==null?null:+di }
+export function unpubArmed(di:any){ return UNPUBARM!=null && UNPUBARM===+di }
 /* drop any preview whose snapshot no longer exists — undo across a publish,
    unpublishAL, a week switch: without this the day would render the live model
    while its header claims to show history. daySnapOf resolves 'd:<id>' draft
