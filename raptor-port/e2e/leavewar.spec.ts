@@ -875,6 +875,20 @@ async function dragSelect(page: Page, fromId: string, toId: string) {
   await page.mouse.up()
 }
 
+// [GLOBAL-UNDO] a drag-select that RETRIES until the select sheet opens. An admin edit
+// crosses to Raptor and re-derives the roster + OIL, re-rendering the grid over a window
+// that outlasts settleGrid on CI's slower runners; a drag fired into it is silently lost.
+// Retrying is side-effect-free — the sheet must be confirmed open before any sel-* click,
+// so a lost drag (which armed nothing) is simply re-fired. Adapts to any machine speed.
+async function dragSelectStable(page: Page, fromId: string, toId: string) {
+  const sheet = page.locator('[data-testid="select-sheet"]')
+  for (let i = 0; i < 5; i++) {
+    await dragSelect(page, fromId, toId)
+    try { await sheet.waitFor({ state: 'visible', timeout: 1500 }); return } catch { await settleGrid(page) }
+  }
+  await sheet.waitFor({ state: 'visible', timeout: 2000 })   // final attempt surfaces any real failure
+}
+
 // Desktop only: the mouse gesture (4px arm) is what Playwright can drive; the
 // phone TOUCH gesture (180ms hold) and its frozen-column overlay are checked
 // in the live-view pass, not here.
@@ -3979,7 +3993,7 @@ test('undo/redo drive a real grid edit: fill, clear, restore', async ({ page }) 
   const undo = page.locator('[data-testid="lw-undo"]')
   const redo = page.locator('[data-testid="lw-redo"]')
   await expect(undo).toBeDisabled()
-  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-06')
+  await dragSelectStable(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-06')
   await page.locator('[data-testid="sel-LL"]').click()
   await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toBeVisible()
   await expect(undo).toBeEnabled()
@@ -3996,19 +4010,17 @@ test('undo fired in MOVE mode does not corrupt: the grid stays usable', async ({
   desktopOnly()
   await lwRole(page, 'admin')
   await raptorRole(page, 'admin')   // [GLOBAL-UNDO] login actor admin for mayReverse (no re-login)
-  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-07')
+  await dragSelectStable(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-07')
   await page.locator('[data-testid="sel-LL"]').click()
   await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toBeVisible()
-  await settleGrid(page)   // let the admin edit's cross-app re-render settle before a fresh drag
-  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-07')
+  await dragSelectStable(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-07')   // re-select for move (retries past the edit's re-render)
   await page.locator('[data-testid="sel-move"]').click()
   await expect(page.locator('[data-testid="move-banner"]')).toBeVisible()
   const errors: string[] = []
   page.on('pageerror', e => errors.push(e.message))
   await page.locator('[data-testid="lw-undo"]').click()   // undo mid-move
-  await settleGrid(page)   // the undo restore re-renders the grid; let it settle
   // the grid is still alive: a fresh drag-select still opens the sheet
-  await dragSelect(page, 'cell-slipway-2026-01-10', 'cell-slipway-2026-01-11')
+  await dragSelectStable(page, 'cell-slipway-2026-01-10', 'cell-slipway-2026-01-11')
   await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
   await page.locator('[data-testid="sel-cancel"]').click()
   expect(errors, 'no page error from undo during move mode').toEqual([])
@@ -4018,7 +4030,7 @@ test('the select sheet still works, and undo acts on the committed edit', async 
   desktopOnly()
   await lwRole(page, 'admin')
   await raptorRole(page, 'admin')   // [GLOBAL-UNDO] login actor admin for mayReverse (no re-login)
-  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-06')
+  await dragSelectStable(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-06')
   await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
   await page.locator('[data-testid="sel-LL"]').click()
   await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toBeVisible()
@@ -4030,10 +4042,9 @@ test('rapid undo/redo settle to a consistent grid', async ({ page }) => {
   desktopOnly()
   await lwRole(page, 'admin')
   await raptorRole(page, 'admin')   // [GLOBAL-UNDO] login actor admin for mayReverse (no re-login)
-  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-06')
+  await dragSelectStable(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-06')
   await page.locator('[data-testid="sel-LL"]').click()
-  await settleGrid(page)   // let the first admin edit settle before the next drag
-  await dragSelect(page, 'cell-slipway-2026-01-08', 'cell-slipway-2026-01-08')
+  await dragSelectStable(page, 'cell-slipway-2026-01-08', 'cell-slipway-2026-01-08')
   await page.locator('[data-testid="sel-LL"]').click()
   const undo = page.locator('[data-testid="lw-undo"]')
   const redo = page.locator('[data-testid="lw-redo"]')
