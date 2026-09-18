@@ -157,18 +157,11 @@ Do this only once the seven fixes above are merged; it is not part of the featur
 1. ~~**Delete the handoff screenshots**~~ — **DONE (18 Sep 26).** The three images in
    `raptor-port/docs/img/plans-selector-followups/` were removed and their reference
    lines dropped from this doc. The doc itself is kept because step 2 below is still open.
-2. **Repo-wide space / redundancy sweep — STILL OPEN, READY to start (18 Sep 26).**
-   The earlier hold is CLEARED: `[CMDL-FINISH]` is now merged to `main` (PR #415), so nothing
-   is editing the command-layer / Tracker files in parallel and there is no collision risk.
-   Do it in a fresh chat off `main` as its own gated PR, in batches. Find genuinely dead or
-   redundant material that
-   can be safely removed to save space: orphaned files, unreferenced assets/images, dead
-   CSS, unused exports/functions, stale docs, duplicated content, build cruft.
-   **CAUTION — this repo deliberately KEEPS some dead-looking code** (CLAUDE.md §Stable
-   decisions): e.g. `WEEKS`, `restoreDayVersion`, `openWarns`, `autoSortRoster`,
-   `saDutyIx`/`waveDutyBlock`, `localBackend`, the `probe-bridge` API — kept for
-   reference/tests/probes. Do NOT remove those. For each candidate: grep the whole repo
-   (code, tests, probes, docs, reference) for references, and confirm it isn't a
-   deliberately-retained item, before removing. Land it as its own gated PR, in batches,
-   with gates green — never bundled with the feature fixes. Report what was removed and the
-   space saved; ask the owner before removing anything load-bearing or ambiguous.
+2. **Repo-wide space / redundancy sweep — DONE (18 Sep 26); NOTHING REMOVED, by owner's choice.**
+   The sweep was run and found the repo already tidy — see the `[REPO-CLEANUP]` entry in
+   `OUTSTANDING.md` §Done for the full result. In short: **zero dead source files** (all 522
+   `src` modules import-graph-checked), only **~0.9 KB** of genuinely-dead CSS (the rest is built
+   dynamically at runtime), and the only real weight was **~0.6 MB of design write-ups for
+   already-shipped features** — which the owner chose to **KEEP** for history-keeping (a note left
+   in the tree is browsable; a git-deleted one is only recoverable if you know it existed). No
+   files were removed. **Do not re-run this sweep without a new reason.**
