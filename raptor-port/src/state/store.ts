@@ -24,7 +24,7 @@ import { CURWEEK, setCurWeek } from '../engine/waves'
 import { weekBundle, otherWeekInputs } from '../engine/weeks-data'
 import { seedDemoSans, seedDemoMedical } from './demoseed'
 import { docAdd } from './docs'
-import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAcceptSeedInputs, autoAcceptInput, secOrder, moveSectionModel, reorderSectionTo, secDefaultLoad, waveDefaultLoad } from '../engine'
+import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAcceptSeedInputs, reconcileLandedAcc, relandInputs, secOrder, moveSectionModel, reorderSectionTo, secDefaultLoad, waveDefaultLoad } from '../engine'
 import { qualColsLoad } from '../engine/qualcols'
 import { elogClear } from '../engine/editlog'
 import { markDeletion, resetSched, SCHED, dayApproved, protectedWeek, amFormatOf } from '../engine/publish'
@@ -447,32 +447,9 @@ let weekBaseline = ''
    persisted; see weekstash.ts's "persisted pristine copy is a trap") */
 export function weekDirty() { return weekStashSnap() !== weekBaseline }
 
-/* THE autoAcceptSeedInputs LANDING-MECHANICS GOTCHA a stash restore runs
-   into: acceptInput (engine/slots.ts) does not just set `row.acc='g'`, it
-   PUSHES a real ground row onto DAYS. A stash restore hands back DAYS with
-   that row ALREADY on it (it was there when the week was last left), but the
-   epilogue below still clears every input's `acc` first (see its own
-   comment) so a genuinely NEW input can land — which means the already-
-   landed row's `acc` reads false too. Calling acceptInput again for it does
-   NOT duplicate the row (acceptInput's own dedup guard, keyed on the row's
-   content, refuses a second push) — but it also leaves `acc` unset, so the
-   Inputs page would offer to "Accept" a row that is already sitting on the
-   board. This reconciles that BEFORE the real landing pass runs, by reading
-   `acc` straight off whether a matching ground row already exists — no call
-   into acceptInput, so no duplicate write, no edit-log entry, no flashAdded
-   for something that was never actually re-added. */
-function reconcileLandedAcc() {
-  INPUTS.forEach((r: any) => {
-    if (r.acc || !isPersonal(r.type) || inputProtected(r)) return
-    /* the LANDING is proven by an existing ground row keyed to this input, on ANY
-       loaded day — NOT by the input's start date being in the loaded week. A
-       multi-day input can start in a prior week yet land on this week's Monday
-       (P2-REREVIEW-07); the old dateIx(start) guard dropped its 'g' on
-       navigation, and the frozen fingerprint then read a phantom amendment. */
-    const key = inpId(r)
-    if (DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g.src === key))) r.acc = 'g'
-  })
-}
+/* reconcileLandedAcc + the restore-landing pass now live in engine/slots.ts
+   (relandInputs), the ONE shared landing mechanic behind a week swap AND a
+   Step-3 undo restore ([GLOBAL-UNDO] §11) — imported above. */
 
 /* THE ONE PLACE THE SCHEDULE MODEL FOR WEEK v GETS BUILT — loadWeek's one
    entry to both the restore path and the pure-seed path, so the two cannot
@@ -582,19 +559,10 @@ function applyWeekModel(v: any): any {
   if (s) {
     /* a row this week deliberately unaccepted before must NOT be auto-landed
        again on the way back in (see unacceptedKeys) — everything else lands,
-       including a row that is brand new since this week was last open */
-    const un = new Set<string>(Array.isArray(s.un) ? s.un : [])
-    const savedPending = { ...SCHED.pending }, savedChanges = { ...SCHED.changes }, savedAdded = { ...SCHED.added }
-    /* an un-hit row is re-PARKED as 'r', not left acc-less: the acc-clear
-       above wiped its dormancy marker, and without putting it back the input
-       would read as fresh and start flagging again the moment the week is
-       re-entered — the exact surprise the owner reported (26 Aug 26). */
-    INPUTS.forEach((r: any) => {
-      if (inputProtected(r)) return
-      if (un.has(inpId(r))) { if (isPersonal(r.type)) r.acc = 'r' }
-      else autoAcceptInput(r)
-    })
-    SCHED.pending = savedPending; SCHED.changes = savedChanges; SCHED.added = savedAdded
+       including a row that is brand new since this week was last open. The
+       re-park-as-'r' of an un-hit row and the amendment-mark preservation now
+       live inside relandInputs (engine/slots.ts, [GLOBAL-UNDO] §11). */
+    relandInputs(new Set<string>(Array.isArray(s.un) ? s.un : []))
   } else {
     autoAcceptSeedInputs()      // land activity inputs on ground (dayApproved now clean)
   }

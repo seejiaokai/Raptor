@@ -446,6 +446,48 @@ export function autoAcceptSeedInputs(){
   INPUTS.forEach((r:any)=>autoAcceptInput(r));
   SCHED.pending={}; SCHED.changes={}; SCHED.added={};
 }
+/* RECONCILE AN ALREADY-LANDED ROW WHOSE acc WAS CLEARED (moved here from
+   state/store.ts, 18 Sep 26 — the restore-landing consumer lives outside
+   store.ts now). A week swap and an undo restore both clear the derived 'g'
+   acc first so the landing can be re-derived (state/store.ts applyWeekModel's
+   acc-clear; [GLOBAL-UNDO] §11's inverse strip), but the ground row itself may
+   still be on the day (it was there when the week was last left, or it came
+   back with the restored day record). autoAcceptInput would then refuse the
+   duplicate push AND leave acc unset — the Inputs page would offer to "Accept"
+   a row already on the board. Read acc straight off whether a matching ground
+   row exists on ANY loaded day (a multi-day input can start in a prior week yet
+   land on this week's Monday, P2-REREVIEW-07), with no call into acceptInput,
+   so no duplicate write, no edit-log entry, no flashAdded for a non-add. */
+export function reconcileLandedAcc(){
+  INPUTS.forEach((r:any)=>{
+    if(r.acc||!isPersonal(r.type)||inputProtected(r))return;
+    const key=inpId(r);
+    if(DAYS.some((d:any)=>((d&&d.ground)||[]).some((g:any)=>g.src===key)))r.acc='g';
+  });
+}
+/* THE ONE SHARED "re-derive this week's input landings" PASS ([GLOBAL-UNDO]
+   §11). Extracted from applyWeekModel's restore branch so a stash restore and a
+   Step-3 undo restore cannot drift. Reconcile any row already present back to
+   'g' (no duplicate), then land every still-unlanded personal input — except a
+   row the user deliberately un-landed (its id in `unaccepted`), which re-parks
+   'r' so it does not silently re-land (the 26 Aug 26 surprise). The amendment
+   marks (pending/changes/added) are a property of the restored book, not of
+   this derived landing, so the pass's own marks (acceptInput -> markEdit) are
+   snapshotted and put back — only what THIS pass adds is undone. The caller
+   owns the acc-strip that runs first and the baseline resync that must bracket
+   this (the §11 timing fix), because those differ between a live week swap and
+   an inverse applied to the loaded week. */
+export function relandInputs(unaccepted?:Set<string>){
+  reconcileLandedAcc();
+  const un=unaccepted||new Set<string>();
+  const savedPending={...SCHED.pending}, savedChanges={...SCHED.changes}, savedAdded={...SCHED.added};
+  INPUTS.forEach((r:any)=>{
+    if(inputProtected(r))return;
+    if(un.has(inpId(r))){ if(isPersonal(r.type))r.acc='r'; }
+    else autoAcceptInput(r);
+  });
+  SCHED.pending=savedPending; SCHED.changes=savedChanges; SCHED.added=savedAdded;
+}
 /* Which day carries the row this input was accepted onto, or -1. The row does
    NOT record its day, and the caller cannot infer it: a multi-day input
    renders an Accept button on every day it spans, so it may have been accepted
