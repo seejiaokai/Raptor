@@ -178,12 +178,20 @@ describe('completeness — the stream reconstructs the persisted week (§7 / R4-
     const orig: any = {}
     const als: any[] = []
     const inputs: any[] = []
+    let inpOrder: string[] | null = null
     for (const [k, e] of m) {
       if (k.startsWith('sched.orig/')) orig[k.slice(k.lastIndexOf(':') + 1)] = e.value
       // [CMDL-FINISH] §5 — the als key is now the verId, not the array index, so
       // collect the values and order the book by iso/seq (chronological AL order).
       else if (k.startsWith('sched.als/')) als.push(e.value)
+      // [CMDL-FINISH] CMDLF-010 — inputs/__order is order metadata, not a row;
+      // consume it to re-sort the inputs, exactly as write() does.
+      else if (k === 'inputs/__order') inpOrder = e.value
       else if (k.startsWith('inputs/')) inputs.push(e.value)
+    }
+    if (inpOrder) {
+      const pos = new Map(inpOrder.map((id, i) => [id, i]))
+      inputs.sort((a, b) => (pos.get(a.iid) ?? 1e9) - (pos.get(b.iid) ?? 1e9))
     }
     als.sort((a, b) => {
       const ai = String(a?.iso ?? ''), bi = String(b?.iso ?? '')
