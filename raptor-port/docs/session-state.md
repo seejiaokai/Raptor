@@ -39,9 +39,10 @@ Fable 5.1 + Codex both inspected the finished diff (`git diff e8aa7ae..HEAD`). F
 - **HIGH, both found it** — undo-of-publish left `SCHED_BASELINE` stale; a later unrelated edit could
   absorb the sign-clear and undoing it silently re-sign the day. Fixed: `schedPostRestore` resyncs the
   baseline after `signClear`. Regression test added.
-- **HIGH (Codex)** — `w.raptorRole` I'd added let a member escalate to admin in the production bridge.
-  Removed; the 4 LW undo e2e tests log in as a real admin now. Also removed the E3 footguns
-  `w.histApply/histPush` + the `w.legacyUndo/legacyRedo` I'd added.
+- **HIGH (Codex)** — `w.raptorRole` (the e2e's admin-actor setter) would let a member escalate to
+  admin on the public site. Now GATED TO LOCALHOST (dev + the e2e's vite preview), so it is never on
+  the deployed site; the 4 LW undo e2e tests use it (no fragile mid-test re-login — that failed CI).
+  Also removed the E3 footguns `w.histApply/histPush` + the `w.legacyUndo/legacyRedo` I'd added.
 - **MEDIUM (Codex C8)** — a restore-caused projection now advances `expected` without a barrier, so an
   immediate redo after undoing an LW edit that wakes the reconciler isn't wrongly refused.
 - **LOW** — Unpublish surfaces a refusal (Fable#4); `oilCreditBidAgainst` counts only a LANDED

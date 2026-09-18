@@ -124,8 +124,12 @@ export function installProbeBridge() {
      the e2e's vite-preview) so it is NOT present on the deployed public site: unlike
      w.lwSetRole (LW role only), raptorRole('admin') would also open scheduler editing
      via canEditSched, so keep that reach off any real surface (Codex GU-P2-002). */
+  // NO notify: a Raptor notify wakes the Raptor->Leave War roster re-sync, which
+  // re-renders the grid and races a drag-select fired right after (fails on CI's
+  // slower runners). mayReverse reads the role at undo-CLICK time, and the buttons
+  // refresh off the timeline, so the flip needs no re-render.
   if (typeof location !== 'undefined' && (location.hostname === 'localhost' || location.hostname === '127.0.0.1'))
-    w.raptorRole = (r: 'admin' | 'member') => { setEffectiveRole(r); notify() }
+    w.raptorRole = (r: 'admin' | 'member') => { setEffectiveRole(r) }
   /* the Leave War VIEWER — the "View as" person the war scopes a member to
      (canEditRow). Production mirrors Raptor's ME onto it through the sync; the
      e2e needs to pin the member's identity to the row it edits without driving
