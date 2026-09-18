@@ -105,20 +105,29 @@ function decompose(snapStr: string): Map<string, RecordEntry> {
     const id = `${wk}:${(al && al.id) ?? n}`
     m.set(`sched.als/${id}`, { collection: 'sched.als', id, value: al })
   }
+  const inpOrder: string[] = []
   for (const r of ((s.i as any[]) || [])) {
     const id = r && r.iid
     if (!id) continue
     m.set(`inputs/${id}`, { collection: 'inputs', id, value: r })
+    inpOrder.push(id)
   }
+  /* [CMDL-FINISH] CMDLF-010 — emit the INPUTS order EXPLICITLY. INPUTS order is
+     meaningful (runInbound keeps the first value per portion; writers use push AND
+     unshift), so a delete→restore that pushed the row back at the end would change
+     which leave code wins. With the order in the record set, a reorder is a
+     recorded change and the position round-trips; write() consumes this reserved
+     id to re-sort (below). */
+  m.set(`inputs/${INPUT_ORDER_ID}`, { collection: 'inputs', id: INPUT_ORDER_ID, value: inpOrder })
   m.set('plan/all', { collection: 'plan', id: 'all', value: { pp: s.pp || [], dm: s.dm || {} } })
   return m
 }
 function schedRecords(): Map<string, RecordEntry> { return decompose(baseline()) }
 
 /* [CMDL-FINISH] §3 — a write() entry with this reserved id (collection 'inputs')
-   reorders INPUTS to the carried iid[] sequence (C11/CMDLF-011). records() does
-   NOT emit it — array order round-trips as-is on an in-place re-apply; the undo
-   step synthesises it only when restoring an order that changed. */
+   reorders INPUTS to the carried iid[] sequence (C11/CMDLF-010/011). records() now
+   EMITS it (CMDLF-010), so an order change is a recorded change and a delete→restore
+   round-trips the position rather than pushing the row to the end. */
 const INPUT_ORDER_ID = '__order'
 
 /* apply a decomposed `sched.book` record value back onto the live SCHED book —

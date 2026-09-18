@@ -68,6 +68,10 @@ interface TxnState {
   causedBy?: number
   env: CommitEnvelope
   api: Txn
+  /* [CMDL-FINISH] CMDLF-012 — a joined child's expectedRevs, merged here so the
+     phase-5 conflict check covers the child's staged base too, not only the
+     root's (a child-joined command's optimistic guard was silently discarded). */
+  childRevs?: Record<string, number>
 }
 interface QueuedCommit {
   cmd: Command; actor: Actor; origin: Origin; causedBy?: number
@@ -209,14 +213,8 @@ function runPipeline(cmd: Command, actor: Actor, origin: Origin, causedBy?: numb
     // the base the caller staged against has moved and this commit is a stale
     // conflict (rolled back, emits nothing). Checked against the PRE-finalize
     // revision map (finalize bumps them). The undo step is the consumer at Step 3.
-    if (cmd.expectedRevs) {
-      for (const key of Object.keys(cmd.expectedRevs)) {
-        const have = revisions.get(key) || 0
-        if (have !== cmd.expectedRevs[key]) {
-          throw new CmdError('conflict', `stale revision for ${key}: expected ${cmd.expectedRevs[key]}, have ${have}`)
-        }
-      }
-    }
+    checkExpectedRevs(cmd.expectedRevs)     // the root command's staged base
+    checkExpectedRevs(txn.childRevs)        // [CMDL-FINISH] CMDLF-012 — every joined child's too
     if (conflictChecker) {
       const c = conflictChecker(txn.env.changes)
       if (c) throw new CmdError('conflict', c)
@@ -310,7 +308,10 @@ function makeTxnApi(txn: TxnState): Txn {
     child(cmd: Command) {
       /* a joined child inherits the PARENT's declared permission (Fable R4-7):
          no re-authorization. It shares the snapshot set (its enlist calls add to
-         txn.enlisted), the rollback, and the ONE envelope. */
+         txn.enlisted), the rollback, and the ONE envelope. [CMDL-FINISH]
+         CMDLF-012 — its expectedRevs join the parent's phase-5 conflict check
+         (checked pre-finalize, same as the root's). */
+      if (cmd.expectedRevs) txn.childRevs = Object.assign(txn.childRevs || {}, cmd.expectedRevs)
       cmd.apply(txn.api)
     },
     boundary(b: Boundary) { txn.boundary = b },
@@ -388,6 +389,17 @@ function guardCheck(before: Map<string, GuardEntry>, txn: TxnState): void {
     }
   }
   if (bad) throw new CmdError('invalid', `un-enlisted store "${bad}" changed during ${txn.cmd.type} — a txn.enlist() is missing`)
+}
+
+/* [CMDL-FINISH] §3 (F8) — the scoped optimistic-concurrency check, against the
+   PRE-finalize revision map (finalize bumps them). Shared by the root command
+   and every joined child (CMDLF-012). */
+function checkExpectedRevs(exp: Record<string, number> | undefined): void {
+  if (!exp) return
+  for (const key of Object.keys(exp)) {
+    const have = revisions.get(key) || 0
+    if (have !== exp[key]) throw new CmdError('conflict', `stale revision for ${key}: expected ${exp[key]}, have ${have}`)
+  }
 }
 
 /* ---- latch release + rollback -------------------------------------------- */

@@ -54,4 +54,30 @@ describe('LW write() — cell round-trip + create->delete', () => {
     restore([{ collection: 'lw.cell', id: `${getState().period.id}:${getState().people[0].id}:2026-01-22`, value: 'LL', op: 'put' }])
     expect(lwStore.signature!()).not.toBe(s0)
   })
+
+  it('applies a war BEFORE its cells even when the cell is listed first (Fable#8)', () => {
+    const pid = getState().people[0].id
+    const newWarId = 'war-new-2027'
+    const period = { ...getState().wars[0].period, id: newWarId, name: 'NEW 2027' }
+    // cell listed BEFORE the war that must exist to hold it
+    const r = restore([
+      { collection: 'lw.cell', id: `${newWarId}:${pid}:2027-02-10`, value: 'LL', op: 'put' },
+      { collection: 'lw.war', id: newWarId, value: period as any, op: 'put' },
+    ])
+    expect(isOk(r)).toBe(true)
+    const war = getState().wars.find(w => w.period.id === newWarId)
+    expect(war).toBeTruthy()
+    expect(war!.grid[pid]['2027-02-10']).toBe('LL')   // cell not dropped despite order
+  })
+
+  it('clones object values on write so the source record is not aliased (Fable#7)', () => {
+    const warId = getState().period.id
+    const period = { ...getState().wars[0].period }
+    const rec = { collection: 'lw.war' as const, id: warId, value: period as any, op: 'put' as const }
+    restore([rec])
+    const stored = getState().wars.find(w => w.period.id === warId)!.period
+    expect(stored).not.toBe(period)                   // installed a clone, not the source object
+    stored.name = 'MUTATED IN PLACE'
+    expect(period.name).not.toBe('MUTATED IN PLACE')  // the source record is untouched
+  })
 })

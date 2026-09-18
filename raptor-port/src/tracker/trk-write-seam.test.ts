@@ -55,6 +55,21 @@ describe('Tracker capture/restore — selection + signature (R3-005/C9)', () => 
     expect((core as any).active).toBe(before)   // selection restored (R3-005)
   })
 
+  it('restore() preserves an unsaved flow DRAFT (SYL), not a rebuild from the persisted def (CMDLF-005/006)', async () => {
+    const store = (core as any).trkStore
+    // an unsaved structural edit: SYL diverges from the persisted def, dirty flag up
+    await (core as any).saveSylText(JSON.stringify([{ id: 'DRAFT-EV', type: 'flight' }]))
+    expect((core as any).SYL.map((e: any) => e.id)).toEqual(['DRAFT-EV'])
+    const snap = store.capture()
+    // the draft moves on (as a rejected gesture's interim state might)
+    await (core as any).saveSylText(JSON.stringify([{ id: 'OTHER-EV', type: 'flight' }]))
+    expect((core as any).SYL.map((e: any) => e.id)).toEqual(['OTHER-EV'])
+    // rollback restores the EXACT draft, not the def rebuilt from mem
+    store.restore(snap)
+    expect((core as any).SYL.map((e: any) => e.id)).toEqual(['DRAFT-EV'])
+    expect((core as any).byid['DRAFT-EV']).toBeTruthy()
+  })
+
   it('the durable-version signature advances on a write', () => {
     const store = (core as any).trkStore
     const s0 = store.signature()
@@ -76,5 +91,21 @@ describe('Tracker gesture grouping — one gesture = one envelope (§4, Class A)
     expect(caught.length).toBe(1)                                          // ONE envelope, not one per write
     expect(caught[0].type).toBe('trk.gesture')
     expect(caught[0].changes.some(c => c.collection === 'trk.marks')).toBe(true)
+  })
+})
+
+describe('Tracker gesture grouping — a cross-syllabus relabel is ONE envelope (§4, Class C)', () => {
+  it('renameStudent emits ONE trk.gesture envelope for the whole relabel', async () => {
+    const id = (core as any).active
+    expect(id).toBeTruthy()
+    const caught: CommitEnvelope[] = []
+    const unsub = onCommit(e => caught.push(e))
+    const p = (core as any).renameStudent(id)          // opens the rename prompt synchronously
+    ;(core as any).dlgClose('RENAMED ' + Date.now())   // answer it (unique — no name clash)
+    await p
+    unsub()
+    const gestures = caught.filter(e => e.type === 'trk.gesture')
+    expect(gestures.length).toBe(1)                    // the whole relabel, not one write per roster
+    expect(gestures[0].changes.some(c => c.collection === 'trk.roster')).toBe(true)
   })
 })
