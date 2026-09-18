@@ -206,8 +206,17 @@ const weekstashStore: EnlistableStore = {
     return m
   },
   /* [GLOBAL-UNDO] §13 phase 1 — the undo/restore write() seam (finding I: an
-     off-week edit captured on the stream round-trips through the stash). */
-  write: (entries) => writeStashRecords(entries),
+     off-week edit captured on the stream round-trips through the stash).
+     C7 — refuse writing the stash for the LOADED week: for CURWEEK the live
+     DAYS/SCHED are authoritative and the stash blob is stale, so writing it
+     would be silently lost on the next persistAll (which re-serializes the live
+     week over it). An off-week undo applies to the stash while that week is off
+     screen; the restore's loadContext must NOT load a weekstash-only context
+     first (else it would make the target week CURWEEK and hit this guard). */
+  write: (entries) => {
+    for (const e of entries) if (e.id === CURWEEK) throw new CmdRefused(`weekstash write to the loaded week ${e.id} — undo it from another week`)
+    writeStashRecords(entries)
+  },
 }
 /* run an input batch that ALSO enlists extra stores (the weekstash), rolling
    every enlisted store back together on a refusal (§6, C11/N5). */
