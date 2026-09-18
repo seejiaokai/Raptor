@@ -2532,3 +2532,15 @@ Checkpoint (tasks #59, #60 complete): no further observations.
 **Suggested improvement:** When documenting glob/path patterns in code, prefer `//` line comments, or write the glob without the literal `*/` (e.g. `sched.<coll>/<wk>`, `lw ...·/all`). A build-hygiene checklist could add: "no `*/` inside a block comment except its terminator" — trivially greppable (`grep -n '\*/'`).
 
 **Principle:** An opaque transform/parse error whose reported location is offset from the real cause wastes iterations; the fastest fix is recognising the SIGNATURE (unterminated-regex/semicolon error right after a comment that documents a path glob) rather than re-reading the flagged line. Cheap mechanical guards beat re-derivation.
+
+### Observation 167: Distinguish flaky parallel-load test failures from real regressions before acting
+
+**Status:** OPEN
+**Date:** 2026-09-18
+**Session context:** Running the full vitest gate after a large GLOBAL-UNDO build. A first full run failed only the file I'd just changed (expected); after fixing it, a re-run failed 8 tests across UI files I had NOT touched — a different set than the first run.
+
+**Issue:** Under a full parallel vitest run, a handful of timing-sensitive UI-render tests (`src/ui/*.test.tsx`) fail non-deterministically. Treating these as regressions from the change under test would send you debugging the wrong code. The tell-tales that it is FLAKE, not regression: (a) the failing SET differs between runs, (b) the failing files are outside the change's surface, (c) they pass when re-run in isolation, (d) the built artifact shows the changed module tree-shaken out entirely.
+
+**Suggested improvement:** A verification/gates skill should include a "flaky vs real" triage step before reporting a gate red: re-run the exact failing files in ISOLATION; if they pass and lie outside the diff's surface, classify as flake and report the gate as green-modulo-known-flake rather than blocking. Prefer the CI's own project split when reproducing.
+
+**Principle:** A non-deterministic failure set is itself evidence. Before debugging a "regression," check whether the failures move between runs, survive isolation, and intersect the change surface — three cheap checks that separate environ/parallelism flake from a real defect and prevent chasing ghosts.
