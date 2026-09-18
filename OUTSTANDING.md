@@ -54,6 +54,18 @@ Codex) and folded in. Two `[CMDL-FINISH]` items were deferred INTO it and remain
 posting-window rebuild on a postouts restore = CMDLF-002; grouping a whole Import as one undo step),
 plus the phase-2 review deferrals under the item below. **NEXT = step 4 (one Absence record) / [DB-STEP].**
 
+**STEP 4 ([ONE-ABSENCE]) — DESIGN Rev 2 DONE + dual red-teamed (19 Sep 26); GATED on owner decisions.**
+Design + both-provider red-team (Codex/Astra high + Fable, both REVISE→affirmed the direction, all
+7+11 findings folded) on branch `claude/arch-stack-4-absence-record-design`. The model: an approved
+absence becomes ONE record (the scheduler Input); the Leave War stops storing its own copy and reads
+approved leave by id (a pure in-memory projection, like the roster). **Decision-ready, NOT build-ready
+— it branches on two NEW owner decisions the red-team surfaced** (a *moved* approved bid: keep approval
+or return to pending — a live 27 Aug feature; and an absence change on a *published* day: silent or a
+pending amendment) plus four earlier ones. **PREREQUISITES: [SYNC-INTEG] P2 + P4 must land first.**
+After the owner answers → Rev 3 → a second red-team round → build. Docs:
+`docs/superpowers/specs/2026-09-19-arch-stack-4-one-absence-record-design.md` (§8 = the decisions) +
+`…-review-log.md`.
+
 Below is the older item ordering (kept for the non-stack items); land what's **cheap, done, or
 in-flight and risk-reducing** first.
 
