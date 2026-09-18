@@ -1,136 +1,106 @@
-# [ARCH-STACK] Step 3 — one global undo — DESIGN (Rev 2, 18 Sep 26)
+# [ARCH-STACK] Step 3 — one global undo — DESIGN (Rev 3, 18 Sep 26)
 
-> **Status:** Rev 2 — **BUILD-READY pending a fresh dual cross-provider red-team** of THIS
-> revision (Codex/Astra + Fable 5.1, both high). Rev 1 was returned REVISE by both reviewers
-> (converged) because it assumed Step-2 machinery that was only built for the scheduler. That
-> gap has since been closed by **`[CMDL-FINISH]` (merged + live, PR #412/#415)**: Leave War and
-> Tracker now have the causal both-side envelope, projection origins, one-gesture-one-envelope,
-> the per-store `write()` seam, and guarded-store registration. So Rev 2 rewrites the design on
-> the foundation that now genuinely exists, folds in the durable §12-B undo-engine corrections
-> and the two items `[CMDL-FINISH]` deferred to this step (CMDLF-002 postouts reproject; whole-
-> Import undo granularity), and bakes in the owner's product rulings (below). No code ships until
-> this revision is red-teamed clean and the owner says "merge live".
+> **Status:** Rev 3 — **BUILD-READY pending a fresh dual cross-provider re-review** of THIS
+> revision. Rev 2 was returned REVISE by both providers (Codex/Astra GU2-001..010 + Fable
+> R2-01..14, converged); Fable independently **confirmed every `[CMDL-FINISH]` foundation claim
+> TRUE in code** (causal join, `write()` on all five stores, the phase-5 `expectedRevs` checker,
+> stable `sched.als` keys, the live `issuedDisclosed` read). Rev 3 folds in ALL round-2 findings.
+> The three converged highs it fixes: the revision/conflict model that would refuse every redo and
+> every second consecutive undo (§4); the reconciler-suppression seam that suppressed nothing (§3.4);
+> and the reversal-authorization hole that let a member undo an admin's decision (§5). A handful of
+> small FOUNDATION additions are folded into build phase 1 (§13). No code ships until this revision
+> is red-teamed clean and the owner says "merge live".
 >
-> **Method (the 17 Sep lesson, still binding):** every claim about existing machinery below was
-> re-checked against CODE (`src/command/types.ts`, `src/state/sched-commit.ts`,
-> `src/leavewar/state/store.ts`, `src/state/disclosure.ts`), not against another doc. A doc
-> agreeing with a doc is evidence of nothing.
+> **Method (still binding):** every claim about existing machinery was re-checked against CODE, and
+> the round-2 fix specs cite exact `file:line`. A doc agreeing with a doc is evidence of nothing.
+> Round-2 transcript: `2026-09-17-arch-stack-3-global-undo-review-log.md` (§14/§15 map every finding
+> to where Rev 3 closes it).
 
-**Depends on:** Step 1 (stable ids everywhere) — DONE. Step 2 (the one command/commit layer +
-record-level change stream) — DONE + live (PR #409/#410). **`[CMDL-FINISH]`** (Step-2 completion
-for LW + Tracker: causal join, projection origins, one-gesture-one-envelope, `write()` seam,
-guarded stores) — **DONE + live (PR #412/#415).**
-**Feeds / interleaves with:** Step 4 (one Absence record) — see §7 (sequencing).
+**Depends on:** Step 1 (stable ids) — DONE. Step 2 (command/commit layer + change stream) — DONE +
+live (PR #409/#410). **`[CMDL-FINISH]`** — DONE + live (PR #412/#415), foundation re-confirmed in
+code by the round-2 review.
+**Feeds / interleaves with:** Step 4 (one Absence record) — §7.
 **Plan of record:** `2026-09-13-architecture-rootcause-plan.md` (RC1/ARCH-02; SEQ-002/003/004).
-**Front-door contract this consumes:** `docs/undo-contract.md` (the durable summary of the command
-stream + the `write()` seam + the plug-in checklist). Read it first.
-**Round-1 review transcript:** `2026-09-17-arch-stack-3-global-undo-review-log.md` (9 Codex + 10
-Fable findings, all accepted). This revision closes every one; §14 maps them.
+**Front-door contract:** `docs/undo-contract.md`. Read it first.
 
 ---
 
-## 0. OWNER RULINGS BAKED IN (product-direction, settled 17–18 Sep 26)
+## 0. OWNER RULINGS BAKED IN (product-direction, settled 17–18 Sep 26 — not reopened by the red-team)
 
-These were the §9 open questions. They are now decided and are NOT reopened by the red-team; the
-red-team attacks correctness, not these product calls.
-
-1. **Conflict policy = REFUSE-WHOLE.** If any target record was advanced by a later change, the
-   undo is refused whole with a plain message; nothing partial is applied (§4). Owner, 18 Sep 26.
-2. **Import undo granularity = ONE UNDO PER WHOLE IMPORT.** A single training-data import (many
-   charts/students) is ONE undo entry that removes all of it, not one-per-chart (§10.2). Owner,
-   18 Sep 26. This completes the `importClick` item `[CMDL-FINISH]` left per-write.
-3. **One global Undo button** — "undo the last thing I did, anywhere", with snap-to-context. No
-   per-screen "undo only here" affordance (§8). Owner (13 Sep + confirmed 18 Sep).
-4. **Redo stays at the change.** After an undo snaps you to another week/tab, Redo re-applies
-   there and keeps you there — same as undo (§8). Coordinator call, 18 Sep, owner not objecting.
+1. **Conflict policy = REFUSE-WHOLE** (§4). Owner, 18 Sep 26.
+2. **Import undo granularity = ONE UNDO PER WHOLE IMPORT** (§10.2). Owner, 18 Sep 26.
+3. **One global Undo button**, "undo the last thing I did, anywhere", with snap-to-context; no
+   per-screen affordance (§8). Owner, 13 Sep + confirmed 18 Sep.
+4. **Redo stays at the change** (§8). Coordinator call, 18 Sep, owner not objecting.
 5. **On-the-record undo of a registered publish = a line in the history** (not a correcting
-   amendment); the issued id is never erased or reused; an export is NOT a boundary event (§6).
-   Owner, 17 Sep 26, superseding the 16 Sep "correcting amendment" wording.
+   amendment); issued id never erased or reused; an export is NOT a boundary event (§6). Owner,
+   17 Sep 26.
+
+The round-2 review raised NO new product questions; every finding is technical and is decided by
+the coordinator per the repo's standing rule.
 
 ---
 
-## 1. THE FRAMING — Step 3 is a CUTOVER, built ADDITIVELY, the legacy stacks retire after Step 4
+## 1. THE FRAMING — a CUTOVER, built ADDITIVELY, legacy stacks retire after Step 4
 
-Step 2 + `[CMDL-FINISH]` were purely additive: they added the stream and the per-store seams and
-changed no undo behaviour. Step 3 is the first real **cutover** — it introduces ONE global undo
-timeline that the Undo/Redo buttons drive, *replacing* the three separate snapshot stacks. The
-cutover is a **strangler**, staged per module, never a big-bang:
+Step 3 introduces ONE global undo timeline the Undo/Redo buttons drive, *replacing* the three
+snapshot stacks (scheduler `HIST`, Leave War per-war snapshot, Tracker mark/structural history).
+The cutover is a **strangler**, staged per module:
 
-- **The new timeline becomes authoritative for the UI**, driving Undo/Redo, one module at a time.
-- **The three legacy snapshot stacks are KEPT as a dormant fallback** (scheduler `HIST`, Leave
-  War per-war snapshot, Tracker mark/structural history) until Step 4 removes the last
-  reconciliation ambiguity (SEQ-004). They are **retired** — `undo()`/`lwUndo()`/`applyMarkHist()`
-  deleted — only **after Step 4**.
-- **"Dormant" means UNREACHABLE, not merely unused** (round-1 finding F4/GU-009 — the load-bearing
-  safety rule). Once a module is cut over, EVERY undo/redo entry point for it — the buttons, the
-  Ctrl+Z / keyboard handlers, the probe bridge, any exported handler — routes through the ONE new
-  dispatcher; the legacy path for that module is not reachable from any input. Two undo systems
-  must never drive one module's records, or the global timeline and a live legacy stack disagree
-  on revisions and the very two-systems hazard this whole step exists to remove sneaks back in
-  (§9). A surviving legacy call (e.g. an internal restore) may only run as
-  `commitAs(restore, system)`.
+- The new timeline becomes authoritative for the UI, one module at a time.
+- The legacy stacks are kept as a dormant fallback until Step 4 removes the last reconciliation
+  ambiguity (SEQ-004); they are deleted only **after Step 4**.
+- **"Dormant" means UNREACHABLE, not merely unused (round-2 GU2-006/R2-08 + round-1 F4).** This is
+  the load-bearing safety rule and it is STRONGER in Rev 3: because a legacy restore path writes
+  **off-stream — it does not bump the per-record revision** (LW `historyApply`/`LW_RESTORING` →
+  `rawPersist`, scheduler `histRestore` → `SCHED_RESYNC`, Tracker `TRK_RESTORING` raw writes), a
+  reachable legacy stack silently advances shared records past what the timeline's expectation map
+  (§4) knows, so the timeline's conflict check then passes on stale data and corrupts. Therefore a
+  module's legacy restore paths must be UNREACHABLE from the moment ANY cut-over module's closures
+  can touch that module's records (§7 reworks the order around this — the scheduler's input-delete
+  already writes LW records via `retractLwRow`, so LW's legacy restore cannot stay reachable once
+  the scheduler is cut over).
 
-**What Step 3 delivers:** one Undo button for the whole app, over stable ids, that
-(1) dissolves the delete-vs-undo bug family at the root (§2), (2) refuses a member reversing an
-admin's or another person's decision (§5), (3) refuses-whole rather than clobbering a later
-independent edit (§4, SEQ-003), (4) honours the publish boundary read LIVE (§6, SEQ-002 + the
-17 Sep ruling), and (5) snaps the view to where a change was so an off-screen undo is visible
-([XWEEK-UNDO]).
-
-**Non-multi-user by construction, but forward-compatible.** Step 3 builds the **single-tab,
-single-session, per-actor** timeline. The multi-user rules (undo scoped to login session; never
-touches another user; others see your change/undo live from the shared DB; `remote` changes are
-never undo entries) are **captured, not built** (memory `future-undo-semantics-multiuser`) and the
-shape carries `actor`+`session` on every entry so Step 5 slots in without rework (§5.4).
+**Non-multi-user by construction, forward-compatible.** Single-tab, single-session, per-actor
+timeline; `actor`+`session` on every entry so the Step-5 multi-user rules attach without rework
+(§5.4). Memory `future-undo-semantics-multiuser` is authoritative.
 
 ---
 
 ## 2. What it must dissolve — the bug family, and WHY one timeline removes it at the root
 
-The read-only cross-provider audit (Codex + Fable, 13 Sep 26,
-`2026-09-13-sync-delete-undo-integrity-spec.md`) found a family of delete/undo bugs tracing to
-**two whole-world snapshot undo stacks (scheduler + Leave War) sitting over the same synced data**.
-When one stack rewinds its photo it re-drives the diff reconciler (`sync.ts`
-`runOutbound`/`runInbound`), which re-derives the *other* side by comparison — and every such
-re-derivation is a guess about which copy wins.
+The 13-Sep sync/delete/undo audit found a bug family tracing to two whole-world snapshot stacks
+over the same synced data: rewinding one stack re-drives the diff reconciler
+(`sync.ts` `runOutbound`/`runInbound`), which re-derives the *other* side by comparison — a guess.
 
-| Finding | What the user sees | Root (today) | How ONE timeline dissolves it |
+| Finding | User-visible | Root today | How ONE timeline dissolves it |
 |---|---|---|---|
-| **A (undo-face)** | Delete an approved leave on the war → it comes back "Raptor-owned", can't be deleted again | reconciler demotes+rebuilds instead of propagating the delete | Undo applies the **exact recorded before-image** of every touched record, never re-running the reconciler as a guessing pass. **BUT finding A also has a FORWARD face** (war-side delete → demote → re-land raptor-owned, no undo involved) that a record-level inverse cannot reach — see the note below. |
-| **C (DU-001)** | A member can Undo/Redo to reverse an **admin's** Leave War decision | `historyApply` restores a snapshot with no role/viewer check | Reversal is authorized per-change against the CURRENT actor via `mayReverse` (§5); admin-decision-undone-by-member is REFUSED. |
-| **D (DU-005/006)** | Undo of a synced leave flips it Raptor-owned, loses `source`/`shiftedFrom`/remarks, re-mints a fresh `iid` | the demote path re-mints; unrelated snapshots overlap | The before-image already CONTAINS `source`/`shiftedFrom`/remarks/`iid`; restoring it re-mints nothing. Unrelated edits are separate records, never in this envelope's inverse. |
-| **E (F4)** | Delete a leave on the war, Undo → the person shows it **twice** | LW Undo restores the bid → reconciler mints a *second* plain row | The inverse restores the *one* prior state of both the bid record and the day record; no second row is derived (reconciler suppressed on restore, §3.4). |
-| **F (F5)** | Filing on inputs what the war already had makes the war copy "Raptor's"; deleting the input later deletes the original | forward reconciliation ownership upgrade | Undo restores exact before-images; the **forward** ownership ambiguity is what **Step 4** (one Absence record) removes — §7. |
-| **I (DU-004)** | Delete/edit an input while on another week → a stale ground row reappears on return | delete cleanup searches only the loaded week's DAYS | Conditional — see the off-week note below. |
+| **A** | Delete an approved leave on the war → comes back "Raptor-owned", undeletable | reconciler demotes+rebuilds | Undo applies exact recorded before-images, no reconciler guessing. **A ALSO has a FORWARD face** (no undo involved) — carried as a forward splice fix (below), not claimed dissolved by undo alone. |
+| **C** | A member Undo/Redo reverses an **admin's** LW decision | snapshot restore, no role check | `mayReverse` per-change against the CURRENT actor AND the forward actor's role (§5) — REFUSED. |
+| **D** | Undo of a synced leave flips it Raptor-owned, loses `source`/`shiftedFrom`/remarks, re-mints `iid` | demote path re-mints | Before-image CONTAINS all of it; restore re-mints nothing. |
+| **E** | Delete a leave on the war, Undo → shows **twice** | LW Undo restores bid → reconciler mints a 2nd row | Inverse restores both records' one prior state; reconciler re-run reaches a fixpoint (§3.4), derives nothing. |
+| **F** | Filing on inputs what the war had makes the war copy "Raptor's"; deleting input deletes original | forward ownership upgrade | Undo restores before-images; the FORWARD ambiguity is removed by **Step 4** (§7). |
+| **I** | Delete/edit an input off-week → stale ground row reappears on return | cleanup searches only loaded week | Conditional on weekstash capture + a weekstash `write()` adapter (§2 note + §11 + §13 phase 1). |
 
-**The one root fix (RC1/ARCH-02):** an undo is a **replay of recorded inverse data**, not a
-re-derivation. The Step-2 envelope already carries the deep `before`/`after` of every record the
-forward command touched — including causal children that JOINED the transaction (now genuinely
-true for LW after `[CMDL-FINISH]`). Applying it as a `restore`-origin commit reverses both sides of
-a synced fact *without asking the reconciler to guess*.
+**Root fix (RC1/ARCH-02):** an undo is a **replay of recorded inverse data**, not a re-derivation.
+The envelope already carries deep `before`/`after` for every record the forward *causal closure*
+touched (LW causal join now real — `[CMDL-FINISH]`, re-confirmed round-2). Applying it as a
+`restore`-origin commit reverses both sides without asking the reconciler to guess; the reconciler
+is then allowed to run and MUST find nothing (§3.4).
 
-> **Correction to Rev 1 (finding F2/A + F6/I — do NOT re-claim what a record inverse cannot do):**
-> - **Finding A's FORWARD face is not dissolved by undo.** The war-delete→demote→re-land bug
->   happens with no undo in play. The GUARANTEE is idempotence of the restored *causal closure*
->   (re-running the reconciler on the restored world yields no further Change); the suppression
->   token (§3.4) is an optimisation, not the guarantee. **We carry the forward fix** as part of
->   this step (recommended, since A is the most-reported bug): a war-side delete of an empty-cell
->   lw-tagged row **splices** the row out rather than demoting it. If the red-team judges the
->   forward fix out of scope, finding A is explicitly **dropped from the "dissolved" table** rather
->   than falsely claimed.
-> - **Finding I (off-week) is conditional on weekstash capture.** `decompose()` reads only the
->   loaded `CURWEEK`; stashed weeks live in `engine/weekstash.ts`. `[CMDL-FINISH]` added the
->   `weekstash` logical collection (`types.ts` line 37–38) so a protected-week clear rolls back
->   atomically, but **the stash is only enlisted where a writer enlists it**. Row I is dissolved
->   **iff** the off-week delete path enlists the stash record for every affected week; where it
->   does not yet, the off-week undo **refuses** (honest) rather than half-restoring. §11 (F7/acc)
->   and the build phase for scheduler pin which paths enlist the stash. Do not claim I solved
->   wholesale.
+> **Corrections carried from round-1/round-2 (do not re-over-claim):**
+> - **Finding A's FORWARD face is a separate fix** (war-side delete of an empty-cell lw-tagged row
+>   **splices** the row out rather than demoting) — carried in phase 5 with its own regression test,
+>   or A is dropped from this table. Not dissolved by undo alone.
+> - **Finding I needs a weekstash `write()` adapter.** `weekstashStore` has `capture/restore/records`
+>   but NO `write()` today (round-2 GU2-008, `state/store.ts:199-208`); `clearHistoryData` enlists it
+>   and deletes stashed weeks in a real user command (`inputedit.tsx:1330`). So the off-week inverse
+>   cannot be APPLIED until phase 1 adds `weekstashStore.write()`. Until then an off-week closure
+>   **refuses whole** rather than half-applying. §13 phase 1 adds the adapter; §11 covers the `acc`
+>   half.
 
-> **CRUX-1 for the red-team (make-or-break correctness).** At Step 3 the LW↔inputs sync
-> reconcilers still exist as live subscribers (they become pure `onCommit`-by-id handlers only at
-> Step 4). A `restore`-origin commit **must not** let the diff reconciler re-fire and re-derive the
-> other side. Mechanism + the idempotence guarantee: §3.4. Attack this first.
+> **CRUX-1 (make-or-break):** a `restore` commit must not let the diff reconciler re-derive the
+> other side. The mechanism CHANGED in Rev 3 — see §3.4.
 
 ---
 
@@ -139,368 +109,458 @@ a synced fact *without asking the reconciler to guess*.
 ### 3.1 The timeline
 ```ts
 interface UndoEntry {
-  seq: number            // the forward user-envelope's seq (identity)
-  scope: Scope           // WHERE it happened (drives snap-to-context, §8)
-  actor: Actor           // WHO did it (snapshot at commit; authorization + session scoping)
-  type: string           // the originating command type (kept for logging/debug only)
-  owners: RecordOwner[]  // §5.1 — per-change ownership DERIVED FROM THE RECORD at forward time
-  inverse: Change[]      // derived from the envelope: per record, invert(), reverse order
-  forward: Change[]      // the envelope's own changes (for redo)
-  revs: Record<string,number>  // the causal closure's post-commit per-record revisions (conflict base, §4)
-  boundary?: Boundary    // publish-boundary flag; registration read LIVE at undo time (§6)
+  seq: number            // the forward USER envelope's seq (identity)
+  scope: Scope           // primary display destination for the snap (§8)
+  contexts: RecordCtx[]  // ALL storage contexts the closure touches — weeks, wars, courses
+                         // (R2-06/GU2-007): derived from the closure's record ids, NOT from scope
+  actor: Actor           // WHO did it — snapshot at commit; actor.role drives reversal auth (§5)
+  type: string           // originating type (logging/debug only)
+  owners: RecordOwner[]  // per-change record ownership, derived at forward time (§5.1)
+  inverse: Change[]      // invert() of the closure's changes, reverse order, NEVER coalesced (R2-14)
+  forward: Change[]      // the closure's own changes (for redo)
+  revs: Record<string,number>  // the closure's post-commit per-record revisions (seeds `expected`, §4)
+  boundary?: Boundary    // publish boundary; registration read LIVE at undo time (§6)
+  eligible: boolean      // false while the entry's module(s) are not yet cut over (§7)
   undone: boolean
 }
 ```
-- **One list, ordered by `seq`, across all modules.** Only `origin:'user'` envelopes become
-  entries (the stream tags `remote`/`projection`/`restore`/`seed` as non-undo — `types.ts` L21).
-- **A timeline entry is a CAUSAL CLOSURE, not a single envelope.** A user action's `projection`
-  children (the LW↔inputs reconciler writes, now real `projection`-origin commits with `causedBy`)
-  are folded into the entry via their `causedBy` chain: the entry's `inverse`/`forward`/`revs`
-  cover the user envelope AND its chained projections. This is what makes the both-side undo
-  complete. A projection/restore child is **never its own entry** and its arrival **never truncates
-  the redo tail** (round-1 F1/GU-001).
-- **Undo cursor + redo tail.** Undo reverses the newest not-yet-undone eligible entry; a new
-  `user` commit truncates the redo tail (standard). Redo re-applies `forward` as a `restore`
-  commit.
+- **One list ordered by `seq`, across all modules.** Only `origin:'user'` envelopes become entries
+  (`types.ts` L21).
+- **An entry is a CAUSAL CLOSURE, derived TRANSITIVELY (round-2 R2-13).** `finalize` sets
+  `causalSeq` to each pipeline's OWN seq (`commit.ts:264`), so a projection raised by a projection's
+  phase-8 chains to that projection, not the user root. The entry is therefore the user envelope
+  ∪ **all envelopes reachable by following `causedBy` upward to that seq** — walk the chain, don't
+  assume one hop. Orphan projections (no `causedBy` — idle trailing reconciles, `store.ts:1291`) are
+  NEVER folded. Children are drained inside the same outer `commit()` (before it returns), so the
+  closure is complete by the time the entry is recorded. A projection/restore child is never its own
+  entry and never truncates the redo tail.
+- **A closure may touch one record twice (round-2 R2-14)** (e.g. a withdraw deletes `lw.cell/x`, an
+  inbound re-puts it). The inverse keeps BOTH changes in reverse order and is applied as-is; the
+  engine never coalesces changes per record, and each store's `write()` applies its entry list in
+  order (LW's is a stable sort, `store.ts:1194`).
+- **Navigation is NOT an entry (round-2 R2-10).** `lw.current` is demoted from a stream record to a
+  raw persisted view-preference (dropped from `lwDecompose`; it is already classified
+  VIEW_PREFERENCE in `registry.ts:7`), so `selectWar` no longer emits a `user` envelope. As a belt:
+  the engine's entry filter also excludes any envelope whose changes are ALL in `{lw.current}` or a
+  `trk.plan` change whose only differing key is `sylId`, and such an envelope never truncates redo.
 
 ### 3.2 Deriving the inverse
-For a closure's ordered `changes = [c1..cn]` (user envelope then its `causedBy` projections in seq
-order), the inverse is `[invert(cn)..invert(c1)]` where
-`invert({op,collection,id,before,after}) = {op: (op==='put' && before===undefined) ? 'delete' : 'put', collection, id, before: after, after: before}`.
-- A `put` with no `before` (record created) inverts to a `delete`.
-- A `delete` inverts to a `put` of its `before`.
-- Reverse order matters when two changes touch dependent records in one closure.
-Pure data from the envelope — no module code, no re-derivation.
+For a closure's ordered `changes = [c1..cn]` (user envelope then its `causedBy` chain in seq order),
+the inverse is `[invert(cn)..invert(c1)]` where
+`invert({op,collection,id,before,after}) = {op:(op==='put'&&before===undefined)?'delete':'put', collection, id, before:after, after:before}`.
+`put` with no `before` → `delete`; `delete` → `put` of its `before`. Reverse order + no per-record
+coalescing (R2-14). Pure data from the envelope.
 
-### 3.3 Applying the inverse — via each store's `write()` seam
-Undo of entry `E` issues **one** `commitAs(inverseCmd, { origin:'restore' })` whose reducer:
-1. enlists exactly the stores/records in `E.inverse`,
-2. calls each store's **`write(entries, {allowIssued})`** (`types.ts` L142–152) with that store's
-   inverse `RecordEntry[]` — apply-all-then-rebuild, refusing issued records unless the boundary
-   rule (§6) grants `allowIssued`,
-3. lets persist/notify/history fire **once** at the transaction boundary (phase 8) via
-   `cmdDeferEffect` — never inline, so no reconciler observes a half-applied world.
+### 3.3 Applying the inverse — via each store's `write()` seam, with clone-on-write
+Undo of entry `E` issues **one** `commitAs(inverseCmd, { origin:'restore', causedBy:E.seq })` (round-2
+R2-11: `commitAs` gains a `causedBy?` opt; the restore type is registered
+`definePermission('undo.restore', anyone)` because `mayReverse` (§5) is the real gate, evaluated by
+the engine BEFORE the commit). Its reducer:
+1. enlists exactly the stores/records in `E.inverse` (loading any off-screen week first — §8),
+2. calls each store's **`write(entries, {allowIssued})`** with that store's inverse `RecordEntry[]`
+   — apply-all-then-rebuild, refusing issued records unless the boundary rule (§6) grants
+   `allowIssued`,
+3. lets persist/notify/history fire once at the boundary (phase 8) via `cmdDeferEffect`.
+- **Deep clone between the immutable timeline image and mutable live state (round-2 GU2-009).**
+  Scheduler and people `write()` currently assign `e.value` BY REFERENCE into DAYS/INPUTS/SCHED/
+  PEOPLE (`sched-commit.ts:135-205`, `people-settings-commit.ts:170-175`); LW already clones
+  (`store.ts:1196-1201`). Phase 1 adds the same clone-on-write to scheduler + people `write()`, so a
+  later in-place edit can never mutate an entry's recorded `forward`/`before` image (which would make
+  a subsequent redo replay the wrong value). This is a FOUNDATION fix (§13 phase 1).
+The restore is transactional (SEQ-003), latched (one repaint/notify), and recorded as a `restore`
+envelope that is not a new `user` entry — it flips `E.undone`. Redo is the symmetric `restore` of
+`E.forward`.
 
-Because it goes through `commit()` it is **transactional** (all-or-nothing rollback — SEQ-003
-atomicity), **latched** (one repaint/notify at the end), and **recorded** as a `restore` envelope
-(`causedBy: E.seq`) that is **not** a new `user` entry — instead it flips `E.undone = true`. Redo is
-the symmetric `restore` commit of `E.forward`. This replaces Rev 1's glib "commit() releases the
-effects" wording (round-1 F8/GU-007): the seam is explicit per-store `write()` adapters, which
-`[CMDL-FINISH]` built and unit-tested for all five stores.
+### 3.4 The reconciler on `restore` — LET IT RUN, PROVE IT FINDS NOTHING (Rev-3 rewrite, round-2 GU2-001/R2-02)
+**Rev 2 was wrong:** it said re-installing the registered effect contexts (`HIST.lock`, `lw.hist`)
+suppresses the reconcilers. It does not — `runOutbound`/`runInbound`/`runOilPass`/`runPoArchive`
+gate on the module-private `SYNCING` flag (`sync.ts:70,248,526,926,1079`), which is never registered
+with the latch; the locks only stop legacy `recordHistory`/`histPush` from pushing a legacy step
+(that is finding F10, not reconciler suppression).
 
-### 3.4 Suppressing the reconciler on `restore` (the CRUX-1 mechanism) — corrected
-The inverse already carries BOTH sides' before-images (the causal child joined the forward
-transaction). Two layers, per round-1 F2:
-- **(a) Origin gate via the registered effect context (the real seam, not a private flag).** Rev 1
-  named `SYNCING`/`HIST.lock`; F2 showed `SYNCING` is a private module flag not registered with the
-  latch. The correct seam is the **`registerEffectContext`** mechanism `[CMDL-FINISH]` shipped
-  (`store.ts` L1226 registers `lw.hist`; the scheduler registers its own): a `restore`-origin
-  commit re-installs each registered suppression context for the duration of its apply+release, so
-  the outbound/inbound reconcilers no-op while the inverse's both-side changes are written directly.
-- **(b) Closure idempotence is the GUARANTEE (not the token).** A property test asserts that after
-  a `restore` commit, re-running the LW sync reconcilers produces **no further Change** — i.e. the
-  restored closure is a fixpoint. This is the safety net if (a)'s suppression is ever bypassed. The
-  red-team must confirm idempotence holds given `runOutbound` runs before `runInbound`.
+**Rev 3 does NOT add a `SYNCING` suppression context.** Fable's round-2 argument (accepted):
+suppressing the reconcilers would HIDE a non-fixpoint — if the restored world were ever not
+self-consistent, suppression would defer the re-derivation to the next unrelated edit, chaining the
+drift to the WRONG cause and making it un-debuggable. Instead:
 
----
-
-## 4. Conflict detection (SEQ-003) — REFUSE-WHOLE (owner-decided)
-
-The classic hazard: A writes X→Y, B writes →Z, then A undoes and must **not** silently restore X
-over B's Z.
-
-### 4.1 The check — inside the transaction (round-1 F8)
-Each entry pins `revs` — the per-record revision after its own causal closure committed. The
-restore command declares `expectedRevs` (= `E.revs`) and the **phase-5 per-commit conflict checker**
-(`Command.expectedRevs`, `types.ts` L177–183) compares each target record's CURRENT in-memory
-revision to it. If any record advanced beyond what the timeline expects (a later `user`/`remote`
-commit touched it and it has not been undone back to `E`'s state), the commit **rejects as
-`conflict`** and rolls back the whole inverse — atomic, nothing partial. The check is INSIDE the
-transaction, not a stateless pre-check (Rev 1's gap).
-
-### 4.2 Policy — refuse-whole (owner, 18 Sep 26)
-On any conflicted target record, refuse the undo with a plain message ("A later change to <thing>
-is in the way — undo that first"). No partial state. Revisit at Step 5 when real concurrency
-arrives.
-
-> **Known consequence, stated not hidden (round-1 F9):** `sched.book/<wk>` is a week-wide "hot"
-> record (it holds the pending-amendment marks), so many scheduler edits touch it. Under
-> refuse-whole, **non-linear scheduler undo is frequently refused** (undo the 2nd-last edit while
-> the last still stands → the shared `sched.book` advanced → refused). This is correct-but-strict.
-> It is acceptable for Step 3 (single-tab, pre-live); if it proves annoying in the live-view pass,
-> the mitigation is Step-4+ record-splitting of `sched.book`, not a partial-undo hack now.
+- **(a) Re-install `HIST.lock` + `lw.hist` for the restore's duration** — ONLY so no legacy undo step
+  is pushed and LW persists route to the projection lane (F10). This is the existing, tested seam.
+- **(b) The GUARANTEE is closure idempotence, made OBSERVABLE.** The inverse already writes BOTH
+  sides' before-images (the causal child was in the forward closure), so when phase 8 lets the
+  reconcilers run they diff a FULLY-restored world and derive nothing. Fable hand-traced this holds
+  for the four load-bearing scenarios (war-delete of an lw-owned leave; Inputs-page delete of a
+  raptor-owned leave; approve-a-bid outbound mint; publish → OIL credit) on BOTH wiring lane orders
+  (Raptor lane inbound-first `sync.ts:1162`, LW lane outbound-first `:1178`), because `write()`
+  applies ALL entries before any pass runs. **The invariant, asserted after every `restore` commit:
+  `commandStream()` contains no `projection` envelope with `causedBy === restore.seq`** — literally
+  "the reconcilers found nothing to do". A non-empty result is a hard test failure and names the
+  exact restore that broke the fixpoint. The (b) property test (§12) is the safety net.
 
 ---
 
-## 5. Authorization at reversal time — `mayReverse`, ownership FROM THE RECORD (round-1 F3/GU-002)
+## 4. Conflict detection — REFUSE-WHOLE, timeline-owned expectations (Rev-3 rewrite, round-2 GU2-003/R2-01)
 
-### 5.1 The rule
-Rev 1 said `permission(E.type)`. That cannot work on shipped code: **every** command permission is
-`anyone` today (`lw.edit` is one permissive type for approve/bid/move/stage — `store.ts` L1212), so
-`permission(E.type)` would permit a member undoing an admin's decision. Replace it with a Step-3
-predicate:
+**Rev 2 was wrong:** it pinned each entry's forward `revs` and demanded exact equality at undo time.
+But `finalize` bumps every touched record's revision for EVERY origin, including `restore`
+(`commit.ts:269-275`, no origin check), so: undo E (a restore) makes `rev = E.revs+1`; a later redo
+of E with `expectedRevs=E.revs` → `conflict` (redo ALWAYS fails); and undoing E2 then E1 where both
+touched the week-wide `sched.book/<wk>` record (every scheduler edit does, `sched-commit.ts:87-91`)
+→ E1's pinned rev is stale → refused. A monotonic counter cannot express "has been undone back to
+E's state".
+
+**Rev 3 splits the two questions the pinned-rev conflated:**
+
+### 4.1 The timeline's own expectation map
+The timeline keeps `expected: Map<recordKey, rev>`. It is updated:
+- when an envelope is RECORDED as an entry (and for each `causedBy`-chained child): `expected[key] = env.revs[key]`;
+- when a `restore`/nav commit is ISSUED (and its chained children): `expected[key] = env.revs[key]`.
+So `expected` always holds the revision the timeline last accounted for on each record.
+
+### 4.2 Out-of-band conflict (the SEQ-003 hazard)
+To undo/redo `E`, the restore command sets `cmd.expectedRevs = { key: expected[key] }` for every key
+in `E`'s closure. The **phase-5 in-transaction checker** (`Command.expectedRevs`, checked at
+`commit.ts:216-217,397-403`, INSIDE the txn, pre-finalize, root + child) compares each record's
+CURRENT revision. A mismatch means something advanced the record OUTSIDE the timeline's knowledge —
+an orphan projection, a `remote` change (Step 5), or a still-reachable legacy stack — and the commit
+**rejects as `conflict`**, rolling back the whole inverse. This is the atomic guarantee.
+
+### 4.3 Non-linear conflict (a SEPARATE timeline rule, not a revision rule)
+Reversing an older entry while a newer one still stands is a timeline question:
+- **Refuse undo of `E`** if any NEWER not-yet-undone entry's closure shares a record key with `E`.
+- **Refuse redo of `E`** if any newer entry committed AFTER `E`'s undo shares a record key with `E`.
+Both are checked against the timeline before the restore is issued, with a plain message.
+
+### 4.4 Policy — refuse-whole (owner)
+On any conflict (4.2 or 4.3), refuse the whole undo/redo; nothing partial. Message: "A later change
+to <thing> is in the way — undo that first."
+
+> **Known consequence, stated (round-2 R2-01 makes it concrete):** because `sched.book/<wk>` is a
+> week-wide hot record every scheduler edit touches, the §4.3 key-sharing rule means **scheduler undo
+> is effectively LINEAR per week** — you can undo the most recent edit on a week, then the next, but
+> not reach past a later un-undone edit on the same week. This is correct-and-strict, acceptable for
+> Step 3 (single-tab, pre-live). Loosening it needs Step-4+ splitting of `sched.book`, not a
+> partial-undo hack now. A property test asserts the positive case works: **N edits on one week → N
+> undos → N redos, all succeed** (the case Rev 2 would have failed at the first redo).
+
+---
+
+## 5. Authorization at reversal time — `mayReverse`, actor-role + record ownership (Rev-3 rewrite, round-2 GU2-002/R2-03/GU2-010)
+
+**Rev 2 was wrong:** its per-record ownership table classified an approved bid as owned by the bidder
+(`setBidState` writes `lw.bid/<war>:<pid>:<date>`, `store.ts:2147-2166`; its outbound child mints
+`inputs/<iid>` with `value.person=pid`, `sync.ts:338`), so a member could undo the ADMIN's approval
+of their own leave — the exact finding C the design claims to dissolve.
+
+**The fix — the forward ACTOR's role is what gates reversal, not just the record owner:**
 
 ```ts
-mayReverse(E: UndoEntry, cur: Actor): boolean
+mayReverse(E: UndoEntry, cur: Actor): boolean =
+  cur.role === 'admin'
+  || ( E.actor.role !== 'admin'          // an action an admin took is admin-only to reverse,
+                                          //   whatever record it landed on
+       && cur.personId != null
+       && E.owners.every(o => o.person === cur.personId) )  // every change is the current person's
 ```
 
-evaluated per change, with **ownership derived from the RECORD**, per collection, captured on the
-entry at forward time as `E.owners`:
+Record ownership (`E.owners`, derived at forward time) per collection:
 
-| collection | owner / gate |
+| collection | record owner |
 |---|---|
-| `lw.cell`, `lw.bid` | the person id parsed from the record id (`${warId}:${pid}:${date}`) — only that person, or an admin, may reverse |
-| `lw.war`, `lw.ledger`, `lw.balances`, `lw.oilpolicy`, `lw.postouts`, `lw.config`, `lw.current` | admin-only (war-level decisions) |
-| `inputs` | `value.person` — only that person, or an admin |
-| `days`, `sched.*`, `people`, `settings`, `plan`, `trk.*` | admin-only (schedule/roster/tracker are admin-authored) |
+| `lw.cell`, `lw.bid` | the person id parsed from the record id `${warId}:${pid}:${date}` (split pid/date from the RIGHT — warId may contain colons; `verId` has no colon so the split is safe, round-2 R2-05-verify) |
+| `inputs/<iid>` | `value.person` |
+| `inputs/__order` | **structural metadata — owned by the union of the affected input records' owners** (round-2 GU2-010): a member may reverse an `__order` change iff every input it reorders/creates/deletes is theirs. Not a person-less admin-only record. |
+| `people/<id>` | `id` — a member ticks their own quals via a `people.edit` user envelope and may undo it (round-2 R2-03) |
+| `lw.war`, `lw.ledger`, `lw.balances`, `lw.oilpolicy`, `lw.postouts`, `lw.config`, `lw.current` | admin-only |
+| `days`, `sched.*`, `settings`, `plan`, `trk.*` | admin-only |
 
-- The canonical refusal: **admin decides → toggles View-as-member → tries to undo their own admin
-  decision → REFUSED**, because `cur` is the effective (member) actor and ownership on an admin-only
-  record is admin. Ownership `personId` comes from the `ME`/viewer binding, not `SESSION` (Step-2
-  §3.5; real identity at Step 5).
-- **Redo carries the identical gate** (§5.3) — you may only redo what you were allowed to undo.
-- Splitting `lw.edit` into per-operation typed commands (approve/bid/move/stage) is a LATER layer;
-  Step 3 gets correctness from record-derived ownership, not from typed permissions.
+- **Canonical refusal now holds:** admin approves a bid (`E.actor.role==='admin'`) → toggles
+  View-as-member (`cur.role==='member'`) → undo ⇒ the `E.actor.role!=='admin'` clause is false ⇒
+  **REFUSED**, regardless of whose `lw.bid` record it is.
+- **Redo carries the identical gate** (round-2 R2-03).
+- Splitting `lw.edit` into per-operation typed commands is a later layer; correctness comes from
+  `E.actor.role` + record ownership now.
+- `Actor.personId` is the `ME`/viewer binding (`actor.ts:29`, confirmed round-2), not `SESSION` —
+  defense-in-depth parity; real identity at Step 5.
 
-### 5.2 History segregation on identity change
-On real login/logout and on role/identity change, the timeline segregates: entries owned by a
-different actor are not eligible for the current actor to reverse, and a logout clears the session's
-timeline. At Step 3 (single account, `ME` toggle) this is enforced by the per-change ownership check
-in §5.1; full login/logout clearing is the Step-5 multi-user extension (§5.4), designed now.
-
-### 5.3 Redo carries the same gate — see §5.1.
-
-### 5.4 Forward-compatible multi-user shape (FUTURE — capture, don't build)
-Every entry carries `actor`+`session`, so Step-5 rules attach without rework: (1) filter the
-timeline to `entry.actor.session === current session` (logout clears); (2) `remote`-origin
-envelopes are never entries (already true); (3) an undo is a normal forward `restore` commit the
-shared DB propagates, so others see it live; (4) one person's timeline never contains another's
-`user` envelope. Memory `future-undo-semantics-multiuser` is authoritative; nothing multi-user is
-built at Step 3.
+### 5.2 History segregation on identity change / 5.3 redo gate / 5.4 multi-user shape
+Unchanged from Rev 2: on real login/logout/role change the timeline segregates (Step 3 enforces via
+the per-change ownership check; full login clearing is Step 5); redo is authorized identically; every
+entry carries `actor`+`session` so the Step-5 rules attach without rework (memory
+`future-undo-semantics-multiuser`).
 
 ---
 
-## 6. The publish boundary — read LIVE (round-1 F5/GU-008 + the 17 Sep owner ruling)
+## 6. The publish boundary — read LIVE, issued face FROZEN (Rev-3 rewrite, round-2 GU2-005/R2-04)
 
-Step-2 §3.4 resolved the policy with the owner; Step 3 consumes + enforces it. The single checkable
-fact is **has the shared database registered this issued version?** — read at UNDO TIME, not from
-the frozen envelope.
+The single checkable fact — **has the shared DB registered this issued version?** — is read at UNDO
+TIME via `issuedDisclosed(id)` (`src/state/disclosure.ts:51`; `discloseIssued` records it), NOT from
+the frozen `boundary.crossable`, for each `E.boundary.ids`.
 
-- **Rev 1's bug:** it read `boundary.crossable`, a value sealed at publish time. After
-  acknowledgement `crossable` is stale → undo would silently reverse a registered publish. **Fix:**
-  evaluate registration LIVE via `issuedDisclosed(id)` (`src/state/disclosure.ts` L46–51 —
-  `discloseIssued` records disclosure, `issuedDisclosed` reads it) for each `E.boundary.ids`. The
-  frozen `crossable` is ignored.
+- **NOT registered (`!issuedDisclosed`)** — nothing is on the shared record. Undo reverses the
+  publish **silently**; a later re-publish MAY reuse the same issued id (SEQ-002). This is the only
+  path live at Step 3 (no shared DB yet).
 
-- **NOT registered (`!issuedDisclosed`)** — nothing is on the shared record anywhere. Undo reverses
-  the publish **silently** (today's silent-undo-before-sent). A later re-publish MAY reuse the same
-  issued id (SEQ-002's "publish AL1 → undo → republish reuses `iso#1`").
+- **Registered (`issuedDisclosed`) — a PARTIAL inverse that FREEZES the issued face (round-2 R2-04
+  fixes Rev 2's recovery-breaking version):** Rev 2 said "skip `sched.als`/`sched.orig`" but would
+  still revert the whole `sched.book`, rewinding `cur[di]`/`dayOK` — so `dayApproved` (which reads
+  only `dayOK`, `publish.ts:120`) would think the day was never published and the next publish would
+  overwrite `orig[di]` with the SAME `iso#0` id (immutability + new-id recovery both violated). The
+  correct partial inverse:
+  1. **Skip** `sched.als` and `sched.orig` changes (issued records never erased; their stable ids —
+     `sched.als/<id>`, `sched-commit.ts:106` — never reused).
+  2. **Within `sched.book`, leave `cv` (cur), `ok` (dayOK) and `al` UNTOUCHED** — the issued face is
+     frozen. `cur[di]` stays at the issued version (e.g. AL1); `dayOK` stays true.
+  3. **Reverse** `days/<wk>#<di>`, the working-copy marks (`p/c/ad`) and signatures (`sg/sb`).
+     Because `dayDelta` is canonical (day vs the `cur` snapshot), this reversal automatically becomes
+     the pending diff for the NEXT amendment — consistent with memory
+     `published-day-input-is-pending-amendment`. Recovery re-publishes as AL2 (`nextSeq` derives from
+     the AL list, `publish.ts:725`, so it is a NEW id — round-2 R2-05-verify).
+  4. **Write a DURABLE "withdrawn on the record" line.** The edit log is session-only (won't survive
+     a reload), so the history line lives in a new durable book field
+     `wd: { [verId]: { at, by, restoreSeq } }`, wired into `schedFields()` (`history.ts:24`),
+     `weekStashSnap` (`store.ts:428`), `decompose()`/`applyBook()`, and rendered in the AL history
+     panel. This is a FOUNDATION addition (§13 phase 1).
+  5. **Enforce issued-record immutability at the command gate** (round-2 GU2-005): a normal (non-
+     restore, non-`allowIssued`) commit that would overwrite a registered `sched.als`/`sched.orig`
+     record is refused at phase 5. (Step-2 §3.4 deferred this; Step 3 turns it on for registered ids.)
 
-- **Registered (`issuedDisclosed`)** — the issued version is out. The undo **goes through** (owner,
-  17 Sep: *"it will be recorded as this was undone in the history to prevent silent bugs"*) but as a
-  **partial inverse**: the inverse SKIPS the `sched.als`/`sched.orig` changes (the issued record is
-  never erased and its id — now stable, `sched.als/<id>` per `sched-commit.ts` L106 — is never
-  reused), the working-copy changes ARE reversed, a **line is written to the history**, and any
-  restored signature bindings are re-validated (SEQ-002). Recovery re-publishes under a NEW id.
+- **AL1-under-AL2 = conflict, by design (round-2 F5-verify):** undoing the creation of AL1 when AL2
+  was numbered after it shares the `sched.book` record → the §4.3 non-linear rule refuses it. You
+  cannot pull a middle issued version.
 
-- **AL1-under-AL2 = conflict, by design (round-1 F5).** Undoing the creation of AL1 when AL2 was
-  numbered after it is caught as a **conflict** via the `sched.book`/`sched.als` revision advance
-  (§4) and refused — you cannot pull out a middle issued version. State this; do not special-case it.
-
-**At Step 3 there is no shared database**, so `issuedDisclosed` is always false → only the **silent**
-path is live and testable against real state. The registered path is unit-modelled via `MemoryDoor`
-(its `discloseIssued` trigger), its real driver arriving with the Step-5 DB adapter.
-
-> **CRUX-2 for the red-team:** confirm the live-read registered/unregistered id-reuse rule is
-> consistent with the amendment engine's identity model (`undo-of-publish-semantics`; amendment
-> phase-2 plan L251–262), and that the partial-inverse (skip `sched.als`/`orig`, write a history
-> line) is well-defined when the publish closure also touched `days`/`sched.book`.
-
----
-
-## 7. Sequencing vs Step 4 (one Absence record) — SEQ-004, recommended interleave
-
-SEQ-004: **do Step 4 (one Absence record) BEFORE retiring the three undo stacks.** While a leave
-fact is stored **twice** (an Input and a war cell) and reconciled by diff, the cleanest undo of a
-leave action is a Step-4 payoff. Step 3's record-level inverse handles it *correctly* via
-before-images, but keeping the LW snapshot stack as a dormant fallback is worth holding until
-one-Absence removes the forward ambiguity (finding F) for good.
-
-**Recommended build order (technical sequencing call — flagged to the owner):**
-1. **Step 3a — the undo ENGINE + the non-double-storage modules.** Timeline, inverse, `restore`
-   application via `write()`, conflict, `mayReverse`, snap-to-context, live boundary; cut
-   **scheduler, people, settings, Tracker** onto it. LW's `user` envelopes are on the timeline and
-   undo via record-level inverse, but the **LW snapshot stack stays dormant**.
-2. **Step 4 — one Absence record** (approve/retract as commands, `bid.inputId`, one roster
-   projection). Removes the double-storage finding F's forward path exploits.
-3. **Step 3b — retire the three snapshot stacks** onto the global timeline. Delete
-   `undo()`/`lwUndo()`/`applyMarkHist()`.
-
-Step 3 and Step 4 designs are siblings and should be red-teamed close together. Step 3's design does
-not depend on Step 4's internals; only the **stack retirement** does.
+At Step 3 `issuedDisclosed` is always false → only the silent path is live/testable; the registered
+path is unit-modelled via `MemoryDoor`'s `discloseIssued`, its real driver arriving with the Step-5
+DB adapter.
 
 ---
 
-## 8. Snap-to-context ([XWEEK-UNDO]) — record-free navigation, ordered AFTER auth+conflict
+## 7. Sequencing vs Step 4, and cutover by RECORD-SET not module (Rev-3 rework, round-2 GU2-006/R2-08)
 
-Every entry carries `scope`, so the UI can put the reversed change in front of the user:
-- `{module:'sched', weekId}` on a non-loaded week → load that week and flash the changed day/rows.
-- `{module:'lw', warId}` while on the schedule → open Leave War at that war.
-- `{module:'trk', courseId, sylId, student?}` → switch to that course/syllabus and centre the event.
+SEQ-004: **Step 4 (one Absence record) BEFORE retiring the three stacks.** While a leave is stored
+twice (an Input + a war cell) the cleanest undo is a Step-4 payoff; keep the LW snapshot as a dormant
+fallback until then.
 
-Two corrections from round-1 (F/GU-006):
-- **Navigation must create NO user envelope and MUST NOT truncate the redo tail.** `selectWar` /
-  `switchSyllabus` / `loadWeek` today emit records or mutate acceptance. The snap uses **navigation-
-  only** variants (view-state moves that enlist no records, or run as `restore`/`system` so they are
-  never `user` entries). A snap is a pure view move; it is not itself undoable.
-- **Order: authorize → conflict-check → (only if the undo will proceed) snap → apply.** A refused
-  undo must never have moved the view or mutated anything through its snap. The nav hop runs before
-  the inverse apply's repaint so the user SEES the change, but after the undo is known to be
-  allowed.
+**The round-2 correction to the cutover ORDER.** Rev 2 said "cut scheduler over in phase 2, LW stays
+on its stack until phase 5". But a scheduler/input command's closure **already contains LW records**
+— `retractLwRow` (`inputedit.tsx:1225`) joins the input command's transaction and writes `lw.cell`.
+Its global inverse must restore those LW records. If LW's legacy `historyApply` is still REACHABLE, it
+can overwrite those same records off-stream without bumping revisions (§1), and the timeline's
+`expected` map (§4) goes stale silently → corruption. So:
 
----
-
-## 9. Dormant = UNREACHABLE + the single dispatcher (round-1 F4/GU-009)
-
-This is the explicit answer to Rev 1 §9-Q6 and the exact failure mode the whole step removes.
-
-- **One dispatcher.** Every undo/redo entry point in the app — the toolbar buttons, the Ctrl+Z /
-  keyboard handlers, `probe-bridge` hooks, and any exported `undo`/`redo` handler — is rewired to a
-  single `globalUndo()` / `globalRedo()` dispatcher.
-- **`eligibleModules` grows per cutover phase.** The dispatcher only drives modules that have been
-  cut over. A module still on its legacy stack keeps its OWN buttons until its phase; the moment it
-  is cut over, its legacy entry points are rerouted to the dispatcher and its legacy stack is no
-  longer reachable from any input.
-- **No module is driven by two systems at once.** This is the invariant a strangler-parity test
-  asserts per phase (§12). The Tracker subtlety (round-1 F4): its legacy `doUndo`→`saveLayout`
-  already emits a `user` envelope, so leaving it reachable would let a legacy undo become a NEW
-  timeline entry — exactly the disagreement we forbid. At Tracker cutover its legacy `doUndo` is
+- **Eligibility is computed from a closure's FULL record-set, not its initiating module.** A closure
+  is undoable only when EVERY module whose records it touches has its legacy restore paths
   unreachable.
-- Any legacy path that must survive internally (a boot/migration restore) runs only as
-  `commitAs(restore, system)`, never as a reachable user undo.
+- **LW's legacy restore paths (`lwUndo`/`historyApply`/`LW_RESTORING`) are made UNREACHABLE at the
+  SAME cutover as the scheduler** (phase 2), because scheduler closures already reach LW records. LW
+  can keep its own snapshot data as a dormant DATA fallback, but no reachable button/handler may
+  invoke it. LW's OWN `user` envelopes are recorded from phase 2 but marked `eligible:false` until
+  LW's full forward cutover; the dispatcher skips ineligible entries.
+- **Orphan-projection consequence, stated (round-2 R2-08):** a still-reachable LW legacy path (before
+  phase 2) that wakes `runOutbound` at idle produces an orphan `inputs.batch` projection (no
+  `causedBy`) that bumps `inputs` revs. A later global undo of a scheduler/inputs entry sharing that
+  input record then fails the §4.2 out-of-band check — a SAFE refusal, not corruption. This is why LW
+  legacy reachability must end at phase 2.
+
+**Recommended build order (technical call, flagged to the owner):**
+1. **Step 3a — engine + foundation additions + scheduler/people/settings/Tracker cutover, AND LW
+   legacy restore made unreachable** (its forward cutover completes here too, since its records are
+   already reachable from scheduler closures — this is a change from Rev 2, forced by GU2-006).
+2. **Step 4 — one Absence record** (removes finding F's forward double-storage).
+3. **Step 3b — delete the three dormant stacks** (`undo()`/`lwUndo()`/`applyMarkHist()`).
+
+Step 3 and Step 4 remain siblings, red-teamed close together; only stack DELETION depends on Step 4.
+
+---
+
+## 8. Snap-to-context ([XWEEK-UNDO]) — pre-check, then load, then apply (Rev-3, round-2 R2-09/GU2-007)
+
+Every entry carries `contexts` (§3.1) — ALL storage contexts derived from the closure's record ids,
+not just the display `scope`. So an inputs-rooted closure that also changed `days/<weekA>#<di>`
+carries week A in `contexts` even though `scope` is `{module:'inputs'}`.
+
+Ordering (Rev 2's "conflict-check → snap → apply" can't hold, because `schedWriteRecords` refuses a
+foreign-week write so `loadWeek` MUST precede the reducer, but the phase-5 check runs AFTER the
+reducer):
+1. **Stateless pre-check** (`revisionOf(key)` vs `expected[key]`, plus the §4.3 non-linear rule)
+   BEFORE moving anything — catches every single-tab conflict cheaply.
+2. **Load every week/context in `E.contexts`** (transactional: all required weeks loaded/enlisted
+   before the reducer, or the whole operation refuses — no partial multi-week restore).
+3. **Snap the view** to the primary `scope` (a view-only move — enlists no records; the demoted
+   `lw.current`/`trk.plan` view-prefs are written as `restore`-origin commits that update `expected`,
+   so nav is never a `user` entry, round-2 R2-10).
+4. **Apply the inverse** through `write()`; the in-txn `expectedRevs` (§4.2) is the atomic net.
+Honest note: an in-txn refusal after the snap leaves the view moved but data untouched; optionally
+`loadWeek` back to the prior week on refusal.
+
+---
+
+## 9. Dormant = UNREACHABLE + the single dispatcher (Rev-3, round-2 GU2-006/R2-12)
+
+- **One dispatcher** — `globalUndo()` / `globalRedo()`. EVERY entry point routes through it. The
+  complete set today (round-2 R2-12, enumerated so none is missed at cutover):
+  - Scheduler: Shell buttons (`Shell.tsx:319-320`), board buttons (`SchedBoard.tsx:348-350`). No
+    Ctrl+Z (`textedit.ts` handles Enter/Escape only).
+  - Leave War: `lwUndo`/`lwRedo` (`Chrome.tsx:109,118`).
+  - Tracker: buttons (`Header.jsx:238-239`) + the ONLY keyboard Undo/Redo in the app
+    (`App.jsx:99` → `core.js:2612 handleUndoKey`).
+  - Probe bridge: `w.undo`/`w.redo` (`probe-bridge.ts:90`) AND `w.histApply`/`w.histPush`
+    (`:220`) — a direct legacy restore the e2e/probes call.
+- **`eligibleModules` / record-set eligibility grows per phase (§7).** At each module's cutover its
+  legacy entry points are retargeted to the dispatcher and its legacy restore becomes unreachable
+  (e.g. `Chrome.tsx` no longer imports `lwUndo`; `w.undo`→`globalUndo`; `w.histApply` restricted to
+  tests or removed). A per-phase test asserts the legacy path is unreachable and no module's records
+  are driven by two systems.
+- Any internally-surviving legacy restore (boot/migration) runs only as `commitAs(restore, system)`.
 
 ---
 
 ## 10. The two folded-in `[CMDL-FINISH]` deferrals
 
-### 10.1 CMDLF-002 — restoring `lw.postouts` must reproject the roster posting-windows
-`applyLwRecord` currently sets `s.postOuts = e.value` and stops (`store.ts` L1147–1157). But the
-people **posting-windows** on the roster are a PROJECTION built by `reprojectRoster` from each
-person's CURRENT `ex.from/ex.to`, not from `postOuts` — so a postouts-only record restore is
-invisible to the roster and the windows are stale.
+### 10.1 CMDLF-002 — restoring `lw.postouts` reprojects the roster INSIDE `write()` (Rev-3, round-2 R2-05)
+Rev 2 proposed doing the reproject "in the restore commit under suppression" — but `setPeople` ends
+in a bare inline `notify()` (`store.ts:1575`) that wakes `reprojectRoster`+`lwSyncTurn`→ the
+reconcilers, inside the reducer, with nothing suppressing them (§3.4). And `projectPeople` lives in
+`leavewar/state/raptorRoster.ts` (no store import), so the "crosses the sync.ts boundary" premise was
+overstated.
 
-**Completion (the undo CONSUMER's orchestration, per the deferral marker):** when a `restore`
-closure includes an `lw.postouts` change, the restore commit — which already holds the clean-
-projection context and suppresses the reconcilers (§3.4) — after applying the record, re-lays the
-restored `postOuts` over the CLEAN Raptor projection: `setPeople(projectPeople())` then the posting-
-window pass, INSIDE the restore commit's deferred boundary, under the effect-context suppression so
-it does not re-enter the LW↔Raptor reconcilers as a fresh user action. This crosses the LW↔Raptor
-boundary `sync.ts` owns, which is why it belongs to the consumer, not to the bare `applyLwRecord`.
-A property test: approve/retract a posting-out, undo, assert both `postOuts` AND every roster
-posting-window equal the pre-state (deep-equal), and the reconciler reaches a fixpoint.
+**Completion — a pure state lay inside `lwStore.write()`, no reconciler involvement:** factor
+`setPeople`'s lay-over (`store.ts:1566-1574`) into a pure `layRoster(people, postOuts, personEdits)`.
+In `write()`, if any entry is `lw.postouts` or `lw.config`, set
+`next.people = layRoster(projectPeople(next.showSans), next.postOuts, next.personEdits)` before
+`withCurrent(next)`; the already-deferred boundary `notify()` (`:1205`) then finds `reprojectRoster`'s
+signature unchanged (a fixpoint, §3.4). Remove the CMDLF-002 deferral marker (`:1147-1156`).
+Property test: approve/retract a posting-out → undo → `postOuts` AND every roster posting-window
+(`people[].to`/`poArchive`) deep-equal the pre-state; and assert the legitimate edge — restoring a
+past-dated window with `poArchive:true` re-archives via `runPoArchive` as a projection child of the
+restore (that is a real derived effect, not a non-fixpoint).
 
-### 10.2 Whole-Import undo granularity — ONE undo per import (owner, 18 Sep 26)
-`importClick` was left per-write at `[CMDL-FINISH]` (each chart/student its own commit) because
-`applyCharts`/`applyStudents` are large async guardrail paths with `loadCourse` reloads inside. The
-owner has ruled a whole import is **ONE** undo entry.
-
-**Approach:** the import stays async on the OUTSIDE (reads, prompts, `loadCourse` reloads stay
-outside `commit`, per the one-gesture rule), but its synchronous model writes across all charts +
-students are grouped into **one causal closure** — a single `user` commit whose reducer applies
-every chart/student record, with the per-chart reloads sequenced as `projection` children joined by
-`causedBy` (or, if a reload must be async, the import is staged so all record writes land in one
-commit and the reloads are pure view rebuilds after). One import → one timeline entry → one undo
-removes all of it. This is a Tracker-cutover-phase build item (§13 phase 4); a property test drives
-a multi-chart import then a single undo and asserts the catalogue/marks/roster return to pre-import
-state.
-
----
-
-## 11. Cross-week `acc` handling (round-1 F7)
-
-`inputs.acc` is per-loaded-week *derived landing* state carried on a global `inputs` record. A naive
-cross-week undo snap-loads the target week then restores a stale `acc` → a false landing, and it
-also trips the "exact before-image" invariant on every cross-week undo.
-
-**Fix:** the inverse **strips `acc` as a projection field** (it is derived, not authored), and the
-restore commit **re-runs the landing reconcile** for the affected week INSIDE the restore
-transaction (as a suppressed projection, same as §3.4), so `acc` is recomputed from the restored
-authored state rather than replayed stale. Long-term, `acc` moves onto the day record (Step 4+); for
-Step 3 the strip-and-recompute is sufficient and is asserted by a cross-week undo property test.
+### 10.2 Whole-Import undo = ONE undo, three phases (Rev-3, round-2 R2-07)
+Rev 2's staging was infeasible (`causedBy` can't chain across an `await`; `loadCourse` writes). The
+real shape:
+- **Phase A (async, ZERO writes):** parse the file, collect every `uiChoice`/`uiPrompt` answer, do
+  every `sGet`, and run the reconcile/migration logic as PURE functions that RETURN the complete
+  `{ key → value | delete }` record set (charts, layouts, sylcat/order/hidden/tomb, eventinfo,
+  per-course rosters/marks/dates/plan/pace/lulls, migration flags, courses). A cancelled chart prompt
+  simply drops that chart from the set.
+- **Phase B (sync, ONE `trkGesture`):** apply the whole set via `sSet`/`delKey` (gesture-pending →
+  mem now, storage at the boundary) — ONE `user` envelope of type `trk.gesture`.
+- **Phase C (view only):** `trkReloadGlobalsFromMem()` + `trkReloadCurrentFromMem(true)`
+  (`core.js:402,411` — both write-free) + render.
+Guard test: a multi-chart import adds EXACTLY ONE `user` envelope; a single undo returns the
+catalogue/marks/roster to the pre-import state.
 
 ---
 
-## 12. Testing & invariants (grow the Step-2 `MemoryDoor` + harness — do not build a new framework)
+## 11. Cross-week `acc` — preserve authored `r`/`u`, recompute only landing (Rev-3, round-2 GU2-004/R2-06)
 
-Classify first (hard / advisory / frozen — SEQ-001), then property-test the undo layer:
-- **(hard)** inverse of a closure, applied, returns every touched record to its exact `before`
-  (deep-equal) — scheduler, inputs, people, settings, LW cell/bid/**postouts+roster windows**,
-  Tracker.
-- **(hard)** a `restore` commit reaches a **reconciler fixpoint**: re-running LW sync produces no
-  further Change (the CRUX-1 idempotence net, §3.4b) — including the postouts reproject (§10.1) and
-  the `acc` recompute (§11).
-- **(hard)** undo/redo round-trips N random `user` commands back to the exact start state (stateful
-  property test over generated valid AND conflicting sequences), and **redo carries the auth gate**.
-- **(hard)** conflict: A:X→Y, B:→Z, then undo A ⇒ `conflict`, B's Z intact, nothing partial;
-  `sched.book` week-wide record behaves as §4.2 states.
-- **(hard/auth)** admin decides → toggle View-as-member → undo ⇒ REFUSED; member can't reverse
-  another `personId`'s change; redo same gate — via `mayReverse` with record-derived ownership.
-- **(hard)** whole-import: multi-chart import → ONE undo ⇒ pre-import state (§10.2).
-- **(frozen)** silent reverse while `!issuedDisclosed`; on the registered side (`MemoryDoor`
-  `discloseIssued`), the issued `sched.als/<id>` is untouched, its id never reused, the working copy
-  IS reversed, and a history line is written (§6).
-- **(hard/strangler)** for each module still on its legacy stack, undo/redo behave byte-identically
-  to pre-Step-3 until that module's cutover; after cutover, **no module is reachable by two undo
-  systems** (§9) — assert the legacy entry point is unreachable.
-- **(regression, findings A/C/D/E/F/I)** each concrete scenario from the sync spec, driven through
-  the real command layer, produces the correct single-copy result (memory
-  `scenario-based-rule-testing`: build the real situation in the running app, assert it lands right,
-  don't just unit the machinery). Finding A includes the FORWARD splice fix (§2) or is dropped from
-  the table.
+Rev 2's "strip `acc` as derived" was wrong: `acc` has THREE values — `'g'` (derived per-week
+landing), `'r'` (removed/dormant, an authored decision, `engine/inputs.ts:440`), `'u'` (filed
+unavailable, authored). `loadWeek`'s own clear preserves `'r'`/`'u'` precisely because they are
+decisions, not landings (`state/store.ts:556-567`); dropping `'u'` was the P2-IMPL-05 phantom-
+amendment bug.
+
+**Fix:** in the inverse, strip `acc` ONLY when `=== 'g'` (mirror `store.ts:567`'s predicate exactly,
+including `inputProtected`); preserve authored `'r'`/`'u'` in both inverse and forward. Inside the
+restore reducer, after `schedStore.write()`, recompute the derived landing: run
+`reconcileLandedAcc()` then the landing pass with `pending/changes/added` saved+restored around it
+(the `store.ts:583-593` idiom), exposed as one `relandInputs()` from `state/store.ts`. Add
+`weekId: CURWEEK` to `inputsScope()` so the snap can load the recording week; the `days` ids in the
+closure are the fallback source of the affected week (feeds `E.contexts`, §8).
 
 ---
 
-## 13. Rollout (all within Step 3; strangler, all five gates green after each phase; nothing merges
-without "merge live"; a fresh cross-provider CODE inspection after the build)
-1. **Engine:** the timeline + causal-closure entries, inverse derivation, `restore`-commit
-   application via `write()`, the phase-5 conflict checker wired to `expectedRevs`, `mayReverse`
-   authorization, snap-to-context (record-free nav), live boundary via `issuedDisclosed`, the single
-   dispatcher, `MemoryDoor` boundary model + the harness increment. **No module cut over yet.**
-2. **Scheduler** onto the timeline (its `HIST` stack kept dormant + made unreachable at its entry
-   points); includes the `acc` strip-and-recompute (§11) and the off-week/weekstash enlistment
-   decision (finding I, §2) — enlist or keep-refusing, explicitly.
-3. **People + settings** onto the timeline.
-4. **Tracker** onto the timeline (mark + structural history kept dormant + unreachable); includes
-   whole-import = one undo (§10.2) and the undoable-draft representation for unsaved structural edits
-   (round-1 GU-005) so structural undo coverage is not lost.
-5. **Leave War** onto the timeline (snapshot stack kept dormant + unreachable — the CRUX-1 module);
-   includes the postouts reproject (§10.1) and the forward splice fix for finding A (§2).
-6. *(after Step 4)* **Retire** the three dormant stacks.
+## 12. Testing & invariants (grow the `MemoryDoor` + harness — no new framework)
 
-Each item is shippable and gated. The forward finding-A splice fix (phase 5) is the one behaviour
-change outside undo itself — called out in its own commit with its own regression test.
+Classify first (hard/advisory/frozen — SEQ-001), then property-test:
+- **(hard)** inverse of a closure returns every touched record to its exact `before` (deep-equal) —
+  scheduler, inputs, people, settings, LW cell/bid/**postouts+roster windows**, Tracker; with
+  **clone-on-write** so interleaved undo/redo + in-place edits never replay a mutated image (GU2-009).
+- **(hard, fixpoint)** after every `restore` commit, `commandStream()` has NO `projection` with
+  `causedBy===restore.seq` (§3.4b) — incl. postouts reproject (§10.1) and `acc` recompute (§11).
+- **(hard, sequential)** N edits on one week → N undos → N redos, all succeed (§4 — the case Rev 2
+  would fail); undo/redo round-trips N random `user` closures back to exact start state.
+- **(hard, conflict)** A:X→Y, B:→Z, undo A ⇒ `conflict` (out-of-band, §4.2), B's Z intact; and the
+  §4.3 non-linear refusal (newer un-undone entry shares a key) — nothing partial.
+- **(hard, auth)** admin approves → View-as-member → undo ⇒ REFUSED (§5, `E.actor.role`); member
+  can't reverse another person's change; member CAN undo own bid / own qual tick / own input
+  create+delete (incl. `inputs/__order`); redo same gate.
+- **(hard, import)** multi-chart import → EXACTLY ONE `user` envelope → one undo ⇒ pre-import (§10.2).
+- **(frozen, boundary)** silent while `!issuedDisclosed`; on the registered side (`MemoryDoor`),
+  `sched.als/<id>` + `sched.orig` untouched, `cur[di]`/`dayOK` frozen, working copy reversed, a
+  durable `wd` line written, recovery publishes a NEW id; a normal overwrite of a registered issued
+  record is refused at the gate (§6).
+- **(hard, off-week)** an off-week closure restores/removes landings in every affected week via
+  `weekstashStore.write()`; where the stash is not enlisted, the undo refuses whole (§2/§11).
+- **(hard, strangler)** each legacy-stack module behaves byte-identically pre-cutover; after cutover
+  its legacy entry point is UNREACHABLE and no module's records are driven by two systems (§9);
+  navigation never creates an entry (§3.1/R2-10).
+- **(regression A/C/D/E/F/I)** each sync-spec scenario driven through the real command layer in the
+  running app (memory `scenario-based-rule-testing`) — finding A includes the forward splice fix or
+  is dropped from the §2 table.
 
 ---
 
-## 14. Round-1 findings → where Rev 2 closes each
+## 13. Rollout (strangler; all five gates green after each phase; nothing merges without "merge live";
+a fresh cross-provider CODE inspection after the build)
 
-| round-1 | closed in Rev 2 |
+**Phase 1 — Engine + FOUNDATION additions (no module cut over yet):**
+- the timeline + transitive causal-closure derivation (§3.1), inverse (§3.2), `restore` application
+  via `write()` (§3.3), the `commandStream()`-fixpoint invariant (§3.4);
+- the timeline `expected` map + phase-5 conflict wiring + the §4.3 non-linear rule;
+- `mayReverse` with `E.actor.role` + record ownership (§5);
+- live-boundary via `issuedDisclosed`, the durable `wd` book field, gate-level issued immutability
+  for registered ids (§6);
+- snap-to-context with `E.contexts` + the stateless pre-check (§8); the single dispatcher (§9);
+- **the small foundation additions the review surfaced:** `weekstashStore.write()` (GU2-008);
+  clone-on-write in scheduler + people `write()` (GU2-009); `commitAs` `causedBy?` + the
+  `undo.restore` permission (R2-11); demote `lw.current` to a raw view-pref (R2-10); `layRoster`
+  extraction (§10.1); `relandInputs()` extraction (§11);
+- `MemoryDoor` boundary model + the harness increment.
+**Phase 2 — Scheduler cutover AND LW legacy restore made unreachable together** (forced by GU2-006):
+scheduler + LW records share closures via `retractLwRow`, so LW's legacy restore cannot stay
+reachable once the scheduler is undoable. Includes the `acc` strip-and-reland (§11) and the off-week/
+weekstash enlistment (finding I) — enlist or explicitly refuse.
+**Phase 3 — People + settings** onto the timeline.
+**Phase 4 — Tracker** onto the timeline (mark + structural history dormant + unreachable); whole-
+import = one undo (§10.2) + an undoable-draft representation for unsaved structural edits (round-1
+GU-005) so structural undo coverage is not lost.
+**Phase 5 — Leave War forward cutover complete** (its snapshot data kept as a dormant fallback);
+postouts reproject (§10.1) + the forward splice fix for finding A (§2), the latter in its own commit
+with its own regression test.
+**Phase 6 (after Step 4)** — delete the three dormant stacks.
+
+Each phase shippable and gated.
+
+---
+
+## 14. Round-1 findings → closed (see the review log for round-1 detail)
+All 9 Codex (GU-001..009) + 10 Fable (F1..F10) round-1 findings were folded into Rev 2 and remain
+closed; the machinery they demanded (causal join, `write()`, one-gesture, off-week collection, stable
+`sched.als`) is confirmed built. The Rev-2 mapping table is preserved in git history of this file.
+
+## 15. Round-2 findings → where Rev 3 closes each
+
+| round-2 | closed in Rev 3 |
 |---|---|
-| GU-001 / F1 — causal both-side envelope didn't exist | Now built (`[CMDL-FINISH]`); §3.1 causal-closure entries; §3.4a uses the real `registerEffectContext` seam |
-| GU-002 / F3 — `permission(E.type)` insufficient (all `anyone`) | §5 `mayReverse` with ownership DERIVED FROM THE RECORD per collection |
-| GU-003 / F6 — off-week / weekstash not captured | §2 note + §11: conditional on stash enlistment; refuse where absent; do not over-claim I |
-| GU-004 — one Tracker gesture ≠ one envelope | Now built (`trkGesture`, `[CMDL-FINISH]`); §10.2 whole-import one closure |
-| GU-005 — Tracker unsaved structural edits lost if history dormant | §13 phase 4: undoable-draft representation before structural history goes dormant |
-| GU-006 — snap mutates records / truncates redo | §8: record-free nav, ordered after auth+conflict, no user entry |
-| GU-007 / F8 — effect contract glib; no `write()` seam | Now built (`write()` per store, `[CMDL-FINISH]`); §3.3 explicit per-store adapters |
-| GU-008 / F5 — boundary read from frozen `crossable`; `sched.als` array-indexed | §6 live `issuedDisclosed`; `sched.als/<id>` now stable-id-keyed (built); registered-side partial inverse specified |
-| GU-009 / F4 — dormant stacks reachable | §9 dormant = UNREACHABLE + single dispatcher + per-phase `eligibleModules` |
-| F2 — suppression token is not the guarantee; finding A is a forward bug | §2 correction + §3.4b closure idempotence IS the guarantee; forward splice fix carried (or A dropped) |
-| F7 — cross-week `acc` restored stale | §11 strip `acc` + recompute inside the restore |
-| F9 — `sched.book` hot record → refuse-whole refuses a lot | §4.2 stated as a known consequence, not hidden |
-| F10 — legacy `HIST` diverges once timeline used | §9 unreachable rule makes this moot; not claimed behaviour-identical after cutover |
+| GU2-001 / R2-02 — suppression seam suppresses nothing | §3.4 rewritten: locks stop legacy step-push only; reconcilers RUN; fixpoint made observable (no `projection` caused by the restore seq); NO SYNCING context |
+| GU2-002 / R2-03 — member can reverse admin decision | §5 `mayReverse` keyed on `E.actor.role` + record ownership; admin action admin-only whatever the record |
+| GU2-003 / R2-01 — revs model refuses redo + 2nd undo | §4 timeline-owned `expected` map (out-of-band conflict) split from the §4.3 non-linear key-sharing rule; N-edits→N-undos→N-redos test |
+| GU2-004 / R2-06 — `acc` strip erases authored `r`/`u` | §11 strip only `'g'`; preserve `r`/`u`; `relandInputs()` inside restore |
+| GU2-005 / R2-04 — skipping issued breaks recovery | §6 issued face frozen (`cv`/`ok`/`al` untouched); durable `wd` line; gate-level immutability; recovery = new-id AL2 |
+| GU2-006 / R2-08 — module cutover doesn't isolate shared records | §1/§7/§9 eligibility by closure record-SET; LW legacy restore unreachable at scheduler cutover (phase 2) |
+| GU2-007 / R2-06 — scope misses replay contexts | §3.1 `contexts` derived from record ids; §8 load all contexts or refuse; `weekId` on `inputsScope` |
+| GU2-008 — weekstash has no `write()` | §2 note + §13 phase 1 adds `weekstashStore.write()`; refuse off-week closures until then |
+| GU2-009 — replay aliases timeline images | §3.3 clone-on-write in scheduler + people `write()` (LW already clones); interleave test |
+| GU2-010 — `inputs/__order` has no owner | §5 structural-metadata ownership = union of affected input owners |
+| R2-05 — postouts reproject re-enters reconcilers inline | §10.1 pure `layRoster` inside `lwStore.write()`, no reconciler involvement |
+| R2-07 — import staging hand-wavy | §10.2 three phases (async zero-write set → one `trkGesture` → write-free reload) |
+| R2-09 — snap ordering can't hold | §8 stateless pre-check → load contexts → snap → in-txn net |
+| R2-10 — navigation becomes an entry | §3.1 demote `lw.current` to view-pref + entry filter; nav as `restore`-origin |
+| R2-11 — `commitAs` has no `causedBy`; restore type unregistered | §3.3 + §13 phase 1 |
+| R2-12 — entry-point set incomplete | §9 full enumeration incl probe `w.histApply`/`w.histPush` + Tracker keyboard |
+| R2-13 — closure derivation must be transitive | §3.1 walk `causedBy` upward; orphans never folded |
+| R2-14 — a closure can change one record twice | §3.1/§3.2 never coalesce; apply inverse list as-is |
 
-**Revision history:** Rev 1 (17 Sep 26) — first design, both-provider red-team → REVISE (converged).
-Round-1 transcript: `2026-09-17-arch-stack-3-global-undo-review-log.md`. Rev 2 (18 Sep 26) —
-rewritten on the now-built `[CMDL-FINISH]` foundation; folds §12-B corrections + CMDLF-002 +
-whole-import; bakes owner rulings §0. **Next: fresh dual red-team of Rev 2, then build.**
+**Revision history:** Rev 1 (17 Sep) first design → REVISE (converged). Rev 2 (18 Sep) rebuilt on the
+live `[CMDL-FINISH]` foundation → REVISE (converged; foundation confirmed built). Rev 3 (18 Sep) folds
+all round-2 findings. **Next: fresh dual re-review of Rev 3, then build (Opus, high, test-first).**

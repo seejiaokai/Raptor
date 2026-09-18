@@ -74,3 +74,68 @@ take Fable F2's forward-fix-or-drop; recommend **carry the forward splice fix** 
 root of the most-reported bug. (2) The prerequisites are large enough to be their **own gated
 step** ("finish the command layer for LW + Tracker") rather than a Phase 0 buried in the undo
 build — surfacing to the owner as a sequencing choice before writing Rev 2.
+
+---
+
+## Round 2 — Rev 2 reviewed (18 Sep 26) — BOTH REVISE, converged again
+
+Rev 2 (rebuilt on the now-live `[CMDL-FINISH]` foundation) sent to both providers. Plan SHA256
+`d8fda1391935e27423f2a528c1aaa180f4b01e1d2dc4892bdcf1581953eb80ca`; repo HEAD `8c3e91d`.
+
+### Round 2 — Codex / GPT-6 Astra (high) — VERDICT: REVISE
+Runner result `C:\Users\User\AppData\Local\Temp\claudex-ogt9skmr`; codex-cli 0.154.0; session
+`01a0b21b-…`; 268 s. 7 high, 3 medium. Static, read-only against HEAD.
+
+| id | sev | gap | fix |
+|---|---|---|---|
+| GU2-001 | high | §3.4 suppression doesn't stop reconciliation: the registered contexts restore only sched/LW `HIST.lock`; `runOutbound`/`runInbound` gate on the private `SYNCING` flag (`sync.ts:248,526`); locked persistNotify keeps notifying/projecting. | Explicit restore-suppression context the sync subscribers consult, held through apply+deferred notify+drain; keep the fixpoint check. |
+| GU2-002 | high | §5 table permits the promised-refused admin-decision reversal: `setBidState` changes only the person's `lw.bid` (`store.ts:2147-2166`), classified owned-by-person → admin→view-as-member→undo passes. | Capture reversal authority separately from subject ownership; admin decision transitions admin-only; enforce for undo AND redo. |
+| GU2-003 | high | §4 pinned forward revs + exact-equality can't do sequential undo: `finalize` bumps revs for restore too; undo B then undo A expects the stale pre-B rev → fails; redo fails. No rebasing algorithm. | Separate current expectations for undo/redo, updated from successful restore envelopes; rebase predecessor expectations; keep rejecting independent intervening writes. |
+| GU2-004 | high | §11 `acc` is not fully derived: `acceptInput` writes `acc='u'`, `unacceptInput` `acc='r'` as authored decisions (`slots.ts:367,533`); stripping loses dormancy/filing. | Preserve authored `r`/`u` in inverse+forward; recompute only derived landing. |
+| GU2-005 | high | §6 skipping issued records while restoring `sched.book` breaks recovery: inverse sets dayOK false but keeps `sched.orig`; `dayApproved` reads only dayOK (`publish.ts:120`) → next publish overwrites `orig[di]` with same `iso#0` (`:184-200`); `commitPublish` sees no new id. | Withdrawn-publication state distinct from never-published; update eligibility + id allocation for new-id recovery; specify redo; enforce registered-record immutability at the gate. |
+| GU2-006 | high | Module-by-module cutover doesn't isolate shared records: scheduler/input commands retract LW cells via `retractLwRow` (`inputedit.tsx:1225`), so their inverse restores LW records, yet LW snapshot undo stays reachable until phase 5 and `historyApply` overwrites off-stream w/o rev bump. `eligibleModules` can't prevent the overlap. | Cut over all modules sharing a causal write set together, OR forbid global reversal of cross-boundary closures until every participating legacy restore path is disabled; define authority over records/closures, not just initiating module. |
+| GU2-007 | med | Root scope doesn't identify every replay context: inputs commands carry `{module:'inputs'}` only (`sched-commit.ts:285`) though deleting an accepted input changes days in week A; after nav to week B the snap has no week and `schedWriteRecords` refuses foreign `days/A`. | Record/derive all affected storage contexts from the closure; transactional multi-week load/restore or explicit whole-operation refusal. |
+| GU2-008 | med | `weekstashStore` has no `write()` (`store.ts:199-208`); `clearHistoryData` enlists it and deletes stashed weeks in a real user command (`inputedit.tsx:1330`) → a captured closure can't be applied by the write-only restore. | Add a batch weekstash write adapter (routing, auth, deferred persist, preserved-week metadata); until then explicitly refuse such closures before any mutation. |
+| GU2-009 | high | Direct replay aliases timeline images into live state: scheduler/`peopleStore.write` assign `e.value` directly into DAYS/INPUTS/SCHED/PEOPLE (`sched-commit.ts:135-205`, `people-settings-commit.ts:170-175`); LW clones, they don't → redo installs `E.forward`'s object, a later in-place edit mutates the recorded image. | Deep-clone between immutable timeline data and every mutable store write (centrally in replay or per adapter); test interleaved undo/redo + in-place edits. |
+| GU2-010 | med | `inputs/__order` (iid array, `sched-commit.ts:111-123`) has no `value.person` → the per-change ownership rule denies a member undo of their own input create/delete. | Separate policy for structural metadata (`inputs/__order`) tied to the authorized affected input records; keep ordering-conflict checks. |
+
+### Round 2 — Fable 5.1 (high, in-session subagent) — VERDICT: REVISE
+Full report preserved in the session transcript. **Confirmed every `[CMDL-FINISH]` foundation
+claim TRUE in code** (causal join, `write()` on all five stores, phase-5 `expectedRevs` checker,
+stable `sched.als`, live `issuedDisclosed`). 3 high + 11 med/low, with exact fix specs. Strong
+convergence with Codex.
+
+| id | sev | finding | maps to Codex |
+|---|---|---|---|
+| R2-01 | high | §4 conflict model refuses **every redo** and **every second consecutive undo**: `finalize` bumps revs for all origins incl `restore` (`commit.ts:269-275`), `checkExpectedRevs` demands exact equality. Fix: timeline keeps its OWN `expected: Map<recordKey,rev>` updated on each recorded entry + each issued restore/nav; undo/redo use it (catches only out-of-band advances); non-linearity is a SEPARATE timeline rule (key-sharing), not a rev rule; property test N edits→N undos→N redos. | GU2-003 |
+| R2-02 | high | §3.4(a) names a seam that does not gate the reconcilers: `runOutbound/runInbound/...` gate on module-private `SYNCING` (`sync.ts:70,248,526`), never registered; re-installing `HIST.lock`/`lw.hist` suppresses only legacy step-push (that's F10). **Fixpoint (b) HOLDS** (hand-traced 4 scenarios, both lane orders). Fix: rewrite §3.4 — (a) is "re-install locks so no legacy step is pushed", NOT reconciler suppression; do NOT add a SYNCING context (would hide a non-fixpoint and chain drift to the wrong later cause); make the guarantee OBSERVABLE — after every restore assert no `projection` envelope has `causedBy===restore.seq`. | GU2-001 |
+| R2-03 | high | §5 table lets the bidder reverse the admin's decision: approve writes `lw.bid` owned by pid + mints `inputs/<iid>` `value.person=pid` (`store.ts:2147`, `sync.ts:338`) → member may undo the approval. Fix: `mayReverse(E,cur)=cur.role==='admin' || (E.actor.role!=='admin' && cur.personId!=null && every change owner===cur.personId)` — the forward ACTOR's role makes an admin action admin-only whatever record it lands on; `people/<id>` owner=id; redo identical. | GU2-002 |
+| R2-04 | med | §6 registered-side under-specified on `sched.book` + the "history line" has no durable home (edit log is session-only). Fix: skip `als`/`orig` AND leave `cv/ok/al` in `sched.book` (issued face frozen); reverse `days`+marks+signatures (canonical `dayDelta` becomes the next AL's pending diff); add a DURABLE `wd:{[verId]:{at,by,restoreSeq}}` book field wired into `schedFields`/`weekStashSnap`/decompose/applyBook + AL panel; `cur[di]` stays at AL1, next publish = AL2. | GU2-005 |
+| R2-05 | med | §10.1 as written re-enters reconcilers INLINE (`setPeople`→bare `notify`→`reprojectRoster`+`lwSyncTurn`, nothing suppresses). Fix: do it inside `lwStore.write()` as a pure `layRoster(people,postOuts,personEdits)` when an entry is `lw.postouts`/`lw.config`; the deferred boundary notify finds the signature unchanged; remove the CMDLF-002 marker; test incl the legit poArchive re-archive edge. | — (folds CMDLF-002) |
+| R2-06 | med | §11 "strip acc" erases authored `r`/`u`; inputs closures have no `weekId`. Fix: strip acc only when `==='g'` (mirror `store.ts:567` incl `inputProtected`); run `relandInputs()` inside the restore; add `weekId:CURWEEK` to `inputsScope`. | GU2-004, GU2-007 |
+| R2-07 | med | §10.2 staging hand-wavy (causedBy can't cross an await; loadCourse writes). Fix: 3 phases — A async zero-writes returns the full `{key→value\|delete}` set; B one `trkGesture` applies via `sSet`/`delKey`; C write-free `trkReloadGlobalsFromMem`+`trkReloadCurrentFromMem`. One `user` envelope per import. | (folds importClick) |
+| R2-08 | med | §7 contradicts §9/§13 on LW in phase 3a; LW legacy undo persists off-stream + wakes an orphan `inputs.batch` projection. Fix: LW `user` envelopes recorded but NOT eligible until phase 5; dispatcher skips; key-sharing rule protects shared records; state the orphan-projection = safe refusal. | GU2-006 |
+| R2-09 | med | §8 order can't hold (loadWeek must precede the reducer; phase-5 runs after). Fix: stateless pre-check (`revisionOf` vs `expected`) BEFORE the snap, in-txn `expectedRevs` as the atomic net; on in-txn refusal view moved but data untouched (optionally loadWeek back). | GU2-007 |
+| R2-10 | med | Navigation becomes an entry: `lw.current/all` emitted as a record → `selectWar` makes a `lw.edit` user envelope; same for Tracker `plan.sylId`. Fix: entry filter excludes changes all-in `{lw.current}` / trk.plan-sylId-only (+ no redo truncation); better, stop emitting `lw.current` as a record (view-pref). | — |
+| R2-11 | low | `commitAs` has no `causedBy` param; a user-actor restore needs its type registered. Fix: add `causedBy?` to `commitAs` opts; `definePermission('undo.restore',anyone)`, `mayReverse` is the real gate. | — |
+| R2-12 | low | §9 entry-point set incomplete: add probe-bridge `w.histApply`/`w.histPush` and the Tracker keyboard handler (`App.jsx:99`); scheduler has no Ctrl+Z. | GU-009 |
+| R2-13 | low | Closure derivation must be transitive (`causalSeq`=each pipeline's own seq): entry = user envelope ∪ all reachable by `causedBy` upward; orphans never folded; fold lazily (children drained inside the same outer commit). | — |
+| R2-14 | low | A closure can change one record twice; never coalesce per record — apply the inverse list as-is. | — |
+
+### Round-2 disposition (coordinator) → Rev 3
+Accept ALL. Convergence is total on the three highs (GU2-001/R2-02 suppression; GU2-002/R2-03
+auth; GU2-003/R2-01 revision model). Arbitration where the two differ:
+- **Suppression (GU2-001 vs R2-02):** take **Fable's** answer over Codex's. Codex would add a
+  real SYNCING suppression context; Fable shows that suppressing would HIDE a non-fixpoint and
+  chain drift to a later wrong cause, and hand-verified the reconcilers already reach a fixpoint.
+  Rev 3 keeps the locks for legacy-step-push only, lets the reconcilers run, and makes the
+  fixpoint OBSERVABLE (assert no `projection` caused by the restore seq). Keep the (b) property test.
+- **Cutover (GU2-006 vs R2-08):** take the union — LW `user` envelopes recorded-but-not-eligible
+  until phase 5 (Fable), AND eligibility computed from the closure's full record-set not the
+  initiating module (Codex), AND LW legacy restore paths made UNREACHABLE at/before scheduler
+  cutover because scheduler input-deletes already carry LW records (Codex). §7/§13 reworked.
+- Everything else folds directly with the reviewers' fix specs. A few are small FOUNDATION
+  additions (weekstash `write()` GU2-008; scheduler/people clone-on-write GU2-009; `commitAs`
+  `causedBy` R2-11; `lw.current` demoted to a raw view-pref R2-10; the durable `wd` book field
+  R2-04) — folded into build phase 1, not a new CMDL-FINISH-sized step.
+Rev 3 written next; re-review both providers (Codex `--resume`, Fable fresh).
