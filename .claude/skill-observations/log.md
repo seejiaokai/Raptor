@@ -2487,3 +2487,33 @@ Checkpoint (tasks #59, #60 complete): no further observations.
 **Suggested improvement:** Add an explicit pre-flight to executing-plans / session-start orientation: before starting any handed-off build or rebase, verify the target branch's ahead/behind vs main and the target PR's merge state; if merge-base(main,branch)==branch tip or the PR is MERGED, STOP and report "already landed" instead of building. Cheap (two git commands) and prevents rework.
 
 **Principle:** Trust the repository's live state over the task's narrative. A handoff describes the world when it was written; verify the world now before acting on it, especially for anything the description says is "pending", "blocked" or "behind".
+
+### Observation 164: claudex-loop runner exits 1 on a Windows console charmap error even when the review succeeded
+
+**Status:** OPEN
+**Date:** 2026-09-18
+**Session context:** [GLOBAL-UNDO] design, 5 rounds of Codex/Astra plan review via the claudex-loop runner on Windows.
+**Skill:** claudex-loop (runtime reference)
+**Type:** open-source
+**Phase/Area:** references/runtime.md — CLI invocation / result handling on Windows
+
+**Issue:** Two Codex review runs reported `failed` / exit code 1 with `'charmap' codec can't encode character '\u2192'` (and once `\u2212`). The failure was ONLY the console pretty-print of the result choking on a Unicode arrow/minus under the Windows cp1252 default; `result.json` was fully intact (`status: completed`, a real verdict). A coordinator that trusts the exit code alone would discard a good review. The same class of bug bit my own `python -c` print of the result until I set UTF-8.
+
+**Suggested improvement:** In `references/runtime.md`, (1) note that on Windows the runner should be launched with `PYTHONIOENCODING=utf-8 PYTHONUTF8=1` (it removed the crash across the remaining rounds), and (2) state explicitly that a non-zero exit MUST be reconciled against `result.json`: if `result.json` exists with `status: completed`, the review succeeded and the exit code was a reporting artifact. Also advise host-authored `--feedback` dispositions files be ASCII (use `->` not `→`).
+
+**Principle:** A tool's process exit code and its structured result are two independent signals; on a platform with a narrow default text encoding, a cosmetic output-encoding failure can flip the exit code while the real result is intact. Reconcile the structured artifact against the exit code before treating a run as failed, and force UTF-8 at the process boundary.
+
+### Observation 165: a mid-design owner reframe resets the review clock for the reframed section only
+
+**Status:** OPEN
+**Date:** 2026-09-18
+**Session context:** [GLOBAL-UNDO] — a 6-revision, dual-provider (Codex + Fable) plan-review loop where the owner introduced a new sub-model (undo-of-publish → UNPUBLISH) at Rev 4, mid-loop.
+**Skill:** New skill candidate: iterative-dual-provider-plan-review
+**Type:** open-source
+**Phase/Area:** running a bounded multi-round cross-provider design review to convergence
+
+**Issue:** The engine parts of the design converged and were accepted by both reviewers by round 3; but a NEW sub-model introduced at round 4 (the owner's reframe) then generated its own fresh cluster of findings for two more rounds while the rest stayed silent. Reading "still REVISE" as "the whole design is unsettled" would have been wrong — the signal was "the newly-added section is one review-round old." Recognising that let me (a) reassure the owner the core was done, (b) localise each round's fixes to the new section, and (c) arbitrate a final Fable-APPROVE + Codex-contained-REVISE as "closed". What kept it legible: an append-only review log with a per-round findings-to-resolution map keyed to design section numbers, and re-review via `--resume` + a host-authored dispositions file that told the reviewer what changed so it didn't relitigate.
+
+**Suggested improvement:** Capture as a reusable workflow: per round, tag each finding to a design section and disposition; treat "new findings cluster on the section changed since last round" as convergence, not regression; when the material remaining findings are contained + one provider approves, the coordinator arbitrates closed rather than spending more rounds; a newly-introduced sub-model resets the clock for that section and should be expected to need its own 1-2 rounds even after the rest is settled.
+
+**Principle:** In an iterative review, convergence is measured per-section, not per-verdict: the meaningful signal is WHERE new findings land relative to what changed since the last round. A late structural addition inherits the full review cost of a fresh design for that part, independent of how settled the rest is.
