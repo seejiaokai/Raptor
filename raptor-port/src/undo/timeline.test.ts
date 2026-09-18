@@ -15,7 +15,7 @@ import { makeStore } from '../command/_fake'
 import type { Actor, Command, Scope } from '../command'
 import {
   installUndo, globalUndo, globalRedo, setCutoverModules, registerUndoStore,
-  setUndoHooks, mayReverse, undoState,
+  setUndoHooks, mayReverse, undoState, subscribeUndo, getUndoVersion,
 } from './index'
 import { _resetTimeline, _timelineEntries, _undoConflict, _redoConflict, _pubBar } from './timeline'
 import type { UndoEntry } from './types'
@@ -197,6 +197,22 @@ describe('causal closure — a user action + its projection child = ONE undo (§
     globalUndo()
     expect(sA.get('x')).toBeUndefined()
     expect(sB.get('i1')).toBeUndefined()   // the projection child was reversed too
+  })
+})
+
+describe('the timeline version store drives button refresh without domain notify (C4)', () => {
+  it('bumps and notifies on record, undo and redo', () => {
+    const s = makeStore('S', 'settings')
+    registerUndoStore(s.store, ['settings']); setCutoverModules(['settings'])
+    let ticks = 0
+    const off = subscribeUndo(() => { ticks++ })
+    const v0 = getUndoVersion()
+    edit(s.store, { module: 'settings' }, () => s.set('x', { v: 1 }))
+    expect(getUndoVersion()).toBeGreaterThan(v0)
+    const afterRecord = ticks; expect(afterRecord).toBeGreaterThan(0)
+    globalUndo(); const afterUndo = ticks; expect(afterUndo).toBeGreaterThan(afterRecord)
+    globalRedo(); expect(ticks).toBeGreaterThan(afterUndo)
+    off()
   })
 })
 

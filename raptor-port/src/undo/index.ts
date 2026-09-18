@@ -7,6 +7,7 @@
 export {
   installUndo, globalUndo, globalRedo, undoState, mayReverse,
   registerUndoStore, setCutoverModules, setUndoHooks,
+  subscribeUndo, getUndoVersion,
 } from './timeline'
 export type { UndoHooks, UndoResult } from './timeline'
 export { describeEntry, bubbleText } from './describe'

@@ -59,7 +59,7 @@ export function registerUndoStore(store: EnlistableStore, collections: string[])
 
 /* ---- eligibility (strangler; §7) ----------------------------------------- */
 let cutover = new Set<Module>()
-export function setCutoverModules(mods: Module[]): void { cutover = new Set(mods) }
+export function setCutoverModules(mods: Module[]): void { cutover = new Set(mods); bumpUndo() }
 
 /* ---- timeline state ------------------------------------------------------- */
 let entries: UndoEntry[] = []
@@ -72,6 +72,18 @@ const barrier = new Map<string, number>()    // §4.1 sticky out-of-band barrier
 let stamp = 0                                 // monotonic undoneAt source (R3-06)
 let installed = false
 let unsub: (() => void) | null = null
+
+/* ---- the timeline's OWN external store (button refresh, C4) ----------------
+   The retargeted Undo/Redo controls subscribe to THIS (useSyncExternalStore),
+   NOT the domain stores. Notifying schedStore/lwStore just to refresh a button
+   would run their reconcilers (roster reproject, OIL, sync) on every
+   record/undo/redo and enqueue projections mid-delivery, altering the entry's
+   closure/eligibility. This is a pure version counter over undoState(). */
+let undoVersion = 0
+const undoSubs = new Set<() => void>()
+export function getUndoVersion(): number { return undoVersion }
+export function subscribeUndo(fn: () => void): () => void { undoSubs.add(fn); return () => { undoSubs.delete(fn) } }
+function bumpUndo(): void { undoVersion++; for (const fn of Array.from(undoSubs)) fn() }
 
 export interface UndoResult {
   ok: boolean
@@ -174,6 +186,7 @@ function recordEntry(env: CommitEnvelope): void {
   entries.push(entry)
   bySeq.set(entry.seq, entry)
   trackExpectation(env)
+  bumpUndo()
 }
 
 /* fold a causal projection child into its root entry's closure (§3.1). */
@@ -191,6 +204,7 @@ function foldProjection(rootSeq: number, env: CommitEnvelope): void {
   Object.assign(entry.revs, env.revs || {})
   entry.label = describeEntry(entry)
   trackExpectation(env)
+  bumpUndo()
 }
 
 /* §4.1 — before EVERY expectation update (a tracked entry, a folded child, a
@@ -423,6 +437,7 @@ export function globalUndo(): UndoResult {
   if (!r.ok) return { ok: false, reason: r.reason || 'That couldn’t be undone — try again.' }
   entry.undone = true
   entry.undoneAt = ++stamp
+  bumpUndo()
   if (hooks.showBubble) hooks.showBubble(bubbleText(entry, 'undo'))
   return { ok: true, entry }
 }
@@ -438,6 +453,7 @@ export function globalRedo(): UndoResult {
   if (!r.ok) return { ok: false, reason: r.reason || 'That couldn’t be redone — try again.' }
   entry.undone = false
   entry.undoneAt = undefined
+  bumpUndo()
   if (hooks.showBubble) hooks.showBubble(bubbleText(entry, 'redo'))
   return { ok: true, entry }
 }
@@ -467,4 +483,5 @@ export function _resetTimeline(): void {
   entries = []
   bySeq.clear(); rootOfSeq.clear(); expected.clear(); barrier.clear()
   storeOf.clear(); cutover = new Set(); stamp = 0; installed = false; hooks = {}
+  undoVersion = 0; undoSubs.clear()
 }
