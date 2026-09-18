@@ -430,6 +430,15 @@ function plainRestoreReason(_reason?: string): string {
   return 'That couldn’t be completed just now — something else changed on this week. Try again.'
 }
 
+/* §8.1/C7(b) — the applicability pre-check, run BEFORE snap: every collection in
+   the change set must have a registered store, or applyRestore would refuse AFTER
+   the view already moved. Returns the unregistered collections (empty = all fine). */
+function missingStores(changes: Change[]): string[] {
+  const out: string[] = []
+  for (const ch of changes) if (!storeOf.has(ch.collection) && !out.includes(ch.collection)) out.push(ch.collection)
+  return out
+}
+
 /* ---- the dispatcher: globalUndo / globalRedo (§9) ------------------------ */
 function newestUndoable(): UndoEntry | null {
   for (let i = entries.length - 1; i >= 0; i--) {
@@ -452,6 +461,8 @@ export function globalUndo(): UndoResult {
   if (!mayReverse(entry, currentActor())) return { ok: false, reason: 'You can’t undo that — it was someone else’s change.' }
   const conflict = undoConflict(entry)
   if (conflict) return { ok: false, reason: conflict }
+  // C7(b) — refuse an unrestorable closure BEFORE the view-snap moves anything.
+  if (missingStores(entry.inverse).length) return { ok: false, reason: plainRestoreReason() }
   snap(entry, 'undo')
   // N11 — loadContext's loadWeek can emit orphan projections that bump revisions
   // AFTER the pre-check, so re-run the conflict check now that the target week is
@@ -474,6 +485,7 @@ export function globalRedo(): UndoResult {
   if (!mayReverse(entry, currentActor())) return { ok: false, reason: 'You can’t redo that — it was someone else’s change.' }
   const conflict = redoConflict(entry)
   if (conflict) return { ok: false, reason: conflict }
+  if (missingStores(entry.forward).length) return { ok: false, reason: plainRestoreReason() }
   snap(entry, 'redo')
   // N11 — see globalUndo: re-check after the view-snap loaded the target week.
   const postConflict = redoConflict(entry)
