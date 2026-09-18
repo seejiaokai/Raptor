@@ -39,7 +39,7 @@ import { setFileLocked as trSetFileLocked } from '../tracker/role.js'
 import { isHydrated, weekSwapBegin, weekSwapEnd } from './persist'
 import { deferEffect, CmdRefused } from '../command'
 import type { EnlistableStore, RecordEntry, CommitResult } from '../command'
-import { snapshotStash, restoreStash, stashEntries } from '../engine/weekstash'
+import { snapshotStash, restoreStash, stashEntries, writeStashRecords } from '../engine/weekstash'
 import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, commitInputsProjection, commitInputsWith, SCHED_TYPES, resyncSchedBaseline } from './sched-commit'
 import { registerPeopleSettingsCommandLayer, resyncPeopleBaseline } from './people-settings-commit'
 
@@ -205,6 +205,9 @@ const weekstashStore: EnlistableStore = {
     for (const [wk, blob] of stashEntries()) m.set(`weekstash/${wk}`, { collection: 'weekstash', id: wk, value: blob })
     return m
   },
+  /* [GLOBAL-UNDO] §13 phase 1 — the undo/restore write() seam (finding I: an
+     off-week edit captured on the stream round-trips through the stash). */
+  write: (entries) => writeStashRecords(entries),
 }
 /* run an input batch that ALSO enlists extra stores (the weekstash), rolling
    every enlisted store back together on a refusal (§6, C11/N5). */

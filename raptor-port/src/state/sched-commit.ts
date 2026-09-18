@@ -142,16 +142,24 @@ function schedRecords(): Map<string, RecordEntry> { return decompose(baseline())
    round-trips the position rather than pushing the row to the end. */
 const INPUT_ORDER_ID = '__order'
 
+/* [GLOBAL-UNDO] GU2-009 — CLONE-ON-WRITE. write() applies an undo entry's RECORDED
+   inverse image; assigning that image into live state BY REFERENCE would alias the
+   entry's stored `after` with the live record, so a later in-place edit would mutate
+   the recorded image and corrupt a re-undo (or the history line). Deep-clone at
+   every assignment site so live state and the recorded image never share an object.
+   Restore is not a hot path, so the clone costs nothing that matters. */
+const cw = <T>(v: T): T => (v == null ? v : JSON.parse(JSON.stringify(v)))
+
 /* apply a decomposed `sched.book` record value back onto the live SCHED book —
    the exact inverse of decompose()'s book projection (schedFields minus o/a,
-   which are their own records). */
+   which are their own records). Clone-on-write (GU2-009). */
 function applyBook(v: any): void {
-  SCHED.changes = v.c || {}; SCHED.pending = v.p || {}; SCHED.added = v.ad || {}
-  SCHED.al = v.al || 0; SCHED.dayOK = v.ok || {}
-  SCHED.sign = v.sg || {}; SCHED.signBind = v.sb || {}
-  SCHED.cur = v.cv || {}; SCHED.drafts = v.dr || {}; SCHED.curDraft = v.cd || {}
+  SCHED.changes = cw(v.c) || {}; SCHED.pending = cw(v.p) || {}; SCHED.added = cw(v.ad) || {}
+  SCHED.al = v.al || 0; SCHED.dayOK = cw(v.ok) || {}
+  SCHED.sign = cw(v.sg) || {}; SCHED.signBind = cw(v.sb) || {}
+  SCHED.cur = cw(v.cv) || {}; SCHED.drafts = cw(v.dr) || {}; SCHED.curDraft = cw(v.cd) || {}
   SCHED.ridV = v.v; SCHED.amV = v.am
-  SCHED.correcting = v.cr || {}   // [GLOBAL-UNDO] §6.1 — the correction flags ride the book record
+  SCHED.correcting = cw(v.cr) || {}   // [GLOBAL-UNDO] §6.1 — the correction flags ride the book record
 }
 
 /* [CMDL-FINISH] §3 (F8/GU-007) — the batch, delete-aware, per-collection record
@@ -172,7 +180,7 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
     switch (e.collection) {
       case 'days': {
         if (foreign(e.id, '#')) throw new CmdRefused(`scheduler write: foreign week ${e.id}`)
-        if (e.op !== 'delete') DAYS[Number(e.id.slice(e.id.indexOf('#') + 1))] = e.value
+        if (e.op !== 'delete') DAYS[Number(e.id.slice(e.id.indexOf('#') + 1))] = cw(e.value)
         break
       }
       case 'sched.book':
@@ -187,7 +195,7 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
         if (foreign(e.id, ':')) throw new CmdRefused(`scheduler write: foreign week ${e.id}`)
         if (!opts?.allowIssued) throw new CmdRefused(`scheduler write: issued record ${e.id} needs allowIssued`)
         const di = e.id.slice(e.id.indexOf(':') + 1)
-        if (e.op === 'delete') delete (SCHED.orig as any)[di]; else (SCHED.orig as any)[di] = e.value
+        if (e.op === 'delete') delete (SCHED.orig as any)[di]; else (SCHED.orig as any)[di] = cw(e.value)
         break
       }
       case 'sched.als': {
@@ -201,8 +209,8 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
         const arr = SCHED.als as any[]
         const ix = arr.findIndex(a => String((a && a.id) ?? '') === alId)
         if (e.op === 'delete') { if (ix >= 0) arr.splice(ix, 1) }
-        else if (ix >= 0) arr[ix] = e.value
-        else arr.push(e.value)
+        else if (ix >= 0) arr[ix] = cw(e.value)
+        else arr.push(cw(e.value))
         alsTouched = true
         break
       }
@@ -214,19 +222,19 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
         if (foreign(e.id, ':')) throw new CmdRefused(`scheduler write: foreign week ${e.id}`)
         const idn = e.id.slice(e.id.indexOf(':') + 1)
         SCHED.retired = SCHED.retired || {}
-        if (e.op === 'delete') delete SCHED.retired[idn]; else SCHED.retired[idn] = e.value
+        if (e.op === 'delete') delete SCHED.retired[idn]; else SCHED.retired[idn] = cw(e.value)
         break
       }
       case 'inputs': {
         if (e.id === INPUT_ORDER_ID) { orderIds = (e.value as string[]) || null; break }
         const ix = INPUTS.findIndex((r: any) => r.iid === e.id)
         if (e.op === 'delete') { if (ix >= 0) INPUTS.splice(ix, 1) }
-        else if (ix >= 0) INPUTS[ix] = e.value
-        else INPUTS.push(e.value)
+        else if (ix >= 0) INPUTS[ix] = cw(e.value)
+        else INPUTS.push(cw(e.value))
         break
       }
       case 'plan': {
-        const v = e.value as any
+        const v = cw(e.value) as any   // [GLOBAL-UNDO] GU2-009 — clone-on-write
         PLANPUCKS.length = 0; ((v && v.pp) || []).forEach((x: any) => PLANPUCKS.push(x))
         for (const k of Object.keys(DAYRMK)) delete DAYRMK[k]
         Object.assign(DAYRMK, (v && v.dm) || {})

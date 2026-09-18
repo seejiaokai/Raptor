@@ -169,8 +169,10 @@ export const peopleStore: EnlistableStore = {
      advance the baseline in the apply, and persist at the boundary. */
   write(entries: RecordEntry[]): void {
     for (const e of entries) {
+      // [GLOBAL-UNDO] GU2-009 — clone-on-write: never alias the undo entry's recorded
+      // image with the live roster record, or a later in-place edit would corrupt it.
       if (e.op === 'delete') delete (PEOPLE as any)[e.id]
-      else (PEOPLE as any)[e.id] = e.value
+      else (PEOPLE as any)[e.id] = e.value == null ? e.value : JSON.parse(JSON.stringify(e.value))
     }
     rebuildIdByCs()
     PEOPLE_BASELINE = JSON.stringify(PEOPLE)
