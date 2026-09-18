@@ -63,16 +63,16 @@ in-flight and risk-reducing** first.
    - **[AMEND-SEL-FOLLOWUPS] — DONE + LIVE (merged 15 Sep 26, PR #405).** See the Done
      section for the resolution. The 7 changes (incl. the signature-leak bug, taken the
      per-plan way) were built, cross-provider bug-checked, and merged to `main`.
-   - **[REPO-CLEANUP] (owner, 15 Sep 26) — SECOND task; screenshots DONE, sweep READY — DO NEXT.**
-     Step 1 (delete the handoff screenshots `raptor-port/docs/img/plans-selector-followups/`)
-     is DONE (18 Sep 26). Step 2, the repo-wide space/redundancy sweep (orphaned files, dead
-     CSS, unused exports, stale docs, build cruft), is **READY to start (18 Sep 26 — the hold
-     is cleared: `[CMDL-FINISH]` is now MERGED to `main` (PR #415), so nothing is editing the
-     command-layer / Tracker files in parallel).** Do it in a FRESH chat off `main` as its
-     own gated PR, in batches. **CAUTION:** the repo deliberately keeps
-     some dead-looking code (CLAUDE.md §Stable decisions — `WEEKS`, `restoreDayVersion`,
-     `openWarns`, etc.); grep for refs and confirm before removing anything. Own gated PR, in
-     batches. See the "SECOND TASK" section of `raptor-port/docs/plans-selector-followups.md`.
+   - **[REPO-CLEANUP] (owner, 15 Sep 26) — DONE (18 Sep 26). Nothing removed, by owner's choice.**
+     Step 1 (delete the handoff screenshots) was done earlier. Step 2, the repo-wide space/
+     redundancy sweep, was RUN this session and found the repo already tidy — so do NOT re-run it:
+     **zero dead source files** (all 522 checked by an import-graph scan), and only **~0.9 KB** of
+     genuinely-dead CSS (every other unused-looking class is built dynamically at runtime, e.g.
+     `seat-${seat}`, the `g-*` group family — removing them would break the app). The only real
+     weight was **~0.6 MB of design write-ups for already-shipped features**; the owner chose to
+     **KEEP them on purpose** — better for history-keeping (a note left in the tree is browsable;
+     a git-deleted one is only recoverable if you know it existed). No files removed. See the Done
+     section for the full result.
 1b. **[TRK-SMOKE] — DONE + MERGED LIVE (17 Sep 26, PR #408, squash `93deab7` on `main`).**
    Code-only cherry-pick; the rest of this branch stayed unmerged. It was NOT a flake: two real
    causes. See the Done section entry for the
@@ -680,6 +680,30 @@ THREE halves now (owner, 15–17 Sep 26):
 ---
 
 ## Done
+
+### [REPO-CLEANUP] Repo-wide space/redundancy sweep — DONE, NOTHING REMOVED (18 Sep 26)
+The sweep was run and the conclusion is: **the repo is already tidy; there is nothing worth
+removing.** Do not re-open this without a new reason. What was checked and found:
+- **Source files: 0 dead.** An import-graph scan over all 522 `src` modules (handling
+  extensioned `.js` imports and vitest's glob-loaded `.test.*` entry points) found no file that
+  nothing imports.
+- **Dead CSS: negligible.** A scan of all 8 stylesheets against every source file (including the
+  innerHTML string-builders) flagged ~60 candidate classes, but almost all are **built
+  dynamically** (`seat-${p.seat}`, the `g-*` group family, the `sbi-`/`ic-pick` families) — false
+  positives. The genuinely-dead, single-class rules total **~0.9 KB**, not worth a gated cycle.
+- **Unused exports (`ts-prune`): not actionable.** Output was dominated by the `command/` and
+  `engine/` barrel `index.ts` re-exports and core keep-list symbols (`HOOKS`, `storeBackend`,
+  `VCONF`, `RULE_SPEC`) — flagging them is a false positive; acting on it would be a bug.
+- **Docs: ~0.6 MB of design write-ups for already-shipped features** (board rebuild, Leave War
+  bulk-balance + figures drawer, stores config, the Sep-7 rules audit, tracker interface rework,
+  leave types, plans-selector red-team). These are the only real weight. **Owner's decision:
+  KEEP them all** — leaving a note in the tree is the stronger form of history-keeping (browsable),
+  vs. a git-deleted file that is only recoverable if you know it existed. Git keeps history either
+  way, so deletion would have saved ~0.6 MB for no benefit and a real downside. **No removals made.**
+- Method note for a future sweep: the "referenced nowhere" test must strip the leading `YYYY-MM-DD-`
+  from a doc's filename, because OUTSTANDING/HANDOFF cite design docs by their date-elided tail
+  (`…-amendment-rev4-rev5-review-log.md`); a raw basename grep under-counts references and would
+  mark live-context docs as orphans.
 
 ### [AMEND-SEL-FOLLOWUPS] Plans-selector 7 follow-ups (incl. the signature-leak bug) — DONE + LIVE 15 Sep 26
 The owner's 15 Sep batch of 7 changes to the plans-selector redesign, all built test-first on
