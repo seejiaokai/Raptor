@@ -36,13 +36,15 @@ import {
 import { DAYS } from '../engine/data'
 import { INPUTS, mintInpIds } from '../engine/inputs'
 import { ensureRowIds } from '../engine/rowids'
-import { SCHED, setDayApproved, publishALDay, discardPending } from '../engine/publish'
+import { SCHED, setDayApproved, publishALDay, discardPending, unpublishDay, dayCurVer } from '../engine/publish'
 import { CURWEEK } from '../engine/waves'
 import { HIST, histSnap, histRestore, setSchedResync } from './history'
 import { setSchedEpilogueHook, HOOKS } from '../engine/hooks'
 import { issuedDisclosed, discloseIssued } from './disclosure'
 import { PLANPUCKS, DAYRMK } from './plan'
-import { WARNOFF } from './view'
+import { WARNOFF, DPREV, prunePreviews } from './view'
+import { canEditSched } from './auth'
+import { deriveActor } from '../command'
 
 /* ---- the scheduler EnlistableStore (a LAGGING BASELINE, decomposed) --------
    [ARCH-STACK] follow-up #1: copy the People pattern. The unrouted board/text/
@@ -83,10 +85,12 @@ function decompose(snapStr: string): Map<string, RecordEntry> {
     const id = `${wk}#${di}`
     m.set(`days/${id}`, { collection: 'days', id, value: days[di] })
   }
-  // the mutable book (excludes the issued orig/als, which are their own records)
+  // the mutable book (excludes the issued orig/als/retired, which are their own
+  // records). [GLOBAL-UNDO] §6.1 — `cr` (the per-day correction flags) rides the
+  // book like curDraft; `retired` is a separate append-only collection below.
   const book = {
     c: s.c, p: s.p, ad: s.ad, al: s.al, ok: s.ok,
-    sg: s.sg, sb: s.sb, cv: s.cv, dr: s.dr, cd: s.cd, v: s.v, am: s.am,
+    sg: s.sg, sb: s.sb, cv: s.cv, dr: s.dr, cd: s.cd, v: s.v, am: s.am, cr: s.cr,
   }
   m.set(`sched.book/${wk}`, { collection: 'sched.book', id: wk, value: book })
   m.set(`sched.mutes/${wk}`, { collection: 'sched.mutes', id: wk, value: (s.wo || []) })
@@ -104,6 +108,14 @@ function decompose(snapStr: string): Map<string, RecordEntry> {
     const al = als[n]
     const id = `${wk}:${(al && al.id) ?? n}`
     m.set(`sched.als/${id}`, { collection: 'sched.als', id, value: al })
+  }
+  // [GLOBAL-UNDO] §6.1 — the append-only retired-issuance log, one record per
+  // `<verId>~<n>` entry, so a same-label reissue keeps every prior issuance as its
+  // own immutable, individually-addressable snapshot.
+  const retired = (s.rt as any) || {}
+  for (const idn of Object.keys(retired)) {
+    const id = `${wk}:${idn}`
+    m.set(`sched.retired/${id}`, { collection: 'sched.retired', id, value: retired[idn] })
   }
   const inpOrder: string[] = []
   for (const r of ((s.i as any[]) || [])) {
@@ -139,6 +151,7 @@ function applyBook(v: any): void {
   SCHED.sign = v.sg || {}; SCHED.signBind = v.sb || {}
   SCHED.cur = v.cv || {}; SCHED.drafts = v.dr || {}; SCHED.curDraft = v.cd || {}
   SCHED.ridV = v.v; SCHED.amV = v.am
+  SCHED.correcting = v.cr || {}   // [GLOBAL-UNDO] §6.1 — the correction flags ride the book record
 }
 
 /* [CMDL-FINISH] §3 (F8/GU-007) — the batch, delete-aware, per-collection record
@@ -191,6 +204,17 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
         else if (ix >= 0) arr[ix] = e.value
         else arr.push(e.value)
         alsTouched = true
+        break
+      }
+      case 'sched.retired': {
+        // [GLOBAL-UNDO] §6.1 — the append-only issuance log. Append-only-INTENDED,
+        // so no allowIssued gate: an undo of an UNLOGGED unpublish removes the just-
+        // added entry (op:'delete'); a LOGGED (disseminated) entry is never removed
+        // by an inverse (§6.2 GU4-003, enforced by the timeline, not here).
+        if (foreign(e.id, ':')) throw new CmdRefused(`scheduler write: foreign week ${e.id}`)
+        const idn = e.id.slice(e.id.indexOf(':') + 1)
+        SCHED.retired = SCHED.retired || {}
+        if (e.op === 'delete') delete SCHED.retired[idn]; else SCHED.retired[idn] = e.value
         break
       }
       case 'inputs': {
@@ -265,6 +289,8 @@ export const SCHED_TYPES = {
   approve: 'sched.approve',
   publishAL: 'sched.publishAL',
   discard: 'sched.discard',
+  // [GLOBAL-UNDO] §6.5 — retract a published day to a working copy (the Unpublish button)
+  unpublish: 'sched.unpublish',
   // follow-up #1 — the previously-unrouted paths (rows A–G). Auto-registered by
   // the definePermission loop below. `mutate` is the afterSchedMutate backstop.
   mutate: 'sched.mutate',
@@ -427,6 +453,30 @@ export function commitDiscardPending(): CommitResult {
   return commitSchedVoid(SCHED_TYPES.discard, () => discardPending())
 }
 
+/* [GLOBAL-UNDO] §6.5 — retract the latest issued version of a published day back
+   to a working copy. Declares an `unpublish` boundary carrying the retracted id
+   (the publication barrier §6.3 reads it). Scheduler/admin only, and refused while
+   the day is previewing an older version (DPREV). Defers reflow + prunePreviews +
+   persistence to the transaction boundary, like the write() seam. */
+export function commitUnpublish(di: number): CommitResult {
+  const cmd: Command = {
+    type: SCHED_TYPES.unpublish, scope: schedScope(),
+    apply: (txn) => {
+      txn.enlist(schedStore)
+      if (!canEditSched() || DPREV.has(+di)) throw new CmdRefused(`unpublish: not permitted for day ${di}`)
+      const id0 = dayCurVer(di)
+      const disclosed = id0 != null && issuedDisclosed(id0)
+      const actor = deriveActor()
+      const id = unpublishDay(di, { by: actor.personId ?? actor.id, disclosed })
+      if (!id) throw new CmdRefused(`unpublish: day ${di} has no retractable latest version`)
+      txn.boundary({ kind: 'unpublish', ids: [id], crossable: !disclosed })
+      applyEnd()
+      cmdDeferEffect(() => { prunePreviews(); HOOKS.reflow(); HOOKS.histPush() })
+    },
+  }
+  return commit(cmd)
+}
+
 /* ---- one-time registration (called from initStore) ----------------------- */
 let registered = false
 export function registerSchedCommandLayer(): void {
@@ -465,6 +515,7 @@ export function registerSchedCommandLayer(): void {
   registerRecord({ key: 'weeks:sched.mutes/<wk>', cls: 'record', collection: 'sched.mutes', module: 'scheduler' })
   registerRecord({ key: 'weeks:sched.orig/<wk>:<di>', cls: 'record', collection: 'sched.orig', module: 'scheduler' })
   registerRecord({ key: 'weeks:sched.als/<wk>:<verId>', cls: 'record', collection: 'sched.als', module: 'scheduler' })
+  registerRecord({ key: 'weeks:sched.retired/<wk>:<verId>~<n>', cls: 'record', collection: 'sched.retired', module: 'scheduler' })
   registerRecord({ key: 'inputs:<iid>', cls: 'record', collection: 'inputs', module: 'inputs' })
   registerRecord({ key: 'plan:all', cls: 'record', collection: 'plan', module: 'plan' })
 }

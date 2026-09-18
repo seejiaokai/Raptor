@@ -2517,3 +2517,18 @@ Checkpoint (tasks #59, #60 complete): no further observations.
 **Suggested improvement:** Capture as a reusable workflow: per round, tag each finding to a design section and disposition; treat "new findings cluster on the section changed since last round" as convergence, not regression; when the material remaining findings are contained + one provider approves, the coordinator arbitrates closed rather than spending more rounds; a newly-introduced sub-model resets the clock for that section and should be expected to need its own 1-2 rounds even after the rest is settled.
 
 **Principle:** In an iterative review, convergence is measured per-section, not per-verdict: the meaningful signal is WHERE new findings land relative to what changed since the last round. A late structural addition inherits the full review cost of a fresh design for that part, independent of how settled the rest is.
+
+### Observation 166: Path-glob strings in JS block comments silently break the oxc/vite transform
+
+**Status:** OPEN
+**Date:** 2026-09-18
+**Session context:** Building the GLOBAL-UNDO engine (Raptor); writing new .ts modules with heavily documented block comments that referenced logical-collection globs like `lw.*/all` and `sched.*/<wk>`.
+**Skill:** New skill candidate: build-hygiene notes (or fold into an existing TDD/implementation skill)
+**Type:** open-source
+**Phase/Area:** writing new source files with explanatory comments
+
+**Issue:** A `/* ... */` block comment containing the two-character sequence `*/` inside path-glob prose (`lw.*/all`, `sched.*/weekstash`, `days/<wk>#… / sched.*/<wk>`) terminates the comment early. The oxc-based vite transform then fails with an opaque `Unterminated regular expression` / `Expected a semicolon` parse error pointing at the LINE AFTER the comment, not at the `*/`. It cost three separate edit→run round-trips in one file because each fix only removed one occurrence and the next was several lines down.
+
+**Suggested improvement:** When documenting glob/path patterns in code, prefer `//` line comments, or write the glob without the literal `*/` (e.g. `sched.<coll>/<wk>`, `lw ...·/all`). A build-hygiene checklist could add: "no `*/` inside a block comment except its terminator" — trivially greppable (`grep -n '\*/'`).
+
+**Principle:** An opaque transform/parse error whose reported location is offset from the real cause wastes iterations; the fastest fix is recognising the SIGNATURE (unterminated-regex/semicolon error right after a comment that documents a path glob) rather than re-reading the flagged line. Cheap mechanical guards beat re-derivation.

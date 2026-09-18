@@ -177,10 +177,13 @@ describe('completeness — the stream reconstructs the persisted week (§7 / R4-
     const mutes: any = m.get(`sched.mutes/${wk}`)!.value
     const orig: any = {}
     const als: any[] = []
+    const retired: any = {}
     const inputs: any[] = []
     let inpOrder: string[] | null = null
     for (const [k, e] of m) {
       if (k.startsWith('sched.orig/')) orig[k.slice(k.lastIndexOf(':') + 1)] = e.value
+      // [GLOBAL-UNDO] §6.1 — the retired-issuance log records, keyed by `<verId>~<n>`.
+      else if (k.startsWith('sched.retired/')) retired[k.slice(k.indexOf(':') + 1)] = e.value
       // [CMDL-FINISH] §5 — the als key is now the verId, not the array index, so
       // collect the values and order the book by iso/seq (chronological AL order).
       else if (k.startsWith('sched.als/')) als.push(e.value)
@@ -203,7 +206,7 @@ describe('completeness — the stream reconstructs the persisted week (§7 / R4-
       d, i: inputs,
       c: book.c, p: book.p, ad: book.ad, a: als, al: book.al,
       ok: book.ok, sg: book.sg, sb: book.sb, o: orig, cv: book.cv, dr: book.dr, cd: book.cd,
-      v: book.v, am: book.am, wo: mutes, pp: plan.pp, dm: plan.dm,
+      v: book.v, am: book.am, rt: retired, cr: book.cr, wo: mutes, pp: plan.pp, dm: plan.dm,
     }
   }
 

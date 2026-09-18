@@ -530,6 +530,7 @@ function applyWeekModel(v: any): any {
     SCHED.sign = s.sg || {}; SCHED.signBind = s.sb || {}; SCHED.orig = s.o || {}; SCHED.cur = s.cv || {}
     SCHED.drafts = s.dr || {}; SCHED.curDraft = s.cd || {}; SCHED.ridV = s.v   // undefined on a foundation-era book → migrateLegacyIds runs
     SCHED.amV = s.am   // undefined on a PRE-Phase-2 book → amFormatOf flags it unsupported (read-only, §5)
+    SCHED.retired = s.rt || {}; SCHED.correcting = s.cr || {}   // [GLOBAL-UNDO] §6.1 — issuance log + correction flags hydrate with the week
   } else {
     const wk = weekBundle(v)
     DAYS.length = 0; wk.days.forEach((d: any) => DAYS.push(d))
