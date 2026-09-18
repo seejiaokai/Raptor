@@ -253,10 +253,11 @@ permission is the PARENT command's declared permission — never caller-selected
 **Publish boundary — the UNPUBLISH model** (`Boundary`; step-3 design §6, owner 18 Sep 26 —
 SUPERSEDES the earlier "recovery re-publishes under a NEW id" wording). **Undo of a published day =
 UNPUBLISH it** back to an editable working copy (a first-class `sched.unpublish` command + a day-
-header button, not just an undo). Then the scheduler edits silently and republishes, choosing:
-**correct quietly** → republish as the **SAME version label** (Original→Original, AL1→AL1), not shown
-as an amendment; or **publish amendment** → the changes go out as the next AL. The single checkable
-fact — **has the shared database registered/disseminated this version?** — chooses SILENT vs LOGGED:
+header button, not just an undo). **The choice is by ACTION, not at republish** (round-4 R4-03):
+**unpublish = correct quietly** — edit silently and republish as the **SAME version label**
+(Original→Original, AL1→AL1), not shown as an amendment; **a real amendment = do NOT unpublish** —
+edit the live working copy and publish the next AL. The single checkable fact — **has the shared
+database registered/disseminated this version?** — chooses SILENT vs LOGGED:
 not disseminated → fully silent, label freely reusable; disseminated → the quiet correction is still
 allowed (owner, 18 Sep) but writes a **line in the history** (traceability). **The old "never reuse
 an issued version id" rule is SET ASIDE** — the version LABEL is reused, but **every issuance is kept

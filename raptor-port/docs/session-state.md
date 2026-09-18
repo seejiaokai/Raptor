@@ -1,82 +1,75 @@
-# Session handoff — [CMDL-FINISH] FINISH work BUILT (P4 remainder + punch-list), held for "merge live"
+# Session handoff — [GLOBAL-UNDO] design DONE (Rev 6, build-ready); BUILD not started
 
 ## Where it is
-The main [CMDL-FINISH] build (P1–P6, P4 partial) is **already merged and live** (PR #412 on
-`main`), and the undo front-door doc is live too (PR #413, `docs/undo-contract.md`).
+[ARCH-STACK] step 3, **[GLOBAL-UNDO]** — one global per-session undo — is **DESIGNED, red-teamed to
+close, and build-ready.** Design of record (READ IT FIRST):
+`docs/superpowers/specs/2026-09-17-arch-stack-3-global-undo-design.md` **Rev 6**. Front-door contract:
+`docs/undo-contract.md`. Full review transcript (5 rounds): `…-global-undo-review-log.md`.
 
-This session finished the rest, on branch **`claude/cmdl-finish-p4`** (cut fresh off `main` after
-#413): the remaining P4 Tracker gestures, `TRK_RESTORING`, registering the Tracker store guarded,
-and the deferred cross-provider inspection punch-list. **All five gates are green. Nothing merged —
-held for the owner's "merge live".**
+**Nothing is built. No code. The design work is on branch `claude/global-undo`** (docs only so far,
+pushed). Foundation `[CMDL-FINISH]` is merged + live on `main` — the design sits on the real code.
 
-## Commits (on `claude/cmdl-finish-p4`, after `2099eb7` = #413 doc)
-- `69faa1a` P4 — remaining Tracker gestures + TRK_RESTORING.
-- `b0aa88a` P4-END — register trkStore guarded.
-- `fd3413f` punch-list — CMDLF-012 (child expectedRevs) + CMDLF-010 (inputs order).
-- `571ec53` punch-list — LW write() Fable#7 + Fable#8; CMDLF-002 deferred.
-- `baa6c11` punch-list — Tracker CMDLF-004 + CMDLF-005/006/Fable#9.
-- (docs) undo-contract capture note + HANDOFF + this file + OUTSTANDING.
+## How it got here (so the design is trusted)
+6 revisions, dual cross-provider red-team every round (Codex/GPT-6-Astra high + Fable 5.1 high):
+- Rev 1 (pre-session) → REVISE. Rev 2 (rebuilt on live CMDL-FINISH) → REVISE. Rev 3 → REVISE, but
+  **Fable hand-executed the engine** (N-edits→N-undos→N-redos + the 4 sync fixpoints) and it PASSES.
+- Rev 4 introduced the owner's **UNPUBLISH reframe**; Rev 5 gave it a real issuance identity.
+- **Rev 5 → Fable APPROVED (build-ready, no further design round); Codex REVISE with 6 contained §6
+  findings, all folded into Rev 6.** The engine took NO finding in rounds 4–5.
+The design phase is CLOSED. The remaining quality gate is the **post-build cross-provider CODE
+inspection**, not more design review.
 
-## P4 — DONE
-Every remaining Tracker action is now ONE gesture = ONE envelope (§4), via the all-reads-first
-pattern (hoist every async read/prompt before the synchronous `trkGesture` body):
-- **removeStudentNow, renameStudent** (Class C): hoist the cross-syllabus roster reads + last-marked
-  pointer; the removal/relabel + all its deletes are one envelope. A gesture-aware `delKey` records
-  a delete (TRK_DEL sentinel) so its storage flush rides the gesture's one boundary effect.
-- **addSyl, dupSyl, restoreHiddenSyl** (Class B): the catalogue + def + layout writes are one
-  envelope; the switch/reload after is a separate async step. `reconcileBuiltinsSync` was split out
-  of the async `reconcileBuiltins` so restoreHiddenSyl can run it inside the gesture. The old
-  storage-error rollback is gone (writes are atomic to memory; flush is best-effort at the boundary,
-  status "local only" on failure).
-- **delSyl** (Class C): `planSylSweep` gathers every delete + plan repoint across all course
-  namespaces first (replaced `sweepSylRecords`/`repairPlanSyl`), then the whole sweep applies in one
-  envelope.
-- **TRK_RESTORING** (N7): the legacy undo (applyHist/applyMarkHist) runs its saves off the command
-  stream via `trkRestoring(fn)`, scoped to the synchronous `trkWrite`, never across the awaited
-  `step()`.
-- **trkStore registered GUARDED** (P4-END), mirroring lwStore: its cheap `signature()` is checked on
-  every commit app-wide; the only post-boot raw path (TRK_RESTORING) runs standalone from a keypress,
-  never nested, so it is baked into the next pre-snapshot, not flagged.
-- **importClick** deliberately left per-write (NOT one gesture per chart): under the guard every write
-  is still on the stream; grouping the whole import is the [GLOBAL-UNDO] import-undo-granularity
-  question the design (§4) defers. `applyCharts`/`applyStudents` are large async guardrail paths with
-  `loadCourse` reloads inside — making them one synchronous gesture is a deep restructure best done
-  with the undo consumer.
+## What to build (the model, in one breath)
+One global undo timeline over the command stream replaces the 3 snapshot stacks (scheduler HIST, LW
+per-war, Tracker mark history). An undo is a **replay of recorded inverse data** (never a reconciler
+re-derivation) applied as one `restore` commit through each store's `write()` seam. Plus:
+- **Conflict = refuse-whole**, via a timeline-owned `expected` map + sticky **out-of-band barriers**
+  (§4) checked before EVERY expectation update (incl nav/restore).
+- **Authorization** `mayReverse` keyed on the FORWARD actor's role + record ownership (§5).
+- **Publish path = UNPUBLISH model (§6):** undo of a publish is its ordinary inverse (clears
+  sign-offs); a standing **Unpublish button** on the day header retracts to a working copy; a **quiet
+  correction** reissues the **SAME version label** with each issuance kept as an immutable snapshot in
+  an append-only `sched.retired` collection + a history line once disseminated; a real **amendment**
+  is the separate working-copy→next-AL act. Owner rulings baked in at design §0.
+- **Snap-to-context** + the **undo bubble** (§8) — one central describer, safe generic fallback.
 
-## Punch-list — 6 FIXED, 2 DEFERRED (all latent — write/restore seams have no production caller yet;
-verified by round-trip UNIT tests, not a live scenario, exactly as agreed with the owner)
-- **CMDLF-012** (command core) — a joined child's `expectedRevs` was discarded; now merged into the
-  phase-5 conflict check. Pinned.
-- **CMDLF-010** (scheduler) — `records()` now emits `inputs/__order`, so a reorder is a recorded
-  change and a delete→restore round-trips input position. Pinned.
-- **Fable#8** (LW) — `write()` applies `lw.war` before cells, so a cell listed first isn't dropped.
-- **Fable#7** (LW) — clone-on-write of object record values (no aliasing of the source/undo snapshot).
-- **CMDLF-004** (Tracker) — `trkWriteRecords` re-derives the global catalogue + event-info lets
-  (SYLS/SYL_ORDER/SYL_HIDDEN/SYL_TOMB/eventInfo) from mem, so a restored syllabus-delete no longer
-  leaves a blank board until reload.
-- **CMDLF-005/006/Fable#9** (Tracker) — `capture` also snapshots the course pointer + the unsaved
-  flow draft (SYL); `restore` puts them back and re-derives the rest from mem with `rebuildSyl=false`,
-  so a rejected gesture no longer discards an unsaved draft. Pinned.
-- **CMDLF-002** (LW) — DEFERRED to [GLOBAL-UNDO]. Restoring `lw.postouts` needs the people posting
-  WINDOWS re-laid over the CLEAN Raptor projection (`setPeople(projectPeople)`), which crosses the
-  LW↔Raptor boundary sync.ts owns and re-enters the reconcilers at the write boundary — the undo
-  consumer's orchestration, not a bare record apply. Marker at the apply site. Latent (no caller).
-- **CMDLF-011** (scheduler) — NO fix. A pre-verId legacy `sched.als` key exists only in pre-promulgation
-  demo data and is prevented going forward (all ALs get verIds); per reset-demo-data, clear not migrate.
+## Build order (design §13; strangler; ALL FIVE GATES green after each phase; a phase = a checkpoint)
+1. **Engine + foundation adds** (no module cut over): timeline, inverse via `write()`, clone-on-write,
+   expectation map + barriers + non-linear + redo-LIFO, `mayReverse`, snap + `contexts`, describer +
+   bubble, single dispatcher, the `sched.unpublish` command + `retireIssued` + the append-only
+   `sched.retired` collection + the DERIVED publication barrier + live boundary, `weekstashStore.write()`,
+   `commitAs` `causedBy` + `undo.restore` permission, `Boundary.kind` `'unpublish'`,
+   `layRoster`/`relandInputs` extraction, `SCHED.retired` + `SCHED.correcting` through the FULL
+   scheduler-state codec (schedFields/histRestore/applyWeekModel/boot/weekStashSnap/applyBook/
+   resetSched/LogicalCollection/LOGICAL_TO_BLOB/registerRecord/SchedFields type/schema test), MemoryDoor
+   + harness increment.
+2. **Scheduler + Leave War cutover together** (forced by `retractLwRow`; LW legacy restore unreachable
+   here); `acc` strip+reland; off-week/weekstash; the **Unpublish button** UI on the day header.
+3. **People + settings.**
+4. **Tracker** (mark + structural history dormant/unreachable); whole-import = one undo (~300-line
+   pure-function refactor of applyCharts/applyStudents) + an undoable-draft for unsaved structural edits.
+5. **Leave War postouts reproject (§10.1, the `poArchive===undefined` provenance rule) + finding-A
+   forward splice** (own commit + test).
+6. *(after ARCH-STACK step 4, one-Absence)* delete the three dormant stacks.
 
-## Gates (each run alone)
-build/typecheck clean · `node reference/tfin.js` **728/0** · full unit **4912/4912** ·
-`smoke:tracker` **425/0** · `test:e2e` **425 passed / 33 skipped / 0**.
+## During-build doc items to fold into the build PR (Fable round-5, already listed in design §15)
+R5-03 codec completeness; R5-08 derive `di` from the closure keys; R5-09 add `armDrop`+`prunePreviews`
+to the restore reducer's deferred effects; R5-06/07 wording. R5-01 (postout provenance) is folded in
+§10.1 but re-verify before phase 5.
 
-## Pick up here (next session)
-1. On the owner's **"merge live"**: full gate set once, open PR from `claude/cmdl-finish-p4`, merge on
-   green, Pages rollover, live-verify (open the Tracker tab — it should behave identically; this work is
-   invisible plumbing), one notification. **Coordinate merge order with the parallel [AMEND] chat**
-   (`claude/amendment-engine-core`, PR #405): merge one fully, then the other rebases onto `main` and
-   re-runs its gates — never both at once. Recommend CMDL-FINISH first (it's the foundation).
-2. Next ARCH-STACK step is **[GLOBAL-UNDO]** (design Rev 2, then build). It is the CONSUMER of the
-   write()/capture/restore seams finished here — the two deferred items (CMDLF-002, importClick
-   grouping) are its to complete, with real undo scenarios to verify against.
+## How to work it
+- **Opus, high, test-first (TDD).** The main session builds (no farming to cheaper models —
+  `../.claude/rules/raptor-executor.md`). Read `raptor-port/CLAUDE.md` §Build & verify + the
+  rules-engine robustness doctrine; this touches persisted data + publish + signatures = HEAVY.
+- Gates from `raptor-port/`: `npm test` · `npm run build` · `node reference/tfin.js` (728/0) ·
+  `npm run test:e2e` · `npm run smoke:tracker`. Run only the affected file while iterating; full set
+  once per phase.
+- **NO merge without the owner's explicit "merge live".** Push each phase to `claude/global-undo`,
+  hand him the Vercel link, keep the one PR accumulating. Coordinate with any parallel chat before
+  merging.
+- After the build: the standing dual cross-provider CODE inspection of the diff.
 
-Design of record: `docs/superpowers/specs/2026-09-17-arch-stack-cmdl-finish-design.md`; front-door doc
-`docs/undo-contract.md`.
+## Pick up here (next session — a FRESH chat, per the owner's rule for a big new task)
+Select branch **`claude/global-undo`** in the picker. Read design Rev 6 + `undo-contract.md`, then
+start **phase 1** test-first. The owner is non-technical — plain-language reports only
+(`.claude/rules/plain-language.md`).

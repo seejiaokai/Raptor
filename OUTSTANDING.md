@@ -402,15 +402,18 @@ Owner decision (17 Sep 26): do this as its **own gated step FIRST**, then build 
   `2026-09-16-arch-stack-2-command-layer-design.md`. Global-undo design (gated behind this):
   `2026-09-17-arch-stack-3-global-undo-design.md` §12.
 
-### [GLOBAL-UNDO] One global per-session undo — DESIGNED (Rev 1) + red-teamed; build GATED behind [CMDL-FINISH]
-**DESIGN STATUS (17 Sep 26):** first design written and both-provider red-teamed (Codex + Fable,
-both REVISE, converged). Design + §12 reshaped plan: `raptor-port/docs/superpowers/specs/2026-09-17-arch-stack-3-global-undo-design.md`;
-findings + fix specs: `…-2026-09-17-arch-stack-3-global-undo-review-log.md`. Rev 2 is deliberately
-deferred until `[CMDL-FINISH]` lands (the foundation build re-bases the exact code undo sits on).
-The durable undo-engine corrections to fold into Rev 2 are captured in the design's §12-B
-(record-derived reversal authorization; closure-idempotence as the guarantee + the finding-A
-forward fix; live publish-boundary resolution; dormant-stacks-must-be-UNREACHABLE + single
-dispatcher; cross-week `acc` handling).
+### [GLOBAL-UNDO] One global per-session undo — DESIGNED (Rev 6) + red-teamed to close; BUILD-READY, not built
+**DESIGN STATUS (18 Sep 26): DONE — Rev 6, build-ready.** `[CMDL-FINISH]` foundation is merged + live.
+The design was hardened over **6 revisions with a dual cross-provider red-team every round** (Codex/
+Astra + Fable, both high): **Rev 5 → Fable APPROVED (build-ready, no further design round); Codex
+REVISE with 6 contained §6 findings, all folded into Rev 6.** The engine took no finding in the last
+two rounds and was hand-verified twice. Design of record:
+`raptor-port/docs/superpowers/specs/2026-09-17-arch-stack-3-global-undo-design.md` **Rev 6**; transcript
+`…-global-undo-review-log.md`; front-door `raptor-port/docs/undo-contract.md`; build handoff
+`raptor-port/docs/session-state.md`. Work is on branch **`claude/global-undo`** (docs only, pushed).
+**NEXT: build phase 1 (design §13), test-first, Opus high, in a FRESH chat; standing post-build dual
+CODE inspection; no merge without "merge live".** The 18 Sep owner reframe (undo-of-publish = UNPUBLISH
++ same-label quiet correction) is captured below and in memory `undo-of-publish-semantics`.
 
 **OWNER DECISION 17 Sep 26 — what an on-the-record undo IS. SUPERSEDES the 16 Sep wording.**
 The boundary was settled first: undo is silent while the shared database has NOT registered
@@ -456,11 +459,14 @@ stores' history, which the DB step needs anyway), NOT as a mid-fix patch now.
   approved absence is ONE record (ARCH-STACK step 4, one-Absence). Until then the command carries
   the leave effect in its own inverse data so it can't drift, but the cleanest version is a step-4
   payoff — don't try to fully solve input+leave undo before step 4.
-- **Undo-of-publish semantics SETTLED (owner, 16 Sep 26):** silent reverse BEFORE a publish is
-  sent/witnessed; an on-the-record forward withdrawal (a correcting amendment — append-only, unique
-  never-reused version ids, derived credits recompute) AFTER. Undo is per-user + per-session
-  (logout clears; never touches another user's actions; won't clobber a later edit). Roster/settings
-  edits ARE undoable. See step-2 design §3.4 + memory `undo-of-publish-semantics`.
+- **Undo-of-publish semantics — SUPERSEDED by the 18 Sep UNPUBLISH reframe above (see line 430+).**
+  ~~16 Sep: silent reverse before sent; an on-the-record forward withdrawal (a correcting amendment,
+  never-reused version ids) after.~~ SET ASIDE. The current rule (18 Sep): undo of a publish =
+  UNPUBLISH → quiet-correct → reissue the SAME version LABEL (label reused; each issuance kept as an
+  immutable snapshot; a history line once disseminated); a real amendment is the separate working-copy
+  → next-AL act. Undo stays per-user + per-session (logout clears; never touches another user; won't
+  clobber a later edit); roster/settings edits ARE undoable. See design §6 + memory
+  `undo-of-publish-semantics`.
 - **Context:** the sync spec (findings A/C/D/E/F/I + the red-team on why the two-system patch
   is the wrong approach); memories `future-undo-semantics-multiuser` (architecture direction),
   `undo-of-publish-semantics`, `multi-squadron-and-person-transfer`; ties to

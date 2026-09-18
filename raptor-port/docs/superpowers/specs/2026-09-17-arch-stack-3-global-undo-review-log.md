@@ -213,3 +213,36 @@ specs (the `sched.retired` collection, `retireIssued`, the §6.5 reducer, the da
 barrier, barrier-on-nav) + Codex's GU4-007 full-codec wiring + the OIL side effect flagged to the
 owner (default: warn if the day has credits bid against). Engine untouched, twice hand-verified.
 **Final dual re-review of Rev 5 next** (Codex `--resume`, Fable fresh).
+
+---
+
+## Round 5 — Rev 5 reviewed (18 Sep 26) — Fable APPROVE, Codex REVISE (contained); DESIGN CLOSED at Rev 6
+
+**Fable 5.1 (high): APPROVE — build-ready for phases 1–4, no further design round.** Every code fact
+Rev 5 leans on re-confirmed; clean fold-check of all R4-01..09. Two must-state rule-statements
+(R5-01 the postout seam, before phase 5; R5-02 the derived barrier, phase 1) + during-build wiring
+(R5-03 codec: `resetSched`/`LogicalCollection`/`LOGICAL_TO_BLOB`/`registerRecord`/`SchedFields`
+type/`SCHEMA` test; R5-08 di-derivation; R5-09 `armDrop`+`prunePreviews` on the restore reducer;
+R5-10 retired-append wording) + doc cleanup (R5-04 stale text; R5-06/07 wording; R5-05 Step-5
+disclosure note). Verdict wording: "proceed to build; no re-review of the design is needed; the
+post-build cross-provider code inspection stands."
+
+**Codex / GPT-6 Astra (high): REVISE** (runner `claudex-kuwwqgac`, exit 0). GU5-001 a correction that
+nets to an empty delta can't reissue (`publishALDay` refuses) · GU5-002 `pubBar[di]` not week-unique
+(di is a loaded-week index) · GU5-003 unpublishing an AL clears the barrier though the Original stays
+published · GU5-004 disclosure keyed by the reused label id → a corrected reissue is auto-disclosed ·
+GU5-005 §6.2 restoring sign-offs contradicts the clear-on-unpublish guardrail · GU5-006 the postout
+fix names a non-existent LW people record (= Fable R5-01).
+
+**Round-5 disposition (coordinator) → Rev 6 (DESIGN CLOSED).** Codex's 6 findings map cleanly:
+GU5-006 = Fable R5-01 (postout provenance marker); GU5-002/003 subsumed by Fable R5-02 (DERIVE the
+barrier keyed `weekId#di` from boundary entries — a surviving Original keeps the barrier, undo/redo
+need no bookkeeping); GU5-004 = Fable R5-05 (disclosure keyed by `id~n`, no live effect at Step 3);
+GU5-001 (a `SCHED.correcting[di]` flag permits an empty-delta reissue; ordinary amendments stay
+delta-gated); GU5-005 (resolve toward the guardrail — undo-of-publish CLEARS sign-offs like the
+button; owner already ruled unpublish clears sign-offs, and undo-of-publish IS an unpublish). All
+folded into Rev 6 §6.1/6.2/6.3/10.1. **No engine finding in round 5.** Fable's APPROVE + coordinator
+arbitration of Codex's contained items = design CLOSED; remaining during-build doc items tracked in
+design §15. **Next: BUILD (Opus, high, test-first), phase by phase; standing post-build dual CODE
+inspection; no merge without "merge live".** Handoff to a fresh build chat prepared (owner's rule:
+big new task → fresh chat).

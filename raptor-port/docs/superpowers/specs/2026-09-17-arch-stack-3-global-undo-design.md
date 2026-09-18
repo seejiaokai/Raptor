@@ -1,17 +1,20 @@
-# [ARCH-STACK] Step 3 — one global undo — DESIGN (Rev 5, 18 Sep 26)
+# [ARCH-STACK] Step 3 — one global undo — DESIGN (Rev 6, 18 Sep 26 — BUILD-READY)
 
-> **Status:** Rev 5 — **BUILD-READY pending a final dual cross-provider re-review** of THIS
-> revision. Round-4 (Codex GU4-001..007 + Fable R4-01..09) returned REVISE but **converged that the
-> ENGINE is done** (both accepted §3–§5, §8–§11; Fable re-confirmed the hand-walks) — **every new
-> finding was on the just-introduced publish reframe (§6)**, and the reviewers handed exact fix
-> specs. Rev 5 folds them: the reused-label model gets a real **issuance identity** (an append-only
-> `sched.retired` collection, §6.1) so a corrected version never overwrites the one people saw; undo
-> of a publish is its **ordinary inverse** (marked undone), not a forward dispatch (§6.2); an explicit
-> **publication barrier** replaces the write-key-overlap assumption (§6.3); the reducer is fully
-> specified (§6.5); and the barrier check runs on nav/restore too (§4.1). It keeps the **undo bubble**
-> (§8.2) and the **Unpublish button** on the day header (§6.4). Fable's round-4 verdict: once these
-> rule-statements are made, build-ready without a further design round. No code ships until this
-> revision is red-teamed clean and the owner says "merge live".
+> **Status:** Rev 6 — **BUILD-READY. Design phase CLOSED.** Round-5 review: **Fable 5.1 (high)
+> APPROVED** ("build-ready for phases 1–4, no further design round; fold R5-01 before phase 5,
+> R5-02/R5-08/R5-10 into the phase-1 doc, R5-04 doc cleanup"); Codex/Astra returned REVISE with 6
+> findings (GU5-001..006), **all on §6/§10.1, none on the engine**, and all either converged with
+> Fable's fixes or contained. Coordinator arbitration (claudex protocol): the material defects are
+> resolved — Rev 6 folds them all (below). Both reviewers accepted the ENGINE (§3–§5, §8–§11) across
+> rounds 4–5, hand-verified twice. **Rev 6 folds round-5:** disclosure keyed by per-issuance `id~n`
+> not the reused label (§6.1, GU5-004); a `SCHED.correcting` flag so a no-delta correction still
+> reissues (§6.1, GU5-001); the publication barrier is DERIVED and keyed `weekId#di`, so it survives a
+> surviving Original and needs no undo/redo bookkeeping (§6.3, GU5-002/003 + R5-02); undo-of-publish
+> CLEARS sign-offs like the button, one rule (§6.2, GU5-005); the leave-window removal uses the
+> `poArchive===undefined` provenance marker, not a non-existent LW people record (§10.1, GU5-006/R5-01).
+> Small during-build doc items (R5-03/06/07/09) are listed in §15. **Next: BUILD (Opus, high,
+> test-first), phase by phase; the standing post-build cross-provider CODE inspection replaces further
+> design review. No code merges without the owner's "merge live".**
 >
 > **Method (still binding):** claims about existing machinery are checked against CODE with
 > `file:line`; round-3 fix specs are cited. A doc agreeing with a doc is evidence of nothing.
@@ -239,18 +242,38 @@ type RetiredIssue = { id; n; di; iso; seq; snap; diff; sign; at; by; restoreSeq?
   (`publish.ts:725`), `setDayApproved` stamps `verId(iso,0)` again (`:199`), and the boundary fires
   because the id is absent from `before`. **The `retired` list IS the correction log** — the separate
   `wd` field from Rev 4 is dropped.
+- **Disclosure is keyed by the per-issuance identity `id~n`, NOT the reused label id (round-5
+  GU5-004/R5-05).** `DISCLOSED` is a monotonic `Set` of verIds (`disclosure.ts:43`), so if the fresh
+  reissue's `issuedDisclosed` were asked about the reused label id it would inherit the retired
+  issuance's `disclosed=true` and be treated as already-seen. So the retired snapshot's disclosure is
+  recorded against its `id~n`, and a fresh reissue starts undisclosed. At Step 3 nothing is disclosed,
+  so this has no live effect; it is the model the Step-5 DB adapter keys on.
+- **Reissuing a correction that nets to NO delta must still be allowed (round-5 GU5-001).** If you
+  unpublish AL1, then correct the content back to equal the Original, `dayDelta` is empty and
+  `publishALDay` refuses (`publish.ts:613`), so the corrected AL1 could never be reissued. Fix: a
+  same-label correction carries an explicit **`SCHED.correcting[di] = id`** flag (set by
+  `sched.unpublish`, cleared on reissue) that permits `publishALDay`/the button to reissue **even on an
+  empty delta**; an ORDINARY new-amendment publish stays gated on a non-empty delta. So a pure
+  round-trip correction (fix, then revert) still reissues the same label and clears the flag.
 
 ### 6.2 Undo of a publish = its ORDINARY INVERSE (round-4 GU4-001 / R4-02) — NOT a forward dispatch
 Rev 4 said "undo dispatches the forward `sched.unpublish`". That is wrong: a forward command never
 marks the publish entry `undone`, so the timeline can never walk past a publish and the button
 ping-pongs. Instead:
 - **In-session undo of a publish entry = the plain inverse restore, marked `undone` like any entry:**
-  the `sched.book` before-image (c/p/ad/ok/sg/sb/cv back) + a `delete` of the `sched.orig/<wk>:<di>`
-  or `sched.als/<wk>:<id>` record via `write({allowIssued:true})` (already supported,
-  `sched-commit.ts:173-195`) + a `put` of a `retired` entry **when `issuedDisclosed(id)`**. One helper
-  `retireIssued(di,id,{clearSigns})` appends to `retired` with `logged = issuedDisclosed(id)`. Redo =
-  the forward image. Sign-offs come back on an in-session undo of a just-made publish (the before-image
-  has `sg/sb`; the bindings re-validate — `publish.ts:650-675`).
+  the `sched.book` before-image + a `delete` of the `sched.orig/<wk>:<di>` or `sched.als/<wk>:<id>`
+  record via `write({allowIssued:true})` (already supported, `sched-commit.ts:173-195`). Redo = the
+  forward image.
+  - **Sign-offs are CLEARED, not restored (round-5 GU5-005 — resolving the Rev-5 contradiction with
+    §6.7 toward the guardrail):** undo-of-a-publish IS an unpublish, so the reducer `signClear(di)`s
+    the day exactly like the button; the restore does NOT put the pre-publish `sg/sb` back. (Redo
+    re-publishes and re-clears per the normal publish path.) This keeps one rule: a published day that
+    is pulled back always re-signs on republish, whether pulled back by Undo or by the button.
+  - **The retired entry (the audit line) is written ONLY when disclosed (round-5 R5-10):** the
+    in-session inverse appends a `retired` entry **only if `issuedDisclosed(id)`** — an undisclosed
+    undo means the publish, to the shared world, never happened (the owner's silent rule), so it
+    leaves no line. The standalone button always appends, `logged = issuedDisclosed(id)`. One helper
+    `retireIssued(di,id,{clearSigns,logIf})`.
 - **The standalone Unpublish button** (§6.4) is the forward `sched.unpublish` command used AFTER the
   session, or once the publish is no longer the newest entry — the only path when §6.3 refuses the
   inverse. It runs `retireIssued(di,id,{clearSigns:true})`.
@@ -264,12 +287,21 @@ ping-pongs. Instead:
 Rev 4 leaned on write-key sharing (an edit shares `sched.book/<wk>` with the publish). That is NOT
 guaranteed: a second edit to the same area writes only `days` when its pending mark is already set
 (`markEdit`, `publish.ts:524`), so its closure need not intersect the publish's write set. So Rev 5
-adds an **explicit publication barrier keyed by day**: when a day is published, the timeline records
-`pubBar[di] = publishSeq`. §4.3 refuses undoing ANY entry whose `contexts` include a day with a
-`pubBar` newer than that entry, independent of write-key overlap. Clearing the day (unpublish) clears
-`pubBar[di]`. This is the honest form of "to change a published day you unpublish it first". (The
-week-wide `sched.book` linearity of §4.4 still applies on top; the refusal message names the day:
-"A day on this week was published after that change — unpublish it, or edit the working copy.")
+adds an **explicit publication barrier, DERIVED (not stored), keyed by `weekId#di`** (round-5
+R5-02/GU5-002/GU5-003 — a stored `pubBar[di]` is wrong: `di` is a loaded-week array index so week B's
+Monday would clobber week A's, and undo/redo of the boundary entries would need bookkeeping):
+- `pubBar[weekId#di]` = the seq of the newest **not-undone** entry with a `boundary.kind==='publish'`
+  whose issued id resolves to that `weekId#di`, **unless** a newer not-undone `boundary.kind==='unpublish'`
+  for the same day exists (then none). The day is read from the verId's iso (`dayIso`, `verid.ts:30`)
+  or the `sched.orig/<wk>:<di>` id (round-5 R5-08 — `Scope`/`contexts` carry week/war/course, not a
+  day, so `di` is derived from the closure's `days/<wk>#<di>` / `sched.orig/<wk>:<di>` keys).
+- §4.3 refuses undoing ANY entry whose closure touches a `weekId#di` that has a `pubBar` newer than
+  that entry. Deriving it means **unpublishing AL n while the Original is still published correctly
+  leaves the barrier at the Original's publish** (round-5 GU5-003), and undo/redo of a publish/unpublish
+  need no extra bookkeeping (round-5 R5-02).
+- This is the honest form of "to change a published day you unpublish it first" (the week-wide
+  `sched.book` linearity of §4.4 still applies on top). Refusal message names the day: "A day on this
+  week was published after that change — unpublish it, or edit the working copy."
 
 ### 6.4 The button + the quiet-vs-amendment choice is at the START, not at republish (round-4 R4-03)
 Rev 4's "choose quiet vs next-AL at republish" contradicts `nextSeq` (after AL n is retired `nextSeq`
@@ -383,19 +415,22 @@ before `withCurrent(next)` — carrying `from/to/poArchive` from `current` for a
 `postOuts` and appending any current person absent from the projection with `to!==null` (round-3
 R3-07, mirroring `sync.ts:1012-1031` so a demo-overlay window isn't dropped). No reconciler
 involvement; the deferred boundary notify finds the signature unchanged. Remove the CMDLF-002 marker.
-- **The REMOVAL case (round-4 GU4-004 — R3-07's carry-current over-corrected):** carrying `current`'s
-  window for a person absent from the restored `postOuts` is WRONG when undoing the person's FIRST
-  posting-out — `setPostOut` installs both `postOuts[id]` AND the person's `to`/`poArchive`
-  (`store.ts:1535`), so on undo the window must be REMOVED, but `current` still has it (write() clones
-  current). The fix: the postout forward closure must **record the affected person's `to`/`poArchive`
-  before-image** (enlist the people record, so the window is real recorded data in the inverse, not
-  re-derived); `layRoster` then carries a `current` window **only for a person whose window has
-  independent provenance** (a demo overlay / `personEdits`, not a `postOuts`-supplied one). So the
-  inverse of "add a posting-out" removes the window; the inverse never keeps a window the reversed
-  `postOuts` supplied.
-- Test: add a person's FIRST posting-out → undo → window GONE (`to===null`); approve/retract with an
-  independent demo window present → that window survives; a past-dated `poArchive:true` re-archive is
-  a forward-closure child so undo produces NO projection — assert each.
+- **The REMOVAL case, via the provenance marker the code ALREADY keeps (round-5 R5-01/GU5-006 —
+  Rev 5 named the wrong seam):** there is NO Leave War people RECORD to enlist — `lwDecompose` emits
+  `lw.postouts/all` and `lw.config/all` but `people` is a non-persisted PROJECTION (`store.ts:1104`,
+  `:1553`), and the Raptor `people` store is a different thing (Raptor PEOPLE). So do NOT enlist a
+  people record. Instead use the provenance the code stores: `setPostOut` writes `poArchive` as an
+  explicit boolean (`store.ts:1519`), while an overlay/`personEdits` window has `poArchive===undefined`.
+  Rule for `layRoster(projected, postOuts, personEdits, current)`: a person's window comes from the
+  restored `postOuts` when the id is present; when ABSENT, carry `current`'s window **only if
+  `current.poArchive===undefined`** (independent provenance), else set `to=null, poArchive=undefined`.
+  So the inverse of adding a FIRST posting-out removes the window (its id is gone from the restored
+  `postOuts`, and its `poArchive` was defined), while a genuine demo/overlay window survives. No new
+  record; `setPeople`'s existing keep rule (`store.ts:1566`) already lays back from `postOuts` the
+  same way.
+- Test: add a person's FIRST posting-out → undo → window GONE (`to===null`); a person with an
+  independent demo window (`poArchive===undefined`) present → that window survives; a past-dated
+  `poArchive:true` re-archive is a forward-closure child so undo produces NO projection — assert each.
 
 ### 10.2 Whole-import = ONE undo, three phases (round-3 R2-07 + GU3-008/009)
 - **A (async, zero writes):** parse, collect every prompt answer + `sGet`, run reconcile/migration
