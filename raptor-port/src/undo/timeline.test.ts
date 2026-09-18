@@ -224,11 +224,11 @@ describe('deferred collections: non-undoable but still conflict barriers (§7, C
     setCutoverModules(['lw'])
     definePermission('lw.edit', anyone)
     // a post-out edit — ineligible (its roster reproject is deferred to phase 5)
-    commit({ type: 'lw.edit', scope: { module: 'lw' }, apply: (txn) => { txn.enlist(po.store); po.set('all', { x: 1 }) } })
+    commit({ type: 'lw.edit', scope: { module: 'lw', warId: 'w1' }, apply: (txn) => { txn.enlist(po.store); po.set('all', { x: 1 }) } })
     expect(undoState().canUndo).toBe(false)
     expect(globalUndo().ok).toBe(false)
     // a config edit (figure-hide, colours, order) — eligible, restores cleanly
-    commit({ type: 'lw.edit', scope: { module: 'lw' }, apply: (txn) => { txn.enlist(cfg.store); cfg.set('all', { hidden: ['f1'] }) } })
+    commit({ type: 'lw.edit', scope: { module: 'lw', warId: 'w1' }, apply: (txn) => { txn.enlist(cfg.store); cfg.set('all', { hidden: ['f1'] }) } })
     expect(undoState().canUndo).toBe(true)
   })
 

@@ -394,7 +394,7 @@ function applyRestore(entry: UndoEntry, changes: Change[]): { ok: boolean; reaso
       apply: (txn) => {
         const relock = hooks.reinstallLocks ? hooks.reinstallLocks() : undefined
         try {
-          for (const [store, list] of byStore) { txn.enlist(store); store.write!(list, { allowIssued: true }) }
+          for (const [store, list] of byStore) { txn.enlist(store); store.write!(list, { allowIssued: true, restore: true }) }
         } finally { if (relock) relock() }
       },
     },

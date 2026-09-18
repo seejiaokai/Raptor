@@ -156,8 +156,11 @@ export interface EnlistableStore {
      step (Step 3) is the consumer; at CMDL-FINISH it is built + unit-tested but
      has no production caller (no stream-driven undo yet). `opts.allowIssued`
      lets the restore path write append-only-intended issued records
-     (sched.orig/sched.als); a normal write refuses them (C7). */
-  write?(entries: RecordEntry[], opts?: { allowIssued?: boolean }): void
+     (sched.orig/sched.als); a normal write refuses them (C7). `opts.restore`
+     marks this write as an undo/redo restore, so a store that keeps DERIVED
+     per-week state (the scheduler's input landings) can re-reconcile it against
+     the restored records — never on an ordinary forward write ([GLOBAL-UNDO] §11/C3). */
+  write?(entries: RecordEntry[], opts?: { allowIssued?: boolean; restore?: boolean }): void
 }
 
 /* The reducer's handle onto the open transaction (design §3.2). */

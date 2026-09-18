@@ -35,6 +35,7 @@ import {
 } from '../command'
 import { DAYS } from '../engine/data'
 import { INPUTS, mintInpIds } from '../engine/inputs'
+import { reconcileDayFiling } from '../engine/slots'
 import { ensureRowIds } from '../engine/rowids'
 import { SCHED, setDayApproved, publishALDay, discardPending, unpublishDay, dayCurVer } from '../engine/publish'
 import { CURWEEK } from '../engine/waves'
@@ -171,16 +172,28 @@ function applyBook(v: any): void {
    issued record (sched.orig/sched.als) is refused unless the restore path passes
    {allowIssued:true} (C7). Called only from a reducer that already enlisted
    schedStore. */
-function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolean }): void {
+function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolean; restore?: boolean }): void {
   const wk = CURWEEK
   let orderIds: string[] | null = null
   let alsTouched = false
+  /* [GLOBAL-UNDO] §11/C3 — on a RESTORE, the derived per-week input landing (acc)
+     must be re-reconciled against the restored day records, not trusted from the
+     inverse: 'g' is week-relative, and a days-only inverse can drop or add a ground
+     row without an accompanying inputs record. So on restore we (1) strip a stored
+     'g' from each restored input (on the CLONE, never the recorded inverse — GU2-009),
+     and (2) run reconcileDayFiling per touched day AFTER the apply — two-way, so it
+     clears a dangling 'g' and re-files a row the day image restored, and NEVER pushes
+     a new row (which would land another person's input outside auth/revisions). */
+  const restore = !!opts?.restore
+  const touchedDays = new Set<number>()
   const foreign = (id: string, sep: string) => id.slice(0, id.indexOf(sep)) !== wk
   for (const e of entries) {
     switch (e.collection) {
       case 'days': {
         if (foreign(e.id, '#')) throw new CmdRefused(`scheduler write: foreign week ${e.id}`)
-        if (e.op !== 'delete') DAYS[Number(e.id.slice(e.id.indexOf('#') + 1))] = cw(e.value)
+        const di = Number(e.id.slice(e.id.indexOf('#') + 1))
+        if (e.op !== 'delete') DAYS[di] = cw(e.value)
+        if (restore) touchedDays.add(di)
         break
       }
       case 'sched.book':
@@ -229,8 +242,12 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
         if (e.id === INPUT_ORDER_ID) { orderIds = (e.value as string[]) || null; break }
         const ix = INPUTS.findIndex((r: any) => r.iid === e.id)
         if (e.op === 'delete') { if (ix >= 0) INPUTS.splice(ix, 1) }
-        else if (ix >= 0) INPUTS[ix] = cw(e.value)
-        else INPUTS.push(cw(e.value))
+        else {
+          const v = cw(e.value) as any
+          // strip the DERIVED 'g' landing on a restore; reconcileDayFiling re-derives it
+          if (restore && v && v.acc === 'g') delete v.acc
+          if (ix >= 0) INPUTS[ix] = v; else INPUTS.push(v)
+        }
         break
       }
       case 'plan': {
@@ -257,6 +274,10 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
       return (Number(a?.seq) || 0) - (Number(b?.seq) || 0)
     })
   }
+  /* [GLOBAL-UNDO] §11/C3 — reland BEFORE applyEnd so the re-derived landings are in
+     the baseline snapshot and the emitted envelope (never a stale envelope the next
+     forward edit would absorb). Two-way, per touched day; never auto-lands a row. */
+  if (restore) for (const di of touchedDays) reconcileDayFiling(di)
   applyEnd()   // one ensureRowIds/mintInpIds + advance SCHED_BASELINE
   // HOOKS.reflow = validate() + notify(); HOOKS.histPush persists — both released
   // at the transaction boundary (never on a half-applied multi-store world).

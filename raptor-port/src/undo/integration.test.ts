@@ -9,8 +9,10 @@ import { INPUTS } from '../engine/inputs'
 import { SCHED, dayApproved, signOf } from '../engine/publish'
 import { txtGet } from '../engine/slots'
 import { CURWEEK } from '../engine/waves'
-import { initStore, writeText, weekstashStore } from '../state/store'
-import { schedStore, commitSetDayApproved, commitUnpublish } from '../state/sched-commit'
+import { initStore, writeText, writeInputsBatch, weekstashStore } from '../state/store'
+import { acceptInput } from '../engine/slots'
+import { inpId } from '../engine/inputs'
+import { schedStore, commitSetDayApproved, commitUnpublish, resyncSchedBaseline } from '../state/sched-commit'
 import { setSession } from '../state/auth'
 import * as view from '../state/view'
 import { _resetDisclosure } from '../state/disclosure'
@@ -39,7 +41,7 @@ beforeEach(() => {
   installUndo()
   registerUndoStore(schedStore, SCHED_COLLS)
   registerUndoStore(weekstashStore, ['weekstash'])
-  setCutoverModules(['sched'])
+  setCutoverModules(['sched', 'inputs', 'plan'])
 })
 afterEach(() => { _resetTimeline() })
 
@@ -69,6 +71,53 @@ describe('a real scheduler text edit round-trips through the timeline', () => {
     globalRedo(); expect(note0()).toBe('A')
     globalRedo(); expect(note0()).toBe('B')
     globalRedo(); expect(note0()).toBe('C')
+  })
+})
+
+describe('undo of a real input filing round-trips the landing (reland in restore, §11/C3)', () => {
+  const freshOnDay0 = () => {
+    INPUTS.push({ person: 'vinci', date: DAYS[0].dt, allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'x' })
+    return INPUTS[INPUTS.length - 1] as any
+  }
+  // acc must be read from the LIVE INPUTS entry by id — the restore replaces the
+  // object (clone-on-write), so a held reference goes stale.
+  const accOf = (iid: string) => (INPUTS.find((r: any) => r.iid === iid) as any)?.acc
+  it('accepting an input then undoing removes its ground row AND clears acc; redo re-lands it', () => {
+    const inp = freshOnDay0()
+    const iid = inpId(inp)
+    resyncSchedBaseline()                            // X is pre-existing, so the accept is a PUT (acc), not a create
+    const before = DAYS[0].ground.length
+    // file it onto the ground programme as ONE inputs-module command
+    writeInputsBatch(() => acceptInput(0, inp, 'g'))
+    expect(accOf(iid)).toBe('g')
+    expect(DAYS[0].ground.some((g: any) => g.src === iid)).toBe(true)
+    expect(undoState().canUndo).toBe(true)
+
+    const u = globalUndo()
+    expect(u.ok).toBe(true)
+    expect(DAYS[0].ground.length).toBe(before)                                  // row gone
+    expect(DAYS[0].ground.some((g: any) => g.src === iid)).toBe(false)
+    expect(accOf(iid)).toBeFalsy()                                              // acc re-derived (no dangling 'g')
+
+    const r = globalRedo()
+    expect(r.ok).toBe(true)
+    expect(DAYS[0].ground.some((g: any) => g.src === iid)).toBe(true)           // row back
+    expect(accOf(iid)).toBe('g')                                               // re-landed
+  })
+
+  /* the days-only dangling case (Codex R2-003): a restored day lacks a ground row
+     while the live input still reads acc='g'. reconcileLandedAcc alone (one-way) would
+     leave it dangling; the restore runs reconcileDayFiling (two-way), which clears it. */
+  it('reconciles a dangling g to no-landing when a days-only restore leaves no row', () => {
+    const inp = freshOnDay0()
+    const iid = inpId(inp)
+    inp.acc = 'g'                                    // dangling: 'g' but no ground row exists
+    resyncSchedBaseline()                            // fold X into the baseline, so the next edit is days-ONLY
+    writeText('dn:0.0', 'NOTE')                      // a days-only edit (day note); no inputs change
+    expect(accOf(iid)).toBe('g')
+    const u = globalUndo()                           // restores day 0 (still no row for X)
+    expect(u.ok).toBe(true)
+    expect(accOf(iid)).toBeFalsy()                   // reconcileDayFiling cleared the dangling landing
   })
 })
 
