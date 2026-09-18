@@ -146,7 +146,7 @@ export function installGlobalUndo(): void {
   setUndoHooks({
     loadContext,
     snapView,
-    showBubble: (text: string) => toast(text),
+    showBubble: (text: string) => toast(text, ''),
     reinstallLocks,
     resolvePublishDay,
     postRestore,
