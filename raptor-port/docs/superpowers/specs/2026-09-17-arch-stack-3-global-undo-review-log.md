@@ -139,3 +139,45 @@ auth; GU2-003/R2-01 revision model). Arbitration where the two differ:
   `causedBy` R2-11; `lw.current` demoted to a raw view-pref R2-10; the durable `wd` book field
   R2-04) — folded into build phase 1, not a new CMDL-FINISH-sized step.
 Rev 3 written next; re-review both providers (Codex `--resume`, Fable fresh).
+
+---
+
+## Round 3 — Rev 3 reviewed (18 Sep 26) — BOTH REVISE, converged; engine hand-validated
+
+Rev 3 sent to both. Plan SHA256 `d8fda…`→Rev3 HEAD `f1b6606`. **Fable independently hand-executed
+the core engine and it PASSES:** the N=3 edits→3 undos→3 redos walk on one week (all 9 steps pass
+the conflict check) and the reconciler-fixpoint traces for the 4 load-bearing sync scenarios on both
+lane orders. So the engine is sound; the findings are contained rule-statements + the publish path.
+
+### Round 3 — Codex / GPT-6 Astra (high) — REVISE (7 high, 3 med). Runner `claudex-b7191vuk`
+(exit-1 was the known Windows charmap print glitch; `result.json` intact, status completed).
+GU3-001 expectation-map forgets out-of-band barriers · GU3-002 publish inverse has no content delta
+so AL2 recovery can't fire · GU3-003 undoing a preceding edit rewinds the issued face · GU3-004
+zero-projection invariant vs permitted derived writes (OIL) + the §10.1 contradiction · GU3-005
+reland after the scheduler baseline finalizes → stale envelope · GU3-006 member can't undo own input
+(auto-lands admin-only `days`/`sched.book`) · GU3-007 LW eligibility gap phases 2–4 · GU3-008 import
+migration flags excluded from the reversible set · GU3-009 import doesn't reload the course
+catalogue. Explicitly ACCEPTED as closed: actor-role gating, authored r/u, clone-on-write, context
+capture, weekstash adapter.
+
+### Round 3 — Fable 5.1 (high, in-session) — REVISE (2 high build-blockers as rule-statements, rest med/low)
+R3-01 (=GU3-003) frozen-face keyed on the entry not the record → GU2-005 returns one undo later ·
+R3-03 (=GU3-006) `days`/`sched.*`/`trk.*` admin-only breaks a member's own-input/own-mark undo ·
+R3-02 (=GU3-004) the "no projection ever" invariant is over-strong and self-contradicts §10.1 ·
+R3-04 (=GU3-007) §7/§13 disagree on LW eligibility · R3-05 weekstash key-family / out-of-band ·
+R3-06 redo pick order undefined · R3-07 `layRoster` drops non-`postOuts` windows · R3-08 inputs
+delete owner from `before` · R3-09 `lw.current` live registration is `cls:'record'`. Closed all
+R2-01..14 with code evidence. **"Fix R3-01/R3-03 as rule statements, reconcile §3.4(b)/§10.1 and
+§7/§13, add the weekstash key-family + redo pick rule — then Rev 4 is build-ready without a further
+design round."**
+
+### Round-3 disposition (coordinator) → Rev 4
+Accept all. Arbitration: take Codex's GU3-001 barrier model (sticky per-record barrier when a
+pre-entry rev ≠ the timeline expectation) — Fable's walk didn't exercise the orphan-then-tracked-edit
+sequence. Take Fable's R3-03 predicate (`E.actor.personId===cur.personId` + no-owner coarse classes).
+**MAJOR:** owner reframed the publish path (18 Sep) — undo-of-publish = explicit **UNPUBLISH**;
+quiet-correct republishes as the **same version LABEL** (id-reuse rule set aside; snapshots immutable
++ history line); a real amendment is the separate working-copy→AL act; **Unpublish button** on the
+day header; **undo bubble** added. This DISSOLVES GU3-002 (no AL2 recovery) and GU3-003/R3-01 (undo
+never reaches behind a publish; you unpublish). Rev 4 folds everything + the reframe; **final dual
+re-review of Rev 4 next** (owner asked for both providers given the size of the change).

@@ -250,14 +250,21 @@ change in an inverse, `permission(originating type)` is evaluated against the CU
 ownership, so admin-decides → view-as-member → undo-own-admin-decision is REFUSED. A joined child's
 permission is the PARENT command's declared permission — never caller-selected.
 
-**Publish boundary** (`Boundary`, §5 of the step-3 design). `boundary.crossable` turns on ONE
-checkable fact — **has the shared database registered this issued version?** Not registered → undo
-reverses the publish silently (nothing is on the shared record anywhere). Registered → the undo
-GOES THROUGH but a line in the history records it, the issued record is never erased and its id is
-never reused, and recovery re-publishes under a NEW id. At steps 2/3 there is no shared DB, so
-`crossable` is always true and only the silent path is live; the registered path is designed and
-unit-modelled via `MemoryDoor`, its trigger arriving with the step-5 adapter. An export/print/CSV is
-**not** a boundary event (owner, 17 Sep 26 — `src/state/disclosure.ts` carries the rule).
+**Publish boundary — the UNPUBLISH model** (`Boundary`; step-3 design §6, owner 18 Sep 26 —
+SUPERSEDES the earlier "recovery re-publishes under a NEW id" wording). **Undo of a published day =
+UNPUBLISH it** back to an editable working copy (a first-class `sched.unpublish` command + a day-
+header button, not just an undo). Then the scheduler edits silently and republishes, choosing:
+**correct quietly** → republish as the **SAME version label** (Original→Original, AL1→AL1), not shown
+as an amendment; or **publish amendment** → the changes go out as the next AL. The single checkable
+fact — **has the shared database registered/disseminated this version?** — chooses SILENT vs LOGGED:
+not disseminated → fully silent, label freely reusable; disseminated → the quiet correction is still
+allowed (owner, 18 Sep) but writes a **line in the history** (traceability). **The old "never reuse
+an issued version id" rule is SET ASIDE** — the version LABEL is reused, but **every issuance is kept
+as its own immutable snapshot** and the correction is logged, so the "never ERASE" half stands and
+nothing is lost. At steps 2/3 there is no shared DB, so nothing is ever disseminated and only the
+silent path runs live; the logged path is unit-modelled via `MemoryDoor`. An export/print/CSV is
+**not** a boundary event (owner, 17 Sep 26 — `src/state/disclosure.ts`). See memory
+`undo-of-publish-semantics`.
 
 ---
 

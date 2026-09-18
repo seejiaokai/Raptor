@@ -427,8 +427,15 @@ remaining question was what the on-the-record form is — and the answer is:
   anyone. If the publish had already reached the shared record, others are not actively told
   it was undone — the undo is discoverable in the history, not announced. The owner's call,
   made knowingly.
-- STILL BINDING from before: **never erase or reuse an issued version id.** The history line
-  is additive; the issued record stays immutable.
+- STILL BINDING from before: **never ERASE an issued record** — every issuance is kept as its own
+  immutable snapshot; the history line is additive.
+- **UPDATED 18 Sep 26 (SUPERSEDES "never reuse a version id"):** undo of a publish is an explicit
+  **UNPUBLISH** (back to a working copy) + a day-header button; a **quiet correction** then
+  republishes as the **SAME version label** (Original stays Original, AL1 stays AL1), not shown as
+  an amendment — so the LABEL is deliberately reused. A real **amendment** stays the separate act of
+  editing the live working copy and publishing as the next AL. A disseminated correction writes a
+  history line; guardrails: scheduler/admin only, unpublish clears that day's sign-offs, only the
+  latest version is unpublishable. See design §6 + memory `undo-of-publish-semantics`.
 
 **Decision (owner, 13 Sep 26):** replace the current SEPARATE per-section undo stacks
 (schedule / Leave War / Tracker) with ONE global, per-session, per-user undo timeline. The
