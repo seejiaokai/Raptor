@@ -34,10 +34,10 @@ import { resyncSchedBaseline, schedBaselineClean } from './state/sched-commit'
 import { HOOKS } from './engine/hooks'
 import * as view from './state/view'
 import { setLgEdit, setEffectiveRole } from './state/auth'
-import { notify, loadWeek, moveSection, moveSectionTo } from './state/store'
+import { notify, loadWeek, moveSection, moveSectionTo, writeInputs } from './state/store'
 import { globalUndo, globalRedo } from './undo'
 import { secOrder, SECTIONS, secDefault, setSecDefault, moveSecDefault } from './engine/order'
-import { setRole as lwSetRole, setViewer as lwSetViewer, loadWars as lwLoadWars } from './leavewar/state/store'
+import { setRole as lwSetRole, setViewer as lwSetViewer, loadWars as lwLoadWars, setCell as lwSetCell, setPostOut as lwSetPostOut } from './leavewar/state/store'
 
 export function installProbeBridge() {
   const w = window as any
@@ -144,6 +144,17 @@ export function installProbeBridge() {
      dev/test path, which is what the e2e run actually uses. The bridge is still
      the right seam, for a different reason: it does not depend on the backend. */
   w.lwLoadWars = (raw: unknown, currentId: string) => lwLoadWars(raw, currentId)
+  /* [ARCH-STACK] step 4 — file an absence through the REAL inputs door (the one
+     the Inputs page uses: writeInputs → the absence rules → the war re-reads
+     it), and read the Inputs back. Localhost only, like w.raptorRole: e2e and
+     screenshot scenarios plant a filed leave / medical without driving the
+     whole Inputs form each time. */
+  if (typeof location !== 'undefined' && (location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+    w.fileInput = (row: any) => writeInputs(() => { INPUTS.unshift({ remarks: '', mod: '2026-01-01', ...row }) })
+    w.INPUTS = INPUTS
+    w.lwSetCell = (p: string, d: string, code: string) => lwSetCell(p, d, code)
+    w.lwSetPostOut = (p: string, from: string | null) => lwSetPostOut(p, from)
+  }
   /* the board — loaded lazily to keep module order simple */
   /* the id-getter every probe leans on, and the wider engine surface */
   w.$ = (id: string) => document.getElementById(id)
