@@ -47,6 +47,12 @@ import { RangeCal } from './RangeCal'
    offered or in what order, so all three call this rather than each sorting
    PEOPLE their own way. */
 export const rosterOptions = () => Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived)
+/* [ARCH-STACK] step 4 (clash check H5, owner answer C, 20 Sep 26): an admin
+   can still FILE leave for someone who has posted out (clearing leave) or has
+   not posted in yet — so the Inputs page's own person pickers offer the
+   archived bodies too, in their own group below the roster. Every OTHER roster
+   surface (the board, the palette, reassign) keeps rosterOptions(). */
+export const archivedOptions = () => Object.keys(PEOPLE).filter(id => PEOPLE[id].archived && !PEOPLE[id].special)
   .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
 
 const MON = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']

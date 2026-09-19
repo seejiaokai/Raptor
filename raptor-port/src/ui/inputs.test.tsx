@@ -321,6 +321,22 @@ describe('the Inputs page (tfin)', () => {
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   })
 
+  /* [ARCH-STACK] step 4 (H5, owner answer C, 20 Sep 26): an admin files
+     clearing leave for someone who has posted out — the archived body is in
+     the admin's person picker, in its own group, and nowhere else. */
+  it('an admin can pick a posted-out (archived) person on the form, in their own group', async () => {
+    const id = Object.keys(PEOPLE).find(k => !PEOPLE[k].special && !PEOPLE[k].archived)!
+    await act(async () => { PEOPLE[id].archived = true; notify() })
+    try {
+      const grp = $('#inPerson optgroup') as unknown as HTMLOptGroupElement
+      expect(grp, 'the posted-out group is there').toBeTruthy()
+      expect([...grp.querySelectorAll('option')].map(o => o.value)).toContain(id)
+      expect(grp.label).toBe('Posted out / archived')
+    } finally {
+      await act(async () => { PEOPLE[id].archived = false; notify() })
+    }
+  })
+
   /* owner, 22 Aug 26 — "for normal user account they can only input their own
      self. Which is whoever they are viewing as." Admin keeps the full roster
      select on both this form and the month calendar; a member's Person is the
