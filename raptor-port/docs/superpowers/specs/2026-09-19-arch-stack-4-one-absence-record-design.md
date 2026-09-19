@@ -184,7 +184,25 @@ synchronous — queued items drain before `commit()` returns). On any envelope t
 This SUPERSEDES Rev-4/5's "the credit still lands, leave wins the display only" and **REMOVES the
 `earned`-field machinery** (fM1/R3-001/R4-001) the last two rounds built — there is no credit to keep
 visible, so no split is needed. An approved absence on a day (`absenceAt` hit) **suppresses the OIL
-credit for that day:** no FO/HO lands, and a credit already landed is **removed** when leave is added.
+credit for that day:** no FO/HO lands, and a credit already landed is **removed** when the absence is
+added.
+
+**WHICH TYPES EARN OIL IS UNCHANGED — the owner's 20 Sep rule already IS the app's `oilAsks`/`restsInput`
+logic** (`inputs.ts:380-389`): a type earns NO OIL when `grp ∈ {leave, med, upchit}` OR it is `Personal`
+or `SANS Availability`; everything else earns OIL. So the NO-OIL set = **all leave** (LL/OL/OIL/CCL/PL/
+FCL/EL/CL), **all medical incl. ATT B** (HL/OML/ATT C/ATT B), **Upchit**, **Personal**, **SANS
+Availability**; the OIL-earning set = **Duty, OD, Training, CSE, Meeting, Fly with, Appointment, Other**.
+This matches the owner's messages exactly (leave/medical/SANS/Personal don't; "the rest" do) and needs
+**no code change** — and it answers ATT B: no OIL, as today. **HOW the OIL-earning commitment types
+credit: via the OilConfirm ASK-flow, not auto** (`oilAsks`, `row.oil`, 28 Aug 26) — Duty, OD, Training,
+CSE, Meeting, Fly with, Appointment, Other all PROMPT "does this earn OIL?" on a non-working day and
+credit only if confirmed; only genuine scheduled work (flying/sim/duty crew) auto-credits. **Owner
+20 Sep 26 flagged OD specifically must ASK — it already does, as do all of them. DECIDED (owner,
+20 Sep 26): KEEP TODAY'S MODEL — all OIL-earning commitment types ask before crediting; OD is not
+special; no auto-credit distinction. No change.** The **only** design change is the
+conflict-suppress above (an absence on a day that WOULD have earned scheduled-work OIL → none), plus the
+half-day sub-case §8.7. *(Owner to note only if surprising: Appointment + Other are in the OIL-earning
+set today.)*
 - `runOilPass`/`ingestDutyCredit`: **skip crediting a day where `absenceAt` hits**; the existing
   reverse-and-replace sweep clears an FO/HO the leave now suppresses. **Order-independent:** work-first →
   credit lands, then cleared when leave is added; leave-first → never credited — both end at no credit.
