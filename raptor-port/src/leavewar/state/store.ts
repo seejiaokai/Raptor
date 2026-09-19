@@ -742,6 +742,10 @@ function readStored<T>(key: string, parse: (x: unknown) => T | null): T | null {
   }
 }
 
+let INIT_HOOK: (() => void) | null = null
+/** Test-only: run after every initStore (the Leave War suite's seed absences). */
+export function _setInitHook(fn: (() => void) | null): void { INIT_HOOK = fn }
+
 export function initStore(b?: StorageBackend): void {
   backend = b ?? localBackend()
   state = blank()
@@ -814,6 +818,11 @@ export function initStore(b?: StorageBackend): void {
 
   version = 0
   listeners.clear()
+  MERGED = null
+  // [ARCH-STACK] step 4 — the Leave War suite's setup files the seed's
+  // approved leave as Inputs here (test-only; production files it through
+  // installDemoWorld). Never set in the app.
+  INIT_HOOK?.()
   // Baseline undo/redo to the freshly loaded world. main.tsx re-baselines once
   // more after the demo world and the first sync pass are in (so those boot
   // writes fold into the baseline rather than becoming undo steps); this keeps
@@ -1878,7 +1887,14 @@ function gesture<T>(type: string, fn: () => T): T {
   let out!: T
   const r = cmdCommit({
     type, scope: { module: 'lw', warId: state.currentId } as CmdScope,
-    apply: (t) => { t.enlist(lwStore); out = fn() },
+    apply: (t) => {
+      t.enlist(lwStore)
+      out = fn()
+      /* the per-cell persists inside ran as joined children (locked — no
+         legacy undo step each); ONE unlocked persist at the seal records the
+         whole gesture as one step on the legacy Leave War stack too */
+      cmdDeferEffect(() => rawPersist())
+    },
   })
   if ((r as any).ok === false) rawNotify()
   return out

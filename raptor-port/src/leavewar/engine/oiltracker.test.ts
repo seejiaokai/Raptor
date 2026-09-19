@@ -12,7 +12,7 @@ import {
   type OilPolicy,
 } from './oiltracker'
 import { addMonths } from './period'
-import { seedLedger, seedOpenings, seedWars } from './seed'
+import { seedLedger, seedOpenings, seedSources } from './seed'
 
 const NONE: OilPolicy = { expiry: null, historyMonths: null }
 const DAYS30: OilPolicy = { expiry: { n: 30, unit: 'days' }, historyMonths: 6 }
@@ -240,9 +240,9 @@ describe('with no expiry the tracker IS the old sum', () => {
   it('matches balanceOf for every seeded person, negative openings included', () => {
     const openings = seedOpenings()
     const ledger = seedLedger()
-    const sources = seedWars()
+    const sources = seedSources()
     const ctx: FigureCtx = { openings, ledger, sources }
-    const people = new Set([...Object.keys(openings), ...ledger.map(e => e.personId), ...sources.flatMap(w => Object.keys(w.grid))])
+    const people = new Set([...Object.keys(openings), ...ledger.map(e => e.personId), ...sources.flatMap(w => Object.keys(w.views))])
     expect(people.size).toBeGreaterThan(10)
     for (const p of people) {
       expect(oilBalanceOf(ctx, p, DEFAULT_OIL_POLICY, '2026-12-31'), p).toBeCloseTo(balanceOf(openings, ledger, sources, p, 'oil'), 6)

@@ -4,7 +4,12 @@
 
 import { buildDays, type Period } from './period'
 import type { Person } from './people'
-import type { Recs, WarRec } from './warrecs'
+import { recContribs, type Recs, type WarRec } from './warrecs'
+import { dayView, AM, PM, FULL, type Contrib, type Views } from './dayview'
+import { parseCell } from './codes'
+import { addDays } from './period'
+import type { Grid } from './availability'
+import type { States } from './bids'
 import type { Ledger, Openings } from './counters'
 import { makeWar, type LeaveWar } from './wars'
 import type { Requirements } from './requirements'
@@ -298,4 +303,33 @@ export function seedWars(): LeaveWar[] {
   }
 
   return [y26, y27]
+}
+
+/** The seed wars as FIGURE SOURCES — each war with its day views built from
+ *  its own records plus `SEED_ABSENCES` (what the store's merge produces once
+ *  those absences are filed as Inputs). For engine code and tests that read
+ *  the seed without the Raptor side ([ARCH-STACK] step 4). */
+export function seedSources(): Array<LeaveWar & { grid: Grid; states: States; views: Views }> {
+  return seedWars().map(w => {
+    const at = new Map<string, Contrib[]>()
+    const push = (pid: string, d: string, c: Contrib) => {
+      const k = `${pid}|${d}`
+      at.set(k, [...(at.get(k) ?? []), c])
+    }
+    for (const [pid, row] of Object.entries(w.recs)) for (const [d, list] of Object.entries(row)) for (const c of recContribs(list)) push(pid, d, c)
+    SEED_ABSENCES.forEach((a, i) => {
+      const cell = parseCell(a.code)!
+      const win = cell.portion === 'am' ? AM : cell.portion === 'pm' ? PM : FULL
+      for (let d = a.date, n = 0; d <= (a.endDate ?? a.date) && n < 400; d = addDays(d, 1), n++) {
+        if (d < w.period.start || d > w.period.end) continue
+        push(a.person, d, { id: `seedabs${i}`, kind: 'absence', code: cell.type, win, ...(a.lw ? { lw: true } : {}) })
+      }
+    })
+    const views: Views = {}
+    for (const [k, cs] of at) {
+      const [pid, d] = k.split('|') as [string, string]
+      ;(views[pid] ??= {})[d] = dayView(cs)
+    }
+    return { ...w, grid: {}, states: {}, views }
+  })
 }

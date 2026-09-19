@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { chargedDays, LONG_LEAVE_DAYS, type CountCtx, type LeaveSource } from './charge'
+import { chargedDays, legacyViews, LONG_LEAVE_DAYS, type CountCtx, type LeaveSource } from './charge'
+import { dayView, AM, PM } from './dayview'
 import { balanceOf, drawnFrom, lveConOf, medConOf, takenOf } from './counters'
 import { seedEventDefs } from './eventdefs'
 import type { Person } from './people'
@@ -26,6 +27,7 @@ const period = (start: string, end: string, tweak?: (p: Period) => void): Period
 }
 
 /** `who` holds `code` on every day from `from` for `n` days. */
+
 const span = (from: string, n: number, code: string): Record<string, string> => {
   const out: Record<string, string> = {}
   for (let i = 0; i < n; i++) out[addDays(from, i)] = code
@@ -172,16 +174,36 @@ describe("the pilots' 15-day rule", () => {
     expect(drawnFrom([src({ ace: grid })], 'ace', 'annual', pilotCtx)).toBe(10.5)
   })
 
-  it('a long run of CL charges every day for a pilot too — the rule is by counter, not by LL/OL', () => {
-    expect(drawnFrom([src({ ace: span('2026-01-05', 15, 'CL') })], 'ace', 'cl', pilotCtx)).toBe(15)
+  /* owner Q13 (19 Sep 26), CHANGED from the 3 Sep "by counter" reading: the
+     15-day rule is for LL and OL only — a long run of CL (or OIL, CCL …) keeps
+     its weekends free, pilot or not. */
+  it('a long run of CL does NOT charge its weekends — the rule is LL/OL only (owner Q13)', () => {
+    expect(drawnFrom([src({ ace: span('2026-01-05', 15, 'CL') })], 'ace', 'cl', pilotCtx)).toBe(11)
     expect(drawnFrom([src({ wiz: span('2026-01-05', 15, 'CL') })], 'wiz', 'cl', pilotCtx)).toBe(11)
+  })
+  it('14 LL, one FCL, then LL again: no run reaches 15, so the weekends stay free (owner Q13)', () => {
+    const cells = { ...span('2026-01-05', 14, 'LL'), ...span('2026-01-19', 1, 'FCL'), ...span('2026-01-20', 14, 'LL') }
+    const all = drawnFrom([src({ ace: cells })], 'ace', 'annual', pilotCtx)
+    const noWeekends = drawnFrom([src({ wiz: cells })], 'wiz', 'annual', pilotCtx)
+    expect(all).toBe(noWeekends)
+  })
+  it('a morning of LL and an afternoon of OL is a full LL/OL day: it continues the run', () => {
+    const cells = { ace: span('2026-01-05', 15, 'LL') }
+    const views = legacyViews(cells, {})
+    const mid = '2026-01-12'
+    const split = { ...views, ace: { ...views.ace, [mid]: dayView([
+      { id: 'a', kind: 'absence', code: 'LL', win: AM }, { id: 'b', kind: 'absence', code: 'OL', win: PM }]) } }
+    expect(drawnFrom([{ grid: cells, states: {}, views: split }], 'ace', 'annual', pilotCtx)).toBe(15)
+    const broken = { ...views, ace: { ...views.ace, [mid]: dayView([
+      { id: 'a', kind: 'absence', code: 'LL', win: AM }, { id: 'b', kind: 'absence', code: 'OIL', win: PM }]) } }
+    expect(drawnFrom([{ grid: cells, states: {}, views: broken }], 'ace', 'annual', pilotCtx)).toBeLessThan(15)
   })
 })
 
 describe('chargedDays', () => {
   it('reports the counter and the amount per charged date, and nothing for an excused one', () => {
     const m = chargedDays([src({ wiz: { '2026-01-02': 'LL', '2026-01-03': '*OIL' } })], 'wiz', pilotCtx)
-    expect([...m.entries()]).toEqual([['2026-01-02', { date: '2026-01-02', counter: 'annual', amount: 1 }]])
+    expect([...m.entries()]).toEqual([['2026-01-02', [{ date: '2026-01-02', counter: 'annual', amount: 1, type: 'LL' }]]])
   })
 
   it('is empty for someone with no leave at all', () => {

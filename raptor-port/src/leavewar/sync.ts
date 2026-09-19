@@ -151,6 +151,17 @@ export function refreshAbsences(force = false): boolean {
   return true
 }
 
+/** Install the absence door (wireLeaveWarSync does; tests call it alone). */
+export function installAbsenceDoor(): void {
+  setAbsenceDoor({ approve: doorApprove, decideApproved: doorDecideApproved, removeApproved: doorRemoveApproved, moveApproved: doorMoveApproved })
+}
+/** Re-read the Inputs into the war now and repaint — what a Raptor notify
+ *  does in the app; tests that push INPUTS directly call it. */
+export function syncAbsences(): void {
+  refreshAbsences(true)
+  absencesChanged()
+}
+
 /* The Raptor leave INPUT behind a war cell — what the published-stage remarks
    editor edits (owner, 27 Aug 26). The day view knows exactly which Inputs make
    the cell (their iids), so this is a lookup, not a guess: the tapped half's
@@ -225,7 +236,28 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
     return row
   })
   let ok = false
-  writeInputsBatch(() => { for (const r of rows) INPUTS.push(r); ok = true })
+  writeInputsBatch(() => {
+    for (const r of rows) {
+      /* approving next to leave already approved in the same war, of the same
+         type and part of the day, EXTENDS that Input (design §1: "creates (or
+         extends) an Input") — a day-by-day approval stays one record */
+      const start = labelToISO(r.date, r.yr)!, end = r.endDate ? labelToISO(r.endDate, r.yr)! : start
+      const same = (x: any) => x !== r && x.person === r.person && x.lw === r.lw && x.type === r.type &&
+        !!x.allday === !!r.allday && (x.half ?? '') === (r.half ?? '')
+      const before = INPUTS.find((x: any) => same(x) && addDays(inputDates(x).slice(-1)[0] ?? '', 1) === start)
+      const after = INPUTS.find((x: any) => same(x) && inputDates(x)[0] === addDays(end, 1))
+      if (!before && !after) { INPUTS.push(r); continue }
+      const from = before ? inputDates(before)[0]! : start
+      const to = after ? inputDates(after).slice(-1)[0]! : end
+      const keep = before ?? after
+      const merged = sliceInput({ ...keep, lwMoved: { ...(before?.lwMoved ?? {}), ...(r.lwMoved ?? {}), ...(after?.lwMoved ?? {}) } }, from, to, true)
+      merged.remarks = withRemarksTail(keep.remarks ?? '', from, to, 'on')
+      merged.mod = nowStamp()
+      INPUTS.splice(INPUTS.indexOf(keep), 1, merged)
+      if (before && after) INPUTS.splice(INPUTS.indexOf(after), 1)
+    }
+    ok = true
+  })
   if (!ok) return { done: 0, skipped: skipped + picks.length, why }
   lwEditLists(picks.map(p => ({ personId: p.personId, date: p.date, drop: [p.rec.id], add: [] })))
   refreshAbsences()
@@ -1042,7 +1074,7 @@ export function wireLeaveWarSync(): void {
      mirror converged without a new seam; setViewer no-ops on a same value. */
   setViewer(ME)
   /* the absence door — the war's changes to approved leave (design §5.2) */
-  setAbsenceDoor({ approve: doorApprove, decideApproved: doorDecideApproved, removeApproved: doorRemoveApproved, moveApproved: doorMoveApproved })
+  installAbsenceDoor()
   runPoArchive()
   refreshAbsences(true)
   absencesChanged()

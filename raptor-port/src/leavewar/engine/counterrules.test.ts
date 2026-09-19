@@ -9,7 +9,7 @@ import { countsFor, effectiveCat, matchesFilter, ruleHave, type Grid } from './a
 import type { States } from './bids'
 import type { Person } from './people'
 import type { RuleCount } from './requirements'
-import { seedPeople, seedRequirements, seedWars } from './seed'
+import { seedPeople, seedRequirements, seedSources } from './seed'
 
 const p = (id: string, seat: Person['seat'], band: Person['band'], over: Partial<Person> = {}): Person => ({
   id, callsign: id.toUpperCase(), seat, band, sxo: false, from: null, to: null, ...over,
@@ -184,9 +184,10 @@ describe('custom counter shapes', () => {
 // reference here.
 describe('the seeded rules read what the hard-coded kinds read', () => {
   const people = seedPeople()
-  const war = seedWars()[0]
+  const war = seedSources()[0]!
   const grid = war.grid as Grid
   const states = war.states as States
+  const views = war.views
   const rules = seedRequirements().default.rules
   const dates: string[] = war.period.days.map(d => d.date)
 
@@ -211,8 +212,8 @@ describe('the seeded rules read what the hard-coded kinds read', () => {
   for (const rule of seedRequirements().default.rules) {
     it(`${rule.id} agrees on every day of the seeded war`, () => {
       for (const date of dates) {
-        const counts = countsFor(people, grid, states, date)
-        const have = ruleHave(rule.count, people, grid, states, date)
+        const counts = countsFor(people, grid, states, date, views)
+        const have = ruleHave(rule.count, people, grid, states, date, views)
         expect(have, `${rule.id} on ${date}`).toBeCloseTo(OLD[rule.id](counts), 6)
       }
     })

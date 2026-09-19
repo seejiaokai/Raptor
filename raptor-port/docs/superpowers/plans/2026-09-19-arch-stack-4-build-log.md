@@ -74,3 +74,15 @@ This file is the running record of what is BUILT, so a new session can resume fr
   invariant), publish replacing weekend/PH bids (B5), notices UI + "OK, seen", the box `+n`/`!` +
   tap list UI, posting-out filing (H5), SCHEMA_VERSION 3→4, seed/test re-baseline, docs, gates,
   cross-provider code inspection.
+
+## Resume point (20 Sep 26, ~65% context — checkpoint commit)
+- Leave War suite: 1446 pass / 39 fail. Remaining failing files: quarantine-pile1, undoaudit,
+  ui/remarks, oilsync, ui/scrim, state/write-seam, state/raptorRoster, causal-envelope,
+  ui/undermanned, storage-seam, state/lw-commit — mostly tests of deleted ingest/runInbound/
+  runOutbound/source; rewrite each to the new model (see sync.test.ts for the pattern:
+  `fileAbsence` from `testkit.ts`, `syncAbsences()` after a Raptor-side INPUTS change).
+- Test setup: `src/leavewar/test-setup.ts` (vite.config leavewar `setupFiles`) resets INPUTS per test
+  to pristine + SEED_ABSENCES; `initStore` runs the test hook (door + syncAbsences).
+- Engine suite fully green; store.test and sync.test green.
+- Then: Raptor-side suite (`npx vitest run --project raptor`), typecheck incl. tests, then the
+  still-TO-BUILD list above.
