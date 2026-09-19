@@ -40,7 +40,13 @@ function notation(c: Contrib): string {
   return c.code
 }
 const shown = (code: string) => (code === 'ATTC' ? 'ATT C' : code === 'ATTB' ? 'ATT B' : code)
-const nameOf = (code: string) => codeOf(code.replace(/\*/g, ''))?.label ?? ''
+/* the catalogue's words for a code, without repeating the code itself
+   (a medical's label is "medical — ATT C") */
+const nameOf = (code: string) => {
+  const bare = code.replace(/\*/g, '')
+  const lab = codeOf(bare)?.label ?? ''
+  return lab.split(' — ').filter(part => part !== shown(bare)).join(' — ')
+}
 
 export function DayListSheet({
   personId, callsign, date, view, role, viewer, period, onEditRemark, onClose,
@@ -87,7 +93,7 @@ export function DayListSheet({
       if (row && isLeave && period.stage === 'published' && (role === 'admin' || own)) {
         actions.push(<button key="n" className="dchip" data-testid={`dl-note-${c.id}`} onClick={() => onEditRemark(row)}>Note</button>)
       }
-      return { key: `a-${c.id}`, cls: 'appr', text, sub: !warOwned ? 'Change it on the Inputs page.' : row?.remarks ? String(row.remarks) : '', actions }
+      return { key: `a-${c.id}`, cls: isLeave ? 'appr' : '', text, sub: !warOwned ? 'Change it on the Inputs page.' : row?.remarks ? String(row.remarks) : '', actions }
     }
     if (c.kind === 'request') {
       const st = c.state === 'acknowledged' ? 'bid, acknowledged' : c.state === 'refused' ? 'bid refused' : 'bid, not decided yet'

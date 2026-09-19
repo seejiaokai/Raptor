@@ -33,9 +33,9 @@ async function run(name, viewport, mobile) {
   // four adjacent people on the grid, in roster order
   const ids = await page.evaluate(() => {
     const seen = []
-    for (const td of document.querySelectorAll('[data-testid$="-2026-01-05"]')) {
+    for (const td of document.querySelectorAll('td[data-testid^="cell-"][data-testid$="-2026-01-05"]')) {
       const id = td.getAttribute('data-testid').slice(5, -11)
-      if (!seen.includes(id)) seen.push(id)
+      if (id && !id.startsWith('-') && !seen.includes(id)) seen.push(id)
     }
     return seen.slice(2, 6)
   })
@@ -73,7 +73,8 @@ async function run(name, viewport, mobile) {
     const td = document.querySelector(`[data-testid="cell-${p}-2026-02-11"]`)
     return td ? td.textContent : null
   }), ids)
-  // the tap lists
+  // the tap lists (after the filing toast has faded)
+  await page.waitForTimeout(4500)
   for (const [who, tag] of [[a, 'list-halves'], [b, 'list-notice'], [c, 'list-course'], [d, 'list-postout']]) {
     await cell(who).click()
     await page.waitForTimeout(350)
