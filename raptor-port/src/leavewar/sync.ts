@@ -869,10 +869,10 @@ export function publishReplacesBids(di: number): void {
   const spans = dayOilWork(snap.d, { expandAll: win => availableFor(iso, win) })
   const claims: BidClaim[] = []
   for (const [person, sp] of Object.entries(spans)) {
-    for (const [s, e] of workSpans(sp)) claims.push({ person, date: iso, win: [s, e], byType: 'published schedule' })
+    for (const [s, e] of workSpans(sp)) claims.push({ person, date: iso, win: [s, e], byType: 'the published schedule' })
   }
   if (!claims.length) return
-  const said = replaceClashingBids(claims, 'the published schedule', () => false)
+  const said = replaceClashingBids(claims, '', () => false)
   if (said.length) HOOKS.toast(`Publishing replaces ${said.join(', ')} on the Leave War`, '')
 }
 

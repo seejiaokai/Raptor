@@ -71,13 +71,25 @@ function sickCutsLeave(changed: any[], changedIds: Set<string>): string[] {
       if (!leave || leave === med || String(leave.person) !== String(med.person) || !isLeave(leave.type)) continue
       if (changedIds.has(String(leave.iid))) continue   // judged by the invariant instead
       const own = new Map<string, Win>()
-      for (const [d, c] of contribsOfInput(leave)) if (!c.spill) own.set(d, c.win)
-      const shapes: Array<[string, 'keep' | 'drop' | 'am' | 'pm']> = []
+      /* an overnight leave's tail, keyed by the date it STARTED on (H6: the
+         tail counts on the next date, so a next-morning medical cuts it) */
+      const tailOf = new Map<string, Win>()
+      for (const [d, c] of contribsOfInput(leave)) {
+        if (!c.spill) own.set(d, c.win)
+        else tailOf.set(addDays(d, -1), c.win)
+      }
+      const shapes: Array<[string, 'keep' | 'drop' | 'am' | 'pm' | 'trim']> = []
       const cutDays: string[] = []
       for (const d of inputDates(leave)) {
         const lw = own.get(d) ?? FULL
         const mw = medWins.get(d) ?? []
-        if (!mw.some(w => overlaps(w, lw))) { shapes.push([d, 'keep']); continue }
+        if (!mw.some(w => overlaps(w, lw))) {
+          const tail = tailOf.get(d)
+          const next = medWins.get(addDays(d, 1)) ?? []
+          if (tail && next.some(w => overlaps(w, tail))) { cutDays.push(addDays(d, 1)); shapes.push([d, 'trim']) }
+          else shapes.push([d, 'keep'])
+          continue
+        }
         cutDays.push(d)
         const medAm = mw.some(w => overlaps(w, AM)), medPm = mw.some(w => overlaps(w, PM))
         /* a leave taking both halves (all day, or its own times across noon)
@@ -96,7 +108,10 @@ function sickCutsLeave(changed: any[], changedIds: Set<string>): string[] {
       for (const r of runs) {
         if (r.sh === 'drop') continue
         const piece = sliceInput(leave, r.from, r.to, pieces.length === 0)
-        if ((r.sh === 'am' || r.sh === 'pm') && leave.allday) {
+        if (r.sh === 'trim') {
+          // the overnight tail goes: the leave now ends at midnight (Codex/Opus scenario, H6)
+          piece.e = 1439
+        } else if ((r.sh === 'am' || r.sh === 'pm') && leave.allday) {
           piece.allday = false
           piece.half = r.sh
           piece.s = r.sh === 'am' ? 0 : 721

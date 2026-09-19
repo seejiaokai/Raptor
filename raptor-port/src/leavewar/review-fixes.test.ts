@@ -105,6 +105,21 @@ describe('Fable #4 / Codex AS4-005 — a morning medical over a timed leave acro
   })
 })
 
+describe('Opus scenario — overnight leave and back-to-back leave', () => {
+  it('a next-morning medical cuts the tail of an overnight leave instead of being refused', () => {
+    expect(file('ammo', 'LL', 'Aug 5', { allday: false, s: 22 * 60, e: 2 * 60 })).toBe(true)
+    expect(file('ammo', 'ATT C', 'Aug 6', { allday: false, half: 'am', s: 0, e: 720 })).toBe(true)
+    const ll = INPUTS.filter((r: any) => r.person === 'ammo' && r.type === 'LL')
+    expect(ll).toHaveLength(1)
+    expect(ll[0].s).toBe(22 * 60)
+    expect(ll[0].e).toBe(1439)
+  })
+  it('LL 08:00–10:00 then OL 10:00–11:00 sit back to back — allowed', () => {
+    expect(file('ammo', 'LL', 'Feb 10', { allday: false, s: 480, e: 600 })).toBe(true)
+    expect(file('ammo', 'OL', 'Feb 10', { allday: false, s: 600, e: 660 })).toBe(true)
+  })
+})
+
 describe('Codex AS4-002 — un-approving never overwrites a stored request', () => {
   it('a refused request on that time blocks "back to bid" and "refuse", naming it', () => {
     setRole('admin'); setCell('ammo', '2026-02-10', 'LL'); advanceStage()

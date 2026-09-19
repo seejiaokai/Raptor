@@ -60,7 +60,7 @@ describe('publishing weekend work replaces a clashing leave bid (B5, answer A)',
     runOilPass()
     const list = recs('plasma', SAT)
     expect(list.some(r => r.kind === 'request')).toBe(false)
-    expect(list.find(r => r.kind === 'notice')).toMatchObject({ code: 'LL', byType: 'published schedule', byWho: 'the published schedule' })
+    expect(list.find(r => r.kind === 'notice')).toMatchObject({ code: 'LL', byType: 'the published schedule', byWho: '' })
     expect(list.some(r => r.kind === 'credit')).toBe(true)
     expect(said.some(m => m.includes("Publishing replaces plasma") || m.includes('bid on 18 Jul'))).toBe(true)
   })

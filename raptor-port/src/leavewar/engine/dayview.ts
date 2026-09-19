@@ -69,7 +69,12 @@ export const isAwayDutyCode = (code: string) => AWAY_DUTY.has(code)
 export const isCreditCode = (code: string) => CREDIT.has(code)
 const isAnnual = (code: string) => code === 'LL' || code === 'OL'
 
-export const overlaps = (a: Win, b: Win) => a[0] <= b[1] && b[0] <= a[1]
+/* Two windows clash only when they share time: an end and a start at the same
+   minute (LL 08:00–10:00, OL 10:00–11:00) sit back to back and do NOT clash —
+   the owner's own example had a gap, and back-to-back is the natural reading
+   (20 Sep 26 overnight call). The halves still never meet: morning ends 12:00
+   (720), afternoon starts 12:01 (721). */
+export const overlaps = (a: Win, b: Win) => a[0] < b[1] && b[0] < a[1]
 /** every stretch a contribution really takes */
 export const winsOf = (c: Contrib): readonly Win[] => c.wins ?? [c.win]
 export const touchesAM = (w: Win) => w[0] <= AM[1]
