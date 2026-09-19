@@ -149,47 +149,67 @@ function vet(persons: ReadonlySet<string>, changedIds: ReadonlySet<string>, with
   }
 }
 
-/* ---- 3. a clashing input replaces an undecided bid ---------------------- */
-function replaceBids(changed: any[]): string[] {
-  const own = (p: string) => !!SESSION && SESSION.role !== 'admin' && String(ME) === p
-  const who = () => (SESSION ? (SESSION.role === 'admin' ? 'an admin' : cs(String(ME))) : 'the Inputs page')
+/* ---- 3. a clashing claim replaces an undecided bid ---------------------- */
+export interface BidClaim { person: string; date: string; win: Win; byType: string }
+
+/** Remove the clashing part of every undecided bid the claims overlap — the
+ *  one body both doors share (an Input filed on the Inputs page; weekend / PH
+ *  work in a publish, answer A). Per person/date the claims' windows are taken
+ *  together, so a full-day bid loses only the halves something actually covers
+ *  (answer B). A notice goes on the war unless `own(person)` (B6). Runs inside
+ *  the caller's command, so its undo brings the bid back. */
+export function replaceClashingBids(claims: readonly BidClaim[], byWho: string, own: (p: string) => boolean): string[] {
+  const byAddr = new Map<string, { person: string; date: string; wins: Win[]; byType: string }>()
+  for (const c of claims) {
+    const k = `${c.person}|${c.date}`
+    const e = byAddr.get(k)
+    if (e) e.wins.push(c.win)
+    else byAddr.set(k, { person: c.person, date: c.date, wins: [c.win], byType: c.byType })
+  }
   const group = Date.now()
-  const handled = new Set<string>()
   const edits: Array<{ personId: string; date: string; drop: string[]; add: WarRec[] }> = []
   const said: string[] = []
-  for (const row of changed) {
-    const code = warCodeOf(row.type)
-    if (!isLeave(row.type) && !isSickCode(code)) continue
-    const p = String(row.person)
-    for (const [d, c] of contribsOfInput(row) as Array<[string, Contrib]>) {
-      const war = warHolding(rawState().wars, d)
-      if (!war) continue
-      for (const r of recsAt(war.recs, p, d)) {
-        if (r.kind !== 'request' || r.state === 'refused' || handled.has(r.id)) continue
-        if (!overlaps(requestWin(r.code), c.win)) continue
-        handled.add(r.id)
-        const bare = r.code.replace(/\*/g, '')
-        let keep: RequestRec | null = null
-        let gone = r.code
-        if (portionOfCode(r.code) === 'full') {
-          const amHit = overlaps(AM, c.win), pmHit = overlaps(PM, c.win)
-          if (!(amHit && pmHit)) {
-            keep = { ...(r as RequestRec), code: amHit ? `${bare}*` : `*${bare}` }
-            gone = amHit ? `*${bare}` : `${bare}*`
-          }
+  for (const { person: p, date: d, wins, byType } of byAddr.values()) {
+    const war = warHolding(rawState().wars, d)
+    if (!war) continue
+    const hit = (w: Win) => wins.some(x => overlaps(x, w))
+    const drop: string[] = []
+    const add: WarRec[] = []
+    for (const r of recsAt(war.recs, p, d)) {
+      if (r.kind !== 'request' || r.state === 'refused' || !hit(requestWin(r.code))) continue
+      const bare = r.code.replace(/\*/g, '')
+      let keep: RequestRec | null = null
+      let gone = r.code
+      if (portionOfCode(r.code) === 'full') {
+        const amHit = hit(AM), pmHit = hit(PM)
+        if (!(amHit && pmHit)) {
+          keep = { ...(r as RequestRec), code: amHit ? `${bare}*` : `*${bare}` }
+          gone = amHit ? `*${bare}` : `${bare}*`
         }
-        const add: WarRec[] = keep ? [keep] : []
-        if (!own(p)) {
-          const n: NoticeRec = { id: newRecId('n'), kind: 'notice', code: gone, was: (r as RequestRec).state as 'pending' | 'acknowledged', byType: String(row.type), byWho: who(), seq: group, at: nowStamp() }
-          add.push(n)
-        }
-        edits.push({ personId: p, date: d, drop: [r.id], add })
-        said.push(`${own(p) ? 'your' : `${cs(p)}'s`} ${bare} bid on ${dm(d)}${keep ? ` (${gone.startsWith('*') ? 'morning' : 'afternoon'})` : ''}`)
       }
+      drop.push(r.id)
+      if (keep) add.push(keep)
+      if (!own(p)) {
+        const n: NoticeRec = { id: newRecId('n'), kind: 'notice', code: gone, was: (r as RequestRec).state as 'pending' | 'acknowledged', byType, byWho, seq: group, at: nowStamp() }
+        add.push(n)
+      }
+      said.push(`${own(p) ? 'your' : `${cs(p)}'s`} ${bare} bid on ${dm(d)}${keep ? ` (${gone.startsWith('*') ? 'morning' : 'afternoon'})` : ''}`)
     }
+    if (drop.length) edits.push({ personId: p, date: d, drop, add })
   }
   if (edits.length) lwEditLists(edits)
   return said
+}
+
+function replaceBids(changed: any[]): string[] {
+  const own = (p: string) => !!SESSION && SESSION.role !== 'admin' && String(ME) === p
+  const who = SESSION ? (SESSION.role === 'admin' ? 'an admin' : cs(String(ME))) : 'the Inputs page'
+  const claims: BidClaim[] = []
+  for (const row of changed) {
+    if (!isLeave(row.type) && !isSickCode(warCodeOf(row.type))) continue
+    for (const [d, c] of contribsOfInput(row) as Array<[string, Contrib]>) claims.push({ person: String(row.person), date: d, win: c.win, byType: String(row.type) })
+  }
+  return replaceClashingBids(claims, who, own)
 }
 
 /* ---- the gate ------------------------------------------------------------ */

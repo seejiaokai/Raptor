@@ -74,8 +74,10 @@ import {
   setViewer,
   subscribe as lwSubscribe,
 } from './state/store'
+import { HOOKS } from '../engine/hooks'
+import { setPublishGate } from '../state/inputgate-hook'
 import { absencesAt, setAbsenceRows } from './state/merge'
-import { installInputGate } from './inputgate'
+import { installInputGate, replaceClashingBids, type BidClaim } from './inputgate'
 import { projectPeople, qualCatalogue } from './state/raptorRoster'
 import {
   labelToISO, warVisible, absenceSignature, buildAbsenceIndex, inputDates, inputRowFor, isoToInputDate,
@@ -156,6 +158,7 @@ export function refreshAbsences(force = false): boolean {
 export function installAbsenceDoor(): void {
   setAbsenceDoor({ approve: doorApprove, decideApproved: doorDecideApproved, removeApproved: doorRemoveApproved, moveApproved: doorMoveApproved })
   installInputGate()
+  setPublishGate(publishReplacesBids)
 }
 /** Re-read the Inputs into the war now and repaint — what a Raptor notify
  *  does in the app; tests that push INPUTS directly call it. */
@@ -834,6 +837,29 @@ function workSpans(spans: OilWork[]): Array<[number, number]> {
     else out.push([a, b])
   }
   return out
+}
+
+/* THE PUBLISH DOOR ([ARCH-STACK] step 4 — clash check B5, owner answer A,
+   20 Sep 26). Publishing a weekend or public-holiday day (first publish or an
+   AL) replaces the clashing part of every undecided leave bid the published
+   work overlaps, INSIDE the publish command (lwStore joins it), so undoing
+   the publish brings the bid back. Weekday work never replaces a bid — that
+   stays the schedule's own warning. Reads the RESOLVED issued snapshot, the
+   same evidence the OIL pass credits from; the OIL pass itself never deletes a
+   request (it runs on week navigation too, which is no one's decision). */
+export function publishReplacesBids(di: number): void {
+  const iso = labelToISO(DATES[di])
+  if (!iso || !warHolding(rawState().wars, iso) || !isNonWorkingISO(iso) || !dayApproved(di)) return
+  const snap = daySnapOf(di, dayCurVer(di))
+  if (!snap || !snap.d) return
+  const spans = dayOilWork(snap.d, { expandAll: win => availableFor(iso, win) })
+  const claims: BidClaim[] = []
+  for (const [person, sp] of Object.entries(spans)) {
+    for (const [s, e] of workSpans(sp)) claims.push({ person, date: iso, win: [s, e], byType: 'published schedule' })
+  }
+  if (!claims.length) return
+  const said = replaceClashingBids(claims, 'the published schedule', () => false)
+  if (said.length) HOOKS.toast(`Publishing replaces ${said.join(', ')} on the Leave War`, '')
 }
 
 /* [GLOBAL-UNDO] §6.6 — the Unpublish button's warn. Unpublishing a loaded-week day

@@ -24,3 +24,11 @@ export interface InputGate {
 let GATE: InputGate | null = null
 export function setInputGate(g: InputGate | null): void { GATE = g }
 export function inputGate(): InputGate | null { return GATE }
+
+/* The publish door (clash check B5, owner answer A): publishing a weekend or
+   public-holiday day replaces the clashing part of an undecided leave bid, in
+   the SAME command as the publish, so undoing the publish brings the bid back.
+   `di` = the loaded week's day just published. */
+let PUBLISH_GATE: ((di: number) => void) | null = null
+export function setPublishGate(g: ((di: number) => void) | null): void { PUBLISH_GATE = g }
+export function publishGate(): ((di: number) => void) | null { return PUBLISH_GATE }
