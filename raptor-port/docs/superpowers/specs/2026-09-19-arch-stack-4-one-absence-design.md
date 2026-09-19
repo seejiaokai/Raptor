@@ -1,6 +1,7 @@
-# ARCH-STACK step 4 — ONE absence record (design, Rev 5, 19 Sep 26)
+# ARCH-STACK step 4 — ONE absence record (design, Rev 6, 19 Sep 26)
 
-Status: **DESIGN — round 5 of the cross-provider red-team (Codex + Fable). No code yet.**
+Status: **DESIGN — round 6 of the cross-provider red-team (Codex + Fable). No code yet.**
+Rev 6 (§20) makes the all-or-nothing save exact after round 5 and overrides §19's mechanics.
 Rev 3 folded in Fable's round-2 findings (§16) and the owner's answers (§13). Fable APPROVED Rev 3
 (§17) and Rev 4 (§18, with the round-4 items now in §19). **Later sections override earlier ones:
 §19 over §18 over the body.** Rev 5's one big change (§19): a command's saves land all-or-nothing
@@ -634,3 +635,60 @@ storage through ONE whiteboard, ONE postman and ONE backend (`src/storage/`). Ad
   cell counts the person AWAY (safe for manning) and charges the displayed code; the remarks sheet
   offers each contributor; all conflicting Inputs go on the clash list. Tests: two full-day filings
   of different codes, and incompatible halves — pinned display, availability, charge and action target.
+
+## 20. Round-5 → Rev 6: the group-save mechanics made exact. THIS SECTION OVERRIDES §19's MECHANICS (items 1–4) AND §19 OA4-004's ORDER.
+
+Host-verified before deciding (the reviewers disagreed): `wirePersist` sets
+`HOOKS.histPush = () => { push(); persistAll() }` (`state/persist.ts:137-138`) — `push()` defers the
+undo snapshot, but **`persistAll()` runs immediately, inside the reducer** (`runInputWrite` calls the
+hook at `state/store.ts:170`). Codex OA5-001 is right: "wrap phase 8" misses real persists. The
+Leave War standalone branch (FB5-03), settings and people paths write inline too, and `commit.ts`
+drains the latch twice (`:253`, `:255`).
+
+1. **The group is the whiteboard's NET change over the whole command** (OA5-001). The outermost
+   `commit()` opens `wb.transaction()` before phase 1 and closes it after the second latch drain.
+   Inside it, `set`/`delete` update the map at once (readers see new values) but emit nothing; at
+   close the whiteboard emits ONE group = every key whose value differs from its value when the
+   transaction opened. A rolled-back command (whose restore re-persists the old world) therefore
+   nets to an EMPTY group — nothing leaves the browser. In-reducer persists, both drains, settings,
+   people, Tracker and Leave War writes are all captured without re-routing any of them. A nested
+   `commit` joins the outer transaction; the hook is `setTxnWrapper` on `commit.ts`, installed by
+   `wirePersist`, identity when unset (headless tests, parity harness). Writes outside any command
+   (boot, legacy import, reset, seeds before `LW_READY`) stay single-key groups — idempotent, not
+   step-4 transitions. The Leave War standalone branch still moves its persist to `cmdDeferEffect`
+   (FB5-03) for undo-snapshot hygiene, but correctness no longer depends on it.
+2. **The postman sends one group at a time, in order, and merges instead of superseding**
+   (OA5-002). State: at most ONE group in flight + ONE accumulating pending group. A new group from
+   the whiteboard merges into pending (latest value per key wins — the merge of consecutive net
+   changes is itself the net change, so it is always a consistent world). When the in-flight group
+   succeeds, pending (if any) is sent after the coalesce wait. When it FAILS, it is merged UNDER
+   pending (pending's newer values win) and the result retries with today's backoff. No per-key
+   parallel sends remain; `status`, `hasWork`, `flush` and the unload prompt keep their meaning.
+3. **One journal, only ever replaced by a superset, removed only after full apply** (OA5-003).
+   Because at most one group is in flight and a retry is always a superset of the failed group,
+   `raptor:__txn` is either absent, or holds the group being applied, or holds a failed group
+   awaiting its (superset) retry. A new journal overwrites the old only as that superset; the journal
+   is removed only after every entry applied. Boot replays it (FB5-02: per-entry try; on failure keep
+   the journal AND overlay its values onto the loaded snapshot so the app boots on the acknowledged
+   world; a malformed journal is dropped). `putMany` is ONE synchronous block — `setItem(journal)`,
+   apply all, `removeItem(journal)`, no `await` inside (FB5-01). Cross-TAB writers are out of scope:
+   two tabs already clobber each other whole-record today, a known limitation owned by ARCH-STACK
+   step 5 ([DB-STEP] two-tab safety); recorded, not solved here.
+4. **No sequential fallback** (OA5-004). `putMany` is REQUIRED on `Backend`: Memory implements it
+   natively, Browser via the journal; `contractTests` enforce atomic-or-recoverable group
+   application (fail after entry k → reload shows before OR after, never between). A future backend
+   (Dataverse `$batch` changeset) must meet the same contract.
+5. **A conflict cell always counts the person fully away** (OA5-005). Order for the displayed code
+   is today's (`sync.ts:586-589`): a full-day contribution beats a half; among halves, AM first;
+   ties by earliest `iid`. The merged state record carries `awayFull: true` whenever `cellFor`
+   reported a conflict. `availabilityOf` (`availability.ts:85`) gains the record as an optional
+   argument and returns 0 when `awayFull`; its callers (`:216`, `:223`, `:266`) and
+   `evaluatePeriod` pass the merged record. Charging stays on the displayed code only (today's
+   behaviour — the other absence sits on the clash list). Tests: AM LL + full-day OIL → shows OIL,
+   away, charges OIL; incompatible AM + PM → shows the AM code, away, both on the clash list.
+
+Tests added: a real boot (`main.tsx` wiring, not an isolated command) where one Inputs filing that
+deletes a same-code request produces exactly ONE postman group containing both keys, and a refused
+command produces ZERO; overlapping commands and an undo before the coalesce timer fires → groups
+merge, never split; G1 fails mid-apply, G2 arrives, the tab "closes" before the retry → reload
+shows the world after G1∪G2 or after neither, never between.

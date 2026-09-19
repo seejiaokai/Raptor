@@ -108,6 +108,29 @@ step 5's transactional save pulled forward because step 4 needs it. `consumedBy`
 are withdrawn; approve deletes requests outright. FB4-01's remaining half, FB4-03, FB4-04, OA4-003
 and OA4-004 folded. Design §19.
 
-## Round 5 — design Rev 5
+## Round 5 — design Rev 5, 19 Sep 26
+
+**Fable: APPROVED** ("the transactional-save decision is sound and the seam supports it"), with four
+completions: FB5-01 `putMany` must be one synchronous block (one journal key, concurrent sends);
+FB5-02 boot replay must be quota-safe and never block boot; FB5-03 the Leave War standalone branch
+persists inline; FB5-04 wiring details.
+
+**Codex: REVISE (5).** OA5-001 (HIGH): wrapping phase 8 misses persists — `persistAll()` runs inside
+the reducer; OA5-002 (HIGH): per-key supersession can split a group; OA5-003 (HIGH): a single journal
+can be overwritten by a later group while an earlier one waits to retry; OA5-004: a sequential
+fallback breaks the contract; OA5-005 (HIGH): the conflict-cell order (AM before full) would count a
+full-day absence as half available, and `availabilityOf` cannot see "away" from the code alone.
+
+**Host:** the reviewers disagreed on OA5-001's fact (Fable: persists are released in one place;
+Codex: `persistAll` runs in the reducer). Host read the code: `wirePersist` wraps `histPush` as
+`push(); persistAll()` — `push` defers, `persistAll` runs immediately (`state/persist.ts:137-138`,
+called at `state/store.ts:170`). **Codex is right.** Rev 6 (design §20): the group is the
+whiteboard's NET change over the whole outermost command (a refused command nets to nothing), the
+postman sends one group at a time and merges rather than supersedes, the journal is only ever
+replaced by a superset and removed after full apply, `putMany` is required (no fallback), and a
+conflict cell carries `awayFull` so availability counts the person away; full-day beats half as
+today. Cross-tab writing stays a step-5 known limitation.
+
+## Round 6 — design Rev 6
 
 (pending)
