@@ -706,17 +706,19 @@ test('a placed bid survives a reload — the war persists per browser', async ({
 // Medical row exists for an admin, is absent for a member (they file on
 // Raptor's Inputs page and it syncs), and the ATT chips read the owner's
 // bare B / C — on the chip and on the grid cell it writes.
-test('an admin marks medical on the grid; a member is never offered the row', async ({ page }) => {
+// Medical is MEMBER-FILED ONLY (owner, 13 Sep 26, reversing 17 Aug): the grid
+// never offers the medical markers — for a member OR an admin. The war displays
+// medical that syncs in from a member's Inputs filing; it never creates it.
+test('the grid offers no medical markers — for a member or an admin', async ({ page }) => {
   await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
   await expect(page.locator('[data-testid="bid-picker"]')).toBeVisible()
-  await expect(page.locator('[data-testid="bid-ATTB"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="bid-ATTB"]')).toHaveCount(0)   // member
   await page.locator('[data-testid="bid-cancel"]').click()
   await lwRole(page, 'admin')
   await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
-  const chip = page.locator('[data-testid="bid-ATTB"]')
-  await expect(chip).toHaveText('B')
-  await chip.click()
-  await expect(page.locator('[data-testid="cell-ammo-2026-02-11"] .c')).toHaveText('B')
+  await expect(page.locator('[data-testid="bid-picker"]')).toBeVisible()
+  await expect(page.locator('[data-testid="bid-ATTB"]')).toHaveCount(0)   // admin too — no medical row
+  await expect(page.locator('[data-testid="bid-HL"]')).toHaveCount(0)
 })
 
 // The owner's "click the individual personnel counter" (17 Aug 26): the cell
