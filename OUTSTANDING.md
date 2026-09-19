@@ -54,17 +54,22 @@ Codex) and folded in. Two `[CMDL-FINISH]` items were deferred INTO it and remain
 posting-window rebuild on a postouts restore = CMDLF-002; grouping a whole Import as one undo step),
 plus the phase-2 review deferrals under the item below. **NEXT = step 4 (one Absence record) / [DB-STEP].**
 
-**STEP 4 ([ONE-ABSENCE]) — DESIGN Rev 2 DONE + dual red-teamed (19 Sep 26); GATED on owner decisions.**
-Design + both-provider red-team (Codex/Astra high + Fable, both REVISE→affirmed the direction, all
-7+11 findings folded) on branch `claude/arch-stack-4-absence-record-design`. The model: an approved
-absence becomes ONE record (the scheduler Input); the Leave War stops storing its own copy and reads
-approved leave by id (a pure in-memory projection, like the roster). **Decision-ready, NOT build-ready
-— it branches on two NEW owner decisions the red-team surfaced** (a *moved* approved bid: keep approval
-or return to pending — a live 27 Aug feature; and an absence change on a *published* day: silent or a
-pending amendment) plus four earlier ones. **PREREQUISITES: [SYNC-INTEG] P2 + P4 must land first.**
-After the owner answers → Rev 3 → a second red-team round → build. Docs:
-`docs/superpowers/specs/2026-09-19-arch-stack-4-one-absence-record-design.md` (§8 = the decisions) +
-`…-review-log.md`.
+**STEP 4 ([ONE-ABSENCE]) — DESIGN Rev 6 DONE + CONVERGED; BUILD-READY (19 Sep 26).** Model: an approved
+absence becomes ONE record (the scheduler Input); the Leave War keeps no copy and reads approved leave
+by id as a pure in-memory projection (`egrid`/`estates` = stored ∪ PROJ; `absenceAt()`), like the
+roster. On branch `claude/arch-stack-4-absence-record-design`. **FOUR cross-provider red-team rounds**
+(Codex/Astra high + Fable ×4, eight reviews; direction affirmed every round, each narrower; round 4
+both cleared it for build, no further round). **All SIX owner decisions RESOLVED** (§8): 1=B retract
+vanishes; 2=B member edits own leave; 3=certs user-managed + NOT undoable (link on `DocRec.iids[]`);
+4=A build now; 5=B moved bid → pending; 6=A leave change on a published day stays silent. Faint product
+point: an approved-absent day still EARNS its OIL credit (leave wins display only — current behaviour;
+raise to change). **PREREQUISITES (build these FIRST): [SYNC-INTEG] P2 (block medical creation on the
+war for ALL roles incl. admin + hide the pickers — still open) + P4 (clutter-only clear-data); the
+relaxed mandatory-doc "ask once / No document" prompt (5 cert types: ATT C/ATT B/HL/OML/Up-chit) rides
+the P2 batch.** Then the heavy test-first build (Opus), running-app scenarios (§7), post-build
+cross-provider inspection, hold for "merge live". Docs:
+`docs/superpowers/specs/2026-09-19-arch-stack-4-one-absence-record-design.md` (§4 mechanics, §7 tests,
+§8 decisions) + `…-review-log.md` (4 rounds).
 
 Below is the older item ordering (kept for the non-stack items); land what's **cheap, done, or
 in-flight and risk-reducing** first.
