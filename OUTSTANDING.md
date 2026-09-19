@@ -650,6 +650,16 @@ screenshots in `raptor-port/docs/img/step4-shots/`.
   findings; hold for the owner's "merge live". Deferred on purpose: OIL itself as a read-time
   derivation (design §7), per-year balances `[LEAVE-YEAR]`, published-day Unavailable `[PUB-UNAVAIL]`.
 
+### [S4-BUGHUNT] Full scenario bug hunt of the one-absence model — NEXT (owner, 20 Sep 26)
+The owner's next task: a full end-to-end bug test of the step-4 scenarios NOT yet covered. **Fable and
+Codex PLAN the hunt (a scenario list each, cross-provider), Opus EXECUTES** in the running app and fixes
+what it finds. Everything the planners need is in
+`raptor-port/docs/superpowers/plans/2026-09-20-arch-stack-4-test-coverage.md` — bugs already caught, what
+the 18 e2e + the unit suites already cover, and §3's list of untested ground (other Input doors, answer
+A's weekday case, pre-posting-in leave, medical corners, the OIL pass vs absences, cross-war dates, bulk
+gestures, undo depth, storage faults, phone touch, figures on multi-record days). Rules of record:
+`specs/2026-09-20-arch-stack-4-clash-check.md`. Do it on the step-4 branch (or on main once it merges).
+
 ### [LW-LOCKMARK] Retire the war's `source:'raptor'` lock marker — OPEN (follow-up to step 4, 20 Sep 26)
 Codex's round-2 inspection (AS4-R2-004, low): the merged view still synthesises `source:'raptor'` ("locked on
 the war") and Matrix reads it through `raptorOwns`, and the published remarks sheet finds its Input via
