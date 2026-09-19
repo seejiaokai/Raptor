@@ -41,6 +41,20 @@ inline as they arrive.
    manning; personal activities (appointments, meetings, training) during leave are allowed and never
    appear on the war (the schedule's own warning stays); two wars can never cover one date.
 
+## OWNER RULE (19 Sep 26) — an undecided bid loses to any clashing input
+
+Owner: "technically the input on the leave war is not approved or pending. If there is another input
+that clashes with it, it overwrites it and highlights to the user that the applicable input on the
+leave war had been overwritten." Confirmed for BOTH untouched (plain, `pending`) and `acknowledged`
+(purple) bids, and for ANY type (A = yes, B = yes). So: a real input (Inputs page, calendar,
+reassign) whose time clashes with an undecided bid on the same person/day REPLACES that bid in the
+same command (one undo step brings it back), and the filer is told plainly which war bid was
+replaced. **This SUPERSEDES design §26.2** ("filing over your own pending bid of a different type —
+refused") and the §5.2 "same-code request is consumed / different-code request is left on the clash
+list" rule: newest instruction wins. It does NOT touch an APPROVED leave (still: overlapping leave
+refused; ATT C/HL/OML still cut it) or a REFUSED bid (never blocks; stays as history in the list).
+ATT B does not clash with leave, so it leaves a bid alone.
+
 ## Owner decisions needed (numbered as put to the owner, 19 Sep 26)
 
 | # | Bundle | Question | Recommendation |
