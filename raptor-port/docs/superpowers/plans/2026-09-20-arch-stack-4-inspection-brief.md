@@ -67,3 +67,14 @@ writes the Input inside the same command. All saves are all-or-nothing groups (p
 For each finding: severity, file + line, the concrete scenario (inputs → wrong result), and an exact
 step-by-step fix (the owner's standing rule: reviewers give detailed fix specs). Say plainly what you
 did NOT inspect.
+
+## Round 2 (re-inspection of the fixes)
+
+Inspect ONLY the changes since commit `41ce01d` (`git diff 41ce01d HEAD -- raptor-port`): the fixes for
+round 1's findings (Fable #1–#9, Codex AS4-001…AS4-007) and the scenario tester's three bugs (overnight
+tail cut, back-to-back windows no longer clash, publish notice wording). Check each fix actually closes
+its finding, and that none introduces a new defect (especially: the deferred repaint in
+`sync.ts refreshAbsencesAndRepaint`, the multi-span credit contribution in `warrecs.ts recContribs` +
+`dayview.ts winsOf`, the strict `overlaps`, `moveAbsenceById`, and the notice ownership by `LOGINROLE`).
+Known and deliberate: the list rule "one undecided + one refused request per half" is kept (a filed
+leave with a refused bid underneath is in the owner's approved comp).
