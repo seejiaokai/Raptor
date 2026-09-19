@@ -70,6 +70,15 @@ const DEMO_RAPTOR_INPUTS: any[] = [
     remarks: 'OIL — CO approved', mod: '2026-06-20' },
   { person: DEMO_MAP.dusk, date: 'May 4 2027', allday: true, type: 'OIL',
     remarks: 'OIL — CO approved', mod: '2026-06-20' },
+  /* SPLICE's medical is MEMBER-FILED (owner, 13 Sep 26): the war can no longer
+     create medical, so the demo's ATT C / OML cells are backed by the member's
+     own Inputs filing and merely DISPLAYED on the war (seedStates marks them
+     source:'raptor'). Without these live inputs the boot reverse-sweep would
+     clear the Raptor-owned cells, exactly as it would TATA's/DUSK's OIL. */
+  { person: DEMO_MAP.splice, date: 'Jan 5', allday: true, type: 'ATT C',
+    remarks: 'ATT C — filed on Inputs', mod: '2026-01-04' },
+  { person: DEMO_MAP.splice, date: 'Jan 6', allday: true, type: 'OML',
+    remarks: 'OML — filed on Inputs', mod: '2026-01-05' },
 ]
 
 /* The demo OIL story (owner, 2 Sep 26 — "put in more mock data as well as

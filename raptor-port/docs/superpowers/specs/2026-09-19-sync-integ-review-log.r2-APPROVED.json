@@ -1,0 +1,57 @@
+{
+  "status": "completed",
+  "mode": "review",
+  "provider": "codex",
+  "roles": {
+    "host": "claude",
+    "planner": "claude",
+    "reviewer": "codex",
+    "builder": "claude",
+    "inspector": "codex"
+  },
+  "repo": "C:\\Users\\User\\projects\\Raptor",
+  "plan": "C:\\Users\\User\\projects\\Raptor\\raptor-port\\docs\\superpowers\\specs\\2026-09-19-sync-integ-guardrails-build-plan.md",
+  "plan_sha256": "e4c5ee3a2d6551af0fc297281de6336e41baa092135c3245b5f37fdadaee5700",
+  "requested_model": "gpt-6-astra",
+  "requested_effort": "high",
+  "base": null,
+  "snapshot": null,
+  "previous": "C:/Users/User/AppData/Local/Temp/claude/C--Users-User-projects-Raptor/c844c682-e47d-4ed3-9c56-d229bdf33959/scratchpad/codex-review-r1b/claudex-kvf5iam0/result.json",
+  "started_at": 1789805950.6937509,
+  "artifacts": "C:\\Users\\User\\AppData\\Local\\Temp\\claude\\C--Users-User-projects-Raptor\\c844c682-e47d-4ed3-9c56-d229bdf33959\\scratchpad\\codex-review-r2\\claudex-quf7s3ns",
+  "cli_version": "codex-cli 0.154.0",
+  "executable": [
+    "C:\\Program Files\\nodejs\\node.EXE",
+    "C:\\Users\\User\\AppData\\Roaming\\npm\\node_modules\\@openai\\codex\\bin\\codex.js"
+  ],
+  "exit_code": 0,
+  "session_id": "01a0b8b6-719e-7c93-9d40-a94f0e778217",
+  "response": {
+    "verdict": "APPROVED",
+    "summary": "The revised plan resolves all six prior findings. Keeping saved weeks untouched safely resolves the publication-history loss and seed-resurrection defects. Resetting the entire leavewar collection before hydration, removing the medical seed cells, and excluding medical from outbound sync closes SYNC-001. No material unresolved plan defects found.",
+    "findings": [],
+    "coverage": [
+      "Verified plan SHA256: e4c5ee3a2d6551af0fc297281de6336e41baa092135c3245b5f37fdadaee5700.",
+      "Reviewed against committed baseline aa485ff457a5123356162cd47c3d8540bb358d47 and the prior review.",
+      "SYNC-001: traced durable reset, whiteboard hydration, storage adapters, legacy war fallback, demo initialization, outbound eligibility and direct medical ingestion.",
+      "SYNC-002: checked explicit button/Enter bindings and document-confirm continuation through medical confirmation paths; retained replace-don’t-strip enforcement.",
+      "SYNC-003/005: removing stash deletion eliminates both identified loss scenarios; checked cleanup batching and persistence.",
+      "SYNC-004/006: confirmed canonical puck date writers, loaded-week exclusion requirements and real-calendar validation address the prior findings.",
+      "Rechecked related medical callers, bid decisions, move guards and cleanup confirmation lifecycle."
+    ],
+    "limitations": [
+      "Approval covers the plan, not implementation or release readiness.",
+      "Implementation edits appeared during review; conclusions use the committed baseline rather than treating partial working-tree changes as completed work.",
+      "No files edited, tests or builds run, browser verification performed, or work delegated. Runtime reset, prompt behavior and balance invariance remain to be validated."
+    ]
+  },
+  "usage": {
+    "input_tokens": 2188109,
+    "cached_input_tokens": 2013824,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 10444,
+    "reasoning_output_tokens": 3078
+  },
+  "observed_models": [],
+  "elapsed_seconds": 117.21
+}

@@ -14,7 +14,7 @@
 // rather than against a signed-in person — see `docs/known-gaps.md`.
 
 import { useState } from 'react'
-import { addDays, displayCell, formatCell, LEAVE_TYPES, MEDICAL_TYPES, type BidState, type CounterName, type Portion } from '../engine'
+import { addDays, formatCell, LEAVE_TYPES, type BidState, type CounterName, type Portion } from '../engine'
 import { setBidState, setCell, setCellRange, shiftBid } from '../state/store'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
@@ -33,7 +33,6 @@ export function BidPicker({
   date,
   current,
   dates,
-  medical,
   onWrote,
   wouldLeave,
   onPostOut,
@@ -43,11 +42,6 @@ export function BidPicker({
   personId: string
   date: string
   current: string
-  /** Whether the sheet also offers the four medical markers. Medical is
-   *  assigned, not bid — management marks it (or it arrives from a Raptor
-   *  input) — so the matrix passes `true` for an admin only; a member never
-   *  sees the row and files theirs on Raptor's Inputs page instead. */
-  medical?: boolean
   /** Every date in the war, used only for the range picker's bounds so a
    *  fortnight cannot run off the end of the sheet it belongs to. */
   dates: string[]
@@ -223,29 +217,11 @@ export function BidPicker({
         {note && <span className="note warn" data-testid="span-note">{note}</span>}
       </div>
 
-      {/* The medical markers, for management only (owner, 17 Aug 26: "for
-          the leave war grids u can indicate, B (att b), C (att c), OML,
-          HL"). They ride the SAME portion and range controls as leave — a
-          whole day is the default, AM/PM the halves — and spend nothing, so
-          the negative-balance confirm above never fires for them. Normally
-          the record arrives from Raptor's Inputs page and lands read-only;
-          this row is the direct path for the admin who is told first. */}
-      {medical && (
-        <div className="bidsheet-row">
-          <span className="lab">Medical</span>
-          {MEDICAL_TYPES.map(t => (
-            <button
-              key={t.type}
-              data-testid={`bid-${t.type}`}
-              className="tchip med"
-              title={t.label}
-              onClick={() => write(formatCell({ type: t.type, portion }))}
-            >
-              {displayCell(formatCell({ type: t.type, portion }))}
-            </button>
-          ))}
-        </div>
-      )}
+      {/* Medical is MEMBER-FILED ONLY (owner, 13 Sep 26, reversing the 17 Aug
+          "management marks it" rule): the war no longer offers the medical
+          markers to anyone. A member files a medical input with its certificate
+          on Raptor's Inputs page and it syncs in read-only — the war displays
+          it, never creates it. The old admin medical row is gone. */}
 
       {/* Post the person OUT (owner, 18 Aug 26; any date + the archive switch
           19 Aug 26). A management action, not a bid — it takes them off the

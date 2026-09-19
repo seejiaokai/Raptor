@@ -7,10 +7,9 @@ import { HIST, initStore, notify, setSession, writeInputsBatch } from '../state/
 import { docAdd } from '../state/docs'
 import { InputEditor } from '../ui/inputedit'
 import { INPEDIT, setInpEdit } from '../ui/pops'
-import { getState, initStore as lwInitStore, setCell, setPeople, setRole } from './state/store'
+import { getState, initStore as lwInitStore, setPeople, setRole } from './state/store'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
-import { runOutbound } from './sync'
 
 const seed = JSON.stringify(INPUTS)
 const toast = HOOKS.toast
@@ -37,8 +36,12 @@ const saveEditor = () => fireEvent.click(document.querySelector('#inpEditSave')!
 
 describe('Pile 1 whole-form medical preflight', () => {
   it.each([true, false])('refuses every segment before the first write (new=%s)', isNew => {
-    for (const day of ['02', '05', '06', '07', '08', '09']) setCell('ammo', `2026-02-${day}`, 'OML')
-    runOutbound()
+    // Member-filed medical extending into the protected week (Feb 9). Was seeded
+    // via an admin grid mark + runOutbound before medical became member-filed
+    // only (owner, 13 Sep 26); planted directly now — the preflight checks the
+    // row's dates, not how it reached INPUTS.
+    plant('OML', 'Feb 2')
+    plant('OML', 'Feb 5', 'Feb 9')
     plant('ATT C', 'Feb 4')
     const row = plant('ATT B', 'Feb 2', 'Feb 6')
     if (isNew) INPUTS.splice(INPUTS.indexOf(row), 1)
@@ -60,8 +63,11 @@ describe('Pile 1 whole-form medical preflight', () => {
   })
 
   it.each([true, false])('refuses ticked protected removals before adding or editing an upchit (new=%s)', isNew => {
-    setCell('ammo', '2026-02-09', 'OML')
-    runOutbound()
+    // A member-filed medical on the protected week (Feb 9), planted directly
+    // (medical is member-filed only now — owner, 13 Sep 26): the upchit summary
+    // offers it as a removable entry, and ticking Remove on a protected week is
+    // what the preflight refuses.
+    plant('OML', 'Feb 9')
     plant('ATT C', 'Feb 2', 'Feb 3')
     const row = plant('Upchit', 'Feb 4')
     if (isNew) INPUTS.splice(INPUTS.indexOf(row), 1)

@@ -250,7 +250,10 @@ describe('the counter follows the leave just entered — to the balance it comes
   // instead of showing a pool they were not thinking about. LL and OL both
   // come off the ONE LVE balance now (its two used lines, not two figures),
   // so entering either lands on the same +LVE.
-  it('switches to LVE for LL and OL, OIL for OIL, MED TOT for a medical mark', () => {
+  it('switches to LVE for LL and OL, OIL for OIL', () => {
+    // The medical case is gone: medical is member-filed only now (owner,
+    // 13 Sep 26), so there is no war picker to enter a medical mark and snap
+    // the column to MED TOT. LL/OL → +LVE and OIL → +OIL still apply.
     setRole('admin')
     render(<Matrix />)
     pick('medtot')
@@ -260,10 +263,6 @@ describe('the counter follows the leave just entered — to the balance it comes
     fireEvent.click(screen.getByTestId('cell-ramp-2026-03-03'))
     fireEvent.click(screen.getByTestId('bid-OIL'))
     expect(screen.getByTestId('counter-name').textContent).toBe('+OIL')
-    // …and a medical mark, matching the title's own claim.
-    fireEvent.click(screen.getByTestId('cell-ramp-2026-03-04'))
-    fireEvent.click(screen.getByTestId('bid-HL'))
-    expect(screen.getByTestId('counter-name').textContent).toBe('−MED TOT')
   })
 
   it('snaps for a half day exactly as for a whole one', () => {

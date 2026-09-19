@@ -83,18 +83,19 @@ describe('outboundToRaptor', () => {
     ])
   })
 
-  it('sends a medical marker with NO approval step — assigned, not bid — but never one Raptor owns', () => {
+  it('never sends a medical marker back to Raptor — medical is member-filed only', () => {
+    // Owner, 13 Sep 26 (reversing 17 Aug): the war no longer originates medical,
+    // so it never crosses war→Raptor. A member-filed medical cell is Raptor-owned
+    // (skipped anyway); a bare medical cell is treated like any non-biddable code
+    // and simply not exported — closing the path a lingering pre-reset war-medical
+    // could take to mint a Raptor input.
     const g: Grid = {
       ramp: { '2026-01-05': 'ATTB', '2026-01-06': '*OML', '2026-01-07': 'ATTC' },
     }
     const st: States = {
-      // The ATTC came from Raptor in the first place: it must not echo back.
       ramp: { '2026-01-07': { state: 'approved', source: 'raptor' } },
     }
-    expect(outboundToRaptor(g, st)).toEqual([
-      { personId: 'ramp', date: '2026-01-05', code: 'ATTB' },
-      { personId: 'ramp', date: '2026-01-06', code: '*OML' },
-    ])
+    expect(outboundToRaptor(g, st)).toEqual([])
   })
 
   it('sends nothing at all from an empty leave war', () => {

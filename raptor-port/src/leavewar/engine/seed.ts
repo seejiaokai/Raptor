@@ -183,12 +183,12 @@ export function seedGrid(): Grid {
   return {
     ramp: { '2026-01-01': 'OL', '2026-01-03': 'FO', '2026-02-10': '*OIL' },
     tata: { '2026-01-01': 'FO', '2026-01-04': 'FO', '2026-01-09': 'OIL' },
-    // The two `M` days become two of the three medical markers — `ATTC` and
-    // `OML` — so MED USED reads 2 and OML USED reads 1 on this demo run (they
-    // replaced the single `M`, owner Aug 26). Both remove a whole day exactly
-    // as `M` did, so splice keeps the availability it had and no manning count
-    // moves. (`HL` is the third medical marker; it is exercised in the unit
-    // tests rather than seeded, to keep this grid's counts unchanged.)
+    // SPLICE's ATT C (5 Jan) and OML (6 Jan) are MEMBER-FILED medical (owner,
+    // 13 Sep 26): the war no longer CREATES medical, it only displays what a
+    // member filed on Raptor's Inputs page. The pristine seed cells stay exactly
+    // as before (MED USED 2 / OML USED 1, manning unchanged); in the live demo
+    // DEMO_RAPTOR_INPUTS backs them so they read as member-filed (Raptor-owned)
+    // rather than war-marked. `HL` is exercised in the unit tests, not seeded.
     splice: { '2026-01-05': 'ATTC', '2026-01-06': 'OML', '2026-01-08': 'LL' },
     jaguar: { '2026-01-16': 'OL', '2026-01-17': 'OL', '2026-01-19': 'OL' },
     asics: { '2026-01-08': 'LL', '2026-01-09': 'LL', '2026-01-23': '*LL', '2026-02-24': 'OIL' },
@@ -221,6 +221,11 @@ export function seedStates(): States {
     // told yes, and it arrived here already approved. Nothing in Leave War
     // may edit or re-decide it.
     tata: { '2026-01-09': { state: 'approved', source: 'raptor' } },
+    // SPLICE's medical carries NO state here, exactly as the original seed had
+    // it — a medical marker is assigned, not bid, so it records no bid decision.
+    // In the live demo it becomes member-filed (Raptor-owned) when
+    // DEMO_RAPTOR_INPUTS ingests the backing inputs at boot; the pristine seed
+    // the unit tests read leaves it stateless, its long-standing shape.
     jaguar: {
       '2026-01-16': { state: 'approved', source: 'bid' },
       '2026-01-17': { state: 'approved', source: 'bid' },
