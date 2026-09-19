@@ -131,6 +131,24 @@ replaced by a superset and removed after full apply, `putMany` is required (no f
 conflict cell carries `awayFull` so availability counts the person away; full-day beats half as
 today. Cross-tab writing stays a step-5 known limitation.
 
-## Round 6 — design Rev 6
+## Round 6 — design Rev 6, 19 Sep 26
+
+**Fable: APPROVED** with one must-fix (FB6-01, HIGH) and a close-point pin (FB6-02). Fable confirmed
+its own round-5 statement was wrong and Codex's OA5-001 right.
+
+**Codex: REVISE (2).** Confirms Rev 6 resolves coalescing, backend-contract and availability.
+OA6-001 (HIGH): rollback does not restore the whiteboard. OA6-002 (HIGH): a failed boot replay is
+not connected to the new postman, so a later unrelated group can overwrite the only recovery record;
+and the G1/G2 fault-test expectation was wrong.
+
+**Converged:** OA6-001 = FB6-01 — `histRestore`, `lwStore.restore`, `restorePeople` reset memory
+only, so a refused command's in-reducer persist would ship. (Also a live bug today.)
+
+**Host:** folded as design §21 — whiteboard transaction with explicit `abort()` called by `dispatch`
+on a refused/failed outermost pipeline (closed after `drainQueue()`), the scheduler persist deferred,
+the Leave War standalone persist deferred as required; an unfinished boot recovery becomes the new
+postman's initial failed group; test expectation corrected; unload edge recorded for step 5.
+
+## Round 7 — design Rev 7
 
 (pending)

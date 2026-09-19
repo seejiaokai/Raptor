@@ -1,7 +1,8 @@
-# ARCH-STACK step 4 — ONE absence record (design, Rev 6, 19 Sep 26)
+# ARCH-STACK step 4 — ONE absence record (design, Rev 7, 19 Sep 26)
 
-Status: **DESIGN — round 6 of the cross-provider red-team (Codex + Fable). No code yet.**
-Rev 6 (§20) makes the all-or-nothing save exact after round 5 and overrides §19's mechanics.
+Status: **DESIGN — round 7 of the cross-provider red-team (Codex + Fable). No code yet.**
+Rev 6 (§20) made the all-or-nothing save exact; Rev 7 (§21) makes a refused command leave nothing
+in storage and carries an unfinished recovery into the save queue. Later sections override earlier.
 Rev 3 folded in Fable's round-2 findings (§16) and the owner's answers (§13). Fable APPROVED Rev 3
 (§17) and Rev 4 (§18, with the round-4 items now in §19). **Later sections override earlier ones:
 §19 over §18 over the body.** Rev 5's one big change (§19): a command's saves land all-or-nothing
@@ -691,4 +692,45 @@ Tests added: a real boot (`main.tsx` wiring, not an isolated command) where one 
 deletes a same-code request produces exactly ONE postman group containing both keys, and a refused
 command produces ZERO; overlapping commands and an undo before the coalesce timer fires → groups
 merge, never split; G1 fails mid-apply, G2 arrives, the tab "closes" before the retry → reload
-shows the world after G1∪G2 or after neither, never between.
+shows the world after G1∪G2 or after neither, never between. *(Corrected in Rev 7, §21.3.)*
+
+## 21. Round-6 → Rev 7. THIS SECTION OVERRIDES §20 WHERE THEY DIFFER.
+
+1. **A refused command leaves NOTHING in storage — by abort, not by assumption** (Codex OA6-001 +
+   Fable FB6-01, converged). §20.1's premise "a rollback re-persists the old world" is false:
+   `schedStore.restore` = `histRestore` (`sched-commit.ts:323`), which never persists;
+   `lwStore.restore` (`leavewar/state/store.ts:1179`) and `restorePeople`
+   (`people-settings-commit.ts:140-150`) only reset memory. (This is a live bug today too: a refused
+   batch's mutation reaches storage until the next unrelated save.) Three changes, all required:
+   a. `Whiteboard.transaction` returns a handle with `commit()` and `abort()`. `abort()` restores
+      every key touched since open to its opening value (or deletes it, if it did not exist) and
+      emits nothing.
+   b. `dispatch` (`commit.ts:145-151`) opens the transaction when `phase === 'idle'` and closes it in
+      its outer `finally`, AFTER `drainQueue()` (FB6-02 — so causally-chained projections drained
+      there, e.g. an OIL credit woken by an approval's notify, land in the same group). It calls
+      `abort()` when the outermost pipeline's result is `conflict | invalid | unauthorized |
+      refused` (these return a result, not a throw — `commit.ts:240-244`), and on a throw from
+      phases 1–6; it calls `commit()` otherwise, including when a phase-8/9 effect throws after the
+      envelope was sealed (the command DID happen).
+   c. Belt: `wirePersist` sets `HOOKS.histPush = () => { push(); if (!deferEffect(persistAll))
+      persistAll() }`, so the scheduler's persist joins the deferred effects and a rollback discards
+      it (this also stops serialising INPUTS twice per command); the Leave War standalone branch's
+      persist moves to `cmdDeferEffect` as REQUIRED (FB5-03), not hygiene.
+   Test (real `main.tsx` wiring): an Input write refused by `protectedTouched`, one refused by a
+   stale `expectedRevs`, and one failing `guardCheck` (`commit.ts:395`) each leave every
+   whiteboard value byte-equal to before and deliver ZERO groups to the postman.
+2. **An unfinished recovery is carried into the new session's save queue** (OA6-002). If boot
+   replay of `raptor:__txn` fails (§20.3), `loadAll` returns the journal's group alongside the
+   snapshot; `bootStorage` (`storage/boot.ts:11-21`) hands it to the new `Postman` as its initial
+   FAILED group. Status reads "failed" (never "saved") until it applies; it retries with backoff;
+   every later write merges OVER it, so the next journal is always a superset of it. A storage reset
+   (`resetPreSchema`, which runs before the postman exists) deletes the journal with everything else
+   — a reset discards the old world by design. Test: replay fails at boot → an unrelated edit →
+   reload → the recovered group AND the edit are both present; the save status showed failed until
+   then.
+3. **Fault-test expectation corrected** (OA6-002): G1 fails mid-apply, G2 arrives, the tab closes
+   before the retry → after reload the world is **exactly after G1** if G2 never reached a durable
+   journal, or **exactly after G1∪G2** if it did — never a mix, never before G1.
+4. **Unload** (FB6-02): `flush()` on pagehide sends the pending group straight through `putMany`;
+   safe because the browser backend's group write is synchronous. With a future asynchronous backend
+   that gap is step 5's to close — recorded.
