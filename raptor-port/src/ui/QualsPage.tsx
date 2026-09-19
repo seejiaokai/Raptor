@@ -24,7 +24,7 @@ import { boxOf, frameLift, frameLand } from './lift'
    the UTF-8 BOM the shared one now writes. One exporter, one encoding. */
 import { exportCSV } from './export'
 /* the sync seam is the ONE sanctioned crossing into Leave War (CLAUDE.md's
-   four-seams rule; inputedit's retractLwRow is the precedent). Restoring an
+   four-seams rule). Restoring an
    archived body has to clear their Leave War posting-out too, or the very
    next auto-archive pass would put them straight back — so the whole restore
    lives in sync.ts and this page just calls it. */

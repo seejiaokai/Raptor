@@ -14,7 +14,7 @@ import { INPUTS } from '../../engine/inputs'
 import { canDecide, canEditCell, canEditRow, codeOf, type Period, type Role } from '../engine'
 import { AM, FULL, PM, type Contrib, type DayView, type Win } from '../engine/dayview'
 import type { NoticeRec, CreditRec } from '../engine/warrecs'
-import { ackReplacement, changeAbsenceById, clearRecordById, decideRequestById, recordsAt } from '../state/store'
+import { ackReplacement, changeAbsenceById, clearRecordById, decideRequestById, moveAbsenceById, recordsAt } from '../state/store'
 import { Sheet } from './Sheet'
 import './bidpicker.css'
 
@@ -63,6 +63,9 @@ export function DayListSheet({
   onClose: () => void
 }) {
   const [msg, setMsg] = useState('')
+  /* the per-record Move: which Input is being moved, and to when */
+  const [moving, setMoving] = useState<string | null>(null)
+  const [moveTo, setMoveTo] = useState(date)
   const deciding = canDecide(period.stage, role)
   const editable = canEditCell(period, role, date) && canEditRow(role, viewer, personId)
   const own = viewer === personId
@@ -88,7 +91,14 @@ export function DayListSheet({
           <button key="p" className="dchip" data-testid={`dl-unapprove-${c.id}`} onClick={() => act(() => changeAbsenceById(personId, date, c.id, 'pending'))}>Back to bid</button>,
           <button key="r" className="dchip refuse" data-testid={`dl-refuse-${c.id}`} onClick={() => act(() => changeAbsenceById(personId, date, c.id, 'refused'))}>Refuse</button>,
           <button key="d" className="dchip" data-testid={`dl-remove-${c.id}`} onClick={() => act(() => changeAbsenceById(personId, date, c.id, 'removed'))}>Delete</button>,
+          <button key="m" className="dchip move" data-testid={`dl-move-${c.id}`} onClick={() => { setMoving(moving === c.id ? null : c.id); setMoveTo(date) }}>Move…</button>,
         )
+        if (moving === c.id) {
+          actions.push(
+            <input key="mt" type="date" className="dateinput" aria-label="Move to" data-testid={`dl-moveto-${c.id}`} value={moveTo} min={period.start} max={period.end} onChange={e => setMoveTo(e.target.value)} />,
+            <button key="mg" className="dchip approve" data-testid={`dl-movego-${c.id}`} onClick={() => { const r = moveAbsenceById(personId, date, c.id, moveTo); if (r) setMsg(r); else { setMsg(''); setMoving(null) } }}>Move</button>,
+          )
+        }
       }
       if (row && isLeave && period.stage === 'published' && (role === 'admin' || own)) {
         actions.push(<button key="n" className="dchip" data-testid={`dl-note-${c.id}`} onClick={() => onEditRemark(row)}>Note</button>)

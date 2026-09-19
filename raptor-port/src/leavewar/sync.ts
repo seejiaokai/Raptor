@@ -1,34 +1,28 @@
-// Wires 1 + 2 of the Leave War ⇄ Raptor sync
-// (docs/superpowers/specs/leavewar-sync.md): approved leave crosses to the
-// schedule as a personal input, and leave filed on the Inputs page crosses
-// back as an approved, Raptor-owned cell. MEDICAL is MEMBER-FILED ONLY since
-// 13 Sep 26 (owner, reversing the 17 Aug "management marks it" rule): it rides
-// only the INBOUND wire — an ATT B / ATT C / HL / OML input filed on the Inputs
-// page lands as a raptor-owned medical cell (half days per medRowPortion's
-// six-hour rule) — and NEVER the outbound one: the war can no longer originate a
-// medical marker, so nothing medical crosses war → Raptor.
+// THE LEAVE WAR ⇄ RAPTOR SEAM ([ARCH-STACK] step 4, 20 Sep 26 — replaces the
+// 17 Aug two-way copy of approved leave, wires 1 + 2, which is DELETED).
 //
-// Both directions are DERIVED RECONCILIATION, not queues: each pass computes
-// the desired state from the source of truth, diffs it against what the
-// other side holds, and writes only the difference. A queue would be a
-// second record of a fact the grid / INPUTS already hold, and two records of
-// one fact disagree. Idempotence follows for free — a second pass over an
-// unchanged world finds an empty diff and touches nothing, history included.
-//
-// The loop cannot run away, by construction rather than by counter:
-//   - outbound skips Raptor-owned cells (outboundToRaptor's documented rule),
-//   - inbound skips lw-tagged inputs (the rows outbound itself wrote),
-// so each direction is blind to the other's writes, and one full pass
-// reaches a fixed point. A SYNCING flag guards re-entrancy on top — every
-// store write notifies subscribers synchronously, and this module is one.
+// An absence — leave, medical, course, overseas duty — is ONE record: the Raptor
+// Input. This module:
+//   - READS the Inputs into the war's absence index (`refreshAbsences`), from
+//     which the war derives what each day shows (state/merge.ts, engine/dayview.ts);
+//   - installs the ABSENCE DOOR on the war store: approving, un-approving,
+//     removing and moving approved leave write the Input inside the war's own
+//     command (`doorApprove` … `doorMoveApproved`);
+//   - installs the owner's clash rules at the inputs door (inputgate.ts) and the
+//     publish door (`publishReplacesBids`);
+//   - derives the clash strip from the day views;
+//   - keeps wire 0 (the roster projection) and wire 4 (OIL credits from the
+//     published schedule and acknowledged duty claims, `runOilPass`) and the
+//     posting-out archive pass.
+// The derived passes are reconciliation, not queues: compute the desired state,
+// diff, write only the difference; a SYNCING flag guards re-entrancy.
 
-import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isDownchit, isLeave, oilAsks, withRemarksTail, inputCoversDate, nowStamp } from '../engine/inputs'
+import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, oilAsks, withRemarksTail, inputCoversDate, nowStamp } from '../engine/inputs'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { ME, SESSION } from '../state/auth'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (the cross-seam roster
    writers — PO-archive, restore — emit a people change too). */
 import { persistPeopleProjection, commitPeopleEdit } from '../state/people-settings-commit'
-import { docFields, rowDocIds } from '../state/docs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { SCHED, dayApproved, dayCurVer, dayCurVerIn, daySnapIn, daySnapOf, amFormatOf } from '../engine/publish'
@@ -36,7 +30,7 @@ import { dayOilWork, inputOilAmt, envMin, uniformOil, oilWorkWhy, type OilWork }
 import { stashKeys, stashGet, isPreservedWeek } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
-import { notify as raptorNotify, subscribe as raptorSubscribe, writeInputsBatch, writeInputsBatchProjection } from '../state/store'
+import { notify as raptorNotify, subscribe as raptorSubscribe, writeInputsBatch } from '../state/store'
 import { lwSyncTurn } from './state/store'
 import {
   addDays,
@@ -62,6 +56,7 @@ import {
 } from './engine'
 import {
   absencesChanged,
+  getVersion,
   clearRaptorCell,
   getState,
   ingestDutyCredit,
@@ -75,6 +70,7 @@ import {
   subscribe as lwSubscribe,
 } from './state/store'
 import { HOOKS } from '../engine/hooks'
+import { deferEffect as cmdDeferEffect } from '../command'
 import { setPublishGate } from '../state/inputgate-hook'
 import { absencesAt, setAbsenceRows } from './state/merge'
 import { installInputGate, replaceClashingBids, type BidClaim } from './inputgate'
@@ -89,12 +85,6 @@ import {
    mid-write. One flag over both means those nested calls return at the door;
    the wiring below re-runs the counterpart pass once the writer finishes. */
 let SYNCING = false
-/* [CMDL-FINISH] N6 — a queued outbound mint is not yet applied when a SECOND
-   runOutbound fires in the same post-phase window (the lwSubscribe pending-OIL
-   tail raptorNotify()s, waking a second pass before the queue drains). Without
-   this latch the second pass sees the mint still missing and queues a DUPLICATE
-   lw-tagged row. Set before the (maybe-queued) write, cleared first-in-apply. */
-let OUTBOUND_PENDING = false
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
@@ -152,6 +142,21 @@ export function refreshAbsences(force = false): boolean {
   setAbsenceRows(INDEX)
   publishLeaveClashes()
   return true
+}
+
+/** Re-read the Inputs AND repaint the war when anything changed. Every door
+ *  and the inputs gate refresh inside their command; the repaint must come
+ *  from them, because the Raptor lane that runs afterwards then finds the index
+ *  already current and would not bump the war (Fable inspection #1, 20 Sep 26).
+ *  Deferred to the command's release when inside one, so no subscriber runs on
+ *  a half-applied world. */
+export function refreshAbsencesAndRepaint(): void {
+  if (!refreshAbsences()) return
+  /* one repaint per command: if the war notified on its own after this point
+     (a door that also rewrote its records), that repaint already reads the
+     fresh index — skip a second one */
+  const at = getVersion()
+  if (!cmdDeferEffect(() => { if (getVersion() === at) absencesChanged() })) absencesChanged()
 }
 
 /** Install the absence door (wireLeaveWarSync does; tests call it alone). */
@@ -261,8 +266,11 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
          type and part of the day, EXTENDS that Input (design §1: "creates (or
          extends) an Input") — a day-by-day approval stays one record */
       const start = labelToISO(r.date, r.yr)!, end = r.endDate ? labelToISO(r.endDate, r.yr)! : start
+      /* …and only when the remark (without its date tail) matches, so an
+         extension never swallows the run's own carried remark (Fable #7) */
+      const body = (t: unknown) => withRemarksTail(t ?? '', null, null, 'none')
       const same = (x: any) => x !== r && x.person === r.person && x.lw === r.lw && x.type === r.type &&
-        !!x.allday === !!r.allday && (x.half ?? '') === (r.half ?? '')
+        !!x.allday === !!r.allday && (x.half ?? '') === (r.half ?? '') && body(x.remarks) === body(r.remarks)
       const before = INPUTS.find((x: any) => same(x) && addDays(inputDates(x).slice(-1)[0] ?? '', 1) === start)
       const after = INPUTS.find((x: any) => same(x) && inputDates(x)[0] === addDays(end, 1))
       if (!before && !after) { INPUTS.push(r); continue }
@@ -279,7 +287,7 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
   })
   if (!ok) return { done: 0, skipped: skipped + picks.length, why }
   lwEditLists(picks.map(p => ({ personId: p.personId, date: p.date, drop: [p.rec.id], add: [] })))
-  refreshAbsences()
+  refreshAbsencesAndRepaint()
   return { done: picks.length, skipped, why }
 }
 
@@ -341,26 +349,29 @@ function doorDecideApproved(items: Array<{ personId: string; date: string; iid: 
   let skipped = 0
   const cuts = new Map<string, Set<string>>()
   const adds: Array<{ personId: string; date: string; drop: string[]; add: WarRec[] }> = []
+  const prot = new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
   for (const it of items) {
     const row = INPUTS.find((r: any) => String(r.iid) === it.iid)
     if (!row || !row.lw) { skipped++; continue }
+    if (prot.has(it.date) || inputProtected(row)) { skipped++; why.push(`${it.date} is on a locked week — not changed`); continue }
     const contrib = absencesAt(it.personId, it.date).find(c => c.id === it.iid)
     if (!contrib) { skipped++; continue }
     const code = notationOf(contrib.code, contrib.win)
     const war = warHolding(rawState().wars, it.date)
     if (!war) { skipped++; continue }
     const list = recsAt(war.recs, it.personId, it.date)
-    const blocking = liveRequestsOn(list, portionOfCode(code))
-    if (blocking.length && to !== 'refused') { skipped++; why.push(`${blocking[0]!.code} request on ${it.date} — decide it before changing the ${contrib.code}`); continue }
-    const refusedClash = to === 'refused' && list.some(r => r.kind === 'request' && r.state === 'refused' && overlaps(requestWin(r.code), contrib.win))
+    /* design §24.1 (Codex AS4-002): un-approving never overwrites or sits
+       beside a request already stored on that time — pending, acknowledged OR a
+       refused one kept as history — for every destination state */
+    const blocking = list.filter((r): r is RequestRec => r.kind === 'request' && overlaps(requestWin(r.code), contrib.win))
+    if (blocking.length) { skipped++; why.push(`${blocking[0]!.code} request on ${it.date} — decide or clear it before changing the ${contrib.code}`); continue }
     const rec: RequestRec = {
       id: newRecId(), kind: 'request', code, state: to,
       ...(row.lwMoved?.[it.date] ? { shiftedFrom: row.lwMoved[it.date] } : {}),
       carried: { ...(row.remarks ? { remarks: String(row.remarks) } : {}), ...(row.lwMoved?.[it.date] ? { lwMoved: { [it.date]: row.lwMoved[it.date] } } : {}) },
     }
     if (!rec.carried!.remarks && !rec.carried!.lwMoved) delete rec.carried
-    const dropIds = refusedClash ? list.filter(r => r.kind === 'request' && r.state === 'refused' && overlaps(requestWin(r.code), contrib.win)).map(r => r.id) : []
-    adds.push({ personId: it.personId, date: it.date, drop: dropIds, add: [rec] })
+    adds.push({ personId: it.personId, date: it.date, drop: [], add: [rec] })
     const set = cuts.get(it.iid) ?? new Set<string>()
     set.add(it.date)
     cuts.set(it.iid, set)
@@ -368,7 +379,7 @@ function doorDecideApproved(items: Array<{ personId: string; date: string; iid: 
   if (!adds.length) return { done: 0, skipped, why }
   if (!cutDates(cuts)) return { done: 0, skipped: skipped + adds.length, why }
   lwEditLists(adds)
-  refreshAbsences()
+  refreshAbsencesAndRepaint()
   return { done: adds.length, skipped, why }
 }
 
@@ -376,19 +387,22 @@ function doorDecideApproved(items: Array<{ personId: string; date: string; iid: 
  *  delete propagates and sticks, owner decision 2, 13 Sep 26). */
 function doorRemoveApproved(items: Array<{ personId: string; date: string; iid: string }>): { done: number; skipped: number; why: string[] } {
   const cuts = new Map<string, Set<string>>()
+  const why: string[] = []
+  const prot = new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
   let skipped = 0
   for (const it of items) {
     const row = INPUTS.find((r: any) => String(r.iid) === it.iid)
     if (!row || !row.lw) { skipped++; continue }
+    if (prot.has(it.date) || inputProtected(row)) { skipped++; why.push(`${it.date} is on a locked week — not deleted`); continue }
     const set = cuts.get(it.iid) ?? new Set<string>()
     set.add(it.date)
     cuts.set(it.iid, set)
   }
   const n = items.length - skipped
-  if (!n) return { done: 0, skipped, why: [] }
-  if (!cutDates(cuts)) return { done: 0, skipped: items.length, why: [] }
-  refreshAbsences()
-  return { done: n, skipped, why: [] }
+  if (!n) return { done: 0, skipped, why }
+  if (!cutDates(cuts)) return { done: 0, skipped: items.length, why }
+  refreshAbsencesAndRepaint()
+  return { done: n, skipped, why }
 }
 
 /** slide approved leave days by `delta` (design §5.2 `lw.moveApproved`, §17
@@ -457,7 +471,7 @@ function doorMoveApproved(items: Array<{ personId: string; date: string; iid: st
     for (const r of refile) INPUTS.push(r)
     ok = true
   })
-  if (ok) refreshAbsences()
+  if (ok) refreshAbsencesAndRepaint()
   return ok ? null : { reason: 'window' }
 }
 
@@ -563,7 +577,7 @@ export function isNonWorkingISO(date: string): boolean {
    input's own standing (all-day = FO, else its length under oilFullMin) —
    the CELL finally posted may still upgrade when published schedule work on
    the same day stretches its envelope (desiredOilCells). Walks label→ISO exactly as
-   runInbound does, same 400-day cap. */
+   inputDates does, same 400-day cap. */
 export function oilAskPlan(row: { person?: any; date: string; endDate?: string; yr?: any; allday?: any; s?: any; e?: any }): { iso: string; amt: 0.5 | 1 }[] {
   const out: { iso: string; amt: 0.5 | 1 }[] = []
   const amt = inputOilAmt(row.allday, row.s, row.e)

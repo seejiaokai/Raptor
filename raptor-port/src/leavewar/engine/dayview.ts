@@ -37,8 +37,13 @@ export interface Contrib {
   /** Leave War notation type, no portion marks: LL, OL, OIL, ATTC, HL, OML,
    *  ATTB, CSE, OD, FO, HO. A notice carries the REPLACED bid's code. */
   code: string
-  /** The part of this date it takes. */
+  /** The part of this date it takes — for a credit worked in several
+   *  stretches, the envelope from first start to last end (what it shows as). */
   win: Win
+  /** credit only: the separate work stretches, when there are several. Every
+   *  overlap test reads these, so leave in a GAP between two stretches is not a
+   *  clash (Fable inspection #2, 20 Sep 26). */
+  wins?: readonly Win[]
   /** request only */
   state?: RequestState
   /** absence only: approved on the war (the Input carries `lw`) */
@@ -65,6 +70,8 @@ export const isCreditCode = (code: string) => CREDIT.has(code)
 const isAnnual = (code: string) => code === 'LL' || code === 'OL'
 
 export const overlaps = (a: Win, b: Win) => a[0] <= b[1] && b[0] <= a[1]
+/** every stretch a contribution really takes */
+export const winsOf = (c: Contrib): readonly Win[] => c.wins ?? [c.win]
 export const touchesAM = (w: Win) => w[0] <= AM[1]
 export const touchesPM = (w: Win) => w[1] >= PM[0]
 /** minutes of `w` inside `half` (inclusive windows) */
@@ -105,7 +112,7 @@ export function compareContrib(a: Contrib, b: Contrib): number {
 export function forbiddenPair(a: Contrib, b: Contrib): boolean {
   if (a.kind === 'notice' || b.kind === 'notice') return false
   if (a.state === 'refused' || b.state === 'refused') return false
-  if (!overlaps(a.win, b.win)) return false
+  if (!winsOf(a).some(x => winsOf(b).some(y => overlaps(x, y)))) return false
   const leaveLike = (c: Contrib) => LEAVE.has(c.code) && (c.kind === 'absence' || c.kind === 'request')
   const sick = (c: Contrib) => c.kind === 'absence' && SICK.has(c.code)
   const work = (c: Contrib) => c.kind === 'credit'
@@ -173,12 +180,13 @@ function notation(code: string, w: Win): string {
 }
 
 /* which record pays for one half: the leave covering more of that half, a tie
-   to the filed absence over a request, then the earlier start, then the id */
+   to the earlier start (owner answer D), then the filed absence over a
+   request, then the id */
 function payerFor(half: Win, cs: Contrib[]): Contrib | null {
   const ranked = cs.filter(c => minutesIn(c.win, half) > 0).sort((x, y) =>
     minutesIn(y.win, half) - minutesIn(x.win, half)
-    || (x.kind === 'absence' ? 0 : 1) - (y.kind === 'absence' ? 0 : 1)
     || x.win[0] - y.win[0]
+    || (x.kind === 'absence' ? 0 : 1) - (y.kind === 'absence' ? 0 : 1)
     || (x.id < y.id ? -1 : x.id > y.id ? 1 : 0))
   return ranked[0] ?? null
 }

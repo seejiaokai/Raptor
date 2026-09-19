@@ -395,7 +395,7 @@ export function commitInputs<T>(type: string, fn: () => T): T {
   return commitSched(type, inputsScope(), fn).value
 }
 /* [CMDL-FINISH] §2.2 — the PROJECTION sibling of commitInputs: the LW-originated
-   reconciler (runOutbound) mints/retracts Raptor inputs as a causally-chained
+   reconciler (historically runOutbound, deleted in [ARCH-STACK] step 4) writes Raptor inputs as a causally-chained
    projection, not a user edit. Raised at phase 8 (woken by the LW edit's deferred
    notify) it ENQUEUEs with the edit's seq as its cause; raised at idle (inside
    lwSyncTurn) it runs as a top-level projection. Same enlist + applyEnd body. */

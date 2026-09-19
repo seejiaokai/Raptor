@@ -501,7 +501,9 @@ const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, v
           (here && cellOpenable(states, period, role, viewer, deciding, grid, p.id, d.date)) || (role === 'admin' && !here && !notYetArrived) ||
           // a marked day always opens its list; leave dated outside the
           // squadron window opens for an admin and for the person themself
-          (!!mark && (here || outLeave)) || (outLeave && (role === 'admin' || viewer === p.id))
+          (!!mark && (here || outLeave)) || (outLeave && (role === 'admin' || viewer === p.id)) ||
+          // …and the person may bid clearing leave on a day after posting out
+          (!here && !notYetArrived && role !== 'admin' && viewer === p.id && canEditCell(period, role, d.date))
         // Their LAST day in the squadron wears a small PO tag (owner, 19 Aug
         // 26 — chosen over nothing after the edge case was put to him):
         // someone posting out on the 1st has a final month that otherwise
@@ -4048,7 +4050,9 @@ export function Matrix() {
           dragAfter={dragAfter}
         />
       )}
-      {open && !listOpen && !canRemark && !openPostedOut && !raptorOwns(states, open.id, open.date)
+      {/* a member may bid CLEARING leave after their own posting-out (owner
+          answer C, 20 Sep 26) — the admin's tap there stays the PO sheet */}
+      {open && !listOpen && !canRemark && (!openPostedOut || role !== 'admin') && !raptorOwns(states, open.id, open.date)
         && canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id)
         && !(deciding && isBiddable(grid[open.id]?.[open.date])) && (
         <BidPicker

@@ -558,9 +558,9 @@ Relationships: n–1 `LeaveWar`, n–1 `Person`.
 Unique on the record id; per (`warId`, `personId`, `date`) at most one
 undecided request per half, one refused per half, one credit.
 From today: `recs` (`personId → date → WarRec[]`) inside the war record.
-App change: `sync.ts` keeps computing desired state and writing the
-difference. `inputId` is a strengthening, **not** a replacement for
-`source` / `Input.fromLeaveWar` — losing either marker loses the loop-breaker.
+App change: none beyond the move to rows — the Leave War reads the Inputs and
+writes only these records; there is no sync difference to compute and no
+loop-breaker to keep ([ARCH-STACK] step 4).
 
 ### LeaveLedger, LeaveCounter, LeaveOpening
 
@@ -900,7 +900,7 @@ can do better.
 |---|---|---|---|
 | `ScheduleWeek` (snapshot) | the whole week | **reject and reload**, plus the edit lease below so two schedulers rarely collide at all | 1 |
 | ScheduleRow family | one row | **row merge**: two people editing different rows of one day both land; the same row is reject-and-reload | 2 |
-| `LeaveBid` | one cell (person × date) | **per-cell last writer wins** — a cell is one person's bid and one admin's decision; the row version still guards the same cell edited twice | 1 |
+| `LeaveBid` | one record (by id) | **per-record last writer wins** — several records may share a person/date since [ARCH-STACK] step 4; each is one person's bid (or one credit, one notice) and one admin's decision; the row version guards the same record edited twice | 1 |
 | `Attempt`, `Enrolment` | one row | reject and reload — a mark is a fact about one attempt; `applySummary` re-reads and re-applies | 2 |
 | `Setting` | one key | reject and reload — an admin edit over an admin edit is a conversation, not a merge | 1 |
 | `Input`, `Person`, `LeavePersonProfile`, `QualMark` | one row | reject and reload | 1 |

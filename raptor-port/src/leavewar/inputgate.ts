@@ -34,14 +34,14 @@ import { CmdRefused } from '../command'
 import { HOOKS } from '../engine/hooks'
 import { INPUTS, inpId, isLeave, nowStamp } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
-import { ME, SESSION } from '../state/auth'
+import { LOGINROLE, ME, SESSION } from '../state/auth'
 import { setInputGate } from '../state/inputgate-hook'
 import { buildAbsenceIndex, contribsOfInput, inputDates, warCodeOf, warVisible } from './absences'
 import { addDays, warHolding } from './engine'
 import { AM, FULL, PM, forbiddenPair, isLeaveCode, isSickCode, overlaps, type Contrib, type Win } from './engine/dayview'
 import { creditWins, newRecId, portionOfCode, recsAt, requestWin, type NoticeRec, type RequestRec, type WarRec } from './engine/warrecs'
 import { lwEditLists, rawState } from './state/store'
-import { inDoor, refreshAbsences, sliceInput } from './sync'
+import { inDoor, refreshAbsencesAndRepaint, sliceInput } from './sync'
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const dm = (iso: string) => `${Number(iso.slice(8, 10))} ${MONTHS[Number(iso.slice(5, 7)) - 1]}`
@@ -80,7 +80,9 @@ function sickCutsLeave(changed: any[], changedIds: Set<string>): string[] {
         if (!mw.some(w => overlaps(w, lw))) { shapes.push([d, 'keep']); continue }
         cutDays.push(d)
         const medAm = mw.some(w => overlaps(w, AM)), medPm = mw.some(w => overlaps(w, PM))
-        if (leave.allday && !(medAm && medPm)) shapes.push([d, medAm ? 'pm' : 'am'])
+        /* a leave taking both halves (all day, or its own times across noon)
+           keeps the half the medical leaves free (H2; Fable #4) */
+        if (overlaps(lw, AM) && overlaps(lw, PM) && !(medAm && medPm)) shapes.push([d, medAm ? 'pm' : 'am'])
         else shapes.push([d, 'drop'])
       }
       if (!cutDays.length) continue
@@ -94,11 +96,16 @@ function sickCutsLeave(changed: any[], changedIds: Set<string>): string[] {
       for (const r of runs) {
         if (r.sh === 'drop') continue
         const piece = sliceInput(leave, r.from, r.to, pieces.length === 0)
-        if (r.sh === 'am' || r.sh === 'pm') {
+        if ((r.sh === 'am' || r.sh === 'pm') && leave.allday) {
           piece.allday = false
           piece.half = r.sh
           piece.s = r.sh === 'am' ? 0 : 721
           piece.e = r.sh === 'am' ? 720 : 1439
+        } else if (r.sh === 'am' || r.sh === 'pm') {
+          // its own times, clipped to the half it keeps
+          delete piece.half
+          if (r.sh === 'am') piece.e = Math.min(Number(leave.e), 720)
+          else piece.s = Math.max(Number(leave.s), 721)
         }
         pieces.push(piece)
       }
@@ -150,6 +157,15 @@ function vet(persons: ReadonlySet<string>, changedIds: ReadonlySet<string>, with
 }
 
 /* ---- 3. a clashing claim replaces an undecided bid ---------------------- */
+/* A notice group: every notice ONE command made shares it, and "OK, seen"
+   clears the group. Unique per command even within one millisecond (Codex
+   AS4-003): the time in ms times 1000 plus a rolling counter. */
+let GROUP_N = 0
+function nextNoticeGroup(): number {
+  GROUP_N = (GROUP_N + 1) % 1000
+  return Date.now() * 1000 + GROUP_N
+}
+
 export interface BidClaim { person: string; date: string; win: Win; byType: string }
 
 /** Remove the clashing part of every undecided bid the claims overlap — the
@@ -166,7 +182,7 @@ export function replaceClashingBids(claims: readonly BidClaim[], byWho: string, 
     if (e) e.wins.push(c.win)
     else byAddr.set(k, { person: c.person, date: c.date, wins: [c.win], byType: c.byType })
   }
-  const group = Date.now()
+  const group = nextNoticeGroup()
   const edits: Array<{ personId: string; date: string; drop: string[]; add: WarRec[] }> = []
   const said: string[] = []
   for (const { person: p, date: d, wins, byType } of byAddr.values()) {
@@ -202,8 +218,12 @@ export function replaceClashingBids(claims: readonly BidClaim[], byWho: string, 
 }
 
 function replaceBids(changed: any[]): string[] {
-  const own = (p: string) => !!SESSION && SESSION.role !== 'admin' && String(ME) === p
-  const who = SESSION ? (SESSION.role === 'admin' ? 'an admin' : cs(String(ME))) : 'the Inputs page'
+  /* B6 — decided by the LOGIN, not by the admin's "view as member" toggle or
+     "View as" (Codex AS4-004): a real admin login is always someone else acting
+     for the member; a member login is the person they view as */
+  const adminLogin = LOGINROLE === 'admin'
+  const own = (p: string) => !!SESSION && !adminLogin && String(ME) === p
+  const who = SESSION ? (adminLogin ? 'an admin' : cs(String(ME))) : 'the Inputs page'
   const claims: BidClaim[] = []
   for (const row of changed) {
     if (!isLeave(row.type) && !isSickCode(warCodeOf(row.type))) continue
@@ -234,7 +254,7 @@ function apply(before: unknown): void {
   const replaced = inDoor() ? [] : replaceBids(changed)
   const msgs = [...cut, ...(replaced.length ? [`This replaces ${replaced.join(', ')} on the Leave War`] : [])]
   if (msgs.length) HOOKS.toast(msgs.join(' · '), '')
-  refreshAbsences()
+  refreshAbsencesAndRepaint()
 }
 
 function vetRestore(iids: ReadonlySet<string>, persons: ReadonlySet<string>): void {

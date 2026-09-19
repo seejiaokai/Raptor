@@ -230,7 +230,8 @@ export function writeInputsBatchWith(stores: EnlistableStore[], fn: () => void):
 }
 export { weekstashStore }
 /* [CMDL-FINISH] §2.2 — the PROJECTION variant, for the LW-originated reconciler
-   (sync.ts runOutbound) so its Raptor input mint/retract chains causally to the
+   (historically sync.ts runOutbound — deleted in [ARCH-STACK] step 4; kept for any
+   future LW-side reconciler) so its Raptor input write chains causally to the
    Leave War edit that triggered it, instead of standing as an orphan user edit. */
 export function writeInputsBatchProjection(fn: () => void): boolean {
   return commitInputsProjection(SCHED_TYPES.inputsBatch, () => runInputWrite(fn, true))

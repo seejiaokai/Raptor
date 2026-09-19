@@ -1225,8 +1225,8 @@ export function lwSyncTurn<T>(fn: () => T): T {
    - people / qualCatalog / personEdits — a live PROJECTION of Raptor's roster
      (sync.ts), owned by Raptor's Quals page; undo here must not fight it.
 
-   Raptor-DRIVEN grid writes (the four sync writers: ingestFromRaptor,
-   ingestDutyCredit, clearRaptorCell, withdrawLeaveCell) run under `locked`, so
+   Raptor-DRIVEN writes (the OIL pass's ingestDutyCredit / clearRaptorCell;
+   since [ARCH-STACK] step 4 leave is never copied onto the war) run under `locked`, so
    a change Raptor pushed never becomes a Leave War undo step — undoing a cell
    Raptor still holds an input for would only be re-applied by the next
    reconcile pass, growing the stack forever. A restore (historyApply) is
@@ -2177,6 +2177,9 @@ export function changeAbsenceById(personId: string, date: string, iid: string, t
   if (!DOOR) return 'Not available'
   const item = [{ personId, date, iid }]
   const r = gesture(to === 'removed' ? 'lw.edit' : 'lw.decide', () => (to === 'removed' ? DOOR!.removeApproved(item) : DOOR!.decideApproved(item, to)))
+  /* a refusal inside the command (a locked week) rolls the gesture back and
+     leaves `r` unset — report it rather than read through it (Fable #3) */
+  if (!r) return 'Couldn’t change that — the week is locked, or something else refused it'
   if (r.done > 0) return null
   return r.why[0] ?? 'That leave was filed on the Inputs page — change it there'
 }
@@ -3162,6 +3165,27 @@ function isMovableSource(personId: string, date: string): boolean {
   if (m.kind === 'request') return isBiddable(m.code) && canEditCell(state.period, state.role, date)
   if (m.kind === 'absence') return canDecide(state.period.stage, state.role) && warEditable(personId, date)
   return false
+}
+
+/** Move ONE war-approved leave, by its Input id, to another date — the tap
+ *  list's per-record Move (design §23.3; Codex AS4-006): on a day holding
+ *  several records the grid's drag cannot tell which one to take, so the list
+ *  moves exactly the one tapped. Same law as a drag: an admin at a deciding
+ *  stage, both days in the war, the landing free (the door's own check), the
+ *  dotted mark once bidding is closed. Null when moved, else why not. */
+export function moveAbsenceById(personId: string, date: string, iid: string, to: string): string | null {
+  if (state.role !== 'admin' || !canDecide(state.period.stage, state.role)) return 'Only an admin can move approved leave now'
+  if (!DOOR) return 'Not available'
+  const delta = Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${date}T00:00:00Z`)) / 86_400_000)
+  if (!delta) return 'Pick a different day'
+  const dayset = new Set(state.period.days.map((d: any) => d.date))
+  if (!dayset.has(to)) return 'That day is not in this war'
+  const item = [{ personId, date, iid }]
+  const tracked = biddingClosed(state.period.stage)
+  const p = DOOR.moveApproved(item, delta, tracked, true)
+  if (p) return p.reason === 'occupied' ? `${p.at ?? to} already has something on that time` : p.reason === 'window' ? 'That day is outside the war' : 'That leave was filed on the Inputs page — change it there'
+  gesture('lw.edit', () => DOOR!.moveApproved(item, delta, tracked, false))
+  return null
 }
 
 /** The cells of a selection that actually hold something movable (owner,

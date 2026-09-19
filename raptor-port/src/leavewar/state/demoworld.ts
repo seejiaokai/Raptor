@@ -64,7 +64,7 @@ export const DEMO_MAP: Record<string, string> = {
 const DEMO_RAPTOR_INPUTS: any[] = [
   /* SPLICE's medical is MEMBER-FILED (owner, 13 Sep 26): the war can no longer
      create medical, so the demo shows it as the member's OWN Inputs filing — the
-     ATT C / OML rows sync onto the war (ingestFromRaptor) as read-only cells, the
+     ATT C / OML rows show on the war (read from the Inputs) as read-only cells, the
      one way medical reaches the war now. The pristine seed carries no war-marked
      medical at all; this is the live demo's member-filed example. A CLOSING
      upchit (7 Jan) completes the episode so the Medical view shows no

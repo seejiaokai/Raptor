@@ -47,6 +47,7 @@ import { RangeCal } from './RangeCal'
    offered or in what order, so all three call this rather than each sorting
    PEOPLE their own way. */
 export const rosterOptions = () => Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived)
+  .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
 /* [ARCH-STACK] step 4 (clash check H5, owner answer C, 20 Sep 26): an admin
    can still FILE leave for someone who has posted out (clearing leave) or has
    not posted in yet — so the Inputs page's own person pickers offer the
@@ -747,9 +748,9 @@ function protectedInput(...rows: any[]): boolean {
    not the model's date/endDate — reading those raw was the P2-REREVIEW-01 no-op). */
 const normDest = (n: { date: string, endDate: string | undefined }, yr: any) => ({ date: n.date, endDate: n.endDate, yr })
 /* PREFLIGHT A MEDICAL PLAN (P2-QREV-01). The medical create/trim cascade
-   (applyMedPlan) mutates EXISTING rows — trims, deletes, and, for an lw-tagged
-   row, withdraws its Leave War cells (retractLwRow) as an immediate side effect
-   the input funnel's model-rollback cannot take back. So a plan that touches ANY
+   (applyMedPlan) mutates EXISTING rows — trims and deletes — and (before
+   [ARCH-STACK] step 4) withdrew Leave War cells as a side effect the input
+   funnel's model-rollback could not take back. So a plan that touches ANY
    protected-date row must be refused BEFORE it runs, not rolled back after: this
    preflights the whole plan (its target rows, and the surviving tail a split
    would mint) so nothing executes on a frozen record. */

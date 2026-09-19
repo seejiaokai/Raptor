@@ -112,7 +112,11 @@ export function recContribs(list: readonly WarRec[]): Contrib[] {
       const cell = parseCell(r.code)
       out.push({ id: r.id, kind: 'request', code: cell?.type ?? r.code, win: requestWin(r.code), state: r.state, ...(r.shiftedFrom ? { movedFrom: r.shiftedFrom } : {}) })
     } else if (r.kind === 'credit') {
-      creditWins(r).forEach((w, i) => out.push({ id: i ? `${r.id}#${i}` : r.id, kind: 'credit', code: r.code, win: w, ...(r.oil === 'auto' ? { auto: true } : {}), ...(r.note ? { note: r.note } : {}) }))
+      /* ONE contribution per credit, however many work stretches it has: the
+         envelope is what the box shows, the stretches are what clashes read */
+      const ws = creditWins(r)
+      const env: Win = [Math.min(...ws.map(w => w[0])), Math.max(...ws.map(w => w[1]))]
+      out.push({ id: r.id, kind: 'credit', code: r.code, win: env, ...(ws.length > 1 ? { wins: ws } : {}), ...(r.oil === 'auto' ? { auto: true } : {}), ...(r.note ? { note: r.note } : {}) })
     } else {
       out.push({ id: r.id, kind: 'notice', code: parseCell(r.code)?.type ?? r.code, win: FULL })
     }
