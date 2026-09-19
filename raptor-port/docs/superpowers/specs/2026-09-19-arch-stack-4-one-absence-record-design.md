@@ -244,9 +244,15 @@ still earns — §8.7 DECIDED). Appointment + Other keep asking/crediting as usu
   (`inputs.ts:93`, `codes.ts:279`) — a man on ATT B can stand a Saturday desk, and under this ruling that
   desk earns nothing. The owner said "incl. ATT B", so build it; this sentence exists so a later builder
   doesn't "fix" it back.
-- **Consistent with [OIL]** (lock earned OIL on an already-WORKED day): §4.4 is the FORWARD suppress; [OIL]
-  is the already-worked lock; a retrospective absence on an already-locked worked day needs a stated
-  winner — an [OIL] item, not a §4.4 defect.
+- **THE OIL TRUTH IS THE LATEST PUBLISHED VERSION OF THE DAY (owner ruling, 20 Sep 26 — supersedes the
+  11 Sep [OIL] "lock earned OIL" lean; newest wins).** OIL for a day is derived from its **latest
+  published version — the latest amendment, or the EOD if that is the latest** — regardless of how long
+  ago the day was. There is **no "lock"** and no clock / "was it actually worked" inference: the
+  published record *is* what happened. If a later amendment/EOD **takes someone off a past day, that
+  day's OIL for them goes** (the record now says they weren't there); to keep it, don't take them off.
+  This matches how the OIL pass already reads (issued/published snapshots, `sync.ts:771-787`), so it is
+  mostly a confirmation + a simplification: **the [OIL] "protect already-worked OIL" machinery is no
+  longer needed.** When an **EOD** is published it is the final word on that day (what actually flew).
 - **The advisory** (schedule would have earned but the person is on leave) is optional information, one
   producer (rt4-4/R4-003), never a credit.
 - **HALF-DAY — DECIDED (owner, 20 Sep 26): the worked half still earns.** Suppression is per-portion

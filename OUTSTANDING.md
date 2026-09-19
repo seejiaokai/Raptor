@@ -229,17 +229,21 @@ path in a clock-free app needs its own design cycle. Astra/Codex REV5 findings t
   findings + dispositions in the review log. **Model:** design-first, red-team both
   providers again before building; then Opus build + Codex inspection.
 
-### [OIL] Lock earned OIL on an already-worked day — STANDBY (after [AMEND])
-An amendment that removes a person re-derives Leave War auto-OIL from the current
-published version and sweeps it away — correct for a **future** day, wrong for a
-**past** day already worked.
-- **Decision (owner leaning, 11 Sep 26):** earned OIL on an already-worked day is
-  **locked**; amendments only affect OIL for days not yet flown. Exception: an
-  amendment whose explicit purpose is "he didn't work it after all."
-- **Cross-feature, verified:** `src/leavewar/sync.ts` `runOilPass`/`desiredOilCells`
-  + `src/engine/oil.ts`; acknowledged claims (`row.oil`) are the only sticky source
-  today. Sequenced after [AMEND].
-- **Model:** build on Opus; a Fable-high bug-check (touches money + saved data).
+### [OIL] OIL truth = the latest published version — LARGELY DISSOLVED (owner ruling, 20 Sep 26)
+- **NEW RULING (owner, 20 Sep 26 — SUPERSEDES the 11 Sep "lock earned OIL" lean; newest wins):**
+  **OIL for a day is derived from its LATEST PUBLISHED VERSION — the latest amendment, or the EOD if
+  that is the latest — regardless of how long ago the day was.** The published record IS what happened;
+  there is **no clock, no "was it actually worked" inference, and NO lock.** If a later amendment/EOD
+  takes someone off a past day, **that day's OIL for them goes** (owner confirmed); to keep it, don't
+  take them off. An EOD, once published, is the final word on the day.
+- **Effect:** the old "lock/protect already-worked OIL" machinery is **not needed** — this item is
+  largely dissolved. What remains is only to ensure the OIL pass reads each day's LATEST published
+  version (it already reads issued/published snapshots — `sync.ts:771-787` — so likely a confirmation,
+  not a build). Folded into the [ONE-ABSENCE] §4.4 design; the [EOD] item provides the "what actually
+  flew" published truth.
+- **Superseded text (kept per newest-instruction-wins):** ~~earned OIL on an already-worked day is
+  LOCKED; amendments only affect OIL for days not yet flown; exception "he didn't work it after all."~~
+- **Model:** verify against `runOilPass`/`desiredOilCells` + `oil.ts` when [EOD]/[ONE-ABSENCE] build.
 
 ### [BUG2] Verify the reopen control during version preview — SMALL (folds into [AMEND])
 Astra says the original Bug 2 may **not** reproduce (EditWeek `ed=false`; SchedBoard
