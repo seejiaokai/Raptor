@@ -31,13 +31,16 @@ const STAMP: [Collection, string] = ['settings', 'schema']
    (memory dev-phase-reset-demo-data-not-migrate).
    settings/people/tracker carry no reset shape and are kept; day templates are
    coerced on load (daytpl.sanitiseBlob), so they need no reset. */
-const RESET: Collection[] = ['inputs', 'weeks', 'leavewar']
+export const RESET: Collection[] = ['inputs', 'weeks', 'leavewar']
 
 function storedVersion(snap: Snapshot): number {
   const v = snap[STAMP[0]] && snap[STAMP[0]][STAMP[1]]
   if (!v) return 0
   try { const n = Number(JSON.parse(v)); return Number.isFinite(n) ? n : 0 } catch { return 0 }
 }
+
+/** a version bump is due on this snapshot (the reset below will run) */
+export function resetDue(snap: Snapshot): boolean { return storedVersion(snap) < SCHEMA_VERSION }
 
 async function writeStamp(backend: Backend, snap: Snapshot): Promise<void> {
   const json = JSON.stringify(SCHEMA_VERSION)

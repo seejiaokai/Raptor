@@ -85,6 +85,29 @@ interface QueuedCommit {
 }
 const queue: QueuedCommit[] = []
 
+/* [ARCH-STACK-4] phase 0 (design §20.1, §21.1, §22.1, §23.1) — ONE command's
+   durable writes land all-or-nothing. The storage whiteboard is installed here
+   (by `wirePersist`, identity when unset — headless tests, the parity harness).
+   The outermost dispatch opens ONE whiteboard transaction and closes it after
+   the queue drains, so the command's whole causal closure (in-reducer persists,
+   both latch drains, drained projections) reaches the postman as ONE group.
+   Every pipeline takes a SAVEPOINT: a RETURNED refusal rolls the whiteboard back
+   to that pipeline's savepoint only; a THROW out of the pipeline (a phase 8/9
+   effect after the seal) means the command happened, so its writes stay. The
+   interface is structural so the command layer never imports storage. */
+export interface TxnSavepoint { readonly before: unknown }
+export interface TxnHandle {
+  savepoint(): TxnSavepoint
+  rollbackTo(sp: TxnSavepoint): void
+  release(sp: TxnSavepoint): void
+  commit(): void
+  abort(): void
+}
+export interface TxnWrapper { transaction(): TxnHandle }
+let txnWrapper: TxnWrapper | null = null
+let openTxn: TxnHandle | null = null
+export function setTxnWrapper(w: TxnWrapper | null): void { txnWrapper = w }
+
 /* ---- public + internal entry points -------------------------------------- */
 
 /* public: forward user writes. Actor+origin derived internally. */
@@ -142,13 +165,21 @@ function dispatch(cmd: Command, actor: Actor, origin: Origin, causedBy?: number)
      pipeline is isolated), instead of leaving them to fire on the next unrelated
      commit with their stale captured cause. The pipeline's throw is rethrown
      AFTER the drain + reset. */
-  let result!: CommitResult
+  let result: CommitResult | undefined
+  const wtx = txnWrapper ? txnWrapper.transaction() : null
+  openTxn = wtx
   try {
     result = runPipeline(cmd, actor, origin, causedBy)
   } finally {
-    try { drainQueue() } finally { phase = 'idle'; active = null }
+    try { drainQueue() } finally {
+      phase = 'idle'; active = null; openTxn = null
+      /* §21.1b — a RETURNED refusal of the outermost pipeline leaves nothing in
+         storage (its savepoint already put the keys back; abort makes it
+         explicit). A throw (result undefined) is a command that happened. */
+      if (wtx) { if (result && 'ok' in result && result.ok === false) wtx.abort(); else wtx.commit() }
+    }
   }
-  return result
+  return result!
 }
 
 function enqueue(cmd: Command, actor: Actor, origin: Origin): CommitResult {
@@ -201,6 +232,10 @@ function runPipeline(cmd: Command, actor: Actor, origin: Origin, causedBy?: numb
      pipeline never leaks its cause into the next drained item. */
   const savedCausal = causalSeq
   causalSeq = causedBy
+  /* §22.1 — this pipeline's savepoint on the one whiteboard transaction */
+  const wtx = openTxn
+  const sp = wtx ? wtx.savepoint() : null
+  let rolledBack = false
   try {
    try {
     // phase 1 — authorize
@@ -240,6 +275,9 @@ function runPipeline(cmd: Command, actor: Actor, origin: Origin, causedBy?: numb
   } catch (e) {
     // phase 6 — rollback: restore snapshots, discard latched effects, emit nothing
     rollback(txn)
+    /* §23.1 — a RETURNED refusal: this pipeline's durable writes (an inline
+       persist inside the reducer) go back too — only this pipeline's */
+    if (wtx && sp) { wtx.rollbackTo(sp); rolledBack = true }
     active = null
     return errResult(e)
   }
@@ -261,6 +299,7 @@ function runPipeline(cmd: Command, actor: Actor, origin: Origin, causedBy?: numb
   return { ok: true, seq: emitted ? txn.env.seq : -1, envelope: txn.env }
   } finally {
     causalSeq = savedCausal   // restore the enclosing cause (§2.1(1))
+    if (wtx && sp && !rolledBack) wtx.release(sp)   // it happened (or threw after the seal): keep its writes
   }
 }
 
@@ -417,10 +456,21 @@ function releaseLatch(txn: TxnState): unknown {
      Return the first error (the tail aggregates + rethrows once, after the phase
      reset) to preserve today's error visibility without wedging the dispatcher. */
   let firstErr: unknown = undefined
-  const batch = txn.deferred.splice(0)   // effects deferred DURING this drain re-queue onto txn.deferred
-  for (const d of batch) {
-    const restore = installContexts(d.snaps)
-    try { d.fn() } catch (e) { if (firstErr === undefined) firstErr = e; console.error('[commit] deferred effect threw', e) } finally { restore() }
+  /* [ARCH-STACK-4] §22.3 — EVERY deferred effect runs, however deep: an effect
+     that defers another (the scheduler's histPush now defers persistAll during
+     phase 8) is drained in the same release, bounded at 8 rounds, then a
+     diagnostic and one final drain. */
+  let rounds = 0
+  while (txn.deferred.length) {
+    if (++rounds > 8) {
+      console.warn('[commit] deferred effects still re-deferring after 8 rounds — final drain', txn.cmd.type)
+      if (rounds > 9) { txn.deferred.length = 0; break }
+    }
+    const batch = txn.deferred.splice(0)   // effects deferred DURING this drain re-queue onto txn.deferred
+    for (const d of batch) {
+      const restore = installContexts(d.snaps)
+      try { d.fn() } catch (e) { if (firstErr === undefined) firstErr = e; console.error('[commit] deferred effect threw', e) } finally { restore() }
+    }
   }
   return firstErr
 }
@@ -502,4 +552,5 @@ export function _resetCommandEngine(): void {
   SEQ = 0; phase = 'idle'; active = null; deliveringSeq = undefined
   stream.length = 0; subscribers.length = 0; guardedStores.length = 0
   revisions.clear(); queue.length = 0; conflictChecker = null
+  txnWrapper = null; openTxn = null
 }

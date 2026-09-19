@@ -1250,7 +1250,9 @@ function persistNotify(): void {
   if (!cmdIsCommitting() && !LW_SYNC_TURN) LW_PROJ_PENDING = false
   if (HIST.lock || cmdIsCommitting()) {                                          // reconciler OR nested causal
     if (cmdIsCommitting() && cmdIsInReducer()) {                                 // nested causal child (Gap 2) — JOINs the parent
-      cmdCommitProjection({ type: 'lw.sync', scope, apply: (t) => { t.enlist(lwStore); rawPersist(); LW_BASELINE = state } })
+      /* [ARCH-STACK-4] §5.2 FB2-05 — the durable write defers to phase 8 (run on
+         success, discarded if the parent command is refused after its reducer) */
+      cmdCommitProjection({ type: 'lw.sync', scope, apply: (t) => { t.enlist(lwStore); cmdDeferEffect(() => locked(() => rawPersist())); LW_BASELINE = state } })
     } else if (!LW_PROJ_PENDING) {                                               // first cell of a turn — ONE projection
       LW_PROJ_PENDING = true
       const r = cmdCommitProjection({ type: 'lw.sync', scope, apply: (t) => { LW_PROJ_PENDING = false; t.enlist(lwStore); rawPersist(); LW_BASELINE = state } })
@@ -1266,7 +1268,8 @@ function persistNotify(): void {
   // emits the change stream; the repaint defers to phase 8 (causal seq live).
   const r = cmdCommit({
     type: 'lw.edit', scope,
-    apply: (txn) => { txn.enlist(lwStore); rawPersist(); LW_BASELINE = state; cmdDeferEffect(rawNotify) },
+    /* [ARCH-STACK-4] §21.1c (FB5-03) — the backend write defers with the repaint */
+    apply: (txn) => { txn.enlist(lwStore); cmdDeferEffect(rawPersist); LW_BASELINE = state; cmdDeferEffect(rawNotify) },
   })
   if ((r as any).ok === false) rawNotify()   // a rejected edit reverted the model; re-read the grid + toast idiom
 }
