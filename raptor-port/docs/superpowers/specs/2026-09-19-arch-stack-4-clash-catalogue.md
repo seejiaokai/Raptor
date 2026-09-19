@@ -112,12 +112,14 @@ The acknowledgement is its own small stored note on the war (per person/day), un
 - **Side note (owner): an upchit is NOT work.** It never earns OIL, never counts as presence at work,
   and never blocks leave; it only ends a covering medical early (existing).
 
-## Main-code priority (host proposal 19 Sep 26, owner hint: "OIL credited / leave taken / medical taken are more important") — PENDING owner OK
+## Main-code priority — AGREED (owner 19 Sep 26: host proposal with leave moved above sick)
 
 Top wins the main code; everything else is behind the `+n` count (tap lists all). Comp:
-`docs/img/step4-main-code-ladder.png`.
-1. Off sick — ATT C, HL, OML (they replace leave anyway).
-2. Leave — approved or filed on Inputs, every type (costs the balance).
+`docs/img/step4-main-code-ladder.png`. Note: ATT C/HL/OML cut any leave they overlap and leave over
+them is refused, so levels 1 and 2 only ever meet on different halves of a day (e.g. morning LL +
+afternoon ATT C → `*LL +1`).
+1. Leave — approved or filed on Inputs, every type (costs the balance). (Owner: "show leave over sick.")
+2. Off sick — ATT C, HL, OML.
 3. OIL credited — FO / HO (earned).
 4. Away on duty or a course — OD, CSE (owner Q8: leave during them shows the leave).
 5. ATT B (can still work, just not fly).
