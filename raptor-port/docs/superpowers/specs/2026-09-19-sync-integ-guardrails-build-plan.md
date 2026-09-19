@@ -40,15 +40,27 @@ branch is exactly the latent re-enablement seam the robustness doctrine warns ab
 is the backstop; removing the UI is the honest, seam-free expression of "medical is never created on
 the war." (Alternative — pass `medical={false}` — leaves dead code; rejected.)
 
-### Reset the demo data
+### Reset the demo data — REVISED (SYNC-001)
 `src/leavewar/engine/seed.ts` `seedGrid()`: SPLICE carries war-originated medical
 `'2026-01-05': 'ATTC', '2026-01-06': 'OML'` (no `source:'raptor'` state → war-created). REMOVE those
-two cells (keep SPLICE's `'2026-01-08': 'LL'`). Existing browsers: reset via the coordinated storage
-version, NOT migration — bump `storage/reset.ts SCHEMA_VERSION` (2→3) so a persisted pre-existing LW
-world with war-medical is cleared and re-seeded clean (memory `dev-phase-reset-demo-data-not-migrate`).
-**OPEN QUESTION for red-team:** does bumping SCHEMA_VERSION actually clear+re-seed the LEAVE WAR world
-(it clears `inputs`+`weeks`; does it clear `leavewar:` keys / re-run installDemoWorld with
-`hadStoredWars=false`)? If not, the reset must be expressed differently. Verify in build.
+two cells (keep SPLICE's `'2026-01-08': 'LL'`).
+**Round-1 correction:** the schema reset clears only `['inputs','weeks']` and deliberately KEEPS
+`leavewar`, so a version bump alone would NOT clear the persisted war-medical (`main.tsx:57`
+`hadStoredWars = wb.has('leavewar','wars')` stays true → the old cells reload). Fix: add `'leavewar'`
+to the `RESET` list in `storage/reset.ts` AND bump `SCHEMA_VERSION` 2→3, so a returning browser's
+whole LW world is durably cleared BEFORE hydration → `hadStoredWars=false` → `installDemoWorld`
+re-seeds clean (dev-phase reset, no migration). Document the new leavewar-reset reason in reset.ts.
+**Also (SYNC-001):** `leavewar/engine/raptor.ts outboundToRaptor` currently lets a MEDICAL cell cross
+war→Raptor "as soon as marked". Member-filed medical is already `source:'raptor'` (skipped by the
+ownership guard), so the medical branch only ever mattered for war-ORIGINATED medical, which no
+longer exists — and a lingering pre-reset war-medical could still mint a Raptor input through it.
+Remove the `isMedical` exception so medical never crosses war→Raptor (treat like any non-biddable
+code). Update `raptor.test.ts` (the "sends a medical marker" test asserts the retired behaviour).
+
+### Tests — reset (SYNC-001)
+- Add a returning-browser test: a stored LW world with war-medical, second boot after the version
+  bump → the war-medical is gone and the demo re-seeds; member-filed medical (via `ingestFromRaptor`)
+  still displays on the war.
 
 ### Tests
 - `store.test.ts`: invert the two "refuses a medical code from a member" tests → refuses from admin too.
@@ -88,6 +100,12 @@ body "File this <type> without a certificate?", buttons **Upload** (dismiss, ret
 the existing upload control sits) and **No document** (resume the save with the doc treated as
 resolved). No new confirm primitive — reuse the editors' existing sheet pattern.
 
+**SYNC-002 (save-arg vs click event):** `onClick={save}` passes React's event as arg1, making a
+`skipDoc` boolean truthy and bypassing docGate (also a TS error). Every binding must be explicit:
+`onClick={() => save(false)}` (button ~1725), and the Enter handler (~1691) → `save(false)`; same for
+InputsPage `add`/`saveEdit`. `save(true)`/`add(true)`/`saveEdit(true)` are reserved for the DocConfirm
+"No document" resume ONLY. Audit every call site.
+
 ### Wire into the three commit paths (docGate BEFORE the type sheets / oilGate)
 - `inputedit.tsx` InputEditor `save(skipDoc=false)`: `const dg = skipDoc ? 'ok' : docGate(draft, except)`.
   On `'refused'` → toast+return; on `'ask'` → `setDocConf({...})` and return; DocConfirm "No document"
@@ -106,37 +124,45 @@ resolved). No new confirm primitive — reuse the editors' existing sheet patter
 
 ---
 
-## Item 3 — "Clear old data" is CLUTTER-ONLY (P4)
+## Item 3 — "Clear old data" is CLUTTER-ONLY (P4) — REVISED after round-1 red-team
 
 **Today** `clearHistoryData` (`inputedit.tsx` ~1286) deletes past INPUTS (`doomed`), plan pucks,
-day notes, and stashed weeks whose whole span is in the window. **Want:** clear ONLY old plan
-pucks, day notes, and genuinely-empty past weeks — never delete any leave/medical/duty input, never
-change balances, never touch the currently-loaded week — honest confirm showing the count.
+day notes, and stashed weeks whose whole span is in the window. **Want:** clear ONLY genuine
+clutter — never delete any leave/medical/duty input, never change balances, never touch the
+currently-loaded week — honest confirm showing the count.
+
+**ROUND-1 DECISION (SYNC-003 + SYNC-005): DO NOT drop stashed weeks.** Codex proved dropping a
+stash is not safely "clutter" in two ways: (SYNC-003) a published-then-unpublished day keeps its
+issuance history in `rt`/`cr` while `a/ok/o/cv/dr` read empty, so an "empty" predicate would delete
+publication history; (SYNC-005) an authored/seed week that was deliberately EMPTIED holds that fact
+only as an empty stash override — dropping it makes `loadWeek` fall back to `weekBundle()` and
+RESURRECT the removed schedule. Both trace to the one feature. Per the owner's guardrail-over-cascade
+rule, clear-old-data clears **pucks + day notes only** and leaves saved weeks untouched. Scope call
+flagged to the owner. (A safe narrow week-drop — non-authored week AND empty across ALL schedFields
+keys incl rt/cr — is a possible later follow-up, not this batch.)
 
 ### Changes to `clearHistoryData`
-1. **Remove the `doomed` INPUTS deletion entirely.** No input is ever cleared by this button — which
-   also means balances (derived from inputs) are never changed. This drops the `inputProtected(doomed)`
-   preflight (no inputs to protect) — but keep a protected-week guard on the stash drop.
-2. Keep pucks (`PLANPUCKS`) + day notes (`DAYRMK`) in-window deletion.
-3. **Narrow the stash drop to genuinely-empty weeks.** New `stashWeekEmpty(blob)` in `weekstash.ts`
-   (co-located with the blob shape): true iff the parsed blob has NO day carrying content in
-   waves/allhands/ground/dutywaves/sims.amt/sims.oft/notes AND no publish state (als `a`, dayOK `ok`,
-   orig `o`, cur `cv`, drafts `dr` all empty/absent). Conservative — any parse doubt → NOT empty (keep).
-   The existing test blob `{"d":[]}` (empty days, no publish) classifies empty → still droppable.
-4. **Never touch the currently-loaded week in ANY collection.** Exclude CURWEEK's 7 ISO dates from the
-   puck/note selection, and exclude CURWEEK's stash key from the week drop. (CURWEEK dd/mm/yyyy →
-   Mon..Sun ISO via the one week-math seam.)
-5. `dry`-run selection == execute selection (already true — same body; keep it).
-6. Honest confirm: the count is pucks + notes + empty-weeks only (no inputs). The Admin panel's
-   confirm copy updated to say leave/medical/duty inputs are NOT affected.
+1. **Remove the `doomed` INPUTS deletion entirely.** No input is ever cleared — so balances (derived
+   from inputs) are never changed. Drop the `inputProtected(doomed)` preflight and the `weekstashStore`
+   enlisted batch / `stashDrop` calls (no weeks dropped).
+2. Keep pucks (`PLANPUCKS`) + day notes (`DAYRMK`) in-window deletion. **SYNC-004:** pucks select on
+   the real `.date` field (the current `.iso` read is a pre-existing bug — real pucks carry `date`,
+   `state/plan.ts`); loaded-week exclusion by `.date` too.
+3. **Never touch the currently-loaded week.** Exclude CURWEEK's 7 ISO dates from the puck/note
+   selection (CURWEEK dd/mm/yyyy → Mon..Sun ISO via the one week-math seam).
+4. **SYNC-006:** `isoOk` validates a REAL calendar date (reject 2026-02-31, Feb-29 non-leap) before
+   any window math — no silent `nextIso` normalization of an impossible date.
+5. `dry`-run selection == execute selection (same body; keep it).
+6. Honest confirm: count is pucks + notes only. Admin confirm copy says leave/medical/duty inputs and
+   saved weeks are NOT affected.
 
-### Tests (rewrite `wipe.test.tsx` data-sweep cases)
-- Inputs are NEVER deleted (the January `divot` input is KEPT now); balances untouched.
-- Pucks + day notes in-window still cleared; crossing-edge kept whole.
-- A stashed empty week in-window dropped; a stashed week WITH content in-window KEPT.
-- The currently-loaded week's pucks/notes/stash never touched even when in-window.
-- Count reflects pucks+notes+empty-weeks only.
-- Member gate holds; malformed/missing dates clear nothing (fail closed).
+### Tests (rewrite `wipe.test.tsx` data-sweep cases; build fixtures via real `addPlanPuck`/`addPuckRow`)
+- Inputs are NEVER deleted (the January input is KEPT now); balances untouched.
+- Real pucks (built via `addPlanPuck`, carrying `.date`) + day notes in-window cleared; crossing-edge kept whole.
+- Stashed weeks are NEVER dropped by the sweep (a stash in-window is KEPT).
+- The currently-loaded week's pucks/notes never touched even when in-window.
+- Count reflects pucks+notes only.
+- Member gate holds; malformed/missing/impossible dates clear nothing (fail closed).
 
 ---
 

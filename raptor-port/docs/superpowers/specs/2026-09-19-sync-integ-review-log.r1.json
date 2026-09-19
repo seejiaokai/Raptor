@@ -1,0 +1,98 @@
+{
+  "status": "completed",
+  "mode": "review",
+  "provider": "codex",
+  "roles": {
+    "host": "claude",
+    "planner": "claude",
+    "reviewer": "codex",
+    "builder": "claude",
+    "inspector": "codex"
+  },
+  "repo": "C:\\Users\\User\\projects\\Raptor",
+  "plan": "C:\\Users\\User\\projects\\Raptor\\raptor-port\\docs\\superpowers\\specs\\2026-09-19-sync-integ-guardrails-build-plan.md",
+  "plan_sha256": "3c7b884d609c0f2e90641ac777346237fc5ec652576a117acb26f3c9541d50f2",
+  "requested_model": "gpt-6-astra",
+  "requested_effort": "high",
+  "base": null,
+  "snapshot": null,
+  "previous": null,
+  "started_at": 1789805357.9945092,
+  "artifacts": "C:\\Users\\User\\AppData\\Local\\Temp\\claude\\C--Users-User-projects-Raptor\\c844c682-e47d-4ed3-9c56-d229bdf33959\\scratchpad\\codex-review-r1b\\claudex-kvf5iam0",
+  "cli_version": "codex-cli 0.154.0",
+  "executable": [
+    "C:\\Program Files\\nodejs\\node.EXE",
+    "C:\\Users\\User\\AppData\\Roaming\\npm\\node_modules\\@openai\\codex\\bin\\codex.js"
+  ],
+  "exit_code": 0,
+  "session_id": "01a0b8b6-719e-7c93-9d40-a94f0e778217",
+  "response": {
+    "verdict": "REVISE",
+    "summary": "Six concrete defects need resolution: the reset preserves Leave War medical, the proposed save argument conflicts with its click handler, and cleanup can lose publication history, miss real pucks, resurrect seeded schedules, and accept invalid dates.",
+    "findings": [
+      {
+        "id": "SYNC-001",
+        "severity": "high",
+        "path": "raptor-port/src/storage/reset.ts:28",
+        "evidence": "RESET contains only inputs and weeks. Bumping SCHEMA_VERSION leaves raptor:leavewar/wars intact. main.tsx:57-59 consequently passes hadStoredWars=true, and leavewar/state/store.ts:850 loads the existing medical cells instead of seedGrid(). Moreover, engine/raptor.ts:43-51 still exports war-originated medical, and sync.ts:339-382 can recreate its Inputs rows after the reset.",
+        "fix": "Make the versioned reset durably clear the coordinated Leave War world before hydration, retaining the existing verify-before-stamp behavior. Explicitly remove medical from the outbound mint eligibility. Add returning-browser reset coverage, including a second boot and preservation of member-to-war medical display."
+      },
+      {
+        "id": "SYNC-002",
+        "severity": "medium",
+        "path": "raptor-port/src/ui/inputedit.tsx:1725",
+        "evidence": "The plan changes save to save(skipDoc=false), but the existing button uses onClick={save}. React passes the click event as the first argument, making skipDoc truthy and bypassing docGate. With the inferred boolean parameter, this binding also becomes a TypeScript type error. The Enter handler calls save() and would behave differently.",
+        "fix": "Change the button binding to onClick={() => save(false)} and reserve save(true) for the explicit No document action. Cover both clicking Add/Save and pressing Enter."
+      },
+      {
+        "id": "SYNC-003",
+        "severity": "high",
+        "path": "raptor-port/docs/superpowers/specs/2026-09-19-sync-integ-guardrails-build-plan.md:121",
+        "evidence": "The proposed empty-week predicate omits rt and cr. state/history.ts:24 persists these as retired issuance history and correction state. Publishing an otherwise empty day and then unpublishing its Original leaves a/ok/o/cv/dr empty, while publish.ts:674-724 retains the issued snapshot in retired and sets correcting. This week satisfies the proposed predicate; stashProtected() does not protect this current-format case. Cleanup would delete its publication history.",
+        "fix": "Include retired history and correction state in the nonempty decision. Audit the entire weekStashSnap/schedFields shape, including signatures, pending bookkeeping and saved decisions, and preserve unrecognized content. Add a publish→unpublish→clear scenario."
+      },
+      {
+        "id": "SYNC-004",
+        "severity": "medium",
+        "path": "raptor-port/src/ui/inputedit.tsx:1299",
+        "evidence": "The retained puck selector reads s.iso, but state/plan.ts:79 and :130 create both notes and person-puck rows with date. movePlanPuck also updates date. Real calendar pucks therefore never enter the cleanup selection or count. wipe.test.tsx:30 masks this with fabricated iso-shaped fixtures.",
+        "fix": "Use the canonical date field for window selection and loaded-week exclusion. Construct cleanup fixtures through addPlanPuck/addPuckRow, including moved pucks, instead of reproducing the incorrect shape."
+      },
+      {
+        "id": "SYNC-005",
+        "severity": "medium",
+        "path": "raptor-port/src/engine/weeks-data.ts:87",
+        "evidence": "An explicitly emptied stash for 13/07/2026 or 20/07/2026 can satisfy the proposed predicate and be dropped. When that week is next loaded, state/store.ts:523-527 treats the missing stash as permission to call weekBundle(), which restores the authored flying/programme/duty data. Thus clearing an empty historical week can resurrect deliberately removed schedule content.",
+        "fix": "Only drop a stash when its absence has equivalent empty semantics. Preserve empty overrides for authored weeks, or introduce an explicit cleared-week representation that loaders and cross-week readers honor. Verify navigation and reload after cleanup."
+      },
+      {
+        "id": "SYNC-006",
+        "severity": "medium",
+        "path": "raptor-port/src/ui/inputedit.tsx:1264",
+        "evidence": "The plan promises malformed dates clear nothing, but isoOk only checks the YYYY-MM-DD pattern. For example, clearHistoryData('before', '2026-02-31') accepts an impossible date and deletes eligible earlier notes instead of returning zero. nextIso normalizes impossible dates, and stash-key selection at :1306-1312 likewise accepts finite but impossible calendar components.",
+        "fix": "Validate actual calendar dates and canonical week keys before calculating any deletion window or candidate span. Reject invalid values without normalization, and cover invalid month/day combinations and non-leap-year February 29."
+      }
+    ],
+    "coverage": [
+      "Verified the plan SHA256 matches 3c7b884d609c0f2e90641ac777346237fc5ec652576a117acb26f3c9541d50f2; inspected checkout ff60bbcee319c96ef9bd8ed27ce3844e2f1540ba.",
+      "Compared the plan with the revised P2/P4 specification and OUTSTANDING.md.",
+      "Traced Leave War cell/range/batch writers, bid decisions, moves, ingestion, outbound minting, demo initialization, persistence and record replay. Medical aliases and half-day forms pass through isMedical; ingestion bypasses the proposed ordinary-writer gates.",
+      "Traced medical creation/edit paths, document normalization, document reference storage, calendar moves, reassignment and inline edits. Inspected picker props and confirmation callbacks.",
+      "Traced cleanup through plan-data writers, week snapshot serialization, quarantine, stash deletion, persistence, week loading, publication retirement and OIL reconciliation. Read relevant existing test fixtures."
+    ],
+    "limitations": [
+      "Static review of the proposed plan against current source; the proposed implementation was not available for inspection.",
+      "No files edited, tests or builds run, browser interactions performed, or work delegated. No test-pass claims are made.",
+      "Runtime confirmation behavior, durable reset/reload behavior and end-to-end balance invariance remain unverified."
+    ]
+  },
+  "usage": {
+    "input_tokens": 1254156,
+    "cached_input_tokens": 1117312,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 7467,
+    "reasoning_output_tokens": 2132
+  },
+  "observed_models": [],
+  "elapsed_seconds": 289.15
+}
