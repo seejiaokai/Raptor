@@ -12,33 +12,40 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { initStore, setSession, notify } from '../state/store'
 import { INPUTS } from '../engine/inputs'
-import { PLANPUCKS, DAYRMK } from '../state/plan'
+import { PLANPUCKS, DAYRMK, addPlanPuck } from '../state/plan'
 import { stashPut, stashHas, stashClear } from '../engine/weekstash'
 import { ELOG, elogClear } from '../engine/editlog'
 import { undo } from '../state/history'
 import { clearHistoryBefore, clearHistoryData, clearEditHistory } from './inputedit'
 
+/* CLUTTER-ONLY (owner, 13 Sep 26 — [SYNC-INTEG] P4). "Clear old data" removes
+   only past calendar pucks and day titles. It NEVER deletes a leave/medical/duty
+   input (so a balance never moves), NEVER drops a stashed week, and NEVER touches
+   the currently-loaded week. The loaded week after initStore() is 13/07/2026
+   (Jul 13–19), so a puck/title on those days is excluded even when the window
+   covers it. Pucks are built through addPlanPuck so they carry the real `date`
+   field (SYNC-004: the old sweep read a `.iso` field real pucks never have). */
 const seed = () => {
   INPUTS.length = 0
   INPUTS.push(
-    { person: 'divot', type: 'LL', date: 'Jan 5', yr: 2026, remarks: '' },                      // wholly before
-    { person: 'krait', type: 'LL', date: 'Feb 27', endDate: 'Mar 3', yr: 2026, remarks: '' },   // crosses the cutoff — kept
-    { person: 'ranger', type: 'MA', date: 'Jul 14', yr: 2026, remarks: '' },                    // after — kept
-    { person: 'outlaw', type: 'LL', date: 'garbled', yr: 2026, remarks: '' },                   // unreadable — kept
+    { person: 'divot', type: 'LL', date: 'Jan 5', yr: 2026, remarks: '' },                      // past — MUST be kept (no input is ever cleared)
+    { person: 'krait', type: 'LL', date: 'Feb 27', endDate: 'Mar 3', yr: 2026, remarks: '' },
+    { person: 'ranger', type: 'MA', date: 'Jul 14', yr: 2026, remarks: '' },
+    { person: 'outlaw', type: 'LL', date: 'garbled', yr: 2026, remarks: '' },
   )
   PLANPUCKS.length = 0
-  PLANPUCKS.push({ id: 'pp_a', iso: '2026-01-10', text: 'old note' }, { id: 'pp_b', iso: '2026-07-15', text: 'new note' })
+  addPlanPuck('2026-01-10', 'old note')       // past clutter — cleared
+  addPlanPuck('2026-07-15', 'loaded-week note') // on the loaded week (Jul 13–19) — never touched
+  addPlanPuck('2026-08-20', 'future note')    // after — kept
   for (const k of Object.keys(DAYRMK)) delete DAYRMK[k]
-  DAYRMK['2026-01-11'] = 'old title'
-  DAYRMK['2026-07-16'] = 'new title'
+  DAYRMK['2026-01-11'] = 'old title'          // past clutter — cleared
+  DAYRMK['2026-07-16'] = 'loaded-week title'  // on the loaded week — never touched
+  DAYRMK['2026-08-21'] = 'future title'       // after — kept
   stashClear()
-  /* a REALISTIC stash blob carries a `d` days array (weekStashSnap always
-     serialises DAYS) — a bare '{}' now classifies as a damaged/unreadable week
-     (P2-QREV-06) and would be quarantined, which is not what these week-drop
-     pins are exercising. An empty-days snapshot is a normal, droppable week. */
-  stashPut('05/01/2026', '{"d":[]}')   // week ends Jan 11 — before the cutoff
-  stashPut('02/03/2026', '{"d":[]}')   // week of the cutoff (Mar 1) — kept whole
+  stashPut('05/01/2026', '{"d":[]}')   // a past stashed week — NEVER dropped by the clutter sweep
 }
+
+const puckAt = (iso: string) => PLANPUCKS.some((s: any) => s.date === iso)
 
 beforeEach(() => {
   initStore()
@@ -47,93 +54,94 @@ beforeEach(() => {
   notify()
 })
 
-describe('clear history before a date', () => {
+describe('clear old clutter before a date', () => {
   it('a member cannot clear anything, whatever the page shows', () => {
     setSession({ user: 'user', role: 'main' })
     expect(clearHistoryBefore('2026-03-01')).toBe(0)
-    expect(INPUTS.length).toBe(4)
+    expect(PLANPUCKS.length).toBe(3)
   })
 
-  it('a dry run counts without deleting', () => {
+  it('a dry run counts only pucks + titles — never inputs or weeks', () => {
     const n = clearHistoryBefore('2026-03-01', true)
-    expect(n).toBe(4) // 1 input + 1 puck + 1 title + 1 stashed week
+    expect(n).toBe(2) // the Jan puck + the Jan title; NOT the input, NOT the week
     expect(INPUTS.length).toBe(4)
-    expect(PLANPUCKS.length).toBe(2)
+    expect(PLANPUCKS.length).toBe(3)
     expect(stashHas('05/01/2026')).toBe(true)
   })
 
-  it('the sweep takes only what is wholly past, and fails closed on bad dates', () => {
-    expect(clearHistoryBefore('2026-03-01')).toBe(4)
-    // gone: the January input, puck, title, and the January week's memory
-    expect(INPUTS.some((r: any) => r.person === 'divot')).toBe(false)
-    expect(PLANPUCKS.some((s: any) => s.id === 'pp_a')).toBe(false)
+  it('clears past pucks and titles; never an input, a balance, or a stashed week', () => {
+    expect(clearHistoryBefore('2026-03-01')).toBe(2)
+    // gone: the January puck and title (SYNC-004: real .date pucks ARE selected)
+    expect(puckAt('2026-01-10')).toBe(false)
     expect(DAYRMK['2026-01-11']).toBeUndefined()
-    expect(stashHas('05/01/2026')).toBe(false)
-    // kept: the span crossing the cutoff, the future rows, the unreadable date,
-    // and the cutoff's own week
-    expect(INPUTS.some((r: any) => r.person === 'krait')).toBe(true)
-    expect(INPUTS.some((r: any) => r.person === 'ranger')).toBe(true)
-    expect(INPUTS.some((r: any) => r.person === 'outlaw')).toBe(true)
-    expect(PLANPUCKS.some((s: any) => s.id === 'pp_b')).toBe(true)
-    expect(DAYRMK['2026-07-16']).toBe('new title')
-    expect(stashHas('02/03/2026')).toBe(true)
-  })
-
-  it('a malformed or missing date clears nothing', () => {
-    expect(clearHistoryBefore('')).toBe(0)
-    expect(clearHistoryBefore('01/03/2026')).toBe(0)
+    // KEPT: every input (no leave/medical/duty is ever cleared → no balance moves)
     expect(INPUTS.length).toBe(4)
+    expect(INPUTS.some((r: any) => r.person === 'divot')).toBe(true)
+    // KEPT: the stashed past week is never dropped
+    expect(stashHas('05/01/2026')).toBe(true)
+    // KEPT: the future puck/title
+    expect(puckAt('2026-08-20')).toBe(true)
+    expect(DAYRMK['2026-08-21']).toBe('future title')
   })
 
-  it('one Undo brings the inputs, pucks and titles back', () => {
+  it('a malformed OR impossible date clears nothing (fails closed)', () => {
+    expect(clearHistoryBefore('')).toBe(0)
+    expect(clearHistoryBefore('01/03/2026')).toBe(0)   // wrong format
+    expect(clearHistoryBefore('2026-02-31')).toBe(0)   // SYNC-006: impossible day
+    expect(clearHistoryBefore('2026-13-01')).toBe(0)   // impossible month
+    expect(clearHistoryBefore('2025-02-29')).toBe(0)   // 29 Feb, non-leap
+    expect(PLANPUCKS.length).toBe(3)
+  })
+
+  it('one Undo brings the pucks and titles back', () => {
     clearHistoryBefore('2026-03-01')
-    expect(INPUTS.some((r: any) => r.person === 'divot')).toBe(false)
+    expect(puckAt('2026-01-10')).toBe(false)
     undo()
-    expect(INPUTS.some((r: any) => r.person === 'divot')).toBe(true)
-    expect(PLANPUCKS.some((s: any) => s.id === 'pp_a')).toBe(true)
+    expect(puckAt('2026-01-10')).toBe(true)
     expect(DAYRMK['2026-01-11']).toBe('old title')
   })
 })
 
-describe('clear data on one date or in a range', () => {
-  it('a specific date takes only what sits wholly on that date', () => {
-    // divot is Jan 5; the Jan 5 stashed WEEK spans Jan 5–11, so it stays
-    expect(clearHistoryData('on', '2026-01-05')).toBe(1)
-    expect(INPUTS.some((r: any) => r.person === 'divot')).toBe(false)
-    expect(PLANPUCKS.length).toBe(2)
+describe('clear old clutter on one date or in a range', () => {
+  it('a specific date takes only the puck/title wholly on that date, never the input', () => {
+    // The Jan 10 puck is on the 10th; the Jan 5 input stays (inputs are never cleared)
+    expect(clearHistoryData('on', '2026-01-10')).toBe(1)
+    expect(puckAt('2026-01-10')).toBe(false)
+    expect(INPUTS.length).toBe(4)
     expect(stashHas('05/01/2026')).toBe(true)
   })
 
-  it('a range takes what is wholly inside, either way round', () => {
-    // Jan 1–15 holds: divot (Jan 5), pp_a (Jan 10), the Jan 11 title, and
-    // the whole Jan 5–11 stashed week
-    expect(clearHistoryData('range', '2026-01-15', '2026-01-01', true)).toBe(4)   // reversed dates swap
-    expect(clearHistoryData('range', '2026-01-01', '2026-01-15')).toBe(4)
-    expect(INPUTS.some((r: any) => r.person === 'divot')).toBe(false)
-    expect(PLANPUCKS.some((s: any) => s.id === 'pp_a')).toBe(false)
+  it('a range clears its pucks + titles either way round, keeping inputs and weeks', () => {
+    expect(clearHistoryData('range', '2026-01-15', '2026-01-01', true)).toBe(2)   // reversed dates swap
+    expect(clearHistoryData('range', '2026-01-01', '2026-01-15')).toBe(2)
+    expect(puckAt('2026-01-10')).toBe(false)
     expect(DAYRMK['2026-01-11']).toBeUndefined()
-    expect(stashHas('05/01/2026')).toBe(false)
-    expect(stashHas('02/03/2026')).toBe(true)
+    expect(INPUTS.length).toBe(4)                 // inputs untouched
+    expect(stashHas('05/01/2026')).toBe(true)     // stash untouched
   })
 
-  it('a span crossing the range edge is kept whole', () => {
-    // krait runs Feb 27 – Mar 3, across the range's lower edge — kept; the
-    // one thing wholly inside March is the stashed week of Mar 2–8, which goes
-    expect(clearHistoryData('range', '2026-03-01', '2026-03-31')).toBe(1)
-    expect(INPUTS.some((r: any) => r.person === 'krait')).toBe(true)
-    expect(stashHas('02/03/2026')).toBe(false)
+  it('NEVER touches the currently-loaded week, even when the window covers it', () => {
+    // A wide range spanning the loaded week (Jul 13–19): its puck/title stay.
+    const n = clearHistoryData('range', '2026-01-01', '2026-12-31')
+    expect(puckAt('2026-07-15')).toBe(true)       // loaded-week puck kept
+    expect(DAYRMK['2026-07-16']).toBe('loaded-week title')
+    // …while past + future clutter outside the loaded week is cleared.
+    expect(puckAt('2026-01-10')).toBe(false)
+    expect(puckAt('2026-08-20')).toBe(false)
+    expect(n).toBe(4)                             // Jan puck+title + Aug puck+title
+    expect(INPUTS.length).toBe(4)                 // still no input touched
   })
 
   it('a range missing its second date clears nothing', () => {
     expect(clearHistoryData('range', '2026-01-01', '')).toBe(0)
-    expect(INPUTS.length).toBe(4)
+    expect(PLANPUCKS.length).toBe(3)
   })
 
   it('the member gate holds for every mode', () => {
     setSession({ user: 'user', role: 'main' })
-    expect(clearHistoryData('on', '2026-01-05')).toBe(0)
+    expect(clearHistoryData('on', '2026-01-10')).toBe(0)
     expect(clearHistoryData('range', '2026-01-01', '2026-12-31')).toBe(0)
-    expect(INPUTS.length).toBe(4)
+    expect(PLANPUCKS.length).toBe(3)
   })
 })
 
@@ -180,6 +188,6 @@ describe('clear the edit history', () => {
     setSession({ user: 'a', role: 'admin' })
     clearEditHistory('before', '2026-12-31')
     expect(INPUTS.length).toBe(4)                   // the data sweep's world, untouched
-    expect(PLANPUCKS.length).toBe(2)
+    expect(PLANPUCKS.length).toBe(3)
   })
 })

@@ -1,12 +1,17 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import type { Person } from '../engine'
-import { addGroup, advanceStage, getState, initStore, setBidState, setCell, setGroupColor, setPersLabel, setRole } from '../state/store'
+import { addGroup, advanceStage, getState, ingestFromRaptor, initStore, setBidState, setCell, setGroupColor, setPersLabel, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
 beforeEach(() => {
   initStore(memoryBackend())
+  // SPLICE's medical is MEMBER-FILED now (owner, 13 Sep 26): the pristine seed
+  // has none, so ingest a member-filed ATT C / OML (the way a member's Inputs
+  // filing syncs onto the war) to exercise how the grid renders a medical cell.
+  ingestFromRaptor('splice', '2026-01-05', 'ATTC')
+  ingestFromRaptor('splice', '2026-01-06', 'OML')
 })
 
 describe('Matrix', () => {

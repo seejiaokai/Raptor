@@ -30,9 +30,10 @@ import {
   fmt, fmtDay, fmtDMY, unfmt, hasHalf, spanOf, spanFields, SpanPicker, typeOptions,
   draftOf, commitInputEdit, removeInput, SansPicker, sansRefusal, sansOverlapRefusal, sansFlags,
   medOverlapRefusal, upchitRefusal, downOverUpchitRefusal, applyMedPlan, normalizeInputDraft,
-  medKeptSegments, mintMedSegments, ordISO, DocField, oilGate, oilAnswered,
+  medKeptSegments, mintMedSegments, ordISO, DocField, oilGate, oilAnswered, docGate,
   rosterOptions as people, inputTone, medPlanProtected, medSegmentsProtected,
 } from './inputedit'
+import { DocConfirm } from './DocConfirm'
 import { docFields, docHas, rowDocIds } from '../state/docs'
 import { useVersion } from './useStore'
 import { exportCSV } from './export'
@@ -262,6 +263,9 @@ export function InputsPage() {
   /* the OIL ask (owner, 28 Aug 26) — the oilGate payload plus the commit to
      run on Save; one state, one render site, both editors */
   const [oilConf, setOilConf] = useState<any>(null)
+  /* the medical-document ask (owner, [SYNC-INTEG]) — {who, typeLabel, resume};
+     resume() re-runs the pending add/edit with the document treated as resolved */
+  const [docConf, setDocConf] = useState<any>(null)
   const [pinned, setPinned] = useState<any[]>([])
   const [flash, setFlash] = useState<any[]>([])
   const timers = useRef<any[]>([])
@@ -334,7 +338,7 @@ export function InputsPage() {
      already worked exactly this way (InputsCal.tsx openAdd seeds ME and the
      dialog hides Person for a member); this is the page catching up. */
   const filedFor = () => canEditSched() ? person : ME
-  const add = () => {
+  const add = (skipDoc = false) => {
     /* the calendar asks for a pick and the readout says so — accepting the
        click anyway and quietly dating it Monday was a trap */
     if (!start) return HOOKS.toast('Pick a start date on the calendar first', 'warn')
@@ -361,10 +365,17 @@ export function InputsPage() {
       const dup = sansOverlapRefusal(filedFor(), date, endDate, null)
       if (dup) return HOOKS.toast(dup, 'warn')
     }
-    /* a medical input does not go in without its document (owner, 27 Aug 26)
-       — needsDoc is the same body that draws the upload button below */
-    if (needsDoc(type) && !docIds.length)
-      return HOOKS.toast('Attach the medical document first — use the upload button', 'warn')
+    /* a medical input with no certificate PROMPTS now (owner, [SYNC-INTEG]) —
+       [Upload] or [No document] — instead of a hard refusal; "No document" files
+       it with none. docGate is the one shared decision every editor runs. */
+    if (!skipDoc && docGate({ type, docIds }, null) === 'ask') {
+      setDocConf({
+        who: PEOPLE[filedFor()] ? PEOPLE[filedFor()].cs : filedFor(),
+        typeLabel: type,
+        resume: () => add(true),
+      })
+      return
+    }
     /* the medical refusals (owner, 27 Aug 26) — one shared check per rule so
        this form, the row editor and the board dialog can never disagree */
     if (isDownchit(type)) {
@@ -545,8 +556,21 @@ export function InputsPage() {
      it register?"). The board's own input dialog (inputedit.tsx) already
      toasts these two same words for the identical commit/removeInput calls;
      this page's own inline ✓/✕ ran the same functions silently. */
-  const saveEdit = () => {
+  const saveEdit = (skipDoc = false) => {
     if (!editRow || !draft) return
+    /* THE DOCUMENT ASK runs FIRST (owner, [SYNC-INTEG]): editing an input INTO
+       the medical group with no certificate opens [Upload] / [No document] before
+       the upchit/downchit/OIL sheets; "No document" resumes through them. An
+       already-medical row never prompts — docGate returns 'ok' for it (the
+       replace-don't-strip guard still refuses stripping its last file). */
+    if (!skipDoc && docGate(draft, editRow) === 'ask') {
+      setDocConf({
+        who: PEOPLE[draft.person] ? PEOPLE[draft.person].cs : String(draft.person || ''),
+        typeLabel: draft.type,
+        resume: () => saveEdit(true),
+      })
+      return
+    }
     /* an upchit EDIT re-runs its trims against the (possibly moved) date, so
        it goes through the same save-time summary a new upchit does (owner,
        27 Aug 26 — nothing silent); the sheet's Save then commits the edit and
@@ -827,7 +851,7 @@ export function InputsPage() {
           {needsDoc(type) && <div className="ifield"><label>Document</label>
             <DocField ids={docIds} onIds={setDocIds} /></div>}
           <div className="ifield"><label>Remarks</label><input id="inRemarks" placeholder={isSansAvail(type) ? '' : 'e.g. medical appt'} maxLength={200} value={remarks} onChange={e => setRemarks(e.target.value)} /></div>
-          <div className="ifield"><label>&nbsp;</label><button className="abtn primary" id="inAdd" onClick={add}>Add input</button></div>
+          <div className="ifield"><label>&nbsp;</label><button className="abtn primary" id="inAdd" onClick={() => add(false)}>Add input</button></div>
         </div>
       </div>
       <div className="infilter">
@@ -1010,7 +1034,7 @@ export function InputsPage() {
                     onChange={e => setDraft({ ...draft, remarks: e.target.value })} /></td>
                   <td className="mono ined-sec" style={{ color: 'var(--ink-3)' }}>{fmtDMY(r.mod)}</td>
                   <td className="inact">
-                    <span className="rok" data-save={inx} title="Save" onClick={saveEdit}>✓</span>
+                    <span className="rok" data-save={inx} title="Save" onClick={() => saveEdit(false)}>✓</span>
                     <span className="rmx" data-cancel={inx} title="Cancel" onClick={() => { setEditRow(null); setDraft(null) }}>✕</span>
                   </td>
                 </tr>
@@ -1115,6 +1139,11 @@ export function InputsPage() {
         plan={oilConf.plan} prev={oilConf.prev}
         onCancel={() => setOilConf(null)}
         onSave={dec => { const c = oilConf.commit; setOilConf(null); c(dec) }} />}
+      {/* the medical-document ask (owner, [SYNC-INTEG]): "No document" resumes
+          the pending add/edit with the certificate treated as resolved */}
+      {docConf && <DocConfirm who={docConf.who} typeLabel={docConf.typeLabel}
+        onUpload={() => setDocConf(null)}
+        onNoDoc={() => { const r = docConf.resume; setDocConf(null); r() }} />}
     </>
   )
 }

@@ -2544,3 +2544,29 @@ Checkpoint (tasks #59, #60 complete): no further observations.
 **Suggested improvement:** A verification/gates skill should include a "flaky vs real" triage step before reporting a gate red: re-run the exact failing files in ISOLATION; if they pass and lie outside the diff's surface, classify as flake and report the gate as green-modulo-known-flake rather than blocking. Prefer the CI's own project split when reproducing.
 
 **Principle:** A non-deterministic failure set is itself evidence. Before debugging a "regression," check whether the failures move between runs, survive isolation, and intersect the change surface — three cheap checks that separate environ/parallelism flake from a real defect and prevent chasing ghosts.
+
+### Observation 168: claudex-loop runner `--host` names the coordinator, not the reviewer
+
+**Status:** OPEN
+**Date:** 2026-09-19
+**Session context:** Running a Codex pre-build plan red-team via claudex-loop mode=review from Claude Code.
+**Skill:** claudex-loop (and codex-review compatibility entry)
+**Type:** open-source
+**Phase/Area:** references/runtime.md — the review command / `--host` semantics.
+
+**Issue:** Intending "Codex reviews my plan", the natural first call was `runner.py review --host codex …`
+(mirroring the skill args `reviewer=codex`). That launched the CLAUDE CLI (host's own provider as the
+turn's actor) and failed fast — because `--host` names the COORDINATING provider and the runner launches
+the OTHER provider as reviewer. The correct call for a Codex review from Claude Code is `--host claude`.
+The runtime table encodes this, but the `review --host codex` example line sits right next to
+`review --host claude` with no note that the two are "reviewed BY the other provider", so it reads like
+"host = who reviews". One wasted round-trip.
+
+**Suggested improvement:** In `references/runtime.md` under "Roles and commands", add a one-line gloss to
+the review examples: `--host` is the coordinator; the runner launches the OTHER provider as reviewer
+(so from Claude Code use `--host claude` to get a Codex review). Optionally have the runner emit the
+resolved `{host, reviewer}` pair to stderr before launch so an inverted call is obvious immediately.
+
+**Principle:** When a CLI flag names a ROLE in a two-party protocol, the docs must state which party the
+flag names and which the tool infers — an example pair that only varies the flag value invites the reader
+to bind the flag to the wrong party. Echo the resolved role mapping before acting.

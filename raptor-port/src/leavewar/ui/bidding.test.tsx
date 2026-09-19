@@ -227,41 +227,20 @@ describe('bidding over a range', () => {
   })
 })
 
-describe('marking medical on the grid (owner, 17 Aug 26)', () => {
-  it('offers the four medical markers to an admin, in the owner’s order, whole day by default', () => {
+describe('medical is member-filed only — never marked on the grid (owner, 13 Sep 26)', () => {
+  // Reverses the 17 Aug 26 "management marks medical on the grid" rule. The war
+  // now DISPLAYS medical that syncs in from a member's Inputs filing but offers
+  // no way to create it — for a member OR an admin. The picker has no Medical
+  // row at all, and the store refuses a medical write behind it.
+  it('offers no medical markers to an admin — the row is gone for every role', () => {
     setRole('admin')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(CELL))
-    const labels = ['ATTB', 'ATTC', 'OML', 'HL'].map(t => screen.getByTestId(`bid-${t}`).textContent)
-    // The chips read the owner's own shorthand — B and C, not ATTB/ATTC.
-    expect(labels).toEqual(['B', 'C', 'OML', 'HL'])
-    fireEvent.click(screen.getByTestId('bid-ATTC'))
-    expect(getState().grid.dusk['2026-02-11']).toBe('ATTC')
-    // Assigned, not bid: no bid state rides a medical cell.
-    expect(getState().states.dusk?.['2026-02-11']).toBeUndefined()
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
+    for (const t of ['ATTB', 'ATTC', 'OML', 'HL']) expect(screen.queryByTestId(`bid-${t}`)).toBeNull()
   })
 
-  it('marks a half day with the portion controls, asterisk on the right side', () => {
-    setRole('admin')
-    render(<Matrix />)
-    fireEvent.click(screen.getByTestId(CELL))
-    fireEvent.click(screen.getByTestId('portion-pm'))
-    fireEvent.click(screen.getByTestId('bid-OML'))
-    expect(getState().grid.dusk['2026-02-11']).toBe('OML*')
-    // The grid cell prints the stored notation (OML has no short form).
-    expect(screen.getByTestId(CELL).textContent).toBe('OML*')
-  })
-
-  it('prints the ATT markers as bare B / C on the grid', () => {
-    setRole('admin')
-    render(<Matrix />)
-    fireEvent.click(screen.getByTestId(CELL))
-    fireEvent.click(screen.getByTestId('bid-ATTB'))
-    expect(getState().grid.dusk['2026-02-11']).toBe('ATTB')
-    expect(screen.getByTestId(CELL).textContent).toBe('B')
-  })
-
-  it('never shows the medical row to a member — they file on Raptor’s Inputs page', () => {
+  it('offers no medical markers to a member either', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(CELL))
     expect(screen.getByTestId('bid-picker')).toBeTruthy()

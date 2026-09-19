@@ -55,6 +55,25 @@ describe('resetPreSchema — ARCH-STACK 1A storage reset (Astra SID-05/07)', () 
     expect(be.journal.filter(e => e.op !== 'loadAll').length).toBe(writes)   // no backend writes at all
   })
 
+  it('v3: a returning browser\'s Leave War world is cleared so the medical-free demo re-seeds', async () => {
+    // Owner, 13 Sep 26 — medical is member-filed only, so the demo's old
+    // war-CREATED medical must not persist. Clearing the leavewar collection
+    // before hydration makes main.tsx read hadStoredWars=false → the demo
+    // re-seeds clean, with no back-compat code (dev-phase reset).
+    const be = new MemoryBackend()
+    be.seed({
+      leavewar: { wars: JSON.stringify([{ period: { id: 'y2026' }, grid: { splice: { '2026-01-05': 'ATTC' } } }]) },
+      people: { all: JSON.stringify({ dj: { cs: 'DJ' } }) },
+      settings: { schema: JSON.stringify(2) },     // a pre-v3 (1C-era) store
+    })
+    const snap = await be.loadAll()
+    await resetPreSchema(be, snap)
+    expect(snap.leavewar).toEqual({})
+    expect(be.peek('leavewar', 'wars')).toBeNull()     // durably gone → hadStoredWars=false at boot
+    expect(be.peek('people', 'all')).not.toBeNull()    // people kept (projected onto the fresh demo)
+    expect(JSON.parse(be.peek('settings', 'schema')!)).toBe(SCHEMA_VERSION)
+  })
+
   it('stamps a fresh empty store (nothing to reset)', async () => {
     const be = new MemoryBackend()
     const snap = await be.loadAll()

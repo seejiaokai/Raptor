@@ -1,0 +1,215 @@
+# [SYNC-INTEG] medical guardrail batch — build plan (19 Sep 26)
+
+Prerequisite before the one-Absence rebuild. Owner-scoped to THREE items (P6 Quals-✕
+confirm and P7 doc fix are NOT in this batch). Source of decisions: OUTSTANDING [SYNC-INTEG]
+and `2026-09-13-sync-delete-undo-integrity-spec.md` (revised P2/P4). Build on Opus 4.8 high,
+test-first, own gated PR, hold for "merge live".
+
+This doc is the plan handed to a cross-provider red-team (Codex) BEFORE building, because the
+batch changes PERMISSIONS (who may write medical) and DELETION (what "clear old data" removes).
+
+---
+
+## Item 1 — Medical is member-filed ONLY (P2)
+
+**Decision (owner, 13 Sep 26, revising 17 Aug 26):** the Leave War may DISPLAY member-filed
+medical (synced in from the member's own Inputs filing, which carries the certificate) but may
+no longer CREATE it. Block war-side medical creation for ALL roles incl admin; hide the war's
+medical pickers. Existing war-created medical is demo data → reset, no migration/back-compat.
+
+### Write-path backstop (the load-bearing half)
+`src/leavewar/state/store.ts` — three writers currently gate medical by `role !== 'admin'`:
+- `setCell` (~1983): `if (isMedical(clean) && state.role !== 'admin') return`
+  → `if (isMedical(clean)) return` (block ALL roles).
+- `setCellRange` (~2044): `medBlocked = isMedical(...) && state.role !== 'admin'`
+  → `medBlocked = isMedical(...)`.
+- `setCells` (~2096): same → `medBlocked = isMedical(...)`.
+
+`shiftBid`/`moveCells` never carry medical (not biddable / admin-only; store comment line ~3304).
+`ingestFromRaptorImpl` (~2995) writes member-filed medical DIRECTLY via `updateWar`, NOT through
+`setCell`, so the backstop change does NOT affect member-filed medical display. Confirmed by read.
+
+### Hide the pickers (the affordance half)
+Both Matrix call sites pass `medical={role === 'admin'}`:
+- `Matrix.tsx` ~3770 (SelectSheet, drag batch) and ~4007 (BidPicker, single cell).
+
+**Decision:** REMOVE the `medical` prop entirely from `BidPicker`, `SelectSheet`, and both Matrix
+call sites, and delete the medical-render blocks (BidPicker ~233-248, SelectSheet ~145-152) and the
+now-unused `MEDICAL_TYPES` imports. Rationale: a permanently-`false` prop with a live medical-render
+branch is exactly the latent re-enablement seam the robustness doctrine warns about. The store gate
+is the backstop; removing the UI is the honest, seam-free expression of "medical is never created on
+the war." (Alternative — pass `medical={false}` — leaves dead code; rejected.)
+
+### Reset the demo data — REVISED (SYNC-001)
+`src/leavewar/engine/seed.ts` `seedGrid()`: SPLICE carries war-originated medical
+`'2026-01-05': 'ATTC', '2026-01-06': 'OML'` (no `source:'raptor'` state → war-created). REMOVE those
+two cells (keep SPLICE's `'2026-01-08': 'LL'`).
+**Round-1 correction:** the schema reset clears only `['inputs','weeks']` and deliberately KEEPS
+`leavewar`, so a version bump alone would NOT clear the persisted war-medical (`main.tsx:57`
+`hadStoredWars = wb.has('leavewar','wars')` stays true → the old cells reload). Fix: add `'leavewar'`
+to the `RESET` list in `storage/reset.ts` AND bump `SCHEMA_VERSION` 2→3, so a returning browser's
+whole LW world is durably cleared BEFORE hydration → `hadStoredWars=false` → `installDemoWorld`
+re-seeds clean (dev-phase reset, no migration). Document the new leavewar-reset reason in reset.ts.
+**Also (SYNC-001):** `leavewar/engine/raptor.ts outboundToRaptor` currently lets a MEDICAL cell cross
+war→Raptor "as soon as marked". Member-filed medical is already `source:'raptor'` (skipped by the
+ownership guard), so the medical branch only ever mattered for war-ORIGINATED medical, which no
+longer exists — and a lingering pre-reset war-medical could still mint a Raptor input through it.
+Remove the `isMedical` exception so medical never crosses war→Raptor (treat like any non-biddable
+code). Update `raptor.test.ts` (the "sends a medical marker" test asserts the retired behaviour).
+
+### Tests — reset (SYNC-001)
+- Add a returning-browser test: a stored LW world with war-medical, second boot after the version
+  bump → the war-medical is gone and the demo re-seeds; member-filed medical (via `ingestFromRaptor`)
+  still displays on the war.
+
+### Tests
+- `store.test.ts`: invert the two "refuses a medical code from a member" tests → refuses from admin too.
+- `bidding.test.tsx` / `selectsheet.test.tsx`: assert medical markers never render (any role).
+- `matrix.test.tsx` grid-display of member-filed medical stays green (display unaffected).
+- A test: `ingestFromRaptor` still lands member-filed medical on the war (display preserved).
+- Update `counters`/`demomed` tests that assert SPLICE's seed ATTC/OML counts.
+
+---
+
+## Item 2 — Relaxed mandatory-document prompt
+
+**Today:** filing a medical input with no certificate is HARD-refused in two places
+(`inputedit.tsx normalizeInputDraft` ~567-570 and `InputsPage.tsx add()` ~366).
+**Want:** on saving a medical input with no document, PROMPT once — [Upload] or [No document];
+"No document" files it with none. Keep the replace-don't-strip guard on an entry that already has a
+document. Five certificate types (needsDoc = isDownchit || isUpchit): ATT C, ATT B, HL, OML, Upchit.
+
+### Shared gate mirroring the existing `oilGate`/`OilConfirm` doctrine
+New `docGate(draft, except): 'ok' | 'refused' | 'ask'`:
+- `'ok'` — not a needsDoc type; OR draft already has a doc; OR `except` was medical with NO doc
+  (pre-feature bare legacy row — don't nag, preserves current free-edit behaviour).
+- `'refused'` — `except` was medical and HAD ≥1 doc, draft now has none (replace-don't-strip). Toast
+  the existing "keep at least one document" message; caller aborts.
+- `'ask'` — NEW medical, or a row retyped INTO medical, with no doc. Caller opens `DocConfirm`.
+
+`normalizeInputDraft`: REMOVE the first hard-refuse (new-medical-no-doc, ~567-570); KEEP the
+replace-strip refuse (~576-578) so any direct caller still enforces it. The relaxation is safe only
+because every medical-CREATING surface is one of the three editors below, each of which runs docGate
+first. Verified non-creating callers of commitInputEdit: caldrag (date move, except present),
+reassignInput (Unavailable person swap), QualsPage (reads downchit only). Build-time check:
+`commitNewInput` callers.
+
+### `DocConfirm` sheet
+Small Sheet (mirror `OilConfirm.tsx` shape/scrim/Escape): title "No medical document attached",
+body "File this <type> without a certificate?", buttons **Upload** (dismiss, return to editor where
+the existing upload control sits) and **No document** (resume the save with the doc treated as
+resolved). No new confirm primitive — reuse the editors' existing sheet pattern.
+
+**SYNC-002 (save-arg vs click event):** `onClick={save}` passes React's event as arg1, making a
+`skipDoc` boolean truthy and bypassing docGate (also a TS error). Every binding must be explicit:
+`onClick={() => save(false)}` (button ~1725), and the Enter handler (~1691) → `save(false)`; same for
+InputsPage `add`/`saveEdit`. `save(true)`/`add(true)`/`saveEdit(true)` are reserved for the DocConfirm
+"No document" resume ONLY. Audit every call site.
+
+### Wire into the three commit paths (docGate BEFORE the type sheets / oilGate)
+- `inputedit.tsx` InputEditor `save(skipDoc=false)`: `const dg = skipDoc ? 'ok' : docGate(draft, except)`.
+  On `'refused'` → toast+return; on `'ask'` → `setDocConf({...})` and return; DocConfirm "No document"
+  → `save(true)` (resumes through the upchit-summary / downchit-clash / oilGate pipeline so a no-doc
+  downchit still gets its clash sheet). Threaded as an arg, no lingering state.
+- `InputsPage.tsx` `add()`: extract the post-doc body into a closure; docGate → ask opens DocConfirm
+  whose "No document" runs the closure; else proceed.
+- `InputsPage.tsx` edit commit (~623/637 region): same docGate insertion ahead of the type sheets.
+
+### Tests
+- docGate unit: ok/refused/ask across (new medical no-doc), (retyped into medical), (has doc),
+  (except had doc → refused), (except bare legacy → ok), (non-medical → ok).
+- New medical no-doc → "No document" files it with none (a row lands, docIds empty).
+- Replace-strip still hard-refused (unchanged).
+- Existing "attach the document first" hard-refuse tests → become the prompt path.
+
+---
+
+## Item 3 — "Clear old data" is CLUTTER-ONLY (P4) — REVISED after round-1 red-team
+
+**Today** `clearHistoryData` (`inputedit.tsx` ~1286) deletes past INPUTS (`doomed`), plan pucks,
+day notes, and stashed weeks whose whole span is in the window. **Want:** clear ONLY genuine
+clutter — never delete any leave/medical/duty input, never change balances, never touch the
+currently-loaded week — honest confirm showing the count.
+
+**ROUND-1 DECISION (SYNC-003 + SYNC-005): DO NOT drop stashed weeks.** Codex proved dropping a
+stash is not safely "clutter" in two ways: (SYNC-003) a published-then-unpublished day keeps its
+issuance history in `rt`/`cr` while `a/ok/o/cv/dr` read empty, so an "empty" predicate would delete
+publication history; (SYNC-005) an authored/seed week that was deliberately EMPTIED holds that fact
+only as an empty stash override — dropping it makes `loadWeek` fall back to `weekBundle()` and
+RESURRECT the removed schedule. Both trace to the one feature. Per the owner's guardrail-over-cascade
+rule, clear-old-data clears **pucks + day notes only** and leaves saved weeks untouched. Scope call
+flagged to the owner. (A safe narrow week-drop — non-authored week AND empty across ALL schedFields
+keys incl rt/cr — is a possible later follow-up, not this batch.)
+
+### Changes to `clearHistoryData`
+1. **Remove the `doomed` INPUTS deletion entirely.** No input is ever cleared — so balances (derived
+   from inputs) are never changed. Drop the `inputProtected(doomed)` preflight and the `weekstashStore`
+   enlisted batch / `stashDrop` calls (no weeks dropped).
+2. Keep pucks (`PLANPUCKS`) + day notes (`DAYRMK`) in-window deletion. **SYNC-004:** pucks select on
+   the real `.date` field (the current `.iso` read is a pre-existing bug — real pucks carry `date`,
+   `state/plan.ts`); loaded-week exclusion by `.date` too.
+3. **Never touch the currently-loaded week.** Exclude CURWEEK's 7 ISO dates from the puck/note
+   selection (CURWEEK dd/mm/yyyy → Mon..Sun ISO via the one week-math seam).
+4. **SYNC-006:** `isoOk` validates a REAL calendar date (reject 2026-02-31, Feb-29 non-leap) before
+   any window math — no silent `nextIso` normalization of an impossible date.
+5. `dry`-run selection == execute selection (same body; keep it).
+6. Honest confirm: count is pucks + notes only. Admin confirm copy says leave/medical/duty inputs and
+   saved weeks are NOT affected.
+
+### Tests (rewrite `wipe.test.tsx` data-sweep cases; build fixtures via real `addPlanPuck`/`addPuckRow`)
+- Inputs are NEVER deleted (the January input is KEPT now); balances untouched.
+- Real pucks (built via `addPlanPuck`, carrying `.date`) + day notes in-window cleared; crossing-edge kept whole.
+- Stashed weeks are NEVER dropped by the sweep (a stash in-window is KEPT).
+- The currently-loaded week's pucks/notes never touched even when in-window.
+- Count reflects pucks+notes only.
+- Member gate holds; malformed/missing/impossible dates clear nothing (fail closed).
+
+---
+
+## Process
+Test-first per item. Gates from `raptor-port/`: `npm test`, `npm run build`,
+`node reference/tfin.js` (728/0), `npm run test:e2e`, `npm run smoke:tracker`. Then cross-provider
+bug-check (Codex now while its window is open + Fable after). Preview link to owner. Hold for
+"merge live".
+
+## Red-team, please pressure-test
+1. **Permission holes** — any path that still writes medical on the war after the three store gates?
+   (drag batch `setCells`/`setCellRange`, `shiftBid`/`moveCells`, balance-bar, undo/redo replay,
+   ingest, OIL pass). Does `role==='member'` vs admin matter anywhere now?
+2. **Member-filed medical display** — does removing the pickers + gating the writers break the
+   member→war sync-in for medical? (should not; ingest is direct.)
+3. **docGate bypass** — any medical-creating caller that skips docGate and, with the relaxed
+   normalizeInputDraft, now silently files a bare medical? (commitNewInput, board dialogs, drag→Ground.)
+4. **Replace-don't-strip** — still enforced on every edit path after the relaxation?
+5. **Clear-data safety** — with inputs removed from the sweep, is there ANY residual path that still
+   deletes an input or moves a balance? Is the "genuinely-empty" predicate ever true for a week that
+   actually holds content (false-empty → data loss)? Loaded-week exclusion correct at week boundaries?
+6. **Demo reset** — does the SCHEMA_VERSION bump actually clear+re-seed the Leave War world, or is the
+   war-medical reset expressed wrong?
+
+---
+
+## Post-build cross-provider CODE inspection (19 Sep 26) — dispositions
+
+Both providers inspected the built diff (`aa485ff..HEAD`). Fable found NO permission or
+data-loss holes (it independently re-verified every write gate, the doc-prompt bindings,
+replace-don't-strip, clear-data safety, and the reset). Codex found 2 mediums on the seed. All fixed:
+
+- **Codex SYNC-IMPL-001 (deviation) + SYNC-IMPL-002 (year-shift bug) — FIXED.** Removed SPLICE's
+  ATT C / OML from the PRISTINE seed (plan-faithful; no war-marked medical in the seed). The live
+  demo shows a member-filed example via `DEMO_RAPTOR_INPUTS` instead, now with an explicit
+  `yr: 2026` (so navigation to another year can't re-resolve and shift the cell).
+- **Fable M1 (WOLF permanent "pending upchit" nag) — FIXED.** Added a closing Upchit (7 Jan 2026)
+  so the demo medical is a complete episode.
+- **Fable M2 (InputsPage prompt paths untested) — FIXED.** Added add + Upload/No-document cases in
+  `docconfirm.test.tsx` driving the real Inputs page.
+- **Fable L1 (contradictory seed/demo comments) — FIXED** by the seed-cell removal + comment rewrite.
+- **Fable L2 (stale doctrine text) — FIXED.** `sync.ts` header + `:442`, `store.ts` ingest comment,
+  and the `sync.test.ts` describe title now state medical is member-filed / crosses one way.
+- **Pristine manning ripple (removing the seed medical) — FIXED.** `undermanned` recomputed (SPLICE
+  present 5–6 Jan → those days no longer red); `counters`/`matrix` ingest a member-filed medical
+  fixture to exercise the MED TOT / chip rendering the war displays. `figselect` was a load flake.
+- **DEFERRED / owner's call (noted, not fixed):** Fable L3 (the v3 reset clears the WHOLE LW world
+  for a returning browser — documented; medical-doc IndexedDB blobs become orphans, harmless);
+  Fable L4 (clearing a date on the loaded week reports "No old clutter" — a wording papercut);
+  Fable L5 (the doc prompt fires before overlap/time refusals — harmless ordering).

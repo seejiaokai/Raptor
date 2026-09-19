@@ -8,9 +8,13 @@ import { Matrix } from './Matrix'
 beforeEach(() => { initStore(memoryBackend()) })
 
 // The seeded war's red days, in order: RAMP is the only SXO and is away on
-// 1 and 3 Jan and half of 10 Feb; the roster carries two IWSOs, so one away
-// leaves one on 5, 6, 8 and 15 Jan.
-const RED = ['2026-01-01', '2026-01-03', '2026-01-05', '2026-01-06', '2026-01-08', '2026-01-15', '2026-02-10']
+// 1 and 3 Jan and half of 10 Feb; the roster carries two IWSOs (SPLICE and
+// ROULETTE), so one away reds the IWSO rule — SPLICE on 8 Jan (LL) and
+// ROULETTE on 15 Jan (CCL). Since 13 Sep 26 the pristine seed carries no
+// war-marked medical, so SPLICE's old 5–6 Jan ATT C / OML are gone and those
+// two days are no longer red (both IWSOs present); member-filed medical is a
+// live-demo-only example now.
+const RED = ['2026-01-01', '2026-01-03', '2026-01-08', '2026-01-15', '2026-02-10']
 
 describe('the under-manned list', () => {
   it('is shut until the chip is clicked', () => {
@@ -38,9 +42,9 @@ describe('the under-manned list', () => {
     render(<StageBar />)
     fireEvent.click(screen.getByTestId('undermanned'))
     // A list of bare dates would make a scheduler open all seven to find out
-    // which is which. 1 Jan is the SXO gone; 5 Jan is one IWSO left.
+    // which is which. 1 Jan is the SXO gone; 8 Jan is one IWSO left (SPLICE's LL).
     expect(screen.getByTestId('undermanned-day-2026-01-01').textContent).toContain('SXO')
-    expect(screen.getByTestId('undermanned-day-2026-01-05').textContent).toContain('IWSO')
+    expect(screen.getByTestId('undermanned-day-2026-01-08').textContent).toContain('IWSO')
   })
 
   it('counts the same days the chip counts', () => {

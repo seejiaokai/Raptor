@@ -70,6 +70,22 @@ const DEMO_RAPTOR_INPUTS: any[] = [
     remarks: 'OIL — CO approved', mod: '2026-06-20' },
   { person: DEMO_MAP.dusk, date: 'May 4 2027', allday: true, type: 'OIL',
     remarks: 'OIL — CO approved', mod: '2026-06-20' },
+  /* SPLICE's medical is MEMBER-FILED (owner, 13 Sep 26): the war can no longer
+     create medical, so the demo shows it as the member's OWN Inputs filing — the
+     ATT C / OML rows sync onto the war (ingestFromRaptor) as read-only cells, the
+     one way medical reaches the war now. The pristine seed carries no war-marked
+     medical at all; this is the live demo's member-filed example. A CLOSING
+     upchit (7 Jan) completes the episode so the Medical view shows no
+     never-clearing "pending upchit" for him (an upchit never lands a war cell, so
+     the war still shows the down days). `yr: 2026` is EXPLICIT: these are pushed
+     AFTER initStore's year-stamping pass, so a bare 'Jan 5' would re-resolve
+     against whatever year is later loaded and shift the cell out from under itself. */
+  { person: DEMO_MAP.splice, date: 'Jan 5', yr: 2026, allday: true, type: 'ATT C',
+    remarks: 'ATT C — filed on Inputs', mod: '2026-01-04' },
+  { person: DEMO_MAP.splice, date: 'Jan 6', yr: 2026, allday: true, type: 'OML',
+    remarks: 'OML — filed on Inputs', mod: '2026-01-05' },
+  { person: DEMO_MAP.splice, date: 'Jan 7', yr: 2026, allday: true, type: 'Upchit',
+    remarks: 'Medically up 7 Jan', mod: '2026-01-07' },
 ]
 
 /* The demo OIL story (owner, 2 Sep 26 — "put in more mock data as well as

@@ -220,22 +220,27 @@ describe('bids', () => {
     expect(getState().states.ramp?.['2026-02-04']).toBeUndefined()
   })
 
-  // The medical markers are management's vocabulary — only an admin writes
-  // one (owner, 17 Aug 26), and since the 27 Aug overnight pass the store
-  // refuses it too, not just the sheets.
   it('drops the state when a bid is overwritten by a non-bid code', () => {
     setRole('admin')
     setCell('ramp', '2026-02-05', 'LL')
-    setCell('ramp', '2026-02-05', 'OML')
+    // CSE is non-biddable but not medical, so the write is allowed and the bid
+    // state falls away (medical would be REFUSED outright — see the test below).
+    setCell('ramp', '2026-02-05', 'CSE')
+    expect(getState().grid.ramp['2026-02-05']).toBe('CSE')
     expect(getState().states.ramp?.['2026-02-05']).toBeUndefined()
   })
 
-  it('refuses a medical code from a member — the write path, not just the sheet', () => {
-    setCell('ramp', '2026-02-05', 'OML')
+  // Medical is MEMBER-FILED ONLY (owner, 13 Sep 26, reversing the 17 Aug
+  // "management's" rule): the war can no longer CREATE a medical marker — for
+  // ANY role, admin included. It only DISPLAYS medical that syncs in from a
+  // member's own Inputs filing. This is the write-path backstop, not just the
+  // (now removed) picker.
+  it('refuses a medical code from ANYONE — member or admin — the write path, not just the sheet', () => {
+    setCell('ramp', '2026-02-05', 'OML')            // member
     expect(getState().grid.ramp?.['2026-02-05']).toBeUndefined()
     setRole('admin')
-    setCell('ramp', '2026-02-05', 'OML')
-    expect(getState().grid.ramp['2026-02-05']).toBe('OML')
+    setCell('ramp', '2026-02-05', 'OML')            // admin too — still refused
+    expect(getState().grid.ramp?.['2026-02-05']).toBeUndefined()
   })
 
   // Decisions are made by an admin once bidding is no longer open —
@@ -2063,10 +2068,11 @@ describe('the batch writers (drag-select)', () => {
     expect(fn).not.toHaveBeenCalled()
   })
 
-  // A member never writes a medical marker — the batch predicate reports the
-  // refusal in the count instead of silently absorbing it in setCell.
-  it('setCells refuses a medical code from a member, counted as skipped', () => {
-    setRole('member')
+  // NOBODY writes a medical marker on the war — medical is member-filed only
+  // (owner, 13 Sep 26). The batch predicate reports the refusal in the count
+  // instead of silently absorbing it in setCell, for admin as for a member.
+  it('setCells refuses a medical code from anyone incl admin, counted as skipped', () => {
+    setRole('admin')
     const r = setCells(cells('ramp', '2026-01-06', '2026-01-07'), 'HL')
     expect(r).toEqual({ written: 0, skipped: 2 })
     expect(getState().grid.ramp?.['2026-01-06']).toBeUndefined()

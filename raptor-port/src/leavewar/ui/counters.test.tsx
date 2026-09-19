@@ -2,13 +2,18 @@ import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { DEFAULT_FIGURE_ORDER, FIGURES } from '../engine'
-import { advanceStage, getState, grantTo, initStore, moveFigure, resetFigureOrder, setBalance, setBidState, setCell, setPeople, setRole, setViewer, toggleFigure, visibleFigures } from '../state/store'
+import { advanceStage, getState, grantTo, ingestFromRaptor, initStore, moveFigure, resetFigureOrder, setBalance, setBidState, setCell, setPeople, setRole, setViewer, toggleFigure, visibleFigures } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { FigureCell } from './FigureCell'
 import { Matrix } from './Matrix'
 
 beforeEach(() => {
   initStore(memoryBackend())
+  // SPLICE's medical is MEMBER-FILED now (owner, 13 Sep 26) — the pristine seed
+  // carries none, so ingest one member-filed ATT C / OML (exactly as a member's
+  // Inputs filing syncs in) to exercise the MED TOT breakdown the war displays.
+  ingestFromRaptor('splice', '2026-01-05', 'ATTC')
+  ingestFromRaptor('splice', '2026-01-06', 'OML')
 })
 
 /** Open the counter sheet and choose one. The whole column header is the
@@ -250,7 +255,10 @@ describe('the counter follows the leave just entered — to the balance it comes
   // instead of showing a pool they were not thinking about. LL and OL both
   // come off the ONE LVE balance now (its two used lines, not two figures),
   // so entering either lands on the same +LVE.
-  it('switches to LVE for LL and OL, OIL for OIL, MED TOT for a medical mark', () => {
+  it('switches to LVE for LL and OL, OIL for OIL', () => {
+    // The medical case is gone: medical is member-filed only now (owner,
+    // 13 Sep 26), so there is no war picker to enter a medical mark and snap
+    // the column to MED TOT. LL/OL → +LVE and OIL → +OIL still apply.
     setRole('admin')
     render(<Matrix />)
     pick('medtot')
@@ -260,10 +268,6 @@ describe('the counter follows the leave just entered — to the balance it comes
     fireEvent.click(screen.getByTestId('cell-ramp-2026-03-03'))
     fireEvent.click(screen.getByTestId('bid-OIL'))
     expect(screen.getByTestId('counter-name').textContent).toBe('+OIL')
-    // …and a medical mark, matching the title's own claim.
-    fireEvent.click(screen.getByTestId('cell-ramp-2026-03-04'))
-    fireEvent.click(screen.getByTestId('bid-HL'))
-    expect(screen.getByTestId('counter-name').textContent).toBe('−MED TOT')
   })
 
   it('snaps for a half day exactly as for a whole one', () => {

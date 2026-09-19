@@ -358,14 +358,31 @@ it is dissolved wholesale by a single **global undo re-architecture → see [GLO
 done as a step BEFORE the database. Do NOT build interim two-system undo patches (they'd be
 thrown away). Rationale: pre-promulgation demo data (no live users), and the root cause is
 having two separate undo systems over shared data — remove the root, don't patch each face.
-- **What REMAINS here (independent of undo, small guardrails):** P2 medical is member-filed
-  only (block creation on the war for all roles + hide the war medical pickers; existing =
-  demo, reset — no migration); P4 "Clear old data" is CLUTTER-ONLY (old pucks/day-notes/empty
-  past weeks; never deletes any leave/medical/duty input; never the loaded week); P6 a Quals ✕
-  confirm; P7 fix CLAUDE.md's stale "Leave War session-only" line.
-- **Urgency:** low (pre-live); do as a cheap batch when convenient. Model: Opus build,
-  gates, no merge without "merge live".
-- **Context:** the spec/record above (findings, dispositions).
+- **MEDICAL GUARDRAIL BATCH — BUILT + ALL GATES GREEN, held for "merge live" (19 Sep 26,
+  branch `claude/sync-integ-medical-guardrails`).** THREE items built test-first on Opus 4.8:
+  (1) **P2 medical member-filed only** — the war blocks medical creation for ALL roles incl admin
+  (store write path) and the medical pickers are gone; it still DISPLAYS member-filed medical that
+  syncs in; war→Raptor no longer crosses medical; the demo's war-created medical is reset via
+  `leavewar` added to the versioned storage reset (SCHEMA_VERSION 2→3) and re-shown as a member-filed
+  example. (2) **Relaxed document prompt** — filing a medical with no certificate PROMPTS once
+  ([Upload]/[No document]) instead of hard-refusing; "No document" files it with none; the
+  replace-don't-strip guard stays (`docGate` + `DocConfirm`, wired into all three editors). (3) **P4
+  "Clear old data" is CLUTTER-ONLY** — clears only past pucks + day notes; never an input, a balance,
+  a stashed week, or the loaded week; renamed "Clear old clutter"; validates real calendar dates.
+  Process: pre-build plan red-teamed by Codex (APPROVED after 1 revise round); post-build code
+  inspected by Codex + Fable (Fable: no permission/data-loss holes; all findings folded in). Gates:
+  unit 4985/0, build, parity 728/0, e2e, smoke 425/0. **Plan + dispositions:**
+  `raptor-port/docs/superpowers/specs/2026-09-19-sync-integ-guardrails-build-plan.md`.
+  **SCOPE NOTE (owner's call):** the backlog listed "clear genuinely-empty past weeks" under P4; the
+  red-team proved dropping a stashed week can lose a day's amendment history (SYNC-003) or resurrect a
+  deliberately-emptied authored week (SYNC-005), so per the guardrail-over-cascade rule the sweep
+  drops NO stashed weeks. A narrow safe empty-week drop is a possible later follow-up.
+- **STILL OPEN in [SYNC-INTEG] (NOT in this batch):** **P6** a Quals ✕ confirm (a confirmation that
+  archiving removes the person's leave; small; superseded by the fresh-recall feature [RECALL]);
+  **P7** fix CLAUDE.md's stale "Leave War session-only" line (the 8 Sep storage work persists the LW
+  world; already corrected in raptor-port/CLAUDE.md but re-verify the root CLAUDE.md / any stale copy).
+- **Urgency:** low (pre-live). Model: Opus build, gates, no merge without "merge live".
+- **Context:** the build plan above + the 13 Sep sync spec (findings, dispositions).
 
 ### [CMDL-FINISH] Finish the command layer for Leave War + Tracker — ARCH-STACK step 2 completion — DONE + LIVE (18 Sep 26)
 **STATUS (18 Sep 26):** DONE + LIVE. P1–P6 (P4 partial) merged as PR #412; the undo front-door doc

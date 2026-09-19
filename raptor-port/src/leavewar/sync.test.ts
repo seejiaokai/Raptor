@@ -318,7 +318,7 @@ describe('wire 3: counters follow the sync for free', () => {
   })
 })
 
-describe('medical crosses both ways (owner, 17 Aug 26)', () => {
+describe('medical crosses ONE way — member-filed → war only (owner, 13 Sep 26)', () => {
   it('a spanned ATT C input lands per-day ATTC cells, approved and Raptor-owned', () => {
     writeInputs(() => INPUTS.push({
       person: 'ammo', date: 'Feb 10', endDate: 'Feb 12', allday: true,
@@ -417,58 +417,35 @@ describe('medical crosses both ways (owner, 17 Aug 26)', () => {
     expect(getState().grid.ammo?.['2026-02-10']).toBeUndefined()
   })
 
-  it('a marker the admin writes on the grid lands as an lw-tagged input in Raptor\'s spelling — no approval step', () => {
+  /* Medical is MEMBER-FILED ONLY (owner, 13 Sep 26, reversing 17 Aug): the war
+     no longer ORIGINATES a medical marker, so an admin's grid write is refused
+     outright and nothing crosses to Raptor. Where an admin used to mark ATT B /
+     ATT C / OML on the grid and have it mint an lw-tagged input, there is now no
+     cell and no input. */
+  it('an admin cannot mark medical on the grid — no cell is written and nothing crosses to Raptor', () => {
     setRole('admin')
     setCell('ammo', '2026-02-02', 'ATTB')
-    setCell('ammo', '2026-02-03', 'ATTB')
-    runOutbound()
-    const rows = lwInputs()
-    expect(rows).toHaveLength(1)
-    expect(rows[0]).toMatchObject({
-      person: 'ammo', type: 'ATT B', date: 'Feb 2', endDate: 'Feb 3', allday: true, lw: 'y2026',
-    })
-  })
-
-  it('a half-day C on the grid lands as a half-day ATT C input', () => {
-    setRole('admin')
-    setCell('ammo', '2026-02-05', 'ATTC*')
-    runOutbound()
-    const rows = lwInputs()
-    expect(rows).toHaveLength(1)
-    expect(rows[0]).toMatchObject({
-      person: 'ammo', type: 'ATT C', date: 'Feb 5', allday: false, half: 'pm', s: 721, e: 1439,
-    })
-  })
-
-  it('clearing the grid marker removes exactly its own input again', () => {
-    setRole('admin')
-    setCell('ammo', '2026-02-05', 'OML')
-    runOutbound()
-    expect(lwInputs()).toHaveLength(1)
-    setCell('ammo', '2026-02-05', '')
+    setCell('ammo', '2026-02-03', 'ATTC*')
+    expect((getState().grid.ammo || {})['2026-02-02']).toBeUndefined()
+    expect((getState().grid.ammo || {})['2026-02-03']).toBeUndefined()
     runOutbound()
     expect(lwInputs()).toHaveLength(0)
   })
 
-  it('reaches a fixed point: each side skips what the other wrote', () => {
-    // In from Raptor: the raptor-owned cell must NOT come back out.
+  it('reaches a fixed point: a member-filed medical cell is never echoed back to Raptor', () => {
+    // In from Raptor: the raptor-owned medical cell must NOT come back out as a
+    // fresh lw-tagged input — it already IS the member's own filing.
     writeInputs(() => INPUTS.push({
       person: 'ammo', date: 'Feb 10', allday: true, type: 'ATT C', remarks: '', mod: '2026-06-01',
     }))
     runInbound()
+    expect(getState().grid.ammo['2026-02-10']).toBe('ATTC')
+    const before = JSON.stringify([getState().grid.ammo, getState().states.ammo])
+    runOutbound()
+    runInbound()
     runOutbound()
     expect(lwInputs()).toHaveLength(0)
-    // Out from the grid: the lw-tagged input must NOT be re-ingested as a
-    // fresh, differently-owned cell (it already IS the grid's own row).
-    setRole('admin')
-    setCell('ammo', '2026-02-20', 'HL')
-    runOutbound()
-    const before = JSON.stringify([getState().grid.ammo, getState().states.ammo])
-    runInbound()
-    runOutbound()
-    runInbound()
     expect(JSON.stringify([getState().grid.ammo, getState().states.ammo])).toBe(before)
-    expect(lwInputs()).toHaveLength(1)
   })
 
   it('a medical input against an existing bid raises the clash and overwrites nothing', () => {
@@ -678,20 +655,21 @@ describe('two-way: edits and deletes on the Inputs page carry back into the war'
   })
 })
 
-/* The medical marker rides the same retraction: an admin-marked grid cell
-   lands as an lw-tagged input (wire 5), so deleting THAT input on the Inputs
-   page must clear the grid mark too — same rule, medical's own notation. */
-describe('two-way: a medical grid mark follows its input out', () => {
-  it('deleting the lw medical input clears the admin\'s grid mark', () => {
-    setRole('admin')
-    setCell('ammo', '2026-02-11', 'ATTC')
-    runOutbound()
-    const row = lwInputs().find((r: any) => r.type === 'ATT C')
-    expect(row).toBeTruthy()
+/* Member-filed medical follows its input the same way leave does: a member's
+   ATT C input lands a Raptor-owned war cell, and deleting the input on the
+   Inputs page reverse-clears that cell. The war never originates medical now
+   (owner, 13 Sep 26), so the only direction is member → war → cleared. */
+describe('member-filed medical: deleting the input clears its war cell', () => {
+  it('deleting the member\'s medical input reverse-clears the war mark', () => {
+    writeInputs(() => INPUTS.push({
+      person: 'ammo', date: 'Feb 11', allday: true, type: 'ATT C', remarks: '', mod: '2026-06-01',
+    }))
+    runInbound()
+    expect(getState().grid.ammo['2026-02-11']).toBe('ATTC')
+    const row = INPUTS.find((r: any) => r.person === 'ammo' && r.type === 'ATT C')
     expect(removeInput(row)).toBe(true)
+    runInbound()
     expect(getState().grid.ammo?.['2026-02-11']).toBeUndefined()
-    runOutbound(); runInbound()
-    expect(lwInputs().filter((r: any) => r.type === 'ATT C')).toHaveLength(0)
   })
 })
 
@@ -753,19 +731,22 @@ describe('what a re-mint carries (27 Aug 26)', () => {
     expect(re.remarks, 'the member\'s own words survive the flip-flop').toContain('Bali')
   })
 
-  it('a war-side date change on a synced medical row carries the document id', () => {
-    setRole('admin')
-    setCell('ammo', '2026-02-11', 'ATTC')
-    runOutbound()
-    const row = lwInputs().find((r: any) => r.type === 'ATT C')
-    const d = draftOf(row); d.docIds = ['doc-cert']
-    expect(commitInputEdit(row, d), 'attaching the certificate keeps the row synced').toBe(true)
-    expect(row.lw, 'doc-only edit did not retract').toBeTruthy()
-    setCell('ammo', '2026-02-12', 'ATTC')       // the admin extends the run on the grid
-    runOutbound()                                // old row stale, longer run minted
-    const re = lwInputs().find((r: any) => r.type === 'ATT C')
-    expect(re.endDate).toBe('Feb 12')
-    expect(re.docId, 'the certificate followed its record').toBe('doc-cert')
+  it('a member\'s medical input carries its certificate onto the war and keeps it across an edit', () => {
+    // The war-side date-change path is gone (medical is member-filed only,
+    // owner 13 Sep 26). A member files an ATT C, attaches the certificate and
+    // extends the span on the Inputs page; the doc id stays with the record and
+    // the war reflects the longer run.
+    writeInputs(() => INPUTS.push({
+      person: 'ammo', date: 'Feb 11', allday: true, type: 'ATT C', remarks: '', mod: '2026-06-01', yr: 2026,
+    }))
+    runInbound()
+    const row = INPUTS.find((r: any) => r.person === 'ammo' && r.type === 'ATT C')
+    const d = draftOf(row); d.docIds = ['doc-cert']; d.end = '2026-02-12'
+    expect(commitInputEdit(row, d), 'the edit keeps the row synced').toBe(true)
+    expect(row.docId, 'the certificate stayed with its record').toBe('doc-cert')
+    runInbound()
+    expect(getState().grid.ammo['2026-02-11']).toBe('ATTC')
+    expect(getState().grid.ammo['2026-02-12']).toBe('ATTC')
   })
 })
 

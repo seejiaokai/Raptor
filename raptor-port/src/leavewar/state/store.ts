@@ -1976,11 +1976,15 @@ export function setCell(personId: string, date: string, code: string): void {
   if (!canEditRow(state.role, state.viewer, personId)) return
 
   const clean = code.trim().toUpperCase()
-  // ...and the VOCABULARY: the medical markers are management's (owner,
-  // 17 Aug 26 — "for management only"). Every sheet already offers them to
-  // an admin alone, but until this line the store took an HL from anyone —
-  // the one vocabulary the affordance gated that the write path did not.
-  if (isMedical(clean) && state.role !== 'admin') return
+  // ...and the VOCABULARY: MEDICAL IS MEMBER-FILED ONLY (owner, 13 Sep 26,
+  // reversing the 17 Aug 26 "management's" rule). The war may DISPLAY medical
+  // that syncs in from a member's own Inputs filing (which carries the
+  // certificate) but may no longer CREATE it — for ANYONE, admin included. The
+  // pickers no longer offer it; this is the write-path backstop that makes it
+  // true whatever path reaches here. Member-filed medical lands via
+  // ingestFromRaptor's own writer (updateWar), never through here, so its
+  // DISPLAY is untouched.
+  if (isMedical(clean)) return
   const previous = state.grid[personId]?.[date]
   const row = { ...(state.grid[personId] ?? {}) }
   const srow = { ...(state.states[personId] ?? {}) }
@@ -2038,10 +2042,11 @@ export function setCellRange(
   let written = 0
   let skipped = 0
   const person = state.people.find(p => p.id === personId)
-  // the vocabulary gate setCell carries — evaluated once out here, and kept in
+  // the vocabulary gate setCell carries (medical is member-filed only, blocked
+  // for every role — owner 13 Sep 26) — evaluated once out here, and kept in
   // the predicate below so the count reports the refusal instead of silently
   // absorbing it
-  const medBlocked = isMedical(code.trim().toUpperCase()) && state.role !== 'admin'
+  const medBlocked = isMedical(code.trim().toUpperCase())
 
   // Suppressed for the run, then released once. Without this a fortnight is
   // fourteen persists and fourteen re-renders, and every subscriber sees the
@@ -2091,9 +2096,10 @@ export function setCells(cells: { personId: string; date: string }[], code: stri
   let written = 0
   let skipped = 0
   const wasQuiet = quiet
-  // the vocabulary gate setCell carries, reported by the count rather than
-  // silently absorbed (see setCellRange)
-  const medBlocked = isMedical(code.trim().toUpperCase()) && state.role !== 'admin'
+  // the vocabulary gate setCell carries (medical is member-filed only, blocked
+  // for every role), reported by the count rather than silently absorbed
+  // (see setCellRange)
+  const medBlocked = isMedical(code.trim().toUpperCase())
   quiet = true
   try {
     for (const { personId, date } of cells) {
@@ -2994,9 +3000,10 @@ export function ingestFromRaptor(personId: string, date: string, code: string): 
 }
 function ingestFromRaptorImpl(personId: string, date: string, code: string): IngestResult {
   const clean = code.trim().toUpperCase()
-  // Raptor sends more than leave. Leave is bid for and medical is assigned
-  // (owner, 17 Aug 26 — the four markers cross from the Inputs page too);
-  // anything else nobody bids for is not this app's business and is dropped
+  // Raptor sends more than leave. Leave is bid for and medical is MEMBER-FILED
+  // (owner, 13 Sep 26 — the four markers cross IN from the Inputs page; the war
+  // never originates one); anything else nobody bids for is not this app's
+  // business and is dropped
   // rather than written as a cell with a state that would make no sense.
   // The 'approved' record a medical cell gets below is its OWNERSHIP marker
   // — raptorOwns and both reverse sweeps read the source; the grid draws a

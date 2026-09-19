@@ -24,7 +24,6 @@ const mount = (sel: Selection, props: Partial<Parameters<typeof SelectSheet>[0]>
       people={id => id}
       role="admin"
       canDecide={false}
-      medical
       onDone={noop}
       onMove={noop}
       onClose={noop}
@@ -96,9 +95,11 @@ describe('the selection sheet', () => {
     expect(screen.getByTestId('sel-pending').textContent).toBe('Pending')
   })
 
-  it('a member sees no Medical row and no Decide row', () => {
+  it('no Medical row for anyone, and no Decide row for a member', () => {
+    // Medical is member-filed only now (owner, 13 Sep 26) — the batch sheet
+    // never offers it, for admin or member.
     setRole('member')
-    mount(rampTwo, { role: 'member', medical: false, canDecide: false })
+    mount(rampTwo, { role: 'member', canDecide: false })
     expect(screen.queryByTestId('sel-OML')).toBeNull()
     expect(screen.queryByTestId('sel-approve')).toBeNull()
     expect(screen.getByTestId('sel-LL')).toBeTruthy() // but can still fill

@@ -183,13 +183,12 @@ export function seedGrid(): Grid {
   return {
     ramp: { '2026-01-01': 'OL', '2026-01-03': 'FO', '2026-02-10': '*OIL' },
     tata: { '2026-01-01': 'FO', '2026-01-04': 'FO', '2026-01-09': 'OIL' },
-    // The two `M` days become two of the three medical markers — `ATTC` and
-    // `OML` — so MED USED reads 2 and OML USED reads 1 on this demo run (they
-    // replaced the single `M`, owner Aug 26). Both remove a whole day exactly
-    // as `M` did, so splice keeps the availability it had and no manning count
-    // moves. (`HL` is the third medical marker; it is exercised in the unit
-    // tests rather than seeded, to keep this grid's counts unchanged.)
-    splice: { '2026-01-05': 'ATTC', '2026-01-06': 'OML', '2026-01-08': 'LL' },
+    // SPLICE keeps a plain LL. The old war-CREATED medical (ATT C 5 Jan, OML
+    // 6 Jan) is GONE from the pristine seed (owner, 13 Sep 26): medical is
+    // member-filed only, so a war-marked medical cell has no place here. The
+    // live demo shows a MEMBER-filed medical instead — DEMO_RAPTOR_INPUTS files
+    // it as a real Raptor input and it syncs onto the war read-only.
+    splice: { '2026-01-08': 'LL' },
     jaguar: { '2026-01-16': 'OL', '2026-01-17': 'OL', '2026-01-19': 'OL' },
     asics: { '2026-01-08': 'LL', '2026-01-09': 'LL', '2026-01-23': '*LL', '2026-02-24': 'OIL' },
     pipper: { '2026-01-12': 'CSE', '2026-01-13': 'CSE' },

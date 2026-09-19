@@ -16,7 +16,7 @@
 // which the owner allows. The single-cell path keeps the confirm.
 
 import { useState } from 'react'
-import { displayCell, formatCell, LEAVE_TYPES, MEDICAL_TYPES, type BidState, type Portion } from '../engine'
+import { formatCell, LEAVE_TYPES, type BidState, type Portion } from '../engine'
 import { clearCells, movableCells, setBidStates, setCells } from '../state/store'
 import { Sheet } from './Sheet'
 import { shortSpan } from './dates'
@@ -34,7 +34,6 @@ export function SelectSheet({
   people,
   role,
   canDecide,
-  medical,
   onDone,
   onMove,
   onPostOut,
@@ -46,8 +45,6 @@ export function SelectSheet({
   role: 'admin' | 'member'
   /** admin && closed — the batch Decide row */
   canDecide: boolean
-  /** admin — the medical markers */
-  medical: boolean
   /** Report the write back. `keepOpen` says a PARTIAL write left a note on the
    *  sheet the person still has to read ("3 written. 4 skipped — locked…") —
    *  the matrix closes the sheet only when it is absent, or the note died
@@ -142,17 +139,8 @@ export function SelectSheet({
             ))}
           </div>
 
-          {medical && (
-            <div className="bidsheet-row">
-              <span className="lab">Medical</span>
-              {MEDICAL_TYPES.map(t => (
-                <button key={t.type} data-testid={`sel-${t.type}`} className="tchip med" title={t.label}
-                  onClick={() => fill(formatCell({ type: t.type, portion }))}>
-                  {displayCell(formatCell({ type: t.type, portion }))}
-                </button>
-              ))}
-            </div>
-          )}
+          {/* No Medical row: medical is member-filed only (owner, 13 Sep 26) —
+              the war never creates it, whatever the role. */}
         </>
       )}
 

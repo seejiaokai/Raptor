@@ -3767,7 +3767,6 @@ export function Matrix() {
           people={csOf}
           role={role}
           canDecide={canDecide(period.stage, role)}
-          medical={role === 'admin'}
           onPostOut={role === 'admin' ? (pid, from, archive) => setPostOut(pid, from, archive) : undefined}
           onMove={s => setMoveSel(s)}
           /* a PARTIAL write keeps the sheet up (keepOpen) so its "N written,
@@ -4001,10 +4000,9 @@ export function Matrix() {
           onPostOut={role === 'admin'
             ? (from, archive) => { setPostOut(open.id, from, archive); close() }
             : undefined}
-          /* Medical is assigned, not bid: only management marks it here.
-             Members file theirs on Raptor's Inputs page, which is also the
-             normal path once bidding has closed. */
-          medical={role === 'admin'}
+          /* No medical here: medical is member-filed only (owner, 13 Sep 26).
+             Everyone files a medical input with its certificate on Raptor's
+             Inputs page; the war displays it read-only, never creates it. */
           /* The column follows the leave just entered, to the BALANCE it
              comes off (owner, 6 Sep 26) — ask for OIL and it snaps to +OIL.
              The owner's ask, and it makes the figure answer the question the

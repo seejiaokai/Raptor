@@ -17,6 +17,7 @@ import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, subtractSpan
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
 import { OilConfirm } from './OilConfirm'
+import { DocConfirm } from './DocConfirm'
 import { docAdd, docFields, docGet, rowDocIds } from '../state/docs'
 import { UploadIcon } from './icons'
 import { acceptInput, autoAcceptInput, unacceptInput, acceptedDay } from '../engine/slots'
@@ -25,15 +26,16 @@ import { PEOPLE, isSpecial } from '../engine/people'
 import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { logAction, elogSweep } from '../engine/editlog'
-import { writeInputsBatch, writeInputsBatchWith, weekstashStore, notify, protectedDates, inputProtected } from '../state/store'
+import { writeInputsBatch, notify, protectedDates, inputProtected } from '../state/store'
 /* The Leave War seam (sync.ts is the one crossing point, CLAUDE.md §The Leave
    War tab): retracting a synced row's war cells when it is edited or deleted
    here — not a new seam, a Raptor-side caller of the existing one. */
 import { retractLwRow, rowSig, oilAskPlan } from '../leavewar/sync'
 import { inputOilAmt } from '../engine/oil'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
-import { stashKeys, stashDrop, stashGet } from '../engine/weekstash'
-import { persistAll } from '../state/persist'
+import { stashKeys, stashGet } from '../engine/weekstash'
+import { CURWEEK } from '../engine/waves'
+import { keyToIso, mondayOf } from './weeknav'
 import { canEditSched, ME, SESSION } from '../state/auth'
 import { INPEDIT, setInpEdit, OILASK, setOilAsk } from './pops'
 import { useVersion } from './useStore'
@@ -558,24 +560,19 @@ export function normalizeInputDraft(draft: any, except: any):
     const dup = sansOverlapRefusal(draft.person, date, endDate, except)
     if (dup) { HOOKS.toast(dup, 'warn'); return null }
   }
-  /* A MEDICAL INPUT DOES NOT GO IN WITHOUT ITS DOCUMENT (owner, 27 Aug 26).
-     New rows and rows retyped INTO the medical group are refused bare; a row
-     that was already medical keeps whatever it has — the pre-feature records
-     carry no document, and refusing every edit of them would brick the
-     paperwork this exists to keep. rowDocIds reads the draft's list and the
-     bare docId some callers still hand in, alike. */
-  if (needsDoc(draft.type) && !rowDocIds(draft).length) {
-    if (!(except && needsDoc(except.type))) {
-      HOOKS.toast('Attach the medical document first — use the upload button', 'warn'); return null
-    }
-    /* ...and an already-medical row that HAS paperwork cannot be saved with
-       none (owner, 1 Sep 26 — files are deletable now, but deleting the
-       LAST one would strip an entry of the proof it went in on; replace it
-       instead). Only rows that never had a file — the pre-feature records —
-       stay freely editable bare. */
-    if (rowDocIds(except).length) {
-      HOOKS.toast('Keep at least one document on this entry — add the replacement before removing the last file', 'warn'); return null
-    }
+  /* REPLACE-DON'T-STRIP (owner, 1 Sep 26): an already-medical row that HAS
+     paperwork cannot be saved with none — deleting the LAST file would strip an
+     entry of the proof it went in on; replace it instead. This guard stays here,
+     at the one write path, so a hand-made call cannot do what the picker will not.
+     The OTHER half — "a medical input needs a document AT ALL" — is now a PROMPT,
+     not a hard refusal (owner, [SYNC-INTEG]): saving a NEW medical (or one retyped
+     INTO the medical group) with no document opens a [Upload] / [No document] ask
+     at the commit sites (docGate + DocConfirm), so a record that genuinely isn't
+     available can still be filed. A pre-feature bare medical row still edits
+     freely. rowDocIds reads the draft's list and the bare docId alike. */
+  if (needsDoc(draft.type) && !rowDocIds(draft).length
+      && except && needsDoc(except.type) && rowDocIds(except).length) {
+    HOOKS.toast('Keep at least one document on this entry — add the replacement before removing the last file', 'warn'); return null
   }
   /* the medical refusals (owner, 27 Aug 26) — same-type overlap says "edit
      that entry"; an upchit has to be a single date closing something real */
@@ -597,6 +594,28 @@ export function normalizeInputDraft(draft: any, except: any):
      deriving it twice is how the two would drift (see the note at that write). */
   const half = (!draft.allday && hasHalf(draft.type) && s != null && e != null) ? halfOf(s as number, e as number) : ''
   return { s: s as number, e: e as number, date, endDate, half }
+}
+
+/* THE MEDICAL-DOCUMENT GATE (owner, [SYNC-INTEG]) — the withOilAsk doctrine's
+   sibling, so every editor that can save a medical input asks the SAME question
+   the SAME way. Given the draft about to be saved and the row it replaces (null
+   for an add), decide whether the missing-document PROMPT is needed:
+   - 'ask'  — a NEW medical input, or one retyped INTO the medical group, with no
+              document. The caller opens DocConfirm ([Upload] / [No document]);
+              "No document" re-runs the save with the doc treated as resolved, so
+              a record that genuinely isn't available can still be filed.
+   - 'ok'   — everything else, and the caller proceeds straight to the commit:
+              a non-medical type; a draft that already carries a document; OR an
+              already-medical row being edited (whether it keeps its file, strips
+              it — normalizeInputDraft's replace-don't-strip guard refuses that at
+              the commit — or is a pre-feature bare record that edits freely). No
+              prompt nags an existing medical row.
+   The five certificate types are exactly `needsDoc` (ATT C / ATT B / HL / OML /
+   Upchit). rowDocIds reads the draft's list and the bare docId alike. */
+export function docGate(draft: any, except: any): 'ok' | 'ask' {
+  if (!draft || !needsDoc(draft.type) || rowDocIds(draft).length) return 'ok'
+  if (except && needsDoc(except.type)) return 'ok'
+  return 'ask'
 }
 
 /* THE OIL ASK GATE (owner, 28 Aug 26) — one decision body for every save
@@ -1237,17 +1256,26 @@ function dropInputRow(r: any) {
    EXCLUSIVE-upper ISO window, so every comparison below is the same
    `>= lo && < hi` shape whatever the mode.
 
-   The DATA sweep covers everything the app accumulates: past INPUTS, past
-   calendar pucks and day titles (state/plan.ts), and stashed past weeks
-   (engine/weekstash.ts). Doctrine points, deliberate:
-   - DELETION FAILS CLOSED: an input whose dates cannot be parsed is KEPT,
-     never guessed old. Only a row wholly inside the period goes — one that
-     touches or crosses the period's edge stays whole. Same for a stashed
-     week: it goes only when its whole Mon–Sun span sits inside.
-   - The inputs/pucks/titles sweep is ONE writeInputsBatch, so it lands as a
-     single undo step (history.ts snapshots all three) — the safety net for
-     a destructive button. Stashed weeks are outside the undo snapshot and
-     are gone for real.
+   The DATA sweep is CLUTTER-ONLY (owner, 13 Sep 26 — [SYNC-INTEG] P4). It
+   clears past calendar pucks and day titles (state/plan.ts) and NOTHING ELSE.
+   Doctrine points, deliberate:
+   - It NEVER deletes any leave / medical / duty INPUT, so it never changes a
+     leave balance (balances are derived from inputs) — that whole class of
+     data loss is designed out, not guarded against. The old input sweep and
+     its Leave War withdrawals are gone.
+   - It NEVER drops a stashed week. A stash is not safely "clutter": a
+     published-then-unpublished day keeps its issuance history in a stash even
+     when the day reads empty, and an authored week that was deliberately
+     EMPTIED holds that fact ONLY as an empty stash — dropping it would resurrect
+     the seed. Both were proven in the pre-build red-team (SYNC-003 / SYNC-005),
+     so saved weeks are left alone.
+   - It NEVER touches the currently-loaded week, in either collection — a puck
+     or title on any of its seven days is excluded even when the period covers it.
+   - DELETION FAILS CLOSED: an impossible date (isoOk) clears nothing; only a
+     puck/title wholly inside the period goes.
+   - The pucks/titles sweep is ONE writeInputsBatch, so it lands as a single
+     undo step (history.ts snapshots both) — the safety net for a destructive
+     button, and enough on its own now that no stash or input is touched.
    - `dry` answers "how many would go?" without touching anything — the
      panel's confirm step shows the count it is about to act on, from the
      same selection logic it will act with (one body, no drift).
@@ -1262,7 +1290,19 @@ function dropInputRow(r: any) {
    own clearing even when the period covers today. */
 export type ClearMode = 'before' | 'on' | 'range'
 const ISO_RX = /^\d{4}-\d{2}-\d{2}$/
-const isoOk = (s: any) => ISO_RX.test(String(s || '')) ? String(s) : null
+/* FAIL CLOSED on an IMPOSSIBLE date too (SYNC-006): the pattern alone accepts
+   2026-02-31, and nextIso would silently normalise it to 3 Mar, widening the
+   window past what was asked. Round-trip through a UTC date and reject anything
+   the calendar does not actually hold — a bad month/day, 29 Feb in a non-leap
+   year — so a typo clears NOTHING instead of the wrong span. */
+const isoOk = (s: any) => {
+  const str = String(s || '')
+  if (!ISO_RX.test(str)) return null
+  const [y, m, d] = str.split('-').map(Number)
+  const dt = new Date(Date.UTC(y, m - 1, d))
+  if (dt.getUTCFullYear() !== y || dt.getUTCMonth() !== m - 1 || dt.getUTCDate() !== d) return null
+  return str
+}
 const nextIso = (iso: string) => {
   const p = iso.split('-')
   return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2] + 1)).toISOString().slice(0, 10)
@@ -1281,64 +1321,41 @@ function clearWindow(mode: ClearMode, a: string, b?: string): { lo: string | nul
   const x = A <= B ? A : B, y = A <= B ? B : A
   return { lo: x, hi: nextIso(y), said: `between ${x} and ${y}` }
 }
-const ordOf = (iso: string | null) => iso == null ? null : +iso.slice(0, 4) * 10000 + +iso.slice(5, 7) * 100 + +iso.slice(8, 10)
+/* The 7-day ISO span of the currently-loaded week, [lo, hi) — its Monday to the
+   NEXT Monday. A puck or title on any of these seven days is never cleared, so
+   the sweep can never disturb the week on screen (owner, [SYNC-INTEG] P4). */
+function loadedWeekSpan(): { lo: string, hi: string } {
+  const lo = keyToIso(mondayOf(CURWEEK))
+  const p = lo.split('-')
+  const hi = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2] + 7)).toISOString().slice(0, 10)
+  return { lo, hi }
+}
 
 export function clearHistoryData(mode: ClearMode, a: string, b?: string, dry?: boolean): number {
   if (!canEditSched()) return 0
   const w = clearWindow(mode, a, b)
   if (!w) return 0
-  const loOrd = ordOf(w.lo), hiOrd = ordOf(w.hi)!
-  const doomed = INPUTS.filter((r: any) => {
-    const end = dateOrd(r.endDate || r.date, r.yr)
-    if (end == null || end >= hiOrd) return false
-    if (loOrd == null) return true
-    const start = dateOrd(r.date, r.yr)
-    return start != null && start >= loOrd
-  })
-  const inWin = (iso: any) => !!iso && iso < w.hi && (w.lo == null || iso >= w.lo)
-  const oldPucks = PLANPUCKS.filter((s: any) => inWin(s.iso))
+  const loaded = loadedWeekSpan()
+  /* in the period, and NOT on the loaded week (owner: never touch the week on
+     screen — a puck/title on any of its seven days is excluded even when the
+     period covers it). Pucks/titles are keyed by their own ISO `date` field
+     (SYNC-004: the old `.iso` read matched nothing, so real pucks were never
+     cleared — state/plan.ts writes `date`). */
+  const inWin = (iso: any) => !!iso && iso < w.hi && (w.lo == null || iso >= w.lo) &&
+    !(iso >= loaded.lo && iso < loaded.hi)
+  const oldPucks = PLANPUCKS.filter((s: any) => inWin(s.date))
   const oldRmk = Object.keys(DAYRMK).filter(inWin)
-  /* a stashed week goes only when its WHOLE span sits inside the window —
-     Monday (the key itself) on or after the lower edge, Sunday (key+6d)
-     before the upper — so a week the period's edge lands inside stays
-     remembered whole */
-  const oldWeeks = stashKeys().filter(k => {
-    const p = String(k).split('/')
-    if (p.length !== 3) return false
-    const mon = +p[2] * 10000 + +p[1] * 100 + +p[0]
-    const d = new Date(Date.UTC(+p[2], +p[1] - 1, +p[0] + 6))
-    const sun = d.getUTCFullYear() * 10000 + (d.getUTCMonth() + 1) * 100 + d.getUTCDate()
-    if (!isFinite(mon) || !isFinite(sun)) return false
-    return sun < hiOrd && (loOrd == null || mon >= loOrd)
-  })
-  const n = doomed.length + oldPucks.length + oldRmk.length + oldWeeks.length
+  const n = oldPucks.length + oldRmk.length
   if (dry || !n) return n
-  /* PREFLIGHT the whole clear (P2-QREV-04): if any doomed input sits on a
-     protected week, refuse the ENTIRE operation before deleting anything — the
-     old code let the input batch be rolled back by the funnel yet still ran
-     stashDrop/persistAll and logged "Cleared N", a partial destructive op that
-     removed week records while the inputs survived. */
-  if (doomed.some((r: any) => inputProtected(r))) {
-    HOOKS.toast('Some of those records are on a locked week and can’t be cleared', 'warn')
-    return 0
-  }
-  /* [CMDL-FINISH] §6 (C11/N5) — drop the stashed weeks INSIDE the enlisted batch
-     (weekstashStore), so if runInputWrite refuses a protected week the phase-6
-     rollback undoes the stash drop too, instead of leaving it done while the input
-     batch reverts (the old partial-destructive gap the preflight above only
-     band-aided). A refusal returns ok:false → skip the success log + report 0. */
-  const ok = writeInputsBatchWith([weekstashStore], () => {
-    doomed.forEach((r: any) => dropInputRow(r))
+  /* ONE writeInputsBatch → ONE undo step (history.ts snapshots pucks + titles).
+     No input is deleted, no balance moves, no stashed week is dropped and the
+     loaded week is untouched, so there is nothing to preflight or persist beyond
+     what the batch already does. */
+  writeInputsBatch(() => {
     oldPucks.forEach((s: any) => { const ix = PLANPUCKS.indexOf(s); if (ix >= 0) PLANPUCKS.splice(ix, 1) })
     oldRmk.forEach(k => { delete DAYRMK[k] })
-    oldWeeks.forEach(k => stashDrop(k))
   })
-  /* a stash drop is not a history step, so file it now — persistAll deletes
-     the stored copy of every week no longer stashed (8 Sep 26 bug pass: the
-     cleared weeks were all back after a reload). Kept unconditional (§6). */
-  persistAll()
-  if (!ok) return 0   // refused + rolled back — do NOT report a clear that did not happen
-  logAction(null, `Cleared ${n} record${n === 1 ? '' : 's'} ${w.said}`)
+  logAction(null, `Cleared ${n} item${n === 1 ? '' : 's'} of old clutter ${w.said}`)
   return n
 }
 
@@ -1418,6 +1435,8 @@ export function InputEditor() {
   const [medConf, setMedConf] = useState<any>(null)
   /* the OIL ask (owner, 28 Aug 26) — the oilGate payload; null = no sheet */
   const [oilConf, setOilConf] = useState<any>(null)
+  /* the medical-document ask (owner, [SYNC-INTEG]) — {who, typeLabel}; null = no sheet */
+  const [docConf, setDocConf] = useState<any>(null)
   const box = useRef<HTMLDivElement>(null)
   /* re-seed whenever a different row is opened, never on a repaint — a
      re-seed mid-edit would throw away what has been typed. The bell's
@@ -1425,7 +1444,7 @@ export function InputEditor() {
      OIL sheet comes straight up over the dialog so the tap lands on the
      question itself — one-shot, cleared as it is read. */
   useEffect(() => {
-    setDraft(r ? draftOf(r) : null); setUpConf(null); setMedConf(null); setOilConf(null)
+    setDraft(r ? draftOf(r) : null); setUpConf(null); setMedConf(null); setOilConf(null); setDocConf(null)
     if (r && !r._new && OILASK && r.iid === OILASK) {
       setOilAsk(null)
       const g = oilGate(draftOf(r), r)
@@ -1439,14 +1458,15 @@ export function InputEditor() {
     const esc = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
       e.stopPropagation()
-      if (upConf) setUpConf(null)
+      if (docConf) setDocConf(null)
+      else if (upConf) setUpConf(null)
       else if (medConf) setMedConf(null)
       else if (oilConf) setOilConf(null)
       else close()
     }
     document.addEventListener('keydown', esc, true)
     return () => document.removeEventListener('keydown', esc, true)
-  }, [open, upConf, medConf, oilConf])
+  }, [open, upConf, medConf, oilConf, docConf])
 
   const close = () => { setInpEdit(null); notify() }
   /* a refusal KEEPS the dialog open, so nothing typed is lost — bar the one
@@ -1503,7 +1523,21 @@ export function InputEditor() {
     if (ok) { HOOKS.toast(isNew ? 'Input added' : 'Input updated', 'ok'); close() }
     else if (!isNew && INPUTS.indexOf(r) < 0) close()
   }
-  const save = () => {
+  /* `skipDoc` is reserved for the DocConfirm "No document" resume (owner,
+     [SYNC-INTEG]); a plain click/Enter must pass FALSE, never React's event
+     object — see the bindings below (SYNC-002). */
+  const save = (skipDoc = false) => {
+    /* THE DOCUMENT ASK runs FIRST (owner, [SYNC-INTEG]): saving a NEW medical
+       with no certificate opens [Upload] / [No document] before anything else,
+       so "No document" then flows on through the upchit-summary / downchit-clash
+       / OIL pipeline exactly as an attached one would. */
+    if (!skipDoc && draft && docGate(draft, isNew ? null : r) === 'ask') {
+      setDocConf({
+        who: PEOPLE[draft.person] ? PEOPLE[draft.person].cs : String(draft.person || ''),
+        typeLabel: draft.type,
+      })
+      return
+    }
     /* an upchit is NEVER saved silently (owner, 27 Aug 26): the summary sheet
        runs first — what it ends, and an explicit Keep/Remove on every
        later-dated entry. A missing date skips straight to the commit, whose
@@ -1688,7 +1722,7 @@ export function InputEditor() {
             <span className="inped-k">Remarks</span>
             <input id="inpEditRmk" aria-label="Remarks" maxLength={200} value={draft.remarks} autoComplete="off"
               onChange={e => setDraft({ ...draft, remarks: e.target.value })}
-              onKeyDown={e => { if (e.key === 'Enter') save() }} />
+              onKeyDown={e => { if (e.key === 'Enter') save(false) }} />
           </label>
           {/* REVISE A RECORDED OIL ANSWER (owner, 29 Aug 26 — a mistaken "No
               OIL" used to be revisable only by nudging the input's times).
@@ -1722,7 +1756,7 @@ export function InputEditor() {
           {!isNew && <button className="abtn danger" id="inpEditDel" onClick={del}>Delete</button>}
           <span style={{ flex: 1 }}></span>
           <button className="abtn ghost" id="inpEditCancel" onClick={close}>Cancel</button>
-          <button className="abtn primary" id="inpEditSave" onClick={save}>{isNew ? 'Add' : 'Save'}</button>
+          <button className="abtn primary" id="inpEditSave" onClick={() => save(false)}>{isNew ? 'Add' : 'Save'}</button>
         </div>
       </div>
       {/* the upchit save-time summary rides OVER this dialog (its z sits one
@@ -1743,6 +1777,12 @@ export function InputEditor() {
         plan={oilConf.plan} prev={oilConf.prev}
         onCancel={() => setOilConf(null)}
         onSave={dec => { setOilConf(null); doSave([], dec) }} />}
+      {/* the medical-document ask (owner, [SYNC-INTEG]): "No document" resumes
+          the SAME save through the rest of the pipeline (skipDoc); "Upload"
+          dismisses so the filer can attach a certificate and save again */}
+      {docConf && <DocConfirm who={docConf.who} typeLabel={docConf.typeLabel}
+        onUpload={() => setDocConf(null)}
+        onNoDoc={() => { setDocConf(null); save(true) }} />}
     </div>
   )
 }

@@ -15,17 +15,23 @@ import type { Backend, Collection, Snapshot } from './backend'
    `who` must be cleared — once renameCallsign stops rewriting rows, a rename on
    such a week would drop the person from the row (owner-confirmed reset, not
    migrate). Pre-1A data is unstamped, which reads as 0. */
-export const SCHEMA_VERSION = 2
+export const SCHEMA_VERSION = 3
 const STAMP: [Collection, string] = ['settings', 'schema']
 
-/* the collections carrying an incompatible shape: `weeks` holds the days
-   (pre-1A: note strings + content-key ground.src; pre-1C: cs-form ground/
-   programme `who`) AND the nested publish snapshots/drafts; `inputs` holds
-   accept state whose landing lived on a week.
-   Cleared together so an accepted input can never survive without its landing.
-   people/settings/leavewar/tracker carry no 1A shape and are kept; day templates
-   are coerced on load (daytpl.sanitiseBlob), so they need no reset. */
-const RESET: Collection[] = ['inputs', 'weeks']
+/* the collections cleared on a version bump. `weeks` holds the days (pre-1A:
+   note strings + content-key ground.src; pre-1C: cs-form ground/programme `who`)
+   AND the nested publish snapshots/drafts; `inputs` holds accept state whose
+   landing lived on a week. Cleared together so an accepted input can never
+   survive without its landing.
+   `leavewar` joins the list at v3 (owner, 13 Sep 26): medical is now member-filed
+   ONLY, so the demo's war-CREATED medical cells must not persist on a returning
+   browser. This is a dev-phase CONTENT reset, not a shape migration — clearing the
+   whole LW world before hydration makes main.tsx read `hadStoredWars=false`, so
+   installDemoWorld re-seeds the (medical-free) demo clean, with no back-compat code
+   (memory dev-phase-reset-demo-data-not-migrate).
+   settings/people/tracker carry no reset shape and are kept; day templates are
+   coerced on load (daytpl.sanitiseBlob), so they need no reset. */
+const RESET: Collection[] = ['inputs', 'weeks', 'leavewar']
 
 function storedVersion(snap: Snapshot): number {
   const v = snap[STAMP[0]] && snap[STAMP[0]][STAMP[1]]
