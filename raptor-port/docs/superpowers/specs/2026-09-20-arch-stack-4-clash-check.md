@@ -117,4 +117,6 @@ Owner answers (20 Sep 26):
   half by the earlier start time; grey `+n`; the tap list shows each record with its times.
 - **D (asked 20 Sep 26):** a half shared by leaves on DIFFERENT balances (e.g. LL 08:00–10:00 + OIL
   10:30–11:30): recommended — the half day comes off the balance of the leave covering more time
-  (a tie → the earlier one); the other is shown but charges nothing that half. Answer: _pending_.
+  (a tie → the earlier one); the other is shown but charges nothing that half. **Answer: recommended
+  (owner, 20 Sep 26).** Owner also confirmed C: a leave dated before posting-in SHOWS on the war as
+  the leave code in that otherwise-blank box.
