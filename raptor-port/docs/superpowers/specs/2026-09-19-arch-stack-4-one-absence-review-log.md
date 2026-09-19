@@ -176,6 +176,17 @@ built from two war-approved absences of DIFFERENT types cannot preserve both typ
 rewrite; conflict cells offer approved-leave actions per contributing absence only, and multi-cell
 selections skip them with a plain report.
 
-## Round 9 — design Rev 9
+## Round 9 — design Rev 9, 19 Sep 26
+
+**Fable: APPROVED — build-ready**, one LOW (FB9-01): un-approving one contributor of a conflict cell
+leaves the cell showing the new request until decided; recommended accept-and-pin.
+
+**Codex: REVISE (1).** OA9-001 (HIGH): refusing the two contributors of a conflict cell one after the
+other overwrites the first's request (one record per person/date).
+
+**Host:** design §24 — `lw.decideApproved` / `lw.moveApproved` preflight against the stored record
+and refuse rather than overwrite, with a plain message; FB9-01 accepted as option (a) and pinned.
+
+## Round 10 — design Rev 10
 
 (pending)

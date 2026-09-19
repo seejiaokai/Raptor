@@ -1,6 +1,7 @@
-# ARCH-STACK step 4 — ONE absence record (design, Rev 9, 19 Sep 26)
+# ARCH-STACK step 4 — ONE absence record (design, Rev 10, 19 Sep 26)
 
-Status: **DESIGN — round 9 of the cross-provider red-team (Codex + Fable). No code yet.**
+Status: **DESIGN — round 10 of the cross-provider red-team (Codex + Fable). No code yet.**
+Rev 10 (§24): un-approving never overwrites a stored request; the one-contributor interim state is pinned.
 Rev 9 (§23): the refusal discriminator, a failed journal rewrite stops the boot, conflict cells act per absence.
 Rev 8 (§22): savepoints per pipeline, recovery obeys the selective reset, deferred effects drain fully.
 Rev 6 (§20) made the all-or-nothing save exact; Rev 7 (§21) makes a refused command leave nothing
@@ -793,3 +794,19 @@ shows the world after G1∪G2 or after neither, never between. *(Corrected in Re
    at a time"). `carried` therefore never has to hold more than one type per request. Test: approve LL
    and OIL on separate dates, admin re-dates one to overlap → the cell offers two separate absences;
    un-approve the OIL → reload → approve → the LL is untouched and the OIL comes back as OIL.
+
+## 24. Round-9 → Rev 10.
+
+1. **Un-approving never overwrites a request** (Codex OA9-001). `lw.decideApproved` (and
+   `lw.moveApproved`'s landing) preflights the request it would create against the RAW stored record
+   at that address: if a different request is already stored there (e.g. the OIL request left by
+   un-approving one contributor of a conflict cell), the action is REFUSED for that date, the Input
+   is left unchanged, and the sheet says which request must be decided first ("OIL request on 15 Jul
+   — decide it before changing the LL"). A multi-date action reports those dates as skipped. Test:
+   overlapping war-approved LL and OIL → refuse the OIL → refuse the LL → refused with the message,
+   the OIL request and its `carried` intact; reload; undo/redo round-trips both steps.
+2. **The interim state after un-approving one contributor is accepted and pinned** (Fable FB9-01,
+   option a). After un-approving the OIL of an LL+OIL conflict cell, the cell shows the pending OIL
+   request, the remaining LL goes on the clash list, and the person counts away (a pending request
+   removes availability, `bids.ts:118-124`); the charged counter follows the displayed request until
+   the admin decides it. §3.1 row 4 is reachable this way by design. Test asserts that interim state.
