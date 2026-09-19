@@ -634,22 +634,21 @@ retry (more likely on iPhone). Never fixed, not logged as a limitation.
 - **Fix within [DB-STEP]:** a real "it's saved" signal the delete waits for, rather
   than a piecemeal patch in three places. Or pull earlier on request.
 
-### [ARCH-STACK-4] One absence record — DESIGN DONE, BUILD NEXT (19 Sep 26)
-Step 4 of the [ARCH-STACK] backbone. Branch `claude/db-step4-one-absence` (design + records only so
-far; no code). An absence is ONE record (the Input); the Leave War stores only requests and OIL
-credits and DERIVES approved leave/medical/course/OD from the records on read; approve/retract are
-commands; one command saves all-or-nothing (a narrow slice of step 5's transactional save pulled
-forward). Design red-teamed 10 rounds (Fable APPROVED; Codex's late rounds only narrowing edge cases,
-all folded); owner closed the loop ("10 rounds is a long loop" — future steps cap at ~3). Then the
-owner settled every Leave War clash case (both providers enumerated them).
-- **Read to resume:** the design `raptor-port/docs/superpowers/specs/2026-09-19-arch-stack-4-one-absence-design.md`
-  (later sections override earlier: §26 > §25 > … ), the clash decisions
-  `…-2026-09-19-arch-stack-4-clash-catalogue.md` (owner answers at the bottom override the design
-  where they differ), and the red-team transcript `…-one-absence-review-log.md`. Box comp:
-  `raptor-port/docs/img/step4-multi-record-box.png`.
-- **Build order:** design §14 (phase 0 = group saves). Test-first, Opus high; show the owner the real
-  multi-record box in the app's colours before building that screen; cross-provider CODE inspection
-  after; gates; hold for "merge live".
+### [ARCH-STACK-4] One absence record — BUILT, IN REVIEW, HOLDING FOR "merge live" (20 Sep 26)
+Step 4 of the [ARCH-STACK] backbone. Branch `claude/db-step4-one-absence`. An absence is ONE record
+(the Input); the Leave War stores only its own records (requests, OIL credits, replaced-bid notices)
+as a list per person/date and DERIVES what each day shows on read; approving on the war writes the
+Input in the same command; every save is all-or-nothing (phase 0). The owner's clash rules run at
+one seat in the inputs door (`leavewar/inputgate.ts`) and on undo/redo; publishing a weekend/PH day
+replaces a clashing bid. The multi-record box (grey `+n` / amber `!`) and its tap list are built;
+screenshots in `raptor-port/docs/img/step4-shots/`.
+- **Read to resume:** the build log `raptor-port/docs/superpowers/plans/2026-09-19-arch-stack-4-build-log.md`
+  (what is built where + status), the rules of record
+  `raptor-port/docs/superpowers/specs/2026-09-20-arch-stack-4-clash-check.md`, the inspection brief
+  `…/plans/2026-09-20-arch-stack-4-inspection-brief.md`.
+- **Left:** fold in the cross-provider code inspection (Codex + Fable) and the scenario tester's
+  findings; hold for the owner's "merge live". Deferred on purpose: OIL itself as a read-time
+  derivation (design §7), per-year balances `[LEAVE-YEAR]`, published-day Unavailable `[PUB-UNAVAIL]`.
 
 ### [PUB-UNAVAIL] New absence silently changes a published day's Unavailable list — NEXT AFTER step 4
 A new absence covering an already-published day changes that day's issued Unavailable list with no

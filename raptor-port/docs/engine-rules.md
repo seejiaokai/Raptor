@@ -1459,8 +1459,9 @@ the input that caused them — one undo step):
   part of the episode being closed — and instead surfaces as a LEFTOVER of
   `upchitEffects(person, x, except)`, the one body the save-time summary
   sheet and the write both read. The remarks "till …" token is rewritten
-  (`withRemarksTail`), `retractLwRow` runs first on an lw-tagged row, and the
-  Leave War's freed days clear on the next reconcile. The canonical closer of
+  (`withRemarksTail`), and the Leave War — which reads approved leave straight
+  off the Inputs since [ARCH-STACK] step 4 (20 Sep 26) — shows the freed days at
+  once. The canonical closer of
   an EXPIRED episode is dated the day AFTER its end; `pendingUpchits`' `>=`
   covering test admits it and still tolerates old ends-on-the-date records.
 - A **different-type medical overlap is ASKED ABOUT, never resolved
@@ -2637,8 +2638,12 @@ single click that a MEMBER makes on their own published leave is the remarks
 editor (`docs/ui-contracts.md` §Published-stage remarks editing) — a member
 edits their own note, an admin edits anyone's, and the save runs through
 Raptor's `setLeaveRemarks → commitInputEdit`, so the same member-own gate
-applies. `sync.ts:leaveInputAt` is a new query on the sync seam that finds the
-Raptor input a war cell derives from.
+applies. `sync.ts:leaveInputAt` is a query on the sync seam that finds the
+Raptor input a war cell derives from (since [ARCH-STACK] step 4 through the day
+view: every absence IS an Input, so there is exactly one to find per record).
+The owner's absence clash rules (20 Sep 26) are in
+`docs/superpowers/specs/2026-09-20-arch-stack-4-clash-check.md`; they run at one
+seat, `leavewar/inputgate.ts`.
 
 **A member edits and deletes only their OWN personal inputs (owner, 27 Aug
 26 — "they cant edit other people's input, only can view").** On the Inputs

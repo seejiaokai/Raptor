@@ -11,12 +11,12 @@ This file is the running record of what is BUILT, so a new session can resume fr
 |---|---|---|
 | 0 | All-or-nothing group saves (whiteboard transaction + savepoints, postman groups, `putMany` + journal + boot replay, reset filter, phase-8 drain loop, deferred persists) | **BUILT, tests green** (19 Sep 26) |
 | 1 | Tests + `cellFor` (= `engine/dayview.ts` + `absences.ts`) | **BUILT, tests green** (20 Sep 26) |
-| 2–5 | Stored records as a LIST per day (`engine/warrecs.ts`), merged read (`state/merge.ts`), figures read day views, runInbound/runOutbound/retract deleted, absence door in sync.ts | **IN PROGRESS** (20 Sep 26, overnight) |
-| 3 | Absence index + merged `getState()` + structural sharing + perf gate | — |
-| 4 | Delete `runInbound`/`retractLwRow`/ingest/withdraw; inputs door consumes/replaces bids | — |
-| 5 | War commands + one-envelope bulk entry points + delete `runOutbound` | — |
-| 6 | Landing `srcType` + OIL marker | — |
-| 7 | Docs → cross-provider CODE inspection → hold for "merge live" | — |
+| 2–5 | Records as a LIST per day (`engine/warrecs.ts`), merged read (`state/merge.ts`), figures read day views, the copy deleted, the absence door (approve / un-approve / remove / move) in `sync.ts` | **BUILT, tests green** (20 Sep 26) |
+| 4b | The rules at the inputs door (`inputgate.ts`): sick cuts leave (H2), no-overlap invariant incl. undo/redo (B7), bid replacement + notices (H1, B, B6); approval skips a worked day (§26.3) | **BUILT** (20 Sep 26) |
+| 5b | The publish door (B5, answer A): weekend/PH work replaces a clashing bid inside the publish command | **BUILT** (20 Sep 26) |
+| UI | The multi-record box (`+n` / `!`), the tap list (`ui/DayList.tsx`), leave outside the squadron window (answer C, PO tag), posted-out filing on the Inputs page (H5), legend | **BUILT** (20 Sep 26); screenshots `docs/img/step4-shots/` |
+| 6 | Landing `srcType` (§8.1); OIL marker = `oil:'auto'` credits | **BUILT** |
+| 7 | SCHEMA_VERSION 3→4; docs (CLAUDE.md, HANDOFF, data-model, data-schema, feature-impact, undo-contract, engine-rules, ui-contracts, known-gaps, OUTSTANDING); gates; cross-provider code inspection | docs + gates DONE; inspection RUNNING (20 Sep 26 overnight) |
 
 ## Owner checkpoints still ahead
 - Before building the Leave War multi-record box (the `+n` / amber `!` cell and its tap list): show the
@@ -70,10 +70,9 @@ This file is the running record of what is BUILT, so a new session can resume fr
   converted by `legacyViews`, so there is one reading path).
 - `sync.ts`: `refreshAbsences()` (per-person signature over war-visible Inputs → `setAbsenceRows`),
   clash strip derived from `views[..].conflicts`, OIL pass writes `auto` credits with work `spans`.
-- Still TO BUILD: the Inputs-door rules (bid replacement + notices, sick cuts leave, refusals, redo
-  invariant), publish replacing weekend/PH bids (B5), notices UI + "OK, seen", the box `+n`/`!` +
-  tap list UI, posting-out filing (H5), SCHEMA_VERSION 3→4, seed/test re-baseline, docs, gates,
-  cross-provider code inspection.
+- Everything in the design is built (see the phase table). Not built, on purpose: OIL as a read-time
+  derivation (design §7, OUTSTANDING); the structural-sharing unit test of §12 (the merge caches
+  per person; the perf gate is green).
 
 ## Resume point (20 Sep 26, ~65% context — checkpoint commit)
 - Leave War suite: 1446 pass / 39 fail. Remaining failing files: quarantine-pile1, undoaudit,
@@ -86,3 +85,12 @@ This file is the running record of what is BUILT, so a new session can resume fr
 - Engine suite fully green; store.test and sync.test green.
 - Then: Raptor-side suite (`npx vitest run --project raptor`), typecheck incl. tests, then the
   still-TO-BUILD list above.
+
+## Status (20 Sep 26, overnight)
+- Whole vitest suite green (5,000+), build clean, `tfin.js` 728/0, e2e green after the red-day
+  fixture moved to the record-list shape, perf gate 4/4 (check B had caught a stale boot-time
+  warning count — fixed in `main.tsx`), tracker smoke run.
+- Owner decisions made by the builder overnight (to report): who counts as "the bid's own person"
+  for notices (a member session whose View-as is that person; an admin filing always leaves a
+  notice); the tap list shows for any marked day and for leave outside the squadron window; a
+  medical line in the tap list carries no colour edge.

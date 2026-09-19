@@ -107,7 +107,8 @@ directions, no stray second `user` envelope, no spurious undo step. Two mechanis
 
 - **Join in-reducer.** A `commit`/`commitAs` (or `commitProjection`) raised from *inside* the
   running reducer JOINS the open transaction via `txn.child(cmd)`: shared snapshot set, shared
-  rollback, ONE envelope, its changes appended. `commitInputEdit`'s `retractLwRow` is such a child.
+  rollback, ONE envelope, its changes appended. (Example since [ARCH-STACK] step 4: a war
+  approval's Inputs write, and an Inputs-page filing's bid replacement on the war.)
 - **Enqueue-with-causedBy from a subscriber.** A `commit` raised from a notify/subscriber during
   phase-8 delivery is enqueued (not nested) and drained after, carrying `causedBy` = the user
   action's `seq`. `causalSeq` is live across phases 8 AND 9 and is saved/restored around each
@@ -202,8 +203,8 @@ which every store's implementation must honour and every caller must respect:
   a half-applied world.
 - **Persist / history / notify release at the TRANSACTION boundary (phase 8), via
   `cmdDeferEffect` — never inline in the reducer.** An inline `notify`/`rawPersist` inside the
-  reducer would let a reconciler fire on a half-applied world (e.g. child-join a `runOutbound`
-  mid-restore). Defer them so an N-record write is one persist + one notify at the end.
+  reducer would let a reconciler fire on a half-applied world (e.g. a sync pass reading a
+  half-restored Inputs list). Defer them so an N-record write is one persist + one notify at the end.
 - **Called only from a reducer that has already enlisted this store, and never opens its own
   command.** `write()` is an apply primitive, not a command.
 - **Issued records are refused unless `opts.allowIssued`.** The append-only-intended issued records
@@ -321,3 +322,22 @@ on the same seam — never a new stack.
 
 If a proposed feature can't be expressed as "emit/consume envelopes over this seam", that's the
 signal to stop and revisit the design — not to add a parallel mechanism.
+
+## 6. Worked example — the one absence record ([ARCH-STACK] step 4, 20 Sep 26)
+
+Approved leave is the Raptor Input; the Leave War keeps only requests, OIL credits and notices. So
+every absence gesture is ONE `user` envelope carrying real records on BOTH stores, and undo is plain
+replay — no reconciler re-derives anything:
+
+- Approve on the war: the requests' `lw.cell` lists + the Input put (`lw` = war id).
+- Un-approve / remove / move approved leave: the Input put/delete (a split mints a second Input) +
+  the request re-created where it applies.
+- File on the Inputs page over a bid: the Input put + the bid's `lw.cell` list (the clashing half
+  gone, a notice added when someone else filed it); sick over leave: the medical put + the leave
+  trimmed, in the same envelope.
+- Publish a weekend/PH day: the book records + the replaced bids' `lw.cell` lists.
+
+**Every door re-checks the rules, including redo.** `schedWriteRecords` (the restore body) calls the
+absence gate's `vetRestore` after replaying Inputs: a restore that would put two leaves on the same
+time, or leave over a medical, is refused whole with the blocker named (clash check B7). The war
+re-reads the Inputs after a restore through its ordinary Raptor-notify subscription.
