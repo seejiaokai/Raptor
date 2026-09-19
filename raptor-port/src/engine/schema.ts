@@ -220,8 +220,10 @@ export type AllhandsRow = RowFlags & {
 export type GroundRow = AllhandsRow & {
   /** The submitter's input remarks, carried into the row when landed — engine (acceptInput). */
   rmks?: string
-  /** Back-reference to the INPUTS content key (`inpKey`) it was landed from — engine (acceptInput). */
+  /** Back-reference to the INPUT it was landed from — its stable id (`iid`, since ARCH-STACK 1A, 13 Sep 26) — engine (acceptInput). */
   src?: string
+  /** The TYPE of the input it was landed from ([ARCH-STACK] step 4 §8.1), so the clash grade survives the input's deletion — engine (acceptInput, shiftHardGround). */
+  srcType?: string
 }
 
 /** A standalone wave kind: SC, AVALON, BB (a flying wave has none). */

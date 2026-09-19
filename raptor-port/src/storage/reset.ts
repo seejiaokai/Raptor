@@ -14,8 +14,14 @@ import type { Backend, Collection, Snapshot } from './backend'
    person ID, not the callsign string, so a pre-1C week persisted with cs-form
    `who` must be cleared — once renameCallsign stops rewriting rows, a rename on
    such a week would drop the person from the row (owner-confirmed reset, not
-   migrate). Pre-1A data is unstamped, which reads as 0. */
-export const SCHEMA_VERSION = 3
+   migrate). Pre-1A data is unstamped, which reads as 0.
+   4 = [ARCH-STACK] step 4 (one absence record, 20 Sep 26): the Leave War stores
+   its records as a LIST per person/date (requests, OIL credits, notices) and
+   approved leave lives only as an Input with `lw` provenance; an old war blob
+   (one code per cell + a states map with approved leave in it) cannot be read
+   as the new shape, and old Inputs carry no `lw` link to it — cleared together
+   (owner's dev-phase rule: reset, don't migrate). */
+export const SCHEMA_VERSION = 4
 const STAMP: [Collection, string] = ['settings', 'schema']
 
 /* the collections cleared on a version bump. `weeks` holds the days (pre-1A:

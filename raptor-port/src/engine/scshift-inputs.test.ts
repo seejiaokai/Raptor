@@ -132,6 +132,13 @@ describe('accepted ground rows are graded by their source type', () => {
     expect(acceptInput(TUE, i, 'g')).toBe(true)
     expect(mine('DOUBLE_BOOK').filter((x: any) => /SC AM & ESCORT VISIT clash/.test(x.msg)).length).toBe(1)
   })
+  it("an accepted 'Other' KEEPS its hard grade after the input is deleted (ARCH-STACK step 4 §8.1)", () => {
+    addSC(P)
+    const i = INPUTS[inp('Other', { remarks: 'ESCORT VISIT' }) - 1]
+    expect(acceptInput(TUE, i, 'g')).toBe(true)
+    INPUTS.splice(INPUTS.indexOf(i), 1)   // the input goes; the landed row stays
+    expect(mine('DOUBLE_BOOK').filter((x: any) => /SC AM & ESCORT VISIT clash/.test(x.msg)).length).toBe(1)
+  })
   it('an accepted Meeting row stays the amber SHIFT_SOFT, spoken once', () => {
     addSC(P)
     const i = INPUTS[inp('Meeting') - 1]

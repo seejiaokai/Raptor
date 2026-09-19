@@ -385,7 +385,7 @@ export function acceptInput(di:any,inp:any,dest:any){
   d.ground.push({prog:inpLabel(inp).toUpperCase(),
                  str:inp.allday?'':hhmm(inp.s), end:inp.allday?'':hhmm(inp.e),
                  who:inp.person,
-                 rmks:inp.remarks||'', src:key});
+                 rmks:inp.remarks||'', src:key, srcType:inp.type});
   inp.acc='g';
   /* markStructuralAdd, not trackStructuralAdd+noteChange (owner audit, 15 Aug
      26 — every OTHER new ground row gets a ~6s blue box, an accepted input's
