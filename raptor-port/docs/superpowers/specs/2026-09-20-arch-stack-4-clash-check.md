@@ -97,4 +97,24 @@ whole, naming the medical.
   posting-out: may a member BID clearing leave too (recommended — same as filing), or only have it
   filed?
 
-Owner answers: _pending_.
+Owner answers (20 Sep 26):
+- **A — recommended:** published work replaces a bid only on weekends and public holidays (the days
+  that earn OIL). Weekday work vs an absence stays the schedule's own warning (+ the Q6 amber for
+  ATT C/HL/OML).
+- **B — recommended:** only the clashing half/dates of a bid are removed; the rest stays with its state.
+- **C — CHANGED: leave may be dated BEFORE posting-in and AFTER posting-out** — filed or bid. Shown as
+  the leave code (before posting-in the box is otherwise blank; after posting-out it carries the PO
+  mark); charged; never counted for manning. A leave-date eligibility check, never a loosened "in
+  squadron".
+- **H1, H2, H4, H5, H6 — confirmed.**
+- **H3 — OVERRULED:** two leaves in the SAME half at times that do NOT overlap are ALLOWED ("LL
+  08:00–10:00 and OL 10:30–11:30 is allowed since the timings don't clash … total 3 hours. Half day of
+  leave is being deducted"). So: leave vs leave (and leave vs medical) overlap is judged on REAL TIMES
+  (a half preset = its whole half; a full day = the whole day); a half of a day is CHARGED ONCE however
+  many leave records share it — never two halves for one morning. Which balance pays when the sharing
+  records spend different balances: asked (D, below). The 15-day rule reads "is this half covered by
+  LL/OL", so a shared morning counts once — unchanged. Display: main code by the ladder, ties inside a
+  half by the earlier start time; grey `+n`; the tap list shows each record with its times.
+- **D (asked 20 Sep 26):** a half shared by leaves on DIFFERENT balances (e.g. LL 08:00–10:00 + OIL
+  10:30–11:30): recommended — the half day comes off the balance of the leave covering more time
+  (a tie → the earlier one); the other is shown but charges nothing that half. Answer: _pending_.
