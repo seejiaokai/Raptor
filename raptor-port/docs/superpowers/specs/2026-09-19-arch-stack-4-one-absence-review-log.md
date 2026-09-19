@@ -61,6 +61,31 @@ after step 4 (`[PUB-UNAVAIL]`).
 
 **Host disposition:** all eight folded into Rev 3 (design §16).
 
-## Round 3 — design Rev 3
+## Round 3 — design Rev 3, 19 Sep 26
+
+**Fable: APPROVED** ("build-ready once three small items are folded into the build plan"): every
+FB2 fix verified against the code. Items: FB3-01 the drag-move can't reach approved leave
+(`isMovableSource`/`moveProblem` read the raw grid); FB3-02 nothing publishes the derived clash
+list to the strip; FB3-03 `carried` is stripped by `readRecord`'s allow-list and dropped by moves.
+Folded as design §17.
+
+**Codex: REVISE (7).** The runner marked the run failed because the host appended §17 while it ran
+(a result cannot approve a plan that changed under it) — host process error, noted; the findings
+themselves are valid. Codex confirmed Rev 3 resolves the stored-projection, balance-reader,
+war-resolution and repaint defects. New: OA3-001 decide on a visible request would hit the absence
+beneath (dispatch must follow the displayed record); OA3-002 approve over an existing absence needs
+a preflight, and the combine body drops a second full-day contribution silently; OA3-003 manual vs
+generated OIL credits must stay distinguishable (the pass would auto-delete a hand-typed credit);
+OA3-004 an existing credit followed by an absence was wrongly "cannot arise"; OA3-005 Input and
+request persist under separate keys retried independently, so a half-save can lose an approval;
+OA3-006 one `carried` remark cannot hold two contributors'; OA3-007 undo of an Input-only war
+command doesn't snap to the war.
+
+**Host disposition:** all seven folded as design §18 (overrides earlier sections; three contradicted
+lines also corrected in place). OA3-005: loss-free ordering via `consumedBy` markers + a boot tidy;
+the residual "action not fully applied after a mid-save tab close" is the storage door's
+transactional save, owned by ARCH-STACK step 5 — recorded as a known limitation, not built twice.
+
+## Round 4 — design Rev 4
 
 (pending)

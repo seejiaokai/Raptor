@@ -1,7 +1,10 @@
-# ARCH-STACK step 4 — ONE absence record (design, Rev 3, 19 Sep 26)
+# ARCH-STACK step 4 — ONE absence record (design, Rev 4, 19 Sep 26)
 
-Status: **DESIGN — round 3 of the cross-provider red-team (Codex + Fable). No code yet.**
-Rev 3 folds in Fable's round-2 findings FB2-01…08 (§16) and the owner's two answers (§13).
+Status: **DESIGN — round 4 of the cross-provider red-team (Codex + Fable). No code yet.**
+Rev 3 folded in Fable's round-2 findings (§16) and the owner's answers (§13). Fable APPROVED Rev 3
+with three build items (§17). Rev 4 folds in Codex's round-3 findings (§18) — **§18 overrides any
+earlier section it contradicts** (notably §2.2 `oil:true`, §3.1's credit row, §5.2 "delete those
+requests").
 Branch `claude/db-step4-one-absence`. Own gated PR; nothing merges without the owner's
 "merge live". Author: Opus 5 (high). Review transcript + dispositions:
 `2026-09-19-arch-stack-4-one-absence-review-log.md`.
@@ -93,7 +96,7 @@ Current shape kept (`engine/schema.ts:148-185`). Changes:
 | Variant | Stored in | Fields | Who writes |
 |---|---|---|---|
 | **Request** | `war.grid` code + `war.states` record | `state: pending \| acknowledged \| refused`, `shiftedFrom?`, `note?` | members bid (own row, `canEditRow`), admin decides (`canDecide`) — today's `lw.edit` |
-| **OIL credit** | same | `state:'approved'`, `oil: true`, `note?` (the FO/HO reason) | `runOilPass` (generated) and `setCellNote` (manual reason) — unchanged behaviour, marker renamed from `source:'raptor'` (OA-006, FB-06) |
+| **OIL credit** | same | `state:'approved'`, `oil: 'auto' \| 'manual'`, `note?` (the FO/HO reason) | `runOilPass` (`auto`) and `setCellNote` / direct FO-HO entry (`manual`) — unchanged behaviour; replaces `source` (OA-006, FB-06, OA3-003) |
 | **Absence** | **nowhere** — derived (§4) | `state:'approved'`, `inputIds: string[]`, `shiftedFrom?` | nobody; it is a read |
 
 A **request** may also carry `carried?: { remarks: string; lwMoved?: Record<iso, iso> }` — written
@@ -138,7 +141,8 @@ A request is the war's own record; an absence is the squadron's record of fact. 
 | pending / acknowledged request, same code | yes | the absence (the filing consumed the request — §5.2; a leftover is dropped at merge) | — |
 | pending / acknowledged request, different code | yes | **the request** (today's behaviour: the war keeps what was bid; only reachable when the request predates the filing) | the absence, as today's clash note |
 | **refused** request, any code | yes | **the absence** — a refusal removes nobody, and the absence is fact (FB2-02; today a refused chip can hide a filed leave and count the person available — fixed) | — |
-| OIL credit | yes | cannot arise — the OIL pass refuses a credit on an absence day (§7) | — |
+| OIL credit (was there first) | yes | **the credit** — today's behaviour; the OIL pass never places a NEW credit on an absence day (§7, §18 OA3-004) | the absence |
+| request with `consumedBy` naming a live Input | — | hidden (the absence shows) — §18 OA3-005 | — |
 
 **New stored records never land on an absence day** (FB2-02). One module-internal read,
 `absenceAt(person, date)` (from the index, no war walk), replaces every deleted `raptorOwns(...)`
@@ -244,7 +248,7 @@ stay the door; the change is deletions inside them: `retractLwRow` and `delete r
 
 | Gesture | Command | Reducer (enlists `schedStore` + `lwStore`) |
 |---|---|---|
-| Approve request(s) | `lw.approve` | group selected requests into contiguous same-code same-portion runs per person → one Input per run (`lw` = war id, `lwMoved` from each request's `shiftedFrom`) → delete those requests |
+| Approve request(s) | `lw.approve` | preflight each date against covering Inputs (§18 OA3-002) → group the rest into contiguous same-code same-portion same-remarks runs per person → one Input per run (`lw` = war id, `lwMoved` from each request's `shiftedFrom`, remarks from `carried`) → mark those requests `consumedBy: <iid>` (§18 OA3-005) |
 | Un-approve / refuse an approved day | `lw.decideApproved(state)` | shrink / split / remove the owning Input(s); re-create a request at exactly those dates with the chosen state (`pending`, `acknowledged` or `refused`) |
 | Delete approved day(s) on the war | `lw.removeApproved` | shrink / split / remove the owning Input(s). **Deliberate delete propagates and sticks** (owner decision 2, 13 Sep 26) |
 | Move approved day(s) | `lw.moveApproved` | shift the owning Input's dates (split for a sub-run); record `lwMoved` when bidding is closed (today's `biddingClosed` rule); `moveProblem` stays the one validation body |
@@ -483,3 +487,81 @@ Effort: M–L, several sessions.
 | FB2-06 refuse → approve loses the remark | §2.2 `carried` on the request |
 | FB2-07 structural-sharing rationale wrong | §4.3 reworded; gate = measured merge time + perf ceilings |
 | FB2-08 signature fields / full-build points | §4.1 spelled out |
+
+## 17. Round-3 items (Fable APPROVED Rev 3 with these folded into the build)
+
+- **FB3-01 — the drag-move must reach approved leave.** `isMovableSource` (store.ts ~3281) and
+  `moveProblem`'s source loop (~3327) test `isBiddable` on the RAW grid, so an approved selection
+  yields zero movers and the sheet offers no Move. Build: `isMovableSource` = raw request test OR
+  (`absenceAt` is an absence whose every Input has `lw` AND `canDecide`); `moveProblem` accepts
+  that source and excludes the selection's own absence sources from the landing check (a block can
+  slide over itself); `moveCells` becomes the one-envelope dispatcher — request cells moved raw,
+  absence cells via the `lw.moveApproved` helper. Tests: admin drags a 3-day approved block +2
+  after close → one envelope, Input shifted, dotted mark on the landing days; a member's drag → no
+  Move offered; a mixed selection → one envelope.
+- **FB3-02 — the clash strip must be published.** `refreshAbsenceIndex` recomputes
+  `LEAVE_CLASHES = clashesOf(merged)` (§3.1 row 4 only) after any rebuild and calls
+  `publishClashes()`; the OIL pass keeps its half. Test: pending OL over a filed LL → strip lists
+  it; refuse the OL → the strip empties with no other write.
+- **FB3-03 — `carried` must survive storage and moves.** `readRecord` (store.ts ~385) is an
+  allow-list: add `carried` (shape-validated). `shiftBid` / `moveCells` spread `carried` from the
+  source record onto the landing record. Test: approve → refuse → reload → approve keeps the
+  remark; refuse → move → approve keeps it.
+- Copy: `BidPicker.tsx:339` and the `RaptorSheet` copy say "Filed on the Inputs page — change it
+  there". Reducers read the module `state`, never `getState()`, so no merge is paid inside a loop.
+
+## 18. Round-3 items (Codex, on Rev 3) → Rev 4 rules. WHERE THIS SECTION DISAGREES WITH AN EARLIER ONE, THIS SECTION WINS.
+
+- **OA3-001 — actions target what is displayed.** Source actions (decide, refuse, clear, move,
+  note) dispatch on the DISPLAYED record's variant (§3.1): a displayed request is acted on as a
+  request (`lw.edit`) even when an absence lies under it; only a displayed absence routes to the
+  `lw.*Approved` commands. `absenceAt` is for DESTINATION occupancy (a new write landing), never the
+  sole source discriminator. Test: pending OL masking a filed LL → refuse the OL → the request is
+  refused, the LL shows, the Input is untouched.
+- **OA3-002 — approval preflights overlaps; `cellFor` never drops a conflict silently.** Before
+  consuming anything, `lw.approve` runs `cellFor` over (covering Inputs + the would-be Input) for
+  every selected date: a different-code or same-portion conflict → that cell is SKIPPED and reported
+  (`{decided, skipped}`), nothing consumed; the same code already approved → idempotent (the request
+  is consumed, no new Input); a complementary half (AM approved, PM requested) → allowed and
+  combines. `cellFor` returns `{clash}` for ANY two contributions it cannot represent together —
+  including two full-day contributions, which today's body (`sync.ts:571-575`) keeps first-wins
+  silently. The combine table is re-pinned, not copied blind.
+- **OA3-003 — two kinds of credit.** The credit variant is `oil: 'auto' | 'manual'` (not `true`):
+  `runOilPass` generates and cleans up only `auto`; `setCellNote`/direct FO/HO entry writes `manual`,
+  which the pass never deletes; `oiltracker.ts:209` reads `oil === 'manual'` for the reason editor
+  (`OilTracker.tsx:431`). `readRecord` validates the value.
+- **OA3-004 — a credit that was there first keeps the cell** (today's behaviour: the leave went to
+  the clash list). §3.1's "OIL credit + absence cannot arise" row is REPLACED by: stored credit +
+  absence → **the credit is displayed; the absence goes on the clash list**. The OIL pass never
+  PLACES a new credit on an absence day (merged check) and does its `auto` cleanup over the RAW
+  credits, so an obsolete generated credit is removed whether or not anything covers it; a `manual`
+  credit is never auto-removed. Undo of either is ordinary record replay.
+- **OA3-005 — a half-finished save must never LOSE anything.** Saves go out per storage key, each
+  retried independently (`storage/postman.ts:45-82`), so an approval (Input + request) can land
+  half-saved if the tab closes inside the save window. Rules, replacing "delete those requests"
+  in §5.2:
+  1. Approving (and a same-code filing over a request) does NOT delete the request; it marks it
+     `consumedBy: <iid>` in the same envelope. The merge hides a request whose `consumedBy` names a
+     live Input. If that Input never reached storage, the request is simply shown again after the
+     reload — the member's bid is back, the admin re-approves. No loss.
+  2. Removing / un-approving an Input deletes the requests it consumed in the same envelope (and
+     `lw.decideApproved` re-creates requests with `carried`). A half-save here can leave a leftover
+     request visible again — visible and correctable, never a silent loss.
+  3. A boot tidy (seed origin, not an undo step) deletes consumed requests whose Input loaded, and
+     clears a dangling `consumedBy` whose Input did not.
+  4. The residual — an admin action not fully applied after a tab closed mid-save — is the storage
+     door's transactional save, owned by ARCH-STACK step 5 (RC5, with [TRK-DISK]); recorded as a
+     known limitation, not solved twice.
+  Tests: backend fault injection (`MemoryBackend` failing `inputs/all` once, then `leavewar/wars`
+  once) around approve, remove-approved, un-approve and same-code filing → after reload, no request
+  and no absence is lost in any order.
+- **OA3-006 — remarks are per contributor.** `carried` is a list, one entry per contributing Input
+  per date: `{ portion, remarks, lwMoved? }[]`. Un-approving a cell that combined two Inputs keeps
+  both; re-approval groups into one run only fragments whose remarks match, else mints one Input per
+  distinct fragment. Tests: two adjacent same-code Inputs with different remarks, and an AM + PM pair
+  with different remarks, each round-trip approve → un-approve → approve with both remarks intact.
+- **OA3-007 — undo snaps to the right war.** `lw.approve` / `lw.decideApproved` / `lw.removeApproved`
+  / `lw.moveApproved` set the envelope `scope` to `{ module:'lw', warId, dates }`; `undo-wire.ts`
+  `snapView` selects `scope.warId` and lands the first of `scope.dates` when an envelope has no
+  `lw.cell`/`lw.bid` change (`deriveContexts` maps it to the war, not the Inputs page). Test: move
+  approved leave in war A, switch to war B, undo → war A, that date.
