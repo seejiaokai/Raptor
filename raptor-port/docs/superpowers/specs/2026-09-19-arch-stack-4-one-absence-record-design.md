@@ -1,7 +1,7 @@
-# [ARCH-STACK] Step 4 — ONE Absence Record — DESIGN (Rev 6, 19 Sep 26 — CONVERGED, BUILD-READY)
+# [ARCH-STACK] Step 4 — ONE Absence Record — DESIGN (Rev 7, 20 Sep 26 — owner OIL ruling; build-ready pending a quick OIL re-check)
 
-> **Status: Rev 6 — FOUR cross-provider red-team rounds done; CONVERGED; BOTH reviewers clear it for
-> build (no further round).** Eight reviews (Codex/GPT-6 Astra high + Fable 5.1 ×4), **direction affirmed
+> **Status: Rev 7 — CONVERGED over four cross-provider rounds (Rev 6), then an owner OIL ruling
+> (20 Sep 26) SIMPLIFIED §4.4.** Eight reviews (Codex/GPT-6 Astra high + Fable 5.1 ×4), **direction affirmed
 > every time**, each round strictly narrower (structural → mechanics → edge cases → spec text). Round 4
 > both REVISE-narrow and both said fold-and-build; Fable explicit: *"fold into Rev 6 and build; a further
 > review round is not needed."* Rev 6 folds the last spec-text fixes, all pinnable by one test, no design
@@ -10,9 +10,12 @@
 > splits credits (stored `earned` grid+states, reason preserved) from debits (effective) — rt4-3/R4-001;
 > (3) the duty/absence advisory is derived on every OIL pass, one producer — rt4-4/R4-003; (4) the
 > bid-sheet balance preview + a few readers repointed; (5) the doc index + `docLink` write-through.
-> **All six §8 owner decisions RESOLVED. Faint product point (§4.4): an approved-absent day still EARNS
-> its OIL credit — leave only wins the display (current behaviour; raise to change).**
-> **NEXT: BUILD (heavy, test-first) after the P2/P4 prerequisites. No code. Nothing merged.**
+> **All six §8 owner decisions RESOLVED.** **OWNER RULING 20 Sep 26 (§4.4): an approved leave on a
+> non-working day earns NO OIL — leave SUPPRESSES the credit (not just the display).** This SIMPLIFIES
+> the design — it removes the `earned`-field/`oilLedgerFor`-split machinery the last two rounds built.
+> One half-day sub-case left for the owner (§8.7). Because this touches balances (HEAVY), the OIL change
+> wants a quick targeted re-check before build. **NEXT: confirm §8.7 + a quick OIL re-check, then BUILD
+> (heavy, test-first) after the P2/P4 prerequisites. No code. Nothing merged.**
 
 **Plan of record:** `2026-09-13-architecture-rootcause-plan.md` (RC2; step 4; SEQ-004).
 **Builds on (DONE + live):** Step 1 stable ids, Step 2 command layer, Step 3 [GLOBAL-UNDO].
@@ -176,32 +179,31 @@ synchronous — queued items drain before `commit()` returns). On any envelope t
 **Boot:** run once in `wireLeaveWarSync` **after `remapPersonKeys`** (INPUTS hydrate before `lwInitStore`
 — `main.tsx:51,58,69`). Change-guarded by a per-`(person,span)` signature (perf).
 
-### 4.4 OIL — the `earned` field on the effective war (fM1/R3-001 — the load-bearing fix)
-The single effective cell cannot serve both "leave wins the display" and "the earned credit still feeds
-the balance" — so carry BOTH on the effective war, not one code:
-`effectiveWars()` returns each war as **`{ ...w, grid: egrid, states: estates, earned: w.grid }`** — the
-display grid is the merged effective view (leave wins the cell), but **`earned` is the raw STORED grid**
-that still holds the FO/HO credit codes. Then:
-- **`oilLedgerFor` is ONE loop over credits AND debits (`oiltracker.ts:201-219`) — split it, don't
-  switch it wholesale (rt4-3/R4-001):** **credits** (`earnsOil`) read the stored **`earned` grid AND its
-  stored states** (so an auto FO/HO keeps its `note`/reason and its automatic-vs-manual classification —
-  `oiltracker.ts:208-210`, `OilTracker.tsx:431`); **debits** (`spends.counter==='oil'`) + `chargedDays`
-  read the **effective** grid/states (a projected OIL-leave still posts its `taken` debit — else the
-  tracker balance exceeds `balanceOf`). `LeaveSource` (`charge.ts:57-62`) gains `earned` + earned states.
-  `earnedOil` (`counters.ts:137-144`) walks the stored `earned` grid.
-- `ingestDutyCredit` clashes **only on a STORED non-matching cell** (`store.ts:3074`, unchanged — the
-  `owned && FO/HO` overwrite clause stays) — a projected absence does **NOT** block the accounting write.
-- **The duty/absence advisory is derived on EVERY OIL pass** from the desired/landed credits +
-  `absenceAt`, **before** `runOilPass`'s unchanged-credit shortcut (`sync.ts:973`) — not only when a
-  credit is written — else it vanishes when the pass replaces `OIL_CLASHES` with an empty list on an
-  unchanged run (`:999-1000`); one producer, cleared only when the conflict is gone (rt4-4/R4-003).
-- `figureCtxOf` (`store.ts:2525`), `oilCreditBidAgainst`'s balance read (`sync.ts:952`) read
-  `effectiveWars()`; the `landed` FO/HO check (`sync.ts:947`) stays STORED (an effective grid would hide
-  FO under LL and silence the warn).
-So **both event orders agree**: leave-before-work and work-before-leave give identical balance AND
-identical leave-wins display; FO↔HO changes + withdrawal covered. **Faint product point (owner):** an
-approved-absent day STILL earns its OIL credit — leave only wins the *display*; this preserves current
-behaviour (raise if you'd want an absent day to forfeit the credit instead).
+### 4.4 OIL — an approved leave SUPPRESSES the day's OIL credit (OWNER RULING 20 Sep 26)
+**OWNER RULING (20 Sep 26): a leave on a non-working day is not a worked day, so it earns NO OIL.**
+This SUPERSEDES Rev-4/5's "the credit still lands, leave wins the display only" and **REMOVES the
+`earned`-field machinery** (fM1/R3-001/R4-001) the last two rounds built — there is no credit to keep
+visible, so no split is needed. An approved absence on a day (`absenceAt` hit) **suppresses the OIL
+credit for that day:** no FO/HO lands, and a credit already landed is **removed** when leave is added.
+- `runOilPass`/`ingestDutyCredit`: **skip crediting a day where `absenceAt` hits**; the existing
+  reverse-and-replace sweep clears an FO/HO the leave now suppresses. **Order-independent:** work-first →
+  credit lands, then cleared when leave is added; leave-first → never credited — both end at no credit.
+  (`ingestDutyCredit` already returns `'clash'` on a conflict — extend the conflict test to `absenceAt`,
+  `store.ts:3074`.)
+- **Display AND accounting agree trivially:** a leave day shows leave and counts no credit. No `earned`
+  field, no `oilLedgerFor` split, no dual-source contract — the rt4-3/R4-001 complexity is dropped.
+- **Consistent with [OIL]** (lock earned OIL on an already-WORKED day): a day actually WORKED earns +
+  locks; a day on LEAVE earns nothing; [OIL] still governs the already-worked lock and the "didn't work
+  it after all" amendment. This ruling is the forward case; [OIL] is the already-worked case.
+- **The advisory** (a day the schedule would have earned OIL but the person is on leave) is optional
+  information only — still derived on every OIL pass, one producer (rt4-4/R4-003), never a credit.
+- `figureCtxOf`/`oilCreditBidAgainst` balance reads use `effectiveWars()`; the `landed` FO/HO check
+  (`sync.ts:947`) stays STORED. No credit ever coexists with leave on a cell, so there is nothing to
+  hide.
+- **HALF-DAY EDGE — OWNER TO CONFIRM (§8.7):** a half-day leave + half-day *actual* work on a
+  non-working day — does the worked half still earn (a half-day HO per the envelope), or does any leave
+  that day suppress the whole credit? *(Rec: the worked half still earns — they did work it; but "any
+  leave that day = no credit" is simpler. Your call.)*
 
 ### 4.5 Cross-week ground-row cleanup (ARCH4-001)
 `retractAbsence`/`editAbsence` must clean the scheduler's working Ground rows in **every affected week,
@@ -300,8 +302,9 @@ vs redo date.
   war jumps to the day; (e) move an approved bid → old input gone, fresh pending bid at new date,
   remarks carried; (f) retract ONE day of a 3-day approval → split, other days stand; (g) **off-week**:
   delete a landed `Other` whose ground row is on a stashed week → cleaned, no orphan grade; (h) file
-  leave, THEN create a war → populated; (i) OIL **both orders**: approve leave then work-day vs work-day
-  then approve leave → identical balance AND leave-wins display, credit visible in accounting; (j) set a
+  leave, THEN create a war → populated; (i) OIL **both orders** (§4.4 ruling): leave-then-work-day
+  AND work-day-then-leave → **NO OIL credit** either way (work-first: credit lands, cleared when leave is
+  added; leave-first: never credited); (j) set a
   balance with projected leave present → correct opening, stable after undo/reload; (k) replace cert
   A→B, then undo an unrelated input edit → B stays, A not resurrected (fR2-6); (l) do (c) on a published
   day → silent, no AL (§8.6).
@@ -345,6 +348,13 @@ vs redo date.
    amendment-machinery work** (`dayFilingFingerprint`/`filingDelta`/`computePubBar` for absences stay as
    they are). Consistent with the owner's model (post-publish leave changes are agreed + communicated
    outside the app). The undo publish-boundary itself is unchanged.
+
+7. **DECIDED (owner, 20 Sep 26) — an approved leave on a non-working day earns NO OIL; leave SUPPRESSES
+   the credit** (§4.4; supersedes the earlier "credit still lands" and removes the `earned`-field
+   machinery). **STILL OPEN (owner to confirm): the half-day sub-case** — a half-day leave + half-day
+   *actual* work on a non-working day: does the worked half still earn (a half-day HO), or does any
+   leave that day suppress the whole credit? *(Rec: the worked half still earns; simplest is "any leave
+   that day = none.")*
 
 **ALSO DECIDED (owner, 19 Sep 26) — the relaxed mandatory-document rule (§4.7) is FOLDED INTO the
 [SYNC-INTEG] P2 medical batch** (not a step-4 item), affecting the five certificate types: **ATT C,

@@ -405,3 +405,16 @@ Rev 6, all spec-text, no design change, no re-decision:
 5. §4.4 anchor `store.ts:3074` (rt4-5); §4.7 `docsFor` Map + `docLink` write-through (rt4-6).
 **After Rev 6 the design is BUILD-READY — no further review round (both reviewers).**
 
+
+---
+
+# OWNER RULING 20 Sep 26 — OIL on a leave day (supersedes the round-3/4 `earned`-field fix)
+The owner ruled: **a leave on a non-working day is not a worked day, so it earns NO OIL — leave
+SUPPRESSES the credit** (not "leave wins the display while the credit still counts"). This is a cleaner
+resolution of the same knot the reviewers kept hitting (R3-001/R4-001/fM1/rt4-3): with no credit on a
+leave day there is nothing to keep visible, so the `earned` field + `oilLedgerFor` credit/debit split
+are DROPPED. `runOilPass`/`ingestDutyCredit` skip crediting a day where `absenceAt` hits; the existing
+reverse sweep clears a credit when leave is added later (order-independent → both orders end at no
+credit). Consistent with `[OIL]` (already-worked-day lock). Design updated to Rev 7 §4.4. **This is a
+balances (HEAVY) change that removes previously-scrutinised machinery — it wants a quick TARGETED OIL
+re-check before build, plus the owner's half-day sub-decision (§8.7).**
