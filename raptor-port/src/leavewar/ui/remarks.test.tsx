@@ -8,7 +8,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../../engine/inputs'
 import { advanceStage, initStore, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
-import { runInbound, leaveInputAt } from '../sync'
+import { syncAbsences, leaveInputAt } from '../sync'
 import { Matrix } from './Matrix'
 
 const ISNAP = JSON.stringify(INPUTS)
@@ -23,7 +23,7 @@ function seedLeave(remarks = 'Bali till 15 Feb') {
     iid: 'rmk-test', person: PERSON, type: 'LL',
     date: 'Feb 11', endDate: 'Feb 13', yr: 2026, allday: true, remarks,
   })
-  runInbound()                 // lands the leave as a Raptor-owned war cell
+  syncAbsences()               // the war reads the filed leave
 }
 
 /** Close bidding then publish — advancing is admin-only, so this runs as an

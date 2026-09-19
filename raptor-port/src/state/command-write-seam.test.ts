@@ -139,7 +139,8 @@ describe('two-store restore (scheduler + LW in one reducer) runs NO reconciler b
         const mod = JSON.parse(JSON.stringify(drec.value)); mod.__twoStore = 1
         schedStore.write!([{ collection: 'days', id: `${CURWEEK}#0`, value: mod, op: 'put' }])
         txn.enlist(lwStore)
-        lwStore.write!([{ collection: 'lw.cell', id: `${warId}:${pid}:2026-01-20`, value: 'LL', op: 'put' }])
+        // [ARCH-STACK] step 4: an lw.cell value is the date's list of war records
+        lwStore.write!([{ collection: 'lw.cell', id: `${warId}:${pid}:2026-01-20`, value: [{ id: 'r-2s', kind: 'request', code: 'LL', state: 'pending' }] as any, op: 'put' }])
         inReducer = false
       },
     })

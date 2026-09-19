@@ -10,10 +10,11 @@ import { initStore as raptorInitStore } from '../state/store'
 import { projectPeople } from './state/raptorRoster'
 import {
   getState, initStore as lwInitStore, setCell, setCellRange, setBidState, setPeople, setRole, advanceStage,
-  ingestFromRaptor, lwCanUndo,
+  lwCanUndo,
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { wireLeaveWarSync } from './sync'
+import { fileAbsence } from './testkit'
 import { schedStore } from '../state/sched-commit'
 import { onCommit, commit, deferEffect, definePermission, anyone } from '../command'
 import type { CommitEnvelope } from '../command'
@@ -43,37 +44,36 @@ function approveWatched(person: string, dates: string[]): CommitEnvelope[] {
   return seen
 }
 
-describe('F1 — an LW approval mints its Raptor input as a chained projection', () => {
-  it('the input mint is a projection whose causedBy points at a real LW edit (not an orphan)', () => {
+/* [ARCH-STACK] step 4 — approving no longer MINTS a copy afterwards: the
+   approval files the Input itself, inside the one command, so the war's change
+   and the Inputs change travel in ONE envelope (design §2). The old C1 worry — an
+   orphan mint landing at idle — cannot arise because there is no second step. */
+describe('F1 — an LW approval files its Raptor input in the SAME envelope', () => {
+  it('the approval envelope carries both the war change and the Inputs change', () => {
     const pid = getState().people[0].id
     const seen = approveWatched(pid, ['2026-02-02', '2026-02-03', '2026-02-04'])
     // the leave landed as an lw-tagged Raptor input
     expect(INPUTS.some((r: any) => r.lw && r.person === pid)).toBe(true)
-    // it reached the stream as a PROJECTION carrying an inputs change
-    const mint = seen.find(e => e.origin === 'projection' && e.changes.some(c => c.collection === 'inputs'))
-    expect(mint).toBeDefined()
-    // …causally chained to a preceding edit in the same closure, never an orphan (C1)
-    expect(mint!.causedBy).toBeDefined()
-    const cause = seen.find(e => e.seq === mint!.causedBy)
-    expect(cause).toBeDefined()
-    // the mint is system-driven, not a stray user envelope (C10)
-    expect(mint!.actor.role).toBe('system')
+    const both = seen.find(e => e.changes.some(c => c.collection === 'inputs') && e.changes.some(c => c.collection === 'lw.cell'))
+    expect(both).toBeDefined()
+    // a person's decision (a user command), not a projection landing later
+    expect(both!.origin).toBe('user')
+    // no Inputs write ever arrives on its own, without the war change it belongs to
+    expect(seen.filter(e => e.changes.some(c => c.collection === 'inputs') && !e.changes.some(c => c.collection === 'lw.cell'))).toHaveLength(0)
   })
 
-  it('a Raptor-driven LW reconcile pushes NO Leave War undo step (lw.hist effect context — CMDLF-001)', () => {
+  it('a Raptor-side Inputs change re-reads the war and pushes NO Leave War undo step (CMDLF-001)', () => {
     definePermission('test.raptor', anyone)
     const pid = getState().people[0].id
-    // a Raptor command whose phase-8 effect lands an LW cell via the inbound sync
-    // writer (under LW locked()). The queued lw.sync projection runs at drain,
-    // AFTER the lock unwound — without the lw.hist context its recordHistory would
-    // push a spurious LW undo step. With the fix it must not.
+    // a Raptor command that files leave; the war re-reads it in a phase-8 effect
     commit({
       type: 'test.raptor', scope: { module: 'sched', weekId: 'X' } as any,
       apply: (txn) => {
         txn.enlist(schedStore)
-        deferEffect(() => { ingestFromRaptor(pid, '2026-02-02', 'LL') })
+        deferEffect(() => { fileAbsence(pid, 'LL', '2026-02-02') })
       },
     })
+    expect(getState().grid[pid]?.['2026-02-02']).toBe('LL')
     expect(lwCanUndo()).toBe(false)
   })
 
