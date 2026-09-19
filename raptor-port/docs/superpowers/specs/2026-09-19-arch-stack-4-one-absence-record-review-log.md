@@ -140,3 +140,124 @@ new owner decisions (the moved-bid feature and the published-day amendment behav
 commands do). A Rev 3 + second cross-provider round runs after the owner answers §8 and before any
 build — recorded as the gate. Both reviewers explicitly framed 5–8 as "decisions the doc should pin
 now," which Rev 2 does.
+
+---
+
+# ROUND 2 (on Rev 3)
+
+## Reviewer A — Codex / GPT-6 Astra (high), resumed — VERDICT: REVISE
+*"Rev 3 resolves several round-1 concerns, but approved-cell guards, decision transitions, OIL
+accounting and projection delivery remain inconsistent; the certificate simplification needs an
+explicit strategy for document links stored inside undoable Inputs."* Seven findings:
+- **R2-001 (HIGH) — the `absenceAt()!=null || raptorOwns()` guard is too blunt: it BLOCKS the very
+  §4.1 commands.** `setCell`/`setBidState`/`isMovableSource` are early-return guards
+  (`store.ts:1966,2168,3275`); a projected leave would make an approved bid impossible to clear/refuse/
+  drag; removing stored cells adds more early exits (batch clear skips missing grid entries `:2104`;
+  decisions need a raw-grid bid `:2164`). **Fix:** distinguish "block an unrelated overwrite" from
+  "deliberately act on an approved absence" — resolve request/contributor identity first, enforce
+  role/stage, dispatch to the atomic command; keep collision guards for UNRELATED destination
+  absences (incl. correct source-range exclusion on overlapping moves); update single AND batch.
+- **R2-002 (MED) — Refuse ≠ un-approve; both mapped to retract+pending is wrong.** `refused` excludes
+  availability/charge; `pending` still charges (`bids.ts removesAvailability`, `counters.ts:116-125`) —
+  so refusing an approved working-day LL would still cut manning + consume leave. Also §4.1 still has
+  the return-to-open alt despite §8.1 vanish. **Fix:** distinct transitions for Refuse/Pending/drag/
+  delete with stage behaviour; preserve `refused`; strike the return-to-open text.
+- **R2-003 (HIGH) — OIL still inconsistent under a single-code effective view.** §4.2 blocks credit
+  when leave exists / no overlay; §4.4 wants leave to win display while earned credit still feeds
+  balance. `earnedOil`/`oilLedgerFor` read FO/HO grid codes (`counters.ts:137-144`,
+  `oiltracker.ts:201-213`); `oilCreditBidAgainst` needs a landed FO/HO (`sync.ts:943-952`). Leave-first
+  → no credit; work-first → keeping FO/HO breaks leave-display, replacing it hides the credit.
+  **Fix:** SEPARATE effective display data from earned-credit ACCOUNTING data; one authoritative credit
+  computation; handle both event orders; update earnedOil/oilLedgerFor/withdrawal/clash.
+- **R2-004 (HIGH) — the projection emission is fictional for a pure cache update.** `commit.ts:232-254`
+  emits only on durable record changes; PROJ is outside decomposition. `commitProjection` in `onCommit`
+  is QUEUED (`:128-131`) while notify + OIL subscribers already ran in phase 8 before onCommit (phase 9)
+  — so retract can let OIL read the OLD index then update PROJ with no emission. LW render subscribes to
+  its own version counter, not the stream. **Fix:** replace the cache-change-envelope with an explicit
+  invalidate/rebuild + notification contract; ensure every consumer (esp. OIL) sees the rebuilt index
+  BEFORE evaluating (or a causal re-eval after rebuild); publish an LW version bump on effective-view
+  change; keep cache out of inverse patches — only real durable OIL changes emit projection commits.
+- **R2-005 (HIGH) — "certs not undoable" is incomplete: the docId LINK lives on the undoable Input.**
+  `DocField`→draft ids (`inputedit.tsx:450-472`); `commitInputEdit` writes `docId/docIds`
+  (`:977-979`); `sched-commit.ts:125` records the whole Input and restore replaces it (`:243-251`). So
+  replace cert A→B, then undo an unrelated Input edit → A's ref restored, B detached; if A was
+  permanently deleted → "no document" despite B intended. **Fix:** a durable, non-undoable
+  attachment-association model OR field-aware restore that preserves the latest cert change across
+  unrelated Input undo/redo; cover Input delete/restore + shared doc ids from medical splits
+  (`:325-334,382-394`); permanent delete in both cache + durable backend with failure handling.
+- **R2-006 (MED) — the `reconcile()` drift guard drops only the state record; the stale grid CODE
+  survives** (`store.ts:830-843` returns new States but keeps grid) — a stateless LL still removes
+  availability + charges leave. **Fix:** reject the obsolete stored world at the reset/version boundary,
+  or remove grid cell + state together; assert the stronger invariant (no legacy approved-absence grid
+  contribution survives independent of an Input).
+- **R2-007 (MED) — missed consumers of the current-war aliases.** `withCurrent`/`getState().grid/states`
+  (`store.ts:302-307`): `Chrome.tsx:225-233` (red-day summary via `evaluatePeriod`) and
+  `CounterForm.tsx:177` (rule previews) read raw stored grid/states independently — repointing Matrix
+  but not these leaves the summary/preview on bids-only. **Fix:** an effective-current-war read
+  selector/facade used in Chrome, CounterForm and every `getState().grid/states` reader; mutation/
+  persistence stay on raw stored state.
+
+## Reviewer B — Fable 5.1 (round 2) — VERDICT: (pending — in flight)
+Read-only, 45 code reads, anchors verified. VERDICT: REVISE — direction holds, 9/11 round-1 findings
+closed (F-1 & F-5 reopened as the round-2 gaps below), the simplifications opened 2 HIGH + a cert gap.
+- **fR2-1 (HIGH) — effective-view seam mis-located → projected leave WILL be persisted.** Readers use
+  the DERIVED top-level `state.grid/states` (`withCurrent`, `store.ts:302-308`), not `state.wars`; the
+  writers (`setCell/setBidState/shiftBid/moveCells`) CLONE the person's row from it and write back via
+  `updateCurrent` → one ordinary bid on a row with projected leave copies all projected cells into the
+  stored war → `lwDecompose` (`1082-1099`) → `rawPersist` (`978`). **Fix:** keep `state.grid/states`
+  STORED-only (writers' contract); add derived `egrid/estates` = stored ∪ `PROJ.get(currentId)` in
+  `withCurrent`, recomputed on PROJ change; READERS move to effective (`Matrix.tsx:198-217,409,453,
+  475-476,3069,3745,3757,3989-3995,4058-4066`, `Chrome.tsx:225`, `CounterForm.tsx:177`), WRITERS stay
+  stored; `effectiveWars()` feeds `figureCtxOf().sources`/`setBalance`/`sync.ts:937-952`. Build-time
+  assert in `lwDecompose`: throw if any `lw.bid` has `source:'input'` (pins §7 mechanically).
+- **fR2-2 (HIGH) — §4.1 vs §4.2 contradict; the discriminator doesn't exist.** §4.2 (guard refuses)
+  and §4.1 (dispatch to command) can't both be true; today `source:'raptor'` (Inputs-filed, war can't
+  touch) vs `source:'bid'`-approved (war-approved, admin may move — the live 27 Aug feature) — both
+  become `source:'input'` under projection. **Fix:** `absenceAt()` returns
+  `{iid,code,portion,warLinked,shiftedFrom?}`; `warLinked===false` → refuse as `raptorOwns` today;
+  `warLinked===true` → §4.1 command mapping; state once, reference from §4.1. (Resolves Codex R2-001/002.)
+- **fR2-3 (HIGH) — the request record has no durable home; `reconcile()` deletes it on reload.**
+  **Fix (a real simplification): NO request record.** Reuse the Input's existing `lw:warId` tag as
+  "approved on the war" (its old loop-breaker meaning dies with inbound) + add `shiftedFrom?` to the
+  Input; `absenceAt` reads them; the war persists NOTHING about an approved absence; `approveBid` =
+  delete bid cells + create Input in one txn; `reconcile()` untouched. Note `inputedit.tsx:328/388`
+  `delete t.lw` on copy = "a copy is not war-approved".
+- **fR2-4 (MED) — `absenceAt` misses the landing side + 3 OIL/balance reads:** `shiftBid`
+  `store.ts:3239`/`moveProblem:3334` (a bid can move ONTO an approved-leave day → double book — add
+  `absenceAt(to)→'occupied'`); `runOilPass:972-976` clash uses `bidCode:''` (use `absenceAt().code`);
+  `oilCreditBidAgainst:952`/`figureCtxOf:2525` need `effectiveWars()`; `setBidState:2164` `isBiddable`
+  short-circuits — order the absence branch first.
+- **fR2-5 (MED) — §4.3 "emit as commitProjection" is wrong-shaped.** PROJ is outside records so a
+  projection envelope carries zero changes; routing through `rawPersist` does a spurious write +
+  `recordHistory`. onCommit delivery is already synchronous. **Fix:** the handler writes PROJ,
+  re-derives the effective fields, calls `rawNotify()` — no envelope, no persist; handle ALL origins
+  touching `inputs/*` (user/restore/seed/projection) so undo/redo/boot recompute; boot once in
+  `wireLeaveWarSync` after `remapPersonKeys` (INPUTS hydrate before `lwInitStore`, `main.tsx:51,58,69`).
+- **fR2-6 (MED) — §8.3 cert-not-undoable has no mechanism; the naive one trips the sticky barrier.**
+  The `docId/docIds` link lives ON the Input (`schema.ts:178-180`, written `inputedit.tsx:977-979`) →
+  either a `user` envelope (IS undoable, contradicts) or out-of-band (sets the sticky barrier
+  `timeline.ts:256-266` → earlier edits refuse); no delete API (`docs.ts:111-123` append-only). **Fix:
+  move the link OFF the Input onto the drawer row** — `DocRec{id,iid,name,mime,size,blob}`,
+  `docsFor(iid)` replaces `rowDocIds`, add `docDelete(id)` (memory + IndexedDB) with the confirm guard;
+  cert ops then touch no command record → no entry, no barrier; a new input mints its iid in the draft
+  so upload links before save. `DocViewer.tsx:51` already null-guards → "no document".
+- **fR2-7/8/9/10 (LOW):** a moved bid loses the `RETAINED` remarks carry (carry `remarks` on re-approve
+  or state the loss); stale §4.1 text ("return to open", `moveAbsence`) to strike; the mandatory-doc
+  rule is enforced in TWO places (`InputsPage.tsx:366` + `inputedit.tsx:567-569` — the relaxed prompt
+  must replace both); undo no longer lands the war on the day (`undo-wire.ts:66-74` reads `lw.cell` ids
+  — derive the focus date from the `inputs` change instead).
+- **VERIFIED PASSING:** §8.6=A silent-on-published is internally consistent (`filingDelta` sees `''`,
+  `computePubBar` keys only days/orig — an inputs-only undo is never behind the barrier); §8.5
+  during-bidding is a no-op (`canDecide` false at `open`); no `state.wars` reader missing beyond fR2-4.
+
+## Host arbitration — ROUND 2 dispositions (Opus)
+Both reviewers CONVERGE (fR2-1≈R2-007/004, fR2-2≈R2-001/002, fR2-4≈R2-003 reads, fR2-5≈R2-004,
+fR2-6≈R2-005, plus fR2-3 new & sharp). **ALL ACCEPTED → Rev 4.** Fable's fixes are precise and two
+SIMPLIFY: (a) drop the request record entirely (Input `lw` tag + `shiftedFrom`); (b) move the cert link
+onto the drawer row (`DocRec.iid` + `docDelete`) — this is the mechanism §8.3 lacked. Rev 4 folds:
+stored-vs-effective grid split (`egrid/estates`, readers vs writers); `absenceAt→{warLinked}` +
+refuse-vs-dispatch rule; no request record; OIL split (display vs accounting) + the 4 missed reads;
+projection handler = write-PROJ+rederive+rawNotify (no envelope), all origins, boot; cert link on the
+drawer + `docDelete`; the LOW fixes. §8.6/§8.5 confirmed sound — no owner re-decision. **Owner-relevant:
+decision 3 STANDS; the cert link simply moves onto the document record so an unrelated undo can't
+resurrect it.** After Rev 4 → one confirm round (round 3).

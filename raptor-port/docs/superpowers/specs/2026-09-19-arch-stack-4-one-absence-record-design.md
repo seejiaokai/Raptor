@@ -1,13 +1,16 @@
-# [ARCH-STACK] Step 4 — ONE Absence Record — DESIGN (Rev 3, 19 Sep 26 — owner decisions folded)
+# [ARCH-STACK] Step 4 — ONE Absence Record — DESIGN (Rev 4, 19 Sep 26 — round-2 folded)
 
-> **Status: Rev 3 — all six §8 owner decisions RESOLVED (19 Sep 26).** Rev 2 was dual red-teamed
-> (Codex/GPT-6 Astra high + Fable 5.1, both REVISE→affirmed, all 7+11 findings folded; log
-> `…-review-log.md`). Rev 3 folds the owner's answers, which **SIMPLIFY** the design: §8.5=B and
-> §8.6=A both keep current behaviour (no `moveAbsence`-keeps-approval; no leave-amendment machinery);
-> §8.1=B removes the return-to-open branch; §8.3 makes certificates user-managed/not-undoable. The
-> relaxed mandatory-document rule and medical-on-war lockdown are folded into the **[SYNC-INTEG] P2**
-> batch (prerequisite, not step 4). **NEXT: a SECOND cross-provider red-team round on Rev 3** (a
-> changed design needs a fresh pass; should converge cleaner) → then build. **No code. Nothing merged.**
+> **Status: Rev 4 — TWO cross-provider red-team rounds done; round-2 folded.** Round 1 (on Rev 1) and
+> round 2 (on Rev 3): Codex/GPT-6 Astra high + Fable 5.1, all four verdicts REVISE, **the direction
+> affirmed every time**; Fable round 2 confirmed 9/11 round-1 findings closed and verified the passing
+> parts (§8.6 silent-on-publish is internally consistent; §8.5 during-bidding is a no-op). Rev 4 folds
+> the convergent round-2 fixes — two of which SIMPLIFY: (a) **no stored request record** — the Input's
+> `lw` tag + `shiftedFrom` carry "war-approved"; (b) the **certificate link moves onto the document
+> record** (`DocRec.iid` + `docDelete`), which is the mechanism §8.3 needed. Plus the load-bearing
+> **stored-vs-effective grid split** (`egrid`/`estates`; readers vs writers), `absenceAt→{warLinked}`
+> (refuse-vs-dispatch), the **OIL display-vs-accounting split**, and the projection-rebuild handler
+> (write PROJ + re-derive + `rawNotify`, no envelope). All six §8 owner decisions RESOLVED.
+> **NEXT: one confirm round (round 3) on Rev 4** → then build. **No code. Nothing merged.**
 
 **Plan of record:** `2026-09-13-architecture-rootcause-plan.md` (RC2; step 4; SEQ-004).
 **Builds on (DONE + live):** Step 1 stable ids, Step 2 command layer, Step 3 [GLOBAL-UNDO].
@@ -64,114 +67,125 @@ postouts rebuild, import-undo granularity.
 
 ## 3. The target model — ONE record, read by id (PURE PROJECTION)
 
-The approved absence is **ONE record of truth: the Input** (`inputs/<iid>`). The Leave War **keeps no
-persisted copy** of an approved absence. Concretely:
-1. **The war owns only bids and its period/config.** An approved bid becomes a **request record**
-   pointing at the Input (`bid.inputId`) — it no longer holds the leave dates as live `grid` cells.
-2. **Approved absences are a PURE, in-memory PROJECTION** (§4.3): `PROJ: Map<warId,{grid,states}>` held
-   **outside `state.wars`** (so `rawPersist`/`lwDecompose` never serialize it — F-5/ARCH4-004).
-   `effectiveWars() = stored ∪ PROJ` is what every war consumer reads. No stored second copy ⇒ nothing
-   to drift, GC, or guess; nothing to persist twice; the undo closure carries only the `inputs` change.
-3. **Approve / retract / edit / move are COMMANDS** (§4.1) on the live command layer; the reconciler's
-   leave passes retire and become a **synchronous projection handler** (§4.3).
-4. **OIL stays a separate derived pass but is NOT "untouched"** — it reads leave through the new
-   `absenceAt()` effective view instead of the retired stored marker (§4.4). Bids, the Ground-row
-   landing, remarks + the cert all stay where they are.
+The approved absence is **ONE record of truth: the Input** (`inputs/<iid>`). The Leave War **persists
+NOTHING about an approved absence.** Concretely (Rev 4 — round-2 corrected):
+1. **The war owns only bids and its period/config. There is NO request record** (Rev-4 simplification,
+   fR2-3): an approved bid does **not** become a stored `{approved,inputId,…}` record — a states record
+   whose grid cell is empty is deleted by `reconcile()` on reload. Instead the link + the moved-stripe
+   live on the **Input**: reuse the existing **`lw: warId`** tag as *"approved on the war"* (its old
+   loop-breaker meaning dies with inbound) and **add `shiftedFrom?` to the Input**. `approveBid` = delete
+   the bid's grid/states cells + create the Input in one txn; the war stores nothing further.
+2. **Stored vs effective grid — the load-bearing seam (fR2-1).** `state.grid`/`state.states` stay
+   **STORED-only** (the writers' contract — every writer clones the person's row from them). `withCurrent`
+   gains **derived** `egrid`/`estates` = `stored ∪ PROJ.get(currentId)`, recomputed whenever `PROJ`
+   changes. **PROJ** (`Map<warId,{grid,states}>`) is held OUTSIDE `state.wars`, so `rawPersist`/
+   `lwDecompose` never serialize a projected cell. **READERS** (guards, render, counters, OIL) read the
+   **effective** fields; **WRITERS** stay on stored. A build-time assert in `lwDecompose` throws if any
+   `lw.bid` has `source:'input'` — pinning "no persisted approved-leave cell" mechanically.
+3. **Approve / retract / edit are COMMANDS** (§4.1); the reconciler's leave passes retire and become a
+   **synchronous projection rebuild** (§4.3) — NOT an emitted envelope.
+4. **OIL reads the effective view for DISPLAY but keeps its own ACCOUNTING data** (§4.4, fR2-4/R2-003).
 
-**What this dissolves:** delete = delete (no demote/rebuild); undo restores one record; move moves one
-record; remarks/cert can't be lost in a copy. Findings A/D/E/F become structural non-events.
-**CORRECTION (ARCH4-001): cross-week (finding I) is NOT fixed for free** — displaying leave by id in
-the war does not clean the scheduler's Ground rows in *stashed* weeks; that needs explicit atomic
-cleanup (§4.5). The off-week guard stays until §4.5 lands.
+**What this dissolves:** delete = delete; undo restores one record; move = retract + fresh bid;
+remarks/cert can't be lost in a copy. Findings A/D/E/F become non-events. **Cross-week (finding I) is
+NOT free** — the scheduler Ground rows in *stashed* weeks still need atomic cleanup (§4.5).
 
-## 4. Mechanics (rebuilt for Rev 2)
+## 4. Mechanics (Rev 4 — both round-2 reviews folded)
 
-### 4.1 The commands and the bid model (F-1/ARCH4-002)
-A war **bid** and an approved **Absence** are different things. Bids are date-keyed cells; a run of
-adjacent approved cells today merges into ONE multi-day Input (`desiredRuns`, `sync.ts:173-201`) — so
-**bid↔Input is many-days-to-one-record**, and "retract one day of a three-day approval" is a
-**partial-span split**, not a whole-Input delete.
+### 4.1 The commands and the bid model (fR2-2, fR2-3)
+Bids are date-keyed cells; adjacent approved cells merge into ONE multi-day Input (`desiredRuns`,
+`sync.ts:173-201`) — **bid↔Input is many-days-to-one-record**; "retract one day of three" is a
+**partial-span split**, not a whole delete.
+- **`approveBid(bidSpan)`** — ONE txn: delete the bid's grid/states cells + create `inputs/<iid>` for
+  the span, tagged **`lw = warId`** (= war-approved) with `shiftedFrom?` if moved. No stored request
+  record.
+- **`retractAbsence(iid | iid+dayRange)`** — deletes the Input (or **splits** it for a partial-span),
+  preserving remarks on the survivors. **The bid VANISHES (owner §8.1 = B); there is NO return-to-open
+  branch** (Rev-1 text struck — fR2-8).
+- **`editAbsence(iid, patch)`** — edits the one record in place (a member editing their own leave via
+  Inputs, §8.2 = B, is this). A war-side **drag** of an approved request (§8.5 = B) is **retract + a
+  fresh PENDING bid at the new date at the Input's current dates**, as today — **no `moveAbsence`, no
+  keep-approval path** (all `moveAbsence` references struck — fR2-8). Carry `remarks` onto the pending
+  bid so a same-session re-approve doesn't lose them (fR2-7).
+- **The war grid ops route by `warLinked` (fR2-2 — the discriminator that makes §4.1 and §4.2
+  compatible):** `absenceAt()` returns `{iid, code, portion, warLinked, shiftedFrom?}`.
+  **`warLinked===false`** (Inputs-filed leave) → the op is **REFUSED** exactly as `raptorOwns` refuses
+  today (the war may not touch an Inputs-filed leave — §8.1 model). **`warLinked===true`** (war-approved)
+  → the op maps to a command: `setBidState` refuse/un-approve → `retractAbsence` (+ bid back as
+  pending/refused at current dates); `shiftBid`/`moveCells` → retract + pending; `setCell('')`/
+  `clearCells` → `retractAbsence`. **`setBidState` must order the `absenceAt` branch BEFORE the
+  `isBiddable(state.grid…)` short-circuit** (`store.ts:2164`), since the stored grid has no projected
+  cell (fR2-4).
 
-- **`approveBid(bidSpan)`** — ONE txn: create/confirm `inputs/<iid>` for the span AND convert the bid
-  cells to a **request record** `{state:'approved', inputId, askedFrom, askedTo, shiftedFrom?}`; **remove
-  the bid's live `grid`/`states` cells** (the displayed cell becomes the Input projection). Span
-  identity is stable (a bidId over the asked span), so approval/refusal/move target it, not loose cells.
-- **`retractAbsence(iid | iid+dayRange)`** — deletes the Input, or **splits** it (shorten/hole) for a
-  partial-span retract, preserving remarks/links on the surviving parts; the linked request returns to
-  **open at its asked dates** (owner decision §8.1) or is removed. One deliberate delete/split.
-- **`editAbsence(iid, patch)`** — edits the one record in place (dates/type/remarks). A member editing
-  their OWN leave via Inputs (decision §8.2 = B) is this command. **A war-side DRAG of an approved
-  request (decision §8.5 = B, KEEP CURRENT) is NOT a keep-approval move** — it is `retractAbsence` (the
-  input goes) + a pending bid at the new date, as today. No `moveAbsence`-keeps-approval path is built.
-- **The four admin grid ops on a projected cell are defined, not left to the old reconciler:**
-  `setBidState` refuse/un-approve → `retractAbsence` + bid back to pending; `moveCells`/`shiftBid` →
-  `moveAbsence` (or retract+pending per §8.5); `setCell('')`/`clearCells` → `retractAbsence`;
-  `setCell(code)` over an approved cell → **refused as a clash** (`absenceAt` hit).
+All commands take **ISO inputs** (never `baseYear()` labels — F-10) and call `inputProtected` first,
+**refusing with a toast** on a protected week. Each emits a `user` closure the live timeline consumes.
 
-All commands take **ISO inputs, never `baseYear()` labels** (convert via `isoToLabel`/year-suffix as
-`runOutbound` does — F-10), and call `inputProtected` first, **refusing with a toast** on a protected
-week (F-10). Each emits a `user` closure the live timeline consumes.
+### 4.2 `absenceAt` — the effective view predicate (fR2-2, fR2-4)
+`absenceAt(personId, iso): { iid, code, portion, warLinked, shiftedFrom? } | null` resolves from the
+PROJ index (all covering Inputs). It replaces the retired stored `source:'raptor'` leave marker at
+every guard/read, using the `warLinked` rule (§4.1) rather than a blanket refuse:
+- Guards `setCell`/`setCellRange`/`setCells`/`setBidState(s)`/`isMovableSource` — the `absenceAt`
+  branch (refuse-or-dispatch by `warLinked`) runs first.
+- **Move destinations too (fR2-4):** `shiftBid` (`store.ts:3239`) and `moveProblem` (`3334`) must call
+  `absenceAt(pid, to)` → `'occupied'`, or a bid can be dragged ONTO an approved-leave day (double-book).
+- `ingestDutyCredit` returns **`'clash'`** on an `absenceAt` hit using `absenceAt().code` (not `''` —
+  fR2-4), so the OIL strip shows "FO vs LL", not "FO vs nothing".
 
-### 4.2 The `absenceAt` effective view (F-3/ARCH4-005 — the load-bearing addition)
-One predicate is the single source every non-render consumer uses:
-`absenceAt(personId, iso): { iid, code, portion } | null` — resolves from the projection index (all
-covering Inputs for that person/day). It replaces the retired stored `source:'raptor'` leave marker:
-- Every `raptorOwns`-based guard that today blocks writing over approved leave —
-  `setCell`/`setCellRange`/`setCells`/`setBidState(s)`/`shiftBid`/`isMovableSource`/`moveProblem`
-  (`store.ts:1966,2053,2107,2141,2168,3220,3275,3322`) — becomes `absenceAt()!=null || raptorOwns()`
-  (`raptorOwns` stays for FO/HO ownership only).
-- `ingestDutyCredit` returns **`'clash'`** when `absenceAt` hits (leave wins over a would-be FO/HO —
-  `store.ts:3061-3081`), so OIL never writes a credit onto an approved-absent day.
-- The composer never overlays a projected leave onto a stored FO/HO cell — it emits a clash entry, so
-  a cell shows exactly one code (F-3, F-11).
+### 4.3 The projection rebuild handler (fR2-5 — reshaped)
+An `onCommit` subscriber, run **synchronously in the causing commit's delivery** (delivery is already
+synchronous — queued items drain before `commit()` returns). On any envelope touching a leave/medical
+`inputs/<iid>` — for **ALL origins** (`user`/`restore`/`seed`/`projection`) so undo/redo/boot recompute:
+1. Invalidate the affected `(person,day)` cells from the **union of `Change.before` + `Change.after`**.
+2. Rebuild those cells in `PROJ` from **ALL covering Inputs** (AM/PM aggregation, §4.6).
+3. **Re-derive the effective fields** (`egrid`/`estates`, §3.2) and call **`rawNotify()`** — **NO
+   envelope, NO `rawPersist`/`recordHistory`** (a projection envelope would carry zero changes and a
+   persist would be a spurious backend write + LW snapshot — fR2-5).
+**Boot:** run once in `wireLeaveWarSync` **after `remapPersonKeys`** (INPUTS hydrate before `lwInitStore`
+— `main.tsx:51,58,69`). Change-guarded by a per-`(person,span)` signature (perf).
 
-### 4.3 The projection handler (F-6/ARCH4-003)
-An `onCommit` subscriber, run **synchronously inside the causing commit's delivery** (never deferred to
-an idle `lwSyncTurn` — an orphan projection sets a sticky undo barrier and refuses the earlier undo —
-F-6). On any envelope touching a leave/medical `inputs/<iid>`:
-1. Invalidate the affected `(person, day)` cells from the **union of `Change.before` and `Change.after`**
-   (so a delete, a shorten, a person/type change all clear the OLD coverage too — ARCH4-003).
-2. Recompute those cells in `PROJ` from **ALL covering Inputs** (AM/PM aggregation, §4.6), as
-   `{state:'approved', source:'input', iid}`.
-3. Emit as `commitProjection` (origin `projection`, `causedBy = causalSeq`) so it folds into the user
-   closure and is never its own undo entry.
-Also re-projects on **war create/restore and boot hydration** (a leave filed before a war exists, then
-`createWar`, must populate — ARCH4-003); change-guarded by a per-`(person,span)` signature so an
-unrelated edit doesn't reproject a whole person (F-6 condition b, moot under pure projection but kept
-as a perf guard).
-
-### 4.4 OIL (stays a derived pass, reads the effective view)
-`runOilPass` is unchanged in spirit but reads leave via `absenceAt` (§4.2), not the retired stored
-marker; FO/HO credits keep their own `source:'raptor'` ownership + `clearRaptorCell`-equivalent (OIL
-credits ARE genuinely war-owned derived cells). Precedence when leave and earned work cover one day:
-**leave wins the cell display; the OIL credit is still computed for balance purposes per the [OIL]
-worked-day rule** — the interaction with [OIL] is noted, not changed here.
+### 4.4 OIL — separate DISPLAY vs ACCOUNTING data (fR2-4/R2-003 — HIGH)
+The single-code effective cell cannot serve both "leave wins the display" and "the earned credit still
+feeds the balance". So split them:
+- **Display:** the effective view shows leave over an approved-absent day (§4.2).
+- **Accounting:** the earned FO/HO credit is computed by ONE authoritative function and stored as its
+  own war-owned FO/HO cell (kept `source:'raptor'`, its own clear path — OIL credits ARE genuinely
+  derived war cells). `earnedOil`/`oilLedgerFor` (`counters.ts:137-144`, `oiltracker.ts:201-213`) read
+  those FO/HO codes; `oilCreditBidAgainst` (`sync.ts:952`) and `figureCtxOf` (`store.ts:2525`) read
+  **`effectiveWars()`**. Both event orders must agree: leave-before-work and work-before-leave give
+  identical balance AND identical (leave-wins) display, and FO↔HO changes + withdrawal are covered.
 
 ### 4.5 Cross-week ground-row cleanup (ARCH4-001)
-`retractAbsence`/`moveAbsence`/`editAbsence` must clean the scheduler's working Ground rows in **every
-affected week, including stashed weeks**, in one reversible transaction (preserving issued snapshots),
-so no stale `acc='g'`/orphan row is left — and the orphaned-`Other`-grade case (§2.1) closes because
-the row and its Input go together. Until this atomic cleanup exists the off-week guard
+`retractAbsence`/`editAbsence` must clean the scheduler's working Ground rows in **every affected week,
+incl. stashed weeks**, in one reversible txn (issued snapshots preserved), so no stale `acc='g'`/orphan
+row is left — closing the orphaned-`Other`-grade case (§2.1). Until this exists the off-week guard
 (`inputedit.tsx:836-845`) stays; §7 pins a real off-week `Other` scenario.
 
-### 4.6 AM/PM aggregation + medical portions (F-11/ARCH4-006, F-4)
-A projected cell records its **contributing Input id(s) + portion** (same-type AM+PM combine to a full
-day; incompatible portions raise a clash — `sync.ts:538-595`). A cell-level remarks/edit/retract action
-targets the contributing Input for that portion; a two-contributor cell is not undercounted. The two
-portion rules `rowPortion`/`medRowPortion` (`sync.ts:108-142`) stay in the composer.
+### 4.6 AM/PM aggregation + medical portions (ARCH4-006)
+A projected cell records its **contributing Input id(s) + portion** (same-type AM+PM combine; incompatible
+portions clash — `sync.ts:538-595`); a cell-level remarks/edit/retract targets the right portion's Input;
+a two-contributor cell is not undercounted. The portion rules `rowPortion`/`medRowPortion` stay in the
+composer.
 
-### 4.7 Medical + certificate (F-4, F-9)
-Medical is member-filed only — **[SYNC-INTEG] P2 is a PREREQUISITE** (§10), so the admin grid-medical
-outlet is gone before step 4 retires the mint. **Certificates are USER-MANAGED and NOT UNDOABLE (owner
-decision §8.3, supersedes the old append-only stance):** upload / replace / delete-a-wrong-one via the
-✕, direct and permanent, kept out of the undo timeline (the blobs already live outside the command
-stream). A confirm-before-delete guard; a missing file renders "no document". Retracting a medical
-entry does not auto-delete its certificate; there is no keep-vs-delete-on-removal rule. The Rev 1 "a
-re-file can re-link" claim is **dropped** (F-9).
+### 4.7 Medical + certificate (§8.3; mechanism fixed for Rev 4 — fR2-6/R2-005)
+Medical is member-filed only — **[SYNC-INTEG] P2 is a PREREQUISITE** (§10). **Certificates are
+USER-MANAGED and NOT UNDOABLE (owner §8.3).** The Rev-3 "keep the blobs out of undo" was NOT enough: the
+`docId`/`docIds` **link lives ON the Input** (`schema.ts:178-180`, written `inputedit.tsx:977-979`),
+which IS undoable — so undoing an unrelated Input edit restores a stale/deleted certificate id, or the
+write goes out-of-band and sets the sticky undo barrier that refuses earlier edits. **Rev-4 fix (move
+the link OFF the Input, fR2-6):** the drawer row carries the owner — `DocRec { id, iid, name, mime, size,
+blob }`; **`docsFor(iid)` replaces `rowDocIds(r)`**; `docFields`/`docId`/`docIds`-on-Input retire; add
+**`docDelete(id)`** (memory + IndexedDB `delete`, `docs.ts` is append-only today) behind a
+confirm-before-delete guard. Now a certificate op touches **no command-layer record** → no undo entry,
+no barrier; an undone-then-redone input finds its paperwork by `iid`; a permanent delete of a wrong file
+is truly gone. A new input mints its `iid` in the draft so an upload links before save (a cancelled
+draft's orphan blobs are swept on cancel). `DocViewer.tsx:51` already null-guards → "no document".
+Medical splits that shared a doc id (`inputedit.tsx:325-334,382-394`) now share by `iid`.
 
 **OWNER RULING 19 Sep 26 — the mandatory-document rule is RELAXED (a SMALL STANDALONE change, not part
 of step 4; SUPERSEDES the 27 Aug 26 "a medical input does not go in without its document").** Filing a
-bare medical input must NOT hard-refuse (`needsDoc`→toast at `inputedit.tsx:567-569`). Instead, saving a
+bare medical input must NOT hard-refuse — the rule is enforced in **TWO places** that must BOTH be
+replaced or the Inputs-page form keeps refusing (fR2-9): `inputedit.tsx:567-569` AND
+`InputsPage.tsx:366`. Instead, saving a
 document-less medical input **prompts ONCE** — [Upload] or [**No document**]; "No document" files the
 input with no certificate (for when the record genuinely isn't available). Kept unless owner says
 otherwise: an entry that already HAS a document keeps the replace-not-strip guard; a bare entry stays
@@ -181,36 +195,52 @@ certificate types **ATT C, ATT B, HL, OML, Up-chit**; not a step-4 item.
 ## 5. Migration — reset, not migrate (+ seed + drift guard — F-7)
 Reset the demo world; no back-compat. **Also (F-7):** remove the two seeded `source:'raptor'` cells in
 `seed.ts:223,332` (seed the matching Inputs if the demo needs them), and add **one drift-guard line to
-`reconcile()`** — drop any stored record whose `source==='raptor'` on a non-FO/HO code on load — so a
-tester's un-reset browser can't reload a stale copy. This is a load guard the path already owns, not a
-migration. Invariant test: after boot, no stored `lw.bid` has `source:'raptor'` on a leave/medical code.
+`reconcile()`** that drops **both the grid CODE and its state record** for any stale approved-leave cell
+(fR2-6/R2-006 — `reconcile()` today returns new States but KEEPS the grid, so a stateless `LL` cell still
+removes availability + charges leave); or reject the obsolete stored world at the reset/version boundary.
+This is a load guard the path already owns, not a migration. Invariant: after boot, no legacy
+approved-absence grid contribution survives independent of an Input (stronger than "no `source:'raptor'`
+marker").
 
-## 6. Ecosystem walk (surfaces to repoint — F-5, ARCH4-007)
-Every war consumer that reads `war.grid/states` reads **`effectiveWars()`** instead:
-`charge.ts:145-148`, `availability.ts:216-266`, `counters.ts:197`, `evaluate.ts:49-79`,
-`oiltracker.ts:201-209`, `Matrix.tsx` (`:199,475,3753,3987,4057`), `sync.ts:947`. **The balance WRITER
-`setBalance`** (`store.ts:2664-2673`) computes opening from `drawnFrom(state.wars)` — it must use the
-same effective selector, or a set-balance stores a wrong opening while the display shows the reduced
-value (ARCH4-007). Scheduler surfaces (`isAway`, `inpShow`, the Ground row) already read the Input, so
-they're unaffected. `PersonMonth` row identity must be preserved for the perf memo (reuse an unchanged
-row reference — performance.md). Perf: projection is data, not a render rewrite; string builders
-untouched.
+## 6. Ecosystem walk (readers → effective; writers stay stored — fR2-1, fR2-4, R2-007)
+**READERS** move to the derived effective fields (`egrid`/`estates`, §3.2) / `effectiveWars()`; **WRITERS
+stay on stored `state.grid`/`state.states`.** The reader list (verified by both reviewers — Matrix render
+read is `grid[p.id]?.[d.date]` at `Matrix.tsx:409`, NOT only the guard lines): `Matrix.tsx:198-217,409,
+453,475-476,3069,3745,3757,3989-3995,4058-4066`; **`Chrome.tsx:225`** (red-day summary via
+`evaluatePeriod`) and **`CounterForm.tsx:177`** (rule preview) — MISSED in Rev 2/3, they read
+`getState().grid/states` independently (R2-007/fR2-1); `charge.ts:145-148`, `availability.ts:216-266`,
+`counters.ts:197`, `evaluate.ts:49-79`, `oiltracker.ts:201-213`. **`effectiveWars()`** feeds
+`figureCtxOf().sources` (`store.ts:2525`), the balance WRITER **`setBalance`** (`:2664-2673` — else a
+set-balance stores a wrong opening while the display shows the reduced value — ARCH4-007), and
+`sync.ts:937-952`. FO/HO landed checks (`sync.ts:947`) correctly stay on stored. Period-only readers
+(`WarSheet`, `createWar:3499`, `isNonWorkingISO:657`, `eventRowUsed:2452`) and boot-only stored writers
+(`remapPersonKeys:1901`, `installDemoOil:1918`) are unaffected (PROJ builds after them — §4.3).
+Scheduler surfaces (`isAway`, `inpShow`, the Ground row) already read the Input. **Undo focus (fR2-10):**
+`undo-wire.ts:66-74` derives the war's landing day from `lw.cell/lw.bid` ids — an inputs-only closure has
+none, so derive the focus date from the `inputs` change (label→ISO) or the war won't jump on undo.
+`PersonMonth` row identity preserved for the perf memo. Perf: projection is data, not a render rewrite.
 
 ## 7. Testing (invariants + real-app scenarios)
 - **Hard invariants:** exactly one Absence per approved absence; **no persisted war cell for approved
-  leave** (only FO/HO + open bids persist); a retract leaves no orphan cell and no orphan Ground row
-  (incl. stashed weeks).
-- **Advisory:** war display == the Inputs-by-id projection; OIL FO/HO correct after a leave retract;
-  `setBalance` reaches the requested value with projected leave present.
+  leave** (only FO/HO + open bids persist) — pinned MECHANICALLY by the `lwDecompose` assert (throw if any
+  `lw.bid` has `source:'input'` — fR2-1); a stateless stored grid cell for a leave code is a defect
+  (fR2-6/R2-006: `reconcile()` must drop the grid CODE too, not just the state record); a retract leaves
+  no orphan cell and no orphan Ground row (incl. stashed weeks).
+- **Advisory:** effective war display == the Inputs-by-id projection; the Matrix, the red-day summary
+  (`Chrome`) and the rule preview (`CounterForm`) AGREE after approve/retract/undo (fR2-1); OIL FO/HO
+  correct after a leave retract; `setBalance` reaches the requested value with projected leave present.
 - **Frozen:** issued snapshots + signatures unchanged.
 - **Real-app scenarios (mandatory — `[[scenario-based-rule-testing]]`):** (a) member bids → approve →
-  ONE input, no `raptor` copy, bid is a request record; (b) scheduler files leave → war shows it, no
-  ingest; (c) delete → gone both places, no resurrection on next notify; (d) undo → back once; (e) move
-  dates → one record moves, remarks/cert intact; (f) retract ONE day of a 3-day approval → split, other
-  days stand; (g) **off-week**: delete a landed `Other` whose ground row is on a stashed week → cleaned,
-  no orphan grade; (h) file leave, THEN create a war → populated; (i) OIL: approve leave on a weekend
-  work day → clash, no double cell; (j) set a balance with projected leave present → correct opening;
-  (k) do (c) on a published day → per owner decision §8.6.
+  ONE input tagged `lw`, no stored `raptor`/`input` cell; (b) scheduler files leave → war shows it, no
+  ingest; (c) delete → gone both places, no resurrection on next notify or reload; (d) undo → back once,
+  war jumps to the day; (e) move an approved bid → old input gone, fresh pending bid at new date,
+  remarks carried; (f) retract ONE day of a 3-day approval → split, other days stand; (g) **off-week**:
+  delete a landed `Other` whose ground row is on a stashed week → cleaned, no orphan grade; (h) file
+  leave, THEN create a war → populated; (i) OIL **both orders**: approve leave then work-day vs work-day
+  then approve leave → identical balance AND leave-wins display, credit visible in accounting; (j) set a
+  balance with projected leave present → correct opening, stable after undo/reload; (k) replace cert
+  A→B, then undo an unrelated input edit → B stays, A not resurrected (fR2-6); (l) do (c) on a published
+  day → silent, no AL (§8.6).
 
 ## 8. DECISIONS FOR THE OWNER (each has my recommendation)
 1. **DECIDED (owner, 19 Sep 26) — VANISHES (option 1B).** Retracting a leave does NOT resurrect a
@@ -257,28 +287,25 @@ untouched.
 ATT B, HL, OML, Up-chit**. Saving a bare medical input prompts once ([Upload] / [No document]); "No
 document" files it with none.
 
-## 9. Open questions (engineering — resolved in Rev 2, listed for the second round)
-1. Pure projection is now the committed choice (§3, §4.3); the `PROJ`-outside-serialization contract
-   and the ~10 repointed consumers are the build's spine — second round verifies completeness of the
-   consumer list.
-2. Bid↔Input cardinality + partial-span split (§4.1) — verify the split preserves the AL/edit-log and
-   the request record's `shiftedFrom`.
-3. Clash precedence (§4.2, §4.6) — the composed cell shows leave; the bid/clash surfaces via
-   `LEAVE_CLASHES`/`Chrome.tsx:524` (unchanged surface).
-4. Confirm `effectiveWars()` preserves `PersonMonth` row identity for the perf memo (§6).
+## 9. Open questions (engineering — for round 3)
+1. Consumer-list completeness — round 2 already added `Chrome`/`CounterForm` (fR2-1); round 3 confirms
+   `egrid`/`estates` covers every reader and no writer accidentally reads effective.
+2. Partial-span split (§4.1) — verify it preserves the edit-log and the Input's `shiftedFrom`.
+3. OIL both-orders equivalence (§4.4) — verify the display-vs-accounting split gives identical balances.
+4. `PersonMonth` row identity preserved under the effective fields (perf memo, §6).
 
 ## 10. PREREQUISITES + gate
 - **[SYNC-INTEG] P2 (medical member-filed only — block medical creation on the war for ALL roles, incl.
   admin, and HIDE the war medical pickers: `store.ts:1983,2044,2096` still allow admin; `BidPicker`
   `medical` prop + `Matrix.tsx:3770 medical={role==='admin'}` still show them)** and **P4 (clutter-only
-  clear-data)** must land first (F-4, F-8) — step 4 retires the admin grid-medical outlet and must not
-  let "Clear old data" erase the frozen leave history. **The relaxed mandatory-document prompt (§4.7,
-  five cert types) is folded into this P2 batch.**
-- **Gate:** owner answered §8 (19 Sep 26 — all six) → Rev 3 folded (this doc) → **a SECOND cross-provider
-  red-team round on Rev 3 (NEXT)** → then build (test-first, Opus; per-phase parity gates; post-build
-  cross-provider code inspection; hold for "merge live"). No build before the round-2 verdict.
+  clear-data)** must land first — step 4 retires the admin grid-medical outlet and must not let "Clear
+  old data" erase the frozen leave history. **The relaxed mandatory-document prompt (§4.7, five cert
+  types, TWO enforcement sites) is folded into this P2 batch.**
+- **Gate:** owner answered §8 (all six) → Rev 4 folds round 2 (this doc) → **one confirm round (round 3)
+  on Rev 4 (NEXT)** → then build (test-first, Opus; per-phase parity gates; post-build cross-provider
+  code inspection; hold for "merge live"). No build before the round-3 verdict.
 
 ---
 
-*Process: design (Opus, high) → dual red-team round 1 (Codex + Fable, both REVISE→folded) → owner §8 →
-Rev 3 → red-team round 2 → build. Reviewers are a different model/provider from the author.*
+*Process: design (Opus, high) → red-team round 1 (Rev 1) → owner §8 → Rev 3 → red-team round 2 (Rev 3)
+→ Rev 4 → round 3 (confirm) → build. Reviewers are a different model/provider from the author.*
