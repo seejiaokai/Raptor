@@ -20,6 +20,7 @@ import { docAdd, rowDocIds } from '../state/docs'
 let host: HTMLDivElement
 let root: Root
 const $ = (sel: string) => document.querySelector(sel) as HTMLElement
+const $$ = (sel: string) => [...document.querySelectorAll(sel)] as HTMLElement[]
 const click = async (el: Element | null) => {
   expect(el, 'click target exists').toBeTruthy()
   await act(async () => { (el as HTMLElement).dispatchEvent(new MouseEvent('click', { bubbles: true })) })
@@ -89,5 +90,47 @@ describe('the medical-document prompt gates a bare new medical save', () => {
     await click($('#inpEditSave'))
     expect($('[data-testid="docconf"]'), 'no ask when a doc is attached').toBeFalsy()
     expect(meds(), 'filed at once').toHaveLength(1)
+  })
+})
+
+/* The Inputs PAGE has its own two save paths (add + edit) — the page a member
+   actually files on (Fable M2). They wire the same docGate/DocConfirm, so pin
+   the prompt on both there too, including that the resume closure still carries
+   the right person/type. */
+describe('the Inputs page add form prompts for a bare medical too', () => {
+  const gotoInputs = async () => {
+    await click($$('.nav a[data-page]').find(a => (a as HTMLElement).dataset.page === 'inputs') || null)
+  }
+  const setType = async (v: string) => act(async () => {
+    const sel = $('#inType') as unknown as HTMLSelectElement
+    Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')!.set!.call(sel, v)
+    sel.dispatchEvent(new Event('change', { bubbles: true }))
+  })
+  const pickADay = async () => { await click($('#inCal [data-cal]')); await click($('#inCal [data-cal]')) }
+  const attc = () => INPUTS.filter((r: any) => r.type === 'ATT C')
+
+  it('add: a medical with no document opens the ask; "No document" files it bare', async () => {
+    await gotoInputs()
+    await setType('ATT C')
+    await pickADay()
+    const n = attc().length
+    await click($('#inAdd'))
+    expect($('[data-testid="docconf"]'), 'the ask is up on the page too').toBeTruthy()
+    expect(attc().length, 'nothing written yet').toBe(n)
+    await click($('[data-testid="docconf-nodoc"]'))
+    expect($('[data-testid="docconf"]'), 'sheet gone').toBeFalsy()
+    expect(attc().length, 'the bare medical filed').toBe(n + 1)
+    expect(rowDocIds(attc()[0]).length, 'with no document').toBe(0)
+  })
+
+  it('add: "Upload" writes nothing and keeps the form', async () => {
+    await gotoInputs()
+    await setType('ATT C')
+    await pickADay()
+    const n = attc().length
+    await click($('#inAdd'))
+    await click($('[data-testid="docconf-upload"]'))
+    expect($('[data-testid="docconf"]'), 'sheet gone').toBeFalsy()
+    expect(attc().length, 'Upload wrote nothing').toBe(n)
   })
 })

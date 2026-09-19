@@ -3000,9 +3000,10 @@ export function ingestFromRaptor(personId: string, date: string, code: string): 
 }
 function ingestFromRaptorImpl(personId: string, date: string, code: string): IngestResult {
   const clean = code.trim().toUpperCase()
-  // Raptor sends more than leave. Leave is bid for and medical is assigned
-  // (owner, 17 Aug 26 — the four markers cross from the Inputs page too);
-  // anything else nobody bids for is not this app's business and is dropped
+  // Raptor sends more than leave. Leave is bid for and medical is MEMBER-FILED
+  // (owner, 13 Sep 26 — the four markers cross IN from the Inputs page; the war
+  // never originates one); anything else nobody bids for is not this app's
+  // business and is dropped
   // rather than written as a cell with a state that would make no sense.
   // The 'approved' record a medical cell gets below is its OWNERSHIP marker
   // — raptorOwns and both reverse sweeps read the source; the grid draws a

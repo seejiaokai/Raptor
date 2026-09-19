@@ -1,0 +1,202 @@
+{
+  "status": "failed",
+  "mode": "inspect",
+  "provider": "codex",
+  "roles": {
+    "host": "claude",
+    "planner": "claude",
+    "reviewer": "codex",
+    "builder": "claude",
+    "inspector": "codex"
+  },
+  "repo": "C:\\Users\\User\\projects\\Raptor",
+  "plan": "C:\\Users\\User\\projects\\Raptor\\raptor-port\\docs\\superpowers\\specs\\2026-09-19-sync-integ-guardrails-build-plan.md",
+  "plan_sha256": "e4c5ee3a2d6551af0fc297281de6336e41baa092135c3245b5f37fdadaee5700",
+  "requested_model": "gpt-6-astra",
+  "requested_effort": "high",
+  "base": "aa485ff",
+  "snapshot": {
+    "base": "aa485ff457a5123356162cd47c3d8540bb358d47",
+    "files": [
+      {
+        "path": "raptor-port/docs/superpowers/specs/2026-09-19-sync-integ-review-log.r2-APPROVED.json",
+        "kind": "file",
+        "sha256": "40ea330cf2990195ef50af3ecd9640d86ea830f8fe05d6f9ed0e47f884c353a0"
+      },
+      {
+        "path": "raptor-port/src/leavewar/engine/raptor.test.ts",
+        "kind": "file",
+        "sha256": "70f609862cdb6d2fc25a79b3a073a1419c1417d6d7548aabc22cc49247fae855"
+      },
+      {
+        "path": "raptor-port/src/leavewar/engine/raptor.ts",
+        "kind": "file",
+        "sha256": "0ec2fa84f05f36cc5f3aaa15aafa0f203ddc6666b23d32a8b44a254c8994c16b"
+      },
+      {
+        "path": "raptor-port/src/leavewar/engine/seed.ts",
+        "kind": "file",
+        "sha256": "e05fb98aea7cf936e9b44b73b03beeb6efd17c262b1548390cec079d4c06c9f3"
+      },
+      {
+        "path": "raptor-port/src/leavewar/quarantine-medical-ui-pile1.test.tsx",
+        "kind": "file",
+        "sha256": "a7a4aa68585d10d075755eb96e1ac2d73b6529e28d2932ebd47c363b7f885379"
+      },
+      {
+        "path": "raptor-port/src/leavewar/state/demoworld.ts",
+        "kind": "file",
+        "sha256": "10fc48288e67fcb5dfa0b366b1c122729fd127c67f9d4f236b8b9a95f5bc7e73"
+      },
+      {
+        "path": "raptor-port/src/leavewar/state/store.test.ts",
+        "kind": "file",
+        "sha256": "5ab6fd02a259061a2dc227a75bee31bf61482b4a5622d4dd96b9ee3e8b472a71"
+      },
+      {
+        "path": "raptor-port/src/leavewar/state/store.ts",
+        "kind": "file",
+        "sha256": "d8c764503c95ea3c4213c97885fadb75d5fc26c5ef4911c6267c3953e49aba17"
+      },
+      {
+        "path": "raptor-port/src/leavewar/sync.test.ts",
+        "kind": "file",
+        "sha256": "7f784ed581152d2f058ff2f33e48c85878feef86b52ac110d7ad78777b5a6a84"
+      },
+      {
+        "path": "raptor-port/src/leavewar/ui/BidPicker.tsx",
+        "kind": "file",
+        "sha256": "bd5cfe7723bee8f4c67507a63aec2922ca10a8ee7155de3e50e0733526a8454c"
+      },
+      {
+        "path": "raptor-port/src/leavewar/ui/Matrix.tsx",
+        "kind": "file",
+        "sha256": "306d4e611511bff3334230b014c10840dba962d1cc423040ec38fd56c14ef8e1"
+      },
+      {
+        "path": "raptor-port/src/leavewar/ui/SelectSheet.tsx",
+        "kind": "file",
+        "sha256": "a43fc3c3e26d2c8be74b3d84ae43868f066244662b216d380508546bfd382f22"
+      },
+      {
+        "path": "raptor-port/src/leavewar/ui/bidding.test.tsx",
+        "kind": "file",
+        "sha256": "16711d436aca7360a9414b4490a9475336512e58fb9238880982a51a254e9357"
+      },
+      {
+        "path": "raptor-port/src/leavewar/ui/counters.test.tsx",
+        "kind": "file",
+        "sha256": "5f964c1cf03569f71f01e13853020caf24429104a571870dac29b58698102f45"
+      },
+      {
+        "path": "raptor-port/src/leavewar/ui/selectsheet.test.tsx",
+        "kind": "file",
+        "sha256": "206ef137187b6ddf35977fd66f0917a0e16242993f95133745fa61467c159ece"
+      },
+      {
+        "path": "raptor-port/src/storage/reset.test.ts",
+        "kind": "file",
+        "sha256": "be138c466883c8963a36a087c83e5a1e3329144cf4b7e05a2a40b57141083dea"
+      },
+      {
+        "path": "raptor-port/src/storage/reset.ts",
+        "kind": "file",
+        "sha256": "4c844c6c67346ff8acd20e85c1548490f9582454c67ef5b39e9f440f1f81f35a"
+      },
+      {
+        "path": "raptor-port/src/ui/AdminPage.tsx",
+        "kind": "file",
+        "sha256": "f35a6a64e80afb90896f44a9675c3dbcf29ad4a9a38cae4888525c7d39e9efa2"
+      },
+      {
+        "path": "raptor-port/src/ui/DocConfirm.tsx",
+        "kind": "file",
+        "sha256": "53d777b2a962525450ad0582f9fe126d068d208b9ece4136c429b8faa49ebb89"
+      },
+      {
+        "path": "raptor-port/src/ui/InputsPage.tsx",
+        "kind": "file",
+        "sha256": "1245614cd3f2eb2e2ff975e7495020f8bcfee9dafa7488cd560eabd54b30daf9"
+      },
+      {
+        "path": "raptor-port/src/ui/docconfirm.test.tsx",
+        "kind": "file",
+        "sha256": "84d27bcb986bf80455c8571475ae0eb11cee637e7a0a53afbe22a46a4c198dfc"
+      },
+      {
+        "path": "raptor-port/src/ui/inputedit.tsx",
+        "kind": "file",
+        "sha256": "e9d700160d12b589929a108dcd3912fa2d66ffdbe75e74c28764f9f4c92dd18f"
+      },
+      {
+        "path": "raptor-port/src/ui/medwrite.test.ts",
+        "kind": "file",
+        "sha256": "12868d0f13843284e914dfc2081e16d26aaf6391ab08609a0320a9f362644ec8"
+      },
+      {
+        "path": "raptor-port/src/ui/scheduler.css",
+        "kind": "file",
+        "sha256": "2f9252522038b301cdad9283157c10989509ccb1ff56a00f3500c37ce5ad23fb"
+      },
+      {
+        "path": "raptor-port/src/ui/wipe.test.tsx",
+        "kind": "file",
+        "sha256": "11d28786bea96ca00bc4f7f8098bde8b1b58da0e1821637b6482ad72322eb23d"
+      }
+    ],
+    "diff_sha256": "9e8f7ea9bd5c8fa3e37b2eca09e18fb52c92cdc30d84c08ca6f290ccd596514b",
+    "sha256": "14c3f361b0738dc4a9114484c03b20b0e9f26f5295ef9673782d873bff84ba56"
+  },
+  "previous": null,
+  "started_at": 1789808614.8248954,
+  "artifacts": "C:\\Users\\User\\AppData\\Local\\Temp\\claude\\C--Users-User-projects-Raptor\\c844c682-e47d-4ed3-9c56-d229bdf33959\\scratchpad\\codex-inspect\\claudex-71q95o1r",
+  "cli_version": "codex-cli 0.154.0",
+  "executable": [
+    "C:\\Program Files\\nodejs\\node.EXE",
+    "C:\\Users\\User\\AppData\\Roaming\\npm\\node_modules\\@openai\\codex\\bin\\codex.js"
+  ],
+  "exit_code": 0,
+  "session_id": "01a0b8e8-2518-78a1-a69f-402b028f3d53",
+  "response": {
+    "verdict": "REVISE",
+    "summary": "The medical write gates and clutter-only cleanup largely follow the plan. The demo reset deviates materially, and its new medical Inputs can shift years during navigation.",
+    "findings": [
+      {
+        "id": "SYNC-IMPL-001",
+        "severity": "medium",
+        "path": "raptor-port/src/leavewar/engine/seed.ts:192",
+        "evidence": "Item 1 explicitly requires removing SPLICE’s January 5 ATTC and January 6 OML cells. Both remain. After the schema reset, boot recreates them and demoworld.ts:78–81 fabricates corresponding WOLF Inputs, converting the retired examples into Raptor-owned medical instead of removing them. The new reset test checks storage deletion but never exercises this reseeding.",
+        "fix": "Remove the two seed cells and the newly added backing medical Inputs as planned. Update affected counter expectations and add a complete reset-to-boot check; test genuine member-filed medical ingestion separately."
+      },
+      {
+        "id": "SYNC-IMPL-002",
+        "severity": "medium",
+        "path": "raptor-port/src/leavewar/state/demoworld.ts:78",
+        "evidence": "The new medical rows use yearless 'Jan 5'/'Jan 6' labels without yr. main.tsx calls installDemoWorld after initStore’s year-stamping pass (state/store.ts:809). Navigating to a 2027 schedule week therefore makes dateOrd resolve these rows against 2027 (engine/inputs.ts:525). runInbound then targets January 2027 and reverse-clears their January 2026 medical cells (sync.ts:556–558, 624–631), changing recorded medical dates and availability merely through navigation.",
+        "fix": "Remove these rows to follow the plan. If any equivalent demo Inputs are retained under a revised specification, give them an explicit fixed year and verify that navigation across years preserves their dates and war cells."
+      }
+    ],
+    "coverage": [
+      "Verified the plan SHA256 and all 25 manifest file hashes; inspected clean HEAD 3a7d53d2c9d861e08dbfb895ba2a3079938e38b8 against the supplied baseline.",
+      "Reviewed changes in every manifest file, including test changes and the prior plan-review artifact.",
+      "Traced medical code classification, single/batch writers, bid decisions, moves, ingestion, outbound/reverse sync, history restoration, boot reset, hydration and demo initialization.",
+      "Traced all three document-prompt save paths, explicit click/Enter bindings, medical confirmation continuations, normalization, document retention, and related edit/creation callers.",
+      "Inspected cleanup selection, canonical puck writers, loaded-week arithmetic, batching, history, persistence, saved-week handling and Admin confirmation."
+    ],
+    "limitations": [
+      "Static review only: no files edited, tests or builds executed, browser interaction performed, or work delegated.",
+      "The new reset test does not cover complete boot/reseeding. New document-prompt integration tests cover InputEditor, but not both InputsPage save paths.",
+      "Memory was consulted for repository orientation; findings use current repository evidence.\n"
+    ]
+  },
+  "usage": {
+    "input_tokens": 1765279,
+    "cached_input_tokens": 1608192,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 6260,
+    "reasoning_output_tokens": 2726
+  },
+  "observed_models": [],
+  "error": "Code changed during inspection; inspect the final code again.",
+  "elapsed_seconds": 264.71
+}

@@ -1,12 +1,12 @@
 // Wires 1 + 2 of the Leave War ⇄ Raptor sync
 // (docs/superpowers/specs/leavewar-sync.md): approved leave crosses to the
 // schedule as a personal input, and leave filed on the Inputs page crosses
-// back as an approved, Raptor-owned cell. Since 17 Aug 26 the four MEDICAL
-// markers ride the same two wires (owner: "these will be connected to the
-// inputs") — an ATT B / ATT C / HL / OML input lands as a raptor-owned
-// medical cell (half days per medRowPortion's six-hour rule), and a marker
-// the admin writes on the grid lands as an lw-tagged input, no approval
-// step because medical is assigned, not bid.
+// back as an approved, Raptor-owned cell. MEDICAL is MEMBER-FILED ONLY since
+// 13 Sep 26 (owner, reversing the 17 Aug "management marks it" rule): it rides
+// only the INBOUND wire — an ATT B / ATT C / HL / OML input filed on the Inputs
+// page lands as a raptor-owned medical cell (half days per medRowPortion's
+// six-hour rule) — and NEVER the outbound one: the war can no longer originate a
+// medical marker, so nothing medical crosses war → Raptor.
 //
 // Both directions are DERIVED RECONCILIATION, not queues: each pass computes
 // the desired state from the source of truth, diffs it against what the
@@ -439,8 +439,8 @@ export function retractLwRow(row: any): void {
    on the Inputs page (raptor-owned in the war) and one BID in the war (the
    lw-tagged row outbound mints at publish): both are ordinary INPUTS rows and
    both carry the remark. Same date arithmetic as `inputCoversDate`, on the
-   war cell's ISO date. Leaves only — medical is management's, filed and read
-   on the Inputs page.
+   war cell's ISO date. Leaves only — medical is member-filed (owner, 13 Sep 26),
+   filed and read on the Inputs page and never originated on the war.
 
    `code` is the CELL'S OWN notation, when the caller has it: a leave clash
    keeps two inputs alive over one day (an approved LL minted lw-tagged plus

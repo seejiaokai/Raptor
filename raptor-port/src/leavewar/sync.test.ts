@@ -318,7 +318,7 @@ describe('wire 3: counters follow the sync for free', () => {
   })
 })
 
-describe('medical crosses both ways (owner, 17 Aug 26)', () => {
+describe('medical crosses ONE way — member-filed → war only (owner, 13 Sep 26)', () => {
   it('a spanned ATT C input lands per-day ATTC cells, approved and Raptor-owned', () => {
     writeInputs(() => INPUTS.push({
       person: 'ammo', date: 'Feb 10', endDate: 'Feb 12', allday: true,

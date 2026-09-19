@@ -186,3 +186,30 @@ bug-check (Codex now while its window is open + Fable after). Preview link to ow
    actually holds content (false-empty → data loss)? Loaded-week exclusion correct at week boundaries?
 6. **Demo reset** — does the SCHEMA_VERSION bump actually clear+re-seed the Leave War world, or is the
    war-medical reset expressed wrong?
+
+---
+
+## Post-build cross-provider CODE inspection (19 Sep 26) — dispositions
+
+Both providers inspected the built diff (`aa485ff..HEAD`). Fable found NO permission or
+data-loss holes (it independently re-verified every write gate, the doc-prompt bindings,
+replace-don't-strip, clear-data safety, and the reset). Codex found 2 mediums on the seed. All fixed:
+
+- **Codex SYNC-IMPL-001 (deviation) + SYNC-IMPL-002 (year-shift bug) — FIXED.** Removed SPLICE's
+  ATT C / OML from the PRISTINE seed (plan-faithful; no war-marked medical in the seed). The live
+  demo shows a member-filed example via `DEMO_RAPTOR_INPUTS` instead, now with an explicit
+  `yr: 2026` (so navigation to another year can't re-resolve and shift the cell).
+- **Fable M1 (WOLF permanent "pending upchit" nag) — FIXED.** Added a closing Upchit (7 Jan 2026)
+  so the demo medical is a complete episode.
+- **Fable M2 (InputsPage prompt paths untested) — FIXED.** Added add + Upload/No-document cases in
+  `docconfirm.test.tsx` driving the real Inputs page.
+- **Fable L1 (contradictory seed/demo comments) — FIXED** by the seed-cell removal + comment rewrite.
+- **Fable L2 (stale doctrine text) — FIXED.** `sync.ts` header + `:442`, `store.ts` ingest comment,
+  and the `sync.test.ts` describe title now state medical is member-filed / crosses one way.
+- **Pristine manning ripple (removing the seed medical) — FIXED.** `undermanned` recomputed (SPLICE
+  present 5–6 Jan → those days no longer red); `counters`/`matrix` ingest a member-filed medical
+  fixture to exercise the MED TOT / chip rendering the war displays. `figselect` was a load flake.
+- **DEFERRED / owner's call (noted, not fixed):** Fable L3 (the v3 reset clears the WHOLE LW world
+  for a returning browser — documented; medical-doc IndexedDB blobs become orphans, harmless);
+  Fable L4 (clearing a date on the loaded week reports "No old clutter" — a wording papercut);
+  Fable L5 (the doc prompt fires before overlap/time refusals — harmless ordering).

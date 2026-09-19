@@ -2,13 +2,18 @@ import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { DEFAULT_FIGURE_ORDER, FIGURES } from '../engine'
-import { advanceStage, getState, grantTo, initStore, moveFigure, resetFigureOrder, setBalance, setBidState, setCell, setPeople, setRole, setViewer, toggleFigure, visibleFigures } from '../state/store'
+import { advanceStage, getState, grantTo, ingestFromRaptor, initStore, moveFigure, resetFigureOrder, setBalance, setBidState, setCell, setPeople, setRole, setViewer, toggleFigure, visibleFigures } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { FigureCell } from './FigureCell'
 import { Matrix } from './Matrix'
 
 beforeEach(() => {
   initStore(memoryBackend())
+  // SPLICE's medical is MEMBER-FILED now (owner, 13 Sep 26) — the pristine seed
+  // carries none, so ingest one member-filed ATT C / OML (exactly as a member's
+  // Inputs filing syncs in) to exercise the MED TOT breakdown the war displays.
+  ingestFromRaptor('splice', '2026-01-05', 'ATTC')
+  ingestFromRaptor('splice', '2026-01-06', 'OML')
 })
 
 /** Open the counter sheet and choose one. The whole column header is the
