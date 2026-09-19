@@ -13,10 +13,11 @@
 > **All six §8 owner decisions RESOLVED.** **OWNER RULING 20 Sep 26 (§4.4): an approved leave on a
 > non-working day earns NO OIL — leave SUPPRESSES the credit (not just the display).** This SIMPLIFIES
 > the design — it removes the `earned`-field/`oilLedgerFor`-split machinery the last two rounds built.
-> All OIL sub-decisions now settled (§8.7): suppression is per-portion (a worked half earns); type
-> eligibility = the app's existing `oilAsks` (no change); keep the "all commitments ask" model. Because
-> this touches balances (HEAVY), the OIL change wants a quick targeted re-check before build. **NEXT: a
-> quick OIL re-check, then BUILD
+> All OIL sub-decisions settled (§8.7) AND the targeted OIL re-check is FOLDED (Rev 8 §4.4): suppression
+> = leave+medical only, per-WINDOW (a worked half earns, read from the STORED grid so it counts — F1);
+> type eligibility = the app's `oilAsks` (no change); keep the "all commitments ask" model; SANS/Personal/
+> Upchit don't earn but never suppress (F4). **§4.4 now build-ready — no earlier finding resurfaces. NEXT:
+> BUILD
 > (heavy, test-first) after the P2/P4 prerequisites. No code. Nothing merged.**
 
 **Plan of record:** `2026-09-13-architecture-rootcause-plan.md` (RC2; step 4; SEQ-004).
@@ -184,13 +185,14 @@ synchronous — queued items drain before `commit()` returns). On any envelope t
 ### 4.4 OIL — an approved leave SUPPRESSES the day's OIL credit (OWNER RULING 20 Sep 26)
 **OWNER RULING (20 Sep 26): a leave on a non-working day is not a worked day, so it earns NO OIL.**
 This SUPERSEDES Rev-4/5's "the credit still lands, leave wins the display only" and **REMOVES the
-`earned`-field machinery** (fM1/R3-001/R4-001) the last two rounds built — there is no credit to keep
-visible, so no split is needed. An approved absence **suppresses the OIL credit for the PORTION(S) it covers — not necessarily the whole
-day (owner, 20 Sep 26: a worked half still earns).** OIL follows ACTUAL WORK; leave/medical time is not
-work, so it contributes nothing to the worked envelope. So: full-day absence → no worked portion → no
-OIL; **half-day absence + half-day actual work → the worked half earns** per the normal ≤6h/>6h envelope
-(a half-day = HO). `absenceAt(person, iso)` returns `portion`, and the OIL calc excludes absence-covered
-portions; a credit already landed is **removed** only for the portion an absence now covers.
+`earned`-field machinery** (fM1/R3-001/R4-001) as a general split — but the half-day ruling needs a
+**minimal** credit-read partition back (F1, below). A **leave or medical** absence (`absenceAt`'s domain
+— NOT SANS/Personal/Upchit, F4) **suppresses the OIL credit for the WINDOW it covers — not necessarily
+the whole day (owner, 20 Sep 26: a worked half still earns).** OIL follows ACTUAL WORK; leave/medical
+time is not work, so it contributes nothing to the worked envelope. So: full-day absence → no worked
+minutes → no OIL; **half-day absence + half-day actual work → the worked half earns** (HO), computed by
+subtracting the leave window's overlap from the worked envelope (§4.4 F3); a credit already landed is
+reduced/removed only for the minutes an absence now covers.
 
 **WHICH TYPES EARN OIL IS UNCHANGED — the owner's 20 Sep rule already IS the app's `oilAsks`/`restsInput`
 logic** (`inputs.ts:380-389`): a type earns NO OIL when `grp ∈ {leave, med, upchit}` OR it is `Personal`
@@ -207,23 +209,46 @@ credit only if confirmed; only genuine scheduled work (flying/sim/duty crew) aut
 special; no auto-credit distinction. No change.** The **only** design change is the
 conflict-suppress above (an absence on the worked portion → no OIL for that portion; a worked portion
 still earns — §8.7 DECIDED). Appointment + Other keep asking/crediting as usual (owner-confirmed).
-- `runOilPass`/`ingestDutyCredit`: **exclude an absence-covered PORTION from the worked envelope** (a
-  fully-covered day credits nothing; a half-covered day credits the worked half); the existing
-  reverse-and-replace sweep clears an FO/HO a newly-added absence now suppresses. **Order-independent:**
-  work-first → credit lands, then cleared/reduced when the absence is added; absence-first → the covered
-  portion never earns.
-  (`ingestDutyCredit` already returns `'clash'` on a conflict — extend the conflict test to `absenceAt`,
-  `store.ts:3074`.)
-- **Display AND accounting agree trivially:** a leave day shows leave and counts no credit. No `earned`
-  field, no `oilLedgerFor` split, no dual-source contract — the rt4-3/R4-001 complexity is dropped.
-- **Consistent with [OIL]** (lock earned OIL on an already-WORKED day): a day actually WORKED earns +
-  locks; a day on LEAVE earns nothing; [OIL] still governs the already-worked lock and the "didn't work
-  it after all" amendment. This ruling is the forward case; [OIL] is the already-worked case.
-- **The advisory** (a day the schedule would have earned OIL but the person is on leave) is optional
-  information only — still derived on every OIL pass, one producer (rt4-4/R4-003), never a credit.
-- `figureCtxOf`/`oilCreditBidAgainst` balance reads use `effectiveWars()`; the `landed` FO/HO check
-  (`sync.ts:947`) stays STORED. No credit ever coexists with leave on a cell, so there is nothing to
-  hide.
+- **The exclusion is BY WINDOW, computed in `desiredOilCells`, not by rounded `portion` (F3).** For each
+  `person|iso`: worked minutes = `envMin(spans)` (`oil.ts`) **minus the overlap of the envelope with each
+  covering leave/medical absence's `inpWin`** (AM=`[0,720]`, PM=`[721,1439]`, custom windows exact —
+  `inputedit.tsx:116-117`), then `uniformOil`. This subsumes AM/PM (the window IS the half), handles a
+  mid-day leave inside a long duty, and keeps "gaps count" for real gaps while removing only leave time.
+  Pins: AM `*LL` + duty 06:00–14:00 → HO; leave 10:00–14:00 + duty 06:00–18:00 → FO; full-day OL + any
+  work → nothing. (Do NOT drive the clip off `absenceAt().portion` — `rowPortion` rounds a 10:00–14:00
+  window to `full` and would wrongly suppress a demonstrably-worked day — F3.)
+- **No blanket `ingestDutyCredit` guard (F2).** With the exclusion in the calculation, a fully-covered
+  day yields no desired key so `ingestDutyCredit` is never called; at most add a belt-and-braces
+  `absenceAt(...)?.portion === 'full'` refusal — **never clash on a half portion** (a blanket
+  `absenceAt` guard at `store.ts:3074` would block the worked-half HO and spam the strip).
+- **The worked-half HO must COUNT — read the credit from STORED, the display from effective (F1, the
+  ship-blocker).** A cell holds one code; on AM leave + worked PM the OIL pass writes `HO` to the stored
+  grid but the *effective* cell shows `*LL` (`codeOf('*LL').earnsOil===0`, `codes.ts:263`) — so a
+  balance read off `effectiveWars()` would silently drop the half they worked. Fix: keep the DISPLAY on
+  effective (the leave shows), read the CREDIT side from the STORED grid. The OIL pass is the only writer
+  of FO/HO and is itself absence-aware, so a stored FO/HO is by construction an already-suppressed valid
+  credit. Concretely: `FigureCtx` carries **`storedSources`** beside `sources`; **`earnedOil` and the
+  `earns>0` branch of `oilLedgerFor` iterate `storedSources`**; the OIL-DEBIT branch (`spends.counter==='oil'`,
+  `chargedDays`) stays on effective `sources`; `figureCtxOf`/`setBalance`/`Matrix.tsx:4046` pass both.
+  This is a read-partition **by vocabulary** (the same partition `runInbound`/`runOilPass` already use) —
+  smaller than the removed `earned`-field split, no new stored field.
+- **Order-independent, on one condition:** the reverse sweep (`sync.ts:985-996`) clears a stored
+  raptor-owned FO/HO absent from `desired`, and FO→HO rewrites via the owned-FO/HO exception
+  (`store.ts:3074`) — so the exclusion MUST live in `desiredOilCells` (the calculation), not only a
+  guard; the sweep keys off `desired`. Work-first → credit lands, then reduced/cleared when the absence
+  is added; absence-first → the covered minutes never earn.
+- **Suppress set = leave + medical ONLY (F4)** — exactly `absenceAt`'s domain. `SANS Availability`,
+  `Personal`, `Upchit` do not *earn* (already true via `oilAsks`) but must **never suppress** scheduled
+  work — a SANS pilot who was seated and flew a Saturday earns for the flying. (§8.7 wording corrected.)
+- **ATT B advisory (owner-explicit — build it, note it):** ATT B is `work:true`/`removes:0`
+  (`inputs.ts:93`, `codes.ts:279`) — a man on ATT B can stand a Saturday desk, and under this ruling that
+  desk earns nothing. The owner said "incl. ATT B", so build it; this sentence exists so a later builder
+  doesn't "fix" it back.
+- **Consistent with [OIL]** (lock earned OIL on an already-WORKED day): §4.4 is the FORWARD suppress; [OIL]
+  is the already-worked lock; a retrospective absence on an already-locked worked day needs a stated
+  winner — an [OIL] item, not a §4.4 defect.
+- **The advisory** (schedule would have earned but the person is on leave) is optional information, one
+  producer (rt4-4/R4-003), never a credit.
 - **HALF-DAY — DECIDED (owner, 20 Sep 26): the worked half still earns.** Suppression is per-portion
   (§8.7): the absence-covered portion earns nothing; a genuinely-worked portion earns per the ≤6h/>6h
   envelope. `absenceAt().portion` drives which portion is excluded from the worked envelope.
@@ -372,13 +397,16 @@ vs redo date.
    they are). Consistent with the owner's model (post-publish leave changes are agreed + communicated
    outside the app). The undo publish-boundary itself is unchanged.
 
-7. **DECIDED (owner, 20 Sep 26) — an approved absence (leave OR medical, incl. ATT B; also SANS
-   Availability, Personal, Upchit) earns NO OIL; it SUPPRESSES the credit** (§4.4; supersedes the
-   earlier "credit still lands" + removes the `earned`-field machinery). **Portion-aware (owner, 20 Sep
-   26): the suppression covers only the portion the absence spans — a half-day absence + half-day ACTUAL
-   work → the worked half still earns (HO).** Which types earn OIL is UNCHANGED (= the app's `oilAsks`),
-   they credit via the OilConfirm ask-flow (keep today's "all ask" model), and **Appointment + Other
-   keep asking/crediting as usual (owner, 20 Sep 26 — confirmed, no change).**
+7. **DECIDED (owner, 20 Sep 26) — OIL, two separate rules (corrected by the OIL re-check):**
+   (a) **Which types EARN OIL is unchanged** (= the app's `oilAsks`): NO-OIL = all leave, all medical
+   (incl. ATT B), Upchit, Personal, SANS Availability; the rest earn via the OilConfirm ask-flow (keep
+   today's "all ask" model; Appointment + Other unchanged).
+   (b) **SUPPRESS = leave + medical ONLY** — an approved leave/medical absence over a worked portion
+   earns no OIL for that portion (supersedes the "credit still lands" model; removes the `earned`-field
+   machinery). **Per-portion by WINDOW:** a half-day absence + half-day actual work → the worked half
+   earns (HO); computed as `envMin` minus the leave window's overlap (§4.4, F1–F4). **SANS Availability,
+   Personal, Upchit don't earn but NEVER suppress** scheduled work (F4). The worked-half credit is read
+   from the STORED grid so it counts on the balance (F1).
 
 **ALSO DECIDED (owner, 19 Sep 26) — the relaxed mandatory-document rule (§4.7) is FOLDED INTO the
 [SYNC-INTEG] P2 medical batch** (not a step-4 item), affecting the five certificate types: **ATT C,

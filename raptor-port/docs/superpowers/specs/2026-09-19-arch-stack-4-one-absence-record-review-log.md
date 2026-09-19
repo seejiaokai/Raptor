@@ -418,3 +418,28 @@ reverse sweep clears a credit when leave is added later (order-independent → b
 credit). Consistent with `[OIL]` (already-worked-day lock). Design updated to Rev 7 §4.4. **This is a
 balances (HEAVY) change that removes previously-scrutinised machinery — it wants a quick TARGETED OIL
 re-check before build, plus the owner's half-day sub-decision (§8.7).**
+
+---
+
+# TARGETED OIL RE-CHECK (Fable, on Rev 7 §4.4 — after the owner's half-day ruling) — VERDICT: REVISE→folded
+The half-day "worked half still earns" ruling reintroduced one case the simplified §4.4 claimed couldn't
+exist. Verified sound: type eligibility (= `oilAsks`, no change), order-independence, balance/tracker
+agreement, [OIL] consistency. Findings (all folded into §4.4/§8.7):
+- **F1 (HIGH, ship-blocker) — the worked-half HO is stored but INVISIBLE to the balance.** A cell holds
+  one code; the effective cell shows `*LL` (`earnsOil===0`, `codes.ts:263`), so a balance read off
+  `effectiveWars()` drops the worked half. **Fix (minimal partition, smaller than the removed `earned`
+  field):** display stays effective; the CREDIT side reads the STORED grid — `FigureCtx.storedSources`;
+  `earnedOil` + `oilLedgerFor`'s `earns>0` branch iterate stored; the OIL-debit branch stays effective;
+  `figureCtxOf`/`setBalance`/`Matrix.tsx:4046` pass both. The OIL pass is the only FO/HO writer and is
+  absence-aware, so a stored FO/HO is a valid already-suppressed credit.
+- **F2 (MED) — a blanket `ingestDutyCredit` `absenceAt` guard blocks the half-day credit + spams the
+  strip.** Put the exclusion in the CALCULATION; at most a `portion==='full'` belt-and-braces; never
+  clash on a half.
+- **F3 (MED) — exclude by exact WINDOW, not rounded `portion`.** `rowPortion` rounds 10:00–14:00 to
+  `full`; drive the clip off `envMin` minus the leave `inpWin` overlap instead (subsumes AM/PM, handles
+  mid-day leave, keeps "gaps count").
+- **F4 (LOW) — SUPPRESS is leave+medical ONLY;** SANS/Personal/Upchit don't earn (via `oilAsks`) but
+  must never suppress scheduled work (a SANS pilot who flew Saturday earns).
+- **Advisory — ATT B (`work:true`) earns nothing on a worked Saturday under the ruling; owner said "incl.
+  ATT B", so build it + note it** so a later builder doesn't revert it.
+**Folded → §4.4 (Rev 8). §4.4 now build-ready; no earlier finding resurfaces.**
