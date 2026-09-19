@@ -263,21 +263,21 @@ export function AdminPage() {
                   data. Wipe it clean so that the app stays snappy", widened the
                   same day to the full period grammar). The ids the pins hold:
                   #admWipeMode/#admWipeDate/#admWipeDate2/#admWipe. */}
-              <h4 className="adm-sub">Schedule data</h4>
-              <ClearControl idp="admWipe" act="Clear old data…"
-                zero="Nothing on file in that period" unit={['record', 'records']}
-                note="Permanently removes personal inputs, calendar notes and past week edits in the chosen period. Anything only partly inside the period is kept whole."
+              <h4 className="adm-sub">Old clutter</h4>
+              <ClearControl idp="admWipe" act="Clear old clutter…"
+                zero="No old clutter in that period" unit={['item', 'items']}
+                note="Removes only old calendar pucks and day notes in the chosen period. It never deletes a leave, medical or duty entry (so no balance changes), never a saved week, and never the week you're viewing. Anything only partly inside the period is kept whole."
                 run={clearHistoryData} />
               {/* PROTOTYPE TRUTHS, off-screen by owner's word (25 Aug 26): the
-                  on-screen note above is the DATABASE-ERA wording — it calls the
-                  wipe permanent, because the two-tap confirm is the safety and a
-                  DB-era wipe won't ride the session undo. What it deliberately
-                  does not say, kept here so the database migration remembers:
-                  - TODAY the inputs/pucks/titles half IS one session-undo step
-                    (writeInputsBatch), except Leave-War-synced leave, which is
-                    withdrawn from the war for real (no shared undo) — same as
-                    deleting such a row by hand. Stashed past weeks don't come
-                    back either (outside the history snapshot).
+                  on-screen note above is the DATABASE-ERA wording. What it
+                  deliberately does not say, kept here so the migration remembers:
+                  - CLUTTER-ONLY since 13 Sep 26 ([SYNC-INTEG] P4): the sweep
+                    clears only PLANPUCKS + DAYRMK in the period, as ONE session-
+                    undo step (writeInputsBatch). It no longer deletes any input,
+                    moves any balance, drops any stashed week, or touches the
+                    loaded week — the two data-loss faces the red-team found
+                    (SYNC-003 issuance history, SYNC-005 authored-week
+                    resurrection) are designed out by not dropping stashes at all.
                   - Everything in this prototype is session-only (reload forgets;
                     nothing leaves this browser). The shared live database is the
                     stated end-state (HANDOFF.md), this panel is where its real

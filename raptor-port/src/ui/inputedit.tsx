@@ -25,15 +25,16 @@ import { PEOPLE, isSpecial } from '../engine/people'
 import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { logAction, elogSweep } from '../engine/editlog'
-import { writeInputsBatch, writeInputsBatchWith, weekstashStore, notify, protectedDates, inputProtected } from '../state/store'
+import { writeInputsBatch, notify, protectedDates, inputProtected } from '../state/store'
 /* The Leave War seam (sync.ts is the one crossing point, CLAUDE.md §The Leave
    War tab): retracting a synced row's war cells when it is edited or deleted
    here — not a new seam, a Raptor-side caller of the existing one. */
 import { retractLwRow, rowSig, oilAskPlan } from '../leavewar/sync'
 import { inputOilAmt } from '../engine/oil'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
-import { stashKeys, stashDrop, stashGet } from '../engine/weekstash'
-import { persistAll } from '../state/persist'
+import { stashKeys, stashGet } from '../engine/weekstash'
+import { CURWEEK } from '../engine/waves'
+import { keyToIso, mondayOf } from './weeknav'
 import { canEditSched, ME, SESSION } from '../state/auth'
 import { INPEDIT, setInpEdit, OILASK, setOilAsk } from './pops'
 import { useVersion } from './useStore'
@@ -1237,17 +1238,26 @@ function dropInputRow(r: any) {
    EXCLUSIVE-upper ISO window, so every comparison below is the same
    `>= lo && < hi` shape whatever the mode.
 
-   The DATA sweep covers everything the app accumulates: past INPUTS, past
-   calendar pucks and day titles (state/plan.ts), and stashed past weeks
-   (engine/weekstash.ts). Doctrine points, deliberate:
-   - DELETION FAILS CLOSED: an input whose dates cannot be parsed is KEPT,
-     never guessed old. Only a row wholly inside the period goes — one that
-     touches or crosses the period's edge stays whole. Same for a stashed
-     week: it goes only when its whole Mon–Sun span sits inside.
-   - The inputs/pucks/titles sweep is ONE writeInputsBatch, so it lands as a
-     single undo step (history.ts snapshots all three) — the safety net for
-     a destructive button. Stashed weeks are outside the undo snapshot and
-     are gone for real.
+   The DATA sweep is CLUTTER-ONLY (owner, 13 Sep 26 — [SYNC-INTEG] P4). It
+   clears past calendar pucks and day titles (state/plan.ts) and NOTHING ELSE.
+   Doctrine points, deliberate:
+   - It NEVER deletes any leave / medical / duty INPUT, so it never changes a
+     leave balance (balances are derived from inputs) — that whole class of
+     data loss is designed out, not guarded against. The old input sweep and
+     its Leave War withdrawals are gone.
+   - It NEVER drops a stashed week. A stash is not safely "clutter": a
+     published-then-unpublished day keeps its issuance history in a stash even
+     when the day reads empty, and an authored week that was deliberately
+     EMPTIED holds that fact ONLY as an empty stash — dropping it would resurrect
+     the seed. Both were proven in the pre-build red-team (SYNC-003 / SYNC-005),
+     so saved weeks are left alone.
+   - It NEVER touches the currently-loaded week, in either collection — a puck
+     or title on any of its seven days is excluded even when the period covers it.
+   - DELETION FAILS CLOSED: an impossible date (isoOk) clears nothing; only a
+     puck/title wholly inside the period goes.
+   - The pucks/titles sweep is ONE writeInputsBatch, so it lands as a single
+     undo step (history.ts snapshots both) — the safety net for a destructive
+     button, and enough on its own now that no stash or input is touched.
    - `dry` answers "how many would go?" without touching anything — the
      panel's confirm step shows the count it is about to act on, from the
      same selection logic it will act with (one body, no drift).
@@ -1262,7 +1272,19 @@ function dropInputRow(r: any) {
    own clearing even when the period covers today. */
 export type ClearMode = 'before' | 'on' | 'range'
 const ISO_RX = /^\d{4}-\d{2}-\d{2}$/
-const isoOk = (s: any) => ISO_RX.test(String(s || '')) ? String(s) : null
+/* FAIL CLOSED on an IMPOSSIBLE date too (SYNC-006): the pattern alone accepts
+   2026-02-31, and nextIso would silently normalise it to 3 Mar, widening the
+   window past what was asked. Round-trip through a UTC date and reject anything
+   the calendar does not actually hold — a bad month/day, 29 Feb in a non-leap
+   year — so a typo clears NOTHING instead of the wrong span. */
+const isoOk = (s: any) => {
+  const str = String(s || '')
+  if (!ISO_RX.test(str)) return null
+  const [y, m, d] = str.split('-').map(Number)
+  const dt = new Date(Date.UTC(y, m - 1, d))
+  if (dt.getUTCFullYear() !== y || dt.getUTCMonth() !== m - 1 || dt.getUTCDate() !== d) return null
+  return str
+}
 const nextIso = (iso: string) => {
   const p = iso.split('-')
   return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2] + 1)).toISOString().slice(0, 10)
@@ -1281,64 +1303,41 @@ function clearWindow(mode: ClearMode, a: string, b?: string): { lo: string | nul
   const x = A <= B ? A : B, y = A <= B ? B : A
   return { lo: x, hi: nextIso(y), said: `between ${x} and ${y}` }
 }
-const ordOf = (iso: string | null) => iso == null ? null : +iso.slice(0, 4) * 10000 + +iso.slice(5, 7) * 100 + +iso.slice(8, 10)
+/* The 7-day ISO span of the currently-loaded week, [lo, hi) — its Monday to the
+   NEXT Monday. A puck or title on any of these seven days is never cleared, so
+   the sweep can never disturb the week on screen (owner, [SYNC-INTEG] P4). */
+function loadedWeekSpan(): { lo: string, hi: string } {
+  const lo = keyToIso(mondayOf(CURWEEK))
+  const p = lo.split('-')
+  const hi = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2] + 7)).toISOString().slice(0, 10)
+  return { lo, hi }
+}
 
 export function clearHistoryData(mode: ClearMode, a: string, b?: string, dry?: boolean): number {
   if (!canEditSched()) return 0
   const w = clearWindow(mode, a, b)
   if (!w) return 0
-  const loOrd = ordOf(w.lo), hiOrd = ordOf(w.hi)!
-  const doomed = INPUTS.filter((r: any) => {
-    const end = dateOrd(r.endDate || r.date, r.yr)
-    if (end == null || end >= hiOrd) return false
-    if (loOrd == null) return true
-    const start = dateOrd(r.date, r.yr)
-    return start != null && start >= loOrd
-  })
-  const inWin = (iso: any) => !!iso && iso < w.hi && (w.lo == null || iso >= w.lo)
-  const oldPucks = PLANPUCKS.filter((s: any) => inWin(s.iso))
+  const loaded = loadedWeekSpan()
+  /* in the period, and NOT on the loaded week (owner: never touch the week on
+     screen — a puck/title on any of its seven days is excluded even when the
+     period covers it). Pucks/titles are keyed by their own ISO `date` field
+     (SYNC-004: the old `.iso` read matched nothing, so real pucks were never
+     cleared — state/plan.ts writes `date`). */
+  const inWin = (iso: any) => !!iso && iso < w.hi && (w.lo == null || iso >= w.lo) &&
+    !(iso >= loaded.lo && iso < loaded.hi)
+  const oldPucks = PLANPUCKS.filter((s: any) => inWin(s.date))
   const oldRmk = Object.keys(DAYRMK).filter(inWin)
-  /* a stashed week goes only when its WHOLE span sits inside the window —
-     Monday (the key itself) on or after the lower edge, Sunday (key+6d)
-     before the upper — so a week the period's edge lands inside stays
-     remembered whole */
-  const oldWeeks = stashKeys().filter(k => {
-    const p = String(k).split('/')
-    if (p.length !== 3) return false
-    const mon = +p[2] * 10000 + +p[1] * 100 + +p[0]
-    const d = new Date(Date.UTC(+p[2], +p[1] - 1, +p[0] + 6))
-    const sun = d.getUTCFullYear() * 10000 + (d.getUTCMonth() + 1) * 100 + d.getUTCDate()
-    if (!isFinite(mon) || !isFinite(sun)) return false
-    return sun < hiOrd && (loOrd == null || mon >= loOrd)
-  })
-  const n = doomed.length + oldPucks.length + oldRmk.length + oldWeeks.length
+  const n = oldPucks.length + oldRmk.length
   if (dry || !n) return n
-  /* PREFLIGHT the whole clear (P2-QREV-04): if any doomed input sits on a
-     protected week, refuse the ENTIRE operation before deleting anything — the
-     old code let the input batch be rolled back by the funnel yet still ran
-     stashDrop/persistAll and logged "Cleared N", a partial destructive op that
-     removed week records while the inputs survived. */
-  if (doomed.some((r: any) => inputProtected(r))) {
-    HOOKS.toast('Some of those records are on a locked week and can’t be cleared', 'warn')
-    return 0
-  }
-  /* [CMDL-FINISH] §6 (C11/N5) — drop the stashed weeks INSIDE the enlisted batch
-     (weekstashStore), so if runInputWrite refuses a protected week the phase-6
-     rollback undoes the stash drop too, instead of leaving it done while the input
-     batch reverts (the old partial-destructive gap the preflight above only
-     band-aided). A refusal returns ok:false → skip the success log + report 0. */
-  const ok = writeInputsBatchWith([weekstashStore], () => {
-    doomed.forEach((r: any) => dropInputRow(r))
+  /* ONE writeInputsBatch → ONE undo step (history.ts snapshots pucks + titles).
+     No input is deleted, no balance moves, no stashed week is dropped and the
+     loaded week is untouched, so there is nothing to preflight or persist beyond
+     what the batch already does. */
+  writeInputsBatch(() => {
     oldPucks.forEach((s: any) => { const ix = PLANPUCKS.indexOf(s); if (ix >= 0) PLANPUCKS.splice(ix, 1) })
     oldRmk.forEach(k => { delete DAYRMK[k] })
-    oldWeeks.forEach(k => stashDrop(k))
   })
-  /* a stash drop is not a history step, so file it now — persistAll deletes
-     the stored copy of every week no longer stashed (8 Sep 26 bug pass: the
-     cleared weeks were all back after a reload). Kept unconditional (§6). */
-  persistAll()
-  if (!ok) return 0   // refused + rolled back — do NOT report a clear that did not happen
-  logAction(null, `Cleared ${n} record${n === 1 ? '' : 's'} ${w.said}`)
+  logAction(null, `Cleared ${n} item${n === 1 ? '' : 's'} of old clutter ${w.said}`)
   return n
 }
 
