@@ -1,10 +1,10 @@
-# ARCH-STACK step 4 — ONE absence record (design, Rev 4, 19 Sep 26)
+# ARCH-STACK step 4 — ONE absence record (design, Rev 5, 19 Sep 26)
 
-Status: **DESIGN — round 4 of the cross-provider red-team (Codex + Fable). No code yet.**
+Status: **DESIGN — round 5 of the cross-provider red-team (Codex + Fable). No code yet.**
 Rev 3 folded in Fable's round-2 findings (§16) and the owner's answers (§13). Fable APPROVED Rev 3
-with three build items (§17). Rev 4 folds in Codex's round-3 findings (§18) — **§18 overrides any
-earlier section it contradicts** (notably §2.2 `oil:true`, §3.1's credit row, §5.2 "delete those
-requests").
+(§17) and Rev 4 (§18, with the round-4 items now in §19). **Later sections override earlier ones:
+§19 over §18 over the body.** Rev 5's one big change (§19): a command's saves land all-or-nothing
+in the storage seam, so the `consumedBy` workaround of §18 OA3-005 is withdrawn.
 Branch `claude/db-step4-one-absence`. Own gated PR; nothing merges without the owner's
 "merge live". Author: Opus 5 (high). Review transcript + dispositions:
 `2026-09-19-arch-stack-4-one-absence-review-log.md`.
@@ -142,7 +142,7 @@ A request is the war's own record; an absence is the squadron's record of fact. 
 | pending / acknowledged request, different code | yes | **the request** (today's behaviour: the war keeps what was bid; only reachable when the request predates the filing) | the absence, as today's clash note |
 | **refused** request, any code | yes | **the absence** — a refusal removes nobody, and the absence is fact (FB2-02; today a refused chip can hide a filed leave and count the person available — fixed) | — |
 | OIL credit (was there first) | yes | **the credit** — today's behaviour; the OIL pass never places a NEW credit on an absence day (§7, §18 OA3-004) | the absence |
-| request with `consumedBy` naming a live Input | — | hidden (the absence shows) — §18 OA3-005 | — |
+| — | two or more that cannot combine | the deterministic effective cell (§19 OA4-004) | every conflicting absence |
 
 **New stored records never land on an absence day** (FB2-02). One module-internal read,
 `absenceAt(person, date)` (from the index, no war walk), replaces every deleted `raptorOwns(...)`
@@ -248,7 +248,7 @@ stay the door; the change is deletions inside them: `retractLwRow` and `delete r
 
 | Gesture | Command | Reducer (enlists `schedStore` + `lwStore`) |
 |---|---|---|
-| Approve request(s) | `lw.approve` | preflight each date against covering Inputs (§18 OA3-002) → group the rest into contiguous same-code same-portion same-remarks runs per person → one Input per run (`lw` = war id, `lwMoved` from each request's `shiftedFrom`, remarks from `carried`) → mark those requests `consumedBy: <iid>` (§18 OA3-005) |
+| Approve request(s) | `lw.approve` | preflight each date against covering Inputs (§18 OA3-002) → group the rest into contiguous same-code same-portion same-remarks runs per person → one Input per run (`lw` = war id, `lwMoved` from each request's `shiftedFrom`, remarks from `carried`) → delete those requests; the whole command saves as one all-or-nothing group (§19) |
 | Un-approve / refuse an approved day | `lw.decideApproved(state)` | shrink / split / remove the owning Input(s); re-create a request at exactly those dates with the chosen state (`pending`, `acknowledged` or `refused`) |
 | Delete approved day(s) on the war | `lw.removeApproved` | shrink / split / remove the owning Input(s). **Deliberate delete propagates and sticks** (owner decision 2, 13 Sep 26) |
 | Move approved day(s) | `lw.moveApproved` | shift the owning Input's dates (split for a sub-run); record `lwMoved` when bidding is closed (today's `biddingClosed` rule); `moveProblem` stays the one validation body |
@@ -440,6 +440,9 @@ request no longer hides a filed absence on the war (§3.1).
 
 ## 14. Build phases (each gate-green before the next)
 
+0. All-or-nothing group saves in the storage seam (§19) — whiteboard `transaction`, postman
+   groups, `putMany` + journal + boot replay, phase-8 release wrapped — with its fault-injection
+   tests. Independently useful; lands first so everything after it relies on it.
 1. Tests + `cellFor` + the invariant checker (red on the regressions).
 2. Record variants (§2.2), `lw` provenance + `lwMoved`, reset + re-seed.
 3. The absence index + merged `getState()` / `rawState()` split + structural sharing + perf gate.
@@ -536,7 +539,8 @@ Effort: M–L, several sessions.
   PLACES a new credit on an absence day (merged check) and does its `auto` cleanup over the RAW
   credits, so an obsolete generated credit is removed whether or not anything covers it; a `manual`
   credit is never auto-removed. Undo of either is ordinary record replay.
-- **OA3-005 — a half-finished save must never LOSE anything.** Saves go out per storage key, each
+- **OA3-005 — WITHDRAWN in Rev 5; superseded by §19 (all-or-nothing group saves). Kept below only
+  as the record of what was tried.** Saves go out per storage key, each
   retried independently (`storage/postman.ts:45-82`), so an approval (Input + request) can land
   half-saved if the tab closes inside the save window. Rules, replacing "delete those requests"
   in §5.2:
@@ -565,3 +569,68 @@ Effort: M–L, several sessions.
   `snapView` selects `scope.warId` and lands the first of `scope.dates` when an envelope has no
   `lw.cell`/`lw.bid` change (`deriveContexts` maps it to the war, not the Inputs page). Test: move
   approved leave in war A, switch to war B, undo → war A, that date.
+
+## 19. Round-4 → Rev 5: fix the half-save at its root; the `consumedBy` workaround is WITHDRAWN. THIS SECTION OVERRIDES §18 OA3-005 AND EVERY `consumedBy` MENTION.
+
+**Why (guardrail-over-cascade).** OA3-005's `consumedBy` markers existed only to survive a
+half-finished save across two storage keys. In one round they produced five new findings — Fable
+FB4-01 (an Inputs-page delete resurrects the consumed bid), FB4-02, FB4-03, and Codex OA4-001
+(un-approve after a boot tidy still loses both records) and OA4-002 (hidden records blocking moves).
+A workaround that grows a finding per round is the wrong decision, so the decision is changed.
+
+**The root fix — one command's saves land all-or-nothing.** Every durable write already reaches
+storage through ONE whiteboard, ONE postman and ONE backend (`src/storage/`). Add, in that seam:
+1. `Whiteboard.transaction(fn)` — the `set`/`delete` calls made inside `fn` are emitted as ONE
+   grouped change instead of one per key.
+2. The command layer releases phase 8 (the latched `persistAll`, the Leave War `rawPersist`, and
+   any other store's persist) inside `wb.transaction(...)`, so one command = one group.
+3. The postman sends a group as one unit (`backend.putMany(entries)`, an optional `Backend` method
+   with a sequential fallback for a backend that lacks it), retries it as one unit with today's
+   backoff, and lets a newer value for a key supersede the older within pending, as now.
+4. `BrowserBackend.putMany` writes a single journal key (`raptor:__txn`, the whole group in ONE
+   `setItem`), then applies each entry, then removes the journal. `loadAll` replays a journal it
+   finds BEFORE reading anything, then removes it. A failed journal write applies nothing (the
+   group retries whole); a crash or quota failure mid-apply is completed at the next boot. Memory
+   backend: trivially atomic. `contractTests` gain the group cases.
+5. This is the Dataverse shape too — a `$batch` changeset is the same all-or-nothing group. It
+   pulls a narrow, real slice of ARCH-STACK step 5 ("transactional save") forward because step 4
+   needs it; the rest of step 5 (record-oriented door, versions) stays there.
+
+**Consequences for the design.**
+- Approve **deletes** the requests it consumes (Rev 2/3 semantics); `consumedBy` is gone from §2.2,
+  §3.1 and §5.2, and so are the boot tidy and the "leftover" row. FB4-01, FB4-02, OA4-001 and
+  OA4-002 dissolve: there is no hidden record to resurrect, block a move or be lost.
+- Un-approve, remove-approved, move-approved and a same-code filing are each one group: the Input
+  change and the request change land together or not at all.
+- Risk to carry: a group roughly doubles the bytes written for that command while the journal
+  exists (a near-full browser store could refuse the journal and retry — the save status shows
+  "failed" rather than half-saving). Measured in the build; the storage-full behaviour is pinned.
+- Tests: fault-injection on `putMany` (journal write fails; apply fails after entry k; process
+  "dies" before journal removal) around approve, un-approve, remove-approved, move-approved and a
+  same-code filing → after reload, the world is exactly before OR exactly after, never between;
+  plus the existing postman/whiteboard/boot/contract suites.
+
+**Other round-4 items, folded:**
+- **FB4-01 (remaining half)** — every Input change, from ANY screen, keeps the requests consistent
+  through the one inputs-command door (`commitInputsWith`, after `fn()`): a same-code request on a
+  date an Input newly covers is deleted (the filing rule, §5.2). Nothing else is needed now that
+  approval deletes requests outright.
+- **FB4-03** — `readRecord` (store.ts ~385, an allow-list) validates and keeps `carried` as the
+  list `{ portion: 'am'|'pm'|'full', remarks, lwMoved? }[]`, dropping a malformed entry, never the
+  record. Test: a two-entry `carried` round-trips a reload byte-equal.
+- **FB4-04** — widen `Scope` (`command/types.ts:55-62`) to `{ module:'lw'; warId; dates?: string[] }`;
+  in `timeline.ts` `recordEntry`/`foldProjection`, an `lw`-scoped entry with no derived war context
+  gains `{ kind:'war', warId }`; `snapView` falls back to `scope.dates[0]`.
+- **OA4-003 — clashes are published whenever the war's stored records OR the absence index change**
+  (not only on an index rebuild), from the merge step, with an equality guard so an unchanged list
+  notifies nothing. The list covers every conflict class: a request over an absence (§3.1), a credit
+  over an absence (OA3-004), and Input-vs-Input conflicts from `cellFor`. Tests: refuse a blocking
+  request, remove a credit, file two conflicting absences — each updates the strip with no unrelated
+  Input edit.
+- **OA4-004 — a conflict still has a total, deterministic cell.** When `cellFor` cannot represent
+  its contributions, it returns an effective cell AND the conflict: the displayed code is the first
+  contribution in a fixed order (AM before PM before full-day, then earliest `iid`) — today's
+  "lands the first, reports a clash" rule made deterministic; `inputIds` lists every contributor; the
+  cell counts the person AWAY (safe for manning) and charges the displayed code; the remarks sheet
+  offers each contributor; all conflicting Inputs go on the clash list. Tests: two full-day filings
+  of different codes, and incompatible halves — pinned display, availability, charge and action target.

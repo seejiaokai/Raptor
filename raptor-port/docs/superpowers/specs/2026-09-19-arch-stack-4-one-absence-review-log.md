@@ -86,6 +86,28 @@ lines also corrected in place). OA3-005: loss-free ordering via `consumedBy` mar
 the residual "action not fully applied after a mid-save tab close" is the storage door's
 transactional save, owned by ARCH-STACK step 5 — recorded as a known limitation, not built twice.
 
-## Round 4 — design Rev 4
+## Round 4 — design Rev 4, 19 Sep 26
+
+**Fable: APPROVED**, with one real hole — FB4-01 (HIGH): deleting or re-dating an approved Input
+from the Inputs page leaves its `consumedBy` request behind, which resurfaces as a pending bid
+(finding A's shape) — plus FB4-02 (boot-tidy placement + same-code leftover), FB4-03 (`readRecord`
+allow-list must keep `consumedBy`/list `carried`), FB4-04 (`Scope` needs `dates`; war context must
+reach `loadContext`).
+
+**Codex: REVISE (4).** OA4-001 (HIGH): un-approve after a boot tidy can still lose both records on a
+half-save; a surviving split iid keeps a stale consumed request hidden. OA4-002: consumed requests
+still occupy destinations for moves. OA4-003: the clash strip isn't republished on request-only
+changes, and misses credit and Input-vs-Input conflicts. OA4-004 (HIGH): a `{clash}` cell had no
+defined display, availability or charge — a conflict would count the person available.
+
+**Host disposition — decision changed, not patched.** Five of the nine round-4 findings traced to
+the `consumedBy` workaround for half-saves (guardrail-over-cascade rule). Rev 5 fixes the half-save
+at its root instead: one command's saves land all-or-nothing through the ONE whiteboard/postman/
+backend seam (grouped change, `putMany`, a single-key journal replayed at boot) — a narrow slice of
+step 5's transactional save pulled forward because step 4 needs it. `consumedBy` and the boot tidy
+are withdrawn; approve deletes requests outright. FB4-01's remaining half, FB4-03, FB4-04, OA4-003
+and OA4-004 folded. Design §19.
+
+## Round 5 — design Rev 5
 
 (pending)
