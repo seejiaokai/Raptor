@@ -1,11 +1,13 @@
-# [ARCH-STACK] Step 4 — ONE Absence Record — DESIGN (Rev 2, 19 Sep 26 — dual red-team folded)
+# [ARCH-STACK] Step 4 — ONE Absence Record — DESIGN (Rev 3, 19 Sep 26 — owner decisions folded)
 
-> **Status: Rev 2 — cross-provider red-teamed (Codex/GPT-6 Astra high + Fable 5.1), both REVISE,
-> both affirm the direction; all 7+11 findings ACCEPTED and folded (log:
-> `2026-09-19-arch-stack-4-one-absence-record-review-log.md`).** Two findings surfaced **new owner
-> decisions** the design cannot resolve (§8.5, §8.6). **GATE: this is decision-ready, not
-> build-ready** — it branches on §8; after the owner answers, Rev 3 + a second red-team round run
-> before any build. **No code. Nothing merged.**
+> **Status: Rev 3 — all six §8 owner decisions RESOLVED (19 Sep 26).** Rev 2 was dual red-teamed
+> (Codex/GPT-6 Astra high + Fable 5.1, both REVISE→affirmed, all 7+11 findings folded; log
+> `…-review-log.md`). Rev 3 folds the owner's answers, which **SIMPLIFY** the design: §8.5=B and
+> §8.6=A both keep current behaviour (no `moveAbsence`-keeps-approval; no leave-amendment machinery);
+> §8.1=B removes the return-to-open branch; §8.3 makes certificates user-managed/not-undoable. The
+> relaxed mandatory-document rule and medical-on-war lockdown are folded into the **[SYNC-INTEG] P2**
+> batch (prerequisite, not step 4). **NEXT: a SECOND cross-provider red-team round on Rev 3** (a
+> changed design needs a fresh pass; should converge cleaner) → then build. **No code. Nothing merged.**
 
 **Plan of record:** `2026-09-13-architecture-rootcause-plan.md` (RC2; step 4; SEQ-004).
 **Builds on (DONE + live):** Step 1 stable ids, Step 2 command layer, Step 3 [GLOBAL-UNDO].
@@ -97,9 +99,10 @@ adjacent approved cells today merges into ONE multi-day Input (`desiredRuns`, `s
 - **`retractAbsence(iid | iid+dayRange)`** — deletes the Input, or **splits** it (shorten/hole) for a
   partial-span retract, preserving remarks/links on the surviving parts; the linked request returns to
   **open at its asked dates** (owner decision §8.1) or is removed. One deliberate delete/split.
-- **`editAbsence(iid, patch)` / `moveAbsence(iid, span)`** — edits the one record; the request record
-  keeps `shiftedFrom`. **Whether a *moved approved bid* keeps approval or returns to pending is owner
-  decision §8.5** (it changes a live 27 Aug admin feature).
+- **`editAbsence(iid, patch)`** — edits the one record in place (dates/type/remarks). A member editing
+  their OWN leave via Inputs (decision §8.2 = B) is this command. **A war-side DRAG of an approved
+  request (decision §8.5 = B, KEEP CURRENT) is NOT a keep-approval move** — it is `retractAbsence` (the
+  input goes) + a pending bid at the new date, as today. No `moveAbsence`-keeps-approval path is built.
 - **The four admin grid ops on a projected cell are defined, not left to the old reconciler:**
   `setBidState` refuse/un-approve → `retractAbsence` + bid back to pending; `moveCells`/`shiftBid` →
   `moveAbsence` (or retract+pending per §8.5); `setCell('')`/`clearCells` → `retractAbsence`;
@@ -159,10 +162,21 @@ portion rules `rowPortion`/`medRowPortion` (`sync.ts:108-142`) stay in the compo
 
 ### 4.7 Medical + certificate (F-4, F-9)
 Medical is member-filed only — **[SYNC-INTEG] P2 is a PREREQUISITE** (§10), so the admin grid-medical
-outlet is gone before step 4 retires the mint. The cert stays append-only in IndexedDB keyed to the
-Input's `docId`/`docIds`; on retract the Input goes, the **document is not deleted** (decision 3). The
-Rev 1 "a re-file can re-link" claim is **dropped** (no surface maps `docId`→person after the Input is
-gone — F-9); an orphaned document is accepted.
+outlet is gone before step 4 retires the mint. **Certificates are USER-MANAGED and NOT UNDOABLE (owner
+decision §8.3, supersedes the old append-only stance):** upload / replace / delete-a-wrong-one via the
+✕, direct and permanent, kept out of the undo timeline (the blobs already live outside the command
+stream). A confirm-before-delete guard; a missing file renders "no document". Retracting a medical
+entry does not auto-delete its certificate; there is no keep-vs-delete-on-removal rule. The Rev 1 "a
+re-file can re-link" claim is **dropped** (F-9).
+
+**OWNER RULING 19 Sep 26 — the mandatory-document rule is RELAXED (a SMALL STANDALONE change, not part
+of step 4; SUPERSEDES the 27 Aug 26 "a medical input does not go in without its document").** Filing a
+bare medical input must NOT hard-refuse (`needsDoc`→toast at `inputedit.tsx:567-569`). Instead, saving a
+document-less medical input **prompts ONCE** — [Upload] or [**No document**]; "No document" files the
+input with no certificate (for when the record genuinely isn't available). Kept unless owner says
+otherwise: an entry that already HAS a document keeps the replace-not-strip guard; a bare entry stays
+freely bare. **FOLDED INTO the [SYNC-INTEG] P2 medical batch (owner, 19 Sep 26)** — affects the five
+certificate types **ATT C, ATT B, HL, OML, Up-chit**; not a step-4 item.
 
 ## 5. Migration — reset, not migrate (+ seed + drift guard — F-7)
 Reset the demo world; no back-compat. **Also (F-7):** remove the two seeded `source:'raptor'` cells in
@@ -199,22 +213,49 @@ untouched.
   (k) do (c) on a published day → per owner decision §8.6.
 
 ## 8. DECISIONS FOR THE OWNER (each has my recommendation)
-1. **Approved-then-retracted bid — request returns to "open", or vanishes?** *(Rec: return to open.)*
-2. **Who edits an approved absence's dates?** *(Rec: scheduler-side stays the one writer; a member
-   re-bids — but see §8.5 which governs the war-side move.)*
-3. **Keep the medical certificate on retract?** *(Rec: yes — append-only, orphaned document accepted.)*
-4. **Timing vs [RECALL].** *(Rec: build one-record now; the chapter/freeze/starting-balance model sits
-   on top later.)*
-5. **NEW — a *moved* approved bid (admin drags an approved bid to new dates, a live 27 Aug feature at
-   closed/published): does it KEEP its approval (the absence just moves), or RETURN TO PENDING (today's
-   behaviour — the old input is spliced and a pending bid lands at the new date)?** *(Rec: KEEP approval
-   — `moveAbsence` edits the one record; cleaner and matches "one record moves." But this is a real
-   behaviour change to a feature you use, so it's your call.)*
-6. **NEW — an approved/retracted absence on an already-PUBLISHED day: a SILENT working-copy change
-   (today — leave has no amendment path at all), or a PENDING AMENDMENT like an activity input?** *(Rec:
-   make it a pending amendment for consistency with the published-day-input rule — but it's new
-   machinery (`filingDelta` must count an absence-record change), so if you'd rather keep leave silent
-   on published days for now, say so and I strike it.)*
+1. **DECIDED (owner, 19 Sep 26) — VANISHES (option 1B).** Retracting a leave does NOT resurrect a
+   war request. **Owner's model (load-bearing, informs 2/5/6):** the Leave War is the **bidding
+   window** — while open, requests + approvals are the shared reference for all; once leave is
+   approved and **published**, that phase closes and subsequent changes are made via the **Input
+   section** (they reflect requests already agreed *outside the app*; any war-side change is
+   communicated outside the app too). So a post-publish retract simply removes the leave — there is no
+   war request to bring back. **This SIMPLIFIES §4.1:** `retractAbsence` deletes; no "return the
+   request to open" branch. **Boundary to confirm:** *during bidding* (war still open), un-approving a
+   bid still returns it to pending (ordinary bidding); the vanish rule is the **post-publish** path.
+2. **DECIDED (owner, 19 Sep 26) — B (KEEP CURRENT):** a member can edit their OWN leave in the Input
+   section even after approval; they cannot edit others' leave or reassign it (both scheduler-only —
+   `inputedit.tsx:875,886`). Editing re-projects the war. No change from today; consistent with the
+   §8.1 "changes via Inputs" model. Under one-record a member edits the one Input; the war re-reads it.
+3. **DECIDED (owner, 19 Sep 26) — medical certificates are NOT UNDOABLE; the user manages them
+   directly.** SUPERSEDES the old "append-only, never delete" stance (sync-spec decision 3) and my
+   Rev-1/Rev-2 "keep + retrieval surface" framing. Rationale (owner): keeping every upload forever
+   would POLLUTE the record with wrong screenshots; the correctly-uploaded ones are already viewable
+   in the existing medical archive (`MedicalView`, Inputs page → "med"). The clean fix: certificate
+   operations (upload / replace / **delete a wrong one** via the ✕) are **direct and permanent, kept
+   OUT of the undo timeline** — which is safe precisely because the ONLY risk of deleting was the
+   undo interaction ("did it come back?"), and the document blobs already live outside the command
+   stream. So a wrong upload can be truly deleted (no pollution, no orphan) with no undo bug. Types
+   carrying a certificate (confirmed by owner + `needsDoc`): **HL, OML, ATT B, ATT C, and the up-chit**.
+   **Build:** a confirm-before-delete guard (so a correct cert isn't zapped by accident); a missing
+   file renders "no document", never an error; there is NO "keep vs delete on entry-removal" rule —
+   the certificate is user-managed. Retracting a medical entry does not auto-delete its certificate.
+4. **DECIDED (owner, 19 Sep 26) — A: build one-record NOW; the [RECALL] chapter/freeze/starting-balance
+   model sits on top later.**
+5. **DECIDED (owner, 19 Sep 26) — B (KEEP CURRENT): a *moved* approved bid RETURNS TO PENDING.** Dragging
+   an approved request to new dates drops it back to "requested" (needs re-approval), as today. Mapped to
+   the command model: the drag `retractAbsence` (the old input goes) + a pending bid lands at the new
+   date; NO `moveAbsence`-keeps-approval path is built. No behaviour change; less work.
+6. **DECIDED (owner, 19 Sep 26) — A (KEEP CURRENT): a leave change on an already-published day is
+   SILENT.** No amendment (AL) is created for a leave filed/changed/retracted on a published day — it
+   updates the working copy quietly, as today (leave has no filing-delta). **This REMOVES the F-2
+   amendment-machinery work** (`dayFilingFingerprint`/`filingDelta`/`computePubBar` for absences stay as
+   they are). Consistent with the owner's model (post-publish leave changes are agreed + communicated
+   outside the app). The undo publish-boundary itself is unchanged.
+
+**ALSO DECIDED (owner, 19 Sep 26) — the relaxed mandatory-document rule (§4.7) is FOLDED INTO the
+[SYNC-INTEG] P2 medical batch** (not a step-4 item), affecting the five certificate types: **ATT C,
+ATT B, HL, OML, Up-chit**. Saving a bare medical input prompts once ([Upload] / [No document]); "No
+document" files it with none.
 
 ## 9. Open questions (engineering — resolved in Rev 2, listed for the second round)
 1. Pure projection is now the committed choice (§3, §4.3); the `PROJ`-outside-serialization contract
@@ -227,12 +268,15 @@ untouched.
 4. Confirm `effectiveWars()` preserves `PersonMonth` row identity for the perf memo (§6).
 
 ## 10. PREREQUISITES + gate
-- **[SYNC-INTEG] P2 (medical member-filed only)** and **P4 (clutter-only clear-data)** must land first
-  (F-4, F-8) — step 4 retires the admin grid-medical outlet and must not let "Clear old data" erase the
-  frozen leave history. These are the small guardrails already specced.
-- **Gate:** the owner answers §8 (esp. 5 & 6) → Rev 3 folds the answers → a SECOND cross-provider
-  red-team round → then build (test-first, Opus; per-phase parity gates; post-build cross-provider code
-  inspection; hold for "merge live"). No build before that.
+- **[SYNC-INTEG] P2 (medical member-filed only — block medical creation on the war for ALL roles, incl.
+  admin, and HIDE the war medical pickers: `store.ts:1983,2044,2096` still allow admin; `BidPicker`
+  `medical` prop + `Matrix.tsx:3770 medical={role==='admin'}` still show them)** and **P4 (clutter-only
+  clear-data)** must land first (F-4, F-8) — step 4 retires the admin grid-medical outlet and must not
+  let "Clear old data" erase the frozen leave history. **The relaxed mandatory-document prompt (§4.7,
+  five cert types) is folded into this P2 batch.**
+- **Gate:** owner answered §8 (19 Sep 26 — all six) → Rev 3 folded (this doc) → **a SECOND cross-provider
+  red-team round on Rev 3 (NEXT)** → then build (test-first, Opus; per-phase parity gates; post-build
+  cross-provider code inspection; hold for "merge live"). No build before the round-2 verdict.
 
 ---
 
