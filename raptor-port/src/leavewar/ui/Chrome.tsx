@@ -222,7 +222,7 @@ export function StageBar() {
   useSyncExternalStore(subscribeClashes, getClashVersion, getClashVersion)
   const clashes = getClashes()
   const [picking, setPicking] = useState(false)
-  const { people, period, grid, states, requirements, role } = getState()
+  const { people, period, grid, states, views, requirements, role } = getState()
   const dates = period.days.map(d => d.date)
   // Duplicates the same evaluatePeriod call Matrix makes internally. Both
   // stay self-contained (no prop plumbing between them) so Matrix keeps
@@ -230,7 +230,7 @@ export function StageBar() {
   // over a 90-day period, which is not worth threading props for. Both must
   // be handed the same `states`, or the strip counts a different squadron
   // from the one the grid below it is painting.
-  const verdicts = evaluatePeriod(people, grid, states, requirements, dates)
+  const verdicts = evaluatePeriod(people, grid, states, requirements, dates, views)
   // The red days themselves, not just how many. Recomputed every render like
   // the tally beside them: a list built once would send a scheduler to a day
   // a refusal had already recovered.

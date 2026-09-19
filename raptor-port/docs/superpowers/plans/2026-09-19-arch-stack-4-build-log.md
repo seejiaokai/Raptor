@@ -10,8 +10,8 @@ This file is the running record of what is BUILT, so a new session can resume fr
 | Phase | What | Status |
 |---|---|---|
 | 0 | All-or-nothing group saves (whiteboard transaction + savepoints, postman groups, `putMany` + journal + boot replay, reset filter, phase-8 drain loop, deferred persists) | **BUILT, tests green** (19 Sep 26) |
-| 1 | Tests + `cellFor` + invariant checker | next |
-| 2 | Record variants, `lw` provenance + `lwMoved`, reset + re-seed | — |
+| 1 | Tests + `cellFor` (= `engine/dayview.ts` + `absences.ts`) | **BUILT, tests green** (20 Sep 26) |
+| 2–5 | Stored records as a LIST per day (`engine/warrecs.ts`), merged read (`state/merge.ts`), figures read day views, runInbound/runOutbound/retract deleted, absence door in sync.ts | **IN PROGRESS** (20 Sep 26, overnight) |
 | 3 | Absence index + merged `getState()` + structural sharing + perf gate | — |
 | 4 | Delete `runInbound`/`retractLwRow`/ingest/withdraw; inputs door consumes/replaces bids | — |
 | 5 | War commands + one-envelope bulk entry points + delete `runOutbound` | — |
@@ -46,3 +46,31 @@ This file is the running record of what is BUILT, so a new session can resume fr
   is red without the change — verified).
 - Known limitation carried (design §20.3/§21.4): two tabs still clobber each other; an asynchronous
   future backend's unload gap is step 5's.
+
+## Owner rulings during the build (20 Sep 26) — also in `specs/2026-09-20-arch-stack-4-clash-check.md`
+- A/B recommended; C: leave may be dated before posting-in and after posting-out (filed or bid).
+- H3 overruled: two leaves in one half at non-overlapping times are allowed; the half is charged ONCE.
+- D: a shared half on different balances — the leave covering more time pays (tie → earlier).
+- Owner OK'd (20 Sep 26, going to sleep): build the multi-record box to the approved comp without a
+  pre-build picture; show real phone + desktop screenshots in the morning. Stay in this chat.
+
+## Architecture as built (phases 2–5) — read this to resume
+- `engine/warrecs.ts`: `LeaveWar = { period, recs }`; `recs[pid][date]` = list of Request /
+  Credit(auto|manual, spans?) / Notice records. `readRecs` rejects old shapes (reset, don't migrate).
+- `engine/dayview.ts`: `dayView(contribs)` → main code, `+n` / `!`, charges (a half charged once),
+  away, duty, earnsOil, annualFull. `Views` type.
+- `absences.ts`: Inputs → contributions; `inputRowFor` (war leave → Input row); `leaveKey`.
+- `state/merge.ts`: `mergeWar(war)` = recs + absence index → `grid`/`states` projections (main code;
+  `source:'raptor'` = locked on the war, the blue edge) + `views`. Cached per war/person.
+- `state/store.ts`: `getState()` = MERGED (`MergedState`); `rawState()` = stored. Writers work on
+  recs; `gesture(type, fn)` = one command per war gesture; the ABSENCE DOOR (`setAbsenceDoor`) is
+  installed by `sync.ts` (approve / decideApproved / removeApproved / moveApproved, all writing the
+  Input through `writeInputsBatch` inside the gesture). `lwEditLists` = the door's record edit.
+- `engine/charge.ts` etc.: every figure reads `viewsOf(source)` (a bare grid/states fixture is
+  converted by `legacyViews`, so there is one reading path).
+- `sync.ts`: `refreshAbsences()` (per-person signature over war-visible Inputs → `setAbsenceRows`),
+  clash strip derived from `views[..].conflicts`, OIL pass writes `auto` credits with work `spans`.
+- Still TO BUILD: the Inputs-door rules (bid replacement + notices, sick cuts leave, refusals, redo
+  invariant), publish replacing weekend/PH bids (B5), notices UI + "OK, seen", the box `+n`/`!` +
+  tap list UI, posting-out filing (H5), SCHEMA_VERSION 3→4, seed/test re-baseline, docs, gates,
+  cross-provider code inspection.

@@ -4,6 +4,7 @@
 // is enough to make it red. Meeting a threshold exactly is met, not breached —
 // "IP >= 2" with two IPs available is fine.
 
+import type { Views } from './dayview'
 import { countsFor, ruleHave, type DayCounts, type Grid } from './availability'
 import type { States } from './bids'
 import type { Person } from './people'
@@ -45,15 +46,16 @@ export function evaluateDay(
   states: States,
   reqs: Requirements,
   date: string,
+  views?: Views,
 ): DayVerdict {
-  const counts = countsFor(people, grid, states, date)
+  const counts = countsFor(people, grid, states, date, views)
   const req = requirementFor(reqs, date)
   const results: RuleResult[] = []
 
   for (const rule of req.rules) {
     // Each rule computes its own number from its definition (availability.ts:
     // ruleHave) — the old fixed-kind lookup went when rules became data.
-    const have = ruleHave(rule.count, people, grid, states, date)
+    const have = ruleHave(rule.count, people, grid, states, date, views)
     results.push({
       ruleId: rule.id,
       label: rule.label,
@@ -74,8 +76,9 @@ export function evaluatePeriod(
   states: States,
   reqs: Requirements,
   dates: string[],
+  views?: Views,
 ): Record<string, DayVerdict> {
   const out: Record<string, DayVerdict> = {}
-  for (const date of dates) out[date] = evaluateDay(people, grid, states, reqs, date)
+  for (const date of dates) out[date] = evaluateDay(people, grid, states, reqs, date, views)
   return out
 }

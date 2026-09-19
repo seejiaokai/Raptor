@@ -23,10 +23,11 @@
 //    single day … I can break the counting by having an OIL/FCL/CCL/EL/PL/
 //    CL, then continuing with OL or LL."
 //
-// A RUN is consecutive calendar days, each holding a taken (not refused)
-// cell that spends the SAME counter. LL and OL both spend the annual pool,
-// so LL → OL continues a run; a day of anything else — a different counter,
-// medical, a course, a blank, a refused bid — ends it. A pilot's run of 15
+// A RUN is consecutive calendar days, each FULLY covered by LL/OL and holding
+// no other leave type (owner Q13, 19 Sep 26 — "the 15-consecutive-days rule
+// applies to LL and OL only … any other leave type breaks the run"; a morning
+// of LL and an afternoon of OL is a full LL/OL day — clash check H4). Before
+// 19 Sep 26 any single counter ran (15 days of OIL charged weekends) — fixed. A pilot's run of 15
 // days or more charges every day in it, weekends and holidays included; a
 // shorter run, or anyone who is not a pilot, charges working days only. A
 // run may cross a war boundary (entitlements are continuous and wars are
@@ -42,8 +43,9 @@
 // weekend is still hospitalisation, and MED USED counts it as before.
 
 import type { Grid } from './availability'
-import { removesAvailability, stateOf, type States } from './bids'
-import { codeOf, portionAmount, parseCell, type CounterName } from './codes'
+import { isBiddable, stateOf, type States } from './bids'
+import { codeOf, parseCell, type CounterName } from './codes'
+import { dayView, AM, PM, FULL, type Contrib, type Views } from './dayview'
 import { isNonWorkingDay, type EventDef } from './eventdefs'
 import type { Person } from './people'
 import { addDays, type DayInfo, type Period } from './period'
@@ -58,7 +60,46 @@ export const LONG_LEAVE_DAYS = 15
 export interface LeaveSource {
   grid: Grid
   states: States
+  /** The day views ([ARCH-STACK] step 4) — what every figure reads. A merged
+   *  war carries them; a bare grid/states fixture is converted on the fly
+   *  (`viewsOf`), so there is ONE reading path either way. */
+  views?: Views
   period?: Period
+}
+
+/* A bare grid/states source (the engine's own fixtures) as day views: one
+   contribution per cell — a bid is a request (an approved one reads as an
+   approved absence), FO/HO a credit, anything else an absence. Cached on the
+   grid object. */
+const LEGACY = new WeakMap<Grid, { states: States; views: Views }>()
+export function legacyViews(grid: Grid, states: States): Views {
+  const hit = LEGACY.get(grid)
+  if (hit && hit.states === states) return hit.views
+  const views: Views = {}
+  for (const [pid, row] of Object.entries(grid)) {
+    const out: Record<string, ReturnType<typeof dayView>> = {}
+    for (const [date, code] of Object.entries(row)) {
+      const cell = parseCell(code)
+      if (!cell) continue
+      const win = cell.portion === 'am' ? AM : cell.portion === 'pm' ? PM : FULL
+      const st = stateOf(states, pid, date)
+      const rec = states[pid]?.[date]
+      let c: Contrib
+      if (cell.type === 'FO' || cell.type === 'HO') c = { id: date, kind: 'credit', code: cell.type, win, ...(rec?.source === 'raptor' ? { auto: true } : {}), ...(rec?.note ? { note: rec.note } : {}) }
+      else if (isBiddable(code) && st !== 'approved') c = { id: date, kind: 'request', code: cell.type, win, state: st ?? 'pending' }
+      else c = { id: date, kind: 'absence', code: cell.type, win, lw: rec?.source !== 'raptor' }
+      if (rec?.shiftedFrom) c.movedFrom = rec.shiftedFrom
+      out[date] = dayView([c])
+    }
+    views[pid] = out
+  }
+  LEGACY.set(grid, { states, views })
+  return views
+}
+
+/** The day views of a source — its own when merged, else derived. */
+export function viewsOf(src: LeaveSource): Views {
+  return src.views ?? legacyViews(src.grid, src.states)
 }
 
 /** What the charging rule needs beyond the grid: the squadron's event-type
@@ -75,11 +116,15 @@ export function isPilot(ctx: CountCtx | undefined, personId: string): boolean {
   return ctx?.people?.find(p => p.id === personId)?.seat === 'pilot'
 }
 
-/** One taken, counter-bearing cell, as the run walk sees it. */
-interface Taken {
+/** One charge on a date, as the run walk sees it — a day may hold two
+ *  (morning LL, afternoon OIL). `type` is the leave code; `half` says which
+ *  half a half-day charge is. */
+export interface Taken {
   date: string
   counter: CounterName
   amount: number
+  type: string
+  half?: 'am' | 'pm'
 }
 
 /**
@@ -133,29 +178,25 @@ function dayIndex(period: Period): Map<string, DayInfo> {
  * excuses. The value is the counter and how much of a day it charges — the
  * two facts `drawnFrom` and `takenOf` need — so neither re-walks the runs.
  */
-export function chargedDays(sources: readonly LeaveSource[], personId: string, ctx?: CountCtx): Map<string, Taken> {
-  // 1. Every taken counter-bearing cell, merged across the wars. This walks
-  //    only THIS person's cells, so it is cheap — and it comes FIRST, ahead of
-  //    any calendar work, because most people hold no leave at all in most
-  //    calls and the answer for them is an empty map. Before 6 Sep 26 the
-  //    calendar was built above this line and every one of those calls paid a
-  //    year of it for nothing.
-  const taken = new Map<string, Taken>()
+export function chargedDays(sources: readonly LeaveSource[], personId: string, ctx?: CountCtx): Map<string, Taken[]> {
+  // 1. Every charge, merged across the wars — only THIS person's days, so it
+  //    is cheap, and it comes FIRST: most people hold no leave in most calls.
+  //    What a day charges is the day view's (a half charged ONCE, by the leave
+  //    covering more of it — owner, 20 Sep 26).
+  const taken = new Map<string, Taken[]>()
+  const full = new Set<string>()
   for (const src of sources) {
-    for (const [date, code] of Object.entries(src.grid[personId] ?? {})) {
-      const spends = codeOf(code)?.spends
-      if (!spends) continue
-      if (!removesAvailability(code, stateOf(src.states, personId, date))) continue
-      taken.set(date, { date, counter: spends.counter, amount: spends.amount })
+    const row = viewsOf(src)[personId]
+    if (!row) continue
+    for (const [date, v] of Object.entries(row)) {
+      if (v.charges.length) taken.set(date, v.charges.map(c => ({ date, counter: c.counter, amount: c.amount, type: c.code, ...(c.half ? { half: c.half } : {}) })))
+      if (v.annualFull) full.add(date)
     }
   }
   if (taken.size === 0) return taken
 
-  // The war holding a date, and its own record of that day. Searched from the
-  // LAST source back, which is the merged map's rule kept exactly: it was
-  // filled in source order with `set`, so the last war naming a date won. (The
-  // store refuses overlapping wars, so in practice only one ever does.) One
-  // lookup per taken date rather than one insert per day of the year.
+  // The war holding a date, and its own record of that day (last source wins,
+  // the merged map's old rule — the store refuses overlapping wars anyway).
   const held = (date: string): { period: Period; day: DayInfo } | undefined => {
     for (let i = sources.length - 1; i >= 0; i--) {
       const period = sources[i]!.period
@@ -165,58 +206,33 @@ export function chargedDays(sources: readonly LeaveSource[], personId: string, c
     }
     return undefined
   }
-
   const nonWorking = (date: string): boolean => {
     const h = held(date)
     return isNonWorkingDay(date, h?.day, ctx?.eventDefs ?? [], h?.period.bands ?? [])
   }
   const pilot = isPilot(ctx, personId)
 
-  // 2. Walk the dates in calendar order, cutting runs where the day before
-  //    is missing, spends a different counter, or is not a full day — a half
-  //    day breaks the run on both sides, so it forms a run of one that can
-  //    never reach LONG_LEAVE_DAYS. `yyyy-mm-dd` sorts as a date;
-  //    `Object.entries` order is insertion order, so sort explicitly (the
-  //    engine/raptor.ts precedent).
+  // 2. Walk the dates in calendar order. A run is consecutive days each FULLY
+  //    covered by LL/OL (`annualFull`); anything else — a half day, another
+  //    leave type, a gap — ends it. A pilot's run of 15+ charges every day in
+  //    it; otherwise a weekend/PH charges nothing.
   const dates = [...taken.keys()].sort()
-  const out = new Map<string, Taken>()
-  let run: Taken[] = []
+  const out = new Map<string, Taken[]>()
+  let run: string[] = []
   const flush = () => {
     const every = pilot && run.length >= LONG_LEAVE_DAYS
-    for (const t of run) if (every || !nonWorking(t.date)) out.set(t.date, t)
+    for (const d of run) if (every || !nonWorking(d)) out.set(d, taken.get(d)!)
     run = []
   }
   for (const date of dates) {
-    const t = taken.get(date)!
-    const prev = run[run.length - 1]
-    const continues = prev && addDays(prev.date, 1) === date && prev.counter === t.counter && prev.amount === 1 && t.amount === 1
-    if (prev && !continues) flush()
-    run.push(t)
+    if (full.has(date)) {
+      if (run.length && addDays(run[run.length - 1]!, 1) !== date) flush()
+      run.push(date)
+      continue
+    }
+    flush()
+    if (!nonWorking(date)) out.set(date, taken.get(date)!)
   }
   flush()
   return out
-}
-
-/**
- * Whether ONE cell charges — the per-cell view of `chargedDays`, for a
- * caller that already holds the map. A cell that spends no counter (medical)
- * charges nothing but is still "taken" whenever it removes availability,
- * which is what the USED figures for medical count.
- */
-export function cellCharges(charged: Map<string, Taken>, code: string, date: string, states: States, personId: string): boolean {
-  const cell = parseCell(code)
-  if (!cell) return false
-  const spends = codeOf(code)?.spends
-  // Matched on the counter too, not the date alone: should two sources ever
-  // hold one date for one person (hand-edited storage — the store refuses
-  // overlapping wars), the per-type readers must not charge a cell the map
-  // charged for a different counter.
-  if (spends) return charged.get(date)?.counter === spends.counter
-  return removesAvailability(code, stateOf(states, personId, date))
-}
-
-/** How much of the day a taken cell counts as, for the USED figures. */
-export function cellAmount(code: string): number {
-  const cell = parseCell(code)
-  return cell ? portionAmount(cell.portion) : 0
 }

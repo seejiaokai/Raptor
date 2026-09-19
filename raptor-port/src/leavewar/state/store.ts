@@ -1,7 +1,9 @@
-// The store. `setCell` is the ONLY path that writes a cell: it updates the
-// grid AND that cell's bid state, persists through the backend, bumps the
-// version and notifies. A write that skips it is invisible to the interface
-// and is never saved.
+// The store. A war keeps only its OWN records (requests, OIL credits,
+// replaced-bid notices — engine/warrecs.ts); approved and filed absences are
+// Raptor Inputs, READ through the merge (state/merge.ts) and changed only
+// through the absence door ([ARCH-STACK] step 4). `setCell` is the only path
+// that writes a request; every write persists through the backend, bumps the
+// version and notifies. A write that skips these is invisible and unsaved.
 
 import {
   addDays,
@@ -26,7 +28,6 @@ import {
   canReopen,
   nextStage,
   previousStage,
-  raptorOwns,
   COUNTERS,
   DEFAULT_FIGURE_ORDER,
   orderedFigures,
@@ -65,9 +66,6 @@ import {
   STAGE_ORDER,
   pickDefaultPeriodId,
   defaultFocusDate,
-  type BidRecord,
-  MAX_CELL_NOTE,
-  type BidSource,
   type BidState,
   type CounterName,
   type DayInfo,
@@ -80,6 +78,27 @@ import {
   removeEventDef,
   type Grid,
   type LeaveWar,
+  type Recs,
+  type WarRec,
+  type RequestRec,
+  type CreditRec,
+  type NoticeRec,
+  type RequestState,
+  type Contrib,
+  readRecs,
+  recsAt,
+  withList,
+  recContribs,
+  newRecId,
+  isCredit,
+  liveRequestsOn,
+  portionOfCode,
+  requestWin,
+  forbiddenPair,
+  isLeaveCode,
+  parseCell,
+  FULL,
+  MAX_REC_NOTE,
   type Ledger,
   type LedgerEntry,
   type Openings,
@@ -91,6 +110,7 @@ import {
   type Stage,
   type States,
 } from '../engine'
+import { mergeWar, absencesAt, absenceVersion, type MergedWar, type Views } from './merge'
 import { counterLabel } from '../engine/counters'
 import { localBackend, memoryBackend, type StorageBackend } from './storage'
 /* [ARCH-STACK] Step 2 phase 4 — the shared command layer (see the persist()
@@ -135,15 +155,10 @@ interface State {
   currentId: string
 
   // ---- derived from `wars` + `currentId`, never assigned directly ----
-  //
-  // The current war's three parts, republished at the top level by
-  // `withCurrent()` on every change. They exist so that the matrix and the
-  // chrome can go on reading `period`, `grid` and `states` exactly as they
-  // did when there was only one war: multiplicity is the store's problem,
-  // not the interface's.
+  // The current war's period, republished at the top level by `withCurrent()`
+  // on every change. (Its grid/states/views are the MERGED read's —
+  // `getState()` adds them; the raw state never holds them.)
   period: Period
-  grid: Grid
-  states: States
   /** Where each counter started. A balance is this plus the ledger less what
    *  the grid has drawn — never a stored figure, which would be a second
    *  version of a truth the grid already holds. */
@@ -285,6 +300,16 @@ interface State {
   postOuts: Record<string, Person>
 }
 
+/** What every screen reads: the raw state with each war MERGED — its own
+ *  records together with the absences derived from the Inputs — and the
+ *  current war's projections republished at the top level (design §4.2). */
+export interface MergedState extends Omit<State, 'wars'> {
+  wars: MergedWar[]
+  grid: Grid
+  states: States
+  views: Views
+}
+
 /** The event-row count and its bounds (owner, 18 Aug 26). Two rows is the
  *  historic default; six is a soft cap so the header block cannot be grown
  *  without limit. */
@@ -299,12 +324,12 @@ const listeners = new Set<() => void>()
 /** Republish the current war's parts at the top level. Every assignment to
  *  `state` goes through this, so the three derived fields cannot fall out of
  *  step with the war they came from. */
-function withCurrent(s: Omit<State, 'period' | 'grid' | 'states'>): State {
+function withCurrent(s: Omit<State, 'period'>): State {
   // Falling back to the first war rather than throwing: a `currentId`
   // naming a war that no longer exists is recoverable, and a blank screen
   // is not. `wars` is never empty — `blank()` seeds it and nothing removes.
   const war = s.wars.find(w => w.period.id === s.currentId) ?? s.wars[0]
-  return { ...s, period: war.period, grid: war.grid, states: war.states }
+  return { ...s, period: war.period }
 }
 
 function blank(): State {
@@ -348,79 +373,6 @@ function blank(): State {
 
 function isPlainObject(x: unknown): x is Record<string, unknown> {
   return !!x && typeof x === 'object' && !Array.isArray(x)
-}
-
-// A grid is a plain object of plain objects of strings: personId -> date ->
-// code. Checking only the top level lets a shape like `{"ramp":{"...":123}}`
-// through, which then crashes on boot inside codeOf (which expects a
-// string). The guard's job is to degrade to the seed instead, same as every
-// other malformed shape.
-function isValidGrid(x: unknown): x is Grid {
-  if (!isPlainObject(x)) return false
-  for (const row of Object.values(x)) {
-    if (!isPlainObject(row)) return false
-    for (const code of Object.values(row)) {
-      if (typeof code !== 'string') return false
-    }
-  }
-  return true
-}
-
-// `acknowledged` joined these on 10 Aug 26. A blob written before that date
-// cannot contain it, and one written after cannot contain anything else — so
-// the set only ever grows and no migration is needed either way.
-const BID_STATES = new Set(['pending', 'acknowledged', 'approved', 'refused'])
-const BID_SOURCES = new Set(['bid', 'raptor'])
-
-/**
- * Read one stored leaf into a `BidRecord`, or `null` if it is not one.
- *
- * Two shapes are accepted. The record is what is written today. A bare
- * string is what earlier builds wrote, and it is MIGRATED rather than
- * rejected: bids already sitting in someone's browser predate sources
- * entirely, and degrading them to the seed would silently throw away real
- * decisions to gain nothing. A string could only ever have meant a bid the
- * squadron placed here, so `source: 'bid'` is a fact, not a guess.
- */
-function readRecord(leaf: unknown): BidRecord | null {
-  if (typeof leaf === 'string') {
-    return BID_STATES.has(leaf) ? { state: leaf as BidState, source: 'bid' } : null
-  }
-  if (!isPlainObject(leaf)) return null
-  const { state, source, shiftedFrom, note } = leaf
-  if (typeof state !== 'string' || !BID_STATES.has(state)) return null
-  if (typeof source !== 'string' || !BID_SOURCES.has(source)) return null
-  if (shiftedFrom !== undefined && typeof shiftedFrom !== 'string') return null
-  const out: BidRecord = { state: state as BidState, source: source as BidSource }
-  if (shiftedFrom !== undefined) out.shiftedFrom = shiftedFrom
-  // A note is decoration on the record, never the record: a bad one is
-  // dropped and the cell's state survives.
-  if (typeof note === 'string' && note.trim()) out.note = note.trim().slice(0, MAX_CELL_NOTE)
-  return out
-}
-
-// Same shape as a grid, but each leaf is a record rather than free text. A
-// state nobody defined is not a state — it would flow straight into
-// `removesAvailability`, where anything that is not exactly 'refused'
-// silently removes a person.
-//
-// Unlike the grid guard this one CONVERTS as it validates, because the
-// migration above has to happen somewhere and doing it here means every
-// caller downstream sees one shape.
-function readStates(x: unknown): States | null {
-  if (!isPlainObject(x)) return null
-  const out: States = {}
-  for (const [id, row] of Object.entries(x)) {
-    if (!isPlainObject(row)) return null
-    const kept: Record<string, BidRecord> = {}
-    for (const [date, leaf] of Object.entries(row)) {
-      const record = readRecord(leaf)
-      if (!record) return null
-      kept[date] = record
-    }
-    out[id] = kept
-  }
-  return out
 }
 
 const COUNTER_NAMES = new Set<string>(COUNTERS)
@@ -662,7 +614,7 @@ function readColorMap(x: unknown): Record<string, string> | null {
 // scheduler would lose on every reload.
 function readWar(x: unknown): LeaveWar | null {
   if (!isPlainObject(x)) return null
-  const { period, grid, states } = x
+  const { period, recs } = x
   if (!isPlainObject(period)) return null
   const { id, name, start, end, stage, bidFrom, bidTo, days, bands } = period
   if (typeof id !== 'string' || typeof name !== 'string') return null
@@ -732,29 +684,12 @@ function readWar(x: unknown): LeaveWar | null {
     }
   }
 
-  /* LEGACY OIL-CREDIT MIGRATION (bug pass, 28 Aug 26): a war stored before
-     the FS/HS → FO/HO rename holds the old letters, which parseCell no
-     longer recognises — reconcile below would drop their ownership records
-     and strand dead grid strings neither reverse sweep can collect, and
-     `ingestDutyCredit` would clash on those dates forever. Renamed in place
-     at the one load door (the seedGrid HO→*OIL migration precedent). No
-     live path hits this today. CORRECTED 17 Sep 26: the old reason — "main.tsx
-     boots the memory backend" — is FALSE since 8 Sep 26; main.tsx boots Leave War
-     on the WHITEBOARD, so on a built site this load path IS live and a returning
-     browser does come through here. The migration is therefore not
-     standing-in-advance for the DB era: it is load-bearing now. */
-  if (isPlainObject(grid)) {
-    for (const row of Object.values(grid as Record<string, unknown>)) {
-      if (!isPlainObject(row)) continue
-      for (const [d, c] of Object.entries(row as Record<string, unknown>)) {
-        if (c === 'FS') (row as Record<string, unknown>)[d] = 'FO'
-        else if (c === 'HS') (row as Record<string, unknown>)[d] = 'HO'
-      }
-    }
-  }
-  if (!isValidGrid(grid)) return null
-  const readStatesOrNull = readStates(states)
-  if (!readStatesOrNull) return null
+  /* The war's own records ([ARCH-STACK] step 4). An old-shape war (a grid
+     and states pair, a source on a record, a stored "approved") is NOT read
+     half-way: the whole blob is rejected and the demo re-seeds — reset, don't
+     migrate (design §2.2, §9; the schema bump clears it first anyway). */
+  const readRecsOrNull = readRecs(recs)
+  if (!readRecsOrNull) return null
 
   return {
     period: {
@@ -763,10 +698,7 @@ function readWar(x: unknown): LeaveWar | null {
       days: readDays,
       bands: readBands,
     },
-    grid,
-    // Same reconciliation the single-war store did: a state whose cell no
-    // longer holds a bid is dropped rather than left to colour it wrong.
-    states: reconcile(grid, readStatesOrNull),
+    recs: readRecsOrNull,
   }
 }
 
@@ -810,44 +742,11 @@ function readStored<T>(key: string, parse: (x: unknown) => T | null): T | null {
   }
 }
 
-// The parallel map's one real weakness is drift, and load is the one place
-// drift can arrive from outside `setCell` — hand-edited storage, or data
-// written by a build that predates bid states. So every stored state is
-// checked against the cell it names and dropped if that cell no longer
-// holds a code that legitimately carries one: a bid code (any record), or a
-// medical OR OIL-credit cell's raptor OWNERSHIP record — those are what keep
-// a synced cell read-only and reverse-clearable across a reload. Dropping a
-// medical one here would let the outbound pass re-mint an input for a row
-// Raptor itself wrote (the loop the source model exists to prevent);
-// dropping an OIL one (FO/HO — a pre-existing gap, found and closed
-// 28 Aug 26 while this store still boots on the memory backend) would
-// orphan the credit — the reverse sweep clears only source:'raptor' cells,
-// so a no-longer-earned credit would sit uncollectable forever once real
-// persistence (the DB era) makes this load path live. A BID-sourced record
-// on either stays drift — `setCell` never writes one — and an 'approved'
-// left on a cell that no longer holds any such code would colour it wrong,
-// so both are still dropped.
-function reconcile(grid: Grid, states: States): States {
-  const out: States = {}
-  for (const [id, row] of Object.entries(states)) {
-    const kept: Record<string, BidRecord> = {}
-    for (const [date, record] of Object.entries(row)) {
-      const code = grid[id]?.[date]
-      // A duty cell keeps its record when Raptor owns it, or when an admin
-      // wrote a reason on a hand-typed FO/HO (setCellNote, 2 Sep 26) — the
-      // note is the record's whole reason to exist there.
-      if (isBiddable(code) || ((isMedical(code) || isDuty(code)) && (record.source === 'raptor' || (isDuty(code) && !!record.note)))) kept[date] = record
-    }
-    if (Object.keys(kept).length > 0) out[id] = kept
-  }
-  return out
-}
-
 export function initStore(b?: StorageBackend): void {
   backend = b ?? localBackend()
   state = blank()
 
-  const wars = readStored('wars', readWars) ?? migrateSingleWar() ?? seedWars()
+  const wars = readStored('wars', readWars) ?? seedWars()
   /* THE TAB ALWAYS OPENS ON THE WAR BEING WORKED (owner, 7 Sep 26, restated
      and reaffirmed 17 Sep 26): open for bidding first, else bidding-closed,
      else published, else draft. A remembered choice does NOT override it.
@@ -922,34 +821,29 @@ export function initStore(b?: StorageBackend): void {
   lwHistInit()
 }
 
-/**
- * Rebuild one war from the keys written before wars were a list.
- *
- * Those browsers hold `grid`, `states` and `stage` and no `wars`, and all of
- * it belonged to the only period that existed — the seeded one. Rebuilding
- * rather than discarding follows the same rule as the bid-record migration:
- * a squadron's real leave is not worth throwing away to save a branch.
- *
- * Returns `null` when there is nothing of the old shape to migrate, so a
- * genuinely fresh boot still falls through to the seed.
- */
-function migrateSingleWar(): LeaveWar[] | null {
-  const grid = read('grid', isValidGrid)
-  if (!grid) return null
-
-  const period = seedPeriod()
-  const storedStage = backend.read('stage') as Stage | null
-  if (storedStage && STAGE_ORDER.includes(storedStage)) period.stage = storedStage
-
-  return [{
-    period,
-    grid,
-    states: reconcile(grid, readStored('states', readStates) ?? {}),
-  }]
+/* the merged read, cached on the raw state ref and the absence index version,
+   so a view-only render pays nothing (design §4.2/§4.3) */
+let MERGED: { raw: State; ver: number; out: MergedState } | null = null
+export function getState(): MergedState {
+  const ver = absenceVersion()
+  if (MERGED && MERGED.raw === state && MERGED.ver === ver) return MERGED.out
+  const wars = state.wars.map(mergeWar)
+  const cur = wars.find(w => w.period.id === state.currentId) ?? wars[0]!
+  const out: MergedState = { ...state, wars, grid: cur.grid, states: cur.states, views: cur.views }
+  MERGED = { raw: state, ver, out }
+  return out
 }
 
-export function getState(): State {
+/** The RAW state — the war's own records only. For writers, persistence, the
+ *  command layer and tests of the stored shape; screens read getState(). */
+export function rawState(): State {
   return state
+}
+
+/** A repaint after the absence index changed (sync.ts) — no persist, no
+ *  envelope: nothing of the war's own changed (design §4.1). */
+export function absencesChanged(): void {
+  rawNotify()
 }
 
 export function getVersion(): number {
@@ -1079,22 +973,17 @@ function lwDecompose(s: State): Map<string, CmdRecordEntry> {
        blocked). Without this a stage advance, bidding-window change, war rename or
        a brand-new (cell-less) war produces an empty diff and is dropped (Fable-2). */
     m.set(`lw.war/${warId}`, { collection: 'lw.war', id: warId, value: w.period })
-    const grid = (w.grid || {}) as Record<string, Record<string, string>>
-    for (const pid of Object.keys(grid)) {
-      const row = grid[pid] || {}
+    /* [ARCH-STACK] step 4 — ONE record per populated address: the war's own
+       list there (requests / credits / notices). Same lw.cell collection and
+       warId:pid:date id as before, so undo's war/date snapping reads it
+       unchanged; the value is now the list. */
+    const recs = (w.recs || {}) as Recs
+    for (const pid of Object.keys(recs)) {
+      const row = recs[pid] || {}
       for (const date of Object.keys(row)) {
-        if (row[date] === undefined) continue
+        if (!row[date]?.length) continue
         const id = `${warId}:${pid}:${date}`
         m.set(`lw.cell/${id}`, { collection: 'lw.cell', id, value: row[date] })
-      }
-    }
-    const states = (w.states || {}) as Record<string, Record<string, unknown>>
-    for (const pid of Object.keys(states)) {
-      const row = states[pid] || {}
-      for (const date of Object.keys(row)) {
-        if (row[date] === undefined) continue
-        const id = `${warId}:${pid}:${date}`
-        m.set(`lw.bid/${id}`, { collection: 'lw.bid', id, value: row[date] })
       }
     }
   }
@@ -1126,18 +1015,16 @@ function applyLwRecord(s: State, e: CmdRecordEntry): void {
     const ix = s.wars.findIndex(w => w.period.id === e.id)
     if (e.op === 'delete') { if (ix >= 0) s.wars.splice(ix, 1) }
     else if (ix >= 0) s.wars[ix].period = e.value as any
-    else s.wars.push({ period: e.value as any, grid: {}, states: {} } as any)
+    else s.wars.push({ period: e.value as any, recs: {} } as any)
     return
   }
-  if (coll === 'lw.cell' || coll === 'lw.bid') {
+  if (coll === 'lw.cell') {
     const iDate = e.id.lastIndexOf(':'); const date = e.id.slice(iDate + 1)
     const rest = e.id.slice(0, iDate); const iPid = rest.lastIndexOf(':')
     const pid = rest.slice(iPid + 1); const warId = rest.slice(0, iPid)
     const war = s.wars.find(w => w.period.id === warId)
     if (!war) return
-    const map: Record<string, Record<string, string>> = (coll === 'lw.cell' ? war.grid : war.states) as any
-    if (e.op === 'delete') { if (map[pid]) delete map[pid][date] }
-    else { (map[pid] || (map[pid] = {}))[date] = e.value as any }
+    war.recs = withList(war.recs, pid, date, e.op === 'delete' ? [] : (e.value as WarRec[]))
     return
   }
   switch (coll) {
@@ -1211,12 +1098,15 @@ export const lwStore: CmdEnlistableStore = {
    layer record registration below AND the undo-store registration (undo-wire.ts):
    an omitted collection would fail the restore reducer with "no restore target".
    `lw.current` is in the list (harmless — nav is never restored). */
-export const LW_COLLS = ['lw.cell', 'lw.bid', 'lw.war', 'lw.ledger', 'lw.balances', 'lw.oilpolicy', 'lw.postouts', 'lw.current', 'lw.config'] as const
+export const LW_COLLS = ['lw.cell', 'lw.war', 'lw.ledger', 'lw.balances', 'lw.oilpolicy', 'lw.postouts', 'lw.current', 'lw.config'] as const
 
 function lwRegisterCommands(): void {
   if (LW_REGISTERED) return
   LW_REGISTERED = true
   cmdDefinePermission('lw.edit', cmdAnyone)   // permissive at Step 2 (the real role gates are unchanged)
+  /* [ARCH-STACK] step 4 — the war gestures. The role gates live in the writers
+     (canDecide / canEditRow), exactly as lw.edit's do. */
+  for (const t of ['lw.decide', 'lw.move', 'lw.ack', 'lw.approve', 'lw.decideApproved', 'lw.removeApproved', 'lw.moveApproved']) cmdDefinePermission(t, cmdAnyone)
   for (const c of LW_COLLS) cmdRegisterRecord({ key: `leavewar:${c}`, cls: 'record', collection: c, module: 'leavewar' })
   // [CMDL-FINISH] C9/P3-END — now that every LW write routes through the command
   // layer (the only post-boot raw path is LW_RESTORING, which runs at idle and is
@@ -1901,7 +1791,7 @@ export function remapPersonKeys(map: Record<string, string>): void {
     for (const [id, row] of Object.entries(rows)) out[map[id] ?? id] = row
     return out
   }
-  const wars = state.wars.map(w => ({ ...w, grid: rekey(w.grid), states: rekey(w.states) }))
+  const wars = state.wars.map(w => ({ ...w, recs: rekey(w.recs) }))
   const openings = rekey(state.openings)
   const ledger = state.ledger.map(e => ({ ...e, personId: map[e.personId] ?? e.personId }))
   state = withCurrent({ ...state, wars, openings, ledger })
@@ -1917,19 +1807,16 @@ export function remapPersonKeys(map: Record<string, string>): void {
  * seed's wars cover 2026 and 2027 whole); states and ledger entries merge in.
  * The tests never see it — they build the store from the pristine seed.
  */
-export function installDemoOil(extra: { grid: Grid; states: States; ledger: Ledger }): void {
+export function installDemoOil(extra: { recs: Recs; ledger: Ledger }): void {
   const wars = state.wars.map(w => {
-    const grid: Grid = { ...w.grid }
-    const states: States = { ...w.states }
-    for (const [person, row] of Object.entries(extra.grid)) {
-      for (const [date, code] of Object.entries(row)) {
+    let recs = w.recs
+    for (const [person, row] of Object.entries(extra.recs)) {
+      for (const [date, list] of Object.entries(row)) {
         if (warHolding(state.wars, date) !== w) continue
-        grid[person] = { ...(grid[person] ?? {}), [date]: code }
-        const rec = extra.states[person]?.[date]
-        if (rec) states[person] = { ...(states[person] ?? {}), [date]: rec }
+        recs = withList(recs, person, date, [...recsAt(recs, person, date), ...list])
       }
     }
-    return { ...w, grid, states }
+    return { ...w, recs }
   })
   const have = new Set(state.ledger.map(e => e.id))
   const ledger = [...state.ledger, ...extra.ledger.filter(e => !have.has(e.id))]
@@ -1958,56 +1845,130 @@ export function setViewer(next: string | null): void {
   notify()
 }
 
-// A cell and its bid state are written together. Splitting them across two
-// callers is how the two maps drift — a code with no state, or a state whose
-// code has gone. This is the only function allowed to write either.
-export function setCell(personId: string, date: string, code: string): void {
-  // Raptor owns what Raptor last wrote. That cell is changed in Raptor's
-  // input tab and syncs back here, so writing it here would leave the two
-  // systems disagreeing — the single failure the source model exists to
-  // prevent. Ignore rather than write, and do not notify: nothing changed.
-  if (raptorOwns(state.states, personId, date)) return
-  // Stage, role AND the bidding window, in the one place a cell is written.
-  // Enforced here rather than only in the grid's click handler for the same
-  // reason `createWar` re-checks the role: the interface hides what a person
-  // may not do, but the store is what makes it true.
-  if (!canEditCell(state.period, state.role, date)) return
-  // ...and the ROW: a member writes only their own row (the person they are
-  // viewing as), an admin any. The grid stops offering another row's cell, but
-  // this is the backstop that makes it true — a stray write path can never
-  // put one member's leave onto another man's row (owner, 27 Aug 26).
-  if (!canEditRow(state.role, state.viewer, personId)) return
+/* ---- THE WAR'S OWN RECORDS: requests and credits ([ARCH-STACK] step 4) -----
+   A war stores only requests, OIL credits and replaced-bid notices (see
+   engine/warrecs.ts). An APPROVED absence is a Raptor Input — the war reads it
+   (merge.ts) and changes it only through the ABSENCE DOOR below, which sync.ts
+   installs: approve a request, un-approve / remove / move an approved leave.
+   Each writer here keeps the per-address rules (one undecided request per half,
+   one credit) and never lets a new record land on a time it cannot share
+   (`forbiddenPair` — leave over leave, leave over a medical, leave over worked
+   time), which replaces the old "Raptor owns this cell" refusal. */
 
+/** What the absence door does, installed by sync.ts (the one Raptor seam). Each
+ *  runs INSIDE the caller's gesture (one envelope) and reports per item. */
+export interface AbsenceDoor {
+  /** turn requests into Inputs (design §5.2 `lw.approve`) */
+  approve(items: Array<{ personId: string; date: string; recId: string }>): { done: number; skipped: number; why: string[] }
+  /** un-approve approved leave back into a request of `to` (`lw.decideApproved`) */
+  decideApproved(items: Array<{ personId: string; date: string; iid: string }>, to: RequestState): { done: number; skipped: number; why: string[] }
+  /** delete approved leave days (`lw.removeApproved`) */
+  removeApproved(items: Array<{ personId: string; date: string; iid: string }>): { done: number; skipped: number; why: string[] }
+  /** slide approved leave days by `delta` (`lw.moveApproved`); null = clear, else the refusal */
+  moveApproved(items: Array<{ personId: string; date: string; iid: string }>, delta: number, tracked: boolean, check: boolean): { reason: 'occupied' | 'window' | 'nothing'; at?: string } | null
+}
+let DOOR: AbsenceDoor | null = null
+export function setAbsenceDoor(d: AbsenceDoor | null): void { DOOR = d }
+
+/** Run a war gesture as ONE command — every cell it touches, requests and
+ *  approved leave alike, lands in one envelope and one undo step (design §5.2
+ *  OA-003). Inside an already-running command it simply joins. */
+function gesture<T>(type: string, fn: () => T): T {
+  if (cmdIsCommitting() || !LW_READY || LW_RESTORING) return fn()
+  let out!: T
+  const r = cmdCommit({
+    type, scope: { module: 'lw', warId: state.currentId } as CmdScope,
+    apply: (t) => { t.enlist(lwStore); out = fn() },
+  })
+  if ((r as any).ok === false) rawNotify()
+  return out
+}
+
+/** The war's own list at one address, in the war holding the date. */
+function listAt(personId: string, date: string): readonly WarRec[] {
+  const war = warHolding(state.wars, date)
+  return war ? recsAt(war.recs, personId, date) : []
+}
+/** Replace the list at one address, in the war holding the date. */
+function putList(personId: string, date: string, list: readonly WarRec[]): boolean {
+  const war = warHolding(state.wars, date)
+  if (!war) return false
+  updateWar(war.period.id, w => ({ ...w, recs: withList(w.recs, personId, date, list) }))
+  return true
+}
+
+/** The absence door's edit of the war's own records (sync.ts): per address,
+ *  drop records by id and add new ones, as ONE write inside the caller's
+ *  gesture. Not a user entry point — the door has already checked the rules. */
+export function lwEditLists(edits: Array<{ personId: string; date: string; drop: string[]; add: WarRec[] }>): void {
+  if (!edits.length) return
+  const wasQuiet = quiet
+  quiet = true
+  try {
+    for (const e of edits) {
+      const list = listAt(e.personId, e.date).filter(r => !e.drop.includes(r.id))
+      putList(e.personId, e.date, [...list, ...e.add])
+    }
+  } finally { quiet = wasQuiet }
+  if (!quiet) persistNotify()
+}
+
+/** Would a new contribution share this address with something it may not
+ *  (a filed absence, worked time, another request on the same time)?
+ *  `ignore` leaves out records the write is about to replace. */
+function occupiedFor(c: Contrib, personId: string, date: string, ignore: readonly WarRec[] = []): boolean {
+  const staying = listAt(personId, date).filter(r => !ignore.includes(r))
+  return [...recContribs(staying), ...absencesAt(personId, date)].some(o => forbiddenPair(c, o))
+}
+
+/** What the merged view shows on top at one address. */
+function mainAt(personId: string, date: string): Contrib | null {
+  const war = warHolding(getState().wars as MergedWar[], date) as MergedWar | undefined
+  return war?.views[personId]?.[date]?.main ?? null
+}
+
+/** Write a bid (or, for an admin, a hand-typed FO/HO credit), or clear the
+ *  cell with an empty code. Returns whether anything changed. The only path
+ *  that writes a request; the same guards as ever — stage, window, row, and
+ *  no medical from the war (owner, 13 Sep 26) — plus the step-4 occupancy
+ *  rule: a bid may not land on a time a filed absence, worked time or
+ *  another undecided bid already holds. */
+export function setCell(personId: string, date: string, code: string): boolean {
+  if (!canEditCell(state.period, state.role, date)) return false
+  if (!canEditRow(state.role, state.viewer, personId)) return false
   const clean = code.trim().toUpperCase()
-  // ...and the VOCABULARY: MEDICAL IS MEMBER-FILED ONLY (owner, 13 Sep 26,
-  // reversing the 17 Aug 26 "management's" rule). The war may DISPLAY medical
-  // that syncs in from a member's own Inputs filing (which carries the
-  // certificate) but may no longer CREATE it — for ANYONE, admin included. The
-  // pickers no longer offer it; this is the write-path backstop that makes it
-  // true whatever path reaches here. Member-filed medical lands via
-  // ingestFromRaptor's own writer (updateWar), never through here, so its
-  // DISPLAY is untouched.
-  if (isMedical(clean)) return
-  const previous = state.grid[personId]?.[date]
-  const row = { ...(state.grid[personId] ?? {}) }
-  const srow = { ...(state.states[personId] ?? {}) }
+  if (isMedical(clean)) return false
+  const list = listAt(personId, date)
 
-  if (clean) row[date] = clean
-  else delete row[date]
+  if (!clean) {
+    /* clear: the requests at the address, and a hand-typed credit for an
+       admin. A generated credit belongs to the schedule; a notice to its
+       "OK, seen". */
+    const next = list.filter(r => !(r.kind === 'request' || (r.kind === 'credit' && r.oil === 'manual' && state.role === 'admin')))
+    if (next.length === list.length) return false
+    return putList(personId, date, next)
+  }
 
-  if (!clean || !isBiddable(clean)) delete srow[date]
-  // A code rewritten as ITSELF keeps whatever decision it already carries —
-  // re-typing LL over an approved LL must not quietly un-approve it. A code
-  // rewritten as a DIFFERENT one is a different ask, so it goes back to
-  // pending AND loses any record of having been shifted: that provenance
-  // belonged to the bid that has just been replaced.
-  else if (clean !== previous || srow[date] === undefined) srow[date] = { state: 'pending', source: 'bid' }
+  if (clean === 'FO' || clean === 'HO') {
+    if (state.role !== 'admin') return false
+    const had = list.find(isCredit)
+    if (had && had.oil === 'auto') return false
+    if (had && had.code === clean) return false
+    const c: Contrib = { id: 'new', kind: 'credit', code: clean, win: FULL }
+    if (occupiedFor(c, personId, date, had ? [had] : [])) return false
+    const rec: CreditRec = { id: had?.id ?? newRecId('c'), kind: 'credit', code: clean, oil: 'manual', ...(had?.note ? { note: had.note } : {}), ...(had?.spans ? { spans: had.spans } : {}) }
+    return putList(personId, date, [...list.filter(r => r !== had), rec])
+  }
 
-  updateCurrent(w => ({
-    ...w,
-    grid: { ...w.grid, [personId]: row },
-    states: { ...w.states, [personId]: srow },
-  }))
+  if (!isBiddable(clean) || !parseCell(clean)) return false
+  const portion = portionOfCode(clean)
+  const replaced = liveRequestsOn(list, portion)
+  // re-typing the same bid keeps whatever decision it carries
+  if (replaced.length === 1 && replaced[0]!.code === clean) return false
+  const c: Contrib = { id: 'new', kind: 'request', code: parseCell(clean)!.type, win: requestWin(clean), state: 'pending' }
+  if (occupiedFor(c, personId, date, replaced)) return false
+  const rec: RequestRec = { id: newRecId(), kind: 'request', code: clean, state: 'pending' }
+  return putList(personId, date, [...list.filter(r => !replaced.includes(r as RequestRec)), rec])
 }
 
 /** What a range write did. `skipped` counts days it was not allowed to touch,
@@ -2017,174 +1978,202 @@ export interface RangeWrite {
   skipped: number
 }
 
-/**
- * Write the same code across every day from `from` to `to`, inclusive.
- *
- * The owner's ask, in their words: "instead of click a day 1 by 1 … So I
- * don't need to keep clicking a leave input like for 2 weeks continuous."
- *
- * It writes through `setCell` day by day rather than reimplementing it,
- * because `setCell` is the only function allowed to write a cell and its
- * state together — a second write path is exactly how the two maps drift.
- * The cost is one persist and one notify per day, which is why the whole run
- * is wrapped: subscribers see one change, not fourteen.
- *
- * PARTIAL BY DESIGN. A range crossing a Raptor-owned cell, a posted-out day
- * or the edge of the bidding window writes what it may and reports what it
- * did not. Refusing the whole range would make the common case — a fortnight
- * that happens to include one locked day — impossible to ask for at all.
- */
-export function setCellRange(
-  personId: string,
-  from: string,
-  to: string,
-  code: string,
-): RangeWrite {
+/** Write the same code across every day from `from` to `to`, inclusive (the
+ *  owner's fortnight-in-one-go ask). PARTIAL BY DESIGN: a day it may not write
+ *  (posted out, outside the window, already holding something the bid cannot
+ *  share) is skipped and counted, the rest written. ONE gesture — one save,
+ *  one undo step. */
+export function setCellRange(personId: string, from: string, to: string, code: string): RangeWrite {
   if (to < from) return { written: 0, skipped: 0 }
-
-  let written = 0
-  let skipped = 0
   const person = state.people.find(p => p.id === personId)
-  // the vocabulary gate setCell carries (medical is member-filed only, blocked
-  // for every role — owner 13 Sep 26) — evaluated once out here, and kept in
-  // the predicate below so the count reports the refusal instead of silently
-  // absorbing it
-  const medBlocked = isMedical(code.trim().toUpperCase())
+  const dates: string[] = []
+  for (let d = from; d <= to; d = addDays(d, 1)) dates.push(d)
+  return writeMany(dates.map(date => ({ personId, date })), code, person ? () => person : undefined)
+}
 
-  // Suppressed for the run, then released once. Without this a fortnight is
-  // fourteen persists and fourteen re-renders, and every subscriber sees the
-  // range half-written thirteen times.
-  quiet = true
-  try {
-    for (let d = from; d <= to; d = addDays(d, 1)) {
-      const allowed =
-        !raptorOwns(state.states, personId, d) &&
-        canEditCell(state.period, state.role, d) &&
-        canEditRow(state.role, state.viewer, personId) &&
-        !medBlocked &&
-        (!person || inSquadron(person, d))
-      if (!allowed) {
-        skipped++
-        continue
+/* the shared body of the range and selection writers */
+function writeMany(cells: { personId: string; date: string }[], code: string, who?: (id: string) => Person | undefined): RangeWrite {
+  let written = 0, skipped = 0
+  const find = who ?? ((id: string) => state.people.find(p => p.id === id))
+  const clearing = !code.trim()
+  gesture('lw.edit', () => {
+    const wasQuiet = quiet
+    quiet = true
+    try {
+      for (const { personId, date } of cells) {
+        /* clearing an EMPTY cell is neither a write nor a refusal — a loose
+           delete-box sweeps up empties around the bids */
+        if (clearing && !listAt(personId, date).some(r => r.kind === 'request' || r.kind === 'credit')) continue
+        const person = find(personId)
+        if (person && !leaveDateOk(person, date)) { skipped++; continue }
+        if (setCell(personId, date, code)) written++
+        else skipped++
       }
-      setCell(personId, d, code)
-      written++
+    } finally {
+      quiet = wasQuiet
     }
-  } finally {
-    quiet = false
-  }
-
-  if (written > 0) {
-    persistNotify()
-  }
+    if (written > 0 && !quiet) persistNotify()
+  })
   return { written, skipped }
 }
 
-/* ---- THE DRAG-SELECTION BATCH WRITERS (owner, 27 Aug 26) -----------------
-   The grid gained a drag-to-select layer, so an action can now name MANY
-   cells across many people at once. These wrap `setCell`/`setBidState` under
-   the same `quiet` suppression `setCellRange` uses — one save-and-notify for
-   the whole batch, not one per cell — and carry the SAME per-cell guards, so
-   a batch can never write where a single cell could not: raptor-owned cells,
-   locked dates and out-of-squadron days are skipped, never forced. Partial
-   BY DESIGN, exactly like `setCellRange`: a fortnight that clips one blocked
-   day writes the rest and reports the skip. `quiet` is saved and restored
-   (not hard-cleared) so these stay safe if one is ever nested.
-   The role gate is per-writer: fill/clear ride `canEditCell` (a member fills
-   what they could fill one cell at a time); decide and move are admin's. */
+/** May leave be dated on this day for this person? Before they join and after
+ *  they post out are both allowed (owner, 20 Sep 26 answer C) — the day must
+ *  simply be in the war. A separate question from `inSquadron`, which still
+ *  keeps them out of manning. */
+function leaveDateOk(_p: Person, date: string): boolean {
+  return !!warHolding(state.wars, date)
+}
 
 /** Write one code across a hand-picked set of cells. `{written, skipped}` in
  *  the `setCellRange` shape. */
 export function setCells(cells: { personId: string; date: string }[], code: string): RangeWrite {
-  let written = 0
-  let skipped = 0
-  const wasQuiet = quiet
-  // the vocabulary gate setCell carries (medical is member-filed only, blocked
-  // for every role), reported by the count rather than silently absorbed
-  // (see setCellRange)
-  const medBlocked = isMedical(code.trim().toUpperCase())
-  quiet = true
-  try {
-    for (const { personId, date } of cells) {
-      // Clearing an EMPTY cell is not a write and not a refusal — a loose
-      // delete-box sweeps up empty cells around the bids, and counting them
-      // as "deleted" made the sheet report deletions that never existed.
-      // They simply don't count either way.
-      if (!code && state.grid[personId]?.[date] === undefined) continue
-      const person = state.people.find(p => p.id === personId)
-      const allowed =
-        !raptorOwns(state.states, personId, date) &&
-        canEditCell(state.period, state.role, date) &&
-        canEditRow(state.role, state.viewer, personId) &&
-        !medBlocked &&
-        (!person || inSquadron(person, date))
-      if (!allowed) { skipped++; continue }
-      setCell(personId, date, code)
-      written++
-    }
-  } finally {
-    quiet = wasQuiet
-  }
-  if (written > 0 && !quiet) { persistNotify() }
-  return { written, skipped }
+  return writeMany(cells, code)
 }
 
 /** Clear a set of cells — the empty-code path of `setCells`, named so the
- *  caller (and the tests) read as delete, not "write nothing". */
+ *  caller (and the tests) read as delete, not "write nothing". Approved leave
+ *  in the selection is REMOVED through the absence door (design §5.2
+ *  `lw.removeApproved` — deliberate delete propagates and sticks), in the same
+ *  gesture. */
 export function clearCells(cells: { personId: string; date: string }[]): RangeWrite {
-  return setCells(cells, '')
+  let written = 0, skipped = 0
+  gesture('lw.edit', () => {
+    const approved: Array<{ personId: string; date: string; iid: string }> = []
+    const rest: { personId: string; date: string }[] = []
+    for (const c of cells) {
+      const m = mainAt(c.personId, c.date)
+      if (m && m.kind === 'absence') {
+        if (state.role === 'admin' && canDecide(state.period.stage, state.role) && warEditable(c.personId, c.date)) approved.push({ ...c, iid: m.id })
+        else skipped++
+      } else rest.push(c)
+    }
+    const r = writeMany(rest, '')
+    written += r.written; skipped += r.skipped
+    if (approved.length) {
+      const d = DOOR ? DOOR.removeApproved(approved) : { done: 0, skipped: approved.length }
+      written += d.done; skipped += d.skipped
+    }
+  })
+  return { written, skipped }
 }
 
-/** Decide a set of bids at once — ADMIN ONLY (a decision is management's, the
- *  same as the single `setBidState` is only offered on the admin's closed
- *  sheet). Per cell it needs a biddable, non-Raptor cell, so a mixed
- *  selection decides the bids and skips the rest. */
+/** An approved absence the war may change: every absence on the address was
+ *  approved on the war, none is medical / course / OD, and it is not a cell
+ *  holding two absences (those are changed one at a time from the list —
+ *  design §23.3). */
+function warEditable(personId: string, date: string): boolean {
+  const war = warHolding(getState().wars as MergedWar[], date) as MergedWar | undefined
+  const v = war?.views[personId]?.[date]
+  if (!v || !v.main || v.main.kind !== 'absence') return false
+  const abs = v.all.filter(c => c.kind === 'absence')
+  return abs.length === 1 && !!abs[0]!.lw && isLeaveCode(abs[0]!.code)
+}
+
+/** Decide a set of cells at once — ADMIN ONLY, once bidding is no longer open
+ *  (`canDecide`). Each cell acts on what it DISPLAYS (design §18 OA3-001): a
+ *  shown request is decided (approving turns it into an Input through the
+ *  door), a shown war-approved leave is un-approved back into a request. One
+ *  gesture, one envelope; a cell with nothing decidable is skipped. */
 export function setBidStates(cells: { personId: string; date: string }[], bid: BidState): { decided: number; skipped: number } {
   if (!canDecide(state.period.stage, state.role)) return { decided: 0, skipped: cells.length }
-  let decided = 0
-  let skipped = 0
-  const wasQuiet = quiet
-  quiet = true
-  try {
-    for (const { personId, date } of cells) {
-      if (raptorOwns(state.states, personId, date) || !isBiddable(state.grid[personId]?.[date])) { skipped++; continue }
-      setBidState(personId, date, bid)
-      decided++
+  let decided = 0, skipped = 0
+  gesture('lw.decide', () => {
+    const toApprove: Array<{ personId: string; date: string; recId: string }> = []
+    const toUnapprove: Array<{ personId: string; date: string; iid: string }> = []
+    const wasQuiet = quiet
+    quiet = true
+    let wrote = false
+    try {
+      for (const { personId, date } of cells) {
+        const m = mainAt(personId, date)
+        if (m && m.kind === 'request') {
+          if (bid === 'approved') { toApprove.push({ personId, date, recId: m.id }); continue }
+          if (decideRequest(personId, date, m.id, bid)) { decided++; wrote = true } else skipped++
+        } else if (m && m.kind === 'absence' && warEditable(personId, date)) {
+          if (bid === 'approved') { decided++; continue }            // already approved: nothing to do
+          toUnapprove.push({ personId, date, iid: m.id })
+        } else skipped++
+      }
+    } finally {
+      quiet = wasQuiet
     }
-  } finally {
-    quiet = wasQuiet
-  }
-  if (decided > 0 && !quiet) { persistNotify() }
+    if (wrote && !quiet) persistNotify()
+    if (toApprove.length) {
+      const r = DOOR ? DOOR.approve(toApprove) : { done: 0, skipped: toApprove.length }
+      decided += r.done; skipped += r.skipped
+    }
+    if (toUnapprove.length) {
+      const r = DOOR ? DOOR.decideApproved(toUnapprove, bid as RequestState) : { done: 0, skipped: toUnapprove.length }
+      decided += r.done; skipped += r.skipped
+    }
+  })
   return { decided, skipped }
 }
 
-/** Record a decision on a bid — ADMIN ONLY, once bidding is no longer open
- *  (`canDecide`, the same body the sheet renders by). The old "deliberately
- *  not role-gated: there is no login" note pre-dated the Raptor merge; there
- *  IS a login now, the role rides it with a ceiling a member cannot climb,
- *  and this batch's own doctrine is that the store is what makes a rule true
- *  — the batch sibling `setBidStates` above was already gated, and a gate
- *  the single writer didn't share was a drift seam, not a decision. */
+/** Record a decision on one cell — the single-cell sibling of `setBidStates`,
+ *  with the same gate and the same "act on what is shown" rule. */
 export function setBidState(personId: string, date: string, bid: BidState): void {
-  if (!canDecide(state.period.stage, state.role)) return
-  // A decision on a cell nobody bid for would be a state with no bid behind
-  // it, which is exactly the drift `setCell` exists to prevent. Ignore it
-  // rather than write it.
-  if (!isBiddable(state.grid[personId]?.[date])) return
-  // There is nothing to decide on a cell Raptor owns: the approval already
-  // happened, verbally, before Leave War ever saw it. Refusing it here would
-  // claim an authority this app does not have.
-  if (raptorOwns(state.states, personId, date)) return
-  // Deciding keeps the rest of the record — the source that wrote it, and
-  // the date it was shifted from. Management approving a shifted bid is the
-  // second half of that move, and losing the provenance at exactly the
-  // moment the move completes would make the trail useless.
-  const existing = state.states[personId]?.[date]
-  const srow = {
-    ...(state.states[personId] ?? {}),
-    [date]: { ...(existing ?? { source: 'bid' as const }), state: bid },
+  setBidStates([{ personId, date }], bid)
+}
+
+/** Set the state of ONE request by its id (the tap list acts per record).
+ *  Approving goes through the door; the rest is a plain edit. */
+export function decideRequestById(personId: string, date: string, recId: string, bid: BidState): boolean {
+  if (!canDecide(state.period.stage, state.role)) return false
+  if (bid === 'approved') {
+    return gesture('lw.decide', () => (DOOR ? DOOR.approve([{ personId, date, recId }]).done > 0 : false))
   }
-  updateCurrent(w => ({ ...w, states: { ...w.states, [personId]: srow } }))
+  return gesture('lw.decide', () => decideRequest(personId, date, recId, bid))
+}
+
+/* the plain request-state edit: pending / acknowledged / refused. A refusal
+   replaces an older refusal on the same half (one refused request per half). */
+function decideRequest(personId: string, date: string, recId: string, bid: BidState): boolean {
+  if (bid === 'approved') return false
+  const list = listAt(personId, date)
+  const r = list.find((x): x is RequestRec => x.kind === 'request' && x.id === recId)
+  if (!r || r.state === bid) return false
+  const next: RequestRec = { ...r, state: bid }
+  let rest = list.filter(x => x !== r)
+  if (bid === 'refused') {
+    const halves = portionOfCode(r.code)
+    const older = rest.filter((x): x is RequestRec => x.kind === 'request' && x.state === 'refused' &&
+      (halves === 'full' || portionOfCode(x.code) === 'full' || portionOfCode(x.code) === halves))
+    rest = rest.filter(x => !older.includes(x as RequestRec))
+  } else if (r.state === 'refused') {
+    /* reconsidering a refusal: it becomes undecided again, so it must not share
+       a half with another undecided request */
+    const clash = liveRequestsOn(rest, portionOfCode(r.code))
+    if (clash.length) return false
+    if (occupiedFor({ id: r.id, kind: 'request', code: parseCell(r.code)!.type, win: requestWin(r.code), state: bid as RequestState }, personId, date, [r])) return false
+  }
+  return putList(personId, date, [...rest, next])
+}
+
+/** "OK, seen" on a replaced-bid notice — the person or an admin. Clears every
+ *  notice the same command made (one tap for a five-day replacement). */
+export function ackReplacement(personId: string, noticeId: string): number {
+  if (state.role !== 'admin' && state.viewer !== personId) return 0
+  let seq: number | null = null
+  for (const w of state.wars) for (const list of Object.values(w.recs[personId] ?? {})) {
+    const n = list.find(r => r.kind === 'notice' && r.id === noticeId) as NoticeRec | undefined
+    if (n) seq = n.seq
+  }
+  if (seq === null) return 0
+  let cleared = 0
+  gesture('lw.ack', () => {
+    const wasQuiet = quiet
+    quiet = true
+    try {
+      for (const w of state.wars) for (const [date, list] of Object.entries(w.recs[personId] ?? {})) {
+        const keep = list.filter(r => !(r.kind === 'notice' && r.seq === seq))
+        if (keep.length !== list.length) { cleared += list.length - keep.length; putList(personId, date, keep) }
+      }
+    } finally { quiet = wasQuiet }
+    if (cleared && !quiet) persistNotify()
+  })
+  return cleared
 }
 
 /** Why a bidding window was refused. */
@@ -2531,7 +2520,8 @@ const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/
 export function figureCtxOf(): FigureCtx {
   // `eventDefs` and `people` feed the weekend/PH charging rule (charge.ts,
   // 3 Sep 26): which typed words are a holiday, and who is a pilot.
-  return { openings: state.openings, ledger: state.ledger, sources: state.wars, oilPolicy: state.oilPolicy, asOf: localToday(), eventDefs: state.eventDefs, people: state.people }
+  // the MERGED wars (design §4.2 FB2-01): approved leave lives in the Inputs now
+  return { openings: state.openings, ledger: state.ledger, sources: getState().wars, oilPolicy: state.oilPolicy, asOf: localToday(), eventDefs: state.eventDefs, people: state.people }
 }
 
 export function setOilPolicy(patch: Partial<OilPolicy>): boolean {
@@ -2676,7 +2666,7 @@ export function setBalance(personId: string, counter: CounterName, target: numbe
   if (!Number.isFinite(target)) return false
   // Through the same ctx the column reads, or "set to 20" would land on a
   // different number than the figure shows once a holiday excuses a day.
-  const opening = target - grantedTo(state.ledger, personId, counter) + drawnFrom(state.wars, personId, counter, figureCtxOf())
+  const opening = target - grantedTo(state.ledger, personId, counter) + drawnFrom(getState().wars, personId, counter, figureCtxOf())
   state = withCurrent({
     ...state,
     openings: { ...state.openings, [personId]: { ...state.openings[personId], [counter]: Math.round(opening * 1e6) / 1e6 || 0 } },
@@ -2987,406 +2977,224 @@ export function reopenStage(): boolean {
 export type IngestResult = 'written' | 'confirmed' | 'clash' | 'ignored'
 
 /**
- * Take leave entered directly in Raptor's input tab.
+ * Post an OIL credit earned on the schedule — sync wire 4's writer.
  *
- * Entering it there means the person sought approval **verbally and already
- * has it**, so this lands approved without anyone deciding anything here.
- * That state is written by this function alone and never trusted from a
- * caller — there is no path that produces a raptor record in any other
- * state, which is what makes `raptorOwns` safe to read as "approved
- * elsewhere".
+ * Only `FO` and `HO` come through here, from published weekend/PH work or an
+ * acknowledged duty claim (`engine/oil.ts`). The credit is an `auto` record the
+ * pass may take away again; `spans` are the actual work times (clash check B4,
+ * B8). It lands BESIDE whatever else is on the day unless the work overlaps it
+ * in time — leave or a medical on the same hours, or an undecided bid — which
+ * is the clash (the pass reports it; a human decides). A hand-typed credit
+ * already there is the squadron having recorded the same fact first: taken
+ * over in place.
  */
-export function ingestFromRaptor(personId: string, date: string, code: string): IngestResult {
-  // Held under `locked`: a Raptor-driven write is never a Leave War undo step
-  // (see the UNDO / REDO block). The body is otherwise untouched.
-  return locked(() => ingestFromRaptorImpl(personId, date, code))
+export function ingestDutyCredit(personId: string, date: string, code: 'FO' | 'HO', why?: string, spans?: Array<[number, number]>): IngestResult {
+  // Locked — a sync-driven credit is not an undo step.
+  return locked(() => ingestDutyCreditImpl(personId, date, code, why, spans))
 }
-function ingestFromRaptorImpl(personId: string, date: string, code: string): IngestResult {
-  const clean = code.trim().toUpperCase()
-  // Raptor sends more than leave. Leave is bid for and medical is MEMBER-FILED
-  // (owner, 13 Sep 26 — the four markers cross IN from the Inputs page; the war
-  // never originates one); anything else nobody bids for is not this app's
-  // business and is dropped
-  // rather than written as a cell with a state that would make no sense.
-  // The 'approved' record a medical cell gets below is its OWNERSHIP marker
-  // — raptorOwns and both reverse sweeps read the source; the grid draws a
-  // non-biddable code as plain information whatever state rides it.
-  if (!isBiddable(clean) && !isMedical(clean)) return 'ignored'
-
-  // The war that OWNS the date, not the war on screen. The sync wire feeds
-  // this whatever dates Raptor's inputs cover, whichever war is currently
-  // selected — writing through updateCurrent would land a 2027 leave in the
-  // 2026 grid the moment the admin happened to be looking at 2026. A date no
-  // war holds is skipped silently: a war might simply not exist for that
-  // year yet, and that is the caller's documented contract.
-  const war = warHolding(state.wars, date)
-  if (!war) return 'ignored'
-
-  const existing = war.grid[personId]?.[date]
-  const owned = raptorOwns(war.states, personId, date)
-
-  // A DIFFERENT code already bid here is the clash. Write nothing.
-  if (existing && existing !== clean && !owned) return 'clash'
-
-  // The SAME code is not a clash — it is Raptor confirming what was already
-  // asked for, so the cell is upgraded in place rather than left pending
-  // forever, waiting on a decision that has in fact already been made.
-  const confirming = existing === clean && !owned
-
-  const row = { ...(war.grid[personId] ?? {}), [date]: clean }
-  const srow = {
-    ...(war.states[personId] ?? {}),
-    [date]: { state: 'approved', source: 'raptor' } as BidRecord,
-  }
-  updateWar(war.period.id, w => ({
-    ...w,
-    grid: { ...w.grid, [personId]: row },
-    states: { ...w.states, [personId]: srow },
-  }))
-  return confirming ? 'confirmed' : 'written'
-}
-
-/**
- * Post an OIL credit earned on the schedule — sync wire 4's writer, the
- * duty-shaped sibling of `ingestFromRaptor` above.
- *
- * Only `FO` and `HO` come through here: they are the two codes nobody bids
- * for that Raptor's schedule can mint (published work — or an acknowledged
- * duty-&-commitments input — on a non-working day, `engine/oil.ts`), which
- * is exactly the gap ingest's `isBiddable` gate exists to refuse. The
- * ownership record is the same `{approved, raptor}` shape, and deliberately
- * so — every guard that keeps a hand off a synced leave cell (setCell's
- * refusal, outbound's skip, `clearRaptorCell`'s narrowness) protects a
- * credit identically, and the schedule stays the only thing that can move
- * it. A cell already holding anything else — a leave bid, a course, a
- * hand-typed marker — is the clash: write nothing, a human decides (the
- * wire surfaces it). A hand-typed FO/HO matching the schedule's verdict is
- * not a clash, it is the squadron having recorded the same fact first —
- * taken over in place, exactly like ingest's confirming upgrade.
- */
-export function ingestDutyCredit(personId: string, date: string, code: 'FO' | 'HO', why?: string): IngestResult {
-  // Locked like ingestFromRaptor — a sync-driven credit is not an undo step.
-  return locked(() => ingestDutyCreditImpl(personId, date, code, why))
-}
-function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO', why?: string): IngestResult {
+function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO', why?: string, spans?: Array<[number, number]>): IngestResult {
   if (code !== 'FO' && code !== 'HO') return 'ignored'
-  const war = warHolding(state.wars, date)
-  if (!war) return 'ignored'
-
-  const existing = war.grid[personId]?.[date]
-  const owned = raptorOwns(war.states, personId, date)
-  /* An owned cell is only this wire's to move while it holds this wire's own
-     vocabulary (FO/HO — the hours changed, the credit follows). An owned cell
-     holding a LEAVE code is wire 2's: overwriting it would set the two passes
-     flipping one cell forever, so the man reading as on leave AND on duty is
-     surfaced as the clash it is, and leave keeps the cell until a human moves
-     one of the two records. */
-  if (existing && existing !== code && !(owned && (existing === 'FO' || existing === 'HO'))) return 'clash'
-  const confirming = existing === code && !owned
-
-  const row = { ...(war.grid[personId] ?? {}), [date]: code }
-  const note = (why ?? '').trim().slice(0, MAX_CELL_NOTE)
-  const srow = {
-    ...(war.states[personId] ?? {}),
-    [date]: { state: 'approved', source: 'raptor', ...(note ? { note } : {}) } as BidRecord,
-  }
-  updateWar(war.period.id, w => ({
-    ...w,
-    grid: { ...w.grid, [personId]: row },
-    states: { ...w.states, [personId]: srow },
-  }))
+  if (!warHolding(state.wars, date)) return 'ignored'
+  const list = listAt(personId, date)
+  const had = list.find(isCredit)
+  const note = (why ?? '').trim().slice(0, MAX_REC_NOTE)
+  const clean = spans?.filter(s => Array.isArray(s) && s[0] <= s[1] && s[0] >= 0 && s[1] <= 1439)
+  const rec: CreditRec = { id: had?.id ?? newRecId('c'), kind: 'credit', code, oil: 'auto', ...(note ? { note } : {}), ...(clean && clean.length ? { spans: clean } : {}) }
+  const probe = recContribs([rec]).map(c => ({ ...c, id: 'new' }))
+  const staying = list.filter(r => r !== had)
+  const others = [...recContribs(staying), ...absencesAt(personId, date)]
+  if (probe.some(p => others.some(o => forbiddenPair(p, o)))) return 'clash'
+  if (had && had.oil === 'auto' && had.code === code && JSON.stringify(had) === JSON.stringify(rec)) return 'confirmed'
+  const confirming = !!had && had.oil === 'manual' && had.code === code
+  putList(personId, date, [...staying, rec])
   return confirming ? 'confirmed' : 'written'
 }
 
 /**
- * The REASON on a hand-entered FO/HO credit (owner, 2 Sep 26 — a manual OIL
- * credit typed on the grid "will bring me to the OIL tracker page to
- * include the reason"). Admin only; the cell must hold FO or HO. The note
- * rides on the cell's record, the same field the sync wire fills for an
- * earned credit, so the tracker reads both the same way. An empty note
- * clears it. Undo covers it because `states` is in the snapshot.
+ * The REASON on a hand-entered FO/HO credit (owner, 2 Sep 26). Admin only; the
+ * day must hold a credit. An empty note clears it.
  */
 export function setCellNote(personId: string, date: string, note: string): string | null {
   if (state.role !== 'admin') return 'Only an admin can edit OIL'
-  const war = warHolding(state.wars, date)
-  if (!war) return 'That day is in no war'
-  const code = war.grid[personId]?.[date]
-  if (code !== 'FO' && code !== 'HO') return 'Only an FO or HO credit takes a reason'
+  if (!warHolding(state.wars, date)) return 'That day is in no war'
+  const list = listAt(personId, date)
+  const had = list.find(isCredit)
+  if (!had) return 'Only an FO or HO credit takes a reason'
   const clean = note.trim()
-  if (clean.length > MAX_CELL_NOTE) return `A reason is at most ${MAX_CELL_NOTE} characters`
-  const cur = war.states[personId]?.[date] ?? ({ state: 'approved', source: 'bid' } as BidRecord)
-  const { note: _old, ...rest } = cur
-  const rec: BidRecord = clean ? { ...rest, note: clean } : rest
-  updateWar(war.period.id, w => ({
-    ...w,
-    states: { ...w.states, [personId]: { ...(w.states[personId] ?? {}), [date]: rec } },
-  }))
+  if (clean.length > MAX_REC_NOTE) return `A reason is at most ${MAX_REC_NOTE} characters`
+  const { note: _old, ...rest } = had
+  const next: CreditRec = clean ? { ...rest, note: clean } : rest
+  putList(personId, date, list.map(r => (r === had ? next : r)))
   return null
 }
 
 /**
- * Clear one cell Raptor owns — the sync wire's delete path, and nothing
- * else's.
- *
- * Every ordinary clearing path (setCell with an empty code, the bid sheet's
- * Clear) REFUSES a Raptor-owned cell, and rightly: the squadron does not
- * un-decide what was decided in Raptor. But when the input that put the cell
- * here is deleted on Raptor's Inputs page, the deletion IS Raptor speaking,
- * and the cell has to follow it out. Narrow on purpose — only a cell whose
- * source is still 'raptor' is touched, so a cell Leave War has since taken
- * back over is left alone (the spec's own deletion rule).
- *
- * Ignores stage, role and the bidding window for the same reason ingest
- * does: Raptor's word arrives already decided.
+ * Remove a GENERATED credit the schedule no longer earns — the OIL pass's
+ * clean-up, and nothing else's. A hand-typed credit is never touched (design
+ * §18 OA3-003). Ignores stage, role and window: the schedule's word arrives
+ * already decided.
  */
 export function clearRaptorCell(personId: string, date: string): boolean {
   // Locked: a sync-driven delete is not a Leave War undo step.
-  return locked(() => clearRaptorCellImpl(personId, date))
-}
-function clearRaptorCellImpl(personId: string, date: string): boolean {
-  const war = warHolding(state.wars, date)
-  if (!war) return false
-  if (!raptorOwns(war.states, personId, date)) return false
-  const row = { ...(war.grid[personId] ?? {}) }
-  delete row[date]
-  const srow = { ...(war.states[personId] ?? {}) }
-  delete srow[date]
-  updateWar(war.period.id, w => ({
-    ...w,
-    grid: { ...w.grid, [personId]: row },
-    states: { ...w.states, [personId]: srow },
-  }))
-  return true
-}
-
-/**
- * Withdraw one cell of Leave-War-owned leave — the mirror of `clearRaptorCell`
- * for the OTHER ownership, and the piece that makes editing or deleting a
- * synced input on Raptor's Inputs page carry back here (owner, 17 Aug 26 —
- * "make sure both leave war and input, edits or deletes are sync").
- *
- * A synced input row derives from approved cells this store owns. When that
- * row is edited or deleted on the Inputs page, the change IS the squadron
- * speaking — leaving the cells behind would make the next reconcile re-mint
- * the very row that was just changed (the snap-back this closes). Narrow on
- * purpose, twice over: a Raptor-owned cell is wire 2's and is never touched
- * here (its input is its record), and the cell must still hold EXACTLY the
- * notation the row derived from — a cell the squadron has since rebid says
- * something newer than the row being retired, and the reconcile is the one
- * that sorts that disagreement out, not this.
- *
- * Ignores stage, role and the bidding window for the same reason ingest and
- * `clearRaptorCell` do: Raptor's word arrives already decided.
- */
-export function withdrawLeaveCell(personId: string, date: string, code: string): boolean {
-  // Locked: this fires only when a synced input is edited/deleted on Raptor's
-  // Inputs page — a Raptor-driven change, not a Leave War undo step.
-  return locked(() => withdrawLeaveCellImpl(personId, date, code))
-}
-function withdrawLeaveCellImpl(personId: string, date: string, code: string): boolean {
-  const war = warHolding(state.wars, date)
-  if (!war) return false
-  if (raptorOwns(war.states, personId, date)) return false
-  if (war.grid[personId]?.[date] !== code) return false
-  const row = { ...(war.grid[personId] ?? {}) }
-  delete row[date]
-  const srow = { ...(war.states[personId] ?? {}) }
-  delete srow[date]
-  updateWar(war.period.id, w => ({
-    ...w,
-    grid: { ...w.grid, [personId]: row },
-    states: { ...w.states, [personId]: srow },
-  }))
-  return true
+  return locked(() => {
+    const list = listAt(personId, date)
+    const had = list.find(r => r.kind === 'credit' && r.oil === 'auto')
+    if (!had) return false
+    return putList(personId, date, list.filter(r => r !== had))
+  })
 }
 
 /** What a shift did, or why it did nothing. `window` covers every "not an
  *  editable day" refusal: outside the stage/window this role may write, off
- *  the war's own calendar (a typed date the war has no column for), or on a
- *  day the person has left the squadron. */
+ *  the war's own calendar, or not a day leave may be dated for this person. */
 export type ShiftResult = 'shifted' | 'occupied' | 'raptor' | 'nothing' | 'window'
 
 /**
- * Move a bid to a different date.
- *
- * This is what management does instead of refusing when a week goes red and
- * refusing outright is too blunt. It lands **pending**, not approved: moving
- * a bid is a proposal, and someone still has to approve the date it was
- * moved to. The date it came from is kept on the record, because a leave
- * date that changed with no trace is exactly the untraceable edit the OIL
- * ledger exists to end.
- *
- * Written here rather than as two `setCell` calls so the whole move is one
- * write, one persist and one notify — a half-applied shift would leave the
- * man booked twice or not at all.
+ * Move a bid to a different date — lands PENDING (a move is a proposal), and
+ * keeps the date it came from once bidding is closed (the dotted mark, owner
+ * 27 Aug 26). Acts on the request the day SHOWS; an approved leave shown there
+ * moves through the absence door instead. Never overwrites: a landing that
+ * cannot share the day refuses.
  */
 export function shiftBid(personId: string, from: string, to: string): ShiftResult {
-  const code = state.grid[personId]?.[from]
-  if (!isBiddable(code)) return 'nothing'
-  // A member moves only their own row's bids (owner, 27 Aug 26). The sheet
-  // that reaches here already only opens on the member's own row, but the
-  // write path is what makes it true.
+  const m = mainAt(personId, from)
+  if (!m) return 'nothing'
+  if (m.kind === 'absence') {
+    if (!warEditable(personId, from)) return 'raptor'
+    const r = moveCells([{ personId, date: from }], dayDiff(from, to))
+    return r === 'moved' ? 'shifted' : r.reason === 'occupied' ? 'occupied' : r.reason === 'raptor' ? 'raptor' : r.reason === 'window' ? 'window' : 'nothing'
+  }
+  if (m.kind !== 'request' || !isBiddable(m.code)) return 'nothing'
   if (!canEditRow(state.role, state.viewer, personId)) return 'nothing'
-  if (raptorOwns(state.states, personId, from)) return 'raptor'
-  // The same day law `moveCells` enforces per cell, which this single-cell
-  // sibling was missing: both ends must be days this role may write (a member
-  // cannot slide a bid once the war closes, nor outside the bid window), and
-  // the LANDING day must exist on the war's own calendar and inside the
-  // person's time in the squadron. Without the calendar check a typed date —
-  // the Move field is a keyed input, and min/max on a date input are advisory
-  // — could land a bid on a day no column renders: gone from every screen,
-  // still draining the leave balance. That is `setBidWindow`'s wrong-year
-  // typo, and the answer is the same: refuse, never absorb.
   if (!canEditCell(state.period, state.role, from)) return 'window'
   if (!canEditCell(state.period, state.role, to)) return 'window'
   if (!state.period.days.some((d: any) => d.date === to)) return 'window'
-  const person = state.people.find(p => p.id === personId)
-  if (person && !inSquadron(person, to)) return 'window'
-  // Never overwrite. Moving one man's leave onto a day he already has
-  // something booked would destroy the second booking to save the first.
-  // Shifting onto its own date lands here too, which is right: it is not a
-  // move, and treating it as one would rewrite the record for nothing.
-  if (state.grid[personId]?.[to]) return 'occupied'
-
-  const row = { ...(state.grid[personId] ?? {}) }
-  delete row[from]
-  row[to] = code
-
-  const srow = { ...(state.states[personId] ?? {}) }
-  // The ORIGIN survives a chain of moves: a bid moved 23 → 30 → Feb 6 was
-  // still BID on the 23rd, and the trail exists so the ledger can answer
-  // exactly that — "moved from the 30th" would trace to a date nobody asked
-  // for. Read before the delete below takes the old record with it.
-  const origin = srow[from]?.shiftedFrom ?? from
-  delete srow[from]
-  // Record the moved-from trace ONLY once bidding has closed — the same rule as
-  // moveCells: a shift while the war is OPEN is ordinary shuffling and leaves no
-  // stripe (owner, 27 Aug 26).
-  srow[to] = biddingClosed(state.period.stage)
-    ? { state: 'pending', source: 'bid', shiftedFrom: origin }
-    : { state: 'pending', source: 'bid' }
-
-  updateCurrent(w => ({
-    ...w,
-    grid: { ...w.grid, [personId]: row },
-    states: { ...w.states, [personId]: srow },
-  }))
+  if (from === to) return 'occupied'
+  const src = listAt(personId, from).find((r): r is RequestRec => r.kind === 'request' && r.id === m.id)
+  if (!src) return 'nothing'
+  const c: Contrib = { id: src.id, kind: 'request', code: m.code, win: requestWin(src.code), state: 'pending' }
+  if (occupiedFor(c, personId, to) || liveRequestsOn(listAt(personId, to), portionOfCode(src.code)).length) return 'occupied'
+  const tracked = biddingClosed(state.period.stage)
+  const landed: RequestRec = {
+    id: src.id, kind: 'request', code: src.code, state: 'pending',
+    ...(tracked ? { shiftedFrom: src.shiftedFrom ?? from } : {}),
+    ...(src.carried ? { carried: src.carried } : {}),
+  }
+  gesture('lw.edit', () => {
+    const wasQuiet = quiet
+    quiet = true
+    try {
+      putList(personId, from, listAt(personId, from).filter(r => r !== src))
+      putList(personId, to, [...listAt(personId, to), landed])
+    } finally { quiet = wasQuiet }
+    if (!quiet) persistNotify()
+  })
   return 'shifted'
 }
 
-/** Does this cell hold a bid THIS role may move? The same conditions
- *  `moveCells` guards each source by (below): not Raptor-owned, a real
- *  biddable bid, editable in the current stage/window, and on a row this role
- *  owns (a member's own, an admin's any). Kept as one body so the sheet
- *  (whether to offer Move at all), the anchor (which day is the block's first
- *  input) and the mover all read the SAME rule — a second copy would be a
- *  drift seam. */
-function isMovableSource(personId: string, date: string): boolean {
-  return !raptorOwns(state.states, personId, date)
-    && isBiddable(state.grid[personId]?.[date])
-    && canEditCell(state.period, state.role, date)
-    // A member slides only their OWN bids (owner, 27 Aug 26). Folding the row
-    // rule in here carries it to every reader of this one body at once: the
-    // sheet (whether to offer Move), the anchor and the mover's source guard.
-    && canEditRow(state.role, state.viewer, personId)
+function dayDiff(a: string, b: string): number {
+  const t = (s: string) => Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10))
+  return Math.round((t(b) - t(a)) / 86400000)
 }
 
-/** The cells of a selection that actually hold a movable bid — the drag-move
- *  acts on the inputs PRESENT in the box and ignores the empty cells around
- *  them (owner, 27 Aug 26 — "move items … that are present … if I select more
- *  area than required it registers as nothing"). The caller filters with this
- *  before a move, both to skip the empties and to anchor the slide on the
- *  block's first input. */
+/** Does this cell hold something THIS role may move? A request on a row this
+ *  role owns, in an editable day — or, for an admin at the deciding stages, a
+ *  war-approved leave (design §17 FB3-01). One body for the sheet, the anchor
+ *  and the mover. */
+function isMovableSource(personId: string, date: string): boolean {
+  if (!canEditRow(state.role, state.viewer, personId)) return false
+  const m = mainAt(personId, date)
+  if (!m) return false
+  if (m.kind === 'request') return isBiddable(m.code) && canEditCell(state.period, state.role, date)
+  if (m.kind === 'absence') return canDecide(state.period.stage, state.role) && warEditable(personId, date)
+  return false
+}
+
+/** The cells of a selection that actually hold something movable (owner,
+ *  27 Aug 26 — the drag-move acts on the inputs PRESENT in the box). */
 export function movableCells(cells: { personId: string; date: string }[]): { personId: string; date: string }[] {
   return cells.filter(c => isMovableSource(c.personId, c.date))
 }
 
 export type MoveResult = 'moved' | { reason: 'nothing' | 'raptor' | 'occupied' | 'window'; at?: string }
-/** Move a whole SELECTION by a day-delta — the drag-select "Move" (owner,
- *  27 Aug 26). ATOMIC on purpose: every source and every landing day is
- *  validated FIRST, and only an all-clear applies — a half-moved block is a
- *  worse state than a refused move, and there is no undo here. Each cell
- *  lands on its own row shifted by the same delta, `{state:'pending', source,
- *  shiftedFrom}` exactly as `shiftBid` lands one. A cell whose landing day is
- *  another SELECTED cell's source is fine (the block is sliding over itself),
- *  so the occupied check excludes the selection's own sources. Role-gated by
- *  `canEditCell` like `shiftBid` — a member may slide bids they could shift
- *  one at a time; medical/PO never reach here (not biddable / admin-only). */
+
 /** The validation half of `moveCells`, held apart so the grid's landing
- *  preview can ask "would this move actually go?" BEFORE painting it — a
- *  preview that shows half a landing the atomic commit then wholly refuses is
- *  a lie, and a second copy of these guards in the UI would be the drift seam
- *  this store exists to prevent. Returns null when the move is clear, else
- *  the same `{reason, at}` the commit reports. */
+ *  preview asks the SAME rule the commit applies. Null when clear. */
 export function moveProblem(cells: { personId: string; date: string }[], dayDelta: number): Exclude<MoveResult, 'moved'> | null {
   if (!dayDelta || cells.length === 0) return { reason: 'nothing' }
   const dayset = new Set(state.period.days.map((d: any) => d.date))
-  const sources = new Set(cells.map(c => `${c.personId}|${c.date}`))
-  // every source must be a movable bid this role may edit — the same guards
-  // `isMovableSource` carries, kept inline here only to name a precise reason
-  // per cell. A member may slide only their OWN row's bids: another row is
-  // "nothing you may move" (owner, 27 Aug 26). The affordance already filters
-  // through `movableCells`, so this is the backstop against a direct call.
+  const reqs: Array<{ personId: string; date: string; rec: RequestRec }> = []
+  const abs: Array<{ personId: string; date: string; iid: string }> = []
   for (const c of cells) {
     if (!canEditRow(state.role, state.viewer, c.personId)) return { reason: 'nothing', at: c.date }
-    if (raptorOwns(state.states, c.personId, c.date)) return { reason: 'raptor', at: c.date }
-    if (!isBiddable(state.grid[c.personId]?.[c.date])) return { reason: 'nothing', at: c.date }
+    const m = mainAt(c.personId, c.date)
+    if (!m) return { reason: 'nothing', at: c.date }
+    if (m.kind === 'absence') {
+      if (!canDecide(state.period.stage, state.role) || !warEditable(c.personId, c.date)) return { reason: 'raptor', at: c.date }
+      abs.push({ ...c, iid: m.id })
+      continue
+    }
+    if (m.kind !== 'request' || !isBiddable(m.code)) return { reason: 'nothing', at: c.date }
     if (!canEditCell(state.period, state.role, c.date)) return { reason: 'window', at: c.date }
+    const rec = listAt(c.personId, c.date).find((r): r is RequestRec => r.kind === 'request' && r.id === m.id)
+    if (!rec) return { reason: 'nothing', at: c.date }
+    reqs.push({ ...c, rec })
   }
-  // every landing day must be a real, editable, in-squadron day this role owns,
-  // and empty of anything not itself sliding away
-  for (const c of cells) {
-    const to = addDays(c.date, dayDelta)
+  const moving = new Set(reqs.map(r => r.rec))
+  for (const r of reqs) {
+    const to = addDays(r.date, dayDelta)
     if (!dayset.has(to)) return { reason: 'window', at: to }
     if (!canEditCell(state.period, state.role, to)) return { reason: 'window', at: to }
-    const person = state.people.find(p => p.id === c.personId)
-    if (person && !inSquadron(person, to)) return { reason: 'window', at: to }
-    if (raptorOwns(state.states, c.personId, to)) return { reason: 'occupied', at: to }
-    const occ = state.grid[c.personId]?.[to]
-    if (occ && !sources.has(`${c.personId}|${to}`)) return { reason: 'occupied', at: to }
+    const landing = listAt(r.personId, to).filter(x => !moving.has(x as RequestRec))
+    const c: Contrib = { id: r.rec.id, kind: 'request', code: parseCell(r.rec.code)!.type, win: requestWin(r.rec.code), state: 'pending' }
+    /* the selection's own approved leave sliding away frees its landing too */
+    const absHere = absencesAt(r.personId, to).filter(a => !abs.some(x => x.iid === a.id && x.personId === r.personId))
+    if ([...recContribs(landing), ...absHere].some(o => forbiddenPair(c, o))) return { reason: 'occupied', at: to }
+    if (liveRequestsOn(landing, portionOfCode(r.rec.code)).length) return { reason: 'occupied', at: to }
+  }
+  if (abs.length) {
+    for (const a of abs) if (!dayset.has(addDays(a.date, dayDelta))) return { reason: 'window', at: addDays(a.date, dayDelta) }
+    const p = DOOR ? DOOR.moveApproved(abs, dayDelta, biddingClosed(state.period.stage), true) : { reason: 'nothing' as const }
+    if (p) return p
   }
   return null
 }
 
+/** Move a whole SELECTION by a day-delta — the drag-select "Move" (owner,
+ *  27 Aug 26). ATOMIC: validated first, then ONE gesture — requests re-placed
+ *  pending (with the moved-from trail once bidding is closed), approved leave
+ *  slid through the absence door — one envelope, one undo step. */
 export function moveCells(cells: { personId: string; date: string }[], dayDelta: number): MoveResult {
   const problem = moveProblem(cells, dayDelta)
   if (problem) return problem
-  // apply as ONE write: clone the touched rows, drop every source, then land
-  // every target (all deletes before any set, so a self-overlapping slide
-  // never deletes a day it has just filled)
-  const grid: Record<string, Record<string, string>> = {}
-  const states: Record<string, any> = {}
-  for (const pid of new Set(cells.map(c => c.personId))) {
-    grid[pid] = { ...(state.grid[pid] ?? {}) }
-    states[pid] = { ...(state.states[pid] ?? {}) }
-  }
-  // A move only leaves a "moved" trail (shiftedFrom) once bidding has CLOSED —
-  // that is a management shift, the thing the mark and the OIL audit exist to
-  // trace. While bidding is OPEN people shuffle their own bids freely, so an
-  // open-bidding move is a clean re-place with NO provenance: without this the
-  // trail was recorded on every open move and surfaced the moment the war
-  // closed, painting an orange stripe on a bid the squadron had simply tidied
-  // (owner, 27 Aug 26 — "I shouldn't see the stripes… only after bidding is
-  // closed AND the input is moved"). Clearing shiftedFrom on the open re-place
-  // also drops any stale trail a prior closed-era move had left.
   const tracked = biddingClosed(state.period.stage)
-  // `origin` rather than `from`: the trail survives a CHAIN of moves — a bid
-  // moved 23 → 30 → Feb 6 was still bid on the 23rd, and that is the date the
-  // ledger exists to answer with (same rule as shiftBid). Read here, before
-  // the delete loop takes the old records with it.
-  const moves = cells.map(c => ({
-    pid: c.personId, from: c.date, to: addDays(c.date, dayDelta),
-    code: state.grid[c.personId][c.date],
-    origin: state.states[c.personId]?.[c.date]?.shiftedFrom ?? c.date,
-  }))
-  for (const m of moves) { delete grid[m.pid][m.from]; delete states[m.pid][m.from] }
-  for (const m of moves) {
-    grid[m.pid][m.to] = m.code
-    states[m.pid][m.to] = tracked
-      ? { state: 'pending', source: 'bid', shiftedFrom: m.origin }
-      : { state: 'pending', source: 'bid' }
-  }
-  updateCurrent(w => ({ ...w, grid: { ...w.grid, ...grid }, states: { ...w.states, ...states } }))
+  gesture('lw.move', () => {
+    const reqs: Array<{ personId: string; from: string; to: string; rec: RequestRec }> = []
+    const abs: Array<{ personId: string; date: string; iid: string }> = []
+    for (const c of cells) {
+      const m = mainAt(c.personId, c.date)
+      if (m?.kind === 'absence') { abs.push({ ...c, iid: m.id }); continue }
+      const rec = listAt(c.personId, c.date).find((r): r is RequestRec => r.kind === 'request' && r.id === m?.id)
+      if (rec) reqs.push({ personId: c.personId, from: c.date, to: addDays(c.date, dayDelta), rec })
+    }
+    const wasQuiet = quiet
+    quiet = true
+    try {
+      // every source out before any landing, so a block sliding over itself
+      // never deletes a day it has just filled
+      for (const r of reqs) putList(r.personId, r.from, listAt(r.personId, r.from).filter(x => x !== r.rec))
+      for (const r of reqs) {
+        const landed: RequestRec = {
+          id: r.rec.id, kind: 'request', code: r.rec.code, state: 'pending',
+          ...(tracked ? { shiftedFrom: r.rec.shiftedFrom ?? r.from } : {}),
+          ...(r.rec.carried ? { carried: r.rec.carried } : {}),
+        }
+        putList(r.personId, r.to, [...listAt(r.personId, r.to), landed])
+      }
+    } finally { quiet = wasQuiet }
+    if (reqs.length && !quiet) persistNotify()
+    if (abs.length && DOOR) DOOR.moveApproved(abs, dayDelta, tracked, false)
+  })
   return 'moved'
 }
 

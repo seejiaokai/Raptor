@@ -529,7 +529,7 @@ export function Matrix() {
      memo keyed only on the selection went stale when a sync pass changed a
      selected cell under an armed move */
   const version = useVersion()
-  const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, focusDate, focusSeq, qualCatalog, groupColors } = getState()
+  const { people, period, grid, states, views, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, focusDate, focusSeq, qualCatalog, groupColors } = getState()
   const dates = period.days.map(d => d.date)
   // Memoized on the store objects (the store replaces what it writes, so
   // identity IS change): rules-as-data made a day's evaluation walk every
@@ -537,9 +537,9 @@ export function Matrix() {
   // VIEW-state render (a sheet opening, Rearrange toggling) is waste the old
   // fixed-kind lookup merely tolerated.
   const verdicts = useMemo(
-    () => evaluatePeriod(people, grid, states, requirements, dates),
+    () => evaluatePeriod(people, grid, states, requirements, dates, views),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [people, grid, states, requirements, period],
+    [people, grid, states, views, requirements, period],
   )
   // The colour a whole day column takes from its events: light green for an
   // off day (a PH), orange for a no-leave day. Computed once per day and read

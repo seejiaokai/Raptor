@@ -132,7 +132,7 @@ export function contribsOfInput(row: any): Array<[string, Contrib]> {
   for (const d of inputDates(row)) {
     const c: Contrib = { id: String(row.iid), kind: 'absence', code, win }
     if (row.lw) c.lw = true
-    if (moved[d]) c.moved = true
+    if (moved[d]) c.movedFrom = moved[d]
     out.push([d, c])
     if (tail) out.push([addDays(d, 1), { id: String(row.iid), kind: 'absence', code, win: tail, spill: true }])
   }
@@ -157,6 +157,15 @@ export function addInput(ix: AbsenceIndex, row: any): void {
   }
 }
 
+/** What makes a leave the SAME leave: who, what type, which days, which part
+ *  of the day — everything but its remarks, documents and bookkeeping. A
+ *  remarks-only edit keeps it; the Inputs editor uses it to tell the two
+ *  apart (design §5.4). */
+export function leaveKey(row: any): string {
+  return [row.person, warCodeOf(row.type), labelToISO(row.date, row.yr), row.endDate ? labelToISO(row.endDate, row.yr) : '',
+    row.allday ? 1 : 0, row.half ?? '', row.allday ? '' : row.s ?? '', row.allday ? '' : row.e ?? ''].join('|')
+}
+
 /** Only the Input fields `contribsOfInput` reads — the per-person signature
  *  the index rebuilds on (design §4.1, FB2-08: remarks, docs, acc, mod … are
  *  deliberately out, so a remarks edit never rebuilds anything). */
@@ -164,4 +173,52 @@ export function absenceSignature(row: any): string {
   if (!row || !warVisible(row.type)) return ''
   return [row.iid, row.type, row.date, row.endDate ?? '', row.yr ?? '', row.allday ? 1 : 0,
     row.half ?? '', row.s ?? '', row.e ?? '', row.lw ? 1 : 0, JSON.stringify(row.lwMoved ?? null)].join('|')
+}
+
+/* ---- the other direction: a war leave → the one Input ------------------- */
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const INPUT_FOR_WAR: Record<string, string> = { ATTB: 'ATT B', ATTC: 'ATT C' }
+
+/** '2026-07-15' → the Input's label + its anchor year ('Jul 15', 2026). The
+ *  year rides `yr`, so the label never needs a suffix and never re-anchors
+ *  when another week is loaded (engine/inputs.ts, 24 Aug 26). */
+export function isoToInputDate(iso: string): { date: string; yr: number } {
+  return { date: `${MONTHS[+iso.slice(5, 7) - 1]} ${+iso.slice(8, 10)}`, yr: +iso.slice(0, 4) }
+}
+/** An end date on the SAME anchor year as the start: a span crossing 31 Dec
+ *  carries the year suffix dateOrd reads. */
+function endLabel(startIso: string, endIso: string): string {
+  const { date, yr } = isoToInputDate(endIso)
+  return yr === +startIso.slice(0, 4) ? date : `${date} ${yr}`
+}
+
+export interface WarLeave {
+  person: string
+  /** war notation, portion marks included: LL, *LL, OL*, ATTC … */
+  code: string
+  from: string
+  to: string
+  /** the war it was approved in (provenance, design §5.4); none = filed on
+   *  the Inputs page */
+  lw?: string
+  remarks?: string
+  lwMoved?: Record<string, string>
+  mod?: string
+}
+
+/** The Input row a war leave is — the ONE absence record. `iid` is left for
+ *  the inputs door to mint. */
+export function inputRowFor(w: WarLeave): any {
+  const lead = w.code.startsWith('*'), trail = w.code.endsWith('*')
+  const bare = w.code.replace(/\*/g, '')
+  const { date, yr } = isoToInputDate(w.from)
+  const row: any = { person: w.person, date, yr, type: INPUT_FOR_WAR[bare] ?? bare, remarks: w.remarks ?? '' }
+  if (w.to > w.from) row.endDate = endLabel(w.from, w.to)
+  if (lead) { row.allday = false; row.half = 'am'; row.s = 0; row.e = 720 }
+  else if (trail) { row.allday = false; row.half = 'pm'; row.s = 721; row.e = 1439 }
+  else row.allday = true
+  if (w.lw) row.lw = w.lw
+  if (w.lwMoved && Object.keys(w.lwMoved).length) row.lwMoved = { ...w.lwMoved }
+  if (w.mod) row.mod = w.mod
+  return row
 }

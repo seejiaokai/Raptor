@@ -20,7 +20,8 @@
 // and re-keying it would corrupt it.
 
 import { INPUTS, inpId } from '../../engine/inputs'
-import { seedPeople, type BidRecord, type Grid, type Ledger, type States } from '../engine'
+import { seedPeople, SEED_ABSENCES, warHolding, type Ledger, type Recs, type WarRec } from '../engine'
+import { inputRowFor } from '../absences'
 import { projectPeople } from './raptorRoster'
 import { getState, installDemoOil, remapPersonKeys, setPeople } from './store'
 
@@ -57,19 +58,10 @@ export const DEMO_MAP: Record<string, string> = {
   reset: 'harpoon',     // pilot / instructor
 }
 
-/* The seed's two Raptor-owned cells (TATA's OIL on 9 Jan 26, DUSK's OIL on
-   4 May 27), BACKED by the live inputs the seed's own comments say they came
-   from. Without these, the sync's reverse pass — a Raptor-owned cell no
-   live input covers is cleared — would erase the demo's Raptor-owned
-   examples at boot, and the two render paths they exist to exercise would
-   never appear on a fresh screen. Pushed idempotently on every boot, the
-   demoseed idiom: Raptor's INPUTS are session-only, so they need re-seeding
-   whether or not Leave War's half persisted. */
+/* The demo's member-filed rows ([ARCH-STACK] step 4 — every approved or filed
+   absence is an Input now; the seed's own list is `SEED_ABSENCES`, filed below
+   together with the demo OIL story's taken days). */
 const DEMO_RAPTOR_INPUTS: any[] = [
-  { person: DEMO_MAP.tata, date: 'Jan 9', allday: true, type: 'OIL',
-    remarks: 'OIL — CO approved', mod: '2026-06-20' },
-  { person: DEMO_MAP.dusk, date: 'May 4 2027', allday: true, type: 'OIL',
-    remarks: 'OIL — CO approved', mod: '2026-06-20' },
   /* SPLICE's medical is MEMBER-FILED (owner, 13 Sep 26): the war can no longer
      create medical, so the demo shows it as the member's OWN Inputs filing — the
      ATT C / OML rows sync onto the war (ingestFromRaptor) as read-only cells, the
@@ -98,42 +90,36 @@ const DEMO_RAPTOR_INPUTS: any[] = [
    shows each shape on first run: a credit used up (archived), one part-drawn
    with its takes stacked, a correction, an untouched grant with a giver, a
    2027 lane, and a row whose only credit is in the archive. */
-const APPROVED: BidRecord = { state: 'approved', source: 'bid' }
-const earned = (note: string): BidRecord => ({ state: 'approved', source: 'bid', note })
+let demoN = 0
+const earned = (code: 'FO' | 'HO', note: string): WarRec[] => [{ id: `demo${++demoN}`, kind: 'credit', code, oil: 'manual', note }]
 const grant = (id: string, personId: string, amount: number, date: string, reason: string, approvedBy: string, givenBy?: string) =>
   ({ id, personId, counter: 'oil' as const, amount, date, reason, approvedBy, ...(givenBy ? { givenBy } : {}) })
 
-export const DEMO_OIL: { grid: Grid; states: States; ledger: Ledger } = {
-  grid: {
-    // opening 3, FO 3 Jan and a half day pending on 10 Feb already seeded:
-    // the opening figure is used up by June (archived), the January day
-    // part-drawn, the March grant and April half day untouched.
-    ramp: { '2026-04-18': 'HO', '2026-05-11': 'OIL', '2026-05-12': 'OIL', '2026-06-13': 'OIL' },
-    // opening 1.5 and two January days seeded, one OIL day taken 9 Jan: two
-    // more takes empty the opening AND the 1 Jan day — two archived boxes.
-    tata: { '2026-02-07': 'FO', '2026-03-21': 'FO', '2026-03-02': 'OIL', '2026-03-30': 'OIL' },
-    asics: { '2026-07-15': 'OIL', '2026-07-16': 'OIL' },
-    // opening 6, one earned day, a −1 correction, three days taken.
-    miles: { '2026-05-09': 'FO', '2026-06-01': 'OIL', '2026-06-02': 'OIL', '2026-06-03': 'OIL' },
-    // a 2027 grant and a 2027 day taken — the second year lane.
-    reset: { '2027-02-15': 'OIL' },
-    dusk: { '2026-07-04': 'FO', '2026-08-08': 'HO' },
-    cage: { '2026-08-15': 'FO' },
-    skin: { '2026-08-29': 'FO' },
+/* The OIL days TAKEN in the story — approved leave, so Inputs (seed ids). */
+const DEMO_OIL_TAKEN: Array<[string, string]> = [
+  ['ramp', '2026-05-11'], ['ramp', '2026-05-12'], ['ramp', '2026-06-13'],
+  ['tata', '2026-03-02'], ['tata', '2026-03-30'],
+  ['asics', '2026-07-15'], ['asics', '2026-07-16'],
+  ['miles', '2026-06-01'], ['miles', '2026-06-02'], ['miles', '2026-06-03'],
+  ['reset', '2027-02-15'],
+  ['slammed', '2026-01-14'],
+]
+
+export const DEMO_OIL: { recs: Recs; ledger: Ledger } = {
+  // opening 3, FO 3 Jan seeded: the opening figure is used up by June
+  // (archived), the January day part-drawn, the March grant and April half
+  // day untouched. Every earned day is a HAND-TYPED credit with its reason —
+  // the OIL pass would sweep a generated one the live schedule does not back.
+  recs: {
+    ramp: { '2026-04-18': earned('HO', 'SIM') },
+    tata: { '2026-02-07': earned('FO', 'FLT'), '2026-03-21': earned('FO', 'Duty') },
+    miles: { '2026-05-09': earned('FO', 'FLT + SIM') },
+    dusk: { '2026-07-04': earned('FO', 'Duty'), '2026-08-08': earned('HO', 'SIM') },
+    cage: { '2026-08-15': earned('FO', 'FLT') },
+    skin: { '2026-08-29': earned('FO', 'Duty') },
     // opening 0: one earned day, taken the week after — the row's ONLY
     // credit is in the archive, so it reads idle with a count of 1.
-    slammed: { '2026-01-10': 'FO', '2026-01-14': 'OIL' },
-  },
-  states: {
-    ramp: { '2026-04-18': earned('SIM'), '2026-05-11': APPROVED, '2026-05-12': APPROVED, '2026-06-13': APPROVED },
-    tata: { '2026-02-07': earned('FLT'), '2026-03-21': earned('Duty'), '2026-03-02': APPROVED, '2026-03-30': APPROVED },
-    asics: { '2026-07-15': APPROVED, '2026-07-16': APPROVED },
-    miles: { '2026-05-09': earned('FLT + SIM'), '2026-06-01': APPROVED, '2026-06-02': APPROVED, '2026-06-03': APPROVED },
-    reset: { '2027-02-15': APPROVED },
-    dusk: { '2026-07-04': earned('Duty'), '2026-08-08': earned('SIM') },
-    cage: { '2026-08-15': earned('FLT') },
-    skin: { '2026-08-29': earned('Duty') },
-    slammed: { '2026-01-10': earned('FLT'), '2026-01-14': APPROVED },
+    slammed: { '2026-01-10': earned('FO', 'FLT') },
   },
   ledger: [
     grant('dol-1', 'ramp', 2, '2026-03-14', 'Exercise recovery', 'SQNCDR', 'OC Ops'),
@@ -175,6 +161,26 @@ export function installDemoWorld(hadStoredWars: boolean): void {
   if (!hadStoredWars) {
     installDemoOil(DEMO_OIL)
     remapPersonKeys(DEMO_MAP)
+  }
+
+  /* The seed's approved / filed leave and the demo's taken OIL days, filed as
+     the Inputs they are ([ARCH-STACK] step 4 — design §9: absences as Inputs,
+     with `lw` where the demo shows war-approved leave). Raw pushes before
+     LW_READY and before the undo baseline, so none is an undo step (FB-09). */
+  if (!hadStoredWars) {
+    const wars = getState().wars
+    const seedRows = [
+      ...SEED_ABSENCES.map(a => ({ ...a, to: a.endDate ?? a.date })),
+      ...DEMO_OIL_TAKEN.map(([person, date]) => ({ person, code: 'OIL', date, to: date, lw: true })),
+    ]
+    for (const a of seedRows) {
+      const person = DEMO_MAP[a.person] ?? a.person
+      const war = warHolding(wars, a.date)
+      const row = inputRowFor({ person, code: a.code, from: a.date, to: a.to, lw: a.lw && war ? war.period.id : undefined, mod: '2026-01-01' })
+      if (INPUTS.some((x: any) => x.person === row.person && x.date === row.date && x.yr === row.yr && x.type === row.type)) continue
+      inpId(row)
+      INPUTS.push(row)
+    }
   }
 
   /* The demo inputs are SEED, like the OIL story above them: a world that

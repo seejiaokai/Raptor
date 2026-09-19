@@ -174,7 +174,7 @@ export function CounterForm({ ruleId, onClose }: {
   onClose: () => void
 }) {
   useVersion()
-  const { requirements, qualCatalog, people, grid, states, period } = getState()
+  const { requirements, qualCatalog, people, grid, states, views, period } = getState()
   const rules = requirements.default.rules
   const existing = ruleId ? rules.find(r => r.id === ruleId) : undefined
 
@@ -238,7 +238,7 @@ export function CounterForm({ ruleId, onClose }: {
   // A live sample, so the admin sees what the rule reads BEFORE saving it —
   // the war's first day, the one every open war is guaranteed to have.
   const sampleDate = period.days[0]?.date
-  const sample = valid && sampleDate ? ruleHave(draftCount(), people, grid, states, sampleDate) : null
+  const sample = valid && sampleDate ? ruleHave(draftCount(), people, grid, states, sampleDate, views) : null
 
   const save = () => {
     if (!valid) return

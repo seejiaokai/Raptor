@@ -10,14 +10,15 @@
 // is the common case, not a rule: `buildDays` has always built an arbitrary
 // range and nothing here narrows it.
 
-import type { Grid } from './availability'
-import type { States } from './bids'
 import { buildDays, type Period } from './period'
+import type { Recs } from './warrecs'
 
+/** A war as STORED: its period and its own records (requests, OIL credits,
+ *  replaced-bid notices). What a day shows is derived — see `warrecs.ts`,
+ *  `dayview.ts` and the store's merge ([ARCH-STACK] step 4). */
 export interface LeaveWar {
   period: Period
-  grid: Grid
-  states: States
+  recs: Recs
 }
 
 /**
@@ -36,8 +37,7 @@ export function makeWar(id: string, name: string, start: string, end: string): L
   }
   return {
     period: { id, name, start, end, stage: 'draft', bidFrom: null, bidTo: null, days: buildDays(start, end), bands: [] },
-    grid: {},
-    states: {},
+    recs: {},
   }
 }
 

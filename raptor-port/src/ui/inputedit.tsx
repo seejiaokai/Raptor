@@ -30,7 +30,8 @@ import { writeInputsBatch, notify, protectedDates, inputProtected } from '../sta
 /* The Leave War seam (sync.ts is the one crossing point, CLAUDE.md §The Leave
    War tab): retracting a synced row's war cells when it is edited or deleted
    here — not a new seam, a Raptor-side caller of the existing one. */
-import { retractLwRow, rowSig, oilAskPlan } from '../leavewar/sync'
+import { oilAskPlan } from '../leavewar/sync'
+import { leaveKey } from '../leavewar/absences'
 import { inputOilAmt } from '../engine/oil'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { stashKeys, stashGet } from '../engine/weekstash'
@@ -348,7 +349,8 @@ export function applyMedPlan(plan: any[]) {
       continue
     }
     if (p.action !== 'trim' || p.newEndOrd == null) continue
-    if (r.lw) { retractLwRow(r); delete r.lw }
+    /* [ARCH-STACK] step 4: the Leave War READS this row — trimming it trims the
+       war with nothing to retract. */
     const a = dateOrd(r.date, r.yr)
     if (a != null && p.newEndOrd <= a) delete r.endDate
     else r.endDate = ordLabel(p.newEndOrd, r.yr)
@@ -941,9 +943,14 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        refined remark survives. rowSig folds the type vocabulary and the portion
        exactly as reconciliation does, so "did the leave change?" here cannot
        disagree with what a re-sync would decide. */
-    const leaveSame = r.lw && rowSig(r) != null &&
-      rowSig(r) === rowSig({ person: draft.person, type: draft.type, date, endDate, allday: draft.allday, half, s, e })
-    if (r.lw && !leaveSame) { retractLwRow(r); delete r.lw }
+    /* [ARCH-STACK] step 4 (design §5.4, owner §13 Q1): the war READS this row, so
+       nothing is retracted — the edit simply shows there. What changes is who
+       may edit it on the war: a MEMBER's own date / type / person edit of a
+       leave the admin approved clears `lw` (it stays green and gains the blue
+       "filed on the Inputs page" edge; from then on it is changed here). A
+       remarks-only edit, and any admin edit, keep it war-approved. */
+    const leaveSame = leaveKey(r) === leaveKey({ person: draft.person, type: draft.type, date, endDate, yr: r.yr, allday: draft.allday, half, s, e })
+    if (r.lw && !leaveSame && !canEditSched()) delete r.lw
     /* An ACCEPTED input is linked to the row it created by `src`, a content
        key of person|date|type|s. Editing any of those silently broke the
        link: the row stayed on the programme, undo could no longer find it,
@@ -1242,7 +1249,9 @@ export function removeInput(r: any) {
    row still says what was granted. Without this the next reconcile would
    re-mint the row from the still-approved cells — the snap-back. */
 function dropInputRow(r: any) {
-  if (r.lw) retractLwRow(r)
+  /* [ARCH-STACK] step 4: deleting the row IS deleting the absence — the war
+     reads it, so there is nothing to withdraw (deliberate delete propagates
+     and sticks, owner decision 2, 13 Sep 26). */
   if (r.acc) unacceptInput(acceptedDay(r), r)
   const ix = INPUTS.indexOf(r); if (ix >= 0) INPUTS.splice(ix, 1)
 }

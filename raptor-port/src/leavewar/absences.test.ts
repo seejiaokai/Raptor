@@ -38,7 +38,7 @@ describe('contributions per date', () => {
     const cs = contribsOfInput(r)
     expect(cs.map(([d]) => d)).toEqual(['2026-07-15', '2026-07-16', '2026-07-17'])
     expect(cs.every(([, c]) => c.id === r.iid && c.lw === true)).toBe(true)
-    expect(cs.map(([, c]) => !!c.moved)).toEqual([false, true, false])
+    expect(cs.map(([, c]) => c.movedFrom ?? null)).toEqual([null, '2026-07-10', null])
   })
   it('an overnight leave puts a spill tail on the next date only for clashes', () => {
     const cs = contribsOfInput(row({ type: 'LL', allday: false, s: hm(22), e: hm(2) }))

@@ -93,13 +93,13 @@ describe('what the day costs', () => {
   it('each half charges its own leave: AM LL + PM OIL = half annual + half OIL', () => {
     const v = dayView([ab('l', 'LL', AM), ab('o', 'OIL', PM)])
     expect(v.charges).toEqual(expect.arrayContaining([
-      { counter: 'annual', amount: 0.5, code: 'LL', id: 'l' },
-      { counter: 'oil', amount: 0.5, code: 'OIL', id: 'o' },
+      { counter: 'annual', amount: 0.5, code: 'LL', id: 'l', half: 'am' },
+      { counter: 'oil', amount: 0.5, code: 'OIL', id: 'o', half: 'pm' },
     ]))
   })
   it('a morning shared by LL 08–10 and OL 10:30–11:30 is charged ONCE — half a day (owner, 20 Sep 26)', () => {
     const v = dayView([ab('ll', 'LL', [hm(8), hm(10)]), ab('ol', 'OL', [hm(10, 30), hm(11, 30)])])
-    expect(v.charges).toEqual([{ counter: 'annual', amount: 0.5, code: 'LL', id: 'll' }])
+    expect(v.charges).toEqual([{ counter: 'annual', amount: 0.5, code: 'LL', id: 'll', half: 'am' }])
   })
   it('a shared half on different balances: the leave covering MORE time pays (answer D)', () => {
     const v = dayView([ab('oil', 'OIL', [hm(10, 30), hm(11, 30)]), ab('ll', 'LL', [hm(8), hm(10)])])

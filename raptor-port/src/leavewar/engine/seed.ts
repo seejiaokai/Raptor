@@ -4,8 +4,7 @@
 
 import { buildDays, type Period } from './period'
 import type { Person } from './people'
-import type { Grid } from './availability'
-import type { States } from './bids'
+import type { Recs, WarRec } from './warrecs'
 import type { Ledger, Openings } from './counters'
 import { makeWar, type LeaveWar } from './wars'
 import type { Requirements } from './requirements'
@@ -170,85 +169,63 @@ export function seedRequirements(): Requirements {
   }
 }
 
-// The ORIGINAL sheet's `HO` (then meaning half OIL TAKEN) became `*OIL` —
-// the morning reading, picked arbitrarily since the old code carried no
-// time-of-day information to preserve. (28 Aug 26: the letters `HO` were
-// later re-minted as the half-day OIL EARNED credit beside `FO` — a
-// different meaning; no stored data ever carried both.) A bare `AM`/`PM` in
-// the source sheet meant half a day of ordinary leave, so those become
-// `*LL`/`LL*` respectively: same leave type, the portion the old code name
-// was already naming. All three keep removing exactly 0.5 of a person, so
-// the manning figures this grid produces are unchanged.
-export function seedGrid(): Grid {
+// THE SEED'S LEAVE ([ARCH-STACK] step 4). A war stores only its own records
+// now — requests and OIL credits — so the seed is split the same way:
+//   `seedRecs`      the requests (pending / acknowledged / refused, so every
+//                   colour the sheet paints is on screen from the first run)
+//                   and the hand-typed OIL credits;
+//   `SEED_ABSENCES` the leave that is already APPROVED or was filed on the
+//                   Inputs page, plus the course — these are Inputs now, and
+//                   the Raptor side (demoworld / the test harness) files them
+//                   as Inputs before the war first reads.
+// The ORIGINAL sheet's `HO` (half OIL taken) became `*OIL` and a bare `AM`/`PM`
+// became `*LL`/`LL*` long ago; the notation below is today's.
+export interface SeedAbsence {
+  person: string
+  /** the Leave War code (spaceless medical), portion marks included */
+  code: string
+  date: string
+  endDate?: string
+  /** approved on the war (the Input carries `lw`) vs filed on the Inputs page */
+  lw: boolean
+}
+
+let seedN = 0
+const rq = (code: string, state: 'pending' | 'acknowledged' | 'refused'): WarRec[] =>
+  [{ id: `seed${++seedN}`, kind: 'request', code, state }]
+const credit = (code: 'FO' | 'HO'): WarRec[] => [{ id: `seed${++seedN}`, kind: 'credit', code, oil: 'manual' }]
+
+export function seedRecs(): Recs {
+  seedN = 0
   return {
-    ramp: { '2026-01-01': 'OL', '2026-01-03': 'FO', '2026-02-10': '*OIL' },
-    tata: { '2026-01-01': 'FO', '2026-01-04': 'FO', '2026-01-09': 'OIL' },
-    // SPLICE keeps a plain LL. The old war-CREATED medical (ATT C 5 Jan, OML
-    // 6 Jan) is GONE from the pristine seed (owner, 13 Sep 26): medical is
-    // member-filed only, so a war-marked medical cell has no place here. The
-    // live demo shows a MEMBER-filed medical instead — DEMO_RAPTOR_INPUTS files
-    // it as a real Raptor input and it syncs onto the war read-only.
-    splice: { '2026-01-08': 'LL' },
-    jaguar: { '2026-01-16': 'OL', '2026-01-17': 'OL', '2026-01-19': 'OL' },
-    asics: { '2026-01-08': 'LL', '2026-01-09': 'LL', '2026-01-23': '*LL', '2026-02-24': 'OIL' },
-    pipper: { '2026-01-12': 'CSE', '2026-01-13': 'CSE' },
-    miles: { '2026-02-02': 'LL', '2026-02-03': 'LL*' },
-    roulette: { '2026-01-15': 'CCL' },
-    cross: { '2026-03-10': 'LL' },
-    skin: { '2026-01-03': 'HO' },
+    ramp: { '2026-01-03': credit('FO'), '2026-02-10': rq('*OIL', 'pending') },
+    tata: { '2026-01-01': credit('FO'), '2026-01-04': credit('FO') },
+    // SPLICE's LL has no decision recorded — a plain pending bid, the shape a
+    // bid nobody has looked at yet renders as.
+    splice: { '2026-01-08': rq('LL', 'pending') },
+    jaguar: { '2026-01-19': rq('OL', 'refused') },
+    // ASICS carries every request colour at once: refused red, acknowledged
+    // purple, and a plain pending bid (his approved green LL is an Input).
+    asics: { '2026-01-09': rq('LL', 'refused'), '2026-01-23': rq('*LL', 'pending'), '2026-02-24': rq('OIL', 'acknowledged') },
+    // MILES holds two plain pending bids — no seeded `shiftedFrom` (a trail is
+    // a closed-war fact, owner 27 Aug 26).
+    miles: { '2026-02-02': rq('LL', 'pending'), '2026-02-03': rq('LL*', 'pending') },
+    cross: { '2026-03-10': rq('LL', 'refused') },
+    skin: { '2026-01-03': credit('HO') },
   }
 }
 
-// Enough of each state that the matrix shows all three colours on first run,
-// plus one cell Raptor owns, so that path renders without anyone having to
-// construct it. (No seeded `shiftedFrom` — see the MILES note below.)
-//
-// Every entry here must name a cell that seedGrid() actually holds, and a
-// code someone would bid for — a state on a cell with no code is a bug the
-// tests beside this one will catch.
-//
-// SPLICE's LL on 2026-01-08 is deliberately left out: a bid with no decision
-// recorded is a real shape the matrix has to render (it reads as pending),
-// and leaving one unstated is how that path gets exercised on first run.
-export function seedStates(): States {
-  return {
-    ramp: {
-      '2026-01-01': { state: 'approved', source: 'bid' },
-      '2026-02-10': { state: 'pending', source: 'bid' },
-    },
-    // TATA's OIL came in through Raptor's input tab: he asked verbally, was
-    // told yes, and it arrived here already approved. Nothing in Leave War
-    // may edit or re-decide it.
-    tata: { '2026-01-09': { state: 'approved', source: 'raptor' } },
-    jaguar: {
-      '2026-01-16': { state: 'approved', source: 'bid' },
-      '2026-01-17': { state: 'approved', source: 'bid' },
-      '2026-01-19': { state: 'refused', source: 'bid' },
-    },
-    // ASICS carries all four states at once, so every colour the sheet can
-    // paint is on screen from the first run: approved green, refused red,
-    // acknowledged purple, and a plain pending input with no colour at all.
-    asics: {
-      '2026-01-08': { state: 'approved', source: 'bid' },
-      '2026-01-09': { state: 'refused', source: 'bid' },
-      '2026-01-23': { state: 'pending', source: 'bid' },
-      '2026-02-24': { state: 'acknowledged', source: 'bid' },
-    },
-    // MILES holds two plain pending bids. The seed used to plant a
-    // `shiftedFrom` on the second so the moved stripe rendered on first run,
-    // but the 27 Aug 26 ruling made that record a closed-war fact — a move
-    // made while bidding is OPEN stores no trail — and a seeded trail on an
-    // OPEN war painted the stripe the moment anyone closed bidding, on a bid
-    // nobody had moved: the exact false mark the ruling exists to kill. The
-    // moved path is exercised by the e2e (close, shift, look), not the seed.
-    miles: {
-      '2026-02-02': { state: 'pending', source: 'bid' },
-      '2026-02-03': { state: 'pending', source: 'bid' },
-    },
-    roulette: { '2026-01-15': { state: 'approved', source: 'bid' } },
-    cross: { '2026-03-10': { state: 'refused', source: 'bid' } },
-  }
-}
+export const SEED_ABSENCES: readonly SeedAbsence[] = Object.freeze([
+  { person: 'ramp', code: 'OL', date: '2026-01-01', lw: true },
+  // TATA's OIL came in through Raptor's input tab: asked verbally, told yes —
+  // filed on the Inputs page, so it reads read-only on the war.
+  { person: 'tata', code: 'OIL', date: '2026-01-09', lw: false },
+  { person: 'jaguar', code: 'OL', date: '2026-01-16', endDate: '2026-01-17', lw: true },
+  { person: 'asics', code: 'LL', date: '2026-01-08', lw: true },
+  { person: 'pipper', code: 'CSE', date: '2026-01-12', endDate: '2026-01-13', lw: false },
+  { person: 'roulette', code: 'CCL', date: '2026-01-15', lw: true },
+  { person: 'dusk', code: 'OIL', date: '2027-05-04', lw: false },
+])
 
 // Opening balances, and the ledger that has moved them since. Deliberately
 // not round numbers: §Counters records that a balance is allowed to run
@@ -307,8 +284,7 @@ export function seedLedger(): Ledger {
 export function seedWars(): LeaveWar[] {
   const y26 = makeWar('y2026', 'JAN - DEC 26', '2026-01-01', '2026-12-31')
   y26.period = seedPeriod()
-  y26.grid = seedGrid()
-  y26.states = seedStates()
+  y26.recs = seedRecs()
 
   // Next year's war, in draft — the ordinary state of the one after the
   // current, while its schedule is still being firmed up. It holds leave of
@@ -316,21 +292,9 @@ export function seedWars(): LeaveWar[] {
   // four days here spend the same annual pool the 2026 screen draws on, and
   // his figure must read the same from either.
   const y27 = makeWar('y2027', 'JAN - DEC 27', '2027-01-01', '2027-12-31')
-  y27.grid = {
-    reset: { '2027-04-13': 'LL', '2027-04-14': 'LL', '2027-04-15': 'LL', '2027-04-16': 'LL' },
-    dusk: { '2027-05-04': 'OIL', '2027-05-05': '*LL' },
-  }
-  y27.states = {
-    reset: {
-      '2027-04-13': { state: 'pending', source: 'bid' },
-      '2027-04-14': { state: 'pending', source: 'bid' },
-      '2027-04-15': { state: 'pending', source: 'bid' },
-      '2027-04-16': { state: 'pending', source: 'bid' },
-    },
-    dusk: {
-      '2027-05-04': { state: 'approved', source: 'raptor' },
-      '2027-05-05': { state: 'pending', source: 'bid' },
-    },
+  y27.recs = {
+    reset: Object.fromEntries(['2027-04-13', '2027-04-14', '2027-04-15', '2027-04-16'].map(d => [d, rq('LL', 'pending')])),
+    dusk: { '2027-05-05': rq('*LL', 'pending') },
   }
 
   return [y26, y27]
