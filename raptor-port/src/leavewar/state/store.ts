@@ -2107,6 +2107,20 @@ export function setBidStates(cells: { personId: string; date: string }[], bid: B
     try {
       for (const { personId, date } of cells) {
         const m = mainAt(personId, date)
+        /* A DAY MAY HOLD BOTH: a filed afternoon leave shows on top of a
+           morning bid nobody has decided (the ladder puts an absence above a
+           request). Decide the UNDECIDED BID first — it is what a decision is
+           for — instead of reading the day as "already approved" and reporting
+           a decision that never happened (probe, 20 Sep 26). The tap list
+           already acts per record; this is the drag / bulk path. */
+        const live = liveRequestsOn(listAt(personId, date), 'full')
+        if (live.length && (m?.kind !== 'request' || live.length > 1)) {
+          for (const r of live) {
+            if (bid === 'approved') { toApprove.push({ personId, date, recId: r.id }); continue }
+            if (decideRequest(personId, date, r.id, bid)) { decided++; wrote = true } else skipped++
+          }
+          continue
+        }
         if (m && m.kind === 'request') {
           if (bid === 'approved') { toApprove.push({ personId, date, recId: m.id }); continue }
           if (decideRequest(personId, date, m.id, bid)) { decided++; wrote = true } else skipped++

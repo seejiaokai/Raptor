@@ -59,26 +59,34 @@ run) · `inputgate.test.ts` (16 — the clash rules at the inputs door) · `publ
 `ui/daylist.test.tsx` (8 — marks and the tap list) · `review-fixes.test.ts` (15 — one per inspection
 finding) · `absences`, `warrecs`, `merge`, `charge`, `counters`, `oiltracker`, `sync`, `store` suites.
 
+## 2b. Opus scenario sweep, 20 Sep 26 (34 more tests — `scenarios-doors`, `scenarios-rules`,
+`scenarios-corners`)
+
+Swept most of §3 at the doors, over both wired stores. **One bug found and fixed:** the drag / bulk
+DECIDE read a day as "already approved" when a filed leave sat on top of an undecided bid (the ladder
+puts an absence above a request), so the bid stayed pending while the count said it was decided; it
+now decides the bid. Everything else behaved: reassign and Inputs-page edits obey the rules; leave
+before a posting-in shows and is charged; the OIL pass writes no credit on a leave day and is a fixed
+point; leave across 31 Dec shows in both wars; a leave filed for a year with no war appears when the
+war is created; bulk clear / range-fill / move over mixed days; a long mixed run undone and redone;
+half-day charges per counter; an upchit closing a medical early; a medical over a course; leave over
+part of a medical refused; the 15-day run (pilots only); manning counts a person away once; "OK, seen"
+clears one filing's notices and not another's; member permissions; a save-and-reload round trip;
+clearing leave after the archive pass; a bid in the SECOND war; a move into the next war refused; a
+medical swallowing a whole leave (and undo); moved marks surviving a cut; a bid placed after a publish
+refused; an AL that puts someone new on a weekend replacing their bid; "OK, seen" permissions + undo.
+
 ## 3. NOT tested — the next bug hunt's ground
 
 Named by the scenario tester and the inspectors, plus the gaps the build knows about:
 
-- **Other doors that write Inputs:** the Inputs-page CALENDAR (drag / add dialog), the board's
-  reassign-to-another-person, `mintMedSegments` / `applyMedPlan` from the medical cascade, the OIL ask
-  flow — each must obey the same clash rules as the Inputs form.
-- **Answer A's negative case:** publishing an ordinary WEEKDAY must leave a bid alone.
-- **Leave dated BEFORE a posting-in** (shows, charged, not counted) — only the after-posting-out half
-  is covered.
-- **Medical corners:** an upchit ending a medical early while leave sits around it; two medicals of the
-  same type overlapping; a medical over a course / OD (allowed, amber only vs recorded work).
-- **The OIL pass against absences:** a credit landing where leave already sits and the reverse; an
-  auto credit removed when the schedule changes; hand-typed credits with times vs leave.
-- **Wars and dates:** leave crossing 31 Dec into the next war; a leave in a year with no war, then
-  creating the war; `loadWars`; switching wars with a sheet open.
-- **Bulk gestures:** drag-select fill / decide / delete / move over a rectangle that mixes requests,
-  approved leave, medical and empty days; partial skips and their counts.
-- **Undo depth:** long mixed sequences (file, approve, cut, publish, move, delete) undone and redone to
-  the start; undo after switching wars; undo across a reload.
+- **Doors not yet swept:** the Inputs-page CALENDAR (drag, the add dialog), `mintMedSegments` /
+  `applyMedPlan` driven from the medical dialog, the OIL ask flow (OilConfirm).
+- **Two medicals of the same type overlapping** (the existing "edit that entry" refusal) beside leave.
+- **Hand-typed credits with times vs leave** in the app (unit-covered only).
+- **Switching wars with a sheet open**; undo after switching wars; undo across a reload.
+- **Bulk gestures IN THE BROWSER** (drag-select fill / decide / delete / move over a mixed rectangle
+  — covered at the store, not by a real drag).
 - **Storage faults:** a refused save mid-group, the boot journal replay, two tabs (known limitation).
 - **Phone touch:** drag-select and move by touch; the tap list at the smallest width with many records.
 - **Manning and figures:** that every figure and the manning verdict read the records, not the box, on
