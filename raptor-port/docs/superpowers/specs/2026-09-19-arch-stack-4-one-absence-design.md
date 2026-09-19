@@ -830,4 +830,36 @@ inputs-command door (§5.1) refuses any filing or edit whose absence would overl
 medical absence of the same person on the same portion of a day (AM + PM of different types stays
 allowed and combines as today), with a plain message naming the existing absence. That makes the
 conflict-cell corner (§19 OA4-004, §20.5, §23.3, §24, OA10-001) unreachable by new actions; the
-machinery stays as a defensive fallback. **Decision: pending.**
+machinery stays as a defensive fallback. **Decision: YES (owner, 19 Sep 26).** Applies at every
+filing/moving door: the Inputs page, the calendar, and approval / moves on the Leave War.
+
+## 26. Other clash rules (owner decisions, 19 Sep 26)
+
+One time model for all of them, reused from the app (`sync.ts:105`, `inputs.ts:570`): **morning =
+00:00–12:00, afternoon = 12:01–23:59, full day = both; an absence with its own start/end times uses
+those times** (`inpWin`). Every rule below is enforced at the one inputs-command door (§5.1) and at
+the war's approve/move doors, with a plain message naming what it clashes with.
+
+1. **Sick during leave — ALLOWED; the medical cuts the leave** (owner: "allow it", taking the
+   recommendation). Filing a medical over days/halves already covered by a leave absence of the same
+   person is accepted, and in the SAME command the leave is trimmed / split so it no longer covers
+   the medical's time (split rules §5.2: first part keeps the `iid`, later part a fresh `iid`, `lw`
+   / remarks / docs / `mod` carried). Because charges are derived from what the war shows, those
+   leave days stop charging on their own — the balance goes back up with no ledger write. Undo
+   restores the leave whole. Leave over an existing medical stays REFUSED (§25). Test: LL 14–18 Jul,
+   medical 16–17 → LL 14–15 + 18, medical 16–17, balance +2; undo → LL 14–18, no medical.
+   *(If the owner meant "keep the leave as filed", this rule changes to "allowed, leave untouched";
+   flagged in the report for confirmation.)*
+2. **Filing over your own pending bid of a DIFFERENT type — REFUSED** ("You have a pending OL bid
+   on 15 Jul — withdraw it first"). Same type = the bid is consumed (§5.2). Applies to pending and
+   acknowledged bids; a refused bid does not block.
+3. **Leave on a day credited as worked (FO/HO) — refused only when the TIMES overlap** (owner:
+   "if it's time de-conflicted it's ok, but if it's clashing at the same time as work and leave then
+   no"). The work time is the person's actual published work spans on that day (the same spans the
+   OIL pass reads — `dayOilWork`, each flight / sim / duty start–end, NOT the gap-inclusive envelope)
+   plus any acknowledged duty claim's own times. The leave's time is its portion or its own times.
+   Overlap → refused ("You're recorded as working 08:00–11:30 on 15 Jul"); no overlap (e.g. duty
+   08:00–11:00 and afternoon leave) → allowed, and the war shows the cell per §3.1's credit row with
+   the leave on the clash strip removed for this deconflicted case (a deconflicted leave is not a
+   clash). A later change to the published schedule that creates an overlap does not delete the
+   leave; it appears on the clash strip for the admin to resolve.
