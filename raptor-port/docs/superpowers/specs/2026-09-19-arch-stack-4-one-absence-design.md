@@ -1,6 +1,7 @@
-# ARCH-STACK step 4 — ONE absence record (design, Rev 7, 19 Sep 26)
+# ARCH-STACK step 4 — ONE absence record (design, Rev 8, 19 Sep 26)
 
-Status: **DESIGN — round 7 of the cross-provider red-team (Codex + Fable). No code yet.**
+Status: **DESIGN — round 8 of the cross-provider red-team (Codex + Fable). No code yet.**
+Rev 8 (§22): savepoints per pipeline, recovery obeys the selective reset, deferred effects drain fully.
 Rev 6 (§20) made the all-or-nothing save exact; Rev 7 (§21) makes a refused command leave nothing
 in storage and carries an unfinished recovery into the save queue. Later sections override earlier.
 Rev 3 folded in Fable's round-2 findings (§16) and the owner's answers (§13). Fable APPROVED Rev 3
@@ -734,3 +735,36 @@ shows the world after G1∪G2 or after neither, never between. *(Corrected in Re
 4. **Unload** (FB6-02): `flush()` on pagehide sends the pending group straight through `putMany`;
    safe because the browser backend's group write is synchronous. With a future asynchronous backend
    that gap is step 5's to close — recorded.
+
+## 22. Round-7 → Rev 8. THIS SECTION OVERRIDES §21 WHERE THEY DIFFER.
+
+1. **A savepoint per pipeline** (Codex OA7-001). `drainQueue` runs queued commands as separate
+   pipelines and isolates their failures (`commit.ts:170-182`), and some writers still persist
+   inline (`people-settings-commit.ts:203`, while `restorePeople` resets memory only). So the ONE
+   whiteboard transaction per outermost `dispatch` stays (one delivered group), but every pipeline —
+   the outermost and each drained one — takes a SAVEPOINT on entry (`wb.savepoint()` records the
+   current value of each key as it is first touched after that point). A pre-seal rejection of that
+   pipeline (`conflict | invalid | unauthorized | refused`, or a phase 1–6 throw) rolls the whiteboard
+   back to ITS savepoint only, keeping the parent's and earlier siblings' writes. The outermost
+   pipeline's rejection rolls back to the outermost savepoint = the §21 `abort()`. Tests: a
+   successful parent followed by a rejected queued pipeline (both touching `people/all`, and touching
+   different keys) → the group carries exactly the parent's values.
+2. **Recovery obeys the SELECTIVE reset** (Codex OA7-002, sharpening Fable FB7-01). The storage reset
+   clears only `inputs`, `weeks`, `leavewar` and keeps `settings`, `people`, `tracker`
+   (`storage/reset.ts:32-34`). `bootStorage` order, each step durable before the next:
+   a. `loadAll` replays the journal; on failure it returns the unfinished group.
+   b. If a reset is due, FILTER the group: drop entries in reset collections, keep the rest. Write
+      the filtered group back as the journal (or remove the journal if nothing is left) — BEFORE any
+      reset removal runs, so an interruption can neither lose a preserved entry nor resurrect a reset
+      one.
+   c. Run the reset removals, then stamp the version.
+   d. Seed the new `Postman` with the (filtered) group as its initial failed group; it retries and
+      later writes merge over it (§21.2).
+   `Backend` gains `writeJournal(group | null)` for step b (Memory: in-memory; Browser: one
+   `setItem`/`removeItem`). Test: a journal holding a `tracker` entry and an `inputs` entry, replay
+   failing, a version bump due → after boot and another reload, the tracker entry is present, the
+   inputs entry is gone, the reset world is intact, no journal remains once applied.
+3. **Every deferred effect runs, however deep** (Fable FB7-02). `releaseLatch` loops
+   `while (txn.deferred.length)` with a bounded guard (8 rounds, then a console diagnostic and a
+   final drain), because the scheduler's `histPush` now defers `persistAll` during phase 8. Test: an
+   effect deferring another two levels deep → both run inside the same command's group.

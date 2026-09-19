@@ -149,6 +149,20 @@ on a refused/failed outermost pipeline (closed after `drainQueue()`), the schedu
 the Leave War standalone persist deferred as required; an unfinished boot recovery becomes the new
 postman's initial failed group; test expectation corrected; unload edge recorded for step 5.
 
-## Round 7 — design Rev 7
+## Round 7 — design Rev 7, 19 Sep 26
+
+**Fable: APPROVED — build-ready**, two LOW completions: FB7-01 the recovery group must not survive a
+storage reset; FB7-02 an effect deferred during the last latch drain would be dropped.
+
+**Codex: REVISE (2).** OA7-001 (HIGH): a drained queued pipeline that rejects after writing inline
+(`people/all`) would leak its value into the successful parent's group. OA7-002 (HIGH): the reset
+is selective (keeps settings/people/tracker), so deleting the whole journal loses preserved
+entries, and passing it unfiltered resurrects reset data — this corrects FB7-01's "drop the group".
+
+**Host:** folded as design §22 — a whiteboard savepoint per pipeline inside the one outer
+transaction; the recovery group is filtered by the reset's collections and re-journaled before the
+reset runs, then seeded into the postman; `releaseLatch` drains until empty.
+
+## Round 8 — design Rev 8
 
 (pending)
