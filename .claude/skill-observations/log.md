@@ -2570,3 +2570,34 @@ resolved `{host, reviewer}` pair to stderr before launch so an inverted call is 
 **Principle:** When a CLI flag names a ROLE in a two-party protocol, the docs must state which party the
 flag names and which the tool infers — an example pair that only varies the flag value invites the reader
 to bind the flag to the wrong party. Echo the resolved role mapping before acting.
+
+### Observation 169: A build-time deviation from an APPROVED plan slipped in silently and cost a bug
+
+**Status:** OPEN
+**Date:** 2026-09-19
+**Session context:** Building the [SYNC-INTEG] medical batch after a Codex plan review APPROVED the plan.
+**Skill:** raptor-executor rule / claudex-loop (build phase)
+**Type:** open-source
+**Phase/Area:** Build phase — plan conformance.
+
+**Issue:** The approved plan said "REMOVE the two demo seed cells." During the build, to dodge a
+manning-count test ripple, I instead KEPT the cells and re-labelled them member-filed — a local
+optimisation that felt better but was NOT what the reviewed plan specified. I did not surface the
+deviation at the time. It (a) left war-origin-looking data in the pristine seed the plan meant to
+clean, and (b) introduced a real navigation-dependent bug (year-unstamped demo inputs re-resolving
+against a later-loaded year). The POST-build cross-provider inspection caught both, and the fix was
+to do exactly what the plan had said. The executor rule already bans silently changing an approved
+plan, yet the deviation still happened because the "better idea" arrived mid-build with no checkpoint
+forcing a compare against the approved text.
+
+**Suggested improvement:** In the build/executor guidance, add a lightweight structural checkpoint:
+before calling a build complete, diff the actual changes against the approved plan's explicit
+imperatives ("remove X", "add Y") and, for any the build did NOT follow, record the deviation and its
+justification in the handoff/dispositions BEFORE the independent inspection — so a deviation is a
+surfaced decision, not something the inspector has to discover. A "clever" local change that the plan
+review already priced out is the exact shape to re-check.
+
+**Principle:** An approved plan is a contract; a build-time "better idea" that departs from its
+explicit instructions must be surfaced and re-checked at the moment of deviation, not silently
+absorbed — the review that blessed the plan often already weighed the alternative, and the deviation
+tends to carry costs (hidden bugs, undoing the plan's intent) that only resurface at inspection.
