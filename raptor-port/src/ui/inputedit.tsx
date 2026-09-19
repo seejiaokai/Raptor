@@ -17,6 +17,7 @@ import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, subtractSpan
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
 import { OilConfirm } from './OilConfirm'
+import { DocConfirm } from './DocConfirm'
 import { docAdd, docFields, docGet, rowDocIds } from '../state/docs'
 import { UploadIcon } from './icons'
 import { acceptInput, autoAcceptInput, unacceptInput, acceptedDay } from '../engine/slots'
@@ -559,24 +560,19 @@ export function normalizeInputDraft(draft: any, except: any):
     const dup = sansOverlapRefusal(draft.person, date, endDate, except)
     if (dup) { HOOKS.toast(dup, 'warn'); return null }
   }
-  /* A MEDICAL INPUT DOES NOT GO IN WITHOUT ITS DOCUMENT (owner, 27 Aug 26).
-     New rows and rows retyped INTO the medical group are refused bare; a row
-     that was already medical keeps whatever it has — the pre-feature records
-     carry no document, and refusing every edit of them would brick the
-     paperwork this exists to keep. rowDocIds reads the draft's list and the
-     bare docId some callers still hand in, alike. */
-  if (needsDoc(draft.type) && !rowDocIds(draft).length) {
-    if (!(except && needsDoc(except.type))) {
-      HOOKS.toast('Attach the medical document first — use the upload button', 'warn'); return null
-    }
-    /* ...and an already-medical row that HAS paperwork cannot be saved with
-       none (owner, 1 Sep 26 — files are deletable now, but deleting the
-       LAST one would strip an entry of the proof it went in on; replace it
-       instead). Only rows that never had a file — the pre-feature records —
-       stay freely editable bare. */
-    if (rowDocIds(except).length) {
-      HOOKS.toast('Keep at least one document on this entry — add the replacement before removing the last file', 'warn'); return null
-    }
+  /* REPLACE-DON'T-STRIP (owner, 1 Sep 26): an already-medical row that HAS
+     paperwork cannot be saved with none — deleting the LAST file would strip an
+     entry of the proof it went in on; replace it instead. This guard stays here,
+     at the one write path, so a hand-made call cannot do what the picker will not.
+     The OTHER half — "a medical input needs a document AT ALL" — is now a PROMPT,
+     not a hard refusal (owner, [SYNC-INTEG]): saving a NEW medical (or one retyped
+     INTO the medical group) with no document opens a [Upload] / [No document] ask
+     at the commit sites (docGate + DocConfirm), so a record that genuinely isn't
+     available can still be filed. A pre-feature bare medical row still edits
+     freely. rowDocIds reads the draft's list and the bare docId alike. */
+  if (needsDoc(draft.type) && !rowDocIds(draft).length
+      && except && needsDoc(except.type) && rowDocIds(except).length) {
+    HOOKS.toast('Keep at least one document on this entry — add the replacement before removing the last file', 'warn'); return null
   }
   /* the medical refusals (owner, 27 Aug 26) — same-type overlap says "edit
      that entry"; an upchit has to be a single date closing something real */
@@ -598,6 +594,28 @@ export function normalizeInputDraft(draft: any, except: any):
      deriving it twice is how the two would drift (see the note at that write). */
   const half = (!draft.allday && hasHalf(draft.type) && s != null && e != null) ? halfOf(s as number, e as number) : ''
   return { s: s as number, e: e as number, date, endDate, half }
+}
+
+/* THE MEDICAL-DOCUMENT GATE (owner, [SYNC-INTEG]) — the withOilAsk doctrine's
+   sibling, so every editor that can save a medical input asks the SAME question
+   the SAME way. Given the draft about to be saved and the row it replaces (null
+   for an add), decide whether the missing-document PROMPT is needed:
+   - 'ask'  — a NEW medical input, or one retyped INTO the medical group, with no
+              document. The caller opens DocConfirm ([Upload] / [No document]);
+              "No document" re-runs the save with the doc treated as resolved, so
+              a record that genuinely isn't available can still be filed.
+   - 'ok'   — everything else, and the caller proceeds straight to the commit:
+              a non-medical type; a draft that already carries a document; OR an
+              already-medical row being edited (whether it keeps its file, strips
+              it — normalizeInputDraft's replace-don't-strip guard refuses that at
+              the commit — or is a pre-feature bare record that edits freely). No
+              prompt nags an existing medical row.
+   The five certificate types are exactly `needsDoc` (ATT C / ATT B / HL / OML /
+   Upchit). rowDocIds reads the draft's list and the bare docId alike. */
+export function docGate(draft: any, except: any): 'ok' | 'ask' {
+  if (!draft || !needsDoc(draft.type) || rowDocIds(draft).length) return 'ok'
+  if (except && needsDoc(except.type)) return 'ok'
+  return 'ask'
 }
 
 /* THE OIL ASK GATE (owner, 28 Aug 26) — one decision body for every save
@@ -1417,6 +1435,8 @@ export function InputEditor() {
   const [medConf, setMedConf] = useState<any>(null)
   /* the OIL ask (owner, 28 Aug 26) — the oilGate payload; null = no sheet */
   const [oilConf, setOilConf] = useState<any>(null)
+  /* the medical-document ask (owner, [SYNC-INTEG]) — {who, typeLabel}; null = no sheet */
+  const [docConf, setDocConf] = useState<any>(null)
   const box = useRef<HTMLDivElement>(null)
   /* re-seed whenever a different row is opened, never on a repaint — a
      re-seed mid-edit would throw away what has been typed. The bell's
@@ -1424,7 +1444,7 @@ export function InputEditor() {
      OIL sheet comes straight up over the dialog so the tap lands on the
      question itself — one-shot, cleared as it is read. */
   useEffect(() => {
-    setDraft(r ? draftOf(r) : null); setUpConf(null); setMedConf(null); setOilConf(null)
+    setDraft(r ? draftOf(r) : null); setUpConf(null); setMedConf(null); setOilConf(null); setDocConf(null)
     if (r && !r._new && OILASK && r.iid === OILASK) {
       setOilAsk(null)
       const g = oilGate(draftOf(r), r)
@@ -1438,14 +1458,15 @@ export function InputEditor() {
     const esc = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
       e.stopPropagation()
-      if (upConf) setUpConf(null)
+      if (docConf) setDocConf(null)
+      else if (upConf) setUpConf(null)
       else if (medConf) setMedConf(null)
       else if (oilConf) setOilConf(null)
       else close()
     }
     document.addEventListener('keydown', esc, true)
     return () => document.removeEventListener('keydown', esc, true)
-  }, [open, upConf, medConf, oilConf])
+  }, [open, upConf, medConf, oilConf, docConf])
 
   const close = () => { setInpEdit(null); notify() }
   /* a refusal KEEPS the dialog open, so nothing typed is lost — bar the one
@@ -1502,7 +1523,21 @@ export function InputEditor() {
     if (ok) { HOOKS.toast(isNew ? 'Input added' : 'Input updated', 'ok'); close() }
     else if (!isNew && INPUTS.indexOf(r) < 0) close()
   }
-  const save = () => {
+  /* `skipDoc` is reserved for the DocConfirm "No document" resume (owner,
+     [SYNC-INTEG]); a plain click/Enter must pass FALSE, never React's event
+     object — see the bindings below (SYNC-002). */
+  const save = (skipDoc = false) => {
+    /* THE DOCUMENT ASK runs FIRST (owner, [SYNC-INTEG]): saving a NEW medical
+       with no certificate opens [Upload] / [No document] before anything else,
+       so "No document" then flows on through the upchit-summary / downchit-clash
+       / OIL pipeline exactly as an attached one would. */
+    if (!skipDoc && draft && docGate(draft, isNew ? null : r) === 'ask') {
+      setDocConf({
+        who: PEOPLE[draft.person] ? PEOPLE[draft.person].cs : String(draft.person || ''),
+        typeLabel: draft.type,
+      })
+      return
+    }
     /* an upchit is NEVER saved silently (owner, 27 Aug 26): the summary sheet
        runs first — what it ends, and an explicit Keep/Remove on every
        later-dated entry. A missing date skips straight to the commit, whose
@@ -1687,7 +1722,7 @@ export function InputEditor() {
             <span className="inped-k">Remarks</span>
             <input id="inpEditRmk" aria-label="Remarks" maxLength={200} value={draft.remarks} autoComplete="off"
               onChange={e => setDraft({ ...draft, remarks: e.target.value })}
-              onKeyDown={e => { if (e.key === 'Enter') save() }} />
+              onKeyDown={e => { if (e.key === 'Enter') save(false) }} />
           </label>
           {/* REVISE A RECORDED OIL ANSWER (owner, 29 Aug 26 — a mistaken "No
               OIL" used to be revisable only by nudging the input's times).
@@ -1721,7 +1756,7 @@ export function InputEditor() {
           {!isNew && <button className="abtn danger" id="inpEditDel" onClick={del}>Delete</button>}
           <span style={{ flex: 1 }}></span>
           <button className="abtn ghost" id="inpEditCancel" onClick={close}>Cancel</button>
-          <button className="abtn primary" id="inpEditSave" onClick={save}>{isNew ? 'Add' : 'Save'}</button>
+          <button className="abtn primary" id="inpEditSave" onClick={() => save(false)}>{isNew ? 'Add' : 'Save'}</button>
         </div>
       </div>
       {/* the upchit save-time summary rides OVER this dialog (its z sits one
@@ -1742,6 +1777,12 @@ export function InputEditor() {
         plan={oilConf.plan} prev={oilConf.prev}
         onCancel={() => setOilConf(null)}
         onSave={dec => { setOilConf(null); doSave([], dec) }} />}
+      {/* the medical-document ask (owner, [SYNC-INTEG]): "No document" resumes
+          the SAME save through the rest of the pipeline (skipDoc); "Upload"
+          dismisses so the filer can attach a certificate and save again */}
+      {docConf && <DocConfirm who={docConf.who} typeLabel={docConf.typeLabel}
+        onUpload={() => setDocConf(null)}
+        onNoDoc={() => { setDocConf(null); save(true) }} />}
     </div>
   )
 }

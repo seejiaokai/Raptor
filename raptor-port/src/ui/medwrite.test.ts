@@ -6,9 +6,9 @@ import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS, dateOrd } from '../engine/inputs'
 import { HIST, initStore, setSession, writeInputsBatch } from '../state/store'
 import { HOOKS } from '../engine/hooks'
-import { commitNewInput, commitInputEdit, draftOf, medOverlapRefusal, upchitRefusal, downOverUpchitRefusal, applyMedPlan } from './inputedit'
+import { commitNewInput, commitInputEdit, draftOf, medOverlapRefusal, upchitRefusal, downOverUpchitRefusal, applyMedPlan, docGate } from './inputedit'
 import { upchitTrimPlan } from '../engine/medical'
-import { docAdd } from '../state/docs'
+import { docAdd, rowDocIds } from '../state/docs'
 
 /* a fresh stored document per draft — a medical input does not go in bare */
 const freshDoc = () => docAdd(new Blob(['x'], { type: 'image/png' }) as any).id
@@ -98,13 +98,20 @@ describe('a different-type overlap overwrites (trims) the older entry', () => {
   })
 })
 
-describe('the mandatory document', () => {
-  it('a new medical input without a document is refused; with one it lands', () => {
-    expect(commitNewInput(newDraft({ docId: null }))).toBe(false)
-    expect(TOASTS.join(' ')).toContain('Attach the medical document')
-    expect(commitNewInput(newDraft({}))).toBe(true)
+describe('the medical document — now a UI PROMPT, not a commit refusal (owner, [SYNC-INTEG])', () => {
+  it('a new medical with no document now FILES at the commit — the [Upload]/[No document] ask lives in the UI', () => {
+    // The hard refusal moved OUT of the commit layer (docGate + DocConfirm at
+    // the editors). So when the filer picks "No document", the save reaches
+    // commitNewInput and it files with none — for a record that isn't available.
+    expect(commitNewInput(newDraft({ docId: null }))).toBe(true)
+    expect(TOASTS.join(' ')).not.toContain('Attach the medical document')
     const r = INPUTS.find((x: any) => x.person === 'bane' && x.type === 'ATT C')
-    expect(r && typeof r.docId).toBe('string')
+    expect(r, 'the bare medical filed').toBeTruthy()
+    expect(rowDocIds(r).length, 'with no document').toBe(0)
+    // …and with a document it still lands, carrying the id.
+    expect(commitNewInput(newDraft({ start: '2026-08-01', end: '2026-08-02' }))).toBe(true)
+    const withDoc = INPUTS.find((x: any) => x.person === 'bane' && x.type === 'ATT C' && x.date === 'Aug 1')
+    expect(withDoc && typeof withDoc.docId).toBe('string')
   })
   it('editing an already-medical row that has no document still saves (pre-feature rows)', () => {
     const r = plant({ person: 'bane', type: 'OML', date: 'Jul 10', endDate: 'Jul 13' })
@@ -112,19 +119,42 @@ describe('the mandatory document', () => {
     expect(commitInputEdit(r, d)).toBe(true)
     expect(r.remarks).toBe('resting')
   })
-  it('retyping INTO the medical group demands the document', () => {
+  it('retyping INTO the medical group also files at the commit — the demand is the UI prompt (docGate)', () => {
     const r = plant({ person: 'bane', type: 'Meeting', date: 'Jul 10', allday: false, s: 540, e: 600 })
     const d = draftOf(r); d.type = 'ATT C'
-    expect(commitInputEdit(r, d)).toBe(false)
-    expect(TOASTS.join(' ')).toContain('Attach the medical document')
-    d.docIds = [freshDoc()]
+    // docGate is the cue the editor uses to open DocConfirm; the commit itself
+    // no longer refuses, so a resumed "No document" save lands.
+    expect(docGate(d, r)).toBe('ask')
     expect(commitInputEdit(r, d)).toBe(true)
+    expect(r.type).toBe('ATT C')
   })
   it('history snapshots carry the id, never the file', () => {
     expect(commitNewInput(newDraft({}))).toBe(true)
     const snap = JSON.stringify(INPUTS)
     expect(snap).toContain('"docId":"doc')
     expect(snap.length, 'no blob payload rode into the snapshot').toBeLessThan(20000)
+  })
+})
+
+describe('docGate — the one decision every editor runs for the document prompt', () => {
+  it('ASKS for a new medical (or one retyped INTO medical) with no document', () => {
+    expect(docGate({ type: 'ATT C', docIds: [] }, null), 'new medical').toBe('ask')
+    expect(docGate({ type: 'Upchit' }, null), 'new upchit').toBe('ask')
+    expect(docGate({ type: 'OML' }, { type: 'Meeting' }), 'retyped into medical').toBe('ask')
+  })
+  it('does NOT ask when the draft already carries a document', () => {
+    expect(docGate({ type: 'ATT C', docIds: ['d1'] }, null)).toBe('ok')
+    expect(docGate({ type: 'HL', docId: 'd1' }, null)).toBe('ok')
+  })
+  it('does NOT ask for a non-medical type', () => {
+    expect(docGate({ type: 'LL' }, null)).toBe('ok')
+    expect(docGate({ type: 'Meeting' }, null)).toBe('ok')
+  })
+  it('does NOT nag an already-medical row — the commit\'s strip-guard covers the has-doc case', () => {
+    // had a doc, now none → 'ok' here; normalizeInputDraft refuses the strip at commit
+    expect(docGate({ type: 'OML', docIds: [] }, { type: 'OML', docId: 'd1' })).toBe('ok')
+    // pre-feature bare medical row → edits freely, no prompt
+    expect(docGate({ type: 'OML', docIds: [] }, { type: 'OML', docIds: [] })).toBe('ok')
   })
 })
 
