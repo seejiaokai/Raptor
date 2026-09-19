@@ -86,7 +86,7 @@ export function DayListSheet({
       const warOwned = !!row?.lw
       const text = `${shown(notation(c))} — ${nameOf(c.code) || shown(c.code)}${partTxt} · ${warOwned ? 'approved' : 'filed on the Inputs page'}`
       const actions: ReactElement[] = []
-      if (warOwned && role === 'admin' && deciding) {
+      if (warOwned && isLeave && role === 'admin' && deciding) {
         actions.push(
           <button key="p" className="dchip" data-testid={`dl-unapprove-${c.id}`} onClick={() => act(() => changeAbsenceById(personId, date, c.id, 'pending'))}>Back to bid</button>,
           <button key="r" className="dchip refuse" data-testid={`dl-refuse-${c.id}`} onClick={() => act(() => changeAbsenceById(personId, date, c.id, 'refused'))}>Refuse</button>,

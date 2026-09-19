@@ -57,6 +57,7 @@ import {
 import {
   absencesChanged,
   getVersion,
+  setRefusalHook,
   clearRaptorCell,
   getState,
   ingestDutyCredit,
@@ -162,6 +163,9 @@ export function refreshAbsencesAndRepaint(): void {
 /** Install the absence door (wireLeaveWarSync does; tests call it alone). */
 export function installAbsenceDoor(): void {
   setAbsenceDoor({ approve: doorApprove, decideApproved: doorDecideApproved, removeApproved: doorRemoveApproved, moveApproved: doorMoveApproved })
+  /* a refused war gesture rolled INPUTS back; the absence index was refreshed
+     inside it, so re-read it before the repaint (Codex AS4-R2-001) */
+  setRefusalHook(() => { refreshAbsences(true) })
   installInputGate()
   setPublishGate(publishReplacesBids)
 }
@@ -203,6 +207,17 @@ const cmpISO = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0)
    stands aside for them; the invariant (B7) still applies. */
 let DOOR = 0
 export const inDoor = (): boolean => DOOR > 0
+
+/** The Input a war door may act on for one item — it must BE that person's
+ *  war-approved LEAVE covering that date (Codex AS4-R2-002/003): a stale or
+ *  mismatched id, or an lw-tagged row an admin retyped to a medical / course /
+ *  duty, is never moved, un-approved or deleted from the war. */
+function warLeaveRow(it: { personId: string; date: string; iid: string }): any | null {
+  const row = INPUTS.find((r: any) => String(r.iid) === it.iid)
+  if (!row || !row.lw || !isLeave(row.type)) return null
+  if (String(row.person) !== it.personId || !inputDates(row).includes(it.date)) return null
+  return row
+}
 function doorWrite(fn: () => void): boolean {
   DOOR++
   try { return writeInputsBatch(fn) } finally { DOOR-- }
@@ -351,8 +366,8 @@ function doorDecideApproved(items: Array<{ personId: string; date: string; iid: 
   const adds: Array<{ personId: string; date: string; drop: string[]; add: WarRec[] }> = []
   const prot = new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
   for (const it of items) {
-    const row = INPUTS.find((r: any) => String(r.iid) === it.iid)
-    if (!row || !row.lw) { skipped++; continue }
+    const row = warLeaveRow(it)
+    if (!row) { skipped++; continue }
     if (prot.has(it.date) || inputProtected(row)) { skipped++; why.push(`${it.date} is on a locked week — not changed`); continue }
     const contrib = absencesAt(it.personId, it.date).find(c => c.id === it.iid)
     if (!contrib) { skipped++; continue }
@@ -391,8 +406,8 @@ function doorRemoveApproved(items: Array<{ personId: string; date: string; iid: 
   const prot = new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
   let skipped = 0
   for (const it of items) {
-    const row = INPUTS.find((r: any) => String(r.iid) === it.iid)
-    if (!row || !row.lw) { skipped++; continue }
+    const row = warLeaveRow(it)
+    if (!row) { skipped++; continue }
     if (prot.has(it.date) || inputProtected(row)) { skipped++; why.push(`${it.date} is on a locked week — not deleted`); continue }
     const set = cuts.get(it.iid) ?? new Set<string>()
     set.add(it.date)
@@ -412,12 +427,16 @@ function doorRemoveApproved(items: Array<{ personId: string; date: string; iid: 
  *  the moved-from marks. */
 function doorMoveApproved(items: Array<{ personId: string; date: string; iid: string }>, delta: number, tracked: boolean, check: boolean): { reason: 'occupied' | 'window' | 'nothing'; at?: string } | null {
   const leaving = new Set(items.map(i => `${i.iid}|${i.date}`))
+  const prot = new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
   for (const it of items) {
-    const row = INPUTS.find((r: any) => String(r.iid) === it.iid)
-    if (!row || !row.lw) return { reason: 'nothing', at: it.date }
+    const row = warLeaveRow(it)
+    if (!row) return { reason: 'nothing', at: it.date }
     const to = addDays(it.date, delta)
     if (!warHolding(rawState().wars, to)) return { reason: 'window', at: to }
-    const contrib = absencesAt(it.personId, it.date).find(c => c.id === it.iid)!
+    /* a locked week at either end refuses before anything moves (AS4-R2-001) */
+    if (prot.has(it.date) || prot.has(to) || inputProtected(row)) return { reason: 'window', at: prot.has(to) ? to : it.date }
+    const contrib = absencesAt(it.personId, it.date).find(c => c.id === it.iid)
+    if (!contrib) return { reason: 'nothing', at: it.date }
     const here = absencesAt(it.personId, to).filter(c => !leaving.has(`${c.id}|${to}`))
     const war = warHolding(rawState().wars, to)!
     const reqs = recContribs(recsAt(war.recs, it.personId, to))

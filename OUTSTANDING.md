@@ -650,6 +650,16 @@ screenshots in `raptor-port/docs/img/step4-shots/`.
   findings; hold for the owner's "merge live". Deferred on purpose: OIL itself as a read-time
   derivation (design §7), per-year balances `[LEAVE-YEAR]`, published-day Unavailable `[PUB-UNAVAIL]`.
 
+### [LW-LOCKMARK] Retire the war's `source:'raptor'` lock marker — OPEN (follow-up to step 4, 20 Sep 26)
+Codex's round-2 inspection (AS4-R2-004, low): the merged view still synthesises `source:'raptor'` ("locked on
+the war") and Matrix reads it through `raptorOwns`, and the published remarks sheet finds its Input via
+`leaveInputAt` (person/date/code) rather than the record id. Correct today (the tap list acts by id on any
+multi-record day), but design §6 wants the lock derived from each contribution's own Input. Replace the
+Matrix `raptorOwns` checks with per-contribution predicates, open the remarks sheet by iid, then delete
+`sourceOf`/`raptorOwns` and the synthesised `source`. Also open: a publish → undo → publish → undo → redo
+refusal ("an earlier undone change touches the same thing") that exists on `main` too (found by the step-4
+scenario tester) — the global undo timeline's own item.
+
 ### [PUB-UNAVAIL] New absence silently changes a published day's Unavailable list — NEXT AFTER step 4
 A new absence covering an already-published day changes that day's issued Unavailable list with no
 amendment, no re-sign, no history line (`html.ts:1515` reads live inputs; the filing fingerprint

@@ -86,6 +86,14 @@ This file is the running record of what is BUILT, so a new session can resume fr
 - Then: Raptor-side suite (`npx vitest run --project raptor`), typecheck incl. tests, then the
   still-TO-BUILD list above.
 
+## Review record (20 Sep 26, overnight)
+- Round 1: Fable (9 findings) + Codex (7) + the Opus scenario tester (3 bugs, 22 real-app scenarios in
+  `e2e/step4-leavewar.spec.ts`) — all fixed except Codex AS4-007's `raptorOwns` part, filed as
+  `[LW-LOCKMARK]`. Deliberately kept: one undecided + one refused request per half (the approved comp).
+- Round 2 (Codex, fixes only): 3 fixed (refused move now reports and re-derives the index; door items
+  validated by person/date/leave type), 1 filed (`[LW-LOCKMARK]`). The round-2 fixes themselves are
+  covered by tests (`review-fixes.test.ts`) but were NOT re-inspected — the two-round budget is used.
+
 ## Status (20 Sep 26, overnight)
 - Whole vitest suite green (5,000+), build clean, `tfin.js` 728/0, e2e green after the red-day
   fixture moved to the record-list shape, perf gate 4/4 (check B had caught a stale boot-time

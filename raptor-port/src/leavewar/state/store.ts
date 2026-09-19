@@ -1896,9 +1896,13 @@ function gesture<T>(type: string, fn: () => T): T {
       cmdDeferEffect(() => rawPersist())
     },
   })
-  if ((r as any).ok === false) rawNotify()
+  if ((r as any).ok === false) { REFUSED?.(); rawNotify() }
   return out
 }
+/* what a refused gesture must re-derive before its repaint (the absence index,
+   installed by sync.ts — Codex AS4-R2-001) */
+let REFUSED: (() => void) | null = null
+export function setRefusalHook(fn: (() => void) | null): void { REFUSED = fn }
 
 /** The war's own list at one address, in the war holding the date. */
 function listAt(personId: string, date: string): readonly WarRec[] {
@@ -3182,10 +3186,13 @@ export function moveAbsenceById(personId: string, date: string, iid: string, to:
   if (!dayset.has(to)) return 'That day is not in this war'
   const item = [{ personId, date, iid }]
   const tracked = biddingClosed(state.period.stage)
+  const why = (p: { reason: string; at?: string }) => p.reason === 'occupied' ? `${p.at ?? to} already has something on that time` : p.reason === 'window' ? 'That day is outside the war or on a locked week' : 'That leave was filed on the Inputs page — change it there'
   const p = DOOR.moveApproved(item, delta, tracked, true)
-  if (p) return p.reason === 'occupied' ? `${p.at ?? to} already has something on that time` : p.reason === 'window' ? 'That day is outside the war' : 'That leave was filed on the Inputs page — change it there'
-  gesture('lw.edit', () => DOOR!.moveApproved(item, delta, tracked, false))
-  return null
+  if (p) return why(p)
+  /* report what the COMMAND did, not what the preflight hoped (AS4-R2-001) */
+  const done = gesture('lw.edit', () => DOOR!.moveApproved(item, delta, tracked, false))
+  if (done === undefined) return 'Couldn’t move that — the week is locked, or something else refused it'
+  return done ? why(done) : null
 }
 
 /** The cells of a selection that actually hold something movable (owner,

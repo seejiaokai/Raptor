@@ -177,4 +177,42 @@ describe('Codex AS4-006 — the tap list moves ONE leave off a busy day', () => 
   })
 })
 
+describe('Codex round 2 — the per-record doors', () => {
+  function approved(p: string, d: string): string {
+    setRole('admin'); setCell(p, d, 'LL'); advanceStage()
+    setBidState(p, d, 'approved')
+    return String(lwRows(p)[0].iid)
+  }
+
+  it('AS4-R2-001: moving leave off a locked week is refused, and the war still shows it where it is', () => {
+    const iid = approved('ammo', '2026-02-10')
+    stashPut('09/02/2026', 'null')
+    const r = moveAbsenceById('ammo', '2026-02-10', iid, '2026-02-17')
+    expect(typeof r).toBe('string')
+    expect(lwRows('ammo')[0].date).toBe('Feb 10')
+    expect(getState().grid.ammo?.['2026-02-10']).toBe('LL')
+    expect(getState().grid.ammo?.['2026-02-17']).toBeUndefined()
+  })
+
+  it('AS4-R2-002: an Input id sent with the wrong person or date moves nothing', () => {
+    const iid = approved('ammo', '2026-02-10')
+    const before = JSON.stringify(INPUTS)
+    expect(typeof moveAbsenceById('rocky', '2026-02-10', iid, '2026-02-12')).toBe('string')
+    expect(typeof moveAbsenceById('ammo', '2026-02-11', iid, '2026-02-12')).toBe('string')
+    expect(JSON.stringify(INPUTS)).toBe(before)
+  })
+
+  it('AS4-R2-003: a war-approved row retyped to a medical is not moved, un-approved or deleted from the war', () => {
+    const iid = approved('ammo', '2026-02-10')
+    const row = INPUTS.find((r: any) => r.iid === iid)
+    writeInputs(() => { row.type = 'ATT C' })    // an admin retyped it; lw stays
+    expect(row.lw).toBeTruthy()
+    const before = JSON.stringify(INPUTS)
+    expect(typeof moveAbsenceById('ammo', '2026-02-10', iid, '2026-02-12')).toBe('string')
+    expect(typeof changeAbsenceById('ammo', '2026-02-10', iid, 'pending')).toBe('string')
+    expect(typeof changeAbsenceById('ammo', '2026-02-10', iid, 'removed')).toBe('string')
+    expect(JSON.stringify(INPUTS)).toBe(before)
+  })
+})
+
 void FULL
