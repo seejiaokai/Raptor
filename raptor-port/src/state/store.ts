@@ -13,6 +13,7 @@
    hooks alone. toast stays injectable (setToast) for the phase-4 UI.
    --------------------------------------------------------------------------- */
 import { HOOKS } from '../engine/hooks'
+import { inputGate } from './inputgate-hook'
 import { slotVal, setSlotVal, fillSlot, txtSet } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { lookaheadLoad } from '../engine/lookahead'
@@ -153,7 +154,11 @@ function runInputWrite(fn: () => void, suppressHist: boolean): boolean {
   const snap = prot.length ? histSnap() : null
   const push = HOOKS.histPush
   if (suppressHist) HOOKS.histPush = () => {}
-  try { fn() }
+  /* [ARCH-STACK] step 4 — the absence rules (inputgate-hook.ts): snapshot
+     before, enforce after, inside this same command */
+  const gate = inputGate()
+  const gateSnap = gate ? gate.snapshot() : null
+  try { fn(); if (gate) gate.apply(gateSnap) }
   catch (e) { if (snap) { histRestore(snap); view.armDrop() } HOOKS.histPush = push; HOOKS.renderInputs(); HOOKS.reflow(); throw e }
   finally { if (suppressHist) HOOKS.histPush = push }
   if (snap && protectedTouched(JSON.parse(snap), prot)) {

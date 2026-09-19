@@ -29,6 +29,7 @@
    the HOOKS repaint/history effects ARE latched (below), so model atomicity holds.
 */
 import type { EnlistableStore, RecordEntry, Scope, CommitResult, Command } from '../command'
+import { inputGate } from './inputgate-hook'
 import {
   commit, commitProjection, definePermission, anyone, registerRecord, registerGuardedStore,
   registerEffectContext, installBaselineInvariants, cmdDeferEffect, CmdRefused,
@@ -186,6 +187,7 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
      a new row (which would land another person's input outside auth/revisions). */
   const restore = !!opts?.restore
   const touchedDays = new Set<number>()
+  const restoredIids = new Set<string>(), restoredPersons = new Set<string>()
   const foreign = (id: string, sep: string) => id.slice(0, id.indexOf(sep)) !== wk
   for (const e of entries) {
     switch (e.collection) {
@@ -243,6 +245,11 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
       case 'inputs': {
         if (e.id === INPUT_ORDER_ID) { orderIds = (e.value as string[]) || null; break }
         const ix = INPUTS.findIndex((r: any) => r.iid === e.id)
+        if (restore) {
+          restoredIids.add(e.id)
+          if (ix >= 0 && INPUTS[ix]?.person) restoredPersons.add(String(INPUTS[ix].person))
+          if (e.op !== 'delete' && (e.value as any)?.person) restoredPersons.add(String((e.value as any).person))
+        }
         if (e.op === 'delete') { if (ix >= 0) INPUTS.splice(ix, 1) }
         else {
           const v = cw(e.value) as any
@@ -280,6 +287,10 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
      the baseline snapshot and the emitted envelope (never a stale envelope the next
      forward edit would absorb). Two-way, per touched day; never auto-lands a row. */
   if (restore) for (const di of touchedDays) reconcileDayFiling(di)
+  /* [ARCH-STACK] step 4 (clash check B7) — an undo / redo obeys the same absence
+     rules as every other door: a restore that would put two leaves on the same
+     time, or leave over a medical, is refused with the blocker named */
+  if (restore && restoredIids.size) inputGate()?.vetRestore(restoredIids, restoredPersons)
   applyEnd()   // one ensureRowIds/mintInpIds + advance SCHED_BASELINE
   // HOOKS.reflow = validate() + notify(); HOOKS.histPush persists — both released
   // at the transaction boundary (never on a half-applied multi-store world).

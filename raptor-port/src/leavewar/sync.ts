@@ -75,6 +75,7 @@ import {
   subscribe as lwSubscribe,
 } from './state/store'
 import { absencesAt, setAbsenceRows } from './state/merge'
+import { installInputGate } from './inputgate'
 import { projectPeople, qualCatalogue } from './state/raptorRoster'
 import {
   labelToISO, warVisible, absenceSignature, buildAbsenceIndex, inputDates, inputRowFor, isoToInputDate,
@@ -154,6 +155,7 @@ export function refreshAbsences(force = false): boolean {
 /** Install the absence door (wireLeaveWarSync does; tests call it alone). */
 export function installAbsenceDoor(): void {
   setAbsenceDoor({ approve: doorApprove, decideApproved: doorDecideApproved, removeApproved: doorRemoveApproved, moveApproved: doorMoveApproved })
+  installInputGate()
 }
 /** Re-read the Inputs into the war now and repaint — what a Raptor notify
  *  does in the app; tests that push INPUTS directly call it. */
@@ -188,6 +190,16 @@ const INPUT_TYPE_FOR: Record<string, string> = { ATTB: 'ATT B', ATTC: 'ATT C' }
    and the war's own records through the store, in the same command. */
 const cmpISO = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0)
 
+/* The war's own Input writes (approve / un-approve / remove / move) manage the
+   requests they touch themselves, so the inputs door's bid replacement (H1)
+   stands aside for them; the invariant (B7) still applies. */
+let DOOR = 0
+export const inDoor = (): boolean => DOOR > 0
+function doorWrite(fn: () => void): boolean {
+  DOOR++
+  try { return writeInputsBatch(fn) } finally { DOOR-- }
+}
+
 /** approve: requests → Inputs (design §5.2 `lw.approve`, §18 OA3-002). Groups
  *  each person's selected requests into runs of consecutive days with the same
  *  code and the same carried remark; one Input per run; the requests go. */
@@ -207,6 +219,10 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
        nothing consumed */
     const c: Contrib = { id: 'new', kind: 'absence', code: parseCell(rec.code)!.type, win: requestWin(rec.code) }
     if (absencesAt(it.personId, it.date).some(o => forbiddenPair(c, o))) { skipped++; why.push(`${it.date} already holds leave or a medical at that time — not approved`); continue }
+    /* a bid left standing when work was later credited (owner Q5: keep both,
+       the time check runs at approval) — §26.3: leave over recorded work */
+    const credits = recContribs(recsAt(war.recs, it.personId, it.date)).filter(o => o.kind === 'credit')
+    if (credits.some(o => forbiddenPair(c, o))) { skipped++; why.push(`${it.date} is recorded as worked at that time — not approved`); continue }
     picks.push({ ...it, rec, warId: war.period.id })
   }
   if (!picks.length) return { done: 0, skipped, why }
@@ -236,7 +252,7 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
     return row
   })
   let ok = false
-  writeInputsBatch(() => {
+  doorWrite(() => {
     for (const r of rows) {
       /* approving next to leave already approved in the same war, of the same
          type and part of the day, EXTENDS that Input (design §1: "creates (or
@@ -267,7 +283,7 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
 /* the dates an Input covers and a copy of it limited to [from, to] — the one
    split/shrink body (design §5.2 Splitting: the first part keeps the iid, a
    later part gets a fresh one carrying lw / remarks / docs / mod verbatim) */
-function sliceInput(row: any, from: string, to: string, keepIid: boolean): any {
+export function sliceInput(row: any, from: string, to: string, keepIid: boolean): any {
   const out = { ...row }
   const { date, yr } = isoToInputDate(from)
   out.date = date
@@ -291,7 +307,7 @@ function sliceInput(row: any, from: string, to: string, keepIid: boolean): any {
  *  in ONE Raptor batch. Returns the per-Input result for the callers. */
 function cutDates(cuts: Map<string, Set<string>>): boolean {
   let ok = false
-  writeInputsBatch(() => {
+  doorWrite(() => {
     for (const [iid, drop] of cuts) {
       const ix = INPUTS.findIndex((r: any) => String(r.iid) === iid)
       if (ix < 0) continue
@@ -420,7 +436,7 @@ function doorMoveApproved(items: Array<{ personId: string; date: string; iid: st
     flush()
   }
   let ok = false
-  writeInputsBatch(() => {
+  doorWrite(() => {
     /* cut first (same body as remove), then file the landings */
     for (const [iid, drop] of cuts) {
       const ix = INPUTS.findIndex((r: any) => String(r.iid) === iid)
