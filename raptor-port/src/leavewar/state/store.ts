@@ -2143,6 +2143,44 @@ export function decideRequestById(personId: string, date: string, recId: string,
   return gesture('lw.decide', () => decideRequest(personId, date, recId, bid))
 }
 
+/* ---- the tap list's per-record actions ([ARCH-STACK] step 4 — design §25
+   OA10-001: a day holding several records lists EVERY one, each with its own
+   permission-checked actions, so no record can hide under another) ---------- */
+
+/** The war's own records at one address (requests, credits, notices). */
+export function recordsAt(personId: string, date: string): readonly WarRec[] {
+  return listAt(personId, date)
+}
+
+/** Clear ONE war record: a request (whoever may edit that cell today) or a
+ *  hand-typed credit (an admin). A generated credit belongs to the schedule and
+ *  a notice to its "OK, seen", so neither clears here. */
+export function clearRecordById(personId: string, date: string, recId: string): boolean {
+  const list = listAt(personId, date)
+  const r = list.find(x => x.id === recId)
+  if (!r) return false
+  if (r.kind === 'request') {
+    if (!canEditCell(state.period, state.role, date) || !canEditRow(state.role, state.viewer, personId)) return false
+  } else if (r.kind === 'credit') {
+    if (state.role !== 'admin' || r.oil !== 'manual') return false
+  } else return false
+  return gesture('lw.edit', () => putList(personId, date, list.filter(x => x !== r)))
+}
+
+/** Change ONE approved-on-the-war absence by its Input id: back to a request
+ *  (`pending` / `acknowledged` / `refused`) or `removed` altogether. An admin
+ *  at a deciding stage; the door refuses leave filed on the Inputs page and
+ *  says why when a request already sits on that time (§24). Returns null when
+ *  done, else the reason in the sheet's own words. */
+export function changeAbsenceById(personId: string, date: string, iid: string, to: RequestState | 'removed'): string | null {
+  if (state.role !== 'admin' || !canDecide(state.period.stage, state.role)) return 'Only an admin can change approved leave now'
+  if (!DOOR) return 'Not available'
+  const item = [{ personId, date, iid }]
+  const r = gesture(to === 'removed' ? 'lw.edit' : 'lw.decide', () => (to === 'removed' ? DOOR!.removeApproved(item) : DOOR!.decideApproved(item, to)))
+  if (r.done > 0) return null
+  return r.why[0] ?? 'That leave was filed on the Inputs page — change it there'
+}
+
 /* the plain request-state edit: pending / acknowledged / refused. A refusal
    replaces an older refusal on the same half (one refused request per half). */
 function decideRequest(personId: string, date: string, recId: string, bid: BidState): boolean {

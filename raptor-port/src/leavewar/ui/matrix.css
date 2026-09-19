@@ -910,9 +910,67 @@
   background: repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(58, 67, 79, .75) 4px, rgba(58, 67, 79, .75) 6px);
 }
 
-.mx td.gone .c {
+.mx td.gone:not(.outlv) .c {
   color: var(--ink-3);
   opacity: .75;
+}
+
+/* [ARCH-STACK] step 4 — THE CORNER MARK (owner comp,
+   docs/img/step4-multi-record-box.png). One main code per day plus a small
+   corner badge: grey `+n` = more records that sit together fine, amber `!` =
+   something an admin must look at (a clash, or a replaced-bid notice). A tap
+   opens the list of every record (DayList.tsx). Top-right like the PO ribbon,
+   so the code underneath still prints in full at phone width. */
+.mx td.mkd {
+  position: relative;
+}
+
+.mx td .mk {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 7.5px;
+  font-weight: 800;
+  line-height: 1;
+  padding: 1px 2px;
+  border-radius: 0 0 0 4px;
+  pointer-events: none;
+}
+
+.mx td .mk.more {
+  background: rgba(150, 162, 178, .85);
+  color: #0d1117;
+}
+
+.mx td .mk.warn {
+  background: #F2C879;
+  color: #3a2500;
+  padding: 1px 3px;
+}
+
+/* the last-day PO ribbon owns the top-right corner; the mark steps left */
+.mx td.pofin .mk {
+  right: 13px;
+}
+
+/* Leave dated after a posting-out (owner answer C, 20 Sep 26): the leave code
+   prints as usual, the hatch says "not counted", and this small tag says why. */
+.mx td .potag {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  font-size: 6.5px;
+  font-weight: 800;
+  line-height: 1;
+  padding: 1px 2px;
+  border-radius: 4px 0 0 0;
+  background: rgba(150, 162, 178, .85);
+  color: #0d1117;
+  pointer-events: none;
+}
+
+.mx td.outlv {
+  position: relative;
 }
 
 /* The LAST day in the squadron wears a small corner tag (owner, 19 Aug 26).

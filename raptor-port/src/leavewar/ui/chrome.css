@@ -695,3 +695,11 @@
 .leg-sec-here { color: var(--accent); }
 
 }
+
+/* [ARCH-STACK] step 4 — the legend's corner-mark swatches, drawn like the
+   grid's own `.mk` / `.potag` (matrix.css) */
+.leg-sw.legmk { position: relative; padding-right: 9px; }
+.leg-sw .lmk { position: absolute; right: -3px; font-style: normal; font-size: 7px; font-weight: 800; line-height: 1; padding: 1px 2px; border-radius: 3px; }
+.leg-sw .lmk.more { top: -3px; background: rgba(150, 162, 178, .85); color: #0d1117; }
+.leg-sw .lmk.warn { top: -3px; background: #F2C879; color: #3a2500; padding: 1px 3px; }
+.leg-sw .lmk.po { bottom: -3px; background: rgba(150, 162, 178, .85); color: #0d1117; }

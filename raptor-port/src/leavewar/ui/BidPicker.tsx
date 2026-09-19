@@ -453,10 +453,9 @@ export function RaptorSheet({
         </button>
       </div>
       <div className="bidsheet-row">
-        <span className="lab">From Raptor</span>
+        <span className="lab">Inputs page</span>
         <span className="note" data-testid="raptor-note">
-          Entered on Raptor’s input tab, so it was approved there — change it in Raptor and it
-          syncs back here.
+          Filed on the Inputs page, so it is already approved — change it there, not here.
         </span>
       </div>
     </Sheet>

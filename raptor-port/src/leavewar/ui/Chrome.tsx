@@ -476,6 +476,12 @@ export function StageBar() {
               {biddingClosed(period.stage) && (
                 <div className="leg-row"><span className="leg-sw moved">LL</span><span className="leg-t">Moved here from another day</span></div>
               )}
+              {/* [ARCH-STACK] step 4 — the corner mark: one code per day, the
+                  rest behind a count (owner comp, 19 Sep 26) */}
+              <div className="leg-sec">The corner — more on the day</div>
+              <div className="leg-row"><span className="leg-sw appr legmk">LL<i className="lmk more">+1</i></span><span className="leg-t">More on this day — tap to see every entry</span></div>
+              <div className="leg-row"><span className="leg-sw appr legmk">LL<i className="lmk warn">!</i></span><span className="leg-t">Something on this day needs an admin — tap to see</span></div>
+              <div className="leg-row"><span className="leg-sw appr legmk">LL<i className="lmk po">PO</i></span><span className="leg-t">Leave after a posting-out — not counted for manning</span></div>
               <div className="leg-sec">The <b>*</b> — a half day</div>
               <div className="leg-row"><span className="leg-sw plain">*LL</span><span className="leg-t">AM (before the code)</span></div>
               <div className="leg-row"><span className="leg-sw plain">LL*</span><span className="leg-t">PM (after the code)</span></div>
