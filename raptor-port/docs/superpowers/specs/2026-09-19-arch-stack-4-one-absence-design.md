@@ -810,3 +810,24 @@ shows the world after G1∪G2 or after neither, never between. *(Corrected in Re
    request, the remaining LL goes on the clash list, and the person counts away (a pending request
    removes availability, `bids.ts:118-124`); the charged counter follows the displayed request until
    the admin decides it. §3.1 row 4 is reachable this way by design. Test asserts that interim state.
+
+## 25. Round 10 — the LAST design round (owner, 19 Sep 26: "10 rounds is a long loop")
+
+Design review is closed after round 10. Remaining corners go into the build and are checked at the
+cross-provider CODE inspection, the full gates and the in-app scenarios. Future ARCH-STACK steps cap
+design review at 3 rounds by default.
+
+**Codex OA10-001 (MEDIUM), folded by the host with no further round:** after §24's refusal, the
+blocking request can be hidden under the remaining absence with no way to reach it. Fix: the cell's
+sheet lists EVERY record at that address — each contributing absence (§23.3) AND any stored request
+or credit the merge is hiding — each as its own line with its own permission-checked actions; a
+request line's actions address the stored request and leave the absence untouched. The §24 refusal
+message links to that line. Test: overlapping approved LL + OIL → refuse OIL → reload → the sheet
+lists the OIL request → decide or clear it → un-approving the LL now succeeds.
+
+**Open owner question (asked 19 Sep 26): refuse overlapping leave on the same half-day?** If yes, the
+inputs-command door (§5.1) refuses any filing or edit whose absence would overlap another leave or
+medical absence of the same person on the same portion of a day (AM + PM of different types stays
+allowed and combines as today), with a plain message naming the existing absence. That makes the
+conflict-cell corner (§19 OA4-004, §20.5, §23.3, §24, OA10-001) unreachable by new actions; the
+machinery stays as a defensive fallback. **Decision: pending.**

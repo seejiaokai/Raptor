@@ -187,6 +187,20 @@ other overwrites the first's request (one record per person/date).
 **Host:** design §24 — `lw.decideApproved` / `lw.moveApproved` preflight against the stored record
 and refuse rather than overwrite, with a plain message; FB9-01 accepted as option (a) and pinned.
 
-## Round 10 — design Rev 10
+## Round 10 — design Rev 10, 19 Sep 26 — FINAL design round
 
-(pending)
+**Fable:** not re-run (approved Rev 9; Rev 10 was a small Codex-only fix).
+
+**Codex: REVISE (1, MEDIUM).** Confirms OA9-001 resolved. OA10-001: the request that blocks a
+refusal can be hidden under the remaining absence with no UI to reach it.
+
+**Host:** folded without another round (design §25): the cell sheet lists every record at the
+address, each with its own actions. **The owner judged the loop too long** ("10 rounds is a long
+loop"). Host's own causes: one round lost to editing the plan mid-run; the half-save workaround kept
+two rounds too long before the root fix; late rounds were one narrow corner each. Design review is
+closed; remaining risk moves to the code inspection. Future steps cap design review at 3 rounds.
+
+**Final state:** Fable APPROVED (Rev 9). Codex never issued a formal APPROVED; its last seven rounds
+found only narrowing edge cases (save-recovery and the two-overlapping-absences corner), none in the
+core model after round 3. Proposed guardrail pending owner: refuse overlapping leave on the same
+half-day.
