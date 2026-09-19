@@ -63,6 +63,7 @@ import {
   withdrawLeaveCell,
 } from './state/store'
 import { projectPeople, qualCatalogue } from './state/raptorRoster'
+import { labelToISO, rowPortion, medRowPortion } from './absences'
 
 /* Re-entrancy: ingest persists-and-notifies per cell, and writeInputsBatch's
    epilogue notifies too, so each reconciler fires the other's subscription
@@ -86,60 +87,8 @@ function isoToLabel(iso: string): string {
   return y === baseYear() ? lbl : `${lbl} ${y}`
 }
 
-/* 'Feb 11' -> '2026-02-11', through dateOrd so the two directions cannot
-   disagree about what a label means. Null for anything unreadable. `yr` is
-   the ROW'S anchor year (engine/inputs.ts, 24 Aug 26) — a bare label on an
-   input belongs to the year the row was created under, not to whatever week
-   Raptor happens to have loaded when the sync runs. */
-function labelToISO(lbl: unknown, yr?: unknown): string | null {
-  const ord = dateOrd(lbl, yr)
-  if (ord == null) return null
-  const p = (n: number) => String(n).padStart(2, '0')
-  return `${Math.floor(ord / 10000)}-${p(Math.floor(ord / 100) % 100)}-${p(ord % 100)}`
-}
-
-/* Which portion of the day an input row covers. allday and the two half
-   presets are exact; a CUSTOM window rounds OUT to the halves it touches
-   (a 10:00–14:00 leave covers both, so it reads as the full day) — rounding
-   out never under-reports an absence, and the schedule keeps the exact
-   window. The half minutes are HALF_AM/HALF_PM's own: [0,720] / [721,1439].
-   A thin row with neither flag nor times fails closed to the whole day,
-   the same call inpWin itself makes. */
-function rowPortion(row: any): Portion {
-  if (row.allday) return 'full'
-  if (row.half === 'am') return 'am'
-  if (row.half === 'pm') return 'pm'
-  if (row.s != null && row.e != null) {
-    const w = inpWin(row)
-    if (w) {
-      if (w[1] <= 720) return 'am'
-      if (w[0] >= 721) return 'pm'
-    }
-  }
-  return 'full'
-}
-
-/* A MEDICAL row's portion runs on the owner's own rule instead (17 Aug 26):
-   AM/PM are the halves, and a CUSTOM window — "which they should not" file,
-   but the form allows — counts as a half day at six hours or less ("6 hours
-   or less as half day"; exactly six is a half) and a full day past that.
-   Which half: the side of noon the window sits on, its midpoint deciding a
-   straddler. Leave keeps its round-OUT rule above untouched — the owner
-   stated this one for the medical types. */
-function medRowPortion(row: any): Portion {
-  if (row.allday) return 'full'
-  if (row.half === 'am') return 'am'
-  if (row.half === 'pm') return 'pm'
-  if (row.s != null && row.e != null) {
-    const w = inpWin(row)
-    if (w && w[1] - w[0] <= 360) {
-      if (w[1] <= 720) return 'am'
-      if (w[0] >= 721) return 'pm'
-      return (w[0] + w[1]) / 2 <= 720 ? 'am' : 'pm'
-    }
-  }
-  return 'full'
-}
+/* labelToISO / rowPortion / medRowPortion moved to ./absences ([ARCH-STACK] step 4) —
+   the one absence layer reads them too. */
 
 /* The type vocabulary bridge. Raptor's INPUT_META spells the markers as a
    person types them ('ATT B', 'ATT C', 'HL', 'OML'); Leave War stores them
