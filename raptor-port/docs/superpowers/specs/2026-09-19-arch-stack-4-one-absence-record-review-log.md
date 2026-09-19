@@ -261,3 +261,79 @@ projection handler = write-PROJ+rederive+rawNotify (no envelope), all origins, b
 drawer + `docDelete`; the LOW fixes. §8.6/§8.5 confirmed sound — no owner re-decision. **Owner-relevant:
 decision 3 STANDS; the cert link simply moves onto the document record so an unrelated undo can't
 resurrect it.** After Rev 4 → one confirm round (round 3).
+
+---
+
+# ROUND 3 (on Rev 4)
+
+## Reviewer A — Codex / GPT-6 Astra (high), resumed — VERDICT: REVISE
+*"Rev 4 resolves the earlier persistence, notification and missing-reader defects. Material gaps remain
+in OIL accounting, certificate ownership across splits, projection lifecycle triggers and move/undo."*
+- **R3-001 (HIGH) — OIL split STILL contradictory.** §4.2 has `ingestDutyCredit` return `'clash'`
+  before storing the credit (`store.ts:3061-3088`) → leave-before-work never creates the accounting
+  FO/HO §4.4 promises; and `figureCtxOf().sources = effectiveWars()` HIDES the FO/HO code, so
+  `oilLedgerFor` (`oiltracker.ts:198-219`) + `balanceOf`/`earnedOil`/`drawnFrom` (`counters.ts:155-167`)
+  reading that single `ctx.sources` grid can't see a stored credit. **Fix:** separate clash REPORTING
+  from accounting INSERTION (an approved absence must not block recording an earned credit under policy);
+  define explicit **credit sources** vs **effective absence/debit sources** in the accounting APIs +
+  `FigureCtx`; update `balanceOf`/`oilLedgerFor`/`oilCreditBidAgainst`; both event orders identical.
+- **R3-002 (HIGH) — `DocRec.iid` can't implement "splits share by iid".** Splits mint DISTINCT Input
+  ids (`inputedit.tsx:325-334,382-394`); `docsFor(newSeg.iid)` won't find the original's doc; reusing
+  the original iid breaks record identity (`sched-commit.ts:125` collapses equal ids; restore/delete
+  finds only the first, `:245-251`). **Fix:** keep every iid unique; add a separate stable
+  **medical-document GROUP/episode identity** (or explicit multi-owner association) that supports split
+  segments + their undo/redo; define replacement/deletion scope across the group.
+- **R3-003 (MED) — Rev 4 dropped the explicit war-create/restore projection trigger.** `createWar`
+  (`store.ts:3488-3502`) doesn't touch Inputs → a leave filed before its war exists won't populate PROJ
+  on `createWar` (contradicts §7(h)). **Fix:** restore explicit war create/remove/restore handling +
+  per-war cache invalidation; signature guard includes war-topology changes; add undo/redo of createWar.
+- **R3-004 (MED) — the unconditional destination `absenceAt→occupied` check rejects valid overlapping
+  block moves** (13–15 → 14–16 hits its own projected cells; `moveProblem` permits selected sources to
+  overlap destinations — `store.ts:3314,3335-3336`). **Fix:** validate destinations against POST-retract
+  occupancy — exclude the selected contributor ranges the same txn removes; keep collisions with
+  unselected/unrelated.
+- **R3-005 (MED) — undo focus from the Input change doesn't select the WAR.** An inputs-only closure
+  makes only a `page:inputs` context (`derive.ts:57-73`); `loadContext` selects a war only for a war
+  context (`undo-wire.ts:77-83`) — delete in war A, switch to B, undo → focuses an A date while B stays
+  selected. **Fix:** define both context SELECTION and date focus for absence commands (derive the war
+  from scope/Input coverage, select before focusing; specify undo vs redo date).
+- **R3-006 (MED) — deleting per-day bid records + keeping run-merging loses per-day move provenance.**
+  `desiredRuns` merges by war/person/type/portion (`sync.ts:187-197`) but `shiftedFrom` is per-date;
+  approving adjacent LL where only the first was shifted → one Input, one `shiftedFrom` → both get the
+  moved stripe or the first loses history (`Matrix.tsx:476` consumes per-day provenance). **Fix:** merge
+  only when provenance + remarks are lossless, OR retain per-day provenance on the Input.
+
+## Reviewer B — Fable 5.1 (round 3) — VERDICT: REVISE (NARROW — "one more pass on §4.2/§4.4 and this is ship-ready")
+Verified ALL 7 round-2 folds correct against the code (stored/effective split single-point in
+`withCurrent`; `warLinked` derivable from `Input.lw`; no dangling request-record consumer; handler at
+phase-9 synchronous, boot placement right; cert-on-drawer readers all found; §9.4 CLOSED — `PersonMonth`
+already takes `version`). Three MED gaps + LOWs, none reopening a decision:
+- **fM1 (MED) ≡ R3-001 — the OIL split, WITH a concrete fix.** `effectiveWars()` returns each war as
+  `{...w, grid:egrid, states:estates, earned:w.grid}`; `earnedOil`/`oilLedgerFor` walk
+  `src.earned ?? src.grid` (`counters.ts:137-144,155-167`); `chargedDays` reads effective `grid`;
+  `ingestDutyCredit` clashes ONLY on a stored non-matching cell (`store.ts:3019`) — a projected absence
+  does NOT block the accounting write, it adds an advisory strip entry. Both orders then agree.
+- **fM2 (MED) — the leave-vs-bid clash strip loses its producer** (`LEAVE_CLASHES` is made in `runInbound`
+  which retires; `Chrome.tsx:222-223` reads it). Fix: the handler emits into `LEAVE_CLASHES` via
+  `publishClashes()`; projected absence wins the effective cell, the stored bid stays stored.
+- **fM3 (MED) — the "absenceAt before the `isBiddable` short-circuit" rule was stated for `setBidState`
+  only; four siblings short-circuit on the SOURCE too** (`shiftBid:3214`, `moveProblem:3323`,
+  `setBidStates:2141`, `setCells:2104`) — so dragging/batch-clearing a war-approved leave silently
+  no-ops. Fix: order the `absenceAt` branch first in every one.
+- **LOW:** L1 split cert = many-to-many `DocRec.iids[]` + `docLink(id,iid)` (this is R3-002's clean fix,
+  simpler than a group id); L2 `docDelete` deletes IndexedDB first then memory (else resurrect on
+  reload); L3 state `lw`/`shiftedFrom` fate on an Inputs-side edit (span change drops `lw`→warLinked
+  false, remarks-only keeps it — `inputedit.tsx:925-927`); L4 `BidRecord.remarks?`, not `note`
+  (`reconcile:839` keys on `note`); L5 with the link on the drawer an upload binds immediately (Cancel
+  no longer un-attaches — a visible change, consistent with §8.3); L6 document the double OIL pass
+  (converges same-commit).
+
+## Host arbitration — ROUND 3 dispositions (Opus)
+Both reviewers CONVERGE and the design is essentially landed. Overlaps: R3-001≡fM1 (OIL — Fable's
+`earned` field is the fix), R3-002≡L1 (split cert — many-to-many `DocRec.iids[]`), R3-004⊂fM3 + its own
+overlapping-self-move exclusion. Distinct Codex: R3-003 (re-add the war-create/restore projection
+trigger — Rev 4 over-trimmed it), R3-005 (undo focus must SELECT the war, not just a date — derive from
+the command's Input coverage), R3-006 (run-merge loses per-day `shiftedFrom` — retain per-day provenance
+or merge only when lossless). ALL ACCEPTED → Rev 5 (spec-text; every fix is concrete). Faint product
+edge in fM1: an approved-absent day STILL earns its OIL credit (leave only wins the DISPLAY) — preserves
+current behaviour; flagged to owner, not a re-decision. After Rev 5, one final confirm (round 4) → build.
