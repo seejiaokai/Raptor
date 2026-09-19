@@ -1,17 +1,18 @@
-# [ARCH-STACK] Step 4 — ONE Absence Record — DESIGN (Rev 5, 19 Sep 26 — round-3 folded, converged)
+# [ARCH-STACK] Step 4 — ONE Absence Record — DESIGN (Rev 6, 19 Sep 26 — CONVERGED, BUILD-READY)
 
-> **Status: Rev 5 — THREE cross-provider red-team rounds done; CONVERGED.** Six reviews (Codex/GPT-6
-> Astra high + Fable 5.1 ×3), **direction affirmed every time**; each round narrowed. Round 3: Fable
-> verified ALL round-2 folds correct against the code and called it **"one more pass on §4.2/§4.4 and
-> ship-ready"**; both reviewers converged on the last knot (OIL accounting) and Fable handed the fix.
-> Rev 5 folds it: the **`earned` field on the effective war** (`{...w, grid:egrid, states:estates,
-> earned:w.grid}`) so a projected absence wins the DISPLAY while the FO/HO credit stays visible to
-> ACCOUNTING — both event orders agree; the **certificate link is many-to-many** (`DocRec.iids[]` +
-> `docLink`/`docDelete`) for split medical; the war-create/restore projection trigger + the clash-strip
-> producer restored; the guard-ordering generalised to all short-circuiting siblings; the overlapping
-> self-move + undo-war-selection fixed. All six §8 owner decisions RESOLVED. **One faint product point
-> (§4.4): an approved-absent day still EARNS its OIL credit — leave only wins the display (current
-> behaviour).** **NEXT: one final confirm round (round 4) → then build. No code. Nothing merged.**
+> **Status: Rev 6 — FOUR cross-provider red-team rounds done; CONVERGED; BOTH reviewers clear it for
+> build (no further round).** Eight reviews (Codex/GPT-6 Astra high + Fable 5.1 ×4), **direction affirmed
+> every time**, each round strictly narrower (structural → mechanics → edge cases → spec text). Round 4
+> both REVISE-narrow and both said fold-and-build; Fable explicit: *"fold into Rev 6 and build; a further
+> review round is not needed."* Rev 6 folds the last spec-text fixes, all pinnable by one test, no design
+> change, no re-decision: (1) the absence guard runs AFTER the role/stage gates and before the stored-grid
+> short-circuit (a member can't decide/drag their own war-approved leave — rt4-1/R4-002); (2) `oilLedgerFor`
+> splits credits (stored `earned` grid+states, reason preserved) from debits (effective) — rt4-3/R4-001;
+> (3) the duty/absence advisory is derived on every OIL pass, one producer — rt4-4/R4-003; (4) the
+> bid-sheet balance preview + a few readers repointed; (5) the doc index + `docLink` write-through.
+> **All six §8 owner decisions RESOLVED. Faint product point (§4.4): an approved-absent day still EARNS
+> its OIL credit — leave only wins the display (current behaviour; raise to change).**
+> **NEXT: BUILD (heavy, test-first) after the P2/P4 prerequisites. No code. Nothing merged.**
 
 **Plan of record:** `2026-09-13-architecture-rootcause-plan.md` (RC2; step 4; SEQ-004).
 **Builds on (DONE + live):** Step 1 stable ids, Step 2 command layer, Step 3 [GLOBAL-UNDO].
@@ -138,10 +139,15 @@ PROJ index (all covering Inputs). It replaces the retired stored `source:'raptor
 every guard/read, using the `warLinked` rule (§4.1) rather than a blanket refuse:
 - Guards `setCell`/`setCellRange`/`setCells`/`setBidState(s)`/`isMovableSource` — the `absenceAt`
   branch (refuse-or-dispatch by `warLinked`) runs first.
-- **The ordering rule applies to EVERY guard that short-circuits on the STORED grid, not just
-  `setBidState` (fM3):** `shiftBid` (`store.ts:3214`), `moveProblem` (`3323`), `setBidStates` (`2141`),
-  `setCells` (`2104`) all `isBiddable(state.grid…)`-return before any absence route, so a drag/batch-clear
-  of a war-approved leave silently no-ops — the `absenceAt` branch must be the FIRST statement in each.
+- **Ordering (fM3, corrected by rt4-1/R4-002 — a role-gate bug):** the absence branch runs **AFTER the
+  role/stage gates** (`canDecide`, `canEditRow`, `canEditCell`, `medBlocked`, `inSquadron` — none read
+  the grid) and **BEFORE the first stored-grid read** (`isBiddable(state.grid…)`/`=== undefined`) in
+  `shiftBid` (`store.ts:3219,3230`), `moveProblem` (`3321`), `setBidStates` (`2134`), `setCells`
+  (`2106`), `setBidState` (`2160`). Putting it first (Rev-5 wording) would let a **member** decide/drag/
+  clear their own war-approved leave out of window/stage — a roles-class break (HEAVY). The war-side
+  `retractAbsence` carries the gate of the op it replaces; the new commands enforce equivalent
+  role/stage/window checks; `moveProblem`/`isMovableSource` stay **read-only — validate, never dispatch**.
+  Pin: member + projected approved leave → `setBidState`/`shiftBid`/`clearCells`/`moveProblem` all refuse.
 - **Move destinations (fR2-4) validate POST-retract occupancy (R3-004):** `shiftBid`/`moveProblem` call
   `absenceAt(pid, to)` → `'occupied'`, but **exclude the selected contributor ranges the same txn will
   remove** (else a valid overlapping self-move, 13–15 → 14–16, refuses on its own cells); keep collisions
@@ -156,12 +162,13 @@ synchronous — queued items drain before `commit()` returns). On any envelope t
 3. **Re-derive the effective fields** (`egrid`/`estates`, §3.2) and call **`rawNotify()`** — **NO
    envelope, NO `rawPersist`/`recordHistory`** (a projection envelope would carry zero changes and a
    persist would be a spurious backend write + LW snapshot — fR2-5).
-4. **Clash strip (fM2):** where a rebuilt PROJ cell overlays a stored `grid` entry with a different code
-   (a member's pending bid under an Inputs-filed leave), emit `{person, date, inputCode:projected,
-   bidCode:stored}` into `LEAVE_CLASHES` via `publishClashes()` — `LEAVE_CLASHES` was produced only in
-   the retiring `runInbound`, so the handler must re-produce it or `Chrome.tsx:222-223`'s strip goes
-   silent. The projected absence wins the effective cell; the stored bid stays stored (decidable once the
-   absence goes).
+4. **Clash strip (fM2), partitioned by vocabulary (rt4-4):** where a rebuilt PROJ cell overlays a stored
+   `grid` entry with a different code, the handler emits into `LEAVE_CLASHES` via `publishClashes()` —
+   BUT **only for a stored BID cell** (a member's pending bid under an Inputs-filed leave); it **SKIPS a
+   stored FO/HO cell** — the OIL pass owns that duty-vs-absence advisory (§4.4), so one producer per cell,
+   no double entry. `LEAVE_CLASHES` was produced only in the retiring `runInbound`, so without this the
+   `Chrome.tsx:222-223` strip goes silent. The projected absence wins the effective cell; the stored bid
+   stays stored (decidable once the absence goes).
 - **War topology (R3-003):** the handler also fires on **`createWar`/war-restore/war-remove** (which
   touch the war collection, not Inputs — `store.ts:3488-3502`), rebuilding that war's PROJ from existing
   Inputs; the signature guard includes war-topology changes. (A leave filed before its war exists must
@@ -175,13 +182,22 @@ the balance" — so carry BOTH on the effective war, not one code:
 `effectiveWars()` returns each war as **`{ ...w, grid: egrid, states: estates, earned: w.grid }`** — the
 display grid is the merged effective view (leave wins the cell), but **`earned` is the raw STORED grid**
 that still holds the FO/HO credit codes. Then:
-- `earnedOil`/`oilLedgerFor` (`counters.ts:137-144`, `oiltracker.ts:201-213`) walk **`src.earned ?? src.grid`**
-  (the credit is always visible to accounting); `chargedDays` keeps reading the effective `grid` (leave
-  charges from the display).
-- `ingestDutyCredit` clashes **only on a STORED non-matching cell** (`store.ts:3019`, unchanged) — a
-  projected absence does **NOT** block the accounting write; instead it adds an advisory strip entry
-  `{inputCode:FO/HO, bidCode:absenceAt().code, kind:'duty'}`.
-- `figureCtxOf` (`store.ts:2525`), `oilCreditBidAgainst` (`sync.ts:952`) read `effectiveWars()`.
+- **`oilLedgerFor` is ONE loop over credits AND debits (`oiltracker.ts:201-219`) — split it, don't
+  switch it wholesale (rt4-3/R4-001):** **credits** (`earnsOil`) read the stored **`earned` grid AND its
+  stored states** (so an auto FO/HO keeps its `note`/reason and its automatic-vs-manual classification —
+  `oiltracker.ts:208-210`, `OilTracker.tsx:431`); **debits** (`spends.counter==='oil'`) + `chargedDays`
+  read the **effective** grid/states (a projected OIL-leave still posts its `taken` debit — else the
+  tracker balance exceeds `balanceOf`). `LeaveSource` (`charge.ts:57-62`) gains `earned` + earned states.
+  `earnedOil` (`counters.ts:137-144`) walks the stored `earned` grid.
+- `ingestDutyCredit` clashes **only on a STORED non-matching cell** (`store.ts:3074`, unchanged — the
+  `owned && FO/HO` overwrite clause stays) — a projected absence does **NOT** block the accounting write.
+- **The duty/absence advisory is derived on EVERY OIL pass** from the desired/landed credits +
+  `absenceAt`, **before** `runOilPass`'s unchanged-credit shortcut (`sync.ts:973`) — not only when a
+  credit is written — else it vanishes when the pass replaces `OIL_CLASHES` with an empty list on an
+  unchanged run (`:999-1000`); one producer, cleared only when the conflict is gone (rt4-4/R4-003).
+- `figureCtxOf` (`store.ts:2525`), `oilCreditBidAgainst`'s balance read (`sync.ts:952`) read
+  `effectiveWars()`; the `landed` FO/HO check (`sync.ts:947`) stays STORED (an effective grid would hide
+  FO under LL and silence the warn).
 So **both event orders agree**: leave-before-work and work-before-leave give identical balance AND
 identical leave-wins display; FO↔HO changes + withdrawal covered. **Faint product point (owner):** an
 approved-absent day STILL earns its OIL credit — leave only wins the *display*; this preserves current
@@ -218,7 +234,10 @@ command-layer record** → no undo entry, no barrier; an undone-then-redone inpu
 upload links before save (**L5: the upload now binds IMMEDIATELY — Cancel no longer un-attaches; a
 visible change, consistent with §8.3, state it in the UI**). (a cancelled
 draft's orphan blobs are swept on cancel). `DocViewer.tsx:51` already null-guards → "no document".
-Medical splits that shared a doc id (`inputedit.tsx:325-334,382-394`) now share by `iid`.
+**Perf (rt4-6):** `docsFor(iid)` as a filter over the drawer is O(docs) per row — maintain a
+`Map<iid, id[]>` built at `docBoot`, updated by `docLink`/`docDelete`; **`docLink` must write-through
+(`put`) to IndexedDB** or the link is lost on reload. Existing `DocRec` rows lack `iids` — covered by the
+§5 reset. Split undo removes the tail Input but leaving its id in `iids` is harmless (redo re-links).
 
 **OWNER RULING 19 Sep 26 — the mandatory-document rule is RELAXED (a SMALL STANDALONE change, not part
 of step 4; SUPERSEDES the 27 Aug 26 "a medical input does not go in without its document").** Filing a
@@ -245,7 +264,9 @@ marker").
 **READERS** move to the derived effective fields (`egrid`/`estates`, §3.2) / `effectiveWars()`; **WRITERS
 stay on stored `state.grid`/`state.states`.** The reader list (verified by both reviewers — Matrix render
 read is `grid[p.id]?.[d.date]` at `Matrix.tsx:409`, NOT only the guard lines): `Matrix.tsx:198-217,409,
-453,475-476,3069,3745,3757,3989-3995,4058-4066`; **`Chrome.tsx:225`** (red-day summary via
+453,475-476,3069,3745,3757,3989-3995,4058-4066`; **`Matrix.tsx:4046`** (the bid-sheet `balanceOf`
+would-this-go-negative preview reads stored `wars` at `:532` — under one-record it must read
+`figureCtx.sources`/`effectiveWars()` or it stops warning on approved leave — rt4-2); **`Chrome.tsx:225`** (red-day summary via
 `evaluatePeriod`) and **`CounterForm.tsx:177`** (rule preview) — MISSED in Rev 2/3, they read
 `getState().grid/states` independently (R2-007/fR2-1); `charge.ts:145-148`, `availability.ts:216-266`,
 `counters.ts:197`, `evaluate.ts:49-79`, `oiltracker.ts:201-213`. **`effectiveWars()`** feeds
@@ -344,12 +365,14 @@ document" files it with none.
   clear-data)** must land first — step 4 retires the admin grid-medical outlet and must not let "Clear
   old data" erase the frozen leave history. **The relaxed mandatory-document prompt (§4.7, five cert
   types, TWO enforcement sites) is folded into this P2 batch.**
-- **Gate:** owner answered §8 (all six) → Rev 4 (round 2) → round 3 (both REVISE→narrow, converged) →
-  **Rev 5 folds round 3 (this doc)** → **one final confirm round (round 4, NEXT)** → then build
-  (test-first, Opus; per-phase parity gates; post-build cross-provider code inspection; hold for "merge
-  live"). No build before the round-4 verdict.
+- **Gate — CLEARED for build.** owner answered §8 (all six) → 4 red-team rounds (Rev 1/3/4/5), each
+  narrower, direction affirmed every time → **Rev 6 folds round 4 (this doc)** → **BOTH reviewers clear
+  it for build with no further round.** Build = test-first, Opus, per-phase parity gates (`tfin` 728/0,
+  vitest, e2e, tracker smoke), the mandatory RUNNING-APP scenarios (§7), post-build cross-provider CODE
+  inspection, hold for "merge live". **PREREQUISITES first: [SYNC-INTEG] P2 + P4.**
 
 ---
 
 *Process: design (Opus, high) → round 1 (Rev 1) → owner §8 → Rev 3 → round 2 → Rev 4 → round 3 → Rev 5
-→ round 4 (confirm) → build. Reviewers are a different model/provider from the author.*
+→ round 4 → Rev 6 (build-ready). Four rounds, both providers, all REVISE→converged. Reviewers are a
+different model/provider from the author.*

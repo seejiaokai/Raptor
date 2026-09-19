@@ -337,3 +337,71 @@ the command's Input coverage), R3-006 (run-merge loses per-day `shiftedFrom` —
 or merge only when lossless). ALL ACCEPTED → Rev 5 (spec-text; every fix is concrete). Faint product
 edge in fM1: an approved-absent day STILL earns its OIL credit (leave only wins the DISPLAY) — preserves
 current behaviour; flagged to owner, not a re-decision. After Rev 5, one final confirm (round 4) → build.
+
+---
+
+# ROUND 4 (final confirm, on Rev 5)
+
+## Reviewer B — Fable 5.1 (round 4) — VERDICT: REVISE (NARROW) → "fold into Rev 6 and BUILD; no further round needed"
+Verified ALL Rev-5 folds correct against code: fM1 OIL both orders converge (leave-first & work-first
+end identical; FO↔HO overwrite survives `store.ts:3074`; `earned` threaded through `balanceOf`/`earnedOil`
+`counters.ts:166`, `figureCtxOf:2525`, `oilCreditBidAgainst:952` effective while the `landed` check
+`sync.ts:947` correctly stays stored); fM2 `publishClashes` is the right producer; fM3 all five sites +
+`isMovableSource` covered; L1/L2 split-tail `docLink` survives undo/redo/delete-of-original; R3-004/005/006
+sound. Findings (all pinnable by one test, no re-open):
+- **rt4-1 (MED) — §4.2 "absenceAt FIRST" bypasses the role/stage gates.** `canDecide`/`canEditRow`/
+  `canEditCell`/`medBlocked`/`inSquadron` (`store.ts:2160,2134,3219,3230-3234,3321-3324,2106-2111`) run
+  before the grid short-circuit; putting the absence dispatch first lets a MEMBER decide/drag/clear their
+  own war-approved leave out of window/stage — a roles-class break (HEAVY). **Fix:** absence branch runs
+  **AFTER** the role/stage gates, **BEFORE** the first `state.grid` read; the war-side `retractAbsence`
+  carries the gate of the op it replaces. Pin: member + projected approved leave → all refuse.
+- **rt4-2 (MED-LOW) — missed effective reader `Matrix.tsx:4046`** (`balanceOf` bid-sheet preview uses
+  stored `wars` `:532`) → the negative-balance warning ignores approved leave. Add to §6 (read
+  `figureCtx.sources`/`effectiveWars()`).
+- **rt4-3 (LOW) — `oilLedgerFor` is ONE walk (credits AND debits, `oiltracker.ts:201-221`).** Moving it
+  wholesale to `earned` drops a projected OIL-leave's `taken` debit. Fix: credits from `earned ?? grid`,
+  debits from effective `grid`; `LeaveSource` gains `earned?`.
+- **rt4-4 (LOW) — clash-strip double emit** (handler `{LL vs FO}` + OIL advisory `{FO vs LL}` on one
+  cell). Fix: partition by vocabulary — the handler SKIPS stored FO/HO cells; the OIL pass owns that.
+- **rt4-5 (LOW) — anchor fix:** §4.4 `ingestDutyCredit` clash is `store.ts:3074`, not `:3019`.
+- **rt4-6 (LOW advice):** `docsFor(iid)` O(docs) → maintain a `Map<iid,id[]>` at `docBoot`; `docLink`
+  must write-through (`put`) to IndexedDB or the link is lost on reload.
+
+## Reviewer A — Codex / GPT-6 Astra (round 4), resumed — VERDICT: REVISE (narrow — spec text)
+Converges with Fable R4. Three findings, all pinnable by test, none reopening a decision:
+- **R4-002 (HIGH) ≡ rt4-1 — guard ordering bypasses the role/stage gates.** Making the absence branch
+  FIRST places dispatch before `canDecide` (`store.ts:2134`), `canEditRow`/window/calendar
+  (`3219-3235`); `lw.edit` command permission is `cmdAnyone` (`:1219`) and `inputProtected` checks
+  dates not permissions — so a member could request an unapproval/move the gates prohibit. **Fix:** the
+  ordering rule applies ONLY to the stored-cell-existence/ownership short-circuits; role/person/stage/
+  window/destination validation stays BEFORE mutation, and the new commands enforce equivalent checks;
+  `moveProblem`/`isMovableSource` stay read-only (validate, never dispatch).
+- **R4-001 (HIGH) ≡ rt4-3 — `oilLedgerFor` combined credit/debit loop.** Walking `earned` wholesale
+  drops a projected OIL-leave's `taken` debit → tracker balance exceeds `balanceOf`; and reading a
+  hidden FO/HO credit against `estates` loses its stored note + misclassifies auto as manual
+  (`oiltracker.ts:208-210`, `OilTracker.tsx:431`). **Fix:** credits read the stored `earned` grid AND
+  stored states (preserve reason/classification); debits read the effective grid/states + `chargedDays`;
+  extend the source contract; require tracker==balance for approved OIL with no stored cell.
+- **R4-003 (MED) ≡ rt4-4 — the duty/absence advisory isn't maintained across passes.** `runOilPass`
+  skips an already-landed credit (`sync.ts:973`) then replaces `OIL_CLASHES` with an empty list
+  (`999-1000`), so a leave-first-then-work advisory vanishes on the next unchanged run. **Fix:** derive
+  duty/absence advisories from current desired/landed credits + `absenceAt` on EVERY OIL pass, before
+  the unchanged-credit shortcut; ONE producer (no duplicate leave/duty entry); clear only when the
+  conflict is gone.
+
+## Host arbitration — ROUND 4 dispositions (Opus) → Rev 6 (final)
+Both round-4 reviews CONVERGE (R4-002≡rt4-1, R4-001≡rt4-3, R4-003≡rt4-4) and BOTH clear it for build
+after one text pass (Fable explicit: "fold into Rev 6 and build; no further round"). ALL ACCEPTED →
+Rev 6, all spec-text, no design change, no re-decision:
+1. §4.2 — role/stage gates (`canDecide`/`canEditRow`/`canEditCell`/`medBlocked`/`inSquadron`) run
+   BEFORE the absence branch; the absence branch precedes only the stored-grid short-circuit; commands
+   enforce equivalent checks; `moveProblem`/`isMovableSource` validate-not-dispatch (rt4-1/R4-002).
+2. §4.4/§6 — `oilLedgerFor` splits: credits from stored `earned` grid+states (reason/classification
+   preserved), debits from effective grid/states+`chargedDays`; `LeaveSource` gains `earned`+earned
+   states (rt4-3/R4-001).
+3. §4.3/§4.4 — advisories derived on EVERY OIL pass from desired/landed + `absenceAt`, before the
+   unchanged-credit shortcut; one producer; the Input handler SKIPS stored FO/HO cells (rt4-4/R4-003).
+4. §6 — add `Matrix.tsx:4046` (`balanceOf` bid-sheet preview) to effective readers (rt4-2).
+5. §4.4 anchor `store.ts:3074` (rt4-5); §4.7 `docsFor` Map + `docLink` write-through (rt4-6).
+**After Rev 6 the design is BUILD-READY — no further review round (both reviewers).**
+
