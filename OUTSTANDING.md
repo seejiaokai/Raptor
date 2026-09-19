@@ -634,6 +634,33 @@ retry (more likely on iPhone). Never fixed, not logged as a limitation.
 - **Fix within [DB-STEP]:** a real "it's saved" signal the delete waits for, rather
   than a piecemeal patch in three places. Or pull earlier on request.
 
+### [ARCH-STACK-4] One absence record — DESIGN DONE, BUILD NEXT (19 Sep 26)
+Step 4 of the [ARCH-STACK] backbone. Branch `claude/db-step4-one-absence` (design + records only so
+far; no code). An absence is ONE record (the Input); the Leave War stores only requests and OIL
+credits and DERIVES approved leave/medical/course/OD from the records on read; approve/retract are
+commands; one command saves all-or-nothing (a narrow slice of step 5's transactional save pulled
+forward). Design red-teamed 10 rounds (Fable APPROVED; Codex's late rounds only narrowing edge cases,
+all folded); owner closed the loop ("10 rounds is a long loop" — future steps cap at ~3). Then the
+owner settled every Leave War clash case (both providers enumerated them).
+- **Read to resume:** the design `raptor-port/docs/superpowers/specs/2026-09-19-arch-stack-4-one-absence-design.md`
+  (later sections override earlier: §26 > §25 > … ), the clash decisions
+  `…-2026-09-19-arch-stack-4-clash-catalogue.md` (owner answers at the bottom override the design
+  where they differ), and the red-team transcript `…-one-absence-review-log.md`. Box comp:
+  `raptor-port/docs/img/step4-multi-record-box.png`.
+- **Build order:** design §14 (phase 0 = group saves). Test-first, Opus high; show the owner the real
+  multi-record box in the app's colours before building that screen; cross-provider CODE inspection
+  after; gates; hold for "merge live".
+
+### [PUB-UNAVAIL] New absence silently changes a published day's Unavailable list — NEXT AFTER step 4
+A new absence covering an already-published day changes that day's issued Unavailable list with no
+amendment, no re-sign, no history line (`html.ts:1515` reads live inputs; the filing fingerprint
+compares `acc` only). Owner (19 Sep 26): fix as its own item straight after step 4. Context: design §13.2.
+
+### [LEAVE-YEAR] Yearly leave balances and carry-over — OPEN (owner, 19 Sep 26: "we will do this next time")
+Today each person has ONE running balance per counter; leave on 1 Jan simply comes off it, and a new
+year is handled by the admin's "Reset counters". Decide next session: separate balances per year/war,
+carry-over rules, and which year a leave crossing 31 Dec charges. Context: clash catalogue Q10.
+
 ### [DB-STEP] The shared-database step (Dataverse) — FUTURE MILESTONE
 The big future move: Raptor, Leave War and Tracker all run on `localStorage` /
 session today; the target is a shared database (**Dataverse** — `src/storage/`

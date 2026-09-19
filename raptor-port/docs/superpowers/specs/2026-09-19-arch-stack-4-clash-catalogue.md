@@ -84,6 +84,34 @@ The acknowledgement is its own small stored note on the war (per person/day), un
 | 14 | Inputs route | A member can file leave on the Inputs page for any date, even when the war is closed or outside the bidding window, and it counts as approved with no admin step — intended? | Keep (it is the "already approved" record), but confirm |
 | 15 | SANS | A SANS "available to fly" offer on a leave day | Warning when filing, never refused; never on the war |
 
+## OWNER ANSWERS (19 Sep 26) — final
+
+- **Q1 yes, Q2 yes, Q6 yes, Q7 yes, Q11 yes, Q14 yes** (recommendations taken).
+- **Q3, Q4, Q5** — superseded by the owner rule above (undecided bid replaced by any clashing input;
+  own action → message; someone else's action → amber `!` until "OK, seen").
+- **Q8 CHANGED:** courses and overseas duty DO show on the war from the Inputs entries (one record),
+  but **leave is ALLOWED during an OD or a course** ("they maybe taking leave on some days while they
+  are on OD or CSE"). The leave day shows the LEAVE code as main and the course/OD as `+1`; the leave
+  is deducted. The corner mark is a COUNT — `+1`, `+2`, … — and tapping it lists every overlapping
+  entry (owner confirmed both). A course during OD is allowed; medical over either is allowed (amber
+  `!` only for ATT C/HL/OML vs recorded work, per Q6).
+- **Q9 CHANGED:** a person officially posted out may still be **clearing leave** afterwards — leave
+  after the posting-out date is ALLOWED and DEDUCTED. The box shows the leave code with the small PO
+  mark (as the last in-squadron day already does, `Matrix.tsx:486`), not a bare `PO`.
+- **Q10 DEFERRED** to its own item `[LEAVE-YEAR]` in OUTSTANDING (per-year balances / carry-over);
+  step 4 keeps today's one running balance per person.
+- **Q12:** warning only on a "No leave" day, and an admin can still approve it for special cases
+  (today's behaviour).
+- **Q13 confirmed and made exact:** the 15-consecutive-days rule applies to **LL and OL only**. When
+  a run of LL/OL reaches 15 days in a row, PH and weekends inside it also count and are deducted for
+  the whole run. Any other leave type breaks the run — e.g. LL for 14 days, FCL on day 15, LL again
+  from day 16: no run reaches 15, so PH/weekends are NOT charged. (Fixes the code, which today applies
+  the rule to any single leave type, `charge.ts:185`.)
+- **Q15:** a SANS offer on a leave day is a warning only, and a SANS offer is **not** counted as a
+  work day (never earns OIL, never counts as worked for the time-overlap rules).
+- **Side note (owner): an upchit is NOT work.** It never earns OIL, never counts as presence at work,
+  and never blocks leave; it only ends a covering medical early (existing).
+
 ## Deferred / out of scope (recorded)
 
 Multiple tours (leave, return months later) needs dated membership periods → `[RECALL]`/`[XFER]`.
