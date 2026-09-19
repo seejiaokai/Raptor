@@ -163,6 +163,19 @@ entries, and passing it unfiltered resurrects reset data — this corrects FB7-0
 transaction; the recovery group is filtered by the reset's collections and re-journaled before the
 reset runs, then seeded into the postman; `releaseLatch` drains until empty.
 
-## Round 8 — design Rev 8
+## Round 8 — design Rev 8, 19 Sep 26
+
+**Fable: APPROVED — build-ready**, two sharpenings: FB8-01 roll back on a RETURNED refusal but keep
+on a post-seal THROW (both surface as `ok:false` from `drainQueue`); FB8-02 a failed filtered-journal
+write must stop the boot.
+
+**Codex: REVISE (1).** Confirms OA7-001/002 resolved. OA8-001 (HIGH): un-approving a conflict cell
+built from two war-approved absences of DIFFERENT types cannot preserve both types.
+
+**Host:** folded as design §23 — the throw-vs-return discriminator; boot rejects on a failed journal
+rewrite; conflict cells offer approved-leave actions per contributing absence only, and multi-cell
+selections skip them with a plain report.
+
+## Round 9 — design Rev 9
 
 (pending)

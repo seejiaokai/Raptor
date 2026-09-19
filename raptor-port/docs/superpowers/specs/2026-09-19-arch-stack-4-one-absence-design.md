@@ -1,6 +1,7 @@
-# ARCH-STACK step 4 — ONE absence record (design, Rev 8, 19 Sep 26)
+# ARCH-STACK step 4 — ONE absence record (design, Rev 9, 19 Sep 26)
 
-Status: **DESIGN — round 8 of the cross-provider red-team (Codex + Fable). No code yet.**
+Status: **DESIGN — round 9 of the cross-provider red-team (Codex + Fable). No code yet.**
+Rev 9 (§23): the refusal discriminator, a failed journal rewrite stops the boot, conflict cells act per absence.
 Rev 8 (§22): savepoints per pipeline, recovery obeys the selective reset, deferred effects drain fully.
 Rev 6 (§20) made the all-or-nothing save exact; Rev 7 (§21) makes a refused command leave nothing
 in storage and carries an unfinished recovery into the save queue. Later sections override earlier.
@@ -768,3 +769,27 @@ shows the world after G1∪G2 or after neither, never between. *(Corrected in Re
    `while (txn.deferred.length)` with a bounded guard (8 rounds, then a console diagnostic and a
    final drain), because the scheduler's `histPush` now defers `persistAll` during phase 8. Test: an
    effect deferring another two levels deep → both run inside the same command's group.
+
+## 23. Round-8 → Rev 9. THIS SECTION OVERRIDES §22 WHERE THEY DIFFER.
+
+1. **Roll back on a RETURNED refusal, keep on a THROW** (Fable FB8-01). `runPipeline` returns
+   `ok:false` for every phase 1–6 failure (`commit.ts:240-244`) but re-throws a phase 8/9 failure
+   after the envelope is sealed (`:259`), which `drainQueue` also maps to `ok:false` (`:180`). The
+   one discriminator, for the outermost pipeline and every drained one: a RETURNED `ok:false` → roll
+   the whiteboard back to that pipeline's savepoint; a THROW out of `runPipeline` → the command
+   happened → keep its writes. Test: a drained projection whose phase-8 effect throws keeps its keys
+   in the group; one refused at phase 5 drops them and keeps the parent's.
+2. **A failed journal rewrite stops the boot** (Fable FB8-02). If §22.2 step b's `writeJournal`
+   fails, `bootStorage` rejects (the Retry screen), exactly as the reset's own delete/verify/stamp
+   failures do (`reset.ts:53-58`); nothing after it runs, the store stays unstamped with the old
+   journal intact. Test: step b throws once → boot rejects; next boot with space → filtered, reset,
+   stamped, the preserved entry retried.
+3. **Conflict cells are acted on per absence, never as a block** (Codex OA8-001). Two war-approved
+   absences of different types can overlap (an admin date edit keeps `lw`, §5.4), making a conflict
+   cell with several `inputIds`. On such a cell the decide/remove/move actions for approved leave are
+   OFFERED ONLY PER CONTRIBUTOR: the sheet lists each absence (type, dates, remarks) and the admin
+   picks which one to un-approve, remove or move; the others are untouched. A multi-cell selection
+   that includes a conflict cell skips it and reports it ("N days hold two absences — change them one
+   at a time"). `carried` therefore never has to hold more than one type per request. Test: approve LL
+   and OIL on separate dates, admin re-dates one to overlap → the cell offers two separate absences;
+   un-approve the OIL → reload → approve → the LL is untouched and the OIL comes back as OIL.
