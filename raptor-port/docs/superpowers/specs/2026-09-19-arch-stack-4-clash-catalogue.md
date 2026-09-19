@@ -112,6 +112,22 @@ The acknowledgement is its own small stored note on the war (per person/day), un
 - **Side note (owner): an upchit is NOT work.** It never earns OIL, never counts as presence at work,
   and never blocks leave; it only ends a covering medical early (existing).
 
+## Main-code priority (host proposal 19 Sep 26, owner hint: "OIL credited / leave taken / medical taken are more important") — PENDING owner OK
+
+Top wins the main code; everything else is behind the `+n` count (tap lists all). Comp:
+`docs/img/step4-main-code-ladder.png`.
+1. Off sick — ATT C, HL, OML (they replace leave anyway).
+2. Leave — approved or filed on Inputs, every type (costs the balance).
+3. OIL credited — FO / HO (earned).
+4. Away on duty or a course — OD, CSE (owner Q8: leave during them shows the leave).
+5. ATT B (can still work, just not fly).
+6. Leave bid not decided yet (plain or acknowledged/purple).
+7. Refused bid (history; main only if nothing else is there).
+Tie-breakers at the same level: a full day beats a half; between two halves, the morning shows.
+The PO tag and the moved stripe are overlays, never the main code. The amber `!` replaces the grey
+count whenever anything on the day needs an admin. Figures ALWAYS read every record, never the main
+code (build rule 1 above) — the order only decides what is displayed.
+
 ## Deferred / out of scope (recorded)
 
 Multiple tours (leave, return months later) needs dated membership periods → `[RECALL]`/`[XFER]`.
