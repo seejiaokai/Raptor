@@ -55,6 +55,15 @@ list" rule: newest instruction wins. It does NOT touch an APPROVED leave (still:
 refused; ATT C/HL/OML still cut it) or a REFUSED bid (never blocks; stays as history in the list).
 ATT B does not clash with leave, so it leaves a bid alone.
 
+**Refinement (host proposal, owner agreed 19 Sep 26):** (1) when the bid's OWN person replaces it
+(files the clashing input themselves) → replaced + a message to them, nothing else. (2) when someone
+ELSE's action replaces it (an admin files medical/course/OD for them; scheduled work published over
+it — this answers Q5 = yes, overlapping work replaces an undecided bid) → still replaced, but the day
+carries an amber `!` and the tap list says "Your LL bid was replaced by ATT C (filed by <who>)" until
+the person or an admin taps "OK, seen". Nothing disappears without the person being able to see it.
+The acknowledgement is its own small stored note on the war (per person/day), undoable, cleared by
+"OK, seen". Non-overlapping work (morning work, afternoon bid) keeps both.
+
 ## Owner decisions needed (numbered as put to the owner, 19 Sep 26)
 
 | # | Bundle | Question | Recommendation |
