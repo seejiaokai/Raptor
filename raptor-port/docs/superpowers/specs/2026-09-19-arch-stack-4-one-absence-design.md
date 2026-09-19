@@ -1,6 +1,7 @@
-# ARCH-STACK step 4 — ONE absence record (design, Rev 2, 19 Sep 26)
+# ARCH-STACK step 4 — ONE absence record (design, Rev 3, 19 Sep 26)
 
-Status: **DESIGN — round 2 of the cross-provider red-team (Codex + Fable). No code yet.**
+Status: **DESIGN — round 3 of the cross-provider red-team (Codex + Fable). No code yet.**
+Rev 3 folds in Fable's round-2 findings FB2-01…08 (§16) and the owner's two answers (§13).
 Branch `claude/db-step4-one-absence`. Own gated PR; nothing merges without the owner's
 "merge live". Author: Opus 5 (high). Review transcript + dispositions:
 `2026-09-19-arch-stack-4-one-absence-review-log.md`.
@@ -95,6 +96,12 @@ Current shape kept (`engine/schema.ts:148-185`). Changes:
 | **OIL credit** | same | `state:'approved'`, `oil: true`, `note?` (the FO/HO reason) | `runOilPass` (generated) and `setCellNote` (manual reason) — unchanged behaviour, marker renamed from `source:'raptor'` (OA-006, FB-06) |
 | **Absence** | **nowhere** — derived (§4) | `state:'approved'`, `inputIds: string[]`, `shiftedFrom?` | nobody; it is a read |
 
+A **request** may also carry `carried?: { remarks: string; lwMoved?: Record<iso, iso> }` — written
+by `lw.decideApproved` from the Input it un-approves, consumed by the next `lw.approve` of that run
+— so refuse → reconsider → approve keeps the member's remark ("in Bali till 17 Jul") and the moved
+mark. Leave only; medical is never un-approved, so documents never travel (FB2-06; replaces the
+session-only `RETAINED`).
+
 `readRecord` (store.ts:392) accepts the first two shapes; a stored record carrying `source`, or
 `approved` without `oil`, is **rejected** (demo data is reset, §9 — reset, don't migrate). Because
 `readRecord` rejecting a record rejects the whole war blob and re-seeds (FB-06), the reset in §9
@@ -111,9 +118,11 @@ ONE pure function, the single statement of how absences appear on the war:
   in verbatim: AM + PM of the same type → full day; a full day subsumes a matching half; an
   un-representable pair lands AM and reports a clash; medical six-hour portion rule (`medRowPortion`)
   unchanged. Answers OA-001 / FB-01 — pinned by today's `sync.test.ts:190-209` cases, kept.
-- **War resolution is outside `cellFor`** (FB-02, OA-004, §12-Q6 of Rev 1): the index files a
-  (person, date) under `warHolding(wars, date)`; a date in no war shows on no war, and appears the
-  moment a war covering it is created — because the next read computes it.
+- **War resolution is outside `cellFor` AND outside the index** (FB-02, OA-004, FB2-03): the index
+  is war-agnostic (`personId → date → cell`); the MERGE step (§4.2) files each date under
+  `warHolding(rawWars, date)`. A date in no war shows on no war, and a war created later (by
+  `createWar`, or replaced wholesale by `loadWars`) shows the absences it covers on its first merge,
+  with no index change. The `onCommit` subscriber also drops the merge cache on any `lw.war` change.
 - **No roster filter** (FB-02.3, answers Rev-1 §12-Q3): cells exist for any person id; the matrix
   draws only roster rows. Finding H's "cells cleared on archive" goes away — the person's record is
   untouched, and restoring them shows it again.
@@ -122,12 +131,22 @@ ONE pure function, the single statement of how absences appear on the war:
 
 A request is the war's own record; an absence is the squadron's record of fact. At one address:
 
-| Request there | Absence there | Displayed | Clash list |
+| Stored record there | Absence there | Displayed | Clash list |
 |---|---|---|---|
 | none | yes | the absence | — |
-| yes | none | the request | — |
-| same code | yes | the absence (the request is **consumed** by the filing — §5.2) | — |
-| different code | yes | **the request** (today's behaviour: the war keeps what was bid) | the absence, as today's clash note |
+| request / credit | none | the stored record | — |
+| pending / acknowledged request, same code | yes | the absence (the filing consumed the request — §5.2; a leftover is dropped at merge) | — |
+| pending / acknowledged request, different code | yes | **the request** (today's behaviour: the war keeps what was bid; only reachable when the request predates the filing) | the absence, as today's clash note |
+| **refused** request, any code | yes | **the absence** — a refusal removes nobody, and the absence is fact (FB2-02; today a refused chip can hide a filed leave and count the person available — fixed) | — |
+| OIL credit | yes | cannot arise — the OIL pass refuses a credit on an absence day (§7) | — |
+
+**New stored records never land on an absence day** (FB2-02). One module-internal read,
+`absenceAt(person, date)` (from the index, no war walk), replaces every deleted `raptorOwns(...)`
+occupancy check with the same meaning — "occupied by a filed absence": `setCell` (store.ts
+~1966/1988), `setCellRange` (~2058), `setCells` (~2110), `setBidState`/`setBidStates` (~2147,
+~2170 — an absence address routes to `lw.decideApproved`), `shiftBid` (~3221/3246),
+`isMovableSource` (~3282), `moveProblem` (~3329-3343), `ingestDutyCreditImpl` (~3070-3081). So a
+member cannot bid OL onto their own filed LL day, and a move cannot land a request on an absence.
 
 The clash list is itself **derived** (`clashesOf`, computed on read, never stored — FB-02.4). When
 the blocking request is refused, cleared or moved, the absence shows on the next read with no
@@ -137,50 +156,75 @@ trigger (OA-002). The invariant (§12) is stated over this table, not over "ever
 
 ### 4.1 The index
 
-`absenceIndex`: `warId → personId → date → cell` (the `cellFor` output), built from INPUTS.
-In memory only. Two maintenance paths:
+`absenceIndex`: `personId → date → cell` (the `cellFor` output), built from INPUTS. War-agnostic
+(§3). In memory only. Maintenance:
 
-- **Incremental, from the change stream.** An `onCommit` subscriber reads each envelope's
-  `inputs/<iid>` Changes (the before AND after values are in the envelope — undo-contract §1.2) and
-  invalidates the persons named by either. Restores and seeds emit envelopes too, so undo/redo and
-  command-routed seeding are covered.
-- **Signature fallback** (FB-02(a), FB-03): on every Raptor notify, a per-person signature of that
-  person's off-type inputs (iid + dates + type + portion fields + `lwMoved`) is compared to the
-  last build; a changed person is rebuilt. This catches every INPUTS mutation that does not pass
-  through a command — boot hydrate, `initStore`'s seeding (`otherWeekInputs`, `seedDemoSans`,
-  `seedDemoMedical`), the `yr` stamp, `installDemoWorld`, `remapPersonKeys` — so no call site has
-  to remember anything. Cost: one pass over INPUTS (hundreds of rows) per notify; measured in the
-  perf gate.
-- **Full build** at `wireLeaveWarSync` start and after a storage reset.
+- **Primary — the per-person signature, on every Raptor notify** (FB2-04.3: phase 8's legacy
+  `notify` runs BEFORE phase 9's `onCommit` delivery, `commit.ts:253-254`, so this path always fires
+  first). For each person, a signature over their off-type rows =
+  `iid|type|date|endDate|yr|allday|half|s|e|lwMoved`, a row counted under its CURRENT `person` (a
+  reassign changes both persons). Excluded, because `cellFor` ignores them: `acc`, `mod`,
+  `remarks`, `oil`, `docIds`, `lw` (FB2-08). A changed signature rebuilds that person. This covers
+  every INPUTS mutation, command or not — boot hydrate, `initStore`'s seeds, the `yr` stamp,
+  `installDemoWorld`, `remapPersonKeys` — and every later one is followed by a Raptor notify
+  (the `writeInputs*` epilogue, `loadWeek`, a restore's deferred reflow). Cost: one pass over
+  INPUTS (hundreds of rows) per notify, measured in the perf gate.
+- **Secondary — `onCommit`**: an envelope's `inputs/<iid>` Changes (before + after) invalidate the
+  persons named; an `lw.war` Change drops the merge cache. Belt-and-braces; never the only path.
+- **Full build** at `wireLeaveWarSync` start (after `installDemoWorld`), after the storage reset,
+  and inside `loadWars`.
+
+**The war repaints when the index changes** (FB2-04). Every Leave War screen subscribes to the LW
+store version only (`useSyncExternalStore(subscribe, getVersion)`). Today an Inputs-page filing
+reaches the war through `ingestFromRaptor`'s write, which bumps that version; with the write gone,
+a changed index calls `rawNotify()` — a repaint, no persist, no envelope. Loop-safe: LW notify →
+`reprojectRoster` (signature-guarded) → the pending-OIL signature (notifies Raptor only on change)
+→ the index finds no input change → stops. **Order in the Raptor lane** (`sync.ts:1186-1195`):
+`setViewer → reprojectRoster → refreshAbsenceIndex → lwSyncTurn(runPoArchive, runOilPass)` — the
+index is fresh before the OIL pass reads the merged cell.
 
 ### 4.2 The one read door
 
-`getState()` (`leavewar/state/store.ts:951`) today returns the raw store state; every screen and
-all the balance maths (`drawnFrom`, `balanceOf`, `takenOf`, `chargedDays`, `availabilityOf`,
-`oiltracker`) read `grid`/`states`/`wars` through it. Step 4 splits it:
+`getState()` (`leavewar/state/store.ts:951`) today returns the module `state`. Step 4 makes it the
+**only merge door**; the module `state` is never assigned a merged view:
 
 - `getState()` → the **merged** state: each war's `grid`/`states` (and the current war's top-level
-  `grid`/`states`) = requests ∪ credits ∪ absence layer per §3.1. Screens and balance maths are
-  unchanged.
-- `rawState()` (module-internal) → requests and credits only. Every **writer** and the store's own
-  `persist()` / `records()` / `capture()` / `write()` use it, so an absence can never be persisted
-  or diffed into an `lw.*` Change.
+  `grid`/`states`) = stored records ∪ absence layer per §3.1, identity-stable per (raw `state`
+  ref, index version) so `useMemo([version])` and `evaluatePeriod`'s identity memo
+  (`Matrix.tsx:539-543`) keep their bail-outs.
+- The module `state` stays raw — requests and credits only. Writers, `rawPersist`,
+  `records()`/`capture()`/`write()`, `reconcile()`, `installDemoOil`, `remapPersonKeys`,
+  `clearRaptorCell`, `setCellNote`, `loadWars` and the dormant legacy history all keep reading it,
+  so an absence can never be persisted or diffed into an `lw.*` Change (Fable verified each).
+
+**Readers of the module `state` that must move to the merged view** (FB2-01). The balance figures do
+NOT go through `getState()` today: `figureCtxOf()` (store.ts ~2528) builds `sources: state.wars`
+and is the one builder for the Matrix counter column, `CounterSheet`, `FiguresDrawer`, `OilTracker`
+and `BalanceBar`; `setBalance` (~2676) calls `drawnFrom(state.wars, …)` directly. Both switch to
+the merged wars — otherwise approved leave stops charging, USED reads 0 and "set balance to 20"
+shows a different number. The build's first task is a complete audit: every read of
+`state.grid`/`state.states`/`state.wars` in `leavewar/` classified as **writer/persist (raw)** or
+**display/figure/validation of a new write against existing absences (merged or `absenceAt`)**,
+recorded in the build plan, with a test per display/figure reader.
 
 Verified by Fable: `chargedDays` charges any non-refused cell and `availabilityOf` likewise, so a
-request consumed into an absence at the same code moves nothing in any balance.
+request consumed into an absence at the same code moves nothing in any balance — provided those
+functions are handed the merged wars.
 
 ### 4.3 Performance — structural sharing (a named gate)
 
-The Leave War grid's window engine and memoised `PersonMonth` rows rely on per-person object
-identity (`docs/performance.md` §Leave War window engine). The merge therefore:
-- caches the merged war per (raw war object, absence-index version for that war);
-- reuses the raw per-person `grid`/`states` row objects untouched for any person with no absence
-  cells, and reuses the previously merged row for any person whose raw row AND absence row are
-  both unchanged since the last merge.
+Corrected in Rev 3 (FB2-07): `PersonRow`/`PersonMonth` take `version` and the WHOLE
+`grid`/`states` maps as props (`Matrix.tsx:283, 405`), so per-person row identity is not a React
+memo input — every store change already repaints through them, exactly as today. What sharing buys
+is the **cost of the merge itself**, which would otherwise copy every person's row on every version
+bump (every bid keystroke). So the merge:
+- is cached per (raw `state` ref, index version) — a view-only render pays nothing;
+- reuses the raw per-person row objects for anyone with no absence cells, and the previously merged
+  row for anyone whose raw row and absence row are both unchanged — bounding the work to the
+  persons that changed.
 
-Gate: a scripted edit of one person's absence re-creates exactly one person's row objects
-(identity test in vitest), and `npm run perf` DOM/interaction ceilings hold. If they don't, the
-fallback is a per-war memo only — measured, not guessed.
+Gate: **merge time per store change on the seed store — a measured number, reported**, plus the
+existing `npm run perf` ceilings. The row-reuse identity test stays as a cheap unit pin, not the gate.
 
 ## 5. The commands
 
@@ -214,6 +258,14 @@ any state `canDecide` allows:
 | pending / acknowledged / refused (request) | `lw.edit` | `lw.edit` | `lw.edit` | `lw.approve` |
 | approved (absence with `lw`) | `lw.decideApproved` | `lw.decideApproved` | `lw.decideApproved` | no-op |
 | approved (absence without `lw`, or medical) | refused — display-only on the war (§5.4) | | | |
+
+**No war write persists before the command is sealed** (FB2-05). `lw.approve` and a same-code
+filing both delete requests inside an inputs-writing command that `runInputWrite` can still refuse
+AFTER the reducer (`state/store.ts:147-172`). Today the nested branch of `persistNotify`
+(store.ts ~1252) runs `rawPersist()` inside the reducer, so a refused command would leave the
+request deletion in storage. Fix: in that branch keep `t.enlist(lwStore); LW_BASELINE = state`
+inline and move the backend write to `cmdDeferEffect(() => locked(() => rawPersist()))` —
+discarded on rollback, run at phase 8 on success; the inline `rawNotify()` is deferred the same way.
 
 **One gesture = one envelope** (OA-003): every bulk entry point (`setCells`, `clearCells`,
 `setBidStates`, `moveCells`, `shiftBid`) opens ONE outer `commit` before touching any cell, enlists
@@ -249,8 +301,12 @@ Today a Raptor-owned cell is locked on the war and a war-approved leave is edita
 now read from the record: an absence cell whose every Input has `lw` is war-editable (admin); any
 other absence cell, and every medical cell, is display-only on the war ("filed on the Inputs page").
 
-`lw` provenance survives a remarks-only edit and any admin edit. **What a member's own date/type
-edit of a war-approved leave does is the owner's call — §13 Q1.**
+`lw` provenance survives a remarks-only edit and any admin edit. **A member's own date / type /
+person edit of a war-approved leave clears `lw`** (owner, 19 Sep 26 — §13 Q1): the cell stays
+green (approved) and gains the blue left edge the war already uses for "Filed on the Inputs page —
+change it there, not here" (`matrix.css .c.raptor`, `Chrome.tsx:471` legend); from then on it is
+changed on the Inputs page. This is today's visible behaviour, now produced by one record instead of
+a withdraw-and-re-mint. The `.raptor` class is kept for the edge; it is driven by `lockedOnWar`.
 
 ## 6. What is deleted
 
@@ -270,7 +326,9 @@ edit of a war-approved leave does is the owner's call — §13 Q1.**
 OIL credits come from the **published schedule** and acknowledged duty claims (`row.oil`), not from
 absences. `runOilPass` stays; its cells carry `oil:true` instead of `source:'raptor'`, and its
 clash rule ("a leave cell blocks a credit") reads the **merged** view (an absence or request at
-that address blocks it). Making OIL a read-time derivation too is a later item (it reads issued
+that address blocks it) — including inside `ingestDutyCreditImpl`, which today re-reads the raw
+cell and would otherwise write a credit onto an absence day (FB2-02.2). It runs after the index
+refresh in the Raptor lane (§4.1). Making OIL a read-time derivation too is a later item (it reads issued
 snapshots, so it touches the amendment engine) — filed in OUTSTANDING, not built here.
 
 ## 8. The landing (schedule side)
@@ -344,6 +402,16 @@ Machinery (vitest):
   → leave shows (OA-004); reload after an Input-only save → consistent (OA-005); Inputs-page form
   add and `mintMedSegments` segments both show (FB-03); split with an early `mod` → neither half
   late (FB-11).
+- Round-2 pins: file a 3-day LL on the Inputs page → balance drops by 3, USED = 3, "set balance to
+  20" reads 20, the OIL tracker lists an OIL absence (FB2-01); bid over own LL day refused, move a
+  request onto an absence day → occupied, OIL pass over an absence day → no credit, refused OL on
+  a filed LL day → shows LL and the person counts away (FB2-02); leave in a no-war year, then
+  `createWar`, and `loadWars` → cells show (FB2-03); Inputs-page filing bumps the LW version exactly
+  once with no `lw.*` envelope, a board keystroke touching no input bumps it zero times (FB2-04);
+  an approve refused by `protectedTouched` leaves no `leavewar/wars` write in the backend journal
+  (FB2-05); approve → refuse → approve keeps the remark (FB2-06).
+- Fixture budget: the vendored Leave War suite and `engine/seed.ts` carry `source:` literals
+  (e.g. `deciding.test.tsx`, `seed.ts:216-332`); the record reshape rewrites them in phase 2.
 
 Scenario (in the running app, the 16 Sep standing rule): a real week + the war; approve a 5-day
 bid, delete its middle day on the war, undo, redo; file leave over a pending request; move an
@@ -352,17 +420,19 @@ check the clash grade; each outcome eyeballed on the RIGHT day.
 
 Gates: vitest, build, `tfin.js` 728/0, e2e, tracker smoke, `npm run perf`.
 
-## 13. Questions for the OWNER (product, not technical)
+## 13. Owner decisions (asked and answered 19 Sep 26)
 
-1. **A member changes the dates of a leave the admin approved on the war.** Today it quietly
-   becomes the member's own filing: locked on the war, no longer "approved on the war". Keep that
-   (recommended — nobody approved the new days), or keep it as war-approved? (FB-07)
-2. **A new absence covering an already-published day.** Today the published schedule's
-   Unavailable list silently shows the new absence — no amendment count, no re-sign, no history
-   line — because that list reads the live records, not the issued copy. Your 16 Sep rule says a
-   filing on a published day is a pending amendment and the issued face stays frozen. This gap is
-   older than step 4. Recommended: fix it as its own follow-up item right after step 4, not inside
-   it. (FB-08)
+1. **A member changes the dates of a leave the admin approved on the war** (FB-07). Owner: "Stay
+   green but it has an input blue line at the left just like the input standard." → it stays
+   approved-green, gains the blue "filed on the Inputs page" edge, and is changed on the Inputs page
+   from then on (§5.4). Equivalent to today's visible behaviour.
+2. **A new absence covering an already-published day** silently changes that day's published
+   Unavailable list (FB-08, pre-existing — `html.ts:1515` reads live INPUTS on every face;
+   `publish.ts:256-260` compares `acc` only). Owner: **its own follow-up, straight after step 4**
+   — filed in OUTSTANDING as `[PUB-UNAVAIL]`; not built here.
+
+One behaviour change is a bug fix, not a question (a one-line heads-up to the owner): a REFUSED
+request no longer hides a filed absence on the war (§3.1).
 
 ## 14. Build phases (each gate-green before the next)
 
@@ -400,3 +470,16 @@ Effort: M–L, several sessions.
 | FB-10 `acc:'g'` derived = scope creep | dropped (§8) |
 | FB-11 split `mod` / `LATEOFF` | §5.2 Splitting |
 | FB-12 locked-week approve wording | §5.2 Locked weeks |
+
+## 16. Round-2 findings (Fable, on Rev 2) → disposition
+
+| Finding | Disposition in Rev 3 |
+|---|---|
+| FB2-01 balances read raw `state.wars` (`figureCtxOf`, `setBalance`) | §4.2 both move to the merged wars + a full raw/merged reader audit as build task 1 |
+| FB2-02 writers/affordances lose `raptorOwns` occupancy; credit/refused vs absence undefined | §3.1 extended table + `absenceAt` at every former `raptorOwns` site; §7 OIL Impl reads merged |
+| FB2-03 index keyed by war misses later wars | §3 / §4.1 index war-agnostic; war resolved in the merge; `lw.war` drops the cache; `loadWars` full build |
+| FB2-04 nothing repaints the war after an Inputs filing | §4.1 index change → `rawNotify()`; lane order fixed; signature path is primary |
+| FB2-05 nested `persistNotify` persists before rollback | §5.2 backend write + notify deferred via `cmdDeferEffect` |
+| FB2-06 refuse → approve loses the remark | §2.2 `carried` on the request |
+| FB2-07 structural-sharing rationale wrong | §4.3 reworded; gate = measured merge time + perf ceilings |
+| FB2-08 signature fields / full-build points | §4.1 spelled out |

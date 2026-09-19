@@ -39,6 +39,28 @@ to remove. Rev 2 stops storing absences on the war: requests + OIL credits stay 
 absence layer is derived on read from INPUTS through one merged `getState()` with per-person
 structural sharing. Full finding → disposition map: design §15. Two owner questions: design §13.
 
-## Round 2 — design Rev 2 (derived on read)
+## Round 2 — design Rev 2 (derived on read), 19 Sep 26
+
+**Fable: REVISE, "close"** — the derived-on-read model is right and dissolves most of round 1, but
+four load-bearing wrong-reads: the balance figures read the raw `state.wars` via `figureCtxOf` /
+`setBalance`, not `getState()` (FB2-01, HIGH); deleting `raptorOwns` leaves every writer/affordance
+blind to absences, and credit/refused-vs-absence was undefined (FB2-02, HIGH); an index keyed by war
+misses a later-created war (FB2-03, HIGH); nothing bumps the LW version after an Inputs filing, so
+the war never repaints (FB2-04, HIGH). Plus: nested `persistNotify` still persists request deletes
+before a possible rollback (FB2-05); refuse→approve loses the remark (FB2-06); the structural-sharing
+rationale was wrong — rows take the whole maps + `version` (FB2-07); signature fields unstated
+(FB2-08). Both owner questions judged correctly framed; nothing else is an owner decision.
+
+**Codex round 2:** the runner crashed on a Windows console encoding error (a `→` character) before
+completing — no review, not an approval. Re-run on Rev 3 with UTF-8 mode.
+
+**Owner answers (19 Sep 26):** Q1 — a member's re-dated war-approved leave "stays green but has an
+input blue line at the left just like the input standard" (= clears `lw`; blue "filed on the Inputs
+page" edge; today's visible behaviour). Q2 — the published-day Unavailable gap is its own follow-up
+after step 4 (`[PUB-UNAVAIL]`).
+
+**Host disposition:** all eight folded into Rev 3 (design §16).
+
+## Round 3 — design Rev 3
 
 (pending)
