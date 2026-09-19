@@ -604,6 +604,10 @@ point a removal needs a migration, not a fallback.
 
 ## The RAPTOR clash has nowhere to go
 
+> **SUPERSEDED by [ARCH-STACK] step 4 (20 Sep 26).** `ingestFromRaptor` is deleted; an absence is
+> the Input itself, clashes are derived per day (`engine/dayview.ts`) and shown as the amber `!`
+> corner mark + the clash strip + the tap list. Kept below as history.
+
 `ingestFromRaptor` returns `clash` when an inbound input lands on a date the
 squadron already bid differently, and **nothing displays it**. The value is
 returned to the caller and dropped, because until the wire exists the only
@@ -1119,9 +1123,9 @@ Quals-tick-lifts-the-count integration — are pinned in
     Quals page; they carry their own explicit undo (clear the PO date, flip the
     field back) and are re-projected on every Raptor notify, so putting them in
     the snapshot would only let an undo fight Raptor.
-  - **Raptor-driven grid changes** — a leave/duty cell that arrived by sync
-    (`ingestFromRaptor` / `ingestDutyCredit` / `clearRaptorCell` /
-    `withdrawLeaveCell`, all held under the history `locked`). Undoing one would
+  - **Raptor-driven grid changes** — an OIL credit the OIL pass wrote
+    (`ingestDutyCredit` / `clearRaptorCell`, held under the history `locked`;
+    since [ARCH-STACK] step 4 leave is never copied onto the war at all). Undoing one would
     only be re-applied by the next reconcile pass. The mirror of this is what
     makes undo of a Leave War approval CLEAN: the restore notifies, sync
     re-derives, and the Raptor input the approval had minted is retracted — the

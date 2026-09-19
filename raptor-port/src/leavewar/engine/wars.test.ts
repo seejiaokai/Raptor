@@ -24,8 +24,7 @@ describe('makeWar', () => {
   })
 
   it('starts empty — no leave and no bids', () => {
-    expect(blankWar('x', 'X', '2026-05-01', '2026-05-02').grid).toEqual({})
-    expect(blankWar('x', 'X', '2026-05-01', '2026-05-02').states).toEqual({})
+    expect(blankWar('x', 'X', '2026-05-01', '2026-05-02').recs).toEqual({})
   })
 
   it('carries the id and name it was given', () => {

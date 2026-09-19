@@ -29,6 +29,7 @@
    the HOOKS repaint/history effects ARE latched (below), so model atomicity holds.
 */
 import type { EnlistableStore, RecordEntry, Scope, CommitResult, Command } from '../command'
+import { inputGate, publishGate } from './inputgate-hook'
 import {
   commit, commitProjection, definePermission, anyone, registerRecord, registerGuardedStore,
   registerEffectContext, installBaselineInvariants, cmdDeferEffect, CmdRefused,
@@ -186,6 +187,7 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
      a new row (which would land another person's input outside auth/revisions). */
   const restore = !!opts?.restore
   const touchedDays = new Set<number>()
+  const restoredIids = new Set<string>(), restoredPersons = new Set<string>()
   const foreign = (id: string, sep: string) => id.slice(0, id.indexOf(sep)) !== wk
   for (const e of entries) {
     switch (e.collection) {
@@ -243,6 +245,11 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
       case 'inputs': {
         if (e.id === INPUT_ORDER_ID) { orderIds = (e.value as string[]) || null; break }
         const ix = INPUTS.findIndex((r: any) => r.iid === e.id)
+        if (restore) {
+          restoredIids.add(e.id)
+          if (ix >= 0 && INPUTS[ix]?.person) restoredPersons.add(String(INPUTS[ix].person))
+          if (e.op !== 'delete' && (e.value as any)?.person) restoredPersons.add(String((e.value as any).person))
+        }
         if (e.op === 'delete') { if (ix >= 0) INPUTS.splice(ix, 1) }
         else {
           const v = cw(e.value) as any
@@ -280,6 +287,10 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
      the baseline snapshot and the emitted envelope (never a stale envelope the next
      forward edit would absorb). Two-way, per touched day; never auto-lands a row. */
   if (restore) for (const di of touchedDays) reconcileDayFiling(di)
+  /* [ARCH-STACK] step 4 (clash check B7) — an undo / redo obeys the same absence
+     rules as every other door: a restore that would put two leaves on the same
+     time, or leave over a medical, is refused with the blocker named */
+  if (restore && restoredIids.size) inputGate()?.vetRestore(restoredIids, restoredPersons)
   applyEnd()   // one ensureRowIds/mintInpIds + advance SCHED_BASELINE
   // HOOKS.reflow = validate() + notify(); HOOKS.histPush persists — both released
   // at the transaction boundary (never on a half-applied multi-store world).
@@ -384,7 +395,7 @@ export function commitInputs<T>(type: string, fn: () => T): T {
   return commitSched(type, inputsScope(), fn).value
 }
 /* [CMDL-FINISH] §2.2 — the PROJECTION sibling of commitInputs: the LW-originated
-   reconciler (runOutbound) mints/retracts Raptor inputs as a causally-chained
+   reconciler (historically runOutbound, deleted in [ARCH-STACK] step 4) writes Raptor inputs as a causally-chained
    projection, not a user edit. Raised at phase 8 (woken by the LW edit's deferred
    notify) it ENQUEUEs with the edit's seq as its cause; raised at idle (inside
    lwSyncTurn) it runs as a top-level projection. Same enlist + applyEnd body. */
@@ -477,7 +488,7 @@ export function discloseCurrentIssued(): void {
    record change) the commit emits nothing. `crossable` is true while none of the
    new ids is on the shared record yet — which at Step 2 is always, there being no
    shared database. Step 3 reads it to choose silent-reverse vs on-the-record undo. */
-function commitPublish(type: string, fn: () => void): CommitResult {
+function commitPublish(type: string, fn: () => void, di: number): CommitResult {
   const cmd: Command = {
     type, scope: schedScope(),
     apply: (txn) => {
@@ -488,6 +499,8 @@ function commitPublish(type: string, fn: () => void): CommitResult {
       for (const id of issuedIdSet()) if (!before.has(id)) added.push(id)
       if (added.length) {
         txn.boundary({ kind: 'publish', ids: added, crossable: !added.some(issuedDisclosed) })
+        /* [ARCH-STACK] step 4 (B5) — weekend / PH work replaces a clashing leave bid */
+        publishGate()?.(di)
       }
       applyEnd()   // SR-001: commitPublish builds its OWN Command, so it needs the shared advance too
     },
@@ -499,13 +512,13 @@ function commitPublish(type: string, fn: () => void): CommitResult {
    publish boundary). Routed additively: the engine setDayApproved runs unchanged
    inside the command. */
 export function commitSetDayApproved(di: number, on: any): CommitResult {
-  return commitPublish(SCHED_TYPES.approve, () => setDayApproved(di, on))
+  return commitPublish(SCHED_TYPES.approve, () => setDayApproved(di, on), di)
 }
 
 /* publish one day's changes as its next per-day AL (appends a sched.als record +
    the publish boundary). */
 export function commitPublishALDay(di: number): CommitResult {
-  return commitPublish(SCHED_TYPES.publishAL, () => publishALDay(di))
+  return commitPublish(SCHED_TYPES.publishAL, () => publishALDay(di), di)
 }
 
 /* clear a never-published day's draft marks. Not a publish (mints no issued id,

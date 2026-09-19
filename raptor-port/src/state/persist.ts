@@ -14,6 +14,7 @@ import { HOOKS } from '../engine/hooks'
 import { stashPut, stashKeys, stashGet, stashHas, isPreservedWeek, preservedBlob } from '../engine/weekstash'
 import { PLANPUCKS, DAYRMK, seedPuckCounter } from './plan'
 import type { Whiteboard } from '../storage/whiteboard'
+import { deferEffect, setTxnWrapper } from '../command'
 
 /* the stash key is dd/mm/yyyy; '/' is the collection/id separator */
 export const weekId = (key: string) => String(key).replace(/\//g, '-')
@@ -134,8 +135,15 @@ export function weekSwapEnd(): void { swapping = false; persistAll() }
 export function wirePersist(wb: Whiteboard, s: Snapshots): void {
   wbRef = wb
   snaps = s
+  /* [ARCH-STACK-4] phase 0 (§20.1) — every command's durable writes become ONE
+     all-or-nothing group: the command layer opens a whiteboard transaction per
+     outermost command. */
+  setTxnWrapper(wb)
   const push = HOOKS.histPush
-  HOOKS.histPush = () => { push(); persistAll() }
+  /* §21.1c — the scheduler's persist joins the command's deferred effects, so a
+     refused command discards it instead of writing its rolled-back world; outside
+     a command it runs inline exactly as before. */
+  HOOKS.histPush = () => { push(); if (!deferEffect(persistAll)) persistAll() }
   const applied = HOOKS.histApplied
   HOOKS.histApplied = () => { applied(); persistAll() }
   const swapped = HOOKS.weekSwapped

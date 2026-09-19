@@ -28,12 +28,14 @@ describe('Postman', () => {
     expect(pm.status).toBe('saved')
   })
 
-  it('never merges two DIFFERENT records', async () => {
+  it('writes waiting together travel as ONE group (one putMany), each record once', async () => {
     const { be, wb } = rig()
     wb.set('inputs', 'all', '[]')
     wb.set('people', 'all', '{}')
     await vi.advanceTimersByTimeAsync(300)
-    expect(be.journal.filter(j => j.op === 'put').map(j => `${j.collection}/${j.id}`).sort()).toEqual(['inputs/all', 'people/all'])
+    const puts = be.journal.filter(j => j.op === 'put')
+    expect(puts.map(j => `${j.collection}/${j.id}`).sort()).toEqual(['inputs/all', 'people/all'])
+    expect(new Set(puts.map(j => j.group)).size).toBe(1)
   })
 
   it('a delete on the whiteboard becomes a remove', async () => {
@@ -115,5 +117,85 @@ describe('Postman', () => {
     wb.set('inputs', 'all', '[]')
     await vi.advanceTimersByTimeAsync(300)
     expect(be.journal).toHaveLength(0)
+  })
+
+  /* [ARCH-STACK-4] phase 0 — groups, one at a time (design §20.2, §21.2) */
+  it('a whiteboard transaction reaches the backend as ONE group', async () => {
+    const { be, wb } = rig()
+    const t = wb.transaction()
+    wb.set('inputs', 'all', '[1]'); wb.set('leavewar', 'wars', '[]'); wb.delete('tracker', 'nope')
+    t.commit()
+    await vi.advanceTimersByTimeAsync(300)
+    const groups = new Set(be.journal.filter(j => j.op !== 'loadAll').map(j => j.group))
+    expect(groups.size).toBe(1)
+    expect(be.peek('inputs', 'all')).toBe('[1]')
+    expect(be.peek('leavewar', 'wars')).toBe('[]')
+  })
+
+  it('at most one group in flight: a write during a send waits and goes as the next group', async () => {
+    const { be, wb, pm } = rig(500)
+    wb.set('inputs', 'all', '[1]')
+    await vi.advanceTimersByTimeAsync(300)           // group 1 in flight
+    wb.set('people', 'all', 'P')
+    wb.set('inputs', 'all', '[2]')
+    await vi.advanceTimersByTimeAsync(500)           // group 1 lands; group 2 arms its coalesce wait
+    expect(pm.status).toBe('unsaved')
+    await vi.advanceTimersByTimeAsync(300 + 500)
+    expect(be.peek('inputs', 'all')).toBe('[2]')
+    expect(be.peek('people', 'all')).toBe('P')
+    const g = be.journal.filter(j => j.op === 'put').map(j => j.group)
+    expect(g).toEqual([g[0], g[1], g[1]])           // [1] alone, then people + [2] together
+    expect(g[0]).not.toBe(g[1])
+  })
+
+  it('a failed group is merged UNDER newer writes: the retry is a superset and the newest value wins', async () => {
+    const { be, wb } = rig()
+    be.failNext(1)
+    const t = wb.transaction()
+    wb.set('inputs', 'all', 'I1'); wb.set('leavewar', 'wars', 'W1')
+    t.commit()
+    await vi.advanceTimersByTimeAsync(300)           // fails
+    wb.set('inputs', 'all', 'I2')                    // newer, while waiting to retry
+    await vi.advanceTimersByTimeAsync(1000)
+    expect(be.peek('inputs', 'all')).toBe('I2')
+    expect(be.peek('leavewar', 'wars')).toBe('W1')   // the failed group's other key still went
+    const last = be.journal.filter(j => j.op === 'put').at(-1)!.group
+    expect(be.journal.filter(j => j.group === last).map(j => j.collection).sort()).toEqual(['inputs', 'leavewar'])
+  })
+
+  it('a waiting backoff is not skipped by a fresh write', async () => {
+    const { be, wb } = rig()
+    be.failNext(1)
+    wb.set('inputs', 'all', '[1]')
+    await vi.advanceTimersByTimeAsync(300)           // fails → retry in 1s
+    wb.set('people', 'all', 'P')
+    await vi.advanceTimersByTimeAsync(300)
+    expect(be.peek('people', 'all')).toBeNull()      // still waiting out the backoff
+    await vi.advanceTimersByTimeAsync(700)
+    expect(be.peek('people', 'all')).toBe('P')
+  })
+
+  it('an unfinished group from boot starts as FAILED, retries, and later writes merge over it', async () => {
+    const be = new MemoryBackend()
+    const wb = new Whiteboard()
+    const pm = new Postman(be, { initialFailed: [{ collection: 'tracker', id: 't', value: 'T0' }, { collection: 'people', id: 'all', value: 'P0' }] })
+    pm.attach(wb)
+    expect(pm.status).toBe('failed')
+    expect(pm.hasWork()).toBe(true)
+    wb.set('people', 'all', 'P1')
+    await vi.advanceTimersByTimeAsync(1000)
+    expect(pm.status).toBe('saved')
+    expect(be.peek('tracker', 't')).toBe('T0')
+    expect(be.peek('people', 'all')).toBe('P1')
+  })
+
+  it('flush sends a pending group straight away, even mid-backoff', async () => {
+    const { be, wb, pm } = rig()
+    be.failNext(1)
+    wb.set('inputs', 'all', '[1]')
+    await vi.advanceTimersByTimeAsync(300)           // fails
+    await pm.flush()
+    expect(be.peek('inputs', 'all')).toBe('[1]')
+    expect(pm.status).toBe('saved')
   })
 })

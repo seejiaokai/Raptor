@@ -9,6 +9,7 @@ import { App } from './ui/App'
 import { initStore as lwInitStore, lwHistInit } from './leavewar/state/store'
 import { installDemoWorld } from './leavewar/state/demoworld'
 import { wireLeaveWarSync } from './leavewar/sync'
+import { validate } from './engine/validate'
 import { installProbeBridge } from './probe-bridge'
 import { bootStorage, chooseBackend, guardUnload } from './storage/boot'
 import { BrowserBackend } from './storage/browser'
@@ -57,6 +58,13 @@ async function boot(): Promise<void> {
   const hadStoredWars = wb.has('leavewar', 'wars')
   lwInitStore(leavewarAdapter(wb))
   installDemoWorld(hadStoredWars)
+  /* [ARCH-STACK] step 4 — the demo world files its approved leave as INPUTS
+     (raw, before any command). The scheduler's warnings were computed by
+     initStore before those rows existed, so re-derive them now — else a day
+     under a demo leave shows a stale issue count until the first edit (found by
+     the perf gate's "a day-1 edit rewrites only day 1" check). The old boot got
+     this for free from runOutbound's inputs write. */
+  validate()
 
   /* [ARCH-STACK] follow-up #1 (R2-08): installDemoWorld pushed INPUTS raw (no
      command), so the scheduler baseline is now stale. Re-sync BEFORE the leave-war

@@ -81,10 +81,10 @@ export function sourceOf(states: States, personId: string, date: string): BidSou
   return recordOf(states, personId, date)?.source
 }
 
-/** The question every write path asks first. Raptor owns what Raptor last
- *  wrote: it is edited in Raptor's input tab and syncs back here, so editing
- *  it here would leave the two systems disagreeing — which is the single
- *  failure this whole model exists to prevent. */
+/** The question every write path asks first. `source:'raptor'` on the merged
+ *  view means "locked on the war": leave filed on the Inputs page, or a
+ *  medical — it is changed on the Inputs page, never here ([ARCH-STACK] step 4:
+ *  the Input is the one record, so there is nothing to sync back). */
 export function raptorOwns(states: States, personId: string, date: string): boolean {
   return sourceOf(states, personId, date) === 'raptor'
 }

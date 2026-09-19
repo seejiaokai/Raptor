@@ -6,18 +6,37 @@ import { Whiteboard } from './whiteboard'
 import { Postman } from './postman'
 import { MemoryBackend } from './memory'
 import { BrowserBackend } from './browser'
-import { resetPreSchema } from './reset'
+import { RESET, resetDue, resetPreSchema } from './reset'
 
 export async function bootStorage(backend: Backend): Promise<{ wb: Whiteboard; postman: Postman }> {
+  /* [ARCH-STACK-4] §22.2 — each step durable before the next.
+     a. loadAll finishes an unfinished all-or-nothing group first; if it cannot,
+        it overlays the group onto the snapshot and reports it as unfinished. */
   const snap = await backend.loadAll()
+  /* b. a version bump will wipe `inputs`/`weeks`/`leavewar`: FILTER the
+        unfinished group to the collections the reset keeps and write that back
+        as the journal BEFORE any reset removal runs — an interruption can then
+        neither lose a preserved entry nor resurrect a reset one. A failed
+        rewrite rejects the boot (the Retry screen), the old journal intact
+        (§23.2). */
+  const due = resetDue(snap)
+  const found = backend.unfinished()
+  if (due && found) {
+    const kept = found.filter(e => !RESET.includes(e.collection))
+    if (kept.length !== found.length) await backend.writeJournal(kept.length ? kept : null)
+  }
   /* clear any pre-1A persisted scheduler data and stamp the schema version BEFORE
      the whiteboard fills or the postman attaches (ARCH-STACK 1A, Astra SID-05/07):
      an incompatible shape must never reach hydration, and the durable cleanup must
      go through the real backend, not the postman's queued writes. */
+  /* c. the reset removals, then the version stamp */
   await resetPreSchema(backend, snap)
   const wb = new Whiteboard()
   wb.fill(snap)
-  const postman = new Postman(backend)
+  /* d. the (filtered) unfinished group becomes the postman's first, FAILED,
+        group: the status reads "failed" until it lands, and every later write
+        merges over it, so the next journal is always a superset of it (§21.2) */
+  const postman = new Postman(backend, { initialFailed: backend.unfinished() })
   postman.attach(wb)
   return { wb, postman }
 }

@@ -1116,3 +1116,84 @@
 .bidsheet .set-disc .cv { color: var(--ink-3); font-size: 11px; }
 .bidsheet .set-disc .dl { font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
 .bidsheet .set-disc .dh { margin-left: auto; font-size: 10px; font-weight: 500; color: var(--ink-3); letter-spacing: .01em; }
+
+/* [ARCH-STACK] step 4 — THE TAP LIST (DayList.tsx): one line per record on the
+   day, its own actions on the right (wrapping under it on a phone). The left
+   edge carries the record's own state colour, the same one its chip wears on
+   the grid, so the list and the box read as the same thing. */
+.bidsheet .daylist {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  border: 1px solid var(--edge);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.bidsheet .dl-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 9px 12px;
+  border-left: 3px solid transparent;
+}
+
+.bidsheet .dl-line + .dl-line {
+  border-top: 1px solid var(--edge);
+}
+
+.bidsheet .dl-line.appr { border-left-color: rgba(87, 201, 122, .7); }
+.bidsheet .dl-line.tbc { border-left-color: rgba(178, 77, 234, .7); }
+.bidsheet .dl-line.ref { border-left-color: rgba(240, 85, 95, .7); }
+.bidsheet .dl-line.sc { border-left-color: rgba(59, 198, 232, .7); }
+.bidsheet .dl-line.warn { border-left-color: #F2C879; }
+
+.bidsheet .dl-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.bidsheet .dl-main {
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.bidsheet .dl-sub {
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+
+.bidsheet .dl-acts {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.bidsheet .dl-acts .dchip {
+  padding: 6px 12px;
+  background: var(--panel-2);
+  color: var(--ink-2);
+  border: 1px solid var(--edge);
+}
+
+.bidsheet .dl-acts .dchip.approve {
+  background: rgba(87, 201, 122, .16);
+  color: #8FE0A8;
+  border-color: rgba(87, 201, 122, .5);
+}
+
+.bidsheet .dl-acts .dchip.refuse {
+  background: rgba(240, 85, 95, .16);
+  color: #FFA6AD;
+  border-color: rgba(240, 85, 95, .5);
+}
+
+.bidsheet .dl-acts .dchip.ack {
+  background: rgba(178, 77, 234, .16);
+  color: #D9A6F5;
+  border-color: rgba(178, 77, 234, .5);
+}

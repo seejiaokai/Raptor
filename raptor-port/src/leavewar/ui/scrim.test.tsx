@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../../engine/inputs'
 import { advanceStage, getState, initStore, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
-import { runInbound } from '../sync'
+import { syncAbsences } from '../sync'
 import { StageBar, Topbar } from './Chrome'
 import { Matrix } from './Matrix'
 
@@ -91,7 +91,7 @@ const SHEETS: { name: string; testid: string; open: () => void }[] = [
       // a filed leave, synced in, then published — an admin taps it to edit
       // the note (owner, 27 Aug 26)
       INPUTS.push({ iid: 'scrim-rmk', person: 'dusk', type: 'LL', date: 'Feb 11', yr: 2026, allday: true, remarks: 'x' })
-      runInbound()
+      syncAbsences()
       advanceStage(); advanceStage()   // open -> closed -> published (admin)
       setViewer('dusk')
       render(<Matrix />)

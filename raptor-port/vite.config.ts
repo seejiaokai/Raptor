@@ -42,6 +42,7 @@ export default defineConfig({
         test: {
           name: 'leavewar',
           include: ['src/leavewar/**/*.test.{ts,tsx}'],
+          setupFiles: ['src/leavewar/test-setup.ts'],
           environment: 'jsdom',
           globals: true,
           testTimeout: 20_000,

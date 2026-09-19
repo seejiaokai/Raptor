@@ -8,7 +8,7 @@ import { initStore as raptorInitStore, weekStashSnap, weekDirty } from '../state
 import { hydrate, wirePersist } from '../state/persist'
 import { projectPeople } from './state/raptorRoster'
 import { advanceStage, getState, initStore as lwInitStore, setBidState, setCell, setPeople, setRole } from './state/store'
-import { runInbound, runOutbound } from './sync'
+import { syncAbsences } from './sync'
 import { bootStorage } from '../storage/boot'
 import { settingsAdapter, leavewarAdapter } from '../storage/adapters'
 import { MemoryBackend } from '../storage/memory'
@@ -42,8 +42,7 @@ describe('storage seam ⇄ Leave War sync', () => {
     await vi.advanceTimersByTimeAsync(600)                      // let the boot-time letters settle
     const putsBefore = be.journal.filter(j => j.op === 'put' && j.collection === 'inputs').length
 
-    approve('ammo', ['2026-02-02', '2026-02-03', '2026-02-04'])
-    runOutbound()
+    approve('ammo', ['2026-02-02', '2026-02-03', '2026-02-04'])   // the approval files the Input itself (step 4)
     const rows = INPUTS.filter((r: any) => r.lw)
     expect(rows).toHaveLength(1)
     expect(JSON.parse(wb.get('inputs', 'all')!).filter((r: any) => r.lw)).toHaveLength(1)
@@ -53,7 +52,7 @@ describe('storage seam ⇄ Leave War sync', () => {
     expect(inputPuts()).toBe(putsBefore + 1)
     expect(JSON.parse(be.peek('inputs', 'all')!).filter((r: any) => r.lw)).toHaveLength(1)
 
-    runOutbound(); runInbound()                                 // a fixed point: nothing changes
+    syncAbsences()                                              // a fixed point: nothing changes
     await vi.advanceTimersByTimeAsync(600)
     expect(inputPuts()).toBe(putsBefore + 1)
   })

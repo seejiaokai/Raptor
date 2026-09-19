@@ -3,6 +3,8 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { advanceStage, getState, getVersion, initStore, selectWar, setBidState, setCell, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { StageBar } from './Chrome'
+import { INPUTS } from '../../engine/inputs'
+import { syncAbsences } from '../sync'
 import { Matrix } from './Matrix'
 
 beforeEach(() => { initStore(memoryBackend()) })
@@ -85,6 +87,10 @@ describe('the under-manned list', () => {
 
   it('offers nothing to open when no day is under-manned', () => {
     act(() => {
+      // approved / filed leave is an Inputs-page entry the war reads — clear those first
+      INPUTS.length = 0
+      syncAbsences()
+      setRole('admin')   // the seed's FO/HO credits are admin-typed
       for (const [id, row] of Object.entries(getState().grid)) {
         for (const date of Object.keys(row)) setCell(id, date, '')
       }

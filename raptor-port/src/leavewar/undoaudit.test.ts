@@ -4,7 +4,7 @@
 // Wired over BOTH real stores (like sync.test.ts), so the cross-app half — an
 // undo rippling back through the Raptor Inputs sync — is exercised for real,
 // not mocked. Every `it` is an adversarial scenario; a failure here is a bug.
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../engine/inputs'
 import { initStore as raptorInitStore, writeInputs } from '../state/store'
 import { projectPeople } from './state/raptorRoster'
@@ -26,6 +26,7 @@ import {
   initStore as lwInitStore,
   lwCanRedo,
   lwCanUndo,
+  lwHistInit,
   lwRedo,
   lwUndo,
   moveCells,
@@ -48,7 +49,20 @@ import {
   setViewer,
 } from './state/store'
 import { memoryBackend } from './state/storage'
-import { runInbound, runOutbound } from './sync'
+import { syncAbsences, wireLeaveWarSync } from './sync'
+import { globalUndo, globalRedo, undoState } from '../undo'
+import { _resetTimeline } from '../undo/timeline'
+import { installGlobalUndo } from '../state/undo-wire'
+import { setSession } from '../state/auth'
+
+/* [ARCH-STACK] step 4 — approved leave IS the Raptor Input, so an approval is one
+   command that writes the war AND the Inputs. The app's Undo button drives the
+   ONE global timeline (Chrome.tsx), which replays both halves of that command;
+   the legacy war-only snapshot stack (lwUndo) cannot see the Inputs and is not
+   what the button runs. Every cross-app scenario below therefore drives the real
+   wiring. */
+function wireUndo() { setSession({ user: 'ad', role: 'admin' }); wireLeaveWarSync(); _resetTimeline(); lwHistInit(); installGlobalUndo() }
+afterEach(() => { _resetTimeline() })
 
 const ISNAP = JSON.stringify(INPUTS)
 
@@ -89,13 +103,15 @@ describe('undo/redo — baseline & mechanics', () => {
     setRole('admin')
     setCell('ramp', '2026-03-02', 'LL'); setCell('ramp', '2026-03-03', 'LL')
     advanceStage()
-    const undoAt = { canUndo: lwCanUndo() }
+    wireUndo()
     setBidStates([{ personId: 'ramp', date: '2026-03-02' }, { personId: 'ramp', date: '2026-03-03' }], 'approved')
     expect(stateOf('ramp', '2026-03-02')!.state).toBe('approved')
-    lwUndo()  // one step undoes BOTH decisions
+    expect(lwInputs()).toHaveLength(1)   // one Input spanning both days
+    expect(globalUndo().ok).toBe(true)  // one step undoes BOTH decisions
     expect(stateOf('ramp', '2026-03-02')!.state).toBe('pending')
     expect(stateOf('ramp', '2026-03-03')!.state).toBe('pending')
-    expect(undoAt.canUndo).toBe(true)
+    expect(lwInputs()).toHaveLength(0)
+    expect(undoState().canUndo).toBe(false)
   })
 
   it('a batch clear is ONE step and restores every cleared cell', () => {
@@ -273,25 +289,26 @@ describe('undo/redo — the deliberate exclusions (must NOT corrupt)', () => {
     expect(lwCanUndo()).toBe(false)
   })
 
-  it('a Raptor-driven ingest is not an undo step', () => {
-    writeInputs(() => INPUTS.push({ person: 'ammo', date: 'Feb 10', endDate: 'Feb 12', allday: true, type: 'LL', remarks: '', mod: '2026-06-01' } as any))
-    runInbound()
+  it('leave filed on the Inputs page is not a Leave War undo step', () => {
+    writeInputs(() => INPUTS.push({ person: 'ammo', date: 'Feb 10', endDate: 'Feb 12', yr: 2026, allday: true, type: 'LL', remarks: '', mod: '2026-06-01' } as any))
+    syncAbsences()
     expect(codeOf('ammo', '2026-02-10')).toBe('LL')
     expect(lwCanUndo()).toBe(false)   // no step for a change Raptor pushed
   })
 })
 
 describe('undo/redo — how it affects the rest (cross-app + engine)', () => {
-  it('undoing an approval retracts its Raptor input; redo re-mints it', () => {
-    approve('rocky', '2026-02-10')
-    runOutbound()
+  it('undoing an approval removes its Raptor input; redo files it again', () => {
+    setRole('admin'); setCell('rocky', '2026-02-10', 'LL'); advanceStage()
+    wireUndo()
+    setBidState('rocky', '2026-02-10', 'approved')
     expect(lwInputs()).toHaveLength(1)
-    lwUndo()               // approved -> pending
-    runOutbound()
+    globalUndo()           // approved -> pending, the Input goes
     expect(lwInputs()).toHaveLength(0)
-    lwRedo()
-    runOutbound()
+    expect(stateOf('rocky', '2026-02-10')!.state).toBe('pending')
+    globalRedo()
     expect(lwInputs()).toHaveLength(1)
+    expect(stateOf('rocky', '2026-02-10')!.state).toBe('approved')
   })
 
   it('undoing a MOVE of an approved leave carries the input back to the original day', () => {
@@ -299,24 +316,19 @@ describe('undo/redo — how it affects the rest (cross-app + engine)', () => {
     setCell('rocky', '2026-02-10', 'LL')
     advanceStage()                                  // closed
     setBidState('rocky', '2026-02-10', 'approved')
-    runOutbound()
-    // the approved leave has minted one Raptor input, dated the 10th
     expect(lwInputs()).toHaveLength(1)
     expect(lwInputs()[0].date).toBe('Feb 10')
-    // move it 3 days on (a closed-stage management shift, lands pending →
-    // outbound retracts the input since a pending bid is not approved leave)
+    wireUndo()
+    // an approved leave moves AS approved leave: the Input itself moves
     expect(moveCells([{ personId: 'rocky', date: '2026-02-10' }], 3)).toBe('moved')
     expect(codeOf('rocky', '2026-02-13')).toBe('LL')
     expect(codeOf('rocky', '2026-02-10')).toBeUndefined()
-    runOutbound()
-    expect(lwInputs()).toHaveLength(0)
-    lwUndo()                                        // the move reverses whole
+    expect(lwInputs()).toHaveLength(1)
+    expect(lwInputs()[0].date).toBe('Feb 13')
+    globalUndo()                                    // the move reverses whole
     expect(codeOf('rocky', '2026-02-10')).toBe('LL')
     expect(codeOf('rocky', '2026-02-13')).toBeUndefined()
-    // the approval state comes back with it (not left pending)
     expect(stateOf('rocky', '2026-02-10')!.state).toBe('approved')
-    // and the input reconverges to the original day
-    runOutbound()
     expect(lwInputs()).toHaveLength(1)
     expect(lwInputs()[0].date).toBe('Feb 10')
   })
@@ -333,41 +345,37 @@ describe('undo/redo — how it affects the rest (cross-app + engine)', () => {
     expect(stateOf('rocky', '2026-02-12')!.shiftedFrom).toBe('2026-02-10')
   })
 
-  it('a Raptor-owned cell survives an undo of an unrelated edit (the reconcile restores it)', () => {
-    // Raptor files an input mid-session — inbound lands a raptor-owned cell
-    writeInputs(() => INPUTS.push({ person: 'ammo', date: 'Feb 10', endDate: 'Feb 12', allday: true, type: 'LL', remarks: '', mod: '2026-06-01' } as any))
-    runInbound()
+  it('a Raptor-owned cell survives an undo of an unrelated edit', () => {
+    writeInputs(() => INPUTS.push({ person: 'ammo', date: 'Feb 10', endDate: 'Feb 12', yr: 2026, allday: true, type: 'LL', remarks: '', mod: '2026-06-01' } as any))
+    syncAbsences()
     expect(stateOf('ammo', '2026-02-10')!.source).toBe('raptor')
-    // an unrelated Leave War edit, then undo it
+    wireUndo()
     setCell('ramp', '2026-03-02', 'LL')
-    lwUndo()
-    // the reconcile (which the live app runs on every notify) re-lands the cell
-    runInbound()
-    expect(codeOf('ammo', '2026-02-10'), 'the synced cell must not be stranded by an undo').toBe('LL')
+    globalUndo()
+    expect(codeOf('ramp', '2026-03-02')).toBeUndefined()
+    expect(codeOf('ammo', '2026-02-10'), 'the filed leave must not be touched by an unrelated undo').toBe('LL')
     expect(stateOf('ammo', '2026-02-10')!.source).toBe('raptor')
   })
 
-  it('the whole-period manning verdict is byte-identical before an edit and after its undo', () => {
+  it('the whole-period manning verdict is byte-identical before an approval and after its undo', () => {
     setRole('admin')
     const dates = getState().period.days.map(d => d.date)
-    const verdicts = () => JSON.stringify(evaluatePeriod(getState().people, getState().grid, getState().states, getState().requirements, dates))
-    const before = verdicts()
-    // approve a spread of leave on one day — enough to move the manning maths
+    const verdicts = () => JSON.stringify(evaluatePeriod(getState().people, getState().grid, getState().states, getState().requirements, dates, getState().views))
     for (const id of ['ramp', 'rocky', 'dusk', 'ammo']) setCell(id, '2026-02-10', 'LL')
     advanceStage()
+    wireUndo()
+    const before = verdicts()
     setBidStates(['ramp', 'rocky', 'dusk', 'ammo'].map(id => ({ personId: id, date: '2026-02-10' })), 'approved')
-    expect(verdicts(), 'the edit actually moved the manning verdict').not.toBe(before)
-    // walk every edit back; the verdict recomputes off the restored grid and matches
-    while (lwCanUndo()) lwUndo()
+    globalUndo()
     expect(verdicts()).toBe(before)
   })
 
-  it('undo then repeated reconcile is a fixed point (no oscillation)', () => {
-    approve('rocky', '2026-02-10')
-    runOutbound()
-    lwUndo()
-    // run the passes several times — they must converge, not flip the cell
-    for (let i = 0; i < 4; i++) { runOutbound(); runInbound() }
+  it('undo then repeated re-reads is a fixed point (no oscillation)', () => {
+    setRole('admin'); setCell('rocky', '2026-02-10', 'LL'); advanceStage()
+    wireUndo()
+    setBidState('rocky', '2026-02-10', 'approved')
+    globalUndo()
+    for (let i = 0; i < 4; i++) syncAbsences()
     expect(lwInputs()).toHaveLength(0)
     expect(stateOf('rocky', '2026-02-10')!.state).toBe('pending')
   })

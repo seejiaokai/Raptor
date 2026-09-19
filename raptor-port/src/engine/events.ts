@@ -93,6 +93,10 @@ export function shiftHardGround(e:any){
        Other stopped grading hard by its source type). */
     const inp=inpById(row.src);
     if(inp&&inpMeta(inp.type))return shiftHardInput(inp.type);
+    /* [ARCH-STACK] step 4 §8.1 — the input is GONE (deleted after it landed):
+       the row keeps the type it was landed from, so an orphaned 'Other' keeps
+       its hard-clash grade instead of falling back to the label keywords. */
+    if(!inp&&row.srcType&&inpMeta(row.srcType))return shiftHardInput(row.srcType);
   }
   return shiftHardLabel(e.label);
 }

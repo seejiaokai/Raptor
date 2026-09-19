@@ -3130,22 +3130,19 @@ async function seedRedDays(page: Page) {
         events: ['', ''], blocked: false, blockedReason: '', ph: false,
       })
     }
-    const grid: Record<string, Record<string, string>> = {}
-    const states: Record<string, Record<string, unknown>> = {}
+    /* [ARCH-STACK] step 4: the war stores a LIST of its own records per
+       person/date — here one pending LL request each */
+    const recs: Record<string, Record<string, unknown[]>> = {}
     for (const id of sxo) {
-      grid[id] = {}
-      states[id] = {}
-      for (const d of red) {
-        grid[id][d] = 'LL'
-        states[id][d] = { state: 'pending', source: 'bid' }
-      }
+      recs[id] = {}
+      for (const d of red) recs[id][d] = [{ id: `rd-${id}-${d}`, kind: 'request', code: 'LL', state: 'pending' }]
     }
     const war = {
       period: {
         id: 'y2026', name: 'JAN - DEC 26', start: '2026-01-01', end: '2026-12-31',
         stage: 'open', bidFrom: null, bidTo: null, days,
       },
-      grid, states,
+      recs,
     }
     ;(window as any).lwLoadWars([war], 'y2026')
   }, RED_DAYS)

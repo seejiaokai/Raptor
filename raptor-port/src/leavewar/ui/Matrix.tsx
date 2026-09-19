@@ -74,6 +74,8 @@ import { BalanceBar } from './BalanceBar'
 import { RemarksSheet } from './RemarksSheet'
 import { leaveInputAt } from '../sync'
 import { useVersion } from './useStore'
+import { DayListSheet } from './DayList'
+import type { Views } from '../engine/dayview'
 import './matrix.css'
 
 /** A move refusal, in plain words for the move banner. */
@@ -227,6 +229,7 @@ type PersonRowProps = {
   monthDays: DayInfo[][]
   grid: Grid
   states: States
+  views: Views
   role: Role
   viewer: string | null
   deciding: boolean
@@ -264,6 +267,9 @@ type PersonMonthProps = {
   days: DayInfo[]
   grid: Grid
   states: States
+  /** the day views ([ARCH-STACK] step 4) — the corner mark and leave dated
+   *  outside the person's time in the squadron read them */
+  views: Views
   role: Role
   viewer: string | null
   deciding: boolean
@@ -280,7 +286,7 @@ const setPhWidth = (el: HTMLElement, w: string) => {
   s.width = w; s.minWidth = w; s.maxWidth = w
 }
 
-const PersonRow = memo(function PersonRow({ p, version, period, monthDays, grid, states, role, viewer, deciding, movedShown, shown, figureCtx, figSel, evKind, lockedCols, quals, me, arranging, dragging, over, api, padL, padR, phL, phR }: PersonRowProps) {
+const PersonRow = memo(function PersonRow({ p, version, period, monthDays, grid, states, views, role, viewer, deciding, movedShown, shown, figureCtx, figSel, evKind, lockedCols, quals, me, arranging, dragging, over, api, padL, padR, phL, phR }: PersonRowProps) {
   const has = quals.length > 0
   // The selected figure's LINES for this person — the two-line box's own
   // number on top, the days taken from it stacked under (FigureCell, 6 Sep
@@ -386,6 +392,7 @@ const PersonRow = memo(function PersonRow({ p, version, period, monthDays, grid,
           days={md}
           grid={grid}
           states={states}
+          views={views}
           role={role}
           viewer={viewer}
           deciding={deciding}
@@ -402,7 +409,7 @@ const PersonRow = memo(function PersonRow({ p, version, period, monthDays, grid,
 
 // One month of a person's day cells. `version` is a memo input only: every
 // store change still repaints every cell through it, exactly as the row did.
-const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, role, viewer, deciding, movedShown, evKind, lockedCols, api }: PersonMonthProps) {
+const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, views, role, viewer, deciding, movedShown, evKind, lockedCols, api }: PersonMonthProps) {
   return (
     <>
       {days.map(d => {
@@ -413,8 +420,17 @@ const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, r
         // having been posted out, and must not read as one. Only the "after
         // `to`" direction is a genuine PO.
         const notYetArrived = !here && p.from !== null && d.date < p.from
+        /* [ARCH-STACK] step 4 — owner answer C (20 Sep 26): leave may be dated
+           before someone posts in and after they post out (clearing leave). It
+           SHOWS as the leave code — blank-looking before posting-in, with the
+           small PO tag after posting-out — and never counts for manning (the
+           hatch stays). */
+        const view = views[p.id]?.[d.date]
+        const outLeave = !here && !!code && !!view?.main && codeOf(view.main.code)?.spends != null
+        const mark = view?.mark ?? ''
         const cls = [
           here ? '' : 'gone',
+          outLeave ? 'outlv' : '',
           here && isDuty(code) ? 'duty' : '',
           // The band runs the whole column, not just the header — finding a
           // Tuesday in 90 columns should not need counting. `.gone`'s hatch
@@ -434,7 +450,7 @@ const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, r
         // The stored notation, printed through the one display mapping — the
         // ATT markers read as the owner's bare B / C on the grid while
         // everything else prints as stored (displayCell is identity for it).
-        const text = here ? displayCell(code) : notYetArrived ? '' : 'PO'
+        const text = here || outLeave ? displayCell(code) : notYetArrived ? '' : 'PO'
         // Duty first for the reader — FO/HO are work, not a bid. (They carry
         // `bid: false`, so they could not reach a bid branch anyway; the
         // order is legibility, not a guard.) Then the bid state, but only
@@ -451,7 +467,7 @@ const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, r
         // somebody has seen this — and the absence of colour means the
         // absence of news.
         const bid = stateOf(states, p.id, d.date)
-        const chipState = !here || !code
+        const chipState = (!here && !outLeave) || !code
           ? ''
           : isDuty(code) ? 'sc'
           : !isBiddable(code) ? 'info'
@@ -464,7 +480,7 @@ const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, r
         // asterisk here in the component. The asterisk in `text` stays the
         // one source of truth; this is only a derived echo of it, so the two
         // can never disagree.
-        const portion = here && code ? parseCell(code)?.portion : undefined
+        const portion = (here || outLeave) && code ? parseCell(code)?.portion : undefined
         const portionClass = portion === 'am' || portion === 'pm' ? ` ${portion}` : ''
         // Two marks on top of the state colour, never instead of it: the
         // squadron reads green as approved and magenta as pending, and that
@@ -472,8 +488,8 @@ const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, r
         // nothing on this screen will change it; `moved` says management
         // shifted this bid off another date.
         const marks = [
-          here && code && raptorOwns(states, p.id, d.date) ? 'raptor' : '',
-          movedShown && here && code && shiftedFrom(states, p.id, d.date) ? 'moved' : '',
+          (here || outLeave) && code && raptorOwns(states, p.id, d.date) ? 'raptor' : '',
+          movedShown && (here || outLeave) && code && shiftedFrom(states, p.id, d.date) ? 'moved' : '',
         ].filter(Boolean).join(' ')
         // A cell outside the person's time in the squadron is never
         // actionable FOR A BID: bidding leave for a man who has been posted
@@ -482,7 +498,12 @@ const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, r
         // struck day to undo"); `notYetArrived` is excluded — a day before
         // someone joins is blank, not a post-out, and nothing there to undo.
         const actionable =
-          (here && cellOpenable(states, period, role, viewer, deciding, grid, p.id, d.date)) || (role === 'admin' && !here && !notYetArrived)
+          (here && cellOpenable(states, period, role, viewer, deciding, grid, p.id, d.date)) || (role === 'admin' && !here && !notYetArrived) ||
+          // a marked day always opens its list; leave dated outside the
+          // squadron window opens for an admin and for the person themself
+          (!!mark && (here || outLeave)) || (outLeave && (role === 'admin' || viewer === p.id)) ||
+          // …and the person may bid clearing leave on a day after posting out
+          (!here && !notYetArrived && role !== 'admin' && viewer === p.id && canEditCell(period, role, d.date))
         // Their LAST day in the squadron wears a small PO tag (owner, 19 Aug
         // 26 — chosen over nothing after the edge case was put to him):
         // someone posting out on the 1st has a final month that otherwise
@@ -495,7 +516,7 @@ const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, r
           <td
             key={d.date}
             data-testid={`cell-${p.id}-${d.date}`}
-            className={`${cls}${actionable ? ' act' : ''}${lastIn ? ' pofin' : ''}`}
+            className={`${cls}${actionable ? ' act' : ''}${lastIn ? ' pofin' : ''}${mark ? ' mkd' : ''}`}
             onClick={actionable
               ? () => api.current.setOpen({ id: p.id, callsign: p.callsign, date: d.date })
               : undefined}
@@ -506,6 +527,18 @@ const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, r
               >
                 {text}
               </span>
+            )}
+            {mark && (here || outLeave || notYetArrived) && (
+              <span
+                className={`mk ${view!.amber ? 'warn' : 'more'}`}
+                data-testid={`mark-${p.id}-${d.date}`}
+                title={view!.amber ? 'Something on this day needs an admin — tap to see' : 'More on this day — tap to see'}
+              >
+                {mark}
+              </span>
+            )}
+            {outLeave && !notYetArrived && (
+              <span className="potag" data-testid={`potag-${p.id}-${d.date}`}>PO</span>
             )}
             {lastIn && (
               <span
@@ -529,7 +562,7 @@ export function Matrix() {
      memo keyed only on the selection went stale when a sync pass changed a
      selected cell under an armed move */
   const version = useVersion()
-  const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, focusDate, focusSeq, qualCatalog, groupColors } = getState()
+  const { people, period, grid, states, views, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, focusDate, focusSeq, qualCatalog, groupColors } = getState()
   const dates = period.days.map(d => d.date)
   // Memoized on the store objects (the store replaces what it writes, so
   // identity IS change): rules-as-data made a day's evaluation walk every
@@ -537,9 +570,9 @@ export function Matrix() {
   // VIEW-state render (a sheet opening, Rearrange toggling) is waste the old
   // fixed-kind lookup merely tolerated.
   const verdicts = useMemo(
-    () => evaluatePeriod(people, grid, states, requirements, dates),
+    () => evaluatePeriod(people, grid, states, requirements, dates, views),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [people, grid, states, requirements, period],
+    [people, grid, states, views, requirements, period],
   )
   // The colour a whole day column takes from its events: light green for an
   // off day (a PH), orange for a no-leave day. Computed once per day and read
@@ -569,6 +602,8 @@ export function Matrix() {
   // controls on screen.
   const [open, setOpen] = useState<{ id: string; callsign: string; date: string } | null>(null)
   const close = () => setOpen(null)
+  /* the published note editor opened FROM the tap list, for one Input */
+  const [listRemark, setListRemark] = useState<{ at: string; row: any } | null>(null)
   // The DRAG-SELECTION (owner, 27 Aug 26): the rectangle the last drag left,
   // and the sheet it opens. `moveSel` is the selection currently being MOVED
   // (Task E) — sheet closed, waiting for a drop. Both cleared on a stage/war
@@ -3068,7 +3103,15 @@ export function Matrix() {
   const remarkRow = open && period.stage === 'published'
     ? leaveInputAt(open.id, open.date, grid[open.id]?.[open.date])
     : null
-  const canRemark = !!remarkRow && (role === 'admin' || (!!open && open.id === viewer))
+  /* [ARCH-STACK] step 4 — a day holding more than one record (the corner
+     mark), or leave dated outside the person's time in the squadron (owner
+     answer C), opens THE TAP LIST: every record on its own line with its own
+     actions (design §25 OA10-001). It comes before every single-record sheet
+     below, which stay exactly as they were for a one-record day. */
+  const openView = open ? views[open.id]?.[open.date] : undefined
+  const listOpen = !!open && !!openView && (openView.mark !== '' ||
+    (!!openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null))
+  const canRemark = !listOpen && !!remarkRow && (role === 'admin' || (!!open && open.id === viewer))
 
   // Which sheet a click opens follows from three things: the stage, the role,
   // and what the cell already holds.
@@ -3478,6 +3521,7 @@ export function Matrix() {
                         monthDays={drawnMonthDays}
                         grid={grid}
                         states={states}
+                        views={views}
                         role={role}
                         viewer={viewer}
                         deciding={deciding}
@@ -3737,6 +3781,29 @@ export function Matrix() {
           Raptor sheet, because on a published war editing the note is the
           point, and the note lives on the same Raptor row the read-only sheet
           would only point at. */}
+      {open && listOpen && !(listRemark && listRemark.at === `${open.id}|${open.date}`) && (
+        <DayListSheet
+          key={`dl-${open.id}-${open.date}`}
+          personId={open.id}
+          callsign={open.callsign}
+          date={open.date}
+          view={openView!}
+          role={role}
+          viewer={viewer}
+          period={period}
+          onEditRemark={row => setListRemark({ at: `${open.id}|${open.date}`, row })}
+          onClose={close}
+        />
+      )}
+      {open && listRemark && listRemark.at === `${open.id}|${open.date}` && (
+        <RemarksSheet
+          key={`dlrmk-${open.id}-${open.date}`}
+          callsign={open.callsign}
+          row={listRemark.row}
+          code={grid[open.id]?.[open.date] ?? ''}
+          onClose={() => setListRemark(null)}
+        />
+      )}
       {open && canRemark && (
         <RemarksSheet
           key={`rmk-${open.id}-${open.date}`}
@@ -3750,7 +3817,7 @@ export function Matrix() {
           sheets. That cell is approved elsewhere: offering a picker or a
           decision on it would offer an action the store will refuse, which
           is worse than offering nothing. */}
-      {open && !canRemark && raptorOwns(states, open.id, open.date) && (
+      {open && !listOpen && !canRemark && raptorOwns(states, open.id, open.date) && (
         <RaptorSheet
           callsign={open.callsign}
           date={open.date}
@@ -3834,7 +3901,7 @@ export function Matrix() {
       {/* A posted-out cell an admin tapped: the ONE control it offers is Undo,
           and it short-circuits every bid/decision sheet below (owner, 18 Aug
           26). */}
-      {open && !canRemark && openPostedOut && role === 'admin' && (
+      {open && !listOpen && !canRemark && openPostedOut && role === 'admin' && (
         <PostOutSheet
           callsign={open.callsign}
           date={open.date}
@@ -3983,7 +4050,9 @@ export function Matrix() {
           dragAfter={dragAfter}
         />
       )}
-      {open && !canRemark && !openPostedOut && !raptorOwns(states, open.id, open.date)
+      {/* a member may bid CLEARING leave after their own posting-out (owner
+          answer C, 20 Sep 26) — the admin's tap there stays the PO sheet */}
+      {open && !listOpen && !canRemark && (!openPostedOut || role !== 'admin') && !raptorOwns(states, open.id, open.date)
         && canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id)
         && !(deciding && isBiddable(grid[open.id]?.[open.date])) && (
         <BidPicker
@@ -4052,7 +4121,7 @@ export function Matrix() {
           and without the term here BOTH mounted on a posted-out day that
           still held a bid — the decision sheet painting on top of the Undo
           the admin actually tapped for. One `open`, one sheet. */}
-      {open && !canRemark && !openPostedOut && !raptorOwns(states, open.id, open.date) && deciding
+      {open && !listOpen && !canRemark && !openPostedOut && !raptorOwns(states, open.id, open.date) && deciding
         && isBiddable(grid[open.id]?.[open.date]) && (
         <DecisionSheet
           key={`${open.id}-${open.date}`}

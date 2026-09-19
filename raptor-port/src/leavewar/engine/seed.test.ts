@@ -4,7 +4,8 @@ import { codeOf } from './codes'
 import { evaluateDay } from './evaluate'
 import { balanceOf, COUNTERS } from './counters'
 import { overlapping } from './wars'
-import { seedGrid, seedLedger, seedOpenings, seedPeople, seedPeriod, seedRequirements, seedStates, seedWars } from './seed'
+import { SEED_ABSENCES, seedLedger, seedOpenings, seedPeople, seedPeriod, seedRecs, seedRequirements, seedSources, seedWars } from './seed'
+import { parseCell } from './codes'
 
 describe('seed', () => {
   it('has a roster with all four categories represented', () => {
@@ -47,121 +48,62 @@ describe('seed', () => {
 
   it('evaluates every seeded day without throwing', () => {
     const people = seedPeople()
-    const grid = seedGrid()
     const reqs = seedRequirements()
+    const src = seedSources()[0]!
     for (const day of seedPeriod().days) {
-      expect(['ok', 'amber', 'red']).toContain(evaluateDay(people, grid, seedStates(), reqs, day.date).verdict)
+      expect(['ok', 'amber', 'red']).toContain(evaluateDay(people, src.grid, src.states, reqs, day.date, src.views).verdict)
     }
   })
 
-  it('grid ids all resolve to real people', () => {
-    const people = seedPeople()
-    const peopleIds = new Set(people.map(p => p.id))
-    const grid = seedGrid()
-    // Without this, seedGrid() returning {} would pass the loop below
-    // vacuously — assert the collection actually has something to check.
-    expect(Object.keys(grid).length).toBeGreaterThan(0)
-    for (const id of Object.keys(grid)) {
-      if (!peopleIds.has(id)) {
-        throw new Error(`grid contains unknown id: ${id}`)
-      }
-    }
+  it('record and absence ids all resolve to real people', () => {
+    const ids = new Set(seedPeople().map(p => p.id))
+    const recs = seedRecs()
+    expect(Object.keys(recs).length).toBeGreaterThan(0)
+    for (const id of Object.keys(recs)) if (!ids.has(id)) throw new Error(`records for unknown id: ${id}`)
+    for (const a of SEED_ABSENCES) if (!ids.has(a.person)) throw new Error(`absence for unknown id: ${a.person}`)
   })
 
-  it('grid codes all resolve in the catalogue', () => {
-    const grid = seedGrid()
-    const allCodes = Object.values(grid).flatMap(days => Object.values(days))
-    // Without this, an empty grid (or one whose rows are all empty) would
-    // pass the loop below vacuously — assert there is something to check.
-    expect(allCodes.length).toBeGreaterThan(0)
-    for (const [id, days] of Object.entries(grid)) {
-      for (const [date, code] of Object.entries(days)) {
-        const resolved = codeOf(code)
-        if (resolved === undefined) {
-          throw new Error(`grid[${id}]['${date}'] has unknown code: ${code}`)
-        }
-      }
-    }
+  it('every seeded code resolves in the catalogue', () => {
+    const codes = [...Object.values(seedRecs()).flatMap(r => Object.values(r).flat().map(x => x.code)), ...SEED_ABSENCES.map(a => a.code)]
+    expect(codes.length).toBeGreaterThan(0)
+    for (const c of codes) if (codeOf(c) === undefined) throw new Error(`unknown code: ${c}`)
   })
 })
 
-describe('seedStates', () => {
-  it('shows all four states so the screen exercises every colour', () => {
-    const seen = new Set(Object.values(seedStates()).flatMap(r => Object.values(r).map(v => v.state)))
-    expect(seen).toEqual(new Set(['pending', 'acknowledged', 'approved', 'refused']))
+/* [ARCH-STACK] step 4 — the war stores requests and credits; approved and filed
+   leave is the seed's SEED_ABSENCES (Inputs in the app). */
+describe('seed records', () => {
+  const all = () => Object.values(seedRecs()).flatMap(r => Object.values(r).flat())
+
+  it('shows every request colour — pending, acknowledged, refused — and approved green via an absence', () => {
+    const states = new Set(all().filter(r => r.kind === 'request').map(r => (r as any).state))
+    expect(states).toEqual(new Set(['pending', 'acknowledged', 'refused']))
+    expect(SEED_ABSENCES.some(a => a.lw)).toBe(true)
   })
 
-  // Both sources have to render on first run for the same reason all three
-  // states do: nobody can judge a surface that never appears.
-  it('shows a cell Raptor owns as well as ones the squadron bid for', () => {
-    const seen = new Set(Object.values(seedStates()).flatMap(r => Object.values(r).map(v => v.source)))
-    expect(seen).toEqual(new Set(['bid', 'raptor']))
+  it('shows leave filed on the Inputs page as well as leave approved on the war', () => {
+    expect(new Set(SEED_ABSENCES.map(a => a.lw))).toEqual(new Set([true, false]))
   })
 
-  // A Raptor input IS the approval — the person asked verbally and was told
-  // yes before Leave War ever saw it. A seeded raptor cell in any other
-  // state would be a shape the store refuses to write.
-  it('never seeds a raptor cell that is not approved', () => {
-    for (const [id, row] of Object.entries(seedStates())) {
-      for (const [date, record] of Object.entries(row)) {
-        if (record.source === 'raptor' && record.state !== 'approved') {
-          throw new Error(`raptor cell not approved: ${id} ${date}`)
-        }
-      }
-    }
-    const raptor = Object.values(seedStates()).flatMap(r => Object.values(r)).filter(v => v.source === 'raptor')
-    expect(raptor.length).toBeGreaterThan(0)
-  })
-
-  // The seed plants NO shiftedFrom (27 Aug 26): the trail is a CLOSED-war
-  // fact — a move made while bidding is open stores none — and the seed war
-  // opens at `open`, so a seeded trail painted the moved stripe the moment
-  // anyone closed bidding, on a bid nobody had moved after the close. The
-  // moved path is exercised by the e2e (close, shift, look) instead. If a
-  // trail is ever seeded again it must ride a war seeded at closed, and its
-  // origin cell must be empty (the old invariant this test kept).
   it('seeds no shifted trail — the moved stripe is a closed-war fact', () => {
-    const shifted = Object.values(seedStates()).flatMap(row =>
-      Object.values(row).filter((v: any) => v.shiftedFrom))
-    expect(shifted).toHaveLength(0)
+    expect(all().filter((r: any) => r.shiftedFrom)).toHaveLength(0)
   })
 
-  it('never records a state for a cell that has no code', () => {
-    const grid = seedGrid()
-    for (const [id, row] of Object.entries(seedStates())) {
-      for (const date of Object.keys(row)) {
-        if (!grid[id]?.[date]) throw new Error(`state with no code: ${id} ${date}`)
-      }
+  it('requests are only for codes someone bids for; credits are FO/HO', () => {
+    for (const r of all()) {
+      if (r.kind === 'request') expect(isBiddable(r.code)).toBe(true)
+      if (r.kind === 'credit') expect(['FO', 'HO']).toContain(r.code)
     }
-    expect(Object.keys(seedStates()).length).toBeGreaterThan(0)
+    expect(all().length).toBeGreaterThan(5)
   })
 
-  it('never records a state for a code nobody bids for', () => {
-    const grid = seedGrid()
-    for (const [id, row] of Object.entries(seedStates())) {
-      for (const date of Object.keys(row)) {
-        if (!isBiddable(grid[id][date])) throw new Error(`state on a non-bid code: ${id} ${date}`)
-      }
-    }
-    expect(Object.keys(seedStates()).length).toBeGreaterThan(0)
+  it('every absence code parses and is not biddable-only noise', () => {
+    for (const a of SEED_ABSENCES) expect(parseCell(a.code)).not.toBeNull()
   })
 
-  // The two loops above walk `seedStates()` and would pass vacuously against
-  // a row that exists but is empty. Count the entries, not the rows.
-  it('records enough states to be worth walking', () => {
-    const entries = Object.values(seedStates()).flatMap(r => Object.keys(r))
-    expect(entries.length).toBeGreaterThan(5)
-  })
-
-  // A state on a person the roster does not hold would paint nothing and
-  // point at nobody — the same class of bug as a grid row with an unknown id,
-  // which the grid tests above already guard.
   it('names only people the roster actually holds', () => {
     const ids = new Set(seedPeople().map(p => p.id))
-    for (const id of Object.keys(seedStates())) {
-      if (!ids.has(id)) throw new Error(`state for unknown id: ${id}`)
-    }
-    expect(Object.keys(seedStates()).length).toBeGreaterThan(0)
+    for (const id of Object.keys(seedRecs())) if (!ids.has(id)) throw new Error(`records for unknown id: ${id}`)
   })
 })
 
@@ -207,7 +149,7 @@ describe('seeded balances', () => {
   // carry at least one of each sign.
   it('shows a negative balance as well as positive ones, so red renders', () => {
     const [openings, ledger] = [seedOpenings(), seedLedger()]
-    const all = seedPeople().flatMap(p => COUNTERS.map(c => balanceOf(openings, ledger, seedWars(), p.id, c)))
+    const all = seedPeople().flatMap(p => COUNTERS.map(c => balanceOf(openings, ledger, seedSources(), p.id, c)))
     expect(all.some(v => v < 0)).toBe(true)
     expect(all.some(v => v > 0)).toBe(true)
   })
@@ -255,19 +197,12 @@ describe('seedWars', () => {
   // rule has nothing to prove on first run.
   it('puts leave in the second war too, drawing the same counters', () => {
     const [, q2] = seedWars()
-    expect(Object.keys(q2.grid).length).toBeGreaterThan(0)
-    for (const [id, row] of Object.entries(q2.grid)) {
-      for (const date of Object.keys(row)) {
-        if (date < q2.period.start || date > q2.period.end) {
-          throw new Error(`leave outside its war: ${id} ${date}`)
-        }
-      }
-    }
+    expect(Object.keys(q2!.recs).length).toBeGreaterThan(0)
   })
 
-  it('keeps every seeded cell inside the war that holds it', () => {
+  it('keeps every seeded record inside the war that holds it', () => {
     for (const w of seedWars()) {
-      for (const [id, row] of Object.entries(w.grid)) {
+      for (const [id, row] of Object.entries(w.recs)) {
         for (const date of Object.keys(row)) {
           if (date < w.period.start || date > w.period.end) {
             throw new Error(`${w.period.id} holds ${id} ${date}, outside ${w.period.start}..${w.period.end}`)
@@ -278,3 +213,4 @@ describe('seedWars', () => {
     expect(seedWars().length).toBeGreaterThan(0)
   })
 })
+

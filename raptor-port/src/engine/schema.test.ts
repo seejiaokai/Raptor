@@ -97,7 +97,7 @@ const inputSpec = (booted: boolean): Spec => ({
 })
 const FLAGS = { cx: 'boolean?', cxr: 'string?', flag: 'boolean?' }
 const ALLHANDS: Spec = { ...FLAGS, prog: 'string', str: 'string', end: 'string', who: { $opt: { $or: ['string', ['string']] } }, more: { $opt: ['string'] }, info: 'boolean?', rid: 'string?' }
-const GROUND: Spec = { ...(ALLHANDS as object), rmks: 'string?', src: 'string?' }
+const GROUND: Spec = { ...(ALLHANDS as object), rmks: 'string?', src: 'string?', srcType: 'string?' }
 const SAKIND: Spec = { $lit: ['sc', 'avalon', 'bb'] }
 const SEAT: Spec = { ...FLAGS, p: 'string', w: 'string', area: 'string', rmks: 'string', opts: { $map: { $or: ['boolean', 'string'] } }, spare: 'boolean?', role: { $opt: { $lit: ['MAIN', 'SPARE'] } }, rid: 'string?' }
 const FORMATION: Spec = { cs: 'string', msn: 'string', shift: 'string?', to: 'string', ld: 'string', br: 'string?', area: 'string?', atime: 'string?', aircraft: [SEAT], cx: 'boolean?', cxr: 'string?', rid: 'string?' }

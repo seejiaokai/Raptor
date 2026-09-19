@@ -1,5 +1,10 @@
 # Leave War ⇄ RAPTOR sync — the design
 
+> **SUPERSEDED for leave by [ARCH-STACK] step 4 (20 Sep 26).** Wires 1–2 (the two-way copy of
+> approved leave) are deleted: an absence is ONE record, the Raptor Input, and the war derives what
+> it shows on read. See `2026-09-19-arch-stack-4-one-absence-design.md` and
+> `2026-09-20-arch-stack-4-clash-check.md`. Wire 0 (roster) and wire 4 (OIL) below still stand.
+
 **STATUS (17 Aug 26): wires 0–3 are BUILT** — `src/leavewar/state/raptorRoster.ts`
 (projection) + `state/demoworld.ts` (the fresh-browser demo re-key, DEMO_MAP) +
 `src/leavewar/sync.ts` (both reconcilers, the clash strip, `wireLeaveWarSync`

@@ -10,6 +10,9 @@ import { memoryBackend } from './storage'
 import { commit, definePermission, anyone, isOk } from '../../command'
 import type { RecordEntry, CommitResult } from '../../command'
 
+/* [ARCH-STACK] step 4: an lw.cell value is the LIST of the war's own records on that person/date */
+const req = (code: string, id = 'r-seam') => [{ id, kind: 'request', code, state: 'pending' }] as any
+
 beforeEach(() => {
   initStore(memoryBackend())
   definePermission('test.restore', anyone)
@@ -27,7 +30,7 @@ describe('LW write() — cell round-trip + create->delete', () => {
     const warId = getState().period.id
     const pid = getState().people[0].id
     const id = `${warId}:${pid}:2026-01-20`
-    let r = restore([{ collection: 'lw.cell', id, value: 'LL', op: 'put' }])
+    let r = restore([{ collection: 'lw.cell', id, value: req('LL'), op: 'put' }])
     expect(isOk(r)).toBe(true)
     expect(getState().grid[pid]['2026-01-20']).toBe('LL')
     r = restore([{ collection: 'lw.cell', id, op: 'delete' }])
@@ -39,19 +42,19 @@ describe('LW write() — cell round-trip + create->delete', () => {
     // seed a couple of cells so the set is non-trivial
     const warId = getState().period.id
     const pid = getState().people[0].id
-    restore([{ collection: 'lw.cell', id: `${warId}:${pid}:2026-01-21`, value: 'AL', op: 'put' }])
+    restore([{ collection: 'lw.cell', id: `${warId}:${pid}:2026-01-21`, value: req('AL'), op: 'put' }])
     const before = lwStore.records()
     const entries: RecordEntry[] = [...before.values()].map(e => ({ collection: e.collection, id: e.id, value: e.value, op: 'put' }))
     const r = restore(entries)
     expect(isOk(r)).toBe(true)
     const after = lwStore.records()
     expect([...after.keys()].sort()).toEqual([...before.keys()].sort())
-    expect(after.get(`lw.cell/${warId}:${pid}:2026-01-21`)!.value).toBe('AL')
+    expect((after.get(`lw.cell/${warId}:${pid}:2026-01-21`)!.value as any)[0].code).toBe('AL')
   })
 
   it('advances the durable-version signature on a persist', () => {
     const s0 = lwStore.signature!()
-    restore([{ collection: 'lw.cell', id: `${getState().period.id}:${getState().people[0].id}:2026-01-22`, value: 'LL', op: 'put' }])
+    restore([{ collection: 'lw.cell', id: `${getState().period.id}:${getState().people[0].id}:2026-01-22`, value: req('LL'), op: 'put' }])
     expect(lwStore.signature!()).not.toBe(s0)
   })
 
@@ -61,7 +64,7 @@ describe('LW write() — cell round-trip + create->delete', () => {
     const period = { ...getState().wars[0].period, id: newWarId, name: 'NEW 2027' }
     // cell listed BEFORE the war that must exist to hold it
     const r = restore([
-      { collection: 'lw.cell', id: `${newWarId}:${pid}:2027-02-10`, value: 'LL', op: 'put' },
+      { collection: 'lw.cell', id: `${newWarId}:${pid}:2027-02-10`, value: req('LL'), op: 'put' },
       { collection: 'lw.war', id: newWarId, value: period as any, op: 'put' },
     ])
     expect(isOk(r)).toBe(true)

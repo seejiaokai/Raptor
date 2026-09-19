@@ -9,6 +9,8 @@
 import { removesAvailability, stateOf, type BidState, type States } from './bids'
 import { codeOf, isDuty } from './codes'
 import { categoryOf, inSquadron, pilotLead, type Category, type Person } from './people'
+import { legacyViews } from './charge'
+import type { DayView, Views } from './dayview'
 import type { CrewFilter, RuleCount, TeamSlot } from './requirements'
 
 /** `personId -> date -> code`. Sparse: most cells are empty. */
@@ -207,20 +209,21 @@ function teamsOf(slots: TeamSlot[], weightOf: (p: Person) => number, people: Per
  * either teams or the people inside them. The thresholds judge the SAME
  * number the cell shows, so what the admin typed is what turns amber.
  */
-export function ruleHave(rc: RuleCount, people: Person[], grid: Grid, states: States, date: string): number {
+export function ruleHave(rc: RuleCount, people: Person[], grid: Grid, states: States, date: string, views?: Views): number {
+  const vs = views ?? legacyViews(grid, states)
   if (rc.kind === 'people') {
     let total = 0
     for (const p of people) {
       if (p.pers || p.seat === 'gnd') continue
       if (!matchesFilter(p, rc.filter)) continue
-      total += availabilityOf(p, date, grid[p.id]?.[date], stateOf(states, p.id, date))
+      total += haveOf(p, date, vs[p.id]?.[date])
     }
     return Math.round(total * 1000) / 1000
   }
   const weightOf = (p: Person): number => {
-    const code = grid[p.id]?.[date]
-    const onDuty = inSquadron(p, date) && isDuty(code)
-    const have = availabilityOf(p, date, code, stateOf(states, p.id, date))
+    const v = vs[p.id]?.[date]
+    const onDuty = inSquadron(p, date) && !!v?.duty
+    const have = haveOf(p, date, v)
     return rc.presence && onDuty ? 1 : have
   }
   // One rounding, on the number the cell shows — it kills float dust
@@ -233,7 +236,19 @@ export function ruleHave(rc: RuleCount, people: Person[], grid: Grid, states: St
   return r3(teams * size)
 }
 
-export function countsFor(people: Person[], grid: Grid, states: States, date: string): DayCounts {
+/** How much of a person a day leaves on the flying programme — read off the
+ *  day view ([ARCH-STACK] step 4): outside the squadron 0; on duty (an OIL
+ *  credit) 0; else whatever the day's records do not take (a half-day leave
+ *  0.5, a morning LL + afternoon OL 0, a refused bid nothing). */
+export function haveOf(p: Person, date: string, v: DayView | undefined): number {
+  if (!inSquadron(p, date)) return 0
+  if (!v) return 1
+  if (v.duty) return 0
+  return Math.max(0, 1 - v.away)
+}
+
+export function countsFor(people: Person[], grid: Grid, states: States, date: string, views?: Views): DayCounts {
+  const vs = views ?? legacyViews(grid, states)
   const byCategory = { IP: 0, OPSP: 0, IWSO: 0, OPSW: 0 } as Record<Category, number>
   let sxo = 0
   let duty = 0
@@ -259,11 +274,11 @@ export function countsFor(people: Person[], grid: Grid, states: States, date: st
     // tally, the category add and the seat count keeps every existing
     // threshold reading exactly the squadron it always did.
     if (p.pers || p.seat === 'gnd') continue
-    const code = grid[p.id]?.[date]
-    const onDuty = inSquadron(p, date) && isDuty(code)
+    const v = vs[p.id]?.[date]
+    const onDuty = inSquadron(p, date) && !!v?.duty
     if (onDuty) duty += 1
 
-    const have = availabilityOf(p, date, code, stateOf(states, p.id, date))
+    const have = haveOf(p, date, v)
     const present = onDuty ? 1 : have
     if (present > 0) {
       crewPresent += present

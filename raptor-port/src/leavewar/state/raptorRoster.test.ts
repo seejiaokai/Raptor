@@ -9,6 +9,7 @@ import { DEMO_MAP, installDemoWorld } from './demoworld'
 import { projectPeople, qualCatalogue } from './raptorRoster'
 import { getState, initStore } from './store'
 import { memoryBackend } from './storage'
+import { syncAbsences } from '../sync'
 import { DEFAULT_QUAL_COLS, qualCols, resetQualCols, setQualCols } from '../../engine/qualcols'
 
 /* The catalogue is Raptor's OWN LoX column list (owner, 3 Sep 26 — a
@@ -140,11 +141,17 @@ describe('the demo re-key map', () => {
 
 describe('installDemoWorld', () => {
   beforeEach(() => {
+    // The suite's setup files the seed's absences under the SEED ids; the app's
+    // own boot files them through installDemoWorld under the mapped ids — so
+    // start these from the app's INPUTS, not the suite's.
+    const seedOnly = new Set(Object.keys(DEMO_MAP).filter(k => !Object.values(DEMO_MAP).includes(k)))
+    for (let i = INPUTS.length - 1; i >= 0; i--) if (seedOnly.has((INPUTS[i] as any).person)) INPUTS.splice(i, 1)
     initStore(memoryBackend())
   })
 
   it('re-keys grid, states, openings and ledger onto people the projection holds', () => {
     installDemoWorld(false)
+    syncAbsences()   // the boot's sync re-reads the Inputs the demo filed
     const { wars, openings, ledger, people } = getState()
     const ids = new Set(people.map(p => p.id))
     for (const war of wars) {
@@ -171,7 +178,7 @@ describe('installDemoWorld', () => {
     installDemoWorld(true)
     const { wars, people } = getState()
     expect(people.find(p => p.id === 'bane')).toBeTruthy()   // projection ran
-    expect(wars[0].grid.tata['2026-01-09']).toBe('OIL')      // seed keys untouched
+    expect(wars[0].grid.tata['2026-01-01']).toBe('FO')       // seed keys untouched
     expect(wars[0].grid[DEMO_MAP.tata]).toBeUndefined()
     // The overlay is demo dressing, so it stays home too.
     expect(people.find(p => p.id === DEMO_MAP.switcher)!.to).toBeNull()
@@ -179,6 +186,7 @@ describe('installDemoWorld', () => {
 
   it('lays the demo OIL story over the seed, re-keyed with it, and only on a fresh boot', () => {
     installDemoWorld(false)
+    syncAbsences()   // the boot's sync re-reads the Inputs the demo filed
     const { wars, ledger } = getState()
     // TATA's two March takes and two earned days ride his mapped person.
     const row = wars[0]!.grid[DEMO_MAP.tata]!
@@ -201,7 +209,7 @@ describe('installDemoWorld', () => {
     installDemoWorld(false)
     installDemoWorld(false)
     const backing = INPUTS.filter(
-      (x: any) => x.type === 'OIL' && (x.person === DEMO_MAP.tata || x.person === DEMO_MAP.dusk),
+      (x: any) => x.type === 'OIL' && ((x.person === DEMO_MAP.tata && x.date === 'Jan 9') || (x.person === DEMO_MAP.dusk && x.date === 'May 4')),
     )
     expect(backing).toHaveLength(2)
     for (const row of backing) expect(row.iid).toBeTruthy()

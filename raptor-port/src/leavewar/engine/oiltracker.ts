@@ -43,7 +43,7 @@
 // is read here for the debits, so OIL USED and the tracker's balance move
 // together: an OIL day on a Saturday takes nothing from either.
 
-import { chargedDays } from './charge'
+import { chargedDays, viewsOf } from './charge'
 import { codeOf } from './codes'
 import type { FigureCtx } from './counters'
 import { addDays, addMonths, isWeekend } from './period'
@@ -198,25 +198,21 @@ export function oilLedgerFor(ctx: FigureCtx, personId: string, policy: OilPolicy
   // Which OIL days actually charge — the weekend/PH rule, and the pilots'
   // 15-day run rule, decided ONCE for the person across every war.
   const charged = chargedDays(ctx.sources, personId, ctx)
-  ctx.sources.forEach(({ grid, states }, wi) => {
-    for (const [date, code] of Object.entries(grid[personId] ?? {})) {
-      const earns = codeOf(code)?.earnsOil ?? 0
-      if (earns > 0) {
-        // The reason is the sync wire's note (`FLT`, `SIM + Duty`, an input's
-        // type — owner, 2 Sep 26) or the admin's on a hand-typed cell; a cell
-        // with no note falls back to the day's kind.
-        const rec = states[personId]?.[date]
-        const manual = rec?.source !== 'raptor'
-        const reason = rec?.note ?? (isWeekend(date) ? 'weekend duty' : 'PH duty')
-        credits.push({ id: `auto:${wi}:${date}`, date, amount: earns, reason, source: 'auto', ...(manual ? { manual } : {}), expires: expiryOf(date, policy), used: [], left: earns, expired: 0 })
-        continue
+  ctx.sources.forEach((src, wi) => {
+    for (const [date, v] of Object.entries(viewsOf(src)[personId] ?? {})) {
+      // a credit: the reason is the sync wire's note (FLT, SIM + Duty, an
+      // input's type — owner, 2 Sep 26) or the admin's; none falls back to
+      // the day's kind. `manual` = hand-typed (the tracker's reason editor).
+      const credit = v.all.find(c => c.kind === 'credit')
+      if (credit && v.earnsOil > 0) {
+        const reason = credit.note ?? (isWeekend(date) ? 'weekend duty' : 'PH duty')
+        credits.push({ id: `auto:${wi}:${date}`, date, amount: v.earnsOil, reason, source: 'auto', ...(credit.auto ? {} : { manual: true }), expires: expiryOf(date, policy), used: [], left: v.earnsOil, expired: 0 })
       }
-      const cell = codeOf(code)
-      if (!cell || cell.spends?.counter !== 'oil') continue
-      const t = charged.get(date)
-      if (!t) continue
-      const half = cell.code.startsWith('*') ? 'AM' : cell.code.endsWith('*') ? 'PM' : null
-      debits.push({ id: `take:${wi}:${date}`, date, amount: t.amount, reason: half ? `OIL taken (${half})` : 'OIL taken', source: 'taken', from: [], unbacked: 0 })
+      for (const t of charged.get(date) ?? []) {
+        if (t.counter !== 'oil') continue
+        const half = t.half === 'am' ? 'AM' : t.half === 'pm' ? 'PM' : null
+        debits.push({ id: `take:${wi}:${date}${t.half ? ':' + t.half : ''}`, date, amount: t.amount, reason: half ? `OIL taken (${half})` : 'OIL taken', source: 'taken', from: [], unbacked: 0 })
+      }
     }
   })
 

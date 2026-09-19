@@ -24,7 +24,8 @@
 // FO or HO verdict, wherever the cell came from: the sync wire at publish,
 // a hand-typed cell, or the seed.
 
-import { cellAmount, cellCharges, chargedDays, type CountCtx, type LeaveSource } from './charge'
+import { chargedDays, viewsOf, type CountCtx, type LeaveSource } from './charge'
+import { portionOf } from './dayview'
 import { codeOf, LEAVE_TYPES, parseCell, type CounterName } from './codes'
 import { DEFAULT_OIL_POLICY, oilLedgerFor, type OilPolicy } from './oiltracker'
 import { localToday } from './period'
@@ -120,8 +121,8 @@ export function drawnFrom(sources: LeaveSource[], personId: string, counter: Cou
   // 15 days deep in it. So a refused bid draws nothing, a pending one draws
   // in full, a half day draws 0.5, and a holiday draws nothing.
   let total = 0
-  for (const t of chargedDays(sources, personId, ctx).values()) {
-    if (t.counter === counter) total += t.amount
+  for (const day of chargedDays(sources, personId, ctx).values()) {
+    for (const t of day) if (t.counter === counter) total += t.amount
   }
   return total
 }
@@ -136,10 +137,8 @@ export function drawnFrom(sources: LeaveSource[], personId: string, counter: Cou
  */
 export function earnedOil(sources: LeaveSource[], personId: string): number {
   let total = 0
-  for (const { grid } of sources) {
-    for (const code of Object.values(grid[personId] ?? {})) {
-      total += codeOf(code)?.earnsOil ?? 0
-    }
+  for (const src of sources) {
+    for (const v of Object.values(viewsOf(src)[personId] ?? {})) total += v.earnsOil
   }
   return total
 }
@@ -192,13 +191,25 @@ export function balanceOf(
  * taken, every day of the week.
  */
 export function takenOf(sources: LeaveSource[], personId: string, type: string, ctx?: CountCtx): number {
-  const charged = chargedDays(sources, personId, ctx)
+  /* A counter-bearing type counts what CHARGED (the weekend/PH rule and the
+     one-charge-per-half rule both apply); anything else — medical — counts
+     every day its record removes the person, by its portion. Read off the day
+     views, so two records on one day each count (clash catalogue rule 1). */
+  const leave = codeOf(type)?.spends
   let total = 0
-  for (const { grid, states } of sources) {
-    for (const [date, code] of Object.entries(grid[personId] ?? {})) {
-      if (typeOf(code) !== type) continue
-      if (!cellCharges(charged, code, date, states, personId)) continue
-      total += cellAmount(code)
+  if (leave) {
+    for (const day of chargedDays(sources, personId, ctx).values()) {
+      for (const t of day) if (t.type === type) total += t.amount
+    }
+    return total
+  }
+  for (const src of sources) {
+    for (const v of Object.values(viewsOf(src)[personId] ?? {})) {
+      for (const c of v.all) {
+        if (c.code !== type || c.kind === 'notice' || c.kind === 'credit') continue
+        if (c.kind === 'request' && c.state === 'refused') continue
+        total += portionOf(c.win) === 'full' ? 1 : 0.5
+      }
     }
   }
   return total

@@ -27,7 +27,7 @@ import {
   setRole,
 } from './state/store'
 import { memoryBackend } from './state/storage'
-import { getClashes, oilPendingFor, runInbound, runOilPass, runOutbound } from './sync'
+import { getClashes, oilPendingFor, runOilPass, syncAbsences } from './sync'
 
 const ISNAP = JSON.stringify(INPUTS)
 const DSNAP = JSON.stringify(DAYS)
@@ -213,11 +213,10 @@ describe('an unsupported / unresolvable book protects its landed OIL credits (P2
 })
 
 describe('the ownership partition against wires 1+2', () => {
-  it('runInbound\'s reverse-clear leaves the credit alone — no input ever covers an FO cell', () => {
+  it('re-reading the Inputs leaves the credit alone — no input ever covers an FO cell', () => {
     publish(5)
     runOilPass()
-    runInbound()
-    runOutbound()
+    syncAbsences()
     expect(cellOf('plasma', SAT)).toBe('FO')
     // and the credit never becomes an lw-tagged input: FO is not biddable
     expect(INPUTS.filter((r: any) => r.lw)).toEqual([])
@@ -236,14 +235,14 @@ describe('the ownership partition against wires 1+2', () => {
 
   it('leave WINS an owned cell and the passes stay stable — no flip-flop', () => {
     // The man files leave in Raptor for the Saturday he also stands duty.
-    INPUTS.push({ person: 'plasma', type: 'LL', date: 'Jul 18', allday: true, remarks: '', mod: 'now' })
-    runInbound()                                   // wire 2 lands LL, raptor-owned
+    INPUTS.push({ iid: 'oil-ll-1', person: 'plasma', type: 'LL', date: 'Jul 18', yr: 2026, allday: true, remarks: '', mod: 'now' })
+    syncAbsences()                                 // the war reads the filed LL
     expect(cellOf('plasma', SAT)).toBe('LL')
     publish(5)
     runOilPass()
     expect(cellOf('plasma', SAT)).toBe('LL')       // never overwritten
     expect(getClashes().some(c => c.kind === 'duty' && c.person === 'plasma')).toBe(true)
-    runInbound(); runOilPass(); runInbound(); runOilPass()
+    syncAbsences(); runOilPass(); syncAbsences(); runOilPass()
     expect(cellOf('plasma', SAT)).toBe('LL')       // still stable
   })
 
@@ -266,8 +265,8 @@ describe('the ownership partition against wires 1+2', () => {
     // leave clash: a Raptor input against a different standing bid
     setCell('rocky', '2026-07-14', 'OIL')
     setBidState('rocky', '2026-07-14', 'approved')
-    INPUTS.push({ person: 'rocky', type: 'LL', date: 'Jul 14', allday: true, remarks: '', mod: 'now' })
-    runInbound()
+    INPUTS.push({ iid: 'oil-ll-2', person: 'rocky', type: 'LL', date: 'Jul 14', yr: 2026, allday: true, remarks: '', mod: 'now' })
+    syncAbsences()
     runOilPass()
     expect(getClashes().some(c => c.kind === 'duty')).toBe(true)
     expect(getClashes().some(c => !c.kind)).toBe(true)
@@ -421,19 +420,10 @@ describe('oilPendingFor — the bell\'s derived scan', () => {
 })
 
 describe('bug-pass hardening (28 Aug 26)', () => {
-  it('a war stored with the LEGACY FS/HS letters loads renamed, ownership intact', () => {
-    const be = memoryBackend()
-    lwInitStore(be)
-    setPeople(projectPeople())
-    INPUTS.unshift({ person: 'bane', type: 'Duty', date: 'Jul 18', allday: true, s: 0, e: 1439, remarks: '', mod: 'now', yr: 2026, iid: 'mig1', oil: { [SAT]: 1 } })
-    runOilPass()
-    expect(cellOf('bane', SAT)).toBe('FO')
-    /* tamper the STORED blob back to the pre-rename letters, then reload */
-    be.write('wars', (be.read('wars') as string).replace(/"FO"/g, '"FS"').replace(/"HO"/g, '"HS"'))
-    lwInitStore(be)
-    expect(cellOf('bane', SAT), 'renamed at the one load door').toBe('FO')
-    expect(ownedBy('bane', SAT), 'the ownership record survived — the sweep can still collect it').toMatchObject({ source: 'raptor' })
-  })
+  /* The 28 Aug 26 FS/HS → FO/HO rename-on-load test was removed with
+     [ARCH-STACK] step 4: the war's stored shape changed (records as a list)
+     and the schema bump RESETS old demo data rather than migrating it
+     (owner's dev-phase rule), so no pre-rename war can reach the loader. */
 
   it('a body posted out before the day never expands under ALL — even unarchived', () => {
     setRole('admin')

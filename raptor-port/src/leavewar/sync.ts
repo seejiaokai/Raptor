@@ -1,34 +1,28 @@
-// Wires 1 + 2 of the Leave War ⇄ Raptor sync
-// (docs/superpowers/specs/leavewar-sync.md): approved leave crosses to the
-// schedule as a personal input, and leave filed on the Inputs page crosses
-// back as an approved, Raptor-owned cell. MEDICAL is MEMBER-FILED ONLY since
-// 13 Sep 26 (owner, reversing the 17 Aug "management marks it" rule): it rides
-// only the INBOUND wire — an ATT B / ATT C / HL / OML input filed on the Inputs
-// page lands as a raptor-owned medical cell (half days per medRowPortion's
-// six-hour rule) — and NEVER the outbound one: the war can no longer originate a
-// medical marker, so nothing medical crosses war → Raptor.
+// THE LEAVE WAR ⇄ RAPTOR SEAM ([ARCH-STACK] step 4, 20 Sep 26 — replaces the
+// 17 Aug two-way copy of approved leave, wires 1 + 2, which is DELETED).
 //
-// Both directions are DERIVED RECONCILIATION, not queues: each pass computes
-// the desired state from the source of truth, diffs it against what the
-// other side holds, and writes only the difference. A queue would be a
-// second record of a fact the grid / INPUTS already hold, and two records of
-// one fact disagree. Idempotence follows for free — a second pass over an
-// unchanged world finds an empty diff and touches nothing, history included.
-//
-// The loop cannot run away, by construction rather than by counter:
-//   - outbound skips Raptor-owned cells (outboundToRaptor's documented rule),
-//   - inbound skips lw-tagged inputs (the rows outbound itself wrote),
-// so each direction is blind to the other's writes, and one full pass
-// reaches a fixed point. A SYNCING flag guards re-entrancy on top — every
-// store write notifies subscribers synchronously, and this module is one.
+// An absence — leave, medical, course, overseas duty — is ONE record: the Raptor
+// Input. This module:
+//   - READS the Inputs into the war's absence index (`refreshAbsences`), from
+//     which the war derives what each day shows (state/merge.ts, engine/dayview.ts);
+//   - installs the ABSENCE DOOR on the war store: approving, un-approving,
+//     removing and moving approved leave write the Input inside the war's own
+//     command (`doorApprove` … `doorMoveApproved`);
+//   - installs the owner's clash rules at the inputs door (inputgate.ts) and the
+//     publish door (`publishReplacesBids`);
+//   - derives the clash strip from the day views;
+//   - keeps wire 0 (the roster projection) and wire 4 (OIL credits from the
+//     published schedule and acknowledged duty claims, `runOilPass`) and the
+//     posting-out archive pass.
+// The derived passes are reconciliation, not queues: compute the desired state,
+// diff, write only the difference; a SYNCING flag guards re-entrancy.
 
-import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isDownchit, isLeave, oilAsks, withRemarksTail, inputCoversDate, nowStamp } from '../engine/inputs'
+import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, oilAsks, withRemarksTail, inputCoversDate, nowStamp } from '../engine/inputs'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { ME, SESSION } from '../state/auth'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (the cross-seam roster
    writers — PO-archive, restore — emit a people change too). */
 import { persistPeopleProjection, commitPeopleEdit } from '../state/people-settings-commit'
-import { docFields, rowDocIds } from '../state/docs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { SCHED, dayApproved, dayCurVer, dayCurVerIn, daySnapIn, daySnapOf, amFormatOf } from '../engine/publish'
@@ -36,7 +30,7 @@ import { dayOilWork, inputOilAmt, envMin, uniformOil, oilWorkWhy, type OilWork }
 import { stashKeys, stashGet, isPreservedWeek } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
-import { notify as raptorNotify, subscribe as raptorSubscribe, writeInputsBatch, writeInputsBatchProjection } from '../state/store'
+import { notify as raptorNotify, subscribe as raptorSubscribe, writeInputsBatch } from '../state/store'
 import { lwSyncTurn } from './state/store'
 import {
   addDays,
@@ -44,37 +38,54 @@ import {
   inSquadron,
   isNonWorkingDay,
   localToday,
-  outboundToRaptor,
   parseCell,
-  raptorOwns,
   warHolding,
-  type Portion,
+  recsAt,
+  recContribs,
+  requestWin,
+  forbiddenPair,
+  liveRequestsOn,
+  portionOfCode,
+  portionOf,
+  overlaps,
+  newRecId,
+  type Contrib,
+  type RequestRec,
+  type RequestState,
+  type WarRec,
 } from './engine'
 import {
+  absencesChanged,
+  getVersion,
+  setRefusalHook,
   clearRaptorCell,
   getState,
   ingestDutyCredit,
-  ingestFromRaptor,
+  lwEditLists,
+  rawState,
+  setAbsenceDoor,
   setPeople,
   setPostOut,
   setQualCatalog,
   setViewer,
   subscribe as lwSubscribe,
-  withdrawLeaveCell,
 } from './state/store'
+import { HOOKS } from '../engine/hooks'
+import { deferEffect as cmdDeferEffect } from '../command'
+import { setPublishGate } from '../state/inputgate-hook'
+import { absencesAt, setAbsenceRows } from './state/merge'
+import { installInputGate, replaceClashingBids, type BidClaim } from './inputgate'
 import { projectPeople, qualCatalogue } from './state/raptorRoster'
+import {
+  labelToISO, warVisible, absenceSignature, buildAbsenceIndex, inputDates, inputRowFor, isoToInputDate,
+  type AbsenceIndex,
+} from './absences'
 
 /* Re-entrancy: ingest persists-and-notifies per cell, and writeInputsBatch's
    epilogue notifies too, so each reconciler fires the other's subscription
    mid-write. One flag over both means those nested calls return at the door;
    the wiring below re-runs the counterpart pass once the writer finishes. */
 let SYNCING = false
-/* [CMDL-FINISH] N6 — a queued outbound mint is not yet applied when a SECOND
-   runOutbound fires in the same post-phase window (the lwSubscribe pending-OIL
-   tail raptorNotify()s, waking a second pass before the queue drains). Without
-   this latch the second pass sees the mint still missing and queues a DUPLICATE
-   lw-tagged row. Set before the (maybe-queued) write, cleared first-in-apply. */
-let OUTBOUND_PENDING = false
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
@@ -86,395 +97,430 @@ function isoToLabel(iso: string): string {
   return y === baseYear() ? lbl : `${lbl} ${y}`
 }
 
-/* 'Feb 11' -> '2026-02-11', through dateOrd so the two directions cannot
-   disagree about what a label means. Null for anything unreadable. `yr` is
-   the ROW'S anchor year (engine/inputs.ts, 24 Aug 26) — a bare label on an
-   input belongs to the year the row was created under, not to whatever week
-   Raptor happens to have loaded when the sync runs. */
-function labelToISO(lbl: unknown, yr?: unknown): string | null {
-  const ord = dateOrd(lbl, yr)
-  if (ord == null) return null
-  const p = (n: number) => String(n).padStart(2, '0')
-  return `${Math.floor(ord / 10000)}-${p(Math.floor(ord / 100) % 100)}-${p(ord % 100)}`
-}
+/* labelToISO / rowPortion / medRowPortion live in ./absences ([ARCH-STACK]
+   step 4) — the one absence layer reads them too. */
 
-/* Which portion of the day an input row covers. allday and the two half
-   presets are exact; a CUSTOM window rounds OUT to the halves it touches
-   (a 10:00–14:00 leave covers both, so it reads as the full day) — rounding
-   out never under-reports an absence, and the schedule keeps the exact
-   window. The half minutes are HALF_AM/HALF_PM's own: [0,720] / [721,1439].
-   A thin row with neither flag nor times fails closed to the whole day,
-   the same call inpWin itself makes. */
-function rowPortion(row: any): Portion {
-  if (row.allday) return 'full'
-  if (row.half === 'am') return 'am'
-  if (row.half === 'pm') return 'pm'
-  if (row.s != null && row.e != null) {
-    const w = inpWin(row)
-    if (w) {
-      if (w[1] <= 720) return 'am'
-      if (w[0] >= 721) return 'pm'
-    }
-  }
-  return 'full'
-}
+/* ---- THE ABSENCE LAYER ([ARCH-STACK] step 4, design §1–§4) ----------------
+   An absence is ONE record — the Input. The war stores none: it READS the
+   Inputs through a per-person index (absences.ts) and the store's merge. This
+   replaces the two sync wires and their loop-breaker (runInbound /
+   runOutbound / retractLwRow, all deleted): nothing is copied either way, so
+   there is nothing to reconcile and nothing to disagree.
 
-/* A MEDICAL row's portion runs on the owner's own rule instead (17 Aug 26):
-   AM/PM are the halves, and a CUSTOM window — "which they should not" file,
-   but the form allows — counts as a half day at six hours or less ("6 hours
-   or less as half day"; exactly six is a half) and a full day past that.
-   Which half: the side of noon the window sits on, its midpoint deciding a
-   straddler. Leave keeps its round-OUT rule above untouched — the owner
-   stated this one for the medical types. */
-function medRowPortion(row: any): Portion {
-  if (row.allday) return 'full'
-  if (row.half === 'am') return 'am'
-  if (row.half === 'pm') return 'pm'
-  if (row.s != null && row.e != null) {
-    const w = inpWin(row)
-    if (w && w[1] - w[0] <= 360) {
-      if (w[1] <= 720) return 'am'
-      if (w[0] >= 721) return 'pm'
-      return (w[0] + w[1]) / 2 <= 720 ? 'am' : 'pm'
-    }
-  }
-  return 'full'
-}
+   Kept current by a per-person SIGNATURE over the war-visible Inputs, checked
+   on every Raptor notify (design §4.1 — phase 8's notify always runs, command
+   or not): a changed signature rebuilds that person's rows and repaints the
+   war (no persist, no envelope). Unchanged persons keep their row objects, so
+   the merge re-does only them. */
+const SIGS = new Map<string, string>()
+let INDEX: AbsenceIndex = new Map()
 
-/* The type vocabulary bridge. Raptor's INPUT_META spells the markers as a
-   person types them ('ATT B', 'ATT C', 'HL', 'OML'); Leave War stores them
-   spaceless ('ATTB', 'ATTC') so parseCell's trim/upper round-trips. Leave
-   types are spelled identically on both sides, so they map through
-   untouched. */
-const LW_FOR_INPUT: Record<string, string> = { 'ATT B': 'ATTB', 'ATT C': 'ATTC', HL: 'HL', OML: 'OML' }
-const INPUT_FOR_LW: Record<string, string> = { ATTB: 'ATT B', ATTC: 'ATT C' }
-const lwTypeOf = (rawType: unknown): string => {
-  const t = String(rawType).trim().toUpperCase()
-  return LW_FOR_INPUT[t] ?? t
-}
-
-/* ---- outbound: Leave War -> Raptor inputs -------------------------------- */
-
-/** One Raptor input the sync wants to exist: a run of consecutive days with
- *  the same code and portion, for one person, inside one war. */
-interface Run {
-  person: string
-  type: string
-  portion: Portion
-  start: string
-  end: string
-  warId: string
-}
-
-/* Every approved, biddable, non-Raptor-owned cell in every war — the
-   question outboundToRaptor already answers per war, in stable person-then-
-   date order — collapsed into spanned runs, matching how a human files
-   leave. Runs never cross wars: the lw tag is the war's id. */
-function desiredRuns(): Run[] {
-  const runs: Run[] = []
-  const { wars, people } = getState()
-  const known = new Set(people.map(p => p.id))
-  for (const war of wars) {
-    for (const c of outboundToRaptor(war.grid, war.states)) {
-      /* The mirror of inbound's unknown-person guard: a grid row keyed to
-         someone the roster does not hold (a stored war from before the
-         demo re-key, say) must not become an input for a person Raptor's
-         own pages cannot name. */
-      if (!known.has(c.personId)) continue
-      const cell = parseCell(c.code)
-      if (!cell) continue
-      const last = runs[runs.length - 1]
-      if (
-        last && last.warId === war.period.id && last.person === c.personId &&
-        last.type === cell.type && last.portion === cell.portion &&
-        addDays(last.end, 1) === c.date
-      ) {
-        last.end = c.date
-        continue
-      }
-      runs.push({
-        person: c.personId, type: cell.type, portion: cell.portion,
-        start: c.date, end: c.date, warId: war.period.id,
-      })
-    }
-  }
-  return runs
-}
-
-/* The canonical signature both sides reduce to. person|code|portion|start|end
-   is the whole identity of a synced input — remarks, mod and iid are
-   bookkeeping, and the warId cannot differ for the same dates because wars
-   never overlap. */
-const runSig = (r: Run) => `${r.person}|${r.type}|${r.portion}|${r.start}|${r.end}`
-
-/* The member's own remark wording (and a medical row's document id), kept
-   ACROSS passes keyed by the exact leave. The in-pass carry below handles a
-   date change; this survives a refuse-then-re-approve, where the splice and
-   the re-mint happen in different passes and the in-pass maps are empty. */
-const RETAINED = new Map<string, { remarks: string; docIds?: string[] }>()
-
-/* One dispatcher so every reader of a row's portion picks the right rule by
-   the row's own type — a medical row must never be read with leave's
-   round-OUT rule or the two sides of the diff would disagree about the same
-   row. */
-const portionOfRow = (row: any): Portion => (isDownchit(row.type) ? medRowPortion(row) : rowPortion(row))
-const rowPair = (row: any) => `${row.person}|${lwTypeOf(row.type)}|${portionOfRow(row)}`
-const runPair = (run: Run) => `${run.person}|${run.type}|${run.portion}`
-
-/* History can restore a stale tag repeatedly. Only a live non-Raptor cell
-   supersedes it (including pending/refused bids and changed/coalesced runs).
-   Empty or Raptor-owned cells let inbound restore the leave on every undo. */
-function warSupersedes(row: any): boolean {
-  return getState().wars.some(war => Object.keys(war.grid[row.person] || {}).some(date =>
-    war.grid[row.person][date] && !raptorOwns(war.states, row.person, date) &&
-    inputCoversDate(row, isoToLabel(date))))
-}
-
-/* Exported so the Inputs-page editor can ask "does this edit change the leave
-   itself, or only its remarks?" — a remarks-only edit leaves this signature
-   unchanged, and commitInputEdit keeps such a row synced instead of retracting
-   it (owner, 18 Aug 26: refining an OL's remarks must not seize the leave from
-   Leave War, which does not show remarks anyway). */
-export function rowSig(row: any): string | null {
-  const start = labelToISO(row.date, row.yr)
-  if (!start) return null
-  const end = row.endDate ? labelToISO(row.endDate, row.yr) ?? start : start
-  /* lwTypeOf, so an 'ATT C' row and the ATTC run it mirrors reduce to the
-     same signature — the two vocabularies must meet in ONE for the diff to
-     see them as the same fact. */
-  return `${row.person}|${lwTypeOf(row.type)}|${portionOfRow(row)}|${start}|${end}`
-}
-
-export function runOutbound(): void {
-  if (SYNCING || OUTBOUND_PENDING) return   // N6: a queued mint is still pending — do not re-mint
-  SYNCING = true
-  try {
-    const want = new Map(desiredRuns().map(r => [runSig(r), r]))
-    const have = new Set<string>()
-    const stale: any[] = []
-    /* READ-ONLY QUARANTINE (P2-QREV-03). A leave landing on a protected week must
-       NEVER enter this batch: the funnel would roll the WHOLE batch back (every
-       legit leave on normal weeks with it) and the protected mismatch would recur
-       on every notify — a permanent refuse-loop that kills all LW→Raptor sync.
-       So exclude protected-date operations here: a stale row on a frozen week is
-       LEFT in place (not spliced), and a missing run on a frozen week is not
-       minted — its evidence is unavailable, so the credit/leave already there
-       stands (the same reading the OIL pass takes). */
-    const prot = protectedDates()
-    const covered = (row: any) => prot.length > 0 && prot.some((dt: any) => inputCoversDate(row, dt))
-    const runRow = (r: any) => ({ date: isoToLabel(r.start), endDate: r.end !== r.start ? isoToLabel(r.end) : undefined, yr: baseYear() })
-    /* Removing the old run and minting its replacement are one diff. Freeze
-       both halves of a person/type/portion pair if either touches quarantine. */
-    const frozen = new Set<string>()
-    for (const row of INPUTS) if (row.lw && covered(row)) frozen.add(rowPair(row))
-    for (const run of want.values()) if (covered(runRow(run))) frozen.add(runPair(run))
-    for (const row of INPUTS) {
-      if (!row.lw) continue
-      const sig = rowSig(row)
-      if (frozen.has(rowPair(row))) { if (sig) have.add(sig); continue }
-      if (sig && want.has(sig) && !have.has(sig)) have.add(sig)
-      else stale.push(row)
-    }
-    const missing = [...want].filter(([sig, r]) => !have.has(sig) && !frozen.has(runPair(r))).map(([, r]) => r)
-
-    /* An empty diff must not touch anything — writeInputsBatch ends in a
-       history push, and a no-op pass that left a snapshot behind would make
-       every unrelated edit cost two Undos. */
-    if (stale.length === 0 && missing.length === 0) return
-
-    /* ONE batch, one history step, exactly like a human filing the same
-       leave: the epilogue (re-render, reflow, snapshot) comes free. NOT
-       acceptInput — leave is isUnavail and that path hard-refuses it by
-       design; the input existing is what reaches every schedule surface. */
-    OUTBOUND_PENDING = true   // N6: latch before the (possibly queued) projection mint
-    writeInputsBatchProjection(() => {
-      OUTBOUND_PENDING = false   // cleared first-in-apply (at drain for a queued mint, inline otherwise)
-      /* When a leave's DATES change (an admin extends it in Leave War), its
-         old row is stale and a new run is missing — a remove-then-mint. Carry
-         the member's own remark detail across that gap keyed on the unchanging
-         part of the leave (person|type|portion), so "till 13 Jul Bangkok"
-         becomes "till 18 Jul Bangkok" rather than losing Bangkok (owner,
-         18 Aug 26 — the same "the note remains, the date moves" rule the Inputs
-         calendar now follows). withRemarksTail rewrites just the date token in
-         whatever the member wrote. */
-      const priorRemark = new Map<string, { remarks: string; docIds?: string[] }>()
-      /* keyed WITHOUT the portion, as the fallback (review fix, 19 Aug 26):
-         converting a full-day leave to a half day moves the exact key from
-         'p|OL|full' to 'p|OL|am', so the lookup missed and the member's own
-         detail ("Bangkok") was silently dropped — the very loss the date-change
-         carry above exists to prevent. The exact key still wins where it
-         matches, so two same-type leaves with different portions carry their
-         own remarks; only an unmatched portion falls back to the person+type's
-         first stale remark, which beats losing the words. */
-      const priorLoose = new Map<string, { remarks: string; docIds?: string[] }>()
-      for (const row of stale) {
-        const sig = rowSig(row)
-        if (!warSupersedes(row)) {
-          delete row.lw
-          continue
-        }
-        const t = lwTypeOf(row.type)
-        /* the document ids ride the carry with the remarks (27 Aug 26
-           overnight find: a war-side date change on a synced medical row
-           spliced the old row and minted afresh — certificate gone). The
-           FULL list since 1 Sep 26 — an entry holds several files now, and
-           a date change must not thin them to one. */
-        const keptIds = rowDocIds(row)
-        const kept = { remarks: String(row.remarks ?? ''), ...(keptIds.length ? { docIds: keptIds } : {}) }
-        const key = `${row.person}|${t}|${portionOfRow(row)}`
-        if (!priorRemark.has(key)) priorRemark.set(key, kept)
-        const lk = `${row.person}|${t}`
-        if (!priorLoose.has(lk)) priorLoose.set(lk, kept)
-        if (sig) RETAINED.set(sig, kept)
-        const ix = INPUTS.indexOf(row)
-        if (ix >= 0) INPUTS.splice(ix, 1)
-      }
-      for (const r of missing) {
-        const sig = runSig(r)
-        const prior = priorRemark.get(`${r.person}|${r.type}|${r.portion}`)
-          ?? priorLoose.get(`${r.person}|${r.type}`)
-          ?? RETAINED.get(sig)
-        /* a fresh mint supersedes whatever history the same leave had */
-        RETAINED.delete(sig)
-        const row: any = {
-          person: r.person,
-          /* Back to Raptor's own spelling — an 'ATTB' run lands as an
-             'ATT B' input, the type the Inputs page and INPUT_META know. */
-          type: INPUT_FOR_LW[r.type] ?? r.type,
-          date: isoToLabel(r.start),
-          /* the anchor year every creation path stamps (engine/inputs.ts,
-             24 Aug 26) — isoToLabel leaves baseYear()'s year implicit, and
-             this is what reads it back once the loaded week moves on */
-          yr: baseYear(),
-          /* The remarks read "till 17 Jul" for a span, "on 15 Jul" for a
-             single day — the same tail the Inputs-page calendar writes, so a
-             synced leave says how long it runs wherever remarks are read, and
-             the type column already carries LL/OL so nothing repeats it
-             (owner, 18 Aug 26). A member then refines this on the Inputs page
-             — "in Bali till 17 Jul" — and reconciliation preserves it: remarks
-             are not in the signature, so an unchanged leave is matched, not
-             re-minted; and when the DATES change, `prior` above carries the
-             detail into the re-minted row with only the date token moved. */
-          remarks: withRemarksTail(prior?.remarks ?? '', r.start, r.end, 'on'),
-          mod: nowStamp(),
-          /* The ownership tag: which war this row is derived from. Inbound
-             skips lw-tagged rows (the loop-breaker), and reconciliation
-             removes exactly these when their cell is no longer approved.
-             An extra field on the row — inpKey does not include it and
-             nothing downstream reads fields it does not know. */
-          lw: r.warId,
-        }
-        /* the carried documents follow their record (a leave's `prior`
-           never carries the field) — through docFields, the one minter of
-           the docId/docIds pair */
-        if (prior?.docIds) Object.assign(row, docFields(prior.docIds))
-        if (r.end !== r.start) row.endDate = isoToLabel(r.end)
-        if (r.portion === 'full') row.allday = true
-        else {
-          row.allday = false
-          row.half = r.portion
-          row.s = r.portion === 'am' ? 0 : 721
-          row.e = r.portion === 'am' ? 720 : 1439
-        }
-        /* Minted inside the write, so the very first history snapshot the
-           row appears in already carries its address (the mintInpIds rule). */
-        inpId(row)
-        INPUTS.push(row)
-      }
-    })
-  } finally {
-    SYNCING = false
-  }
-}
-
-/**
- * Withdraw the war cells an lw-tagged input derives from — what makes an
- * EDIT or DELETE of that row on the Inputs page carry back into Leave War
- * (owner, 17 Aug 26: "make sure both leave war and input, edits or deletes
- * are sync"; full two-way, members included, chosen over blocking).
- *
- * Called by `commitInputEdit` / `removeInput` (ui/inputedit.tsx) BEFORE the
- * row is mutated or spliced, while it still says what the war granted. Each
- * covered day's cell is cleared through `withdrawLeaveCell`, which touches
- * only a cell still holding exactly this row's notation and never one
- * Raptor owns — so a cell the squadron has since rebid, and every
- * Raptor-owned cell, are left for the ordinary reconcile to judge.
- *
- * The reconcilers then finish the job on their own: a DELETED row leaves
- * nothing behind on either side (the cells are gone, so outbound re-mints
- * nothing); an EDITED row has its lw tag dropped by the caller and becomes
- * an ordinary input, which inbound lands as Raptor-owned cells — the same
- * path a leave filed on the Inputs page has always taken, keeping "Raptor
- * owns what Raptor last wrote" true.
- *
- * SYNCING is held across the walk because withdrawLeaveCell persists-and-
- * notifies per cell, and each notify would otherwise run a reconcile pass
- * against a half-withdrawn span. The caller's own write epilogue triggers
- * the full converging pass once everything is settled.
- */
-export function retractLwRow(row: any): void {
-  if (!row?.lw || inputProtected(row)) return
-  const start = labelToISO(row.date, row.yr)
-  if (!start) return
-  let end = row.endDate ? labelToISO(row.endDate, row.yr) ?? start : start
-  if (end < start) end = start
-  const type = lwTypeOf(row.type)
-  const portion = portionOfRow(row)
-  const notation = portion === 'am' ? `*${type}` : portion === 'pm' ? `${type}*` : type
-  const was = SYNCING
-  SYNCING = true
-  try {
-    /* Capped walk, the runInbound precedent: a malformed span cannot spin. */
-    let n = 0
-    for (let d = start; d <= end && n < 400; d = addDays(d, 1), n++) {
-      withdrawLeaveCell(row.person, d, notation)
-    }
-  } finally {
-    SYNCING = was
-  }
-}
-
-/* The Raptor leave INPUT a war cell derives from — the row whose remarks the
-   published-stage editor edits (owner, 27 Aug 26). Covers both a leave FILED
-   on the Inputs page (raptor-owned in the war) and one BID in the war (the
-   lw-tagged row outbound mints at publish): both are ordinary INPUTS rows and
-   both carry the remark. Same date arithmetic as `inputCoversDate`, on the
-   war cell's ISO date. Leaves only — medical is member-filed (owner, 13 Sep 26),
-   filed and read on the Inputs page and never originated on the war.
-
-   `code` is the CELL'S OWN notation, when the caller has it: a leave clash
-   keeps two inputs alive over one day (an approved LL minted lw-tagged plus
-   an OL filed on the Inputs page), and the plain first-covering-row walk
-   returned whichever sat earlier in INPUTS — the editor then opened, and
-   SAVED, the wrong record under the tapped cell's header. With the code the
-   match is the row that actually derives the cell: same leave type, exact
-   portion when one matches, and the lw-tagged row (the one the war minted)
-   outranking a plain one. A code that is not a leave at all (an FO/HO duty
-   credit) matches nothing — that cell has no note to edit. Callers without
-   a cell in hand keep the date-only walk. */
-export function leaveInputAt(personId: string, iso: string, code?: string): any | null {
-  const t = dateOrd(isoToLabel(iso))
-  if (t == null) return null
-  const covering: any[] = []
+/** Rebuild the index for every person whose war-visible Inputs changed. True
+ *  when anything did (the caller then repaints). */
+export function refreshAbsences(force = false): boolean {
+  const byPerson = new Map<string, any[]>()
   for (const row of INPUTS) {
-    if (row.person !== personId || !isLeave(row.type)) continue
-    const a = dateOrd(row.date, row.yr)
-    if (a == null) continue
-    const b = row.endDate ? dateOrd(row.endDate, row.yr) : a
-    if (b == null) continue
-    if (t >= a && t <= b) covering.push(row)
+    if (!row || !warVisible(row.type) || !row.person) continue
+    const p = String(row.person)
+    const list = byPerson.get(p)
+    if (list) list.push(row)
+    else byPerson.set(p, [row])
   }
-  if (covering.length === 0) return null
-  const cell = code ? parseCell(code) : null
-  if (!cell) return covering[0]
-  const typed = covering.filter(r => lwTypeOf(r.type) === cell.type)
-  if (typed.length === 0) return null
-  const exact = typed.filter(r => portionOfRow(r) === cell.portion)
-  const pool = exact.length ? exact : typed
-  return pool.find(r => r.lw) ?? pool[0]
+  const next: AbsenceIndex = new Map()
+  let changed = force
+  for (const [p, rows] of byPerson) {
+    const sig = rows.map(absenceSignature).join('\n')
+    const prev = INDEX.get(p)
+    if (!force && prev && SIGS.get(p) === sig) { next.set(p, prev); continue }
+    const one = buildAbsenceIndex(rows).get(p) ?? new Map()
+    next.set(p, one)
+    SIGS.set(p, sig)
+    changed = true
+  }
+  for (const p of INDEX.keys()) if (!byPerson.has(p)) { SIGS.delete(p); changed = true }
+  if (!changed) return false
+  INDEX = next
+  setAbsenceRows(INDEX)
+  publishLeaveClashes()
+  return true
 }
 
-/* ---- inbound: Raptor inputs -> Leave War cells --------------------------- */
+/** Re-read the Inputs AND repaint the war when anything changed. Every door
+ *  and the inputs gate refresh inside their command; the repaint must come
+ *  from them, because the Raptor lane that runs afterwards then finds the index
+ *  already current and would not bump the war (Fable inspection #1, 20 Sep 26).
+ *  Deferred to the command's release when inside one, so no subscriber runs on
+ *  a half-applied world. */
+export function refreshAbsencesAndRepaint(): void {
+  if (!refreshAbsences()) return
+  /* one repaint per command: if the war notified on its own after this point
+     (a door that also rewrote its records), that repaint already reads the
+     fresh index — skip a second one */
+  const at = getVersion()
+  if (!cmdDeferEffect(() => { if (getVersion() === at) absencesChanged() })) absencesChanged()
+}
+
+/** Install the absence door (wireLeaveWarSync does; tests call it alone). */
+export function installAbsenceDoor(): void {
+  setAbsenceDoor({ approve: doorApprove, decideApproved: doorDecideApproved, removeApproved: doorRemoveApproved, moveApproved: doorMoveApproved })
+  /* a refused war gesture rolled INPUTS back; the absence index was refreshed
+     inside it, so re-read it before the repaint (Codex AS4-R2-001) */
+  setRefusalHook(() => { refreshAbsences(true) })
+  installInputGate()
+  setPublishGate(publishReplacesBids)
+}
+/** Re-read the Inputs into the war now and repaint — what a Raptor notify
+ *  does in the app; tests that push INPUTS directly call it. */
+export function syncAbsences(): void {
+  refreshAbsences(true)
+  absencesChanged()
+}
+
+/* The Raptor leave INPUT behind a war cell — what the published-stage remarks
+   editor edits (owner, 27 Aug 26). The day view knows exactly which Inputs make
+   the cell (their iids), so this is a lookup, not a guess: the tapped half's
+   contributor when the code names one, else the main one. */
+export function leaveInputAt(personId: string, iso: string, code?: string): any | null {
+  const war = warHolding(getState().wars, iso)
+  const v = war ? (war as any).views?.[personId]?.[iso] : null
+  if (!v) return null
+  const leaves = (v.all as Contrib[]).filter(c => c.kind === 'absence' && isLeave(INPUT_TYPE_FOR[c.code] ?? c.code))
+  if (!leaves.length) return null
+  const cell = code ? parseCell(code) : null
+  const pick = (cell && leaves.find(c => c.code === cell.type && portionOf(c.win) === cell.portion))
+    ?? (cell && leaves.find(c => c.code === cell.type))
+    ?? (cell ? null : leaves[0])
+  if (!pick) return null
+  return INPUTS.find((r: any) => String(r.iid) === pick.id) ?? null
+}
+const INPUT_TYPE_FOR: Record<string, string> = { ATTB: 'ATT B', ATTC: 'ATT C' }
+
+/* ---- THE ABSENCE DOOR: the war's changes to approved leave ---------------
+   Every one runs INSIDE the war gesture that called it (store.ts `gesture` —
+   one envelope, one undo step, all-or-nothing on save). Each writes the Input
+   through the Raptor inputs door (writeInputsBatch, which joins the gesture)
+   and the war's own records through the store, in the same command. */
+const cmpISO = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0)
+
+/* The war's own Input writes (approve / un-approve / remove / move) manage the
+   requests they touch themselves, so the inputs door's bid replacement (H1)
+   stands aside for them; the invariant (B7) still applies. */
+let DOOR = 0
+export const inDoor = (): boolean => DOOR > 0
+
+/** The Input a war door may act on for one item — it must BE that person's
+ *  war-approved LEAVE covering that date (Codex AS4-R2-002/003): a stale or
+ *  mismatched id, or an lw-tagged row an admin retyped to a medical / course /
+ *  duty, is never moved, un-approved or deleted from the war. */
+function warLeaveRow(it: { personId: string; date: string; iid: string }): any | null {
+  const row = INPUTS.find((r: any) => String(r.iid) === it.iid)
+  if (!row || !row.lw || !isLeave(row.type)) return null
+  if (String(row.person) !== it.personId || !inputDates(row).includes(it.date)) return null
+  return row
+}
+function doorWrite(fn: () => void): boolean {
+  DOOR++
+  try { return writeInputsBatch(fn) } finally { DOOR-- }
+}
+
+/** approve: requests → Inputs (design §5.2 `lw.approve`, §18 OA3-002). Groups
+ *  each person's selected requests into runs of consecutive days with the same
+ *  code and the same carried remark; one Input per run; the requests go. */
+function doorApprove(items: Array<{ personId: string; date: string; recId: string }>): { done: number; skipped: number; why: string[] } {
+  const why: string[] = []
+  const prot = new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
+  type Pick = { personId: string; date: string; rec: RequestRec; warId: string }
+  const picks: Pick[] = []
+  let skipped = 0
+  for (const it of items) {
+    const war = warHolding(rawState().wars, it.date)
+    const rec = war ? recsAt(war.recs, it.personId, it.date).find((r): r is RequestRec => r.kind === 'request' && r.id === it.recId) : undefined
+    if (!war || !rec) { skipped++; continue }
+    if (prot.has(it.date)) { skipped++; why.push(`${it.date} is on a locked week — not approved`); continue }
+    /* preflight: the would-be absence against every absence already there
+       (a different leave on the same time, a medical) — skipped and reported,
+       nothing consumed */
+    const c: Contrib = { id: 'new', kind: 'absence', code: parseCell(rec.code)!.type, win: requestWin(rec.code) }
+    if (absencesAt(it.personId, it.date).some(o => forbiddenPair(c, o))) { skipped++; why.push(`${it.date} already holds leave or a medical at that time — not approved`); continue }
+    /* a bid left standing when work was later credited (owner Q5: keep both,
+       the time check runs at approval) — §26.3: leave over recorded work */
+    const credits = recContribs(recsAt(war.recs, it.personId, it.date)).filter(o => o.kind === 'credit')
+    if (credits.some(o => forbiddenPair(c, o))) { skipped++; why.push(`${it.date} is recorded as worked at that time — not approved`); continue }
+    picks.push({ ...it, rec, warId: war.period.id })
+  }
+  if (!picks.length) return { done: 0, skipped, why }
+  /* runs: same person, war, code, carried remark, consecutive dates */
+  picks.sort((a, b) => cmpISO(a.personId, b.personId) || cmpISO(a.date, b.date))
+  const runs: Pick[][] = []
+  for (const p of picks) {
+    const last = runs[runs.length - 1]
+    const prev = last?.[last.length - 1]
+    if (prev && prev.personId === p.personId && prev.warId === p.warId && prev.rec.code === p.rec.code &&
+      (prev.rec.carried?.remarks ?? '') === (p.rec.carried?.remarks ?? '') && addDays(prev.date, 1) === p.date) last!.push(p)
+    else runs.push([p])
+  }
+  const rows = runs.map(run => {
+    const first = run[0]!, last = run[run.length - 1]!
+    const moved: Record<string, string> = {}
+    for (const p of run) {
+      if (p.rec.shiftedFrom) moved[p.date] = p.rec.shiftedFrom
+      for (const [d, f] of Object.entries(p.rec.carried?.lwMoved ?? {})) if (d === p.date) moved[d] = f
+    }
+    const row = inputRowFor({
+      person: first.personId, code: first.rec.code, from: first.date, to: last.date, lw: first.warId,
+      remarks: withRemarksTail(first.rec.carried?.remarks ?? '', first.date, last.date, 'on'),
+      lwMoved: moved, mod: nowStamp(),
+    })
+    inpId(row)
+    return row
+  })
+  let ok = false
+  doorWrite(() => {
+    for (const r of rows) {
+      /* approving next to leave already approved in the same war, of the same
+         type and part of the day, EXTENDS that Input (design §1: "creates (or
+         extends) an Input") — a day-by-day approval stays one record */
+      const start = labelToISO(r.date, r.yr)!, end = r.endDate ? labelToISO(r.endDate, r.yr)! : start
+      /* …and only when the remark (without its date tail) matches, so an
+         extension never swallows the run's own carried remark (Fable #7) */
+      const body = (t: unknown) => withRemarksTail(t ?? '', null, null, 'none')
+      const same = (x: any) => x !== r && x.person === r.person && x.lw === r.lw && x.type === r.type &&
+        !!x.allday === !!r.allday && (x.half ?? '') === (r.half ?? '') && body(x.remarks) === body(r.remarks)
+      const before = INPUTS.find((x: any) => same(x) && addDays(inputDates(x).slice(-1)[0] ?? '', 1) === start)
+      const after = INPUTS.find((x: any) => same(x) && inputDates(x)[0] === addDays(end, 1))
+      if (!before && !after) { INPUTS.push(r); continue }
+      const from = before ? inputDates(before)[0]! : start
+      const to = after ? inputDates(after).slice(-1)[0]! : end
+      const keep = before ?? after
+      const merged = sliceInput({ ...keep, lwMoved: { ...(before?.lwMoved ?? {}), ...(r.lwMoved ?? {}), ...(after?.lwMoved ?? {}) } }, from, to, true)
+      merged.remarks = withRemarksTail(keep.remarks ?? '', from, to, 'on')
+      merged.mod = nowStamp()
+      INPUTS.splice(INPUTS.indexOf(keep), 1, merged)
+      if (before && after) INPUTS.splice(INPUTS.indexOf(after), 1)
+    }
+    ok = true
+  })
+  if (!ok) return { done: 0, skipped: skipped + picks.length, why }
+  lwEditLists(picks.map(p => ({ personId: p.personId, date: p.date, drop: [p.rec.id], add: [] })))
+  refreshAbsencesAndRepaint()
+  return { done: picks.length, skipped, why }
+}
+
+/* the dates an Input covers and a copy of it limited to [from, to] — the one
+   split/shrink body (design §5.2 Splitting: the first part keeps the iid, a
+   later part gets a fresh one carrying lw / remarks / docs / mod verbatim) */
+export function sliceInput(row: any, from: string, to: string, keepIid: boolean): any {
+  const out = { ...row }
+  const { date, yr } = isoToInputDate(from)
+  out.date = date
+  out.yr = yr
+  const endIso = to
+  if (endIso > from) {
+    const e = isoToInputDate(endIso)
+    out.endDate = e.yr === yr ? e.date : `${e.date} ${e.yr}`
+  } else delete out.endDate
+  if (row.lwMoved) {
+    const m: Record<string, string> = {}
+    for (const [d, f] of Object.entries(row.lwMoved as Record<string, string>)) if (d >= from && d <= to) m[d] = f
+    if (Object.keys(m).length) out.lwMoved = m
+    else delete out.lwMoved
+  }
+  if (!keepIid) { delete out.iid; inpId(out) }
+  return out
+}
+
+/** Remove the given dates from the given Inputs — shrink, split or delete —
+ *  in ONE Raptor batch. Returns the per-Input result for the callers. */
+function cutDates(cuts: Map<string, Set<string>>): boolean {
+  let ok = false
+  doorWrite(() => {
+    for (const [iid, drop] of cuts) {
+      const ix = INPUTS.findIndex((r: any) => String(r.iid) === iid)
+      if (ix < 0) continue
+      const row = INPUTS[ix]
+      const dates = inputDates(row)
+      const keep: string[][] = []
+      for (const d of dates) {
+        if (drop.has(d)) { keep.push([]); continue }
+        if (!keep.length || !keep[keep.length - 1]!.length) keep.push([d])
+        else keep[keep.length - 1]!.push(d)
+      }
+      const parts = keep.filter(k => k.length)
+      if (!parts.length) { INPUTS.splice(ix, 1); continue }
+      const pieces = parts.map((k, i) => sliceInput(row, k[0]!, k[k.length - 1]!, i === 0))
+      INPUTS.splice(ix, 1, ...pieces)
+    }
+    ok = true
+  })
+  return ok
+}
+
+/** un-approve approved leave back into a request of `to` (design §5.2
+ *  `lw.decideApproved`, §24): the Input shrinks / splits / goes on those dates,
+ *  and a request carrying its remark and moved marks takes its place. Refused
+ *  per date where a different request already sits on that time (§24.1). */
+function doorDecideApproved(items: Array<{ personId: string; date: string; iid: string }>, to: RequestState): { done: number; skipped: number; why: string[] } {
+  const why: string[] = []
+  let skipped = 0
+  const cuts = new Map<string, Set<string>>()
+  const adds: Array<{ personId: string; date: string; drop: string[]; add: WarRec[] }> = []
+  const prot = new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
+  for (const it of items) {
+    const row = warLeaveRow(it)
+    if (!row) { skipped++; continue }
+    if (prot.has(it.date) || inputProtected(row)) { skipped++; why.push(`${it.date} is on a locked week — not changed`); continue }
+    const contrib = absencesAt(it.personId, it.date).find(c => c.id === it.iid)
+    if (!contrib) { skipped++; continue }
+    const code = notationOf(contrib.code, contrib.win)
+    const war = warHolding(rawState().wars, it.date)
+    if (!war) { skipped++; continue }
+    const list = recsAt(war.recs, it.personId, it.date)
+    /* design §24.1 (Codex AS4-002): un-approving never overwrites or sits
+       beside a request already stored on that time — pending, acknowledged OR a
+       refused one kept as history — for every destination state */
+    const blocking = list.filter((r): r is RequestRec => r.kind === 'request' && overlaps(requestWin(r.code), contrib.win))
+    if (blocking.length) { skipped++; why.push(`${blocking[0]!.code} request on ${it.date} — decide or clear it before changing the ${contrib.code}`); continue }
+    const rec: RequestRec = {
+      id: newRecId(), kind: 'request', code, state: to,
+      ...(row.lwMoved?.[it.date] ? { shiftedFrom: row.lwMoved[it.date] } : {}),
+      carried: { ...(row.remarks ? { remarks: String(row.remarks) } : {}), ...(row.lwMoved?.[it.date] ? { lwMoved: { [it.date]: row.lwMoved[it.date] } } : {}) },
+    }
+    if (!rec.carried!.remarks && !rec.carried!.lwMoved) delete rec.carried
+    adds.push({ personId: it.personId, date: it.date, drop: [], add: [rec] })
+    const set = cuts.get(it.iid) ?? new Set<string>()
+    set.add(it.date)
+    cuts.set(it.iid, set)
+  }
+  if (!adds.length) return { done: 0, skipped, why }
+  if (!cutDates(cuts)) return { done: 0, skipped: skipped + adds.length, why }
+  lwEditLists(adds)
+  refreshAbsencesAndRepaint()
+  return { done: adds.length, skipped, why }
+}
+
+/** delete approved leave days (design §5.2 `lw.removeApproved` — a deliberate
+ *  delete propagates and sticks, owner decision 2, 13 Sep 26). */
+function doorRemoveApproved(items: Array<{ personId: string; date: string; iid: string }>): { done: number; skipped: number; why: string[] } {
+  const cuts = new Map<string, Set<string>>()
+  const why: string[] = []
+  const prot = new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
+  let skipped = 0
+  for (const it of items) {
+    const row = warLeaveRow(it)
+    if (!row) { skipped++; continue }
+    if (prot.has(it.date) || inputProtected(row)) { skipped++; why.push(`${it.date} is on a locked week — not deleted`); continue }
+    const set = cuts.get(it.iid) ?? new Set<string>()
+    set.add(it.date)
+    cuts.set(it.iid, set)
+  }
+  const n = items.length - skipped
+  if (!n) return { done: 0, skipped, why }
+  if (!cutDates(cuts)) return { done: 0, skipped: items.length, why }
+  refreshAbsencesAndRepaint()
+  return { done: n, skipped, why }
+}
+
+/** slide approved leave days by `delta` (design §5.2 `lw.moveApproved`, §17
+ *  FB3-01). `check` = validate only (the store's moveProblem). The moved days
+ *  are cut from their Input and re-filed as a new Input over the landing
+ *  dates, carrying lw / remarks / docs / mod and — once bidding is closed —
+ *  the moved-from marks. */
+function doorMoveApproved(items: Array<{ personId: string; date: string; iid: string }>, delta: number, tracked: boolean, check: boolean): { reason: 'occupied' | 'window' | 'nothing'; at?: string } | null {
+  const leaving = new Set(items.map(i => `${i.iid}|${i.date}`))
+  const prot = new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
+  for (const it of items) {
+    const row = warLeaveRow(it)
+    if (!row) return { reason: 'nothing', at: it.date }
+    const to = addDays(it.date, delta)
+    if (!warHolding(rawState().wars, to)) return { reason: 'window', at: to }
+    /* a locked week at either end refuses before anything moves (AS4-R2-001) */
+    if (prot.has(it.date) || prot.has(to) || inputProtected(row)) return { reason: 'window', at: prot.has(to) ? to : it.date }
+    const contrib = absencesAt(it.personId, it.date).find(c => c.id === it.iid)
+    if (!contrib) return { reason: 'nothing', at: it.date }
+    const here = absencesAt(it.personId, to).filter(c => !leaving.has(`${c.id}|${to}`))
+    const war = warHolding(rawState().wars, to)!
+    const reqs = recContribs(recsAt(war.recs, it.personId, to))
+    if ([...here, ...reqs].some(o => forbiddenPair({ ...contrib, id: 'moving' }, o))) return { reason: 'occupied', at: to }
+    if (liveRequestsOn(recsAt(war.recs, it.personId, to), portionOf(contrib.win)).length) return { reason: 'occupied', at: to }
+  }
+  if (check) return null
+  /* group per Input: cut the moved dates, re-file them shifted */
+  const byIid = new Map<string, string[]>()
+  for (const it of items) byIid.set(it.iid, [...(byIid.get(it.iid) ?? []), it.date])
+  const cuts = new Map<string, Set<string>>()
+  const refile: any[] = []
+  for (const [iid, dates] of byIid) {
+    const row = INPUTS.find((r: any) => String(r.iid) === iid)!
+    cuts.set(iid, new Set(dates))
+    const sorted = [...dates].sort()
+    let run: string[] = []
+    const flush = () => {
+      if (!run.length) return
+      const from = addDays(run[0]!, delta), to = addDays(run[run.length - 1]!, delta)
+      const moved: Record<string, string> = {}
+      for (const d of run) {
+        const origin = row.lwMoved?.[d] ?? d
+        if (tracked) moved[addDays(d, delta)] = origin
+      }
+      const piece = sliceInput({ ...row, lwMoved: undefined }, from, to, false)
+      if (Object.keys(moved).length) piece.lwMoved = moved
+      else delete piece.lwMoved
+      refile.push(piece)
+      run = []
+    }
+    for (const d of sorted) { if (run.length && addDays(run[run.length - 1]!, 1) !== d) flush(); run.push(d) }
+    flush()
+  }
+  let ok = false
+  doorWrite(() => {
+    /* cut first (same body as remove), then file the landings */
+    for (const [iid, drop] of cuts) {
+      const ix = INPUTS.findIndex((r: any) => String(r.iid) === iid)
+      if (ix < 0) continue
+      const row = INPUTS[ix]
+      const parts: string[][] = []
+      for (const d of inputDates(row)) {
+        if (drop.has(d)) { parts.push([]); continue }
+        if (!parts.length || !parts[parts.length - 1]!.length) parts.push([d])
+        else parts[parts.length - 1]!.push(d)
+      }
+      const keep = parts.filter(k => k.length)
+      INPUTS.splice(ix, 1, ...keep.map((k, i) => sliceInput(row, k[0]!, k[k.length - 1]!, i === 0)))
+    }
+    for (const r of refile) INPUTS.push(r)
+    ok = true
+  })
+  if (ok) refreshAbsencesAndRepaint()
+  return ok ? null : { reason: 'window' }
+}
+
+function notationOf(code: string, win: readonly [number, number]): string {
+  const p = portionOf(win)
+  return p === 'am' ? `*${code}` : p === 'pm' ? `${code}*` : code
+}
+
+/* ---- the clash strip: DERIVED from the day views, never stored ------------
+   (design §3.1, §19 OA4-003): every forbidden pair on any day of any war — a
+   request over an absence, leave over worked time, two overlapping leaves, a
+   medical on worked time — republished whenever the war's records or the
+   index change, behind an equality guard so an unchanged list notifies
+   nothing. */
+function publishLeaveClashes(): void {
+  const out: SyncClash[] = []
+  for (const war of getState().wars as any[]) {
+    for (const [person, row] of Object.entries(war.views ?? {}) as Array<[string, Record<string, any>]>) {
+      for (const [date, v] of Object.entries(row)) {
+        for (const [a, b] of v.conflicts as Array<[Contrib, Contrib]>) {
+          out.push({ person, date, inputCode: notationOf(a.code, a.win), bidCode: notationOf(b.code, b.win), ...(a.kind === 'credit' || b.kind === 'credit' ? { kind: 'duty' as const } : {}) })
+        }
+      }
+    }
+  }
+  LEAVE_CLASHES = out
+  publishClashes()
+}
+
+/* ---- the clash list's shape and its subscribers --------------------------- */
 
 /** A leave input asking for a date the squadron already bid differently on.
  *  The system never overwrites a bid — it raises the clash and a human
@@ -523,123 +569,6 @@ function publishClashes(): void {
   for (const fn of clashListeners) fn()
 }
 
-export function runInbound(): void {
-  if (SYNCING) return
-  SYNCING = true
-  try {
-    const { people, wars } = getState()
-    const known = new Set(people.map(p => p.id))
-
-    /* The desired cells: every NON-lw leave OR medical input, one entry per
-       covered day. person|isoDate -> code-with-portion. Medical joined
-       17 Aug 26 ("if I apply on inputs, it will auto populate on the leave
-       war") — same wire, same ownership, only its portion rule differs
-       (medRowPortion's six-hour half). */
-    /* Per person|day, gather each covering input's contribution — the AM
-       half, the PM half, a full day — so that TWO rows covering one day
-       combine instead of the first silently winning (bug sweep, 18 Aug 26:
-       an AM local-leave + a PM off-in-lieu used to land only the first, so a
-       same-type split under-drew half a day and a different-type split lost a
-       whole half with nothing flagged). A Leave War cell holds one code, so:
-       two halves of the SAME type make a full day; a full day subsumes a
-       matching half; a genuinely un-representable pair (two different half
-       types, or a half whose type differs from a full day) lands the AM one
-       and raises a CLASH rather than dropping the other in silence. */
-    const parts = new Map<string, { am?: string; pm?: string; full?: string }>()
-    for (const row of INPUTS) {
-      if (row.lw) continue // the loop-breaker: rows this module itself wrote
-      if (!isLeave(row.type) && !isDownchit(row.type)) continue
-      /* A person Leave War does not know (the seed's j_lee, say) would
-         become an invisible grid row no matrix draws — skip rather than
-         write a cell nobody can see or clear. */
-      if (!known.has(row.person)) continue
-      const start = labelToISO(row.date, row.yr)
-      if (!start) continue
-      let end = row.endDate ? labelToISO(row.endDate, row.yr) ?? start : start
-      if (end < start) end = start
-      const portion = portionOfRow(row)
-      const type = lwTypeOf(row.type)
-      /* Capped walk: a malformed span cannot spin the boot. 400 covers any
-         legitimate year-crossing leave. */
-      let n = 0
-      for (let d = start; d <= end && n < 400; d = addDays(d, 1), n++) {
-        /* Only dates inside some war are syncable — a war might simply not
-           exist for that year. Skipped silently, per the spec. */
-        if (!warHolding(wars, d)) continue
-        const key = `${row.person}|${d}`
-        const slot = parts.get(key) ?? {}
-        // First-of-its-kind wins its half, matching the old first-wins order
-        // for a genuine duplicate; the combining is across DIFFERENT halves.
-        if (portion === 'am') { if (slot.am === undefined) slot.am = type }
-        else if (portion === 'pm') { if (slot.pm === undefined) slot.pm = type }
-        else { if (slot.full === undefined) slot.full = type }
-        parts.set(key, slot)
-      }
-    }
-
-    const desired = new Map<string, string>()
-    const splitClashes: SyncClash[] = []
-    for (const [key, slot] of parts) {
-      const at = key.indexOf('|')
-      const person = key.slice(0, at)
-      const date = key.slice(at + 1)
-      if (slot.full !== undefined) {
-        desired.set(key, slot.full)
-        for (const h of [slot.am, slot.pm]) {
-          if (h !== undefined && h !== slot.full) splitClashes.push({ person, date, inputCode: h, bidCode: slot.full })
-        }
-      } else if (slot.am !== undefined && slot.pm !== undefined) {
-        if (slot.am === slot.pm) desired.set(key, slot.am) // two halves, one type → a full day
-        else { desired.set(key, `*${slot.am}`); splitClashes.push({ person, date, inputCode: slot.pm, bidCode: slot.am }) }
-      } else if (slot.am !== undefined) desired.set(key, `*${slot.am}`)
-      else if (slot.pm !== undefined) desired.set(key, `${slot.pm}*`)
-    }
-
-    /* Forward: land what Raptor holds. Already-synced cells are skipped so
-       an unchanged world writes nothing (ingest would persist-and-notify).
-       The split-clashes (a same-day pair the one-code cell cannot show) join
-       the ingest clashes below on the same strip. */
-    const clashes: SyncClash[] = [...splitClashes]
-    for (const [key, notation] of desired) {
-      const at = key.indexOf('|')
-      const person = key.slice(0, at)
-      const date = key.slice(at + 1)
-      const war = warHolding(getState().wars, date)
-      if (!war) continue
-      const existing = war.grid[person]?.[date]
-      if (existing === notation && raptorOwns(war.states, person, date)) continue
-      const result = ingestFromRaptor(person, date, notation)
-      if (result === 'clash') {
-        clashes.push({ person, date, inputCode: notation, bidCode: existing ?? '' })
-      }
-    }
-
-    /* Reverse: a Raptor-owned cell no live input still covers was DELETED on
-       the Inputs page — clear it (and only it: clearRaptorCell refuses
-       anything Leave War has taken back over). An owned FO/HO cell is NOT
-       ours to garbage-collect: the OIL pass wrote it from published work or
-       an acknowledged input claim, not from a leave input, so no leave input
-       covering it is its normal state — the ownership marker is shared, the
-       vocabulary is the partition. */
-    for (const war of getState().wars) {
-      for (const [person, row] of Object.entries(war.states)) {
-        for (const [date, rec] of Object.entries(row)) {
-          if (rec.source !== 'raptor') continue
-          const code = war.grid[person]?.[date]
-          if (code === 'FO' || code === 'HO') continue
-          if (desired.has(`${person}|${date}`)) continue
-          clearRaptorCell(person, date)
-        }
-      }
-    }
-
-    LEAVE_CLASHES = clashes
-    publishClashes()
-  } finally {
-    SYNCING = false
-  }
-}
-
 /* ---- wire 4: published weekend/PH duty -> OIL credit --------------------- */
 
 /* Whether Leave War calls this date non-working. The weekend needs no war at
@@ -667,7 +596,7 @@ export function isNonWorkingISO(date: string): boolean {
    input's own standing (all-day = FO, else its length under oilFullMin) —
    the CELL finally posted may still upgrade when published schedule work on
    the same day stretches its envelope (desiredOilCells). Walks label→ISO exactly as
-   runInbound does, same 400-day cap. */
+   inputDates does, same 400-day cap. */
 export function oilAskPlan(row: { person?: any; date: string; endDate?: string; yr?: any; allday?: any; s?: any; e?: any }): { iso: string; amt: 0.5 | 1 }[] {
   const out: { iso: string; amt: 0.5 | 1 }[] = []
   const amt = inputOilAmt(row.allday, row.s, row.e)
@@ -815,7 +744,13 @@ function stashOilWeek(v: string): { days: any[], sc: any } | null {
 /** What the sync wire wants a person's day to hold: the credit code and the
  *  WHY that becomes the tracker's reason (`FLT`, `SIM + Duty`, an input's
  *  type name — owner, 2 Sep 26). */
-export interface DesiredOil { code: 'FO' | 'HO'; why: string }
+export interface DesiredOil {
+  code: 'FO' | 'HO'
+  why: string
+  /** the actual work times on the day (not the gap-inclusive envelope) —
+   *  what a leave or a medical must not overlap (clash check B4, §26.3) */
+  spans: Array<[number, number]>
+}
 
 /* A date is PROTECTED when the schedule evidence behind it cannot be read as an
    ISSUED document — a pre-Phase-2 (unsupported) book, a stash filed under the
@@ -918,9 +853,46 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
   for (const [k, spans] of pool) {
     if (protectedDates.has(k.slice(k.indexOf('|') + 1))) continue   // never desire a protected date (P2-IMPL-01)
     const amt = uniformOil(envMin(spans.map(w => [w.s, w.e] as [number, number])))
-    if (amt) out.set(k, { code: amt === 1 ? 'FO' : 'HO', why: oilWorkWhy(spans) })
+    if (amt) out.set(k, { code: amt === 1 ? 'FO' : 'HO', why: oilWorkWhy(spans), spans: workSpans(spans) })
   }
   return { desired: out, protectedDates }
+}
+
+/* the day's work spans clipped to the date and merged where they touch — the
+   stored shape of an auto credit's times */
+function workSpans(spans: OilWork[]): Array<[number, number]> {
+  const clipped = spans.map(w => [Math.max(0, w.s), Math.min(1439, w.e)] as [number, number]).filter(([a, b]) => a <= b)
+  clipped.sort((a, b) => a[0] - b[0])
+  const out: Array<[number, number]> = []
+  for (const [a, b] of clipped) {
+    const last = out[out.length - 1]
+    if (last && a <= last[1] + 1) last[1] = Math.max(last[1], b)
+    else out.push([a, b])
+  }
+  return out
+}
+
+/* THE PUBLISH DOOR ([ARCH-STACK] step 4 — clash check B5, owner answer A,
+   20 Sep 26). Publishing a weekend or public-holiday day (first publish or an
+   AL) replaces the clashing part of every undecided leave bid the published
+   work overlaps, INSIDE the publish command (lwStore joins it), so undoing
+   the publish brings the bid back. Weekday work never replaces a bid — that
+   stays the schedule's own warning. Reads the RESOLVED issued snapshot, the
+   same evidence the OIL pass credits from; the OIL pass itself never deletes a
+   request (it runs on week navigation too, which is no one's decision). */
+export function publishReplacesBids(di: number): void {
+  const iso = labelToISO(DATES[di])
+  if (!iso || !warHolding(rawState().wars, iso) || !isNonWorkingISO(iso) || !dayApproved(di)) return
+  const snap = daySnapOf(di, dayCurVer(di))
+  if (!snap || !snap.d) return
+  const spans = dayOilWork(snap.d, { expandAll: win => availableFor(iso, win) })
+  const claims: BidClaim[] = []
+  for (const [person, sp] of Object.entries(spans)) {
+    for (const [s, e] of workSpans(sp)) claims.push({ person, date: iso, win: [s, e], byType: 'the published schedule' })
+  }
+  if (!claims.length) return
+  const said = replaceClashingBids(claims, '', () => false)
+  if (said.length) HOOKS.toast(`Publishing replaces ${said.join(', ')} on the Leave War`, '')
 }
 
 /* [GLOBAL-UNDO] §6.6 — the Unpublish button's warn. Unpublishing a loaded-week day
@@ -944,7 +916,7 @@ export function oilCreditBidAgainst(di: number): boolean {
        a Raptor-owned FO/HO cell can be withdrawn. A desired credit blocked by an
        existing manual cell (runOilPass returns a clash) never landed and is not in the
        balance, so counting it would falsely warn for anyone at a low balance. */
-    const landed = wars.some(w => (w as any).grid?.[person]?.[iso] === d.code && (w as any).states?.[person]?.[iso]?.source === 'raptor')
+    const landed = rawState().wars.some(w => recsAt(w.recs, person, iso).some(r => r.kind === 'credit' && r.oil === 'auto' && r.code === d.code))
     if (!landed) continue
     const credit = d.code === 'FO' ? 1 : 0.5
     // balanceOf counts that landed cell, so balance − credit is the balance AFTER the
@@ -960,34 +932,31 @@ export function runOilPass(): void {
   try {
     const { desired, protectedDates } = desiredOilCells()
 
-    /* Forward: land what the published schedule earns. Already-landed cells
-       are skipped so an unchanged world writes nothing. */
+    /* Forward: land what the published schedule earns, with its work times.
+       An unchanged credit writes nothing (ingestDutyCredit answers
+       'confirmed'). A credit whose TIMES overlap leave, a medical or an
+       undecided bid on that day is the clash — never placed (clash check B4;
+       a credit beside a non-overlapping absence lands, so a worked Saturday
+       morning + afternoon leave keeps its OIL). */
     const clashes: SyncClash[] = []
-    for (const [key, { code, why }] of desired) {
+    for (const [key, { code, why, spans }] of desired) {
       const at = key.indexOf('|')
       const person = key.slice(0, at)
       const date = key.slice(at + 1)
-      const war = warHolding(getState().wars, date)
-      if (!war) continue
-      const existing = war.grid[person]?.[date]
-      if (existing === code && raptorOwns(war.states, person, date) && war.states[person]?.[date]?.note === why) continue
-      const result = ingestDutyCredit(person, date, code, why)
+      if (!warHolding(rawState().wars, date)) continue
+      const result = ingestDutyCredit(person, date, code, why, spans)
       if (result === 'clash') {
-        clashes.push({ person, date, inputCode: code, bidCode: existing ?? '', kind: 'duty' })
+        const shown = (getState().wars as any[]).find(w => date >= w.period.start && date <= w.period.end)?.grid?.[person]?.[date]
+        clashes.push({ person, date, inputCode: code, bidCode: shown ?? '', kind: 'duty' })
       }
     }
 
-    /* Reverse-and-replace: an owned FO/HO cell no published work still earns
-       — the day was reopened, the man came off the roster, the times shrank,
-       an AL moved him — goes, and the forward half above has already written
-       whatever replaces it. Only FO/HO: the leave cells under the same
-       ownership marker are inbound's, the mirror of its skip. */
-    for (const war of getState().wars) {
-      for (const [person, row] of Object.entries(war.states)) {
-        for (const [date, rec] of Object.entries(row)) {
-          if (rec.source !== 'raptor') continue
-          const code = war.grid[person]?.[date]
-          if (code !== 'FO' && code !== 'HO') continue
+    /* Reverse: a GENERATED credit no published work still earns goes. Only
+       `auto` credits — a hand-typed one is the admin's (design §18 OA3-003). */
+    for (const war of rawState().wars) {
+      for (const [person, row] of Object.entries(war.recs)) {
+        for (const [date, list] of Object.entries(row)) {
+          if (!list.some(r => r.kind === 'credit' && r.oil === 'auto')) continue
           if (protectedDates.has(date)) continue          // issued evidence unavailable → the landed credit stands (P2-IMPL-01)
           if (desired.has(`${person}|${date}`)) continue
           clearRaptorCell(person, date)
@@ -1179,10 +1148,12 @@ export function wireLeaveWarSync(): void {
      it here — once at boot, again on every Raptor notify below — keeps the
      mirror converged without a new seam; setViewer no-ops on a same value. */
   setViewer(ME)
+  /* the absence door — the war's changes to approved leave (design §5.2) */
+  installAbsenceDoor()
   runPoArchive()
-  runInbound()
+  refreshAbsences(true)
+  absencesChanged()
   runOilPass()
-  runOutbound()
   raptorSubscribe(() => {
     setViewer(ME)
     // Before the passes: a body added on the Quals page must be on the roster
@@ -1191,7 +1162,10 @@ export function wireLeaveWarSync(): void {
     // [CMDL-FINISH] M3 — coalesce an IDLE multi-cell reconcile (week-nav
     // loadWeek→runOilPass crediting K cells) into ONE lw.sync projection. A no-op
     // when this callback runs at phase 8 (the committing lane coalesces on its own).
-    lwSyncTurn(() => { runPoArchive(); runInbound(); runOilPass(); runOutbound() })
+    /* design §4.1 order: roster, then the absence index (fresh before the OIL
+       pass reads the merged day), then the passes */
+    if (refreshAbsences()) absencesChanged()
+    lwSyncTurn(() => { runPoArchive(); runOilPass() })
   })
   lwSubscribe(() => {
     /* The showSans switch (store.ts:setShowSans) is a Leave War write, so the
@@ -1207,10 +1181,11 @@ export function wireLeaveWarSync(): void {
        [CMDL-FINISH] M3 — coalesced into ONE lw.sync projection when this lane runs
        at idle (a view-only setter waking the reconcilers writes nothing and emits
        nothing; a setShowSans that changes OIL cells emits one envelope). */
+    /* the war's own records changed (a bid, a refusal, a credit): the clash
+       strip is derived from them too (design §19 OA4-003) */
+    publishLeaveClashes()
     lwSyncTurn(() => {
       runPoArchive()
-      runOutbound()
-      runInbound()
       /* The OIL pass reads Leave War too — a PH flag set, an event word tagged
          "off day", a war created over the loaded week — so a Leave War change
          can change what a published Saturday earns. */

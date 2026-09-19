@@ -705,9 +705,23 @@ sync wires (17 Aug 26; this seam also mirrors Raptor's "View as" person into
 the Leave War store's `viewer` on every Raptor notify — what lights the
 viewer's row and personalises the counter picker — a rider on this seam, not
 a fifth): Leave War's roster is a boot-time PROJECTION of
-Raptor's PEOPLE, approved leave crosses both ways as DERIVED
-RECONCILIATION (outbound skips Raptor-owned cells, inbound skips lw-tagged
-inputs — that pairing is the loop-breaker), and weekend/holiday WORK — the
+Raptor's PEOPLE; **an absence is ONE record — the Raptor Input ([ARCH-STACK]
+step 4, 20 Sep 26; SUPERSEDES the 17 Aug two-way copy: `runInbound`,
+`runOutbound`, `retractLwRow`, `ingestFromRaptor` are deleted)**. The war
+stores only its own records — a LIST per person/date of requests, OIL credits
+and replaced-bid notices (`engine/warrecs.ts`) — and DERIVES everything it
+shows about leave, medical, courses and overseas duty from the Inputs on read
+(`sync.ts:refreshAbsences` → `state/merge.ts` → `engine/dayview.ts`: one main
+code by the agreed ladder, grey `+n` / amber `!`, charges by halves). Approving
+on the war writes the Input inside the same command (the absence door in
+`sync.ts`, installed on the store, carrying `lw` = the war id as provenance).
+The owner's clash rules run at ONE seat inside the Raptor inputs door
+(`leavewar/inputgate.ts` via `state/inputgate-hook.ts`: sick cuts leave, no
+overlapping leave / leave over a medical / leave over recorded work, a
+clashing input replaces an undecided bid with a notice) — and on undo/redo, and
+publishing a weekend/PH day replaces a clashing bid inside the publish command.
+Rules of record: `docs/superpowers/specs/2026-09-20-arch-stack-4-clash-check.md`.
+Weekend/holiday WORK — the
 PUBLISHED schedule plus acknowledged Duty-&-commitments input claims
 (`row.oil`, the OilConfirm ask-flow, 28 Aug 26) — credits OIL as a third
 derived pass (wire 4, `runOilPass` +
@@ -715,11 +729,10 @@ derived pass (wire 4, `runOilPass` +
 since 29 Aug 26 — gaps between events count, and the schedule half reads
 every visited week via the session stash, not just the loaded one — the
 ownership partition is by cell vocabulary, FO/HO vs
-leave codes; details in `docs/superpowers/specs/leavewar-sync.md`). Editing
-or deleting an lw-tagged input on the Inputs page carries back INTO the war
-(owner, 17 Aug 26 — full two-way): `commitInputEdit`/`removeInput` call
-`sync.ts:retractLwRow`, a Raptor-side caller of this same seam, not a new
-one. The roster is a LIVE projection since 18 Aug 26: `sync.ts:reprojectRoster`
+leave codes; credits are `oil:'auto'` records with the work times). Editing
+or deleting a war-approved Input on the Inputs page needs no carry-back any
+more — the war simply re-reads it (a member's own date/type edit clears `lw`,
+so it gains the blue "filed on the Inputs page" edge, owner 19 Sep 26). The roster is a LIVE projection since 18 Aug 26: `sync.ts:reprojectRoster`
 re-projects Raptor's PEOPLE on every Raptor notify (change-guarded), so a body
 added on the Quals page reaches Leave War without a reload — a rider on this
 same seam. Its DISPLAY is categorised (`engine/people.ts:groupOf` — SXO / IP /
@@ -728,9 +741,10 @@ OPS P by CAT / IWSO / OPS W by CAT / OCU / Personnel, colours from Raptor's
 manning count (`countsFor`); `categoryOf` and the thresholds are untouched.
 The PUBLISHED remarks editor (27 Aug 26) rides this same seam in the war→Raptor
 direction: `sync.ts:leaveInputAt` finds the Raptor input a war cell derives
-from, and `RemarksSheet` saves through Raptor's own `setLeaveRemarks →
-commitInputEdit` — a remarks-only edit, so `rowSig` is unchanged and the war
-cells never move. Don't add a fifth seam casually,
+from (through the day view), and `RemarksSheet` saves through Raptor's own
+`setLeaveRemarks → commitInputEdit` — a remarks-only edit. A day holding more
+than one record opens the TAP LIST instead (`ui/DayList.tsx`), each record on
+its own line with its own actions. Don't add a fifth seam casually,
 and never call its `initStore` from a component — it clears the store's
 subscribers.
 
@@ -1452,5 +1466,5 @@ ledger). Read it before any layout/render/drag-touching change.
 | The rules engine | `src/engine/` — `validate.ts` is the heart |
 | Store / UI state / undo | `src/state/` |
 | Components + HTML builders | `src/ui/` |
-| **The Leave War tab** (vendored app: engine, store, UI, tests) | `src/leavewar/` — its own store and `leavewar:` storage keys; role written only by `resetSession` + the admin's `toggleRole`; stage-advance is admin-only (27 Aug 26, members still bid); a member bids only on their OWN row — the "View as" person, mirrored to `viewer` — while an admin edits any row (`canEditRow`, 27 Aug 26; enforced at the write path and the grid affordance alike); an admin decides bids at closed OR published (`canDecide`, 27 Aug 26 — since the 27 Aug overnight pass the STORE enforces it too: `setBidState`/`setBidStates` refuse anyone else, `shiftBid` carries `moveCells`' whole stage/window/war-day law, `moveProblem` is the one validation body the landing preview and the commit share, a chain of closed moves keeps the ORIGINAL `shiftedFrom`, and NO ONE writes a medical mark on the war — medical is MEMBER-FILED only since 13 Sep 26, reversing the 17 Aug "management's" rule: blocked at `setCell`/`setCellRange`/`setCells` for every role incl admin, the pickers removed, `outboundToRaptor` no longer sends medical; the war still DISPLAYS member-filed medical that syncs IN via `ingestFromRaptor`); a drag selects a block to batch fill/decide/move/delete and a plain click still opens the single-cell sheet (`select.ts`, capture taken in `arm()`); the dotted "moved" mark is recorded AND shown only for a move made once bidding is closed (`biddingClosed`, 27 Aug 26 — an open-bidding shuffle stores no `shiftedFrom`, so it never sprouts the stripe when the war later closes); the colour pop-out is "Legend"; at PUBLISHED a tap on an approved leave opens the remarks editor (`RemarksSheet` → `sync.ts:leaveInputAt` + `inputedit.ts:setLeaveRemarks`, member edits own / admin any); CSS scoped under `#page-leavewar`; gaps in `docs/leavewar/known-gaps.md`, future sync in `docs/superpowers/specs/leavewar-sync.md` |
+| **The Leave War tab** (vendored app: engine, store, UI, tests) | `src/leavewar/` — its own store and `leavewar:` storage keys; role written only by `resetSession` + the admin's `toggleRole`; stage-advance is admin-only (27 Aug 26, members still bid); a member bids only on their OWN row — the "View as" person, mirrored to `viewer` — while an admin edits any row (`canEditRow`, 27 Aug 26; enforced at the write path and the grid affordance alike); an admin decides bids at closed OR published (`canDecide`, 27 Aug 26 — since the 27 Aug overnight pass the STORE enforces it too: `setBidState`/`setBidStates` refuse anyone else, `shiftBid` carries `moveCells`' whole stage/window/war-day law, `moveProblem` is the one validation body the landing preview and the commit share, a chain of closed moves keeps the ORIGINAL `shiftedFrom`, and NO ONE writes a medical mark on the war — medical is MEMBER-FILED only since 13 Sep 26, reversing the 17 Aug "management's" rule: blocked at `setCell`/`setCellRange`/`setCells` for every role incl admin, the pickers removed; the war still DISPLAYS member-filed medical, read from the Inputs (step 4, 20 Sep 26)); a drag selects a block to batch fill/decide/move/delete and a plain click still opens the single-cell sheet (`select.ts`, capture taken in `arm()`); the dotted "moved" mark is recorded AND shown only for a move made once bidding is closed (`biddingClosed`, 27 Aug 26 — an open-bidding shuffle stores no `shiftedFrom`, so it never sprouts the stripe when the war later closes); the colour pop-out is "Legend"; at PUBLISHED a tap on an approved leave opens the remarks editor (`RemarksSheet` → `sync.ts:leaveInputAt` + `inputedit.ts:setLeaveRemarks`, member edits own / admin any); CSS scoped under `#page-leavewar`; gaps in `docs/leavewar/known-gaps.md`, future sync in `docs/superpowers/specs/leavewar-sync.md` |
 | **The Tracker tab** (vendored OCU progress tracker: syllabus flow charts, marks, pace) | `src/tracker/` — plain JS/JSX, its own store (`app/core.js`) and storage doorway (`storage.js`, `ocu:` keys), CSS scoped under `#page-tracker`; file lock written only by `resetSession` + the admin's `toggleRole` through `role.js` (everyone edits; Import / Export are the admin's — enforced at the write path; the file is a format, not a store — 9 Sep 26); page seam `TrackerPage.tsx`, kept mounted once visited; its browser suite `scripts/tracker/smoke.mjs` (`npm run smoke:tracker`, a CI job); gaps `docs/tracker/known-gaps.md`; the design specs it was built from `docs/tracker/specs/` |

@@ -634,6 +634,52 @@ retry (more likely on iPhone). Never fixed, not logged as a limitation.
 - **Fix within [DB-STEP]:** a real "it's saved" signal the delete waits for, rather
   than a piecemeal patch in three places. Or pull earlier on request.
 
+### [ARCH-STACK-4] One absence record — BUILT, IN REVIEW, HOLDING FOR "merge live" (20 Sep 26)
+Step 4 of the [ARCH-STACK] backbone. Branch `claude/db-step4-one-absence`. An absence is ONE record
+(the Input); the Leave War stores only its own records (requests, OIL credits, replaced-bid notices)
+as a list per person/date and DERIVES what each day shows on read; approving on the war writes the
+Input in the same command; every save is all-or-nothing (phase 0). The owner's clash rules run at
+one seat in the inputs door (`leavewar/inputgate.ts`) and on undo/redo; publishing a weekend/PH day
+replaces a clashing bid. The multi-record box (grey `+n` / amber `!`) and its tap list are built;
+screenshots in `raptor-port/docs/img/step4-shots/`.
+- **Read to resume:** the build log `raptor-port/docs/superpowers/plans/2026-09-19-arch-stack-4-build-log.md`
+  (what is built where + status), the rules of record
+  `raptor-port/docs/superpowers/specs/2026-09-20-arch-stack-4-clash-check.md`, the inspection brief
+  `…/plans/2026-09-20-arch-stack-4-inspection-brief.md`.
+- **Left:** fold in the cross-provider code inspection (Codex + Fable) and the scenario tester's
+  findings; hold for the owner's "merge live". Deferred on purpose: OIL itself as a read-time
+  derivation (design §7), per-year balances `[LEAVE-YEAR]`, published-day Unavailable `[PUB-UNAVAIL]`.
+
+### [S4-BUGHUNT] Full scenario bug hunt of the one-absence model — NEXT (owner, 20 Sep 26)
+The owner's next task: a full end-to-end bug test of the step-4 scenarios NOT yet covered. **Fable and
+Codex PLAN the hunt (a scenario list each, cross-provider), Opus EXECUTES** in the running app and fixes
+what it finds. Everything the planners need is in
+`raptor-port/docs/superpowers/plans/2026-09-20-arch-stack-4-test-coverage.md` — bugs already caught, what
+the 18 e2e + the unit suites already cover, and §3's list of untested ground (other Input doors, answer
+A's weekday case, pre-posting-in leave, medical corners, the OIL pass vs absences, cross-war dates, bulk
+gestures, undo depth, storage faults, phone touch, figures on multi-record days). Rules of record:
+`specs/2026-09-20-arch-stack-4-clash-check.md`. Do it on the step-4 branch (or on main once it merges).
+
+### [LW-LOCKMARK] Retire the war's `source:'raptor'` lock marker — OPEN (follow-up to step 4, 20 Sep 26)
+Codex's round-2 inspection (AS4-R2-004, low): the merged view still synthesises `source:'raptor'` ("locked on
+the war") and Matrix reads it through `raptorOwns`, and the published remarks sheet finds its Input via
+`leaveInputAt` (person/date/code) rather than the record id. Correct today (the tap list acts by id on any
+multi-record day), but design §6 wants the lock derived from each contribution's own Input. Replace the
+Matrix `raptorOwns` checks with per-contribution predicates, open the remarks sheet by iid, then delete
+`sourceOf`/`raptorOwns` and the synthesised `source`. Also open: a publish → undo → publish → undo → redo
+refusal ("an earlier undone change touches the same thing") that exists on `main` too (found by the step-4
+scenario tester) — the global undo timeline's own item.
+
+### [PUB-UNAVAIL] New absence silently changes a published day's Unavailable list — NEXT AFTER step 4
+A new absence covering an already-published day changes that day's issued Unavailable list with no
+amendment, no re-sign, no history line (`html.ts:1515` reads live inputs; the filing fingerprint
+compares `acc` only). Owner (19 Sep 26): fix as its own item straight after step 4. Context: design §13.2.
+
+### [LEAVE-YEAR] Yearly leave balances and carry-over — OPEN (owner, 19 Sep 26: "we will do this next time")
+Today each person has ONE running balance per counter; leave on 1 Jan simply comes off it, and a new
+year is handled by the admin's "Reset counters". Decide next session: separate balances per year/war,
+carry-over rules, and which year a leave crossing 31 Dec charges. Context: clash catalogue Q10.
+
 ### [DB-STEP] The shared-database step (Dataverse) — FUTURE MILESTONE
 The big future move: Raptor, Leave War and Tracker all run on `localStorage` /
 session today; the target is a shared database (**Dataverse** — `src/storage/`

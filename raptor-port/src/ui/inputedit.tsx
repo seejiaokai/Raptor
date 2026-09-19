@@ -30,7 +30,8 @@ import { writeInputsBatch, notify, protectedDates, inputProtected } from '../sta
 /* The Leave War seam (sync.ts is the one crossing point, CLAUDE.md §The Leave
    War tab): retracting a synced row's war cells when it is edited or deleted
    here — not a new seam, a Raptor-side caller of the existing one. */
-import { retractLwRow, rowSig, oilAskPlan } from '../leavewar/sync'
+import { oilAskPlan } from '../leavewar/sync'
+import { leaveKey } from '../leavewar/absences'
 import { inputOilAmt } from '../engine/oil'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { stashKeys, stashGet } from '../engine/weekstash'
@@ -46,6 +47,13 @@ import { RangeCal } from './RangeCal'
    offered or in what order, so all three call this rather than each sorting
    PEOPLE their own way. */
 export const rosterOptions = () => Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived)
+  .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
+/* [ARCH-STACK] step 4 (clash check H5, owner answer C, 20 Sep 26): an admin
+   can still FILE leave for someone who has posted out (clearing leave) or has
+   not posted in yet — so the Inputs page's own person pickers offer the
+   archived bodies too, in their own group below the roster. Every OTHER roster
+   surface (the board, the palette, reassign) keeps rosterOptions(). */
+export const archivedOptions = () => Object.keys(PEOPLE).filter(id => PEOPLE[id].archived && !PEOPLE[id].special)
   .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
 
 const MON = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -348,7 +356,8 @@ export function applyMedPlan(plan: any[]) {
       continue
     }
     if (p.action !== 'trim' || p.newEndOrd == null) continue
-    if (r.lw) { retractLwRow(r); delete r.lw }
+    /* [ARCH-STACK] step 4: the Leave War READS this row — trimming it trims the
+       war with nothing to retract. */
     const a = dateOrd(r.date, r.yr)
     if (a != null && p.newEndOrd <= a) delete r.endDate
     else r.endDate = ordLabel(p.newEndOrd, r.yr)
@@ -739,9 +748,9 @@ function protectedInput(...rows: any[]): boolean {
    not the model's date/endDate — reading those raw was the P2-REREVIEW-01 no-op). */
 const normDest = (n: { date: string, endDate: string | undefined }, yr: any) => ({ date: n.date, endDate: n.endDate, yr })
 /* PREFLIGHT A MEDICAL PLAN (P2-QREV-01). The medical create/trim cascade
-   (applyMedPlan) mutates EXISTING rows — trims, deletes, and, for an lw-tagged
-   row, withdraws its Leave War cells (retractLwRow) as an immediate side effect
-   the input funnel's model-rollback cannot take back. So a plan that touches ANY
+   (applyMedPlan) mutates EXISTING rows — trims and deletes — and (before
+   [ARCH-STACK] step 4) withdrew Leave War cells as a side effect the input
+   funnel's model-rollback could not take back. So a plan that touches ANY
    protected-date row must be refused BEFORE it runs, not rolled back after: this
    preflights the whole plan (its target rows, and the surviving tail a split
    would mint) so nothing executes on a frozen record. */
@@ -941,9 +950,14 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        refined remark survives. rowSig folds the type vocabulary and the portion
        exactly as reconciliation does, so "did the leave change?" here cannot
        disagree with what a re-sync would decide. */
-    const leaveSame = r.lw && rowSig(r) != null &&
-      rowSig(r) === rowSig({ person: draft.person, type: draft.type, date, endDate, allday: draft.allday, half, s, e })
-    if (r.lw && !leaveSame) { retractLwRow(r); delete r.lw }
+    /* [ARCH-STACK] step 4 (design §5.4, owner §13 Q1): the war READS this row, so
+       nothing is retracted — the edit simply shows there. What changes is who
+       may edit it on the war: a MEMBER's own date / type / person edit of a
+       leave the admin approved clears `lw` (it stays green and gains the blue
+       "filed on the Inputs page" edge; from then on it is changed here). A
+       remarks-only edit, and any admin edit, keep it war-approved. */
+    const leaveSame = leaveKey(r) === leaveKey({ person: draft.person, type: draft.type, date, endDate, yr: r.yr, allday: draft.allday, half, s, e })
+    if (r.lw && !leaveSame && !canEditSched()) delete r.lw
     /* An ACCEPTED input is linked to the row it created by `src`, a content
        key of person|date|type|s. Editing any of those silently broke the
        link: the row stayed on the programme, undo could no longer find it,
@@ -1242,7 +1256,9 @@ export function removeInput(r: any) {
    row still says what was granted. Without this the next reconcile would
    re-mint the row from the still-approved cells — the snap-back. */
 function dropInputRow(r: any) {
-  if (r.lw) retractLwRow(r)
+  /* [ARCH-STACK] step 4: deleting the row IS deleting the absence — the war
+     reads it, so there is nothing to withdraw (deliberate delete propagates
+     and sticks, owner decision 2, 13 Sep 26). */
   if (r.acc) unacceptInput(acceptedDay(r), r)
   const ix = INPUTS.indexOf(r); if (ix >= 0) INPUTS.splice(ix, 1)
 }

@@ -105,7 +105,7 @@ truth for what each type means; the fields below are what a record carries.
 | `remarks` | string? | free text, may be `''`; absent on the seed SANS rows |
 | `mod` | string | last-modified date, ISO `yyyy-mm-dd` on the seeds — but **the app writes the literal `'now'`** on every create, edit and trim (`src/ui/inputedit.tsx:348`, `:712`) and the Leave War sync does the same (`src/leavewar/sync.ts:334`); the reader resolves `'now'` to today's date (`src/engine/inputs.ts:683`). A store that keeps `'now'` keeps "modified today" for ever |
 | `acc` | `undefined \| 'g' \| 'u' \| 'r'` | never landed / landed on the Ground Programme / actioned to Unavailable / **removed by a scheduler (dormant)** |
-| `lw` | string? | the **war id** the row was derived from, written by the Leave War sync (`src/leavewar/sync.ts:340`) — the loop-breaker, see Sync below |
+| `lw` | string? | the **war id** the leave was approved in — PROVENANCE ("approved in war W"), written by the war's approval door (`src/leavewar/sync.ts` `doorApprove`); a member's own date/type edit clears it ([ARCH-STACK] step 4) |
 | `docId` / `docIds` | string / string[] | attachment ids (see Attachments) |
 | `oil` | `{ 'yyyy-mm-dd': 0 \| 0.5 \| 1 }`? | the per-day OIL credit decision from the OilConfirm ask-flow — written after a create or edit (`src/ui/InputsPage.tsx:425`, `:599`, `:631`; `src/ui/inputedit.tsx:1325`, `:1335`) |
 | `sans` | `{ f?, o?, a? }`? | SANS Availability only: which of Fly / OFT / AMT are offered (`src/ui/inputedit.tsx:715`, `:861`; `src/ui/InputsPage.tsx:397`) |
@@ -318,9 +318,9 @@ Every key its `persist()` writes — about twenty (`src/leavewar/state/store.ts`
 `wars`, `current`, `openings`, `ledger`, `oilpolicy`, `eventdefs`, `figorder`,
 `rosterorder`, `perslabels`, `manningorder`, `manninghidden`, `fighidden`,
 `groupdefs`, `grouppriority`, `grouppriocustom`, `groupcolors`, `manningdefs`,
-`eventrows`, `showsans`, `personedits`, `postouts` — plus the pre-migration
-trio `grid`, `states`, `stage` that older browsers may still hold (read once,
-migrated into `wars`).
+`eventrows`, `showsans`, `personedits`, `postouts`. (Since [ARCH-STACK] step 4,
+20 Sep 26, a stored war holds `{ period, recs }`; an older blob is not migrated —
+`SCHEMA_VERSION` 4 clears `inputs`, `weeks` and `leavewar` on a returning browser.)
 
 The last two are the only per-person records Leave War keeps (8 Sep 26 bug
 pass — a posting-out date used to vanish on reload): `personedits` is
@@ -335,7 +335,9 @@ Raptor's `PEOPLE` on every boot and these two are laid back on top.
 ```
 people: Person[]            requirements: Requirements     qualCatalog: QualDef[]
 eventDefs: EventDef[]       wars: LeaveWar[]               currentId: string
-period, grid, states        // derived from the current war — never stored separately
+period                      // the current war's period
+getState() adds grid, states, views — DERIVED on read (state/merge.ts) from the
+  war's own records + the Inputs; rawState() is what is stored
 openings: Openings          ledger: Ledger                 oilPolicy: OilPolicy
 role: 'member' | 'admin'    viewer: string | null
 figureOrder, rosterOrder, manningOrder, manningHidden, figureHidden: string[]
@@ -351,12 +353,14 @@ personEdits: { personId: { seat?, band?, sxo? } }
 | Record | Fields |
 |---|---|
 | `Person` | `id, callsign, seat: 'pilot' \| 'wso' \| 'gnd', band: 'instructor' \| 'ops', sxo, from, to` (dates in squadron, null = open), `poArchive?, q?, scd?, scn?, xq?: string[], san?, pers?, label?` — built from the scheduler's PEOPLE, **same ids** |
-| `LeaveWar` | `{ period, grid, states }` — one war |
+| `LeaveWar` | `{ period, recs }` — one war (stored) |
+| `Recs` | `personId → date → WarRec[]` — the war's OWN records only ([ARCH-STACK] step 4) |
+| `WarRec` | one of: **request** `{ id, kind:'request', code, state: 'pending' \| 'acknowledged' \| 'refused', shiftedFrom?, carried? }` · **OIL credit** `{ id, kind:'credit', code: 'FO' \| 'HO', oil: 'auto' \| 'manual', note?, spans? }` · **notice** `{ id, kind:'notice', code, was, byType, byWho, seq, at }` (a replaced bid, until "OK, seen"). Nothing "approved" is ever stored here — approved leave is the Input with `lw` |
 | `Period` | `id, name, start, end, stage: 'draft' \| 'open' \| 'closed' \| 'published', bidFrom, bidTo, days: DayInfo[], bands: EventBand[]` |
-| `Grid` | `personId → date → code` (the code string a cell shows) |
+| `Grid` (derived) | `personId → date → code` — the main code a cell shows |
 | `Cell` | `{ type, portion: 'full' \| 'am' \| 'pm' }` — a parsed code |
-| `States` | `personId → date → BidRecord` |
-| `BidRecord` | `state: 'pending' \| 'acknowledged' \| 'approved' \| 'refused', source: 'bid' \| 'raptor', shiftedFrom?, note?` |
+| `States` (derived) | `personId → date → BidRecord` — the main record's colour state; `source: 'raptor'` now means "locked on the war" (filed on the Inputs page, or medical) |
+| `Views` (derived) | `personId → date → DayView` — every record on the day, the main one, the corner mark, the charges (`engine/dayview.ts`) |
 | `Openings` | `personId → { counter: number }` — opening balances |
 | `CounterName` | `'annual' \| 'oil' \| 'ccl' \| 'fcl' \| 'pl' \| 'el' \| 'cl'` |
 | `LedgerEntry` | `id, personId, counter, amount, date, reason, approvedBy, givenBy?` — a grant or correction |
@@ -370,19 +374,12 @@ personEdits: { personId: { seat?, band?, sxo? } }
 
 ### Sync with the scheduler — `src/leavewar/sync.ts`
 
-Two wires, both **derived reconciliation** (compute desired state, diff,
-write only the difference — never a queue):
-
-- approved leave, and the four medical markers (`ATT B`, `ATT C`, `HL`,
-  `OML`), cross from the war grid to the schedule as an input tagged
-  `lw: <war id>` (`src/leavewar/sync.ts:340`);
-- leave / medical filed on the Inputs page crosses to the grid as a cell
-  whose `BidRecord.source` is `'raptor'`.
-
-Each direction is blind to the other's writes (outbound skips
-`source: 'raptor'` cells; inbound skips `lw` inputs), so one pass reaches a
-fixed point. **A database must preserve both markers** or the loop-breaker
-is lost.
+**Since [ARCH-STACK] step 4 (20 Sep 26) there is no copy to sync.** An absence
+(leave, medical, course, overseas duty) is ONE record — the Input. The war
+READS the Inputs (`refreshAbsences`) and derives what each day shows; approving
+on the war WRITES the Input in the same command, tagged `lw: <war id>` as
+provenance ("approved in war W"), not as a loop-breaker. OIL credits remain a
+derived pass (`runOilPass`) writing `oil:'auto'` records.
 
 ---
 
@@ -580,7 +577,7 @@ normalising on day one:
 | `EditLog` | one edit | `ELogRow` |
 | `Settings` | one `sqn142_*` key | key + JSON value, absent = standard |
 | `Attachments` | one file | id, name, mime, size + a file store reference |
-| `LW_Wars` | one war | `LeaveWar` (period + grid + states as JSON) |
+| `LW_Wars` | one war | `LeaveWar` (period + the war's record lists as JSON) |
 | `LW_Openings`, `LW_Ledger`, `LW_OilPolicy`, `LW_EventDefs`, `LW_Settings` | as named | the matching `leavewar:*` keys |
 | `TR_Charts`, `TR_Students` | one container each | `charts`, `students` |
 

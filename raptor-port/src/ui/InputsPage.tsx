@@ -31,7 +31,7 @@ import {
   draftOf, commitInputEdit, removeInput, SansPicker, sansRefusal, sansOverlapRefusal, sansFlags,
   medOverlapRefusal, upchitRefusal, downOverUpchitRefusal, applyMedPlan, normalizeInputDraft,
   medKeptSegments, mintMedSegments, ordISO, DocField, oilGate, oilAnswered, docGate,
-  rosterOptions as people, inputTone, medPlanProtected, medSegmentsProtected,
+  rosterOptions as people, archivedOptions, inputTone, medPlanProtected, medSegmentsProtected,
 } from './inputedit'
 import { DocConfirm } from './DocConfirm'
 import { docFields, docHas, rowDocIds } from '../state/docs'
@@ -64,6 +64,15 @@ const isoOf = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.
 /* Date normalises an overflowing month for us — 31 Dec + 2 months is 3 Mar,
    not 31 Feb — which is the behaviour a "two months from now" window wants */
 const plusMonths = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth() + n, d.getDate())
+
+/* The archived / posted-out bodies as their own group in an admin's person
+   picker ([ARCH-STACK] step 4, H5 — clearing leave is filed for them). */
+function ArchivedGroup() {
+  const ids = archivedOptions()
+  if (!ids.length) return null
+  return <optgroup label="Posted out / archived">{ids.map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}</optgroup>
+}
+
 export const DEFAULT_SPAN_MONTHS = 2
 /* The quick button now applies the SQUADRON'S look-ahead rather than a fixed
    two months (owner, 28 Aug 26 — "i am able to change the button function to
@@ -790,6 +799,7 @@ export function InputsPage() {
             {canEditSched()
               ? <select id="inPerson" aria-label="Person" value={person} onChange={e => setPerson(e.target.value)}>
                 {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
+                <ArchivedGroup />
               </select>
               : <div className="inper-fixed" id="inPersonFixed" aria-label="Person">{PEOPLE[ME] ? PEOPLE[ME].cs : String(ME)}</div>}</div>
           <div className="ifield cal"><label>Dates</label>
@@ -859,6 +869,7 @@ export function InputsPage() {
         <select id="inFPerson" aria-label="Filter by person" value={fPerson} onChange={e => { unpin(); setFPerson(e.target.value); notify() }}>
           <option value="all">Everyone</option>
           {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
+          <ArchivedGroup />
         </select>
         <select id="inFType" aria-label="Filter by type" value={fType} onChange={e => { unpin(); setFType(e.target.value); notify() }}>
           <option value="all">Show all types</option>
@@ -985,6 +996,7 @@ export function InputsPage() {
                     ? <select aria-label="Person" data-ed="person" value={draft.person}
                       onChange={e => setDraft({ ...draft, person: e.target.value })}>
                       {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
+                      <ArchivedGroup />
                     </select>
                     : (PEOPLE[draft.person] ? PEOPLE[draft.person].cs : String(draft.person))}</td>
                   <td colSpan={2} data-fld="Dates">

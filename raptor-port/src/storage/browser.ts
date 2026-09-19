@@ -5,7 +5,7 @@
    `ocu:*` (Tracker) keys are imported once and written under `raptor:` so
    later loads find them there; legacy keys are never deleted. The unwired
    `leavewar:*` keys are ignored (main.tsx booted Leave War on memory). */
-import { type Backend, type Collection, type Snapshot, emptySnapshot, isCollection, recordKey, splitKey } from './backend'
+import { type Backend, type Collection, type Entry, type Snapshot, emptySnapshot, isCollection, parseGroup, recordKey, splitKey } from './backend'
 
 export const BROWSER_PREFIX = 'raptor:'
 const LEGACY: Array<[string, Collection]> = [['sqn142_', 'settings'], ['ocu:', 'tracker']]
@@ -22,6 +22,12 @@ const LEGACY_LEDGER = BROWSER_PREFIX + '__legacy__/ledger'
    failed on a full store is still recognisable as mid-flight next boot and is
    never mistaken for an existing install (bug-check, 11 Sep 26 — second pass). */
 const LEGACY_STARTED = BROWSER_PREFIX + '__legacy__/started'
+/* [ARCH-STACK-4] §19.4 / §20.3 — the all-or-nothing journal. ONE key holds the
+   whole group being applied (written in ONE setItem), so a crash or a full store
+   mid-apply is finished at the next boot. It sits outside every collection
+   (`splitKey` finds no collection in it), so loadAll never serves it as a record. */
+export const JOURNAL_KEY = BROWSER_PREFIX + '__txn'
+
 function parseKeyList(raw: string | null): string[] {
   if (raw == null) return []
   try { const a = JSON.parse(raw); return Array.isArray(a) ? a.filter(x => typeof x === 'string') : [] } catch (e) { return [] }
@@ -30,7 +36,10 @@ function parseKeyList(raw: string | null): string[] {
 export class BrowserBackend implements Backend {
   constructor(private ls: Storage = localStorage) {}
 
+  private recovered: Entry[] | null = null
+
   async loadAll(): Promise<Snapshot> {
+    this.replayJournal()
     const snap = emptySnapshot()
     let hasRecords = false
     for (let i = 0; i < this.ls.length; i++) {
@@ -47,7 +56,52 @@ export class BrowserBackend implements Backend {
        this fix (no ledger) is an existing install and is grandfathered — marked
        done, nothing re-imported — so a since-deleted record is not resurrected. */
     if (this.ls.getItem(LEGACY_DONE) == null) this.importLegacy(snap, hasRecords)
+    /* a replay that could not finish: boot on the ACKNOWLEDGED world anyway —
+       the journal's values win over the half-applied records (§20.3 FB5-02) */
+    if (this.recovered) for (const e of this.recovered) {
+      if (e.value === null) delete snap[e.collection][e.id]
+      else snap[e.collection][e.id] = e.value
+    }
     return snap
+  }
+
+  unfinished(): Entry[] | null { return this.recovered }
+
+  /* ONE synchronous block — journal, apply every entry, remove the journal — with
+     no await inside (§20.3 FB5-01), so a pagehide flush lands it whole. A failed
+     journal write applies nothing (the group retries whole); a failure after it
+     leaves the journal for the next boot to finish. */
+  async putMany(entries: Entry[]): Promise<void> {
+    this.ls.setItem(JOURNAL_KEY, JSON.stringify(entries))
+    for (const e of entries) this.apply(e)
+    this.ls.removeItem(JOURNAL_KEY)
+  }
+
+  async writeJournal(group: Entry[] | null): Promise<void> {
+    if (group && group.length) this.ls.setItem(JOURNAL_KEY, JSON.stringify(group))
+    else this.ls.removeItem(JOURNAL_KEY)
+    this.recovered = group && group.length ? group : null
+  }
+
+  private apply(e: Entry): void {
+    const k = BROWSER_PREFIX + recordKey(e.collection, e.id)
+    if (e.value === null) this.ls.removeItem(k)
+    else this.ls.setItem(k, e.value)
+  }
+
+  /* finish an unfinished group BEFORE anything is read. Each entry is tried on
+     its own; if any still fails the journal is KEPT (the next boot tries again)
+     and the group is reported as unfinished. A malformed journal is dropped. */
+  private replayJournal(): void {
+    this.recovered = null
+    const raw = this.ls.getItem(JOURNAL_KEY)
+    if (raw == null) return
+    const group = parseGroup(raw)
+    if (!group) { this.ls.removeItem(JOURNAL_KEY); return }
+    let clean = true
+    for (const e of group) { try { this.apply(e) } catch (err) { clean = false } }
+    if (clean) this.ls.removeItem(JOURNAL_KEY)
+    else this.recovered = group
   }
 
   async put(collection: Collection, id: string, json: string): Promise<void> {

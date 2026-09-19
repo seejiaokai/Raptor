@@ -42,7 +42,7 @@ describe('a standalone user LW edit emits a record-level envelope (property c)',
     setCell('ramp', '2026-01-21', 'LL')
     const cell = caught[0].changes.find(c => c.collection === 'lw.cell' && c.id === `${warId}:ramp:2026-01-21`)
     expect(cell).toBeTruthy()
-    expect(cell!.after).toBe('LL')
+    expect((cell!.after as any[]).map(r => r.code)).toEqual(['LL'])   // the date's record list (step 4)
   })
 
   it('a no-op setCell (same value) emits nothing', () => {

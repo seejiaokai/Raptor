@@ -30,6 +30,65 @@ describe('bootStorage', () => {
     const be = new MemoryBackend(); be.failNext(1)
     await expect(bootStorage(be)).rejects.toThrow()
   })
+
+  /* [ARCH-STACK-4] phase 0 — recovery at boot (design §21.2, §22.2, §23.2) */
+  const stamped = { settings: { schema: JSON.stringify(SCHEMA_VERSION) } }
+  async function crashGroup(be: MemoryBackend, group: any[]) {
+    be.crashNextAfter(0)
+    await expect(be.putMany(group)).rejects.toThrow()
+  }
+
+  it('an unfinished group the replay cannot finish is carried into the save queue as FAILED, and lands with a later edit', async () => {
+    vi.useFakeTimers()
+    const be = new MemoryBackend(); be.seed(stamped)
+    await crashGroup(be, [{ collection: 'tracker', id: 't', value: 'T1' }])
+    be.failReplay(1)
+    const { wb, postman } = await bootStorage(be)
+    expect(wb.get('tracker', 't')).toBe('T1')                // booted on the acknowledged world
+    expect(postman.status).toBe('failed')
+    wb.set('settings', 'rules', 'R')                        // an unrelated edit merges over it
+    await vi.advanceTimersByTimeAsync(1000)
+    expect(postman.status).toBe('saved')
+    const again = await bootStorage(be)                     // reload
+    expect(again.wb.get('tracker', 't')).toBe('T1')
+    expect(again.wb.get('settings', 'rules')).toBe('R')
+    expect(be.peekJournal()).toBeNull()
+  })
+
+  it('a reset due at boot FILTERS the unfinished group: kept collections survive, reset ones never land', async () => {
+    vi.useFakeTimers()
+    const be = new MemoryBackend()
+    be.seed({ settings: { schema: JSON.stringify(SCHEMA_VERSION - 1) }, inputs: { all: 'OLD' } })
+    await crashGroup(be, [{ collection: 'tracker', id: 't', value: 'T1' }, { collection: 'inputs', id: 'all', value: 'I1' }])
+    be.failReplay(1)
+    const { wb, postman } = await bootStorage(be)
+    expect(wb.has('inputs', 'all')).toBe(false)             // the reset world
+    expect(wb.get('tracker', 't')).toBe('T1')
+    await vi.advanceTimersByTimeAsync(1000)
+    expect(postman.status).toBe('saved')
+    const again = await bootStorage(be)
+    expect(again.wb.get('tracker', 't')).toBe('T1')
+    expect(again.wb.has('inputs', 'all')).toBe(false)
+    expect(be.peekJournal()).toBeNull()
+  })
+
+  it('a failed journal rewrite stops the boot (Retry), the old journal intact; next boot filters, resets and stamps', async () => {
+    vi.useFakeTimers()
+    const be = new MemoryBackend()
+    be.seed({ settings: { schema: JSON.stringify(SCHEMA_VERSION - 1) }, inputs: { all: 'OLD' } })
+    await crashGroup(be, [{ collection: 'tracker', id: 't', value: 'T1' }, { collection: 'inputs', id: 'all', value: 'I1' }])
+    be.failReplay(1)
+    const orig = be.writeJournal.bind(be)
+    let failOnce = true
+    be.writeJournal = async (g) => { if (failOnce) { failOnce = false; throw new Error('full') } return orig(g) }
+    await expect(bootStorage(be)).rejects.toThrow()
+    expect(be.peekJournal()?.map(e => e.collection)).toEqual(['tracker', 'inputs'])
+    expect(be.peek('settings', 'schema')).toBe(JSON.stringify(SCHEMA_VERSION - 1))   // unstamped
+    const { wb } = await bootStorage(be)
+    expect(wb.get('tracker', 't')).toBe('T1')
+    expect(wb.has('inputs', 'all')).toBe(false)
+    expect(be.peek('settings', 'schema')).toBe(JSON.stringify(SCHEMA_VERSION))
+  })
 })
 
 /* 8 Sep 26 bug pass: a reload inside the 300 ms coalesce wait lost the last

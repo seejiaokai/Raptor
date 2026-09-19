@@ -5967,8 +5967,8 @@ member editing their own leave) or an admin (anyone). It takes precedence in
 `Matrix.tsx` over the read-only Raptor sheet and the bid/decision sheets
 (`canRemark`), and exists only at `published`; a member still cannot DRAG there
 (a block of runs has no one note). The note lives on the Raptor INPUT the cell
-derives from — a leave FILED on Inputs (Raptor-owned) or BID in the war (the
-lw-tagged row `runOutbound` mints at publish), both found by
+derives from — a leave FILED on Inputs or APPROVED on the war (since
+[ARCH-STACK] step 4 both are the one Input, the war-approved one carrying `lw`), found by
 `sync.ts:leaveInputAt` — which since the 27 Aug overnight pass is handed the
 CELL'S OWN code, so under a leave clash (two inputs covering one day) it opens
 the record that actually derives the tapped cell: same leave type, exact
