@@ -216,3 +216,12 @@ this saves a decision rather than preventing a mistake.
 
 **Parked, bigger than the rest:** the Leave War can only see work that earned an OIL credit, which
 only happens on weekends and public holidays. Ordinary weekday work is invisible to it entirely.
+
+**The member sees the WORDS, not just the mark — and that replaces the auto-cancel.** The real
+problem with a bid left standing was never the admin's extra click: it was that the member's own row
+shows the OIL credit in the box with the bid hidden behind the amber mark, so his leave request
+looks like it has been thrown out when it is still waiting for a decision. The fix is to TELL him,
+not to cancel it. The sentence explaining a clash is admin-only today; it becomes visible to the
+person it is about, for their own row. Owner, 20 Sep 26: "park the auto-cancel, do the words
+instead." Same problem solved, and it shows an existing message to one more group of people rather
+than widening the inputs gate — the file four of today's defects lived in.
