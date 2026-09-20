@@ -167,7 +167,11 @@ function sickCutsLeave(changed: any[], changedIds: Set<string>): string[] {
 }
 
 /* ---- 2. the invariant ---------------------------------------------------- */
-function vet(persons: ReadonlySet<string>, changedIds: ReadonlySet<string>, withWork: boolean): void {
+/** Refusals stop the command; the returned notes are things the filer is TOLD
+ *  about a write that went through (leave over recorded work — owner, 20 Sep
+ *  26). Kept apart on purpose: a refusal is a door, a note is a flag. */
+function vet(persons: ReadonlySet<string>, changedIds: ReadonlySet<string>, withWork: boolean): string[] {
+  const workNotes: string[] = []
   for (const p of persons) {
     const rows = INPUTS.filter((r: any) => r && String(r.person) === p && r.iid && warVisible(r.type))
     const byDate = buildAbsenceIndex(rows).get(p)
@@ -200,13 +204,30 @@ function vet(persons: ReadonlySet<string>, changedIds: ReadonlySet<string>, with
         for (const cr of credits) {
           for (const w of creditWins(cr as any)) {
             if (!overlaps(w, c.win)) continue
+            /* LEAVE OVER RECORDED WORK IS FLAGGED, NOT REFUSED (owner, 20 Sep
+               26): "does making a hard refusal be a bit contradicting to what
+               I'm allowing for the schedule? Currently on the schedule if
+               there's a clash I still allow planning but there is just
+               flagging." It is. The whole validation engine's doctrine is
+               record it, flag it, let a human resolve — a double booking is
+               two facts that cannot both be true and the schedule flags it
+               rather than blocking the scheduler. The owner had already
+               applied that doctrine to this very pair in the other direction
+               (work published onto leave: allowed, amber, credit banked until
+               resolved), so refusing here made the SAME two facts acceptable
+               or forbidden purely by which was entered first.
+               So: the leave is written, the day goes amber from this very
+               pair in `dayView`, the clash strip names it, and it stands until
+               someone removes one side. The filer is told in the same breath,
+               so nothing lands silently. */
             const at = winText(w)
-            refuse(`${cs(p)} is recorded as working ${at ? `${at} ` : ''}on ${dm(d)} — ${typeLabel(c.code)} can't go over it`)
+            workNotes.push(`${cs(p)} is recorded as working ${at ? `${at} ` : ''}on ${dm(d)} — this ${typeLabel(c.code)} is filed anyway and flagged for someone to resolve`)
           }
         }
       }
     }
   }
+  return workNotes
 }
 
 /* ---- 3. a clashing claim replaces an undecided bid ---------------------- */
@@ -307,9 +328,9 @@ function apply(before: unknown): void {
   if (!changed.length) return
   const changedIds = new Set(changed.map(r => String(r.iid)))
   const cut = sickCutsLeave(changed, changedIds)
-  vet(new Set(changed.map(r => String(r.person))), changedIds, true)
+  const overWork = vet(new Set(changed.map(r => String(r.person))), changedIds, true)
   const replaced = inDoor() ? [] : replaceBids(changed)
-  const msgs = [...cut, ...(replaced.length ? [`This replaces ${replaced.join(', ')} on the Leave War`] : [])]
+  const msgs = [...cut, ...overWork, ...(replaced.length ? [`This replaces ${replaced.join(', ')} on the Leave War`] : [])]
   if (msgs.length) HOOKS.toast(msgs.join(' · '), '')
   refreshAbsencesAndRepaint()
 }

@@ -510,7 +510,13 @@ function publishLeaveClashes(): void {
   for (const war of getState().wars as any[]) {
     for (const [person, row] of Object.entries(war.views ?? {}) as Array<[string, Record<string, any>]>) {
       for (const [date, v] of Object.entries(row)) {
-        for (const [a, b] of v.conflicts as Array<[Contrib, Contrib]>) {
+        for (const pair of v.conflicts as Array<[Contrib, Contrib]>) {
+          /* the sentence reads "work earns X but the day holds Y", so when one
+             side is a CREDIT it has to be the X — and which side that is
+             depends only on the order the records happen to sit in on the day
+             (state/merge.ts puts the war's own records before the absences).
+             Order the pair here rather than letting the wording flip. */
+          const [a, b] = pair[1].kind === 'credit' && pair[0].kind !== 'credit' ? [pair[1], pair[0]] : pair
           out.push({ person, date, inputCode: notationOf(a.code, a.win), bidCode: notationOf(b.code, b.win), ...(a.kind === 'credit' || b.kind === 'credit' ? { kind: 'duty' as const } : {}) })
         }
       }
@@ -543,7 +549,6 @@ export interface SyncClash {
    replacing only its own half, so one pass running cannot blank the other's
    findings between its runs. */
 let LEAVE_CLASHES: SyncClash[] = []
-let OIL_CLASHES: SyncClash[] = []
 let CLASHES: SyncClash[] = []
 let clashVersion = 0
 const clashListeners = new Set<() => void>()
@@ -560,7 +565,7 @@ export function subscribeClashes(fn: () => void): () => void {
 }
 
 function publishClashes(): void {
-  const next = [...LEAVE_CLASHES, ...OIL_CLASHES]
+  const next = [...LEAVE_CLASHES]
   /* A clash that did not change must not repaint the strip: the passes run on
      every Raptor notify, and the common case is "still the same clashes". */
   if (JSON.stringify(next) === JSON.stringify(CLASHES)) return
@@ -938,17 +943,12 @@ export function runOilPass(): void {
        undecided bid on that day is the clash — never placed (clash check B4;
        a credit beside a non-overlapping absence lands, so a worked Saturday
        morning + afternoon leave keeps its OIL). */
-    const clashes: SyncClash[] = []
     for (const [key, { code, why, spans }] of desired) {
       const at = key.indexOf('|')
       const person = key.slice(0, at)
       const date = key.slice(at + 1)
       if (!warHolding(rawState().wars, date)) continue
-      const result = ingestDutyCredit(person, date, code, why, spans)
-      if (result === 'clash') {
-        const shown = (getState().wars as any[]).find(w => date >= w.period.start && date <= w.period.end)?.grid?.[person]?.[date]
-        clashes.push({ person, date, inputCode: code, bidCode: shown ?? '', kind: 'duty' })
-      }
+      ingestDutyCredit(person, date, code, why, spans)
     }
 
     /* Reverse: a GENERATED credit no published work still earns goes. Only
@@ -964,8 +964,16 @@ export function runOilPass(): void {
       }
     }
 
-    OIL_CLASHES = clashes
-    publishClashes()
+    /* The strip is DERIVED from the day views, and only from them (20 Sep 26).
+       Since the owner's ruling the credit always lands, so a credit that
+       overlaps an absence IS a conflict on the day and `publishLeaveClashes`
+       finds it — with the record it actually clashes with. The second list
+       this pass used to keep alongside it read the day's BOX instead, which
+       after the credit landed said the day held … the credit, giving the strip
+       "earns FO but 18 Jul holds FO". One list, derived, no duplicate.
+       It must run AFTER the credits are written, or it re-derives the world as
+       it was before this pass. */
+    publishLeaveClashes()
   } finally {
     SYNCING = false
   }

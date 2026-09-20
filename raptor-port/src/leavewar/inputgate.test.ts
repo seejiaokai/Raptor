@@ -74,12 +74,22 @@ describe('the invariant — no overlapping leave, no leave over a medical (B7, �
   })
 })
 
-describe('leave over recorded work is refused only when the times overlap (§26.3, B4)', () => {
-  it('refuses leave on a day credited as worked with no times (whole day, owner Q7)', () => {
+describe('leave over recorded work is FLAGGED, not refused (owner, 20 Sep 26)', () => {
+  /* The owner reversed the refusal on 20 Sep 26, on the app's own doctrine:
+     "does making a hard refusal be a bit contradicting to what I'm allowing
+     for the schedule? Currently on the schedule if there's a clash I still
+     allow planning but there is just flagging." So leave over recorded work
+     is written, the day goes amber, and the filer is told in the same breath.
+     The TIME test (§26.3, B4) is untouched: hours that miss are not a clash
+     at all, and nothing is said. */
+  it('files leave on a day credited as worked with no times, and says so (owner Q7)', () => {
     setRole('admin')
     expect(setCell('ammo', '2026-02-14', 'FO')).toBe(true)
-    expect(file('ammo', 'LL', 'Feb 14')).toBe(false)
+    // no times on a hand-typed credit still means the WHOLE day (Q7, B8)
+    expect(file('ammo', 'LL', 'Feb 14')).toBe(true)
     expect(said.some(m => m.includes('recorded as working on 14 Feb'))).toBe(true)
+    expect(said.some(m => m.includes('flagged for someone to resolve'))).toBe(true)
+    expect(codeAt('ammo', '2026-02-14')).toBe('LL')
   })
 
 

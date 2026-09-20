@@ -3057,11 +3057,12 @@ export type IngestResult = 'written' | 'confirmed' | 'clash' | 'ignored'
  * Only `FO` and `HO` come through here, from published weekend/PH work or an
  * acknowledged duty claim (`engine/oil.ts`). The credit is an `auto` record the
  * pass may take away again; `spans` are the actual work times (clash check B4,
- * B8). It lands BESIDE whatever else is on the day unless the work overlaps it
- * in time — leave or a medical on the same hours, or an undecided bid — which
- * is the clash (the pass reports it; a human decides). A hand-typed credit
- * already there is the squadron having recorded the same fact first: taken
- * over in place.
+ * B8). It lands BESIDE whatever else is on the day — ALWAYS, since the owner's
+ * 20 Sep 26 ruling: work overlapping leave, a medical or an undecided bid is
+ * reported as a clash and the day goes amber, but the credit is still banked
+ * and stays until a human resolves it by removing one side or the other. A
+ * hand-typed credit already there is the squadron having recorded the same
+ * fact first: taken over in place.
  */
 export function ingestDutyCredit(personId: string, date: string, code: 'FO' | 'HO', why?: string, spans?: Array<[number, number]>): IngestResult {
   // Locked — a sync-driven credit is not an undo step.
@@ -3078,24 +3079,29 @@ function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO',
   const probe = recContribs([rec]).map(c => ({ ...c, id: 'new' }))
   const staying = list.filter(r => r !== had)
   const others = [...recContribs(staying), ...absencesAt(personId, date)]
-  if (probe.some(p => others.some(o => forbiddenPair(p, o)))) {
-    /* B4: "Overlap → no credit". The clashing credit is not placed — but an
-       AUTO credit already sitting here, earned under evidence that has since
-       changed, has nothing else to remove it: the forward pass writes nothing
-       and the reverse pass skips this address, because the address is still
-       wanted. So it went on claiming hours the person no longer worked (a
-       Saturday duty re-timed from the morning into the afternoon left its
-       morning credit standing, with no amber on the box, [S4-BUGHUNT] 20 Sep
-       26). It is stale by definition: if it still matched the evidence, this
-       is the shape we would have written. A MANUAL credit is the admin's own
-       and is never touched (design §18 OA3-003). */
-    if (had && had.oil === 'auto') putList(personId, date, staying)
-    return 'clash'
-  }
-  if (had && had.oil === 'auto' && had.code === code && JSON.stringify(had) === JSON.stringify(rec)) return 'confirmed'
+  /* THE CREDIT LANDS EVEN WHEN IT OVERLAPS AN ABSENCE (owner, 20 Sep 26 —
+     "if someone is working, even tho they have leave on that day, it should
+     still bank the OIL credit … until that thing is resolved — which means
+     that if work is removed, then no OIL credit. If leave is removed then OIL
+     still credits").
+     This SETS ASIDE clash-check B4's "Overlap → no credit" half. B4's time
+     test itself stands, in `forbiddenPair`, and is exactly what turns the day
+     amber. Refusing to place the credit was the older reading and it cost more
+     than it saved: the forward pass wrote nothing, the reverse pass skipped
+     the address because the address was still wanted, and a credit already
+     sitting there under evidence that had since changed went on claiming hours
+     the person no longer worked. Writing unconditionally fixes that by
+     overwriting, and the resolution the owner describes falls out of machinery
+     that already exists — `dayView` derives the amber from the very pair we no
+     longer refuse, the strip is derived from the same conflicts, and the
+     reverse pass already removes an auto credit once the work is gone. */
+  const clash = probe.some(p => others.some(o => forbiddenPair(p, o)))
+  if (had && had.oil === 'auto' && had.code === code && JSON.stringify(had) === JSON.stringify(rec)) return clash ? 'clash' : 'confirmed'
   const confirming = !!had && had.oil === 'manual' && had.code === code
   putList(personId, date, [...staying, rec])
-  return confirming ? 'confirmed' : 'written'
+  /* 'clash' still REPORTS — the day needs a human — but it no longer means
+     "nothing was written". The credit is on the day either way. */
+  return clash ? 'clash' : confirming ? 'confirmed' : 'written'
 }
 
 /**

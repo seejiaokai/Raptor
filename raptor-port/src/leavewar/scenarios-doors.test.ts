@@ -53,6 +53,8 @@ const file = (person: string, type: string, date: string, extra: Record<string, 
 }
 const grid = (p: string, d: string) => getState().grid[p]?.[d]
 const recs = (p: string, d: string) => rawState().wars[0]?.recs[p]?.[d] ?? []
+/* the day as the SCREEN reads it — the merged view, not the stored records */
+const view = (p: string, d: string) => getState().wars[0]?.views[p]?.[d]
 const mine = (p: string) => INPUTS.filter((r: any) => r.person === p)
 
 describe('other doors that write Inputs', () => {
@@ -96,14 +98,19 @@ describe('leave dated before a posting-in (owner answer C)', () => {
 })
 
 describe('the OIL pass against absences', () => {
-  it('no auto credit is written on a day the person is already on leave all day', () => {
+  it('the credit LANDS on a day the person is already on leave, and the day is flagged', () => {
+    /* Owner, 20 Sep 26: "if someone is working, even tho they have leave on
+       that day, it should still bank the OIL credit … until that thing is
+       resolved." Sets aside B4's "Overlap → no credit"; the day carries the
+       amber instead, and the leave still shows as the main code. */
     const sat = '2026-07-18'
     file('plasma', 'LL', 'Jul 18')
     const g = signOf(5); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
     commitSetDayApproved(5, true)
     runOilPass()
-    expect(recs('plasma', sat).filter(r => r.kind === 'credit')).toHaveLength(0)
-    expect(grid('plasma', sat)).toBe('LL')
+    expect(recs('plasma', sat).filter(r => r.kind === 'credit')).toHaveLength(1)
+    expect(grid('plasma', sat)).toBe('LL')                 // leave is still the box
+    expect(view('plasma', sat)!.amber).toBe(true)          // and it needs a human
   })
 
   it('an auto credit goes away when the day is unpublished, and the leave stays', () => {

@@ -202,34 +202,39 @@ describe('an OIL credit whose hours have changed', () => {
     return row
   }
 
-  it('is not left standing with the hours it used to have', () => {
+  it('is re-written to the hours it now has, and the day is flagged', () => {
     // an afternoon leave, and a morning duty that misses it — the credit lands
     file('dj', 'LL', 'Jul 18', { allday: false, half: 'pm', s: 721, e: 1439 })
     const row = duty('dj', at(8), at(12))
     runOilPass()
     expect(credit('dj')?.spans).toEqual([[at(8), at(12)]])
+    expect(view('dj', SAT)!.amber).toBe(false)                  // nothing meets
 
-    // the duty is re-timed into the afternoon, where the leave is. B4 says the
-    // work now overlaps the absence, so there must be NO credit — and above all
-    // not one still claiming a morning nobody worked.
+    /* The duty is re-timed into the afternoon, where the leave is. Owner,
+       20 Sep 26: the credit is still banked, and the day is flagged until
+       someone resolves it. What must NEVER survive is the OLD morning — the
+       man did not work it. */
     writeInputs(() => { row.s = at(13); row.e = at(17) })
     runOilPass()
-    expect(credit('dj')?.spans).not.toEqual([[at(8), at(12)]])
-    expect(credit('dj')).toBeUndefined()
+    expect(credit('dj')?.spans).toEqual([[at(13), at(17)]])
+    expect(view('dj', SAT)!.amber).toBe(true)
   })
 
-  it('cannot be reached by filing leave over the hours instead — the door refuses that (B4)', () => {
-    // the other way a credit and a leave could come to share hours: file the
-    // leave second. The inputs door refuses it outright (§26.3), so the pair
-    // never arises that way, and the clash above is the only route to it.
+  it('filing the leave the other way round is flagged too, not refused (owner, 20 Sep 26)', () => {
+    /* The owner reversed the old refusal on the app's own doctrine: the
+       schedule allows planning through a clash and flags it, so leave does
+       too. Both orders now give the same picture — credit banked, leave
+       filed, day amber — which is the whole point of the ruling. */
     const row = duty('casper', at(8), at(12))
     runOilPass()
     expect(credit('casper')).toBeDefined()
     expect(row.oil[SAT]).toBe(0.5)
 
-    expect(file('casper', 'LL', 'Jul 18', { allday: false, half: 'am', s: 0, e: 720 }).ok).toBe(false)
-    expect(said.join(' ')).toMatch(/recorded as working/)
+    expect(file('casper', 'LL', 'Jul 18', { allday: false, half: 'am', s: 0, e: 720 }).ok).toBe(true)
+    expect(said.some(m => m.includes('recorded as working'))).toBe(true)
+    expect(said.some(m => m.includes('flagged for someone to resolve'))).toBe(true)
     expect(credit('casper')).toBeDefined()
+    expect(view('casper', SAT)!.amber).toBe(true)
   })
 
   it("an admin's own hand-typed credit is never removed by the pass", () => {
