@@ -100,6 +100,7 @@ import {
   isLeaveCode,
   parseCell,
   FULL,
+  MAX_GIVEN_BY,
   MAX_REC_NOTE,
   type Ledger,
   type LedgerEntry,
@@ -2010,9 +2011,10 @@ function occupiedFor(c: Contrib, personId: string, date: string, ignore: readonl
      publish that overlaps published work is refused at the bid door". That was
      quoted to the owner on 20 Sep 26 with its consequence — the same Saturday's
      leave going through on the Inputs page form and refused on the grid — and
-     overruled: flag it everywhere. B5's OTHER half, that publishing is the door
-     which replaces an undecided bid, stands. `barsWrite` carries the rule for
-     every door so the four cannot drift apart. */
+     overruled: flag it everywhere. B5's OTHER half went the same day: publishing
+     KEEPS an undecided bid and flags the day (this comment said it stood, which
+     was true for a few hours). `barsWrite` carries the rule for every door so
+     the four cannot drift apart. */
   return [...recContribs(staying), ...absencesAt(personId, date)].some(o => barsWrite(c, o))
 }
 
@@ -2692,8 +2694,10 @@ export function resetEventTypes(): void {
    refuses. */
 
 export const MAX_REASON = 120
-/** The optional "given by" on a grant (owner, 2 Sep 26) — a name or a post. */
-export const MAX_GIVEN_BY = 40
+/** The optional "given by" on a grant (owner, 2 Sep 26) — a name or a post.
+ *  ONE literal, defined with the record field it also caps (engine/warrecs.ts)
+ *  and re-exported here so every existing caller keeps its import. */
+export { MAX_GIVEN_BY }
 const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/
 
 /** Everything a figure needs to read a person's number, from the live state
@@ -3221,7 +3225,7 @@ function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO',
      next pass, which put the deletion-on-unpublish straight back. */
   const snap: CreditRec['manual'] | undefined = had
     ? had.manual ?? (had.oil === 'manual'
-      ? { code: had.code, ...(had.note ? { note: had.note } : {}), ...(had.spans ? { spans: had.spans } : {}) }
+      ? { code: had.code, ...(had.note ? { note: had.note } : {}), ...(had.givenBy ? { givenBy: had.givenBy } : {}), ...(had.spans ? { spans: had.spans } : {}) }
       : undefined)
     : undefined
   const kept: CreditRec = snap ? { ...rec, manual: snap } : rec
@@ -3229,6 +3233,61 @@ function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO',
   /* 'clash' still REPORTS — the day needs a human — but it no longer means
      "nothing was written". The credit is on the day either way. */
   return clash ? 'clash' : snap ? 'confirmed' : 'written'
+}
+
+/**
+ * PLACE A HAND-TYPED OIL CREDIT (owner, 20 Sep 26 — "the admin can also credit
+ * OIL on the leave sheet for convenience. We should enable that even on any
+ * day").
+ *
+ * Until now NOTHING in the app could create one. The store accepted an FO/HO
+ * cell, the reason editor edited one and the hours box edits one, but the only
+ * writers were the automatic pass off the published schedule and the demo
+ * seed — so every one of those editors could only ever reach a credit nobody
+ * was able to type. This is the missing door.
+ *
+ * ANY DAY, deliberately (the owner's ruling above, which sets aside the
+ * assumption — never actually a rule — that OIL is only earned on a weekend or
+ * a public holiday). That restriction is real for the AUTOMATIC pass, which
+ * reads the published schedule and only credits non-working days. A credit an
+ * admin types by hand is a different thing: it is the squadron recording that
+ * a man worked, with no schedule behind it, which is exactly why it carries a
+ * reason and who said so. The pass never removes a hand-typed credit, so a
+ * weekday one stays until an admin clears it — and it DOES add to the man's
+ * OIL balance, which is the point of typing it.
+ *
+ * ONE command, so it is ONE undo step: doing this as setCell + setCellNote +
+ * setCellHours would take three presses of undo to take back one entry.
+ *
+ * Refused only where refusing is the truth: not an admin, no war on that date,
+ * a day the published schedule already earns (its credit is the schedule's —
+ * change the schedule), or hours that are not a real span. It is never refused
+ * for clashing with leave: work always lands and the day is flagged.
+ */
+export function setManualCredit(
+  personId: string, date: string, code: 'FO' | 'HO',
+  opts: { note?: string; givenBy?: string; from?: number | null; to?: number | null } = {},
+): string | null {
+  if (state.role !== 'admin') return 'Only an admin can enter OIL'
+  if (!warHolding(state.wars, date)) return 'That day is in no war'
+  if (code !== 'FO' && code !== 'HO') return 'That is not an OIL code'
+  const list = listAt(personId, date)
+  const had = list.find(isCredit)
+  if (had && had.oil === 'auto') return 'That day already earns OIL from the published schedule'
+  const note = (opts.note ?? '').trim().slice(0, MAX_REC_NOTE)
+  const givenBy = (opts.givenBy ?? '').trim().slice(0, MAX_GIVEN_BY)
+  const from = opts.from ?? null, to = opts.to ?? null
+  if (from !== null || to !== null) {
+    if (from === null || to === null) return 'Type both a start and an end, or leave both blank for the whole day'
+    if (!Number.isFinite(from) || !Number.isFinite(to) || from < 0 || to > 1439) return 'Those hours are not a real time'
+    if (from > to) return 'The end is before the start'
+  }
+  const rec: CreditRec = {
+    id: had?.id ?? newRecId('c'), kind: 'credit', code, oil: 'manual',
+    ...(note ? { note } : {}), ...(givenBy ? { givenBy } : {}),
+    ...(from !== null ? { spans: [[from, to!]] as Array<[number, number]> } : {}),
+  }
+  return putList(personId, date, [...list.filter(r => r !== had), rec]) ? null : 'Could not write that'
 }
 
 /**
@@ -3273,6 +3332,30 @@ export function setCellHours(personId: string, date: string, from: number | null
 }
 
 /**
+ * ON WHOSE SAY-SO, on a hand-typed FO/HO credit (owner, 20 Sep 26). The twin
+ * of `setCellNote` below, and the same rules: admin only, the day must hold a
+ * credit, an empty value clears it. Refused on a credit the published schedule
+ * owns, like the hours are — the schedule is its own evidence and needs no
+ * name behind it.
+ */
+export function setCellGivenBy(personId: string, date: string, givenBy: string): string | null {
+  if (state.role !== 'admin') return 'Only an admin can edit OIL'
+  if (!warHolding(state.wars, date)) return 'That day is in no war'
+  const list = listAt(personId, date)
+  const had = list.find(isCredit)
+  if (!had) return 'Only an FO or HO credit takes a given-by'
+  const clean = givenBy.trim()
+  if (clean.length > MAX_GIVEN_BY) return `Given by is at most ${MAX_GIVEN_BY} characters`
+  if (!clean && !had.givenBy) return null
+  if (clean === had.givenBy) return null
+  if (had.oil !== 'manual') return 'That credit comes from the published schedule — change the schedule instead'
+  const { givenBy: _old, ...rest } = had
+  const next: CreditRec = clean ? { ...rest, givenBy: clean } : rest
+  putList(personId, date, list.map(r => (r === had ? next : r)))
+  return null
+}
+
+/**
  * The REASON on a hand-entered FO/HO credit (owner, 2 Sep 26). Admin only; the
  * day must hold a credit. An empty note clears it.
  */
@@ -3309,6 +3392,7 @@ export function clearRaptorCell(personId: string, date: string): boolean {
     if (had.manual) {
       const back: CreditRec = { id: had.id, kind: 'credit', oil: 'manual', code: had.manual.code,
         ...(had.manual.note ? { note: had.manual.note } : {}),
+        ...(had.manual.givenBy ? { givenBy: had.manual.givenBy } : {}),
         ...(had.manual.spans ? { spans: had.manual.spans } : {}) }
       return putList(personId, date, list.map(r => (r === had ? back : r)))
     }

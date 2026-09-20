@@ -114,7 +114,8 @@ export interface OilCredit {
   source: OilSource
   /** Who recorded a grant (the admin's callsign). */
   approvedBy?: string
-  /** Who GAVE a grant, when the admin named someone (owner, 2 Sep 26). */
+  /** Who GAVE it, when the admin named someone: a grant's approver (owner,
+   *  2 Sep 26) or a hand-typed credit's "on whose say-so" (20 Sep 26). */
   givenBy?: string
   /** An `auto` credit an admin typed by hand (no Raptor-owned record behind
    *  it), so its reason is theirs to write (`setCellNote`). */
@@ -213,7 +214,7 @@ export function oilLedgerFor(ctx: FigureCtx, personId: string, policy: OilPolicy
       if (credit && v.earnsOil > 0) {
         const reason = credit.note ?? (isWeekend(date) ? 'weekend duty' : 'PH duty')
         const hours = credit.wins ?? (credit.win[0] === 0 && credit.win[1] === 1439 ? undefined : [credit.win])
-        credits.push({ id: `auto:${wi}:${date}`, date, amount: v.earnsOil, reason, source: 'auto', ...(credit.auto ? {} : { manual: true }), ...(hours ? { hours } : {}), expires: expiryOf(date, policy), used: [], left: v.earnsOil, expired: 0 })
+        credits.push({ id: `auto:${wi}:${date}`, date, amount: v.earnsOil, reason, source: 'auto', ...(credit.auto ? {} : { manual: true }), ...(hours ? { hours } : {}), ...(credit.givenBy ? { givenBy: credit.givenBy } : {}), expires: expiryOf(date, policy), used: [], left: v.earnsOil, expired: 0 })
       }
       for (const t of charged.get(date) ?? []) {
         if (t.counter !== 'oil') continue

@@ -47,7 +47,7 @@ import {
   type Figure,
   type FigureCtx,
 } from '../engine'
-import { figureCtxOf, setBalance, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostIn, setPostOut, visibleFigures, type MoveResult, type EventMoveResult } from '../state/store'
+import { figureCtxOf, setBalance, setManualCredit, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostIn, setPostOut, visibleFigures, type MoveResult, type EventMoveResult } from '../state/store'
 import { BidPicker, DecisionSheet, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
@@ -66,6 +66,7 @@ import { touchesAM, touchesPM, type DayView } from '../engine/dayview'
 import type { Portion } from '../engine'
 import { isLwOnScreen, subLwScreen } from '../state/screen'
 import type { RecordSpans } from '../state/merge'
+import { parseHM } from '../../engine/time'
 import { msSinceInput } from '../../state/idle'
 import { boxOf, frameLift, frameLand, landOn } from '../../ui/lift'
 import { wireSelect, wireMove, wireFigureSelect, daysBetween, paintLanding, clearLanding, paintEventLanding, eventMoveDateAt, earliestDate, type Cell, type Selection, type SelectCtx, type FigureSelectCtx, type FigureSelection } from './select'
@@ -661,7 +662,7 @@ export function Matrix() {
   // role that changes — while a sheet is open cannot leave the wrong
   // controls on screen.
   const [open, setOpen] = useState<{ id: string; callsign: string; date: string } | null>(null)
-  const close = () => setOpen(null)
+  const close = () => { setOpen(null); setPlaceAt(null) }
   /* the published note editor opened FROM the tap list, for one Input */
   const [listRemark, setListRemark] = useState<{ at: string; row: any } | null>(null)
   // The DRAG-SELECTION (owner, 27 Aug 26): the rectangle the last drag left,
@@ -695,6 +696,19 @@ export function Matrix() {
   // the bid picker, which is answer C's "filed or bid" on a pre-joining day.
   const openNotYetArrived =
     !!open && !!openPerson && openPerson.from !== null && open.date < openPerson.from
+  /* "Place leave or OIL here instead" (owner, 20 Sep 26 — "we should also allow
+     putting inputs when we click on days that were posted out"). An admin's tap
+     on a day outside someone's time in the squadron opens the POSTING sheet,
+     which is right for the common case but left him no way to file the clearing
+     leave that made him open the day. Everyone else could already: the man
+     himself taps his own day and gets the bid sheet, and the Inputs page takes
+     any date. This remembers the ONE cell he asked to place on, so the posting
+     sheet stands aside for the bid sheet — for that cell only, until it closes.
+     Keyed by CELL rather than a boolean, so opening a different day never
+     arrives already switched. */
+  const [placeAt, setPlaceAt] = useState<string | null>(null)
+  const openKey = open ? `${open.id}|${open.date}` : ''
+  const placing = !!open && placeAt === openKey
   // ONE selected figure, shared by every row, tracked by its stable ID so a
   // reorder keeps the SAME figure on screen rather than whatever now sits in
   // its old slot. Giving each row its own would let them desync — row 1
@@ -3978,7 +3992,7 @@ export function Matrix() {
       {/* A posted-out cell an admin tapped: the ONE control it offers is Undo,
           and it short-circuits every bid/decision sheet below (owner, 18 Aug
           26). */}
-      {open && !listOpen && !canRemark && openPostedOut && role === 'admin' && (
+      {open && !listOpen && !canRemark && openPostedOut && role === 'admin' && !placing && (
         <PostOutSheet
           callsign={open.callsign}
           date={open.date}
@@ -3989,6 +4003,7 @@ export function Matrix() {
           archive={openPerson!.poArchive === true}
           onChange={(from, archive) => setPostOut(open.id, from, archive)}
           onUndo={() => { setPostOut(open.id, null); close() }}
+          onPlace={() => setPlaceAt(openKey)}
           onClose={close}
         />
       )}
@@ -3997,7 +4012,7 @@ export function Matrix() {
           and it short-circuits the bid picker below exactly as that one does
           (owner, 20 Sep 26). A MEMBER tapping their own pre-joining day falls
           through to the picker instead, which is answer C's "filed or bid". */}
-      {open && !listOpen && !canRemark && openNotYetArrived && role === 'admin' && (
+      {open && !listOpen && !canRemark && openNotYetArrived && role === 'admin' && !placing && (
         <PostInSheet
           callsign={open.callsign}
           date={open.date}
@@ -4007,6 +4022,7 @@ export function Matrix() {
           piFrom={openPerson!.from!}
           onChange={from => setPostIn(open.id, from)}
           onUndo={() => { setPostIn(open.id, null); close() }}
+          onPlace={() => setPlaceAt(openKey)}
           onClose={close}
         />
       )}
@@ -4147,7 +4163,7 @@ export function Matrix() {
       )}
       {/* a member may bid CLEARING leave after their own posting-out (owner
           answer C, 20 Sep 26) — the admin's tap there stays the PO sheet */}
-      {open && !listOpen && !canRemark && (!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin') && (!raptorOwns(states, open.id, open.date) || !!openFreeHalf)
+      {open && !listOpen && !canRemark && (placing || ((!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin'))) && (!raptorOwns(states, open.id, open.date) || !!openFreeHalf)
         && canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id)
         && !(deciding && isBiddable(grid[open.id]?.[open.date])) && (
         <BidPicker
@@ -4172,6 +4188,23 @@ export function Matrix() {
              day they ARE in the squadron. */
           onPostIn={role === 'admin'
             ? from => { setPostIn(open.id, from); close() }
+            : undefined}
+          /* Admin-only: record that he WORKED this day and earned OIL (owner,
+             20 Sep 26). ANY day — the weekend/public-holiday rule belongs to
+             the automatic pass that reads the published schedule, not to a
+             credit the squadron types itself. Hours are read the way every
+             other time box in the app is (`08:00`, `8:00`, `0800`, `800`);
+             blank means the whole day. */
+          onCredit={role === 'admin'
+            ? (code, note, givenBy, from, to) => {
+              const blank = !from.trim() && !to.trim()
+              const f = blank ? null : parseHM(from)
+              const t = blank ? null : parseHM(to)
+              if (!blank && (f === null || t === null)) return 'Type the hours as 08:00 — or leave both blank for the whole day'
+              const problem = setManualCredit(open.id, open.date, code, { note, givenBy, from: f, to: t })
+              if (!problem) showFigure('oil')
+              return problem
+            }
             : undefined}
           /* No medical here: medical is member-filed only (owner, 13 Sep 26).
              Everyone files a medical input with its certificate on Raptor's

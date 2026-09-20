@@ -44,6 +44,12 @@ export interface CreditRec {
   oil: 'auto' | 'manual'
   /** why it was earned (FLT, SIM + Duty, a claim's type, an admin's words) */
   note?: string
+  /** ON WHOSE SAY-SO, on a HAND-TYPED credit (owner, 20 Sep 26 — the same
+   *  optional box the OIL tracker's grant already carries). A credit the
+   *  published schedule earned needs no such field: the schedule IS the
+   *  evidence. One an admin types has none, so the squadron records who said
+   *  the man worked. Free text — a name or a post. */
+  givenBy?: string
   /** the work times, minutes of the day (clash check B8). None = the whole day
    *  for every overlap check (owner Q7). */
   spans?: Array<[number, number]>
@@ -55,7 +61,7 @@ export interface CreditRec {
    *  A boolean was not enough (Codex review, 20 Sep 26): the schedule's code,
    *  reason and hours overwrite the admin's, so a flag handed back the
    *  SCHEDULE's credit wearing a manual label. It is an exact snapshot. */
-  manual?: { code: 'FO' | 'HO'; note?: string; spans?: Array<[number, number]> }
+  manual?: { code: 'FO' | 'HO'; note?: string; givenBy?: string; spans?: Array<[number, number]> }
 }
 
 export interface NoticeRec {
@@ -79,6 +85,12 @@ export type WarRec = RequestRec | CreditRec | NoticeRec
 export type Recs = Record<string, Record<string, WarRec[]>>
 
 export const MAX_REC_NOTE = 40
+/** The optional "given by" — on a hand-typed credit here, and on the OIL
+ *  tracker's grant, which re-exports THIS one rather than keeping its own.
+ *  Two literals for one box is the drift seam the house rules name: the
+ *  tracker's had lived in the store since 2 Sep 26, and a second copy was
+ *  written here on 20 Sep 26 at a different number before it was caught. */
+export const MAX_GIVEN_BY = 40
 export const MAX_CARRIED_REMARK = 200
 
 /* ---- ids ---------------------------------------------------------------- */
@@ -125,7 +137,7 @@ export function recContribs(list: readonly WarRec[]): Contrib[] {
          envelope is what the box shows, the stretches are what clashes read */
       const ws = creditWins(r)
       const env: Win = [Math.min(...ws.map(w => w[0])), Math.max(...ws.map(w => w[1]))]
-      out.push({ id: r.id, kind: 'credit', code: r.code, win: env, ...(ws.length > 1 ? { wins: ws } : {}), ...(r.oil === 'auto' ? { auto: true } : {}), ...(r.note ? { note: r.note } : {}) })
+      out.push({ id: r.id, kind: 'credit', code: r.code, win: env, ...(ws.length > 1 ? { wins: ws } : {}), ...(r.oil === 'auto' ? { auto: true } : {}), ...(r.note ? { note: r.note } : {}), ...(r.givenBy ? { givenBy: r.givenBy } : {}) })
     } else {
       out.push({ id: r.id, kind: 'notice', code: parseCell(r.code)?.type ?? r.code, win: FULL })
     }
@@ -190,10 +202,14 @@ export function readRec(x: unknown): WarRec | null {
     if (x.oil === 'auto' && mx && (mx.code === 'FO' || mx.code === 'HO')) {
       const m: NonNullable<CreditRec['manual']> = { code: mx.code }
       if (typeof mx.note === 'string' && mx.note.trim()) m.note = mx.note.trim().slice(0, MAX_REC_NOTE)
+      if (typeof mx.givenBy === 'string' && mx.givenBy.trim()) m.givenBy = mx.givenBy.trim().slice(0, MAX_GIVEN_BY)
       if (Array.isArray(mx.spans)) { const ms = mx.spans.filter(isSpan); if (ms.length) m.spans = ms as Array<[number, number]> }
       r.manual = m
     }
     if (typeof x.note === 'string' && x.note.trim()) r.note = x.note.trim().slice(0, MAX_REC_NOTE)
+    /* Dropped rather than refused, like the note beside it: a bad "given by"
+       must not cost the squadron the record that a man worked. */
+    if (typeof x.givenBy === 'string' && x.givenBy.trim()) r.givenBy = x.givenBy.trim().slice(0, MAX_GIVEN_BY)
     if (Array.isArray(x.spans)) { const s = x.spans.filter(isSpan); if (s.length) r.spans = s as Array<[number, number]> }
     return r
   }

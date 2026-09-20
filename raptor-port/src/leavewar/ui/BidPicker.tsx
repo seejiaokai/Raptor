@@ -15,11 +15,13 @@
 
 import { useState } from 'react'
 import { addDays, formatCell, LEAVE_TYPES, type BidState, type CounterName, type Portion } from '../engine'
-import { cellProblem, setBidState, setCell, setCellRange, shiftBid } from '../state/store'
+import { cellProblem, MAX_GIVEN_BY, setBidState, setCell, setCellRange, shiftBid } from '../state/store'
+import { MAX_REC_NOTE } from '../engine/warrecs'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
 import { shortSpan } from './dates'
 import './bidpicker.css'
+import './oiltracker.css'
 
 const PORTIONS: { portion: Portion; label: string; testid: string }[] = [
   { portion: 'full', label: 'Whole day', testid: 'portion-full' },
@@ -37,6 +39,7 @@ export function BidPicker({
   wouldLeave,
   onPostOut,
   onPostIn,
+  onCredit,
   onlyPortion,
   heldBy,
   onClose,
@@ -71,6 +74,11 @@ export function BidPicker({
    *  "How much" row then offers that half alone — the whole day and the held
    *  half are not choices, because neither could be written. Absent on an
    *  ordinary cell, where all three stay on offer. */
+  /** Admin-only: record that this person WORKED this day, earning OIL (owner,
+   *  20 Sep 26 — "the admin can also credit OIL on the leave sheet for
+   *  convenience. We should enable that even on any day"). Present only for an
+   *  admin; the matrix wires it to the store and closes the sheet. */
+  onCredit?: (code: 'FO' | 'HO', note: string, givenBy: string, from: string, to: string) => string | null
   onlyPortion?: Portion | null
   /** What is already on the day, in the words the box shows, so the sheet can
    *  name the half it is NOT offering. */
@@ -104,6 +112,20 @@ export function BidPicker({
   // something a person LEAVES the roster into.
   const [piOpen, setPiOpen] = useState(false)
   const [piDate, setPiDate] = useState(date)
+  // The OIL-earned controls, folded behind one button like the two posting
+  // ones. Folding matters more here than there: this sheet's other rows all
+  // place LEAVE, and a credit is the opposite fact — the man was at work.
+  const [oilOpen, setOilOpen] = useState(false)
+  const [oilNote, setOilNote] = useState('')
+  const [oilGiven, setOilGiven] = useState('')
+  const [oilFrom, setOilFrom] = useState('')
+  const [oilTo, setOilTo] = useState('')
+  const [oilErr, setOilErr] = useState('')
+  const credit = (code: 'FO' | 'HO') => {
+    const problem = onCredit!(code, oilNote, oilGiven, oilFrom, oilTo)
+    if (problem) { setOilErr(problem); return }
+    onClose()
+  }
 
   /** Days this write covers — one, or the span if a range is chosen. */
   const dayCount = () => {
@@ -262,18 +284,83 @@ export function BidPicker({
           on Raptor's Inputs page and it syncs in read-only — the war displays
           it, never creates it. The old admin medical row is gone. */}
 
+      {/* RECORD THAT HE WORKED — an OIL credit typed by hand (owner, 20 Sep 26).
+          ANY DAY, on purpose: the weekend/public-holiday rule belongs to the
+          AUTOMATIC pass, which reads the published schedule. This is the
+          squadron saying a man worked when no schedule says so, which is why
+          it takes a reason and who said it. Set apart below the leave rows and
+          folded behind one button, because it is the opposite fact to
+          everything above it and must not be hit by reflex. */}
+      {/* THE ADMIN'S THREE MANAGEMENT ACTIONS SHARE ONE ROW. They were three
+          stacked rows until the OIL one was added on 20 Sep 26, and the third
+          row made the sheet tall enough on a phone that the strip of grid left
+          above it stopped being reachable — a browser test that scrolls the
+          grid with a finger above the sheet caught it, which no unit test
+          could. They belong together anyway: three sibling admin actions, each
+          folded, none of them a bid. On a phone they wrap to two lines; on a
+          desktop they sit on one. */}
+      {!oilOpen && !poOpen && !piOpen && (onCredit || onPostOut || onPostIn) && (
+        <div className="bidsheet-row postout">
+          {onCredit && (
+            <button className="dchip po" data-testid="bid-oil" onClick={() => setOilOpen(true)}>
+              OIL earned…
+            </button>
+          )}
+          {onPostOut && (
+            <button className="dchip po" data-testid="bid-postout" onClick={() => setPoOpen(true)}>
+              Post out (PO)…
+            </button>
+          )}
+          {onPostIn && (
+            <button className="dchip po" data-testid="bid-postin" onClick={() => setPiOpen(true)}>
+              Post in (PI)…
+            </button>
+          )}
+        </div>
+      )}
+      {onCredit && oilOpen && (
+        <>
+          <div className="bidsheet-row postout">
+            <span className="lab">Worked</span>
+            {/* Blank hours mean the whole day, which is the rule for every
+                credit — so a full day needs no typing at all. */}
+            <input
+              type="text" inputMode="numeric" className="oil-num" maxLength={5}
+              data-testid="oil-from" aria-label="Worked from" placeholder="from"
+              value={oilFrom} onChange={e => { setOilErr(''); setOilFrom(e.target.value) }}
+            />
+            <input
+              type="text" inputMode="numeric" className="oil-num" maxLength={5}
+              data-testid="oil-to" aria-label="Worked to" placeholder="to"
+              value={oilTo} onChange={e => { setOilErr(''); setOilTo(e.target.value) }}
+            />
+            <span className="note">Leave both blank for the whole day.</span>
+          </div>
+          <div className="bidsheet-row postout">
+            <input
+              className="oil-text" maxLength={MAX_REC_NOTE}
+              data-testid="oil-why" aria-label="Reason" placeholder="why — e.g. FLT, SIM, Duty"
+              value={oilNote} onChange={e => { setOilErr(''); setOilNote(e.target.value) }}
+            />
+            <input
+              className="oil-text given" maxLength={MAX_GIVEN_BY}
+              data-testid="oil-given-by" aria-label="Given by" placeholder="given by (optional)"
+              value={oilGiven} onChange={e => { setOilErr(''); setOilGiven(e.target.value) }}
+            />
+          </div>
+          <div className="bidsheet-row postout">
+            <button className="dchip approve" data-testid="oil-fo" onClick={() => credit('FO')}>FO — a whole day</button>
+            <button className="dchip approve" data-testid="oil-ho" onClick={() => credit('HO')}>HO — half a day</button>
+            {oilErr && <span className="note warn" data-testid="oil-err">{oilErr}</span>}
+          </div>
+        </>
+      )}
+
       {/* Post the person OUT (owner, 18 Aug 26; any date + the archive switch
           19 Aug 26). A management action, not a bid — it takes them off the
           manpower from the chosen date and greys their boxes; it is undone by
           tapping a greyed day. Set apart below the bid controls, and folded
           behind one button, so it cannot be hit by reflex. */}
-      {onPostOut && !poOpen && (
-        <div className="bidsheet-row postout">
-          <button className="dchip po" data-testid="bid-postout" onClick={() => setPoOpen(true)}>
-            Post out (PO)…
-          </button>
-        </div>
-      )}
       {/* Post the person IN (owner, 20 Sep 26 — "we need a post in button just
           like post out. Because those dates are official dates. But they can
           be for e.g still taking leave after or before they post in or out").
@@ -282,13 +369,6 @@ export function BidPicker({
           everyone read as having always been here. It is an OFFICIAL date: it
           decides manning and the grey hatch, and it deliberately does not stop
           leave being dated before it. */}
-      {onPostIn && !piOpen && !poOpen && (
-        <div className="bidsheet-row postout">
-          <button className="dchip po" data-testid="bid-postin" onClick={() => setPiOpen(true)}>
-            Post in (PI)…
-          </button>
-        </div>
-      )}
       {onPostIn && piOpen && (
         <>
           <div className="bidsheet-row postout">
@@ -564,6 +644,7 @@ export function PostOutSheet({
   archive,
   onChange,
   onUndo,
+  onPlace,
   onClose,
 }: {
   callsign: string
@@ -576,6 +657,9 @@ export function PostOutSheet({
    *  sheet stays up so the admin can see the grid move behind it. */
   onChange: (fromDate: string, archive: boolean) => void
   onUndo: () => void
+  /** Hand this day to the bid sheet instead (owner, 20 Sep 26 — "we should
+   *  also allow putting inputs when we click on days that were posted out"). */
+  onPlace?: () => void
   onClose: () => void
 }) {
   return (
@@ -622,6 +706,19 @@ export function PostOutSheet({
         <button className="dchip po" data-testid="postout-undo" onClick={onUndo}>
           Undo post out (PO)
         </button>
+        {/* THE WAY THROUGH TO PLACING LEAVE (owner, 20 Sep 26). An admin's tap
+            on a day outside someone's time in the squadron lands here, which is
+            right — managing the posting is what he means nine times out of ten
+            — but it left him no way to file the clearing leave that made him
+            open the day in the first place. Everyone else could: the man
+            himself taps his own day and gets the bid sheet, and the Inputs page
+            takes any date. One button rather than a second gesture, so the
+            common tap keeps doing the safe thing. */}
+        {onPlace && (
+          <button className="dchip" data-testid="postout-place" onClick={onPlace}>
+            Place leave or OIL here instead…
+          </button>
+        )}
       </div>
     </Sheet>
   )
@@ -644,6 +741,7 @@ export function PostInSheet({
   piFrom,
   onChange,
   onUndo,
+  onPlace,
   onClose,
 }: {
   callsign: string
@@ -654,6 +752,9 @@ export function PostInSheet({
    *  the admin watches the grid move behind it. */
   onChange: (date: string) => void
   onUndo: () => void
+  /** Hand this day to the bid sheet instead — the mirror of the post-out
+   *  sheet's, and for the same reason (owner, 20 Sep 26). */
+  onPlace?: () => void
   onClose: () => void
 }) {
   return (
@@ -688,6 +789,11 @@ export function PostInSheet({
         <button className="dchip po" data-testid="postin-undo" onClick={onUndo}>
           Undo post in (PI)
         </button>
+        {onPlace && (
+          <button className="dchip" data-testid="postin-place" onClick={onPlace}>
+            Place leave or OIL here instead…
+          </button>
+        )}
       </div>
     </Sheet>
   )

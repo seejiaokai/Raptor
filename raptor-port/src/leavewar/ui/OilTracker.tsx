@@ -87,6 +87,7 @@ import {
   removeLedgerEntry,
   setCellNote,
   setCellHours,
+  setCellGivenBy,
   setOilPolicy,
   updateLedgerEntry,
 } from '../state/store'
@@ -227,6 +228,7 @@ export function OilTracker({ person, onClose, onGranted }: {
      default and the way back from a mistype. */
   const [hFrom, setHFrom] = useState('')
   const [hTo, setHTo] = useState('')
+  const [hGiven, setHGiven] = useState('')
 
   const groupDefs = groupsInOrder()
   const priority = groupPriorityIds()
@@ -332,6 +334,7 @@ export function OilTracker({ person, onClose, onGranted }: {
     setNoteId(`${personId}|${c.date}`); setNoteDraft(c.manual && c.reason !== 'weekend duty' && c.reason !== 'PH duty' ? c.reason : ''); setEditId(null)
     const h = c.hours?.[0]
     setHFrom(h ? hhmm(h[0]) : ''); setHTo(h ? hhmm(h[1]) : '')
+    setHGiven(c.givenBy ?? '')
   }
   /* Both the reason and the hours save on the one button, because to the admin
      they are one edit of one credit. Hours first: if they are refused the
@@ -347,6 +350,8 @@ export function OilTracker({ person, onClose, onGranted }: {
     }
     const hoursProblem = setCellHours(personId, date, from, to)
     if (hoursProblem) { setEErr(hoursProblem); return }
+    const givenProblem = setCellGivenBy(personId, date, hGiven)
+    if (givenProblem) { setEErr(givenProblem); return }
     const problem = setCellNote(personId, date, noteDraft)
     if (problem) { setEErr(problem); return }
     setNoteId(null); setEErr('')
@@ -493,7 +498,10 @@ export function OilTracker({ person, onClose, onGranted }: {
             <span className="amt">{signed(c.amount)}</span>
             <span className="dt">{c.date ? dmy(c.date, lane) : 'carried in'}</span>
             {c.source === 'auto' && !c.manual && <span className="by auto">Auto</span>}
-            {c.source === 'grant' && c.givenBy && <span className="by">{c.givenBy}</span>}
+            {/* Who said so — on a grant since 2 Sep 26, and now on a
+                hand-typed credit too, where it answers the sharper question:
+                the schedule is its own evidence, a typed credit has none. */}
+            {c.givenBy && <span className="by">{c.givenBy}</span>}
           </div>
           {noting ? (
             <div className="l2 noting" onClick={e => e.stopPropagation()}>
@@ -534,6 +542,16 @@ export function OilTracker({ person, onClose, onGranted }: {
                 placeholder="to"
                 aria-label="Worked to"
                 onChange={e => { setEErr(''); setHTo(e.target.value) }}
+                onKeyDown={e => { if (e.key === 'Enter') saveNote(p.id, c.date); if (e.key === 'Escape') setNoteId(null) }}
+              />
+              <input
+                className="oil-text given"
+                data-testid="oil-note-given"
+                maxLength={MAX_GIVEN_BY}
+                value={hGiven}
+                placeholder="given by (optional)"
+                aria-label="Given by"
+                onChange={e => { setEErr(''); setHGiven(e.target.value) }}
                 onKeyDown={e => { if (e.key === 'Enter') saveNote(p.id, c.date); if (e.key === 'Escape') setNoteId(null) }}
               />
               <button className="dchip approve" data-testid="oil-note-save" onClick={() => saveNote(p.id, c.date)}>Save</button>

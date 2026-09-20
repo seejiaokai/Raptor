@@ -52,6 +52,11 @@ export interface Contrib {
   auto?: boolean
   /** credit only: why it was earned */
   note?: string
+  /** credit only, and HAND-TYPED only: on whose say-so (owner, 20 Sep 26).
+   *  Recorded is not the same as visible — a field nobody can read is the
+   *  shape of the bug where a man was charged for leave his row no longer
+   *  showed. */
+  givenBy?: string
   /** a closed-bidding move landed it here from this date (the dotted mark) */
   movedFrom?: string
   /** an overnight record's tail from the day before: it counts for clashes

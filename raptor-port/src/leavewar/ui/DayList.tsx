@@ -127,7 +127,7 @@ export function DayListSheet({
     if (c.kind === 'credit') {
       const rec = raw.find(r => r.id === c.id) as CreditRec | undefined
       const times = rec?.spans?.length ? rec.spans.map(([a, b]) => `${hhmm(a)}–${hhmm(b)}`).join(', ') : ''
-      const text = `${c.code} — OIL earned${rec?.note ? ` (${rec.note})` : ''}${times ? `, worked ${times}` : ''}`
+      const text = `${c.code} — OIL earned${rec?.note ? ` (${rec.note})` : ''}${times ? `, worked ${times}` : ''}${rec?.givenBy ? ` · ${rec.givenBy}` : ''}`
       const actions: ReactElement[] = []
       if (rec?.oil === 'manual' && role === 'admin') actions.push(<button key="cl" className="dchip" data-testid={`dl-clear-${c.id}`} onClick={() => act(() => clearRecordById(personId, date, c.id))}>Clear</button>)
       return { key: `c-${c.id}`, cls: 'sc', text, sub: rec?.oil === 'auto' ? 'From the published schedule.' : '', actions }
