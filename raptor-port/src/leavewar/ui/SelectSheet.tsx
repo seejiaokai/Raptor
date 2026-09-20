@@ -6,7 +6,7 @@
 //
 // Sections are CONTEXTUAL to role and stage, the same gates the single-cell
 // path uses: everyone fills while the war is open (admin any stage); medical
-// and PO are the admin's; Decide (Pending/Approve/Refuse) is the admin's once
+// and PO are the admin's; Decide (Ack/Approve/Refuse) is the admin's once
 // bidding has closed. Delete and Move act on whatever editable bids the
 // selection holds.
 //
@@ -147,7 +147,7 @@ export function SelectSheet({
       {canDecide && (
         <div className="bidsheet-row">
           <span className="lab">Decide</span>
-          <button className="dchip ack" data-testid="sel-pending" onClick={() => decide('acknowledged')}>Pending</button>
+          <button className="dchip ack" data-testid="sel-pending" onClick={() => decide('acknowledged')}>Ack</button>
           <button className="dchip approve" data-testid="sel-approve" onClick={() => decide('approved')}>Approve</button>
           <button className="dchip refuse" data-testid="sel-refuse" onClick={() => decide('refused')}>Refuse</button>
         </div>

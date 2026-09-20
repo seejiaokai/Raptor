@@ -465,7 +465,7 @@ export function StageBar() {
             <div className="leglist-body">
               <div className="leg-sec">The fill colour — where a bid stands</div>
               <div className="leg-row"><span className="leg-sw appr">LL</span><span className="leg-t">Approved</span></div>
-              <div className="leg-row"><span className="leg-sw tbc">LL</span><span className="leg-t">Pending — waiting on a decision</span></div>
+              <div className="leg-row"><span className="leg-sw tbc">LL</span><span className="leg-t">Ack — seen, waiting on a decision</span></div>
               <div className="leg-row"><span className="leg-sw ref">LL</span><span className="leg-t">Refused</span></div>
               <div className="leg-sec">The left edge — where it came from</div>
               <div className="leg-row"><span className="leg-sw raptor">LL</span><span className="leg-t">Filed on the Inputs page — change it there, not here</span></div>

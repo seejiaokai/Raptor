@@ -125,12 +125,14 @@ export function DayListSheet({
       return { key: `a-${c.id}`, cls: isLeave ? 'appr' : '', text, sub: !warOwned ? 'Change it on the Inputs page.' : row?.remarks ? String(row.remarks) : '', actions }
     }
     if (c.kind === 'request') {
-      const st = c.state === 'acknowledged' ? 'bid, acknowledged' : c.state === 'refused' ? 'bid refused' : 'bid, not decided yet'
+      /* "Ack" is the word everywhere since 21 Sep 26 — the button, the
+         legend and this line had drifted into three ways of saying it. */
+      const st = c.state === 'acknowledged' ? 'bid, acked' : c.state === 'refused' ? 'bid refused' : 'bid, not decided yet'
       const text = `${shown(notation(c))} — ${nameOf(c.code) || shown(c.code)}${partTxt} · ${st}`
       const actions: ReactElement[] = []
       if (deciding) {
         actions.push(<button key="ap" className="dchip approve" data-testid={`dl-approve-${c.id}`} onClick={() => act(() => decideRequestById(personId, date, c.id, 'approved'), 'Couldn’t approve — something else is on that time')}>Approve</button>)
-        if (c.state !== 'acknowledged') actions.push(<button key="ak" className="dchip ack" data-testid={`dl-ack-${c.id}`} onClick={() => act(() => decideRequestById(personId, date, c.id, 'acknowledged'))}>Acknowledge</button>)
+        if (c.state !== 'acknowledged') actions.push(<button key="ak" className="dchip ack" data-testid={`dl-ack-${c.id}`} onClick={() => act(() => decideRequestById(personId, date, c.id, 'acknowledged'))}>Ack</button>)
         if (c.state !== 'refused') actions.push(<button key="rf" className="dchip refuse" data-testid={`dl-refuse-${c.id}`} onClick={() => act(() => decideRequestById(personId, date, c.id, 'refused'))}>Refuse</button>)
       }
       if (editable) actions.push(<button key="cl" className="dchip" data-testid={`dl-clear-${c.id}`} onClick={() => act(() => clearRecordById(personId, date, c.id))}>Clear</button>)

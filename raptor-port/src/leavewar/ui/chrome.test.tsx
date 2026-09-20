@@ -66,7 +66,10 @@ describe('the colour/mark legend', () => {
     const leg = screen.getByTestId('legend')
     const text = leg.textContent || ''
     expect(text).toContain('Approved')
-    expect(text).toContain('Pending')
+    // "Ack" since 21 Sep 26 — the owner renamed his own 27 Aug "Pending", and
+    // the legend has to say what the button says or the key explains a word
+    // that is no longer on any screen.
+    expect(text).toContain('Ack')
     expect(text).toContain('Refused')
     expect(text).toContain('Filed on the Inputs page')
     expect(text).toContain('AM (before the code)')

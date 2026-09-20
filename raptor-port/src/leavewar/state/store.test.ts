@@ -279,17 +279,23 @@ describe('bids', () => {
   // The store refuses the decision itself when the ROLE or the STAGE is
   // wrong — the same canDecide the sheet renders by, checked where it
   // counts (owner doctrine: the interface hides, the store makes it true).
-  it('refuses a decision from a member, and from anyone while bidding is open', () => {
+  it('refuses a decision from a MEMBER at every stage, and takes one from an admin at any', () => {
+    /* MOVED 21 Sep 26: an admin may now answer an input while bidding is
+       still open (owner — "enable it in all Stage on leave war"). The member
+       half is untouched and is the half that matters: a member never decides,
+       their own row included. */
     setCell('ramp', '2026-02-07', 'LL')
     setBidState('ramp', '2026-02-07', 'approved')           // member, open
     expect(getState().states.ramp['2026-02-07']?.state).toBe('pending')
     setRole('admin')
-    setBidState('ramp', '2026-02-07', 'approved')           // admin, still open
-    expect(getState().states.ramp['2026-02-07']?.state).toBe('pending')
+    setBidState('ramp', '2026-02-07', 'approved')           // admin, open — now lands
+    expect(getState().states.ramp['2026-02-07']?.state).toBe('approved')
+    setBidState('ramp', '2026-02-07', 'acknowledged')       // and is changeable back
+    expect(getState().states.ramp['2026-02-07']?.state).toBe('acknowledged')
     advanceStage()
     setRole('member')
     setBidState('ramp', '2026-02-07', 'approved')           // member, closed
-    expect(getState().states.ramp['2026-02-07']?.state).toBe('pending')
+    expect(getState().states.ramp['2026-02-07']?.state).toBe('acknowledged')
     setRole('admin')
     setBidState('ramp', '2026-02-07', 'approved')           // admin, closed
     expect(getState().states.ramp['2026-02-07']?.state).toBe('approved')

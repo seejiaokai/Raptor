@@ -51,6 +51,7 @@ export function BidPicker({
   onCredit,
   credit,
   creditShown,
+  decide,
   onCreditClear,
   onlyPortion,
   heldBy,
@@ -105,6 +106,15 @@ export function BidPicker({
    *  the app credited itself, which is read-only because the OIL pass owns it
    *  and would overwrite anything typed onto it. */
   creditShown?: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; auto?: boolean; spans?: Array<[number, number]> } | null
+  /** THE FOUR THINGS AN ADMIN DOES TO AN INPUT — Ack, Approve, Refuse, Move
+   *  — IN EVERY STAGE (owner, 21 Sep 26: "even a single click on an input, i
+   *  should be able to click on a move button to move the input just like how
+   *  i drag and select and click on move … enable it in all Stage on leave
+   *  war"). Absent when the cell holds no bid to decide, or the reader is not
+   *  an admin. Before this they lived on a separate sheet that only opened
+   *  once bidding had closed, so the same input answered to different controls
+   *  depending on which day of the cycle you clicked it. */
+  decide?: { state?: BidState; movedFrom?: string } | null
   /** Take the granted OIL off this day. */
   onCreditClear?: () => void
   onlyPortion?: Portion | null
@@ -153,6 +163,10 @@ export function BidPicker({
      the hours it would have been worked over are not a fact it holds. Blank
      means the code's own worth: a whole day for FO, half for HO. */
   const [oilDays, setOilDays] = useState(credit?.days != null ? String(credit.days) : '')
+  /* the move field, and the reason a refused move gives — a Move button that
+     simply did nothing would read as broken */
+  const [moveTo, setMoveTo] = useState('')
+  const [moveErr, setMoveErr] = useState('')
   const [oilErr, setOilErr] = useState('')
   const grantOil = (code: 'FO' | 'HO') => {
     const problem = onCredit!(code, oilDays, oilNote, oilGiven)
@@ -217,6 +231,97 @@ export function BidPicker({
           ✕
         </button>
       </div>
+
+      {/* THE DECISION, AND THE MOVE — the admin's four answers to an input,
+          on the same window in every stage (owner, 21 Sep 26). They sit at the
+          TOP because on a day that already holds a bid they are what the admin
+          came for; the leave buttons below are for changing what was asked,
+          which is the rarer thing to do to somebody else's input.
+          All four stay live on an already-decided bid: management tries one,
+          watches the manning rows move, and changes it back — a decision that
+          could not be undone would make that a one-way door. */}
+      {decide && (
+        <>
+          <div className="bidsheet-row">
+            <span className="lab">Decision</span>
+            {/* ACK, not "Pending" (owner, 21 Sep 26). It means SEEN, NOT YET
+                ANSWERED — the state between a bid arriving and a verdict — and
+                it is what turns the cell purple. The label was "Pending" from
+                27 Aug 26; the owner renamed it on 21 Sep, and the later ruling
+                wins. The STATE TOKEN is untouched: still 'acknowledged' in
+                storage, still `decide-ack`. Only the word changed. */}
+            <button
+              className="dchip ack"
+              data-testid="decide-ack"
+              aria-pressed={decide.state === 'acknowledged'}
+              title="Acknowledged — seen, not yet decided"
+              onClick={() => { setBidState(personId, date, 'acknowledged'); onClose() }}
+            >
+              Ack
+            </button>
+            <button
+              className="dchip approve"
+              data-testid="decide-approve"
+              aria-pressed={decide.state === 'approved'}
+              onClick={() => { setBidState(personId, date, 'approved'); onClose() }}
+            >
+              Approve
+            </button>
+            <button
+              className="dchip refuse"
+              data-testid="decide-refuse"
+              aria-pressed={decide.state === 'refused'}
+              onClick={() => { setBidState(personId, date, 'refused'); onClose() }}
+            >
+              Refuse
+            </button>
+            {/* MOVING SITS ON THE SAME ROW as the three decisions, not under
+                them (owner, 21 Sep 26 — "Try to keep the window the same size
+                and squeeze the extra info and buttons into it"). Four controls
+                on one line is what keeps the window the height it was before
+                the decision came onto it, which matters most on a phone, where
+                a taller sheet eats the strip of grid still reachable above it.
+                A move is what management does instead of refusing when a week
+                goes red and refusing outright is too blunt: it lands
+                ACKNOWLEDGED and they approve it on the new date — a proposal
+                with a trail, not a silent re-approval. Reaching it from ONE
+                click was the rest of his ask; it took a drag-select before,
+                which is a lot of gesture for one man's one day. */}
+            <input
+              type="date"
+              className="dateinput"
+              data-testid="shift-date"
+              value={moveTo}
+              min={dates[0]}
+              max={dates[dates.length - 1]}
+              onChange={e => { setMoveTo(e.target.value); setMoveErr('') }}
+            />
+            <button
+              className="dchip move" data-testid="decide-shift" disabled={!moveTo}
+              onClick={() => {
+                if (!moveTo) return
+                const result = shiftBid(personId, date, moveTo)
+                if (result === 'shifted') return onClose()
+                setMoveErr(
+                  result === 'occupied'
+                    ? `${moveTo} already has something booked — clear it first.`
+                    : result === 'raptor'
+                      ? 'Raptor owns this cell; move it there instead.'
+                      : result === 'window'
+                        ? `${moveTo} is not a day this leave can land on — pick a day inside the war.`
+                        : 'There is no bid here to move.',
+                )
+              }}
+            >
+              Move
+            </button>
+            {decide.movedFrom && (
+              <span className="note" data-testid="decide-movedfrom">moved from {decide.movedFrom}</span>
+            )}
+            {moveErr && <span className="note warn" data-testid="shift-problem">{moveErr}</span>}
+          </div>
+        </>
+      )}
 
       {/* How many DAYS, before how much of one. The owner's ask: a fortnight
           of leave should be one selection, not fourteen taps on fourteen
@@ -636,10 +741,11 @@ export function DecisionSheet({
             cell purple. Before it existed a bid was purple from the moment it
             was typed, so the squadron could not tell an untouched input from
             one already in hand. */}
-        {/* The visible word is "Pending" (owner, 27 Aug 26) — the same word the
-            grid legend already gives this purple state, so the two now agree.
-            The STATE TOKEN stays 'acknowledged' (persisted in BID_STATES), only
-            the label changed; testid stays decide-ack. */}
+        {/* The visible word is "Ack" (owner, 21 Sep 26, renaming his own
+            27 Aug "Pending") — the same word the grid legend gives this purple
+            state, so the two agree. The STATE TOKEN stays 'acknowledged'
+            (persisted in BID_STATES), only the label changed; testid stays
+            decide-ack. */}
         <button
           className="dchip ack"
           data-testid="decide-ack"
@@ -647,7 +753,7 @@ export function DecisionSheet({
           title="Seen, not yet decided"
           onClick={() => decide('acknowledged')}
         >
-          Pending
+          Ack
         </button>
         <button
           className="dchip approve"

@@ -4194,8 +4194,7 @@ export function Matrix() {
       {/* a member may bid CLEARING leave after their own posting-out (owner
           answer C, 20 Sep 26) — the admin's tap there stays the PO sheet */}
       {open && !listOpen && !canRemark && (placing || ((!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin'))) && (!raptorOwns(states, open.id, open.date) || !!openFreeHalf)
-        && canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id)
-        && !(deciding && isBiddable(grid[open.id]?.[open.date])) && (
+        && canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id) && (
         <BidPicker
           key={`${open.id}-${open.date}`}
           callsign={open.callsign}
@@ -4231,6 +4230,15 @@ export function Matrix() {
           /* Read back on one click, for anyone who can see the day — a member
              reading his own OIL is entitled to know why it is there and who
              gave it, the same as an admin (owner, 21 Sep 26). */
+          /* THE FOUR ANSWERS TO AN INPUT, IN EVERY STAGE (owner, 21 Sep 26).
+             An admin, and a cell that actually holds a bid to answer — a
+             course, a medical, an OIL credit and an empty day are not things
+             anybody asked for. `canDecide` is deliberately NOT the gate: it
+             means closed-or-published, and the whole point of his ruling is
+             that the window is the same while bidding is still open. */
+          decide={role === 'admin' && isBiddable(grid[open.id]?.[open.date])
+            ? { state: stateOf(states, open.id, open.date), movedFrom: movedShown ? shiftedFrom(states, open.id, open.date) : undefined }
+            : null}
           creditShown={openAnyCredit
             ? {
               code: openAnyCredit.code,
@@ -4301,25 +4309,13 @@ export function Matrix() {
           onClose={close}
         />
       )}
-      {/* `!openPostedOut` for the same reason BidPicker carries it: the PO
-          sheet's comment promises it short-circuits every bid/decision sheet,
-          and without the term here BOTH mounted on a posted-out day that
-          still held a bid — the decision sheet painting on top of the Undo
-          the admin actually tapped for. One `open`, one sheet. */}
-      {open && !listOpen && !canRemark && !openPostedOut && !openNotYetArrived && !raptorOwns(states, open.id, open.date) && deciding
-        && isBiddable(grid[open.id]?.[open.date]) && (
-        <DecisionSheet
-          key={`${open.id}-${open.date}`}
-          callsign={open.callsign}
-          personId={open.id}
-          date={open.date}
-          code={grid[open.id][open.date]}
-          state={stateOf(states, open.id, open.date)}
-          movedFrom={shiftedFrom(states, open.id, open.date)}
-          dates={dates}
-          onClose={close}
-        />
-      )}
+      {/* THE SEPARATE DECISION SHEET IS GONE (owner, 21 Sep 26). It opened
+          only once bidding had closed, so the same input answered to different
+          controls depending on which day of the cycle you clicked it — and
+          moving one man's one day needed a drag-select. Its three buttons and
+          its move field now live on the ONE day window above, in every stage;
+          `DecisionSheet` itself is kept exported for the tests that pin its
+          wording, but nothing in the grid opens it any more. */}
     </div>
   )
 }

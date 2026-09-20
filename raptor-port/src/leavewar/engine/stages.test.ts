@@ -45,13 +45,17 @@ describe('what each stage allows', () => {
     for (const s of STAGE_ORDER) expect(canEdit(s, 'admin')).toBe(true)
   })
 
-  it('accepts decisions once bidding is no longer open, and only from an admin', () => {
+  it('accepts decisions from an ADMIN in every stage the war runs in — never from a member', () => {
+    /* MOVED 21 Sep 26. It used to require bidding to be CLOSED, on the
+       reasoning that a decision should not be made while bids are still
+       arriving underneath it. The owner asked for the four answers on the same
+       window in every stage ("enable it in all Stage on leave war"), and the
+       later ruling wins. Draft is not an exception to that: it is a war nobody
+       has been shown, with no bids in it to answer. */
+    expect(canDecide('open', 'admin')).toBe(true)
     expect(canDecide('closed', 'admin')).toBe(true)
-    // Published still decides (owner, 27 Aug 26): the admin runs the war after
-    // publication too, so a late change can be approved/refused/moved there.
     expect(canDecide('published', 'admin')).toBe(true)
     expect(canDecide('draft', 'admin')).toBe(false)
-    expect(canDecide('open', 'admin')).toBe(false)
     for (const s of STAGE_ORDER) expect(canDecide(s, 'member')).toBe(false)
   })
 
@@ -62,8 +66,17 @@ describe('what each stage allows', () => {
   // Bidding and deciding are deliberately disjoint: the owner's reason for a
   // cycle with stages is that a bid cannot arrive underneath a decision
   // already made. No stage may permit both.
-  it('never lets a member bid and an admin decide in the same stage', () => {
-    for (const s of STAGE_ORDER) expect(canEdit(s, 'member') && canDecide(s, 'admin')).toBe(false)
+  it('lets a member bid and an admin decide in the SAME stage — deliberately', () => {
+    /* MOVED 21 Sep 26, and it is the point of the ruling rather than a side
+       effect. The old invariant said the two could never overlap, so an admin
+       had to close bidding before answering anything. The owner wants to
+       answer an input the moment he sees it, while the squadron is still
+       bidding — so at `open` both are true, and that is the only stage where
+       they overlap. */
+    expect(canEdit('open', 'member') && canDecide('open', 'admin')).toBe(true)
+    for (const s of STAGE_ORDER.filter(x => x !== 'open')) {
+      expect(canEdit(s, 'member') && canDecide(s, 'admin')).toBe(false)
+    }
   })
 
   // The whole reason roles exist here. Once bidding closes, the two roles
