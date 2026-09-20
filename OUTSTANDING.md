@@ -660,6 +660,21 @@ A's weekday case, pre-posting-in leave, medical corners, the OIL pass vs absence
 gestures, undo depth, storage faults, phone touch, figures on multi-record days). Rules of record:
 `specs/2026-09-20-arch-stack-4-clash-check.md`. Do it on the step-4 branch (or on main once it merges).
 
+### [S4-BUGHUNT] IN FLIGHT on `claude/s4-bughunt` — 22 commits, nothing merged (20 Sep 26)
+**Read `HANDOFF-S4-BUGHUNT.md`, then `raptor-port/docs/superpowers/specs/2026-09-20-CURRENT-STATE.md`
+and nothing else first.** That spec is the single destination: what is built, what is next and in
+what order, what is parked, and the EIGHT RULES SET ASIDE today that must not be re-applied — B4's
+"overlap means no credit", B5's bid-door refusal, §26.3's refusal of leave over recorded work, Q5's
+skip, H2 used to decide whether a medical and leave clash at all, and two August rules about
+posted-out rows. Several older documents still read as live and are not.
+- **Ten fixes built and green** (unit 321 files / 5126, tfin 728/0, rulecheck OK). **Five items left
+  to build**, listed in order. **Three parked** with their reasons, **one closed** as not a defect.
+- **The hand-testing pass in the running app is OWED** and is the one gate not yet run; e2e, perf
+  and the Tracker smoke have not been run this session either.
+- Came out of it and now standing: the behaviour register, `npm run rulecheck`, the rules-first red
+  team as a third review, and the CLAUDE.md standing order to sweep the rules and hand-test against
+  them on every build.
+
 ### [LW-LOCKMARK] Retire the war's `source:'raptor'` lock marker — OPEN (follow-up to step 4, 20 Sep 26)
 Codex's round-2 inspection (AS4-R2-004, low): the merged view still synthesises `source:'raptor'` ("locked on
 the war") and Matrix reads it through `raptorOwns`, and the published remarks sheet finds its Input via
