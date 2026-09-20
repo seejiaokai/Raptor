@@ -121,19 +121,36 @@ describe('a medical recorded with real times', () => {
     expect(rowsOf('dj')).toEqual(['ATT C Feb 11 480-600', 'LL Feb 11 pm721-1439'])
   })
 
-  it('a medical straddling noon takes the whole leave day, but still counts as a half', () => {
-    /* 09:00–14:00 is five hours, so the six-hour rule DRAWS it as a morning —
-       that is what the box shows and what manning removes. But its real hours
-       run into the afternoon, so as far as LEAVE is concerned it covers both
-       halves and the whole day's leave goes. Cutting by the drawn half instead
-       left an afternoon leave standing that the invariant then refused: the
-       door would have cut a leave into a piece it would not accept. */
+  it('straddling noon: the leave keeps the hours the medical does not cover', () => {
+    /* Owner, 20 Sep 26: "keep leave from 2pm". A 09:00-14:00 medical is five
+       hours, so the six-hour rule DRAWS it as a morning and the medical takes
+       the morning. Its real hours run to 14:00, so the afternoon the leave
+       keeps starts at 14:00, not at 12:01 -- otherwise the door would hand
+       back a piece its own clash rule refuses. */
     file('casper', 'LL', 'Feb 12')
     expect(file('casper', 'ATT C', 'Feb 12', timed(at(9), at(14))).ok).toBe(true)
-    expect(rowsOf('casper')).toEqual(['ATT C Feb 12 540-840'])
+    expect(rowsOf('casper')).toEqual(['ATT C Feb 12 540-840', 'LL Feb 12 840-1439'])
     const v = view('casper', '2026-02-12')!
-    expect(v.code).toBe('*ATTC')                                // drawn as a morning (H2)
-    expect(v.away).toBe(0.5)                                    // and costs a half of manning
+    expect(v.amber).toBe(false)                                 // the two no longer meet
+    expect(v.all).toHaveLength(2)
+    // the medical is drawn as a morning; the leave pays its own afternoon
+    expect(v.charges).toEqual([expect.objectContaining({ amount: 0.5, half: 'pm' })])
+    expect(v.away).toBe(1)                                      // morning medical + afternoon leave
+  })
+
+  it('a medical that really covers both halves still takes the whole leave day', () => {
+    file('bruise', 'LL', 'Feb 13')
+    expect(file('bruise', 'ATT C', 'Feb 13').ok).toBe(true)     // all day
+    // (this person carries seed leave on other dates, so read only this one)
+    expect(rowsOf('bruise').filter(r => r.includes('Feb 13'))).toEqual(['ATT C Feb 13'])
+  })
+
+  it('a medical filling the half it takes leaves the clean half preset', () => {
+    // 08:00-10:00 is a morning and ends well before noon, so the afternoon
+    // the leave keeps is the ordinary PM half, not a trimmed window
+    file('ammo', 'LL', 'Feb 14')
+    expect(file('ammo', 'ATT C', 'Feb 14', timed(at(8), at(10))).ok).toBe(true)
+    expect(rowsOf('ammo')).toEqual(['ATT C Feb 14 480-600', 'LL Feb 14 pm721-1439'])
   })
 
   it('an undecided bid is replaced only where the medical really overlaps it', () => {

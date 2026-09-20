@@ -65,18 +65,27 @@ function sickCutsLeave(changed: any[], changedIds: Set<string>): string[] {
   const said: string[] = []
   for (const med of changed) {
     if (!isSickCode(warCodeOf(med.type))) continue
-    /* The REAL hours, on both counts (owner, 20 Sep 26). They decide whether
-       this medical touches a leave at all, AND which halves of a touched day
-       it takes — the cut itself still moves in half-day steps (H2), but which
-       halves go is read from the hours actually recorded, not from the half
-       the six-hour rule draws the medical in.
-       Both must use the same window or the door contradicts itself: a 09:00–
-       14:00 medical draws as a MORNING (five hours), so reading the cut from
-       the half left the afternoon's leave standing — and the invariant then
-       refused that very leave, because the real hours run to 14:00. The door
-       cut a leave into a piece it would not accept. */
+    /* THE CUT KEEPS THE HOURS THE MEDICAL DOES NOT COVER (owner, 20 Sep 26 —
+       "keep leave from 2pm"). Two readings of the same medical, each doing one
+       job, and they must not be confused:
+         `medWins`   — the REAL hours. Whether this medical touches the leave
+                       at all, and how far the surviving piece is pushed clear.
+         `medHalves` — the half the six-hour rule DRAWS it in (H2). Which half
+                       of a touched day the medical takes.
+       A 09:00–14:00 medical draws as a MORNING (five hours, midpoint 11:30),
+       so the medical takes the morning and the leave keeps the afternoon — but
+       its real hours run to 14:00, so the surviving afternoon starts at 14:00,
+       not at 12:01. Reading the cut from the half ALONE left leave standing
+       from 12:01 that the invariant then refused, because the real hours were
+       still in it: the door cut a leave into a piece it would not accept.
+       Reading it from the real hours ALONE took the WHOLE day, which charged
+       the man for an afternoon he was free for. */
     const medWins = new Map<string, Win[]>()
-    for (const [d, c] of contribsOfInput(med)) medWins.set(d, [...(medWins.get(d) ?? []), ...winsOf(c)])
+    const medHalves = new Map<string, Win[]>()
+    for (const [d, c] of contribsOfInput(med)) {
+      medWins.set(d, [...(medWins.get(d) ?? []), ...winsOf(c)])
+      medHalves.set(d, [...(medHalves.get(d) ?? []), c.win])
+    }
     for (const leave of INPUTS.slice()) {
       if (!leave || leave === med || String(leave.person) !== String(med.person) || !isLeave(leave.type)) continue
       if (changedIds.has(String(leave.iid))) continue   // judged by the invariant instead
@@ -88,7 +97,11 @@ function sickCutsLeave(changed: any[], changedIds: Set<string>): string[] {
         if (!c.spill) own.set(d, c.win)
         else tailOf.set(addDays(d, -1), c.win)
       }
-      const shapes: Array<[string, 'keep' | 'drop' | 'am' | 'pm' | 'trim']> = []
+      /* a shape per date: what survives, and for a trimmed half the exact
+         window it survives with, so two dates trimmed differently never merge
+         into one run */
+      type Shape = { sh: 'keep' | 'drop' | 'am' | 'pm' | 'trim'; s?: number; e?: number }
+      const shapes: Array<[string, Shape]> = []
       const cutDays: string[] = []
       for (const d of inputDates(leave)) {
         const lw = own.get(d) ?? FULL
@@ -96,41 +109,52 @@ function sickCutsLeave(changed: any[], changedIds: Set<string>): string[] {
         if (!mw.some(w => overlaps(w, lw))) {
           const tail = tailOf.get(d)
           const next = medWins.get(addDays(d, 1)) ?? []
-          if (tail && next.some(w => overlaps(w, tail))) { cutDays.push(addDays(d, 1)); shapes.push([d, 'trim']) }
-          else shapes.push([d, 'keep'])
+          if (tail && next.some(w => overlaps(w, tail))) { cutDays.push(addDays(d, 1)); shapes.push([d, { sh: 'trim' }]) }
+          else shapes.push([d, { sh: 'keep' }])
           continue
         }
         cutDays.push(d)
-        const medAm = mw.some(w => overlaps(w, AM)), medPm = mw.some(w => overlaps(w, PM))
+        const mh = medHalves.get(d) ?? []
+        const medAm = mh.some(w => overlaps(w, AM)), medPm = mh.some(w => overlaps(w, PM))
         /* a leave taking both halves (all day, or its own times across noon)
-           keeps the half the medical leaves free (H2; Fable #4) */
-        if (overlaps(lw, AM) && overlaps(lw, PM) && !(medAm && medPm)) shapes.push([d, medAm ? 'pm' : 'am'])
-        else shapes.push([d, 'drop'])
+           keeps the half the medical leaves free (H2), pushed clear of the
+           medical's real hours (owner, 20 Sep 26) */
+        if (overlaps(lw, AM) && overlaps(lw, PM) && !(medAm && medPm)) {
+          const medS = Math.min(...mw.map(w => w[0])), medE = Math.max(...mw.map(w => w[1]))
+          const from = leave.allday ? 0 : Number(leave.s), to = leave.allday ? 1439 : Number(leave.e)
+          const keep: Shape = medAm
+            ? { sh: 'pm', s: Math.max(PM[0], medE, from), e: to }
+            : { sh: 'am', s: from, e: Math.min(AM[1], medS, to) }
+          // a piece the medical squeezes to nothing is simply gone
+          shapes.push([d, keep.s! < keep.e! ? keep : { sh: 'drop' }])
+        } else shapes.push([d, { sh: 'drop' }])
       }
       if (!cutDays.length) continue
-      const runs: Array<{ sh: string; from: string; to: string }> = []
+      const runs: Array<{ sh: Shape; from: string; to: string }> = []
+      const sameShape = (a: Shape, b: Shape) => a.sh === b.sh && a.s === b.s && a.e === b.e
       for (const [d, sh] of shapes) {
         const last = runs[runs.length - 1]
-        if (last && last.sh === sh && addDays(last.to, 1) === d) last.to = d
+        if (last && sameShape(last.sh, sh) && addDays(last.to, 1) === d) last.to = d
         else runs.push({ sh, from: d, to: d })
       }
       const pieces: any[] = []
       for (const r of runs) {
-        if (r.sh === 'drop') continue
+        if (r.sh.sh === 'drop') continue
         const piece = sliceInput(leave, r.from, r.to, pieces.length === 0)
-        if (r.sh === 'trim') {
+        if (r.sh.sh === 'trim') {
           // the overnight tail goes: the leave now ends at midnight (Codex/Opus scenario, H6)
           piece.e = 1439
-        } else if ((r.sh === 'am' || r.sh === 'pm') && leave.allday) {
+        } else if (r.sh.sh === 'am' || r.sh.sh === 'pm') {
+          /* the surviving window, already pushed clear of the medical above.
+             It keeps the half PRESET only when it is exactly that half —
+             otherwise it carries its own times, which is how "leave from 2pm"
+             is expressed at all (the war reads a real window). */
           piece.allday = false
-          piece.half = r.sh
-          piece.s = r.sh === 'am' ? 0 : 721
-          piece.e = r.sh === 'am' ? 720 : 1439
-        } else if (r.sh === 'am' || r.sh === 'pm') {
-          // its own times, clipped to the half it keeps
-          delete piece.half
-          if (r.sh === 'am') piece.e = Math.min(Number(leave.e), 720)
-          else piece.s = Math.max(Number(leave.s), 721)
+          piece.s = r.sh.s!
+          piece.e = r.sh.e!
+          if (r.sh.s === AM[0] && r.sh.e === AM[1]) piece.half = 'am'
+          else if (r.sh.s === PM[0] && r.sh.e === PM[1]) piece.half = 'pm'
+          else delete piece.half
         }
         pieces.push(piece)
       }
