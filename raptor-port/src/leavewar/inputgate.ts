@@ -38,7 +38,7 @@ import { LOGINROLE, ME, SESSION } from '../state/auth'
 import { setInputGate } from '../state/inputgate-hook'
 import { buildAbsenceIndex, contribsOfInput, inputDates, warCodeOf, warVisible } from './absences'
 import { addDays, warHolding } from './engine'
-import { AM, FULL, PM, forbiddenPair, isLeaveCode, isSickCode, overlaps, type Contrib, type Win } from './engine/dayview'
+import { AM, FULL, PM, forbiddenPair, isLeaveCode, isSickCode, overlaps, winsOf, type Contrib, type Win } from './engine/dayview'
 import { creditWins, newRecId, portionOfCode, recsAt, requestWin, type NoticeRec, type RequestRec, type WarRec } from './engine/warrecs'
 import { lwEditLists, rawState } from './state/store'
 import { inDoor, refreshAbsencesAndRepaint, sliceInput } from './sync'
@@ -65,8 +65,18 @@ function sickCutsLeave(changed: any[], changedIds: Set<string>): string[] {
   const said: string[] = []
   for (const med of changed) {
     if (!isSickCode(warCodeOf(med.type))) continue
+    /* The REAL hours, on both counts (owner, 20 Sep 26). They decide whether
+       this medical touches a leave at all, AND which halves of a touched day
+       it takes — the cut itself still moves in half-day steps (H2), but which
+       halves go is read from the hours actually recorded, not from the half
+       the six-hour rule draws the medical in.
+       Both must use the same window or the door contradicts itself: a 09:00–
+       14:00 medical draws as a MORNING (five hours), so reading the cut from
+       the half left the afternoon's leave standing — and the invariant then
+       refused that very leave, because the real hours run to 14:00. The door
+       cut a leave into a piece it would not accept. */
     const medWins = new Map<string, Win[]>()
-    for (const [d, c] of contribsOfInput(med)) medWins.set(d, [...(medWins.get(d) ?? []), c.win])
+    for (const [d, c] of contribsOfInput(med)) medWins.set(d, [...(medWins.get(d) ?? []), ...winsOf(c)])
     for (const leave of INPUTS.slice()) {
       if (!leave || leave === med || String(leave.person) !== String(med.person) || !isLeave(leave.type)) continue
       if (changedIds.has(String(leave.iid))) continue   // judged by the invariant instead
@@ -146,9 +156,13 @@ function vet(persons: ReadonlySet<string>, changedIds: ReadonlySet<string>, with
           if (!changedIds.has(a.id) && !changedIds.has(b.id)) continue
           if (!forbiddenPair(a, b)) continue
           const [mine, other] = changedIds.has(a.id) ? [a, b] : [b, a]
-          const at = winText(other.win)
+          /* the hours the blocker REALLY covers — a medical drawn as a
+             morning may be a two-hour appointment, and naming the whole half
+             would misdescribe what is in the way (owner, 20 Sep 26) */
+          const realWins = winsOf(other)
+          const at = realWins.length === 1 ? winText(realWins[0]!) : ''
           if (isSickCode(other.code) && isLeaveCode(mine.code))
-            refuse(`${cs(p)} is on ${typeLabel(other.code)} on ${dm(d)} — leave can't go over a medical`)
+            refuse(`${cs(p)} is on ${typeLabel(other.code)} on ${dm(d)}${at ? ` (${at})` : ''} — leave can't go over a medical`)
           refuse(`${cs(p)} already has ${typeLabel(other.code)} on ${dm(d)}${at ? ` (${at})` : ''} — ${typeLabel(mine.code)} can't overlap it`)
         }
       }
@@ -242,7 +256,11 @@ function replaceBids(changed: any[]): string[] {
   const claims: BidClaim[] = []
   for (const row of changed) {
     if (!isLeave(row.type) && !isSickCode(warCodeOf(row.type))) continue
-    for (const [d, c] of contribsOfInput(row) as Array<[string, Contrib]>) claims.push({ person: String(row.person), date: d, win: c.win, byType: String(row.type) })
+    /* a medical claims the hours it really covers, not the whole half it is
+       drawn in (owner, 20 Sep 26) — an afternoon bid survives a two-hour
+       morning appointment */
+    for (const [d, c] of contribsOfInput(row) as Array<[string, Contrib]>)
+      for (const w of winsOf(c)) claims.push({ person: String(row.person), date: d, win: w, byType: String(row.type) })
   }
   return replaceClashingBids(claims, who, own)
 }
