@@ -16,7 +16,7 @@ import {
   getState, initStore as lwInitStore, lwHistInit, rawState, setCell, setPeople, setRole, setViewer,
 } from './state/store'
 import { memoryBackend } from './state/storage'
-import { wireLeaveWarSync } from './sync'
+import { runOilPass, wireLeaveWarSync } from './sync'
 import { _resetTimeline } from '../undo/timeline'
 import { installGlobalUndo } from '../state/undo-wire'
 import { balanceOf } from './engine'
@@ -158,5 +158,70 @@ describe('a medical recorded with real times', () => {
     file('bruise', 'LL', 'Feb 18', timed(at(9), at(11)))
     // "00:00–12:00" would be a lie about a two-hour appointment
     expect(said.join(' ')).not.toMatch(/00:00–12:00/)
+  })
+})
+
+/* ====================================================================== */
+/*  OIL — a credit must never outlive the hours that earned it (B4)        */
+/* ====================================================================== */
+/* B4: "refuse only when the work overlaps the absence's time; otherwise the
+   credit is stored beside it. Overlap → no credit". The forward pass refuses
+   to PLACE a clashing credit and writes nothing; the reverse pass then skips
+   the address, because the address is still wanted. Between them, a credit
+   already sitting there — earned under evidence that has since changed — has
+   nothing to remove it, and goes on claiming hours the person did not work. */
+describe('an OIL credit whose hours have changed', () => {
+  const SAT = '2026-07-18'                           // the seed Saturday
+  const credit = (p: string) => (rawState().wars.find(w => SAT >= w.period.start && SAT <= w.period.end)
+    ?.recs[p]?.[SAT] ?? []).find((r: any) => r.kind === 'credit') as any
+
+  /** a duty the person answered "yes, credit it" on the Saturday */
+  const duty = (person: string, s: number, e: number) => {
+    const row: any = {
+      iid: `oil${++n}`, person, type: 'Duty', date: 'Jul 18', yr: 2026,
+      allday: false, s, e, remarks: '', mod: '2026-07-01', oil: { [SAT]: 0.5 },
+    }
+    writeInputs(() => { INPUTS.unshift(row) })
+    return row
+  }
+
+  it('is not left standing with the hours it used to have', () => {
+    // an afternoon leave, and a morning duty that misses it — the credit lands
+    file('dj', 'LL', 'Jul 18', { allday: false, half: 'pm', s: 721, e: 1439 })
+    const row = duty('dj', at(8), at(12))
+    runOilPass()
+    expect(credit('dj')?.spans).toEqual([[at(8), at(12)]])
+
+    // the duty is re-timed into the afternoon, where the leave is. B4 says the
+    // work now overlaps the absence, so there must be NO credit — and above all
+    // not one still claiming a morning nobody worked.
+    writeInputs(() => { row.s = at(13); row.e = at(17) })
+    runOilPass()
+    expect(credit('dj')?.spans).not.toEqual([[at(8), at(12)]])
+    expect(credit('dj')).toBeUndefined()
+  })
+
+  it('cannot be reached by filing leave over the hours instead — the door refuses that (B4)', () => {
+    // the other way a credit and a leave could come to share hours: file the
+    // leave second. The inputs door refuses it outright (§26.3), so the pair
+    // never arises that way, and the clash above is the only route to it.
+    const row = duty('casper', at(8), at(12))
+    runOilPass()
+    expect(credit('casper')).toBeDefined()
+    expect(row.oil[SAT]).toBe(0.5)
+
+    expect(file('casper', 'LL', 'Jul 18', { allday: false, half: 'am', s: 0, e: 720 }).ok).toBe(false)
+    expect(said.join(' ')).toMatch(/recorded as working/)
+    expect(credit('casper')).toBeDefined()
+  })
+
+  it("an admin's own hand-typed credit is never removed by the pass", () => {
+    // design §18 OA3-003 — only an admin takes a manual credit away. Nothing
+    // published earns this one, so the reverse pass sees it unwanted; it must
+    // still survive, because the reverse pass only ever clears `auto`.
+    setCell('bruise', SAT, 'FO')
+    expect(credit('bruise')?.oil).toBe('manual')
+    runOilPass()
+    expect(credit('bruise')?.oil).toBe('manual')
   })
 })

@@ -3078,7 +3078,20 @@ function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO',
   const probe = recContribs([rec]).map(c => ({ ...c, id: 'new' }))
   const staying = list.filter(r => r !== had)
   const others = [...recContribs(staying), ...absencesAt(personId, date)]
-  if (probe.some(p => others.some(o => forbiddenPair(p, o)))) return 'clash'
+  if (probe.some(p => others.some(o => forbiddenPair(p, o)))) {
+    /* B4: "Overlap → no credit". The clashing credit is not placed — but an
+       AUTO credit already sitting here, earned under evidence that has since
+       changed, has nothing else to remove it: the forward pass writes nothing
+       and the reverse pass skips this address, because the address is still
+       wanted. So it went on claiming hours the person no longer worked (a
+       Saturday duty re-timed from the morning into the afternoon left its
+       morning credit standing, with no amber on the box, [S4-BUGHUNT] 20 Sep
+       26). It is stale by definition: if it still matched the evidence, this
+       is the shape we would have written. A MANUAL credit is the admin's own
+       and is never touched (design §18 OA3-003). */
+    if (had && had.oil === 'auto') putList(personId, date, staying)
+    return 'clash'
+  }
   if (had && had.oil === 'auto' && had.code === code && JSON.stringify(had) === JSON.stringify(rec)) return 'confirmed'
   const confirming = !!had && had.oil === 'manual' && had.code === code
   putList(personId, date, [...staying, rec])
