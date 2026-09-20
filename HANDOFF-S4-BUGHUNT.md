@@ -1,7 +1,37 @@
-# [S4-BUGHUNT] handoff — for the next session (20 Sep 26, second pass)
+# [S4-BUGHUNT] handoff — for the next session (21 Sep 26, overnight pass)
 
-Branch **`claude/s4-bughunt`**, 34 commits off `main` (`e904d44`). **Nothing merged. Working tree
-clean.** The owner has not said "merge live". PR: seejiaokai/Raptor#422.
+Branch **`claude/s4-bughunt`**, 38 commits off `main`. **Nothing merged. Working tree clean.** The
+owner has not said "merge live". PR: seejiaokai/Raptor#422.
+
+## WHAT THE NIGHT OF 20–21 SEP ADDED (read this before the older text below)
+
+Four pieces of work, all from rulings the owner gave that evening, and then a cross-provider bug
+check on the lot. Detail: CURRENT-STATE items 21–24 and behaviour-register N13–N15.
+
+1. **An OIL AWARD owes a man a day; it does not say he was at work.** A hand-typed credit no longer
+   flags a leave day and no longer counts him on duty — with an empty day he is available to work.
+   A credit the published schedule earned still does both. Eight manning tests moved with it; one
+   visible consequence is that 3 January leaves the under-manned list.
+2. **A worked day that earns nobody anything says so** — on the day's own warning strip while it is
+   being built, and again at the publish moment. Weekends and public holidays only; it names the
+   desk.
+3. **OIL says why it is there, who gave it and how many days**, on one click, in all three sheets a
+   credit can open in. Automatic OIL answers the same three from the schedule it was earned off.
+4. **One window for an input, in every stage** — Ack, Approve, Refuse and Move on one row at the top
+   of the day window; the separate decision sheet is retired; "Pending" is now **Ack** everywhere.
+   `canDecide` became "an admin, any stage but draft".
+
+**THE BUG CHECK FOUND TEN THINGS AND ALL TEN ARE FIXED** (`dcf3f25`). Fable and Astra reviewed
+independently; the two worst would each have lost a man days of leave in silence — an award the
+schedule later earned on top of lost its days, and Clear on an approved leave did nothing while the
+buttons beside it said to use it. The full list is in that commit message; each has a test.
+
+**ONE QUESTION IS WAITING FOR HIM**: should an award and a worked day ADD UP (a 3-day award on a
+Saturday he then works — 3 or 4)? Today it keeps the larger, which is what he had. See
+`OUTSTANDING.md` → `[OIL-AWARD-ADD]`.
+
+---
+
 
 ## Read exactly one file first
 

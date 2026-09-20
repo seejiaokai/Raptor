@@ -695,6 +695,18 @@ rules about posted-out and pre-joining rows. Several older documents still read 
   belongs to the AUTOMATIC pass, which reads the published schedule, not to a credit the squadron
   types itself.
 
+### [OIL-AWARD-ADD] Should an award and a worked day ADD UP? — ONE QUESTION FOR THE OWNER (21 Sep 26)
+Fable found that a 3-day award on a Saturday fell to 1 day the moment that Saturday was published
+with the man on a desk: the takeover replaced the award wholesale. That is now fixed — the award's
+days, reason and giver ride onto the taken-over record, so the balance never falls.
+
+**What was NOT decided, because it is his:** whether the two should ADD. Today the day is worth the
+LARGER of the two (the 3-day award), which is what he had before the defect. The argument for
+adding (3 + 1 = 4) is his own 20 Sep reasoning — an award is days he is OWED, the worked Saturday is
+a day he WORKED, and they are different facts. The argument against is that a day is a day and 4
+days of OIL from one Saturday will look like a mistake on the tracker.
+**Ask him; do not assume.** One line of code either way.
+
 ### [S4-HUNT-REST] The bug hunt's untouched ground — about three quarters of it (owner, 21 Sep 26)
 The branch turned into a long detour through the rules and the five items, so most of the hunt Fable
 and Codex planned (eight batches) has never been run. The owner listed what is still untouched, and
