@@ -1948,19 +1948,13 @@ function occupiedFor(c: Contrib, personId: string, date: string, ignore: readonl
      same two facts were kept or lost depending on which was entered first
      (Codex review, 20 Sep 26). Incoming credits are therefore never barred.
 
-     RECORDED WORK STILL BARS A BID — B5 is not reversed.
-     The owner's 20 Sep 26 doctrine (a clash is flagged, never refused) was
-     applied to the INPUTS door, where filing leave over recorded work is now
-     written and flagged. Carrying it into the war's own bid door as well was
-     tried and backed out: clash-check B5 says in as many words that "a bid
-     made after the publish that overlaps published work is refused at the bid
-     door", and the owner has not reversed that. Newest-wins does not license
-     setting aside a rule he did not speak to.
-     So the two doors deliberately differ, and the difference is recorded:
-     FILING leave over work is a flag; BIDDING for it is refused. Raised with
-     the owner — see docs/superpowers/specs/2026-09-20-clash-doctrine-change.md.
-     Pinned by scenarios-corners.test.ts "a bid placed AFTER the publish is
-     refused at the bid door (B5)". */
+     NOR DOES IT BAR A BID ANY MORE. Clash-check B5 said "a bid made after the
+     publish that overlaps published work is refused at the bid door". That was
+     quoted to the owner on 20 Sep 26 with its consequence — the same Saturday's
+     leave going through on the Inputs page form and refused on the grid — and
+     overruled: flag it everywhere. B5's OTHER half, that publishing is the door
+     which replaces an undecided bid, stands. `barsWrite` carries the rule for
+     every door so the four cannot drift apart. */
   return [...recContribs(staying), ...absencesAt(personId, date)].some(o => barsWrite(c, o))
 }
 

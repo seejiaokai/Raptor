@@ -44,7 +44,7 @@ by reading, not by watching it on screen. That is owed before this merges.
 | # | What | Why it is next |
 |---|---|---|
 | A | **A member sees the clash WORDS on their own row**, not just the amber mark. | His own row currently shows the OIL credit in the box with his bid hidden behind the mark, so his leave request looks thrown out when it is still live. He is misled about his own leave. |
-| B | **A person's row spans their records, not their posting window.** From the earlier of (joining, first record) to the later of (leaving, last record). | A man posted out in January with clearing leave in September is charged for it and cannot be seen. The money and the screen disagree. |
+| B | **A person's row spans their records, not their posting window.** From the earlier of (joining, first record) to the later of (leaving, last record). **Needs Q2 answered first.** | A man posted out in January with clearing leave in September is charged for it and cannot be seen. The money and the screen disagree. |
 | C | **Days outside the posting window are tappable** once the row shows, so leave there can be bid and not only filed. | Owner answer C says "filed **or** bid". Only filing works. |
 | D | **The free half beside Inputs-filed leave is biddable.** | The read-only panel speaks for the whole day when it should speak only for the leave that came from the form. Most leave arrives that way, so this is the normal case. |
 | E | **A box for the hours on a hand-typed OIL credit.** | Without it every hand-typed credit means the whole day, so rule 6 above fires far more often than it should. |
@@ -52,6 +52,23 @@ by reading, not by watching it on screen. That is owed before this merges.
 **Known consequence of B, accepted:** the row appears *because* a record is out there, so the very
 first pre-join or post-out leave must be filed on the Inputs page. In practice an admin files it
 anyway.
+
+**Three constraints on B that both reviewers insisted on. They are not optional.**
+1. **It is a DISPLAY span and nothing else.** Do not widen the person's posting dates to achieve it
+   — that would put a posted-out man back into the manning counts, a worse bug than the one being
+   fixed. Manning must still read zero for him.
+2. **It runs per person per repaint**, inside the grid-speed rules in `docs/performance.md`. Compute
+   the first and last record dates ONCE per absence-index change and memoise them; keep month
+   granularity so scrolling inside a month never reshuffles rows.
+3. **An archived person with no posting-out date is dropped by the roster projection altogether**, so
+   "a row spans its records" cannot be satisfied for them at all. Decide what happens there before
+   building.
+
+**A constraint on D:** it opens the free half only. It must NOT make the Inputs-filed leave itself
+editable from the grid, and must not weaken the lock that protects it.
+
+**A constraint on E:** the provenance fix it depends on is now in (`e63d462`) — an admin's credit is
+handed back exactly as typed. Build E on top of that, not beside it.
 
 ---
 
@@ -95,10 +112,34 @@ text gets fixed in the same change; these are the ones that changed.
 | **Aug 19** — "once I hit the next month the row disappears" | The row follows the person's records (item B). |
 | **Aug 18** — a pre-join day is blank so nothing there to act on | Answer C: leave there may be filed **or bid** (item C). |
 
-## 6. What is NOT settled and needs the owner
+## 6. What is NOT settled — THREE OWNER QUESTIONS
 
-Nothing. Every question raised in this session has been answered. The next session builds items
-A–E, hand-tests everything against §1 and §2 in the running app, and re-runs the gates.
+**This section previously said "nothing". That was wrong.** Both providers' review of this
+consolidation found real questions hiding inside the items above, and one of them changes how leave
+is charged. **Do not build items B or C until Q2 is answered.**
+
+**Q1 — The 15-day rule: "touches both halves", or "covered all day"?**
+Today a day counts as a full annual day if *some* leave touches the morning and *some* touches the
+afternoon. So **LL 08:00–10:00 plus OL 14:00–16:00 is charged as a full day**, removes a whole man
+and continues a 15-day run — with four hours in the middle uncovered. The plain-language rule says
+"covered". The code says "touches". This changes leave CHARGING, so it is the owner's call and must
+not be settled inside a build. An existing day-view test pins the current reading, so whichever way
+he rules, that test states the rule.
+
+**Q2 — Item B: WHICH records extend a row?**
+"From the earliest of (joining, first record) to the latest of (leaving, last record)" never says
+what counts as a record. Each of these needs a yes or no: a **refused bid** six months after posting
+out; an unacknowledged **replacement notice**; an **OIL credit** outside the posting window; an
+overnight medical's **invisible spill** onto the next date (this one probably should NOT); an Inputs
+record in a year **no war exists for**. Guessing gives a row that appears for the wrong reason, or
+fails to appear for the right one.
+
+**Q3 — Publishing still REMOVES an undecided bid, while a bid placed afterwards is kept and flagged.**
+Same two facts, opposite outcomes decided by which came first — the exact thing the owner's "flag it
+everywhere" ruling was meant to kill. It survives because the removal is B5's OTHER half, plus owner
+answer A and the 19 Sep owner rule, none of which he was asked about. Either publishing should flag
+rather than remove, or a bid over published work should be removed rather than flagged. Today the
+app does both.
 
 ---
 

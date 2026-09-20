@@ -133,3 +133,15 @@ it read; the merge is what makes the pair worth running.
 | R9 | B6 | DRIFT | low, park |
 | R10 | Q6 | DRIFT | by design, noted |
 | R11 | B7 | DRIFT | low, clear fix |
+
+## Findings that fell off every list without being filed
+
+Caught by the consolidation review. Each is real, and none appears in CURRENT-STATE §2, §3 or §4:
+
+- **R5 — a SANS offer over leave warns nobody (Q15).** The owner asked for a warning; there is none.
+  Low consequence, trivially true, and it belongs somewhere.
+- **R9 — a publish replacement freezes no actor (B6).** The notice reads "replaced by the published
+  schedule" with nobody named, where an Inputs-page replacement names the person or "an admin".
+- **R11 — undo/redo is not checked against recorded work (B7).** Now MOOT: leave over recorded work
+  is no longer refused anywhere, so the check that was switched off has nothing left to enforce.
+  Recorded here so the next reader does not switch it back on.

@@ -13,11 +13,14 @@
 //      full leave day into the other half, or removes a same-half leave. The
 //      charge follows on its own (figures read what is there).
 //   2. THE INVARIANT (B7, §25, owner H3-overruled). No two leaves of one
-//      person on overlapping TIMES, no leave over a medical, and no leave
-//      over recorded work (an OIL credit's work times, §26.3). Refused whole,
-//      naming the blocker. Judged only for the records this command changed
-//      (their dates, type or times), so an old record elsewhere never blocks
-//      an unrelated edit.
+//      person on overlapping TIMES, and no leave over a medical. Refused
+//      whole, naming the blocker. Judged only for the records this command
+//      changed (their dates, type or times), so an old record elsewhere never
+//      blocks an unrelated edit.
+//      Leave over RECORDED WORK is NO LONGER refused (owner, 20 Sep 26,
+//      setting aside §26.3): it is written, the day goes amber, and the filer
+//      is told in the same breath — `vet` returns those notes rather than
+//      throwing, so a flag and a door stay separate things.
 //   3. A CLASHING INPUT REPLACES AN UNDECIDED BID (owner rule 19 Sep 26 as
 //      narrowed by H1 and answer B). Leave, or ATT C / HL / OML, on the same
 //      time as a pending or acknowledged bid removes the clashing part of the

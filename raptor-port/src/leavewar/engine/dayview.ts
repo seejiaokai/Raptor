@@ -124,7 +124,8 @@ export function forbiddenPair(a: Contrib, b: Contrib): boolean {
   const pairs: Array<[(c: Contrib) => boolean, (c: Contrib) => boolean]> = [
     [leaveLike, leaveLike],   // two leaves on the same time (§25, H3 overruled → real times)
     [leaveLike, sick],        // sick cuts leave; leave over sick is refused (§26.1)
-    [leaveLike, work],        // leave over recorded work (§26.3, B4)
+    [leaveLike, work],        // leave on recorded work — FLAGS the day; since
+                              // 20 Sep 26 it no longer bars a write (barsWrite)
     [sick, work],             // ATT C/HL/OML on a worked time (owner Q6)
   ]
   return pairs.some(([p, q]) => (p(a) && q(b)) || (p(b) && q(a)))

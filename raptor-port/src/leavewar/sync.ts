@@ -243,8 +243,9 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
        nothing consumed */
     const c: Contrib = { id: 'new', kind: 'absence', code: parseCell(rec.code)!.type, win: requestWin(rec.code) }
     if (absencesAt(it.personId, it.date).some(o => barsWrite(c, o))) { skipped++; why.push(`${it.date} already holds leave or a medical at that time — not approved`); continue }
-    /* a bid left standing when work was later credited (owner Q5: keep both,
-       the time check runs at approval) — §26.3: leave over recorded work */
+    /* a bid left standing when work was later credited. Owner Q5 and §26.3
+       used to SKIP that day at approval; reversed 20 Sep 26 — the leave is
+       granted and the day is flagged instead. */
     const credits = recContribs(recsAt(war.recs, it.personId, it.date)).filter(o => o.kind === 'credit')
     /* recorded work no longer stops an approval — the leave is granted, the
        day is flagged, and a human resolves it (owner, 20 Sep 26) */
