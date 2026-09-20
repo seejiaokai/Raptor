@@ -369,3 +369,33 @@ That rule was never about permission: an admin could always close the stage, dec
 *Leaves untouched, and it is his own exception:* an input APPROVED and PUBLISHED offers remarks and
 nothing else — to change it an admin reopens the war. One not yet approved stays fully editable.
 
+
+### N16 — an award and a worked day ADD UP (21 Sep 26)
+> "Yes an award and a worked day add up. So it's 4. The auto oil credits don't get affected by
+> manual OIL inputs."
+
+A 3-day award on a Saturday the man then works is worth **four** — the award's three plus the
+day's one. The two are INDEPENDENT: what the published schedule earns is never changed by what a
+person typed, and what a person typed is never changed by the schedule.
+
+So a person/date now holds **one earned credit and one award, side by side**, each keeping its own
+worth, reason and giver. It was one record, and the schedule TOOK AN AWARD OVER when it earned one,
+stashing the award in a snapshot for the unpublish hand-back. Two records make that machinery
+unnecessary and it retires — which matters, because the snapshot is where both of the silent
+balance bugs of 20–21 Sep lived.
+
+The box still shows ONE code: the app's own, with the award behind the `+1` mark. That is not
+cosmetic — the top record is what makes the cell read as owned by the schedule, which is what locks
+it.
+
+*Reverses:* the 21 Sep holding position that a day carrying both is worth the LARGER of the two.
+That was only ever the safe reading of a defect, pending this decision.
+*Settles:* the refusal "That day already earns OIL from the published schedule", which under this
+ruling was the app declining to record a fact the owner has ruled is separate.
+*Leaves untouched:* N13 entirely. An award still flags nothing, stands nobody down and counts
+nobody on duty; the earned credit still does all three. The weekend / public-holiday restriction
+still belongs to the AUTOMATIC pass alone (N11).
+*Consequence, and it was already live:* the Inputs page told a filer "X is recorded as working on
+that day — this leave is filed anyway and flagged for someone to resolve" for ANY credit, award
+included. Under N13 neither half is true of an award: nothing flags it and there is nothing to
+resolve. That note now fires only for a credit the schedule earned.
