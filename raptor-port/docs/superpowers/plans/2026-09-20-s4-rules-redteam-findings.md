@@ -1,5 +1,10 @@
 # [S4-BUGHUNT] — the RULES-FIRST red team's findings, merged (20 Sep 26)
 
+> **Read `specs/2026-09-20-CURRENT-STATE.md` first.** Decisions in this session changed several
+> times; that file is the destination and this one is part of the journey. Where they disagree, that
+> one is right.
+
+
 The first run of the standing rules-first sweep (`briefs/rules-first-red-team.md`), against
 `specs/2026-09-20-one-absence-behaviour-register.md`. Fable 5.1 (high) and Codex 0.154.0 (high),
 independently, read-only, same brief. Fable returned 9 findings and marked 28 rulings MATCHES;

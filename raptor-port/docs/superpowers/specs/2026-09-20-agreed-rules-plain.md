@@ -1,5 +1,10 @@
 # The agreed rules, in plain words — by screen and by type (20 Sep 26)
 
+> **Read `specs/2026-09-20-CURRENT-STATE.md` first.** Decisions in this session changed several
+> times; that file is the destination and this one is part of the journey. Where they disagree, that
+> one is right.
+
+
 Everything settled for the one-absence model, written the way the owner asked: **which screen**, **what
 kind of entry**, and **what happens**. The register
 (`2026-09-20-one-absence-behaviour-register.md`) remains the formal record with rule ids; this file
@@ -110,8 +115,8 @@ approved on the grid, moved onto the day on the grid, or published over the top 
 - When **someone else's** action replaces a bid, a notice sits on that day with an amber mark until
   the person or an admin taps **"OK, seen"**. Your own action leaves no notice, just a message.
 - A member may **bid each half separately**, and may bid the free half beside filed leave.
-- **A duty answered "yes, this earns OIL" takes the clashing part of your own bid off that day** —
-  the same as publishing would. *(Ruled; not yet built.)*
+- **A duty does NOT cancel your bid.** Decided and deliberately parked — see CURRENT-STATE §3. The
+  member is told instead (CURRENT-STATE §2 item A), which solves the real problem more cheaply.
 
 ---
 
@@ -134,7 +139,7 @@ approved on the grid, moved onto the day on the grid, or published over the top 
   and continues the run; anything else breaks it.
 - **Leave before someone joins and after they leave** is allowed, filed or bid. It shows, it is
   charged, and it is **never** counted for manning. After posting out the box carries the PO mark.
-  *(Two halves of this are still broken — see below.)*
+  *(Two halves still to build — CURRENT-STATE §2 items B and C.)*
 - One running balance per person. Per-year balances are deliberately not built.
 
 ---

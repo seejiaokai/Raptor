@@ -1,5 +1,10 @@
 # The one-absence model — every behaviour the owner ruled, in plain words (20 Sep 26)
 
+> **Read `specs/2026-09-20-CURRENT-STATE.md` first.** Decisions in this session changed several
+> times; that file is the destination and this one is part of the journey. Where they disagree, that
+> one is right.
+
+
 Why this file exists: the [S4-BUGHUNT] planning step found a bug that two full cross-provider code
 inspections had missed, because it was not a coding mistake. The build had taken one ruling (a
 medical cuts leave in half-day steps) and used it for a job that ruling never claimed (deciding

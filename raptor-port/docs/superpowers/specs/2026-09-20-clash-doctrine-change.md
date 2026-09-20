@@ -1,5 +1,10 @@
 # The clash doctrine — what it was, what it is now (20 Sep 26)
 
+> **Read `specs/2026-09-20-CURRENT-STATE.md` first.** Decisions in this session changed several
+> times; that file is the destination and this one is part of the journey. Where they disagree, that
+> one is right.
+
+
 Written for the owner and for the cross-provider review of the change. Every section answers one of
 his questions: what the plan was before, what it is now, what the workflow becomes, what each person
 sees, what could go wrong, and what is actually built.

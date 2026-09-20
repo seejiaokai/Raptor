@@ -1,5 +1,10 @@
 # [S4-BUGHUNT] batch 2 — the applicable rulings, before a line is written
 
+> **Read `specs/2026-09-20-CURRENT-STATE.md` first.** Decisions in this session changed several
+> times; that file is the destination and this one is part of the journey. Where they disagree, that
+> one is right.
+
+
 First run of the standing order (CLAUDE.md §How to work here, owner 20 Sep 26): search the record
 for every ruling that applies, list them, then hand-test the build against this list in the running
 app, ruling by ruling, and report pass/fail per ruling.
@@ -60,7 +65,7 @@ it for them: expect a notice, amber, "OK, seen" clears it.
 
 | Ruling | What it demands here |
 |---|---|
-| **N4** (owner, 20 Sep, newest) | Allowed when the real hours do not overlap; still refused when they do. |
+| **N4** — **STALE, see CURRENT-STATE §5** | Written as "refused when the hours overlap". The owner reversed it the same day: nothing is refused for recorded work, on any screen. |
 | **H3 as overruled** | Overlap on real times — the same test as leave vs leave. |
 | **B8 / Q7** | A credit with no times means the whole day, so it still blocks. Only item 4 makes N4 reachable. |
 | **N2 — the deliberate asymmetry** | Work onto leave is allowed and flagged; leave onto overlapping work is refused. **This is the owner's choice, confirmed 20 Sep. Do not "fix" it.** |
