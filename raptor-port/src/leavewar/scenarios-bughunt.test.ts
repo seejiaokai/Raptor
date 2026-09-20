@@ -19,7 +19,7 @@ import { memoryBackend } from './state/storage'
 import { runOilPass, wireLeaveWarSync } from './sync'
 import { _resetTimeline } from '../undo/timeline'
 import { installGlobalUndo } from '../state/undo-wire'
-import { balanceOf } from './engine'
+import { balanceOf, countsFor } from './engine'
 
 const ISNAP = JSON.stringify(INPUTS)
 const DSNAP = JSON.stringify(DAYS)
@@ -424,5 +424,40 @@ describe("an admin's hand-typed credit the schedule later agrees with", () => {
     ingestDutyCredit('casper', D, 'FO', 'Duty', [[at(8), at(12)]])
     clearRaptorCell('casper', D)
     expect(credOf('casper')).toBeUndefined()
+  })
+})
+
+/* ====================================================================== */
+/*  Manning must not count a man on leave as present (20 Sep 26)          */
+/* ====================================================================== */
+/* A second-order consequence of the credit now landing on a leave day,
+   found by the rules-first review. A credit means AT WORK, so a duty day
+   counts its man as present even though he is off the flying programme
+   (owner, 19 Aug 26). Before the ruling a credit was never placed on a leave
+   day, so the two could not meet. Now they can — and counting him present
+   would man a duty weekend with someone who is on leave. */
+describe('a man with both a credit and leave on one day', () => {
+  const SAT = '2026-07-18'
+  const dutyCount = () => countsFor(getState().people as any, getState().grid as any,
+    getState().states as any, SAT, getState().views as any).duty
+
+  it('is not counted on duty when the leave takes his whole day', () => {
+    setRole('admin')
+    const before = dutyCount()
+    setCell('plasma', SAT, 'FO')                                 // an admin records the work
+    expect(dutyCount()).toBe(before + 1)                         // he is at work
+
+    // now he is also on leave all that day: the day is flagged, and he mans nothing
+    file('plasma', 'LL', 'Jul 18')
+    expect(view('plasma', SAT)!.amber).toBe(true)
+    expect(dutyCount()).toBe(before)
+  })
+
+  it('still counts when only half the day is leave', () => {
+    setRole('admin')
+    const before = dutyCount()
+    setCell('dj', SAT, 'FO')
+    file('dj', 'LL', 'Jul 18', { allday: false, half: 'pm', s: 721, e: 1439 })
+    expect(dutyCount()).toBe(before + 1)                         // still at work that morning
   })
 })
