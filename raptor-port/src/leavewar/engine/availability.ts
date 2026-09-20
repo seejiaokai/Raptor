@@ -222,9 +222,15 @@ export function ruleHave(rc: RuleCount, people: Person[], grid: Grid, states: St
   }
   const weightOf = (p: Person): number => {
     const v = vs[p.id]?.[date]
-    const onDuty = inSquadron(p, date) && !!v?.duty
+    /* ON DUTY means AT WORK. A credit says he worked, and until the owner's
+       20 Sep 26 ruling that was the end of it, because a credit was never
+       placed on a day he was also absent. Now the two are recorded together
+       and flagged, so the head count has to ask the second question too: a man
+       away all day is not on duty, whatever the credit says, and counting him
+       would man a duty weekend with someone on leave. */
+    const onDuty = inSquadron(p, date) && !!v?.duty && v!.away < 1
     const have = haveOf(p, date, v)
-    return rc.presence && onDuty ? 1 : have
+    return rc.presence && onDuty ? Math.max(0, 1 - v!.away) : have
   }
   // One rounding, on the number the cell shows — it kills float dust
   // (0.9999999 must read 1: a team the squadron has must not paint the day
@@ -275,11 +281,15 @@ export function countsFor(people: Person[], grid: Grid, states: States, date: st
     // threshold reading exactly the squadron it always did.
     if (p.pers || p.seat === 'gnd') continue
     const v = vs[p.id]?.[date]
-    const onDuty = inSquadron(p, date) && !!v?.duty
+    /* ON DUTY means AT WORK — see the note in `ruleHave` above. A man away
+       all day is not on duty however loudly his credit says he worked. */
+    const onDuty = inSquadron(p, date) && !!v?.duty && v!.away < 1
     if (onDuty) duty += 1
 
     const have = haveOf(p, date, v)
-    const present = onDuty ? 1 : have
+    // ...and presence is what the day leaves of him: a whole man on an
+    // ordinary duty day, half when a half-day absence takes the rest.
+    const present = onDuty ? Math.max(0, 1 - v!.away) : have
     if (present > 0) {
       crewPresent += present
       if (p.sxo) sxoPresent += present

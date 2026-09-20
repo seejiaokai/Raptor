@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "raptor-preview",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["--prefix", "raptor-port", "vite", "preview", "raptor-port", "--port", "4180", "--strictPort"],
+      "port": 4180
+    }
+  ]
+}

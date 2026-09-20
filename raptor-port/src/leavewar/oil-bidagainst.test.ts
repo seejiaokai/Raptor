@@ -51,15 +51,20 @@ describe('oilCreditBidAgainst — the §6.6 warn', () => {
     expect(oilCreditBidAgainst(SAT_DI)).toBe(false)
   })
 
-  it('is FALSE when a manual cell CLASHED the credit so it never landed (Fable#5/GU-P2-009)', () => {
-    // a manual LL on the Saturday blocks the FO credit — runOilPass leaves it unlanded.
+  it('is FALSE when the landed credit is still fully in the balance, clash or no clash', () => {
+    /* This used to read "the credit CLASHED so it never landed" (Fable#5 /
+       GU-P2-009). The owner's 20 Sep 26 ruling banks the credit even when it
+       overlaps the leave, so there IS a landed credit here now. The guard the
+       test exists for still holds and is the point: the warning fires only
+       when withdrawing the credit would push the balance BELOW zero, i.e.
+       when the credit has already been bid against. It has not been, so the
+       answer is still FALSE — by the balance rule rather than by absence. */
     setCell('plasma', '2026-07-18', 'LL')
     setBidState('plasma', '2026-07-18', 'approved')
     sign(SAT_DI); setDayApproved(SAT_DI, true)
     runOilPass()
-    expect(getState().wars[0].grid['plasma']?.['2026-07-18']).toBe('LL')   // FO did NOT land
-    // plasma's OIL balance is 0 (LL draws annual, not oil), so the OLD balance−credit<0
-    // rule would have falsely warned; there is no landed credit to withdraw, so FALSE.
-    expect(oilCreditBidAgainst(SAT_DI)).toBe(false)
+    const v = getState().wars[0].views['plasma']?.['2026-07-18']!
+    expect(v.all.some(c => c.kind === 'credit')).toBe(true)      // the credit is banked now
+    expect(oilCreditBidAgainst(SAT_DI)).toBe(false)              // nothing spent against it
   })
 })

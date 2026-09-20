@@ -17,18 +17,32 @@ beforeEach(() => {
 const PENDING = 'cell-asics-2026-01-23'
 
 describe('deciding a bid', () => {
-  it('offers nothing while bidding is still open', () => {
+  it('offers the SAME four answers while bidding is still open', () => {
+    /* MOVED 21 Sep 26. The decision used to appear only once bidding closed,
+       so the same input answered to different controls depending on which day
+       of the cycle you clicked it. Owner: "enable it in all Stage on leave
+       war". An admin can now Ack, Approve, Refuse or Move from the first day
+       of bidding — the stage decides what the SQUADRON may do, never what the
+       admin running it may do. */
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(PENDING))
-    expect(screen.queryByTestId('decide-approve')).toBeNull()
+    expect(screen.getByTestId('decide-ack')).toBeTruthy()
+    expect(screen.getByTestId('decide-approve')).toBeTruthy()
+    expect(screen.getByTestId('decide-refuse')).toBeTruthy()
+    expect(screen.getByTestId('decide-shift')).toBeTruthy()
   })
 
-  it('offers no bid picker once bidding has closed', () => {
+  it('keeps the leave buttons once bidding has closed — ONE window, every stage', () => {
+    /* MOVED 21 Sep 26, the other half of the same ruling. Deciding used to
+       REPLACE the window with a smaller one, so an admin who wanted to change
+       what was asked for had to reopen the war. He keeps both: the decision at
+       the top, what was asked for below it. */
     advanceStage()
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(PENDING))
-    expect(screen.queryByTestId('bid-LL')).toBeNull()
-    expect(screen.queryByTestId('bid-clear')).toBeNull()
+    expect(screen.getByTestId('decide-approve')).toBeTruthy()
+    expect(screen.getByTestId('bid-LL')).toBeTruthy()
+    expect(screen.getByTestId('bid-clear')).toBeTruthy()
   })
 
   it('approves a pending bid once closed', () => {
@@ -49,9 +63,10 @@ describe('deciding a bid', () => {
     render(<Matrix />)
     const before = screen.getByTestId('count-opsp-2026-01-23').textContent
     fireEvent.click(screen.getByTestId(PENDING))
-    // the button reads "Pending" (owner, 27 Aug 26) though the stored state
-    // token is still 'acknowledged' — the label changed, not the model
-    expect(screen.getByTestId('decide-ack').textContent).toBe('Pending')
+    // the button reads "Ack" (owner, 21 Sep 26, renaming his own 27 Aug
+    // "Pending") though the stored state token is still 'acknowledged' — the
+    // label changed, not the model
+    expect(screen.getByTestId('decide-ack').textContent).toBe('Ack')
     fireEvent.click(screen.getByTestId('decide-ack'))
     expect(getState().states.asics['2026-01-23']?.state).toBe('acknowledged')
     expect(screen.getByTestId('count-opsp-2026-01-23').textContent).toBe(before)
@@ -129,7 +144,9 @@ describe('deciding a bid', () => {
     fireEvent.click(screen.getByTestId(PENDING))
     expect(screen.getByTestId('decide-approve')).toBeTruthy()
     expect(screen.getByTestId('decide-refuse')).toBeTruthy()
-    expect(screen.queryByTestId('bid-LL')).toBeNull()
+    // …and the leave buttons stay with them at published too (owner,
+    // 21 Sep 26): an input NOT yet approved is still the admin's to change.
+    expect(screen.getByTestId('bid-LL')).toBeTruthy()
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     expect(screen.getByTestId('bid-LL')).toBeTruthy()
   })
@@ -144,10 +161,96 @@ describe('deciding a bid', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(PENDING))
     expect(screen.getByTestId('decide-approve')).toBeTruthy()
-    expect(screen.queryByTestId('bid-LL')).toBeNull()
+    expect(screen.getByTestId('bid-LL')).toBeTruthy()      // one window, both halves
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     expect(screen.getByTestId('bid-LL')).toBeTruthy()
+    // An EMPTY day still offers no decision: there is nothing there to answer.
     expect(screen.queryByTestId('decide-approve')).toBeNull()
+  })
+})
+
+/* ONE WINDOW FOR AN INPUT, IN EVERY STAGE (owner, 21 Sep 26). Four answers —
+   Ack, Approve, Refuse, Move — plus what was asked for, on the same window
+   whether the war is open for bidding, closed, or published. The exception he
+   named himself: an input that is approved AND published is finished
+   paperwork, so it offers remarks and nothing else; to change it an admin
+   reopens the war. */
+describe('the one input window', () => {
+  const PENDING = 'cell-asics-2026-01-23'
+
+  it('moves an input from ONE click — no drag-select needed', () => {
+    /* His words: "even a single click on an input, i should be able to click
+       on a move button to move the input just like how i drag and select and
+       click on move". */
+    advanceStage()
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(PENDING))
+    fireEvent.change(screen.getByTestId('shift-date'), { target: { value: '2026-01-26' } })
+    fireEvent.click(screen.getByTestId('decide-shift'))
+    expect(getState().grid.asics['2026-01-23']).toBeFalsy()
+    expect(getState().grid.asics['2026-01-26']).toBeTruthy()
+  })
+
+  it('says WHY when a move cannot land, rather than doing nothing', () => {
+    advanceStage()
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(PENDING))
+    // 24 Feb already holds ASICS's acknowledged OIL bid — the day is taken
+    fireEvent.change(screen.getByTestId('shift-date'), { target: { value: '2026-02-24' } })
+    fireEvent.click(screen.getByTestId('decide-shift'))
+    expect(screen.getByTestId('shift-problem').textContent).toContain('already has something booked')
+  })
+
+  it('an APPROVED input on a PUBLISHED war offers remarks and nothing else', () => {
+    /* The owner's own exception: "if the input is approved and published, once
+       u click on it, the member and admin can input the remarks there. In
+       order to edit it again, admin has to go back to open for bidding or
+       bidding closed". */
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(PENDING))
+    fireEvent.click(screen.getByTestId('decide-approve'))
+    act(() => { advanceStage(); advanceStage() })
+    fireEvent.click(screen.getByTestId(PENDING))
+    expect(screen.getByTestId('remarks-sheet')).toBeTruthy()
+    expect(screen.queryByTestId('decide-approve')).toBeNull()
+    expect(screen.queryByTestId('bid-LL')).toBeNull()
+  })
+
+  it('an input NOT yet approved on a published war is still the admin’s to change', () => {
+    advanceStage()
+    advanceStage()
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(PENDING))
+    expect(screen.getByTestId('decide-ack')).toBeTruthy()
+    expect(screen.getByTestId('decide-shift')).toBeTruthy()
+    expect(screen.getByTestId('bid-LL')).toBeTruthy()
+    expect(screen.getByTestId('bid-clear')).toBeTruthy()
+  })
+
+  it('offers NO decision in DRAFT — a war nobody has been shown has nothing to answer', () => {
+    /* Astra, 21 Sep 26: the first cut gated the buttons on "an admin and a
+       biddable cell", so at DRAFT they appeared and the store refused the
+       write — a control that does nothing, which is the one outcome the house
+       rule forbids. */
+    setRole('admin')
+    reopenStage()                                   // open → draft
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(PENDING))
+    expect(screen.queryByTestId('decide-ack')).toBeNull()
+    expect(screen.queryByTestId('decide-shift')).toBeNull()
+  })
+
+  it('a MEMBER gets no decisions on anybody’s input, their own included', () => {
+    advanceStage()
+    setRole('member')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(PENDING))
+    expect(screen.queryByTestId('decide-approve')).toBeNull()
+    expect(screen.queryByTestId('decide-shift')).toBeNull()
   })
 })
 

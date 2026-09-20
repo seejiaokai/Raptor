@@ -32,6 +32,23 @@ export function labelToISO(lbl: unknown, yr?: unknown): string | null {
   return `${Math.floor(ord / 10000)}-${p(Math.floor(ord / 100) % 100)}-${p(ord % 100)}`
 }
 
+/* NOON BELONGS TO THE AFTERNOON (owner, 20 Sep 26, [S4-BUGHUNT]): "12:00 —
+   afternoon, half a day." The morning's last minute is 720 and the
+   afternoon's first is 721, so a window recorded as starting at exactly
+   12:00 sat on the boundary and the app answered two ways about it: the
+   clash test (strict) said it did not touch the morning, while the box, the
+   charge and the manning count (inclusive) said it did. An OL 12:00–14:00
+   therefore showed as a whole day, cost a whole day of balance and removed a
+   whole person from manning — while a morning bid was still allowed beside
+   it. One reading now: a custom window that starts at noon and runs past it
+   starts at 12:01. A window that ENDS at noon is untouched, and so are both
+   half presets. */
+function realWin(row: any): [number, number] | null {
+  const w = inpWin(row)
+  if (!w) return null
+  return w[0] === 720 && w[1] > 720 ? [721, w[1]] : [w[0], w[1]]
+}
+
 /* Which portion of the day an input row covers. allday and the two half
    presets are exact; a CUSTOM window rounds OUT to the halves it touches
    (a 10:00–14:00 leave covers both, so it reads as the full day) — rounding
@@ -44,7 +61,7 @@ export function rowPortion(row: any): Portion {
   if (row.half === 'am') return 'am'
   if (row.half === 'pm') return 'pm'
   if (row.s != null && row.e != null) {
-    const w = inpWin(row)
+    const w = realWin(row)
     if (w) {
       if (w[1] <= 720) return 'am'
       if (w[0] >= 721) return 'pm'
@@ -65,7 +82,7 @@ export function medRowPortion(row: any): Portion {
   if (row.half === 'am') return 'am'
   if (row.half === 'pm') return 'pm'
   if (row.s != null && row.e != null) {
-    const w = inpWin(row)
+    const w = realWin(row)
     if (w && w[1] - w[0] <= 360) {
       if (w[1] <= 720) return 'am'
       if (w[0] >= 721) return 'pm'
@@ -95,13 +112,42 @@ export function warVisible(type: unknown): boolean {
 const halfWin = (p: Portion): Win => (p === 'am' ? AM : p === 'pm' ? PM : FULL)
 
 /** The part of EACH covered date an Input takes, plus the overnight tail it
- *  leaves on the following date (null when it ends by midnight). */
-export function inputWindow(row: any): { win: Win; tail: Win | null } {
-  if (isDownchit(row.type)) return { win: halfWin(medRowPortion(row)), tail: null }
+ *  leaves on the following date (null when it ends by midnight).
+ *
+ *  A MEDICAL gets two windows, because the owner's rules want two different
+ *  things from it (20 Sep 26, confirmed at the [S4-BUGHUNT] planning step —
+ *  "allow both, judge on real times"):
+ *    - `win` is the HALF the six-hour rule gives it (H2). That is what the
+ *      box shows, what manning removes and what the medical total counts —
+ *      the war and the balances only know halves.
+ *    - `real` is the hours actually recorded on the form. That is what every
+ *      CLASH and every bid REPLACEMENT is judged on (owner answer H3, as
+ *      overruled: "leave vs leave (and leave vs medical) overlap is judged on
+ *      REAL TIMES"). Without it a two-hour appointment owned the whole
+ *      morning, so leave half an hour after it ended was refused — or, filed
+ *      first, was silently deleted.
+ *  `real` is left off when it would be the same window, so nothing downstream
+ *  has to care about the distinction for an all-day or half-preset medical. */
+export function inputWindow(row: any): { win: Win; real?: Win; tail: Win | null } {
+  if (isDownchit(row.type)) {
+    const win = halfWin(medRowPortion(row))
+    if (row.allday || row.half === 'am' || row.half === 'pm' || row.s == null || row.e == null) return { win, tail: null }
+    const w = realWin(row)
+    if (!w) return { win, tail: null }
+    const real: Win = [w[0], Math.min(w[1], 1439)]
+    /* H6 applies to a medical too — "a record running past midnight counts on
+       the second date, for clashes". Leave, courses and overseas duty got the
+       tail from the start; the medical branch returned none, so an HL from
+       20:00 to 02:00 let next morning's leave through untouched (rules-first
+       red team, 20 Sep 26). The tail is spill-only: it is never shown and
+       never charged on the second date, it only clashes there. */
+    const tail: Win | null = w[1] > 1439 ? [0, w[1] - 1440] : null
+    return { win, real: real[0] === win[0] && real[1] === win[1] ? undefined : real, tail }
+  }
   if (row.allday) return { win: FULL, tail: null }
   if (row.half === 'am') return { win: AM, tail: null }
   if (row.half === 'pm') return { win: PM, tail: null }
-  const w = inpWin(row)
+  const w = realWin(row)
   if (!w || row.s == null || row.e == null) return { win: FULL, tail: null }
   if (w[1] <= 1439) return { win: [w[0], w[1]], tail: null }
   return { win: [w[0], 1439], tail: [0, w[1] - 1440] }
@@ -125,12 +171,16 @@ export type AbsenceIndex = Map<string, Map<string, Contrib[]>>
 /** One Input's contributions, date by date. */
 export function contribsOfInput(row: any): Array<[string, Contrib]> {
   if (!row || typeof row !== 'object' || !warVisible(row.type) || !row.person || !row.iid) return []
-  const { win, tail } = inputWindow(row)
+  const { win, real, tail } = inputWindow(row)
   const code = warCodeOf(row.type)
   const moved: Record<string, string> = row.lwMoved && typeof row.lwMoved === 'object' ? row.lwMoved : {}
   const out: Array<[string, Contrib]> = []
   for (const d of inputDates(row)) {
     const c: Contrib = { id: String(row.iid), kind: 'absence', code, win }
+    /* a medical's real hours ride as `wins` — the field every overlap test
+       already reads (`winsOf`), built for a credit worked in stretches. The
+       half in `win` still drives the box, manning and the medical total. */
+    if (real) c.wins = [real]
     if (row.lw) c.lw = true
     if (moved[d]) c.movedFrom = moved[d]
     out.push([d, c])

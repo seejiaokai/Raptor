@@ -113,17 +113,34 @@ describe('parseCell', () => {
   })
 })
 
+/* THE ONE FOLD BETWEEN WHAT IS STORED AND WHAT A BOX SHOWS. Rewritten on the
+   owner's 20 Sep 26 ask, which changed what the marks MEAN: the arrow now
+   carries the half of the day, which frees the asterisk to answer the question
+   the squadron actually asks of an OIL credit — did a person type this, or did
+   the app work it out? These tests asserted the OLD marks, and they move with
+   the rule. The STORED grammar is untouched: `parseCell`'s own tests above
+   still pin `*LL`, and nothing but the screen changed. */
 describe('displayCell', () => {
-  it('shows the ATT markers as the owner’s one-letter shorthand, asterisk kept on its side', () => {
-    expect(displayCell('ATTB')).toBe('B')
-    expect(displayCell('*ATTC')).toBe('*C')
-    expect(displayCell('ATTC*')).toBe('C*')
+  it('points an arrow at the half of the day the record sits in', () => {
+    expect(displayCell('LL')).toBe('LL')
+    expect(displayCell('*LL')).toBe('<LL')
+    expect(displayCell('LL*')).toBe('LL>')
   })
 
-  it('leaves every other code exactly as stored', () => {
-    for (const raw of ['LL', '*OIL', 'HL*', 'OML', 'CSE', 'FO', 'PO', 'NOPE']) {
-      expect(displayCell(raw)).toBe(raw)
-    }
+  it('shows the ATT markers as the owner’s one-letter shorthand, arrow and all', () => {
+    expect(displayCell('ATTB')).toBe('B')
+    expect(displayCell('*ATTC')).toBe('<C')
+    expect(displayCell('ATTC*')).toBe('C>')
+  })
+
+  it('a trailing star means the APP put it there, not a person', () => {
+    expect(displayCell('FO', true)).toBe('FO*')
+    expect(displayCell('HO', true)).toBe('HO*')
+    expect(displayCell('FO')).toBe('FO')          // a person granted this one
+  })
+
+  it('leaves anything it cannot parse exactly as it found it', () => {
+    for (const raw of ['PO', 'NOPE', '']) expect(displayCell(raw)).toBe(raw)
   })
 })
 

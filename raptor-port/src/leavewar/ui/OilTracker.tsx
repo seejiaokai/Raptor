@@ -86,9 +86,12 @@ import {
   MAX_REASON,
   removeLedgerEntry,
   setCellNote,
+  setCellDays,
+  setCellGivenBy,
   setOilPolicy,
   updateLedgerEntry,
 } from '../state/store'
+import { hhmm, parseHM } from '../../engine/time'
 import { CreditForm, DayChip } from './CreditForm'
 import { shortDate, shortSpan } from './dates'
 import { RangePicker, type Range } from './RangePicker'
@@ -217,6 +220,14 @@ export function OilTracker({ person, onClose, onGranted }: {
   const [armDel, setArmDel] = useState<string | null>(null)
   const [noteId, setNoteId] = useState<string | null>(null)
   const [noteDraft, setNoteDraft] = useState('')
+  /* The WORK HOURS on a hand-typed credit (CURRENT-STATE item E; clash check
+     B8's "a manual credit MAY carry work times; none = the whole day"). They
+     sit beside the reason because they answer the same question — what this
+     credit was FOR — and because a credit an admin types is the only kind
+     whose hours are his to say. Empty means the whole day, which is B8's own
+     default and the way back from a mistype. */
+  const [hDays, setHDays] = useState('')
+  const [hGiven, setHGiven] = useState('')
 
   const groupDefs = groupsInOrder()
   const priority = groupPriorityIds()
@@ -320,8 +331,21 @@ export function OilTracker({ person, onClose, onGranted }: {
   }
   const startNote = (c: OilCredit, personId: string) => {
     setNoteId(`${personId}|${c.date}`); setNoteDraft(c.manual && c.reason !== 'weekend duty' && c.reason !== 'PH duty' ? c.reason : ''); setEditId(null)
+    setHDays(c.days != null ? String(c.days) : '')
+    setHGiven(c.givenBy ?? '')
   }
+  /* Both the reason and the hours save on the one button, because to the admin
+     they are one edit of one credit. Hours first: if they are refused the
+     reason must not land on its own, or Save would half-work and the message
+     would read as being about the part that did. */
   const saveNote = (personId: string, date: string) => {
+    const raw = hDays.trim()
+    const days = raw ? Number(raw) : null
+    if (raw && !Number.isFinite(days)) { setEErr('Type how many days — or leave it blank'); return }
+    const daysProblem = setCellDays(personId, date, days)
+    if (daysProblem) { setEErr(daysProblem); return }
+    const givenProblem = setCellGivenBy(personId, date, hGiven)
+    if (givenProblem) { setEErr(givenProblem); return }
     const problem = setCellNote(personId, date, noteDraft)
     if (problem) { setEErr(problem); return }
     setNoteId(null); setEErr('')
@@ -468,7 +492,10 @@ export function OilTracker({ person, onClose, onGranted }: {
             <span className="amt">{signed(c.amount)}</span>
             <span className="dt">{c.date ? dmy(c.date, lane) : 'carried in'}</span>
             {c.source === 'auto' && !c.manual && <span className="by auto">Auto</span>}
-            {c.source === 'grant' && c.givenBy && <span className="by">{c.givenBy}</span>}
+            {/* Who said so — on a grant since 2 Sep 26, and now on a
+                hand-typed credit too, where it answers the sharper question:
+                the schedule is its own evidence, a typed credit has none. */}
+            {c.givenBy && <span className="by">{c.givenBy}</span>}
           </div>
           {noting ? (
             <div className="l2 noting" onClick={e => e.stopPropagation()}>
@@ -483,14 +510,40 @@ export function OilTracker({ person, onClose, onGranted }: {
                 onChange={e => setNoteDraft(e.target.value)}
                 onKeyDown={e => { if (e.key === 'Enter') saveNote(p.id, c.date); if (e.key === 'Escape') setNoteId(null) }}
               />
+              {/* HOW MANY DAYS this grant is worth. Blank is the ordinary
+                  case and means the code's own worth — a day for FO, half for
+                  HO — so the common grant needs no typing at all. */}
+              <input
+                className="oil-num"
+                data-testid="oil-note-days"
+                inputMode="decimal"
+                maxLength={5}
+                value={hDays}
+                placeholder="days"
+                aria-label="How many days"
+                onChange={e => { setEErr(''); setHDays(e.target.value) }}
+                onKeyDown={e => { if (e.key === 'Enter') saveNote(p.id, c.date); if (e.key === 'Escape') setNoteId(null) }}
+              />
+              <input
+                className="oil-text given"
+                data-testid="oil-note-given"
+                maxLength={MAX_GIVEN_BY}
+                value={hGiven}
+                placeholder="given by (optional)"
+                aria-label="Given by"
+                onChange={e => { setEErr(''); setHGiven(e.target.value) }}
+                onKeyDown={e => { if (e.key === 'Enter') saveNote(p.id, c.date); if (e.key === 'Escape') setNoteId(null) }}
+              />
               <button className="dchip approve" data-testid="oil-note-save" onClick={() => saveNote(p.id, c.date)}>Save</button>
-              {eErr && <span className="note warn">{eErr}</span>}
+              {eErr && <span className="note warn" data-testid="oil-note-err">{eErr}</span>}
             </div>
           ) : (
             <div className="l2">
               {canNote ? (
                 <button className="oil-notebtn" data-testid={`oil-note-${tid(c.id, c.ledgerId)}`} onClick={e => { e.stopPropagation(); startNote(c, p.id) }} title="Say why this credit was given">
                   {c.manual && c.reason !== 'weekend duty' && c.reason !== 'PH duty' ? c.reason : '+ reason'}
+                  {c.hours?.[0] && <span className="oil-hrs"> · {hhmm(c.hours[0][0])}–{hhmm(c.hours[0][1])}</span>}
+                  {c.days != null && <span className="oil-hrs"> · {c.days} days</span>}
                 </button>
               ) : (
                 <span className="rt">{c.reason}</span>

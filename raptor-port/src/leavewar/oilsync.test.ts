@@ -222,13 +222,20 @@ describe('the ownership partition against wires 1+2', () => {
     expect(INPUTS.filter((r: any) => r.lw)).toEqual([])
   })
 
-  it('a leave bid already on the date is never overwritten — it clashes for a human', () => {
+  it('a leave already on the date is never overwritten — the credit lands beside it and clashes for a human', () => {
+    /* Owner, 20 Sep 26: the credit is banked even when it overlaps the leave,
+       and the day carries the clash until someone resolves it. What has NOT
+       changed, and is what this test is really about, is that the leave is
+       never overwritten (B5: the pass never deletes a request). */
     setRole('admin')                               // July sits outside the seed bid window
     setCell('plasma', SAT, 'LL')
     setBidState('plasma', SAT, 'approved')
     publish(5)
     runOilPass()
-    expect(cellOf('plasma', SAT)).toBe('LL')
+    const v = getState().wars[0].views['plasma']?.[SAT]!
+    expect(v.all.some(c => c.code === 'LL')).toBe(true)          // untouched
+    expect(v.all.some(c => c.kind === 'credit')).toBe(true)      // and the credit is banked
+    expect(v.amber).toBe(true)                                   // the day needs a human
     expect(getClashes()).toContainEqual(
       { person: 'plasma', date: SAT, inputCode: 'FO', bidCode: 'LL', kind: 'duty' })
   })

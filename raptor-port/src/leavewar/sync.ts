@@ -26,7 +26,7 @@ import { persistPeopleProjection, commitPeopleEdit } from '../state/people-setti
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { SCHED, dayApproved, dayCurVer, dayCurVerIn, daySnapIn, daySnapOf, amFormatOf } from '../engine/publish'
-import { dayOilWork, inputOilAmt, envMin, uniformOil, oilWorkWhy, type OilWork } from '../engine/oil'
+import { blindDesks, dayOilBlind, dayOilWork, inputOilAmt, envMin, uniformOil, oilWorkWhy, type OilWork } from '../engine/oil'
 import { stashKeys, stashGet, isPreservedWeek } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
@@ -38,11 +38,13 @@ import {
   inSquadron,
   isNonWorkingDay,
   localToday,
+  weekday,
   parseCell,
   warHolding,
   recsAt,
   recContribs,
   requestWin,
+  barsWrite,
   forbiddenPair,
   liveRequestsOn,
   portionOfCode,
@@ -74,7 +76,7 @@ import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect } from '../command'
 import { setPublishGate } from '../state/inputgate-hook'
 import { absencesAt, setAbsenceRows } from './state/merge'
-import { installInputGate, replaceClashingBids, type BidClaim } from './inputgate'
+import { cs, dm, installInputGate } from './inputgate'
 import { projectPeople, qualCatalogue } from './state/raptorRoster'
 import {
   labelToISO, warVisible, absenceSignature, buildAbsenceIndex, inputDates, inputRowFor, isoToInputDate,
@@ -167,7 +169,16 @@ export function installAbsenceDoor(): void {
      inside it, so re-read it before the repaint (Codex AS4-R2-001) */
   setRefusalHook(() => { refreshAbsences(true) })
   installInputGate()
-  setPublishGate(publishReplacesBids)
+  setPublishGate(publishFlagsBids)
+  /* WHICH DAYS CAN EARN OIL AT ALL — the schedule's blind-desk warning asks
+     this before it speaks, and only Leave War can answer for a public holiday
+     (the engine covers Saturday and Sunday from the day's own name). One
+     predicate, the same `isNonWorkingISO` the credit itself is drawn from, so
+     the warning and the OIL can never disagree about which days count. */
+  HOOKS.oilEarningDay = (di: number) => {
+    const iso = labelToISO(DATES[di])
+    return !!iso && isNonWorkingISO(iso)
+  }
 }
 /** Re-read the Inputs into the war now and repaint — what a Raptor notify
  *  does in the app; tests that push INPUTS directly call it. */
@@ -241,11 +252,13 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
        (a different leave on the same time, a medical) — skipped and reported,
        nothing consumed */
     const c: Contrib = { id: 'new', kind: 'absence', code: parseCell(rec.code)!.type, win: requestWin(rec.code) }
-    if (absencesAt(it.personId, it.date).some(o => forbiddenPair(c, o))) { skipped++; why.push(`${it.date} already holds leave or a medical at that time — not approved`); continue }
-    /* a bid left standing when work was later credited (owner Q5: keep both,
-       the time check runs at approval) — §26.3: leave over recorded work */
+    if (absencesAt(it.personId, it.date).some(o => barsWrite(c, o))) { skipped++; why.push(`${it.date} already holds leave or a medical at that time — not approved`); continue }
+    /* a bid left standing when work was later credited. Owner Q5 and §26.3
+       used to SKIP that day at approval; reversed 20 Sep 26 — the leave is
+       granted and the day is flagged instead. */
     const credits = recContribs(recsAt(war.recs, it.personId, it.date)).filter(o => o.kind === 'credit')
-    if (credits.some(o => forbiddenPair(c, o))) { skipped++; why.push(`${it.date} is recorded as worked at that time — not approved`); continue }
+    /* recorded work no longer stops an approval — the leave is granted, the
+       day is flagged, and a human resolves it (owner, 20 Sep 26) */
     picks.push({ ...it, rec, warId: war.period.id })
   }
   if (!picks.length) return { done: 0, skipped, why }
@@ -440,7 +453,7 @@ function doorMoveApproved(items: Array<{ personId: string; date: string; iid: st
     const here = absencesAt(it.personId, to).filter(c => !leaving.has(`${c.id}|${to}`))
     const war = warHolding(rawState().wars, to)!
     const reqs = recContribs(recsAt(war.recs, it.personId, to))
-    if ([...here, ...reqs].some(o => forbiddenPair({ ...contrib, id: 'moving' }, o))) return { reason: 'occupied', at: to }
+    if ([...here, ...reqs].some(o => barsWrite({ ...contrib, id: 'moving' }, o))) return { reason: 'occupied', at: to }
     if (liveRequestsOn(recsAt(war.recs, it.personId, to), portionOf(contrib.win)).length) return { reason: 'occupied', at: to }
   }
   if (check) return null
@@ -510,7 +523,13 @@ function publishLeaveClashes(): void {
   for (const war of getState().wars as any[]) {
     for (const [person, row] of Object.entries(war.views ?? {}) as Array<[string, Record<string, any>]>) {
       for (const [date, v] of Object.entries(row)) {
-        for (const [a, b] of v.conflicts as Array<[Contrib, Contrib]>) {
+        for (const pair of v.conflicts as Array<[Contrib, Contrib]>) {
+          /* the sentence reads "work earns X but the day holds Y", so when one
+             side is a CREDIT it has to be the X — and which side that is
+             depends only on the order the records happen to sit in on the day
+             (state/merge.ts puts the war's own records before the absences).
+             Order the pair here rather than letting the wording flip. */
+          const [a, b] = pair[1].kind === 'credit' && pair[0].kind !== 'credit' ? [pair[1], pair[0]] : pair
           out.push({ person, date, inputCode: notationOf(a.code, a.win), bidCode: notationOf(b.code, b.win), ...(a.kind === 'credit' || b.kind === 'credit' ? { kind: 'duty' as const } : {}) })
         }
       }
@@ -543,7 +562,6 @@ export interface SyncClash {
    replacing only its own half, so one pass running cannot blank the other's
    findings between its runs. */
 let LEAVE_CLASHES: SyncClash[] = []
-let OIL_CLASHES: SyncClash[] = []
 let CLASHES: SyncClash[] = []
 let clashVersion = 0
 const clashListeners = new Set<() => void>()
@@ -560,7 +578,7 @@ export function subscribeClashes(fn: () => void): () => void {
 }
 
 function publishClashes(): void {
-  const next = [...LEAVE_CLASHES, ...OIL_CLASHES]
+  const next = [...LEAVE_CLASHES]
   /* A clash that did not change must not repaint the strip: the passes run on
      every Raptor notify, and the common case is "still the same clashes". */
   if (JSON.stringify(next) === JSON.stringify(CLASHES)) return
@@ -747,6 +765,9 @@ function stashOilWeek(v: string): { days: any[], sc: any } | null {
 export interface DesiredOil {
   code: 'FO' | 'HO'
   why: string
+  /** the published schedule, or a duty-and-commitments input the owner
+   *  accepted — what the credit's giver reads as on screen (owner, 21 Sep 26) */
+  via: 'schedule' | 'input'
   /** the actual work times on the day (not the gap-inclusive envelope) —
    *  what a leave or a medical must not overlap (clash check B4, §26.3) */
   spans: Array<[number, number]>
@@ -766,7 +787,12 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
   const known = new Set(people.map(p => p.id))
   /* person|iso -> that day's work spans; their ENVELOPE faces the threshold */
   const pool = new Map<string, OilWork[]>()
-  const add = (person: string, iso: string, spans: OilWork[]) => {
+  /* which of those days the PUBLISHED SCHEDULE earned, as opposed to a duty
+     input the owner accepted — what the credit's giver reads as on screen
+     (owner, 21 Sep 26). A day backed by both is the schedule's: that is the
+     stronger evidence, and it is what the reader would go and look at. */
+  const fromSchedule = new Set<string>()
+  const add = (person: string, iso: string, spans: OilWork[], via: 'schedule' | 'input' = 'schedule') => {
     /* The same unknown-person guard both leave directions carry: a row
        naming someone the roster does not hold (ground crew, a sentinel)
        must not become a grid row no matrix draws. */
@@ -775,6 +801,7 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
     const arr = pool.get(k) ?? []
     arr.push(...spans)
     pool.set(k, arr)
+    if (via === 'schedule') fromSchedule.add(k)
   }
   /* CLASSIFY the live book FIRST (P2-REREVIEW-05): an unsupported / wrong-week /
      future-version book must be quarantined even if its snapshots still resolve,
@@ -846,14 +873,14 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
       if (!isNonWorkingISO(iso)) continue                  // a day that stopped being PH stops crediting
       /* the reason is the input's own type name (Training, CSE, Duty…) —
          the word the owner acknowledged, which is what the tracker shows */
-      add(row.person, iso, [{ s: win[0], e: win[1], src: String(row.type || 'Duty').trim() as OilWork['src'] }])
+      add(row.person, iso, [{ s: win[0], e: win[1], src: String(row.type || 'Duty').trim() as OilWork['src'] }], 'input')
     }
   }
   const out = new Map<string, DesiredOil>()
   for (const [k, spans] of pool) {
     if (protectedDates.has(k.slice(k.indexOf('|') + 1))) continue   // never desire a protected date (P2-IMPL-01)
     const amt = uniformOil(envMin(spans.map(w => [w.s, w.e] as [number, number])))
-    if (amt) out.set(k, { code: amt === 1 ? 'FO' : 'HO', why: oilWorkWhy(spans), spans: workSpans(spans) })
+    if (amt) out.set(k, { code: amt === 1 ? 'FO' : 'HO', why: oilWorkWhy(spans), spans: workSpans(spans), via: fromSchedule.has(k) ? 'schedule' : 'input' })
   }
   return { desired: out, protectedDates }
 }
@@ -872,27 +899,96 @@ function workSpans(spans: OilWork[]): Array<[number, number]> {
   return out
 }
 
-/* THE PUBLISH DOOR ([ARCH-STACK] step 4 — clash check B5, owner answer A,
-   20 Sep 26). Publishing a weekend or public-holiday day (first publish or an
-   AL) replaces the clashing part of every undecided leave bid the published
-   work overlaps, INSIDE the publish command (lwStore joins it), so undoing
-   the publish brings the bid back. Weekday work never replaces a bid — that
-   stays the schedule's own warning. Reads the RESOLVED issued snapshot, the
-   same evidence the OIL pass credits from; the OIL pass itself never deletes a
-   request (it runs on week navigation too, which is no one's decision). */
-export function publishReplacesBids(di: number): void {
+/* THE PUBLISH DOOR ([ARCH-STACK] step 4).
+ *
+ * PUBLISHING NO LONGER THROWS A BID AWAY — it FLAGS the day and says so
+ * (owner, 20 Sep 26, answering the last of the three questions the
+ * consolidation review left open). It used to replace the clashing part of
+ * every undecided leave bid the published work overlapped, and leave a notice
+ * saying the schedule had taken it. Meanwhile a bid placed AFTER the publish
+ * was kept and the day flagged. The same two facts, opposite outcomes, decided
+ * only by which came first — the exact thing the owner's own rule was meant to
+ * kill:
+ *
+ *   "Two different facts fighting → let both in, and flag the day."
+ *
+ * Put to him with both ways out spelled out; he chose "keep the bid and flag
+ * the day, both ways".
+ *
+ * This SETS ASIDE the SECOND half of clash check B5 — "publishing is the door
+ * that replaces an undecided bid, so undo of the publish brings the bid back".
+ * (Its first half, "a bid made after the publish is refused at the bid door",
+ * was already set aside the same day by `barsWrite`.) With nothing removed
+ * there is nothing for an undo to bring back, which is a simplification rather
+ * than a loss.
+ *
+ * The amber costs no machinery: the OIL credit lands on the day regardless
+ * (`ingestDutyCredit`, the owner's "the credit always lands" ruling), and a
+ * credit overlapping an undecided bid is already a `forbiddenPair`, so the day
+ * flags itself and the warning list already names it. All this door does now
+ * is TELL the admin at the moment of publishing, because the one thing the old
+ * behaviour got right was that he found out immediately.
+ *
+ * Weekend and public holidays only, as before — weekday work never reaches the
+ * war at all. Reads the RESOLVED issued snapshot, the same evidence the OIL
+ * pass credits from. */
+const WEEKDAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
+/* A WORKED DAY THAT EARNS NOBODY ANYTHING SAYS SO (owner, 20 Sep 26 — "Yes i
+   want a warning … At the moment you publish").
+ *
+ * His own case: a man on the SDO desk for a Sunday, the day published, no OIL.
+ * The desk had no start and no end, so it measured nothing and minted nothing.
+ * Correct, and silent — a man's leave balance short with no screen admitting
+ * it. This is the backstop for anyone who published past the day's own warning
+ * strip, which is where the cheap fix is (a blank desk costs nothing to fill
+ * before signing; after publishing it costs an amendment).
+ *
+ * Weekends and public holidays only, and only from the RESOLVED ISSUED
+ * snapshot — the same evidence the credit itself is drawn from, so the warning
+ * can never disagree with the OIL. */
+function oilBlindLine(iso: string, day: any, spans: Record<string, OilWork[]>): string | null {
+  const blind = dayOilBlind(day)
+  if (!blind.length) return null
+  const earners = Object.values(spans).filter(sp => workSpans(sp).length).length
+  const when = `${WEEKDAY_NAMES[weekday(iso)]} ${dm(iso)}`
+  const { list, verb, desk } = blindDesks(blind)
+  /* "the SDO desk has", but "the ground programme has" — the wrapper only fits
+     a duty desk's bare role name (Fable, 21 Sep 26). */
+  const desks = desk ? `the ${list} desk${blind.length > 1 ? 's' : ''} ${verb}` : `${list} ${verb}`
+  return earners
+    ? `${when}: ${desks} no start and end times, so nobody on ${blind.length > 1 ? 'them' : 'it'} earns OIL`
+    : `${when} earned nobody any OIL — ${desks} no start and end times`
+}
+
+export function publishFlagsBids(di: number): void {
   const iso = labelToISO(DATES[di])
   if (!iso || !warHolding(rawState().wars, iso) || !isNonWorkingISO(iso) || !dayApproved(di)) return
   const snap = daySnapOf(di, dayCurVer(di))
   if (!snap || !snap.d) return
   const spans = dayOilWork(snap.d, { expandAll: win => availableFor(iso, win) })
-  const claims: BidClaim[] = []
+  /* ONE MESSAGE, BOTH FACTS (Astra, 21 Sep 26). The strip at the foot of the
+     screen is a single element whose text is REPLACED, so speaking twice in the
+     same breath showed only the second — and the one that got swallowed was the
+     silent-OIL warning, the whole point of the ruling. Both lines are collected
+     and delivered together. */
+  const lines: string[] = []
+  const blindLine = oilBlindLine(iso, snap.d, spans)
+  if (blindLine) lines.push(blindLine)
+  const war = warHolding(rawState().wars, iso)
+  if (!war) { if (lines.length) HOOKS.toast(lines.join(' · '), ''); return }
+  const said: string[] = []
   for (const [person, sp] of Object.entries(spans)) {
-    for (const [s, e] of workSpans(sp)) claims.push({ person, date: iso, win: [s, e], byType: 'the published schedule' })
+    const wins = workSpans(sp)
+    if (!wins.length) continue
+    for (const r of recsAt(war.recs, person, iso)) {
+      if (r.kind !== 'request' || r.state === 'refused') continue
+      if (!wins.some(w => overlaps(w, requestWin(r.code)))) continue
+      said.push(`${cs(person)}'s ${r.code.replace(/\*/g, '')} bid on ${dm(iso)}`)
+    }
   }
-  if (!claims.length) return
-  const said = replaceClashingBids(claims, '', () => false)
-  if (said.length) HOOKS.toast(`Publishing replaces ${said.join(', ')} on the Leave War`, '')
+  if (said.length) lines.push(`${said.join(', ')} now sits on published work — the day is flagged, the bid is still live`)
+  if (lines.length) HOOKS.toast(lines.join(' · '), '')
 }
 
 /* [GLOBAL-UNDO] §6.6 — the Unpublish button's warn. Unpublishing a loaded-week day
@@ -938,17 +1034,12 @@ export function runOilPass(): void {
        undecided bid on that day is the clash — never placed (clash check B4;
        a credit beside a non-overlapping absence lands, so a worked Saturday
        morning + afternoon leave keeps its OIL). */
-    const clashes: SyncClash[] = []
-    for (const [key, { code, why, spans }] of desired) {
+    for (const [key, { code, why, spans, via }] of desired) {
       const at = key.indexOf('|')
       const person = key.slice(0, at)
       const date = key.slice(at + 1)
       if (!warHolding(rawState().wars, date)) continue
-      const result = ingestDutyCredit(person, date, code, why, spans)
-      if (result === 'clash') {
-        const shown = (getState().wars as any[]).find(w => date >= w.period.start && date <= w.period.end)?.grid?.[person]?.[date]
-        clashes.push({ person, date, inputCode: code, bidCode: shown ?? '', kind: 'duty' })
-      }
+      ingestDutyCredit(person, date, code, why, spans, via)
     }
 
     /* Reverse: a GENERATED credit no published work still earns goes. Only
@@ -964,8 +1055,16 @@ export function runOilPass(): void {
       }
     }
 
-    OIL_CLASHES = clashes
-    publishClashes()
+    /* The strip is DERIVED from the day views, and only from them (20 Sep 26).
+       Since the owner's ruling the credit always lands, so a credit that
+       overlaps an absence IS a conflict on the day and `publishLeaveClashes`
+       finds it — with the record it actually clashes with. The second list
+       this pass used to keep alongside it read the day's BOX instead, which
+       after the credit landed said the day held … the credit, giving the strip
+       "earns FO but 18 Jul holds FO". One list, derived, no duplicate.
+       It must run AFTER the credits are written, or it re-derives the world as
+       it was before this pass. */
+    publishLeaveClashes()
   } finally {
     SYNCING = false
   }

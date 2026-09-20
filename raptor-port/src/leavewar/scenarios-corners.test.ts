@@ -54,6 +54,8 @@ const grid = (p: string, d: string) => getState().grid[p]?.[d]
 const warOf = (d: string) => getState().wars.find(w => w.period.start <= d && d <= w.period.end)!
 const gridIn = (p: string, d: string) => warOf(d).grid[p]?.[d]
 const recsIn = (p: string, d: string) => (rawState().wars.find(w => w.period.start <= d && d <= w.period.end)!.recs[p]?.[d] ?? [])
+/* the day as the SCREEN reads it — the merged view, not the stored records */
+const view = (p: string, d: string) => getState().wars.find(w => w.period.start <= d && d <= w.period.end)!.views[p]?.[d]
 const lwRows = (p: string) => INPUTS.filter((r: any) => r.person === p && r.lw)
 const sign = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }
 
@@ -120,14 +122,27 @@ describe('a medical that swallows a whole leave', () => {
 })
 
 describe('publishing an amendment (the AL path)', () => {
-  it('a bid placed AFTER the publish is refused at the bid door (B5)', () => {
+  it('a bid placed AFTER the publish is now ALLOWED and flags the day (owner, 20 Sep 26)', () => {
+    /* Clash-check B5 said this was "refused at the bid door". The owner was
+       shown that rule and the consequence — the same Saturday's leave going
+       through on the Inputs page form but refused on the grid — and overruled
+       it: flag it everywhere. B5's OTHER half, that publishing is the door
+       which replaces an undecided bid, held for a few hours longer and was
+       then overruled too (see the AL case below): publishing now flags rather
+       than removes, so the two directions finally match. */
     setRole('admin')
     sign(5); commitSetDayApproved(5, true)
     runOilPass()
-    expect(setCell('plasma', '2026-07-18', 'LL')).toBe(false)     // plasma is recorded as working it
+    expect(setCell('plasma', '2026-07-18', 'LL')).toBe(true)
+    expect(view('plasma', '2026-07-18')!.amber).toBe(true)
   })
 
-  it('an AL that puts someone NEW on that Saturday replaces their bid too', () => {
+  it('an AL that puts someone NEW on that Saturday FLAGS their bid, and keeps it', () => {
+    /* The amendment path goes through the same door as the first publish, so
+       it moved with the owner's 20 Sep 26 ruling: the bid stays live, the day
+       flags, and no "your bid was replaced" notice is left — because nothing
+       was replaced. This test previously asserted the opposite; the
+       expectations WERE the rule, so they move with it. */
     setRole('admin')
     expect(setCell('rocky', '2026-07-18', 'LL')).toBe(true)
     sign(5); commitSetDayApproved(5, true)
@@ -136,8 +151,10 @@ describe('publishing an amendment (the AL path)', () => {
     ;(DAYS[5] as any).dutywaves[0].rows.push({ role: 'SDO 2', id: 'rocky', str: '0800', end: '1800' })
     writeText('dn:5.0', 'an amendment')
     sign(5); commitPublishALDay(5)
-    expect(recsIn('rocky', '2026-07-18').some(r => r.kind === 'request')).toBe(false)
-    expect(recsIn('rocky', '2026-07-18').some(r => r.kind === 'notice')).toBe(true)
+    runOilPass()
+    expect(recsIn('rocky', '2026-07-18').filter(r => r.kind === 'request')).toHaveLength(1)
+    expect(recsIn('rocky', '2026-07-18').some(r => r.kind === 'notice')).toBe(false)
+    expect(view('rocky', '2026-07-18')!.amber).toBe(true)
   })
 })
 
@@ -156,18 +173,27 @@ describe('"OK, seen"', () => {
 })
 
 describe('the OIL pass is idempotent around absences', () => {
-  it('removing the leave lets the credit appear on the next pass; running twice changes nothing', () => {
+  it('the credit is banked beside the leave, and removing the leave just clears the flag', () => {
+    /* Owner, 20 Sep 26: the credit lands either way. So what removing the
+       leave changes is not whether there IS a credit, but whether the day
+       still needs a human. The pass stays a fixed point on both sides of it. */
     const sat = '2026-07-18'
     setRole('admin')
     file('plasma', 'LL', 'Jul 18')
     sign(5); commitSetDayApproved(5, true)
     runOilPass()
-    expect(recsIn('plasma', sat).some(r => r.kind === 'credit')).toBe(false)
+    expect(recsIn('plasma', sat).some(r => r.kind === 'credit')).toBe(true)
+    expect(view('plasma', sat)!.amber).toBe(true)
+    const withLeave = JSON.stringify(recsIn('plasma', sat))
+    runOilPass()
+    expect(JSON.stringify(recsIn('plasma', sat))).toBe(withLeave)   // a fixed point
+
     const row = INPUTS.find((r: any) => r.person === 'plasma' && r.type === 'LL')!
     writeInputs(() => { INPUTS.splice(INPUTS.indexOf(row), 1) })
     runOilPass()
     const once = JSON.stringify(recsIn('plasma', sat))
     expect(recsIn('plasma', sat).some(r => r.kind === 'credit')).toBe(true)
+    expect(view('plasma', sat)!.amber).toBe(false)                  // resolved
     runOilPass()
     expect(JSON.stringify(recsIn('plasma', sat))).toBe(once)
   })

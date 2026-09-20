@@ -660,6 +660,114 @@ A's weekday case, pre-posting-in leave, medical corners, the OIL pass vs absence
 gestures, undo depth, storage faults, phone touch, figures on multi-record days). Rules of record:
 `specs/2026-09-20-arch-stack-4-clash-check.md`. Do it on the step-4 branch (or on main once it merges).
 
+### [S4-BUGHUNT] IN FLIGHT on `claude/s4-bughunt` — 34 commits, PR #422, WAITING ON "MERGE LIVE" (20 Sep 26)
+**Read `HANDOFF-S4-BUGHUNT.md`, then `raptor-port/docs/superpowers/specs/2026-09-20-CURRENT-STATE.md`
+and nothing else first.** That spec is the single destination: what is built, what is parked, and the
+RULES SET ASIDE today that must not be re-applied — B4's "overlap means no credit", BOTH halves of
+B5 (the bid-door refusal AND "publishing replaces an undecided bid"), §26.3's refusal of leave over
+recorded work, Q5's skip, H2 used to decide whether a medical and leave clash at all, and the August
+rules about posted-out and pre-joining rows. Several older documents still read as live and are not.
+- **Twenty fixes built and green.** The five items that were left to build are DONE, plus a sixth
+  the owner asked for in the same breath (a Post in date — the app had no joining date at all
+  before), plus two more from questions the hand test raised and he answered: an admin can now
+  RECORD that someone worked (FO/HO with reason, who said so and hours, **on any day** — his
+  ruling), and can place leave or OIL on a day outside someone's posting dates. **Three parked**
+  with their reasons, **one closed** as not a defect.
+- **The owner's three open questions are ANSWERED** and recorded in CURRENT-STATE §6. One of them
+  changed how leave is charged — it does not: he ruled the app was right and the written rule had
+  the wrong word.
+- **ALL SEVEN GATES RUN** — unit 327/5181, build, tfin 728/0, rulecheck, e2e 447/0, perf 4/0,
+  Tracker smoke 425/0 — **and the hand-testing pass in the running app is DONE.** It found one real
+  defect (the new hours box was unusable on a phone), now fixed. One test pair is not certified: see
+  the handoff's "the one thing NOT certified".
+- **`npm run perf` was dead on the Windows desktop** and silently so — it hard-coded the container's
+  Chromium path. Fixed to the repo's own fallback. If another probe "fails instantly", suspect this.
+- Came out of it and now standing: the behaviour register, `npm run rulecheck`, the rules-first red
+  team as a third review, and the CLAUDE.md standing order to sweep the rules and hand-test against
+  them on every build.
+- **TWO NEW OWNER RULINGS, NOT YET BUILT** — `specs/2026-09-20-NEXT-TASK-oil-award-and-oil-warning.md`
+  is the whole task, written for a fresh session: (1) an OIL AWARD stops flagging a leave day (he did
+  NOT rule on `duty` — ask), and (2) warn, on the day AND at publish, when a worked weekend earns
+  nobody anything because the duty desk has no times. The second came from him testing DASH on SDO
+  for Sun 16 Aug and getting no credit.
+- **Both things that were to be put to the owner are ANSWERED AND BUILT.** The ruling to carry
+  forward: **OIL may be credited by hand on ANY day** — the weekend/public-holiday restriction
+  belongs to the AUTOMATIC pass, which reads the published schedule, not to a credit the squadron
+  types itself.
+
+### [OIL-AWARD-ADD] Should an award and a worked day ADD UP? — ONE QUESTION FOR THE OWNER (21 Sep 26)
+Fable found that a 3-day award on a Saturday fell to 1 day the moment that Saturday was published
+with the man on a desk: the takeover replaced the award wholesale. That is now fixed — the award's
+days, reason and giver ride onto the taken-over record, so the balance never falls.
+
+**What was NOT decided, because it is his:** whether the two should ADD. Today the day is worth the
+LARGER of the two (the 3-day award), which is what he had before the defect. The argument for
+adding (3 + 1 = 4) is his own 20 Sep reasoning — an award is days he is OWED, the worked Saturday is
+a day he WORKED, and they are different facts. The argument against is that a day is a day and 4
+days of OIL from one Saturday will look like a mistake on the tracker.
+**Ask him; do not assume.** One line of code either way.
+
+### [S4-HUNT-REST] The bug hunt's untouched ground — about three quarters of it (owner, 21 Sep 26)
+The branch turned into a long detour through the rules and the five items, so most of the hunt Fable
+and Codex planned (eight batches) has never been run. The owner listed what is still untouched, and
+this is his order. **Realistically two or three sessions.**
+1. **The Inputs page calendar, by DRAG.** It has 43 tests of its own behaviour, but the clash rules
+   have never been tested through the drag route — dragging leave onto a pending bid, onto other
+   leave at overlapping times, onto a day someone is recorded working. A door people use daily.
+2. **The medical dialog's cascade** — a medical laid over existing leave and over other medicals:
+   how many pieces it mints, whether ONE undo puts it all back, whether cancelling leaves a
+   half-edit behind.
+3. **Bulk gestures by real drag** — select a block, then fill / approve / delete / move it, and
+   whether the "N written, M skipped" message tells the truth.
+4. **Switching wars with a sheet open**, and undo after switching.
+5. **Storage faults** — a save that fails halfway: does the app say so, and does a retry land the
+   WHOLE thing?
+6. **Phone, by finger** — drag-select and the two-step move at phone width, and a day carrying
+   eight records.
+7. **Figures on days with several records** — four records on one day, and whether the manning count
+   removes the man ONCE rather than twice.
+
+### [BACKLOG-ORDER] The backlog proper, in the owner's order (21 Sep 26)
+After the hunt. Recorded here because he gave the ORDER, which the individual items do not carry:
+1. **[PUB-UNAVAIL]** — a published day's "not available" list changes silently. File a new absence
+   over an already-published day and that day's list changes with no amendment, no re-sign and no
+   line in the history. An audit hole on published paperwork; **the next one he would fix**.
+2. **[LW-LOCKMARK] / the day-vs-record lock** — the grid locks by DAY, not by RECORD. The free-half
+   fix works around this rather than fixing it. Worth doing once, properly.
+3. **[LW-WEEKDAY-WORK] — the Leave War cannot see ordinary weekday work at all.** Work only reaches
+   that grid as an OIL credit, and credits only happen on weekends and holidays, so a man flying
+   every Tuesday has nothing on his row to show it. **Bigger than everything else on this page put
+   together, and it needs a conversation with the owner before any of it is built.**
+4. **[DB-STEP]**, and then the **[AMEND]** work queued behind it.
+
+### [LW-UI-WINDOW] The Leave War input window — Ack, four buttons, every stage (owner, 20–21 Sep 26)
+Four asks, given in one sitting while the OIL rulings were being built. A mock-up of all four windows
+was shown to the owner and approved before he slept (the only change he asked for: "Duty input", not
+"Duty claim", as the giver of OIL credited from an accepted input).
+1. **"Pending" becomes "Ack"** — EVERYWHERE the word shows: the decision button, the legend, the
+   corner-mark tooltips, the warning list. The button already WRITES `acknowledged`; only the label
+   was "Pending" (owner, 27 Aug 26) — so this is a rename, and it **supersedes that 27 Aug naming**
+   (`newest-instruction-wins`). Fix the stale text in the same change.
+2. **One click on an input gives all four decisions** — Ack, Approve, Refuse, and **Move** with its
+   own date box, so a single click can move an input exactly as a drag-select + Move does today.
+3. **The same window in EVERY stage** — Open for bidding, Bidding closed, Published. Same size: the
+   extra controls are squeezed in, the move date sits beside the decision buttons.
+4. **Published behaves as it does today, with the new window's controls.** An input that is approved
+   AND published: clicking it lets member and admin write REMARKS, nothing else — to change it, an
+   admin goes back to Open for bidding or Bidding closed. An input NOT yet approved on a published
+   day stays editable exactly as it is now, with the new buttons (LL / Clear / +OIL / PO / PI and the
+   rest).
+**Context:** the approved mock-up is in the 21 Sep session; re-draw from this item if it is lost.
+
+### [LW-OIL-DETAIL] What a credited OIL day says when you click it (owner, 20–21 Sep 26)
+Clicking an FO or HO shows, at the bottom of the day window: the **reason**, **given by**, and **days
+granted**. Both kinds, one shape:
+- **An award** (hand-typed) — all three editable, as the OIL tracker already allows.
+- **OIL the app credited itself** — the same three lines, filled in: the reason in the words the
+  engine already computes (`Duty`, `FLT`, `SIM`, `FLT + SIM`), the giver **"Weekend/PH"**, or
+  **"Duty input"** where the credit came from an accepted duty-and-commitments input rather than a
+  weekend. Automatic credits must also appear **in the OIL tracker like every other credit**.
+
 ### [LW-LOCKMARK] Retire the war's `source:'raptor'` lock marker — OPEN (follow-up to step 4, 20 Sep 26)
 Codex's round-2 inspection (AS4-R2-004, low): the merged view still synthesises `source:'raptor'` ("locked on
 the war") and Matrix reads it through `raptorOwns`, and the published remarks sheet finds its Input via

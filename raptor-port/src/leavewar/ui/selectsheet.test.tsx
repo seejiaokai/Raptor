@@ -90,9 +90,12 @@ describe('the selection sheet', () => {
     expect(getState().states.ramp['2026-01-07'].state).toBe('approved')
   })
 
-  it('the Pending decision uses the app word, not "Acknowledge"', () => {
+  it('the acknowledge decision uses the app word — "Ack"', () => {
+    /* One word for one state (owner, 21 Sep 26, renaming his own 27 Aug
+       "Pending"): the bulk button, the single-cell window and the legend all
+       say Ack. The stored token is still 'acknowledged'. */
     mount(rampTwo, { canDecide: true })
-    expect(screen.getByTestId('sel-pending').textContent).toBe('Pending')
+    expect(screen.getByTestId('sel-pending').textContent).toBe('Ack')
   })
 
   it('no Medical row for anyone, and no Decide row for a member', () => {

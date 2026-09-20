@@ -26,7 +26,35 @@ export interface MergedWar extends LeaveWar {
   grid: Grid
   states: States
   views: Views
+  spans: RecordSpans
 }
+
+/** personId → the FIRST and LAST month ('yyyy-mm') this war shows anything on
+ *  for them. What `rowInWindow` stretches a person's row to cover (owner, 20
+ *  Sep 26 — records may be dated outside someone's official time in the
+ *  squadron, "because those dates are official dates. But they can be for e.g
+ *  still taking leave after or before they post in or out"). A man posted out
+ *  in January with clearing leave in September is charged for it, so he has to
+ *  be visible in September; before this his row simply vanished once the
+ *  months moved past his posting-out date, and the money and the screen
+ *  disagreed.
+ *
+ *  Three things make it safe, all of them insisted on by both reviewers:
+ *  - It is a DISPLAY span and NOTHING else. The person's own joining and
+ *    posting-out dates are untouched, so `inSquadron` still answers false out
+ *    there and every manning count still reads zero for him. Widening the
+ *    dates instead would put a posted-out man back into the counts — a worse
+ *    bug than the one being fixed.
+ *  - It is computed ONCE per merge, in the loop that is already walking every
+ *    person's days, and cached on the war exactly as the grid is. Nothing
+ *    recomputes it per repaint.
+ *  - MONTH granularity, like `rowInWindow` itself, so scrolling inside a month
+ *    can never reshuffle the rows.
+ *
+ *  A day whose only content is the hidden tail of a record running past
+ *  midnight does NOT count: that tail is never shown and never charged on the
+ *  second date, so there is nothing there to be visible for. */
+export type RecordSpans = ReadonlyMap<string, { first: string; last: string }>
 /** personId → date → the absences on it (derived from the Inputs). */
 export type AbsenceRows = ReadonlyMap<string, ReadonlyMap<string, readonly Contrib[]>>
 
@@ -120,13 +148,26 @@ export function mergeWar(war: LeaveWar): MergedWar {
     for (const d of rows.keys()) if (d >= war.period.start && d <= war.period.end) { people.add(pid); break }
   }
   const grid: Grid = {}, states: States = {}, views: Views = {}
+  const spans = new Map<string, { first: string; last: string }>()
   for (const pid of people) {
     const row = mergeRow(war, pid, recs[pid], ABS.get(pid))
     if (Object.keys(row.grid).length) grid[pid] = row.grid
     if (Object.keys(row.states).length) states[pid] = row.states
     if (Object.keys(row.views).length) views[pid] = row.views
+    /* `row.views` is keyed by date and already only holds days with
+       contributions, so this is a walk of what the war shows — not a second
+       scan of the Inputs. `all.length` is the spill guard: a date reached ONLY
+       by a record running past midnight produces a view with nothing shown. */
+    let first = '', last = ''
+    for (const d of Object.keys(row.views)) {
+      if (!row.views[d]!.all.length) continue
+      const m = d.slice(0, 7)
+      if (!first || m < first) first = m
+      if (!last || m > last) last = m
+    }
+    if (first) spans.set(pid, { first, last })
   }
-  const merged: MergedWar = { ...war, grid, states, views }
+  const merged: MergedWar = { ...war, grid, states, views, spans }
   WARS.set(war, { ver: ABS_VER, merged })
   return merged
 }

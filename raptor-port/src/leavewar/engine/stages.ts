@@ -145,18 +145,31 @@ export function canEditRow(role: Role, viewer: string | null, personId: string):
   return role === 'admin' || viewer === null || personId === viewer
 }
 
-/** Decisions are made once bidding has closed and the picture has frozen —
- *  not while bids are still arriving underneath them — and only by an
- *  admin. A member watching the same screen sees the outcome, not the
- *  buttons.
+/** WHO MAY DECIDE A BID: an admin, at any stage (owner, 21 Sep 26 — "enable
+ *  it in all Stage on leave war"). A member watching the same screen sees the
+ *  outcome, not the buttons.
  *
- *  Published counts too (owner, 27 Aug 26 — "if leave war is published, the
- *  admin can still have these functions"): publishing freezes the picture for
- *  the squadron, but the admin still runs it, so a late change tapped in after
- *  publication can be approved/refused/moved exactly as at closed. The gate is
- *  "bidding is no longer open", not "the stage is closed". */
+ *  IT USED TO REQUIRE BIDDING TO BE CLOSED, on the reasoning that a decision
+ *  should not be made while bids are still arriving underneath it. The owner
+ *  has now asked for the four answers — Ack, Approve, Refuse, Move — on the
+ *  same window in every stage, and that ruling is the later one. The old
+ *  reasoning was never about permission anyway: nothing breaks when an admin
+ *  answers early, and an admin who wanted to could already close the stage,
+ *  decide, and reopen it.
+ *
+ *  Published was already included (owner, 27 Aug 26 — "if leave war is
+ *  published, the admin can still have these functions"): publishing freezes
+ *  the picture for the squadron, not for the person running it.
+ *
+ *  `stage` is kept in the signature: every caller passes it, and the day this
+ *  becomes stage-dependent again it should not need a new argument threaded
+ *  through them all. */
 export function canDecide(stage: Stage, role: Role): boolean {
-  return role === 'admin' && biddingClosed(stage)
+  // DRAFT is the one stage that still says no, and it is not an exception to
+  // his ruling: he named the three stages the war actually runs in ("Opening
+  // for bidding, bidding closed and published"). A draft is a war nobody has
+  // been shown yet — there are no bids in it to answer.
+  return role === 'admin' && stage !== 'draft'
 }
 
 /** "Bidding is no longer open" — the squadron can no longer freely place and

@@ -11,7 +11,7 @@
 // shift-window rule (AM/PM halves, midpoint, night clause) is deleted.
 
 import { afterEach, describe, expect, it } from 'vitest'
-import { dayOilCredits, dayOilSpans, dayOilWork, envMin, uniformOil, inputOilAmt, oilWorkWhy } from './oil'
+import { blindDesks, dayOilBlind, dayOilCredits, dayOilSpans, dayOilWork, envMin, uniformOil, inputOilAmt, oilWorkWhy } from './oil'
 import { VCONF } from './rules'
 import { PEOPLE } from './people'
 
@@ -248,3 +248,58 @@ describe('dayOilCredits — who earns what from one day blob', () => {
     expect(dayOilSpans(d)).toEqual({ plasma: [[480, 720], [840, 1020]] })
   })
 })
+
+// THE SILENT FAILURE THIS CLOSES (owner, 20 Sep 26). He put a man on the SDO
+// desk for a Sunday, published it, and no OIL appeared. The desk had no start
+// and no end, so it measured nothing and minted nothing — correct, and
+// completely silent. `dayOilBlind` is what lets a screen say so.
+describe('dayOilBlind — a desk with a man on it and no times', () => {
+  it('names the desk that earns him nothing', () => {
+    expect(dayOilBlind(day([], [{ role: 'SDO', id: 'plasma', str: '', end: '' }]))).toEqual(['SDO'])
+  })
+
+  it('says nothing when the desk is properly timed', () => {
+    expect(dayOilBlind(day([], [duty('plasma', '0800', '1800')]))).toEqual([])
+  })
+
+  it('says nothing about an EMPTY desk — nobody is owed anything for it', () => {
+    expect(dayOilBlind(day([], [{ role: 'SDO', id: '', str: '', end: '' }]))).toEqual([])
+  })
+
+  it('names each blind desk once, in the order the day lists them', () => {
+    const d = day([], [
+      { role: 'SDO', id: 'plasma', str: '', end: '' },
+      { role: 'SXO', id: 'dj', str: '', end: '' },
+      { role: 'SDO', id: 'casper', str: '', end: '' },
+      duty('bruise', '0800', '1800'),
+    ])
+    expect(dayOilBlind(d)).toEqual(['SDO', 'SXO'])
+  })
+
+  it('ignores a cancelled desk — a duty that did not stand owes nobody', () => {
+    expect(dayOilBlind(day([], [{ role: 'SDO', id: 'plasma', str: '', end: '', cx: true }]))).toEqual([])
+  })
+
+  it('a zero-length desk counts as blind: it measures nothing either', () => {
+    expect(dayOilBlind(day([], [{ role: 'SDO', id: 'plasma', str: '0800', end: '0800' }]))).toEqual(['SDO'])
+  })
+
+  it('catches the ground and common programmes too, by their own names', () => {
+    /* The names come back BARE — lower case, with their own article where the
+       thing has one — because the caller builds the sentence. The publish
+       message wraps a DESK name in "the … desk", and while these carried a
+       capital "The" it read "the The ground programme desk" (Fable, 21 Sep 26). */
+    const g = day([], [], { ground: [{ who: 'plasma', str: '', end: '' }] })
+    expect(dayOilBlind(g)).toEqual(['the ground programme'])
+    const a = day([], [], { allhands: [{ who: ['plasma'], str: '', end: '' }] })
+    expect(dayOilBlind(a)).toEqual(['the common programme'])
+  })
+
+  it('wraps a DESK name in "the … desk" and leaves a programme name alone', () => {
+    expect(blindDesks(['SDO'])).toEqual({ list: 'SDO', verb: 'has', desk: true })
+    expect(blindDesks(['SDO', 'SXO'])).toEqual({ list: 'SDO and SXO', verb: 'have', desk: true })
+    expect(blindDesks(['the ground programme'])).toMatchObject({ desk: false })
+    expect(blindDesks(['SDO', 'the ground programme'])).toMatchObject({ desk: false })
+  })
+})
+

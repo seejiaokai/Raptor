@@ -47,6 +47,8 @@ import { chargedDays, viewsOf } from './charge'
 import { codeOf } from './codes'
 import type { FigureCtx } from './counters'
 import { addDays, addMonths, isWeekend } from './period'
+import type { Win } from './dayview'
+import { creditGiver } from './warrecs'
 
 export type OilExpiryUnit = 'days' | 'months'
 
@@ -113,7 +115,8 @@ export interface OilCredit {
   source: OilSource
   /** Who recorded a grant (the admin's callsign). */
   approvedBy?: string
-  /** Who GAVE a grant, when the admin named someone (owner, 2 Sep 26). */
+  /** Who GAVE it, when the admin named someone: a grant's approver (owner,
+   *  2 Sep 26) or a hand-typed credit's "on whose say-so" (20 Sep 26). */
   givenBy?: string
   /** An `auto` credit an admin typed by hand (no Raptor-owned record behind
    *  it), so its reason is theirs to write (`setCellNote`). */
@@ -128,6 +131,13 @@ export interface OilCredit {
   expired: number
   /** For a grant: the ledger entry behind it (the thing an admin edits). */
   ledgerId?: string
+  /** How many days a GRANT is worth, when not the code's own worth. */
+  days?: number
+  /** The work hours an AUTOMATIC credit was earned over, read off the
+   *  published schedule (clash check B8). Minutes from midnight.
+   *  Readonly because it is the contribution's own array, handed straight
+   *  through rather than copied — nothing downstream may write to it. */
+  hours?: readonly Win[]
 }
 
 export type OilDebitSource = 'taken' | 'correction' | 'opening'
@@ -206,7 +216,14 @@ export function oilLedgerFor(ctx: FigureCtx, personId: string, policy: OilPolicy
       const credit = v.all.find(c => c.kind === 'credit')
       if (credit && v.earnsOil > 0) {
         const reason = credit.note ?? (isWeekend(date) ? 'weekend duty' : 'PH duty')
-        credits.push({ id: `auto:${wi}:${date}`, date, amount: v.earnsOil, reason, source: 'auto', ...(credit.auto ? {} : { manual: true }), expires: expiryOf(date, policy), used: [], left: v.earnsOil, expired: 0 })
+        /* WHO GAVE IT, on an automatic credit too (owner, 21 Sep 26). It used
+           to be blank for anything the app earned itself, so the tracker's
+           own rows disagreed about whether that column meant anything. An
+           earned credit's giver is the evidence behind it — the published
+           weekend or holiday, or the duty input that was accepted. */
+        const giver = creditGiver({ oil: credit.auto ? 'auto' : 'manual', givenBy: credit.givenBy, via: credit.via })
+        const hours = credit.wins ?? (credit.win[0] === 0 && credit.win[1] === 1439 ? undefined : [credit.win])
+        credits.push({ id: `auto:${wi}:${date}`, date, amount: v.earnsOil, reason, source: 'auto', ...(credit.auto ? {} : { manual: true }), ...(hours ? { hours } : {}), ...(giver ? { givenBy: giver } : {}), ...(credit.days != null ? { days: credit.days } : {}), expires: expiryOf(date, policy), used: [], left: v.earnsOil, expired: 0 })
       }
       for (const t of charged.get(date) ?? []) {
         if (t.counter !== 'oil') continue

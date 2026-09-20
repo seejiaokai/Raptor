@@ -15,11 +15,12 @@ const D = '2026-02-11'
 const cell = () => screen.getByTestId(`cell-${P}-${D}`)
 
 describe('the corner mark', () => {
-  it('morning LL + afternoon OIL: *LL shows, with a grey +1', () => {
+  it('morning LL + afternoon OIL: the box reads <LL, with a grey +1', () => {
     fileAbsence(P, '*LL', D, D, { lw: true })
     fileAbsence(P, 'OIL*', D, D, { lw: true })
     render(<Matrix />)
-    expect(cell().textContent).toContain('*LL')
+    // `<LL` on screen, `*LL` in the record — one fold, `displayCell`
+    expect(cell().textContent).toContain('<LL')
     const mk = screen.getByTestId(`mark-${P}-${D}`)
     expect(mk.textContent).toBe('+1')
     expect(mk.className).toContain('more')
@@ -50,8 +51,8 @@ describe('the tap list', () => {
     const list = screen.getByTestId('daylist')
     const lines = within(list).getAllByRole('listitem')
     expect(lines).toHaveLength(2)
-    expect(lines[0]!.textContent).toContain('*LL — local leave, morning · approved')
-    expect(lines[1]!.textContent).toContain('OIL* ')
+    expect(lines[0]!.textContent).toContain('<LL — local leave, morning · approved')
+    expect(lines[1]!.textContent).toContain('OIL> ')
   })
 
   it('an admin can send one of two approved leaves back to a bid from its own line', () => {
@@ -65,6 +66,26 @@ describe('the tap list', () => {
     expect(INPUTS.some((r: any) => r.iid === am.iid)).toBe(false)
     const list = rawState().wars[0]!.recs[P]![D]!
     expect(list.find(r => r.kind === 'request')).toMatchObject({ code: '*LL', state: 'pending' })
+  })
+
+  it('an APPROVED leave on a PUBLISHED war offers the NOTE and nothing else', () => {
+    /* Owner, 21 Sep 26: "if the input is approved and published … the member
+       and admin can input the remarks there. In order to edit it again, admin
+       has to go back to open for bidding or bidding closed." The single-record
+       window always obeyed that; THIS list did not, because deciding means
+       closed-OR-published — so a day holding two records let an admin send a
+       published, approved leave back to a bid in one click (Astra, 21 Sep 26). */
+    const am = fileAbsence(P, '*LL', D, D, { lw: true })
+    fileAbsence(P, 'OIL*', D, D, { lw: true })
+    setRole('admin')
+    act(() => { advanceStage(); advanceStage() })     // closed → published
+    render(<Matrix />)
+    fireEvent.click(cell())
+    expect(screen.queryByTestId(`dl-unapprove-${am.iid}`)).toBeNull()
+    expect(screen.queryByTestId(`dl-refuse-${am.iid}`)).toBeNull()
+    expect(screen.queryByTestId(`dl-remove-${am.iid}`)).toBeNull()
+    expect(screen.queryByTestId(`dl-move-${am.iid}`)).toBeNull()
+    expect(screen.getByTestId(`dl-note-${am.iid}`)).toBeTruthy()
   })
 
   it('leave filed on the Inputs page says so and offers no war action', () => {

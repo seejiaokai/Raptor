@@ -32,9 +32,11 @@ describe('count rows', () => {
 
   it('shows the available figure for a day', () => {
     render(<Matrix />)
-    // Three IPs seeded (TATA, MILES, RESET). TATA is on FO on 1 Jan, and OIL-credit
-    // duty is at work but off the flying programme, so two remain available.
-    expect(screen.getByTestId('count-ip-2026-01-01').textContent).toBe('2')
+    // Three IPs seeded (TATA, MILES, RESET). TATA carries a hand-typed FO on
+    // 1 Jan, which since 20 Sep 26 is an AWARD — OIL owed him, not a day at
+    // work — so it takes him off nothing and all three are available. Only a
+    // credit the schedule earned stands a man down from flying.
+    expect(screen.getByTestId('count-ip-2026-01-01').textContent).toBe('3')
   })
 
   it('shows a real set figure for a day, not just that the row exists', () => {

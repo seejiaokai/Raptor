@@ -48,6 +48,49 @@ silent one costs a bug. When in doubt whether something is "implementation"
 (decide) or "his call" (ask), lean toward a one-line heads-up that states
 your call and invites a correction.
 
+**STANDING ORDER — SWEEP THE RULES, THEN HAND-TEST AGAINST THEM (owner, 20 Sep
+26 — "for all things that u built I want u to search through all the things
+that we discussed like rules and how the app should perform or designed for
+things that are applicable, list them down, hand test it yourself and see if it
+performs to what we wanted and tell me anytime if a new ruling clashes with the
+current one").** On EVERY build, four steps, in order:
+
+1. **SEARCH** the record for every ruling that applies — not only the spec for
+   the task in hand. Rulings, "how the app should perform", design decisions,
+   across every doc and every earlier session. A rule missing from the task's
+   own spec is not evidence it does not apply.
+2. **LIST them down** and show him the list, in the words the app uses.
+3. **HAND-TEST the build against that list** in the running app (the live-view
+   pass below — real bundle, phone and desktop), walking the list ruling by
+   ruling and reporting pass/fail per ruling. Unit tests alone do not satisfy
+   this; the 16 Sep 26 scenario rule already says the same thing, and this adds
+   *against the enumerated rules*.
+4. **FLAG A CLASH THE MOMENT IT APPEARS** — any new ruling that contradicts or
+   NARROWS an existing one. Name both, say which is newer, put it to him. This
+   is the active half of the newest-instruction-wins rule above.
+
+**Why this is an order and not advice.** On 20 Sep 26 a defect survived two
+full cross-provider CODE inspections and 5103 green tests. It was not a coding
+mistake: the code did exactly what its own comment said. The build had taken
+H2 (a medical cuts leave in half-day steps) and used it for a second job that
+ruling never claimed — deciding whether a medical and a leave clash at all —
+while a LATER ruling the same day (H3 as overruled, real times) governed that
+second job. Nothing went red because NO TEST NAMED EITHER RULING. A rules-first
+sweep across both providers then found ten more of the same shape in ONE pass,
+four of them August rulings still live after September ones replaced them.
+Reviewing code against itself cannot catch this. Only reading the rules against
+the behaviour can.
+
+**The two instruments, both standing.** A per-feature BEHAVIOUR REGISTER in
+plain words, one line per ruling with its id (worked example:
+`docs/superpowers/specs/2026-09-20-one-absence-behaviour-register.md`), and
+`npm run rulecheck` — a gate that fails when a ruling no test names appears
+outside the recorded baseline. The script catches "nothing is watching this
+rule"; the sweep catches "the code does not obey this rule". Run both. The
+reusable sweep brief is `docs/superpowers/briefs/rules-first-red-team.md`, and
+it is now the THIRD standing review beside the pre-build design red team and
+the post-build code inspection.
+
 **`/brainstorming` overrides this section, and usually should not.** That
 skill mandates a committed spec document and then a task-by-task
 implementation plan — the HEAVY path. For a list of concrete asks ("rename

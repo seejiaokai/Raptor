@@ -53,6 +53,28 @@ describe('the credit\'s reason and who gave it', () => {
       ['2026-01-05', 'typed', true],
     ])
   })
+  it('OIL THE APP EARNED names its giver too — the weekend, or the input behind it', () => {
+    /* Owner, 21 Sep 26: "For automatically credited OIL it should also show on
+       the OIL tracker. similar to the rest." It used to be blank for anything
+       the app earned itself, so the column meant something on one row and
+       nothing on the next. An earned credit's giver is the evidence behind
+       it: the published weekend or holiday, or the duty input that was
+       accepted — which is recorded, not guessed, because one of the input
+       types is itself called Duty. */
+    const ctx: FigureCtx = { openings: {}, ledger: [], sources: [{
+      grid: { p: { '2026-01-03': 'FO', '2026-01-04': 'HO' } },
+      states: { p: {
+        '2026-01-03': { state: 'approved', source: 'raptor', note: 'Duty' },
+        '2026-01-04': { state: 'approved', source: 'bid', note: 'Call-out' },
+      } },
+    }] }
+    const led = oilLedgerFor(ctx, 'p', NONE, '2026-02-01')
+    expect(led.credits.map(c => [c.date, c.givenBy ?? null])).toEqual([
+      ['2026-01-03', 'Weekend/PH'],
+      ['2026-01-04', null],
+    ])
+  })
+
   it('a grant carries givenBy through when the ledger has it', () => {
     const ledger: Ledger = [
       { id: 'l1', personId: 'p', counter: 'oil', amount: 2, date: '2026-01-10', reason: 'Late', approvedBy: 'ADMIN', givenBy: 'OC Ops' },

@@ -47,8 +47,8 @@ import {
   type Figure,
   type FigureCtx,
 } from '../engine'
-import { figureCtxOf, setBalance, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostOut, visibleFigures, type MoveResult, type EventMoveResult } from '../state/store'
-import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
+import { clearRecordById, figureCtxOf, recordsAt, setBalance, setManualCredit, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostIn, setPostOut, visibleFigures, type MoveResult, type EventMoveResult } from '../state/store'
+import { BidPicker, DecisionSheet, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
 import { FiguresDrawer, FigureTitle, figClass, type DrawerRow } from './FiguresDrawer'
@@ -62,7 +62,12 @@ import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
 import { popAt } from './popat'
 import { clampWin, rollingTarget, stepAllowedInMotion, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
+import { touchesAM, touchesPM, type DayView } from '../engine/dayview'
+import type { Portion } from '../engine'
 import { isLwOnScreen, subLwScreen } from '../state/screen'
+import type { RecordSpans } from '../state/merge'
+import { creditGiver, type CreditRec } from '../engine/warrecs'
+import { parseHM } from '../../engine/time'
 import { msSinceInput } from '../../state/idle'
 import { boxOf, frameLift, frameLand, landOn } from '../../ui/lift'
 import { wireSelect, wireMove, wireFigureSelect, daysBetween, paintLanding, clearLanding, paintEventLanding, eventMoveDateAt, earliestDate, type Cell, type Selection, type SelectCtx, type FigureSelectCtx, type FigureSelection } from './select'
@@ -99,17 +104,35 @@ function monthLabel(date: string): string | null {
 }
 
 /** Whether a person's row rides the roster for a visible month window
- *  ('yyyy-mm|yyyy-mm', or '' meaning no measurement → everyone). A
- *  posted-out person rides every month up to and including the one holding
+ *  ('yyyy-mm|yyyy-mm', or '' meaning no measurement → everyone).
+ *
+ *  A posted-out person rides every month up to and including the one holding
  *  their last day and drops off after it (owner, 19 Aug 26 — "once I hit the
  *  next month… the row disappears"); a late joiner mirrors it at the other
  *  end. Month granularity on purpose: scrolling inside a month never
- *  reshuffles the rows, only crossing a boundary does. */
-function rowInWindow(p: Person, win: string): boolean {
+ *  reshuffles the rows, only crossing a boundary does.
+ *
+ *  …AND the row stretches to reach anything the war shows for them outside
+ *  those dates (owner, 20 Sep 26 — records may be dated before someone posts
+ *  in and after they post out, "because those dates are official dates. But
+ *  they can be for e.g still taking leave after or before they post in or
+ *  out"). Without it a man posted out in January with clearing leave in
+ *  September was charged for that leave and could not be seen — the money and
+ *  the screen disagreed. `spans` is merge.ts's per-merge map, so this stays a
+ *  lookup; it is a DISPLAY span only, and his own dates — which is what every
+ *  manning count reads — are untouched. This narrows the 19 Aug rule above
+ *  rather than reversing it: a row with nothing out there still disappears
+ *  exactly as it did. */
+function rowInWindow(p: Person, win: string, spans?: RecordSpans): boolean {
   if (!win) return true
   const [first, last] = win.split('|')
-  if (p.to !== null && p.to.slice(0, 7) < first!) return false
-  if (p.from !== null && p.from.slice(0, 7) > last!) return false
+  const span = spans?.get(p.id)
+  const endsAt = p.to === null ? null
+    : span && span.last > p.to.slice(0, 7) ? span.last : p.to.slice(0, 7)
+  const startsAt = p.from === null ? null
+    : span && span.first < p.from.slice(0, 7) ? span.first : p.from.slice(0, 7)
+  if (endsAt !== null && endsAt < first!) return false
+  if (startsAt !== null && startsAt > last!) return false
   return true
 }
 
@@ -192,6 +215,33 @@ type RowApi = {
   chipEnter: (id: string, el: HTMLElement) => void
   chipLeave: () => void
   chipClick: (p: Person, el: HTMLElement) => void
+}
+
+/**
+ * The half of a day that is FREE beside a record locked to the Inputs page
+ * (CURRENT-STATE item D), or null when there is no such half.
+ *
+ * The read-only sheet speaks for the WHOLE day whenever the main record is
+ * filed on the Inputs page — so a morning LL filed on the form made the
+ * afternoon unbiddable too, with nothing on screen to say why. Most leave
+ * arrives through the form, so this is the normal case, not a corner.
+ *
+ * Deliberately narrow, which is the constraint both reviewers put on it: it
+ * finds a free half, it does NOT make the filed leave editable here. The filed
+ * record keeps its lock, the store's own occupancy rule still has the last
+ * word on any write, and a day held on BOTH halves (or on neither) returns
+ * null and behaves exactly as before.
+ *
+ * A credit is not a blocker: since the owner's 20 Sep 26 ruling, recorded work
+ * never bars a write — it flags the day. A refused bid never blocked anything.
+ */
+function freeHalfBeside(v: DayView | undefined): Portion | null {
+  if (!v) return null
+  const holding = v.all.filter(c => c.kind === 'absence' || (c.kind === 'request' && c.state !== 'refused'))
+  if (!holding.length) return null
+  const am = holding.some(c => touchesAM(c.win))
+  const pm = holding.some(c => touchesPM(c.win))
+  return am && !pm ? 'pm' : pm && !am ? 'am' : null
 }
 
 /** Whether a tap on this cell opens SOMETHING — the one body Matrix and the
@@ -450,7 +500,11 @@ const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, v
         // The stored notation, printed through the one display mapping — the
         // ATT markers read as the owner's bare B / C on the grid while
         // everything else prints as stored (displayCell is identity for it).
-        const text = here || outLeave ? displayCell(code) : notYetArrived ? '' : 'PO'
+        /* `view.main.auto` is the fact the code string cannot carry: an OIL
+           credit the APP worked out from the published schedule, rather than
+           one a person granted. It prints as the trailing star (owner, 20 Sep
+           26). */
+        const text = here || outLeave ? displayCell(code, !!view?.main?.auto) : notYetArrived ? '' : 'PO'
         // Duty first for the reader — FO/HO are work, not a bid. (They carry
         // `bid: false`, so they could not reach a bid branch anyway; the
         // order is legibility, not a guard.) Then the bid state, but only
@@ -491,19 +545,24 @@ const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, v
           (here || outLeave) && code && raptorOwns(states, p.id, d.date) ? 'raptor' : '',
           movedShown && (here || outLeave) && code && shiftedFrom(states, p.id, d.date) ? 'moved' : '',
         ].filter(Boolean).join(' ')
-        // A cell outside the person's time in the squadron is never
-        // actionable FOR A BID: bidding leave for a man who has been posted
-        // out is a data-entry accident, not a bid. But an ADMIN can still tap
-        // a posted-out day to UNDO the post-out (owner, 18 Aug 26 — "tap a
-        // struck day to undo"); `notYetArrived` is excluded — a day before
-        // someone joins is blank, not a post-out, and nothing there to undo.
+        /* BOTH ENDS of the squadron window are tappable (owner answer C, 20
+           Sep 26 — leave outside the window may be "filed OR bid"; and the
+           post-in ruling the same day). The old text here said a day before
+           someone joins is "blank, not a post-out, and nothing there to undo",
+           and `notYetArrived` barred it on both branches. That reading is
+           DEAD: there is now a joining date to undo (before the post-in button
+           no person had one, so no such day could exist), and answer C says
+           leave may be bid there. So the split is now the same at both ends —
+           an ADMIN's tap manages the POSTING (the post-out sheet after, the
+           post-in sheet before), and the person's OWN tap places LEAVE. */
         const actionable =
-          (here && cellOpenable(states, period, role, viewer, deciding, grid, p.id, d.date)) || (role === 'admin' && !here && !notYetArrived) ||
+          (here && cellOpenable(states, period, role, viewer, deciding, grid, p.id, d.date)) || (role === 'admin' && !here) ||
           // a marked day always opens its list; leave dated outside the
           // squadron window opens for an admin and for the person themself
           (!!mark && (here || outLeave)) || (outLeave && (role === 'admin' || viewer === p.id)) ||
-          // …and the person may bid clearing leave on a day after posting out
-          (!here && !notYetArrived && role !== 'admin' && viewer === p.id && canEditCell(period, role, d.date))
+          // …and the person may bid clearing leave after posting out, or leave
+          // dated before they post in
+          (!here && role !== 'admin' && viewer === p.id && canEditCell(period, role, d.date))
         // Their LAST day in the squadron wears a small PO tag (owner, 19 Aug
         // 26 — chosen over nothing after the edge case was put to him):
         // someone posting out on the 1st has a final month that otherwise
@@ -532,7 +591,14 @@ const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, v
               <span
                 className={`mk ${view!.amber ? 'warn' : 'more'}`}
                 data-testid={`mark-${p.id}-${d.date}`}
-                title={view!.amber ? 'Something on this day needs an admin — tap to see' : 'More on this day — tap to see'}
+                /* Item A: on the reader's OWN row an amber day is not "someone
+                   else has a job to do" — it is news about their own leave,
+                   which is still live. Two audiences, two sentences. */
+                title={!view!.amber
+                  ? 'More on this day — tap to see'
+                  : viewer === p.id
+                    ? 'Your bid is still live — tap to see what else is on this day'
+                    : 'Something on this day needs an admin — tap to see'}
               >
                 {mark}
               </span>
@@ -562,7 +628,7 @@ export function Matrix() {
      memo keyed only on the selection went stale when a sync pass changed a
      selected cell under an armed move */
   const version = useVersion()
-  const { people, period, grid, states, views, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, focusDate, focusSeq, qualCatalog, groupColors } = getState()
+  const { people, period, grid, states, views, spans: rowSpans, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, focusDate, focusSeq, qualCatalog, groupColors } = getState()
   const dates = period.days.map(d => d.date)
   // Memoized on the store objects (the store replaces what it writes, so
   // identity IS change): rules-as-data made a day's evaluation walk every
@@ -601,7 +667,7 @@ export function Matrix() {
   // role that changes — while a sheet is open cannot leave the wrong
   // controls on screen.
   const [open, setOpen] = useState<{ id: string; callsign: string; date: string } | null>(null)
-  const close = () => setOpen(null)
+  const close = () => { setOpen(null); setPlaceAt(null) }
   /* the published note editor opened FROM the tap list, for one Input */
   const [listRemark, setListRemark] = useState<{ at: string; row: any } | null>(null)
   // The DRAG-SELECTION (owner, 27 Aug 26): the rectangle the last drag left,
@@ -629,6 +695,25 @@ export function Matrix() {
   const openPostedOut =
     !!open && !!openPerson && !inSquadron(openPerson, open.date) &&
     !(openPerson.from !== null && open.date < openPerson.from)
+  // …and its mirror at the other end: a day BEFORE the person posted in
+  // (owner, 20 Sep 26). For an ADMIN this opens the post-in sheet, exactly as
+  // a posted-out day opens the post-out one; for a member it falls through to
+  // the bid picker, which is answer C's "filed or bid" on a pre-joining day.
+  const openNotYetArrived =
+    !!open && !!openPerson && openPerson.from !== null && open.date < openPerson.from
+  /* "Place leave or OIL here instead" (owner, 20 Sep 26 — "we should also allow
+     putting inputs when we click on days that were posted out"). An admin's tap
+     on a day outside someone's time in the squadron opens the POSTING sheet,
+     which is right for the common case but left him no way to file the clearing
+     leave that made him open the day. Everyone else could already: the man
+     himself taps his own day and gets the bid sheet, and the Inputs page takes
+     any date. This remembers the ONE cell he asked to place on, so the posting
+     sheet stands aside for the bid sheet — for that cell only, until it closes.
+     Keyed by CELL rather than a boolean, so opening a different day never
+     arrives already switched. */
+  const [placeAt, setPlaceAt] = useState<string | null>(null)
+  const openKey = open ? `${open.id}|${open.date}` : ''
+  const placing = !!open && placeAt === openKey
   // ONE selected figure, shared by every row, tracked by its stable ID so a
   // reorder keeps the SAME figure on screen rather than whatever now sits in
   // its old slot. Giving each row its own would let them desync — row 1
@@ -1281,8 +1366,8 @@ export function Matrix() {
   // failure that turned out to be the test's own year-wide assumption; kept
   // because the hazard is real. Every measure reads this ref, never its
   // closure.
-  const liveRef = useRef({ drawnMonths, drawnDates, people })
-  liveRef.current = { drawnMonths, drawnDates, people }
+  const liveRef = useRef({ drawnMonths, drawnDates, people, rowSpans })
+  liveRef.current = { drawnMonths, drawnDates, people, rowSpans }
   const coarsePointer = () => typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches
   // The war's month structure for the placeholders' width estimate (see
   // `monthPx`): days per month. Constant for the war and needs no layout, so a
@@ -2310,7 +2395,7 @@ export function Matrix() {
         .filter(x => Math.min(x.s.right, viewR) - Math.max(x.s.left, viewL) > 2)
       if (vis.length) {
         const win = `${vis[0]!.key}|${vis[vis.length - 1]!.key}`
-        const sig = people.filter(p => rowInWindow(p, win)).map(p => p.id).join(',')
+        const sig = people.filter(p => rowInWindow(p, win, liveRef.current.rowSpans)).map(p => p.id).join(',')
         if (sig !== visSigRef.current) {
           // Capture where the FIRST VISIBLE DAY column sits NOW; the layout
           // effect below puts it back after the repaint (see anchorRef and
@@ -3019,7 +3104,7 @@ export function Matrix() {
     | { kind: 'catsub'; g: string; cat: string }
     | { kind: 'person'; p: Person }
   const rosterSequence = (): RSeq[] => {
-    const roster = displayRoster().filter(p => rowInWindow(p, visWindow))
+    const roster = displayRoster().filter(p => rowInWindow(p, visWindow, rowSpans))
     const out: RSeq[] = []
     let prevG: string | null = null
     let prevCat = ''
@@ -3112,6 +3197,30 @@ export function Matrix() {
   const listOpen = !!open && !!openView && (openView.mark !== '' ||
     (!!openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null))
   const canRemark = !listOpen && !!remarkRow && (role === 'admin' || (!!open && open.id === viewer))
+  /* THE FREE HALF BESIDE INPUTS-FILED LEAVE (CURRENT-STATE item D). When the
+     cell is locked to the Inputs page but only HALF of it is actually spoken
+     for, the tap opens the bid picker on the free half instead of the
+     read-only sheet — with the locked half named on it, so nothing about the
+     lock becomes invisible. Everything else about a Raptor-owned cell is
+     unchanged: both halves held, or nobody who may edit, and the read-only
+     sheet opens exactly as it did. */
+  /* The granted OIL on the open cell, for the sheet to name and reopen. Only a
+     HAND-TYPED one: a credit the published schedule earned is the schedule's
+     to change, and the pass would overwrite anything typed onto it. */
+  const openCredit = open
+    ? (recordsAt(open.id, open.date).find(r => r.kind === 'credit' && r.oil === 'manual') as CreditRec | undefined)
+    : undefined
+  /* EVERY credit on the open cell, award or earned — what the day window
+     reads back on one click (owner, 21 Sep 26). Separate from `openCredit`
+     above, which is only the one an admin may EDIT: the app's own credit is
+     shown and never offered for editing, because the OIL pass owns it. */
+  const openAnyCredit = open
+    ? (recordsAt(open.id, open.date).find(r => r.kind === 'credit') as CreditRec | undefined)
+    : undefined
+  const openFreeHalf = open && raptorOwns(states, open.id, open.date)
+    && canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id)
+    ? freeHalfBeside(openView)
+    : null
 
   // Which sheet a click opens follows from three things: the stage, the role,
   // and what the cell already holds.
@@ -3422,7 +3531,7 @@ export function Matrix() {
                 // rowInWindow above): the heads/counts below derive from the
                 // filtered list, so an emptied group takes its heading with
                 // it. visWindow '' (jsdom, first paint) shows everyone.
-                const roster = displayRoster().filter(p => rowInWindow(p, visWindow))
+                const roster = displayRoster().filter(p => rowInWindow(p, visWindow, rowSpans))
                 const span = 2 + dayCols
                 let prevG: string | null = null
                 let prevCat = ''
@@ -3817,11 +3926,24 @@ export function Matrix() {
           sheets. That cell is approved elsewhere: offering a picker or a
           decision on it would offer an action the store will refuse, which
           is worse than offering nothing. */}
-      {open && !listOpen && !canRemark && raptorOwns(states, open.id, open.date) && (
+      {open && !listOpen && !canRemark && raptorOwns(states, open.id, open.date) && !openFreeHalf && (
         <RaptorSheet
           callsign={open.callsign}
           date={open.date}
           code={grid[open.id]?.[open.date] ?? ''}
+          /* An OIL credit the app earned opens here too, and it is not leave
+             from the Inputs page — the sheet says which it is, and reads the
+             credit back in the same three lines as everywhere else. */
+          creditShown={openAnyCredit && openAnyCredit.oil === 'auto'
+            ? {
+              code: openAnyCredit.code,
+              days: openAnyCredit.days,
+              note: openAnyCredit.note,
+              giver: creditGiver(openAnyCredit),
+              spans: openAnyCredit.spans,
+              via: openAnyCredit.via,
+            }
+            : null}
           onClose={close}
         />
       )}
@@ -3901,7 +4023,7 @@ export function Matrix() {
       {/* A posted-out cell an admin tapped: the ONE control it offers is Undo,
           and it short-circuits every bid/decision sheet below (owner, 18 Aug
           26). */}
-      {open && !listOpen && !canRemark && openPostedOut && role === 'admin' && (
+      {open && !listOpen && !canRemark && openPostedOut && role === 'admin' && !placing && (
         <PostOutSheet
           callsign={open.callsign}
           date={open.date}
@@ -3912,6 +4034,26 @@ export function Matrix() {
           archive={openPerson!.poArchive === true}
           onChange={(from, archive) => setPostOut(open.id, from, archive)}
           onUndo={() => { setPostOut(open.id, null); close() }}
+          onPlace={() => setPlaceAt(openKey)}
+          onClose={close}
+        />
+      )}
+      {/* …and the mirror at the other end: a day BEFORE the person posted in,
+          tapped by an admin. Same one-control shape as the post-out sheet,
+          and it short-circuits the bid picker below exactly as that one does
+          (owner, 20 Sep 26). A MEMBER tapping their own pre-joining day falls
+          through to the picker instead, which is answer C's "filed or bid". */}
+      {open && !listOpen && !canRemark && openNotYetArrived && role === 'admin' && !placing && (
+        <PostInSheet
+          callsign={open.callsign}
+          date={open.date}
+          /* openNotYetArrived already proves `from` is set. The sheet talks in
+             the PI date itself — the first day they ARE here — where the
+             post-out sheet has to add a day to the stored last-day-in. */
+          piFrom={openPerson!.from!}
+          onChange={from => setPostIn(open.id, from)}
+          onUndo={() => { setPostIn(open.id, null); close() }}
+          onPlace={() => setPlaceAt(openKey)}
           onClose={close}
         />
       )}
@@ -4052,9 +4194,8 @@ export function Matrix() {
       )}
       {/* a member may bid CLEARING leave after their own posting-out (owner
           answer C, 20 Sep 26) — the admin's tap there stays the PO sheet */}
-      {open && !listOpen && !canRemark && (!openPostedOut || role !== 'admin') && !raptorOwns(states, open.id, open.date)
-        && canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id)
-        && !(deciding && isBiddable(grid[open.id]?.[open.date])) && (
+      {open && !listOpen && !canRemark && (placing || ((!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin'))) && (!raptorOwns(states, open.id, open.date) || !!openFreeHalf)
+        && canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id) && (
         <BidPicker
           key={`${open.id}-${open.date}`}
           callsign={open.callsign}
@@ -4062,12 +4203,65 @@ export function Matrix() {
           date={open.date}
           current={grid[open.id]?.[open.date] ?? ''}
           dates={dates}
+          /* Item D: only the free half is on offer, and the sheet says what
+             holds the other one. */
+          onlyPortion={openFreeHalf}
+          heldBy={openFreeHalf ? displayCell(grid[open.id]?.[open.date] ?? '') : undefined}
           /* Admin-only: post this person out (owner, 18 Aug 26; any date and
              the archive switch, 19 Aug 26). The store sets their posting-out
              date; the greyed boxes and the manpower exclusion follow from it,
              and sync.ts's auto-archive pass reads the switch. */
           onPostOut={role === 'admin'
             ? (from, archive) => { setPostOut(open.id, from, archive); close() }
+            : undefined}
+          /* Admin-only, the mirror of the above (owner, 20 Sep 26): the first
+             day they ARE in the squadron. */
+          onPostIn={role === 'admin'
+            ? from => { setPostIn(open.id, from); close() }
+            : undefined}
+          /* Admin-only: record that he WORKED this day and earned OIL (owner,
+             20 Sep 26). ANY day — the weekend/public-holiday rule belongs to
+             the automatic pass that reads the published schedule, not to a
+             credit the squadron types itself. Hours are read the way every
+             other time box in the app is (`08:00`, `8:00`, `0800`, `800`);
+             blank means the whole day. */
+          credit={role === 'admin' && openCredit
+            ? { code: openCredit.code, days: openCredit.days, note: openCredit.note, givenBy: openCredit.givenBy }
+            : null}
+          /* Read back on one click, for anyone who can see the day — a member
+             reading his own OIL is entitled to know why it is there and who
+             gave it, the same as an admin (owner, 21 Sep 26). */
+          /* THE FOUR ANSWERS TO AN INPUT, IN EVERY STAGE (owner, 21 Sep 26).
+             An admin, and a cell that actually holds a bid to answer — a
+             course, a medical, an OIL credit and an empty day are not things
+             anybody asked for. `canDecide` is deliberately NOT the gate: it
+             means closed-or-published, and the whole point of his ruling is
+             that the window is the same while bidding is still open. */
+          decide={canDecide(period.stage, role) && !openFreeHalf && isBiddable(grid[open.id]?.[open.date])
+            ? { state: stateOf(states, open.id, open.date), movedFrom: movedShown ? shiftedFrom(states, open.id, open.date) : undefined }
+            : null}
+          creditShown={openAnyCredit
+            ? {
+              code: openAnyCredit.code,
+              days: openAnyCredit.days,
+              note: openAnyCredit.note,
+              giver: creditGiver(openAnyCredit),
+              auto: openAnyCredit.oil === 'auto',
+              spans: openAnyCredit.spans,
+            }
+            : null}
+          onCreditClear={role === 'admin' && openCredit
+            ? () => { clearRecordById(open.id, open.date, openCredit.id); close() }
+            : undefined}
+          onCredit={role === 'admin'
+            ? (code, days, note, givenBy) => {
+              const raw = days.trim()
+              const n = raw ? Number(raw) : null
+              if (raw && (n === null || !Number.isFinite(n))) return 'Type how many days — or leave it blank'
+              const problem = setManualCredit(open.id, open.date, code, { note, givenBy, days: n })
+              if (!problem) showFigure('oil')
+              return problem
+            }
             : undefined}
           /* No medical here: medical is member-filed only (owner, 13 Sep 26).
              Everyone files a medical input with its certificate on Raptor's
@@ -4116,25 +4310,13 @@ export function Matrix() {
           onClose={close}
         />
       )}
-      {/* `!openPostedOut` for the same reason BidPicker carries it: the PO
-          sheet's comment promises it short-circuits every bid/decision sheet,
-          and without the term here BOTH mounted on a posted-out day that
-          still held a bid — the decision sheet painting on top of the Undo
-          the admin actually tapped for. One `open`, one sheet. */}
-      {open && !listOpen && !canRemark && !openPostedOut && !raptorOwns(states, open.id, open.date) && deciding
-        && isBiddable(grid[open.id]?.[open.date]) && (
-        <DecisionSheet
-          key={`${open.id}-${open.date}`}
-          callsign={open.callsign}
-          personId={open.id}
-          date={open.date}
-          code={grid[open.id][open.date]}
-          state={stateOf(states, open.id, open.date)}
-          movedFrom={shiftedFrom(states, open.id, open.date)}
-          dates={dates}
-          onClose={close}
-        />
-      )}
+      {/* THE SEPARATE DECISION SHEET IS GONE (owner, 21 Sep 26). It opened
+          only once bidding had closed, so the same input answered to different
+          controls depending on which day of the cycle you clicked it — and
+          moving one man's one day needed a drag-select. Its three buttons and
+          its move field now live on the ONE day window above, in every stage;
+          `DecisionSheet` itself is kept exported for the tests that pin its
+          wording, but nothing in the grid opens it any more. */}
     </div>
   )
 }

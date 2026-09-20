@@ -35,6 +35,23 @@ export interface RequestRec {
 }
 export interface Carried { remarks?: string; lwMoved?: Record<string, string> }
 
+/** WHO GAVE THIS OIL, in the words the squadron reads (owner, 21 Sep 26).
+ *  A hand-typed award carries a name or a post, typed by the admin who gave
+ *  it. An automatic credit has no person behind it — the evidence is the
+ *  published weekend or public holiday it was earned on, or the duty input
+ *  the owner accepted — so it says which of those it was. One helper, because
+ *  the day window and the OIL tracker must not word it differently. */
+export function creditGiver(c: { oil?: 'auto' | 'manual'; givenBy?: string; via?: 'schedule' | 'input' } | null | undefined): string {
+  if (!c) return ''
+  /* A NAME ALWAYS WINS. On an automatic credit a name can only have come from
+     an AWARD the schedule later took over — and that award is why the day is
+     worth what it is worth, so the person who granted it is the honest answer
+     rather than the weekend underneath it (Fable, 21 Sep 26). */
+  if (c.givenBy) return c.givenBy
+  if (c.oil !== 'auto') return ''
+  return c.via === 'input' ? 'Duty input' : 'Weekend/PH'
+}
+
 export interface CreditRec {
   id: string
   kind: 'credit'
@@ -44,9 +61,44 @@ export interface CreditRec {
   oil: 'auto' | 'manual'
   /** why it was earned (FLT, SIM + Duty, a claim's type, an admin's words) */
   note?: string
+  /** ON WHOSE SAY-SO, on a HAND-TYPED credit (owner, 20 Sep 26 — the same
+   *  optional box the OIL tracker's grant already carries). A credit the
+   *  published schedule earned needs no such field: the schedule IS the
+   *  evidence. One an admin types has none, so the squadron records who said
+   *  the man worked. Free text — a name or a post. */
+  givenBy?: string
+  /** WHERE AN AUTOMATIC CREDIT CAME FROM (owner, 21 Sep 26 — he wants the
+   *  giver shown on automatic OIL too, as "Weekend/PH", or "Duty input" where
+   *  the credit came from a duty-and-commitments input he accepted rather than
+   *  from the published schedule).
+   *  It is RECORDED rather than worked out from the reason, because the two
+   *  are genuinely indistinguishable there: the schedule's own reasons are
+   *  FLT / SIM / Duty and one of the input types is also called Duty, so a
+   *  Duty input and a duty desk would read identically. Only an `auto` credit
+   *  carries it; a hand-typed award has `givenBy` instead. */
+  via?: 'schedule' | 'input'
   /** the work times, minutes of the day (clash check B8). None = the whole day
-   *  for every overlap check (owner Q7). */
+   *  for every overlap check (owner Q7). Only an AUTOMATIC credit carries
+   *  these now: they come off the published schedule, which knows the hours.
+   *  A GRANT has none, because a grant is an award and not an attendance
+   *  record (owner, 20 Sep 26 — "Remove the worked hours. Not required"). */
   spans?: Array<[number, number]>
+  /** HOW MANY DAYS this grant is worth, when it is not simply the code's own
+   *  worth (owner, 20 Sep 26 — "on the leave war i can also grant more than 1
+   *  day of OIL credit just like how the oil tracker does it"). Absent means
+   *  FO is one day and HO is half, which is the ordinary case and needs no
+   *  typing. Never set on an automatic credit: the schedule earns exactly what
+   *  the code says. */
+  days?: number
+  /** THE ADMIN'S OWN CREDIT, KEPT WHOLE. An admin typed a credit here first
+   *  and the published schedule later earned one too, so the pass took it over
+   *  in place. The pass may take its OWN credit away again — but taking this
+   *  one away would destroy the squadron's record, which design §18 OA3-003
+   *  forbids. So when the schedule stops backing it, exactly THIS is put back.
+   *  A boolean was not enough (Codex review, 20 Sep 26): the schedule's code,
+   *  reason and hours overwrite the admin's, so a flag handed back the
+   *  SCHEDULE's credit wearing a manual label. It is an exact snapshot. */
+  manual?: { code: 'FO' | 'HO'; note?: string; givenBy?: string; days?: number; spans?: Array<[number, number]> }
 }
 
 export interface NoticeRec {
@@ -70,6 +122,15 @@ export type WarRec = RequestRec | CreditRec | NoticeRec
 export type Recs = Record<string, Record<string, WarRec[]>>
 
 export const MAX_REC_NOTE = 40
+/** The optional "given by" — on a hand-typed credit here, and on the OIL
+ *  tracker's grant, which re-exports THIS one rather than keeping its own.
+ *  Two literals for one box is the drift seam the house rules name: the
+ *  tracker's had lived in the store since 2 Sep 26, and a second copy was
+ *  written here on 20 Sep 26 at a different number before it was caught. */
+export const MAX_GIVEN_BY = 40
+/** The most days one grant may be worth. A year of OIL in a single entry is a
+ *  typo, not a decision; corrections go through the OIL tracker's ledger. */
+export const MAX_GRANT_DAYS = 365
 export const MAX_CARRIED_REMARK = 200
 
 /* ---- ids ---------------------------------------------------------------- */
@@ -116,7 +177,7 @@ export function recContribs(list: readonly WarRec[]): Contrib[] {
          envelope is what the box shows, the stretches are what clashes read */
       const ws = creditWins(r)
       const env: Win = [Math.min(...ws.map(w => w[0])), Math.max(...ws.map(w => w[1]))]
-      out.push({ id: r.id, kind: 'credit', code: r.code, win: env, ...(ws.length > 1 ? { wins: ws } : {}), ...(r.oil === 'auto' ? { auto: true } : {}), ...(r.note ? { note: r.note } : {}) })
+      out.push({ id: r.id, kind: 'credit', code: r.code, win: env, ...(ws.length > 1 ? { wins: ws } : {}), ...(r.oil === 'auto' ? { auto: true, ...(r.via ? { via: r.via } : {}) } : {}), ...(r.note ? { note: r.note } : {}), ...(r.givenBy ? { givenBy: r.givenBy } : {}), ...(r.days != null ? { days: r.days } : {}) })
     } else {
       out.push({ id: r.id, kind: 'notice', code: parseCell(r.code)?.type ?? r.code, win: FULL })
     }
@@ -177,8 +238,30 @@ export function readRec(x: unknown): WarRec | null {
   if (x.kind === 'credit') {
     if ((x.code !== 'FO' && x.code !== 'HO') || (x.oil !== 'auto' && x.oil !== 'manual')) return null
     const r: CreditRec = { id: x.id, kind: 'credit', code: x.code, oil: x.oil }
+    /* WHERE AN AUTOMATIC CREDIT CAME FROM SURVIVES A RELOAD (Astra, 21 Sep 26).
+       It was written and then dropped here, so after a reload a credit earned
+       off an accepted DUTY INPUT read as "Weekend/PH" — the wrong evidence,
+       pointing a reader at a schedule that does not back it. Reconciliation
+       repairs most dates on the next pass, but a PROTECTED date is deliberately
+       skipped by both halves of the OIL pass, so there it would never heal. */
+    if (x.oil === 'auto' && (x.via === 'schedule' || x.via === 'input')) r.via = x.via
+    const mx = x.manual as any
+    if (x.oil === 'auto' && mx && (mx.code === 'FO' || mx.code === 'HO')) {
+      const m: NonNullable<CreditRec['manual']> = { code: mx.code }
+      if (typeof mx.note === 'string' && mx.note.trim()) m.note = mx.note.trim().slice(0, MAX_REC_NOTE)
+      if (typeof mx.givenBy === 'string' && mx.givenBy.trim()) m.givenBy = mx.givenBy.trim().slice(0, MAX_GIVEN_BY)
+      if (typeof mx.days === 'number' && Number.isFinite(mx.days) && mx.days > 0 && mx.days <= MAX_GRANT_DAYS && mx.days * 2 === Math.round(mx.days * 2)) m.days = mx.days
+      if (Array.isArray(mx.spans)) { const ms = mx.spans.filter(isSpan); if (ms.length) m.spans = ms as Array<[number, number]> }
+      r.manual = m
+    }
     if (typeof x.note === 'string' && x.note.trim()) r.note = x.note.trim().slice(0, MAX_REC_NOTE)
+    /* Dropped rather than refused, like the note beside it: a bad "given by"
+       must not cost the squadron the record that a man worked. */
+    if (typeof x.givenBy === 'string' && x.givenBy.trim()) r.givenBy = x.givenBy.trim().slice(0, MAX_GIVEN_BY)
     if (Array.isArray(x.spans)) { const s = x.spans.filter(isSpan); if (s.length) r.spans = s as Array<[number, number]> }
+    /* Halves only, and inside sane bounds — an unreadable quantity falls back
+       to the code's own worth rather than costing the squadron the record. */
+    if (typeof x.days === 'number' && Number.isFinite(x.days) && x.days > 0 && x.days <= MAX_GRANT_DAYS && x.days * 2 === Math.round(x.days * 2)) r.days = x.days
     return r
   }
   if (x.kind === 'notice') {

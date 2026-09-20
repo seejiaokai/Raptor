@@ -339,7 +339,7 @@ test('a morning ATT C over a full-day LL leaves the afternoon as LL', async ({ p
   expect(rows).toContain('LL Jul 20 pm721-1439')
   await backToWar(page)
   await showMonth(page, D)
-  await expect(chip(page, P, D)).toHaveText('LL*')             // leave shows over sick; afternoon
+  await expect(chip(page, P, D)).toHaveText('LL>')             // leave shows over sick; afternoon
   await expect(mark(page, P, D)).toHaveText('+1')
   expect(await figure(page, P, 'lve')).toBe(lve1 + 0.5)
   expect(await figure(page, P, 'medtot')).toBe(0.5)
@@ -367,7 +367,7 @@ test('two leaves in one morning at times that do not overlap: allowed, half a da
   expect((await inputsOf(page, P)).filter(r => r.includes('Jul 22'))).toHaveLength(2)
   await backToWar(page)
   await showMonth(page, D)
-  await expect(chip(page, P, D)).toHaveText('*LL')
+  await expect(chip(page, P, D)).toHaveText('<LL')
   await expect(mark(page, P, D)).toHaveText('+1')
   // owner answer D: the half comes off the leave covering more time (LL, 2h) — once
   expect(await figure(page, P, 'lve')).toBe(lve0 - 0.5)
@@ -449,7 +449,14 @@ async function signSaturday(page: Page) {
   })
 }
 
-test('publishing a weekend day replaces a pending bid for someone working it; undo of the publish brings it back', async ({ page }) => {
+/* PUBLISHING KEEPS THE BID AND FLAGS THE DAY (owner, 20 Sep 26). This test
+   used to assert the opposite — that publishing REPLACED the bid and left a
+   "your bid was replaced" notice — and it moved with the ruling, because those
+   expectations were the rule. It is worth keeping in the browser suite rather
+   than only in the unit tests: it is the one place the whole chain runs for
+   real, from signing the day on the scheduler through to what the box shows on
+   the war. */
+test('publishing a weekend day KEEPS a pending bid for someone working it and flags the day', async ({ page }) => {
   await openWar(page)
   const W = 'plasma', D = '2026-07-18'        // plasma is on the Saturday duty in the demo week
   await page.evaluate(([w, d]) => (window as any).lwSetCell(w, d, 'LL'), [W, D])
@@ -457,26 +464,33 @@ test('publishing a weekend day replaces a pending bid for someone working it; un
   await go(page, 'editsched')
   await clearToast(page)
   await page.locator('button[data-beak="5"]').click()
-  await expect(toast(page)).toContainText("Publishing replaces")
+  // The admin is told at the moment he publishes — and told the bid is LIVE.
+  await expect(toast(page)).toContainText('still live')
   await backToWar(page)
   await showMonth(page, D)
-  await expect(chip(page, W, D)).toHaveText('FO')                   // the earned OIL
-  await expect(mark(page, W, D)).toHaveText('!')
+  /* `FO*` — the star is the owner's 20 Sep 26 mark for "the APP put this
+     here", and this is the one place in the whole suite that proves it: a
+     credit earned off the PUBLISHED SCHEDULE rather than granted by a person.
+     A bare `FO` here would mean the publish had somehow written a grant. */
+  await expect(chip(page, W, D)).toHaveText('FO*')                  // the earned OIL
+  await expect(mark(page, W, D)).toHaveText('!')                    // …and the flag
   await tap(page, W, D)
   const lines = await listLines(page)
-  expect(lines.some(l => /LL bid was replaced by/.test(l))).toBe(true)
-  expect(lines.some(l => /bid, not decided yet/.test(l))).toBe(false)
+  expect(lines.some(l => /bid, not decided yet/.test(l))).toBe(true)
+  expect(lines.some(l => /bid was replaced/.test(l))).toBe(false)   // nothing was taken
   await closeList(page)
 
-  await expect(page.locator('[data-testid="lw-undo"]')).toHaveAttribute('title', /publishing a day/)
+  // Undoing the publish takes the CREDIT back and leaves the bid exactly where
+  // it always was. B5's "undo brings the bid back" has nothing left to do.
   await undo(page)
   await expect(chip(page, W, D)).toHaveText('LL')
-  await expect(chip(page, W, D)).not.toHaveClass(/appr|sc/)
   await expect(mark(page, W, D)).toHaveCount(0)
   expect(await page.evaluate(() => (window as any).dayApproved(5))).toBe(false)
   await redo(page)
-  await expect(chip(page, W, D)).toHaveText('FO')
+  await expect(chip(page, W, D)).toHaveText('FO*')
   await expect(mark(page, W, D)).toHaveText('!')
+  await tap(page, W, D)
+  expect((await listLines(page)).some(l => /bid, not decided yet/.test(l))).toBe(true)
 })
 
 test('the tap list: approve one half, refuse the other, un-approve back to a bid — each undoable', async ({ page }) => {
@@ -485,29 +499,29 @@ test('the tap list: approve one half, refuse the other, un-approve back to a bid
   await page.evaluate(([p, d]) => { (window as any).lwSetCell(p, d, '*LL'); (window as any).lwSetCell(p, d, 'OIL*') }, [P, D])
   await showMonth(page, D)
   await closeBidding(page)
-  await expect(chip(page, P, D)).toHaveText('*LL')
+  await expect(chip(page, P, D)).toHaveText('<LL')
   await expect(mark(page, P, D)).toHaveText('+1')
 
   await tap(page, P, D)
   await page.locator('[data-testid^="dl-approve-"]').first().click()
   expect(await listLines(page)).toEqual([
-    '*LL — local leave, morning · approved',
-    'OIL* — off in lieu, afternoon · bid, not decided yet',
+    '<LL — local leave, morning · approved',
+    'OIL> — off in lieu, afternoon · bid, not decided yet',
   ])
   expect(await inputsOf(page, P)).toContain('LL Feb 11 am0-720')
   await page.locator('[data-testid^="dl-refuse-"]').last().click()
-  expect((await listLines(page))[1]).toBe('OIL* — off in lieu, afternoon · bid refused')
+  expect((await listLines(page))[1]).toBe('OIL> — off in lieu, afternoon · bid refused')
   await closeList(page)
 
   await undo(page)                                  // the refusal
   await tap(page, P, D)
-  expect((await listLines(page))[1]).toBe('OIL* — off in lieu, afternoon · bid, not decided yet')
+  expect((await listLines(page))[1]).toBe('OIL> — off in lieu, afternoon · bid, not decided yet')
   await closeList(page)
   await redo(page)
 
   await tap(page, P, D)
   await page.locator('[data-testid^="dl-unapprove-"]').click()
-  expect((await listLines(page))[0]).toBe('*LL — local leave, morning · bid, not decided yet')
+  expect((await listLines(page))[0]).toBe('<LL — local leave, morning · bid, not decided yet')
   expect((await inputsOf(page, P)).filter(r => r.startsWith('LL Feb 11'))).toHaveLength(0)
   await closeList(page)
   await undo(page)
@@ -668,21 +682,12 @@ test('BUG: an overnight leave does not block a medical the next morning — the 
   expect(rows.some(r => r.startsWith('LL Aug 5'))).toBe(true)
 })
 
-// BUG 3 (LOW). The notice left by a publish reads "replaced by published
-// schedule (the published schedule)" — the replacer is named twice.
-// publishReplacesBids (sync.ts) passes 'published schedule' as the type AND
-// 'the published schedule' as the actor; DayList prints both.
-test('BUG: the notice a publish leaves names the published schedule once', async ({ page }) => {
-  rulesOnDesktop()
-  await openWar(page)
-  const W = 'plasma', D = '2026-07-18'
-  await page.evaluate(([w, d]) => (window as any).lwSetCell(w, d, 'LL'), [W, D])
-  await signSaturday(page)
-  await go(page, 'editsched')
-  await page.locator('button[data-beak="5"]').click()
-  await backToWar(page)
-  await showMonth(page, D)
-  await tap(page, W, D)
-  const notice = (await listLines(page)).find(l => /bid was replaced/.test(l))!
-  expect(notice.match(/published schedule/g)?.length ?? 0).toBe(1)
-})
+/* BUG 3 (LOW) is GONE, not fixed — the defect stopped being reachable.
+   It was: the notice a publish left read "replaced by published schedule (the
+   published schedule)", naming the replacer twice, because the publish door
+   passed it as both the type and the actor. Since the owner's 20 Sep 26
+   ruling a publish leaves NO notice, because it replaces nothing. The test is
+   removed rather than rewritten; the case it covered has no behaviour left
+   behind it, and the publish door's own test above covers what happens now.
+   The same double-naming would return the moment anything else is given both
+   fields, so it is recorded here rather than silently deleted. */

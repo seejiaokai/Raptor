@@ -170,6 +170,78 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number])=>stri
   });
   return out;
 }
+/* THE DESKS THAT MEASURE NOTHING (owner, 20 Sep 26 — "Yes i want a warning").
+ *
+ *  The rule above mints strictly from WRITTEN times, so a duty desk with a man
+ *  on it and no start and end earns him nothing. That is correct — money must
+ *  not come from a guess — but it used to happen in silence: the day was
+ *  published, no OIL appeared, and nothing said why. A man's leave balance was
+ *  short and no screen admitted it.
+ *
+ *  This lists the places on a day that NAME somebody and carry no usable times,
+ *  by the name the day itself uses for them (the desk's role, the programme's
+ *  own name). The caller decides when to speak; Leave War knows which days can
+ *  earn at all. Blank-and-nameless is not listed — an empty desk is an empty
+ *  desk, not a mistake. */
+/* ONE wording for the blind places, so the day's warning strip and the publish
+   message can never name them differently: the list, and the verb that agrees
+   with it. A day can carry three desks and only one be blank, which is why the
+   plural is built rather than assumed.
+   The names arrive BARE ("SDO", "the ground programme") because only the caller
+   knows the sentence it is building — the publish message wraps a desk name in
+   "the ... desk", which read "the The ground programme desk" while the names
+   carried their own article (Fable, 21 Sep 26). `desk` says whether every name
+   in the list is a duty desk, which is what lets a caller add that wrapper. */
+export function blindDesks(names:readonly string[]):{list:string;verb:string;desk:boolean}{
+  const many=names.length>1;
+  return {
+    list: many?`${names.slice(0,-1).join(', ')} and ${names[names.length-1]}`:names.join(''),
+    verb: many?'have':'has',
+    desk: names.length>0&&names.every(n=>!/^the /.test(n)),
+  };
+}
+
+export function dayOilBlind(day:any):string[]{
+  const out:string[]=[];
+  const seen=new Set<string>();
+  const add=(name:string)=>{if(!seen.has(name)){seen.add(name);out.push(name);}};
+  const timed=(st:any,en:any)=>{
+    const s=parseHM(st);let e=parseHM(en);
+    if(s==null||e==null)return false;
+    if(e<s)e+=1440;
+    return e>s;
+  };
+  const named=(vs:any[])=>vs.some((v:any)=>{const id=whoId(v);return !!id&&(realP(id)||isSpecial(id));});
+  (day.dutywaves||[]).forEach((dw:any)=>{
+    if(dw&&saExemptKind(dw.sa))return;
+    (dw.rows||[]).forEach((r:any)=>{
+      if(r.cx)return;
+      if(timed(r.str,r.end))return;
+      if(!named([r.id,...(r.more||[])]))return;
+      add(String(r.role||dw.label||'a duty desk'));
+    });
+  });
+  (day.ground||[]).forEach((g:any)=>{
+    if(g.cx||g.src||g.info)return;
+    if(timed(g.str,g.end))return;
+    if(!named([g.who,...(g.more||[])]))return;
+    add('the ground programme');
+  });
+  ['amt','oft'].forEach((k:any)=>((day.sims||{})[k]||[]).forEach((r:any)=>{
+    if(r.cx)return;
+    if(timed(r.str,r.end))return;
+    if(!named([r.p,r.w,...(r.pax||[]),...(r.more||[])]))return;
+    add(k==='amt'?'the AMT sim':'the OFT sim');
+  }));
+  (day.allhands||[]).forEach((x:any)=>{
+    if(x.cx||x.info)return;
+    if(timed(x.str,x.end))return;
+    if(!named([...whoArr(x),...(x.more||[])]))return;
+    add('the common programme');
+  });
+  return out;
+}
+
 /* the same work as bare [s,e] spans: id -> [s,e][] — the shape envMin takes
    and the probe bridge exposes. */
 export function dayOilSpans(day:any,opts?:{expandAll?:(win:[number,number])=>string[]}){

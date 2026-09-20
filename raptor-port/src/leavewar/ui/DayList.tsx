@@ -11,9 +11,9 @@
 // check — the buttons are only offered where it would succeed.
 import { useState, type ReactElement } from 'react'
 import { INPUTS } from '../../engine/inputs'
-import { canDecide, canEditCell, canEditRow, codeOf, type Period, type Role } from '../engine'
+import { canDecide, canEditCell, canEditRow, codeOf, displayCell, type Period, type Role } from '../engine'
 import { AM, FULL, PM, type Contrib, type DayView, type Win } from '../engine/dayview'
-import type { NoticeRec, CreditRec } from '../engine/warrecs'
+import { creditGiver, type NoticeRec, type CreditRec } from '../engine/warrecs'
 import { ackReplacement, changeAbsenceById, clearRecordById, decideRequestById, moveAbsenceById, recordsAt } from '../state/store'
 import { Sheet } from './Sheet'
 import './bidpicker.css'
@@ -34,12 +34,22 @@ function partOf(w: Win): string {
   if (same(w, PM)) return 'afternoon'
   return `${hhmm(w[0])}–${hhmm(w[1])}`
 }
+/* The STORED notation for this contribution — `*LL` for a morning — which is
+   then folded for the screen by `displayCell`, so the list and the box cannot
+   say different things about the same record. */
 function notation(c: Contrib): string {
   if (same(c.win, AM)) return `*${c.code}`
   if (same(c.win, PM)) return `${c.code}*`
   return c.code
 }
-const shown = (code: string) => (code === 'ATTC' ? 'ATT C' : code === 'ATTB' ? 'ATT B' : code)
+/* What a line CALLS a record: the arrows for a half day, a trailing star when
+   the app put it there, and the medical markers in the owner's own short form
+   — one body, `displayCell`, shared with the grid. `ATT C` keeps its space
+   here because a line has room for it where a 2-character box does not. */
+const shown = (code: string, auto = false) => {
+  const d = displayCell(code, auto)
+  return d.replace(/\bC\b/, 'ATT C').replace(/\bB\b/, 'ATT B')
+}
 /* the catalogue's words for a code, without repeating the code itself
    (a medical's label is "medical — ATT C") */
 const nameOf = (code: string) => {
@@ -70,6 +80,12 @@ export function DayListSheet({
   const editable = canEditCell(period, role, date) && canEditRow(role, viewer, personId)
   const own = viewer === personId
   const raw = recordsAt(personId, date)
+  /* The reader's OWN undecided bids on this day, in the words the box uses —
+     what the clash line names so a member can see his leave is still there. A
+     refused bid is not live and is nobody's news. */
+  const liveBids = view.all
+    .filter(c => c.kind === 'request' && c.state !== 'refused')
+    .map(c => `${shown(notation(c))}${partOf(c.win) ? ` (${partOf(c.win)})` : ''}`)
   const act = (fn: () => boolean | string | null | number, fail = "Couldn’t change that") => {
     const r = fn()
     if (r === false || r === 0) setMsg(fail)
@@ -77,6 +93,9 @@ export function DayListSheet({
     else setMsg('')
   }
 
+  /* the OIL on this day, whichever kind — read back in three lines at the
+     bottom, the same three the day window shows (owner, 21 Sep 26) */
+  const oilRec = raw.find(r => r.kind === 'credit') as CreditRec | undefined
   const lines = view.all.map(c => {
     const part = partOf(c.win)
     const partTxt = part ? `, ${part}` : ''
@@ -86,7 +105,16 @@ export function DayListSheet({
       const warOwned = !!row?.lw
       const text = `${shown(notation(c))} — ${nameOf(c.code) || shown(c.code)}${partTxt} · ${warOwned ? 'approved' : 'filed on the Inputs page'}`
       const actions: ReactElement[] = []
-      if (warOwned && isLeave && role === 'admin' && deciding) {
+      /* APPROVED AND PUBLISHED IS FINISHED PAPERWORK (owner, 21 Sep 26 — "if
+         the input is approved and published … the member and admin can input
+         the remarks there. In order to edit it again, admin has to go back to
+         open for bidding or bidding closed"). The single-record window has
+         always obeyed this; THIS list did not, because `deciding` means
+         closed-OR-published, so a day holding two records let an admin send a
+         published, approved leave back to a bid in one click. Found by Astra,
+         21 Sep 26. Note stays — a remark is the one thing he DID ask for here. */
+      const finished = period.stage === 'published'
+      if (warOwned && isLeave && role === 'admin' && deciding && !finished) {
         actions.push(
           <button key="p" className="dchip" data-testid={`dl-unapprove-${c.id}`} onClick={() => act(() => changeAbsenceById(personId, date, c.id, 'pending'))}>Back to bid</button>,
           <button key="r" className="dchip refuse" data-testid={`dl-refuse-${c.id}`} onClick={() => act(() => changeAbsenceById(personId, date, c.id, 'refused'))}>Refuse</button>,
@@ -106,12 +134,14 @@ export function DayListSheet({
       return { key: `a-${c.id}`, cls: isLeave ? 'appr' : '', text, sub: !warOwned ? 'Change it on the Inputs page.' : row?.remarks ? String(row.remarks) : '', actions }
     }
     if (c.kind === 'request') {
-      const st = c.state === 'acknowledged' ? 'bid, acknowledged' : c.state === 'refused' ? 'bid refused' : 'bid, not decided yet'
+      /* "Ack" is the word everywhere since 21 Sep 26 — the button, the
+         legend and this line had drifted into three ways of saying it. */
+      const st = c.state === 'acknowledged' ? 'bid, acked' : c.state === 'refused' ? 'bid refused' : 'bid, not decided yet'
       const text = `${shown(notation(c))} — ${nameOf(c.code) || shown(c.code)}${partTxt} · ${st}`
       const actions: ReactElement[] = []
       if (deciding) {
         actions.push(<button key="ap" className="dchip approve" data-testid={`dl-approve-${c.id}`} onClick={() => act(() => decideRequestById(personId, date, c.id, 'approved'), 'Couldn’t approve — something else is on that time')}>Approve</button>)
-        if (c.state !== 'acknowledged') actions.push(<button key="ak" className="dchip ack" data-testid={`dl-ack-${c.id}`} onClick={() => act(() => decideRequestById(personId, date, c.id, 'acknowledged'))}>Acknowledge</button>)
+        if (c.state !== 'acknowledged') actions.push(<button key="ak" className="dchip ack" data-testid={`dl-ack-${c.id}`} onClick={() => act(() => decideRequestById(personId, date, c.id, 'acknowledged'))}>Ack</button>)
         if (c.state !== 'refused') actions.push(<button key="rf" className="dchip refuse" data-testid={`dl-refuse-${c.id}`} onClick={() => act(() => decideRequestById(personId, date, c.id, 'refused'))}>Refuse</button>)
       }
       if (editable) actions.push(<button key="cl" className="dchip" data-testid={`dl-clear-${c.id}`} onClick={() => act(() => clearRecordById(personId, date, c.id))}>Clear</button>)
@@ -121,10 +151,18 @@ export function DayListSheet({
     if (c.kind === 'credit') {
       const rec = raw.find(r => r.id === c.id) as CreditRec | undefined
       const times = rec?.spans?.length ? rec.spans.map(([a, b]) => `${hhmm(a)}–${hhmm(b)}`).join(', ') : ''
-      const text = `${c.code} — OIL earned${rec?.note ? ` (${rec.note})` : ''}${times ? `, worked ${times}` : ''}`
+      /* The same three facts the day window reads back (owner, 21 Sep 26):
+         why, who gave it, and — for one the app earned — the hours it was
+         measured over. `creditGiver` is shared with the window and the OIL
+         tracker so the giver is never worded three ways. */
+      const giver = creditGiver(rec)
+      const text = `${c.code} — OIL earned${rec?.note ? ` (${rec.note})` : ''}${times ? `, worked ${times}` : ''}${giver ? ` · given by ${giver}` : ''}`
       const actions: ReactElement[] = []
       if (rec?.oil === 'manual' && role === 'admin') actions.push(<button key="cl" className="dchip" data-testid={`dl-clear-${c.id}`} onClick={() => act(() => clearRecordById(personId, date, c.id))}>Clear</button>)
-      return { key: `c-${c.id}`, cls: 'sc', text, sub: rec?.oil === 'auto' ? 'From the published schedule.' : '', actions }
+      const from = rec?.oil !== 'auto' ? ''
+        : rec.via === 'input' ? 'From a duty input that was accepted.'
+          : 'From the published schedule.'
+      return { key: `c-${c.id}`, cls: 'sc', text, sub: from, actions }
     }
     // a replaced-bid notice
     const n = raw.find(r => r.id === c.id) as NoticeRec | undefined
@@ -142,10 +180,24 @@ export function DayListSheet({
         <span className="dt">{dayLabel(date)}</span>
         <button className="x" data-testid="daylist-close" onClick={onClose} aria-label="Close">✕</button>
       </div>
+      {/* WHAT THE CLASH MEANS, TO WHOEVER IS READING IT (CURRENT-STATE item A,
+          20 Sep 26). The one line here used to be written for an admin — "an
+          admin needs to change one" — whoever opened it. On a member's own day
+          that is the wrong news entirely: his box shows the OIL credit with his
+          bid behind the corner mark, so the day already reads as though his
+          leave had been thrown out, and the only sentence on the sheet talks
+          about somebody else's job. Since the owner's ruling that nothing is
+          refused for recorded work, his bid IS still live and a person needs
+          to be told so in those words. An admin still gets the instruction,
+          because for him it IS an instruction. */}
       {view.conflicts.length > 0 && (
         <div className="bidsheet-row">
           <span className="note warn" data-testid="daylist-clash">
-            Two of these can’t both stand on the same time — an admin needs to change one.
+            {own && liveBids.length > 0
+              ? `Your ${liveBids.join(' and ')} ${liveBids.length > 1 ? 'bids are' : 'bid is'} still live — something else on this day covers the same time, so an admin has to decide between them. Nothing has been thrown out.`
+              : own
+                ? 'Two things on this day cover the same time. An admin has to decide between them — nothing has been thrown out.'
+                : 'Two of these can’t both stand on the same time — an admin needs to change one.'}
           </span>
         </div>
       )}
@@ -160,6 +212,35 @@ export function DayListSheet({
           </li>
         ))}
       </ul>
+      {/* THE OIL ON THIS DAY, READ BACK IN THE SAME THREE LINES AS THE DAY
+          WINDOW (owner, 21 Sep 26). A locked day — one the published schedule
+          earned OIL on — opens this sheet rather than the window, so without
+          this the app answered his question on one screen and not the other.
+          Read-only here by construction: nothing on a Raptor-owned day is
+          edited on the war. */}
+      {oilRec && (
+        <div className="daylist-oil" data-testid="oil-detail">
+          <div className="bidsheet-row">
+            <span className="lab">Reason</span>
+            <span className="note" data-testid="oil-detail-why">
+              {oilRec.note?.trim() || (oilRec.oil === 'auto' ? 'Worked this day' : 'Not given')}
+            </span>
+          </div>
+          <div className="bidsheet-row">
+            <span className="lab">Given by</span>
+            <span className="note" data-testid="oil-detail-given">{creditGiver(oilRec) || 'Not given'}</span>
+          </div>
+          <div className="bidsheet-row">
+            <span className="lab">Days</span>
+            <span className="note" data-testid="oil-detail-days">
+              {oilDaysText(oilRec)}
+              {oilRec.oil === 'auto' && oilRec.spans?.length
+                ? ` — worked ${oilRec.spans.map(([a, b]) => `${hhmm(a)}–${hhmm(b)}`).join(', ')}`
+                : ''}
+            </span>
+          </div>
+        </div>
+      )}
       {msg && (
         <div className="bidsheet-row">
           <span className="note warn" data-testid="daylist-msg">{msg}</span>
@@ -167,4 +248,11 @@ export function DayListSheet({
       )}
     </Sheet>
   )
+}
+
+/** "3 days" / "half a day" / "a day" — what a credit is worth, in words. The
+ *  day window says it the same way; one wording for one fact. */
+function oilDaysText(c: { code: 'FO' | 'HO'; days?: number }): string {
+  const n = c.days ?? (c.code === 'FO' ? 1 : 0.5)
+  return n === 1 ? 'a day' : n === 0.5 ? 'half a day' : `${n} days`
 }

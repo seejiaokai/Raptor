@@ -12,7 +12,10 @@
 // the bug this rework fixes: a portion is something ANY leave type can
 // carry, not a leave type in itself. The owner's own notation says where the
 // portion goes: `OIL` is a whole day, `*OIL` is the morning, `OIL*` is the
-// afternoon. The asterisk sits where the time sits, and that notation — not
+// afternoon. THAT IS THE STORED FORM AND IT HAS NOT CHANGED; since 20 Sep 26
+// the SCREEN shows `<OIL` and `OIL>` instead, and keeps the asterisk to mean
+// "the app put this here" (`displayCell`). The asterisk sits where the time
+// sits, and that notation — not
 // an abbreviation like the old `HO` (which then meant half a day of OIL
 // TAKEN) — is what is stored, typed and read back from a CSV. NOTE: `HO` was
 // resurrected on 28 Aug 26 by the owner with the OPPOSITE meaning — half a
@@ -215,14 +218,36 @@ export function isMedical(code: string | undefined | null): boolean {
  * keeps its side. Display only: nothing stores or parses what this returns
  * without going back through `parseCell`, which accepts the short form too.
  */
-export function displayCell(raw: string): string {
+/**
+ * THE ONE FOLD BETWEEN WHAT IS STORED AND WHAT A BOX SHOWS.
+ *
+ * Reworked on the owner's 20 Sep 26 ask, which changes what the marks MEAN:
+ *
+ *   `<LL`   the morning        (was `*LL`)
+ *   `LL>`   the afternoon      (was `LL*`)
+ *   `FO*`   the APP put it there, not a person
+ *
+ * The arrow points at the half of the day the record sits in — it reads like
+ * the day runs left to right, which is how the grid is drawn. That frees the
+ * ASTERISK for the question the squadron actually asks of an OIL credit: did
+ * somebody type this, or did the app work it out from the published schedule?
+ * A starred code is the app's; a bare one is a person's.
+ *
+ * DISPLAY ONLY. The stored grammar is untouched — a request still stores
+ * `*LL`, `parseCell` and `formatCell` still speak it, and every rule, figure
+ * and test keeps reading the same strings. Changing the stored form would have
+ * meant rewriting the grammar every rule is written against to change what a
+ * box looks like. Same reason `fmtHM` exists for times: one fold, at the edge.
+ *
+ * `auto` is not in the code string — it is a fact about the RECORD — so the
+ * caller passes it. Only a credit can be automatic.
+ */
+export function displayCell(raw: string, auto = false): string {
   const cell = parseCell(raw)
   if (!cell) return raw
-  const short = MEDICAL_SHORT[cell.type]
-  if (!short) return raw
-  if (cell.portion === 'am') return `*${short}`
-  if (cell.portion === 'pm') return `${short}*`
-  return short
+  const short = MEDICAL_SHORT[cell.type] ?? cell.type
+  const half = cell.portion === 'am' ? `<${short}` : cell.portion === 'pm' ? `${short}>` : short
+  return auto ? `${half}*` : half
 }
 
 export interface DayCode {
@@ -336,13 +361,22 @@ export const CODE_GLOSSARY: GlossaryGroup[] = [
     group: 'Shown here only — not on the Inputs page',
     onlyHere: true,
     rows: [
-      { show: 'FO', mean: cap(SC_DUTY_LABELS.FO) + ' — more than 6 hours worked on a weekend or public holiday earns a full day off in lieu. Credited automatically from the published schedule, or confirmed on a Duty & commitments input — not typed here.' },
-      { show: 'HO', mean: cap(SC_DUTY_LABELS.HO) + ' — 6 hours or less worked earns half a day off in lieu, the same way.' },
+      { show: 'FO', mean: cap(SC_DUTY_LABELS.FO) + ' — a full day off in lieu. An admin grants it here or on the OIL tracker, for any reason.' },
+      { show: 'HO', mean: cap(SC_DUTY_LABELS.HO) + ' — half a day off in lieu, granted the same way.' },
+      { show: 'FO*', mean: 'The star means the APP put it there, not a person — credited automatically from the published schedule for a weekend or public holiday actually worked.' },
     ],
   },
   {
     group: 'Medical',
     rows: MEDICAL_TYPES.map(m => ({ show: displayCell(m.type), mean: cap(m.label.replace(/^medical — /, '')) })),
+  },
+  {
+    group: 'Half days',
+    onlyHere: true,
+    rows: [
+      { show: '<LL', mean: 'The arrow points at the half of the day — this one is the MORNING.' },
+      { show: 'LL>', mean: 'And this one is the AFTERNOON. A code with no arrow is the whole day.' },
+    ],
   },
   {
     group: 'Leave',

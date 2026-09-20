@@ -665,3 +665,53 @@ describe('AMT debrief is a range (owner, 13 Aug 26)', () => {
     expect(w.de).toBe(12 * 60 + 30 + VCONF.amtDebrief)   // 1230 + 30
   })
 })
+
+/* THE SILENT FAILURE ON A MAN'S LEAVE BALANCE (owner, 20 Sep 26 — "I would
+   also like u to give the warning On the day itself, while you're building
+   it"). A desk with a man on it and no times mints no OIL — correct, since
+   money must not come from a guess — and it used to happen in silence. The
+   day's own warning strip is where it is worth saying, because here the fix
+   costs nothing; after the publish it costs an amendment. */
+describe('a weekend duty desk with no times warns on the day itself', () => {
+  const warnsOn = (di: number) => (validate().byDay[di]?.warns ?? []).filter((w: any) => w.code === 'OIL_NO_TIMES')
+  const blank = (di: number) => {
+    for (const dw of (DAYS[di] as any).dutywaves ?? []) for (const r of dw.rows ?? []) { r.str = ''; r.end = '' }
+  }
+
+  it('names the desk, and says nobody earns OIL for the day', () => {
+    blank(5)                                                     // the seed Saturday
+    const w = warnsOn(5)
+    expect(w).toHaveLength(1)
+    /* "nobody ON IT", not "nobody" (Astra, 21 Sep 26): the day strip cannot
+       see whether some OTHER timed row on the same day earns somebody OIL, so
+       the wider claim could be false. It says the part it can stand behind —
+       the publish message, which does know, still uses the owner's own words
+       when the day truly earns nobody anything. */
+    expect(w[0].msg).toBe('SDO has no times — nobody on it earns OIL for this day')
+    expect(w[0].sev).toBe('hard')
+  })
+
+  it('stays quiet when the desk is properly timed', () => {
+    expect(warnsOn(5)).toHaveLength(0)
+  })
+
+  it('stays quiet on a WEEKDAY — a blank desk on a Monday earns nothing anyway', () => {
+    blank(0)
+    expect(warnsOn(0)).toHaveLength(0)
+  })
+
+  it('stays quiet about an EMPTY desk — nobody is owed anything for it', () => {
+    for (const dw of (DAYS[5] as any).dutywaves ?? []) for (const r of dw.rows ?? []) { r.id = ''; r.str = ''; r.end = '' }
+    expect(warnsOn(5)).toHaveLength(0)
+  })
+
+  it('reads as one line however many desks are blank, with the verb agreeing', () => {
+    const wave = ((DAYS[5] as any).dutywaves ?? [])[0]
+    wave.rows.push({ role: 'SXO', id: 'dj', str: '', end: '' })
+    blank(5)
+    const w = warnsOn(5)
+    expect(w).toHaveLength(1)
+    expect(w[0].msg).toBe('SDO and SXO have no times — nobody on them earns OIL for this day')
+  })
+})
+

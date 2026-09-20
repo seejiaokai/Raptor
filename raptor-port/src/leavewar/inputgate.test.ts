@@ -74,24 +74,38 @@ describe('the invariant — no overlapping leave, no leave over a medical (B7, �
   })
 })
 
-describe('leave over recorded work is refused only when the times overlap (§26.3, B4)', () => {
-  it('refuses leave on a day credited as worked with no times (whole day, owner Q7)', () => {
+describe('leave over recorded work is FLAGGED, not refused (owner, 20 Sep 26)', () => {
+  /* The owner reversed the refusal on 20 Sep 26, on the app's own doctrine:
+     "does making a hard refusal be a bit contradicting to what I'm allowing
+     for the schedule? Currently on the schedule if there's a clash I still
+     allow planning but there is just flagging." So leave over recorded work
+     is written, the day goes amber, and the filer is told in the same breath.
+     The TIME test (§26.3, B4) is untouched: hours that miss are not a clash
+     at all, and nothing is said. */
+  it('files leave on a day credited as worked with no times, and says so (owner Q7)', () => {
     setRole('admin')
     expect(setCell('ammo', '2026-02-14', 'FO')).toBe(true)
-    expect(file('ammo', 'LL', 'Feb 14')).toBe(false)
+    // no times on a hand-typed credit still means the WHOLE day (Q7, B8)
+    expect(file('ammo', 'LL', 'Feb 14')).toBe(true)
     expect(said.some(m => m.includes('recorded as working on 14 Feb'))).toBe(true)
+    expect(said.some(m => m.includes('flagged for someone to resolve'))).toBe(true)
+    expect(codeAt('ammo', '2026-02-14')).toBe('LL')
   })
 
 
-  it('approving a bid on a day later credited as worked skips that day (owner Q5, §26.3)', () => {
+  it('approving a bid on a day later credited as worked GRANTS it and flags the day (owner, 20 Sep 26)', () => {
+    /* This used to skip the day (owner Q5, §26.3). The owner reversed it on
+       20 Sep 26: recorded work never refuses a write, on any screen, because
+       the same leave must not be kept or lost depending on where it was typed.
+       The leave is granted, and the day carries the amber for a human. */
     setRole('admin')
     expect(setCell('ammo', '2026-02-14', 'LL')).toBe(true)
-    // the work was credited after the bid (the OIL pass keeps both)
+    // the work was credited after the bid
     lwEditLists([{ personId: 'ammo', date: '2026-02-14', drop: [], add: [{ id: 'c-late', kind: 'credit', code: 'FO', oil: 'manual' } as any] }])
     advanceStage()
     setBidState('ammo', '2026-02-14', 'approved')
-    expect(rowsOf('ammo', 'LL')).toHaveLength(0)
-    expect(recsAt('ammo', '2026-02-14').some(r => r.kind === 'request')).toBe(true)
+    expect(rowsOf('ammo', 'LL')).toHaveLength(1)                    // granted
+    expect(codeAt('ammo', '2026-02-14')).toBe('LL')
   })
 })
 

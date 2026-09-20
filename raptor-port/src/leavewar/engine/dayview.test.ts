@@ -6,7 +6,16 @@ import { dayView, AM, PM, FULL, type Contrib, type Win } from './dayview'
 const hm = (h: number, m = 0) => h * 60 + m
 const ab = (id: string, code: string, win: Win = FULL, extra: Partial<Contrib> = {}): Contrib => ({ id, kind: 'absence', code, win, ...extra })
 const rq = (id: string, code: string, state: Contrib['state'] = 'pending', win: Win = FULL): Contrib => ({ id, kind: 'request', code, win, state })
-const cr = (id: string, code: 'FO' | 'HO', win: Win = FULL): Contrib => ({ id, kind: 'credit', code, win })
+/** RECORDED WORK — the credit the app worked out from the published schedule
+ *  (`auto`). It is the one that still flags a day off, because it is the only
+ *  one that says where the man was (owner, 20 Sep 26). */
+const cr = (id: string, code: 'FO' | 'HO', win: Win = FULL): Contrib => ({ id, kind: 'credit', code, win, auto: true })
+/** An AWARD — a hand-typed credit. It says a man is OWED a day, not where he
+ *  was, so it clashes with nothing (owner, 20 Sep 26). */
+const aw = (id: string, code: 'FO' | 'HO', win: Win = FULL): Contrib => ({ id, kind: 'credit', code, win })
+/** A credit carrying how many days it is worth (owner, 20 Sep 26). */
+const grant = (id: string, code: 'FO' | 'HO', days?: number): Contrib =>
+  ({ id, kind: 'credit', code, win: FULL, ...(days != null ? { days } : {}) })
 const nt = (id: string, code: string): Contrib => ({ id, kind: 'notice', code, win: FULL })
 const charged = (v: ReturnType<typeof dayView>) => Object.fromEntries(v.charges.map(c => [c.code, c.amount]))
 
@@ -69,6 +78,19 @@ describe('the amber "!" — only for what an admin must resolve', () => {
   it('worked Saturday morning + afternoon leave is grey; leave over the work time is amber', () => {
     expect(dayView([cr('w', 'HO', [hm(8), hm(11)]), ab('l', 'LL', PM)]).mark).toBe('+1')
     expect(dayView([cr('w', 'HO', [hm(8), hm(11)]), ab('l', 'LL', AM)]).amber).toBe(true)
+  })
+  it('an AWARD over leave is NOT amber — it says he is owed a day, not where he was', () => {
+    // The same two records as the case above, with the credit hand-typed
+    // instead of read off the schedule. Nothing contradicts anything, so the
+    // day stays grey and the admin is not sent to resolve a non-problem.
+    expect(dayView([aw('w', 'HO', [hm(8), hm(11)]), ab('l', 'LL', AM)]).amber).toBe(false)
+    // ...and the same over a medical, the credit's OTHER clash row.
+    expect(dayView([ab('c', 'ATTC', AM), aw('w', 'HO', [hm(8), hm(11, 30)])]).amber).toBe(false)
+  })
+  it('a credit is worth what it says, not what its code is worth', () => {
+    expect(dayView([grant('g', 'FO', 3)]).earnsOil).toBe(3)
+    expect(dayView([grant('g', 'HO', 2.5)]).earnsOil).toBe(2.5)
+    expect(dayView([grant('g', 'HO')]).earnsOil).toBe(0.5)
   })
   it('an end at 12:00 and a start at 12:01 do not overlap', () => {
     expect(dayView([ab('a', 'LL', [hm(8), hm(12)]), ab('b', 'OL', [hm(12, 1), hm(14)])]).amber).toBe(false)

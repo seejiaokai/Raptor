@@ -94,10 +94,14 @@ import {
   liveRequestsOn,
   portionOfCode,
   requestWin,
+  barsWrite,
   forbiddenPair,
+  isSickCode,
   isLeaveCode,
   parseCell,
   FULL,
+  MAX_GIVEN_BY,
+  MAX_GRANT_DAYS,
   MAX_REC_NOTE,
   type Ledger,
   type LedgerEntry,
@@ -110,7 +114,7 @@ import {
   type Stage,
   type States,
 } from '../engine'
-import { mergeWar, absencesAt, absenceVersion, type MergedWar, type Views } from './merge'
+import { mergeWar, absencesAt, absenceVersion, type MergedWar, type RecordSpans, type Views } from './merge'
 import { counterLabel } from '../engine/counters'
 import { localBackend, memoryBackend, type StorageBackend } from './storage'
 /* [ARCH-STACK] Step 2 phase 4 — the shared command layer (see the persist()
@@ -287,14 +291,20 @@ interface State {
    *  is not an identity field. */
   personEdits: Record<string, Partial<Pick<Person, 'seat' | 'band' | 'sxo'>>>
 
-  /** The posting-out windows an admin set through `setPostOut`, keyed by
-   *  person id, each holding the person AS LAST PROJECTED with the window on
-   *  it. Persisted (8 Sep 26 bug pass — a PO date vanished on reload): on
+  /** The SQUADRON WINDOWS an admin set by hand, keyed by person id, each
+   *  holding the person AS LAST PROJECTED with the window on it. BOTH ends
+   *  live here: the posting-OUT date (`setPostOut`, 18 Aug 26) and — since the
+   *  owner's 20 Sep 26 ruling "we need a post in button just like post out" —
+   *  the posting-IN date (`setPostIn`). One record for both, because they are
+   *  one fact (the person's official time in the squadron) and because the
+   *  restore, merge and keep rules below then cannot drift apart. Records
+   *  written before the post-in half existed carry `from: null`, which is
+   *  exactly what the projection gives, so nothing needs migrating. Persisted (8 Sep 26 bug pass — a PO date vanished on reload): on
    *  every `setPeople` the window is laid back onto the projected person, and
    *  someone the projection no longer has (archived once the date arrived) is
    *  put back from the frozen copy, so the months before they left keep
    *  showing their history — `reprojectRoster`'s keep rule, now surviving a
-   *  reboot. An entry exists only while `to` is set; clearing the post-out
+   *  reboot. An entry exists while EITHER end is set; clearing the last one
    *  removes it. The demo overlay's own `to` (no `poArchive`) is not one of
    *  these and still lasts a session. */
   postOuts: Record<string, Person>
@@ -308,6 +318,10 @@ export interface MergedState extends Omit<State, 'wars'> {
   grid: Grid
   states: States
   views: Views
+  /** The months the CURRENT war shows something on, per person — what
+   *  stretches a row past the person's official squadron dates so leave dated
+   *  outside them can still be seen (merge.ts `RecordSpans`). */
+  spans: RecordSpans
 }
 
 /** The event-row count and its bounds (owner, 18 Aug 26). Two rows is the
@@ -838,7 +852,7 @@ export function getState(): MergedState {
   if (MERGED && MERGED.raw === state && MERGED.ver === ver) return MERGED.out
   const wars = state.wars.map(mergeWar)
   const cur = wars.find(w => w.period.id === state.currentId) ?? wars[0]!
-  const out: MergedState = { ...state, wars, grid: cur.grid, states: cur.states, views: cur.views }
+  const out: MergedState = { ...state, wars, grid: cur.grid, states: cur.states, views: cur.views, spans: cur.spans }
   MERGED = { raw: state, ver, out }
   return out
 }
@@ -1447,16 +1461,64 @@ export function setPostOut(id: string, fromDate: string | null, archive = true):
   const person = state.people.find(p => p.id === id)
   if (!person) return false
   const to = fromDate ? addDays(fromDate, -1) : null
+  /* A window that closes before it opens is not a decision, it is a typo, and
+     it would hide the person on EVERY date at once (`inSquadron` answers false
+     both sides). Refused here rather than clamped: silently moving the other
+     end would be the app deciding a posting date for the admin. */
+  if (to !== null && person.from !== null && to < person.from) return false
   const people = state.people.map(p =>
     (p.id === id ? { ...p, to, poArchive: fromDate ? archive : undefined } : p))
-  /* the persisted window (State.postOuts): the person as they stand now,
-     window on; cleared with the post-out */
-  const postOuts = { ...state.postOuts }
-  if (fromDate) postOuts[id] = people.find(p => p.id === id)!
-  else delete postOuts[id]
-  state = withCurrent({ ...state, people, postOuts })
+  state = withCurrent({ ...state, people, postOuts: windowRecord(people, id) })
   persistNotify()
   return true
+}
+
+/**
+ * Post a person IN from a date, or clear it (owner, 20 Sep 26 — "we need a
+ * post in button just like post out. Because those dates are official dates").
+ *
+ * `date` is the first day they ARE here, stored straight onto `from`; the
+ * post-out sheet's date is the first day they are GONE, so the two read the
+ * same way round on screen ("PI from", "PO from") while landing on opposite
+ * ends of the window. `null` clears it, which is the undo.
+ *
+ * Before this existed `from` was ALWAYS null — the Raptor projection has no
+ * joining date to give — so every person read as having always been here.
+ * That is why answer C's "a pre-joining day may be bid on" had nothing to
+ * stand on: there were no pre-joining days.
+ *
+ * The date is OFFICIAL and nothing more: it decides manning (`inSquadron`,
+ * `availabilityOf`) and the grey hatch, and it deliberately does NOT decide
+ * what may be filed. A man can be on leave before he posts in and after he
+ * posts out (the owner, same ruling), so records outside the window are
+ * allowed, shown and charged — the row stretches to reach them (`rowInWindow`)
+ * without the official dates moving an inch.
+ *
+ * Same guard rails as the post-out: admin-gated in the store because the role
+ * switch is only an affordance, any real date accepted, only malformed strings
+ * refused, and the window preserved across every Raptor re-projection.
+ */
+export function setPostIn(id: string, date: string | null): boolean {
+  if (state.role !== 'admin') return false
+  if (date !== null && !/^\d{4}-\d{2}-\d{2}$/.test(date)) return false
+  const person = state.people.find(p => p.id === id)
+  if (!person) return false
+  if (date !== null && person.to !== null && date > person.to) return false
+  const people = state.people.map(p => (p.id === id ? { ...p, from: date } : p))
+  state = withCurrent({ ...state, people, postOuts: windowRecord(people, id) })
+  persistNotify()
+  return true
+}
+
+/* The persisted squadron window (State.postOuts): the person as they stand
+   now, kept while EITHER end is set and dropped once both are clear. One body
+   so the two ends cannot disagree about when the record goes. */
+function windowRecord(people: Person[], id: string): Record<string, Person> {
+  const next = { ...state.postOuts }
+  const p = people.find(x => x.id === id)!
+  if (p.from !== null || p.to !== null) next[id] = p
+  else delete next[id]
+  return next
 }
 
 /**
@@ -1481,7 +1543,7 @@ export function setPeople(people: Person[]): void {
   const next: Person[] = people.map(p => {
     const w = po[p.id]
     const merged: Person = { ...p, ...(edits[p.id] || {}) }
-    return w ? { ...merged, to: w.to, poArchive: w.poArchive } : merged
+    return w ? { ...merged, from: w.from, to: w.to, poArchive: w.poArchive } : merged
   })
   const ids = new Set(next.map(p => p.id))
   for (const id of Object.keys(po)) if (!ids.has(id)) next.push(po[id])
@@ -1938,7 +2000,56 @@ export function lwEditLists(edits: Array<{ personId: string; date: string; drop:
  *  `ignore` leaves out records the write is about to replace. */
 function occupiedFor(c: Contrib, personId: string, date: string, ignore: readonly WarRec[] = []): boolean {
   const staying = listAt(personId, date).filter(r => !ignore.includes(r))
-  return [...recContribs(staying), ...absencesAt(personId, date)].some(o => forbiddenPair(c, o))
+  /* WORK ALWAYS LANDS; only a REQUEST is barred here.
+     A CREDIT is work, and the owner ruled on 20 Sep 26 that work lands on a
+     leave day and the day is flagged — so an admin typing FO/HO onto someone's
+     leave must behave exactly as the published schedule does when it earns a
+     credit on that day. It used to be refused, and refused SILENTLY, so the
+     same two facts were kept or lost depending on which was entered first
+     (Codex review, 20 Sep 26). Incoming credits are therefore never barred.
+
+     NOR DOES IT BAR A BID ANY MORE. Clash-check B5 said "a bid made after the
+     publish that overlaps published work is refused at the bid door". That was
+     quoted to the owner on 20 Sep 26 with its consequence — the same Saturday's
+     leave going through on the Inputs page form and refused on the grid — and
+     overruled: flag it everywhere. B5's OTHER half went the same day: publishing
+     KEEPS an undecided bid and flags the day (this comment said it stood, which
+     was true for a few hours). `barsWrite` carries the rule for every door so
+     the four cannot drift apart. */
+  return [...recContribs(staying), ...absencesAt(personId, date)].some(o => barsWrite(c, o))
+}
+
+/** WHY a cell write would be refused, in the words the person needs — or null
+ *  when it would go through. The picker asks this BEFORE writing, so a refusal
+ *  is always explained: `setCell` answers only true/false, and the sheet used
+ *  to close on a false as though it had worked, leaving no leave and no
+ *  message ([S4-BUGHUNT], 20 Sep 26). Runs the same guards `setCell` runs,
+ *  never a second copy of them — the `moveProblem` idiom. */
+export function cellProblem(personId: string, date: string, code: string): string | null {
+  if (!canEditCell(state.period, state.role, date)) return 'That day is not open for bidding — check the war and the bidding window.'
+  if (!canEditRow(state.role, state.viewer, personId)) return 'You can only bid on your own row.'
+  const clean = code.trim().toUpperCase()
+  if (isMedical(clean)) return 'Medical is filed on the Inputs page, not here.'
+  if (!clean) return null
+  const list = listAt(personId, date)
+  if (clean === 'FO' || clean === 'HO') {
+    if (state.role !== 'admin') return 'Only an admin can enter OIL.'
+    const had = list.find(isCredit)
+    if (had && had.oil === 'auto') return 'That day already earns OIL from the published schedule.'
+    /* nothing else stops a credit: work lands on a leave day and the day is
+       flagged (owner, 20 Sep 26) */
+    return null
+  }
+  if (!isBiddable(clean) || !parseCell(clean)) return 'That is not something you can bid here.'
+  const portion = portionOfCode(clean)
+  const replaced = liveRequestsOn(list, portion)
+  if (replaced.length === 1 && replaced[0]!.code === clean) return null
+  const c: Contrib = { id: 'new', kind: 'request', code: parseCell(clean)!.type, win: requestWin(clean), state: 'pending' }
+  const staying = list.filter(r => !replaced.includes(r as RequestRec))
+  const blocker = [...recContribs(staying), ...absencesAt(personId, date)].find(o => barsWrite(c, o))
+  if (!blocker) return null
+  if (isSickCode(blocker.code)) return `That day is already ${blocker.code === 'ATTC' ? 'ATT C' : blocker.code} — leave can't go over a medical.`
+  return `That time is already taken by ${blocker.code} — clear it first.`
 }
 
 /** What the merged view shows on top at one address. */
@@ -2083,6 +2194,19 @@ export function clearCells(cells: { personId: string; date: string }[]): RangeWr
  *  holding two absences (those are changed one at a time from the list —
  *  design §23.3). */
 function warEditable(personId: string, date: string): boolean {
+  /* APPROVED AND PUBLISHED IS FINISHED PAPERWORK (owner, 21 Sep 26 — "if the
+     input is approved and published … the member and admin can input the
+     remarks there. In order to edit it again, admin has to go back to open for
+     bidding or bidding closed"). ONE seat for that rule, because the war reaches
+     an approved leave from five directions — the tap list, the bulk decision
+     over a drag-selection, a bulk clear, a drag-move and a single move — and
+     every one of them asks this question. Enforcing it only where the owner
+     happened to be looking is how the rule would rot (Fable, 21 Sep 26; Astra
+     found the tap-list half of it).
+     It is NARROW on purpose: this predicate is only ever asked about a leave
+     the WAR approved. An input nobody has approved yet stays fully editable on
+     a published war, which is the other half of his ruling. */
+  if (getState().period.stage === 'published') return false
   const war = warHolding(getState().wars as MergedWar[], date) as MergedWar | undefined
   const v = war?.views[personId]?.[date]
   if (!v || !v.main || v.main.kind !== 'absence') return false
@@ -2584,8 +2708,10 @@ export function resetEventTypes(): void {
    refuses. */
 
 export const MAX_REASON = 120
-/** The optional "given by" on a grant (owner, 2 Sep 26) — a name or a post. */
-export const MAX_GIVEN_BY = 40
+/** The optional "given by" on a grant (owner, 2 Sep 26) — a name or a post.
+ *  ONE literal, defined with the record field it also caps (engine/warrecs.ts)
+ *  and re-exported here so every existing caller keeps its import. */
+export { MAX_GIVEN_BY }
 const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/
 
 /** Everything a figure needs to read a person's number, from the live state
@@ -3057,32 +3183,217 @@ export type IngestResult = 'written' | 'confirmed' | 'clash' | 'ignored'
  * Only `FO` and `HO` come through here, from published weekend/PH work or an
  * acknowledged duty claim (`engine/oil.ts`). The credit is an `auto` record the
  * pass may take away again; `spans` are the actual work times (clash check B4,
- * B8). It lands BESIDE whatever else is on the day unless the work overlaps it
- * in time — leave or a medical on the same hours, or an undecided bid — which
- * is the clash (the pass reports it; a human decides). A hand-typed credit
- * already there is the squadron having recorded the same fact first: taken
- * over in place.
+ * B8). It lands BESIDE whatever else is on the day — ALWAYS, since the owner's
+ * 20 Sep 26 ruling: work overlapping leave, a medical or an undecided bid is
+ * reported as a clash and the day goes amber, but the credit is still banked
+ * and stays until a human resolves it by removing one side or the other. A
+ * hand-typed credit already there is the squadron having recorded the same
+ * fact first: taken over in place.
  */
-export function ingestDutyCredit(personId: string, date: string, code: 'FO' | 'HO', why?: string, spans?: Array<[number, number]>): IngestResult {
+export function ingestDutyCredit(personId: string, date: string, code: 'FO' | 'HO', why?: string, spans?: Array<[number, number]>, via: 'schedule' | 'input' = 'schedule'): IngestResult {
   // Locked — a sync-driven credit is not an undo step.
-  return locked(() => ingestDutyCreditImpl(personId, date, code, why, spans))
+  return locked(() => ingestDutyCreditImpl(personId, date, code, why, spans, via))
 }
-function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO', why?: string, spans?: Array<[number, number]>): IngestResult {
+function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO', why?: string, spans?: Array<[number, number]>, via: 'schedule' | 'input' = 'schedule'): IngestResult {
   if (code !== 'FO' && code !== 'HO') return 'ignored'
   if (!warHolding(state.wars, date)) return 'ignored'
   const list = listAt(personId, date)
   const had = list.find(isCredit)
   const note = (why ?? '').trim().slice(0, MAX_REC_NOTE)
   const clean = spans?.filter(s => Array.isArray(s) && s[0] <= s[1] && s[0] >= 0 && s[1] <= 1439)
-  const rec: CreditRec = { id: had?.id ?? newRecId('c'), kind: 'credit', code, oil: 'auto', ...(note ? { note } : {}), ...(clean && clean.length ? { spans: clean } : {}) }
+  const rec: CreditRec = { id: had?.id ?? newRecId('c'), kind: 'credit', code, oil: 'auto', via, ...(note ? { note } : {}), ...(clean && clean.length ? { spans: clean } : {}) }
   const probe = recContribs([rec]).map(c => ({ ...c, id: 'new' }))
   const staying = list.filter(r => r !== had)
   const others = [...recContribs(staying), ...absencesAt(personId, date)]
-  if (probe.some(p => others.some(o => forbiddenPair(p, o)))) return 'clash'
-  if (had && had.oil === 'auto' && had.code === code && JSON.stringify(had) === JSON.stringify(rec)) return 'confirmed'
-  const confirming = !!had && had.oil === 'manual' && had.code === code
-  putList(personId, date, [...staying, rec])
-  return confirming ? 'confirmed' : 'written'
+  /* THE CREDIT LANDS EVEN WHEN IT OVERLAPS AN ABSENCE (owner, 20 Sep 26 —
+     "if someone is working, even tho they have leave on that day, it should
+     still bank the OIL credit … until that thing is resolved — which means
+     that if work is removed, then no OIL credit. If leave is removed then OIL
+     still credits").
+     This SETS ASIDE clash-check B4's "Overlap → no credit" half. B4's time
+     test itself stands, in `forbiddenPair`, and is exactly what turns the day
+     amber. Refusing to place the credit was the older reading and it cost more
+     than it saved: the forward pass wrote nothing, the reverse pass skipped
+     the address because the address was still wanted, and a credit already
+     sitting there under evidence that had since changed went on claiming hours
+     the person no longer worked. Writing unconditionally fixes that by
+     overwriting, and the resolution the owner describes falls out of machinery
+     that already exists — `dayView` derives the amber from the very pair we no
+     longer refuse, the strip is derived from the same conflicts, and the
+     reverse pass already removes an auto credit once the work is gone. */
+  const clash = probe.some(p => others.some(o => forbiddenPair(p, o)))
+  /* The comparison is against the record this pass would WRITE, carried fields
+     and all — comparing against the bare `rec` made a taken-over award look
+     different on every pass and rewrote it forever (Fable, 21 Sep 26). */
+  const same = had && had.oil === 'auto' && had.code === code && !had.manual && JSON.stringify(had) === JSON.stringify(rec)
+  if (same) return clash ? 'clash' : 'confirmed'
+  /* TAKEN OVER IN PLACE, BUT NEVER DESTROYED. The squadron recorded this fact
+     first; the schedule now backs it, so the credit becomes the schedule's and
+     shows as such. What it must NOT do is forget where it came from: the
+     reverse pass may clear an `auto` credit, so an unpublish used to delete
+     the admin's own record outright — a hand-entered call-out vanished because
+     the schedule later happened to earn a credit on the same day (Codex
+     review, 20 Sep 26), against design §18 OA3-003. It now carries
+     `wasManual`, the admin's own reason is kept in preference to the
+     schedule's words, and an unpublish returns it to `manual` rather than
+     removing it. */
+  /* Idempotent on purpose: the pass runs on EVERY change, so a second run
+     must recognise a credit it has already taken over and carry the snapshot
+     forward untouched. Testing `oil === 'manual'` alone lost it on the very
+     next pass, which put the deletion-on-unpublish straight back. */
+  const snap: CreditRec['manual'] | undefined = had
+    ? had.manual ?? (had.oil === 'manual'
+      ? { code: had.code, ...(had.note ? { note: had.note } : {}), ...(had.givenBy ? { givenBy: had.givenBy } : {}), ...(had.days != null ? { days: had.days } : {}), ...(had.spans ? { spans: had.spans } : {}) }
+      : undefined)
+    : undefined
+  /* AN AWARD IS NOT THE SAME FACT AS THE WORK, SO THE TAKEOVER MUST NOT EAT IT
+     (Fable, 21 Sep 26; consequence of the owner's 20 Sep award ruling). The
+     takeover was built when a hand-typed credit meant "the squadron recorded
+     this work first" — the same fact, so replacing it lost nothing. Since the
+     ruling it is an AWARD: days a man is OWED, which the schedule knows nothing
+     about. Replacing it wholesale took a 3-day award down to the one day the
+     Saturday earns, silently, and his balance was short by two until somebody
+     unpublished the day.
+     So the award's QUANTITY and its WORDS ride on: the day now says both what
+     the schedule earned and what he was owed, and the balance never falls. The
+     snapshot is still kept for the unpublish hand-back. Whether an award and a
+     worked day should ADD UP (3 + 1) is the owner's call and is not assumed
+     here — this keeps the larger of the two, which is what he had before. */
+  const kept: CreditRec = snap
+    ? {
+      ...rec,
+      manual: snap,
+      ...(snap.days != null ? { days: Math.max(snap.days, code === 'FO' ? 1 : 0.5) } : {}),
+      ...(snap.note ? { note: snap.note } : {}),
+      ...(snap.givenBy ? { givenBy: snap.givenBy } : {}),
+    }
+    : rec
+  putList(personId, date, [...staying, kept])
+  /* 'clash' still REPORTS — the day needs a human — but it no longer means
+     "nothing was written". The credit is on the day either way. */
+  return clash ? 'clash' : snap ? 'confirmed' : 'written'
+}
+
+/**
+ * PLACE A HAND-TYPED OIL CREDIT (owner, 20 Sep 26 — "the admin can also credit
+ * OIL on the leave sheet for convenience. We should enable that even on any
+ * day").
+ *
+ * Until now NOTHING in the app could create one. The store accepted an FO/HO
+ * cell, the reason editor edited one and the hours box edits one, but the only
+ * writers were the automatic pass off the published schedule and the demo
+ * seed — so every one of those editors could only ever reach a credit nobody
+ * was able to type. This is the missing door.
+ *
+ * ANY DAY, deliberately (the owner's ruling above, which sets aside the
+ * assumption — never actually a rule — that OIL is only earned on a weekend or
+ * a public holiday). That restriction is real for the AUTOMATIC pass, which
+ * reads the published schedule and only credits non-working days. A credit an
+ * admin types by hand is a different thing: it is the squadron recording that
+ * a man worked, with no schedule behind it, which is exactly why it carries a
+ * reason and who said so. The pass never removes a hand-typed credit, so a
+ * weekday one stays until an admin clears it — and it DOES add to the man's
+ * OIL balance, which is the point of typing it.
+ *
+ * ONE command, so it is ONE undo step: doing this as setCell + setCellNote +
+ * setCellHours would take three presses of undo to take back one entry.
+ *
+ * Refused only where refusing is the truth: not an admin, no war on that date,
+ * a day the published schedule already earns (its credit is the schedule's —
+ * change the schedule), or hours that are not a real span. It is never refused
+ * for clashing with leave: work always lands and the day is flagged.
+ */
+export function setManualCredit(
+  personId: string, date: string, code: 'FO' | 'HO',
+  opts: { note?: string; givenBy?: string; days?: number | null } = {},
+): string | null {
+  if (state.role !== 'admin') return 'Only an admin can enter OIL'
+  if (!warHolding(state.wars, date)) return 'That day is in no war'
+  if (code !== 'FO' && code !== 'HO') return 'That is not an OIL code'
+  const list = listAt(personId, date)
+  const had = list.find(isCredit)
+  if (had && had.oil === 'auto') return 'That day already earns OIL from the published schedule'
+  const note = (opts.note ?? '').trim().slice(0, MAX_REC_NOTE)
+  const givenBy = (opts.givenBy ?? '').trim().slice(0, MAX_GIVEN_BY)
+  const days = opts.days ?? null
+  if (days !== null) {
+    if (!Number.isFinite(days) || days <= 0) return 'Type how many days \u2014 or leave it blank'
+    if (days * 2 !== Math.round(days * 2)) return 'OIL goes in halves \u2014 1, 1.5, 2'
+    if (days > MAX_GRANT_DAYS) return `That is more than ${MAX_GRANT_DAYS} days`
+  }
+  const rec: CreditRec = {
+    id: had?.id ?? newRecId('c'), kind: 'credit', code, oil: 'manual',
+    ...(note ? { note } : {}), ...(givenBy ? { givenBy } : {}),
+    ...(days !== null ? { days } : {}),
+  }
+  return putList(personId, date, [...list.filter(r => r !== had), rec]) ? null : 'Could not write that'
+}
+
+/**
+ * HOW MANY DAYS a granted OIL credit is worth (owner, 20 Sep 26 — "on the
+ * leave war i can also grant more than 1 day of OIL credit just like how the
+ * oil tracker does it").
+ *
+ * THIS REPLACED A WORK-HOURS BOX BUILT THE DAY BEFORE, and the reason is the
+ * model changing under it rather than the box being wrong. The hours existed
+ * so a two-hour call-out beside afternoon leave would not flag the day. Then
+ * the owner ruled that OIL may be granted "for any reason, doesnt have to be
+ * like working on weekends" and told us to drop the hours — which together
+ * mean a granted credit is an AWARD, not a record of attendance. An award
+ * cannot contradict a day off, so there is nothing for hours to prevent, and
+ * `forbiddenPair` now exempts a grant outright. The hours live on only where
+ * they are real: the AUTOMATIC credit, which reads them off the published
+ * schedule.
+ *
+ * `null` clears the quantity, which puts the code's own worth back — a day
+ * for FO, half for HO. Halves only. Admin only, an existing HAND-TYPED credit
+ * only: the schedule earns exactly what its code says, and the pass would
+ * overwrite anything typed onto it on the next run.
+ *
+ * It writes through `putList` like every other record change, so it joins the
+ * same command, the same undo and the same persistence as its neighbours.
+ */
+export function setCellDays(personId: string, date: string, days: number | null): string | null {
+  if (state.role !== 'admin') return 'Only an admin can edit OIL'
+  if (!warHolding(state.wars, date)) return 'That day is in no war'
+  const list = listAt(personId, date)
+  const had = list.find(isCredit)
+  if (!had) return 'There is no OIL credit on that day'
+  if (had.oil !== 'manual') return 'That credit comes from the published schedule — change the schedule instead'
+  if (days !== null) {
+    if (!Number.isFinite(days) || days <= 0) return 'Type how many days — or leave it blank'
+    if (days * 2 !== Math.round(days * 2)) return 'OIL goes in halves — 1, 1.5, 2'
+    if (days > MAX_GRANT_DAYS) return `That is more than ${MAX_GRANT_DAYS} days`
+  }
+  const rest = { ...had }
+  delete (rest as { days?: unknown }).days
+  const rec: CreditRec = days === null ? rest : { ...rest, days }
+  if (JSON.stringify(rec) === JSON.stringify(had)) return null
+  return putList(personId, date, list.map(r => (r === had ? rec : r))) ? null : 'Could not change that'
+}
+
+/**
+ * ON WHOSE SAY-SO, on a hand-typed FO/HO credit (owner, 20 Sep 26). The twin
+ * of `setCellNote` below, and the same rules: admin only, the day must hold a
+ * credit, an empty value clears it. Refused on a credit the published schedule
+ * owns, like the hours are — the schedule is its own evidence and needs no
+ * name behind it.
+ */
+export function setCellGivenBy(personId: string, date: string, givenBy: string): string | null {
+  if (state.role !== 'admin') return 'Only an admin can edit OIL'
+  if (!warHolding(state.wars, date)) return 'That day is in no war'
+  const list = listAt(personId, date)
+  const had = list.find(isCredit)
+  if (!had) return 'Only an FO or HO credit takes a given-by'
+  const clean = givenBy.trim()
+  if (clean.length > MAX_GIVEN_BY) return `Given by is at most ${MAX_GIVEN_BY} characters`
+  if (!clean && !had.givenBy) return null
+  if (clean === had.givenBy) return null
+  if (had.oil !== 'manual') return 'That credit comes from the published schedule — change the schedule instead'
+  const { givenBy: _old, ...rest } = had
+  const next: CreditRec = clean ? { ...rest, givenBy: clean } : rest
+  putList(personId, date, list.map(r => (r === had ? next : r)))
+  return null
 }
 
 /**
@@ -3113,8 +3424,20 @@ export function clearRaptorCell(personId: string, date: string): boolean {
   // Locked: a sync-driven delete is not a Leave War undo step.
   return locked(() => {
     const list = listAt(personId, date)
-    const had = list.find(r => r.kind === 'credit' && r.oil === 'auto')
+    const had = list.find(r => r.kind === 'credit' && r.oil === 'auto') as CreditRec | undefined
     if (!had) return false
+    /* the squadron's OWN record, taken over in place when the schedule agreed
+       with it: give back EXACTLY what the admin typed rather than deleting it,
+       and rather than handing back the schedule's credit wearing a manual
+       label (design §18 OA3-003) */
+    if (had.manual) {
+      const back: CreditRec = { id: had.id, kind: 'credit', oil: 'manual', code: had.manual.code,
+        ...(had.manual.note ? { note: had.manual.note } : {}),
+        ...(had.manual.givenBy ? { givenBy: had.manual.givenBy } : {}),
+        ...(had.manual.days != null ? { days: had.manual.days } : {}),
+        ...(had.manual.spans ? { spans: had.manual.spans } : {}) }
+      return putList(personId, date, list.map(r => (r === had ? back : r)))
+    }
     return putList(personId, date, list.filter(r => r !== had))
   })
 }
@@ -3248,7 +3571,7 @@ export function moveProblem(cells: { personId: string; date: string }[], dayDelt
     const c: Contrib = { id: r.rec.id, kind: 'request', code: parseCell(r.rec.code)!.type, win: requestWin(r.rec.code), state: 'pending' }
     /* the selection's own approved leave sliding away frees its landing too */
     const absHere = absencesAt(r.personId, to).filter(a => !abs.some(x => x.iid === a.id && x.personId === r.personId))
-    if ([...recContribs(landing), ...absHere].some(o => forbiddenPair(c, o))) return { reason: 'occupied', at: to }
+    if ([...recContribs(landing), ...absHere].some(o => barsWrite(c, o))) return { reason: 'occupied', at: to }
     if (liveRequestsOn(landing, portionOfCode(r.rec.code)).length) return { reason: 'occupied', at: to }
   }
   if (abs.length) {
