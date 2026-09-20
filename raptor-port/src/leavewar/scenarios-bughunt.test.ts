@@ -258,3 +258,39 @@ describe('a medical running past midnight (H6)', () => {
     expect(v.mark).toBe('')
   })
 })
+
+/* ====================================================================== */
+/*  Noon belongs to the AFTERNOON (owner, 20 Sep 26)                      */
+/* ====================================================================== */
+/* "12:00 — afternoon, half a day." The minute 720 sat on the boundary and the
+   app answered two ways about it: the clash test said a window starting there
+   did not touch the morning, while the box, the charge and the manning count
+   said it did. So an OL 12:00–14:00 read as a WHOLE day, cost a whole day of
+   balance and removed a whole person from manning — while a morning bid was
+   still allowed beside it. */
+describe('leave starting at exactly 12:00', () => {
+  it('is an afternoon, and costs half a day', () => {
+    file('ammo', 'OL', 'Feb 09', timed(at(12), at(14)))
+    const v = view('ammo', '2026-02-09')!
+    expect(v.code).toBe('OL*')                                  // not a bare full-day OL
+    expect(v.away).toBe(0.5)                                    // half a man, not a whole one
+    expect(v.charges).toEqual([expect.objectContaining({ counter: 'annual', amount: 0.5, half: 'pm' })])
+  })
+
+  it('leaves the morning free for a separate leave, charged on its own', () => {
+    file('dj', 'OL', 'Feb 09', timed(at(12), at(14)))
+    expect(file('dj', 'LL', 'Feb 09', { allday: false, half: 'am', s: 0, e: 720 }).ok).toBe(true)
+    const v = view('dj', '2026-02-09')!
+    expect(v.all).toHaveLength(2)
+    expect(v.amber).toBe(false)
+    expect(v.away).toBe(1)                                      // both halves covered now
+    expect(v.charges.map(c => c.amount).sort()).toEqual([0.5, 0.5])
+  })
+
+  it('a window ENDING at 12:00 is still a morning', () => {
+    file('casper', 'LL', 'Feb 09', timed(at(9), at(12)))
+    const v = view('casper', '2026-02-09')!
+    expect(v.code).toBe('*LL')
+    expect(v.away).toBe(0.5)
+  })
+})
