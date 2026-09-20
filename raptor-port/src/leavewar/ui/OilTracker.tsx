@@ -86,9 +86,11 @@ import {
   MAX_REASON,
   removeLedgerEntry,
   setCellNote,
+  setCellHours,
   setOilPolicy,
   updateLedgerEntry,
 } from '../state/store'
+import { hhmm, parseHM } from '../../engine/time'
 import { CreditForm, DayChip } from './CreditForm'
 import { shortDate, shortSpan } from './dates'
 import { RangePicker, type Range } from './RangePicker'
@@ -217,6 +219,14 @@ export function OilTracker({ person, onClose, onGranted }: {
   const [armDel, setArmDel] = useState<string | null>(null)
   const [noteId, setNoteId] = useState<string | null>(null)
   const [noteDraft, setNoteDraft] = useState('')
+  /* The WORK HOURS on a hand-typed credit (CURRENT-STATE item E; clash check
+     B8's "a manual credit MAY carry work times; none = the whole day"). They
+     sit beside the reason because they answer the same question — what this
+     credit was FOR — and because a credit an admin types is the only kind
+     whose hours are his to say. Empty means the whole day, which is B8's own
+     default and the way back from a mistype. */
+  const [hFrom, setHFrom] = useState('')
+  const [hTo, setHTo] = useState('')
 
   const groupDefs = groupsInOrder()
   const priority = groupPriorityIds()
@@ -320,8 +330,23 @@ export function OilTracker({ person, onClose, onGranted }: {
   }
   const startNote = (c: OilCredit, personId: string) => {
     setNoteId(`${personId}|${c.date}`); setNoteDraft(c.manual && c.reason !== 'weekend duty' && c.reason !== 'PH duty' ? c.reason : ''); setEditId(null)
+    const h = c.hours?.[0]
+    setHFrom(h ? hhmm(h[0]) : ''); setHTo(h ? hhmm(h[1]) : '')
   }
+  /* Both the reason and the hours save on the one button, because to the admin
+     they are one edit of one credit. Hours first: if they are refused the
+     reason must not land on its own, or Save would half-work and the message
+     would read as being about the part that did. */
   const saveNote = (personId: string, date: string) => {
+    const blank = !hFrom.trim() && !hTo.trim()
+    const from = blank ? null : parseHM(hFrom)
+    const to = blank ? null : parseHM(hTo)
+    if (!blank && (from === null || to === null)) {
+      setEErr('Type the hours as 08:00 — or leave both blank for the whole day')
+      return
+    }
+    const hoursProblem = setCellHours(personId, date, from, to)
+    if (hoursProblem) { setEErr(hoursProblem); return }
     const problem = setCellNote(personId, date, noteDraft)
     if (problem) { setEErr(problem); return }
     setNoteId(null); setEErr('')
@@ -483,14 +508,43 @@ export function OilTracker({ person, onClose, onGranted }: {
                 onChange={e => setNoteDraft(e.target.value)}
                 onKeyDown={e => { if (e.key === 'Enter') saveNote(p.id, c.date); if (e.key === 'Escape') setNoteId(null) }}
               />
+              {/* The hours worked. Left blank the credit means the whole day,
+                  which is what every hand-typed credit meant until now — and
+                  why a two-hour call-out beside afternoon leave turned the day
+                  amber for nothing. Plain text boxes rather than a time
+                  picker, so `08:00`, `8:00`, `0800` and `800` all work and a
+                  phone keypad is enough (the app's own hh:mm rule). */}
+              <input
+                className="oil-num"
+                data-testid="oil-hours-from"
+                inputMode="numeric"
+                maxLength={5}
+                value={hFrom}
+                placeholder="from"
+                aria-label="Worked from"
+                onChange={e => { setEErr(''); setHFrom(e.target.value) }}
+                onKeyDown={e => { if (e.key === 'Enter') saveNote(p.id, c.date); if (e.key === 'Escape') setNoteId(null) }}
+              />
+              <input
+                className="oil-num"
+                data-testid="oil-hours-to"
+                inputMode="numeric"
+                maxLength={5}
+                value={hTo}
+                placeholder="to"
+                aria-label="Worked to"
+                onChange={e => { setEErr(''); setHTo(e.target.value) }}
+                onKeyDown={e => { if (e.key === 'Enter') saveNote(p.id, c.date); if (e.key === 'Escape') setNoteId(null) }}
+              />
               <button className="dchip approve" data-testid="oil-note-save" onClick={() => saveNote(p.id, c.date)}>Save</button>
-              {eErr && <span className="note warn">{eErr}</span>}
+              {eErr && <span className="note warn" data-testid="oil-note-err">{eErr}</span>}
             </div>
           ) : (
             <div className="l2">
               {canNote ? (
                 <button className="oil-notebtn" data-testid={`oil-note-${tid(c.id, c.ledgerId)}`} onClick={e => { e.stopPropagation(); startNote(c, p.id) }} title="Say why this credit was given">
                   {c.manual && c.reason !== 'weekend duty' && c.reason !== 'PH duty' ? c.reason : '+ reason'}
+                  {c.hours?.[0] && <span className="oil-hrs"> · {hhmm(c.hours[0][0])}–{hhmm(c.hours[0][1])}</span>}
                 </button>
               ) : (
                 <span className="rt">{c.reason}</span>

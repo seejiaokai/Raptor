@@ -213,21 +213,19 @@ So: filing leave onto a day the person is recorded working is **written**, the d
 and the filer is told in the same breath. There is no asymmetry between the two directions at the
 Inputs door any more — which was the point.
 
-**BUT the war's own doors were NOT changed, and that is an open inconsistency, not a decision.**
-Clash-check **B5** says "a bid made after the publish that overlaps published work is refused at the
-bid door", and the owner has not reversed B5. Carrying the doctrine into the bid door was tried and
-backed out when a test pinned B5. The rules-first review then found the same gap at **approve** and
-**move** of an approved leave, which B5 does not cover. So today:
+**SETTLED — this paragraph used to say the war's doors were untouched and the question was open.
+Both halves are now false, and the text is corrected rather than deleted so the sequence stays
+readable.** The owner was asked and overruled B5 in BOTH its halves:
 
 | Door | Leave over recorded work |
 |---|---|
 | The Inputs page (filing) | **Filed and flagged** |
-| The war's bid door | **Refused** (B5, not reversed) |
-| The war's approve / move doors | **Refused** (no ruling either way — an accident) |
+| The war's bid door | **Filed and flagged** — B5's first half set aside, one predicate `barsWrite` |
+| The war's approve / move doors | **Filed and flagged** — the same predicate, so they cannot drift |
+| Publishing, over an undecided bid | **Kept and flagged** — B5's SECOND half set aside (see N9) |
 
-**Owner question, open:** should the war's doors follow the Inputs page, or does B5 stand? Until he
-says, the build follows the rules as written and the difference is recorded here rather than
-quietly decided.
+There is no asymmetry left: the same two facts get the same answer whichever screen they arrive
+from and whichever came first.
 
 ### N5 — a hand-typed credit can be given its hours
 The credit box gains a **start and end time**, so an admin can record "worked 08:00–10:00". Until
@@ -236,3 +234,54 @@ it, but nothing could write it, so every hand-typed credit meant the whole day a
 that did not really clash. **Owner: build it now.**
 *Settles:* B8, which the register had marked as named by no test, and which both reviewers
 independently found MISSING.
+
+### N6 — a day counts as a full annual day when leave TOUCHES both halves
+Put to the owner because the plain-language rule said "covered all day" while the app has always
+said "touches both halves": LL 08:00–10:00 plus OL 14:00–16:00 is charged as a full day, removes a
+whole man from manning, and continues a pilot's 15-day run, with four hours in the middle
+uncovered. **Owner: leave it as it is.** The app counts leave in HALVES — each of those records
+costs half a day, and half plus half is a day — so the current reading is the halves model applied
+consistently, not a bug. Nothing in the app changed; the plain-language wording was corrected to
+say "touches".
+*Settles:* H4 / owner Q13's `annualFull`, and the `dayview` test that pins it.
+
+### N7 — there is a POST IN date, and it is set by hand
+> "We need a post in button just like post out."
+
+The app had no joining date at all. `Person.from` existed and every manning path already read it,
+but nothing ever wrote it — the Raptor roster has no joining date to give — so every person read as
+having always been here. `setPostIn` is the mirror of `setPostOut`, in the same sheet family and
+the same stored record. Both ends now refuse a window that CLOSES before it opens.
+*Settles:* the missing half of the squadron window. It also gives owner answer C something to stand
+on: there were no pre-joining days to bid on before, because nobody had a joining date.
+
+### N8 — the posting dates are OFFICIAL, and they gate NOTHING
+> "Because those dates are official dates. But they can be for e.g still taking leave after or
+> before they post in or out."
+
+So the two dates decide MANNING and the grey hatch, and nothing else. A record dated outside them is
+allowed, shown and charged exactly as one inside them; the person's ROW stretches to reach it
+(a display span only — the dates themselves never move, or a posted-out man would be back in the
+manning counts). Setting a posting date must never become a way of refusing a record.
+*Settles:* CURRENT-STATE item B, and the five sub-questions of Q2 — the row reaches anything the war
+SHOWS, which excludes only the hidden tail of a record running past midnight, since that is never
+shown or charged on the second date.
+
+### N9 — publishing FLAGS an undecided bid; it no longer takes it
+Publishing a weekend or PH day used to remove the clashing part of an undecided leave bid and leave
+a "the schedule took your bid" notice — while a bid placed AFTER the publish was kept and flagged.
+The same two facts, opposite outcomes, decided only by which came first. **Owner: "keep the bid and
+flag the day, both ways."**
+*Settles:* the second half of B5. The amber needs no new machinery — the OIL credit lands on the day
+regardless and a credit overlapping an undecided bid is already a forbidden pair — so the door now
+only TELLS the admin at the moment of publishing. With nothing removed there is nothing for an undo
+of the publish to bring back.
+
+### N10 — a member is told what a clash means for HIS OWN leave
+The sheet behind the amber mark listed every record all along, but its one explanatory line was
+written for an admin — "an admin needs to change one" — whoever opened it. On a member's own day
+that is the wrong news: his box shows the OIL credit with his bid behind the mark, so the day reads
+as though his leave had been thrown out, when since N4 it is still live. The line now names his own
+live bids and says so; an admin still gets the instruction, because for him it is one.
+*Settles:* CURRENT-STATE item A, and with it the reason the duty-cancels-your-bid feature was
+parked — telling the man was the cheap half of that problem.

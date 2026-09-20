@@ -105,16 +105,22 @@ approved on the grid, moved onto the day on the grid, or published over the top 
 
 ## Bids on the Leave War
 
-- An **undecided bid loses to any clashing input**, in the same action, and the filer is told which
-  bid went. One undo brings it back.
+- An **undecided bid loses to any clashing INPUT**, in the same action, and the filer is told which
+  bid went. One undo brings it back. (An input is something filed on the Inputs page. **Published
+  work is not** — see the publishing line below.)
 - Only the **clashing half or dates** go. The rest keeps its state.
 - An **approved** leave is never touched this way. A **refused** bid never blocks anything — it
   stays as history.
-- **Publishing is a door**: the bid replacement happens inside the publish, so undoing the publish
-  brings the bid back. Published work replaces a bid **only on weekends and public holidays**.
+- **Publishing KEEPS the bid and flags the day** (owner, 20 Sep 26, reversing the older "publishing
+  is a door that replaces the bid"). The admin is told at the moment he publishes, in words that say
+  the bid is still live, and he decides it. Nothing is taken, so there is nothing for an undo of the
+  publish to bring back. This matches what already happened to a bid placed AFTER publishing, which
+  was the point: the same two facts must not get opposite answers depending on which came first.
 - When **someone else's** action replaces a bid, a notice sits on that day with an amber mark until
   the person or an admin taps **"OK, seen"**. Your own action leaves no notice, just a message.
-- A member may **bid each half separately**, and may bid the free half beside filed leave.
+- A member may **bid each half separately**, and may bid the free half beside filed leave. Tapping a
+  day whose other half was filed on the Inputs page opens the bid sheet on the FREE half only, and
+  names what holds the other one. The filed leave is still changed on the Inputs page, never here.
 - **A duty does NOT cancel your bid.** Decided and deliberately parked — see CURRENT-STATE §3. The
   member is told instead (CURRENT-STATE §2 item A), which solves the real problem more cheaply.
 

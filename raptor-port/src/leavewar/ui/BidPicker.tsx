@@ -37,6 +37,8 @@ export function BidPicker({
   wouldLeave,
   onPostOut,
   onPostIn,
+  onlyPortion,
+  heldBy,
   onClose,
 }: {
   callsign: string
@@ -64,12 +66,21 @@ export function BidPicker({
    *  the first day they ARE here, where the post-out sets the first day they
    *  are gone. Present only for an admin, same as its twin. */
   onPostIn?: (date: string) => void
+  /** Item D (CURRENT-STATE, 20 Sep 26): the only half of this day that is
+   *  free, when the other is held by a record locked to the Inputs page. The
+   *  "How much" row then offers that half alone — the whole day and the held
+   *  half are not choices, because neither could be written. Absent on an
+   *  ordinary cell, where all three stay on offer. */
+  onlyPortion?: Portion | null
+  /** What is already on the day, in the words the box shows, so the sheet can
+   *  name the half it is NOT offering. */
+  heldBy?: string
   onClose: () => void
 }) {
   // Deliberately not seeded from `current`: the portion resets to a whole
   // day for every cell opened. A picker that remembered the last choice
   // would silently write a half day on the next cell the bidder touched.
-  const [portion, setPortion] = useState<Portion>('full')
+  const [portion, setPortion] = useState<Portion>(onlyPortion ?? 'full')
   // The range, if the bidder has asked for one. `null` means this one day —
   // the common case, and the one that must stay a single tap.
   const [range, setRange] = useState<Range | null>(null)
@@ -197,7 +208,13 @@ export function BidPicker({
 
       <div className="bidsheet-row">
         <span className="lab">How much</span>
-        {PORTIONS.map(p => (
+        {/* Item D: with one half already spoken for by the Inputs page, the
+            other choices are not dimmed, they are ABSENT — the house rule for
+            a control that could not work (a disabled chip invites a tap and
+            then refuses it). The line under it says what holds the other half
+            and where it is changed, so the lock is explained rather than just
+            enforced. */}
+        {PORTIONS.filter(p => !onlyPortion || p.portion === onlyPortion).map(p => (
           <button
             key={p.portion}
             data-testid={p.testid}
@@ -208,6 +225,12 @@ export function BidPicker({
             {p.label}
           </button>
         ))}
+        {onlyPortion && (
+          <span className="note" data-testid="bid-heldhalf">
+            The {onlyPortion === 'pm' ? 'morning' : 'afternoon'} is {heldBy || 'already taken'},
+            filed on the Inputs page — change that there.
+          </span>
+        )}
       </div>
 
       <div className="bidsheet-row">

@@ -47,6 +47,7 @@ import { chargedDays, viewsOf } from './charge'
 import { codeOf } from './codes'
 import type { FigureCtx } from './counters'
 import { addDays, addMonths, isWeekend } from './period'
+import type { Win } from './dayview'
 
 export type OilExpiryUnit = 'days' | 'months'
 
@@ -128,6 +129,11 @@ export interface OilCredit {
   expired: number
   /** For a grant: the ledger entry behind it (the thing an admin edits). */
   ledgerId?: string
+  /** The work hours recorded on a hand-typed credit, when it has any
+   *  (clash check B8 — none means the whole day). Minutes from midnight.
+   *  Readonly because it is the contribution's own array, handed straight
+   *  through rather than copied — nothing downstream may write to it. */
+  hours?: readonly Win[]
 }
 
 export type OilDebitSource = 'taken' | 'correction' | 'opening'
@@ -206,7 +212,8 @@ export function oilLedgerFor(ctx: FigureCtx, personId: string, policy: OilPolicy
       const credit = v.all.find(c => c.kind === 'credit')
       if (credit && v.earnsOil > 0) {
         const reason = credit.note ?? (isWeekend(date) ? 'weekend duty' : 'PH duty')
-        credits.push({ id: `auto:${wi}:${date}`, date, amount: v.earnsOil, reason, source: 'auto', ...(credit.auto ? {} : { manual: true }), expires: expiryOf(date, policy), used: [], left: v.earnsOil, expired: 0 })
+        const hours = credit.wins ?? (credit.win[0] === 0 && credit.win[1] === 1439 ? undefined : [credit.win])
+        credits.push({ id: `auto:${wi}:${date}`, date, amount: v.earnsOil, reason, source: 'auto', ...(credit.auto ? {} : { manual: true }), ...(hours ? { hours } : {}), expires: expiryOf(date, policy), used: [], left: v.earnsOil, expired: 0 })
       }
       for (const t of charged.get(date) ?? []) {
         if (t.counter !== 'oil') continue

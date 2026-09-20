@@ -459,3 +459,9 @@
   }
   .cmove.setbal-edit .oil-num { width: 72px; }
 }
+
+/* The work hours on a hand-typed OIL credit (CURRENT-STATE item E). Quieter
+   than the reason beside it: the reason is what an admin reads down the list
+   for, the hours are the detail he checks when a day has gone amber. */
+.oil-e .oil-hrs { color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.oil-e .noting .oil-num { width: 4.5em; text-align: center; }

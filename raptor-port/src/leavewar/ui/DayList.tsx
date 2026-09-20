@@ -70,6 +70,12 @@ export function DayListSheet({
   const editable = canEditCell(period, role, date) && canEditRow(role, viewer, personId)
   const own = viewer === personId
   const raw = recordsAt(personId, date)
+  /* The reader's OWN undecided bids on this day, in the words the box uses —
+     what the clash line names so a member can see his leave is still there. A
+     refused bid is not live and is nobody's news. */
+  const liveBids = view.all
+    .filter(c => c.kind === 'request' && c.state !== 'refused')
+    .map(c => `${shown(notation(c))}${partOf(c.win) ? ` (${partOf(c.win)})` : ''}`)
   const act = (fn: () => boolean | string | null | number, fail = "Couldn’t change that") => {
     const r = fn()
     if (r === false || r === 0) setMsg(fail)
@@ -142,10 +148,24 @@ export function DayListSheet({
         <span className="dt">{dayLabel(date)}</span>
         <button className="x" data-testid="daylist-close" onClick={onClose} aria-label="Close">✕</button>
       </div>
+      {/* WHAT THE CLASH MEANS, TO WHOEVER IS READING IT (CURRENT-STATE item A,
+          20 Sep 26). The one line here used to be written for an admin — "an
+          admin needs to change one" — whoever opened it. On a member's own day
+          that is the wrong news entirely: his box shows the OIL credit with his
+          bid behind the corner mark, so the day already reads as though his
+          leave had been thrown out, and the only sentence on the sheet talks
+          about somebody else's job. Since the owner's ruling that nothing is
+          refused for recorded work, his bid IS still live and a person needs
+          to be told so in those words. An admin still gets the instruction,
+          because for him it IS an instruction. */}
       {view.conflicts.length > 0 && (
         <div className="bidsheet-row">
           <span className="note warn" data-testid="daylist-clash">
-            Two of these can’t both stand on the same time — an admin needs to change one.
+            {own && liveBids.length > 0
+              ? `Your ${liveBids.join(' and ')} ${liveBids.length > 1 ? 'bids are' : 'bid is'} still live — something else on this day covers the same time, so an admin has to decide between them. Nothing has been thrown out.`
+              : own
+                ? 'Two things on this day cover the same time. An admin has to decide between them — nothing has been thrown out.'
+                : 'Two of these can’t both stand on the same time — an admin needs to change one.'}
           </span>
         </div>
       )}

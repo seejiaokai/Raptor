@@ -3232,6 +3232,47 @@ function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO',
 }
 
 /**
+ * The WORK HOURS on a hand-typed FO/HO credit (CURRENT-STATE item E; clash
+ * check B8, "a manual credit MAY carry work times; none = the whole day").
+ *
+ * B8's field and every check that reads it have existed all along — what was
+ * missing was any way to WRITE it. The only writer was the automatic pass, so
+ * a credit an admin typed by hand always meant the whole day, and therefore
+ * always overlapped any leave on it. The consequence was not cosmetic: the
+ * day went amber and the warning list called for a human every time, for
+ * credits that in truth clashed with nothing. A two-hour Saturday call-out
+ * beside afternoon leave should be quiet.
+ *
+ * Both minutes-from-midnight, `from` <= `to`. Passing nulls CLEARS the hours,
+ * which is B8's "none = the whole day" and the way back if an admin mistypes.
+ * Admin only, an existing HAND-TYPED credit only: a generated credit's hours
+ * are the schedule's, and the reverse pass would overwrite them on the next
+ * run anyway. Returns null on success, or the reason in words.
+ *
+ * It writes through `putList` like every other record change, so it joins the
+ * same command, the same undo and the same persistence as its neighbours.
+ */
+export function setCellHours(personId: string, date: string, from: number | null, to: number | null): string | null {
+  if (state.role !== 'admin') return 'Only an admin can edit OIL'
+  if (!warHolding(state.wars, date)) return 'That day is in no war'
+  const list = listAt(personId, date)
+  const had = list.find(isCredit)
+  if (!had) return 'There is no OIL credit on that day'
+  if (had.oil !== 'manual') return 'That credit comes from the published schedule — change the schedule instead'
+  const clearing = from === null && to === null
+  if (!clearing) {
+    if (from === null || to === null) return 'Type both a start and an end, or leave both blank for the whole day'
+    if (!Number.isFinite(from) || !Number.isFinite(to) || from < 0 || to > 1439) return 'Those hours are not a real time'
+    if (from > to) return 'The end is before the start'
+  }
+  const rest = { ...had }
+  delete (rest as { spans?: unknown }).spans
+  const rec: CreditRec = clearing ? rest : { ...rest, spans: [[from!, to!]] }
+  if (JSON.stringify(rec) === JSON.stringify(had)) return null
+  return putList(personId, date, list.map(r => (r === had ? rec : r))) ? null : 'Could not change that'
+}
+
+/**
  * The REASON on a hand-entered FO/HO credit (owner, 2 Sep 26). Admin only; the
  * day must hold a credit. An empty note clears it.
  */

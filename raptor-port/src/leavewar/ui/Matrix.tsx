@@ -62,6 +62,8 @@ import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
 import { popAt } from './popat'
 import { clampWin, rollingTarget, stepAllowedInMotion, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
+import { touchesAM, touchesPM, type DayView } from '../engine/dayview'
+import type { Portion } from '../engine'
 import { isLwOnScreen, subLwScreen } from '../state/screen'
 import type { RecordSpans } from '../state/merge'
 import { msSinceInput } from '../../state/idle'
@@ -211,6 +213,33 @@ type RowApi = {
   chipEnter: (id: string, el: HTMLElement) => void
   chipLeave: () => void
   chipClick: (p: Person, el: HTMLElement) => void
+}
+
+/**
+ * The half of a day that is FREE beside a record locked to the Inputs page
+ * (CURRENT-STATE item D), or null when there is no such half.
+ *
+ * The read-only sheet speaks for the WHOLE day whenever the main record is
+ * filed on the Inputs page — so a morning LL filed on the form made the
+ * afternoon unbiddable too, with nothing on screen to say why. Most leave
+ * arrives through the form, so this is the normal case, not a corner.
+ *
+ * Deliberately narrow, which is the constraint both reviewers put on it: it
+ * finds a free half, it does NOT make the filed leave editable here. The filed
+ * record keeps its lock, the store's own occupancy rule still has the last
+ * word on any write, and a day held on BOTH halves (or on neither) returns
+ * null and behaves exactly as before.
+ *
+ * A credit is not a blocker: since the owner's 20 Sep 26 ruling, recorded work
+ * never bars a write — it flags the day. A refused bid never blocked anything.
+ */
+function freeHalfBeside(v: DayView | undefined): Portion | null {
+  if (!v) return null
+  const holding = v.all.filter(c => c.kind === 'absence' || (c.kind === 'request' && c.state !== 'refused'))
+  if (!holding.length) return null
+  const am = holding.some(c => touchesAM(c.win))
+  const pm = holding.some(c => touchesPM(c.win))
+  return am && !pm ? 'pm' : pm && !am ? 'am' : null
 }
 
 /** Whether a tap on this cell opens SOMETHING — the one body Matrix and the
@@ -556,7 +585,14 @@ const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, v
               <span
                 className={`mk ${view!.amber ? 'warn' : 'more'}`}
                 data-testid={`mark-${p.id}-${d.date}`}
-                title={view!.amber ? 'Something on this day needs an admin — tap to see' : 'More on this day — tap to see'}
+                /* Item A: on the reader's OWN row an amber day is not "someone
+                   else has a job to do" — it is news about their own leave,
+                   which is still live. Two audiences, two sentences. */
+                title={!view!.amber
+                  ? 'More on this day — tap to see'
+                  : viewer === p.id
+                    ? 'Your bid is still live — tap to see what else is on this day'
+                    : 'Something on this day needs an admin — tap to see'}
               >
                 {mark}
               </span>
@@ -3142,6 +3178,17 @@ export function Matrix() {
   const listOpen = !!open && !!openView && (openView.mark !== '' ||
     (!!openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null))
   const canRemark = !listOpen && !!remarkRow && (role === 'admin' || (!!open && open.id === viewer))
+  /* THE FREE HALF BESIDE INPUTS-FILED LEAVE (CURRENT-STATE item D). When the
+     cell is locked to the Inputs page but only HALF of it is actually spoken
+     for, the tap opens the bid picker on the free half instead of the
+     read-only sheet — with the locked half named on it, so nothing about the
+     lock becomes invisible. Everything else about a Raptor-owned cell is
+     unchanged: both halves held, or nobody who may edit, and the read-only
+     sheet opens exactly as it did. */
+  const openFreeHalf = open && raptorOwns(states, open.id, open.date)
+    && canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id)
+    ? freeHalfBeside(openView)
+    : null
 
   // Which sheet a click opens follows from three things: the stage, the role,
   // and what the cell already holds.
@@ -3847,7 +3894,7 @@ export function Matrix() {
           sheets. That cell is approved elsewhere: offering a picker or a
           decision on it would offer an action the store will refuse, which
           is worse than offering nothing. */}
-      {open && !listOpen && !canRemark && raptorOwns(states, open.id, open.date) && (
+      {open && !listOpen && !canRemark && raptorOwns(states, open.id, open.date) && !openFreeHalf && (
         <RaptorSheet
           callsign={open.callsign}
           date={open.date}
@@ -4100,7 +4147,7 @@ export function Matrix() {
       )}
       {/* a member may bid CLEARING leave after their own posting-out (owner
           answer C, 20 Sep 26) — the admin's tap there stays the PO sheet */}
-      {open && !listOpen && !canRemark && (!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin') && !raptorOwns(states, open.id, open.date)
+      {open && !listOpen && !canRemark && (!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin') && (!raptorOwns(states, open.id, open.date) || !!openFreeHalf)
         && canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id)
         && !(deciding && isBiddable(grid[open.id]?.[open.date])) && (
         <BidPicker
@@ -4110,6 +4157,10 @@ export function Matrix() {
           date={open.date}
           current={grid[open.id]?.[open.date] ?? ''}
           dates={dates}
+          /* Item D: only the free half is on offer, and the sheet says what
+             holds the other one. */
+          onlyPortion={openFreeHalf}
+          heldBy={openFreeHalf ? displayCell(grid[open.id]?.[open.date] ?? '') : undefined}
           /* Admin-only: post this person out (owner, 18 Aug 26; any date and
              the archive switch, 19 Aug 26). The store sets their posting-out
              date; the greyed boxes and the manpower exclusion follow from it,
