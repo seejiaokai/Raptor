@@ -27,13 +27,20 @@ Owner's own words for it, 20 Sep 26. Every decision below is that sentence appli
 | 6 | Leave over recorded work is **filed and flagged**, not refused, on the Inputs page. | `ee22b89` |
 | 7 | Recorded work **never bars a write anywhere** — bid, approve, move, all four doors. One predicate, `barsWrite`. | `fe378f0` |
 | 8 | A refused bid **says why**, at every door it can be refused at. | `9644471` |
-| 9 | A **hand-typed credit is never destroyed** — taken over in place, handed back when the schedule stops backing it, the admin's own reason kept. | `a6e1c64` |
+| 9 | A **hand-typed credit is never destroyed** — taken over in place, and handed back EXACTLY as the admin typed it (code, hours and reason) when the schedule stops backing it. | `a6e1c64`, `e63d462` |
 | 10 | **One** warning list, derived from the day; the work is always the "earns" side. | `ee22b89` |
 
 Process, also built: the **behaviour register**, `npm run rulecheck` (fails when a ruling has no
 test naming it), and the **rules-first red team** as a standing third review.
 
-**Gates at the last full run:** unit 321 files / 5126 tests green · `tfin` 728/0 · rulecheck OK.
+| 11 | **A man on leave no longer mans a duty weekend.** A credit on a leave day was counting him fully present and on duty. | `ca6b4ff` |
+
+Process, also built: see below.
+
+**Gates at the last full run:** unit 321 files / 5128 tests green · `tfin` 728/0 · rulecheck OK.
+One known flake, twice confirmed: `src/ui/inputscal.test.tsx` fails under parallel load and passes
+alone, with and without this branch. **`npm run test:e2e`, `npm run perf` and `npm run smoke:tracker`
+have NOT been run this session.**
 **Not yet done: the hand-testing pass in the running app.** Everything above is proved by tests and
 by reading, not by watching it on screen. That is owed before this merges.
 
