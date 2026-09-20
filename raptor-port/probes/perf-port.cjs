@@ -166,7 +166,15 @@ async function trial(b, measureSize) {
 }
 
 ;(async () => {
-  const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' })
+  /* The dev container ships ONE Chromium at a stable path; a desktop checkout
+     has no such path and Playwright brings its own. Hard-coding the container
+     path made this gate DEAD on the Windows desktop — it failed instantly with
+     "executable doesn't exist", which reads like a broken probe rather than a
+     missing browser, so the gate was simply never run there. Same fallback as
+     `playwright.config.ts` and `scripts/tracker/smoke.mjs`, so the three
+     cannot drift. */
+  const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
+  const b = await chromium.launch(require('fs').existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
   let pass = 0, fail = 0
   const T = (n, got, want) => {
     const ok = String(got) === String(want); ok ? pass++ : fail++
