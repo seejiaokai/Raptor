@@ -52,14 +52,15 @@ recorded a count that was wrong.
 
 **Current main baseline — PR #420 ([SYNC-INTEG] medical guardrail batch: medical
 member-filed only, relaxed document prompt, clutter-only clear-old-data) MERGED
-LIVE 19 Sep 26**, all CI jobs green at merge, deploy succeeded, all three changes
-verified on the live page (no medical picker on the war for any role; the
-Upload/No-document prompt on the Inputs page; the Admin "Clear old clutter"
-control + its clutter-only note). Counts watched on this tree: `npm test`
-**4985 across 310 files** (2 vitest projects); `tfin.js` **728/0**; build clean;
-`test:e2e` **423 passed / 0 failed** (35 skipped) — the two Windows-local geometry
-crew-rest flakes pass in isolation and on Linux CI; `smoke:tracker` **425/0**.
-`perf` / `probes:adapted` unchanged (Leave-War/inputs change, parity held 728/0).
+LIVE 21 Sep 26** — `[S4-BUGHUNT]` merged (PR #422), all nine deploy jobs green,
+the live page loaded and checked (the one input window carries Ack / Approve /
+Refuse / Move; under-manned reads 0 days). Counts watched on this tree:
+`npm test` **5230 across 327 files** (2 vitest projects); `tfin.js` **728/0**;
+build clean; `test:e2e` **447 passed / 0 failed** (45 skipped); `smoke:tracker`
+**425/0**; `perf` **4/0**; `rulecheck` OK. Pre-existing note kept: the two
+Windows-local geometry crew-rest flakes pass in isolation and on Linux CI.
+Post-build bug-checked by BOTH providers (Fable + Astra) — ten findings, all
+fixed and test-pinned before the merge.
 Pre-build plan red-teamed by Codex (APPROVED after 1 revise round); post-build code
 inspected by Codex + Fable (Fable: no permission/data-loss holes). **The per-gate
 table and traps below predate this baseline — the trap descriptions still stand;
@@ -177,17 +178,15 @@ None of these gate a tracker- or storage-only change.
 
 ## In flight
 
-**[CMDL-FINISH] — ARCH-STACK step 2 completion (finish the one command layer for Leave
-War + Tracker).** P1–P6 (with P4 partial) BUILT + MERGED LIVE (PR #412 on `main`), plus
-the undo front-door doc (PR #413). The FINISH work — the remaining P4 Tracker gestures,
-`TRK_RESTORING`, registering trkStore guarded, and the cross-provider inspection punch-list
-— is BUILT on branch `claude/cmdl-finish-p4`, gates green, **held for "merge live"**. Punch
--list: 6 fixed (CMDLF-004/005/006/010/012, Fable#7/#8), 2 deferred with reasons (CMDLF-002
-postouts-reproject → [GLOBAL-UNDO]; CMDLF-011 legacy sched.als → reset-demo-data). importClick
-stays per-write on the stream; grouping it is the [GLOBAL-UNDO] import-undo-granularity
-question. Gates `[GLOBAL-UNDO]`. Front-door doc `docs/undo-contract.md`; design
-`docs/superpowers/specs/2026-09-17-arch-stack-cmdl-finish-design.md`; state
-`docs/session-state.md`; task in `OUTSTANDING.md`.
+**[CMDL-FINISH] — ARCH-STACK step 2 completion — DONE + LIVE.** Merged via PRs #412
+(build), #415 (finish) and #413 (the undo front-door doc); `OUTSTANDING.md` records it as
+live. This entry said "held for merge live" on branch `claude/cmdl-finish-p4` until
+21 Sep 26, months of sessions after it landed — corrected here; the branch is spent.
+Two items were deferred OUT of it and are still open under `[GLOBAL-UNDO]`: the Leave War
+posting-window rebuild on a postouts restore (CMDLF-002) and grouping a whole Import as one
+undo step. Front-door doc `docs/undo-contract.md`; design
+`docs/superpowers/specs/2026-09-17-arch-stack-cmdl-finish-design.md`; task in
+`OUTSTANDING.md`.
 
 **Historical (merged):** the big thread this section grew around —
 the storage seam and everything after it — culminated in **[ARCH-STACK] Step 2
