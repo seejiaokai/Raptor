@@ -327,10 +327,10 @@ describe('leave starting at exactly 12:00', () => {
    been refused. Nobody asked what reached the person. */
 describe('a bid the war refuses', () => {
   it('gives a reason for every door it can be refused at', () => {
-    // recorded work (B5 — still a bar at the bid door, unlike the Inputs page)
-    setCell('bruise', '2026-07-18', 'FO')
-    expect(cellProblem('bruise', '2026-07-18', 'LL')).toMatch(/recorded as worked/)
-
+    /* Recorded work is NOT here: the owner ruled on 20 Sep 26 that it never
+       refuses a write on any screen, so there is no reason to give. What is
+       refused is the SAME fact twice — another leave on the same hours — and
+       leave over a medical. */
     // a medical
     file('ammo', 'ATT C', 'Feb 09')
     expect(cellProblem('ammo', '2026-02-09', 'LL')).toMatch(/can't go over a medical/)
@@ -344,12 +344,18 @@ describe('a bid the war refuses', () => {
   })
 
   it('names the same reason the write acts on — the two can never disagree', () => {
-    setCell('bruise', '2026-07-18', 'FO')
-    // the reason is non-null exactly when the write refuses
-    expect(cellProblem('bruise', '2026-07-18', 'LL')).not.toBeNull()
-    expect(setCell('bruise', '2026-07-18', 'LL')).toBe(false)
+    // refused: the same morning already holds leave
+    file('bruise', 'LL', 'Feb 09')
+    expect(cellProblem('bruise', '2026-02-09', 'OL')).not.toBeNull()
+    expect(setCell('bruise', '2026-02-09', 'OL')).toBe(false)
+    // allowed: nothing in the way
     expect(cellProblem('casper', '2026-02-09', 'LL')).toBeNull()
     expect(setCell('casper', '2026-02-09', 'LL')).toBe(true)
+    // allowed: recorded work flags the day, it does not refuse (owner, 20 Sep 26)
+    setCell('dj', '2026-07-18', 'FO')
+    expect(cellProblem('dj', '2026-07-18', 'LL')).toBeNull()
+    expect(setCell('dj', '2026-07-18', 'LL')).toBe(true)
+    expect(view('dj', '2026-07-18')!.amber).toBe(true)
   })
 })
 

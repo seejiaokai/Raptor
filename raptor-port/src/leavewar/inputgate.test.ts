@@ -93,15 +93,19 @@ describe('leave over recorded work is FLAGGED, not refused (owner, 20 Sep 26)', 
   })
 
 
-  it('approving a bid on a day later credited as worked skips that day (owner Q5, §26.3)', () => {
+  it('approving a bid on a day later credited as worked GRANTS it and flags the day (owner, 20 Sep 26)', () => {
+    /* This used to skip the day (owner Q5, §26.3). The owner reversed it on
+       20 Sep 26: recorded work never refuses a write, on any screen, because
+       the same leave must not be kept or lost depending on where it was typed.
+       The leave is granted, and the day carries the amber for a human. */
     setRole('admin')
     expect(setCell('ammo', '2026-02-14', 'LL')).toBe(true)
-    // the work was credited after the bid (the OIL pass keeps both)
+    // the work was credited after the bid
     lwEditLists([{ personId: 'ammo', date: '2026-02-14', drop: [], add: [{ id: 'c-late', kind: 'credit', code: 'FO', oil: 'manual' } as any] }])
     advanceStage()
     setBidState('ammo', '2026-02-14', 'approved')
-    expect(rowsOf('ammo', 'LL')).toHaveLength(0)
-    expect(recsAt('ammo', '2026-02-14').some(r => r.kind === 'request')).toBe(true)
+    expect(rowsOf('ammo', 'LL')).toHaveLength(1)                    // granted
+    expect(codeAt('ammo', '2026-02-14')).toBe('LL')
   })
 })
 

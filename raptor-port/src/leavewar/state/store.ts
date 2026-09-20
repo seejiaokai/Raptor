@@ -94,6 +94,7 @@ import {
   liveRequestsOn,
   portionOfCode,
   requestWin,
+  barsWrite,
   forbiddenPair,
   isSickCode,
   isLeaveCode,
@@ -1960,8 +1961,7 @@ function occupiedFor(c: Contrib, personId: string, date: string, ignore: readonl
      the owner — see docs/superpowers/specs/2026-09-20-clash-doctrine-change.md.
      Pinned by scenarios-corners.test.ts "a bid placed AFTER the publish is
      refused at the bid door (B5)". */
-  if (c.kind === 'credit') return false
-  return [...recContribs(staying), ...absencesAt(personId, date)].some(o => forbiddenPair(c, o))
+  return [...recContribs(staying), ...absencesAt(personId, date)].some(o => barsWrite(c, o))
 }
 
 /** WHY a cell write would be refused, in the words the person needs — or null
@@ -1991,9 +1991,8 @@ export function cellProblem(personId: string, date: string, code: string): strin
   if (replaced.length === 1 && replaced[0]!.code === clean) return null
   const c: Contrib = { id: 'new', kind: 'request', code: parseCell(clean)!.type, win: requestWin(clean), state: 'pending' }
   const staying = list.filter(r => !replaced.includes(r as RequestRec))
-  const blocker = [...recContribs(staying), ...absencesAt(personId, date)].find(o => forbiddenPair(c, o))
+  const blocker = [...recContribs(staying), ...absencesAt(personId, date)].find(o => barsWrite(c, o))
   if (!blocker) return null
-  if (blocker.kind === 'credit') return 'That day is already recorded as worked — a bid can\'t go over it (file it on the Inputs page if the leave is right).'
   if (isSickCode(blocker.code)) return `That day is already ${blocker.code === 'ATTC' ? 'ATT C' : blocker.code} — leave can't go over a medical.`
   return `That time is already taken by ${blocker.code} — clear it first.`
 }
@@ -3347,7 +3346,7 @@ export function moveProblem(cells: { personId: string; date: string }[], dayDelt
     const c: Contrib = { id: r.rec.id, kind: 'request', code: parseCell(r.rec.code)!.type, win: requestWin(r.rec.code), state: 'pending' }
     /* the selection's own approved leave sliding away frees its landing too */
     const absHere = absencesAt(r.personId, to).filter(a => !abs.some(x => x.iid === a.id && x.personId === r.personId))
-    if ([...recContribs(landing), ...absHere].some(o => forbiddenPair(c, o))) return { reason: 'occupied', at: to }
+    if ([...recContribs(landing), ...absHere].some(o => barsWrite(c, o))) return { reason: 'occupied', at: to }
     if (liveRequestsOn(landing, portionOfCode(r.rec.code)).length) return { reason: 'occupied', at: to }
   }
   if (abs.length) {

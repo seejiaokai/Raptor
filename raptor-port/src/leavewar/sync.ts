@@ -43,6 +43,7 @@ import {
   recsAt,
   recContribs,
   requestWin,
+  barsWrite,
   forbiddenPair,
   liveRequestsOn,
   portionOfCode,
@@ -241,11 +242,12 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
        (a different leave on the same time, a medical) — skipped and reported,
        nothing consumed */
     const c: Contrib = { id: 'new', kind: 'absence', code: parseCell(rec.code)!.type, win: requestWin(rec.code) }
-    if (absencesAt(it.personId, it.date).some(o => forbiddenPair(c, o))) { skipped++; why.push(`${it.date} already holds leave or a medical at that time — not approved`); continue }
+    if (absencesAt(it.personId, it.date).some(o => barsWrite(c, o))) { skipped++; why.push(`${it.date} already holds leave or a medical at that time — not approved`); continue }
     /* a bid left standing when work was later credited (owner Q5: keep both,
        the time check runs at approval) — §26.3: leave over recorded work */
     const credits = recContribs(recsAt(war.recs, it.personId, it.date)).filter(o => o.kind === 'credit')
-    if (credits.some(o => forbiddenPair(c, o))) { skipped++; why.push(`${it.date} is recorded as worked at that time — not approved`); continue }
+    /* recorded work no longer stops an approval — the leave is granted, the
+       day is flagged, and a human resolves it (owner, 20 Sep 26) */
     picks.push({ ...it, rec, warId: war.period.id })
   }
   if (!picks.length) return { done: 0, skipped, why }
@@ -440,7 +442,7 @@ function doorMoveApproved(items: Array<{ personId: string; date: string; iid: st
     const here = absencesAt(it.personId, to).filter(c => !leaving.has(`${c.id}|${to}`))
     const war = warHolding(rawState().wars, to)!
     const reqs = recContribs(recsAt(war.recs, it.personId, to))
-    if ([...here, ...reqs].some(o => forbiddenPair({ ...contrib, id: 'moving' }, o))) return { reason: 'occupied', at: to }
+    if ([...here, ...reqs].some(o => barsWrite({ ...contrib, id: 'moving' }, o))) return { reason: 'occupied', at: to }
     if (liveRequestsOn(recsAt(war.recs, it.personId, to), portionOf(contrib.win)).length) return { reason: 'occupied', at: to }
   }
   if (check) return null

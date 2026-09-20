@@ -122,11 +122,17 @@ describe('a medical that swallows a whole leave', () => {
 })
 
 describe('publishing an amendment (the AL path)', () => {
-  it('a bid placed AFTER the publish is refused at the bid door (B5)', () => {
+  it('a bid placed AFTER the publish is now ALLOWED and flags the day (owner, 20 Sep 26)', () => {
+    /* Clash-check B5 said this was "refused at the bid door". The owner was
+       shown that rule and the consequence — the same Saturday's leave going
+       through on the Inputs page form but refused on the grid — and overruled
+       it: flag it everywhere. B5's other half, that publishing is the door
+       which replaces an undecided bid, is untouched. */
     setRole('admin')
     sign(5); commitSetDayApproved(5, true)
     runOilPass()
-    expect(setCell('plasma', '2026-07-18', 'LL')).toBe(false)     // plasma is recorded as working it
+    expect(setCell('plasma', '2026-07-18', 'LL')).toBe(true)
+    expect(view('plasma', '2026-07-18')!.amber).toBe(true)
   })
 
   it('an AL that puts someone NEW on that Saturday replaces their bid too', () => {

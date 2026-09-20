@@ -130,6 +130,26 @@ export function forbiddenPair(a: Contrib, b: Contrib): boolean {
   return pairs.some(([p, q]) => (p(a) && q(b)) || (p(b) && q(a)))
 }
 
+/** Does this pair BAR a write, as opposed to merely flagging the day?
+ *
+ *  Every forbidden pair raises the amber `!` — that is `forbiddenPair`'s job
+ *  and it is unchanged. This is the narrower question each write door asks
+ *  before refusing, and since the owner's ruling of 20 Sep 26 the answer for
+ *  RECORDED WORK is no: work and an absence may sit on the same hours, the day
+ *  is flagged, and a human resolves it by removing one side. That holds
+ *  wherever the leave arrives from — the Inputs page form, a bid on the grid,
+ *  an approval, or a move — because the owner's whole reason was that the same
+ *  two facts must not be kept or lost depending on which screen was used.
+ *
+ *  It SETS ASIDE clash-check B5's "a bid made after the publish that overlaps
+ *  published work is refused at the bid door": put to the owner on 20 Sep 26
+ *  with that consequence spelled out, and overruled.
+ *
+ *  What still bars is what B7 always barred: two leaves on the same time, and
+ *  leave over a medical. */
+export const barsWrite = (a: Contrib, b: Contrib) =>
+  a.kind !== 'credit' && b.kind !== 'credit' && forbiddenPair(a, b)
+
 export interface Charge {
   counter: CounterName
   amount: number
