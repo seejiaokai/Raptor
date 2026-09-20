@@ -1939,7 +1939,15 @@ export function lwEditLists(edits: Array<{ personId: string; date: string; drop:
  *  `ignore` leaves out records the write is about to replace. */
 function occupiedFor(c: Contrib, personId: string, date: string, ignore: readonly WarRec[] = []): boolean {
   const staying = listAt(personId, date).filter(r => !ignore.includes(r))
-  /* RECORDED WORK STILL BARS A BID HERE — B5 is not reversed.
+  /* WORK ALWAYS LANDS; only a REQUEST is barred here.
+     A CREDIT is work, and the owner ruled on 20 Sep 26 that work lands on a
+     leave day and the day is flagged — so an admin typing FO/HO onto someone's
+     leave must behave exactly as the published schedule does when it earns a
+     credit on that day. It used to be refused, and refused SILENTLY, so the
+     same two facts were kept or lost depending on which was entered first
+     (Codex review, 20 Sep 26). Incoming credits are therefore never barred.
+
+     RECORDED WORK STILL BARS A BID — B5 is not reversed.
      The owner's 20 Sep 26 doctrine (a clash is flagged, never refused) was
      applied to the INPUTS door, where filing leave over recorded work is now
      written and flagged. Carrying it into the war's own bid door as well was
@@ -1952,6 +1960,7 @@ function occupiedFor(c: Contrib, personId: string, date: string, ignore: readonl
      the owner — see docs/superpowers/specs/2026-09-20-clash-doctrine-change.md.
      Pinned by scenarios-corners.test.ts "a bid placed AFTER the publish is
      refused at the bid door (B5)". */
+  if (c.kind === 'credit') return false
   return [...recContribs(staying), ...absencesAt(personId, date)].some(o => forbiddenPair(c, o))
 }
 
@@ -1972,7 +1981,8 @@ export function cellProblem(personId: string, date: string, code: string): strin
     if (state.role !== 'admin') return 'Only an admin can enter OIL.'
     const had = list.find(isCredit)
     if (had && had.oil === 'auto') return 'That day already earns OIL from the published schedule.'
-    if (had && had.code === clean) return null
+    /* nothing else stops a credit: work lands on a leave day and the day is
+       flagged (owner, 20 Sep 26) */
     return null
   }
   if (!isBiddable(clean) || !parseCell(clean)) return 'That is not something you can bid here.'
@@ -3144,11 +3154,28 @@ function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO',
      reverse pass already removes an auto credit once the work is gone. */
   const clash = probe.some(p => others.some(o => forbiddenPair(p, o)))
   if (had && had.oil === 'auto' && had.code === code && JSON.stringify(had) === JSON.stringify(rec)) return clash ? 'clash' : 'confirmed'
-  const confirming = !!had && had.oil === 'manual' && had.code === code
-  putList(personId, date, [...staying, rec])
+  /* TAKEN OVER IN PLACE, BUT NEVER DESTROYED. The squadron recorded this fact
+     first; the schedule now backs it, so the credit becomes the schedule's and
+     shows as such. What it must NOT do is forget where it came from: the
+     reverse pass may clear an `auto` credit, so an unpublish used to delete
+     the admin's own record outright — a hand-entered call-out vanished because
+     the schedule later happened to earn a credit on the same day (Codex
+     review, 20 Sep 26), against design §18 OA3-003. It now carries
+     `wasManual`, the admin's own reason is kept in preference to the
+     schedule's words, and an unpublish returns it to `manual` rather than
+     removing it. */
+  /* Idempotent on purpose: the pass runs on EVERY change, so the second run
+     must see a credit it has already taken over and carry the mark and the
+     admin's words forward. Testing `oil === 'manual'` alone lost both on the
+     very next pass, which put the deletion-on-unpublish straight back. */
+  const taking = !!had && (had.oil === 'manual' || had.wasManual === true)
+  const kept: CreditRec = taking
+    ? { ...rec, wasManual: true, ...(had!.note ? { note: had!.note } : {}) }
+    : rec
+  putList(personId, date, [...staying, kept])
   /* 'clash' still REPORTS — the day needs a human — but it no longer means
      "nothing was written". The credit is on the day either way. */
-  return clash ? 'clash' : confirming ? 'confirmed' : 'written'
+  return clash ? 'clash' : taking ? 'confirmed' : 'written'
 }
 
 /**
@@ -3179,8 +3206,14 @@ export function clearRaptorCell(personId: string, date: string): boolean {
   // Locked: a sync-driven delete is not a Leave War undo step.
   return locked(() => {
     const list = listAt(personId, date)
-    const had = list.find(r => r.kind === 'credit' && r.oil === 'auto')
+    const had = list.find(r => r.kind === 'credit' && r.oil === 'auto') as CreditRec | undefined
     if (!had) return false
+    /* the squadron's OWN record, taken over in place when the schedule agreed
+       with it: give it back rather than deleting it (design §18 OA3-003) */
+    if (had.wasManual) {
+      const { wasManual: _w, ...rest } = had
+      return putList(personId, date, list.map(r => (r === had ? { ...rest, oil: 'manual' } as CreditRec : r)))
+    }
     return putList(personId, date, list.filter(r => r !== had))
   })
 }

@@ -47,6 +47,12 @@ export interface CreditRec {
   /** the work times, minutes of the day (clash check B8). None = the whole day
    *  for every overlap check (owner Q7). */
   spans?: Array<[number, number]>
+  /** an ADMIN typed this first and the published schedule later earned the
+   *  same credit, so the pass took it over in place. The pass may take its own
+   *  credit away again — but taking this one away would destroy the squadron's
+   *  own record, which design §18 OA3-003 forbids. So an unpublish returns it
+   *  to `manual` instead of deleting it (Codex review, 20 Sep 26). */
+  wasManual?: true
 }
 
 export interface NoticeRec {
@@ -177,6 +183,7 @@ export function readRec(x: unknown): WarRec | null {
   if (x.kind === 'credit') {
     if ((x.code !== 'FO' && x.code !== 'HO') || (x.oil !== 'auto' && x.oil !== 'manual')) return null
     const r: CreditRec = { id: x.id, kind: 'credit', code: x.code, oil: x.oil }
+    if (x.wasManual === true && x.oil === 'auto') r.wasManual = true
     if (typeof x.note === 'string' && x.note.trim()) r.note = x.note.trim().slice(0, MAX_REC_NOTE)
     if (Array.isArray(x.spans)) { const s = x.spans.filter(isSpan); if (s.length) r.spans = s as Array<[number, number]> }
     return r

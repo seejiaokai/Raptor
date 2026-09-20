@@ -13,7 +13,7 @@ import { initStore as raptorInitStore, writeInputs } from '../state/store'
 import { setSession, setMe } from '../state/auth'
 import { projectPeople } from './state/raptorRoster'
 import {
-  cellProblem, getState, initStore as lwInitStore, lwHistInit, rawState, setCell, setPeople, setRole, setViewer,
+  cellProblem, clearRaptorCell, getState, ingestDutyCredit, initStore as lwInitStore, lwHistInit, rawState, setCell, setCellNote, setPeople, setRole, setViewer,
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { runOilPass, wireLeaveWarSync } from './sync'
@@ -350,5 +350,73 @@ describe('a bid the war refuses', () => {
     expect(setCell('bruise', '2026-07-18', 'LL')).toBe(false)
     expect(cellProblem('casper', '2026-02-09', 'LL')).toBeNull()
     expect(setCell('casper', '2026-02-09', 'LL')).toBe(true)
+  })
+})
+
+/* ====================================================================== */
+/*  Work lands on a leave day whichever way it arrives (owner, 20 Sep 26)  */
+/* ====================================================================== */
+describe('a hand-typed credit on a day that already holds leave', () => {
+  it('lands and flags the day, the same as the schedule earning it', () => {
+    /* The owner's ruling is about WORK arriving on a leave day; it must not
+       matter whether the work comes from the published schedule or from an
+       admin typing it. This was refused — and refused silently — so the two
+       facts were kept or lost depending on which was entered first. */
+    file('ammo', 'LL', 'Feb 14', timed(at(9), at(11)))
+    expect(cellProblem('ammo', '2026-02-14', 'FO')).toBeNull()
+    expect(setCell('ammo', '2026-02-14', 'FO')).toBe(true)
+    const v = view('ammo', '2026-02-14')!
+    expect(v.all.some(c => c.kind === 'credit')).toBe(true)
+    expect(v.all.some(c => c.code === 'LL')).toBe(true)
+    expect(v.amber).toBe(true)
+    expect(v.earnsOil).toBe(1)
+  })
+})
+
+describe("an admin's hand-typed credit the schedule later agrees with", () => {
+  const D = '2026-02-17'                                   // an ordinary Tuesday
+  const credOf = (p: string) => (rawState().wars.find(w => D >= w.period.start && D <= w.period.end)
+    ?.recs[p]?.[D] ?? []).find((r: any) => r.kind === 'credit') as any
+
+  it('is never destroyed — it is handed back, not deleted', () => {
+    /* Design §18 OA3-003: the pass never takes a hand-typed credit away. It
+       used to take it over in place and turn it `auto`, and the reverse pass
+       — which may clear `auto` — then deleted it outright. An admin's record
+       of a call-out vanished because the schedule later happened to earn a
+       credit on the same day (Codex review, 20 Sep 26).
+       Asserted as an END STATE on purpose: the pass runs on every change, so
+       a takeover and a hand-back can both happen before anything is read.
+       What must hold, whatever order they run in, is that the squadron's own
+       record and its words are still there. */
+    setCell('dj', D, 'FO')
+    setCellNote('dj', D, 'called out for the recovery')
+    expect(credOf('dj')?.oil).toBe('manual')
+
+    // the schedule now earns the same credit on that day: taken over in place
+    ingestDutyCredit('dj', D, 'FO', 'Duty', [[at(8), at(12)]])
+
+    const after = credOf('dj')
+    expect(after).toBeDefined()                                  // never deleted
+    expect(after.code).toBe('FO')
+    expect(after.note).toBe('called out for the recovery')       // the admin's words kept
+    // either still the schedule's, carrying the mark home, or already handed back
+    expect(after.oil === 'manual' || after.wasManual === true).toBe(true)
+
+    // and whatever the schedule does next, it still cannot destroy it
+    clearRaptorCell('dj', D)
+    const end = credOf('dj')
+    expect(end).toBeDefined()
+    expect(end.oil).toBe('manual')
+    expect(end.note).toBe('called out for the recovery')
+  })
+
+  it('a credit the schedule ALONE earned is still removed outright', () => {
+    /* The other half of the same rule: with nothing hand-typed underneath,
+       there is nothing to hand back. Nothing on this Tuesday earns a credit,
+       so the pass clears it as soon as it sees it — which is the behaviour,
+       not a race. */
+    ingestDutyCredit('casper', D, 'FO', 'Duty', [[at(8), at(12)]])
+    clearRaptorCell('casper', D)
+    expect(credOf('casper')).toBeUndefined()
   })
 })

@@ -61,7 +61,7 @@ const RULES = {
 
 /* Rules with no test naming them on 20 Sep 26. The check fails if this set
    GROWS. Shrink it as the [S4-BUGHUNT] scenarios land their named tests. */
-const BASELINE = new Set(['B8', 'Q9', 'Q11', 'Q12', 'Q14', 'Q15'])
+const BASELINE = new Set(['Q9', 'Q11', 'Q12', 'Q14', 'Q15'])
 
 const TEST_DIRS = [join(ROOT, 'src'), join(ROOT, 'e2e')]
 const isTest = (f) => /\.(test|spec)\.(ts|tsx)$/.test(f)
