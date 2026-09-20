@@ -3163,18 +3163,20 @@ function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO',
      `wasManual`, the admin's own reason is kept in preference to the
      schedule's words, and an unpublish returns it to `manual` rather than
      removing it. */
-  /* Idempotent on purpose: the pass runs on EVERY change, so the second run
-     must see a credit it has already taken over and carry the mark and the
-     admin's words forward. Testing `oil === 'manual'` alone lost both on the
-     very next pass, which put the deletion-on-unpublish straight back. */
-  const taking = !!had && (had.oil === 'manual' || had.wasManual === true)
-  const kept: CreditRec = taking
-    ? { ...rec, wasManual: true, ...(had!.note ? { note: had!.note } : {}) }
-    : rec
+  /* Idempotent on purpose: the pass runs on EVERY change, so a second run
+     must recognise a credit it has already taken over and carry the snapshot
+     forward untouched. Testing `oil === 'manual'` alone lost it on the very
+     next pass, which put the deletion-on-unpublish straight back. */
+  const snap: CreditRec['manual'] | undefined = had
+    ? had.manual ?? (had.oil === 'manual'
+      ? { code: had.code, ...(had.note ? { note: had.note } : {}), ...(had.spans ? { spans: had.spans } : {}) }
+      : undefined)
+    : undefined
+  const kept: CreditRec = snap ? { ...rec, manual: snap } : rec
   putList(personId, date, [...staying, kept])
   /* 'clash' still REPORTS — the day needs a human — but it no longer means
      "nothing was written". The credit is on the day either way. */
-  return clash ? 'clash' : taking ? 'confirmed' : 'written'
+  return clash ? 'clash' : snap ? 'confirmed' : 'written'
 }
 
 /**
@@ -3208,10 +3210,14 @@ export function clearRaptorCell(personId: string, date: string): boolean {
     const had = list.find(r => r.kind === 'credit' && r.oil === 'auto') as CreditRec | undefined
     if (!had) return false
     /* the squadron's OWN record, taken over in place when the schedule agreed
-       with it: give it back rather than deleting it (design §18 OA3-003) */
-    if (had.wasManual) {
-      const { wasManual: _w, ...rest } = had
-      return putList(personId, date, list.map(r => (r === had ? { ...rest, oil: 'manual' } as CreditRec : r)))
+       with it: give back EXACTLY what the admin typed rather than deleting it,
+       and rather than handing back the schedule's credit wearing a manual
+       label (design §18 OA3-003) */
+    if (had.manual) {
+      const back: CreditRec = { id: had.id, kind: 'credit', oil: 'manual', code: had.manual.code,
+        ...(had.manual.note ? { note: had.manual.note } : {}),
+        ...(had.manual.spans ? { spans: had.manual.spans } : {}) }
+      return putList(personId, date, list.map(r => (r === had ? back : r)))
     }
     return putList(personId, date, list.filter(r => r !== had))
   })

@@ -13,7 +13,7 @@ import { initStore as raptorInitStore, writeInputs } from '../state/store'
 import { setSession, setMe } from '../state/auth'
 import { projectPeople } from './state/raptorRoster'
 import {
-  cellProblem, clearRaptorCell, getState, ingestDutyCredit, initStore as lwInitStore, lwHistInit, rawState, setCell, setCellNote, setPeople, setRole, setViewer,
+  cellProblem, clearRaptorCell, getState, ingestDutyCredit, lwEditLists, initStore as lwInitStore, lwHistInit, rawState, setCell, setCellNote, setPeople, setRole, setViewer,
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { runOilPass, wireLeaveWarSync } from './sync'
@@ -394,26 +394,34 @@ describe("an admin's hand-typed credit the schedule later agrees with", () => {
        a takeover and a hand-back can both happen before anything is read.
        What must hold, whatever order they run in, is that the squadron's own
        record and its words are still there. */
-    setCell('dj', D, 'FO')
+    setCell('dj', D, 'HO')
     setCellNote('dj', D, 'called out for the recovery')
-    expect(credOf('dj')?.oil).toBe('manual')
+    lwEditLists([{ personId: 'dj', date: D, drop: [], add: [] }])   // settle
+    const mine = credOf('dj')
+    expect(mine.oil).toBe('manual')
+    // give the admin's credit its own hours, as the hours box will
+    lwEditLists([{ personId: 'dj', date: D, drop: [mine.id], add: [{ ...mine, spans: [[at(6), at(9)]] }] }])
 
-    // the schedule now earns the same credit on that day: taken over in place
+    // the schedule now earns a DIFFERENT credit that day: taken over in place
     ingestDutyCredit('dj', D, 'FO', 'Duty', [[at(8), at(12)]])
 
     const after = credOf('dj')
     expect(after).toBeDefined()                                  // never deleted
-    expect(after.code).toBe('FO')
-    expect(after.note).toBe('called out for the recovery')       // the admin's words kept
-    // either still the schedule's, carrying the mark home, or already handed back
-    expect(after.oil === 'manual' || after.wasManual === true).toBe(true)
+    // either still the schedule's, carrying the snapshot home, or handed back
+    expect(after.oil === 'manual' || after.manual?.code === 'HO').toBe(true)
 
-    // and whatever the schedule does next, it still cannot destroy it
+    /* And what comes back is EXACTLY what the admin typed — his code, his
+       hours, his words. A boolean flag was not enough: the schedule's FO and
+       its own hours had overwritten the admin's HO, so the hand-back returned
+       the SCHEDULE's credit wearing a manual label (Codex review, 20 Sep 26). */
     clearRaptorCell('dj', D)
     const end = credOf('dj')
     expect(end).toBeDefined()
     expect(end.oil).toBe('manual')
+    expect(end.code).toBe('HO')                                  // not the schedule's FO
+    expect(end.spans).toEqual([[at(6), at(9)]])                  // not the schedule's hours
     expect(end.note).toBe('called out for the recovery')
+    expect(end.manual).toBeUndefined()                           // the snapshot is spent
   })
 
   it('a credit the schedule ALONE earned is still removed outright', () => {
