@@ -1106,7 +1106,7 @@ function validateCore(){
       const blind=dayOilBlind(DAYS[di]||{});
       if(blind.length){
         const {list,verb}=blindDesks(blind);
-        add('hard','OIL_NO_TIMES',[],`${list} ${verb} no times — nobody earns OIL for this day`);
+        add('hard','OIL_NO_TIMES',[],`${list} ${verb} no times — nobody on ${blind.length>1?'them':'it'} earns OIL for this day`);
       }
     }
     const SORD:any={hard:0,adv:1,note:2};

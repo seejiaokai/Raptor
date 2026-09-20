@@ -2194,6 +2194,19 @@ export function clearCells(cells: { personId: string; date: string }[]): RangeWr
  *  holding two absences (those are changed one at a time from the list —
  *  design §23.3). */
 function warEditable(personId: string, date: string): boolean {
+  /* APPROVED AND PUBLISHED IS FINISHED PAPERWORK (owner, 21 Sep 26 — "if the
+     input is approved and published … the member and admin can input the
+     remarks there. In order to edit it again, admin has to go back to open for
+     bidding or bidding closed"). ONE seat for that rule, because the war reaches
+     an approved leave from five directions — the tap list, the bulk decision
+     over a drag-selection, a bulk clear, a drag-move and a single move — and
+     every one of them asks this question. Enforcing it only where the owner
+     happened to be looking is how the rule would rot (Fable, 21 Sep 26; Astra
+     found the tap-list half of it).
+     It is NARROW on purpose: this predicate is only ever asked about a leave
+     the WAR approved. An input nobody has approved yet stays fully editable on
+     a published war, which is the other half of his ruling. */
+  if (getState().period.stage === 'published') return false
   const war = warHolding(getState().wars as MergedWar[], date) as MergedWar | undefined
   const v = war?.views[personId]?.[date]
   if (!v || !v.main || v.main.kind !== 'absence') return false
@@ -3209,7 +3222,11 @@ function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO',
      longer refuse, the strip is derived from the same conflicts, and the
      reverse pass already removes an auto credit once the work is gone. */
   const clash = probe.some(p => others.some(o => forbiddenPair(p, o)))
-  if (had && had.oil === 'auto' && had.code === code && JSON.stringify(had) === JSON.stringify(rec)) return clash ? 'clash' : 'confirmed'
+  /* The comparison is against the record this pass would WRITE, carried fields
+     and all — comparing against the bare `rec` made a taken-over award look
+     different on every pass and rewrote it forever (Fable, 21 Sep 26). */
+  const same = had && had.oil === 'auto' && had.code === code && !had.manual && JSON.stringify(had) === JSON.stringify(rec)
+  if (same) return clash ? 'clash' : 'confirmed'
   /* TAKEN OVER IN PLACE, BUT NEVER DESTROYED. The squadron recorded this fact
      first; the schedule now backs it, so the credit becomes the schedule's and
      shows as such. What it must NOT do is forget where it came from: the
@@ -3229,7 +3246,28 @@ function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO',
       ? { code: had.code, ...(had.note ? { note: had.note } : {}), ...(had.givenBy ? { givenBy: had.givenBy } : {}), ...(had.days != null ? { days: had.days } : {}), ...(had.spans ? { spans: had.spans } : {}) }
       : undefined)
     : undefined
-  const kept: CreditRec = snap ? { ...rec, manual: snap } : rec
+  /* AN AWARD IS NOT THE SAME FACT AS THE WORK, SO THE TAKEOVER MUST NOT EAT IT
+     (Fable, 21 Sep 26; consequence of the owner's 20 Sep award ruling). The
+     takeover was built when a hand-typed credit meant "the squadron recorded
+     this work first" — the same fact, so replacing it lost nothing. Since the
+     ruling it is an AWARD: days a man is OWED, which the schedule knows nothing
+     about. Replacing it wholesale took a 3-day award down to the one day the
+     Saturday earns, silently, and his balance was short by two until somebody
+     unpublished the day.
+     So the award's QUANTITY and its WORDS ride on: the day now says both what
+     the schedule earned and what he was owed, and the balance never falls. The
+     snapshot is still kept for the unpublish hand-back. Whether an award and a
+     worked day should ADD UP (3 + 1) is the owner's call and is not assumed
+     here — this keeps the larger of the two, which is what he had before. */
+  const kept: CreditRec = snap
+    ? {
+      ...rec,
+      manual: snap,
+      ...(snap.days != null ? { days: Math.max(snap.days, code === 'FO' ? 1 : 0.5) } : {}),
+      ...(snap.note ? { note: snap.note } : {}),
+      ...(snap.givenBy ? { givenBy: snap.givenBy } : {}),
+    }
+    : rec
   putList(personId, date, [...staying, kept])
   /* 'clash' still REPORTS — the day needs a human — but it no longer means
      "nothing was written". The credit is on the day either way. */

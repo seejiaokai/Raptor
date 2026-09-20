@@ -20,6 +20,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { balanceOf, isWeekend } from '../engine'
+import { creditGiver, readRec } from '../engine/warrecs'
 import { getState, ingestDutyCredit, initStore, rawState, setCell, setManualCredit, setPostOut, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
@@ -267,6 +268,76 @@ describe('the OIL on a day, read back on one click', () => {
   it('shows nothing at all on a day with no OIL on it', () => {
     open(TUE)
     expect(screen.queryByTestId('oil-detail')).toBeNull()
+  })
+})
+
+/* WHAT ASTRA FOUND, 21 Sep 26 — each pinned so it cannot come back. */
+describe('the OIL read-back, hardened', () => {
+  it('remembers WHERE an automatic credit came from across a reload', () => {
+    /* `via` was written and then dropped when the record was read back, so a
+       credit earned off an accepted duty INPUT came back reading "Weekend/PH"
+       — the wrong evidence, pointing a reader at a schedule that does not back
+       it. A protected date is skipped by both halves of the OIL pass, so there
+       it would never have healed. */
+    const stored = { id: 'c9', kind: 'credit', code: 'FO', oil: 'auto', via: 'input', note: 'Duty' }
+    expect(readRec(stored)).toMatchObject({ oil: 'auto', via: 'input' })
+    expect(creditGiver(readRec(stored) as any)).toBe('Duty input')
+    // a hand-typed one carries no provenance, and a nonsense value is dropped
+    expect(readRec({ id: 'c8', kind: 'credit', code: 'FO', oil: 'manual', via: 'input' })).not.toHaveProperty('via')
+    expect(readRec({ id: 'c7', kind: 'credit', code: 'FO', oil: 'auto', via: 'elsewhere' })).not.toHaveProperty('via')
+  })
+
+  it('sends an INPUT-earned credit to the input, not to the schedule', () => {
+    /* Both sentences used to say "change the schedule and the OIL follows",
+       which for this kind is false: editing the schedule cannot take away a
+       credit an accepted duty input is still backing. */
+    expect(ingestDutyCredit(P, SAT, 'FO', 'Duty', [[480, 1080]], 'input')).toBe('written')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-${SAT}`))
+    expect(screen.getByTestId('raptor-note').textContent).toContain('duty input')
+    expect(screen.getByTestId('raptor-note').textContent).not.toContain('published schedule')
+  })
+
+  it('…and one the SCHEDULE earned still points at the schedule', () => {
+    expect(ingestDutyCredit(P, SAT, 'FO', 'Duty', [[480, 1080]])).toBe('written')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-${SAT}`))
+    expect(screen.getByTestId('raptor-note').textContent).toContain('published schedule')
+  })
+})
+
+/* THE ONE THAT COST A MAN TWO DAYS (Fable, 21 Sep 26). */
+describe('an award the schedule later earns on top of', () => {
+  it('keeps every day it was worth — the takeover must not eat it', () => {
+    /* The takeover was built when a hand-typed credit meant "the squadron
+       recorded this work first" — the same fact, so replacing it lost nothing.
+       Since the owner's 20 Sep ruling it is an AWARD: days a man is OWED, which
+       the schedule knows nothing about. Replacing it took a 3-day award down to
+       the one day the Saturday earns, silently. */
+    expect(setManualCredit(P, SAT, 'FO', { note: 'Exercise recovery', givenBy: 'OC Ops', days: 3 })).toBeNull()
+    expect(getState().views[P]?.[SAT]?.earnsOil).toBe(3)
+    expect(ingestDutyCredit(P, SAT, 'FO', 'Duty', [[480, 1080]])).toBeTruthy()
+    expect(getState().views[P]?.[SAT]?.earnsOil).toBe(3)
+  })
+
+  it('still says whose award it was, and why — not the weekend underneath it', () => {
+    expect(setManualCredit(P, SAT, 'FO', { note: 'Exercise recovery', givenBy: 'OC Ops', days: 3 })).toBeNull()
+    expect(ingestDutyCredit(P, SAT, 'FO', 'Duty', [[480, 1080]])).toBeTruthy()
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-${SAT}`))
+    expect(screen.getByTestId('oil-detail-why').textContent).toBe('Exercise recovery')
+    expect(screen.getByTestId('oil-detail-given').textContent).toBe('OC Ops')
+    expect(screen.getByTestId('oil-detail-days').textContent).toContain('3 days')
+  })
+
+  it('does not churn: a second pass over the same day writes nothing new', () => {
+    /* The pass runs on every change, so a taken-over award it did not
+       recognise would be rewritten forever. */
+    expect(setManualCredit(P, SAT, 'FO', { note: 'Exercise recovery', days: 3 })).toBeNull()
+    ingestDutyCredit(P, SAT, 'FO', 'Duty', [[480, 1080]])
+    const first = JSON.stringify(creditOn(P, SAT))
+    ingestDutyCredit(P, SAT, 'FO', 'Duty', [[480, 1080]])
+    expect(JSON.stringify(creditOn(P, SAT))).toBe(first)
   })
 })
 

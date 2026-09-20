@@ -105,7 +105,16 @@ export function DayListSheet({
       const warOwned = !!row?.lw
       const text = `${shown(notation(c))} — ${nameOf(c.code) || shown(c.code)}${partTxt} · ${warOwned ? 'approved' : 'filed on the Inputs page'}`
       const actions: ReactElement[] = []
-      if (warOwned && isLeave && role === 'admin' && deciding) {
+      /* APPROVED AND PUBLISHED IS FINISHED PAPERWORK (owner, 21 Sep 26 — "if
+         the input is approved and published … the member and admin can input
+         the remarks there. In order to edit it again, admin has to go back to
+         open for bidding or bidding closed"). The single-record window has
+         always obeyed this; THIS list did not, because `deciding` means
+         closed-OR-published, so a day holding two records let an admin send a
+         published, approved leave back to a bid in one click. Found by Astra,
+         21 Sep 26. Note stays — a remark is the one thing he DID ask for here. */
+      const finished = period.stage === 'published'
+      if (warOwned && isLeave && role === 'admin' && deciding && !finished) {
         actions.push(
           <button key="p" className="dchip" data-testid={`dl-unapprove-${c.id}`} onClick={() => act(() => changeAbsenceById(personId, date, c.id, 'pending'))}>Back to bid</button>,
           <button key="r" className="dchip refuse" data-testid={`dl-refuse-${c.id}`} onClick={() => act(() => changeAbsenceById(personId, date, c.id, 'refused'))}>Refuse</button>,
@@ -150,7 +159,10 @@ export function DayListSheet({
       const text = `${c.code} — OIL earned${rec?.note ? ` (${rec.note})` : ''}${times ? `, worked ${times}` : ''}${giver ? ` · given by ${giver}` : ''}`
       const actions: ReactElement[] = []
       if (rec?.oil === 'manual' && role === 'admin') actions.push(<button key="cl" className="dchip" data-testid={`dl-clear-${c.id}`} onClick={() => act(() => clearRecordById(personId, date, c.id))}>Clear</button>)
-      return { key: `c-${c.id}`, cls: 'sc', text, sub: rec?.oil === 'auto' ? 'From the published schedule.' : '', actions }
+      const from = rec?.oil !== 'auto' ? ''
+        : rec.via === 'input' ? 'From a duty input that was accepted.'
+          : 'From the published schedule.'
+      return { key: `c-${c.id}`, cls: 'sc', text, sub: from, actions }
     }
     // a replaced-bid notice
     const n = raw.find(r => r.id === c.id) as NoticeRec | undefined

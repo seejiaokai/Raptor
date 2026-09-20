@@ -43,7 +43,12 @@ export interface Carried { remarks?: string; lwMoved?: Record<string, string> }
  *  the day window and the OIL tracker must not word it differently. */
 export function creditGiver(c: { oil?: 'auto' | 'manual'; givenBy?: string; via?: 'schedule' | 'input' } | null | undefined): string {
   if (!c) return ''
-  if (c.oil !== 'auto') return c.givenBy ?? ''
+  /* A NAME ALWAYS WINS. On an automatic credit a name can only have come from
+     an AWARD the schedule later took over — and that award is why the day is
+     worth what it is worth, so the person who granted it is the honest answer
+     rather than the weekend underneath it (Fable, 21 Sep 26). */
+  if (c.givenBy) return c.givenBy
+  if (c.oil !== 'auto') return ''
   return c.via === 'input' ? 'Duty input' : 'Weekend/PH'
 }
 
@@ -233,6 +238,13 @@ export function readRec(x: unknown): WarRec | null {
   if (x.kind === 'credit') {
     if ((x.code !== 'FO' && x.code !== 'HO') || (x.oil !== 'auto' && x.oil !== 'manual')) return null
     const r: CreditRec = { id: x.id, kind: 'credit', code: x.code, oil: x.oil }
+    /* WHERE AN AUTOMATIC CREDIT CAME FROM SURVIVES A RELOAD (Astra, 21 Sep 26).
+       It was written and then dropped here, so after a reload a credit earned
+       off an accepted DUTY INPUT read as "Weekend/PH" — the wrong evidence,
+       pointing a reader at a schedule that does not back it. Reconciliation
+       repairs most dates on the next pass, but a PROTECTED date is deliberately
+       skipped by both halves of the OIL pass, so there it would never heal. */
+    if (x.oil === 'auto' && (x.via === 'schedule' || x.via === 'input')) r.via = x.via
     const mx = x.manual as any
     if (x.oil === 'auto' && mx && (mx.code === 'FO' || mx.code === 'HO')) {
       const m: NonNullable<CreditRec['manual']> = { code: mx.code }

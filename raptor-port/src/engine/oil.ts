@@ -183,15 +183,21 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number])=>stri
  *  own name). The caller decides when to speak; Leave War knows which days can
  *  earn at all. Blank-and-nameless is not listed — an empty desk is an empty
  *  desk, not a mistake. */
-/* ONE wording for the blind desks, so the day's warning strip and the publish
+/* ONE wording for the blind places, so the day's warning strip and the publish
    message can never name them differently: the list, and the verb that agrees
    with it. A day can carry three desks and only one be blank, which is why the
-   plural is built rather than assumed. */
-export function blindDesks(names:readonly string[]):{list:string;verb:string}{
+   plural is built rather than assumed.
+   The names arrive BARE ("SDO", "the ground programme") because only the caller
+   knows the sentence it is building — the publish message wraps a desk name in
+   "the ... desk", which read "the The ground programme desk" while the names
+   carried their own article (Fable, 21 Sep 26). `desk` says whether every name
+   in the list is a duty desk, which is what lets a caller add that wrapper. */
+export function blindDesks(names:readonly string[]):{list:string;verb:string;desk:boolean}{
   const many=names.length>1;
   return {
     list: many?`${names.slice(0,-1).join(', ')} and ${names[names.length-1]}`:names.join(''),
     verb: many?'have':'has',
+    desk: names.length>0&&names.every(n=>!/^the /.test(n)),
   };
 }
 
@@ -212,26 +218,26 @@ export function dayOilBlind(day:any):string[]{
       if(r.cx)return;
       if(timed(r.str,r.end))return;
       if(!named([r.id,...(r.more||[])]))return;
-      add(String(r.role||dw.label||'A duty desk'));
+      add(String(r.role||dw.label||'a duty desk'));
     });
   });
   (day.ground||[]).forEach((g:any)=>{
     if(g.cx||g.src||g.info)return;
     if(timed(g.str,g.end))return;
     if(!named([g.who,...(g.more||[])]))return;
-    add('The ground programme');
+    add('the ground programme');
   });
   ['amt','oft'].forEach((k:any)=>((day.sims||{})[k]||[]).forEach((r:any)=>{
     if(r.cx)return;
     if(timed(r.str,r.end))return;
     if(!named([r.p,r.w,...(r.pax||[]),...(r.more||[])]))return;
-    add(k==='amt'?'The AMT sim':'The OFT sim');
+    add(k==='amt'?'the AMT sim':'the OFT sim');
   }));
   (day.allhands||[]).forEach((x:any)=>{
     if(x.cx||x.info)return;
     if(timed(x.str,x.end))return;
     if(!named([...whoArr(x),...(x.more||[])]))return;
-    add('The common programme');
+    add('the common programme');
   });
   return out;
 }

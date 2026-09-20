@@ -11,7 +11,7 @@
 // shift-window rule (AM/PM halves, midpoint, night clause) is deleted.
 
 import { afterEach, describe, expect, it } from 'vitest'
-import { dayOilBlind, dayOilCredits, dayOilSpans, dayOilWork, envMin, uniformOil, inputOilAmt, oilWorkWhy } from './oil'
+import { blindDesks, dayOilBlind, dayOilCredits, dayOilSpans, dayOilWork, envMin, uniformOil, inputOilAmt, oilWorkWhy } from './oil'
 import { VCONF } from './rules'
 import { PEOPLE } from './people'
 
@@ -285,10 +285,21 @@ describe('dayOilBlind — a desk with a man on it and no times', () => {
   })
 
   it('catches the ground and common programmes too, by their own names', () => {
+    /* The names come back BARE — lower case, with their own article where the
+       thing has one — because the caller builds the sentence. The publish
+       message wraps a DESK name in "the … desk", and while these carried a
+       capital "The" it read "the The ground programme desk" (Fable, 21 Sep 26). */
     const g = day([], [], { ground: [{ who: 'plasma', str: '', end: '' }] })
-    expect(dayOilBlind(g)).toEqual(['The ground programme'])
+    expect(dayOilBlind(g)).toEqual(['the ground programme'])
     const a = day([], [], { allhands: [{ who: ['plasma'], str: '', end: '' }] })
-    expect(dayOilBlind(a)).toEqual(['The common programme'])
+    expect(dayOilBlind(a)).toEqual(['the common programme'])
+  })
+
+  it('wraps a DESK name in "the … desk" and leaves a programme name alone', () => {
+    expect(blindDesks(['SDO'])).toEqual({ list: 'SDO', verb: 'has', desk: true })
+    expect(blindDesks(['SDO', 'SXO'])).toEqual({ list: 'SDO and SXO', verb: 'have', desk: true })
+    expect(blindDesks(['the ground programme'])).toMatchObject({ desk: false })
+    expect(blindDesks(['SDO', 'the ground programme'])).toMatchObject({ desk: false })
   })
 })
 

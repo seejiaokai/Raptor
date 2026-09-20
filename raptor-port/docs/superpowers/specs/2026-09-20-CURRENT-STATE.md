@@ -40,6 +40,11 @@ Owner's own words for it, 20 Sep 26. Every decision below is that sentence appli
 | 19 | **An admin can RECORD that someone worked** — FO/HO with a reason, who said so, and the hours, from the day sheet. On ANY day. Nothing in the app could create one before; the three editors that existed could only reach credits nobody could type. | `—` |
 | 20 | **Leave or OIL can be placed on a day outside someone's posting dates**, by an admin, from the grid. One button on the posting sheet. | `—` |
 
+| 21 | **An OIL AWARD owes a man a day; it does not say he was at work.** A hand-typed credit no longer flags a leave day and no longer counts him on duty — with an empty day he is available to work. A credit the published schedule earned still does both. (N13) | `54c2709` |
+| 22 | **A worked day that earns nobody anything says so** — on the day's own warning strip while it is being built, and again at the publish moment. Weekends and public holidays only, and it names the desk. (N14) | `54c2709` |
+| 23 | **OIL says why it is there, who gave it and how many days**, on one click, in all three sheets a credit can open in — and automatic OIL answers the same three from the schedule it was earned off ("Weekend/PH", or "Duty input"). It also fixed a sheet that told an earned credit it had been "filed on the Inputs page". | `3eb46ec` |
+| 24 | **One window for an input, in every stage** — Ack, Approve, Refuse and Move on one row at the top of the day window, the separate decision sheet retired, and "Pending" renamed to **Ack** everywhere the word showed. (N15) | `4277ad1` |
+
 Process, also built: the **behaviour register**, `npm run rulecheck` (fails when a ruling has no
 test naming it), and the **rules-first red team** as a standing third review.
 

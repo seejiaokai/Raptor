@@ -15,7 +15,7 @@
 
 import { useState } from 'react'
 import { addDays, displayCell, formatCell, LEAVE_TYPES, type BidState, type CounterName, type Portion } from '../engine'
-import { cellProblem, MAX_GIVEN_BY, setBidState, setCell, setCellRange, shiftBid } from '../state/store'
+import { cellProblem, clearCells, MAX_GIVEN_BY, setBidState, setBidStates, setCell, setCellRange, shiftBid } from '../state/store'
 import { MAX_REC_NOTE } from '../engine/warrecs'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
@@ -167,6 +167,22 @@ export function BidPicker({
      simply did nothing would read as broken */
   const [moveTo, setMoveTo] = useState('')
   const [moveErr, setMoveErr] = useState('')
+
+  /* A DECISION THAT DOES NOT LAND SAYS SO (Astra, 21 Sep 26). The first cut
+     wrote and closed regardless, so wherever the store refuses — a cell the
+     Inputs page owns, a stage that does not decide — the sheet shut as though
+     the answer had been recorded. The affordance is gated too (Matrix passes
+     `decide` only where a decision can land); this is the second line, because
+     a control that silently does nothing is the worst of the three outcomes. */
+  const answer = (bid: BidState) => {
+    // Tapping the answer it already holds is a NO-OP, not a failure (Fable,
+    // 21 Sep 26): the store returns "nothing decided" for it, which the line
+    // below would otherwise report as a refusal.
+    if (decide?.state === bid) return onClose()
+    const { decided } = setBidStates([{ personId, date }], bid)
+    if (decided > 0) return onClose()
+    setMoveErr('That could not be recorded — this day is not this screen’s to decide.')
+  }
   const [oilErr, setOilErr] = useState('')
   const grantOil = (code: 'FO' | 'HO') => {
     const problem = onCredit!(code, oilDays, oilNote, oilGiven)
@@ -201,6 +217,23 @@ export function BidPicker({
       /* A refused single-day write used to close the sheet as though it had
          worked: no leave, no message, nothing ([S4-BUGHUNT], 20 Sep 26). Ask
          WHY first, and say it. */
+      /* CLEAR GOES THROUGH THE DOOR THAT CAN ACTUALLY REMOVE THINGS (Fable,
+         21 Sep 26). `setCell('')` only strips the war's OWN records — a
+         request or an award — so on a leave the war APPROVED it found nothing,
+         changed nothing and closed as though it had worked, while the leave
+         buttons beside it were saying "already taken by LL — clear it first".
+         A dead-end loop, and new: before the one window this cell opened the
+         decision sheet, which carried no Clear at all. `clearCells` is the door
+         that reaches an approved leave (through the absence door on the Input
+         itself) and it still covers requests and awards, so this is a superset
+         of the old behaviour — and it refuses a PUBLISHED approved leave,
+         which is the owner's own rule. */
+      if (!code) {
+        const { written } = clearCells([{ personId, date }])
+        if (!written) return setNote('Nothing here can be cleared from the war — leave filed on the Inputs page is changed there, and an approved leave on a published war needs the war reopened.')
+        onWrote?.('')
+        return onClose()
+      }
       const why = cellProblem(personId, date, code)
       if (why) return setNote(why)
       setCell(personId, date, code)
@@ -255,7 +288,7 @@ export function BidPicker({
               data-testid="decide-ack"
               aria-pressed={decide.state === 'acknowledged'}
               title="Acknowledged — seen, not yet decided"
-              onClick={() => { setBidState(personId, date, 'acknowledged'); onClose() }}
+              onClick={() => answer('acknowledged')}
             >
               Ack
             </button>
@@ -263,7 +296,7 @@ export function BidPicker({
               className="dchip approve"
               data-testid="decide-approve"
               aria-pressed={decide.state === 'approved'}
-              onClick={() => { setBidState(personId, date, 'approved'); onClose() }}
+              onClick={() => answer('approved')}
             >
               Approve
             </button>
@@ -271,7 +304,7 @@ export function BidPicker({
               className="dchip refuse"
               data-testid="decide-refuse"
               aria-pressed={decide.state === 'refused'}
-              onClick={() => { setBidState(personId, date, 'refused'); onClose() }}
+              onClick={() => answer('refused')}
             >
               Refuse
             </button>
@@ -282,8 +315,8 @@ export function BidPicker({
                 the decision came onto it, which matters most on a phone, where
                 a taller sheet eats the strip of grid still reachable above it.
                 A move is what management does instead of refusing when a week
-                goes red and refusing outright is too blunt: it lands
-                ACKNOWLEDGED and they approve it on the new date — a proposal
+                goes red and refusing outright is too blunt: it lands UNDECIDED
+                and they approve it on the new date — a proposal
                 with a trail, not a silent re-approval. Reaching it from ONE
                 click was the rest of his ask; it took a drag-select before,
                 which is a lot of gesture for one man's one day. */}
@@ -820,11 +853,19 @@ export function RaptorSheet({
   /** OIL the APP earned on this day, if that is what the cell holds (owner,
    *  21 Sep 26). See the note below on why this sheet had to learn the
    *  difference. */
-  creditShown?: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; spans?: Array<[number, number]> } | null
+  creditShown?: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; spans?: Array<[number, number]>; via?: 'schedule' | 'input' } | null
   onClose: () => void
 }) {
+  /* WHICH EVIDENCE BACKS THIS CREDIT decides where the reader is sent (Astra,
+     21 Sep 26). The first cut sent everyone to the schedule, which is wrong for
+     a credit earned off a duty-and-commitments input the owner accepted:
+     editing the schedule cannot take that credit away, so the sentence pointed
+     him at a screen where there is nothing to change — the same defect, one
+     layer down, as the "filed on the Inputs page" line this sheet used to give
+     an earned credit. */
+  const fromInput = creditShown?.via === 'input'
   return (
-    <Sheet testid="raptor-sheet" label={creditShown ? 'OIL from the schedule' : 'Leave from Raptor'} onClose={onClose}>
+    <Sheet testid="raptor-sheet" label={creditShown ? 'OIL the app credited' : 'Leave from Raptor'} onClose={onClose}>
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
         <span className="dt">{date}</span>
@@ -843,7 +884,9 @@ export function RaptorSheet({
         <span className="lab">{creditShown ? 'Where it came from' : 'Inputs page'}</span>
         <span className="note" data-testid="raptor-note">
           {creditShown
-            ? 'Earned off the published schedule — change the schedule and the OIL follows.'
+            ? fromInput
+              ? 'Earned off a duty input that was accepted — change that input, not the schedule.'
+              : 'Earned off the published schedule — change the schedule and the OIL follows.'
             : 'Filed on the Inputs page, so it is already approved — change it there, not here.'}
         </span>
       </div>

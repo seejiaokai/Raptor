@@ -231,6 +231,19 @@ describe('the one input window', () => {
     expect(screen.getByTestId('bid-clear')).toBeTruthy()
   })
 
+  it('offers NO decision in DRAFT — a war nobody has been shown has nothing to answer', () => {
+    /* Astra, 21 Sep 26: the first cut gated the buttons on "an admin and a
+       biddable cell", so at DRAFT they appeared and the store refused the
+       write — a control that does nothing, which is the one outcome the house
+       rule forbids. */
+    setRole('admin')
+    reopenStage()                                   // open → draft
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(PENDING))
+    expect(screen.queryByTestId('decide-ack')).toBeNull()
+    expect(screen.queryByTestId('decide-shift')).toBeNull()
+  })
+
   it('a MEMBER gets no decisions on anybody’s input, their own included', () => {
     advanceStage()
     setRole('member')

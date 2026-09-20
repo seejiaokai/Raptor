@@ -311,3 +311,61 @@ already holds leave opens its record list. The fourth — an admin tapping a BLA
 was taken by the posting sheet, which is right nine times out of ten and left him no way to file the
 clearing leave that made him open the day. One button through, for that cell only.
 *Settles:* the last asymmetry in N8.
+
+### N13 — an OIL AWARD owes a man a day; it does not say he was at work
+> "i want an award of an OIL to stop flagging a leave day. That makes sense." — and, later the
+> same night: "OIL that is credited should just be as simple as he is credited OIL. It shouldn't
+> by default take him as on duty. Affecting the manning present count … It also makes him
+> available to work if he has nothing else that day planned … But if i add like FO or HO on the
+> leave war or the oil tracker it shouldn't be counting that person as working by default unless
+> its stated in the input or the schedule."
+
+Two kinds of OIL credit now behave differently, and the line between them is WHO SAYS HE WAS AT
+WORK. A credit the app earned off the PUBLISHED SCHEDULE (`auto`) says he was: it still flags a
+leave day, it still stands him down from flying, and it still counts him in the duty manning.
+A credit a person TYPED (an award) says only that he is OWED a day: it flags nothing, stands him
+down from nothing, and with an empty day he is available to work.
+
+Measured consequence, and the reason the duty half needed its own ruling: exempting the amber alone
+moved nine tests; the duty half moved eight more, all manning figures. One of them is visible on
+first run — 3 January leaves the under-manned list, because RAMP's hand-typed FO was reddening the
+day by standing the only SXO down.
+
+*Settles:* B4's last assumption that a credit is evidence of attendance whoever entered it. *Leaves
+untouched:* the automatic pass — weekend and public-holiday work credits exactly as before.
+*Reverses nothing:* N11's "an admin may credit OIL on any day" is what makes the distinction
+necessary, not what it overturns.
+
+### N14 — a worked day that earns nobody anything says so
+> "Yes i want a warning." … "I would also like u to give the warning On the day itself, while
+> you're building it And At the moment you publish."
+
+He put a man on the SDO desk for a Sunday, published the day, and no OIL appeared. The desk had no
+start and no end time, so it measured nothing and minted nothing — correct, because money must not
+come from a guess, and completely silent. A man's leave balance was short and no screen admitted it.
+
+The day's own warning strip now names the desk while the day is being built, which is where the fix
+is free; the publish moment says it again as a backstop. Weekends and public holidays only — they
+are the only days that earn OIL at all, so a blank desk on a Tuesday is ordinary and says nothing.
+An empty desk says nothing either: an empty desk owes no one.
+
+*Settles:* the silent half of the rule in `engine/oil.ts` that "a row with no readable times earns
+nothing". The rule is unchanged; the app simply stopped keeping it to itself.
+
+### N15 — one window for an input, in every stage
+> "Can u change the term Pending to Ack (which is Acknowledged). When i click on an input in the
+> leave war, it should also allow me to Have the buttons Ack, Approve, Refuse and Move … enable it
+> in all Stage on leave war … Try to keep the window the same size and squeeze the extra info and
+> buttons into it."
+
+The decision used to live on a SEPARATE sheet that opened only once bidding had closed, so the same
+input answered to different controls depending on which day of the cycle you clicked it, and moving
+one man's one day took a drag-select. The four answers — Ack, Approve, Refuse, Move — now sit on
+one row at the top of the day window, above what was asked for, in every stage the war runs in.
+
+*Reverses:* his own 27 Aug 26 naming of that button as "Pending" (the stored state token is
+untouched — still `acknowledged`), and the design rule that decisions wait for bidding to close.
+That rule was never about permission: an admin could always close the stage, decide, and reopen it.
+*Leaves untouched, and it is his own exception:* an input APPROVED and PUBLISHED offers remarks and
+nothing else — to change it an admin reopens the war. One not yet approved stays fully editable.
+

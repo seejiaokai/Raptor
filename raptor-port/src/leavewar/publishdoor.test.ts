@@ -181,6 +181,23 @@ describe('publishing a weekend nobody earns OIL for', () => {
     expect(said.some(m => m.includes('earns OIL') || m.includes('earned nobody'))).toBe(false)
   })
 
+  it('does not LOSE the warning behind the bid-clash message', () => {
+    /* Astra, 21 Sep 26. The strip at the foot of the screen is one element
+       whose text is REPLACED, so publishing a day that had BOTH a blank desk
+       and a bid sitting on published work said the second thing only — and the
+       one swallowed was the silent-OIL warning, the whole point of the ruling.
+       Both facts now arrive in one message. */
+    setRole('admin')
+    const wave = ((DAYS[5] as any).dutywaves ?? [])[0]
+    wave.rows.push({ role: 'SXO', id: 'plasma', str: '0800', end: '1800' })   // someone still earns
+    wave.rows[0].str = ''; wave.rows[0].end = ''                              // and a desk is blank
+    expect(setCell('plasma', SAT, 'LL')).toBe(true)                           // …on a live bid
+    publish(5)
+    const spoke = said.find(m => m.includes('no start and end times'))
+    expect(spoke).toBeTruthy()
+    expect(spoke).toContain('still live')
+  })
+
   it('still speaks when SOMEBODY earns but a desk is blank — the man on it gets nothing', () => {
     setRole('admin')
     // The seed Saturday carries ONE desk, so the mixed case has to be built:

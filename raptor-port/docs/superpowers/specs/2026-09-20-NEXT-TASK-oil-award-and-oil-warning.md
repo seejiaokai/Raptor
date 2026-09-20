@@ -1,4 +1,25 @@
-# NEXT TASK — two owner rulings, made late on 20 Sep 26, NOT YET BUILT
+# DONE — BUILT 21 Sep 26. Kept as the record of the two rulings and how they were read.
+
+**Both rulings are built and green on `claude/s4-bughunt` (`54c2709`), plus the `duty` half the
+owner ruled on the same night, which this file said to ask him about. See CURRENT-STATE items
+21–24 and behaviour-register entries N13–N15.**
+
+Three things this file got wrong, recorded because the next reader will otherwise trust them:
+
+1. **The demo-data fork's recommendation was wrong.** Marking the historic demo credits `auto`
+   does not survive: the OIL pass's reverse sweep DELETES an `auto` credit no published schedule
+   backs, on every wake, so the tracker would have emptied on first run. The demo file's own
+   comment says as much. **The owner chose to leave the demo data alone**, and nothing about it
+   changed.
+2. **"They lose their star" was false.** The star IS the `auto` mark; those credits were already
+   hand-typed, so they never had one.
+3. **The nine tests were nine, but eight more moved with the `duty` half** — not the six this
+   file measured. The three extra are the under-manned list, which loses 3 January: RAMP's
+   hand-typed FO had been reddening the day by standing the only SXO down.
+
+Original text follows.
+
+---
 
 **Branch `claude/s4-bughunt`, clean at `0f457e3`, pushed, PR #422 open. Nothing merged.**
 Read `2026-09-20-CURRENT-STATE.md` first; this file is the one piece of work queued after it.

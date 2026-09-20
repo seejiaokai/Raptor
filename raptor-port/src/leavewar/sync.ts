@@ -947,16 +947,18 @@ const WEEKDAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', '
  * Weekends and public holidays only, and only from the RESOLVED ISSUED
  * snapshot — the same evidence the credit itself is drawn from, so the warning
  * can never disagree with the OIL. */
-function warnNobodyEarnsOil(iso: string, day: any, spans: Record<string, OilWork[]>): void {
+function oilBlindLine(iso: string, day: any, spans: Record<string, OilWork[]>): string | null {
   const blind = dayOilBlind(day)
-  if (!blind.length) return
+  if (!blind.length) return null
   const earners = Object.values(spans).filter(sp => workSpans(sp).length).length
   const when = `${WEEKDAY_NAMES[weekday(iso)]} ${dm(iso)}`
-  const { list, verb } = blindDesks(blind)
-  const desks = `the ${list} desk${blind.length > 1 ? 's' : ''} ${verb}`
-  HOOKS.toast(earners
+  const { list, verb, desk } = blindDesks(blind)
+  /* "the SDO desk has", but "the ground programme has" — the wrapper only fits
+     a duty desk's bare role name (Fable, 21 Sep 26). */
+  const desks = desk ? `the ${list} desk${blind.length > 1 ? 's' : ''} ${verb}` : `${list} ${verb}`
+  return earners
     ? `${when}: ${desks} no start and end times, so nobody on ${blind.length > 1 ? 'them' : 'it'} earns OIL`
-    : `${when} earned nobody any OIL — ${desks} no start and end times`, '')
+    : `${when} earned nobody any OIL — ${desks} no start and end times`
 }
 
 export function publishFlagsBids(di: number): void {
@@ -965,9 +967,16 @@ export function publishFlagsBids(di: number): void {
   const snap = daySnapOf(di, dayCurVer(di))
   if (!snap || !snap.d) return
   const spans = dayOilWork(snap.d, { expandAll: win => availableFor(iso, win) })
-  warnNobodyEarnsOil(iso, snap.d, spans)
+  /* ONE MESSAGE, BOTH FACTS (Astra, 21 Sep 26). The strip at the foot of the
+     screen is a single element whose text is REPLACED, so speaking twice in the
+     same breath showed only the second — and the one that got swallowed was the
+     silent-OIL warning, the whole point of the ruling. Both lines are collected
+     and delivered together. */
+  const lines: string[] = []
+  const blindLine = oilBlindLine(iso, snap.d, spans)
+  if (blindLine) lines.push(blindLine)
   const war = warHolding(rawState().wars, iso)
-  if (!war) return
+  if (!war) { if (lines.length) HOOKS.toast(lines.join(' · '), ''); return }
   const said: string[] = []
   for (const [person, sp] of Object.entries(spans)) {
     const wins = workSpans(sp)
@@ -978,7 +987,8 @@ export function publishFlagsBids(di: number): void {
       said.push(`${cs(person)}'s ${r.code.replace(/\*/g, '')} bid on ${dm(iso)}`)
     }
   }
-  if (said.length) HOOKS.toast(`${said.join(', ')} now sits on published work — the day is flagged, the bid is still live`, '')
+  if (said.length) lines.push(`${said.join(', ')} now sits on published work — the day is flagged, the bid is still live`)
+  if (lines.length) HOOKS.toast(lines.join(' · '), '')
 }
 
 /* [GLOBAL-UNDO] §6.6 — the Unpublish button's warn. Unpublishing a loaded-week day

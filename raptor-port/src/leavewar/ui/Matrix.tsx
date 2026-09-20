@@ -3941,6 +3941,7 @@ export function Matrix() {
               note: openAnyCredit.note,
               giver: creditGiver(openAnyCredit),
               spans: openAnyCredit.spans,
+              via: openAnyCredit.via,
             }
             : null}
           onClose={close}
@@ -4236,7 +4237,7 @@ export function Matrix() {
              anybody asked for. `canDecide` is deliberately NOT the gate: it
              means closed-or-published, and the whole point of his ruling is
              that the window is the same while bidding is still open. */
-          decide={role === 'admin' && isBiddable(grid[open.id]?.[open.date])
+          decide={canDecide(period.stage, role) && !openFreeHalf && isBiddable(grid[open.id]?.[open.date])
             ? { state: stateOf(states, open.id, open.date), movedFrom: movedShown ? shiftedFrom(states, open.id, open.date) : undefined }
             : null}
           creditShown={openAnyCredit
