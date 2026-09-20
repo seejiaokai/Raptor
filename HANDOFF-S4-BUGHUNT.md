@@ -1,6 +1,6 @@
 # [S4-BUGHUNT] handoff — for the next session (20 Sep 26)
 
-Branch **`claude/s4-bughunt`**, 22 commits off `main` (`e904d44`). **Nothing merged. Working tree
+Branch **`claude/s4-bughunt`**, 27 commits off `main` (`e904d44`). **Nothing merged. Working tree
 clean.** The owner has not said "merge live".
 
 ## Read exactly one file first
@@ -58,13 +58,20 @@ One known flake: `src/ui/inputscal.test.tsx`'s real-pointer chip-tap test fails 
 and passes on its own, confirmed twice, both with and without this branch's changes. Untouched by
 anything here.
 
-## Two cross-provider reviews were in flight at handoff
+## The consolidation was reviewed, and it was NOT clean
 
-Fable and Codex were both asked to check the **consolidation** — is CURRENT-STATE true against the
-code, does anything contradict, what did the new doctrine silently change the meaning of, and do the
-five TO BUILD items make sense in that order. If their results are not in the next session's context,
-re-run them from the prompts recorded in this session; the brief shape is in
-`docs/superpowers/briefs/rules-first-red-team.md`.
+Fable returned SOUND WITH FIXES; **Codex returned NOT SOUND**. They agreed on why. Everything they
+found that could be fixed has been — two more code defects (a man on leave counting as manning a
+duty weekend, and a hand-typed credit handed back as the schedule's rather than the admin's), and
+four code comments still asserting rules this session killed.
+
+**What could NOT be fixed without the owner is now CURRENT-STATE §6: three questions.** That section
+previously said nothing remained; that was wrong and it is retracted there. **Q2 blocks items B and
+C.** Do not guess it.
+
+Item B also carries three non-optional constraints from that review — it is a display span only, it
+must be memoised because it runs per person per repaint, and an archived person with no posting-out
+date cannot satisfy it at all.
 
 ## Standing rules that bit during this session — worth knowing before you start
 
