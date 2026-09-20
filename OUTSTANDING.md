@@ -660,20 +660,31 @@ A's weekday case, pre-posting-in leave, medical corners, the OIL pass vs absence
 gestures, undo depth, storage faults, phone touch, figures on multi-record days). Rules of record:
 `specs/2026-09-20-arch-stack-4-clash-check.md`. Do it on the step-4 branch (or on main once it merges).
 
-### [S4-BUGHUNT] IN FLIGHT on `claude/s4-bughunt` — 22 commits, nothing merged (20 Sep 26)
+### [S4-BUGHUNT] IN FLIGHT on `claude/s4-bughunt` — 32 commits, nothing merged, WAITING ON "MERGE LIVE" (20 Sep 26)
 **Read `HANDOFF-S4-BUGHUNT.md`, then `raptor-port/docs/superpowers/specs/2026-09-20-CURRENT-STATE.md`
-and nothing else first.** That spec is the single destination: what is built, what is next and in
-what order, what is parked, and the EIGHT RULES SET ASIDE today that must not be re-applied — B4's
-"overlap means no credit", B5's bid-door refusal, §26.3's refusal of leave over recorded work, Q5's
-skip, H2 used to decide whether a medical and leave clash at all, and two August rules about
-posted-out rows. Several older documents still read as live and are not.
-- **Ten fixes built and green** (unit 321 files / 5126, tfin 728/0, rulecheck OK). **Five items left
-  to build**, listed in order. **Three parked** with their reasons, **one closed** as not a defect.
-- **The hand-testing pass in the running app is OWED** and is the one gate not yet run; e2e, perf
-  and the Tracker smoke have not been run this session either.
+and nothing else first.** That spec is the single destination: what is built, what is parked, and the
+RULES SET ASIDE today that must not be re-applied — B4's "overlap means no credit", BOTH halves of
+B5 (the bid-door refusal AND "publishing replaces an undecided bid"), §26.3's refusal of leave over
+recorded work, Q5's skip, H2 used to decide whether a medical and leave clash at all, and the August
+rules about posted-out and pre-joining rows. Several older documents still read as live and are not.
+- **Eighteen fixes built and green.** The five items that were left to build are DONE, plus a sixth
+  the owner asked for in the same breath (a Post in date — the app had no joining date at all
+  before). **Three parked** with their reasons, **one closed** as not a defect.
+- **The owner's three open questions are ANSWERED** and recorded in CURRENT-STATE §6. One of them
+  changed how leave is charged — it does not: he ruled the app was right and the written rule had
+  the wrong word.
+- **ALL SEVEN GATES RUN** — unit 326/5164, build, tfin 728/0, rulecheck, e2e 447/0, perf 4/0,
+  Tracker smoke 425/0 — **and the hand-testing pass in the running app is DONE.** It found one real
+  defect (the new hours box was unusable on a phone), now fixed. One test pair is not certified: see
+  the handoff's "the one thing NOT certified".
+- **`npm run perf` was dead on the Windows desktop** and silently so — it hard-coded the container's
+  Chromium path. Fixed to the repo's own fallback. If another probe "fails instantly", suspect this.
 - Came out of it and now standing: the behaviour register, `npm run rulecheck`, the rules-first red
   team as a third review, and the CLAUDE.md standing order to sweep the rules and hand-test against
   them on every build.
+- **Two things to put to the owner** (neither urgent, both in the handoff): an admin cannot type an
+  FO/HO credit anywhere in the app, and an admin tapping a day outside someone's posting dates
+  always gets the posting sheet rather than being able to file leave there.
 
 ### [LW-LOCKMARK] Retire the war's `source:'raptor'` lock marker — OPEN (follow-up to step 4, 20 Sep 26)
 Codex's round-2 inspection (AS4-R2-004, low): the merged view still synthesises `source:'raptor'` ("locked on
