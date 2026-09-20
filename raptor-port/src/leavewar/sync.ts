@@ -26,7 +26,7 @@ import { persistPeopleProjection, commitPeopleEdit } from '../state/people-setti
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { SCHED, dayApproved, dayCurVer, dayCurVerIn, daySnapIn, daySnapOf, amFormatOf } from '../engine/publish'
-import { dayOilWork, inputOilAmt, envMin, uniformOil, oilWorkWhy, type OilWork } from '../engine/oil'
+import { blindDesks, dayOilBlind, dayOilWork, inputOilAmt, envMin, uniformOil, oilWorkWhy, type OilWork } from '../engine/oil'
 import { stashKeys, stashGet, isPreservedWeek } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
@@ -38,6 +38,7 @@ import {
   inSquadron,
   isNonWorkingDay,
   localToday,
+  weekday,
   parseCell,
   warHolding,
   recsAt,
@@ -169,6 +170,15 @@ export function installAbsenceDoor(): void {
   setRefusalHook(() => { refreshAbsences(true) })
   installInputGate()
   setPublishGate(publishFlagsBids)
+  /* WHICH DAYS CAN EARN OIL AT ALL — the schedule's blind-desk warning asks
+     this before it speaks, and only Leave War can answer for a public holiday
+     (the engine covers Saturday and Sunday from the day's own name). One
+     predicate, the same `isNonWorkingISO` the credit itself is drawn from, so
+     the warning and the OIL can never disagree about which days count. */
+  HOOKS.oilEarningDay = (di: number) => {
+    const iso = labelToISO(DATES[di])
+    return !!iso && isNonWorkingISO(iso)
+  }
 }
 /** Re-read the Inputs into the war now and repaint — what a Raptor notify
  *  does in the app; tests that push INPUTS directly call it. */
@@ -913,12 +923,40 @@ function workSpans(spans: OilWork[]): Array<[number, number]> {
  * Weekend and public holidays only, as before — weekday work never reaches the
  * war at all. Reads the RESOLVED issued snapshot, the same evidence the OIL
  * pass credits from. */
+const WEEKDAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
+/* A WORKED DAY THAT EARNS NOBODY ANYTHING SAYS SO (owner, 20 Sep 26 — "Yes i
+   want a warning … At the moment you publish").
+ *
+ * His own case: a man on the SDO desk for a Sunday, the day published, no OIL.
+ * The desk had no start and no end, so it measured nothing and minted nothing.
+ * Correct, and silent — a man's leave balance short with no screen admitting
+ * it. This is the backstop for anyone who published past the day's own warning
+ * strip, which is where the cheap fix is (a blank desk costs nothing to fill
+ * before signing; after publishing it costs an amendment).
+ *
+ * Weekends and public holidays only, and only from the RESOLVED ISSUED
+ * snapshot — the same evidence the credit itself is drawn from, so the warning
+ * can never disagree with the OIL. */
+function warnNobodyEarnsOil(iso: string, day: any, spans: Record<string, OilWork[]>): void {
+  const blind = dayOilBlind(day)
+  if (!blind.length) return
+  const earners = Object.values(spans).filter(sp => workSpans(sp).length).length
+  const when = `${WEEKDAY_NAMES[weekday(iso)]} ${dm(iso)}`
+  const { list, verb } = blindDesks(blind)
+  const desks = `the ${list} desk${blind.length > 1 ? 's' : ''} ${verb}`
+  HOOKS.toast(earners
+    ? `${when}: ${desks} no start and end times, so nobody on ${blind.length > 1 ? 'them' : 'it'} earns OIL`
+    : `${when} earned nobody any OIL — ${desks} no start and end times`, '')
+}
+
 export function publishFlagsBids(di: number): void {
   const iso = labelToISO(DATES[di])
   if (!iso || !warHolding(rawState().wars, iso) || !isNonWorkingISO(iso) || !dayApproved(di)) return
   const snap = daySnapOf(di, dayCurVer(di))
   if (!snap || !snap.d) return
   const spans = dayOilWork(snap.d, { expandAll: win => availableFor(iso, win) })
+  warnNobodyEarnsOil(iso, snap.d, spans)
   const war = warHolding(rawState().wars, iso)
   if (!war) return
   const said: string[] = []

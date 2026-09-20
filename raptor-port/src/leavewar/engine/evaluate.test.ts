@@ -5,6 +5,13 @@ import { evaluateDay, evaluatePeriod, worst } from './evaluate'
 import type { Person } from './people'
 import type { Requirements } from './requirements'
 
+/* A credit the SCHEDULE earned — the only kind that stands a man down from
+   flying and puts him on the duty line (owner, 20 Sep 26). A hand-typed FO/HO
+   is an AWARD: it tops up his OIL bank and changes no manning figure, so a
+   test whose subject is SC duty has to say the schedule owns the cell. */
+const worked = (pid: string, date: string): States => ({ [pid]: { [date]: { state: 'approved', source: 'raptor' } } })
+
+
 const p = (id: string, seat: 'pilot' | 'wso', band: 'instructor' | 'ops', over: Partial<Person> = {}): Person => ({
   id, callsign: id.toUpperCase(), seat, band, sxo: false, from: null, to: null, ...over,
 })
@@ -168,7 +175,7 @@ describe('overseas duty', () => {
     // thin. A man overseas is simply gone, and must never be counted there:
     // a day thin because half the squadron is on SC reads very differently
     // from one thin because half the squadron is abroad.
-    const scDuty = evaluateDay(people, { ip1: { [D]: 'FO' } }, {}, reqs, D)
+    const scDuty = evaluateDay(people, { ip1: { [D]: 'FO' } }, worked('ip1', D), reqs, D)
     expect(scDuty.counts.byCategory.IP).toBe(1)
     expect(scDuty.counts.duty).toBe(1)
     expect(away.counts.duty).toBe(0)

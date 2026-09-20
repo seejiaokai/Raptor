@@ -31,6 +31,13 @@ export const HOOKS = {
   renderSchedule: (): void => {},
   renderInputs: (): void => {},
   syncHistBtns: (): void => {},
+  /* IS THIS DAY ONE THAT CAN EARN OIL? Only Leave War knows a public holiday
+     (its own PH input and the 'off' event tag), and the engine does not import
+     state/ or leavewar/ — so the answer arrives as a hook, the way editMode and
+     the edit-log name do. Unset, the blind-desk warning below still covers
+     Saturday and Sunday from the day's own name; the wire sharpens it to the
+     squadron's real non-working days. */
+  oilEarningDay: (_di: number): boolean => false,
   isPhone: (): boolean => false,
   editMode: (): boolean => false,
   /* who is making this edit, for the edit log (editlog.ts). It arrives as a

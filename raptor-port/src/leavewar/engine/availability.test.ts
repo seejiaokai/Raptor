@@ -3,6 +3,13 @@ import { availabilityOf, countsFor, heldQuals, type Grid } from './availability'
 import type { States } from './bids'
 import type { Person } from './people'
 
+/* A credit the SCHEDULE earned — the only kind that stands a man down from
+   flying and puts him on the duty line (owner, 20 Sep 26). A hand-typed FO/HO
+   is an AWARD: it tops up his OIL bank and changes no manning figure, so a
+   test whose subject is SC duty has to say the schedule owns the cell. */
+const worked = (pid: string, date: string): States => ({ [pid]: { [date]: { state: 'approved', source: 'raptor' } } })
+
+
 const p = (id: string, seat: 'pilot' | 'wso', band: 'instructor' | 'ops', over: Partial<Person> = {}): Person => ({
   id, callsign: id.toUpperCase(), seat, band, sxo: false, from: null, to: null, ...over,
 })
@@ -74,7 +81,7 @@ describe('countsFor', () => {
 
   it('reports people on SC duty separately from people on leave', () => {
     const grid: Grid = { ip1: { '2026-01-05': 'FO' }, op1: { '2026-01-05': 'LL' } }
-    const c = countsFor(people, grid, {}, '2026-01-05')
+    const c = countsFor(people, grid, worked('ip1', '2026-01-05'), '2026-01-05')
     expect(c.duty).toBe(1)
     expect(c.byCategory.IP).toBe(1)
     expect(c.byCategory.OPSP).toBe(0)
@@ -96,12 +103,12 @@ describe('countsFor', () => {
     const postedOut = p('gone', 'pilot', 'instructor', { to: '2026-01-04' })
     const withPostedOutDuty = [...people, postedOut]
     const grid: Grid = { gone: { '2026-01-05': 'FO' } }
-    expect(countsFor(withPostedOutDuty, grid, {}, '2026-01-05').duty).toBe(0)
+    expect(countsFor(withPostedOutDuty, grid, worked('gone', '2026-01-05'), '2026-01-05').duty).toBe(0)
   })
 
   it('counts the HO credit code in the duty tally like FO', () => {
     const grid: Grid = { ip1: { '2026-01-05': 'HO' } }
-    const c = countsFor(people, grid, {}, '2026-01-05')
+    const c = countsFor(people, grid, worked('ip1', '2026-01-05'), '2026-01-05')
     expect(c.duty).toBe(1)
   })
 

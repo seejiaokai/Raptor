@@ -9,6 +9,7 @@ import { seedRunIn, prevSundaySeed, nextMondaySeed, nextMondayWorked, windowDive
 import { setWorld, setFiling, clearFiling } from './world'
 import { CURWEEK } from './waves'
 import { DAYS } from './data'
+import { dayOilBlind, blindDesks } from './oil'
 import { keyDay } from './keys'
 import { SCHED, approvedDays, dayDelta, dayCurVer, daySnapOf } from './publish'
 
@@ -24,7 +25,8 @@ export const WCODE:any={DOUBLE_BOOK:'Conflict — two events at once',DNIF_FLY:'
   PAX_CREW:'Incentive passenger — crew pairing needs approval',
   SHIFT_SOFT:'On shift — also down for a ground event',
   SC_INTIME:'In-time window cut — busy between report and shift start',
-  SANS_AVAIL:'SANS availability — planned outside the availability filed'};
+  SANS_AVAIL:'SANS availability — planned outside the availability filed',
+  OIL_NO_TIMES:'No OIL earned — a duty desk has no times'};
 /* what a flag PRINTS on the puck. The internal codes stay as they are — they
    key the colours, the ranking and the tooltips — but the squadron reads these
    at 9px on a phone, so the glyphs are short: R for crew rest, B for either
@@ -1087,6 +1089,26 @@ function validateCore(){
       if(p&&p.seat==='RCP'){markChip(di,s.p,'Q');markRing(di,s.p,'hard');add('hard','QUAL',[s.p],`${p.cs} is a WSO — cannot take the front seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.p`);}
       if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,s.p,'Q');markRing(di,s.p,'hard');add('hard','QUAL',[s.p],`${p.cs} is CAT IW — a WSO category, cannot take the front seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.p`);}
     });
+    /* A DESK WITH A MAN ON IT AND NO TIMES EARNS HIM NOTHING, AND SAYS SO
+       (owner, 20 Sep 26 — "I would also like u to give the warning On the day
+       itself, while you're building it").
+       His own case: a man on the SDO desk for a Sunday, the day published, no
+       OIL, and no screen admitting why. OIL is minted strictly from written
+       times, so a blank desk mints nothing — correct, and silent. THIS is the
+       valuable half of the warning: here the fix is free, because after the
+       publish it costs an amendment.
+       Weekends and public holidays only — they are the only days that earn OIL
+       at all, so a blank desk on a Tuesday is ordinary and must say nothing.
+       The weekend comes from the day's own name; the holiday from the hook,
+       because only Leave War holds that answer. */
+    const earnsOil=day.dow==='Saturday'||day.dow==='Sunday'||HOOKS.oilEarningDay(di);
+    if(earnsOil){
+      const blind=dayOilBlind(DAYS[di]||{});
+      if(blind.length){
+        const {list,verb}=blindDesks(blind);
+        add('hard','OIL_NO_TIMES',[],`${list} ${verb} no times — nobody earns OIL for this day`);
+      }
+    }
     const SORD:any={hard:0,adv:1,note:2};
     ws.sort((a:any,b:any)=>(SORD[a.sev]??3)-(SORD[b.sev]??3));
     byDay[di]={di,dow:day.dow,warns:ws};

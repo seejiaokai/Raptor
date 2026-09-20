@@ -87,13 +87,17 @@ describe('setManualCredit', () => {
     expect(setManualCredit(P, SAT, 'HO')).toContain('published schedule')
   })
 
-  it('never refuses for clashing with leave — both land and the day is flagged', () => {
+  it('never refuses for clashing with leave — both land, and an award does not flag the day', () => {
+    /* The credit still lands beside the leave — that is the older half of the
+       rule. What changed on 20 Sep 26 is the flag: a credit typed in by hand is
+       an AWARD, it says nothing about where the man was, so there is nothing
+       for an admin to resolve and the day stays grey. */
     expect(setCell(P, SAT, 'LL')).toBe(true)                 // leave first…
-    expect(setManualCredit(P, SAT, 'FO')).toBeNull()         // …then the credit
+    expect(setManualCredit(P, SAT, 'FO')).toBeNull()         // …then the award
     const v = getState().views[P]?.[SAT]
     expect(v?.all.filter(c => c.kind === 'request')).toHaveLength(1)
     expect(v?.all.filter(c => c.kind === 'credit')).toHaveLength(1)
-    expect(v?.amber).toBe(true)
+    expect(v?.amber).toBe(false)
   })
 })
 

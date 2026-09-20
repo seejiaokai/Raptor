@@ -7,7 +7,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { DAYS } from '../engine/data'
-import { SCHED } from '../engine/publish'
+import { SCHED, setDayApproved, signOf } from '../engine/publish'
 import { stashClear } from '../engine/weekstash'
 import { initStore as raptorInitStore, writeInputs } from '../state/store'
 import { setSession, setMe } from '../state/auth'
@@ -50,6 +50,23 @@ const file = (person: string, type: string, date: string, extra: Record<string, 
 /** a custom-time row: minutes from midnight, inclusive */
 const timed = (s: number, e: number) => ({ allday: false, s, e })
 const at = (h: number, m = 0) => h * 60 + m
+
+/* RECORDED WORK, the only kind that still flags a day off (owner, 20 Sep 26).
+   A hand-typed credit is an AWARD now and contradicts nothing, so a test whose
+   subject is a man who ACTUALLY WORKED has to make the work real: publish the
+   seed Saturday and let the OIL pass mint the credit off it, the same way the
+   running app does. Day 5 is that Saturday; PLASMA stands its SDO desk
+   08:00–18:00, so he is the man the published day credits. An `auto` credit
+   the schedule does NOT back is swept by the same pass moments later, which is
+   why it cannot simply be written by hand here. */
+const WORKED_SAT = '2026-07-18'
+const WORKED_MAN = 'plasma'
+const publishTheSaturday = () => {
+  const g = signOf(5)
+  g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+  setDayApproved(5, true)
+  runOilPass()
+}
 
 const grid = (p: string, d: string) => getState().grid[p]?.[d]
 const view = (p: string, d: string) => getState().views[p]?.[d]
@@ -352,10 +369,10 @@ describe('a bid the war refuses', () => {
     expect(cellProblem('casper', '2026-02-09', 'LL')).toBeNull()
     expect(setCell('casper', '2026-02-09', 'LL')).toBe(true)
     // allowed: recorded work flags the day, it does not refuse (owner, 20 Sep 26)
-    setCell('dj', '2026-07-18', 'FO')
-    expect(cellProblem('dj', '2026-07-18', 'LL')).toBeNull()
-    expect(setCell('dj', '2026-07-18', 'LL')).toBe(true)
-    expect(view('dj', '2026-07-18')!.amber).toBe(true)
+    publishTheSaturday()
+    expect(cellProblem(WORKED_MAN, WORKED_SAT, 'LL')).toBeNull()
+    expect(setCell(WORKED_MAN, WORKED_SAT, 'LL')).toBe(true)
+    expect(view(WORKED_MAN, WORKED_SAT)!.amber).toBe(true)
   })
 })
 
@@ -363,19 +380,35 @@ describe('a bid the war refuses', () => {
 /*  Work lands on a leave day whichever way it arrives (owner, 20 Sep 26)  */
 /* ====================================================================== */
 describe('a hand-typed credit on a day that already holds leave', () => {
-  it('lands and flags the day, the same as the schedule earning it', () => {
-    /* The owner's ruling is about WORK arriving on a leave day; it must not
-       matter whether the work comes from the published schedule or from an
-       admin typing it. This was refused — and refused silently — so the two
-       facts were kept or lost depending on which was entered first. */
+  it('lands beside the leave, and does NOT flag it — an award says nothing about where he was', () => {
+    /* Two owner rulings meet here, both 20 Sep 26. The first: work arriving on
+       a leave day must LAND whichever way it arrives — it was refused, and
+       refused silently, so the two facts were kept or lost depending on which
+       was entered first. The second, later the same day: a HAND-TYPED credit
+       is an AWARD. It says a man is owed a day, not that he was at work, so it
+       cannot contradict the leave and the day must not go amber for it. The
+       credit is still banked — the OIL is still earned. */
     file('ammo', 'LL', 'Feb 14', timed(at(9), at(11)))
     expect(cellProblem('ammo', '2026-02-14', 'FO')).toBeNull()
     expect(setCell('ammo', '2026-02-14', 'FO')).toBe(true)
     const v = view('ammo', '2026-02-14')!
     expect(v.all.some(c => c.kind === 'credit')).toBe(true)
     expect(v.all.some(c => c.code === 'LL')).toBe(true)
-    expect(v.amber).toBe(true)
+    expect(v.amber).toBe(false)
     expect(v.earnsOil).toBe(1)
+  })
+
+  it('…but the SCHEDULE earning one on the same day still flags it', () => {
+    /* The other half of the ruling, and the reason the exemption is narrow: a
+       credit the app worked out off the published schedule DOES say he was at
+       work, so it still contradicts the leave and still sends an admin to
+       look. Same two facts as the case above, one of them recorded instead of
+       awarded, and the day goes the other way. */
+    file(WORKED_MAN, 'LL', 'Jul 18')
+    publishTheSaturday()
+    const v = view(WORKED_MAN, WORKED_SAT)!
+    expect(v.all.some(c => c.kind === 'credit' && c.auto)).toBe(true)
+    expect(v.amber).toBe(true)
   })
 })
 
@@ -452,20 +485,22 @@ describe('a man with both a credit and leave on one day', () => {
   it('is not counted on duty when the leave takes his whole day', () => {
     setRole('admin')
     const before = dutyCount()
-    setCell('plasma', SAT, 'FO')                                 // an admin records the work
-    expect(dutyCount()).toBe(before + 1)                         // he is at work
+    publishTheSaturday()                                         // the schedule records the work
+    const worked = dutyCount()
+    expect(worked).toBeGreaterThan(before)                       // he is at work
+    expect(view('plasma', SAT)!.duty).toBe(true)
 
     // now he is also on leave all that day: the day is flagged, and he mans nothing
     file('plasma', 'LL', 'Jul 18')
     expect(view('plasma', SAT)!.amber).toBe(true)
-    expect(dutyCount()).toBe(before)
+    expect(dutyCount()).toBe(worked - 1)
   })
 
   it('still counts when only half the day is leave', () => {
     setRole('admin')
-    const before = dutyCount()
-    setCell('dj', SAT, 'FO')
-    file('dj', 'LL', 'Jul 18', { allday: false, half: 'pm', s: 721, e: 1439 })
-    expect(dutyCount()).toBe(before + 1)                         // still at work that morning
+    publishTheSaturday()
+    const worked = dutyCount()
+    file('plasma', 'LL', 'Jul 18', { allday: false, half: 'pm', s: 721, e: 1439 })
+    expect(dutyCount()).toBe(worked)                             // still at work that morning
   })
 })

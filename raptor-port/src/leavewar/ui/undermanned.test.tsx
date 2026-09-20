@@ -10,13 +10,19 @@ import { Matrix } from './Matrix'
 beforeEach(() => { initStore(memoryBackend()) })
 
 // The seeded war's red days, in order: RAMP is the only SXO and is away on
-// 1 and 3 Jan and half of 10 Feb; the roster carries two IWSOs (SPLICE and
+// 1 Jan and half of 10 Feb; the roster carries two IWSOs (SPLICE and
 // ROULETTE), so one away reds the IWSO rule — SPLICE on 8 Jan (LL) and
 // ROULETTE on 15 Jan (CCL). Since 13 Sep 26 the pristine seed carries no
 // war-marked medical, so SPLICE's old 5–6 Jan ATT C / OML are gone and those
 // two days are no longer red (both IWSOs present); member-filed medical is a
 // live-demo-only example now.
-const RED = ['2026-01-01', '2026-01-03', '2026-01-08', '2026-01-15', '2026-02-10']
+//
+// 3 JAN DROPPED OUT on 20 Sep 26. RAMP's 3 Jan is a hand-typed FO, which is
+// now an AWARD — OIL he is owed, saying nothing about where he was. It no
+// longer stands him down from flying, so the only SXO is available and the
+// day is not under-manned. Under the old reading a person could red a day
+// just by being granted OIL on it.
+const RED = ['2026-01-01', '2026-01-08', '2026-01-15', '2026-02-10']
 
 describe('the under-manned list', () => {
   it('is shut until the chip is clicked', () => {

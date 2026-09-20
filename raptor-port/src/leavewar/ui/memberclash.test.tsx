@@ -15,7 +15,7 @@
 
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { initStore, setCell, setRole, setViewer } from '../state/store'
+import { ingestDutyCredit, initStore, setCell, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -25,7 +25,12 @@ const SAT = '2026-01-03'
 beforeEach(() => {
   initStore(memoryBackend())
   setRole('admin')
-  expect(setCell(P, SAT, 'FO')).toBe(true)     // he works the Saturday
+  // RECORDED WORK, not an award: the subject of every case below is a day the
+  // man actually worked, so it is built the way the app builds one — off the
+  // published schedule. Since the owner's 20 Sep 26 ruling a hand-typed credit
+  // is an AWARD and clashes with nothing, so `setCell(P, SAT, 'FO')` would no
+  // longer produce the clash these cases are about.
+  expect(ingestDutyCredit(P, SAT, 'FO', 'FLT')).toBe('written')   // he works the Saturday
   expect(setCell(P, SAT, 'LL')).toBe(true)     // …and had bid leave on it
 })
 

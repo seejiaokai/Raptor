@@ -125,6 +125,13 @@ export function forbiddenPair(a: Contrib, b: Contrib): boolean {
   if (a.kind === 'notice' || b.kind === 'notice') return false
   if (a.state === 'refused' || b.state === 'refused') return false
   if (!winsOf(a).some(x => winsOf(b).some(y => overlaps(x, y)))) return false
+  /* An AWARD clashes with nothing (owner, 20 Sep 26). A hand-typed credit says
+     a man is OWED a day; it does not say where he was, so it cannot contradict
+     a day off and must not amber it. The app's OWN credit (`auto`) still
+     flags — that one is read off the published schedule and does say he was at
+     work. This sits before the pair table so it exempts BOTH clash rows a
+     credit appears in (leave and medical), not just the leave one. */
+  if ((a.kind === 'credit' && !a.auto) || (b.kind === 'credit' && !b.auto)) return false
   const leaveLike = (c: Contrib) => LEAVE.has(c.code) && (c.kind === 'absence' || c.kind === 'request')
   const sick = (c: Contrib) => c.kind === 'absence' && SICK.has(c.code)
   const work = (c: Contrib) => c.kind === 'credit'
@@ -189,7 +196,8 @@ export interface DayView {
   charges: Charge[]
   /** the fraction of this day the person is away from the manning picture */
   away: number
-  /** at work but off the flying programme (an OIL credit) — today's `duty` */
+  /** at work but off the flying programme — an OIL credit the SCHEDULE earned.
+   *  A hand-typed award never sets this (owner, 20 Sep 26). */
   duty: boolean
   /** OIL earned by the credits on this day: FO a whole day, HO a half — or
    *  the quantity a grant names, which may be more (owner, 20 Sep 26) */
@@ -281,7 +289,17 @@ export function dayView(input: readonly Contrib[]): DayView {
     conflicts,
     charges: [...byId.values()],
     away,
-    duty: shown.some(c => c.kind === 'credit'),
+    /* ON DUTY means the SCHEDULE says he was at work — nothing else (owner,
+       20 Sep 26): "it shouldn't by default take him as on duty … count the
+       manning based on the schedule … if I add FO or HO on the leave war or
+       the OIL tracker it shouldn't be counting that person as working unless
+       it's stated in the input or the schedule". So only the app's OWN credit
+       stands a man down from flying and counts him in the duty manning. An
+       AWARD is a line in his OIL bank and nothing more: it does not take him
+       off the programme, and with nothing else on the day he is available to
+       work. Weekend/public-holiday work still credits automatically — that
+       credit is `auto` and reads exactly as it always did. */
+    duty: shown.some(c => c.kind === 'credit' && c.auto),
     earnsOil: shown.reduce((n, c) => n + (c.kind !== 'credit' ? 0 : c.days ?? (c.code === 'FO' ? 1 : c.code === 'HO' ? 0.5 : 0)), 0),
     annualFull,
   }

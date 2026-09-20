@@ -144,3 +144,56 @@ describe('publishing weekend work FLAGS a clashing leave bid (owner, 20 Sep 26)'
     expect(said.join(' ')).not.toContain('bid on')
   })
 })
+
+/* ====================================================================== */
+/*  A PUBLISHED DAY THAT EARNS NOBODY ANYTHING SAYS SO (owner, 20 Sep 26) */
+/* ====================================================================== */
+/* His own case, in the app: a man on the SDO desk for a Sunday, the day
+   published, and no OIL. The desk had no start and no end, so it measured
+   nothing and minted nothing — correct, and completely silent. A man's leave
+   balance short with no screen admitting it. */
+describe('publishing a weekend nobody earns OIL for', () => {
+  const blankTheSaturdayDesks = () => {
+    for (const dw of (DAYS[5] as any).dutywaves ?? []) for (const r of dw.rows ?? []) { r.str = ''; r.end = '' }
+  }
+
+  it('says the day earned nobody anything, and names the desk', () => {
+    setRole('admin')
+    blankTheSaturdayDesks()
+    publish(5)
+    const spoke = said.find(m => m.includes('earned nobody any OIL'))
+    expect(spoke).toBeTruthy()
+    expect(spoke).toContain('Saturday 18 Jul')
+    expect(spoke).toContain('SDO')
+    expect(spoke).toContain('no start and end times')
+  })
+
+  it('says NOTHING when the desks are properly timed — the seed Saturday earns', () => {
+    setRole('admin')
+    publish(5)
+    expect(said.some(m => m.includes('OIL'))).toBe(false)
+  })
+
+  it('says nothing on a WEEKDAY: a blank desk on a Monday is ordinary', () => {
+    setRole('admin')
+    for (const dw of (DAYS[0] as any).dutywaves ?? []) for (const r of dw.rows ?? []) { r.str = ''; r.end = '' }
+    publish(0)
+    expect(said.some(m => m.includes('earns OIL') || m.includes('earned nobody'))).toBe(false)
+  })
+
+  it('still speaks when SOMEBODY earns but a desk is blank — the man on it gets nothing', () => {
+    setRole('admin')
+    // The seed Saturday carries ONE desk, so the mixed case has to be built:
+    // a second desk properly timed beside the blank one.
+    const wave = ((DAYS[5] as any).dutywaves ?? [])[0]
+    wave.rows.push({ role: 'SXO', id: 'dj', str: '0800', end: '1800' })
+    wave.rows[0].str = ''; wave.rows[0].end = ''
+    publish(5)
+    const spoke = said.find(m => m.includes('earns OIL'))
+    expect(spoke).toBeTruthy()
+    expect(spoke).toContain('SDO')
+    expect(spoke).not.toContain('SXO')
+    expect(spoke).toContain('no start and end times')
+  })
+})
+

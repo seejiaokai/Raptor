@@ -86,17 +86,18 @@ describe('a grant worth more than one day', () => {
 })
 
 describe('a granted credit still behaves like every other credit', () => {
-  it('lands beside leave and FLAGS the day, whatever quantity it carries', () => {
-    /* NOT narrowed by the quantity or by the hours coming out. The owner's own
-       ruling stands: two different facts fighting, let both in and flag the
-       day. Whether a bigger grant should stop flagging is HIS call and has not
-       been made — so the rule is left exactly where he put it. */
+  it('lands beside leave and does NOT flag it, whatever quantity it carries', () => {
+    /* The question this test used to park — whether a grant should stop
+       flagging — was PUT TO THE OWNER and answered on 20 Sep 26: a granted
+       credit is an AWARD. It says a man is owed days, not that he was at work,
+       so it cannot contradict his leave and the day must not go amber. Both
+       records still land; the quantity never mattered either way. */
     expect(setCell(P, TUE, 'LL')).toBe(true)
     expect(setManualCredit(P, TUE, 'FO', { note: 'Exercise', days: 2 })).toBeNull()
     const v = getState().views[P]?.[TUE]
     expect(v?.all.filter(c => c.kind === 'request')).toHaveLength(1)
     expect(v?.all.filter(c => c.kind === 'credit')).toHaveLength(1)
-    expect(v?.amber).toBe(true)
+    expect(v?.amber).toBe(false)
   })
 })
 

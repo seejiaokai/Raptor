@@ -11,6 +11,13 @@ import type { Person } from './people'
 import type { RuleCount } from './requirements'
 import { seedPeople, seedRequirements, seedSources } from './seed'
 
+/* A credit the SCHEDULE earned — the only kind that stands a man down from
+   flying and puts him on the duty line (owner, 20 Sep 26). A hand-typed FO/HO
+   is an AWARD: it tops up his OIL bank and changes no manning figure, so a
+   test whose subject is SC duty has to say the schedule owns the cell. */
+const worked = (pid: string, date: string): States => ({ [pid]: { [date]: { state: 'approved', source: 'raptor' } } })
+
+
 const p = (id: string, seat: Person['seat'], band: Person['band'], over: Partial<Person> = {}): Person => ({
   id, callsign: id.toUpperCase(), seat, band, sxo: false, from: null, to: null, ...over,
 })
@@ -106,9 +113,10 @@ describe('ruleHave', () => {
   it('presence counts a man standing SC duty; availability does not', () => {
     const duo = [p('p1', 'pilot', 'ops', { scd: true }), p('w1', 'wso', 'ops', { scd: true })]
     const grid: Grid = { p1: { [D]: 'FO' } }
+    const st = worked('p1', D)
     const slots = [{ count: 1, filter: { seats: ['pilot' as const], quals: ['scDay'] } }, { count: 1, filter: { seats: ['wso' as const], quals: ['scDay'] } }]
-    expect(ruleHave({ kind: 'team', slots, presence: true }, duo, grid, {}, D)).toBe(1)
-    expect(ruleHave({ kind: 'team', slots }, duo, grid, {}, D)).toBe(0)
+    expect(ruleHave({ kind: 'team', slots, presence: true }, duo, grid, st, D)).toBe(1)
+    expect(ruleHave({ kind: 'team', slots }, duo, grid, st, D)).toBe(0)
   })
 })
 
