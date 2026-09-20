@@ -161,6 +161,10 @@ approved on the grid, moved onto the day on the grid, or published over the top 
 - A **hand-typed** credit is the admin's own: the app never deletes it. If the schedule later earns
   the same credit it is taken over in place, the admin's own reason is kept, and when the schedule
   stops backing it, it is **handed back** rather than removed.
+- An admin can **record that someone worked** from the day sheet — FO for a whole day, HO for half —
+  with the reason, who said so, and the hours. **On any day**: the weekend and public-holiday rule is
+  about what the published schedule EARNS automatically, not about what the squadron may record. A
+  typed credit adds to the man's OIL the same way, and only an admin can clear it.
 - A hand-typed credit with **no times means the whole day**. *(A box to type its hours is ruled but
   not yet built — until then this blocks more than it should.)*
 - A **SANS offer is never work**: it never earns OIL and never counts as worked.

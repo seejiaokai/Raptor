@@ -37,6 +37,8 @@ Owner's own words for it, 20 Sep 26. Every decision below is that sentence appli
 | 16 | **A hand-typed OIL credit can be given its hours.** Without them every one meant the whole day, so a two-hour call-out beside afternoon leave turned the day amber for nothing. | `—` |
 | 17 | **The free half beside Inputs-filed leave is biddable**, on the free half only, with the locked half named on the sheet. | `—` |
 | 18 | **A member is told what a clash means for his OWN leave** — his bid named, and "still live". | `—` |
+| 19 | **An admin can RECORD that someone worked** — FO/HO with a reason, who said so, and the hours, from the day sheet. On ANY day. Nothing in the app could create one before; the three editors that existed could only reach credits nobody could type. | `—` |
+| 20 | **Leave or OIL can be placed on a day outside someone's posting dates**, by an admin, from the grid. One button on the posting sheet. | `—` |
 
 Process, also built: the **behaviour register**, `npm run rulecheck` (fails when a ruling has no
 test naming it), and the **rules-first red team** as a standing third review.
@@ -144,6 +146,17 @@ record running past midnight, which is never shown or charged on the second date
 **Q3 — Publishing vs a bid → KEEP THE BID AND FLAG THE DAY, BOTH WAYS.**
 Publishing no longer removes an undecided bid; it tells the admin and flags the day, which is
 already what happened to a bid placed afterwards. Sets aside the second half of B5. Built as row 15.
+
+**Q4 and Q5, raised by the hand test and answered the same day.**
+- **"Should we have an option for admin to put FO HO with the ability to input reason, given by?"**
+  → **Yes**, and: *"the admin can also credit OIL on the leave sheet for convenience. We should
+  enable that even on ANY day."* So the weekend / public-holiday restriction belongs to the
+  AUTOMATIC pass alone — it reads the published schedule. A credit an admin types is the squadron
+  recording that a man worked with no schedule behind it, which is why it carries a reason and a
+  name, and why it moves his OIL balance on a Tuesday like any other day. Built as row 19.
+- **"Should we allow filing leave after he posted out?"** → Already the rule (Q2), and already true
+  on the Inputs page, on the man's own tap, and on a day out there that already holds leave. Only a
+  blank one, tapped by an admin, was taken by the posting sheet. Built as row 20.
 
 ---
 

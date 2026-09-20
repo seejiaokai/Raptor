@@ -1,13 +1,13 @@
 # [S4-BUGHUNT] handoff — for the next session (20 Sep 26, second pass)
 
-Branch **`claude/s4-bughunt`**, 32 commits off `main` (`e904d44`). **Nothing merged. Working tree
-clean.** The owner has not said "merge live".
+Branch **`claude/s4-bughunt`**, 34 commits off `main` (`e904d44`). **Nothing merged. Working tree
+clean.** The owner has not said "merge live". PR: seejiaokai/Raptor#422.
 
 ## Read exactly one file first
 
 **`raptor-port/docs/superpowers/specs/2026-09-20-CURRENT-STATE.md`.**
 
-It is still the single destination, and it is now true again: §1 lists eighteen things built, §2 says
+It is still the single destination, and it is now true again: §1 lists twenty things built, §2 says
 all five items are done, §6 records the owner's answers to the three questions that were open, and
 §8 states what is left. §5 is still the section that matters most — the rules set aside, which must
 not be re-applied.
@@ -16,8 +16,9 @@ not be re-applied.
 
 The previous session ended with five items to build and three questions only the owner could answer.
 He answered all three; one answer replaced a mechanism rather than picking from the options, so the
-work grew a sixth item. All six are built, all gates have been run, and the hand-testing pass that
-had been owed since the branch started has been done — it found one real defect, which is fixed.
+work grew a sixth item. All six were built, every gate was run, and the hand-testing pass owed since
+the branch started was done — it found one real defect, now fixed, and raised two gaps. Both gaps
+were put to the owner, both answered, and both built. Eight items in all.
 
 ## The owner's three answers, because they are the load-bearing part
 
@@ -46,6 +47,8 @@ had been owed since the branch started has been done — it found one real defec
 | E | **Hours on a hand-typed OIL credit.** | `setCellHours`, the tracker's reason editor |
 | D | **The free half beside Inputs-filed leave is biddable**, free half only, with the locked half named. | `freeHalfBeside`, `onlyPortion` |
 | A | **A member is told his bid is still live**, by name, on his own clashed day. | `DayList` clash line, the mark's tooltip |
+| G | **An admin can RECORD that someone worked** — FO/HO with reason, who said so and hours, from the day sheet, on ANY day. | `setManualCredit` |
+| H | **Leave or OIL can be placed on a day outside the posting dates** by an admin, from the grid. | `onPlace` on both posting sheets |
 
 All three constraints the reviewers put on item B were held, and the third one — an archived person
 with no posting date at all — is recorded as a limit in CURRENT-STATE §2 rather than quietly
@@ -55,7 +58,7 @@ skipped.
 
 | Gate | Result |
 |---|---|
-| `npm test` | **326 files / 5164 green** |
+| `npm test` | **327 files / 5181 green** |
 | `npm run build` | clean |
 | `node reference/tfin.js` | **728 / 0** |
 | `npm run rulecheck` | **OK** — 21 of 26 rulings named by a test, 5 in the recorded baseline |
@@ -109,14 +112,11 @@ carry the `#page-leavewar` prefix.**
    `plans/2026-09-20-s4-bughunt-plan.md`. The Inputs-page calendar (the one door with no test at
    all), the medical dialog's cascade, bulk gestures driven by a real drag, switching wars with a
    sheet open, storage faults, phone touch, figures on multi-record days.
-4. **Two things worth raising with him**, both found while hand-testing and neither urgent:
-   - **An admin cannot type an FO or HO credit anywhere in the app.** The store accepts one and the
-     hours box now edits one, but the only writers are the automatic pass and the demo seed. Item E
-     assumed a door that does not exist. Ask whether he wants one.
-   - **An admin tapping a day outside someone's posting dates always gets the posting sheet**, so he
-     cannot file leave there from the grid — only the person themself can. That mirrors the post-out
-     end exactly and was deliberate, but it is the first time both ends have existed, so it is worth
-     his eye.
+4. **The two things the hand test raised have been PUT TO HIM AND BUILT** (items G and H above).
+   His ruling on the first is the one to carry forward: **OIL may be credited by hand on ANY day.**
+   The weekend / public-holiday restriction belongs to the automatic pass, which reads the published
+   schedule; a credit the squadron types has no schedule behind it, which is why it names a reason
+   and a person. It moves the balance on a Tuesday like any other day.
 
 ## Standing rules that bit during this session
 
@@ -132,4 +132,10 @@ carry the `#page-leavewar` prefix.**
   still reported as uncertain rather than dismissed.
 - **Python edit scripts on Windows:** `store.ts` is CRLF, most of `leavewar/` is LF. Always
   `open(..., newline='')` AND detect the file's own line ending before matching — a hard-coded
-  `\r\n` matches nothing in an LF file and the script reports success having changed nothing.
+  `\r\n` matches nothing in an LF file and the script reports success having changed nothing. And
+  **write the file after EVERY replacement**: a script that writes only at the end and throws on
+  its fifth edit leaves the first four unapplied while looking like it ran. That happened here.
+- **`npx tsc --noEmit -p tsconfig.json` is NOT this project's typecheck.** It passed a missing
+  import and two other real type errors that `npm run build` rejects. **Use `npm run build`.**
+- **One literal per rule.** A second `MAX_GIVEN_BY` was written at a different number beside a new
+  record field while one already existed in the store. Grep before adding a cap.

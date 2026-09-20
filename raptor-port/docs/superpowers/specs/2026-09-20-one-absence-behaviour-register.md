@@ -285,3 +285,29 @@ as though his leave had been thrown out, when since N4 it is still live. The lin
 live bids and says so; an admin still gets the instruction, because for him it is one.
 *Settles:* CURRENT-STATE item A, and with it the reason the duty-cancels-your-bid feature was
 parked — telling the man was the cheap half of that problem.
+
+### N11 — an admin can RECORD that someone worked, on ANY day
+> "Should we have an option for admin to put FO HO with the ability to input reason, given by.
+> Similar to oil tracker" — and: "the admin can also credit OIL on the leave sheet for convenience.
+> We should enable that even on any day."
+
+B8 gave a hand-typed credit its hours and N5 built the box for them; neither noticed that **nothing
+in the app could create a hand-typed credit at all**. The only writers were the automatic pass and
+the demo seed, so the reason editor, the hours box and the hand-back machinery could only ever
+reach credits nobody was able to type. The door now takes the code, the reason, who said so and the
+hours as ONE command.
+
+*Settles:* B8 completely, and the assumption — never a ruling — that OIL is only earned on a weekend
+or a public holiday. That restriction is the AUTOMATIC pass's, because it reads the published
+schedule. A credit the squadron types has no schedule behind it, which is exactly why it names a
+reason and a person, and it moves the balance on any day.
+
+### N12 — an admin can place leave or OIL on a day outside the posting dates
+> "We should also allow putting inputs when we click on days that were posted out."
+
+N8 already made this the rule and it was already true in three of four places: the Inputs page takes
+any date, the person's own tap on their own day opens the bid sheet, and a day out there that
+already holds leave opens its record list. The fourth — an admin tapping a BLANK day out there —
+was taken by the posting sheet, which is right nine times out of ten and left him no way to file the
+clearing leave that made him open the day. One button through, for that cell only.
+*Settles:* the last asymmetry in N8.
