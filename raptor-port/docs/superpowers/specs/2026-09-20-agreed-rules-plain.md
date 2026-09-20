@@ -184,3 +184,35 @@ grey count whenever the day needs someone to look.
 6. **Cannot bid the free half** beside leave filed on the Inputs page — the tap opens a read-only panel.
 7. A **SANS offer over leave warns nobody.**
 8. Someone's **OIL balance can go below zero silently** when an admin resolves a clash.
+
+---
+
+## Rulings on the outstanding list (owner, 20 Sep 26)
+
+**A person's row spans their RECORDS, not just their posting window.** A man posted out on 31 January
+with clearing leave in September must still be visible in September. The row is drawn from the
+earliest of (posting-in, first record) to the latest of (posting-out, last record) — "if there's
+leave it will use the end or start of leave to show". This replaces the August rule that dropped the
+row the month after posting out, which was written before clearing leave existed.
+
+*Consequence to watch:* the row appears BECAUSE a record is out there, so the very first pre-join or
+post-out leave has to be filed on the Inputs page form. Once it exists the row shows, and the days
+around it can be bid on the grid. In practice pre-join leave is filed by an admin anyway, so this is
+the normal path rather than a workaround — but it is worth knowing.
+
+**Bidding the free half beside Inputs-filed leave is allowed.** The read-only panel is right about
+the leave that came from the form, but it must not lock the whole day: the free half stays biddable.
+
+**OIL may go negative.** "It's ok to go negative OIL, because OIL can be earned back in the future."
+So a resolution that withdraws a credit someone has already spent is not an error and needs no
+guard. The existing notice on the Unpublish button stays as INFORMATION — it tells an admin what
+they are about to do — but nothing anywhere blocks or must warn on account of a negative balance.
+
+**A duty clearing your bid: decided, deliberately not built.** A Duty or "Fly with" entry that has
+been ANSWERED takes the clashing part of your own bid off that day, whichever way the OIL question
+was answered — being at work and being paid for it are different things. Parked because an admin
+always decides a bid before the day arrives, and the day is already flagged amber when they do, so
+this saves a decision rather than preventing a mistake.
+
+**Parked, bigger than the rest:** the Leave War can only see work that earned an OIL credit, which
+only happens on weekends and public holidays. Ordinary weekday work is invisible to it entirely.
