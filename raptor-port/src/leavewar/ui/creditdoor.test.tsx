@@ -36,7 +36,7 @@ beforeEach(() => {
 const creditOn = (person: string, date: string) =>
   (rawState().wars.find(w => w.period.start <= date && date <= w.period.end)!.recs[person]?.[date] ?? [])
     .find(r => r.kind === 'credit') as
-    { code: string; oil: string; note?: string; givenBy?: string; spans?: Array<[number, number]> } | undefined
+    { code: string; oil: string; note?: string; givenBy?: string; days?: number } | undefined
 
 const oilOf = (person: string) => {
   const { openings, ledger, wars } = getState()
@@ -44,10 +44,10 @@ const oilOf = (person: string) => {
 }
 
 describe('setManualCredit', () => {
-  it('records the day, the reason, who said so and the hours — in ONE step', () => {
-    expect(setManualCredit(P, SAT, 'FO', { note: 'Call-out', givenBy: 'OC Ops', from: 480, to: 600 })).toBeNull()
+  it('records the day, the reason, who said so and how many days — in ONE step', () => {
+    expect(setManualCredit(P, SAT, 'FO', { note: 'Call-out', givenBy: 'OC Ops', days: 2 })).toBeNull()
     expect(creditOn(P, SAT)).toMatchObject({
-      code: 'FO', oil: 'manual', note: 'Call-out', givenBy: 'OC Ops', spans: [[480, 600]],
+      code: 'FO', oil: 'manual', note: 'Call-out', givenBy: 'OC Ops', days: 2,
     })
   })
 
@@ -66,17 +66,17 @@ describe('setManualCredit', () => {
     expect(oilOf(P)).toBe(before + 0.5)
   })
 
-  it('blank hours mean the whole day, which is the rule for every credit', () => {
+  it('no quantity means the code’s own worth, which is the ordinary case', () => {
     expect(setManualCredit(P, SAT, 'FO', { note: 'Duty' })).toBeNull()
-    expect(creditOn(P, SAT)!.spans).toBeUndefined()
+    expect(creditOn(P, SAT)!.days).toBeUndefined()
   })
 
   it('refuses only where refusing is the truth', () => {
     setRole('member')
     expect(setManualCredit(P, SAT, 'FO')).toContain('admin')
     setRole('admin')
-    expect(setManualCredit(P, SAT, 'FO', { from: 600, to: 480 })).toContain('before the start')
-    expect(setManualCredit(P, SAT, 'FO', { from: 480, to: null })).toContain('both')
+    expect(setManualCredit(P, SAT, 'FO', { days: 1.3 })).toContain('halves')
+    expect(setManualCredit(P, SAT, 'FO', { days: 0 })).toContain('how many days')
     expect(creditOn(P, SAT)).toBeUndefined()
   })
 
@@ -87,13 +87,13 @@ describe('setManualCredit', () => {
     expect(setManualCredit(P, SAT, 'HO')).toContain('published schedule')
   })
 
-  it('never refuses for clashing with leave — work lands and the day is flagged', () => {
+  it('never refuses for clashing with leave — both land and the day is flagged', () => {
     expect(setCell(P, SAT, 'LL')).toBe(true)                 // leave first…
-    expect(setManualCredit(P, SAT, 'FO')).toBeNull()         // …then the work
+    expect(setManualCredit(P, SAT, 'FO')).toBeNull()         // …then the credit
     const v = getState().views[P]?.[SAT]
     expect(v?.all.filter(c => c.kind === 'request')).toHaveLength(1)
     expect(v?.all.filter(c => c.kind === 'credit')).toHaveLength(1)
-    expect(v?.amber).toBe(true)                              // both in, day flagged
+    expect(v?.amber).toBe(true)
   })
 })
 
@@ -115,20 +115,18 @@ describe('the OIL control on the day sheet', () => {
     openSheet(TUE)
     fireEvent.change(screen.getByTestId('oil-why'), { target: { value: 'Recall' } })
     fireEvent.change(screen.getByTestId('oil-given-by'), { target: { value: 'OC Ops' } })
-    fireEvent.change(screen.getByTestId('oil-from'), { target: { value: '0800' } })
-    fireEvent.change(screen.getByTestId('oil-to'), { target: { value: '10:00' } })
+    fireEvent.change(screen.getByTestId('oil-days'), { target: { value: '2' } })
     fireEvent.click(screen.getByTestId('oil-fo'))
     expect(creditOn(P, TUE)).toMatchObject({
-      code: 'FO', oil: 'manual', note: 'Recall', givenBy: 'OC Ops', spans: [[480, 600]],
+      code: 'FO', oil: 'manual', note: 'Recall', givenBy: 'OC Ops', days: 2,
     })
   })
 
-  it('says so rather than guessing when the hours cannot be read', () => {
+  it('says so rather than guessing when the quantity cannot be read', () => {
     openSheet(TUE)
-    fireEvent.change(screen.getByTestId('oil-from'), { target: { value: 'lunchtime' } })
-    fireEvent.change(screen.getByTestId('oil-to'), { target: { value: '10:00' } })
+    fireEvent.change(screen.getByTestId('oil-days'), { target: { value: 'lots' } })
     fireEvent.click(screen.getByTestId('oil-fo'))
-    expect(screen.getByTestId('oil-err').textContent).toContain('08:00')
+    expect(screen.getByTestId('oil-err').textContent).toContain('how many days')
     expect(creditOn(P, TUE)).toBeUndefined()
   })
 

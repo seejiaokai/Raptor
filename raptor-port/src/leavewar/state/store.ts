@@ -101,6 +101,7 @@ import {
   parseCell,
   FULL,
   MAX_GIVEN_BY,
+  MAX_GRANT_DAYS,
   MAX_REC_NOTE,
   type Ledger,
   type LedgerEntry,
@@ -3225,7 +3226,7 @@ function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO',
      next pass, which put the deletion-on-unpublish straight back. */
   const snap: CreditRec['manual'] | undefined = had
     ? had.manual ?? (had.oil === 'manual'
-      ? { code: had.code, ...(had.note ? { note: had.note } : {}), ...(had.givenBy ? { givenBy: had.givenBy } : {}), ...(had.spans ? { spans: had.spans } : {}) }
+      ? { code: had.code, ...(had.note ? { note: had.note } : {}), ...(had.givenBy ? { givenBy: had.givenBy } : {}), ...(had.days != null ? { days: had.days } : {}), ...(had.spans ? { spans: had.spans } : {}) }
       : undefined)
     : undefined
   const kept: CreditRec = snap ? { ...rec, manual: snap } : rec
@@ -3266,7 +3267,7 @@ function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO',
  */
 export function setManualCredit(
   personId: string, date: string, code: 'FO' | 'HO',
-  opts: { note?: string; givenBy?: string; from?: number | null; to?: number | null } = {},
+  opts: { note?: string; givenBy?: string; days?: number | null } = {},
 ): string | null {
   if (state.role !== 'admin') return 'Only an admin can enter OIL'
   if (!warHolding(state.wars, date)) return 'That day is in no war'
@@ -3276,57 +3277,59 @@ export function setManualCredit(
   if (had && had.oil === 'auto') return 'That day already earns OIL from the published schedule'
   const note = (opts.note ?? '').trim().slice(0, MAX_REC_NOTE)
   const givenBy = (opts.givenBy ?? '').trim().slice(0, MAX_GIVEN_BY)
-  const from = opts.from ?? null, to = opts.to ?? null
-  if (from !== null || to !== null) {
-    if (from === null || to === null) return 'Type both a start and an end, or leave both blank for the whole day'
-    if (!Number.isFinite(from) || !Number.isFinite(to) || from < 0 || to > 1439) return 'Those hours are not a real time'
-    if (from > to) return 'The end is before the start'
+  const days = opts.days ?? null
+  if (days !== null) {
+    if (!Number.isFinite(days) || days <= 0) return 'Type how many days \u2014 or leave it blank'
+    if (days * 2 !== Math.round(days * 2)) return 'OIL goes in halves \u2014 1, 1.5, 2'
+    if (days > MAX_GRANT_DAYS) return `That is more than ${MAX_GRANT_DAYS} days`
   }
   const rec: CreditRec = {
     id: had?.id ?? newRecId('c'), kind: 'credit', code, oil: 'manual',
     ...(note ? { note } : {}), ...(givenBy ? { givenBy } : {}),
-    ...(from !== null ? { spans: [[from, to!]] as Array<[number, number]> } : {}),
+    ...(days !== null ? { days } : {}),
   }
   return putList(personId, date, [...list.filter(r => r !== had), rec]) ? null : 'Could not write that'
 }
 
 /**
- * The WORK HOURS on a hand-typed FO/HO credit (CURRENT-STATE item E; clash
- * check B8, "a manual credit MAY carry work times; none = the whole day").
+ * HOW MANY DAYS a granted OIL credit is worth (owner, 20 Sep 26 — "on the
+ * leave war i can also grant more than 1 day of OIL credit just like how the
+ * oil tracker does it").
  *
- * B8's field and every check that reads it have existed all along — what was
- * missing was any way to WRITE it. The only writer was the automatic pass, so
- * a credit an admin typed by hand always meant the whole day, and therefore
- * always overlapped any leave on it. The consequence was not cosmetic: the
- * day went amber and the warning list called for a human every time, for
- * credits that in truth clashed with nothing. A two-hour Saturday call-out
- * beside afternoon leave should be quiet.
+ * THIS REPLACED A WORK-HOURS BOX BUILT THE DAY BEFORE, and the reason is the
+ * model changing under it rather than the box being wrong. The hours existed
+ * so a two-hour call-out beside afternoon leave would not flag the day. Then
+ * the owner ruled that OIL may be granted "for any reason, doesnt have to be
+ * like working on weekends" and told us to drop the hours — which together
+ * mean a granted credit is an AWARD, not a record of attendance. An award
+ * cannot contradict a day off, so there is nothing for hours to prevent, and
+ * `forbiddenPair` now exempts a grant outright. The hours live on only where
+ * they are real: the AUTOMATIC credit, which reads them off the published
+ * schedule.
  *
- * Both minutes-from-midnight, `from` <= `to`. Passing nulls CLEARS the hours,
- * which is B8's "none = the whole day" and the way back if an admin mistypes.
- * Admin only, an existing HAND-TYPED credit only: a generated credit's hours
- * are the schedule's, and the reverse pass would overwrite them on the next
- * run anyway. Returns null on success, or the reason in words.
+ * `null` clears the quantity, which puts the code's own worth back — a day
+ * for FO, half for HO. Halves only. Admin only, an existing HAND-TYPED credit
+ * only: the schedule earns exactly what its code says, and the pass would
+ * overwrite anything typed onto it on the next run.
  *
  * It writes through `putList` like every other record change, so it joins the
  * same command, the same undo and the same persistence as its neighbours.
  */
-export function setCellHours(personId: string, date: string, from: number | null, to: number | null): string | null {
+export function setCellDays(personId: string, date: string, days: number | null): string | null {
   if (state.role !== 'admin') return 'Only an admin can edit OIL'
   if (!warHolding(state.wars, date)) return 'That day is in no war'
   const list = listAt(personId, date)
   const had = list.find(isCredit)
   if (!had) return 'There is no OIL credit on that day'
   if (had.oil !== 'manual') return 'That credit comes from the published schedule — change the schedule instead'
-  const clearing = from === null && to === null
-  if (!clearing) {
-    if (from === null || to === null) return 'Type both a start and an end, or leave both blank for the whole day'
-    if (!Number.isFinite(from) || !Number.isFinite(to) || from < 0 || to > 1439) return 'Those hours are not a real time'
-    if (from > to) return 'The end is before the start'
+  if (days !== null) {
+    if (!Number.isFinite(days) || days <= 0) return 'Type how many days — or leave it blank'
+    if (days * 2 !== Math.round(days * 2)) return 'OIL goes in halves — 1, 1.5, 2'
+    if (days > MAX_GRANT_DAYS) return `That is more than ${MAX_GRANT_DAYS} days`
   }
   const rest = { ...had }
-  delete (rest as { spans?: unknown }).spans
-  const rec: CreditRec = clearing ? rest : { ...rest, spans: [[from!, to!]] }
+  delete (rest as { days?: unknown }).days
+  const rec: CreditRec = days === null ? rest : { ...rest, days }
   if (JSON.stringify(rec) === JSON.stringify(had)) return null
   return putList(personId, date, list.map(r => (r === had ? rec : r))) ? null : 'Could not change that'
 }
@@ -3393,6 +3396,7 @@ export function clearRaptorCell(personId: string, date: string): boolean {
       const back: CreditRec = { id: had.id, kind: 'credit', oil: 'manual', code: had.manual.code,
         ...(had.manual.note ? { note: had.manual.note } : {}),
         ...(had.manual.givenBy ? { givenBy: had.manual.givenBy } : {}),
+        ...(had.manual.days != null ? { days: had.manual.days } : {}),
         ...(had.manual.spans ? { spans: had.manual.spans } : {}) }
       return putList(personId, date, list.map(r => (r === had ? back : r)))
     }

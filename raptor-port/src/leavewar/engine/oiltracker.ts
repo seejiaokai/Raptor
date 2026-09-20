@@ -130,8 +130,10 @@ export interface OilCredit {
   expired: number
   /** For a grant: the ledger entry behind it (the thing an admin edits). */
   ledgerId?: string
-  /** The work hours recorded on a hand-typed credit, when it has any
-   *  (clash check B8 — none means the whole day). Minutes from midnight.
+  /** How many days a GRANT is worth, when not the code's own worth. */
+  days?: number
+  /** The work hours an AUTOMATIC credit was earned over, read off the
+   *  published schedule (clash check B8). Minutes from midnight.
    *  Readonly because it is the contribution's own array, handed straight
    *  through rather than copied — nothing downstream may write to it. */
   hours?: readonly Win[]
@@ -214,7 +216,7 @@ export function oilLedgerFor(ctx: FigureCtx, personId: string, policy: OilPolicy
       if (credit && v.earnsOil > 0) {
         const reason = credit.note ?? (isWeekend(date) ? 'weekend duty' : 'PH duty')
         const hours = credit.wins ?? (credit.win[0] === 0 && credit.win[1] === 1439 ? undefined : [credit.win])
-        credits.push({ id: `auto:${wi}:${date}`, date, amount: v.earnsOil, reason, source: 'auto', ...(credit.auto ? {} : { manual: true }), ...(hours ? { hours } : {}), ...(credit.givenBy ? { givenBy: credit.givenBy } : {}), expires: expiryOf(date, policy), used: [], left: v.earnsOil, expired: 0 })
+        credits.push({ id: `auto:${wi}:${date}`, date, amount: v.earnsOil, reason, source: 'auto', ...(credit.auto ? {} : { manual: true }), ...(hours ? { hours } : {}), ...(credit.givenBy ? { givenBy: credit.givenBy } : {}), ...(credit.days != null ? { days: credit.days } : {}), expires: expiryOf(date, policy), used: [], left: v.earnsOil, expired: 0 })
       }
       for (const t of charged.get(date) ?? []) {
         if (t.counter !== 'oil') continue

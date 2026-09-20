@@ -15,11 +15,12 @@ const D = '2026-02-11'
 const cell = () => screen.getByTestId(`cell-${P}-${D}`)
 
 describe('the corner mark', () => {
-  it('morning LL + afternoon OIL: *LL shows, with a grey +1', () => {
+  it('morning LL + afternoon OIL: the box reads <LL, with a grey +1', () => {
     fileAbsence(P, '*LL', D, D, { lw: true })
     fileAbsence(P, 'OIL*', D, D, { lw: true })
     render(<Matrix />)
-    expect(cell().textContent).toContain('*LL')
+    // `<LL` on screen, `*LL` in the record — one fold, `displayCell`
+    expect(cell().textContent).toContain('<LL')
     const mk = screen.getByTestId(`mark-${P}-${D}`)
     expect(mk.textContent).toBe('+1')
     expect(mk.className).toContain('more')
@@ -50,8 +51,8 @@ describe('the tap list', () => {
     const list = screen.getByTestId('daylist')
     const lines = within(list).getAllByRole('listitem')
     expect(lines).toHaveLength(2)
-    expect(lines[0]!.textContent).toContain('*LL — local leave, morning · approved')
-    expect(lines[1]!.textContent).toContain('OIL* ')
+    expect(lines[0]!.textContent).toContain('<LL — local leave, morning · approved')
+    expect(lines[1]!.textContent).toContain('OIL> ')
   })
 
   it('an admin can send one of two approved leaves back to a bid from its own line', () => {

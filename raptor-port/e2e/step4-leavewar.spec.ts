@@ -339,7 +339,7 @@ test('a morning ATT C over a full-day LL leaves the afternoon as LL', async ({ p
   expect(rows).toContain('LL Jul 20 pm721-1439')
   await backToWar(page)
   await showMonth(page, D)
-  await expect(chip(page, P, D)).toHaveText('LL*')             // leave shows over sick; afternoon
+  await expect(chip(page, P, D)).toHaveText('LL>')             // leave shows over sick; afternoon
   await expect(mark(page, P, D)).toHaveText('+1')
   expect(await figure(page, P, 'lve')).toBe(lve1 + 0.5)
   expect(await figure(page, P, 'medtot')).toBe(0.5)
@@ -367,7 +367,7 @@ test('two leaves in one morning at times that do not overlap: allowed, half a da
   expect((await inputsOf(page, P)).filter(r => r.includes('Jul 22'))).toHaveLength(2)
   await backToWar(page)
   await showMonth(page, D)
-  await expect(chip(page, P, D)).toHaveText('*LL')
+  await expect(chip(page, P, D)).toHaveText('<LL')
   await expect(mark(page, P, D)).toHaveText('+1')
   // owner answer D: the half comes off the leave covering more time (LL, 2h) — once
   expect(await figure(page, P, 'lve')).toBe(lve0 - 0.5)
@@ -468,7 +468,11 @@ test('publishing a weekend day KEEPS a pending bid for someone working it and fl
   await expect(toast(page)).toContainText('still live')
   await backToWar(page)
   await showMonth(page, D)
-  await expect(chip(page, W, D)).toHaveText('FO')                   // the earned OIL
+  /* `FO*` — the star is the owner's 20 Sep 26 mark for "the APP put this
+     here", and this is the one place in the whole suite that proves it: a
+     credit earned off the PUBLISHED SCHEDULE rather than granted by a person.
+     A bare `FO` here would mean the publish had somehow written a grant. */
+  await expect(chip(page, W, D)).toHaveText('FO*')                  // the earned OIL
   await expect(mark(page, W, D)).toHaveText('!')                    // …and the flag
   await tap(page, W, D)
   const lines = await listLines(page)
@@ -483,7 +487,7 @@ test('publishing a weekend day KEEPS a pending bid for someone working it and fl
   await expect(mark(page, W, D)).toHaveCount(0)
   expect(await page.evaluate(() => (window as any).dayApproved(5))).toBe(false)
   await redo(page)
-  await expect(chip(page, W, D)).toHaveText('FO')
+  await expect(chip(page, W, D)).toHaveText('FO*')
   await expect(mark(page, W, D)).toHaveText('!')
   await tap(page, W, D)
   expect((await listLines(page)).some(l => /bid, not decided yet/.test(l))).toBe(true)
@@ -495,29 +499,29 @@ test('the tap list: approve one half, refuse the other, un-approve back to a bid
   await page.evaluate(([p, d]) => { (window as any).lwSetCell(p, d, '*LL'); (window as any).lwSetCell(p, d, 'OIL*') }, [P, D])
   await showMonth(page, D)
   await closeBidding(page)
-  await expect(chip(page, P, D)).toHaveText('*LL')
+  await expect(chip(page, P, D)).toHaveText('<LL')
   await expect(mark(page, P, D)).toHaveText('+1')
 
   await tap(page, P, D)
   await page.locator('[data-testid^="dl-approve-"]').first().click()
   expect(await listLines(page)).toEqual([
-    '*LL — local leave, morning · approved',
-    'OIL* — off in lieu, afternoon · bid, not decided yet',
+    '<LL — local leave, morning · approved',
+    'OIL> — off in lieu, afternoon · bid, not decided yet',
   ])
   expect(await inputsOf(page, P)).toContain('LL Feb 11 am0-720')
   await page.locator('[data-testid^="dl-refuse-"]').last().click()
-  expect((await listLines(page))[1]).toBe('OIL* — off in lieu, afternoon · bid refused')
+  expect((await listLines(page))[1]).toBe('OIL> — off in lieu, afternoon · bid refused')
   await closeList(page)
 
   await undo(page)                                  // the refusal
   await tap(page, P, D)
-  expect((await listLines(page))[1]).toBe('OIL* — off in lieu, afternoon · bid, not decided yet')
+  expect((await listLines(page))[1]).toBe('OIL> — off in lieu, afternoon · bid, not decided yet')
   await closeList(page)
   await redo(page)
 
   await tap(page, P, D)
   await page.locator('[data-testid^="dl-unapprove-"]').click()
-  expect((await listLines(page))[0]).toBe('*LL — local leave, morning · bid, not decided yet')
+  expect((await listLines(page))[0]).toBe('<LL — local leave, morning · bid, not decided yet')
   expect((await inputsOf(page, P)).filter(r => r.startsWith('LL Feb 11'))).toHaveLength(0)
   await closeList(page)
   await undo(page)

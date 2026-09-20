@@ -7,6 +7,9 @@ const hm = (h: number, m = 0) => h * 60 + m
 const ab = (id: string, code: string, win: Win = FULL, extra: Partial<Contrib> = {}): Contrib => ({ id, kind: 'absence', code, win, ...extra })
 const rq = (id: string, code: string, state: Contrib['state'] = 'pending', win: Win = FULL): Contrib => ({ id, kind: 'request', code, win, state })
 const cr = (id: string, code: 'FO' | 'HO', win: Win = FULL): Contrib => ({ id, kind: 'credit', code, win })
+/** A credit carrying how many days it is worth (owner, 20 Sep 26). */
+const grant = (id: string, code: 'FO' | 'HO', days?: number): Contrib =>
+  ({ id, kind: 'credit', code, win: FULL, ...(days != null ? { days } : {}) })
 const nt = (id: string, code: string): Contrib => ({ id, kind: 'notice', code, win: FULL })
 const charged = (v: ReturnType<typeof dayView>) => Object.fromEntries(v.charges.map(c => [c.code, c.amount]))
 
@@ -69,6 +72,11 @@ describe('the amber "!" — only for what an admin must resolve', () => {
   it('worked Saturday morning + afternoon leave is grey; leave over the work time is amber', () => {
     expect(dayView([cr('w', 'HO', [hm(8), hm(11)]), ab('l', 'LL', PM)]).mark).toBe('+1')
     expect(dayView([cr('w', 'HO', [hm(8), hm(11)]), ab('l', 'LL', AM)]).amber).toBe(true)
+  })
+  it('a credit is worth what it says, not what its code is worth', () => {
+    expect(dayView([grant('g', 'FO', 3)]).earnsOil).toBe(3)
+    expect(dayView([grant('g', 'HO', 2.5)]).earnsOil).toBe(2.5)
+    expect(dayView([grant('g', 'HO')]).earnsOil).toBe(0.5)
   })
   it('an end at 12:00 and a start at 12:01 do not overlap', () => {
     expect(dayView([ab('a', 'LL', [hm(8), hm(12)]), ab('b', 'OL', [hm(12, 1), hm(14)])]).amber).toBe(false)

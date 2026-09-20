@@ -47,7 +47,7 @@ import {
   type Figure,
   type FigureCtx,
 } from '../engine'
-import { figureCtxOf, setBalance, setManualCredit, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostIn, setPostOut, visibleFigures, type MoveResult, type EventMoveResult } from '../state/store'
+import { clearRecordById, figureCtxOf, recordsAt, setBalance, setManualCredit, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostIn, setPostOut, visibleFigures, type MoveResult, type EventMoveResult } from '../state/store'
 import { BidPicker, DecisionSheet, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
@@ -66,6 +66,7 @@ import { touchesAM, touchesPM, type DayView } from '../engine/dayview'
 import type { Portion } from '../engine'
 import { isLwOnScreen, subLwScreen } from '../state/screen'
 import type { RecordSpans } from '../state/merge'
+import type { CreditRec } from '../engine/warrecs'
 import { parseHM } from '../../engine/time'
 import { msSinceInput } from '../../state/idle'
 import { boxOf, frameLift, frameLand, landOn } from '../../ui/lift'
@@ -499,7 +500,11 @@ const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, v
         // The stored notation, printed through the one display mapping — the
         // ATT markers read as the owner's bare B / C on the grid while
         // everything else prints as stored (displayCell is identity for it).
-        const text = here || outLeave ? displayCell(code) : notYetArrived ? '' : 'PO'
+        /* `view.main.auto` is the fact the code string cannot carry: an OIL
+           credit the APP worked out from the published schedule, rather than
+           one a person granted. It prints as the trailing star (owner, 20 Sep
+           26). */
+        const text = here || outLeave ? displayCell(code, !!view?.main?.auto) : notYetArrived ? '' : 'PO'
         // Duty first for the reader — FO/HO are work, not a bid. (They carry
         // `bid: false`, so they could not reach a bid branch anyway; the
         // order is legibility, not a guard.) Then the bid state, but only
@@ -3199,6 +3204,12 @@ export function Matrix() {
      lock becomes invisible. Everything else about a Raptor-owned cell is
      unchanged: both halves held, or nobody who may edit, and the read-only
      sheet opens exactly as it did. */
+  /* The granted OIL on the open cell, for the sheet to name and reopen. Only a
+     HAND-TYPED one: a credit the published schedule earned is the schedule's
+     to change, and the pass would overwrite anything typed onto it. */
+  const openCredit = open
+    ? (recordsAt(open.id, open.date).find(r => r.kind === 'credit' && r.oil === 'manual') as CreditRec | undefined)
+    : undefined
   const openFreeHalf = open && raptorOwns(states, open.id, open.date)
     && canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id)
     ? freeHalfBeside(openView)
@@ -4195,13 +4206,18 @@ export function Matrix() {
              credit the squadron types itself. Hours are read the way every
              other time box in the app is (`08:00`, `8:00`, `0800`, `800`);
              blank means the whole day. */
+          credit={role === 'admin' && openCredit
+            ? { code: openCredit.code, days: openCredit.days, note: openCredit.note, givenBy: openCredit.givenBy }
+            : null}
+          onCreditClear={role === 'admin' && openCredit
+            ? () => { clearRecordById(open.id, open.date, openCredit.id); close() }
+            : undefined}
           onCredit={role === 'admin'
-            ? (code, note, givenBy, from, to) => {
-              const blank = !from.trim() && !to.trim()
-              const f = blank ? null : parseHM(from)
-              const t = blank ? null : parseHM(to)
-              if (!blank && (f === null || t === null)) return 'Type the hours as 08:00 — or leave both blank for the whole day'
-              const problem = setManualCredit(open.id, open.date, code, { note, givenBy, from: f, to: t })
+            ? (code, days, note, givenBy) => {
+              const raw = days.trim()
+              const n = raw ? Number(raw) : null
+              if (raw && (n === null || !Number.isFinite(n))) return 'Type how many days — or leave it blank'
+              const problem = setManualCredit(open.id, open.date, code, { note, givenBy, days: n })
               if (!problem) showFigure('oil')
               return problem
             }

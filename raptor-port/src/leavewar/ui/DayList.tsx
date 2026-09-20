@@ -11,7 +11,7 @@
 // check — the buttons are only offered where it would succeed.
 import { useState, type ReactElement } from 'react'
 import { INPUTS } from '../../engine/inputs'
-import { canDecide, canEditCell, canEditRow, codeOf, type Period, type Role } from '../engine'
+import { canDecide, canEditCell, canEditRow, codeOf, displayCell, type Period, type Role } from '../engine'
 import { AM, FULL, PM, type Contrib, type DayView, type Win } from '../engine/dayview'
 import type { NoticeRec, CreditRec } from '../engine/warrecs'
 import { ackReplacement, changeAbsenceById, clearRecordById, decideRequestById, moveAbsenceById, recordsAt } from '../state/store'
@@ -34,12 +34,22 @@ function partOf(w: Win): string {
   if (same(w, PM)) return 'afternoon'
   return `${hhmm(w[0])}–${hhmm(w[1])}`
 }
+/* The STORED notation for this contribution — `*LL` for a morning — which is
+   then folded for the screen by `displayCell`, so the list and the box cannot
+   say different things about the same record. */
 function notation(c: Contrib): string {
   if (same(c.win, AM)) return `*${c.code}`
   if (same(c.win, PM)) return `${c.code}*`
   return c.code
 }
-const shown = (code: string) => (code === 'ATTC' ? 'ATT C' : code === 'ATTB' ? 'ATT B' : code)
+/* What a line CALLS a record: the arrows for a half day, a trailing star when
+   the app put it there, and the medical markers in the owner's own short form
+   — one body, `displayCell`, shared with the grid. `ATT C` keeps its space
+   here because a line has room for it where a 2-character box does not. */
+const shown = (code: string, auto = false) => {
+  const d = displayCell(code, auto)
+  return d.replace(/\bC\b/, 'ATT C').replace(/\bB\b/, 'ATT B')
+}
 /* the catalogue's words for a code, without repeating the code itself
    (a medical's label is "medical — ATT C") */
 const nameOf = (code: string) => {

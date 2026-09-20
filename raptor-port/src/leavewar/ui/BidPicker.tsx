@@ -14,7 +14,7 @@
 // rather than against a signed-in person — see `docs/known-gaps.md`.
 
 import { useState } from 'react'
-import { addDays, formatCell, LEAVE_TYPES, type BidState, type CounterName, type Portion } from '../engine'
+import { addDays, displayCell, formatCell, LEAVE_TYPES, type BidState, type CounterName, type Portion } from '../engine'
 import { cellProblem, MAX_GIVEN_BY, setBidState, setCell, setCellRange, shiftBid } from '../state/store'
 import { MAX_REC_NOTE } from '../engine/warrecs'
 import { RangePicker, type Range } from './RangePicker'
@@ -22,6 +22,12 @@ import { Sheet } from './Sheet'
 import { shortSpan } from './dates'
 import './bidpicker.css'
 import './oiltracker.css'
+
+/** "3 days" / "half a day" / "a day" — what a grant is worth, in words. */
+function creditDays(c: { code: 'FO' | 'HO'; days?: number }): string {
+  const n = c.days ?? (c.code === 'FO' ? 1 : 0.5)
+  return n === 1 ? 'a day' : n === 0.5 ? 'half a day' : `${n} days`
+}
 
 const PORTIONS: { portion: Portion; label: string; testid: string }[] = [
   { portion: 'full', label: 'Whole day', testid: 'portion-full' },
@@ -40,6 +46,8 @@ export function BidPicker({
   onPostOut,
   onPostIn,
   onCredit,
+  credit,
+  onCreditClear,
   onlyPortion,
   heldBy,
   onClose,
@@ -78,7 +86,16 @@ export function BidPicker({
    *  20 Sep 26 — "the admin can also credit OIL on the leave sheet for
    *  convenience. We should enable that even on any day"). Present only for an
    *  admin; the matrix wires it to the store and closes the sheet. */
-  onCredit?: (code: 'FO' | 'HO', note: string, givenBy: string, from: string, to: string) => string | null
+  onCredit?: (code: 'FO' | 'HO', days: string, note: string, givenBy: string) => string | null
+  /** The OIL already on this day, when a person granted it (owner, 20 Sep 26 —
+   *  "when I click on FO or HO on the leave war, i should be able to see the
+   *  reason and given by who if applicable and quantity"). The sheet names it
+   *  and opens its controls already filled in, so reading it and changing it
+   *  are the same tap. Absent when the day has none, or when the APP earned it
+   *  off the published schedule — that one is the schedule's to change. */
+  credit?: { code: 'FO' | 'HO'; days?: number; note?: string; givenBy?: string } | null
+  /** Take the granted OIL off this day. */
+  onCreditClear?: () => void
   onlyPortion?: Portion | null
   /** What is already on the day, in the words the box shows, so the sheet can
    *  name the half it is NOT offering. */
@@ -115,14 +132,19 @@ export function BidPicker({
   // The OIL-earned controls, folded behind one button like the two posting
   // ones. Folding matters more here than there: this sheet's other rows all
   // place LEAVE, and a credit is the opposite fact — the man was at work.
+  // Opened already filled in when the day HOLDS granted OIL, so reading it and
+  // changing it are one tap rather than two controls.
   const [oilOpen, setOilOpen] = useState(false)
-  const [oilNote, setOilNote] = useState('')
-  const [oilGiven, setOilGiven] = useState('')
-  const [oilFrom, setOilFrom] = useState('')
-  const [oilTo, setOilTo] = useState('')
+  const [oilNote, setOilNote] = useState(credit?.note ?? '')
+  const [oilGiven, setOilGiven] = useState(credit?.givenBy ?? '')
+  /* HOW MANY DAYS, not which hours (owner, 20 Sep 26 — "Remove the worked
+     hours. Not required"). A grant is an AWARD, not an attendance record, so
+     the hours it would have been worked over are not a fact it holds. Blank
+     means the code's own worth: a whole day for FO, half for HO. */
+  const [oilDays, setOilDays] = useState(credit?.days != null ? String(credit.days) : '')
   const [oilErr, setOilErr] = useState('')
-  const credit = (code: 'FO' | 'HO') => {
-    const problem = onCredit!(code, oilNote, oilGiven, oilFrom, oilTo)
+  const grantOil = (code: 'FO' | 'HO') => {
+    const problem = onCredit!(code, oilDays, oilNote, oilGiven)
     if (problem) { setOilErr(problem); return }
     onClose()
   }
@@ -269,7 +291,9 @@ export function BidPicker({
             title={t.label}
             onClick={() => write(formatCell({ type: t.type, portion }))}
           >
-            {formatCell({ type: t.type, portion })}
+            {/* the chip says what the BOX will say — `<LL`, `LL>` — while the
+                write still speaks the stored grammar */}
+            {displayCell(formatCell({ type: t.type, portion }))}
           </button>
         ))}
         <button className="tchip clear" data-testid="bid-clear" onClick={() => write('')}>
@@ -301,45 +325,62 @@ export function BidPicker({
           desktop they sit on one. */}
       {!oilOpen && !poOpen && !piOpen && (onCredit || onPostOut || onPostIn) && (
         <div className="bidsheet-row postout">
+          {/* SHORT LABELS, MEANING ON HOVER (owner, 20 Sep 26). These three are
+              the admin's management actions and he knows them by their
+              initials; spelling them out cost a third of the sheet's width for
+              words he reads past. `title` is the desktop hover; it is also
+              what a screen reader announces, which is why the aria-label
+              carries the long form rather than the short one. A phone has no
+              hover — nothing is lost there, because a phone has no room for
+              the long form either. */}
           {onCredit && (
-            <button className="dchip po" data-testid="bid-oil" onClick={() => setOilOpen(true)}>
-              OIL earned…
-            </button>
+            <button
+              className="dchip po" data-testid="bid-oil"
+              title={credit
+                ? 'The OIL on this day — its reason, who gave it and how many days'
+                : 'Grant OIL — a day or half a day off in lieu, for any reason'}
+              aria-label={credit ? 'The OIL on this day' : 'Grant OIL'}
+              onClick={() => setOilOpen(true)}
+            >{credit ? `${credit.code} · ${creditDays(credit)}` : '+OIL'}</button>
           )}
           {onPostOut && (
-            <button className="dchip po" data-testid="bid-postout" onClick={() => setPoOpen(true)}>
-              Post out (PO)…
-            </button>
+            <button
+              className="dchip po" data-testid="bid-postout"
+              title="Post out — their last day in the squadron"
+              aria-label="Post out"
+              onClick={() => setPoOpen(true)}
+            >PO</button>
           )}
           {onPostIn && (
-            <button className="dchip po" data-testid="bid-postin" onClick={() => setPiOpen(true)}>
-              Post in (PI)…
-            </button>
+            <button
+              className="dchip po" data-testid="bid-postin"
+              title="Post in — their first day in the squadron"
+              aria-label="Post in"
+              onClick={() => setPiOpen(true)}
+            >PI</button>
           )}
         </div>
       )}
       {onCredit && oilOpen && (
         <>
-          <div className="bidsheet-row postout">
-            <span className="lab">Worked</span>
-            {/* Blank hours mean the whole day, which is the rule for every
-                credit — so a full day needs no typing at all. */}
-            <input
-              type="text" inputMode="numeric" className="oil-num" maxLength={5}
-              data-testid="oil-from" aria-label="Worked from" placeholder="from"
-              value={oilFrom} onChange={e => { setOilErr(''); setOilFrom(e.target.value) }}
-            />
-            <input
-              type="text" inputMode="numeric" className="oil-num" maxLength={5}
-              data-testid="oil-to" aria-label="Worked to" placeholder="to"
-              value={oilTo} onChange={e => { setOilErr(''); setOilTo(e.target.value) }}
-            />
-            <span className="note">Leave both blank for the whole day.</span>
-          </div>
+          {/* What is already there, in words, before any box — an admin who
+              tapped the cell to READ it should not have to infer it from the
+              state of three inputs. */}
+          {credit && (
+            <div className="bidsheet-row postout">
+              <span className="note" data-testid="oil-current">
+                {creditDays(credit)} of OIL{credit.note ? ` — ${credit.note}` : ''}
+                {credit.givenBy ? `, given by ${credit.givenBy}` : ''}.
+              </span>
+              {onCreditClear && (
+                <button className="tchip clear" data-testid="oil-clear" onClick={onCreditClear}>Remove</button>
+              )}
+            </div>
+          )}
           <div className="bidsheet-row postout">
             <input
               className="oil-text" maxLength={MAX_REC_NOTE}
-              data-testid="oil-why" aria-label="Reason" placeholder="why — e.g. FLT, SIM, Duty"
+              data-testid="oil-why" aria-label="Reason" placeholder="why — any reason"
               value={oilNote} onChange={e => { setOilErr(''); setOilNote(e.target.value) }}
             />
             <input
@@ -349,8 +390,20 @@ export function BidPicker({
             />
           </div>
           <div className="bidsheet-row postout">
-            <button className="dchip approve" data-testid="oil-fo" onClick={() => credit('FO')}>FO — a whole day</button>
-            <button className="dchip approve" data-testid="oil-ho" onClick={() => credit('HO')}>HO — half a day</button>
+            {/* "Days", not "How many" — the row above already asks How many,
+                about DATES, and two of the same question on one sheet reads as
+                a mistake. */}
+            <span className="lab">Days</span>
+            {/* More than one day, the way the OIL tracker already grants
+                (owner, 20 Sep 26). Blank is the common case and needs no
+                typing: FO is a day, HO is half. */}
+            <input
+              type="text" inputMode="decimal" className="oil-num" maxLength={5}
+              data-testid="oil-days" aria-label="How many days" placeholder="days"
+              value={oilDays} onChange={e => { setOilErr(''); setOilDays(e.target.value) }}
+            />
+            <button className="dchip approve" data-testid="oil-fo" onClick={() => grantOil('FO')}>FO</button>
+            <button className="dchip approve" data-testid="oil-ho" onClick={() => grantOil('HO')}>HO</button>
             {oilErr && <span className="note warn" data-testid="oil-err">{oilErr}</span>}
           </div>
         </>
