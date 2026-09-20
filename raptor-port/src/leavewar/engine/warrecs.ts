@@ -35,6 +35,18 @@ export interface RequestRec {
 }
 export interface Carried { remarks?: string; lwMoved?: Record<string, string> }
 
+/** WHO GAVE THIS OIL, in the words the squadron reads (owner, 21 Sep 26).
+ *  A hand-typed award carries a name or a post, typed by the admin who gave
+ *  it. An automatic credit has no person behind it — the evidence is the
+ *  published weekend or public holiday it was earned on, or the duty input
+ *  the owner accepted — so it says which of those it was. One helper, because
+ *  the day window and the OIL tracker must not word it differently. */
+export function creditGiver(c: { oil?: 'auto' | 'manual'; givenBy?: string; via?: 'schedule' | 'input' } | null | undefined): string {
+  if (!c) return ''
+  if (c.oil !== 'auto') return c.givenBy ?? ''
+  return c.via === 'input' ? 'Duty input' : 'Weekend/PH'
+}
+
 export interface CreditRec {
   id: string
   kind: 'credit'
@@ -50,6 +62,16 @@ export interface CreditRec {
    *  evidence. One an admin types has none, so the squadron records who said
    *  the man worked. Free text — a name or a post. */
   givenBy?: string
+  /** WHERE AN AUTOMATIC CREDIT CAME FROM (owner, 21 Sep 26 — he wants the
+   *  giver shown on automatic OIL too, as "Weekend/PH", or "Duty input" where
+   *  the credit came from a duty-and-commitments input he accepted rather than
+   *  from the published schedule).
+   *  It is RECORDED rather than worked out from the reason, because the two
+   *  are genuinely indistinguishable there: the schedule's own reasons are
+   *  FLT / SIM / Duty and one of the input types is also called Duty, so a
+   *  Duty input and a duty desk would read identically. Only an `auto` credit
+   *  carries it; a hand-typed award has `givenBy` instead. */
+  via?: 'schedule' | 'input'
   /** the work times, minutes of the day (clash check B8). None = the whole day
    *  for every overlap check (owner Q7). Only an AUTOMATIC credit carries
    *  these now: they come off the published schedule, which knows the hours.
@@ -150,7 +172,7 @@ export function recContribs(list: readonly WarRec[]): Contrib[] {
          envelope is what the box shows, the stretches are what clashes read */
       const ws = creditWins(r)
       const env: Win = [Math.min(...ws.map(w => w[0])), Math.max(...ws.map(w => w[1]))]
-      out.push({ id: r.id, kind: 'credit', code: r.code, win: env, ...(ws.length > 1 ? { wins: ws } : {}), ...(r.oil === 'auto' ? { auto: true } : {}), ...(r.note ? { note: r.note } : {}), ...(r.givenBy ? { givenBy: r.givenBy } : {}), ...(r.days != null ? { days: r.days } : {}) })
+      out.push({ id: r.id, kind: 'credit', code: r.code, win: env, ...(ws.length > 1 ? { wins: ws } : {}), ...(r.oil === 'auto' ? { auto: true, ...(r.via ? { via: r.via } : {}) } : {}), ...(r.note ? { note: r.note } : {}), ...(r.givenBy ? { givenBy: r.givenBy } : {}), ...(r.days != null ? { days: r.days } : {}) })
     } else {
       out.push({ id: r.id, kind: 'notice', code: parseCell(r.code)?.type ?? r.code, win: FULL })
     }

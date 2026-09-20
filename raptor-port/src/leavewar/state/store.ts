@@ -3177,18 +3177,18 @@ export type IngestResult = 'written' | 'confirmed' | 'clash' | 'ignored'
  * hand-typed credit already there is the squadron having recorded the same
  * fact first: taken over in place.
  */
-export function ingestDutyCredit(personId: string, date: string, code: 'FO' | 'HO', why?: string, spans?: Array<[number, number]>): IngestResult {
+export function ingestDutyCredit(personId: string, date: string, code: 'FO' | 'HO', why?: string, spans?: Array<[number, number]>, via: 'schedule' | 'input' = 'schedule'): IngestResult {
   // Locked — a sync-driven credit is not an undo step.
-  return locked(() => ingestDutyCreditImpl(personId, date, code, why, spans))
+  return locked(() => ingestDutyCreditImpl(personId, date, code, why, spans, via))
 }
-function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO', why?: string, spans?: Array<[number, number]>): IngestResult {
+function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO', why?: string, spans?: Array<[number, number]>, via: 'schedule' | 'input' = 'schedule'): IngestResult {
   if (code !== 'FO' && code !== 'HO') return 'ignored'
   if (!warHolding(state.wars, date)) return 'ignored'
   const list = listAt(personId, date)
   const had = list.find(isCredit)
   const note = (why ?? '').trim().slice(0, MAX_REC_NOTE)
   const clean = spans?.filter(s => Array.isArray(s) && s[0] <= s[1] && s[0] >= 0 && s[1] <= 1439)
-  const rec: CreditRec = { id: had?.id ?? newRecId('c'), kind: 'credit', code, oil: 'auto', ...(note ? { note } : {}), ...(clean && clean.length ? { spans: clean } : {}) }
+  const rec: CreditRec = { id: had?.id ?? newRecId('c'), kind: 'credit', code, oil: 'auto', via, ...(note ? { note } : {}), ...(clean && clean.length ? { spans: clean } : {}) }
   const probe = recContribs([rec]).map(c => ({ ...c, id: 'new' }))
   const staying = list.filter(r => r !== had)
   const others = [...recContribs(staying), ...absencesAt(personId, date)]

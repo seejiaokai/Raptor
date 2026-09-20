@@ -66,7 +66,7 @@ import { touchesAM, touchesPM, type DayView } from '../engine/dayview'
 import type { Portion } from '../engine'
 import { isLwOnScreen, subLwScreen } from '../state/screen'
 import type { RecordSpans } from '../state/merge'
-import type { CreditRec } from '../engine/warrecs'
+import { creditGiver, type CreditRec } from '../engine/warrecs'
 import { parseHM } from '../../engine/time'
 import { msSinceInput } from '../../state/idle'
 import { boxOf, frameLift, frameLand, landOn } from '../../ui/lift'
@@ -3210,6 +3210,13 @@ export function Matrix() {
   const openCredit = open
     ? (recordsAt(open.id, open.date).find(r => r.kind === 'credit' && r.oil === 'manual') as CreditRec | undefined)
     : undefined
+  /* EVERY credit on the open cell, award or earned — what the day window
+     reads back on one click (owner, 21 Sep 26). Separate from `openCredit`
+     above, which is only the one an admin may EDIT: the app's own credit is
+     shown and never offered for editing, because the OIL pass owns it. */
+  const openAnyCredit = open
+    ? (recordsAt(open.id, open.date).find(r => r.kind === 'credit') as CreditRec | undefined)
+    : undefined
   const openFreeHalf = open && raptorOwns(states, open.id, open.date)
     && canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id)
     ? freeHalfBeside(openView)
@@ -3924,6 +3931,18 @@ export function Matrix() {
           callsign={open.callsign}
           date={open.date}
           code={grid[open.id]?.[open.date] ?? ''}
+          /* An OIL credit the app earned opens here too, and it is not leave
+             from the Inputs page — the sheet says which it is, and reads the
+             credit back in the same three lines as everywhere else. */
+          creditShown={openAnyCredit && openAnyCredit.oil === 'auto'
+            ? {
+              code: openAnyCredit.code,
+              days: openAnyCredit.days,
+              note: openAnyCredit.note,
+              giver: creditGiver(openAnyCredit),
+              spans: openAnyCredit.spans,
+            }
+            : null}
           onClose={close}
         />
       )}
@@ -4208,6 +4227,19 @@ export function Matrix() {
              blank means the whole day. */
           credit={role === 'admin' && openCredit
             ? { code: openCredit.code, days: openCredit.days, note: openCredit.note, givenBy: openCredit.givenBy }
+            : null}
+          /* Read back on one click, for anyone who can see the day — a member
+             reading his own OIL is entitled to know why it is there and who
+             gave it, the same as an admin (owner, 21 Sep 26). */
+          creditShown={openAnyCredit
+            ? {
+              code: openAnyCredit.code,
+              days: openAnyCredit.days,
+              note: openAnyCredit.note,
+              giver: creditGiver(openAnyCredit),
+              auto: openAnyCredit.oil === 'auto',
+              spans: openAnyCredit.spans,
+            }
             : null}
           onCreditClear={role === 'admin' && openCredit
             ? () => { clearRecordById(open.id, open.date, openCredit.id); close() }

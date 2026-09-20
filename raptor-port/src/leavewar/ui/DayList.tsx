@@ -13,7 +13,7 @@ import { useState, type ReactElement } from 'react'
 import { INPUTS } from '../../engine/inputs'
 import { canDecide, canEditCell, canEditRow, codeOf, displayCell, type Period, type Role } from '../engine'
 import { AM, FULL, PM, type Contrib, type DayView, type Win } from '../engine/dayview'
-import type { NoticeRec, CreditRec } from '../engine/warrecs'
+import { creditGiver, type NoticeRec, type CreditRec } from '../engine/warrecs'
 import { ackReplacement, changeAbsenceById, clearRecordById, decideRequestById, moveAbsenceById, recordsAt } from '../state/store'
 import { Sheet } from './Sheet'
 import './bidpicker.css'
@@ -93,6 +93,9 @@ export function DayListSheet({
     else setMsg('')
   }
 
+  /* the OIL on this day, whichever kind — read back in three lines at the
+     bottom, the same three the day window shows (owner, 21 Sep 26) */
+  const oilRec = raw.find(r => r.kind === 'credit') as CreditRec | undefined
   const lines = view.all.map(c => {
     const part = partOf(c.win)
     const partTxt = part ? `, ${part}` : ''
@@ -137,7 +140,12 @@ export function DayListSheet({
     if (c.kind === 'credit') {
       const rec = raw.find(r => r.id === c.id) as CreditRec | undefined
       const times = rec?.spans?.length ? rec.spans.map(([a, b]) => `${hhmm(a)}–${hhmm(b)}`).join(', ') : ''
-      const text = `${c.code} — OIL earned${rec?.note ? ` (${rec.note})` : ''}${times ? `, worked ${times}` : ''}${rec?.givenBy ? ` · ${rec.givenBy}` : ''}`
+      /* The same three facts the day window reads back (owner, 21 Sep 26):
+         why, who gave it, and — for one the app earned — the hours it was
+         measured over. `creditGiver` is shared with the window and the OIL
+         tracker so the giver is never worded three ways. */
+      const giver = creditGiver(rec)
+      const text = `${c.code} — OIL earned${rec?.note ? ` (${rec.note})` : ''}${times ? `, worked ${times}` : ''}${giver ? ` · given by ${giver}` : ''}`
       const actions: ReactElement[] = []
       if (rec?.oil === 'manual' && role === 'admin') actions.push(<button key="cl" className="dchip" data-testid={`dl-clear-${c.id}`} onClick={() => act(() => clearRecordById(personId, date, c.id))}>Clear</button>)
       return { key: `c-${c.id}`, cls: 'sc', text, sub: rec?.oil === 'auto' ? 'From the published schedule.' : '', actions }
@@ -190,6 +198,35 @@ export function DayListSheet({
           </li>
         ))}
       </ul>
+      {/* THE OIL ON THIS DAY, READ BACK IN THE SAME THREE LINES AS THE DAY
+          WINDOW (owner, 21 Sep 26). A locked day — one the published schedule
+          earned OIL on — opens this sheet rather than the window, so without
+          this the app answered his question on one screen and not the other.
+          Read-only here by construction: nothing on a Raptor-owned day is
+          edited on the war. */}
+      {oilRec && (
+        <div className="daylist-oil" data-testid="oil-detail">
+          <div className="bidsheet-row">
+            <span className="lab">Reason</span>
+            <span className="note" data-testid="oil-detail-why">
+              {oilRec.note?.trim() || (oilRec.oil === 'auto' ? 'Worked this day' : 'Not given')}
+            </span>
+          </div>
+          <div className="bidsheet-row">
+            <span className="lab">Given by</span>
+            <span className="note" data-testid="oil-detail-given">{creditGiver(oilRec) || 'Not given'}</span>
+          </div>
+          <div className="bidsheet-row">
+            <span className="lab">Days</span>
+            <span className="note" data-testid="oil-detail-days">
+              {oilDaysText(oilRec)}
+              {oilRec.oil === 'auto' && oilRec.spans?.length
+                ? ` — worked ${oilRec.spans.map(([a, b]) => `${hhmm(a)}–${hhmm(b)}`).join(', ')}`
+                : ''}
+            </span>
+          </div>
+        </div>
+      )}
       {msg && (
         <div className="bidsheet-row">
           <span className="note warn" data-testid="daylist-msg">{msg}</span>
@@ -197,4 +234,11 @@ export function DayListSheet({
       )}
     </Sheet>
   )
+}
+
+/** "3 days" / "half a day" / "a day" — what a credit is worth, in words. The
+ *  day window says it the same way; one wording for one fact. */
+function oilDaysText(c: { code: 'FO' | 'HO'; days?: number }): string {
+  const n = c.days ?? (c.code === 'FO' ? 1 : 0.5)
+  return n === 1 ? 'a day' : n === 0.5 ? 'half a day' : `${n} days`
 }

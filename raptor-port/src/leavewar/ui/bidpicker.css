@@ -1197,3 +1197,22 @@
   color: #D9A6F5;
   border-color: rgba(178, 77, 234, .5);
 }
+
+/* THE OIL READ-BACK — reason, given by, days (owner, 21 Sep 26). A hairline
+   sets it apart from the controls above without becoming a second panel: it
+   is the sheet ANSWERING a question, not offering an action. Inside this
+   file's `#page-leavewar` nesting like everything else, so it cannot lose to
+   its own neighbours. */
+.bidsheet .bidsheet-oil-detail,
+.bidsheet .daylist-oil {
+  border-top: 1px solid var(--edge);
+  margin-top: 6px;
+  padding-top: 4px;
+}
+
+.bidsheet .bidsheet-oil-detail .bidsheet-row,
+.bidsheet .daylist-oil .bidsheet-row {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+

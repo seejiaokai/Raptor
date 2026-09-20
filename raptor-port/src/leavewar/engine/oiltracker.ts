@@ -48,6 +48,7 @@ import { codeOf } from './codes'
 import type { FigureCtx } from './counters'
 import { addDays, addMonths, isWeekend } from './period'
 import type { Win } from './dayview'
+import { creditGiver } from './warrecs'
 
 export type OilExpiryUnit = 'days' | 'months'
 
@@ -215,8 +216,14 @@ export function oilLedgerFor(ctx: FigureCtx, personId: string, policy: OilPolicy
       const credit = v.all.find(c => c.kind === 'credit')
       if (credit && v.earnsOil > 0) {
         const reason = credit.note ?? (isWeekend(date) ? 'weekend duty' : 'PH duty')
+        /* WHO GAVE IT, on an automatic credit too (owner, 21 Sep 26). It used
+           to be blank for anything the app earned itself, so the tracker's
+           own rows disagreed about whether that column meant anything. An
+           earned credit's giver is the evidence behind it — the published
+           weekend or holiday, or the duty input that was accepted. */
+        const giver = creditGiver({ oil: credit.auto ? 'auto' : 'manual', givenBy: credit.givenBy, via: credit.via })
         const hours = credit.wins ?? (credit.win[0] === 0 && credit.win[1] === 1439 ? undefined : [credit.win])
-        credits.push({ id: `auto:${wi}:${date}`, date, amount: v.earnsOil, reason, source: 'auto', ...(credit.auto ? {} : { manual: true }), ...(hours ? { hours } : {}), ...(credit.givenBy ? { givenBy: credit.givenBy } : {}), ...(credit.days != null ? { days: credit.days } : {}), expires: expiryOf(date, policy), used: [], left: v.earnsOil, expired: 0 })
+        credits.push({ id: `auto:${wi}:${date}`, date, amount: v.earnsOil, reason, source: 'auto', ...(credit.auto ? {} : { manual: true }), ...(hours ? { hours } : {}), ...(giver ? { givenBy: giver } : {}), ...(credit.days != null ? { days: credit.days } : {}), expires: expiryOf(date, policy), used: [], left: v.earnsOil, expired: 0 })
       }
       for (const t of charged.get(date) ?? []) {
         if (t.counter !== 'oil') continue

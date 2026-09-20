@@ -20,7 +20,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { balanceOf, isWeekend } from '../engine'
-import { getState, initStore, rawState, setCell, setManualCredit, setPostOut, setRole, setViewer } from '../state/store'
+import { getState, ingestDutyCredit, initStore, rawState, setCell, setManualCredit, setPostOut, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -222,3 +222,51 @@ describe('who said so is RECORDED and VISIBLE', () => {
     expect(list.textContent).toContain('OC Ops')
   })
 })
+
+/* WHAT THE OIL ON A DAY SAYS, ON ONE CLICK (owner, 21 Sep 26 — "When i click
+   on like FO or HO once, At the bottom i want to see the reason, given by and
+   days granted"). Three lines, the same three whichever kind of credit it is;
+   the app's own credit answers them from the schedule it was earned off. */
+describe('the OIL on a day, read back on one click', () => {
+  const open = (date: string) => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-${date}`))
+  }
+
+  it('an AWARD shows the reason, the giver and how many days — without opening anything', () => {
+    expect(setManualCredit(P, TUE, 'FO', { note: 'Exercise recovery', givenBy: 'OC Ops', days: 2 })).toBeNull()
+    open(TUE)
+    expect(screen.getByTestId('oil-detail-why').textContent).toBe('Exercise recovery')
+    expect(screen.getByTestId('oil-detail-given').textContent).toBe('OC Ops')
+    expect(screen.getByTestId('oil-detail-days').textContent).toBe('2 days')
+  })
+
+  it('says so plainly when an award was given with no reason and no name', () => {
+    expect(setManualCredit(P, TUE, 'HO')).toBeNull()
+    open(TUE)
+    expect(screen.getByTestId('oil-detail-why').textContent).toBe('Not given')
+    expect(screen.getByTestId('oil-detail-given').textContent).toBe('Not given')
+    expect(screen.getByTestId('oil-detail-days').textContent).toBe('half a day')
+  })
+
+  it('OIL the app earned names the WEEKEND as its giver, and the hours behind it', () => {
+    expect(ingestDutyCredit(P, SAT, 'FO', 'Duty', [[480, 1080]])).toBe('written')
+    open(SAT)
+    expect(screen.getByTestId('oil-detail-why').textContent).toBe('Duty')
+    expect(screen.getByTestId('oil-detail-given').textContent).toBe('Weekend/PH')
+    expect(screen.getByTestId('oil-detail-days').textContent).toContain('a day')
+    expect(screen.getByTestId('oil-detail-days').textContent).toContain('worked 08:00–18:00')
+  })
+
+  it('OIL earned from an accepted duty INPUT says so instead — the two are not the same evidence', () => {
+    expect(ingestDutyCredit(P, SAT, 'HO', 'Duty', [[480, 720]], 'input')).toBe('written')
+    open(SAT)
+    expect(screen.getByTestId('oil-detail-given').textContent).toBe('Duty input')
+  })
+
+  it('shows nothing at all on a day with no OIL on it', () => {
+    open(TUE)
+    expect(screen.queryByTestId('oil-detail')).toBeNull()
+  })
+})
+

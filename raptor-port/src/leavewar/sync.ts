@@ -765,6 +765,9 @@ function stashOilWeek(v: string): { days: any[], sc: any } | null {
 export interface DesiredOil {
   code: 'FO' | 'HO'
   why: string
+  /** the published schedule, or a duty-and-commitments input the owner
+   *  accepted — what the credit's giver reads as on screen (owner, 21 Sep 26) */
+  via: 'schedule' | 'input'
   /** the actual work times on the day (not the gap-inclusive envelope) —
    *  what a leave or a medical must not overlap (clash check B4, §26.3) */
   spans: Array<[number, number]>
@@ -784,7 +787,12 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
   const known = new Set(people.map(p => p.id))
   /* person|iso -> that day's work spans; their ENVELOPE faces the threshold */
   const pool = new Map<string, OilWork[]>()
-  const add = (person: string, iso: string, spans: OilWork[]) => {
+  /* which of those days the PUBLISHED SCHEDULE earned, as opposed to a duty
+     input the owner accepted — what the credit's giver reads as on screen
+     (owner, 21 Sep 26). A day backed by both is the schedule's: that is the
+     stronger evidence, and it is what the reader would go and look at. */
+  const fromSchedule = new Set<string>()
+  const add = (person: string, iso: string, spans: OilWork[], via: 'schedule' | 'input' = 'schedule') => {
     /* The same unknown-person guard both leave directions carry: a row
        naming someone the roster does not hold (ground crew, a sentinel)
        must not become a grid row no matrix draws. */
@@ -793,6 +801,7 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
     const arr = pool.get(k) ?? []
     arr.push(...spans)
     pool.set(k, arr)
+    if (via === 'schedule') fromSchedule.add(k)
   }
   /* CLASSIFY the live book FIRST (P2-REREVIEW-05): an unsupported / wrong-week /
      future-version book must be quarantined even if its snapshots still resolve,
@@ -864,14 +873,14 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
       if (!isNonWorkingISO(iso)) continue                  // a day that stopped being PH stops crediting
       /* the reason is the input's own type name (Training, CSE, Duty…) —
          the word the owner acknowledged, which is what the tracker shows */
-      add(row.person, iso, [{ s: win[0], e: win[1], src: String(row.type || 'Duty').trim() as OilWork['src'] }])
+      add(row.person, iso, [{ s: win[0], e: win[1], src: String(row.type || 'Duty').trim() as OilWork['src'] }], 'input')
     }
   }
   const out = new Map<string, DesiredOil>()
   for (const [k, spans] of pool) {
     if (protectedDates.has(k.slice(k.indexOf('|') + 1))) continue   // never desire a protected date (P2-IMPL-01)
     const amt = uniformOil(envMin(spans.map(w => [w.s, w.e] as [number, number])))
-    if (amt) out.set(k, { code: amt === 1 ? 'FO' : 'HO', why: oilWorkWhy(spans), spans: workSpans(spans) })
+    if (amt) out.set(k, { code: amt === 1 ? 'FO' : 'HO', why: oilWorkWhy(spans), spans: workSpans(spans), via: fromSchedule.has(k) ? 'schedule' : 'input' })
   }
   return { desired: out, protectedDates }
 }
@@ -1015,12 +1024,12 @@ export function runOilPass(): void {
        undecided bid on that day is the clash — never placed (clash check B4;
        a credit beside a non-overlapping absence lands, so a worked Saturday
        morning + afternoon leave keeps its OIL). */
-    for (const [key, { code, why, spans }] of desired) {
+    for (const [key, { code, why, spans, via }] of desired) {
       const at = key.indexOf('|')
       const person = key.slice(0, at)
       const date = key.slice(at + 1)
       if (!warHolding(rawState().wars, date)) continue
-      ingestDutyCredit(person, date, code, why, spans)
+      ingestDutyCredit(person, date, code, why, spans, via)
     }
 
     /* Reverse: a GENERATED credit no published work still earns goes. Only

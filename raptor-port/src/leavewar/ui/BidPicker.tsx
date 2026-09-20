@@ -23,6 +23,9 @@ import { shortSpan } from './dates'
 import './bidpicker.css'
 import './oiltracker.css'
 
+/** minutes of the day as `08:00` — the worked hours on an automatic credit */
+const hhmm = (n: number) => `${String(Math.floor(n / 60)).padStart(2, '0')}:${String(n % 60).padStart(2, '0')}`
+
 /** "3 days" / "half a day" / "a day" — what a grant is worth, in words. */
 function creditDays(c: { code: 'FO' | 'HO'; days?: number }): string {
   const n = c.days ?? (c.code === 'FO' ? 1 : 0.5)
@@ -47,6 +50,7 @@ export function BidPicker({
   onPostIn,
   onCredit,
   credit,
+  creditShown,
   onCreditClear,
   onlyPortion,
   heldBy,
@@ -94,6 +98,13 @@ export function BidPicker({
    *  are the same tap. Absent when the day has none, or when the APP earned it
    *  off the published schedule — that one is the schedule's to change. */
   credit?: { code: 'FO' | 'HO'; days?: number; note?: string; givenBy?: string } | null
+  /** WHAT THE OIL ON THIS DAY SAYS, shown on a single click without opening
+   *  anything (owner, 21 Sep 26: "When i click on like FO or HO once, At the
+   *  bottom i want to see the reason, given by and days granted"). Covers BOTH
+   *  kinds: an award, which `credit` above also lets an admin edit, and one
+   *  the app credited itself, which is read-only because the OIL pass owns it
+   *  and would overwrite anything typed onto it. */
+  creditShown?: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; auto?: boolean; spans?: Array<[number, number]> } | null
   /** Take the granted OIL off this day. */
   onCreditClear?: () => void
   onlyPortion?: Portion | null
@@ -501,6 +512,45 @@ export function BidPicker({
           </div>
         </>
       )}
+
+      {/* WHAT THE OIL ON THIS DAY SAYS — on ONE click, at the bottom, without
+          opening anything (owner, 21 Sep 26). Three things, always the same
+          three, whichever kind of credit it is: why it was given, who gave it,
+          and how many days it is worth.
+          The app's OWN credit answers them from the schedule it was earned
+          off: the reason is the work it found (FLT, SIM, Duty, or the type of
+          an accepted duty input), the giver is "Weekend/PH" — or "Duty input"
+          when it came from an input rather than the published day — and the
+          hours it was measured over are shown, because for that kind they are
+          the evidence. It is READ-ONLY: the OIL pass owns it and would
+          overwrite anything typed on top.
+          An AWARD answers them from what the admin typed, and +OIL above
+          reopens exactly those boxes to change them. */}
+      {creditShown && (
+        <div className="bidsheet-oil-detail" data-testid="oil-detail">
+          <div className="bidsheet-row postout">
+            <span className="lab">Reason</span>
+            <span className="note" data-testid="oil-detail-why">
+              {creditShown.note?.trim() || (creditShown.auto ? 'Worked this day' : 'Not given')}
+            </span>
+          </div>
+          <div className="bidsheet-row postout">
+            <span className="lab">Given by</span>
+            <span className="note" data-testid="oil-detail-given">
+              {creditShown.giver?.trim() || 'Not given'}
+            </span>
+          </div>
+          <div className="bidsheet-row postout">
+            <span className="lab">Days</span>
+            <span className="note" data-testid="oil-detail-days">
+              {creditDays(creditShown)}
+              {creditShown.auto && creditShown.spans?.length
+                ? ` — worked ${creditShown.spans.map(([a, b]) => `${hhmm(a)}–${hhmm(b)}`).join(', ')}`
+                : ''}
+            </span>
+          </div>
+        </div>
+      )}
     </Sheet>
   )
 }
@@ -655,15 +705,20 @@ export function RaptorSheet({
   callsign,
   date,
   code,
+  creditShown,
   onClose,
 }: {
   callsign: string
   date: string
   code: string
+  /** OIL the APP earned on this day, if that is what the cell holds (owner,
+   *  21 Sep 26). See the note below on why this sheet had to learn the
+   *  difference. */
+  creditShown?: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; spans?: Array<[number, number]> } | null
   onClose: () => void
 }) {
   return (
-    <Sheet testid="raptor-sheet" label="Leave from Raptor" onClose={onClose}>
+    <Sheet testid="raptor-sheet" label={creditShown ? 'OIL from the schedule' : 'Leave from Raptor'} onClose={onClose}>
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
         <span className="dt">{date}</span>
@@ -672,12 +727,43 @@ export function RaptorSheet({
           ✕
         </button>
       </div>
+      {/* THIS SHEET USED TO TELL AN OIL CREDIT IT CAME FROM THE INPUTS PAGE
+          (fixed 21 Sep 26). Both kinds of cell the schedule owns open here,
+          and only one of them is leave someone filed: a weekend credit is the
+          app's own reading of the PUBLISHED SCHEDULE, and sending an admin to
+          the Inputs page to change it sends him somewhere he will find
+          nothing. Each now says where its own fact lives. */}
       <div className="bidsheet-row">
-        <span className="lab">Inputs page</span>
+        <span className="lab">{creditShown ? 'Where it came from' : 'Inputs page'}</span>
         <span className="note" data-testid="raptor-note">
-          Filed on the Inputs page, so it is already approved — change it there, not here.
+          {creditShown
+            ? 'Earned off the published schedule — change the schedule and the OIL follows.'
+            : 'Filed on the Inputs page, so it is already approved — change it there, not here.'}
         </span>
       </div>
+      {/* The same three lines the day window gives for OIL, because the
+          question is the same one however the day happens to open. */}
+      {creditShown && (
+        <div className="bidsheet-oil-detail" data-testid="oil-detail">
+          <div className="bidsheet-row">
+            <span className="lab">Reason</span>
+            <span className="note" data-testid="oil-detail-why">{creditShown.note?.trim() || 'Worked this day'}</span>
+          </div>
+          <div className="bidsheet-row">
+            <span className="lab">Given by</span>
+            <span className="note" data-testid="oil-detail-given">{creditShown.giver?.trim() || 'Not given'}</span>
+          </div>
+          <div className="bidsheet-row">
+            <span className="lab">Days</span>
+            <span className="note" data-testid="oil-detail-days">
+              {creditDays(creditShown)}
+              {creditShown.spans?.length
+                ? ` — worked ${creditShown.spans.map(([a, b]) => `${hhmm(a)}–${hhmm(b)}`).join(', ')}`
+                : ''}
+            </span>
+          </div>
+        </div>
+      )}
     </Sheet>
   )
 }
