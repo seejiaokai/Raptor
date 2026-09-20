@@ -157,3 +157,58 @@ Rulings no test names by id, so nothing would fail if they silently changed:
 `scripts/rulecheck.mjs` prints this list and fails when it grows. Two of them — **B8** (hand-typed
 credit times) and **B3** (different parts of the day sitting side by side) — are already in the
 [S4-BUGHUNT] plan's batch A and F, so they get named tests in this hunt.
+
+## 10. Rulings made DURING this hunt (20 Sep 26) — newest, and they win
+
+Five rulings the owner gave while the [S4-BUGHUNT] sweeps were running. Each names what it sets
+aside. These are the LATEST word and beat anything above them.
+
+### N1 — noon belongs to the afternoon
+Leave recorded as starting at exactly **12:00** is the **afternoon**: half a day of balance, half a
+person off the manning count. A window that ENDS at 12:00 is still a morning, and both half presets
+are untouched.
+*Sets aside:* nothing written — the app simply answered two ways about that minute. The clash test
+said it was not the morning; the box, the charge and the manning count said it was, so a two-hour
+afternoon cost a whole day. **BUILT** (`9e5cf94`).
+
+### N2 — work and an absence on the same hours: the credit LANDS
+> Owner: "If someone is working, even tho they have leave on that day. It should still bank the OIL
+> credit. Until that thing is resolved — which means that if work is removed, then no OIL credit. If
+> leave is removed then OIL still credits."
+
+So when work and an absence cover the same hours: the **credit is created**, the day carries the
+**amber mark**, the warning list names it, and it **stays banked until someone resolves it**. Remove
+the work → the credit goes. Remove the leave → the credit stays.
+*Sets aside:* **B4's "Overlap → no credit"**, which is now wrong. B4's time test itself stands — the
+credit only clashes when the hours really meet.
+*Also sets aside:* the fix made earlier the same day that deleted a stale credit on a clash. Under
+N2 there is no refusal, so the pass simply writes the credit with its current hours and the stale
+one is overwritten — the original defect (a credit showing hours nobody worked) is still fixed, by a
+simpler route.
+
+### N3 — an acknowledged duty replaces the person's own undecided bid
+When someone files a duty on a weekend or public holiday and answers **"yes, this earns OIL"**, the
+clashing part of their own undecided leave **bid on that day is removed in the same action**, exactly
+as publishing the schedule over it would, and they are told. Someone else filing it for them leaves
+the notice with its amber mark until "OK, seen".
+*Settles:* H1's "recorded work at the same time". The two reviewers disagreed on whether an
+acknowledged input counted; the owner says it does.
+
+### N4 — leave onto a worked day: allowed when the hours really miss
+Filing leave onto a day the person is recorded working is **allowed when the real hours do not
+overlap** (work 08:00–10:00, leave 13:00–15:00) and **still refused when they genuinely do**.
+*Note the deliberate asymmetry with N2:* work arriving onto leave is allowed and flagged; leave
+arriving onto overlapping work is refused. That is the owner's choice and not a defect — work
+already recorded is harder evidence, and a person should not be able to claim leave over hours they
+are recorded as working, while management publishing work over someone's leave is a real situation
+that must be surfaced rather than blocked.
+*Already true in code:* the refusal has always compared real hours. What made it behave as a
+whole-day block is N5.
+
+### N5 — a hand-typed credit can be given its hours
+The credit box gains a **start and end time**, so an admin can record "worked 08:00–10:00". Until
+now B8's "a manual credit MAY carry work times" had no door: the field existed and every check read
+it, but nothing could write it, so every hand-typed credit meant the whole day and blocked leave
+that did not really clash. **Owner: build it now.**
+*Settles:* B8, which the register had marked as named by no test, and which both reviewers
+independently found MISSING.
