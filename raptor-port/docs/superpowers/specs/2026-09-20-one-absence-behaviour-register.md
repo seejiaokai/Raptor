@@ -194,16 +194,35 @@ the notice with its amber mark until "OK, seen".
 *Settles:* H1's "recorded work at the same time". The two reviewers disagreed on whether an
 acknowledged input counted; the owner says it does.
 
-### N4 — leave onto a worked day: allowed when the hours really miss
-Filing leave onto a day the person is recorded working is **allowed when the real hours do not
-overlap** (work 08:00–10:00, leave 13:00–15:00) and **still refused when they genuinely do**.
-*Note the deliberate asymmetry with N2:* work arriving onto leave is allowed and flagged; leave
-arriving onto overlapping work is refused. That is the owner's choice and not a defect — work
-already recorded is harder evidence, and a person should not be able to claim leave over hours they
-are recorded as working, while management publishing work over someone's leave is a real situation
-that must be surfaced rather than blocked.
-*Already true in code:* the refusal has always compared real hours. What made it behave as a
-whole-day block is N5.
+### N4 — leave onto a worked day: FLAGGED, not refused
+
+**SUPERSEDED THE SAME DAY by the owner, and this entry is corrected rather than
+deleted so the reversal is readable.** N4 was first recorded as "allowed when the real hours miss,
+refused when they meet", with the asymmetry against N2 called deliberate. The owner then reversed
+it on the app's own doctrine:
+
+> "Does making a hard refusal be a bit contradicting to what I'm allowing for the schedule?
+> Currently on the schedule if there's a clash I still allow planning but there is just flagging."
+
+So: filing leave onto a day the person is recorded working is **written**, the day goes **amber**,
+and the filer is told in the same breath. There is no asymmetry between the two directions at the
+Inputs door any more — which was the point.
+
+**BUT the war's own doors were NOT changed, and that is an open inconsistency, not a decision.**
+Clash-check **B5** says "a bid made after the publish that overlaps published work is refused at the
+bid door", and the owner has not reversed B5. Carrying the doctrine into the bid door was tried and
+backed out when a test pinned B5. The rules-first review then found the same gap at **approve** and
+**move** of an approved leave, which B5 does not cover. So today:
+
+| Door | Leave over recorded work |
+|---|---|
+| The Inputs page (filing) | **Filed and flagged** |
+| The war's bid door | **Refused** (B5, not reversed) |
+| The war's approve / move doors | **Refused** (no ruling either way — an accident) |
+
+**Owner question, open:** should the war's doors follow the Inputs page, or does B5 stand? Until he
+says, the build follows the rules as written and the difference is recorded here rather than
+quietly decided.
 
 ### N5 — a hand-typed credit can be given its hours
 The credit box gains a **start and end time**, so an admin can record "worked 08:00–10:00". Until
