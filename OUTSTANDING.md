@@ -695,7 +695,42 @@ rules about posted-out and pre-joining rows. Several older documents still read 
   belongs to the AUTOMATIC pass, which reads the published schedule, not to a credit the squadron
   types itself.
 
-### [OIL-AWARD-ADD] Should an award and a worked day ADD UP? — ONE QUESTION FOR THE OWNER (21 Sep 26)
+### [OIL-AWARD-ADD] An award and a worked day ADD UP — RULED, NOT YET BUILT (owner, 21 Sep 26)
+> "Yes an award and a worked day add up. So it's 4. The auto oil credits don't get affected by
+> manual OIL inputs."
+
+**The ruling.** A 3-day award on a Saturday the man then works is worth **4** — the award's 3 plus
+the day's 1. The two are INDEPENDENT: what the schedule earns is never changed by what a person
+typed, and what a person typed is never changed by the schedule.
+
+**What the app does today (wrong under this ruling).** One credit record per person per day. When
+the schedule earns a credit on a day that already holds an award, it TAKES THE AWARD OVER in place
+and stashes it in a snapshot for the unpublish hand-back. Since 21 Sep it keeps the LARGER of the
+two (3), which was the safe reading of a defect Fable found — before that fix it kept only the
+schedule's 1 and the man silently lost two days.
+
+**What this ruling actually asks for, and why it SIMPLIFIES the app.** Two records on the day, side
+by side: the app's own credit and the award, each keeping its own worth, reason and giver. The whole
+take-over-and-hand-back machinery exists ONLY because they were sharing one slot — under this ruling
+it can go. The day view already sums `earnsOil` across every credit and already asks `.some(auto)`
+for duty, so the engine is ready; the work is in the store and the tracker.
+
+**The pieces:**
+1. `ingestDutyCredit` writes the app's credit BESIDE an award instead of over it; the `manual`
+   snapshot and the hand-back retire (keep the reader for records already stored).
+2. `setManualCredit` stops refusing an award on a day the schedule already earns ("That day already
+   earns OIL from the published schedule").
+3. The reverse sweep (`clearRaptorCell`) removes only the app's own credit, never the award.
+4. The OIL tracker lists ONE ENTRY PER CREDIT on the day, not the first one it finds.
+5. The day window and the tap list read back both.
+6. The grid cell holds one code: the app's own (starred) shows, with the award behind the `+1` mark
+   — the same way the app already shows a day carrying more than one record.
+
+**Do this in a FRESH session, not at the tail of one.** It moves persisted OIL balances, which is
+where both of the night's silent bugs lived; the project's own rule escalates that kind of change.
+Build it test-first and put it through both reviewers.
+
+### [OIL-AWARD-ADD-OLD] The question as it was put to him (superseded above, kept for the reasoning)
 Fable found that a 3-day award on a Saturday fell to 1 day the moment that Saturday was published
 with the man on a desk: the takeover replaced the award wholesale. That is now fixed — the award's
 days, reason and giver ride onto the taken-over record, so the balance never falls.
