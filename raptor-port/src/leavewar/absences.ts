@@ -118,7 +118,14 @@ export function inputWindow(row: any): { win: Win; real?: Win; tail: Win | null 
     const w = inpWin(row)
     if (!w) return { win, tail: null }
     const real: Win = [w[0], Math.min(w[1], 1439)]
-    return { win, real: real[0] === win[0] && real[1] === win[1] ? undefined : real, tail: null }
+    /* H6 applies to a medical too — "a record running past midnight counts on
+       the second date, for clashes". Leave, courses and overseas duty got the
+       tail from the start; the medical branch returned none, so an HL from
+       20:00 to 02:00 let next morning's leave through untouched (rules-first
+       red team, 20 Sep 26). The tail is spill-only: it is never shown and
+       never charged on the second date, it only clashes there. */
+    const tail: Win | null = w[1] > 1439 ? [0, w[1] - 1440] : null
+    return { win, real: real[0] === win[0] && real[1] === win[1] ? undefined : real, tail }
   }
   if (row.allday) return { win: FULL, tail: null }
   if (row.half === 'am') return { win: AM, tail: null }

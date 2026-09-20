@@ -225,3 +225,36 @@ describe('an OIL credit whose hours have changed', () => {
     expect(credit('bruise')?.oil).toBe('manual')
   })
 })
+
+/* ====================================================================== */
+/*  H6 — an overnight MEDICAL counts on the second date too               */
+/* ====================================================================== */
+/* H6: "overnight records count on the second date for overlap". Leave,
+   courses and overseas duty always did; the medical branch of the window
+   reader returned no tail, so a medical running past midnight let the next
+   morning's leave through as if nothing were there (rules-first red team,
+   20 Sep 26). The tail only ever clashes — it is never shown and never
+   charged on the second date. */
+describe('a medical running past midnight (H6)', () => {
+  it('blocks leave on the next morning that its hours really cover', () => {
+    file('ammo', 'HL', 'Feb 09', timed(at(20), at(2)))          // 20:00 → 02:00
+    expect(file('ammo', 'LL', 'Feb 10', { allday: false, half: 'am', s: 0, e: 720 }).ok).toBe(false)
+    expect(said.join(' ')).toMatch(/leave can't go over a medical/)
+  })
+
+  it('cuts a next-morning leave that was already there', () => {
+    file('dj', 'LL', 'Feb 10', { allday: false, half: 'am', s: 0, e: 720 })
+    expect(file('dj', 'HL', 'Feb 09', timed(at(20), at(2))).ok).toBe(true)
+    expect(rowsOf('dj')).toEqual(['HL Feb 09 1200-120'])
+  })
+
+  it('leaves the next AFTERNOON alone, and is neither shown nor charged there', () => {
+    expect(file('casper', 'HL', 'Feb 09', timed(at(20), at(2))).ok).toBe(true)
+    expect(file('casper', 'LL', 'Feb 10', { allday: false, half: 'pm', s: 721, e: 1439 }).ok).toBe(true)
+    // the tail is spill-only: 10 Feb shows the leave alone, no medical, no mark
+    const v = view('casper', '2026-02-10')!
+    expect(v.all).toHaveLength(1)
+    expect(v.code).toBe('LL*')
+    expect(v.mark).toBe('')
+  })
+})
