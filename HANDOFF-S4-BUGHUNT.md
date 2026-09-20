@@ -102,6 +102,22 @@ specificity. New rules written without the prefix lose to their own neighbours h
 file they sit — silently, no error, no failing test. **When adding CSS to a Leave War stylesheet,
 carry the `#page-leavewar` prefix.**
 
+## THE NEXT TASK IS ALREADY WRITTEN
+
+**`raptor-port/docs/superpowers/specs/2026-09-20-NEXT-TASK-oil-award-and-oil-warning.md`.**
+
+Two owner rulings made late on 20 Sep 26, both NOT YET BUILT, both recorded there because they were
+given in chat and exist nowhere else:
+
+1. **An OIL AWARD stops flagging a leave day.** A credit a person granted is an award, not a record
+   of attendance; the APP's own credit (off the published schedule, shown with the star) still
+   flags. The exact line, the nine tests that move, and a demo-data fork are all in that file. **He
+   did NOT rule on `duty` — leave it alone and ask him.**
+2. **Warn when a worked weekend earns nobody anything.** He put DASH on SDO for Sunday 16 Aug,
+   published, and got no OIL — because the duty row had no start and end times, so there is nothing
+   to measure and the FO-or-HO decision cannot be made. Today that fails silently. He wants the
+   warning in TWO places: on the day while he is building it, and at the moment he publishes.
+
 ## What to do next
 
 1. **Hand him the Vercel preview link** if it is not already with him, and **wait**. Nothing merges

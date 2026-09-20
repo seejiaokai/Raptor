@@ -685,6 +685,11 @@ rules about posted-out and pre-joining rows. Several older documents still read 
 - Came out of it and now standing: the behaviour register, `npm run rulecheck`, the rules-first red
   team as a third review, and the CLAUDE.md standing order to sweep the rules and hand-test against
   them on every build.
+- **TWO NEW OWNER RULINGS, NOT YET BUILT** — `specs/2026-09-20-NEXT-TASK-oil-award-and-oil-warning.md`
+  is the whole task, written for a fresh session: (1) an OIL AWARD stops flagging a leave day (he did
+  NOT rule on `duty` — ask), and (2) warn, on the day AND at publish, when a worked weekend earns
+  nobody anything because the duty desk has no times. The second came from him testing DASH on SDO
+  for Sun 16 Aug and getting no credit.
 - **Both things that were to be put to the owner are ANSWERED AND BUILT.** The ruling to carry
   forward: **OIL may be credited by hand on ANY day** — the weekend/public-holiday restriction
   belongs to the AUTOMATIC pass, which reads the published schedule, not to a credit the squadron
