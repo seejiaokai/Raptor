@@ -460,8 +460,33 @@
   .cmove.setbal-edit .oil-num { width: 72px; }
 }
 
-/* The work hours on a hand-typed OIL credit (CURRENT-STATE item E). Quieter
-   than the reason beside it: the reason is what an admin reads down the list
-   for, the hours are the detail he checks when a day has gone amber. */
-.oil-e .oil-hrs { color: var(--ink-2); font-variant-numeric: tabular-nums; }
-.oil-e .noting .oil-num { width: 4.5em; text-align: center; }
+/* THE WORK HOURS ON A HAND-TYPED OIL CREDIT (CURRENT-STATE item E).
+ *
+ * `#page-leavewar` is not decoration — EVERY rule in this file carries it, so
+ * every rule here has an id's specificity. A rule written without it loses to
+ * its own neighbours no matter how far down the file it sits, silently, which
+ * is exactly what happened on the first cut: the row kept the old widths and
+ * only a measurement in the running app showed it. Keep the prefix.
+ *
+ * The shown hours are quieter than the reason beside them: the reason is what
+ * an admin reads down the list for, the hours are the detail he checks when a
+ * day has gone amber. */
+#page-leavewar .oil-e .oil-hrs { color: var(--ink-2); font-variant-numeric: tabular-nums; }
+
+/* The editing row WRAPS, and the reason keeps a floor it cannot be squeezed
+   below. Without both, the two hours boxes took the whole width of a credit
+   card on a phone: measured at 375px the reason box came out ELEVEN PIXELS
+   wide and Save sat 70px past the right edge. The inherited `flex: 1 1 60px`
+   does not save it — a flex basis is a starting size, not a minimum. */
+#page-leavewar .oil-e .l2.noting { flex-wrap: wrap; }
+#page-leavewar .oil-e .l2.noting .oil-text { min-width: 7em; }
+#page-leavewar .oil-e .l2.noting .oil-num { width: 4.5em; min-width: 4.5em; text-align: center; }
+
+/* On a phone the reason takes the whole first line, which puts the two hours
+   boxes and Save together on the second. Measured at 375px: without this the
+   hours start past the right edge of the credits scroller and have to be
+   found by dragging sideways — workable, but nobody would. The same
+   breakpoint the rest of this file uses for a phone. */
+@media (max-width: 520px) {
+  #page-leavewar .oil-e .l2.noting .oil-text { flex: 1 1 100%; }
+}
