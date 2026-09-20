@@ -36,6 +36,7 @@ export function BidPicker({
   onWrote,
   wouldLeave,
   onPostOut,
+  onPostIn,
   onClose,
 }: {
   callsign: string
@@ -58,6 +59,11 @@ export function BidPicker({
    *  switch). Present only for an admin; the matrix wires it to the store and
    *  closes the sheet. A member never sees the control. */
   onPostOut?: (fromDate: string, archive: boolean) => void
+  /** Admin-only: post this person IN from a date (owner, 20 Sep 26 — "we need
+   *  a post in button just like post out"). The mirror of `onPostOut`: it sets
+   *  the first day they ARE here, where the post-out sets the first day they
+   *  are gone. Present only for an admin, same as its twin. */
+  onPostIn?: (date: string) => void
   onClose: () => void
 }) {
   // Deliberately not seeded from `current`: the portion resets to a whole
@@ -82,6 +88,11 @@ export function BidPicker({
   const [poOpen, setPoOpen] = useState(false)
   const [poDate, setPoDate] = useState(date)
   const [poArchive, setPoArchive] = useState(true)
+  // The post-IN controls, folded the same way and for the same reason. No
+  // archive switch: arriving has no counterpart to it — the Quals archive is
+  // something a person LEAVES the roster into.
+  const [piOpen, setPiOpen] = useState(false)
+  const [piDate, setPiDate] = useState(date)
 
   /** Days this write covers — one, or the span if a range is chosen. */
   const dayCount = () => {
@@ -239,6 +250,54 @@ export function BidPicker({
             Post out (PO)…
           </button>
         </div>
+      )}
+      {/* Post the person IN (owner, 20 Sep 26 — "we need a post in button just
+          like post out. Because those dates are official dates. But they can
+          be for e.g still taking leave after or before they post in or out").
+          Same shape as its twin above, folded behind one button for the same
+          reason. Before this existed the app had no joining date at all, so
+          everyone read as having always been here. It is an OFFICIAL date: it
+          decides manning and the grey hatch, and it deliberately does not stop
+          leave being dated before it. */}
+      {onPostIn && !piOpen && !poOpen && (
+        <div className="bidsheet-row postout">
+          <button className="dchip po" data-testid="bid-postin" onClick={() => setPiOpen(true)}>
+            Post in (PI)…
+          </button>
+        </div>
+      )}
+      {onPostIn && piOpen && (
+        <>
+          <div className="bidsheet-row postout">
+            <span className="lab">PI from</span>
+            {/* Unbounded like the post-out's, and for the same reason: a
+                joining date can sit anywhere in real time, and the keyboard
+                path is what reaches a year the calendar would take twelve taps
+                to walk to. */}
+            <input
+              type="date"
+              className="dateinput"
+              data-testid="pi-date"
+              aria-label={`Post ${callsign} in from`}
+              value={piDate}
+              onChange={e => setPiDate(e.target.value)}
+            />
+          </div>
+          <div className="bidsheet-row postout">
+            <button
+              className="dchip po"
+              data-testid="pi-confirm"
+              disabled={!piDate}
+              onClick={() => onPostIn(piDate)}
+            >
+              Post in from {piDate || '…'}
+            </button>
+            <span className="note">
+              Their first day in the squadron. Days before it are blank and count nobody —
+              leave can still be dated there.
+            </span>
+          </div>
+        </>
       )}
       {onPostOut && poOpen && (
         <>
@@ -539,6 +598,72 @@ export function PostOutSheet({
       <div className="bidsheet-row postout">
         <button className="dchip po" data-testid="postout-undo" onClick={onUndo}>
           Undo post out (PO)
+        </button>
+      </div>
+    </Sheet>
+  )
+}
+
+/**
+ * Manage a post-in (owner, 20 Sep 26). The mirror of `PostOutSheet`: it opens
+ * when an admin taps a blank cell dated BEFORE the person joined, and it is
+ * where that joining date is moved or cleared.
+ *
+ * A member never reaches it — for them a pre-joining day opens the bid picker
+ * instead, which is answer C's "leave there may be filed or bid". That split
+ * is the same one the post-out end already makes, deliberately: the admin's
+ * tap on an out-of-squadron day manages the POSTING, the member's places
+ * LEAVE.
+ */
+export function PostInSheet({
+  callsign,
+  date,
+  piFrom,
+  onChange,
+  onUndo,
+  onClose,
+}: {
+  callsign: string
+  date: string
+  /** The person's CURRENT PI date — the first day they are here. */
+  piFrom: string
+  /** Re-post with a new date. Commits on change, like the post-out sheet, so
+   *  the admin watches the grid move behind it. */
+  onChange: (date: string) => void
+  onUndo: () => void
+  onClose: () => void
+}) {
+  return (
+    <Sheet testid="postin-sheet" label="Posted in" onClose={onClose}>
+      <div className="bidsheet-hd">
+        <span className="who">{callsign}</span>
+        <span className="dt">{date}</span>
+        <button className="x" data-testid="postin-cancel" onClick={onClose} aria-label="Close">
+          ✕
+        </button>
+      </div>
+      <div className="bidsheet-row">
+        <span className="note">
+          Posted in on {piFrom} — on the manpower from that day. Days before it count nobody,
+          but leave can still be dated there.
+        </span>
+      </div>
+      <div className="bidsheet-row postout">
+        <span className="lab">PI from</span>
+        {/* Unbounded, and an emptied field commits nothing — clearing a
+            post-in is the Undo button's job, not a backspace. */}
+        <input
+          type="date"
+          className="dateinput"
+          data-testid="postin-date"
+          aria-label={`Move ${callsign}'s post-in date`}
+          value={piFrom}
+          onChange={e => { if (e.target.value) onChange(e.target.value) }}
+        />
+      </div>
+      <div className="bidsheet-row postout">
+        <button className="dchip po" data-testid="postin-undo" onClick={onUndo}>
+          Undo post in (PI)
         </button>
       </div>
     </Sheet>

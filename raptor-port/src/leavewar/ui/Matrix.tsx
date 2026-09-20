@@ -47,8 +47,8 @@ import {
   type Figure,
   type FigureCtx,
 } from '../engine'
-import { figureCtxOf, setBalance, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostOut, visibleFigures, type MoveResult, type EventMoveResult } from '../state/store'
-import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
+import { figureCtxOf, setBalance, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostIn, setPostOut, visibleFigures, type MoveResult, type EventMoveResult } from '../state/store'
+import { BidPicker, DecisionSheet, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
 import { FiguresDrawer, FigureTitle, figClass, type DrawerRow } from './FiguresDrawer'
@@ -63,6 +63,7 @@ import { monthInView } from './monthview'
 import { popAt } from './popat'
 import { clampWin, rollingTarget, stepAllowedInMotion, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
 import { isLwOnScreen, subLwScreen } from '../state/screen'
+import type { RecordSpans } from '../state/merge'
 import { msSinceInput } from '../../state/idle'
 import { boxOf, frameLift, frameLand, landOn } from '../../ui/lift'
 import { wireSelect, wireMove, wireFigureSelect, daysBetween, paintLanding, clearLanding, paintEventLanding, eventMoveDateAt, earliestDate, type Cell, type Selection, type SelectCtx, type FigureSelectCtx, type FigureSelection } from './select'
@@ -99,17 +100,35 @@ function monthLabel(date: string): string | null {
 }
 
 /** Whether a person's row rides the roster for a visible month window
- *  ('yyyy-mm|yyyy-mm', or '' meaning no measurement → everyone). A
- *  posted-out person rides every month up to and including the one holding
+ *  ('yyyy-mm|yyyy-mm', or '' meaning no measurement → everyone).
+ *
+ *  A posted-out person rides every month up to and including the one holding
  *  their last day and drops off after it (owner, 19 Aug 26 — "once I hit the
  *  next month… the row disappears"); a late joiner mirrors it at the other
  *  end. Month granularity on purpose: scrolling inside a month never
- *  reshuffles the rows, only crossing a boundary does. */
-function rowInWindow(p: Person, win: string): boolean {
+ *  reshuffles the rows, only crossing a boundary does.
+ *
+ *  …AND the row stretches to reach anything the war shows for them outside
+ *  those dates (owner, 20 Sep 26 — records may be dated before someone posts
+ *  in and after they post out, "because those dates are official dates. But
+ *  they can be for e.g still taking leave after or before they post in or
+ *  out"). Without it a man posted out in January with clearing leave in
+ *  September was charged for that leave and could not be seen — the money and
+ *  the screen disagreed. `spans` is merge.ts's per-merge map, so this stays a
+ *  lookup; it is a DISPLAY span only, and his own dates — which is what every
+ *  manning count reads — are untouched. This narrows the 19 Aug rule above
+ *  rather than reversing it: a row with nothing out there still disappears
+ *  exactly as it did. */
+function rowInWindow(p: Person, win: string, spans?: RecordSpans): boolean {
   if (!win) return true
   const [first, last] = win.split('|')
-  if (p.to !== null && p.to.slice(0, 7) < first!) return false
-  if (p.from !== null && p.from.slice(0, 7) > last!) return false
+  const span = spans?.get(p.id)
+  const endsAt = p.to === null ? null
+    : span && span.last > p.to.slice(0, 7) ? span.last : p.to.slice(0, 7)
+  const startsAt = p.from === null ? null
+    : span && span.first < p.from.slice(0, 7) ? span.first : p.from.slice(0, 7)
+  if (endsAt !== null && endsAt < first!) return false
+  if (startsAt !== null && startsAt > last!) return false
   return true
 }
 
@@ -491,19 +510,24 @@ const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, v
           (here || outLeave) && code && raptorOwns(states, p.id, d.date) ? 'raptor' : '',
           movedShown && (here || outLeave) && code && shiftedFrom(states, p.id, d.date) ? 'moved' : '',
         ].filter(Boolean).join(' ')
-        // A cell outside the person's time in the squadron is never
-        // actionable FOR A BID: bidding leave for a man who has been posted
-        // out is a data-entry accident, not a bid. But an ADMIN can still tap
-        // a posted-out day to UNDO the post-out (owner, 18 Aug 26 — "tap a
-        // struck day to undo"); `notYetArrived` is excluded — a day before
-        // someone joins is blank, not a post-out, and nothing there to undo.
+        /* BOTH ENDS of the squadron window are tappable (owner answer C, 20
+           Sep 26 — leave outside the window may be "filed OR bid"; and the
+           post-in ruling the same day). The old text here said a day before
+           someone joins is "blank, not a post-out, and nothing there to undo",
+           and `notYetArrived` barred it on both branches. That reading is
+           DEAD: there is now a joining date to undo (before the post-in button
+           no person had one, so no such day could exist), and answer C says
+           leave may be bid there. So the split is now the same at both ends —
+           an ADMIN's tap manages the POSTING (the post-out sheet after, the
+           post-in sheet before), and the person's OWN tap places LEAVE. */
         const actionable =
-          (here && cellOpenable(states, period, role, viewer, deciding, grid, p.id, d.date)) || (role === 'admin' && !here && !notYetArrived) ||
+          (here && cellOpenable(states, period, role, viewer, deciding, grid, p.id, d.date)) || (role === 'admin' && !here) ||
           // a marked day always opens its list; leave dated outside the
           // squadron window opens for an admin and for the person themself
           (!!mark && (here || outLeave)) || (outLeave && (role === 'admin' || viewer === p.id)) ||
-          // …and the person may bid clearing leave on a day after posting out
-          (!here && !notYetArrived && role !== 'admin' && viewer === p.id && canEditCell(period, role, d.date))
+          // …and the person may bid clearing leave after posting out, or leave
+          // dated before they post in
+          (!here && role !== 'admin' && viewer === p.id && canEditCell(period, role, d.date))
         // Their LAST day in the squadron wears a small PO tag (owner, 19 Aug
         // 26 — chosen over nothing after the edge case was put to him):
         // someone posting out on the 1st has a final month that otherwise
@@ -562,7 +586,7 @@ export function Matrix() {
      memo keyed only on the selection went stale when a sync pass changed a
      selected cell under an armed move */
   const version = useVersion()
-  const { people, period, grid, states, views, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, focusDate, focusSeq, qualCatalog, groupColors } = getState()
+  const { people, period, grid, states, views, spans: rowSpans, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, focusDate, focusSeq, qualCatalog, groupColors } = getState()
   const dates = period.days.map(d => d.date)
   // Memoized on the store objects (the store replaces what it writes, so
   // identity IS change): rules-as-data made a day's evaluation walk every
@@ -629,6 +653,12 @@ export function Matrix() {
   const openPostedOut =
     !!open && !!openPerson && !inSquadron(openPerson, open.date) &&
     !(openPerson.from !== null && open.date < openPerson.from)
+  // …and its mirror at the other end: a day BEFORE the person posted in
+  // (owner, 20 Sep 26). For an ADMIN this opens the post-in sheet, exactly as
+  // a posted-out day opens the post-out one; for a member it falls through to
+  // the bid picker, which is answer C's "filed or bid" on a pre-joining day.
+  const openNotYetArrived =
+    !!open && !!openPerson && openPerson.from !== null && open.date < openPerson.from
   // ONE selected figure, shared by every row, tracked by its stable ID so a
   // reorder keeps the SAME figure on screen rather than whatever now sits in
   // its old slot. Giving each row its own would let them desync — row 1
@@ -1281,8 +1311,8 @@ export function Matrix() {
   // failure that turned out to be the test's own year-wide assumption; kept
   // because the hazard is real. Every measure reads this ref, never its
   // closure.
-  const liveRef = useRef({ drawnMonths, drawnDates, people })
-  liveRef.current = { drawnMonths, drawnDates, people }
+  const liveRef = useRef({ drawnMonths, drawnDates, people, rowSpans })
+  liveRef.current = { drawnMonths, drawnDates, people, rowSpans }
   const coarsePointer = () => typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches
   // The war's month structure for the placeholders' width estimate (see
   // `monthPx`): days per month. Constant for the war and needs no layout, so a
@@ -2310,7 +2340,7 @@ export function Matrix() {
         .filter(x => Math.min(x.s.right, viewR) - Math.max(x.s.left, viewL) > 2)
       if (vis.length) {
         const win = `${vis[0]!.key}|${vis[vis.length - 1]!.key}`
-        const sig = people.filter(p => rowInWindow(p, win)).map(p => p.id).join(',')
+        const sig = people.filter(p => rowInWindow(p, win, liveRef.current.rowSpans)).map(p => p.id).join(',')
         if (sig !== visSigRef.current) {
           // Capture where the FIRST VISIBLE DAY column sits NOW; the layout
           // effect below puts it back after the repaint (see anchorRef and
@@ -3019,7 +3049,7 @@ export function Matrix() {
     | { kind: 'catsub'; g: string; cat: string }
     | { kind: 'person'; p: Person }
   const rosterSequence = (): RSeq[] => {
-    const roster = displayRoster().filter(p => rowInWindow(p, visWindow))
+    const roster = displayRoster().filter(p => rowInWindow(p, visWindow, rowSpans))
     const out: RSeq[] = []
     let prevG: string | null = null
     let prevCat = ''
@@ -3422,7 +3452,7 @@ export function Matrix() {
                 // rowInWindow above): the heads/counts below derive from the
                 // filtered list, so an emptied group takes its heading with
                 // it. visWindow '' (jsdom, first paint) shows everyone.
-                const roster = displayRoster().filter(p => rowInWindow(p, visWindow))
+                const roster = displayRoster().filter(p => rowInWindow(p, visWindow, rowSpans))
                 const span = 2 + dayCols
                 let prevG: string | null = null
                 let prevCat = ''
@@ -3915,6 +3945,24 @@ export function Matrix() {
           onClose={close}
         />
       )}
+      {/* …and the mirror at the other end: a day BEFORE the person posted in,
+          tapped by an admin. Same one-control shape as the post-out sheet,
+          and it short-circuits the bid picker below exactly as that one does
+          (owner, 20 Sep 26). A MEMBER tapping their own pre-joining day falls
+          through to the picker instead, which is answer C's "filed or bid". */}
+      {open && !listOpen && !canRemark && openNotYetArrived && role === 'admin' && (
+        <PostInSheet
+          callsign={open.callsign}
+          date={open.date}
+          /* openNotYetArrived already proves `from` is set. The sheet talks in
+             the PI date itself — the first day they ARE here — where the
+             post-out sheet has to add a day to the stored last-day-in. */
+          piFrom={openPerson!.from!}
+          onChange={from => setPostIn(open.id, from)}
+          onUndo={() => { setPostIn(open.id, null); close() }}
+          onClose={close}
+        />
+      )}
       {/* An admin at `closed` can BOTH edit and decide, so the two are not
           mutually exclusive and the order between them matters. Deciding
           wins on a cell that holds a bid, because that is what the stage is
@@ -4052,7 +4100,7 @@ export function Matrix() {
       )}
       {/* a member may bid CLEARING leave after their own posting-out (owner
           answer C, 20 Sep 26) — the admin's tap there stays the PO sheet */}
-      {open && !listOpen && !canRemark && (!openPostedOut || role !== 'admin') && !raptorOwns(states, open.id, open.date)
+      {open && !listOpen && !canRemark && (!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin') && !raptorOwns(states, open.id, open.date)
         && canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id)
         && !(deciding && isBiddable(grid[open.id]?.[open.date])) && (
         <BidPicker
@@ -4068,6 +4116,11 @@ export function Matrix() {
              and sync.ts's auto-archive pass reads the switch. */
           onPostOut={role === 'admin'
             ? (from, archive) => { setPostOut(open.id, from, archive); close() }
+            : undefined}
+          /* Admin-only, the mirror of the above (owner, 20 Sep 26): the first
+             day they ARE in the squadron. */
+          onPostIn={role === 'admin'
+            ? from => { setPostIn(open.id, from); close() }
             : undefined}
           /* No medical here: medical is member-filed only (owner, 13 Sep 26).
              Everyone files a medical input with its certificate on Raptor's
@@ -4121,7 +4174,7 @@ export function Matrix() {
           and without the term here BOTH mounted on a posted-out day that
           still held a bid — the decision sheet painting on top of the Undo
           the admin actually tapped for. One `open`, one sheet. */}
-      {open && !listOpen && !canRemark && !openPostedOut && !raptorOwns(states, open.id, open.date) && deciding
+      {open && !listOpen && !canRemark && !openPostedOut && !openNotYetArrived && !raptorOwns(states, open.id, open.date) && deciding
         && isBiddable(grid[open.id]?.[open.date]) && (
         <DecisionSheet
           key={`${open.id}-${open.date}`}

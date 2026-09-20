@@ -112,7 +112,7 @@ import {
   type Stage,
   type States,
 } from '../engine'
-import { mergeWar, absencesAt, absenceVersion, type MergedWar, type Views } from './merge'
+import { mergeWar, absencesAt, absenceVersion, type MergedWar, type RecordSpans, type Views } from './merge'
 import { counterLabel } from '../engine/counters'
 import { localBackend, memoryBackend, type StorageBackend } from './storage'
 /* [ARCH-STACK] Step 2 phase 4 — the shared command layer (see the persist()
@@ -289,14 +289,20 @@ interface State {
    *  is not an identity field. */
   personEdits: Record<string, Partial<Pick<Person, 'seat' | 'band' | 'sxo'>>>
 
-  /** The posting-out windows an admin set through `setPostOut`, keyed by
-   *  person id, each holding the person AS LAST PROJECTED with the window on
-   *  it. Persisted (8 Sep 26 bug pass — a PO date vanished on reload): on
+  /** The SQUADRON WINDOWS an admin set by hand, keyed by person id, each
+   *  holding the person AS LAST PROJECTED with the window on it. BOTH ends
+   *  live here: the posting-OUT date (`setPostOut`, 18 Aug 26) and — since the
+   *  owner's 20 Sep 26 ruling "we need a post in button just like post out" —
+   *  the posting-IN date (`setPostIn`). One record for both, because they are
+   *  one fact (the person's official time in the squadron) and because the
+   *  restore, merge and keep rules below then cannot drift apart. Records
+   *  written before the post-in half existed carry `from: null`, which is
+   *  exactly what the projection gives, so nothing needs migrating. Persisted (8 Sep 26 bug pass — a PO date vanished on reload): on
    *  every `setPeople` the window is laid back onto the projected person, and
    *  someone the projection no longer has (archived once the date arrived) is
    *  put back from the frozen copy, so the months before they left keep
    *  showing their history — `reprojectRoster`'s keep rule, now surviving a
-   *  reboot. An entry exists only while `to` is set; clearing the post-out
+   *  reboot. An entry exists while EITHER end is set; clearing the last one
    *  removes it. The demo overlay's own `to` (no `poArchive`) is not one of
    *  these and still lasts a session. */
   postOuts: Record<string, Person>
@@ -310,6 +316,10 @@ export interface MergedState extends Omit<State, 'wars'> {
   grid: Grid
   states: States
   views: Views
+  /** The months the CURRENT war shows something on, per person — what
+   *  stretches a row past the person's official squadron dates so leave dated
+   *  outside them can still be seen (merge.ts `RecordSpans`). */
+  spans: RecordSpans
 }
 
 /** The event-row count and its bounds (owner, 18 Aug 26). Two rows is the
@@ -840,7 +850,7 @@ export function getState(): MergedState {
   if (MERGED && MERGED.raw === state && MERGED.ver === ver) return MERGED.out
   const wars = state.wars.map(mergeWar)
   const cur = wars.find(w => w.period.id === state.currentId) ?? wars[0]!
-  const out: MergedState = { ...state, wars, grid: cur.grid, states: cur.states, views: cur.views }
+  const out: MergedState = { ...state, wars, grid: cur.grid, states: cur.states, views: cur.views, spans: cur.spans }
   MERGED = { raw: state, ver, out }
   return out
 }
@@ -1449,16 +1459,64 @@ export function setPostOut(id: string, fromDate: string | null, archive = true):
   const person = state.people.find(p => p.id === id)
   if (!person) return false
   const to = fromDate ? addDays(fromDate, -1) : null
+  /* A window that closes before it opens is not a decision, it is a typo, and
+     it would hide the person on EVERY date at once (`inSquadron` answers false
+     both sides). Refused here rather than clamped: silently moving the other
+     end would be the app deciding a posting date for the admin. */
+  if (to !== null && person.from !== null && to < person.from) return false
   const people = state.people.map(p =>
     (p.id === id ? { ...p, to, poArchive: fromDate ? archive : undefined } : p))
-  /* the persisted window (State.postOuts): the person as they stand now,
-     window on; cleared with the post-out */
-  const postOuts = { ...state.postOuts }
-  if (fromDate) postOuts[id] = people.find(p => p.id === id)!
-  else delete postOuts[id]
-  state = withCurrent({ ...state, people, postOuts })
+  state = withCurrent({ ...state, people, postOuts: windowRecord(people, id) })
   persistNotify()
   return true
+}
+
+/**
+ * Post a person IN from a date, or clear it (owner, 20 Sep 26 — "we need a
+ * post in button just like post out. Because those dates are official dates").
+ *
+ * `date` is the first day they ARE here, stored straight onto `from`; the
+ * post-out sheet's date is the first day they are GONE, so the two read the
+ * same way round on screen ("PI from", "PO from") while landing on opposite
+ * ends of the window. `null` clears it, which is the undo.
+ *
+ * Before this existed `from` was ALWAYS null — the Raptor projection has no
+ * joining date to give — so every person read as having always been here.
+ * That is why answer C's "a pre-joining day may be bid on" had nothing to
+ * stand on: there were no pre-joining days.
+ *
+ * The date is OFFICIAL and nothing more: it decides manning (`inSquadron`,
+ * `availabilityOf`) and the grey hatch, and it deliberately does NOT decide
+ * what may be filed. A man can be on leave before he posts in and after he
+ * posts out (the owner, same ruling), so records outside the window are
+ * allowed, shown and charged — the row stretches to reach them (`rowInWindow`)
+ * without the official dates moving an inch.
+ *
+ * Same guard rails as the post-out: admin-gated in the store because the role
+ * switch is only an affordance, any real date accepted, only malformed strings
+ * refused, and the window preserved across every Raptor re-projection.
+ */
+export function setPostIn(id: string, date: string | null): boolean {
+  if (state.role !== 'admin') return false
+  if (date !== null && !/^\d{4}-\d{2}-\d{2}$/.test(date)) return false
+  const person = state.people.find(p => p.id === id)
+  if (!person) return false
+  if (date !== null && person.to !== null && date > person.to) return false
+  const people = state.people.map(p => (p.id === id ? { ...p, from: date } : p))
+  state = withCurrent({ ...state, people, postOuts: windowRecord(people, id) })
+  persistNotify()
+  return true
+}
+
+/* The persisted squadron window (State.postOuts): the person as they stand
+   now, kept while EITHER end is set and dropped once both are clear. One body
+   so the two ends cannot disagree about when the record goes. */
+function windowRecord(people: Person[], id: string): Record<string, Person> {
+  const next = { ...state.postOuts }
+  const p = people.find(x => x.id === id)!
+  if (p.from !== null || p.to !== null) next[id] = p
+  else delete next[id]
+  return next
 }
 
 /**
@@ -1483,7 +1541,7 @@ export function setPeople(people: Person[]): void {
   const next: Person[] = people.map(p => {
     const w = po[p.id]
     const merged: Person = { ...p, ...(edits[p.id] || {}) }
-    return w ? { ...merged, to: w.to, poArchive: w.poArchive } : merged
+    return w ? { ...merged, from: w.from, to: w.to, poArchive: w.poArchive } : merged
   })
   const ids = new Set(next.map(p => p.id))
   for (const id of Object.keys(po)) if (!ids.has(id)) next.push(po[id])
