@@ -47,10 +47,14 @@ import { lwEditLists, rawState } from './state/store'
 import { inDoor, refreshAbsencesAndRepaint, sliceInput } from './sync'
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-const dm = (iso: string) => `${Number(iso.slice(8, 10))} ${MONTHS[Number(iso.slice(5, 7)) - 1]}`
+/** '2026-07-18' → '18 Jul'. Exported so the publish door names a day in the
+ *  same words this door does. */
+export const dm = (iso: string) => `${Number(iso.slice(8, 10))} ${MONTHS[Number(iso.slice(5, 7)) - 1]}`
 const hhmm = (m: number) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`
 const winText = (w: Win) => (w[0] === FULL[0] && w[1] === FULL[1] ? '' : `${hhmm(w[0])}–${hhmm(w[1])}`)
-const cs = (p: string) => ((PEOPLE as any)[p]?.cs ?? p) as string
+/** A person's callsign, falling back to their id. Exported for the same
+ *  reason as `dm` above. */
+export const cs = (p: string) => ((PEOPLE as any)[p]?.cs ?? p) as string
 const typeLabel = (code: string) => (code === 'ATTC' ? 'ATT C' : code === 'ATTB' ? 'ATT B' : code)
 
 /** The fields that decide what an Input claims on the war: who, what, when. A

@@ -126,8 +126,10 @@ describe('publishing an amendment (the AL path)', () => {
     /* Clash-check B5 said this was "refused at the bid door". The owner was
        shown that rule and the consequence — the same Saturday's leave going
        through on the Inputs page form but refused on the grid — and overruled
-       it: flag it everywhere. B5's other half, that publishing is the door
-       which replaces an undecided bid, is untouched. */
+       it: flag it everywhere. B5's OTHER half, that publishing is the door
+       which replaces an undecided bid, held for a few hours longer and was
+       then overruled too (see the AL case below): publishing now flags rather
+       than removes, so the two directions finally match. */
     setRole('admin')
     sign(5); commitSetDayApproved(5, true)
     runOilPass()
@@ -135,7 +137,12 @@ describe('publishing an amendment (the AL path)', () => {
     expect(view('plasma', '2026-07-18')!.amber).toBe(true)
   })
 
-  it('an AL that puts someone NEW on that Saturday replaces their bid too', () => {
+  it('an AL that puts someone NEW on that Saturday FLAGS their bid, and keeps it', () => {
+    /* The amendment path goes through the same door as the first publish, so
+       it moved with the owner's 20 Sep 26 ruling: the bid stays live, the day
+       flags, and no "your bid was replaced" notice is left — because nothing
+       was replaced. This test previously asserted the opposite; the
+       expectations WERE the rule, so they move with it. */
     setRole('admin')
     expect(setCell('rocky', '2026-07-18', 'LL')).toBe(true)
     sign(5); commitSetDayApproved(5, true)
@@ -144,8 +151,10 @@ describe('publishing an amendment (the AL path)', () => {
     ;(DAYS[5] as any).dutywaves[0].rows.push({ role: 'SDO 2', id: 'rocky', str: '0800', end: '1800' })
     writeText('dn:5.0', 'an amendment')
     sign(5); commitPublishALDay(5)
-    expect(recsIn('rocky', '2026-07-18').some(r => r.kind === 'request')).toBe(false)
-    expect(recsIn('rocky', '2026-07-18').some(r => r.kind === 'notice')).toBe(true)
+    runOilPass()
+    expect(recsIn('rocky', '2026-07-18').filter(r => r.kind === 'request')).toHaveLength(1)
+    expect(recsIn('rocky', '2026-07-18').some(r => r.kind === 'notice')).toBe(false)
+    expect(view('rocky', '2026-07-18')!.amber).toBe(true)
   })
 })
 

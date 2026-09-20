@@ -75,7 +75,7 @@ import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect } from '../command'
 import { setPublishGate } from '../state/inputgate-hook'
 import { absencesAt, setAbsenceRows } from './state/merge'
-import { installInputGate, replaceClashingBids, type BidClaim } from './inputgate'
+import { cs, dm, installInputGate } from './inputgate'
 import { projectPeople, qualCatalogue } from './state/raptorRoster'
 import {
   labelToISO, warVisible, absenceSignature, buildAbsenceIndex, inputDates, inputRowFor, isoToInputDate,
@@ -168,7 +168,7 @@ export function installAbsenceDoor(): void {
      inside it, so re-read it before the repaint (Codex AS4-R2-001) */
   setRefusalHook(() => { refreshAbsences(true) })
   installInputGate()
-  setPublishGate(publishReplacesBids)
+  setPublishGate(publishFlagsBids)
 }
 /** Re-read the Inputs into the war now and repaint — what a Raptor notify
  *  does in the app; tests that push INPUTS directly call it. */
@@ -880,27 +880,58 @@ function workSpans(spans: OilWork[]): Array<[number, number]> {
   return out
 }
 
-/* THE PUBLISH DOOR ([ARCH-STACK] step 4 — clash check B5, owner answer A,
-   20 Sep 26). Publishing a weekend or public-holiday day (first publish or an
-   AL) replaces the clashing part of every undecided leave bid the published
-   work overlaps, INSIDE the publish command (lwStore joins it), so undoing
-   the publish brings the bid back. Weekday work never replaces a bid — that
-   stays the schedule's own warning. Reads the RESOLVED issued snapshot, the
-   same evidence the OIL pass credits from; the OIL pass itself never deletes a
-   request (it runs on week navigation too, which is no one's decision). */
-export function publishReplacesBids(di: number): void {
+/* THE PUBLISH DOOR ([ARCH-STACK] step 4).
+ *
+ * PUBLISHING NO LONGER THROWS A BID AWAY — it FLAGS the day and says so
+ * (owner, 20 Sep 26, answering the last of the three questions the
+ * consolidation review left open). It used to replace the clashing part of
+ * every undecided leave bid the published work overlapped, and leave a notice
+ * saying the schedule had taken it. Meanwhile a bid placed AFTER the publish
+ * was kept and the day flagged. The same two facts, opposite outcomes, decided
+ * only by which came first — the exact thing the owner's own rule was meant to
+ * kill:
+ *
+ *   "Two different facts fighting → let both in, and flag the day."
+ *
+ * Put to him with both ways out spelled out; he chose "keep the bid and flag
+ * the day, both ways".
+ *
+ * This SETS ASIDE the SECOND half of clash check B5 — "publishing is the door
+ * that replaces an undecided bid, so undo of the publish brings the bid back".
+ * (Its first half, "a bid made after the publish is refused at the bid door",
+ * was already set aside the same day by `barsWrite`.) With nothing removed
+ * there is nothing for an undo to bring back, which is a simplification rather
+ * than a loss.
+ *
+ * The amber costs no machinery: the OIL credit lands on the day regardless
+ * (`ingestDutyCredit`, the owner's "the credit always lands" ruling), and a
+ * credit overlapping an undecided bid is already a `forbiddenPair`, so the day
+ * flags itself and the warning list already names it. All this door does now
+ * is TELL the admin at the moment of publishing, because the one thing the old
+ * behaviour got right was that he found out immediately.
+ *
+ * Weekend and public holidays only, as before — weekday work never reaches the
+ * war at all. Reads the RESOLVED issued snapshot, the same evidence the OIL
+ * pass credits from. */
+export function publishFlagsBids(di: number): void {
   const iso = labelToISO(DATES[di])
   if (!iso || !warHolding(rawState().wars, iso) || !isNonWorkingISO(iso) || !dayApproved(di)) return
   const snap = daySnapOf(di, dayCurVer(di))
   if (!snap || !snap.d) return
   const spans = dayOilWork(snap.d, { expandAll: win => availableFor(iso, win) })
-  const claims: BidClaim[] = []
+  const war = warHolding(rawState().wars, iso)
+  if (!war) return
+  const said: string[] = []
   for (const [person, sp] of Object.entries(spans)) {
-    for (const [s, e] of workSpans(sp)) claims.push({ person, date: iso, win: [s, e], byType: 'the published schedule' })
+    const wins = workSpans(sp)
+    if (!wins.length) continue
+    for (const r of recsAt(war.recs, person, iso)) {
+      if (r.kind !== 'request' || r.state === 'refused') continue
+      if (!wins.some(w => overlaps(w, requestWin(r.code)))) continue
+      said.push(`${cs(person)}'s ${r.code.replace(/\*/g, '')} bid on ${dm(iso)}`)
+    }
   }
-  if (!claims.length) return
-  const said = replaceClashingBids(claims, '', () => false)
-  if (said.length) HOOKS.toast(`Publishing replaces ${said.join(', ')} on the Leave War`, '')
+  if (said.length) HOOKS.toast(`${said.join(', ')} now sits on published work — the day is flagged, the bid is still live`, '')
 }
 
 /* [GLOBAL-UNDO] §6.6 — the Unpublish button's warn. Unpublishing a loaded-week day
