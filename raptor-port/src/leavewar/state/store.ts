@@ -95,6 +95,7 @@ import {
   portionOfCode,
   requestWin,
   forbiddenPair,
+  isSickCode,
   isLeaveCode,
   parseCell,
   FULL,
@@ -1938,7 +1939,53 @@ export function lwEditLists(edits: Array<{ personId: string; date: string; drop:
  *  `ignore` leaves out records the write is about to replace. */
 function occupiedFor(c: Contrib, personId: string, date: string, ignore: readonly WarRec[] = []): boolean {
   const staying = listAt(personId, date).filter(r => !ignore.includes(r))
+  /* RECORDED WORK STILL BARS A BID HERE — B5 is not reversed.
+     The owner's 20 Sep 26 doctrine (a clash is flagged, never refused) was
+     applied to the INPUTS door, where filing leave over recorded work is now
+     written and flagged. Carrying it into the war's own bid door as well was
+     tried and backed out: clash-check B5 says in as many words that "a bid
+     made after the publish that overlaps published work is refused at the bid
+     door", and the owner has not reversed that. Newest-wins does not license
+     setting aside a rule he did not speak to.
+     So the two doors deliberately differ, and the difference is recorded:
+     FILING leave over work is a flag; BIDDING for it is refused. Raised with
+     the owner — see docs/superpowers/specs/2026-09-20-clash-doctrine-change.md.
+     Pinned by scenarios-corners.test.ts "a bid placed AFTER the publish is
+     refused at the bid door (B5)". */
   return [...recContribs(staying), ...absencesAt(personId, date)].some(o => forbiddenPair(c, o))
+}
+
+/** WHY a cell write would be refused, in the words the person needs — or null
+ *  when it would go through. The picker asks this BEFORE writing, so a refusal
+ *  is always explained: `setCell` answers only true/false, and the sheet used
+ *  to close on a false as though it had worked, leaving no leave and no
+ *  message ([S4-BUGHUNT], 20 Sep 26). Runs the same guards `setCell` runs,
+ *  never a second copy of them — the `moveProblem` idiom. */
+export function cellProblem(personId: string, date: string, code: string): string | null {
+  if (!canEditCell(state.period, state.role, date)) return 'That day is not open for bidding — check the war and the bidding window.'
+  if (!canEditRow(state.role, state.viewer, personId)) return 'You can only bid on your own row.'
+  const clean = code.trim().toUpperCase()
+  if (isMedical(clean)) return 'Medical is filed on the Inputs page, not here.'
+  if (!clean) return null
+  const list = listAt(personId, date)
+  if (clean === 'FO' || clean === 'HO') {
+    if (state.role !== 'admin') return 'Only an admin can enter OIL.'
+    const had = list.find(isCredit)
+    if (had && had.oil === 'auto') return 'That day already earns OIL from the published schedule.'
+    if (had && had.code === clean) return null
+    return null
+  }
+  if (!isBiddable(clean) || !parseCell(clean)) return 'That is not something you can bid here.'
+  const portion = portionOfCode(clean)
+  const replaced = liveRequestsOn(list, portion)
+  if (replaced.length === 1 && replaced[0]!.code === clean) return null
+  const c: Contrib = { id: 'new', kind: 'request', code: parseCell(clean)!.type, win: requestWin(clean), state: 'pending' }
+  const staying = list.filter(r => !replaced.includes(r as RequestRec))
+  const blocker = [...recContribs(staying), ...absencesAt(personId, date)].find(o => forbiddenPair(c, o))
+  if (!blocker) return null
+  if (blocker.kind === 'credit') return 'That day is already recorded as worked — a bid can\'t go over it (file it on the Inputs page if the leave is right).'
+  if (isSickCode(blocker.code)) return `That day is already ${blocker.code === 'ATTC' ? 'ATT C' : blocker.code} — leave can't go over a medical.`
+  return `That time is already taken by ${blocker.code} — clear it first.`
 }
 
 /** What the merged view shows on top at one address. */

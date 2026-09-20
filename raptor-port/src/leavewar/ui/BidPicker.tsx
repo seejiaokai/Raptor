@@ -15,7 +15,7 @@
 
 import { useState } from 'react'
 import { addDays, formatCell, LEAVE_TYPES, type BidState, type CounterName, type Portion } from '../engine'
-import { setBidState, setCell, setCellRange, shiftBid } from '../state/store'
+import { cellProblem, setBidState, setCell, setCellRange, shiftBid } from '../state/store'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
 import { shortSpan } from './dates'
@@ -107,6 +107,11 @@ export function BidPicker({
     setConfirming(null)
 
     if (!range) {
+      /* A refused single-day write used to close the sheet as though it had
+         worked: no leave, no message, nothing ([S4-BUGHUNT], 20 Sep 26). Ask
+         WHY first, and say it. */
+      const why = cellProblem(personId, date, code)
+      if (why) return setNote(why)
       setCell(personId, date, code)
       onWrote?.(code)
       return onClose()

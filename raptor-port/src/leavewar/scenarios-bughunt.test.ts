@@ -13,7 +13,7 @@ import { initStore as raptorInitStore, writeInputs } from '../state/store'
 import { setSession, setMe } from '../state/auth'
 import { projectPeople } from './state/raptorRoster'
 import {
-  getState, initStore as lwInitStore, lwHistInit, rawState, setCell, setPeople, setRole, setViewer,
+  cellProblem, getState, initStore as lwInitStore, lwHistInit, rawState, setCell, setPeople, setRole, setViewer,
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { runOilPass, wireLeaveWarSync } from './sync'
@@ -314,5 +314,41 @@ describe('leave starting at exactly 12:00', () => {
     const v = view('casper', '2026-02-09')!
     expect(v.code).toBe('*LL')
     expect(v.away).toBe(0.5)
+  })
+})
+
+/* ====================================================================== */
+/*  A refused bid must SAY so ([S4-BUGHUNT], 20 Sep 26)                   */
+/* ====================================================================== */
+/* Found by walking the workflow screen by screen: the bid sheet called the
+   write, threw the answer away and closed as though it had worked. No leave,
+   no message, nothing. Four review passes had missed it, because on every
+   axis they checked the app was behaving correctly — the write SHOULD have
+   been refused. Nobody asked what reached the person. */
+describe('a bid the war refuses', () => {
+  it('gives a reason for every door it can be refused at', () => {
+    // recorded work (B5 — still a bar at the bid door, unlike the Inputs page)
+    setCell('bruise', '2026-07-18', 'FO')
+    expect(cellProblem('bruise', '2026-07-18', 'LL')).toMatch(/recorded as worked/)
+
+    // a medical
+    file('ammo', 'ATT C', 'Feb 09')
+    expect(cellProblem('ammo', '2026-02-09', 'LL')).toMatch(/can't go over a medical/)
+
+    // another leave on the same time
+    file('dj', 'LL', 'Feb 09')
+    expect(cellProblem('dj', '2026-02-09', 'OL')).toMatch(/already taken by LL/)
+
+    // and a write that WOULD go through says nothing at all
+    expect(cellProblem('casper', '2026-02-09', 'LL')).toBeNull()
+  })
+
+  it('names the same reason the write acts on — the two can never disagree', () => {
+    setCell('bruise', '2026-07-18', 'FO')
+    // the reason is non-null exactly when the write refuses
+    expect(cellProblem('bruise', '2026-07-18', 'LL')).not.toBeNull()
+    expect(setCell('bruise', '2026-07-18', 'LL')).toBe(false)
+    expect(cellProblem('casper', '2026-02-09', 'LL')).toBeNull()
+    expect(setCell('casper', '2026-02-09', 'LL')).toBe(true)
   })
 })
