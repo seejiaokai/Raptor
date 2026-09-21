@@ -491,21 +491,37 @@ describe('OIL14, OIL15 — [ALL-AVAIL-REDEF] who an ALL AVAIL puck stands for (o
     expect(availableFor(SAT, [600, 1020], DAYS[5]), 'not on our programme').not.toContain(san)
   })
 
-  /* A CLASH WORTH NAMING (owner's 18 Aug 26 rule vs his 21 Sep 26 one): SANS are
-     kept OFF the Leave War roster unless the squadron turns "Show SANS" on, so a
-     SANS man who is now part of ALL AVAIL has nowhere for the credit to land
-     while that switch is off. The expansion follows the newer ruling; the credit
-     still needs a row, which stays the older ruling's call. */
-  it('OIL35 (a flagged clash) — his credit lands only while the squadron shows SANS on the war', () => {
+  /* THE CLASH, AND THE OWNER'S ANSWER (21 Sep 26 — "There's no way to credit OIL
+     to SANs even when they are hidden?"). His 18 Aug rule keeps SANS off the
+     Leave War roster unless "Show SANS" is on; his 21 Sep rule puts a SANS man
+     planned with us inside ALL AVAIL. Hiding is a DISPLAY choice and must not
+     destroy his money: the credit is stored against the person, so it lands
+     while he is hidden and his row arrives carrying it when the switch goes on. */
+  it('OIL35 — a SANS man earns even while the war HIDES him, and his row arrives carrying it', () => {
     const san = Object.keys(PEOPLE).find((id: any) => (PEOPLE as any)[id].san && !(PEOPLE as any)[id].archived) as string
     plant([EVENT])
     ownHour(san)
     publish(5)
     runOilPass()
-    expect(cellOf(san, SAT), 'no row on the war — nowhere to credit').toBeUndefined()
+    expect(getState().people.some(p => p.id === san), 'the war is hiding him').toBe(false)
+    expect(cellOf(san, SAT), 'and he earns anyway — hiding is not forfeiting').toBe('FO')
     setPeople(projectPeople(true))
     runOilPass()
-    expect(cellOf(san, SAT), '07:00→17:00 once he has a row').toBe('FO')
+    expect(cellOf(san, SAT), 'his row arrives with what he already earned').toBe('FO')
+  })
+
+  it('OIL14, OIL35 — a sentinel is never credited, and ground crew only when NAMED', () => {
+    plant([EVENT, { prog: 'GROUND CREW EVENT', str: '1000', end: '1600', who: 'torque' }])
+    publish(5)
+    runOilPass()
+    expect(cellOf('allavail', SAT), 'a sentinel is not a person').toBeUndefined()
+    /* GROUND CREW: out of the ALL AVAIL expansion by the owner's own rule, but a
+       ground-crew man a scheduler NAMES on a weekend row is on the Leave War
+       roster (his 18 Aug 26 ask) and has always earned from that row. Unchanged
+       by this build; pinned here because the guard above now reasons about who
+       may be credited, and this is the line it does NOT move. RAISED with the
+       owner 21 Sep 26 as a question in its own right. */
+    expect(cellOf('torque', SAT), 'named on the row, so he earns — existing behaviour').toBe('HO')
   })
 
   it('ATT B — no flying, may still work — stays in the event', () => {

@@ -65,19 +65,27 @@ newest-instruction-wins rule, and both need the owner to know.
 
 ## The two clashes
 
-**OIL35 — a SANS man is now inside ALL AVAIL, but has no row on the Leave War.**
+**OIL35 — a SANS man is now inside ALL AVAIL, and the war was hiding him.**
 The owner's 18 August ruling keeps SANS off the Leave War roster unless the squadron
 turns "Show SANS" on ("we will not show the SANS in the leave war however there is a
 function to still enable this"). His 21 September ruling puts a SANS man who is
-planned with us that day INSIDE ALL AVAIL — which means he should earn OIL from a
-family day. With "Show SANS" off there is no row for that credit to land in, and it
-silently does not land.
+planned with us that day INSIDE ALL AVAIL — which means he earns OIL from a family
+day. The first cut of this build let the credit fall on the floor while the switch
+was off, and it was put to him as an open clash.
 
-*Resolved this way, and it is his to change:* the PUCK follows the newer ruling — a
-SANS man on our programme is part of ALL AVAIL, is listed in the count chip, and
-appears in the OIL mode. The CREDIT still needs a Leave War row, which stays the
-older ruling's call, so it lands only while "Show SANS" is on. Nothing was
-silently widened. Pinned by a test that states both halves.
+*HIS ANSWER, 21 Sep 26: "There's no way to credit OIL to SANs even when they are
+hidden?"* — so hiding a man must not destroy his money. A credit is stored against
+the PERSON and the DATE, not against a grid row, so a hidden man can hold one
+perfectly well: it lands while he is hidden, and his row arrives carrying everything
+he earned the moment "Show SANS" goes on. The guard that used to drop it keeps its
+real job — a SENTINEL puck and a body the war has no business crediting are still
+never credited. Pinned by two tests, one for each half.
+
+*A question this raised, still open and his to answer:* GROUND CREW ride the Leave
+War roster (his own 18 Aug ask), so a ground-crew man a scheduler NAMES on a weekend
+row has always earned OIL from that row — unchanged by this build, and not something
+any ruling covers either way. He is correctly OUT of the ALL AVAIL expansion; the
+question is only whether being named should earn him a credit at all.
 
 **OIL36 — "the old hours must never survive" vs "the published schedule is the truth".**
 On 20 September the owner ruled that a credit's hours follow the work, and that what

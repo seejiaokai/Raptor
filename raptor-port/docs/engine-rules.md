@@ -1735,10 +1735,18 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   semantics — **one behaviour, two names, deliberately** (owner, 21 Sep 26: *"U
   cant possible force ALL to join, its just like a best effort to join kind of
   thing"*); do not "fix" the duplication.
-  **A KNOWN CLASH, flagged:** SANS are kept off the Leave War roster unless the
-  squadron turns "Show SANS" on (owner, 18 Aug 26), so a SANS man who is now part
-  of ALL AVAIL has nowhere for his credit to land while that switch is off — the
-  puck follows the newer ruling, the credit still needs a row. See
+  **HIDING A MAN DOES NOT FORFEIT HIS MONEY** (owner, 21 Sep 26 — "There's no way
+  to credit OIL to SANs even when they are hidden?"). SANS are kept off the Leave
+  War roster unless the squadron turns "Show SANS" on (his 18 Aug 26 rule), which
+  is a DISPLAY choice; until this build it also silently threw the credit away.
+  A credit is stored against the PERSON and the DATE, not against a grid row, so
+  a hidden man holds one perfectly well: it lands while he is hidden and his row
+  arrives carrying it when the switch goes on (`sync.ts:creditable`). The guard
+  keeps its real job — a sentinel and a body the war has no business crediting
+  are still never credited. GROUND CREW are a separate case and unchanged: out of
+  the ALL AVAIL expansion by the rule above, but on the war's roster since his
+  18 Aug ask, so one a scheduler NAMES on a weekend row has always earned from
+  that row. Raised with him 21 Sep 26; no ruling covers it either way.
   `docs/superpowers/specs/2026-09-21-oil-behaviour-register.md` (OIL35).
 - **The input ask + the `row.oil` field (28 Aug 26).** A duty-&-commitments
   input (`oilAsks` — the `restsInput` eight; Personal and SANS excluded)

@@ -1,6 +1,6 @@
 /* The scheduler-board panel builders — sbInputsHTML, sbNotesPanel,
    sbProgPanel, sbSimPanel, sbSlot, labelToTitle/titleToLabel — verbatim. */
-import { INPUTS, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge } from '../engine/inputs'
+import { INPUTS, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, isUpchit, oilAsks, sansBadge } from '../engine/inputs'
 import { PEOPLE, whoId } from '../engine/people'
 import { noteText } from '../engine/note'
 import { hhmm, fmtHM, parseHM } from '../engine/time'
@@ -10,7 +10,7 @@ import { alAttr } from '../engine/publish'
 import { groundOrder } from '../engine/order'
 import { esc, PIOPEN, notePub } from '../state/view'
 import { canEditSched } from '../state/auth'
-import { oilModeOn, oilSeatHTML, oilItemCellHTML, oilRowPeople } from './oilmode'
+import { oilModeOn, oilSeatHTML, oilItemCellHTML, oilRowPeople, inputItemKey } from './oilmode'
 import { rowItemKey, groundItemKey } from '../engine/oil'
 import { oilSeatDeco } from './html'
 import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, dormRowCls, dormRowTitle, sansCardsHTML, notePubTog, ADDZ, exemptDeskOwn } from './html'
@@ -553,17 +553,32 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
   const RO=ro??pv;
   const sb=isSansAvail(inp.type)&&dt?sansBadge(inp.person,dt):'';
   const sbt=sb?`<span class="sansb" title="SANS availability">${esc(sb)}</span>`:'';
+  /* THE MODE HAS TO REACH A CLAIM WHEREVER IT IS SHOWN ([OIL-AUTO-REMOVE] §2.4,
+     owner: "Overseas duty will show on unavailable on the schedule as OD … the
+     mode must reach it there"). OVERSEAS DUTY IS THE CASE THAT FORCES THIS: it
+     asks for OIL but NEVER lands on the ground programme, so the board's rows
+     alone cannot offer it — and without this the one OIL-earning claim with no
+     row of its own could not be taken off at all. The item address is the
+     INPUT's own id, the same one its landed ground row uses, so the two
+     switches drive one decision and can never disagree.
+     Only a claim that actually asks for OIL is a switch; leave and medical are
+     drawn exactly as before. */
+  const oilItem=(oilModeOn(di)&&oilAsks(inp.type))?inputItemKey(inpId(inp)):'';
   /* the board's half of "even down to changing the puck" — see html.ts's
      inGrp for the week's twin and the full reasoning. `acc` true is the
      Personal Inputs panel (its own Accept control decides that row's fate
      already); `!acc` is Unavailable, the only panel this seat address opens
      on, and only when the row is actually live (not a read-only/preview
      board). */
-  const seatable=!acc&&!RO;
+  const seatable=!acc&&!RO&&!oilItem;
   const pk=PEOPLE[inp.person]
-    ? `<span class="seat"${seatable?` data-inpseat="${esc(inpId(inp))}"`:''}>${puck(inp.person,sevOf(di,inp.person),true,chipOf(di,inp.person))}</span>`
+    ? (oilItem
+      ? oilSeatHTML(di,inp.person,oilItem,(oil:any)=>puck(inp.person,null,true,null,false,null,oil))
+      /* outside the mode the claim's puck wears the man's day figure like every
+         other puck he is on — which is the ONLY place an OD earner is visible */
+      : `<span class="seat"${seatable?` data-inpseat="${esc(inpId(inp))}"`:''}>${puck(inp.person,sevOf(di,inp.person),true,chipOf(di,inp.person),false,null,oilSeatDeco(di,inp.person,'').oil)}</span>`)
     : `<span class="itxt">${esc(inp.person)}</span>`;
-  if(RO){
+  if(RO&&!oilItem){
     const t=inp.allday?'all day':`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
     return `<div class="sbi-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}><span class="sbi-t">${t}</span>${pk}`
       +inpEditLabel(inp,false,inpLabel(inp),`sbi-ty ${inTypeCls(inp.type)}`)
@@ -586,7 +601,9 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
      wrapper holding the type label plus the chip; a non-late row keeps the bare
      label and is byte-identical to before. */
   const lc=lateChip(inp);
-  const itemCell=inpEditLabel(inp,true,inpLabel(inp),`sbi-ty inpty ${inTypeCls(inp.type)}`);
+  const itemCell=oilItem
+    ? oilItemCellHTML(di,oilItem,inpLabel(inp),`sbi-ty inpty ${inTypeCls(inp.type)}`)
+    : inpEditLabel(inp,true,inpLabel(inp),`sbi-ty inpty ${inTypeCls(inp.type)}`);
   return `<div class="sb-arow c6r inprow${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${lateRowCls(inp)}${acc?dormRowCls(inp):''}"${lateRowTitle(inp)||(acc?dormRowTitle(inp):'')}>`
     +sbGrip(true)
     +(lc?`<span class="itemcell">${itemCell}${lc}</span>`:itemCell)

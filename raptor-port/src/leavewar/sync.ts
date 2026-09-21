@@ -866,6 +866,22 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
   const { people, wars } = getState()
   const protectedDates = new Set<string>()
   const known = new Set(people.map(p => p.id))
+  /* HIDING A MAN MUST NOT DESTROY HIS MONEY (owner, 21 Sep 26 — "There's no way
+     to credit OIL to SANs even when they are hidden?").
+     The Leave War keeps SANS off its roster unless the squadron turns "Show
+     SANS" on (his own 18 Aug 26 rule) — a DISPLAY choice. Until now that choice
+     also silently threw away the credit, because the guard below dropped anyone
+     the roster did not hold. A credit lives on the person and the date, not on a
+     grid row, so a hidden man can hold one perfectly well: turn the switch on
+     and his row arrives with everything he earned already in it.
+     The guard's real job is unchanged — a SENTINEL puck and a GROUND-CREW body
+     are not people the war has any business crediting, and they still are not.
+     This admits only a real, present aircrew body the war is merely hiding. */
+  const creditable = (id: string) => {
+    if (known.has(id)) return true
+    const p: any = (PEOPLE as any)[id]
+    return !!(p && p.san && !p.archived && !p.special && !p.pers)
+  }
   /* person|iso -> that day's work spans; their ENVELOPE faces the threshold */
   const pool = new Map<string, OilWork[]>()
   /* which of those days the PUBLISHED SCHEDULE earned, as opposed to a duty
@@ -874,10 +890,11 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
      stronger evidence, and it is what the reader would go and look at. */
   const fromSchedule = new Set<string>()
   const add = (person: string, iso: string, spans: OilWork[], via: 'schedule' | 'input' = 'schedule') => {
-    /* The same unknown-person guard both leave directions carry: a row
-       naming someone the roster does not hold (ground crew, a sentinel)
-       must not become a grid row no matrix draws. */
-    if (!known.has(person) || !spans.length) return
+    /* The same unknown-person guard both leave directions carry: a row naming
+       someone the war has no business crediting — ground crew, a sentinel —
+       must not become a grid row no matrix draws. A SANS man the war is merely
+       HIDING is not that case (see `creditable` above). */
+    if (!creditable(person) || !spans.length) return
     const k = `${person}|${iso}`
     const arr = pool.get(k) ?? []
     arr.push(...spans)

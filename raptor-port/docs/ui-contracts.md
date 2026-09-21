@@ -7020,9 +7020,23 @@ holiday comes from Leave War through `HOOKS.oilEarningDay`.
 
 ### The mode (§2.1)
 
-- **One button, "OIL Earn", at the top of the day's own content** — beside Templates,
-  never on the phone board's frozen first line (§The board on a phone is ONE window:
-  nothing joins that bar without something else leaving it).
+- **ONE BAR, headed `THIS DAY`, carrying Templates and OIL Earn** (owner, 21 Sep 26 —
+  "Perhaps combine them into a single bar? … It can still remain on the phone at that
+  position? just merged", then "a looks better" of the two comps drawn for him). It
+  replaced two full-width panels, each with a heading and a sub-line, which cost a row
+  apiece and read as part of the schedule rather than as controls.
+  The buttons take a TINT of the app's accent — his ask, "since settings usually have
+  some blue to it. Make the buttons slightly stand out" — never the solid fill, which
+  is Done and Publish day and must keep meaning "this finishes the job".
+  **ON A DESKTOP the way IN rides the board's own action row instead** (he circled the
+  empty stretch beside Undo / Redo / History), so the bar appears there only once the
+  mode is on, where it is the blanket and the instruction rather than a second button.
+  CSS picks per width; the builder never asks, so a resize answers instantly. The
+  PHONE's top bar is untouched — §The board on a phone is ONE window still holds, and
+  nothing was added to it.
+  **A fit lesson, from the comp that was drawn before this was built:** at 390px
+  "✓ Done with OIL" ran off the right edge; it is "✓ Done". Re-draw the comp before
+  lengthening any label on this bar.
 - **Pressed, it lights and the board goes READ-ONLY for schedule editing.** In the mode
   a tap on a puck means "take this man off this event" and a tap on an item's name means
   "stop the whole item earning"; leaving the ordinary write controls live beside that
@@ -7041,7 +7055,9 @@ holiday comes from Leave War through `HOOKS.oilEarningDay`.
 - **An item's NAME is its own switch**, tinted green when it earns and struck through
   when it does not. It replaces the row's editable name box while the mode is on.
 - **"Nothing today earns"** is the day blanket, offered only inside the mode. It masks
-  every row and person mark rather than deleting them, and the panel says so in words.
+  every row and person mark rather than deleting them, and the bar's own line says so in
+  words. It fills AMBER while it is on — amber is "look at this", which a day switched
+  off deserves — while the marked states below stay neutral.
 - **A sentinel opens into REAL pucks inside the mode**, or its people could not be
   tapped at all.
 - **Colour:** the marked state is NEUTRAL. Amber means "look at this" and red means a

@@ -97,11 +97,13 @@ describe('the mode itself (§2.1)', () => {
   it('OIL1, OIL17 — pressing it lights the button and stops the ordinary schedule edits', async () => {
     expect($$('#sbBoard .sb-panel.grnd [data-bfld]').length, 'editable boxes before').toBeGreaterThan(0)
     await click(oilBtn())
-    expect(oilBtn().classList.contains('on')).toBe(true)
+    /* the bar's own button is the way OUT once the mode is on, so it reads
+       "✓ Done" and wears the green `done` class rather than `.on` */
+    expect(oilBtn().classList.contains('done'), 'the way in became the way out').toBe(true)
     expect($$('#sbBoard .sb-panel.grnd [data-oilitem]').length, 'every item is now a switch').toBeGreaterThan(0)
     expect($$('#sbBoard .sb-panel.grnd .lctl .mbtn.del').length, 'and the row controls are gone').toBe(0)
     await click(oilBtn())
-    expect(oilBtn().classList.contains('on'), 'and it toggles back off').toBe(false)
+    expect(oilBtn().classList.contains('done'), 'and it toggles back off').toBe(false)
   })
 
   it('OIL2, OIL5, OIL21 — every puck that earns glows and wears the man\'s figure for the DAY', async () => {
@@ -148,7 +150,7 @@ describe('the mode itself (§2.1)', () => {
     await click($('#sbBoard [data-oilblank]'))
     expect((DAYS[SAT] as any).oild.blanket).toBe(1)
     expect($$('#sbBoard .sb-panel.grnd .puck.oilglow').length, 'nothing glows').toBe(0)
-    expect($('#sbBoard .oilnote').textContent).toContain('kept')
+    expect($('#sbBoard .daybar-note').textContent).toContain('kept')
     await click($('#sbBoard [data-oilblank]'))
     expect((DAYS[SAT] as any).oild.blanket).toBeUndefined()
     expect((DAYS[SAT] as any).oild.people, 'the person mark survived underneath').toBeTruthy()

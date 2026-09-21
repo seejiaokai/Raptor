@@ -31,7 +31,7 @@ import { esc } from '../state/view'
 import { notify, notifyBoard, loadWeek } from '../state/store'
 import { CURWEEK } from '../engine/waves'
 import { shiftWeek } from './weeknav'
-import { oilModeOn, oilModeBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilSentinelList } from './oilmode'
+import { oilModeOn, dayBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilSentinelList } from './oilmode'
 import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbSansPanel, sbUnavailPanel, labelToTitle, titleToLabel, titleToKind, sbGrip, sbNudge, rowMove, sbSortBtn, boxHTML } from './board-html'
 
 const toast = (...a: any[]) => HOOKS.toast(...a)
@@ -95,7 +95,11 @@ export function boardHTML(di: number, pv?: boolean) {
   /* The old "Drafts" button that sat here is GONE (owner, 15 Sep 26 — the plans
      selector redesign): plans are now reached from the ONE selector in the sign
      strip (planSelectorHTML → planMenu), so this panel is Templates alone. */
-  const dayTplHead = mvRO ? '' : `<div class="sb-panel dtpl"><div class="sb-ph">Templates <span class="sub">save or apply this day's structure</span><span class="gctl"><button class="mbtn add" data-daytpladd="${di}" title="Save this day, or apply a saved one">Templates</button></span></div></div>`
+  /* THE TWO PANELS ARE ONE BAR NOW (owner, 21 Sep 26) — Templates and OIL Earn
+     together in a single row, where they used to be a full-width panel each with
+     a heading and a sub-line. ui/oilmode.ts dayBarHTML draws it and explains the
+     phone/desktop split. */
+  const tplBtn = mvRO ? '' : `<button class="mbtn daybtn" data-daytpladd="${di}" title="Save this day, or apply a saved one">Templates</button>`
   /* Overall Notes and Common Programme are two separate sections now (owner, 31 Aug
      26 — "split them apart"); each is built and wrapped on its own below (sect). */
   let fly = ''
@@ -303,7 +307,7 @@ export function boardHTML(di: number, pv?: boolean) {
   const secGrip = '<span class="secgrip" title="Drag to reorder this section" aria-label="Reorder this section">⠿</span>'
   const wrapSec = (html: string, k: string) =>
     `<div class="sb-sec" data-secmove="${di}.${k}">${html.replace(/(<div class="(?:sb-ph|ap-h)\b[^>]*>)/, `$1${secGrip}`)}</div>`
-  let b = oilModeBarHTML(di) + dayTplHead + secOrder(d).map((k: string) =>
+  let b = dayBarHTML(di, tplBtn) + secOrder(d).map((k: string) =>
     mvRO ? (sect[k] || '') : (sect[k] ? wrapSec(sect[k], k) : '')).join('')
   return b
 }

@@ -224,24 +224,55 @@ export function toggleOilPerson(di: any, person: any, item: string): boolean {
 
 /* ---- the board's markup --------------------------------------------------- */
 
-/** The OIL Earn button, plus the day blanket once the mode is on. Drawn at the
- *  top of the day's own content — never on the phone board's frozen first line
- *  (CLAUDE.md §the phone board is ONE window: nothing joins that bar without
- *  something else leaving it), the same idiom Templates and + Wave already use
- *  for a control that can change the whole day. */
-export function oilModeBarHTML(di: any): string {
-  if (!oilShown(di)) return ''
+/** THE DAY'S OWN CONTROL BAR — ONE bar, not two panels (owner, 21 Sep 26:
+ *  "Perhaps combine them into a single bar? … It can still remain on the phone
+ *  at that position? just merged", then "a looks better" of the two comps).
+ *
+ *  Templates and OIL Earn were a full-width panel each at the top of the day's
+ *  own content: two rows of vertical space, each with a heading and a sub-line,
+ *  and both reading as part of the schedule rather than as controls. They are
+ *  one compact row now, headed THIS DAY, with the buttons where the eye already
+ *  goes for controls on every other section header.
+ *
+ *  The buttons carry a slight tint of the app's ACCENT — his word, "since
+ *  settings usually have some blue to it. Make the buttons slightly stand out".
+ *  A tint and an edge, never the solid fill, which belongs to Done and Publish
+ *  day and has to keep meaning "this is the action that finishes the job".
+ *
+ *  IN THE MODE the bar changes job: it stops offering the way in and becomes the
+ *  mode's own strip — the heading goes green and reads OIL EARN, Templates steps
+ *  aside (it does nothing in this mode), and what is left is the day blanket,
+ *  the way out, and one line saying what a tap does.
+ *
+ *  WHERE IT IS DRAWN. On a PHONE this bar is the whole control, in and out. On a
+ *  DESKTOP the way IN rides the board's action row instead (he circled the empty
+ *  stretch of it), so the bar appears there only once the mode is on — at which
+ *  point it is not a duplicate button, it is the blanket and the instruction.
+ *  CSS picks; the builder never asks the width, so a resize answers instantly.
+ *
+ *  ONE FIT LESSON, from the comp that had to be drawn before this was built: at
+ *  390px "✓ Done with OIL" ran off the right edge. It is "✓ Done". Re-draw the
+ *  comp before lengthening any label here. */
+export function dayBarHTML(di: any, tplBtn: string): string {
+  const oil = oilShown(di)
   const on = oilModeOn(di)
   const bl = oilBlanketOn(di)
-  const sub = on
-    ? 'tap a puck to take a man off that event · tap an item to stop the whole item earning'
-    : 'see and change who earns OIL on this day'
-  return `<div class="sb-panel oilbar${on ? ' on' : ''}">`
-    + `<div class="sb-ph">OIL <span class="sub">${sub}</span><span class="gctl">`
-    + (on ? `<button class="mbtn oilblank${bl ? ' on' : ''}" data-oilblank="${di}" title="${bl ? 'Let this day earn again' : 'Nothing today earns — covers anything added later too'}">Nothing today earns</button>` : '')
-    + `<button class="mbtn add oilbtn${on ? ' on' : ''}" data-oilmode="${di}" title="${on ? 'Leave OIL mode and edit the schedule again' : 'Show who earns OIL on this day, and change it'}">OIL Earn</button>`
-    + `</span></div>`
-    + (on && bl ? `<div class="oilnote">Nothing on this day earns OIL. The marks underneath are kept — turn this off and they come back.</div>` : '')
+  if (!oil && !tplBtn) return ''
+  const head = on ? `<span class="daybar-h on">OIL EARN</span>` : `<span class="daybar-h">THIS DAY</span>`
+  const oilBtn = !oil ? ''
+    : on
+      ? `<button class="mbtn daybtn done" data-oilmode="${di}" title="Leave OIL mode and edit the schedule again">✓ Done</button>`
+      : `<button class="mbtn daybtn" data-oilmode="${di}" title="Show who earns OIL on this day, and change it">OIL Earn</button>`
+  const blankBtn = on
+    ? `<button class="mbtn daybtn blank${bl ? ' on' : ''}" data-oilblank="${di}" title="${bl ? 'Let this day earn again' : 'Nothing today earns — covers anything added later too'}">Nothing today earns</button>`
+    : ''
+  return `<div class="sb-panel daybar${on ? ' oilon' : ''}">`
+    + `<div class="sb-ph">${head}<span class="gctl">${on ? '' : tplBtn}${blankBtn}${oilBtn}</span></div>`
+    + (on
+      ? `<div class="daybar-note">${bl
+        ? 'Nothing on this day earns OIL. The marks underneath are kept — turn it off and they come back.'
+        : 'Tap a puck to take a man off that event · tap an item to stop the whole item earning'}</div>`
+      : '')
     + `</div>`
 }
 
