@@ -660,7 +660,7 @@ A's weekday case, pre-posting-in leave, medical corners, the OIL pass vs absence
 gestures, undo depth, storage faults, phone touch, figures on multi-record days). Rules of record:
 `specs/2026-09-20-arch-stack-4-clash-check.md`. Do it on the step-4 branch (or on main once it merges).
 
-### [S4-BUGHUNT] IN FLIGHT on `claude/s4-bughunt` — 34 commits, PR #422, WAITING ON "MERGE LIVE" (20 Sep 26)
+### [S4-BUGHUNT] MERGED to main (PR #422, 21 Sep 26) — 34 commits. Kept for what it SET ASIDE.
 **Read `HANDOFF-S4-BUGHUNT.md`, then `raptor-port/docs/superpowers/specs/2026-09-20-CURRENT-STATE.md`
 and nothing else first.** That spec is the single destination: what is built, what is parked, and the
 RULES SET ASIDE today that must not be re-applied — B4's "overlap means no credit", BOTH halves of
@@ -800,48 +800,32 @@ for will read "earned 4".
 `counters.ts` splits the +OIL part into "earned by weekend/PH work" and "awarded on the war".
 One afternoon. **Ask him before doing it** — it changes two numbers he reads.
 
-### [OIL-AWARD-ADD] An award and a worked day ADD UP — BUILT, IN FLIGHT on `claude/oil-award-add`, PR #423, WAITING ON "MERGE LIVE" (21 Sep 26)
-**Read `raptor-port/docs/superpowers/specs/2026-09-21-oil-award-add-design.md` and its
-`-review-log.md` first.** Ruling N16 in the behaviour register. Three owner rulings are on this
-branch, not one.
+### [OIL-AWARD-ADD] An award and a worked day ADD UP — MERGED to main, 21 Sep 26 (PR #423)
+**DONE.** Rulings N16, N17, N18 and N19, all built, all in the behaviour register, all named by a
+test that `npm run rulecheck` watches. Design: `specs/2026-09-21-oil-award-add-design.md`. What the
+two review rounds found and what was done with each: `-review-log.md` — worth reading before any
+further work on OIL.
 
-- **N16 — an award and a worked day ADD UP.** A day holds ONE earned credit and ONE award, side by
-  side. The take-over-and-hand-back machinery is RETIRED, which is the point: both silent balance
-  bugs of 20–21 Sep lived inside its snapshot.
-- **N17 — the manning counts BODIES.** An OIL credit no longer removes a man; only leave and a
-  duty-and-commitments input do. Publishing a day used to turn the Leave War red as a direct
-  consequence of planning it. NARROWS N13's duty half; the duty LINE is untouched, by his own word.
-- **N18 — a clash note holds long enough to read**, and is amber rather than the "Saved" face.
+- **N16** a day holds ONE earned credit and ONE award, side by side; they ADD UP. The
+  take-over-and-hand-back machinery is retired, which was the point: both silent balance bugs of
+  20–21 Sep lived in its snapshot.
+- **N17** the manning counts BODIES — an OIL credit removes nobody. (Its other half is
+  `[LW-COMMIT-MANNING]`, below, and is NOT done.)
+- **N18** a clash note is amber and holds long enough to read.
+- **N19** an award is ONE number, and it comes in halves at every door.
 
-**RED-TEAMED BEFORE ANY CODE.** Fable and Astra reviewed the design independently and **both picked
-the same single highest-conviction silent balance bug — and it was in the BRIEF, not the app**: the
-21 Sep "keep the larger of the two" fix writes the award's days onto the schedule's own record as
-well as into the snapshot, so splitting by dropping the snapshot makes a 3-day award worth SIX, and
-on a week the app cannot read it never heals. Astra found four more Fable missed, two of them
-blockers. Every finding and its decision: the review log.
+**Three bugs fixed that were LIVE before this ruling**, all silent: re-typing an award's code on
+the grid destroyed its days and its giver; the OIL tracker's "Save" was three undo steps, so one
+undo left the balance changed; and the unpublish warning measured a balance that ignored expiry.
 
-**THREE BUGS FIXED THAT WERE ALREADY LIVE** before this ruling and are worth knowing about:
-re-typing an award's code on the grid silently destroyed its days and its giver; the OIL tracker's
-"Save" was three undo steps, so one undo left the balance changed; and the unpublish warning
-measured a balance that ignored expiry, so it stayed silent while the tracker read zero.
+**The demo now carries the ruling.** Sat 4 Jul, `ammo`: an accepted duty input earns a real credit
+beside a 3-day award, so a fresh boot opens showing four days on one Saturday with the tracker
+listing them apart. Seeded through an INPUT rather than a published day, so the week the reference
+parity gate measures does not move.
 
-**STILL OWED on this branch, and it is the whole of what is left:**
-1. `npm run test:e2e`, `npm run perf`, `npm run smoke:tracker` — NOT YET RUN.
-2. **The hand-testing pass in the running app** — NOT DONE. The standing order. Build the owner's
-   own Saturday for real, publish it, and look at it at phone and desktop widths.
-3. **The cross-provider bug check** (Fable AND Astra) on the finished code — he asked for it by
-   name, and this moves persisted balances.
-4. The owner's own look at the Vercel preview.
-
-**Gates green so far:** unit 328 files / 5268, build clean, `node reference/tfin.js` 728/0,
-`npm run rulecheck` OK (29 rulings; N13, N16 and N17 now named).
-
-**Known flake, not this branch's doing:** `src/leavewar/ui/figselect.test.tsx` fails under parallel
-load and passes alone — the same shape as the `inputscal.test.tsx` flake recorded on 20 Sep.
-
-**`rulecheck` earned its keep here.** Rewriting one stale test orphaned rulings B8 and Q7 — nothing
-in the suite would have been watching them — and the gate refused to pass until they were named
-where they still apply (narrowed by N13 to the AUTOMATIC credit).
+**What it cost, recorded because it is the useful part:** across two review rounds and two
+providers, THREE silent balance bugs — two of them made during this session, one of them caused by
+the fix for the other. None would have looked wrong on screen. Every gate was green throughout.
 
 ### [OIL-AWARD-ADD-RULING] The ruling as it was given, kept for the reasoning
 
