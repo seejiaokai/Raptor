@@ -103,6 +103,13 @@ in-flight and risk-reducing** first.
 9. **[DB-STEP]** / **[XFER]** — the future database milestone and multi-squadron
    transfer; **[TRK-DISK]** (Decision A) is fixed inside [DB-STEP].
 
+**NEXT, added 21 Sep 26 — the OIL pair, ahead of the numbered list above.**
+**[ALL-AVAIL-REDEF]** then **[OIL-AUTO-REMOVE]**, in that order, or as one job. The OIL mode cannot
+resolve an ALL AVAIL puck until ALL AVAIL is defined, and the redefinition closes a live
+disagreement (two answers to "is this man available") that also sits under [LW-COMMIT-MANNING].
+Both are DESIGNED and reviewed once; both need a Codex red team before anything is written.
+Context for both: `raptor-port/docs/superpowers/specs/2026-09-21-oil-auto-remove-decisions.md`.
+
 *(Done 12 Sep 2026: **[TRK-IMPORT]** and **[TRK-LEDGER]** — both merged live; see Done.)*
 
 ---
@@ -695,34 +702,45 @@ rules about posted-out and pre-joining rows. Several older documents still read 
   belongs to the AUTOMATIC pass, which reads the published schedule, not to a credit the squadron
   types itself.
 
-### [OIL-AUTO-REMOVE] An admin should be able to take OFF an automatic OIL credit (owner, 21 Sep 26)
-**His words: "Should we allow the admin to remove the OIL credited automatically from the schedule?
-I think we should yeah. Maybe do this in the next chat."** RULED, not built.
+### [OIL-AUTO-REMOVE] Taking OIL off — DESIGNED 21 Sep 26, not built
+**The three shapes were put to him and he rejected the framing** — rightly. Instead of fighting the
+derived credit, ask about the EVENT at the source. He then designed the interface himself: an
+**"OIL Earn" mode** on the scheduler board that glows every puck earning OIL that day, where the
+admin taps a puck to take a man off one event, or taps an item to stop the whole item earning.
 
-Today the schedule's own credit cannot be removed on the war at all. Tapping it says "change the
-schedule and the OIL follows" — true, and useless when the schedule is RIGHT and the credit is
-wrong. There is no door.
+- **Context: `raptor-port/docs/superpowers/specs/2026-09-21-oil-auto-remove-decisions.md`.** Read it
+  and nothing else first. It holds every owner ruling of the session verbatim, the verified ground
+  truth behind them (the pass, the measure, what earns nothing by default, the publication
+  asymmetry, how a sentinel resolves, input types and landing), the build order and the model
+  guidance. Nothing of the design lives only in the chat.
+- **Reviewed once, by Fable** — it converged on the same architecture and corrected four things,
+  all folded in. **Codex (Astra) has NOT reviewed it**, and the owner's standing rule is both
+  providers before building.
+- **Three questions are still open for him** and are named in §2.3, §2.6 and §4 of that doc:
+  a publish-reminder warning, whether ALL and ALL AVAIL should diverge, and whether the Leave War
+  needs a removal door at all once the board has one. A fourth — does a member see a NO OIL mark
+  on the schedule — is in §2.8.
+- **A mockup exists** (an artifact canvas, the owner's own) and is one revision behind the mode
+  ruling. Redraw before relying on it.
 
-**The hard part, and the reason it is not a delete button.** The credit is DERIVED: the OIL pass
-mints it from published work on every run and sweeps any it no longer finds. So an admin deleting
-one would watch the next pass put it straight back — worse than no button, because it would look
-like the app ignoring him.
+### [ALL-AVAIL-REDEF] What ALL AVAIL and ALL actually mean (owner, 21 Sep 26) — SPLIT OUT, not built
+**His words: "ALL Avail and ALL pucks should not consist of ground crew by default. only SANS that
+are planned on the programmed on that day with us should be included … people on ATT B only should
+still be included. Those on Training, Course, Meeting, Appointment, Duty, Personal, Other, planned
+for anything on the schedule that conflicts in timing with the rest of the schedule is not part of
+All avail and ALL."** Full before/after table in §2.6 of the decisions doc above.
 
-So it needs a decision about what "remove" MEANS. Three shapes, roughly:
-1. **A standing refusal on that person/date** — the pass records that this credit was withdrawn by
-   hand and stops re-minting it. Durable, survives a republish, and needs somewhere to live.
-2. **Change the evidence instead** — the app helps him get to the thing that earned it (the duty
-   desk, or the accepted input) rather than the credit. No new state; more clicks; does not cover
-   "the schedule is right, the credit is wrong".
-3. **Correct the BALANCE rather than the day** — an OIL tracker correction entry, which already
-   exists. Leaves the day saying he worked, which is true, and fixes the number. Probably the
-   cheapest honest answer, and worth putting to him first.
+Split out of [OIL-AUTO-REMOVE] because it changes **who gets planted on a row**, not only who gets
+credited. It also closes a real disagreement: the board and the crew picker already know who is busy
+on the programme, and the expansion that credits OIL ignores the schedule entirely — two answers to
+"is this man available" living in one app.
 
-**Also needs deciding:** whether removing it should say WHY, and whether a member ever sees that it
-was removed. Both matter under [PUB-UNAVAIL]'s concern about published paperwork changing silently.
-
-**Do it in a fresh chat, and start by putting the three shapes to him** — this is a
-product-direction fork, not an implementation choice.
+- **Do it WITH or BEFORE [OIL-AUTO-REMOVE]**: the OIL mode's sentinel expansion depends on what ALL
+  AVAIL means.
+- **Consider merging with [LW-COMMIT-MANNING]** below — same root cause, same seam.
+- **It fixes a live bug as a side effect** (§5 of the doc): a man whose Training input was answered
+  "no OIL" is still swept into an ALL AVAIL family day and credited anyway, for an event he is not
+  at. If this item is deferred, that needs its own guard.
 
 ### [LW-COMMIT-MANNING] Duty & commitments must reduce the Leave War manning — the OTHER half of N17 (owner, 21 Sep 26)
 **Owner's words, and he then said to file it: "The manning should only reduce if they are like
