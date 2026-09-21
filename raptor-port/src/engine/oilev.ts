@@ -348,9 +348,29 @@ export function oilDecisionsKey(dec: OilDecisions | undefined): string {
   return [d.blanket ? 'B' : '', items, people].join('|')
 }
 
+/** A FROZEN BLOCK WRITTEN BEFORE `stand` EXISTED HAS NONE, and the key must not
+ *  read that absence as a change (Fable F3, 22 Sep 26 — and it was a real
+ *  defect: every already-published weekend carrying a claim would have reported
+ *  "1 pending" and gone unsigned the moment the owner opened the app, which is
+ *  exactly the manufactured-amendment shape §9 of the hand-pass sheet is about).
+ *
+ *  The missing value is RECONSTRUCTED from `acc`, which those blocks do carry,
+ *  rather than defaulted to a constant — a constant cannot help, because the
+ *  live side always has a real value and would differ from it anyway. `acc:'g'`
+ *  meant "landed and paying", which is `active`; anything else never landed.
+ *
+ *  The one case it does not reconstruct: a day published while its anchor row
+ *  was CANCELLED. That keys as `active` here and `cx` live, so it reports a
+ *  pending change — and it SHOULD, because that day was paying a claim the
+ *  schedule said did not happen. That is the R-2 defect, fixed on this branch;
+ *  a day still carrying it deserves the flag. */
+function standOf(i: OilInputEv): OilInputEv['stand'] {
+  return i.stand || (String(i.acc || '') === 'g' ? 'active' : 'unlanded')
+}
+
 export function oilEvidenceKey(ev: OilEvidence | null | undefined): string {
   if (!ev || !ev.earns) return ''
-  const ins = ev.inputs.map(i => `${i.iid}:${i.person}:${i.type}:${i.acc}:${i.stand}:${i.win ? i.win.join('-') : ''}:${i.ans == null ? '' : i.ans}`).join(',')
+  const ins = ev.inputs.map(i => `${i.iid}:${i.person}:${i.type}:${i.acc}:${standOf(i)}:${i.win ? i.win.join('-') : ''}:${i.ans == null ? '' : i.ans}`).join(',')
   const sent = Object.keys(ev.sent).sort().map(k => `${k}=${[...ev.sent[k]].sort().join('+')}`).join(',')
   return `${ev.iso}|${oilDecisionsKey(ev.d)}|${ins}|${sent}`
 }

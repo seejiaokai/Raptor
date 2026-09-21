@@ -469,3 +469,23 @@ describe('a second man on a landed request row earns from it (D18, job 8)', () =
     expect(figure(SAT, 'stiff'), 'the claim carries the window, not the row').toBe('FO')
   })
 })
+
+/* FABLE F3 (22 Sep 26) — does a frozen block written BEFORE `stand` existed
+   now key differently from an unchanged live day? If so, every published
+   weekend carrying a claim reports a change nobody made, which is the §9 shape
+   again and this time genuinely manufactured. */
+describe('F3 — an older frozen block must not manufacture a pending amendment', () => {
+  it('a published day whose issued block predates `stand` still reads as unchanged', () => {
+    claim({ iid: 'old1', person: 'bane', type: 'Duty', date: 'Jul 18', acc: 'g',
+      allday: false, s: 9 * 60, e: 17 * 60, oil: { [SAT_ISO]: 1 } })
+    groundRow(SAT, { prog: 'DUTY', str: '0900', end: '1700', who: 'bane', src: 'old1' })
+    publish(SAT)
+    expect(dayHasChanges(SAT), 'freshly published, nothing pending').toBe(false)
+
+    /* age the issued block: strip the field the old build never wrote */
+    const snap: any = daySnapOf(SAT, dayCurVer(SAT))
+    for (const i of snap.d.oilev.inputs) delete i.stand
+
+    expect(dayHasChanges(SAT), 'nothing underneath changed, so nothing may be pending').toBe(false)
+  })
+})
