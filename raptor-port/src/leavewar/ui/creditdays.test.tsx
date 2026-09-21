@@ -15,7 +15,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { balanceOf } from '../engine'
-import { getState, initStore, rawState, setCell, setCellDays, setManualCredit, setRole } from '../state/store'
+import { getState, HALF_STEP_MSG, initStore, rawState, setCell, setCellDays, setManualCredit, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -51,15 +51,11 @@ describe('a grant worth more than one day', () => {
     expect(oilOf(P)).toBe(before + 0.5)
   })
 
-  it('takes ANY quantity, and refuses only what is not one (owner, 21 Sep 26)', () => {
-    /* "it should accept anything that's outside of multiples of 0.5" — which
-       supersedes his own 6 Sep "one rule for every pool", for the war's award.
-       The tracker's LEDGER grant still refuses a non-half, so the two doors
-       differ; that is raised with him rather than changed on his behalf. */
+  it('goes in halves at EVERY door, in the same words (owner, 21 Sep 26)', () => {
     expect(setManualCredit(P, TUE, 'FO', { days: 1.5 })).toBeNull()
     expect(oilOf(P)).toBeGreaterThan(0)
-    expect(setManualCredit(P, TUE, 'FO', { days: 1.3 })).toBeNull()
-    expect(setManualCredit(P, TUE, 'HO', { days: 0.3 })).toBeNull()
+    expect(setManualCredit(P, TUE, 'FO', { days: 1.3 })).toBe(HALF_STEP_MSG)
+    expect(setCellDays(P, TUE, 0.3)).toBe(HALF_STEP_MSG)
     expect(setManualCredit(P, TUE, 'FO', { days: 0 })).toContain('how many days')
     expect(setManualCredit(P, TUE, 'FO', { days: -2 })).toContain('how many days')
     expect(setManualCredit(P, TUE, 'FO', { days: 9999 })).toContain('more than')
@@ -175,16 +171,22 @@ describe('tapping an OIL day shows what is on it', () => {
     expect(creditOn(P, TUE)).toBeUndefined()
   })
 
-  it('a credit the SCHEDULE earned is not offered for editing at all — it is the schedule’s', () => {
-    // It opens the READ-ONLY sheet, not the bid sheet: the cell belongs to
-    // Raptor, and the OIL pass would overwrite anything typed onto it on its
-    // next run. That is the existing lock, and the +OIL control inherits it.
+  it('a credit the SCHEDULE earned is still never EDITED — it is the schedule’s', () => {
+    /* An admin reaches the picker on such a day now (N16: he may record an
+       AWARD beside it), so what this pins is the thing that has not changed:
+       the earned credit itself is read-back only. Nothing offers to change
+       its worth, its reason or its giver, and nothing offers to remove it —
+       the OIL pass owns it and would overwrite anything typed on top. */
     expect(setManualCredit(P, TUE, 'FO')).toBeNull()
     const list = rawState().wars[0]!.recs[P]![TUE]!
     ;(list.find(r => r.kind === 'credit') as { oil: string }).oil = 'auto'
     openDay()
-    expect(screen.queryByTestId('bid-picker')).toBeNull()
-    expect(screen.queryByTestId('bid-oil')).toBeNull()
+    // it is read back, in full
+    expect(screen.getByTestId('oil-detail-days')).toBeTruthy()
+    expect(screen.getByTestId('raptor-note')).toBeTruthy()
+    // …and offered no editor of its own
+    expect(screen.queryByTestId('oil-current')).toBeNull()
+    expect(screen.queryByTestId('oil-clear')).toBeNull()
   })
 })
 
@@ -247,17 +249,30 @@ describe('how many days the sheet asks for', () => {
     expect(creditOn(P, TUE)).toMatchObject({ code: 'FO', days: 3 })
   })
 
-  it('takes a quantity that is NOT a half (owner, 21 Sep 26)', () => {
-    /* SUPERSEDES his own 6 Sep "one rule for every pool" for the war's award.
-       The cost, and it is real: the grid charges leave in halves, so a final
-       remainder under a half cannot be spent on its own. It is not stranded
-       though — FIFO draws PART of a credit, so 0.3 + 0.2 pays a half day. */
+  it('REFUSES a quantity that is not a half — the guard rail (owner, 21 Sep 26)', () => {
+    /* "put a guard rail to make sure that only 0.5 multiples can be input just
+       like the oil tracker". A half day is the smallest thing the grid ever
+       CHARGES, so an odd quantity can never be drawn down cleanly — a
+       remainder under a half strands in the balance. Refused, not silently
+       corrected: a number quietly changed after it was typed is the very
+       thing this branch spent two days removing.
+       Restores his 6 Sep rule and extends it to the door that had escaped
+       it; withdraws his own earlier ask the same day that an odd number be
+       accepted, which he reversed once he saw the cost. */
     openOil(TUE)
     days('0.3')
     fireEvent.click(screen.getByTestId('oil-give'))
-    expect(screen.queryByTestId('oil-err')).toBeNull()
-    expect(getState().views[P]?.[TUE]?.earnsOil).toBe(0.3)
-    expect(creditOn(P, TUE)!.code).toBe('HO')
+    expect(screen.getByTestId('oil-err').textContent).toContain('halves')
+    expect(creditOn(P, TUE)).toBeUndefined()
+  })
+
+  it('and says it the SAME way the OIL tracker does', () => {
+    /* Two sentences for one rule drift apart the moment one is edited — the
+       seam the house rules name. The war used to word this its own way. */
+    openOil(TUE)
+    days('1.3')
+    fireEvent.click(screen.getByTestId('oil-give'))
+    expect(screen.getByTestId('oil-err').textContent).toBe(HALF_STEP_MSG)
   })
 
   it('still refuses what is not a quantity at all', () => {

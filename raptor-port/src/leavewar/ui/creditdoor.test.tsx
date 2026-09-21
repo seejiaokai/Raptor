@@ -371,17 +371,22 @@ describe('a day the schedule has already earned on', () => {
      publish-then-award did not, so half the owner's ruling lived only in the
      tests. Found by review, then confirmed by hand in the running app — the
      hand test had walked one order and not the other. */
-  it('still takes an award, through one button on the read-only sheet', () => {
+  it('opens STRAIGHT on the sheet that can take one — no second window', () => {
+    /* For a few hours an admin got a read-only sheet first and had to press a
+       button to reach this one — two windows, the second carrying everything
+       the first did except the "where it came from" line. The owner asked why
+       he could not just have the second; the answer was to MOVE that line
+       rather than charge a tap for it. */
     expect(ingestDutyCredit(P, SAT, 'HO', 'FLT', [[420, 780]])).toBe('written')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${SAT}`))
 
-    // the day still explains itself first — that is what a locked cell is for
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
+    expect(screen.queryByTestId('raptor-award')).toBeNull()
+    // …and nothing the locked sheet used to say has been lost
     expect(screen.getByTestId('raptor-note').textContent).toContain('published schedule')
     expect(screen.getByTestId('oil-detail-days').textContent).toContain('half a day')
 
-    fireEvent.click(screen.getByTestId('raptor-award'))
-    expect(screen.getByTestId('bid-picker')).toBeTruthy()
     fireEvent.click(screen.getByTestId('bid-oil'))
     fireEvent.change(screen.getByTestId('oil-days'), { target: { value: '3' } })
     fireEvent.change(screen.getByTestId('oil-why'), { target: { value: 'Exercise recovery' } })
@@ -392,13 +397,14 @@ describe('a day the schedule has already earned on', () => {
     expect(getState().views[P]?.[SAT]?.earnsOil).toBe(3.5)
   })
 
-  it('offers it to an ADMIN only — a member still just reads the day', () => {
+  it('a MEMBER still gets the read-only sheet — there is nothing there for him to do', () => {
     expect(ingestDutyCredit(P, SAT, 'FO', 'FLT', [[480, 1080]])).toBe('written')
     setRole('member'); setViewer(P)
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${SAT}`))
-    expect(screen.getByTestId('raptor-note')).toBeTruthy()
-    expect(screen.queryByTestId('raptor-award')).toBeNull()
+    expect(screen.getByTestId('raptor-sheet')).toBeTruthy()
+    expect(screen.getByTestId('raptor-note').textContent).toContain('published schedule')
+    expect(screen.queryByTestId('bid-oil')).toBeNull()
   })
 
   it('does not offer it where an award is already there — that day opens the list', () => {
@@ -407,6 +413,5 @@ describe('a day the schedule has already earned on', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${SAT}`))
     expect(screen.getByTestId('daylist-sheet')).toBeTruthy()
-    expect(screen.queryByTestId('raptor-award')).toBeNull()
   })
 })

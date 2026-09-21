@@ -2751,9 +2751,32 @@ export function setOilPolicy(patch: Partial<OilPolicy>): boolean {
   return true
 }
 
-/** Days come in HALVES — a half day (HO) is the smallest thing the grid ever
- *  charges, so a credit of 0.3 could never be drawn against. One rule for every
- *  pool, the tracker's included (owner, 6 Sep 26). */
+/**
+ * DAYS COME IN HALVES, AND THAT IS A GUARD RAIL (owner, 21 Sep 26 — "put a
+ * guard rail to make sure that only 0.5 multiples can be input just like the
+ * oil tracker", after "For any type of leave, be it on the inputs or oil
+ * tracker or leave war or oil credits it should always round off … This is to
+ * prevent bugs and calculation of the leave balances easier").
+ *
+ * A half day is the smallest thing the grid ever CHARGES, so an odd quantity
+ * can never be drawn down cleanly: a remainder under a half strands in the
+ * balance and every figure that touches it carries a fraction nobody can
+ * spend. That is the bug he is naming, and REFUSING the input is what
+ * prevents it — he asked for a guard rail, not a silent correction, because
+ * a number quietly changed after it was typed is the very thing this app has
+ * spent two days removing.
+ *
+ * This RESTORES his 6 Sep 26 rule and extends it to the door that had
+ * escaped it. It withdraws his own earlier ask on 21 Sep that an odd number
+ * be accepted — he saw what it cost and reversed himself the same hour.
+ *
+ * ONE RULE AND ONE MESSAGE, EVERY POOL AND EVERY DOOR: the war's award, the
+ * OIL tracker's grant, a correction, and every other leave type. (The Inputs
+ * page needs nothing — leave there is whole or half days by construction,
+ * with no way to type a quantity at all.) The war used to word it its own
+ * way, which is the drift seam the house rules name: two sentences for one
+ * rule drift apart the moment one of them is edited.
+ */
 const isHalfStep = (n: number) => Math.abs(n * 2 - Math.round(n * 2)) < 1e-9
 export const HALF_STEP_MSG = 'Days come in halves — 1, 1.5, 2 …'
 
@@ -3318,19 +3341,6 @@ function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO',
 const awardAt = (list: readonly WarRec[]): CreditRec | undefined =>
   list.find(r => isCredit(r) && r.oil === 'manual') as CreditRec | undefined
 
-/* AN AWARD TAKES ANY NUMBER OF DAYS, NOT JUST HALVES (owner, 21 Sep 26 —
-   "it should accept anything that's outside of multiples of 0.5").
-   SUPERSEDES his own 6 Sep 26 "one rule for every pool", FOR THE WAR'S
-   AWARD ONLY. The OIL tracker's ledger grant still refuses a non-half
-   (`isHalfStep`/`HALF_STEP_MSG`), so the two doors now differ — raised
-   with him rather than changed on his behalf, because the 6 Sep rule
-   covers every pool and narrowing it is his call, not ours.
-   The 6 Sep reasoning was that "a credit of 0.3 could never be drawn
-   against", since the grid charges in halves. That is only half true:
-   FIFO draws PART of a credit, so 0.3 + 0.2 pays a half day perfectly
-   well. What is true is that a final remainder under a half cannot be
-   spent alone and will sit in the balance — which is the cost of his
-   ruling, and it is a real one worth him knowing. */
 export function setManualCredit(
   personId: string, date: string, code: 'FO' | 'HO',
   opts: { note?: string; givenBy?: string; days?: number | null } = {},
@@ -3349,6 +3359,7 @@ export function setManualCredit(
   const days = opts.days ?? null
   if (days !== null) {
     if (!Number.isFinite(days) || days <= 0) return 'Type how many days \u2014 or leave it blank'
+    if (!isHalfStep(days)) return HALF_STEP_MSG
     if (days > MAX_GRANT_DAYS) return `That is more than ${MAX_GRANT_DAYS} days`
   }
   const rec: CreditRec = {
@@ -3405,6 +3416,7 @@ export function editManualCredit(
     if (days === null) delete next.days
     else {
       if (!Number.isFinite(days) || days <= 0) return 'Type how many days — or leave it blank'
+      if (!isHalfStep(days)) return HALF_STEP_MSG
       if (days > MAX_GRANT_DAYS) return `That is more than ${MAX_GRANT_DAYS} days`
       next.days = days
     }
@@ -3447,6 +3459,7 @@ export function setCellDays(personId: string, date: string, days: number | null)
     : 'There is no OIL credit on that day'
   if (days !== null) {
     if (!Number.isFinite(days) || days <= 0) return 'Type how many days — or leave it blank'
+    if (!isHalfStep(days)) return HALF_STEP_MSG
     if (days > MAX_GRANT_DAYS) return `That is more than ${MAX_GRANT_DAYS} days`
   }
   const rest = { ...had }

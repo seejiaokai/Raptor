@@ -442,32 +442,39 @@ works on a weekend and attempts to take a leave is a bonus to tell the admin or 
 an error." The warnings are a FEATURE, not noise — which is why the answer was to make them
 readable rather than fewer.
 
-### N19 — an award is ONE number, and it takes any number (21 Sep 26)
+### N19 — an award is ONE number, and it comes in halves (21 Sep 26)
 > "this is confusing, the number of days when u click on HO. Any recommendation on how to present
 > this correctly? Should we just have number of days to input? Then it shows HO or FO as require
-> based on what was input? And it should accept anything that's outside of multiples of 0.5"
+> based on what was input?"
 
-The sheet had TWO controls for one fact: an FO / HO pair, which already mean a day and half a day,
-and a days box, which also means a quantity. So "HO" beside a "1" read as nonsense, and every
+and, after one round of getting it wrong:
+
+> "For any type of leave, be it on the inputs or oil tracker or leave war or oil credits it should
+> always round off … This is to prevent bugs and calculation of the leave balances easier."
+> — "So put a guard rail to make sure that only 0.5 multiples can be input just like the oil
+> tracker"
+
+**ONE CONTROL.** The sheet had TWO for one fact: an FO / HO pair, which already mean a day and half
+a day, and a days box, which also means a quantity. So "HO" beside a "1" read as nonsense, and every
 attempt to rank one over the other produced a different surprise.
 
 For an AWARD the code is now only a LABEL — it is what the grid square shows and nothing else,
 because the worth comes from the quantity and an award clashes with nothing, stands nobody down and
 moves no manning (N13, N16, N17). So **the quantity is the fact and the code follows it**: under a
-day reads HO, a day or more reads FO, and the one button says which before it is pressed. His own
-suggestion, and the only reading with no second way to say the same thing.
+day reads HO, a day or more reads FO, and the one button says which before it is pressed.
 
-**And any number, not just halves.** *Supersedes his own 6 Sep 26 "days come in halves — one rule
-for every pool", for the WAR'S AWARD only.*
+**HALVES, AND IT IS A GUARD RAIL.** A half day is the smallest thing the grid ever CHARGES, so an
+odd quantity can never be drawn down cleanly — a remainder under a half strands in the balance and
+every figure that touches it carries a fraction nobody can spend. Refused, **not silently
+corrected**: he asked for a guard rail, and a number quietly changed after it was typed is the very
+thing this session spent two days removing.
 
-**The cost, which is real and was put to him:** the grid charges leave in halves, so a final
-remainder under a half cannot be spent on its own and will sit in the balance. It is not stranded
-— FIFO draws PART of a credit, so 0.3 + 0.2 pays a half day perfectly well — but the last scrap
-can be.
-
-**The clash still open:** the OIL tracker's LEDGER grant still refuses a non-half
-(`HALF_STEP_MSG`), and so do the other pools. The two doors now disagree. Raised with him rather
-than changed on his behalf, because the 6 Sep rule covers every pool and narrowing it is his call.
-
-*Leaves untouched:* the AUTOMATIC credit. The published schedule still decides FO or HO by the
-six-hour rule and knows nothing about this box.
+*Restores and extends:* his 6 Sep 26 "days come in halves — one rule for every pool". The war's
+award had escaped it and worded its own refusal; there is now ONE rule and ONE sentence across the
+war's award, the OIL tracker's grant, a correction and every other leave type. Two sentences for one
+rule drift apart the moment one is edited.
+*Withdraws:* his own ask earlier the same day that an odd number be ACCEPTED — reversed by him
+within the hour, once the cost was put to him.
+*Leaves untouched:* the Inputs page, where leave is whole or half days by construction with no
+quantity to type; and the AUTOMATIC credit, where the published schedule still decides FO or HO by
+the six-hour rule.

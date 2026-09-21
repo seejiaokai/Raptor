@@ -108,7 +108,7 @@ export function BidPicker({
    *  kinds: an award, which `credit` above also lets an admin edit, and one
    *  the app credited itself, which is read-only because the OIL pass owns it
    *  and would overwrite anything typed onto it. */
-  creditShown?: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; auto?: boolean; spans?: Array<[number, number]> } | null
+  creditShown?: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; auto?: boolean; spans?: Array<[number, number]>; via?: 'schedule' | 'input' } | null
   /** THE FOUR THINGS AN ADMIN DOES TO AN INPUT — Ack, Approve, Refuse, Move
    *  — IN EVERY STAGE (owner, 21 Sep 26: "even a single click on an input, i
    *  should be able to click on a move button to move the input just like how
@@ -691,6 +691,25 @@ export function BidPicker({
           reopens exactly those boxes to change them. */}
       {creditShown && (
         <div className="bidsheet-oil-detail" data-testid="oil-detail">
+          {/* WHERE IT CAME FROM, ON THE SAME SHEET (owner, 21 Sep 26 — "why
+              cant u just show me the 2nd picture window which has the same
+              info?").
+              For a few hours an admin tapping a day the schedule had earned on
+              got a read-only sheet FIRST and had to press a button to reach
+              this one — two windows, the second carrying everything the first
+              did except this line. The answer was to MOVE the line, not to
+              charge a tap for it. A member still gets the read-only sheet:
+              there is nothing here for him to do. */}
+          {creditShown.auto && (
+            <div className="bidsheet-row postout">
+              <span className="lab">Where it came from</span>
+              <span className="note" data-testid="raptor-note">
+                {creditShown.via === 'input'
+                  ? 'Earned off a duty input that was accepted — change that input, not the schedule.'
+                  : 'Earned off the published schedule — change the schedule and the OIL follows.'}
+              </span>
+            </div>
+          )}
           <div className="bidsheet-row postout">
             <span className="lab">Reason</span>
             <span className="note" data-testid="oil-detail-why">
@@ -870,7 +889,6 @@ export function RaptorSheet({
   date,
   code,
   creditShown,
-  onAward,
   onClose,
 }: {
   callsign: string
@@ -880,13 +898,6 @@ export function RaptorSheet({
    *  21 Sep 26). See the note below on why this sheet had to learn the
    *  difference. */
   creditShown?: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; spans?: Array<[number, number]>; via?: 'schedule' | 'input' } | null
-  /** GIVE AN AWARD ON A DAY THE SCHEDULE ALREADY EARNED ON (N16, 21 Sep 26).
-   *  Admin only, and only where the cell holds nothing but OIL. Without it
-   *  the owner's ruling had no door in this direction: the store let an award
-   *  land beside the schedule's credit and no screen offered one, so
-   *  award-then-publish worked and publish-then-award did not. The same
-   *  hand-through the posting sheet uses, rather than a second +OIL form. */
-  onAward?: () => void
   onClose: () => void
 }) {
   /* WHICH EVIDENCE BACKS THIS CREDIT decides where the reader is sent (Astra,
@@ -944,18 +955,6 @@ export function RaptorSheet({
                 : ''}
             </span>
           </div>
-        </div>
-      )}
-      {/* AND A WAY TO ADD AN AWARD ON TOP (N16, 21 Sep 26). The day is the
-          schedule's and stays read-only — what this offers is the OTHER fact:
-          days the man is OWED, which the schedule knows nothing about. Without
-          it the ruling that the two ADD UP only worked if the award was typed
-          first, because nothing on this sheet could record one afterwards. */}
-      {onAward && (
-        <div className="bidsheet-row">
-          <button className="dchip" data-testid="raptor-award" onClick={onAward}>
-            Give an OIL award on this day…
-          </button>
         </div>
       )}
     </Sheet>

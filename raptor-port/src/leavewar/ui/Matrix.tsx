@@ -3939,7 +3939,7 @@ export function Matrix() {
           sheets. That cell is approved elsewhere: offering a picker or a
           decision on it would offer an action the store will refuse, which
           is worse than offering nothing. */}
-      {open && !listOpen && !canRemark && raptorOwns(states, open.id, open.date) && !openFreeHalf && !placing && (
+      {open && !listOpen && !canRemark && raptorOwns(states, open.id, open.date) && !openFreeHalf && !openWorkOnly && (
         <RaptorSheet
           callsign={open.callsign}
           date={open.date}
@@ -3957,15 +3957,6 @@ export function Matrix() {
               via: openAnyCredit.via,
             }
             : null}
-          /* The hand-through, the same shape the posting sheet already uses:
-             the day stays the SCHEDULE'S and read-only, and one button opens
-             the picker on it so an award can be recorded beside what the
-             schedule earned. Routing straight to the picker instead would
-             have cost this sheet's "where it came from" line, which is the
-             one thing a reader opens a locked cell to find out. */
-          onAward={openWorkOnly && canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id)
-            ? () => setPlaceAt(openKey)
-            : undefined}
           onClose={close}
         />
       )}
@@ -4216,7 +4207,7 @@ export function Matrix() {
       )}
       {/* a member may bid CLEARING leave after their own posting-out (owner
           answer C, 20 Sep 26) — the admin's tap there stays the PO sheet */}
-      {open && !listOpen && !canRemark && (placing || ((!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin'))) && (!raptorOwns(states, open.id, open.date) || !!openFreeHalf || (openWorkOnly && placing))
+      {open && !listOpen && !canRemark && (placing || ((!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin'))) && (!raptorOwns(states, open.id, open.date) || !!openFreeHalf || openWorkOnly)
         && canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id) && (
         <BidPicker
           key={`${open.id}-${open.date}`}
@@ -4270,6 +4261,7 @@ export function Matrix() {
               giver: creditGiver(openAnyCredit),
               auto: openAnyCredit.oil === 'auto',
               spans: openAnyCredit.spans,
+              via: openAnyCredit.via,
             }
             : null}
           onCreditClear={role === 'admin' && openCredit
