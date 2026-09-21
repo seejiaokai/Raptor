@@ -13,10 +13,11 @@ import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, writeInputsBatch, HIST } from '../state/store'
 import { INPUTS, oilAsks, inpId } from '../engine/inputs'
+import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
-import { setInpEdit, INPEDIT } from './pops'
+import { setInpEdit, INPEDIT, OILASK, setOilAsk } from './pops'
 import { CURPAGE, setPage } from '../state/view'
-import { commitInputEdit, draftOf, oilGate, oilAnswered } from './inputedit'
+import { commitInputEdit, draftOf, oilGate, oilAnswered, reassignInput } from './inputedit'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -142,7 +143,7 @@ describe('the OIL ask gates a weekend/PH duty-&-commitments save', () => {
 })
 
 describe('the answers belong to the acknowledged commitment', () => {
-  const plant = (r: any) => { writeInputsBatch(() => { INPUTS.unshift({ allday: true, remarks: '', mod: 'now', yr: 2026, ...r }) }); return INPUTS[0] }
+  const plant = (r: any) => { const row: any = { allday: true, remarks: '', mod: 'now', yr: 2026, ...r }; inpId(row); writeInputsBatch(() => { INPUTS.unshift(row) }); return INPUTS[0] }
 
   it('a retype OUT of the ask set voids them (the delete half/sans precedent)', () => {
     const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
@@ -156,6 +157,54 @@ describe('the answers belong to the acknowledged commitment', () => {
     const d = draftOf(r); d.person = 'stiff'
     expect(commitInputEdit(r, d)).toBe(true)
     expect(r.oil).toBeUndefined()
+  })
+
+  /* THE HAND PASS'S FINDING 1 (21 Sep 26), diagnosed by both red teams 22 Sep.
+     The test above proves the old man's ANSWERS are voided on a person change.
+     Nothing proved the other half of the same sentence — that the NEW man is
+     then asked. He is not: oilGate prices the new draft against the OLD man's
+     answers, finds the amount unchanged, and reports nothing to ask. The commit
+     then wipes those answers, so the new holder arrives unanswered, and the mode
+     draws unanswered with the wording of a refusal. Reproduced in the running
+     app: Talisman refused and published, the request handed to Ace, and Ace's
+     published Saturday went blank while Talisman's came back. */
+  it("a PERSON change always re-opens the question — the new man is asked, and never inherits the old holder's answers", () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
+
+    /* the control: an untouched draft asks nothing, so a bare 'ask' below
+       cannot be the gate simply asking about everything */
+    expect((oilGate(draftOf(r), r) as any).kind, 'an unchanged draft has nothing to ask').toBe('none')
+
+    const d = draftOf(r); d.person = 'stiff'
+    const g: any = oilGate(d, r)
+    expect(g.kind, 'handing the request to another man must re-open the OIL question').toBe('ask')
+    expect(g.who, 'and it must be asked about the NEW holder').toBe(PEOPLE['stiff'].cs)
+    expect(g.who, 'never about the man who has just left it').not.toBe(PEOPLE['bane'].cs)
+    expect(g.plan.length, 'the Saturday it covers is the day to ask about').toBeGreaterThan(0)
+    expect(Object.keys(g.prev || {}), "the new holder must not arrive with the old man's ticks pre-loaded").toEqual([])
+  })
+
+  /* THE SECOND DOOR (Fable M2, Codex's "any direct reassign helper"). Dragging
+     an Unavailable puck onto another man calls reassignInput, which goes STRAIGHT
+     to commitInputEdit and never near the gate — so the fix above does not reach
+     it, and the new holder still arrives unanswered and drawn as refused.
+     Refusing the drag was the cheaper repair and is the wrong one: the app draws
+     the gesture as available, and a gesture that is invited and then declined is
+     the same defect as finding G5. So the drag REASSIGNS and then raises the
+     question, through the same one-shot hand-off the bell already uses. */
+  it('the drag-reassign raises the OIL question for the new holder, instead of silently skipping it (Fable M2)', () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
+    setOilAsk(null)
+    expect(reassignInput(r.iid, 'stiff')).toBe(true)
+    expect(r.person, 'the reassign itself still happens').toBe('stiff')
+    expect(r.oil, "and the old holder's answers are still voided").toBeUndefined()
+    expect(OILASK, 'the new holder must be asked, not left unanswered').toBe(r.iid)
+
+    /* the control: a type that never asks for OIL must NOT raise the sheet */
+    setOilAsk(null)
+    const leave = plant({ person: 'bane', type: 'LL', date: 'Jul 18', s: 0, e: 1439 })
+    reassignInput(leave.iid, 'stiff')
+    expect(OILASK, 'leave does not earn OIL, so nothing is asked').toBe(null)
   })
 
   it('an in-place time edit that REPRICES a positive answer voids that day (bug pass, 28 Aug 26)', () => {

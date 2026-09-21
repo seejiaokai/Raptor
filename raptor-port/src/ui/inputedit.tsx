@@ -654,7 +654,18 @@ export function oilGate(draft: any, prevRow: any, force = false):
   if (!n) return { kind: 'refused' }
   const plan = oilAskPlan({ person: draft.person, date: n.date, endDate: n.endDate, yr: baseYear(), allday: !!draft.allday, s: n.s, e: n.e })
   if (!plan.length) return { kind: 'none' }
-  const prev = (prevRow && prevRow.oil) || {}
+  /* THE ANSWERS BELONG TO A MAN, NOT TO THE REQUEST (hand pass finding 1,
+     21 Sep 26; both red teams 22 Sep). Pricing a NEW holder's plan against the
+     OLD holder's answers finds the amount unchanged and reports nothing to ask
+     — so the new man was never asked, the commit below then voided those
+     answers anyway (its own comment already said "the new person must be asked
+     again"), and he arrived unanswered. Unanswered is drawn with the wording of
+     a refusal, so a man who worked was shown as having been refused and paid
+     nothing, silently. Reproduced end to end: Talisman refused and published,
+     the request handed to Ace, Ace's published Saturday blank and Talisman's
+     back. A person change is therefore ALWAYS stale, and the sheet opens with
+     NO ticks pre-loaded — the new holder answers for himself. */
+  const prev = (prevRow && prevRow.person === draft.person && prevRow.oil) || {}
   const stale = plan.some(p => prev[p.iso] == null || (prev[p.iso] !== 0 && prev[p.iso] !== p.amt))
   if (!force && prevRow && !stale) return { kind: 'none' }
   return {
@@ -1159,6 +1170,20 @@ export function reassignInput(iid: any, personId: any) {
   draft.person = personId
   if (!commitInputEdit(r, draft)) return false
   HOOKS.toast(`${PEOPLE[personId].cs} is now unavailable instead of ${was}`, 'ok')
+  /* THE SECOND DOOR ONTO THE SAME BUG (Fable M2, 22 Sep 26). This helper goes
+     straight to commitInputEdit, so the gate's own person-change rule never
+     runs and the new holder arrives unanswered — which the mode then draws with
+     the wording of a refusal. Refusing the drag was the cheaper repair and is
+     the wrong one: the app DRAWS this gesture as available, and inviting a
+     gesture then declining it is the defect G5 is about. So the reassign stands
+     and the question follows, through the one-shot hand-off the bell already
+     uses (pops.OILASK, consumed by InputEditor's open effect). The editor is
+     mounted at App level, so it opens over the board the drag happened on — no
+     navigation, unlike the bell, which is taking a member somewhere. */
+  if (oilAsks(r.type)) {
+    const g = oilGate(draftOf(r), r)
+    if (g.kind === 'ask') { setOilAsk(r.iid); setInpEdit(r); notify() }
+  }
   return true
 }
 
