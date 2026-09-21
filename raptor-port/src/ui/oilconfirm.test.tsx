@@ -207,6 +207,11 @@ describe('the answers belong to the acknowledged commitment', () => {
     const leave = plant({ person: 'bane', type: 'LL', date: 'Jul 18', s: 0, e: 1439 })
     reassignInput(leave.iid, 'stiff')
     expect(OILASK, 'leave does not earn OIL, so nothing is asked').toBe(null)
+
+    /* reassignInput opens the editor on the row it asks about, and INPEDIT is
+       module state that outlives this file — left set, it decided the result of
+       an unrelated calendar test three files later. Put it back. */
+    setOilAsk(null); setInpEdit(null)
   })
 
   /* THE HAND-BACK (Codex scenario 7, real in the code and never tested). Nothing

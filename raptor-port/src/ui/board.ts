@@ -216,14 +216,39 @@ export function boardHTML(di: number, pv?: boolean) {
          is what taught this codebase that distinction. */
       fly += `<div class="sb-line${cxOn ? ' cx' : ''}${a.flag ? ' redbox' : ''}"${rowMove(`mv:ac.${key}`, mvRO)}>
         ${sbGrip(mvRO)}
-        ${oilModeOn(di)
+        ${oilModeOn(di) && ai === 0
           /* in the mode the line's CALLSIGN is its own switch, exactly as a
              ground row's name is (OIL7) — "stop this whole line earning".
              Flying lines and SC shifts had no switch at all until 21 Sep 26,
              so the only events a scheduler could stop earning were the desks
-             and the programmes (owner, found by hand). */
+             and the programmes (owner, found by hand).
+
+             ONCE PER FORMATION, NOT ONCE PER AIRCRAFT (`ai === 0`; hand pass
+             finding 3, and Codex M2 which found the real reach). The switch
+             addresses the FORMATION (`f.rid`), but this block runs per
+             aircraft, so a formation drew one switch on every row it held —
+             an SC shift on this Saturday drew SIX of the same switch, and
+             nine of the day's switches sat on rows with nobody on them at
+             all. Pressing the one beside an empty spare row did not switch
+             off that row: it switched off the whole shift, and the MAIN crew
+             two rows above lost their day with nothing on screen connecting
+             the two. It is not an SC defect — every multi-aircraft formation
+             had it, which is why the guard is here on the generic renderer
+             and not on a kind check. The later rows keep the ordinary
+             disabled box, so the line still reads the same.
+
+             THE PLAN'S SECOND CLAUSE — "and never on a line nobody is on" —
+             IS DELIBERATELY NOT BUILT (Fable, 22 Sep 26, and it is right).
+             OIL7 says a switch covers a man added LATER, which is exactly why
+             an empty ordinary row keeps its one switch. The empty SC spare
+             rows stop drawing one here only because the item is the FORMATION,
+             not the row. Measured after this change: 14 switches, 14 distinct
+             items, none duplicated, and 4 still on rows with nobody on them —
+             correctly. */
           ? oilItemCellHTML(di, rowItemKey(f.rid), f.cs, 'lin')
-          : boxHTML('lin', `data-bfld="${fp}.cs"${alAttr(`${fp}.cs`)}${dis}`, f.cs, '')}
+          /* in the mode the later rows say WHERE the switch went, rather than
+             leaving a scheduler on row two wondering why his row has none */
+          : boxHTML('lin', `data-bfld="${fp}.cs"${alAttr(`${fp}.cs`)}${dis}${oilModeOn(di) ? ' title="Part of the line above — its OIL switch is on the first row"' : ''}`, f.cs, '')}
         ${boxHTML('msn', `data-bfld="${fp}.msn"${alAttr(`${fp}.msn`)}${dis}`, f.msn, '')}
         <div class="sb-bcell">${brSug}<input class="tm" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis} value="${esc(fmtHM(f.br))}"></div>
         <input class="tm" data-bfld="${fp}.to"${alAttr(`${fp}.to`)}${dis} value="${esc(fmtHM(f.to))}">
