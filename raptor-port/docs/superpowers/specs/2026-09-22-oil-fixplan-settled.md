@@ -90,7 +90,24 @@ roster change after a publish reaches the money.
 5. **Fix 6** — the uncovered weekend, including the unreachable warning call site (Codex M8) and the
    OIL question that can never land (Fable M7).
 6. **Fix 5** — close the doors that move money; leave Sign and Publish open (both reviewers agree);
-   close the mode on Undo and the plans selector (Fable M11).
+   close the mode on the plans selector and Unpublish (Fable M11).
+
+   **UNDO IS NOT ONE OF THE DOORS TO SHUT — corrected 22 Sep 26, driven in the app after the owner
+   asked.** Measured on the everything-Saturday: 18 bars and Undo greyed out · tap a puck to take a
+   man off OIL → `deny` stored, Undo lights, 17 bars · press Undo → the decision is gone and the
+   18th bar is back. **Undo already reverses an OIL decision correctly, and that is behaviour worth
+   keeping** — it is the natural way to take back a mis-tap. Fable's M11 says to close the mode on
+   Undo; that would take this away, so it is not followed as written.
+
+   What the walk actually caught is different: Undo does not STOP at the mode. It walks back
+   whatever the last change was, so with the mode open it removed a ground-programme row from the
+   day — a schedule change, made from a screen that says the schedule cannot be changed.
+
+   **The rule to build:** opening the mode marks the spot. Inside the mode Undo walks back OIL
+   decisions freely down to that spot, and no further — reaching past it closes the mode first, so
+   a schedule change is never undone from behind a screen that claims to be read-only. Red first:
+   tap two pucks, Undo twice (both come back), Undo a third time (the mode closes rather than
+   deleting the row underneath).
 7. **Fix 4** — the mirror advisory.
 8. **Fix 7** — deduplicate the switch on the GENERIC formation renderer, not as an SC special case
    (Codex M2).
