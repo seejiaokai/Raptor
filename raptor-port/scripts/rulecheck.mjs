@@ -57,6 +57,14 @@ const RULES = {
   Q13: 'the 15-day rule is LL/OL only',
   Q14: 'a member may file leave any date, already approved',
   Q15: 'a SANS offer is never work',
+  /* The 20–21 Sep rulings. N13 and N16 are a pair and the second only makes
+     sense beside the first: an award is not attendance, and an award and a
+     worked day add up. They are the ones a later change is most likely to
+     undo by accident, because every instinct in the old code says a day has
+     one credit and a credit means the man was at work. */
+  N13: 'an OIL award owes a man a day; it does not say he was at work',
+  N16: 'an award and a worked day ADD UP, and never affect each other',
+  N17: 'the manning counts bodies; only a planned absence takes one away',
 }
 
 /* Rules with no test naming them on 20 Sep 26. The check fails if this set

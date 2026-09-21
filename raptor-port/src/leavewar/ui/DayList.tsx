@@ -13,8 +13,9 @@ import { useState, type ReactElement } from 'react'
 import { INPUTS } from '../../engine/inputs'
 import { canDecide, canEditCell, canEditRow, codeOf, displayCell, type Period, type Role } from '../engine'
 import { AM, FULL, PM, type Contrib, type DayView, type Win } from '../engine/dayview'
+import { creditWorthText } from '../engine/credit'
 import { creditGiver, type NoticeRec, type CreditRec } from '../engine/warrecs'
-import { ackReplacement, changeAbsenceById, clearRecordById, decideRequestById, moveAbsenceById, recordsAt } from '../state/store'
+import { ackReplacement, changeAbsenceById, clearRecordById, decideRequestById, editManualCredit, moveAbsenceById, recordsAt } from '../state/store'
 import { Sheet } from './Sheet'
 import './bidpicker.css'
 
@@ -75,6 +76,11 @@ export function DayListSheet({
   const [msg, setMsg] = useState('')
   /* the per-record Move: which Input is being moved, and to when */
   const [moving, setMoving] = useState<string | null>(null)
+  /* the award being edited in place, and its three boxes */
+  const [editing, setEditing] = useState<string | null>(null)
+  const [eWhy, setEWhy] = useState('')
+  const [eWho, setEWho] = useState('')
+  const [eDays, setEDays] = useState('')
   const [moveTo, setMoveTo] = useState(date)
   const deciding = canDecide(period.stage, role)
   const editable = canEditCell(period, role, date) && canEditRow(role, viewer, personId)
@@ -93,9 +99,12 @@ export function DayListSheet({
     else setMsg('')
   }
 
-  /* the OIL on this day, whichever kind — read back in three lines at the
-     bottom, the same three the day window shows (owner, 21 Sep 26) */
-  const oilRec = raw.find(r => r.kind === 'credit') as CreditRec | undefined
+  /* EVERY credit on this day, read back one block each (N16, 21 Sep 26).
+     It took the first one it found, which under a single credit per day was
+     the only one. Since an award and a worked day may now sit side by side,
+     showing one of them would leave the other's reason, giver and worth with
+     nowhere on this sheet to appear. */
+  const oilRecs = raw.filter(r => r.kind === 'credit') as CreditRec[]
   const lines = view.all.map(c => {
     const part = partOf(c.win)
     const partTxt = part ? `, ${part}` : ''
@@ -156,9 +165,23 @@ export function DayListSheet({
          measured over. `creditGiver` is shared with the window and the OIL
          tracker so the giver is never worded three ways. */
       const giver = creditGiver(rec)
-      const text = `${c.code} — OIL earned${rec?.note ? ` (${rec.note})` : ''}${times ? `, worked ${times}` : ''}${giver ? ` · given by ${giver}` : ''}`
+      /* THE TWO KINDS ARE NAMED APART (N16, 21 Sep 26). Every credit read
+         "OIL earned", which of an award is simply untrue — an award says a
+         man is OWED a day, not that he was at work (N13). On a worked
+         Saturday the sheet would have shown the same four words twice. */
+      const kind = rec?.oil === 'auto' ? 'OIL earned' : 'OIL award'
+      const text = `${c.code} — ${kind}${rec?.note ? ` (${rec.note})` : ''}${times ? `, worked ${times}` : ''}${giver ? ` · given by ${giver}` : ''}`
       const actions: ReactElement[] = []
-      if (rec?.oil === 'manual' && role === 'admin') actions.push(<button key="cl" className="dchip" data-testid={`dl-clear-${c.id}`} onClick={() => act(() => clearRecordById(personId, date, c.id))}>Clear</button>)
+      if (rec?.oil === 'manual' && role === 'admin') {
+        /* AN AWARD IS EDITABLE WHEREVER IT OPENS (owner, [LW-OIL-DETAIL]).
+           On a day holding both, this sheet is the ONLY thing a tap opens —
+           the day window never shows for more than one record — so without
+           this the ruling quietly stopped being true on exactly the days
+           N16 creates. One door: `editManualCredit` writes all three fields
+           as a single step, so one undo takes the whole change back. */
+        actions.push(<button key="ed" className="dchip" data-testid={`dl-oil-edit-${c.id}`} onClick={() => { setEditing(editing === c.id ? null : c.id); setEWhy(rec.note ?? ''); setEWho(rec.givenBy ?? ''); setEDays(rec.days != null ? String(rec.days) : '') }}>Edit…</button>)
+        actions.push(<button key="cl" className="dchip" data-testid={`dl-clear-${c.id}`} onClick={() => act(() => clearRecordById(personId, date, c.id))}>Clear</button>)
+      }
       const from = rec?.oil !== 'auto' ? ''
         : rec.via === 'input' ? 'From a duty input that was accepted.'
           : 'From the published schedule.'
@@ -218,29 +241,48 @@ export function DayListSheet({
           this the app answered his question on one screen and not the other.
           Read-only here by construction: nothing on a Raptor-owned day is
           edited on the war. */}
-      {oilRec && (
-        <div className="daylist-oil" data-testid="oil-detail">
-          <div className="bidsheet-row">
-            <span className="lab">Reason</span>
-            <span className="note" data-testid="oil-detail-why">
-              {oilRec.note?.trim() || (oilRec.oil === 'auto' ? 'Worked this day' : 'Not given')}
-            </span>
+      {oilRecs.map(rec => {
+        const award = rec.oil !== 'auto'
+        const editing_ = editing === rec.id
+        return (
+          <div key={`oil-${rec.id}`} className="daylist-oil" data-testid={`oil-detail-${rec.id}`}>
+            <div className="bidsheet-row">
+              <span className="lab">{award ? 'OIL award' : 'OIL earned'}</span>
+              <span className="note" data-testid={`oil-detail-days-${rec.id}`}>
+                {creditWorthText(rec)}
+                {!award && rec.spans?.length
+                  ? ` — worked ${rec.spans.map(([a, b]) => `${hhmm(a)}–${hhmm(b)}`).join(', ')}`
+                  : ''}
+              </span>
+            </div>
+            <div className="bidsheet-row">
+              <span className="lab">Reason</span>
+              <span className="note" data-testid={`oil-detail-why-${rec.id}`}>
+                {rec.note?.trim() || (award ? 'Not given' : 'Worked this day')}
+              </span>
+            </div>
+            <div className="bidsheet-row">
+              <span className="lab">Given by</span>
+              <span className="note" data-testid={`oil-detail-given-${rec.id}`}>{creditGiver(rec) || 'Not given'}</span>
+            </div>
+            {editing_ && (
+              <div className="bidsheet-row oil-edit">
+                <input className="notebox" aria-label="Reason" data-testid={`oil-edit-why-${rec.id}`} value={eWhy} onChange={e => setEWhy(e.target.value)} placeholder="Why it was given" />
+                <input className="notebox" aria-label="Given by" data-testid={`oil-edit-given-${rec.id}`} value={eWho} onChange={e => setEWho(e.target.value)} placeholder="Given by" />
+                <input className="oil-num" aria-label="Days" data-testid={`oil-edit-days-${rec.id}`} value={eDays} onChange={e => setEDays(e.target.value)} placeholder="Days" />
+                <button className="dchip approve" data-testid={`oil-edit-save-${rec.id}`} onClick={() => {
+                  const t = eDays.trim()
+                  const n = t ? Number(t) : null
+                  if (t && !Number.isFinite(n)) { setMsg('Type how many days — or leave it blank'); return }
+                  const problem = editManualCredit(personId, date, rec.id, { note: eWhy, givenBy: eWho, days: n })
+                  if (problem) setMsg(problem)
+                  else { setMsg(''); setEditing(null) }
+                }}>Save</button>
+              </div>
+            )}
           </div>
-          <div className="bidsheet-row">
-            <span className="lab">Given by</span>
-            <span className="note" data-testid="oil-detail-given">{creditGiver(oilRec) || 'Not given'}</span>
-          </div>
-          <div className="bidsheet-row">
-            <span className="lab">Days</span>
-            <span className="note" data-testid="oil-detail-days">
-              {oilDaysText(oilRec)}
-              {oilRec.oil === 'auto' && oilRec.spans?.length
-                ? ` — worked ${oilRec.spans.map(([a, b]) => `${hhmm(a)}–${hhmm(b)}`).join(', ')}`
-                : ''}
-            </span>
-          </div>
-        </div>
-      )}
+        )
+      })}
       {msg && (
         <div className="bidsheet-row">
           <span className="note warn" data-testid="daylist-msg">{msg}</span>
@@ -248,11 +290,4 @@ export function DayListSheet({
       )}
     </Sheet>
   )
-}
-
-/** "3 days" / "half a day" / "a day" — what a credit is worth, in words. The
- *  day window says it the same way; one wording for one fact. */
-function oilDaysText(c: { code: 'FO' | 'HO'; days?: number }): string {
-  const n = c.days ?? (c.code === 'FO' ? 1 : 0.5)
-  return n === 1 ? 'a day' : n === 0.5 ? 'half a day' : `${n} days`
 }

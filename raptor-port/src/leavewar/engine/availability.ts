@@ -95,11 +95,16 @@ export function availabilityOf(
   // An unknown code must not remove anyone. A typo should look wrong on screen,
   // not quietly delete a person from the manning picture.
   if (!c) return 1
-  if (c.duty) return 0
+  /* AN OIL DAY NO LONGER REMOVES HIM EITHER (owner, 21 Sep 26 — see `haveOf`
+     below for his words). `c.duty` is the FO/HO flag, and it zeroed the man
+     here exactly as the day view did. The two paths have to agree: this one
+     serves the bare grid fixtures, that one the real day records, and a
+     manning figure that changed depending on which read it is the drift seam
+     the house rules name. */
   // A refused bid gives the WHOLE person back, not the fraction the code
   // would have taken — he is at work all day, not half of one. This sits
-  // after the two guards above on purpose: a refusal returns a man to the
-  // programme, never to a squadron he has left or to a duty he is still on.
+  // after the guard above on purpose: a refusal returns a man to the
+  // programme, never to a squadron he has left.
   if (!removesAvailability(code, state)) return 1
   return 1 - c.removes
 }
@@ -220,18 +225,15 @@ export function ruleHave(rc: RuleCount, people: Person[], grid: Grid, states: St
     }
     return Math.round(total * 1000) / 1000
   }
-  const weightOf = (p: Person): number => {
-    const v = vs[p.id]?.[date]
-    /* ON DUTY means AT WORK. A credit says he worked, and until the owner's
-       20 Sep 26 ruling that was the end of it, because a credit was never
-       placed on a day he was also absent. Now the two are recorded together
-       and flagged, so the head count has to ask the second question too: a man
-       away all day is not on duty, whatever the credit says, and counting him
-       would man a duty weekend with someone on leave. */
-    const onDuty = inSquadron(p, date) && !!v?.duty && v!.away < 1
-    const have = haveOf(p, date, v)
-    return rc.presence && onDuty ? Math.max(0, 1 - v!.away) : have
-  }
+  /* PRESENCE AND AVAILABILITY ARE THE SAME ANSWER NOW (N17, 21 Sep 26).
+     A rule carried a `presence` switch that meant "count a man standing SC
+     duty — he is at work", because a credit used to read him as zero and a
+     fully-manned duty weekend would otherwise have gone red. Since a credit
+     removes nobody, both settings give `1 − away` and the switch decided
+     nothing — while the rule's own sentence still promised the admin a
+     difference. A control that silently does nothing is the shape this whole
+     change exists to remove, so it goes rather than lingering. */
+  const weightOf = (p: Person): number => haveOf(p, date, vs[p.id]?.[date])
   // One rounding, on the number the cell shows — it kills float dust
   // (0.9999999 must read 1: a team the squadron has must not paint the day
   // red) without stacking a second rounding on top of the first.
@@ -242,14 +244,37 @@ export function ruleHave(rc: RuleCount, people: Person[], grid: Grid, states: St
   return r3(teams * size)
 }
 
-/** How much of a person a day leaves on the flying programme — read off the
- *  day view ([ARCH-STACK] step 4): outside the squadron 0; on duty (an OIL
- *  credit) 0; else whatever the day's records do not take (a half-day leave
- *  0.5, a morning LL + afternoon OL 0, a refused bid nothing). */
+/**
+ * How much of a person a day leaves available — read off the day view
+ * ([ARCH-STACK] step 4): outside the squadron 0; else whatever the day's
+ * records take away (a half-day leave 0.5, a morning LL + afternoon OL 0, a
+ * refused bid nothing).
+ *
+ * BEING AT WORK NO LONGER REMOVES HIM (owner, 21 Sep 26):
+ *   "you dont need to take him off the manning. The planner only needs to know
+ *    if this current day can be fulfilled with the amount of manpower they have
+ *    as a whole. Doesnt make sense that after the admin plans a day and leave
+ *    war manning starts to become red, which is weird."
+ * and, asked whether the duty-desk half should go too:
+ *   "Dont need that gone. The manning should only reduce if they are like
+ *    planned by things like leave, duty & commitments."
+ *
+ * So the count answers ONE question — have we the bodies for this day — and
+ * only a PLANNED absence takes a body out of it. A man the published schedule
+ * says worked that weekend is still a man the squadron has; publishing the day
+ * used to take him to zero, which turned the manning red as a direct result of
+ * planning it. That is the thing he could not make sense of, and it was right
+ * not to.
+ *
+ * NARROWS N13 (20 Sep 26), which said an earned credit "stands him down from
+ * flying and counts him in the duty manning". The second half stands, by his
+ * own answer above: `countsFor` still counts a credited man on the duty desk,
+ * which is what tells an admin the desk is covered. Only the standing-down
+ * went.
+ */
 export function haveOf(p: Person, date: string, v: DayView | undefined): number {
   if (!inSquadron(p, date)) return 0
   if (!v) return 1
-  if (v.duty) return 0
   return Math.max(0, 1 - v.away)
 }
 
@@ -287,9 +312,14 @@ export function countsFor(people: Person[], grid: Grid, states: States, date: st
     if (onDuty) duty += 1
 
     const have = haveOf(p, date, v)
-    // ...and presence is what the day leaves of him: a whole man on an
-    // ordinary duty day, half when a half-day absence takes the rest.
-    const present = onDuty ? Math.max(0, 1 - v!.away) : have
+    /* Presence IS availability now (owner, 21 Sep 26). It used to need its
+       own branch, because a man on duty read 0 available and counting him
+       absent would have turned a fully-manned duty weekend red. Since being
+       at work no longer removes anybody, the two answers are the same one
+       and the branch would be a second way of saying it. The `duty` tally
+       above is untouched — that is what still tells an admin the desk is
+       covered, and it is the half he kept. */
+    const present = have
     if (present > 0) {
       crewPresent += present
       if (p.sxo) sxoPresent += present

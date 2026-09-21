@@ -695,7 +695,156 @@ rules about posted-out and pre-joining rows. Several older documents still read 
   belongs to the AUTOMATIC pass, which reads the published schedule, not to a credit the squadron
   types itself.
 
-### [OIL-AWARD-ADD] An award and a worked day ADD UP — RULED, NOT YET BUILT (owner, 21 Sep 26)
+### [OIL-AUTO-REMOVE] An admin should be able to take OFF an automatic OIL credit (owner, 21 Sep 26)
+**His words: "Should we allow the admin to remove the OIL credited automatically from the schedule?
+I think we should yeah. Maybe do this in the next chat."** RULED, not built.
+
+Today the schedule's own credit cannot be removed on the war at all. Tapping it says "change the
+schedule and the OIL follows" — true, and useless when the schedule is RIGHT and the credit is
+wrong. There is no door.
+
+**The hard part, and the reason it is not a delete button.** The credit is DERIVED: the OIL pass
+mints it from published work on every run and sweeps any it no longer finds. So an admin deleting
+one would watch the next pass put it straight back — worse than no button, because it would look
+like the app ignoring him.
+
+So it needs a decision about what "remove" MEANS. Three shapes, roughly:
+1. **A standing refusal on that person/date** — the pass records that this credit was withdrawn by
+   hand and stops re-minting it. Durable, survives a republish, and needs somewhere to live.
+2. **Change the evidence instead** — the app helps him get to the thing that earned it (the duty
+   desk, or the accepted input) rather than the credit. No new state; more clicks; does not cover
+   "the schedule is right, the credit is wrong".
+3. **Correct the BALANCE rather than the day** — an OIL tracker correction entry, which already
+   exists. Leaves the day saying he worked, which is true, and fixes the number. Probably the
+   cheapest honest answer, and worth putting to him first.
+
+**Also needs deciding:** whether removing it should say WHY, and whether a member ever sees that it
+was removed. Both matter under [PUB-UNAVAIL]'s concern about published paperwork changing silently.
+
+**Do it in a fresh chat, and start by putting the three shapes to him** — this is a
+product-direction fork, not an implementation choice.
+
+### [LW-COMMIT-MANNING] Duty & commitments must reduce the Leave War manning — the OTHER half of N17 (owner, 21 Sep 26)
+**Owner's words, and he then said to file it: "The manning should only reduce if they are like
+planned by things like leave, duty & commitments."**
+
+N17 built the first half — an OIL credit no longer removes a man. The second half is NOT true and
+never was: **duty-and-commitment inputs do not reach the Leave War at all.** `absences.ts warVisible`
+admits leave, medical, a course and overseas duty, and nothing else — so Training, Meeting, Fly
+with, Appointment, Duty and Other are invisible to that grid and to its manning.
+
+Found by Astra in the N16 bug check, and verified: it is NOT a regression from N17. What N17 removed
+was an ACCIDENTAL reduction — a duty input that happened to earn an OIL credit used to zero the man
+through the credit, on a weekend only. A weekday commitment never counted at all.
+
+**The scenario that shows it:** an SC-day team needs six and the squadron has exactly six on a
+Saturday. One of them has an accepted all-day Training input. The Leave War still reads six and one
+complete team; it should read five and a shortage.
+
+**The shape, when it is built:**
+1. Project active duty-and-commitment inputs into a manning-only contribution — NOT into the war's
+   editable cells, its clashes, its charges, or anything that reads as OIL evidence.
+2. Fold its full/half-day portions into `DayView.away`, capped per half so leave and a commitment on
+   the same half cannot subtract the man twice.
+3. Carry it through the category counts, `ruleHave`, the presence counts and `scTeams`.
+4. Respect removed/dormant inputs, the posting dates and the ground-crew rules.
+5. An OIL credit still removes nobody (N17), whichever way the input that earned it was filed.
+
+**Why it is its own job:** it changes the manning figures on a screen the owner reads, it needs a
+decision about which of the six types count (a two-hour Appointment is not a day off the programme),
+and the projection is a new seam into the war. Not a line. **Priority: his call — raised with him on
+21 Sep and filed at his word.**
+
+### [OIL-NEXT-TWO] The two the owner parked until after the bug check (21 Sep 26)
+**His words: "We can do point 2 and 3 later after the 3 things above are done."** The three being
+the browser gates, the hand test in the running app, and the cross-provider bug check on
+[OIL-AWARD-ADD]. So these are queued BEHIND that branch being finished, not forgotten.
+
+1. **[OIL-EARNED-VS-GRANTED]** — below. The recommendation put to him was DO IT, as its own small
+   change, because it changes two figures he reads and he should be looking at it deliberately
+   rather than finding it inside another job.
+2. **His own look at the Vercel preview** — build a Saturday with an award, publish it, and see
+   whether 4 reads the way he expects. Nothing merges before that.
+
+**Both belong in a FRESH chat**, agreed with him on 21 Sep: they are new work, and the point to
+switch is once [OIL-AWARD-ADD] is green or merged. The handoff note names the branch.
+
+### [OIL-AWARD-IS-A-GRANT] An award is a ledger grant stored a second way (Fable, 21 Sep 26)
+**Raised by the [OIL-AWARD-ADD] design review as the real architectural root cause. NOT built, and
+deliberately not bundled — it moves persisted balances again and touches ~28 test files, so it is
+its own escalated session. It needs the owner's go before anything is written.**
+
+After his two rulings an award now: flags nothing, stands nobody down from flying, counts nobody on
+the duty manning, is never touched by the published schedule, and adds to the OIL balance. That is
+exactly what the OIL tracker's own ledger GRANT already does. The only differences left are where
+it is stored and which editor reaches it — so the same fact lives in two stores, which is the drift
+seam the house rules name. [OIL-AWARD-ADD] adds a fourth reader of it rather than removing one.
+
+**The shape, if it is ever done:** awards become ledger entries; the Leave War DERIVES the FO/HO
+contribution from the ledger on read, exactly the way an absence is derived from the Inputs page;
+the three cell editors become one ledger edit; a one-time conversion of stored hand-typed credits
+and of the demo seed. **Priority: after the bug hunt, and below [PUB-UNAVAIL] — it is tidiness with
+a real risk attached, not a hole in the paperwork.**
+
+### [OIL-EARNED-VS-GRANTED] The tracker calls an award "earned" (Fable, 21 Sep 26)
+**Small, and it is the OWNER'S FIGURE to change, which is why it was not folded into
+[OIL-AWARD-ADD] silently.**
+
+The tracker's summary counts a hand-typed award under **earned**, and the +OIL breakdown labels the
+whole lot "earned by weekend/PH work". That has been true since long before the award ruling, and
+[OIL-AWARD-ADD] does not change how a single credit is classified — only that a Saturday can now
+carry two. But it makes the wording visible: a Saturday he worked one day on and was awarded three
+for will read "earned 4".
+
+**If he wants it:** `oiltracker.ts` counts `auto && !manual` as earned and `manual` as granted;
+`counters.ts` splits the +OIL part into "earned by weekend/PH work" and "awarded on the war".
+One afternoon. **Ask him before doing it** — it changes two numbers he reads.
+
+### [OIL-AWARD-ADD] An award and a worked day ADD UP — BUILT, IN FLIGHT on `claude/oil-award-add`, PR #423, WAITING ON "MERGE LIVE" (21 Sep 26)
+**Read `raptor-port/docs/superpowers/specs/2026-09-21-oil-award-add-design.md` and its
+`-review-log.md` first.** Ruling N16 in the behaviour register. Three owner rulings are on this
+branch, not one.
+
+- **N16 — an award and a worked day ADD UP.** A day holds ONE earned credit and ONE award, side by
+  side. The take-over-and-hand-back machinery is RETIRED, which is the point: both silent balance
+  bugs of 20–21 Sep lived inside its snapshot.
+- **N17 — the manning counts BODIES.** An OIL credit no longer removes a man; only leave and a
+  duty-and-commitments input do. Publishing a day used to turn the Leave War red as a direct
+  consequence of planning it. NARROWS N13's duty half; the duty LINE is untouched, by his own word.
+- **N18 — a clash note holds long enough to read**, and is amber rather than the "Saved" face.
+
+**RED-TEAMED BEFORE ANY CODE.** Fable and Astra reviewed the design independently and **both picked
+the same single highest-conviction silent balance bug — and it was in the BRIEF, not the app**: the
+21 Sep "keep the larger of the two" fix writes the award's days onto the schedule's own record as
+well as into the snapshot, so splitting by dropping the snapshot makes a 3-day award worth SIX, and
+on a week the app cannot read it never heals. Astra found four more Fable missed, two of them
+blockers. Every finding and its decision: the review log.
+
+**THREE BUGS FIXED THAT WERE ALREADY LIVE** before this ruling and are worth knowing about:
+re-typing an award's code on the grid silently destroyed its days and its giver; the OIL tracker's
+"Save" was three undo steps, so one undo left the balance changed; and the unpublish warning
+measured a balance that ignored expiry, so it stayed silent while the tracker read zero.
+
+**STILL OWED on this branch, and it is the whole of what is left:**
+1. `npm run test:e2e`, `npm run perf`, `npm run smoke:tracker` — NOT YET RUN.
+2. **The hand-testing pass in the running app** — NOT DONE. The standing order. Build the owner's
+   own Saturday for real, publish it, and look at it at phone and desktop widths.
+3. **The cross-provider bug check** (Fable AND Astra) on the finished code — he asked for it by
+   name, and this moves persisted balances.
+4. The owner's own look at the Vercel preview.
+
+**Gates green so far:** unit 328 files / 5268, build clean, `node reference/tfin.js` 728/0,
+`npm run rulecheck` OK (29 rulings; N13, N16 and N17 now named).
+
+**Known flake, not this branch's doing:** `src/leavewar/ui/figselect.test.tsx` fails under parallel
+load and passes alone — the same shape as the `inputscal.test.tsx` flake recorded on 20 Sep.
+
+**`rulecheck` earned its keep here.** Rewriting one stale test orphaned rulings B8 and Q7 — nothing
+in the suite would have been watching them — and the gate refused to pass until they were named
+where they still apply (narrowed by N13 to the AUTOMATIC credit).
+
+### [OIL-AWARD-ADD-RULING] The ruling as it was given, kept for the reasoning
+
 > "Yes an award and a worked day add up. So it's 4. The auto oil credits don't get affected by
 > manual OIL inputs."
 

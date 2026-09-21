@@ -34,7 +34,7 @@ import { notify as raptorNotify, subscribe as raptorSubscribe, writeInputsBatch 
 import { lwSyncTurn } from './state/store'
 import {
   addDays,
-  balanceOf,
+  oilLedgerOf,
   inSquadron,
   isNonWorkingDay,
   localToday,
@@ -61,6 +61,7 @@ import {
   getVersion,
   setRefusalHook,
   clearRaptorCell,
+  figureCtxOf,
   getState,
   ingestDutyCredit,
   lwEditLists,
@@ -976,7 +977,10 @@ export function publishFlagsBids(di: number): void {
   const blindLine = oilBlindLine(iso, snap.d, spans)
   if (blindLine) lines.push(blindLine)
   const war = warHolding(rawState().wars, iso)
-  if (!war) { if (lines.length) HOOKS.toast(lines.join(' · '), ''); return }
+  /* amber, like the Inputs page's twin (N18, 21 Sep 26): this is a warning,
+     not the face the app says "Saved" in. Both exits, because the day with
+     no war is exactly the one a reader is least expecting a clash on. */
+  if (!war) { if (lines.length) HOOKS.toast(lines.join(' · '), 'warn'); return }
   const said: string[] = []
   for (const [person, sp] of Object.entries(spans)) {
     const wins = workSpans(sp)
@@ -988,7 +992,7 @@ export function publishFlagsBids(di: number): void {
     }
   }
   if (said.length) lines.push(`${said.join(', ')} now sits on published work — the day is flagged, the bid is still live`)
-  if (lines.length) HOOKS.toast(lines.join(' · '), '')
+  if (lines.length) HOOKS.toast(lines.join(' · '), 'warn')
 }
 
 /* [GLOBAL-UNDO] §6.6 — the Unpublish button's warn. Unpublishing a loaded-week day
@@ -1002,7 +1006,6 @@ export function publishFlagsBids(di: number): void {
 export function oilCreditBidAgainst(di: number): boolean {
   const iso = labelToISO(DATES[di])
   if (!iso) return false
-  const { openings, ledger, wars } = getState()
   const { desired } = desiredOilCells()
   for (const [key, d] of desired) {
     const bar = key.indexOf('|')
@@ -1014,10 +1017,24 @@ export function oilCreditBidAgainst(di: number): boolean {
        balance, so counting it would falsely warn for anyone at a low balance. */
     const landed = rawState().wars.some(w => recsAt(w.recs, person, iso).some(r => r.kind === 'credit' && r.oil === 'auto' && r.code === d.code))
     if (!landed) continue
-    const credit = d.code === 'FO' ? 1 : 0.5
-    // balanceOf counts that landed cell, so balance − credit is the balance AFTER the
-    // withdrawal; below zero means a bid was spent against it.
-    if (balanceOf(openings, ledger, wars, person, 'oil') - credit < 0) return true
+    /* ASK THE TRACKER'S OWN QUESTION, ON THE TRACKER'S OWN DATE (both
+       reviewers, 21 Sep 26).
+       It first asked `balanceOf`, which sums what every day earns and knows
+       nothing about EXPIRY, while the tracker applies the squadron's policy —
+       so the warning stayed silent while the tracker read zero. The first fix
+       swapped the formula but measured AS OF THE DAY BEING UNPUBLISHED, which
+       reports every credit that was alive back then as alive now, and left the
+       same hole open a different way.
+       And subtracting the credit's worth was never the right sum: expiry and
+       FIFO are not linear. A credit that expired unused is worth nothing to
+       take away, and removing a live one can strand a LATER debit that had
+       drawn on it. So the ledger is rebuilt with that credit left out — the
+       actual counterfactual — as of today, through the same `figureCtxOf()`
+       the tracker reads, so the two cannot diverge on the figure OR the date.
+       Only the SCHEDULE'S credit goes; an award on the same day stays in the
+       balance and is none of this button's business (N16). */
+    const without = oilLedgerOf(figureCtxOf(), person, c => c.date === iso && c.source === 'auto' && !c.manual)
+    if (without.balance < 0) return true
   }
   return false
 }

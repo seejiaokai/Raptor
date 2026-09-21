@@ -44,6 +44,7 @@
 // together: an OIL day on a Saturday takes nothing from either.
 
 import { chargedDays, viewsOf } from './charge'
+import { creditWorth } from './credit'
 import { codeOf } from './codes'
 import type { FigureCtx } from './counters'
 import { addDays, addMonths, isWeekend } from './period'
@@ -121,6 +122,10 @@ export interface OilCredit {
   /** An `auto` credit an admin typed by hand (no Raptor-owned record behind
    *  it), so its reason is theirs to write (`setCellNote`). */
   manual?: boolean
+  /** The war RECORD this row was read off — what an editor addresses.
+   *  Since N16 (21 Sep 26) a day can carry two credits, so a person and a
+   *  date no longer name one of them. */
+  recId?: string
   /** First day it can no longer be used; `null` = never. */
   expires: string | null
   /** FIFO draws against it, oldest debit first. */
@@ -185,7 +190,16 @@ const DEBIT_RANK: Record<OilDebitSource, number> = { opening: 0, taken: 1, corre
  * A person's whole OIL story: every credit and debit across every war, FIFO-
  * allocated, expiry applied as of `asOf`.
  */
-export function oilLedgerFor(ctx: FigureCtx, personId: string, policy: OilPolicy, asOf: string): OilLedger {
+/** WHAT THE BALANCE WOULD BE WITHOUT ONE CREDIT (21 Sep 26).
+ *  The unpublish warning has to ask a counterfactual: if this day's earned
+ *  credit went, would the man be overdrawn? Subtracting its worth from the
+ *  balance is NOT the same question — expiry and FIFO are not linear, so a
+ *  credit that has already expired unused is worth nothing to subtract, while
+ *  removing a live one can strand a later debit that had drawn on it. The
+ *  honest answer is to build the ledger again with that credit left out. */
+export type OilOmit = (c: OilCredit) => boolean
+
+export function oilLedgerFor(ctx: FigureCtx, personId: string, policy: OilPolicy, asOf: string, omit?: OilOmit): OilLedger {
   const credits: OilCredit[] = []
   const debits: OilDebit[] = []
 
@@ -213,17 +227,33 @@ export function oilLedgerFor(ctx: FigureCtx, personId: string, policy: OilPolicy
       // a credit: the reason is the sync wire's note (FLT, SIM + Duty, an
       // input's type — owner, 2 Sep 26) or the admin's; none falls back to
       // the day's kind. `manual` = hand-typed (the tracker's reason editor).
-      const credit = v.all.find(c => c.kind === 'credit')
-      if (credit && v.earnsOil > 0) {
-        const reason = credit.note ?? (isWeekend(date) ? 'weekend duty' : 'PH duty')
+      /* ONE ENTRY PER CREDIT (N16, 21 Sep 26 — "an award and a worked day add
+         up"). It took the FIRST credit on the day and paired its reason and
+         giver with the day's already-summed total, which under one credit per
+         day was the same thing. With two it is not: a Saturday worth 4 would
+         have shown as ONE row of 4, reasoned and attributed from whichever
+         record happened to be first, and the man's own tracker could not tell
+         him which three of those days he was owed and which one he worked. */
+      for (const credit of v.all) {
+        if (credit.kind !== 'credit') continue
+        const auto = credit.auto === true
+        const amount = creditWorth({ code: credit.code as 'FO' | 'HO', days: credit.days, auto })
+        if (amount <= 0) continue
+        /* The fall-back reason is the SCHEDULE'S evidence, so only a credit
+           the schedule earned may use it. An award has no weekend behind it —
+           labelling one "weekend duty" beside the row that really was weekend
+           duty would put two contradictory stories on one Saturday. */
+        const reason = credit.note ?? (auto ? (isWeekend(date) ? 'weekend duty' : 'PH duty') : '')
         /* WHO GAVE IT, on an automatic credit too (owner, 21 Sep 26). It used
            to be blank for anything the app earned itself, so the tracker's
            own rows disagreed about whether that column meant anything. An
            earned credit's giver is the evidence behind it — the published
            weekend or holiday, or the duty input that was accepted. */
-        const giver = creditGiver({ oil: credit.auto ? 'auto' : 'manual', givenBy: credit.givenBy, via: credit.via })
-        const hours = credit.wins ?? (credit.win[0] === 0 && credit.win[1] === 1439 ? undefined : [credit.win])
-        credits.push({ id: `auto:${wi}:${date}`, date, amount: v.earnsOil, reason, source: 'auto', ...(credit.auto ? {} : { manual: true }), ...(hours ? { hours } : {}), ...(giver ? { givenBy: giver } : {}), ...(credit.days != null ? { days: credit.days } : {}), expires: expiryOf(date, policy), used: [], left: v.earnsOil, expired: 0 })
+        const giver = creditGiver({ oil: auto ? 'auto' : 'manual', givenBy: credit.givenBy, via: credit.via })
+        /* Hours belong to the earned credit alone: they are read off the
+           published schedule. An award is not an attendance record (N13). */
+        const hours = !auto ? undefined : credit.wins ?? (credit.win[0] === 0 && credit.win[1] === 1439 ? undefined : [credit.win])
+        credits.push({ id: `${auto ? 'auto' : 'award'}:${wi}:${date}`, recId: credit.id, date, amount, reason, source: 'auto', ...(auto ? {} : { manual: true }), ...(hours ? { hours } : {}), ...(giver ? { givenBy: giver } : {}), ...(credit.days != null ? { days: credit.days } : {}), expires: expiryOf(date, policy), used: [], left: amount, expired: 0 })
       }
       for (const t of charged.get(date) ?? []) {
         if (t.counter !== 'oil') continue
@@ -233,6 +263,16 @@ export function oilLedgerFor(ctx: FigureCtx, personId: string, policy: OilPolicy
     }
   })
 
+  /* The counterfactual: drop the named credit BEFORE the FIFO walk, so every
+     debit re-allocates as it would if that credit had never existed.
+     Guarded, because with no omission `filter` would be skipped and an
+     in-place empty-and-refill would be emptying the very array it is about
+     to read back — the same reference — and lose every credit. */
+  if (omit) {
+    const kept = credits.filter(c => !omit(c))
+    credits.length = 0
+    credits.push(...kept)
+  }
   credits.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : CREDIT_RANK[a.source] - CREDIT_RANK[b.source] || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)))
   debits.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : DEBIT_RANK[a.source] - DEBIT_RANK[b.source] || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)))
 

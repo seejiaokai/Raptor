@@ -85,9 +85,7 @@ import {
   MAX_GIVEN_BY,
   MAX_REASON,
   removeLedgerEntry,
-  setCellNote,
-  setCellDays,
-  setCellGivenBy,
+  editManualCredit,
   setOilPolicy,
   updateLedgerEntry,
 } from '../state/store'
@@ -330,23 +328,28 @@ export function OilTracker({ person, onClose, onGranted }: {
     done()
   }
   const startNote = (c: OilCredit, personId: string) => {
-    setNoteId(`${personId}|${c.date}`); setNoteDraft(c.manual && c.reason !== 'weekend duty' && c.reason !== 'PH duty' ? c.reason : ''); setEditId(null)
+    /* KEYED BY THE CREDIT, NOT BY THE DAY (N16, 21 Sep 26). A Saturday can
+       now carry the schedule's credit AND an award, so a key of person+date
+       no longer names one row. Only the award is editable, but the key has
+       to be able to say WHICH row is open.
+       The reason no longer needs comparing against the automatic wording
+       either — an award never falls back to "weekend duty" now. */
+    setNoteId(`${personId}|${c.id}`); setNoteDraft(c.manual ? c.reason : ''); setEditId(null)
     setHDays(c.days != null ? String(c.days) : '')
     setHGiven(c.givenBy ?? '')
   }
-  /* Both the reason and the hours save on the one button, because to the admin
-     they are one edit of one credit. Hours first: if they are refused the
-     reason must not land on its own, or Save would half-work and the message
-     would read as being about the part that did. */
-  const saveNote = (personId: string, date: string) => {
+  /* ONE EDIT, ONE STEP (Astra, 21 Sep 26). The reason, the giver and the
+     days used to be written by three separate calls, which is three separate
+     commands: ONE press of undo took back the reason and left the balance
+     changed and the giver rewritten, and a refused value left the earlier
+     two already saved. Ordering them carefully only narrowed the window.
+     `editManualCredit` checks everything first and writes once, so a refusal
+     changes nothing and an undo takes the whole edit back. */
+  const saveNote = (personId: string, date: string, recId: string) => {
     const raw = hDays.trim()
     const days = raw ? Number(raw) : null
     if (raw && !Number.isFinite(days)) { setEErr('Type how many days — or leave it blank'); return }
-    const daysProblem = setCellDays(personId, date, days)
-    if (daysProblem) { setEErr(daysProblem); return }
-    const givenProblem = setCellGivenBy(personId, date, hGiven)
-    if (givenProblem) { setEErr(givenProblem); return }
-    const problem = setCellNote(personId, date, noteDraft)
+    const problem = editManualCredit(personId, date, recId, { note: noteDraft, givenBy: hGiven, days })
     if (problem) { setEErr(problem); return }
     setNoteId(null); setEErr('')
     done()
@@ -449,7 +452,10 @@ export function OilTracker({ person, onClose, onGranted }: {
       const c = b.c
       const usedUp = c.left === 0 && !c.expired && c.used.length > 0
       const editing = editId !== null && c.ledgerId === editId
-      const noting = noteId === `${p.id}|${c.date}`
+      /* WHICH ROW is open, not which DAY (N16, 21 Sep 26): a Saturday can
+         now carry the schedule's credit and an award, so a person and a
+         date no longer name one row. */
+      const noting = noteId === `${p.id}|${c.id}`
       const cls = `oil-e credit${c.source === 'grant' ? ' grant' : ''}${usedUp ? ' used' : ''}${c.expired ? ' expired' : ''}${editing || noting ? ' editing' : ''}`
       const canEdit = admin && c.source === 'grant'
       const canNote = admin && c.source === 'auto' && c.manual
@@ -508,7 +514,7 @@ export function OilTracker({ person, onClose, onGranted }: {
                 aria-label="Reason"
                 autoFocus
                 onChange={e => setNoteDraft(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter') saveNote(p.id, c.date); if (e.key === 'Escape') setNoteId(null) }}
+                onKeyDown={e => { if (e.key === 'Enter') saveNote(p.id, c.date, c.recId!); if (e.key === 'Escape') setNoteId(null) }}
               />
               {/* HOW MANY DAYS this grant is worth. Blank is the ordinary
                   case and means the code's own worth — a day for FO, half for
@@ -522,7 +528,7 @@ export function OilTracker({ person, onClose, onGranted }: {
                 placeholder="days"
                 aria-label="How many days"
                 onChange={e => { setEErr(''); setHDays(e.target.value) }}
-                onKeyDown={e => { if (e.key === 'Enter') saveNote(p.id, c.date); if (e.key === 'Escape') setNoteId(null) }}
+                onKeyDown={e => { if (e.key === 'Enter') saveNote(p.id, c.date, c.recId!); if (e.key === 'Escape') setNoteId(null) }}
               />
               <input
                 className="oil-text given"
@@ -532,16 +538,18 @@ export function OilTracker({ person, onClose, onGranted }: {
                 placeholder="given by (optional)"
                 aria-label="Given by"
                 onChange={e => { setEErr(''); setHGiven(e.target.value) }}
-                onKeyDown={e => { if (e.key === 'Enter') saveNote(p.id, c.date); if (e.key === 'Escape') setNoteId(null) }}
+                onKeyDown={e => { if (e.key === 'Enter') saveNote(p.id, c.date, c.recId!); if (e.key === 'Escape') setNoteId(null) }}
               />
-              <button className="dchip approve" data-testid="oil-note-save" onClick={() => saveNote(p.id, c.date)}>Save</button>
+              <button className="dchip approve" data-testid="oil-note-save" onClick={() => saveNote(p.id, c.date, c.recId!)}>Save</button>
               {eErr && <span className="note warn" data-testid="oil-note-err">{eErr}</span>}
             </div>
           ) : (
             <div className="l2">
               {canNote ? (
                 <button className="oil-notebtn" data-testid={`oil-note-${tid(c.id, c.ledgerId)}`} onClick={e => { e.stopPropagation(); startNote(c, p.id) }} title="Say why this credit was given">
-                  {c.manual && c.reason !== 'weekend duty' && c.reason !== 'PH duty' ? c.reason : '+ reason'}
+                  {/* An award no longer borrows the weekend's words, so the
+                      button simply asks whether it has any of its own. */}
+                  {c.manual && c.reason ? c.reason : '+ reason'}
                   {c.hours?.[0] && <span className="oil-hrs"> · {hhmm(c.hours[0][0])}–{hhmm(c.hours[0][1])}</span>}
                   {c.days != null && <span className="oil-hrs"> · {c.days} days</span>}
                 </button>

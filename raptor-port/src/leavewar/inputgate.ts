@@ -204,7 +204,21 @@ function vet(persons: ReadonlySet<string>, changedIds: ReadonlySet<string>, with
       if (!withWork) continue
       const war = warHolding(rawState().wars, d)
       if (!war) continue
-      const credits = recsAt(war.recs, p, d).filter(r => r.kind === 'credit')
+      /* ONLY A CREDIT THE SCHEDULE EARNED IS EVIDENCE THAT HE WORKED (N13,
+         20 Sep 26 — "if I add FO or HO on the leave war or the OIL tracker it
+         shouldn't be counting that person as working unless it's stated in
+         the input or the schedule").
+         This took EVERY credit as attendance, which was harmless only while an
+         award and an earned credit could not share a day. It told the filer
+         "X is recorded as working on that day — this leave is filed anyway and
+         flagged for someone to resolve", and for an award neither half is
+         true: `forbiddenPair` exempts an award, so the day never goes amber
+         and there is nothing to resolve. The app promised a warning it then
+         did not show. N16 is what makes that visible, not what causes it.
+         Q7 and B8 — "a hand-typed credit with no times is whole-day work" —
+         still stand for the credit they now describe: an AUTOMATIC one whose
+         schedule reported no hours. */
+      const credits = recsAt(war.recs, p, d).filter(r => r.kind === 'credit' && r.oil === 'auto')
       if (!credits.length) continue
       for (const c of list) {
         if (!changedIds.has(c.id) || !isLeaveCode(c.code)) continue
@@ -338,7 +352,15 @@ function apply(before: unknown): void {
   const overWork = vet(new Set(changed.map(r => String(r.person))), changedIds, true)
   const replaced = inDoor() ? [] : replaceBids(changed)
   const msgs = [...cut, ...overWork, ...(replaced.length ? [`This replaces ${replaced.join(', ')} on the Leave War`] : [])]
-  if (msgs.length) HOOKS.toast(msgs.join(' · '), '')
+  /* AMBER, BECAUSE THESE ARE WARNINGS (owner, 21 Sep 26). They went out on the
+     plain face, which is the one used for "Saved" — so the app said a medical
+     had cut someone's leave, or that a man is recorded as working the day the
+     leave was just filed on, in exactly the voice it says nothing happened.
+     The tint also buys the longer hold, which is what he asked for: these are
+     whole sentences and several of them can arrive at once. Nothing is
+     refused here — the owner's doctrine is record it, flag it, let a human
+     resolve — so the colour is the entire signal. */
+  if (msgs.length) HOOKS.toast(msgs.join(' · '), 'warn')
   refreshAbsencesAndRepaint()
 }
 

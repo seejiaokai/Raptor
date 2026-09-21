@@ -76,16 +76,21 @@ describe('setManualCredit', () => {
     setRole('member')
     expect(setManualCredit(P, SAT, 'FO')).toContain('admin')
     setRole('admin')
-    expect(setManualCredit(P, SAT, 'FO', { days: 1.3 })).toContain('halves')
+    expect(setManualCredit(P, SAT, 'FO', { days: 9999 })).toContain('more than')
     expect(setManualCredit(P, SAT, 'FO', { days: 0 })).toContain('how many days')
     expect(creditOn(P, SAT)).toBeUndefined()
   })
 
-  it('leaves a day the published schedule already earns to the schedule', () => {
-    expect(setManualCredit(P, SAT, 'FO')).toBeNull()
-    const list = rawState().wars[0]!.recs[P]![SAT]!
-    ;(list.find(r => r.kind === 'credit') as { oil: string }).oil = 'auto'
-    expect(setManualCredit(P, SAT, 'HO')).toContain('published schedule')
+  it('lands BESIDE a day the published schedule already earns (N16, 21 Sep 26)', () => {
+    /* It used to answer "That day already earns OIL from the published
+       schedule" and write nothing. The owner ruled the two add up and never
+       affect each other, so refusing here was the app declining to record a
+       fact he has said is separate. */
+    expect(ingestDutyCredit(P, SAT, 'FO', 'Duty', [[480, 1080]])).toBe('written')
+    expect(setManualCredit(P, SAT, 'HO', { days: 3 })).toBeNull()
+    const list = rawState().wars[0]!.recs[P]![SAT]!.filter(r => r.kind === 'credit')
+    expect(list).toHaveLength(2)
+    expect(getState().views[P]?.[SAT]?.earnsOil).toBe(4)
   })
 
   it('never refuses for clashing with leave — both land, and an award does not flag the day', () => {
@@ -121,7 +126,7 @@ describe('the OIL control on the day sheet', () => {
     fireEvent.change(screen.getByTestId('oil-why'), { target: { value: 'Recall' } })
     fireEvent.change(screen.getByTestId('oil-given-by'), { target: { value: 'OC Ops' } })
     fireEvent.change(screen.getByTestId('oil-days'), { target: { value: '2' } })
-    fireEvent.click(screen.getByTestId('oil-fo'))
+    fireEvent.click(screen.getByTestId('oil-give'))
     expect(creditOn(P, TUE)).toMatchObject({
       code: 'FO', oil: 'manual', note: 'Recall', givenBy: 'OC Ops', days: 2,
     })
@@ -130,7 +135,7 @@ describe('the OIL control on the day sheet', () => {
   it('says so rather than guessing when the quantity cannot be read', () => {
     openSheet(TUE)
     fireEvent.change(screen.getByTestId('oil-days'), { target: { value: 'lots' } })
-    fireEvent.click(screen.getByTestId('oil-fo'))
+    fireEvent.click(screen.getByTestId('oil-give'))
     expect(screen.getByTestId('oil-err').textContent).toContain('how many days')
     expect(creditOn(P, TUE)).toBeUndefined()
   })
@@ -178,7 +183,7 @@ describe('placing leave on a day outside the posting dates', () => {
     fireEvent.click(screen.getByTestId('postout-place'))
     fireEvent.click(screen.getByTestId('bid-oil'))
     fireEvent.change(screen.getByTestId('oil-why'), { target: { value: 'Clearing' } })
-    fireEvent.click(screen.getByTestId('oil-fo'))
+    fireEvent.click(screen.getByTestId('oil-give'))
     expect(creditOn(P, day)?.note).toBe('Clearing')
   })
 
@@ -201,9 +206,9 @@ describe('who said so is RECORDED and VISIBLE', () => {
     expect(setManualCredit(P, TUE, 'FO', { note: 'Recall', givenBy: 'OC Ops' })).toBeNull()
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('oil-tracker'))
-    const row = screen.getByTestId(`oil-entry-${P}-auto:0:${TUE}`)
+    const row = screen.getByTestId(`oil-entry-${P}-award:0:${TUE}`)
     expect(row.textContent).toContain('OC Ops')
-    fireEvent.click(screen.getByTestId(`oil-note-${P}-auto:0:${TUE}`))
+    fireEvent.click(screen.getByTestId(`oil-note-${P}-award:0:${TUE}`))
     expect((screen.getByTestId('oil-note-given') as HTMLInputElement).value).toBe('OC Ops')
     fireEvent.change(screen.getByTestId('oil-note-given'), { target: { value: 'SQNCDR' } })
     fireEvent.click(screen.getByTestId('oil-note-save'))
@@ -308,7 +313,7 @@ describe('the OIL read-back, hardened', () => {
 
 /* THE ONE THAT COST A MAN TWO DAYS (Fable, 21 Sep 26). */
 describe('an award the schedule later earns on top of', () => {
-  it('keeps every day it was worth — the takeover must not eat it', () => {
+  it('ADDS UP with the day it worked — 3 + 1 = 4 (N16, 21 Sep 26)', () => {
     /* The takeover was built when a hand-typed credit meant "the squadron
        recorded this work first" — the same fact, so replacing it lost nothing.
        Since the owner's 20 Sep ruling it is an AWARD: days a man is OWED, which
@@ -317,17 +322,33 @@ describe('an award the schedule later earns on top of', () => {
     expect(setManualCredit(P, SAT, 'FO', { note: 'Exercise recovery', givenBy: 'OC Ops', days: 3 })).toBeNull()
     expect(getState().views[P]?.[SAT]?.earnsOil).toBe(3)
     expect(ingestDutyCredit(P, SAT, 'FO', 'Duty', [[480, 1080]])).toBeTruthy()
-    expect(getState().views[P]?.[SAT]?.earnsOil).toBe(3)
+    /* Was 3 — the takeover kept the LARGER of the two, which was the safe
+       reading of a defect while the owner's decision was still open. He
+       ruled on 21 Sep that they ADD. */
+    expect(getState().views[P]?.[SAT]?.earnsOil).toBe(4)
   })
 
-  it('still says whose award it was, and why — not the weekend underneath it', () => {
+  it('reads BOTH back on the day — the award and the day he worked, told apart', () => {
+    /* Two records, so the tap opens the record LIST and there is one detail
+       block each. Reading "the" block by a bare testid is what this test used
+       to do, and with two on screen it would either throw or silently pin
+       whichever came first — which is no assertion at all. Each block is
+       addressed by its own record. */
     expect(setManualCredit(P, SAT, 'FO', { note: 'Exercise recovery', givenBy: 'OC Ops', days: 3 })).toBeNull()
     expect(ingestDutyCredit(P, SAT, 'FO', 'Duty', [[480, 1080]])).toBeTruthy()
+    const recs = rawState().wars[0]!.recs[P]![SAT]!.filter(r => r.kind === 'credit') as any[]
+    const award = recs.find(r => r.oil === 'manual')!
+    const earned = recs.find(r => r.oil === 'auto')!
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${SAT}`))
-    expect(screen.getByTestId('oil-detail-why').textContent).toBe('Exercise recovery')
-    expect(screen.getByTestId('oil-detail-given').textContent).toBe('OC Ops')
-    expect(screen.getByTestId('oil-detail-days').textContent).toContain('3 days')
+
+    expect(screen.getByTestId(`oil-detail-why-${award.id}`).textContent).toBe('Exercise recovery')
+    expect(screen.getByTestId(`oil-detail-given-${award.id}`).textContent).toBe('OC Ops')
+    expect(screen.getByTestId(`oil-detail-days-${award.id}`).textContent).toContain('3 days')
+
+    // the schedule's own day says the SCHEDULE gave it, never the admin
+    expect(screen.getByTestId(`oil-detail-given-${earned.id}`).textContent).toBe('Weekend/PH')
+    expect(screen.getByTestId(`oil-detail-days-${earned.id}`).textContent).toContain('a day')
   })
 
   it('does not churn: a second pass over the same day writes nothing new', () => {
@@ -341,3 +362,56 @@ describe('an award the schedule later earns on top of', () => {
   })
 })
 
+
+/* THE OTHER ORDER — publish FIRST, then award (N16, 21 Sep 26). */
+describe('a day the schedule has already earned on', () => {
+  /* The store always allowed this and a unit test proved it, but NO SCREEN
+     offered it: the cell reads as the schedule's, so the tap opened the
+     read-only sheet, which has no +OIL. Award-then-publish worked and
+     publish-then-award did not, so half the owner's ruling lived only in the
+     tests. Found by review, then confirmed by hand in the running app — the
+     hand test had walked one order and not the other. */
+  it('opens STRAIGHT on the sheet that can take one — no second window', () => {
+    /* For a few hours an admin got a read-only sheet first and had to press a
+       button to reach this one — two windows, the second carrying everything
+       the first did except the "where it came from" line. The owner asked why
+       he could not just have the second; the answer was to MOVE that line
+       rather than charge a tap for it. */
+    expect(ingestDutyCredit(P, SAT, 'HO', 'FLT', [[420, 780]])).toBe('written')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-${SAT}`))
+
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
+    expect(screen.queryByTestId('raptor-award')).toBeNull()
+    // …and nothing the locked sheet used to say has been lost
+    expect(screen.getByTestId('raptor-note').textContent).toContain('published schedule')
+    expect(screen.getByTestId('oil-detail-days').textContent).toContain('half a day')
+
+    fireEvent.click(screen.getByTestId('bid-oil'))
+    fireEvent.change(screen.getByTestId('oil-days'), { target: { value: '3' } })
+    fireEvent.change(screen.getByTestId('oil-why'), { target: { value: 'Exercise recovery' } })
+    fireEvent.click(screen.getByTestId('oil-give'))
+
+    const credits = rawState().wars[0]!.recs[P]![SAT]!.filter(r => r.kind === 'credit')
+    expect(credits).toHaveLength(2)
+    expect(getState().views[P]?.[SAT]?.earnsOil).toBe(3.5)
+  })
+
+  it('a MEMBER still gets the read-only sheet — there is nothing there for him to do', () => {
+    expect(ingestDutyCredit(P, SAT, 'FO', 'FLT', [[480, 1080]])).toBe('written')
+    setRole('member'); setViewer(P)
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-${SAT}`))
+    expect(screen.getByTestId('raptor-sheet')).toBeTruthy()
+    expect(screen.getByTestId('raptor-note').textContent).toContain('published schedule')
+    expect(screen.queryByTestId('bid-oil')).toBeNull()
+  })
+
+  it('does not offer it where an award is already there — that day opens the list', () => {
+    setManualCredit(P, SAT, 'FO', { days: 3 })
+    expect(ingestDutyCredit(P, SAT, 'FO', 'FLT', [[480, 1080]])).toBe('written')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-${SAT}`))
+    expect(screen.getByTestId('daylist-sheet')).toBeTruthy()
+  })
+})

@@ -3217,6 +3217,19 @@ export function Matrix() {
   const openAnyCredit = open
     ? (recordsAt(open.id, open.date).find(r => r.kind === 'credit') as CreditRec | undefined)
     : undefined
+  /* A DAY THE SCHEDULE HAS ALREADY EARNED ON STILL TAKES AN AWARD (N16,
+     21 Sep 26). The owner ruled the two add up and that the same two facts
+     must not be kept or lost depending on which was entered first. The STORE
+     obeys that — but the screen did not: a day holding only the schedule's
+     credit reads as Raptor's, so the tap opened the read-only sheet, which
+     has no +OIL control and no other door offers one. Award-then-publish
+     worked; publish-then-award was unreachable, so half the ruling existed
+     only in the tests. Found by review and confirmed in the running app.
+     Admin only, and only when the day holds no LEAVE the Inputs page owns —
+     that cell is still the Inputs page's to change. */
+  const openWorkOnly = !!open && !!openView && role === 'admin'
+    && openView.all.length > 0 && openView.all.every(c => c.kind === 'credit')
+    && !openView.all.some(c => c.kind === 'credit' && !c.auto)
   const openFreeHalf = open && raptorOwns(states, open.id, open.date)
     && canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id)
     ? freeHalfBeside(openView)
@@ -3926,7 +3939,7 @@ export function Matrix() {
           sheets. That cell is approved elsewhere: offering a picker or a
           decision on it would offer an action the store will refuse, which
           is worse than offering nothing. */}
-      {open && !listOpen && !canRemark && raptorOwns(states, open.id, open.date) && !openFreeHalf && (
+      {open && !listOpen && !canRemark && raptorOwns(states, open.id, open.date) && !openFreeHalf && !openWorkOnly && (
         <RaptorSheet
           callsign={open.callsign}
           date={open.date}
@@ -4194,7 +4207,7 @@ export function Matrix() {
       )}
       {/* a member may bid CLEARING leave after their own posting-out (owner
           answer C, 20 Sep 26) — the admin's tap there stays the PO sheet */}
-      {open && !listOpen && !canRemark && (placing || ((!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin'))) && (!raptorOwns(states, open.id, open.date) || !!openFreeHalf)
+      {open && !listOpen && !canRemark && (placing || ((!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin'))) && (!raptorOwns(states, open.id, open.date) || !!openFreeHalf || openWorkOnly)
         && canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id) && (
         <BidPicker
           key={`${open.id}-${open.date}`}
@@ -4248,6 +4261,7 @@ export function Matrix() {
               giver: creditGiver(openAnyCredit),
               auto: openAnyCredit.oil === 'auto',
               spans: openAnyCredit.spans,
+              via: openAnyCredit.via,
             }
             : null}
           onCreditClear={role === 'admin' && openCredit

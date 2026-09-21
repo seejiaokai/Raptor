@@ -15,7 +15,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { balanceOf } from '../engine'
-import { getState, initStore, rawState, setCell, setCellDays, setManualCredit, setRole } from '../state/store'
+import { getState, HALF_STEP_MSG, initStore, rawState, setCell, setCellDays, setManualCredit, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -51,10 +51,11 @@ describe('a grant worth more than one day', () => {
     expect(oilOf(P)).toBe(before + 0.5)
   })
 
-  it('goes in halves, and refuses what is not a real quantity', () => {
+  it('goes in halves at EVERY door, in the same words (owner, 21 Sep 26)', () => {
     expect(setManualCredit(P, TUE, 'FO', { days: 1.5 })).toBeNull()
     expect(oilOf(P)).toBeGreaterThan(0)
-    expect(setManualCredit(P, TUE, 'FO', { days: 1.3 })).toContain('halves')
+    expect(setManualCredit(P, TUE, 'FO', { days: 1.3 })).toBe(HALF_STEP_MSG)
+    expect(setCellDays(P, TUE, 0.3)).toBe(HALF_STEP_MSG)
     expect(setManualCredit(P, TUE, 'FO', { days: 0 })).toContain('how many days')
     expect(setManualCredit(P, TUE, 'FO', { days: -2 })).toContain('how many days')
     expect(setManualCredit(P, TUE, 'FO', { days: 9999 })).toContain('more than')
@@ -106,8 +107,8 @@ describe('the quantity in the OIL tracker', () => {
     expect(setManualCredit(P, TUE, 'FO', { note: 'Exercise', givenBy: 'OC Ops', days: 3 })).toBeNull()
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('oil-tracker'))
-    expect(screen.getByTestId(`oil-entry-${P}-auto:0:${TUE}`).textContent).toContain('3 days')
-    fireEvent.click(screen.getByTestId(`oil-note-${P}-auto:0:${TUE}`))
+    expect(screen.getByTestId(`oil-entry-${P}-award:0:${TUE}`).textContent).toContain('3 days')
+    fireEvent.click(screen.getByTestId(`oil-note-${P}-award:0:${TUE}`))
     expect((screen.getByTestId('oil-note-days') as HTMLInputElement).value).toBe('3')
     fireEvent.change(screen.getByTestId('oil-note-days'), { target: { value: '2.5' } })
     fireEvent.click(screen.getByTestId('oil-note-save'))
@@ -118,7 +119,7 @@ describe('the quantity in the OIL tracker', () => {
     expect(setManualCredit(P, TUE, 'FO', { note: 'Exercise' })).toBeNull()
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('oil-tracker'))
-    fireEvent.click(screen.getByTestId(`oil-note-${P}-auto:0:${TUE}`))
+    fireEvent.click(screen.getByTestId(`oil-note-${P}-award:0:${TUE}`))
     fireEvent.change(screen.getByTestId('oil-note-days'), { target: { value: 'lots' } })
     fireEvent.click(screen.getByTestId('oil-note-save'))
     expect(screen.getByTestId('oil-note-err').textContent).toContain('how many days')
@@ -156,7 +157,7 @@ describe('tapping an OIL day shows what is on it', () => {
     openDay()
     fireEvent.click(screen.getByTestId('bid-oil'))
     fireEvent.change(screen.getByTestId('oil-days'), { target: { value: '1' } })
-    fireEvent.click(screen.getByTestId('oil-fo'))
+    fireEvent.click(screen.getByTestId('oil-give'))
     const credits = (rawState().wars[0]!.recs[P]![TUE] ?? []).filter(r => r.kind === 'credit')
     expect(credits).toHaveLength(1)
     expect(creditOn(P, TUE)!.days).toBe(1)
@@ -170,16 +171,22 @@ describe('tapping an OIL day shows what is on it', () => {
     expect(creditOn(P, TUE)).toBeUndefined()
   })
 
-  it('a credit the SCHEDULE earned is not offered for editing at all — it is the schedule’s', () => {
-    // It opens the READ-ONLY sheet, not the bid sheet: the cell belongs to
-    // Raptor, and the OIL pass would overwrite anything typed onto it on its
-    // next run. That is the existing lock, and the +OIL control inherits it.
+  it('a credit the SCHEDULE earned is still never EDITED — it is the schedule’s', () => {
+    /* An admin reaches the picker on such a day now (N16: he may record an
+       AWARD beside it), so what this pins is the thing that has not changed:
+       the earned credit itself is read-back only. Nothing offers to change
+       its worth, its reason or its giver, and nothing offers to remove it —
+       the OIL pass owns it and would overwrite anything typed on top. */
     expect(setManualCredit(P, TUE, 'FO')).toBeNull()
     const list = rawState().wars[0]!.recs[P]![TUE]!
     ;(list.find(r => r.kind === 'credit') as { oil: string }).oil = 'auto'
     openDay()
-    expect(screen.queryByTestId('bid-picker')).toBeNull()
-    expect(screen.queryByTestId('bid-oil')).toBeNull()
+    // it is read back, in full
+    expect(screen.getByTestId('oil-detail-days')).toBeTruthy()
+    expect(screen.getByTestId('raptor-note')).toBeTruthy()
+    // …and offered no editor of its own
+    expect(screen.queryByTestId('oil-current')).toBeNull()
+    expect(screen.queryByTestId('oil-clear')).toBeNull()
   })
 })
 
@@ -188,5 +195,91 @@ describe('the marks on the box', () => {
     expect(setCell(P, TUE, '*LL')).toBe(true)
     render(<Matrix />)
     expect(screen.getByTestId(`cell-${P}-${TUE}`).textContent).toContain('<LL')
+  })
+})
+
+/* ONE QUANTITY, ONE MEANING (owner, 21 Sep 26). */
+describe('how many days the sheet asks for', () => {
+  const openOil = (date: string) => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-${date}`))
+    fireEvent.click(screen.getByTestId('bid-oil'))
+  }
+  const days = (v: string) => fireEvent.change(screen.getByTestId('oil-days'), { target: { value: v } })
+
+  it('shows 1 rather than an empty box — the ordinary grant, said out loud', () => {
+    openOil(TUE)
+    expect((screen.getByTestId('oil-days') as HTMLInputElement).value).toBe('1')
+  })
+
+  it('there is ONE button, and it says what the day will READ as', () => {
+    /* It had an FO/HO pair AND a days box — two controls for one fact, so "HO"
+       beside a "1" read as nonsense. For an award the code is only the label on
+       the grid square now; the quantity is the fact, and the code follows it. */
+    openOil(TUE)
+    expect(screen.queryByTestId('oil-fo')).toBeNull()
+    expect(screen.queryByTestId('oil-ho')).toBeNull()
+    expect(screen.getByTestId('oil-give').textContent).toContain('FO')
+    days('0.5')
+    expect(screen.getByTestId('oil-give').textContent).toContain('HO')
+    days('2')
+    expect(screen.getByTestId('oil-give').textContent).toContain('FO')
+  })
+
+  it('the default 1 gives a day, and reads FO', () => {
+    openOil(TUE)
+    fireEvent.click(screen.getByTestId('oil-give'))
+    expect(getState().views[P]?.[TUE]?.earnsOil).toBe(1)
+    expect(creditOn(P, TUE)!.code).toBe('FO')
+  })
+
+  it('under a day reads HO and is worth what was typed', () => {
+    openOil(TUE)
+    days('0.5')
+    fireEvent.click(screen.getByTestId('oil-give'))
+    expect(getState().views[P]?.[TUE]?.earnsOil).toBe(0.5)
+    expect(creditOn(P, TUE)!.code).toBe('HO')
+  })
+
+  it('more than a day reads FO and is worth what was typed', () => {
+    openOil(TUE)
+    days('3')
+    fireEvent.click(screen.getByTestId('oil-give'))
+    expect(getState().views[P]?.[TUE]?.earnsOil).toBe(3)
+    expect(creditOn(P, TUE)).toMatchObject({ code: 'FO', days: 3 })
+  })
+
+  it('REFUSES a quantity that is not a half — the guard rail (owner, 21 Sep 26)', () => {
+    /* "put a guard rail to make sure that only 0.5 multiples can be input just
+       like the oil tracker". A half day is the smallest thing the grid ever
+       CHARGES, so an odd quantity can never be drawn down cleanly — a
+       remainder under a half strands in the balance. Refused, not silently
+       corrected: a number quietly changed after it was typed is the very
+       thing this branch spent two days removing.
+       Restores his 6 Sep rule and extends it to the door that had escaped
+       it; withdraws his own earlier ask the same day that an odd number be
+       accepted, which he reversed once he saw the cost. */
+    openOil(TUE)
+    days('0.3')
+    fireEvent.click(screen.getByTestId('oil-give'))
+    expect(screen.getByTestId('oil-err').textContent).toContain('halves')
+    expect(creditOn(P, TUE)).toBeUndefined()
+  })
+
+  it('and says it the SAME way the OIL tracker does', () => {
+    /* Two sentences for one rule drift apart the moment one is edited — the
+       seam the house rules name. The war used to word this its own way. */
+    openOil(TUE)
+    days('1.3')
+    fireEvent.click(screen.getByTestId('oil-give'))
+    expect(screen.getByTestId('oil-err').textContent).toBe(HALF_STEP_MSG)
+  })
+
+  it('still refuses what is not a quantity at all', () => {
+    openOil(TUE)
+    days('lots')
+    fireEvent.click(screen.getByTestId('oil-give'))
+    expect(screen.getByTestId('oil-err').textContent).toContain('how many days')
+    expect(creditOn(P, TUE)).toBeUndefined()
   })
 })

@@ -18,9 +18,14 @@ const NONE: OilPolicy = { expiry: null, historyMonths: null }
 const DAYS30: OilPolicy = { expiry: { n: 30, unit: 'days' }, historyMonths: 6 }
 const MONTHS3: OilPolicy = { expiry: { n: 3, unit: 'months' }, historyMonths: 6 }
 
-/** One person, one war, the cells given — everything else empty. */
+/** One person, one war, the cells given — everything else empty.
+ *  Every cell reads as the SCHEDULE'S own (`source: 'raptor'`). It used to
+ *  leave the states empty, which made every FO/HO in here a hand-typed
+ *  AWARD by accident — harmless while the two behaved alike, and misleading
+ *  since N16 (21 Sep 26) gave them different reasons and different rows. */
 function ctxOf(grid: Record<string, string>, ledger: Ledger = [], openings: Openings = {}): FigureCtx {
-  return { openings, ledger, sources: [{ grid: { p: grid }, states: {} }] }
+  const states = { p: Object.fromEntries(Object.keys(grid).map(d => [d, { state: 'approved' as const, source: 'raptor' as const }])) }
+  return { openings, ledger, sources: [{ grid: { p: grid }, states }] }
 }
 
 describe('addMonths', () => {
@@ -49,7 +54,14 @@ describe('the credit\'s reason and who gave it', () => {
     const led = oilLedgerFor(ctx, 'p', NONE, '2026-02-01')
     expect(led.credits.map(c => [c.date, c.reason, c.manual ?? false])).toEqual([
       ['2026-01-03', 'FLT + SIM', false],
-      ['2026-01-04', 'weekend duty', true],
+      /* AN AWARD DOES NOT BORROW THE WEEKEND'S WORDS (N16, 21 Sep 26). The
+         fall-back reason is the SCHEDULE'S evidence — it says the app worked
+         this out from a published weekend. An award has no weekend behind
+         it, and since a Saturday can now carry both, one row saying
+         "weekend duty" beside another that really is weekend duty told the
+         reader two contradictory stories. A blank reason is what the
+         tracker's "+ reason" button is for. */
+      ['2026-01-04', '', true],
       ['2026-01-05', 'typed', true],
     ])
   })

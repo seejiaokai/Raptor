@@ -175,8 +175,12 @@ describe('overseas duty', () => {
     // thin. A man overseas is simply gone, and must never be counted there:
     // a day thin because half the squadron is on SC reads very differently
     // from one thin because half the squadron is abroad.
+    /* The SC-duty man is still COUNTED since 21 Sep 26 — both IPs read here.
+       What this test is really guarding is the OTHER half: overseas duty is a
+       planned absence, so it removes the whole man, and it is never reported
+       on the duty line. Both of those still hold below. */
     const scDuty = evaluateDay(people, { ip1: { [D]: 'FO' } }, worked('ip1', D), reqs, D)
-    expect(scDuty.counts.byCategory.IP).toBe(1)
+    expect(scDuty.counts.byCategory.IP).toBe(2)
     expect(scDuty.counts.duty).toBe(1)
     expect(away.counts.duty).toBe(0)
   })

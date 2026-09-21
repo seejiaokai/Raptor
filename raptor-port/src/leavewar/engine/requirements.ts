@@ -66,7 +66,9 @@ export type RuleCount =
   | { kind: 'people'; filter: CrewFilter }
   /** Complete teams of DIFFERENT people, one slot each. `show` picks what the
    *  cell displays (and what the thresholds judge): the number of teams, or
-   *  the people inside them (teams × team size). `presence` counts someone
+   *  the people inside them (teams × team size). `presence` is RETIRED by N17
+   *  (21 Sep 26) — read from stored rules so an old one still loads, but it
+   *  no longer changes any number, because a credit removes nobody. It counted
    *  standing SC duty as present — the SC-cover reading, where a man at work
    *  is the manning, not a gap — where absent/false only availability counts. */
   | { kind: 'team'; slots: TeamSlot[]; show?: 'teams' | 'people'; presence?: boolean }
@@ -149,15 +151,15 @@ export function describeRule(rule: ManningRule, qualLabel: (k: string) => string
   if (rule.count.kind === 'people') {
     return `Counts available ${filterWords(rule.count.filter, qualLabel)}. Ground crew never counted; a half day of leave costs half a person.`
   }
-  const { slots, show, presence } = rule.count
+  const { slots, show } = rule.count
   const size = slots.reduce((n, s) => n + s.count, 0)
   const parts = slots.map(s => `${s.count} ${filterWords(s.filter, qualLabel)}`).join(' + ')
   const body = `One team is ${parts} — ${size} different people, ground crew never counted.`
   const shown = show === 'people'
     ? `The day's number is how many people fill complete teams (teams × ${size}).`
     : `The day's number is how many complete teams can still be manned.`
-  const duty = presence
-    ? ' Someone standing SC duty still counts — they are at work.'
-    : ''
-  return `${body} ${shown}${duty}`
+  /* The `presence` switch no longer changes the number (N17, 21 Sep 26 — a
+     credit removes nobody, so a man on the desk was always counted), and a
+     sentence promising a difference that does not exist is worse than none. */
+  return `${body} ${shown}`
 }

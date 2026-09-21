@@ -82,13 +82,28 @@ describe('leave over recorded work is FLAGGED, not refused (owner, 20 Sep 26)', 
      is written, the day goes amber, and the filer is told in the same breath.
      The TIME test (§26.3, B4) is untouched: hours that miss are not a clash
      at all, and nothing is said. */
-  it('files leave on a day credited as worked with no times, and says so (owner Q7)', () => {
+  /* B8 and Q7 — "a credit may carry work times; none means the WHOLE day" —
+     still stand, NARROWED by N13 (20 Sep 26) to the credit they now describe:
+     an AUTOMATIC one, read off a published schedule that reported no hours.
+     They no longer reach a hand-typed award, which says a man is OWED a day
+     and nothing about where he was.
+     THE EARNED-CREDIT HALF of this rule is proved in `scenarios-bughunt`
+     ("filing the leave the other way round is flagged too"), where a real
+     duty input is published and the OIL pass mints the credit itself. It
+     cannot be staged here: the pass's reverse half takes an earned credit
+     straight back off any day no published schedule supports, so a
+     hand-planted one is gone before the door is reached. What belongs
+     here is the half that door decides — an AWARD is not work. */
+  it('…and says NOTHING when the day only carries an AWARD (N13, N16 — not B8/Q7)', () => {
+    /* The other half, which nothing pinned before: an award is not evidence
+       that anybody worked, so filing leave beside one is an ordinary filing.
+       Invisible until N16 let the two share a day — and the reason this is
+       the place it would have gone wrong. */
     setRole('admin')
     expect(setCell('ammo', '2026-02-14', 'FO')).toBe(true)
-    // no times on a hand-typed credit still means the WHOLE day (Q7, B8)
     expect(file('ammo', 'LL', 'Feb 14')).toBe(true)
-    expect(said.some(m => m.includes('recorded as working on 14 Feb'))).toBe(true)
-    expect(said.some(m => m.includes('flagged for someone to resolve'))).toBe(true)
+    expect(said.some(m => m.includes('recorded as working'))).toBe(false)
+    expect(getState().views.ammo?.['2026-02-14']?.amber).toBe(false)
     expect(codeAt('ammo', '2026-02-14')).toBe('LL')
   })
 
@@ -101,7 +116,9 @@ describe('leave over recorded work is FLAGGED, not refused (owner, 20 Sep 26)', 
     setRole('admin')
     expect(setCell('ammo', '2026-02-14', 'LL')).toBe(true)
     // the work was credited after the bid
-    lwEditLists([{ personId: 'ammo', date: '2026-02-14', drop: [], add: [{ id: 'c-late', kind: 'credit', code: 'FO', oil: 'manual' } as any] }])
+    // the SCHEDULE credited the work after the bid — an award would not flag
+    // the day at all (N13), so it cannot stand in for one here
+    lwEditLists([{ personId: 'ammo', date: '2026-02-14', drop: [], add: [{ id: 'c-late', kind: 'credit', code: 'FO', oil: 'auto' } as any] }])
     advanceStage()
     setBidState('ammo', '2026-02-14', 'approved')
     expect(rowsOf('ammo', 'LL')).toHaveLength(1)                    // granted

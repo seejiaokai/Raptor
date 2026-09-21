@@ -31,9 +31,15 @@ describe('availabilityOf', () => {
     expect(availabilityOf(someone, '2026-01-05', 'OD')).toBe(0)
   })
 
-  it('does not count someone on SC duty toward flying, though they are at work', () => {
-    expect(availabilityOf(someone, '2026-01-05', 'FO')).toBe(0)
-    expect(availabilityOf(someone, '2026-01-05', 'HO')).toBe(0)
+  it('STILL COUNTS someone on SC duty — he is a man the squadron has (N17)', () => {
+    /* It read 0 here, so publishing a day turned the Leave War manning red as
+       a direct result of planning it. The owner: "you dont need to take him
+       off the manning. The planner only needs to know if this current day can
+       be fulfilled with the amount of manpower they have as a whole."
+       NARROWS N13's "stands him down from flying"; the duty-desk tally it
+       also named is untouched, by his own answer. */
+    expect(availabilityOf(someone, '2026-01-05', 'FO')).toBe(1)
+    expect(availabilityOf(someone, '2026-01-05', 'HO')).toBe(1)
   })
 
   it('does not count someone who has been posted out', () => {
@@ -79,11 +85,16 @@ describe('countsFor', () => {
     expect(countsFor(people, grid, {}, '2026-01-05').sets).toBe(2.5)
   })
 
-  it('reports people on SC duty separately from people on leave', () => {
+  it('reports people on SC duty separately from people on leave — and still counts them', () => {
+    /* The duty LINE is the half the owner kept (21 Sep 26): it is what tells
+       an admin the desk is covered. What went is the man vanishing from the
+       category count while he did it — only leave and duty-and-commitments
+       take a body out of the manning now. Two IPs here, one of them on the
+       desk; the man on LEAVE is the one who is gone. */
     const grid: Grid = { ip1: { '2026-01-05': 'FO' }, op1: { '2026-01-05': 'LL' } }
     const c = countsFor(people, grid, worked('ip1', '2026-01-05'), '2026-01-05')
     expect(c.duty).toBe(1)
-    expect(c.byCategory.IP).toBe(1)
+    expect(c.byCategory.IP).toBe(2)
     expect(c.byCategory.OPSP).toBe(0)
   })
 
@@ -174,10 +185,12 @@ describe('availability and the bid state', () => {
   // A refused bid gives back the person, not the roster window. Someone
   // posted out on the 4th is not at work on the 5th however his last bid
   // was decided, and the duty short-circuit must still win too.
-  it('does not resurrect a posted-out man, or put a duty man back on the programme', () => {
+  it('does not resurrect a posted-out man', () => {
+    /* The duty half of this went on 21 Sep 26 — a man at work is counted now,
+       refused bid or not. A man who has LEFT is still gone, which is the
+       guard this test is really for. */
     const gone = p('b', 'pilot', 'ops', { to: '2026-01-04' })
     expect(availabilityOf(gone, '2026-01-05', 'LL', 'refused')).toBe(0)
-    expect(availabilityOf(someone, '2026-01-05', 'FO', 'refused')).toBe(0)
   })
 
   it('puts a refused person back into the counts', () => {

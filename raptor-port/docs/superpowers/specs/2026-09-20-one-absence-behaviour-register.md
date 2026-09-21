@@ -369,3 +369,112 @@ That rule was never about permission: an admin could always close the stage, dec
 *Leaves untouched, and it is his own exception:* an input APPROVED and PUBLISHED offers remarks and
 nothing else — to change it an admin reopens the war. One not yet approved stays fully editable.
 
+
+### N16 — an award and a worked day ADD UP (21 Sep 26)
+> "Yes an award and a worked day add up. So it's 4. The auto oil credits don't get affected by
+> manual OIL inputs."
+
+A 3-day award on a Saturday the man then works is worth **four** — the award's three plus the
+day's one. The two are INDEPENDENT: what the published schedule earns is never changed by what a
+person typed, and what a person typed is never changed by the schedule.
+
+So a person/date now holds **one earned credit and one award, side by side**, each keeping its own
+worth, reason and giver. It was one record, and the schedule TOOK AN AWARD OVER when it earned one,
+stashing the award in a snapshot for the unpublish hand-back. Two records make that machinery
+unnecessary and it retires — which matters, because the snapshot is where both of the silent
+balance bugs of 20–21 Sep lived.
+
+The box still shows ONE code: the app's own, with the award behind the `+1` mark. That is not
+cosmetic — the top record is what makes the cell read as owned by the schedule, which is what locks
+it.
+
+*Reverses:* the 21 Sep holding position that a day carrying both is worth the LARGER of the two.
+That was only ever the safe reading of a defect, pending this decision.
+*Settles:* the refusal "That day already earns OIL from the published schedule", which under this
+ruling was the app declining to record a fact the owner has ruled is separate.
+*Leaves untouched:* N13 entirely. An award still flags nothing, stands nobody down and counts
+nobody on duty; the earned credit still does all three. The weekend / public-holiday restriction
+still belongs to the AUTOMATIC pass alone (N11).
+*Consequence, and it was already live:* the Inputs page told a filer "X is recorded as working on
+that day — this leave is filed anyway and flagged for someone to resolve" for ANY credit, award
+included. Under N13 neither half is true of an award: nothing flags it and there is nothing to
+resolve. That note now fires only for a credit the schedule earned.
+
+### N17 — the manning counts BODIES; only a planned absence takes one away (21 Sep 26)
+> "you dont need to take him off the manning. The planner only needs to know if this current day
+> can be fulfilled with the amount of manpower they have as a whole. Doesnt make sense that after
+> the admin plans a day and leave war manning starts to become red, which is weird."
+
+and, asked whether the duty-desk half of N13 should go with it:
+
+> "Dont need that gone. The manning should only reduce if they are like planned by things like
+> leave, duty & commitments."
+
+An OIL credit no longer takes a man out of the manning. Publishing a day used to drop him to zero
+available, so the Leave War went red as a direct consequence of the admin planning it — the count
+answered "who can fly" while the admin was asking "have we the people". It answers the second
+question now, and only LEAVE and a duty-and-commitments input reduce it.
+
+Both reading paths moved together — the one off the day's records and the one off a bare grid —
+because a manning figure that changed depending on which one answered is the drift seam the house
+rules name. The presence branch inside the day counts collapsed into availability, since the two
+are now the same answer.
+
+*Narrows:* N13's duty half, which said an earned credit "stands him down from flying and counts him
+in the duty manning". Only the standing-down went. *Leaves untouched, and it is his own exception:*
+the DUTY LINE still counts a credited man, which is what tells an admin the desk is covered.
+*Leaves untouched:* everything about flying eligibility on the schedule itself — this is the Leave
+War's manning picture, not the crew picker.
+
+### N18 — a clash note holds long enough to read, and looks like a warning (21 Sep 26)
+> "the inputs bubble warning timing is abit too short as well to read it. Maybe increase the timing
+> abit if conflicts are recognised."
+
+The clash notes went out on the plain face — the one used for "Saved" — and held for 2.6 seconds.
+They are whole sentences, and several can arrive joined end to end, so the more there was to read
+the less time there was to read it. They are AMBER now, which is what they always were, and the
+hold grows with the message: the old time as a floor, reading time on top, capped at twelve seconds
+so a runaway message cannot park a toast on screen.
+
+*Context he gave for it, worth keeping:* "even if the leave war is published, it's still a live
+current view of all the inputs and forecast … having the multiple guard rails that if the person
+works on a weekend and attempts to take a leave is a bonus to tell the admin or member to correct
+an error." The warnings are a FEATURE, not noise — which is why the answer was to make them
+readable rather than fewer.
+
+### N19 — an award is ONE number, and it comes in halves (21 Sep 26)
+> "this is confusing, the number of days when u click on HO. Any recommendation on how to present
+> this correctly? Should we just have number of days to input? Then it shows HO or FO as require
+> based on what was input?"
+
+and, after one round of getting it wrong:
+
+> "For any type of leave, be it on the inputs or oil tracker or leave war or oil credits it should
+> always round off … This is to prevent bugs and calculation of the leave balances easier."
+> — "So put a guard rail to make sure that only 0.5 multiples can be input just like the oil
+> tracker"
+
+**ONE CONTROL.** The sheet had TWO for one fact: an FO / HO pair, which already mean a day and half
+a day, and a days box, which also means a quantity. So "HO" beside a "1" read as nonsense, and every
+attempt to rank one over the other produced a different surprise.
+
+For an AWARD the code is now only a LABEL — it is what the grid square shows and nothing else,
+because the worth comes from the quantity and an award clashes with nothing, stands nobody down and
+moves no manning (N13, N16, N17). So **the quantity is the fact and the code follows it**: under a
+day reads HO, a day or more reads FO, and the one button says which before it is pressed.
+
+**HALVES, AND IT IS A GUARD RAIL.** A half day is the smallest thing the grid ever CHARGES, so an
+odd quantity can never be drawn down cleanly — a remainder under a half strands in the balance and
+every figure that touches it carries a fraction nobody can spend. Refused, **not silently
+corrected**: he asked for a guard rail, and a number quietly changed after it was typed is the very
+thing this session spent two days removing.
+
+*Restores and extends:* his 6 Sep 26 "days come in halves — one rule for every pool". The war's
+award had escaped it and worded its own refusal; there is now ONE rule and ONE sentence across the
+war's award, the OIL tracker's grant, a correction and every other leave type. Two sentences for one
+rule drift apart the moment one is edited.
+*Withdraws:* his own ask earlier the same day that an odd number be ACCEPTED — reversed by him
+within the hour, once the cost was put to him.
+*Leaves untouched:* the Inputs page, where leave is whole or half days by construction with no
+quantity to type; and the AUTOMATIC credit, where the published schedule still decides FO or HO by
+the six-hour rule.

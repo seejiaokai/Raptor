@@ -22,15 +22,18 @@ import { Sheet } from './Sheet'
 import { shortSpan } from './dates'
 import './bidpicker.css'
 import './oiltracker.css'
+import { creditWorthText } from '../engine/credit'
 
 /** minutes of the day as `08:00` — the worked hours on an automatic credit */
 const hhmm = (n: number) => `${String(Math.floor(n / 60)).padStart(2, '0')}:${String(n % 60).padStart(2, '0')}`
 
-/** "3 days" / "half a day" / "a day" — what a grant is worth, in words. */
-function creditDays(c: { code: 'FO' | 'HO'; days?: number }): string {
-  const n = c.days ?? (c.code === 'FO' ? 1 : 0.5)
-  return n === 1 ? 'a day' : n === 0.5 ? 'half a day' : `${n} days`
-}
+/* What a credit is worth, in words, comes from `engine/credit.ts` — the ONE
+   formula. A second copy lived here and took only the code and the quantity,
+   so a credit the schedule owned that somehow carried an award's `days` read
+   "3 days" on this sheet while the tracker and the day both said one. That is
+   the exact "the worth changed and no screen admitted it" shape the helper
+   was written to end, so the sheet reads the helper and passes the OWNERSHIP
+   with it (both reviewers, 21 Sep 26). */
 
 const PORTIONS: { portion: Portion; label: string; testid: string }[] = [
   { portion: 'full', label: 'Whole day', testid: 'portion-full' },
@@ -105,7 +108,7 @@ export function BidPicker({
    *  kinds: an award, which `credit` above also lets an admin edit, and one
    *  the app credited itself, which is read-only because the OIL pass owns it
    *  and would overwrite anything typed onto it. */
-  creditShown?: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; auto?: boolean; spans?: Array<[number, number]> } | null
+  creditShown?: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; auto?: boolean; spans?: Array<[number, number]>; via?: 'schedule' | 'input' } | null
   /** THE FOUR THINGS AN ADMIN DOES TO AN INPUT — Ack, Approve, Refuse, Move
    *  — IN EVERY STAGE (owner, 21 Sep 26: "even a single click on an input, i
    *  should be able to click on a move button to move the input just like how
@@ -162,7 +165,28 @@ export function BidPicker({
      hours. Not required"). A grant is an AWARD, not an attendance record, so
      the hours it would have been worked over are not a fact it holds. Blank
      means the code's own worth: a whole day for FO, half for HO. */
-  const [oilDays, setOilDays] = useState(credit?.days != null ? String(credit.days) : '')
+  /* ONE QUANTITY, ONE MEANING (owner, 21 Sep 26 — "this is confusing, the
+     number of days when u click on HO … Should we just have number of days to
+     input? Then it shows HO or FO as require based on what was input?").
+
+     It had TWO controls for one fact: an FO/HO pair, which already mean a day
+     and half a day, and a days box that also means a quantity. So "HO" beside
+     a "1" read as nonsense, and every attempt to rank one over the other
+     produced a different surprise.
+
+     For an AWARD the code is now only a LABEL — it is what the grid square
+     shows, and nothing else: the worth comes from the quantity, an award
+     clashes with nothing, stands nobody down and moves no manning (N13, N16,
+     N17). So the quantity is the fact and the code is derived from it, which
+     is the owner's own suggestion and the only reading with no second way to
+     say the same thing. Under a day reads HO, a day or more reads FO, and the
+     button says which before it is pressed.
+
+     The AUTOMATIC credit is untouched: the published schedule still decides
+     FO or HO by the six-hour rule, and knows nothing about this box. */
+  const [oilDays, setOilDays] = useState(credit?.days != null ? String(credit.days) : '1')
+  const oilN = Number(oilDays.trim())
+  const oilCode: 'FO' | 'HO' = Number.isFinite(oilN) && oilN > 0 && oilN < 1 ? 'HO' : 'FO'
   /* the move field, and the reason a refused move gives — a Move button that
      simply did nothing would read as broken */
   const [moveTo, setMoveTo] = useState('')
@@ -184,8 +208,8 @@ export function BidPicker({
     setMoveErr('That could not be recorded — this day is not this screen’s to decide.')
   }
   const [oilErr, setOilErr] = useState('')
-  const grantOil = (code: 'FO' | 'HO') => {
-    const problem = onCredit!(code, oilDays, oilNote, oilGiven)
+  const grantOil = () => {
+    const problem = onCredit!(oilCode, oilDays, oilNote, oilGiven)
     if (problem) { setOilErr(problem); return }
     onClose()
   }
@@ -490,7 +514,7 @@ export function BidPicker({
                 : 'Grant OIL — a day or half a day off in lieu, for any reason'}
               aria-label={credit ? 'The OIL on this day' : 'Grant OIL'}
               onClick={() => setOilOpen(true)}
-            >{credit ? `${credit.code} · ${creditDays(credit)}` : '+OIL'}</button>
+            >{credit ? `${credit.code} · ${creditWorthText({ ...credit, auto: false })}` : '+OIL'}</button>
           )}
           {onPostOut && (
             <button
@@ -518,7 +542,7 @@ export function BidPicker({
           {credit && (
             <div className="bidsheet-row postout">
               <span className="note" data-testid="oil-current">
-                {creditDays(credit)} of OIL{credit.note ? ` — ${credit.note}` : ''}
+                {creditWorthText({ ...credit, auto: false })} of OIL{credit.note ? ` — ${credit.note}` : ''}
                 {credit.givenBy ? `, given by ${credit.givenBy}` : ''}.
               </span>
               {onCreditClear && (
@@ -543,16 +567,17 @@ export function BidPicker({
                 about DATES, and two of the same question on one sheet reads as
                 a mistake. */}
             <span className="lab">Days</span>
-            {/* More than one day, the way the OIL tracker already grants
-                (owner, 20 Sep 26). Blank is the common case and needs no
-                typing: FO is a day, HO is half. */}
+            {/* The one control. It opens at 1 — the ordinary grant, said out
+                loud rather than implied — and the button beside it shows what
+                the day will READ as before it is pressed. */}
             <input
-              type="text" inputMode="decimal" className="oil-num" maxLength={5}
+              type="text" inputMode="decimal" className="oil-num" maxLength={6}
               data-testid="oil-days" aria-label="How many days" placeholder="days"
               value={oilDays} onChange={e => { setOilErr(''); setOilDays(e.target.value) }}
             />
-            <button className="dchip approve" data-testid="oil-fo" onClick={() => grantOil('FO')}>FO</button>
-            <button className="dchip approve" data-testid="oil-ho" onClick={() => grantOil('HO')}>HO</button>
+            <button className="dchip approve" data-testid="oil-give" onClick={grantOil}>
+              Give {oilCode}
+            </button>
             {oilErr && <span className="note warn" data-testid="oil-err">{oilErr}</span>}
           </div>
         </>
@@ -666,6 +691,25 @@ export function BidPicker({
           reopens exactly those boxes to change them. */}
       {creditShown && (
         <div className="bidsheet-oil-detail" data-testid="oil-detail">
+          {/* WHERE IT CAME FROM, ON THE SAME SHEET (owner, 21 Sep 26 — "why
+              cant u just show me the 2nd picture window which has the same
+              info?").
+              For a few hours an admin tapping a day the schedule had earned on
+              got a read-only sheet FIRST and had to press a button to reach
+              this one — two windows, the second carrying everything the first
+              did except this line. The answer was to MOVE the line, not to
+              charge a tap for it. A member still gets the read-only sheet:
+              there is nothing here for him to do. */}
+          {creditShown.auto && (
+            <div className="bidsheet-row postout">
+              <span className="lab">Where it came from</span>
+              <span className="note" data-testid="raptor-note">
+                {creditShown.via === 'input'
+                  ? 'Earned off a duty input that was accepted — change that input, not the schedule.'
+                  : 'Earned off the published schedule — change the schedule and the OIL follows.'}
+              </span>
+            </div>
+          )}
           <div className="bidsheet-row postout">
             <span className="lab">Reason</span>
             <span className="note" data-testid="oil-detail-why">
@@ -681,7 +725,7 @@ export function BidPicker({
           <div className="bidsheet-row postout">
             <span className="lab">Days</span>
             <span className="note" data-testid="oil-detail-days">
-              {creditDays(creditShown)}
+              {creditWorthText(creditShown)}
               {creditShown.auto && creditShown.spans?.length
                 ? ` — worked ${creditShown.spans.map(([a, b]) => `${hhmm(a)}–${hhmm(b)}`).join(', ')}`
                 : ''}
@@ -905,7 +949,7 @@ export function RaptorSheet({
           <div className="bidsheet-row">
             <span className="lab">Days</span>
             <span className="note" data-testid="oil-detail-days">
-              {creditDays(creditShown)}
+              {creditWorthText(creditShown)}
               {creditShown.spans?.length
                 ? ` — worked ${creditShown.spans.map(([a, b]) => `${hhmm(a)}–${hhmm(b)}`).join(', ')}`
                 : ''}
