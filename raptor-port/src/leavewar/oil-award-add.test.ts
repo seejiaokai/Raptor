@@ -19,6 +19,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { balanceOf } from './engine'
 import { oilLedgerFor } from './engine/oiltracker'
+import { countsFor } from './engine/availability'
 import { creditWorth } from './engine/credit'
 import { creditGiver, listProblem, readRecs, type WarRec } from './engine/warrecs'
 import {
@@ -448,5 +449,46 @@ describe('changing an award', () => {
     expect(setCell(P, SAT, 'HO')).toBe(true)
     expect(awardOn(P, SAT)).toMatchObject({ code: 'HO', note: 'Recovery', givenBy: 'OC Ops', days: 3 })
     expect(worthOf(P, SAT)).toBe(4)
+  })
+})
+
+/* ====================================================================== */
+/*  9. PLANNING A DAY MUST NOT TURN THE MANNING RED (owner, 21 Sep 26)    */
+/* ====================================================================== */
+
+describe('what reduces the manning', () => {
+  /* "you dont need to take him off the manning. The planner only needs to know
+      if this current day can be fulfilled with the amount of manpower they
+      have as a whole. Doesnt make sense that after the admin plans a day and
+      leave war manning starts to become red, which is weird."
+     and, on whether the duty-desk half should go with it:
+      "Dont need that gone. The manning should only reduce if they are like
+       planned by things like leave, duty & commitments."
+     NARROWS N13, whose duty half said an earned credit "stands him down from
+     flying". Only the standing-down went. */
+  const countIP = (date: string) => {
+    const { people, wars } = getState()
+    const war = wars.find(w => w.period.start <= date && date <= w.period.end)!
+    return countsFor(people as never, {} as never, {} as never, date, war.views as never)
+  }
+
+  it('publishing a worked weekend leaves the man in the count', () => {
+    const before = countIP(SAT).byCategory
+    ingestDutyCredit(P, SAT, 'FO', 'Duty', WORKED)
+    const after = countIP(SAT)
+    expect(after.byCategory).toEqual(before)      // planning the day changed nothing
+    expect(after.duty).toBe(1)                    // …and the desk still reads as covered
+  })
+
+  it('an award leaves him in the count too', () => {
+    const before = countIP(SAT).byCategory
+    setManualCredit(P, SAT, 'FO', { days: 3 })
+    expect(countIP(SAT).byCategory).toEqual(before)
+  })
+
+  it('but a day he is on LEAVE for does reduce it', () => {
+    const before = countIP(SAT).byCategory
+    expect(setCell(P, SAT, 'LL')).toBe(true)
+    expect(countIP(SAT).byCategory).not.toEqual(before)
   })
 })

@@ -352,7 +352,15 @@ function apply(before: unknown): void {
   const overWork = vet(new Set(changed.map(r => String(r.person))), changedIds, true)
   const replaced = inDoor() ? [] : replaceBids(changed)
   const msgs = [...cut, ...overWork, ...(replaced.length ? [`This replaces ${replaced.join(', ')} on the Leave War`] : [])]
-  if (msgs.length) HOOKS.toast(msgs.join(' · '), '')
+  /* AMBER, BECAUSE THESE ARE WARNINGS (owner, 21 Sep 26). They went out on the
+     plain face, which is the one used for "Saved" — so the app said a medical
+     had cut someone's leave, or that a man is recorded as working the day the
+     leave was just filed on, in exactly the voice it says nothing happened.
+     The tint also buys the longer hold, which is what he asked for: these are
+     whole sentences and several of them can arrive at once. Nothing is
+     refused here — the owner's doctrine is record it, flag it, let a human
+     resolve — so the colour is the entire signal. */
+  if (msgs.length) HOOKS.toast(msgs.join(' · '), 'warn')
   refreshAbsencesAndRepaint()
 }
 

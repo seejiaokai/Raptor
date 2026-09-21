@@ -110,13 +110,16 @@ describe('ruleHave', () => {
     expect(ruleHave({ ...rc, show: 'teams' }, four, {}, {}, D)).toBe(1.333)
   })
 
-  it('presence counts a man standing SC duty; availability does not', () => {
+  it('a man standing SC duty counts, for presence and availability alike', () => {
     const duo = [p('p1', 'pilot', 'ops', { scd: true }), p('w1', 'wso', 'ops', { scd: true })]
     const grid: Grid = { p1: { [D]: 'FO' } }
     const st = worked('p1', D)
     const slots = [{ count: 1, filter: { seats: ['pilot' as const], quals: ['scDay'] } }, { count: 1, filter: { seats: ['wso' as const], quals: ['scDay'] } }]
     expect(ruleHave({ kind: 'team', slots, presence: true }, duo, grid, st, D)).toBe(1)
-    expect(ruleHave({ kind: 'team', slots }, duo, grid, st, D)).toBe(0)
+    /* Availability used to read 0 for a man on the desk. Since 21 Sep 26 the
+       two answers are the same one: he is a body the squadron has, and only
+       a planned absence takes a body out of the count. */
+    expect(ruleHave({ kind: 'team', slots }, duo, grid, st, D)).toBe(1)
   })
 })
 

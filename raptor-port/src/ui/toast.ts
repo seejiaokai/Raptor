@@ -36,6 +36,16 @@ export function toast(msg:any,kind:any){
         [{transform:'translateX(-50%) translateY(8px)'},{transform:'translateX(-50%)'}],
         {duration:200,easing:'cubic-bezier(.22,.61,.36,1)'})
   }catch(_){/* motion is decoration — a throw here must never eat the toast */}
-  if(toastT)clearTimeout(toastT); toastT=setTimeout(()=>t.style.opacity='0',tint?4200:2600);
+  /* HOW LONG IT HOLDS — long enough to READ (owner, 21 Sep 26: "the inputs
+     bubble warning timing is a bit too short as well to read it. Maybe
+     increase the timing a bit if conflicts are recognised").
+     It was a flat 2.6s plain / 4.2s tinted, which is fine for "Saved" and far
+     too quick for the clash notes, which are whole sentences and sometimes
+     several of them joined end to end — the longer the message, the more it
+     mattered and the less time there was. So the hold now GROWS with the
+     message: the flat time as a floor, then reading time on top, capped so a
+     runaway message cannot park a toast on screen for ever. */
+  const hold=Math.min(12000,Math.max(tint?4200:2600,String(msg).length*60+1200));
+  if(toastT)clearTimeout(toastT); toastT=setTimeout(()=>t.style.opacity='0',hold);
 }
 
