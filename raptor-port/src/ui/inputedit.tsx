@@ -26,7 +26,7 @@ import { PEOPLE, isSpecial } from '../engine/people'
 import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { logAction, elogSweep } from '../engine/editlog'
-import { writeInputsBatch, notify, protectedDates, inputProtected } from '../state/store'
+import { writeInputsBatch, writeInputsBatchWith, weekstashStore, notify, protectedDates, inputProtected } from '../state/store'
 /* The Leave War seam (sync.ts is the one crossing point, CLAUDE.md §The Leave
    War tab): retracting a synced row's war cells when it is edited or deleted
    here — not a new seam, a Raptor-side caller of the existing one. */
@@ -944,7 +944,14 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
     return false
   }
-  const ok = writeInputsBatch(() => {
+  /* THE WEEKSTASH JOINS THE BATCH WHEN THE HOLDER MOVES ([OIL-XWEEK-DENY],
+     22 Sep 26). Handing a request over now clears the old holder's refusal out
+     of weeks nobody is looking at as well, and those live in the stash, which
+     `histSnap` does not serialise. Without enlisting it, one undo would put the
+     request back in his name while the refusal it was made about stayed
+     deleted — half a step, which is worse than none. Enlisted only on a person
+     change, so every other edit keeps the cheaper single-store batch. */
+  const ok = (draft.person !== r.person ? (fn: () => void) => writeInputsBatchWith([weekstashStore], fn) : writeInputsBatch)(() => {
     /* A Leave-War-synced row (owner, 17 Aug 26 — full two-way): editing the
        LEAVE ITSELF — its person, type, dates or which half — changes the war
        too. The old grant is WITHDRAWN first, while the row still says what the

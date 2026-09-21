@@ -11,11 +11,18 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
-import { initStore, setSession, notify, writeInputsBatch, HIST } from '../state/store'
+import { initStore, setSession, notify, writeInputsBatch, HIST, loadWeek } from '../state/store'
 import { INPUTS, oilAsks, inpId } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { DAYS } from '../engine/data'
 import { inputItemKey, oilEvidence } from '../engine/oilev'
+import { stashClear } from '../engine/weekstash'
+import { globalUndo, installUndo, registerUndoStore, setCutoverModules, setUndoHooks } from '../undo'
+import { _resetTimeline } from '../undo/timeline'
+import { schedStore, schedPostRestore } from '../state/sched-commit'
+import { weekstashStore } from '../state/store'
+import { labelToISO } from '../leavewar/absences'
+import { toggleOilPerson, oilFigureFor } from './oilmode'
 import { HOOKS } from '../engine/hooks'
 import { setInpEdit, INPEDIT, OILASK, setOilAsk } from './pops'
 import { CURPAGE, setPage } from '../state/view'
@@ -393,5 +400,91 @@ describe('the bell (owner, 28 Aug 26 — the retro notification)', () => {
     inpId(row)
     await act(async () => { writeInputsBatch(() => { INPUTS.unshift(row) }) })
     expect($('#notifyBell')!.className).not.toContain('on')   // ME is bane
+  })
+})
+
+/* [OIL-XWEEK-DENY] — BOTH reviewers found this independently (Fable F1, Codex
+   rank 2), which is the strongest signal the branch produced. Job 1 claimed the
+   write-side clear plus the read-side prune "leave no live stale decision
+   anywhere". They do not. The clear walked only the LOADED week; the prune only
+   HIDES a key while somebody else holds the request. Hand the request away and
+   BACK while a DIFFERENT week is on screen — ordinary, because the Inputs page
+   is global — and the old refusal is live again the moment its week is opened.
+   A man who worked and answered Yes is paid nothing, silently; and if that day
+   was already published the live and frozen keys match, so nothing flags it. */
+describe('a refusal must not survive a hand-over made while its week is off screen', () => {
+  const SCHED_COLLS = ['days', 'sched.book', 'sched.mutes', 'sched.orig', 'sched.als', 'sched.retired', 'inputs', 'plan', 'weekstash']
+  const plant = (r: any) => { const row: any = { allday: true, remarks: 'oiltest', mod: 'now', yr: 2026, ...r }; inpId(row); writeInputsBatch(() => { INPUTS.unshift(row) }); return INPUTS[0] }
+  const handTo = (r: any, person: string) => { const d = draftOf(r); d.person = person; expect(commitInputEdit(r, d)).toBe(true) }
+  const keyOn = (di: number, k: string) => (((DAYS[di] as any).oild || {}).people || {})[k]
+  let hooks: any
+
+  /* the money half needs the two facts the Leave War normally supplies —
+     which days earn, and what date a day index is — so the figure below is the
+     real one and not a hook returning nothing */
+  beforeEach(() => {
+    hooks = { day: HOOKS.oilEarningDay, iso: HOOKS.oilDayISO }
+    HOOKS.oilEarningDay = (di: number) => di === 5 || di === 6
+    HOOKS.oilDayISO = (di: number) => labelToISO((DAYS[di] || {}).dt, 2026) || ''
+    _resetTimeline(); installUndo()
+    setUndoHooks({ postRestore: schedPostRestore })
+    registerUndoStore(schedStore, SCHED_COLLS)
+    registerUndoStore(weekstashStore, ['weekstash'])
+    setCutoverModules(['sched', 'inputs', 'plan'])
+  })
+  afterEach(() => {
+    HOOKS.oilEarningDay = hooks.day; HOOKS.oilDayISO = hooks.iso
+    _resetTimeline(); stashClear(); loadWeek('13/07/2026')
+  })
+
+  it('A → B → A across weeks: the dead refusal is gone and he is paid (Fable F1 / Codex rank 2)', () => {
+    loadWeek('13/07/2026')
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
+    const item = inputItemKey(r.iid)
+    expect(oilFigureFor(5, 'bane', item), 'he earns the Saturday before anyone touches it').toBe('FO')
+    /* the scheduler taps him off, through the mode's own writer */
+    expect(toggleOilPerson(5, 'bane', item), 'the tap takes him off').toBe(false)
+    expect(keyOn(5, `bane|${item}`), 'the mark is on the day').toBe('deny')
+    expect(oilFigureFor(5, 'bane', item), 'and it takes his day').toBe(null)
+
+    /* ...and now the scheduler is looking at a different week */
+    loadWeek('20/07/2026')
+    handTo(r, 'stiff')
+    handTo(r, 'bane')
+    writeInputsBatch(() => { r.oil = { '2026-07-18': 1 } })   // he answers Yes again
+
+    loadWeek('13/07/2026')
+    expect(keyOn(5, `bane|${item}`), 'the refusal died with the assignment it was made about').toBeUndefined()
+    expect(oilFigureFor(5, 'bane', item), 'he worked the Saturday and said Yes').toBe('FO')
+  })
+
+  it('the control — a decision about a DIFFERENT request in that week is untouched', () => {
+    loadWeek('13/07/2026')
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
+    const item = inputItemKey(r.iid)
+    ;(DAYS[5] as any).oild = { people: { [`bane|${item}`]: 'deny', 'bane|i:someoneelse': 'deny' } }
+    loadWeek('20/07/2026')
+    handTo(r, 'stiff')
+    loadWeek('13/07/2026')
+    expect(keyOn(5, `bane|${item}`), 'the one that was handed over goes').toBeUndefined()
+    expect(keyOn(5, 'bane|i:someoneelse'), 'and nothing else is touched').toBe('deny')
+  })
+
+  /* CODEX RANK 2's own requirement: one undo must put back the assignment AND
+     the off-week decision together. Half a step is worse than none — the
+     request back in his name with the refusal about it still deleted means he
+     is PAID over a scheduler's No. Driven through the Undo the app's own button
+     presses, which is the only one that carries the stash. */
+  it('ONE undo puts back the assignment AND the off-week refusal together (Codex rank 2)', () => {
+    loadWeek('13/07/2026')
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
+    const item = inputItemKey(r.iid)
+    toggleOilPerson(5, 'bane', item)
+    loadWeek('20/07/2026')
+    handTo(r, 'stiff')
+    expect(globalUndo().ok, 'the Undo button reverses it').toBe(true)
+    loadWeek('13/07/2026')
+    expect((INPUTS.find((x: any) => inpId(x) === r.iid) as any).person, 'the request is his again').toBe('bane')
+    expect(keyOn(5, `bane|${item}`), 'and so is the refusal').toBe('deny')
   })
 })

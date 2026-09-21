@@ -127,6 +127,29 @@ export function stashSched(v:any){
     return {dayOK:p.ok||{},cur:p.cv||{},als:p.a||[],orig:p.o||{},drafts:p.dr||{},amV:p.am};
   }catch(_e){ return null; }
 }
+/* EDIT A STASHED WEEK'S DAYS IN PLACE ([OIL-XWEEK-DENY], 22 Sep 26). A scheduler
+   can hand a request to another man — and back — while a DIFFERENT week is on
+   screen, because the Inputs page is global. Anything that must die with that
+   assignment therefore has to reach days nobody is looking at, and until now
+   nothing could: the write side walked the seven loaded days and the read side
+   only HID the key while somebody else held the request.
+   Raw days, exactly as stored: no `dt` re-labelling (that is stashDays's job for
+   READERS and must never leak back into the blob). `edit` returns true if it
+   changed anything, and only then is the week written back — so an untouched
+   week's gen is not bumped and every preview keyed on it stays valid.
+   A PRESERVED (byte-frozen) week is never rewritten: P2-IMPL-02 makes it
+   read-only, and a decision inside one belongs to a book that is closed. */
+export function stashEditDays(v:any,edit:(days:any[])=>boolean):boolean{
+  if(isPreservedWeek(v))return false;
+  const s=stashGet(v); if(!s)return false;
+  try{
+    const p=JSON.parse(s);
+    if(!p||typeof p!=='object'||!Array.isArray(p.d))return false;
+    if(!edit(p.d))return false;
+    stashPut(v,JSON.stringify(p));
+    return true;
+  }catch(_e){ return false; }
+}
 export function stashDays(v:any){
   const s=stashGet(v); if(!s)return null;
   /* a blob that fails to parse (truncated write, foreign data) degrades to

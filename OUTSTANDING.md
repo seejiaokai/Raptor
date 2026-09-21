@@ -907,7 +907,7 @@ July while the demo posts him out in January, so deciding which is right may be 
 **Context.** `raptor-port/docs/handpass/2026-09-21-oil.md` §9 · the red team's §3 in
 `…/specs/2026-09-21-oil-fixplan-redteam-fable.md` · script `scripts/handpass/settle-d4.mjs`.
 
-### [OIL-XWEEK-DENY] A refusal survives a hand-back in a week nobody had loaded — OPEN, 22 Sep 26
+### [OIL-XWEEK-DENY] A refusal survives a hand-back in a week nobody had loaded — CLOSED, 22 Sep 26
 
 **Money, silent.** Job 1 clears a scheduler's refusal when a request changes hands, but only on the
 week that is loaded. The read-side prune hides the key while somebody ELSE holds the request — so
@@ -926,6 +926,13 @@ about them.
 
 **Context.** `…/specs/2026-09-22-oil-jobs12-codereview-fable.md` §F1 (step-by-step, with the red
 test) · `…/specs/2026-09-22-oil-fixplan-settled.md` §0, which now carries the correction.
+
+**CLOSED 22 Sep 26.** The clear now reaches every readable stashed week through a new
+`stashEditDays` on the week stash, skipping the loaded week (the live days are authoritative and the
+store refuses that write anyway) and skipping every byte-frozen week, as the hazard above required.
+The read-side prune stays, as the guard it always was for exactly those two cases. The week stash
+joins the input batch on a person change, so ONE Undo puts back the assignment and the off-week
+refusal together — proved by a test that fails if the enlistment is removed.
 
 ### [OIL-XWEEK-ELSEWHERE] The cross-week branch of job 2 never fires in the real app — OPEN, 22 Sep 26
 

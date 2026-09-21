@@ -50,6 +50,8 @@ import { HOOKS } from '../engine/hooks'
 import { envMin, uniformOil, dayOilWork, oilCapableItems, rowItemKey, groundItemKey, inputItemKey, type OilWork } from '../engine/oil'
 import { oilEvidence, oilEvidenceOf, oilEarnedWork, oilInputEligible, personDecision, type OilEvidence, type OilDecisions } from '../engine/oilev'
 import { OILDAY, setOilDay, afterSchedMutate, esc } from '../state/view'
+import { CURWEEK } from '../engine/waves'
+import { stashKeys, stashEditDays } from '../engine/weekstash'
 
 export { rowItemKey, groundItemKey, inputItemKey }
 
@@ -223,13 +225,14 @@ function decOf(di: any): OilDecisions {
    scheduler has undone every mark on serialises identically to one he never
    touched — otherwise turning a mark on and off again would read as a change
    forever and offer an empty amendment. */
-function tidy(di: any): void {
-  const d = DAYS[+di], dec = d && d.oild
+function tidyDay(d: any): void {
+  const dec = d && d.oild
   if (!dec) return
   if (dec.items && !Object.keys(dec.items).length) delete dec.items
   if (dec.people && !Object.keys(dec.people).length) delete dec.people
   if (!dec.blanket && !dec.items && !dec.people) delete d.oild
 }
+function tidy(di: any): void { tidyDay(DAYS[+di]) }
 
 /** A DECISION DIES WITH THE ASSIGNMENT IT WAS MADE ABOUT (Codex scenario 7,
  *  22 Sep 26). A scheduler's refusal names a man AND an item; nothing ever
@@ -242,13 +245,23 @@ function tidy(di: any): void {
  *  whichever of them nobody was looking at. The item is the request's own id, so
  *  clearing it cannot touch a decision about anything else this man is on.
  *
- *  This is the WRITE-side half. A day in a week that is not loaded cannot be
- *  reached from here and is handled at READ instead (`oilEvidence`'s prune), so
- *  the two together leave no live stale decision anywhere.
+ *  IT REACHES THE WEEKS NOBODY IS LOOKING AT TOO ([OIL-XWEEK-DENY], 22 Sep 26 —
+ *  Fable F1 and Codex rank 2, found independently, which is the strongest signal
+ *  the branch produced). This used to walk the seven LOADED days and say so,
+ *  leaning on the read-side prune for the rest. But the prune only HIDES a key
+ *  while somebody else holds the request: hand it away and BACK — ordinary,
+ *  because the Inputs page is global and the scheduler may be on any week — and
+ *  the holder matches again, so the old refusal is live the moment its week is
+ *  opened. A man who worked and answered Yes is paid nothing, silently; and if
+ *  that day was already published the live and frozen keys match, so nothing
+ *  flags it either. The prune STAYS, as the guard it always was, for a week the
+ *  stash cannot read or is forbidden to rewrite.
  *
  *  It writes through no funnel of its own on purpose: the one caller
  *  (`commitInputEdit`'s person branch) is already inside `writeInputsBatch`, so
- *  the clear, the person change and the relink are ONE undo step. */
+ *  the clear, the person change and the relink are ONE undo step — and the
+ *  caller enlists the weekstash in that batch when the person moves, so ONE undo
+ *  puts back the assignment and the off-week refusal together. */
 export function clearOilPersonDecisions(person: string, item: string): number {
   if (!person || !item) return 0
   const k = `${person}|${item}`
@@ -259,6 +272,20 @@ export function clearOilPersonDecisions(person: string, item: string): number {
     delete ppl[k]; n++
     tidy(di)
   })
+  /* the loaded week is DAYS, and writing its stash entry is refused anyway */
+  for (const wk of stashKeys()) {
+    if (wk === CURWEEK) continue
+    stashEditDays(wk, (days: any[]) => {
+      let hit = false
+      for (const d of days || []) {
+        const ppl = d && d.oild && d.oild.people
+        if (!ppl || ppl[k] == null) continue
+        delete ppl[k]; n++; hit = true
+        tidyDay(d)
+      }
+      return hit
+    })
+  }
   return n
 }
 
