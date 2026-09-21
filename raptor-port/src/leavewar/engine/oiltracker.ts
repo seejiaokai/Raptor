@@ -190,7 +190,16 @@ const DEBIT_RANK: Record<OilDebitSource, number> = { opening: 0, taken: 1, corre
  * A person's whole OIL story: every credit and debit across every war, FIFO-
  * allocated, expiry applied as of `asOf`.
  */
-export function oilLedgerFor(ctx: FigureCtx, personId: string, policy: OilPolicy, asOf: string): OilLedger {
+/** WHAT THE BALANCE WOULD BE WITHOUT ONE CREDIT (21 Sep 26).
+ *  The unpublish warning has to ask a counterfactual: if this day's earned
+ *  credit went, would the man be overdrawn? Subtracting its worth from the
+ *  balance is NOT the same question — expiry and FIFO are not linear, so a
+ *  credit that has already expired unused is worth nothing to subtract, while
+ *  removing a live one can strand a later debit that had drawn on it. The
+ *  honest answer is to build the ledger again with that credit left out. */
+export type OilOmit = (c: OilCredit) => boolean
+
+export function oilLedgerFor(ctx: FigureCtx, personId: string, policy: OilPolicy, asOf: string, omit?: OilOmit): OilLedger {
   const credits: OilCredit[] = []
   const debits: OilDebit[] = []
 
@@ -254,6 +263,16 @@ export function oilLedgerFor(ctx: FigureCtx, personId: string, policy: OilPolicy
     }
   })
 
+  /* The counterfactual: drop the named credit BEFORE the FIFO walk, so every
+     debit re-allocates as it would if that credit had never existed.
+     Guarded, because with no omission `filter` would be skipped and an
+     in-place empty-and-refill would be emptying the very array it is about
+     to read back — the same reference — and lose every credit. */
+  if (omit) {
+    const kept = credits.filter(c => !omit(c))
+    credits.length = 0
+    credits.push(...kept)
+  }
   credits.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : CREDIT_RANK[a.source] - CREDIT_RANK[b.source] || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)))
   debits.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : DEBIT_RANK[a.source] - DEBIT_RANK[b.source] || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)))
 

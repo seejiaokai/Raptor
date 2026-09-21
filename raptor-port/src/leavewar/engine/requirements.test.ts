@@ -50,7 +50,7 @@ describe('describeRule', () => {
     expect(describeRule(r, qualLabel)).toContain('crew (pilot or WSO) not CAT OCU without SXO')
   })
 
-  it('spells a team out slot by slot, with the size and the duty reading', () => {
+  it('spells a team out slot by slot, with the size', () => {
     const r = rule('x', {
       count: {
         kind: 'team',
@@ -65,7 +65,11 @@ describe('describeRule', () => {
     const words = describeRule(r, qualLabel)
     expect(words).toContain('One team is 2 pilots holding SC DAY + 1 crew (pilot or WSO) holding SXO + 1 crew (pilot or WSO) — 4 different people')
     expect(words).toContain('how many complete teams')
-    expect(words).toContain('SC duty still counts')
+    /* The sentence promising that a man on the desk "still counts" is GONE
+       (N17, 21 Sep 26). A credit removes nobody now, so he was always
+       counted and the switch decided nothing — while the words told an admin
+       the two settings differed. A stored `presence` still loads harmlessly. */
+    expect(words).not.toContain('SC duty')
   })
 
   it('says when the cell shows the people inside the teams instead', () => {

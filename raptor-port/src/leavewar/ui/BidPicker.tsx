@@ -22,15 +22,18 @@ import { Sheet } from './Sheet'
 import { shortSpan } from './dates'
 import './bidpicker.css'
 import './oiltracker.css'
+import { creditWorthText } from '../engine/credit'
 
 /** minutes of the day as `08:00` — the worked hours on an automatic credit */
 const hhmm = (n: number) => `${String(Math.floor(n / 60)).padStart(2, '0')}:${String(n % 60).padStart(2, '0')}`
 
-/** "3 days" / "half a day" / "a day" — what a grant is worth, in words. */
-function creditDays(c: { code: 'FO' | 'HO'; days?: number }): string {
-  const n = c.days ?? (c.code === 'FO' ? 1 : 0.5)
-  return n === 1 ? 'a day' : n === 0.5 ? 'half a day' : `${n} days`
-}
+/* What a credit is worth, in words, comes from `engine/credit.ts` — the ONE
+   formula. A second copy lived here and took only the code and the quantity,
+   so a credit the schedule owned that somehow carried an award's `days` read
+   "3 days" on this sheet while the tracker and the day both said one. That is
+   the exact "the worth changed and no screen admitted it" shape the helper
+   was written to end, so the sheet reads the helper and passes the OWNERSHIP
+   with it (both reviewers, 21 Sep 26). */
 
 const PORTIONS: { portion: Portion; label: string; testid: string }[] = [
   { portion: 'full', label: 'Whole day', testid: 'portion-full' },
@@ -490,7 +493,7 @@ export function BidPicker({
                 : 'Grant OIL — a day or half a day off in lieu, for any reason'}
               aria-label={credit ? 'The OIL on this day' : 'Grant OIL'}
               onClick={() => setOilOpen(true)}
-            >{credit ? `${credit.code} · ${creditDays(credit)}` : '+OIL'}</button>
+            >{credit ? `${credit.code} · ${creditWorthText({ ...credit, auto: false })}` : '+OIL'}</button>
           )}
           {onPostOut && (
             <button
@@ -518,7 +521,7 @@ export function BidPicker({
           {credit && (
             <div className="bidsheet-row postout">
               <span className="note" data-testid="oil-current">
-                {creditDays(credit)} of OIL{credit.note ? ` — ${credit.note}` : ''}
+                {creditWorthText({ ...credit, auto: false })} of OIL{credit.note ? ` — ${credit.note}` : ''}
                 {credit.givenBy ? `, given by ${credit.givenBy}` : ''}.
               </span>
               {onCreditClear && (
@@ -681,7 +684,7 @@ export function BidPicker({
           <div className="bidsheet-row postout">
             <span className="lab">Days</span>
             <span className="note" data-testid="oil-detail-days">
-              {creditDays(creditShown)}
+              {creditWorthText(creditShown)}
               {creditShown.auto && creditShown.spans?.length
                 ? ` — worked ${creditShown.spans.map(([a, b]) => `${hhmm(a)}–${hhmm(b)}`).join(', ')}`
                 : ''}
@@ -845,6 +848,7 @@ export function RaptorSheet({
   date,
   code,
   creditShown,
+  onAward,
   onClose,
 }: {
   callsign: string
@@ -854,6 +858,13 @@ export function RaptorSheet({
    *  21 Sep 26). See the note below on why this sheet had to learn the
    *  difference. */
   creditShown?: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; spans?: Array<[number, number]>; via?: 'schedule' | 'input' } | null
+  /** GIVE AN AWARD ON A DAY THE SCHEDULE ALREADY EARNED ON (N16, 21 Sep 26).
+   *  Admin only, and only where the cell holds nothing but OIL. Without it
+   *  the owner's ruling had no door in this direction: the store let an award
+   *  land beside the schedule's credit and no screen offered one, so
+   *  award-then-publish worked and publish-then-award did not. The same
+   *  hand-through the posting sheet uses, rather than a second +OIL form. */
+  onAward?: () => void
   onClose: () => void
 }) {
   /* WHICH EVIDENCE BACKS THIS CREDIT decides where the reader is sent (Astra,
@@ -905,12 +916,24 @@ export function RaptorSheet({
           <div className="bidsheet-row">
             <span className="lab">Days</span>
             <span className="note" data-testid="oil-detail-days">
-              {creditDays(creditShown)}
+              {creditWorthText(creditShown)}
               {creditShown.spans?.length
                 ? ` — worked ${creditShown.spans.map(([a, b]) => `${hhmm(a)}–${hhmm(b)}`).join(', ')}`
                 : ''}
             </span>
           </div>
+        </div>
+      )}
+      {/* AND A WAY TO ADD AN AWARD ON TOP (N16, 21 Sep 26). The day is the
+          schedule's and stays read-only — what this offers is the OTHER fact:
+          days the man is OWED, which the schedule knows nothing about. Without
+          it the ruling that the two ADD UP only worked if the award was typed
+          first, because nothing on this sheet could record one afterwards. */}
+      {onAward && (
+        <div className="bidsheet-row">
+          <button className="dchip" data-testid="raptor-award" onClick={onAward}>
+            Give an OIL award on this day…
+          </button>
         </div>
       )}
     </Sheet>

@@ -225,18 +225,15 @@ export function ruleHave(rc: RuleCount, people: Person[], grid: Grid, states: St
     }
     return Math.round(total * 1000) / 1000
   }
-  const weightOf = (p: Person): number => {
-    const v = vs[p.id]?.[date]
-    /* ON DUTY means AT WORK. A credit says he worked, and until the owner's
-       20 Sep 26 ruling that was the end of it, because a credit was never
-       placed on a day he was also absent. Now the two are recorded together
-       and flagged, so the head count has to ask the second question too: a man
-       away all day is not on duty, whatever the credit says, and counting him
-       would man a duty weekend with someone on leave. */
-    const onDuty = inSquadron(p, date) && !!v?.duty && v!.away < 1
-    const have = haveOf(p, date, v)
-    return rc.presence && onDuty ? Math.max(0, 1 - v!.away) : have
-  }
+  /* PRESENCE AND AVAILABILITY ARE THE SAME ANSWER NOW (N17, 21 Sep 26).
+     A rule carried a `presence` switch that meant "count a man standing SC
+     duty — he is at work", because a credit used to read him as zero and a
+     fully-manned duty weekend would otherwise have gone red. Since a credit
+     removes nobody, both settings give `1 − away` and the switch decided
+     nothing — while the rule's own sentence still promised the admin a
+     difference. A control that silently does nothing is the shape this whole
+     change exists to remove, so it goes rather than lingering. */
+  const weightOf = (p: Person): number => haveOf(p, date, vs[p.id]?.[date])
   // One rounding, on the number the cell shows — it kills float dust
   // (0.9999999 must read 1: a team the squadron has must not paint the day
   // red) without stacking a second rounding on top of the first.

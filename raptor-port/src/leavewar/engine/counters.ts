@@ -27,7 +27,7 @@
 import { chargedDays, viewsOf, type CountCtx, type LeaveSource } from './charge'
 import { portionOf } from './dayview'
 import { codeOf, LEAVE_TYPES, parseCell, type CounterName } from './codes'
-import { DEFAULT_OIL_POLICY, oilLedgerFor, type OilPolicy } from './oiltracker'
+import { DEFAULT_OIL_POLICY, oilLedgerFor, type OilOmit, type OilPolicy } from './oiltracker'
 import { localToday } from './period'
 
 /**
@@ -262,8 +262,8 @@ export interface FigureCtx extends CountCtx {
 /** The OIL ledger this ctx describes for one person — FIFO-allocated and
  *  expiry-applied. The OIL figure and its breakdown both read from here, so
  *  the column and the tracker sheet cannot disagree. */
-export function oilLedgerOf(ctx: FigureCtx, personId: string) {
-  return oilLedgerFor(ctx, personId, ctx.oilPolicy ?? DEFAULT_OIL_POLICY, ctx.asOf ?? localToday())
+export function oilLedgerOf(ctx: FigureCtx, personId: string, omit?: OilOmit) {
+  return oilLedgerFor(ctx, personId, ctx.oilPolicy ?? DEFAULT_OIL_POLICY, ctx.asOf ?? localToday(), omit)
 }
 
 /** Which colour a number wears: the balance white, LL amber, everything else

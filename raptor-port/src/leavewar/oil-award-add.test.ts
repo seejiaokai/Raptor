@@ -492,3 +492,78 @@ describe('what reduces the manning (N17)', () => {
     expect(countIP(SAT).byCategory).not.toEqual(before)
   })
 })
+
+/* ====================================================================== */
+/*  10. A DAMAGED LEGACY RECORD MUST NOT QUIETLY LOSE THE AWARD           */
+/* ====================================================================== */
+
+describe('a taken-over record whose snapshot is damaged', () => {
+  /* Astra, 21 Sep 26. The first fix refused a snapshot whose own code was not
+     exactly FO or HO, AND dropped the outer `days`/`givenBy` on any automatic
+     record — so a damaged blob threw the award away twice over and reloaded,
+     without complaint, as ONE day. The retired takeover copied the award to
+     BOTH places, so either survivor is enough to rebuild it, and the outer
+     code is always sound because it is validated first. */
+  const legacy = (manual: unknown) => ({
+    [P]: { [SAT]: [{
+      id: 'c-old', kind: 'credit', code: 'FO', oil: 'auto',
+      days: 3, note: 'Exercise recovery', givenBy: 'OC Ops', spans: WORKED,
+      ...(manual === undefined ? {} : { manual }),
+    }] },
+  })
+  const worthOfBlob = (blob: unknown) => {
+    const list = readRecs(blob)![P]![SAT]! as Array<Extract<WarRec, { kind: 'credit' }>>
+    return { n: list.length, worth: list.reduce((a, c) => a + creditWorth(c), 0), list }
+  }
+
+  it('a snapshot with NO code still rebuilds the award — 4, not 1', () => {
+    const { n, worth, list } = worthOfBlob(legacy({ note: 'Exercise recovery', givenBy: 'OC Ops', days: 3 }))
+    expect(n).toBe(2)
+    expect(worth).toBe(4)
+    expect(list.find(c => c.oil === 'manual')).toMatchObject({ code: 'FO', days: 3, givenBy: 'OC Ops' })
+  })
+
+  it('a snapshot with a GARBAGE code still rebuilds the award', () => {
+    const { n, worth } = worthOfBlob(legacy({ code: 'XX', days: 3, givenBy: 'OC Ops' }))
+    expect(n).toBe(2)
+    expect(worth).toBe(4)
+  })
+
+  it('no snapshot at all, but the award fields still on the record, rebuilds it', () => {
+    /* An automatic credit may not legitimately carry days or a giver, so their
+       presence IS the evidence that a takeover happened here. */
+    const { n, worth } = worthOfBlob(legacy(undefined))
+    expect(n).toBe(2)
+    expect(worth).toBe(4)
+  })
+
+  it('an award carrying its days ONLY in a nested snapshot keeps them', () => {
+    const blob = { [P]: { [SAT]: [{
+      id: 'm-old', kind: 'credit', code: 'FO', oil: 'manual',
+      manual: { code: 'FO', days: 3, givenBy: 'OC Ops', note: 'Exercise recovery' },
+    }] } }
+    const list = readRecs(blob)![P]![SAT]! as Array<Extract<WarRec, { kind: 'credit' }>>
+    expect(list).toHaveLength(1)
+    expect(list[0]).toMatchObject({ oil: 'manual', days: 3, givenBy: 'OC Ops' })
+    expect(creditWorth(list[0]!)).toBe(3)
+  })
+
+  it('every damaged shape is still IDEMPOTENT — reading twice gives the same thing', () => {
+    for (const m of [{ note: 'x', days: 3 }, { code: 'XX', days: 3 }, undefined]) {
+      const once = readRecs(legacy(m))!
+      const twice = readRecs(JSON.parse(JSON.stringify(once)))!
+      expect(JSON.stringify(twice)).toBe(JSON.stringify(once))
+    }
+  })
+
+  it('the rebuilt award steps past an id already taken', () => {
+    const blob = { [P]: { [SAT]: [
+      { id: 'c-old', kind: 'credit', code: 'FO', oil: 'auto', days: 3, manual: { code: 'HO', days: 3 } },
+      { id: 'c-old:award', kind: 'request', code: 'LL', state: 'pending' },
+    ] } }
+    const list = readRecs(blob)![P]![SAT]!
+    expect(list).toHaveLength(3)
+    expect(new Set(list.map(r => r.id)).size).toBe(3)       // nothing overwrote anything
+    expect(list.find(r => r.kind === 'credit' && r.oil === 'manual')).toBeDefined()
+  })
+})

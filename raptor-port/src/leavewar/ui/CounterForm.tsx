@@ -210,7 +210,8 @@ export function CounterForm({ ruleId, onClose }: {
         ],
   )
   const [showPeople, setShowPeople] = useState(existing?.count.kind === 'team' && existing.count.show === 'people')
-  const [presence, setPresence] = useState(existing?.count.kind === 'team' && !!existing.count.presence)
+  /* kept so an existing rule round-trips unchanged; no longer editable (N17) */
+  const [presence] = useState(existing?.count.kind === 'team' && !!existing.count.presence)
   const [amber, setAmber] = useState(existing ? String(existing.threshold.amber) : '0')
   const [red, setRed] = useState(existing ? String(existing.threshold.red) : '0')
   const [armDel, setArmDel] = useState(false)
@@ -365,17 +366,13 @@ export function CounterForm({ ruleId, onClose }: {
               People in them
             </button>
           </div>
-          <div className="bidsheet-row cf-row">
-            <button
-              className={`tchip${presence ? ' on' : ''}`}
-              data-testid="cform-presence"
-              aria-pressed={presence}
-              title="With this on, someone standing SC duty still counts — they are at work, just off the flying programme"
-              onClick={() => setPresence(p => !p)}
-            >
-              {presence ? '✓ ' : ''}SC duty still counts
-            </button>
-          </div>
+          {/* The "SC duty still counts" switch is GONE (N17, 21 Sep 26). It
+              existed because an OIL credit read a man as zero available, so a
+              fully-manned duty weekend would have gone red without it. Since a
+              credit removes nobody, both settings gave the same number and the
+              switch decided nothing — while its own label promised otherwise.
+              A stored `presence: true` on an old rule still loads and is still
+              written back below; it simply changes no figure. */}
         </>
       )}
 

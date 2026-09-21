@@ -695,6 +695,37 @@ rules about posted-out and pre-joining rows. Several older documents still read 
   belongs to the AUTOMATIC pass, which reads the published schedule, not to a credit the squadron
   types itself.
 
+### [LW-COMMIT-MANNING] Duty & commitments must reduce the Leave War manning — the OTHER half of N17 (owner, 21 Sep 26)
+**Owner's words, and he then said to file it: "The manning should only reduce if they are like
+planned by things like leave, duty & commitments."**
+
+N17 built the first half — an OIL credit no longer removes a man. The second half is NOT true and
+never was: **duty-and-commitment inputs do not reach the Leave War at all.** `absences.ts warVisible`
+admits leave, medical, a course and overseas duty, and nothing else — so Training, Meeting, Fly
+with, Appointment, Duty and Other are invisible to that grid and to its manning.
+
+Found by Astra in the N16 bug check, and verified: it is NOT a regression from N17. What N17 removed
+was an ACCIDENTAL reduction — a duty input that happened to earn an OIL credit used to zero the man
+through the credit, on a weekend only. A weekday commitment never counted at all.
+
+**The scenario that shows it:** an SC-day team needs six and the squadron has exactly six on a
+Saturday. One of them has an accepted all-day Training input. The Leave War still reads six and one
+complete team; it should read five and a shortage.
+
+**The shape, when it is built:**
+1. Project active duty-and-commitment inputs into a manning-only contribution — NOT into the war's
+   editable cells, its clashes, its charges, or anything that reads as OIL evidence.
+2. Fold its full/half-day portions into `DayView.away`, capped per half so leave and a commitment on
+   the same half cannot subtract the man twice.
+3. Carry it through the category counts, `ruleHave`, the presence counts and `scTeams`.
+4. Respect removed/dormant inputs, the posting dates and the ground-crew rules.
+5. An OIL credit still removes nobody (N17), whichever way the input that earned it was filed.
+
+**Why it is its own job:** it changes the manning figures on a screen the owner reads, it needs a
+decision about which of the six types count (a two-hour Appointment is not a day off the programme),
+and the projection is a new seam into the war. Not a line. **Priority: his call — raised with him on
+21 Sep and filed at his word.**
+
 ### [OIL-NEXT-TWO] The two the owner parked until after the bug check (21 Sep 26)
 **His words: "We can do point 2 and 3 later after the 3 things above are done."** The three being
 the browser gates, the hand test in the running app, and the cross-provider bug check on

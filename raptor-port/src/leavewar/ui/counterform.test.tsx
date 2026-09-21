@@ -59,7 +59,8 @@ describe('building a new counter', () => {
     fireEvent.click(screen.getByTestId('s2-qual-sxo'))
     fireEvent.change(screen.getByTestId('s0-count'), { target: { value: '2' } })
     fireEvent.click(screen.getByTestId('cform-show-people'))
-    fireEvent.click(screen.getByTestId('cform-presence'))
+    /* the "SC duty still counts" chip is gone — it changed no number (N17) */
+    expect(screen.queryByTestId('cform-presence')).toBeNull()
     fireEvent.click(screen.getByTestId('cform-save'))
     const rule = getState().requirements.default.rules.find(r => r.id === 'duty-pairs')!
     expect(rule.count).toEqual({
@@ -70,7 +71,6 @@ describe('building a new counter', () => {
         { count: 1, filter: { quals: ['sxo'] } },
       ],
       show: 'people',
-      presence: true,
     })
   })
 

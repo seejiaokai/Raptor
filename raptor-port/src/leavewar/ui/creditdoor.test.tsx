@@ -362,3 +362,51 @@ describe('an award the schedule later earns on top of', () => {
   })
 })
 
+
+/* THE OTHER ORDER — publish FIRST, then award (N16, 21 Sep 26). */
+describe('a day the schedule has already earned on', () => {
+  /* The store always allowed this and a unit test proved it, but NO SCREEN
+     offered it: the cell reads as the schedule's, so the tap opened the
+     read-only sheet, which has no +OIL. Award-then-publish worked and
+     publish-then-award did not, so half the owner's ruling lived only in the
+     tests. Found by review, then confirmed by hand in the running app — the
+     hand test had walked one order and not the other. */
+  it('still takes an award, through one button on the read-only sheet', () => {
+    expect(ingestDutyCredit(P, SAT, 'HO', 'FLT', [[420, 780]])).toBe('written')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-${SAT}`))
+
+    // the day still explains itself first — that is what a locked cell is for
+    expect(screen.getByTestId('raptor-note').textContent).toContain('published schedule')
+    expect(screen.getByTestId('oil-detail-days').textContent).toContain('half a day')
+
+    fireEvent.click(screen.getByTestId('raptor-award'))
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
+    fireEvent.click(screen.getByTestId('bid-oil'))
+    fireEvent.change(screen.getByTestId('oil-days'), { target: { value: '3' } })
+    fireEvent.change(screen.getByTestId('oil-why'), { target: { value: 'Exercise recovery' } })
+    fireEvent.click(screen.getByTestId('oil-fo'))
+
+    const credits = rawState().wars[0]!.recs[P]![SAT]!.filter(r => r.kind === 'credit')
+    expect(credits).toHaveLength(2)
+    expect(getState().views[P]?.[SAT]?.earnsOil).toBe(3.5)
+  })
+
+  it('offers it to an ADMIN only — a member still just reads the day', () => {
+    expect(ingestDutyCredit(P, SAT, 'FO', 'FLT', [[480, 1080]])).toBe('written')
+    setRole('member'); setViewer(P)
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-${SAT}`))
+    expect(screen.getByTestId('raptor-note')).toBeTruthy()
+    expect(screen.queryByTestId('raptor-award')).toBeNull()
+  })
+
+  it('does not offer it where an award is already there — that day opens the list', () => {
+    setManualCredit(P, SAT, 'FO', { days: 3 })
+    expect(ingestDutyCredit(P, SAT, 'FO', 'FLT', [[480, 1080]])).toBe('written')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-${SAT}`))
+    expect(screen.getByTestId('daylist-sheet')).toBeTruthy()
+    expect(screen.queryByTestId('raptor-award')).toBeNull()
+  })
+})

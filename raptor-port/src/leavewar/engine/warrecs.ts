@@ -265,17 +265,53 @@ export function readRec(x: unknown): WarRec | null {
        repairs most dates on the next pass, but a PROTECTED date is deliberately
        skipped by both halves of the OIL pass, so there it would never heal. */
     if (x.oil === 'auto' && (x.via === 'schedule' || x.via === 'input')) r.via = x.via
-    const mx = x.manual as any
-    if (x.oil === 'auto' && mx && (mx.code === 'FO' || mx.code === 'HO')) {
-      const m: NonNullable<CreditRec['manual']> = { code: mx.code }
-      if (typeof mx.note === 'string' && mx.note.trim()) m.note = mx.note.trim().slice(0, MAX_REC_NOTE)
-      if (typeof mx.givenBy === 'string' && mx.givenBy.trim()) m.givenBy = mx.givenBy.trim().slice(0, MAX_GIVEN_BY)
-      if (typeof mx.days === 'number' && Number.isFinite(mx.days) && mx.days > 0 && mx.days <= MAX_GRANT_DAYS && mx.days * 2 === Math.round(mx.days * 2)) m.days = mx.days
-      if (Array.isArray(mx.spans)) { const ms = mx.spans.filter(isSpan); if (ms.length) m.spans = ms as Array<[number, number]> }
+    /* RECOVER THE AWARD FROM WHEREVER IT SURVIVED (Astra, 21 Sep 26).
+       This used to accept the nested snapshot ONLY when its own code read
+       exactly FO or HO, and to drop the outer `days`/`givenBy` unconditionally
+       on an automatic record. Between them those two rules threw the award
+       away twice over: a snapshot whose code had been damaged was refused,
+       the duplicated outer fields that could have rebuilt it were binned, and
+       a 3-day award plus a worked Saturday reloaded, with no complaint, as
+       ONE day. Silent, and on the owner's own balances.
+       The retired takeover copied the award onto the outer record AS WELL AS
+       into the snapshot, so there are two places to look and the record is
+       recoverable whenever either survived. The outer CODE is always sound —
+       it is validated above — so there is no unrecoverable case to reject,
+       and rejecting would be worse than the disease: a refusal here discards
+       every war in the app.
+       LEGACY IS ANYTHING AN AUTOMATIC CREDIT MAY NOT LEGITIMATELY CARRY: a
+       snapshot, or the two award-only fields. Nothing writes either now. */
+    const mx = isObj(x.manual) ? x.manual as Record<string, unknown> : undefined
+    const asDays = (v: unknown): number | undefined =>
+      typeof v === 'number' && Number.isFinite(v) && v > 0 && v <= MAX_GRANT_DAYS && v * 2 === Math.round(v * 2) ? v : undefined
+    const asText = (v: unknown, cap: number): string | undefined =>
+      typeof v === 'string' && v.trim() ? v.trim().slice(0, cap) : undefined
+    const asSpans = (v: unknown): Array<[number, number]> | undefined => {
+      if (!Array.isArray(v)) return undefined
+      const s = v.filter(isSpan) as Array<[number, number]>
+      return s.length ? s : undefined
+    }
+    const outerDays = asDays(x.days)
+    const outerGiven = asText(x.givenBy, MAX_GIVEN_BY)
+    const outerNote = asText(x.note, MAX_REC_NOTE)
+    if (x.oil === 'auto' && (mx || outerDays !== undefined || outerGiven !== undefined)) {
+      /* nested first, then what the takeover copied outwards, then the
+         record's own code — which cannot be wrong, having been checked */
+      const code = mx?.code === 'FO' || mx?.code === 'HO' ? mx.code : r.code
+      const note = asText(mx?.note, MAX_REC_NOTE) ?? outerNote
+      const givenBy = asText(mx?.givenBy, MAX_GIVEN_BY) ?? outerGiven
+      const days = asDays(mx?.days) ?? outerDays
+      const spans = asSpans(mx?.spans)
+      const m: NonNullable<CreditRec['manual']> = { code: code as 'FO' | 'HO' }
+      if (note) m.note = note
+      if (givenBy) m.givenBy = givenBy
+      if (days !== undefined) m.days = days
+      if (spans) m.spans = spans
       r.manual = m
     }
-    if (typeof x.note === 'string' && x.note.trim()) r.note = x.note.trim().slice(0, MAX_REC_NOTE)
-    if (Array.isArray(x.spans)) { const s = x.spans.filter(isSpan); if (s.length) r.spans = s as Array<[number, number]> }
+    if (outerNote) r.note = outerNote
+    const rSpans = asSpans(x.spans)
+    if (rSpans) r.spans = rSpans
     /* AN AWARD'S TWO FIELDS ARE REFUSED ON THE SCHEDULE'S OWN RECORD (both
        reviewers, independently, 21 Sep 26). The type has always said "never
        set on an automatic credit"; saying it was not enough, because the
@@ -288,12 +324,17 @@ export function readRec(x: unknown): WarRec | null {
        The nested snapshot is still read, just below: that is where the award
        itself is recovered from. This refuses only the contamination. */
     if (r.oil === 'manual') {
-      /* Dropped rather than refused, like the note beside it: a bad "given by"
-         must not cost the squadron the record of an award. */
-      if (typeof x.givenBy === 'string' && x.givenBy.trim()) r.givenBy = x.givenBy.trim().slice(0, MAX_GIVEN_BY)
-      /* Halves only, and inside sane bounds — an unreadable quantity falls
-         back to the code's own worth rather than costing the record. */
-      if (typeof x.days === 'number' && Number.isFinite(x.days) && x.days > 0 && x.days <= MAX_GRANT_DAYS && x.days * 2 === Math.round(x.days * 2)) r.days = x.days
+      /* An AWARD keeps its own two fields — dropped rather than refused when
+         unreadable, like the note beside them: a bad "given by" must not cost
+         the squadron the record of an award.
+         A nested snapshot on a record that is ALREADY an award is not a shape
+         anything ever wrote, but it costs one line to read it rather than let
+         a damaged blob quietly halve someone's days. */
+      r.givenBy = outerGiven ?? asText(mx?.givenBy, MAX_GIVEN_BY)
+      r.days = outerDays ?? asDays(mx?.days)
+      if (r.givenBy === undefined) delete r.givenBy
+      if (r.days === undefined) delete r.days
+      if (!r.note) { const n = asText(mx?.note, MAX_REC_NOTE); if (n) r.note = n }
     }
     return r
   }
