@@ -178,18 +178,45 @@ clutter, and the answer to the second half is that on a weekend nearly everythin
 the EARNERS means marking almost every line, marking the exceptions means marking almost none.
 The rare thing gets the mark.
 
-Agreed shape:
+**SUPERSEDED THE SAME DAY by §2.10 — the owner reversed to showing OIL POSITIVELY.** The
+reasoning above (mark the rare thing, one line not per-row tags) stands as the record of why the
+NEGATIVE marking was shaped that way; the shipped answer is §2.10. Kept because if positive
+marking is ever dropped, this is what it reverts to.
 
-- **On the member's schedule: ONE LINE on the day**, only on a weekend / PH, only when there is an
-  exception — *"OIL — everything on this day earns except SQN FAMILY DAY."* A normal weekend
-  prints nothing; a weekday prints nothing. A member never reads an OIL line unless it affects him.
-  **No per-row tags on the issued schedule.**
-- **On the scheduler's board, outside the mode**: the same one line, PLUS a small `NO OIL` tag in
-  the marked row's REMARKS cell — the column that already answers "why is this line like this",
-  and only the person editing needs it.
-- **A per-person exclusion never appears on the schedule.** That is one man's business, not the
-  squadron's: he sees it in HIS OWN OIL tracker, with the reason, where his credits live and where
-  he would go looking.
+- One LINE on the day, weekend / PH only, only when there is an exception; no per-row tags on the
+  issued schedule; a per-person exclusion never appears there at all.
+
+### 2.10 OIL IS SHOWN POSITIVELY — a green EDGE on the puck (owner, 21 Sep 26, FINAL)
+
+The owner asked to see OIL shown by default rather than its absence: *"can u show a mock up if OIL
+is default shown on the schedule? Like a green little OIL tag on the applicable pucks"*. Three
+treatments were drawn on one real Saturday (14 pucks) — today's nothing, a green `FO`/`HO` chip on
+the puck, and a green edge bar. **He chose the EDGE: "c looks good."**
+
+- **A green bar down the LEFT edge of the puck.** Full height = a full day. Half height (bottom
+  half) = half a day, drawn a shade PALER as a second cue — height is the structural signal that
+  survives colour-blindness, the tint is the one that survives being read alone with nothing to
+  compare against. Costs NO width, so no callsign clips and the puck geometry is untouched (the
+  measured contracts in `scheduler.css` and the geometry gate are unaffected).
+- **Weekend / public-holiday days only.** Five days a week the schedule is byte-identical.
+- **It is the MAN'S DAY figure, repeated on every puck he wears that day**, never what that one
+  event earned. DASH on four rows shows the same bar four times = one full day, not four. This was
+  the trap that would have made positive marking actively wrong, and it is fixed by what the mark
+  MEANS, not by showing it less.
+- **It RETIRES the `NO OIL` marking entirely** (§2.9). If green means earns, no green means earns
+  nothing, and no sentence is needed. The day line and the remarks tag both go.
+- **It needs teaching once** — put it in whatever legend the schedule carries, and give the bar a
+  hover title naming the figure in words.
+
+**COLLISION FOUND, and the call made — raise it again if a reviewer disagrees.** The crew palette
+ALREADY draws a green left inset on a puck: `.rpuck.standby .puck{box-shadow:inset 2px 0 0
+var(--ok)}` (`scheduler.css`) means "on standby", with a grey twin for "busy". Same colour family,
+same side, and a scheduler sees the palette and the board at once on a Saturday with an SC wave.
+**The call: the OIL bar is a 4px SOLID bar, the standby mark stays a 2px INSET, and the OIL bar
+exists only on weekend/PH days** — different weight, different rendering, different context (a
+strip you drag FROM vs a row you read). The palette's mark is NOT changed for this. If a reviewer
+judges that too subtle on a money-bearing mark, the fallback order is: a distinctly different green
+for OIL, then the bottom edge (nothing uses it; the right edge is taken by the SANS purple).
 
 ---
 
