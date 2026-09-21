@@ -64,6 +64,7 @@ const RULES = {
      one credit and a credit means the man was at work. */
   N13: 'an OIL award owes a man a day; it does not say he was at work',
   N16: 'an award and a worked day ADD UP, and never affect each other',
+  N17: 'the manning counts bodies; only a planned absence takes one away',
 }
 
 /* Rules with no test naming them on 20 Sep 26. The check fails if this set

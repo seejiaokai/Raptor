@@ -399,3 +399,45 @@ still belongs to the AUTOMATIC pass alone (N11).
 that day — this leave is filed anyway and flagged for someone to resolve" for ANY credit, award
 included. Under N13 neither half is true of an award: nothing flags it and there is nothing to
 resolve. That note now fires only for a credit the schedule earned.
+
+### N17 — the manning counts BODIES; only a planned absence takes one away (21 Sep 26)
+> "you dont need to take him off the manning. The planner only needs to know if this current day
+> can be fulfilled with the amount of manpower they have as a whole. Doesnt make sense that after
+> the admin plans a day and leave war manning starts to become red, which is weird."
+
+and, asked whether the duty-desk half of N13 should go with it:
+
+> "Dont need that gone. The manning should only reduce if they are like planned by things like
+> leave, duty & commitments."
+
+An OIL credit no longer takes a man out of the manning. Publishing a day used to drop him to zero
+available, so the Leave War went red as a direct consequence of the admin planning it — the count
+answered "who can fly" while the admin was asking "have we the people". It answers the second
+question now, and only LEAVE and a duty-and-commitments input reduce it.
+
+Both reading paths moved together — the one off the day's records and the one off a bare grid —
+because a manning figure that changed depending on which one answered is the drift seam the house
+rules name. The presence branch inside the day counts collapsed into availability, since the two
+are now the same answer.
+
+*Narrows:* N13's duty half, which said an earned credit "stands him down from flying and counts him
+in the duty manning". Only the standing-down went. *Leaves untouched, and it is his own exception:*
+the DUTY LINE still counts a credited man, which is what tells an admin the desk is covered.
+*Leaves untouched:* everything about flying eligibility on the schedule itself — this is the Leave
+War's manning picture, not the crew picker.
+
+### N18 — a clash note holds long enough to read, and looks like a warning (21 Sep 26)
+> "the inputs bubble warning timing is abit too short as well to read it. Maybe increase the timing
+> abit if conflicts are recognised."
+
+The clash notes went out on the plain face — the one used for "Saved" — and held for 2.6 seconds.
+They are whole sentences, and several can arrive joined end to end, so the more there was to read
+the less time there was to read it. They are AMBER now, which is what they always were, and the
+hold grows with the message: the old time as a floor, reading time on top, capped at twelve seconds
+so a runaway message cannot park a toast on screen.
+
+*Context he gave for it, worth keeping:* "even if the leave war is published, it's still a live
+current view of all the inputs and forecast … having the multiple guard rails that if the person
+works on a weekend and attempts to take a leave is a bonus to tell the admin or member to correct
+an error." The warnings are a FEATURE, not noise — which is why the answer was to make them
+readable rather than fewer.

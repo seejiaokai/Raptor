@@ -31,7 +31,7 @@ describe('availabilityOf', () => {
     expect(availabilityOf(someone, '2026-01-05', 'OD')).toBe(0)
   })
 
-  it('STILL COUNTS someone on SC duty — he is a man the squadron has (owner, 21 Sep 26)', () => {
+  it('STILL COUNTS someone on SC duty — he is a man the squadron has (N17)', () => {
     /* It read 0 here, so publishing a day turned the Leave War manning red as
        a direct result of planning it. The owner: "you dont need to take him
        off the manning. The planner only needs to know if this current day can

@@ -456,7 +456,7 @@ describe('changing an award', () => {
 /*  9. PLANNING A DAY MUST NOT TURN THE MANNING RED (owner, 21 Sep 26)    */
 /* ====================================================================== */
 
-describe('what reduces the manning', () => {
+describe('what reduces the manning (N17)', () => {
   /* "you dont need to take him off the manning. The planner only needs to know
       if this current day can be fulfilled with the amount of manpower they
       have as a whole. Doesnt make sense that after the admin plans a day and

@@ -695,6 +695,20 @@ rules about posted-out and pre-joining rows. Several older documents still read 
   belongs to the AUTOMATIC pass, which reads the published schedule, not to a credit the squadron
   types itself.
 
+### [OIL-NEXT-TWO] The two the owner parked until after the bug check (21 Sep 26)
+**His words: "We can do point 2 and 3 later after the 3 things above are done."** The three being
+the browser gates, the hand test in the running app, and the cross-provider bug check on
+[OIL-AWARD-ADD]. So these are queued BEHIND that branch being finished, not forgotten.
+
+1. **[OIL-EARNED-VS-GRANTED]** — below. The recommendation put to him was DO IT, as its own small
+   change, because it changes two figures he reads and he should be looking at it deliberately
+   rather than finding it inside another job.
+2. **His own look at the Vercel preview** — build a Saturday with an award, publish it, and see
+   whether 4 reads the way he expects. Nothing merges before that.
+
+**Both belong in a FRESH chat**, agreed with him on 21 Sep: they are new work, and the point to
+switch is once [OIL-AWARD-ADD] is green or merged. The handoff note names the branch.
+
 ### [OIL-AWARD-IS-A-GRANT] An award is a ledger grant stored a second way (Fable, 21 Sep 26)
 **Raised by the [OIL-AWARD-ADD] design review as the real architectural root cause. NOT built, and
 deliberately not bundled — it moves persisted balances again and touches ~28 test files, so it is
@@ -726,7 +740,51 @@ for will read "earned 4".
 `counters.ts` splits the +OIL part into "earned by weekend/PH work" and "awarded on the war".
 One afternoon. **Ask him before doing it** — it changes two numbers he reads.
 
-### [OIL-AWARD-ADD] An award and a worked day ADD UP — RULED, NOT YET BUILT (owner, 21 Sep 26)
+### [OIL-AWARD-ADD] An award and a worked day ADD UP — BUILT, IN FLIGHT on `claude/oil-award-add`, PR #423, WAITING ON "MERGE LIVE" (21 Sep 26)
+**Read `raptor-port/docs/superpowers/specs/2026-09-21-oil-award-add-design.md` and its
+`-review-log.md` first.** Ruling N16 in the behaviour register. Three owner rulings are on this
+branch, not one.
+
+- **N16 — an award and a worked day ADD UP.** A day holds ONE earned credit and ONE award, side by
+  side. The take-over-and-hand-back machinery is RETIRED, which is the point: both silent balance
+  bugs of 20–21 Sep lived inside its snapshot.
+- **N17 — the manning counts BODIES.** An OIL credit no longer removes a man; only leave and a
+  duty-and-commitments input do. Publishing a day used to turn the Leave War red as a direct
+  consequence of planning it. NARROWS N13's duty half; the duty LINE is untouched, by his own word.
+- **N18 — a clash note holds long enough to read**, and is amber rather than the "Saved" face.
+
+**RED-TEAMED BEFORE ANY CODE.** Fable and Astra reviewed the design independently and **both picked
+the same single highest-conviction silent balance bug — and it was in the BRIEF, not the app**: the
+21 Sep "keep the larger of the two" fix writes the award's days onto the schedule's own record as
+well as into the snapshot, so splitting by dropping the snapshot makes a 3-day award worth SIX, and
+on a week the app cannot read it never heals. Astra found four more Fable missed, two of them
+blockers. Every finding and its decision: the review log.
+
+**THREE BUGS FIXED THAT WERE ALREADY LIVE** before this ruling and are worth knowing about:
+re-typing an award's code on the grid silently destroyed its days and its giver; the OIL tracker's
+"Save" was three undo steps, so one undo left the balance changed; and the unpublish warning
+measured a balance that ignored expiry, so it stayed silent while the tracker read zero.
+
+**STILL OWED on this branch, and it is the whole of what is left:**
+1. `npm run test:e2e`, `npm run perf`, `npm run smoke:tracker` — NOT YET RUN.
+2. **The hand-testing pass in the running app** — NOT DONE. The standing order. Build the owner's
+   own Saturday for real, publish it, and look at it at phone and desktop widths.
+3. **The cross-provider bug check** (Fable AND Astra) on the finished code — he asked for it by
+   name, and this moves persisted balances.
+4. The owner's own look at the Vercel preview.
+
+**Gates green so far:** unit 328 files / 5268, build clean, `node reference/tfin.js` 728/0,
+`npm run rulecheck` OK (29 rulings; N13, N16 and N17 now named).
+
+**Known flake, not this branch's doing:** `src/leavewar/ui/figselect.test.tsx` fails under parallel
+load and passes alone — the same shape as the `inputscal.test.tsx` flake recorded on 20 Sep.
+
+**`rulecheck` earned its keep here.** Rewriting one stale test orphaned rulings B8 and Q7 — nothing
+in the suite would have been watching them — and the gate refused to pass until they were named
+where they still apply (narrowed by N13 to the AUTOMATIC credit).
+
+### [OIL-AWARD-ADD-RULING] The ruling as it was given, kept for the reasoning
+
 > "Yes an award and a worked day add up. So it's 4. The auto oil credits don't get affected by
 > manual OIL inputs."
 
