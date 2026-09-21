@@ -7,7 +7,7 @@
    (row.oil) in the SAME undo step as the save. Driven through the REAL
    InputEditor over the real store, the upconfirm harness idiom. The demo
    week is Mon 13 – Sun 19 Jul 26, so Jul 18/19 are the weekend. */
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
@@ -145,6 +145,12 @@ describe('the OIL ask gates a weekend/PH duty-&-commitments save', () => {
 })
 
 describe('the answers belong to the acknowledged commitment', () => {
+  /* reassignInput opens the editor on the row it asks about, and INPEDIT/OILASK
+     are MODULE state that outlives this file — left set, they decided the
+     result of an unrelated calendar test three files later. Cleaning up at the
+     end of the test that sets them is not enough: a failed assertion never
+     reaches it, and the leak comes back looking like a different bug. */
+  afterEach(() => { setInpEdit(null); setOilAsk(null) })
   const plant = (r: any) => { const row: any = { allday: true, remarks: '', mod: 'now', yr: 2026, ...r }; inpId(row); writeInputsBatch(() => { INPUTS.unshift(row) }); return INPUTS[0] }
 
   it('a retype OUT of the ask set voids them (the delete half/sans precedent)', () => {

@@ -489,3 +489,44 @@ describe('F3 — an older frozen block must not manufacture a pending amendment'
     expect(dayHasChanges(SAT), 'nothing underneath changed, so nothing may be pending').toBe(false)
   })
 })
+
+/* CODEX RANK 1 (22 Sep 26) — and it refutes the reasoning in 195943e. That
+   commit repaired the KEY for blocks written before `stand` existed, and
+   claimed `acc:'g'` meant "landed and paying". It did not: the old reader
+   explicitly rejected a cancelled or info-only row. So the money reader was
+   left testing `undefined !== 'cx'` and answering YES — an already-issued day
+   whose row was cancelled would start PAYING, with no amendment and the frozen
+   schedule still saying the work did not happen. Money out of nowhere on a
+   published record, which is worse than the phantom it replaced. */
+describe('an issued block written before `stand` must not start paying (Codex rank 1)', () => {
+  const published = (mark: 'cx' | 'info') => {
+    claim({ iid: 'leg1', person: 'bane', type: 'Duty', date: 'Jul 18', acc: 'g',
+      allday: false, s: 9 * 60, e: 17 * 60, oil: { [SAT_ISO]: 1 } })
+    const row = groundRow(SAT, { prog: 'DUTY', str: '0900', end: '1700', who: 'bane', src: 'leg1' })
+    ;(row as any)[mark] = true
+    publish(SAT)
+    /* age the issued block the way a schema-v5 book really is */
+    const snap: any = daySnapOf(SAT, dayCurVer(SAT))
+    for (const i of snap.d.oilev.inputs) delete i.stand
+  }
+
+  it('a CANCELLED row on an issued day still pays nothing', () => {
+    published('cx')
+    expect(figure(SAT, 'bane'), 'the frozen schedule says the work did not happen').toBe(null)
+  })
+
+  it('an INFO-ONLY row on an issued day still pays nothing', () => {
+    published('info')
+    expect(figure(SAT, 'bane')).toBe(null)
+  })
+
+  it('and a LIVE row on an issued day still pays, so the guard has not gone too far', () => {
+    claim({ iid: 'leg2', person: 'bane', type: 'Duty', date: 'Jul 18', acc: 'g',
+      allday: false, s: 9 * 60, e: 17 * 60, oil: { [SAT_ISO]: 1 } })
+    groundRow(SAT, { prog: 'DUTY', str: '0900', end: '1700', who: 'bane', src: 'leg2' })
+    publish(SAT)
+    const snap: any = daySnapOf(SAT, dayCurVer(SAT))
+    for (const i of snap.d.oilev.inputs) delete i.stand
+    expect(figure(SAT, 'bane')).toBe('FO')
+  })
+})

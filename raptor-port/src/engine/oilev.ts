@@ -395,13 +395,38 @@ export function oilEvidenceKey(ev: OilEvidence | null | undefined): string {
  *  same judgement the green bar makes about a row that gave a man nothing (O-1).
  *  A row that has been deleted outright takes its claim with it for the same
  *  reason. */
-export function oilInputEligible(_day: any, inp: OilInputEv): boolean {
+export function oilInputEligible(day: any, inp: OilInputEv): boolean {
   if (!inp.asks || inp.acc === 'r' || !inp.win) return false
   if (inp.acc !== 'g') return true                                  // never landed: the claim stands on its own
   /* the ONE row's state, frozen onto the claim at projection — NOT a lookup on
      the day being paid, which is what made a multi-day request pay nothing on
      every day but the one its row happened to sit on (job 2) */
-  return inp.stand !== 'cx' && inp.stand !== 'info' && inp.stand !== 'gone'
+  const st = effectiveStand(day, inp)
+  return st !== 'cx' && st !== 'info' && st !== 'gone'
+}
+
+/** A BLOCK FROZEN BEFORE `stand` EXISTED CARRIES NONE, AND THE MONEY MUST NOT
+ *  READ THAT ABSENCE AS "FINE" (Codex rank 1, 22 Sep 26 — and it refuted the
+ *  reasoning in 195943e, which repaired only the key).
+ *
+ *  Left alone, the test above read `undefined !== 'cx'` and answered YES: an
+ *  already-ISSUED day whose row had been cancelled started PAYING, with no
+ *  amendment and the frozen schedule still saying the work did not happen.
+ *  Money out of nowhere on a published record — worse than the phantom
+ *  amendment it replaced.
+ *
+ *  The premise that made it — that `acc:'g'` meant "landed and paying" — was
+ *  simply wrong: the pre-job-2 reader rejected cancelled, info-only and missing
+ *  rows outright. So the old value is not guessed from `acc`. It is
+ *  RECONSTRUCTED by running the old rule against the very day being read, which
+ *  for an issued block is the frozen schedule itself — the one place that
+ *  actually records what was true when the day went out. */
+function effectiveStand(day: any, inp: OilInputEv): OilInputEv['stand'] {
+  if (inp.stand) return inp.stand
+  if (String(inp.acc || '') !== 'g') return 'unlanded'
+  const row = (day && day.ground || []).find((g: any) => g && String(g.src || '') === inp.iid)
+  if (!row) return 'gone'                                           // the old rule: no row, no claim
+  return row.cx ? 'cx' : row.info ? 'info' : 'active'
 }
 
 /** The work that actually earns on a day, after the day's OIL evidence is
