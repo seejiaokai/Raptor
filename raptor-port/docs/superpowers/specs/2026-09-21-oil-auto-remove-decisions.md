@@ -83,6 +83,11 @@ input's puck **glows by default** in the mode → the admin can override it by t
 **Owner, 21 Sep 26:** *"In that case we make it a point to publish everyday so that silently
 earn nothing wont happen."*
 
+**→ §7.1 says HOW. The ruling alone is not implementable:** the issued snapshot freezes only
+each input's `acc` state, never its times or its OIL answer, and the input credit branch reads
+live `INPUTS`. A `dayApproved` check on that branch does NOT make the credit wait for the issued
+document. Read §7.1 before building this.
+
 This is a CHANGE. Today input-earned OIL credits the moment the input is accepted and
 answered yes, without the day ever being published (§3.4). Under this ruling all OIL —
 schedule-earned and input-earned alike — lands on publication, which is what lets the board
@@ -135,6 +140,10 @@ Resolved against the current behaviour (§3.5), that is:
 **Ruled by the session, not the owner (flag if reopened):** a sentinel never blocks another
 sentinel — only NAMED people count as "planned for something". Otherwise two overlapping
 ALL AVAIL rows each empty the other.
+
+**→ §7.3: this redefinition makes an EXISTING hole worse and must ship with the fix.** An issued
+day's sentinel is re-resolved LIVE on every pass, so adding commitment exclusions gives a member a
+new way to change an already-issued credit — his own — by filing an unpublished input.
 
 **RULED 21 Sep 26 — they stay identical, deliberately.** Asked whether ALL should mean
 everybody regardless, the owner said no: *"U cant possible force ALL to join, its just like a
@@ -207,6 +216,10 @@ the puck, and a green edge bar. **He chose the EDGE: "c looks good."**
   nothing, and no sentence is needed. The day line and the remarks tag both go.
 - **It needs teaching once** — put it in whatever legend the schedule carries, and give the bar a
   hover title naming the figure in words.
+- **A SENTINEL puck wears NO bar** (§7.6). ALL / ALL AVAIL is not a person and cannot carry a
+  person's figure: the people behind one puck can earn a full day, a half day and nothing at once.
+  The COUNT chip beside it carries the summary instead — `9 · 6 earn` — and tapping it lists each
+  person with his own figure.
 
 **COLLISION FOUND, and the call made — raise it again if a reviewer disagrees.** The crew palette
 ALREADY draws a green left inset on a puck: `.rpuck.standby .puck{box-shadow:inset 2px 0 0
@@ -366,13 +379,143 @@ guard.
 
 ## 6. Build order, when it is built
 
-1. `[ALL-AVAIL-REDEF]` first, or at least decided — the OIL mode's sentinel expansion depends
-   on what ALL AVAIL means.
-2. The three day-record marks + the pass reading them (item, day, person-per-event).
-3. The mode on the board: the button, the glow, the live FO/HO, the sentinel expansion.
-4. §2.3's publication change + the publish-reminder warning.
-5. The `ⓘ` wording fix.
+**REORDERED after the Codex red team — the evidence block comes first, because three of the six
+findings are the same missing piece.**
+
+1. `[ALL-AVAIL-REDEF]` first, or at least decided — the OIL mode's sentinel expansion and §7.3's
+   frozen participants both depend on what ALL AVAIL means.
+2. **The OIL EVIDENCE BLOCK (§7.1)** — the day-record block, the frozen input projection, the
+   frozen sentinel participants, and the pass reading ONLY the issued block for credit.
+3. **Make it publishable (§7.2)** — `schema.ts`, `dayKeys`/`canonicalContent`, the absent-block
+   default, and the draft/recovery/undo path. Nothing else works until this lands.
+4. Stable decision identity (§7.4) and the cutover reset (§7.5).
+5. The mode on the board: the button, the glow, the live FO/HO, the sentinel expansion.
+6. The green edge on the issued schedule, and the sentinel's count-chip summary (§7.6).
+7. §2.3's publish-reminder warning, and the ⓘ wording fix.
 
 **Model guidance:** the plan still needs a Codex (Astra) red team — Fable has reviewed it, Codex
 has not, and the owner's standing rule is both providers before building. Build on **Opus, high**;
 it touches the pass, the day record, the board renderer and the crew-picker seam.
+
+---
+
+## 7. THE CODEX RED TEAM, AND HOW THE DESIGN ANSWERS IT (21 Sep 26)
+
+Codex (GPT-6 Astra, high) reviewed this document against the live source and returned **REVISE**
+with six findings, four of them high. Every one was checked against the code before being accepted;
+two proved WORSE than reported. The answers below are part of the design now — build to them, not
+to the pre-review text.
+
+### 7.1 Input OIL cannot "wait for publication" without freezing the evidence (OAR-001, high)
+
+**What is actually true.** `daySnap` (`publish.ts:227`) deep-copies the day AND a *filing
+fingerprint* — and that fingerprint is, by its own comment, "NOT AM-04's freezing of full input
+VALUES/identities into content": it records each covering input's `acc` state and nothing else. The
+input credit branch (`sync.ts:856-877`) then reads **live `INPUTS`** — live times, live `row.oil`.
+So revising an OIL answer on a published Saturday moves the credit at once and produces no
+amendment; and an OD answer-only change can never produce one, because OD has no ground row at all.
+Adding a `dayApproved` check to that branch changes nothing about which DATA it reads.
+
+**The design's answer — THE DAY CARRIES AN OIL EVIDENCE BLOCK, and money comes only from it.**
+One block on the day record, frozen into the issued snapshot exactly as day content is:
+
+1. the day blanket (§2.1 item 7);
+2. per-item marks;
+3. per-person-per-event exclusions (§2.1 item 1);
+4. **a frozen projection of every OIL-bearing input covering that date** — per input id: the person,
+   all-day or its times, the type, whether the type earns at all, and the member's own answer.
+
+The pass then reads the issued block for EVERYTHING and stops consulting live `INPUTS` for credit.
+One source: the issued document. This also answers how an OD input ever gets an amendment — its
+evidence is in the block whether or not it has a row.
+
+Must be covered explicitly: OD and anything else filed under Unavailable, multi-day inputs spanning
+several days, and dates in weeks that are not loaded.
+
+### 7.2 A mark on the day record is snapshot-able but NOT publishable (OAR-002, high)
+
+**Verified, and it is a deadlock rather than a gap.** `canonicalContent` (`canonical.ts:52`) is
+built from `dayKeys(d, di)` (`restore.ts:22`) — an EXPLICIT enumeration of fields, whose own comment
+lists the fields deliberately omitted. `publishALDay` refuses an empty delta (`publish.ts:631`). So
+a new field on a day or a row rides the snapshot blob (a deep copy) but is invisible to the
+canonical diff. The scheduler could mark an item on a published day, get no amendment, and have **no
+way to publish the mark at all** — while the pass keeps reading the older issued snapshot that does
+not carry it. Marked forever, never in force.
+
+**The design's answer.** The whole evidence block of §7.1 is canonical content: extend `dayKeys` so
+each fact in it is its own key, and `schema.ts` so the record type is declared. Then an OIL-only
+edit produces a real delta, a real amendment item with its own address, and invalidates the
+signature. An ABSENT block normalises to the default (everything earns) so the first change against
+an older snapshot is detected rather than read as "no change". It must survive draft switching,
+recovery and undo like any other day content.
+
+### 7.3 An issued sentinel is re-resolved LIVE — the credit is not frozen (OAR-003, high)
+
+**Verified.** The pass reads the issued snapshot for day content but expands sentinels through
+`availableFor` (`sync.ts:823, 852, 672`), which reads current `PEOPLE`, the Leave War roster and
+**live `INPUTS`**. So an already-issued ALL AVAIL event's people can change with no amendment
+today — archiving someone already does it. §2.6's commitment exclusion makes it materially worse: a
+member could withdraw his own issued credit by filing an unpublished Saturday Training.
+
+**The design's answer.** Publication FREEZES the resolved participants of every sentinel event into
+the evidence block of §7.1. The pass, and every issued display, read that frozen list; live
+resolution is for the DRAFT only. Changing who is on an issued ALL AVAIL event then costs an
+amendment, like every other change to an issued day.
+
+**The consequence the owner must hear:** once a day is published, a man who later goes on leave
+still shows on that event and still earns, until the day is amended. That is the same rule as
+everything else on an issued schedule — the document is the squadron's word — but it is a change
+from today's live behaviour. It is also what makes §7.6's sentinel display possible at all.
+
+### 7.4 The marks need a stable identity, or a member's edit silently clears them (OAR-004, medium)
+
+**Verified.** `commitInputEdit` (`inputedit.tsx:964-988, 1089-1098`) DELETES and RECREATES an
+accepted ground row, preserving only `more`, `flag` and `cx`; `acceptInput` (`slots.ts:385`) builds
+a fresh row. So an admin exclusion hung on the row — or on its `rid` — vanishes when a member edits
+his own remarks or times, and the member's default "yes" comes back at the next publication. An
+admin override undone by an ordinary member edit, silently.
+
+**The design's answer.** Decisions are keyed by what SURVIVES:
+- an input-derived decision by the **input's own id + the ISO date**, never the ground row;
+- a hand-built row's mark by the row's `rid` (the addressing the amendment book already uses);
+- a per-person exclusion by **person id + event key + date**.
+
+An ordinary member edit (remarks, times) preserves the decision. A change of person, date or type
+is a different thing and clears it, visibly. Deletion, re-acceptance and copies each get a stated
+rule; a copied row starts with no decision, like a new one.
+
+### 7.5 The publication change needs a stated cutover (OAR-005, high)
+
+**Verified.** `oilsync.test.ts:294-298` pins today's behaviour: an answered input creates auto OIL
+on a never-published date. Make publication mandatory and those credits leave `desiredOilCells`,
+and the reverse sweep (`sync.ts:1062-1070`) deletes them — **at boot**, before any scheduler
+publishes anything. Balances would drop silently on deploy.
+
+**The design's answer — the owner's standing dev-phase ruling covers it: CLEAR, do not migrate.**
+The app is pre-promulgation and running on demo data, and the standing rule is that a problem
+existing only in demo data, and prevented going forward, is cleared rather than migrated. So: the
+change ships with an explicit reset of existing automatic credits, and the pass re-derives from
+published days. **State it in the release note and tell the owner** — it is a visible drop to zero
+and back, not a silent one. Never backfill issued evidence from unapproved live inputs.
+
+### 7.6 A sentinel puck cannot wear a person's bar (OAR-006, medium)
+
+**Verified, and it was missed in the mockup**, which drew named pucks only. Outside OIL mode the
+schedule draws ONE puck for ALL / ALL AVAIL (`html.ts:308-311`). The people behind it can earn a
+full day, a half day and nothing at the same time. No single bar says that.
+
+**The design's answer.** A sentinel puck wears **no bar**. The count chip beside it (§2.7) carries
+the summary — `9 · 6 earn` — and tapping it lists each person with his own figure, which is the
+same list that chip already opens. §7.3's frozen participants are what make this readable on an
+issued day at all. **Put to the owner as a small visual question**, since he chose the bar.
+
+---
+
+## 8. What is still the owner's to answer after the red team
+
+1. §7.3 — once a day is published, a man who later goes on leave still earns until it is amended.
+   Stated to him as a consequence; not yet confirmed.
+2. §7.5 — the reset of existing automatic credits when this deploys.
+3. §7.6 — a sentinel puck wearing no bar, the count chip carrying the summary instead.
+
+---
