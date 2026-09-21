@@ -92,17 +92,34 @@ export function inputOilAmt(allday:any,s:any,e:any){
    FLT, Duty"). FLT = a flying seat, SIM = a sim row, Duty = a duty row, the
    Ground and Common Programme, and an ALL / ALL AVAIL puck on either. */
 export type OilWorkSrc='FLT'|'SIM'|'Duty';
-export interface OilWork{s:number;e:number;src:OilWorkSrc}
+/* `item` is the ITEM this span came off — the address a scheduler's OIL
+   decision hangs on ([OIL-AUTO-REMOVE] §7.4, engine/oilev.ts). It is keyed by
+   what SURVIVES an ordinary member edit: an input-derived row by the INPUT's own
+   id, a hand-built row by its `rid`. `via` says which half of the evidence
+   produced it — the schedule, or a duty-and-commitments claim. */
+export interface OilWork{s:number;e:number;src:OilWorkSrc;item?:string;via?:'schedule'|'input'}
+/* THE ITEM ADDRESS GRAMMAR, in one place so the walk below, the evidence block
+   and the board's OIL mode can never spell it differently. A row with no rid
+   yet has NO item address: it cannot be marked individually (the day blanket
+   still covers it) rather than taking a positional address a reorder would move
+   under it. */
+export const inputItemKey=(iid:any)=>`i:${iid}`;
+export const rowItemKey=(rid:any)=>rid?`r:${rid}`:'';
+/* a ground row's item: the input it came from, else the row itself */
+export const groundItemKey=(g:any)=>(g&&g.src)?inputItemKey(g.src):rowItemKey(g&&g.rid);
 
 /* every person's work for one day blob, each span tagged with its kind:
    id -> {s,e,src}[]. The envelope of a person's spans is the day's measure.
    opts.expandAll resolves a sentinel puck (ALL / ALL AVAIL) on a ground or
    Common Programme row into the people it stands for at that window. */
-export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number])=>string[]}){
+export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:string)=>string[]}){
   const out:Record<string,OilWork[]>={};
   const rid=(v:any)=>{const id=whoId(v);return realP(id)?id:null;};
   let src:OilWorkSrc='Duty';
-  const put=(v:any,win:[number,number]|null)=>{if(!win)return;const id=rid(v);if(id)(out[id]=out[id]||[]).push({s:win[0],e:win[1],src});};
+  /* the item each span is being collected for — set at the top of every row so
+     a span can never be tagged with its neighbour's address */
+  let item='';
+  const put=(v:any,win:[number,number]|null)=>{if(!win)return;const id=rid(v);if(id)(out[id]=out[id]||[]).push({s:win[0],e:win[1],src,item,via:'schedule'});};
   const w2=(st:any,en:any):[number,number]|null=>{
     if(st==null||en==null)return null;
     if(en<st)en+=1440;
@@ -112,7 +129,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number])=>stri
   const putWho=(v:any,win:[number,number]|null,more?:any[])=>{
     if(win){
       const id=whoId(v);
-      if(id&&isSpecial(id)){ if(opts&&opts.expandAll)opts.expandAll(win).forEach((p:any)=>put(p,win)); }
+      if(id&&isSpecial(id)){ if(opts&&opts.expandAll)opts.expandAll(win,item).forEach((p:any)=>put(p,win)); }
       else put(v,win);
     }
     (more||[]).forEach((m:any)=>put(m,win));
@@ -123,6 +140,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number])=>stri
     const sc=isStandalone(wv);
     (wv.formations||[]).forEach((f:any)=>{
       if(f.cx)return;
+      item=rowItemKey(f.rid);                            // the LINE is the item a scheduler taps
       const st=parseHM(f.to),en=parseHM(f.ld);
       /* SC shift = its written window; a flying line = report → land+debrief */
       const win=sc?w2(st,en)
@@ -138,6 +156,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number])=>stri
   src='SIM';
   ['amt','oft'].forEach((k:any)=>((day.sims||{})[k]||[]).forEach((r:any)=>{
     if(r.cx)return;
+    item=rowItemKey(r.rid);
     const win=w2(parseHM(r.str),parseHM(r.end));
     if(!win)return;
     /* the same id set events.ts rowIds enumerates: seats, pax, extras — sim who
@@ -150,6 +169,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number])=>stri
     if(dw&&saExemptKind(dw.sa))return;                   // the excluded waves' own desks
     (dw.rows||[]).forEach((r:any)=>{
       if(r.cx)return;
+      item=rowItemKey(r.rid);
       const win=w2(parseHM(r.str),parseHM(r.end));
       if(!win)return;
       [r.id,...(r.more||[])].forEach((v:any)=>put(v,win));
@@ -158,11 +178,13 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number])=>stri
   (day.ground||[]).forEach((g:any)=>{
     if(g.cx||g.src)return;                               // src = an accepted input: the ask-flow's
     if(g.info)return;                                    // ⓘ info-only: shown, never worked — mints no OIL
+    item=groundItemKey(g);
     putWho(g.who,w2(parseHM(g.str),parseHM(g.end)),g.more);
   });
   (day.allhands||[]).forEach((x:any)=>{
     if(x.cx)return;
     if(x.info)return;                                    // ⓘ info-only: mints no OIL
+    item=rowItemKey(x.rid);
     const win=w2(parseHM(x.str),parseHM(x.end));
     if(!win)return;
     whoArr(x).forEach((v:any)=>putWho(v,win));
@@ -244,7 +266,7 @@ export function dayOilBlind(day:any):string[]{
 
 /* the same work as bare [s,e] spans: id -> [s,e][] — the shape envMin takes
    and the probe bridge exposes. */
-export function dayOilSpans(day:any,opts?:{expandAll?:(win:[number,number])=>string[]}){
+export function dayOilSpans(day:any,opts?:{expandAll?:(win:[number,number],item:string)=>string[]}){
   const work=dayOilWork(day,opts);
   const out:Record<string,[number,number][]>={};
   Object.keys(work).forEach((id:any)=>{out[id]=work[id].map((w:OilWork)=>[w.s,w.e] as [number,number]);});
@@ -258,7 +280,7 @@ export function oilWorkWhy(work:OilWork[]){
   return seen.join(' + ');
 }
 /* every person's OIL credit for one day blob: id -> 0.5 | 1 */
-export function dayOilCredits(day:any,opts?:{expandAll?:(win:[number,number])=>string[]}){
+export function dayOilCredits(day:any,opts?:{expandAll?:(win:[number,number],item:string)=>string[]}){
   const out:any={};
   const spans=dayOilSpans(day,opts);
   Object.keys(spans).forEach((id:any)=>{

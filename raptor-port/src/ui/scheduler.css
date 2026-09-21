@@ -5874,3 +5874,71 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .savestat{margin-left:8px;padding:6px 10px;border-radius:10px;font-size:12px;color:var(--ink-2);background:var(--raised);white-space:nowrap}
 .savestat.failed{color:#E5C24A}
 .savestat button{margin-left:4px;padding:2px 8px;border-radius:8px;border:1px solid currentColor;background:transparent;color:inherit;font:inherit;cursor:pointer}
+
+/* ======================================================================
+   OIL ON THE SCHEDULE — [OIL-AUTO-REMOVE], owner 21 Sep 26
+   ====================================================================== */
+/* THE GREEN EDGE (§2.10). The owner asked to see OIL shown POSITIVELY rather
+   than its absence, three treatments were drawn on one real Saturday, and he
+   chose the edge bar: "c looks good."
+     · A bar down the LEFT edge of the puck. FULL height = a full day; the
+       BOTTOM HALF, a shade paler = half a day. Height is the structural signal
+       that survives colour-blindness; the tint is the one that survives being
+       read alone with nothing to compare against.
+     · It costs NO WIDTH — a pseudo-element inside the puck's own box — so no
+       callsign clips and the measured puck geometry (--puck-w/--puck-h and the
+       geometry gate) is untouched.
+     · Weekend / public-holiday days only. Five days a week the schedule is
+       byte-identical, because nothing emits the class at all.
+   THE COLLISION, and the call made. The crew palette ALREADY draws a green
+   left inset on a puck — `.rpuck.standby .puck{box-shadow:inset 2px 0 0
+   var(--ok)}`, meaning "on standby", with a grey twin for "busy" — and a
+   scheduler sees the palette and the board at once on a Saturday with an SC
+   wave. So the OIL bar is deliberately drawn apart from it in three ways at
+   once: a 4px SOLID bar against a 2px inset, its OWN colour token (--oil, a
+   deeper leaf green, not --ok), and only ever on a day that can earn. The
+   palette's mark is NOT changed for this. */
+:root{--oil:#2FA65C; --oil-half:#7FC79A}
+/* DRAWN AS A BACKGROUND GRADIENT, NOT A PSEUDO-ELEMENT. A puck's ::before is
+   RESERVED for the drag ghost's lift veil and its ::after for the SANS edge —
+   lift-css.test.ts pins both, and the veil has to sit on the one pseudo-element
+   the ghost's clone leaves free. A 4px gradient stripe costs no node, no width
+   and no pseudo-element, so it cannot collide with either. */
+.puck.oilbar{background-repeat:no-repeat}
+.puck.oilbar-fo{background-image:linear-gradient(var(--oil),var(--oil));background-size:4px 100%;background-position:left top}
+/* half a day: the BOTTOM HALF only, and a shade paler — height is the signal
+   that survives colour-blindness, the tint the one that survives being read
+   alone with nothing to compare against */
+.puck.oilbar-ho{background-image:linear-gradient(var(--oil-half),var(--oil-half));background-size:4px 50%;background-position:left bottom}
+
+/* THE OIL EARN MODE (§2.1). The button lights, the board goes read-only for
+   schedule editing, and every puck that earns glows. Solid glow = a full day,
+   an outline only = a half (§2.1 item 4), so the two are distinct without
+   reading the figure. */
+.sb-panel.oilbar.on{border-color:var(--oil)}
+.mbtn.oilbtn.on{background:var(--oil);border-color:var(--oil);color:#04220f}
+.mbtn.oilblank.on{background:var(--adv);border-color:var(--adv);color:#12100a}
+.oilnote{padding:4px 8px;font-size:11px;color:var(--ink-2)}
+/* a puck that earns: the whole puck rings green. A HALF day is an outline only
+   — the same solid/outline distinction the owner asked for. */
+.puck.oilglow{box-shadow:0 0 0 2px var(--oil),0 0 8px rgba(47,166,92,.5)}
+.puck.oilglow.half{box-shadow:0 0 0 2px var(--oil)}
+.puck.oildim{opacity:.5}
+.puck .role.oilamt{background:var(--oil);color:#04220f}
+.puck .role.oilamt.half{background:var(--oil-half);color:#04220f}
+.puck .role.oilno{background:var(--ink-3);color:var(--panel)}
+/* the item's own switch: its name reads as a control while the mode is on */
+.oilitem{display:flex;align-items:center;padding:0 4px;border-radius:4px;cursor:pointer;
+  font-size:11px;font-weight:600;min-height:20px;border:1px solid transparent;overflow:hidden}
+.oilitem.on{background:rgba(47,166,92,.18);border-color:var(--oil);color:var(--ink)}
+.oilitem.off{background:var(--panel-2);border-color:var(--edge-2);color:var(--ink-3);text-decoration:line-through}
+.oilitem.none{cursor:default;color:var(--ink-3)}
+.seat.oilpk{cursor:pointer}
+.seat.oilpk.inert{cursor:default}
+/* the sentinel's count chip beside an ALL / ALL AVAIL puck (§7.6): plain when
+   the people behind it agree, green with a fraction when they are MIXED — a
+   mixed puck and an earns-nothing puck both wear no bar, so the chip is what
+   tells them apart. */
+.oilcount{display:inline-flex;align-items:center;margin-left:3px;padding:0 4px;border-radius:4px;
+  font-size:9px;font-weight:700;background:var(--panel-2);color:var(--ink-2);border:1px solid var(--edge-2);cursor:pointer}
+.oilcount.some{background:rgba(47,166,92,.2);border-color:var(--oil);color:var(--ink)}

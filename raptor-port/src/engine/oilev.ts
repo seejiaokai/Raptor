@@ -1,0 +1,291 @@
+/* =====================================================================
+   THE OIL EVIDENCE BLOCK — [OIL-AUTO-REMOVE], 21 Sep 26
+   (docs/superpowers/specs/2026-09-21-oil-auto-remove-decisions.md §7.1,
+   §7.3, §7.4, §9.1, §9.2, §9.3)
+
+   ONE place that says what earns OIL on a day, and the ONE body that computes
+   it. Before this, the money came from two disagreeing sources: the day's
+   ISSUED snapshot for schedule work, and LIVE `INPUTS` for a duty-and-
+   commitments claim. So revising an OIL answer on a published Saturday moved
+   the credit at once and produced no amendment, and an overseas-duty answer
+   could never produce one at all, because OD has no row on the programme.
+
+   THE ANSWER: the day carries an OIL EVIDENCE BLOCK, and money comes only from
+   it. On an ISSUED day the block is FROZEN into the snapshot (`Day.oilev`,
+   attached by publish.ts's daySnap) and the credit pass reads nothing else. On
+   the live working copy the block is DERIVED ON READ from the current inputs,
+   roster and day content plus the scheduler's stored decisions — never stored,
+   so it cannot go stale, and a parked plan restored months later re-derives it
+   rather than resurrecting an obsolete one (§9.3).
+
+   WHAT IS STORED on a day is only the DECISIONS (`Day.oild`): the whole-day
+   blanket, the per-item marks and the three-state per-person decisions. Those
+   are the owner's choices and they are the day's content. Everything else — the
+   input projection, the resolved sentinel participants — exists on the issued
+   snapshot only.
+
+   THREE STATES, NOT A FLAG (§9.1). A per-person-per-event decision is `inherit`
+   (absent — follow the member's own answer and the ordinary rules), `allow`
+   (this man earns from this event whatever the member's answer said) or `deny`.
+   `allow` and `deny` both outrank the member's answer; the member's answer is
+   stored on his own input and is NEVER overwritten, so lifting an override
+   brings his word back and the Inputs page still shows him what he said.
+
+   NOTHING OVERRIDES INELIGIBILITY. A dormant input, a cancelled row, a day that
+   cannot earn at all, work with no written times, an SC spare, AVALON/BB, an ⓘ
+   info row — all stay at nothing whatever the three-state says. An `allow` is
+   permission to count real work, never permission to invent it. That is why the
+   decisions are applied to the work the day's own rules produced (engine/oil.ts)
+   rather than being a second source of work.
+
+   Ordinary TS style — a new file, not a ported engine body.
+   ===================================================================== */
+import { DAYS } from './data'
+import { INPUTS, inpId, inpWin, oilAsks, dateOrd } from './inputs'
+import { HOOKS } from './hooks'
+import { dayOilWork, envMin, uniformOil, inputItemKey, rowItemKey, groundItemKey, type OilWork } from './oil'
+
+/* the item-address grammar lives in engine/oil.ts, beside the walk that tags
+   every span with it — re-exported here so callers of the evidence block have
+   one import. */
+export { inputItemKey, rowItemKey, groundItemKey }
+
+/* ---- the stored decisions (Day.oild — day content) ---------------------- */
+
+export type OilDecision = 'allow' | 'deny'
+
+export interface OilDecisions {
+  /** the whole-day blanket: nothing today earns. A FACT about the day, not a
+   *  stamp on the rows, so it covers anything added later — and it MASKS the
+   *  marks beneath it rather than deleting them (§2.1 item 7, §9.1). */
+  blanket?: 1
+  /** item key → 0: this item earns nobody anything. */
+  items?: Record<string, 0>
+  /** `<personId>|<itemKey>` → allow | deny (§9.1). */
+  people?: Record<string, OilDecision>
+}
+
+/* ---- the derived halves (issued snapshots only) -------------------------- */
+
+/** One OIL-bearing input covering the day's date, frozen at publication (§7.1
+ *  item 4). This is what lets an OD claim — which never lands on the programme
+ *  — be part of the issued document at all, and what makes revising an answer
+ *  on a published day an amendment like any other change. */
+export interface OilInputEv {
+  /** the input's own stable id: the decision address that survives an edit (§7.4) */
+  iid: string
+  person: string
+  type: string
+  /** does the TYPE ask for OIL at all (`oilAsks`) */
+  asks: boolean
+  /** its standing on the programme: 'g' landed · 'u' unavailable · 'r' dormant · '' fresh */
+  acc: string
+  /** its window on this date, rolled; null when it carries no usable one */
+  win: [number, number] | null
+  /** the MEMBER's own answer for this date — null = unanswered. Never overwritten. */
+  ans: number | null
+}
+
+export interface OilEvidence {
+  /** the date this block belongs to, so a frozen block can never be read against another day */
+  iso: string
+  /** can this day earn at all (a weekend, the war's public holiday, an off day) */
+  earns: boolean
+  /** the scheduler's decisions (a copy of Day.oild) */
+  d: OilDecisions
+  /** every OIL-bearing input covering the date */
+  inputs: OilInputEv[]
+  /** item key → the people a sentinel on that item stands for, frozen (§7.3) */
+  sent: Record<string, string[]>
+}
+
+export const EMPTY_OIL_EVIDENCE: OilEvidence = { iso: '', earns: false, d: {}, inputs: [], sent: {} }
+
+/* ---- item identity (§7.4) ------------------------------------------------
+   Decisions are keyed by what SURVIVES an ordinary member edit. `commitInputEdit`
+   DELETES and RECREATES an accepted ground row, and `acceptInput` builds a fresh
+   one, so a mark hung on the row — or on its rid — vanishes when a member edits
+   his own remarks or times, and his default "yes" comes back at the next
+   publication: an admin override undone by an ordinary member edit, silently.
+   So an INPUT-DERIVED item is addressed by the INPUT's own id, and only a
+   hand-built row by its `rid` (the addressing the amendment book already uses).
+   The grammar itself is `inputItemKey` / `rowItemKey` / `groundItemKey`, in
+   engine/oil.ts beside the walk that stamps it onto every span.
+
+   A change of person, date or type makes it a DIFFERENT thing: the input keeps
+   its id, so its item address survives, but the projection records the new
+   person — and a decision addressed to the old man no longer matches anyone the
+   item earns for, so it stops applying. A copied row starts with no decision,
+   like a new one, because a copy is minted a fresh rid (`stripRowIds`). */
+
+/* ---- the decision algebra ------------------------------------------------ */
+
+/** Is this item live at all under the day's decisions (blanket + item mark)? */
+function itemOn(ev: OilEvidence, item: string): boolean {
+  if (ev.d.blanket) return false
+  if (item && ev.d.items && ev.d.items[item] === 0) return false
+  return true
+}
+
+/** The three-state decision for one man on one item; undefined = inherit. */
+export function personDecision(ev: OilEvidence, person: string, item: string): OilDecision | undefined {
+  if (!item || !ev.d.people) return undefined
+  return ev.d.people[`${person}|${item}`]
+}
+
+/** Does this man earn from this item — `allow`/`deny` outranking `dflt`, which
+ *  is the ordinary rule's own answer (yes for schedule work, the member's own
+ *  answer for an input claim). Ineligibility is decided before this is asked. */
+export function earnsFrom(ev: OilEvidence, person: string, item: string, dflt: boolean): boolean {
+  if (!itemOn(ev, item)) return false
+  const dec = personDecision(ev, person, item)
+  return dec === 'allow' ? true : dec === 'deny' ? false : dflt
+}
+
+/* ---- building the block -------------------------------------------------- */
+
+/** every OIL-bearing input covering `iso`, projected (§7.1 item 4). Reads live
+ *  INPUTS — which is exactly right while this is the LIVE candidate, and is
+ *  never reached on an issued day, whose block is frozen. */
+export function projectOilInputs(iso: string): OilInputEv[] {
+  const ord = +String(iso).replace(/-/g, '')
+  const out: OilInputEv[] = []
+  for (const row of INPUTS as any[]) {
+    if (!row || !row.person || !oilAsks(row.type)) continue
+    const a = dateOrd(row.date, row.yr)
+    if (a == null) continue
+    const b = row.endDate ? dateOrd(row.endDate, row.yr) ?? a : a
+    if (ord < a || ord > b) continue
+    const w = inpWin(row)
+    const ans = (row.oil || {})[iso]
+    out.push({
+      iid: String(inpId(row)),
+      person: String(row.person),
+      type: String(row.type || ''),
+      asks: true,
+      acc: String(row.acc || ''),
+      win: w && w[1] > w[0] ? [w[0], w[1]] : null,
+      ans: typeof ans === 'number' ? ans : null,
+    })
+  }
+  /* deterministic order, so an unchanged day serialises byte-identically and a
+     reordered INPUTS array is not read as a change (§9.2). */
+  out.sort((x, y) => (x.iid < y.iid ? -1 : x.iid > y.iid ? 1 : 0))
+  return out
+}
+
+/** THE ONE BODY (§9.3). The day's OIL evidence as it stands right now: the
+ *  stored decisions, the projected inputs and the resolved sentinel membership.
+ *  The preview, the amendment comparison, the signature binding and publication
+ *  all call THIS, so they cannot disagree about what is being signed.
+ *
+ *  `day` defaults to the loaded week's day, which is what every caller in the
+ *  app wants; passing one explicitly is for tests and for a stashed week. */
+export function oilEvidence(di: any, day?: any): OilEvidence {
+  di = +di
+  const d = day || DAYS[di]
+  const iso = HOOKS.oilDayISO(di)
+  const earns = !!d && !!iso && HOOKS.oilEarningDay(di)
+  const dec: OilDecisions = (d && d.oild) || {}
+  if (!earns) return { iso: iso || '', earns: false, d: dec, inputs: [], sent: {} }
+  const sent: Record<string, string[]> = {}
+  /* the walk that finds the day's work is the SAME walk the credit uses, so the
+     frozen membership can never be resolved for an item the credit does not
+     measure (or missed for one it does). It hands each sentinel its item key. */
+  dayOilWork(d, {
+    expandAll: (win, item) => {
+      const people = HOOKS.oilSentinel(iso as string, win, d)
+      if (item) sent[item] = people
+      return people
+    },
+  })
+  return { iso: iso as string, earns: true, d: dec, inputs: projectOilInputs(iso as string), sent }
+}
+
+/** The evidence a DAY OBJECT carries: the frozen block on an issued snapshot,
+ *  else the live candidate. This is what every reader should ask — inside a
+ *  version preview (ui/html.ts withDaySnap) DAYS[di] IS the snapshot, so the
+ *  same call returns the issued answer without the caller knowing. */
+export function oilEvidenceOf(di: any, day?: any): OilEvidence {
+  const d = day || DAYS[+di]
+  if (d && d.oilev) return d.oilev as OilEvidence
+  return oilEvidence(di, d)
+}
+
+/* ---- serialisation (§9.2) ------------------------------------------------
+   ONE ALWAYS-PRESENT AGGREGATE VALUE PER DAY, not one key per fact. The
+   canonical diff ignores a key that newly APPEARS unless `rowKeyOf` recognises
+   its owning row, and ignores one that DISAPPEARS — and `rowKeyOf` knows only
+   the crew-slot families. So "one key per fact" would change the digest and
+   still emit no amendment item. The whole block serialises to a single
+   deterministic string under one synthetic per-day address instead: always
+   present, always compared, byte-identical when nothing changed.
+
+   THE COST, stated: the amendment item reads "the OIL decisions on this day
+   changed" rather than naming each man. One line instead of twelve, and the
+   history still holds the before and after through the edit log. A per-man item
+   would need canonicalDiff taught the identity lifecycle — a bigger job, and
+   not in this build. */
+const sortedPairs = (o: any) => Object.keys(o || {}).sort().map(k => `${k}=${(o as any)[k]}`).join(',')
+
+export function oilDecisionsKey(dec: OilDecisions | undefined): string {
+  const d = dec || {}
+  if (!d.blanket && !d.items && !d.people) return ''
+  return [d.blanket ? 'B' : '', sortedPairs(d.items), sortedPairs(d.people)].join('|')
+}
+
+export function oilEvidenceKey(ev: OilEvidence | null | undefined): string {
+  if (!ev || !ev.earns) return ''
+  const ins = ev.inputs.map(i => `${i.iid}:${i.person}:${i.type}:${i.acc}:${i.win ? i.win.join('-') : ''}:${i.ans == null ? '' : i.ans}`).join(',')
+  const sent = Object.keys(ev.sent).sort().map(k => `${k}=${[...ev.sent[k]].sort().join('+')}`).join(',')
+  return `${ev.iso}|${oilDecisionsKey(ev.d)}|${ins}|${sent}`
+}
+
+/* ---- what the block says a day EARNS ------------------------------------- */
+
+/** The work that actually earns on a day, after the day's OIL evidence is
+ *  applied: the schedule's own work minus what the decisions take out, plus the
+ *  duty-and-commitments claims the evidence carries. `id -> spans`.
+ *
+ *  Both halves come from the SAME block, which is the whole point: on an issued
+ *  day that block is the frozen document, so the money follows the schedule the
+ *  squadron was given and nothing else. */
+export function oilEarnedWork(day: any, ev: OilEvidence): Record<string, OilWork[]> {
+  const out: Record<string, OilWork[]> = {}
+  if (!ev.earns) return out
+  const put = (person: string, w: OilWork) => { (out[person] = out[person] || []).push(w) }
+  /* the schedule half — the frozen participants resolve every sentinel, so an
+     issued ALL AVAIL event's people cannot change under the reader (§7.3) */
+  const work = dayOilWork(day, { expandAll: (_win, item) => (item && ev.sent[item]) || [] })
+  for (const person of Object.keys(work)) {
+    for (const w of work[person]) {
+      if (!earnsFrom(ev, person, String(w.item || ''), true)) continue
+      put(person, w)
+    }
+  }
+  /* the input half — a claim earns on its own evidence, with the member's own
+     answer as the default and the admin's three-state over the top (§9.1) */
+  for (const inp of ev.inputs) {
+    if (!inp.asks || inp.acc === 'r' || !inp.win) continue          // dormant / unreadable: nothing to allow
+    const item = inputItemKey(inp.iid)
+    if (!earnsFrom(ev, inp.person, item, inp.ans != null && inp.ans > 0)) continue
+    put(inp.person, { s: inp.win[0], e: inp.win[1], src: (inp.type || 'Duty').trim() as any, item, via: 'input' })
+  }
+  return out
+}
+
+/** WOULD ANYBODY EARN ANYTHING ON THIS DAY AS IT STANDS? What the day's
+ *  publish reminder asks before it speaks (§2.3). Reads the LIVE candidate,
+ *  because the whole point is that the day has NOT gone out yet — so this is
+ *  "there is money here waiting on a publication", not "money has landed". */
+export function oilWouldEarn(di: any): boolean {
+  const d = DAYS[+di]
+  if (!d) return false
+  const ev = oilEvidence(di)
+  if (!ev.earns) return false
+  const work = oilEarnedWork(d, ev)
+  for (const p of Object.keys(work)) {
+    if (uniformOil(envMin(work[p].map(w => [w.s, w.e] as [number, number])))) return true
+  }
+  return false
+}

@@ -10,8 +10,9 @@ import { setWorld, setFiling, clearFiling } from './world'
 import { CURWEEK } from './waves'
 import { DAYS } from './data'
 import { dayOilBlind, blindDesks } from './oil'
+import { oilWouldEarn } from './oilev'
 import { keyDay } from './keys'
-import { SCHED, approvedDays, dayDelta, dayCurVer, daySnapOf } from './publish'
+import { SCHED, approvedDays, dayApproved, dayDelta, dayCurVer, daySnapOf } from './publish'
 
 /* the reference guards its header counters with $() lookups; the engine takes
    $ from the hooks (null outside a browser) so the guarded lines stay verbatim */
@@ -1107,6 +1108,20 @@ function validateCore(){
       if(blind.length){
         const {list,verb}=blindDesks(blind);
         add('hard','OIL_NO_TIMES',[],`${list} ${verb} no times — nobody on ${blind.length>1?'them':'it'} earns OIL for this day`);
+      }
+      /* NOBODY EARNS UNTIL THE DAY IS PUBLISHED ([OIL-AUTO-REMOVE] §2.3, owner
+         21 Sep 26). All OIL now lands on publication — the schedule's and a
+         duty-and-commitments claim's alike — which is what lets the board's OIL
+         mode be the single door. The risk he accepted is a weekend nobody
+         bothers to publish paying nobody, and the mitigation he chose is a
+         standing practice of publishing every day PLUS a reminder to every
+         scheduler: "ok u can set it as a reminder to all schedulers."
+         This is that reminder. It speaks only on a day that CAN earn, that has
+         somebody down to earn something, and that has not gone out yet — so it
+         is silent on an ordinary weekday, silent on an empty weekend, and
+         silent the moment the day is published. */
+      if(!dayApproved(di)&&oilWouldEarn(di)){
+        add('adv','OIL_UNPUBLISHED',[],'This day is not published yet, so nobody earns their OIL for it — publish it before the day is out');
       }
     }
     const SORD:any={hard:0,adv:1,note:2};

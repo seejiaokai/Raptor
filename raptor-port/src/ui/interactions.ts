@@ -21,6 +21,7 @@ import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList } from './pops'
 import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
+import { oilSentinelList } from './oilmode'
 import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
 import { pickRosDay } from './pan'
@@ -479,6 +480,15 @@ export function routeClick(e: MouseEvent) {
     loadWeek(shiftWeek(CURWEEK, 1))
     return
   }
+
+  /* WHO IS BEHIND AN ALL / ALL AVAIL PUCK, and what each of them earns
+     ([OIL-AUTO-REMOVE] §7.6 / §2.7). Routed here, not in board.ts, because the
+     count chip is drawn on the WEEK as well — it is part of the issued schedule,
+     not a board control — and a document-level handler catches it on both
+     surfaces. Read-only, so no role gate: anybody reading the schedule may ask
+     who the puck stands for. */
+  const osn = t.closest('[data-oilsent]') as HTMLElement | null
+  if (osn) { e.stopPropagation(); HOOKS.toast(oilSentinelList(+(osn.dataset.oilday || -1), osn.dataset.oilsent || '')); return }
 
   /* accepting a personal input — the same control on the week and the board, so
      it is routed here rather than duplicated in board.ts. Promotes the input

@@ -20,8 +20,23 @@ import type { Backend, Collection, Snapshot } from './backend'
    approved leave lives only as an Input with `lw` provenance; an old war blob
    (one code per cell + a states map with approved leave in it) cannot be read
    as the new shape, and old Inputs carry no `lw` link to it — cleared together
-   (owner's dev-phase rule: reset, don't migrate). */
-export const SCHEMA_VERSION = 4
+   (owner's dev-phase rule: reset, don't migrate).
+   5 = [OIL-AUTO-REMOVE] (21 Sep 26): a published day now carries its own OIL
+   EVIDENCE BLOCK, and money comes only from it (engine/oilev.ts). An issued
+   snapshot written before this build carries NO block, and its evidence — which
+   duty-and-commitments claims covered the date, and who each ALL / ALL AVAIL
+   puck stood for — was never stored and cannot be reconstructed (rebuilding it
+   from today's unapproved inputs is exactly what the design forbids: it would
+   mint money off evidence nobody signed). Without the reset, every previously
+   published weekend would freeze as "evidence unavailable" — its landed credits
+   standing forever, no new ones derivable — and input-earned credits that never
+   needed a publication would be swept at the first boot, dropping balances
+   silently before any scheduler could publish anything.
+   THE OWNER WAS TOLD THE SCOPE AND AGREED ("ok reset", 21 Sep 26): this is not
+   "your OIL numbers reset", it is the demo data — the weeks, the published days,
+   the inputs and the Leave War — cleared and re-seeded together. Right while the
+   app is pre-promulgation; it would be the wrong call the day after it is not. */
+export const SCHEMA_VERSION = 5
 const STAMP: [Collection, string] = ['settings', 'schema']
 
 /* the collections cleared on a version bump. `weeks` holds the days (pre-1A:

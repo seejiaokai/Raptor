@@ -27,7 +27,7 @@ import {
   setRole,
 } from './state/store'
 import { memoryBackend } from './state/storage'
-import { getClashes, oilPendingFor, runOilPass, syncAbsences } from './sync'
+import { availableFor, getClashes, oilPendingFor, runOilPass, syncAbsences } from './sync'
 
 const ISNAP = JSON.stringify(INPUTS)
 const DSNAP = JSON.stringify(DAYS)
@@ -280,19 +280,34 @@ describe('the ownership partition against wires 1+2', () => {
   })
 })
 
-/* ---- the input ask-flow's credits (owner, 28 Aug 26) ---------------------
-   An acknowledged duty-&-commitments input joins the SAME desired map the
+/* ---- the input ask-flow's credits (owner, 28 Aug 26; PUBLICATION-GATED since
+   [OIL-AUTO-REMOVE], owner 21 Sep 26) ---------------------------------------
+   An acknowledged duty-&-commitments claim joins the SAME desired map the
    published schedule feeds, so the reverse sweep protects and collects both
-   identically, and one pooled ≤6h/>6h test per person per day decides the
-   cell (hours SUM across sources, overlaps counted once). */
-describe('an acknowledged input credits — the ask-flow half of the wire', () => {
+   identically, and one pooled six-hour test per person per day decides the cell.
+
+   WHAT CHANGED 21 Sep 26: the claim now WAITS FOR PUBLICATION like everything
+   else. Its evidence — the person, the times, the type and the member's own
+   answer — is frozen into the day's OIL evidence block when the day goes out,
+   and the pass reads nothing else. Before this, a member could move his own
+   already-issued credit by revising an answer, and an overseas-duty answer
+   could never raise an amendment at all because OD has no row on the programme.
+   The owner's mitigation for the day nobody publishes is a standing practice of
+   publishing every day, plus the reminder this build adds. */
+describe('an acknowledged input credits once the day is PUBLISHED', () => {
   const plant = (r: any) => {
     INPUTS.unshift({ allday: true, s: 0, e: 1439, remarks: '', mod: 'now', yr: 2026, ...r })
     return INPUTS[0]
   }
+  /* publish the day AGAIN as its next amendment — the correction path for
+     anything the issued evidence has since got wrong (spec §7.3). */
+  const amend = (di: number) => { sign(di); publishALDay(di) }
 
-  it('an answered yes mints the cell, raptor-owned, no publish needed', () => {
+  it('an answered yes mints the cell only once the day is published', () => {
     plant({ person: 'bane', type: 'Duty', date: 'Jul 18', oil: { [SAT]: 1 } })
+    runOilPass()
+    expect(cellOf('bane', SAT), 'nothing published — nothing earned').toBeUndefined()
+    publish(5)
     runOilPass()
     expect(cellOf('bane', SAT)).toBe('FO')
     expect(ownedBy('bane', SAT)).toMatchObject({ state: 'approved', source: 'raptor' })
@@ -301,6 +316,7 @@ describe('an acknowledged input credits — the ask-flow half of the wire', () =
   it('unanswered and declined mint nothing — no acknowledgment, no credit', () => {
     plant({ person: 'bane', type: 'Duty', date: 'Jul 18' })                 // never asked/answered
     plant({ person: 'stiff', type: 'Duty', date: 'Jul 18', oil: { [SAT]: 0 } })  // explicit No
+    publish(5)
     runOilPass()
     expect(cellOf('bane', SAT)).toBeUndefined()
     expect(cellOf('stiff', SAT)).toBeUndefined()
@@ -308,52 +324,62 @@ describe('an acknowledged input credits — the ask-flow half of the wire', () =
 
   it('a dormant (scheduler-removed) input mints nothing even when answered', () => {
     plant({ person: 'bane', type: 'Duty', date: 'Jul 18', acc: 'r', oil: { [SAT]: 1 } })
+    publish(5)
     runOilPass()
     expect(cellOf('bane', SAT)).toBeUndefined()
   })
 
-  it('deleting the input collects its cell on the next pass', () => {
+  it('deleting the input leaves the issued credit standing until the day is published again', () => {
     const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', oil: { [SAT]: 1 } })
+    publish(5)
     runOilPass()
     expect(cellOf('bane', SAT)).toBe('FO')
     INPUTS.splice(INPUTS.indexOf(r), 1)
     runOilPass()
-    expect(cellOf('bane', SAT)).toBeUndefined()
+    expect(cellOf('bane', SAT), 'the published day still says he claimed it').toBe('FO')
+    amend(5)
+    runOilPass()
+    expect(cellOf('bane', SAT), 'republished without the claim — the credit goes').toBeUndefined()
   })
 
-  it('a stale yes is inert once the dates move off the day — and the cell goes with it', () => {
+  it('moving the input off the day does not move the issued credit on its own', () => {
     const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', oil: { [SAT]: 1 } })
+    publish(5)
     runOilPass()
     expect(cellOf('bane', SAT)).toBe('FO')
     r.date = 'Jul 20'                                   // moved; the answer's day is uncovered now
     runOilPass()
+    expect(cellOf('bane', SAT), 'a member cannot withdraw an issued credit by editing his own input').toBe('FO')
+    amend(5)
+    runOilPass()
     expect(cellOf('bane', SAT)).toBeUndefined()
   })
 
-  it('the owner\'s worked example: 4h published duty + 4h acknowledged input make one FO day', () => {
+  it('the owner worked example: 4h published duty + 4h acknowledged input make one FO day', () => {
     DAYS[5].dutywaves[0].rows[0].str = '0800'
     DAYS[5].dutywaves[0].rows[0].end = '1200'           // plasma: 4h published — HO alone
-    publish(5)
     plant({ person: 'plasma', type: 'Training', date: 'Jul 18', allday: false, s: 13 * 60, e: 17 * 60, oil: { [SAT]: 0.5 } })
+    publish(5)
     runOilPass()
-    expect(cellOf('plasma', SAT)).toBe('FO')            // envelope 0800→1700 = 9h
+    expect(cellOf('plasma', SAT)).toBe('FO')            // envelope 08:00 to 17:00 = 9h
   })
 
   it('two answered inputs on one day share one envelope — overlap never pays twice', () => {
     plant({ person: 'bane', type: 'Duty', date: 'Jul 18', allday: false, s: 8 * 60, e: 12 * 60, oil: { [SAT]: 0.5 } })
     plant({ person: 'bane', type: 'Meeting', date: 'Jul 18', allday: false, s: 10 * 60, e: 14 * 60, oil: { [SAT]: 0.5 } })
+    publish(5)
     runOilPass()
-    expect(cellOf('bane', SAT)).toBe('HO')              // envelope 0800→1400 = 6h exactly — still a half
+    expect(cellOf('bane', SAT)).toBe('HO')              // envelope 08:00 to 14:00 = 6h exactly — still a half
   })
 
   it('the gap between a morning duty and an afternoon input COUNTS — the day runs start to finish (owner, 29 Aug 26)', () => {
     // one written hour each side of a five-hour gap: two hours of bookings,
-    // but a 0800→1500 day in squadron — seven hours, a FULL day. This is the
-    // pin that keeps the envelope from regressing to a summed union.
+    // but an 08:00 to 15:00 day in squadron — seven hours, a FULL day. This is
+    // the pin that keeps the envelope from regressing to a summed union.
     DAYS[5].dutywaves[0].rows[0].str = '0800'
     DAYS[5].dutywaves[0].rows[0].end = '0900'           // plasma: 1h published
-    publish(5)
     plant({ person: 'plasma', type: 'Meeting', date: 'Jul 18', allday: false, s: 14 * 60, e: 15 * 60, oil: { [SAT]: 0.5 } })
+    publish(5)
     runOilPass()
     expect(cellOf('plasma', SAT)).toBe('FO')
   })
@@ -362,6 +388,7 @@ describe('an acknowledged input credits — the ask-flow half of the wire', () =
     setRole('admin')
     setDayEvent('2026-07-15', 0, 'PH')
     const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 15', oil: { '2026-07-15': 1 } })
+    publish(2)                                          // the Wednesday now reads as a holiday
     runOilPass()
     expect(cellOf('bane', '2026-07-15')).toBe('FO')
     setDayEvent('2026-07-15', 0, '')                    // the holiday is un-typed
@@ -375,6 +402,7 @@ describe('an acknowledged input credits — the ask-flow half of the wire', () =
     lwInitStore(be)
     setPeople(projectPeople())
     plant({ person: 'bane', type: 'Duty', date: 'Jul 18', oil: { [SAT]: 1 } })
+    publish(5)
     runOilPass()
     expect(ownedBy('bane', SAT)).toMatchObject({ source: 'raptor' })
     lwInitStore(be)                                      // reload from the SAME backend — the reconcile path
@@ -396,7 +424,105 @@ describe('the ALL / ALL AVAIL expansion on a published non-working day', () => {
     expect(cellOf('torque', SAT)).toBeUndefined()        // ground crew Personnel — excluded
     const sanId = Object.keys(PEOPLE).find((id: any) => (PEOPLE as any)[id].san && !(PEOPLE as any)[id].archived)
     expect(sanId, 'the roster holds a SANS body').toBeTruthy()
-    expect(cellOf(sanId as string, SAT)).toBeUndefined() // SANS — excluded from ALL events
+    expect(cellOf(sanId as string, SAT)).toBeUndefined() // SANS, and not on our programme — out
+  })
+})
+
+/* [ALL-AVAIL-REDEF] — the owner's 21 Sep 26 redefinition of who an ALL / ALL
+   AVAIL puck stands for. Each case uses the ENVELOPE as its discriminator: the
+   man is named on a short row of his own, so being swept into the big event
+   stretches his day from an hour (HO) to most of it (FO). That way the test
+   reads the EXPANSION, not merely "did he earn anything". */
+describe('[ALL-AVAIL-REDEF] who an ALL AVAIL puck stands for (owner, 21 Sep 26)', () => {
+  const EVENT = { prog: 'FAMILY DAY', str: '1000', end: '1700', who: 'ALL AVAIL' }
+  const plant = (rows: any[]) => { DAYS[5].allhands = (DAYS[5].allhands || []).concat(rows) }
+  /* his OWN hour, deliberately outside the event: being swept into the event
+     stretches his day from one hour (HO) to most of it (FO), so each case reads
+     the EXPANSION rather than merely "did he earn anything". */
+  const ownHour = (who: string) => { DAYS[5].ground = (DAYS[5].ground || []).concat([{ prog: 'BRIEF', str: '0700', end: '0800', who }]) }
+  const input = (r: any) => INPUTS.unshift({ allday: false, remarks: '', mod: 'now', yr: 2026, ...r })
+
+  it('a commitment that OVERLAPS the event takes the man out of it', () => {
+    /* the live bug the redefinition closes (spec §5): a man files Training over
+       the event and answers NO to its own OIL question, and the family day's
+       ALL AVAIL puck credits him anyway, for an event he is not at. */
+    plant([EVENT])
+    ownHour('bane')
+    input({ person: 'bane', type: 'Training', date: 'Jul 18', s: 540, e: 1020 })  // 09:00–17:00
+    publish(5)
+    runOilPass()
+    expect(cellOf('bane', SAT), 'his own hour only — the event is not his').toBe('HO')
+  })
+
+  it('a commitment that does NOT overlap leaves him in the event', () => {
+    plant([EVENT])
+    ownHour('bane')
+    input({ person: 'bane', type: 'Training', date: 'Jul 18', s: 300, e: 420 })   // 05:00–07:00
+    publish(5)
+    runOilPass()
+    expect(cellOf('bane', SAT), '07:00→17:00 — the event is his').toBe('FO')
+  })
+
+  it('a commitment the scheduler took off the programme is dormant and blocks nothing', () => {
+    plant([EVENT])
+    ownHour('bane')
+    input({ person: 'bane', type: 'Training', date: 'Jul 18', s: 540, e: 1020, acc: 'r' })
+    publish(5)
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBe('FO')
+  })
+
+  it('work already on the schedule at that time takes him out of the event', () => {
+    plant([EVENT, { prog: 'OTHER EVENT', str: '1200', end: '1300', who: 'bane' }])
+    ownHour('bane')
+    publish(5)
+    runOilPass()
+    /* 07:00–08:00 and 12:00–13:00 are his own; the 10:00–17:00 event is not, so
+       his day runs 07:00→13:00 — six hours, a half day, not a full one. */
+    expect(cellOf('bane', SAT)).toBe('HO')
+  })
+
+  it('a SANS man planned on our programme that day IS part of ALL AVAIL', () => {
+    const san = Object.keys(PEOPLE).find((id: any) => (PEOPLE as any)[id].san && !(PEOPLE as any)[id].archived) as string
+    plant([EVENT])
+    ownHour(san)                                          // he is with us that morning
+    expect(availableFor(SAT, [600, 1020], DAYS[5]), 'with us that day').toContain(san)
+    DAYS[5].ground = []
+    expect(availableFor(SAT, [600, 1020], DAYS[5]), 'not on our programme').not.toContain(san)
+  })
+
+  /* A CLASH WORTH NAMING (owner's 18 Aug 26 rule vs his 21 Sep 26 one): SANS are
+     kept OFF the Leave War roster unless the squadron turns "Show SANS" on, so a
+     SANS man who is now part of ALL AVAIL has nowhere for the credit to land
+     while that switch is off. The expansion follows the newer ruling; the credit
+     still needs a row, which stays the older ruling's call. */
+  it('…but his OIL credit lands only while the squadron shows SANS on the Leave War', () => {
+    const san = Object.keys(PEOPLE).find((id: any) => (PEOPLE as any)[id].san && !(PEOPLE as any)[id].archived) as string
+    plant([EVENT])
+    ownHour(san)
+    publish(5)
+    runOilPass()
+    expect(cellOf(san, SAT), 'no row on the war — nowhere to credit').toBeUndefined()
+    setPeople(projectPeople(true))
+    runOilPass()
+    expect(cellOf(san, SAT), '07:00→17:00 once he has a row').toBe('FO')
+  })
+
+  it('ATT B — no flying, may still work — stays in the event', () => {
+    plant([EVENT])
+    input({ person: 'bane', type: 'ATT B', date: 'Jul 18', allday: true, s: 0, e: 1439 })
+    input({ person: 'stiff', type: 'ATT C', date: 'Jul 18', allday: true, s: 0, e: 1439 })
+    publish(5)
+    runOilPass()
+    expect(cellOf('bane', SAT), 'ATT B may still work').toBe('FO')
+    expect(cellOf('stiff', SAT), 'ATT C cannot report to work').toBeUndefined()
+  })
+
+  it('a sentinel never blocks another sentinel — two overlapping ALL rows do not empty each other', () => {
+    plant([EVENT, { prog: 'SECOND EVENT', str: '1100', end: '1200', who: 'ALL' }])
+    publish(5)
+    runOilPass()
+    expect(cellOf('bane', SAT), 'only NAMED people count as planned for something').toBe('FO')
   })
 })
 

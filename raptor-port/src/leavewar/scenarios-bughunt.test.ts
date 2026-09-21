@@ -7,7 +7,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { DAYS } from '../engine/data'
-import { SCHED, setDayApproved, signOf } from '../engine/publish'
+import { SCHED, setDayApproved, publishALDay, signOf } from '../engine/publish'
 import { stashClear } from '../engine/weekstash'
 import { initStore as raptorInitStore, writeInputs } from '../state/store'
 import { setSession, setMe } from '../state/auth'
@@ -61,10 +61,21 @@ const at = (h: number, m = 0) => h * 60 + m
    why it cannot simply be written by hand here. */
 const WORKED_SAT = '2026-07-18'
 const WORKED_MAN = 'plasma'
-const publishTheSaturday = () => {
+const signTheSaturday = () => {
   const g = signOf(5)
   g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+}
+const publishTheSaturday = () => {
+  signTheSaturday()
   setDayApproved(5, true)
+  runOilPass()
+}
+/* Publish the day AGAIN as its next amendment — since [OIL-AUTO-REMOVE] this is
+   what moves an already-issued OIL credit, because the money comes only from the
+   issued document (§7.1). */
+const republishTheSaturday = () => {
+  signTheSaturday()
+  publishALDay(5)
   runOilPass()
 }
 
@@ -219,20 +230,28 @@ describe('an OIL credit whose hours have changed', () => {
     return row
   }
 
-  it('is re-written to the hours it now has, and the day is flagged', () => {
+  it('is re-written to the hours it now has when the day is published again, and the day is flagged', () => {
     // an afternoon leave, and a morning duty that misses it — the credit lands
     file('dj', 'LL', 'Jul 18', { allday: false, half: 'pm', s: 721, e: 1439 })
     const row = duty('dj', at(8), at(12))
-    runOilPass()
+    publishTheSaturday()
     expect(credit('dj')?.spans).toEqual([[at(8), at(12)]])
     expect(view('dj', SAT)!.amber).toBe(false)                  // nothing meets
 
-    /* The duty is re-timed into the afternoon, where the leave is. Owner,
-       20 Sep 26: the credit is still banked, and the day is flagged until
-       someone resolves it. What must NEVER survive is the OLD morning — the
-       man did not work it. */
+    /* The duty is re-timed into the afternoon, where the leave is.
+       TWO OWNER RULINGS MEET HERE, and the LATER one governs (CLAUDE.md, newest
+       wins). 20 Sep 26: a credit's hours follow the work, and the old morning
+       must never survive — the man did not work it. 21 Sep 26
+       ([OIL-AUTO-REMOVE] §7.1/§7.3): money comes ONLY from the issued document,
+       because a member must not be able to move his own already-issued credit by
+       editing his own input. So re-timing alone moves nothing; PUBLISHING THE
+       DAY AGAIN moves it, and then the old morning is gone exactly as the 20 Sep
+       ruling requires. The correction costs no amendment number — unpublish and
+       republish under the same label, or the end-of-day publish. */
     writeInputs(() => { row.s = at(13); row.e = at(17) })
     runOilPass()
+    expect(credit('dj')?.spans, 'the issued day still says he worked the morning').toEqual([[at(8), at(12)]])
+    republishTheSaturday()
     expect(credit('dj')?.spans).toEqual([[at(13), at(17)]])
     expect(view('dj', SAT)!.amber).toBe(true)
   })
@@ -243,7 +262,7 @@ describe('an OIL credit whose hours have changed', () => {
        too. Both orders now give the same picture — credit banked, leave
        filed, day amber — which is the whole point of the ruling. */
     const row = duty('casper', at(8), at(12))
-    runOilPass()
+    publishTheSaturday()
     expect(credit('casper')).toBeDefined()
     expect(row.oil[SAT]).toBe(0.5)
 

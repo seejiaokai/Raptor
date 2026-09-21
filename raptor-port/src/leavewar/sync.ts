@@ -17,7 +17,8 @@
 // The derived passes are reconciliation, not queues: compute the desired state,
 // diff, write only the difference; a SYNCING flag guards re-entrancy.
 
-import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, oilAsks, withRemarksTail, inputCoversDate, nowStamp } from '../engine/inputs'
+import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, withRemarksTail, inputCoversDate, nowStamp } from '../engine/inputs'
+import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { ME, SESSION } from '../state/auth'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (the cross-seam roster
@@ -27,6 +28,7 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { SCHED, dayApproved, dayCurVer, dayCurVerIn, daySnapIn, daySnapOf, amFormatOf } from '../engine/publish'
 import { blindDesks, dayOilBlind, dayOilWork, inputOilAmt, envMin, uniformOil, oilWorkWhy, type OilWork } from '../engine/oil'
+import { oilEarnedWork, type OilEvidence } from '../engine/oilev'
 import { stashKeys, stashGet, isPreservedWeek } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
@@ -180,6 +182,11 @@ export function installAbsenceDoor(): void {
     const iso = labelToISO(DATES[di])
     return !!iso && isNonWorkingISO(iso)
   }
+  /* the other two facts the OIL evidence block needs from out here: the day's
+     real date, and who an ALL / ALL AVAIL puck stands for ([ALL-AVAIL-REDEF]).
+     Same seam, same reason — the engine cannot ask a war anything. */
+  HOOKS.oilDayISO = (di: number) => labelToISO(DATES[di]) || ''
+  HOOKS.oilSentinel = (iso: string, win: [number, number], day: any) => availableFor(iso, win, day)
 }
 /** Re-read the Inputs into the war now and repaint — what a Raptor notify
  *  does in the app; tests that push INPUTS directly call it. */
@@ -661,15 +668,45 @@ export function oilPendingFor(personId: any): { iid: string; iso: string }[] {
   return out
 }
 
-/* Everyone an ALL / ALL AVAIL puck stands for on a non-working day's event
-   (owner, 28 Aug 26 — "it will count everyone who is available for that
-   event"): AIRCREW MINUS SANS, the owner's pick — no ground crew Personnel,
-   no SANS aircrew, never a sentinel or an archived body — minus anyone an
-   away-making input (leave, medical, OD — the palette's own isAway) takes
-   out of the event's window. The war grid needs no separate read: an
-   approved war-side leave exists as an outbound-minted input too, so INPUTS
-   is the one absence record this consults. */
-function availableFor(iso: string, win: [number, number]): string[] {
+/* WHO AN ALL / ALL AVAIL PUCK STANDS FOR ([ALL-AVAIL-REDEF], owner 21 Sep 26 —
+   "ALL Avail and ALL pucks should not consist of ground crew by default. only
+   SANS that are planned on the programmed on that day with us should be
+   included. Like if they fly, then they should be counted as part of all
+   avail/all. people on ATT B only should still be included. Those on Training,
+   Course, Meeting, Appointment, Duty, Personal, Other, planned for anything on
+   the schedule that conflicts in timing with the rest of the schedule is not
+   part of All avail and ALL").
+
+   ONE answer to "is this man available", which is the point: the board and the
+   crew picker already knew who was busy on the programme (engine/avail.ts) and
+   this expansion ignored the schedule entirely — two notions of available living
+   in one app. It now asks the schedule's own body, on the day blob it is
+   measuring, so a frozen snapshot resolves against the day it was issued with.
+
+   The rule, in order:
+   - never a sentinel, an archived body or ground-crew Personnel (unchanged);
+   - a SANS man ONLY when he is planned on OUR programme that day — named
+     anywhere on it (`dayEngaged`). He is otherwise another squadron's;
+   - not posted in, or posted out, drops him (`inSquadron`, unchanged);
+   - an away-making input — all leave, medical, overseas duty — that overlaps
+     the event's window drops him, EXCEPT **ATT B**, the one type in the app
+     that says "no flying, may still work" (`canWork`);
+   - a COMMITMENT that overlaps the window drops him: Training, CSE, Meeting,
+     Fly with, Personal, Appointment, Duty, Other. A commitment the scheduler
+     took off the programme (`acc === 'r'`) is dormant and drops nothing;
+   - anything he is NAMED for on the day's own schedule that overlaps the window
+     drops him (`personBusy` — the same occupancy the validator and the picker
+     read).
+
+   A SENTINEL NEVER BLOCKS ANOTHER SENTINEL (ruled by the build, not the owner —
+   raise it if reopened): only NAMED people count as "planned for something", so
+   two overlapping ALL AVAIL rows cannot each empty the other. `personBusy`
+   gives this for free — it matches a person by id, and a sentinel row names no
+   one.
+
+   The war grid needs no separate read: an approved war-side leave exists as an
+   Input too, so INPUTS is the one absence record this consults. */
+export function availableFor(iso: string, win: [number, number], day?: any): string[] {
   const out: string[] = []
   const isoOrd = +iso.replace(/-/g, '')
   /* the Leave War body, for the posting window (bug pass, 28 Aug 26): a
@@ -678,21 +715,35 @@ function availableFor(iso: string, win: [number, number]): string[] {
      mint a credit the matrix hides behind its not-yet-arrived blank. The
      same inSquadron read the manning counts make. */
   const lwById = new Map(getState().people.map(p => [p.id, p]))
+  /* computed ONCE for the whole walk, not per person: dayEngaged is a full pass
+     over the day, and this loop runs sixty times per sentinel window. */
+  const engaged = day ? dayEngaged(day) : null
+  const covers = (inp: any) => {
+    const a = dateOrd(inp.date, inp.yr)
+    if (a == null) return false
+    const b = inp.endDate ? dateOrd(inp.endDate, inp.yr) ?? a : a
+    return isoOrd >= a && isoOrd <= b
+  }
+  const hits = (inp: any) => { const w = inpWin(inp); return !!w && w[0] < win[1] && win[0] < w[1] }
   for (const id of Object.keys(PEOPLE)) {
     const p: any = (PEOPLE as any)[id]
-    if (!p || p.special || p.archived || p.pers || p.san) continue
+    if (!p || p.special || p.archived || p.pers) continue
+    /* SANS are another squadron's men until they are on our programme for the
+       day. With no day blob to read (a caller that cannot supply one) they stay
+       out, which is the pre-[ALL-AVAIL-REDEF] answer — fail closed. */
+    if (p.san && !(engaged && engaged.has(id))) continue
     const lw = lwById.get(id)
     if (lw && !inSquadron(lw, iso)) continue
-    const away = INPUTS.some((inp: any) => {
-      if (inp.person !== id || !isAway(inp)) return false
-      const a = dateOrd(inp.date, inp.yr)
-      if (a == null) return false
-      const b = inp.endDate ? dateOrd(inp.endDate, inp.yr) ?? a : a
-      if (isoOrd < a || isoOrd > b) return false
-      const w = inpWin(inp)
-      return !!w && w[0] < win[1] && win[0] < w[1]
+    const blocked = INPUTS.some((inp: any) => {
+      if (inp.person !== id) return false
+      const away = isAway(inp) && !canWork(inp.type)
+      const commit = isPersonal(inp.type) && inp.acc !== 'r'
+      if (!away && !commit) return false
+      return covers(inp) && hits(inp)
     })
-    if (!away) out.push(id)
+    if (blocked) continue
+    if (engaged && personBusy(day, id).some((w: any) => w[0] < win[1] && win[0] < w[1])) continue
+    out.push(id)
   }
   return out
 }
@@ -744,12 +795,15 @@ function stashOilWeek(v: string): { days: any[], sc: any } | null {
  *    moves nothing until it is published too (the AL/reissue paths), which
  *    is also where reverse-and-replace naturally lives: the snapshot
  *    changes, the diff below follows it;
- *  - ACKNOWLEDGED duty-&-commitments inputs (row.oil — the ask-flow's
- *    answers). Publication does not gate these: the owner's acknowledgment
- *    is their gate. An answer only counts while its day is still covered by
- *    the row's dates AND still reads non-working — a moved input or a
- *    revoked PH leaves the old yes inert, and the reverse sweep collects
- *    the cell. Nothing acknowledged = nothing credited, structurally.
+ *  - ACKNOWLEDGED duty-&-commitments claims, which since [OIL-AUTO-REMOVE]
+ *    (owner, 21 Sep 26 — "we make it a point to publish everyday so that
+ *    silently earn nothing wont happen") ALSO WAIT FOR PUBLICATION: the claim
+ *    rides the day's frozen OIL evidence block, so an answer revised after the
+ *    day went out moves no money until the day is published again. Before this
+ *    an answer moved the credit at once and produced no amendment, and an
+ *    overseas-duty answer could never produce one at all — OD has no row.
+ *    A day that stops reading non-working still stops crediting (checked live
+ *    below), and the reverse sweep collects the cell.
  *
  *  The schedule half reads EVERY week, not just the loaded one (owner,
  *  29 Aug 26 — "pull the full day schedule regardless of what's on
@@ -782,6 +836,32 @@ export interface DesiredOil {
    issued it: the issued evidence is unavailable, so the standing credit is the
    best truth we have (P2-IMPL-01). Never substitute draft content for missing
    issued content, and never reverse-collect a protected date. */
+/* WHAT ONE ISSUED DAY EARNS — the only door money comes through since
+   [OIL-AUTO-REMOVE] (§7.1). The day's own frozen OIL EVIDENCE BLOCK answers
+   everything: the scheduler's decisions, the duty-and-commitments claims
+   projected at publication, and the people each ALL / ALL AVAIL puck stood for.
+   Nothing live is consulted, so revising an answer or filing a leave cannot
+   move an already-issued credit — that now costs a publication, like every
+   other change to an issued day.
+
+   A snapshot carrying NO block was issued by a build that did not store one. Its
+   evidence cannot be reconstructed (rebuilding it from today's unapproved inputs
+   is exactly what §7.5 forbids), so the date is PROTECTED rather than guessed
+   at: the landed credit stands and nothing new is derived — the same rule the
+   pass already applies to an unresolvable snapshot. Returns false to say so. */
+function creditFrom(day: any, iso: string, add: (p: string, iso: string, sp: OilWork[], via?: 'schedule' | 'input') => void): boolean {
+  const ev: OilEvidence | undefined = day && day.oilev
+  if (!ev) return false
+  for (const [person, sp] of Object.entries(oilEarnedWork(day, ev))) {
+    /* the two halves POOL into one envelope per person per date, and the credit
+       reads as the SCHEDULE's when the schedule earned any of it — that is the
+       stronger evidence, and it is what the reader would go and look at (owner,
+       21 Sep 26). */
+    add(person, iso, sp, sp.some(w => w.via !== 'input') ? 'schedule' : 'input')
+  }
+  return true
+}
+
 function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: Set<string> } {
   const { people, wars } = getState()
   const protectedDates = new Set<string>()
@@ -820,8 +900,7 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
        No snapshot (an orphaned approved day) → protect it (P2-IMPL-01). */
     const snap = daySnapOf(di, dayCurVer(di))
     if (!snap || !snap.d) { protectedDates.add(iso); continue }
-    const spans = dayOilWork(snap.d, { expandAll: win => availableFor(iso, win) })
-    for (const [person, sp] of Object.entries(spans)) add(person, iso, sp)
+    if (!creditFrom(snap.d, iso, add)) protectedDates.add(iso)
   }
   /* every OTHER week, out of its stash entry — the loaded week is skipped
      (its stash is at best a stale copy of the live model read above) and a
@@ -849,32 +928,7 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
          protect the date, never fall back to its stashed draft (P2-IMPL-01). */
       const snap = daySnapIn(wk!.sc, di, dayCurVerIn(wk!.sc, di, String(v)), String(v))
       if (!snap || !snap.d) { protectedDates.add(iso); continue }
-      const spans = dayOilWork(snap.d, { expandAll: win => availableFor(iso, win) })
-      for (const [person, sp] of Object.entries(spans)) add(person, iso, sp)
-    }
-  }
-  for (const row of INPUTS) {
-    if (!row.oil || !oilAsks(row.type) || row.acc === 'r') continue
-    const a = dateOrd(row.date, row.yr)
-    if (a == null) continue
-    const b = row.endDate ? dateOrd(row.endDate, row.yr) ?? a : a
-    /* the acknowledged window, one span per answered day: all-day is the
-       whole day, a timed row its rolled length — the same reading the ask's
-       own suggestion (inputOilAmt) priced */
-    const win: [number, number] = row.allday || row.s == null || row.e == null
-      ? [0, 1439]
-      : [row.s, row.e < row.s ? row.e + 1440 : row.e]
-    if (win[1] <= win[0]) continue
-    for (const [iso, amt] of Object.entries(row.oil as Record<string, number>)) {
-      if (!(typeof amt === 'number' && amt > 0)) continue
-      const o = +String(iso).replace(/-/g, '')
-      if (!(o >= a && o <= b)) continue                    // moved dates → stale yes is inert
-      if (protectedDates.has(iso)) continue                // hands off a protected date entirely (P2-IMPL-01)
-      if (!warHolding(wars, iso)) continue
-      if (!isNonWorkingISO(iso)) continue                  // a day that stopped being PH stops crediting
-      /* the reason is the input's own type name (Training, CSE, Duty…) —
-         the word the owner acknowledged, which is what the tracker shows */
-      add(row.person, iso, [{ s: win[0], e: win[1], src: String(row.type || 'Duty').trim() as OilWork['src'] }], 'input')
+      if (!creditFrom(snap.d, iso, add)) protectedDates.add(iso)
     }
   }
   const out = new Map<string, DesiredOil>()
@@ -967,7 +1021,7 @@ export function publishFlagsBids(di: number): void {
   if (!iso || !warHolding(rawState().wars, iso) || !isNonWorkingISO(iso) || !dayApproved(di)) return
   const snap = daySnapOf(di, dayCurVer(di))
   if (!snap || !snap.d) return
-  const spans = dayOilWork(snap.d, { expandAll: win => availableFor(iso, win) })
+  const spans = dayOilWork(snap.d, { expandAll: win => availableFor(iso, win, snap.d) })
   /* ONE MESSAGE, BOTH FACTS (Astra, 21 Sep 26). The strip at the foot of the
      screen is a single element whose text is REPLACED, so speaking twice in the
      same breath showed only the second — and the one that got swallowed was the

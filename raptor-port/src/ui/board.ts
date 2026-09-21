@@ -31,6 +31,7 @@ import { esc } from '../state/view'
 import { notify, notifyBoard, loadWeek } from '../state/store'
 import { CURWEEK } from '../engine/waves'
 import { shiftWeek } from './weeknav'
+import { oilModeOn, oilModeBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilSentinelList } from './oilmode'
 import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbSansPanel, sbUnavailPanel, labelToTitle, titleToLabel, titleToKind, sbGrip, sbNudge, rowMove, sbSortBtn, boxHTML } from './board-html'
 
 const toast = (...a: any[]) => HOOKS.toast(...a)
@@ -56,7 +57,15 @@ export function boardHTML(di: number, pv?: boolean) {
      routeFocusOut (textedit.ts) checks only canEditSched() — so a blur on
      that field would commit and markEdit in a state the week would never
      have rendered the field in at all. */
-  const stoRO = pv || !HOOKS.editMode()
+  /* OIL MODE MAKES THE BOARD READ-ONLY FOR SCHEDULE EDITING ([OIL-AUTO-REMOVE]
+     §2.1). In the mode a tap means "does this man earn from this event" and an
+     item's name is its own switch — leaving the ordinary write controls live
+     beside that would give one gesture two meanings on the same pixel, and the
+     scheduler cannot see which he is in. One mode at a time, and the lit button
+     says which. Every write control on this board already gates on the same
+     flag, so this costs one term and nothing else. */
+  const oilm = oilModeOn(di)
+  const stoRO = pv || !HOOKS.editMode() || oilm
   /* same gate as the stores chips: pv OR not in edit mode. A duty crew who
      still has a board open after navigating away must not get live controls. */
   const mvRO = stoRO
@@ -294,7 +303,7 @@ export function boardHTML(di: number, pv?: boolean) {
   const secGrip = '<span class="secgrip" title="Drag to reorder this section" aria-label="Reorder this section">⠿</span>'
   const wrapSec = (html: string, k: string) =>
     `<div class="sb-sec" data-secmove="${di}.${k}">${html.replace(/(<div class="(?:sb-ph|ap-h)\b[^>]*>)/, `$1${secGrip}`)}</div>`
-  let b = dayTplHead + secOrder(d).map((k: string) =>
+  let b = oilModeBarHTML(di) + dayTplHead + secOrder(d).map((k: string) =>
     mvRO ? (sect[k] || '') : (sect[k] ? wrapSec(sect[k], k) : '')).join('')
   return b
 }
@@ -855,7 +864,7 @@ export function boardMbtn(e: MouseEvent) {
   if (ds.pinfo != null) {
     const [di, ri] = ds.pinfo.split('.').map(Number); const x = DAYS[di].allhands[ri]
     x.info = !x.info; markEdit(`ap:${di}.${ri}.prog`); afterSchedMutate(); notify()
-    return toast(x.info ? 'Info only — this item is no longer checked against the rules' : 'This item is checked against the rules again')
+    return toast(x.info ? 'Info only — this item is no longer checked against the rules, and earns nobody any OIL' : 'This item is checked against the rules again')
   }
   /* ---- duty / sim / ground rows (the panels added Aug 26) ---------------
      Same shapes as the p* programme branches: adds mark the new row's name
@@ -876,6 +885,22 @@ export function boardMbtn(e: MouseEvent) {
   }
   /* the board's own "Templates" button, at the top of the board content —
      see dayTplMenu above and the boardHTML comment on where the button lives. */
+  /* the OIL Earn button, and the day blanket once the mode is on. A mode switch
+     writes nothing — it only changes what the board draws and what a tap means —
+     so it needs no funnel; the blanket IS a write and goes through it. */
+  if (ds.oilmode != null) {
+    const di = +ds.oilmode
+    const on = toggleOilMode(di)
+    notify()
+    return toast(on ? 'OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning' : 'Back to editing the schedule')
+  }
+  if (ds.oilblank != null) {
+    const di = +ds.oilblank
+    const on = !oilBlanketOn(di)
+    setOilBlanket(di, on)
+    notify()
+    return toast(on ? 'Nothing on this day earns OIL — anything added later is covered too' : 'This day can earn again — the marks underneath are back')
+  }
   if (ds.daytpladd != null) {
     const di = +ds.daytpladd
     return dayTplMenu(t, di)
@@ -995,7 +1020,7 @@ export function boardMbtn(e: MouseEvent) {
   if (ds.grinfo != null) {
     const [di, ri] = ds.grinfo.split('.').map(Number); const x = DAYS[di].ground[ri]
     x.info = !x.info; markEdit(`gr:${di}.${ri}.prog`); afterSchedMutate(); notify()
-    return toast(x.info ? 'Info only — this item is no longer checked against the rules' : 'This item is checked against the rules again')
+    return toast(x.info ? 'Info only — this item is no longer checked against the rules, and earns nobody any OIL' : 'This item is checked against the rules again')
   }
 }
 
@@ -1109,6 +1134,39 @@ export function boardArmClick(e: MouseEvent) {
   if (!canEditSched() || !HOOKS.editMode()) return
   if (view.DPREV.has(view.SBDAY as any)) return   // same stale-markup guard as boardMbtn
   const t = e.target as HTMLElement
+  /* OIL MODE OWNS EVERY TAP ON THE DAY IT IS ON ([OIL-AUTO-REMOVE] §2.1).
+     FIRST, before the role pick and before every arm branch: in the mode a tap
+     on a puck means "take this man off this event" and a tap on an item's name
+     means "stop the whole item earning" — never arm a slot, never plant a
+     person, never open a pick-list. The board renders read-only in the mode, so
+     nothing below would fire anyway; this is the belt to that braces, and it is
+     what makes the two gestures impossible to confuse. */
+  const opk = t.closest('[data-oilp]') as HTMLElement | null
+  if (opk) {
+    const di = +(opk.dataset.oilday || -1), person = opk.dataset.oilp!, item = opk.dataset.oilitem || ''
+    if (!oilModeOn(di)) return
+    const on = toggleOilPerson(di, person, item)
+    notify(); e.stopPropagation()
+    return toast(on ? `${(PEOPLE[person]||{}).cs||person} earns from this event again` : `${(PEOPLE[person]||{}).cs||person} earns nothing from this event`)
+  }
+  /* the sentinel's count chip: who is behind this puck, and what each of them
+     earns (§7.6 / §2.7). Read-only, so it works outside the mode too — on the
+     issued schedule it lists the FROZEN membership, which is the whole reason
+     that membership is frozen. The SHAPE of this list is not yet ruled: the
+     owner asked for hover on a desktop and "something equivalent on the phone",
+     and one tap target that behaves the same on both is the cheapest honest
+     answer until he picks one. */
+  const osn = t.closest('[data-oilsent]') as HTMLElement | null
+  if (osn) { e.stopPropagation(); return toast(oilSentinelList(+(osn.dataset.oilday || -1), osn.dataset.oilsent || '')) }
+  const oit = t.closest('[data-oilitem]') as HTMLElement | null
+  if (oit) {
+    const di = +(oit.dataset.oilday || -1), item = oit.dataset.oilitem || ''
+    if (!oilModeOn(di)) return
+    if (oilBlanketOn(di)) { e.stopPropagation(); return toast('Nothing on this day earns — turn that off first') }
+    const on = toggleOilItem(di, item)
+    notify(); e.stopPropagation()
+    return toast(on ? 'This item earns OIL again' : 'This item earns nobody any OIL')
+  }
   /* the duty ROLE cell offers its pick-list (owner, 10 Aug 26). Before the
      arm branches, because a ROLE cell is not a seat and must not be treated
      as one — and BEFORE nothing else, so the box still takes typing exactly
