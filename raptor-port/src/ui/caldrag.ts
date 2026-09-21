@@ -20,7 +20,7 @@
    so it is unit-testable on its own and reusable by anything that ever wants
    to redate a chip without a drag (a keyboard move, say).
    --------------------------------------------------------------------------- */
-import { draftOf, commitInputEdit, fmtDay } from './inputedit'
+import { draftOf, commitInputEdit, fmtDay, askOilIfPending } from './inputedit'
 import { movePlanPuck, PLANPUCKS } from '../state/plan'
 import { writeInputs } from '../state/store'
 import { canEditSched, ME } from '../state/auth'
@@ -115,7 +115,16 @@ export function commitChipMove(entry: any, fromIso: string, toIso: string): bool
      second toast on failure here would double up on the same news. Only the
      success case needs one, because "moved to <date>" is wording specific to
      a drag, which commitInputEdit has no way to know it was. */
-  if (ok) HOOKS.toast('Moved to ' + fmtDay(d.start), 'ok')
+  if (ok) {
+    HOOKS.toast('Moved to ' + fmtDay(d.start), 'ok')
+    /* THE THIRD DOOR (Codex rank 5): a date-only move KEEPS the old answers by
+       design — an entry for a day the row no longer covers is inert — but the
+       day it has just landed on was never answered for, so the request arrives
+       unanswered and pays nothing until somebody notices the member's bell.
+       The question follows the move instead, exactly as it follows the
+       drag-reassign. */
+    askOilIfPending(r)
+  }
   return !!ok
 }
 

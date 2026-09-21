@@ -915,14 +915,9 @@ hand it away and back while a different week is on screen (ordinary: the Inputs 
 then open the original week, and the old refusal is live again. The man is paid nothing and, on an
 already-published day, nothing flags it.
 
-**This vindicates Codex's M1 over the cheaper repair that was chosen.** A generation frozen onto the
-input would have closed it. The chosen pair-plus-clear does not unless the clear reaches stashed
-weeks.
-
-**The hazard to respect when fixing it:** a stashed week is a JSON STRING, and some are byte-frozen
-(`isPreservedWeek` / `preservedBlob`) because their engine cannot safely re-key them — those must
-round-trip verbatim and must NOT be rewritten. Any clear has to skip them, and say what it did
-about them.
+**This vindicated Codex's M1 over the cheaper repair that was chosen:** the pair-plus-clear does not
+close it unless the clear reaches stashed weeks. The hazard it had to respect — that some stashed
+weeks are byte-frozen and must round-trip verbatim — is respected below.
 
 **Context.** `…/specs/2026-09-22-oil-jobs12-codereview-fable.md` §F1 (step-by-step, with the red
 test) · `…/specs/2026-09-22-oil-fixplan-settled.md` §0, which now carries the correction.
@@ -955,11 +950,9 @@ we know that week WAS touched and cannot see how, so it does not pay. `elsewhere
 that and nothing else. The `acc !== 'g'` short-circuit that answered "pays" before the standing was
 ever consulted is gone.
 
-**And the key stopped recording the standing itself.** It records the only thing the standing decides
-— earns, or does not. A claim whose row merely moved into an unloaded week used to move the key
-while paying exactly the same, which offered an amendment with no money behind it; that is the
-manufactured-amendment shape this branch has now met three times, and it cannot happen through this
-axis again.
+**And the key stopped recording the standing itself** — it records only what the standing decides,
+earns or does not, so a row merely moving into an unloaded week no longer offers an amendment with
+no money behind it.
 
 ### [LW-SCRUBBER-FLAKY] The year scrubber test fails on a saturated machine — PRE-EXISTING (21 Sep 26)
 `e2e/leavewar.spec.ts` "the bottom scrollbar is a year-wide scrubber", lw-desktop only. Under a full

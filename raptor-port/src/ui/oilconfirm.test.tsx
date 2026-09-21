@@ -26,7 +26,7 @@ import { toggleOilPerson, oilFigureFor } from './oilmode'
 import { HOOKS } from '../engine/hooks'
 import { setInpEdit, INPEDIT, OILASK, setOilAsk } from './pops'
 import { CURPAGE, setPage } from '../state/view'
-import { commitInputEdit, draftOf, oilGate, oilAnswered, reassignInput } from './inputedit'
+import { commitInputEdit, draftOf, oilGate, oilAnswered, reassignInput, setInpField } from './inputedit'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -486,5 +486,40 @@ describe('a refusal must not survive a hand-over made while its week is off scre
     loadWeek('13/07/2026')
     expect((INPUTS.find((x: any) => inpId(x) === r.iid) as any).person, 'the request is his again').toBe('bane')
     expect(keyOn(5, `bane|${item}`), 'and so is the refusal').toBe('deny')
+  })
+})
+
+/* CODEX RANK 6 (22 Sep 26) — the in-place time cells are the FOURTH door onto
+   job 1's bug. Both of them — the board's field handler and the week's
+   contenteditable — go through `setInpField`, which goes straight to
+   commitInputEdit. The reprice rule correctly deletes an answer whose hours no
+   longer price it, and then nothing asks: the day reads unanswered and pays
+   nothing until somebody notices the member's bell. There is already a test
+   pinning the deletion; none required the question. */
+describe('editing a request’s times in place raises the OIL question it just invalidated', () => {
+  const plant = (r: any) => { const row: any = { allday: false, remarks: 'oiltest', mod: 'now', yr: 2026, ...r }; inpId(row); writeInputsBatch(() => { INPUTS.unshift(row) }); return INPUTS[0] }
+  afterEach(() => { setOilAsk(null) })
+
+  it('stretching an answered half-day to a full one asks again (Codex rank 6)', () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 8 * 60, e: 10 * 60, oil: { '2026-07-18': 0.5 } })
+    setOilAsk(null)
+    expect(setInpField(r, 'end', '1800')).toBe(true)
+    expect(r.oil, 'the answer no longer prices the hours, so it is void').toBeUndefined()
+    expect(OILASK, 'and the question comes up rather than waiting on a bell').toBe(r.iid)
+  })
+
+  it('THE CONTROL — a remarks-only edit asks nothing', () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 8 * 60, e: 10 * 60, oil: { '2026-07-18': 0.5 } })
+    setOilAsk(null)
+    expect(setInpField(r, 'rmks', 'oiltest refined')).toBe(true)
+    expect(r.oil, 'nothing about the hours moved').toEqual({ '2026-07-18': 0.5 })
+    expect(OILASK).toBe(null)
+  })
+
+  it('THE OTHER CONTROL — a time edit on a weekday asks nothing', () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 15', s: 8 * 60, e: 10 * 60 })
+    setOilAsk(null)
+    expect(setInpField(r, 'end', '1800')).toBe(true)
+    expect(OILASK).toBe(null)
   })
 })

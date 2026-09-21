@@ -1191,14 +1191,44 @@ export function reassignInput(iid: any, personId: any) {
      the wording of a refusal. Refusing the drag was the cheaper repair and is
      the wrong one: the app DRAWS this gesture as available, and inviting a
      gesture then declining it is the defect G5 is about. So the reassign stands
-     and the question follows, through the one-shot hand-off the bell already
-     uses (pops.OILASK, consumed by InputEditor's open effect). The editor is
-     mounted at App level, so it opens over the board the drag happened on — no
-     navigation, unlike the bell, which is taking a member somewhere. */
-  if (oilAsks(r.type)) {
-    const g = oilGate(draftOf(r), r)
-    if (g.kind === 'ask') { setOilAsk(r.iid); setInpEdit(r); notify() }
-  }
+     and the question follows. */
+  askOilIfPending(r)
+  return true
+}
+
+/** THE QUESTION FOLLOWS A SAVE THAT LEFT A DAY UNANSWERED — the one body, so
+ *  every door that writes an input straight through `commitInputEdit` raises it
+ *  the same way and none of them can drift (Codex ranks 5 and 6, 22 Sep 26).
+ *
+ *  Three doors reach it: the drag-reassign above, the calendar's date drag, and
+ *  the two in-place time cells (both of which go through `setInpField`, so
+ *  neither the board's handler nor the week's contenteditable can bypass this).
+ *  Each of them correctly voids an answer their edit made stale — a new holder
+ *  has not answered, a moved date was never answered for, hours that no longer
+ *  price an answer kill it — and each of them then relied on the member's
+ *  notification bell being noticed later. The bell is per-member, so the
+ *  SCHEDULER who made the change sees nothing at all, and the day pays nothing
+ *  until somebody happens to look.
+ *
+ *  THE SPLIT THIS SETTLES: Fable reads the bell as the 28 Aug design for these
+ *  two doors and Codex reads them as missing asks. The evidence that decides it
+ *  is the app's own behaviour on the door that WAS closed — the drag-reassign
+ *  asks immediately, on the same surface, with no navigation. Two gestures of
+ *  the same kind, on the same record, answered two different ways is the drift
+ *  the one-body rule exists to stop. The bell remains, for the member and for
+ *  everything nobody was standing in front of.
+ *
+ *  It asks only where there is something to ask: an ask-set type, and a gate
+ *  that reports a covered day with no answer that prices it. A remarks-only
+ *  edit, a weekday move and a type that never earns all pass through silently.
+ *  The editor is mounted at App level, so the sheet opens over whatever surface
+ *  the gesture happened on — no navigation, unlike the bell, which is taking a
+ *  member somewhere. */
+export function askOilIfPending(r: any): boolean {
+  if (!r || !oilAsks(r.type)) return false
+  const g: any = oilGate(draftOf(r), r)
+  if (g.kind !== 'ask') return false
+  setOilAsk(r.iid); setInpEdit(r); notify()
   return true
 }
 
@@ -1251,7 +1281,12 @@ export function setInpField(inp: any, field: 'str' | 'end' | 'rmks', text: any) 
       d.allday = false; d.sTime = hhmm(s); d.eTime = hhmm(e); d.half = halfOf(s, e)
     }
   }
-  return commitInputEdit(inp, d)
+  const ok = commitInputEdit(inp, d)
+  /* the FOURTH door (Codex rank 6): the reprice rule above has just voided any
+     answer these hours no longer price, so the question follows the save rather
+     than waiting on a bell the scheduler cannot even see */
+  if (ok) askOilIfPending(inp)
+  return ok
 }
 /* Deleting an ACCEPTED input used to leave its ground row on the programme for
    good — nothing pointed at it any more, so it could never be removed and it
