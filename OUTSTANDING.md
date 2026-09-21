@@ -86,6 +86,14 @@ in-flight and risk-reducing** first.
    stops further growth; this is the trim itself. Do it after OIL merges, not before —
    a third of tonight's new lines are that task's scaffolding and become archive the day it
    closes. See the item below.
+**TOP OF THE QUEUE (21 Sep 26, late).** 1) Finish **[OIL-AUTO-REMOVE]** — the fixes are in and
+pushed; what remains is executing the two scenario lists in the running app, then the owner's
+"merge live". 2) Then **[HUMAN-RETEST]**. 3) Then **[DOC-TRIM]** — after OIL merges, because a
+third of that task's new docs become archive the day it closes.
+**Open for the owner:** he has not picked whether to do the one cheap `CLAUDE.md` trim (~30 min,
+a move not a cut, ~700 lines off EVERY later session) as a warm-up before the scenarios, or to
+leave all of [DOC-TRIM] until after the merge. Either is fine; the ratchet already stops growth.
+
 1a. **[HUMAN-RETEST] — NEW, owner 21 Sep 26, HIGH once [OIL-AUTO-REMOVE] is closed.**
    Re-run the hands-on pass over EVERY feature whose "bug test" was really a code review plus
    unit tests. See the item below for the full reasoning — the short version is that the OIL
@@ -748,43 +756,42 @@ the OIL pass — the same scenario-design-then-execute shape is what this needs.
 
 ### [OIL-AUTO-REMOVE] Taking OIL off — BUILT 21 Sep 26, holding for "merge live"
 
-> **CROSS-PROVIDER BUG CHECK DONE 21 Sep 26 — eight defects, being fixed before merge.**
-> Fable 5.1 (high) and Astra/Codex (high), both read-only, neither the model that built it.
-> **Triage and the ordered fix plan: `raptor-port/docs/superpowers/specs/2026-09-21-oil-bugcheck-fixplan.md`.**
-> The two reviews in full are `…-oil-bugcheck-fable.md` and `…-oil-bugcheck-codex.md` beside it.
-> Four of the eight are ONE root cause — the freeze boundary has more doors than `creditFrom`.
-> **Two owner rulings came out of it:** R-1, only the issued schedule pays, BOTH directions (a
-> holiday declared after publication waits for a republication, and revoking one no longer sweeps
-> money silently); R-2, the two pre-existing money bugs are fixed here because they share that root
-> cause. **No second aliasing bug exists** — both reviewers traced every hand-back by hand — but the
-> test suite is still blind to that whole shape, and the fix plan's last section says how.
-
-> **OWNER RULING 21 Sep 26 — O-1 ANSWERED, NOT YET BUILT.** The green bar is drawn **only on the
-> events that COUNTED towards the man's day**. It stays his whole-day figure (there is no per-event
-> figure and one must never be invented), but it is WITHHELD on any row that gave him nothing: an ⓘ
-> info-only row, a row whose item is switched off, a person the admin denied, a row with no written
-> times. Green therefore means "this row counted towards his day", and it agrees with what the mode
-> shows when a puck is tapped off. A man on four rows where two counted shows the bar twice.
-> This **supersedes §2.10 / OIL21**, which said the bar repeats on every puck he wears that day.
-> Deferred only until the cross-provider bug check lands, so both changes go in one pass.
-> **The work:** `ui/oilmode.ts oilBarOf` takes the item key too and returns null unless that man has
-> a surviving span on THAT item (`oilEarnedWork(day, ev)` already computes it per person with
-> `w.item`). Pin it in `ui/oilmode.test.tsx` beside the OIL20/OIL21 tests. Correct OIL21's wording
-> in the behaviour register, in `docs/ui-contracts.md` §OIL and in `docs/engine-rules.md`.
-> **Re-examine O-3 in the same pass** — the ALL AVAIL count chip counts each man's DAY, which he
-> ruled "leave it" only because the bar meant the same thing; under this ruling they could agree
-> again. Display only; nothing in the engine or the credit path moves.
+> **BUG-CHECKED AND FIXED 21 Sep 26. The remaining job is the hands-on scenario pass.**
+> Cross-provider check by Fable 5.1 and Astra/Codex, both read-only, neither the model that
+> built it. **Ten defects fixed from their reports, plus FOUR the owner found by opening the
+> app, plus his O-1 ruling — all built, tested and pushed (commit `b3d8ee8`).**
+>
+> - **Triage and what was fixed:** `docs/superpowers/specs/2026-09-21-oil-bugcheck-fixplan.md`;
+>   both reviews verbatim beside it. Four of their eight were ONE root cause — the freeze
+>   boundary had more doors than `creditFrom`.
+> - **Owner rulings from it:** R-1 (only the issued schedule pays, BOTH directions) and R-2
+>   (the two pre-existing money bugs share that root cause, so they are fixed here). O-1: the
+>   green bar shows only on the events that COUNTED — BUILT, superseding OIL21. All in
+>   `DECISIONS.md` D1–D3, D15.
+> - **What the reviews could NOT find, and the owner did:** the app draws a puck in six places
+>   and only some were wired to this feature — the board's cockpit seats and Common Programme,
+>   the WEEK's cockpit seats, the mode's own gesture on all three, and a chip painting over the
+>   strip. Every call site is now enumerated and decided. **This is what produced the new
+>   bug-check standing order** (`docs/bug-check-order.md`).
+>
+> **NEXT: execute the two scenario lists in the running app** — Fable's 44 and Codex's 24,
+> `…/specs/2026-09-21-oil-scenarios-{fable,codex}.md`. **Start from
+> `…/specs/2026-09-21-oil-handpass-handoff.md`**, which says what is already walked by hand so
+> it is not redone, names the highest-value scenarios left, and carries the one open question
+> for the owner (a pending OIL change looks identical to one in force).
+>
+> **Gates at that commit:** 5350 unit · build · parity 728/0 · rulecheck OK · tracker 425/0 ·
+> **e2e 446 pass / 1 fail** — a Leave War grid scrollbar test that passes in isolation and
+> fails under full parallel load. Unresolved on purpose: the handoff names the check that
+> settles whether it is ours or pre-existing, and forbids waving it through.
 
 **The three shapes were put to him and he rejected the framing** — rightly. Instead of fighting the
 derived credit, ask about the EVENT at the source. He then designed the interface himself: an
 **"OIL Earn" mode** on the scheduler board that glows every puck earning OIL that day, where the
 admin taps a puck to take a man off one event, or taps an item to stop the whole item earning.
 
-- **Context: `raptor-port/docs/superpowers/specs/2026-09-21-oil-auto-remove-decisions.md`.** Read it
-  and nothing else first. It holds every owner ruling of the session verbatim, the verified ground
-  truth behind them (the pass, the measure, what earns nothing by default, the publication
-  asymmetry, how a sentinel resolves, input types and landing), the build order and the model
-  guidance. Nothing of the design lives only in the chat.
+- **The design of record is `…/specs/2026-09-21-oil-auto-remove-decisions.md`** — every owner
+  ruling of that session verbatim, plus the ground truth behind them. Nothing lives only in chat.
 - **Design rulings that must NOT be relitigated** (21 Sep 26, §8/§9 of the decisions doc, which
   carries each in full): the published schedule is the truth — a full freeze, corrected by
   unpublish-and-republish under the same label, never an approved-absence carve-out; the
@@ -795,8 +802,7 @@ admin taps a puck to take a man off one event, or taps an item to stop the whole
 - **The design red team was capped at two rounds**, so §9's four answers were never
   independently reviewed — which is why the post-build check weighted them highest. Done; see
   the bug-check fix plan.
-- **The owner's mockup** (his own artifact canvas) is a revision behind the mode ruling.
-  Redraw before relying on it.
+- **The owner's mockup** (his own artifact canvas) is a revision behind; redraw before use.
 
 ### [ALL-AVAIL-REDEF] What ALL AVAIL and ALL actually mean (owner, 21 Sep 26) — BUILT 21 Sep 26
 His ruling, in short: no ground crew by default; a SANS man only when planned with us that day;
@@ -1123,18 +1129,12 @@ history; git keeps it either way, so deleting saved nothing.
   how much must be READ per session — that is `[DOC-TRIM]`, a different measure entirely.
 
 ### [AMEND-SEL-FOLLOWUPS] Plans-selector 7 follow-ups (incl. the signature-leak bug) — DONE + LIVE 15 Sep 26
-The owner's 15 Sep batch of 7 changes to the plans-selector redesign, all built test-first on
-`claude/amendment-engine-core` and merged as **PR #405** (merge commit `9ba253c`), which the
-branch is now fully inside. Resolutions: (1) the signature-leak bug — signatures are now
-**per-plan** (owner's option a): each saved plan carries its own four sign-offs, so signing one
-plan never fills another; a plan whose content moved out from under a signature reads empty; a
-later Codex finding (PSF-001) bound signatures to the filing axis too. (2) the amber week banner
-removed entirely. (3) version tag coloured by AL number off the shared palette. (4) tag moved
-left of the 4X4 badge. (5) tag shown on the view-only schedule too. (6) no change needed —
-view-only live faces already show warnings. (7) the board sign-off line is publish-aware.
-Cross-provider bug-checked (Codex + Fable); gates green (unit 4671/0, tfin 728/0, e2e, tracker
-smoke). Housekeeping follow-on tracked under **[REPO-CLEANUP]** above (screenshots deleted
-18 Sep 26; the space sweep is now READY — the [CMDL-FINISH] hold lifted when it merged, 18 Sep 26).
+The owner's 15 Sep batch of seven changes, built test-first and merged as **PR #405** (`9ba253c`).
+The one worth remembering: **signatures are PER-PLAN** (his option a) — each saved plan carries
+its own four sign-offs, so signing one never fills another, and a plan whose content moved out
+from under a signature reads empty. The other six were selector wording and layout.
+**Full resolutions are in PR #405 and the commit messages**, which is where a finished batch's
+detail belongs (`doc-budget.md` §3). Nothing outstanding.
 
 ### [LW-OPEN] Leave War opens on the war being WORKED — DONE 17 Sep 26
 Owner ruling (17 Sep 26, restating his 7 Sep rule under newest-instruction-wins):

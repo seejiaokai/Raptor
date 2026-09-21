@@ -84,6 +84,23 @@ load and see whether it fails there too. If it does, it is pre-existing and belo
 `OUTSTANDING.md`, not in this branch's report. If it does not, it is ours and must be found. It is
 recorded here precisely because assuming would be the same mistake this session exists to correct.
 
+## Two things that changed AFTER the fixes, and that you inherit
+
+1. **`raptor-port/docs/bug-check-order.md` is the adopted bug-check method** — merged from
+   independent Fable and Codex proposals, and it replaces the three earlier overlapping rules.
+   `.claude/rules/bug-check.md` makes it fire on its own: state the TIER out loud before you
+   execute, and carry the `Walk:` line in your closing report. §4 says which jobs to spend the
+   other providers on and which are a waste of them; §4a says how it sits with Claudex.
+2. **`DECISIONS.md` at the repo root** is now the index of every owner ruling and the file that
+   carries each one. A ruling goes in the MOMENT he makes it, before the work it implies — a
+   hook fires the check on every message, and every closing report carries a `Rulings:` line.
+   Sweep for missed rulings before any handoff; that sweep caught one in this very session.
+   Rule: `.claude/rules/record-decisions.md`.
+
+**And a live constraint:** `npm run docsize` is a ratchet on how much must be read per session.
+If you add to `CLAUDE.md`, `HANDOFF.md` or `OUTSTANDING.md`, it will fail unless you take the
+same number of lines out. That is deliberate — obey it rather than raising a ceiling.
+
 ## Standing rules that bit this session, so they do not bite again
 
 - A code review plus green tests is **not** a bug check. Two frontier models passed this build; the
