@@ -7127,3 +7127,46 @@ year, in DRAFT, and moves to the Leave War so he can set the bidding window — 
 period for bidding is his own act and is never done behind him from a schedule screen. A
 member sees the reason and is offered nothing. A year another war already reaches is
 refused with a line saying so, rather than made twice.
+
+### The mode is read-only, and where that stops (fix 5, 22 Sep 26)
+
+The board's own schedule boxes were shut when OIL Earn came in; the two crew
+panels beside them were not. A claim's row still took a typed time, still let a
+puck be dropped on it and still toggled the late mark, from inside the one
+screen that exists to stop the day changing while a scheduler decides what it
+pays. That row is drawn at all only so the mode can reach a claim with no
+schedule row of its own — an overseas duty — so it keeps its switch and its puck
+live now and shuts the rest: the times and remarks read as shut boxes, the
+Accept control is gone, and the late mark reads as a badge rather than a button.
+A puck cannot be dragged onto the day at all while the mode is on; the drag says
+why instead of doing nothing.
+
+**Sign and Publish stay open.** They are how the decisions reach the money.
+
+**Undo is not one of the doors to shut.** It already reverses an OIL tap
+correctly and that is worth keeping — it is the natural way to take back a
+mis-tap. What it must not do is keep going: with the mode open it walked back
+whatever the last change was and took a ground-programme row off the day. So
+opening the mode MARKS THE SPOT. Inside, Undo walks back OIL decisions freely
+down to that spot; the press that would reach past it leaves the mode instead
+and says so, and the press after that behaves normally, outside. Leaving the
+mode and re-entering moves the mark with it.
+
+**Unpublishing a day, and the plans selector, close the mode.** Both replace the
+day the mode is describing.
+
+### A day that stopped being a holiday (fix 4, 22 Sep 26)
+
+Only the issued schedule pays, both directions. The forward half already spoke:
+a day published as an ordinary working day that the war LATER calls a holiday
+keeps its frozen "earns nothing", and says *"This day started earning OIL after
+it was published — publish it again so the OIL lands."*
+
+The reverse half said nothing at all. A day published as a holiday that later
+stops being one goes on paying off its frozen block — which is correct, money
+comes from the issued document and not from today's calendar — while the screen
+contradicted the money and offered no way to look. It now says *"This day stopped
+being a holiday after it was published — publish it again to withdraw the OIL."*
+
+A WEEKDAY rule in practice: a Saturday cannot stop being a weekend, so the case
+this covers is a public holiday the war takes back off.

@@ -1159,6 +1159,23 @@ function validateCore(){
         }
       }
     }
+    /* THE MIRROR OF IT (fix 4, hand pass §6 row 4). R-1 runs BOTH directions, and
+       only one of them was speaking. A day published as a holiday that the war
+       later stops calling one goes on paying off its frozen block — correctly,
+       because money comes from the issued document and not from today's calendar
+       — while the screen says nothing at all. The scheduler sees a day that is no
+       longer a holiday, men still credited on the Leave War, and no way to work
+       out which is right or how to change it.
+       It sits OUTSIDE the earning-day block above on purpose: the whole point of
+       this case is that the day is no longer one that earns, so nothing in there
+       would ever run for it. */
+    if(!earnsOil&&dayApproved(di)){
+      const ver=dayCurVer(di), snap:any=ver!=null?daySnapOf(di,ver):null;
+      const frozen=snap&&snap.d&&snap.d.oilev;
+      if(frozen&&frozen.earns){
+        add('adv','OIL_STALE_HOLIDAY',[],'This day stopped being a holiday after it was published — publish it again to withdraw the OIL');
+      }
+    }
     const SORD:any={hard:0,adv:1,note:2};
     ws.sort((a:any,b:any)=>(SORD[a.sev]??3)-(SORD[b.sev]??3));
     byDay[di]={di,dow:day.dow,warns:ws};

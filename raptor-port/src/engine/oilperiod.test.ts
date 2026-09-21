@@ -14,7 +14,7 @@ import { beforeEach, afterEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { validate, WARN } from './validate'
 import { HOOKS } from './hooks'
-import { SCHED, signOf, setDayApproved } from './publish'
+import { SCHED, signOf, setDayApproved, dayApproved, dayCurVer, daySnapOf } from './publish'
 
 const SAT = 5                                   // the seed Saturday, 18 Jul 26
 const warnsOn = (di: number): any[] => {
@@ -70,5 +70,53 @@ describe('a day whose year has no leave war period says so', () => {
     HOOKS.oilNoPeriod = () => '2027'
     validate()
     expect(codesOn(1)).not.toContain('OIL_NO_PERIOD')
+  })
+})
+
+/* FIX 4 — THE MIRROR OF THE ADVISORY THE FORWARD CASE ALREADY HAS (hand pass
+   §6 row 4). R-1 says only the issued schedule pays, BOTH directions. The
+   forward half already speaks: a day published as an ordinary working day that
+   the war LATER calls a holiday keeps its frozen "earns nothing" and says
+   "publish it again so the OIL lands". The reverse half said nothing at all: a
+   day published as a holiday that later stops being one goes on paying off its
+   frozen block, correctly, while the screen contradicts the money and offers no
+   way to look. */
+describe('a day that stopped being a holiday after it went out says so', () => {
+  /* A WEEKDAY, deliberately: a Saturday cannot stop being a weekend, and the
+     engine says so in its own words beside the hook. The case this is really
+     about is a public holiday the war later takes off — a Tuesday that was a
+     holiday when the day went out and is an ordinary working day now. */
+  const TUE = 1
+  const holiday = () => { HOOKS.oilEarningDay = (di: number) => di === TUE; HOOKS.oilDayISO = (di: number) => (di === TUE ? '2027-01-01' : '') }
+  const notAnyMore = () => { HOOKS.oilEarningDay = () => false }
+
+  it('names it, and tells him how to withdraw the OIL', () => {
+    holiday()
+    publish(TUE)
+    notAnyMore()
+    validate()
+    expect(codesOn(TUE)).toContain('OIL_STALE_HOLIDAY')
+    expect(msgOn(TUE, 'OIL_STALE_HOLIDAY')).toMatch(/publish it again/i)
+  })
+
+  it('THE CONTROL — a day still a holiday says nothing of the kind', () => {
+    holiday()
+    publish(TUE)
+    validate()
+    expect(codesOn(TUE)).not.toContain('OIL_STALE_HOLIDAY')
+  })
+
+  it('THE OTHER CONTROL — a published weekday that never earned says nothing', () => {
+    publish(2)
+    notAnyMore()
+    validate()
+    expect(codesOn(2)).not.toContain('OIL_STALE_HOLIDAY')
+  })
+
+  it('and an UNPUBLISHED day that stopped being a holiday says nothing — nothing was ever frozen', () => {
+    holiday()
+    notAnyMore()
+    validate()
+    expect(codesOn(TUE)).not.toContain('OIL_STALE_HOLIDAY')
   })
 })
