@@ -41,7 +41,10 @@
    Ordinary TS style — a new file, not a ported engine body.
    ===================================================================== */
 import { DAYS } from './data'
-import { INPUTS, inpId, inpWin, oilAsks, dateOrd } from './inputs'
+import { INPUTS, inpId, inpWin, oilAsks, dateOrd, dateIx } from './inputs'
+import { weekKeyOfOrd } from './weeks-data'
+import { CURWEEK } from './waves'
+import { stashHas, stashGet, stashDays } from './weekstash'
 import { PEOPLE, whoId, isSpecial } from './people'
 import { HOOKS } from './hooks'
 import { dayOilWork, envMin, uniformOil, inputItemKey, rowItemKey, groundItemKey, type OilWork } from './oil'
@@ -180,23 +183,76 @@ export function earnsFrom(ev: OilEvidence, person: string, item: string, dflt: b
  *  row, the row is gone. If it is not loaded at all, the row is elsewhere and
  *  we simply cannot see it.
  *
- *  STATED LIMIT: an anchor row CANCELLED in a week nobody has loaded reads as
- *  `elsewhere`, so its other days still pay. Closing that needs a stash-aware
- *  read; filed rather than pretended. (Codex proposed a helper
- *  `landedOnUnloadedWeek` for this — no such function exists in the codebase.) */
+ *  THE WEEK NOBODY HAS LOADED IS READ TOO ([OIL-XWEEK-ELSEWHERE], 22 Sep 26 —
+ *  Fable F2 and Codex rank 3, and both wanted it closed before the branch could
+ *  go live). It used to stop at the loaded week and file the rest as a limit,
+ *  and the limit was described wrongly: a request anchored in another week does
+ *  not read `elsewhere`, because every `'g'` is cleared on a week swap, so it
+ *  reads `acc:''` and the money paid it at a short-circuit before the standing
+ *  was consulted at all. A repair written against the `elsewhere` branch would
+ *  never have fired. A ten-day Training cancelled on its row therefore went on
+ *  paying its weekend in the following week — a day paid for work the schedule
+ *  itself says did not happen, and one that can be frozen into a publication.
+ *
+ *  So the anchor's own week is resolved from the request's first date and its
+ *  stashed days are searched. What each answer means:
+ *    · no stash entry at all — that week was never edited, so no row was ever
+ *      made there, so nothing contradicts the man's own answer: `unlanded`;
+ *    · a stash entry that cannot be read — we know the week WAS touched and
+ *      cannot see how. Codex asked for the conservative answer here and is
+ *      right: absence of evidence about a week somebody worked in is not
+ *      evidence of work. `elsewhere` now means exactly that, and does not pay;
+ *    · a row found — its own state, the same as a loaded one. */
 function landedStanding(row: any): OilInputEv['stand'] {
-  if (String(row.acc || '') !== 'g') return 'unlanded'
+  const acc = String(row.acc || '')
+  if (acc === 'r' || acc === 'u') return 'unlanded'       // dormant, or a kind that never lands
   const key = String(inpId(row))
-  const first = dateOrd(row.date, row.yr)
-  let firstDayLoaded = false
   for (let i = 0; i < DAYS.length; i++) {
-    const d: any = DAYS[i]
-    if (!d) continue
-    if (first != null && dateOrd(d.dt, row.yr) === first) firstDayLoaded = true
-    const hit = (d.ground || []).find((r: any) => r && String(r.src || '') === key)
+    const hit = ((DAYS[i] as any || {}).ground || []).find((r: any) => r && String(r.src || '') === key)
     if (hit) return hit.cx ? 'cx' : hit.info ? 'info' : 'active'
   }
-  return firstDayLoaded ? 'gone' : 'elsewhere'
+  /* `dateIx` is the app's own "is this label one of the loaded days", and it
+     resolves BOTH sides under the right year convention — the day labels under
+     the loaded week's, the request's under its own `yr`. Comparing the day
+     label against the ROW's year (which is what this did) reads the anchor day
+     as not loaded across a New Year boundary (Fable F7). */
+  if (dateIx(row.date, row.yr) >= 0) return acc === 'g' ? 'gone' : 'unlanded'
+  return stashStanding(dateOrd(row.date, row.yr), key)
+}
+
+/* The anchor row's state in a week that is not on screen. Memoised on the
+   stashed BLOB ITSELF, the way leavewar/sync.ts's STASH_OIL_CACHE already does:
+   the evidence is rebuilt once per puck, and parsing a whole week for every one
+   of them would be felt. Keyed on the blob and not on a counter deliberately —
+   a counter that can restart (stashClear) serves a stale answer under a key
+   that looks fresh, which is a hard defect to see. A rewritten week is a new
+   string, so it misses correctly. */
+const XW_MEMO = new Map<string, Map<string, OilInputEv['stand']> | null>()
+function stashStanding(first: number | null, key: string): OilInputEv['stand'] {
+  if (first == null) return 'unlanded'
+  const wk = weekKeyOfOrd(first)
+  /* the loaded week is DAYS, which was just scanned; its stash blob is the
+     stale one written on the way IN and must never be read back over it */
+  if (!wk || wk === CURWEEK || !stashHas(wk)) return 'unlanded'
+  const blob = String(stashGet(wk) || '')
+  let rows = XW_MEMO.get(blob)
+  if (rows === undefined) {
+    const parsed: any = stashDays(wk)
+    if (!parsed || !Array.isArray(parsed.days)) rows = null
+    else {
+      rows = new Map<string, OilInputEv['stand']>()
+      for (const d of parsed.days) {
+        for (const r of ((d || {}).ground || [])) {
+          const src = r && String(r.src || '')
+          if (src && !rows.has(src)) rows.set(src, r.cx ? 'cx' : r.info ? 'info' : 'active')
+        }
+      }
+    }
+    if (XW_MEMO.size > 32) XW_MEMO.clear()
+    XW_MEMO.set(blob, rows)
+  }
+  if (!rows) return 'elsewhere'                           // stashed and unreadable
+  return rows.get(key) || 'unlanded'
 }
 
 export function projectOilInputs(iso: string): OilInputEv[] {
@@ -378,9 +434,22 @@ function standIn(day: any, i: OilInputEv): OilInputEv['stand'] {
   return String(i.acc || '') === 'g' ? 'active' : 'unlanded'
 }
 
+/** DOES THIS STANDING LET THE CLAIM EARN? The one body — the money asks it and
+ *  so does the key, so they cannot disagree about a day. */
+function standEarns(st: OilInputEv['stand']): boolean {
+  return st !== 'cx' && st !== 'info' && st !== 'gone' && st !== 'elsewhere'
+}
+
 export function oilEvidenceKey(ev: OilEvidence | null | undefined, day?: any): string {
+  /* THE KEY RECORDS WHAT THE DAY PAYS, NOT AN INTERNAL WORD (22 Sep 26). It used
+     to serialise the standing itself, so a claim whose row simply moved to a
+     week nobody has loaded — `active` to `unlanded`, both of which pay exactly
+     the same — moved the key and offered an amendment with no money behind it.
+     That is the manufactured-amendment shape this branch has now met three
+     times. Two values, and they are the two the money makes: earns, or does
+     not. Every standing change that moves money still moves the key. */
   if (!ev || !ev.earns) return ''
-  const ins = ev.inputs.map(i => `${i.iid}:${i.person}:${i.type}:${i.acc}:${standIn(day, i)}:${i.win ? i.win.join('-') : ''}:${i.ans == null ? '' : i.ans}`).join(',')
+  const ins = ev.inputs.map(i => `${i.iid}:${i.person}:${i.type}:${i.acc}:${standEarns(standIn(day, i)) ? 'y' : 'n'}:${i.win ? i.win.join('-') : ''}:${i.ans == null ? '' : i.ans}`).join(',')
   const sent = Object.keys(ev.sent).sort().map(k => `${k}=${[...ev.sent[k]].sort().join('+')}`).join(',')
   return `${ev.iso}|${oilDecisionsKey(ev.d)}|${ins}|${sent}`
 }
@@ -436,12 +505,16 @@ export function oilUpgradeMovedMoney(day: any, ev: OilEvidence | null | undefine
  *  reason. */
 export function oilInputEligible(day: any, inp: OilInputEv): boolean {
   if (!inp.asks || inp.acc === 'r' || !inp.win) return false
-  if (inp.acc !== 'g') return true                                  // never landed: the claim stands on its own
   /* the ONE row's state, frozen onto the claim at projection — NOT a lookup on
      the day being paid, which is what made a multi-day request pay nothing on
-     every day but the one its row happened to sit on (job 2) */
-  const st = effectiveStand(day, inp)
-  return st !== 'cx' && st !== 'info' && st !== 'gone'
+     every day but the one its row happened to sit on (job 2).
+     THE `acc !== 'g'` SHORT-CIRCUIT THAT USED TO SIT HERE IS GONE
+     ([OIL-XWEEK-ELSEWHERE]): it answered "pays" before the standing was read,
+     and since every `'g'` is cleared on a week swap it caught every request
+     anchored in another week — including one whose row had been cancelled. The
+     standing now decides alone, and it says `unlanded` for everything that
+     genuinely never landed, which pays exactly as before. */
+  return standEarns(effectiveStand(day, inp))
 }
 
 /** A BLOCK FROZEN BEFORE `stand` EXISTED CARRIES NONE, AND THE MONEY MUST NOT

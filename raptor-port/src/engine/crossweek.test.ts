@@ -16,8 +16,8 @@ import { CURWEEK } from './waves'
 import { seedRunIn, prevSundaySeed } from './weekctx'
 import { VCONF } from './rules'
 import { PEOPLE, isSpecial } from './people'
-import { shiftWeekKey } from './weeks-data'
-import { shiftWeek } from '../ui/weeknav'
+import { shiftWeekKey, weekKeyOfOrd } from './weeks-data'
+import { shiftWeek, mondayOf } from '../ui/weeknav'
 
 /* @vitest-environment jsdom — loadWeek/initStore pull in the store, which
    wires the engine's HOOKS; loadweek.test.ts uses the same pragma for the
@@ -87,6 +87,35 @@ describe('Test C — drift-seam pin: shiftWeekKey (engine) and shiftWeek (ui) mu
         })
       })
     })
+  })
+})
+
+describe('Test C2 — drift-seam pin: weekKeyOfOrd (engine) and mondayOf (ui) must never disagree', () => {
+  /* the SAME "which week is this date in" question, deliberately implemented
+     twice for the same reason as Test C — the engine stays Date-free, the ui
+     layer uses Date.UTC. The OIL money asks the engine's one when it has to
+     find the week a request's row is anchored in ([OIL-XWEEK-ELSEWHERE]), so a
+     drift here would pay, or refuse to pay, out of the wrong week. */
+  const DATES = [
+    20260718, // the seed Saturday
+    20260713, // a Monday — its own week's key
+    20260719, // a Sunday — the far end of the same week
+    20270101, // New Year's Day, whose week starts in the previous year
+    20261231, // the last day of a year
+    20240229, // the leap day
+    20250301, // the day after February in a NON-leap year
+    20260101,
+  ]
+  DATES.forEach(ord => {
+    it(`${ord}`, () => {
+      const iso = `${String(ord).slice(0, 4)}-${String(ord).slice(4, 6)}-${String(ord).slice(6, 8)}`
+      expect(weekKeyOfOrd(ord)).toBe(mondayOf(iso))
+    })
+  })
+  it('an unreadable ordinal is refused rather than guessed', () => {
+    expect(weekKeyOfOrd(null)).toBe('')
+    expect(weekKeyOfOrd(0)).toBe('')
+    expect(weekKeyOfOrd(20261300)).toBe('')
   })
 })
 

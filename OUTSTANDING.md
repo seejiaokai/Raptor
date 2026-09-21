@@ -934,7 +934,7 @@ The read-side prune stays, as the guard it always was for exactly those two case
 joins the input batch on a person change, so ONE Undo puts back the assignment and the off-week
 refusal together — proved by a test that fails if the enlistment is removed.
 
-### [OIL-XWEEK-ELSEWHERE] The cross-week branch of job 2 never fires in the real app — OPEN, 22 Sep 26
+### [OIL-XWEEK-ELSEWHERE] The cross-week branch of job 2 never fires in the real app — CLOSED, 22 Sep 26
 
 Job 2's `landedStanding` returns `elsewhere` for a request anchored in an unloaded week, and a unit
 test pins it. **In the running app that branch is unreachable:** `applyWeekModel` clears every `'g'`
@@ -946,6 +946,20 @@ PRE-EXISTING rather than introduced by job 2 (the same line paid before it).
 Fable recommends closing it before "merge live": read the anchor's week from `stashDays`, drop the
 `acc !== 'g'` short-circuit, keep `'gone'` gated on `'g'`. Step-by-step and a red test in its
 review §F2.
+
+**CLOSED 22 Sep 26.** The standing now resolves the anchor's own week from the request's first date
+and reads that week's stashed days. No stash entry at all means the week was never edited, so no row
+was ever made there and nothing contradicts the man's own answer — he is paid. A stash entry that
+cannot be read is the case the two reviewers split on, and Codex's conservative answer was taken:
+we know that week WAS touched and cannot see how, so it does not pay. `elsewhere` now means exactly
+that and nothing else. The `acc !== 'g'` short-circuit that answered "pays" before the standing was
+ever consulted is gone.
+
+**And the key stopped recording the standing itself.** It records the only thing the standing decides
+— earns, or does not. A claim whose row merely moved into an unloaded week used to move the key
+while paying exactly the same, which offered an amendment with no money behind it; that is the
+manufactured-amendment shape this branch has now met three times, and it cannot happen through this
+axis again.
 
 ### [LW-SCRUBBER-FLAKY] The year scrubber test fails on a saturated machine — PRE-EXISTING (21 Sep 26)
 `e2e/leavewar.spec.ts` "the bottom scrollbar is a year-wide scrubber", lw-desktop only. Under a full

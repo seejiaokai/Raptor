@@ -27,6 +27,7 @@ import { SCHED, daySnap, dayDelta, dayHasChanges, dayApproved, setDayApproved, p
 import { ensureRowIds } from './rowids'
 import { oilEvidence, oilEvidenceOf, oilEarnedWork, oilEvidenceKey, oilDecisionsKey, oilWouldEarn, inputItemKey, rowItemKey, groundItemKey } from './oilev'
 import { envMin, uniformOil } from './oil'
+import { stashPut, stashClear } from './weekstash'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
@@ -613,5 +614,59 @@ describe('rank 4 — the BINDING half: a signature given before `stand` existed'
     expect(daySigned(SAT)).toBe(true)
     ageBindings(SAT)
     expect(daySigned(SAT), 'the Saturday pays a day it never paid before').toBe(false)
+  })
+})
+
+/* [OIL-XWEEK-ELSEWHERE] — BOTH reviewers want this closed before merge live
+   (Fable F2, Codex rank 3), and both are right that the build's own note names
+   the wrong mechanism. A request running from one week into the next, whose ONE
+   row the scheduler CANCELLED in the first week, goes on paying its days in the
+   second. The note said that reads as `elsewhere`; it does not. Every `'g'` is
+   cleared on a week swap, so the request reads `acc:''` → `unlanded`, and the
+   money paid it at the `acc !== 'g'` short-circuit before the standing was ever
+   consulted. A repair written against the `elsewhere` branch would never fire.
+
+   Pre-existing rather than introduced by job 2 — the same line paid before it —
+   but it is a day paid for work the schedule itself says did not happen, and it
+   can be frozen into a signed publication. */
+describe('an anchor row cancelled in a week nobody has loaded stops the money', () => {
+  const XW_WEEK = '06/07/2026'                    // Mon 6 Jul 26; index 5 is Sat 11 Jul
+  const stashWeekWith = (row: any) => {
+    const days = [0, 1, 2, 3, 4, 5, 6].map(i => ({ dt: `Jul ${6 + i}`, ground: [] as any[] }))
+    if (row) days[5].ground = [row]
+    stashPut(XW_WEEK, JSON.stringify({ d: days }))
+  }
+  const crossWeekClaim = () => claim({ iid: 'xw', person: 'stiff', type: 'Training', date: 'Jul 11',
+    endDate: 'Jul 18', acc: '', allday: false, s: 8 * 60, e: 18 * 60, oil: { [SAT_ISO]: 1 } })
+
+  afterEach(() => { stashClear() })
+
+  it('a CANCELLED anchor row pays nothing on the Saturday a week later', () => {
+    crossWeekClaim()
+    stashWeekWith({ prog: 'TRAINING', str: '0800', end: '1800', who: 'stiff', src: 'xw', cx: true })
+    expect(figure(SAT, 'stiff'), 'the schedule says the training did not happen').toBe(null)
+  })
+
+  it('an INFO-ONLY anchor row pays nothing either', () => {
+    crossWeekClaim()
+    stashWeekWith({ prog: 'TRAINING', str: '0800', end: '1800', who: 'stiff', src: 'xw', info: true })
+    expect(figure(SAT, 'stiff')).toBe(null)
+  })
+
+  it('THE CONTROL — a LIVE anchor row a week away still pays', () => {
+    crossWeekClaim()
+    stashWeekWith({ prog: 'TRAINING', str: '0800', end: '1800', who: 'stiff', src: 'xw' })
+    expect(figure(SAT, 'stiff')).toBe('FO')
+  })
+
+  it('THE OTHER CONTROL — a request that never landed anywhere stands on its own answer', () => {
+    crossWeekClaim()
+    stashWeekWith(null)                            // the week is remembered, and has no such row
+    expect(figure(SAT, 'stiff'), 'nothing to contradict him').toBe('FO')
+  })
+
+  it('and a week nobody has ever opened is not read as evidence of anything', () => {
+    crossWeekClaim()                               // no stash entry at all for 06/07/2026
+    expect(figure(SAT, 'stiff')).toBe('FO')
   })
 })
