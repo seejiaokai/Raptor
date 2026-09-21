@@ -26,6 +26,24 @@ what the screen says.**
 
 Two of them take money off a man who worked, and both are silent. They are numbers 1 and 2 in §6.
 
+## TWO REVIEWS ARE ALREADY IN FLIGHT — read them before you build
+
+Fired at the end of the walking session, blind to each other, both on their top model, both
+attacking the PLAN rather than the findings. Their brief is
+`docs/superpowers/briefs/2026-09-21-oil-fixplan-redteam.md` — read it, because it names the
+question neither the build nor the walk answered.
+
+- Fable 5.1 → `docs/superpowers/specs/2026-09-21-oil-fixplan-redteam-fable.md`
+- Astra/Codex → `docs/superpowers/specs/2026-09-21-oil-fixplan-redteam-codex.md`
+
+If a file is missing, that review did not finish; say so rather than proceeding as if it had.
+**Where they disagree, settle it with evidence, never by confidence or majority** — and remember
+the pattern from this build: each of them found something the other had explicitly declared clean.
+
+The question they were both asked, which governs fix 1 and must be answered before it is written:
+**is an OIL decision addressed to the PERSON, the REQUEST, or the pair?** Each answer has its own
+mirror-image failure, and the brief names all three.
+
 ## The job
 
 **Work §6 in order.** For each:
