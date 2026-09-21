@@ -101,6 +101,10 @@ export interface OilEvidence {
 
 export const EMPTY_OIL_EVIDENCE: OilEvidence = { iso: '', earns: false, d: {}, inputs: [], sent: {} }
 
+/* a plain deep copy — the evidence block must never hand back a live reference
+   into the day it was read from (see oilEvidence below). */
+const clone = <T,>(v: T): T => JSON.parse(JSON.stringify(v))
+
 /* ---- item identity (§7.4) ------------------------------------------------
    Decisions are keyed by what SURVIVES an ordinary member edit. `commitInputEdit`
    DELETES and RECREATES an accepted ground row, and `acceptInput` builds a fresh
@@ -186,7 +190,13 @@ export function oilEvidence(di: any, day?: any): OilEvidence {
   const d = day || DAYS[di]
   const iso = HOOKS.oilDayISO(di)
   const earns = !!d && !!iso && HOOKS.oilEarningDay(di)
-  const dec: OilDecisions = (d && d.oild) || {}
+  /* THE DECISIONS ARE COPIED, NEVER ALIASED — found by hand in the running app,
+     21 Sep 26. `daySnap` freezes this block onto the issued day, so handing back
+     the LIVE `oild` object made the frozen evidence track every later edit: mark
+     one more man on a published Saturday and the issued document silently agreed
+     with you, the delta read as "no change", and the day could never be amended.
+     The whole point of the block is that the issued answer stops moving. */
+  const dec: OilDecisions = clone((d && d.oild) || {})
   if (!earns) return { iso: iso || '', earns: false, d: dec, inputs: [], sent: {} }
   const sent: Record<string, string[]> = {}
   /* the walk that finds the day's work is the SAME walk the credit uses, so the

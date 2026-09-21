@@ -230,7 +230,7 @@ describe('an OIL credit whose hours have changed', () => {
     return row
   }
 
-  it('is re-written to the hours it now has when the day is published again, and the day is flagged', () => {
+  it('OIL36 (a flagged clash) — re-written to the hours it now has when the day is published again', () => {
     // an afternoon leave, and a morning duty that misses it — the credit lands
     file('dj', 'LL', 'Jul 18', { allday: false, half: 'pm', s: 721, e: 1439 })
     const row = duty('dj', at(8), at(12))

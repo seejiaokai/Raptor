@@ -2601,3 +2601,33 @@ review already priced out is the exact shape to re-check.
 explicit instructions must be surfaced and re-checked at the moment of deviation, not silently
 absorbed — the review that blessed the plan often already weighed the alternative, and the deviation
 tends to carry costs (hidden bugs, undoing the plan's intent) that only resurface at inspection.
+
+### Observation 170: a unit test that REPLACES the object hides a bug in code that MUTATES it
+
+**Status:** OPEN
+**Date:** 2026-09-21
+**Session context:** Building a feature where a day record gains a new sub-object that is copied into an immutable published snapshot; the UI mutates that sub-object in place.
+**Skill:** test-driven-development (and the project's own hand-test rule)
+**Type:** open-source
+**Phase/Area:** writing the regression test / choosing the fixture's write path
+
+**Issue:** The engine froze a copy of a record into an immutable snapshot, but the "copy" aliased the live object. 5326 unit tests passed, including a purpose-written test for exactly this rule, because every fixture set the state by ASSIGNING a fresh object (`day.decisions = {...}`) while the production UI MUTATES the existing one (`day.decisions.people[k] = 'deny'`). Assignment breaks the alias; mutation exposes it. The bug — an already-published document silently rewriting itself, so the change could never be amended — was found in the first ten minutes of driving the real app, not by the suite.
+
+**Suggested improvement:** When a test sets up state that production code reaches through a different write path, the fixture should USE that path, or mutate the same way it does. Concretely: prefer calling the production writer in the fixture; where that is impractical, mutate in place rather than replace, because replacement is the weaker case and passes for free. A second, cheaper guard for the same class: any function that returns part of a mutable record for storage elsewhere should copy it at the boundary, and a test should assert the two diverge after a mutation.
+
+**Principle:** A fixture that reaches the state by a different route than production tests a different program. Aliasing bugs are invisible to any test that assigns where the app mutates — so the setup's write path is part of what the test asserts, not an implementation detail of the test.
+
+### Observation 171: "hand-test in the running app" earns its cost on integration seams, not on logic
+
+**Status:** OPEN
+**Date:** 2026-09-21
+**Session context:** A project rule requires driving the built app and walking an enumerated list of rulings after every build; this session did it after the unit suite was green.
+**Skill:** verification-before-completion
+**Type:** open-source
+**Phase/Area:** what "verified" means before claiming completion
+
+**Issue:** The unit suite proved every rule in isolation and missed the one defect, which lived in the seam between a UI writer and an engine reader. The hand test found it immediately, because the app is the only place both halves run against the same object. It also surfaced a second, non-defect judgement call (a summary chip counting a figure earned elsewhere) that no unit test would have framed as a question at all.
+
+**Suggested improvement:** State the division explicitly in the verification guidance: unit tests own rules and branches; the live-app pass owns SEAMS — shared mutable state, a writer and a reader that never meet in a test, identity/aliasing, and anything whose correctness depends on the order real gestures happen in. Recommend budgeting the live pass on that basis rather than treating it as a final formality, and recommend that whatever the live pass finds gets a unit test written in the production write path (see the aliasing observation above).
+
+**Principle:** Passing tests and a working program are different claims. The live pass is not a slower repeat of the suite — it is the only check that exercises the seams between components the suite stubs apart, so it should be scoped to those seams rather than to re-proving the logic.

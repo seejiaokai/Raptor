@@ -65,7 +65,7 @@ const figure = (di: number, person: string) => {
 }
 
 describe('the block is derived on the live day and FROZEN on the issued one (§9.3)', () => {
-  it('a live day stores only the decisions — never the projection', () => {
+  it('OIL29 — a live day stores only the decisions, never the projection', () => {
     claim({ iid: 'c1', person: 'bane', type: 'Duty', date: 'Jul 18', oil: { [SAT_ISO]: 1 } })
     const ev = oilEvidence(SAT)
     expect(ev.earns).toBe(true)
@@ -73,7 +73,7 @@ describe('the block is derived on the live day and FROZEN on the issued one (§9
     expect((DAYS[SAT] as any).oilev, 'nothing derived is stored on the working copy').toBeUndefined()
   })
 
-  it('publishing freezes the whole block onto the issued snapshot', () => {
+  it('OIL29 — publishing freezes the whole block onto the issued snapshot', () => {
     claim({ iid: 'c1', person: 'bane', type: 'Duty', date: 'Jul 18', oil: { [SAT_ISO]: 1 } })
     publish(SAT)
     const snap: any = daySnapOf(SAT, dayCurVer(SAT))
@@ -82,13 +82,13 @@ describe('the block is derived on the live day and FROZEN on the issued one (§9
     expect((DAYS[SAT] as any).oilev, 'the working copy still stores nothing derived').toBeUndefined()
   })
 
-  it('a weekday carries no block at all, so the five ordinary days are untouched', () => {
+  it('OIL18 — a weekday carries no block at all, so the five ordinary days are untouched', () => {
     expect(oilEvidence(1).earns).toBe(false)
     expect(oilEvidenceKey(oilEvidence(1))).toBe('')
     expect(dayDelta(1)).toEqual([])
   })
 
-  it('the issued block answers, not the live inputs — a member edit moves nothing', () => {
+  it('OIL24, OIL36 — the issued block answers, not the live inputs: a member edit moves nothing', () => {
     const c = claim({ iid: 'c1', person: 'bane', type: 'Duty', date: 'Jul 18', allday: false, s: 480, e: 720, oil: { [SAT_ISO]: 0.5 } })
     publish(SAT)
     expect(figure(SAT, 'bane')).toBe('HO')
@@ -98,7 +98,7 @@ describe('the block is derived on the live day and FROZEN on the issued one (§9
 })
 
 describe('an OIL-only edit is PUBLISHABLE (§7.2, §9.2)', () => {
-  it('marking an item on a published day produces a delta, one amendment item, and clears the signature', () => {
+  it('OIL16, OIL27 — marking an item on a published day is one amendment item, and clears the signature', () => {
     const g = groundRow(SAT, { prog: 'FAMILY DAY', str: '1000', end: '1700', who: 'bane' })
     publish(SAT)
     expect(dayHasChanges(SAT), 'nothing changed yet').toBe(false)
@@ -116,7 +116,7 @@ describe('an OIL-only edit is PUBLISHABLE (§7.2, §9.2)', () => {
     expect(dayHasChanges(SAT), 'published — the issued block now carries the mark').toBe(false)
   })
 
-  it('an ANSWER-ONLY change on a published day is publishable too — even for OD, which has no row', () => {
+  it('OIL11, OIL12 — an answer-only change is publishable too, even for OD, which has no row', () => {
     const c = claim({ iid: 'od1', person: 'bane', type: 'OD', date: 'Jul 18', oil: { [SAT_ISO]: 1 } })
     publish(SAT)
     expect(dayHasChanges(SAT)).toBe(false)
@@ -134,6 +134,27 @@ describe('an OIL-only edit is PUBLISHABLE (§7.2, §9.2)', () => {
     expect(dayHasChanges(SAT)).toBe(false)
   })
 
+  it('OIL16, OIL29 — a decision MUTATED in place on a published day is still a change', () => {
+    /* FOUND BY HAND IN THE RUNNING APP, 21 Sep 26, and it is the sharpest bug of
+       the build. The board mutates `oild` IN PLACE (the mode's writers hold the
+       live object), where this suite had been REPLACING it. The frozen block was
+       handing back that same live object, so marking one more man on a published
+       Saturday silently rewrote the issued document, the delta read "no change",
+       and the day could never be amended — the exact failure §7.2 exists to
+       prevent, arriving by a different door. */
+    const g = groundRow(SAT, { prog: 'FAMILY DAY', str: '1000', end: '1700', who: 'bane' })
+    const item = rowItemKey(g.rid)
+    ;(DAYS[SAT] as any).oild = { people: { [`bane|${item}`]: 'deny' } }
+    publish(SAT)
+    expect(dayHasChanges(SAT)).toBe(false)
+    const snap: any = daySnapOf(SAT, dayCurVer(SAT))
+    /* mutate the LIVE object, exactly as the board's own writer does */
+    ;(DAYS[SAT] as any).oild.people[`stiff|${item}`] = 'deny'
+    expect(snap.d.oilev.d.people[`stiff|${item}`], 'the issued document did not move').toBeUndefined()
+    expect(dayHasChanges(SAT), 'and the day now has a publishable change').toBe(true)
+    expect(diffCounts(dayDelta(SAT)).oil).toBe(1)
+  })
+
   it('a decision-only divergence counts as an edit a recovery would discard', () => {
     const g = groundRow(SAT, { prog: 'BRIEF', str: '0800', end: '0900', who: 'bane' })
     publish(SAT)
@@ -144,7 +165,7 @@ describe('an OIL-only edit is PUBLISHABLE (§7.2, §9.2)', () => {
 })
 
 describe('the three states, and what cannot be overridden (§9.1)', () => {
-  it('the member has the first word on his own claim, and the admin can say YES over his NO', () => {
+  it('OIL10 — the member has the first word, and the admin can say YES over his NO', () => {
     claim({ iid: 'c1', person: 'bane', type: 'Duty', date: 'Jul 18', oil: { [SAT_ISO]: 0 } })   // he says no
     publish(SAT)
     expect(figure(SAT, 'bane'), 'his own No stands').toBe(null)
@@ -155,7 +176,7 @@ describe('the three states, and what cannot be overridden (§9.1)', () => {
     expect(figure(SAT, 'bane')).toBe('FO')
   })
 
-  it('the member\'s own answer is never overwritten — lift the override and his word comes back', () => {
+  it('OIL10 — his own answer is never overwritten: lift the override and his word comes back', () => {
     const c = claim({ iid: 'c1', person: 'bane', type: 'Duty', date: 'Jul 18', oil: { [SAT_ISO]: 0 } })
     ;(DAYS[SAT] as any).oild = { people: { [`bane|${inputItemKey('c1')}`]: 'allow' } }
     publish(SAT)
@@ -165,7 +186,7 @@ describe('the three states, and what cannot be overridden (§9.1)', () => {
     expect(figure(SAT, 'bane'), 'back to his No').toBe(null)
   })
 
-  it('an ALLOW is permission to count real work, never permission to invent it', () => {
+  it('OIL28, OIL13, OIL31 — an allow counts real work, it never invents it', () => {
     /* a dormant claim, and a row with no times: neither can be allowed into money */
     claim({ iid: 'c1', person: 'bane', type: 'Duty', date: 'Jul 18', acc: 'r', oil: { [SAT_ISO]: 1 } })
     const g = groundRow(SAT, { prog: 'NO TIMES', str: '', end: '', who: 'stiff' })
@@ -175,7 +196,7 @@ describe('the three states, and what cannot be overridden (§9.1)', () => {
     expect(figure(SAT, 'stiff'), 'money must not come from a guess').toBe(null)
   })
 
-  it('a DENY takes one man off ONE event and leaves his others alone', () => {
+  it('OIL3, OIL4 — a deny takes one man off ONE event and leaves his others alone', () => {
     const a = groundRow(SAT, { prog: 'MORNING', str: '0700', end: '0800', who: 'bane' })
     const b = groundRow(SAT, { prog: 'ALL DAY', str: '0900', end: '1700', who: 'bane' })
     ;(DAYS[SAT] as any).oild = { people: { [`bane|${rowItemKey(b.rid)}`]: 'deny' } }
@@ -186,7 +207,7 @@ describe('the three states, and what cannot be overridden (§9.1)', () => {
 })
 
 describe('the day blanket MASKS, it does not delete (§2.1 item 7)', () => {
-  it('everything stops earning, and every mark underneath comes back when it is lifted', () => {
+  it('OIL9 — everything stops earning, and every mark underneath comes back when it is lifted', () => {
     const g = groundRow(SAT, { prog: 'ALL DAY', str: '0800', end: '1700', who: 'bane' })
     const item = rowItemKey(g.rid)
     ;(DAYS[SAT] as any).oild = { blanket: 1, people: { [`bane|${item}`]: 'deny' } }
@@ -199,7 +220,7 @@ describe('the day blanket MASKS, it does not delete (§2.1 item 7)', () => {
     expect(figure(SAT, 'bane')).toBe(null)
   })
 
-  it('it covers a row added AFTER it was set — it is a fact about the day, not a stamp on the rows', () => {
+  it('OIL9 — it covers a row added AFTER it was set: a fact about the day, not a stamp on the rows', () => {
     ;(DAYS[SAT] as any).oild = { blanket: 1 }
     groundRow(SAT, { prog: 'ADDED LATER', str: '0800', end: '1700', who: 'bane' })
     publish(SAT)
@@ -208,7 +229,7 @@ describe('the day blanket MASKS, it does not delete (§2.1 item 7)', () => {
 })
 
 describe('the sentinel membership is frozen at publication (§7.3)', () => {
-  it('who an ALL AVAIL puck stood for cannot change under the reader', () => {
+  it('OIL24 — who an ALL AVAIL puck stood for cannot change under the reader', () => {
     const g = groundRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'allavail' })
     publish(SAT)
     const item = rowItemKey(g.rid)
@@ -224,7 +245,7 @@ describe('the sentinel membership is frozen at publication (§7.3)', () => {
 })
 
 describe('an item address survives what it must (§7.4)', () => {
-  it('a ground row from an accepted input is addressed by the INPUT, not the row', () => {
+  it('OIL25 — a ground row from an accepted input is addressed by the INPUT, not the row', () => {
     const g = groundRow(SAT, { prog: 'TRAINING', str: '0900', end: '1700', who: 'bane', src: 'c1' })
     expect(groundItemKey(g)).toBe(inputItemKey('c1'))
     expect(groundItemKey({ rid: 'r9' })).toBe(rowItemKey('r9'))
@@ -232,7 +253,7 @@ describe('an item address survives what it must (§7.4)', () => {
 })
 
 describe('the publish reminder asks the right question (§2.3)', () => {
-  it('speaks only where there is money waiting on a publication', () => {
+  it('OIL11 — the reminder speaks only where there is money waiting on a publication', () => {
     /* a weekend day with nothing on it: the reminder must stay silent, or every
        Saturday morning would nag about a day nobody is working */
     Object.assign(DAYS[6], { waves: [], sims: { amt: [], oft: [] }, dutywaves: [], ground: [], allhands: [] })

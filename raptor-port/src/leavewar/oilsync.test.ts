@@ -294,7 +294,7 @@ describe('the ownership partition against wires 1+2', () => {
    could never raise an amendment at all because OD has no row on the programme.
    The owner's mitigation for the day nobody publishes is a standing practice of
    publishing every day, plus the reminder this build adds. */
-describe('an acknowledged input credits once the day is PUBLISHED', () => {
+describe('OIL11, OIL13 — an acknowledged input credits once the day is PUBLISHED', () => {
   const plant = (r: any) => {
     INPUTS.unshift({ allday: true, s: 0, e: 1439, remarks: '', mod: 'now', yr: 2026, ...r })
     return INPUTS[0]
@@ -433,7 +433,7 @@ describe('the ALL / ALL AVAIL expansion on a published non-working day', () => {
    man is named on a short row of his own, so being swept into the big event
    stretches his day from an hour (HO) to most of it (FO). That way the test
    reads the EXPANSION, not merely "did he earn anything". */
-describe('[ALL-AVAIL-REDEF] who an ALL AVAIL puck stands for (owner, 21 Sep 26)', () => {
+describe('OIL14, OIL15 — [ALL-AVAIL-REDEF] who an ALL AVAIL puck stands for (owner, 21 Sep 26)', () => {
   const EVENT = { prog: 'FAMILY DAY', str: '1000', end: '1700', who: 'ALL AVAIL' }
   const plant = (rows: any[]) => { DAYS[5].allhands = (DAYS[5].allhands || []).concat(rows) }
   /* his OWN hour, deliberately outside the event: being swept into the event
@@ -496,7 +496,7 @@ describe('[ALL-AVAIL-REDEF] who an ALL AVAIL puck stands for (owner, 21 Sep 26)'
      SANS man who is now part of ALL AVAIL has nowhere for the credit to land
      while that switch is off. The expansion follows the newer ruling; the credit
      still needs a row, which stays the older ruling's call. */
-  it('…but his OIL credit lands only while the squadron shows SANS on the Leave War', () => {
+  it('OIL35 (a flagged clash) — his credit lands only while the squadron shows SANS on the war', () => {
     const san = Object.keys(PEOPLE).find((id: any) => (PEOPLE as any)[id].san && !(PEOPLE as any)[id].archived) as string
     plant([EVENT])
     ownHour(san)

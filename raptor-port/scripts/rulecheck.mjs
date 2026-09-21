@@ -65,11 +65,48 @@ const RULES = {
   N13: 'an OIL award owes a man a day; it does not say he was at work',
   N16: 'an award and a worked day ADD UP, and never affect each other',
   N17: 'the manning counts bodies; only a planned absence takes one away',
+  /* [OIL-AUTO-REMOVE] + [ALL-AVAIL-REDEF], 21 Sep 26. Register:
+     docs/superpowers/specs/2026-09-21-oil-behaviour-register.md, which also
+     carries the two CLASHES this build found (OIL35, OIL36) and how each was
+     resolved. OIL30 and up are earlier rulings the build had to keep. */
+  OIL1: 'one OIL Earn button at the top of the day, weekends and holidays only',
+  OIL2: 'every man who earns wears a glowing green puck; tap it off, tap it back',
+  OIL3: 'a tap takes him off THAT event; his others keep counting',
+  OIL4: 'the figure is first start to last end, gaps included, on what is left',
+  OIL5: 'every puck shows its own figure live, where the qual letter sits',
+  OIL6: 'a full day and a half day look different',
+  OIL7: 'tapping an item name stops the whole item earning, later additions too',
+  OIL8: 'a sentinel opens into real pucks inside the mode',
+  OIL9: 'the day blanket is a FACT about the day and MASKS the marks beneath it',
+  OIL10: 'the member answers first; the admin overrules; his answer is never overwritten',
+  OIL11: 'all OIL waits for publication — the schedule and a claim alike',
+  OIL12: 'overseas duty shows under Unavailable as OD, and the mode reaches it',
+  OIL13: 'an input taken off the programme earns nothing, whatever he answered',
+  OIL14: 'ALL AVAIL: no ground crew, SANS in when with us, ATT B in, a clash out',
+  OIL15: 'ALL and ALL AVAIL stay identical — one behaviour, two names',
+  OIL16: 'a mark on a published day goes out as an amendment',
+  OIL17: 'the marked state is NEUTRAL, never amber or red',
+  OIL18: 'every one of these controls only where a day can earn',
+  OIL19: 'the info-only wording says it earns no OIL',
+  OIL20: 'a green bar down the left edge: full height a full day, bottom half a half',
+  OIL21: 'the bar is the MAN’S DAY, repeated, never what one event earned',
+  OIL22: 'the NO OIL marking is retired entirely',
+  OIL23: 'a sentinel wears the bar only when the people behind it agree',
+  OIL24: 'the published schedule IS the truth — full freeze, unpublish to correct',
+  OIL25: 'a decision is addressed by what survives a member edit',
+  OIL26: 'the change ships behind the existing development reset, at its real scope',
+  OIL27: 'an OIL-only edit is publishable, as ONE amendment item',
+  OIL28: 'an allow counts real work; it never invents it',
+  OIL29: 'derived on the live copy, frozen only on the issued one',
 }
 
 /* Rules with no test naming them on 20 Sep 26. The check fails if this set
    GROWS. Shrink it as the [S4-BUGHUNT] scenarios land their named tests. */
-const BASELINE = new Set(['Q9', 'Q11', 'Q12', 'Q14', 'Q15'])
+/* OIL19 (the info-only wording) and OIL26 (the storage reset, which its own boot
+   tests exercise by version rather than by name) are the two OIL rulings no test
+   names yet — both are wording/version facts checked by eye in the live-view
+   pass, and they are listed here so they stay visible rather than silent. */
+const BASELINE = new Set(['Q9', 'Q11', 'Q12', 'Q14', 'Q15', 'OIL19', 'OIL26'])
 
 const TEST_DIRS = [join(ROOT, 'src'), join(ROOT, 'e2e')]
 const isTest = (f) => /\.(test|spec)\.(ts|tsx)$/.test(f)

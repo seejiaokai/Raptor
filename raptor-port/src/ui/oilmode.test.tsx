@@ -79,7 +79,7 @@ const addRow = (di: number, r: any) => { DAYS[di].ground = (rows(di) || []).conc
 const groundRowEl = (ri: number) => $$('#sbBoard .sb-panel.grnd .sb-arow.c6r')[ri]
 
 describe('the button is drawn only where a day can earn (§2.8)', () => {
-  it('a weekend day offers it, an ordinary weekday does not', async () => {
+  it('OIL1, OIL18 — a weekend day offers it, an ordinary weekday does not', async () => {
     await open(SAT)
     expect(oilBtn(), 'the Saturday offers OIL Earn').toBeTruthy()
     await open(1)
@@ -94,7 +94,7 @@ describe('the mode itself (§2.1)', () => {
     await open(SAT)
   })
 
-  it('pressing it lights the button and stops the ordinary schedule edits', async () => {
+  it('OIL1, OIL17 — pressing it lights the button and stops the ordinary schedule edits', async () => {
     expect($$('#sbBoard .sb-panel.grnd [data-bfld]').length, 'editable boxes before').toBeGreaterThan(0)
     await click(oilBtn())
     expect(oilBtn().classList.contains('on')).toBe(true)
@@ -104,7 +104,7 @@ describe('the mode itself (§2.1)', () => {
     expect(oilBtn().classList.contains('on'), 'and it toggles back off').toBe(false)
   })
 
-  it('every puck that earns glows and wears the man\'s figure for the DAY, not the event', async () => {
+  it('OIL2, OIL5, OIL21 — every puck that earns glows and wears the man\'s figure for the DAY', async () => {
     await click(oilBtn())
     const pucks = $$('#sbBoard .sb-panel.grnd .seat.oilpk .puck')
     expect(pucks.length, 'both of his rows draw him').toBe(2)
@@ -114,7 +114,7 @@ describe('the mode itself (§2.1)', () => {
     expect($$('#sbBoard .sb-panel.grnd .role.oilamt').map(e => e.textContent)).toEqual(['FO', 'FO'])
   })
 
-  it('tapping a puck takes him off THAT event, his others keep counting, and the figure follows', async () => {
+  it('OIL3, OIL4, OIL6 — tapping a puck takes him off THAT event and the figure follows', async () => {
     await click(oilBtn())
     /* take him off the long event: only his one morning hour is left, so the
        figure on the remaining puck drops to a half day — the mitigation the
@@ -133,7 +133,7 @@ describe('the mode itself (§2.1)', () => {
     expect((DAYS[SAT] as any).oild, 'nothing is left behind on the record').toBeUndefined()
   })
 
-  it('tapping an item\'s NAME stops the whole item earning, whoever is added later', async () => {
+  it('OIL7 — tapping an item\'s NAME stops the whole item earning, whoever is added later', async () => {
     await click(oilBtn())
     await click(groundRowEl(1).querySelector('[data-oilitem]'))
     const item = rowItemKey(rows(SAT)[1].rid)
@@ -142,7 +142,7 @@ describe('the mode itself (§2.1)', () => {
     expect(groundRowEl(0).querySelector('.role.oilamt')!.textContent, 'his day is a half now').toBe('HO')
   })
 
-  it('the day blanket stops everything, and says the marks underneath are kept', async () => {
+  it('OIL9 — the day blanket stops everything, and says the marks underneath are kept', async () => {
     await click(oilBtn())
     await click(groundRowEl(1).querySelector('.seat.oilpk'))       // a person mark underneath
     await click($('#sbBoard [data-oilblank]'))
@@ -154,7 +154,7 @@ describe('the mode itself (§2.1)', () => {
     expect((DAYS[SAT] as any).oild.people, 'the person mark survived underneath').toBeTruthy()
   })
 
-  it('a sentinel opens into REAL pucks inside the mode, or its people cannot be tapped at all', async () => {
+  it('OIL8, OIL15 — a sentinel opens into REAL pucks inside the mode', async () => {
     addRow(SAT, { prog: 'ALL HANDS', str: '1000', end: '1600', who: 'allavail' })
     await open(SAT)
     await click(oilBtn())
@@ -163,7 +163,7 @@ describe('the mode itself (§2.1)', () => {
     expect([...el.querySelectorAll('.seat.oilpk')].length, 'the men behind it are drawn').toBe(2)
   })
 
-  it('a man with nothing measurable to earn from is drawn inert, not tappable', async () => {
+  it('OIL28, OIL31 — a man with nothing measurable to earn from is drawn inert, not tappable', async () => {
     addRow(SAT, { prog: 'NO TIMES', str: '', end: '', who: 'plasma' })
     await open(SAT)
     await click(oilBtn())
@@ -179,7 +179,7 @@ describe('the green edge on the issued schedule (§2.10, §7.6)', () => {
     setDayApproved(di, true)
   }
 
-  it('a man who earns wears a bar; on a weekday nothing is emitted at all', async () => {
+  it('OIL20, OIL22, OIL18 — a man who earns wears a bar; on a weekday nothing is emitted at all', async () => {
     addRow(SAT, { prog: 'ALL DAY', str: '0800', end: '1700', who: 'bane' })
     addRow(1, { prog: 'ALL DAY', str: '0800', end: '1700', who: 'bane' })
     await open(SAT)
@@ -188,7 +188,7 @@ describe('the green edge on the issued schedule (§2.10, §7.6)', () => {
     expect($$('#sbBoard .puck.oilbar').length, 'and the Tuesday is byte-identical to before').toBe(0)
   })
 
-  it('a half day is a different bar from a full one', async () => {
+  it('OIL20, OIL30 — a half day is a different bar from a full one', async () => {
     addRow(SAT, { prog: 'HALF', str: '0800', end: '1100', who: 'stiff' })
     await open(SAT)
     const pk = $$('#sbBoard .sb-panel.grnd .puck.oilbar')
@@ -196,7 +196,7 @@ describe('the green edge on the issued schedule (§2.10, §7.6)', () => {
     expect(pk[0].classList.contains('oilbar-ho'), 'three hours is a half day').toBe(true)
   })
 
-  it('a SENTINEL wears a bar only when the people behind it agree, and a count chip either way', async () => {
+  it('OIL23 — a sentinel wears a bar only when the people behind it agree', async () => {
     addRow(SAT, { prog: 'ALL HANDS', str: '0800', end: '1700', who: 'allavail' })
     await open(SAT)
     const chip = $('#sbBoard .sb-panel.grnd .oilcount')
@@ -212,7 +212,7 @@ describe('the green edge on the issued schedule (§2.10, §7.6)', () => {
     expect(mixed.textContent).toBe('1 of 2 earn')
   })
 
-  it('the bar reads the ISSUED evidence on a published day, not the live draft', async () => {
+  it('OIL24, OIL32 — the bar reads the ISSUED evidence on a published day, not the live draft', async () => {
     addRow(SAT, { prog: 'ALL DAY', str: '0800', end: '1700', who: 'bane' })
     await open(SAT)
     publish(SAT)
@@ -222,7 +222,7 @@ describe('the green edge on the issued schedule (§2.10, §7.6)', () => {
 })
 
 describe('the publish reminder (§2.3)', () => {
-  it('an unpublished weekend day with somebody down to earn says so', async () => {
+  it('OIL11, OIL33 — an unpublished weekend day with somebody down to earn says so', async () => {
     addRow(SAT, { prog: 'ALL DAY', str: '0800', end: '1700', who: 'bane' })
     /* the strip is DERIVED state: in the app every edit ends in
        afterSchedMutate, which re-validates. The fixture writes DAYS directly,
@@ -235,7 +235,7 @@ describe('the publish reminder (§2.3)', () => {
 })
 
 describe('input-derived items keep the member\'s word, and the admin can overrule it', () => {
-  it('a claim the member answered NO to draws a dim puck the admin can light', async () => {
+  it('OIL10, OIL25 — a claim the member answered NO to draws a dim puck the admin can light', async () => {
     INPUTS.unshift({ iid: 'c1', person: 'bane', type: 'Duty', date: 'Jul 18', yr: 2026, allday: true, s: 0, e: 1439, remarks: '', mod: 'now', oil: { [SAT_ISO]: 0 } })
     addRow(SAT, { prog: 'TRAINING', str: '0900', end: '1700', who: 'bane', src: 'c1' })
     await open(SAT)

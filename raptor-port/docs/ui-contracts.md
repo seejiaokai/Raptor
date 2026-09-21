@@ -6957,3 +6957,101 @@ screen:
   dialog render, order, narrowing, the linked chip, the refusal), the smoke
   suite (12 checks after the `addStudent` helper, incl. a real Export
   carrying `links`). Wiring: `docs/data-schema.md` §The person link.
+
+## OIL on the schedule: the "OIL Earn" mode and the green edge (owner, 21 Sep 26)
+
+`[OIL-AUTO-REMOVE]`. Design: `docs/superpowers/specs/2026-09-21-oil-auto-remove-decisions.md`.
+Rules of record: `docs/engine-rules.md` §Weekend/PH work earns OIL. Register of every
+ruling, and the two clashes it found: `…/2026-09-21-oil-behaviour-register.md`.
+Code: `ui/oilmode.ts` (the mode + the figure reader), `ui/html.ts` (`puck`'s 7th
+argument, `oilSeatDeco`, `oilCls`/`oilChipHTML`), `ui/board.ts` + `ui/board-html.ts`
+(the bar, the row switches, the click routes), `scheduler.css` §OIL on the schedule.
+
+### Where it is drawn, and where it is not
+
+**Weekend, public-holiday and off-day-tagged days only.** Five days a week nothing is
+emitted at all — no class, no node, no attribute — so the printed schedule on an
+ordinary Tuesday is byte-identical to before and the reference parity gate is
+untouched (728/0, checked). The day's own name covers Saturday and Sunday; the
+holiday comes from Leave War through `HOOKS.oilEarningDay`.
+
+### The green edge (§2.10 — the owner chose it over a chip: "c looks good")
+
+- **A bar down the LEFT edge of the puck.** Full height = a full day. The BOTTOM HALF,
+  a shade paler = half a day. Height is the structural signal that survives
+  colour-blindness; the tint is the one that survives being read alone with nothing
+  to compare against.
+- **It is the MAN'S DAY, repeated on every puck he wears that day** — never what that
+  one event earned. A man on four DASH rows shows the same bar four times = one full
+  day. Getting this wrong is what would have made positive marking actively wrong.
+- **Drawn as a 4px background-gradient stripe, NOT a pseudo-element.** A puck's
+  `::before` belongs to the drag ghost's lift veil and its `::after` to the SANS edge;
+  `lift-css.test.ts` pins both. A gradient costs no node, no width and no
+  pseudo-element, so no callsign clips and the measured puck geometry is untouched.
+- **Its own colour token `--oil`, deliberately NOT `--ok`.** The crew palette already
+  draws a 2px INSET green on `.rpuck.standby .puck` meaning "on standby", and a
+  scheduler sees the palette and the board at once on a Saturday with an SC wave. The
+  OIL bar is drawn apart from it in three ways at once — a solid 4px bar, a different
+  green, and only on a day that can earn. The palette's mark is NOT changed for this.
+- **It retires the "NO OIL" marking entirely.** Green means earns; no green means earns
+  nothing; no sentence is needed. It needs teaching once — the bar carries a hover
+  title naming the figure in words.
+- **A SENTINEL puck (ALL / ALL AVAIL) wears the bar only when the people behind it
+  agree** (§7.6, as the owner refined it: *"if everyone in the all avail or all puck is
+  granted OIL, it should be green"*). Four states, and the COUNT CHIP beside the puck
+  is what tells the last two apart:
+
+  | behind the puck | the puck | the count chip |
+  |---|---|---|
+  | everyone a FULL day | full-height green bar | plain, `9` |
+  | everyone HALF a day | half-height paler bar | plain, `9` |
+  | nobody earns | no bar | plain, `9` |
+  | **mixed** | **no bar** | **green, `6 of 9 earn`** |
+
+  Tapping the chip lists each man with his own figure. The chip — not the puck — is the
+  tap target: tapping the puck already arms the slot so a scheduler can swap the
+  sentinel for real people, and that must not be taken over. The SHAPE of the list is
+  not yet ruled (the owner asked for hover on a desktop and "something equivalent on
+  the phone"); one tap target behaving the same at both widths is the standing answer
+  until he picks one.
+- **On a published day the bar reads the ISSUED evidence**, because inside the version
+  preview `DAYS[di]` IS the snapshot — so what a reader sees is the figure the money
+  actually came from, and it cannot change under him.
+
+### The mode (§2.1)
+
+- **One button, "OIL Earn", at the top of the day's own content** — beside Templates,
+  never on the phone board's frozen first line (§The board on a phone is ONE window:
+  nothing joins that bar without something else leaving it).
+- **Pressed, it lights and the board goes READ-ONLY for schedule editing.** In the mode
+  a tap on a puck means "take this man off this event" and a tap on an item's name means
+  "stop the whole item earning"; leaving the ordinary write controls live beside that
+  would give one gesture two meanings on the same pixel. One mode at a time, and the lit
+  button says which. It costs one term — `oilm` folded into the board's existing
+  `stoRO`/`mvRO` gate, which every write control already reads.
+- **Every puck that earns GLOWS, and wears its figure where the qualification letter
+  sits** — solid glow = a full day, an outline only = a half. The figure is live on
+  every tap, and it is not optional: the measure is first-start-to-last-end, so
+  unticking one puck often changes nothing (another event still spans the day) and
+  occasionally costs half a day because that event was holding the far end. Without the
+  figure the mode looks broken.
+- **A man the day measures NOTHING for is drawn inert** — no glow, no tap target, a
+  plain puck and a title saying why (a blank-times row, a cancelled one, a spare,
+  AVALON/BB, an ⓘ row, a dormant claim).
+- **An item's NAME is its own switch**, tinted green when it earns and struck through
+  when it does not. It replaces the row's editable name box while the mode is on.
+- **"Nothing today earns"** is the day blanket, offered only inside the mode. It masks
+  every row and person mark rather than deleting them, and the panel says so in words.
+- **A sentinel opens into REAL pucks inside the mode**, or its people could not be
+  tapped at all.
+- **Colour:** the marked state is NEUTRAL. Amber means "look at this" and red means a
+  clash; a deliberate scheduler decision is neither, and borrowing either would make
+  every family day read as a problem. Green is the EARNING state, not the marked one.
+
+### The reminder
+
+A weekend or holiday day that is not published yet and has somebody down to earn carries
+an ADVISORY in the day's checks: *"This day is not published yet, so nobody earns their
+OIL for it — publish it before the day is out."* Silent on a weekday, silent on an empty
+weekend, and silent the moment the day is published. It is the backstop the owner chose
+for the one risk he accepted when all OIL moved behind publication.

@@ -104,11 +104,13 @@ in-flight and risk-reducing** first.
    transfer; **[TRK-DISK]** (Decision A) is fixed inside [DB-STEP].
 
 **NEXT, added 21 Sep 26 — the OIL pair, ahead of the numbered list above.**
-**[ALL-AVAIL-REDEF]** then **[OIL-AUTO-REMOVE]**, in that order, or as one job. The OIL mode cannot
-resolve an ALL AVAIL puck until ALL AVAIL is defined, and the redefinition closes a live
-disagreement (two answers to "is this man available") that also sits under [LW-COMMIT-MANNING].
-Both are DESIGNED and reviewed once; both need a Codex red team before anything is written.
-Context for both: `raptor-port/docs/superpowers/specs/2026-09-21-oil-auto-remove-decisions.md`.
+*(Done 21 Sep 2026: **[ALL-AVAIL-REDEF]** and **[OIL-AUTO-REMOVE]** — built together on branch
+`claude/oil-auto-remove-design`, holding for the owner's "merge live". The line that stood here
+said both "need a Codex red team before anything is written"; that was STALE the day it was
+written — Codex red-teamed the design TWICE and reviewing was closed by the owner's own cap, as
+§9 of the decisions doc records. Corrected in the build's PR. What the build had to obey, and the
+two rule clashes it found, are in
+`raptor-port/docs/superpowers/specs/2026-09-21-oil-behaviour-register.md`.)*
 
 *(Done 12 Sep 2026: **[TRK-IMPORT]** and **[TRK-LEDGER]** — both merged live; see Done.)*
 
@@ -702,7 +704,7 @@ rules about posted-out and pre-joining rows. Several older documents still read 
   belongs to the AUTOMATIC pass, which reads the published schedule, not to a credit the squadron
   types itself.
 
-### [OIL-AUTO-REMOVE] Taking OIL off — DESIGNED 21 Sep 26, not built
+### [OIL-AUTO-REMOVE] Taking OIL off — BUILT 21 Sep 26, holding for "merge live"
 **The three shapes were put to him and he rejected the framing** — rightly. Instead of fighting the
 derived credit, ask about the EVENT at the source. He then designed the interface himself: an
 **"OIL Earn" mode** on the scheduler board that glows every puck earning OIL that day, where the
@@ -734,7 +736,7 @@ admin taps a puck to take a man off one event, or taps an item to stop the whole
 - **A mockup exists** (an artifact canvas, the owner's own) and is one revision behind the mode
   ruling. Redraw before relying on it.
 
-### [ALL-AVAIL-REDEF] What ALL AVAIL and ALL actually mean (owner, 21 Sep 26) — SPLIT OUT, not built
+### [ALL-AVAIL-REDEF] What ALL AVAIL and ALL actually mean (owner, 21 Sep 26) — BUILT 21 Sep 26
 **His words: "ALL Avail and ALL pucks should not consist of ground crew by default. only SANS that
 are planned on the programmed on that day with us should be included … people on ATT B only should
 still be included. Those on Training, Course, Meeting, Appointment, Duty, Personal, Other, planned

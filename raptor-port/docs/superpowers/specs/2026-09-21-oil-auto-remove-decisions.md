@@ -1,6 +1,12 @@
 # [OIL-AUTO-REMOVE] — owner decisions and the design as it stands (21 Sep 26)
 
-**Status: DESIGNED, NOT BUILT.** This is the context doc for `[OIL-AUTO-REMOVE]` in
+**Status: BUILT 21 Sep 26** on branch `claude/oil-auto-remove-design`, together with
+`[ALL-AVAIL-REDEF]`, in the §6 order. What the build had to obey, and the two rule CLASHES it
+found, are in `2026-09-21-oil-behaviour-register.md`; the shipped behaviour is in
+`docs/engine-rules.md` §Weekend/PH work earns OIL and `docs/ui-contracts.md` §OIL on the schedule.
+The design below is unchanged — it is the record of what was decided.
+
+**Was: DESIGNED, NOT BUILT.** This is the context doc for `[OIL-AUTO-REMOVE]` in
 `OUTSTANDING.md`. It records what the owner ruled in the 21 Sep design session, the
 verified facts about how OIL works today that those rulings rest on, and the two jobs the
 session split out. Written so a fresh session can build without re-deriving any of it.
@@ -398,9 +404,13 @@ findings are the same missing piece.**
 6. The green edge on the issued schedule, and the sentinel's count-chip summary (§7.6).
 7. §2.3's publish-reminder warning, and the ⓘ wording fix.
 
-**Model guidance:** the plan still needs a Codex (Astra) red team — Fable has reviewed it, Codex
-has not, and the owner's standing rule is both providers before building. Build on **Opus, high**;
-it touches the pass, the day record, the board renderer and the crew-picker seam.
+**Model guidance: BUILT 21 Sep 26 on Opus 5, high.** (The line that stood here said the plan
+"still needs a Codex (Astra) red team — Fable has reviewed it, Codex has not". That was written
+before §7 and §9 existed and is STALE: Codex red-teamed it twice and §9 records that reviewing
+stopped there by the owner's own cap. Corrected in the build's own PR, per CLAUDE.md's
+newest-instruction-wins rule — a superseded line that still reads as live is how a fix once got
+merged without him.) The build touched the pass, the day record, the board renderer and the
+crew-picker seam, as expected.
 
 ---
 
