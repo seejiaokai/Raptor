@@ -409,3 +409,63 @@ describe('a multi-day request pays on every day it was answered for (job 2)', ()
     expect(rows, 'one request, one row').toBe(1)
   })
 })
+
+/* JOB 8 — the owner's ruling D18: "for 2 he should earn". A second man the
+   scheduler puts on a member's landed request row earns from it, the same as
+   the man who filed it. Until now the claim OWNED the row and the schedule half
+   skipped every src row, so the second man wore no bar, was inert in the mode,
+   and his tooltip said nothing about OIL at all.
+
+   THE MIRROR, which is why this is not simply "stop skipping src rows" (Codex):
+   feeding the row through the schedule half would put the REQUESTER through it
+   too, where the default is YES — overriding his own No and paying him twice.
+   So the row is split. The requester stays in the input half, governed by his
+   own answer. The extras are ordinary scheduled work on the same item. */
+describe('a second man on a landed request row earns from it (D18, job 8)', () => {
+  const landed = (oilAns: any, more: any[] = []) => {
+    claim({ iid: 'd18', person: 'bane', type: 'Training', date: 'Jul 18', acc: 'g',
+      allday: false, s: 9 * 60, e: 17 * 60, oil: { [SAT_ISO]: oilAns } })
+    return groundRow(SAT, { prog: 'Training', str: '0900', end: '1700', who: 'bane', src: 'd18', more })
+  }
+
+  it('the extra man earns the same as the man who filed it', () => {
+    landed(1, ['stiff'])
+    expect(figure(SAT, 'bane'), 'the requester, on his own answer').toBe('FO')
+    expect(figure(SAT, 'stiff'), 'the second man, on the same row').toBe('FO')
+  })
+
+  it("the requester's own No is never overridden by the split — but the extra still earns", () => {
+    landed(0, ['stiff'])
+    expect(figure(SAT, 'bane'), 'he said No for himself and that stands').toBe(null)
+    expect(figure(SAT, 'stiff'), 'the scheduler put him there; it is ordinary work').toBe('FO')
+  })
+
+  it('the requester is not paid TWICE — he is in the input half only', () => {
+    landed(1, ['stiff'])
+    const ev = oilEvidence(SAT)
+    const work = oilEarnedWork(DAYS[SAT], ev)
+    expect((work['bane'] || []).length, 'one span, not one per half').toBe(1)
+  })
+
+  it('a scheduler can take the extra man off without touching the requester', () => {
+    landed(1, ['stiff'])
+    DAYS[SAT].oild = { people: { [`stiff|${inputItemKey('d18')}`]: 'deny' } }
+    expect(figure(SAT, 'stiff')).toBe(null)
+    expect(figure(SAT, 'bane'), 'untouched').toBe('FO')
+  })
+
+  it('a CANCELLED or info-only row pays neither of them', () => {
+    const row = landed(1, ['stiff'])
+    row.cx = true
+    expect(figure(SAT, 'bane')).toBe(null)
+    expect(figure(SAT, 'stiff')).toBe(null)
+  })
+
+  it('an ALL-DAY request pays the extra man too — the row carries no times (Fable M6)', () => {
+    claim({ iid: 'd18b', person: 'bane', type: 'Training', date: 'Jul 18', acc: 'g',
+      allday: true, s: 0, e: 1439, oil: { [SAT_ISO]: 1 } })
+    groundRow(SAT, { prog: 'Training', str: '', end: '', who: 'bane', src: 'd18b', more: ['stiff'] })
+    expect(figure(SAT, 'bane')).toBe('FO')
+    expect(figure(SAT, 'stiff'), 'the claim carries the window, not the row').toBe('FO')
+  })
+})

@@ -42,6 +42,7 @@
    ===================================================================== */
 import { DAYS } from './data'
 import { INPUTS, inpId, inpWin, oilAsks, dateOrd } from './inputs'
+import { PEOPLE, whoId, isSpecial } from './people'
 import { HOOKS } from './hooks'
 import { dayOilWork, envMin, uniformOil, inputItemKey, rowItemKey, groundItemKey, type OilWork } from './oil'
 
@@ -233,7 +234,7 @@ export function projectOilInputs(iso: string): OilInputEv[] {
 /** Drop every per-person override that names a man who no longer holds the
  *  request it is about. Mutates the COPY oilEvidence has already made — never
  *  `DAYS`. Row items (`r:`/`g:`) are not assignments and are never touched. */
-function pruneHandedOverDecisions(dec: OilDecisions): void {
+function pruneHandedOverDecisions(dec: OilDecisions, day: any): void {
   const ppl = dec && dec.people
   if (!ppl) return
   for (const k of Object.keys(ppl)) {
@@ -244,7 +245,15 @@ function pruneHandedOverDecisions(dec: OilDecisions): void {
     const iid = item.slice(2)
     const inp = (INPUTS as any[]).find(r => r && String(inpId(r)) === iid)
     if (!inp) continue                                       // orphan: already inert, leave it be
-    if (String(inp.person || '') !== person) delete ppl[k]
+    if (String(inp.person || '') === person) continue        // the man who holds it
+    /* AND ANYONE THE SCHEDULER PUT ON ITS ROW (D18, 22 Sep 26). This used to
+       assume only the requester could carry a decision about a request, which
+       was true until a second man on the row started earning from it. Left as
+       it was, taking that second man off did nothing: the prune deleted his
+       refusal on the way out and he was paid anyway. Caught by job 8's own
+       test, which is the only place the two fixes meet. */
+    if (landedExtras(day, iid, String(inp.person || '')).includes(person)) continue
+    delete ppl[k]
   }
   if (!Object.keys(ppl).length) delete (dec as any).people
 }
@@ -282,7 +291,7 @@ export function oilEvidence(di: any, day?: any): OilEvidence {
      Runs BEFORE the non-earning bail: a day that earns nothing today may earn
      tomorrow (a holiday declared late), and the copy every reader is handed
      should be clean whichever it is. */
-  pruneHandedOverDecisions(dec)
+  pruneHandedOverDecisions(dec, d)
   if (!earns) return { iso: iso || '', earns: false, d: dec, inputs: [], sent: {} }
   const sent: Record<string, string[]> = {}
   /* the walk that finds the day's work is the SAME walk the credit uses, so the
@@ -379,6 +388,23 @@ export function oilInputEligible(_day: any, inp: OilInputEv): boolean {
  *  Both halves come from the SAME block, which is the whole point: on an issued
  *  day that block is the frozen document, so the money follows the schedule the
  *  squadron was given and nothing else. */
+/** The people a SCHEDULER added to a request's landed row, beside the man who
+ *  filed it — D18. Read off the day being paid, so a man standing on the row is
+ *  credited on the day he is actually on it and not on every day the request
+ *  happens to cover. Sentinels are never real work here; the requester is
+ *  excluded because the input half already carries him. */
+function landedExtras(day: any, iid: string, owner: string): string[] {
+  const row = (day && day.ground || []).find((g: any) => g && String(g.src || '') === iid)
+  if (!row || row.cx || row.info) return []
+  const out: string[] = []
+  for (const v of (row.more || [])) {
+    const id = whoId(v)
+    if (!id || id === owner || isSpecial(id) || !PEOPLE[id]) continue
+    if (!out.includes(id)) out.push(id)
+  }
+  return out
+}
+
 export function oilEarnedWork(day: any, ev: OilEvidence): Record<string, OilWork[]> {
   const out: Record<string, OilWork[]> = {}
   if (!ev.earns) return out
@@ -397,8 +423,30 @@ export function oilEarnedWork(day: any, ev: OilEvidence): Record<string, OilWork
   for (const inp of ev.inputs) {
     if (!oilInputEligible(day, inp) || !inp.win) continue            // dormant / cancelled / unreadable: nothing to allow
     const item = inputItemKey(inp.iid)
-    if (!earnsFrom(ev, inp.person, item, inp.ans != null && inp.ans > 0)) continue
-    put(inp.person, { s: inp.win[0], e: inp.win[1], src: (inp.type || 'Duty').trim() as any, item, via: 'input' })
+    const span = (): OilWork => ({ s: (inp.win as any)[0], e: (inp.win as any)[1], src: (inp.type || 'Duty').trim() as any, item, via: 'input' })
+    /* the man who FILED it: his own answer is the default, and the admin's
+       three-state sits over the top (§2.2 / OIL10) */
+    if (earnsFrom(ev, inp.person, item, inp.ans != null && inp.ans > 0)) put(inp.person, span())
+    /* D18 (owner, 21 Sep 26 — "for 2 he should earn"): a second man the
+       SCHEDULER puts on the row earns from it, the same as the man who filed
+       it. Until now the claim owned the row and the schedule half skipped every
+       `src` row, so he wore no bar and his tooltip said nothing about OIL.
+
+       WHY IT IS A SPLIT AND NOT "STOP SKIPPING src ROWS" (Codex, 22 Sep 26):
+       putting the row through the schedule half would put the REQUESTER through
+       it too, where the default is yes — overriding his own No and paying him
+       twice, once as unconditional work and again as the answered claim. So the
+       requester stays here, on his own answer, and the extras are ordinary
+       scheduled work on the SAME item: default yes, each with his own override,
+       so taking one off never touches the other.
+
+       The CLAIM's window, not the row's (Fable M6): an all-day request lands a
+       row with no times at all, and reading the row would have left the second
+       man on an all-day request unpaid — the mirror of the bug being fixed. */
+    for (const extra of landedExtras(day, inp.iid, inp.person)) {
+      if (!earnsFrom(ev, extra, item, true)) continue
+      put(extra, span())
+    }
   }
   return out
 }

@@ -475,78 +475,12 @@ off-week undo are live. Detail + the review dispositions: `docs/session-state.md
   week (Fable#6, correct outcome); postRestore view-effects (armDrop/prunePreviews) aren't rolled
   back on a failed restore (Fable#7, drops the armed puck on a rare refusal). Both LOW.
 
-### [GLOBAL-UNDO] design record (Rev 6) — for reference
-`[CMDL-FINISH]` foundation is merged + live.
-The design was hardened over **6 revisions with a dual cross-provider red-team every round** (Codex/
-Astra + Fable, both high): **Rev 5 → Fable APPROVED (build-ready, no further design round); Codex
-REVISE with 6 contained §6 findings, all folded into Rev 6.** The engine took no finding in the last
-two rounds and was hand-verified twice. Design of record:
-`raptor-port/docs/superpowers/specs/2026-09-17-arch-stack-3-global-undo-design.md` **Rev 6**; transcript
-`…-global-undo-review-log.md`; front-door `raptor-port/docs/undo-contract.md`; build handoff
-`raptor-port/docs/session-state.md`. The 18 Sep owner reframe (undo-of-publish = UNPUBLISH
-+ same-label quiet correction) is captured below and in memory `undo-of-publish-semantics`.
+### [GLOBAL-UNDO] design record (Rev 6) — MOVED OUT 22 Sep 26
 
-**OWNER DECISION 17 Sep 26 — what an on-the-record undo IS. SUPERSEDES the 16 Sep wording.**
-The boundary was settled first: undo is silent while the shared database has NOT registered
-the publish, and goes on the record once it HAS (an export is NOT a boundary event). The
-remaining question was what the on-the-record form is — and the answer is:
-**just a line in the history saying it was undone.**
-
-- **NOT** a correcting amendment. The 16 Sep record said "an on-the-record forward withdrawal
-  (= a correcting amendment) — append-only, unique never-reused ids, derived credits
-  recompute, with a one-line heads-up". That is SET ASIDE; newest instruction wins.
-- The owner's stated purpose is traceability — "to prevent silent bugs" — not notifying the
-  squadron. A history line satisfies that purpose.
-- **What it deliberately does NOT do, so nobody re-derives it as a gap:** nothing is pushed to
-  anyone. If the publish had already reached the shared record, others are not actively told
-  it was undone — the undo is discoverable in the history, not announced. The owner's call,
-  made knowingly.
-- STILL BINDING from before: **never ERASE an issued record** — every issuance is kept as its own
-  immutable snapshot; the history line is additive.
-- **UPDATED 18 Sep 26 (SUPERSEDES "never reuse a version id"):** undo of a publish is an explicit
-  **UNPUBLISH** (back to a working copy) + a day-header button; a **quiet correction** then
-  republishes as the **SAME version label** (Original stays Original, AL1 stays AL1), not shown as
-  an amendment — so the LABEL is deliberately reused. A real **amendment** stays the separate act of
-  editing the live working copy and publishing as the next AL. A disseminated correction writes a
-  history line; guardrails: scheduler/admin only, unpublish clears that day's sign-offs, only the
-  latest version is unpublishable. See design §6 + memory `undo-of-publish-semantics`.
-
-**Decision (owner, 13 Sep 26):** replace the current SEPARATE per-section undo stacks
-(schedule / Leave War / Tracker) with ONE global, per-session, per-user undo timeline. The
-whole delete/undo weird-behaviour family exists BECAUSE two independent undo systems sit over
-the same synced data and disagree; one timeline removes that class of bugs at the root instead
-of patching each. **Do this as a dedicated step BEFORE [DB-STEP]** (it unifies the section
-stores' history, which the DB step needs anyway), NOT as a mid-fix patch now.
-- **Absorbs (do not fix separately):** the delete-vs-undo resurrection (finding A/P1), the
-  undo-family bugs (D, E, F, I), the member-undoes-admin permission gap (C/DU-001/P3), per-week
-  undo that survives navigation, and the [XWEEK-UNDO] snap-to-page idea.
-- **Rules to honour (owner):** undo scoped to the LOGIN SESSION (logout clears it), never
-  affects another user, others see every change live from the shared DB; undo only reverses
-  your own actions; a role/viewer PREVIEW must not wipe an admin's undo.
-- **Gate:** must be done before promulgation / real users (the interim bugs are tolerable only
-  because it's demo data).
-- **Clean input+leave undo lands at step 4, NOT before (owner, 16 Sep 26).** A schedule undo that
-  also reverses an accepted LEAVE input's Leave War cell reaches its fully-clean form only once an
-  approved absence is ONE record (ARCH-STACK step 4, one-Absence). Until then the command carries
-  the leave effect in its own inverse data so it can't drift, but the cleanest version is a step-4
-  payoff — don't try to fully solve input+leave undo before step 4.
-- **Undo-of-publish semantics — SUPERSEDED by the 18 Sep UNPUBLISH reframe above (see line 430+).**
-  ~~16 Sep: silent reverse before sent; an on-the-record forward withdrawal (a correcting amendment,
-  never-reused version ids) after.~~ SET ASIDE. The current rule (18 Sep): undo of a publish =
-  UNPUBLISH → quiet-correct → reissue the SAME version LABEL (label reused; each issuance kept as an
-  immutable snapshot; a history line once disseminated); a real amendment is the separate working-copy
-  → next-AL act. Undo stays per-user + per-session (logout clears; never touches another user; won't
-  clobber a later edit); roster/settings edits ARE undoable. See design §6 + memory
-  `undo-of-publish-semantics`.
-- **Context:** the sync spec (findings A/C/D/E/F/I + the red-team on why the two-system patch
-  is the wrong approach); memories `future-undo-semantics-multiuser` (architecture direction),
-  `undo-of-publish-semantics`, `multi-squadron-and-person-transfer`; ties to
-  `docs/architecture-direction.md` + [DB-STEP].
-- **READ FIRST — the front-door doc `raptor-port/docs/undo-contract.md`** (written at CMDL-FINISH
-  completion): the durable, plain summary of the whole command layer — the change stream, the
-  per-store `write()` seam this undo build consumes, and the checklist a new undo feature must
-  satisfy. It condenses the three ARCH-STACK step-2/3 designs into one so this build reads ONE
-  doc, not four. Any future undo development (per-person, whole-import, global) follows it.
+The full Rev 6 design record lived here after the work was built, merged and went live on
+18 Sep 26. A backlog is for what is NOT done, and every line of this file is read by every session
+that opens it, so it is retired to git history rather than carried forever: `git log -S"Rev 6"
+-- OUTSTANDING.md` finds it, and the shipped behaviour is in `docs/undo-contract.md`.
 
 ### [RECALL] Fresh recall from archive — FUTURE FEATURE
 An admin recalls an archived person back into Quals. **Behaviour (owner, 13 Sep 26):**
@@ -961,31 +895,17 @@ Build it test-first and put it through both reviewers.
 
 ### [POSTOUT-LOST] A posted-out man walks back into the squadron on a reload — NEW, 22 Sep 26
 
-**What it is.** A person's posting-out window is written straight onto the person by the demo
-overlay and is never recorded in the persisted posting record. The overlay only runs on a
-first-ever boot, so the moment anything is saved and the page is reloaded, the posting is gone and
-the man is back in the squadron's availability.
+A person's posting-out window is written straight onto the person by the demo overlay and never
+recorded in the persisted posting record. The overlay runs only on a first-ever boot, so once
+anything is saved and the page reloads, the posting is gone and he is available again — which
+reaches the crew picker, ALL AVAIL, the manning counts and every rule that asks who is free, not
+just OIL. Found under a mis-diagnosed OIL report; reproduced (27 members before a reload, 28
+after). Deliberately NOT fixed on the OIL branch: not an OIL defect, and it would widen a money
+change into an availability one. Watch the dev-phase ruling when fixing — the seed flies him in
+July while the demo posts him out in January, so deciding which is right may be most of the job.
 
-**Why it matters well beyond OIL.** Availability is read by the crew picker, by ALL AVAIL, by the
-manning counts and by every rule that asks who is free. A man who has left the squadron silently
-becoming available again is wrong everywhere, not only on an earning day.
-
-**How it was found.** Fable's red team of the OIL fix plan (22 Sep 26) went looking for the cause
-of a "reload manufactures a pending amendment" report and found this underneath it. Reproduced by
-the walking session: the family day had **27** members before a reload and **28** after.
-
-**Deliberately NOT fixed on `claude/oil-auto-remove-design`.** It is not an OIL defect and it would
-widen a money branch into an availability one. The OIL branch keeps only the WORDING half — the
-pending item must say what actually moved.
-
-**Watch the dev-phase ruling when fixing it.** The seed schedule flies this man in July while the
-demo posts him out in January, so the two worlds disagree. Per the dev-phase ruling (demo data is
-cleared, not migrated), deciding which of the two is right may be most of the fix.
-
-**Context.** `raptor-port/docs/handpass/2026-09-21-oil.md` §9 (the settled account and the
-observation that proved it) · `raptor-port/docs/superpowers/specs/2026-09-21-oil-fixplan-redteam-fable.md`
-§3 (the mechanism, with the persistence rule it breaks) · the observation script
-`raptor-port/scripts/handpass/settle-d4.mjs`.
+**Context.** `raptor-port/docs/handpass/2026-09-21-oil.md` §9 · the red team's §3 in
+`…/specs/2026-09-21-oil-fixplan-redteam-fable.md` · script `scripts/handpass/settle-d4.mjs`.
 
 ### [LW-SCRUBBER-FLAKY] The year scrubber test fails on a saturated machine — PRE-EXISTING (21 Sep 26)
 `e2e/leavewar.spec.ts` "the bottom scrollbar is a year-wide scrubber", lw-desktop only. Under a full

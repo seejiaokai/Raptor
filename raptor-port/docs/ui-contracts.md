@@ -6977,6 +6977,17 @@ holiday comes from Leave War through `HOOKS.oilEarningDay`.
 
 ### The green edge (§2.10 — the owner chose it over a chip: "c looks good")
 
+**A LANDED REQUEST ROW CARRIES TWO KINDS OF MAN (owner, D18, 22 Sep 26).** The man who FILED the
+request wears the edge off his own answer. Anyone the SCHEDULER puts on that row beside him wears
+it as ordinary scheduled work, and each of them can be taken off on his own. So a request row can
+show one man glowing and another dark, and that is correct rather than a fault.
+
+The row's NAME must not say *"Nothing on this row can earn OIL, so there is nothing to switch
+off"* — it said that while the puck on the same line said the man earned a full day (hand pass
+finding 13). A claim row is not switchable as a whole for a different reason, and should say so:
+**"OIL is decided per person on this request."**
+
+
 - **A bar down the LEFT edge of the puck.** Full height = a full day. The BOTTOM HALF,
   a shade paler = half a day. Height is the structural signal that survives
   colour-blindness; the tint is the one that survives being read alone with nothing

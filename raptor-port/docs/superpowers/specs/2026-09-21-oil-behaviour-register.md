@@ -55,7 +55,7 @@ newest-instruction-wins rule, and both need the owner to know.
 | id | in plain words |
 |---|---|
 | OIL30 | Six hours and one minute or more is a full day; exactly six hours is still a half. |
-| OIL31 | What earns nothing by default: an SC spare · AVALON and BB, desks included · anything cancelled · a row with no readable times · a zero-length row · a ground row that came from an input · an ⓘ row · sim free text. |
+| OIL31 | What earns nothing by default: an SC spare · AVALON and BB, desks included (including a duty block MADE from the AVALON template — D20) · anything cancelled · a row with no readable times · a zero-length row · an ⓘ row · sim free text. **REVISED 22 Sep 26 by D18** — a ground row that came from an input no longer earns nothing as a whole. The row is SPLIT: the man who FILED the request is governed by his own answer (the input half, OIL10), and anyone the SCHEDULER puts on that row beside him is ordinary scheduled work with his own per-person override. The requester never passes through the schedule half, so his own No cannot be overridden and he is never paid twice. |
 | OIL32 | A day backed by BOTH the schedule and a claim is labelled the schedule's — the stronger evidence, and what a reader would go and look at. |
 | OIL33 | A worked day that earns nobody anything says so — at the moment of publishing, and on the day itself while it is being built. |
 | OIL34 | The credit always lands. A credit sitting on an undecided leave bid flags the day rather than replacing the bid. |

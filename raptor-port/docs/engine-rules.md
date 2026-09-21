@@ -1700,9 +1700,18 @@ were `FS`/`HS` until the 28 Aug 26 rename.
     owner's rule is "based on what timing was written", and inventing
     `openEnd`/`simLen` defaults here would mint OIL from a guess (display
     may guess; money may not);
-  - a **ground row carrying `src`** (an accepted personal input) — those
-    are the ask-flow's to credit (`row.oil`, below), never auto: a Saturday
-    dental appointment must not mint OIL uninvited.
+  - a **ground row carrying `src`** (an accepted personal input) — the man who
+    FILED it is the ask-flow's to credit (`row.oil`, below), never auto: a
+    Saturday dental appointment must not mint OIL uninvited.
+    **REVISED 22 Sep 26 (owner, D18 — "for 2 he should earn").** The row is no
+    longer skipped WHOLE. Anyone the SCHEDULER adds to it beside the requester
+    is ordinary scheduled work and earns from it, with his own per-person
+    override; the requester alone stays in the ask-flow. The split matters: if
+    the row went through the schedule half entire, the requester would go with
+    it, where the default is YES — overriding his own No and paying him twice,
+    once as unconditional work and again as his answered claim. The extras take
+    the CLAIM's window, not the row's, because an all-day request lands a row
+    with no times at all (`landedExtras` / `oilEarnedWork` in `engine/oilev.ts`).
 - **The ALL / ALL AVAIL expansion — REDEFINED 21 Sep 26 ([ALL-AVAIL-REDEF]).**
   A sentinel puck on a ground or Common Programme row expands — via the injected
   `opts.expandAll`, so `engine/oil.ts` stays Leave-War-free — to the people
