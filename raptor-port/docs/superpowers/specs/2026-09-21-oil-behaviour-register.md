@@ -30,6 +30,7 @@ newest-instruction-wins rule, and both need the owner to know.
 | OIL10 | The member's own answer to the OIL question decides whether his input's puck glows by DEFAULT. The admin can overrule it, and the member's answer is never overwritten. |
 | OIL11 | All OIL now waits for publication — the schedule's and a duty-and-commitments claim's alike. |
 | OIL12 | Overseas duty never lands on the ground programme but shows under Unavailable as OD, and the mode reaches it there. |
+| OIL38 | **An "Off day" does NOT earn OIL** (owner, D21, 22 Sep 26 — "nope"). Only a weekend or a day tagged **PH** can earn. An off day is time GIVEN to a man, not a public holiday he was called in on, so a squadron that declares one and then works it pays nobody — deliberately. Closes hand-pass finding 16: the defect was a written contract that said otherwise, not the code. Leave charging is untouched. |
 | OIL13 | An input the scheduler took off the programme earns nothing, whatever the member answered. |
 | OIL14 | ALL AVAIL / ALL: no ground crew; a SANS man IN when he is planned on our programme that day; ATT B in; anyone whose commitment or existing tasking overlaps the event OUT. |
 | OIL15 | ALL and ALL AVAIL stay identical — one behaviour, two names. Do not "fix" the duplication. |

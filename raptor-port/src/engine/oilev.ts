@@ -99,7 +99,10 @@ export interface OilInputEv {
 export interface OilEvidence {
   /** the date this block belongs to, so a frozen block can never be read against another day */
   iso: string
-  /** can this day earn at all (a weekend, the war's public holiday, an off day) */
+  /** can this day earn at all — a weekend, or the war's public holiday.
+   *  NOT an "off day" (owner, D21, 22 Sep 26: "nope"). An off day is time GIVEN
+   *  to a man, not a holiday he was called in on, so working it earns nothing.
+   *  This comment used to list it and was the drift Fable's M10 named. */
   earns: boolean
   /** the scheduler's decisions (a copy of Day.oild) */
   d: OilDecisions
