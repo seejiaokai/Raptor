@@ -27,7 +27,7 @@ Two of them are done.
 Every part was proved RED first through its own production function. What each does is in the
 commit messages, which are written for you and are the best short account of the reasoning.
 
-**Gates at this point:** unit **5368 passed / 0 failed** (330 files) · build green · rulecheck **OK** ·
+**Gates at this point:** unit **5372 passed / 0 failed** (330 files) · build green · rulecheck **OK** ·
 docsize **OK** · tracker smoke **425 / 0**. NOT re-run since the fixes: parity, e2e.
 
 ## What is NOT done, and must not be reported as done
@@ -77,8 +77,30 @@ docsize **OK** · tracker smoke **425 / 0**. NOT re-run since the fixes: parity,
   the key's order-independence. Apart from F3 it found no path that keys an unchanged day
   differently.
 
-**Codex's review had not landed when this was written.** Check for
-`…-oil-jobs12-codereview-codex.md` before trusting this list as complete.
+## CODEX'S REVIEW IS IN TOO — and its verdict is **"not ready to close"**
+
+`docs/superpowers/specs/2026-09-22-oil-jobs12-codereview-codex.md`. Written blind to Fable's.
+
+- **Rank 1 — FIXED, commit `3df527d`. It was the worst defect on the branch.** My own F3 repair
+  fixed the KEY and not the MONEY READER: an already-issued day whose row was cancelled would have
+  STARTED PAYING, no amendment raised, the frozen schedule still saying the work never happened.
+  The premise that `acc:'g'` meant "landed and paying" was simply false. Now reconstructed from the
+  frozen schedule itself.
+- **Rank 2 — OPEN.** The same A→B→A resurrection Fable found as F1, reached by a second route.
+  Filed as `[OIL-XWEEK-DENY]`. **Two independent reviewers found this, which is the strongest
+  signal on the branch.** Codex adds the undo requirement: one undo must restore the assignment AND
+  the off-week decision together.
+- **Rank 3 — OPEN.** Codex DISAGREES that the unloaded-anchor limit can stay open; Fable says the
+  same as F2. Filed as `[OIL-XWEEK-ELSEWHERE]`. **Both reviewers want it closed before merge live.**
+- **Rank 4 — OPEN, NOT yet assessed.** Persisted SIGNATURES still break, and some unchanged days
+  still manufacture amendments. Read this before trusting `3df527d` as complete — it repaired the
+  reader, and Codex says the signature half remains.
+- **Ranks 5 and 6 — OPEN, both MISSING ask paths.** The calendar date drag bypasses the question,
+  and both in-place time editors reprice an answered day without asking. **These are job 1's bug
+  through two more doors** — the same shape as the drag-reassign that was closed.
+
+**Read Codex's §4 too: it DISAGREES IN PART with the read-side prune**, which Fable verified clean.
+Where two reviewers split, settle it with evidence, not by majority.
 
 ## The FIVE jobs left, in order
 
