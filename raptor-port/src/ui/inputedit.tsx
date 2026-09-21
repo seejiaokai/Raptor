@@ -687,6 +687,22 @@ export function oilAnswered(row: any): boolean {
   const prev = (row.oil || {}) as Record<string, number>
   return oilAskPlan(row).some(p => prev[p.iso] != null)
 }
+/** THE FIRST APPLICABLE DAY NOBODY HAS ANSWERED FOR, or '' (Fable F6,
+ *  22 Sep 26). The mirror of `oilAnswered`, and the sign that was missing
+ *  everywhere outside the mode: when a scheduler hands a request over and then
+ *  cancels the question, the new holder is correctly left unanswered — and the
+ *  row carried no mark, the warning list said nothing, and the bell is
+ *  per-member, so it lit for the man and not for the scheduler who made the
+ *  change. He would never have found it.
+ *
+ *  Derived, like the bell: answer the day, move the request or retype it out of
+ *  the ask set and the row stops matching, with nothing to clear. */
+export function oilUnansweredDay(row: any): string {
+  if (!row || !oilAsks(row.type) || row.acc === 'r') return ''
+  const prev = (row.oil || {}) as Record<string, number>
+  const p = oilAskPlan(row).find(x => prev[x.iso] == null)
+  return p ? p.iso : ''
+}
 /* the one-line standing beside the button: how many applicable days the
    record currently credits */
 export function oilSummary(row: any): string {

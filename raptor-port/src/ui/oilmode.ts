@@ -45,6 +45,7 @@
    reader the issued schedule's green edge shares.
    ===================================================================== */
 import { DAYS } from '../engine/data'
+import { INPUTS, inpId } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { envMin, uniformOil, dayOilWork, oilCapableItems, rowItemKey, groundItemKey, inputItemKey, type OilWork } from '../engine/oil'
@@ -463,6 +464,30 @@ export function oilItemCellHTML(di: any, item: string, name: any, cls: string): 
     + ` title="${blanket ? 'Nothing on this day earns — the day blanket is on' : on ? 'Earns OIL — tap to stop this item earning' : 'Earns nothing — tap to let it earn again'}">${esc(txt) || '&nbsp;'}</span>`
 }
 
+/** WHY A CLAIM'S PUCK IS INERT, in the app's own words (Fable F5, 22 Sep 26).
+ *  "Nothing measurable to earn from here" is true and useless when the reason is
+ *  a scheduler's mark on ANOTHER day: a request that runs Friday into Saturday,
+ *  cancelled on its Friday row, drew an inert puck on the Saturday and sent the
+ *  scheduler looking round the Saturday, where there is nothing to find. So when
+ *  the reason IS the one row, the row's own day and what was done to it are
+ *  named. Everything else keeps the plain words — there is no row to name, and
+ *  inventing one would be worse than saying little. */
+function inertWhy(di: any, item: string): string {
+  const plain = 'nothing measurable to earn from here'
+  if (!item || !item.startsWith('i:')) return plain
+  const iid = item.slice(2)
+  const inp = (evOf(di).inputs || []).find((i: any) => String(i.iid) === iid)
+  if (!inp) return plain
+  const what = String(inp.type || 'request').trim() || 'request'
+  const row = (INPUTS as any[]).find(r => r && String(inpId(r)) === iid)
+  const when = row && row.date ? ` on ${String(row.date)}` : ''
+  if (inp.stand === 'cx') return `his ${what}'s row${when} is cancelled, so nothing is earned from it`
+  if (inp.stand === 'info') return `his ${what}'s row${when} is information only, so nothing is earned from it`
+  if (inp.stand === 'gone') return `his ${what}'s row has been taken off the programme, so nothing is earned from it`
+  if (inp.stand === 'elsewhere') return `his ${what}'s row is in a week that cannot be read, so nothing is earned from it until that week is opened`
+  return plain
+}
+
 /** One PUCK inside the mode: the ordinary puck, glowing or not, wearing the
  *  man's figure for the day in place of his qualification letter, and tappable.
  *  A man the day measures NOTHING for (no written times, a cancelled row, a
@@ -472,7 +497,7 @@ export function oilSeatHTML(di: any, person: any, item: string, pk: (oil: any) =
   const p = (PEOPLE as any)[person]
   if (!p) return ''
   const eligible = oilEligible(di, person, item)
-  if (!eligible) return `<span class="seat oilpk inert" title="${esc(p.cs)} — nothing measurable to earn from here">${pk(null)}</span>`
+  if (!eligible) return `<span class="seat oilpk inert" title="${esc(p.cs)} — ${esc(inertWhy(di, item))}">${pk(null)}</span>`
   /* UNDER A MASK THE PUCK IS NOT A CONTROL. The old markup left it tappable and
      its title actively invited the tap — "tap to put him back on it" — while the
      tap could only destroy the decision the mask was hiding. It keeps the man's

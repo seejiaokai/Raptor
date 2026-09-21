@@ -4,7 +4,7 @@
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inputRuleText, inpId, typeGroup, isLateInput, lateNote, isSansAvail, isDownchit, isUpchit, needsDoc, sansLetters, defaultAllday, withRemarksTail, baseYear, dateOrd, oilAsks, nowStamp } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inputRuleText, inpId, typeGroup, isLateInput, lateNote, isSansAvail, isDownchit, isUpchit, needsDoc, sansLetters, defaultAllday, withRemarksTail, baseYear, dateOrd, oilAsks, nowStamp, isoLabel } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, ordLabel } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -30,7 +30,7 @@ import {
   fmt, fmtDay, fmtDMY, unfmt, hasHalf, spanOf, spanFields, SpanPicker, typeOptions,
   draftOf, commitInputEdit, removeInput, SansPicker, sansRefusal, sansOverlapRefusal, sansFlags,
   medOverlapRefusal, upchitRefusal, downOverUpchitRefusal, applyMedPlan, normalizeInputDraft,
-  medKeptSegments, mintMedSegments, ordISO, DocField, oilGate, oilAnswered, docGate,
+  medKeptSegments, mintMedSegments, ordISO, DocField, oilGate, oilAnswered, oilUnansweredDay, docGate,
   rosterOptions as people, archivedOptions, inputTone, medPlanProtected, medSegmentsProtected,
 } from './inputedit'
 import { DocConfirm } from './DocConfirm'
@@ -1110,6 +1110,17 @@ export function InputsPage() {
                           change (oilAnswered), same right as editing the row */}
                       {oilAnswered(r) && <span className="roil" data-oilrev={inx} title="Change the OIL decision"
                         onClick={() => reviseOil(r)}>OIL</span>}
+                      {/* AND THE SIGN WHEN NOBODY HAS ANSWERED YET (Fable F6,
+                          22 Sep 26). The revise control above appears only where
+                          an answer EXISTS, so a request whose question was asked
+                          and dismissed — a hand-over where the sheet was
+                          cancelled — showed nothing at all outside the mode. The
+                          bell is per-member, so it lights for the man and never
+                          for the scheduler who made the change. Same predicate
+                          family, same place, and it opens the same sheet. */}
+                      {!oilAnswered(r) && oilUnansweredDay(r) && <span className="roil ask" data-oilask={inx}
+                        title={`Nobody has answered the OIL question for ${isoLabel(oilUnansweredDay(r))} — tap to answer it`}
+                        onClick={() => reviseOil(r)}>OIL?</span>}
                       <span className="red" data-edit={inx} title="Edit this input" onClick={() => startEdit(inx)}>✎</span>
                       <span className="rmx" data-inx={inx} onClick={() => del(inx)}>✕</span>
                     </>}

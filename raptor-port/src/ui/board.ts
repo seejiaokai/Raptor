@@ -3,7 +3,7 @@
    store's notify(). The CX-with-a-reason dialog state lives here too. */
 import { DAYS } from '../engine/data'
 import { mkNote, noteText } from '../engine/note'
-import { INPUTS, inputCoversDate, inpById, inpTimeText } from '../engine/inputs'
+import { INPUTS, inputCoversDate, inpById, inpTimeText, inpId, inpLabel, inpMeta } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { waveInTime } from '../engine/events'
@@ -712,6 +712,22 @@ const act = (di: any, msg: string) => { logAction(di, msg); return toast(msg) }
    Matched by attribute rather than by selector so no key needs escaping. */
 const oilItemName = (di: any, item: string): string => {
   if (!item) return 'this event'
+  /* A CLAIM IS NAMED BY WHAT IT IS, never by what happens to be drawn in its
+     cell (hand pass finding 14, 21 Sep 26). A request's item cell holds the
+     man's own puck, so reading the page back produced lines like "Sidewinder
+     earns nothing from SidewinderFO" — which reads as a glitch on the one
+     record that has to answer "why was my balance short?". The type is what the
+     app calls it everywhere else, so the history calls it that too. */
+  if (item.startsWith('i:')) {
+    const r = (INPUTS as any[]).find(x => x && String(inpId(x)) === item.slice(2))
+    /* the LONG name the type carries ("overseas duty"), not the two-letter code
+       on the row — a history line is read cold, a week later, by someone who
+       was not there. An "Other" has no long name and reads by what was typed on
+       it, which is exactly what inpLabel already does. */
+    const meta: any = r ? inpMeta(r.type) : null
+    const t = r ? String((meta && meta.name) || inpLabel(r) || '').trim() : ''
+    if (t) return t
+  }
   const all = document.querySelectorAll(`[data-oilitem][data-oilday="${+di}"]`)
   for (const el of Array.from(all)) {
     if ((el as HTMLElement).dataset.oilitem === item) return ((el.textContent || '').trim()) || 'this event'

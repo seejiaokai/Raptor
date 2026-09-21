@@ -5991,3 +5991,7 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .oilcount{display:inline-flex;align-items:center;margin-left:3px;padding:0 4px;border-radius:4px;
   font-size:9px;font-weight:700;background:var(--panel-2);color:var(--ink-2);border:1px solid var(--edge-2);cursor:pointer}
 .oilcount.some{background:rgba(47,166,92,.2);border-color:var(--oil);color:var(--ink)}
+/* the OIL question nobody has answered yet, on an Inputs row (Fable F6) — the
+   same chip as the revise control, in the warning colour, so it reads as
+   something waiting rather than something already decided */
+.roil.ask{color:var(--warn);border-color:var(--warn)}

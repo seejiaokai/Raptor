@@ -536,3 +536,64 @@ describe('the mode shuts the crew panels too (fix 5)', () => {
     expect($$('#sbBoard .latetag').length, 'but the row still SAYS it was late').toBeGreaterThan(0)
   })
 })
+
+/* FABLE F5 (22 Sep 26) — "nothing measurable to earn from here" is true and
+   useless when the reason is a scheduler's mark on ANOTHER day. A request that
+   runs Friday into Saturday, whose one row was cancelled on the Friday, draws an
+   inert puck on the Saturday and says only that there is nothing to earn — so
+   the scheduler looks around the Saturday, where there is nothing to find. */
+describe('an inert claim names the row that made it inert', () => {
+  const crossWeekClaim = () => {
+    const row: any = { iid: 'xf', person: 'bane', type: 'Training', date: 'Jul 17', endDate: 'Jul 18',
+      acc: 'g', allday: false, s: 8 * 60, e: 18 * 60, remarks: '', mod: 'now', yr: 2026, oil: { [SAT_ISO]: 1 } }
+    INPUTS.unshift(row); return row
+  }
+  const titleOf = (sel: string) => ($(sel) as HTMLElement | null)?.getAttribute('title') || ''
+
+  it('names the anchor day and says the row was cancelled', async () => {
+    crossWeekClaim()
+    const r = addRow(4, { prog: 'TRAINING', str: '0800', end: '1800', who: 'bane', src: 'xf', cx: true })
+    expect(r.cx).toBe(true)
+    await open(SAT)
+    await click(oilBtn())
+    const t = titleOf('#sbBoard .oilpk.inert')
+    expect(t, 'it names the day the row is on').toMatch(/Jul 17/)
+    expect(t, 'and what was done to it').toMatch(/cancel/i)
+  })
+
+  it('an INFO-ONLY anchor says that instead', async () => {
+    crossWeekClaim()
+    addRow(4, { prog: 'TRAINING', str: '0800', end: '1800', who: 'bane', src: 'xf', info: true })
+    await open(SAT)
+    await click(oilBtn())
+    expect(titleOf('#sbBoard .oilpk.inert')).toMatch(/information only/i)
+  })
+
+  it('THE CONTROL — a man who is simply on nothing measurable keeps the plain words', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '', end: '', who: 'bane' })
+    await open(SAT)
+    await click(oilBtn())
+    const t = titleOf('#sbBoard .oilpk.inert')
+    expect(t, 'no row to name, so nothing invented').not.toMatch(/Jul 1[0-9]/)
+  })
+})
+
+/* HAND PASS FINDING 14 — the change history is the record of a money decision
+   and read like a glitch: "Sidewinder earns nothing from SidewinderFO". The
+   line reads the row's name back off the page, which is right for a schedule
+   row and wrong for a claim, whose cell holds the man's own puck. */
+describe('the history names a claim by what it IS, not by the puck in its cell', () => {
+  it('a request reads by its type, the way the app names it everywhere else', async () => {
+    const row: any = { iid: 'h14', person: 'bane', type: 'OD', date: 'Jul 18', allday: true,
+      remarks: '', mod: 'now', yr: 2026, oil: { [SAT_ISO]: 1 } }
+    INPUTS.unshift(row)
+    await open(SAT)
+    await click(oilBtn())
+    const pk = $(`#sbBoard [data-oilp][data-oilitem="${inputItemKey('h14')}"]`)
+    expect(pk, 'his claim carries a tappable puck').toBeTruthy()
+    await click(pk)
+    const said = elogRows(SAT).map(r => r.lbl).join(' | ')
+    expect(said, 'it names the request').toMatch(/overseas duty/i)
+    expect(said, 'and not the puck text beside it').not.toMatch(/FO|HO/)
+  })
+})
