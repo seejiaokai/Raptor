@@ -441,3 +441,33 @@ current view of all the inputs and forecast … having the multiple guard rails 
 works on a weekend and attempts to take a leave is a bonus to tell the admin or member to correct
 an error." The warnings are a FEATURE, not noise — which is why the answer was to make them
 readable rather than fewer.
+
+### N19 — an award is ONE number, and it takes any number (21 Sep 26)
+> "this is confusing, the number of days when u click on HO. Any recommendation on how to present
+> this correctly? Should we just have number of days to input? Then it shows HO or FO as require
+> based on what was input? And it should accept anything that's outside of multiples of 0.5"
+
+The sheet had TWO controls for one fact: an FO / HO pair, which already mean a day and half a day,
+and a days box, which also means a quantity. So "HO" beside a "1" read as nonsense, and every
+attempt to rank one over the other produced a different surprise.
+
+For an AWARD the code is now only a LABEL — it is what the grid square shows and nothing else,
+because the worth comes from the quantity and an award clashes with nothing, stands nobody down and
+moves no manning (N13, N16, N17). So **the quantity is the fact and the code follows it**: under a
+day reads HO, a day or more reads FO, and the one button says which before it is pressed. His own
+suggestion, and the only reading with no second way to say the same thing.
+
+**And any number, not just halves.** *Supersedes his own 6 Sep 26 "days come in halves — one rule
+for every pool", for the WAR'S AWARD only.*
+
+**The cost, which is real and was put to him:** the grid charges leave in halves, so a final
+remainder under a half cannot be spent on its own and will sit in the balance. It is not stranded
+— FIFO draws PART of a credit, so 0.3 + 0.2 pays a half day perfectly well — but the last scrap
+can be.
+
+**The clash still open:** the OIL tracker's LEDGER grant still refuses a non-half
+(`HALF_STEP_MSG`), and so do the other pools. The two doors now disagree. Raised with him rather
+than changed on his behalf, because the 6 Sep rule covers every pool and narrowing it is his call.
+
+*Leaves untouched:* the AUTOMATIC credit. The published schedule still decides FO or HO by the
+six-hour rule and knows nothing about this box.

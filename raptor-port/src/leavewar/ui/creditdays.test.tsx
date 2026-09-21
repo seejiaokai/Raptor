@@ -51,10 +51,15 @@ describe('a grant worth more than one day', () => {
     expect(oilOf(P)).toBe(before + 0.5)
   })
 
-  it('goes in halves, and refuses what is not a real quantity', () => {
+  it('takes ANY quantity, and refuses only what is not one (owner, 21 Sep 26)', () => {
+    /* "it should accept anything that's outside of multiples of 0.5" — which
+       supersedes his own 6 Sep "one rule for every pool", for the war's award.
+       The tracker's LEDGER grant still refuses a non-half, so the two doors
+       differ; that is raised with him rather than changed on his behalf. */
     expect(setManualCredit(P, TUE, 'FO', { days: 1.5 })).toBeNull()
     expect(oilOf(P)).toBeGreaterThan(0)
-    expect(setManualCredit(P, TUE, 'FO', { days: 1.3 })).toContain('halves')
+    expect(setManualCredit(P, TUE, 'FO', { days: 1.3 })).toBeNull()
+    expect(setManualCredit(P, TUE, 'HO', { days: 0.3 })).toBeNull()
     expect(setManualCredit(P, TUE, 'FO', { days: 0 })).toContain('how many days')
     expect(setManualCredit(P, TUE, 'FO', { days: -2 })).toContain('how many days')
     expect(setManualCredit(P, TUE, 'FO', { days: 9999 })).toContain('more than')
@@ -156,7 +161,7 @@ describe('tapping an OIL day shows what is on it', () => {
     openDay()
     fireEvent.click(screen.getByTestId('bid-oil'))
     fireEvent.change(screen.getByTestId('oil-days'), { target: { value: '1' } })
-    fireEvent.click(screen.getByTestId('oil-fo'))
+    fireEvent.click(screen.getByTestId('oil-give'))
     const credits = (rawState().wars[0]!.recs[P]![TUE] ?? []).filter(r => r.kind === 'credit')
     expect(credits).toHaveLength(1)
     expect(creditOn(P, TUE)!.days).toBe(1)
@@ -191,53 +196,75 @@ describe('the marks on the box', () => {
   })
 })
 
-/* THE DAYS BOX OPENS AT 1 (owner, 21 Sep 26). */
-describe('how many days the box starts on', () => {
+/* ONE QUANTITY, ONE MEANING (owner, 21 Sep 26). */
+describe('how many days the sheet asks for', () => {
   const openOil = (date: string) => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${date}`))
     fireEvent.click(screen.getByTestId('bid-oil'))
   }
+  const days = (v: string) => fireEvent.change(screen.getByTestId('oil-days'), { target: { value: v } })
 
   it('shows 1 rather than an empty box — the ordinary grant, said out loud', () => {
     openOil(TUE)
     expect((screen.getByTestId('oil-days') as HTMLInputElement).value).toBe('1')
   })
 
-  it('FO on the untouched box is a day', () => {
+  it('there is ONE button, and it says what the day will READ as', () => {
+    /* It had an FO/HO pair AND a days box — two controls for one fact, so "HO"
+       beside a "1" read as nonsense. For an award the code is only the label on
+       the grid square now; the quantity is the fact, and the code follows it. */
     openOil(TUE)
-    fireEvent.click(screen.getByTestId('oil-fo'))
+    expect(screen.queryByTestId('oil-fo')).toBeNull()
+    expect(screen.queryByTestId('oil-ho')).toBeNull()
+    expect(screen.getByTestId('oil-give').textContent).toContain('FO')
+    days('0.5')
+    expect(screen.getByTestId('oil-give').textContent).toContain('HO')
+    days('2')
+    expect(screen.getByTestId('oil-give').textContent).toContain('FO')
+  })
+
+  it('the default 1 gives a day, and reads FO', () => {
+    openOil(TUE)
+    fireEvent.click(screen.getByTestId('oil-give'))
     expect(getState().views[P]?.[TUE]?.earnsOil).toBe(1)
+    expect(creditOn(P, TUE)!.code).toBe('FO')
   })
 
-  it('HO on the untouched box is still HALF a day — the button means what it says', () => {
-    /* The box reads 1 and HO means half. Letting the visible 1 win would turn
-       every half day into a whole one, silently — which is exactly the shape
-       of defect this branch exists to remove. An untouched box is a display of
-       the ordinary case; the code decides until somebody types. */
+  it('under a day reads HO and is worth what was typed', () => {
     openOil(TUE)
-    fireEvent.click(screen.getByTestId('oil-ho'))
+    days('0.5')
+    fireEvent.click(screen.getByTestId('oil-give'))
     expect(getState().views[P]?.[TUE]?.earnsOil).toBe(0.5)
-    expect(creditOn(P, TUE)!.days).toBeUndefined()
+    expect(creditOn(P, TUE)!.code).toBe('HO')
   })
 
-  it('a number the admin TYPES wins, on either button', () => {
+  it('more than a day reads FO and is worth what was typed', () => {
     openOil(TUE)
-    fireEvent.change(screen.getByTestId('oil-days'), { target: { value: '3' } })
-    fireEvent.click(screen.getByTestId('oil-ho'))
+    days('3')
+    fireEvent.click(screen.getByTestId('oil-give'))
     expect(getState().views[P]?.[TUE]?.earnsOil).toBe(3)
-    expect(creditOn(P, TUE)!.days).toBe(3)
+    expect(creditOn(P, TUE)).toMatchObject({ code: 'FO', days: 3 })
   })
 
-  it('re-entering the SAME 1 changes nothing, so HO is still half a day', () => {
-    /* Typing a 1 into a box already reading 1 is not a change, so it does not
-       count as touched. The consequence, stated rather than hidden: "HO, but
-       worth a whole day" cannot be asked for by typing 1 — which is no loss,
-       because that is a contradiction in terms and FO is the button for it.
-       Any OTHER number is a real change and wins, as the case above shows. */
+  it('takes a quantity that is NOT a half (owner, 21 Sep 26)', () => {
+    /* SUPERSEDES his own 6 Sep "one rule for every pool" for the war's award.
+       The cost, and it is real: the grid charges leave in halves, so a final
+       remainder under a half cannot be spent on its own. It is not stranded
+       though — FIFO draws PART of a credit, so 0.3 + 0.2 pays a half day. */
     openOil(TUE)
-    fireEvent.change(screen.getByTestId('oil-days'), { target: { value: '1' } })
-    fireEvent.click(screen.getByTestId('oil-ho'))
-    expect(getState().views[P]?.[TUE]?.earnsOil).toBe(0.5)
+    days('0.3')
+    fireEvent.click(screen.getByTestId('oil-give'))
+    expect(screen.queryByTestId('oil-err')).toBeNull()
+    expect(getState().views[P]?.[TUE]?.earnsOil).toBe(0.3)
+    expect(creditOn(P, TUE)!.code).toBe('HO')
+  })
+
+  it('still refuses what is not a quantity at all', () => {
+    openOil(TUE)
+    days('lots')
+    fireEvent.click(screen.getByTestId('oil-give'))
+    expect(screen.getByTestId('oil-err').textContent).toContain('how many days')
+    expect(creditOn(P, TUE)).toBeUndefined()
   })
 })

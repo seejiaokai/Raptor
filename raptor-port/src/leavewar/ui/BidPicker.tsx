@@ -165,19 +165,28 @@ export function BidPicker({
      hours. Not required"). A grant is an AWARD, not an attendance record, so
      the hours it would have been worked over are not a fact it holds. Blank
      means the code's own worth: a whole day for FO, half for HO. */
-  /* THE BOX OPENS AT 1 (owner, 21 Sep 26 — "by default the number of days can
-     u just put a default of 1. And if there's deviation then the user will
-     change it"). It opened EMPTY, with the quantity implied by which button
-     was pressed, so the commonest grant of all — one day — was the one thing
-     the sheet never said out loud.
-     `touched` is what keeps HO honest. The two buttons already MEAN a
-     quantity: FO a day, HO half. A visible "1" that HO then obeyed would turn
-     every half day into a whole one, silently, which is the shape of bug this
-     whole branch exists to remove. So an UNTOUCHED box is a display of the
-     ordinary case and the code still decides; the moment it is typed in, the
-     number is the admin's and wins. */
+  /* ONE QUANTITY, ONE MEANING (owner, 21 Sep 26 — "this is confusing, the
+     number of days when u click on HO … Should we just have number of days to
+     input? Then it shows HO or FO as require based on what was input?").
+
+     It had TWO controls for one fact: an FO/HO pair, which already mean a day
+     and half a day, and a days box that also means a quantity. So "HO" beside
+     a "1" read as nonsense, and every attempt to rank one over the other
+     produced a different surprise.
+
+     For an AWARD the code is now only a LABEL — it is what the grid square
+     shows, and nothing else: the worth comes from the quantity, an award
+     clashes with nothing, stands nobody down and moves no manning (N13, N16,
+     N17). So the quantity is the fact and the code is derived from it, which
+     is the owner's own suggestion and the only reading with no second way to
+     say the same thing. Under a day reads HO, a day or more reads FO, and the
+     button says which before it is pressed.
+
+     The AUTOMATIC credit is untouched: the published schedule still decides
+     FO or HO by the six-hour rule, and knows nothing about this box. */
   const [oilDays, setOilDays] = useState(credit?.days != null ? String(credit.days) : '1')
-  const [daysTouched, setDaysTouched] = useState(credit?.days != null)
+  const oilN = Number(oilDays.trim())
+  const oilCode: 'FO' | 'HO' = Number.isFinite(oilN) && oilN > 0 && oilN < 1 ? 'HO' : 'FO'
   /* the move field, and the reason a refused move gives — a Move button that
      simply did nothing would read as broken */
   const [moveTo, setMoveTo] = useState('')
@@ -199,9 +208,8 @@ export function BidPicker({
     setMoveErr('That could not be recorded — this day is not this screen’s to decide.')
   }
   const [oilErr, setOilErr] = useState('')
-  const grantOil = (code: 'FO' | 'HO') => {
-    /* untouched → the code's own worth, which is what the button just said */
-    const problem = onCredit!(code, daysTouched ? oilDays : '', oilNote, oilGiven)
+  const grantOil = () => {
+    const problem = onCredit!(oilCode, oilDays, oilNote, oilGiven)
     if (problem) { setOilErr(problem); return }
     onClose()
   }
@@ -559,17 +567,17 @@ export function BidPicker({
                 about DATES, and two of the same question on one sheet reads as
                 a mistake. */}
             <span className="lab">Days</span>
-            {/* More than one day, the way the OIL tracker already grants
-                (owner, 20 Sep 26). It opens at 1 — the ordinary grant, said
-                out loud rather than implied — and until it is typed in, the
-                button still decides: FO a day, HO half. */}
+            {/* The one control. It opens at 1 — the ordinary grant, said out
+                loud rather than implied — and the button beside it shows what
+                the day will READ as before it is pressed. */}
             <input
-              type="text" inputMode="decimal" className="oil-num" maxLength={5}
+              type="text" inputMode="decimal" className="oil-num" maxLength={6}
               data-testid="oil-days" aria-label="How many days" placeholder="days"
-              value={oilDays} onChange={e => { setOilErr(''); setDaysTouched(true); setOilDays(e.target.value) }}
+              value={oilDays} onChange={e => { setOilErr(''); setOilDays(e.target.value) }}
             />
-            <button className="dchip approve" data-testid="oil-fo" onClick={() => grantOil('FO')}>FO</button>
-            <button className="dchip approve" data-testid="oil-ho" onClick={() => grantOil('HO')}>HO</button>
+            <button className="dchip approve" data-testid="oil-give" onClick={grantOil}>
+              Give {oilCode}
+            </button>
             {oilErr && <span className="note warn" data-testid="oil-err">{oilErr}</span>}
           </div>
         </>

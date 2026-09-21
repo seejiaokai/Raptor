@@ -429,7 +429,9 @@ describe('changing an award', () => {
     setManualCredit(P, SAT, 'FO', { note: 'Recovery', givenBy: 'OC Ops', days: 3 })
     const id = awardOn(P, SAT)!.id
     const before = JSON.stringify(awardOn(P, SAT))
-    expect(editManualCredit(P, SAT, id, { note: 'Changed', givenBy: 'CO', days: 1.3 })).toContain('halves')
+    /* 1.3 is a perfectly good award since 21 Sep, so the refusal this pins is
+       a quantity that is not one at all — over the cap. */
+    expect(editManualCredit(P, SAT, id, { note: 'Changed', givenBy: 'CO', days: 9999 })).toContain('more than')
     expect(JSON.stringify(awardOn(P, SAT))).toBe(before)
   })
 

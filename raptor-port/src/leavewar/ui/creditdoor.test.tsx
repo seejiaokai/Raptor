@@ -76,7 +76,7 @@ describe('setManualCredit', () => {
     setRole('member')
     expect(setManualCredit(P, SAT, 'FO')).toContain('admin')
     setRole('admin')
-    expect(setManualCredit(P, SAT, 'FO', { days: 1.3 })).toContain('halves')
+    expect(setManualCredit(P, SAT, 'FO', { days: 9999 })).toContain('more than')
     expect(setManualCredit(P, SAT, 'FO', { days: 0 })).toContain('how many days')
     expect(creditOn(P, SAT)).toBeUndefined()
   })
@@ -126,7 +126,7 @@ describe('the OIL control on the day sheet', () => {
     fireEvent.change(screen.getByTestId('oil-why'), { target: { value: 'Recall' } })
     fireEvent.change(screen.getByTestId('oil-given-by'), { target: { value: 'OC Ops' } })
     fireEvent.change(screen.getByTestId('oil-days'), { target: { value: '2' } })
-    fireEvent.click(screen.getByTestId('oil-fo'))
+    fireEvent.click(screen.getByTestId('oil-give'))
     expect(creditOn(P, TUE)).toMatchObject({
       code: 'FO', oil: 'manual', note: 'Recall', givenBy: 'OC Ops', days: 2,
     })
@@ -135,7 +135,7 @@ describe('the OIL control on the day sheet', () => {
   it('says so rather than guessing when the quantity cannot be read', () => {
     openSheet(TUE)
     fireEvent.change(screen.getByTestId('oil-days'), { target: { value: 'lots' } })
-    fireEvent.click(screen.getByTestId('oil-fo'))
+    fireEvent.click(screen.getByTestId('oil-give'))
     expect(screen.getByTestId('oil-err').textContent).toContain('how many days')
     expect(creditOn(P, TUE)).toBeUndefined()
   })
@@ -183,7 +183,7 @@ describe('placing leave on a day outside the posting dates', () => {
     fireEvent.click(screen.getByTestId('postout-place'))
     fireEvent.click(screen.getByTestId('bid-oil'))
     fireEvent.change(screen.getByTestId('oil-why'), { target: { value: 'Clearing' } })
-    fireEvent.click(screen.getByTestId('oil-fo'))
+    fireEvent.click(screen.getByTestId('oil-give'))
     expect(creditOn(P, day)?.note).toBe('Clearing')
   })
 
@@ -385,7 +385,7 @@ describe('a day the schedule has already earned on', () => {
     fireEvent.click(screen.getByTestId('bid-oil'))
     fireEvent.change(screen.getByTestId('oil-days'), { target: { value: '3' } })
     fireEvent.change(screen.getByTestId('oil-why'), { target: { value: 'Exercise recovery' } })
-    fireEvent.click(screen.getByTestId('oil-fo'))
+    fireEvent.click(screen.getByTestId('oil-give'))
 
     const credits = rawState().wars[0]!.recs[P]![SAT]!.filter(r => r.kind === 'credit')
     expect(credits).toHaveLength(2)
