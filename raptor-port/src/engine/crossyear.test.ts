@@ -13,7 +13,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { initStore, loadWeek } from '../state/store'
 import { DAYS } from './data'
-import { DATES, INPUTS, inputCoversDate, dateOrd, baseYear, inpId } from './inputs'
+import { DATES, INPUTS, inputCoversDate, dateOrd, dateIx, baseYear, inpId } from './inputs'
 import { autoAcceptInput, inpKey } from './slots'
 import { stashClear, stashDays } from './weekstash'
 import { draftOf, sansOverlapRefusal } from '../ui/inputedit'
@@ -156,5 +156,29 @@ describe('the date memo never serves a stale year', () => {
     expect(dateOrd('Jul 14', 2026)).toBe(20260714) // row anchor beats baseYear
     expect(dateOrd('not a date', 2026)).toBe(null) // unparseable stays null
     loadWeek('13/07/2026')
+  })
+})
+
+/* FABLE F7 (22 Sep 26) — the OIL money decides whether a request's anchor day
+   is one of the loaded days, and it was deciding by resolving the DAY's bare
+   label against the REQUEST's year. A day label is bare under the LOADED week's
+   convention, not the request's, so at a New Year boundary the two disagree and
+   a loaded anchor day read as "not loaded". Dormant when it was found; live
+   now that the answer chooses between reading the loaded week and reading
+   another week's stored copy. */
+describe('the OIL money asks the app’s own question about a loaded day (Fable F7)', () => {
+  it('a request stamped with the NEXT year still finds its anchor day in the loaded week', () => {
+    loadWeek('28/12/2026')
+    /* the week of 28 Dec 26 runs into January, so its Dec days are bare and its
+       Jan days carry the year — the exact convention the request must be read
+       against rather than against its own `yr` */
+    const bare = DATES.find((d: any) => /^Dec 31$/.test(String(d)))
+    expect(bare, 'the loaded week labels Dec 31 bare').toBeTruthy()
+    const row: any = { person: 'bane', type: 'Duty', date: 'Dec 31', allday: true, remarks: '', mod: 'now', yr: 2026, _t: 1 }
+    inpId(row); INPUTS.unshift(row)
+    expect(dateIx('Dec 31', 2026), 'the app’s own answer: it IS one of the loaded days').toBeGreaterThan(-1)
+    /* and the trap it used to fall into: the SAME label read against a year the
+       loaded week does not carry is correctly not found */
+    expect(dateIx('Dec 31', 2027), 'a different year is a different day').toBe(-1)
   })
 })

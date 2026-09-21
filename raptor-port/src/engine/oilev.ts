@@ -215,7 +215,8 @@ function landedStanding(row: any): OilInputEv['stand'] {
      resolves BOTH sides under the right year convention — the day labels under
      the loaded week's, the request's under its own `yr`. Comparing the day
      label against the ROW's year (which is what this did) reads the anchor day
-     as not loaded across a New Year boundary (Fable F7). */
+     as not loaded across a New Year boundary (Fable F7). Pinned by
+     `engine/crossyear.test.ts` §"the OIL money asks the app's own question". */
   if (dateIx(row.date, row.yr) >= 0) return acc === 'g' ? 'gone' : 'unlanded'
   return stashStanding(dateOrd(row.date, row.yr), key)
 }
