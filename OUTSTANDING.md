@@ -695,6 +695,35 @@ rules about posted-out and pre-joining rows. Several older documents still read 
   belongs to the AUTOMATIC pass, which reads the published schedule, not to a credit the squadron
   types itself.
 
+### [OIL-AUTO-REMOVE] An admin should be able to take OFF an automatic OIL credit (owner, 21 Sep 26)
+**His words: "Should we allow the admin to remove the OIL credited automatically from the schedule?
+I think we should yeah. Maybe do this in the next chat."** RULED, not built.
+
+Today the schedule's own credit cannot be removed on the war at all. Tapping it says "change the
+schedule and the OIL follows" — true, and useless when the schedule is RIGHT and the credit is
+wrong. There is no door.
+
+**The hard part, and the reason it is not a delete button.** The credit is DERIVED: the OIL pass
+mints it from published work on every run and sweeps any it no longer finds. So an admin deleting
+one would watch the next pass put it straight back — worse than no button, because it would look
+like the app ignoring him.
+
+So it needs a decision about what "remove" MEANS. Three shapes, roughly:
+1. **A standing refusal on that person/date** — the pass records that this credit was withdrawn by
+   hand and stops re-minting it. Durable, survives a republish, and needs somewhere to live.
+2. **Change the evidence instead** — the app helps him get to the thing that earned it (the duty
+   desk, or the accepted input) rather than the credit. No new state; more clicks; does not cover
+   "the schedule is right, the credit is wrong".
+3. **Correct the BALANCE rather than the day** — an OIL tracker correction entry, which already
+   exists. Leaves the day saying he worked, which is true, and fixes the number. Probably the
+   cheapest honest answer, and worth putting to him first.
+
+**Also needs deciding:** whether removing it should say WHY, and whether a member ever sees that it
+was removed. Both matter under [PUB-UNAVAIL]'s concern about published paperwork changing silently.
+
+**Do it in a fresh chat, and start by putting the three shapes to him** — this is a
+product-direction fork, not an implementation choice.
+
 ### [LW-COMMIT-MANNING] Duty & commitments must reduce the Leave War manning — the OTHER half of N17 (owner, 21 Sep 26)
 **Owner's words, and he then said to file it: "The manning should only reduce if they are like
 planned by things like leave, duty & commitments."**

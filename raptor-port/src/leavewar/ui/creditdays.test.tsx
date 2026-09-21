@@ -190,3 +190,54 @@ describe('the marks on the box', () => {
     expect(screen.getByTestId(`cell-${P}-${TUE}`).textContent).toContain('<LL')
   })
 })
+
+/* THE DAYS BOX OPENS AT 1 (owner, 21 Sep 26). */
+describe('how many days the box starts on', () => {
+  const openOil = (date: string) => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-${date}`))
+    fireEvent.click(screen.getByTestId('bid-oil'))
+  }
+
+  it('shows 1 rather than an empty box — the ordinary grant, said out loud', () => {
+    openOil(TUE)
+    expect((screen.getByTestId('oil-days') as HTMLInputElement).value).toBe('1')
+  })
+
+  it('FO on the untouched box is a day', () => {
+    openOil(TUE)
+    fireEvent.click(screen.getByTestId('oil-fo'))
+    expect(getState().views[P]?.[TUE]?.earnsOil).toBe(1)
+  })
+
+  it('HO on the untouched box is still HALF a day — the button means what it says', () => {
+    /* The box reads 1 and HO means half. Letting the visible 1 win would turn
+       every half day into a whole one, silently — which is exactly the shape
+       of defect this branch exists to remove. An untouched box is a display of
+       the ordinary case; the code decides until somebody types. */
+    openOil(TUE)
+    fireEvent.click(screen.getByTestId('oil-ho'))
+    expect(getState().views[P]?.[TUE]?.earnsOil).toBe(0.5)
+    expect(creditOn(P, TUE)!.days).toBeUndefined()
+  })
+
+  it('a number the admin TYPES wins, on either button', () => {
+    openOil(TUE)
+    fireEvent.change(screen.getByTestId('oil-days'), { target: { value: '3' } })
+    fireEvent.click(screen.getByTestId('oil-ho'))
+    expect(getState().views[P]?.[TUE]?.earnsOil).toBe(3)
+    expect(creditOn(P, TUE)!.days).toBe(3)
+  })
+
+  it('re-entering the SAME 1 changes nothing, so HO is still half a day', () => {
+    /* Typing a 1 into a box already reading 1 is not a change, so it does not
+       count as touched. The consequence, stated rather than hidden: "HO, but
+       worth a whole day" cannot be asked for by typing 1 — which is no loss,
+       because that is a contradiction in terms and FO is the button for it.
+       Any OTHER number is a real change and wins, as the case above shows. */
+    openOil(TUE)
+    fireEvent.change(screen.getByTestId('oil-days'), { target: { value: '1' } })
+    fireEvent.click(screen.getByTestId('oil-ho'))
+    expect(getState().views[P]?.[TUE]?.earnsOil).toBe(0.5)
+  })
+})

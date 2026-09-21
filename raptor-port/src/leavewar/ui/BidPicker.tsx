@@ -165,7 +165,19 @@ export function BidPicker({
      hours. Not required"). A grant is an AWARD, not an attendance record, so
      the hours it would have been worked over are not a fact it holds. Blank
      means the code's own worth: a whole day for FO, half for HO. */
-  const [oilDays, setOilDays] = useState(credit?.days != null ? String(credit.days) : '')
+  /* THE BOX OPENS AT 1 (owner, 21 Sep 26 — "by default the number of days can
+     u just put a default of 1. And if there's deviation then the user will
+     change it"). It opened EMPTY, with the quantity implied by which button
+     was pressed, so the commonest grant of all — one day — was the one thing
+     the sheet never said out loud.
+     `touched` is what keeps HO honest. The two buttons already MEAN a
+     quantity: FO a day, HO half. A visible "1" that HO then obeyed would turn
+     every half day into a whole one, silently, which is the shape of bug this
+     whole branch exists to remove. So an UNTOUCHED box is a display of the
+     ordinary case and the code still decides; the moment it is typed in, the
+     number is the admin's and wins. */
+  const [oilDays, setOilDays] = useState(credit?.days != null ? String(credit.days) : '1')
+  const [daysTouched, setDaysTouched] = useState(credit?.days != null)
   /* the move field, and the reason a refused move gives — a Move button that
      simply did nothing would read as broken */
   const [moveTo, setMoveTo] = useState('')
@@ -188,7 +200,8 @@ export function BidPicker({
   }
   const [oilErr, setOilErr] = useState('')
   const grantOil = (code: 'FO' | 'HO') => {
-    const problem = onCredit!(code, oilDays, oilNote, oilGiven)
+    /* untouched → the code's own worth, which is what the button just said */
+    const problem = onCredit!(code, daysTouched ? oilDays : '', oilNote, oilGiven)
     if (problem) { setOilErr(problem); return }
     onClose()
   }
@@ -547,12 +560,13 @@ export function BidPicker({
                 a mistake. */}
             <span className="lab">Days</span>
             {/* More than one day, the way the OIL tracker already grants
-                (owner, 20 Sep 26). Blank is the common case and needs no
-                typing: FO is a day, HO is half. */}
+                (owner, 20 Sep 26). It opens at 1 — the ordinary grant, said
+                out loud rather than implied — and until it is typed in, the
+                button still decides: FO a day, HO half. */}
             <input
               type="text" inputMode="decimal" className="oil-num" maxLength={5}
               data-testid="oil-days" aria-label="How many days" placeholder="days"
-              value={oilDays} onChange={e => { setOilErr(''); setOilDays(e.target.value) }}
+              value={oilDays} onChange={e => { setOilErr(''); setDaysTouched(true); setOilDays(e.target.value) }}
             />
             <button className="dchip approve" data-testid="oil-fo" onClick={() => grantOil('FO')}>FO</button>
             <button className="dchip approve" data-testid="oil-ho" onClick={() => grantOil('HO')}>HO</button>
