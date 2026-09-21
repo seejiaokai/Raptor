@@ -104,6 +104,13 @@ in-flight and risk-reducing** first.
    transfer; **[TRK-DISK]** (Decision A) is fixed inside [DB-STEP].
 
 **NEXT, added 21 Sep 26 — the OIL pair, ahead of the numbered list above.**
+**NEXT: a CROSS-PROVIDER BUG CHECK of the OIL build**, then the owner's "merge live". The code was
+written on Opus 5, so the check goes to **Fable 5.1 (high)** and **Astra (Codex, high)**, both, and
+each finding must come back with exact step-by-step fix instructions. Where to point them, what the
+build decided on its own, what the rules walk already found, and the ONE design question still open
+(should the green bar show on every puck a man wears, or only on the events that counted towards his
+day?) are all in `raptor-port/docs/superpowers/specs/2026-09-21-oil-build-handoff.md`.
+
 *(Done 21 Sep 2026: **[ALL-AVAIL-REDEF]** and **[OIL-AUTO-REMOVE]** — built together on branch
 `claude/oil-auto-remove-design`, holding for the owner's "merge live". The line that stood here
 said both "need a Codex red team before anything is written"; that was STALE the day it was

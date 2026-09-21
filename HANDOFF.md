@@ -178,7 +178,11 @@ None of these gate a tracker- or storage-only change.
 
 ## In flight
 
-**[OIL-AUTO-REMOVE] + [ALL-AVAIL-REDEF] — BUILT 21 Sep 26, HELD for "merge live"** on branch
+**[OIL-AUTO-REMOVE] + [ALL-AVAIL-REDEF] — BUILT 21 Sep 26, HELD for "merge live"; the
+cross-provider bug check is the next job.** Everything the build session held that the design doc
+does not — what it decided on its own, what the rules walk found, the one design question still
+open, and where to point Fable and Astra — is in
+`raptor-port/docs/superpowers/specs/2026-09-21-oil-build-handoff.md`. On branch
 `claude/oil-auto-remove-design`. All five gates green (5327 unit, build, parity 728/0, e2e 447,
 tracker 425) plus `rulecheck`; hand-tested in the running bundle against an enumerated register of
 29 rulings. What shipped, in one line each: ALL / ALL AVAIL now means what the owner said (ground
