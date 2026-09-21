@@ -37,12 +37,24 @@ commit messages, which are written for you and are the best short account of the
   every remaining scenario that edits a request.
 - **Job 2 is not walked at all.** Same door problem — a multi-day request can only be filed from the
   Inputs page (the board's form has no date field; that is finding 18).
-- **The cross-provider code read is HALF done.** Fable's is running and lands at
-  `docs/superpowers/specs/2026-09-22-oil-jobs12-codereview-fable.md`. **Codex's was NOT fired** —
-  the harness refused the command that launches it. The brief is written and waiting at
-  `docs/superpowers/briefs/2026-09-22-oil-jobs12-codereview.md`; it needs the owner's permission, or
-  a session that can run `codex exec`. §4a of the standing order makes both providers non-optional
-  on money, so **this branch is not ready for "merge live" until Codex has read these two fixes.**
+- **The cross-provider code read is running, BOTH halves.** Fable's lands at
+  `docs/superpowers/specs/2026-09-22-oil-jobs12-codereview-fable.md`; Codex's at
+  `…-codereview-codex.md`. Brief: `docs/superpowers/briefs/2026-09-22-oil-jobs12-codereview.md`.
+  §4a makes both non-optional on money, so **the branch is not ready for "merge live" until both
+  have been read AND acted on.**
+
+  **How to fire Codex here, because the first attempt was got wrong.** `codex exec --full-auto` is
+  REFUSED by this harness — it launches an agent that can edit files unattended. Do not go asking
+  for that permission; a reviewer has no business writing to the repo anyway. Run it READ-ONLY and
+  capture its answer instead, which is allowed with no settings change at all:
+
+  ```
+  codex exec -s read-only --output-last-message <file> "<the brief>"
+  ```
+
+  then write that file into `docs/superpowers/specs/` yourself. The lesson, since it cost a
+  detour and an owner correction: when the harness refuses a command, the question is not "how do
+  I get this allowed" but "can the same job be done with less power". Here it always could.
 
 ## The seven jobs left, in order
 
