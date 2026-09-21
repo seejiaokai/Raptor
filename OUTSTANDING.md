@@ -716,10 +716,12 @@ admin taps a puck to take a man off one event, or taps an item to stop the whole
 - **Reviewed once, by Fable** — it converged on the same architecture and corrected four things,
   all folded in. **Codex (Astra) has NOT reviewed it**, and the owner's standing rule is both
   providers before building.
-- **Three questions are still open for him** and are named in §2.3, §2.6 and §4 of that doc:
-  a publish-reminder warning, whether ALL and ALL AVAIL should diverge, and whether the Leave War
-  needs a removal door at all once the board has one. A fourth — does a member see a NO OIL mark
-  on the schedule — is in §2.8.
+- **EVERY open question is now answered** (21 Sep 26). A publish reminder to all schedulers: YES.
+  ALL vs ALL AVAIL: stay identical, deliberately — do not "fix" the duplication. A Leave War
+  removal door: **NO, do not build one** (§4 has the three reasons and the cost he accepted).
+  How the exception shows: ONE line on the day, only when there is an exception, no per-row tags
+  on the issued schedule, and a per-person exclusion never appears there at all (§2.9).
+  **The design is complete. The next step is the Codex red team, not more questions.**
 - **A mockup exists** (an artifact canvas, the owner's own) and is one revision behind the mode
   ruling. Redraw before relying on it.
 

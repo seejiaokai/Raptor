@@ -89,9 +89,10 @@ schedule-earned and input-earned alike — lands on publication, which is what l
 mode be the single door.
 
 **The risk he accepted, and the mitigation he chose:** a weekend nobody bothers to publish
-would pay nobody. His answer is a standing practice of publishing every day. A partner
-warning at publish time ("this weekend has accepted work on it and has not been published")
-was recommended and is NOT yet ruled on — put it to him.
+would pay nobody. His answer is a standing practice of publishing every day, **plus a standing
+reminder to all schedulers** — RULED 21 Sep 26: *"ok u can set it as a reminder to all
+schedulers."* Build the backstop: a weekend or PH day carrying accepted work and not yet
+published tells whoever is looking.
 
 ### 2.4 Overseas duty
 
@@ -135,9 +136,12 @@ Resolved against the current behaviour (§3.5), that is:
 sentinel — only NAMED people count as "planned for something". Otherwise two overlapping
 ALL AVAIL rows each empty the other.
 
-**Open, put to him and not yet answered:** ALL and ALL AVAIL are byte-for-byte identical
-today. Does he want them to diverge — ALL meaning everybody regardless, ALL AVAIL meaning
-only those free?
+**RULED 21 Sep 26 — they stay identical, deliberately.** Asked whether ALL should mean
+everybody regardless, the owner said no: *"U cant possible force ALL to join, its just like a
+best effort to join kind of thing. even if people are not available. So the mechanism is still
+the same, filters those out who are actually not available."* So ALL and ALL AVAIL keep ONE
+behaviour and two names. **Do not "fix" the duplication** — it is the owner's call, not an
+oversight. Both sentinels take the §2.6 definition.
 
 ### 2.7 Seeing inside a sentinel puck
 
@@ -166,9 +170,26 @@ whole puck — that already arms the slot so a scheduler can swap the sentinel f
   makes the people look FREE, which is why it is the wrong tool for this. Extend its wording
   in the same change.
 
-**Open, put to him and not yet answered:** does a member see a `NO OIL` mark on the schedule
-everyone reads? Show it and a man knows before the weekend that the family day earns him
-nothing; hide it and he finds out when the credit never appears. Recommendation: show it.
+### 2.9 How the exception SHOWS — ruled 21 Sep 26
+
+The owner pushed back on tagging rows: *"How does the NO OIL mark show on the schedule? Why not
+show OIL instead of NO OIL? I am afraid that the schedule will be very cluttered."* Right on the
+clutter, and the answer to the second half is that on a weekend nearly everything earns — marking
+the EARNERS means marking almost every line, marking the exceptions means marking almost none.
+The rare thing gets the mark.
+
+Agreed shape:
+
+- **On the member's schedule: ONE LINE on the day**, only on a weekend / PH, only when there is an
+  exception — *"OIL — everything on this day earns except SQN FAMILY DAY."* A normal weekend
+  prints nothing; a weekday prints nothing. A member never reads an OIL line unless it affects him.
+  **No per-row tags on the issued schedule.**
+- **On the scheduler's board, outside the mode**: the same one line, PLUS a small `NO OIL` tag in
+  the marked row's REMARKS cell — the column that already answers "why is this line like this",
+  and only the person editing needs it.
+- **A per-person exclusion never appears on the schedule.** That is one man's business, not the
+  squadron's: he sees it in HIS OWN OIL tracker, with the reason, where his credits live and where
+  he would go looking.
 
 ---
 
@@ -278,11 +299,16 @@ The two notions of "available" disagree today; §2.6 is what makes them agree.
 
 ## 4. Does the Leave War still need a removal door?
 
-**Open question, put to the owner and not yet answered.** With the item switch, the day
-blanket and the per-person exclusion all on the board, the original `[OIL-AUTO-REMOVE]` ask may
-need no Leave War door at all — and fewer doors is the house rule. The arguments for keeping
-one: the board route costs an amendment on a published day, and the Leave War is the admin's
-screen, not the scheduler's.
+**ANSWERED 21 Sep 26: NO — do not build one.** The owner asked for the recommendation and it
+was given: with the item switch, the day blanket and the per-person exclusion all on the board,
+every case where the DAY'S EVIDENCE is wrong now has a door. The one case that is not about a day
+— the balance is wrong for some other reason — is already served by the OIL tracker's correction,
+which exists and needs no build. And a removal on the war would let the war DISAGREE with the
+schedule: a man with no credit, a published Saturday saying he worked, and nothing on the day
+explaining the gap — the exact drift the house rules name.
+
+**The cost, stated to him and accepted:** correcting OIL on a published day costs an amendment.
+Revisit only if that proves too heavy in daily use; do not pre-build a second door for it.
 
 Note that shape 3 from the original three (an OIL-tracker balance correction) **already exists
 and needs no build** — `CreditForm` with the `±` chip writes a dated, signed, reasoned
