@@ -177,6 +177,44 @@ an area the other found a defect in is the cheapest possible pointer to a real b
 
 ---
 
+## 4a. How this fits the Claudex loop
+
+They do not compete. **Claudex covers the plan and the code; this order covers the running app.**
+Claudex's own rules stand unchanged — in particular *the provider that built never inspects*, and
+*never disable or bypass the workflow's independent reviewer* (`.claude/rules/raptor-executor.md`).
+This order adds checks; it never removes one of Claudex's.
+
+| Claudex stage | What it is | What this order says about it |
+|---|---|---|
+| **Plan review** — the host plans, the other provider attacks the plan before any code | The pre-build red team | This IS §4 rank 3, and Claudex is the machinery for it. The owner's cap of about three rounds still applies; after that, findings fold into the build. |
+| **Build** — one provider implements | — | Unchanged. The implementation stays in the main session (the executor rule). |
+| **Final inspection** — a fresh session of the provider that did NOT build reads the finished code | The post-build code read | This is §4 rank 2 — but with two changes, below. |
+| *(nothing)* | — | **Claudex has no step that runs the app.** That is the gap this order fills, and it is where every defect the owner found tonight lived. |
+
+**Three things this order changes about how Claudex is used:**
+
+1. **The WALK goes BEFORE the final inspection, not after.** Drive the app first, fix what it
+   finds, then hand the inspector the finished code *and the evidence sheet*. Reading for absence
+   works when there is a roll-call in hand; reading cold does not. On the OIL build the inspection
+   ran first, passed, and three unwired surfaces went out behind it.
+2. **On FULL-tier work, one inspector is not enough.** Claudex's default is a single fresh session
+   of the other provider. Where money, entitlement, published records, permissions or persistence
+   are touched, run **both** providers independently and blind to each other (§4 rank 2). That is
+   what found five money defects here that driving the app would not have.
+3. **The inspection brief gets the finder wording from §4.** Claudex's inspector is asked whether
+   the code is wrong. Add the sentence that asks what is MISSING, or it will answer only the first
+   question.
+
+**And one thing that does not change:** Claudex binds approval to the plan's path and hash. A
+bug check never re-opens an approved plan. If the walk finds behaviour the plan never decided,
+that is a question for the owner (§11), not a change made under cover of a fix.
+
+**In one line:** run Claudex to harden the plan, build, then **walk the app**, then run Claudex's
+inspection — both providers if the change touches money — and only then report, with the `Walk:`
+line.
+
+---
+
 ## 5. Which checks for which change
 
 All of it on everything would be abandoned in a week. The tier is decided by facts read off the

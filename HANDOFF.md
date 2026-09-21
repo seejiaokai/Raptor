@@ -179,6 +179,11 @@ None of these gate a tracker- or storage-only change.
 ## In flight
 
 **[OIL-AUTO-REMOVE] + [ALL-AVAIL-REDEF] — BUILT + BUG-CHECKED 21 Sep 26, HELD for "merge live".**
+**NEXT SESSION READS `raptor-port/docs/superpowers/specs/2026-09-21-oil-handpass-handoff.md` FIRST** —
+the job is executing the two scenario lists (Fable's 44, Codex's 24) in the RUNNING app, and that
+file says what is already done by hand so it is not redone. **And read
+`raptor-port/docs/bug-check-order.md` before any bug check** — the adopted standing order,
+new tonight, which triggers itself via `.claude/rules/bug-check.md`.
 On branch `claude/oil-auto-remove-design`. The build session's own handoff is
 `raptor-port/docs/superpowers/specs/2026-09-21-oil-build-handoff.md`.
 
