@@ -2,7 +2,7 @@
    Drives the REAL production bundle in a real Chromium, exactly as
    raptor-port/CLAUDE.md §Build & verify prescribes. Pictures go to disk so the
    evidence sheet has something to show. */
-import { existsSync, mkdirSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync } from 'node:fs'
 import { chromium } from '@playwright/test'
 
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
@@ -15,9 +15,29 @@ export const BASE = process.env.HP_URL || 'http://localhost:4173'
 export const STATE = process.env.HP_STATE
   || 'C:/Users/User/AppData/Local/Temp/claude/C--Users-User-projects-Raptor/f98d5224-18e3-4e42-8a4f-bd4fe1b84782/scratchpad/hp/state-sat.json'
 
+/** A saved world is keyed to the ORIGIN it was captured on, because that is how
+    browser storage is partitioned. Loading one against a different port restores
+    NOTHING and the app renders a perfectly valid EMPTY day — which reads exactly
+    like a legitimate "nobody earns here" result. That is a false PASS waiting to
+    happen (it nearly was one, 22 Sep 26), so it is refused here rather than
+    documented. To drive on another port, re-save the state against that port.  */
+function assertStateOrigin(state) {
+  let j
+  try { j = JSON.parse(readFileSync(state, 'utf8')) } catch { return }   // not a state file we wrote; let Playwright complain
+  const origins = (j.origins || []).map(o => String(o.origin || ''))
+  if (!origins.length || origins.includes(BASE)) return
+  throw new Error(
+    `The saved world was captured on ${origins.join(', ')} but the driver is pointed at ${BASE}.
+` +
+    `Browser storage is per-origin, so this would restore an EMPTY world that looks like a real result.
+` +
+    `Either serve the build on ${origins[0]}, or set HP_URL to it, or re-save the state against ${BASE}.`)
+}
+
 /** `state` loads a saved world (the built Saturday) so a scenario starts in
     two seconds instead of rebuilding the day for seventy. */
 export async function open({ width = 1440, height = 900, who = 'a', fresh = false, state = null } = {}) {
+  if (state) assertStateOrigin(state)
   mkdirSync(SHOTS, { recursive: true })
   const browser = await chromium.launch({ headless: true, ...launchOptions })
   const ctx = await browser.newContext({ viewport: { width, height }, ...(state ? { storageState: state } : {}) })

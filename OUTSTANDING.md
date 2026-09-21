@@ -959,6 +959,34 @@ for duty, so the engine is ready; the work is in the store and the tracker.
 where both of the night's silent bugs lived; the project's own rule escalates that kind of change.
 Build it test-first and put it through both reviewers.
 
+### [POSTOUT-LOST] A posted-out man walks back into the squadron on a reload — NEW, 22 Sep 26
+
+**What it is.** A person's posting-out window is written straight onto the person by the demo
+overlay and is never recorded in the persisted posting record. The overlay only runs on a
+first-ever boot, so the moment anything is saved and the page is reloaded, the posting is gone and
+the man is back in the squadron's availability.
+
+**Why it matters well beyond OIL.** Availability is read by the crew picker, by ALL AVAIL, by the
+manning counts and by every rule that asks who is free. A man who has left the squadron silently
+becoming available again is wrong everywhere, not only on an earning day.
+
+**How it was found.** Fable's red team of the OIL fix plan (22 Sep 26) went looking for the cause
+of a "reload manufactures a pending amendment" report and found this underneath it. Reproduced by
+the walking session: the family day had **27** members before a reload and **28** after.
+
+**Deliberately NOT fixed on `claude/oil-auto-remove-design`.** It is not an OIL defect and it would
+widen a money branch into an availability one. The OIL branch keeps only the WORDING half — the
+pending item must say what actually moved.
+
+**Watch the dev-phase ruling when fixing it.** The seed schedule flies this man in July while the
+demo posts him out in January, so the two worlds disagree. Per the dev-phase ruling (demo data is
+cleared, not migrated), deciding which of the two is right may be most of the fix.
+
+**Context.** `raptor-port/docs/handpass/2026-09-21-oil.md` §9 (the settled account and the
+observation that proved it) · `raptor-port/docs/superpowers/specs/2026-09-21-oil-fixplan-redteam-fable.md`
+§3 (the mechanism, with the persistence rule it breaks) · the observation script
+`raptor-port/scripts/handpass/settle-d4.mjs`.
+
 ### [LW-SCRUBBER-FLAKY] The year scrubber test fails on a saturated machine — PRE-EXISTING (21 Sep 26)
 `e2e/leavewar.spec.ts` "the bottom scrollbar is a year-wide scrubber", lw-desktop only. Under a full
 parallel run it sometimes times out after the SEP month button is clicked: the grid has not scrolled

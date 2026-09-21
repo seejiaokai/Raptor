@@ -17,6 +17,14 @@ const { browser, page } = await open({ state: 'C:/Users/User/projects/Raptor/rap
 builds the whole day through the app's own controls in ~70s) and every scenario script. They are
 committed on purpose: the next session re-runs a finding instead of rediscovering it.
 
+**THE TRAP THAT COSTS A FALSE PASS — the saved world is tied to its PORT.** `state-sat.json` was
+captured on `http://localhost:4173`, and browser storage is per-origin, so loading it against any
+other port restores NOTHING. The app then draws a perfectly valid EMPTY day, which reads exactly
+like a real "nobody earns here" result — a scenario script would PASS while asserting against an
+empty world. `lib.mjs` now REFUSES this with a plain message rather than trusting anyone to
+remember it. To drive on another port, re-save the state against that port. Serve with
+`npx vite preview --port 4173` from `raptor-port/`.
+
 **The traps that cost an hour, so nobody pays for them twice** — the board is rendered twice in the
 DOM, so every board selector is scoped `#schedBoard … :visible`; the board's crew palette is
 `#sbRoster`, the week's is `#eRoster`; the desktop OIL button is `#sbOil` and the phone one is
