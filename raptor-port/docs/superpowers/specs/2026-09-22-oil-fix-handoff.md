@@ -58,6 +58,28 @@ docsize **OK** · tracker smoke **425 / 0**. NOT re-run since the fixes: parity,
   detour and an owner correction: when the harness refuses a command, the question is not "how do
   I get this allowed" but "can the same job be done with less power". Here it always could.
 
+## FABLE'S REVIEW IS IN — read it before the remaining jobs
+
+`docs/superpowers/specs/2026-09-22-oil-jobs12-codereview-fable.md` (422 lines). What it changed:
+
+- **F3 — FIXED, commit `195943e`.** Job 2 would have flagged every already-published weekend the
+  moment the owner opened the app. My defect, reproduced and fixed non-destructively (the missing
+  field is reconstructed from `acc`, rather than Fable's schema bump, which would have cleared his
+  data at two in the morning). If the reconstruction ever proves wrong, the bump is the fallback.
+- **F4 — already closed**, independently, by job 8's own test. Fable predicted it as a forward risk.
+- **F1 — OPEN, filed as `[OIL-XWEEK-DENY]`.** Job 1 is NOT closed for a stashed week. Money, silent.
+  **This vindicates Codex's M1 over the cheaper repair chosen here**, and §0 of the settled plan now
+  says so.
+- **F2 — OPEN, filed as `[OIL-XWEEK-ELSEWHERE]`.** Job 2's cross-week branch is unreachable in the
+  real app, so the hole it was meant to close is still open. Pre-existing, not introduced.
+- **Verified clean by Fable:** the read-side prune cannot touch an issued record · both editors'
+  commit order · undo of a hand-over · the ✕ on a landed row · plan switch, recovery and template ·
+  the key's order-independence. Apart from F3 it found no path that keys an unchanged day
+  differently.
+
+**Codex's review had not landed when this was written.** Check for
+`…-oil-jobs12-codereview-codex.md` before trusting this list as complete.
+
 ## The FIVE jobs left, in order
 
 **Watch for collisions between fixes.** Jobs 1 and 8 already collided once and only job 8's own

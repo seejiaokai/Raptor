@@ -907,6 +907,39 @@ July while the demo posts him out in January, so deciding which is right may be 
 **Context.** `raptor-port/docs/handpass/2026-09-21-oil.md` §9 · the red team's §3 in
 `…/specs/2026-09-21-oil-fixplan-redteam-fable.md` · script `scripts/handpass/settle-d4.mjs`.
 
+### [OIL-XWEEK-DENY] A refusal survives a hand-back in a week nobody had loaded — OPEN, 22 Sep 26
+
+**Money, silent.** Job 1 clears a scheduler's refusal when a request changes hands, but only on the
+week that is loaded. The read-side prune hides the key while somebody ELSE holds the request — so
+hand it away and back while a different week is on screen (ordinary: the Inputs page is global),
+then open the original week, and the old refusal is live again. The man is paid nothing and, on an
+already-published day, nothing flags it.
+
+**This vindicates Codex's M1 over the cheaper repair that was chosen.** A generation frozen onto the
+input would have closed it. The chosen pair-plus-clear does not unless the clear reaches stashed
+weeks.
+
+**The hazard to respect when fixing it:** a stashed week is a JSON STRING, and some are byte-frozen
+(`isPreservedWeek` / `preservedBlob`) because their engine cannot safely re-key them — those must
+round-trip verbatim and must NOT be rewritten. Any clear has to skip them, and say what it did
+about them.
+
+**Context.** `…/specs/2026-09-22-oil-jobs12-codereview-fable.md` §F1 (step-by-step, with the red
+test) · `…/specs/2026-09-22-oil-fixplan-settled.md` §0, which now carries the correction.
+
+### [OIL-XWEEK-ELSEWHERE] The cross-week branch of job 2 never fires in the real app — OPEN, 22 Sep 26
+
+Job 2's `landedStanding` returns `elsewhere` for a request anchored in an unloaded week, and a unit
+test pins it. **In the running app that branch is unreachable:** `applyWeekModel` clears every `'g'`
+on a week swap, so the input reads `''` → `unlanded`, and `oilInputEligible` pays it at the
+`acc !== 'g'` short-circuit before `stand` is ever consulted. The hole it was meant to close — a
+CANCELLED or ⓘ anchor in another week still paying its other days — is therefore still open, and is
+PRE-EXISTING rather than introduced by job 2 (the same line paid before it).
+
+Fable recommends closing it before "merge live": read the anchor's week from `stashDays`, drop the
+`acc !== 'g'` short-circuit, keep `'gone'` gated on `'g'`. Step-by-step and a red test in its
+review §F2.
+
 ### [LW-SCRUBBER-FLAKY] The year scrubber test fails on a saturated machine — PRE-EXISTING (21 Sep 26)
 `e2e/leavewar.spec.ts` "the bottom scrollbar is a year-wide scrubber", lw-desktop only. Under a full
 parallel run it sometimes times out after the SEP month button is clicked: the grid has not scrolled

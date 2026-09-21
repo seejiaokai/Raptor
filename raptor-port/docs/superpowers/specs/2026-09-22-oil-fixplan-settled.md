@@ -47,6 +47,22 @@ That is not needed, and the code says why:
   out of the live projection can never disturb an issued record, which is precisely what Codex
   warned against.
 
+**CORRECTED 22 Sep 26, AFTER FABLE READ THE FINISHED CODE — this ruling is HALF right, and the
+half that is wrong is the half that argued Codex out of its generation.** The claim above was that
+the write-side clear plus the read-side prune "leave no live stale decision anywhere". They do not.
+
+- **The prune only HIDES a key while somebody else holds the request.** Hand it away and BACK and
+  the holder matches again, so the prune keeps it and the old refusal is live. The write-side clear
+  is what was supposed to have deleted it — but it walks only the LOADED week.
+- So the exact case Codex named (M1) is still open: change the holder while a DIFFERENT week is on
+  screen — an ordinary path, because the Inputs page is global — then open the original week. The
+  man is paid nothing, silently. If that day was already published, the live and frozen keys match
+  and nothing flags it.
+
+**Codex was more right than this document credited.** A generation frozen onto the input would have
+closed it; the cheaper pair-plus-clear does not, unless the clear also reaches stashed weeks.
+Filed as `[OIL-XWEEK-DENY]`; Fable's step-by-step is in its review §F1.
+
 **RULING: pair + clear at the one write site + prune at read + RE-ASK + new words for
 "unanswered".** No new addressing concept, no schema change, no signature change.
 
