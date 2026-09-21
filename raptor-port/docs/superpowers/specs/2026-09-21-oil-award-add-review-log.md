@@ -298,3 +298,118 @@ and Astra found a SECOND stale fixture at `inputgate.test.ts` ~104 that the brie
 
 Filed, not built: `[OIL-AWARD-IS-A-GRANT]` (both reviewers, independently, as the real root cause)
 and `[OIL-EARNED-VS-GRANTED]`.
+
+---
+
+# ROUND 2 — the BUG CHECK on the finished code
+
+Both providers reviewed the built branch independently, with the same brief, each asked to verify
+the OTHER round's accepted fixes had actually landed. **Astra's verdict was DO NOT SHIP, and it was
+right.**
+
+## What they found, and what was done
+
+| # | Finding | From | Severity | Status |
+|---|---|---|---|---|
+| 1 | A **damaged** legacy record silently loses the award — 4 days reload as 1 | Astra | BLOCKER | FIXED |
+| 2 | **No door** for publish-then-award: the store allows it, no screen offers it | Fable | BLOCKER | FIXED |
+| 3 | The unpublish warning measures the balance **on the wrong date** | both | MAJOR | FIXED |
+| 4 | N17 left an admin switch **doing nothing**, while its words promised otherwise | Fable | MAJOR | FIXED |
+| 5 | Duty & commitments **still do not reduce the manning** — the other half of N17 | Astra | MAJOR | FILED, at the owner's word |
+| 6 | The bid sheet kept its **own copy** of the worth formula | both | MINOR | FIXED |
+| 7 | The **publish** clash note was still on the plain face | both | MINOR | FIXED |
+| 8 | The demo helper still called an award `earned` | both | MINOR | FIXED |
+| 9 | Stale comments asserting the retired invariants | both | NIT | PART DONE |
+| 10 | Accepted tests that were not the tests accepted | both | MINOR | FIXED (see below) |
+
+### 1 — the second silent balance bug, and it was in MY fix
+
+`readRec` accepted the take-over snapshot only when `manual.code` read exactly `FO` or `HO`, and
+dropped the outer `days`/`givenBy` on every automatic record. Those two rules together threw the
+award away **twice over**: a snapshot whose code had been damaged was refused, and the duplicated
+outer fields that could have rebuilt it were binned. A 3-day award plus a worked Saturday reloaded,
+with no rejection and no warning, as ONE day.
+
+The fix that caused it was the fix for round 1's blocker. Tightening a trust boundary to stop
+contamination discarded the only surviving copy of the thing being protected.
+
+**Resolved by recovering from wherever the award survived.** The retired takeover wrote it to BOTH
+places, so either is enough; the outer CODE is always sound because it is validated first, so there
+is no unrecoverable case and nothing to reject — and rejecting would have been worse than the
+disease, since a refusal here discards every war in the app. Six tests pin the damaged shapes,
+including idempotency and an id collision.
+
+### 2 — half the ruling had no way in, and the hand test had walked past it
+
+The owner's ruling is that the two orders must agree. Award-then-publish worked. **Publish-then-award
+was unreachable**: a day holding only the schedule's credit reads as Raptor-owned, so the tap opened
+the read-only sheet, which has no +OIL control, and no other door offers one.
+
+Found by reading. **Confirmed by hand in the running app** — and the hand test had already been run
+and passed, because it walked ONE order. That is the lesson, and it is now a standing rule: drive
+every route and every order, not one.
+
+**Fixed with the app's own idiom** rather than the reviewer's suggested route. Fable proposed sending
+the admin straight to the picker; that would have cost the sheet's "where it came from" line, which
+is the one thing a reader opens a locked cell to find out. Instead the sheet keeps everything it
+said and gains ONE button through to the picker — exactly the hand-through the posting sheet already
+uses for the same shape of problem.
+
+### 3 — the same site, wrong a third way
+
+Round 1 found this measured a balance that ignored expiry. The fix made it policy-aware and
+introduced a new error: it measured **as of the day being unpublished**, which reports every credit
+that was alive back then as alive now.
+
+Both reviewers caught it, and Astra added the deeper point: **subtracting the credit's worth was
+never the right sum.** Expiry and FIFO are not linear — a credit that expired unused is worth
+nothing to take away, and removing a live one can strand a LATER debit that had drawn on it. The
+ledger is now rebuilt with that credit left out, which is the actual counterfactual, as of today,
+through the same context the tracker reads.
+
+*Worth recording:* three passes over one twenty-line function, each fixing a real defect and each
+leaving another. The lesson is not "be more careful" — it is that a figure quoted on a screen should
+be ASKED FOR, never recomputed alongside.
+
+### 4 — a ruling's second-order cost
+
+N17 (a credit removes nobody from the manning) silently turned an admin control into a no-op: the
+"SC duty still counts" switch on a team rule, whose own description promised a difference. Neither
+setting changed a number any more.
+
+Removed, along with the sentence. A stored `presence: true` still loads so an existing rule
+round-trips. **A ruling can retire a control without anybody noticing** — worth asking, on every
+ruling, what it makes pointless as well as what it changes.
+
+### 5 — the other half of the owner's own ruling, and it was never true
+
+He said the manning "should only reduce if they are like planned by things like leave, duty &
+commitments." N17 built the first half. Astra found the second is false: **duty-and-commitment inputs
+do not reach the Leave War at all.** Verified — `warVisible` admits leave, medical, a course and
+overseas duty and nothing else.
+
+**Not a regression from N17.** What N17 removed was an ACCIDENTAL reduction: a duty input that
+happened to earn an OIL credit used to zero the man through the credit, on weekends only.
+
+Raised with the owner, who said to file it → `[LW-COMMIT-MANNING]`.
+
+### 10 — accepted tests that were not the tests accepted
+
+Both reviewers checked the round-1 fixes and found the TESTS had drifted from what was agreed: the
+protected-date migration case drove the store directly instead of a real pass, and the "one undo
+step" case never called undo. Fair, and fixed.
+
+**The check worth keeping:** asking each reviewer to verify the other round's accepted fixes landed.
+Four of them had landed only partly, and nobody would have looked without being asked.
+
+## Verdicts after the fixes
+
+Round 2 was run against the code before these fixes. Everything either reviewer raised is either
+fixed above, filed with the owner's agreement (`[LW-COMMIT-MANNING]`,
+`[OIL-AWARD-IS-A-GRANT]`, `[OIL-EARNED-VS-GRANTED]`), or a comment tidy.
+
+## The count that matters
+
+Across two rounds and two providers, on one feature: **three silent balance bugs**, two of them in
+work done THIS session, and one live bug that predated the change. Not one of them would have shown
+on screen — every one looked like a number. The gates were green throughout.
