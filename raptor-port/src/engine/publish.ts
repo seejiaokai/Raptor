@@ -11,7 +11,7 @@ import { INPUTS, inpId, inputCoversDate } from './inputs'
 import { CURWEEK } from './waves'
 import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './verid'
 import { isPreservedWeek } from './weekstash'
-import { oilEvidence, oilEvidenceKey, oilDecisionsKey } from './oilev'
+import { oilEvidence, oilEvidenceKey, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney } from './oilev'
 
 /* the reference calls straight into the UI here; the engine routes those four
    calls through injected hooks (no-ops until the app provides them) so the
@@ -302,8 +302,14 @@ function filingDelta(di:any,issuedFil:any):DeltaEntry[]{
    An ABSENT issued block normalises to '' — the same as "nothing decided,
    everything earns" — so the FIRST change against an older snapshot is detected
    rather than read as no change. */
-function oilDelta(di:any,issuedEv:any):DeltaEntry[]{
-  const now=oilEvidenceKey(oilEvidence(di)), was=oilEvidenceKey(issuedEv);
+/* BOTH SIDES ARE KEYED WITH THEIR OWN DAY (Codex rank 4, 22 Sep 26). A block
+   frozen before `stand` existed carries no standing, and the only honest place
+   to recover it is the frozen SCHEDULE beside it — so the issued day goes in,
+   not merely its block. Guessing it from `acc` made a cancelled row key
+   `active` on the issued side and `cx` live, which offered an amendment on a
+   day the money already agreed was unchanged. */
+function oilDelta(di:any,issuedDay:any):DeltaEntry[]{
+  const now=oilEvidenceKey(oilEvidence(di),DAYS[+di]), was=oilEvidenceKey((issuedDay||{}).oilev,issuedDay);
   return now===was?[]:[{addr:`oil:${+di}`,kind:'oil',from:was,to:now}];}
 /* ---- Phase 2: the ONE normalized publication delta (F-02) ------------------
    Eligibility, the panel counts and the stored diff ALL derive from this — never
@@ -316,7 +322,7 @@ export function dayDeltaIn(sc:any,di:any,weekKey?:any):DeltaEntry[]{di=+di;
   if(!((sc&&sc.dayOK)||{})[di])return [];
   const ver=dayCurVerIn(sc,di,weekKey), snap=ver!=null?daySnapIn(sc,di,ver,weekKey):null;
   if(!snap||!snap.d)return [];
-  return canonicalDiff(snap.d,DAYS[di],di).concat(filingDelta(di,snap.fil)).concat(oilDelta(di,(snap.d||{}).oilev));}
+  return canonicalDiff(snap.d,DAYS[di],di).concat(filingDelta(di,snap.fil)).concat(oilDelta(di,snap.d));}
 export function dayDelta(di:any):DeltaEntry[]{return dayDeltaIn(SCHED,di,CURWEEK);}
 /* the publish trigger + every publication affordance (P2-02/P2-07): a published
    day has changes iff its normalized delta is non-empty. Derived SOLELY from
@@ -809,7 +815,7 @@ export function currentBind(di:any){di=+di; const d=DAYS[di];
      and publication all call the SAME body, so they cannot disagree about what
      is being signed. Without it an answer-only change would be publishable on a
      signature given before the answer moved. */
-  return {dg:d?digest(d,di):'', iso:dayIso(CURWEEK,di), base:dayCurVer(di)||'', rev:(SCHED.curDraft||{})[di]||'', fil:filingKey(di), oil:oilEvidenceKey(oilEvidence(di))};}
+  return {dg:d?digest(d,di):'', iso:dayIso(CURWEEK,di), base:dayCurVer(di)||'', rev:(SCHED.curDraft||{})[di]||'', fil:filingKey(di), oil:oilEvidenceKey(oilEvidence(di),d)};}
 /* set a role's signer through the ONE sanctioned write path (ui/Shell.tsx). A
    truthy signer binds that role to the current content; clearing a role drops its
    binding. Tests / a legacy demo book that write signOf(di)[role] directly leave
@@ -831,7 +837,23 @@ function signBoundOk(di:any,role:any,cur?:any){const b=(SCHED.signBind||{})[+di]
      carries no oil field, and on a day that earns nothing there is nothing it
      could have failed to promise. A day that DOES carry evidence still
      invalidates, because '' and a real block differ. */
-  return x.dg===c.dg&&x.iso===c.iso&&x.base===c.base&&x.rev===c.rev&&x.fil===c.fil&&(x.oil||'')===(c.oil||'');}
+  return x.dg===c.dg&&x.iso===c.iso&&x.base===c.base&&x.rev===c.rev&&x.fil===c.fil&&oilBoundOk(di,x.oil,c.oil);}
+/* A BINDING WRITTEN BEFORE `stand` EXISTED stores the OIL key in the old
+   six-part form, which can never equal today's seven-part one — so every
+   signature given before this build fell off a day whose content had not moved,
+   while the amendment panel (repaired beside it) said that same day was
+   unchanged. One day, two contradictory answers (Codex rank 4, 22 Sep 26).
+   An old string is tested the only way it can be: today's content is written
+   the way HE saw it written, and compared. That alone is NOT enough, and Codex
+   is right to say so — job 2 changed what some days pay without changing
+   anything the old form could show. So the day must also pay today what it paid
+   then. Where it does not, the signature is refused and the day must be signed
+   again, which is the honest answer: the money under it moved. */
+function oilBoundOk(di:any,was:any,now:any){
+  if((was||'')===(now||''))return true;
+  if(!was)return false;
+  const ev=oilEvidence(di);
+  return oilKeyBeforeStand(ev)===was&&!oilUpgradeMovedMoney(DAYS[+di],ev);}
 /* a name only counts while it is still appointed — withdrawing someone's
    Scheduler qual after they signed used to leave the day looking signed — AND
    only while its content binding still holds (AM-06). currentBind is computed at

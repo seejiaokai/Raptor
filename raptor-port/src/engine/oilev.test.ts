@@ -530,3 +530,88 @@ describe('an issued block written before `stand` must not start paying (Codex ra
     expect(figure(SAT, 'bane')).toBe('FO')
   })
 })
+
+/* CODEX RANK 4 (22 Sep 26) — THE OTHER HALF OF THE SAME REPAIR. `3df527d`
+   taught the MONEY how to read a block written before `stand` existed, by
+   reconstructing the old value from the frozen schedule. It left two readers
+   still doing it the old, wrong way:
+
+   · the evidence KEY still guessed the value from `acc`, so a day whose row was
+     cancelled keys `cx` live and `active` frozen — a pending amendment on a day
+     nobody touched, on top of a day the money already agrees is unchanged;
+   · the signature BINDING compares a six-part string written by the old build
+     against today's seven-part one, so every signature given before tonight
+     falls off a day whose content has not moved.
+
+   Both make the app say two contradictory things about one day: nothing
+   changed, and everything changed. */
+describe('rank 4 — the KEY half: a day nobody touched offers no amendment', () => {
+  const agedPublish = (mark?: 'cx' | 'info') => {
+    claim({ iid: 'r4a', person: 'bane', type: 'Duty', date: 'Jul 18', acc: 'g',
+      allday: false, s: 9 * 60, e: 17 * 60, oil: { [SAT_ISO]: 1 } })
+    const row = groundRow(SAT, { prog: 'DUTY', str: '0900', end: '1700', who: 'bane', src: 'r4a' })
+    if (mark) (row as any)[mark] = true
+    publish(SAT)
+    /* age the issued block the way a schema-v5 book really is */
+    const snap: any = daySnapOf(SAT, dayCurVer(SAT))
+    for (const i of snap.d.oilev.inputs) delete i.stand
+  }
+
+  it('a CANCELLED row: both builds pay nothing, so nothing is pending', () => {
+    agedPublish('cx')
+    expect(dayHasChanges(SAT), 'the money agrees it is unchanged; the key must too').toBe(false)
+  })
+
+  it('an INFO-ONLY row: the same', () => {
+    agedPublish('info')
+    expect(dayHasChanges(SAT)).toBe(false)
+  })
+
+  it('a LIVE row: still unchanged, so the repair has not gone too far', () => {
+    agedPublish()
+    expect(dayHasChanges(SAT)).toBe(false)
+  })
+})
+
+describe('rank 4 — the BINDING half: a signature given before `stand` existed', () => {
+  /* EXACTLY the string the old build wrote, reproduced here and not taken from
+     production, so this test defines what "an old binding" is rather than
+     agreeing with whatever the current serialiser happens to do. */
+  const oldBuildKey = (ev: any) => {
+    if (!ev || !ev.earns) return ''
+    const ins = ev.inputs.map((i: any) => `${i.iid}:${i.person}:${i.type}:${i.acc}:${i.win ? i.win.join('-') : ''}:${i.ans == null ? '' : i.ans}`).join(',')
+    const sent = Object.keys(ev.sent).sort().map((k: string) => `${k}=${[...ev.sent[k]].sort().join('+')}`).join(',')
+    return `${ev.iso}|${oilDecisionsKey(ev.d)}|${ins}|${sent}`
+  }
+  const signAll = (di: number) => {
+    setSign(di, 'cur', 'ignite'); setSign(di, 'sked', 'bane')
+    setSign(di, 'plan', 'stiff'); setSign(di, 'appr', 'pump')
+  }
+  const ageBindings = (di: number) => {
+    const old = oldBuildKey(oilEvidence(di))
+    for (const r of Object.keys((SCHED.signBind || {})[di] || {})) (SCHED.signBind[di] as any)[r].oil = old
+  }
+
+  it('a day nobody touched keeps its sign-offs', () => {
+    claim({ iid: 'r4s', person: 'bane', type: 'Duty', date: 'Jul 18', acc: 'g',
+      allday: false, s: 9 * 60, e: 17 * 60, oil: { [SAT_ISO]: 1 } })
+    groundRow(SAT, { prog: 'DUTY', str: '0900', end: '1700', who: 'bane', src: 'r4s' })
+    signAll(SAT)
+    expect(daySigned(SAT), 'signed against the day as it stands').toBe(true)
+    ageBindings(SAT)
+    expect(daySigned(SAT), 'nothing was edited, so the sign-offs still cover the day').toBe(true)
+  })
+
+  it('THE CONTROL — a day job 2 changed the money on must be signed again', () => {
+    /* a two-day Training anchored on the FRIDAY and covering the Saturday: it
+       paid the Saturday nothing before job 2 and pays a full day now, so an old
+       signature cannot be allowed to cover it */
+    claim({ iid: 'r4x', person: 'stiff', type: 'Training', date: 'Jul 17', endDate: 'Jul 18',
+      acc: 'g', allday: false, s: 8 * 60, e: 18 * 60, oil: { [SAT_ISO]: 1 } })
+    groundRow(4, { prog: 'TRAINING', str: '0800', end: '1800', who: 'stiff', src: 'r4x' })
+    signAll(SAT)
+    expect(daySigned(SAT)).toBe(true)
+    ageBindings(SAT)
+    expect(daySigned(SAT), 'the Saturday pays a day it never paid before').toBe(false)
+  })
+})

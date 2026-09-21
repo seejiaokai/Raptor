@@ -357,25 +357,64 @@ export function oilDecisionsKey(dec: OilDecisions | undefined): string {
  *  "1 pending" and gone unsigned the moment the owner opened the app, which is
  *  exactly the manufactured-amendment shape §9 of the hand-pass sheet is about).
  *
- *  The missing value is RECONSTRUCTED from `acc`, which those blocks do carry,
- *  rather than defaulted to a constant — a constant cannot help, because the
- *  live side always has a real value and would differ from it anyway. `acc:'g'`
- *  meant "landed and paying", which is `active`; anything else never landed.
+ *  CORRECTED, Codex rank 4, 22 Sep 26. The first repair guessed the missing
+ *  value from `acc` — `'g'` meant `active`, anything else `unlanded`. That guess
+ *  is the same false premise `3df527d` had to undo in the money reader: a day
+ *  published while its row was CANCELLED keyed `active` here and `cx` live, so
+ *  a day the money agrees is unchanged still offered an amendment nobody asked
+ *  for. Two readers of one stored fact, and only one of them was repaired.
  *
- *  The one case it does not reconstruct: a day published while its anchor row
- *  was CANCELLED. That keys as `active` here and `cx` live, so it reports a
- *  pending change — and it SHOULD, because that day was paying a claim the
- *  schedule said did not happen. That is the R-2 defect, fixed on this branch;
- *  a day still carrying it deserves the flag. */
-function standOf(i: OilInputEv): OilInputEv['stand'] {
-  return i.stand || (String(i.acc || '') === 'g' ? 'active' : 'unlanded')
+ *  So the key reads it the way the money does — `effectiveStand`, which runs the
+ *  OLD rule against the day being read, which for an issued block is the frozen
+ *  schedule itself. One body, one answer.
+ *
+ *  `day` is optional only because the key is exported; both production callers
+ *  pass it (`oilDelta` passes the frozen day, `currentBind` the live one). With
+ *  no day and a legacy input there is nothing to reconstruct from, so the old
+ *  guess remains as the last resort rather than a silent wrong answer. */
+function standIn(day: any, i: OilInputEv): OilInputEv['stand'] {
+  if (i.stand) return i.stand
+  if (day) return effectiveStand(day, i)
+  return String(i.acc || '') === 'g' ? 'active' : 'unlanded'
 }
 
-export function oilEvidenceKey(ev: OilEvidence | null | undefined): string {
+export function oilEvidenceKey(ev: OilEvidence | null | undefined, day?: any): string {
   if (!ev || !ev.earns) return ''
-  const ins = ev.inputs.map(i => `${i.iid}:${i.person}:${i.type}:${i.acc}:${standOf(i)}:${i.win ? i.win.join('-') : ''}:${i.ans == null ? '' : i.ans}`).join(',')
+  const ins = ev.inputs.map(i => `${i.iid}:${i.person}:${i.type}:${i.acc}:${standIn(day, i)}:${i.win ? i.win.join('-') : ''}:${i.ans == null ? '' : i.ans}`).join(',')
   const sent = Object.keys(ev.sent).sort().map(k => `${k}=${[...ev.sent[k]].sort().join('+')}`).join(',')
   return `${ev.iso}|${oilDecisionsKey(ev.d)}|${ins}|${sent}`
+}
+
+/** THE SAME KEY AS THE BUILD BEFORE `stand` WROTE IT — six parts per claim, not
+ *  seven. Kept for exactly one purpose: a signature binding frozen by that build
+ *  stores this string, and the only way to ask "is the day still what he signed"
+ *  is to write today's content the way he saw it written. Never used to compare
+ *  two live keys, and never written anywhere new. */
+export function oilKeyBeforeStand(ev: OilEvidence | null | undefined): string {
+  if (!ev || !ev.earns) return ''
+  const ins = ev.inputs.map(i => `${i.iid}:${i.person}:${i.type}:${i.acc}:${i.win ? i.win.join('-') : ''}:${i.ans == null ? '' : i.ans}`).join(',')
+  const sent = Object.keys(ev.sent).sort().map(k => `${k}=${[...ev.sent[k]].sort().join('+')}`).join(',')
+  return `${ev.iso}|${oilDecisionsKey(ev.d)}|${ins}|${sent}`
+}
+
+/** DID JOB 2 CHANGE WHAT THIS DAY PAYS? The old rule looked for the request's
+ *  row on the day being paid; the new one reads the ONE anchor row's standing,
+ *  wherever it sits, and lets it govern every day the request covers. For most
+ *  days the two agree. Where they do not — a Saturday covered by a request
+ *  anchored on the Friday, which paid nothing before and pays a full day now —
+ *  the day's money moved when the build changed, and no signature given before
+ *  the change can honestly still cover it.
+ *
+ *  This is the guard Codex asked for in rank 4: an old binding is never accepted
+ *  merely because it matches an old serialiser. */
+export function oilUpgradeMovedMoney(day: any, ev: OilEvidence | null | undefined): boolean {
+  if (!ev || !ev.earns) return false
+  for (const inp of ev.inputs) {
+    const before = !(!inp.asks || inp.acc === 'r' || !inp.win) &&
+      (inp.acc !== 'g' || effectiveStand(day, { ...inp, stand: undefined } as any) === 'active')
+    if (before !== oilInputEligible(day, inp)) return true
+  }
+  return false
 }
 
 /* ---- what the block says a day EARNS ------------------------------------- */
