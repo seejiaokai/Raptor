@@ -712,6 +712,34 @@ rules about posted-out and pre-joining rows. Several older documents still read 
   types itself.
 
 ### [OIL-AUTO-REMOVE] Taking OIL off — BUILT 21 Sep 26, holding for "merge live"
+
+> **CROSS-PROVIDER BUG CHECK DONE 21 Sep 26 — eight defects, being fixed before merge.**
+> Fable 5.1 (high) and Astra/Codex (high), both read-only, neither the model that built it.
+> **Triage and the ordered fix plan: `raptor-port/docs/superpowers/specs/2026-09-21-oil-bugcheck-fixplan.md`.**
+> The two reviews in full are `…-oil-bugcheck-fable.md` and `…-oil-bugcheck-codex.md` beside it.
+> Four of the eight are ONE root cause — the freeze boundary has more doors than `creditFrom`.
+> **Two owner rulings came out of it:** R-1, only the issued schedule pays, BOTH directions (a
+> holiday declared after publication waits for a republication, and revoking one no longer sweeps
+> money silently); R-2, the two pre-existing money bugs are fixed here because they share that root
+> cause. **No second aliasing bug exists** — both reviewers traced every hand-back by hand — but the
+> test suite is still blind to that whole shape, and the fix plan's last section says how.
+
+> **OWNER RULING 21 Sep 26 — O-1 ANSWERED, NOT YET BUILT.** The green bar is drawn **only on the
+> events that COUNTED towards the man's day**. It stays his whole-day figure (there is no per-event
+> figure and one must never be invented), but it is WITHHELD on any row that gave him nothing: an ⓘ
+> info-only row, a row whose item is switched off, a person the admin denied, a row with no written
+> times. Green therefore means "this row counted towards his day", and it agrees with what the mode
+> shows when a puck is tapped off. A man on four rows where two counted shows the bar twice.
+> This **supersedes §2.10 / OIL21**, which said the bar repeats on every puck he wears that day.
+> Deferred only until the cross-provider bug check lands, so both changes go in one pass.
+> **The work:** `ui/oilmode.ts oilBarOf` takes the item key too and returns null unless that man has
+> a surviving span on THAT item (`oilEarnedWork(day, ev)` already computes it per person with
+> `w.item`). Pin it in `ui/oilmode.test.tsx` beside the OIL20/OIL21 tests. Correct OIL21's wording
+> in the behaviour register, in `docs/ui-contracts.md` §OIL and in `docs/engine-rules.md`.
+> **Re-examine O-3 in the same pass** — the ALL AVAIL count chip counts each man's DAY, which he
+> ruled "leave it" only because the bar meant the same thing; under this ruling they could agree
+> again. Display only; nothing in the engine or the credit path moves.
+
 **The three shapes were put to him and he rejected the framing** — rightly. Instead of fighting the
 derived credit, ask about the EVENT at the source. He then designed the interface himself: an
 **"OIL Earn" mode** on the scheduler board that glows every puck earning OIL that day, where the
