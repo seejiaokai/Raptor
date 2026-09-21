@@ -695,6 +695,37 @@ rules about posted-out and pre-joining rows. Several older documents still read 
   belongs to the AUTOMATIC pass, which reads the published schedule, not to a credit the squadron
   types itself.
 
+### [OIL-AWARD-IS-A-GRANT] An award is a ledger grant stored a second way (Fable, 21 Sep 26)
+**Raised by the [OIL-AWARD-ADD] design review as the real architectural root cause. NOT built, and
+deliberately not bundled — it moves persisted balances again and touches ~28 test files, so it is
+its own escalated session. It needs the owner's go before anything is written.**
+
+After his two rulings an award now: flags nothing, stands nobody down from flying, counts nobody on
+the duty manning, is never touched by the published schedule, and adds to the OIL balance. That is
+exactly what the OIL tracker's own ledger GRANT already does. The only differences left are where
+it is stored and which editor reaches it — so the same fact lives in two stores, which is the drift
+seam the house rules name. [OIL-AWARD-ADD] adds a fourth reader of it rather than removing one.
+
+**The shape, if it is ever done:** awards become ledger entries; the Leave War DERIVES the FO/HO
+contribution from the ledger on read, exactly the way an absence is derived from the Inputs page;
+the three cell editors become one ledger edit; a one-time conversion of stored hand-typed credits
+and of the demo seed. **Priority: after the bug hunt, and below [PUB-UNAVAIL] — it is tidiness with
+a real risk attached, not a hole in the paperwork.**
+
+### [OIL-EARNED-VS-GRANTED] The tracker calls an award "earned" (Fable, 21 Sep 26)
+**Small, and it is the OWNER'S FIGURE to change, which is why it was not folded into
+[OIL-AWARD-ADD] silently.**
+
+The tracker's summary counts a hand-typed award under **earned**, and the +OIL breakdown labels the
+whole lot "earned by weekend/PH work". That has been true since long before the award ruling, and
+[OIL-AWARD-ADD] does not change how a single credit is classified — only that a Saturday can now
+carry two. But it makes the wording visible: a Saturday he worked one day on and was awarded three
+for will read "earned 4".
+
+**If he wants it:** `oiltracker.ts` counts `auto && !manual` as earned and `manual` as granted;
+`counters.ts` splits the +OIL part into "earned by weekend/PH work" and "awarded on the war".
+One afternoon. **Ask him before doing it** — it changes two numbers he reads.
+
 ### [OIL-AWARD-ADD] An award and a worked day ADD UP — RULED, NOT YET BUILT (owner, 21 Sep 26)
 > "Yes an award and a worked day add up. So it's 4. The auto oil credits don't get affected by
 > manual OIL inputs."
