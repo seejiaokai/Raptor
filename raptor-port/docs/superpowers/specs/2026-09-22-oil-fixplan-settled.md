@@ -134,6 +134,25 @@ roster change after a publish reaches the money.
    (`engine/oil.ts:159`), so a per-person allow has no work to switch on. This pins the owner's
    ruling **D15** ("SC Spare not earning") at the measure itself.
 
+   **AND THE SAME FOR EVERY OTHER EXEMPT SEAT — D20, driven 22 Sep 26.** Asked with a control, so
+   a false pass was impossible: Hunter earns nothing on this Saturday, earns a full day the moment
+   he is put on an ordinary flying line, and then —
+
+   | where Hunter is put | earns | with a FORCED green |
+   |---|---|---|
+   | an ordinary flying line (the control) | **yes** | yes |
+   | an AVALON flying line | no | **no** |
+   | an AVALON duty desk | no | **no** |
+   | a BB flying line | no | **no** |
+   | a duty block made from the AVALON template, through the board's own + Block | no | **no** |
+   | a duty block made from the Standard template (the control again) | **yes** | yes |
+
+   **The last two rows are the ones nobody had checked.** The existing test hand-builds a desk
+   carrying the AVALON wave, so it watched the engine and never the MINT: if `blockFromTpl` had
+   stopped stamping the wave onto a user-made block, that test would still have passed while every
+   AVALON desk a squadron created quietly started paying. Now pinned by its own test, proved red
+   before it was left green.
+
    **So fix 7 is entirely about the SWITCH, never the men.** The danger is the opposite of the one
    the question suggests: a spare AIRCRAFT sits under a formation that is NOT spare, the line is one
    item, and the board draws that item's switch once per aircraft row. Pressing the one beside the
