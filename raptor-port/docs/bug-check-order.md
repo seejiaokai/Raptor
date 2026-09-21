@@ -20,6 +20,51 @@ The rule that overrides all others: **a walk that left no picture did not happen
 
 ---
 
+## 0a. It fires itself — the owner never picks the checks
+
+**Owner, 21 Sep 26:** *"the bug check order auto automatically kick in based on the right scenario
+and will recommend what checks to do. And this will be a standing order henceforth. So that i dont
+need to figure out what kind of bug checks to execute and u will read this bug check file to know
+what to do before u execute."*
+
+So the agent decides, and tells him. He is never asked "which checks shall I run?" — that question
+is the agent's job, answered out of §5.
+
+**The trigger.** The order is in force the moment any of these is true:
+
+- he asks to bug-check, test, verify, review, "check for bugs", "make sure it works", or whether
+  something is safe to merge;
+- anything under `raptor-port/src` has just been built, fixed or changed;
+- work is about to be reported done, ready, or ready for "merge live";
+- he reports something wrong on screen, or asks why something looks or behaves a certain way;
+- a review, a gate or a reviewer hands back a finding that is about to be acted on.
+
+**Then, before executing anything:**
+
+1. **Open this file.** Not from memory — it changes.
+2. **Answer the eight questions in §5** against the actual change and **state the TIER out loud**:
+   NONE / LOOK / WALK / FULL. If a question cannot be answered NO with a reason that could be
+   written down, the answer is YES.
+3. **Tell him in one short block what that tier means you are about to do** — the checks, and
+   roughly how long. He reads it; he does not choose it. If he wants less, he will say so, and that
+   is his call to make, not the agent's to assume.
+4. **Execute it in the order §5 gives**, and finish with the `Walk:` line from §9.
+
+**If you are about to skip a step, say so and say why.** A skipped check he agreed to is a
+decision. A skipped check he never heard about is how three defects reached him on 21 Sep 26.
+
+**This replaces every earlier bug-check instruction** — owner, same day: *"The previous methods I
+told I to bug check. I think this is the most comprehensive one. So just follow this instead."* The
+16 Sep scenario rule, the 20 Sep rules sweep and the 21 Sep test-like-a-human rule are all inside
+this file. Follow this one; do not run four overlapping methods. The older notes are kept only for
+the evidence that produced them and point here.
+
+`.claude/rules/bug-check.md` is the short always-loaded copy of this section, so the trigger
+survives even when this file has not been opened yet. **This file is the authority; that one is the
+reminder.**
+
+---
+
 ## 1. Why — six failures in one build, all on the same day
 
 Not theory. On 21 Sep 26 the OIL build had five automatic gates, ~5,300 passing tests, two
