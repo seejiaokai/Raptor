@@ -15,7 +15,8 @@
     "probes:adapted": "node probes/adapted/run-all.cjs",
     "perf": "node probes/perf-port.cjs",
     "smoke:tracker": "node scripts/tracker/smoke.mjs",
-    "rulecheck": "node scripts/rulecheck.mjs"
+    "rulecheck": "node scripts/rulecheck.mjs",
+    "docsize": "node scripts/docsize.mjs"
   },
   "dependencies": {
     "react": "^19.2.8",

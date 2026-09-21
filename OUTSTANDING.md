@@ -81,6 +81,11 @@ in-flight and risk-reducing** first.
    abandoned its preview server, and on Windows even a passing run did, so the next run
    couldn't bind the port and failed on clean code. Both fixed, cross-provider reviewed
    (Codex + Fable), gates green. The follow-up #1 build can run its per-phase gate set.
+1b. **[DOC-TRIM] — NEW, owner 21 Sep 26 (D14), AFTER [OIL-AUTO-REMOVE] merges.**
+   A session reads ~4,000 lines before it can work. The ratchet (`npm run docsize`) already
+   stops further growth; this is the trim itself. Do it after OIL merges, not before —
+   a third of tonight's new lines are that task's scaffolding and become archive the day it
+   closes. See the item below.
 1a. **[HUMAN-RETEST] — NEW, owner 21 Sep 26, HIGH once [OIL-AUTO-REMOVE] is closed.**
    Re-run the hands-on pass over EVERY feature whose "bug test" was really a code review plus
    unit tests. See the item below for the full reasoning — the short version is that the OIL
@@ -334,40 +339,12 @@ what to stop):** `raptor-port/docs/superpowers/specs/2026-09-13-architecture-roo
   when landings become the one Absence record, or a cheap `srcType` on the ground row if it surfaces.
 
 ### [TRK-SMOKE] The `addStudent` tracker smoke check — DONE 17 Sep 26 (committed, NOT merged)
-**Answer to the mandated first question: NOT a flake.** It failed deterministically at one spot
-(the second of two back-to-back adds) and, when the machine was clean, a specific race — proven
-by instrumenting the running app at the failing add and reading the value the box held at submit
-time. Two independent causes, both fixed:
-
-1. **The add-student box wiped the typed name (shipped bug).** The shared in-page dialog cleared
-   its text field to the default in a POST-PAINT step that ran a beat AFTER the box was already
-   fillable. A human types later than that, so a person never hit it — but a machine-speed fill
-   (the smoke suite, a fast paste, a password manager) landed the name before the clear, which
-   then wiped it, so OK submitted a blank and the add silently no-op'd → the roster option never
-   appeared → 15s timeout. FIX (`src/tracker/components/Modals.jsx`): clear the field DURING
-   render, before it is ever shown, so nothing typed can be clobbered. Focus moved to its own
-   effect keyed on the dialog serial (a Fable-review fix — the interim version cancelled the
-   cursor when any background refresh landed within 30ms of opening). Two regression tests pin
-   both, each proven to fail on the pre-fix code.
-2. **Failed runs (and, on Windows, ALL runs) abandoned the preview server.** The harness only
-   tore down at the end-of-file; a timed-out check threw before that and left the vite server
-   holding the strict port, and on Windows even a passing run leaked it because `server.kill()`
-   killed only the shell wrapper, not the vite child. An orphan on the port makes the NEXT run
-   fail to bind — the "stray :4179" and "fails three times running on clean code". FIX
-   (`scripts/tracker/smoke.mjs`): register a teardown (close browser + kill server) BEFORE the
-   browser launches and on any crash, memoised so a second failure can't race ahead of it, with
-   a Windows tree-kill (`taskkill /T /F`) and a bounded browser close.
-
-**Verification.** vitest 4868/0 · build clean · parity 728/0 · tracker units 76/76 (2 new
-regression tests) · `npm run smoke:tracker` 425/0 repeatedly with the server confirmed torn
-down, and a forced browser-launch failure now cleans up too. Cross-provider bug-check: Codex
-(found the teardown-before-launch gap, fixed) + Fable (found the focus regression + a concurrent-
-teardown leak, both fixed). **MERGED LIVE 17 Sep 26 (PR #408, code-only cherry-pick, squash
-`93deab7` on `main`).** Only the tracker fix went live; the rest of the branch stayed unmerged.
-NB the app itself is fast (Tracker tab opens in ~0.4s, instant thereafter); the slowness during
-this work was the leaked servers, not the app.
-
----
+**Not a flake.** Two independent causes, both fixed and both pinned: the shared add-student box
+cleared its text field in a post-paint step that ran AFTER the box had been read (a shipped
+bug, not a test bug), and a second race on back-to-back adds. Proven by instrumenting the
+running app at the failing add and reading what the box actually held at submit time.
+**The full diagnosis is in the commit message**, which is where a how-it-was-found story
+belongs (`doc-budget.md` §3). Nothing outstanding; kept only until it merges.
 
 ### [SYNC-INTEG] Leave War ↔ inputs guardrails (NON-undo part) — small, ready
 A read-only cross-provider audit (Codex + Fable, 13 Sep 26) of DELETE/UNDO across the
@@ -717,6 +694,30 @@ rules about posted-out and pre-joining rows. Several older documents still read 
   belongs to the AUTOMATIC pass, which reads the published schedule, not to a credit the squadron
   types itself.
 
+### [DOC-TRIM] The repo is too heavy to read (owner, 21 Sep 26 — D14)
+**His words: "theres going to be alot of context for the AI to read ... reading so much context
+as an AI it starts to hallucinate."** Measured that day: **1,830 lines loaded every session**
+whatever the task, plus **2,228 more** at session start. `HANDOFF.md` states its own 550-line
+ceiling inside itself and had reached 961.
+
+- **Policy and tiers: `raptor-port/docs/doc-budget.md`. Gate: `npm run docsize`** — a RATCHET,
+  so ceilings only ever go down. Growth is already stopped; this item is the reduction.
+- **The one change worth doing FIRST, and on its own** (~30–45 min, compounding on every later
+  session): `CLAUDE.md` is 1,539 lines and is loaded every time. Most of that is §Stable
+  decisions — historical rulings, which are tier-2 reference, not tier-0 index. Move them to
+  `docs/stable-decisions.md` and leave ONE line per topic pointing in. Target ~500 lines.
+  Careful work: that section is the project's memory of what must not be relitigated, so move
+  it wholesale, verify nothing is dropped, and lower the ceiling in the same commit.
+- **Then:** `HANDOFF.md` 961 → 400 (current state only; the stories belong in commit messages);
+  `OUTSTANDING.md` 1,210 → 600 (done items out, one short block per live item); `ui-contracts.md`
+  is 7,095 lines and needs no budget but does need sub-heads so a session can read one section.
+- **The writing rule that stops it recurring** is in `doc-budget.md` §2: record the DECISION,
+  not the transcript. Quote him only where the exact words are load-bearing; never quote the
+  same words in two files; a reason earns its place only if it would change a future decision.
+  This does NOT thin the reasoning — that is the plain-language rule and it still holds. It
+  stops saying the same thing three times.
+- **Prune on write:** touching a doc means leaving it no longer than you found it.
+
 ### [HUMAN-RETEST] Re-test the earlier builds the way a person uses them (owner, 21 Sep 26)
 **His words: "This also means that all the previous bug tests we did there will be bugs not
 captured. Because I didnt test them when i told u that u would test like a human since."** He is
@@ -784,38 +785,27 @@ admin taps a puck to take a man off one event, or taps an item to stop the whole
   truth behind them (the pass, the measure, what earns nothing by default, the publication
   asymmetry, how a sentinel resolves, input types and landing), the build order and the model
   guidance. Nothing of the design lives only in the chat.
-- **RED-TEAMED BY BOTH PROVIDERS, and reviewing is CLOSED.** Fable converged on the same
-  architecture and corrected four things. Codex (GPT-6 Astra, high) then reviewed it TWICE: round
-  one returned REVISE with six findings — two of them dead ends, not rough edges — and forced the
-  OIL evidence block; round two accepted the architecture and left four integration gaps, answered
-  in §9. **Stopped at two rounds by the owner's cap**, so §9's four answers were not themselves
-  re-reviewed — they go to the post-build code inspection with extra weight.
-- **NOTHING IS OUTSTANDING FOR THE OWNER — the design is CLOSED** (21 Sep 26, §8). His last three:
-  the published schedule is the truth (full freeze, corrected by unpublish-and-republish under the
-  same label, NOT by an approved-absence carve-out — do not build that); the full existing
-  development reset, scope stated and agreed; and a sentinel puck that DOES go green when everyone
-  behind it earns the same, with the count chip carrying the mixed case.
-- **READY TO BUILD.** Next step is the build, not more design.
-- **EVERY open question from the DESIGN is answered** (21 Sep 26). A publish reminder to all schedulers: YES.
-  ALL vs ALL AVAIL: stay identical, deliberately — do not "fix" the duplication. A Leave War
-  removal door: **NO, do not build one** (§4 has the three reasons and the cost he accepted).
-  How the exception shows: ONE line on the day, only when there is an exception, no per-row tags
-  on the issued schedule, and a per-person exclusion never appears there at all (§2.9).
-  **The design is complete. The next step is the Codex red team, not more questions.**
-- **A mockup exists** (an artifact canvas, the owner's own) and is one revision behind the mode
-  ruling. Redraw before relying on it.
+- **Design rulings that must NOT be relitigated** (21 Sep 26, §8/§9 of the decisions doc, which
+  carries each in full): the published schedule is the truth — a full freeze, corrected by
+  unpublish-and-republish under the same label, never an approved-absence carve-out; the
+  development reset ships at its real scope; a sentinel puck goes green when everyone behind
+  it earns the same, the count chip carries the mixed case; ALL and ALL AVAIL stay identical
+  on purpose; NO Leave War removal door; the exception shows as ONE line on the day and a
+  per-person exclusion never appears on the issued schedule.
+- **The design red team was capped at two rounds**, so §9's four answers were never
+  independently reviewed — which is why the post-build check weighted them highest. Done; see
+  the bug-check fix plan.
+- **The owner's mockup** (his own artifact canvas) is a revision behind the mode ruling.
+  Redraw before relying on it.
 
 ### [ALL-AVAIL-REDEF] What ALL AVAIL and ALL actually mean (owner, 21 Sep 26) — BUILT 21 Sep 26
-**His words: "ALL Avail and ALL pucks should not consist of ground crew by default. only SANS that
-are planned on the programmed on that day with us should be included … people on ATT B only should
-still be included. Those on Training, Course, Meeting, Appointment, Duty, Personal, Other, planned
-for anything on the schedule that conflicts in timing with the rest of the schedule is not part of
-All avail and ALL."** Full before/after table in §2.6 of the decisions doc above.
+His ruling, in short: no ground crew by default; a SANS man only when planned with us that day;
+ATT B still in; anyone whose own tasking clashes in time is out. **His exact words and the full
+before/after table are §2.6 of the decisions doc** — quoted there, not here.
 
 Split out of [OIL-AUTO-REMOVE] because it changes **who gets planted on a row**, not only who gets
-credited. It also closes a real disagreement: the board and the crew picker already know who is busy
-on the programme, and the expansion that credits OIL ignores the schedule entirely — two answers to
-"is this man available" living in one app.
+credited, and because it closed a real disagreement: two answers to "is this man available" living
+in one app.
 
 - **Do it WITH or BEFORE [OIL-AUTO-REMOVE]**: the OIL mode's sentinel expansion depends on what ALL
   AVAIL means.
@@ -1121,28 +1111,16 @@ THREE halves now (owner, 15–17 Sep 26):
 ## Done
 
 ### [REPO-CLEANUP] Repo-wide space/redundancy sweep — DONE, NOTHING REMOVED (18 Sep 26)
-The sweep was run and the conclusion is: **the repo is already tidy; there is nothing worth
-removing.** Do not re-open this without a new reason. What was checked and found:
-- **Source files: 0 dead.** An import-graph scan over all 522 `src` modules (handling
-  extensioned `.js` imports and vitest's glob-loaded `.test.*` entry points) found no file that
-  nothing imports.
-- **Dead CSS: negligible.** A scan of all 8 stylesheets against every source file (including the
-  innerHTML string-builders) flagged ~60 candidate classes, but almost all are **built
-  dynamically** (`seat-${p.seat}`, the `g-*` group family, the `sbi-`/`ic-pick` families) — false
-  positives. The genuinely-dead, single-class rules total **~0.9 KB**, not worth a gated cycle.
-- **Unused exports (`ts-prune`): not actionable.** Output was dominated by the `command/` and
-  `engine/` barrel `index.ts` re-exports and core keep-list symbols (`HOOKS`, `storeBackend`,
-  `VCONF`, `RULE_SPEC`) — flagging them is a false positive; acting on it would be a bug.
-- **Docs: ~0.6 MB of design write-ups for already-shipped features** (board rebuild, Leave War
-  bulk-balance + figures drawer, stores config, the Sep-7 rules audit, tracker interface rework,
-  leave types, plans-selector red-team). These are the only real weight. **Owner's decision:
-  KEEP them all** — leaving a note in the tree is the stronger form of history-keeping (browsable),
-  vs. a git-deleted file that is only recoverable if you know it existed. Git keeps history either
-  way, so deletion would have saved ~0.6 MB for no benefit and a real downside. **No removals made.**
-- Method note for a future sweep: the "referenced nowhere" test must strip the leading `YYYY-MM-DD-`
-  from a doc's filename, because OUTSTANDING/HANDOFF cite design docs by their date-elided tail
-  (`…-amendment-rev4-rev5-review-log.md`); a raw basename grep under-counts references and would
-  mark live-context docs as orphans.
+**The repo is already tidy; there is nothing worth removing. Do not re-open without a new
+reason.** Checked: 0 dead source files across 522 modules; dead CSS ~0.9 KB (the rest are
+dynamically built class names, false positives); `ts-prune` output was barrel re-exports and
+keep-list symbols, acting on it would be a bug. The only real weight is ~0.6 MB of design
+write-ups for shipped features, and the owner ruled **KEEP** — a note in the tree is browsable
+history; git keeps it either way, so deleting saved nothing.
+- Method note for a future sweep: strip the leading `YYYY-MM-DD-` before testing whether a doc
+  is referenced, because OUTSTANDING/HANDOFF cite design docs by their date-elided tail.
+- **NOTE (21 Sep 26): this was about disk space, which was never the problem.** The problem is
+  how much must be READ per session — that is `[DOC-TRIM]`, a different measure entirely.
 
 ### [AMEND-SEL-FOLLOWUPS] Plans-selector 7 follow-ups (incl. the signature-leak bug) — DONE + LIVE 15 Sep 26
 The owner's 15 Sep batch of 7 changes to the plans-selector redesign, all built test-first on
