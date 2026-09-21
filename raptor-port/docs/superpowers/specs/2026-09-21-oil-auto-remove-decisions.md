@@ -25,6 +25,11 @@ Two independent reviews (the session's own analysis and Fable) converged on the 
 architecture: per-event primary, the day as a FACT not a stamp, per-person as
 per-person-per-DAY, and nothing on the puck.
 
+**Then Codex red-teamed it twice (§7, §9).** Round one returned REVISE with six findings and forced
+the OIL evidence block; round two accepted the architecture and left four integration gaps, answered
+in §9. **Reviewing stopped at two rounds by the owner's cap** — §9's four answers are the design's
+best answer and were NOT independently reviewed. Give them extra weight in the post-build inspection.
+
 ---
 
 ## 2. THE OWNER'S RULINGS (21 Sep 26) — build to these
@@ -515,7 +520,115 @@ issued day at all. **Put to the owner as a small visual question**, since he cho
 
 1. §7.3 — once a day is published, a man who later goes on leave still earns until it is amended.
    Stated to him as a consequence; not yet confirmed.
-2. §7.5 — the reset of existing automatic credits when this deploys.
+2. §7.5 + §9.4 — the deploy reset, **and its real scope**: not just OIL numbers, but the demo
+   weeks, the published days, the inputs and the Leave War cleared and re-seeded together, using
+   the reset the app already has. Right while the app is pre-promulgation; wrong the day after.
 3. §7.6 — a sentinel puck wearing no bar, the count chip carrying the summary instead.
 
 ---
+
+---
+
+## 9. ROUND TWO OF THE RED TEAM — the last four, and where reviewing STOPPED (21 Sep 26)
+
+Codex re-reviewed the revised document. **The architecture is accepted**, in its words: the frozen
+input evidence, the frozen sentinel participants, the stable decision identity and the sentinel
+display all answer round one. Four integration gaps remained, all high. They are answered below.
+
+**REVIEWING STOPPED HERE, deliberately.** The owner's standing rule caps a design red team at about
+three rounds — Fable was one, Codex two — then the findings fold into the build and code inspection
+carries the rest. So §9's four answers have NOT themselves been independently reviewed. Treat them
+as the design's best answer, not as certified, and give them extra attention in the post-build
+inspection.
+
+### 9.1 The admin cannot say YES over a member's NO (OAR-001 residual, high)
+
+**The gap.** §2.2 gives the member the first word and the admin the override. But the evidence
+block as written holds the member's answer plus per-person EXCLUSIONS only — both of which subtract.
+If the member answered No, removing an exclusion still leaves No, and adding one changes nothing.
+The existing reader rejects any non-positive answer outright (`sync.ts:868-869`). The override the
+owner asked for cannot be expressed.
+
+**The answer.** A per-person-per-event decision is **THREE-STATE, not a flag**: `inherit` (the
+default — follow the member's answer and the ordinary rules), `allow` (this man earns from this
+event whatever the member's answer said) and `deny`. `allow` and `deny` both OUTRANK the member's
+answer; `inherit` defers to it. **The member's own answer is stored separately and is never
+overwritten** — so the admin's override can be removed and the member's word comes back, and the
+Inputs page still shows the member what he himself said.
+
+The day blanket and an item mark **MASK** the decisions beneath them rather than deleting them: turn
+the blanket off and every person and item decision is exactly as it was. And nothing overrides
+ineligibility — a dormant input, a cancelled row, a day that cannot earn at all, or work with no
+written times stays at nothing whatever the three-state says. An `allow` is permission to count real
+work, never permission to invent it.
+
+### 9.2 Extending `dayKeys` is not enough — keys that APPEAR and DISAPPEAR (OAR-002 residual, high)
+
+**The gap, and it is exactly the one §7.2's own fix created.** `canonicalDiff` ignores a key that
+newly appears unless `rowKeyOf` recognises its owning row (`canonical.ts:167-180`), and ignores one
+that disappears (`185-190`); `rowKeyOf` knows only the existing crew-slot families. So "one key per
+fact" means adding or clearing a per-person decision changes the digest and still emits **no
+amendment item**.
+
+**The answer — ONE always-present aggregate key per day, not one key per fact.** The whole evidence
+block serialises to a single deterministic value under one synthetic per-day address (the pattern
+`markInputFiling` already uses for a filing that owns no cell, and that `canonical.ts` already
+describes for changes with no slot of their own). Always present, so it is always compared; a
+deterministic serialisation, so an unchanged block is byte-identical and a changed one always
+produces a delta. No key ever appears or disappears, so `rowKeyOf` and the structure pass need no
+new families.
+
+**The cost, stated:** the amendment item reads *"the OIL decisions on this day changed"* rather than
+naming each man. For the owner that is better, not worse — one line instead of twelve — and the
+history still holds the before and after through the edit log. If a per-man amendment item is ever
+wanted, it needs `canonicalDiff` taught the identity lifecycle, which is a bigger job and is NOT in
+this build.
+
+### 9.3 The evidence block needs a refresh boundary, or it signs the wrong thing (OAR-007, high)
+
+**The gap, and it is the sharpest of the four.** Materialising the evidence only when publication
+freezes it breaks both ways: an answer-only change is invisible to amendment detection (no delta, so
+nothing can be published), or the frozen evidence is not the evidence that was signed. `reviseOil`
+writes only the global `row.oil` (`InputsPage.tsx:689-695`) while `currentBind` hashes `DAYS[di]`
+(`publish.ts:750-757`), and publication checks changes and signatures BEFORE taking the snapshot
+(`publish.ts:631-634`, first publication `194-208`). Worse, a saved draft clones the day block
+(`drafts.ts:173`), so restoring one could restore an obsolete input projection while the live inputs
+hold newer answers — stale money, silently.
+
+**The answer — ONE candidate projection, derived, never stored on the live day.**
+
+1. The live day's evidence is **DERIVED on read** from the current inputs, roster and day content
+   plus the stored decisions. It is not a stored field on the working copy, so it cannot go stale.
+2. **One body computes it**, and the preview, the amendment comparison, the signature binding and
+   publication all call that one body — so they cannot disagree. It is recomputed on the ordinary
+   mutation cycle, and after an input change, a roster change, a draft selection, an undo and a week
+   load.
+3. **Publication freezes exactly the candidate whose signature was validated** — the same computed
+   value, not a second read taken afterwards.
+4. **What is STORED on a day is only the decisions** — the blanket, the item marks, the three-state
+   per-person decisions. Those are the owner's choices and they are the day's content. The derived
+   parts (the input projection, the resolved sentinel participants) exist on the ISSUED snapshot
+   only. So a restored draft carries its decisions and re-derives everything else, and can never
+   resurrect an obsolete projection.
+
+### 9.4 The cutover scope is wider than "reset the credits" (OAR-005 residual, high)
+
+**The gap.** Clearing automatic credits alone leaves old issued snapshots with no input projection
+and no frozen sentinel participants — evidence that was never stored and cannot be reconstructed
+(§7.5 rightly forbids rebuilding it from unapproved live inputs). So the pass cannot "re-derive from
+published days" for an old published OD claim or ALL AVAIL event.
+
+**The answer — use the reset that already exists, at its real scope.** `storage/reset.ts:27-40`
+already clears inputs, every week INCLUDING its issued snapshots, and the Leave War together. That
+is exactly the coherent scope this change needs, and it is the owner's standing development-phase
+ruling applied rather than a new mechanism invented beside it. The change ships behind that reset,
+once, durably — not a narrower credits-only sweep.
+
+**THE OWNER MUST HEAR THE SCOPE.** This is not "your OIL numbers reset". It is the demo data — the
+weeks, the published days, the inputs and the Leave War — cleared and re-seeded together. That is
+the right call while the app is pre-promulgation, and it would be the wrong call the day after it is
+not. **§8 carries it as his to confirm.**
+
+If he declines the full reset, the only other coherent option is: classify a legacy snapshot as
+carrying NO OIL evidence, credit nothing from it, and require a newly signed publication before that
+day can earn again. Never promise automatic restoration from evidence that was never stored.

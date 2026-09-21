@@ -713,10 +713,17 @@ admin taps a puck to take a man off one event, or taps an item to stop the whole
   truth behind them (the pass, the measure, what earns nothing by default, the publication
   asymmetry, how a sentinel resolves, input types and landing), the build order and the model
   guidance. Nothing of the design lives only in the chat.
-- **Reviewed once, by Fable** — it converged on the same architecture and corrected four things,
-  all folded in. **Codex (Astra) has NOT reviewed it**, and the owner's standing rule is both
-  providers before building.
-- **EVERY open question is now answered** (21 Sep 26). A publish reminder to all schedulers: YES.
+- **RED-TEAMED BY BOTH PROVIDERS, and reviewing is CLOSED.** Fable converged on the same
+  architecture and corrected four things. Codex (GPT-6 Astra, high) then reviewed it TWICE: round
+  one returned REVISE with six findings — two of them dead ends, not rough edges — and forced the
+  OIL evidence block; round two accepted the architecture and left four integration gaps, answered
+  in §9. **Stopped at two rounds by the owner's cap**, so §9's four answers were not themselves
+  re-reviewed — they go to the post-build code inspection with extra weight.
+- **THREE THINGS ARE HIS TO CONFIRM before the build** — §8 of the decisions doc names them: a man
+  who goes on leave after publication still earns until the day is amended; the deploy reset and
+  its real scope (the demo weeks, published days, inputs and Leave War cleared together, not just
+  OIL numbers); and a sentinel puck wearing no green bar.
+- **EVERY open question from the DESIGN is answered** (21 Sep 26). A publish reminder to all schedulers: YES.
   ALL vs ALL AVAIL: stay identical, deliberately — do not "fix" the duplication. A Leave War
   removal door: **NO, do not build one** (§4 has the three reasons and the cost he accepted).
   How the exception shows: ONE line on the day, only when there is an exception, no per-row tags
