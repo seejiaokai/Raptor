@@ -26,10 +26,24 @@ what the screen says.**
 
 Two of them take money off a man who worked, and both are silent. They are numbers 1 and 2 in §6.
 
-## TWO REVIEWS ARE ALREADY IN FLIGHT — read them before you build
+## BOTH REVIEWS ARE IN — read them before you build
 
-Fired at the end of the walking session, blind to each other, both on their top model, both
-attacking the PLAN rather than the findings. Their brief is
+Fired blind to each other, both on their top model, both attacking the PLAN rather than the
+findings. **Between them they say SEVEN of the eight fixes have the wrong shape. Only fix 4
+survived unchallenged.** Do not start from §6 as written; start from §6 as these two amend it.
+
+**Where they agree, and both against the plan:** fix 2 must NOT make a multi-day request land a
+row on every day it covers. One request is one row by design; the defect is that the money check
+demands the row be on the day being paid.
+
+**Where they disagree — same symptom, two diagnoses, and this is the one to settle first.** On
+fix 1, Codex says the decision key needs an assignment incarnation because a bare person/request
+pair revives the old refusal on a hand-back. Fable says nothing carries the refusal at all: the ask
+gate sees the old man's answers and asks the new man nothing, the commit then wipes them, and
+'unanswered' is drawn with the wording of a refusal. **Both agree the hand-back resurrection is
+real.** Settle the rest with evidence — a probe, not a preference — before writing a line.
+
+**Already settled, and it went against the host:** fix 3. See §9 of the evidence sheet. Their brief is
 `docs/superpowers/briefs/2026-09-21-oil-fixplan-redteam.md` — read it, because it names the
 question neither the build nor the walk answered.
 
