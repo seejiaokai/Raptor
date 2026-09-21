@@ -952,7 +952,7 @@ amendment with no money behind it. Commit `7045067`.
 The stash-aware read built for `[OIL-XWEEK-ELSEWHERE]` is the same seam a stash-aware relink would
 use. **Context.** `…/specs/2026-09-22-oil-jobs12-codereview-fable.md` §3 F8.
 
-### [LW-SCRUBBER-FLAKY] The year scrubber test fails on a saturated machine — PRE-EXISTING (21 Sep 26)
+### [LW-SCRUBBER-FLAKY] Leave War e2e tests time out on a saturated machine — PRE-EXISTING (21 Sep 26)
 `e2e/leavewar.spec.ts` "the bottom scrollbar is a year-wide scrubber", lw-desktop only. Under a full
 parallel run it sometimes times out after the SEP month button is clicked: the grid has not scrolled
 within 4s, so the bar's fraction still reads 0. Checked the way the OIL handoff demanded — the SAME
@@ -963,6 +963,12 @@ a year-wide grid redraw. Fix by waiting for the grid's own scroll to settle inst
 or raise that poll and the twelve-months one beside it. Low priority — it bites only a loaded dev
 box; CI runs three workers with one retry. Logs from both runs are in the 21 Sep evidence sheet,
 `raptor-port/docs/handpass/2026-09-21-oil.md`.
+
+**WIDENED 22 Sep 26 — it is a FAMILY, not one test.** The overnight run on this branch failed a
+different one, `e2e/step4-leavewar.spec.ts` "leave during a course", lw-desktop, and it failed on the
+LOGIN page: the sign-in form had not rendered before the fill timed out. Run on its own it passes in
+six seconds. Same cause, same shape — a fixed wall-clock wait on a loaded box — so the fix is the
+same one, and it belongs to the Leave War e2e suite rather than to any branch.
 
 ### [S4-HUNT-REST] The bug hunt's untouched ground — about three quarters of it (owner, 21 Sep 26)
 The branch turned into a long detour through the rules and the five items, so most of the hunt Fable
