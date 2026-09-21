@@ -9,7 +9,7 @@
 // these tests publish days and edit duty rows.
 
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, DATES } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { SCHED, signOf, setDayApproved, publishALDay, dayApproved } from '../engine/publish'
@@ -27,7 +27,8 @@ import {
   setRole,
 } from './state/store'
 import { memoryBackend } from './state/storage'
-import { availableFor, getClashes, oilPendingFor, runOilPass, syncAbsences } from './sync'
+import { availableFor, createOilPeriodFor, getClashes, installAbsenceDoor, oilPendingFor, publishFlagsBids, runOilPass, syncAbsences } from './sync'
+import { HOOKS } from '../engine/hooks'
 
 const ISNAP = JSON.stringify(INPUTS)
 const DSNAP = JSON.stringify(DAYS)
@@ -645,5 +646,91 @@ describe('bug-pass hardening (28 Aug 26)', () => {
     runOilPass()
     expect(cellOf('bane', SAT)).toBe('FO')                   // present bodies still earn
     expect(cellOf('pump', SAT), 'posted out — not in the squadron that day').toBeUndefined()
+  })
+})
+
+/* A WEEKEND NO LEAVE WAR PERIOD COVERS — owner's ruling D19 (22 Sep 26). A
+   weekend counts as a day that earns whether or not a war holds it; the credit
+   can only be written into a war that DOES. So a day outside every period
+   promised a full day of OIL that nobody could ever be paid, and said nothing
+   about it. This is the wire that lets the schedule say so. */
+describe('the day knows when no leave war period covers it (D19)', () => {
+  /* these load a 2028 week; hand the file's own week back so nothing after
+     them inherits it (loadweek.test.ts's rule) */
+  afterEach(() => { loadWeek('13/07/2026') })
+
+  it('names the year for a date outside every war, and says nothing for one inside', () => {
+    installAbsenceDoor()
+    /* the seed Saturday is held by the demo war — the control */
+    expect(HOOKS.oilNoPeriod(5), 'a Saturday a period covers is fine').toBe('')
+    /* a weekend in a year no war reaches — the demo seeds 2026 and 2027 */
+    loadWeek('07/02/2028')
+    const sat = DATES.findIndex((d: any) => /Feb 12/.test(String(d)))
+    expect(sat, 'the week of 7 Feb 28 carries Sat the 12th').toBeGreaterThan(-1)
+    expect(HOOKS.oilNoPeriod(sat), 'and it names the year whose period is missing').toBe('2028')
+  })
+
+  it('an ordinary weekday in that year says nothing — only a day that could earn asks', () => {
+    installAbsenceDoor()
+    loadWeek('07/02/2028')
+    const wed = DATES.findIndex((d: any) => /Feb 9/.test(String(d)))
+    expect(HOOKS.oilNoPeriod(wed)).toBe('')
+  })
+
+  it('creating the period from the schedule makes a real war for that year, in draft', () => {
+    setRole('admin')
+    expect(createOilPeriodFor('2028')).toBe('created')
+    const w = getState().wars.find(x => x.period.start === '2028-01-01')
+    expect(w, 'the war exists').toBeTruthy()
+    expect(w!.period.end).toBe('2028-12-31')
+    expect(w!.period.stage, 'draft — opening it for bidding stays his act').toBe('draft')
+    installAbsenceDoor()
+    loadWeek('07/02/2028')
+    const sat = DATES.findIndex((d: any) => /Feb 12/.test(String(d)))
+    expect(HOOKS.oilNoPeriod(sat), 'and the day stops complaining').toBe('')
+  })
+
+  it('a member cannot create one, and a year already covered is refused rather than duplicated', () => {
+    setRole('member')
+    expect(createOilPeriodFor('2028')).toBe('forbidden')
+    setRole('admin')
+    expect(createOilPeriodFor('2026'), 'the demo war already holds 2026').toBe('overlap')
+  })
+})
+
+/* CODEX M8 — the "no war" line at the foot of the screen could never speak.
+   `publishFlagsBids` returned on `!warHolding(...)` several lines before the
+   branch that handles a day no war covers, so that branch was unreachable and
+   any repair written against it would have shipped nothing. With D19 it has
+   something worth saying: publishing a day whose year has no period is exactly
+   the moment to tell him nothing can be paid for it. */
+describe('publishing a day no leave war period covers says so (Codex M8 + D19)', () => {
+  /* these load a 2028 week; hand the file's own week back so nothing after
+     them inherits it (loadweek.test.ts's rule) */
+  afterEach(() => { loadWeek('13/07/2026') })
+
+  it('the strip names the missing period instead of staying silent', () => {
+    installAbsenceDoor()
+    loadWeek('07/02/2028')
+    const sat = DATES.findIndex((d: any) => /Feb 12/.test(String(d)))
+    ;(DAYS[sat] as any).ground = [{ prog: 'SDO', str: '0800', end: '1800', who: 'plasma' }]
+    const said: string[] = []
+    const real = HOOKS.toast
+    HOOKS.toast = ((m: any) => { said.push(String(m)) }) as any
+    try {
+      publish(sat)
+      publishFlagsBids(sat)
+    } finally { HOOKS.toast = real }
+    expect(said.join(' | '), 'it says which period is missing').toMatch(/2028/)
+    expect(said.join(' | ')).toMatch(/no leave war period|nothing can be paid|cannot be paid/i)
+  })
+
+  it('THE CONTROL — a day a period covers says nothing about periods', () => {
+    installAbsenceDoor()
+    const said: string[] = []
+    const real = HOOKS.toast
+    HOOKS.toast = ((m: any) => { said.push(String(m)) }) as any
+    try { publish(5); publishFlagsBids(5) } finally { HOOKS.toast = real }
+    expect(said.join(' | ')).not.toMatch(/leave war period/i)
   })
 })

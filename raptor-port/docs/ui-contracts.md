@@ -7104,3 +7104,26 @@ an ADVISORY in the day's checks: *"This day is not published yet, so nobody earn
 OIL for it — publish it before the day is out."* Silent on a weekday, silent on an empty
 weekend, and silent the moment the day is published. It is the backstop the owner chose
 for the one risk he accepted when all OIL moved behind publication.
+
+### The day with no leave war period (D19, 22 Sep 26)
+
+A weekend counts as a day that earns whether or not a leave war period covers it — that is
+the calendar. But the credit can only be written into a war that HOLDS the date, so a day
+outside every period promised money nobody could ever be paid: it offered OIL Earn, drew a
+full green bar, said it earned a full day, told the scheduler to publish it before the day
+was out, and then reported "No conflicts flagged for this day" while the war had no cell
+for that date.
+
+Now the day's checks carry an ADVISORY naming the year: *"There is no leave war period for
+2028, so no OIL can be paid for this day — create the period on the Leave War."* It keeps
+saying so after the day is published (publishing does not fix it, and a day that reads
+clean is the lie), and the "publish it before the day is out" reminder above stays quiet on
+such a day, because it would be telling him to do the one thing that cannot help. The same
+sentence is added to the strip at the foot of the screen when he publishes.
+
+**The way out sits beside the reason.** A SCHEDULER's copy of that check carries the one
+action any check has: *Create the 2028 period*. It makes a whole-year period named for the
+year, in DRAFT, and moves to the Leave War so he can set the bidding window — opening a
+period for bidding is his own act and is never done behind him from a schedule screen. A
+member sees the reason and is offered nothing. A year another war already reaches is
+refused with a line saying so, rather than made twice.

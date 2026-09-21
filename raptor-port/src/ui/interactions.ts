@@ -14,7 +14,7 @@ import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { notify, loadWeek, commitSetDayApproved, commitPublishALDay } from '../state/store'
 import { schedWrite, schedWriteValue, SCHED_TYPES, commitUnpublish } from '../state/sched-commit'
-import { oilCreditBidAgainst } from '../leavewar/sync'
+import { oilCreditBidAgainst, createOilPeriodFor } from '../leavewar/sync'
 import { scrollToWarnFocus, queueHold, warnWeekId } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
 import { logAction } from '../engine/editlog'
@@ -1041,6 +1041,28 @@ export function routeClick(e: MouseEvent) {
      session-only — WARNOFF rides histSnap AND weekStashSnap (`wo`), so a mute
      persists with its week and survives a reload. Caught
      ABOVE the .wln jump so muting a row never also pans to its puck. */
+  /* THE MISSING LEAVE WAR PERIOD, CREATED FROM THE SCHEDULE (owner's ruling
+     D19, 22 Sep 26). The day says a period for that year does not exist and
+     that nothing can be paid for it; this is the way out sitting beside the
+     reason. It lands in DRAFT and takes him to the Leave War, because a period
+     carries bidding dates and a stage — opening it for bidding is his own act,
+     never something a schedule screen does behind him. */
+  const mkp = t.closest('[data-mkperiod]') as HTMLElement | null
+  if (mkp) {
+    e.stopPropagation()
+    if (!canEditSched()) { HOOKS.toast('Only a scheduler can create a leave war period', 'warn'); return }
+    const yr = String(mkp.dataset.mkperiod || '')
+    const made = createOilPeriodFor(yr)
+    if (made === 'created') {
+      HOOKS.toast(`The ${yr} leave war period is created — set its bidding window here`, 'ok')
+      view.setPage('leavewar'); notify()
+    } else if (made === 'overlap') {
+      HOOKS.toast(`A leave war already covers part of ${yr} — open the Leave War and extend it instead`, 'warn')
+    } else {
+      HOOKS.toast(`The ${yr} period could not be created`, 'warn')
+    }
+    return
+  }
   const wo = t.closest('[data-woff]') as HTMLElement | null
   if (wo) {
     e.stopPropagation()

@@ -63,6 +63,7 @@ import {
   getVersion,
   setRefusalHook,
   clearRaptorCell,
+  createWar,
   figureCtxOf,
   getState,
   ingestDutyCredit,
@@ -187,6 +188,38 @@ export function installAbsenceDoor(): void {
      Same seam, same reason — the engine cannot ask a war anything. */
   HOOKS.oilDayISO = (di: number) => labelToISO(DATES[di]) || ''
   HOOKS.oilSentinel = (iso: string, win: [number, number], day: any) => availableFor(iso, win, day)
+  /* WHICH YEAR'S PERIOD IS MISSING (owner's ruling D19, 22 Sep 26). A weekend
+     COUNTS as a day that earns whether or not a war holds it — that is the
+     calendar, and the predicate above says so. But the credit can only be
+     written into a war that DOES hold the date (`creditFrom`'s own first
+     line), so a day outside every period promised a full day of OIL that
+     nobody could ever be paid, and said nothing about it. The year is the
+     war's fact, not the engine's, so it is handed over already named. */
+  HOOKS.oilNoPeriod = (di: number) => {
+    const iso = labelToISO(DATES[di])
+    if (!iso || !isNonWorkingISO(iso)) return ''
+    return warHolding(getState().wars, iso) ? '' : iso.slice(0, 4)
+  }
+}
+
+/** CREATE THE MISSING PERIOD, from the schedule — the way out the day offers
+ *  beside the reason (owner's ruling D19, 22 Sep 26: "indicate that the leave
+ *  war period doesn't exist, create it").
+ *
+ *  A whole calendar year, named for it, and left in DRAFT: a period carries
+ *  bidding dates and a stage, and opening it for bidding is the admin's own
+ *  act taken when the schedule firms up — so it is never made open from a
+ *  schedule screen. The scheduler is handed to the Leave War afterwards to set
+ *  the window, which is his half of the job.
+ *
+ *  Refusals come straight back from the store, which is where they belong: a
+ *  member gets 'forbidden', and a year another war already reaches gets
+ *  'overlap' rather than a second war over the same dates — a date in two wars
+ *  would let one man hold leave on it twice. */
+export function createOilPeriodFor(year: string): string {
+  const y = String(year || '').trim()
+  if (!/^\d{4}$/.test(y)) return 'backwards'
+  return createWar(y, `${y}-01-01`, `${y}-12-31`)
 }
 /** Re-read the Inputs into the war now and repaint — what a Raptor notify
  *  does in the app; tests that push INPUTS directly call it. */
@@ -1062,7 +1095,12 @@ function oilBlindLine(iso: string, day: any, spans: Record<string, OilWork[]>): 
 
 export function publishFlagsBids(di: number): void {
   const iso = labelToISO(DATES[di])
-  if (!iso || !warHolding(rawState().wars, iso) || !isNonWorkingISO(iso) || !dayApproved(di)) return
+  /* THE `warHolding` TEST USED TO BE HERE, AND IT MADE THE BRANCH BELOW DEAD
+     (Codex M8, 21 Sep 26). Returning on "no war" several lines before the code
+     that handles a day no war covers meant that code could never run, so any
+     repair written against it would have shipped nothing. The war is resolved
+     further down, where it is actually needed. */
+  if (!iso || !isNonWorkingISO(iso) || !dayApproved(di)) return
   const snap = daySnapOf(di, dayCurVer(di))
   if (!snap || !snap.d) return
   /* THE WARNING MUST READ THE SAME BLOCK THE MONEY DOES (Fable, 21 Sep 26 — the
@@ -1089,7 +1127,15 @@ export function publishFlagsBids(di: number): void {
   /* amber, like the Inputs page's twin (N18, 21 Sep 26): this is a warning,
      not the face the app says "Saved" in. Both exits, because the day with
      no war is exactly the one a reader is least expecting a clash on. */
-  if (!war) { if (lines.length) HOOKS.toast(lines.join(' · '), 'warn'); return }
+  if (!war) {
+    /* AND NOW IT HAS SOMETHING TO SAY (owner's ruling D19, 22 Sep 26).
+       Publishing is exactly the moment the scheduler expects the money to move,
+       so it is the moment to tell him it cannot: no period holds this date, so
+       there is nowhere for the credit to be written. The day's own warning list
+       says the same thing and carries the way out. */
+    lines.push(`there is no leave war period for ${iso.slice(0, 4)}, so no OIL can be paid for this day — create the period on the Leave War`)
+    HOOKS.toast(lines.join(' · '), 'warn'); return
+  }
   const said: string[] = []
   for (const [person, sp] of Object.entries(spans)) {
     const wins = workSpans(sp)

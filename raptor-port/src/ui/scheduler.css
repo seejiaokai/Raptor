@@ -2983,6 +2983,9 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .dwlist .witem .wtx{flex:1;min-width:0;overflow-wrap:anywhere}
 .dwlist .witem-mute{flex:0 0 auto;align-self:flex-start;background:none;border:0;color:inherit;opacity:.5;cursor:pointer;font-size:12px;line-height:1.3;padding:0 3px;border-radius:5px}
 .dwlist .witem-mute:hover{opacity:1;background:rgba(255,255,255,.08)}
+/* the ONE check that carries an action (the missing leave war period, D19) — reads as a control, not as another muted glyph */
+.dwlist .witem-act{flex:0 0 auto;align-self:flex-start;background:var(--panel-2);border:1px solid var(--edge-2);color:var(--ink);cursor:pointer;font-size:11px;font-weight:600;line-height:1.3;padding:2px 7px;border-radius:6px;white-space:nowrap}
+.dwlist .witem-act:hover{background:var(--accent);border-color:var(--accent);color:#fff}
 .dwlist .witem.muted{opacity:.55}
 .dwlist .wmuted-h{display:flex;align-items:center;gap:3px;cursor:pointer;font-size:10.5px;color:var(--ink-3);padding:3px 4px;margin-top:1px;border-radius:6px}
 .dwlist .wmuted-h:hover{color:var(--ink-2)}

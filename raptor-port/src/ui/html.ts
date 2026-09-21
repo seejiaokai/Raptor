@@ -822,6 +822,13 @@ const soloTrace=(di:any,pf:any)=>{
   const t=dayTraceHTML(di,pf);
   return t?`<div class="dwbox open"><div class="dwlist solo">${t}</div></div>`:'';
 };
+/* the year whose leave war period is missing, for the one check that offers to
+   create it — '' for every other check, for a member, and whenever a period
+   already covers the day. Asked of the hook, so the button and the sentence
+   beside it cannot ever name different years. */
+function mkPeriod(w:any,di:any){
+  return w&&w.code==='OIL_NO_PERIOD'&&canEditSched()?HOOKS.oilNoPeriod(+di):'';
+}
 export function dayWarnHTML(di:any){
   const all=(WARN.byDay[di]&&WARN.byDay[di].warns)||[];
   /* When a puck is clicked the box narrows to that person's issues on this day
@@ -892,6 +899,13 @@ export function dayWarnHTML(di:any){
         +`<span class="wbar"></span><span${ed?' class="wtx"':''}><span class="wcode">${esc(wlbl(WCODE[w.code]||w.code))}</span>`
         +`<b>${esc(names)}</b>${names?' — ':''}${esc(w.msg||'')}${sigNew(w)}</span>`
         +(ed?`<button class="witem-mute" data-woff="${di}.${ix}" title="${muted?'Show this check again':'Hide this check — it comes back if the situation changes'}">${muted?'↺':'✕'}</button>`:'')
+        /* THE WAY OUT, BESIDE THE REASON (owner's ruling D19, 22 Sep 26 —
+           "indicate that the leave war period doesn't exist, create it"). Only
+           this one check carries an action, and only for a scheduler: saying
+           what is missing and leaving him to find the Leave War himself is half
+           an answer. The year is read from the SAME hook the warning was
+           written from, never parsed back out of its sentence. */
+        +(mkPeriod(w,di)?`<button class="witem-act" data-mkperiod="${esc(mkPeriod(w,di))}" title="Creates the ${esc(mkPeriod(w,di))} leave war period in draft and takes you to the Leave War to set its bidding window">Create the ${esc(mkPeriod(w,di))} period</button>`:'')
         +`</div>`;
     };
     /* an OFFICIAL-only warning (it clears once the day is signed): struck through,

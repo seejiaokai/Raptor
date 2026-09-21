@@ -63,6 +63,7 @@ newest-instruction-wins rule, and both need the owner to know.
 | OIL37 | A request filed on an already-published day auto-accepts on the WORKING copy as a pending amendment; the issued face stays frozen. |
 | OIL38 | Amendment numbering is per-day isolated. |
 | OIL39 | Undo of a publish is silent until the shared database registers it, then just a line in the history. |
+| OIL40 | **A weekend no leave war period covers NAMES the missing period and offers to create it (D19, 22 Sep 26).** Such a day still counts as one that earns — that is the calendar — but the credit can only be written into a war that holds the date, so nothing can ever be paid for it. The day says which year's period is missing, keeps saying it after publication, and the reminder to publish stays quiet because publishing cannot help. A scheduler is offered a control that creates the period for that year, in DRAFT, and takes him to the Leave War to set the bidding window; a member sees the reason but is offered nothing. A year another war already reaches is refused rather than duplicated. |
 
 ---
 

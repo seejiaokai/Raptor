@@ -1120,7 +1120,25 @@ function validateCore(){
          somebody down to earn something, and that has not gone out yet — so it
          is silent on an ordinary weekday, silent on an empty weekend, and
          silent the moment the day is published. */
-      if(!dayApproved(di)&&oilWouldEarn(di)){
+      /* A WEEKEND NO LEAVE WAR PERIOD COVERS (owner's ruling D19, 22 Sep 26 —
+         "Perhaps indicate that the leave war period doesn't exist, create it").
+         A weekend counts as a day that earns whether or not a war holds it —
+         that is the calendar — but the credit can only be written into a war
+         that DOES hold the date. Driven on Sat 13 Feb 27: the day offered OIL
+         Earn, drew a full green bar, promised a full day, told the scheduler to
+         publish it before the day was out, and then reported "No conflicts
+         flagged for this day" while the war had no cell for that date and never
+         could. The app instructed him to do something that cannot work and
+         reported success. So the day NAMES what is missing, and it keeps saying
+         so after publication — publishing does not fix it, and a day that reads
+         clean is the lie. The way out is offered beside it, on screen. */
+      const noPeriod=oilWouldEarn(di)?HOOKS.oilNoPeriod(di):'';
+      if(noPeriod){
+        add('adv','OIL_NO_PERIOD',[],`There is no leave war period for ${noPeriod}, so no OIL can be paid for this day — create the period on the Leave War`);
+      }
+      /* silent where the period is missing: telling him to publish would be
+         telling him to do the one thing that cannot help */
+      if(!noPeriod&&!dayApproved(di)&&oilWouldEarn(di)){
         add('adv','OIL_UNPUBLISHED',[],'This day is not published yet, so nobody earns their OIL for it — publish it before the day is out');
       }
       /* THE DAY STARTED EARNING AFTER IT WENT OUT (owner, 21 Sep 26 — R-1:

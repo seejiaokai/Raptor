@@ -47,6 +47,14 @@ export const HOOKS = {
      and a sentinel stands for nobody — which is exactly how the engine behaved
      before this block existed, so a headless run is unchanged. */
   oilDayISO: (_di: number): string => '',
+  /* THE YEAR WHOSE LEAVE WAR PERIOD IS MISSING, or '' when one covers the day
+     (owner's ruling D19, 22 Sep 26). A weekend needs no period to COUNT as a
+     day that earns — that is the calendar — but the credit can only be written
+     into a war that holds the date, so a day outside every period promised
+     money nobody could ever be paid. The engine cannot ask a war anything, and
+     the year is the war's own fact, so it arrives already named. Unset, nothing
+     is ever missing, which is how a headless run behaved before this. */
+  oilNoPeriod: (_di: number): string => '',
   oilSentinel: (_iso: string, _win: [number, number], _day: any): string[] => [],
   isPhone: (): boolean => false,
   editMode: (): boolean => false,
