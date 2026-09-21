@@ -1,0 +1,795 @@
+{
+ "beforePublish": {
+  "viewport": {
+   "w": 390,
+   "h": 844
+  },
+  "sideScroll": {
+   "docW": 390,
+   "winW": 390,
+   "overflows": false
+  },
+  "boardTopBarH": 49,
+  "dayBar": {
+   "box": {
+    "x": 14,
+    "y": 315,
+    "w": 346,
+    "h": 40
+   },
+   "text": "THIS DAY | Templates | OIL Earn",
+   "lines": 2,
+   "items": [
+    {
+     "t": "THIS DAY",
+     "x": 26,
+     "y": 328,
+     "w": 58,
+     "h": 12
+    },
+    {
+     "t": "Templates\nOIL Earn",
+     "x": 180,
+     "y": 323,
+     "w": 168,
+     "h": 23
+    },
+    {
+     "t": "Templates",
+     "x": 180,
+     "y": 323,
+     "w": 87,
+     "h": 23
+    },
+    {
+     "t": "OIL Earn",
+     "x": 272,
+     "y": 323,
+     "w": 76,
+     "h": 23
+    }
+   ]
+  },
+  "oilBtnPhone": [
+   {
+    "t": "OIL Earn",
+    "x": 272,
+    "y": 323,
+    "w": 76,
+    "h": 23
+   }
+  ],
+  "oilBtnDesktop": {
+   "vis": false,
+   "x": 0,
+   "y": 0,
+   "w": 0,
+   "h": 0
+  },
+  "clipped": []
+ },
+ "pub": {
+  "published": true,
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "afterPublish": {
+  "viewport": {
+   "w": 390,
+   "h": 844
+  },
+  "sideScroll": {
+   "docW": 390,
+   "winW": 390,
+   "overflows": false
+  },
+  "boardTopBarH": 49,
+  "dayBar": {
+   "box": {
+    "x": 14,
+    "y": 284,
+    "w": 346,
+    "h": 40
+   },
+   "text": "THIS DAY | Templates | OIL Earn",
+   "lines": 1,
+   "items": [
+    {
+     "t": "THIS DAY",
+     "x": 26,
+     "y": 297,
+     "w": 58,
+     "h": 12
+    },
+    {
+     "t": "Templates\nOIL Earn",
+     "x": 180,
+     "y": 292,
+     "w": 168,
+     "h": 23
+    },
+    {
+     "t": "Templates",
+     "x": 180,
+     "y": 292,
+     "w": 87,
+     "h": 23
+    },
+    {
+     "t": "OIL Earn",
+     "x": 272,
+     "y": 292,
+     "w": 76,
+     "h": 23
+    }
+   ]
+  },
+  "oilBtnPhone": [
+   {
+    "t": "OIL Earn",
+    "x": 272,
+    "y": 292,
+    "w": 76,
+    "h": 23
+   }
+  ],
+  "oilBtnDesktop": {
+   "vis": false,
+   "x": 0,
+   "y": 0,
+   "w": 0,
+   "h": 0
+  },
+  "clipped": []
+ },
+ "bars": [
+  {
+   "who": "ALL AVAIL",
+   "kind": "HALF",
+   "puck": {
+    "w": 74,
+    "h": 15
+   },
+   "stripW": "auto",
+   "stripH": "auto",
+   "bg": "rgba(0, 0, 0, 0)",
+   "grad": "none"
+  },
+  {
+   "who": "Saber",
+   "kind": "FULL",
+   "puck": {
+    "w": 74,
+    "h": 15
+   },
+   "stripW": "auto",
+   "stripH": "auto",
+   "bg": "rgba(0, 0, 0, 0)",
+   "grad": "none"
+  },
+  {
+   "who": "Torch",
+   "kind": "HALF",
+   "puck": {
+    "w": 74,
+    "h": 15
+   },
+   "stripW": "auto",
+   "stripH": "auto",
+   "bg": "rgba(0, 0, 0, 0)",
+   "grad": "none"
+  },
+  {
+   "who": "Ranger",
+   "kind": "HALF",
+   "puck": {
+    "w": 74,
+    "h": 15
+   },
+   "stripW": "auto",
+   "stripH": "auto",
+   "bg": "rgba(0, 0, 0, 0)",
+   "grad": "none"
+  },
+  {
+   "who": "Echo",
+   "kind": "HALF",
+   "puck": {
+    "w": 74,
+    "h": 15
+   },
+   "stripW": "auto",
+   "stripH": "auto",
+   "bg": "rgba(0, 0, 0, 0)",
+   "grad": "none"
+  },
+  {
+   "who": "Ridge",
+   "kind": "FULL",
+   "puck": {
+    "w": 74,
+    "h": 15
+   },
+   "stripW": "auto",
+   "stripH": "auto",
+   "bg": "rgba(0, 0, 0, 0)",
+   "grad": "none"
+  },
+  {
+   "who": "Grit",
+   "kind": "FULL",
+   "puck": {
+    "w": 74,
+    "h": 15
+   },
+   "stripW": "auto",
+   "stripH": "auto",
+   "bg": "rgba(0, 0, 0, 0)",
+   "grad": "none"
+  },
+  {
+   "who": "Piston",
+   "kind": "FULL",
+   "puck": {
+    "w": 74,
+    "h": 15
+   },
+   "stripW": "auto",
+   "stripH": "auto",
+   "bg": "rgba(0, 0, 0, 0)",
+   "grad": "none"
+  },
+  {
+   "who": "Basher",
+   "kind": "FULL",
+   "puck": {
+    "w": 74,
+    "h": 15
+   },
+   "stripW": "auto",
+   "stripH": "auto",
+   "bg": "rgba(0, 0, 0, 0)",
+   "grad": "none"
+  },
+  {
+   "who": "Fable",
+   "kind": "FULL",
+   "puck": {
+    "w": 74,
+    "h": 15
+   },
+   "stripW": "auto",
+   "stripH": "auto",
+   "bg": "rgba(0, 0, 0, 0)",
+   "grad": "none"
+  },
+  {
+   "who": "Drifter",
+   "kind": "HALF",
+   "puck": {
+    "w": 74,
+    "h": 15
+   },
+   "stripW": "auto",
+   "stripH": "auto",
+   "bg": "rgba(0, 0, 0, 0)",
+   "grad": "none"
+  },
+  {
+   "who": "Cinch",
+   "kind": "HALF",
+   "puck": {
+    "w": 74,
+    "h": 15
+   },
+   "stripW": "auto",
+   "stripH": "auto",
+   "bg": "rgba(0, 0, 0, 0)",
+   "grad": "none"
+  },
+  {
+   "who": "Cinder",
+   "kind": "HALF",
+   "puck": {
+    "w": 74,
+    "h": 15
+   },
+   "stripW": "auto",
+   "stripH": "auto",
+   "bg": "rgba(0, 0, 0, 0)",
+   "grad": "none"
+  },
+  {
+   "who": "Reaper",
+   "kind": "HALF",
+   "puck": {
+    "w": 74,
+    "h": 15
+   },
+   "stripW": "auto",
+   "stripH": "auto",
+   "bg": "rgba(0, 0, 0, 0)",
+   "grad": "none"
+  }
+ ],
+ "chip": {
+  "board": {
+   "present": false
+  },
+  "week": {
+   "present": true,
+   "text": "27",
+   "title": "All 27 earn half a day — tap to see each one",
+   "box": {
+    "w": 20,
+    "h": 15
+   },
+   "rowH": 49
+  }
+ },
+ "doorCheck": {
+  "phoneBtnVisible": true,
+  "phoneBtnText": "OIL Earn",
+  "desktopBtnVisible": false
+ },
+ "inMode": {
+  "viewport": {
+   "w": 390,
+   "h": 844
+  },
+  "sideScroll": {
+   "docW": 390,
+   "winW": 390,
+   "overflows": false
+  },
+  "boardTopBarH": 49,
+  "dayBar": {
+   "box": {
+    "x": 14,
+    "y": 284,
+    "w": 346,
+    "h": 76
+   },
+   "text": "OIL EARN | Nothing today earns | ✓ Done | Tap a puck to take a man off that event · tap an item to stop the whole item earning",
+   "lines": 1,
+   "items": [
+    {
+     "t": "OIL EARN",
+     "x": 26,
+     "y": 297,
+     "w": 60,
+     "h": 12
+    },
+    {
+     "t": "Nothing today earns\n✓ ",
+     "x": 129,
+     "y": 292,
+     "w": 219,
+     "h": 23
+    },
+    {
+     "t": "Nothing today earns",
+     "x": 129,
+     "y": 292,
+     "w": 149,
+     "h": 23
+    },
+    {
+     "t": "✓ Done",
+     "x": 282,
+     "y": 292,
+     "w": 66,
+     "h": 23
+    }
+   ]
+  },
+  "oilBtnPhone": [
+   {
+    "t": "✓ Done",
+    "x": 282,
+    "y": 292,
+    "w": 66,
+    "h": 23
+   }
+  ],
+  "oilBtnDesktop": {
+   "vis": false,
+   "x": 0,
+   "y": 0,
+   "w": 0,
+   "h": 0
+  },
+  "clipped": []
+ },
+ "modeBar": {
+  "text": "OIL EARN | Nothing today earns | ✓ Done | Tap a puck to take a man off that event · tap an item to stop the whole item earning",
+  "h": 76,
+  "parts": [
+   {
+    "t": "OIL EARN",
+    "y": 297,
+    "x": 26,
+    "right": 86,
+    "w": 60
+   },
+   {
+    "t": "Nothing today earns",
+    "y": 292,
+    "x": 129,
+    "right": 277,
+    "w": 149
+   },
+   {
+    "t": "✓ Done",
+    "y": 292,
+    "x": 282,
+    "right": 348,
+    "w": 66
+   },
+   {
+    "t": "Tap a puck to take a man off that event ",
+    "y": 323,
+    "x": 15,
+    "right": 359,
+    "w": 344
+   }
+  ],
+  "overflowRight": []
+ },
+ "tapTargets": {
+  "n": 48,
+  "minH": 15,
+  "medH": 15,
+  "under44": 48,
+  "under30": 48,
+  "sample": [
+   {
+    "who": "Ace",
+    "w": 74,
+    "h": 15
+   },
+   {
+    "who": "Warden",
+    "w": 74,
+    "h": 15
+   },
+   {
+    "who": "Blade",
+    "w": 74,
+    "h": 15
+   },
+   {
+    "who": "Trident",
+    "w": 74,
+    "h": 15
+   },
+   {
+    "who": "Anvil",
+    "w": 74,
+    "h": 15
+   },
+   {
+    "who": "Forge",
+    "w": 74,
+    "h": 15
+   }
+  ]
+ },
+ "phoneTaps": {
+  "Ranger": {
+   "flipped": true,
+   "after": "Ranger earns nothing from this event — tap to put him back o"
+  },
+  "Piston": {
+   "flipped": true,
+   "after": "Piston earns nothing from this event — tap to put him back o"
+  },
+  "Saber": {
+   "flipped": true,
+   "after": "Saber earns nothing from this event — tap to put him back on"
+  },
+  "Sidewinder": {
+   "flipped": true,
+   "after": "Sidewinder earns nothing from this event — tap to put him ba"
+  }
+ },
+ "blanketOn": {
+  "bar": "OIL EARN | Nothing today earns | ✓ Done | Nothing on this day earns OIL. The marks underneath are kept — turn it off and they come back.",
+  "h": 76
+ },
+ "sentinelPhone": {
+  "rowH": 304,
+  "pucks": 27,
+  "wraps": true,
+  "text": "FAMILY DAY Ace HO Warden HO Blade HO Trident HO Anvil HO Forge HO Havoc HO Comet HO Reaper"
+ },
+ "doneBtn": {
+  "t": "✓ Done",
+  "x": 282,
+  "right": 348,
+  "w": 66,
+  "inView": true
+ },
+ "afterDone": {
+  "modeOff": true,
+  "boxesEditable": 86,
+  "bar": "THIS DAY | Templates | OIL Earn"
+ },
+ "w360": {
+  "viewport": {
+   "w": 360,
+   "h": 844
+  },
+  "sideScroll": {
+   "docW": 360,
+   "winW": 360,
+   "overflows": false
+  },
+  "boardTopBarH": 49,
+  "dayBar": {
+   "box": {
+    "x": 14,
+    "y": 315,
+    "w": 316,
+    "h": 40
+   },
+   "text": "THIS DAY | Templates | OIL Earn",
+   "lines": 2,
+   "items": [
+    {
+     "t": "THIS DAY",
+     "x": 26,
+     "y": 328,
+     "w": 58,
+     "h": 12
+    },
+    {
+     "t": "Templates\nOIL Earn",
+     "x": 150,
+     "y": 323,
+     "w": 168,
+     "h": 23
+    },
+    {
+     "t": "Templates",
+     "x": 150,
+     "y": 323,
+     "w": 87,
+     "h": 23
+    },
+    {
+     "t": "OIL Earn",
+     "x": 242,
+     "y": 323,
+     "w": 76,
+     "h": 23
+    }
+   ]
+  },
+  "oilBtnPhone": [
+   {
+    "t": "OIL Earn",
+    "x": 242,
+    "y": 323,
+    "w": 76,
+    "h": 23
+   }
+  ],
+  "oilBtnDesktop": {
+   "vis": false,
+   "x": 0,
+   "y": 0,
+   "w": 0,
+   "h": 0
+  },
+  "clipped": []
+ },
+ "w389": {
+  "viewport": {
+   "w": 389,
+   "h": 844
+  },
+  "sideScroll": {
+   "docW": 389,
+   "winW": 389,
+   "overflows": false
+  },
+  "boardTopBarH": 49,
+  "dayBar": {
+   "box": {
+    "x": 14,
+    "y": 315,
+    "w": 345,
+    "h": 40
+   },
+   "text": "THIS DAY | Templates | OIL Earn",
+   "lines": 2,
+   "items": [
+    {
+     "t": "THIS DAY",
+     "x": 26,
+     "y": 328,
+     "w": 58,
+     "h": 12
+    },
+    {
+     "t": "Templates\nOIL Earn",
+     "x": 179,
+     "y": 323,
+     "w": 168,
+     "h": 23
+    },
+    {
+     "t": "Templates",
+     "x": 179,
+     "y": 323,
+     "w": 87,
+     "h": 23
+    },
+    {
+     "t": "OIL Earn",
+     "x": 271,
+     "y": 323,
+     "w": 76,
+     "h": 23
+    }
+   ]
+  },
+  "oilBtnPhone": [
+   {
+    "t": "OIL Earn",
+    "x": 271,
+    "y": 323,
+    "w": 76,
+    "h": 23
+   }
+  ],
+  "oilBtnDesktop": {
+   "vis": false,
+   "x": 0,
+   "y": 0,
+   "w": 0,
+   "h": 0
+  },
+  "clipped": []
+ },
+ "w391": {
+  "viewport": {
+   "w": 391,
+   "h": 844
+  },
+  "sideScroll": {
+   "docW": 391,
+   "winW": 391,
+   "overflows": false
+  },
+  "boardTopBarH": 49,
+  "dayBar": {
+   "box": {
+    "x": 14,
+    "y": 315,
+    "w": 347,
+    "h": 40
+   },
+   "text": "THIS DAY | Templates | OIL Earn",
+   "lines": 2,
+   "items": [
+    {
+     "t": "THIS DAY",
+     "x": 26,
+     "y": 328,
+     "w": 58,
+     "h": 12
+    },
+    {
+     "t": "Templates\nOIL Earn",
+     "x": 181,
+     "y": 323,
+     "w": 168,
+     "h": 23
+    },
+    {
+     "t": "Templates",
+     "x": 181,
+     "y": 323,
+     "w": 87,
+     "h": 23
+    },
+    {
+     "t": "OIL Earn",
+     "x": 273,
+     "y": 323,
+     "w": 76,
+     "h": 23
+    }
+   ]
+  },
+  "oilBtnPhone": [
+   {
+    "t": "OIL Earn",
+    "x": 273,
+    "y": 323,
+    "w": 76,
+    "h": 23
+   }
+  ],
+  "oilBtnDesktop": {
+   "vis": false,
+   "x": 0,
+   "y": 0,
+   "w": 0,
+   "h": 0
+  },
+  "clipped": []
+ },
+ "w430": {
+  "viewport": {
+   "w": 430,
+   "h": 844
+  },
+  "sideScroll": {
+   "docW": 430,
+   "winW": 430,
+   "overflows": false
+  },
+  "boardTopBarH": 49,
+  "dayBar": {
+   "box": {
+    "x": 14,
+    "y": 315,
+    "w": 386,
+    "h": 40
+   },
+   "text": "THIS DAY | Templates | OIL Earn",
+   "lines": 2,
+   "items": [
+    {
+     "t": "THIS DAY",
+     "x": 26,
+     "y": 328,
+     "w": 58,
+     "h": 12
+    },
+    {
+     "t": "Templates\nOIL Earn",
+     "x": 220,
+     "y": 323,
+     "w": 168,
+     "h": 23
+    },
+    {
+     "t": "Templates",
+     "x": 220,
+     "y": 323,
+     "w": 87,
+     "h": 23
+    },
+    {
+     "t": "OIL Earn",
+     "x": 312,
+     "y": 323,
+     "w": 76,
+     "h": 23
+    }
+   ]
+  },
+  "oilBtnPhone": [
+   {
+    "t": "OIL Earn",
+    "x": 312,
+    "y": 323,
+    "w": 76,
+    "h": 23
+   }
+  ],
+  "oilBtnDesktop": {
+   "vis": false,
+   "x": 0,
+   "y": 0,
+   "w": 0,
+   "h": 0
+  },
+  "clipped": []
+ },
+ "errors": []
+}

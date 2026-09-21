@@ -959,17 +959,17 @@ for duty, so the engine is ready; the work is in the store and the tracker.
 where both of the night's silent bugs lived; the project's own rule escalates that kind of change.
 Build it test-first and put it through both reviewers.
 
-### [OIL-AWARD-ADD-OLD] The question as it was put to him (superseded above, kept for the reasoning)
-Fable found that a 3-day award on a Saturday fell to 1 day the moment that Saturday was published
-with the man on a desk: the takeover replaced the award wholesale. That is now fixed — the award's
-days, reason and giver ride onto the taken-over record, so the balance never falls.
-
-**What was NOT decided, because it is his:** whether the two should ADD. Today the day is worth the
-LARGER of the two (the 3-day award), which is what he had before the defect. The argument for
-adding (3 + 1 = 4) is his own 20 Sep reasoning — an award is days he is OWED, the worked Saturday is
-a day he WORKED, and they are different facts. The argument against is that a day is a day and 4
-days of OIL from one Saturday will look like a mistake on the tracker.
-**Ask him; do not assume.** One line of code either way.
+### [LW-SCRUBBER-FLAKY] The year scrubber test fails on a saturated machine — PRE-EXISTING (21 Sep 26)
+`e2e/leavewar.spec.ts` "the bottom scrollbar is a year-wide scrubber", lw-desktop only. Under a full
+parallel run it sometimes times out after the SEP month button is clicked: the grid has not scrolled
+within 4s, so the bar's fraction still reads 0. Checked the way the OIL handoff demanded — the SAME
+full run on `main` (bdd51cc) FAILED it (446 passed, 1 failed) while `claude/oil-auto-remove-design`
+PASSED it (447 passed, 0 failed). **Pre-existing; not the OIL branch's.** It also passes in isolation
+(287/0 for the Leave War projects alone). The fault is the test's, not the app's: a fixed 4s poll on
+a year-wide grid redraw. Fix by waiting for the grid's own scroll to settle instead of a wall clock,
+or raise that poll and the twelve-months one beside it. Low priority — it bites only a loaded dev
+box; CI runs three workers with one retry. Logs from both runs are in the 21 Sep evidence sheet,
+`raptor-port/docs/handpass/2026-09-21-oil.md`.
 
 ### [S4-HUNT-REST] The bug hunt's untouched ground — about three quarters of it (owner, 21 Sep 26)
 The branch turned into a long detour through the rules and the five items, so most of the hunt Fable

@@ -1,0 +1,113 @@
+{
+ "B2_itemOffTitle": "Earns nothing — tap to let it earn again",
+ "B2_beakAfterSwitchOff": "Publish AL1",
+ "B2_barsAfterSwitchOff": [
+  "Saber:-",
+  "Torch:-",
+  "Saber:ho",
+  "Saber:-",
+  "Torch:-",
+  "Torch:-"
+ ],
+ "B2_thirdManAdded": "FAILED [data-fill=\"a:5.1.+\"]",
+ "B2_barsWithThirdMan": [
+  "Saber:-",
+  "Torch:-",
+  "Saint:-",
+  "Saber:ho",
+  "Saber:-",
+  "Saint:-",
+  "Torch:-",
+  "Torch:-",
+  "Vapor:-",
+  "Recon:-"
+ ],
+ "B2_thirdManInMode": [],
+ "B2_beak": "Publish AL1",
+ "A2_rowIndex": 2,
+ "A2_secondManAdded": "beams",
+ "A2_rowInMode": [
+  {
+   "item": [
+    {
+     "t": "Talisman earns half a day — tap to take him off this event"
+    }
+   ],
+   "people": [
+    {
+     "who": "Talisman",
+     "title": "Talisman earns half a day — tap to take him off this event"
+    }
+   ],
+   "inert": [
+    {
+     "who": "Talisman",
+     "title": "Talisman · OCU (ab-initio)",
+     "cls": "puck sm oilglow half dim"
+    },
+    {
+     "who": "Comet",
+     "title": "Comet · IP · instructor pilot",
+     "cls": "puck sm dim"
+    }
+   ]
+  },
+  {
+   "item": [
+    {
+     "t": "Talisman earns half a day — tap to take him off this event"
+    }
+   ],
+   "people": [
+    {
+     "who": "Talisman",
+     "title": "Talisman earns half a day — tap to take him off this event"
+    }
+   ],
+   "inert": [
+    {
+     "who": "Talisman",
+     "title": "Talisman · OCU (ab-initio)",
+     "cls": "puck sm oilglow half dim"
+    }
+   ]
+  }
+ ],
+ "A2_bars": [
+  "Talisman:ho",
+  "Comet:-",
+  "Comet:-",
+  "Talisman:-",
+  "Blade:-",
+  "Forge:-",
+  "Havoc:-"
+ ],
+ "A10_blanketLabel": "Nothing today earns",
+ "A10_afterBlanket": {
+  "some": [],
+  "items": [
+   "Nothing on this day earns — the day blanket is on",
+   "Nothing on this day earns — the day blanket is on"
+  ]
+ },
+ "A10_warnWithBlanket": {
+  "head": "⚠ 2 issues",
+  "lines": [
+   "· 1 warning ·",
+   "tap to review",
+   "SXO and OPS DESK have no times — nobody on them earns OIL for this day",
+   "Basher — No time for the OFT EP-6 brief — SC AM sits inside 13:45–14:00"
+  ]
+ },
+ "A10_barsWithBlanket": [
+  "Saber:-",
+  "Ranger:-",
+  "Piston:-",
+  "Fable:-",
+  "Saber:-",
+  "Ranger:-",
+  "Saber:-"
+ ],
+ "A10_beak": "Publish AL1",
+ "errors": []
+}

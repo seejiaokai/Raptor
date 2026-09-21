@@ -1,0 +1,96 @@
+{
+ "familyRow": null,
+ "signInMode": {
+  "selects": 4,
+  "beakDisabledBefore": true,
+  "after": {
+   "text": "Publish day",
+   "disabled": false,
+   "vals": [
+    "dj",
+    "glass",
+    "yeti",
+    "snap"
+   ]
+  },
+  "stillInMode": true
+ },
+ "publishFromInside": {
+  "version": "ORIG",
+  "stillInMode": true,
+  "barsDrawn": 0,
+  "daybar": "OIL EARN | Nothing today earns | ✓ Done | Tap a puck to take a man off that event · tap an item to stop the whole item earning"
+ },
+ "plansMenu": {
+  "found": true,
+  "menus": [
+   "Live working copy | ▾",
+   "Live working copy | ▾",
+   "Live working copy | ▾",
+   "Live working copy | ▾"
+  ]
+ },
+ "gripDrag": {
+  "grips": 0
+ },
+ "lateAndAcc": {
+  "late": [
+   {
+    "text": "LATE",
+    "title": "Tap to hide this LATE mark from the board and the week (the Inputs page keeps it",
+    "dis": false
+   },
+   {
+    "text": "LATE",
+    "title": "Tap to hide this LATE mark from the board and the week (the Inputs page keeps it",
+    "dis": false
+   },
+   {
+    "text": "LATE",
+    "title": "Tap to hide this LATE mark from the board and the week (the Inputs page keeps it",
+    "dis": false
+   }
+  ],
+  "acc": [
+   {
+    "text": "UNDO",
+    "title": "Undo — removes the ground-programme row this created",
+    "dis": false
+   },
+   {
+    "text": "UNDO",
+    "title": "Undo — removes the ground-programme row this created",
+    "dis": false
+   },
+   {
+    "text": "UNDO",
+    "title": "Undo — removes the ground-programme row this created",
+    "dis": false
+   }
+  ],
+  "woff": [
+   {
+    "text": "✕",
+    "title": "Hide this check — it comes back if the situation changes",
+    "dis": false
+   },
+   {
+    "text": "✕",
+    "title": "Hide this check — it comes back if the situation changes",
+    "dis": false
+   }
+  ],
+  "ifld": 9
+ },
+ "pressLate": {
+  "before": "latechip",
+  "after": "latechip off",
+  "changed": true
+ },
+ "ifldType": {
+  "before": "13:00",
+  "after": "05:00",
+  "tookTheEdit": true
+ },
+ "errors": []
+}

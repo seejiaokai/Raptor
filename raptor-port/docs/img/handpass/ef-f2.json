@@ -1,0 +1,240 @@
+{
+ "put": "allavail",
+ "s1": {
+  "board": [],
+  "editWeek": [
+   {
+    "bar": "ho",
+    "puckTitle": "ALL AVAIL · earns half a day of OIL",
+    "chip": "27",
+    "chipTitle": "All 27 earn half a day — tap to see each one",
+    "chipCls": "oilcount"
+   },
+   {
+    "bar": "fo",
+    "puckTitle": "ALL AVAIL · earns a full day of OIL",
+    "chip": "45",
+    "chipTitle": "All 45 earn a full day — tap to see each one",
+    "chipCls": "oilcount"
+   }
+  ],
+  "viewOnly": [
+   {
+    "bar": "ho",
+    "puckTitle": "ALL AVAIL · earns half a day of OIL",
+    "chip": "27",
+    "chipTitle": "All 27 earn half a day — tap to see each one",
+    "chipCls": "oilcount"
+   },
+   {
+    "bar": "fo",
+    "puckTitle": "ALL AVAIL · earns a full day of OIL",
+    "chip": "45",
+    "chipTitle": "All 45 earn a full day — tap to see each one",
+    "chipCls": "oilcount"
+   }
+  ],
+  "list": "27 behind this puck — Ace half day, Warden half day, Blade half day, Trident half day, Anvil half day, Forge half day, Havoc half day, Comet half day, Reaper half day, Vandal half day, Outlaw half day, Nomad half day, Diesel half day, Vapor half day, Wildcard half day, Recon half day, Static half day, Relay half day, Scope half day, Rune half day, Hex half day, Vector half day, Dash half day, Ghost half day, Wisp half day, Ryder half day, Cutter half day"
+ },
+ "_at": "done",
+ "s2": {
+  "board": [],
+  "editWeek": [
+   {
+    "bar": "ho",
+    "puckTitle": "ALL AVAIL · earns half a day of OIL",
+    "chip": "27",
+    "chipTitle": "All 27 earn half a day — tap to see each one",
+    "chipCls": "oilcount"
+   },
+   {
+    "bar": "ho",
+    "puckTitle": "ALL AVAIL · earns half a day of OIL",
+    "chip": "45",
+    "chipTitle": "All 45 earn half a day — tap to see each one",
+    "chipCls": "oilcount"
+   }
+  ],
+  "viewOnly": [
+   {
+    "bar": "ho",
+    "puckTitle": "ALL AVAIL · earns half a day of OIL",
+    "chip": "27",
+    "chipTitle": "All 27 earn half a day — tap to see each one",
+    "chipCls": "oilcount"
+   },
+   {
+    "bar": "ho",
+    "puckTitle": "ALL AVAIL · earns half a day of OIL",
+    "chip": "45",
+    "chipTitle": "All 45 earn half a day — tap to see each one",
+    "chipCls": "oilcount"
+   }
+  ],
+  "list": "27 behind this puck — Ace half day, Warden half day, Blade half day, Trident half day, Anvil half day, Forge half day, Havoc half day, Comet half day, Reaper half day, Vandal half day, Outlaw half day, Nomad half day, Diesel half day, Vapor half day, Wildcard half day, Recon half day, Static half day, Relay half day, Scope half day, Rune half day, Hex half day, Vector half day, Dash half day, Ghost half day, Wisp half day, Ryder half day, Cutter half day"
+ },
+ "membersInMode": 0,
+ "deniedRanger": true,
+ "deniedTitle": "Ranger — :: Ranger earns nothing from this event — tap to put him back on it",
+ "s3": {
+  "board": [],
+  "editWeek": [
+   {
+    "bar": "ho",
+    "puckTitle": "ALL AVAIL · earns half a day of OIL",
+    "chip": "27",
+    "chipTitle": "All 27 earn half a day — tap to see each one",
+    "chipCls": "oilcount"
+   },
+   {
+    "bar": "NO BAR",
+    "puckTitle": "ALL AVAIL",
+    "chip": "44 of 45 earn",
+    "chipTitle": "Some of these men earn OIL and some do not — tap to see each one",
+    "chipCls": "oilcount some"
+   }
+  ],
+  "viewOnly": [
+   {
+    "bar": "ho",
+    "puckTitle": "ALL AVAIL · earns half a day of OIL",
+    "chip": "27",
+    "chipTitle": "All 27 earn half a day — tap to see each one",
+    "chipCls": "oilcount"
+   },
+   {
+    "bar": "NO BAR",
+    "puckTitle": "ALL AVAIL",
+    "chip": "44 of 45 earn",
+    "chipTitle": "Some of these men earn OIL and some do not — tap to see each one",
+    "chipCls": "oilcount some"
+   }
+  ],
+  "list": "27 behind this puck — Ace half day, Warden half day, Blade half day, Trident half day, Anvil half day, Forge half day, Havoc half day, Comet half day, Reaper half day, Vandal half day, Outlaw half day, Nomad half day, Diesel half day, Vapor half day, Wildcard half day, Recon half day, Static half day, Relay half day, Scope half day, Rune half day, Hex half day, Vector half day, Dash half day, Ghost half day, Wisp half day, Ryder half day, Cutter half day"
+ },
+ "allHandsItem": "ALL HANDS :: Earns OIL — tap to stop this item earning",
+ "deskFill": "slash",
+ "s4": {
+  "board": [],
+  "editWeek": [
+   {
+    "bar": "ho",
+    "puckTitle": "ALL AVAIL · earns half a day of OIL",
+    "chip": "27",
+    "chipTitle": "All 27 earn half a day — tap to see each one",
+    "chipCls": "oilcount"
+   },
+   {
+    "bar": "NO BAR",
+    "puckTitle": "ALL AVAIL",
+    "chip": "44",
+    "chipTitle": "None of these 44 earn OIL today — tap to see each one",
+    "chipCls": "oilcount"
+   }
+  ],
+  "viewOnly": [
+   {
+    "bar": "ho",
+    "puckTitle": "ALL AVAIL · earns half a day of OIL",
+    "chip": "27",
+    "chipTitle": "All 27 earn half a day — tap to see each one",
+    "chipCls": "oilcount"
+   },
+   {
+    "bar": "NO BAR",
+    "puckTitle": "ALL AVAIL",
+    "chip": "44",
+    "chipTitle": "None of these 44 earn OIL today — tap to see each one",
+    "chipCls": "oilcount"
+   }
+  ],
+  "list": "27 behind this puck — Ace half day, Warden half day, Blade half day, Trident half day, Anvil half day, Forge half day, Havoc half day, Comet half day, Reaper half day, Vandal half day, Outlaw half day, Nomad half day, Diesel half day, Vapor half day, Wildcard half day, Recon half day, Static half day, Relay half day, Scope half day, Rune half day, Hex half day, Vector half day, Dash half day, Ghost half day, Wisp half day, Ryder half day, Cutter half day"
+ },
+ "publish": {
+  "published": true,
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "grid": {
+  "allavail": {
+   "text": "ROW NOT ON THE GRID",
+   "cls": "",
+   "mark": null
+  },
+  "all": {
+   "text": "ROW NOT ON THE GRID",
+   "cls": "",
+   "mark": null
+  },
+  "bane": {
+   "text": "",
+   "cls": "weekend act",
+   "mark": null
+  },
+  "slash": {
+   "text": "FO*",
+   "cls": "duty weekend act",
+   "mark": null
+  },
+  "stiff": {
+   "text": "HO*",
+   "cls": "duty weekend act",
+   "mark": null
+  }
+ },
+ "tracker": {
+  "allavail": {
+   "found": false
+  },
+  "bane": {
+   "found": true,
+   "text": "Ranger IP 0",
+   "entries": []
+  },
+  "slash": {
+   "found": true,
+   "text": "Blade IP 4 + 8 − 4 +6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left +1 9 May FLT + SIM 1 left −1 20 May Correction: double credit · correction +1 19 Jul AUTO Weekend/PH Duty 1 left",
+   "entries": [
+    {
+     "testid": "oil-entry-slash-open:slash",
+     "cls": "oil-e credit",
+     "text": "+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left",
+     "buttons": []
+    },
+    {
+     "testid": "oil-entry-slash-award:0:2026-05-09",
+     "cls": "oil-e credit",
+     "text": "+1 9 May FLT + SIM 1 left",
+     "buttons": [
+      "FLT + SIM"
+     ]
+    },
+    {
+     "testid": "oil-entry-dol-3",
+     "cls": "oil-e take corr",
+     "text": "−1 20 May Correction: double credit · correction",
+     "buttons": []
+    },
+    {
+     "testid": "oil-entry-slash-auto:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+1 19 Jul AUTO Weekend/PH Duty 1 left",
+     "buttons": []
+    }
+   ]
+  },
+  "stiff": {
+   "found": true,
+   "text": "Saber IP 0.5 + 0.5 +0.5 19 Jul AUTO Weekend/PH Duty 0.5 left",
+   "entries": [
+    {
+     "testid": "oil-entry-stiff-auto:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+0.5 19 Jul AUTO Weekend/PH Duty 0.5 left",
+     "buttons": []
+    }
+   ]
+  }
+ },
+ "errors": []
+}

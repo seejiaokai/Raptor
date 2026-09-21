@@ -1,0 +1,151 @@
+{
+ "warPeriods": [],
+ "has2027": 0,
+ "has2026Jul": 1,
+ "steps": [
+  "Jul 18",
+  "Jul 25",
+  "Aug 1",
+  "Aug 8",
+  "Aug 15",
+  "Aug 22",
+  "Aug 29",
+  "Sep 5",
+  "Sep 12",
+  "Sep 19",
+  "Sep 26",
+  "Oct 3",
+  "Oct 10",
+  "Oct 17",
+  "Oct 24",
+  "Oct 31",
+  "Nov 7",
+  "Nov 14",
+  "Nov 21",
+  "Nov 28",
+  "Dec 5",
+  "Dec 12",
+  "Dec 19",
+  "Dec 26",
+  "Jan 2 2027",
+  "Jan 9",
+  "Jan 16",
+  "Jan 23",
+  "Jan 30",
+  "Feb 6"
+ ],
+ "landedOn": {
+  "date": "Feb 13",
+  "keys": [
+   "dow",
+   "dt",
+   "wc",
+   "notes",
+   "allhands",
+   "waves",
+   "sims",
+   "dutywaves",
+   "ground"
+  ],
+  "title": "Saturday Feb 13 · scheduler board"
+ },
+ "offered": [
+  "◧ OIL Earn"
+ ],
+ "pickerButtons": [
+  "↶ Undo",
+  "↷ Redo",
+  "Edit history",
+  "Sync · slow",
+  "Insights",
+  "Logout",
+  "ADMIN",
+  "Feb 01",
+  "Feb 08",
+  "Feb 15",
+  "Feb 22",
+  "CAT",
+  "TYPE",
+  "QUALS",
+  "Discard marks",
+  "Templates",
+  "Live working copy ▾",
+  "i",
+  "Publish day",
+  "MAKE PUBLIC",
+  "MAKE PUBLIC",
+  "MAKE PUBLIC",
+  "MAKE PUBLIC",
+  "Templates",
+  "Live working copy ▾",
+  "i",
+  "Publish day",
+  "MAKE PUBLIC",
+  "MAKE PUBLIC",
+  "MAKE PUBLIC",
+  "MAKE PUBLIC",
+  "Templates",
+  "Live working copy ▾",
+  "i",
+  "Publish day",
+  "MAKE PUBLIC",
+  "MAKE PUBLIC",
+  "MAKE PUBLIC",
+  "MAKE PUBLIC",
+  "Templates"
+ ],
+ "blocks": 1,
+ "man": "dj",
+ "manCs": "Ace",
+ "beforePublish": {
+  "warnHead": "⚠ 1 issue",
+  "warnings": [
+   "tap to review",
+   "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out"
+  ],
+  "bars": [
+   {
+    "who": "Ace",
+    "kind": "fo",
+    "title": "Ace · A · 4-ship FL · earns a full day of OIL"
+   }
+  ],
+  "oilButtons": [
+   "◧ OIL Earn"
+  ]
+ },
+ "pub": {
+  "published": true,
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "toasts": [
+  "OIL Earn"
+ ],
+ "afterPublish": {
+  "warnHead": "No conflicts flagged for Saturday ✓",
+  "warnings": [
+   "No conflicts flagged for this day ✓"
+  ],
+  "bars": [
+   {
+    "who": "Ace",
+    "kind": "fo",
+    "title": "Ace · A · 4-ship FL · earns a full day of OIL"
+   }
+  ],
+  "oilButtons": [
+   "◧ OIL Earn"
+  ]
+ },
+ "credit": {
+  "date": "Feb 13",
+  "cellExists": false,
+  "text": null
+ },
+ "tracker": {
+  "opened": true,
+  "txt": []
+ },
+ "errors": []
+}

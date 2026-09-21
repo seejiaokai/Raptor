@@ -1,0 +1,193 @@
+{
+ "tuePlain": {
+  "title": "Tuesday Jul 14 · scheduler board",
+  "dayBar": "THIS DAYTemplates",
+  "oilButtons": [],
+  "bars": 0,
+  "chips": 0,
+  "weekChips": 1,
+  "warnHead": "⚠ 4 issues",
+  "oilWarnings": [],
+  "allWarnings": [
+   "· 2 warnings ·",
+   "tap to review",
+   "Saint — VL SAT & APPOINTMENT clash",
+   "Outlaw — Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.",
+   "Saint — No time for the VL SAT flight brief — APPOINTMENT sits inside 12:20–14:40 (brief 12:20)",
+   "Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed)"
+  ]
+ },
+ "offSet": "Off day",
+ "tueOffDay": {
+  "title": "Tuesday Jul 14 · scheduler board",
+  "dayBar": "THIS DAYTemplates",
+  "oilButtons": [],
+  "bars": 0,
+  "chips": 0,
+  "weekChips": 1,
+  "warnHead": "⚠ 4 issues",
+  "oilWarnings": [],
+  "allWarnings": [
+   "· 2 warnings ·",
+   "tap to review",
+   "Saint — VL SAT & APPOINTMENT clash",
+   "Outlaw — Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.",
+   "Saint — No time for the VL SAT flight brief — APPOINTMENT sits inside 12:20–14:40 (brief 12:20)",
+   "Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed)"
+  ]
+ },
+ "phSet": "PH",
+ "tuePH": {
+  "title": "Tuesday Jul 14 · scheduler board",
+  "dayBar": "THIS DAYTemplatesOIL Earn",
+  "oilButtons": [
+   "◧ OIL Earn"
+  ],
+  "bars": 25,
+  "chips": 0,
+  "weekChips": 1,
+  "warnHead": "⚠ 6 issues",
+  "oilWarnings": [
+   "the ground programme has no times — nobody on it earns OIL for this day",
+   "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out"
+  ],
+  "allWarnings": [
+   "· 3 warnings ·",
+   "tap to review",
+   "Saint — VL SAT & APPOINTMENT clash",
+   "Outlaw — Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.",
+   "the ground programme has no times — nobody on it earns OIL for this day",
+   "Saint — No time for the VL SAT flight brief — APPOINTMENT sits inside 12:20–14:40 (brief 12:20)",
+   "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out",
+   "Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed)"
+  ]
+ },
+ "tueCleared": {
+  "title": "Tuesday Jul 14 · scheduler board",
+  "dayBar": "THIS DAYTemplates",
+  "oilButtons": [],
+  "bars": 0,
+  "chips": 0,
+  "weekChips": 1,
+  "warnHead": "⚠ 4 issues",
+  "oilWarnings": [],
+  "allWarnings": [
+   "· 2 warnings ·",
+   "tap to review",
+   "Saint — VL SAT & APPOINTMENT clash",
+   "Outlaw — Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.",
+   "Saint — No time for the VL SAT flight brief — APPOINTMENT sits inside 12:20–14:40 (brief 12:20)",
+   "Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed)"
+  ]
+ },
+ "satDraft": {
+  "title": "Saturday Jul 18 · scheduler board",
+  "dayBar": "THIS DAYTemplatesOIL Earn",
+  "oilButtons": [
+   "◧ OIL Earn"
+  ],
+  "bars": 18,
+  "chips": 0,
+  "weekChips": 1,
+  "warnHead": "⚠ 3 issues",
+  "oilWarnings": [
+   "SXO and OPS DESK have no times — nobody on them earns OIL for this day",
+   "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out"
+  ],
+  "allWarnings": [
+   "· 1 warning ·",
+   "tap to review",
+   "SXO and OPS DESK have no times — nobody on them earns OIL for this day",
+   "Basher — No time for the OFT EP-6 brief — SC AM sits inside 13:45–14:00",
+   "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out"
+  ]
+ },
+ "satDraftReminder": [
+  "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out"
+ ],
+ "satBlanket": {
+  "title": "Saturday Jul 18 · scheduler board",
+  "dayBar": "THIS DAYTemplatesOIL Earn",
+  "oilButtons": [
+   "◧ OIL Earn"
+  ],
+  "bars": 0,
+  "chips": 0,
+  "weekChips": 1,
+  "warnHead": "⚠ 2 issues",
+  "oilWarnings": [
+   "SXO and OPS DESK have no times — nobody on them earns OIL for this day"
+  ],
+  "allWarnings": [
+   "· 1 warning ·",
+   "tap to review",
+   "SXO and OPS DESK have no times — nobody on them earns OIL for this day",
+   "Basher — No time for the OFT EP-6 brief — SC AM sits inside 13:45–14:00"
+  ]
+ },
+ "satBlanketReminder": [],
+ "satPub": {
+  "published": true,
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "satPublished": {
+  "title": "Saturday Jul 18 · scheduler board",
+  "dayBar": "THIS DAYTemplatesOIL Earn",
+  "oilButtons": [
+   "◧ OIL Earn"
+  ],
+  "bars": 18,
+  "chips": 0,
+  "weekChips": 1,
+  "warnHead": "⚠ 2 issues",
+  "oilWarnings": [
+   "SXO and OPS DESK have no times — nobody on them earns OIL for this day"
+  ],
+  "allWarnings": [
+   "· 1 warning ·",
+   "tap to review",
+   "SXO and OPS DESK have no times — nobody on them earns OIL for this day",
+   "Basher — No time for the OFT EP-6 brief — SC AM sits inside 13:45–14:00"
+  ]
+ },
+ "satPublishedReminder": [],
+ "tueReminder": [],
+ "emptySat": {
+  "title": "Saturday Jul 25 · scheduler board",
+  "warnings": [
+   "⚠ 1 issue",
+   "·",
+   "tap to review",
+   "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out",
+   "✕"
+  ],
+  "oilButtons": [
+   "◧ OIL Earn"
+  ]
+ },
+ "emptySatReminder": [
+  "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out"
+ ],
+ "sunday": {
+  "before": [
+   "· 1 warning ·",
+   "tap to review",
+   "SDO has no times — nobody on it earns OIL for this day"
+  ],
+  "pub": {
+   "published": true,
+   "version": "ORIG",
+   "signSelects": 4
+  },
+  "toasts": [
+   "SDO has no times — nobody on it earns OIL for this day"
+  ],
+  "after": [
+   "· 1 warning ·",
+   "tap to review",
+   "SDO has no times — nobody on it earns OIL for this day"
+  ]
+ },
+ "errors": []
+}

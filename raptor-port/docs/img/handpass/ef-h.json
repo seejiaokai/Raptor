@@ -1,0 +1,430 @@
+{
+ "g": "bane",
+ "req": {
+  "added": 1,
+  "oilAsked": true,
+  "question": "OIL — Ranger, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 19 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the who",
+  "docAsk": ""
+ },
+ "rows": [
+  "MORNING BRIEF|09:00-11:00|bane",
+  "DUTY|15:00-17:00|bane"
+ ],
+ "_at": "done",
+ "mode": [
+  "Ranger FO :: Ranger earns a full day — tap to take him off this event :: bane",
+  "Ranger FO :: Ranger earns a full day — tap to take him off this event :: bane",
+  "Ranger FO :: Ranger earns a full day — tap to take him off this event :: bane"
+ ],
+ "bars": [
+  "fo :: Ranger · IP · instructor pilot · SXO · earns a full day of OIL :: ⠿ Ranger IP + ADD CXⓘ■✕",
+  "fo :: Ranger · IP · instructor pilot · SXO · earns a full day of OIL :: ⠿ Ranger IP + ADD CXⓘ■✕"
+ ],
+ "publishOrig": {
+  "published": true,
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "afterPublish": {
+  "cellText": "FO*",
+  "sheet": {
+   "open": true,
+   "testid": "bid-picker",
+   "text": "Ranger 2026-07-19 NOW FO ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL Clear +OIL PO PI WHERE IT CAME FROM Earned off the published schedule — change the schedule and the OIL follows. REASON Duty GIVEN BY Weekend/PH DAYS a day — worked 09:00–11:00, 15:00–17:00",
+   "buttons": [
+    "✕",
+    "Just this day",
+    "Pick a range",
+    "Whole day",
+    "AM",
+    "PM",
+    "LL",
+    "OL",
+    "OIL",
+    "CCL",
+    "FCL",
+    "PL",
+    "EL",
+    "CL",
+    "Clear",
+    "+OIL",
+    "PO",
+    "PI"
+   ],
+   "recs": [
+    {
+     "id": "oil-detail-why",
+     "text": "Duty"
+    },
+    {
+     "id": "oil-detail-given",
+     "text": "Weekend/PH"
+    },
+    {
+     "id": "oil-detail-days",
+     "text": "a day — worked 09:00–11:00, 15:00–17:00"
+    }
+   ]
+  }
+ },
+ "tracker1": {
+  "bane": {
+   "found": true,
+   "text": "Ranger IP 1 + 1 +1 19 Jul AUTO Weekend/PH Duty 1 left",
+   "entries": [
+    {
+     "testid": "oil-entry-bane-auto:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+1 19 Jul AUTO Weekend/PH Duty 1 left",
+     "buttons": []
+    }
+   ]
+  }
+ },
+ "awardDoor": "+OIL",
+ "awardForm": {
+  "testids": [
+   "bid-cancel",
+   "span-one",
+   "span-range",
+   "portion-full",
+   "portion-am",
+   "portion-pm",
+   "bid-LL",
+   "bid-OL",
+   "bid-OIL",
+   "bid-CCL",
+   "bid-FCL",
+   "bid-PL",
+   "bid-EL",
+   "bid-CL",
+   "bid-clear",
+   "oil-why",
+   "oil-given-by",
+   "oil-days",
+   "oil-give",
+   "oil-detail",
+   "raptor-note",
+   "oil-detail-why",
+   "oil-detail-given",
+   "oil-detail-days"
+  ],
+  "text": "Ranger 2026-07-19 NOW FO ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL Clear DAYS Give FO WHERE IT CAME FROM Earned off the published schedule — change the schedule and the OIL follows. REASON Duty GIVEN BY Weekend/PH DAYS a day — worked 09:00–11:00, 15:00–17:00"
+ },
+ "giveLabel": "Give HO",
+ "awardSaved": true,
+ "bothRecords": {
+  "cellText": "FO*\n+1",
+  "sheet": {
+   "open": true,
+   "testid": "daylist-sheet",
+   "text": "Ranger Sun 19 Jul ✕ FO — OIL earned (Duty), worked 09:00–11:00, 15:00–17:00 · given by Weekend/PH From the published schedule. HO — OIL award (Stood in at short notice) · given by SQNCDR Edit… Clear OIL EARNED a day — worked 09:00–11:00, 15:00–17:00 REASON Duty GIVEN BY Weekend/PH OIL AWARD half a day REASON Stood in at short notice GIVEN BY SQNCDR",
+   "buttons": [
+    "✕",
+    "Edit…",
+    "Clear"
+   ],
+   "recs": [
+    {
+     "id": "dl-c-cmube64sv25viu",
+     "text": "FO — OIL earned (Duty), worked 09:00–11:00, 15:00–17:00 · given by Weekend/PH From the published schedule."
+    },
+    {
+     "id": "dl-c-cmube6dzy35ter",
+     "text": "HO — OIL award (Stood in at short notice) · given by SQNCDR Edit… Clear"
+    },
+    {
+     "id": "dl-oil-edit-cmube6dzy35ter",
+     "text": "Edit…"
+    },
+    {
+     "id": "dl-clear-cmube6dzy35ter",
+     "text": "Clear"
+    },
+    {
+     "id": "oil-detail-cmube64sv25viu",
+     "text": "OIL EARNED a day — worked 09:00–11:00, 15:00–17:00 REASON Duty GIVEN BY Weekend/PH"
+    },
+    {
+     "id": "oil-detail-days-cmube64sv25viu",
+     "text": "a day — worked 09:00–11:00, 15:00–17:00"
+    },
+    {
+     "id": "oil-detail-why-cmube64sv25viu",
+     "text": "Duty"
+    },
+    {
+     "id": "oil-detail-given-cmube64sv25viu",
+     "text": "Weekend/PH"
+    },
+    {
+     "id": "oil-detail-cmube6dzy35ter",
+     "text": "OIL AWARD half a day REASON Stood in at short notice GIVEN BY SQNCDR"
+    },
+    {
+     "id": "oil-detail-days-cmube6dzy35ter",
+     "text": "half a day"
+    },
+    {
+     "id": "oil-detail-why-cmube6dzy35ter",
+     "text": "Stood in at short notice"
+    },
+    {
+     "id": "oil-detail-given-cmube6dzy35ter",
+     "text": "SQNCDR"
+    }
+   ]
+  }
+ },
+ "tracker2": {
+  "bane": {
+   "found": true,
+   "text": "Ranger IP 1.5 + 1.5 +1 19 Jul AUTO Weekend/PH Duty 1 left +0.5 19 Jul SQNCDR Stood in at short notice · 0.5 days 0.5 left",
+   "entries": [
+    {
+     "testid": "oil-entry-bane-auto:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+1 19 Jul AUTO Weekend/PH Duty 1 left",
+     "buttons": []
+    },
+    {
+     "testid": "oil-entry-bane-award:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+0.5 19 Jul SQNCDR Stood in at short notice · 0.5 days 0.5 left",
+     "buttons": [
+      "Stood in at short notice · 0.5 days"
+     ]
+    }
+   ]
+  }
+ },
+ "recordActions": [
+  {
+   "text": "FO — OIL earned (Duty), worked 09:00–11:00, 15:00–17:00 · given by Weekend/PH From the published schedule.",
+   "buttons": []
+  },
+  {
+   "text": "HO — OIL award (Stood in at short notice) · given by SQNCDR Edit… Clear",
+   "buttons": [
+    "Edit…",
+    "Clear"
+   ]
+  },
+  {
+   "text": "OIL EARNED a day — worked 09:00–11:00, 15:00–17:00 REASON Duty GIVEN BY Weekend/PH",
+   "buttons": []
+  },
+  {
+   "text": "OIL AWARD half a day REASON Stood in at short notice GIVEN BY SQNCDR",
+   "buttons": []
+  }
+ ],
+ "clearButtons": [
+  "dl-clear-cmube6dzy35ter"
+ ],
+ "afterClear": {
+  "cellText": "FO*",
+  "sheet": {
+   "open": true,
+   "testid": "bid-picker",
+   "text": "Ranger 2026-07-19 NOW FO ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL Clear +OIL PO PI WHERE IT CAME FROM Earned off the published schedule — change the schedule and the OIL follows. REASON Duty GIVEN BY Weekend/PH DAYS a day — worked 09:00–11:00, 15:00–17:00",
+   "buttons": [
+    "✕",
+    "Just this day",
+    "Pick a range",
+    "Whole day",
+    "AM",
+    "PM",
+    "LL",
+    "OL",
+    "OIL",
+    "CCL",
+    "FCL",
+    "PL",
+    "EL",
+    "CL",
+    "Clear",
+    "+OIL",
+    "PO",
+    "PI"
+   ],
+   "recs": [
+    {
+     "id": "oil-detail-why",
+     "text": "Duty"
+    },
+    {
+     "id": "oil-detail-given",
+     "text": "Weekend/PH"
+    },
+    {
+     "id": "oil-detail-days",
+     "text": "a day — worked 09:00–11:00, 15:00–17:00"
+    }
+   ]
+  }
+ },
+ "tracker3": {
+  "bane": {
+   "found": true,
+   "text": "Ranger IP 1 + 1 +1 19 Jul AUTO Weekend/PH Duty 1 left",
+   "entries": [
+    {
+     "testid": "oil-entry-bane-auto:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+1 19 Jul AUTO Weekend/PH Duty 1 left",
+     "buttons": []
+    }
+   ]
+  }
+ },
+ "deniedBrief": true,
+ "afterDenyMode": [
+  "Ranger — :: Ranger earns nothing from this event — tap to put him back on it",
+  "Ranger HO :: Ranger earns half a day — tap to take him off this event",
+  "Ranger HO :: Ranger earns half a day — tap to take him off this event"
+ ],
+ "publishAL": {
+  "published": true,
+  "pressed": "Publish AL1",
+  "version": "AL1"
+ },
+ "afterDeny": {
+  "cellText": "HO*",
+  "sheet": {
+   "open": true,
+   "testid": "bid-picker",
+   "text": "Ranger 2026-07-19 NOW HO ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL Clear +OIL PO PI WHERE IT CAME FROM Earned off a duty input that was accepted — change that input, not the schedule. REASON Duty GIVEN BY Duty input DAYS half a day — worked 15:00–17:00",
+   "buttons": [
+    "✕",
+    "Just this day",
+    "Pick a range",
+    "Whole day",
+    "AM",
+    "PM",
+    "LL",
+    "OL",
+    "OIL",
+    "CCL",
+    "FCL",
+    "PL",
+    "EL",
+    "CL",
+    "Clear",
+    "+OIL",
+    "PO",
+    "PI"
+   ],
+   "recs": [
+    {
+     "id": "oil-detail-why",
+     "text": "Duty"
+    },
+    {
+     "id": "oil-detail-given",
+     "text": "Duty input"
+    },
+    {
+     "id": "oil-detail-days",
+     "text": "half a day — worked 15:00–17:00"
+    }
+   ]
+  }
+ },
+ "tracker4": {
+  "bane": {
+   "found": true,
+   "text": "Ranger IP 0.5 + 0.5 +0.5 19 Jul AUTO Duty input Duty 0.5 left",
+   "entries": [
+    {
+     "testid": "oil-entry-bane-auto:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+0.5 19 Jul AUTO Duty input Duty 0.5 left",
+     "buttons": []
+    }
+   ]
+  }
+ },
+ "autoSheetButtons": [
+  "bid-cancel=✕",
+  "span-one=Just this day",
+  "span-range=Pick a range",
+  "portion-full=Whole day",
+  "portion-am=AM",
+  "portion-pm=PM",
+  "bid-LL=LL",
+  "bid-OL=OL",
+  "bid-OIL=OIL",
+  "bid-CCL=CCL",
+  "bid-FCL=FCL",
+  "bid-PL=PL",
+  "bid-EL=EL",
+  "bid-CL=CL",
+  "bid-clear=Clear",
+  "bid-oil=+OIL",
+  "bid-postout=PO",
+  "bid-postin=PI"
+ ],
+ "pressedClear": true,
+ "afterAutoClear": {
+  "cellText": "HO*",
+  "sheet": {
+   "open": true,
+   "testid": "bid-picker",
+   "text": "Ranger 2026-07-19 NOW HO ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL Clear +OIL PO PI WHERE IT CAME FROM Earned off a duty input that was accepted — change that input, not the schedule. REASON Duty GIVEN BY Duty input DAYS half a day — worked 15:00–17:00",
+   "buttons": [
+    "✕",
+    "Just this day",
+    "Pick a range",
+    "Whole day",
+    "AM",
+    "PM",
+    "LL",
+    "OL",
+    "OIL",
+    "CCL",
+    "FCL",
+    "PL",
+    "EL",
+    "CL",
+    "Clear",
+    "+OIL",
+    "PO",
+    "PI"
+   ],
+   "recs": [
+    {
+     "id": "oil-detail-why",
+     "text": "Duty"
+    },
+    {
+     "id": "oil-detail-given",
+     "text": "Duty input"
+    },
+    {
+     "id": "oil-detail-days",
+     "text": "half a day — worked 15:00–17:00"
+    }
+   ]
+  }
+ },
+ "tracker5": {
+  "bane": {
+   "found": true,
+   "text": "Ranger IP 0.5 + 0.5 +0.5 19 Jul AUTO Duty input Duty 0.5 left",
+   "entries": [
+    {
+     "testid": "oil-entry-bane-auto:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+0.5 19 Jul AUTO Duty input Duty 0.5 left",
+     "buttons": []
+    }
+   ]
+  }
+ },
+ "boardAfterAutoClear": [
+  "NO BAR :: Ranger · IP · instructor pilot · SXO",
+  "ho :: Ranger · IP · instructor pilot · SXO · earns half a day of OIL"
+ ],
+ "errors": []
+}

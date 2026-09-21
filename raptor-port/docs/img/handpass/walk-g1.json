@@ -1,0 +1,1488 @@
+{
+ "outside": {
+  "groups": {
+   "crew palette pucks": {
+    "n": 63,
+    "enabled": 63
+   },
+   "seat drop zones": {
+    "n": 45,
+    "enabled": 45
+   },
+   "\"+ add\" fill strips": {
+    "n": 20,
+    "enabled": 20
+   },
+   "typing boxes": {
+    "n": 181,
+    "enabled": 181
+   },
+   "all text inputs": {
+    "n": 182,
+    "enabled": 182
+   },
+   "selects (any)": {
+    "n": 7,
+    "enabled": 7
+   },
+   "+ Line buttons": {
+    "n": 3,
+    "enabled": 3
+   },
+   "+ Wave button": {
+    "n": 1,
+    "enabled": 1
+   },
+   "+ Row ground": {
+    "n": 1,
+    "enabled": 1
+   },
+   "+ Row duty": {
+    "n": 3,
+    "enabled": 3
+   },
+   "+ Block duty": {
+    "n": 1,
+    "enabled": 1
+   },
+   "+ Row programme": {
+    "n": 1,
+    "enabled": 1
+   },
+   "+ Row sim": {
+    "n": 2,
+    "enabled": 2
+   },
+   "+ Sim block": {
+    "n": 1,
+    "enabled": 1
+   },
+   "+ Inputs door": {
+    "n": 3,
+    "enabled": 3
+   },
+   "info toggles": {
+    "n": 5,
+    "enabled": 5
+   },
+   "row menu buttons": {
+    "n": 0,
+    "enabled": 0
+   },
+   "drag grips": {
+    "n": 0,
+    "enabled": 0
+   },
+   "publish button": {
+    "n": 1,
+    "enabled": 0
+   },
+   "OIL item switches": {
+    "n": 0,
+    "enabled": 0
+   },
+   "OIL pucks": {
+    "n": 0,
+    "enabled": 0
+   },
+   "OIL inert pucks": {
+    "n": 0,
+    "enabled": 0
+   },
+   "OIL dead name cells": {
+    "n": 0,
+    "enabled": 0
+   },
+   "count chips": {
+    "n": 0,
+    "enabled": 0
+   },
+   "Nothing today earns": {
+    "n": 0,
+    "enabled": 0
+   },
+   "OIL Earn / Done": {
+    "n": 0,
+    "enabled": 0
+   }
+  },
+  "samples": {
+   "crew palette pucks": {
+    "tag": "SPAN",
+    "cls": "rpuck",
+    "dis": false,
+    "ro": false,
+    "title": "ALL AVAIL — a placeholder, never validated",
+    "text": "ALL AVAIL"
+   },
+   "seat drop zones": {
+    "tag": "SPAN",
+    "cls": "seat",
+    "dis": false,
+    "ro": false,
+    "title": "",
+    "text": "ALL AVAIL"
+   },
+   "\"+ add\" fill strips": {
+    "tag": "DIV",
+    "cls": "ppl",
+    "dis": false,
+    "ro": false,
+    "title": "",
+    "text": "ALL AVAIL\n+ ADD"
+   },
+   "typing boxes": {
+    "tag": "TEXTAREA",
+    "cls": "nin",
+    "dis": false,
+    "ro": false,
+    "title": "",
+    "text": "WEEKEND - NO FLYING"
+   },
+   "all text inputs": {
+    "tag": "INPUT",
+    "cls": "",
+    "dis": false,
+    "ro": false,
+    "title": "",
+    "text": ""
+   },
+   "selects (any)": {
+    "tag": "SELECT",
+    "cls": "",
+    "dis": false,
+    "ro": false,
+    "title": "",
+    "text": "— name —\nAce\nAnvil\nBasher\nBlad"
+   },
+   "+ Line buttons": {
+    "tag": "BUTTON",
+    "cls": "mbtn add",
+    "dis": false,
+    "ro": false,
+    "title": "Add a line to this wave",
+    "text": "+ Line"
+   },
+   "+ Wave button": {
+    "tag": "BUTTON",
+    "cls": "mbtn add",
+    "dis": false,
+    "ro": false,
+    "title": "Add a flying wave",
+    "text": "+ Wave"
+   },
+   "+ Row ground": {
+    "tag": "BUTTON",
+    "cls": "mbtn add",
+    "dis": false,
+    "ro": false,
+    "title": "Add a ground item",
+    "text": "+ Item"
+   },
+   "+ Row duty": {
+    "tag": "BUTTON",
+    "cls": "mbtn add",
+    "dis": false,
+    "ro": false,
+    "title": "Add a duty row",
+    "text": "+ Row"
+   },
+   "+ Block duty": {
+    "tag": "BUTTON",
+    "cls": "mbtn add",
+    "dis": false,
+    "ro": false,
+    "title": "Add a duty block",
+    "text": "+ Block"
+   },
+   "+ Row programme": {
+    "tag": "BUTTON",
+    "cls": "mbtn add",
+    "dis": false,
+    "ro": false,
+    "title": "Add a squadron-wide item",
+    "text": "+ Item"
+   },
+   "+ Row sim": {
+    "tag": "BUTTON",
+    "cls": "mbtn add",
+    "dis": false,
+    "ro": false,
+    "title": "Add a AMT row",
+    "text": "+ Row"
+   },
+   "+ Sim block": {
+    "tag": "BUTTON",
+    "cls": "mbtn add",
+    "dis": false,
+    "ro": false,
+    "title": "Add an AMT block — BRIEF, BOX and DEBRIEF together",
+    "text": "+ Block"
+   },
+   "+ Inputs door": {
+    "tag": "BUTTON",
+    "cls": "sb-addinp",
+    "dis": false,
+    "ro": false,
+    "title": "Add a personal input (meeting, course…) — it goes straight onto the Ground Programme",
+    "text": "+ INPUTS"
+   },
+   "info toggles": {
+    "tag": "BUTTON",
+    "cls": "mbtn nfo",
+    "dis": false,
+    "ro": false,
+    "title": "Info only — show this item on the programme, never check it against the rules, and never e",
+    "text": "ⓘ"
+   },
+   "publish button": {
+    "tag": "BUTTON",
+    "cls": "dbeak locked",
+    "dis": true,
+    "ro": false,
+    "title": "Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday",
+    "text": "Publish day"
+   }
+  },
+  "daybar": "THIS DAYTemplatesOIL Earn",
+  "actionrow": "▤ | Templates | ◧ | OIL Earn | ↶ | Undo | ↷ | Redo | History | ⇅ | Sort all | ✓ | Done | ✕ | Close",
+  "tplBtn": [
+   "▤\nTemplates"
+  ],
+  "planSel": [
+   {
+    "t": "Live working copy\n▾",
+    "dis": false
+   },
+   {
+    "t": "Publish day",
+    "dis": true
+   }
+  ]
+ },
+ "publish": {
+  "published": true,
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "outsidePublished": {
+  "groups": {
+   "crew palette pucks": {
+    "n": 63,
+    "enabled": 63
+   },
+   "seat drop zones": {
+    "n": 45,
+    "enabled": 45
+   },
+   "\"+ add\" fill strips": {
+    "n": 20,
+    "enabled": 20
+   },
+   "typing boxes": {
+    "n": 181,
+    "enabled": 181
+   },
+   "all text inputs": {
+    "n": 182,
+    "enabled": 182
+   },
+   "selects (any)": {
+    "n": 7,
+    "enabled": 7
+   },
+   "+ Line buttons": {
+    "n": 3,
+    "enabled": 3
+   },
+   "+ Wave button": {
+    "n": 1,
+    "enabled": 1
+   },
+   "+ Row ground": {
+    "n": 1,
+    "enabled": 1
+   },
+   "+ Row duty": {
+    "n": 3,
+    "enabled": 3
+   },
+   "+ Block duty": {
+    "n": 1,
+    "enabled": 1
+   },
+   "+ Row programme": {
+    "n": 1,
+    "enabled": 1
+   },
+   "+ Row sim": {
+    "n": 2,
+    "enabled": 2
+   },
+   "+ Sim block": {
+    "n": 1,
+    "enabled": 1
+   },
+   "+ Inputs door": {
+    "n": 3,
+    "enabled": 3
+   },
+   "info toggles": {
+    "n": 5,
+    "enabled": 5
+   },
+   "row menu buttons": {
+    "n": 0,
+    "enabled": 0
+   },
+   "drag grips": {
+    "n": 0,
+    "enabled": 0
+   },
+   "publish button": {
+    "n": 0,
+    "enabled": 0
+   },
+   "OIL item switches": {
+    "n": 0,
+    "enabled": 0
+   },
+   "OIL pucks": {
+    "n": 0,
+    "enabled": 0
+   },
+   "OIL inert pucks": {
+    "n": 0,
+    "enabled": 0
+   },
+   "OIL dead name cells": {
+    "n": 0,
+    "enabled": 0
+   },
+   "count chips": {
+    "n": 0,
+    "enabled": 0
+   },
+   "Nothing today earns": {
+    "n": 0,
+    "enabled": 0
+   },
+   "OIL Earn / Done": {
+    "n": 0,
+    "enabled": 0
+   }
+  },
+  "samples": {
+   "crew palette pucks": {
+    "tag": "SPAN",
+    "cls": "rpuck",
+    "dis": false,
+    "ro": false,
+    "title": "ALL AVAIL — a placeholder, never validated",
+    "text": "ALL AVAIL"
+   },
+   "seat drop zones": {
+    "tag": "SPAN",
+    "cls": "seat",
+    "dis": false,
+    "ro": false,
+    "title": "",
+    "text": "ALL AVAIL"
+   },
+   "\"+ add\" fill strips": {
+    "tag": "DIV",
+    "cls": "ppl",
+    "dis": false,
+    "ro": false,
+    "title": "",
+    "text": "ALL AVAIL\n+ ADD"
+   },
+   "typing boxes": {
+    "tag": "TEXTAREA",
+    "cls": "nin",
+    "dis": false,
+    "ro": false,
+    "title": "",
+    "text": "WEEKEND - NO FLYING"
+   },
+   "all text inputs": {
+    "tag": "INPUT",
+    "cls": "",
+    "dis": false,
+    "ro": false,
+    "title": "",
+    "text": ""
+   },
+   "selects (any)": {
+    "tag": "SELECT",
+    "cls": "",
+    "dis": false,
+    "ro": false,
+    "title": "",
+    "text": "— name —\nAce\nAnvil\nBasher\nBlad"
+   },
+   "+ Line buttons": {
+    "tag": "BUTTON",
+    "cls": "mbtn add",
+    "dis": false,
+    "ro": false,
+    "title": "Add a line to this wave",
+    "text": "+ Line"
+   },
+   "+ Wave button": {
+    "tag": "BUTTON",
+    "cls": "mbtn add",
+    "dis": false,
+    "ro": false,
+    "title": "Add a flying wave",
+    "text": "+ Wave"
+   },
+   "+ Row ground": {
+    "tag": "BUTTON",
+    "cls": "mbtn add",
+    "dis": false,
+    "ro": false,
+    "title": "Add a ground item",
+    "text": "+ Item"
+   },
+   "+ Row duty": {
+    "tag": "BUTTON",
+    "cls": "mbtn add",
+    "dis": false,
+    "ro": false,
+    "title": "Add a duty row",
+    "text": "+ Row"
+   },
+   "+ Block duty": {
+    "tag": "BUTTON",
+    "cls": "mbtn add",
+    "dis": false,
+    "ro": false,
+    "title": "Add a duty block",
+    "text": "+ Block"
+   },
+   "+ Row programme": {
+    "tag": "BUTTON",
+    "cls": "mbtn add",
+    "dis": false,
+    "ro": false,
+    "title": "Add a squadron-wide item",
+    "text": "+ Item"
+   },
+   "+ Row sim": {
+    "tag": "BUTTON",
+    "cls": "mbtn add",
+    "dis": false,
+    "ro": false,
+    "title": "Add a AMT row",
+    "text": "+ Row"
+   },
+   "+ Sim block": {
+    "tag": "BUTTON",
+    "cls": "mbtn add",
+    "dis": false,
+    "ro": false,
+    "title": "Add an AMT block — BRIEF, BOX and DEBRIEF together",
+    "text": "+ Block"
+   },
+   "+ Inputs door": {
+    "tag": "BUTTON",
+    "cls": "sb-addinp",
+    "dis": false,
+    "ro": false,
+    "title": "Add a personal input (meeting, course…) — it goes straight onto the Ground Programme",
+    "text": "+ INPUTS"
+   },
+   "info toggles": {
+    "tag": "BUTTON",
+    "cls": "mbtn nfo",
+    "dis": false,
+    "ro": false,
+    "title": "Info only — show this item on the programme, never check it against the rules, and never e",
+    "text": "ⓘ"
+   }
+  },
+  "daybar": "THIS DAYTemplatesOIL Earn",
+  "actionrow": "▤ | Templates | ◧ | OIL Earn | ↶ | Undo | ↷ | Redo | History | ⇅ | Sort all | ✓ | Done | ✕ | Close",
+  "tplBtn": [
+   "▤\nTemplates"
+  ],
+  "planSel": [
+   {
+    "t": "Live working copy\n▾",
+    "dis": false
+   },
+   {
+    "t": "Unpublish",
+    "dis": false
+   }
+  ]
+ },
+ "modeCounts": {
+  "items": 68,
+  "people": 48,
+  "bar": "Calendar | Saturday Jul 18 · scheduler board | ‹ | Mon 13 | Tue 14 | Wed 15 | Thu 16 | Fri 17 | Sat 18 | Sun 19 | › | 🔍 | ◧ | OIL Earn | ↶ | Undo | ↷ | Redo | History | ⇅ | Sort all | ✓ | Done | ✕ | Close | CAT | TYPE | QUALS"
+ },
+ "inside": {
+  "groups": {
+   "crew palette pucks": {
+    "n": 63,
+    "enabled": 63
+   },
+   "seat drop zones": {
+    "n": 0,
+    "enabled": 0
+   },
+   "\"+ add\" fill strips": {
+    "n": 0,
+    "enabled": 0
+   },
+   "typing boxes": {
+    "n": 145,
+    "enabled": 0
+   },
+   "all text inputs": {
+    "n": 155,
+    "enabled": 10
+   },
+   "selects (any)": {
+    "n": 7,
+    "enabled": 4
+   },
+   "+ Line buttons": {
+    "n": 0,
+    "enabled": 0
+   },
+   "+ Wave button": {
+    "n": 0,
+    "enabled": 0
+   },
+   "+ Row ground": {
+    "n": 0,
+    "enabled": 0
+   },
+   "+ Row duty": {
+    "n": 0,
+    "enabled": 0
+   },
+   "+ Block duty": {
+    "n": 0,
+    "enabled": 0
+   },
+   "+ Row programme": {
+    "n": 0,
+    "enabled": 0
+   },
+   "+ Row sim": {
+    "n": 0,
+    "enabled": 0
+   },
+   "+ Sim block": {
+    "n": 0,
+    "enabled": 0
+   },
+   "+ Inputs door": {
+    "n": 0,
+    "enabled": 0
+   },
+   "info toggles": {
+    "n": 0,
+    "enabled": 0
+   },
+   "row menu buttons": {
+    "n": 0,
+    "enabled": 0
+   },
+   "drag grips": {
+    "n": 0,
+    "enabled": 0
+   },
+   "publish button": {
+    "n": 0,
+    "enabled": 0
+   },
+   "OIL item switches": {
+    "n": 68,
+    "enabled": 68
+   },
+   "OIL pucks": {
+    "n": 48,
+    "enabled": 48
+   },
+   "OIL inert pucks": {
+    "n": 8,
+    "enabled": 8
+   },
+   "OIL dead name cells": {
+    "n": 19,
+    "enabled": 19
+   },
+   "count chips": {
+    "n": 0,
+    "enabled": 0
+   },
+   "Nothing today earns": {
+    "n": 1,
+    "enabled": 1
+   },
+   "OIL Earn / Done": {
+    "n": 1,
+    "enabled": 1
+   }
+  },
+  "samples": {
+   "crew palette pucks": {
+    "tag": "SPAN",
+    "cls": "rpuck",
+    "dis": false,
+    "ro": false,
+    "title": "ALL AVAIL — a placeholder, never validated",
+    "text": "ALL AVAIL"
+   },
+   "typing boxes": {
+    "tag": "TEXTAREA",
+    "cls": "nin",
+    "dis": true,
+    "ro": false,
+    "title": "",
+    "text": "WEEKEND - NO FLYING"
+   },
+   "all text inputs": {
+    "tag": "INPUT",
+    "cls": "",
+    "dis": false,
+    "ro": false,
+    "title": "",
+    "text": ""
+   },
+   "selects (any)": {
+    "tag": "SELECT",
+    "cls": "",
+    "dis": false,
+    "ro": false,
+    "title": "",
+    "text": "— name —\nAce\nAnvil\nBasher\nBlad"
+   },
+   "OIL item switches": {
+    "tag": "SPAN",
+    "cls": "ain oilitem on",
+    "dis": false,
+    "ro": false,
+    "title": "Earns OIL — tap to stop this item earning",
+    "text": "FAMILY DAY"
+   },
+   "OIL pucks": {
+    "tag": "SPAN",
+    "cls": "seat oilpk on",
+    "dis": false,
+    "ro": false,
+    "title": "Ace earns half a day — tap to take him off this event",
+    "text": "Ace\nHO"
+   },
+   "OIL inert pucks": {
+    "tag": "SPAN",
+    "cls": "seat oilpk inert",
+    "dis": false,
+    "ro": false,
+    "title": "Cobra — nothing measurable to earn from here",
+    "text": "Cobra\nIP"
+   },
+   "OIL dead name cells": {
+    "tag": "SPAN",
+    "cls": "lin oilitem none",
+    "dis": false,
+    "ro": false,
+    "title": "Nothing on this row can earn OIL, so there is nothing to switch off",
+    "text": "AV"
+   },
+   "Nothing today earns": {
+    "tag": "BUTTON",
+    "cls": "mbtn daybtn blank",
+    "dis": false,
+    "ro": false,
+    "title": "Nothing today earns — covers anything added later too",
+    "text": "Nothing today earns"
+   },
+   "OIL Earn / Done": {
+    "tag": "BUTTON",
+    "cls": "mbtn daybtn done",
+    "dis": false,
+    "ro": false,
+    "title": "Leave OIL mode and edit the schedule again",
+    "text": "✓ Done"
+   }
+  },
+  "daybar": "OIL EARN | Nothing today earns | ✓ Done | Tap a puck to take a man off that event · tap an item to stop the whole item earning",
+  "actionrow": "◧ | OIL Earn | ↶ | Undo | ↷ | Redo | History | ⇅ | Sort all | ✓ | Done | ✕ | Close",
+  "tplBtn": [],
+  "planSel": [
+   {
+    "t": "Live working copy\n▾",
+    "dis": false
+   },
+   {
+    "t": "Unpublish",
+    "dis": false
+   }
+  ]
+ },
+ "tips": {
+  "items": [
+   {
+    "kind": "ON",
+    "name": "FAMILY DAY",
+    "item": "r:rmubcmaxl24wz91",
+    "title": "Earns OIL — tap to stop this item earning"
+   },
+   {
+    "kind": "ON",
+    "name": "MASS BRIEF",
+    "item": "r:rmubcmbb0n9y0uj",
+    "title": "Earns OIL — tap to stop this item earning"
+   },
+   {
+    "kind": "ON",
+    "name": "VIPER",
+    "item": "r:rmubcl96zk43f8n",
+    "title": "Earns OIL — tap to stop this item earning"
+   },
+   {
+    "kind": "ON",
+    "name": "COBRA",
+    "item": "r:rmubclcx3d40u63",
+    "title": "Earns OIL — tap to stop this item earning"
+   },
+   {
+    "kind": "ON",
+    "name": "SC",
+    "item": "r:rmubclgntiqurs0",
+    "title": "Earns OIL — tap to stop this item earning"
+   },
+   {
+    "kind": "ON",
+    "name": "SC",
+    "item": "r:rmubclgntiqurs0",
+    "title": "Earns OIL — tap to stop this item earning"
+   },
+   {
+    "kind": "ON",
+    "name": "SC",
+    "item": "r:rmubclgntiqurs0",
+    "title": "Earns OIL — tap to stop this item earning"
+   },
+   {
+    "kind": "ON",
+    "name": "SC",
+    "item": "r:rmubclgntiqurs0",
+    "title": "Earns OIL — tap to stop this item earning"
+   },
+   {
+    "kind": "ON",
+    "name": "SC",
+    "item": "r:rmubclgntd3x2gs",
+    "title": "Earns OIL — tap to stop this item earning"
+   },
+   {
+    "kind": "ON",
+    "name": "SC",
+    "item": "r:rmubclgntd3x2gs",
+    "title": "Earns OIL — tap to stop this item earning"
+   },
+   {
+    "kind": "ON",
+    "name": "SC",
+    "item": "r:rmubclgntd3x2gs",
+    "title": "Earns OIL — tap to stop this item earning"
+   },
+   {
+    "kind": "ON",
+    "name": "SC",
+    "item": "r:rmubclgntd3x2gs",
+    "title": "Earns OIL — tap to stop this item earning"
+   },
+   {
+    "kind": "DEAD",
+    "name": "AV",
+    "item": "",
+    "title": "Nothing on this row can earn OIL, so there is nothing to switch off"
+   },
+   {
+    "kind": "DEAD",
+    "name": "AV",
+    "item": "",
+    "title": "Nothing on this row can earn OIL, so there is nothing to switch off"
+   },
+   {
+    "kind": "DEAD",
+    "name": "AV",
+    "item": "",
+    "title": "Nothing on this row can earn OIL, so there is nothing to switch off"
+   },
+   {
+    "kind": "DEAD",
+    "name": "AV",
+    "item": "",
+    "title": "Nothing on this row can earn OIL, so there is nothing to switch off"
+   },
+   {
+    "kind": "ON",
+    "name": "SDO",
+    "item": "r:rmubcl78vnjihbq",
+    "title": "Earns OIL — tap to stop this item earning"
+   },
+   {
+    "kind": "DEAD",
+    "name": "SXO",
+    "item": "",
+    "title": "Nothing on this row can earn OIL, so there is nothing to switch off"
+   },
+   {
+    "kind": "DEAD",
+    "name": "OPS DESK",
+    "item": "",
+    "title": "Nothing on this row can earn OIL, so there is nothing to switch off"
+   },
+   {
+    "kind": "DEAD",
+    "name": "SXO",
+    "item": "",
+    "title": "Nothing on this row can earn OIL, so there is nothing to switch off"
+   },
+   {
+    "kind": "DEAD",
+    "name": "OPS O",
+    "item": "",
+    "title": "Nothing on this row can earn OIL, so there is nothing to switch off"
+   },
+   {
+    "kind": "DEAD",
+    "name": "RUNNER",
+    "item": "",
+    "title": "Nothing on this row can earn OIL, so there is nothing to switch off"
+   },
+   {
+    "kind": "DEAD",
+    "name": "LOG CELL",
+    "item": "",
+    "title": "Nothing on this row can earn OIL, so there is nothing to switch off"
+   },
+   {
+    "kind": "ON",
+    "name": "SXO AM",
+    "item": "r:rmubclww05qnapm",
+    "title": "Earns OIL — tap to stop this item earning"
+   },
+   {
+    "kind": "ON",
+    "name": "OPS O AM",
+    "item": "r:rmubclww02vnxti",
+    "title": "Earns OIL — tap to stop this item earning"
+   },
+   {
+    "kind": "ON",
+    "name": "SXO PM",
+    "item": "r:rmubclww0pd2o60",
+    "title": "Earns OIL — tap to stop this item earning"
+   },
+   {
+    "kind": "ON",
+    "name": "OPS O PM",
+    "item": "r:rmubclww021dcvo",
+    "title": "Earns OIL — tap to stop this item earning"
+   },
+   {
+    "kind": "DEAD",
+    "name": "BRIEF",
+    "item": "",
+    "title": "Nothing on this row can earn OIL, so there is nothing to switch off"
+   },
+   {
+    "kind": "ON",
+    "name": "BOX",
+    "item": "r:rmubcm24z60pa1q",
+    "title": "Earns OIL — tap to stop this item earning"
+   },
+   {
+    "kind": "DEAD",
+    "name": "DEBRIEF",
+    "item": "",
+    "title": "Nothing on this row can earn OIL, so there is nothing to switch off"
+   },
+   {
+    "kind": "ON",
+    "name": "EP-6",
+    "item": "r:rmubclymnurb7v4",
+    "title": "Earns OIL — tap to stop this item earning"
+   },
+   {
+    "kind": "ON",
+    "name": "OCU REVIEW",
+    "item": "r:rmubcm5adgaphyo",
+    "title": "Earns OIL — tap to stop this item earning"
+   },
+   {
+    "kind": "DEAD",
+    "name": "TRAINING",
+    "item": "",
+    "title": "Nothing on this row can earn OIL, so there is nothing to switch off"
+   },
+   {
+    "kind": "DEAD",
+    "name": "ADMIN",
+    "item": "",
+    "title": "Nothing on this row can earn OIL, so there is nothing to switch off"
+   },
+   {
+    "kind": "DEAD",
+    "name": "MEETING",
+    "item": "",
+    "title": "Nothing on this row can earn OIL, so there is nothing to switch off"
+   },
+   {
+    "kind": "DEAD",
+    "name": "DUTY",
+    "item": "",
+    "title": "Nothing on this row can earn OIL, so there is nothing to switch off"
+   },
+   {
+    "kind": "DEAD",
+    "name": "Meeting",
+    "item": "",
+    "title": "Nothing on this row can earn OIL, so there is nothing to switch off"
+   },
+   {
+    "kind": "DEAD",
+    "name": "Duty",
+    "item": "",
+    "title": "Nothing on this row can earn OIL, so there is nothing to switch off"
+   },
+   {
+    "kind": "DEAD",
+    "name": "Training",
+    "item": "",
+    "title": "Nothing on this row can earn OIL, so there is nothing to switch off"
+   }
+  ],
+  "pucks": [
+   {
+    "kind": "ON",
+    "who": "Ace",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Ace HO",
+    "tappable": true,
+    "title": "Ace earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Warden",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Warden HO",
+    "tappable": true,
+    "title": "Warden earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Blade",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Blade HO",
+    "tappable": true,
+    "title": "Blade earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Trident",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Trident HO",
+    "tappable": true,
+    "title": "Trident earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Anvil",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Anvil HO",
+    "tappable": true,
+    "title": "Anvil earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Forge",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Forge HO",
+    "tappable": true,
+    "title": "Forge earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Havoc",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Havoc HO",
+    "tappable": true,
+    "title": "Havoc earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Comet",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Comet HO",
+    "tappable": true,
+    "title": "Comet earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Reaper",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Reaper HO",
+    "tappable": true,
+    "title": "Reaper earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Vandal",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Vandal HO",
+    "tappable": true,
+    "title": "Vandal earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Outlaw",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Outlaw HO",
+    "tappable": true,
+    "title": "Outlaw earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Nomad",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Nomad HO",
+    "tappable": true,
+    "title": "Nomad earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Diesel",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Diesel HO",
+    "tappable": true,
+    "title": "Diesel earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Vapor",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Vapor HO",
+    "tappable": true,
+    "title": "Vapor earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Wildcard",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Wildcard HO",
+    "tappable": true,
+    "title": "Wildcard earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Recon",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Recon HO",
+    "tappable": true,
+    "title": "Recon earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Static",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Static HO",
+    "tappable": true,
+    "title": "Static earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Relay",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Relay HO",
+    "tappable": true,
+    "title": "Relay earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Scope",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Scope HO",
+    "tappable": true,
+    "title": "Scope earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Rune",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Rune HO",
+    "tappable": true,
+    "title": "Rune earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Hex",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Hex HO",
+    "tappable": true,
+    "title": "Hex earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Vector",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Vector HO",
+    "tappable": true,
+    "title": "Vector earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Dash",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Dash HO",
+    "tappable": true,
+    "title": "Dash earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Ghost",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Ghost HO",
+    "tappable": true,
+    "title": "Ghost earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Wisp",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Wisp HO",
+    "tappable": true,
+    "title": "Wisp earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Ryder",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Ryder HO",
+    "tappable": true,
+    "title": "Ryder earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Cutter",
+    "item": "r:rmubcmaxl24wz91",
+    "figure": "Cutter HO",
+    "tappable": true,
+    "title": "Cutter earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Saber",
+    "item": "r:rmubcmbb0n9y0uj",
+    "figure": "Saber FO",
+    "tappable": true,
+    "title": "Saber earns a full day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Torch",
+    "item": "r:rmubcmbb0n9y0uj",
+    "figure": "Torch HO",
+    "tappable": true,
+    "title": "Torch earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Ranger",
+    "item": "r:rmubcl96zk43f8n",
+    "figure": "Ranger HO",
+    "tappable": true,
+    "title": "Ranger earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Echo",
+    "item": "r:rmubcl96zk43f8n",
+    "figure": "Echo HO",
+    "tappable": true,
+    "title": "Echo earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Ridge",
+    "item": "r:rmubclcx3d40u63",
+    "figure": "Ridge FO",
+    "tappable": true,
+    "title": "Ridge earns a full day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Grit",
+    "item": "r:rmubclcx3d40u63",
+    "figure": "Grit FO",
+    "tappable": true,
+    "title": "Grit earns a full day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Piston",
+    "item": "r:rmubclgntiqurs0",
+    "figure": "Piston FO",
+    "tappable": true,
+    "title": "Piston earns a full day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Basher",
+    "item": "r:rmubclgntiqurs0",
+    "figure": "Basher FO",
+    "tappable": true,
+    "title": "Basher earns a full day — tap to take him off this event"
+   },
+   {
+    "kind": "INERT",
+    "who": "Cobra",
+    "item": "",
+    "figure": "Cobra IP",
+    "tappable": false,
+    "title": "Cobra — nothing measurable to earn from here"
+   },
+   {
+    "kind": "INERT",
+    "who": "Ledger",
+    "item": "",
+    "figure": "Ledger IW",
+    "tappable": false,
+    "title": "Ledger — nothing measurable to earn from here"
+   },
+   {
+    "kind": "INERT",
+    "who": "Hunter",
+    "item": "",
+    "figure": "Hunter IP",
+    "tappable": false,
+    "title": "Hunter — nothing measurable to earn from here"
+   },
+   {
+    "kind": "INERT",
+    "who": "Quill",
+    "item": "",
+    "figure": "Quill IW",
+    "tappable": false,
+    "title": "Quill — nothing measurable to earn from here"
+   },
+   {
+    "kind": "ON",
+    "who": "Fable",
+    "item": "r:rmubcl78vnjihbq",
+    "figure": "Fable FO",
+    "tappable": true,
+    "title": "Fable earns a full day — tap to take him off this event"
+   },
+   {
+    "kind": "INERT",
+    "who": "Warden",
+    "item": "",
+    "figure": "Warden IP",
+    "tappable": false,
+    "title": "Warden — nothing measurable to earn from here"
+   },
+   {
+    "kind": "INERT",
+    "who": "Outlaw",
+    "item": "",
+    "figure": "Outlaw C",
+    "tappable": false,
+    "title": "Outlaw — nothing measurable to earn from here"
+   },
+   {
+    "kind": "INERT",
+    "who": "Saint",
+    "item": "",
+    "figure": "Saint B",
+    "tappable": false,
+    "title": "Saint — nothing measurable to earn from here"
+   },
+   {
+    "kind": "ON",
+    "who": "Drifter",
+    "item": "r:rmubclww05qnapm",
+    "figure": "Drifter HO",
+    "tappable": true,
+    "title": "Drifter earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Cinch",
+    "item": "r:rmubcm24z60pa1q",
+    "figure": "Cinch HO",
+    "tappable": true,
+    "title": "Cinch earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Cinder",
+    "item": "r:rmubcm24z60pa1q",
+    "figure": "Cinder HO",
+    "tappable": true,
+    "title": "Cinder earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Reaper",
+    "item": "r:rmubclymnurb7v4",
+    "figure": "Reaper HO",
+    "tappable": true,
+    "title": "Reaper earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Basher",
+    "item": "r:rmubclymnurb7v4",
+    "figure": "Basher FO",
+    "tappable": true,
+    "title": "Basher earns a full day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Saber",
+    "item": "r:rmubcm5adgaphyo",
+    "figure": "Saber FO",
+    "tappable": true,
+    "title": "Saber earns a full day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Talisman",
+    "item": "i:imubcmj77qa4e76",
+    "figure": "Talisman HO",
+    "tappable": true,
+    "title": "Talisman earns half a day — tap to take him off this event"
+   },
+   {
+    "kind": "INERT",
+    "who": "Vandal",
+    "item": "",
+    "figure": "Vandal IP",
+    "tappable": false,
+    "title": "Vandal — nothing measurable to earn from here"
+   },
+   {
+    "kind": "OFF",
+    "who": "Gambit",
+    "item": "i:imubcmotlcg0zk3",
+    "figure": "Gambit —",
+    "tappable": true,
+    "title": "Gambit earns nothing from this event — tap to put him back on it"
+   },
+   {
+    "kind": "ON",
+    "who": "Sidewinder",
+    "item": "i:imubcmm079vze93",
+    "figure": "Sidewinder FO",
+    "tappable": true,
+    "title": "Sidewinder earns a full day — tap to take him off this event"
+   },
+   {
+    "kind": "OFF",
+    "who": "Gambit",
+    "item": "i:imubcmotlcg0zk3",
+    "figure": "Gambit —",
+    "tappable": true,
+    "title": "Gambit earns nothing from this event — tap to put him back on it"
+   },
+   {
+    "kind": "ON",
+    "who": "Sidewinder",
+    "item": "i:imubcmm079vze93",
+    "figure": "Sidewinder FO",
+    "tappable": true,
+    "title": "Sidewinder earns a full day — tap to take him off this event"
+   },
+   {
+    "kind": "ON",
+    "who": "Talisman",
+    "item": "i:imubcmj77qa4e76",
+    "figure": "Talisman HO",
+    "tappable": true,
+    "title": "Talisman earns half a day — tap to take him off this event"
+   }
+  ],
+  "chips": [],
+  "bar": [
+   {
+    "text": "Nothing today earns",
+    "title": "Nothing today earns — covers anything added later too",
+    "dis": false
+   },
+   {
+    "text": "✓ Done",
+    "title": "Leave OIL mode and edit the schedule again",
+    "dis": false
+   }
+  ],
+  "note": "Tap a puck to take a man off that event · tap an item to stop the whole item earning"
+ },
+ "tryArm": {
+  "seats": 0,
+  "armed": null,
+  "note": "no seat drop zones drawn in the mode"
+ },
+ "tryType": {
+  "found": true,
+  "key": "ap:5.0.str",
+  "disabled": true,
+  "readOnly": false,
+  "before": "10:00",
+  "focused": false
+ },
+ "rowKinds": [
+  {
+   "section": "COMMON PROGRAMME",
+   "switches": 2,
+   "deadNames": 0,
+   "liveP": 29,
+   "inertP": 0
+  },
+  {
+   "section": "DUTIES",
+   "switches": 5,
+   "deadNames": 6,
+   "liveP": 2,
+   "inertP": 3
+  },
+  {
+   "section": "SIMS",
+   "switches": 2,
+   "deadNames": 2,
+   "liveP": 4,
+   "inertP": 0
+  },
+  {
+   "section": "GROUND PROGRAMME",
+   "switches": 1,
+   "deadNames": 4,
+   "liveP": 4,
+   "inertP": 1
+  },
+  {
+   "section": "PERSONAL INPUTS",
+   "switches": 0,
+   "deadNames": 3,
+   "liveP": 3,
+   "inertP": 0
+  }
+ ],
+ "freshRow": [
+  {
+   "name": "(blank)",
+   "title": "Nothing on this row can earn OIL, so there is nothing to switch off"
+  }
+ ],
+ "errors": []
+}

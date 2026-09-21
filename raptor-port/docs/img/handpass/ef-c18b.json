@@ -1,0 +1,33 @@
+{
+ "publish": {
+  "published": true,
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "before": {
+  "row": true,
+  "cell": "FO*"
+ },
+ "trkBefore": "Fable C 1 + 1 +1 18 Jul AUTO Weekend/PH Duty 1 left",
+ "archBefore": 61,
+ "editBtn": "Enable editing",
+ "archAfter": 61,
+ "door": "the ✕ on his row (only after Enable editing)",
+ "archivedFlag": true,
+ "afterArchive": {
+  "row": false,
+  "cell": "NO CELL"
+ },
+ "trkAfter": "no row in the tracker",
+ "restoreList": [
+  "▸ Archived · 1"
+ ],
+ "restoreDoor": "Restore button in the posted-out list",
+ "restoredFlag": false,
+ "afterRestore": {
+  "row": true,
+  "cell": "FO*"
+ },
+ "trkRestore": "Fable C 1 + 1 +1 18 Jul AUTO Weekend/PH Duty 1 left",
+ "errors": []
+}

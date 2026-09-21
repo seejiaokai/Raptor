@@ -1,0 +1,112 @@
+{
+ "steps": [
+  {
+   "label": "1. off a flying line (VIPER)",
+   "who": "bane",
+   "done": true,
+   "copies": 1,
+   "before": "Ranger earns half a day — tap to take him off this event",
+   "after": "Ranger earns nothing from this event — tap to put him back on it",
+   "toast": []
+  },
+  {
+   "label": "2. off an SC shift (SC MAIN)",
+   "who": "pump",
+   "done": true,
+   "copies": 1,
+   "before": "Piston earns a full day — tap to take him off this event",
+   "after": "Piston earns nothing from this event — tap to put him back on it",
+   "toast": []
+  },
+  {
+   "label": "3. off a duty desk (SDO)",
+   "who": "plasma",
+   "done": true,
+   "copies": 1,
+   "before": "Fable earns a full day — tap to take him off this event",
+   "after": "Fable earns nothing from this event — tap to put him back on it",
+   "toast": []
+  },
+  {
+   "label": "4. off a sim (OFT EP-6)",
+   "who": "snap",
+   "done": true,
+   "copies": 1,
+   "before": "Cinch earns half a day — tap to take him off this event",
+   "after": "Cinch earns nothing from this event — tap to put him back on it",
+   "toast": []
+  },
+  {
+   "label": "5. off a ground row (OCU REVIEW)",
+   "who": "stiff",
+   "done": true,
+   "copies": 2,
+   "before": "Saber earns a full day — tap to take him off this event",
+   "after": "Saber earns nothing from this event — tap to put him back on it",
+   "toast": []
+  },
+  {
+   "label": "6. off the family day (opened sentinel)",
+   "who": "dj",
+   "done": true,
+   "copies": 1,
+   "before": "Ace earns half a day — tap to take him off this event",
+   "after": "Ace earns nothing from this event — tap to put him back on it",
+   "toast": []
+  },
+  {
+   "label": "7. off his overseas duty (Unavailable)",
+   "who": "mamba",
+   "done": true,
+   "copies": 2,
+   "before": "Sidewinder earns a full day — tap to take him off this event",
+   "after": "Sidewinder earns nothing from this event — tap to put him back on it",
+   "toast": []
+  },
+  {
+   "label": "8. off his Training (Personal Inputs)",
+   "who": "haowen",
+   "done": true,
+   "copies": 2,
+   "before": "Talisman earns half a day — tap to take him off this event",
+   "after": "Talisman earns nothing from this event — tap to put him back on it",
+   "toast": []
+  },
+  {
+   "label": "9. a row with an EMPTY name",
+   "name": "(blank)",
+   "done": true,
+   "before": "Earns OIL — tap to stop this item earning",
+   "toast": []
+  },
+  {
+   "label": "10. Nothing today earns — ON",
+   "toast": [],
+   "note": "Nothing on this day earns OIL. The marks underneath are kept — turn it off and they come back."
+  },
+  {
+   "label": "11. Nothing today earns — OFF",
+   "toast": [],
+   "note": "Tap a puck to take a man off that event · tap an item to stop the whole item earning"
+  }
+ ],
+ "namelessRow": "FAILED nobody offered for [data-fill=\"g:5.5.+\"]",
+ "pub": {
+  "published": true,
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "pending0": [],
+ "pending": {
+  "chips": [],
+  "hits": []
+ },
+ "alPanel": {
+  "found": false
+ },
+ "history": {
+  "head": "☰ Edit history · 14 changes",
+  "lines": []
+ },
+ "errors": []
+}

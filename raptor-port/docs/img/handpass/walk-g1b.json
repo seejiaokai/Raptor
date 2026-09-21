@@ -1,0 +1,891 @@
+{
+ "doorsDraftOut": {
+  "button.abtn": {
+   "n": 10,
+   "live": 8,
+   "eg": "Calendar"
+  },
+  "input": {
+   "n": 1,
+   "live": 1,
+   "eg": ""
+  },
+  "data-hlgrp-btn": {
+   "n": 3,
+   "live": 3,
+   "eg": "CAT"
+  },
+  "data-sign,data-signday": {
+   "n": 4,
+   "live": 4,
+   "eg": "— name —\nAce\nAnvil\nBasher\nBlade\nBo"
+  },
+  "data-planmenu": {
+   "n": 1,
+   "live": 1,
+   "eg": "Live working copy\n▾"
+  },
+  "data-dayinfo": {
+   "n": 1,
+   "live": 1,
+   "eg": "i"
+  },
+  "data-beak": {
+   "n": 1,
+   "live": 0,
+   "eg": "Publish day"
+  },
+  "span.secgrip": {
+   "n": 10,
+   "live": 10,
+   "eg": "⠿"
+  },
+  "data-nadd": {
+   "n": 1,
+   "live": 1,
+   "eg": "+ Note"
+  },
+  "span.sb-grip": {
+   "n": 38,
+   "live": 38,
+   "eg": "⠿"
+  },
+  "data-bfld": {
+   "n": 170,
+   "live": 170,
+   "eg": "WEEKEND - NO FLYING"
+  },
+  "data-ndel": {
+   "n": 2,
+   "live": 2,
+   "eg": "✕"
+  },
+  "data-sortsec": {
+   "n": 10,
+   "live": 10,
+   "eg": "⇅ Auto sort"
+  },
+  "data-padd": {
+   "n": 1,
+   "live": 1,
+   "eg": "+ Item"
+  },
+  "data-fill": {
+   "n": 20,
+   "live": 20,
+   "eg": "ALL AVAIL\n+ ADD"
+  },
+  "data-drag,data-slot": {
+   "n": 27,
+   "live": 27,
+   "eg": "ALL AVAIL"
+  },
+  "data-pcx": {
+   "n": 2,
+   "live": 2,
+   "eg": "CX"
+  },
+  "data-pinfo": {
+   "n": 2,
+   "live": 2,
+   "eg": "ⓘ"
+  },
+  "data-pflag": {
+   "n": 2,
+   "live": 2,
+   "eg": "■"
+  },
+  "data-pdel": {
+   "n": 2,
+   "live": 2,
+   "eg": "✕"
+  },
+  "data-notepub": {
+   "n": 4,
+   "live": 4,
+   "eg": "MAKE PUBLIC"
+  },
+  "data-wvadd": {
+   "n": 1,
+   "live": 1,
+   "eg": "+ Wave"
+  },
+  "span.wvgrip": {
+   "n": 3,
+   "live": 3,
+   "eg": "⠿"
+  },
+  "data-wsel": {
+   "n": 3,
+   "live": 3,
+   "eg": "1st wave\n2nd wave\n3rd wave\n4th wav"
+  },
+  "data-air": {
+   "n": 1,
+   "live": 1,
+   "eg": "Traffic"
+  },
+  "data-itadd": {
+   "n": 1,
+   "live": 1,
+   "eg": "+ In time"
+  },
+  "data-gline": {
+   "n": 3,
+   "live": 3,
+   "eg": "+ Line"
+  },
+  "data-gdel": {
+   "n": 3,
+   "live": 3,
+   "eg": "✕ Wave"
+  },
+  "data-stcfg": {
+   "n": 2,
+   "live": 2,
+   "eg": "C"
+  },
+  "data-lcx": {
+   "n": 14,
+   "live": 14,
+   "eg": "CX"
+  },
+  "data-lflag": {
+   "n": 14,
+   "live": 14,
+   "eg": "■"
+  },
+  "data-lac": {
+   "n": 14,
+   "live": 14,
+   "eg": "+"
+  },
+  "data-ldel": {
+   "n": 14,
+   "live": 14,
+   "eg": "✕"
+  },
+  "data-sarole": {
+   "n": 12,
+   "live": 12,
+   "eg": "MAIN"
+  },
+  "data-slot": {
+   "n": 18,
+   "live": 18,
+   "eg": "+ FCP"
+  },
+  "data-dwadd": {
+   "n": 1,
+   "live": 1,
+   "eg": "+ Block"
+  },
+  "data-dradd": {
+   "n": 3,
+   "live": 3,
+   "eg": "+ Row"
+  },
+  "data-dwdel": {
+   "n": 3,
+   "live": 3,
+   "eg": "✕ Block"
+  },
+  "data-bfld,data-rolepick": {
+   "n": 11,
+   "live": 11,
+   "eg": "SDO"
+  },
+  "data-drcx": {
+   "n": 11,
+   "live": 11,
+   "eg": "CX"
+  },
+  "data-drflag": {
+   "n": 11,
+   "live": 11,
+   "eg": "■"
+  },
+  "data-drdel": {
+   "n": 11,
+   "live": 11,
+   "eg": "✕"
+  },
+  "data-sblkadd": {
+   "n": 1,
+   "live": 1,
+   "eg": "+ Block"
+  },
+  "data-sradd": {
+   "n": 2,
+   "live": 2,
+   "eg": "+ Row"
+  },
+  "data-srcx": {
+   "n": 4,
+   "live": 4,
+   "eg": "CX"
+  },
+  "data-srflag": {
+   "n": 4,
+   "live": 4,
+   "eg": "■"
+  },
+  "data-srdel": {
+   "n": 4,
+   "live": 4,
+   "eg": "✕"
+  },
+  "data-inpadd": {
+   "n": 3,
+   "live": 3,
+   "eg": "+ INPUTS"
+  },
+  "data-gradd": {
+   "n": 1,
+   "live": 1,
+   "eg": "+ Item"
+  },
+  "data-grcx": {
+   "n": 5,
+   "live": 5,
+   "eg": "CX"
+  },
+  "data-grinfo": {
+   "n": 5,
+   "live": 5,
+   "eg": "ⓘ"
+  },
+  "data-grflag": {
+   "n": 5,
+   "live": 5,
+   "eg": "■"
+  },
+  "data-grdel": {
+   "n": 5,
+   "live": 5,
+   "eg": "✕"
+  },
+  "data-woff": {
+   "n": 3,
+   "live": 3,
+   "eg": "✕"
+  }
+ },
+ "chipsDraftOut": [
+  {
+   "where": "#eWeek",
+   "text": "27",
+   "cls": "oilcount",
+   "title": "All 27 earn half a day — tap to see each one"
+  }
+ ],
+ "doorsDraftIn": {
+  "button.abtn": {
+   "n": 9,
+   "live": 7,
+   "eg": "Calendar"
+  },
+  "input": {
+   "n": 1,
+   "live": 1,
+   "eg": ""
+  },
+  "data-hlgrp-btn": {
+   "n": 3,
+   "live": 3,
+   "eg": "CAT"
+  },
+  "data-sign,data-signday": {
+   "n": 4,
+   "live": 4,
+   "eg": "— name —\nAce\nAnvil\nBasher\nBlade\nBo"
+  },
+  "data-planmenu": {
+   "n": 1,
+   "live": 1,
+   "eg": "Live working copy\n▾"
+  },
+  "data-dayinfo": {
+   "n": 1,
+   "live": 1,
+   "eg": "i"
+  },
+  "data-beak": {
+   "n": 1,
+   "live": 0,
+   "eg": "Publish day"
+  },
+  "data-oilblank": {
+   "n": 1,
+   "live": 1,
+   "eg": "Nothing today earns"
+  },
+  "data-oilmode": {
+   "n": 1,
+   "live": 1,
+   "eg": "✓ Done"
+  },
+  "span.sb-grip": {
+   "n": 41,
+   "live": 41,
+   "eg": ""
+  },
+  "data-bfld": {
+   "n": 145,
+   "live": 0,
+   "eg": "WEEKEND - NO FLYING"
+  },
+  "data-wsel": {
+   "n": 3,
+   "live": 0,
+   "eg": "1st wave\n2nd wave\n3rd wave\n4th wav"
+  },
+  "data-lateoff": {
+   "n": 3,
+   "live": 3,
+   "eg": "LATE"
+  },
+  "data-ifld": {
+   "n": 9,
+   "live": 9,
+   "eg": "13:00"
+  },
+  "data-acc,data-accd,data-acck": {
+   "n": 3,
+   "live": 3,
+   "eg": "UNDO"
+  },
+  "data-woff": {
+   "n": 3,
+   "live": 3,
+   "eg": "✕"
+  }
+ },
+ "chipsDraftIn": [
+  {
+   "where": "#eWeek",
+   "text": "27",
+   "cls": "oilcount",
+   "title": "All 27 earn half a day — tap to see each one"
+  }
+ ],
+ "publishInMode": {
+  "beak": {
+   "text": "Publish day",
+   "disabled": true,
+   "visible": true
+  },
+  "signSelects": 4,
+  "signLive": 4
+ },
+ "publish": {
+  "published": true,
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "chipsPubOut": [
+  {
+   "where": "#eWeek",
+   "text": "27",
+   "cls": "oilcount",
+   "title": "All 27 earn half a day — tap to see each one"
+  }
+ ],
+ "doorsPubOut": {
+  "button.abtn": {
+   "n": 10,
+   "live": 9,
+   "eg": "Calendar"
+  },
+  "input": {
+   "n": 1,
+   "live": 1,
+   "eg": ""
+  },
+  "data-hlgrp-btn": {
+   "n": 3,
+   "live": 3,
+   "eg": "CAT"
+  },
+  "data-sign,data-signday": {
+   "n": 4,
+   "live": 4,
+   "eg": "— name —\nAce\nAnvil\nBasher\nBlade\nBo"
+  },
+  "data-planmenu": {
+   "n": 1,
+   "live": 1,
+   "eg": "Live working copy\n▾"
+  },
+  "data-dayinfo": {
+   "n": 1,
+   "live": 1,
+   "eg": "i"
+  },
+  "data-unpub": {
+   "n": 1,
+   "live": 1,
+   "eg": "Unpublish"
+  },
+  "span.secgrip": {
+   "n": 10,
+   "live": 10,
+   "eg": "⠿"
+  },
+  "data-nadd": {
+   "n": 1,
+   "live": 1,
+   "eg": "+ Note"
+  },
+  "span.sb-grip": {
+   "n": 38,
+   "live": 38,
+   "eg": "⠿"
+  },
+  "data-bfld": {
+   "n": 170,
+   "live": 170,
+   "eg": "WEEKEND - NO FLYING"
+  },
+  "data-ndel": {
+   "n": 2,
+   "live": 2,
+   "eg": "✕"
+  },
+  "data-sortsec": {
+   "n": 10,
+   "live": 10,
+   "eg": "⇅ Auto sort"
+  },
+  "data-padd": {
+   "n": 1,
+   "live": 1,
+   "eg": "+ Item"
+  },
+  "data-fill": {
+   "n": 20,
+   "live": 20,
+   "eg": "ALL AVAIL\n+ ADD"
+  },
+  "data-drag,data-slot": {
+   "n": 27,
+   "live": 27,
+   "eg": "ALL AVAIL"
+  },
+  "data-pcx": {
+   "n": 2,
+   "live": 2,
+   "eg": "CX"
+  },
+  "data-pinfo": {
+   "n": 2,
+   "live": 2,
+   "eg": "ⓘ"
+  },
+  "data-pflag": {
+   "n": 2,
+   "live": 2,
+   "eg": "■"
+  },
+  "data-pdel": {
+   "n": 2,
+   "live": 2,
+   "eg": "✕"
+  },
+  "data-notepub": {
+   "n": 4,
+   "live": 4,
+   "eg": "MAKE PUBLIC"
+  },
+  "data-wvadd": {
+   "n": 1,
+   "live": 1,
+   "eg": "+ Wave"
+  },
+  "span.wvgrip": {
+   "n": 3,
+   "live": 3,
+   "eg": "⠿"
+  },
+  "data-wsel": {
+   "n": 3,
+   "live": 3,
+   "eg": "1st wave\n2nd wave\n3rd wave\n4th wav"
+  },
+  "data-air": {
+   "n": 1,
+   "live": 1,
+   "eg": "Traffic"
+  },
+  "data-itadd": {
+   "n": 1,
+   "live": 1,
+   "eg": "+ In time"
+  },
+  "data-gline": {
+   "n": 3,
+   "live": 3,
+   "eg": "+ Line"
+  },
+  "data-gdel": {
+   "n": 3,
+   "live": 3,
+   "eg": "✕ Wave"
+  },
+  "data-stcfg": {
+   "n": 2,
+   "live": 2,
+   "eg": "C"
+  },
+  "data-lcx": {
+   "n": 14,
+   "live": 14,
+   "eg": "CX"
+  },
+  "data-lflag": {
+   "n": 14,
+   "live": 14,
+   "eg": "■"
+  },
+  "data-lac": {
+   "n": 14,
+   "live": 14,
+   "eg": "+"
+  },
+  "data-ldel": {
+   "n": 14,
+   "live": 14,
+   "eg": "✕"
+  },
+  "data-sarole": {
+   "n": 12,
+   "live": 12,
+   "eg": "MAIN"
+  },
+  "data-slot": {
+   "n": 18,
+   "live": 18,
+   "eg": "+ FCP"
+  },
+  "data-dwadd": {
+   "n": 1,
+   "live": 1,
+   "eg": "+ Block"
+  },
+  "data-dradd": {
+   "n": 3,
+   "live": 3,
+   "eg": "+ Row"
+  },
+  "data-dwdel": {
+   "n": 3,
+   "live": 3,
+   "eg": "✕ Block"
+  },
+  "data-bfld,data-rolepick": {
+   "n": 11,
+   "live": 11,
+   "eg": "SDO"
+  },
+  "data-drcx": {
+   "n": 11,
+   "live": 11,
+   "eg": "CX"
+  },
+  "data-drflag": {
+   "n": 11,
+   "live": 11,
+   "eg": "■"
+  },
+  "data-drdel": {
+   "n": 11,
+   "live": 11,
+   "eg": "✕"
+  },
+  "data-sblkadd": {
+   "n": 1,
+   "live": 1,
+   "eg": "+ Block"
+  },
+  "data-sradd": {
+   "n": 2,
+   "live": 2,
+   "eg": "+ Row"
+  },
+  "data-srcx": {
+   "n": 4,
+   "live": 4,
+   "eg": "CX"
+  },
+  "data-srflag": {
+   "n": 4,
+   "live": 4,
+   "eg": "■"
+  },
+  "data-srdel": {
+   "n": 4,
+   "live": 4,
+   "eg": "✕"
+  },
+  "data-inpadd": {
+   "n": 3,
+   "live": 3,
+   "eg": "+ INPUTS"
+  },
+  "data-gradd": {
+   "n": 1,
+   "live": 1,
+   "eg": "+ Item"
+  },
+  "data-grcx": {
+   "n": 5,
+   "live": 5,
+   "eg": "CX"
+  },
+  "data-grinfo": {
+   "n": 5,
+   "live": 5,
+   "eg": "ⓘ"
+  },
+  "data-grflag": {
+   "n": 5,
+   "live": 5,
+   "eg": "■"
+  },
+  "data-grdel": {
+   "n": 5,
+   "live": 5,
+   "eg": "✕"
+  },
+  "data-woff": {
+   "n": 2,
+   "live": 2,
+   "eg": "✕"
+  }
+ },
+ "doorsPubIn": {
+  "button.abtn": {
+   "n": 9,
+   "live": 8,
+   "eg": "Calendar"
+  },
+  "input": {
+   "n": 1,
+   "live": 1,
+   "eg": ""
+  },
+  "data-hlgrp-btn": {
+   "n": 3,
+   "live": 3,
+   "eg": "CAT"
+  },
+  "data-sign,data-signday": {
+   "n": 4,
+   "live": 4,
+   "eg": "— name —\nAce\nAnvil\nBasher\nBlade\nBo"
+  },
+  "data-planmenu": {
+   "n": 1,
+   "live": 1,
+   "eg": "Live working copy\n▾"
+  },
+  "data-dayinfo": {
+   "n": 1,
+   "live": 1,
+   "eg": "i"
+  },
+  "data-unpub": {
+   "n": 1,
+   "live": 1,
+   "eg": "Unpublish"
+  },
+  "data-oilblank": {
+   "n": 1,
+   "live": 1,
+   "eg": "Nothing today earns"
+  },
+  "data-oilmode": {
+   "n": 1,
+   "live": 1,
+   "eg": "✓ Done"
+  },
+  "span.sb-grip": {
+   "n": 41,
+   "live": 41,
+   "eg": ""
+  },
+  "data-bfld": {
+   "n": 145,
+   "live": 0,
+   "eg": "WEEKEND - NO FLYING"
+  },
+  "data-wsel": {
+   "n": 3,
+   "live": 0,
+   "eg": "1st wave\n2nd wave\n3rd wave\n4th wav"
+  },
+  "data-lateoff": {
+   "n": 3,
+   "live": 3,
+   "eg": "LATE"
+  },
+  "data-ifld": {
+   "n": 9,
+   "live": 9,
+   "eg": "13:00"
+  },
+  "data-acc,data-accd,data-acck": {
+   "n": 3,
+   "live": 3,
+   "eg": "UNDO"
+  },
+  "data-woff": {
+   "n": 2,
+   "live": 2,
+   "eg": "✕"
+  }
+ },
+ "plans": {
+  "found": true,
+  "named": false,
+  "popups": [
+   "142 | RAPTOR | Edit Schedule | View-only Sched | Inputs | Quals | Logic | Leave War | Tracker | Help | Admin | ↶ Undo | ↷ Redo |  Edit history | VIEW AS | Ace |"
+  ]
+ },
+ "unpublish": {
+  "text": "Unpublish",
+  "disabled": false,
+  "visible": true,
+  "title": "Unpublish Saturday — pull Original back to a working copy to correct it; republishing reissues the same version"
+ },
+ "scSwitches": [
+  {
+   "name": "SC",
+   "item": "r:rmubclgntiqurs0",
+   "people": [
+    {
+     "who": "pump",
+     "kind": "ON"
+    },
+    {
+     "who": "glass",
+     "kind": "ON"
+    }
+   ]
+  },
+  {
+   "name": "SC",
+   "item": "r:rmubclgntiqurs0",
+   "people": []
+  },
+  {
+   "name": "SC",
+   "item": "r:rmubclgntiqurs0",
+   "people": [
+    {
+     "who": "taipan",
+     "kind": "INERT"
+    },
+    {
+     "who": "drill",
+     "kind": "INERT"
+    }
+   ]
+  },
+  {
+   "name": "SC",
+   "item": "r:rmubclgntiqurs0",
+   "people": []
+  },
+  {
+   "name": "SC",
+   "item": "r:rmubclgntd3x2gs",
+   "people": []
+  },
+  {
+   "name": "SC",
+   "item": "r:rmubclgntd3x2gs",
+   "people": []
+  },
+  {
+   "name": "SC",
+   "item": "r:rmubclgntd3x2gs",
+   "people": []
+  },
+  {
+   "name": "SC",
+   "item": "r:rmubclgntd3x2gs",
+   "people": []
+  },
+  {
+   "name": "AV",
+   "item": "DEAD",
+   "people": [
+    {
+     "who": "prowler",
+     "kind": "INERT"
+    },
+    {
+     "who": "nasty",
+     "kind": "INERT"
+    }
+   ]
+  },
+  {
+   "name": "AV",
+   "item": "DEAD",
+   "people": []
+  },
+  {
+   "name": "AV",
+   "item": "DEAD",
+   "people": []
+  },
+  {
+   "name": "AV",
+   "item": "DEAD",
+   "people": []
+  },
+  {
+   "name": "SXO",
+   "item": "DEAD",
+   "people": [
+    {
+     "who": "nact",
+     "kind": "INERT"
+    }
+   ]
+  },
+  {
+   "name": "OPS DESK",
+   "item": "DEAD",
+   "people": [
+    {
+     "who": "casper",
+     "kind": "INERT"
+    }
+   ]
+  },
+  {
+   "name": "SXO",
+   "item": "DEAD",
+   "people": [
+    {
+     "who": "salsa",
+     "kind": "INERT"
+    }
+   ]
+  },
+  {
+   "name": "ADMIN",
+   "item": "DEAD",
+   "people": [
+    {
+     "who": "split",
+     "kind": "INERT"
+    }
+   ]
+  }
+ ],
+ "errors": []
+}

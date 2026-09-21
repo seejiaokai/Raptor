@@ -1,0 +1,737 @@
+{
+ "tabs": [
+  "View-only Sched",
+  "Inputs",
+  "Quals",
+  "Logic",
+  "Leave War",
+  "Tracker",
+  "Help",
+  "QUALS"
+ ],
+ "memberLanding": {
+  "page": "viewsched",
+  "visiblePucks": 183,
+  "barred": 19,
+  "unpainted": [
+   {
+    "who": "Ranger",
+    "where": "view week",
+    "kind": "HALF",
+    "painted": false,
+    "size": "auto",
+    "title": "Ranger · IP · instructor pilot · SXO · earns half a day of OIL"
+   }
+  ],
+  "byPlace": {
+   "view week": 19
+  },
+  "sample": [
+   {
+    "who": "ALL AVAIL",
+    "where": "view week",
+    "kind": "HALF",
+    "painted": true,
+    "size": "4px 50%",
+    "title": "ALL AVAIL · earns half a day of OIL"
+   },
+   {
+    "who": "Saber",
+    "where": "view week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Saber · IP · instructor pilot · SXO · earns a full day of OIL"
+   },
+   {
+    "who": "Torch",
+    "where": "view week",
+    "kind": "HALF",
+    "painted": true,
+    "size": "4px 50%",
+    "title": "Torch · C · ops wingman · earns half a day of OIL"
+   },
+   {
+    "who": "Ranger",
+    "where": "view week",
+    "kind": "HALF",
+    "painted": false,
+    "size": "auto",
+    "title": "Ranger · IP · instructor pilot · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Echo",
+    "where": "view week",
+    "kind": "HALF",
+    "painted": true,
+    "size": "4px 50%",
+    "title": "Echo · IW · instructor WSO · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Ridge",
+    "where": "view week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Ridge · C · ops wingman · SXO · earns a full day of OIL"
+   },
+   {
+    "who": "Grit",
+    "where": "view week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Grit · C · ops wingman · earns a full day of OIL"
+   },
+   {
+    "who": "Piston",
+    "where": "view week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Piston · IP · instructor pilot · SXO · earns a full day of OIL"
+   }
+  ],
+  "chips": [
+   {
+    "where": "view week",
+    "t": "27",
+    "title": "All 27 earn half a day — tap to see each one"
+   }
+  ],
+  "oilButtons": [],
+  "modeChrome": 0,
+  "noOil": false,
+  "tabs": [
+   "View-only Sched",
+   "Inputs",
+   "Quals",
+   "Logic",
+   "Leave War",
+   "Tracker",
+   "Help"
+  ]
+ },
+ "member_viewsched": {
+  "page": "viewsched",
+  "visiblePucks": 183,
+  "barred": 19,
+  "unpainted": [
+   {
+    "who": "Ranger",
+    "where": "view week",
+    "kind": "HALF",
+    "painted": false,
+    "size": "auto",
+    "title": "Ranger · IP · instructor pilot · SXO · earns half a day of OIL"
+   }
+  ],
+  "byPlace": {
+   "view week": 19
+  },
+  "sample": [
+   {
+    "who": "ALL AVAIL",
+    "where": "view week",
+    "kind": "HALF",
+    "painted": true,
+    "size": "4px 50%",
+    "title": "ALL AVAIL · earns half a day of OIL"
+   },
+   {
+    "who": "Saber",
+    "where": "view week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Saber · IP · instructor pilot · SXO · earns a full day of OIL"
+   },
+   {
+    "who": "Torch",
+    "where": "view week",
+    "kind": "HALF",
+    "painted": true,
+    "size": "4px 50%",
+    "title": "Torch · C · ops wingman · earns half a day of OIL"
+   },
+   {
+    "who": "Ranger",
+    "where": "view week",
+    "kind": "HALF",
+    "painted": false,
+    "size": "auto",
+    "title": "Ranger · IP · instructor pilot · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Echo",
+    "where": "view week",
+    "kind": "HALF",
+    "painted": true,
+    "size": "4px 50%",
+    "title": "Echo · IW · instructor WSO · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Ridge",
+    "where": "view week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Ridge · C · ops wingman · SXO · earns a full day of OIL"
+   },
+   {
+    "who": "Grit",
+    "where": "view week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Grit · C · ops wingman · earns a full day of OIL"
+   },
+   {
+    "who": "Piston",
+    "where": "view week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Piston · IP · instructor pilot · SXO · earns a full day of OIL"
+   }
+  ],
+  "chips": [
+   {
+    "where": "view week",
+    "t": "27",
+    "title": "All 27 earn half a day — tap to see each one"
+   }
+  ],
+  "oilButtons": [],
+  "modeChrome": 0,
+  "noOil": false,
+  "tabs": [
+   "View-only Sched",
+   "Inputs",
+   "Quals",
+   "Logic",
+   "Leave War",
+   "Tracker",
+   "Help"
+  ]
+ },
+ "member_editsched": {
+  "page": "editsched",
+  "visiblePucks": 183,
+  "barred": 19,
+  "unpainted": [
+   {
+    "who": "Ranger",
+    "where": "edit week",
+    "kind": "HALF",
+    "painted": false,
+    "size": "auto",
+    "title": "Ranger · IP · instructor pilot · SXO · earns half a day of OIL"
+   }
+  ],
+  "byPlace": {
+   "edit week": 19
+  },
+  "sample": [
+   {
+    "who": "ALL AVAIL",
+    "where": "edit week",
+    "kind": "HALF",
+    "painted": true,
+    "size": "4px 50%",
+    "title": "ALL AVAIL · earns half a day of OIL"
+   },
+   {
+    "who": "Saber",
+    "where": "edit week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Saber · IP · instructor pilot · SXO · earns a full day of OIL"
+   },
+   {
+    "who": "Torch",
+    "where": "edit week",
+    "kind": "HALF",
+    "painted": true,
+    "size": "4px 50%",
+    "title": "Torch · C · ops wingman · earns half a day of OIL"
+   },
+   {
+    "who": "Ranger",
+    "where": "edit week",
+    "kind": "HALF",
+    "painted": false,
+    "size": "auto",
+    "title": "Ranger · IP · instructor pilot · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Echo",
+    "where": "edit week",
+    "kind": "HALF",
+    "painted": true,
+    "size": "4px 50%",
+    "title": "Echo · IW · instructor WSO · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Ridge",
+    "where": "edit week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Ridge · C · ops wingman · SXO · earns a full day of OIL"
+   },
+   {
+    "who": "Grit",
+    "where": "edit week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Grit · C · ops wingman · earns a full day of OIL"
+   },
+   {
+    "who": "Piston",
+    "where": "edit week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Piston · IP · instructor pilot · SXO · earns a full day of OIL"
+   }
+  ],
+  "chips": [
+   {
+    "where": "edit week",
+    "t": "28",
+    "title": "All 28 earn half a day — tap to see each one"
+   }
+  ],
+  "oilButtons": [],
+  "modeChrome": 0,
+  "noOil": false,
+  "tabs": [
+   "View-only Sched",
+   "Inputs",
+   "Quals",
+   "Logic",
+   "Leave War",
+   "Tracker",
+   "Help"
+  ]
+ },
+ "memberDayDoors": 0,
+ "memberAfterDayClick": {
+  "page": "editsched",
+  "visiblePucks": 183,
+  "barred": 19,
+  "unpainted": [
+   {
+    "who": "Ranger",
+    "where": "edit week",
+    "kind": "HALF",
+    "painted": false,
+    "size": "auto",
+    "title": "Ranger · IP · instructor pilot · SXO · earns half a day of OIL"
+   }
+  ],
+  "byPlace": {
+   "edit week": 19
+  },
+  "sample": [
+   {
+    "who": "ALL AVAIL",
+    "where": "edit week",
+    "kind": "HALF",
+    "painted": true,
+    "size": "4px 50%",
+    "title": "ALL AVAIL · earns half a day of OIL"
+   },
+   {
+    "who": "Saber",
+    "where": "edit week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Saber · IP · instructor pilot · SXO · earns a full day of OIL"
+   },
+   {
+    "who": "Torch",
+    "where": "edit week",
+    "kind": "HALF",
+    "painted": true,
+    "size": "4px 50%",
+    "title": "Torch · C · ops wingman · earns half a day of OIL"
+   },
+   {
+    "who": "Ranger",
+    "where": "edit week",
+    "kind": "HALF",
+    "painted": false,
+    "size": "auto",
+    "title": "Ranger · IP · instructor pilot · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Echo",
+    "where": "edit week",
+    "kind": "HALF",
+    "painted": true,
+    "size": "4px 50%",
+    "title": "Echo · IW · instructor WSO · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Ridge",
+    "where": "edit week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Ridge · C · ops wingman · SXO · earns a full day of OIL"
+   },
+   {
+    "who": "Grit",
+    "where": "edit week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Grit · C · ops wingman · earns a full day of OIL"
+   },
+   {
+    "who": "Piston",
+    "where": "edit week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Piston · IP · instructor pilot · SXO · earns a full day of OIL"
+   }
+  ],
+  "chips": [
+   {
+    "where": "edit week",
+    "t": "28",
+    "title": "All 28 earn half a day — tap to see each one"
+   }
+  ],
+  "oilButtons": [],
+  "modeChrome": 0,
+  "noOil": false,
+  "tabs": [
+   "View-only Sched",
+   "Inputs",
+   "Quals",
+   "Logic",
+   "Leave War",
+   "Tracker",
+   "Help"
+  ]
+ },
+ "chipTap": {
+  "pops": [],
+  "chipsStill": 1
+ },
+ "errD": [],
+ "memberPhone": {
+  "page": "viewsched",
+  "visiblePucks": 183,
+  "barred": 19,
+  "unpainted": [
+   {
+    "who": "Ranger",
+    "where": "view week",
+    "kind": "HALF",
+    "painted": false,
+    "size": "auto",
+    "title": "Ranger · IP · instructor pilot · SXO · earns half a day of OIL"
+   }
+  ],
+  "byPlace": {
+   "view week": 19
+  },
+  "sample": [
+   {
+    "who": "ALL AVAIL",
+    "where": "view week",
+    "kind": "HALF",
+    "painted": true,
+    "size": "4px 50%",
+    "title": "ALL AVAIL · earns half a day of OIL"
+   },
+   {
+    "who": "Saber",
+    "where": "view week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Saber · IP · instructor pilot · SXO · earns a full day of OIL"
+   },
+   {
+    "who": "Torch",
+    "where": "view week",
+    "kind": "HALF",
+    "painted": true,
+    "size": "4px 50%",
+    "title": "Torch · C · ops wingman · earns half a day of OIL"
+   },
+   {
+    "who": "Ranger",
+    "where": "view week",
+    "kind": "HALF",
+    "painted": false,
+    "size": "auto",
+    "title": "Ranger · IP · instructor pilot · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Echo",
+    "where": "view week",
+    "kind": "HALF",
+    "painted": true,
+    "size": "4px 50%",
+    "title": "Echo · IW · instructor WSO · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Ridge",
+    "where": "view week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Ridge · C · ops wingman · SXO · earns a full day of OIL"
+   },
+   {
+    "who": "Grit",
+    "where": "view week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Grit · C · ops wingman · earns a full day of OIL"
+   },
+   {
+    "who": "Piston",
+    "where": "view week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Piston · IP · instructor pilot · SXO · earns a full day of OIL"
+   }
+  ],
+  "chips": [
+   {
+    "where": "view week",
+    "t": "27",
+    "title": "All 27 earn half a day — tap to see each one"
+   }
+  ],
+  "oilButtons": [],
+  "modeChrome": 0,
+  "noOil": false,
+  "tabs": []
+ },
+ "memberPhoneView": {
+  "page": "viewsched",
+  "visiblePucks": 183,
+  "barred": 19,
+  "unpainted": [
+   {
+    "who": "Ranger",
+    "where": "view week",
+    "kind": "HALF",
+    "painted": false,
+    "size": "auto",
+    "title": "Ranger · IP · instructor pilot · SXO · earns half a day of OIL"
+   }
+  ],
+  "byPlace": {
+   "view week": 19
+  },
+  "sample": [
+   {
+    "who": "ALL AVAIL",
+    "where": "view week",
+    "kind": "HALF",
+    "painted": true,
+    "size": "4px 50%",
+    "title": "ALL AVAIL · earns half a day of OIL"
+   },
+   {
+    "who": "Saber",
+    "where": "view week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Saber · IP · instructor pilot · SXO · earns a full day of OIL"
+   },
+   {
+    "who": "Torch",
+    "where": "view week",
+    "kind": "HALF",
+    "painted": true,
+    "size": "4px 50%",
+    "title": "Torch · C · ops wingman · earns half a day of OIL"
+   },
+   {
+    "who": "Ranger",
+    "where": "view week",
+    "kind": "HALF",
+    "painted": false,
+    "size": "auto",
+    "title": "Ranger · IP · instructor pilot · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Echo",
+    "where": "view week",
+    "kind": "HALF",
+    "painted": true,
+    "size": "4px 50%",
+    "title": "Echo · IW · instructor WSO · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Ridge",
+    "where": "view week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Ridge · C · ops wingman · SXO · earns a full day of OIL"
+   },
+   {
+    "who": "Grit",
+    "where": "view week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Grit · C · ops wingman · earns a full day of OIL"
+   },
+   {
+    "who": "Piston",
+    "where": "view week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Piston · IP · instructor pilot · SXO · earns a full day of OIL"
+   }
+  ],
+  "chips": [
+   {
+    "where": "view week",
+    "t": "27",
+    "title": "All 27 earn half a day — tap to see each one"
+   }
+  ],
+  "oilButtons": [],
+  "modeChrome": 0,
+  "noOil": false,
+  "tabs": []
+ },
+ "errP": [],
+ "adminBoard": {
+  "page": "editsched",
+  "visiblePucks": 556,
+  "barred": 37,
+  "unpainted": [
+   {
+    "who": "Ranger",
+    "where": "edit week",
+    "kind": "HALF",
+    "painted": false,
+    "size": "auto",
+    "title": "Ranger · IP · instructor pilot · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Ranger",
+    "where": "board",
+    "kind": "HALF",
+    "painted": false,
+    "size": "auto",
+    "title": "Ranger · IP · instructor pilot · SXO · earns half a day of OIL"
+   }
+  ],
+  "byPlace": {
+   "edit week": 19,
+   "board": 18
+  },
+  "sample": [
+   {
+    "who": "ALL AVAIL",
+    "where": "edit week",
+    "kind": "HALF",
+    "painted": true,
+    "size": "4px 50%",
+    "title": "ALL AVAIL · earns half a day of OIL"
+   },
+   {
+    "who": "Saber",
+    "where": "edit week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Saber · IP · instructor pilot · SXO · earns a full day of OIL"
+   },
+   {
+    "who": "Torch",
+    "where": "edit week",
+    "kind": "HALF",
+    "painted": true,
+    "size": "4px 50%",
+    "title": "Torch · C · ops wingman · earns half a day of OIL"
+   },
+   {
+    "who": "Ranger",
+    "where": "edit week",
+    "kind": "HALF",
+    "painted": false,
+    "size": "auto",
+    "title": "Ranger · IP · instructor pilot · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Echo",
+    "where": "edit week",
+    "kind": "HALF",
+    "painted": true,
+    "size": "4px 50%",
+    "title": "Echo · IW · instructor WSO · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Ridge",
+    "where": "edit week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Ridge · C · ops wingman · SXO · earns a full day of OIL"
+   },
+   {
+    "who": "Grit",
+    "where": "edit week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Grit · C · ops wingman · earns a full day of OIL"
+   },
+   {
+    "who": "Piston",
+    "where": "edit week",
+    "kind": "FULL",
+    "painted": true,
+    "size": "4px 100%",
+    "title": "Piston · IP · instructor pilot · SXO · earns a full day of OIL"
+   }
+  ],
+  "chips": [
+   {
+    "where": "edit week",
+    "t": "28",
+    "title": "All 28 earn half a day — tap to see each one"
+   }
+  ],
+  "oilButtons": [
+   "◧\nOIL Earn"
+  ],
+  "modeChrome": 0,
+  "noOil": false,
+  "tabs": [
+   "Edit Schedule",
+   "View-only Sched",
+   "Inputs",
+   "Quals",
+   "Logic",
+   "Leave War",
+   "Tracker",
+   "Help",
+   "Admin"
+  ]
+ }
+}

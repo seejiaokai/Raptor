@@ -1,0 +1,211 @@
+{
+ "massBefore": "{\"prog\":\"MASS BRIEF\",\"sub\":\"\",\"str\":\"15:00\",\"end\":\"16:00\",\"who\":[\"stiff\",\"ignite\"],\"rmks\":\"\",\"rid\":\"rmubcmbb0n9y0uj\"}",
+ "addZone": {
+  "text": "Saber\nIP\nTorch\nC\n+ ADD",
+  "cls": "ppl",
+  "title": ""
+ },
+ "armAfterTap": null,
+ "massAfter": "{\"prog\":\"MASS BRIEF\",\"sub\":\"\",\"str\":\"15:00\",\"end\":\"16:00\",\"who\":[\"stiff\",\"ignite\"],\"rmks\":\"\",\"rid\":\"rmubcmbb0n9y0uj\"}",
+ "massThirdLanded": false,
+ "_at": "done",
+ "f1": "chaps",
+ "f2": "chaps",
+ "f3": "chaps",
+ "progRows": 3,
+ "f4": "chaps",
+ "start": {
+  "mode": [
+   {
+    "text": "Forge FO",
+    "title": "Forge earns a full day — tap to take him off this event",
+    "row": "LATE BRIEF Forge FO"
+   },
+   {
+    "text": "Forge FO",
+    "title": "Forge earns a full day — tap to take him off this event",
+    "row": "Z DESK Forge FO"
+   },
+   {
+    "text": "Forge FO",
+    "title": "Forge earns a full day — tap to take him off this event",
+    "row": "EP-9 Forge FO"
+   }
+  ],
+  "bar": [
+   {
+    "bar": "fo",
+    "title": "Forge · IP · instructor pilot · earns a full day of OIL",
+    "row": "⠿ Forge IP + ADD CXⓘ■✕"
+   },
+   {
+    "bar": "fo",
+    "title": "Forge · IP · instructor pilot · earns a full day of OIL",
+    "row": "⠿ Forge IP + ADD CX■✕"
+   },
+   {
+    "bar": "fo",
+    "title": "Forge · IP · instructor pilot · earns a full day of OIL",
+    "row": "⠿ Forge IP + CX■✕"
+   },
+   {
+    "bar": "NO BAR",
+    "title": "Forge · IP · instructor pilot",
+    "row": "⠿ Vandal IP Forge IP + ADD CXⓘ■✕"
+   }
+  ]
+ },
+ "lateBriefItem": "LATE BRIEF :: Earns OIL — tap to stop this item earning",
+ "offMode": [
+  {
+   "text": "Forge HO",
+   "title": "Forge earns half a day — tap to take him off this event",
+   "row": "Z DESK Forge HO"
+  },
+  {
+   "text": "Forge HO",
+   "title": "Forge earns half a day — tap to take him off this event",
+   "row": "EP-9 Forge HO"
+  }
+ ],
+ "offBars": [
+  {
+   "bar": "NO BAR",
+   "title": "Forge · IP · instructor pilot",
+   "row": "⠿ Forge IP + ADD CXⓘ■✕"
+  },
+  {
+   "bar": "ho",
+   "title": "Forge · IP · instructor pilot · earns half a day of OIL",
+   "row": "⠿ Forge IP + ADD CX■✕"
+  },
+  {
+   "bar": "ho",
+   "title": "Forge · IP · instructor pilot · earns half a day of OIL",
+   "row": "⠿ Forge IP + CX■✕"
+  },
+  {
+   "bar": "NO BAR",
+   "title": "Forge · IP · instructor pilot",
+   "row": "⠿ Vandal IP Forge IP + ADD CXⓘ■✕"
+  }
+ ],
+ "lateBriefItemOff": "LATE BRIEF :: Earns nothing — tap to let it earn again",
+ "backOnMode": [
+  {
+   "text": "Forge FO",
+   "title": "Forge earns a full day — tap to take him off this event",
+   "row": "LATE BRIEF Forge FO"
+  },
+  {
+   "text": "Forge FO",
+   "title": "Forge earns a full day — tap to take him off this event",
+   "row": "Z DESK Forge FO"
+  },
+  {
+   "text": "Forge FO",
+   "title": "Forge earns a full day — tap to take him off this event",
+   "row": "EP-9 Forge FO"
+  }
+ ],
+ "zTapped": true,
+ "zOffMode": [
+  {
+   "text": "Forge —",
+   "title": "Forge earns nothing from this event — tap to put him back on it",
+   "row": "LATE BRIEF Forge —"
+  },
+  {
+   "text": "Forge HO",
+   "title": "Forge earns half a day — tap to take him off this event",
+   "row": "Z DESK Forge HO"
+  },
+  {
+   "text": "Forge HO",
+   "title": "Forge earns half a day — tap to take him off this event",
+   "row": "EP-9 Forge HO"
+  }
+ ],
+ "zOffBars": [
+  {
+   "bar": "NO BAR",
+   "title": "Forge · IP · instructor pilot",
+   "row": "⠿ Forge IP + ADD CXⓘ■✕"
+  },
+  {
+   "bar": "ho",
+   "title": "Forge · IP · instructor pilot · earns half a day of OIL",
+   "row": "⠿ Forge IP + ADD CX■✕"
+  },
+  {
+   "bar": "ho",
+   "title": "Forge · IP · instructor pilot · earns half a day of OIL",
+   "row": "⠿ Forge IP + CX■✕"
+  },
+  {
+   "bar": "NO BAR",
+   "title": "Forge · IP · instructor pilot",
+   "row": "⠿ Vandal IP Forge IP + ADD CXⓘ■✕"
+  }
+ ],
+ "warn": {
+  "head": "⚠ 3 issues",
+  "lines": [
+   "· 1 warning ·",
+   "tap to review",
+   "SXO and OPS DESK have no times — nobody on them earns OIL for this day",
+   "Basher — No time for the OFT EP-6 brief — SC AM sits inside 13:45–14:00",
+   "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out"
+  ]
+ },
+ "publish": {
+  "published": true,
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "barsPublished": [
+  {
+   "bar": "NO BAR",
+   "title": "Forge · IP · instructor pilot",
+   "row": "⠿ Forge IP + ADD CXⓘ■✕"
+  },
+  {
+   "bar": "ho",
+   "title": "Forge · IP · instructor pilot · earns half a day of OIL",
+   "row": "⠿ Forge IP + ADD CX■✕"
+  },
+  {
+   "bar": "ho",
+   "title": "Forge · IP · instructor pilot · earns half a day of OIL",
+   "row": "⠿ Forge IP + CX■✕"
+  },
+  {
+   "bar": "NO BAR",
+   "title": "Forge · IP · instructor pilot",
+   "row": "⠿ Vandal IP Forge IP + ADD CXⓘ■✕"
+  }
+ ],
+ "grid": {
+  "chaps": {
+   "text": "HO*",
+   "cls": "duty weekend act",
+   "mark": null
+  }
+ },
+ "detail": "Forge 2026-07-18 NOW HO ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL Clear +OIL PO PI WHERE IT CAME FROM Earned off the published schedule — change the schedule and the OIL follows. REASON SIM + Duty GIVEN BY Weekend/PH DAYS half a day — worked 08:00–10:00, 11:00–12:00",
+ "tracker": {
+  "chaps": {
+   "found": true,
+   "text": "Forge IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH SIM + Duty 0.5 left",
+   "entries": [
+    {
+     "testid": "oil-entry-chaps-auto:0:2026-07-18",
+     "cls": "oil-e credit",
+     "text": "+0.5 18 Jul AUTO Weekend/PH SIM + Duty 0.5 left",
+     "buttons": []
+    }
+   ]
+  }
+ },
+ "errors": []
+}

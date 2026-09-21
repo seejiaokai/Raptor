@@ -1,0 +1,321 @@
+{
+ "ph": "PH",
+ "wedMan": "shaft",
+ "wedDecided": "harpoon",
+ "s1_inMode": {
+  "board": "OPEN",
+  "day": "Wednesday Jul 15 · scheduler board",
+  "modeChrome": 44,
+  "dayBar": "OIL EARN | Nothing today earns | ✓ Done | Tap a puck to take a man off that event · tap an item to stop the whole item earning",
+  "dayBarGreen": "sb-panel daybar oilon",
+  "oilButtons": [
+   "◧ OIL Earn",
+   "✓ Done"
+  ],
+  "editableBoxes": 0,
+  "totalBoxes": 48,
+  "seatTargets": 0,
+  "pending": [
+   "4 pending"
+  ]
+ },
+ "phCleared": "＋",
+ "s1_afterLW": {
+  "board": "OPEN",
+  "day": "· scheduler board",
+  "modeChrome": 44,
+  "dayBar": "OIL EARNNothing today earns✓ DoneTap a puck to take a man off that event · tap an item to stop the whole item earning",
+  "dayBarGreen": "sb-panel daybar oilon",
+  "oilButtons": [],
+  "editableBoxes": 0,
+  "totalBoxes": 48,
+  "seatTargets": 0,
+  "pending": []
+ },
+ "s1_reopened": {
+  "board": "OPEN",
+  "day": "Wednesday Jul 15 · scheduler board",
+  "modeChrome": 0,
+  "dayBar": "THIS DAYTemplates",
+  "dayBarGreen": "sb-panel daybar",
+  "oilButtons": [],
+  "editableBoxes": 48,
+  "totalBoxes": 48,
+  "seatTargets": 39,
+  "pending": [
+   "4 pending"
+  ]
+ },
+ "s1_phBack": {
+  "board": "OPEN",
+  "day": "Wednesday Jul 15 · scheduler board",
+  "modeChrome": 0,
+  "dayBar": "THIS DAYTemplatesOIL Earn",
+  "dayBarGreen": "sb-panel daybar",
+  "oilButtons": [
+   "◧ OIL Earn"
+  ],
+  "editableBoxes": 48,
+  "totalBoxes": 48,
+  "seatTargets": 39,
+  "pending": [
+   "4 pending"
+  ]
+ },
+ "s1_marksKept": {
+  "cls": "seat oilpk off",
+  "title": "Trident earns nothing from this event — tap to put him back on it"
+ },
+ "s2_before": {
+  "board": "OPEN",
+  "day": "Saturday Jul 18 · scheduler board",
+  "modeChrome": 68,
+  "dayBar": "OIL EARN | Nothing today earns | ✓ Done | Tap a puck to take a man off that event · tap an item to stop the whole item earning",
+  "dayBarGreen": "sb-panel daybar oilon",
+  "oilButtons": [
+   "◧ OIL Earn",
+   "✓ Done"
+  ],
+  "editableBoxes": 0,
+  "totalBoxes": 86,
+  "seatTargets": 0,
+  "pending": [
+   "67 pending"
+  ]
+ },
+ "s2_sunday": {
+  "board": "OPEN",
+  "day": "Saturday Jul 18 · scheduler board",
+  "modeChrome": 68,
+  "dayBar": "OIL EARN | Nothing today earns | ✓ Done | Tap a puck to take a man off that event · tap an item to stop the whole item earning",
+  "dayBarGreen": "sb-panel daybar oilon",
+  "oilButtons": [
+   "◧ OIL Earn",
+   "✓ Done"
+  ],
+  "editableBoxes": 0,
+  "totalBoxes": 86,
+  "seatTargets": 0,
+  "pending": [
+   "67 pending"
+  ]
+ },
+ "s2_backToSat": {
+  "board": "OPEN",
+  "day": "Saturday Jul 18 · scheduler board",
+  "modeChrome": 68,
+  "dayBar": "OIL EARN | Nothing today earns | ✓ Done | Tap a puck to take a man off that event · tap an item to stop the whole item earning",
+  "dayBarGreen": "sb-panel daybar oilon",
+  "oilButtons": [
+   "◧ OIL Earn",
+   "✓ Done"
+  ],
+  "editableBoxes": 0,
+  "totalBoxes": 86,
+  "seatTargets": 0,
+  "pending": [
+   "67 pending"
+  ]
+ },
+ "s3_before": {
+  "board": "OPEN",
+  "day": "Saturday Jul 18 · scheduler board",
+  "modeChrome": 68,
+  "dayBar": "OIL EARN | Nothing today earns | ✓ Done | Tap a puck to take a man off that event · tap an item to stop the whole item earning",
+  "dayBarGreen": "sb-panel daybar oilon",
+  "oilButtons": [
+   "◧ OIL Earn",
+   "✓ Done"
+  ],
+  "editableBoxes": 0,
+  "totalBoxes": 86,
+  "seatTargets": 0,
+  "pending": [
+   "67 pending"
+  ]
+ },
+ "s3_away": {
+  "board": "OPEN",
+  "day": "· scheduler board",
+  "modeChrome": 68,
+  "dayBar": "OIL EARNNothing today earns✓ DoneTap a puck to take a man off that event · tap an item to stop the whole item earning",
+  "dayBarGreen": "sb-panel daybar oilon",
+  "oilButtons": [],
+  "editableBoxes": 0,
+  "totalBoxes": 86,
+  "seatTargets": 0,
+  "pending": []
+ },
+ "s3_back": {
+  "board": "OPEN",
+  "day": "Saturday Jul 18 · scheduler board",
+  "modeChrome": 0,
+  "dayBar": "THIS DAYTemplatesOIL Earn",
+  "dayBarGreen": "sb-panel daybar",
+  "oilButtons": [
+   "◧ OIL Earn"
+  ],
+  "editableBoxes": 86,
+  "totalBoxes": 86,
+  "seatTargets": 65,
+  "pending": [
+   "67 pending"
+  ]
+ },
+ "s3_closed": {
+  "board": "OPEN",
+  "day": "· scheduler board",
+  "modeChrome": 68,
+  "dayBar": "OIL EARNNothing today earns✓ DoneTap a puck to take a man off that event · tap an item to stop the whole item earning",
+  "dayBarGreen": "sb-panel daybar oilon",
+  "oilButtons": [],
+  "editableBoxes": 0,
+  "totalBoxes": 86,
+  "seatTargets": 0,
+  "pending": []
+ },
+ "s3_afterClose": {
+  "board": "OPEN",
+  "day": "Saturday Jul 18 · scheduler board",
+  "modeChrome": 0,
+  "dayBar": "THIS DAYTemplatesOIL Earn",
+  "dayBarGreen": "sb-panel daybar",
+  "oilButtons": [
+   "◧ OIL Earn"
+  ],
+  "editableBoxes": 86,
+  "totalBoxes": 86,
+  "seatTargets": 65,
+  "pending": [
+   "67 pending"
+  ]
+ },
+ "s4_who": "dj",
+ "s4_afterTap": "seat oilpk off",
+ "s4_undos": [
+  {
+   "step": 1,
+   "modeChrome": 68,
+   "oilButtons": [
+    "◧ OIL Earn",
+    "✓ Done"
+   ],
+   "editable": 0,
+   "day": "Saturday Jul 18 · scheduler board"
+  },
+  {
+   "step": 2,
+   "modeChrome": 68,
+   "oilButtons": [
+    "◧ OIL Earn",
+    "✓ Done"
+   ],
+   "editable": 0,
+   "day": "Saturday Jul 18 · scheduler board"
+  },
+  {
+   "step": 3,
+   "modeChrome": 68,
+   "oilButtons": [
+    "◧ OIL Earn",
+    "✓ Done"
+   ],
+   "editable": 0,
+   "day": "Saturday Jul 18 · scheduler board"
+  },
+  {
+   "step": 4,
+   "modeChrome": 68,
+   "oilButtons": [
+    "◧ OIL Earn",
+    "✓ Done"
+   ],
+   "editable": 0,
+   "day": "Saturday Jul 18 · scheduler board"
+  },
+  {
+   "step": 5,
+   "modeChrome": 68,
+   "oilButtons": [
+    "◧ OIL Earn",
+    "✓ Done"
+   ],
+   "editable": 0,
+   "day": "Saturday Jul 18 · scheduler board"
+  },
+  {
+   "step": 6,
+   "modeChrome": 0,
+   "oilButtons": [
+    "◧ OIL Earn"
+   ],
+   "editable": 48,
+   "day": "Wednesday Jul 15 · scheduler board"
+  }
+ ],
+ "s4_end": {
+  "board": "OPEN",
+  "day": "Wednesday Jul 15 · scheduler board",
+  "modeChrome": 0,
+  "dayBar": "THIS DAYTemplatesOIL Earn",
+  "dayBarGreen": "sb-panel daybar",
+  "oilButtons": [
+   "◧ OIL Earn"
+  ],
+  "editableBoxes": 48,
+  "totalBoxes": 48,
+  "seatTargets": 39,
+  "pending": [
+   "4 pending"
+  ]
+ },
+ "s5_before": {
+  "board": "OPEN",
+  "day": "Saturday Jul 18 · scheduler board",
+  "modeChrome": 68,
+  "dayBar": "OIL EARN | Nothing today earns | ✓ Done | Tap a puck to take a man off that event · tap an item to stop the whole item earning",
+  "dayBarGreen": "sb-panel daybar oilon",
+  "oilButtons": [
+   "◧ OIL Earn",
+   "✓ Done"
+  ],
+  "editableBoxes": 0,
+  "totalBoxes": 86,
+  "seatTargets": 0,
+  "pending": [
+   "67 pending"
+  ]
+ },
+ "s5_weekBtns": 2,
+ "s5_nextWeek": {
+  "board": "OPEN",
+  "day": "Saturday Jul 25 · scheduler board",
+  "modeChrome": 0,
+  "dayBar": "THIS DAYTemplatesOIL Earn",
+  "dayBarGreen": "sb-panel daybar",
+  "oilButtons": [
+   "◧ OIL Earn"
+  ],
+  "editableBoxes": 2,
+  "totalBoxes": 2,
+  "seatTargets": 2,
+  "pending": []
+ },
+ "s5_backWeek": {
+  "board": "OPEN",
+  "day": "Saturday Jul 18 · scheduler board",
+  "modeChrome": 0,
+  "dayBar": "THIS DAYTemplatesOIL Earn",
+  "dayBarGreen": "sb-panel daybar",
+  "oilButtons": [
+   "◧ OIL Earn"
+  ],
+  "editableBoxes": 86,
+  "totalBoxes": 86,
+  "seatTargets": 65,
+  "pending": [
+   "67 pending"
+  ]
+ },
+ "errors": []
+}
