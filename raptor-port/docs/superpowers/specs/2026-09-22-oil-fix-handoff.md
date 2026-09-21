@@ -21,12 +21,14 @@ Two of them are done.
 |---|---|
 | **1 — a request handed to another man pays him nothing** | **BUILT.** Commits `b034398`, `351c600` |
 | **2 — a multi-day request pays nothing on the day it was answered for** | **BUILT.** Commit `eb28f2c` |
+| **7 — one switch drawn per aircraft row instead of per formation** | **BUILT.** Commit `07f7a86`. Measured before/after: 20 switches with two drawn four times → 14, none duplicated. The plan's second clause ("never on an empty line") is deliberately NOT built — Fable is right that OIL7 needs a switch to cover a man added later |
+| **8 — a second man on a request row earns (D18)** | **BUILT.** Commit `35b786e`. Rule revised in the register, engine-rules and ui-contracts in the same change |
 
 Every part was proved RED first through its own production function. What each does is in the
 commit messages, which are written for you and are the best short account of the reasoning.
 
-**Gates at this point:** unit **5362 passed / 0 failed** (330 files) · build green · tracker smoke
-**425 / 0** (re-run this session). NOT re-run since the fixes: parity, rulecheck, docsize, e2e.
+**Gates at this point:** unit **5368 passed / 0 failed** (330 files) · build green · rulecheck **OK** ·
+docsize **OK** · tracker smoke **425 / 0**. NOT re-run since the fixes: parity, e2e.
 
 ## What is NOT done, and must not be reported as done
 
@@ -56,11 +58,20 @@ commit messages, which are written for you and are the best short account of the
   detour and an owner correction: when the harness refuses a command, the question is not "how do
   I get this allowed" but "can the same job be done with less power". Here it always could.
 
-## The seven jobs left, in order
+## The FIVE jobs left, in order
+
+**Watch for collisions between fixes.** Jobs 1 and 8 already collided once and only job 8's own
+test caught it: job 1's read-side prune deletes a decision naming anyone who is not the request's
+holder, which was true until D18 let a second man on the row earn. Whenever two of these jobs touch
+the same body, write a test that exercises BOTH.
+
 
 Shapes are settled in `…-oil-fixplan-settled.md` §2 — do not re-derive them.
 
-3. **The reload "pending" wording.** NOT a phantom (§9). Do not suppress the mark. Only the wording:
+3. **The reload "pending" wording.** LOW value now — its real defect is filed out as
+   `[POSTOUT-LOST]`, and the "sentence" turns out to be only a COUNT in the amendment panel
+   (`diffCounts`), not a literal string anywhere in the source. Decide whether it is worth doing at
+   all before spending on it. NOT a phantom (§9). Do not suppress the mark. Only the wording:
    the item says "the OIL decisions on this day changed" when no scheduler decided anything.
 4. **A holiday taken off a published day** needs the mirror of the advisory the forward case has.
 5. **The mode must be read-only** — shut the two panels and the palette drag. **Sign and Publish
