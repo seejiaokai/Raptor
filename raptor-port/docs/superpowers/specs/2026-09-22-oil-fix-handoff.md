@@ -1,4 +1,4 @@
-# HANDOFF — every reviewer finding is closed; four jobs left (22 Sep 26, overnight)
+# HANDOFF — every reviewer finding and every job is built; the WALK is what is left (22 Sep 26, overnight)
 
 **Branch `claude/oil-auto-remove-design`, PR #424. Nothing merged. Holding for the owner's
 "merge live".** This replaces the earlier copy of this file, which asked for the reviews to be read
@@ -31,6 +31,10 @@ The two reviews themselves, if you need the reasoning behind a fix:
 | Codex **rank 2** / Fable **F1** — `[OIL-XWEEK-DENY]` | **FIXED.** `26f9de5` |
 | Codex **rank 3** / Fable **F2** — `[OIL-XWEEK-ELSEWHERE]` | **FIXED.** `7045067` |
 | Codex **ranks 5 and 6** — the calendar drag and the in-place time cells never asked | **FIXED.** `4c892ba` |
+| **6 — a weekend no leave war period covers (D19)** | **BUILT.** `8b16a03` — also closes Codex M8 |
+| **5 — the mode is actually read-only, and Undo stops at its door** | **BUILT.** `27c1882` |
+| **4 — a day that stopped being a holiday says so** | **BUILT.** `d8a73f2` |
+| **9 — the wording batch**, four of it | **PART BUILT.** `1521506` — see below for what is left |
 | Fable **F7** — the anchor day misread across a New Year | fixed in passing, inside `7045067` |
 | Fable **F4** | closed independently by job 8's own test |
 
@@ -38,8 +42,9 @@ The two reviews themselves, if you need the reasoning behind a fix:
 function; what each does is in the commit messages, which are the best short account of the
 reasoning and are written for you.
 
-**Gates after the last commit:** unit **5400 passed / 0 failed** (330 files) · build green ·
-rulecheck **OK** · docsize **OK** · tracker smoke **425 / 0**. NOT re-run since: parity, e2e.
+**Gates after the last commit:** unit **5438 passed / 0 failed** (333 files) · build green ·
+reference parity **728 / 0** · rulecheck **OK** · docsize **OK** · tracker smoke **425 / 0** · e2e
+run at the end of the session.
 
 ## What is NOT done, and must not be reported as done
 
@@ -61,27 +66,35 @@ change at all: `codex exec -s read-only --output-last-message <file> "<the brief
 file into `docs/superpowers/specs/` yourself. The lesson: when the harness refuses a command, the
 question is not "how do I get this allowed" but "can the same job be done with less power".
 
-## The jobs left, in order
+## What is left
 
-Shapes are settled in `…-oil-fixplan-settled.md` §2 — do not re-derive them.
+### 1. THE WALK — and it is the whole of what stands between this and "merge live"
 
-1. **Fix 6 — a weekend no leave period covers.** Owner's ruling **D19**: name the missing period and
-   offer to create it. This reaches the Leave War and is bigger than the others around it.
-2. **Fix 5 — the mode must be read-only.** Shut the two panels and the palette drag. **Sign and
-   Publish stay open** (both reviewers). **Undo is NOT one of the doors to shut** — it already
-   reverses an OIL tap correctly and that is worth keeping. The rule is a BOUNDARY: opening the
-   mode marks the spot, Undo walks back OIL decisions freely down to it, and reaching past it
-   closes the mode first. Measurement behind it is in the settled plan under fix 5.
-3. **Fix 4 — a holiday taken off a published day** needs the mirror of the advisory the forward
-   case has.
-4. **Fix 9 — the wording batch**, about fourteen, one red test at a time. **Leave "Off day" alone**
-   — D21 settled it and only the written contract changes, not the code. Folded into this batch:
-   - **fix 3**, which turned out to be only wording — the pending item says "the OIL decisions on
-     this day changed" when no scheduler decided anything. Do NOT suppress the mark (§9).
-   - **Fable F5** — the same sentence, plus the inert puck tooltip, which says "nothing measurable
-     to earn from here" when the real reason is a cancelled row on another day.
-   - **Fable F6** — after a dismissed sheet the only sign is inside the mode; the Inputs page row
-     carries no mark and the bell is per-member, so the scheduler who made the change sees nothing.
+Nothing on this branch has been driven in the app since job 2. Everything above
+is machinery, proved by tests and read by two models. The standing order is
+explicit that this is not a bug check.
+
+### 2. The rest of the wording batch — seven items, ALL of them screen-level
+
+These are findings 8–13 and 17 in `docs/handpass/parts/blocks-g.md`. Every one
+of them needs the app on screen, at both widths, and none can be settled by
+reading code — which is why they were left rather than guessed at:
+
+| # | What | Why it needs the app |
+|---|---|---|
+| 9 | the viewer's OWN puck never draws its green stripe — "this is you" styling wins | which rule wins is a paint question |
+| 11 | the board never shows the count beside ALL AVAIL; the week does | a missing number on one surface |
+| 12 | every tappable puck in the mode is 15px tall on a phone — 48 of them | a finger test, at 390px |
+| 13 | a claim row's NAME says "nothing on this row can earn" while the puck beside it says he earns a full day | both are on screen together; the fix depends on what D18 changed underneath |
+| 8 | two buttons reading "✓ Done" at once — the board's and the mode's | **the label's own code comment forbids lengthening it without re-drawing the comp at 390px.** Do that first |
+| 10 | "tap to see each one" on the count chip does nothing | either make the tap work or take the promise out |
+| 17 | no toast or acknowledgement after any OIL gesture | a feel question |
+
+**Already done and not to be re-opened:** finding 15 (an empty Saturday no longer
+nags) — the reminder was narrowed to days with money waiting on them.
+
+**"Off day" (finding 16) is settled by D21 and needs NO code** — only the written
+contract, which was corrected.
 
 ## Filed, deliberately not fixed here
 
