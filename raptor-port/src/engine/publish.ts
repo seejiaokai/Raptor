@@ -192,6 +192,15 @@ export function setDayApproved(di:any,on:any){
      changing a published day means editing its working draft and publishing the
      next AL. An `on=false` (or a repeat approve) is a no-op. */
   if(!on||SCHED.dayOK[di])return;
+  /* MINT THE ROW IDS BEFORE ANYTHING READS THE DAY (Fable, 21 Sep 26). §9.3
+     promises publication freezes exactly the value the signature was validated
+     against, and every OIL decision is addressed by a row id — so a row that
+     reached here without one would be compared and signed under one address and
+     frozen under another. daySnap mints on its way past, which is AFTER
+     daySigned and dayDelta have already read the day. Every production add path
+     mints before this point, so no reachable case was found; the mint is
+     idempotent and costs one walk, which is cheaper than relying on that. */
+  ensureRowIds(DAYS);
   if(!daySigned(di))return toast(`${DAYS[di].dow} needs ${signMissing(di).join(', ')} before it can be published`);
   stampAmFormat();   // first publish of a validated empty pre-Phase-2 draft keeps it 'current' (P2-IMPL-04)
   /* the day goes out AS IT STANDS. Everything pending on it up to this moment
@@ -667,6 +676,10 @@ export function publishALDay(di:any){
      writeback would otherwise discard the issue on reload (a silent lost AL). */
   if(protectedWeek())return toast(`${(DAYS[di]||{}).dow||'This day'} is locked — it was published by an older version and can’t be amended here`);
   if(!dayApproved(di))return toast(`${DAYS[di].dow} is still draft — publish the day before publishing its changes`);
+  /* the same mint as the first publish above, for the same reason: every read
+     in this turn — the delta, the signature binding, the frozen block — must
+     see one set of row ids (Fable, 21 Sep 26). */
+  ensureRowIds(DAYS);
   /* [GLOBAL-UNDO] §6.1 GU5-001 — a day being CORRECTED (unpublished, then edited)
      may reissue its SAME label even if the correction nets to no delta; an ordinary
      amendment still needs a real change. */

@@ -178,14 +178,35 @@ None of these gate a tracker- or storage-only change.
 
 ## In flight
 
-**[OIL-AUTO-REMOVE] + [ALL-AVAIL-REDEF] — BUILT 21 Sep 26, HELD for "merge live"; the
-cross-provider bug check is the next job.** Everything the build session held that the design doc
-does not — what it decided on its own, what the rules walk found, the one design question still
-open, and where to point Fable and Astra — is in
-`raptor-port/docs/superpowers/specs/2026-09-21-oil-build-handoff.md`. On branch
-`claude/oil-auto-remove-design`. All five gates green (5327 unit, build, parity 728/0, e2e 447,
-tracker 425) plus `rulecheck`; hand-tested in the running bundle against an enumerated register of
-29 rulings. What shipped, in one line each: ALL / ALL AVAIL now means what the owner said (ground
+**[OIL-AUTO-REMOVE] + [ALL-AVAIL-REDEF] — BUILT + BUG-CHECKED 21 Sep 26, HELD for "merge live".**
+On branch `claude/oil-auto-remove-design`. The build session's own handoff is
+`raptor-port/docs/superpowers/specs/2026-09-21-oil-build-handoff.md`.
+
+**The cross-provider bug check is DONE, and ten defects are fixed** — triage and the ordered plan in
+`…/2026-09-21-oil-bugcheck-fixplan.md`, the two reviews verbatim beside it (`…-fable.md`,
+`…-codex.md`). Fable 5.1 and Astra/Codex, both read-only, neither the model that built it. Four of
+the eight they found were ONE root cause: **the freeze boundary had more doors than `creditFrom`** —
+the war's calendar, the live roster and a landed row's own state were all still read live for money
+on a published day. **Two owner rulings settled it:** R-1, only the issued schedule pays, BOTH
+directions (a holiday declared after publication waits for a republication and the day says so;
+revoking one no longer sweeps money silently); R-2, the two pre-existing money bugs that share that
+root cause are fixed here. Also: a tap under a mask can no longer wipe the decision it hides, an OIL
+decision now reaches the day's history, and the green bar follows the owner's O-1 ruling — shown
+only on the events that COUNTED towards his day.
+
+**The OWNER found two more by hand that neither review could.** Both reviews were static, and a
+missing call site is invisible when every line that IS there is correct. (1) The green strip never
+reached the board's cockpit seats or its Common Programme — so a whole Saturday of flying crews read
+as earning nothing while the money behind them was right. (2) Any advisory chip on a puck covered
+the strip. `docs/feature-impact.md` had already named this exact drift-seam, worded as "a NEW seat
+renderer"; the hole was in two EXISTING ones, and no test saw it because every bar assertion had
+been written against a duty desk or a ground row. **The standing lesson: run the reviews AND drive
+the app — treat "which call sites should have this and do not" as its own question.**
+
+All five gates green after the fixes (5341 unit, build, parity 728/0, e2e, tracker) plus
+`rulecheck`; hand-tested in the running bundle against an enumerated register of 29 rulings, and the
+owner's whole seat list re-checked live (flying · SC MAIN · Common Programme · Standard and SC Shift
+desks earn; SC SPARE · AVALON wave · AVALON desk do not). What shipped, in one line each: ALL / ALL AVAIL now means what the owner said (ground
 crew out, a SANS man in when planned with us, ATT B in, a clashing commitment or tasking out — ONE
 resolver, sharing `engine/avail.ts`'s occupancy answer); a day carries its own **OIL evidence
 block** and money comes only from it (`engine/oilev.ts` — decisions on `Day.oild`, the frozen

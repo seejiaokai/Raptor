@@ -1123,6 +1123,23 @@ function validateCore(){
       if(!dayApproved(di)&&oilWouldEarn(di)){
         add('adv','OIL_UNPUBLISHED',[],'This day is not published yet, so nobody earns their OIL for it — publish it before the day is out');
       }
+      /* THE DAY STARTED EARNING AFTER IT WENT OUT (owner, 21 Sep 26 — R-1:
+         "only the issued schedule pays", both directions). A day published as an
+         ordinary working day froze "this day earns nothing"; if the war later
+         calls it a public holiday, the frozen answer still governs and nobody is
+         paid until the day is published again. That is the right rule — money
+         comes from the issued document, not from today's calendar — but it must
+         never be SILENT, or a scheduler sees an unexplained "1 change" on a day
+         he did not touch and nobody is paid for a real holiday. This is what
+         says so. It cannot collide with the reminder above: that one speaks only
+         on an UNPUBLISHED day, this one only on a published one. */
+      if(dayApproved(di)&&oilWouldEarn(di)){
+        const ver=dayCurVer(di), snap:any=ver!=null?daySnapOf(di,ver):null;
+        const frozen=snap&&snap.d&&snap.d.oilev;
+        if(frozen&&!frozen.earns){
+          add('adv','OIL_STALE_DAY',[],'This day started earning OIL after it was published — publish it again so the OIL lands');
+        }
+      }
     }
     const SORD:any={hard:0,adv:1,note:2};
     ws.sort((a:any,b:any)=>(SORD[a.sev]??3)-(SORD[b.sev]??3));

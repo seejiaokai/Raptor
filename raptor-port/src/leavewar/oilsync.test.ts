@@ -384,17 +384,61 @@ describe('OIL11, OIL13 — an acknowledged input credits once the day is PUBLISH
     expect(cellOf('plasma', SAT)).toBe('FO')
   })
 
-  it('a PH revoked after the answer stops the credit — the yes stays, inert', () => {
+  /* OWNER RULING R-1 (21 Sep 26): ONLY THE ISSUED SCHEDULE PAYS, BOTH
+     DIRECTIONS. This test previously asserted the OPPOSITE — that un-typing the
+     holiday stopped the credit at once — which is how the bug got in: the day's
+     calendar was read LIVE before the issued block was ever opened, so an admin
+     could delete everybody's day in lieu off a published day with no amendment,
+     no signature, no record and nothing on screen. Astra found it from this end
+     and Fable found the same seam from the other (a holiday declared after
+     publication paying nobody). The money now follows the issued document; the
+     day must be published again for either direction to move. */
+  it('OIL24, OIL29 — revoking a PH does NOT take back issued money until the day is re-published', () => {
     setRole('admin')
     setDayEvent('2026-07-15', 0, 'PH')
     const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 15', oil: { '2026-07-15': 1 } })
     publish(2)                                          // the Wednesday now reads as a holiday
     runOilPass()
     expect(cellOf('bane', '2026-07-15')).toBe('FO')
-    setDayEvent('2026-07-15', 0, '')                    // the holiday is un-typed
+    setDayEvent('2026-07-15', 0, '')                    // the holiday is un-typed, LIVE
     runOilPass()
-    expect(cellOf('bane', '2026-07-15')).toBeUndefined()
-    expect(r.oil).toEqual({ '2026-07-15': 1 })          // the record keeps the answer; the day just is not a holiday
+    expect(cellOf('bane', '2026-07-15'), 'the issued document still says he earned it').toBe('FO')
+    expect(r.oil).toEqual({ '2026-07-15': 1 })          // the record keeps the answer either way
+    amend(2)                                            // re-issued: NOW the new truth governs
+    runOilPass()
+    expect(cellOf('bane', '2026-07-15'), 'republished as an ordinary Wednesday — the credit goes').toBeUndefined()
+  })
+
+  it('OIL24 — a PH declared AFTER the day went out pays nobody until it is re-published', () => {
+    setRole('admin')
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 15', oil: { '2026-07-15': 1 } })
+    publish(2)                                          // published as an ordinary Wednesday
+    runOilPass()
+    expect(cellOf('bane', '2026-07-15'), 'a working Wednesday earns nothing').toBeUndefined()
+    setDayEvent('2026-07-15', 0, 'PH')                  // the holiday is declared afterwards
+    runOilPass()
+    expect(cellOf('bane', '2026-07-15'), 'the issued block froze "this day earns nothing"').toBeUndefined()
+    amend(2)
+    runOilPass()
+    expect(cellOf('bane', '2026-07-15'), 'published again — now it lands').toBe('FO')
+    expect(r.oil).toEqual({ '2026-07-15': 1 })
+  })
+
+  it('OIL24 — archiving a man does NOT withdraw the day in lieu he was already issued', () => {
+    plant({ person: 'bane', type: 'Duty', date: 'Jul 18', oil: { [SAT]: 1 } })
+    publish(5)
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBe('FO')
+    /* the production archive route: the flag on the roster, then the same
+       re-projection the Quals page triggers on every Raptor notify */
+    const was = (PEOPLE as any).bane.archived
+    try {
+      ;(PEOPLE as any).bane.archived = true
+      setPeople(projectPeople())
+      runOilPass()
+      expect(cellOf('bane', SAT), 'hiding or archiving a man is a display choice, never a refund').toBe('FO')
+      expect(ownedBy('bane', SAT)).toMatchObject({ source: 'raptor' })
+    } finally { (PEOPLE as any).bane.archived = was }
   })
 
   it('a raptor-owned credit survives a storage round-trip — reconcile keeps FO/HO ownership', () => {
@@ -573,6 +617,24 @@ describe('bug-pass hardening (28 Aug 26)', () => {
      [ARCH-STACK] step 4: the war's stored shape changed (records as a list)
      and the schema bump RESETS old demo data rather than migrating it
      (owner's dev-phase rule), so no pre-rename war can reach the loader. */
+
+  /* [ALL-AVAIL-REDEF] — Astra, 21 Sep 26. A REMOVED input is silent everywhere,
+     and `availableFor` applied that rule to commitments (Training, Meeting…)
+     but not to the away-making types: a leave, medical or overseas-duty request
+     the scheduler had already turned down still kept its man out of ALL AVAIL.
+     He was then missing from the frozen membership when the day went out and
+     earned nothing — underpaid, with nothing on screen to explain it. The old
+     dormant test covered only Training, which takes the other branch. */
+  it('OIL13, OIL14 — a turned-down leave, medical or OD request does NOT keep a man out of ALL AVAIL', () => {
+    for (const type of ['LL', 'Medical', 'OD']) {
+      INPUTS.length = 0
+      JSON.parse(ISNAP).forEach((r: any) => INPUTS.push(r))
+      INPUTS.unshift({ person: 'bane', type, date: 'Jul 18', allday: true, s: 0, e: 1439,
+        remarks: '', mod: 'now', yr: 2026, acc: 'r' })
+      expect(availableFor(SAT, [8 * 60, 15 * 60], DAYS[5]),
+        `a dormant ${type} speaks nowhere else, so it must not speak here either`).toContain('bane')
+    }
+  })
 
   it('a body posted out before the day never expands under ALL — even unarchived', () => {
     setRole('admin')

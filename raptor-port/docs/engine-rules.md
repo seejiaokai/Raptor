@@ -1833,6 +1833,45 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   has published nothing, so live + stash is the whole session; before
   this, navigating off a published weekend let the reverse sweep collect
   its credits.
+- **ONLY THE ISSUED SCHEDULE PAYS, BOTH DIRECTIONS** (owner, 21 Sep 26 — R-1,
+  from the cross-provider bug check; triage in
+  `docs/superpowers/specs/2026-09-21-oil-bugcheck-fixplan.md`). The credit pass
+  used to gate each date on the war's calendar LIVE, before the issued block was
+  ever opened, while whether the day EARNS is frozen into that block — so the two
+  directions disagreed. Revoking a public holiday on a published day swept
+  everybody's day in lieu on the next pass, silently, with no amendment and
+  nothing on screen; declaring one afterwards paid nobody. Now only an unreadable
+  date skips before the snapshot is resolved and the frozen `ev.earns` decides
+  both ways: a day that starts earning after it went out waits to be published
+  again, and `validateCore` says so on the day (`OIL_STALE_DAY`). The block's own
+  ISO must also match the date it is read under, or the date is protected.
+- **THE LIVE ROSTER IS NOT A SECOND MONEY AUTHORITY** (owner, 21 Sep 26 — R-2).
+  `creditable` consulted the current Leave War roster, so archiving a man on the
+  Monday deleted the day in lieu an issued Saturday had already promised him. Who
+  earned was decided at publication and frozen; nothing the roster does
+  afterwards reopens it. The guard now rejects only a SENTINEL — not a person at
+  all. An archived man, a hidden SANS and a NAMED ground-crew body all keep what
+  they earned; the credit lives on the person and the date, so it lands and waits
+  for the row.
+- **A CANCELLED OR ⓘ LANDED ROW EARNS NOTHING** (owner, 21 Sep 26 — R-2). The
+  schedule half skips every `src` row so the accepted claim owns it, and the
+  input half then never looked at the row it had landed on — so cancelling that
+  row, or turning it ⓘ info-only, left the claim paying for work the schedule
+  itself says did not happen. One body decides it now (`oilInputEligible`),
+  shared by the money and the mode, so the board can never offer a toggle on a
+  claim the credit path has already ruled out.
+- **A REMOVED REQUEST IS SILENT EVERYWHERE** (owner, 21 Sep 26). `availableFor`
+  applied that to commitments but not to the away-making types, so a LEAVE,
+  MEDICAL or OVERSEAS DUTY request the scheduler had turned down still kept its
+  man out of ALL AVAIL — missing from the membership frozen into the issued day,
+  and underpaid, with nothing on screen to say why.
+- **A MASK HIDES DECISIONS, IT DOES NOT DELETE THEM** — and that now holds at the
+  WRITER, not only in the reader. The day blanket and an event's switch make
+  `oilPersonOn` answer false for everyone beneath them; reading that masked false
+  back as a man's own answer meant a tap deleted a stored `deny`, or wrote an
+  `allow` over a member's own No, while the puck stayed dim and said nothing.
+  Both writers now refuse under a mask, the board refuses the gesture and names
+  which mask is on, and a masked puck is drawn inert.
 - **Never overwrites.** A date already holding anything else — a leave bid,
   a synced leave cell, a hand-typed marker — is left alone and raised on
   Leave War's clash strip (`kind:'duty'`) for a human; where the same date

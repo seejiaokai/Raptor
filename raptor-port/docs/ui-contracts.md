@@ -6981,9 +6981,31 @@ holiday comes from Leave War through `HOOKS.oilEarningDay`.
   a shade paler = half a day. Height is the structural signal that survives
   colour-blindness; the tint is the one that survives being read alone with nothing
   to compare against.
-- **It is the MAN'S DAY, repeated on every puck he wears that day** — never what that
-  one event earned. A man on four DASH rows shows the same bar four times = one full
-  day. Getting this wrong is what would have made positive marking actively wrong.
+- **It is the MAN'S DAY — but it is SHOWN ONLY on the events that COUNTED towards it**
+  (owner, 21 Sep 26 — O-1, revising §2.10 / OIL21). There is no such thing as a
+  per-event OIL figure and one must never be invented: the measure runs first-start to
+  last-end across the whole day including the gaps, so a man on four rows that all
+  counted still shows one full day, four times. What changed is WHERE it is drawn. It
+  is withheld on any row that gave him nothing — an ⓘ info-only row, an event switched
+  off, a man the scheduler denied, a row with no written times. Green now means "this
+  row counted towards his day", which is what the mode already says when a puck is
+  tapped off. The owner asked for this on being shown an ⓘ row wearing a bar: *"I
+  thought the green should show for individual pucks on individual events?"* The
+  earlier rule — repeated on every puck he wears — drew green on rows that had given
+  him nothing, which read as the row earning.
+- **It reaches EVERY seat the schedule draws.** The week has one seat renderer; the
+  BOARD has several, and two of them — every cockpit seat (so every flying line and
+  every SC shift) and the Common Programme — built their own markup and never asked
+  for the decoration. The money was right the whole time; only the mark was missing,
+  which made flying crews read as earning nothing on a weekend. Found by the owner in
+  the running app, 21 Sep 26; no unit test saw it because every bar assertion had been
+  made on a duty desk or a ground row. Pinned by `oilmode.test.tsx` §"the green strip
+  reaches every kind of seat the board draws", which walks the seat KINDS.
+- **It survives a chip sitting on it.** The late/advisory chip is the puck's first
+  child with a solid background of its own, painted over the same 4px the stripe
+  lives in — so every man with a warning on a weekend read as earning nothing. The
+  stripe is re-drawn on the chip (`background-image`, not the shorthand, so it layers
+  over the chip's colour), which costs no node and no width.
 - **Drawn as a 4px background-gradient stripe, NOT a pseudo-element.** A puck's
   `::before` belongs to the drag ghost's lift veil and its `::after` to the SANS edge;
   `lift-css.test.ts` pins both. A gradient costs no node, no width and no

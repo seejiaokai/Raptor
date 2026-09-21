@@ -112,8 +112,15 @@ export const groundItemKey=(g:any)=>(g&&g.src)?inputItemKey(g.src):rowItemKey(g&
    id -> {s,e,src}[]. The envelope of a person's spans is the day's measure.
    opts.expandAll resolves a sentinel puck (ALL / ALL AVAIL) on a ground or
    Common Programme row into the people it stands for at that window. */
-export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:string)=>string[]}){
+export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:string)=>string[];onItem?:(item:string)=>void}){
   const out:Record<string,OilWork[]>={};
+  /* EVERY ROW THIS WALK REACHES WITH REAL TIMES, whether or not anybody is
+     sitting on it (21 Sep 26). The mode needs to know which events CAN earn so
+     it does not offer a switch on one that never could — an AVALON line, its
+     desk, an SC spare, a cancelled or ⓘ row, a desk with no times. Reported
+     from THIS walk rather than from a second rulebook, so the switch and the
+     money can never disagree about what is capable of earning. */
+  const reach=(it:string)=>{ if(opts&&opts.onItem)opts.onItem(it); };
   const rid=(v:any)=>{const id=whoId(v);return realP(id)?id:null;};
   let src:OilWorkSrc='Duty';
   /* the item each span is being collected for — set at the top of every row so
@@ -147,6 +154,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
                   :(st==null||en==null?null
                     :w2(st-VCONF.reportLead,(en<st?en+1440:en)+VCONF.debrief));
       if(!win)return;
+      if(!f.spare)reach(item);
       (f.aircraft||[]).forEach((ac:any)=>{
         if(ac.cx||f.spare||ac.spare)return;              // spares stand by, they do not work
         [ac.p,ac.w].forEach((v:any)=>put(v,win));
@@ -159,6 +167,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
     item=rowItemKey(r.rid);
     const win=w2(parseHM(r.str),parseHM(r.end));
     if(!win)return;
+    reach(item);
     /* the same id set events.ts rowIds enumerates: seats, pax, extras — sim who
        is free text (1C), never a person */
     [r.p,r.w].concat(r.pax||[]).concat(r.more||[])
@@ -172,6 +181,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
       item=rowItemKey(r.rid);
       const win=w2(parseHM(r.str),parseHM(r.end));
       if(!win)return;
+      reach(item);
       [r.id,...(r.more||[])].forEach((v:any)=>put(v,win));
     });
   });
@@ -179,7 +189,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
     if(g.cx||g.src)return;                               // src = an accepted input: the ask-flow's
     if(g.info)return;                                    // ⓘ info-only: shown, never worked — mints no OIL
     item=groundItemKey(g);
-    putWho(g.who,w2(parseHM(g.str),parseHM(g.end)),g.more);
+    { const gw=w2(parseHM(g.str),parseHM(g.end)); if(gw)reach(item); putWho(g.who,gw,g.more); }
   });
   (day.allhands||[]).forEach((x:any)=>{
     if(x.cx)return;
@@ -187,6 +197,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
     item=rowItemKey(x.rid);
     const win=w2(parseHM(x.str),parseHM(x.end));
     if(!win)return;
+    reach(item);
     whoArr(x).forEach((v:any)=>putWho(v,win));
     (x.more||[]).forEach((m:any)=>put(m,win));
   });
@@ -287,5 +298,20 @@ export function dayOilCredits(day:any,opts?:{expandAll?:(win:[number,number],ite
     const v=uniformOil(envMin(spans[id]));
     if(v)out[id]=v;
   });
+  return out;
+}
+
+/** WHICH EVENTS ON THIS DAY ARE CAPABLE OF EARNING AT ALL — the set of item
+ *  addresses the OIL walk actually reaches. An empty ground row IS capable (put
+ *  a man on it and he earns); an AVALON line, its desk, an SC spare, a cancelled
+ *  row, an ⓘ row and a desk with no written times are NOT, whoever is added
+ *  later. The mode uses this so it never draws a switch that could not change
+ *  anything: such a switch reads "tap to stop this item earning" beside pucks
+ *  that already say they earn nothing, and on a published day tapping it would
+ *  cost a real amendment for a decision that moves no money (Fable, 21 Sep 26).
+ *  Derived from dayOilWork's own walk, so it cannot drift from the money. */
+export function oilCapableItems(day:any):Set<string>{
+  const out=new Set<string>();
+  dayOilWork(day,{expandAll:()=>[],onItem:(it:string)=>{if(it)out.add(it);}});
   return out;
 }

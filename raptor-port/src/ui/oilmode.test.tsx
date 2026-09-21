@@ -15,14 +15,17 @@ import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import { DAYS } from '../engine/data'
+import { PEOPLE } from '../engine/people'
 import { INPUTS } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { SCHED, signOf, setDayApproved } from '../engine/publish'
+import { toggleOilPerson, oilModeOn } from './oilmode'
 import { ensureRowIds } from '../engine/rowids'
 import { rowItemKey, inputItemKey } from '../engine/oil'
-import { elogClear } from '../engine/editlog'
+import { makeStandalone } from '../engine/waves'
+import { elogClear, elogRows } from '../engine/editlog'
 import { validate } from '../engine/validate'
-import { openScheduler } from './board'
+import { openScheduler, boardWeekStep } from './board'
 import { setOilDay } from '../state/view'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -248,5 +251,200 @@ describe('input-derived items keep the member\'s word, and the admin can overrul
     await click(seat)
     expect((DAYS[SAT] as any).oild.people[`bane|${inputItemKey('c1')}`], 'the admin says yes over it').toBe('allow')
     expect(INPUTS[0].oil, 'and his own answer is untouched').toEqual({ [SAT_ISO]: 0 })
+  })
+})
+
+/* ── THE BUG CHECK'S FIXES, 21 Sep 26 (Fable + Astra) ──────────────────────
+   Driven through the board the way a scheduler drives it — real clicks on real
+   pucks — because the review's sharpest finding was that the old tests set the
+   marks by replacing the record where the board mutates it in place. */
+describe('the bug check (21 Sep 26)', () => {
+  let brief: any, family: any
+  beforeEach(async () => {
+    brief = addRow(SAT, { prog: 'MORNING BRIEF', str: '0700', end: '0800', who: 'bane' })
+    family = addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    await open(SAT)
+  })
+  const puckOn = (row: any, person = 'bane') =>
+    $$(`[data-oilp="${person}"]`).find(el => el.dataset.oilitem === rowItemKey(row.rid)) || null
+  /* the PEOPLE marks only — pressing the blanket legitimately adds its own
+     mark to the record, and what this is watching is whether the decisions
+     UNDERNEATH it survive */
+  const decisions = () => JSON.stringify(((DAYS[SAT] as any).oild || {}).people || {})
+
+  it('OIL9 — a tap under the day blanket changes NOTHING underneath it', async () => {
+    await click(oilBtn())
+    await click(puckOn(family))                                  // bane taken off FAMILY DAY
+    const denied = decisions()
+    expect(denied, 'the deny is recorded').toContain('deny')
+    await click($('#sbBoard [data-oilblank]'))                   // "Nothing today earns"
+    const masked = puckOn(family)
+    expect(masked, 'a masked puck is not a control at all').toBeNull()
+    /* and even if something reached the writer, it must refuse */
+    await act(async () => { toggleOilPerson(SAT, 'bane', rowItemKey(family.rid)); notify() })
+    expect(decisions(), 'the decision under the blanket is exactly as it was').toBe(denied)
+    await click($('#sbBoard [data-oilblank]'))                   // blanket off again
+    expect(decisions(), 'and it comes back untouched').toBe(denied)
+  })
+
+  it('OIL9 — a tap under a switched-off EVENT changes nothing either', async () => {
+    await click(oilBtn())
+    await click(puckOn(family))
+    const denied = decisions()
+    const itemCell = $$('#sbBoard [data-oilitem]').find(el => el.dataset.oilitem === rowItemKey(family.rid))!
+    await click(itemCell)                                        // the whole event switched off
+    expect(puckOn(family), 'no tap target while the event is off').toBeNull()
+    await act(async () => { toggleOilPerson(SAT, 'bane', rowItemKey(family.rid)); notify() })
+    expect(decisions()).toContain('deny')
+    expect(JSON.parse(decisions())[`bane|${rowItemKey(family.rid)}`]).toBe('deny')
+  })
+
+  it('an OIL decision is written into the day\'s history, naming the man and the event', async () => {
+    await click(oilBtn())
+    await click(puckOn(family))
+    const said = elogRows(SAT).map(r => r.lbl).join(' | ')
+    expect(said, 'the man is named, by the callsign the schedule shows').toContain((PEOPLE as any).bane.cs)
+    expect(said, 'and so is the event he was taken off').toContain('FAMILY DAY')
+  })
+
+  it('O-1 — the green bar shows on the events that COUNTED, not on every puck he wears', async () => {
+    /* the owner, on being shown an ⓘ row wearing a green bar: "I thought the
+       green should show for individual pucks on individual events?" */
+    family.info = true                                           // ⓘ — shown, never worked
+    signOf(SAT).cur = 'ignite'; signOf(SAT).sked = 'bane'
+    signOf(SAT).plan = 'stiff'; signOf(SAT).appr = 'pump'
+    await act(async () => { setDayApproved(SAT, true); validate(); notify() })
+    const bars = $$('#sbBoard .sb-panel.grnd .puck.oilbar')
+    expect(bars.length, 'the morning brief counted; the ⓘ row gave him nothing').toBe(1)
+  })
+
+  it('stepping to another week leaves OIL mode rather than stranding a locked board', async () => {
+    await click(oilBtn())
+    expect(oilModeOn(SAT), 'in the mode').toBe(true)
+    await act(async () => { boardWeekStep(1); notify() })
+    expect(oilModeOn(SAT), 'the mode belongs to one day of one week').toBe(false)
+    await act(async () => { boardWeekStep(-1); notify() })
+  })
+})
+
+/* THE GREEN STRIP MUST REACH EVERY SEAT THE BOARD DRAWS — found by the owner in
+   the running app, 21 Sep 26 ("Flying waves should be earning OIL", "SC MAIN
+   should be earning OIL", "Common programme should be earning oil").
+   The money was always right; the STRIP was missing, because the board builds
+   its cockpit seats and its Common Programme seats with their own builders
+   rather than the shared one, and neither asked for the decoration. Nothing in
+   5328 unit tests saw it: every assertion about the bar was made on a duty desk
+   or a ground row, which DO go through the shared builder. This is the test
+   that walks the seat kinds instead. */
+describe('the green strip reaches every kind of seat the board draws', () => {
+  beforeEach(async () => {
+    DAYS[SAT].waves = [
+      /* a plain flying line: report → land + debrief, a long day */
+      { formations: [{ cs: 'KN', msn: 'BFM', to: '08:00', ld: '19:00',
+        aircraft: [{ p: 'bane', w: 'stiff' }] }] },
+      /* an SC shift with a MAIN pair and a SPARE pair, exactly as the board mints it */
+      { kind: 'sc', formations: [{ cs: 'SC', msn: 'AM', shift: 'AM', to: '07:00', ld: '19:00',
+        aircraft: [
+          { role: 'MAIN', spare: false, p: 'pump', w: '' },
+          { role: 'SPARE', spare: true, p: 'plasma', w: '' },
+        ] }] },
+    ]
+    DAYS[SAT].allhands = [{ prog: 'TEST EVENT', str: '07:00', end: '18:00', who: 'dice' }]
+    ensureRowIds(DAYS)
+    await open(SAT)
+  })
+  const barOf = (cs: string) => {
+    const id = Object.keys(PEOPLE).find(k => (PEOPLE as any)[k]?.cs === (PEOPLE as any)[cs]?.cs || k === cs)
+    const pk = $$(`#sbBoard .puck[data-person="${id}"]`)[0]
+    return pk ? [...pk.classList].filter(c => c.startsWith('oilbar')).join(' ') : 'NO PUCK'
+  }
+
+  it('OIL20 — a flying line, an SC MAIN and the Common Programme all wear it', async () => {
+    expect(barOf('bane'), 'the flying line FCP').toContain('oilbar')
+    expect(barOf('stiff'), 'the flying line RCP').toContain('oilbar')
+    expect(barOf('pump'), 'the SC MAIN seat').toContain('oilbar')
+    expect(barOf('dice'), 'the Common Programme seat').toContain('oilbar')
+  })
+
+  it('OIL21a — and an SC SPARE still wears nothing, because a spare stands by', async () => {
+    expect(barOf('plasma'), 'spares do not work, so they do not earn').toBe('')
+  })
+})
+
+/* THE WEEK IS A SECOND RENDERER AND IT HAD THE SAME HOLE (owner, 21 Sep 26).
+   The board's cockpit seats were fixed first; the week draws its own
+   (`html.ts slotCell`) and was still calling puck() with six arguments, so
+   every flying line and SC shift on the WEEK showed no bar either. Two
+   renderers, one rule — assert it on both surfaces or it only ever gets half
+   fixed. */
+describe('the green strip reaches the WEEK view too, not only the board', () => {
+  beforeEach(async () => {
+    DAYS[SAT].waves = [
+      { formations: [{ cs: 'KN', msn: 'BFM', to: '08:00', ld: '19:00',
+        aircraft: [{ p: 'bane', w: 'stiff' }] }] },
+      { kind: 'sc', formations: [{ cs: 'SC', msn: 'AM', shift: 'AM', to: '07:00', ld: '19:00',
+        aircraft: [
+          { role: 'MAIN', spare: false, p: 'pump', w: '' },
+          { role: 'SPARE', spare: true, p: 'plasma', w: '' },
+        ] }] },
+    ]
+    ensureRowIds(DAYS)
+    await act(async () => { notify() })
+  })
+  const weekBar = (key: string) => {
+    const seat = $$(`.seat[data-slot="${key}"]`).find(s => s.querySelector('.puck[data-person]'))
+    const pk = seat?.querySelector('.puck')
+    return pk ? [...pk.classList].filter(c => c.startsWith('oilbar')).join(' ') : 'NO SEAT'
+  }
+  it('OIL21a — a flying line and an SC MAIN wear the bar on the week', async () => {
+    expect(weekBar(`${SAT}.0.0.0.p`), 'the flying FCP on the week').toContain('oilbar')
+    expect(weekBar(`${SAT}.0.0.0.w`), 'the flying RCP on the week').toContain('oilbar')
+    expect(weekBar(`${SAT}.1.0.0.p`), 'the SC MAIN on the week').toContain('oilbar')
+  })
+  it('OIL21a — and an SC SPARE does not, on the week either', async () => {
+    expect(weekBar(`${SAT}.1.0.1.p`), 'spares stand by').toBe('')
+  })
+})
+
+/* AN EVENT THAT CAN NEVER EARN MUST NOT OFFER A SWITCH (Fable ranked this its
+   third most likely find; confirmed in the running app 21 Sep 26). The switch
+   used to be drawn on every row with an id, so an AVALON line, its desk and an
+   ⓘ row all read "tap to stop this item earning" beside pucks that already said
+   they earn nothing — and on a published day a tap wrote a real decision, so the
+   day grew an amendment for something that moves no money. */
+describe('the item switch is only offered where the event can earn', () => {
+  beforeEach(async () => {
+    /* minted the way the board mints it — a hand-built shape would not be a
+       standalone wave at all, and the test would quietly check a different
+       program (the fixture-not-how-the-app-writes trap both reviewers named) */
+    const av: any = makeStandalone('avalon')
+    av.formations[0].aircraft[0].p = 'bane'
+    DAYS[SAT].waves = [av]
+    DAYS[SAT].ground = [
+      { prog: 'MORNING BRIEF', str: '07:00', end: '08:00', who: 'stiff' },
+      { prog: 'NOTICE ONLY', str: '08:00', end: '12:00', who: 'pump', info: true },
+    ]
+    DAYS[SAT].dutywaves = [
+      { rows: [{ role: 'SDO', str: '08:00', end: '18:00', id: 'plasma' }] },
+      { sa: 'avalon', noconf: 1, rows: [{ role: 'AVALON DESK', str: '07:00', end: '19:00', id: 'dice' }] },
+    ]
+    ensureRowIds(DAYS)
+    await open(SAT)
+    await click(oilBtn())
+  })
+  const cellFor = (label: string) =>
+    $$('#sbBoard .oilitem').find(e => (e.textContent || '').trim() === label)
+
+  it('OIL7 — an ordinary event offers one', async () => {
+    expect(cellFor('MORNING BRIEF')?.dataset.oilitem, 'a ground row that earns').toBeTruthy()
+    expect(cellFor('SDO')?.dataset.oilitem, 'a duty desk that earns').toBeTruthy()
+  })
+  it('OIL7, OIL28 — AVALON, its desk and an ⓘ row offer none', async () => {
+    for (const label of ['AV', 'AVALON DESK', 'NOTICE ONLY']) {
+      const el = cellFor(label)
+      expect(el, `${label} is drawn`).toBeTruthy()
+      expect(el!.dataset.oilitem, `${label} must not be tappable`).toBeFalsy()
+      expect(el!.classList.contains('none'), `${label} reads as nothing to switch`).toBe(true)
+    }
   })
 })

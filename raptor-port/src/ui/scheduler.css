@@ -5910,6 +5910,19 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
    that survives colour-blindness, the tint the one that survives being read
    alone with nothing to compare against */
 .puck.oilbar-ho{background-image:linear-gradient(var(--oil-half),var(--oil-half));background-size:4px 50%;background-position:left bottom}
+/* AND IT MUST SURVIVE A CHIP SITTING ON IT (owner, 21 Sep 26 — "the green OIL
+   strip on the left side of the puck for Piston is not showing on top of the
+   advisory"). The stripe is the PUCK's background, and the late/advisory chip is
+   the puck's first child with a solid background of its own — so on any puck
+   wearing one, the chip painted straight over the 4px the stripe lives in and
+   the man read as earning nothing. Re-drawing the same stripe on the chip costs
+   no node and no width and cannot collide with the two reserved
+   pseudo-elements (the ghost's lift veil and the SANS edge). Written as
+   background-image, not the shorthand, so it layers over the chip's own colour;
+   it sits after the .lchip colour rules deliberately, and equal specificity
+   means the later one wins. */
+.puck.oilbar-fo .lchip{background-image:linear-gradient(var(--oil),var(--oil));background-size:4px 100%;background-position:left top;background-repeat:no-repeat}
+.puck.oilbar-ho .lchip{background-image:linear-gradient(var(--oil-half),var(--oil-half));background-size:4px 50%;background-position:left bottom;background-repeat:no-repeat}
 
 /* THE OIL EARN MODE (§2.1). The button lights, the board goes read-only for
    schedule editing, and every puck that earns glows. Solid glow = a full day,

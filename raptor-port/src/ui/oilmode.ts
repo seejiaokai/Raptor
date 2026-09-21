@@ -47,8 +47,8 @@
 import { DAYS } from '../engine/data'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
-import { envMin, uniformOil, dayOilWork, rowItemKey, groundItemKey, inputItemKey, type OilWork } from '../engine/oil'
-import { oilEvidence, oilEvidenceOf, oilEarnedWork, personDecision, type OilEvidence, type OilDecisions } from '../engine/oilev'
+import { envMin, uniformOil, dayOilWork, oilCapableItems, rowItemKey, groundItemKey, inputItemKey, type OilWork } from '../engine/oil'
+import { oilEvidence, oilEvidenceOf, oilEarnedWork, oilInputEligible, personDecision, type OilEvidence, type OilDecisions } from '../engine/oilev'
 import { OILDAY, setOilDay, afterSchedMutate, esc } from '../state/view'
 
 export { rowItemKey, groundItemKey, inputItemKey }
@@ -84,26 +84,49 @@ const amtOf = (spans: OilWork[]): OilAmt => {
   return v === 1 ? 'FO' : v === 0.5 ? 'HO' : null
 }
 
-/** EVERY PERSON'S FIGURE FOR THE DAY — `personId -> FO | HO`. This is THE
- *  MAN'S DAY, not what one event earned (§2.10): the same bar is repeated on
- *  every puck he wears that day, so a man on four DASH rows shows one full day
- *  four times, not four full days. Getting that wrong is what would have made
- *  positive marking actively wrong. */
-export function oilDayFigures(di: any): Record<string, OilAmt> {
+/* the day's earning work per person, in ONE place — every figure on every
+   surface is measured from this, so the bar, the mode and the count chip can
+   never disagree about what a man earned or about which events earned it. */
+function oilDaySpans(di: any): Record<string, OilWork[]> {
   const d = DAYS[+di]
   const ev = evOf(di)
+  if (!d || !ev.earns) return {}
+  return oilEarnedWork(d, ev)
+}
+
+/** EVERY PERSON'S FIGURE FOR THE DAY — `personId -> FO | HO`. The man's DAY,
+ *  never what one event earned (§2.10): first start to last end, gaps included,
+ *  so a man on four rows has ONE figure. Where that figure is SHOWN is O-1's
+ *  question, answered in oilFigureFor below. */
+export function oilDayFigures(di: any): Record<string, OilAmt> {
+  const work = oilDaySpans(di)
   const out: Record<string, OilAmt> = {}
-  if (!d || !ev.earns) return out
-  const work = oilEarnedWork(d, ev)
   for (const person of Object.keys(work)) { const a = amtOf(work[person]); if (a) out[person] = a }
   return out
 }
 
 /** One man's figure for the day — what the green edge draws and what the mode
- *  prints on every one of his pucks. */
-export function oilFigureFor(di: any, person: any): OilAmt {
-  const f = oilDayFigures(di)
-  return f[String(person)] || null
+ *  prints on his pucks.
+ *
+ *  THE FIGURE IS ALWAYS HIS DAY (owner, 21 Sep 26 — O-1). There is no such thing
+ *  as a per-event OIL figure: the measure runs first-start to last-end across the
+ *  whole day including the gaps, and inventing a number per event would make a
+ *  man on four rows read as four separate part-days.
+ *
+ *  WHAT `item` CHANGES IS WHERE IT IS SHOWN, not what it says. Pass an item and
+ *  the figure is WITHHELD unless that event actually counted towards his day —
+ *  so an ⓘ info-only row, an event switched off, a man the scheduler denied and a
+ *  row with no written times all show nothing. The owner asked for this on being
+ *  shown an ⓘ row wearing a green bar: "I thought the green should show for
+ *  individual pucks on individual events?" Green now means "this row counted
+ *  towards his day", which is what the mode already says when a puck is tapped
+ *  off. A man on four rows where two counted shows the figure twice.
+ *  This SUPERSEDES §2.10 / OIL21, which repeated it on every puck he wore. */
+export function oilFigureFor(di: any, person: any, item?: string): OilAmt {
+  const spans = oilDaySpans(di)[String(person)] || []
+  const a = amtOf(spans)
+  if (!a || item == null) return a
+  return spans.some(w => String(w.item || '') === item) ? a : null
 }
 
 /* ---- the mode's own reads ------------------------------------------------- */
@@ -144,7 +167,7 @@ function itemDefaultFor(ev: OilEvidence, person: string, item: string): boolean 
  *  the day. `null` figure with `on` true means he is on the item but the day
  *  measures him nothing yet (no written times) — the puck glows nothing. */
 export function oilPuck(di: any, person: any, item: string): { on: boolean; amt: OilAmt } {
-  return { on: oilPersonOn(di, person, item), amt: oilFigureFor(di, person) }
+  return { on: oilPersonOn(di, person, item), amt: oilFigureFor(di, person, item) }
 }
 
 /** THE PEOPLE A SENTINEL PUCK STANDS FOR, for the mode to open into real pucks
@@ -153,7 +176,12 @@ export function oilPuck(di: any, person: any, item: string): { on: boolean; amt:
  *  the reader; on a working copy it resolves live. */
 export function oilSentinelPeople(di: any, item: string, win: [number, number]): string[] {
   const ev = evOf(di)
-  if (ev.sent && ev.sent[item]) return ev.sent[item]
+  /* A COPY, not the frozen array itself. On a published day this is a slice of
+     the ISSUED document; nothing writes to it today, but one in-place sort() in
+     some future caller would rewrite what the squadron was given — which is
+     exactly the shape of the aliasing bug found by hand in this build. The cost
+     is one array per call; the alternative is trusting every future reader. */
+  if (ev.sent && ev.sent[item]) return [...ev.sent[item]]
   if (!ev.earns || !ev.iso) return []
   return HOOKS.oilSentinel(ev.iso, win, DAYS[+di])
 }
@@ -194,7 +222,10 @@ export function setOilBlanket(di: any, on: boolean): void {
 /** Toggle a whole ITEM (§2.1 item 5). Marked items are stored, unmarked ones are
  *  absent, so the default "everything earns" costs nothing on the record. */
 export function toggleOilItem(di: any, item: string): boolean {
-  if (!item) return false
+  /* the same rule one level up: the blanket masks every item mark, so a tap
+     under it must not rewrite one. The board already refuses this gesture; this
+     is the writer's own guard behind it. */
+  if (!item || oilBlanketOn(di)) return false
   const dec = decOf(di)
   const wasOn = oilItemOn(di, item)
   if (wasOn) { dec.items = dec.items || {}; dec.items[item] = 0 }
@@ -210,6 +241,18 @@ export function toggleOilItem(di: any, item: string): boolean {
  *  member's word comes back and the record stays as small as the decision is. */
 export function toggleOilPerson(di: any, person: any, item: string): boolean {
   if (!item || !person) return false
+  /* A TAP UNDER A MASK MUST NOT REWRITE WHAT THE MASK HIDES (Astra + Fable,
+     21 Sep 26 — both found it independently, and it is the sharpest bug in the
+     mode). The blanket and the item switch MASK the decisions beneath them
+     (§9.1); `oilPersonOn` therefore answers false for every man under one,
+     whatever his own decision says. Reading that masked false back as the man's
+     own answer meant a tap DELETED a stored `deny` — or wrote an `allow` over a
+     member's own No — while the puck stayed dim and said nothing. Lift the mask
+     weeks later and he earns a day nobody granted him.
+     The guard sits BEFORE decOf so a masked tap does not even mint an empty
+     record. The board refuses the gesture and says which mask is on; this is the
+     writer's own belt, so no future caller can repeat it. */
+  if (!oilItemOn(di, item)) return false
   const dec = decOf(di)
   const want = !oilPersonOn(di, person, item)
   const dflt = itemDefaultFor(evOf(di), String(person), item)
@@ -253,8 +296,10 @@ export function toggleOilPerson(di: any, person: any, item: string): boolean {
  *  ONE FIT LESSON, from the comp that had to be drawn before this was built: at
  *  390px "✓ Done with OIL" ran off the right edge. It is "✓ Done". Re-draw the
  *  comp before lengthening any label here. */
-export function dayBarHTML(di: any, tplBtn: string): string {
-  const oil = oilShown(di)
+export function dayBarHTML(di: any, tplBtn: string, canEdit = true): string {
+  /* a reader who cannot edit the day is not offered the mode at all, rather than
+     offered it and refused at the click (Fable, 21 Sep 26) */
+  const oil = canEdit && oilShown(di)
   const on = oilModeOn(di)
   const bl = oilBlanketOn(di)
   if (!oil && !tplBtn) return ''
@@ -283,6 +328,17 @@ export function dayBarHTML(di: any, tplBtn: string): string {
 export function oilItemCellHTML(di: any, item: string, name: any, cls: string): string {
   const txt = String(name || '').trim()
   if (!item) return `<span class="${cls} oilitem none" title="This row has no identity yet — save the day and it can be marked on its own">${esc(txt)}</span>`
+  /* AN EVENT THAT CAN NEVER EARN OFFERS NO SWITCH (Fable, 21 Sep 26). The switch
+     used to be drawn on every row with an id, so an AVALON line, its desk, an SC
+     spare, a cancelled row, an ⓘ row and a desk with no written times all read
+     "Earns OIL — tap to stop this item earning" while sitting beside pucks that
+     already said they earn nothing. Worse, on a published day a tap wrote a real
+     decision, so the day grew an amendment for something that moves no money.
+     An EMPTY ordinary row keeps its switch — put a man on it and he earns, and
+     OIL7 says the switch covers later additions too. */
+  if (!oilCapableItems(DAYS[+di] || {}).has(item)) {
+    return `<span class="${cls} oilitem none" title="Nothing on this row can earn OIL, so there is nothing to switch off">${esc(txt) || '&nbsp;'}</span>`
+  }
   const on = oilItemOn(di, item)
   const blanket = oilBlanketOn(di)
   return `<span class="${cls} oilitem${on ? ' on' : ' off'}" data-oilitem="${esc(item)}" data-oilday="${+di}"`
@@ -299,6 +355,16 @@ export function oilSeatHTML(di: any, person: any, item: string, pk: (oil: any) =
   if (!p) return ''
   const eligible = oilEligible(di, person, item)
   if (!eligible) return `<span class="seat oilpk inert" title="${esc(p.cs)} — nothing measurable to earn from here">${pk(null)}</span>`
+  /* UNDER A MASK THE PUCK IS NOT A CONTROL. The old markup left it tappable and
+     its title actively invited the tap — "tap to put him back on it" — while the
+     tap could only destroy the decision the mask was hiding. It keeps the man's
+     day figure, because he may still be earning from other events; what it loses
+     is the tap target and the lie. */
+  if (!oilItemOn(di, item)) {
+    const why = oilBlanketOn(di) ? 'nothing on this day earns' : 'this event earns nobody'
+    return `<span class="seat oilpk inert" title="${esc(p.cs)} — ${why}, so this cannot be changed here">`
+      + pk({ on: false, amt: oilFigureFor(di, person, item) }) + `</span>`
+  }
   const { on, amt } = oilPuck(di, person, item)
   const ttl = on
     ? `${p.cs} earns ${amt === 'FO' ? 'a full day' : amt === 'HO' ? 'half a day' : 'nothing yet'} — tap to take him off this event`
@@ -315,9 +381,11 @@ export function oilEligible(di: any, person: any, item: string): boolean {
   if (!d) return false
   const ev = evOf(di)
   if (!ev.earns) return false
-  /* a claim-derived item is eligible when the claim itself is live */
+  /* a claim-derived item is eligible when the claim itself is live — ONE body
+     decides that, shared with the money (oilInputEligible), so the mode can
+     never offer a toggle on a claim the credit path has already ruled out. */
   const inp = ev.inputs.find(i => inputItemKey(i.iid) === item && i.person === String(person))
-  if (inp) return !!(inp.asks && inp.acc !== 'r' && inp.win)
+  if (inp) return oilInputEligible(d, inp)
   const work = dayOilWork(d, { expandAll: (win, it) => oilSentinelPeople(di, it, win) })
   return (work[String(person)] || []).some(w => String(w.item || '') === item)
 }
@@ -338,11 +406,12 @@ export function oilRowPeople(di: any, whos: any[], item: string, win: [number, n
 /* ---- the issued schedule's green edge, and the sentinel's summary --------- */
 
 /** The OIL decoration an ordinary person's puck wears on the schedule (§2.10) —
- *  his figure for the DAY, repeated on every puck he wears that day. Null five
- *  days a week and on any day that earns nothing, so nothing is emitted at all
- *  and the printed schedule is byte-identical to before. */
-export function oilBarOf(di: any, id: any): { bar: 'FO' | 'HO' } | null {
-  const a = oilFigureFor(di, id)
+ *  his figure for the DAY, shown on the events that COUNTED towards it (O-1,
+ *  owner 21 Sep 26; see oilFigureFor). Null five days a week and on any day that
+ *  earns nothing, so nothing is emitted at all and the printed schedule is
+ *  byte-identical to before. */
+export function oilBarOf(di: any, id: any, item?: string): { bar: 'FO' | 'HO' } | null {
+  const a = oilFigureFor(di, id, item)
   return a ? { bar: a } : null
 }
 
@@ -350,9 +419,21 @@ export function oilBarOf(di: any, id: any): { bar: 'FO' | 'HO' } | null {
  *  key it is drawing, finds the row's OIL address. */
 export function oilItemOfKey(di: any, key: any): string {
   const s = String(key || ''), c = s.indexOf(':')
-  if (c < 0) return ''                                    // a flying seat: no sentinel earns there
-  const p = s.slice(0, c), a = s.slice(c + 1).split('.')
   const d: any = DAYS[+di] || {}
+  if (!s) return ''                                       // no seat address at all
+  /* A FLYING SEAT: `di.wave.line.aircraft.seat`, the one key grammar with no
+     prefix (slots.ts flyRef). It used to answer '' here, which was true of the
+     only question then being asked — no sentinel is ever planted in a cockpit.
+     Since O-1 the ordinary bar needs this address too, and answering '' would
+     have silently stripped the green edge off every sortie and every SC shift,
+     which is exactly the kind of row that earns a weekend day. The LINE is the
+     item, the same address dayOilWork tags a flying span with. */
+  if (c < 0) {
+    const a = s.split('.')
+    const w = (d.waves || [])[+a[1]], f = w && (w.formations || [])[+a[2]]
+    return f ? rowItemKey(f.rid) : ''
+  }
+  const p = s.slice(0, c), a = s.slice(c + 1).split('.')
   if (p === 'g') { const r = (d.ground || [])[+a[1]]; return r ? groundItemKey(r) : '' }
   if (p === 'a') { const r = (d.allhands || [])[+a[1]]; return r ? rowItemKey(r.rid) : '' }
   if (p === 'd') { const b = (d.dutywaves || [])[+a[1]], r = b && (b.rows || [])[+a[2]]; return r ? rowItemKey(r.rid) : '' }
@@ -384,8 +465,13 @@ export function oilSentinelSummary(di: any, item: string): { bar: 'FO' | 'HO' | 
   if (!ev.earns || !item) return null
   const people = ev.sent && ev.sent[item]
   if (!people) return null
-  const fig = oilDayFigures(di)
-  const amts = people.map(p => fig[p] || null)
+  /* measured ON THIS ROW, not across the man's day (O-3, re-examined under O-1).
+     The chip used to count anyone earning ANYWHERE that day, so a row switched
+     off could still read "1 of 45 earn". The owner left that alone only because
+     the green bar meant the same thing; now that the bar is withheld on a row
+     that gave a man nothing, the two agree again — and they must, because they
+     sit on the same puck. */
+  const amts = people.map(p => oilFigureFor(di, p, item))
   const n = people.length, earn = amts.filter(Boolean).length
   const all = (v: OilAmt) => n > 0 && amts.every(a => a === v)
   return { bar: all('FO') ? 'FO' : all('HO') ? 'HO' : null, n, earn }
@@ -396,8 +482,9 @@ export function oilSentinelSummary(di: any, item: string): { bar: 'FO' | 'HO' | 
 export function oilSentinelList(di: any, item: string): string {
   const ev = evOf(di)
   const people = (ev.sent && ev.sent[item]) || []
-  const fig = oilDayFigures(di)
   if (!people.length) return 'Nobody is behind this puck on this day'
-  const say = people.map(p => `${((PEOPLE as any)[p] || {}).cs || p} ${fig[p] === 'FO' ? 'full day' : fig[p] === 'HO' ? 'half day' : 'nothing'}`)
+  /* each man as THIS ROW earned him, so the list and the chip above it agree */
+  const say = people.map(p => { const a = oilFigureFor(di, p, item)
+    return `${((PEOPLE as any)[p] || {}).cs || p} ${a === 'FO' ? 'full day' : a === 'HO' ? 'half day' : 'nothing'}` })
   return `${people.length} behind this puck — ${say.join(', ')}`
 }

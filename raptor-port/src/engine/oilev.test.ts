@@ -23,9 +23,9 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { INPUTS } from './inputs'
 import { HOOKS } from './hooks'
-import { SCHED, daySnap, dayDelta, dayHasChanges, dayApproved, setDayApproved, publishALDay, signOf, dayCurVer, daySnapOf, currentBind, diffCounts, dayDiscardCount } from './publish'
+import { SCHED, daySnap, dayDelta, dayHasChanges, dayApproved, setDayApproved, publishALDay, signOf, setSign, daySigned, dayCurVer, daySnapOf, currentBind, diffCounts, dayDiscardCount } from './publish'
 import { ensureRowIds } from './rowids'
-import { oilEvidence, oilEvidenceOf, oilEarnedWork, oilEvidenceKey, oilWouldEarn, inputItemKey, rowItemKey, groundItemKey } from './oilev'
+import { oilEvidence, oilEvidenceOf, oilEarnedWork, oilEvidenceKey, oilDecisionsKey, oilWouldEarn, inputItemKey, rowItemKey, groundItemKey } from './oilev'
 import { envMin, uniformOil } from './oil'
 
 const DSNAP = JSON.stringify(DAYS)
@@ -284,5 +284,62 @@ describe('the snapshot the signature was validated against is the one frozen (§
     const before = (currentBind(SAT) as any).oil
     const snap: any = daySnap(SAT)
     expect(oilEvidenceKey(snap.d.oilev)).toBe(before)
+  })
+})
+
+/* ── THE BUG CHECK'S FIXES, 21 Sep 26 ─────────────────────────────────────
+   Pinned through the routes PRODUCTION takes, because the review's sharpest
+   finding was that this suite did not: it signed days by writing the record
+   directly (so the OIL signature rule was proved by nothing at all) and set
+   the decisions by REPLACING the record where the board mutates it in place —
+   the same blindness that hid the aliasing bug found by hand. */
+describe('the bug check (Fable + Astra, 21 Sep 26)', () => {
+  it('OIL28, OIL31 — a CANCELLED landed row earns nothing, and `allow` cannot resurrect it', () => {
+    const c = claim({ iid: 'cx1', person: 'bane', type: 'Duty', date: 'Jul 18', acc: 'g',
+      allday: false, s: 9 * 60, e: 17 * 60, oil: { [SAT_ISO]: 1 } })
+    const row = groundRow(SAT, { prog: 'DUTY', str: '0900', end: '1700', who: 'bane', src: c.iid })
+    expect(figure(SAT, 'bane'), 'the claim earns while its row stands').toBe('FO')
+    row.cx = true
+    expect(figure(SAT, 'bane'), 'the schedule itself says it did not happen').toBeNull()
+    /* an allow is permission to count REAL work, never permission to invent it */
+    ;(DAYS[SAT] as any).oild = { people: { [`bane|${inputItemKey(c.iid)}`]: 'allow' } }
+    expect(figure(SAT, 'bane'), 'allow cannot outrank a cancelled row').toBeNull()
+  })
+
+  it('OIL28 — an ⓘ info-only landed row earns nothing either', () => {
+    const c = claim({ iid: 'inf1', person: 'bane', type: 'Duty', date: 'Jul 18', acc: 'g',
+      allday: false, s: 9 * 60, e: 17 * 60, oil: { [SAT_ISO]: 1 } })
+    const row = groundRow(SAT, { prog: 'DUTY', str: '0900', end: '1700', who: 'bane', src: c.iid })
+    row.info = true
+    expect(figure(SAT, 'bane'), 'an ⓘ row gives a man nothing, so it earns him nothing').toBeNull()
+  })
+
+  it('a landed row DELETED out from under its claim earns nothing', () => {
+    const c = claim({ iid: 'gone1', person: 'bane', type: 'Duty', date: 'Jul 18', acc: 'g',
+      allday: false, s: 9 * 60, e: 17 * 60, oil: { [SAT_ISO]: 1 } })
+    groundRow(SAT, { prog: 'DUTY', str: '0900', end: '1700', who: 'bane', src: c.iid })
+    expect(figure(SAT, 'bane')).toBe('FO')
+    DAYS[SAT].ground = (DAYS[SAT].ground || []).filter((g: any) => g.src !== c.iid)
+    expect(figure(SAT, 'bane'), 'the row it landed on is gone').toBeNull()
+  })
+
+  it('an empty decisions record keys the same as none at all', () => {
+    expect(oilDecisionsKey(undefined)).toBe('')
+    expect(oilDecisionsKey({} as any)).toBe('')
+    expect(oilDecisionsKey({ items: {}, people: {} } as any),
+      'present but empty is still "nobody decided anything"').toBe('')
+    expect(oilDecisionsKey({ items: {}, people: { 'bane|r:1': 'deny' } } as any)).not.toBe('')
+  })
+
+  it('OIL27 — an OIL decision INVALIDATES a real signature, through the signing the app does', () => {
+    claim({ iid: 's1', person: 'bane', type: 'Duty', date: 'Jul 18', oil: { [SAT_ISO]: 1 } })
+    /* setSign, NOT a direct write to the record: only setSign records what was
+       signed FOR, and the whole OIL half of that promise was untested. */
+    setSign(SAT, 'cur', 'ignite'); setSign(SAT, 'sked', 'bane')
+    setSign(SAT, 'plan', 'stiff'); setSign(SAT, 'appr', 'pump')
+    expect(daySigned(SAT), 'signed against the day as it stood').toBe(true)
+    setDayApproved(SAT, true)
+    ;(DAYS[SAT] as any).oild = { people: { [`bane|${inputItemKey('s1')}`]: 'deny' } }
+    expect(daySigned(SAT), 'the OIL decisions changed, so the sign-off no longer covers the day').toBe(false)
   })
 })

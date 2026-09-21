@@ -206,3 +206,56 @@ clicks or the exported writers to make a mark, `runOilPass` and the real Leave W
 money. Existing tests that claim a production path and do not take one are renamed to say what they
 actually prove (algebra) or rewritten. The owner's standing rule also requires each fix to be set up
 as a real scenario in the running app and eyeballed, not only unit-tested.
+
+---
+
+# WHAT WAS ACTUALLY DONE (21 Sep 26)
+
+All eight fixes above are built, plus O-1, plus **two more the OWNER found by hand in the running
+app that neither reviewer could have found** — see below. Gates at the end of the pass: 5341 unit ·
+build · parity 728/0.
+
+| # | fix | state |
+|---|---|---|
+| 1 | the war's calendar no longer gates a published day's money, both directions + `OIL_STALE_DAY` | done |
+| 2 | `creditable` rejects only a sentinel — the live roster is not a second money authority | done |
+| 3 | a cancelled or ⓘ landed row earns nothing (`oilInputEligible`, shared with the mode) | done |
+| 4 | a tap under a mask cannot rewrite what the mask hides; a masked puck is drawn inert | done |
+| 5 | the publish warning reads the frozen block instead of re-expanding the sentinel live | done |
+| 6 | the three OIL gestures write to the day's history, naming the man and the event | done |
+| 7 | a week step leaves the mode rather than stranding a read-only board | done |
+| 8 | O-1 — the green bar shows only where the row counted; the count chip agrees again | done |
+| 9 | F6 viewer button · F7 row-id mint ordering · F8 empty-vs-absent key · sentinel copy | done |
+| — | **F9 — dropping `acc` from the OIL key** | **DELIBERATELY NOT DONE** |
+
+**Why F9 was not done.** Fable rated it LOW: a filing change on a published day counts twice in the
+panel, and the `oil` item is sometimes named "decisions changed" when no scheduler decided anything.
+The proposed fix drops `acc` from the OIL key so the filing axis alone carries it. But `acc` is what
+decides whether a claim earns at all, so dropping it from the key trades a cosmetic double-count for
+the risk that some acc transition moves MONEY without moving the OIL digest. On a branch already
+carrying five money fixes that is the wrong trade. The wording half is worth doing and is filed.
+
+## THE TWO THE OWNER FOUND, AND WHY THE REVIEWS COULD NOT
+
+Both reviews were STATIC — read-only by design, and neither ran the app. Both of these are invisible
+that way, because every line of code that IS there is correct.
+
+1. **The green strip never reached the board's cockpit seats or its Common Programme.** The week has
+   one seat renderer and its comment correctly says the mark reaches every surface. The BOARD has
+   several, and two of them build their own markup and never asked for the decoration. So on a
+   Saturday the flying lines, every SC shift and the Common Programme showed no green at all — while
+   the money behind them was completely correct. A scheduler would have read that as "the flying
+   crews are not earning" and taken people off events that were already right.
+   **A missing call site is not a wrong line.** Nothing in 5328 tests saw it either, because every
+   assertion about the bar had been written against a duty desk or a ground row — both of which DO
+   go through the shared renderer. The new test walks the seat KINDS instead.
+2. **The strip was hidden by any chip sitting on the puck.** It is painted as the puck's own 4px
+   background; the late/advisory chip is the puck's first child with a solid background, covering
+   exactly those 4px. So every man carrying a warning on a weekend read as earning nothing. The
+   stripe is now re-drawn on the chip as well.
+
+**The lesson, for the next build's review brief.** A static cross-provider review is excellent at
+the rules, the algebra and the freeze boundary — it found five money defects here that driving the
+app would probably never have surfaced. It is blind to a surface that was never wired up. The two
+are complementary and neither substitutes for the other: run the reviews, then DRIVE THE APP and
+walk the surfaces, and treat "which call sites should have this and do not" as its own question.

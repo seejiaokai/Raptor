@@ -38,7 +38,9 @@ newest-instruction-wins rule, and both need the owner to know.
 | OIL18 | Every one of these controls is drawn only on a day that can earn. Five days a week the board is unchanged. |
 | OIL19 | ⓘ info-only silently killed OIL and its wording did not say so. It says so now. |
 | OIL20 | OIL is shown POSITIVELY on the schedule: a green bar down the LEFT edge of the puck. Full height is a full day; the bottom half, a shade paler, is a half. |
-| OIL21 | That bar is the MAN'S DAY, repeated on every puck he wears that day — never what one event earned. |
+| OIL21 | That bar is the MAN'S DAY — never what one event earned — but it is SHOWN ONLY on the events that COUNTED towards it. Withheld on an ⓘ info-only row, an event switched off, a man the scheduler denied, and a row with no written times. A man on four rows where two counted shows it twice. **REVISED 21 Sep 26 (owner, O-1)**, superseding "repeated on every puck he wears that day", which drew green on rows that had given him nothing. |
+| OIL21a | It reaches EVERY seat the schedule draws, on the board as well as the week: the flying lines, the SC shifts, the duty desks, the sims, the Ground Programme, the Common Programme and a claim's own puck. Added 21 Sep 26 after the owner found the board's cockpit seats and Common Programme drawing no bar at all — the money was right, only the mark was missing. |
+| OIL21b | It stays visible on a puck already wearing a warning chip. The chip is drawn over the same left edge, so it re-draws the bar rather than hiding it (owner, 21 Sep 26). |
 | OIL22 | It retires the "NO OIL" marking entirely: if green means earns, no green means earns nothing. |
 | OIL23 | A sentinel puck wears the bar only when the people behind it all earn the same thing. Mixed, it wears none and its count chip says "6 of 9 earn". |
 | OIL24 | The published schedule IS the truth — a full freeze, no carve-out. Correcting an issued day's OIL is unpublish-and-republish under the same label, or the end-of-day publish. Neither costs an amendment number. |

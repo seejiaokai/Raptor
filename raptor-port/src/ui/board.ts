@@ -31,7 +31,8 @@ import { esc } from '../state/view'
 import { notify, notifyBoard, loadWeek } from '../state/store'
 import { CURWEEK } from '../engine/waves'
 import { shiftWeek } from './weeknav'
-import { oilModeOn, dayBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilSentinelList } from './oilmode'
+import { oilModeOn, dayBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilItemOn, oilItemCellHTML, oilSentinelList } from './oilmode'
+import { rowItemKey } from '../engine/oil'
 import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbSansPanel, sbUnavailPanel, labelToTitle, titleToLabel, titleToKind, sbGrip, sbNudge, rowMove, sbSortBtn, boxHTML } from './board-html'
 
 const toast = (...a: any[]) => HOOKS.toast(...a)
@@ -66,6 +67,13 @@ export function boardHTML(di: number, pv?: boolean) {
      flag, so this costs one term and nothing else. */
   const oilm = oilModeOn(di)
   const stoRO = pv || !HOOKS.editMode() || oilm
+  /* MAY THIS READER USE THE MODE AT ALL (Fable, 21 Sep 26)? The phone's day bar
+     drew "OIL Earn" for anyone who could see the day, including a crew member
+     on a read-only board, and the click handler then silently refused it — a
+     control that does nothing. This is deliberately NOT mvRO: mvRO is true
+     *while the mode is on*, so gating the bar on it would take away the "✓ Done"
+     button and trap the scheduler in the mode. Only the editability half. */
+  const canOil = !pv && HOOKS.editMode()
   /* same gate as the stores chips: pv OR not in edit mode. A duty crew who
      still has a board open after navigating away must not get live controls. */
   const mvRO = stoRO
@@ -208,7 +216,14 @@ export function boardHTML(di: number, pv?: boolean) {
          is what taught this codebase that distinction. */
       fly += `<div class="sb-line${cxOn ? ' cx' : ''}${a.flag ? ' redbox' : ''}"${rowMove(`mv:ac.${key}`, mvRO)}>
         ${sbGrip(mvRO)}
-        ${boxHTML('lin', `data-bfld="${fp}.cs"${alAttr(`${fp}.cs`)}${dis}`, f.cs, '')}
+        ${oilModeOn(di)
+          /* in the mode the line's CALLSIGN is its own switch, exactly as a
+             ground row's name is (OIL7) — "stop this whole line earning".
+             Flying lines and SC shifts had no switch at all until 21 Sep 26,
+             so the only events a scheduler could stop earning were the desks
+             and the programmes (owner, found by hand). */
+          ? oilItemCellHTML(di, rowItemKey(f.rid), f.cs, 'lin')
+          : boxHTML('lin', `data-bfld="${fp}.cs"${alAttr(`${fp}.cs`)}${dis}`, f.cs, '')}
         ${boxHTML('msn', `data-bfld="${fp}.msn"${alAttr(`${fp}.msn`)}${dis}`, f.msn, '')}
         <div class="sb-bcell">${brSug}<input class="tm" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis} value="${esc(fmtHM(f.br))}"></div>
         <input class="tm" data-bfld="${fp}.to"${alAttr(`${fp}.to`)}${dis} value="${esc(fmtHM(f.to))}">
@@ -307,7 +322,7 @@ export function boardHTML(di: number, pv?: boolean) {
   const secGrip = '<span class="secgrip" title="Drag to reorder this section" aria-label="Reorder this section">⠿</span>'
   const wrapSec = (html: string, k: string) =>
     `<div class="sb-sec" data-secmove="${di}.${k}">${html.replace(/(<div class="(?:sb-ph|ap-h)\b[^>]*>)/, `$1${secGrip}`)}</div>`
-  let b = dayBarHTML(di, tplBtn) + secOrder(d).map((k: string) =>
+  let b = dayBarHTML(di, tplBtn, canOil) + secOrder(d).map((k: string) =>
     mvRO ? (sect[k] || '') : (sect[k] ? wrapSec(sect[k], k) : '')).join('')
   return b
 }
@@ -663,6 +678,22 @@ export function sortAllCommit() {
    with no change to how any of them behave. */
 const act = (di: any, msg: string) => { logAction(di, msg); return toast(msg) }
 
+/* THE ROW AS THE SCHEDULER READS IT, for the day's history. An OIL decision is
+   addressed by an internal row id, which means nothing to anyone reading the
+   history a week later — and until now an OIL decision left NO history at all,
+   so a man asking why his balance was short could not be answered (Fable,
+   21 Sep 26). The mode has already drawn the row's name in its item cell, so
+   the name is on the page; this reads it back rather than re-deriving it.
+   Matched by attribute rather than by selector so no key needs escaping. */
+const oilItemName = (di: any, item: string): string => {
+  if (!item) return 'this event'
+  const all = document.querySelectorAll(`[data-oilitem][data-oilday="${+di}"]`)
+  for (const el of Array.from(all)) {
+    if ((el as HTMLElement).dataset.oilitem === item) return ((el.textContent || '').trim()) || 'this event'
+  }
+  return 'this event'
+}
+
 /* WHAT A DELETED ROW HELD, said once — the log and the toast are the same
    string (act, above), so a description has to stay short. Free text is
    clipped to ~60 chars with a trailing ellipsis; empty parts are dropped
@@ -903,7 +934,7 @@ export function boardMbtn(e: MouseEvent) {
     const on = !oilBlanketOn(di)
     setOilBlanket(di, on)
     notify()
-    return toast(on ? 'Nothing on this day earns OIL — anything added later is covered too' : 'This day can earn again — the marks underneath are back')
+    return act(di, on ? 'Nothing on this day earns OIL — anything added later is covered too' : 'This day can earn again — the marks underneath are back')
   }
   if (ds.daytpladd != null) {
     const di = +ds.daytpladd
@@ -1149,9 +1180,20 @@ export function boardArmClick(e: MouseEvent) {
   if (opk) {
     const di = +(opk.dataset.oilday || -1), person = opk.dataset.oilp!, item = opk.dataset.oilitem || ''
     if (!oilModeOn(di)) return
+    /* UNDER A MASK THIS GESTURE HAS NO MEANING, and letting it through destroyed
+       the decision the mask was hiding (Astra + Fable, 21 Sep 26). The item's own
+       switch has always refused a tap under the blanket; the person's puck did
+       not. Say which mask is on, so the way to change it is obvious. */
+    if (!oilItemOn(di, item)) {
+      e.stopPropagation()
+      return toast(oilBlanketOn(di)
+        ? 'Nothing on this day earns — turn that off first'
+        : 'This event earns nobody any OIL — turn the event back on first')
+    }
     const on = toggleOilPerson(di, person, item)
     notify(); e.stopPropagation()
-    return toast(on ? `${(PEOPLE[person]||{}).cs||person} earns from this event again` : `${(PEOPLE[person]||{}).cs||person} earns nothing from this event`)
+    const cs = (PEOPLE[person]||{}).cs||person, nm = oilItemName(di, item)
+    return act(di, on ? `${cs} earns OIL from ${nm} again` : `${cs} earns nothing from ${nm}`)
   }
   /* the sentinel's count chip: who is behind this puck, and what each of them
      earns (§7.6 / §2.7). Read-only, so it works outside the mode too — on the
@@ -1169,7 +1211,8 @@ export function boardArmClick(e: MouseEvent) {
     if (oilBlanketOn(di)) { e.stopPropagation(); return toast('Nothing on this day earns — turn that off first') }
     const on = toggleOilItem(di, item)
     notify(); e.stopPropagation()
-    return toast(on ? 'This item earns OIL again' : 'This item earns nobody any OIL')
+    const nm = oilItemName(di, item)
+    return act(di, on ? `${nm} earns OIL again` : `${nm} earns nobody any OIL`)
   }
   /* the duty ROLE cell offers its pick-list (owner, 10 Aug 26). Before the
      arm branches, because a ROLE cell is not a seat and must not be treated
@@ -1749,6 +1792,15 @@ export function boardDayStep(n: number) {
 export function boardWeekStep(dir: number) {
   const di = view.SBDAY
   if (di == null) return
+  /* THE MODE BELONGS TO ONE DAY OF ONE WEEK (Fable, 21 Sep 26). Stepping the
+     board left OIL mode switched on at the SAME index of the NEW week: if that
+     day cannot earn, neither way out is drawn — the desktop button and the day
+     bar's own button are both gated on the day earning — while the board stays
+     read-only. Every field greyed, no Done, nothing to do but close the board.
+     Leaving the mode on a week step is what the scheduler means anyway; he
+     stepped away from the day he was deciding about. boardTab clears it only
+     when the day INDEX changes, which a week step does not. */
+  view.setOilDay(null)
   loadWeek(shiftWeek(CURWEEK, dir))
   boardTab(Math.min(di, DAYS.length - 1))
 }

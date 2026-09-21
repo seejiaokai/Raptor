@@ -735,9 +735,17 @@ export function availableFor(iso: string, win: [number, number], day?: any): str
     const lw = lwById.get(id)
     if (lw && !inSquadron(lw, iso)) continue
     const blocked = INPUTS.some((inp: any) => {
-      if (inp.person !== id) return false
+      /* A REMOVED REQUEST IS SILENT EVERYWHERE (Astra, 21 Sep 26). The dormant
+         test used to sit on the `commit` branch only, so a Training or Meeting
+         the scheduler had turned down correctly stopped speaking — while a
+         LEAVE, MEDICAL or OVERSEAS DUTY he had turned down still kept its man
+         out of ALL AVAIL. He was then missing from the membership frozen into
+         the issued day and earned nothing, with nothing on screen to say why.
+         `inputDormant` has always defined every removed input as silent; this
+         is the one reader that applied it to half the types. */
+      if (inp.person !== id || inp.acc === 'r') return false
       const away = isAway(inp) && !canWork(inp.type)
-      const commit = isPersonal(inp.type) && inp.acc !== 'r'
+      const commit = isPersonal(inp.type)
       if (!away && !commit) return false
       return covers(inp) && hits(inp)
     })
@@ -851,7 +859,11 @@ export interface DesiredOil {
    pass already applies to an unresolvable snapshot. Returns false to say so. */
 function creditFrom(day: any, iso: string, add: (p: string, iso: string, sp: OilWork[], via?: 'schedule' | 'input') => void): boolean {
   const ev: OilEvidence | undefined = day && day.oilev
-  if (!ev) return false
+  /* the block's own date must be the date we are crediting. The evidence carries
+     its ISO precisely so this binding can be checked, and a block that does not
+     match the date it was found under is a misfiled document, not a licence to
+     pay against it — so the date is PROTECTED, exactly like a missing block. */
+  if (!ev || ev.iso !== iso) return false
   for (const [person, sp] of Object.entries(oilEarnedWork(day, ev))) {
     /* the two halves POOL into one envelope per person per date, and the credit
        reads as the SCHEDULE's when the schedule earned any of it — that is the
@@ -863,24 +875,26 @@ function creditFrom(day: any, iso: string, add: (p: string, iso: string, sp: Oil
 }
 
 function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: Set<string> } {
-  const { people, wars } = getState()
   const protectedDates = new Set<string>()
-  const known = new Set(people.map(p => p.id))
   /* HIDING A MAN MUST NOT DESTROY HIS MONEY (owner, 21 Sep 26 — "There's no way
-     to credit OIL to SANs even when they are hidden?").
-     The Leave War keeps SANS off its roster unless the squadron turns "Show
-     SANS" on (his own 18 Aug 26 rule) — a DISPLAY choice. Until now that choice
-     also silently threw away the credit, because the guard below dropped anyone
-     the roster did not hold. A credit lives on the person and the date, not on a
-     grid row, so a hidden man can hold one perfectly well: turn the switch on
-     and his row arrives with everything he earned already in it.
-     The guard's real job is unchanged — a SENTINEL puck and a GROUND-CREW body
-     are not people the war has any business crediting, and they still are not.
-     This admits only a real, present aircrew body the war is merely hiding. */
+     to credit OIL to SANs even when they are hidden?"), and neither must
+     ARCHIVING him (Astra, 21 Sep 26, confirmed by the owner as R-2).
+     This guard used to consult the LIVE Leave War roster, which made the roster
+     a second money authority sitting behind `creditFrom`: archive a man on the
+     Monday and the reverse sweep deleted the day in lieu an ISSUED Saturday had
+     already promised him — no amendment, no record, no way to see it happen.
+     Who earned was decided when the day was published and frozen in its
+     evidence; nothing the roster does afterwards may reopen that. A credit lives
+     on the person and the date, not on a grid row, so it lands and waits: turn
+     "Show SANS" on, or bring an archived man back, and his row arrives with
+     everything he earned already in it.
+     What the guard rejects now is the only thing that was never a person: a
+     SENTINEL. A named GROUND-CREW body is deliberately creditable — they ride
+     the Leave War roster (owner, 18 Aug 26) and a scheduler who names one on a
+     weekend row means it (O-2, "leave it", 21 Sep 26). */
   const creditable = (id: string) => {
-    if (known.has(id)) return true
     const p: any = (PEOPLE as any)[id]
-    return !!(p && p.san && !p.archived && !p.special && !p.pers)
+    return !!(p && !p.special)
   }
   /* person|iso -> that day's work spans; their ENVELOPE faces the threshold */
   const pool = new Map<string, OilWork[]>()
@@ -910,7 +924,18 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
   const liveUnsupported = amFormatOf(SCHED, CURWEEK) === 'unsupported' || isPreservedWeek(CURWEEK)
   for (let di = 0; di < DAYS.length; di++) {
     const iso = labelToISO(DATES[di])
-    if (!iso || !warHolding(wars, iso) || !isNonWorkingISO(iso)) continue
+    /* ONLY THE ISSUED SCHEDULE PAYS, BOTH DIRECTIONS (owner, 21 Sep 26 — R-1).
+       This gate used to read the war's calendar LIVE, before the issued block
+       was ever opened, and that made the two directions disagree: whether the
+       day EARNS is frozen into the evidence, but whether it is a non-working day
+       at all was answered by today's calendar. So taking a public holiday off a
+       published day swept everybody's day in lieu on the next pass — silently,
+       with no amendment and nothing on screen — while declaring one paid nobody.
+       Now only an unreadable date skips before the snapshot is resolved, and the
+       frozen `ev.earns` decides in both directions. A day that starts earning
+       after it went out waits for a republication, and validateCore says so on
+       the day (OIL_STALE_DAY). */
+    if (!iso) continue
     if (liveUnsupported) { protectedDates.add(iso); continue }
     if (!dayApproved(di)) continue
     /* only ever credit from the RESOLVED ISSUED snapshot — never the live draft.
@@ -935,7 +960,9 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
     const stashUnsupported = !wk || amFormatOf(wk.sc, String(v)) === 'unsupported'
     for (let di = 0; di < 7; di++) {
       const iso = weekDayISO(String(v), di)
-      if (!iso || !warHolding(wars, iso) || !isNonWorkingISO(iso)) continue
+      /* the same rule as the loaded week above (R-1): the frozen block decides,
+         never today's calendar. */
+      if (!iso) continue
       if (stashUnsupported) { protectedDates.add(iso); continue }
       if (!(wk!.sc.dayOK || {})[di]) continue
       /* the stash's OWN week key (v = its Monday, dd/mm/yyyy) is the trusted
@@ -1038,7 +1065,18 @@ export function publishFlagsBids(di: number): void {
   if (!iso || !warHolding(rawState().wars, iso) || !isNonWorkingISO(iso) || !dayApproved(di)) return
   const snap = daySnapOf(di, dayCurVer(di))
   if (!snap || !snap.d) return
-  const spans = dayOilWork(snap.d, { expandAll: win => availableFor(iso, win, snap.d) })
+  /* THE WARNING MUST READ THE SAME BLOCK THE MONEY DOES (Fable, 21 Sep 26 — the
+     one caller left resolving a sentinel its own way). It used to walk the raw
+     schedule and expand ALL AVAIL through the LIVE roster, knowing nothing about
+     the day blanket, the event switches or the per-man decisions. So it could
+     tell a scheduler that a man's leave bid now sat on published work when he
+     had been taken off that event and no credit would ever land — sending him
+     looking for a clash that did not exist — and its "earned nobody" sentence
+     could be wrong under a blanket, where everyone has hours and nobody earns.
+     A block-less snapshot is PROTECTED, so there is nothing to warn about. */
+  const ev: OilEvidence | undefined = snap.d.oilev
+  if (!ev) return
+  const spans = oilEarnedWork(snap.d, ev)
   /* ONE MESSAGE, BOTH FACTS (Astra, 21 Sep 26). The strip at the foot of the
      screen is a single element whose text is REPLACED, so speaking twice in the
      same breath showed only the second — and the one that got swallowed was the

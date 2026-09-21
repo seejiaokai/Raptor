@@ -240,8 +240,17 @@ const sortedPairs = (o: any) => Object.keys(o || {}).sort().map(k => `${k}=${(o 
 
 export function oilDecisionsKey(dec: OilDecisions | undefined): string {
   const d = dec || {}
-  if (!d.blanket && !d.items && !d.people) return ''
-  return [d.blanket ? 'B' : '', sortedPairs(d.items), sortedPairs(d.people)].join('|')
+  /* EMPTINESS, NOT PRESENCE (Fable, 21 Sep 26). This used to test whether the
+     sub-maps EXIST, so `{ people: {} }` — a record with nothing in it — keyed as
+     '||' where a day nobody had touched keyed as ''. A published day left in
+     that state would read as changed for ever and offer an amendment with an
+     empty OIL item. `tidy()` deletes empty maps on every UI write, so no path
+     reaches it today; a parked plan, an undo snapshot or any future writer that
+     skips tidy would. Cheaper to make the key itself safe than to rely on every
+     writer remembering. */
+  const items = sortedPairs(d.items), people = sortedPairs(d.people)
+  if (!d.blanket && !items && !people) return ''
+  return [d.blanket ? 'B' : '', items, people].join('|')
 }
 
 export function oilEvidenceKey(ev: OilEvidence | null | undefined): string {
@@ -252,6 +261,28 @@ export function oilEvidenceKey(ev: OilEvidence | null | undefined): string {
 }
 
 /* ---- what the block says a day EARNS ------------------------------------- */
+
+/** CAN THIS CLAIM EARN AT ALL, before any decision is asked? Structural
+ *  ineligibility, which nothing overrides — an `allow` is permission to count
+ *  real work, never permission to invent it (§9.1).
+ *
+ *  A claim the member never asked about, a DORMANT one (the scheduler removed
+ *  it) or one with no readable window earns nothing, and never did. The part
+ *  that was missing: a claim which LANDED on the programme is answered by the
+ *  row it landed on, and the schedule half deliberately skips every `src` row so
+ *  the claim owns it — so nobody was reading that row's own state. Cancel the
+ *  row, or turn it ⓘ info-only, and the claim went on paying for work the
+ *  schedule itself says did not happen (Astra + Fable, 21 Sep 26; fixed under
+ *  R-2). §3.3 has always said anything cancelled earns nothing, and ⓘ is the
+ *  same judgement the green bar makes about a row that gave a man nothing (O-1).
+ *  A row that has been deleted outright takes its claim with it for the same
+ *  reason. */
+export function oilInputEligible(day: any, inp: OilInputEv): boolean {
+  if (!inp.asks || inp.acc === 'r' || !inp.win) return false
+  if (inp.acc !== 'g') return true                                  // never landed: the claim stands on its own
+  const row = (day && day.ground || []).find((g: any) => g && String(g.src || '') === inp.iid)
+  return !!row && !row.cx && !row.info
+}
 
 /** The work that actually earns on a day, after the day's OIL evidence is
  *  applied: the schedule's own work minus what the decisions take out, plus the
@@ -276,7 +307,7 @@ export function oilEarnedWork(day: any, ev: OilEvidence): Record<string, OilWork
   /* the input half — a claim earns on its own evidence, with the member's own
      answer as the default and the admin's three-state over the top (§9.1) */
   for (const inp of ev.inputs) {
-    if (!inp.asks || inp.acc === 'r' || !inp.win) continue          // dormant / unreadable: nothing to allow
+    if (!oilInputEligible(day, inp) || !inp.win) continue            // dormant / cancelled / unreadable: nothing to allow
     const item = inputItemKey(inp.iid)
     if (!earnsFrom(ev, inp.person, item, inp.ans != null && inp.ans > 0)) continue
     put(inp.person, { s: inp.win[0], e: inp.win[1], src: (inp.type || 'Duty').trim() as any, item, via: 'input' })

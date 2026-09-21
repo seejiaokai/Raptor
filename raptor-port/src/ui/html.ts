@@ -20,7 +20,7 @@ import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWORK, CURPA
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
-import { oilBarOf, oilItemOfKey, oilSentinelSummary } from './oilmode'
+import { oilBarOf, oilItemOfKey, inputItemKey, oilSentinelSummary } from './oilmode'
 import { STORE_CFG, groundOrder, secOrder } from '../engine'
 
 const editMode=()=>HOOKS.editMode()
@@ -426,10 +426,19 @@ export function oilChipHTML(oil:any){
   return `<span class="role oilamt${amt==='HO'?' half':''}" title="${amt==='FO'?'A full day of OIL':amt==='HO'?'Half a day of OIL':'No measurable hours yet'}">${amt||'·'}</span>`;
 }
 
-export function slotCell(id:any,sev:any,key:any,kind:any,editable:any,flag:any,dash?:any,trace?:any){
+export function slotCell(id:any,sev:any,key:any,kind:any,editable:any,flag:any,dash?:any,trace?:any,di?:any){
   const al=alAttr(key);
+  /* THE WEEK'S FLYING SEATS WEAR THE GREEN EDGE TOO (owner, 21 Sep 26). This is
+     the week's own cockpit-seat builder — every flying line and every SC shift —
+     and it called puck() with six arguments, so the 7th (the OIL decoration)
+     was never passed. The week's lSeat comment claimed the mark reached "the
+     flying lines"; it reached everything lSeat draws, and lSeat does not draw
+     these. Same hole as the board's sbSlot, in the other renderer. `di` is
+     optional only so no other caller has to change; the one real caller passes
+     it, and without it the seat simply draws as it always did. */
+  const oil=(id&&di!=null)?oilSeatDeco(di,id,key).oil:null;
   /* preview: no data-slot, no data-drag — the key addresses the LIVE model */
-  if(id) return `<span class="seat"${PV?'':` data-slot="${key}"`}${al}${editable?' data-drag="1"':''}>${puck(id,sev,false,flag,dash,trace)}</span>`;
+  if(id) return `<span class="seat"${PV?'':` data-slot="${key}"`}${al}${editable?' data-drag="1"':''}>${puck(id,sev,false,flag,dash,trace,oil)}</span>`;
   if(editable) return `<span class="seat empty-slot" data-slot="${key}"${al}>+ ${kind}</span>`;
   return `<span class="seat"${al}></span>`;
 }
@@ -478,9 +487,14 @@ export function lSeat(di:any,id:any,key:any,ed:any){
    figure. For a person it is his own day figure; for a resolved ALL / ALL AVAIL
    puck it is the four-state summary of the people behind it plus the count chip
    that carries the mixed case. */
-export function oilSeatDeco(di:any,id:any,key:any):{oil:any;chip:string}{
+export function oilSeatDeco(di:any,id:any,key:any,itemOf?:string):{oil:any;chip:string}{
+  /* WHICH EVENT this seat belongs to — hoisted, because since O-1 the ordinary
+     person's bar needs it too: the figure is his day, but it is only shown on
+     the events that counted towards it. `itemOf` is for the one puck that has no
+     seat address to resolve — a claim on the inputs strip, which knows its own
+     item directly. */
+  const item=itemOf!=null?itemOf:oilItemOfKey(di,key);
   if(isSpecial(id)){
-    const item=oilItemOfKey(di,key);
     const sum=oilSentinelSummary(di,item);
     if(!sum)return {oil:null,chip:''};
     const some=sum.bar==null&&sum.earn>0;
@@ -491,7 +505,7 @@ export function oilSeatDeco(di:any,id:any,key:any):{oil:any;chip:string}{
     return {oil:sum.bar?{bar:sum.bar}:null,
       chip:`<span class="oilcount${some?' some':''}" data-oilsent="${esc(item)}" data-oilday="${+di}" title="${esc(ttl)}">${txt}</span>`};
   }
-  return {oil:oilBarOf(di,id),chip:''};
+  return {oil:oilBarOf(di,id,item),chip:''};
 }
 /* the people cell itself — a drop target in edit mode (data-fill) */
 /* the extra bodies dropped onto a row, after its own seats */
@@ -1471,7 +1485,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
             return hit?((hit.code==='SC_QUAL'||hit.code==='QUAL')?'Q':'C'):null; };
           const sv=(id:any)=>chk?sev(di,id):(own(id)?'hard':null), cp=(id:any)=>chk?chip(di,id):own(id), dh=(id:any)=>chk?dsh(di,id):false,
                 tr=(id:any)=>chk?traceHit(di,id):null;
-          h+=`<div class="acrow${ai?'':' r1'}${acx}" style="--gr:${ai+1}"><span class="pucks">${slotCell(a.p,sv(a.p),key+'.p','FCP',ed,cp(a.p),dh(a.p),tr(a.p))}${slotCell(a.w,sv(a.w),key+'.w','RCP',ed,cp(a.w),dh(a.w),tr(a.w))}</span></div>
+          h+=`<div class="acrow${ai?'':' r1'}${acx}" style="--gr:${ai+1}"><span class="pucks">${slotCell(a.p,sv(a.p),key+'.p','FCP',ed,cp(a.p),dh(a.p),tr(a.p),di)}${slotCell(a.w,sv(a.w),key+'.w','RCP',ed,cp(a.w),dh(a.w),tr(a.w),di)}</span></div>
               <div class="rmkcell${ai?'':' r1'}${acx}${rmkE}" style="--gr:${ai+1}"${alAttr(`st:${key}`)}>${cxTag(a)}${flagTag(a)}${sa?saRoleHTML(key,a,ed):''}${ted(`fr:${key}`,a.rmks,ed,'ntx',null,ed?'Remarks':null)}${sa?'':stores}</div>`;
         });
         /* AREA strip: full-width row under this formation's aircraft. Rendered whenever
@@ -1636,7 +1650,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
            SAME relink commitInputEdit already does — never a second write path. */
         const seatable=!acc&&ed;
         const pk=PEOPLE[inp.person]
-          ? `<span class="seat"${seatable?` data-inpseat="${esc(inpId(inp))}"`:''}>${puck(inp.person,sev(di,inp.person),true,chip(di,inp.person))}</span>`
+          ? `<span class="seat"${seatable?` data-inpseat="${esc(inpId(inp))}"`:''}>${puck(inp.person,sev(di,inp.person),true,chip(di,inp.person),false,null,oilSeatDeco(di,inp.person,'',inputItemKey(inpId(inp))).oil)}</span>`
           : `<span class="itxt">${esc(inp.person)}</span>`;
         /* the input's own free text now reads in the RMKS column, so the NAME column
            carries the type and every block lines up on the same five columns */

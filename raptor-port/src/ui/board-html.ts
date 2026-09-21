@@ -10,7 +10,7 @@ import { alAttr } from '../engine/publish'
 import { groundOrder } from '../engine/order'
 import { esc, PIOPEN, notePub } from '../state/view'
 import { canEditSched } from '../state/auth'
-import { oilModeOn, oilSeatHTML, oilItemCellHTML, oilRowPeople, inputItemKey } from './oilmode'
+import { oilModeOn, oilSeatHTML, oilItemCellHTML, oilItemOfKey, oilRowPeople, inputItemKey } from './oilmode'
 import { rowItemKey, groundItemKey } from '../engine/oil'
 import { oilSeatDeco } from './html'
 import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, dormRowCls, dormRowTitle, sansCardsHTML, notePubTog, ADDZ, exemptDeskOwn } from './html'
@@ -210,7 +210,17 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
          (reviewer-found residual, 9 Aug 26) — these are the "36 draggable
          seats" the reviewer counted on a read-only board. */
       const inner=arr.map((nm:any,k:any)=>{const id=whoId(nm);
-        if(id&&PEOPLE[id])return `<span class="seat"${ro?'':` data-slot="a:${di}.${ri}.${k}"`}${alAttr(`a:${di}.${ri}.${k}`)}${ro?'':' data-drag="1"'}>${puck(id,ro?null:sevOf(di,id),true,ro?null:chipOf(di,id))}</span>`;
+        /* the same missing decoration as the cockpit seats below (owner,
+           21 Sep 26 — "Common programme should be earning oil"): this builder
+           draws its own seat rather than going through sbSeat, so the green edge
+           never reached the Common Programme on the board. */
+        /* in the mode this seat is a tap target like every other, and it was
+           not one (owner, 21 Sep 26): the Common Programme's NAME was already a
+           switch, so a scheduler could stop the whole item earning but could not
+           take ONE man off it — the same hole as the cockpit seats. */
+        if(id&&PEOPLE[id]&&oilModeOn(di))
+          return oilSeatHTML(di,id,rowItemKey(x.rid),(oil:any)=>puck(id,null,true,null,false,null,oil));
+        if(id&&PEOPLE[id])return `<span class="seat"${ro?'':` data-slot="a:${di}.${ri}.${k}"`}${alAttr(`a:${di}.${ri}.${k}`)}${ro?'':' data-drag="1"'}>${puck(id,ro?null:sevOf(di,id),true,ro?null:chipOf(di,id),false,null,oilSeatDeco(di,id,`a:${di}.${ri}.${k}`).oil)}</span>`;
         return String(nm||'').trim()?`<span class="itxt">${esc(nm)}</span>`:'';}).join('');
       s+=`<div class="sb-arow c6r${rowCls(x)}"${rowMove(`mv:p.${di}.${ri}`,ro)}>`+sbGrip(ro)
         /* the Item box WRAPS AND GROWS like every other free-text board box
@@ -575,8 +585,10 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
     ? (oilItem
       ? oilSeatHTML(di,inp.person,oilItem,(oil:any)=>puck(inp.person,null,true,null,false,null,oil))
       /* outside the mode the claim's puck wears the man's day figure like every
-         other puck he is on — which is the ONLY place an OD earner is visible */
-      : `<span class="seat"${seatable?` data-inpseat="${esc(inpId(inp))}"`:''}>${puck(inp.person,sevOf(di,inp.person),true,chipOf(di,inp.person),false,null,oilSeatDeco(di,inp.person,'').oil)}</span>`)
+         other puck he is on — which is the ONLY place an OD earner is visible.
+         It is addressed by the claim's OWN item since O-1, so the figure shows
+         here only when this claim is one of the things that earned it. */
+      : `<span class="seat"${seatable?` data-inpseat="${esc(inpId(inp))}"`:''}>${puck(inp.person,sevOf(di,inp.person),true,chipOf(di,inp.person),false,null,oilSeatDeco(di,inp.person,'',inputItemKey(inpId(inp))).oil)}</span>`)
     : `<span class="itxt">${esc(inp.person)}</span>`;
   if(RO&&!oilItem){
     const t=inp.allday?'all day':`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
@@ -691,7 +703,26 @@ export function sbSansPanel(d:any,di:any,day?:any,ro?:any){
    the AL preview (Aug 26) so a board edit shows what it will go out as.
    pv: no data-slot, no data-drag, no arm target — those keys are live keys. */
 export function sbSlot(di:any,key:any,seat:any,id:any,pv?:any){
-  if(id&&PEOPLE[id])return `<div class="sb-slot"><span class="seat"${pv?'':` data-slot="${key}"`}${alAttr(key)}${pv?'':' data-drag="1"'}>${puck(id,pv?null:sevOf(di,id),true,pv?null:chipOf(di,id))}</span></div>`;
+  /* THE MODE REACHES THE COCKPIT (owner, 21 Sep 26, found by hand). This is the
+     ONLY builder for a flying seat — so every flying line and every SC shift —
+     and it never asked whether OIL mode was on. The mode's whole gesture is
+     "tap a puck to take this man off THIS event", and on a weekend schedule the
+     flying lines and the SC shifts ARE most of the day: a scheduler could take a
+     man off a duty desk or a ground row and off nothing else. Same root cause as
+     the missing green strip, one level up — a surface that was never wired in.
+     Empty seats stay as they are: there is nobody to take off one. */
+  if(id&&PEOPLE[id]&&oilModeOn(di))
+    return `<div class="sb-slot">${oilSeatHTML(di,id,oilItemOfKey(di,key),(oil:any)=>puck(id,null,true,null,false,null,oil))}</div>`;
+  /* THE GREEN EDGE REACHES THE FLYING LINES TOO (owner, 21 Sep 26 — "Flying
+     waves should be earning OIL", "SC MAIN should be earning OIL"). The week's
+     one seat renderer carried the mark to every surface; the BOARD has its own
+     builders, and this one — every cockpit seat, so every flying line and every
+     SC shift — never asked for the decoration at all. The work was earning the
+     whole time (the credit landed, the mode glowed); only the bar was missing,
+     which is exactly the kind of hole a missing call site leaves and no unit
+     test noticed. SPARE seats and AVALON/BB still earn nothing, because
+     dayOilWork skips them — this changes what is DRAWN, never what is owed. */
+  if(id&&PEOPLE[id])return `<div class="sb-slot"><span class="seat"${pv?'':` data-slot="${key}"`}${alAttr(key)}${pv?'':' data-drag="1"'}>${puck(id,pv?null:sevOf(di,id),true,pv?null:chipOf(di,id),false,null,oilSeatDeco(di,id,key).oil)}</span></div>`;
   if(pv)return `<div class="sb-slot"><span class="itxt">— ${seat==='p'?'FCP':'RCP'} empty —</span></div>`;
   return `<div class="sb-slot empty" data-slot="${key}">+ ${seat==='p'?'FCP':'RCP'}</div>`;
 }

@@ -81,6 +81,12 @@ in-flight and risk-reducing** first.
    abandoned its preview server, and on Windows even a passing run did, so the next run
    couldn't bind the port and failed on clean code. Both fixed, cross-provider reviewed
    (Codex + Fable), gates green. The follow-up #1 build can run its per-phase gate set.
+1a. **[HUMAN-RETEST] — NEW, owner 21 Sep 26, HIGH once [OIL-AUTO-REMOVE] is closed.**
+   Re-run the hands-on pass over EVERY feature whose "bug test" was really a code review plus
+   unit tests. See the item below for the full reasoning — the short version is that the OIL
+   build passed two model reviews and 5328 tests, and the owner then found three defects in
+   minutes by opening the app, all of them surfaces that were never wired up. Any earlier
+   build checked the same way is carrying the same class of defect, unfound.
 2. **[SYNC-INTEG]** — now just the small NON-undo guardrails (medical member-filed,
    clutter-only clear-data, Quals ✕ confirm, doc fix). Low urgency (pre-live); cheap batch.
    *The undo/permission half was pulled out into [GLOBAL-UNDO] (owner, 13 Sep 26).*
@@ -710,6 +716,34 @@ rules about posted-out and pre-joining rows. Several older documents still read 
   forward: **OIL may be credited by hand on ANY day** — the weekend/public-holiday restriction
   belongs to the AUTOMATIC pass, which reads the published schedule, not to a credit the squadron
   types itself.
+
+### [HUMAN-RETEST] Re-test the earlier builds the way a person uses them (owner, 21 Sep 26)
+**His words: "This also means that all the previous bug tests we did there will be bugs not
+captured. Because I didnt test them when i told u that u would test like a human since."** He is
+right, and the OIL build is the proof. It had a two-model cross-provider review and 5341 green
+tests, and he then opened the app and found three defects within minutes: the green OIL strip never
+reached the board's flying seats or its Common Programme; any advisory chip on a puck painted over
+the strip; and in OIL Earn mode the flying seats, the SC shifts and the Common Programme were not
+tappable at all — the mode's one gesture did not work on the biggest part of a weekend schedule.
+
+**All three are the same shape: a surface that was never wired up.** Every line of code that IS
+there is correct, so reading code cannot find them, and no test caught them because every assertion
+about the strip had been written against a duty desk or a ground row — the two surfaces that DO go
+through the shared renderer. `docs/feature-impact.md` had even NAMED this drift-seam in advance,
+worded as "a new seat renderer"; the hole was in two existing ones.
+
+**So any earlier feature whose bug check was a code review plus unit tests is carrying this class of
+defect, unfound.** The scope is every build reviewed that way — the amendment core, the command
+layer, the one-absence record, the Leave War wires, the Tracker. The method is the owner's standing
+rule, applied properly: build the real thing in the running app, walk every surface that draws the
+feature, walk every ORDER of gestures, and ask of each screen whether what is drawn is what a person
+would expect to see and can actually use.
+
+**DO THIS AFTER [OIL-AUTO-REMOVE] is closed and merged** (owner: "perhaps the next session we can do
+that after this task is truely completed and free of bugs"). Start from
+`raptor-port/docs/superpowers/specs/2026-09-21-oil-bugcheck-fixplan.md` §"the two the owner found",
+which records why the static pass missed them, and from the scenario lists Fable and Codex wrote for
+the OIL pass — the same scenario-design-then-execute shape is what this needs.
 
 ### [OIL-AUTO-REMOVE] Taking OIL off — BUILT 21 Sep 26, holding for "merge live"
 
