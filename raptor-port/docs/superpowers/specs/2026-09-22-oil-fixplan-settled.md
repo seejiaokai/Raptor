@@ -119,6 +119,27 @@ roster change after a publish reaches the money.
 7. **Fix 4** — the mirror advisory.
 8. **Fix 7** — deduplicate the switch on the GENERIC formation renderer, not as an SC special case
    (Codex M2).
+
+   **CHECKED, AND THE SPARE'S OWN MEN ARE SAFE — driven 22 Sep 26 after the owner asked whether an
+   SC spare can be made to earn by tapping him green. He cannot, and the rule holds at the ENGINE,
+   not merely at the button:**
+
+   | What was asked of the app | What it did |
+   |---|---|
+   | the two men on the SC spare aircraft (Cobra, Ledger) | no green bar; the main crew beside them (Piston, Basher) carry full days |
+   | are they offered a tap in the mode? | **no** — 48 tappable people on the day, neither of them among them; their tooltip says only name and role, nothing about OIL |
+   | force an `allow` straight into the day's decisions — the strongest green a scheduler could ever produce, bypassing the button | **nothing changed.** Cobra still earns nothing |
+
+   Why: `dayOilWork` skips a spare aircraft's crew before anyone is put into the work list
+   (`engine/oil.ts:159`), so a per-person allow has no work to switch on. This pins the owner's
+   ruling **D15** ("SC Spare not earning") at the measure itself.
+
+   **So fix 7 is entirely about the SWITCH, never the men.** The danger is the opposite of the one
+   the question suggests: a spare AIRCRAFT sits under a formation that is NOT spare, the line is one
+   item, and the board draws that item's switch once per aircraft row. Pressing the one beside the
+   spare row therefore switches off the whole shift and takes the MAIN crew's day away — Piston to
+   nothing, Basher to a half. Nobody on the spare row loses anything, because they never had
+   anything.
 9. **Fix 9** — the wording batch, one red test at a time.
 
 **Carried to the owner, not decided here:** "Off day". Both reviewers say the app is consistent that
