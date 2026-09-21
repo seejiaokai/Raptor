@@ -32,7 +32,8 @@ import { writeInputsBatch, notify, protectedDates, inputProtected } from '../sta
    here — not a new seam, a Raptor-side caller of the existing one. */
 import { oilAskPlan } from '../leavewar/sync'
 import { leaveKey } from '../leavewar/absences'
-import { inputOilAmt } from '../engine/oil'
+import { inputOilAmt, inputItemKey } from '../engine/oil'
+import { clearOilPersonDecisions } from './oilmode'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { stashKeys, stashGet } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
@@ -1043,6 +1044,13 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        re-checks coverage live. reassignInput and the calendar drag both land
        here, so they inherit the person rule. */
     if (r.oil && (!oilAsks(r.type) || r.person !== wasPerson)) delete r.oil
+    /* ...and the SCHEDULER's own override on this request dies with the
+       assignment too (Codex scenario 7, 22 Sep 26). Voiding the member's
+       answers above was only half of it: a refusal the scheduler made about the
+       old holder stayed on the day, dormant while someone else held the
+       request, and live again the moment it was handed back. Same batch, so it
+       is one undo step with the person change and the relink. */
+    if (r.person !== wasPerson) clearOilPersonDecisions(String(wasPerson || ''), inputItemKey(String(inpId(r))))
     /* AND a positive answer whose HOURS no longer price what was approved is
        void per day (bug pass, 28 Aug 26): the three gated editors re-ask via
        oilGate, but the board's and week's IN-PLACE cells commit straight

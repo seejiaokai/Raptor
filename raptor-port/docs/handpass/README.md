@@ -31,3 +31,22 @@ DOM, so every board selector is scoped `#schedBoard … :visible`; the board's c
 `[data-oilmode="<day>"]`; the warning list is inside `#sbSide` before the text "PLACEHOLDERS"; the
 request dialog is `#inpEditPop` with `#inpEditSave`, and pressing Add raises the OIL question
 `[data-testid="oilconf"]` ON TOP of the form, which must be answered or nothing is filed.
+
+## STILL TO WALK — job 1's last mile (22 Sep 26)
+
+Everything in job 1 is proved through its own production function with a test that was red first,
+and the new wording is proved live on the built board (`docs/img/handpass/2026-09-21-oil/job1-wording.png`).
+**What is NOT yet walked** is the last step of the money story through the real dialog: opening a
+landed request, changing who it belongs to, and watching the OIL question come up for the new man.
+
+Steps 1–4 of that story DO drive cleanly and were re-confirmed on this branch — publish the
+Saturday, refuse the requester in the mode, publish the amendment, and his cell goes blank while
+the other man keeps his.
+
+**The blocker, so the next session does not rediscover it:** the request's own edit button
+(`data-inpedit`, drawn by `inpEditLabel` in `ui/html.ts`) is NOT in the DOM on the board the
+driver opens — `document.querySelectorAll('[data-inpedit="<iid>"]')` returns nothing, and
+`HOOKS.editMode()` reads false there. `lib.mjs`'s `board()` does go to `editsched` first, so the
+cause is something else — most likely the panel that carries the button is not the one the landed
+request is drawn on. Find that door once and every remaining scenario that edits a request gets
+easier.

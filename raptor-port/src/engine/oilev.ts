@@ -185,6 +185,25 @@ export function projectOilInputs(iso: string): OilInputEv[] {
  *
  *  `day` defaults to the loaded week's day, which is what every caller in the
  *  app wants; passing one explicitly is for tests and for a stashed week. */
+/** Drop every per-person override that names a man who no longer holds the
+ *  request it is about. Mutates the COPY oilEvidence has already made — never
+ *  `DAYS`. Row items (`r:`/`g:`) are not assignments and are never touched. */
+function pruneHandedOverDecisions(dec: OilDecisions): void {
+  const ppl = dec && dec.people
+  if (!ppl) return
+  for (const k of Object.keys(ppl)) {
+    const cut = k.indexOf('|')
+    if (cut < 0) continue
+    const person = k.slice(0, cut), item = k.slice(cut + 1)
+    if (!item.startsWith('i:')) continue                     // only a REQUEST can change hands
+    const iid = item.slice(2)
+    const inp = (INPUTS as any[]).find(r => r && String(inpId(r)) === iid)
+    if (!inp) continue                                       // orphan: already inert, leave it be
+    if (String(inp.person || '') !== person) delete ppl[k]
+  }
+  if (!Object.keys(ppl).length) delete (dec as any).people
+}
+
 export function oilEvidence(di: any, day?: any): OilEvidence {
   di = +di
   const d = day || DAYS[di]
@@ -197,6 +216,28 @@ export function oilEvidence(di: any, day?: any): OilEvidence {
      with you, the delta read as "no change", and the day could never be amended.
      The whole point of the block is that the issued answer stops moving. */
   const dec: OilDecisions = clone((d && d.oild) || {})
+  /* A DECISION DIES WITH THE ASSIGNMENT (Codex M1, 22 Sep 26). A scheduler's
+     override names a man AND an item; when a request changes hands, the write
+     side clears the old holder's key on every LOADED day, but a request can
+     cover a day in a stashed week that no write can reach. Left there, the key
+     is dormant until that week is opened and then decides against a man who has
+     nothing to do with the request any more.
+
+     So it is closed here as well, and only here is it safe to: this runs on the
+     LIVE day only — an issued day carries its own frozen block, written once at
+     publication and never recomputed — and it works on the COPY above, so the
+     stored day is untouched and the issued record cannot move.
+
+     ONLY on a positive mismatch: the request still exists and names somebody
+     else. An ORPHANED key, whose request is gone, is deliberately left alone —
+     it is already inert (no input, no span, nothing to decide), and dropping it
+     would move the day's evidence for no reason, which is exactly how the
+     phantom amendment in job 3 was made.
+
+     Runs BEFORE the non-earning bail: a day that earns nothing today may earn
+     tomorrow (a holiday declared late), and the copy every reader is handed
+     should be clean whichever it is. */
+  pruneHandedOverDecisions(dec)
   if (!earns) return { iso: iso || '', earns: false, d: dec, inputs: [], sent: {} }
   const sent: Record<string, string[]> = {}
   /* the walk that finds the day's work is the SAME walk the credit uses, so the

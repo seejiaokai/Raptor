@@ -163,6 +163,28 @@ function itemDefaultFor(ev: OilEvidence, person: string, item: string): boolean 
   return inp.ans != null && inp.ans > 0
 }
 
+/** WHY a man is not earning from an item — because the three reasons read
+ *  identically today and only one of them is a mistake (hand pass finding 13 /
+ *  Fable M3, 22 Sep 26). One sentence covered "the scheduler took him off",
+ *  "he said No himself" and "nobody has asked him", and the third is the one
+ *  that costs a man money in silence: a request handed to a new holder arrives
+ *  unanswered, and unanswered was drawn with the wording of a refusal.
+ *
+ *  `denied`   — a scheduler's own mark on this man.
+ *  `declined` — the member answered No, which is his word and stands (§2.2).
+ *  `unasked`  — the question exists for him and has no answer yet.
+ *  `off`      — anything else (ordinary schedule work switched off). */
+export type OilOffWhy = 'denied' | 'declined' | 'unasked' | 'off'
+export function oilOffReason(di: any, person: any, item: string): { why: OilOffWhy, what: string } {
+  const ev = evOf(di)
+  const dec = personDecision(ev, String(person), item)
+  if (dec === 'deny') return { why: 'denied', what: '' }
+  const inp = ev.inputs.find(i => inputItemKey(i.iid) === item && i.person === String(person))
+  if (!inp) return { why: 'off', what: '' }
+  const what = String(inp.type || '').trim()
+  return { why: inp.ans == null ? 'unasked' : 'declined', what }
+}
+
 /** What the mode shows on ONE puck: whether it glows, and the man's figure for
  *  the day. `null` figure with `on` true means he is on the item but the day
  *  measures him nothing yet (no written times) — the puck glows nothing. */
@@ -207,6 +229,37 @@ function tidy(di: any): void {
   if (dec.items && !Object.keys(dec.items).length) delete dec.items
   if (dec.people && !Object.keys(dec.people).length) delete dec.people
   if (!dec.blanket && !dec.items && !dec.people) delete d.oild
+}
+
+/** A DECISION DIES WITH THE ASSIGNMENT IT WAS MADE ABOUT (Codex scenario 7,
+ *  22 Sep 26). A scheduler's refusal names a man AND an item; nothing ever
+ *  cleared it when that man left the item, so it lay dormant while somebody
+ *  else held the request and came back to life the moment it was handed back —
+ *  taking a day from a man whose refusal everyone believed was cleared.
+ *
+ *  Cleared on EVERY loaded day, not only the one in front of the scheduler: one
+ *  request can cover several days, and the stale key would otherwise wait on
+ *  whichever of them nobody was looking at. The item is the request's own id, so
+ *  clearing it cannot touch a decision about anything else this man is on.
+ *
+ *  This is the WRITE-side half. A day in a week that is not loaded cannot be
+ *  reached from here and is handled at READ instead (`oilEvidence`'s prune), so
+ *  the two together leave no live stale decision anywhere.
+ *
+ *  It writes through no funnel of its own on purpose: the one caller
+ *  (`commitInputEdit`'s person branch) is already inside `writeInputsBatch`, so
+ *  the clear, the person change and the relink are ONE undo step. */
+export function clearOilPersonDecisions(person: string, item: string): number {
+  if (!person || !item) return 0
+  const k = `${person}|${item}`
+  let n = 0
+  DAYS.forEach((d: any, di: number) => {
+    const ppl = d && d.oild && d.oild.people
+    if (!ppl || ppl[k] == null) return
+    delete ppl[k]; n++
+    tidy(di)
+  })
+  return n
 }
 
 /** The whole-day blanket (§2.1 item 7). A FACT about the day: it MASKS every row
@@ -366,9 +419,23 @@ export function oilSeatHTML(di: any, person: any, item: string, pk: (oil: any) =
       + pk({ on: false, amt: oilFigureFor(di, person, item) }) + `</span>`
   }
   const { on, amt } = oilPuck(di, person, item)
-  const ttl = on
-    ? `${p.cs} earns ${amt === 'FO' ? 'a full day' : amt === 'HO' ? 'half a day' : 'nothing yet'} — tap to take him off this event`
-    : `${p.cs} earns nothing from this event — tap to put him back on it`
+  let ttl: string
+  if (on) {
+    ttl = `${p.cs} earns ${amt === 'FO' ? 'a full day' : amt === 'HO' ? 'half a day' : 'nothing yet'} — tap to take him off this event`
+  } else {
+    /* the three OFF states are three different facts and must not share a
+       sentence — see oilOffReason. "Not answered" is the one that used to read
+       as a refusal while quietly costing a man his day. */
+    const { why, what } = oilOffReason(di, person, item)
+    const thing = what ? `this ${what}` : 'this event'
+    ttl = why === 'unasked'
+      ? `${p.cs} has not answered the OIL question for ${thing} yet — tap to put him on it`
+      : why === 'declined'
+        ? `${p.cs} answered No for ${thing} — tap to put him on it anyway`
+        : why === 'denied'
+          ? `${p.cs} was taken off this event — tap to put him back on it`
+          : `${p.cs} earns nothing from this event — tap to put him back on it`
+  }
   return `<span class="seat oilpk${on ? ' on' : ' off'}" data-oilp="${esc(String(person))}" data-oilitem="${esc(item)}" data-oilday="${+di}" title="${esc(ttl)}">`
     + pk({ on, amt }) + `</span>`
 }

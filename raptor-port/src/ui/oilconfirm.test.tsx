@@ -14,6 +14,8 @@ import { App } from './App'
 import { initStore, setSession, notify, writeInputsBatch, HIST } from '../state/store'
 import { INPUTS, oilAsks, inpId } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
+import { DAYS } from '../engine/data'
+import { inputItemKey, oilEvidence } from '../engine/oilev'
 import { HOOKS } from '../engine/hooks'
 import { setInpEdit, INPEDIT, OILASK, setOilAsk } from './pops'
 import { CURPAGE, setPage } from '../state/view'
@@ -205,6 +207,61 @@ describe('the answers belong to the acknowledged commitment', () => {
     const leave = plant({ person: 'bane', type: 'LL', date: 'Jul 18', s: 0, e: 1439 })
     reassignInput(leave.iid, 'stiff')
     expect(OILASK, 'leave does not earn OIL, so nothing is asked').toBe(null)
+  })
+
+  /* THE HAND-BACK (Codex scenario 7, real in the code and never tested). Nothing
+     clears a scheduler's refusal when the man it names leaves the request. While
+     someone else holds it the key is dormant and harmless — but hand the request
+     BACK and it is live again, so a refusal everyone believed was cleared takes
+     the man's day a second time. Today it is masked, because he also returns
+     unanswered and reads "earns nothing" either way; the moment the gate above
+     starts asking him properly, the mask comes off and the stale deny decides it. */
+  it('handing a request away CLEARS the old holder’s decision on it, on every loaded day (Codex 7)', () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
+    const item = inputItemKey(r.iid)
+    const sat = DAYS[5]
+    sat.oild = { people: { [`bane|${item}`]: 'deny', [`stiff|${item}`]: 'allow' } }
+    /* a decision about a DIFFERENT request must survive untouched — the control */
+    sat.oild.people['bane|i:someoneelse'] = 'deny'
+
+    const d = draftOf(r); d.person = 'stiff'
+    expect(commitInputEdit(r, d)).toBe(true)
+
+    const ppl = (DAYS[5].oild || {}).people || {}
+    expect(ppl[`bane|${item}`], "the man who has left must carry no decision on a request that is no longer his").toBeUndefined()
+    expect(ppl['bane|i:someoneelse'], 'his decisions on OTHER requests are untouched').toBe('deny')
+  })
+
+  /* THE OTHER HALF OF THE HAND-BACK (Codex M1). The write-side clear above only
+     reaches days that are LOADED. One request can cover a day in a stashed week,
+     and a refusal left there would wait off-screen until that week is opened —
+     Codex's exact warning, and the reason it wanted a whole new addressing
+     concept. It is closed at READ instead, which is cheaper and provably cannot
+     disturb an issued record: oilEvidence runs only on the LIVE day (an issued
+     day carries its own frozen block, written once at publication), and it
+     already works on a COPY of the decisions.
+
+     Pruned only on a positive mismatch — the input exists and names somebody
+     else. An ORPHANED key, whose request is gone entirely, is left alone: it is
+     inert (no input, no span, nothing to decide), and dropping it would move the
+     day's evidence for no reason, which is how job 3's phantom was made. */
+  it('a decision naming somebody who no longer holds the request is inert at READ, without touching the day (Codex M1)', () => {
+    const r = plant({ person: 'stiff', type: 'Duty', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
+    const item = inputItemKey(r.iid)
+    DAYS[5].oild = { people: {
+      [`bane|${item}`]: 'deny',            // the man who USED to hold it
+      [`stiff|${item}`]: 'deny',           // the man who holds it now — the control
+      'bane|r:somerow': 'deny',            // a schedule row, nothing to do with this
+    } }
+
+    const ev = oilEvidence(5)
+    const seen = (ev.d.people || {}) as any
+    expect(seen[`bane|${item}`], 'a decision about a man who no longer holds this request must not be read').toBeUndefined()
+    expect(seen[`stiff|${item}`], "the CURRENT holder's decision still stands").toBe('deny')
+    expect(seen['bane|r:somerow'], 'a decision about a schedule row is never an assignment and is untouched').toBe('deny')
+
+    /* and the day itself is not rewritten — the prune lives in the copy */
+    expect((DAYS[5].oild.people || {})[`bane|${item}`], 'the stored day is left exactly as it was').toBe('deny')
   })
 
   it('an in-place time edit that REPRICES a positive answer voids that day (bug pass, 28 Aug 26)', () => {

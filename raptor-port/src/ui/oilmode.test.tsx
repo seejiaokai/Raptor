@@ -27,6 +27,7 @@ import { elogClear, elogRows } from '../engine/editlog'
 import { validate } from '../engine/validate'
 import { openScheduler, boardWeekStep } from './board'
 import { setOilDay } from '../state/view'
+import { oilOffReason } from './oilmode'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -446,5 +447,31 @@ describe('the item switch is only offered where the event can earn', () => {
       expect(el!.dataset.oilitem, `${label} must not be tappable`).toBeFalsy()
       expect(el!.classList.contains('none'), `${label} reads as nothing to switch`).toBe(true)
     }
+  })
+})
+
+/* The three OFF states used to share one sentence — "earns nothing from this
+   event" — so a man nobody had ASKED read exactly like a man who had refused.
+   That is the sentence the owner's Ace lost half a day behind. Hand pass
+   finding 13 / Fable M3, 22 Sep 26. */
+describe('a puck that is not earning says WHICH of the three reasons it is', () => {
+  it('tells "nobody asked him" apart from "he said No" and "the scheduler took him off"', () => {
+    const iid = 'testreq1'
+    const item = inputItemKey(iid)
+    const base = { iso: '2026-07-18', earns: true, sent: {} } as any
+    const evFor = (ans: any, dec: any) => ({
+      ...base,
+      d: dec ? { people: { [`bane|${item}`]: dec } } : {},
+      inputs: [{ iid, person: 'bane', type: 'Training', asks: true, acc: 'g', win: [480, 720], ans }],
+    })
+    const read = (ev: any) => {
+      const orig = (DAYS as any)[5]
+      ;(DAYS as any)[5] = { ...(orig || {}), oilev: ev }
+      try { return oilOffReason(5, 'bane', item) } finally { (DAYS as any)[5] = orig }
+    }
+    expect(read(evFor(null, null)).why, 'never asked — the one that costs money in silence').toBe('unasked')
+    expect(read(evFor(0, null)).why, 'the member answered No, which is his own word').toBe('declined')
+    expect(read(evFor(1, 'deny')).why, "the scheduler's own mark, over an answered yes").toBe('denied')
+    expect(read(evFor(null, null)).what, 'and it names the request, so the sentence can say which one').toBe('Training')
   })
 })
