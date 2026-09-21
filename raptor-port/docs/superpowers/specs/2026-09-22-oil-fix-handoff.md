@@ -42,9 +42,14 @@ The two reviews themselves, if you need the reasoning behind a fix:
 function; what each does is in the commit messages, which are the best short account of the
 reasoning and are written for you.
 
-**Gates after the last commit:** unit **5438 passed / 0 failed** (333 files) · build green ·
-reference parity **728 / 0** · rulecheck **OK** · docsize **OK** · tracker smoke **425 / 0** · e2e
-run at the end of the session.
+**Gates after the last commit:** unit **5439 passed / 0 failed** (333 files) · build green ·
+reference parity **728 / 0** · rulecheck **OK** · docsize **OK** · tracker smoke **425 / 0**.
+
+**e2e:** run twice in full — 446/1 then 445/2, a DIFFERENT Leave War test failing each time and
+every one of them passing on its own in seconds. Run the two Leave War projects by themselves and it
+is **310 / 1**, the single failure being the scrubber test already filed as `[LW-SCRUBBER-FLAKY]`,
+which also fails on `main`. It is the saturated-box timing family, not this branch; the filed entry
+now names the family rather than the one test.
 
 ## What is NOT done, and must not be reported as done
 
