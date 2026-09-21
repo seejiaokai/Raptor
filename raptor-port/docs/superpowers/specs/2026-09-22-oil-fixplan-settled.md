@@ -90,6 +90,22 @@ roster change after a publish reaches the money.
 
 ## 2. THE REVISED ORDER
 
+**THE FINDINGS QUEUE COMES FIRST — owner, D23 (22 Sep 26):** *"Work Codex's open findings before the
+remaining jobs — start with its Rank 4."* The numbered list below is SET ASIDE until every open
+finding from Codex's code read is closed. Rank 4 leads because it is the unfinished half of a repair
+already reported as done, which is the worst kind of open item to leave. Order:
+
+| | Codex | Fable | What |
+|---|---|---|---|
+| 1 | Rank 4 | — | a signature frozen before job 2 no longer matches, and a legacy cancelled row still manufactures an amendment |
+| 2 | Rank 2 | F1 | `[OIL-XWEEK-DENY]` — a refusal comes back to life after a hand-over and hand-back made off screen |
+| 3 | Rank 3 | F2 | `[OIL-XWEEK-ELSEWHERE]` — a cancelled anchor in an unloaded week still pays its later-week weekend |
+| 4 | Rank 5 | — | dragging a request to another date in the calendar never asks the question |
+| 5 | Rank 6 | — | editing a request's times in place reprices the day without asking |
+
+Then the numbered jobs resume, minus 1, 2, 7 and 8, which are built. Each fix is proved RED first
+through its own production function; nothing merges without the owner's "merge live".
+
 1. **Fix 1** — re-ask on a person change; clear the old pair decision at the write site; prune dead
    keys at read; close the `reassignInput` door; and give "nobody has answered yet" its own words,
    distinct from a member's No and a scheduler's deny. Covers Fable's M1 (in-place re-timing),
