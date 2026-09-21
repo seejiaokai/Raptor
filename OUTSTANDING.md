@@ -907,52 +907,50 @@ July while the demo posts him out in January, so deciding which is right may be 
 **Context.** `raptor-port/docs/handpass/2026-09-21-oil.md` §9 · the red team's §3 in
 `…/specs/2026-09-21-oil-fixplan-redteam-fable.md` · script `scripts/handpass/settle-d4.mjs`.
 
-### [OIL-XWEEK-DENY] A refusal survives a hand-back in a week nobody had loaded — CLOSED, 22 Sep 26
+### [OIL-XWEEK-DENY] A refusal survived a hand-back in a week nobody had loaded — CLOSED, 22 Sep 26
 
-**Money, silent.** Job 1 clears a scheduler's refusal when a request changes hands, but only on the
-week that is loaded. The read-side prune hides the key while somebody ELSE holds the request — so
-hand it away and back while a different week is on screen (ordinary: the Inputs page is global),
-then open the original week, and the old refusal is live again. The man is paid nothing and, on an
-already-published day, nothing flags it.
+**Money, silent, and both reviewers found it (Fable F1, Codex rank 2).** The clear that kills a
+scheduler's refusal when a request changes hands walked only the LOADED week, and the read-side
+prune merely HIDES a key while somebody else holds the request — so a hand-over and hand-back made
+while a different week was on screen brought a dead refusal back to life. On an already-published
+day nothing flagged it. It vindicated Codex's M1 over the cheaper repair that was chosen.
 
-**This vindicated Codex's M1 over the cheaper repair that was chosen:** the pair-plus-clear does not
-close it unless the clear reaches stashed weeks. The hazard it had to respect — that some stashed
-weeks are byte-frozen and must round-trip verbatim — is respected below.
+**CLOSED.** The clear reaches every readable stashed week (`stashEditDays`), skipping the loaded
+week and every byte-frozen one — the hazard this note asked to be respected. The prune stays as the
+guard for exactly those two cases. The week stash joins the input batch on a person change, so ONE
+Undo restores the assignment and the off-week refusal together, proved by a test that fails if the
+enlistment is removed. Commit `26f9de5`; background in the two reviews' §F1 / rank 2.
 
-**Context.** `…/specs/2026-09-22-oil-jobs12-codereview-fable.md` §F1 (step-by-step, with the red
-test) · `…/specs/2026-09-22-oil-fixplan-settled.md` §0, which now carries the correction.
+### [OIL-XWEEK-ELSEWHERE] A cancelled anchor in an unloaded week kept paying — CLOSED, 22 Sep 26
 
-**CLOSED 22 Sep 26.** The clear now reaches every readable stashed week through a new
-`stashEditDays` on the week stash, skipping the loaded week (the live days are authoritative and the
-store refuses that write anyway) and skipping every byte-frozen week, as the hazard above required.
-The read-side prune stays, as the guard it always was for exactly those two cases. The week stash
-joins the input batch on a person change, so ONE Undo puts back the assignment and the off-week
-refusal together — proved by a test that fails if the enlistment is removed.
+**Money, and pre-existing rather than introduced by job 2** (Fable F2, Codex rank 3; both wanted it
+closed before merge live). A request running into the next week, whose ONE row was CANCELLED in the
+first, went on paying its later days. The build's note named the wrong mechanism — such a request
+does not read "elsewhere", it reads as never-landed, and the money paid it at a short-circuit before
+the row's state was read — so the repair it sketched would never have fired.
 
-### [OIL-XWEEK-ELSEWHERE] The cross-week branch of job 2 never fires in the real app — CLOSED, 22 Sep 26
+**CLOSED.** The standing resolves the anchor's own week and reads its stashed days: no stash entry
+means the week was never edited, so nothing contradicts the man and he is paid; an entry that cannot
+be read does NOT pay (Codex's conservative answer, taken over Fable's degrade-to-seed); a row found
+gives its own state. The short-circuit is gone, and the key now records only what the standing
+decides — earns or does not — so a row merely moving into an unloaded week no longer offers an
+amendment with no money behind it. Commit `7045067`.
 
-Job 2's `landedStanding` returns `elsewhere` for a request anchored in an unloaded week, and a unit
-test pins it. **In the running app that branch is unreachable:** `applyWeekModel` clears every `'g'`
-on a week swap, so the input reads `''` → `unlanded`, and `oilInputEligible` pays it at the
-`acc !== 'g'` short-circuit before `stand` is ever consulted. The hole it was meant to close — a
-CANCELLED or ⓘ anchor in another week still paying its other days — is therefore still open, and is
-PRE-EXISTING rather than introduced by job 2 (the same line paid before it).
+### [OIL-RELINK-XWEEK] A request landed in a stashed week keeps the OLD man, and can land twice — OPEN, 22 Sep 26
 
-Fable recommends closing it before "merge live": read the anchor's week from `stashDays`, drop the
-`acc !== 'g'` short-circuit, keep `'gone'` gated on `'g'`. Step-by-step and a red test in its
-review §F2.
+**Pre-existing, not OIL-caused, and out of scope for this branch** (Fable F8). Two limits that job
+2's "one row" premise stands on:
 
-**CLOSED 22 Sep 26.** The standing now resolves the anchor's own week from the request's first date
-and reads that week's stashed days. No stash entry at all means the week was never edited, so no row
-was ever made there and nothing contradicts the man's own answer — he is paid. A stash entry that
-cannot be read is the case the two reviewers split on, and Codex's conservative answer was taken:
-we know that week WAS touched and cannot see how, so it does not pay. `elsewhere` now means exactly
-that and nothing else. The `acc !== 'g'` short-circuit that answered "pays" before the standing was
-ever consulted is gone.
+- A person change made while the anchor's week is STASHED cannot reach the row. The relink finds
+  nothing to unaccept, toasts "moved outside the programmed week" and drops the landing mark; when
+  that week loads, the row is re-found and re-marked — but its `who` is still the OLD man. The money
+  goes to the new man through the claim while the programme draws the old one.
+- The duplicate-landing guard scans LOADED days only, so a request landed in week B whose start is
+  then moved into week A gets a SECOND row when week A loads. The two rows can disagree (one
+  cancelled, one live), and the standing reads whichever week is loaded.
 
-**And the key stopped recording the standing itself** — it records only what the standing decides,
-earns or does not, so a row merely moving into an unloaded week no longer offers an amendment with
-no money behind it.
+The stash-aware read built for `[OIL-XWEEK-ELSEWHERE]` is the same seam a stash-aware relink would
+use. **Context.** `…/specs/2026-09-22-oil-jobs12-codereview-fable.md` §3 F8.
 
 ### [LW-SCRUBBER-FLAKY] The year scrubber test fails on a saturated machine — PRE-EXISTING (21 Sep 26)
 `e2e/leavewar.spec.ts` "the bottom scrollbar is a year-wide scrubber", lw-desktop only. Under a full
