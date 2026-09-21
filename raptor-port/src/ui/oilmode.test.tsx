@@ -16,7 +16,7 @@ import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, inpId } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { SCHED, signOf, setDayApproved } from '../engine/publish'
 import { toggleOilPerson, oilModeOn } from './oilmode'
@@ -473,5 +473,66 @@ describe('a puck that is not earning says WHICH of the three reasons it is', () 
     expect(read(evFor(0, null)).why, 'the member answered No, which is his own word').toBe('declined')
     expect(read(evFor(1, 'deny')).why, "the scheduler's own mark, over an answered yes").toBe('denied')
     expect(read(evFor(null, null)).what, 'and it names the request, so the sentence can say which one').toBe('Training')
+  })
+})
+
+/* FIX 5 — THE MODE MUST ACTUALLY BE READ-ONLY (hand pass, 21 Sep 26 §6 row 5).
+   The board's own schedule boxes were shut when the mode came in, but the two
+   crew panels beside them were not: the Personal Inputs and Unavailable rows
+   still took a typed time, still let a puck be dropped on them, and still
+   toggled the late mark. All three change what a man earns, which is the one
+   thing the mode exists to prevent. */
+describe('the mode shuts the crew panels too (fix 5)', () => {
+  const claim = (r: any) => {
+    const row: any = { person: 'bane', type: 'OD', date: 'Jul 18', allday: false, s: 8 * 60, e: 10 * 60, remarks: '', mod: 'now', yr: 2026, ...r }
+    inpId(row); INPUTS.unshift(row); return INPUTS[0]
+  }
+  const inpRows = () => $$('#sbBoard .inprow')
+  const boxesIn = (el: HTMLElement) => [...el.querySelectorAll('[data-ifld]')] as HTMLInputElement[]
+
+  beforeEach(async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+  })
+
+  it('a claim row takes a typed time OUTSIDE the mode, and none inside it', async () => {
+    claim({})
+    await open(SAT)
+    const before = inpRows()
+    expect(before.length, 'the claim is drawn on the board').toBeGreaterThan(0)
+    expect(boxesIn(before[0]).length, 'its times and remarks are editable').toBeGreaterThan(0)
+    expect(boxesIn(before[0]).every(b => b.disabled), 'and live').toBe(false)
+
+    await click(oilBtn())
+    const after = inpRows()
+    expect(after.length, 'the row is still drawn — the mode has to reach the claim').toBeGreaterThan(0)
+    expect(boxesIn(after[0]).every(b => b.disabled), 'every box is shut inside the mode').toBe(true)
+  })
+
+  it('the OIL switch on that row still works, which is the whole point of drawing it', async () => {
+    const r = claim({})
+    await open(SAT)
+    await click(oilBtn())
+    expect($(`#sbBoard [data-oilitem="${inputItemKey(inpId(r))}"]`), 'the claim carries its own switch').toBeTruthy()
+  })
+
+  it('no puck can be dropped on an Unavailable row inside the mode', async () => {
+    /* LEAVE, deliberately: it earns no OIL, so it carries no switch of its own
+       and nothing else was taking its drop target away */
+    claim({ type: 'LL' })
+    await open(SAT)
+    expect($$('#sbBoard [data-inpseat]').length, 'the leave row IS a drop target outside the mode').toBeGreaterThan(0)
+    await click(oilBtn())
+    expect($$('#sbBoard [data-inpseat]').length, 'and none of them inside it').toBe(0)
+  })
+
+  it('the LATE mark cannot be toggled from inside the mode', async () => {
+    /* an input whose last change is after the day it covers wears the chip */
+    claim({ mod: '2026-07-18' })
+    await open(SAT)
+    expect($$('#sbBoard [data-lateoff]').length, 'the chip is there to tap outside the mode').toBeGreaterThan(0)
+    expect($$('#sbBoard .latetag').length, 'and it is the clickable one, not the passive badge').toBe(0)
+    await click(oilBtn())
+    expect($$('#sbBoard [data-lateoff]').length, 'and not inside it').toBe(0)
+    expect($$('#sbBoard .latetag').length, 'but the row still SAYS it was late').toBeGreaterThan(0)
   })
 })

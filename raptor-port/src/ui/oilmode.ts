@@ -52,6 +52,7 @@ import { oilEvidence, oilEvidenceOf, oilEarnedWork, oilInputEligible, personDeci
 import { OILDAY, setOilDay, afterSchedMutate, esc } from '../state/view'
 import { CURWEEK } from '../engine/waves'
 import { stashKeys, stashEditDays } from '../engine/weekstash'
+import { undoMark } from '../undo'
 
 export { rowItemKey, groundItemKey, inputItemKey }
 
@@ -69,7 +70,44 @@ export function oilModeOn(di: any): boolean { return OILDAY != null && +OILDAY =
 export function toggleOilMode(di: any): boolean {
   const on = !oilModeOn(di)
   setOilDay(on ? +di : null)
+  /* where Undo stood when the door opened — see oilUndoBoundary */
+  OIL_UNDO_DOOR = on ? undoMark() : null
   return on
+}
+
+/* ---- Undo stops at the door (fix 5, corrected 22 Sep 26) ------------------
+   Undo already reverses an OIL tap correctly, and that is worth keeping — it is
+   the natural way to take back a mis-tap, measured in the running app: 18 bars,
+   tap a puck, 17, press Undo, 18 again. One reviewer wanted the mode CLOSED on
+   Undo, which would take that away, so it is not followed as written.
+
+   What the walk actually caught is different: Undo does not STOP at the mode.
+   It walks back whatever the last change was, so with the mode open it removed
+   a ground-programme row from the day — a schedule change, made from a screen
+   that says the schedule cannot be changed.
+
+   So the rule is a BOUNDARY, not a door. Opening the mode marks the spot Undo
+   stood at; inside, it walks back OIL decisions freely down to that spot; the
+   press that would reach PAST it closes the mode instead, and the one after
+   that behaves normally, outside. The mark is the timeline's own position, not
+   a count of presses — a count could not survive a redo, a refused press, or
+   anything else writing in between. */
+let OIL_UNDO_DOOR: number | null = null
+
+/** Was this Undo press CONSUMED by closing the mode? The one body; the Undo
+ *  button asks it before it does anything else.
+ *
+ *  A mode entered without going through `toggleOilMode` has no recorded door
+ *  (only tests reach the state that way). That reads as "the door is right
+ *  here", which errs towards closing the mode rather than towards reaching
+ *  past it into the schedule — the safe direction for a screen whose whole
+ *  purpose is that the day underneath does not move. */
+export function oilUndoBoundary(): boolean {
+  if (OILDAY == null) return false
+  if (OIL_UNDO_DOOR != null && undoMark() !== OIL_UNDO_DOOR) return false
+  setOilDay(null)
+  OIL_UNDO_DOOR = null
+  return true
 }
 
 /* ---- reading the day's figures ------------------------------------------- */

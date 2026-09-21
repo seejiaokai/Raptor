@@ -549,6 +549,19 @@ export function undoState(): { canUndo: boolean; canRedo: boolean; undoLabel: st
   }
 }
 
+/** WHERE THE TIMELINE STANDS RIGHT NOW — the seq of the entry Undo would
+ *  reverse next, or -1 when there is nothing to reverse. NOT 0: seq 0 is a real
+ *  entry, so 0 would make "nothing to undo" and "the very first change" the same
+ *  answer, and a screen comparing marks would stop one press too early. An opaque marker: a
+ *  screen that must stop Undo at the point it OPENED records one on the way in
+ *  and compares on every press, rather than counting presses itself (which
+ *  cannot survive a redo, a refusal, or anything else writing in between).
+ *  The OIL Earn mode is the first caller — see ui/oilmode.ts. */
+export function undoMark(): number {
+  const u = newestUndoable()
+  return u ? u.seq : -1
+}
+
 /* ---- test-only inspectors + reset ---------------------------------------- */
 export function _timelineEntries(): readonly UndoEntry[] { return entries }
 export function _undoConflict(entry: UndoEntry): string | null { return undoConflict(entry) }

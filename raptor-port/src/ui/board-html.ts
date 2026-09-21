@@ -597,7 +597,18 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
       +sbiRmk(inp,dt)+`</div>`;
   }
   const id=inpId(inp);
-  const fld=(cls:any,f:any,v:any,ph:any)=>boxHTML(cls,`data-ifld="${esc(id)}.${f}"`,v,ph);
+  /* THE MODE IS READ-ONLY, AND THAT HAD TO REACH THIS ROW TOO (fix 5, hand pass
+     §6 row 5). The read-only branch just above is deliberately SKIPPED for a
+     claim carrying an OIL switch, because the switch has to be drawn — and the
+     whole editable row came with it. So the Personal Inputs and Unavailable
+     panels went on taking a typed time, a dropped puck and a tap on the late
+     mark from inside the one screen that exists to stop exactly that, and all
+     three change what a man earns. The switch and his puck stay live; every
+     other control on the row is shut. `oilItem` is set only when the mode is on
+     for this day AND this claim asks for OIL, which is precisely the set of
+     rows that reach here read-only. */
+  const modeRO=!!oilItem;
+  const fld=(cls:any,f:any,v:any,ph:any)=>boxHTML(cls,`data-ifld="${esc(id)}.${f}"${modeRO?' disabled':''}`,v,ph);
   /* the GRIP's own track, kept even though an input row cannot be dragged.
      Every c6r template reserves a leading 18px track, and the phone rule
      (`display:none` on .sb-grip, three columns for the rest) is written
@@ -612,7 +623,8 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
      bug this file already documents). So on a LATE row the item cell becomes a
      wrapper holding the type label plus the chip; a non-late row keeps the bare
      label and is byte-identical to before. */
-  const lc=lateChip(inp);
+  /* the passive badge inside the mode: it still SAYS the input was late, it just cannot be turned off from here */
+  const lc=modeRO?lateTag(inp):lateChip(inp);
   const itemCell=oilItem
     ? oilItemCellHTML(di,oilItem,inpLabel(inp),`sbi-ty inpty ${inTypeCls(inp.type)}`)
     : inpEditLabel(inp,true,inpLabel(inp),`sbi-ty inpty ${inTypeCls(inp.type)}`);
@@ -622,7 +634,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
     +fld('atm','str',inpTimeText(inp,'str'),'all day')+fld('atm','end',inpTimeText(inp,'end'),'')
     +`<div class="ppl">${pk}${sbt}</div>`
     +fld('ain rmkin','rmks',inp.remarks||'','remarks')
-    +`<span class="lctl">${acc?accCtl(di,inp):''}</span></div>`;
+    +`<span class="lctl">${acc&&!modeRO?accCtl(di,inp):''}</span></div>`;
 }
 /* ro (5th param, reviewer-found residual 9 Aug 26): accepting an input is a
    write — promotes it into the ground programme through the mutation funnel

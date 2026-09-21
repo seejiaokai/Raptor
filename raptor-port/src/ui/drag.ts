@@ -190,6 +190,14 @@ export function applyDrop(el: any, x: any, y: any) {
      DRAG state — this is what actually stops it, not the render gate that
      started the drag. */
   if (!canEditSched() || !editMode()) { DRAG = null; dndOff(); return false }
+  /* AND NOT FROM INSIDE OIL EARN (fix 5, 22 Sep 26). The mode's whole promise
+     is that the day underneath does not move while a scheduler decides what it
+     pays, and the board's own controls are already shut while it is on — but a
+     drag picked up from the palette is not one of the board's controls, and it
+     lands here with live DRAG state whatever the board drew. Same reason the
+     role check sits here rather than at each call site: this is what actually
+     stops it. */
+  if (view.OILDAY != null) { DRAG = null; dndOff(); HOOKS.toast('Leave OIL Earn before moving anyone — the day cannot change while you are deciding what it pays', 'warn'); return false }
   if (!DRAG || !el || !el.closest) { DRAG = null; dndOff(); return false }
   /* WARN as it stands before anything is written — the drop delta's baseline
      (state/dropflag.ts). validate() reassigns WARN, so this is a snapshot by

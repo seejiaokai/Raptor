@@ -817,6 +817,11 @@ export function routeClick(e: MouseEvent) {
     if (!canEditSched() || view.CURPAGE !== 'editsched') return
     const di = +unp.dataset.unpub!
     if (view.DPREV.has(di)) return
+    /* LEAVE THE MODE FIRST (fix 5, Fable M11). Withdrawing a day changes what
+       the whole day is — it stops paying — and the mode is a screen that says
+       the day underneath does not move. Staying in it afterwards would leave
+       every figure on it describing a document that has just been taken back. */
+    view.setOilDay(null)
     if (oilCreditBidAgainst(di) && !view.unpubArmed(di)) {
       view.setUnpubArm(di)
       HOOKS.toast(`Heads up — ${DAYS[di]?.dow || 'this day'}’s OIL credits are bid against on the Leave War. Unpublishing withdraws them until you republish. Tap again to confirm.`, 'warn')
@@ -960,6 +965,10 @@ export function routeClick(e: MouseEvent) {
   if (drOpen) {
     e.stopPropagation()
     if (!canEditSched() || view.CURPAGE !== 'editsched') return
+    /* and the same on the plans selector (fix 5, Fable M11): everything it
+       offers — loading a saved plan onto the working copy, switching version —
+       replaces the day the mode is describing */
+    view.setOilDay(null)
     planMenu(drOpen, +drOpen.dataset.planmenu!)
     return
   }
