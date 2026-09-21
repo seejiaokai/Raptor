@@ -80,6 +80,15 @@ export interface OilInputEv {
   asks: boolean
   /** its standing on the programme: 'g' landed · 'u' unavailable · 'r' dormant · '' fresh */
   acc: string
+  /** THE ONE LANDED ROW'S OWN STATE, frozen here so every covered day can read
+   *  it (job 2, 22 Sep 26). A request lands ONE row, on its FIRST day, by
+   *  design — so asking "is there a row on the day being paid?" answered NO on
+   *  every other day it covers, and a Saturday the member had answered YES for
+   *  paid nothing. The row's state travels with the claim instead:
+   *  `unlanded` never landed · `active` a live row · `cx` cancelled ·
+   *  `info` shown-only · `gone` its row was deleted · `elsewhere` landed on a
+   *  week nobody has loaded. */
+  stand: 'unlanded' | 'active' | 'cx' | 'info' | 'gone' | 'elsewhere'
   /** its window on this date, rolled; null when it carries no usable one */
   win: [number, number] | null
   /** the MEMBER's own answer for this date — null = unanswered. Never overwritten. */
@@ -151,6 +160,41 @@ export function earnsFrom(ev: OilEvidence, person: string, item: string, dflt: b
 /** every OIL-bearing input covering `iso`, projected (§7.1 item 4). Reads live
  *  INPUTS — which is exactly right while this is the LIVE candidate, and is
  *  never reached on an issued day, whose block is frozen. */
+/** The ONE row a request landed on, wherever it sits, reduced to what the
+ *  money needs to know. A request lands once (`acceptInput` refuses a second
+ *  landing for the same id), so this is a search for a single row across every
+ *  LOADED day — not a per-day question.
+ *
+ *  NOT FOUND is the case that needs care, because it means two opposite things
+ *  and they pay opposite ways:
+ *    · the row was DELETED out from under the claim — it earns nothing, and a
+ *      test has pinned that since R-2 (21 Sep 26);
+ *    · the row is simply on a week nobody has LOADED — the claim stands, which
+ *      is the whole point of this repair.
+ *  They are told apart by the request's FIRST covered day, which is where
+ *  `acceptInput` puts the row. If that day is in front of us and carries no
+ *  row, the row is gone. If it is not loaded at all, the row is elsewhere and
+ *  we simply cannot see it.
+ *
+ *  STATED LIMIT: an anchor row CANCELLED in a week nobody has loaded reads as
+ *  `elsewhere`, so its other days still pay. Closing that needs a stash-aware
+ *  read; filed rather than pretended. (Codex proposed a helper
+ *  `landedOnUnloadedWeek` for this — no such function exists in the codebase.) */
+function landedStanding(row: any): OilInputEv['stand'] {
+  if (String(row.acc || '') !== 'g') return 'unlanded'
+  const key = String(inpId(row))
+  const first = dateOrd(row.date, row.yr)
+  let firstDayLoaded = false
+  for (let i = 0; i < DAYS.length; i++) {
+    const d: any = DAYS[i]
+    if (!d) continue
+    if (first != null && dateOrd(d.dt, row.yr) === first) firstDayLoaded = true
+    const hit = (d.ground || []).find((r: any) => r && String(r.src || '') === key)
+    if (hit) return hit.cx ? 'cx' : hit.info ? 'info' : 'active'
+  }
+  return firstDayLoaded ? 'gone' : 'elsewhere'
+}
+
 export function projectOilInputs(iso: string): OilInputEv[] {
   const ord = +String(iso).replace(/-/g, '')
   const out: OilInputEv[] = []
@@ -168,6 +212,7 @@ export function projectOilInputs(iso: string): OilInputEv[] {
       type: String(row.type || ''),
       asks: true,
       acc: String(row.acc || ''),
+      stand: landedStanding(row),
       win: w && w[1] > w[0] ? [w[0], w[1]] : null,
       ans: typeof ans === 'number' ? ans : null,
     })
@@ -296,7 +341,7 @@ export function oilDecisionsKey(dec: OilDecisions | undefined): string {
 
 export function oilEvidenceKey(ev: OilEvidence | null | undefined): string {
   if (!ev || !ev.earns) return ''
-  const ins = ev.inputs.map(i => `${i.iid}:${i.person}:${i.type}:${i.acc}:${i.win ? i.win.join('-') : ''}:${i.ans == null ? '' : i.ans}`).join(',')
+  const ins = ev.inputs.map(i => `${i.iid}:${i.person}:${i.type}:${i.acc}:${i.stand}:${i.win ? i.win.join('-') : ''}:${i.ans == null ? '' : i.ans}`).join(',')
   const sent = Object.keys(ev.sent).sort().map(k => `${k}=${[...ev.sent[k]].sort().join('+')}`).join(',')
   return `${ev.iso}|${oilDecisionsKey(ev.d)}|${ins}|${sent}`
 }
@@ -318,11 +363,13 @@ export function oilEvidenceKey(ev: OilEvidence | null | undefined): string {
  *  same judgement the green bar makes about a row that gave a man nothing (O-1).
  *  A row that has been deleted outright takes its claim with it for the same
  *  reason. */
-export function oilInputEligible(day: any, inp: OilInputEv): boolean {
+export function oilInputEligible(_day: any, inp: OilInputEv): boolean {
   if (!inp.asks || inp.acc === 'r' || !inp.win) return false
   if (inp.acc !== 'g') return true                                  // never landed: the claim stands on its own
-  const row = (day && day.ground || []).find((g: any) => g && String(g.src || '') === inp.iid)
-  return !!row && !row.cx && !row.info
+  /* the ONE row's state, frozen onto the claim at projection — NOT a lookup on
+     the day being paid, which is what made a multi-day request pay nothing on
+     every day but the one its row happened to sit on (job 2) */
+  return inp.stand !== 'cx' && inp.stand !== 'info' && inp.stand !== 'gone'
 }
 
 /** The work that actually earns on a day, after the day's OIL evidence is

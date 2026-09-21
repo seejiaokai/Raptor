@@ -343,3 +343,69 @@ describe('the bug check (Fable + Astra, 21 Sep 26)', () => {
     expect(daySigned(SAT), 'the OIL decisions changed, so the sign-off no longer covers the day').toBe(false)
   })
 })
+
+/* JOB 2 — a request over several days is answered per day, and pays on none of
+   them. The claim lands ONE row, on its FIRST day, by design (acceptInput
+   refuses a second landing for the same id). oilInputEligible then looked for
+   that row on the day being PAID, so every covered day but the first failed.
+   Both red teams refused the obvious repair — landing a row on every covered
+   day would change how leave, medicals, overseas duty and courses all land —
+   so the money reads the request itself, carrying the ONE row's standing
+   across every day the request covers. Reproduced in the app 21 Sep 26: Anvil,
+   Training Fri 17 → Mon 20, Saturday answered yes, nothing paid anywhere. */
+describe('a multi-day request pays on every day it was answered for (job 2)', () => {
+  const span = (extra: any = {}) => claim({
+    iid: 'mdq', person: 'bane', type: 'Training', date: 'Jul 17', endDate: 'Jul 20',
+    allday: false, s: 8 * 60, e: 18 * 60, acc: 'g',
+    oil: { '2026-07-18': 1, '2026-07-19': 0 }, ...extra,
+  })
+
+  it('the Saturday it was answered YES for pays, and the Sunday it was answered NO for does not', () => {
+    span()
+    groundRow(4, { prog: 'Training', str: '08:00', end: '18:00', who: 'bane', src: 'mdq' })  // the ONE row, on the Friday
+    expect(figure(SAT, 'bane'), 'answered yes for the Saturday').toBe('FO')
+    expect(figure(6, 'bane'), 'answered no for the Sunday').toBe(null)
+  })
+
+  it("the one row's standing governs every covered day — a CANCELLED anchor pays nothing anywhere", () => {
+    span()
+    const row = groundRow(4, { prog: 'Training', str: '08:00', end: '18:00', who: 'bane', src: 'mdq' })
+    row.cx = true
+    expect(figure(SAT, 'bane'), 'the scheduler cancelled the row, so the claim earns nothing').toBe(null)
+  })
+
+  it('an INFO-ONLY anchor pays nothing anywhere either', () => {
+    span()
+    const row = groundRow(4, { prog: 'Training', str: '08:00', end: '18:00', who: 'bane', src: 'mdq' })
+    row.info = true
+    expect(figure(SAT, 'bane')).toBe(null)
+  })
+
+  it('a DORMANT request earns nothing, as it always did', () => {
+    span({ acc: 'r' })
+    expect(figure(SAT, 'bane')).toBe(null)
+  })
+
+  /* The two ways a row can be missing pay OPPOSITE ways, so they must be told
+     apart, not lumped together. A row DELETED out from under the claim earns
+     nothing (pinned since R-2). A row simply sitting in a week nobody has
+     loaded still earns — that is the cross-week half of this very bug. The
+     request's FIRST covered day decides it: if that day is in front of us and
+     carries no row, the row is gone; if it is not loaded, we just cannot see it. */
+  it('a request anchored in a week nobody has loaded still pays its answered days (Codex M1, cross-week)', () => {
+    claim({
+      iid: 'xweek', person: 'stiff', type: 'Training', date: 'Jul 11', endDate: 'Jul 18',
+      allday: false, s: 8 * 60, e: 18 * 60, acc: 'g', oil: { '2026-07-18': 1 },
+    })
+    /* Jul 11 is the PREVIOUS week — not among the loaded days, so its row
+       cannot be seen from here and its absence is not evidence of deletion */
+    expect(figure(SAT, 'stiff'), 'the claim stands on its own answer').toBe('FO')
+  })
+
+  it('exactly ONE row still lands — the repair must not clone rows onto every covered day', () => {
+    span()
+    groundRow(4, { prog: 'Training', str: '08:00', end: '18:00', who: 'bane', src: 'mdq' })
+    const rows = DAYS.reduce((n: number, d: any) => n + ((d.ground || []).filter((g: any) => g.src === 'mdq').length), 0)
+    expect(rows, 'one request, one row').toBe(1)
+  })
+})
