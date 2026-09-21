@@ -719,10 +719,12 @@ admin taps a puck to take a man off one event, or taps an item to stop the whole
   OIL evidence block; round two accepted the architecture and left four integration gaps, answered
   in §9. **Stopped at two rounds by the owner's cap**, so §9's four answers were not themselves
   re-reviewed — they go to the post-build code inspection with extra weight.
-- **THREE THINGS ARE HIS TO CONFIRM before the build** — §8 of the decisions doc names them: a man
-  who goes on leave after publication still earns until the day is amended; the deploy reset and
-  its real scope (the demo weeks, published days, inputs and Leave War cleared together, not just
-  OIL numbers); and a sentinel puck wearing no green bar.
+- **NOTHING IS OUTSTANDING FOR THE OWNER — the design is CLOSED** (21 Sep 26, §8). His last three:
+  the published schedule is the truth (full freeze, corrected by unpublish-and-republish under the
+  same label, NOT by an approved-absence carve-out — do not build that); the full existing
+  development reset, scope stated and agreed; and a sentinel puck that DOES go green when everyone
+  behind it earns the same, with the count chip carrying the mixed case.
+- **READY TO BUILD.** Next step is the build, not more design.
 - **EVERY open question from the DESIGN is answered** (21 Sep 26). A publish reminder to all schedulers: YES.
   ALL vs ALL AVAIL: stay identical, deliberately — do not "fix" the duplication. A Leave War
   removal door: **NO, do not build one** (§4 has the three reasons and the cost he accepted).

@@ -467,10 +467,31 @@ the evidence block of §7.1. The pass, and every issued display, read that froze
 resolution is for the DRAFT only. Changing who is on an issued ALL AVAIL event then costs an
 amendment, like every other change to an issued day.
 
-**The consequence the owner must hear:** once a day is published, a man who later goes on leave
-still shows on that event and still earns, until the day is amended. That is the same rule as
-everything else on an issued schedule — the document is the squadron's word — but it is a change
-from today's live behaviour. It is also what makes §7.6's sentinel display possible at all.
+**RULED 21 Sep 26 — the published schedule IS the truth, full freeze, no carve-out.** The owner was
+offered a refinement (freeze the tasking but still drop an APPROVED absence — leave, medical, OD —
+since a member cannot grant himself any of those) and **declined it**, with a better answer:
+
+> *"I think just take the published schedule as truth … if the scheduler doesn't want to create an
+> amendment that doesn't concern the rest of the people, they can just unpublish and now they
+> publish the same version with the updated leave input. And now everything reflects correctly. Or
+> the EOD publish would also have corrected it."*
+
+**Verified in the code, and it works exactly as he says.** `unpublishDay`/`retireIssued`
+(`publish.ts:654-693`) is the "correct quietly" engine: the retracted version is kept forever as its
+own immutable snapshot in the append-only `retired` log, and **the day drops back to an editable
+working copy so it can be corrected and RE-ISSUED UNDER THE SAME LABEL** — ORIG stays ORIG, AL1
+stays AL1. No new amendment number, nothing that reads to the squadron as a change. Silent until a
+shared database registers it, then a line in the history (his 17 Sep 26 ruling). Republishing takes
+a fresh `daySnap`, so the frozen membership and the frozen input evidence update with it. The button
+already warns when withdrawing the day's credit would push someone's balance negative
+(`oilCreditBidAgainst`, `sync.ts:1006`).
+
+So the correction path for one man dropping out after publication is **unpublish → republish**, or
+the end-of-day publish, and neither costs an amendment. **Do NOT build the approved-absence
+carve-out** — it was considered and rejected in favour of this; a second path would be the same fact
+deciding the credit in two places.
+
+This is also what makes §7.6's sentinel display possible at all.
 
 ### 7.4 The marks need a stable identity, or a member's edit silently clears them (OAR-004, medium)
 
@@ -509,21 +530,42 @@ and back, not a silent one. Never backfill issued evidence from unapproved live 
 schedule draws ONE puck for ALL / ALL AVAIL (`html.ts:308-311`). The people behind it can earn a
 full day, a half day and nothing at the same time. No single bar says that.
 
-**The design's answer.** A sentinel puck wears **no bar**. The count chip beside it (§2.7) carries
-the summary — `9 · 6 earn` — and tapping it lists each person with his own figure, which is the
-same list that chip already opens. §7.3's frozen participants are what make this readable on an
-issued day at all. **Put to the owner as a small visual question**, since he chose the bar.
+**The design's answer, as the owner REFINED it 21 Sep 26** — *"if everyone in the all avail or all
+puck is granted OIL, it should be green."* So the sentinel DOES wear a bar when the people behind it
+agree, and only falls back to the chip when they do not. Four states:
+
+| behind the puck | the puck | the count chip |
+|---|---|---|
+| everyone earns a FULL day | full-height green bar | plain, `9` |
+| everyone earns HALF a day | half-height paler bar (§2.10) | plain, `9` |
+| nobody earns | no bar | plain, `9` |
+| **mixed** | **no bar** | **green, `6 of 9 earn`** |
+
+**The mixed case is the session's call, not the owner's — flag it if reopened.** A mixed puck and an
+earns-nothing puck both wear no bar, so the CHIP is what tells them apart: green with a fraction
+means "some of these men earn", plain means "none do". That avoids inventing a third bar style for
+a state that has no single honest figure. Tapping the chip lists each person with his own figure —
+the same list the chip already opens (§2.7).
+
+§7.3's frozen participants are what make any of this readable on an issued day: without them the
+puck's answer would change under the reader.
 
 ---
 
-## 8. What is still the owner's to answer after the red team
+## 8. The three post-red-team questions — ALL ANSWERED (21 Sep 26)
 
-1. §7.3 — once a day is published, a man who later goes on leave still earns until it is amended.
-   Stated to him as a consequence; not yet confirmed.
-2. §7.5 + §9.4 — the deploy reset, **and its real scope**: not just OIL numbers, but the demo
-   weeks, the published days, the inputs and the Leave War cleared and re-seeded together, using
-   the reset the app already has. Right while the app is pre-promulgation; wrong the day after.
-3. §7.6 — a sentinel puck wearing no bar, the count chip carrying the summary instead.
+Nothing is outstanding for the owner. The design is closed.
+
+1. **§7.3 — frozen membership: ANSWERED, full freeze.** The published schedule is the truth. He
+   rejected the approved-absence carve-out that was recommended to him, on the grounds that
+   unpublish-and-republish already corrects a day under the same label at no amendment cost —
+   verified. **Do not build the carve-out.**
+2. **§7.5 + §9.4 — the deploy reset: ANSWERED, "ok reset".** The full existing development reset,
+   at its real scope: inputs, every week including its issued snapshots, and the Leave War cleared
+   and re-seeded together. He was told the scope explicitly before agreeing. Right while the app is
+   pre-promulgation; revisit the day it is not.
+3. **§7.6 — the sentinel puck: ANSWERED and REFINED.** It DOES go green when everyone behind it
+   earns the same thing; the count chip carries the mixed case. Table in §7.6.
 
 ---
 
