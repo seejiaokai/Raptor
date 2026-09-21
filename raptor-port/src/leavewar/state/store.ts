@@ -91,6 +91,7 @@ import {
   recContribs,
   newRecId,
   isCredit,
+  splitTakenOver,
   liveRequestsOn,
   portionOfCode,
   requestWin,
@@ -2034,10 +2035,12 @@ export function cellProblem(personId: string, date: string, code: string): strin
   const list = listAt(personId, date)
   if (clean === 'FO' || clean === 'HO') {
     if (state.role !== 'admin') return 'Only an admin can enter OIL.'
-    const had = list.find(isCredit)
-    if (had && had.oil === 'auto') return 'That day already earns OIL from the published schedule.'
-    /* nothing else stops a credit: work lands on a leave day and the day is
-       flagged (owner, 20 Sep 26) */
+    /* A DAY THE SCHEDULE ALREADY EARNS NO LONGER REFUSES AN AWARD (N16,
+       21 Sep 26). It used to answer "That day already earns OIL from the
+       published schedule" — which under this ruling is the app declining to
+       record a fact the owner has said is separate. An award sits beside the
+       schedule's credit and the two add up. Nothing else stops a credit
+       either: work lands on a leave day and the day is flagged. */
     return null
   }
   if (!isBiddable(clean) || !parseCell(clean)) return 'That is not something you can bid here.'
@@ -2082,12 +2085,24 @@ export function setCell(personId: string, date: string, code: string): boolean {
 
   if (clean === 'FO' || clean === 'HO') {
     if (state.role !== 'admin') return false
-    const had = list.find(isCredit)
-    if (had && had.oil === 'auto') return false
+    /* THE AWARD, never the schedule's own credit (N16, 21 Sep 26). This used
+       to take whichever credit the day held, which under one record could
+       only ever be the right one. With two, it depends on which landed first
+       — so an award typed onto an already-published Saturday would have been
+       invisible to every edit made here. */
+    const had = list.find(r => isCredit(r) && r.oil === 'manual') as CreditRec | undefined
     if (had && had.code === clean) return false
     const c: Contrib = { id: 'new', kind: 'credit', code: clean, win: FULL }
     if (occupiedFor(c, personId, date, had ? [had] : [])) return false
-    const rec: CreditRec = { id: had?.id ?? newRecId('c'), kind: 'credit', code: clean, oil: 'manual', ...(had?.note ? { note: had.note } : {}), ...(had?.spans ? { spans: had.spans } : {}) }
+    /* CHANGING THE CODE CHANGES THE CODE, AND NOTHING ELSE (Astra, 21 Sep 26).
+       It rebuilt the record from scratch here and carried only the reason and
+       the hours across, so an award's QUANTITY and who gave it were dropped
+       every time an admin re-typed its code — a 3-day award silently becoming
+       half a day, with nothing on screen to say so. That was already true
+       before this ruling; two records only made it cost more. */
+    const rec: CreditRec = had
+      ? { ...had, code: clean }
+      : { id: newRecId('c'), kind: 'credit', code: clean, oil: 'manual' }
     return putList(personId, date, [...list.filter(r => r !== had), rec])
   }
 
@@ -3197,8 +3212,25 @@ export function ingestDutyCredit(personId: string, date: string, code: 'FO' | 'H
 function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO', why?: string, spans?: Array<[number, number]>, via: 'schedule' | 'input' = 'schedule'): IngestResult {
   if (code !== 'FO' && code !== 'HO') return 'ignored'
   if (!warHolding(state.wars, date)) return 'ignored'
+  /* HEAL A TAKEN-OVER DAY FIRST, AND WRITE THE HEALING DOWN (N16, 21 Sep 26).
+     A day stored under the retired take-over shape is an award hiding inside
+     the schedule's record. If this pass read it as its own ordinary credit it
+     would rewrite it and the award would be gone — so it is split back into
+     two records first.
+     The write has to happen HERE, before anything else looks at the list:
+     further down, a credit identical to what this pass would produce takes the
+     short-circuit and returns without writing at all, so a split done only in
+     a local variable would be thrown away — the day reading 1 for the rest of
+     the session and 4 after the next reload (Fable, 21 Sep 26). */
+  const raw = listAt(personId, date)
+  const healed = splitTakenOver(raw)
+  if (healed !== raw) putList(personId, date, healed)
   const list = listAt(personId, date)
-  const had = list.find(isCredit)
+  /* THE PASS OWNS ITS OWN CREDIT AND NOTHING ELSE. An award on this day is a
+     different fact — days the man is OWED — and the owner ruled the two add
+     up and never affect each other, so this writer must not be able to see
+     one, let alone take it over. */
+  const had = list.find(r => isCredit(r) && r.oil === 'auto') as CreditRec | undefined
   const note = (why ?? '').trim().slice(0, MAX_REC_NOTE)
   const clean = spans?.filter(s => Array.isArray(s) && s[0] <= s[1] && s[0] >= 0 && s[1] <= 1439)
   const rec: CreditRec = { id: had?.id ?? newRecId('c'), kind: 'credit', code, oil: 'auto', via, ...(note ? { note } : {}), ...(clean && clean.length ? { spans: clean } : {}) }
@@ -3222,56 +3254,33 @@ function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO',
      longer refuse, the strip is derived from the same conflicts, and the
      reverse pass already removes an auto credit once the work is gone. */
   const clash = probe.some(p => others.some(o => forbiddenPair(p, o)))
-  /* The comparison is against the record this pass would WRITE, carried fields
-     and all — comparing against the bare `rec` made a taken-over award look
-     different on every pass and rewrote it forever (Fable, 21 Sep 26). */
-  const same = had && had.oil === 'auto' && had.code === code && !had.manual && JSON.stringify(had) === JSON.stringify(rec)
+  /* Idempotent on purpose: the pass runs on EVERY change, so an unchanged day
+     must recognise its own credit and write nothing. Since N16 that comparison
+     is simple again — the record on the day is the pass's own and carries
+     nothing it did not put there, so it is compared against exactly what this
+     run would write. */
+  const same = had && had.code === code && JSON.stringify(had) === JSON.stringify(rec)
   if (same) return clash ? 'clash' : 'confirmed'
-  /* TAKEN OVER IN PLACE, BUT NEVER DESTROYED. The squadron recorded this fact
-     first; the schedule now backs it, so the credit becomes the schedule's and
-     shows as such. What it must NOT do is forget where it came from: the
-     reverse pass may clear an `auto` credit, so an unpublish used to delete
-     the admin's own record outright — a hand-entered call-out vanished because
-     the schedule later happened to earn a credit on the same day (Codex
-     review, 20 Sep 26), against design §18 OA3-003. It now carries
-     `wasManual`, the admin's own reason is kept in preference to the
-     schedule's words, and an unpublish returns it to `manual` rather than
-     removing it. */
-  /* Idempotent on purpose: the pass runs on EVERY change, so a second run
-     must recognise a credit it has already taken over and carry the snapshot
-     forward untouched. Testing `oil === 'manual'` alone lost it on the very
-     next pass, which put the deletion-on-unpublish straight back. */
-  const snap: CreditRec['manual'] | undefined = had
-    ? had.manual ?? (had.oil === 'manual'
-      ? { code: had.code, ...(had.note ? { note: had.note } : {}), ...(had.givenBy ? { givenBy: had.givenBy } : {}), ...(had.days != null ? { days: had.days } : {}), ...(had.spans ? { spans: had.spans } : {}) }
-      : undefined)
-    : undefined
-  /* AN AWARD IS NOT THE SAME FACT AS THE WORK, SO THE TAKEOVER MUST NOT EAT IT
-     (Fable, 21 Sep 26; consequence of the owner's 20 Sep award ruling). The
-     takeover was built when a hand-typed credit meant "the squadron recorded
-     this work first" — the same fact, so replacing it lost nothing. Since the
-     ruling it is an AWARD: days a man is OWED, which the schedule knows nothing
-     about. Replacing it wholesale took a 3-day award down to the one day the
-     Saturday earns, silently, and his balance was short by two until somebody
-     unpublished the day.
-     So the award's QUANTITY and its WORDS ride on: the day now says both what
-     the schedule earned and what he was owed, and the balance never falls. The
-     snapshot is still kept for the unpublish hand-back. Whether an award and a
-     worked day should ADD UP (3 + 1) is the owner's call and is not assumed
-     here — this keeps the larger of the two, which is what he had before. */
-  const kept: CreditRec = snap
-    ? {
-      ...rec,
-      manual: snap,
-      ...(snap.days != null ? { days: Math.max(snap.days, code === 'FO' ? 1 : 0.5) } : {}),
-      ...(snap.note ? { note: snap.note } : {}),
-      ...(snap.givenBy ? { givenBy: snap.givenBy } : {}),
-    }
-    : rec
-  putList(personId, date, [...staying, kept])
+  /* NOTHING IS TAKEN OVER ANY MORE (N16, 21 Sep 26 — "an award and a worked
+     day add up. So it's 4. The auto oil credits don't get affected by manual
+     OIL inputs").
+
+     What stood here was the take-over: the schedule's credit landing ON TOP of
+     an award, with the award stashed in a snapshot so an unpublish could hand
+     it back, and — after the 21 Sep defect — the award's quantity and words
+     copied across so its worth would not fall. Every line of it existed for
+     one reason: a person/date could hold ONE credit, so two facts had to share
+     a slot. The owner's ruling gives them a slot each, and the whole apparatus
+     goes with it: no snapshot, no hand-back, no keeping the larger of the two.
+
+     That is the point, not a side effect. Both of the silent balance bugs
+     found on the night of 20–21 Sep lived inside that snapshot, and so did
+     the one both reviewers found in the plan for THIS change. An award the
+     pass cannot see is an award the pass cannot damage. */
+  putList(personId, date, [...staying, rec])
   /* 'clash' still REPORTS — the day needs a human — but it no longer means
      "nothing was written". The credit is on the day either way. */
-  return clash ? 'clash' : snap ? 'confirmed' : 'written'
+  return clash ? 'clash' : 'written'
 }
 
 /**
@@ -3303,6 +3312,12 @@ function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO',
  * change the schedule), or hours that are not a real span. It is never refused
  * for clashing with leave: work always lands and the day is flagged.
  */
+/** THE DAY'S AWARD — the hand-typed credit, never the schedule's own (N16,
+ *  21 Sep 26). One resolver, because a day can hold both and `find(isCredit)`
+ *  then answers with whichever landed first. */
+const awardAt = (list: readonly WarRec[]): CreditRec | undefined =>
+  list.find(r => isCredit(r) && r.oil === 'manual') as CreditRec | undefined
+
 export function setManualCredit(
   personId: string, date: string, code: 'FO' | 'HO',
   opts: { note?: string; givenBy?: string; days?: number | null } = {},
@@ -3311,8 +3326,11 @@ export function setManualCredit(
   if (!warHolding(state.wars, date)) return 'That day is in no war'
   if (code !== 'FO' && code !== 'HO') return 'That is not an OIL code'
   const list = listAt(personId, date)
-  const had = list.find(isCredit)
-  if (had && had.oil === 'auto') return 'That day already earns OIL from the published schedule'
+  /* THE DAY'S AWARD, which is a different record from the schedule's credit
+     since N16 (21 Sep 26) — and re-typing one replaces the award alone. The
+     refusal that stood here, "That day already earns OIL from the published
+     schedule", is gone with the ruling: the two add up. */
+  const had = list.find(r => isCredit(r) && r.oil === 'manual') as CreditRec | undefined
   const note = (opts.note ?? '').trim().slice(0, MAX_REC_NOTE)
   const givenBy = (opts.givenBy ?? '').trim().slice(0, MAX_GIVEN_BY)
   const days = opts.days ?? null
@@ -3327,6 +3345,61 @@ export function setManualCredit(
     ...(days !== null ? { days } : {}),
   }
   return putList(personId, date, [...list.filter(r => r !== had), rec]) ? null : 'Could not write that'
+}
+
+/**
+ * CHANGE AN AWARD'S REASON, ITS GIVER AND ITS DAYS — AS ONE THING
+ * (Astra, 21 Sep 26).
+ *
+ * The OIL tracker's "Save" called the three single-field editors below in a
+ * row. That is three separate commands, so ONE press of undo took back the
+ * reason and left the balance changed and the giver rewritten; and a value
+ * the third editor refused left the first two already written. The store's own
+ * `setManualCredit` says why that is wrong, in so many words — "ONE command,
+ * so it is ONE undo step" — and the tracker's editor was built the way that
+ * sentence forbids.
+ *
+ * Addressed by RECORD, not by day: since N16 a day can hold the schedule's
+ * credit as well as an award, and only the award is anybody's to edit.
+ *
+ * Everything is checked before anything is written, so a refusal leaves the
+ * record exactly as it was. `null` in a field clears it; a field left out is
+ * left alone. Returns null when done, else the reason in the sheet's words.
+ */
+export function editManualCredit(
+  personId: string, date: string, recId: string,
+  patch: { note?: string; givenBy?: string; days?: number | null },
+): string | null {
+  if (state.role !== 'admin') return 'Only an admin can edit OIL'
+  if (!warHolding(state.wars, date)) return 'That day is in no war'
+  const list = listAt(personId, date)
+  const had = list.find(r => r.id === recId && isCredit(r)) as CreditRec | undefined
+  if (!had) return 'There is no OIL credit on that day'
+  if (had.oil !== 'manual') return 'That credit comes from the published schedule — change the schedule instead'
+
+  const next: CreditRec = { ...had }
+  if (patch.note !== undefined) {
+    const clean = patch.note.trim()
+    if (clean.length > MAX_REC_NOTE) return `A reason is at most ${MAX_REC_NOTE} characters`
+    if (clean) next.note = clean; else delete next.note
+  }
+  if (patch.givenBy !== undefined) {
+    const clean = patch.givenBy.trim()
+    if (clean.length > MAX_GIVEN_BY) return `Given by is at most ${MAX_GIVEN_BY} characters`
+    if (clean) next.givenBy = clean; else delete next.givenBy
+  }
+  if (patch.days !== undefined) {
+    const days = patch.days
+    if (days === null) delete next.days
+    else {
+      if (!Number.isFinite(days) || days <= 0) return 'Type how many days — or leave it blank'
+      if (days * 2 !== Math.round(days * 2)) return 'OIL goes in halves — 1, 1.5, 2'
+      if (days > MAX_GRANT_DAYS) return `That is more than ${MAX_GRANT_DAYS} days`
+      next.days = days
+    }
+  }
+  if (JSON.stringify(next) === JSON.stringify(had)) return null
+  return putList(personId, date, list.map(r => (r === had ? next : r))) ? null : 'Could not change that'
 }
 
 /**
@@ -3357,9 +3430,10 @@ export function setCellDays(personId: string, date: string, days: number | null)
   if (state.role !== 'admin') return 'Only an admin can edit OIL'
   if (!warHolding(state.wars, date)) return 'That day is in no war'
   const list = listAt(personId, date)
-  const had = list.find(isCredit)
-  if (!had) return 'There is no OIL credit on that day'
-  if (had.oil !== 'manual') return 'That credit comes from the published schedule — change the schedule instead'
+  const had = awardAt(list)
+  if (!had) return list.some(isCredit)
+    ? 'That credit comes from the published schedule — change the schedule instead'
+    : 'There is no OIL credit on that day'
   if (days !== null) {
     if (!Number.isFinite(days) || days <= 0) return 'Type how many days — or leave it blank'
     if (days * 2 !== Math.round(days * 2)) return 'OIL goes in halves — 1, 1.5, 2'
@@ -3383,13 +3457,14 @@ export function setCellGivenBy(personId: string, date: string, givenBy: string):
   if (state.role !== 'admin') return 'Only an admin can edit OIL'
   if (!warHolding(state.wars, date)) return 'That day is in no war'
   const list = listAt(personId, date)
-  const had = list.find(isCredit)
-  if (!had) return 'Only an FO or HO credit takes a given-by'
+  const had = awardAt(list)
+  if (!had) return list.some(isCredit)
+    ? 'That credit comes from the published schedule — change the schedule instead'
+    : 'Only an FO or HO credit takes a given-by'
   const clean = givenBy.trim()
   if (clean.length > MAX_GIVEN_BY) return `Given by is at most ${MAX_GIVEN_BY} characters`
   if (!clean && !had.givenBy) return null
   if (clean === had.givenBy) return null
-  if (had.oil !== 'manual') return 'That credit comes from the published schedule — change the schedule instead'
   const { givenBy: _old, ...rest } = had
   const next: CreditRec = clean ? { ...rest, givenBy: clean } : rest
   putList(personId, date, list.map(r => (r === had ? next : r)))
@@ -3404,8 +3479,10 @@ export function setCellNote(personId: string, date: string, note: string): strin
   if (state.role !== 'admin') return 'Only an admin can edit OIL'
   if (!warHolding(state.wars, date)) return 'That day is in no war'
   const list = listAt(personId, date)
-  const had = list.find(isCredit)
-  if (!had) return 'Only an FO or HO credit takes a reason'
+  const had = awardAt(list)
+  if (!had) return list.some(isCredit)
+    ? 'That credit comes from the published schedule — change the schedule instead'
+    : 'Only an FO or HO credit takes a reason'
   const clean = note.trim()
   if (clean.length > MAX_REC_NOTE) return `A reason is at most ${MAX_REC_NOTE} characters`
   const { note: _old, ...rest } = had
@@ -3423,21 +3500,22 @@ export function setCellNote(personId: string, date: string, note: string): strin
 export function clearRaptorCell(personId: string, date: string): boolean {
   // Locked: a sync-driven delete is not a Leave War undo step.
   return locked(() => {
-    const list = listAt(personId, date)
+    /* A day stored under the retired take-over shape is healed first, so the
+       award it is hiding is a record of its own before anything is removed. */
+    const raw = listAt(personId, date)
+    const list = splitTakenOver(raw)
     const had = list.find(r => r.kind === 'credit' && r.oil === 'auto') as CreditRec | undefined
-    if (!had) return false
-    /* the squadron's OWN record, taken over in place when the schedule agreed
-       with it: give back EXACTLY what the admin typed rather than deleting it,
-       and rather than handing back the schedule's credit wearing a manual
-       label (design §18 OA3-003) */
-    if (had.manual) {
-      const back: CreditRec = { id: had.id, kind: 'credit', oil: 'manual', code: had.manual.code,
-        ...(had.manual.note ? { note: had.manual.note } : {}),
-        ...(had.manual.givenBy ? { givenBy: had.manual.givenBy } : {}),
-        ...(had.manual.days != null ? { days: had.manual.days } : {}),
-        ...(had.manual.spans ? { spans: had.manual.spans } : {}) }
-      return putList(personId, date, list.map(r => (r === had ? back : r)))
+    if (!had) {
+      if (list !== raw) putList(personId, date, list)
+      return false
     }
+    /* THE HAND-BACK IS GONE, AND THAT IS THE POINT (N16, 21 Sep 26).
+       This used to restore an award the schedule had taken over — a whole
+       snapshot-and-return apparatus whose only job was to undo damage the
+       takeover had done. Since an award is now its own record, the pass never
+       touched it, so there is nothing to give back: removing the schedule's
+       credit simply leaves the award standing, which is what design §18
+       OA3-003 asked for all along. */
     return putList(personId, date, list.filter(r => r !== had))
   })
 }

@@ -34,7 +34,8 @@ import { notify as raptorNotify, subscribe as raptorSubscribe, writeInputsBatch 
 import { lwSyncTurn } from './state/store'
 import {
   addDays,
-  balanceOf,
+  codeWorth,
+  oilBalanceOf,
   inSquadron,
   isNonWorkingDay,
   localToday,
@@ -61,6 +62,7 @@ import {
   getVersion,
   setRefusalHook,
   clearRaptorCell,
+  figureCtxOf,
   getState,
   ingestDutyCredit,
   lwEditLists,
@@ -1002,7 +1004,6 @@ export function publishFlagsBids(di: number): void {
 export function oilCreditBidAgainst(di: number): boolean {
   const iso = labelToISO(DATES[di])
   if (!iso) return false
-  const { openings, ledger, wars } = getState()
   const { desired } = desiredOilCells()
   for (const [key, d] of desired) {
     const bar = key.indexOf('|')
@@ -1014,10 +1015,18 @@ export function oilCreditBidAgainst(di: number): boolean {
        balance, so counting it would falsely warn for anyone at a low balance. */
     const landed = rawState().wars.some(w => recsAt(w.recs, person, iso).some(r => r.kind === 'credit' && r.oil === 'auto' && r.code === d.code))
     if (!landed) continue
-    const credit = d.code === 'FO' ? 1 : 0.5
-    // balanceOf counts that landed cell, so balance − credit is the balance AFTER the
-    // withdrawal; below zero means a bid was spent against it.
-    if (balanceOf(openings, ledger, wars, person, 'oil') - credit < 0) return true
+    /* MEASURE THE BALANCE THE TRACKER SHOWS, NOT A SECOND ONE (Astra,
+       21 Sep 26). This asked `balanceOf`, which sums what every day earns and
+       knows nothing about EXPIRY; the OIL tracker applies the squadron's
+       expiry policy. With a policy set, a credit long expired still counted
+       here — so the warning stayed silent while the tracker read zero and the
+       unpublish took the man below it. Two balances for one figure is the
+       drift seam the house rules name; there is one now.
+       Only the SCHEDULE'S credit is withdrawn, so only its own worth comes
+       off. An award on the same day stays in the balance and is none of this
+       button's business (N16). */
+    const credit = codeWorth(d.code)
+    if (oilBalanceOf(figureCtxOf(), person, getState().oilPolicy, iso) - credit < 0) return true
   }
   return false
 }

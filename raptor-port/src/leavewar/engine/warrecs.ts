@@ -43,13 +43,15 @@ export interface Carried { remarks?: string; lwMoved?: Record<string, string> }
  *  the day window and the OIL tracker must not word it differently. */
 export function creditGiver(c: { oil?: 'auto' | 'manual'; givenBy?: string; via?: 'schedule' | 'input' } | null | undefined): string {
   if (!c) return ''
-  /* A NAME ALWAYS WINS. On an automatic credit a name can only have come from
-     an AWARD the schedule later took over — and that award is why the day is
-     worth what it is worth, so the person who granted it is the honest answer
-     rather than the weekend underneath it (Fable, 21 Sep 26). */
-  if (c.givenBy) return c.givenBy
-  if (c.oil !== 'auto') return ''
-  return c.via === 'input' ? 'Duty input' : 'Weekend/PH'
+  /* THE EVIDENCE ALWAYS WINS ON AN AUTOMATIC CREDIT (N16, 21 Sep 26).
+     A "a name always wins" rule stood here for a few hours on 21 Sep, written
+     when an award the schedule took over carried the admin's name on the very
+     record the schedule owned. Under N16 nothing is taken over — the award is
+     its own record and keeps its own name — so a name on an automatic credit
+     can only be contamination from the retired takeover, and honouring it
+     would attribute the SCHEDULE's day to an admin who never granted it. */
+  if (c.oil === 'auto') return c.via === 'input' ? 'Duty input' : 'Weekend/PH'
+  return c.givenBy ?? ''
 }
 
 export interface CreditRec {
@@ -90,14 +92,19 @@ export interface CreditRec {
    *  typing. Never set on an automatic credit: the schedule earns exactly what
    *  the code says. */
   days?: number
-  /** THE ADMIN'S OWN CREDIT, KEPT WHOLE. An admin typed a credit here first
-   *  and the published schedule later earned one too, so the pass took it over
-   *  in place. The pass may take its OWN credit away again — but taking this
-   *  one away would destroy the squadron's record, which design §18 OA3-003
-   *  forbids. So when the schedule stops backing it, exactly THIS is put back.
-   *  A boolean was not enough (Codex review, 20 Sep 26): the schedule's code,
-   *  reason and hours overwrite the admin's, so a flag handed back the
-   *  SCHEDULE's credit wearing a manual label. It is an exact snapshot. */
+  /** RETIRED BY N16 (21 Sep 26) — READ, NEVER WRITTEN.
+   *
+   *  The take-over snapshot. An admin typed a credit here first, the published
+   *  schedule later earned one too, and the pass took the award over IN PLACE,
+   *  stashing it here so an unpublish could hand it back. That whole machinery
+   *  existed only because a person/date could hold ONE credit. Since the owner
+   *  ruled that an award and a worked day ADD UP, they are two records side by
+   *  side and nothing is ever taken over — so nothing writes this any more.
+   *
+   *  It is still PARSED, because records stored under the old shape are the
+   *  owner's own balances: `splitTakenOver` below turns each one back into the
+   *  two records it always meant. Deleting the field would silently delete
+   *  every award the schedule had taken over. */
   manual?: { code: 'FO' | 'HO'; note?: string; givenBy?: string; days?: number; spans?: Array<[number, number]> }
 }
 
@@ -189,12 +196,25 @@ export function recContribs(list: readonly WarRec[]): Contrib[] {
 /** Why a list breaks the per-address rules, or null when it is sound. */
 export function listProblem(list: readonly WarRec[]): string | null {
   const live = { am: 0, pm: 0 }, refused = { am: 0, pm: 0 }
-  let credits = 0
+  /* ONE EARNED CREDIT AND ONE AWARD, AND NO MORE (N16, 21 Sep 26).
+     It was "at most one credit" full stop, which is what made the owner's
+     ruling a data-loss risk rather than a feature: a rejection here makes
+     `readRecs` answer null, `readWars` then throws away EVERY war, and the
+     store re-seeds — so the first restart after publishing a worked Saturday
+     over an award would have taken every bid, award and credit in the app
+     with it. `putList` never runs this check, so it would have passed every
+     test in memory and failed only after a reload.
+     The bound stays, it just counts the two kinds apart: the schedule's credit
+     and the award are different facts (N16), two of either is corruption. */
+  const credits = { auto: 0, manual: 0 }
   const ids = new Set<string>()
   for (const r of list) {
     if (ids.has(r.id)) return 'duplicate id'
     ids.add(r.id)
-    if (r.kind === 'credit') { if (++credits > 1) return 'two credits'; continue }
+    if (r.kind === 'credit') {
+      if (++credits[r.oil] > 1) return r.oil === 'auto' ? 'two earned credits' : 'two awards'
+      continue
+    }
     if (r.kind !== 'request') continue
     const tally = r.state === 'refused' ? refused : live
     for (const h of halvesOf(portionOfCode(r.code))) if (++tally[h] > 1) return `two ${r.state === 'refused' ? 'refused' : 'undecided'} requests on the ${h === 'am' ? 'morning' : 'afternoon'}`
@@ -255,13 +275,26 @@ export function readRec(x: unknown): WarRec | null {
       r.manual = m
     }
     if (typeof x.note === 'string' && x.note.trim()) r.note = x.note.trim().slice(0, MAX_REC_NOTE)
-    /* Dropped rather than refused, like the note beside it: a bad "given by"
-       must not cost the squadron the record that a man worked. */
-    if (typeof x.givenBy === 'string' && x.givenBy.trim()) r.givenBy = x.givenBy.trim().slice(0, MAX_GIVEN_BY)
     if (Array.isArray(x.spans)) { const s = x.spans.filter(isSpan); if (s.length) r.spans = s as Array<[number, number]> }
-    /* Halves only, and inside sane bounds — an unreadable quantity falls back
-       to the code's own worth rather than costing the squadron the record. */
-    if (typeof x.days === 'number' && Number.isFinite(x.days) && x.days > 0 && x.days <= MAX_GRANT_DAYS && x.days * 2 === Math.round(x.days * 2)) r.days = x.days
+    /* AN AWARD'S TWO FIELDS ARE REFUSED ON THE SCHEDULE'S OWN RECORD (both
+       reviewers, independently, 21 Sep 26). The type has always said "never
+       set on an automatic credit"; saying it was not enough, because the
+       retired takeover WROTE them there — it copied the award's `days`,
+       `givenBy` and reason onto the auto record as well as into the snapshot.
+       Reading them back would hand the award's three days to the schedule's
+       record as well as to the award, so a taken-over 3-day award would come
+       back worth SIX, and on a week the app cannot read — where both halves
+       of the OIL pass deliberately skip the date — it would never heal.
+       The nested snapshot is still read, just below: that is where the award
+       itself is recovered from. This refuses only the contamination. */
+    if (r.oil === 'manual') {
+      /* Dropped rather than refused, like the note beside it: a bad "given by"
+         must not cost the squadron the record of an award. */
+      if (typeof x.givenBy === 'string' && x.givenBy.trim()) r.givenBy = x.givenBy.trim().slice(0, MAX_GIVEN_BY)
+      /* Halves only, and inside sane bounds — an unreadable quantity falls
+         back to the code's own worth rather than costing the record. */
+      if (typeof x.days === 'number' && Number.isFinite(x.days) && x.days > 0 && x.days <= MAX_GRANT_DAYS && x.days * 2 === Math.round(x.days * 2)) r.days = x.days
+    }
     return r
   }
   if (x.kind === 'notice') {
@@ -270,6 +303,64 @@ export function readRec(x: unknown): WarRec | null {
     return { id: x.id, kind: 'notice', code: x.code, was: x.was, byType: x.byType.slice(0, 40), byWho: x.byWho.slice(0, 60), seq: x.seq, at: x.at }
   }
   return null
+}
+
+/**
+ * A DAY STORED UNDER THE RETIRED TAKE-OVER SHAPE, PUT BACK AS THE TWO RECORDS
+ * IT ALWAYS MEANT (N16, 21 Sep 26).
+ *
+ * Before this ruling, the schedule earning a credit on a day that already held
+ * an award TOOK THE AWARD OVER: one `auto` record, with the award stashed in
+ * its `manual` snapshot and — after the 21 Sep "keep the larger of the two"
+ * fix — the award's quantity, reason and giver copied onto the record ITSELF.
+ *
+ * Under N16 that record is two facts wearing one coat. Left alone it is worse
+ * than stale: the new pass reads it as its own ordinary credit, rewrites it,
+ * and the snapshot goes — the award's days gone, silently, on the owner's own
+ * balances. So every reader heals it instead.
+ *
+ * The award is rebuilt from the SNAPSHOT alone, and the schedule's record from
+ * scratch rather than spread — anything the takeover copied across has to be
+ * left behind, or the award's worth is counted on both records (that is the
+ * 3 + 3 = 6 both reviewers found, independently, in the plan for this change).
+ * The outer reason is dropped when it is the award's own words: the schedule's
+ * reason was overwritten and cannot be recovered, so the day falls back to
+ * naming the weekend, which is at least true.
+ *
+ * The new id is DERIVED, not minted: reading one stored blob twice must give
+ * the same answer, or nothing can be compared across a reload. A collision is
+ * stepped past, because `listProblem` rejects a duplicate id and a rejection
+ * costs the whole war.
+ *
+ * Returns the SAME array when there is nothing to heal, so a caller can tell
+ * cheaply whether anything moved.
+ */
+export function splitTakenOver(list: readonly WarRec[]): readonly WarRec[] {
+  if (!list.some(r => r.kind === 'credit' && r.oil === 'auto' && r.manual)) return list
+  const taken = new Set(list.map(r => r.id))
+  const out: WarRec[] = []
+  for (const r of list) {
+    if (r.kind !== 'credit' || r.oil !== 'auto' || !r.manual) { out.push(r); continue }
+    const snap = r.manual
+    const earned: CreditRec = {
+      id: r.id, kind: 'credit', code: r.code, oil: 'auto',
+      ...(r.via ? { via: r.via } : {}),
+      ...(r.note && r.note !== snap.note ? { note: r.note } : {}),
+      ...(r.spans ? { spans: r.spans } : {}),
+    }
+    let id = `${r.id}:award`
+    for (let n = 2; taken.has(id); n++) id = `${r.id}:award${n}`
+    taken.add(id)
+    const award: CreditRec = {
+      id, kind: 'credit', code: snap.code, oil: 'manual',
+      ...(snap.note ? { note: snap.note } : {}),
+      ...(snap.givenBy ? { givenBy: snap.givenBy } : {}),
+      ...(snap.days != null ? { days: snap.days } : {}),
+      ...(snap.spans ? { spans: snap.spans } : {}),
+    }
+    out.push(earned, award)
+  }
+  return out
 }
 
 /** A whole war's records, or null when anything is malformed or breaks the
@@ -283,8 +374,12 @@ export function readRecs(x: unknown): Recs | null {
     const kept: Record<string, WarRec[]> = {}
     for (const [date, list] of Object.entries(row)) {
       if (!ISO.test(date) || !Array.isArray(list)) return null
-      const recs: WarRec[] = []
-      for (const leaf of list) { const r = readRec(leaf); if (!r) return null; recs.push(r) }
+      const read: WarRec[] = []
+      for (const leaf of list) { const r = readRec(leaf); if (!r) return null; read.push(r) }
+      /* HEAL BEFORE JUDGING. A taken-over record is two credits wearing one
+         coat, and the rules below count credits — so the split runs first, or
+         a legacy day would be measured in the shape it is leaving behind. */
+      const recs = [...splitTakenOver(read)]
       if (listProblem(recs)) return null
       if (recs.length) kept[date] = recs
     }

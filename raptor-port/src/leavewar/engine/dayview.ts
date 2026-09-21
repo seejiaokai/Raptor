@@ -21,6 +21,7 @@
 // 721–1439 (12:01–23:59). An end at 12:00 and a start at 12:01 do NOT overlap.
 
 import { LEAVE_TYPES, type CounterName, type Portion } from './codes'
+import { creditWorth } from './credit'
 
 export type Win = readonly [number, number]
 export const AM: Win = [0, 720]
@@ -113,10 +114,29 @@ export function levelOf(c: Contrib): number {
   return 8                                        // an unknown code: shown last, removes nobody
 }
 
-/** Order for the box and the tap list: the ladder, then a full day over a
- *  half, then the earlier start (morning before afternoon), then the id. */
+/** BETWEEN TWO CREDITS, THE APP'S OWN SHOWS (N16, 21 Sep 26).
+ *
+ *  A day may now hold the schedule's credit AND an award, and both sit at the
+ *  same rung of the ladder. Without this the AWARD came out on top — it has no
+ *  work times, so it starts at midnight and wins on the earlier-start rule
+ *  below (and on the full-day rule too, when the work is only half a day).
+ *
+ *  That is not a matter of taste. The top record is what makes the cell read
+ *  as owned by the schedule, which is what locks it, greys it and sends a tap
+ *  to the read-only sheet. An award on top would quietly hand a published
+ *  Saturday back to the bidders.
+ *
+ *  Deliberately narrow: it fires only between two CREDITS that disagree about
+ *  ownership, so no other day's order moves. */
+const creditRank = (a: Contrib, b: Contrib): number =>
+  a.kind === 'credit' && b.kind === 'credit' ? (b.auto ? 1 : 0) - (a.auto ? 1 : 0) : 0
+
+/** Order for the box and the tap list: the ladder, the app's own credit over
+ *  an award, then a full day over a half, then the earlier start (morning
+ *  before afternoon), then the id. */
 export function compareContrib(a: Contrib, b: Contrib): number {
   return levelOf(a) - levelOf(b)
+    || creditRank(a, b)
     || (portionOf(b.win) === 'full' ? 1 : 0) - (portionOf(a.win) === 'full' ? 1 : 0)
     || a.win[0] - b.win[0]
     || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)
@@ -304,7 +324,12 @@ export function dayView(input: readonly Contrib[]): DayView {
        work. Weekend/public-holiday work still credits automatically — that
        credit is `auto` and reads exactly as it always did. */
     duty: shown.some(c => c.kind === 'credit' && c.auto),
-    earnsOil: shown.reduce((n, c) => n + (c.kind !== 'credit' ? 0 : c.days ?? (c.code === 'FO' ? 1 : c.code === 'HO' ? 0.5 : 0)), 0),
+    /* EVERY credit on the day, added up (N16, 21 Sep 26 — "an award and a
+       worked day add up. So it's 4"). It already summed; what changed is that
+       there can now be two to sum. The worth itself comes from `credit.ts`,
+       the one formula, which refuses to read an award's quantity off the
+       schedule's own record. */
+    earnsOil: shown.reduce((n, c) => n + (c.kind === 'credit' ? creditWorth({ code: c.code as 'FO' | 'HO', days: c.days, auto: c.auto }) : 0), 0),
     annualFull,
   }
 }

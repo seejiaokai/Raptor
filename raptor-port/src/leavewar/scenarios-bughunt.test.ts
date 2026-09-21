@@ -417,7 +417,7 @@ describe("an admin's hand-typed credit the schedule later agrees with", () => {
   const credOf = (p: string) => (rawState().wars.find(w => D >= w.period.start && D <= w.period.end)
     ?.recs[p]?.[D] ?? []).find((r: any) => r.kind === 'credit') as any
 
-  it('is never destroyed — it is handed back, not deleted', () => {
+  it('is never touched at all — it sits beside the schedule’s credit (N16)', () => {
     /* Design §18 OA3-003: the pass never takes a hand-typed credit away. It
        used to take it over in place and turn it `auto`, and the reverse pass
        — which may clear `auto` — then deleted it outright. An admin's record
@@ -435,18 +435,25 @@ describe("an admin's hand-typed credit the schedule later agrees with", () => {
     // give the admin's credit its own hours, as the hours box will
     lwEditLists([{ personId: 'dj', date: D, drop: [mine.id], add: [{ ...mine, spans: [[at(6), at(9)]] }] }])
 
-    // the schedule now earns a DIFFERENT credit that day: taken over in place
+    // the schedule now earns a DIFFERENT credit that day — BESIDE it (N16)
     ingestDutyCredit('dj', D, 'FO', 'Duty', [[at(8), at(12)]])
 
+    /* The award is STILL THE AWARD — not an `auto` record wearing a snapshot,
+       which is what the take-over used to leave here. Nothing rewrote it, so
+       there is nothing to hand back.
+       (Only one credit sits here at the end, because this file runs the live
+       sync wire and nothing published backs a Tuesday, so the pass takes its
+       OWN credit straight off again. The two-records-side-by-side case is
+       proved in `oil-award-add.test.ts`, which drives the store directly.) */
     const after = credOf('dj')
     expect(after).toBeDefined()                                  // never deleted
-    // either still the schedule's, carrying the snapshot home, or handed back
-    expect(after.oil === 'manual' || after.manual?.code === 'HO').toBe(true)
+    expect(after.oil).toBe('manual')                             // untouched, in place
+    expect(after.manual).toBeUndefined()                         // no snapshot to carry
 
-    /* And what comes back is EXACTLY what the admin typed — his code, his
-       hours, his words. A boolean flag was not enough: the schedule's FO and
-       its own hours had overwritten the admin's HO, so the hand-back returned
-       the SCHEDULE's credit wearing a manual label (Codex review, 20 Sep 26). */
+    /* And what is left standing is EXACTLY what the admin typed — his code,
+       his hours, his words — because nothing ever rewrote it. Under the
+       take-over this was the hand-back's job, and getting it wrong twice in
+       one night is what retired the take-over. */
     clearRaptorCell('dj', D)
     const end = credOf('dj')
     expect(end).toBeDefined()
@@ -454,7 +461,7 @@ describe("an admin's hand-typed credit the schedule later agrees with", () => {
     expect(end.code).toBe('HO')                                  // not the schedule's FO
     expect(end.spans).toEqual([[at(6), at(9)]])                  // not the schedule's hours
     expect(end.note).toBe('called out for the recovery')
-    expect(end.manual).toBeUndefined()                           // the snapshot is spent
+    expect(end.manual).toBeUndefined()                           // there was never a snapshot
   })
 
   it('a credit the schedule ALONE earned is still removed outright', () => {

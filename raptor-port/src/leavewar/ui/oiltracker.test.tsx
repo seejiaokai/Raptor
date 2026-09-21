@@ -264,14 +264,14 @@ describe('the credit boxes', () => {
     act(() => { setCell('slammed', '2026-01-10', 'HO') })   // a Saturday, typed on the grid
     openTracker()
     fireEvent.click(screen.getByTestId('oil-range-first'))
-    const box = screen.getByTestId('oil-entry-slammed-auto:0:2026-01-10')
+    const box = screen.getByTestId('oil-entry-slammed-award:0:2026-01-10')
     expect(box.textContent).toContain('+0.5')
     expect(box.textContent).not.toContain('Auto')
-    fireEvent.click(screen.getByTestId('oil-note-slammed-auto:0:2026-01-10'))
+    fireEvent.click(screen.getByTestId('oil-note-slammed-award:0:2026-01-10'))
     fireEvent.change(screen.getByTestId('oil-note-input'), { target: { value: 'SIM' } })
     fireEvent.click(screen.getByTestId('oil-note-save'))
     expect(getState().wars[0]!.states.slammed!['2026-01-10']).toMatchObject({ note: 'SIM' })
-    expect(screen.getByTestId('oil-entry-slammed-auto:0:2026-01-10').textContent).toContain('SIM')
+    expect(screen.getByTestId('oil-entry-slammed-award:0:2026-01-10').textContent).toContain('SIM')
   })
 })
 

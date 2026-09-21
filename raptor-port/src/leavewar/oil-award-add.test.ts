@@ -18,10 +18,12 @@
 
 import { beforeEach, describe, expect, it } from 'vitest'
 import { balanceOf } from './engine'
-import { listProblem, readRecs, type WarRec } from './engine/warrecs'
+import { oilLedgerFor } from './engine/oiltracker'
+import { creditWorth } from './engine/credit'
+import { creditGiver, listProblem, readRecs, type WarRec } from './engine/warrecs'
 import {
-  cellProblem, clearRaptorCell, getState, ingestDutyCredit, initStore, rawState,
-  setCell, setCellDays, setCellGivenBy, setCellNote, setManualCredit, setRole,
+  cellProblem, clearRaptorCell, editManualCredit, getState, ingestDutyCredit, initStore, rawState,
+  figureCtxOf, setCell, setCellDays, setCellGivenBy, setCellNote, setManualCredit, setRole,
 } from './state/store'
 import { memoryBackend, type StorageBackend } from './state/storage'
 
@@ -227,16 +229,25 @@ describe('a day stored under the old take-over shape', () => {
      rewrite it and drop the snapshot — the award's days gone, silently, on
      the owner's own live data. It is SPLIT into the two records it always
      meant. */
+  /* THE REAL STORED SHAPE, not the one the plan assumed. The 21 Sep "keep the
+     larger of the two" fix wrote the award's days, reason and giver onto the
+     SCHEDULE'S OWN RECORD as well as into the snapshot — so the award's worth
+     is on the day twice, and a split that merely drops the snapshot hands the
+     3 to both records and makes the Saturday worth SIX.
+     Both reviewers, working independently, named this as the single most
+     likely silent balance bug in the change. A fixture carrying `days` only
+     inside `manual` would pass either way and prove nothing. */
   const legacy = {
     [P]: {
       [SAT]: [{
-        id: 'c-old', kind: 'credit', code: 'FO', oil: 'auto', note: 'called out', spans: WORKED,
+        id: 'c-old', kind: 'credit', code: 'FO', oil: 'auto',
+        days: 3, note: 'Exercise recovery', givenBy: 'OC Ops', spans: WORKED,
         manual: { code: 'HO', note: 'Exercise recovery', givenBy: 'OC Ops', days: 3 },
       }],
     },
   }
 
-  it('loads as TWO records worth the sum, with the award’s own words kept', () => {
+  it('loads as TWO records worth FOUR — not six', () => {
     const recs = readRecs(legacy)
     expect(recs).not.toBeNull()
     const list = recs![P]![SAT]! as Array<Extract<WarRec, { kind: 'credit' }>>
@@ -245,12 +256,26 @@ describe('a day stored under the old take-over shape', () => {
     const earned = list.find(c => c.oil === 'auto')!
     expect(earned).toMatchObject({ code: 'FO', spans: WORKED })
     expect(earned.manual).toBeUndefined()            // the snapshot is spent
+    // the three fields the takeover copied across, all refused on this record
+    expect(earned.days).toBeUndefined()
+    expect(earned.givenBy).toBeUndefined()
+    expect(earned.note).toBeUndefined()              // it was the award's words, not the schedule's
 
     const award = list.find(c => c.oil === 'manual')!
     expect(award).toMatchObject({ code: 'HO', note: 'Exercise recovery', givenBy: 'OC Ops', days: 3 })
 
     // FO's day plus the award's three
-    expect(list.reduce((n, c) => n + (c.days ?? (c.code === 'FO' ? 1 : 0.5)), 0)).toBe(4)
+    expect(list.reduce((n, c) => n + creditWorth(c), 0)).toBe(4)
+  })
+
+  it('the schedule’s row says the SCHEDULE gave it, never the admin', () => {
+    /* A name on an automatic credit can only be contamination from the retired
+       takeover. Honouring it labelled the schedule's own day with the name of
+       an admin who never granted it — and with two rows on one Saturday a
+       reader could no longer tell which was which. */
+    const list = readRecs(legacy)![P]![SAT]! as Array<Extract<WarRec, { kind: 'credit' }>>
+    expect(creditGiver(list.find(c => c.oil === 'auto')!)).toBe('Weekend/PH')
+    expect(creditGiver(list.find(c => c.oil === 'manual')!)).toBe('OC Ops')
   })
 
   it('splitting is idempotent — reading the split list again changes nothing', () => {
@@ -327,5 +352,101 @@ describe('the grid cell holds one code — the app’s own', () => {
     expect(v?.code).toBe('FO')
     expect(v?.mark).toBe('')
     expect(v?.earnsOil).toBe(3)
+  })
+})
+
+/* ====================================================================== */
+/*  7. THE OIL TRACKER — one entry per credit                             */
+/* ====================================================================== */
+
+describe('the OIL tracker lists the two separately', () => {
+  /* The tests above measure the day's total and the raw records. A tracker
+     that collapsed both credits into a single "+4" row would pass every one
+     of them (Astra, 21 Sep 26) — and the tracker is the screen the owner
+     judges the number on. */
+  const ledger = () => oilLedgerFor(figureCtxOf(), P, getState().oilPolicy, '2026-06-30')
+
+  it('shows the worked day and the award as TWO entries, 1 and 3', () => {
+    setManualCredit(P, SAT, 'FO', { note: 'Exercise recovery', givenBy: 'OC Ops', days: 3 })
+    ingestDutyCredit(P, SAT, 'FO', 'Duty', WORKED)
+
+    const rows = ledger().credits.filter(c => c.date === SAT)
+    expect(rows).toHaveLength(2)
+    expect(rows.map(r => r.amount).sort()).toEqual([1, 3])
+  })
+
+  it('each says its own reason and its own giver, and they never share an id', () => {
+    setManualCredit(P, SAT, 'FO', { note: 'Exercise recovery', givenBy: 'OC Ops', days: 3 })
+    ingestDutyCredit(P, SAT, 'FO', 'Duty', WORKED)
+
+    const rows = ledger().credits.filter(c => c.date === SAT)
+    const earned = rows.find(r => !r.manual)!
+    const award = rows.find(r => r.manual)!
+    expect(earned).toMatchObject({ amount: 1, reason: 'Duty', givenBy: 'Weekend/PH' })
+    expect(award).toMatchObject({ amount: 3, reason: 'Exercise recovery', givenBy: 'OC Ops' })
+    expect(earned.id).not.toBe(award.id)
+  })
+
+  it('an award with no reason does not claim to be weekend duty', () => {
+    /* The fall-back reason is the schedule's evidence. An award has none —
+       saying "weekend duty" beside a row the schedule does not back would put
+       two contradictory stories on one Saturday. */
+    setManualCredit(P, SAT, 'FO', { days: 3 })
+    ingestDutyCredit(P, SAT, 'FO', 'Duty', WORKED)
+    const rows = ledger().credits.filter(c => c.date === SAT)
+    expect(rows.find(r => r.manual)!.reason).not.toContain('weekend')
+    expect(rows.find(r => !r.manual)!.reason).toBe('Duty')
+  })
+
+  it('a day taken later draws on the worked day FIRST and leaves the award standing', () => {
+    setManualCredit(P, SAT, 'FO', { days: 3 })
+    ingestDutyCredit(P, SAT, 'FO', 'Duty', WORKED)
+    setCell(P, '2026-01-05', 'OIL')            // a Monday spent against it
+    const rows = ledger().credits.filter(c => c.date === SAT)
+    const earned = rows.find(r => !r.manual)!
+    const award = rows.find(r => r.manual)!
+    expect(earned.left).toBe(0)                // the earned day goes first
+    expect(award.left).toBe(3)                 // the award is untouched
+  })
+})
+
+/* ====================================================================== */
+/*  8. EDITING AN AWARD IS ONE THING, NOT THREE                           */
+/* ====================================================================== */
+
+describe('changing an award', () => {
+  it('reason, giver and days move together, as ONE step', () => {
+    /* The tracker's Save called three editors in a row, so one press of undo
+       took back the reason and left the balance changed (Astra, 21 Sep 26). */
+    setManualCredit(P, SAT, 'FO', { note: 'Recovery', givenBy: 'OC Ops', days: 3 })
+    const id = awardOn(P, SAT)!.id
+    expect(editManualCredit(P, SAT, id, { note: 'Exercise recovery', givenBy: 'CO', days: 2 })).toBeNull()
+    expect(awardOn(P, SAT)).toMatchObject({ note: 'Exercise recovery', givenBy: 'CO', days: 2 })
+  })
+
+  it('a value it refuses changes NOTHING — not even the fields it had already read', () => {
+    setManualCredit(P, SAT, 'FO', { note: 'Recovery', givenBy: 'OC Ops', days: 3 })
+    const id = awardOn(P, SAT)!.id
+    const before = JSON.stringify(awardOn(P, SAT))
+    expect(editManualCredit(P, SAT, id, { note: 'Changed', givenBy: 'CO', days: 1.3 })).toContain('halves')
+    expect(JSON.stringify(awardOn(P, SAT))).toBe(before)
+  })
+
+  it('will not touch the credit the schedule owns', () => {
+    ingestDutyCredit(P, SAT, 'FO', 'Duty', WORKED)
+    const id = earnedOn(P, SAT)!.id
+    expect(editManualCredit(P, SAT, id, { days: 3 })).toContain('published schedule')
+    expect(earnedOn(P, SAT)!.days).toBeUndefined()
+  })
+
+  it('re-typing an award’s CODE keeps everything else it was worth', () => {
+    /* It rebuilt the record from scratch here and carried only the reason and
+       the hours across — so a 3-day award re-typed as HO silently became half
+       a day and lost who gave it. True before this ruling too. */
+    setManualCredit(P, SAT, 'FO', { note: 'Recovery', givenBy: 'OC Ops', days: 3 })
+    ingestDutyCredit(P, SAT, 'FO', 'Duty', WORKED)
+    expect(setCell(P, SAT, 'HO')).toBe(true)
+    expect(awardOn(P, SAT)).toMatchObject({ code: 'HO', note: 'Recovery', givenBy: 'OC Ops', days: 3 })
+    expect(worthOf(P, SAT)).toBe(4)
   })
 })
