@@ -23,6 +23,12 @@ ruling, or an explicit no. **Not** ordinary task instructions ("run the tests", 
 
 ---
 
+## 22 Sep 2026
+
+| # | His ruling, in his words where short enough | What it means | Where it lives now |
+|---|---|---|---|
+| D19 | *"6. Perhaps indicate that the leave war period doesn't exist, create it"* | **A weekend or holiday that no Leave War period covers must NAME the reason and offer the way out, not just refuse.** Today the day shows a full green bar, promises "earns a full day of OIL", tells the scheduler to publish it, and afterwards reports "No conflicts flagged for this day ✓" — while no period exists for that date, so nothing can ever land. The fix is no longer "say it cannot earn": the day says **the leave war period for that year does not exist**, and offers to create it. Creating a period is a real Leave War record with bidding dates and a stage, so it is never made silently from a schedule screen — the offer creates it and hands the scheduler to the Leave War to set the window. **This widens fix 6 from a wording change into one that reaches the Leave War**, which is the owner's call and he has made it | `docs/handpass/2026-09-21-oil.md` §6 row 6; `docs/superpowers/specs/2026-09-22-oil-fixplan-settled.md` §2 item 5; on build: `docs/ui-contracts.md` and the OIL behaviour register |
+
 ## 21 Sep 2026
 
 | # | His ruling, in his words where short enough | What it means | Where it lives now |

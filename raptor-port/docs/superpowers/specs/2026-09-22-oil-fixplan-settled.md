@@ -89,6 +89,14 @@ roster change after a publish reaches the money.
    his own No is never overridden; extras are schedule work. Watch the all-day mirror (Fable M6).
 5. **Fix 6** — the uncovered weekend, including the unreachable warning call site (Codex M8) and the
    OIL question that can never land (Fable M7).
+
+   **WIDENED BY THE OWNER, D19 (22 Sep 26): the day NAMES the reason and offers the way out.** Not
+   "this day cannot earn" but *"there is no leave war period for 2027, so nothing can be paid for
+   this day"* — with an offer to create it. A period is a real Leave War record carrying bidding
+   dates and a stage, so it is never minted silently from a schedule screen: the offer creates the
+   period for that year and hands the scheduler to the Leave War to set the bidding window. This
+   takes fix 6 out of OIL and into the Leave War, which is a deliberate widening he asked for.
+   Admin only, on the same footing as every other war-level action.
 6. **Fix 5** — close the doors that move money; leave Sign and Publish open (both reviewers agree);
    close the mode on the plans selector and Unpublish (Fable M11).
 
