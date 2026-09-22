@@ -86,7 +86,13 @@ move without a signature behind them, which is why D45 leaves no hole.
   Common Programme), which is where it is now proved; only its cockpit instance is gone, and that
   is pinned as an explicit refusal rather than quietly dropped
   (`src/ui/interact.test.tsx`, "a placeholder in a slot is a shortcut to finding crew").
-  **The owner has not been asked to confirm this** — it is flagged to him in the step-2 report.
+  **SETTLED BY THE OWNER, D47, 22 Sep 26: “keep the refusal”.** He was shown both risk profiles and
+  the fact that decided it: the two lists are not the same question. Arming an empty seat asks *who can
+  fly THIS seat* — seat, qualification, SC currency, crew rest, busy, absences. The puck asks only *who
+  has nothing else on at that time*, so on a front seat it would gather WSOs, men not SC current and men
+  who would break crew rest, and then pay every one of them for a sortie they could not have flown. The
+  two also read different windows (availability step→dekit; the flying rule report→debrief, D36).
+  Recorded in `DECISIONS.md` (D47) and carried by `raptor-port/docs/ui-contracts.md` §Arm-and-plant.
 
 ## 3. What the code actually does
 

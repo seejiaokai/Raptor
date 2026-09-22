@@ -2033,7 +2033,33 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   goes straight to finding them, while a real person's puck still selects.
   A palette tap ALWAYS plants: a darkened name plants too, its reason toasted
   after, mirroring drag ("everything plants, warning after") — the one
-  refusal left is the seat's own occupant ("Already in that seat"). Changing
+  refusal left is the seat's own occupant ("Already in that seat").
+  **AND, SINCE D33/D47 (22 Sep 26), A SECOND AND HARDER ONE: ALL / ALL AVAIL
+  ARE REFUSED ON FLYING-LINE COCKPIT SEATS.** `sentinelSeatOK(key,id)`
+  (`engine/slots.ts`) is the one body; `SENTINEL_JET_BAR` is the one sentence,
+  carried by the drag ghost, the drop message and the palette's own placeholder
+  row, which draws both pucks struck out with the reason PRINTED while a
+  cockpit is armed. It is PREFLIGHTED at every door — drag (both ends of a
+  swap, judged before either write), armed placement, the `[data-fill]` append
+  targets — with `setSlotVal`/`fillSlot` returning `false` as the belt behind
+  them, refusing before `noteChange` so no pending mark is raised.
+  **This is the FIRST hard refusal carved out of the 13 Aug "everything plants,
+  warning after" rule**, and it is carved narrowly: placeholder ids on flying
+  keys, nothing else. It earns the exception because `isSpecial` removes both
+  pucks from every validation path, so a cockpit placeholder draws the jet as
+  crewed with nobody on it and NO warning could ever follow the plant.
+  **The 13 Aug shortcut itself is unchanged** everywhere a placeholder is legal
+  — desks, sims, passengers, ground rows, the Common Programme, an accepted
+  request row — and an EMPTY cockpit seat still arms exactly as before. Only
+  the cockpit instance of the shortcut is unreachable, because the puck cannot
+  get there. Pinned by `src/ui/interact.test.tsx` ("a placeholder in a slot is
+  a shortcut to finding crew") and `src/ui/oilseat-refusal.test.tsx`.
+  **Do not re-propose downgrading it to a warning** (owner, D47, after being
+  shown both risk profiles): the two lists are different questions — arming
+  asks "who can fly THIS seat" (seat, qual, SC currency, crew rest, busy,
+  absences), the puck asks only "who has nothing else on at that time", so on a
+  front seat it would gather WSOs, men not SC current and men who would break
+  crew rest, and then pay them all for a sortie they could not have flown. Changing
   board day disarms. While armed, a darkened name PRINTS its reason on the
   list itself, because a phone has no hover and the owner's rule is that the
   scheduler sees the problem BEFORE the tap: under the name (`.rwhy`), or
