@@ -20,7 +20,7 @@ import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWORK, CURPA
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
-import { oilBarOf, oilItemOfKey, inputItemKey, oilSentinelSummary } from './oilmode'
+import { oilBarOf, oilItemOfKey, inputItemKey, oilSentinelSummary, oilFromWords } from './oilmode'
 import { oilReadPass } from '../engine/oilev'
 import { STORE_CFG, groundOrder, secOrder } from '../engine'
 
@@ -528,7 +528,7 @@ export function oilSeatDeco(di:any,id:any,key:any,itemOf?:string):{oil:any;chip:
        and the list as things stand today. A number that does not say which is
        worse than no number, because the scheduler cannot tell whether he is
        reading a record or a live count. One phrase, used here and on the tap. */
-    const from=ver?' (who was free when this day was issued)':' (who is free as things stand now)';
+    const from=` (${oilFromWords(ver)})`;
     const ttl=sum.unrecorded
       ?'This schedule was issued before the app kept a record of who was behind this puck'
       :(!sum.earns
@@ -643,6 +643,32 @@ export function notePubTog(k:any,pub:any){
    fly, and the owner read that as a bug (13 Aug 26; it was the panel lying,
    not the engine). The grids still list each man once: the wave rows keep
    only the partially-free, the all-day crew keep their own group. */
+/* ---- what [ALL-AVAIL-WINDOW] draws, exported rather than copied (D38) ----
+   The window draws REAL PUCKS carrying the same warning flags the rest of the
+   app draws. Both helpers live HERE, beside the four PV-gated lookups they use,
+   and are exported instead of being re-derived in the window's own file.
+
+   THE REASON IS NOT TIDINESS. `sev`/`chip`/`dsh`/`traceHit` each null out under
+   PV — a frozen snapshot must not read live WARN — and a second reader that
+   forgot that gate would flag an ISSUED document from today's warnings. That is
+   the same shape as the defect D44 exists to stop, and the codebase has already
+   paid for it once (the chip and its tap were two readers, which is how a chip
+   reading 27 sat over a tap saying nobody was behind the puck). One drawer. */
+export function personPuckHTML(di:any,id:any,oil?:any){
+  return puck(id,sev(di,id),true,chip(di,id),dsh(di,id),traceHit(di,id),oil)
+}
+/* Every warning this man carries on this day, worst first, in the words the
+   warning list already uses. D36/D38: the window SHOWS the clash and lets the
+   scheduler judge it — it must never filter the man out, which is the change
+   D36 refuses. Returns [] under PV for the same reason the flags do. */
+export function personWarnMsgs(di:any,id:any):{sev:string,msg:string}[]{
+  if(PV&&!OFW)return []
+  const g=WARN.byDay&&WARN.byDay[+di]
+  return (((g&&g.warns)||[]) as any[])
+    .filter(w=>w&&(w.who||[]).includes(String(id)))
+    .map(w=>({sev:String(w.sev||'note'),msg:String(w.msg||'')}))
+    .filter(w=>w.msg)
+}
 export function availHTML(d:any,di:any,ed:any){
   const A=availByWave(d);
   /* in edit mode an available puck is a drag source — drag it straight onto a line,

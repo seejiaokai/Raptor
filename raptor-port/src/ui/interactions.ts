@@ -19,9 +19,9 @@ import { scrollToWarnFocus, queueHold, warnWeekId } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
 import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
-import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList } from './pops'
+import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList, setAvailWin, setAvailWinBox } from './pops'
 import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
-import { oilSentinelList } from './oilmode'
+import { oilItemLabel } from './oilmode'
 import { withDaySnap } from './html'
 import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
@@ -494,7 +494,15 @@ export function routeClick(e: MouseEvent) {
   if (osn) {
     e.stopPropagation()
     const di = +(osn.dataset.oilday || -1), it = osn.dataset.oilsent || '', ver = osn.dataset.oilver || ''
-    HOOKS.toast(ver ? withDaySnap(di, ver, () => oilSentinelList(di, it)) : oilSentinelList(di, it))
+    /* [ALL-AVAIL-WINDOW] (D38) — the same window the board opens, opened from
+       the WEEK. Both surfaces draw this chip, so both must open the same thing:
+       a second reader here is how the chip and its tap came to disagree once
+       before (Fable correction 2). Read-only to open; the earn half inside the
+       window gates on the scheduler role of its own. */
+    const lbl = oilItemLabel(di, it)
+    setAvailWin({ di, item: it, ver, name: lbl.name, when: lbl.when, tab: 'who' })
+    setAvailWinBox(null)
+    notify()
     return
   }
 

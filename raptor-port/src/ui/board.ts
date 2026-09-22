@@ -22,7 +22,7 @@ import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, day
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
-import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit } from './pops'
+import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit, setAvailWin, setAvailWinBox } from './pops'
 import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel, WAVE_BUILTIN, WAVETPL_CFG } from '../engine/wavetpl'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
@@ -31,7 +31,7 @@ import { esc } from '../state/view'
 import { notify, notifyBoard, loadWeek } from '../state/store'
 import { CURWEEK } from '../engine/waves'
 import { shiftWeek } from './weeknav'
-import { oilModeOn, dayBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilItemMasked, oilItemCellHTML, oilSentinelList } from './oilmode'
+import { oilModeOn, dayBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilItemMasked, oilItemCellHTML, oilItemLabel } from './oilmode'
 import { rowItemKey } from '../engine/oil'
 import { oilReadPass } from '../engine/oilev'
 import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbSansPanel, sbUnavailPanel, labelToTitle, titleToLabel, titleToKind, sbGrip, sbNudge, rowMove, sbSortBtn, boxHTML } from './board-html'
@@ -1276,17 +1276,17 @@ export function boardArmClick(e: MouseEvent) {
      issued schedule it lists the FROZEN membership, which is the whole reason
      that membership is frozen.
 
-     THE SHAPE OF THIS LIST IS NOW RULED, AND THIS IS NOT IT (D38-D41, 22 Sep 26
-     - the comment above used to say "not yet ruled", which was true when it was
-     written and stale within the day). The bubble of names is REPLACED by a
-     movable, resizable, non-blocking window of real pucks - pilots left, WSOs
-     right, carrying the app's own warning flags, clickable - and the SAME window
-     serves both counters: who is available behind a placeholder, and who is
-     credited OIL, where individual pucks are switched off. The mock-up at
-     docs/mock/allavail-window.html is the approved design of record. It is filed
-     as [ALL-AVAIL-WINDOW], job 2 in OUTSTANDING.md, straight after this one,
-     because it opens FROM the counters this job builds. Until then the toast
-     below stands in for it - a placeholder, not a design. */
+     IT OPENS [ALL-AVAIL-WINDOW], BUILT 23 Sep 26 (D38-D41). This comment has now
+     said three different things about the same tap, which is worth knowing: it
+     once said the shape was "not yet ruled" (stale within the day the owner
+     ruled), then that a toast "stands in for it - a placeholder, not a design".
+     Both are gone. The bubble of names IS the window now: movable, resizable,
+     non-blocking, real pucks with the app's own warning flags, pilots left and
+     WSOs right - and the SAME window serves both counters, who is available
+     behind a placeholder and who is credited OIL, where individual pucks are
+     switched off. Design of record: docs/mock/allavail-window.html, approved
+     D41. Contract: docs/ui-contracts.md, which states that the outside-click
+     rule does NOT apply to this surface. */
   const osn = t.closest('[data-oilsent]') as HTMLElement | null
   /* THE VERSION THE CHIP WAS DRAWN IN ([OIL-SEATS-CAN-EARN] step 9, Codex
      OSE-R2-05). The snapshot is installed only while the page is being built,
@@ -1296,7 +1296,16 @@ export function boardArmClick(e: MouseEvent) {
   if (osn) {
     e.stopPropagation()
     const di = +(osn.dataset.oilday || -1), it = osn.dataset.oilsent || '', ver = osn.dataset.oilver || ''
-    return toast(ver ? withDaySnap(di, ver, () => oilSentinelList(di, it)) : oilSentinelList(di, it))
+    /* [ALL-AVAIL-WINDOW] (D38) — this used to be a one-line toast of names, and
+       the comment above said so: "until then the toast stands in for it — a
+       placeholder, not a design". This is the window it stood in for. The name
+       and times are captured HERE rather than re-derived later, because the
+       window outlives the row that opened it — he goes on editing behind it. */
+    const lbl = oilItemLabel(di, it)
+    setAvailWin({ di, item: it, ver, name: lbl.name, when: lbl.when, tab: 'who' })
+    setAvailWinBox(null)
+    notify()
+    return
   }
   const oit = t.closest('[data-oilitem]') as HTMLElement | null
   if (oit) {

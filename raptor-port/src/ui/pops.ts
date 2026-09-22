@@ -116,3 +116,46 @@ export function closeHistList() {
   HISTGROUP = false
   HISTOPEN.clear()
 }
+
+/* ---- [ALL-AVAIL-WINDOW] — the counter's window (owner, D38–D41) -----------
+   A THIRD KIND OF TRANSIENT SURFACE, and the app's first. Not a Sheet (scrim,
+   Escape, blocks everything) and not an inline popup (dismisses on an outside
+   click — the 4 Sep 26 standing rule). It stays open while the scheduler
+   SCROLLS AND EDITS the schedule behind it, and it is movable and resizable.
+   Its contract is in docs/ui-contracts.md, which states in writing that the
+   outside-click rule does NOT apply to it — or a later session will "fix" it.
+
+   `ver` is the version the counter chip was drawn in (Codex OSE-R2-05). Empty
+   means the chip came from the working copy. It is carried rather than re-read
+   because the snapshot is installed only while the page is built: reading the
+   live day when the window opens would list whoever is free NOW under a number
+   frozen when the day went out, which is the one thing D44 forbids. */
+export type AvailWin = {
+  di: number
+  item: string
+  ver: string
+  /* the event's own words for the title bar, captured at open: the window
+     outlives the row that opened it (he can edit the schedule behind it), and
+     re-deriving the name from a row he has since renamed would retitle the
+     window under him. */
+  name: string
+  when: string
+  /* 'who' = who is available, always offered. 'oil' = who earns, which EXISTS
+     ONLY while OIL Earn is on (the mode rule, confirmed 22 Sep 26). */
+  tab: 'who' | 'oil'
+}
+export let AVAILWIN: AvailWin | null = null
+export function setAvailWin(v: AvailWin | null) { AVAILWIN = v }
+export function setAvailTab(t: 'who' | 'oil') { if (AVAILWIN) AVAILWIN = { ...AVAILWIN, tab: t } }
+
+/* WHERE THE WINDOW SITS, kept OUTSIDE React on purpose. He edits the schedule
+   behind it, so every keystroke notifies and re-renders; position held in
+   component state would be thrown away on the first one. A drag writes the
+   element's style directly at pointer speed and commits here on release, so
+   dragging never re-renders the app either. null = the default corner.
+   D40: it OPENS SKINNY at 212px — two 74px pucks, their gap and ~16px of slack
+   per column — and 186 is the floor, below which a puck clips. Build to those
+   numbers rather than re-deriving them. */
+export const AVAILWIN_W = 212, AVAILWIN_MIN_W = 186, AVAILWIN_H = 540, AVAILWIN_MIN_H = 200
+export let AVAILWIN_BOX: { x: number, y: number, w: number, h: number } | null = null
+export function setAvailWinBox(b: { x: number, y: number, w: number, h: number } | null) { AVAILWIN_BOX = b }

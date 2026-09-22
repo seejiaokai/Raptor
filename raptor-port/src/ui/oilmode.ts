@@ -778,6 +778,70 @@ export function oilItemOfKey(di: any, key: any): string {
   return ''
 }
 
+/** WHICH OF THE TWO ANSWERS IS THIS? (step 10, D37; D44.) Since the count
+ *  shows on every day, the same puck can show two different numbers — the list
+ *  the day WENT OUT with, and the list as things stand today. A number that does
+ *  not say which is worse than no number, because the scheduler cannot tell
+ *  whether he is reading a record or a live count.
+ *
+ *  ONE BODY, so the chip and the window cannot drift. They used to be two: the
+ *  chip decided from the version it was drawn in, the tap's sentence decided
+ *  from whether the day carried a frozen block. Both reached the same answer by
+ *  different routes, which is the exact shape that once put a chip reading 27
+ *  over a tap saying nobody was behind the puck. `oilwords.test.tsx` asserts the
+ *  two share a vocabulary; this makes that structural rather than a coincidence.
+ *
+ *  The argument is the VERSION the chip was drawn in — empty means the working
+ *  copy — because that is the fact both callers already hold. */
+export const OIL_FROM_ISSUED = 'who was free when this day was issued'
+export const OIL_FROM_LIVE = 'who is free as things stand now'
+export const oilFromWords = (ver: any) => (ver ? OIL_FROM_ISSUED : OIL_FROM_LIVE)
+/** THE EVENT'S OWN WORDS, for the title bar of [ALL-AVAIL-WINDOW] (D38).
+ *
+ *  READ FROM THE MODEL, NEVER FROM THE PAGE. board.ts's `oilItemName` reads the
+ *  name back off a `[data-oilitem]` cell, which is right for a history line —
+ *  the mode has already drawn it there. It is WRONG here for two reasons: those
+ *  cells exist only while the earn mode is on, and the window opens on any day
+ *  with the mode off (the mode rule, 22 Sep 26); and the window outlives the row
+ *  that opened it, because he goes on editing the schedule behind it.
+ *
+ *  Every kind of row the placeholder may land on is walked, because D33 lets it
+ *  land nearly everywhere: a ground row, a Common Programme row, a duty desk, a
+ *  sim row, and a flying line (refused today, but the engine keeps a belt for
+ *  data that arrived by copy before the refusal existed — so it is walked here
+ *  rather than assumed impossible). A claim is named by WHAT IT IS, never by
+ *  what is drawn in its cell — hand-pass finding 14, which produced history
+ *  lines like "Sidewinder earns nothing from SidewinderFO". */
+export function oilItemLabel(di: any, item: string): { name: string, when: string } {
+  const d: any = DAYS[+di] || {}
+  const hhmm = (v: any) => { const t = String(v || '').replace(':', '').trim()
+    return t.length === 4 ? `${t.slice(0, 2)}:${t.slice(2)}` : t }
+  const span = (a: any, b: any) => { const x = hhmm(a), y = hhmm(b)
+    return x && y ? `${x}–${y}` : x || y || '' }
+  const dayLbl = String(d.dt || d.dow || '').trim()
+  const out = (name: any, a?: any, b?: any) => {
+    const w = span(a, b)
+    return { name: String(name || 'This event').trim() || 'This event',
+             when: [dayLbl, w].filter(Boolean).join(' · ') }
+  }
+  if (!item) return out('This event')
+  /* a landed request: the type's LONG name, the same one the history uses */
+  if (item.startsWith('i:')) {
+    const r = (INPUTS as any[]).find(x => x && String(inpId(x)) === item.slice(2))
+    const t = r ? String(r.type || '').trim() : ''
+    if (r) return out(t || 'Request', r.allday ? '' : r.s, r.allday ? '' : r.e)
+    return out('Request')
+  }
+  for (const r of (d.ground || [])) if (r && groundItemKey(r) === item) return out(r.prog, r.str, r.end)
+  for (const r of (d.allhands || [])) if (r && rowItemKey(r.rid) === item) return out(r.prog, r.str, r.end)
+  for (const b of (d.dutywaves || [])) for (const r of ((b && b.rows) || []))
+    if (r && rowItemKey(r.rid) === item) return out(r.role, r.str, r.end)
+  for (const k of Object.keys(d.sims || {})) for (const r of ((d.sims[k]) || []))
+    if (r && rowItemKey(r.rid) === item) return out(`${String(k).toUpperCase()} · ${r.label || ''}`.trim(), r.str, r.end)
+  for (const w of (d.waves || [])) for (const f of ((w && w.formations) || []))
+    if (f && rowItemKey(f.rid) === item) return out([f.cs, f.msn].filter(Boolean).join(' · '), f.to, f.ld)
+  return out('This event')
+}
 /** THE FOUR STATES OF A SENTINEL PUCK (§7.6, as the owner refined it: "if
  *  everyone in the all avail or all puck is granted OIL, it should be green").
  *  ALL / ALL AVAIL is not a person and cannot carry a person's figure — the men
@@ -826,28 +890,12 @@ export function oilSentinelSummary(di: any, item: string):
   return { bar: all('FO') ? 'FO' : all('HO') ? 'HO' : null, n, earn, earns: true }
 }
 
-/** The people behind a sentinel, each with his own figure, in the words the
- *  count chip's tap shows. */
-export function oilSentinelList(di: any, item: string): string {
-  const ev = evOf(di)
-  const got = oilSentOf(ev, item)
-  /* THE SAME BODY THE CHIP ABOVE IT ASKED. They were two readers, which is how
-     a chip reading 27 could sit over a tap saying "Nobody is behind this puck"
-     (Fable correction 2). */
-  if (got.state === 'unrecorded') return 'This schedule was issued before the app kept a record of who was behind this puck'
-  const people = got.people
-  /* THE SAME PHRASE THE CHIP ABOVE USES (step 10, D37): which of the two answers
-     this is. Inside an issued document DAYS[di] IS the snapshot, so the block
-     carried on the day is what says so — no second source to drift from. */
-  const from = (DAYS[+di] && (DAYS[+di] as any).oilev)
-    ? ' — who was free when this day was issued'
-    : ' — who is free as things stand now'
-  if (!people.length) return 'Nobody is free for this at that time' + from
-  /* on a day that earns nobody anything there are no figures to give — the
-     names ARE the answer (D37) */
-  if (!ev.earns) return `${people.length} with nothing else on at that time${from}: ${people.map(p => ((PEOPLE as any)[p] || {}).cs || p).join(', ')}`
-  /* each man as THIS ROW earned him, so the list and the chip above it agree */
-  const say = people.map(p => { const a = oilFigureFor(di, p, item)
-    return `${((PEOPLE as any)[p] || {}).cs || p} ${a === 'FO' ? 'full day' : a === 'HO' ? 'half day' : 'nothing'}` })
-  return `${people.length} behind this puck${from} — ${say.join(', ')}`
-}
+/* `oilSentinelList` LIVED HERE and is deleted with [ALL-AVAIL-WINDOW] (D38).
+   It built the one-line string of names the count chip's tap used to toast —
+   the "bubble of names" the owner called not intuitive. The window replaced it,
+   and nothing in the app called this any more; only tests did, which is a
+   function no user can reach being kept alive by its own coverage. Its two real
+   assertions were not lost: the issued-versus-live read moved onto
+   `oilSentinelPeople` (the one resolver, which the window calls), and the
+   which-answer-is-this phrase became `oilFromWords` above, shared with the chip
+   so the two cannot drift. See oilcount.test.tsx and oilwords.test.tsx. */
