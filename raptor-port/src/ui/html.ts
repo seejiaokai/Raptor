@@ -1499,7 +1499,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
            week's markup — and the reference parity compare — is untouched. */
         const noLen=fltNoLen(f);
         const badCls=noLen?' badtm':'';
-        const badAtt=noLen?` data-warnkey="${fp}.ld" title="${esc((f.cs||w.label||'A flying line')+' '+FLT_NO_LEN_SAYS(parseHM(f.to)))}"`:'';
+        const badAtt=noLen?` data-warnkey="${fp}.ld" title="${esc((f.cs||w.label||'A flying line')+' '+FLT_NO_LEN_SAYS(parseHM(f.to),sa))}"`:'';
         h+=`<div class="form${rowCls(f)}">
           <div class="fcell csmsn" style="${spans}">${cxTag(f)}${flagTag(f)}<b><span class="mdot" style="background:${sa?'var(--san)':`var(--${mColor(f.msn)})`}"></span>${ted(fp+'.cs',f.cs,ed,'ntx')}</b>${ted(fp+'.msn',f.msn,ed,'','i')}</div>
           ${sa

@@ -1072,6 +1072,26 @@ ALL AVAIL, the manning counts and every rule that asks who is free.
 **Context.** `raptor-port/docs/handpass/2026-09-21-oil.md` §9 · the red team's §3 in
 `…/specs/2026-09-21-oil-fixplan-redteam-fable.md` · script `scripts/handpass/settle-d4.mjs`.
 
+### [OIL-READ-LEFTOVERS] The four the two final code reads raised and this branch did not act on (22 Sep 26)
+
+Both providers read the finished OIL branch blind to each other and returned the SAME four defects;
+three were already fixed and the fourth (a nought-minute SC/AVALON/BB shift saying it still earns)
+was fixed in the same session. Reports and the reconciliation:
+`raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-final-read-{fable,codex,reconciled}.md`.
+These four are what was deliberately left:
+
+1. **The saved-plan preview's chip and its tap disagree about which list it is** (Fable F3, LOW).
+   Wording, on a surface `[ALL-AVAIL-WINDOW]` replaces. Do it there or not at all.
+2. **The second spare sim seat leaves a hole in the stored crew array** (Fable F4, LOW). Check it
+   against `slots.ts`'s trailing-blank trim before changing anything — the array shape is that
+   file's contract, not D50's.
+3. **An already-issued weekend carrying a placeholder reads "1 pending" the moment this ships**
+   (Fable F5, LOW). The BEHAVIOUR is right (D44), but the behaviour register promises such a day
+   stays silent. **His call which of the two moves** — the promise or the day.
+4. **A placeholder that reaches a cockpit by copy draws the jet as crewed** (Fable F8, LOW,
+   pre-existing). D47 belts the money on purpose and names this; the screen half is one advisory
+   away. A product call, not a defect against the plan.
+
 ### [STORE-READER-SWEEP] A stored record read more narrowly than it is written — sweep for more (22 Sep 26)
 
 **TWO INSTANCES FOUND IN ONE FILE IN ONE EVENING, both silent, both about official

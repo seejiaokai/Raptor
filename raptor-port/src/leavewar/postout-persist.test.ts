@@ -283,3 +283,32 @@ describe('the keep rule tests for a LEAVING date, not for any window', () => {
     })
   })
 })
+
+/* AND THE CAPTURE IS FILED AS A RECONCILIATION, NOT AS SOMETHING THE ADMIN DID
+   (the independent code read, F6). At boot the command router is not on, so the
+   capture is a raw seed persist. After boot a bare persist would route as an
+   `lw.edit`: an undo step for a change nobody made, labelled as a Leave War
+   edit. Nothing reaches that path today — no writer puts a window on a person
+   without recording it in the same step — so this is a belt, and the test is the
+   only thing that can say the belt is fastened. */
+describe('an after-boot capture is a projection, never a user edit', () => {
+  it('it persists, and the change stream calls it a sync — not an edit', async () => {
+    const { lwHistInit } = await import('./state/store')
+    const { commandStream } = await import('../command')
+    const be = memoryBackend()
+    reboot(be)
+    lwHistInit()                                    // what main.tsx does at the end of boot
+    const before = commandStream().length
+    const id = anAircrewId()
+    setPeople(projectPeople().map(p => (p.id === id ? { ...p, to: '2026-01-13' } : p)))
+    expect(JSON.parse(be.read('postouts')!)[id]?.to, 'the window is still written down').toBe('2026-01-13')
+    /* THE OBSERVABLE THAT CAN TELL THE TWO APART. `lwCanUndo` cannot: it reads
+       the legacy stack and answers false whichever route was taken, so a test
+       written on it passes with the routing removed — which is exactly the
+       ingredient-not-behaviour trap. The envelope's own TYPE is the thing:
+       `lw.edit` is something a person did and belongs on the timeline;
+       `lw.sync` is a reconciliation and does not. */
+    const made = commandStream().slice(before).map(e => (e as any).type)
+    expect(made.filter(t => t === 'lw.edit'), 'nobody edited anything — this is the app reconciling itself').toEqual([])
+  })
+})

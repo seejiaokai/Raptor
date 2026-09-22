@@ -288,7 +288,15 @@ function moduleOfColl(collection: string): Module {
    here — it restores cleanly (applyLwRecord + reprojectRoster re-reads it), and
    LW's settings undo depends on it. `people`/`settings`/`trk.*` need no entry
    here: their modules aren't cut over, so module-level eligibility already
-   excludes them. Remove `lw.postouts` when §10.1 lands (phase 5). */
+   excludes them. Remove `lw.postouts` when §10.1 lands (phase 5).
+   AND WHEN IT DOES, §10.1's re-lay becomes MANDATORY, not a tidy-up (the
+   independent code read, 22 Sep 26). `leavewar/state/store.ts` `setPeople` now
+   CAPTURES a posting window that arrives on a person with no record behind it —
+   which is what stopped the demo's posting-out date being lost on every reload.
+   Lift this deferral without re-laying restored `postOuts` over the projection
+   and the two meet: an undo restores the record without the person, and the next
+   roster change re-captures the window the admin had just undone. The undo would
+   read as reversed on screen and stand in the record. */
 const deferredCollections = new Set<string>(['lw.postouts'])
 function touchesDeferred(entry: UndoEntry): boolean {
   return entry.forward.some(ch => deferredCollections.has(ch.collection))

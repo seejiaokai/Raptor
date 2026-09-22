@@ -1597,7 +1597,27 @@ export function setPeople(people: Person[]): void {
   for (const p of next) if (!po[p.id] && (p.from != null || p.to != null)) caught[p.id] = p
   const got = Object.keys(caught).length > 0
   state = withCurrent({ ...state, people: next, ...(got ? { postOuts: { ...po, ...caught } } : {}) })
-  if (got) persistNotify(); else notify()
+  /* A CAPTURE IS A PROJECTION, NEVER AN EDIT (the independent code read, F6).
+     At boot the command router is not on yet — `LW_READY` is set by
+     `lwHistInit`, which main.tsx calls AFTER the demo world installs — so this
+     is a raw seed persist and nothing more, which is what it should be. If it
+     ever fires AFTER boot, a bare `persistNotify` at idle would route as
+     `lw.edit`: a change-stream envelope and an UNDO STEP for a change nobody
+     made, labelled as a Leave War edit. `lwSyncTurn` files it as the
+     reconciliation it is.
+     Nothing reaches it today — `projectPeople` emits no window, `setPerson`
+     cannot carry one, and the global undo DEFERS `lw.postouts` — so this is a
+     belt. It stops being one the day `[GLOBAL-UNDO]` phase 5 lifts that
+     deferral: an undo of a posting-out would then restore the RECORD without
+     re-laying the person, and the next roster change would re-capture the
+     window the admin had just undone, silently and persisted.
+     `lwSyncTurn` ALONE IS NOT ENOUGH, and the test is what showed it: the
+     router's gate is `HIST.lock || cmdIsCommitting()`, not the turn flag, so a
+     bare `lwSyncTurn(persistNotify)` at idle still fell straight through to
+     `lw.edit` and the turn's trailing projection never armed. `locked` is what
+     puts it on the reconciler's branch — the same pairing `sync.ts` uses for
+     `runOilPass`. */
+  if (got) { if (LW_READY) lwSyncTurn(() => locked(persistNotify)); else persistNotify() } else notify()
 }
 
 /**

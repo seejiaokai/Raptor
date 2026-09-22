@@ -41,6 +41,7 @@ import { SCHED } from './publish'
 import { ensureRowIds } from './rowids'
 import { dayOilWork, dayOilCredits, dayOilBlind, oilCapableItems, rowItemKey } from './oil'
 import { validate } from './validate'
+import { makeStandalone } from './waves'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
@@ -166,5 +167,121 @@ describe('a flying line with NO readable times earns nothing, and no longer in s
     const f = onlyLine(SAT, '', '')
     f.cs = ''
     expect(dayOilBlind(DAYS[SAT])).toContain('WAVE 1')
+  })
+})
+
+/* A NOUGHT-MINUTE SHIFT IS NOT A NOUGHT-MINUTE SORTIE — the independent code
+   read, 22 Sep 26 (F1), reproduced here before it was acted on.
+
+   D49 was ruled about an ordinary flying LINE: the man reported three hours
+   before and debriefed for two after, so the half day is real work whatever the
+   written times say. A STANDALONE wave — SC MAIN, SC SPARE, AVALON, BB — has no
+   such padding: its window IS the written window. Typed 08:00–08:00 it measures
+   nothing, offers no switch and pays nobody, which is D31 working exactly as
+   ruled.
+
+   What was wrong was the SCREEN. The same advisory fired on it, on the line and
+   in the list, saying "the day still earns from the report and debrief" — which
+   is true of a sortie and false of a shift — while the day's "nobody earns OIL"
+   list did not name it. So on the wave the squadron actually works at weekends,
+   a man's day silently earned nothing and the screen said the opposite. That is
+   the one class of defect the owner asked for a warning about on 20 Sep 26. */
+describe('a nought-minute SHIFT says the opposite of a nought-minute sortie', () => {
+  /* EVERY STANDALONE KIND, not the one the finding happened to name. SC MAIN is
+     the wave the squadron works most weekends, but SC SPARE, AVALON and BB have
+     the same shape and the same absence of padding — and a test that walks one
+     kind tests one kind (the standing order's §8.1). `spare` marks the aircraft,
+     which is how the app tells a SPARE row from a MAIN one. */
+  const saLine = (di: number, kind: string, to: string, ld: string,
+                  { crew = 'bane', spare = false } = {}) => {
+    /* MINTED THE WAY THE APP MINTS ONE (`makeStandalone`), never hand-built. A
+       hand-built standalone wave is missing the flags the mint sets, and the
+       money engine reads those — the first version of this fixture had an
+       AVALON line paying by default, which is not what the app does and would
+       have been a false finding about D24. The order's own rule: fixtures write
+       the way the app writes. */
+    const w = makeStandalone(kind)!
+    const f = w.formations[0]
+    f.to = to; f.ld = ld
+    const a = spare ? (f.aircraft.find((x: any) => x.spare) || f.aircraft[0]) : f.aircraft[0]
+    a.p = crew
+    Object.assign(DAYS[di] as any, { waves: [w], dutywaves: [], sims: {}, ground: [], allhands: [] })
+    ensureRowIds(DAYS)
+    return f
+  }
+  const scLine = (di: number, to: string, ld: string, crew = 'bane') => saLine(di, 'sc', to, ld, { crew })
+  const blindNames = (di: number) => dayOilBlind(DAYS[di]).map((b: any) => b.name || b.label || b.cs || String(b))
+
+  it('THE FACT, unchanged: it measures nothing, offers no switch and pays nobody', () => {
+    const f = scLine(SAT, '08:00', '08:00')
+    expect(credits(SAT).bane, 'a shift has no report and no debrief to pad it').toBeUndefined()
+    expect(oilCapableItems(DAYS[SAT]).has(rowItemKey(f.rid)), 'nothing to measure, so no switch — D31').toBe(false)
+  })
+
+  it('so the day must NAME it in the "nobody earns" list, beside the blank desks', () => {
+    scLine(SAT, '08:00', '08:00')
+    expect(blindNames(SAT).join(' '), 'the man is at work and his day earns nothing — say so').toContain('SC')
+  })
+
+  it('and the advisory must not promise the report and debrief it has not got', () => {
+    scLine(SAT, '08:00', '08:00')
+    const w = advOn(SAT, 'FLT_NO_LEN')
+    expect(w, 'the times are still plainly wrong, so it is still flagged').toHaveLength(1)
+    expect(w[0].msg, 'a shift earns nothing from padding it does not have')
+      .not.toContain('still earns from the report and debrief')
+    expect(w[0].msg, 'it says what is true of a shift instead').toMatch(/earns nobody/i)
+  })
+
+  it('THE CONTROL: an ordinary line with the same times keeps D49 whole', () => {
+    onlyLine(SAT, '08:00', '08:00')
+    expect(credits(SAT).bane, 'he reported and debriefed — the ruling').toBe(0.5)
+    expect(blindNames(SAT).join(' '), 'and it is NOT in the nobody-earns list').not.toContain('RAP 1')
+    expect(advOn(SAT, 'FLT_NO_LEN')[0].msg, 'and keeps the sortie sentence')
+      .toContain('still earns from the report and debrief')
+  })
+
+  it('THE CONTROL: a shift with real times pays and is named nowhere', () => {
+    scLine(SAT, '08:00', '14:00')
+    expect(credits(SAT).bane, 'six hours is a half day').toBe(0.5)
+    expect(advOn(SAT, 'FLT_NO_LEN'), 'nothing wrong with its times').toHaveLength(0)
+    expect(blindNames(SAT).join(' ')).not.toContain('SC')
+  })
+
+  /* THE MATRIX — every standalone kind, and a SPARE as well as a MAIN. The
+     finding named SC MAIN because that is the wave the squadron works; nothing
+     about the fault is particular to it. */
+  for (const [kind, what] of [['sc', 'SC MAIN'], ['avalon', 'AVALON'], ['bb', 'BB']] as const) {
+    it(`${what}, typed to the same minute: pays nobody, says so, and is named`, () => {
+      const f = saLine(SAT, kind, '08:00', '08:00')
+      expect(credits(SAT).bane, 'no padding to pay from').toBeUndefined()
+      expect(oilCapableItems(DAYS[SAT]).has(rowItemKey(f.rid)), 'nothing to measure, so no switch').toBe(false)
+      /* by the name the app gives it — an AVALON line's callsign is 'AV', not
+         'AVALON', and a list that named the wrong thing would help nobody */
+      expect(blindNames(SAT).join(' '), "named in the day's nobody-earns list")
+        .toContain(String(f.cs || what))
+      expect(advOn(SAT, 'FLT_NO_LEN')[0].msg, 'and the sentence is the shift one').toMatch(/earns nobody/i)
+    })
+  }
+
+  it('an SC SPARE is no different — it has the same absence of padding', () => {
+    const f = saLine(SAT, 'sc', '08:00', '08:00', { spare: true })
+    expect(credits(SAT).bane).toBeUndefined()
+    expect(oilCapableItems(DAYS[SAT]).has(rowItemKey(f.rid))).toBe(false)
+    expect(advOn(SAT, 'FLT_NO_LEN')[0].msg).toMatch(/earns nobody/i)
+  })
+
+  it('THE CONTROL: AVALON and BB with real times keep D24 — switchable, and off by default', () => {
+    for (const kind of ['avalon', 'bb']) {
+      const f = saLine(SAT, kind, '08:00', '14:00')
+      expect(oilCapableItems(DAYS[SAT]).has(rowItemKey(f.rid)),
+        `${kind} can be measured, so D24 says it offers the switch`).toBe(true)
+      /* the DEFAULT is the span's own flag, not what the day would credit with
+         every switch on — `dayOilCredits` measures, `dflt` is what it earns
+         unless somebody says otherwise. Asserting the wrong one of those two
+         read as an AVALON line paying by default, which it does not. */
+      const span = dayOilWork(DAYS[SAT], { expandAll: () => [] }).bane
+      expect(span && span[0].dflt, `${kind} reaches the walk and earns nothing until somebody says so`).toBe(false)
+      expect(advOn(SAT, 'FLT_NO_LEN'), 'nothing wrong with its times').toHaveLength(0)
+    }
   })
 })

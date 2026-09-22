@@ -349,12 +349,20 @@ export function dayOilBlind(day:any):string[]{
      A line whose take-off and landing are the SAME is deliberately NOT named
      here. It still earns (D49 — the man reported and debriefed), so "nobody on
      it earns OIL" would be false about it; the day says what is wrong with
-     THOSE times separately, as an advisory on the line. */
+     THOSE times separately, as an advisory on the line.
+     A SHIFT IS THE OTHER WAY ROUND (22 Sep 26, the independent code read). A
+     STANDALONE wave — SC MAIN, SC SPARE, AVALON, BB — has no report and no
+     debrief: its window IS the written window, so typed 08:00–08:00 it measures
+     nothing and pays nobody, exactly like a desk with no times. D49 never
+     reached it (it is a ruling about a sortie), and on the wave the squadron
+     actually works at weekends this is precisely the silent-nothing the owner
+     asked to be warned about on 20 Sep 26. So it IS named. */
   const readable=(st:any,en:any)=>parseHM(st)!=null&&parseHM(en)!=null;
+  const zeroShift=(wv:any,f:any)=>isStandalone(wv)&&parseHM(f.to)!=null&&parseHM(f.to)===parseHM(f.ld);
   (day.waves||[]).forEach((wv:any)=>{
     (wv.formations||[]).forEach((f:any)=>{
       if(f.cx)return;
-      if(readable(f.to,f.ld))return;
+      if(readable(f.to,f.ld)&&!zeroShift(wv,f))return;
       const crew:any[]=[];
       (f.aircraft||[]).forEach((ac:any)=>{if(!ac.cx){crew.push(ac.p);crew.push(ac.w);}});
       if(!named(crew))return;

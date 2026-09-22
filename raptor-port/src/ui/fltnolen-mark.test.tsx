@@ -163,3 +163,43 @@ describe('the warning lights the box it names, as every other warning lights its
     expect(m.some(x => x.classList.contains('wfoc')), 'only the box the key names').toBe(false)
   })
 })
+
+/* A SHIFT'S MARKED BOXES SAY THE SHIFT SENTENCE (the independent code read,
+   22 Sep 26, F1). The mark is right on a standalone wave — the times are still
+   plainly wrong — but its WORDS were the sortie's: "the day still earns from
+   the report and debrief", which a shift has not got. A scheduler reads the box,
+   not the engine, so a box that says the opposite of what the day pays is the
+   whole defect. All three renderers pass the same fact to the same sentence, so
+   they cannot say different things about one line. */
+describe('a nought-minute SHIFT is marked, and says what is true of a shift', () => {
+  const scLine = (to: string, ld: string, crew = 'bane') => {
+    Object.assign(DAYS[SAT] as any, {
+      waves: [{ label: 'SC', kind: 'sc', standalone: true,
+        formations: [{ cs: 'SC', msn: 'AM', to, ld, aircraft: [{ p: crew, w: '' }] }] }],
+      dutywaves: [], sims: {}, ground: [], allhands: [],
+    })
+    ensureRowIds(DAYS)
+    validate()
+  }
+  const says = (html: string) => marked(html).map(x => x.getAttribute('title') || '')
+
+  it('every surface: the shift sentence, never the sortie one', () => {
+    scLine('08:00', '08:00')
+    for (const html of [dayHTML(SAT, true), dayHTML(SAT, false), boardHTML(SAT)]) {
+      const t = says(html)
+      expect(t.length, 'both boxes are marked').toBe(2)
+      for (const s of t) {
+        expect(s, 'it earns nobody, so it must not promise a report and debrief')
+          .not.toContain('still earns from the report and debrief')
+        expect(s).toMatch(/earns nobody/i)
+      }
+    }
+  })
+
+  it('THE CONTROL: an ordinary line keeps the sortie sentence, on every surface', () => {
+    onlyLine(SAT, '10:00', '10:00')
+    for (const html of [dayHTML(SAT, true), dayHTML(SAT, false), boardHTML(SAT)])
+      for (const s of says(html))
+        expect(s, 'D49 — he reported and debriefed').toContain('still earns from the report and debrief')
+  })
+})

@@ -7,7 +7,7 @@ import { HOOKS } from './hooks'
 import { sansGate, SANS_LABEL } from './avail'
 import { seedRunIn, prevSundaySeed, nextMondaySeed, nextMondayWorked, windowDiverges, windowFiling, filingDivergesAt } from './weekctx'
 import { setWorld, setFiling, clearFiling } from './world'
-import { CURWEEK } from './waves'
+import { CURWEEK, isStandalone } from './waves'
 import { DAYS } from './data'
 import { dayOilBlind, blindDesks } from './oil'
 import { oilWouldEarn } from './oilev'
@@ -139,8 +139,16 @@ export function fltNoLen(f:any):boolean{
   return crew.some((v:any)=>{const id=whoId(v);return !!id&&(realP(id)||isSpecial(id));});
 }
 /* the sentence, shared by the warning and by every marked box's own words, so a
-   scheduler reading the box is told the same thing as the list */
-export const FLT_NO_LEN_SAYS=(st:any)=>`takes off and lands at the same time (${hm24(st)}) — one of the two is wrong; the day still earns from the report and debrief`;
+   scheduler reading the box is told the same thing as the list.
+   TWO SENTENCES, BECAUSE THEY ARE TWO DIFFERENT FACTS (22 Sep 26, the
+   independent code read). D49 is a ruling about a SORTIE: the man reported three
+   hours before and debriefed for two after, so the half day is real work
+   whatever the written times say. A STANDALONE wave — SC MAIN, SC SPARE,
+   AVALON, BB — has no such padding; its window IS the written window, so typed
+   08:00–08:00 it measures nothing and pays nobody. Telling a scheduler that
+   shift "still earns from the report and debrief" was false, on the wave the
+   squadron works most weekends, about money. */
+export const FLT_NO_LEN_SAYS=(st:any,sa?:any)=>`takes off and lands at the same time (${hm24(st)}) — one of the two is wrong; ${sa?'a shift with no length earns nobody any OIL until it is fixed':'the day still earns from the report and debrief'}`;
 function validateCore(){
   const ev=collectEvents(), all:any[]=[], byDay:any[]=[], sev:any={}, chip:any={}, dash:any={}, trace:any={};
   REST={}; EVD={};
@@ -1139,7 +1147,7 @@ function validateCore(){
     ((DAYS[di]||{}).waves||[]).forEach((wv:any,gi:any)=>{
       (wv.formations||[]).forEach((f:any,li:any)=>{
         if(!fltNoLen(f))return;
-        add('adv','FLT_NO_LEN',[],`${f.cs||wv.label||'A flying line'} ${FLT_NO_LEN_SAYS(parseHM(f.to))}`,`ff:${di}.${gi}.${li}.ld`);
+        add('adv','FLT_NO_LEN',[],`${f.cs||wv.label||'A flying line'} ${FLT_NO_LEN_SAYS(parseHM(f.to),isStandalone(wv))}`,`ff:${di}.${gi}.${li}.ld`);
       });
     });
     const earnsOil=day.dow==='Saturday'||day.dow==='Sunday'||HOOKS.oilEarningDay(di);

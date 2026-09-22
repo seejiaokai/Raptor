@@ -100,7 +100,7 @@ function peekFormation(w: any, f: any): string {
      a day blob from the seed or the stash, never a day index. */
   const noLen = fltNoLen(f)
   const badCls = noLen ? ' badtm' : ''
-  const badAtt = noLen ? ` title="${esc((f.cs || w.label || 'A flying line') + ' ' + FLT_NO_LEN_SAYS(parseHM(f.to)))}"` : ''
+  const badAtt = noLen ? ` title="${esc((f.cs || w.label || 'A flying line') + ' ' + FLT_NO_LEN_SAYS(parseHM(f.to), sa))}"` : ''
   let h = `<div class="form${rowCls(f)}">`
     + `<div class="fcell csmsn" style="${spans}">${cxTag(f)}${flagTag(f)}<b><span class="mdot" style="background:${sa ? 'var(--san)' : `var(--${mColor(f.msn)})`}"></span>${esc(f.cs || '')}</b>${f.msn ? `<i>${esc(f.msn)}</i>` : ''}</div>`
     + (sa
