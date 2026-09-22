@@ -1,0 +1,184 @@
+/* [OIL-SEATS-CAN-EARN] STEP 9b — a changed crowd on a published day raises the
+   pending mark, and never takes a signature down with it.
+   Plan: docs/superpowers/specs/2026-09-22-oil-seats-can-earn-plan.md §4 (D44,
+   D45), §5 step 9.
+
+   D44 — who was behind a puck is FROZEN at publication on EVERY day, earning or
+   not. The issued version keeps the people it went out with; the working copy
+   shows the live answer; the DIFFERENCE raises the ordinary pending mark, and
+   the scheduler amends or publishes the end-of-day version.
+
+   THE OWNER OVERRULED THIS BUILD'S FIRST ANSWER, and the fact that settled it is
+   one the code could not supply. The build had argued for "live on a day that
+   earns nothing", reasoning that a pending mark for a number owing nobody
+   anything would devalue a mark that does carry money. He knows the squadron
+   reviews every change at the close of the day and issues an end-of-day version
+   as the record of what actually happened — so that mark is the signal their
+   process runs on, not noise, and a change in who was available IS something
+   that happened.
+
+   D45 — A CHANGE IN AVAILABILITY NEVER INVALIDATES A SIGNATURE. The pending mark
+   is the whole mechanism. This is a standing test, in the owner's own words:
+   nothing on a published schedule may change without the scheduler acknowledging
+   it — and a man filing leave is not the scheduler changing his mind about what
+   he approved.
+
+   SO THERE ARE TWO PROJECTIONS OF ONE BLOCK, NOT ONE (OSE-T-03, and it was
+   executable rather than cosmetic: the key a signature binds to already carried
+   membership, so an availability-only change would have taken down a signature
+   the owner said it must not). The publication comparison carries membership on
+   every day; the signature projection leaves it out while still catching a
+   changed OIL decision, a changed answer, or anything else approval-relevant.
+
+   AND AN ALREADY-PUBLISHED DAY MUST NOT LIGHT UP THE MOMENT THIS SHIPS. A block
+   frozen before membership was kept recorded none on a non-earning day, and
+   reading that absence as "the crowd changed" would offer an amendment nobody
+   made — the manufactured-amendment shape this branch has already met three
+   times. Such a day is compared on everything except its membership. */
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { DAYS } from './data'
+import { INPUTS } from './inputs'
+import { HOOKS } from './hooks'
+import {
+  SCHED, setSign, setDayApproved, dayHasChanges, dayCurVer, daySnapOf, daySigned,
+} from './publish'
+import { ensureRowIds } from './rowids'
+import { rowItemKey } from './oil'
+
+const DSNAP = JSON.stringify(DAYS)
+const ISNAP = JSON.stringify(INPUTS)
+const SAT = 5, TUE = 1
+const SAT_ISO = '2026-07-18', TUE_ISO = '2026-07-14'
+const earningDay = HOOKS.oilEarningDay, dayISO = HOOKS.oilDayISO, sentinel = HOOKS.oilSentinel
+const CROWD = ['bane', 'stiff', 'plasma']
+
+beforeEach(() => {
+  DAYS.length = 0; JSON.parse(DSNAP).forEach((d: any) => DAYS.push(d))
+  INPUTS.length = 0; JSON.parse(ISNAP).forEach((r: any) => INPUTS.push(r))
+  SCHED.pending = {}; SCHED.changes = {}; SCHED.added = {}; SCHED.als = []
+  SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.signBind = {}; SCHED.orig = {}; SCHED.cur = {}
+  SCHED.drafts = {}; SCHED.curDraft = {}; SCHED.correcting = {}
+  for (const di of [SAT, TUE]) {
+    Object.assign(DAYS[di] as any, { waves: [], dutywaves: [], sims: {}, ground: [], allhands: [], oild: undefined })
+  }
+  ensureRowIds(DAYS)
+  HOOKS.oilEarningDay = (di: number) => di === SAT
+  HOOKS.oilDayISO = (di: number) => (di === SAT ? SAT_ISO : di === TUE ? TUE_ISO : '2026-07-15')
+  HOOKS.oilSentinel = () => CROWD.slice()
+})
+afterEach(() => { HOOKS.oilEarningDay = earningDay; HOOKS.oilDayISO = dayISO; HOOKS.oilSentinel = sentinel })
+
+const puckRow = (di: number, who = 'allavail') => {
+  ;(DAYS[di] as any).ground = [{ prog: 'FAMILY DAY', str: '0900', end: '1700', who }]
+  ensureRowIds(DAYS)
+  return rowItemKey((DAYS[di] as any).ground[0].rid)
+}
+/* signed through the sanctioned write path, so each role carries a real binding
+   — a hand-written signOf leaves none and proves nothing about D45 */
+const ROLES = [['cur', 'ignite'], ['sked', 'bane'], ['plan', 'stiff'], ['appr', 'pump']]
+/* THE REAL SEQUENCE, because D45 is about the second signature, not the first.
+   A day is signed, published — and publishing SPENDS that signature (`signClear`
+   inside setDayApproved: it went out, the promise is kept). The signature D45
+   protects is the one on the WORKING COPY afterwards: the scheduler signing the
+   day as it stands for the next issue. If a man filing leave took THAT down, he
+   would be re-signing for something he did not change. Signed through setSign,
+   never a hand-written record — only setSign stores what was signed FOR. */
+const signAndPublish = (di: number) => {
+  for (const [role, who] of ROLES) setSign(di, role, who)
+  setDayApproved(di, true)
+  for (const [role, who] of ROLES) setSign(di, role, who)
+}
+const allSigned = (di: number) => daySigned(di)
+
+describe('D44 — a changed crowd on a published day raises the pending mark', () => {
+  it('ON A WEEKDAY, which is the half that did not exist before', () => {
+    puckRow(TUE)
+    signAndPublish(TUE)
+    expect(dayHasChanges(TUE), 'freshly published, nothing pending').toBe(false)
+    HOOKS.oilSentinel = () => ['bane']                     // two of them file leave
+    expect(dayHasChanges(TUE), 'the crowd behind the puck is not what it went out with').toBe(true)
+  })
+
+  it('and on a WEEKEND, exactly as it always did', () => {
+    puckRow(SAT)
+    signAndPublish(SAT)
+    expect(dayHasChanges(SAT)).toBe(false)
+    HOOKS.oilSentinel = () => ['bane']
+    expect(dayHasChanges(SAT)).toBe(true)
+  })
+
+  it('the issued day itself never moves — it is the record', () => {
+    const item = puckRow(TUE)
+    signAndPublish(TUE)
+    HOOKS.oilSentinel = () => ['bane']
+    const snap: any = daySnapOf(TUE, dayCurVer(TUE))
+    expect(snap.d.oilev.sent[item], 'the men it was issued with').toEqual(CROWD)
+  })
+
+  it('THE CONTROL: a day with no puck on it stays quiet whatever availability does', () => {
+    puckRow(TUE, 'bane')
+    signAndPublish(TUE)
+    HOOKS.oilSentinel = () => []
+    expect(dayHasChanges(TUE), 'nothing on this day depends on who is free').toBe(false)
+  })
+})
+
+describe('D45 — but it NEVER takes a signature down with it', () => {
+  it('a man files leave and every signature still stands', () => {
+    puckRow(TUE)
+    signAndPublish(TUE)
+    expect(allSigned(TUE), 'signed before anything moved').toBe(true)
+    HOOKS.oilSentinel = () => ['bane']
+    expect(dayHasChanges(TUE), 'the change is acknowledged through the pending mark').toBe(true)
+    expect(allSigned(TUE), 'and not by tearing up what he approved').toBe(true)
+  })
+
+  it('the same on a weekend, where the crowd is money', () => {
+    puckRow(SAT)
+    signAndPublish(SAT)
+    HOOKS.oilSentinel = () => ['bane']
+    expect(allSigned(SAT), 'a change in availability is not a change of mind').toBe(true)
+  })
+
+  it('THE CONTROL: a changed OIL DECISION still does take the signature down', () => {
+    const item = puckRow(SAT)
+    signAndPublish(SAT)
+    expect(allSigned(SAT)).toBe(true)
+    ;(DAYS[SAT] as any).oild = { items: { [item]: 0 } }    // the scheduler switches the row off
+    expect(allSigned(SAT), 'that IS a change of mind about what he approved').toBe(false)
+  })
+})
+
+describe('an already-published day must not light up the moment this ships', () => {
+  it('a weekday whose block predates the record reads as unchanged', () => {
+    puckRow(TUE)
+    signAndPublish(TUE)
+    /* age the issued block the way the real ones are aged: strip the field the
+       old build never wrote, and the membership it never recorded */
+    const snap: any = daySnapOf(TUE, dayCurVer(TUE))
+    delete snap.d.oilev.mem
+    snap.d.oilev.sent = {}
+    expect(dayHasChanges(TUE), 'nobody made a change, so none may be offered').toBe(false)
+  })
+
+  it('and its signatures are untouched as well', () => {
+    puckRow(TUE)
+    signAndPublish(TUE)
+    const snap: any = daySnapOf(TUE, dayCurVer(TUE))
+    delete snap.d.oilev.mem
+    snap.d.oilev.sent = {}
+    expect(allSigned(TUE)).toBe(true)
+  })
+
+  it('an older WEEKEND block still compares on the membership it did record', () => {
+    /* earning days have carried membership all along — that signal is real and
+       must not be thrown away with the ones that were never written */
+    const item = puckRow(SAT)
+    signAndPublish(SAT)
+    const snap: any = daySnapOf(SAT, dayCurVer(SAT))
+    delete snap.d.oilev.mem
+    expect(dayHasChanges(SAT), 'unchanged is unchanged').toBe(false)
+    snap.d.oilev.sent[item] = ['bane']                     // it went out with somebody else
+    expect(dayHasChanges(SAT), 'and a real difference still shows').toBe(true)
+  })
+})

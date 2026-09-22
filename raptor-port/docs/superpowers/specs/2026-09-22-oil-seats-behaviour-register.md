@@ -9,7 +9,7 @@ Built against the plan at
 a ruling with no row here has not been built yet, and that is the point of the
 blank.
 
-**Status: steps 1–8 built, step 9 half built (9a, the screen).** 9b (the record) and steps 10–11 outstanding.
+**Status: steps 1–9 built.** Steps 10–11 outstanding.
 
 ---
 
@@ -39,7 +39,9 @@ blank.
 | **D37** | It reads as what it is — the men with nothing else on at that time — and on a day that earns nothing it does not mention OIL at all. | step 9a | `ui/oilcount.test.tsx` |
 | **D44** | Who was behind a puck is written down when the day is published, on every day. The issued page keeps that list; the working copy shows today's. A schedule issued before the app kept the record says so rather than having an answer invented for it. | step 9a | `engine/oilsent.test.ts`, `ui/oilcount.test.tsx` |
 | **D44, the tap** | The chip carries the version it was drawn in, so tapping an issued page lists the men that page went out with — not whoever is free now. | step 9a | `ui/oilcount.test.tsx` |
-| **D45** | A change in availability never invalidates a signature; the pending mark is the whole mechanism. | **not built yet — step 9b** | — |
+| **D44, the mark** | When the crowd behind a puck on a published day is no longer what it went out with, the day reads as having something pending — on every day, not just a weekend — and the scheduler amends or publishes the end-of-day version. | step 9b | `engine/oilmembership.test.ts` |
+| **D45** | A change in availability NEVER invalidates a signature. The pending mark is the whole mechanism. A changed OIL decision still does invalidate it, because that is a change of mind about what was approved. | step 9b | `engine/oilmembership.test.ts` (with its control), `engine/oilev.test.ts` |
+| **No amendment nobody made** | A day published before the app kept this record does not light up the moment the change ships. | step 9b | `engine/oilmembership.test.ts` |
 | **OIL7** | Tapping an item's name stops the whole item earning, so a man added later does not earn silently. | unchanged | `ui/oilmode.test.tsx` |
 | **OIL28** | Nothing overrides ineligibility. An "allow" is permission to count real work, never to invent it. | unchanged | `ui/oilmode.test.tsx` |
 | **OIL8** | A placeholder opens into real pucks inside the mode, so one man can be taken off a crowd — on a duty desk, a sim row and every extras line, not just a ground row. | step 7 | `ui/oilrowpucks.test.tsx`, `ui/oilclaimcrowd.test.tsx` |

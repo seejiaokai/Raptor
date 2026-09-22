@@ -678,7 +678,23 @@ function standEarns(st: OilInputEv['stand']): boolean {
   return st !== 'cx' && st !== 'info' && st !== 'gone' && st !== 'elsewhere'
 }
 
-export function oilEvidenceKey(ev: OilEvidence | null | undefined, day?: any): string {
+/** THE MEMBERSHIP TAIL of a key, serialised the one way ([OIL-SEATS-CAN-EARN]
+ *  step 9b). Kept beside the two keys that use it so they cannot spell it
+ *  differently. */
+const memKey = (ev: OilEvidence) => Object.keys(ev.sent || {}).sort().map(k => `${k}=${[...ev.sent[k]].sort().join('+')}`).join(',')
+
+/** EVERYTHING IN A KEY EXCEPT ITS MEMBERSHIP TAIL. Membership is always the
+ *  LAST field, so this is one cut — and deriving the signature projection from
+ *  the comparison key rather than writing it out again is what stops the two
+ *  drifting apart. Exported because `oilBoundOk` has to apply it to a string
+ *  STORED by an earlier build, which is the only other place it is legitimate. */
+export const oilKeyNoMem = (k: string) => { const i = String(k || '').lastIndexOf('|'); return i < 0 ? '' : String(k).slice(0, i) }
+
+/** THE PUBLICATION COMPARISON'S KEY — what "this day has changed" is measured
+ *  on. `mem` is false only where the two sides cannot honestly be compared on
+ *  membership at all: an issued block written before it was recorded (see
+ *  `oilDelta`). */
+export function oilEvidenceKey(ev: OilEvidence | null | undefined, day?: any, mem = true): string {
   /* THE KEY RECORDS WHAT THE DAY PAYS, NOT AN INTERNAL WORD (22 Sep 26). It used
      to serialise the standing itself, so a claim whose row simply moved to a
      week nobody has loaded — `active` to `unlanded`, both of which pay exactly
@@ -686,10 +702,37 @@ export function oilEvidenceKey(ev: OilEvidence | null | undefined, day?: any): s
      That is the manufactured-amendment shape this branch has now met three
      times. Two values, and they are the two the money makes: earns, or does
      not. Every standing change that moves money still moves the key. */
-  if (!ev || !ev.earns) return ''
+  if (!ev) return ''
+  const sent = mem ? memKey(ev) : ''
+  /* A DAY THAT EARNS NOBODY ANYTHING STILL HAS A CROWD TO COMPARE
+     ([OIL-SEATS-CAN-EARN] step 9b, D44). It used to key to '' and stop, so a
+     change in who was behind a puck on a Tuesday was invisible to the
+     publication comparison — and D44 says the issued day keeps the people it
+     went out with on EVERY day, earning or not, with the difference raising the
+     ordinary pending mark. Membership is the whole of what such a day has, so
+     it is the whole of its key, and a day with no puck on it still keys to ''
+     and reads exactly as before. */
+  if (!ev.earns) return sent ? `${ev.iso}|||${sent}` : ''
   const ins = ev.inputs.map(i => `${i.iid}:${i.person}:${i.type}:${i.acc}:${standEarns(standIn(day, i)) ? 'y' : 'n'}:${i.win ? i.win.join('-') : ''}:${i.ans == null ? '' : i.ans}`).join(',')
-  const sent = Object.keys(ev.sent).sort().map(k => `${k}=${[...ev.sent[k]].sort().join('+')}`).join(',')
   return `${ev.iso}|${oilDecisionsKey(ev.d)}|${ins}|${sent}`
+}
+
+/** THE SIGNATURE'S KEY — the SAME block, projected differently (D45, OSE-T-03).
+ *
+ *  A change in availability NEVER invalidates a signature. The owner made that a
+ *  standing test in his own words: nothing on a published schedule may change
+ *  without the scheduler acknowledging it — and a man filing leave is not the
+ *  scheduler changing his mind about what he approved. The pending mark above is
+ *  how that change IS acknowledged.
+ *
+ *  So the two projections are not a tidy-up: the key a signature binds to used to
+ *  carry membership, which meant an availability-only change took down a
+ *  signature the owner said it must not. Everything else about the block still
+ *  invalidates — a changed OIL decision, a changed answer, a claim that stopped
+ *  earning — because those ARE changes of mind about what was approved. */
+export function oilSignKey(ev: OilEvidence | null | undefined, day?: any): string {
+  if (!ev || !ev.earns) return ''
+  return oilKeyNoMem(oilEvidenceKey(ev, day))
 }
 
 /** THE SAME KEY AS THE BUILD BEFORE `stand` WROTE IT — six parts per claim, not
