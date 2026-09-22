@@ -1,11 +1,11 @@
 # Merge note — delete this file once `claude/skill-review` AND `claude/all-avail-window` are both on `main` (owner, D69)
 
 `claude/skill-review` reviewed this notebook on 23 Sep 26: every resolved note moved to
-`archive/log-2026-09-23.md`, and the active `log.md` keeps only #42, #120 and #122.
+`archive/log-2026-09-23.md`, and the active `log.md` keeps only #42, #43, #120 and #122.
 `claude/all-avail-window` was appending new notes (#179-#182, maybe more) to its own copy of
 the old, full `log.md` at the same time. Whichever merges second:
 
-1. **`log.md` conflicts.** Keep the reviewed side (the three-note file). Then re-append the
+1. **`log.md` conflicts.** Keep the reviewed side (the four-note file). Then re-append the
    other branch's NEW entries only — those it added after `main` 6efa6839, from #179 on — at
    the end, renumbered after the highest number already used (#190, in the archive), and fix
    any cross-references between them. Rule: `.claude/skills/task-observer/SKILL.md`

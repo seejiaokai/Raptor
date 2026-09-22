@@ -384,8 +384,8 @@ browser-proven.
   one commit. This is why the device pass below is his, not something CI closes.
 
 - **The observer log is committed** at `.claude/skill-observations/log.md` — the
-  ONE log, never a second outside the repo. Reviewed 23 Sep 26 (D71): 179
-  resolved notes moved to `archive/`, 3 still open. How reviews run here:
+  ONE log, never a second outside the repo. Reviewed 23 Sep 26 (D71): 178
+  resolved notes moved to `archive/`, 4 still open. How reviews run here:
   `.claude/skills/TASK-OBSERVER-VENDORED.md` §Reviews in this repo.
 
 
