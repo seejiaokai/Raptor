@@ -2719,3 +2719,17 @@ tends to carry costs (hidden bugs, undoing the plan's intent) that only resurfac
 **Suggested improvement:** Run the enumeration twice — once before building, to find what to wire, and once after, as the completion check. In the second pass, every cell must be VERIFIED rather than recalled: open the file that draws it. Treat "it doesn't draw that, so it can't be affected" as a claim to check, never a reason to skip a row — a surface that keeps a private copy of shared markup is the commonest place a shared fix fails to arrive, and the reason it has a private copy is usually a good one that has nothing to do with the fix.
 
 **Principle:** A completeness table is only worth the cell you were least sure of. Writing one after the work is not bookkeeping — it is the check, and it only works if each cell is filled by looking rather than by remembering.
+
+### Observation 178: Verify a reviewer's FIX as carefully as their FINDING
+
+**Status:** OPEN
+**Date:** 2026-09-22
+**Skill:** `receiving-code-review`
+**Type:** open-source
+**Phase/Area:** Acting on review feedback
+
+**Issue:** Two independent expert reviews came back on the same work. The practice of reproducing each FINDING before acting was followed and caught two errors — one reviewer's claim about start-up order was wrong (settled by reading the actual sequence, not by taking the other reviewer's side), and a finding in one report was already fixed. But the same scepticism was not initially applied to a reviewer's proposed FIX. One came with a precise one-line change and a confident explanation of why it worked. Applied as given, it did not work: the mechanism it named was gated on a different flag than the reviewer assumed, so the code silently kept its old behaviour. What exposed it was not re-reading the fix — it was that the test written to pin it passed with the fix removed, which forced a hunt for an observable that could actually distinguish the two paths.
+
+**Suggested improvement:** Treat a reviewer's suggested fix as a hypothesis with the same standing as their finding: reproduce the defect, apply the fix, and then prove the fix by REMOVING it and watching the test fail. A reviewer reasoning from source alone cannot execute the path they are describing, so their fix is a reading of the mechanism, not a measurement of it — and a precise, confident one is no safer than a vague one. Where two reviewers disagree on a fact, settle it by measuring the fact, never by majority or by which report is more detailed.
+
+**Principle:** A review gives you a finding worth reproducing and a fix worth doubting. The fix is where the reviewer is furthest from the running system and closest to sounding authoritative, and a test that cannot fail without the fix is the only thing that tells you which you got.
