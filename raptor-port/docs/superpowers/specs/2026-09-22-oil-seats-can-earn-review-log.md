@@ -173,3 +173,28 @@ disagree on the fix.
 spare by tapping the man), and M3's step-2 spec adopted whole in place of plan §5 steps 2–3.
 
 **Unresolved between the reviewers:** M6/OSE-05's remedy. Carried to round 2.
+
+---
+
+## Round 2 — CODEX (GPT-6 Astra, high), on the rewritten plan
+
+**Verdict: REVISE.** Five findings — four high, one medium. It confirmed three of its round-1
+findings as adequately addressed: the narrower seat scope, the atomic swap preflight, and **the
+live-weekday count with its label** — so the host's arbitration on OSE-05 was tested and stands.
+It also confirmed §9 maps every round-1 finding.
+
+**Three of the five are the host's own errors IN THE REWRITE.** The rewrite fixed the shape and
+introduced new mistakes; that is worth stating plainly, because it is the argument for the second
+round existing at all.
+
+| # | Sev | What it says | Host disposition |
+|---|---|---|---|
+| **OSE-R2-01** | high | **The new precedence breaks the INVERSE operation.** `toggleOilPerson` deletes a man's override whenever the wanted state equals the default (`if (want === dflt) delete`). Force an SC item on with `1`, then tap a default-off SPARE man off: want=false, dflt=false, his override is deleted — and the item's `1` immediately makes him earn again. Separately, making `oilItemOn` three-valued breaks every `!oilItemOn` guard, which would read "inherit" as an explicit refusal and refuse every tap on an unset item. | **CONFIRMED by the host**, both halves, by reading `ui/oilmode.ts`. ACCEPTED. The design changed the READ and left the WRITE alone — the classic half-migration. Needs separate raw-override and effective-result functions, and the guards must reject only an explicit false. |
+| **OSE-R2-02** | high | **The span-default predicate omits formation-level `f.spare`.** The old exclusion checks BOTH: `if(ac.cx\|\|f.spare\|\|ac.spare)return`. A saved SC formation with `f.spare` and no aircraft-level flag would get every occupant defaulting ON. **This disproves §6's claim that exempt issued days compute identically.** | **CONFIRMED by the host** — the line reads exactly that. ACCEPTED, and it is the host's own error: it wrote the predicate from memory of one branch. |
+| **OSE-R2-03** | high | **§6's blanket "no historical-credit checks needed" is WRONG.** D43 closed the placeholder route, but **step 8 reopens the same danger by a different one**: an issued Saturday flight with take-off and landing at the same minute pays HO today and would pay nothing after step 8, because the money is recomputed from the frozen day. The reverse sweep then deletes that credit with no amendment, and the existing upgrade guard only checks input eligibility, so it does not catch a schedule change. | ACCEPTED, and it is the sharpest finding of round 2. **The host over-claimed in the rewrite** — it declared the retrospective risk closed when only one of its two routes had been closed. Step 8 needs old issued evidence held to the rule it was issued under, and the correction must be visible in the signature and the amendment comparison. |
+| **OSE-R2-04** | high | **Half of Fable S1 was LOST in the rewrite.** Step 6 says "placeholder extras" — but a placeholder can also sit in an accepted request's PRIMARY `who` seat, which D33 still permits and `setSlotVal` still allows. The claim collector walks `row.more` only, so the primary position would still have no frozen membership and no crowd earnings. §9 maps the finding, but only half of it survived. | ACCEPTED. **This is exactly what round 2 was asked to look for** — a finding handled in name only. The host's §9 table said S1 was covered; it was covered halfway. |
+| **OSE-R2-05** | med | **The frozen count does not survive TAPPING the chip.** The chip carries day and item but no version; the snapshot is installed only while the HTML is generated and then the live day is restored, so the tap re-reads live evidence. An issued day's chip can show 2 while its tap-through lists 1. | ACCEPTED. The promise in §4 is a drawing-time promise only; the read behind it has to carry the same snapshot. |
+
+**What it confirmed as settled:** the live/frozen arbitration (OSE-05 round 1) — it did not re-argue
+it despite being explicitly invited to. That is the strongest possible endorsement of the host's
+position, since the invitation was open.
