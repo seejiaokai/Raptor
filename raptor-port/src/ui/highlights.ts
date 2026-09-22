@@ -110,7 +110,16 @@ export function refreshHighlights(){
      `data-warnkey` unless a warning addresses it. */
   document.querySelectorAll('[data-warnkey]').forEach((el:any)=>{
     el.classList.remove('wfoc','advf');
-    if(!WFOCUS||el.dataset.warnkey!==WFOCUS.key)return;
+    if(!wf||!WFOCUS||el.dataset.warnkey!==WFOCUS.key)return;
+    /* NEVER INSIDE A FROZEN PAGE (the follow-up code read). The puck loop above
+       excludes `.pv-frozen` for a reason — WARN is live and a preview is what
+       the squadron was actually given, so today's focus has no business lighting
+       last week's paper. The box path has to obey the same rule, and by the same
+       test, or a live warning glows on an old line that happens to sit at the
+       same address. `wf` carries the second half: it is null once the focused
+       warning no longer exists (state/view.ts), so a focus that has outlived its
+       cause lights nothing here either. */
+    if(el.closest('.pv-frozen,.preview'))return;
     el.classList.add('wfoc'); if(WFOCUS.sev!=='hard')el.classList.add('advf');
   });
   paintArm();      // every render rebuilds the slots, so the ring is re-hung here

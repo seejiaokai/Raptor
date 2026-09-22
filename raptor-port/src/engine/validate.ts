@@ -27,7 +27,7 @@ export const WCODE:any={DOUBLE_BOOK:'Conflict — two events at once',DNIF_FLY:'
   SHIFT_SOFT:'On shift — also down for a ground event',
   SC_INTIME:'In-time window cut — busy between report and shift start',
   SANS_AVAIL:'SANS availability — planned outside the availability filed',
-  OIL_NO_TIMES:'No OIL earned — a duty desk has no times',
+  OIL_NO_TIMES:'No OIL earned — a row has no usable times',
   FLT_NO_LEN:'Flight times — take-off and landing are the same'};
 /* what a flag PRINTS on the puck. The internal codes stay as they are — they
    key the colours, the ranking and the tooltips — but the squadron reads these
@@ -1155,7 +1155,12 @@ function validateCore(){
       const blind=dayOilBlind(DAYS[di]||{});
       if(blind.length){
         const {list,verb}=blindDesks(blind);
-        add('hard','OIL_NO_TIMES',[],`${list} ${verb} no times — nobody on ${blind.length>1?'them':'it'} earns OIL for this day`);
+        /* "no USABLE times" (the follow-up code read, G1). "No times" was true
+           of every row this named until a nought-minute standalone shift joined
+           the list: that shift HAS two times typed on it, and being told it has
+           none is a sentence a scheduler can see is false while he is looking at
+           them. Unusable covers both — a blank pair and an equal one. */
+        add('hard','OIL_NO_TIMES',[],`${list} ${verb} no usable times — nobody on ${blind.length>1?'them':'it'} earns OIL for this day`);
       }
       /* NOBODY EARNS UNTIL THE DAY IS PUBLISHED ([OIL-AUTO-REMOVE] §2.3, owner
          21 Sep 26). All OIL now lands on publication — the schedule's and a

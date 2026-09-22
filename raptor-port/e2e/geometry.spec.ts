@@ -4932,3 +4932,50 @@ test('desktop: the same chip is inside its column and on top', async ({ page }) 
   expect(m.inside).toBe(true)
   expect(m.onTop).toBe(true)
 })
+
+/* THE WEEKEND'S OIL WARNINGS MUST BE THERE ON ARRIVAL, not after the scheduler
+   happens to touch something else (owner, 22 Sep 26 — "could it be a real
+   problem", after the speed check flagged two untouched days repainting).
+
+   It was a real problem, and not a speed one. `validate()` runs at boot BEFORE
+   `wireLeaveWarSync()` installs the hooks that tell the engine which days can
+   earn OIL — so at first paint `oilWouldEarn` answers false for every weekend,
+   and the advisory the owner asked for on 20 Sep 26 ("this day is not published
+   yet, so nobody earns their OIL for it") is absent. Fill a man into a seat on
+   any OTHER day and the revalidate finds the hooks, and the warning appears on
+   two days nobody touched. That is what the speed check was seeing: not a
+   wasteful repaint, a warning arriving late.
+
+   It reaches the squadron as the exact failure that warning exists to prevent —
+   a weekend that earns nobody anything, saying nothing about it, until an
+   unrelated edit. Present on `main`, so it shipped with [OIL-AUTO-REMOVE].
+
+   Driven in the REAL bundle because the fault IS the boot order in main.tsx,
+   which no unit test executes. */
+test('the weekend says it is unpublished from the first paint, not after an unrelated edit', async ({ page }) => {
+  await page.setViewportSize(DESK)
+  await login(page, 'a')
+  await go(page, 'editsched')
+  await page.waitForFunction(() => document.querySelectorAll('#eWeek .day[data-day]').length === 7, null, { timeout: 15000 })
+
+  const codesOn = (di: number) => page.evaluate((d) => {
+    const g = (window as any).WARN?.byDay?.[d]
+    return ((g && g.warns) || []).map((w: any) => w.code)
+  }, di)
+
+  const satFirst = await codesOn(5)
+  const sunFirst = await codesOn(6)
+  expect(satFirst, 'the Saturday says so on arrival').toContain('OIL_UNPUBLISHED')
+  expect(sunFirst, 'and so does the Sunday').toContain('OIL_UNPUBLISHED')
+
+  /* and an edit on a WEEKDAY must not change what those two days say */
+  await page.evaluate(() => {
+    const w = window as any
+    const s = document.querySelector('#eWeek [data-day="1"] .seat[data-slot$=".p"]') as HTMLElement
+    const ids = Object.keys(w.PEOPLE).filter((x: string) => !w.PEOPLE[x].special)
+    w.fillSlot(s.dataset.slot, ids[9]); w.afterSchedMutate()
+  })
+  await page.waitForTimeout(250)
+  expect(await codesOn(5), 'a Tuesday edit does not change what Saturday says').toEqual(satFirst)
+  expect(await codesOn(6), 'nor the Sunday').toEqual(sunFirst)
+})

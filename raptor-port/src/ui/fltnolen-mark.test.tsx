@@ -28,6 +28,7 @@ import { setSession } from '../state/store'
 import { dayHTML } from './html'
 import { boardHTML } from './board'
 import { anchorEl } from './highlights'
+import { peekDayHTML } from './peek'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
@@ -183,9 +184,13 @@ describe('a nought-minute SHIFT is marked, and says what is true of a shift', ()
   }
   const says = (html: string) => marked(html).map(x => x.getAttribute('title') || '')
 
+  /* FOUR surfaces, not three (the follow-up code read, G5). The roll-call names
+     the peek as the fourth place a flying line's times are drawn, and the loop
+     walked three — so the shift sentence was unpinned on exactly the surface
+     that was missed once already. */
   it('every surface: the shift sentence, never the sortie one', () => {
     scLine('08:00', '08:00')
-    for (const html of [dayHTML(SAT, true), dayHTML(SAT, false), boardHTML(SAT)]) {
+    for (const html of [dayHTML(SAT, true), dayHTML(SAT, false), boardHTML(SAT), peekDayHTML(DAYS[SAT], 0, false)]) {
       const t = says(html)
       expect(t.length, 'both boxes are marked').toBe(2)
       for (const s of t) {
@@ -198,8 +203,128 @@ describe('a nought-minute SHIFT is marked, and says what is true of a shift', ()
 
   it('THE CONTROL: an ordinary line keeps the sortie sentence, on every surface', () => {
     onlyLine(SAT, '10:00', '10:00')
-    for (const html of [dayHTML(SAT, true), dayHTML(SAT, false), boardHTML(SAT)])
+    for (const html of [dayHTML(SAT, true), dayHTML(SAT, false), boardHTML(SAT), peekDayHTML(DAYS[SAT], 0, false)])
       for (const s of says(html))
         expect(s, 'D49 — he reported and debriefed').toContain('still earns from the report and debrief')
+  })
+})
+
+/* A FROZEN VERSION PREVIEW IS A DOCUMENT, NOT A LIVE DAY (the follow-up code
+   read, G2). The highlight pass deliberately refuses to decorate a `.pv-frozen`
+   preview — WARN is live and the preview is what the squadron was given, so
+   putting today's focus on last week's paper would be a lie — and `anchorEl`'s
+   own comment says a preview emits no address for a warning to resolve into.
+   `data-warnkey` was emitted on every paint, preview included, which broke both:
+   a focused live warning lit a box inside a frozen page, and the tap could
+   scroll into one.
+   The MARK stays on the preview — a line that went out with two identical times
+   went out that way, and saying so on the issued page is honest. Only the
+   ADDRESS is withheld. */
+describe('the frozen version preview wears the mark but answers to no warning', () => {
+  const previewHTML = async () => {
+    const { withDaySnap } = await import('./html')
+    const { setSign, setDayApproved, dayCurVer, daySnapOf } = await import('../engine/publish')
+    onlyLine(SAT, '10:00', '10:00')
+    /* signed through the sanctioned path, then published — a day cannot be
+       issued unsigned, and an unsigned `setDayApproved` silently does nothing */
+    for (const [role, who] of [['cur', 'ignite'], ['sked', 'bane'], ['plan', 'stiff'], ['appr', 'pump']])
+      setSign(SAT, role, who)
+    setDayApproved(SAT, true)
+    const ver = dayCurVer(SAT)
+    /* the preview only exists if the day was really issued — without this the
+       call falls through to a LIVE render and the test proves nothing */
+    expect(daySnapOf(SAT, ver), 'the day was published, so there is a frozen copy').toBeTruthy()
+    let frozen = false
+    const html = withDaySnap(SAT, ver, (ok: any) => { frozen = !!ok; return dayHTML(SAT, false) })
+    expect(frozen, 'and the render really went through it').toBe(true)
+    return html
+  }
+
+  it('the two boxes still say the times cannot be right', async () => {
+    const html = await previewHTML()
+    expect(marked(html).length, 'the issued page tells the truth about what went out').toBe(2)
+  })
+
+  it('but nothing in it answers to the live warning', async () => {
+    const html = await previewHTML()
+    onlyLine(SAT, '10:00', '10:00')
+    const key = warnKey(SAT)
+    expect(key).toBeTruthy()
+    expect(anchorEl(el(html), key), 'a live warning must not resolve into a frozen document').toBeFalsy()
+  })
+})
+
+/* DOING WHAT THE WARNING ASKS MUST NOT KILL THE SCREEN (the follow-up code
+   read, G3; measured in the running app before it was believed).
+
+   Tap the nought-minute warning: two boxes light, eighty pucks dim — correct.
+   Now CORRECT THE LANDING TIME, which is the one thing the warning asks for.
+   The warning leaves the list, the boxes lose their mark — and the week stays
+   dimmed with NOTHING lit and nothing on screen saying why. Measured: lit 2 →
+   0, dimmed 80 → 80.
+
+   `warnFocusMap` returned a map for `WFOCUS` without ever asking whether that
+   warning still exists, so a focus outlived its cause and went on dimming the
+   week. The shape is not new — any warning could be fixed while focused — but
+   this one makes the loop natural: the gesture that reveals the fault is one
+   tap away from the gesture that repairs it.
+
+   The guard is GENERAL, not about D49: a focus whose warning no longer exists
+   lights nothing, so it dims nothing. Matched on the warning's CODE and KEY,
+   never its index — `validate()` rebuilds the list wholesale and an index means
+   a different warning a moment later. */
+describe('a focus whose warning has gone stops dimming the week', () => {
+  const focusOn = async (di: number, code: string) => {
+    const view = await import('../state/view')
+    const w = (validate().byDay[di]?.warns ?? []).find((x: any) => x.code === code)
+    expect(w, `there is a ${code} to focus`).toBeTruthy()
+    view.setWarnFocus({ di, ix: 0, ids: (w!.who || []).slice(), sev: w!.sev, key: w!.key, code: w!.code } as any)
+    return view
+  }
+
+  it('while the fault is there, the focus owns the highlight', async () => {
+    onlyLine(SAT, '10:00', '10:00')
+    const view = await focusOn(SAT, 'FLT_NO_LEN')
+    expect(view.warnFocusMap(), 'the week dims around the fault').toBeTruthy()
+  })
+
+  it('correct the times and the dimming goes with the warning', async () => {
+    onlyLine(SAT, '10:00', '10:00')
+    const view = await focusOn(SAT, 'FLT_NO_LEN')
+    onlyLine(SAT, '10:00', '11:30')          // the scheduler does what it asked
+    expect(view.warnFocusMap(), 'nothing left to light, so nothing left to dim').toBeNull()
+  })
+
+  it('it is GENERAL — the same holds for a warning that has nothing to do with this one', async () => {
+    onlyLine(SAT, '', '')                    // a line with no times at all
+    const view = await focusOn(SAT, 'OIL_NO_TIMES')
+    expect(view.warnFocusMap()).toBeTruthy()
+    onlyLine(SAT, '09:00', '11:00')          // fixed
+    expect(view.warnFocusMap(), 'any focus that outlives its cause lets go').toBeNull()
+  })
+
+  it('THE CONTROL: a focus whose warning is still there keeps its grip', async () => {
+    onlyLine(SAT, '10:00', '10:00')
+    const view = await focusOn(SAT, 'FLT_NO_LEN')
+    validate()                                // an unrelated revalidate must not drop it
+    expect(view.warnFocusMap(), 'the fault is still on the day').toBeTruthy()
+  })
+})
+
+/* THE BOARD'S OWN FROZEN PREVIEW, same rule as the week's (the follow-up code
+   read). `boardHTML(di, pv)` renders an issued version inside `.pv-frozen`; it
+   keeps the mark, because the line went out with two identical times, and it
+   answers to no live warning. */
+describe('the board\'s frozen preview wears the mark but answers to no warning', () => {
+  it('marked, and unaddressed', () => {
+    onlyLine(SAT, '10:00', '10:00')
+    const html = boardHTML(SAT, true)
+    expect(marked(html).length, 'the issued board page still says the times are wrong').toBe(2)
+    expect(anchorEl(el(html), warnKey(SAT)), 'but a live warning cannot resolve into it').toBeFalsy()
+  })
+
+  it('THE CONTROL: the live board is still addressed', () => {
+    onlyLine(SAT, '10:00', '10:00')
+    expect(anchorEl(el(boardHTML(SAT)), warnKey(SAT))).toBeTruthy()
   })
 })

@@ -239,6 +239,39 @@ describe('a post-IN date survives a reload too', () => {
     reboot(be)
     expect(getState().postOuts).toEqual({})
   })
+
+  /* AND A DATE HAS TO LOOK LIKE A DATE (the follow-up code read). Widening the
+     reader to accept a one-ended window let ANY string through as that end, and
+     a nonsense `from` is not inert: it is laid onto the live person, where
+     `inSquadron` compares it LEXICALLY against real dates. "June 15" sorts after
+     every 2026-xx-xx, so the man reads as not yet arrived on every day of the
+     year — out of availability, out of the manning counts, out of every crowd a
+     placeholder stands for. Silent, and about who gets paid.
+     The parent reader rejected it by accident, because it demanded `to` be a
+     string. This demands the SHAPE, which is what it always meant. */
+  it('a date-shaped end is required, not merely a string', () => {
+    const be = memoryBackend()
+    be.write('postouts', JSON.stringify({
+      a: { id: 'a', callsign: 'A', from: 'June 15', to: null },
+      b: { id: 'b', callsign: 'B', from: '', to: null },
+      c: { id: 'c', callsign: 'C', from: '2027-1-1', to: null },
+      d: { id: 'd', callsign: 'D', from: null, to: 'whenever' },
+      e: { id: 'e', callsign: 'E', from: '2027-03-01', to: 'whenever' },
+    }))
+    reboot(be)
+    expect(getState().postOuts, 'nothing that is not a real date survives').toEqual({})
+  })
+
+  it('THE CONTROL: real dates still survive, one end or both', () => {
+    const be = memoryBackend()
+    be.write('postouts', JSON.stringify({
+      a: { id: 'a', callsign: 'A', from: '2027-03-01', to: null },
+      b: { id: 'b', callsign: 'B', from: null, to: '2027-09-30' },
+      c: { id: 'c', callsign: 'C', from: '2027-03-01', to: '2027-09-30' },
+    }))
+    reboot(be)
+    expect(Object.keys(getState().postOuts).sort()).toEqual(['a', 'b', 'c'])
+  })
 })
 
 /* AND THE KEEP RULE MEANS WHAT ITS OWN COMMENT SAYS. `setPeople` keeps a person
@@ -285,19 +318,17 @@ describe('the keep rule tests for a LEAVING date, not for any window', () => {
 })
 
 /* AND THE CAPTURE IS FILED AS A RECONCILIATION, NOT AS SOMETHING THE ADMIN DID
-   (the independent code read, F6). At boot the command router is not on, so the
-   capture is a raw seed persist. After boot a bare persist would route as an
-   `lw.edit`: an undo step for a change nobody made, labelled as a Leave War
-   edit. Nothing reaches that path today — no writer puts a window on a person
-   without recording it in the same step — so this is a belt, and the test is the
-   only thing that can say the belt is fastened. */
-describe('an after-boot capture is a projection, never a user edit', () => {
+   (the independent code read, F6; the claim below corrected by the follow-up
+   read). The command router is ALREADY ON when the demo world installs —
+   `lwHistInit` runs at the end of `initStore` as well as from main.tsx — so a
+   bare persist here would file `lw.edit`: an undo step for a change nobody made,
+   labelled as a Leave War edit. This is not a belt for a future case; it is the
+   live path, and this test is what says so. */
+describe('the capture is a projection, never a user edit', () => {
   it('it persists, and the change stream calls it a sync — not an edit', async () => {
-    const { lwHistInit } = await import('./state/store')
     const { commandStream } = await import('../command')
     const be = memoryBackend()
-    reboot(be)
-    lwHistInit()                                    // what main.tsx does at the end of boot
+    reboot(be)                                      // initStore already baselines and enables routing
     const before = commandStream().length
     const id = anAircrewId()
     setPeople(projectPeople().map(p => (p.id === id ? { ...p, to: '2026-01-13' } : p)))
@@ -308,7 +339,11 @@ describe('an after-boot capture is a projection, never a user edit', () => {
        ingredient-not-behaviour trap. The envelope's own TYPE is the thing:
        `lw.edit` is something a person did and belongs on the timeline;
        `lw.sync` is a reconciliation and does not. */
+    /* TIGHTENED (the follow-up code read, G4): "no lw.edit" is also true of an
+       off-stream raw persist that files NOTHING, so the assertion passed for two
+       different worlds and could only rule one out. The reconciliation must
+       actually be recorded AS a reconciliation — exactly one `lw.sync`. */
     const made = commandStream().slice(before).map(e => (e as any).type)
-    expect(made.filter(t => t === 'lw.edit'), 'nobody edited anything — this is the app reconciling itself').toEqual([])
+    expect(made, 'nobody edited anything — the app reconciled itself, once, on the record').toEqual(['lw.sync'])
   })
 })

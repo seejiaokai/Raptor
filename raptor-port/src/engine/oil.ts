@@ -366,7 +366,15 @@ export function dayOilBlind(day:any):string[]{
       const crew:any[]=[];
       (f.aircraft||[]).forEach((ac:any)=>{if(!ac.cx){crew.push(ac.p);crew.push(ac.w);}});
       if(!named(crew))return;
-      add(String(f.cs||wv.label||'a flying line'));
+      /* NAMED THE WAY THE WRAPPER EXPECTS (the follow-up code read, G1). A bare
+         name is wrapped as "the X desk has…", which fits a duty desk's role and
+         nothing else — the ground programme and the two sims already dodge it by
+         naming themselves "the ground programme", "the AMT sim", and that `the `
+         prefix IS `blindDesks`'s own test. A flying row named bare became "the
+         RAP 1 desk" in the publish message, and the nought-minute shift became
+         "the SC desk". It is a line, or a shift; say so. */
+      const nm=String(f.cs||wv.label||'');
+      add(nm?`the ${nm} ${isStandalone(wv)?'shift':'line'}`:(isStandalone(wv)?'a flying shift':'a flying line'));
     });
   });
   (day.dutywaves||[]).forEach((dw:any)=>{

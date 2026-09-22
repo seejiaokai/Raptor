@@ -612,14 +612,23 @@ function readPersonEdits(x: unknown): State['personEdits'] | null {
    one end must be a real date with the other a date or null. A record with
    neither end is not a window and is still dropped — `windowRecord` deletes it
    rather than storing it, so one could only arrive from a damaged file. */
-const dateEnd = (v: unknown): boolean => v === null || typeof v === 'string'
+/* A DATE HAS TO LOOK LIKE A DATE (the follow-up code read). The first version
+   of this accepted any string, and a nonsense `from` is not inert: it is laid
+   onto the live person, where `inSquadron` compares it LEXICALLY against real
+   `yyyy-mm-dd` values. "June 15" sorts after every 2026 date, so the man reads
+   as not yet arrived on every day of the year — out of availability, out of the
+   manning counts, out of every crowd a placeholder stands for, silently.
+   The same `^\d{4}-\d{2}-\d{2}$` shape `setPostOut`/`setPostIn` demand at the
+   write, so the reader now asks for exactly what the writer promises. */
+const isDay = (v: unknown): v is string => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v)
+const dateEnd = (v: unknown): boolean => v === null || isDay(v)
 function readPostOuts(x: unknown): Record<string, Person> | null {
   if (!isPlainObject(x)) return null
   const out: Record<string, Person> = {}
   for (const [id, v] of Object.entries(x)) {
     if (!isPlainObject(v) || v.id !== id || typeof v.callsign !== 'string') continue
     if (!dateEnd(v.from) || !dateEnd(v.to)) continue
-    if (typeof v.from !== 'string' && typeof v.to !== 'string') continue
+    if (!isDay(v.from) && !isDay(v.to)) continue
     out[id] = v as unknown as Person
   }
   return out

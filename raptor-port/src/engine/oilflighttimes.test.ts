@@ -39,7 +39,7 @@ import { INPUTS } from './inputs'
 import { HOOKS } from './hooks'
 import { SCHED } from './publish'
 import { ensureRowIds } from './rowids'
-import { dayOilWork, dayOilCredits, dayOilBlind, oilCapableItems, rowItemKey } from './oil'
+import { dayOilWork, dayOilCredits, dayOilBlind, blindDesks, oilCapableItems, rowItemKey } from './oil'
 import { validate } from './validate'
 import { makeStandalone } from './waves'
 
@@ -137,7 +137,9 @@ describe('a flying line with NO readable times earns nothing, and no longer in s
   it('it is named beside the desks, in the same list', () => {
     onlyLine(SAT, '', '')
     expect(credits(SAT).bane, 'money never comes from a guess').toBeUndefined()
-    expect(dayOilBlind(DAYS[SAT]), 'and now it says so').toContain('RAP 1')
+    /* the list NAMES the line; the exact wrapper wording is G1's, pinned in
+       its own block below rather than here */
+    expect(dayOilBlind(DAYS[SAT]).join(' '), 'and now it says so').toContain('RAP 1')
   })
 
   it('and it reaches the day\'s own warning strip', () => {
@@ -150,7 +152,7 @@ describe('a flying line with NO readable times earns nothing, and no longer in s
 
   it('a line with a take-off and no landing is the same answer', () => {
     onlyLine(SAT, '09:00', '')
-    expect(dayOilBlind(DAYS[SAT])).toContain('RAP 1')
+    expect(dayOilBlind(DAYS[SAT]).join(' ')).toContain('RAP 1')
   })
 
   it('THE CONTROLS: an empty line, a cancelled line and a properly timed one are all silent', () => {
@@ -166,7 +168,7 @@ describe('a flying line with NO readable times earns nothing, and no longer in s
   it('a line with no callsign is named by its wave', () => {
     const f = onlyLine(SAT, '', '')
     f.cs = ''
-    expect(dayOilBlind(DAYS[SAT])).toContain('WAVE 1')
+    expect(dayOilBlind(DAYS[SAT]).join(' ')).toContain('WAVE 1')
   })
 })
 
@@ -283,5 +285,57 @@ describe('a nought-minute SHIFT says the opposite of a nought-minute sortie', ()
       expect(span && span[0].dflt, `${kind} reaches the walk and earns nothing until somebody says so`).toBe(false)
       expect(advOn(SAT, 'FLT_NO_LEN'), 'nothing wrong with its times').toHaveLength(0)
     }
+  })
+})
+
+/* WHAT THE DAY CALLS THE ROW IT IS NAMING — the follow-up code read, G1.
+   `blindDesks` wraps a bare name as "the X desk has…", which is right for a
+   duty desk's role name and wrong for everything else. The ground programme and
+   the two sims already dodge it by naming themselves "the ground programme",
+   "the AMT sim" — the `^the ` convention IS the wrapper's own test. The flying
+   branch added a BARE name, so a flying line with no times became "the RAP 1
+   desk" in the publish message, and the nought-minute shift this session added
+   became "the SC desk".
+   And the sentence itself was false for the new case: a shift typed 08:00–08:00
+   HAS times. "No usable times" is true of both a blank pair and an equal one. */
+describe('the day names a flying row as a flying row, and says what is actually wrong', () => {
+  const saLine = (kind: string, to: string, ld: string) => {
+    const w = makeStandalone(kind)!
+    w.formations[0].to = to; w.formations[0].ld = ld
+    w.formations[0].aircraft[0].p = 'bane'
+    Object.assign(DAYS[SAT] as any, { waves: [w], dutywaves: [], sims: {}, ground: [], allhands: [] })
+    ensureRowIds(DAYS)
+  }
+  const msg = (code: string) => (advOn(SAT, code)[0] || {}).msg || ''
+
+  it('a SHIFT is called a shift, never a desk', () => {
+    saLine('sc', '08:00', '08:00')
+    expect(dayOilBlind(DAYS[SAT]).join(' '), 'it is a shift, and the wrapper must not call it a desk')
+      .toMatch(/^the .*shift/i)
+    expect(blindDesks(dayOilBlind(DAYS[SAT])).desk, 'so "the … desk has" is never reached').toBe(false)
+  })
+
+  it('an ordinary LINE is called a line, never a desk', () => {
+    onlyLine(SAT, '', '')
+    expect(dayOilBlind(DAYS[SAT]).join(' ')).toMatch(/^the .*line/i)
+    expect(blindDesks(dayOilBlind(DAYS[SAT])).desk).toBe(false)
+  })
+
+  it('a shift with two typed times is not told it has NO times', () => {
+    saLine('sc', '08:00', '08:00')
+    const m = msg('OIL_NO_TIMES')
+    expect(m, 'it is named').toMatch(/SC/)
+    expect(m, 'but it has two times typed on it — that sentence would be false').not.toMatch(/has no times|have no times/)
+    expect(m, 'what is true of both a blank pair and an equal one').toMatch(/no usable times/i)
+  })
+
+  it('THE CONTROL: a duty desk is still called a desk, and still reads as it did', () => {
+    Object.assign(DAYS[SAT] as any, {
+      waves: [], sims: {}, ground: [], allhands: [],
+      dutywaves: [{ label: 'DUTIES', rows: [{ role: 'SDO', str: '', end: '', id: 'bane' }] }],
+    })
+    ensureRowIds(DAYS)
+    expect(dayOilBlind(DAYS[SAT])).toEqual(['SDO'])
+    expect(blindDesks(['SDO']).desk, 'the wrapper still fits a bare role name').toBe(true)
   })
 })

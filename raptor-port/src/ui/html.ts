@@ -1499,7 +1499,16 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
            week's markup — and the reference parity compare — is untouched. */
         const noLen=fltNoLen(f);
         const badCls=noLen?' badtm':'';
-        const badAtt=noLen?` data-warnkey="${fp}.ld" title="${esc((f.cs||w.label||'A flying line')+' '+FLT_NO_LEN_SAYS(parseHM(f.to),sa))}"`:'';
+        /* THE ADDRESS ONLY ON LIVE PAPER (the follow-up code read, G2). The
+           MARK belongs on a frozen version preview — a line that went out with
+           two identical times went out that way, and the issued page should say
+           so. The ADDRESS does not: the highlight pass refuses to decorate a
+           `.pv-frozen` preview on purpose (WARN is live, the preview is what the
+           squadron was given), and `anchorEl`'s own contract says a preview
+           emits nothing for a warning to resolve into. Emitting it everywhere
+           broke both — a focused live warning lit a box inside last week's
+           paper, and the tap could scroll into one. */
+        const badAtt=noLen?`${PV?'':` data-warnkey="${fp}.ld"`} title="${esc((f.cs||w.label||'A flying line')+' '+FLT_NO_LEN_SAYS(parseHM(f.to),sa))}"`:'';
         h+=`<div class="form${rowCls(f)}">
           <div class="fcell csmsn" style="${spans}">${cxTag(f)}${flagTag(f)}<b><span class="mdot" style="background:${sa?'var(--san)':`var(--${mColor(f.msn)})`}"></span>${ted(fp+'.cs',f.cs,ed,'ntx')}</b>${ted(fp+'.msn',f.msn,ed,'','i')}</div>
           ${sa

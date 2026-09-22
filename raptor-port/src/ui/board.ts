@@ -205,7 +205,10 @@ function boardHTMLBody(di: number, pv?: boolean) {
       const noLen = fltNoLen(f)
       const badCls = noLen ? ' badtm' : ''
       const badAtt = noLen
-        ? ` data-warnkey="${fp}.ld" title="${esc((f.cs || w.label || 'A flying line') + ' ' + FLT_NO_LEN_SAYS(parseHM(f.to), sa))}"`
+        /* the ADDRESS only on live paper, like the week's (ui/html.ts): a
+           frozen version preview keeps the MARK — the line went out that way —
+           but answers to no live warning. */
+        ? `${pv ? '' : ` data-warnkey="${fp}.ld"`} title="${esc((f.cs || w.label || 'A flying line') + ' ' + FLT_NO_LEN_SAYS(parseHM(f.to), sa))}"`
         : ''
       /* stoRO, not !pv (reviewer-found residual, 9 Aug 26): the ghost is a
          SEPARATE clickable element from the .tm brief input right next to

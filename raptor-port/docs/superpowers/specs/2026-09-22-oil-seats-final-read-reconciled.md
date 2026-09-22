@@ -61,13 +61,25 @@ reviewer asked for — a test that walks one kind tests one kind.
 
 ## Where a reviewer was wrong, and how it was settled
 
-**Codex, on the boot path.** Its explicit negatives say *"The boot comments are
-stale — `initStore` has already enabled the command router"*, which would have
-made the new capture in `setPeople` route as a user edit at boot. Fable says the
-opposite. **Measured, not voted on:** `LW_READY` is set inside `lwHistInit`,
-which `main.tsx` calls at line 79 — after `installDemoWorld` installs the demo
-roster. At capture time the router is off and the write is a raw seed persist.
-Fable is right, Codex is wrong, and the comment stands as written.
+**Codex, on the boot path — AND THIS SECTION HAD IT BACKWARDS.** Its negatives
+said *"the boot comments are stale — `initStore` has already enabled the command
+router"*; Fable said the opposite; this file first recorded Fable as right.
+**It was wrong, and so was the measurement behind it.** `lwHistInit` is called
+TWICE — once at the end of `initStore`, and again from `main.tsx` after the boot
+sync — and only the second was checked. The first one sets `LW_READY`, so the
+router IS on when the demo world installs. **Codex was right.**
+
+The code was never wrong: `lwSyncTurn(() => locked(persistNotify))` files the
+capture as a reconciliation either way. What was wrong was the COMMENT beside it,
+which asserted the opposite of the truth, and the claim in this document that a
+reviewer had erred. Both are corrected, and the correction is left visible rather
+than quietly overwritten — a comment that vouches for a lifecycle it has not
+checked is the anti-pattern this project already has a name for, and it was
+committed here while writing up two reviews that exist to catch exactly that.
+
+**The lesson kept:** "settle it by measuring" is only worth as much as the
+measurement. Checking one of two call sites and stopping is the same error as
+grepping for two named entries and stopping (D53).
 
 **Fable, on its own fix for F6.** Its one-liner —
 `if (LW_READY) lwSyncTurn(persistNotify)` — does not do what its reasoning says.
@@ -111,6 +123,30 @@ the next roster change would silently re-capture the window the admin had undone
   recorded in `[POSTOUT-LOST]` and in §6a of the evidence sheet, and said plainly
   to the owner rather than letting the walk's numbers stand in for what he will
   see.
+
+## The FOLLOW-UP round — the five commits that landed after the first reads
+
+Both providers read them, again blind to each other. Fable appended its section
+to its own report; Codex's is
+`2026-09-22-oil-seats-final-read-codex-followup.md`. **They converged again**,
+and between them they found a fault in every commit of that batch — including one
+in the fix for their own first-round finding.
+
+| What | Fable | Codex | Done |
+|---|---|---|---|
+| The new hard warning says "SC has **no times**" about a line with two typed times, and the publish message calls a flying shift **"the SC desk"** | G1 · LOW | 3 · P2 | **Fixed** — flying rows are named "the SC shift" / "the RAP 1 line", and both sentences say "no usable times". The wrapper's `^the ` test was the whole mechanism, and the flying branch was the only one not using it |
+| `data-warnkey` emitted on a **frozen version preview**, so a live warning could light a box in last week's paper | G2 · LOW | 2 · P2 | **Fixed** on the week AND the board; the highlight pass also skips `.pv-frozen`/`.preview`. The MARK stays — the line went out that way |
+| A focus that **outlives its warning** leaves the week dimmed with nothing lit — reached by doing what the warning asks | G3 · LOW | 2 · P2 (second half) | **Fixed** in `warnFocusMap`, matched on code+key not index. Measured: dimmed 80 → 80 before, 80 → 0 after |
+| My widened storage reader accepts **any string as a date** — "June 15" sorts after every real date, so the man reads as not yet arrived all year | — | 1 · P2 | **Fixed** — the reader now demands the same `yyyy-mm-dd` shape the writer promises |
+| The Logic page's rule **contradicted itself** — its lead still said every equal-time line earns | — | 4 · P2 | **Fixed** — the lead distinguishes a sortie from a shift in its first sentence |
+| The belt test asserted only "no `lw.edit`", which an off-stream persist also satisfies | G4 · LOW | 5 · P3 | **Fixed** — it asserts exactly one `lw.sync` |
+| The shift sentence was **unpinned on the peek** — the loop walked three surfaces, the roll-call says four | G5 · LOW | — | **Fixed** |
+| My boot comment **said the opposite of the truth** | — | 5 · P3 | **Fixed**, and the claim in this document corrected above |
+
+**Nothing HIGH or MEDIUM in either follow-up.** Between them: every commit in
+that batch carried something, and the two most serious were both in code written
+to fix a reviewer's own finding — which is the argument for the second round, not
+against it.
 
 ## Limits of these reads, stated
 

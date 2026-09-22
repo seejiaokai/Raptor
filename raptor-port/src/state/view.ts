@@ -828,7 +828,24 @@ export function warnFocusMap(){
   /* a focused warning always owns the highlight, even inside a person focus —
      the box stays narrowed to the clicked person, the lighting follows the
      warning's whole crew */
-  if(WFOCUS){const m=new Map();m.set(WFOCUS.di,{ids:new Set(WFOCUS.ids),sev:WFOCUS.sev});
+  /* A FOCUS THAT HAS OUTLIVED ITS WARNING LETS GO (22 Sep 26, the follow-up code
+     read). This returned a map for WFOCUS without ever asking whether the warning
+     was still there — so fixing the fault while it was focused left the whole
+     week dimmed with NOTHING lit and nothing on screen saying why. Measured on
+     the board: lit 2 → 0, dimmed 80 → 80, warning gone from the list.
+     The shape was always reachable — any warning can be repaired while focused —
+     but D49's nought-minute line made it the natural path, because the gesture
+     that shows you the fault is one tap from the gesture that repairs it: do as
+     the warning asks and the screen dies.
+     Matched on the warning's CODE and KEY, never its index: `validate()` rebuilds
+     the list wholesale, so an index is a different warning a moment later. Every
+     setter carries both (ui/interactions.ts). A day-spanning warning has no key
+     and compares '' to '', which is right — its code is enough to find it. */
+  if(WFOCUS){
+    const g=displayedByDay(WFOCUS.di), ws=(g&&g.warns)||[]
+    const live=ws.some((w:any)=>w.code===WFOCUS.code&&String(w.key||'')===String(WFOCUS.key||''))
+    if(!live)return null
+    const m=new Map();m.set(WFOCUS.di,{ids:new Set(WFOCUS.ids),sev:WFOCUS.sev});
     return {map:m,echo:new Set(WFOCUS.ids),sev:WFOCUS.sev};}
   if(PFOCUS)return null;          // a clicked puck alone uses the ordinary selection highlight
   if(!DWOPEN.size)return null;

@@ -544,3 +544,320 @@ Reading only, plus two scratchpad reproductions; no browser was driven (another 
 bundle). Scenarios 17–19 are unwalked. I did not read `e28b7234` or the untracked probe test, by
 choice. `sync.ts` is unchanged on the branch and was read for how the new evidence reaches it, not
 line by line. Performance was reasoned, not measured.
+
+---
+
+# FOLLOW-UP READ — the five commits after 0b65979d (Fable 5.1, 22 Sep 26, evening)
+
+Read at HEAD **ca57f306**, blind to the other provider's follow-up. Scope, as briefed: `b05d6f52`,
+`e28b7234`, `0901ef08`, `0ef1df31`, `ca57f306` (`src` and `e2e` only), plus the surrounding code
+each attack question turns on: `ui/peek.ts` whole, `ui/highlights.ts` whole (this time), the
+`anchorEl` / `warnTarget` / `scrollToWarnFocus` chain, `state/view.ts`'s focus lifecycle, the seat
+and warning key grammar (`events.ts`, `html.ts`, `board.ts`, `keys.ts`), `leavewar/state/store.ts`
+(`persistNotify`, `lwSyncTurn`, `locked`, `recordHistory`, `lwHistInit`, `setPostOut`, `setPostIn`,
+`windowRecord`, `setPeople`, `readPostOuts`, `initStore`), `leavewar/sync.ts` (`availableFor`,
+`reprojectRoster`, `runPoArchive`, `restoreArchivedPerson`, `runOilPass`, `oilBlindLine`,
+`publishFlagsBids`, the two subscriber lanes), `leavewar/engine/people.ts` `inSquadron`,
+`engine/availability.ts`, `ui/Matrix.tsx`'s cell classes, `engine/oil.ts` (`dayOilWork`'s window
+branch, `dayOilBlind`, `blindDesks`), `engine/waves.ts`, `engine/validate.ts`'s FLT_NO_LEN and
+OIL_NO_TIMES block, `ui/logic-html.ts`, `ui/lift.ts` `paintLand`, `ui/dayswap.ts`'s keep rule,
+`ui/SchedBoard.tsx`'s preview wiring, `scheduler.css` around `.badtm` / `.wfoc`, `vite.config.ts`.
+The docs commits (`88168163`, `2e261da0`) were read only for what `OUTSTANDING.md` now files.
+
+**Two probes ran**, throwaway vitest files in the scratchpad with their own config (the repo's
+include list shuts the scratchpad out), importing the production modules by absolute path:
+(1) the change stream after an after-boot capture in `setPeople`; (2) the exact words every list
+and surface says about a nought-minute SC shift, Saturday and Monday, and the peek's own title.
+Their output is quoted where it is load-bearing. Nothing in the repo was edited by this read. The
+working tree was clean when it began; by the time this section was appended it carried someone
+else's in-progress edit to `e2e/geometry.spec.ts` and two untracked `scripts/handpass/zz-perfB-diag*.mjs`
+(timestamped 22:48, during the read). Not mine, not read beyond identifying them, and nothing from
+them is in what follows.
+
+---
+
+## 9. Summary of the follow-up
+
+| Severity | Count | What |
+|---|---|---|
+| HIGH | 0 | — |
+| MEDIUM | 0 | — |
+| LOW | 5 | G1 the new hard warning says a shift "has no times" when its times are typed, and the publish toast calls the shift "the SC desk" · G2 the lit box is drawn on the board's frozen version preview, where the puck pass deliberately refuses to decorate — and the anchor can now resolve into a frozen version, against its own comment · G3 fix the times while the warning is focused and the whole week stays dimmed with nothing lit · G4 the F6-belt test pins an absence (`no lw.edit`) that an off-stream raw persist would also satisfy; the probe shows exactly one `lw.sync`, so pin that · G5 the shift sentence is unpinned on the fourth surface (the peek) — the exact drift `b05d6f52` was written to close |
+| INFO | 6 | the peek import adds nothing to the module graph; the highlight pass gained one unconditional whole-document attribute scan (unmeasured); a from-only record outlives its man in storage, and any credit frozen for him has no row — consistent with the rule; the hard OIL_NO_TIMES warning still lights nothing when tapped (it names the line and carries no key); the Logic page's OIL_NO_TIMES row still says "a duty desk"; `locked` was needed in the committing lane too, not only at idle |
+
+**The most important one, in two sentences.** The fix for F1 is right and complete about the money,
+the switch and the advisory, but the HARD warning it newly raises on a weekend reads *"SC has no
+times — nobody on it earns OIL for this day"* about a line whose two times are typed and equal, and
+the publish-time toast reads *"the SC desk has no start and end times"* about a shift that is not a
+desk. The advisory beside it says the true thing, so a scheduler is told the right fact and a wrong
+one about the same line at the same moment; one wording change in `dayOilBlind` and one word in two
+sentences make the three surfaces agree.
+
+**None of the five commits introduces a money, permission, publish or persistence defect that I could
+find.** Every attack question is answered below; where the answer is "no", the reason is written down.
+
+---
+
+## 10. Findings, ranked
+
+### G1 — LOW · ca57f306 · confirmed-new (one half pre-existing) · "has no times" about a line with times, and "the SC desk" about a shift
+
+**Where.** `engine/oil.ts` `dayOilBlind` returns bare names; `engine/validate.ts:1158` wraps them as
+`${list} ${verb} no times — nobody on it earns OIL for this day`; `leavewar/sync.ts` `oilBlindLine`
+wraps them again for the publish toast, and `blindDesks` decides "desk" by `!/^the /.test(name)` —
+so every flying-line and shift name (`SC`, `AV`, `BB`, `RAP 1`) is a desk to it.
+
+**What happens (probed).** Saturday, SC MAIN 08:00–08:00, a pilot on it:
+- hard: `SC has no times — nobody on it earns OIL for this day`
+- adv: `SC takes off and lands at the same time (08:00) — one of the two is wrong; a shift with no
+  length earns nobody any OIL until it is fixed`
+- Monday, same line: the hard one is silent (correct — nothing earns), the advisory speaks.
+- At publish, `publishFlagsBids` toasts `Saturday … earned nobody any OIL — the SC desk has no
+  start and end times` (no earners on that day), or `… the SC desk has no start and end times, so
+  nobody on it earns OIL` (with earners).
+
+**Consequence.** The scheduler reads two red/amber sentences about one line: one says the times are
+wrong, the other says there are none. He looks at the line, sees `08:00` twice, and either distrusts
+the hard warning or goes looking for a different, blank line. The money is right; the screen
+contradicts itself. **Half of it is pre-existing:** step 8 (at 0b65979d) already put a flying line
+with no readable times into this list, so a crewed `RAP 1` with blank times has read "the RAP 1 desk
+has no start and end times" in the toast since then — this commit adds the second name to the same
+wrong wrapper, plus a sentence ("no times") that is now false rather than merely odd.
+
+**Fix.**
+1. `dayOilBlind`: name the two flying cases with their own article so the desk wrapper cannot claim
+   them and the sentence reads as a thing — `add('the ' + (f.cs||wv.label||'flying') + ' ' +
+   (isStandalone(wv) ? 'shift' : 'line'))` for both the unreadable-times branch and the zero-shift
+   branch. `blindDesks`'s `/^the /` test then
+   already keeps them out of the "the … desk" wrapper; `blindNames(SAT).join(' ')).toContain('SC')`
+   in `oilflighttimes.test.ts` still passes.
+2. `validate.ts:1158` and `sync.ts` `oilBlindLine` (both sentences): `no times` → `no usable times`,
+   `no start and end times` → `no usable start and end times`, so the one sentence is true of a blank
+   desk, a blank line and an equal-times shift alike.
+3. `ui/logic-html.ts` OIL_NO_TIMES row: one clause — the list also names a flying line with no
+   readable times and a standby shift typed to the same minute (the INFO below).
+4. Tests: `oilflighttimes.test.ts` — the OIL_NO_TIMES message on the zero-shift Saturday does not
+   contain `has no times` and does contain `shift`; `leavewar/publish-toast` (whichever file pins
+   `oilBlindLine`, or a new `it`) — the toast for the same day contains `the SC shift` and not
+   `desk`.
+
+### G2 — LOW · e28b7234 · confirmed-new · the focus lights the box on a frozen version preview, and the anchor resolves into one
+
+**Where.** `ui/board.ts:205–210` emits `data-warnkey` whenever `fltNoLen(f)` — no `pv`/`stoRO`
+test; `ui/html.ts:1502` likewise under `PV`. `ui/SchedBoard.tsx:206–208` renders a version preview
+as `<div class="pv-frozen">${boardHTML(di, true)}</div>` in place of the live board, same `di`.
+`highlights.ts:111–115` lights any `[data-warnkey]` equal to `WFOCUS.key`, with no `.pv-frozen`
+test — where the puck loop two lines above says, in its own words, "Nor a version preview:
+.pv-frozen is a published snapshot and WARN is live, so decorating it would put today's conflicts on
+last week's paper." `anchorEl` (`highlights.ts:256–263`) now returns `[data-warnkey]` elements, and
+its comment promises "an anchor never resolves into a frozen version — exactly the fallback we want
+there", which was true only because `data-slot` is dropped under PV.
+
+**What happens.** Tap the D49 advisory on the live board (focus set, key `ff:5.0.0.ld`), then open a
+version preview of that day: if the issued line was ALSO typed equal (the usual case — the slip was
+published), the frozen board's two boxes light in the focus colour, while every frozen puck is
+left undecorated on purpose; `scrollToWarnFocus` scrolls to the frozen box. The same on the week's
+version and saved-plan previews (there the pucks are decorated too, so it is at least consistent).
+Reached by reading, not walked.
+
+**Consequence.** Cosmetic: a live warning's "this one" glow on an issued document. Nothing is
+misread as editable (the mark and its title are pure functions of the frozen line and belong
+there); it only breaks the one rule the file states for previews.
+
+**Fix.** Keep the mark and the title on previews; emit the ADDRESS only on live paper:
+`board.ts` — build `badAtt` with the ` data-warnkey="${fp}.ld"` part only when `!pv`;
+`html.ts` — the same part only when `!PV`. `anchorEl`'s comment then stays true. Test in
+`fltnolen-mark.test.tsx`: `boardHTML(SAT, true)` and `withDaySnap(SAT, ver, () => dayHTML(SAT,
+false, true))` carry `.badtm` with the title and no `[data-warnkey]`; the live pair still carry
+it.
+
+### G3 — LOW · e28b7234 · confirmed-pre-existing shape, new form · fix the times while the warning is focused and the week stays dimmed with nothing lit
+
+**Where.** `state/view.ts`: `WFOCUS` is cleared by toggling the same row (`focusWarn`), the ✕ in the
+open day box (`clearWarnFocus`), the severity pills (`openWarns`), a board day change
+(`setBoardDay`), a week load / session reset (`selDrop`) — and by nothing else. `validate()`
+rebuilds `WARN` and leaves `WFOCUS` alone. `highlights.ts:71–83`: with any focus set, every puck on
+the week that is not in `WFOCUS.ids` gets `dim`.
+
+**What happens.** Tap the advisory → boxes lit, every puck on the week dimmed (there is nobody to
+light — that is the design). Type the landing time to `10:30` → `validate()` → the advisory is gone,
+the boxes re-render with no mark and no key → nothing is lit → `WFOCUS` still set → every puck on
+the week is still dimmed, and stays so until the ✕ or a day/week change. For a PUCK-anchored warning
+the same stale focus keeps the man lit (`ids` were captured at the tap), so "everything dim, nothing
+lit" is specific to a box-anchored warning — the state the walk complained about, now after the fix
+instead of before it.
+
+**Fix.** One rule, view-side, after any validate: a focus whose warning no longer exists is
+dropped. In `refreshHighlights` before `warnFocusMap()` (or in `validate()`'s single caller):
+`if(WFOCUS&&!((displayedByDay(WFOCUS.di)||{}).warns||[]).some((w:any)=>w.code===WFOCUS.code&&w.key===WFOCUS.key&&sameWho(w)))clearWarnFocus()`
+— match on `code`+`key` (+`who`) rather than `ix`, because `WARN` re-indexes. Test in
+`fltnolen-mark.test.tsx`: focus the D49 row, fix the time, `validate()`, `refreshHighlights()` →
+no `.dim` on any `.puck` and `WFOCUS` null. Check the toggle and the cross-day crew-rest row
+(`panDi`/`panKey`) still behave.
+
+### G4 — LOW · ca57f306 · confirmed-new · the F6-belt test pins an absence that an off-stream raw persist would also satisfy
+
+**Where.** `leavewar/postout-persist.test.ts` "an after-boot capture is a projection, never a user
+edit": `expect(made.filter(t => t === 'lw.edit')).toEqual([])`.
+
+**What the probe shows.** After `lwHistInit()` and the capture, `commandStream().slice(before)` is
+exactly `[{type:'lw.sync', …}]`, synchronously (the trailing projection `lwSyncTurn` emits under
+`locked`), `lwCanUndo()` is false, the backend holds the window. So the observable the test's own
+comment names — the envelope TYPE — is available and positive.
+
+**Why it matters.** The assertion as written also passes when `made` is `[]`: a future change that
+took the `!LW_READY`/`LW_RESTORING` raw branch, or that never armed `LW_TURN_WROTE`, would persist
+the window OFF the change stream — invisible to the shared-database sync that the stream exists to
+feed — and the belt's test would stay green. The commit message says the test "was rewritten on the
+change stream's envelope TYPE, where it failed"; it failed on the presence of `lw.edit`, which is the
+bug that happened, not on the absence of `lw.sync`, which is the bug that could happen next.
+
+**Fix.** `expect(made).toEqual(['lw.sync'])` (the probe says one and only one). Keep the persisted
+`to` assertion.
+
+### G5 — LOW · ca57f306 (and b05d6f52) · confirmed-new · the shift sentence is unpinned on the peek
+
+**Where.** `fltnolen-mark.test.tsx` "every surface: the shift sentence, never the sortie one" loops
+`[dayHTML(SAT,true), dayHTML(SAT,false), boardHTML(SAT)]`; `peek.test.tsx`'s D49 block builds an
+ordinary wave only. `ca57f306`'s message says "all three renderers pass the same fact"; `b05d6f52`'s
+says the peek is the fourth.
+
+**What the probe shows.** `peekDayHTML` on a `makeStandalone('sc')` line typed `08:00–08:00` carries
+the shift sentence on both boxes today — correct, and pinned nowhere. This is precisely the drift
+`b05d6f52` was written to close (a change lands on the three surfaces that share `html.ts`'s
+predicate and the peek, with its own copy, is forgotten) — it recurred in the next test written.
+
+**Fix.** Add `peekDayHTML(DAYS[SAT], 0, false)` to that loop (the peek takes the day blob, and
+`scLine` has already built it), and the same line to the control.
+
+---
+
+## 11. INFO — worth writing down, not worth acting on
+
+- **b05d6f52, the module graph.** `peek.ts` already imported `./html`, and `html.ts:12` already
+  imports `../engine/validate`, so `validate.ts` and everything under it (`publish`, `oil`, `oilev`,
+  `data`, `waves`) was in the peek's graph before this commit. No file under `src/engine` imports
+  from `ui` (grepped), so no cycle. The peek's contract ("never touches DAYS, SCHED or WARN") holds:
+  `fltNoLen` reads the formation and live `PEOPLE` (`realP`/`isSpecial`), which the peek's pucks
+  already read. No formation shape the peek can produce (seed or stash, `to`/`ld` blank, `aircraft`
+  absent, `cx` set) reaches a branch the live surfaces do not; a BB shift's seeded `''–''` parses to
+  null and is not marked. The `title` sits under a `pointer-events:none` overlay, so it shows; the
+  `.badtm` edge is pure CSS and reads dimmed with the column. **One pre-existing note:** the peek is
+  cached per week × next-week stash generation, and the mark (like the pucks) depends on `PEOPLE` —
+  archive the only man on next week's nought-minute line and the cached mark stays until the week
+  changes. Same as the pucks; not new.
+- **e28b7234, the hot path.** `document.querySelectorAll('[data-warnkey]')` is a whole-document
+  attribute scan run on EVERY highlight pass — every EditWeek / ViewWeek / SchedBoard effect, i.e.
+  every keystroke on the board — whether or not a focus is set, because it must also CLEAR classes
+  when the focus goes. The commit says it "costs nothing"; the same file's own measurement note
+  (6 Sep 26) is that a seven-selector page-wide query cost 12 ms more than the puck loop at 4× CPU.
+  A single `[attr]` selector is far cheaper than that (no per-class work, one attribute check per
+  element; my estimate ≤2 ms at 4× against the loop's 11 ms), but it is the shape that note warns
+  about, and it is unmeasured. If it ever shows: keep a `let BOXLIT=false` and skip the query when
+  `!WFOCUS && !BOXLIT`. Not a finding; a measurement the walk could take in one run.
+- **e28b7234, the other passes.** `paintArm` touches `[data-slot]/[data-fill]/[data-inpseat]`,
+  `paintSelRings` `[data-slot]/[data-fill]`, `paintFreshAdds` the ROW containers reached from
+  `[data-bfld]` (the board's time inputs carry `data-bfld`, so the row around a lit input can wear
+  `sb-fresh` at the same time — two elements, no class collision), `paintLand` a marked selector —
+  none of them adds or removes a class on the time boxes. `dayswap`'s keep rule compares CANONICAL
+  markup, never the decorated live node, so a hung `wfoc` cannot force a block swap. CSS: `.wfoc`
+  and `.advf` appear only as `.puck.wfoc*` and `.badtm.wfoc*`; no bare rule, no JS reads `.wfoc`.
+  **Prefix match:** seat `data-slot` keys are `${di}.${gi}.${li}.${ai}.p` on both surfaces (no
+  prefix), fly-event `slot`s the same, sim/duty/ground keys `s:`/`d:`/`g:`; the only `ff:`-prefixed
+  key any warning carries is FLT_NO_LEN's own, so `anchorEl`'s `key+'.'` prefix test cannot make a
+  time box answer another warning or a seat answer this one — my earlier §3.2 claim stands, now
+  checked against the grammar rather than a grep for the literal.
+- **0901ef08 / 0ef1df31, the record's other readers.** `postOuts` is read by `setPeople` only (and
+  decomposed into the `lw.postouts/all` record; restored by the deferred `lw.postouts` case). `sync.ts`
+  `reprojectRoster`'s in-session keep rule already tested `p.to !== null`, so the two keep rules now
+  agree (they did not at 0b65979d, within a session). `inSquadron` is written for one-ended windows
+  (`if (p.from && date < p.from)`, `if (p.to && date > p.to)`); `availableFor`, `availabilityOf`,
+  `haveOf`, `countsFor` all go through it; the matrix distinguishes `notYetArrived` from a genuine
+  PO. `runPoArchive` needs `p.to !== null && p.poArchive === true`, so a from-only man is never
+  auto-archived. `restoreArchivedPerson` calls `setPostOut(id, null)` and ignores its `false` (the
+  man is not on the roster), flips the flag, notifies → `reprojectRoster` → `setPeople` lays the
+  surviving from-only record back → his joining date returns with him. **Two states worth knowing:**
+  (a) a from-only man archived by ✕ leaves the roster (by rule) but his record stays in `postouts`
+  for good — nothing deletes a record for a person who is not on the roster; harmless, and it is
+  what makes his date come back on Restore; (b) an auto credit frozen for him on an issued weekend
+  before he was archived is still desired by `desiredOilCells`, and `ingestDutyCredit`'s door tests
+  the war, not the roster, so a cell can exist with no row to show it — the same as for any man
+  archived with no window at all since D44; consistent with "✕ means should never have been here",
+  and not this commit's doing. **Should anyone be kept on a joining date alone?** No: the keep rule
+  exists so the months BEFORE a man left still show him; a man with no leaving date has not left,
+  so the only way he is off the projection is the ✕, and the ✕ is the rule's stated other case.
+- **ca57f306, the hard warning's tap.** OIL_NO_TIMES is added with `who: []` and no key, so tapping
+  it on the zero-shift day lights nothing and scrolls to the day — the exact complaint the walk made
+  about D49's advisory before e28b7234. The blank-desk case has always been like this. The advisory
+  beside it does light the boxes. If it is ever worth fixing, `dayOilBlind` would have to return the
+  key with the name.
+- **ca57f306, `isStandalone` is the right test.** `dayOilWork` decides "no padding" by
+  `const sc=isStandalone(wv)` (`oil.ts:213`) and `sc ? w2(st,en) : padded`; `zeroShift`,
+  `validateCore`'s sentence choice and all four renderers use the same predicate, so the screen and
+  the money read the same fact. `saExemptKind` is the other axis (earns-by-default, AVALON/BB `all`)
+  and would wrongly leave SC on the sortie sentence; `w.kind` alone would be a second rulebook beside
+  the flag the mint sets.
+- **ca57f306, `locked(persistNotify)` in every lane.** At idle: `lwSyncTurn` arms
+  `LW_PROJ_PENDING`, `locked` puts `persistNotify` on the `HIST.lock` branch, the write is coalesced
+  (`rawPersist`, `LW_TURN_WROTE=true`, inline `rawNotify`), and the turn's `finally` files one
+  `lw.sync` under the lock — probed. Inside a committing Raptor command: `lwSyncTurn` runs `fn`
+  straight through; `persistNotify` takes the same `cmdIsCommitting()` branch it took before (child
+  JOIN in the reducer, else the phase-8 projection or the coalesced raw write). Nested inside an
+  outer `lwSyncTurn` (the subscriber lanes wrap `runPoArchive`/`runOilPass`): the inner call sets the
+  OUTER turn's `LW_TURN_WROTE`. `locked` is re-entrancy safe (saves and restores). **One thing the
+  commit does not say:** `rawPersist` calls `recordHistory()` (`store.ts:950`), which pushes a legacy
+  Leave War undo step unless `HIST.lock` — so at 0b65979d an after-boot capture in the committing
+  lane (phase 8, not in the reducer) would ALSO have pushed a legacy undo step for a change nobody
+  made; the `locked` wrapper closes that as well, in every branch that reaches `rawPersist`. The belt
+  is tighter than its comment claims.
+- **ca57f306, weekday silence.** `dayOilBlind` is consulted by `validate` only under `earnsOil`
+  (weekend or `HOOKS.oilEarningDay`) and by `oilBlindLine` at publish for the same days, so naming
+  the zero shift changes no weekday. Probed: Monday raises the advisory only.
+- **The Logic page.** The OIL_NO_TIMES row still describes "a duty desk with somebody on it and no
+  start and end times … names the desk"; the list has named flying lines with no readable times
+  since step 8 and now names a nought-minute standby shift. The FLT_NO_LEN row says the latter; the
+  row that owns the warning does not. Folded into G1's fix step 3.
+
+---
+
+## 12. The attack questions, answered in the brief's order
+
+**b05d6f52.** Cycle — none; graph — unchanged (above). `fltNoLen` on a peek shape — no branch the
+live surfaces never reach; `f.cx`, blank, overnight and no-crew shapes all fall out before the mark,
+and the test pins each. The peek's contract — a `title` and a class are inert; no `data-warnkey`, so
+neither the focus walk nor `anchorEl` can touch it, and `scrollToWarnFocus` roots on `.day[data-day]`,
+which a peek column (`data-peek-day`) is not. Nothing wrong. **Unpinned** on the shift sentence — G5.
+
+**e28b7234.** Hot path — one unconditional attribute scan per pass, unmeasured, almost certainly
+small (INFO). Fights — none on the same element; `dayswap` compares canonical markup (INFO). CSS —
+all `wfoc`/`advf` rules are scoped to `.puck` or `.badtm` (INFO). Stale focus — a box lights only
+while a line at that position is still typed equal, so a stale focus cannot leave a box lit; what it
+leaves is the dimmed week with nothing lit (G3). Not asked but found: the box lights on a frozen
+version preview and the anchor resolves into one (G2).
+
+**0901ef08.** Other readers assuming `to` — `setPeople`'s keep loop was the one, closed by 0ef1df31;
+`reprojectRoster` already tested `.to`; no other reader (INFO). `inSquadron` one-ended — correct.
+`availableFor`/`countsFor`/`.gone`/manning — all through `inSquadron`, all designed for the
+one-ended case by the post-in build; the record now merely survives reload. The "state none
+expected" is the orphan record and the row-less frozen credit (INFO), both consistent with the rule.
+
+**0ef1df31.** Kept on a joining date alone — no, with the reason (INFO). Other readers of `postOuts`
+as "who the war still draws" — none. A lost row — the matrix row goes by rule; a frozen credit can
+outlive it (INFO, pre-existing shape).
+
+**ca57f306.** `isStandalone` — right, it is the money's own predicate (INFO). OIL_NO_TIMES on a
+day silent before — yes, weekends and holiday days with a crewed nought-minute standalone line,
+which is F1's intended step 3; weekdays unchanged (probed); but the sentence it raises is wrong about
+the line and the toast calls it a desk (G1). `locked(persistNotify)` under a committing command —
+coalesces correctly in every lane, and closes a legacy-undo-step leak the comment does not mention
+(INFO). The envelope-type assertion — watching the right observable, asserting the wrong side of it
+(G4).
+
+---
+
+## 13. What was walked and what was not
+
+Reasoned from code and two engine-level probes; no browser was opened (the brief forbids a server).
+So G2 and G3 are reachable-by-reading, not seen; G1, G4 and G5 are probe-confirmed. The walk that
+would settle G2 and G3 in one sitting: tap the D49 advisory on the board, open a version preview of
+that day, look; then back on the live day type a real landing time and look at the pucks.
