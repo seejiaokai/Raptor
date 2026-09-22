@@ -1,0 +1,7 @@
+# [DOCS-GUARD] F4 (23 Sep 26): pin the line endings of the backlog and the rulings, so no script or
+# editor setting can rewrite every line of them at once. A whole-file diff is where a destroyed item
+# hides. These files are LF in the repository today; `eol=lf` keeps them that way on every machine.
+OUTSTANDING.md          text eol=lf
+OUTSTANDING-ARCHIVE.md  text eol=lf
+DECISIONS.md            text eol=lf
+HANDOFF.md              text eol=lf

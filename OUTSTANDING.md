@@ -10,11 +10,16 @@ item).
 > ## Maintaining this file — do this every time it's touched
 > **The three D29 rules (owner, 22 Sep 26), enforced by `npm run docsize` in CI and a Stop hook:**
 > 1. **Finished work LEAVES this file** for `OUTSTANDING-ARCHIVE.md` — moved whole, never deleted,
->    never summarised on the way. (Supersedes "move the item to Done at the bottom".)
+>    never summarised on the way. (Supersedes "move the item to Done at the bottom".) **The test for
+>    "finished" is never the heading's words** (they go stale — Fable F4): every fact a later session
+>    would need must first have a pointer in a tier-2 doc or a code comment. Write the pointer, THEN
+>    move the item.
 > 2. **A ruling never lives only here.** It gets a D-number in `DECISIONS.md` and a real home.
 > 3. **Never trim this file inside a code change.** Over budget there is deferred; the trim is its
 >    own docs-only pass.
 > - **Item ids are UNIQUE.** A second heading for the same work gets its own id.
+> - **A script edits this file's BYTES and never normalises its line endings** (pinned LF by
+>   `.gitattributes`): a whole-file rewrite hides a destroyed item inside a diff nobody can read.
 > - **Deferred again / changed** → update the item's status and note why, and
 >   adjust its place in the priority list.
 > - **Re-order the priority list whenever items change** — by *logical* order,
@@ -370,7 +375,7 @@ what to stop):** `raptor-port/docs/superpowers/specs/2026-09-13-architecture-roo
   grade (orphaned row → `shiftHardGround` can't resolve the type; narrow — Fable inspect #2). Fix
   when landings become the one Absence record, or a cheap `srcType` on the ground row if it surfaces.
 
-### [TRK-SMOKE] The `addStudent` tracker smoke check — DONE 17 Sep 26 (committed, NOT merged)
+### [TRK-SMOKE] The `addStudent` tracker smoke check — DONE 17 Sep 26, MERGED (PR #408)
 **Not a flake.** Two independent causes, both fixed and both pinned: the shared add-student box
 cleared its text field in a post-paint step that ran AFTER the box had been read (a shipped
 bug, not a test bug), and a second race on back-to-back adds. Proven by instrumenting the
@@ -456,7 +461,7 @@ below: `git log -S"GU-P2" -- OUTSTANDING.md` (`docs/session-state.md` was delete
 - **[GU-COSMETIC]** an AL barrier bound to the loaded week; view-effects not rolled back on a
   failed restore. Both LOW.
 
-### [GLOBAL-UNDO] design record (Rev 6) — MOVED OUT 22 Sep 26
+### [GLOBAL-UNDO-REV6] design record (Rev 6) — MOVED OUT 22 Sep 26
 
 The full Rev 6 design record lived here after the work was built, merged and went live on
 18 Sep 26. A backlog is for what is NOT done, and every line of this file is read by every session
@@ -550,7 +555,7 @@ retry (more likely on iPhone). Never fixed, not logged as a limitation.
 - **Fix within [DB-STEP]:** a real "it's saved" signal the delete waits for, rather
   than a piecemeal patch in three places. Or pull earlier on request.
 
-### [ARCH-STACK-4] One absence record — BUILT, IN REVIEW, HOLDING FOR "merge live" (20 Sep 26)
+### [ARCH-STACK-4] One absence record — BUILT 20 Sep 26, MERGED (PR #421)
 Step 4 of the [ARCH-STACK] backbone. Branch `claude/db-step4-one-absence`. An absence is ONE record
 (the Input); the Leave War stores only its own records (requests, OIL credits, replaced-bid notices)
 as a list per person/date and DERIVES what each day shows on read; approving on the war writes the
@@ -576,7 +581,7 @@ A's weekday case, pre-posting-in leave, medical corners, the OIL pass vs absence
 gestures, undo depth, storage faults, phone touch, figures on multi-record days). Rules of record:
 `specs/2026-09-20-arch-stack-4-clash-check.md`. Do it on the step-4 branch (or on main once it merges).
 
-### [S4-BUGHUNT] MERGED to main (PR #422, 21 Sep 26) — 34 commits. Kept for what it SET ASIDE.
+### [S4-BUGHUNT-MERGED] MERGED to main (PR #422, 21 Sep 26) — 34 commits. Kept for what it SET ASIDE.
 **Read `HANDOFF-S4-BUGHUNT.md`, then `raptor-port/docs/superpowers/specs/2026-09-20-CURRENT-STATE.md`
 and nothing else first.** That spec is the single destination: what is built, what is parked, and the
 RULES SET ASIDE today that must not be re-applied — B4's "overlap means no credit", BOTH halves of
@@ -841,7 +846,7 @@ the fix is to give an OIL decision its own wording rather than inheriting the ge
 `scripts/handpass/j5-undo.mjs`. **Fold into `[OIL-SEATS-CAN-EARN]` or `[OIL-WORDS]`** — not worth its
 own pass.
 
-### [OIL-SEATS-CAN-EARN] Every seat can earn, the default decides — **MERGED AND LIVE 23 Sep 26 (PR #425). CLOSED.**
+### [OIL-SEATS-CAN-EARN-CLOSED] Every seat can earn, the default decides — **MERGED AND LIVE 23 Sep 26 (PR #425). CLOSED.** (the full record is `[OIL-SEATS-CAN-EARN]` in the archive)
 
 Every seat can earn, the DEFAULT decides, the admin can always override (D24/D27/D28); the two
 placeholder pucks behave like named people wherever they can land (D43). The FULL-tier walk left five
@@ -1189,6 +1194,11 @@ After the hunt. Recorded here because he gave the ORDER, which the individual it
    every Tuesday has nothing on his row to show it. **Bigger than everything else on this page put
    together, and it needs a conversation with the owner before any of it is built.**
 4. **[DB-STEP]**, and then the **[AMEND]** work queued behind it.
+
+### [LW-WEEKDAY-WORK] The Leave War cannot see ordinary weekday work — OPEN, needs the owner first (21 Sep 26)
+Its place in the order and the one-paragraph description are item 3 of `[BACKLOG-ORDER]` above.
+Given a heading 23 Sep 26 ([DOCS-GUARD] F5) so the document gate counts it — it had been named in
+his order without ever having an item of its own. **Talk to him before building any of it.**
 
 ### [LW-UI-WINDOW] The Leave War input window — Ack, four buttons, every stage (owner, 20–21 Sep 26)
 Four asks, given in one sitting while the OIL rulings were being built. A mock-up of all four windows
