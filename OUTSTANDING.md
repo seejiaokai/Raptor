@@ -1096,7 +1096,7 @@ original (no marking of any kind), the deck's 10 slides, the demo data (63 inven
 real names/IDs/DOB/next-of-kin/rank), and the stores, mission and area vocabulary (generic training
 terms and compass points). The only `RESTRICTED` is the stamp the app PRINTS on schedules it
 generates (`src/ui/printpdf.ts`) — the product working, not a trace of anything received.
-`tracker.css`'s `.restricted` banner is dead style, rendered nowhere. **That check never opened the Tracker's SYLLABUS data** (222 events of course content) — and he has since ruled it OUT OF SCOPE (D62): leave it, never flag it again. The aircraft type's other mentions are still his to decide.
+`tracker.css`'s `.restricted` banner is dead style, rendered nowhere. **That check never opened the Tracker's SYLLABUS data** (222 events of course content) — and he has since ruled it OUT OF SCOPE (D62): leave it, never flag it again. Every other mention of the aircraft type is now "fighter squadron" or the bare "F-15" (D63, D64) — only that syllabus data keeps it.
 ### [STORE-READER-SWEEP] A stored record read more narrowly than it is written — sweep for more (22 Sep 26)
 
 **TWO INSTANCES FOUND IN ONE FILE IN ONE EVENING, both silent, both about official
