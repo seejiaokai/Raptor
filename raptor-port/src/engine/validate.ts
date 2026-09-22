@@ -159,22 +159,23 @@ export const debriefSays=(lg:any,what:string)=>{const [ls,de]=legDebriefWin(lg)
  *  inside the pass from the day's private sim table and are not reachable from
  *  here; that half is filed in OUTSTANDING.md rather than guessed at.
  *
- *  THE WORKING COPY ONLY — the window does not ask this under an issued
- *  version. It reads the LIVE day's events (EVD), and an issued face shows the
- *  flags of its OWN world or none (Fable S3): a man booked since publication is
- *  surfaced by the pending mark and the working copy's live crowd, which drops
- *  him (D44/D45), never by painting today onto the record. That is also why
- *  there is no red "booked elsewhere" half here any more. It was written for
- *  exactly that issued case; on the working copy it could never fire, because
- *  the crowd is resolved with this same day's `personBusy` and already leaves
- *  every busy man out. A check that cannot fire is a comment that vouches. */
-export function crowdClashes(di:any,id:any,s:number|null,e:number|null,label:string):{sev:string,msg:string}[]{
+ *  WHICH WORLD'S EVENTS. By default the LIVE day's (EVD) — the working copy.
+ *  A caller reading an ISSUED face hands in that version's own events (`evs`,
+ *  rebuilt with collectEvents while the snapshot is installed), so the issued
+ *  face flags what the RECORD says and never paints today onto it (Fable S3):
+ *  a man booked since publication is surfaced by the pending mark and the
+ *  working copy's live crowd, which drops him (D44/D45). That is also why there
+ *  is no red "booked elsewhere" half here any more. It was written for exactly
+ *  that issued case; on the working copy it could never fire, because the crowd
+ *  is resolved with this same day's `personBusy` and already leaves every busy
+ *  man out. A check that cannot fire is a comment that vouches. */
+export function crowdClashes(di:any,id:any,s:number|null,e:number|null,label:string,evs?:any[]):{sev:string,msg:string}[]{
   const p=PEOPLE[id]
   /* ground crew carry no flight brief of their own to lose — the same
      exemption the pass above makes */
   if(!p||isSpecial(id)||p.pers||s==null||e==null)return [];
   const out:{sev:string,msg:string}[]=[];
-  dayEvents(di,id).filter((x:any)=>x&&x.kind==='fly').forEach((lg:any)=>{
+  (evs||dayEvents(di,id)).filter((x:any)=>x&&x.kind==='fly').forEach((lg:any)=>{
     const [bs,bt]=legBriefWin(lg), [ls,de]=legDebriefWin(lg);
     if(bs!=null&&bt!=null&&overlap(s,e,bs,bt))out.push({sev:'adv',msg:noBriefSays(lg,label)});
     if(ls!=null&&overlap(s,e,ls,de))out.push({sev:'adv',msg:debriefSays(lg,label)});

@@ -35,6 +35,7 @@ import { oilModeOn, oilSeatHTML, toggleOilPerson, oilFigureFor, oilBlanketOn, oi
 import { oilSentOf, oilReadPass } from '../engine/oilev'
 import { logAction } from '../engine/editlog'
 import { crowdClashes } from '../engine/validate'
+import { collectEvents } from '../engine/events'
 import {
   AVAILWIN, setAvailWin, setAvailTab, AVAILWIN_FOOT, setAvailFoot,
   AVAILWIN_BOX, setAvailWinBox,
@@ -202,13 +203,24 @@ export function AvailWindow() {
        comes FIRST, so among equal flags the one about this event is the one he
        reads; a red day-wide flag still outranks it (worst first).
 
-       The event's window is read LIVE, every render, so the flag follows the
-       row if he edits its times behind the window. Only on the working copy:
-       it reads the live day's events, and an issued face shows its own world's
-       flags or none (Fable S3). */
-    const own = !ver && lbl.found
+       The event's window is read afresh every render, so the flag follows the
+       row if he edits its times behind the window. WHICH WORLD'S FLIGHTS
+       (Fable S3): the working copy reads the live day's; the view page's issued
+       face reads the RECORD's own, rebuilt from the installed snapshot — so it
+       flags what the issued day says, never today; a plain preview of an older
+       version shows no flags at all, like every other flag on it ("a past
+       version is read, not checked"). Found by the walk, 23 Sep 26: the first
+       cut asked this on the working copy only, so the issued face dropped the
+       owner's own case. */
+    const flagWorld = !ver ? 'live' : ofw ? 'issued' : 'none'
+    let evsById: Record<string, any[]> | null = null
+    if (flagWorld === 'issued') {
+      evsById = {}
+      for (const x of ((collectEvents()[di] || {}).events || [])) (evsById[x.id] = evsById[x.id] || []).push(x)
+    }
+    const own = flagWorld !== 'none' && lbl.found
     const flagsFor = (id: string) => [
-      ...(own ? crowdClashes(di, id, lbl.s, lbl.e, lbl.name) : []),
+      ...(own ? crowdClashes(di, id, lbl.s, lbl.e, lbl.name, evsById ? (evsById[id] || []) : undefined) : []),
       ...personWarnMsgs(di, id),
     ]
     const worst: Record<string, { sev: string, msg: string } | undefined> = {}

@@ -521,6 +521,29 @@ describe('a published day: the window reads the record, not today (Fable S3, S5)
     expect(stiff.className, "today's double-booking is not on the record").not.toMatch(/clash|flagged/)
   })
 
+  it("the owner's debrief flag on the issued face comes from the RECORD — not from today (walk, 23 Sep 26)", async () => {
+    HOOKS.oilSentinel = () => ['plasma', 'stiff']
+    Object.assign(DAYS[SAT] as any, { dutywaves: [], sims: { amt: [], oft: [] }, oild: undefined })
+    puckRow(SAT)                                   // OPS BRIEF 09:00–17:00, ALL AVAIL
+    ;(DAYS[SAT] as any).waves = [{ label: 'WAVE 1', night: false, intimes: [], traffic: [], formations: [
+      { cs: 'VL', msn: 'BFM', to: '06:30', ld: '08:00',
+        aircraft: [{ p: 'bane', w: 'plasma', area: '', rmks: '', opts: {} }] }] }]   // plasma is a WSO
+    ensureRowIds(DAYS)
+    const g = signOf(SAT); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+    setDayApproved(SAT, true)                      // issued WITH the sortie: his debrief runs 08:00–10:00
+    ;(DAYS[SAT] as any).waves = []                 // today the sortie is gone from the working copy
+    validate()
+    await act(async () => { view.setPage('viewsched'); notify() })
+    await click(viewChip())
+    const onRecord = rows().find(r => r.dataset.awp === 'plasma')!
+    expect(onRecord.className, 'the issued day had him flying: flagged, from the record — ' + (onRecord.textContent || '')).toContain('flagged')
+    expect(onRecord.textContent || '').toContain('debrief')
+    await act(async () => { view.setPage('editsched'); notify() })
+    await openWin(SAT)
+    expect(rows().find(r => r.dataset.awp === 'plasma')!.className,
+      'the working copy has no sortie any more: clean').not.toMatch(/flagged|clash/)
+  })
+
   /* THE ONE PLACE A VERSION'S CHIP MEETS THE EARN MODE: the board, previewing
      the issued version through its plan selector, with OIL Earn on. (The view
      page never has the mode — it ends when the board closes.) */
