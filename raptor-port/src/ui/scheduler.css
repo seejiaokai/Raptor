@@ -6080,8 +6080,19 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
    their blast radius and they in its. Scoping is what keeps the mock's markup
    readable against the design of record without either surface reaching the
    other. The one global rule that DOES apply is the -webkit-user-drag:none near
-   the top, which is wanted here too. */
-.availwin{position:fixed;z-index:150;right:16px;top:96px;
+   the top, which is wanted here too.
+
+   STACKING: 410 — ABOVE the scheduler board (400) and BELOW every dialog layer
+   (the Inputs day popover 420, History's bubble 430, the drawer 440, the
+   confirm pop-ups 460, the modals 470, the + Wave menu 480). It shipped at 150,
+   which is under the board: both are root-level fixed siblings, so on the board
+   — where the earn half lives — the counter opened a window nobody could see or
+   close (Fable S1, 23 Sep 26). Above the board because the window is a tool he
+   works WITH the board, behind it; below the dialogs because those block the
+   page on purpose, and a floating list must never cover a question the app is
+   asking. e2e/availwin.spec.ts presses the window on the board at both widths
+   and reads this ladder from the built stylesheet. */
+.availwin{position:fixed;z-index:410;right:16px;top:96px;
   width:var(--awin-w,212px);height:var(--awin-h,540px);
   min-width:186px;min-height:200px;
   max-width:calc(100vw - 32px);max-height:calc(100vh - 120px);

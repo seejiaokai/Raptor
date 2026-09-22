@@ -46,7 +46,10 @@ export default defineConfig({
      FORCED to chromium (the image ships no WebKit; viewport/touch/UA
      emulation is unaffected), `lw-desktop` is a plain 1440×900 window. */
   projects: [
-    { name: 'raptor', testMatch: /(geometry|medical)\.spec\.ts/ },
+    /* availwin (23 Sep 26): the [ALL-AVAIL-WINDOW] paint and reach checks —
+       their own file because the window is its own surface, and in this
+       project so CI's `--project=raptor` leg runs them with the rest. */
+    { name: 'raptor', testMatch: /(geometry|medical|availwin)\.spec\.ts/ },
     { name: 'lw-phone', testMatch: /leavewar\.spec\.ts/, use: { ...devices['iPhone 13'], browserName: 'chromium' } },
     { name: 'lw-desktop', testMatch: /leavewar\.spec\.ts/, use: { viewport: { width: 1440, height: 900 } } },
   ],
