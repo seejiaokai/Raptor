@@ -51,6 +51,16 @@ Fable 5.1 and adopted a new model workflow (D67).
 | `9f793b2c`, `62a115c9` | The country-specific aircraft type out, outside the Tracker syllabus (D63, D64) |
 | `b2017e6c` | D65/D66 recorded and the window's contract updated — **not built yet** |
 
+## PROGRESS — session of 23 Sep 26 (night), overwrite as it moves
+
+Commits on the branch since the handoff: `32f2e36a` S1 · `735b83dd` S2 + S11 footer · `1c4a8e17`
+D65 + D66 (S4 S9 S12 S13) · `e81e1fe0` S3 S5 S6 S7 S10 S14 + plan wording. Every fix red first.
+**Still to do:** S8 (phone size — the inline width/height beat the ≤620px rule), S11's POSITION half
+and S15 (both: the window's placement — reset on reopen, clamp on browser shrink; ResizeObserver's
+first call commits a box), Fable's "next five", then items 6–8 below (walk → Fable + Astra reads →
+fix → sheet). Rulings this session: **D68, D69** (read fully; condense notes at the end).
+**Owner asleep; worked autonomously. Nothing merged. Branch not pushed yet this session.**
+
 ## Unfinished — in this order
 
 1. **S1: the window paints UNDER the board** (`.availwin` z-index 150, `.schedboard` 400). Confirmed
