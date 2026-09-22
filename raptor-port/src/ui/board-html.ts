@@ -10,7 +10,7 @@ import { alAttr } from '../engine/publish'
 import { groundOrder } from '../engine/order'
 import { esc, PIOPEN, notePub } from '../state/view'
 import { canEditSched } from '../state/auth'
-import { oilModeOn, oilSeatHTML, oilItemCellHTML, oilItemOfKey, oilRowPeople, inputItemKey } from './oilmode'
+import { oilModeOn, oilSeatHTML, oilItemCellHTML, oilItemOfKey, oilRowPeople, oilClaimWin, inputItemKey } from './oilmode'
 import { rowItemKey, groundItemKey } from '../engine/oil'
 import { oilSeatDeco } from './html'
 import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, dormRowCls, dormRowTitle, sansCardsHTML, notePubTog, ADDZ, exemptDeskOwn } from './html'
@@ -534,7 +534,10 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
          ([OIL-AUTO-REMOVE] §7.4). */
       oilRow(groundItemKey(x));
       const inner=oilModeOn(di)
-        ? oilRowPeople(di,[x.who,...(x.more||[])],groundItemKey(x),oilWin(x)).map((pid:any)=>sbSeat(di,base,pid,ro)).join('')
+        /* a row that came from an accepted REQUEST resolves its placeholder
+           against the REQUEST's window, not its own times: an all-day request
+           lands a row with no times at all ([OIL-SEATS-CAN-EARN] step 6). */
+        ? oilRowPeople(di,[x.who,...(x.more||[])],groundItemKey(x),x.src?oilClaimWin(di,x.src):oilWin(x)).map((pid:any)=>sbSeat(di,base,pid,ro)).join('')
         : ((id&&PEOPLE[id])?sbSeat(di,base,id,ro):(x.who?`<span class="itxt">${esc(x.who)}</span>`:''))+sbMore(di,base,x,ro);
       s+=`<div class="sb-arow c6r${rowCls(x)}${lateRowCls(x)}"${lateRowTitle(x)}${rowMove(`mv:g.${di}.${ri}`,ro)}>`+sbGrip(ro)
         +sbName(di,'ain',`${t}.prog`,x.prog,'OCU PROGRESS REVIEW',ro)+sbTxt('atm',`${t}.str`,x.str,'',ro)+sbTxt('atm',`${t}.end`,x.end,'',ro)

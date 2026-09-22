@@ -677,9 +677,23 @@ export function oilEligible(di: any, person: any, item: string): boolean {
      puck would go inert and he could never be switched back on. */
   const claim = ev.inputs.find(i => inputItemKey(i.iid) === item)
   if (claim && claim.win && oilInputEligible(d, claim)
-      && landedExtras(d, claim.iid, String(claim.person)).includes(String(person))) return true
+      && landedExtras(d, claim.iid, String(claim.person), ev.sent[item]).includes(String(person))) return true
   const work = dayOilWork(d, { expandAll: (win, it) => oilSentinelPeople(di, it, win) })
   return (work[String(person)] || []).some(w => String(w.item || '') === item)
+}
+
+/** THE WINDOW A GROUND ROW'S PLACEHOLDER IS RESOLVED AGAINST
+ *  ([OIL-SEATS-CAN-EARN] step 6). A row that came from an accepted REQUEST takes
+ *  the request's own window, never the row's: an all-day request lands a row
+ *  with no times at all, so reading the row would leave its crowd undrawn on
+ *  exactly the request that covers most of the day — the same trap Fable M6
+ *  found on the money side of D18's extras. Any other ground row answers null
+ *  here and the caller uses the row's written times. */
+export function oilClaimWin(di: any, src: any): [number, number] | null {
+  const iid = String(src || '')
+  if (!iid) return null
+  const inp = (evOf(di).inputs || []).find((i: any) => String(i.iid) === iid)
+  return (inp && inp.win) ? [inp.win[0], inp.win[1]] : null
 }
 
 /** Every person a ROW shows in the mode, in order: its named crew with any

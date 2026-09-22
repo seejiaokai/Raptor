@@ -1231,6 +1231,27 @@ THREE halves now (owner, 15–17 Sep 26):
     (his "show a picture before product code" rule); nothing merges without "merge live".
 - Separate gated PR after [CRP-FLAG]. Context: [CRP-FLAG]'s review log + the sample image.
 
+### [OIL-REQ-NAMEBOX] A man typed into a REQUEST row's name box in place of the requester earns nothing — OPEN, 22 Sep 26
+
+**Deferred deliberately during `[OIL-SEATS-CAN-EARN]` step 6, not missed.** That step made a
+PLACEHOLDER on an accepted request's row count the people it stands for, in the name box and in the
+extras line alike. It left one case alone: a real, named person dragged into the name box in place
+of the man who filed the request. He does no worse than before — he earned nothing there yesterday
+either — but he is plainly doing the work, and D18 ("for 2 he should earn") is the same argument
+that got the extras line paid.
+
+**Why it was left.** In every path the app has, that box holds the requester, and the money already
+pays him from his own answer. Crediting "whoever is in the box" would move money on a case nobody
+has reported, inside a step whose scope the plan fixed. Doing it silently is exactly the shape the
+OIL build keeps getting bitten by.
+
+**What to do.** Put it to the owner as a walk question — can the scheduler put someone ELSE in a
+request row's name box, and if so should he earn from it? If yes, it is one line in
+`landedExtras` (treat the name box like the extras, the requester still excluded) plus a test.
+**Priority: with the other small OIL follow-ups, after the walk.**
+**Context:** `raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-can-earn-plan.md` §5 step 6;
+the body is `raptor-port/src/engine/oilev.ts` `landedExtras`, and its own comment says why.
+
 ---
 
 ## Done

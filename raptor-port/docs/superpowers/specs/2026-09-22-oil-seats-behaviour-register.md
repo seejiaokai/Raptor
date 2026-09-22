@@ -9,7 +9,7 @@ Built against the plan at
 a ruling with no row here has not been built yet, and that is the point of the
 blank.
 
-**Status: steps 1–5 built.** Steps 6–11 outstanding.
+**Status: steps 1–6 built.** Steps 7–11 outstanding.
 
 ---
 
@@ -22,7 +22,9 @@ blank.
 | **D28** | Nothing that earns today stops earning. An ordinary flying line, a sim, a duty desk, a ground row and the Common Programme all pay exactly as before. | steps 3–4 | `engine/oilexempt.test.ts` (the D28 controls), whole suite |
 | **D33** | ALL and ALL AVAIL are refused on a flying line's cockpit seats, and nowhere else. The reason shows at every door. | step 2 | `engine/oilseat-refusal.test.ts`, `ui/oilseat-refusal.test.tsx` |
 | **D47** | That refusal stands rather than becoming a warning. The 13 Aug "a placeholder puck arms its seat" shortcut still works everywhere a placeholder is legal. | step 2 | `ui/interact.test.tsx`, `ui/oilseat-refusal.test.tsx` |
-| **D46** | A placeholder is allowed on an accepted request row — no carve-outs. | step 2 (the refusal does not touch it); the crediting is step 6 | `engine/oilseat-refusal.test.ts` |
+| **D46** | A placeholder is allowed on an accepted request row — no carve-outs — and it credits by default there like anywhere else, in the name box and in the extras alike. Taking the puck off takes the crediting with it. | step 2 (the refusal leaves it alone), step 6 (the crediting) | `engine/oilseat-refusal.test.ts`, `engine/oilclaimcrowd.test.ts`, `ui/oilclaimcrowd.test.tsx` |
+| **D18, extended** | The man who filed a request still answers for himself: his own No stands, and the crowd beside him never buries it or pays him twice. | step 6 | `engine/oilclaimcrowd.test.ts` |
+| **D44, on a request** | The people behind a puck on a request row are written down when the day is published, so an issued day keeps paying the men it went out with even after someone files leave. | step 6 | `engine/oilclaimcrowd.test.ts` ("an issued day keeps the people it went out with") |
 | **D43** | The placeholder pucks are ON by default everywhere they can land, like named people. The crowd inherits the seat's answer rather than having one of its own. | step 3 (the rule), step 5 (the seats it actually lands on) | `engine/oilspandefault.test.ts`, `engine/oilexpand.test.ts` |
 | **D43 / D32, in practice** | A placeholder put on a DUTY DESK, a sim seat, a sim passenger line, or the extras line under a ground row, a duty desk, a sim or the Common Programme now counts the people it stands for — the owner's Sunday desk. Before this it silently counted nobody. | step 5 | `engine/oilexpand.test.ts` |
 | **The freeze has something to hold** | A row with no id yet gathers nobody, because there is nowhere to write down who it stood for. Every real row is given an id, so this never shows on screen — it is the belt under the promise that the count on an issued day cannot move. | step 5 | `engine/oilexpand.test.ts` |

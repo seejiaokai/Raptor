@@ -400,6 +400,15 @@ function pruneHandedOverDecisions(dec: OilDecisions, day: any): void {
        refusal on the way out and he was paid anyway. Caught by job 8's own
        test, which is the only place the two fixes meet. */
     if (landedExtras(day, iid, String(inp.person || '')).includes(person)) continue
+    /* AND EVERY DECISION ON A ROW THAT CARRIES A PLACEHOLDER
+       ([OIL-SEATS-CAN-EARN] step 6). Who a placeholder stands for is worked out
+       from who is free, so it changes as people file leave — and a decision must
+       not be thrown away because the man it names happens to be busy today.
+       Deleting it would silently pay him the moment he was free again, which is
+       the same failure D18's half of this prune was written to close. The row
+       standing the puck is what makes his decision legitimate, not today's
+       answer to who is available. */
+    if (landedHasSentinel(day, iid)) continue
     delete ppl[k]
   }
   if (!Object.keys(ppl).length) delete (dec as any).people
@@ -451,7 +460,25 @@ export function oilEvidence(di: any, day?: any): OilEvidence {
       return people
     },
   })
-  return { iso: iso as string, earns: true, d: dec, inputs: projectOilInputs(iso as string), sent }
+  const ins = projectOilInputs(iso as string)
+  /* AND THE REQUEST HALF'S OWN MEMBERSHIP ([OIL-SEATS-CAN-EARN] step 6). An
+     accepted request's row is the one row the walk above skips whole — its money
+     comes down a separate route — so a placeholder standing on it would be
+     resolved nowhere and written down nowhere, and an issued day could not hold
+     its people still.
+
+     THE REQUEST'S OWN WINDOW, NOT THE ROW'S (Fable M6, the same trap as D18's
+     extras): an all-day request lands a row with no times at all, so reading the
+     row would gather nobody on exactly the request that covers most of the day.
+
+     Only a row that actually stands a placeholder is asked. A request with no
+     puck on it writes no entry, so an ordinary day's block is byte-identical to
+     before and nothing reads as changed. */
+  for (const inp of ins) {
+    if (!inp.win || !landedHasSentinel(d, inp.iid) || !oilInputEligible(d, inp)) continue
+    sent[inputItemKey(inp.iid)] = HOOKS.oilSentinel(iso as string, inp.win, d)
+  }
+  return { iso: iso as string, earns: true, d: dec, inputs: ins, sent }
 }
 
 /* ---- the read-only render pass ([OIL-SEATS-CAN-EARN] §5 step 1) -----------
@@ -715,15 +742,54 @@ function effectiveStand(day: any, inp: OilInputEv): OilInputEv['stand'] {
  *  "nothing measurable to earn from here" — with no item and no switch. The
  *  screen contradicted the money about a man's entitlement and offered no way
  *  to change it (walk find, 22 Sep 26). One body, so they cannot disagree. */
-export function landedExtras(day: any, iid: string, owner: string): string[] {
+/** The row an accepted request landed on, if it is still live. A cancelled or
+ *  information-only row is not work, so it has nobody on it for this purpose. */
+function landedRow(day: any, iid: string): any {
   const row = (day && day.ground || []).find((g: any) => g && String(g.src || '') === iid)
-  if (!row || row.cx || row.info) return []
-  const out: string[] = []
-  for (const v of (row.more || [])) {
+  return (!row || row.cx || row.info) ? null : row
+}
+
+/** DOES THIS REQUEST'S ROW STAND A PLACEHOLDER ON IT — in the name box, or in
+ *  the extras under it? ([OIL-SEATS-CAN-EARN] step 6, D46.) BOTH places, because
+ *  a placeholder can sit in either and the first rewrite covered only the extras
+ *  (Codex OSE-R2-04). A row that carries one needs its crowd resolved once and
+ *  written down, so the day can hold those people still after it is issued. */
+export function landedHasSentinel(day: any, iid: string): boolean {
+  const row = landedRow(day, iid)
+  if (!row) return false
+  for (const v of [row.who, ...(row.more || [])]) {
     const id = whoId(v)
-    if (!id || id === owner || isSpecial(id) || !PEOPLE[id]) continue
+    if (id && isSpecial(id)) return true
+  }
+  return false
+}
+
+/** `crowd` is the people a placeholder on the row stands for, ALREADY RESOLVED —
+ *  the day's own written-down membership (`ev.sent`), frozen on an issued day and
+ *  live on the working copy. It is passed in rather than looked up here, because
+ *  a body that resolved availability itself would let an ISSUED day's crowd move
+ *  when somebody files leave, which is the one thing D44 forbids.
+ *
+ *  A NAMED man in the name box is deliberately NOT gathered. In every path the
+ *  app has, that box holds the man who filed the request, and he is paid by the
+ *  input half on his own answer; crediting whoever is in it would be a second
+ *  change to who gets paid, with no case behind it. The box matters here only
+ *  when it holds a PLACEHOLDER. */
+export function landedExtras(day: any, iid: string, owner: string, crowd?: string[] | null): string[] {
+  const row = landedRow(day, iid)
+  if (!row) return []
+  const out: string[] = []
+  const add = (v: any) => {
+    const id = whoId(v)
+    if (!id || id === owner || isSpecial(id) || !PEOPLE[id]) return
     if (!out.includes(id)) out.push(id)
   }
+  for (const v of (row.more || [])) add(v)
+  /* the crowd joins the men the scheduler typed, rather than replacing them: a
+     row can carry a name AND a placeholder, and both are people who were there.
+     The requester is dropped by `add` — he is already in the input half, and
+     paying him here would bury his own No under an ordinary yes. */
+  if (landedHasSentinel(day, iid)) (crowd || []).forEach(add)
   return out
 }
 
@@ -777,7 +843,11 @@ export function oilEarnedWork(day: any, ev: OilEvidence): Record<string, OilWork
        The CLAIM's window, not the row's (Fable M6): an all-day request lands a
        row with no times at all, and reading the row would have left the second
        man on an all-day request unpaid — the mirror of the bug being fixed. */
-    for (const extra of landedExtras(day, inp.iid, inp.person)) {
+    /* THE CROWD BEHIND A PLACEHOLDER ON THAT ROW IS ORDINARY WORK TOO
+       ([OIL-SEATS-CAN-EARN] step 6, D46 — no carve-outs). It is resolved from
+       the day's own written-down membership, so an issued day pays the people it
+       went out with and not whoever happens to be free when it is read. */
+    for (const extra of landedExtras(day, inp.iid, inp.person, ev.sent[item])) {
       if (!earnsFrom(ev, extra, item, true)) continue
       put(extra, span(true))
     }
