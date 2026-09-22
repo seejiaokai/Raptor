@@ -621,6 +621,12 @@ describe('the earn half, on the working copy (Fable S6, S7)', () => {
     expect(toasts.join(' '), 'the board\'s own words').toContain('This event earns nobody any OIL — turn the event back on first')
     expect(JSON.stringify((DAYS[SAT] as any).oild || {}), 'no decision written under the mask').toBe(before)
   })
+
+  it('and under the mask the hint says what IS true, not "tap to stop a man earning" (walk W2)', async () => {
+    const item = await earnSat()
+    await act(async () => { toggleOilItem(SAT, item); notify() })
+    expect($('.availwin .win-foot').textContent || '').toContain('This event earns nobody. Turn it back on')
+  })
 })
 
 describe('the row behind the window is deleted, or its puck is (Fable S14)', () => {

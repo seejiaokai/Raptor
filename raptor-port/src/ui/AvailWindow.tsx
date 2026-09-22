@@ -350,8 +350,16 @@ export function AvailWindow() {
     notify()
   }
 
+  /* UNDER A MASK THE HINT SAYS SO (walk W2, 23 Sep 26): with the event or the
+     whole day switched off, "tap a puck to stop a man earning" invited a tap
+     that can only be refused. It says what IS true and where the way out is. */
+  const masked = oil && !ver && oilItemMasked(di, item)
   const hint = !m ? '' : AVAILWIN_FOOT || (m.lost ? '' : oil
-    ? (ver ? 'Who earned OIL on the day as it was issued.' : 'Tap a puck to stop a man earning from this event.')
+    ? (ver ? 'Who earned OIL on the day as it was issued.'
+      : masked ? (oilBlanketOn(di)
+        ? 'Nothing on this day earns. Turn that off to switch men one by one.'
+        : 'This event earns nobody. Turn it back on to switch men one by one.')
+      : 'Tap a puck to stop a man earning from this event.')
     : m.flagged
       ? `Tap a puck for why. ${m.flagged === 1 ? 'One man is' : `${m.flagged} men are`} flagged.`
       : 'Tap a puck for why.')

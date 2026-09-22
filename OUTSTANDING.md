@@ -101,7 +101,8 @@ D30. 3) **[HUMAN-RETEST]**. 4) **[DOC-TRIM]** — unblocked now that the OIL sca
 archive. 5) The stack resumes at **[DB-STEP]**.
 **Small OIL follow-ups, any time, none blocking:** `[OIL-READ-LEFTOVERS]` (4 items the final reads
 raised and the branch deliberately left), `[STORE-READER-SWEEP]`, `[OIL-REQ-NAMEBOX]`,
-`[POSTOUT-LOST]`'s remaining half, `[OIL-WORDS]`.
+`[POSTOUT-LOST]`'s remaining half, `[OIL-WORDS]`, and from the window's bug check
+`[OIL-PERSONAL-PLACEHOLDER]` and `[CROWD-SIM-BRIEF]` (both below `[ALL-AVAIL-WINDOW]`).
 
 **STALE ABOVE, CORRECTED 22 Sep 26:** the "STACK PROGRESS (updated 18 Sep 26)" block says the next
 stack item is step 4 (one Absence record). **Step 4 SHIPPED on 20 Sep 26** — `raptor-port/CLAUDE.md`
@@ -904,6 +905,24 @@ exactly the case he opened this with.
 **Sequencing: AFTER `[OIL-SEATS-CAN-EARN]`**, which builds the counters this window opens from, and
 which settles where they appear. Ruling: `DECISIONS.md` D38; the related ones are D27 (the count is a
 scheduling feature), D36 (the narrow window) and D37 (the count reads as what it is).
+
+### [OIL-PERSONAL-PLACEHOLDER] A placeholder on a landed "Personal" request row draws no count (23 Sep 26)
+
+Found by Fable's scenario design, confirmed by reading (not walked). A "Personal" request can land on
+the ground programme (`ground:true`) but never asks the OIL question (`oilAsks` excludes it), and the
+request half of the evidence only records a placeholder's crowd for ASKING types — so ALL / ALL AVAIL
+dropped on such a row gets no membership: no count chip, no window, on any day. D27 says the count
+shows wherever the puck lands; D46 lets it land on a request row. **Pre-existing on `main`** (the
+membership code is `[OIL-SEATS-CAN-EARN]`'s), rare in practice. The fix touches the OIL evidence
+(`engine/oilev.ts` — record the crowd for any landed row standing a placeholder, earning or not), so
+it is FULL tier and wants both readers. Evidence: `raptor-port/docs/handpass/2026-09-23-allavail-window.md` §3.
+
+### [CROWD-SIM-BRIEF] The D38 flag does not cover a crowd man's SIM brief/debrief (23 Sep 26)
+
+The window flags an event that sits inside a crowd man's own FLIGHT brief or debrief (`crowdClashes`,
+`engine/validate.ts`). His SIM brief/debrief windows are built inside the warning pass from its
+private sim table and are not reachable from outside it, so a sim man behind an ALL AVAIL is listed
+clean. Needs the sim windows lifted into one body, as the flight ones were. WALK tier.
 
 ### [DEPLOY-DOCS] The Pages-era deploy text is stale since the repo went private (D59, 23 Sep 26)
 
