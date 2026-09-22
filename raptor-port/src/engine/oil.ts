@@ -333,6 +333,26 @@ export function dayOilBlind(day:any):string[]{
     return e>s;
   };
   const named=(vs:any[])=>vs.some((v:any)=>{const id=whoId(v);return !!id&&(realP(id)||isSpecial(id));});
+  /* A FLYING LINE WITH CREW ON IT AND NO READABLE TIMES ([OIL-SEATS-CAN-EARN]
+     step 8, as D49 left it). The duty desks below have been named here since
+     20 Sep 26, when the owner asked for the warning on the day itself; a flying
+     line was never added and it fails in exactly the same way — the day
+     publishes, no OIL appears, and no screen admits why.
+     A line whose take-off and landing are the SAME is deliberately NOT named
+     here. It still earns (D49 — the man reported and debriefed), so "nobody on
+     it earns OIL" would be false about it; the day says what is wrong with
+     THOSE times separately, as an advisory on the line. */
+  const readable=(st:any,en:any)=>parseHM(st)!=null&&parseHM(en)!=null;
+  (day.waves||[]).forEach((wv:any)=>{
+    (wv.formations||[]).forEach((f:any)=>{
+      if(f.cx)return;
+      if(readable(f.to,f.ld))return;
+      const crew:any[]=[];
+      (f.aircraft||[]).forEach((ac:any)=>{if(!ac.cx){crew.push(ac.p);crew.push(ac.w);}});
+      if(!named(crew))return;
+      add(String(f.cs||wv.label||'a flying line'));
+    });
+  });
   (day.dutywaves||[]).forEach((dw:any)=>{
     /* THE FOURTH SKIP, LIFTED (plan C4 / Fable S2 — the plan counted three).
        This is the one that makes an exempt desk SPEAK at publish. While AVALON

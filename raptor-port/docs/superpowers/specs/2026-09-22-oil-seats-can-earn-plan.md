@@ -279,7 +279,20 @@ cockpit placeholder briefly starts earning (Fable M4, which reordered the origin
    path**: the crowd credits by default here like anywhere else.
 7. **Open a placeholder into real pucks in the mode** on duty rows, sim rows and extras (OIL8), so a
    man can be taken off a crowd individually.
-8. **Capability excludes a zero-length WRITTEN interval** (C2): validate `to`/`ld` before the padding
+8. **OVERRULED BY THE OWNER, D49, 22 Sep 26 — "It should still earn, leave it as it is."**
+    A flying line typed with the same take-off and landing KEEPS paying: the man reported and
+    debriefed, so he was at work whatever the times say. That is the squadron's own fact and the
+    code could not supply it — the third time his knowledge of the process has corrected the
+    agent's reading, after D36 and D44. **Nothing about what such a line earns changes, and the
+    guard the rest of this step describes is therefore not built** (D48 was given against a money
+    change that is no longer happening; it stands as the answer for the NEXT rule change).
+    **What WAS built, and is the half he kept:** the day SAYS the times cannot be right — an
+    advisory on the line, on any day, that never refuses it; and a flying line with crew and NO
+    readable times is named beside the duty desks instead of earning nothing in silence.
+    Pinned by `engine/oilflighttimes.test.ts`, worded on the Logic page. The original text follows,
+    kept because the reasoning behind C2 is still the reason the warning exists:
+
+    ~~**Capability excludes a zero-length WRITTEN interval** (C2):~~ validate `to`/`ld` before the padding
    is added, and derive both capability and the visible refusal reason from that one validation.
    Overnight intervals stay legitimate (D42), and D36's availability window is untouched.
    **THIS STEP CHANGES HISTORICAL MONEY and needs its own guard** (Codex OSE-R2-03): an issued

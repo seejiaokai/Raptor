@@ -9,7 +9,7 @@ Built against the plan at
 a ruling with no row here has not been built yet, and that is the point of the
 blank.
 
-**Status: steps 1–7 built.** Steps 8–11 outstanding.
+**Status: steps 1–8 built.** Steps 9–11 outstanding.
 
 ---
 
@@ -29,7 +29,10 @@ blank.
 | **D43 / D32, in practice** | A placeholder put on a DUTY DESK, a sim seat, a sim passenger line, or the extras line under a ground row, a duty desk, a sim or the Common Programme now counts the people it stands for — the owner's Sunday desk. Before this it silently counted nobody. | step 5 | `engine/oilexpand.test.ts` |
 | **The freeze has something to hold** | A row with no id yet gathers nobody, because there is nowhere to write down who it stood for. Every real row is given an id, so this never shows on screen — it is the belt under the promise that the count on an issued day cannot move. | step 5 | `engine/oilexpand.test.ts` |
 | **D42** | An overnight line earns the day it sits on; the day the hours spill into earns nothing from it. | step 4 | `engine/oilexempt.test.ts` (the 19:00–07:00 AVALON line) |
-| **D31** | A seat the rules cannot measure offers no switch, and says why. | pre-existing, held through step 4 | `ui/oilmode.test.tsx` (OIL28, the ⓘ row) |
+| **D31** | A seat the rules cannot measure offers no switch, and says why. | pre-existing, held through step 8 | `ui/oilmode.test.tsx` (OIL28, the ⓘ row) |
+| **D49** | A flying line typed with the SAME take-off and landing still earns — the man reported and debriefed, so he was at work whatever the times say. The day says the times cannot be right, on the line, on any day; it never refuses the line. **This overrules the plan's step 8 and both reviewers.** | step 8 | `engine/oilflighttimes.test.ts` |
+| **D49, the other half** | A flying line with crew on it and NO readable times earns nothing, and is now named beside the duty desks instead of failing in silence. | step 8 | `engine/oilflighttimes.test.ts` |
+| **D48** | When a rule changes under an already-published day, the day keeps the money it went out with until somebody corrects it and re-publishes. | **nothing built — D49 removed the rule change it was given about**; kept as the answer for the next one | — |
 | **D36** | The availability window stays narrow — step to dekit. The flying rules' wider report→debrief window is never handed to the placeholder's crowd. | step 2 (the belt), re-pinned at step 5 where the expansion arrived | `engine/oilseat-refusal.test.ts` ("never hands its window to the expander"), `engine/oilexpand.test.ts` |
 | **D32** | One list: wherever a puck may land, the switch must also be offered. | steps 3–4 for the exempt kinds; the rest is step 9 | `engine/oilexempt.test.ts` |
 | **D27 / D37 / D44 / D45** | The count shows on every seat, frozen at publication, worded as what it is. | **not built yet — step 9** | — |

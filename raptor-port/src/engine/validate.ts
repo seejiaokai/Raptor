@@ -1,7 +1,7 @@
-import { PEOPLE, isSpecial, realP, isOcu, isInstr, isInstrPilot, aarOK, aarInstrOK, scShiftKind, scQualOK } from './people'
+import { PEOPLE, isSpecial, realP, whoId, isOcu, isInstr, isInstrPilot, aarOK, aarInstrOK, scShiftKind, scQualOK } from './people'
 import { isDownchit, isLeave, isUnavail, canSpare, canWork, shiftHardInput, restsInput, inpLabel, inpMeta } from './inputs'
 import { VCONF, SHIFT_HARD } from './rules'
-import { overlap, hm24, lgT } from './time'
+import { overlap, hm24, lgT, parseHM } from './time'
 import { collectEvents, shiftEvHard, scSeatHits, avSeatHits } from './events'
 import { HOOKS } from './hooks'
 import { sansGate, SANS_LABEL } from './avail'
@@ -27,7 +27,8 @@ export const WCODE:any={DOUBLE_BOOK:'Conflict — two events at once',DNIF_FLY:'
   SHIFT_SOFT:'On shift — also down for a ground event',
   SC_INTIME:'In-time window cut — busy between report and shift start',
   SANS_AVAIL:'SANS availability — planned outside the availability filed',
-  OIL_NO_TIMES:'No OIL earned — a duty desk has no times'};
+  OIL_NO_TIMES:'No OIL earned — a duty desk has no times',
+  FLT_NO_LEN:'Flight times — take-off and landing are the same'};
 /* what a flag PRINTS on the puck. The internal codes stay as they are — they
    key the colours, the ranking and the tooltips — but the squadron reads these
    at 9px on a phone, so the glyphs are short: R for crew rest, B for either
@@ -1102,6 +1103,29 @@ function validateCore(){
        at all, so a blank desk on a Tuesday is ordinary and must say nothing.
        The weekend comes from the day's own name; the holiday from the hook,
        because only Leave War holds that answer. */
+    /* A NOUGHT-MINUTE SORTIE ([OIL-SEATS-CAN-EARN] step 8; D49, owner 22 Sep 26
+       — "It should still earn — leave it as it is"). A line typed with the same
+       take-off and landing STILL PAYS the man: he reported and debriefed, so he
+       was at work whatever the times say. Both reviewers read that half day as
+       the app paying off its own padding and asked for the line to be refused;
+       the only reason it is not is a fact about how the squadron runs, which the
+       code cannot hold. The ruling stands and nothing about the money changes.
+       What was missing is that one of the two times is plainly wrong and no
+       screen said so. This says it — on ANY day, because a nought-minute sortie
+       is wrong on a Tuesday as well, and as an ADVISORY, because the line is not
+       being refused. It names the line, not the crew: the times are the
+       scheduler's to fix and no pilot's fault. */
+    ((DAYS[di]||{}).waves||[]).forEach((wv:any,gi:any)=>{
+      (wv.formations||[]).forEach((f:any,li:any)=>{
+        if(f.cx)return;
+        const st=parseHM(f.to),en=parseHM(f.ld);
+        if(st==null||en==null||st!==en)return;
+        const crew:any[]=[];
+        (f.aircraft||[]).forEach((ac:any)=>{if(!ac.cx){crew.push(ac.p);crew.push(ac.w);}});
+        if(!crew.some((v:any)=>{const id=whoId(v);return !!id&&(realP(id)||isSpecial(id));}))return;
+        add('adv','FLT_NO_LEN',[],`${f.cs||wv.label||'A flying line'} takes off and lands at the same time (${hm24(st)}) — one of the two is wrong; the day still earns from the report and debrief`,`ff:${di}.${gi}.${li}.ld`);
+      });
+    });
     const earnsOil=day.dow==='Saturday'||day.dow==='Sunday'||HOOKS.oilEarningDay(di);
     if(earnsOil){
       const blind=dayOilBlind(DAYS[di]||{});
