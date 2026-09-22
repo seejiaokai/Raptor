@@ -2705,3 +2705,17 @@ tends to carry costs (hidden bugs, undoing the plan's intent) that only resurfac
 **Suggested improvement:** When a browser-level check is expected to change and does not, rebuild the artefact the server is serving BEFORE re-examining the change. Where the runner reuses an existing server, treat "rebuild" as part of the check rather than part of the build. A measured value that is bit-identical across a change that should have moved it is a stale-artefact signature, not a failure signature.
 
 **Principle:** A test that loads an artefact is only as current as the artefact. When a result is suspiciously unchanged, suspect the pipeline before the change — the same failure twice is more often one stale input than two real faults.
+
+### Observation 177: Write the coverage table AFTER the fix, not only before it
+
+**Status:** OPEN
+**Date:** 2026-09-22
+**Skill:** `verification-before-completion` (and any project-level "list every place this appears" practice)
+**Type:** open-source
+**Phase/Area:** Confirming a fix is complete
+
+**Issue:** A project practice requires enumerating every place the app draws the thing a feature attaches to, each with a written yes / no-because / missing. It is normally run BEFORE building, to find surfaces the feature was never wired to. Here the same table was written AFTER a fix, to record what had been covered — and while filling one cell the claim being written down ("this surface prints plain text, so it cannot show the mark") turned out to be false on inspection: that surface keeps its own private copy of the markup precisely so it never reads live state, which is exactly why a change to the shared renderer does not reach it. The fix had been declared complete on three surfaces and was missing on a fourth. Nothing else in the session would have found it: the tests were written from the same list, and the hands-on pass had not covered that surface either.
+
+**Suggested improvement:** Run the enumeration twice — once before building, to find what to wire, and once after, as the completion check. In the second pass, every cell must be VERIFIED rather than recalled: open the file that draws it. Treat "it doesn't draw that, so it can't be affected" as a claim to check, never a reason to skip a row — a surface that keeps a private copy of shared markup is the commonest place a shared fix fails to arrive, and the reason it has a private copy is usually a good one that has nothing to do with the fix.
+
+**Principle:** A completeness table is only worth the cell you were least sure of. Writing one after the work is not bookkeeping — it is the check, and it only works if each cell is filled by looking rather than by remembering.
