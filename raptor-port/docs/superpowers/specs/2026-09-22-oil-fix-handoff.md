@@ -15,11 +15,47 @@ first; it carries the `Walk:` line, the re-marked roll-call and what was NOT wal
 | **The owner's call** | **Item 12** — 71 tap targets at 390px, median 15px tall, all under 44px. No cheap fix; three options and a recommendation filed as `[OIL-PHONE-TARGETS]` in `OUTSTANDING.md` |
 | **Rulings recorded** | **D24** (SC spare, AVALON and BB become creditable, default still nothing — queued, NOT built here) and **D25** (OIL is earned leave, not pay) |
 
+## What happened AFTER the walk — he opened the app and found a fifth thing
+
+**He found a money defect the walk missed** (walk sheet §11, §11a): put ALL AVAIL on a **duty desk**
+and it credits NOBODY, silently. Measured — the day pays only the named people, and no key is written
+for the sentinel at all. Cause: `engine/oil.ts` has two helpers; `putWho` expands a sentinel, `put`
+drops anything that is not a person, and only the Common Programme and Ground Programme PRIMARY seats
+use `putWho`. **PRE-EXISTING on `main`** (checked by diff, not assumed) but newly consequential.
+
+**Why the walk missed it:** anti-pattern 2, testing where it works. Every ALL AVAIL row walked was
+one the demo seed already had — which happened to be one of the two places it is honoured. He put one
+somewhere new within minutes. The method gained a line for it (§10 item 6).
+
+**Four rulings came out of that exchange**, and they reshape the next job:
+
+| | |
+|---|---|
+| **D26** | The phone tap targets are RULED "leave it" — he settles OIL on his phone easily, and the agent's inference that 15px made it unusable was wrong. `[OIL-PHONE-TARGETS]` closed as ruled. |
+| **D27** | ALL AVAIL / ALL are a SCHEDULING feature — dropped anywhere they work out who is available and SHOW THE COUNT, with OIL Earn OFF. |
+| **D28** | **ONE PRINCIPLE: every seat can earn, the DEFAULT decides, the admin can always override.** This supersedes his own earlier lean AND the agent's per-seat allow-list, and merges D24 with the ALL AVAIL fix into ONE change: `[OIL-SEATS-CAN-EARN]`. |
+| still open | whether a seat the rules cannot MEASURE (no times, zero length, cancelled, ⓘ) is switchable too. Agent's view: stays refused — no window, so a credit would be invented. |
+
+**Also fixed here: a real test defect, not the "flaky" label it was hiding behind.**
+`src/ui/stsaved.test.tsx` asserted on a 1400ms WALL-CLOCK window, and three of its tests read a
+window opened earlier — one across a test boundary. Its own recorded timings were 1557ms and 2439ms,
+longer than the window. Reproduced by stalling 1500ms; fixed by freezing the clock; the fix survives
+a 2500ms stall. `HANDOFF.md`'s "flaky under load" note was about a DIFFERENT fault (fixed 10 Sep, and
+all 69 mounting files carry its guard) — one label had accumulated two faults and was hiding the
+second. Separately: under three concurrent gates the suite sheds ~37 tests to TIMEOUTS (35 test, 3
+hook), which is starvation. **Do not run the unit gate beside the browser gates.**
+
 ## What is left before "merge live"
 
 1. His five-minute look, pictures first — `docs/img/handpass/2026-09-21-oil/`.
-2. His decision on item 12.
-3. Nothing else. Every reviewer finding was already closed; every job is now driven.
+2. Nothing else on this branch. Every reviewer finding was closed, every job is driven, item 12 is
+   ruled, and the ALL AVAIL defect is PRE-EXISTING and tracked separately — it does not block this.
+
+## The next chat
+
+**`[OIL-SEATS-CAN-EARN]`, at FULL tier, in a FRESH chat** — D24 + D27 + D28 as one change, on his
+principle. Opus high to build; Fable AND Codex to read it, because it decides what men are owed.
+Pick branch `main` if this has merged, otherwise `claude/oil-auto-remove-design`.
 
 ---
 

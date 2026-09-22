@@ -54,12 +54,11 @@ Codex) and folded in. Two `[CMDL-FINISH]` items were deferred INTO it and remain
 posting-window rebuild on a postouts restore = CMDLF-002; grouping a whole Import as one undo step),
 plus the phase-2 review deferrals under the item below. **NEXT = step 4 (one Absence record) / [DB-STEP].**
 
-**NEXT AFTER THE OIL BRANCH MERGES (owner, 22 Sep 26 — D24, sequencing confirmed by him):**
-`[OIL-EXEMPT-CREDITABLE]` — SC spare, AVALON (lines and desks) and BB lines start OFFERING the OIL
-switch, still earning nothing by default. It sits immediately after `[OIL-AUTO-REMOVE]` goes live and
-AHEAD of `[OIL-NEXT-TWO]`, because it touches the same mode while that branch's roll-call is still
-fresh. Deliberately kept OFF `claude/oil-auto-remove-design`: that branch is at its last gate, and the
-change is additive — its new default reproduces today's behaviour exactly, so nothing there is unpicked.
+**NEXT AFTER THE OIL BRANCH MERGES (owner, 22 Sep 26 — D24, D27, D28):**
+`[OIL-SEATS-CAN-EARN]` — one change on his principle that every seat can earn, the default decides,
+and the admin can override. It sits immediately after `[OIL-AUTO-REMOVE]` goes live and AHEAD of
+`[OIL-NEXT-TWO]`, in a FRESH chat, at FULL tier. Kept OFF `claude/oil-auto-remove-design`, which is
+at its last gate.
 
 Below is the older item ordering (kept for the non-stack items); land what's **cheap, done, or
 in-flight and risk-reducing** first.
@@ -412,47 +411,32 @@ P7 a stale "Leave War session-only" line in the ROOT CLAUDE.md (raptor-port's co
 
 Full story: `git log` for those PRs, and `docs/undo-contract.md` for the contract it established.
 
-### [GLOBAL-UNDO] One global per-session undo — PHASE 1 + PHASE 2 BUILT + MERGED LIVE (18 Sep 26)
-**BUILD STATUS (18 Sep 26): phase 1 (engine) + phase 2 (LIVE cutover 2.3–2.6) BUILT, all five gates
-green, driven in the app, dual-reviewed (Fable + Codex) and folded in; MERGED LIVE on owner's "merge
-live".** Every Undo/Redo (scheduler/board/Leave War) drives the ONE timeline; the Unpublish button +
-off-week undo are live. Detail + the review dispositions: `docs/session-state.md`.
+### [GLOBAL-UNDO] One global per-session undo — BUILT + MERGED LIVE (18 Sep 26)
 
-**DEFERRED (not blocking; land at the multi-user / DB step):**
-- **[GU-E2E] two LW undo e2e tests quarantined for CI (18 Sep 26).** `undo fired in MOVE mode` and
-  `rapid undo/redo settle` (e2e/leavewar.spec.ts, `test.fixme`) do a SECOND admin drag-select after
-  an edit; on GitHub Actions' headless Linux runners that second drag never arms (persistent, not a
-  timing race — retries don't help). Cause traced to the edit's Raptor→LW sync re-scoping the war
-  (`setViewer(ME)` on every Raptor notify). Passes 100% locally (real bundle, full lw-desktop) and
-  the two single-drag undo tests pass on CI; behaviour also covered by undoaudit/chrome/undo-wire
-  unit tests and driven live. Fix: make the second-admin-drag harness CI-robust (e.g. pin the viewer
-  or drive the setup off a bridge), then un-fixme. Not a product defect.
-- **inherited [CMDL-FINISH] deferrals** — CMDLF-002 (rebuild the Leave War posting-out windows on a
-  `lw.postouts` restore) and whole-Import undo granularity. These were deferred INTO global-undo when
-  the command layer landed; phase 2 keeps `lw.postouts` a deferred collection (its entries are
-  ineligible for undo), so both remain open for a later phase.
-- **[GU-C3] reland conflict/auth coverage (Codex GU-P2-005)** — the restore's `reconcileDayFiling`
-  re-derives `acc` for inputs beyond the entry's closure without expanding the conflict/auth/
-  expectedRevs set. Inert in the synchronous single-user prototype (re-derive-only, never lands a
-  row, `acc` self-heals on loadWeek); real once there are concurrent users / a shared DB. Fix with
-  the per-session undo work below.
-- **[GU-MAYREV] mayReverse button state (Fable#3) — PRODUCT QUESTION for the owner.** `undoState()`
-  enables Undo on the newest ELIGIBLE entry regardless of the actor, and the timeline isn't cleared
-  on logout, so a member behind an admin's edit sees an enabled-but-refused Undo and can't reach
-  their own older entries. Options: grey the button for a non-reversible newest entry, OR skip past
-  non-reversible entries (safe only where keys don't overlap — `undoConflict` guards the rest).
-  Low impact now (effectively one admin user); ties to the future per-session/per-user undo
-  (memory `future-undo-semantics-multiuser`) — clearing the timeline on `resetSession` is the
-  near-term direction.
-- **[GU-E5] input-only undo doesn't snap to its week (Codex GU-P2-006)** — E5 was deliberately
-  dropped in phase 2 (subsumed by the reland). Minor UX (an input-only undo relands on the loaded
-  week; the record restores correctly, only the view doesn't jump).
-- **[GU-LWLOCK] LW lock through notify (Codex GU-P2-008)** — a restore-caused LW projection can push
-  a vestigial legacy-LW history step. No user-facing effect (buttons drive global undo, not the
-  legacy LW stack). Cosmetic; tidy when the legacy LW stack is retired.
-- **[GU-COSMETIC]** resolvePublishDay binds an AL barrier to CURWEEK → a jump-then-refuse on another
-  week (Fable#6, correct outcome); postRestore view-effects (armDrop/prunePreviews) aren't rolled
-  back on a failed restore (Fable#7, drops the armed puck on a rare refusal). Both LOW.
+Phase 1 (engine) + phase 2 (live cutover) built, five gates green, driven in the app, dual-reviewed
+(Fable + Codex), merged on his "merge live". Every Undo/Redo — scheduler, board, Leave War — drives
+the ONE timeline; the Unpublish button and off-week undo are live. Shipped behaviour:
+`raptor-port/docs/undo-contract.md`. Review dispositions and the full reasoning for each deferral
+below: `raptor-port/docs/session-state.md`, and `git log -S"GU-P2" -- OUTSTANDING.md`.
+
+**SEVEN DEFERRALS, all still open, none blocking — they land at the multi-user / DB step:**
+
+- **[GU-E2E]** two Leave War undo e2e tests `test.fixme`d for CI — a second admin drag-select never
+  arms on the CI runners (traced to the sync re-scoping the war). Passes locally; not a product
+  defect. Fix the harness, then un-fixme.
+- **[CMDLF-002]** rebuild the Leave War posting-out windows on a `lw.postouts` restore, and
+  whole-Import undo granularity — both inherited from `[CMDL-FINISH]`; `lw.postouts` is still a
+  deferred collection.
+- **[GU-C3]** reland conflict/auth coverage — the restore re-derives `acc` beyond the entry's
+  closure without widening the conflict set. Inert single-user; real with concurrent users.
+- **[GU-MAYREV] PRODUCT QUESTION for the owner** — Undo is enabled on the newest eligible entry
+  whatever the actor, and the timeline is not cleared on logout, so a member behind an admin edit
+  sees an enabled-but-refused Undo. Grey it, or skip past non-reversible entries. Clearing the
+  timeline on logout is the near-term direction (memory `future-undo-semantics-multiuser`).
+- **[GU-E5]** an input-only undo does not jump to its week (the record restores correctly).
+- **[GU-LWLOCK]** a restore can push a vestigial legacy-LW history step. No user-facing effect.
+- **[GU-COSMETIC]** an AL barrier bound to the loaded week; view-effects not rolled back on a
+  failed restore. Both LOW.
 
 ### [GLOBAL-UNDO] design record (Rev 6) — MOVED OUT 22 Sep 26
 
@@ -764,25 +748,58 @@ decision about which of the six types count (a two-hour Appointment is not a day
 and the projection is a new seam into the war. Not a line. **Priority: his call — raised with him on
 21 Sep and filed at his word.**
 
-### [OIL-PHONE-TARGETS] The OIL mode cannot be used with a finger (walk find, 22 Sep 26 — finding 12)
+### [OIL-PHONE-TARGETS] The OIL mode's phone tap targets — CLOSED, RULED "leave it" (owner, D26, 22 Sep 26)
 
-**Measured on the built app at 390 × 844, everything-Saturday, mode on:** 71 tappable things — pucks,
-item switches, count chips. Shortest 15px tall, MEDIAN 15px, 57 under 24px, **all 71 under 44px**,
-narrowest 20px wide. The family day alone stacks 27 into ~300px, 15px apart. Every tap decides what a
-man earns.
+**Nothing to build. Do not re-open or re-file as a defect.** At 390px the mode draws 71 tappable
+things, median 15px tall, all under 44px — measured and true. What was wrong was the agent's
+INFERENCE from it; he corrected that directly: *"I can still settle OIL on my phone easily from my
+point of view."* He uses it, so his judgment governs. Kept as a RULED item with its date (standing
+order §7.6) so a later session cannot rediscover the measurement and "fix" it. Detail: the walk sheet
+§6 item 12.
 
-**No cheap fix.** The pucks inherit the board's compact row height and the rows are 15px apart, so
-growing only the hit box makes NEIGHBOURING boxes overlap — mis-taps get worse. The size has to come
-from the row.
+### [OIL-SEATS-CAN-EARN] Every seat can earn, the default decides — ONE change (owner, D24 + D28, 22 Sep 26)
 
-**Three ways out:** (1) taller rows in the mode, phone only — cheap, contained, costs scrolling (~800px
-instead of ~300px); **recommended for now**. (2) A list view for the mode on a phone — the right
-long-term answer, and a new screen. (3) Leave it — the mode stays a desktop job, which means he cannot
-settle OIL from his phone.
+**D28 merged two items into this one.** His principle: *"If everywhere in the schedule can earn oil,
+then the all avail or all puck should also be able to earn oil"* — every seat can earn, the DEFAULT
+decides whether it does, the admin can always override. That replaced both his own earlier lean
+(ALL AVAIL not on duty) and the agent's per-seat allow-list, and it removes the class of defect
+rather than enumerating around it. **Nothing earns by default that does not earn today.**
 
-**His call, not the agent's** — it changes how the screen looks and how much scrolling it costs.
-Deliberately not decided or built on `claude/oil-auto-remove-design`. **Tier if built: WALK.**
-Measurement and evidence: `raptor-port/docs/handpass/2026-09-22-oil-walk.md` §6.
+**Half one — the exempt kinds (D24).** *"is it too late to revert that SC spare, Avalon and BB could
+also earn OIL? … But by default they are not going to earn OIL."* SC SPARE, AVALON lines and desks,
+and BB lines must OFFER the switch, defaulting to OFF. Today they are wholly inert — no switch, no
+door. **Not a flag flip:** all three are skipped BEFORE anyone enters the calculation (`engine/oil.ts`
+— `saExemptKind`, `f.spare`/`ac.spare`), so no item key and no person window exist for a credit to
+attach to. **Supersedes D15 and D20 on the DOOR only**; D20's second half carries forward (a duty
+block MADE from an AVALON template gets the same treatment).
+
+**Half two — ALL AVAIL / ALL, which the OWNER FOUND (22 Sep 26).** A duty desk he added on his phone,
+Dash and ALL AVAIL on it: **on that seat ALL AVAIL credits NOBODY** — the day pays the 2 named people
+and writes no key for the sentinel, a silent drop. Cause: `putWho` expands a sentinel, `put` drops
+anything that is not a person, and only the Common Programme and Ground Programme PRIMARY seats use
+`putWho` — flying lines, sims, duty desks and **the extras array of every row type** use `put`.
+**PRE-EXISTING** (`main` has the same structure) but newly consequential. Measured in
+`raptor-port/scripts/handpass/w11-duty.mjs`; roll-call table in the walk sheet §11.
+
+**Half three — D27, the display half.** ALL AVAIL / ALL are a SCHEDULING feature: dropped anywhere
+they work out who would be available and SHOW THE COUNT, with OIL Earn OFF. Extends
+`[ALL-AVAIL-REDEF]` (WHO counts as available) by settling WHERE the answer shows.
+
+**Still his to answer:** whether a seat the rules genuinely cannot MEASURE (no times, zero length,
+cancelled, ⓘ) is switchable too, or stays refused with its reason on screen. The agent's view: those
+stay refused — there is no window to measure, so a credit would be invented rather than earned.
+
+**Tier: FULL** — money, reaches an issued day, adds roll-call rows on every seat type. **Sequencing,
+his: NEXT, after `[OIL-AUTO-REMOVE]` merges**, ahead of `[OIL-NEXT-TWO]`, in a FRESH chat. The
+display-versus-earning cost analysis and the size estimate are in
+`raptor-port/docs/handpass/2026-09-22-oil-walk.md` §11 and §11a. Rulings: `DECISIONS.md` D24, D27, D28.
+
+### [OIL-WORDS] Stop calling OIL "money" in the code comments (owner, D25, 22 Sep 26)
+
+OIL is banked TIME OFF, not pay. **Nothing on screen is wrong** — checked 22 Sep 26, no user-facing
+string says paid, pay or money. The shorthand is in CODE COMMENTS (`ui/oilmode.ts` ~117, 211, 294,
+455, 542, plus `engine/oil*.ts`) and some test names. **Tier: NONE.** Fold into any later pass that
+already touches those files; the definition now heads the OIL behaviour register.
 
 ### [OIL-NEXT-TWO] The two the owner parked until after the bug check (21 Sep 26)
 **His words: "We can do point 2 and 3 later after the 3 things above are done."** The three being
@@ -830,31 +847,14 @@ for will read "earned 4".
 One afternoon. **Ask him before doing it** — it changes two numbers he reads.
 
 ### [OIL-AWARD-ADD] An award and a worked day ADD UP — MERGED to main, 21 Sep 26 (PR #423)
-**DONE.** Rulings N16, N17, N18 and N19, all built, all in the behaviour register, all named by a
-test that `npm run rulecheck` watches. Design: `specs/2026-09-21-oil-award-add-design.md`. What the
-two review rounds found and what was done with each: `-review-log.md` — worth reading before any
-further work on OIL.
 
-- **N16** a day holds ONE earned credit and ONE award, side by side; they ADD UP. The
-  take-over-and-hand-back machinery is retired, which was the point: both silent balance bugs of
-  20–21 Sep lived in its snapshot.
-- **N17** the manning counts BODIES — an OIL credit removes nobody. (Its other half is
-  `[LW-COMMIT-MANNING]`, below, and is NOT done.)
-- **N18** a clash note is amber and holds long enough to read.
-- **N19** an award is ONE number, and it comes in halves at every door.
-
-**Three bugs fixed that were LIVE before this ruling**, all silent: re-typing an award's code on
-the grid destroyed its days and its giver; the OIL tracker's "Save" was three undo steps, so one
-undo left the balance changed; and the unpublish warning measured a balance that ignored expiry.
-
-**The demo now carries the ruling.** Sat 4 Jul, `ammo`: an accepted duty input earns a real credit
-beside a 3-day award, so a fresh boot opens showing four days on one Saturday with the tracker
-listing them apart. Seeded through an INPUT rather than a published day, so the week the reference
-parity gate measures does not move.
-
-**What it cost, recorded because it is the useful part:** across two review rounds and two
-providers, THREE silent balance bugs — two of them made during this session, one of them caused by
-the fix for the other. None would have looked wrong on screen. Every gate was green throughout.
+**DONE.** Rulings N16–N19 built, all in the OIL behaviour register and each named by a test that
+`npm run rulecheck` watches — so the register, not this file, is where they live. Design:
+`specs/2026-09-21-oil-award-add-design.md`; what the two review rounds found and what was done with
+each: `…-review-log.md`, **worth reading before any further OIL work**. The take-over-and-hand-back
+machinery was retired, which was the point — both silent balance bugs of 20–21 Sep lived in its
+snapshot. **One half is NOT done and is tracked separately: `[LW-COMMIT-MANNING]`** (N17's other
+half — duty and commitments must reduce the Leave War manning).
 
 ### [OIL-AWARD-ADD-RULING] The ruling as it was given, kept for the reasoning
 
