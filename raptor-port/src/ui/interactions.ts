@@ -21,7 +21,7 @@ import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList, setAvailWin, setAvailWinBox } from './pops'
 import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
-import { oilItemLabel } from './oilmode'
+import { oilItemLabel, oilModeOn } from './oilmode'
 import { withDaySnap } from './html'
 import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
@@ -500,7 +500,12 @@ export function routeClick(e: MouseEvent) {
        before (Fable correction 2). Read-only to open; the earn half inside the
        window gates on the scheduler role of its own. */
     const lbl = oilItemLabel(di, it)
-    setAvailWin({ di, item: it, ver, name: lbl.name, when: lbl.when, tab: 'who' })
+    /* WHICH HALF IT OPENS ON. Availability is the default and is always
+       offered; but inside the earn mode the counter IS the door to switching
+       men off — that is the job he opened it for — so it lands on that half
+       and he can still step back to the other tab. With the mode off there is
+       no second tab to land on (the mode rule, 22 Sep 26). */
+    setAvailWin({ di, item: it, ver, name: lbl.name, when: lbl.when, tab: oilModeOn(di) ? 'oil' : 'who' })
     setAvailWinBox(null)
     notify()
     return

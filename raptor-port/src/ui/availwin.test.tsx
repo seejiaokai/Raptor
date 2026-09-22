@@ -98,6 +98,8 @@ const win = () => $('.availwin')
 const openWin = async (di: number) => { await open(di); await click(chipEl()) }
 const tabs = () => $$('.availwin .win-tab')
 const rows = () => $$('.availwin .rpuck')
+const winSeat = (id: string) => ($$('.availwin .seat.oilpk') as HTMLElement[])
+  .find(s => s.dataset.oilp === id)!
 const cs = (id: string) => (PEOPLE as any)[id].cs
 
 describe('the window IS the design of record (D38-D41)', () => {
@@ -152,16 +154,21 @@ describe('the mode rule — availability always, earning only in the mode', () =
     expect(tabs().length, 'the day can earn, but OIL Earn is switched off').toBe(0)
   })
 
-  it('WITH THE MODE ON the second half appears, and availability is still first', async () => {
+  it('WITH THE MODE ON the second half appears, and the counter lands on it', async () => {
     puckRow(SAT)
     await open(SAT)
     await act(async () => { setOilDay(SAT); notify() })
     await click(chipEl())
     const t = tabs()
     expect(t.length, 'two jobs, one window').toBe(2)
-    expect(t[0].textContent, 'who is available is the first thing offered').toContain('available')
+    expect(t[0].textContent, 'availability is still the first half offered').toContain('available')
     expect(t[1].textContent, 'and the earning half second').toContain('earns OIL')
-    expect(t[0].className, 'availability is the tab it opens on').toContain('on')
+    /* inside the mode the counter IS the door to switching men off — that is the
+       job he opened it for — so it lands on that half. He can step back to the
+       other tab, which is why availability keeps its place as the first one. */
+    expect(t[1].className, 'in the mode it opens on the earning half').toContain('on')
+    await click(t[0])
+    expect(tabs()[0].className, 'and he can step back to availability').toContain('on')
   })
 })
 
@@ -237,8 +244,12 @@ describe('THE FLAGS ARE THE POINT — a clash is SHOWN, never filtered out (D36/
 })
 
 describe('the earning half moves real money, so it is gated and it writes (D43/D44)', () => {
+  /* NOTE: this does NOT create the row. `puckRow` rewrites `ground` and
+     ensureRowIds mints a FRESH id, so calling it again would leave the caller
+     holding a key for a row that no longer exists — which is what happened, and
+     it read as "he earns nothing" when he earns a full day. The caller makes the
+     row and owns its key. */
   const earnWin = async () => {
-    puckRow(SAT)
     await open(SAT)
     await act(async () => { setOilDay(SAT); notify() })
     await click(chipEl())
@@ -246,23 +257,47 @@ describe('the earning half moves real money, so it is gated and it writes (D43/D
   }
 
   it('switching a man off in the window takes his credit away for real', async () => {
+    /* THE REAL DOWNSTREAM RESULT, not just the screen (checklist: "the money,
+       not just the screen"). This one test uses the crowd the step-7 fixtures
+       use, because those two men demonstrably EARN from a Saturday row — who
+       earns depends on what else each man is on that day, and a test that
+       asserts money against a crowd that earns nothing proves only its own
+       fixture. The pilot/WSO split is covered by the column tests above. */
+    HOOKS.oilSentinel = () => ['plasma', 'stiff']
+    /* and clear the seed Saturday's OWN duty and sim rows, as the step-7
+       fixtures do. A man's figure is attributed to the events that COUNTED
+       towards his day (O-1), so with a duty desk also on the day his credit may
+       hang off the desk and this ground row would contribute nothing extra —
+       the test would then be measuring the seed day, not the window. */
+    Object.assign(DAYS[SAT] as any, { dutywaves: [], sims: { amt: [], oft: [] }, oild: undefined })
     const item = puckRow(SAT)
     await earnWin()
-    const before = oilFigureFor(SAT, CROWD[0], item)
+    const before = oilFigureFor(SAT, 'plasma', item)
     expect(before, 'he earns from this event to begin with').toBeTruthy()
-    const mine = rows().find(r => (r.textContent || '').includes(cs(CROWD[0])))!
-    await click(mine.querySelector('.puck'))
-    expect(oilFigureFor(SAT, CROWD[0], item), 'and the window wrote the decision').toBeFalsy()
+    await click(winSeat('plasma').querySelector('.puck'))
+    expect(oilFigureFor(SAT, 'plasma', item), 'and the window wrote the decision').toBeFalsy()
+    expect(oilFigureFor(SAT, 'stiff', item), 'the man beside him is untouched').toBe(before)
   })
 
-  it('a MEMBER may read who is available but may not change who earns', async () => {
-    puckRow(SAT)
+  it('a MEMBER may read who is available but may NOT change who earns', async () => {
+    HOOKS.oilSentinel = () => ['plasma', 'stiff']
+    Object.assign(DAYS[SAT] as any, { dutywaves: [], sims: { amt: [], oft: [] }, oild: undefined })
+    const item = puckRow(SAT)
     await earnWin()
+    const before = oilFigureFor(SAT, 'plasma', item)
+    expect(before, 'he earns to begin with').toBeTruthy()
     await act(async () => { setSession({ user: 'us', role: 'main' }); notify() })
-    /* the window is still open and still readable — reading who a placeholder
-       stands for is not a privileged act, which is why the chip's own handler
-       carries no role gate. The EDIT half is the part that is gated. */
+    /* reading who a placeholder stands for is NOT a privileged act — the count
+       chip's own handler carries no role gate on purpose, because anybody
+       reading the schedule may fairly ask who the puck stands for. The EDIT half
+       is what is gated, and it is gated on the WRITE, not merely by hiding the
+       control: a member who reaches the puck must still change nothing. */
     expect(win(), 'he can still read it').toBeTruthy()
+    toasts = []
+    await click(winSeat('plasma').querySelector('.puck'))
+    expect(oilFigureFor(SAT, 'plasma', item), 'his credit is untouched').toBe(before)
+    expect(toasts.join(' '), 'and he is told why, rather than nothing happening')
+      .toContain('Only a scheduler')
     await act(async () => { setSession({ user: 'ad', role: 'admin' }); notify() })
   })
 })

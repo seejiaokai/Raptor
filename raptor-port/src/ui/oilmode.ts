@@ -729,14 +729,28 @@ export function oilClaimWin(di: any, src: any): [number, number] | null {
 
 /** Every person a ROW shows in the mode, in order: its named crew with any
  *  sentinel opened out into the real people it stands for (§2.1 item 6). */
-export function oilRowPeople(di: any, whos: any[], item: string, win: [number, number] | null): string[] {
+/* THE ROW'S OWN PEOPLE — and since [ALL-AVAIL-WINDOW] (D38) a PLACEHOLDER STAYS
+   A PLACEHOLDER HERE, in the earn mode as well as outside it.
+
+   It used to expand: inside the mode a placeholder became the individual pucks
+   of the men behind it, drawn along the row, each tappable to take one man off
+   ([OIL-SEATS-CAN-EARN] step 7). That door was built for a real reason — step 5
+   made those seats EARN, and paying a crowd the scheduler cannot correct is
+   worse than not paying it. THE DOOR HAS NOT BEEN REMOVED, IT HAS MOVED: the
+   counter chip now opens the window, and the window is where a man is switched
+   off. That is what the owner asked for in D38 — the window replaces the
+   in-row crowd as well as the bubble of names.
+
+   It also removes a divergence rather than adding one: the WEEK never expanded
+   a placeholder inline, so the board and the week drew the same row two
+   different ways inside the mode. They agree now.
+
+   What it still does is dedupe and drop an id the roster no longer holds, which
+   is why the call sites keep calling it rather than reading `who` raw. */
+export function oilRowPeople(di: any, whos: any[], item: string, _win?: [number, number] | null): string[] {
   const out: string[] = []
   const push = (id: any) => { if (id && (PEOPLE as any)[id] && out.indexOf(id) < 0) out.push(id) }
-  for (const v of whos) {
-    const id = whoId(v)
-    if (id && isSpecial(id)) { if (win) oilSentinelPeople(di, item, win).forEach(push) }
-    else push(id)
-  }
+  for (const v of whos) push(whoId(v))
   return out
 }
 

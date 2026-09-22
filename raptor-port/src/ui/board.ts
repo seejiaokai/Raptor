@@ -1302,7 +1302,12 @@ export function boardArmClick(e: MouseEvent) {
        and times are captured HERE rather than re-derived later, because the
        window outlives the row that opened it — he goes on editing behind it. */
     const lbl = oilItemLabel(di, it)
-    setAvailWin({ di, item: it, ver, name: lbl.name, when: lbl.when, tab: 'who' })
+    /* WHICH HALF IT OPENS ON. Availability is the default and is always
+       offered; but inside the earn mode the counter IS the door to switching
+       men off — that is the job he opened it for — so it lands on that half
+       and he can still step back to the other tab. With the mode off there is
+       no second tab to land on (the mode rule, 22 Sep 26). */
+    setAvailWin({ di, item: it, ver, name: lbl.name, when: lbl.when, tab: oilModeOn(di) ? 'oil' : 'who' })
     setAvailWinBox(null)
     notify()
     return
