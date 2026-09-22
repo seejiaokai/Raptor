@@ -839,9 +839,10 @@ anything that is not a person, and only the Common Programme and Ground Programm
 they work out who would be available and SHOW THE COUNT, with OIL Earn OFF. Extends
 `[ALL-AVAIL-REDEF]` (WHO counts as available) by settling WHERE the answer shows.
 
-**Still his to answer:** whether a seat the rules genuinely cannot MEASURE (no times, zero length,
-cancelled, ⓘ) is switchable too, or stays refused with its reason on screen. The agent's view: those
-stay refused — there is no window to measure, so a credit would be invented rather than earned.
+**ANSWERED — D31 (22 Sep 26).** A seat the rules genuinely cannot MEASURE (no times, zero length,
+cancelled, ⓘ) offers NO switch, and says why on screen instead. That is the ONE boundary on D28:
+every measurable seat offers the switch, but where there is no window a credit would be invented
+rather than earned. The refusal must NAME its reason — never a silent absence.
 
 **Tier: FULL** — money, reaches an issued day, adds roll-call rows on every seat type. **Sequencing,
 his: NEXT, after `[OIL-AUTO-REMOVE]` merges**, ahead of `[OIL-NEXT-TWO]`, in a FRESH chat. The
