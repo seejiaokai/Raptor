@@ -37,7 +37,13 @@ const FILES = [
      archive pass under a red gate is the exact pressure that destroyed two filed items on 22 Sep.
      The extra headroom answers Fable's finding that seven of eight gated files sat at ZERO, which
      is what made every addition a trim. [DOC-TRIM] still owns bringing this to its 600 target. */
-  ['OUTSTANDING.md',                     1, 1230,  600],
+  /* 1230 -> 1240, 22 Sep 26, the SECOND raise today and the last one that should pass
+     unremarked. Thirteen rulings landed today (D31-D43) and the OIL red-team added a pointer
+     the next session must read. The agent tightened its OWN new text by 3 lines first rather
+     than trimming anyone else's entries - D29 rule 3 forbids a trim inside another change, and
+     squeezing prose to hit a number is the pressure that destroyed two filed items last week.
+     If a third raise is wanted, do [DOC-TRIM] instead: this file is 1234 against a 600 target. */
+  ['OUTSTANDING.md',                     1, 1240,  600],
   /* DECISIONS.md is append-only and is MEANT to grow, so its ceiling is its target.
      When it reaches it, the oldest decisions move to a dated section of their own and
      the index keeps only the live ones — the same shape as HANDOFF-ARCHIVE. */

@@ -134,12 +134,40 @@ and the four agreed findings are the ones to treat as certain.
 
 **Both reviewers: REVISE. The plan is not buildable as written.** Nothing rejected on either side.
 
-**Blocked on the owner** before the plan can be rewritten:
+**BOTH OWNER QUESTIONS ANSWERED, 22 Sep 26 — and his answer to M1 went against BOTH the
+reviewer's recommendation and the host's.**
 
-1. **M1 — the ruling clash.** Does a placeholder on a ground row or Common Programme row keep
-   earning by default (as today), or stop until switched on (newest ruling wins)? It changes what
-   men are owed on days already issued.
-2. **S5 — the overnight line.** An AVALON/BB line running 19:00 to 07:00: which day earns?
+**M1 — CLOSED by D43.** He ruled the placeholder pucks behave exactly like named people: **ON by
+default, everywhere they can land.** Duty desks, sims, passengers, every extra-people line, ground
+rows and Common Programme rows — all on; switch one off deliberately if you do not want it. His
+reasoning, and it is better than either recommendation: a crowd behind the puck on a weekend event
+is doing the same work as a man whose name is typed there, so it earns the same way.
+
+**This closes the worst finding in the entire review rather than answering it.** M1's real danger
+was never the clash — it was that switching those two seats OFF would recompute already-issued
+Saturdays and silently delete landed credits from the Leave War with no amendment. Nothing is
+switched off, so that path cannot be taken. **No data reset, no upgrade guard, no before/after
+published-credit test needed** — M1's fix steps 2 and 3 fall away with it.
+
+**What it does NOT touch:** D24 stands whole. The four exempt KINDS — SC SPARE, AVALON lines,
+AVALON desks, BB lines, and a block minted from an AVALON template (D35) — still default OFF with
+the switch offered. Those are about the kind of WORK, not about who is standing on it. M2 and M3
+are unaffected and still required.
+
+**It simplifies M3.** The span default is ON for everything except the four exempt kinds, so the
+placeholder needs no default of its own — it inherits the seat's. One rule, not two.
+
+**The flying line does not arise**, in his words: D33 refuses the puck there, so no default is
+needed. Fable M4's non-expanding belt on that branch is kept anyway, for data that arrived by copy
+before the refusal existed.
+
+**S5 — CLOSED by D42.** An overnight line earns the day it SITS ON, and the day the hours spill
+into earns nothing from it. A Sunday-night 19:00–07:00 line earns Sunday; Monday earns nothing.
+Recorded in his framing — the host stated the rule wrongly when putting it to him.
+
+**Still open, and the host's to settle in round 2:** M6/OSE-05's remedy — whether the count on a
+published non-earning day reads live or frozen. The two reviewers agree the defect is real and
+disagree on the fix.
 
 **Host decisions taken, not put to him:** M2 Option A (the span carries the default; credit a
 spare by tapping the man), and M3's step-2 spec adopted whole in place of plan §5 steps 2–3.

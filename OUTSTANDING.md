@@ -859,6 +859,14 @@ cancelled, ⓘ) offers NO switch, and says why on screen instead. That is the ON
 every measurable seat offers the switch, but where there is no window a credit would be invented
 rather than earned. The refusal must NAME its reason — never a silent absence.
 
+**RED-TEAMED 22 Sep 26 — BOTH PROVIDERS RETURNED REVISE; the plan is NOT buildable as written.**
+Fable (7 must-fix, 9 should-fix) and Codex/Astra (7, four high), blind to each other, nothing
+rejected, four findings change its shape. **Read `…/2026-09-22-oil-seats-can-earn-review-log.md`
+before touching the plan** (Fable's text verbatim beside it). **D43 settles the default, more
+simply than either reviewer proposed:** the placeholder pucks are ON by default wherever they can
+land, like named people; only the four exempt KINDS default off (D24/D35). That closes the worst
+finding outright — nothing is switched off, so no issued Saturday loses credits silently.
+
 **Tier: FULL** — money, reaches an issued day, adds roll-call rows on every seat type. **Sequencing,
 his: NEXT — `[OIL-AUTO-REMOVE]` merged 22 Sep 26**, so this is unblocked and at the head of the
 queue, ahead of `[OIL-NEXT-TWO]`. **THE PLAN IS WRITTEN:**
