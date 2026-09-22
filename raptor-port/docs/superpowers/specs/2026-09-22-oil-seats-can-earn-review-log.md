@@ -198,3 +198,48 @@ round existing at all.
 **What it confirmed as settled:** the live/frozen arbitration (OSE-05 round 1) — it did not re-argue
 it despite being explicitly invited to. That is the strongest possible endorsement of the host's
 position, since the invitation was open.
+
+## Round 2 — FABLE 5.1, on the rewritten plan
+
+**Verdict: REVISE.** Five must-fix, four should-fix. It confirms §9 carries all twenty round-1
+findings and names **two that were carried in name only** — the thing round 2 was asked to hunt.
+Full text in the agent transcript; the load-bearing content is below.
+
+| # | What it says | Host disposition |
+|---|---|---|
+| **R2-1** | **The person-default half of M3 was dropped, and it makes D24's only door unbuildable.** §4 rewrote the MONEY's default but left the MODE's (`itemDefaultFor`, which returns `true` when there is no claim). Traced: a default-off SPARE man draws GLOWING, the money pays him nothing, and the per-man tap writes `deny` for a credit he never had — `allow` is unreachable, so "credit the spare by tapping the man" cannot happen. | **ACCEPTED, and it is the sharpest finding of round 2.** Same root as Codex OSE-R2-01, found from the opposite end: Codex traced the WRITER deleting overrides, Fable traced the READER glowing. **Two reviewers, two routes, one defect — treat as certain.** The design changed the read and left the write; it also changed the money and left the screen. |
+| **R2-2** | **Three-state `itemOn` breaks six boolean callers, and nothing writes the `1`.** With `undefined` for every unmarked item, `!undefined` is true — every puck inert, every item tap toasts "masked". And `toggleOilItem` today only writes `0` or deletes, so **an AVALON line could never be switched ON**: D24's switch would draw and do nothing. Also kills step 3's "land it green" proof unless the suite never opens the mode, in which case the proof is worthless. | ACCEPTED WHOLE, including its fix: **split into two functions** — a boolean mask for the four guards (unchanged semantics) and a three-valued mark for the switch — plus an `itemState` of on/off/mixed for drawing, the full toggle cycle, and five titles. |
+| **R2-3** | **§6's "an issued day computes identically" holds for the money but not the amendment book.** After steps 4–5 an already-issued day gains a live membership entry the frozen block lacks, so it reads pending — correct under the amendment model, but the walk will report it as a defect unless it is a named expectation. And on an EXEMPT desk it offers an amendment for a decision that moves no money, which §6 itself forbids. | ACCEPTED. **Its fix 1 is now SUPERSEDED by D44** (record membership everywhere, not only where money-bearing). Its fix 2 — restore the before/after published test, in the additive direction — stands and is needed. Third time the host's "computes identically" claim has been holed; it is deleted rather than re-qualified. |
+| **R2-4** | **A NEW PRODUCT QUESTION the rewrite created.** D43 turned step 6 from "pays nobody" into "pays everyone by default": a placeholder mis-dropped in ONE man's accepted request row would credit the whole squadron for his appointment window. Recommends refusing the puck on a request row. | **THE OWNER'S TO ANSWER — put to him.** The host agrees it is a real consequence and that D33's "ground rows" was said before D43 made this the result. |
+| **R2-5** | **D43 was never written into the four rulings it supersedes** — D27, D28, D32, D33 all still read "off by default", and D28's "nothing earns by default that does not earn today" is now false for the placeholder. | **ACCEPTED AND FIXED IMMEDIATELY.** This is the owner's own standing rule (fix the stale text in the same change) and the host broke it. All four rows now carry the amendment. |
+| **R2-7–10** | Memoise in step 1, not step 9 (consolidating onto the evidence turns an O(1) read into a full evidence build per row and per puck). The rid-less row is closed by construction — pin it rather than list it as open. Roll-call still missing a SURFACE axis (the version preview especially, the only place "as issued" shows), the Available-crew panel's second "free" count, an SC-template control row, a cockpit holding a copied placeholder, and OIL8 on a sim row at phone width. Wording moved too late — the five-state switch is on screen from step 3. | ALL ACCEPTED. |
+
+**The arbitration: attacked, and it did NOT survive — but not for any reason a reviewer found.**
+Fable tested it, found it holds, and even pre-empted the case it expected Codex to raise. Codex
+declined to re-argue it. **Both reviewers left the host's position standing — and the OWNER then
+overturned it (D44)** with a fact neither model had: the squadron reviews every change at the close
+of the day and issues an EOD version as the record of what happened, so the pending mark is the
+signal that process runs on. Fable's correction 1 (frozen in the ISSUED version, live on the WORKING
+copy, the difference showing as pending) turns out to be exactly his description and survives whole;
+its correction 2 (one resolver behind all four readers) also stands.
+
+**Explicit negatives Fable checked and cleared:** D42 needs nothing built on either side — the Leave
+War already computes from the unclipped envelope and clips before ingest, so an overnight credit is
+never dropped. D43 creates no double credit on a mixed row (a named man is excluded from the crowd
+by the availability walk) and none across overlapping placeholder rows. The refusal's preflight
+reaches every alias. Seeds and parity unchanged.
+
+---
+
+## Round 2 — outcome, and the round cap
+
+**Both reviewers: REVISE.** Codex 5 (4 high), Fable 5 must-fix + 4 should-fix. Nothing rejected.
+**Both independently found the same defect from opposite ends** (the read/write half-migration), which
+is the strongest signal in either round.
+
+**THE CAP IS REACHED.** The owner capped design red-teaming at about three rounds (19 Sep 26) and
+this loop was set to two. **There is no round 3.** The findings are folded into the plan and into the
+build, and what remains is caught by the post-build inspection — a different check that finds
+different things — and by the WALK, which is the only thing that finds a surface nobody wired up.
+
+**One question still the owner's: R2-4**, the placeholder on an accepted request row.

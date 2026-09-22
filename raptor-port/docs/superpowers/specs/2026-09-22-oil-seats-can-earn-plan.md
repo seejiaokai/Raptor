@@ -138,13 +138,29 @@ message carry them for free, and the palette's placeholder row draws them struck
 when a cockpit is armed. **A non-expanding belt stays on the flying branch of `dayOilWork`** for data
 that arrived by copy — a day template or a parked plan bypasses both doors.
 
-**The count on a published day: LIVE where the day cannot earn, FROZEN where it can** — and the
-count says which ("who has nothing else on today" vs "as issued"). **Host's arbitration between the
-two reviewers**, recorded with its reason: Codex wanted membership frozen on every publication and
-bound into the signature, which is safer in the abstract but would make every issued day read
-"pending amendment" the moment anyone files ordinary leave that week — for a number that owes nobody
-anything. That devalues the amendment mark, which *is* money-bearing. D37 also frames the count as a
-starting point a scheduler can correct, not a promise. **Round 2 should attack this specifically.**
+**The count is FROZEN at publication on EVERY day, earning or not (D44).** The issued version keeps
+the people it was issued with; the working copy shows the live answer; the difference raises the
+ordinary pending mark, and the scheduler amends or publishes the EOD version.
+
+**This REVERSES the host's arbitration, and the reversal is recorded rather than quietly swapped.**
+The host had chosen live-on-a-non-earning-day, arguing that a pending mark for a number owing nobody
+anything would devalue a mark that does carry money. The owner overruled it with a fact the code
+could not supply: **the squadron reviews every change at the close of the day and issues an EOD
+version as the record of what actually happened**, so that pending mark is the SIGNAL their process
+runs on, not noise — and a change in who was available IS something that happened.
+
+**So Codex OSE-05 was right and the host was wrong.** Membership becomes a first-class snapshot
+value: recorded on every publication, inside the signature binding and the amendment comparison.
+**Fable's R2-3 fix 1 is superseded** — do NOT record membership "only where it is money-bearing".
+**Fable's correction 1 still holds and is exactly the owner's own description:** frozen in the
+ISSUED version, live on the WORKING copy, the difference showing as the pending mark. **Fable's
+correction 2 still holds:** one resolver behind all four readers
+(`oilSentinelSummary`, `oilSentinelList`, `oilSentinelPeople`, `oilRowPeople`) — the frozen entry if
+present, else live — or the chip says 27 and the tap says "Nobody is behind this puck on this day".
+**And the chip must carry its version** (Codex OSE-R2-05), or the frozen promise dies on the tap.
+
+**Second time the owner's knowledge of the PROCESS corrected the agent's reasoning about the code.**
+D36 was the first — see §5a, whose lesson is now twice-earned.
 
 ## 5. The order of work
 
@@ -174,7 +190,7 @@ cockpit placeholder briefly starts earning (Fable M4, which reordered the origin
 8. **Capability excludes a zero-length WRITTEN interval** (C2): validate `to`/`ld` before the padding
    is added, and derive both capability and the visible refusal reason from that one validation.
    Overnight intervals stay legitimate (D42), and D36's availability window is untouched.
-9. **Show the count outside the mode** on every seat in §7, live-or-frozen per §4, memoised per
+9. **Show the count outside the mode** on every seat in §7, **frozen per §4 (D44)**, memoised per
    (day, version) — this moves from weekend-in-mode to every day, every seat, every repaint, so it
    must cite `docs/performance.md` Part 1 and keep the chip as the tap target (Fable S4, S7).
 10. **The wording pass** — the refusal (D31), the count (D37), and the mixed-default item switch,
@@ -299,5 +315,6 @@ findable by driving the app.
 | Fable S8 — mixed-default item wording | §5 step 10 |
 | Fable S9 — issued days read "pending" | §6 |
 
-**Unresolved and deliberately so:** OSE-05/M6's remedy. The host chose live-on-non-earning; both
-reviewers' positions are in the log. This is the one place round 2 is being asked to disagree.
+**OSE-05/M6 is now SETTLED by the owner (D44): frozen everywhere.** The host's contrary arbitration
+and its reversal are both kept above, because a reversed call that leaves no trace is how a later
+session re-derives the wrong answer.
