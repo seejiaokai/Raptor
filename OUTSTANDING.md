@@ -94,7 +94,7 @@ in-flight and risk-reducing** first.
    closes. See the item below.
 **TOP OF THE QUEUE (updated 23 Sep 26).** **[OIL-AUTO-REMOVE] AND [OIL-SEATS-CAN-EARN] ARE BOTH
 MERGED AND LIVE.**
-1) **[ALL-AVAIL-WINDOW]** — **IN FLIGHT (23 Sep 26) on `claude/all-avail-window`, pushed, not merged: BUILT, the FULL-tier fix-and-walk is next — `HANDOFF-NEXT.md`.** Was: NEXT, and ready to build. The counters it opens from are now live, its
+1) **[ALL-AVAIL-WINDOW]** — **BUG-CHECKED (FULL), on `claude/all-avail-window`, pushed, not merged — his look, then "merge live" (`HANDOFF-NEXT.md`).** Was: NEXT, and ready to build. The counters it opens from are now live, its
 mock-up is APPROVED and is the design of record (D41), and D38–D41 settle its shape down to the
 pixel. **Do not re-open the design; build to it.** 2) **[DOCS-GUARD]**, scope and order settled by
 D30. 3) **[HUMAN-RETEST]**. 4) **[DOC-TRIM]** — unblocked now that the OIL scaffolding has become
@@ -103,8 +103,8 @@ archive. 5) The stack resumes at **[DB-STEP]**.
 raised and the branch deliberately left), `[STORE-READER-SWEEP]`, `[OIL-REQ-NAMEBOX]`,
 `[POSTOUT-LOST]`'s remaining half, `[OIL-WORDS]`, and from the window's bug check
 `[OIL-PERSONAL-PLACEHOLDER]` and `[CROWD-SIM-BRIEF]` (both below `[ALL-AVAIL-WINDOW]`).
-**BLOCKING A GREEN GATE, do before the next merge that needs one: `[LW-MONTHJUMP-PHONE]`** — a Leave
-War phone e2e red on `main` itself since 23 Sep 26 (below `[ALL-AVAIL-WINDOW]`).
+`[LW-MONTHJUMP-PHONE]` — a Leave War phone e2e that fails under machine load, on `main` too (below
+`[ALL-AVAIL-WINDOW]`).
 
 **STALE ABOVE, CORRECTED 22 Sep 26:** the "STACK PROGRESS (updated 18 Sep 26)" block says the next
 stack item is step 4 (one Absence record). **Step 4 SHIPPED on 20 Sep 26** — `raptor-port/CLAUDE.md`
@@ -856,7 +856,7 @@ and `[POSTOUT-LOST]`'s remaining half.
 
 ### [ALL-AVAIL-WINDOW] The counter opens a movable window of PUCKS, not a bubble of names (owner, D38, 22 Sep 26)
 
-**STATUS 23 Sep 26 — BUILT on `claude/all-avail-window`, NOT bug-checked yet.** Both halves work and every seat kind reaches the window (tested). Fable's scenario design is in `raptor-port/docs/handpass/2026-09-23-allavail-window-fable-scenarios.md` with a status table: **S1 — the window paints UNDER the board — is CONFIRMED and must be fixed first**; D65/D66 settle four items; the rest must be reproduced in the real app. **Known gap, deliberately filed:** the D38 flag covers a crowd man's FLIGHT brief and debrief (`crowdClashes`, built, not yet wired); his SIM brief/debrief windows are not reachable from outside the warning pass and are not covered. Next: `HANDOFF-NEXT.md`.
+**STATUS 23 Sep 26 (night) — BUG-CHECKED AT FULL TIER on `claude/all-avail-window`, pushed, NOT merged.** Walked on the real bundle (four passes, both widths), every Fable scenario dispositioned, both final reads (Fable + Astra, blind) reconciled and fixed, each fix red first. Evidence: `raptor-port/docs/handpass/2026-09-23-allavail-window.md`. **Waiting on: his look, then his "merge live"** — the browser gate is green (a load-sensitive Leave War test is filed as `[LW-MONTHJUMP-PHONE]`). Left open and filed: `[OIL-PERSONAL-PLACEHOLDER]`, `[CROWD-SIM-BRIEF]`; one question for him: on a phone the window moves but cannot be resized (D38 said "resizable").
 
 **His words:** *"the current interface to show just names on a bubble … is not intuitive … a window
 that is movable and … resizable and a user can still click and edit/scroll the schedule behind while
@@ -908,16 +908,16 @@ exactly the case he opened this with.
 which settles where they appear. Ruling: `DECISIONS.md` D38; the related ones are D27 (the count is a
 scheduling feature), D36 (the narrow window) and D37 (the count reads as what it is).
 
-### [LW-MONTHJUMP-PHONE] A Leave War phone e2e is RED ON `main` — every merge's browser gate fails on it (23 Sep 26)
+### [LW-MONTHJUMP-PHONE] A Leave War phone e2e fails under machine load — on `main` too (23 Sep 26)
 
 `e2e/leavewar.spec.ts` "a month button works from wherever the grid already is" (lw-phone): March
 lands 20px short of the frozen edge (`-20`, needs `>= -1`). **Red 3/3 on `main`'s own code** (a
-throwaway worktree of `6efa6839`, 23 Sep 26 night) with the identical `-20`, and red on
-`claude/all-avail-window` — so NOT caused by the window. It passed on 22–23 Sep (450/0 at
-`7c2953b5`). **Likely date-dependent:** the Leave War reads the real clock (`period.ts localToday`)
-and the phone's month window rolls around the view; today is in September, the month the test jumps
-from. Not investigated further. **Blocks a green `test:e2e` for any branch until fixed** — do it
-before the next "merge live" that needs a clean gate. WALK tier (Leave War grid, phone).
+throwaway worktree of `6efa6839`) and red on `claude/all-avail-window` — while two review agents were
+running on the same machine; **it then PASSED in the full run once they had finished** (461/0). So it
+is a LOAD-sensitive timing test, not a defect the window introduced — the same family as
+`[LW-SCRUBBER-FLAKY]` (the test's own comment already records the desktop half of it as "the one flaky
+assertion in the suite"). **Worth making robust** (poll until the grid's draw has settled, not a
+fixed 5s), because a red CI run on a busy runner costs a re-run. WALK tier (Leave War grid, phone).
 
 ### [OIL-PERSONAL-PLACEHOLDER] A placeholder on a landed "Personal" request row draws no count (23 Sep 26)
 

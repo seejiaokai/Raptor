@@ -109,6 +109,47 @@ S1 e2e 3/3 red · S2 2 red · S11 footer: break test 2 red · D65/D66 6 red · S
 - **A touch RESIZE on the phone** — CSS resize has no touch handle; on his phone the window MOVES but
   does not resize. Put to the owner (D38 asked for "resizable").
 
-## 8. Gates — see the closing commit
+## 8. Gates — on the final commit
 
-## 9. The two code reads — see §10 once they return
+| Gate | Result |
+|---|---|
+| `npm test` | **5760 / 5760** across 355 files |
+| `npm run build` | OK |
+| `node reference/tfin.js` | **728 / 0** |
+| `npm run rulecheck` | OK |
+| `npm run test:e2e` | **461 passed / 45 skipped / 0 failed** (incl. `availwin.spec.ts` 11/11) |
+| `npm run smoke:tracker` | **425 / 0** |
+| `npm run perf` | **4 / 0** on the final build — week 5134 < 5450, board 1024 < 1150 |
+| `npm run docsize` | FAIL on the same three files as before the session (`[DOC-TRIM]`); `OUTSTANDING.md` grew by the filed items |
+
+## 9. The two code reads — blind to each other, with this sheet in hand
+
+Brief: `docs/superpowers/briefs/2026-09-23-allavail-window-final-read-brief.md` (§4 finder wording +
+D56 verbatim). Astra (Codex CLI, read-only) and Fable 5.1 (a separate agent, read-only). Neither saw
+the other's report. Both confirmed the tap, the switch's parity with the board, the refusals, the
+closers, the stacking and the D39–D41 numbers by explicit negatives.
+
+| Finding | Who | Disposition |
+|---|---|---|
+| A landed request's window read the LIVE Inputs page — issued face retitled/re-timed by today's request, "gone" after a delete | **both** (Astra 1, Fable F2) | **fixed** `9657e5af` — read from the landed row on the installed day |
+| A cancelled / ⓘ / time-less row read "no puck on this row any more" | Fable F1 | **fixed** — the real reason is named |
+| A vanished version showed a blank window | Fable F3 | **fixed** — "This version is no longer available" |
+| The window did not name the version it read | Fable F4 | **fixed** — "… when this day was issued — Original" |
+| A sim switch from the window read differently in History from the board's | Fable F5 | **fixed** — one naming body, `oilItemHistName` |
+| A view-page draft day's window drew working-world flags under an official-world face | Fable F6 | **fixed** — the chip carries the world; the window replays it |
+| A desktop box beat the phone layout after a narrowing | Astra 3 | **fixed** — a box belongs to its layout |
+| A tap on the bar pinned the window; a second chip threw it back to the corner | Fable (notes) | **fixed** |
+| A parked plan deleted / selected under an open window | Astra 2 | **no change — unreachable**: the plans menu needs Edit Schedule, entering it clears plan previews, and D66 closes the window on that page change first (Fable's negative, checked in the code). F3 is the belt |
+| The window state imported back from `pops.ts` under a comment calling it a leaf | **neither — found while fixing** | **fixed** — the state lives in `state/view.ts`, re-exported by `pops.ts` (the SECDEFOFFER precedent) |
+
+Red first for every one: 8 unit tests and 4 browser tests failed on the pre-fix code.
+
+## 10. Re-walk after the fixes
+
+Walk 1 re-run on the fixed build (`aw-walk.mjs`, plus a step clearing a row's end behind the window):
+F1 reads "This row has no usable start and end times, so nobody can be worked out for it." and the
+list returns with the time; the issued face's window reads "who was free when this day was issued —
+Original" with Ridge and Grit flagged from the record; every other step unchanged; no console errors.
+
+**Walk:** `docs/handpass/2026-09-23-allavail-window.md` · 17 pictures · 12 surfaces · 16 orders ·
+MISSING: 1 filed (`[OIL-PERSONAL-PLACEHOLDER]`) + 1 filed gap (`[CROWD-SIM-BRIEF]`), 0 open

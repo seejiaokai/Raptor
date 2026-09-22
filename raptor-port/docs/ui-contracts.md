@@ -7297,12 +7297,44 @@ extras, Common Programme, Common Programme beside a named man, ground row.
 It also removed a divergence: the WEEK never expanded a placeholder inline, so
 the two surfaces drew the same row two different ways inside the mode.
 
-**Position and size live outside React**, in `pops.ts`. He edits the schedule
-behind the window, so every keystroke notifies and re-renders it; a box held in
-component state would be thrown away on the first one and the window would jump
-back to the corner mid-drag. A drag writes the element's style directly at
-pointer speed and commits on release, so dragging never repaints the board he is
-supposed to still be reading.
+**Position and size live outside React**, in `state/view.ts` (re-exported by
+`pops.ts`, the SECDEFOFFER precedent — the page, week and session resets live in
+state). He edits the schedule behind the window, so every keystroke notifies and
+re-renders it; a box held in component state would be thrown away on the first
+one and the window would jump back to the corner mid-drag. A drag writes the
+element's style directly at pointer speed and commits on release, so dragging
+never repaints the board he is supposed to still be reading.
+
+**Where it sits (bug check, 23 Sep 26).** With no box of his, the STYLESHEET
+places it — the top-right corner at 212 wide on a desktop, and on a phone
+(≤620px) the approved full-width bottom panel, 12px margins, 62% tall. A box is
+his only after a real drag or resize (a plain tap on the bar is not one), and it
+belongs to the LAYOUT it was made in: a desktop box never applies on a phone,
+where only how far he dragged the panel up or down is his. Shown boxes are
+clamped into the screen so the bar and its ✕ — the only way to close it — can
+never be stranded. Every fresh open starts clean (footer and position); a new
+subject tapped while it is open keeps its place. **Stacking: z-index 410** —
+above the board (400), below every dialog (420–480); the toast (540) shows over it.
+
+**It reads the world its chip was drawn in — ALL of it.** The chip says which:
+the working copy, a version preview (a past AL or a parked plan: read, not
+checked — no flags), the view page's issued face (its OFFICIAL flags), or a
+draft day the view page resolves in the official world (`data-oilver` /
+`data-oilofw`). The crowd, the flags, the figures, the puck marks and the title
+all come from that one world (`html.ts withChipWorld`), and the window names the
+version it reads. A landed request row is read from its landed row on the
+installed day, never from the live Inputs page. **A version's earn half is
+read-only** — a switch there would land on the working copy while the record
+above it could not move (no screen route reaches it: a preview turns OIL Earn
+off and disables it). **The D38 flag** (this event inside his own flight brief or
+debrief) is computed from the working copy's flights live, from the RECORD's
+flights on the issued face, and not at all on a plain preview.
+
+**When the list cannot be worked out it says WHY**, by the real reason: the row
+is no longer on the schedule; it is cancelled; it is information only; there is
+no ALL / ALL AVAIL puck on it any more; it has no usable start and end — never a
+confident "0 available". A version that vanished reads "This version is no
+longer available". Undo brings a deleted row, and its list, back.
 
 **A man the roster no longer holds is COUNTED AND SAID OUT LOUD**, under the
 columns, never dropped. An issued day's membership is a frozen list of ids

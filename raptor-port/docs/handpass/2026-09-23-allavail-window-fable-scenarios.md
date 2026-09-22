@@ -6,31 +6,11 @@ read-only (nothing edited, nothing run), against the branch at commit `7c2953b5`
 briefed with the §4 finder wording and the D56 demo-data exclusion. Kept verbatim below the status
 table, the same way the bug-check order keeps both providers' proposals verbatim.
 
-## Status of each item — FILL THIS IN AS THEY ARE DISPOSITIONED
+## Status — ALL DISPOSITIONED (23 Sep 26 night)
 
-The order's §7.6 allows three dispositions and no fourth: **fixed** with a test that was red
-first · **ruled "leave it"** by the owner, with the date · **filed** in `OUTSTANDING.md` with its
-place in the order. "Rare" is not a disposition. Reproduce each through the REAL app before
-fixing it (§4, "what to do with what they hand back").
-
-| Item | Status as of the 23 Sep 26 handoff |
-|---|---|
-| **S1** window painted UNDER the board | **CONFIRMED against the stylesheet** — `.schedboard` z-index 400, `.availwin` 150. Not yet fixed. **Do this first**: until it is fixed the earn half has no visible door, and nothing else in the list can be walked on the board. Aim between the board (400) and the Sheets/modals (420+) so a modal opened from the board still covers it |
-| **S2** the D38 debrief flag never appears | **Found independently and half built** — `crowdClashes` in `validate.ts` (commit `e8e88702`) plus the event's live window from `oilItemLabel`. NOT yet wired into the window's rows, and has no test yet |
-| **S3** issued list, today's flags and figures | Not reproduced. Real — only `crowd()` is inside `withDaySnap` |
-| **S4** week switch leaves a stale window | **Settled by D66** (close on a week change — the agent's call, stated to the owner). Not yet built |
-| **S5** unpublish/undo makes "when this day was issued" lie | Not reproduced |
-| **S6** a switched-off row: the tap says the wrong thing | Not reproduced |
-| **S7** a switch from the window writes NO History line | Not reproduced. Matters: it reopens the "why is my OIL short?" gap for every crowd member, and the window is now the ONLY door |
-| **S8** phone is not the design of record | Not reproduced. Likely cause confirmed in code: the inline `width`/`height` on the window beat the ≤620px media query |
-| **S9** a tap also selects the man on the schedule | **Settled by D65**: select with OIL Earn OFF, never with it ON. Not yet built |
-| **S10** typing lags behind the OIL tab | Not reproduced |
-| **S11** reopening keeps the last footer and position | Not reproduced |
-| **S12** logout → login inherits the window | **Settled by D66** (close on logout). Not yet built |
-| **S13** window floats over other pages | **Settled by D66** (close on page change). Not yet built |
-| **S14** row deleted → a confident "0" | Not reproduced |
-| **S15** browser shrink strands it off-screen | Not reproduced |
-| The five "next worth a look" | Not reproduced. One is a product question (two placeholders on one row share one window) — the agent's view is that it needs no ruling, because D32 makes ALL and ALL AVAIL byte-identical |
+Every item below, and the five "next worth a look", is fixed (with a test red first), ruled, or
+filed — one row each in the evidence sheet §5: `2026-09-23-allavail-window.md`. The status table
+that stood here was the work list; it is retired so it cannot go stale beside the sheet.
 
 ---
 
