@@ -57,7 +57,12 @@ the live page loaded and checked (the one input window carries Ack / Approve /
 Refuse / Move; under-manned reads 0 days). Counts watched on this tree:
 `npm test` **5230 across 327 files** (2 vitest projects); `tfin.js` **728/0**;
 build clean; `test:e2e` **447 passed / 0 failed** (45 skipped); `smoke:tracker`
-**425/0**; `perf` **4/0**; `rulecheck` OK. Pre-existing note kept: the two
+**425/0**; `perf` **4/0**; `rulecheck` OK.
+**Re-read 22 Sep 26 on `claude/oil-seats-can-earn` after the OIL-seats walk's
+fixes, all six watched:** `npm test` **5629 across 352 files**; `tfin.js`
+**728/0**; build clean; `test:e2e` **447 / 0** (45 skipped); `smoke:tracker`
+**425 / 0**; `rulecheck` OK (53 rulings named by a test, 7 by nothing — the
+recorded baseline). `perf` NOT re-run on that branch. Pre-existing note kept: the two
 Windows-local geometry crew-rest flakes pass in isolation and on Linux CI.
 Post-build bug-checked by BOTH providers (Fable + Astra) — ten findings, all
 fixed and test-pinned before the merge.
@@ -906,6 +911,9 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `probes/perf-port.cjs` | The perf gate (`npm run perf`) — measures BOTH builds at once, round for round. Asserts a DOM ceiling per surface plus two behavioural checks; PRINTS the per-node timings without asserting them (10 Aug 26 — see §The gates, and how they lie). |
 | `probes/adapted/` | Six probes re-expressed for this build (`wrap` `drop` `aar` `audit` `sa` `sc2`); `run-all.cjs` runs the set as `npm run probes:adapted`. |
 | `src/testing/refwin.ts` | Boots the reference in jsdom for the parity tests; pushes the port's seed INPUTS into it and patches the in-memory reference for every deliberate divergence (`retier`, `remap`, `resim`, `rematrix`, `reinput`, `redn`, `relead`, `rebrief`, `rering`, `reduty`) so both engines compute from identical data. Each patch is explained beside the rule it serves in `docs/engine-rules.md`. NOT a test file. |
+| `docs/handpass/` | **The walk's evidence** — one sheet per build (`<date>-<feature>.md`), the workers' own sheets in `parts/`, and `README.md`, which carries the traps that cost an hour each (a saved world is tied to its PORT; the board is drawn twice; the inputs panel is folded by default and renders NO rows folded). Pictures live beside it in `docs/img/handpass/<date>-<feature>/`. Required by `docs/bug-check-order.md` §9 — a WALK or FULL change cannot be reported ready without a sheet and its `Walk:` line. |
+| `scripts/handpass/` | **The walk's driver and every scenario script**, committed on purpose so the next session re-runs a finding instead of rediscovering it. `lib.mjs` is the driver (open/board/tap/type/put/publish/oilMode/go, and it REFUSES a saved world captured on another port rather than silently restoring an empty one); `seat-lib.mjs` adds the roll-call helpers. Run from that folder with `HP_STATE` and `HP_SHOTS` set. |
+| `docs/mock/` | **Approved visual designs of record**, in the app's own stylesheet so they are pixel-faithful — not sketches to argue with. `allavail-window.html` is D41's approved design for `[ALL-AVAIL-WINDOW]`. The house rule (owner, 7 Aug 26) is that a visual direction gets a picture before any product code. |
 | `docs/probe-sweep.md` | The full probe → reference → port results table, and the performance gate's reasoning. |
 | `../BUG-TESTING.md` (repo ROOT, beside this file) | **The bug-testing tracker (27 Aug 26)** — one row per shipped batch, ⬜ / 🟡 / ✅, so the owner can have bug testing done batch by batch and nothing is missed. Answers only "what has been bug-tested, and what still needs it?"; open WORK stays in `HANDOFF.md` and the story of each change stays in `git log`. It also carries the passes-on-record table (what each sweep actually covered) and a risk-ordered queue whose Tier 1 is the silent-failure work — engine, roles, dates, saved data. **Every behaviour PR adds its row**; docs-only PRs are listed at the foot as needing no pass. Record a CLEAN pass too — otherwise "not yet tested" and "tested, all good" look identical. |
 | `docs/feature-impact.md` | The surfaces any change can touch (warnings, layout, history, board, edit/view-only, desktop/mobile, quals, availability, publishing, export, roles), the generic FLOWS one edit travels, and the drift-seams where two copies of a rule fall out of step (owner, 12 Aug 26). Walk every non-trivial change against it, and keep it true in the same PR. |

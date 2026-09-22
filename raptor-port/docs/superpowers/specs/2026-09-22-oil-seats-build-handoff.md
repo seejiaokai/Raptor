@@ -1,154 +1,195 @@
-# [OIL-SEATS-CAN-EARN] — build handoff, ALL ELEVEN STEPS BUILT. The WALK is next.
+# [OIL-SEATS-CAN-EARN] — the WALK is done. FIVE defects are open.
 
-**Rewritten 22 Sep 26 at a clean committed checkpoint.** Branch
-`claude/oil-seats-can-earn`, pushed. Working tree clean. **Nothing merged to
-`main`** — the owner has NOT said "merge live", and must not be asked to until
-the FULL-tier walk is done and the two code reads have run behind it.
+**Rewritten 22 Sep 26 at the end of the walk** (this file previously said the
+walk was what remained — it has run). Branch `claude/oil-seats-can-earn`.
+**Nothing merged to `main`.** The owner has NOT said "merge live" and must not be
+asked until the five open defects are fixed and the two code reads have run.
 
-**In a fresh chat, pick the branch `claude/oil-seats-can-earn`.** Not `main` —
-none of this is there.
+**In a fresh chat, pick the branch `claude/oil-seats-can-earn`.** Not `main`.
 
-## Read these, in this order, before anything
+## Read these, in this order
 
-1. `2026-09-22-oil-seats-can-earn-plan.md` — the approved plan. **§5 step 8 is
-   struck through: the owner overruled it (D49).** §2 carries the ruling
-   clashes; §7 is the ROLL-CALL the walk re-marks; §9 lists every review finding.
-2. `2026-09-22-oil-seats-behaviour-register.md` — **the list the rules sweep
-   walks in the RUNNING APP.** Every promise now has a row and a test. This is
-   the walk's checklist; do not invent a different one.
-3. `../../bug-check-order.md` — the standing order. This change is **FULL** tier.
-   §5 gives the order of steps; §6 the roll-call; §7 the walk; §9 the evidence
-   sheet and the `Walk:` line the closing report must carry.
-4. `2026-09-22-oil-seats-can-earn-review-fable.md` and `…-review-log.md` — only
-   if a finding needs chasing back to its words. The build is past them.
-5. `../../../../DECISIONS.md` — **D48 and D49 were made during the build** and
-   are not in the plan's original text. D49 reverses a step.
+1. **`../../../../DECISIONS.md` — the WHOLE file, not the entries a handoff
+   names.** This session put an already-settled design to the owner as an open
+   question because it grepped for two named entries and stopped. **D50–D53 are
+   new tonight**; D38–D41 govern the next job and were missed. D53 is the ruling
+   about that miss.
+2. **`../../../../OUTSTANDING.md`** — the priority order. This job is 1;
+   **`[ALL-AVAIL-WINDOW]` is 2**, and it matters to job 1's leftovers (below).
+3. `2026-09-22-oil-seats-can-earn-plan.md` — the approved plan. §5 step 8 is
+   struck through (D49 overruled it). §7 is the roll-call.
+4. `2026-09-22-oil-seats-behaviour-register.md` — the promises, in plain words.
+5. `../../handpass/2026-09-22-oil-seats.md` — **the walk's evidence sheet**, and
+   `parts/` for the four workers' own sheets. 208 pictures, 88 scripts.
+6. `../../bug-check-order.md` — the standing order. This change is FULL tier.
 
-## What is BUILT
+## What the walk PROVED — do not re-walk these
 
-| Step | What landed | Pinned by |
-|---|---|---|
-| **1** | The earn rule reads the day's EVIDENCE, not the live day. `itemMasked` / `itemMark` split. Memoised inside `oilReadPass`, opened only by `dayHTML` / `boardHTML`. | `ui/oilmode.test.tsx` |
-| **2** | D33/D47 — ALL and ALL AVAIL refused on flying cockpit seats, preflighted at every door, with the reason on screen. The money's own non-expanding belt on the flying branch. | `engine/oilseat-refusal.test.ts`, `ui/oilseat-refusal.test.tsx` |
-| **3** | `OilWork.dflt` — the default rides the SPAN. `spanDefault` is the ONE body the screen and the money both read. The toggle cycle that can write a `1`. Five switch sentences. | `engine/oilspandefault.test.ts`, `ui/oilswitch.test.tsx` |
-| **4** | All FOUR exempt-kind skips lifted; the four kinds reach the walk, default off, offer the switch. | `engine/oilexempt.test.ts` |
-| **5** | **The placeholder counts on every seat it can sit on** — duty `id`/`more`, sim `p`/`w`/`pax`/`more`, ground `more`, the Common Programme's `more`. `putAny` is the one body. The flying branch stays non-expanding; a row with no `rid` gathers nobody (§6's fourth freeze hole, now pinned). | `engine/oilexpand.test.ts` |
-| **6** | **The accepted-request row's crowd** — name box AND extras. Resolved once, from the REQUEST's window, and written into the day's membership. The requester stays on his own answer and is never paid twice. The decision-prune leaves a crowd row's decisions alone. | `engine/oilclaimcrowd.test.ts`, `ui/oilclaimcrowd.test.tsx` |
-| **7** | **OIL8** — a crowd opens into real pucks on a duty desk and a sim row, each tappable. The sim's people cell becomes the flat list of everyone the walk pays. | `ui/oilrowpucks.test.tsx` |
-| **8** | **OVERRULED — see D49.** A nought-minute sortie still earns. What was built instead: `FLT_NO_LEN`, an advisory on the line on any day; and a flying line with crew and no readable times joins the blind list. | `engine/oilflighttimes.test.ts` |
-| **9a** | **The count on every seat, every day, mode off.** `oilSentOf` is the ONE resolver behind all four readers; three answers (`resolved` / `none` / `unrecorded`); the live fallback is gone (OSE-T-02); the chip carries its VERSION and both tap sites open it. | `engine/oilsent.test.ts`, `ui/oilcount.test.tsx` |
-| **9b** | **Two projections of one block.** The publication comparison carries membership on every day (D44); the signature binds to everything except it (D45). An older block is not compared on membership it never recorded. | `engine/oilmembership.test.ts` |
-| **10** | The count says WHICH list it is, in one phrase shared by the chip and its tap. D31's "no identity yet" put into the squadron's words. | `ui/oilwords.test.tsx` |
-| **11** | `[OIL-UNDO-WORDS]` — an OIL decision is its own command (`sched.oil`), so undo names it. Backlog item closed. | `undo/oilundo.test.ts` |
+Driven in the real production bundle, built from this branch and compared
+byte-for-byte with the served copy before a single gesture.
 
-## The TWO RULINGS made during the build — they are not in the plan
+- **The money across the publish boundary is right.** Thirty men behind one
+  placeholder on a duty desk, published, signed again. Filing leave for one drops
+  the working copy to 29, leaves the issued page at 30 still naming him, raises
+  the pending mark, and does NOT touch the four signatures. Changing an OIL
+  decision DOES clear them. D44, D44-the-tap, D44-the-mark, both halves of D45.
+- **D45's two halves were settled against a contradicting report** (`seat-16`).
+  A second walk read the signatures as cleared by an availability change; it had
+  not re-signed after publishing, and **publishing SPENDS the signature**. Signed
+  again first, both runs kept all four. Do not reopen without that step.
+- **The roll-call, by hand, on every seat kind**, both placeholder pucks.
+- **The door check, both orders**, including the jet refusal with its reason on
+  screen at every door.
+- **The Leave War side, all four of the plan's questions.** A man swept up by a
+  placeholder earns exactly what a named man earns — checked across all 50.
+- **The export, the next-week peek, the roles, both weeks at both widths.**
+- **35 of 38 break tests go red**, and all eight placeholder seat kinds are
+  separately pinned.
 
-- **D49 (owner): "It should still earn — leave it as it is."** A flying line
-  typed with the SAME take-off and landing keeps paying: the man reported and
-  debriefed, so he was at work whatever the times say. **This overrules the
-  plan's §5 step 8 and BOTH reviewers**, who read the half day as the app paying
-  off its own padding. Nothing about what such a line earns changed. **Do not
-  "fix" it back** — `engine/oilflighttimes.test.ts` names the ruling so the next
-  reviewer meets it. Carried by `docs/engine-rules.md` and the Logic page.
-- **D48 (owner): "keep what's published until corrected."** When a rule changes
-  under an already-published day, the day keeps the money it went out with until
-  somebody corrects it and re-publishes. **Nothing was built for it** — D49
-  removed the rule change it was given about. It stands as the answer for the
-  NEXT rule change that would move published money.
+## THE FIVE OPEN DEFECTS — this is the work
 
-## What is LEFT — the walk, and nothing before it
+1. **D49's mark is not on the line.** A flying line typed with the same take-off
+   and landing still earns (that is the ruling, do NOT "fix" it), and the day
+   must SAY the times are wrong. It says so ONLY in the warning list; the row
+   itself is byte-for-byte identical to a normal one. And tapping that warning
+   does nothing, where every other warning lights the man and scrolls to him.
+   Three surfaces. Sheet: `parts/…-rules-sweep.md` FAIL 3.
+2. **A sim row that is exactly full offers no door for another body** — no spare
+   seat, and `.schedboard .ppl.fcprcp .addz{display:none}` hides the strip every
+   other cell has. The drag a scheduler would make lands on a seated man and
+   REPLACES him silently. **The owner ruled D50: a sim row always shows one spare
+   seat, even when full.** Pre-existing (identical on `main`); step 5 is what made
+   that seat pay real people. Fix the stale CSS comment in the same change — it
+   claims the grid "never packs edge-to-edge and swaps", true for odd counts and
+   false for even ones.
+3. **A published day carrying a placeholder crowd reopens as "1 pending" after a
+   reload, with all four signatures cleared and nobody having touched it.** No
+   cell is marked, History is empty, so nothing on screen says what changed.
+   One-off per day; publishing the phantom AL settles it. Against the register's
+   "No amendment nobody made". NEW. `seat-lw-21-pending-is-it-oil.mjs` reproduces
+   it in under a minute. Sheet: `parts/…-leavewar.md` F1.
+4. **The count chip includes a man who has posted out; the money correctly
+   excludes him.** Chip said 46 and "All 46 earn half a day"; the war paid 45.
+   The money side makes an in-the-squadron check and `oilSentOf` does not. NEW.
+   Sheet: `parts/…-leavewar.md` F2.
+5. **On a phone, on the EDIT WEEK, the count chip cannot be tapped** — it
+   overflows into the RMKS column and the press opens the row's remarks box, so a
+   scheduler can type a stray character into the schedule. Hits rows where the
+   placeholder sits alone. Correct on desktop, on the phone board and on the
+   phone view week. Layout fault pre-existing; NEW on the five weekdays, because
+   step 9a put the count on days that earn nobody anything. Sheet:
+   `parts/…-surfaces.md` S1.
 
-**In this order** (bug-check order §5, FULL tier). The walk goes BEFORE the two
-code reads, so the reviewers read the final code with the roll-call in hand.
+**Two test gaps found by breaking the code on purpose:**
 
-1. **The ROLL-CALL, re-marked in the running app** — the plan's §7 table, every
-   row created BY HAND (where a thing can be PUT, not where the fixture already
-   has it). No blank cells. That omission is how the owner found the original
-   defect.
-2. **The door check**, both orders of every gesture: drag from the roster, drag
-   as a swap, armed placement, the palette's placeholder row, the tap on a
-   chip, the tap on a puck, the tap on a row name.
-3. **THE WALK**, at phone and desktop width, with pictures. The surface axis is
-   in §7: board at both widths, edit week, view week, **the version preview —
-   the only place "as issued" is visible, so it MUST be walked** — the CSV
-   export (a written NO-because), and the next-week peek (must show no chip).
-4. **The Leave War side**, which round 1 missed entirely: the OIL tracker figure
-   per man, the FO/HO cell on the date, the clash strip when one of the crowd
-   has leave that day, and the reverse sweep after a switch is turned off on a
-   published day plus an amendment.
-5. **The rules sweep** — walk the behaviour register ruling by ruling in the
-   running app, reporting pass/fail per ruling.
-6. Fix what the walk finds → gates → **both providers read the finished code**,
-   blind to each other, with the evidence sheet in their hands → fix → re-walk
-   only what the fixes touched → gates → the evidence sheet → the owner's look
-   → his "merge live".
+- **The Common Programme's crowd opening (OIL8) has NO test.** Break it and all
+  3,301 unit tests stay green. The same break turns 4 red on a duty desk, 4 on a
+  sim, 3 on a ground row. It is also one of the three surfaces the owner found
+  unwired by hand on 21 Sep. Write it.
+- **The signature key's CONTENT is unwatched.** Putting membership back into the
+  key — the exact D45 regression — left 1,914 tests green, because the test named
+  for the rule passes either way on its fixture. The axis is pinned; the key is
+  not. Write it.
 
-### The owner's open questions FOR the walk — put these to him, do not decide them
+## ALREADY FIXED THIS SESSION — do not re-report
 
-- **Crediting an activated SC spare is done by tapping the man** (Fable M2
-  option A). If the walk shows that reads badly, the recorded fallback is to
-  give spare aircraft rows their own item off the aircraft rid, with the switch
-  on the MAIN/SPARE badge.
-- **Where 27 opened pucks go in a sim row's people cell at phone width.** The
-  mode replaces the seat grid with a flat list; nobody has seen it with a real
-  crowd on it.
-- **Two "free" counts on one screen.** The Available-crew panel says "Pilots · N
-  free" from a different body than the puck's count. A D37 wording question, not
-  a defect.
-- **`[OIL-REQ-NAMEBOX]`** (filed in `OUTSTANDING.md`): can a scheduler put
-  someone ELSE in a request row's name box, and if so should he earn from it?
-  Deferred deliberately — it is one line plus a test if he says yes.
-- **Fable S9's expected side effect:** every new placeholder seat makes an
-  already-issued day read "pending" the moment anyone files an input for that
-  date. Correct — the money moved — pre-existing, now multiplied. The walk
-  should EXPECT it rather than report it as a bug.
+All three pinned by `src/ui/oilwalkwords.test.tsx`, proved red before the fix.
+
+- A chip reading "30 of 30 earn" captioned "Some of these men earn OIL and some
+  do not". `bar` is null both when some earn nothing AND when all earn at
+  different rates; the two now have their own words. Found on **ten** surfaces
+  including the issued page.
+- An exempt row's switch painted in the earning green while its own words said it
+  earns nothing (D24). Found on **six** surfaces. New to this branch — step 4 is
+  what brought exempt kinds into the mode.
+- An **empty** exempt row reading "Earns OIL — tap to stop this item earning",
+  because counting men on a row with nobody on it gave zero on and zero off. The
+  walk now carries each row's own default out with it (`oilItemDefaults`),
+  decided in the same body that decides the money.
+
+## THE RULINGS MADE TONIGHT — D50 to D53
+
+- **D50** — a sim row always shows one spare seat, even when full. Costs one row
+  of height on full sim rows; he accepted that against filing it.
+- **D51** — a crowd opens two across, pilots left and WSOs right. **Corrected the
+  same hour: this is D38–D41 and is NOT built here.** The surface is
+  `[ALL-AVAIL-WINDOW]`, job 2. **Do not patch two-a-row into the in-row crowd —
+  job 2 replaces it.**
+- **D52** — ground crew: a named ground crewman earns; ALL / ALL AVAIL do not
+  include ground crew; both correct, leave them. The walk finding is closed as
+  not-a-defect.
+- **D53** — the record was fine and the agent never read it. Before telling him
+  anything is undecided, before putting ANY choice to him, and before calling
+  anything missing: search `DECISIONS.md` and `OUTSTANDING.md` FIRST, not the
+  code. Now in `.claude/rules/record-decisions.md`.
+
+## WHAT JOB 2 CHANGES ABOUT JOB 1's LEFTOVERS
+
+`[ALL-AVAIL-WINDOW]` (D38–D41, approved mock-up at `../../mock/allavail-window.html`)
+replaces the name bubble AND the in-row crowd with **one** movable, resizable,
+non-blocking window of real pucks — and the SAME window serves both counters. So:
+
+- The phone's 600px in-row crowd (75% of the screen, one man per row) is **not a
+  defect to fix here** — job 2 removes that surface.
+- The toast behind the counter is a **placeholder, not a design**. The comment in
+  `src/ui/board.ts` that used to call the shape "not yet ruled" has been corrected.
 
 ## Gate status at this checkpoint
 
 | Gate | Result |
 |---|---|
-| `npm test` | **5618 / 5618** |
+| `npm test` | **5629 / 5629** across 352 files (was 5618; +11 is the new pin file) |
 | `npm run build` | OK |
 | `node reference/tfin.js` | **728 / 0** |
-| `npm run rulecheck` | OK |
-| `npm run test:e2e` | **447 passed, 45 skipped, 0 failed** (2.9 min) |
+| `npm run rulecheck` | OK (53 rulings named by a test, 7 by nothing — the recorded baseline) |
+| `npm run test:e2e` | **447 passed, 45 skipped, 0 failed** (3.7 min) |
 | `npm run smoke:tracker` | **425 passed, 0 failed** |
 
-**ALL SIX GATES GREEN at this checkpoint** — the two browser gates included,
-which the previous handoff had left unrun.
+**ALL SIX GREEN**, re-run after this session's three fixes and the engine change.
 
-**The flaky family, and it is NOT this change.** Three separate full unit runs
-each failed ONE DIFFERENT jsdom timing test — `figselect`, `inputscal`,
-`figdrawer` — at 1.6 s, 22.5 s and 23.1 s, and every one passed alone. Measured
-cause: the machine runs out of memory during a full run (physical memory hits
-100%, the test workers alone peak at 11 GB, and about 30 GB is served off disk),
-so timing-sensitive tests wait on the disk. A fourth run, measured end to end,
-passed clean — which is what a load-dependent flake looks like. Already recorded
-as `[LW-SCRUBBER-FLAKY]`, widened to a family on 22 Sep. None of those tests
-touch anything this change alters.
+**The flaky family is load, not the tree.** The machine has 16 GB and the test
+workers peak at ~11 GB, so a timing-sensitive jsdom test can lose its window
+during a full run. Never run the unit gate concurrently with the browser gates,
+and re-run alone before calling a failure a finding.
 
-## Traps this build actually hit — do not re-learn them
+## Traps this session paid for — do not re-learn them
 
-- **`dayOilCredits` / `dayOilSpans` are NOT the money.** They are the raw walk.
-  The money is `oilEarnedWork`. Check which one a failing test asserts on.
-- **The seed Saturday already carries flying, duty and sim work.** Any "nobody
-  earns" assertion needs the day stripped first, and the test must say which
-  property forced that.
-- **`setDayApproved` only snapshots a day that is fully SIGNED**, and publishing
-  then SPENDS the signature (`signClear`). A test that signs after publishing
-  gets no snapshot; one that checks `daySigned` straight after publishing gets
-  false. The real sequence is sign → publish → sign again for the next issue.
-- **A sim row with a `pax` array does not draw its `p`/`w` seats outside the
-  mode** — but the walk pays them. The mode deliberately shows everyone the day
-  credits; that difference is pinned, not accidental.
-- **An arm does not survive an `act()` boundary in a fresh jsdom harness.** Arm
-  and place inside ONE `act`.
-- **`view.DPREV` is view state and survives a `DAYS` reset**; a day listed in it
-  refuses every arm silently.
-- **Every scripted edit must assert its anchor matched.** A silent no-op costs a
-  debugging cycle pointed at the wrong file.
-- **The build's tsconfig is stricter than `tsconfig.json`** — run `npm run
-  build`, not just `npx tsc --noEmit`.
-- **A new field on the evidence block must be declared in `engine/schema.ts`'s
-  spec**, and a new warning code must be documented on the Logic page. Both
-  gates caught exactly that this session, which is what they are for.
+- **Tapping a seat that already holds a man does NOT arm it** — it selects the
+  man. A placement onto an occupied seat silently does nothing and reads exactly
+  like a correct refusal. Nine roll-call rows were measurement artefacts before
+  this was found. Create the empty seat through the app's own add controls, and
+  assert `window.ARM.key` before believing any outcome.
+- **The app's toast is `#toastEl` and carries NO class.** A reader built from
+  `.toast` / `[class*=toast]` / `[role=alert]` misses it and reports "nothing
+  opened" for a tap that worked. It nearly produced a false defect report against
+  the count chip. It is also only FADED, never removed, so read its opacity.
+- **A fixed-position sheet has `offsetParent === null`** — filtering on that
+  hides it. Same class of error; it cost a second worker a false negative.
+- **The board has THREE "+ Inputs" doors**: `.g` is ground request types, `.u` is
+  UNAVAILABILITY (leave, medical, overseas duty), `.s` is SANS. Only `.u` changes
+  who is available.
+- **A newly added sim block arrives with NO TIMES**, and a row with no readable
+  times correctly earns nothing. Type them or you test a row that was never going
+  to pay anybody.
+- **The mode has two doors and only one is ever visible**: desktop `#sbOil`,
+  phone `[data-oilmode="<day>"]`. `lib.mjs`'s `oilMode()` knows only the desktop
+  one and hangs at phone width.
+- **The plans selector is `[data-planmenu="<day>"]`**; its issued rows carry
+  `data-planpv`; the way back out is `[data-golive="<day>"]`, which sits under
+  the sticky top bar and needs `tap()`.
+- **A parallel worker restoring its own edits with `git checkout` destroys
+  everyone else's uncommitted work**, silently — it happened twice tonight. If
+  work is fanned out while anyone is editing, forbid every git command that
+  writes to the working tree.
+
+## Order of what is left
+
+1. Fix the five defects, each with a test that is red first.
+2. Write the two missing tests.
+3. Rebuild, and **re-walk only what the fixes touched** — the walk's scripts make
+   that cheap. Everything in "what the walk PROVED" stands unless a fix touched it.
+4. All six gates.
+5. **Both providers read the finished code, blind to each other, with the
+   evidence sheet in hand** (bug-check order §4 rank 2 — this is money).
+6. Fix, re-walk what that touched, gates, finish the sheet.
+7. The owner's look, then his "merge live".

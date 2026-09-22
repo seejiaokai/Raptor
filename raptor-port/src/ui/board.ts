@@ -1257,10 +1257,19 @@ export function boardArmClick(e: MouseEvent) {
   /* the sentinel's count chip: who is behind this puck, and what each of them
      earns (§7.6 / §2.7). Read-only, so it works outside the mode too — on the
      issued schedule it lists the FROZEN membership, which is the whole reason
-     that membership is frozen. The SHAPE of this list is not yet ruled: the
-     owner asked for hover on a desktop and "something equivalent on the phone",
-     and one tap target that behaves the same on both is the cheapest honest
-     answer until he picks one. */
+     that membership is frozen.
+
+     THE SHAPE OF THIS LIST IS NOW RULED, AND THIS IS NOT IT (D38-D41, 22 Sep 26
+     - the comment above used to say "not yet ruled", which was true when it was
+     written and stale within the day). The bubble of names is REPLACED by a
+     movable, resizable, non-blocking window of real pucks - pilots left, WSOs
+     right, carrying the app's own warning flags, clickable - and the SAME window
+     serves both counters: who is available behind a placeholder, and who is
+     credited OIL, where individual pucks are switched off. The mock-up at
+     docs/mock/allavail-window.html is the approved design of record. It is filed
+     as [ALL-AVAIL-WINDOW], job 2 in OUTSTANDING.md, straight after this one,
+     because it opens FROM the counters this job builds. Until then the toast
+     below stands in for it - a placeholder, not a design. */
   const osn = t.closest('[data-oilsent]') as HTMLElement | null
   /* THE VERSION THE CHIP WAS DRAWN IN ([OIL-SEATS-CAN-EARN] step 9, Codex
      OSE-R2-05). The snapshot is installed only while the page is being built,

@@ -58,3 +58,38 @@ misses shared.
 Say so plainly and record it, however old. Do not quietly fold it in — he has no way to tell the
 difference between a ruling that was captured and one that merely got done, and that ambiguity is
 the whole problem.
+
+## READ IT BEFORE YOU ASK HIM ANYTHING (added 22 Sep 26)
+
+The rule above is the WRITING half, and it works — on 22 Sep 26 an approved design was saved to
+`docs/mock/`, ruled on four times in `DECISIONS.md` (D38–D41) and filed in `OUTSTANDING.md` as the
+next job. Every one of those records was correct and current.
+
+**And the agent still told the owner no design existed, and put the settled question to him as an
+open choice.** It answered from a CODE COMMENT that had gone stale the same afternoon. He had to
+ask three times before it searched the record.
+
+**Owner, 22 Sep 26:** *"God dam why u need me to tell u 3 times to find the mock up? Is it because
+u didn't save this to outstanding?"* — the answer was no. Saving was never the problem.
+
+### The check
+
+**Before you tell him something is undecided, before you put ANY choice to him, and before you call
+anything missing or unbuilt: search `DECISIONS.md` and `OUTSTANDING.md`.** Not the code. Not the
+specs folder. Those two files, by keyword, every time. It costs one search.
+
+Three failures made it, and each one is worth recognising on sight:
+
+1. **A handoff that names specific entries** ("read D48–D49") is a POINTER, not a scope. Grepping
+   for exactly those two and stopping leaves every other live ruling unread. Read the file.
+2. **`OUTSTANDING.md`'s read-trigger was scoped to "resuming parked work"**, and a session that
+   thinks it is "continuing a build" will skip it. It is now UNCONDITIONAL: read it whenever you
+   are about to ask him something or report something as absent.
+3. **Searching for the words the stale comment used can only CONFIRM it.** Searching for the THING
+   ("mock", "window", the feature's name) is what disconfirms. When you are checking whether a
+   claim is still true, search for its subject, never its phrasing.
+
+**A code comment is dated the moment it is written.** "Not yet ruled", "TODO", "the owner has not
+picked" — none of it is evidence about today. The rulings file is. Where the two disagree, the
+rulings file wins and **you fix the comment in the same change** (the newest-instruction-wins rule
+already says so).
