@@ -41,8 +41,11 @@
   .mk-oil.on .dot{background:var(--ok,#4A8C64)}
 
   /* ---- THE PROPOSED WINDOW ---- */
-  .win{position:fixed;z-index:150;right:16px;top:96px;width:440px;height:420px;
-    min-width:268px;min-height:200px;
+  /* D40 - SKINNY BY DEFAULT: two puck columns wide (a puck is a fixed 74px) and
+     tall, not a wide panel with dead space beside each list. Drag it wider to
+     read the flag reasons beside their pucks instead of under them. */
+  .win{position:fixed;z-index:150;right:16px;top:96px;width:332px;height:520px;
+    min-width:252px;min-height:200px;
     max-width:calc(100vw - 32px);max-height:calc(100vh - 120px);
     background:var(--panel);border:1px solid var(--edge-2);border-radius:10px;
     box-shadow:0 18px 44px rgba(0,0,0,.62);display:flex;flex-direction:column;
@@ -50,7 +53,9 @@
   .win-bar{display:flex;align-items:center;gap:9px;padding:8px 10px;cursor:grab;
     background:var(--raised);border-bottom:1px solid var(--edge);touch-action:none;flex:0 0 auto}
   .win-bar:active{cursor:grabbing}
-  .win-grip{color:var(--ink-3);font-size:15px;line-height:1;flex:0 0 auto}
+  /* the app's OWN drag grip, the same six dots every draggable row and section
+     header wears - so the window reads as movable without being explained */
+  .win-grip{color:var(--ink-3);font-size:16px;line-height:1;flex:0 0 auto}
   .win-ttl{flex:1;min-width:0;font-size:12.5px;font-weight:700;color:var(--ink);
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .win-ttl small{display:block;font-size:10.5px;font-weight:500;color:var(--ink-3)}
@@ -81,8 +86,12 @@
      whole app shares - stretching it here would make these pucks a different
      size from every other puck on screen), and the rest of the row carries the
      reason when he is flagged. That is what makes the list scannable. */
-  .win-body .rpuck{display:flex;align-items:center;gap:7px;margin:0 0 3px;min-height:17px}
-  .win-body .rwhy{flex:1;min-width:0;font-size:10px;line-height:1.25;color:var(--ink-3)}
+  .win-body .rpuck{display:flex;align-items:center;gap:6px;margin:0 0 3px;
+    min-height:17px;flex-wrap:wrap}
+  /* flex-basis 92px: below that the reason has no room beside the 74px puck, so it
+     wraps onto its own line under him. It is never dropped, only moved. */
+  .win-body .rwhy{flex:1 1 92px;min-width:0;font-size:10px;line-height:1.3;
+    color:var(--ink-3);padding-left:2px}
   .win-body .rpuck.flagged .rwhy{color:#E5A83B}
   .win-body .rpuck.clash .rwhy{color:#F0555F}
   .win-body .rh{margin-bottom:5px}
@@ -100,7 +109,7 @@
   .oilview .rpuck.off .puck{opacity:.4;filter:grayscale(.6)}
 
   @media (max-width:620px){
-    .win{left:12px;right:12px;width:auto;top:auto;bottom:12px;height:56vh;max-height:56vh}
+    .win{left:12px;right:12px;width:auto;top:auto;bottom:12px;height:62vh;max-height:62vh}
     .mk-row{grid-template-columns:56px 1fr;row-gap:6px}
     .mk-row .cell3{grid-column:1 / -1}
   }
@@ -142,7 +151,7 @@
 
 <div class="win" id="win">
   <div class="win-bar" id="bar">
-    <span class="win-grip">&#9783;</span>
+    <span class="win-grip">&#10303;</span>
     <span class="win-ttl">OPS BRIEF &middot; ALL AVAIL<small>Sun 19 Jul &middot; 15:20&ndash;16:20</small></span>
     <button class="win-x" id="close" title="Close" aria-label="Close">&#10005;</button>
   </div>
