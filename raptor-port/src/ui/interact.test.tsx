@@ -814,7 +814,16 @@ describe('Sort all — every section, one confirm, one undo step (owner, 8 Aug 2
 /* A placeholder in a slot means "someone still needed here" (owner, 13 Aug
    26), so its puck is a shortcut to finding that someone: clicking it arms
    the seat instead of selecting the sentinel, and the narrowed palette then
-   replaces it. A REAL person's puck keeps ordinary blue selection. */
+   replaces it. A REAL person's puck keeps ordinary blue selection.
+
+   THE SEAT THIS IS PROVED ON MOVED, 22 Sep 26, AND WHY — a clash between two of
+   the owner's own rulings, resolved the way he settled the general case.
+   D33 refuses the placeholder pucks on FLYING-LINE COCKPIT SEATS, so the
+   cockpit this used to plant into can no longer hold one at all. The 13 Aug
+   shortcut is NOT retired: it still works wherever a placeholder is legal —
+   every duty desk, sim seat, ground row and Common Programme row — which is
+   where it is now proved. Newest ruling wins, and the cockpit half of it is
+   pinned below as an explicit refusal rather than quietly dropped. */
 describe('a placeholder in a slot is a shortcut to finding crew (13 Aug 26)', () => {
   beforeAll(async () => {
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
@@ -823,7 +832,7 @@ describe('a placeholder in a slot is a shortcut to finding crew (13 Aug 26)', ()
   })
 
   it('clicking the placeholder puck arms its seat, and never selects it', async () => {
-    const key = '0.0.0.0.p'
+    const key = 'd:0.0.0'
     const before = slotVal(key)
     await act(async () => { writeSlot(key, 'allavail') })
     await click($(`#eWeek .seat[data-slot="${key}"] .puck[data-person="allavail"]`))
@@ -833,6 +842,15 @@ describe('a placeholder in a slot is a shortcut to finding crew (13 Aug 26)', ()
     await click($(`#eWeek .seat[data-slot="${key}"]`))
     expect(view.armedKey()).toBe('')
     await act(async () => { writeSlot(key, before) })
+  })
+
+  it('and a COCKPIT can no longer hold one at all (D33, 22 Sep 26)', async () => {
+    const key = '0.0.0.0.p'
+    const before = slotVal(key)
+    await act(async () => { writeSlot(key, 'allavail') })
+    expect(slotVal(key), 'the write is refused, so there is no puck to tap').toBe(before)
+    expect($(`#eWeek .seat[data-slot="${key}"] .puck[data-person="allavail"]`),
+      'and nothing is drawn for it').toBeFalsy()
   })
 
   it("a real person's puck still selects, never arms", async () => {

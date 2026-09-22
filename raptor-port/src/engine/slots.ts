@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { PEOPLE, nameToId, whoId, ID_BY_CS } from './people'
+import { PEOPLE, nameToId, whoId, ID_BY_CS, isSpecial } from './people'
 import { SCHED, markEdit, markDeletion, deletionWasIssued, markInputFiling, markStructuralAdd, dayApproved, dropRowMarks, protectedWeek } from './publish'
 import { parseHM, hhmm, hmOK } from './time'
 import { INPUTS, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx } from './inputs'
@@ -90,34 +90,87 @@ export function slotVal(key:any){
    missing id); logEdit translates independently on its own read side, so it
    takes the original positional key. */
 export function noteChange(key:any,was?:any,now?:any){ if(key){const rk=ridWriteKey(String(key),DAYS); SCHED.pending[rk]=1; delete SCHED.changes[rk]; logEdit(key,was,now);} }
-export function setSlotVal(key:any,id:any){
+
+/* =====================================================================
+   THE ONE REFUSAL IN THIS APP — a placeholder puck may not crew a jet (D33,
+   22 Sep 26; [OIL-SEATS-CAN-EARN] §5 step 2).
+
+   WHY IT IS A REFUSAL AND NOT A WARNING, said out loud because it breaks a
+   standing rule. Every other door here PLANTS FIRST AND WARNS AFTER (owner,
+   13 Aug 26). The newest ruling wins, and this change carves the FIRST hard
+   refusal out of that rule — narrowly: a placeholder id on a flying key, and
+   nothing else. The reason it earns the exception is that a placeholder in a
+   cockpit draws the jet as CREWED with nobody on it: `isSpecial` removes both
+   pucks from every validation and availability path, so no warning the app can
+   raise would ever appear. A rule that plants and then says nothing is not
+   plant-then-warn; it is plant-and-hide.
+
+   THE GRAMMAR DECIDES, NOT THE LOOKUP. A flying seat is the one key with no
+   prefix (`di.gi.li.ai.seat`); everything else carries `d:`/`s:`/`g:`/`a:`/`iu:`.
+   Judging by grammar rather than by resolving the row means a STALE flying key
+   is still refused — resolving it would return nothing and the puck would pass
+   the check on a technicality.
+
+   NO OTHER SEAT IS TOUCHED. Ground rows, their extras, duty desks and their
+   extras, sim seats, passengers, the Common Programme and — explicitly — an
+   ACCEPTED REQUEST ROW (D46) all take the puck exactly as before. The owner
+   chose the answer with no carve-outs, so over-refusing here is the specific
+   mistake to avoid. */
+export const SENTINEL_JET_BAR='cannot crew a jet; name the people flying it';
+
+/** May this id be written into this seat? The PREFLIGHT — asked before anything
+ *  is written, because a swap is TWO writes and a refusal thrown from inside the
+ *  writer lets the second one run (Codex OSE-04): the person is duplicated, the
+ *  placeholder is lost, and the caller reports success. Every door asks this
+ *  first, about BOTH ends of a swap; the writers below keep their own copy as a
+ *  belt so no future caller can bypass it. */
+export function sentinelSeatOK(key:any,id:any):boolean{
+  if(!id||!isSpecial(id))return true;                  // a named man is refused nowhere
+  const k=String(key).replace(/\.\+$/,'');
+  return k.indexOf(':')>=0;                            // no prefix = a flying seat
+}
+/* THE RETURN VALUE SAYS ONE THING ONLY: `false` means the write was REFUSED
+   (D33) and nothing at all was written — no value, no pending mark, no edit-log
+   line. `true` means the write proceeded exactly as it always has, which
+   includes the two cases that write nothing for their own old reasons (a stale
+   flying key, and re-planting the man already in the seat). It is deliberately
+   NOT a "did the day change" answer: every caller that existed before this
+   change ignores the result, and widening its meaning would quietly change what
+   those callers do. */
+export function setSlotVal(key:any,id:any):boolean{
   key=String(key);const c=key.indexOf(':');
-  if(c<0&&!flyRef(key))return;                   // a stale flying key: nothing to write, nothing to mark
+  /* THE BELT, BEFORE noteChange. The doors preflight with sentinelSeatOK, so
+     this should never fire from the app; it is here so no future caller can
+     write a placeholder into a cockpit by a route nobody remembered to guard.
+     It must sit above the mark: a pending mark with no change behind it reaches
+     the next amendment as an unexplained item (Fable M4). */
+  if(!sentinelSeatOK(key,id))return false;
+  if(c<0&&!flyRef(key))return true;              // a stale flying key: nothing to write, nothing to mark
   /* dropping someone onto the seat they already occupy is not a change — it
      used to raise a pending mark, an undo step and a line in the next AL */
   const was=slotVal(key);
-  if(was===(id||''))return;
+  if(was===(id||''))return true;
   noteChange(key,was,id||'');
   { const m=key.match(XKEY);
     if(m&&c>=0){const k=key.slice(0,c),a=key.slice(c+1).replace(XKEY,'').split('.');
-      const r=rowRef(k,a); if(!r)return;
+      const r=rowRef(k,a); if(!r)return true;
       r.more=r.more||[]; r.more[+m[1]]=id||'';
       while(r.more.length&&!r.more[r.more.length-1])r.more.pop();   // keep the tail tidy
-      return;} }
-  if(c<0){flyRef(key)[key.split('.')[4]]=id||'';return;}   // non-null: guarded above
+      return true;} }
+  if(c<0){flyRef(key)[key.split('.')[4]]=id||'';return true;}   // non-null: guarded above
   const k=key.slice(0,c),a=key.slice(c+1).split('.'),d=DAYS[+a[0]];
   try{
-    if(k==='d'){d.dutywaves[+a[1]].rows[+a[2]].id=id||'';return;}
+    if(k==='d'){d.dutywaves[+a[1]].rows[+a[2]].id=id||'';return true;}
     if(k==='s'){const r=d.sims[a[1]][+a[2]];
       /* pax indices are held in place rather than spliced out: lSeat() renders an
          empty id as nothing, so a blanked pax leaves no gap on screen but every
          other pax keeps the slot key it already had (no re-render key drift). */
-      if(a[3]==='pax'){r.pax=r.pax||[];r.pax[+a[4]]=id||'';return;}
-      r[a[3]]=id||'';return;}
+      if(a[3]==='pax'){r.pax=r.pax||[];r.pax[+a[4]]=id||'';return true;}
+      r[a[3]]=id||'';return true;}
     /* store the stable person ID, not PEOPLE[id].cs (ARCH-STACK 1C, 14 Sep 26).
        The renderers resolve who→id→cs (whoId), so the printed byte is unchanged,
        and a rename now moves nothing — see renameCallsign. */
-    if(k==='g'){d.ground[+a[1]].who=id||'';return;}
+    if(k==='g'){d.ground[+a[1]].who=id||'';return true;}
     if(k==='a'){const r=d.allhands[+a[1]],arr=whoArr(r),i=+a[2];
       /* hold the index rather than splicing, exactly as the pax branch does.
          Splicing shifted every later person up one, so an amendment mark — and
@@ -126,26 +179,31 @@ export function setSlotVal(key:any,id:any){
       if(id){if(i>=arr.length)arr.push(id);else arr[i]=id;}
       else if(i<arr.length)arr[i]='';
       while(arr.length&&!arr[arr.length-1])arr.pop();
-      whoSet(r,arr);return;}
+      whoSet(r,arr);return true;}
   }catch(_){}
+  return true;
 }
 /* dropped on a people CELL rather than on a specific puck */
-export function fillSlot(key:any,id:any){
+/* Same contract as setSlotVal above: `false` means REFUSED and nothing written. */
+export function fillSlot(key:any,id:any):boolean{
   key=String(key);
+  /* the belt, ahead of every branch — so the append doors cannot reach a
+     cockpit by a route the preflight was not asked about */
+  if(!sentinelSeatOK(key,id))return false;
   if(/\.\*$/.test(key)){const b=key.slice(0,-1);            // sims: front seat, else rear
     return setSlotVal(slotVal(b+'p')?b+'w':b+'p',id);}
   /* sims pax: append to the end of the list. This MUST be tested before the generic
      '.+' programme branch below, because 's:0.amt.1.pax.+' also ends in '.+' and
      would otherwise be written into d.allhands. */
   if(/\.pax\.\+$/.test(key)){const a=key.slice(key.indexOf(':')+1).split('.');
-    const r=(DAYS[+a[0]].sims||{})[a[1]]&&DAYS[+a[0]].sims[a[1]][+a[2]]; if(!r)return;
+    const r=(DAYS[+a[0]].sims||{})[a[1]]&&DAYS[+a[0]].sims[a[1]][+a[2]]; if(!r)return true;
     r.pax=r.pax||[];
     /* reuse the first blanked index if there is one, so removing then re-adding a
        body doesn't grow the array forever */
     let i=r.pax.findIndex((v:any)=>!v||!PEOPLE[v]); if(i<0)i=r.pax.length;
     return setSlotVal(`s:${a[0]}.${a[1]}.${a[2]}.pax.${i}`,id);}
   if(/^a:.*\.\+$/.test(key)){const a=key.slice(key.indexOf(':')+1).split('.');   // programme: append
-    const r=DAYS[+a[0]].allhands[+a[1]]; if(!r)return;
+    const r=DAYS[+a[0]].allhands[+a[1]]; if(!r)return true;
     return setSlotVal(`a:${a[0]}.${a[1]}.${whoArr(r).length}`,id);}
   /* every other list row: fill the first empty primary seat, else add one more.
      No limit — a duty, a ground item or a sim can carry as many bodies as the
@@ -153,7 +211,7 @@ export function fillSlot(key:any,id:any){
   if(/\.\+$/.test(key)){
     const base=key.slice(0,-2), c2=base.indexOf(':');
     const k=base.slice(0,c2), a=base.slice(c2+1).split('.');
-    const r=rowRef(k,a); if(!r)return;
+    const r=rowRef(k,a); if(!r)return true;
     /* only a genuinely EMPTY primary seat is filled. A row carrying free text
        ("ALL PILOTS", "149") is not empty — the puck goes below it instead, or
        the text would be silently destroyed. */

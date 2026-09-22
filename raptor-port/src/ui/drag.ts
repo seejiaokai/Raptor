@@ -4,7 +4,7 @@
    the two input methods can never drift apart. Repaint is the store's
    notify(), folded into applyDrop's done(). */
 import { PEOPLE } from '../engine/people'
-import { slotVal, setSlotVal, fillSlot } from '../engine/slots'
+import { slotVal, setSlotVal, fillSlot, sentinelSeatOK } from '../engine/slots'
 import { slotBar } from '../engine/avail'
 import { WARN } from '../engine/validate'
 import { keyDay } from '../engine/keys'
@@ -296,9 +296,26 @@ export function applyDrop(el: any, x: any, y: any) {
     const targetKey = slotEl.dataset.slot || (slotEl.querySelector('[data-slot]') && slotEl.querySelector('[data-slot]').dataset.slot)
     if (!targetKey) { DRAG = null; dndOff(); return false }
     let asks: any[][]
-    if (DRAG.kind === 'roster') { setSlotVal(targetKey, DRAG.id); asks = [[DRAG.id, targetKey]] }
+    /* THE PREFLIGHT, AND WHY IT CANNOT BE A CHECK INSIDE THE WRITER (D33 +
+       Codex OSE-04). A swap below is TWO independent writes. A writer that
+       refuses the one aimed at the cockpit still runs the other, so the pilot
+       is COPIED onto the row the placeholder came from, the placeholder is
+       lost, and done() reports a successful drop. So BOTH ends are judged here,
+       before either is written, and the whole operation is rejected with ONE
+       reason. */
+    const refuse = (id: any, key: any) => {
+      HOOKS.toast(`${PEOPLE[id] ? PEOPLE[id].cs + ' — ' : ''}${slotBar(id, key)}`, 'warn')
+      DRAG = null; dndOff(); return false
+    }
+    if (DRAG.kind === 'roster') {
+      if (!sentinelSeatOK(targetKey, DRAG.id)) return refuse(DRAG.id, targetKey)
+      setSlotVal(targetKey, DRAG.id); asks = [[DRAG.id, targetKey]]
+    }
     else if (DRAG.key !== targetKey) {
-      const a = slotVal(DRAG.key), b = slotVal(targetKey); setSlotVal(targetKey, a); setSlotVal(DRAG.key, b)
+      const a = slotVal(DRAG.key), b = slotVal(targetKey)
+      if (!sentinelSeatOK(targetKey, a)) return refuse(a, targetKey)
+      if (!sentinelSeatOK(DRAG.key, b)) return refuse(b, DRAG.key)
+      setSlotVal(targetKey, a); setSlotVal(DRAG.key, b)
       asks = [[a, targetKey], [b, DRAG.key]]
     }
     /* dropped back where he started — say so rather than reporting nothing, and
@@ -319,8 +336,19 @@ export function applyDrop(el: any, x: any, y: any) {
   }
   if (cell) {                                     // dropped on an empty / shared people cell
     let asks: any[][]
-    if (DRAG.kind === 'roster') { fillSlot(cell.dataset.fill, DRAG.id); asks = [[DRAG.id, cell.dataset.fill]] }
-    else { const id = slotVal(DRAG.key); setSlotVal(DRAG.key, ''); fillSlot(cell.dataset.fill, id); asks = [[id, cell.dataset.fill]] }
+    /* the same preflight as the seat branch, for the same reason: the MOVE below
+       clears the source seat BEFORE it fills the target, so a refusal after the
+       fact would lose the puck entirely. A fill target is an extras/append key
+       today and can never be a cockpit, so this should never fire — it is here
+       because "can never be" is exactly the assumption a later surface breaks. */
+    const fillKey = cell.dataset.fill
+    const moving = DRAG.kind === 'roster' ? DRAG.id : slotVal(DRAG.key)
+    if (!sentinelSeatOK(fillKey, moving)) {
+      HOOKS.toast(`${PEOPLE[moving] ? PEOPLE[moving].cs + ' — ' : ''}${slotBar(moving, fillKey)}`, 'warn')
+      DRAG = null; dndOff(); return false
+    }
+    if (DRAG.kind === 'roster') { fillSlot(fillKey, DRAG.id); asks = [[DRAG.id, fillKey]] }
+    else { const id = slotVal(DRAG.key); setSlotVal(DRAG.key, ''); fillSlot(fillKey, id); asks = [[id, fillKey]] }
     return done(cell.dataset.fill, asks)
   }
   /* a seat puck let go anywhere else — the roster, blank page space, the

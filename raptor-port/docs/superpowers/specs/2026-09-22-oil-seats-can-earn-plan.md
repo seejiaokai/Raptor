@@ -77,6 +77,17 @@ move without a signature behind them, which is why D45 leaves no hole.
   offers the switch, default OFF" cannot be an item-level switch. Settled in §4: the default rides
   the SPAN, and an activated spare is credited by tapping the man.
 
+- **A THIRD CLASH, found during the build (22 Sep 26, step 2) and not predicted by either review.**
+  The owner's 13 Aug 26 rule: *a placeholder in a slot means "someone still needed here", so its
+  puck is a SHORTCUT — clicking it arms the seat instead of selecting the puck, and the narrowed
+  palette replaces it.* The test that pinned that rule planted a placeholder into a COCKPIT seat.
+  D33 now refuses exactly that. **Newest wins, and the shortcut is NOT retired** — it still works on
+  every seat a placeholder is legal on (duty desks, sim seats and passengers, ground rows, the
+  Common Programme), which is where it is now proved; only its cockpit instance is gone, and that
+  is pinned as an explicit refusal rather than quietly dropped
+  (`src/ui/interact.test.tsx`, "a placeholder in a slot is a shortcut to finding crew").
+  **The owner has not been asked to confirm this** — it is flagged to him in the step-2 report.
+
 ## 3. What the code actually does
 
 Everything here was read off the source. **Round 1 confirmed all four original findings and

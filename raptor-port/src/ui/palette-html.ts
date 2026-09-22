@@ -177,10 +177,27 @@ export function paletteHTML(di:any,opts?:any){
     +sansAvailHTML(di,armKey,eng,off,sby,arules)
     +(hasPers?persBand():'');
 }
+/* THE PLACEHOLDER ROW SAYS THE REFUSAL BEFORE THE TAP (D33; [OIL-SEATS-CAN-EARN]
+   step 2). The owner's rule (13 Aug 26) is that the scheduler sees the problem
+   BEFORE he plants, never by planting — and with a cockpit armed these two pucks
+   are the one thing on this page that cannot go where he is aiming. So they are
+   struck out and the reason is PRINTED, exactly as a barred name is, because a
+   phone has no hover to carry a title.
+   It reads ARM itself rather than taking the key as a parameter, the way
+   armStripHTML beside it does: the function is exported and called directly by
+   board-html and the tests, and a second signature is a second thing to keep in
+   step. */
 export function specialRowHTML(di:any){
   if(!SPECIALS.length)return '';
+  const armKey=ARM?String(ARM.key).replace(/\.\+$/,''):'';
   return `<div class="rall"><div class="rh2">Placeholders · drag in</div>`
-    +SPECIALS.map((id:any)=>`<span class="rpuck" data-drag="1" data-person="${id}" title="${esc(PEOPLE[id].cs)} — a placeholder, never validated">${puck(id,null,true,null)}</span>`).join('')
+    +SPECIALS.map((id:any)=>{
+      const why=armKey?slotBar(id,armKey):'';
+      return `<span class="rpuck${why?' no haswhy':''}" data-drag="1" data-person="${id}"`
+        +(why?` data-why="${esc(why)}"`:'')
+        +` title="${esc(why?`${PEOPLE[id].cs} — ${why}`:`${PEOPLE[id].cs} — a placeholder, never validated`)}"`
+        +`>${puck(id,null,true,null)}${why?`<span class="rwhy">${esc(why)}</span>`:''}</span>`;
+    }).join('')
     +`</div>`;
 }
 /* SANS AVAILABILITY, ONE FULL-WIDTH SECTION (owner, 14 Aug 26) — every SANS
