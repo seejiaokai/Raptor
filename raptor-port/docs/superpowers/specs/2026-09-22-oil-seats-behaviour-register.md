@@ -9,7 +9,7 @@ Built against the plan at
 a ruling with no row here has not been built yet, and that is the point of the
 blank.
 
-**Status: steps 1–6 built.** Steps 7–11 outstanding.
+**Status: steps 1–7 built.** Steps 8–11 outstanding.
 
 ---
 
@@ -35,7 +35,7 @@ blank.
 | **D27 / D37 / D44 / D45** | The count shows on every seat, frozen at publication, worded as what it is. | **not built yet — step 9** | — |
 | **OIL7** | Tapping an item's name stops the whole item earning, so a man added later does not earn silently. | unchanged | `ui/oilmode.test.tsx` |
 | **OIL28** | Nothing overrides ineligibility. An "allow" is permission to count real work, never to invent it. | unchanged | `ui/oilmode.test.tsx` |
-| **OIL8** | A placeholder opens into real pucks inside the mode, so one man can be taken off a crowd. | **not built yet — step 7** | — |
+| **OIL8** | A placeholder opens into real pucks inside the mode, so one man can be taken off a crowd — on a duty desk, a sim row and every extras line, not just a ground row. | step 7 | `ui/oilrowpucks.test.tsx`, `ui/oilclaimcrowd.test.tsx` |
 
 ## The three supersessions this change makes, named out loud
 

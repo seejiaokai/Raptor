@@ -408,7 +408,15 @@ export function sbDutyPanel(d:any,di:any,pv?:any,ro?:any){
     (dwv.rows||[]).forEach((r:any,ri:any)=>{
       const base=`d:${di}.${wi}.${ri}`, t=`dr:${di}.${wi}.${ri}`;
       oilRow(rowItemKey(r.rid));
-      const inner=(PEOPLE[r.id]?sbSeat(di,base,r.id,ro):(r.id?`<span class="itxt">${esc(r.id)}</span>`:''))+sbMore(di,base,r,ro);
+      /* INSIDE THE MODE A DESK SHOWS THE PEOPLE IT PAYS ([OIL-SEATS-CAN-EARN]
+         step 7, register OIL8). A placeholder on the desk or under it opens into
+         the men it stands for, each with his own puck, so one can be taken off
+         the crowd; drawn as one inert body the row's whole switch was the only
+         door, all of them or none. Step 5 made this desk EARN — a crowd being
+         paid with no way to correct it is worse than one not paid at all. */
+      const inner=oilModeOn(di)
+        ? oilRowPeople(di,[r.id,...(r.more||[])],rowItemKey(r.rid),oilWin(r)).map((pid:any)=>sbSeat(di,base,pid,ro)).join('')
+        : (PEOPLE[r.id]?sbSeat(di,base,r.id,ro):(r.id?`<span class="itxt">${esc(r.id)}</span>`:''))+sbMore(di,base,r,ro);
       /* NO PLACEHOLDERS ON A DUTY ROW (owner, 10 Aug 26). They read as typed
          text — an empty role box showed "SDO" and a blank block looked
          staffed. The column headings above already say Role / Start / End /
@@ -503,6 +511,19 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
         pplCell=`<div class="ppl fcprcp"${ro?'':` data-fill="${base}.+"`}>${cells}${ro?'':ADDZ}</div>`;
       }else{
         pplCell=`<div class="ppl"${ro?'':` data-fill="${base}.+"`}><span class="itxt">${esc(r.who)}</span>${sbMore(di,base,r,ro)}${ro?'':ADDZ}</div>`;
+      }
+      /* INSIDE THE MODE THE SIM SHOWS THE PEOPLE IT PAYS ([OIL-SEATS-CAN-EARN]
+         step 7, register OIL8). The seat grid, the pairing and the empty drop
+         slots are all about PLANNING the row, and planning is off in the mode —
+         so the cell becomes the plain list of everyone the day credits from this
+         row, with a placeholder opened into the men it stands for. Exactly the
+         set the walk collects (seats, passengers, extras), so the screen cannot
+         show one crowd while the money pays another. */
+      if(oilModeOn(di)){
+        pplCell=`<div class="ppl">`
+          +oilRowPeople(di,[r.p,r.w].concat(r.pax||[]).concat(r.more||[]),rowItemKey(r.rid),oilWin(r))
+            .map((pid:any)=>sbSeat(di,base,pid,ro)).join('')
+          +`</div>`;
       }
       s+=`<div class="sb-arow c6r${rowCls(r)}"${rowMove(`mv:s.${di}.${kind}.${ri}`,ro)}>`+sbGrip(ro)
         +sbName(di,'ain',`${t}.label`,r.label,'EP SIM',ro)+sbTxt('atm',`${t}.str`,r.str,'',ro)+sbTxt('atm',`${t}.end`,r.end,'',ro)
