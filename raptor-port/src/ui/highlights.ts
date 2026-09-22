@@ -96,6 +96,23 @@ export function refreshHighlights(){
     const isFocus=matchHL||isSel;
     if(focusActive&&!isFocus)el.classList.add('dim');
   });
+  /* A WARNING ABOUT A BOX LIGHTS THE BOX (walk, 22 Sep 26). Every other warning
+     lights the MAN it names; D49's nought-minute sortie names the LINE and
+     deliberately no crew — the times are the scheduler's to fix and no pilot's
+     fault — so there is no puck for the loop above to light, and the tap had
+     nothing to show for itself. Making the scroll resolve was only half: on a
+     line already on screen a scroll with nowhere to go leaves the press with no
+     visible answer at all, which is the complaint the walk made.
+     The SAME two classes the pucks use, so the app has one vocabulary for "this
+     is what you just clicked" rather than two; the styling is scoped per element
+     kind in scheduler.css. Cleared on every pass, like the puck classes, so a
+     focus that moves or clears takes the light with it. Cheap: nothing carries
+     `data-warnkey` unless a warning addresses it. */
+  document.querySelectorAll('[data-warnkey]').forEach((el:any)=>{
+    el.classList.remove('wfoc','advf');
+    if(!WFOCUS||el.dataset.warnkey!==WFOCUS.key)return;
+    el.classList.add('wfoc'); if(WFOCUS.sev!=='hard')el.classList.add('advf');
+  });
   paintArm();      // every render rebuilds the slots, so the ring is re-hung here
   paintSelRings(); // after paintArm, so an armed element can keep its own ring
   paintFreshAdds();// the ~6s blue box on a just-added row / line / wave / block

@@ -4426,6 +4426,14 @@ button.sarole:hover{border-color:var(--accent);color:var(--accent);opacity:1}
    board's box is the typed input itself. */
 .badtm{box-shadow:inset 0 0 0 1px var(--adv);border-radius:4px}
 input.tm.badtm{border-color:var(--adv)}
+/* and when the warning in the list is the one being read, the box it names
+   lights — the same `wfoc`/`advf` vocabulary a clicked warning uses on a puck,
+   because it is the same gesture. Without it a tap on a line already on screen
+   had nothing to show: the scroll had nowhere to go. Stronger than the resting
+   mark and in the same colour, so it reads as "this one" rather than as a
+   different kind of problem. */
+.badtm.wfoc{box-shadow:inset 0 0 0 2px var(--hard),0 0 10px rgba(240,85,95,.45)}
+.badtm.wfoc.advf{box-shadow:inset 0 0 0 2px var(--adv),0 0 10px rgba(229,168,59,.45)}
 /* THE CLICKABLE LATE CHIP on a live board input row (owner, 21 Aug 26). It
    rides the ITEM cell beside the type label, wrapped in `.itemcell` so it does
    not add an eighth c6r grid track (see lateChip in board-html.ts). Solid amber

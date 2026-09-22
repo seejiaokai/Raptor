@@ -123,3 +123,43 @@ describe('tapping the warning lands on the line it names', () => {
     expect(a.classList.contains('badtm'), 'not merely somewhere on the row').toBe(true)
   })
 })
+
+/* AND THE TAP HAS TO SHOW SOMETHING, not only move the page (the walk's own
+   words: "tapping that warning does nothing, where every other warning lights
+   the man and scrolls to him"). Making the scroll work is half of it — on a
+   line that is already on screen, a scroll that has nowhere to go leaves the
+   press with no visible answer at all, which is the complaint over again.
+   This warning names the LINE and deliberately no crew (the times are the
+   scheduler's to fix and no pilot's fault), so there is no puck to light. The
+   box the warning addresses lights instead, in the same `wfoc`/`advf` vocabulary
+   every lit puck uses, so the two cannot drift into different languages. */
+describe('the warning lights the box it names, as every other warning lights its man', () => {
+  const paint = async (key: string | null) => {
+    const view = await import('../state/view')
+    const { refreshHighlights } = await import('./highlights')
+    document.body.innerHTML = boardHTML(SAT)
+    view.setWarnFocus(key ? { di: SAT, ix: 0, ids: [], sev: 'adv', key, code: 'FLT_NO_LEN' } as any : null)
+    refreshHighlights()
+    return [...document.querySelectorAll('.badtm')] as HTMLElement[]
+  }
+
+  it('the marked boxes light when the warning is the focus', async () => {
+    onlyLine(SAT, '10:00', '10:00')
+    const m = await paint(warnKey(SAT))
+    expect(m.length, 'the two boxes are there to light').toBe(2)
+    expect(m.every(x => x.classList.contains('wfoc')), 'both of them light').toBe(true)
+    expect(m.every(x => x.classList.contains('advf')), 'in the advisory colour — the line is not refused').toBe(true)
+  })
+
+  it('and go out again when the focus is cleared', async () => {
+    onlyLine(SAT, '10:00', '10:00')
+    const m = await paint(null)
+    expect(m.some(x => x.classList.contains('wfoc')), 'nothing is lit with no focus').toBe(false)
+  })
+
+  it('a DIFFERENT warning does not light them', async () => {
+    onlyLine(SAT, '10:00', '10:00')
+    const m = await paint('ff:99.0.0.ld')
+    expect(m.some(x => x.classList.contains('wfoc')), 'only the box the key names').toBe(false)
+  })
+})
