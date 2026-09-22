@@ -77,5 +77,71 @@ findable by the walk, and that stays in §7.
 
 ## Round 1 — FABLE 5.1
 
-**Status: running.** Appended on return, with the host's disposition on each finding and a note
-on where the two reviewers agreed and diverged.
+**Verdict: REVISE.** Seven must-fix, nine should-fix. 14 minutes, 49 tool calls, read-only, no
+tests run. **Full text, verbatim:** `2026-09-22-oil-seats-can-earn-review-fable.md` — kept whole
+because its fixes are step-by-step and the builder implements from those words.
+
+It confirmed all four of the plan's findings F1–F4, and added a nuance to F2 the plan had missed:
+the two bodies do not merely duplicate the rule, they read **different sources** — the mode reads
+the live day, the money reads the frozen copy. They agree today only because publishing swaps one
+for the other. So step 1 must consolidate onto the EVIDENCE, not onto the live day.
+
+| # | What it says | Host disposition |
+|---|---|---|
+| **M1** | **A CLASH BETWEEN THE OWNER'S OWN RULINGS, and it moves money that already pays.** A placeholder on a ground row or a Common Programme row EARNS TODAY, by default. D28 says nothing may earn by default that does not earn today; D32/D33 (later) say the puck earns off by default everywhere. Both cannot hold for those two seats. Worse: on an ALREADY-ISSUED Saturday the frozen block holds the membership but no "on" mark — the type cannot even store one — so the new default would recompute those men as earning nothing and the reverse sweep would DELETE their landed credits, with no amendment and nothing on screen. | **CONFIRMED by the host** — `OilDecisions.items` is typed `Record<string, 0>`, and test OIL24 pins a no-mark ALL AVAIL ground row paying a full day. **THIS IS THE OWNER'S TO DECIDE, and it is the one blocking question.** Put to him. |
+| **M2** | **D24 is unbuildable as written.** SC MAIN and SC SPARE sit in ONE formation and share ONE item address, so there is no line switch that can say "main on, spare off". | ACCEPTED. **Host decides (technical):** Fable's Option A — the default rides the SPAN, not the item, and an activated spare is credited by tapping the man. No new address, and D24's words ("click credit OIL") are satisfied. Option B (a spare sub-switch on the aircraft rid) is recorded as the fallback if tapping the man reads badly in the walk. |
+| **M3** | **Where the kind's default comes from is unspecified**, and the `dflt` parameter that looks like it already exists means something else (the member's own answer on a claim). Gives the full step-2 spec: tag each span with `dflt` in the walk, widen the item mark to `0` or `1`, make `itemOn` three-valued, pass the span's own default instead of a hard `true`. | ACCEPTED WHOLE. **This replaces plan §5 steps 2–3**, and it is also the answer to Codex's OSE-01 (a mixed row) — the default belongs on the span, which is per-person-per-work, not on the item. Two reviewers reached the same place from different directions. |
+| **M4** | **The fold would make a cockpit placeholder EARN**, and D33's refusal has no shape in this app: both doors PLANT FIRST and warn after (owner, 13 Aug 26), and copies (day template, parked plan) bypass both. Gives an 8-step fix including a non-expanding belt in the flying branch. | ACCEPTED WHOLE. **A second ruling clash** — D33's hard refusal against the 13 Aug plant-then-warn rule. Newest wins; the plan must say it is carving the first hard refusal out of that rule. **Reorders §5: the refusal ships before or with the fold, never after.** Complements Codex's OSE-04 (the swap's two writes) — same defect, and between them the fix is complete. |
+| **M5** | **The mode does not open a placeholder into real pucks on duty desks, sims, passengers or any extras line.** Only the ground row and Common Programme do. So taking ONE man off the crowd on the owner's own Sunday desk is impossible — the item switch is the only door. | ACCEPTED. **Codex did not find this and it is arguably the most user-visible gap in the plan**: the whole `[ALL-AVAIL-WINDOW]` design (D38) assumes individual pucks can be tapped. Needs a fourth roll-call column. |
+| **M6** | A published WEEKDAY has no frozen membership, so §6's "the count on an issued day reads the frozen list" cannot hold once the count shows every day. | ACCEPTED. **Same finding as Codex OSE-05, reached independently** — the strongest signal in the review that it is real. The two differ on the remedy: Fable recommends live on a non-earning day and frozen on an earning one; Codex wants membership made a first-class snapshot value inside signature and amendment tracking. **Host's position: Fable's is cheaper and matches D37 (the count is a starting point, not a promise); Codex's is safer. Unresolved — carry both into round 2.** |
+| **M7** | The Leave War side is absent from the roll-call and the checks: a credited crowd lands 20+ cells, each through the clash rule, then the reverse sweep. | ACCEPTED. A cross-app change walked on one side only is precisely what the standing order forbids. |
+| **S1–S9** | Nine smaller ones. The load-bearing: claim rows are a separate money path the fold never reaches (**S1, = Codex OSE-02**); there are FOUR exempt skips in `oil.ts`, not three (**S2** — the plan miscounted); **S5, an owner question** — an overnight AVALON/BB line, which day earns; **S4**, the count moves from weekend-in-mode to every day every repaint, so it must be memoised and cite the performance doc. | ALL ACCEPTED. S5 goes to the owner with M1. S2 is a plain factual correction to the plan. |
+
+### Where the two reviewers AGREED — the strongest findings
+
+Independently, from different directions:
+
+- **The item-level default cannot work** (Codex OSE-01, Fable M3). Codex found it via a mixed
+  row; Fable found it via the missing default source. Both land on: the default belongs to the span.
+- **The accepted-input claim path is a separate money route the fold never reaches** (OSE-02, S1).
+- **A published non-earning day has no frozen membership** (OSE-05, M6).
+- **The refusal cannot live inside the writer** (OSE-04's two-write swap, M4's plant-then-warn).
+  Between them the fix is complete; neither alone is.
+
+### Where they DIVERGED
+
+- **Fable alone** found M1 (the ruling clash and the retrospective credit deletion), M5 (the mode
+  cannot open a crowd into pucks), M7 (Leave War unwalked), S2 (four skips, not three), S4
+  (performance), S5 (overnight).
+- **Codex alone** found OSE-03 stated as an evidence-versioning problem, OSE-06 (zero-length flying
+  lines pass the capability test because padding is applied first — Fable did not test that
+  arithmetic), and OSE-07 ("extras beside ANY row" is not a real surface) as a scope defect.
+- **On M6/OSE-05 they agree the defect exists and disagree on the remedy** — unresolved, round 2.
+
+**Neither reviewer was shown the other's answer.** The overlap is therefore evidence, not echo —
+and the four agreed findings are the ones to treat as certain.
+
+### The host's own errors, listed because they were in a document it had already checked
+
+- Claimed the capability walk excludes zero-length seats. It does not, for flying lines (OSE-06).
+- Wrote "the extra-people line beside ANY row" after telling the owner flying lines have none (OSE-07).
+- Counted three exempt skips in `oil.ts`; there are four (S2).
+- Named the freeze as a risk in §6 but carried it into no step (OSE-03, M1).
+
+---
+
+## Round 1 — outcome
+
+**Both reviewers: REVISE. The plan is not buildable as written.** Nothing rejected on either side.
+
+**Blocked on the owner** before the plan can be rewritten:
+
+1. **M1 — the ruling clash.** Does a placeholder on a ground row or Common Programme row keep
+   earning by default (as today), or stop until switched on (newest ruling wins)? It changes what
+   men are owed on days already issued.
+2. **S5 — the overnight line.** An AVALON/BB line running 19:00 to 07:00: which day earns?
+
+**Host decisions taken, not put to him:** M2 Option A (the span carries the default; credit a
+spare by tapping the man), and M3's step-2 spec adopted whole in place of plan §5 steps 2–3.
+
+**Unresolved between the reviewers:** M6/OSE-05's remedy. Carried to round 2.
