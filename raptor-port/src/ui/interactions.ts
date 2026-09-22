@@ -22,6 +22,7 @@ import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList } from './pops'
 import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
 import { oilSentinelList } from './oilmode'
+import { withDaySnap } from './html'
 import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
 import { pickRosDay } from './pan'
@@ -488,7 +489,14 @@ export function routeClick(e: MouseEvent) {
      surfaces. Read-only, so no role gate: anybody reading the schedule may ask
      who the puck stands for. */
   const osn = t.closest('[data-oilsent]') as HTMLElement | null
-  if (osn) { e.stopPropagation(); HOOKS.toast(oilSentinelList(+(osn.dataset.oilday || -1), osn.dataset.oilsent || '')); return }
+  /* the same reading as the board's tap: the chip carries the version it was
+     drawn in, so an issued page's list is the issued one (OSE-R2-05) */
+  if (osn) {
+    e.stopPropagation()
+    const di = +(osn.dataset.oilday || -1), it = osn.dataset.oilsent || '', ver = osn.dataset.oilver || ''
+    HOOKS.toast(ver ? withDaySnap(di, ver, () => oilSentinelList(di, it)) : oilSentinelList(di, it))
+    return
+  }
 
   /* accepting a personal input — the same control on the week and the board, so
      it is routed here rather than duplicated in board.ts. Promotes the input

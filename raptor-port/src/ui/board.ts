@@ -18,7 +18,7 @@ import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod } from './html'
+import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap } from './html'
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
@@ -1262,7 +1262,16 @@ export function boardArmClick(e: MouseEvent) {
      and one tap target that behaves the same on both is the cheapest honest
      answer until he picks one. */
   const osn = t.closest('[data-oilsent]') as HTMLElement | null
-  if (osn) { e.stopPropagation(); return toast(oilSentinelList(+(osn.dataset.oilday || -1), osn.dataset.oilsent || '')) }
+  /* THE VERSION THE CHIP WAS DRAWN IN ([OIL-SEATS-CAN-EARN] step 9, Codex
+     OSE-R2-05). The snapshot is installed only while the page is being built,
+     so by the time this tap happens the live day is back in place — reading it
+     here would list whoever is free NOW under a number that was frozen when the
+     day went out. Empty means the chip came from the working copy. */
+  if (osn) {
+    e.stopPropagation()
+    const di = +(osn.dataset.oilday || -1), it = osn.dataset.oilsent || '', ver = osn.dataset.oilver || ''
+    return toast(ver ? withDaySnap(di, ver, () => oilSentinelList(di, it)) : oilSentinelList(di, it))
+  }
   const oit = t.closest('[data-oilitem]') as HTMLElement | null
   if (oit) {
     const di = +(oit.dataset.oilday || -1), item = oit.dataset.oilitem || ''

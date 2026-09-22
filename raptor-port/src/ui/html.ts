@@ -498,13 +498,30 @@ export function oilSeatDeco(di:any,id:any,key:any,itemOf?:string):{oil:any;chip:
   if(isSpecial(id)){
     const sum=oilSentinelSummary(di,item);
     if(!sum)return {oil:null,chip:''};
-    const some=sum.bar==null&&sum.earn>0;
-    const txt=some?`${sum.earn} of ${sum.n} earn`:String(sum.n);
-    const ttl=some?'Some of these men earn OIL and some do not — tap to see each one'
-      :sum.bar?`All ${sum.n} earn ${sum.bar==='FO'?'a full day':'half a day'} — tap to see each one`
-      :`None of these ${sum.n} earn OIL today — tap to see each one`;
+    /* THE VERSION THE CHIP WAS DRAWN IN (Codex OSE-R2-05). The snapshot is
+       installed only while this HTML is being built; a tap happens long after,
+       when DAYS[di] is the live day again. Without this the chip on an issued
+       page would count the men it went out with and the tap would list whoever
+       is free today — one number, a different list, on the same puck. Empty
+       means the working copy, which is what a tap should read there. */
+    const ver=PV&&PVV!=null?String(PVV):'';
+    /* THE COUNT NOW SHOWS ON EVERY DAY ([OIL-SEATS-CAN-EARN] step 9, D27), so
+       the words have to fit a day that earns nobody anything. Saying "None of
+       these 9 earn OIL today" on a Tuesday would be true and useless — nobody
+       earns OIL on a Tuesday. On such a day the count IS the whole answer, and
+       D37 says to read it as what it is: who has nothing else on at that time,
+       not a promise that they will be there. */
+    const some=sum.earns&&sum.bar==null&&sum.earn>0;
+    const txt=sum.unrecorded?'?':some?`${sum.earn} of ${sum.n} earn`:String(sum.n);
+    const ttl=sum.unrecorded
+      ?'This schedule was issued before the app kept a record of who was behind this puck'
+      :!sum.earns
+        ?`${sum.n} with nothing else on at that time — tap to see them`
+        :some?'Some of these men earn OIL and some do not — tap to see each one'
+          :sum.bar?`All ${sum.n} earn ${sum.bar==='FO'?'a full day':'half a day'} — tap to see each one`
+            :`None of these ${sum.n} earn OIL today — tap to see each one`;
     return {oil:sum.bar?{bar:sum.bar}:null,
-      chip:`<span class="oilcount${some?' some':''}" data-oilsent="${esc(item)}" data-oilday="${+di}" title="${esc(ttl)}">${txt}</span>`};
+      chip:`<span class="oilcount${some?' some':''}" data-oilsent="${esc(item)}" data-oilday="${+di}" data-oilver="${esc(ver)}" title="${esc(ttl)}">${txt}</span>`};
   }
   return {oil:oilBarOf(di,id,item),chip:''};
 }

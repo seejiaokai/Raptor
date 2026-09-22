@@ -121,9 +121,54 @@ export interface OilEvidence {
   inputs: OilInputEv[]
   /** item key → the people a sentinel on that item stands for, frozen (§7.3) */
   sent: Record<string, string[]>
+  /** DOES THIS BLOCK RECORD MEMBERSHIP ON EVERY DAY ([OIL-SEATS-CAN-EARN] step
+   *  9, D44)? Every block written from that step on does, earning day or not,
+   *  so an entry that is ABSENT means "there is no puck on that seat" — a known,
+   *  honest nobody.
+   *
+   *  A block frozen by an EARLIER build carries no flag, and its absences mean
+   *  something quite different: it recorded nothing at all on a non-earning day,
+   *  and nothing for a duty or sim placeholder on any day, because the walk did
+   *  not reach those seats yet. Reading those absences as "nobody" would be a
+   *  lie, and resolving them LIVE would be worse — an issued day's count would
+   *  move the moment somebody filed leave, which is the one thing D44 forbids
+   *  (OSE-T-02). So the flag's absence is what makes the reader say "membership
+   *  not recorded" and invent nothing. Same shape, and the same reason, as
+   *  `stand` on a claim. */
+  mem?: 1
 }
 
-export const EMPTY_OIL_EVIDENCE: OilEvidence = { iso: '', earns: false, d: {}, inputs: [], sent: {} }
+export const EMPTY_OIL_EVIDENCE: OilEvidence = { iso: '', earns: false, d: {}, inputs: [], sent: {}, mem: 1 }
+
+/** WHO IS BEHIND A PLACEHOLDER ON THIS SEAT — the ONE body every reader asks
+ *  (Fable correction 2). The count chip, its tap, the mode's opened pucks and
+ *  the row's people list all come through here, or the chip says 27 and the tap
+ *  says "Nobody is behind this puck on this day" — which is what happened when
+ *  they were four separate readers.
+ *
+ *  IT RESOLVES NOTHING ITSELF. The answer is whatever the day's own block wrote
+ *  down: live on a working copy, because the block is rebuilt on every read;
+ *  frozen inside an issued document, because the block IS the record. That is
+ *  the whole of D44, and it is why this takes the block rather than a day index
+ *  — a reader holding an issued block cannot accidentally be handed today's
+ *  availability.
+ *
+ *  THREE ANSWERS, because they are three different facts and one of them must
+ *  never be read as another:
+ *  · `resolved`   — the day wrote this seat down. An EMPTY list is a real
+ *                   answer here: a puck nobody is free for stands for nobody,
+ *                   and the screen should say 0 rather than go quiet.
+ *  · `none`       — the day records membership and wrote nothing for this seat,
+ *                   so there is no puck on it (or its row carries no times the
+ *                   rules could resolve anyone against).
+ *  · `unrecorded` — the block predates membership being kept (see `mem`).
+ *                   Nothing is known and nothing may be invented. */
+export function oilSentOf(ev: OilEvidence | null | undefined, item: string):
+  { people: string[]; state: 'resolved' | 'none' | 'unrecorded' } {
+  const sent = (ev && ev.sent) || {}
+  if (item && Object.prototype.hasOwnProperty.call(sent, item)) return { people: [...sent[item]], state: 'resolved' }
+  return { people: [], state: ev && ev.mem ? 'none' : 'unrecorded' }
+}
 
 /* a plain deep copy — the evidence block must never hand back a live reference
    into the day it was read from (see oilEvidence below). */
@@ -448,7 +493,9 @@ export function oilEvidence(di: any, day?: any): OilEvidence {
      tomorrow (a holiday declared late), and the copy every reader is handed
      should be clean whichever it is. */
   pruneHandedOverDecisions(dec, d)
-  if (!earns) return { iso: iso || '', earns: false, d: dec, inputs: [], sent: {} }
+  /* A DAY WITH NO DATE CAN ANSWER NOTHING — who is free at a time needs the
+     date to ask about. It is the only way out of here that records nothing. */
+  if (!iso) return { iso: '', earns: false, d: dec, inputs: [], sent: {}, mem: 1 }
   const sent: Record<string, string[]> = {}
   /* the walk that finds the day's work is the SAME walk the credit uses, so the
      frozen membership can never be resolved for an item the credit does not
@@ -478,7 +525,16 @@ export function oilEvidence(di: any, day?: any): OilEvidence {
     if (!inp.win || !landedHasSentinel(d, inp.iid) || !oilInputEligible(d, inp)) continue
     sent[inputItemKey(inp.iid)] = HOOKS.oilSentinel(iso as string, inp.win, d)
   }
-  return { iso: iso as string, earns: true, d: dec, inputs: ins, sent }
+  /* A DAY THAT EARNS NOBODY ANYTHING STILL KNOWS WHO IS BEHIND ITS PUCKS
+     ([OIL-SEATS-CAN-EARN] step 9; D27, D44). The count is a SCHEDULING fact —
+     dropped anywhere, a placeholder works out who would attend — and until now
+     it existed only as a by-product of working out the money, so five days a
+     week the puck stood for nobody and the chip said nothing.
+     The money half stays exactly where it was: `inputs` is left empty and
+     `earns` false, so every reader of what a day PAYS is byte-identical to
+     before. Only the membership is now kept. */
+  if (!earns) return { iso, earns: false, d: dec, inputs: [], sent, mem: 1 }
+  return { iso: iso as string, earns: true, d: dec, inputs: ins, sent, mem: 1 }
 }
 
 /* ---- the read-only render pass ([OIL-SEATS-CAN-EARN] §5 step 1) -----------

@@ -49,7 +49,7 @@ import { INPUTS, inpId } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { envMin, uniformOil, dayOilWork, oilCapableItems, rowItemKey, groundItemKey, inputItemKey, type OilWork } from '../engine/oil'
-import { landedExtras, oilEvidence, oilEvidenceOf, oilEarnedWork, oilInputEligible, personDecision, itemMasked, itemMark, itemState, spanDefault, type OilEvidence, type OilDecisions } from '../engine/oilev'
+import { landedExtras, oilEvidence, oilEvidenceOf, oilEarnedWork, oilInputEligible, oilSentOf, personDecision, itemMasked, itemMark, itemState, spanDefault, type OilEvidence, type OilDecisions } from '../engine/oilev'
 import { OILDAY, setOilDay, afterSchedMutate, esc } from '../state/view'
 import { CURWEEK } from '../engine/waves'
 import { stashKeys, stashEditDays } from '../engine/weekstash'
@@ -282,16 +282,22 @@ export function oilPuck(di: any, person: any, item: string): { on: boolean; amt:
  *  (§2.1 item 6) and for the issued schedule's count chip (§7.6). On an issued
  *  day this is the FROZEN membership, so the puck's answer cannot change under
  *  the reader; on a working copy it resolves live. */
-export function oilSentinelPeople(di: any, item: string, win: [number, number]): string[] {
-  const ev = evOf(di)
-  /* A COPY, not the frozen array itself. On a published day this is a slice of
-     the ISSUED document; nothing writes to it today, but one in-place sort() in
-     some future caller would rewrite what the squadron was given — which is
-     exactly the shape of the aliasing bug found by hand in this build. The cost
-     is one array per call; the alternative is trusting every future reader. */
-  if (ev.sent && ev.sent[item]) return [...ev.sent[item]]
-  if (!ev.earns || !ev.iso) return []
-  return HOOKS.oilSentinel(ev.iso, win, DAYS[+di])
+export function oilSentinelPeople(di: any, item: string, _win?: [number, number] | null): string[] {
+  /* THE ONE RESOLVER, and it hands back a COPY. On a published day the list is
+     a slice of the ISSUED document; nothing writes to it today, but one in-place
+     sort() in some future caller would rewrite what the squadron was given —
+     which is exactly the shape of the aliasing bug found by hand in this build.
+
+     THE LIVE FALLBACK THAT USED TO SIT HERE IS GONE ([OIL-SEATS-CAN-EARN] step
+     9, OSE-T-02). It read "the frozen list if there is one, else work it out
+     now", which is fine on a working copy and wrong inside an ISSUED document:
+     a snapshot that recorded nothing for this seat would quietly answer with
+     TODAY's availability, so the issued day's count moved the moment somebody
+     filed leave — the one thing D44 forbids. The day's block is now written on
+     every day, so the working copy has a list of its own and nothing needs
+     inventing. `win` is kept only because callers know it and a future reader
+     may want it; nothing here resolves from it any more. */
+  return oilSentOf(evOf(di), item).people
 }
 
 /* ---- writing a decision -------------------------------------------------- */
@@ -766,11 +772,23 @@ export function oilItemOfKey(di: any, key: any): string {
  *
  *  Returns null where the puck is not a resolved sentinel at all (a sentinel in a
  *  flying seat earns nobody anything, and the day's own rules never expand it). */
-export function oilSentinelSummary(di: any, item: string): { bar: 'FO' | 'HO' | null; n: number; earn: number } | null {
+export function oilSentinelSummary(di: any, item: string):
+  { bar: 'FO' | 'HO' | null; n: number; earn: number; earns: boolean; unrecorded?: true } | null {
   const ev = evOf(di)
-  if (!ev.earns || !item) return null
-  const people = ev.sent && ev.sent[item]
-  if (!people) return null
+  if (!item) return null
+  /* ON EVERY DAY NOW ([OIL-SEATS-CAN-EARN] step 9, D27). The count is a
+     SCHEDULING fact — who would attend — and it used to exist only as a
+     by-product of working out the money, so five days a week the puck stood
+     for nobody and this returned null. */
+  const got = oilSentOf(ev, item)
+  /* an ISSUED document written before membership was kept (OSE-T-02): it does
+     not know, and nothing may be invented for it */
+  if (got.state === 'unrecorded') return { bar: null, n: 0, earn: 0, earns: !!ev.earns, unrecorded: true }
+  if (got.state === 'none') return null                  // no puck on this seat: no chip, as before
+  const people = got.people
+  /* a day that earns nobody anything has no figures to add up — the count is
+     the whole of what it can honestly say */
+  if (!ev.earns) return { bar: null, n: people.length, earn: 0, earns: false }
   /* measured ON THIS ROW, not across the man's day (O-3, re-examined under O-1).
      The chip used to count anyone earning ANYWHERE that day, so a row switched
      off could still read "1 of 45 earn". The owner left that alone only because
@@ -780,15 +798,23 @@ export function oilSentinelSummary(di: any, item: string): { bar: 'FO' | 'HO' | 
   const amts = people.map(p => oilFigureFor(di, p, item))
   const n = people.length, earn = amts.filter(Boolean).length
   const all = (v: OilAmt) => n > 0 && amts.every(a => a === v)
-  return { bar: all('FO') ? 'FO' : all('HO') ? 'HO' : null, n, earn }
+  return { bar: all('FO') ? 'FO' : all('HO') ? 'HO' : null, n, earn, earns: true }
 }
 
 /** The people behind a sentinel, each with his own figure, in the words the
  *  count chip's tap shows. */
 export function oilSentinelList(di: any, item: string): string {
   const ev = evOf(di)
-  const people = (ev.sent && ev.sent[item]) || []
-  if (!people.length) return 'Nobody is behind this puck on this day'
+  const got = oilSentOf(ev, item)
+  /* THE SAME BODY THE CHIP ABOVE IT ASKED. They were two readers, which is how
+     a chip reading 27 could sit over a tap saying "Nobody is behind this puck"
+     (Fable correction 2). */
+  if (got.state === 'unrecorded') return 'This schedule was issued before the app kept a record of who was behind this puck'
+  const people = got.people
+  if (!people.length) return 'Nobody is free for this at that time'
+  /* on a day that earns nobody anything there are no figures to give — the
+     names ARE the answer (D37) */
+  if (!ev.earns) return `${people.length} with nothing else on at that time — ${people.map(p => ((PEOPLE as any)[p] || {}).cs || p).join(', ')}`
   /* each man as THIS ROW earned him, so the list and the chip above it agree */
   const say = people.map(p => { const a = oilFigureFor(di, p, item)
     return `${((PEOPLE as any)[p] || {}).cs || p} ${a === 'FO' ? 'full day' : a === 'HO' ? 'half day' : 'nothing'}` })
