@@ -2733,3 +2733,26 @@ tends to carry costs (hidden bugs, undoing the plan's intent) that only resurfac
 **Suggested improvement:** Treat a reviewer's suggested fix as a hypothesis with the same standing as their finding: reproduce the defect, apply the fix, and then prove the fix by REMOVING it and watching the test fail. A reviewer reasoning from source alone cannot execute the path they are describing, so their fix is a reading of the mechanism, not a measurement of it — and a precise, confident one is no safer than a vague one. Where two reviewers disagree on a fact, settle it by measuring the fact, never by majority or by which report is more detailed.
 
 **Principle:** A review gives you a finding worth reproducing and a fix worth doubting. The fix is where the reviewer is furthest from the running system and closest to sounding authoritative, and a test that cannot fail without the fix is the only thing that tells you which you got.
+
+### Observation 179: A gate piped into `tail` reports its output but loses its verdict
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [DOCS-GUARD] — building a document gate whose whole job is to fail loudly
+**Skill:** New skill candidate: gate-before-commit (or verification-before-completion)
+**Type:** open-source
+**Phase/Area:** running a check and committing in one chained shell command
+
+**Issue:** The agent ran `node gate.mjs | tail -4 && git add -A && git commit ...`. The gate FAILED
+(exit 1, a real finding), but a pipeline's exit status is the LAST command's — `tail`'s 0 — so the
+chain went on and committed the failing state. The failure text was on screen, but the decision to
+commit had already been made by the shell. Caught one command later only because the agent read the
+output of that very command.
+
+**Suggested improvement:** Wherever a skill tells the agent to run a gate before committing, require
+the gate's exit code to be captured on its own (`gate > out.txt 2>&1; echo "exit=$?"`, or
+`set -o pipefail`) and read BEFORE the commit command is written — never trimmed with a pipe in
+the same chain as the commit.
+
+**Principle:** Trimming a check's output with a pipe also throws away its verdict. Read a gate's exit
+code separately from its output, and never let the same line that runs a gate also act on it.

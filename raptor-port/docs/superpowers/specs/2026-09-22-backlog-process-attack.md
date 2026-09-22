@@ -185,12 +185,15 @@ in which every body is doubled.
 3. F4 items 1/3/4 and F5 items 1–2, ~30 min.
 4. F5's mover and F7 when the next archive pass is actually due.
 
-## What was done immediately, and what is owed
+## What was done, and what is owed
 
-**Done 22 Sep 26:** the `[TRK-LEDGER]` fact rescued into `docs/tracker/known-gaps.md`; the D29 row
-corrected, including withdrawing its ratchet clause and its wrong "no other file" claim; the five
-dangling references repaired.
+**22 Sep 26:** the `[TRK-LEDGER]` fact rescued into `docs/tracker/known-gaps.md`; the D29 row
+corrected; the five dangling references repaired.
 
-**Owed, and put to the owner as its own pass:** F1 and F3 (the structural half — the inventory check,
-the CI job, the Stop hook, and a gate that cannot demand a trim inside a code change), then F2, F6,
-and the remainder of F4/F5. Nothing here touches `raptor-port/src`.
+**23 Sep 26, branch `claude/docs-guard` — steps 1–3 of the order, done:** F1, F3, F2, F6, F4 items
+1/3/4 and F5 items 1–2, as written above, with three measured differences: the backlog files were
+LF, not CRLF, by then (LF is what `.gitattributes` pins); `[ARCH-STACK-4]` merged in PR #421, not
+#422; and a third duplicate id (`[OIL-SEATS-CAN-EARN]`) had appeared since, now renamed. The
+"Status:" lines above describe 22 Sep 26.
+
+**Owed — step 4:** F5's mover and F7, when the next archive pass is actually due.

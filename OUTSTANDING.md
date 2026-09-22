@@ -106,8 +106,8 @@ in-flight and risk-reducing** first.
 MERGED AND LIVE.**
 1) **[ALL-AVAIL-WINDOW]** — **NEXT, and ready to build.** The counters it opens from are now live, its
 mock-up is APPROVED and is the design of record (D41), and D38–D41 settle its shape down to the
-pixel. **Do not re-open the design; build to it.** 2) **[DOCS-GUARD]**, scope and order settled by
-D30. 3) **[HUMAN-RETEST]**. 4) **[DOC-TRIM]** — unblocked now that the OIL scaffolding has become
+pixel. **Do not re-open the design; build to it.** 2) **[DOCS-GUARD]** steps 1–3 DONE 23 Sep 26;
+step 4 waits for the next archive pass. 3) **[HUMAN-RETEST]**. 4) **[DOC-TRIM]** — unblocked now that the OIL scaffolding has become
 archive. 5) The stack resumes at **[DB-STEP]**.
 **Small OIL follow-ups, any time, none blocking:** `[OIL-READ-LEFTOVERS]` (4 items the final reads
 raised and the branch deliberately left), `[STORE-READER-SWEEP]`, `[OIL-REQ-NAMEBOX]`,
@@ -780,48 +780,21 @@ point of view."* He uses it, so his judgment governs. Kept as a RULED item with 
 order §7.6) so a later session cannot rediscover the measurement and "fix" it. Detail: the walk sheet
 §6 item 12.
 
-### [DOCS-GUARD] Nothing detects a destroyed record — Fable's F1/F3 (22 Sep 26)
+### [DOCS-GUARD] Nothing detected a destroyed record — steps 1–3 DONE 23 Sep 26; step 4 waits
 
-**The one finding that would stop a recurrence, and it is not built.** `docsize.mjs` counts LINES
-only; `npm run docsize` is in no hook, not in `npm test`, and not in CI — `deploy.yml` has
-`paths-ignore: '**.md'`, so **a docs-only PR runs ZERO checks** and one deleting half the backlog
-merges unexamined. D29's three rules reduce the temptation; none detects a bad script.
+Fable's order (D30), all of it in its order. **Done 23 Sep 26 on `claude/docs-guard`:** step 1
+(F1+F3 — `npm run docsize` now fails a lost, doubled or truncated backlog record by name, runs in CI
+as `docs-guard.yml` and as a Stop hook, and never demands a trim inside a code change), step 2
+(F2+F6 — the texts that ordered trim-on-touch corrected, D63–D66 recorded, every ruling's home
+checked), step 3 (F4 items 1/3/4, F5 items 1–2 — unique ids, true headings, line endings pinned).
+How the gate works: `raptor-port/docs/doc-budget.md` §4.
 
-**F1:** add an inventory pass to `docsize.mjs` — parse item ids from the live + archive files, read
-the HEAD versions via `git show`, and FAIL by name when an id is lost, duplicated, or when any
-non-blank line of a block that left the live file is missing from the archive (**body level, not a
-heading count — that is what passes a file whose bodies are doubled**). Wire it into CI with
-`paths: ['**.md', …docsize.mjs]` and a `.claude/hooks/backlog-guard.sh` **Stop** hook, because Stop
-fires however the edit was made — a python or Bash script included.
-
-**F3:** the gate must never demand a trim inside a code change. Over ceiling AND the diff touches
-`raptor-port/src` → print "deferred to its own pass (D29)" and exit 0; over ceiling and docs-only →
-exit 1, because that IS the trim pass. Seven of eight gated files sit at ZERO headroom while other
-rules require adding lines to two of them during a fix — that is the squeeze that caused the
-destruction. Also: a ceiling constant may change only in a commit touching no `src` file.
-
-**Then F2** (four live texts still order trim-on-touch: the `outstanding-tasks-file` memory,
-`.claude/rules/record-decisions.md` line 37, `doc-budget.md` §3, and docsize's own failure message),
-**F6** (rulings still with no D-number: the award ruling, "OIL may be credited by hand on ANY day",
-and two unbuilt S4 rulings), and the rest of **F4/F5** (the classification rule reworded to "write the
-pointer, THEN move"; `.gitattributes` pinning CRLF; two lying headings; duplicate ids
-`[GLOBAL-UNDO]`/`[S4-BUGHUNT]`; the phantom `[LW-WEEKDAY-WORK]`; a committed archive mover).
-
-**DO ALL OF IT, IN FABLE'S ORDER — owner's D30, 22 Sep 26: _"Nvm I'll do what fable recommend"_.**
-The scope and the sequence are SETTLED; do not re-decide them (the agent offered three different
-recommendations on this in three messages, which is what he ended):
-
-1. **F1 + F3** — the inventory check and the gate that can never demand a trim inside a code change.
-   ~1 h. These make everything after them enforceable, which is why they are first.
-2. **F2 + F6** — the docs-only correction pass, ~45 min, done UNDER the new gate.
-3. **F4 items 1/3/4 and F5 items 1–2** — ~30 min.
-4. **F5's archive mover and F7** — when the next archive pass is actually due.
-
-**Tier: NONE-to-LOOK** — docs and scripts only, no `raptor-port/src`, so it cannot endanger any app
-work; a cheap model can execute it. Total ~2–2½ h, and it splits cleanly into the four sittings above.
-Full findings and exact fix steps:
-`raptor-port/docs/superpowers/specs/2026-09-22-backlog-process-attack.md`.
-Rulings: `DECISIONS.md` D29 (the three rules) and **D30** (this order).
+**Left — step 4, when the next archive pass is actually due, not before:** F5's archive mover
+(`scripts/backlog-archive.mjs <ID>` — refuses a non-unique id, spans to the next heading at either
+level, requires `--homes`, appends bytes, runs the inventory, lists remaining references) and F7
+(D-numbers contiguous and none lost; every `rulecheck` register id exists; decide whether
+`HANDOFF.md`'s open list is a second backlog). Exact steps:
+`raptor-port/docs/superpowers/specs/2026-09-22-backlog-process-attack.md` F5 and F7.
 
 ### [OIL-UNDO-WORDS] — DONE 22 Sep 26, folded into [OIL-SEATS-CAN-EARN] step 11 (NOT merged)
 
