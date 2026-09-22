@@ -25,12 +25,21 @@ Subagent (general-purpose):
 
     [FINDINGS]
 
+    ## Optional, Not Blocking
+
+    [OPTIONAL_MINORS]
+
+    Minor findings the controller sent along with this round, if any. Verdict
+    each ADDRESSED or DEFERRED. A DEFERRED item never keeps the round open and
+    never counts against it.
+
     ## The Fix
 
     Read the implementer's report (fix reports are appended at the end):
     [REPORT_FILE]
 
-    **Fix base:** [FIX_BASE_SHA] (the head the previous review saw)
+    **Fix base:** [FIX_BASE_SHA] (the head the previous review saw, or the
+    commit just before the fix when other work landed in between)
     **Head:** [HEAD_SHA]
     **Diff file:** [DIFF_FILE]
 
@@ -75,6 +84,9 @@ Subagent (general-purpose):
       evidence. "Attempted" is not addressed: the specific defect must no
       longer exist.
 
+    Then, for each optional minor (if any): **[one-liner]** — ADDRESSED |
+    DEFERRED.
+
     ### New Breakage in the Fix Diff
 
     Anything the fix itself broke or introduced, with severity
@@ -97,10 +109,14 @@ Subagent (general-purpose):
 - `[BRIEF_FILE]` — the task brief file (same file the implementer worked from)
 - `[FINDINGS]` — the Critical/Important findings and spec gaps from the
   previous review, copied verbatim, one per bullet
+- `[OPTIONAL_MINORS]` — the task's ledgered Minor findings sent along with
+  this round, one per bullet, or "None"
 - `[REPORT_FILE]` — the implementer's report file (fix reports appended)
-- `[FIX_BASE_SHA]` — the head the previous review saw
+- `[FIX_BASE_SHA]` — the head the previous review saw; when other work's
+  commits landed in between, the commit just before the fix's first commit
 - `[HEAD_SHA]` — current commit
 - `[DIFF_FILE]` — the path `scripts/review-package PLAN_FILE FIX_BASE HEAD` printed
 
 **Re-reviewer returns:** per-finding verdicts (ADDRESSED / NOT ADDRESSED),
-new breakage in the fix diff, out-of-scope observations, and a round verdict.
+per-minor verdicts (ADDRESSED / DEFERRED — never blocking), new breakage in
+the fix diff, out-of-scope observations, and a round verdict.

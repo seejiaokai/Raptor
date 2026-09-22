@@ -71,7 +71,7 @@ where that procedure's defaults do not fit a git repo with vendored skills:
 - **Staging:** drafts go to `.claude/skill-updates/<date>/`, never over the live
   skills, until the owner approves. Installing = copying the approved drafts over
   the live files on the review branch; going live = his "merge live" (D60).
-- **Who reads the drafts (owner, D68):** Fable AND Astra, one round each, before
+- **Who reads the drafts (owner, D70):** Fable AND Astra, one round each, before
   he approves — never the model that wrote them.
 - **Clean up when the review ends (owner, D69):** after installing, delete the
   holding folder (git keeps the drafts), move the resolved entries to
@@ -79,6 +79,16 @@ where that procedure's defaults do not fit a git repo with vendored skills:
 - **Parallel branches are parallel log writers.** When two branches' logs meet at
   a merge, keep the reviewed side and re-append the other side's new entries at
   the end with fresh numbers.
+
+## Local changes to the vendored skill
+
+- **23 Sep 26 review:** `SKILL.md` Numbering discipline gained item 4
+  (parallel branches are parallel log writers) and Acting on Observations
+  gained "Close it where you apply it"; `references/weekly-review.md` Step 3
+  now also searches the project's own docs and settles where lessons land.
+  The session-start hook's message pins the ONE log location (above). An
+  upstream refresh overwrites these files: re-apply them
+  (`git log -p -- .claude/skills/task-observer`).
 
 ## Known caveats (not bugs)
 
