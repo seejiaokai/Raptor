@@ -398,47 +398,19 @@ having two separate undo systems over shared data — remove the root, don't pat
 - **Urgency:** low (pre-live). Model: Opus build, gates, no merge without "merge live".
 - **Context:** the build plan above + the 13 Sep sync spec (findings, dispositions).
 
-### [CMDL-FINISH] Finish the command layer for Leave War + Tracker — ARCH-STACK step 2 completion — DONE + LIVE (18 Sep 26)
-**STATUS (18 Sep 26):** DONE + LIVE. P1–P6 (P4 partial) merged as PR #412; the undo front-door doc
-as PR #413 (`docs/undo-contract.md`); the FINISH work — the remaining P4 Tracker gestures,
-`TRK_RESTORING`, registering trkStore guarded, and the cross-provider inspection punch-list — merged
-as **PR #415** (`7889ff5` on `main`), deployed and live-verified (Tracker renders, no console errors).
-All five gates green. Punch-list: 6 fixed (CMDLF-004/005/006/010/012, Fable#7/#8), 2 deferred with
-reasons (**CMDLF-002** postouts-reproject → [GLOBAL-UNDO], marker in `leavewar/state/store.ts`;
-**CMDLF-011** legacy sched.als → reset-demo-data, no fix); importClick left per-write (grouping the
-whole Import is the [GLOBAL-UNDO] import-undo-granularity question). Both deferrals + the seams this
-built are [GLOBAL-UNDO]'s to consume/complete. Detail: `docs/session-state.md`; front-door doc
-`docs/undo-contract.md`.
+### [CMDL-FINISH] Finish the command layer for Leave War + Tracker — DONE + LIVE (18 Sep 26)
 
-The 17 Sep design + dual red-team (Codex + Fable, both REVISE, converged) of `[GLOBAL-UNDO]`
-found that ARCH-STACK step 2 is genuinely finished only for the **scheduler**. Building global
-undo requires the command stream to carry the FULL ripple of one user action as one causal unit,
-and to have a real per-record write-back seam — neither exists yet for Leave War or Tracker.
-Owner decision (17 Sep 26): do this as its **own gated step FIRST**, then build global undo.
-- **What to build (concrete, from the red-team fix specs — see the review log below):**
-  - **The causal both-side envelope (F1/GU-001) — the load-bearing item.** Route the Leave War
-    sync reconcilers as `origin:'projection'` (`commitInputsAs`/`commitSchedAs`/`cmdCommitAs`);
-    route LW `persist()`'s locked/committing branch through a projection commit so a causal write
-    raised inside a reducer JOINS its envelope and a reconciler write raised from a notify becomes
-    a `projection` with `causedBy`; fix `causalSeq` so phase-8 subscriber commits chain `causedBy`.
-  - **Per-record write seam (F8/GU-007):** add `write(entry)` to `EnlistableStore` per store (rebuild
-    live state + derived indexes + baselines, then persist+notify); a scoped per-commit conflict
-    checker reading `expectedRevs`.
-  - **One Tracker gesture = one envelope (GU-004):** group each gesture's synchronous model changes
-    (`popGrade` mark + Last-Flown; add/delete/import) into one transaction before async persistence.
-  - **Off-week capture (GU-003/F6):** register the weekstash as an `EnlistableStore`, OR keep the
-    current off-week edit refusal until it exists (don't claim finding I solved).
-  - **Re-key `sched.als/<id>` by id (F5):** a Step-1 stable-id leak (array-index keys) surfaced here.
-  - **Tracker unsaved structural edits (GU-005):** scope a stream-visible undoable draft so the
-    structural history can eventually retire (may extend into [GLOBAL-UNDO]).
-- **Process:** HEAVY, design-first → cross-provider red-team (both) → Opus build → cross-provider
-  code inspection → gates → hold for "merge live". Note the earlier queued "follow-up #2 latch
-  persist with histPush" folds in here (same command-layer-completion territory).
-- **Model:** design + build on Opus 4.8 (high); red-team + code-inspect on Codex + Fable.
-- **Context (READ FIRST):** the review log `raptor-port/docs/superpowers/specs/2026-09-17-arch-stack-3-global-undo-review-log.md`
-  (all 9+10 findings with exact file:line + step-by-step fix specs) and the Step-2 design
-  `2026-09-16-arch-stack-2-command-layer-design.md`. Global-undo design (gated behind this):
-  `2026-09-17-arch-stack-3-global-undo-design.md` §12.
+ARCH-STACK step 2 completion: the causal both-side envelope, the per-record write seam,
+one-envelope-per-Tracker-gesture, guarded lw/trk stores, `TRK_RESTORING`, `sched.als` re-key, and the
+cross-provider inspection punch-list. Merged as PR #412 (build) + PR #415 (finish), plus the undo
+front-door doc #413. **Two items were deferred INTO `[GLOBAL-UNDO]` and remain open there:** the
+Leave War posting-window rebuild on a postouts restore (CMDLF-002), and grouping a whole Import as
+one undo step.
+
+**Still open, tracked in `[SYNC-INTEG]` not here:** P6 a Quals ✕ confirm (superseded by `[RECALL]`);
+P7 a stale "Leave War session-only" line in the ROOT CLAUDE.md (raptor-port's copy is corrected).
+
+Full story: `git log` for those PRs, and `docs/undo-contract.md` for the contract it established.
 
 ### [GLOBAL-UNDO] One global per-session undo — PHASE 1 + PHASE 2 BUILT + MERGED LIVE (18 Sep 26)
 **BUILD STATUS (18 Sep 26): phase 1 (engine) + phase 2 (LIVE cutover 2.3–2.6) BUILT, all five gates
@@ -792,59 +764,25 @@ decision about which of the six types count (a two-hour Appointment is not a day
 and the projection is a new seam into the war. Not a line. **Priority: his call — raised with him on
 21 Sep and filed at his word.**
 
-### [OIL-WORDS] Stop calling OIL "money" in the code comments (owner, D25, 22 Sep 26)
+### [OIL-PHONE-TARGETS] The OIL mode cannot be used with a finger (walk find, 22 Sep 26 — finding 12)
 
-**His words: _"It just means that this person earns OIL which means off in lieu. Which means that
-they earn a day of leave to be used next time."_**
+**Measured on the built app at 390 × 844, everything-Saturday, mode on:** 71 tappable things — pucks,
+item switches, count chips. Shortest 15px tall, MEDIAN 15px, 57 under 24px, **all 71 under 44px**,
+narrowest 20px wide. The family day alone stacks 27 into ~300px, 15px apart. Every tap decides what a
+man earns.
 
-OIL is banked TIME OFF, not pay. **Nothing on screen is wrong** — checked 22 Sep 26: every visible
-string already says *earns*, *credit*, *OIL balance*, *lands on the Leave War as an HO cell*, and no
-user-facing text anywhere says paid, pay or money. What carries the wrong shorthand is a handful of
-CODE COMMENTS (`ui/oilmode.ts` lines ~117, 211, 294, 455, 542, plus similar in `engine/oil*.ts`) and
-several test names. Harmless to the build, misleading to the next reader.
+**No cheap fix.** The pucks inherit the board's compact row height and the rows are 15px apart, so
+growing only the hit box makes NEIGHBOURING boxes overlap — mis-taps get worse. The size has to come
+from the row.
 
-**Deliberately not done on `claude/oil-auto-remove-design`** — that branch is at its last gate and a
-comment sweep is pure churn there. **Tier: NONE** (words only, no visible text). Do it in any later
-pass that already touches those files. The definition itself is now at the head of the OIL behaviour
-register and in the bug-check order's tier question, which are the two files a later session reads.
+**Three ways out:** (1) taller rows in the mode, phone only — cheap, contained, costs scrolling (~800px
+instead of ~300px); **recommended for now**. (2) A list view for the mode on a phone — the right
+long-term answer, and a new screen. (3) Leave it — the mode stays a desktop job, which means he cannot
+settle OIL from his phone.
 
-### [OIL-EXEMPT-CREDITABLE] The three exempt kinds become creditable — default still nothing (owner, D24, 22 Sep 26)
-
-**His words: _"is it too late to revert that SC spare, Avalon and BB could also earn OIL? Reason is
-because they could be activated and if they are, the admin can just easily click credit OIL with an
-amendment. But by default they are not going to earn OIL."_**
-
-**What changes.** SC SPARE, AVALON flying lines, AVALON duty desks and BB flying lines must OFFER
-the OIL switch in the mode, defaulting to OFF. Today they are wholly inert — no switch, no door —
-which is precisely the case the data allows and no screen offers. The DEFAULT is unchanged: none of
-them earns unless someone says so, so today's behaviour is reproduced exactly by the new default.
-On a published day, crediting one goes out as an ordinary amendment, like any other OIL decision.
-
-**Supersedes in part:** D15 and D20, on the door only. Every other clause of both stands, and the
-rest of OIL31 (cancelled, unreadable times, zero-length, ⓘ, sim free text) is untouched.
-
-**Why it is not a flag flip.** All three are skipped BEFORE anyone enters the calculation —
-`saExemptKind(dw.sa)` for AVALON/BB in both the earn pass and the warning pass, and
-`if(!f.spare)reach(item)` plus `if(ac.cx||f.spare||ac.spare)return` for the spare (`engine/oil.ts`).
-No item key and no person-window are created, so there is nothing for an `allow` to attach to —
-`earnsFrom`'s own comment says ineligibility is decided before it is asked. The engine has to let
-them in and default them off, which is a change in the money path.
-
-**Tier: FULL** (money, the published record, a new door on three kinds of seat). It needs its own
-roll-call rows, both providers reading the code, and a walk. D20's second half must be carried
-forward too: a duty block MADE from an AVALON template gets the same treatment as one that was
-always AVALON.
-
-**Sequencing — the agent's recommendation, awaiting his go.** NOT on
-`claude/oil-auto-remove-design`. That branch is at its last gate with every reviewer finding closed
-and gates green; folding a money change in re-opens the FULL tier on work that is already checked,
-and the evidence sheet is half-written. Because the change is additive and its default reproduces
-today's behaviour, nothing on that branch has to be unpicked — this lands cleanly as the next
-branch after "merge live". **Place in the order: immediately after [OIL-AUTO-REMOVE] merges**, and
-ahead of [OIL-NEXT-TWO], because it touches the same mode and the roll-call is still fresh.
-
-**Where the reasoning lives:** `DECISIONS.md` D24; the register rule it revises is OIL31 in
-`raptor-port/docs/superpowers/specs/2026-09-21-oil-behaviour-register.md`, already marked.
+**His call, not the agent's** — it changes how the screen looks and how much scrolling it costs.
+Deliberately not decided or built on `claude/oil-auto-remove-design`. **Tier if built: WALK.**
+Measurement and evidence: `raptor-port/docs/handpass/2026-09-22-oil-walk.md` §6.
 
 ### [OIL-NEXT-TWO] The two the owner parked until after the bug check (21 Sep 26)
 **His words: "We can do point 2 and 3 later after the 3 things above are done."** The three being

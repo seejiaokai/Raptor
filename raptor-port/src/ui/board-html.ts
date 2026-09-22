@@ -220,7 +220,18 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
            take ONE man off it — the same hole as the cockpit seats. */
         if(id&&PEOPLE[id]&&oilModeOn(di))
           return oilSeatHTML(di,id,rowItemKey(x.rid),(oil:any)=>puck(id,null,true,null,false,null,oil));
-        if(id&&PEOPLE[id])return `<span class="seat"${ro?'':` data-slot="a:${di}.${ri}.${k}"`}${alAttr(`a:${di}.${ri}.${k}`)}${ro?'':' data-drag="1"'}>${puck(id,ro?null:sevOf(di,id),true,ro?null:chipOf(di,id),false,null,oilSeatDeco(di,id,`a:${di}.${ri}.${k}`).oil)}</span>`;
+        /* AND ITS COUNT CHIP, not just its bar (walk find, 22 Sep 26 —
+           hand-pass finding 11). oilSeatDeco returns {oil, chip}: the bar AND
+           the "27" that says how many men an ALL AVAIL placeholder stands for.
+           This builder took `.oil` and threw `.chip` away, so the board's
+           Common Programme drew the half-day bar and the words "earns half a
+           day of OIL" with no number anywhere — while the week showed it. The
+           board is where the day is worked. sbSeat emits both; so does this
+           now. */
+        if(id&&PEOPLE[id]){
+          const deco=oilSeatDeco(di,id,`a:${di}.${ri}.${k}`);
+          return `<span class="seat"${ro?'':` data-slot="a:${di}.${ri}.${k}"`}${alAttr(`a:${di}.${ri}.${k}`)}${ro?'':' data-drag="1"'}>${puck(id,ro?null:sevOf(di,id),true,ro?null:chipOf(di,id),false,null,deco.oil)}${deco.chip}</span>`;
+        }
         return String(nm||'').trim()?`<span class="itxt">${esc(nm)}</span>`:'';}).join('');
       s+=`<div class="sb-arow c6r${rowCls(x)}"${rowMove(`mv:p.${di}.${ri}`,ro)}>`+sbGrip(ro)
         /* the Item box WRAPS AND GROWS like every other free-text board box

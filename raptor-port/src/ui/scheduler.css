@@ -1266,7 +1266,21 @@ body:not(.tdrag) .page.editing .acrow .seat[data-slot]:hover .puck{outline:2px s
    html.ts prints the same literal and is byte-compared to the reference. */
 .puck.sel{background:#1E86FF!important;color:#fff!important;z-index:2;position:relative}
 .puck.sel .nm{color:#fff;font-weight:700}
-.puck.me{background:var(--me)!important;color:#fff!important;box-shadow:0 0 0 2px #F0B6FF,0 0 12px 1px rgba(155,47,174,.7)!important;z-index:2;position:relative}
+/* background-COLOR, not the `background` shorthand (walk find, 22 Sep 26 —
+   hand-pass finding 9). The shorthand resets background-image, and with
+   !important on it no later rule could put one back — so the OIL stripe
+   (.puck.oilbar-fo/-ho, which IS a background-image) was wiped on exactly
+   one puck: the one belonging to whoever you are viewing as. Measured on the
+   built board: the classes were all present (`puck sm oilbar oilbar-ho me`)
+   and the computed background-image was `none`, while every other earning
+   puck showed its gradient. The scheduler's own row is the one he is most
+   likely to check. The !important stays — it is what makes the View-as ring
+   and fill beat the other state rules (see the drag-ghost note below) — it
+   just no longer claims the image layer.
+   KNOWN AND WANTED CONSEQUENCE: a `me` puck in the crew palette that is busy
+   or unavailable now shows the grey blend (.rpuck.busy/.no .puck), which it
+   previously hid. The palette telling you you are busy is honest. */
+.puck.me{background-color:var(--me)!important;color:#fff!important;box-shadow:0 0 0 2px #F0B6FF,0 0 12px 1px rgba(155,47,174,.7)!important;z-index:2;position:relative}
 .puck.me .nm{color:#fff;font-weight:700}
 .puck.hl{box-shadow:0 0 0 2px var(--accent),0 0 10px -1px rgba(59,198,232,.7);border-color:var(--accent)}
 /* half-visible, not gone (owner, 7 Aug 26 — was .18, which made the rest
@@ -3728,6 +3742,16 @@ body.dw-lock{overflow:hidden}
 .sb-warn .wln-mute{flex:0 0 auto;background:none;border:0;color:inherit;opacity:.5;cursor:pointer;font-size:12px;line-height:1.3;padding:0 3px;border-radius:5px}
 .sb-warn .wln-mute:hover{opacity:1;background:rgba(255,255,255,.08)}
 .sb-warn .wln.muted{opacity:.55}
+/* THE WAY OUT, BESIDE THE REASON (owner's ruling D19; walk find, 22 Sep 26).
+   Only the no-leave-war-period check grows an action, and it is the same
+   recipe as the week's .witem-act so the two lists match. The row is allowed
+   to WRAP only when it carries one (:has), so the button drops to its own
+   line instead of squeezing the sentence — this panel is narrow on a desktop
+   and narrower on a phone — and every other warning row keeps its existing
+   single-line shape byte for byte. */
+.sb-warn .wln:has(.wln-act){flex-wrap:wrap}
+.sb-warn .wln-act{flex:0 0 auto;margin-top:3px;background:var(--panel-2);border:1px solid var(--edge-2);color:var(--ink);cursor:pointer;font-size:11px;font-weight:600;line-height:1.3;padding:2px 7px;border-radius:6px;white-space:nowrap}
+.sb-warn .wln-act:hover{background:var(--accent);border-color:var(--accent);color:#fff}
 /* the "N hidden" reveal for muted checks — always shown here (not the phone-only
    caret rule), so a muted check is reachable to un-mute on either width */
 .sb-warn .wmuted-h{display:flex;align-items:center;gap:3px;cursor:pointer;font-size:11px;color:var(--ink-3);padding:4px 7px;margin-top:2px;border-radius:6px}

@@ -826,7 +826,13 @@ const soloTrace=(di:any,pf:any)=>{
    create it — '' for every other check, for a member, and whenever a period
    already covers the day. Asked of the hook, so the button and the sentence
    beside it cannot ever name different years. */
-function mkPeriod(w:any,di:any){
+/* EXPORTED because the board's side panel draws this same check (boardWarnHTML
+   in ui/board.ts) and carried only the mute ✕ — so on the one surface where a
+   scheduler actually works the day and publishes it, the app named what was
+   missing and offered no way out (walk find, 22 Sep 26, on Sat 6 Feb 28). One
+   body, so the button and the sentence beside it can never name different
+   years, and only this check ever grows an action. */
+export function mkPeriod(w:any,di:any){
   return w&&w.code==='OIL_NO_PERIOD'&&canEditSched()?HOOKS.oilNoPeriod(+di):'';
 }
 export function dayWarnHTML(di:any){

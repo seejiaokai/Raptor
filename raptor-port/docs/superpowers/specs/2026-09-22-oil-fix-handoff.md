@@ -1,4 +1,29 @@
-# HANDOFF — every reviewer finding and every job is built; the WALK is what is left (22 Sep 26, overnight)
+# HANDOFF — the WALK IS DONE; three defects found and fixed, one item is the owner's call (22 Sep 26)
+
+**This supersedes the overnight copy below, which asked for the walk.** It has been done: the door
+was found, all seven built jobs were driven in the real app, and the seven screen-level wording items
+are settled. The evidence sheet is `raptor-port/docs/handpass/2026-09-22-oil-walk.md` — read that
+first; it carries the `Walk:` line, the re-marked roll-call and what was NOT walked.
+
+## What the walk changed
+
+| | |
+|---|---|
+| **The door** | The board's PERSONAL INPUTS panel ships FOLDED and draws no rows, so the request's edit button was absent rather than hidden. `openInputs` in `scripts/handpass/lib.mjs` opens it, with both traps written down |
+| **Found and fixed** | Undo's boundary was wired only to the page's Undo, which the board covers — so it could never fire; a live claim row said "nothing here can earn" beside a puck saying a man earns; D18's second man was paid and drawn inert with no switch; D19's way out was missing on the board |
+| **Wording settled** | 8 fixed ("✓ OIL done", measured at 390px) · 9 fixed (the viewer's own stripe) · 11 fixed (the board's count) · 13 fixed · **10 and 17 were never defects** — the message element fades rather than being removed, so the earlier pass mis-measured them |
+| **The owner's call** | **Item 12** — 71 tap targets at 390px, median 15px tall, all under 44px. No cheap fix; three options and a recommendation filed as `[OIL-PHONE-TARGETS]` in `OUTSTANDING.md` |
+| **Rulings recorded** | **D24** (SC spare, AVALON and BB become creditable, default still nothing — queued, NOT built here) and **D25** (OIL is earned leave, not pay) |
+
+## What is left before "merge live"
+
+1. His five-minute look, pictures first — `docs/img/handpass/2026-09-21-oil/`.
+2. His decision on item 12.
+3. Nothing else. Every reviewer finding was already closed; every job is now driven.
+
+---
+
+# (superseded) HANDOFF — every reviewer finding and every job is built; the WALK is what is left
 
 **Branch `claude/oil-auto-remove-design`, PR #424. Nothing merged. Holding for the owner's
 "merge live".** This replaces the earlier copy of this file, which asked for the reviews to be read

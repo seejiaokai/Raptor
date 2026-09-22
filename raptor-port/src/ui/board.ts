@@ -18,7 +18,7 @@ import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE } from './html'
+import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod } from './html'
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
@@ -437,6 +437,14 @@ export function boardWarnHTML(di: number) {
       wh += `<div class="wln ${w.sev}${on}${sel}" data-wdi="${di}" data-wix="${ix}" title="Jump to the puck that caused this">`
         + `<span class="wln-t">${wtext(w)}</span>`
         + (canMute ? `<button class="wln-mute" data-woff="${di}.${ix}" title="Hide this check — it comes back if the situation changes">✕</button>` : '')
+        /* THE WAY OUT, BESIDE THE REASON, HERE TOO (owner's ruling D19; walk
+           find, 22 Sep 26). The week's list already carried this and the
+           board's did not, so the surface that tells a scheduler the credit can
+           never land was the one that left him to go and find the Leave War
+           himself. Same helper as the week (mkPeriod), so the button and the
+           sentence cannot name different years, and no other check grows an
+           action. */
+        + (mkPeriod(w, di) ? `<button class="wln-act" data-mkperiod="${esc(mkPeriod(w, di))}" title="Creates the ${esc(mkPeriod(w, di))} leave war period in draft and takes you to the Leave War to set its bidding window">Create the ${esc(mkPeriod(w, di))} period</button>` : '')
         + `</div>`
     })
     if (muted.length) {

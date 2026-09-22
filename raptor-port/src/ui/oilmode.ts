@@ -49,7 +49,7 @@ import { INPUTS, inpId } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { envMin, uniformOil, dayOilWork, oilCapableItems, rowItemKey, groundItemKey, inputItemKey, type OilWork } from '../engine/oil'
-import { oilEvidence, oilEvidenceOf, oilEarnedWork, oilInputEligible, personDecision, type OilEvidence, type OilDecisions } from '../engine/oilev'
+import { landedExtras, oilEvidence, oilEvidenceOf, oilEarnedWork, oilInputEligible, personDecision, type OilEvidence, type OilDecisions } from '../engine/oilev'
 import { OILDAY, setOilDay, afterSchedMutate, esc } from '../state/view'
 import { CURWEEK } from '../engine/waves'
 import { stashKeys, stashEditDays } from '../engine/weekstash'
@@ -413,8 +413,16 @@ export function toggleOilPerson(di: any, person: any, item: string): boolean {
  *  CSS picks; the builder never asks the width, so a resize answers instantly.
  *
  *  ONE FIT LESSON, from the comp that had to be drawn before this was built: at
- *  390px "✓ Done with OIL" ran off the right edge. It is "✓ Done". Re-draw the
- *  comp before lengthening any label here. */
+ *  390px "✓ Done with OIL" ran off the right edge. Re-draw the comp — or, as on
+ *  22 Sep 26, MEASURE THE BUILT BAR at 390px — before lengthening any label
+ *  here.
+ *
+ *  IT IS "✓ OIL done", NOT "✓ Done" (walk find, 22 Sep 26 — hand-pass finding
+ *  8). On a DESKTOP, with the mode on, this bar's button and the board's own
+ *  `#sbDone` were BOTH on screen reading "✓ Done", four characters apart and
+ *  doing different things: this one leaves the mode, that one closes the whole
+ *  board. Measured at 390px before changing it — five characters shorter than
+ *  the label that overflowed, and it still fits with room to spare. */
 export function dayBarHTML(di: any, tplBtn: string, canEdit = true): string {
   /* a reader who cannot edit the day is not offered the mode at all, rather than
      offered it and refused at the click (Fable, 21 Sep 26) */
@@ -425,7 +433,7 @@ export function dayBarHTML(di: any, tplBtn: string, canEdit = true): string {
   const head = on ? `<span class="daybar-h on">OIL EARN</span>` : `<span class="daybar-h">THIS DAY</span>`
   const oilBtn = !oil ? ''
     : on
-      ? `<button class="mbtn daybtn done" data-oilmode="${di}" title="Leave OIL mode and edit the schedule again">✓ Done</button>`
+      ? `<button class="mbtn daybtn done" data-oilmode="${di}" title="Leave OIL mode and edit the schedule again">✓ OIL done</button>`
       : `<button class="mbtn daybtn" data-oilmode="${di}" title="Show who earns OIL on this day, and change it">OIL Earn</button>`
   const blankBtn = on
     ? `<button class="mbtn daybtn blank${bl ? ' on' : ''}" data-oilblank="${di}" title="${bl ? 'Let this day earn again' : 'Nothing today earns — covers anything added later too'}">Nothing today earns</button>`
@@ -565,6 +573,21 @@ export function oilEligible(di: any, person: any, item: string): boolean {
      never offer a toggle on a claim the credit path has already ruled out. */
   const inp = ev.inputs.find(i => inputItemKey(i.iid) === item && i.person === String(person))
   if (inp) return oilInputEligible(d, inp)
+  /* D18's EXTRAS — the second man the scheduler stood on a claim's row. The
+     fallback below asks `dayOilWork`, whose ground walk skips every `src` row
+     whole, so he had no span tagged with the claim's item and came back
+     ineligible: drawn inert, "nothing measurable to earn from here", no item
+     and no switch — while `oilEarnedWork` was paying him. Measured on the
+     everything-Saturday: a man on NOTHING, dragged onto a landed Training row
+     through the row's own drop zone, was paid HO and told he earned nothing.
+     Same question, same body as the money now (walk find, 22 Sep 26).
+
+     Asked WITHOUT the decision: eligibility means "could this man earn from
+     this item", and it must not move when somebody switches him off, or his
+     puck would go inert and he could never be switched back on. */
+  const claim = ev.inputs.find(i => inputItemKey(i.iid) === item)
+  if (claim && claim.win && oilInputEligible(d, claim)
+      && landedExtras(d, claim.iid, String(claim.person)).includes(String(person))) return true
   const work = dayOilWork(d, { expandAll: (win, it) => oilSentinelPeople(di, it, win) })
   return (work[String(person)] || []).some(w => String(w.item || '') === item)
 }

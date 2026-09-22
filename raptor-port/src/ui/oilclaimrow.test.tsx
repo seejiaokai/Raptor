@@ -27,11 +27,12 @@ import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
+import { PEOPLE } from '../engine/people'
 import { SCHED } from '../engine/publish'
 import { HOOKS } from '../engine/hooks'
 import { ensureRowIds } from '../engine/rowids'
 import { setOilDay } from '../state/view'
-import { toggleOilMode } from './oilmode'
+import { toggleOilMode, oilDayFigures } from './oilmode'
 import { openScheduler } from './board'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -123,6 +124,34 @@ describe('a claim row and the puck beside it agree about money', () => {
       expect(r.cell, 'it does not borrow the per-person sentence').not.toMatch(PER_PERSON)
       expect(r.puck, 'and its puck agrees nothing is earned').not.toMatch(EARNS)
     })
+  })
+
+  /* D18's SECOND MAN — the money pays him and the mode said he earns nothing.
+     Walk find, 22 Sep 26: Cobra earned NOTHING on the Saturday, was dragged
+     onto Talisman's landed Training row through the row's own drop zone, and
+     the day then paid him HO — so job 8's engine half works. His puck in the
+     mode was drawn INERT, titled "Cobra — nothing measurable to earn from
+     here", carrying no item and no switch. The screen contradicted the money
+     about a man's entitlement AND offered no way to change it.
+
+     The cause is two bodies: the money moved to `oilEarnedWork` (oilev.ts,
+     where D18 was built) while `oilEligible` still asked `dayOilWork`, whose
+     ground walk skips every `src` row whole. */
+  it('D18 — a second man on a claim row is drawn earning, not inert', async () => {
+    claim()
+    addRow(SAT, { prog: 'TRAINING', str: '0900', end: '1700', who: 'bane', src: 'cl1', more: ['stiff'] })
+    await openMode()
+    expect(oilDayFigures(SAT)['stiff'], 'the money pays the second man').toBeTruthy()
+    /* by his DISPLAYED name, derived — an inert puck carries no data-oilp at
+       all, which is half the defect, so the id cannot be the only handle */
+    const name = (PEOPLE as any)['stiff'].cs
+    const his = $$('.oilpk').filter(p =>
+      p.getAttribute('data-oilp') === 'stiff' ||
+      (p.getAttribute('title') || '').startsWith(name))
+    expect(his.length, 'his puck is on the row').toBeGreaterThan(0)
+    const inert = his.filter(p => p.className.includes('inert'))
+    expect(inert.map(p => p.getAttribute('title')), 'none of his pucks is inert').toEqual([])
+    expect(his.some(p => (p.getAttribute('title') || '').match(EARNS)), 'and one of them says he earns').toBe(true)
   })
 
   it('an ⓘ row keeps it too', async () => {

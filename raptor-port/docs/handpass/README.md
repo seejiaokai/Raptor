@@ -32,21 +32,33 @@ DOM, so every board selector is scoped `#schedBoard … :visible`; the board's c
 request dialog is `#inpEditPop` with `#inpEditSave`, and pressing Add raises the OIL question
 `[data-testid="oilconf"]` ON TOP of the form, which must be answered or nothing is filed.
 
-## STILL TO WALK — job 1's last mile (22 Sep 26)
+## THE DOOR IS FOUND, AND THE WALK IS DONE (22 Sep 26)
 
-Everything in job 1 is proved through its own production function with a test that was red first,
-and the new wording is proved live on the built board (`docs/img/handpass/2026-09-21-oil/job1-wording.png`).
-**What is NOT yet walked** is the last step of the money story through the real dialog: opening a
-landed request, changing who it belongs to, and watching the OIL question come up for the new man.
+The blocker this section used to carry — "the request's own edit button is NOT in the DOM on the
+board the driver opens" — was never a missing button. **The board's PERSONAL INPUTS panel folds to a
+one-line summary by default** ("3 inputs · 3 on programme · show ⌄"), and folded it renders **no rows
+at all**, so the button is ABSENT rather than hidden. The header itself is the toggle (`data-pitog`).
+Pressing it: 0 → 3 edit buttons.
 
-Steps 1–4 of that story DO drive cleanly and were re-confirmed on this branch — publish the
-Saturday, refuse the requester in the mode, publish the amendment, and his cell goes blank while
-the other man keeps his.
+`lib.mjs` now has `openInputs(page, di)`. Call it before reaching for any request row on the board.
+Two traps are baked into it:
 
-**The blocker, so the next session does not rediscover it:** the request's own edit button
-(`data-inpedit`, drawn by `inpEditLabel` in `ui/html.ts`) is NOT in the DOM on the board the
-driver opens — `document.querySelectorAll('[data-inpedit="<iid>"]')` returns nothing, and
-`HOOKS.editMode()` reads false there. `lib.mjs`'s `board()` does go to `editsched` first, so the
-cause is something else — most likely the panel that carries the button is not the one the landed
-request is drawn on. Find that door once and every remaining scenario that edits a request gets
-easier.
+- **`data-pitog` rides the header in BOTH states**, so its presence says nothing about which way the
+  panel is folded — a naive "is it shut?" check closes an open one. Read the ROWS.
+- **the fold is `!readOnly`**, which is why the rows DO appear once the OIL mode is on — and why the
+  edit button there is correctly swapped for the OIL cell (fix 5).
+
+With that open, every job on the branch has been driven. The walk's own sheet is
+`2026-09-22-oil-walk.md`; it carries the `Walk:` line, three defects the walk found and fixed, and
+what was deliberately not walked.
+
+**Two more traps this walk paid for, so nobody pays again:**
+
+- **the Leave War's PERIOD SELECTOR, not its grid.** The grid draws only the SELECTED period's cells
+  — 353 of them, all 2026 — which reads exactly like "the war stops at 2026". The selector carries
+  TWO periods, Jan–Dec 26 and Jan–Dec 27, so the first uncovered year is **2028**. Reading the grid
+  nearly produced a false defect report against a check that was behaving correctly.
+- **"Publish day" is drawn five times** (desktop and phone board twins plus the week), so a bare
+  `:visible` + `.first()` presses a copy nobody can see and nothing happens. Go through `tap()`. And
+  a publish is REFUSED while the day carries hard conflicts — Mon–Thu all do in the demo, so
+  **Friday is the only clean weekday** to build a publish fixture on.

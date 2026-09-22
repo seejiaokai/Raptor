@@ -554,7 +554,14 @@ function effectiveStand(day: any, inp: OilInputEv): OilInputEv['stand'] {
  *  credited on the day he is actually on it and not on every day the request
  *  happens to cover. Sentinels are never real work here; the requester is
  *  excluded because the input half already carries him. */
-function landedExtras(day: any, iid: string, owner: string): string[] {
+/** The men the SCHEDULER stood on a claim's landed row beside the requester
+ *  (D18). EXPORTED because the mode has to ask exactly this question too:
+ *  `oilEligible` used to fall back to `dayOilWork`, whose ground walk skips
+ *  every `src` row whole, so an extra the money was paying was drawn INERT —
+ *  "nothing measurable to earn from here" — with no item and no switch. The
+ *  screen contradicted the money about a man's entitlement and offered no way
+ *  to change it (walk find, 22 Sep 26). One body, so they cannot disagree. */
+export function landedExtras(day: any, iid: string, owner: string): string[] {
   const row = (day && day.ground || []).find((g: any) => g && String(g.src || '') === iid)
   if (!row || row.cx || row.info) return []
   const out: string[] = []
