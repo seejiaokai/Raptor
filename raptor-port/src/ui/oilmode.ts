@@ -592,7 +592,18 @@ export function oilItemCellHTML(di: any, item: string, name: any, cls: string): 
         : st === 'mixed' ? 'Part of this row earns — tap to make all of it earn'
           : st === 'off' ? 'This kind of event earns nothing — tap to make it earn'
             : 'Earns OIL — tap to stop this item earning'
-  const cl = masked ? ' off' : st === 'mixed' && mark == null ? ' on mixed' : ' on'
+  /* THE PAINT HAS TO CARRY AS MANY STATES AS THE WORDS DO (walk, 22 Sep 26).
+     Above, five sentences. Below, there were two colours — green for earning,
+     struck-out grey for switched off by hand — and everything that was not
+     switched off by hand fell into the green. So an AVALON line, whose own
+     tooltip reads "This kind of event earns nothing", was drawn in exactly the
+     colour that means "this is earning". D24 says the four exempt kinds all
+     start OFF; on screen they started green, which is the one thing the colour
+     exists to say. Step 4 is what created the case — before it these kinds were
+     skipped before the walk and drew no switch at all.
+     `dflt` is off-by-default: quiet, not struck out, because nobody struck it
+     out — it is a kind that has never earned, and one tap turns it on. */
+  const cl = masked ? ' off' : st === 'mixed' && mark == null ? ' on mixed' : (st === 'off' && mark == null) ? ' dflt' : ' on'
   return `<span class="${cls} oilitem${cl}" data-oilitem="${esc(item)}" data-oilday="${+di}"`
     + ` title="${esc(ttl)}">${esc(txt) || '&nbsp;'}</span>`
 }

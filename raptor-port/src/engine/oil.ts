@@ -134,7 +134,7 @@ export const groundItemKey=(g:any)=>(g&&g.src)?inputItemKey(g.src):rowItemKey(g&
    on — ground rows, duty desks, sim seats and passengers, the Common Programme,
    and every extras line — but NEVER on a flying line's cockpit, and never for a
    row that has no id yet (see `putAny`). */
-export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:string)=>string[];onItem?:(item:string)=>void}){
+export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:string)=>string[];onItem?:(item:string,dflt:boolean)=>void}){
   const out:Record<string,OilWork[]>={};
   /* EVERY ROW THIS WALK REACHES WITH REAL TIMES, whether or not anybody is
      sitting on it (21 Sep 26). The mode needs to know which events CAN earn so
@@ -142,7 +142,15 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
      desk, an SC spare, a cancelled or ⓘ row, a desk with no times. Reported
      from THIS walk rather than from a second rulebook, so the switch and the
      money can never disagree about what is capable of earning. */
-  const reach=(it:string)=>{ if(opts&&opts.onItem)opts.onItem(it); };
+  /* THE ROW'S OWN ANSWER TRAVELS WITH IT (walk, 22 Sep 26). `reach` used to
+     report only that a row CAN earn, so an EMPTY exempt row — an AVALON RUNNER
+     with nobody on it — had nothing to say and the switch fell through to
+     "Earns OIL — tap to stop this item earning". Tapping that would have cost a
+     real amendment on a published day for a decision that moves no money, which
+     is the same fault step 2 fixed for rows that can never earn at all. The
+     default is decided once, here, in the walk that also decides the money, so
+     the two cannot drift. */
+  const reach=(it:string,dfl:boolean)=>{ if(opts&&opts.onItem)opts.onItem(it,dfl); };
   const rid=(v:any)=>{const id=whoId(v);return realP(id)?id:null;};
   let src:OilWorkSrc='Duty';
   /* the item each span is being collected for — set at the top of every row so
@@ -217,7 +225,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
          hidden here, which is why "SC SPARE offers the switch" had nowhere to
          appear. A line with no readable times still reaches nothing — that is
          D31, and it is the `win` test above, not this one. */
-      reach(item);
+      reach(item,!exemptWave&&!f.spare);
       (f.aircraft||[]).forEach((ac:any)=>{
         if(ac.cx)return;                                 // a cancelled jet is not work, ever
         /* BOTH SPARE FLAGS (Codex OSE-R2-02). The exclusion this replaces read
@@ -245,7 +253,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
     item=rowItemKey(r.rid); dflt=true;
     const win=w2(parseHM(r.str),parseHM(r.end));
     if(!win)return;
-    reach(item);
+    reach(item,true);
     /* the same id set events.ts rowIds enumerates: seats, pax, extras — sim who
        is free text (1C), never a person */
     [r.p,r.w].concat(r.pax||[]).concat(r.more||[])
@@ -263,7 +271,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
       item=rowItemKey(r.rid); dflt=!exemptDuty;
       const win=w2(parseHM(r.str),parseHM(r.end));
       if(!win)return;
-      reach(item);
+      reach(item,!exemptDuty);
       [r.id,...(r.more||[])].forEach((v:any)=>putAny(v,win));
     });
   });
@@ -271,7 +279,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
     if(g.cx||g.src)return;                               // src = an accepted input: the ask-flow's
     if(g.info)return;                                    // ⓘ info-only: shown, never worked — mints no OIL
     item=groundItemKey(g); dflt=true;
-    { const gw=w2(parseHM(g.str),parseHM(g.end)); if(gw)reach(item); putWho(g.who,gw,g.more); }
+    { const gw=w2(parseHM(g.str),parseHM(g.end)); if(gw)reach(item,true); putWho(g.who,gw,g.more); }
   });
   (day.allhands||[]).forEach((x:any)=>{
     if(x.cx)return;
@@ -279,7 +287,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
     item=rowItemKey(x.rid); dflt=true;
     const win=w2(parseHM(x.str),parseHM(x.end));
     if(!win)return;
-    reach(item);
+    reach(item,true);
     /* the Common Programme's own extras array joins the rest. Nothing on screen
        drops a puck there — its "extras" append to the `who` list beside it — but
        the engine reads `more` as tasked work everywhere else (events.ts), and a
@@ -427,5 +435,16 @@ export function dayOilCredits(day:any,opts?:{expandAll?:(win:[number,number],ite
 export function oilCapableItems(day:any):Set<string>{
   const out=new Set<string>();
   dayOilWork(day,{expandAll:()=>[],onItem:(it:string)=>{if(it)out.add(it);}});
+  return out;
+}
+/** WHAT A MAN PUT ON THIS ROW WOULD GET, before anybody decides anything —
+ *  `item -> true | false`. The switch needs this for a row NOBODY is standing on
+ *  yet: counting the men there gives zero on and zero off, which used to fall
+ *  through to "earns", and on an exempt kind that is the screen telling the
+ *  admin something false about money. Same walk as `oilCapableItems` and the
+ *  money itself, so it cannot disagree with either. */
+export function oilItemDefaults(day:any):Map<string,boolean>{
+  const out=new Map<string,boolean>();
+  dayOilWork(day,{expandAll:()=>[],onItem:(it:string,dfl:boolean)=>{if(it&&!out.has(it))out.set(it,dfl);}});
   return out;
 }

@@ -511,8 +511,18 @@ export function oilSeatDeco(di:any,id:any,key:any,itemOf?:string):{oil:any;chip:
        earns OIL on a Tuesday. On such a day the count IS the whole answer, and
        D37 says to read it as what it is: who has nothing else on at that time,
        not a promise that they will be there. */
-    const some=sum.earns&&sum.bar==null&&sum.earn>0;
-    const txt=sum.unrecorded?'?':some?`${sum.earn} of ${sum.n} earn`:String(sum.n);
+    /* NO SINGLE AMOUNT IS TWO DIFFERENT STATES, and reading them as one put a
+       false sentence about money on the face of an issued day (walk, 22 Sep 26).
+       `bar` is null whenever the men behind the puck do not all get the SAME
+       amount — which is true both when some earn nothing AND when every one of
+       them earns but at two different rates. The second case was drawn with the
+       first's words: a chip reading "30 of 30 earn" captioned "Some of these men
+       earn OIL and some do not". Two sentences contradicting each other on one
+       puck, over money, on a published document. They are split here. */
+    const mixedAmt=sum.earns&&sum.bar==null&&sum.n>0&&sum.earn===sum.n;   // all earn, at different amounts
+    const partial=sum.earns&&sum.bar==null&&sum.earn>0&&sum.earn<sum.n;   // some earn, some do not
+    const some=mixedAmt||partial;
+    const txt=sum.unrecorded?'?':mixedAmt?`All ${sum.n} earn`:partial?`${sum.earn} of ${sum.n} earn`:String(sum.n);
     /* WHICH ANSWER IS THIS ([OIL-SEATS-CAN-EARN] step 10, D37)? Since step 9 the
        same puck can show two different numbers — the list the day went out with,
        and the list as things stand today. A number that does not say which is
@@ -523,9 +533,10 @@ export function oilSeatDeco(di:any,id:any,key:any,itemOf?:string):{oil:any;chip:
       ?'This schedule was issued before the app kept a record of who was behind this puck'
       :(!sum.earns
         ?`${sum.n} with nothing else on at that time — tap to see them`
-        :some?'Some of these men earn OIL and some do not — tap to see each one'
-          :sum.bar?`All ${sum.n} earn ${sum.bar==='FO'?'a full day':'half a day'} — tap to see each one`
-            :`None of these ${sum.n} earn OIL today — tap to see each one`)+from;
+        :mixedAmt?`All ${sum.n} earn — some a full day, some half a day — tap to see each one`
+          :partial?'Some of these men earn OIL and some do not — tap to see each one'
+            :sum.bar?`All ${sum.n} earn ${sum.bar==='FO'?'a full day':'half a day'} — tap to see each one`
+              :`None of these ${sum.n} earn OIL today — tap to see each one`)+from;
     return {oil:sum.bar?{bar:sum.bar}:null,
       chip:`<span class="oilcount${some?' some':''}" data-oilsent="${esc(item)}" data-oilday="${+di}" data-oilver="${esc(ver)}" title="${esc(ttl)}">${txt}</span>`};
   }

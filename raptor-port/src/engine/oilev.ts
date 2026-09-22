@@ -47,7 +47,7 @@ import { CURWEEK } from './waves'
 import { stashHas, stashGet, stashDays } from './weekstash'
 import { PEOPLE, whoId, isSpecial } from './people'
 import { HOOKS } from './hooks'
-import { dayOilWork, envMin, uniformOil, inputItemKey, rowItemKey, groundItemKey, type OilWork } from './oil'
+import { dayOilWork, oilItemDefaults, envMin, uniformOil, inputItemKey, rowItemKey, groundItemKey, type OilWork } from './oil'
 
 /* the item-address grammar lives in engine/oil.ts, beside the walk that tags
    every span with it — re-exported here so callers of the evidence block have
@@ -276,8 +276,16 @@ export function spanDefault(day: any, ev: OilEvidence, person: string, item: str
  *  would tell the admin something false about half the row (Fable S8).
  *
  *  The admin's own mark answers outright when he has made one; otherwise the
- *  spans speak. An item nobody is standing on yet reads ON — put a man there and
- *  he earns, and OIL7 says the switch covers later additions too. */
+ *  spans speak.
+ *
+ *  AN ITEM NOBODY IS STANDING ON YET used to read ON, reasoned as "put a man
+ *  there and he earns, and OIL7 says the switch covers later additions too".
+ *  That is right for an ordinary row and FALSE for an exempt one: put a man on
+ *  an empty AVALON RUNNER and he earns nothing, yet the switch read "Earns OIL
+ *  — tap to stop this item earning", and tapping it on a published day would
+ *  have cost a real amendment for a decision that moves no money (walk, 22 Sep
+ *  26, on the AVALON desk's two empty rows). The empty case now asks the WALK
+ *  what a man there would get, instead of counting a row with nobody on it. */
 export function itemState(day: any, ev: OilEvidence, item: string): 'on' | 'off' | 'mixed' {
   const mark = itemMark(ev, item)
   if (mark === 0) return 'off'
@@ -291,7 +299,10 @@ export function itemState(day: any, ev: OilEvidence, item: string): 'on' | 'off'
     }
   }
   if (off && on) return 'mixed'
-  return off ? 'off' : 'on'
+  if (off) return 'off'
+  if (on) return 'on'
+  /* nobody on the row: its own kind is the only honest answer */
+  return oilItemDefaults(day).get(item) === false ? 'off' : 'on'
 }
 
 /* ---- building the block -------------------------------------------------- */

@@ -6005,6 +6005,12 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
   font-size:11px;font-weight:600;min-height:20px;border:1px solid transparent;overflow:hidden}
 .oilitem.on{background:rgba(47,166,92,.18);border-color:var(--oil);color:var(--ink)}
 .oilitem.off{background:var(--panel-2);border-color:var(--edge-2);color:var(--ink-3);text-decoration:line-through}
+/* OFF BY DEFAULT, not switched off by hand — the four exempt kinds (D24). It
+   must not be green (green says "earning", and these earn nothing) and it must
+   not be struck out (nobody struck it out; one tap turns it on). Quiet, upright,
+   clearly still a control. Added after the 22 Sep 26 walk found an AVALON line
+   painted green while its own words said it earns nothing. */
+.oilitem.dflt{background:var(--panel-2);border-color:var(--edge-2);color:var(--ink-2)}
 .oilitem.none{cursor:default;color:var(--ink-3)}
 .seat.oilpk{cursor:pointer}
 .seat.oilpk.inert{cursor:default}
