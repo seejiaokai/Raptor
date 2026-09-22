@@ -92,10 +92,11 @@ in-flight and risk-reducing** first.
    stops further growth; this is the trim itself. Do it after OIL merges, not before —
    a third of tonight's new lines are that task's scaffolding and become archive the day it
    closes. See the item below.
-**TOP OF THE QUEUE (21 Sep 26, late).** 1) Finish **[OIL-AUTO-REMOVE]** — the fixes are in and
-pushed; what remains is executing the two scenario lists in the running app, then the owner's
-"merge live". 2) Then **[HUMAN-RETEST]**. 3) Then **[DOC-TRIM]** — after OIL merges, because a
-third of that task's new docs become archive the day it closes.
+**TOP OF THE QUEUE (22 Sep 26).** **[OIL-AUTO-REMOVE] IS MERGED AND CLOSED.** 1) **[OIL-SEATS-CAN-EARN]**
+— the next job, plan written and awaiting its cross-provider red-team, see
+`raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-can-earn-plan.md`. 2) **[DOCS-GUARD]**, whose
+scope and order are settled by D30. 3) **[HUMAN-RETEST]**. 4) **[DOC-TRIM]** — now unblocked, because
+a third of the OIL scaffolding became archive the day it closed.
 **Open for the owner:** he has not picked whether to do the one cheap `CLAUDE.md` trim (~30 min,
 a move not a cut, ~700 lines off EVERY later session) as a warm-up before the scenarios, or to
 leave all of [DOC-TRIM] until after the merge. Either is fine; the ratchet already stops growth.
@@ -647,7 +648,13 @@ that after this task is truely completed and free of bugs"). Start from
 which records why the static pass missed them, and from the scenario lists Fable and Codex wrote for
 the OIL pass — the same scenario-design-then-execute shape is what this needs.
 
-### [OIL-AUTO-REMOVE] Taking OIL off — BUILT 21 Sep 26, holding for "merge live"
+### [OIL-AUTO-REMOVE] Taking OIL off — **MERGED 22 Sep 26 (D34). CLOSED.**
+
+**Live on `main` as of 22 Sep 26**, every check green, on his "merge live". **His five-minute look
+was WAIVED** — the evidence is the walk and the gates, not an owner sighting; do not assume the
+walked Saturday was eyeballed. The walk's own evidence sheet is
+`raptor-port/docs/handpass/2026-09-22-oil-walk.md`. **Stays live in this file, not archived**, because
+it warns a later session off re-doing the four walk defects and off assuming the owner looked.
 
 > **BUG-CHECKED AND FIXED 21 Sep 26. The remaining job is the hands-on scenario pass.**
 > Cross-provider check by Fable 5.1 and Astra/Codex, both read-only, neither the model that
@@ -847,7 +854,13 @@ every measurable seat offers the switch, but where there is no window a credit w
 rather than earned. The refusal must NAME its reason — never a silent absence.
 
 **Tier: FULL** — money, reaches an issued day, adds roll-call rows on every seat type. **Sequencing,
-his: NEXT, after `[OIL-AUTO-REMOVE]` merges**, ahead of `[OIL-NEXT-TWO]`, in a FRESH chat. The
+his: NEXT — `[OIL-AUTO-REMOVE]` merged 22 Sep 26**, so this is unblocked and at the head of the
+queue, ahead of `[OIL-NEXT-TWO]`. **THE PLAN IS WRITTEN:**
+`raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-can-earn-plan.md` — it carries D24/D27/D28/
+D31/D32/D33/D35, the roll-call of all six seat types, four findings read off the code (the earn
+default is ON today; the earn rule is written twice; the sentinel drop is one helper not six call
+sites; placement is unrestricted today) and the order of work. **Red-team it across BOTH providers
+before a line is written.** The
 display-versus-earning cost analysis and the size estimate are in
 `raptor-port/docs/handpass/2026-09-22-oil-walk.md` §11 and §11a. Rulings: `DECISIONS.md` D24, D27, D28.
 
