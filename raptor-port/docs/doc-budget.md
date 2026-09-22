@@ -37,6 +37,9 @@ This is D14's substance, and it applies to every doc, every commit message and e
 - **This is not the plain-language rule's opposite.** That rule says never thin the reasoning, only
   the vocabulary. This one says do not say the same thing three times. Both can hold: say it once,
   fully, in ordinary words.
+- **Chat context saved into the repo is SUMMARISED, never dumped** (owner, D62, 23 Sep 26). When a
+  long session persists its working context — a handoff, a context doc, a closing note — it writes
+  the decisions, the state and the next step, not the conversation. The repo must not bloat.
 
 ## 3. Prune on write
 
