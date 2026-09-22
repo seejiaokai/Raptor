@@ -53,6 +53,7 @@ import { envMin, uniformOil, dayOilWork, oilCapableItems, rowItemKey, groundItem
 import { landedExtras, oilEvidence, oilEvidenceOf, oilEarnedWork, oilInputEligible, oilSentOf, personDecision, itemMasked, itemMark, itemState, spanDefault, type OilEvidence, type OilDecisions } from '../engine/oilev'
 import { OILDAY, setOilDay, afterSchedMutate, esc } from '../state/view'
 import { CURWEEK } from '../engine/waves'
+import { parseHM, win } from '../engine/time'
 import { stashKeys, stashEditDays } from '../engine/weekstash'
 import { undoMark } from '../undo'
 
@@ -826,24 +827,33 @@ export const oilFromWords = (ver: any) => (ver ? OIL_FROM_ISSUED : OIL_FROM_LIVE
  *  rather than assumed impossible). A claim is named by WHAT IT IS, never by
  *  what is drawn in its cell — hand-pass finding 14, which produced history
  *  lines like "Sidewinder earns nothing from SidewinderFO". */
-export function oilItemLabel(di: any, item: string): { name: string, when: string } {
+export function oilItemLabel(di: any, item: string): { name: string, when: string, s: number | null, e: number | null } {
   const d: any = DAYS[+di] || {}
   const hhmm = (v: any) => { const t = String(v || '').replace(':', '').trim()
     return t.length === 4 ? `${t.slice(0, 2)}:${t.slice(2)}` : t }
   const span = (a: any, b: any) => { const x = hhmm(a), y = hhmm(b)
     return x && y ? `${x}–${y}` : x || y || '' }
   const dayLbl = String(d.dt || d.dow || '').trim()
-  const out = (name: any, a?: any, b?: any) => {
+  /* THE EVENT'S WINDOW IN MINUTES, as well as its words: [ALL-AVAIL-WINDOW]
+     asks whether it sits inside a crowd man's own brief or debrief (D38). An
+     open end is left open rather than guessed — a row with no end time cannot
+     be said to clash with anything, and inventing one would put a flag on a
+     man for a clash that may not exist. */
+  const out = (name: any, a?: any, b?: any, sm?: number | null, em?: number | null) => {
     const w = span(a, b)
+    const s0 = sm != null ? sm : parseHM(a), e0 = em != null ? em : parseHM(b)
+    const ww = s0 != null && e0 != null ? win(s0, e0) : null
     return { name: String(name || 'This event').trim() || 'This event',
-             when: [dayLbl, w].filter(Boolean).join(' · ') }
+             when: [dayLbl, w].filter(Boolean).join(' · '),
+             s: ww ? ww[0] : null, e: ww ? ww[1] : null }
   }
   if (!item) return out('This event')
-  /* a landed request: the type's LONG name, the same one the history uses */
+  /* a landed request: the type's LONG name, the same one the history uses; its
+     own times are minutes already, and an all-day request has no window */
   if (item.startsWith('i:')) {
     const r = (INPUTS as any[]).find(x => x && String(inpId(x)) === item.slice(2))
     const t = r ? String(r.type || '').trim() : ''
-    if (r) return out(t || 'Request', r.allday ? '' : r.s, r.allday ? '' : r.e)
+    if (r) return r.allday ? out(t || 'Request') : out(t || 'Request', '', '', r.s, r.e)
     return out('Request')
   }
   for (const r of (d.ground || [])) if (r && groundItemKey(r) === item) return out(r.prog, r.str, r.end)
