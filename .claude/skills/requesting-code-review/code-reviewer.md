@@ -54,11 +54,39 @@ Subagent (general-purpose):
     - Security concerns?
     - Integrates cleanly with surrounding code?
 
+    **Shared state and data** (where the diff touches them — these are the
+    changes that pass their own tests and break something elsewhere):
+    - A NEW routine over a structure other code already walks: do its skip
+      rules match its siblings'? Every marker a sibling honours (cancelled,
+      overflow, sentinel entries) is honoured here, or its omission argued.
+    - A widened vocabulary or domain (a new code, a list that grew, a count
+      that became variable): every validator and every pruning filter of the
+      old domain — the ones that DELETE on load are the dangerous ones.
+    - A computation now run over a wider population: every ambient value it
+      reads (the loaded period, the current page, the viewer) — what was
+      always true for the old population may be false for the new rows.
+    - Cached intent that overrides live state: invalidated on every input
+      channel that can move that state; any tolerance sized to the error it
+      has to absorb.
+    - A display transform: every place that compares the shown value with the
+      stored one (change detection, dirty flags, history).
+    - State set from several places: list each assignment with the refreshes
+      that follow it — one missing a refresh its siblings all make is a bug.
+    - An optional input: "not provided" is not defaulted to an empty
+      collection where the code treats empty and absent differently.
+    - A migration or re-keying: compare with what the OLD code showed for each
+      stored shape (read the pre-change reader), not with what the new model
+      says the data meant.
+    - A rename: every script that exercises the system, including checks CI
+      never runs.
+
     **Testing:**
     - Tests verify real behavior, not mocks?
     - Edge cases covered?
     - Integration tests where they matter?
     - All tests passing?
+    - Could each new test fail? None may pass on an empty fixture or leave
+      shared state switched for the tests after it.
 
     **Production readiness:**
     - Migration strategy if schema changed?

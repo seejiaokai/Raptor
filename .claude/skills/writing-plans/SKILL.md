@@ -17,6 +17,10 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 
 **Save plans to:** `docs/superpowers/plans/YYYY-MM-DD-<feature-name>.md`
 - (User preferences for plan location override this default)
+- Before committing the file, check it actually holds the plan — a shell
+  pipeline ending in `> file` creates the file even when an earlier stage
+  fails: `test -s PLAN && grep -q '### Task 1' PLAN`. Prefer one write tool
+  over a `sed` pipeline for copying a plan.
 
 ## Scope Check
 
@@ -41,6 +45,12 @@ configuration, scaffolding, and documentation steps into the task whose
 deliverable needs them; split only where a reviewer could meaningfully
 reject one task while approving its neighbor. Each task ends with an
 independently testable deliverable.
+
+A task whose change shows on screen ends with the browser check that can SEE
+it (the affected browser project or spec), not only its unit tests. The last
+task still runs every gate once; deferring the only check that can see a
+change to the last task turns each task's findings into one big closing slice
+owned by someone who never wrote that code.
 
 ## Bite-Sized Task Granularity
 
@@ -76,10 +86,18 @@ include this section.]
 ---
 ```
 
+**Standing orders belong in the plan.** Search the project's rules for orders
+that fire before a kind of change ("before any layout change, read X and run
+its checklist"). Each one that applies becomes a Global Constraint AND the
+first step of the first task that touches that surface — an order that lives
+only as a sentence in an index does not fire.
+
 ## Task Structure
 
 ````markdown
 ### Task N: [Component Name]
+
+**Model:** [model · thinking level · why, one line — the task's completion report repeats it]
 
 **Files:**
 - Create: `exact/path/to/file.py`
@@ -134,6 +152,17 @@ Every step must contain the actual content an engineer needs. These are **plan f
 - "Similar to Task N" (repeat the code — the engineer may be reading tasks out of order)
 - Steps that describe what to do without showing how (code blocks required for code steps)
 - References to types, functions, or methods not defined in any task
+- A number a test expects that was reasoned rather than computed. Compute it
+  from the real data while writing the plan and say where it came from
+  ("seed: opening 12 + granted 14 = 26"), or write "measure it on the fixture
+  and pin the measured value". A plausible guess is worse than no number,
+  because it can be pinned.
+- A count of user-visible results (warnings, rows, messages) taken from the
+  code path the change touches. Trace it through every merge or dedupe step
+  between that code and the screen the test reads — or assert the behaviour
+  ("the dropped case now appears") instead of a total.
+- "Delete the tests about X." Name each test by file and title, or state the
+  rule that makes a test obsolete AND list the look-alikes to keep.
 
 ## Self-Review
 
@@ -144,6 +173,41 @@ After writing the complete plan, look at the spec with fresh eyes and check the 
 **2. Placeholder scan:** Search your plan for red flags — any of the patterns from the "No Placeholders" section above. Fix them.
 
 **3. Type consistency:** Do the types, method signatures, and property names you used in later tasks match what you defined in earlier tasks? A function called `clearLayers()` in Task 3 but `clearFullLayers()` in Task 7 is a bug.
+
+**4. Claims about existing code:** Every "reuse X", "X already handles that"
+or "X is a pure function" names the check that proved it — X's real signature
+and side effects (globals it writes, live state it reads), or the value read
+off the real target in a browser. A blanket rule does not reach a place you
+have not checked (a CSS `*` never matches a pseudo-element). For a plan
+touching three or more modules also check — and hand the same four checks to
+an independent reviewer of the plan, because the author shares the plan's
+blind spots: import cycles the plan creates, every existing reader of a rule
+it changes, helpers it assumes exist, and any internal id the screen would
+print.
+
+**5. Replacement code:** For each code block that REPLACES existing lines,
+list the guards and early returns in the original and confirm each survives
+or is dropped on purpose, with the reason.
+
+**6. One owner per shared thing:** Where two writers touch one thing — an
+attribute both a hand-written painter and the framework set, a CSS property a
+new rule and an existing state rule both set — the plan names the owner, says
+which existing rule the new one must beat, and says how that is pinned
+(computed style in a real browser on an element wearing the state, or a
+specificity check where a tie counts as a loss).
+
+**7. Reversed rules:** If the plan reverses or relaxes an existing rule, it
+lists the tests and comments that pin the OLD rule (search the old rule's
+wording) with a disposition for each: rewrite, delete, or keep because still
+true.
+
+**8. Plans built from review findings:** Each finding's code site, its callers
+and the tests that pin it were re-read. A finding names a symptom; a task
+needs the write path and the existing pins its fix must not move.
+
+**9. Shared state in tests:** A plan-authored test that switches shared state
+restores it, and a test over a collection first asserts the collection is not
+empty — both otherwise pass while proving nothing.
 
 If you find issues, fix them inline. No need to re-review — just fix and move on. If you find a spec requirement with no task, add the task.
 

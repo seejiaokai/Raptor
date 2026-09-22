@@ -123,9 +123,15 @@ Confirm:
 - Failure message is expected
 - Fails because feature missing (not typos)
 
-**Test passes?** You're testing existing behavior. Fix test.
+**Test passes?** You're testing existing behavior. Fix test. A test that is green before the implementation is a finding, not a footnote — it is vacuous, on the wrong fixture, or testing something already built; say which before going on. The usual culprits: an empty collection (assert it is non-empty first) and shared state an earlier test switched and never restored.
 
 **Test errors?** Fix error, re-run until it fails correctly.
+
+**Proving an existing fix red:** revert only the lines that ARE the fix — never the whole file when it also holds other uncommitted work — and read the message: it must be the defect's own failure, not a missing-function error.
+
+**Races:** write the losing order down as steps, and make the test force that order — hook the boundary (the storage read, the network call) and perform the competing write from inside it. Assert that the hook fired, so a green test cannot be one that never reached the race. Adding a delay and hoping is not a race test.
+
+**Suites that share one running fixture:** a test that changes shared state runs after every test that reads the old state, or gets a fixture of its own.
 
 ### GREEN - Minimal Code
 
@@ -181,6 +187,8 @@ Confirm:
 **Test fails?** Fix code, not test.
 
 **Other tests fail?** Fix now.
+
+**Many fail after a DELIBERATE behaviour change?** Sort them before touching any: (a) a rule still true whose fixture needs updating; (b) a test of behaviour that was deliberately removed — rewrite it to the new contract or delete it openly, citing the decision; (c) new behaviour not yet covered — write it in fresh tests that set up their own state. Never make a red test green by weakening it, and fix the first failures first: in order-dependent tests one failure cascades.
 
 ### REFACTOR - Clean Up
 

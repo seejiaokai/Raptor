@@ -44,6 +44,12 @@ on redesign and sleeps through bugs. Test the behavior that depends on
 the decision: not `expect(MAX_RETRIES).toBe(5)` but "a failing call is
 retried 5 times and the 6th attempt never happens."
 
+**The assertion is the behaviour its title names, not an ingredient of
+it.** Two common stand-ins pass while the behaviour is broken: asserting
+that an identifier or address EXISTS instead of that something RESOLVES it,
+and asserting a global count as a stand-in for one local fact. Ask what could
+break while the assertion still passes — then break exactly that and watch.
+
 **Behavior, not text.** Asserting that a script, skill, or config
 contains an exact line proves only that the source is the source. Run
 scripts against controlled inputs and assert outputs, side effects, or
@@ -110,6 +116,34 @@ vi.mock('ToolCatalog', () => ({
 // ✅ Mock only the slow server startup; the config write stays real
 vi.mock('MCPServerManager');
 ```
+
+**Reach the state the way production does.** A fixture that gets to its
+state by a different route tests a different program. If the app mutates a
+record in place, mutate in place — assigning a fresh object hides aliasing
+bugs. If the app stores `18:00`, write `18:00`: copy the format of a real
+stored value, because the input form's accepted format is not the stored one.
+Where you can, set the state up through the entry point a user's action goes
+through, so a rule is pinned where a user can actually reach it.
+
+**Pick the fixture for THIS test.** One borrowed from another test carries
+that test's assumptions. When a test asserts which result LEADS, choose the
+fixture by querying the data for one with nothing else going on, and say why
+in a comment. When one fact lives in two records, read one of each before
+writing code that treats them as the same shape.
+
+**Counting calls into a module whose exports are reassigned** (live
+bindings): wrap the real module — a Proxy over its namespace that swaps only
+the target — never copy it. A spread freezes every live binding at mock time
+and silently breaks the code under test.
+
+**Tear down what the test starts.** A mount without an unmount, a timer
+without a clear, a listener without a remove outlives its test file and fails
+some later, slower run.
+
+**Structure is measured on the DOM, not the picture.** A `display: none`
+child is still a child. When a hidden element trips a structure test, fix the
+markup (for example a `display: contents` wrapper a media query can hide),
+not the assertion.
 
 **Make doubles specific.** When arguments, call counts, or ordering are
 part of the contract, assert them — a fake that accepts anything verifies

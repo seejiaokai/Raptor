@@ -281,17 +281,17 @@ barely more than one.
   shape, which tests to run) so it never explores. Agents return diffs
   and conclusions, never file dumps. Small precise work stays inline —
   spawning an agent costs more than a one-file fix.
-- **Token discipline.** Never let a tool dump raw output — pipe logs
-  through `tail`/`grep`, ask GitHub MCP tools for `minimal_output: true`,
-  paginate 5–10, and prefer a 2-line `curl | grep` over a full API object
-  when checking one field. Never read `reference/` whole (6.6k lines) —
-  `grep` it; same for any file over ~300 lines (Grep or offset/limit Reads).
-  While iterating run only the affected test file
-  (`npx vitest run <file>`); the full gate set ONCE, before the PR — not
-  between the sub-changes of a batch. Four full passes is ~20 wasted minutes,
-  and that is a real reading from 10 Aug 26, not a caution.
-  Trust this index instead of re-exploring. Prefer a fresh
-  session per task; a long conversation re-sends itself every turn.
+- **Token discipline.** Never let a tool dump raw output — send a long run to
+  a file, keep its exit code, and `tail`/`grep` the FILE (a pipe hides the
+  exit code), ask GitHub MCP tools for `minimal_output: true`, paginate 5–10,
+  and prefer a 2-line `curl | grep` over a full API object when checking one
+  field. Never read `reference/` whole (6.6k lines) — `grep` it; same for any
+  file over ~300 lines (Grep or offset/limit Reads). While iterating run only
+  the affected test file (`npx vitest run <file>`); the full gate set ONCE,
+  before the PR — not between the sub-changes of a batch. Four full passes is
+  ~20 wasted minutes, and that is a real reading from 10 Aug 26, not a
+  caution. Trust this index instead of re-exploring. Prefer a fresh session
+  per task; a long conversation re-sends itself every turn.
 
 **The rules-engine robustness doctrine (owner, 21 Aug 26 — "Remember
 this").** Any change that touches the rules engine carries a standing bar:
