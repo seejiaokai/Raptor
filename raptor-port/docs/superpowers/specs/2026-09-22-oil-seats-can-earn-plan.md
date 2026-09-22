@@ -31,6 +31,8 @@ printed**, never a silent absence.
 | **D31** | A seat the rules cannot MEASURE offers no switch and says why on screen. The one boundary on D28. |
 | **D32** | ONE LIST: wherever a puck may LAND it must also OFFER the switch. Landing and earning are the same decision. |
 | **D33** | The pucks are refused on **flying-line cockpit seats only**. Everywhere else they land — sim seats, sim passengers, a duty desk's own position, the extra-people line beside any row, ground rows, common programme rows. |
+| **D36** | **DO NOT WIDEN THE AVAILABILITY WINDOW.** A flying man is free up to his STEP and again from DEKIT. The 3-hour report and the 2-hour debrief do NOT block him. See §6a — this one nearly went the wrong way. |
+| **D37** | The count STAYS, on every seat the puck can land on, but must read as **what it is** — who has nothing else on the programme at that time — not as a promise. Taps through to the names. |
 
 D33 sets aside the recommendation in the walk sheet §11a (a short explicit earning list, duty desks
 off). **§11a's recommended shape is superseded; its cost analysis is not** — every earning seat is a
@@ -96,6 +98,11 @@ have caught the owner's find, and it must be re-marked against the running app d
 | Common programme row — the who | Yes (works today) | must | must | off |
 | **The extra-people line beside ANY row** | Yes | must | must | off |
 
+**The wording is part of the roll-call, not a polish step (D37).** Every cell marked "must" in the
+count column has to read as a starting point a scheduler can correct, not as a fact. A bare number
+beside a puck reads as authoritative; this one is "who has nothing else on the programme at that
+time". Same wording on every seat, or the roll-call has a blank cell.
+
 And, separately, the four exempt kinds (D24/D35), which are about REAL people, not the pucks:
 
 | Kind | Today | After |
@@ -130,8 +137,34 @@ they make the behaviour changes small enough to reason about.
    mode's decoration today and has to become an ordinary property of the puck on every seat above.
    Separate "who is available" (a read, any day) from "what it earns" (earning days only) —
    `oilSentinelPeople` currently returns nothing unless the day earns.
-8. **Refusal wording for unmeasurable seats** (D31).
+8. **Refusal wording for unmeasurable seats** (D31), and the count's own wording (D37). One pass, one
+   set of words, checked on every seat in §4 — the two wordings are read side by side on the same
+   screens and must not contradict each other.
 9. `[OIL-UNDO-WORDS]` — one string — folded in if convenient.
+
+## 6a. THE TRAP THAT ALMOST GOT BUILT — read this before touching availability
+
+The owner asked whether the pucks account for debrief timing. Reading the code found a genuine
+disagreement: the availability answer pads a sortie by **step (1h) before take-off and dekit (30m)
+after landing**, while the OIL earning rules use **report (3h) and debrief (2h)**, and the warning
+list separately raises "Not enough time to attend the debrief" across land+2h. Three windows, one
+sortie.
+
+**The agent recommended widening availability to include the debrief. That was WRONG**, and only the
+owner's knowledge of how the squadron actually schedules caught it:
+
+- An ops brief is deliberately slotted between the flight brief and step — 1520–1620 against a 1620
+  step — precisely so the available men can attend. Those men ARE available.
+- A debrief is moved by management: land, attend an ops brief, debrief afterwards. That man is
+  available from dekit.
+
+Widening the window would have marked men unavailable for the very events the squadron builds around
+them. **D36 settles it: the narrow window is correct and is not to be "fixed".** The three windows
+are not a defect — they answer three different questions, and only one of them is availability.
+
+**The method lesson**, and it is the same one the owner's ALL AVAIL find produced: a disagreement
+between two bodies of code is a QUESTION, not a verdict. Reading the code shows which numbers
+differ; only someone who runs the squadron can say which one is right.
 
 ## 6. The risks worth attacking
 
