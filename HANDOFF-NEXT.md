@@ -4,6 +4,22 @@
 have the window. The branch is pushed; no PR is open yet (D60: pushing a branch needs no permission,
 `main` needs his "merge live").
 
+## A second session is running in PARALLEL — read before you merge
+
+A skill-observation review runs at the same time on **`claude/skill-review`**, in its own worktree,
+branched from `main`. The two never merge into each other; **each goes to `main` on his "merge live",
+ONE AT A TIME**, and whichever goes SECOND brings the first in before its own merge:
+
+1. `git fetch origin && git merge origin/main` on this branch.
+2. **`.claude/skill-observations/log.md` will conflict** — the review rewrote statuses, this branch
+   appended entries (#179–#182 and any since). Keep the REVIEWED version and re-append this branch's
+   new entries at the end with fresh numbers (the task-observer numbering discipline). Never a
+   stale-snapshot write-back.
+3. `DECISIONS.md`, `HANDOFF-NEXT.md`, `OUTSTANDING.md` may conflict too: keep BOTH sides' rulings (newest
+   first); the handoff and backlog must describe what is true AFTER both land.
+4. Re-run the full gates on the merged tree, THEN merge. If both are ready together, tell him to say
+   "merge live" in one chat, wait for it to land, then the other.
+
 ## Read these first, in this order
 
 1. **`DECISIONS.md` — the WHOLE file** (D53). **D57–D67 are new this session**; D65, D66 and D67 change
