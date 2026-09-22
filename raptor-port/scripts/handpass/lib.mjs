@@ -90,6 +90,30 @@ export async function board(page, di) {
   await page.waitForTimeout(500)
 }
 
+/** THE PERSONAL INPUTS PANEL IS FOLDED BY DEFAULT, and folded it renders NO
+    ROWS — so a claim's own edit button (`data-inpedit`) is ABSENT from the DOM,
+    not merely hidden. That cost the 21 Sep session job 1's last mile: it
+    measured zero buttons and concluded the button was never drawn. The header
+    is the toggle (`data-pitog`, sbInputsGroupPanel in ui/board-html.ts).
+
+    The fold is `!readOnly`, so a read-only board keeps the panel OPEN — which
+    is why the rows do appear once the OIL mode is on, with the edit button
+    correctly swapped for the OIL cell. Call this before reaching for any
+    request row on the board. */
+export async function openInputs(page, di) {
+  /* `data-pitog` rides the header in BOTH states, so its presence says nothing
+     about which way the panel is folded — pressing on that would SHUT an open
+     one. The rows are the honest signal: folded draws none at all. */
+  const rows = () => page.evaluate(() =>
+    document.querySelectorAll('#schedBoard .pinp .sb-arow, #schedBoard .pinp .sbi-row').length)
+  if (await rows()) return await rows()
+  if (await page.locator(`#schedBoard [data-pitog="${di}"]:visible`).count()) {
+    await tap(page, `[data-pitog="${di}"]`)
+    await page.waitForTimeout(500)
+  }
+  return await rows()
+}
+
 /** The board is rendered TWICE in the DOM (the desktop board and the phone
     board), so a bare attribute selector matches a hidden twin as well as the
     real one. Everything here goes through the visible copy. */

@@ -54,6 +54,13 @@ Codex) and folded in. Two `[CMDL-FINISH]` items were deferred INTO it and remain
 posting-window rebuild on a postouts restore = CMDLF-002; grouping a whole Import as one undo step),
 plus the phase-2 review deferrals under the item below. **NEXT = step 4 (one Absence record) / [DB-STEP].**
 
+**NEXT AFTER THE OIL BRANCH MERGES (owner, 22 Sep 26 — D24, sequencing confirmed by him):**
+`[OIL-EXEMPT-CREDITABLE]` — SC spare, AVALON (lines and desks) and BB lines start OFFERING the OIL
+switch, still earning nothing by default. It sits immediately after `[OIL-AUTO-REMOVE]` goes live and
+AHEAD of `[OIL-NEXT-TWO]`, because it touches the same mode while that branch's roll-call is still
+fresh. Deliberately kept OFF `claude/oil-auto-remove-design`: that branch is at its last gate, and the
+change is additive — its new default reproduces today's behaviour exactly, so nothing there is unpicked.
+
 Below is the older item ordering (kept for the non-stack items); land what's **cheap, done, or
 in-flight and risk-reducing** first.
 
@@ -784,6 +791,60 @@ complete team; it should read five and a shortage.
 decision about which of the six types count (a two-hour Appointment is not a day off the programme),
 and the projection is a new seam into the war. Not a line. **Priority: his call — raised with him on
 21 Sep and filed at his word.**
+
+### [OIL-WORDS] Stop calling OIL "money" in the code comments (owner, D25, 22 Sep 26)
+
+**His words: _"It just means that this person earns OIL which means off in lieu. Which means that
+they earn a day of leave to be used next time."_**
+
+OIL is banked TIME OFF, not pay. **Nothing on screen is wrong** — checked 22 Sep 26: every visible
+string already says *earns*, *credit*, *OIL balance*, *lands on the Leave War as an HO cell*, and no
+user-facing text anywhere says paid, pay or money. What carries the wrong shorthand is a handful of
+CODE COMMENTS (`ui/oilmode.ts` lines ~117, 211, 294, 455, 542, plus similar in `engine/oil*.ts`) and
+several test names. Harmless to the build, misleading to the next reader.
+
+**Deliberately not done on `claude/oil-auto-remove-design`** — that branch is at its last gate and a
+comment sweep is pure churn there. **Tier: NONE** (words only, no visible text). Do it in any later
+pass that already touches those files. The definition itself is now at the head of the OIL behaviour
+register and in the bug-check order's tier question, which are the two files a later session reads.
+
+### [OIL-EXEMPT-CREDITABLE] The three exempt kinds become creditable — default still nothing (owner, D24, 22 Sep 26)
+
+**His words: _"is it too late to revert that SC spare, Avalon and BB could also earn OIL? Reason is
+because they could be activated and if they are, the admin can just easily click credit OIL with an
+amendment. But by default they are not going to earn OIL."_**
+
+**What changes.** SC SPARE, AVALON flying lines, AVALON duty desks and BB flying lines must OFFER
+the OIL switch in the mode, defaulting to OFF. Today they are wholly inert — no switch, no door —
+which is precisely the case the data allows and no screen offers. The DEFAULT is unchanged: none of
+them earns unless someone says so, so today's behaviour is reproduced exactly by the new default.
+On a published day, crediting one goes out as an ordinary amendment, like any other OIL decision.
+
+**Supersedes in part:** D15 and D20, on the door only. Every other clause of both stands, and the
+rest of OIL31 (cancelled, unreadable times, zero-length, ⓘ, sim free text) is untouched.
+
+**Why it is not a flag flip.** All three are skipped BEFORE anyone enters the calculation —
+`saExemptKind(dw.sa)` for AVALON/BB in both the earn pass and the warning pass, and
+`if(!f.spare)reach(item)` plus `if(ac.cx||f.spare||ac.spare)return` for the spare (`engine/oil.ts`).
+No item key and no person-window are created, so there is nothing for an `allow` to attach to —
+`earnsFrom`'s own comment says ineligibility is decided before it is asked. The engine has to let
+them in and default them off, which is a change in the money path.
+
+**Tier: FULL** (money, the published record, a new door on three kinds of seat). It needs its own
+roll-call rows, both providers reading the code, and a walk. D20's second half must be carried
+forward too: a duty block MADE from an AVALON template gets the same treatment as one that was
+always AVALON.
+
+**Sequencing — the agent's recommendation, awaiting his go.** NOT on
+`claude/oil-auto-remove-design`. That branch is at its last gate with every reviewer finding closed
+and gates green; folding a money change in re-opens the FULL tier on work that is already checked,
+and the evidence sheet is half-written. Because the change is additive and its default reproduces
+today's behaviour, nothing on that branch has to be unpicked — this lands cleanly as the next
+branch after "merge live". **Place in the order: immediately after [OIL-AUTO-REMOVE] merges**, and
+ahead of [OIL-NEXT-TWO], because it touches the same mode and the roll-call is still fresh.
+
+**Where the reasoning lives:** `DECISIONS.md` D24; the register rule it revises is OIL31 in
+`raptor-port/docs/superpowers/specs/2026-09-21-oil-behaviour-register.md`, already marked.
 
 ### [OIL-NEXT-TWO] The two the owner parked until after the bug check (21 Sep 26)
 **His words: "We can do point 2 and 3 later after the 3 things above are done."** The three being

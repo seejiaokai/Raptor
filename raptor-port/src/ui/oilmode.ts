@@ -456,6 +456,28 @@ export function oilItemCellHTML(di: any, item: string, name: any, cls: string): 
      An EMPTY ordinary row keeps its switch — put a man on it and he earns, and
      OIL7 says the switch covers later additions too. */
   if (!oilCapableItems(DAYS[+di] || {}).has(item)) {
+    /* A CLAIM ROW IS NOT AN INERT ROW, AND MUST NOT BORROW ITS WORDS (walk
+       find, 22 Sep 26 — hand-pass finding 13). `oilCapableItems` is derived
+       from the SCHEDULE walk, and a request's money never goes through it:
+       the requester is paid from his own answer (the input half) and D18's
+       extras are each decided on their own puck. So a live claim's item is
+       absent from the capable set for a reason that has nothing to do with
+       being unable to earn — and the row was reading "Nothing on this row can
+       earn OIL" directly beside a puck reading "Talisman earns half a day".
+       Both sentences on screen at once, four rows of it on the everything-
+       Saturday, contradicting each other about money.
+
+       A landed request's row carries the INPUT's key (groundItemKey), so both
+       the Personal Inputs echo and the ground row it landed on arrive here
+       with `i:`. A claim that is genuinely dead — cancelled, ⓘ, taken off,
+       or in a week that cannot be read — keeps the ordinary wording, because
+       there it is true. */
+    const claim = String(item).startsWith('i:')
+      ? (evOf(di).inputs || []).find((i: any) => String(i.iid) === String(item).slice(2))
+      : null
+    if (claim && (claim.stand === 'active' || claim.stand === 'unlanded')) {
+      return `<span class="${cls} oilitem none" title="A request is answered for each person on it — tap a puck on this row, not the row itself">${esc(txt) || '&nbsp;'}</span>`
+    }
     return `<span class="${cls} oilitem none" title="Nothing on this row can earn OIL, so there is nothing to switch off">${esc(txt) || '&nbsp;'}</span>`
   }
   const on = oilItemOn(di, item)

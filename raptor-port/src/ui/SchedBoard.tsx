@@ -9,7 +9,7 @@ import { SBDAY, CURPAGE, DPREV, HISTMODE, toggleHistMode, esc, restArmed, HLSET,
 import { closeHistList, setWeekCal } from './pops'
 import { CalIcon, HistIcon, HlIcon } from './icons'
 import { HlChips } from './hlchips'
-import { oilShown, oilModeOn, toggleOilMode } from './oilmode'
+import { oilShown, oilModeOn, toggleOilMode, oilUndoBoundary } from './oilmode'
 import { wireHistBubble, hideHistBub, histBubRecheck } from './histbubble'
 import { daySnapOf, alColor, dayDiscardCount } from '../engine/publish'
 import { verSeq } from '../engine/verid'
@@ -380,8 +380,21 @@ export function SchedBoard() {
             onClick={() => { if (SBDAY != null) { const on = toggleOilMode(SBDAY); HOOKS.toast(on ? 'OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning' : 'Back to editing the schedule'); notify() } }}>
             <span className="bi">◧</span><span className="bl"> OIL Earn</span></button>}
           </span>
+          {/* UNDO STOPS AT THE DOOR OF THE MODE — AND THIS IS THE BUTTON IT HAS
+              TO STOP (walk find, 22 Sep 26). The same guard was already on the
+              PAGE's Undo (#undoBtn, Shell.tsx) and only there, which made it
+              unreachable: the page's top bar sits BEHIND the board's own
+              sticky .sb-top whenever the board is open, and the board is the
+              only place the OIL mode exists. So the one Undo a scheduler can
+              press went straight to globalUndo, and the third press walked
+              back a ground-row change underneath a screen that says the
+              schedule cannot be changed — silently, with the mode still open.
+              Kept identical to Shell.tsx's copy on purpose: two buttons, one
+              rule. oilundo-button.test.tsx presses BOTH through the DOM. */}
           <button className="abtn hbtn" id="sbUndo" title={us.undoLabel ? `Undo — ${us.undoLabel}` : 'Undo'} disabled={!us.canUndo}
-            onClick={() => { const r = globalUndo(); if (!r.ok && r.reason) HOOKS.toast(r.reason, 'warn'); notify() }}><span className="bi">↶</span><span className="bl"> Undo</span></button>
+            onClick={() => {
+              if (oilUndoBoundary()) { HOOKS.toast('Left OIL Earn — the next undo would change the day itself', 'ok'); notify(); return }
+              const r = globalUndo(); if (!r.ok && r.reason) HOOKS.toast(r.reason, 'warn'); notify() }}><span className="bi">↶</span><span className="bl"> Undo</span></button>
           <button className="abtn hbtn" id="sbRedo" title={us.redoLabel ? `Redo — ${us.redoLabel}` : 'Redo'} disabled={!us.canRedo}
             onClick={() => { const r = globalRedo(); if (!r.ok && r.reason) HOOKS.toast(r.reason, 'warn'); notify() }}><span className="bi">↷</span><span className="bl"> Redo</span></button>
           {/* HISTORY (owner, 11 Aug 26) — a VIEW mode, so unlike Sort all and

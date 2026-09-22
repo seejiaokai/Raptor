@@ -266,7 +266,7 @@ All of it on everything would be abandoned in a week. The tier is decided by fac
 change, not by a feeling about risk. **Eight questions — if the agent cannot answer NO with a
 reason it could write down, the answer is YES:**
 
-1. **Money** — does it touch what a man is owed or paid, or how many count as present?
+1. **Money** — does it touch what a man is owed or paid, or how many count as present **Earned leave counts** — OIL is time off banked, not pay (D25), and a wrong answer there is owed just the same, so it fires this question.
 2. **The published record** — publishing, signing, amendments, the issued copy, a saved version,
    undo of a publish?
 3. **Saved data** — what is stored, the reset version, how older data is read?
