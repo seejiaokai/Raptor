@@ -74,9 +74,15 @@ describe('dayOilWork — each span carries its kind', () => {
     expect(dayOilSpans(d).rocky).toEqual([[480, 840]])
   })
   it('the Ground and Common Programme are Duty, ALL pucks included', () => {
+    /* the Common Programme row carries a `rid` because a row holding a
+       PLACEHOLDER now needs one: the day's frozen membership is written per
+       item, so a row with no id has nowhere to record who it stood for and
+       gathers nobody ([OIL-SEATS-CAN-EARN] step 5, engine/oilexpand.test.ts).
+       Every real row is minted one; only a hand-built blob like this can lack
+       it. The assertion below is untouched. */
     const d = day([], [], {
       ground: [{ prog: 'G', str: '0800', end: '1000', who: 'plasma' }],
-      allhands: [{ prog: 'Brief', str: '1000', end: '1100', who: 'all' }],
+      allhands: [{ prog: 'Brief', rid: 'a1', str: '1000', end: '1100', who: 'all' }],
     })
     const w = dayOilWork(d, { expandAll: () => ['rocky'] })
     expect(w.plasma.map(x => x.src)).toEqual(['Duty'])
@@ -222,8 +228,10 @@ describe('dayOilCredits — who earns what from one day blob', () => {
   })
 
   it('an ALL / ALL AVAIL sentinel on a programme or ground row expands via the resolver, or drops without one', () => {
-    const d = day([], [], { allhands: [{ prog: 'All hands', str: '0800', end: '1200', who: 'all' }],
-      ground: [{ prog: 'Sweep', str: '1300', end: '1400', who: 'allavail' }] })
+    /* both rows carry a `rid` for the reason above: a placeholder only gathers
+       people on a row that has an address to freeze them under */
+    const d = day([], [], { allhands: [{ prog: 'All hands', rid: 'a1', str: '0800', end: '1200', who: 'all' }],
+      ground: [{ prog: 'Sweep', rid: 'g1', str: '1300', end: '1400', who: 'allavail' }] })
     expect(dayOilCredits(d)).toEqual({})               // no resolver: sentinel drops, as ever
     const seen: any[] = []
     const credits = dayOilCredits(d, { expandAll: (win) => { seen.push(win); return ['plasma'] } })

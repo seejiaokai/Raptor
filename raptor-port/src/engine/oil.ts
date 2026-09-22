@@ -129,8 +129,11 @@ export const groundItemKey=(g:any)=>(g&&g.src)?inputItemKey(g.src):rowItemKey(g&
 
 /* every person's work for one day blob, each span tagged with its kind:
    id -> {s,e,src}[]. The envelope of a person's spans is the day's measure.
-   opts.expandAll resolves a sentinel puck (ALL / ALL AVAIL) on a ground or
-   Common Programme row into the people it stands for at that window. */
+   opts.expandAll resolves a sentinel puck (ALL / ALL AVAIL) into the people it
+   stands for at that window. It is asked on every seat a placeholder may sit
+   on — ground rows, duty desks, sim seats and passengers, the Common Programme,
+   and every extras line — but NEVER on a flying line's cockpit, and never for a
+   row that has no id yet (see `putAny`). */
 export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:string)=>string[];onItem?:(item:string)=>void}){
   const out:Record<string,OilWork[]>={};
   /* EVERY ROW THIS WALK REACHES WITH REAL TIMES, whether or not anybody is
@@ -155,14 +158,39 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
     if(en<st)en+=1440;
     return en>st?[st,en]:null;   // a zero-length row measures nothing and mints nothing
   };
-  /* a who value that names a sentinel (by id or callsign) expands or drops */
-  const putWho=(v:any,win:[number,number]|null,more?:any[])=>{
-    if(win){
-      const id=whoId(v);
-      if(id&&isSpecial(id)){ if(opts&&opts.expandAll)opts.expandAll(win,item).forEach((p:any)=>put(p,win)); }
-      else put(v,win);
+  /* A SEAT A PLACEHOLDER MAY SIT ON ([OIL-SEATS-CAN-EARN] step 5). A who value
+     naming ALL or ALL AVAIL (by id or callsign) stands for the people who would
+     attend, so it expands into them and each one is credited exactly as a typed
+     name is (D43). Anything else goes straight through.
+
+     THIS USED TO BE THE GROUND ROW'S AND THE COMMON PROGRAMME'S PRIMARY SEATS
+     ONLY, which is the owner's Sunday desk: he put ALL AVAIL on a duty desk,
+     published the day, and nobody earned a thing, because every other seat used
+     the bare `put` above and `put` drops anything that is not a person. Duty
+     desks, sim seats, sim passengers and every extras line now come through
+     here as well. The FLYING branch deliberately does not — see the belt below.
+
+     AN UNIDENTIFIED ROW GATHERS NOBODY. The day's frozen membership is written
+     per ITEM (`oilev.ts`: `if (item) sent[item] = people`), so a row with no id
+     yet has nowhere to record who it stood for: it would draw a crowd in the
+     mode and pay none of them through the evidence, the screen and the money
+     disagreeing about the same row. Every painted row is minted an id by the
+     mutation, load, publish and draft paths alike, so in practice this never
+     fires — it is the belt, and `oilexpand.test.ts` pins it. */
+  const putAny=(v:any,win:[number,number]|null)=>{
+    if(!win)return;
+    const id=whoId(v);
+    if(id&&isSpecial(id)){
+      if(!item)return;                                   // no address: nowhere to freeze the crowd
+      if(opts&&opts.expandAll)opts.expandAll(win,item).forEach((p:any)=>put(p,win));
+      return;
     }
-    (more||[]).forEach((m:any)=>put(m,win));
+    put(v,win);
+  };
+  /* a seat and the extras line under it, which answer the same way */
+  const putWho=(v:any,win:[number,number]|null,more?:any[])=>{
+    putAny(v,win);
+    (more||[]).forEach((m:any)=>putAny(m,win));
   };
   src='FLT';
   (day.waves||[]).forEach((wv:any)=>{
@@ -199,6 +227,14 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
            occupant of such a shift ON, and pay a spare shift that has never
            been paid. */
         dflt=!exemptWave&&!f.spare&&!ac.spare;
+        /* THE NON-EXPANDING BELT, and it is the bare `put` on purpose (D33/D36,
+           Fable M4.5). A placeholder is refused in a cockpit at every door, but
+           data can arrive by COPY — a captured day template or a parked plan
+           bypasses those doors — so the money keeps its own guard rather than
+           trusting the doors alone. And the window here is report→debrief, three
+           hours wider each side than availability: handing it to the expander
+           would gather the men the squadron deliberately schedules around an ops
+           brief (D36, plan §5a) and pay every one of them. */
         [ac.p,ac.w].forEach((v:any)=>put(v,win));
       });
     });
@@ -213,7 +249,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
     /* the same id set events.ts rowIds enumerates: seats, pax, extras — sim who
        is free text (1C), never a person */
     [r.p,r.w].concat(r.pax||[]).concat(r.more||[])
-      .forEach((v:any)=>put(v,win));
+      .forEach((v:any)=>putAny(v,win));
   }));
   src='Duty';
   (day.dutywaves||[]).forEach((dw:any)=>{
@@ -228,7 +264,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
       const win=w2(parseHM(r.str),parseHM(r.end));
       if(!win)return;
       reach(item);
-      [r.id,...(r.more||[])].forEach((v:any)=>put(v,win));
+      [r.id,...(r.more||[])].forEach((v:any)=>putAny(v,win));
     });
   });
   (day.ground||[]).forEach((g:any)=>{
@@ -244,8 +280,14 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
     const win=w2(parseHM(x.str),parseHM(x.end));
     if(!win)return;
     reach(item);
-    whoArr(x).forEach((v:any)=>putWho(v,win));
-    (x.more||[]).forEach((m:any)=>put(m,win));
+    /* the Common Programme's own extras array joins the rest. Nothing on screen
+       drops a puck there — its "extras" append to the `who` list beside it — but
+       the engine reads `more` as tasked work everywhere else (events.ts), and a
+       day that arrived by copy or import can carry one. Leaving it as the single
+       extras line that silently swallowed a placeholder would be a hole with no
+       reason behind it. */
+    whoArr(x).forEach((v:any)=>putAny(v,win));
+    (x.more||[]).forEach((m:any)=>putAny(m,win));
   });
   return out;
 }

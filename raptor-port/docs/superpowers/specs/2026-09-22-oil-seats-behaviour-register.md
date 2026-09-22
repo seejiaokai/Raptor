@@ -9,7 +9,7 @@ Built against the plan at
 a ruling with no row here has not been built yet, and that is the point of the
 blank.
 
-**Status: steps 1–4 built.** Steps 5–11 outstanding.
+**Status: steps 1–5 built.** Steps 6–11 outstanding.
 
 ---
 
@@ -23,10 +23,12 @@ blank.
 | **D33** | ALL and ALL AVAIL are refused on a flying line's cockpit seats, and nowhere else. The reason shows at every door. | step 2 | `engine/oilseat-refusal.test.ts`, `ui/oilseat-refusal.test.tsx` |
 | **D47** | That refusal stands rather than becoming a warning. The 13 Aug "a placeholder puck arms its seat" shortcut still works everywhere a placeholder is legal. | step 2 | `ui/interact.test.tsx`, `ui/oilseat-refusal.test.tsx` |
 | **D46** | A placeholder is allowed on an accepted request row — no carve-outs. | step 2 (the refusal does not touch it); the crediting is step 6 | `engine/oilseat-refusal.test.ts` |
-| **D43** | The placeholder pucks are ON by default everywhere they can land, like named people. The crowd inherits the seat's answer rather than having one of its own. | step 3 | `engine/oilspandefault.test.ts` |
+| **D43** | The placeholder pucks are ON by default everywhere they can land, like named people. The crowd inherits the seat's answer rather than having one of its own. | step 3 (the rule), step 5 (the seats it actually lands on) | `engine/oilspandefault.test.ts`, `engine/oilexpand.test.ts` |
+| **D43 / D32, in practice** | A placeholder put on a DUTY DESK, a sim seat, a sim passenger line, or the extras line under a ground row, a duty desk, a sim or the Common Programme now counts the people it stands for — the owner's Sunday desk. Before this it silently counted nobody. | step 5 | `engine/oilexpand.test.ts` |
+| **The freeze has something to hold** | A row with no id yet gathers nobody, because there is nowhere to write down who it stood for. Every real row is given an id, so this never shows on screen — it is the belt under the promise that the count on an issued day cannot move. | step 5 | `engine/oilexpand.test.ts` |
 | **D42** | An overnight line earns the day it sits on; the day the hours spill into earns nothing from it. | step 4 | `engine/oilexempt.test.ts` (the 19:00–07:00 AVALON line) |
 | **D31** | A seat the rules cannot measure offers no switch, and says why. | pre-existing, held through step 4 | `ui/oilmode.test.tsx` (OIL28, the ⓘ row) |
-| **D36** | The availability window stays narrow — step to dekit. The flying rules' wider report→debrief window is never handed to the placeholder's crowd. | step 2 (the belt) | `engine/oilseat-refusal.test.ts` ("never hands its window to the expander") |
+| **D36** | The availability window stays narrow — step to dekit. The flying rules' wider report→debrief window is never handed to the placeholder's crowd. | step 2 (the belt), re-pinned at step 5 where the expansion arrived | `engine/oilseat-refusal.test.ts` ("never hands its window to the expander"), `engine/oilexpand.test.ts` |
 | **D32** | One list: wherever a puck may land, the switch must also be offered. | steps 3–4 for the exempt kinds; the rest is step 9 | `engine/oilexempt.test.ts` |
 | **D27 / D37 / D44 / D45** | The count shows on every seat, frozen at publication, worded as what it is. | **not built yet — step 9** | — |
 | **OIL7** | Tapping an item's name stops the whole item earning, so a man added later does not earn silently. | unchanged | `ui/oilmode.test.tsx` |
