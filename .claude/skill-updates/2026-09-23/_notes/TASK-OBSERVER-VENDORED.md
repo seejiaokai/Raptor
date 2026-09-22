@@ -80,6 +80,16 @@ where that procedure's defaults do not fit a git repo with vendored skills:
   a merge, keep the reviewed side and re-append the other side's new entries at
   the end with fresh numbers.
 
+## Local changes to the vendored skill
+
+- **23 Sep 26 review:** `SKILL.md` Numbering discipline gained item 4
+  (parallel branches are parallel log writers) and Acting on Observations
+  gained "Close it where you apply it"; `references/weekly-review.md` Step 3
+  now also searches the project's own docs and settles where lessons land.
+  The session-start hook's message pins the ONE log location (above). An
+  upstream refresh overwrites these files: re-apply them
+  (`git log -p -- .claude/skills/task-observer`).
+
 ## Known caveats (not bugs)
 
 - **The skill's default log location does not persist on web/phone** — an

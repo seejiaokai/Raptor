@@ -118,6 +118,15 @@ if [ -f pyproject.toml ]; then poetry install; fi
 if [ -f go.mod ]; then go mod download; fi
 ```
 
+**If you share dependencies into the worktree with a symlink instead** (to
+skip a slow install), that link is now something you did not author for the
+repo, and `git add -A` / `git add .` will commit it: an ignore pattern ending
+in `/` (`node_modules/`) matches a directory, never a symlink. In such a
+worktree, stage files by name — during a conflict,
+`git diff --name-only --diff-filter=U` lists them — and before pushing a big
+merge check `git diff --stat` against its base for a stray link. A committed
+link can overwrite the real dependency folder in every checkout that merges it.
+
 ## Step 3: Verify Clean Baseline
 
 Run tests to ensure workspace starts clean:

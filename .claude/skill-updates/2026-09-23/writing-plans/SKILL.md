@@ -86,6 +86,12 @@ include this section.]
 ---
 ```
 
+**Standing orders belong in the plan.** Search the project's rules for orders
+that fire before a kind of change ("before any layout change, read X and run
+its checklist"). Each one that applies becomes a Global Constraint AND the
+first step of the first task that touches that surface — an order that lives
+only as a sentence in an index does not fire.
+
 ## Task Structure
 
 ````markdown

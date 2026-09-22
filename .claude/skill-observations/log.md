@@ -2733,3 +2733,103 @@ tends to carry costs (hidden bugs, undoing the plan's intent) that only resurfac
 **Suggested improvement:** Treat a reviewer's suggested fix as a hypothesis with the same standing as their finding: reproduce the defect, apply the fix, and then prove the fix by REMOVING it and watching the test fail. A reviewer reasoning from source alone cannot execute the path they are describing, so their fix is a reading of the mechanism, not a measurement of it — and a precise, confident one is no safer than a vague one. Where two reviewers disagree on a fact, settle it by measuring the fact, never by majority or by which report is more detailed.
 
 **Principle:** A review gives you a finding worth reproducing and a fix worth doubting. The fix is where the reviewer is furthest from the running system and closest to sounding authoritative, and a test that cannot fail without the fix is the only thing that tells you which you got.
+
+### Observation 183: Verify local `main` is current before acting on a "parked task" brief
+
+**Status:** OPEN
+**Date:** 2026-09-15
+**Session context:** Resuming a parked crew-rest task; the brief pointed to docs (session-state.md PARKED section, plans-selector-followups.md, a screenshots dir) that did not exist in the working tree. (Moved 23 Sep 26 from a second, machine-local log at ~/.claude/projects/<id>/memory/skill-observations/log.md, where it was Observation 1 — see #187. Numbered from #183 because claude/all-avail-window already holds its own #179-#182.)
+**Skill:** session-handoff (and verification-before-completion)
+**Type:** open-source
+**Phase/Area:** Session start / resuming handed-off work
+
+**Issue:** The referenced handoff docs were missing and OUTSTANDING.md looked stale, which briefly read as "the user misremembered the paths." The real cause: local `main` was 21 commits behind `origin/main`. A `git pull --ff-only` restored every missing file. Several minutes could have been lost hunting for "moved" files.
+
+**Suggested improvement:** In session-handoff (resume side), add an explicit first step: when a brief references docs/paths, check `git status -sb` for "behind N" and fast-forward before concluding anything is missing or stale. A file the handoff names but the tree lacks is more often an un-pulled branch than a wrong path.
+
+**Principle:** When resuming handed-off work, reconcile the local checkout with the remote BEFORE reasoning about missing artifacts — an out-of-date working tree masquerades as a misremembered or deleted file.
+
+### Observation 184: A design plan's claims about existing code must be verified, not asserted
+
+**Status:** OPEN
+**Date:** 2026-09-15
+**Session context:** Wrote a plan that asserted "validate() stays one pure function of a day-set — call it on two inputs." Both independent reviewers (Codex + Fable) found validate() is NOT pure: it writes ~6 module globals + DOM counters and its helpers read live DAYS. The whole mechanism section rested on that false claim. (Moved 23 Sep 26 from a second, machine-local log at ~/.claude/projects/<id>/memory/skill-observations/log.md, where it was Observation 2 — see #187. Numbered from #183 because claude/all-avail-window already holds its own #179-#182.)
+**Skill:** writing-plans (and brainstorming)
+**Type:** open-source
+**Phase/Area:** Writing the approach/mechanism section of a plan
+
+**Issue:** The plan proposed "reuse existing function X as-is / call it on two inputs" without checking X's actual signature and side-effects. The reviewers' single most impactful findings were disproving that assumption. If the planner had grepped the function's body first, the plan's mechanism section would have been right from the start and a review round saved.
+
+**Suggested improvement:** In writing-plans, add a check: any plan step that says "reuse / extend / call existing function X" must first verify X's real signature, inputs, and side-effects (globals it writes, live state it reads) and cite them — never assert a function is pure/pluggable/stateless from its name or role. Treat "X is already a pure function of its inputs" as a claim requiring evidence.
+
+**Principle:** A plan that leans on an existing function being pure/reusable must prove it from the function's body, not assume it from its name or apparent role — unverified reuse claims are where plans most often break under review.
+
+### Observation 185: For a non-technical stakeholder, answer their concrete scenario in plain terms FIRST — don't teach the abstract model
+
+**Status:** OPEN
+**Date:** 2026-09-15
+**Session context:** A long design dialogue with a non-technical owner about a flagging-engine architecture. The correct rule ("reference each surrounding day's published version if it exists, else its working copy") was already in the reviewers' findings and the written plan, but I repeatedly explained it via the abstract model ("two worlds/documents/surfaces"). The owner had to reverse-engineer the plain, workflow-framed version himself over ~8 messages, then asked with frustration why it hadn't been solved — even though it HAD been solved technically. (Moved 23 Sep 26 from a second, machine-local log at ~/.claude/projects/<id>/memory/skill-observations/log.md, where it was Observation 3 — see #187. Numbered from #183 because claude/all-avail-window already holds its own #179-#182.)
+
+**Suggested improvement:** In brainstorming (and any plain-language communication guidance), add: when a non-technical stakeholder raises a concrete worry, answer THAT concrete scenario step-by-step in their own terms before (or instead of) presenting the general model. Restate the solution as their workflow ("you amend Monday → you see Tuesday flag before publishing"), not as architecture ("two flagging worlds"). A technically-correct answer buried in abstraction reads to the stakeholder as an unsolved problem.
+
+**Principle:** With a non-technical audience, a solution isn't delivered until it's expressed in their concrete scenario and vocabulary. Explaining the abstract model instead makes a solved problem feel unsolved and forces the stakeholder to do the translation you should have done.
+
+### Observation 186: A review stalls while "where do the lessons land?" is undecided — decide the home map once, and write it down
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** Weekly review of a 174-entry backlog. The previous review (19 Aug 26) resolved only its two checkpoint markers and left every substantive entry OPEN "pending a decision on where their lessons land" (vendored skill vs project doc); five weeks later the backlog had grown from 8 to 174 with nothing applied.
+**Skill:** task-observer
+**Type:** open-source
+**Phase/Area:** references/weekly-review.md — Step 2/Step 5 (inventory, apply)
+
+**Issue:** The procedure assumes every observation maps to an editable skill. In a repo where most skills are vendored copies of upstream projects and the project keeps its own always-loaded rule files under a size cap, "where does this lesson live?" is a policy question that no single observation answers. Left unanswered, a review becomes a report generator and the backlog grows without bound. Several things had to be decided together: fork the vendored skills (with a register of local changes so a refresh re-applies them) rather than create companion skills; keep the always-loaded project rules out of it (size-capped); close lessons already written in project docs as "already reflected" instead of copying them.
+
+**Suggested improvement:** In the review procedure, before Step 3: if skills are vendored or read-only, decide and RECORD the home map once (a short "reviews in this repo" note beside the vendored skills: fork + register / companion skill / project docs, and which files are off-limits because of load cost), and point every later review at it. A review that cannot place a lesson should say which policy question blocks it, not leave the entry OPEN silently.
+
+**Principle:** A review that has no rule for where changes go will defer every change. Settle the placement policy once, write it where the next review will read it, and the backlog becomes workable.
+
+### Observation 187: A second observation log appeared at the skill's default path, and no review ever saw it
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** The same review found `~/.claude/projects/<id>/memory/skill-observations/log.md` on the desktop machine — three OPEN entries from 15 Sep 26 (now #183-#185 here) — beside the repo's committed log that every review reads.
+**Skill:** task-observer
+**Type:** open-source
+**Phase/Area:** SKILL.md — where the log lives; the activation hook text
+
+**Issue:** The skill tells agents to anchor the log on a STABLE path outside the working directory unless configuration pins it elsewhere. This repo had chosen a committed log (the only store its web and desktop sessions share), but the choice was expressed as a soft suggestion in the session-start message ("commit the log into the repo if it should persist"), not as a pin. A desktop session followed the skill's default instead, and its entries were invisible to every review for eight days.
+
+**Suggested improvement:** Where a project keeps the log somewhere other than the skill's default, the activation text must PIN it in so many words ("the one log is <path>; never create another at the default path"). Reviews should also look for stray logs at the default path.
+
+**Principle:** Two places that can each hold "the log" are a split brain; the configuration must name one, in words the agent reads at the moment it would create the other.
+
+### Observation 188: A workflow change silently emptied the handoff skill's doc-truth check
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** Reading the repo's own session-handoff skill during the review (not from a logged entry). Its Step 3 checks the session's changes with `git diff <session-start>...origin/main`, a range chosen on 11 Aug 26 when every session merged to main before handing off. Since 2 Sep 26 work waits on its branch for the owner's "merge live", so that range no longer contains the session's commits.
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** Step 3 — the bounded "keep the durable docs true" check
+
+**Issue:** The check still runs and still reports a clean bill — over an empty range. Nothing flags it: the command succeeds, the list is simply empty. The step's own warning about the OLD wrong range is what made the new wrong range look safe.
+
+**Suggested improvement:** Range the check from the session's start commit to the session's own HEAD (`<start>...HEAD`), which is right whether or not the work has merged. More generally: when a delivery rule changes (auto-merge → merge on request), search every skill and checklist for commands and ranges that assumed the old flow.
+
+**Principle:** A check that can come back empty must be checked for emptiness; a workflow change quietly invalidates every step written for the old workflow, and an empty result reads exactly like a pass.
+
+### Observation 189: Lessons were applied to project docs without their observations being marked — a quarter of the "open" backlog was already done
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** The review's coverage searches (four parallel read-only agents, one per cluster) found 44 of 174 "OPEN" observations already written into the project's own docs by the sessions that met them — the server-stopping trap alone was logged seven times and was already a rule.
+**Skill:** task-observer
+**Type:** open-source
+**Phase/Area:** SKILL.md — Acting on Observations; references/weekly-review.md Step 3
+
+**Issue:** Sessions fixed the lesson where it hurt (a rules file, a design doc) but left the log entry OPEN, and later sessions, not finding the entry resolved, logged the same lesson again. The review then had to re-discover each by searching. Without the coverage pass, the review would have proposed duplicating those lessons into skills.
+
+**Suggested improvement:** Two lines. In Acting on Observations: whenever an observation's lesson is applied anywhere — a skill, a project doc, a rules file — mark it ACTIONED in the same change, naming where it went. In the review's Step 3: cross-check each observation against the project's own docs, not only the skills, before proposing a change; a lesson already written there is closed as "already reflected".
+
+**Principle:** A backlog is only as honest as its closing discipline. Mark at the moment of applying, and let reviews search where lessons actually land, or a list of done work poses as open work and invites duplication.

@@ -1,0 +1,1171 @@
+diff --git a/.claude/hooks/task-observer-session-start.sh b/.claude/skill-updates/2026-09-23/_hooks/task-observer-session-start.sh
+index 277a9f28..a4a6d3fa 100644
+--- a/.claude/hooks/task-observer-session-start.sh
++++ b/.claude/skill-updates/2026-09-23/_hooks/task-observer-session-start.sh
+@@ -25,11 +25,12 @@ are captured throughout the session. When loading any skill, also check the
+ observation log for OPEN observations tagged to it and apply their insights even
+ if the skill file has not been updated yet.
+ 
+-Persistence note: this repo's web/phone sessions run in an ephemeral container
+-with no stable workspace folder, so the observation log will not survive on its
+-own — use the skill's handoff-doc mode (references/environments.md) and offer the
+-handoff as the session winds down, or commit the log into the repo if it should
+-persist. Provenance/opt-out: .claude/skills/TASK-OBSERVER-VENDORED.md.
++Log location, pinned for this repo: the ONE observation log is
++.claude/skill-observations/log.md, committed with the work — on every device
++and in web sessions alike. Never create another under
++~/.claude/projects/.../skill-observations/ (the skill's default path): no review
++ever sees it. How reviews run here, and provenance/opt-out:
++.claude/skills/TASK-OBSERVER-VENDORED.md.
+ </task-observer-activation>
+ EOF
+ 
+diff --git a/.claude/skills/SUPERPOWERS-VENDORED.md b/.claude/skill-updates/2026-09-23/_notes/SUPERPOWERS-VENDORED.md
+index 0db7e08d..eb9d1872 100644
+--- a/.claude/skills/SUPERPOWERS-VENDORED.md
++++ b/.claude/skill-updates/2026-09-23/_notes/SUPERPOWERS-VENDORED.md
+@@ -18,7 +18,25 @@ did not.
+ 1. **Cross-references de-namespaced.** Upstream skills call each other as
+    `superpowers:test-driven-development`; a repo-level skill is invoked by its
+    bare name, so the `superpowers:` prefix was stripped from all 26 references.
+-   No other edits — the skill bodies are upstream's.
++   Beyond that, the skill bodies were upstream's until change 3.
++3. **Local lessons from the skill review of 23 Sep 26** (owner-approved;
++   `.claude/skills/TASK-OBSERVER-VENDORED.md` §Reviews in this repo says why
++   lessons land in skills). An upstream refresh overwrites these — re-apply
++   them (see Updating). `git log -p -- .claude/skills/<skill>` shows each one.
++
++   | Skill | What was added |
++   |---|---|
++   | `verification-before-completion` | seven rows in Common Failures; the "long check runs" pattern; new `browser-checks.md` |
++   | `systematic-debugging` | reproduce / recent-change / working-example lines; the "flaky is a hypothesis" block; new `device-only-bugs.md`; pointer to `raptor-port/docs/performance.md` |
++   | `test-driven-development` | Verify RED/GREEN additions (green-before-implementation, reverting only the fix, races, shared fixtures, deliberate behaviour changes); `writing-good-tests.md` additions |
++   | `writing-plans` | plan-file check, per-task browser check, `Model:` line, standing orders, three No-Placeholders items, self-review checks 4-9 |
++   | `subagent-driven-development` | pre-flight items, brief contents, machine rules, safe parallelism, DONE_WITH_CONCERNS, decisions-vs-premises, what rides a fix round, ledger/turn-boundary/stop lines, pre-final-review deviation list; `implementer-prompt.md`, `task-reviewer-prompt.md`; `scripts/task-brief` prepends the plan's shared header |
++   | `dispatching-parallel-agents` | three Common Mistakes pairs; "When Agents Share the Working Tree or the Machine" |
++   | `brainstorming` | visual-first layout rounds; enumerate "every"; layered-rule decision table; trap hunt; the mock-on-the-real-app fallback |
++   | `requesting-code-review` | line-ending check before review; `code-reviewer.md` "Shared state and data" checklist + one Testing item |
++   | `receiving-code-review` | finding / diagnosis / fix as three claims; two-of-a-kind; "can't happen" needs proof |
++   | `executing-plans` | premise check before building; deviation list before review |
++   | `using-git-worktrees` | the symlinked-dependencies staging trap |
+ 2. **The SessionStart hook is vendored but NOT wired in.** Upstream ships a hook
+    that injects the whole `using-superpowers` skill into every session as
+    `<EXTREMELY_IMPORTANT>` context. The adapted script is at
+@@ -32,7 +50,9 @@ did not.
+ ## Updating
+ 
+ There is no auto-update. Re-clone upstream, copy `skills/` over, and re-apply
+-change 1:
++change 1 — then change 3: `cp -a` overwrites every edited file (and keeps the
++added reference files), so diff each skill in change 3's table against the
++pre-refresh commit and carry the local lines forward:
+ 
+ ```sh
+ git clone --depth 1 https://github.com/obra/superpowers.git /tmp/sp
+diff --git a/.claude/skills/TASK-OBSERVER-VENDORED.md b/.claude/skill-updates/2026-09-23/_notes/TASK-OBSERVER-VENDORED.md
+index 75b26177..001ea1f3 100644
+--- a/.claude/skills/TASK-OBSERVER-VENDORED.md
++++ b/.claude/skill-updates/2026-09-23/_notes/TASK-OBSERVER-VENDORED.md
+@@ -80,6 +80,16 @@ where that procedure's defaults do not fit a git repo with vendored skills:
+   a merge, keep the reviewed side and re-append the other side's new entries at
+   the end with fresh numbers.
+ 
++## Local changes to the vendored skill
++
++- **23 Sep 26 review:** `SKILL.md` Numbering discipline gained item 4
++  (parallel branches are parallel log writers) and Acting on Observations
++  gained "Close it where you apply it"; `references/weekly-review.md` Step 3
++  now also searches the project's own docs and settles where lessons land.
++  The session-start hook's message pins the ONE log location (above). An
++  upstream refresh overwrites these files: re-apply them
++  (`git log -p -- .claude/skills/task-observer`).
++
+ ## Known caveats (not bugs)
+ 
+ - **The skill's default log location does not persist on web/phone** — an
+diff --git a/.claude/skills/brainstorming/SKILL.md b/.claude/skill-updates/2026-09-23/brainstorming/SKILL.md
+index 789c3a19..2373a7ea 100644
+--- a/.claude/skills/brainstorming/SKILL.md
++++ b/.claude/skill-updates/2026-09-23/brainstorming/SKILL.md
+@@ -22,7 +22,7 @@ Every project goes through this process. A todo list, a single-function utility,
+ You MUST create a task for each of these items and complete them in order:
+ 
+ 1. **Explore project context** — check files, docs, recent commits
+-2. **Offer the visual companion just-in-time** — NOT upfront. The first time a question would genuinely be clearer shown than described, offer it then (its own message); on approval its browser tab opens for you. If no visual question ever arises, never offer it. See the Visual Companion section below.
++2. **Offer the visual companion just-in-time** — NOT upfront. The first time a question would genuinely be clearer shown than described, offer it then (its own message); on approval its browser tab opens for you. If no visual question ever arises, never offer it. When the choice itself is about layout, size or placement, the first round of options is visual — options described in words get answered with a sketch. See the Visual Companion section below.
+ 3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
+ 4. **Propose 2-3 approaches** — with trade-offs and your recommendation
+ 5. **Present design** — in sections scaled to their complexity, get user approval after each section
+@@ -71,6 +71,8 @@ digraph brainstorming {
+ - Prefer multiple choice questions when possible, but open-ended is fine too
+ - Only one question per message - if a topic needs more exploration, break it into multiple questions
+ - Focus on understanding: purpose, constraints, success criteria
++- An ask that says "every", "all" or "everywhere" is a list you have not written yet: enumerate it in the exploration first, and put the count and the list into the scope question
++- A rule that arrives as corrections to what you built is usually one simpler rule the person already holds. After the second correction to the same rule, stop patching and restate the WHOLE rule as a small decision table (what counts, both sides of the boundary, what is exempt) for one confirmation. A list of rules they are "just reinforcing" is an audit before it is a build: for each, where it is enforced, whether a user can actually reach it, and the test that pins it — then build only what is missing or unreachable
+ 
+ **Exploring approaches:**
+ 
+@@ -99,6 +101,9 @@ digraph brainstorming {
+ - Explore the current structure before proposing changes. Follow existing patterns.
+ - Where existing code has problems that affect the work (e.g., a file that's grown too large, unclear boundaries, tangled responsibilities), include targeted improvements as part of the design - the way a good developer improves code they're working in.
+ - Don't propose unrelated refactoring. Stay focused on what serves the current goal.
++- **Reuse is where hidden bugs live — hunt the traps before designing.** When the design reuses an existing interaction or engine core on a new surface, or applies one look or behaviour to many existing places, add a trap-hunt exploration: every trap, each with the existing defence (and where it is) or "must build". For one recipe worn by many hosts, list per host what already owns the same property or slot, where any inherited value comes from and WHEN it is present, which passes repaint after the change and in what order, and where two input paths (mouse and touch) build things differently. The list goes into the spec as build constraints.
++- Before proposing a visual device (a glow, a halo, a blur, a sticky part), search the stylesheets and their comments for it — the codebase may already record that it was tried and failed.
++- A design that reverses an existing rule lists the tests and comments that pin the OLD rule; otherwise the build ships both rules at once.
+ 
+ ## After the Design
+ 
+@@ -138,7 +143,16 @@ A browser-based companion for showing mockups, diagrams, and visual options duri
+ **Offering the companion (just-in-time):** Do NOT offer it upfront. Wait until a question would genuinely be clearer shown than told — a real mockup / layout / diagram question, not merely a UI *topic*. The first time that happens, offer it then, as its own message:
+ > "This next part might be easier if I show you — I can put together mockups, diagrams, and comparisons in a browser tab as we go. It's still new and can be token-intensive. Want me to? I'll open it for you."
+ 
+-**This offer MUST be its own message.** Only the offer — no clarifying question, summary, or other content. Wait for the user's response. If they accept, start the server with `--open` so their browser opens to the first screen automatically. If they decline, continue text-only and don't offer again unless they raise it.
++**This offer MUST be its own message.** Only the offer — no clarifying question, summary, or other content. Wait for the user's response. If they accept, start the server with `--open` so their browser opens to the first screen automatically. If they decline, continue text-only and don't offer again unless they raise it. One exception: when the visual question IS the design section awaiting approval, "show me a picture first" can be one of that question's answers instead of a separate message.
++
++**When the companion cannot open a browser** (a remote or phone session), draw the options on the real running app instead: load the real build, reach the real state by real actions, inject the proposed change into the live page, screenshot it at the widths the app ships, and SEND the images.
++- Build from the product's own components — its class names, cloned from an existing element of the same kind — not just its colour variables: borrowed colours alone read as a different product, and the reviewer ends up judging the noise.
++- Give every injected node a class name the app has never used (a `mock-` prefix): the host stylesheet styles anything it recognises.
++- A layout cost you mention (a row's height, how many days fit) is read off the rendered page, never estimated — a guessed cost puts a false price on the options.
++- Motion and feel (a drag, an animation, a timing) cannot be approved from a still: build a small touchable page from the captured real markup and styles, variants behind an on-page switch, and send the link.
++- Before sending any mock, tap each of its controls the way the user will.
++- The approved picture becomes the build's contract.
++- If the user says they attached an image and none arrived, say so in your first reply and continue from their words.
+ 
+ **Per-question decision:** Even after the user accepts, decide FOR EACH QUESTION whether to use the browser or the terminal. The test: **would the user understand this better by seeing it than reading it?**
+ 
+diff --git a/.claude/skills/dispatching-parallel-agents/SKILL.md b/.claude/skill-updates/2026-09-23/dispatching-parallel-agents/SKILL.md
+index 3fa091b3..f6d966a2 100644
+--- a/.claude/skills/dispatching-parallel-agents/SKILL.md
++++ b/.claude/skill-updates/2026-09-23/dispatching-parallel-agents/SKILL.md
+@@ -126,6 +126,37 @@ Return: Summary of what you found and what you fixed.
+ **❌ Vague output:** "Fix it" - you don't know what changed
+ **✅ Specific:** "Return summary of root cause and changes"
+ 
++**❌ Your paraphrase as the oracle:** "expect exactly one warning" written from memory — the agent verifies your sentence, and a wrong one comes back as a confident false finding
++**✅ The source of truth:** point at the rule document or the test that pins the behaviour, have the agent derive the expected result from it, and label each FAIL "contradicts the doc" or "contradicts the brief"
++
++**❌ UI tests through the back door:** tests that call the state setter directly pass even when the button is never wired to it
++**✅ Through the control:** at least one test per interactive control clicks the real rendered control and checks what the user sees
++
++**❌ Research split by topic for an "everywhere X" feature:** each agent returns a list, and nobody knows which hits need edits
++**✅ Split by code boundary** (each package or app, plus the docs), and have each agent classify every hit: "derives automatically", "hand-written — must edit", or "a test pins the exact list"
++
++## When Agents Share the Working Tree or the Machine
++
++Parallel agents share one filesystem and one machine but not one view of
++them — an agent sees another's side effects, never its intent. Say it in the
++brief:
++
++- **Who owns which files.** A second writer's brief lists the files another
++  agent owns as read-only, with an escape hatch: "report the change you need
++  instead of making it". You apply cross-boundary edits when you integrate.
++- **Scratch files go in each agent's own scratch folder**, never the repo
++  tree. An untracked file an agent did not create belongs to someone else —
++  never delete or "restore" it.
++- **Machine resources:** which test suites, ports and folders are already in
++  use. Agents run named test files in the foreground, one at a time, and
++  never re-run a suite they already started — backgrounded full runs pile up
++  until none finishes.
++- **Never commit a tree an agent is still writing**, whatever a hook or
++  reminder says; push only history that is already committed.
++- **A stop applies to agents too.** If work must pause (plan mode, "stop"),
++  stop every running agent that can write, then check `git status` and undo
++  partial edits.
++
+ ## When NOT to Use
+ 
+ **Related failures:** Fixing one might fix others - investigate together first
+diff --git a/.claude/skills/executing-plans/SKILL.md b/.claude/skill-updates/2026-09-23/executing-plans/SKILL.md
+index 20452595..9611712f 100644
+--- a/.claude/skills/executing-plans/SKILL.md
++++ b/.claude/skill-updates/2026-09-23/executing-plans/SKILL.md
+@@ -17,10 +17,17 @@ Load plan, review critically, execute all tasks, report when complete.
+ 
+ ### Step 1: Load and Review Plan
+ 1. Ensure an isolated workspace: use using-git-worktrees to create one or verify the existing one
+-2. Read plan file
+-3. Review critically - identify any questions or concerns about the plan
+-4. If concerns: Raise them with your human partner before starting
+-5. If no concerns: Create todos for the plan items and proceed
++2. Check the premise before building. A plan or handoff describes the world
++   when it was written: `git fetch`, then for the branch it names,
++   `git log --oneline origin/main..BRANCH` (empty = everything on it already
++   landed) and `git log --oneline BRANCH..origin/main` (what it is missing);
++   read the state of any pull request it mentions. A file the handoff names but the tree lacks is more
++   often an un-pulled branch than a wrong path. If the work already landed,
++   stop and say so instead of rebuilding it.
++3. Read plan file
++4. Review critically - identify any questions or concerns about the plan
++5. If concerns: Raise them with your human partner before starting
++6. If no concerns: Create todos for the plan items and proceed
+ 
+ ### Step 2: Execute Tasks
+ 
+@@ -33,6 +40,10 @@ For each task:
+ ### Step 3: Complete Development
+ 
+ After all tasks complete and verified:
++- Compare what you built with the plan's explicit instructions ("remove X",
++  "add Y"), and list every one you did not follow, with the reason, before
++  any review of the finished work. A deviation you surface is a decision; one
++  the reviewer has to discover is a defect.
+ - Announce: "I'm using the finishing-a-development-branch skill to complete this work."
+ - **REQUIRED SUB-SKILL:** Use finishing-a-development-branch
+ - Follow that skill to verify tests, present options, execute choice
+diff --git a/.claude/skills/receiving-code-review/SKILL.md b/.claude/skill-updates/2026-09-23/receiving-code-review/SKILL.md
+index 950da7b7..68711001 100644
+--- a/.claude/skills/receiving-code-review/SKILL.md
++++ b/.claude/skill-updates/2026-09-23/receiving-code-review/SKILL.md
+@@ -85,6 +85,35 @@ IF conflicts with your human partner's prior decisions:
+ 
+ **your human partner's rule:** "External feedback - be skeptical, but check carefully"
+ 
++### A Finding, Its Diagnosis, and Its Fix Are Three Claims
++
++A reviewer reading source cannot run the path they describe, so check each
++part on its own:
++
++- **The symptom** is usually right — reproduce it.
++- **The named cause** is a hypothesis. Re-derive it from the running system
++  before fixing, and check whether several findings share one cause — a list
++  of "independent" items is exactly where a common root hides. The same goes
++  for a diagnosis written in a handoff or by an earlier session.
++- **The suggested fix** is a hypothesis too, however precise and confident.
++  Apply it, then REMOVE it and watch the pinning test fail. A test that still
++  passes with the fix removed has proven nothing about the fix.
++
++Where two reviewers disagree on a fact, measure the fact — never settle it by
++majority or by whichever report is more detailed.
++
++### Two of a Kind Is a Family
++
++Two findings of the same class are a sample, not the population. State the
++rule they break in one sentence, list every place that rule applies, check
++each, and fix the whole list — another review round would only sample again.
++
++### "Can't Happen" Needs Proof
++
++Declining a finding as theoretical needs a positive argument: what would have
++to be true for it to fire, and why no real path makes that true. "I couldn't
++think of how" is not that argument.
++
+ ## YAGNI Check for "Professional" Features
+ 
+ ```
+diff --git a/.claude/skills/requesting-code-review/SKILL.md b/.claude/skill-updates/2026-09-23/requesting-code-review/SKILL.md
+index fa4f2f99..e4a3edcc 100644
+--- a/.claude/skills/requesting-code-review/SKILL.md
++++ b/.claude/skill-updates/2026-09-23/requesting-code-review/SKILL.md
+@@ -29,6 +29,16 @@ BASE_SHA=$(git rev-parse HEAD~1)  # or origin/main
+ HEAD_SHA=$(git rev-parse HEAD)
+ ```
+ 
++Before dispatching, make sure the diff is content, not noise. On a Windows
++checkout a tool that rewrites a whole file can flip its line endings, and the
++diff then reads as a total rewrite that buries the real change. Compare the
++two stats; a file far larger in the first has flipped — restore its endings
++(a binary-safe rewrite, not `sed`) before anyone reads the diff:
++```bash
++git diff --stat $BASE_SHA..$HEAD_SHA
++git diff --ignore-cr-at-eol --stat $BASE_SHA..$HEAD_SHA
++```
++
+ **2. Dispatch code reviewer subagent:**
+ 
+ Dispatch a `general-purpose` subagent, filling the template at [code-reviewer.md](code-reviewer.md)
+diff --git a/.claude/skills/requesting-code-review/code-reviewer.md b/.claude/skill-updates/2026-09-23/requesting-code-review/code-reviewer.md
+index db84ae2a..c08bc90e 100644
+--- a/.claude/skills/requesting-code-review/code-reviewer.md
++++ b/.claude/skill-updates/2026-09-23/requesting-code-review/code-reviewer.md
+@@ -54,11 +54,39 @@ Subagent (general-purpose):
+     - Security concerns?
+     - Integrates cleanly with surrounding code?
+ 
++    **Shared state and data** (where the diff touches them — these are the
++    changes that pass their own tests and break something elsewhere):
++    - A NEW routine over a structure other code already walks: do its skip
++      rules match its siblings'? Every marker a sibling honours (cancelled,
++      overflow, sentinel entries) is honoured here, or its omission argued.
++    - A widened vocabulary or domain (a new code, a list that grew, a count
++      that became variable): every validator and every pruning filter of the
++      old domain — the ones that DELETE on load are the dangerous ones.
++    - A computation now run over a wider population: every ambient value it
++      reads (the loaded period, the current page, the viewer) — what was
++      always true for the old population may be false for the new rows.
++    - Cached intent that overrides live state: invalidated on every input
++      channel that can move that state; any tolerance sized to the error it
++      has to absorb.
++    - A display transform: every place that compares the shown value with the
++      stored one (change detection, dirty flags, history).
++    - State set from several places: list each assignment with the refreshes
++      that follow it — one missing a refresh its siblings all make is a bug.
++    - An optional input: "not provided" is not defaulted to an empty
++      collection where the code treats empty and absent differently.
++    - A migration or re-keying: compare with what the OLD code showed for each
++      stored shape (read the pre-change reader), not with what the new model
++      says the data meant.
++    - A rename: every script that exercises the system, including checks CI
++      never runs.
++
+     **Testing:**
+     - Tests verify real behavior, not mocks?
+     - Edge cases covered?
+     - Integration tests where they matter?
+     - All tests passing?
++    - Could each new test fail? None may pass on an empty fixture or leave
++      shared state switched for the tests after it.
+ 
+     **Production readiness:**
+     - Migration strategy if schema changed?
+diff --git a/.claude/skills/session-handoff/SKILL.md b/.claude/skill-updates/2026-09-23/session-handoff/SKILL.md
+index b4a3dcc5..4cb7a609 100644
+--- a/.claude/skills/session-handoff/SKILL.md
++++ b/.claude/skill-updates/2026-09-23/session-handoff/SKILL.md
+@@ -15,12 +15,11 @@ plain-language and complete.
+ 
+ ## Step 1 — decide whether a file is warranted
+ 
+-This project ships once per session, at the end (PR → merge → deploy —
+-`CLAUDE.md` §How to work here, owner 10 Aug 26; it used to ship every green
+-change as it landed). So the shipment normally happens just BEFORE this skill
+-runs, and most sessions still end with nothing in flight — but the one PR now
+-carries the whole session, which makes "did it merge" the single question that
+-decides everything below. Check first, then branch:
++Work accumulates on the session's branch and reaches `main` only on the
++owner's "merge live" (`CLAUDE.md` §How to work here; D60 — pushing the branch
++needs no permission, `main` always does). So most sessions end with the branch
++pushed and waiting for him — the normal end state, not unfinished business
++(below). Check first, then branch:
+ 
+ - **Nothing unfinished** → say so in chat, two lines, and write no file. The
+   repo and `git log` already tell the next session everything it needs. A
+@@ -87,12 +86,15 @@ session needs the pointer — never as the reason the file exists.
+    (Nate's original skill forbids git here. That is right for a persistent
+    local machine and wrong for us: the next session cannot read this chat but
+    can read git, so git is the reliable half of the handoff.)
+-3. **GitHub** — PR numbers and whether they merged, whether the Pages deploy
+-   went green, any PR left under watch. Two channels exist since 15 Aug 26
+-   (`CLAUDE.md` §Build & verify): the ungated **Vercel** per-branch preview for
+-   fast cross-device review, and **GitHub Pages** as the official gated site.
+-   "Deploy went green" still means Pages — a preview is not a ship.
+-4. **Plan file**, if one drove the session (`/root/.claude/plans/*.md`).
++3. **GitHub** — each PR's number and state, READ now, whether its checks
++   passed, and any PR left under watch. The owner merges between sessions, so
++   the file records merge state as "PR #N — open when this was written; check
++   before acting", never as a bare "not merged" the next session will trust.
++   The app is viewed on **Vercel** (a link per branch). The old GitHub Pages
++   site was switched off on 23 Sep 26 (D59) — there is no Pages deploy to
++   report.
++4. **Plan file**, if one drove the session (the harness's `plans/` folder:
++   `~/.claude/plans/` on a desktop, `/root/.claude/plans/` in a web container).
+ 
+ Nothing further — no broad Glob sweeps, no filesystem audit. If you did not
+ touch it this session, it does not belong in the handoff. (Step 3's check is
+@@ -110,17 +112,22 @@ This is a **bounded** check, not the filesystem audit Step 2 rules out. One
+ command, over this session's diff only:
+ 
+ ```
+-git diff --name-status <session-start-commit>...origin/main
++git diff --name-status <session-start-commit>...HEAD
+ ```
+ 
+-**`origin/main...HEAD` is the WRONG range here, and it fails silently.** This
+-project merges before the handoff runs (Step 1), so by the time you get here
+-`HEAD` and `origin/main` are usually the same commit — that diff is empty and
+-the check reports a clean bill on a session that added three files. Use the
+-commit the session STARTED from, which is the parent of your first commit:
+-`git log --oneline -8` will show it, or take it from the merge you just made.
+-Corrected 11 Aug 26, after the empty-range version would have passed a session
+-that had added two test files and moved four numbers.
++**The range must start at the commit the session STARTED from and end at your
++own `HEAD`** — the parent of your first commit (`git log --oneline -8` shows
++it). Both wrong ranges fail silently, reporting a clean bill on a session that
++added files: `origin/main...HEAD` was empty back when sessions merged before
++the handoff (11 Aug 26), and `<start>...origin/main` is empty now that work
++waits on the branch for "merge live" — the session's commits are not on
++`main` yet (corrected 23 Sep 26).
++
++**If a merge to `main` happened this session** — yours or the owner's —
++re-read the WHOLE §In flight section of `HANDOFF.md` and reconcile every entry
++against `git log origin/main`, not only the entries this session's diff
++touched. A "current state" section must hold nothing already done, and the
++staleness an earlier session left sits in lines your diff never touched.
+ 
+ For each path it reports, confirm — by reading `HANDOFF.md`, not from
+ memory:
+@@ -186,14 +193,16 @@ stable structure is the point.
+ <2-3 sentences: what the owner asked for, constraints that emerged>
+ 
+ ## Shipped
+-- <change> — PR #<n>, merged/open, deploy green/red/pending
++- <change> — PR #<n>, state when written: open/merged; checks green/red
+ 
+ ## Unfinished
+ - <item> — <what state it is in, what is left to do>
+ 
+ ## Branch state
++- Before acting on anything in this file: `git fetch`, and check the branch
++  and PR states it names — it describes the world when it was written.
+ - Designated branch: `claude/<name>`
+-- Its PR is <merged / open #n / none>.
++- Its PR: <#n, open or merged when written / none>.
+ - If MERGED, the next session must reset before starting new work:
+   `git fetch origin main && git checkout -B <branch> origin/main`
+   Otherwise it stacks commits onto already-merged history.
+diff --git a/.claude/skills/subagent-driven-development/SKILL.md b/.claude/skill-updates/2026-09-23/subagent-driven-development/SKILL.md
+index 412e12df..db0df377 100644
+--- a/.claude/skills/subagent-driven-development/SKILL.md
++++ b/.claude/skill-updates/2026-09-23/subagent-driven-development/SKILL.md
+@@ -136,6 +136,18 @@ a ledger file, not only in todos.
+ - The ledger is your recovery map: the commits it names exist in git even
+   when your context no longer remembers creating them. After compaction,
+   trust the ledger and `git log` over your own recollection.
++- A ledger line says "pushed" only after the push result is read, and any
++  statement about commit or push state — in the ledger or to your human
++  partner — is read from git (`git status -sb`) in the same turn. A
++  remembered push is a guess.
++- Background implementers leave the tree dirty for minutes. If a hook or
++  reminder nags about uncommitted or unpushed work at a turn boundary, triage
++  by git state: HEAD moved and tree clean → push; the tree holds a running
++  helper's files → wait for its completion. Never commit a tree a helper is
++  still writing.
++- If your human partner switches to plan mode or says stop, stop every
++  running helper that can write, check `git status`, undo partial edits, and
++  re-dispatch with the same brief after approval.
+ - `git clean -fdx` will destroy the workspace (it's git-ignored scratch); if
+   that happens, recover from `git log`.
+ 
+@@ -147,6 +159,9 @@ Before dispatching Task 1, scan the plan once for conflicts:
+ - tasks that contradict each other or the plan's Global Constraints
+ - anything the plan explicitly mandates that the review rubric treats as a
+   defect (a test that asserts nothing, verbatim duplication of a logic block)
++- a plan that defers every browser check to its last task — each task that
++  changes the screen should run the check that can see it
++- a code block that replaces existing lines and drops a guard they had
+ 
+ Present everything you find to your human partner as one batched question —
+ each finding beside the plan text that mandates it, asking which governs —
+@@ -214,6 +229,16 @@ and fix-round diffs need it.
+   (5) the report-file path and report contract. Exact values (numbers,
+   magic strings, signatures, test cases) appear only in the brief. Never
+   make a subagent read the whole plan file.
++- **What the brief must also carry:** the plan's Global Constraints —
++  `scripts/task-brief` writes the plan's Goal, Architecture and Global
++  Constraints at the top of every brief; glance at the printed brief to
++  confirm they are there. And add to the dispatch what no test name reveals:
++  the ordering contracts of the code being changed ("this command raises its
++  dialog before its first await, so a guard here must be synchronous").
++- **Machine rules, whenever you run gates while helpers work:** say which
++  suites, ports and folders you own; helpers run only named test files, in
++  the foreground, one at a time, and never re-run a suite they already
++  started. An agent cannot see another's intent, only its side effects.
+ - **Report file:** name the implementer's report file after the brief
+   (brief `…/task-N-brief.md` → report `…/task-N-report.md`) and put it in
+   the dispatch prompt. The implementer writes the full report there and
+@@ -227,7 +252,11 @@ and fix-round diffs need it.
+   a pointer to that ledger entry in the dispatch.
+ - Record the implementer's agent identity from the dispatch result —
+   fix-loop rounds 1-3 resume this agent.
+-- Never dispatch multiple implementation subagents in parallel (conflicts).
++- Never dispatch multiple implementation subagents in parallel on
++  overlapping files (conflicts). What is safe: a read-only reviewer beside the
++  next implementer, always; a second implementer only on a provably separate
++  set of files — counting, for a task whose review is still open, the files
++  its fix round may touch.
+ 
+ Template: [implementer-prompt.md](implementer-prompt.md)
+ 
+@@ -237,7 +266,7 @@ Implementer subagents report one of four statuses. Handle each appropriately:
+ 
+ **DONE:** Generate the review package (`scripts/review-package PLAN_FILE BASE HEAD`, from this skill's directory — it prints the unique file path it wrote; BASE is the commit you recorded before dispatching the implementer — never `HEAD~1`, which silently drops all but the last commit of a multi-commit task), then dispatch the task reviewer with the printed path.
+ 
+-**DONE_WITH_CONCERNS:** The implementer completed the work but flagged doubts. Read the concerns before proceeding. If the concerns are about correctness or scope, address them before review. If they're observations (e.g., "this file is getting large"), note them and proceed to review.
++**DONE_WITH_CONCERNS:** The implementer completed the work but flagged doubts. Read the concerns before proceeding. If the concerns are about correctness or scope, address them before review. If they're observations (e.g., "this file is getting large"), note them and proceed to review. A concern that names a requirement the implementer left undone ("beyond the brief — their call") is neither: resume the implementer to finish it before the review, and review the combined diff. An implementer whose measured value disagrees with a number in the brief reports it here; neither the code nor the test is bent to match silently.
+ 
+ **NEEDS_CONTEXT:** The implementer needs information that wasn't provided. Provide the missing context and re-dispatch.
+ 
+@@ -316,6 +345,13 @@ Before the loop starts, two routes leave it immediately:
+   contradiction: present the finding and the plan text, ask which governs.
+   Do not dismiss the finding because the plan mandates it, and do not
+   dispatch a fix that contradicts the plan without asking.
++  **Escalate decisions, not premises.** That rule is for plan text that
++  records a CHOICE (a behaviour, a trade-off). When the plan text rests on a
++  technical premise the finding proves false, and the design's intent is
++  stated elsewhere, rule for the intent yourself: the fix round also corrects
++  the plan/spec sentence, and the ledger records your ruling with its
++  evidence. A question your human partner cannot answer in their own terms is
++  not their decision.
+ Everything else enters the loop. A fix round is one fix dispatch plus one
+ scoped re-review. Five rounds maximum per task:
+ 
+@@ -340,6 +376,22 @@ output; dispatch the re-review once all three are present. Name the
+ covering test files in the fix message — a one-line fix does not need the
+ whole suite.
+ 
++**What rides along, and what a fix brief must say:**
++- Minor findings never TRIGGER a round, but when a round is open anyway, send
++  that task's ledgered minors with it under a separate "optional, not
++  blocking" heading; the re-review verdicts them ADDRESSED or DEFERRED without
++  extending the loop. The implementer who still holds the context fixes them
++  in minutes.
++- Two findings of one class: state the rule they break and have the round fix
++  every place it applies, not the two named sites (receiving-code-review).
++- "Delete X and what depends on it": build the dependents by tracing what
++  reads X and what those write — never from a name two features happen to
++  share — and write into the brief what STAYS beside what goes.
++- A round that changes a value or behaviour an earlier round documented
++  re-reads every sentence about that behaviour. Search for the old
++  behaviour's wording, not only the number: prose describes effects, so a
++  search for the constant finds nothing.
++
+ **The re-review is scoped.** Run `scripts/review-package PLAN_FILE FIX_BASE HEAD`
+ where FIX_BASE is the head the previous review saw, and dispatch
+ [re-review-prompt.md](re-review-prompt.md) with the findings list, the
+@@ -401,6 +453,13 @@ requesting-code-review's
+ the ledger's deferred-minor and parked lines so it can triage which must be
+ fixed before merge.
+ 
++Before dispatching it, compare the branch with the plan's explicit
++instructions ("remove X", "add Y") and list every one the build did not
++follow, with its reason, in the ledger and in the review brief. A "better
++idea" that arrived mid-build is a surfaced decision, not something the
++reviewer has to discover — the plan's review often priced that alternative
++already.
++
+ If the final whole-branch review returns findings, dispatch ONE fix subagent
+ with the complete findings list — not one fixer per finding.
+ Per-finding fixers each rebuild context and re-run suites; a real
+diff --git a/.claude/skills/subagent-driven-development/implementer-prompt.md b/.claude/skill-updates/2026-09-23/subagent-driven-development/implementer-prompt.md
+index fbe441e2..7baf29d8 100644
+--- a/.claude/skills/subagent-driven-development/implementer-prompt.md
++++ b/.claude/skill-updates/2026-09-23/subagent-driven-development/implementer-prompt.md
+@@ -47,6 +47,16 @@ Subagent (general-purpose):
+     While iterating, run the focused test for what you're changing; run the
+     full suite once before committing, not after every edit.
+ 
++    The brief is the requirement, but check it against the code it touches:
++    - A number the brief expects that disagrees with what you measure: report
++      it (DONE_WITH_CONCERNS). Never bend the code or the test to match.
++    - A test the brief specifies that cannot reach the code it claims to pin
++      (a loop bound, a fixture that skips the branch): fix the test and report
++      the deviation — a test that passes without reaching its target proves
++      nothing.
++    - Code in the brief that replaces lines holding a type or shape guard:
++      keep the guard unless the brief says why it goes.
++
+     ## Code Organization
+ 
+     You reason best about code you can hold in context at once, and your edits are more
+@@ -122,6 +132,7 @@ Subagent (general-purpose):
+       - RED: command run, relevant failing output before implementation, and why the failure was expected
+       - GREEN: command run and relevant passing output after implementation
+     - Files changed
++    - Every test you deleted or rewrote, by file and title
+     - Self-review findings (if any)
+     - Any issues or concerns
+ 
+diff --git a/.claude/skills/subagent-driven-development/scripts/task-brief b/.claude/skill-updates/2026-09-23/subagent-driven-development/scripts/task-brief
+index 612e14a1..21af1563 100644
+--- a/.claude/skills/subagent-driven-development/scripts/task-brief
++++ b/.claude/skill-updates/2026-09-23/subagent-driven-development/scripts/task-brief
+@@ -3,6 +3,13 @@
+ # implementer reads in one call, so the task text never has to be pasted
+ # through the controller's context.
+ #
++# The brief opens with the plan's shared header — its **Goal:** and
++# **Architecture:** lines and its whole "## Global Constraints" section —
++# because every task is bound by them and the implementer never reads the
++# plan itself. (Local change, 23 Sep 26: the upstream script wrote the task
++# section alone, so the constraints that bind every task never reached the
++# implementer unless the controller remembered to send them.)
++#
+ # Usage: task-brief PLAN_FILE TASK_NUMBER [OUTFILE]
+ # Default OUTFILE: <repo-root>/.superpowers/sdd/<plan-basename>/task-<N>-brief.md
+ # (per plan and per worktree; concurrent runs of the SAME plan in the same
+@@ -25,17 +32,44 @@ else
+   out="$dir/task-${n}-brief.md"
+ fi
+ 
++# Check the task exists first, so a missing task never leaves a half-written brief.
++if ! awk -v n="$n" '
++  /^```/ { infence = !infence }
++  !infence && $0 ~ ("^#+[ \t]+Task[ \t]+" n "([^0-9]|$)") { found = 1 }
++  END { exit !found }
++' "$plan"; then
++  echo "task ${n} not found in ${plan} (no heading matching 'Task ${n}')" >&2
++  exit 3
++fi
++
++# The shared header: the Goal / Architecture lines, then the Global Constraints
++# section up to the next "---" rule or level-1/2 heading (code fences respected).
++shared=$(awk '
++  /^```/ { infence = !infence }
++  !infence && !ingc && /^\*\*(Goal|Architecture):\*\*/ { print; print ""; next }
++  !infence && /^## Global Constraints/ { ingc = 1; print; next }
++  ingc && !infence && (/^---[ \t]*$/ || /^#{1,2}[ \t]/) { exit }
++  ingc { print }
++' "$plan")
++
++if ! printf '%s\n' "$shared" | grep -q '^## Global Constraints'; then
++  echo "warning: ${plan} has no '## Global Constraints' section - the brief carries the task text only" >&2
++fi
++
++{
++  printf '<!-- task-brief: %s, Task %s. The shared header below binds every task. -->\n\n' "$plan" "$n"
++  if [ -n "$shared" ]; then
++    printf '%s\n\n---\n\n' "$shared"
++  fi
++} > "$out"
++
++# The task text itself, byte-for-byte as the upstream script wrote it.
+ awk -v n="$n" '
+   /^```/ { infence = !infence }
+   !infence && /^#+[ \t]+Task[ \t]+[0-9]+/ {
+     intask = ($0 ~ ("^#+[ \t]+Task[ \t]+" n "([^0-9]|$)"))
+   }
+   intask { print }
+-' "$plan" > "$out"
+-
+-if [ ! -s "$out" ]; then
+-  echo "task ${n} not found in ${plan} (no heading matching 'Task ${n}')" >&2
+-  exit 3
+-fi
++' "$plan" >> "$out"
+ 
+-echo "wrote ${out}: $(wc -l < "$out" | tr -d ' ') lines"
++echo "wrote ${out}: $(wc -l < "$out" | tr -d ' ') lines (task ${n} + the plan's shared header)"
+diff --git a/.claude/skills/subagent-driven-development/task-reviewer-prompt.md b/.claude/skill-updates/2026-09-23/subagent-driven-development/task-reviewer-prompt.md
+index fefaea8a..765bd706 100644
+--- a/.claude/skills/subagent-driven-development/task-reviewer-prompt.md
++++ b/.claude/skill-updates/2026-09-23/subagent-driven-development/task-reviewer-prompt.md
+@@ -75,6 +75,15 @@ Subagent (general-purpose):
+     Warnings or other noise in the implementer's reported test output are
+     findings — test output should be pristine.
+ 
++    Two things in the report are findings, not footnotes: a new test that
++    was green BEFORE the implementation (it may be vacuous, on the wrong
++    fixture, or testing something already built — the report must say
++    which), and a deleted or rewritten test the brief did not name. When a
++    new test file switches shared state (a loaded period, a global), running
++    one of its tests on its own is the specific doubt that justifies a
++    focused run: a leaked switch can leave later tests passing on an empty
++    fixture.
++
+     ## Part 1: Spec Compliance
+ 
+     Compare the diff against What Was Requested:
+diff --git a/.claude/skills/systematic-debugging/SKILL.md b/.claude/skill-updates/2026-09-23/systematic-debugging/SKILL.md
+index e1a0a350..8e1838cd 100644
+--- a/.claude/skills/systematic-debugging/SKILL.md
++++ b/.claude/skill-updates/2026-09-23/systematic-debugging/SKILL.md
+@@ -60,12 +60,24 @@ You MUST complete each phase before proceeding to the next.
+    - What are the exact steps?
+    - Does it happen every time?
+    - If not reproducible → gather more data, don't guess
++   - Run it several times and note WHERE it fails: the same spot every time
++     is deterministic (it depends on accumulated state), not flaky
++   - If it will not reproduce, stop re-running it. Instrument a PASSING run:
++     log the state the failing check depends on at each step. The mechanism
++     is present on every run; only the outcome varies
++   - Can't run the failing device or browser at all? See
++     `device-only-bugs.md`
+ 
+ 3. **Check Recent Changes**
+    - What changed that could cause this?
+    - Git diff, recent commits
+    - New dependencies, config changes
+    - Environmental differences
++   - Did YOUR last change cause it? A symptom that appears right after a fix
++     may be the fix's side effect on top of behaviour the app had on
++     purpose — ask what the user expected before removing a deliberate rule
++   - A cause someone else wrote down (a handoff, a review, an earlier chat)
++     is a hypothesis: trust the symptom, re-measure the mechanism
+ 
+ 4. **Gather Evidence in Multi-Component Systems**
+ 
+@@ -124,6 +136,9 @@ You MUST complete each phase before proceeding to the next.
+ 1. **Find Working Examples**
+    - Locate similar working code in same codebase
+    - What works that's similar to what's broken?
++   - "This looks different" on screen: read the element's computed style and
++     diff it against a neighbour that looks right, before theorising from
++     the screenshot
+ 
+ 2. **Compare Against References**
+    - If implementing pattern, read reference implementation COMPLETELY
+@@ -274,6 +289,20 @@ If systematic investigation reveals issue is truly environmental, timing-depende
+ 
+ **But:** 95% of "no root cause" cases are incomplete investigation.
+ 
++**"Flaky" is a hypothesis, never a diagnosis — and never fixed with a retry
++or a longer timeout.** Ask first:
++- What does the check assert that the system does not promise? A background
++  loop, a timer or a deferred write racing the assertion makes the outcome
++  depend on how fast the runner is.
++- What leaked between runs? A server a failed run never stopped holds its
++  port and fails the next run; the pile-up looks random.
++- Did it start right after a timing change? Then it is that change's bug
++  announcing itself.
++
++A failure that moves between runs, lies outside your change and passes on its
++own is not your change's — say so, with that evidence, and record it. It is
++still a defect in the test or the environment.
++
+ ## Supporting Techniques
+ 
+ These techniques are part of systematic debugging and available in this directory:
+@@ -281,3 +310,8 @@ These techniques are part of systematic debugging and available in this director
+ - **`root-cause-tracing.md`** - Trace bugs backward through call stack to find original trigger
+ - **`defense-in-depth.md`** - Add validation at multiple layers after finding root cause
+ - **`condition-based-waiting.md`** - Replace arbitrary timeouts with condition polling
++- **`device-only-bugs.md`** - Bugs you cannot reproduce here: phone-only, or seen only in a recording
++
++**Performance problems:** name no cause before measuring. This project's
++method and its measured dead ends are in `raptor-port/docs/performance.md`
++("measure first", "Dead ends") — read them before proposing a fix.
+diff --git a/.claude/skill-updates/2026-09-23/systematic-debugging/device-only-bugs.md b/.claude/skill-updates/2026-09-23/systematic-debugging/device-only-bugs.md
+new file mode 100644
+index 00000000..b848c83b
+--- /dev/null
++++ b/.claude/skill-updates/2026-09-23/systematic-debugging/device-only-bugs.md
+@@ -0,0 +1,52 @@
++# Bugs You Cannot Reproduce Here
++
++**Load this reference when:** a bug shows only on a device or browser you
++cannot run (a phone, Safari), or only in a recording someone sent.
++
++## Read the Recording as Data
++
++- **Turn the clip into frames before forming any theory.** ffmpeg does it (on
++  a machine without it, the `imageio-ffmpeg` Python package ships a binary):
++  contact sheets from its fps / scale / tile filters make a whole clip
++  viewable, then a second pass at 10-30 frames a second over the seconds that
++  matter shows the mechanism.
++- **Classify each motion by its shape.** Diff consecutive frames: a released
++  fling decays smoothly; a held finger is no change, then constant speed; a
++  one-frame jump is a programmatic write or a repaint. Match the one-frame
++  jumps to timers and writes in the code.
++- **Read the platform's own chrome as an instrument.** A mobile browser's
++  address bar collapses only when the PAGE scrolls, so a bar that stays tall
++  while content moves means a nested scroller moved.
++- **A fixed edge is geometry; a drifting edge is timing.** A seam at the same
++  pixel in every frame is an element's box — compare it with the sizes the
++  code measured. Only a boundary that moves or varies earns a paint or timing
++  theory.
++- **After a fix, read the NEW recording, not the old diagnosis.** Removing one
++  fault changes what shows through the same pixels — a hole that showed black
++  now shows whatever is underneath.
++
++## When the Engine Differs
++
++- **Portable causes first.** A train of long timer tasks right after the
++  input is visible in any browser's trace. An engine-specific theory is earned
++  only once the portable causes are exhausted — the portable fix is usually
++  the small one.
++- **Know which bugs the desktop cannot show.** Keep a list of engine
++  differences (e.g. WebKit does not re-snap after a programmatic scroll;
++  Chromium does), so the investigation reaches the device with a hypothesis
++  and a fix preview, not "cannot reproduce".
++- **With no device, the engine's published source beats memory** for exact
++  behaviour.
++- **"Not painted until touched":** confirm the page structure is already
++  right; list the ancestors of the missing pixels and which of them own a
++  compositor layer; find a nearby element that DOES paint on the device and
++  diff only the layer-owning properties. Verify the fix's mechanism on the
++  engine you have, say plainly that the fault itself is verified only on the
++  device, and pin the fix as a contract test that says why it exists.
++- **A mechanism-level diagnosis obliges a mechanism-level sweep:** fix every
++  element the same mechanism reaches, or name each one you leave alone and
++  why.
++
++This project's worked cases: `raptor-port/docs/performance.md` (the ledger
++items on compositor layers, timer trains and the phone week glide) and
++`raptor-port/docs/ui-contracts.md` (the compositor-layer section).
+diff --git a/.claude/skills/task-observer/SKILL.md b/.claude/skill-updates/2026-09-23/task-observer/SKILL.md
+index 1dc1686f..ad9e778c 100644
+--- a/.claude/skills/task-observer/SKILL.md
++++ b/.claude/skill-updates/2026-09-23/task-observer/SKILL.md
+@@ -213,6 +213,14 @@ act of memory.
+    the race. The pattern for shared logs written by parallel agents is
+    check-then-act-then-verify.
+ 
++4. *Parallel branches are parallel writers.* A log kept in a repository has
++   one counter per branch, and the pre-check above sees only yours. Number
++   past any entries you know exist on other open branches (your own or a
++   sibling session's) and say so in the entry. When two branches' logs meet
++   at a merge, keep one side's entries as they are and re-append the other
++   side's new entries at the end with fresh numbers, correcting any
++   cross-reference to them.
++
+ **Log-write safety — never let a mutation span entry boundaries:** When
+ mutating the log programmatically (marking entries ACTIONED/DECLINED,
+ archiving, renumbering), a greedy or DOTALL pattern over the whole file can
+@@ -430,6 +438,12 @@ and staging rules. If an observation reveals a principle that applies to
+ skills generally, propose it for the cross-cutting principles file (see the
+ same reference).
+ 
++**Close it where you apply it.** Whenever an observation's lesson lands
++anywhere — a skill, a project doc, a rules file, by you or at the user's
++request mid-task — mark that entry ACTIONED in the same change, naming where
++it went. A lesson applied but left OPEN reads as open work, gets logged again
++by the next session that meets it, and turns the next review into a search.
++
+ ## Quick Reference
+ 
+ | Question | Answer |
+diff --git a/.claude/skills/task-observer/references/weekly-review.md b/.claude/skill-updates/2026-09-23/task-observer/references/weekly-review.md
+index 3eb252fa..1cd00898 100644
+--- a/.claude/skills/task-observer/references/weekly-review.md
++++ b/.claude/skill-updates/2026-09-23/task-observer/references/weekly-review.md
+@@ -118,9 +118,14 @@ configuration.
+ 
+ **Step 3 — cross-check observations.** Evaluate every OPEN observation
+ against every skill — not just the skill named in its header; Principles
+-often generalise. Build skill → [relevant observations]. Interactive:
+-present all of it and await approval. Autonomous: apply the approval policy
+-above and continue.
++often generalise. Also search the project's own docs and rule files for each
++lesson: sessions often fix a lesson where it hurt and leave its entry OPEN,
++and a lesson already written there is closed as "already reflected", not
++copied into a skill. Where skills are vendored or read-only, settle once —
++and record where the next review will read it — where lessons land (fork with
++a register of local changes, a companion skill, or project docs). Build skill
++→ [relevant observations]. Interactive: present all of it and await approval.
++Autonomous: apply the approval policy above and continue.
+ 
+ **Step 4 — cross-check principles.** Flag every skill that doesn't yet
+ comply with each active cross-cutting principle.
+diff --git a/.claude/skills/test-driven-development/SKILL.md b/.claude/skill-updates/2026-09-23/test-driven-development/SKILL.md
+index 4320d887..744fd999 100644
+--- a/.claude/skills/test-driven-development/SKILL.md
++++ b/.claude/skill-updates/2026-09-23/test-driven-development/SKILL.md
+@@ -123,10 +123,16 @@ Confirm:
+ - Failure message is expected
+ - Fails because feature missing (not typos)
+ 
+-**Test passes?** You're testing existing behavior. Fix test.
++**Test passes?** You're testing existing behavior. Fix test. A test that is green before the implementation is a finding, not a footnote — it is vacuous, on the wrong fixture, or testing something already built; say which before going on. The usual culprits: an empty collection (assert it is non-empty first) and shared state an earlier test switched and never restored.
+ 
+ **Test errors?** Fix error, re-run until it fails correctly.
+ 
++**Proving an existing fix red:** revert only the lines that ARE the fix — never the whole file when it also holds other uncommitted work — and read the message: it must be the defect's own failure, not a missing-function error.
++
++**Races:** write the losing order down as steps, and make the test force that order — hook the boundary (the storage read, the network call) and perform the competing write from inside it. Assert that the hook fired, so a green test cannot be one that never reached the race. Adding a delay and hoping is not a race test.
++
++**Suites that share one running fixture:** a test that changes shared state runs after every test that reads the old state, or gets a fixture of its own.
++
+ ### GREEN - Minimal Code
+ 
+ Write simplest code to pass the test.
+@@ -182,6 +188,8 @@ Confirm:
+ 
+ **Other tests fail?** Fix now.
+ 
++**Many fail after a DELIBERATE behaviour change?** Sort them before touching any: (a) a rule still true whose fixture needs updating; (b) a test of behaviour that was deliberately removed — rewrite it to the new contract or delete it openly, citing the decision; (c) new behaviour not yet covered — write it in fresh tests that set up their own state. Never make a red test green by weakening it, and fix the first failures first: in order-dependent tests one failure cascades.
++
+ ### REFACTOR - Clean Up
+ 
+ After green only:
+diff --git a/.claude/skills/test-driven-development/writing-good-tests.md b/.claude/skill-updates/2026-09-23/test-driven-development/writing-good-tests.md
+index c39b7376..d8905678 100644
+--- a/.claude/skills/test-driven-development/writing-good-tests.md
++++ b/.claude/skill-updates/2026-09-23/test-driven-development/writing-good-tests.md
+@@ -44,6 +44,12 @@ on redesign and sleeps through bugs. Test the behavior that depends on
+ the decision: not `expect(MAX_RETRIES).toBe(5)` but "a failing call is
+ retried 5 times and the 6th attempt never happens."
+ 
++**The assertion is the behaviour its title names, not an ingredient of
++it.** Two common stand-ins pass while the behaviour is broken: asserting
++that an identifier or address EXISTS instead of that something RESOLVES it,
++and asserting a global count as a stand-in for one local fact. Ask what could
++break while the assertion still passes — then break exactly that and watch.
++
+ **Behavior, not text.** Asserting that a script, skill, or config
+ contains an exact line proves only that the source is the source. Run
+ scripts against controlled inputs and assert outputs, side effects, or
+@@ -111,6 +117,34 @@ vi.mock('ToolCatalog', () => ({
+ vi.mock('MCPServerManager');
+ ```
+ 
++**Reach the state the way production does.** A fixture that gets to its
++state by a different route tests a different program. If the app mutates a
++record in place, mutate in place — assigning a fresh object hides aliasing
++bugs. If the app stores `18:00`, write `18:00`: copy the format of a real
++stored value, because the input form's accepted format is not the stored one.
++Where you can, set the state up through the entry point a user's action goes
++through, so a rule is pinned where a user can actually reach it.
++
++**Pick the fixture for THIS test.** One borrowed from another test carries
++that test's assumptions. When a test asserts which result LEADS, choose the
++fixture by querying the data for one with nothing else going on, and say why
++in a comment. When one fact lives in two records, read one of each before
++writing code that treats them as the same shape.
++
++**Counting calls into a module whose exports are reassigned** (live
++bindings): wrap the real module — a Proxy over its namespace that swaps only
++the target — never copy it. A spread freezes every live binding at mock time
++and silently breaks the code under test.
++
++**Tear down what the test starts.** A mount without an unmount, a timer
++without a clear, a listener without a remove outlives its test file and fails
++some later, slower run.
++
++**Structure is measured on the DOM, not the picture.** A `display: none`
++child is still a child. When a hidden element trips a structure test, fix the
++markup (for example a `display: contents` wrapper a media query can hide),
++not the assertion.
++
+ **Make doubles specific.** When arguments, call counts, or ordering are
+ part of the contract, assert them — a fake that accepts anything verifies
+ nothing. Give each branch (success, error, malformed) its own fixture or
+diff --git a/.claude/skills/using-git-worktrees/SKILL.md b/.claude/skill-updates/2026-09-23/using-git-worktrees/SKILL.md
+index 1381dacb..97c3df7c 100644
+--- a/.claude/skills/using-git-worktrees/SKILL.md
++++ b/.claude/skill-updates/2026-09-23/using-git-worktrees/SKILL.md
+@@ -118,6 +118,15 @@ if [ -f pyproject.toml ]; then poetry install; fi
+ if [ -f go.mod ]; then go mod download; fi
+ ```
+ 
++**If you share dependencies into the worktree with a symlink instead** (to
++skip a slow install), that link is now something you did not author for the
++repo, and `git add -A` / `git add .` will commit it: an ignore pattern ending
++in `/` (`node_modules/`) matches a directory, never a symlink. In such a
++worktree, stage files by name — during a conflict,
++`git diff --name-only --diff-filter=U` lists them — and before pushing a big
++merge check `git diff --stat` against its base for a stray link. A committed
++link can overwrite the real dependency folder in every checkout that merges it.
++
+ ## Step 3: Verify Clean Baseline
+ 
+ Run tests to ensure workspace starts clean:
+diff --git a/.claude/skills/verification-before-completion/SKILL.md b/.claude/skill-updates/2026-09-23/verification-before-completion/SKILL.md
+index 7d45333c..c7646fea 100644
+--- a/.claude/skills/verification-before-completion/SKILL.md
++++ b/.claude/skill-updates/2026-09-23/verification-before-completion/SKILL.md
+@@ -46,6 +46,13 @@ Skip any step = lying, not verifying
+ | Regression test works | Red-green cycle verified | Test passes once |
+ | Agent completed | VCS diff shows changes | Agent reports "success" |
+ | Requirements met | Line-by-line checklist | Tests passing |
++| "X still works / is unchanged" (a behaviour someone named) | Found the code that does X — or say "I couldn't find X" | Repeating their description back |
++| A check passed | The check's own exit status and summary, error count included | Output piped through `tail`/`grep` (the pipe reports the filter's success); "0 failed" beside "Errors 1" |
++| A failure is unrelated to the change | An independent run agrees: CI, or the same test on the code before the change | Re-running it locally |
++| A screen change works | Driven in a real browser in every state it appears — [browser-checks.md](browser-checks.md) | Tests with no layout engine; one screenshot at rest |
++| Pushed / committed / clean | `git status -sb` read in this turn | Remembering that you pushed |
++| Fixed everywhere it applies | The list of every place, re-checked AFTER the fix, each by opening it | The list written before building |
++| "You'll see X when you do Y" (a check step for someone else) | Did Y on the built app and saw X | Writing it from what the feature was meant to do |
+ 
+ ## Red Flags - STOP
+ 
+@@ -91,6 +98,12 @@ Skip any step = lying, not verifying
+ ❌ "Linter passed" (linter doesn't check compilation)
+ ```
+ 
++**Long check runs:**
++```
++✅ cmd > run.log 2>&1; echo "exit=$?"; tail -20 run.log   (verdict kept; search the file if red)
++❌ cmd | tail -5   (reports tail's exit status; the failure detail is gone and costs a full re-run)
++```
++
+ **Requirements:**
+ ```
+ ✅ Re-read plan → Create checklist → Verify each → Report gaps or completion
+diff --git a/.claude/skill-updates/2026-09-23/verification-before-completion/browser-checks.md b/.claude/skill-updates/2026-09-23/verification-before-completion/browser-checks.md
+new file mode 100644
+index 00000000..261d2701
+--- /dev/null
++++ b/.claude/skill-updates/2026-09-23/verification-before-completion/browser-checks.md
+@@ -0,0 +1,88 @@
++# Browser Checks
++
++**Load this reference when:** the change is something a browser draws or a
++gesture drives, before claiming it works.
++
++Tests that run without a layout engine (jsdom and similar) prove which markup
++and handlers exist — never what was painted, scrolled or tapped. Each line
++below is a way a real session "verified" a screen change and was wrong.
++
++## Before Trusting Any Browser Result
++
++- **The server is serving THIS build.** A reused preview server serves the
++  last build. Rebuild before re-testing; a measurement that stays bit-identical
++  across a change that should have moved it is a stale-build signature, not a
++  failed fix.
++- **Stop a stale server by the port it holds or its process id** and confirm
++  the port is free. On Windows, a server started under a shell survives
++  killing the shell — kill the process tree. (This project's exact commands
++  are in `CLAUDE.md` §Build & verify.)
++- **A single-page-app server answers every path with 200.** Verify a page or
++  an asset by its content (content type, first bytes), never by status code.
++- **A throwaway drive script lives inside the project folder**, so it finds
++  the project's packages, and imports the browser-test package the project
++  actually installs.
++
++## Drive Every State the Change Appears In
++
++- **Every width the app ships** (phone and desktop): a bug can live in only
++  one of their code paths.
++- **Scrolled, on every axis the container scrolls.** Sticky and frozen things
++  are only tested by moving what they stick against, and a position flip
++  (sticky / fixed / absolute) has different geometry at every scroll offset.
++- **Every mode the change appears in** — another role, an admin toggle, an
++  edit mode. A test proves its rule only in the states it renders: name the
++  test that should catch your change and confirm it visits your state.
++- **After changing a default** (a zoom, a view, a role): run the whole
++  surface's tests, not the ones you touched, and drive its other modes at the
++  new default. A default change re-baselines every earlier measurement.
++- **A new hidden-by-default state:** search the tests for "it is there"
++  assertions on the thing now hidden, before running them.
++- **Pointer handlers:** mouse AND touch, from every place the gesture can
++  start. Move the mouse after a click — a hover is a move — and include a move
++  with no press first.
++
++## Measure, Don't Estimate
++
++- A width that must fit text, a sticky offset, a layout cost you are about to
++  quote: read it off the rendered page with the real classes
++  (`getBoundingClientRect`, `getComputedStyle` — including `::before` /
++  `::after`) and write the measured number beside the rule.
++- Browser assertions name the behaviour, not a value one browser version
++  happens to compute: "same row" is the two boxes overlapping, not a pixel gap
++  tuned to today's fonts; "no outline" is `outline-style: none`, not
++  `outline-width: 0px`; compare a rect with a rect, never with a rounded
++  integer.
++
++## CSS Placement
++
++Before inserting a rule, find what encloses the insertion point: a scope
++wrapper around the whole file, the nearest `@media` above it, an override
++block that must stay last. A base rule goes ABOVE the block that overrides it.
++Then measure the narrow width on the first drive — the rule "appearing in the
++built file" proves it shipped, not that it applies.
++
++## Drive-Tool Traps
++
++- A locator click scrolls its target into view first. When measuring scroll
++  across a click, tap by coordinates on what is already on screen.
++- Before a scripted gesture, check what is at the point
++  (`document.elementFromPoint`) — sticky chrome can cover a target after a
++  scroll. A gesture that measured nothing touched the wrong thing until proven
++  otherwise.
++- A timing harness asserts the interaction's own evidence (the drag armed,
++  the drop landed) before recording a number, and measures its own latency
++  (a run with the behaviour off) before a number becomes a target.
++- Drive each control the way the user will — tap it, then read the result.
++  Setting the state from outside proves the result, not the control.
++- A control that gains a disabled state stalls every existing test click on
++  it (the click waits, then times out quietly): search the tests for clicks on
++  it.
++
++## Reading CI
++
++- A red unit job with every test passing: read its "Errors" section. A timer
++  or render that outlives its test file fails the job on its own — fix the
++  teardown, never re-run it away.
++- Run the unit tests locally the way CI partitions them (per project), or a
++  timing-order difference will surface only in CI.
+diff --git a/.claude/skills/writing-plans/SKILL.md b/.claude/skill-updates/2026-09-23/writing-plans/SKILL.md
+index eba9be60..a6b92c12 100644
+--- a/.claude/skills/writing-plans/SKILL.md
++++ b/.claude/skill-updates/2026-09-23/writing-plans/SKILL.md
+@@ -17,6 +17,10 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
+ 
+ **Save plans to:** `docs/superpowers/plans/YYYY-MM-DD-<feature-name>.md`
+ - (User preferences for plan location override this default)
++- Before committing the file, check it actually holds the plan — a shell
++  pipeline ending in `> file` creates the file even when an earlier stage
++  fails: `test -s PLAN && grep -q '### Task 1' PLAN`. Prefer one write tool
++  over a `sed` pipeline for copying a plan.
+ 
+ ## Scope Check
+ 
+@@ -42,6 +46,12 @@ deliverable needs them; split only where a reviewer could meaningfully
+ reject one task while approving its neighbor. Each task ends with an
+ independently testable deliverable.
+ 
++A task whose change shows on screen ends with the browser check that can SEE
++it (the affected browser project or spec), not only its unit tests. The last
++task still runs every gate once; deferring the only check that can see a
++change to the last task turns each task's findings into one big closing slice
++owned by someone who never wrote that code.
++
+ ## Bite-Sized Task Granularity
+ 
+ **Each step is one action (2-5 minutes):**
+@@ -76,11 +86,19 @@ include this section.]
+ ---
+ ```
+ 
++**Standing orders belong in the plan.** Search the project's rules for orders
++that fire before a kind of change ("before any layout change, read X and run
++its checklist"). Each one that applies becomes a Global Constraint AND the
++first step of the first task that touches that surface — an order that lives
++only as a sentence in an index does not fire.
++
+ ## Task Structure
+ 
+ ````markdown
+ ### Task N: [Component Name]
+ 
++**Model:** [who builds it, at what effort, and why — one line]
++
+ **Files:**
+ - Create: `exact/path/to/file.py`
+ - Modify: `exact/path/to/existing.py:123-145`
+@@ -134,6 +152,17 @@ Every step must contain the actual content an engineer needs. These are **plan f
+ - "Similar to Task N" (repeat the code — the engineer may be reading tasks out of order)
+ - Steps that describe what to do without showing how (code blocks required for code steps)
+ - References to types, functions, or methods not defined in any task
++- A number a test expects that was reasoned rather than computed. Compute it
++  from the real data while writing the plan and say where it came from
++  ("seed: opening 12 + granted 14 = 26"), or write "measure it on the fixture
++  and pin the measured value". A plausible guess is worse than no number,
++  because it can be pinned.
++- A count of user-visible results (warnings, rows, messages) taken from the
++  code path the change touches. Trace it through every merge or dedupe step
++  between that code and the screen the test reads — or assert the behaviour
++  ("the dropped case now appears") instead of a total.
++- "Delete the tests about X." Name each test by file and title, or state the
++  rule that makes a test obsolete AND list the look-alikes to keep.
+ 
+ ## Self-Review
+ 
+@@ -145,6 +174,39 @@ After writing the complete plan, look at the spec with fresh eyes and check the
+ 
+ **3. Type consistency:** Do the types, method signatures, and property names you used in later tasks match what you defined in earlier tasks? A function called `clearLayers()` in Task 3 but `clearFullLayers()` in Task 7 is a bug.
+ 
++**4. Claims about existing code:** Every "reuse X", "X already handles that"
++or "X is a pure function" names the check that proved it — X's real signature
++and side effects (globals it writes, live state it reads), or the value read
++off the real target in a browser. A blanket rule does not reach a place you
++have not checked (a CSS `*` never matches a pseudo-element). For a plan
++touching three or more modules also check: import cycles the plan creates,
++every existing reader of a rule it changes, helpers it assumes exist, and any
++internal id the screen would print.
++
++**5. Replacement code:** For each code block that REPLACES existing lines,
++list the guards and early returns in the original and confirm each survives
++or is dropped on purpose, with the reason.
++
++**6. One owner per shared thing:** Where two writers touch one thing — an
++attribute both a hand-written painter and the framework set, a CSS property a
++new rule and an existing state rule both set — the plan names the owner, says
++which existing rule the new one must beat, and says how that is pinned
++(computed style in a real browser on an element wearing the state, or a
++specificity check where a tie counts as a loss).
++
++**7. Reversed rules:** If the plan reverses or relaxes an existing rule, it
++lists the tests and comments that pin the OLD rule (search the old rule's
++wording) with a disposition for each: rewrite, delete, or keep because still
++true.
++
++**8. Plans built from review findings:** Each finding's code site, its callers
++and the tests that pin it were re-read. A finding names a symptom; a task
++needs the write path and the existing pins its fix must not move.
++
++**9. Shared state in tests:** A plan-authored test that switches shared state
++restores it, and a test over a collection first asserts the collection is not
++empty — both otherwise pass while proving nothing.
++
+ If you find issues, fix them inline. No need to re-review — just fix and move on. If you find a spec requirement with no task, add the task.
+ 
+ ## Execution Handoff
