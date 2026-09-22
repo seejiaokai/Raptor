@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+# Extract one task's full text from an implementation plan into a file the
+# implementer reads in one call, so the task text never has to be pasted
+# through the controller's context.
+#
+# The brief opens with the plan's shared header — its **Goal:** and
+# **Architecture:** lines and its whole "## Global Constraints" section —
+# because every task is bound by them and the implementer never reads the
+# plan itself. (Local change, 23 Sep 26: the upstream script wrote the task
+# section alone, so the constraints that bind every task never reached the
+# implementer unless the controller remembered to send them.)
+#
+# Usage: task-brief PLAN_FILE TASK_NUMBER [OUTFILE]
+# Default OUTFILE: <repo-root>/.superpowers/sdd/<plan-basename>/task-<N>-brief.md
+# (per plan and per worktree; concurrent runs of the SAME plan in the same
+# working tree share it).
+set -euo pipefail
+
+if [ $# -lt 2 ] || [ $# -gt 3 ]; then
+  echo "usage: task-brief PLAN_FILE TASK_NUMBER [OUTFILE]" >&2
+  exit 2
+fi
+
+plan=$1
+n=$2
+[ -f "$plan" ] || { echo "no such plan file: $plan" >&2; exit 2; }
+
+if [ $# -eq 3 ]; then
+  out=$3
+else
+  dir=$("$(cd "$(dirname "$0")" && pwd)/sdd-workspace" "$plan")
+  out="$dir/task-${n}-brief.md"
+fi
+
+# Check the task exists first, so a missing task never leaves a half-written brief.
+if ! awk -v n="$n" '
+  /^```/ { infence = !infence }
+  !infence && $0 ~ ("^#+[ \t]+Task[ \t]+" n "([^0-9]|$)") { found = 1 }
+  END { exit !found }
+' "$plan"; then
+  echo "task ${n} not found in ${plan} (no heading matching 'Task ${n}')" >&2
+  exit 3
+fi
+
+# The shared header: the Goal / Architecture lines, then the Global Constraints
+# section up to the next "---" rule or level-1/2 heading (code fences respected).
+shared=$(awk '
+  /^```/ { infence = !infence }
+  !infence && !ingc && /^\*\*(Goal|Architecture):\*\*/ { print; print ""; next }
+  !infence && /^## Global Constraints/ { ingc = 1; print; next }
+  ingc && !infence && (/^---[ \t]*$/ || /^#{1,2}[ \t]/) { exit }
+  ingc { print }
+' "$plan")
+
+if ! printf '%s\n' "$shared" | grep -q '^## Global Constraints'; then
+  echo "warning: ${plan} has no '## Global Constraints' section - the brief carries the task text only" >&2
+fi
+
+{
+  printf '<!-- task-brief: %s, Task %s. The shared header below binds every task. -->\n\n' "$plan" "$n"
+  if [ -n "$shared" ]; then
+    printf '%s\n\n---\n\n' "$shared"
+  fi
+} > "$out"
+
+# The task text itself, byte-for-byte as the upstream script wrote it.
+awk -v n="$n" '
+  /^```/ { infence = !infence }
+  !infence && /^#+[ \t]+Task[ \t]+[0-9]+/ {
+    intask = ($0 ~ ("^#+[ \t]+Task[ \t]+" n "([^0-9]|$)"))
+  }
+  intask { print }
+' "$plan" >> "$out"
+
+echo "wrote ${out}: $(wc -l < "$out" | tr -d ' ') lines (task ${n} + the plan's shared header)"
