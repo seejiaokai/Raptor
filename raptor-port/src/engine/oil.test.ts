@@ -83,8 +83,8 @@ describe('dayOilWork — each span carries its kind', () => {
     expect(w.rocky.map(x => x.src)).toEqual(['Duty'])
   })
   it('oilWorkWhy joins the distinct kinds in first-seen order', () => {
-    expect(oilWorkWhy([{ s: 0, e: 1, src: 'FLT' }, { s: 1, e: 2, src: 'SIM' }, { s: 2, e: 3, src: 'FLT' }])).toBe('FLT + SIM')
-    expect(oilWorkWhy([{ s: 0, e: 1, src: 'Duty' }])).toBe('Duty')
+    expect(oilWorkWhy([{ s: 0, e: 1, src: 'FLT', dflt: true }, { s: 1, e: 2, src: 'SIM', dflt: true }, { s: 2, e: 3, src: 'FLT', dflt: true }])).toBe('FLT + SIM')
+    expect(oilWorkWhy([{ s: 0, e: 1, src: 'Duty', dflt: true }])).toBe('Duty')
   })
 })
 

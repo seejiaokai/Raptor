@@ -153,7 +153,7 @@ describe('the drag door (ui/drag applyDrop)', () => {
     el.setAttribute('data-slot', targetKey)
     document.body.appendChild(el)
     let ok: any
-    await act(async () => { ok = applyDrop(el) })
+    await act(async () => { ok = applyDrop(el, 0, 0) })
     el.remove()
     return ok
   }

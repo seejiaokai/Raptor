@@ -188,7 +188,65 @@ export function personDecision(ev: OilEvidence, person: string, item: string): O
 export function earnsFrom(ev: OilEvidence, person: string, item: string, dflt: boolean): boolean {
   if (itemMasked(ev, item)) return false
   const dec = personDecision(ev, person, item)
-  return dec === 'allow' ? true : dec === 'deny' ? false : dflt
+  if (dec) return dec === 'allow'
+  /* AN ITEM FORCED ON BEATS THE SEAT'S OWN DEFAULT ([OIL-SEATS-CAN-EARN] §4).
+   *  This is D24's switch: an AVALON line or an SC spare earns nothing by
+   *  default, and the admin must be able to say "this one did". The man's own
+   *  decision is asked FIRST, above, so taking one man off a line the admin
+   *  forced on still works — without that order the `1` would make him earn
+   *  again the instant his override was written (Codex OSE-R2-01). */
+  if (itemMark(ev, item) === 1) return true
+  return dflt
+}
+
+/* ---- the ONE body behind the screen and the money ------------------------ */
+
+/** THE SEAT'S OWN ANSWER for one man on one item, before any decision is
+ *  applied: does this piece of work earn by default?
+ *
+ *  IT EXISTS BECAUSE THE SCREEN AND THE MONEY MUST NOT ANSWER IT SEPARATELY
+ *  (Fable R2-1 and Codex OSE-R2-01, found from opposite ends). The mode used to
+ *  carry its own `itemDefaultFor`, which returned true whenever there was no
+ *  claim. Once a seat can default OFF that is wrong in the worst direction: the
+ *  man would draw GLOWING while the money paid him nothing, and his tap would
+ *  write `deny` for a credit he never had — so `allow` became unreachable and
+ *  D24's only door would not exist. Both now derive from here.
+ *
+ *  A CLAIM is answered by the MEMBER (§2.2 — the OIL question is put to him and
+ *  his word is the default); anything else is answered by the span the day's own
+ *  rules produced. A man with no span at all defaults to yes, which is what the
+ *  input half's D18 extras rely on. */
+export function spanDefault(day: any, ev: OilEvidence, person: string, item: string): boolean {
+  const inp = ev.inputs.find(i => inputItemKey(i.iid) === item && i.person === person)
+  if (inp) return inp.ans != null && inp.ans > 0
+  const spans = (oilDayWork(day, ev)[person] || []).filter(w => String(w.item || '') === item)
+  return spans.length ? spans.every(w => w.dflt !== false) : true
+}
+
+/** WHAT THE ITEM'S SWITCH SHOULD DRAW — `on`, `off`, or `mixed`.
+ *
+ *  MIXED IS NOT A CURIOSITY: an SC shift holds MAIN seats (which earn) and SPARE
+ *  seats (which do not) under ONE item address, and a duty row can hold a named
+ *  man beside an ALL AVAIL. Two titles could not describe that, and the switch
+ *  would tell the admin something false about half the row (Fable S8).
+ *
+ *  The admin's own mark answers outright when he has made one; otherwise the
+ *  spans speak. An item nobody is standing on yet reads ON — put a man there and
+ *  he earns, and OIL7 says the switch covers later additions too. */
+export function itemState(day: any, ev: OilEvidence, item: string): 'on' | 'off' | 'mixed' {
+  const mark = itemMark(ev, item)
+  if (mark === 0) return 'off'
+  if (mark === 1) return 'on'
+  let on = 0, off = 0
+  const work = oilDayWork(day, ev)
+  for (const person of Object.keys(work)) {
+    for (const w of work[person]) {
+      if (String(w.item || '') !== item) continue
+      if (w.dflt === false) off++; else on++
+    }
+  }
+  if (off && on) return 'mixed'
+  return off ? 'off' : 'on'
 }
 
 /* ---- building the block -------------------------------------------------- */
@@ -422,6 +480,13 @@ export function oilEvidence(di: any, day?: any): OilEvidence {
    snapshot into `DAYS[di]` for the same index: a pass that spans the swap must
    MISS rather than serve the live day's answer inside the issued document. */
 let OIL_PASS: Map<number, { d: any; ev: OilEvidence }> | null = null
+/* the same pass holds the day's WORK WALK, for the same reason and with the
+   same safety. From step 3 the walk is asked by `spanDefault` — once per PUCK,
+   and again by `itemState` once per row — where before it ran once per credit
+   pass. Keyed on the EVIDENCE object, which is itself per-day and stable only
+   inside a pass, and the day object is verified as well so a snapshot swapped in
+   under the same index can never be served the live day's work. */
+let OIL_WORK: Map<OilEvidence, { d: any; work: Record<string, OilWork[]> }> | null = null
 
 /** Run `fn` as a read-only pass, memoising each day's evidence for its duration.
  *  NOTHING INSIDE MAY WRITE `DAYS`, `INPUTS` or `PEOPLE`. A nested pass reuses
@@ -429,8 +494,24 @@ let OIL_PASS: Map<number, { d: any; ev: OilEvidence }> | null = null
  *  the paint that opened it. */
 export function oilReadPass<T>(fn: () => T): T {
   const outer = OIL_PASS
-  if (!outer) OIL_PASS = new Map()
-  try { return fn() } finally { if (!outer) OIL_PASS = null }
+  if (!outer) { OIL_PASS = new Map(); OIL_WORK = new Map() }
+  try { return fn() } finally { if (!outer) { OIL_PASS = null; OIL_WORK = null } }
+}
+
+/** THE DAY'S WORK, resolved against the evidence's own membership — the ONE
+ *  walk the money, the seat default and the switch's state all read, so none of
+ *  them can disagree with the others about what the day contains. On an issued
+ *  day `ev.sent` is the frozen membership, so an ALL AVAIL event's people cannot
+ *  change under the reader (§7.3). Uncached outside a read pass, exactly like
+ *  the evidence itself (OSE-T-01). */
+export function oilDayWork(day: any, ev: OilEvidence): Record<string, OilWork[]> {
+  if (OIL_WORK) {
+    const hit = OIL_WORK.get(ev)
+    if (hit && hit.d === day) return hit.work
+  }
+  const work = dayOilWork(day, { expandAll: (_win, item) => (item && ev.sent[item]) || [] })
+  if (OIL_WORK) OIL_WORK.set(ev, { d: day, work })
+  return work
 }
 
 /** The evidence a DAY OBJECT carries: the frozen block on an issued snapshot,
@@ -652,10 +733,17 @@ export function oilEarnedWork(day: any, ev: OilEvidence): Record<string, OilWork
   const put = (person: string, w: OilWork) => { (out[person] = out[person] || []).push(w) }
   /* the schedule half — the frozen participants resolve every sentinel, so an
      issued ALL AVAIL event's people cannot change under the reader (§7.3) */
-  const work = dayOilWork(day, { expandAll: (_win, item) => (item && ev.sent[item]) || [] })
+  const work = oilDayWork(day, ev)
   for (const person of Object.keys(work)) {
     for (const w of work[person]) {
-      if (!earnsFrom(ev, person, String(w.item || ''), true)) continue
+      /* THE SPAN'S OWN DEFAULT, not a hard `true` ([OIL-SEATS-CAN-EARN] §4).
+         The hard true was correct while every seat earned; from step 4 an SC
+         spare, an AVALON or BB line and an AVALON desk reach this walk carrying
+         `false`, and paying them would be silent money — the exact opposite of
+         D24. `w.dflt !== false` rather than `w.dflt` so a span written by an
+         older build, or by any future producer that forgets the field, keeps
+         today's answer instead of silently ceasing to pay. */
+      if (!earnsFrom(ev, person, String(w.item || ''), w.dflt !== false)) continue
       put(person, w)
     }
   }
@@ -664,10 +752,15 @@ export function oilEarnedWork(day: any, ev: OilEvidence): Record<string, OilWork
   for (const inp of ev.inputs) {
     if (!oilInputEligible(day, inp) || !inp.win) continue            // dormant / cancelled / unreadable: nothing to allow
     const item = inputItemKey(inp.iid)
-    const span = (): OilWork => ({ s: (inp.win as any)[0], e: (inp.win as any)[1], src: (inp.type || 'Duty').trim() as any, item, via: 'input' })
+    /* the span carries the default that actually decided it, so a reader of the
+       work can tell WHY a claim paid without re-deriving it: the requester's own
+       answer for him, and an ordinary yes for a man the scheduler stood beside
+       him on the row (D18). */
+    const span = (dflt: boolean): OilWork => ({ s: (inp.win as any)[0], e: (inp.win as any)[1], src: (inp.type || 'Duty').trim() as any, item, dflt, via: 'input' })
     /* the man who FILED it: his own answer is the default, and the admin's
        three-state sits over the top (§2.2 / OIL10) */
-    if (earnsFrom(ev, inp.person, item, inp.ans != null && inp.ans > 0)) put(inp.person, span())
+    const own = inp.ans != null && inp.ans > 0
+    if (earnsFrom(ev, inp.person, item, own)) put(inp.person, span(own))
     /* D18 (owner, 21 Sep 26 — "for 2 he should earn"): a second man the
        SCHEDULER puts on the row earns from it, the same as the man who filed
        it. Until now the claim owned the row and the schedule half skipped every
@@ -686,7 +779,7 @@ export function oilEarnedWork(day: any, ev: OilEvidence): Record<string, OilWork
        man on an all-day request unpaid — the mirror of the bug being fixed. */
     for (const extra of landedExtras(day, inp.iid, inp.person)) {
       if (!earnsFrom(ev, extra, item, true)) continue
-      put(extra, span())
+      put(extra, span(true))
     }
   }
   return out

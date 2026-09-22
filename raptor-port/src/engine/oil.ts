@@ -97,7 +97,20 @@ export type OilWorkSrc='FLT'|'SIM'|'Duty';
    what SURVIVES an ordinary member edit: an input-derived row by the INPUT's own
    id, a hand-built row by its `rid`. `via` says which half of the evidence
    produced it — the schedule, or a duty-and-commitments claim. */
-export interface OilWork{s:number;e:number;src:OilWorkSrc;item?:string;via?:'schedule'|'input'}
+/* `dflt` is THE SEAT'S OWN ANSWER before anyone decides anything: does this
+   piece of work earn by default? It rides the SPAN and not the item because one
+   `item` is stamped per ROW and every occupant takes it — a duty row's named man
+   and an ALL AVAIL in its extras share one address, and an SC formation's MAIN
+   and SPARE seats share one address. An item-level default would therefore have
+   to answer for both at once, which is exactly the finding Codex OSE-01 and
+   Fable M3 reached from opposite directions. The span is the only thing that is
+   not shared.
+
+   EVERYTHING IS `true` UNTIL THE FOUR EXEMPT KINDS ARRIVE (D28: nothing earns
+   less than it does today). The kinds that will carry `false` — an SC SPARE
+   seat, an AVALON or BB line, an AVALON desk — are still skipped before this
+   walk reaches them; step 4 lifts those skips and they arrive already off. */
+export interface OilWork{s:number;e:number;src:OilWorkSrc;item?:string;dflt:boolean;via?:'schedule'|'input'}
 /* THE ITEM ADDRESS GRAMMAR, in one place so the walk below, the evidence block
    and the board's OIL mode can never spell it differently. A row with no rid
    yet has NO item address: it cannot be marked individually (the day blanket
@@ -126,7 +139,11 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
   /* the item each span is being collected for — set at the top of every row so
      a span can never be tagged with its neighbour's address */
   let item='';
-  const put=(v:any,win:[number,number]|null)=>{if(!win)return;const id=rid(v);if(id)(out[id]=out[id]||[]).push({s:win[0],e:win[1],src,item,via:'schedule'});};
+  /* and the seat's own default, set beside it for the same reason. A placeholder
+     expands through `put` like any other body, so the crowd INHERITS the seat's
+     answer rather than carrying one of its own — which is D43 in one line. */
+  let dflt=true;
+  const put=(v:any,win:[number,number]|null)=>{if(!win)return;const id=rid(v);if(id)(out[id]=out[id]||[]).push({s:win[0],e:win[1],src,item,dflt,via:'schedule'});};
   const w2=(st:any,en:any):[number,number]|null=>{
     if(st==null||en==null)return null;
     if(en<st)en+=1440;
@@ -148,6 +165,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
     (wv.formations||[]).forEach((f:any)=>{
       if(f.cx)return;
       item=rowItemKey(f.rid);                            // the LINE is the item a scheduler taps
+      dflt=true;
       const st=parseHM(f.to),en=parseHM(f.ld);
       /* SC shift = its written window; a flying line = report → land+debrief */
       const win=sc?w2(st,en)
@@ -164,7 +182,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
   src='SIM';
   ['amt','oft'].forEach((k:any)=>((day.sims||{})[k]||[]).forEach((r:any)=>{
     if(r.cx)return;
-    item=rowItemKey(r.rid);
+    item=rowItemKey(r.rid); dflt=true;
     const win=w2(parseHM(r.str),parseHM(r.end));
     if(!win)return;
     reach(item);
@@ -178,7 +196,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
     if(dw&&saExemptKind(dw.sa))return;                   // the excluded waves' own desks
     (dw.rows||[]).forEach((r:any)=>{
       if(r.cx)return;
-      item=rowItemKey(r.rid);
+      item=rowItemKey(r.rid); dflt=true;
       const win=w2(parseHM(r.str),parseHM(r.end));
       if(!win)return;
       reach(item);
@@ -188,13 +206,13 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
   (day.ground||[]).forEach((g:any)=>{
     if(g.cx||g.src)return;                               // src = an accepted input: the ask-flow's
     if(g.info)return;                                    // ⓘ info-only: shown, never worked — mints no OIL
-    item=groundItemKey(g);
+    item=groundItemKey(g); dflt=true;
     { const gw=w2(parseHM(g.str),parseHM(g.end)); if(gw)reach(item); putWho(g.who,gw,g.more); }
   });
   (day.allhands||[]).forEach((x:any)=>{
     if(x.cx)return;
     if(x.info)return;                                    // ⓘ info-only: mints no OIL
-    item=rowItemKey(x.rid);
+    item=rowItemKey(x.rid); dflt=true;
     const win=w2(parseHM(x.str),parseHM(x.end));
     if(!win)return;
     reach(item);

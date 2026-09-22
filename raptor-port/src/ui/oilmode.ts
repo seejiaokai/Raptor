@@ -49,7 +49,7 @@ import { INPUTS, inpId } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { envMin, uniformOil, dayOilWork, oilCapableItems, rowItemKey, groundItemKey, inputItemKey, type OilWork } from '../engine/oil'
-import { landedExtras, oilEvidence, oilEvidenceOf, oilEarnedWork, oilInputEligible, personDecision, itemMasked, itemMark, type OilEvidence, type OilDecisions } from '../engine/oilev'
+import { landedExtras, oilEvidence, oilEvidenceOf, oilEarnedWork, oilInputEligible, personDecision, itemMasked, itemMark, itemState, spanDefault, type OilEvidence, type OilDecisions } from '../engine/oilev'
 import { OILDAY, setOilDay, afterSchedMutate, esc } from '../state/view'
 import { CURWEEK } from '../engine/waves'
 import { stashKeys, stashEditDays } from '../engine/weekstash'
@@ -211,17 +211,33 @@ export function oilPersonOn(di: any, person: any, item: string): boolean {
   if (oilItemMasked(di, item)) return false
   const dec = personDecision(ev, String(person), item)
   if (dec) return dec === 'allow'
-  return itemDefaultFor(ev, String(person), item)
+  return effectiveDefault(di, ev, String(person), item)
 }
 
 /** The ordinary rule's own answer for one man on one item, before any override:
- *  yes for schedule work, the MEMBER'S OWN ANSWER for a duty-and-commitments
- *  claim (§2.2 — "the OIL question is posed to the member, so we delegate to the
- *  member to decide as well, but ultimately the admin can still overwrite"). */
-function itemDefaultFor(ev: OilEvidence, person: string, item: string): boolean {
-  const inp = ev.inputs.find(i => inputItemKey(i.iid) === item && i.person === person)
-  if (!inp) return true
-  return inp.ans != null && inp.ans > 0
+ *  the SEAT's own default for schedule work, the MEMBER'S OWN ANSWER for a
+ *  duty-and-commitments claim (§2.2 — "the OIL question is posed to the member,
+ *  so we delegate to the member to decide as well, but ultimately the admin can
+ *  still overwrite").
+ *
+ *  IT NO LONGER ANSWERS `true` FOR EVERYTHING WITHOUT A CLAIM (Fable R2-1 /
+ *  Codex OSE-R2-01 — the sharpest finding of round 2, and both reviewers reached
+ *  it from opposite ends). Once a seat can default OFF that old answer would draw
+ *  a default-off man GLOWING while the money paid him nothing, and his tap would
+ *  write `deny` for a credit he never had — making `allow` unreachable, so D24's
+ *  only door would not exist. `spanDefault` is the ONE body, and the money reads
+ *  it too, so the screen and the payment cannot disagree. */
+function itemDefaultFor(di: any, ev: OilEvidence, person: string, item: string): boolean {
+  return spanDefault(DAYS[+di] || {}, ev, person, item)
+}
+
+/** …and the default AS THE ITEM MARK LEAVES IT. An item the admin has forced ON
+ *  earns for everyone standing on it, so THAT is what a person tap must be
+ *  compared against: comparing against the seat's own answer would delete the
+ *  refusal the moment it was written, and the `1` would pay the man again the
+ *  same instant (Codex OSE-R2-01, second half). */
+function effectiveDefault(di: any, ev: OilEvidence, person: string, item: string): boolean {
+  return itemMark(ev, item) === 1 ? true : itemDefaultFor(di, ev, person, item)
 }
 
 /** WHY a man is not earning from an item — because the three reasons read
@@ -234,16 +250,25 @@ function itemDefaultFor(ev: OilEvidence, person: string, item: string): boolean 
  *  `denied`   — a scheduler's own mark on this man.
  *  `declined` — the member answered No, which is his word and stands (§2.2).
  *  `unasked`  — the question exists for him and has no answer yet.
+ *  `never`    — this KIND of work earns nothing by default: an SC spare standing
+ *               by at home, an AVALON or BB line, an AVALON desk (D24). The FIFTH
+ *               state, added with the seat defaults rather than at the wording
+ *               pass (Fable R2-10) — without it the mode would spend the rest of
+ *               the build telling an admin a man "earns nothing from this event
+ *               — tap to put him back on it" about a man who was never on it.
  *  `off`      — anything else (ordinary schedule work switched off). */
-export type OilOffWhy = 'denied' | 'declined' | 'unasked' | 'off'
+export type OilOffWhy = 'denied' | 'declined' | 'unasked' | 'never' | 'off'
 export function oilOffReason(di: any, person: any, item: string): { why: OilOffWhy, what: string } {
   const ev = evOf(di)
   const dec = personDecision(ev, String(person), item)
   if (dec === 'deny') return { why: 'denied', what: '' }
   const inp = ev.inputs.find(i => inputItemKey(i.iid) === item && i.person === String(person))
-  if (!inp) return { why: 'off', what: '' }
-  const what = String(inp.type || '').trim()
-  return { why: inp.ans == null ? 'unasked' : 'declined', what }
+  if (inp) {
+    const what = String(inp.type || '').trim()
+    return { why: inp.ans == null ? 'unasked' : 'declined', what }
+  }
+  if (!itemDefaultFor(di, ev, String(person), item)) return { why: 'never', what: '' }
+  return { why: 'off', what: '' }
 }
 
 /** What the mode shows on ONE puck: whether it glows, and the man's figure for
@@ -366,12 +391,31 @@ export function toggleOilItem(di: any, item: string): boolean {
      is the writer's own guard behind it. */
   if (!item || oilBlanketOn(di)) return false
   const dec = decOf(di)
-  const wasOn = !oilItemMasked(di, item)
-  if (wasOn) { dec.items = dec.items || {}; dec.items[item] = 0 }
-  else if (dec.items) delete dec.items[item]
+  /* THE CYCLE, AND WHY IT HAS FOUR STOPS RATHER THAN TWO (Fable R2-2).
+     This only ever wrote `0` or deleted, so there was no stored value that meant
+     "this one DID earn" — and once a seat defaults off, D24's switch would draw
+     on an AVALON line and do nothing at all.
+
+       marked 0                  -> clear it, back to no decision
+       marked 1                  -> 0
+       unmarked, earning         -> 0     (an ORDINARY row: unchanged, as today)
+       unmarked, earning nothing
+         or only partly          -> 1     (the new stop, and the only way in)
+
+     So an ordinary row never reaches the `1`: unset -> 0 -> unset, exactly the
+     behaviour a scheduler has now. Only a row that would earn nothing, or only
+     partly, can be forced on. */
+  const m = oilItemMark(di, item)
+  if (m === 0) { if (dec.items) delete dec.items[item] }
+  else if (m === 1) { dec.items = dec.items || {}; dec.items[item] = 0 }
+  else {
+    const st = itemState(DAYS[+di] || {}, evOf(di), item)
+    dec.items = dec.items || {}
+    dec.items[item] = st === 'on' ? 0 : 1
+  }
   tidy(di)
   afterSchedMutate()
-  return !wasOn
+  return !oilItemMasked(di, item)
 }
 
 /** Toggle ONE MAN on ONE item — the three-state write (§9.1). It records `deny`
@@ -394,7 +438,7 @@ export function toggleOilPerson(di: any, person: any, item: string): boolean {
   if (oilItemMasked(di, item)) return false
   const dec = decOf(di)
   const want = !oilPersonOn(di, person, item)
-  const dflt = itemDefaultFor(evOf(di), String(person), item)
+  const dflt = effectiveDefault(di, evOf(di), String(person), item)
   dec.people = dec.people || {}
   const k = `${person}|${item}`
   if (want === dflt) delete dec.people[k]
@@ -508,10 +552,29 @@ export function oilItemCellHTML(di: any, item: string, name: any, cls: string): 
     }
     return `<span class="${cls} oilitem none" title="Nothing on this row can earn OIL, so there is nothing to switch off">${esc(txt) || '&nbsp;'}</span>`
   }
-  const on = !oilItemMasked(di, item)
-  const blanket = oilBlanketOn(di)
-  return `<span class="${cls} oilitem${on ? ' on' : ' off'}" data-oilitem="${esc(item)}" data-oilday="${+di}"`
-    + ` title="${blanket ? 'Nothing on this day earns — the day blanket is on' : on ? 'Earns OIL — tap to stop this item earning' : 'Earns nothing — tap to let it earn again'}">${esc(txt) || '&nbsp;'}</span>`
+  /* FIVE STATES, FIVE SENTENCES, SHIPPED WITH THE DEFAULTS RATHER THAN AT THE
+     WORDING PASS (Fable R2-10). From this step the switch can be in more states
+     than its two old titles could describe, and the wrong ones are not harmless:
+     "Earns OIL — tap to stop this item earning" on an AVALON line that earns
+     nothing would be the screen telling the admin something false about money,
+     for the seven steps between here and the wording pass.
+
+     MIXED is not a curiosity either (Fable S8): an SC shift holds MAIN seats
+     that earn and SPARE seats that do not under ONE item address, and a duty
+     row can hold a named man beside an ALL AVAIL. Neither "earns" nor "earns
+     nothing" is true of that row. */
+  const masked = oilItemMasked(di, item)
+  const mark = oilItemMark(di, item)
+  const st = itemState(DAYS[+di] || {}, evOf(di), item)
+  const ttl = oilBlanketOn(di) ? 'Nothing on this day earns — the day blanket is on'
+    : mark === 0 ? 'Earns nothing — tap to let it earn again'
+      : mark === 1 ? 'Set to earn — tap to stop this item earning'
+        : st === 'mixed' ? 'Part of this row earns — tap to make all of it earn'
+          : st === 'off' ? 'This kind of event earns nothing — tap to make it earn'
+            : 'Earns OIL — tap to stop this item earning'
+  const cl = masked ? ' off' : st === 'mixed' && mark == null ? ' on mixed' : ' on'
+  return `<span class="${cls} oilitem${cl}" data-oilitem="${esc(item)}" data-oilday="${+di}"`
+    + ` title="${esc(ttl)}">${esc(txt) || '&nbsp;'}</span>`
 }
 
 /** WHY A CLAIM'S PUCK IS INERT, in the app's own words (Fable F5, 22 Sep 26).
@@ -574,7 +637,14 @@ export function oilSeatHTML(di: any, person: any, item: string, pk: (oil: any) =
         ? `${p.cs} answered No for ${thing} — tap to put him on it anyway`
         : why === 'denied'
           ? `${p.cs} was taken off this event — tap to put him back on it`
-          : `${p.cs} earns nothing from this event — tap to put him back on it`
+          /* THE FIFTH, and it is the one D24 exists for: he was never ON this
+             kind of work, so "put him BACK on it" would be a lie about what the
+             scheduler did. This is the spare standing by at home, the AVALON or
+             BB line, the AVALON desk — and the owner's words for the way out are
+             exactly this tap ("the admin can just easily click credit OIL"). */
+          : why === 'never'
+            ? `${p.cs} — this kind of event earns nothing by default; tap to credit him`
+            : `${p.cs} earns nothing from this event — tap to put him back on it`
   }
   return `<span class="seat oilpk${on ? ' on' : ' off'}" data-oilp="${esc(String(person))}" data-oilitem="${esc(item)}" data-oilday="${+di}" title="${esc(ttl)}">`
     + pk({ on, amt }) + `</span>`
