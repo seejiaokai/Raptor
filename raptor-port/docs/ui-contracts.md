@@ -7234,7 +7234,15 @@ kind:
 |---|---|---|
 | A **Sheet** | a scrim, and Escape | **Yes** — everything under it is trapped |
 | An **inline popup** (the stores box, the day pop) | an **outside click**, and any page change | No, but it goes the moment you touch anything |
-| **This window** | **its own ✕ button, and nothing else** | **No** |
+| **This window** | **its own ✕ button; a PAGE change (D66); a switch between Edit and View-only; a WEEK change; logout — never a click on the schedule** | **No** |
+
+**Closing, as ruled (D66, 23 Sep 26):** it closes when he changes page — it is a schedule tool, and
+floating it over Leave War or the Tracker is clutter. It also closes on a switch between Edit Schedule
+and View-only Sched (the two show different versions of the day, D44), on a week change (the event it
+was opened from is gone), and on logout (the next person must not inherit it). **A tap on a man (D65):**
+with OIL Earn OFF it highlights him everywhere on the schedule — the ordinary puck selection — as well
+as showing his reason; with OIL Earn ON it only switches him on or off and selects nothing, on either
+tab, matching every other tap inside the mode.
 
 It must survive an outside click, because the whole point of it is that the
 scheduler **scrolls and EDITS the schedule behind it while it is open** — his
