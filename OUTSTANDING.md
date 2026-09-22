@@ -103,6 +103,8 @@ archive. 5) The stack resumes at **[DB-STEP]**.
 raised and the branch deliberately left), `[STORE-READER-SWEEP]`, `[OIL-REQ-NAMEBOX]`,
 `[POSTOUT-LOST]`'s remaining half, `[OIL-WORDS]`, and from the window's bug check
 `[OIL-PERSONAL-PLACEHOLDER]` and `[CROWD-SIM-BRIEF]` (both below `[ALL-AVAIL-WINDOW]`).
+**BLOCKING A GREEN GATE, do before the next merge that needs one: `[LW-MONTHJUMP-PHONE]`** — a Leave
+War phone e2e red on `main` itself since 23 Sep 26 (below `[ALL-AVAIL-WINDOW]`).
 
 **STALE ABOVE, CORRECTED 22 Sep 26:** the "STACK PROGRESS (updated 18 Sep 26)" block says the next
 stack item is step 4 (one Absence record). **Step 4 SHIPPED on 20 Sep 26** — `raptor-port/CLAUDE.md`
@@ -905,6 +907,17 @@ exactly the case he opened this with.
 **Sequencing: AFTER `[OIL-SEATS-CAN-EARN]`**, which builds the counters this window opens from, and
 which settles where they appear. Ruling: `DECISIONS.md` D38; the related ones are D27 (the count is a
 scheduling feature), D36 (the narrow window) and D37 (the count reads as what it is).
+
+### [LW-MONTHJUMP-PHONE] A Leave War phone e2e is RED ON `main` — every merge's browser gate fails on it (23 Sep 26)
+
+`e2e/leavewar.spec.ts` "a month button works from wherever the grid already is" (lw-phone): March
+lands 20px short of the frozen edge (`-20`, needs `>= -1`). **Red 3/3 on `main`'s own code** (a
+throwaway worktree of `6efa6839`, 23 Sep 26 night) with the identical `-20`, and red on
+`claude/all-avail-window` — so NOT caused by the window. It passed on 22–23 Sep (450/0 at
+`7c2953b5`). **Likely date-dependent:** the Leave War reads the real clock (`period.ts localToday`)
+and the phone's month window rolls around the view; today is in September, the month the test jumps
+from. Not investigated further. **Blocks a green `test:e2e` for any branch until fixed** — do it
+before the next "merge live" that needs a clean gate. WALK tier (Leave War grid, phone).
 
 ### [OIL-PERSONAL-PLACEHOLDER] A placeholder on a landed "Personal" request row draws no count (23 Sep 26)
 
