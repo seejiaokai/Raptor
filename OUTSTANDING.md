@@ -786,16 +786,6 @@ point of view."* He uses it, so his judgment governs. Kept as a RULED item with 
 order §7.6) so a later session cannot rediscover the measurement and "fix" it. Detail: the walk sheet
 §6 item 12.
 
-### [DOCS-GUARD] Nothing detected a destroyed record — ALL FOUR STEPS DONE 23 Sep 26. CLOSED.
-
-Fable's order (D30), all of it; step 4 brought forward by the owner's "Ok do it" (D76). Branch
-`claude/docs-guard`. `npm run docsize` fails a lost, doubled or truncated backlog record, a lost or
-doubled D-number, a ruling home that does not exist and a rule-map id with no register entry; it
-runs in CI (`docs-guard.yml`) and as a Stop hook, and never demands a trim inside a code change.
-Finished items move only by `scripts/backlog-archive.mjs`. How it all works:
-`raptor-port/docs/doc-budget.md` §4; what was found and done:
-`raptor-port/docs/superpowers/specs/2026-09-22-backlog-process-attack.md`.
-
 ### [OIL-UNDO-WORDS] — DONE 22 Sep 26, folded into [OIL-SEATS-CAN-EARN] step 11 (NOT merged)
 
 **Resolved:** an OIL decision is now its own command (`sched.oil`) rather than riding the catch-all

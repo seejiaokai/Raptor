@@ -76,7 +76,8 @@ const { from, to } = hits[0]
 const block = L.ls.slice(from, to).join('')
 const eol = live.includes('\r\n') ? '\r\n' : '\n'
 const newLive = L.ls.slice(0, from).join('') + L.ls.slice(to).join('')
-const date = new Date().toISOString().slice(0, 10)
+/* the LOCAL date — toISOString is UTC, which read a day early on its first real run (UTC+8) */
+const now = new Date(), date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
 const note = `*Moved here ${date} by backlog-archive.mjs. Forward facts: ${homes.map(h => '`' + h + '`').join(', ')}.*${eol}${eol}`
 const newArch = arch + (arch.endsWith('\n') ? '' : eol) + eol + note + block + (block.endsWith('\n') ? '' : eol)
 

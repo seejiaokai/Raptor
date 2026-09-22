@@ -179,3 +179,16 @@ before a line is written.** The
 display-versus-earning cost analysis and the size estimate are in
 `raptor-port/docs/handpass/2026-09-22-oil-walk.md` §11 and §11a. Rulings: `DECISIONS.md` D24, D27, D28.
 
+
+*Moved here 2026-09-23 by backlog-archive.mjs. Forward facts: `raptor-port/docs/doc-budget.md`, `raptor-port/docs/superpowers/specs/2026-09-22-backlog-process-attack.md`.*
+
+### [DOCS-GUARD] Nothing detected a destroyed record — ALL FOUR STEPS DONE 23 Sep 26. CLOSED.
+
+Fable's order (D30), all of it; step 4 brought forward by the owner's "Ok do it" (D76). Branch
+`claude/docs-guard`. `npm run docsize` fails a lost, doubled or truncated backlog record, a lost or
+doubled D-number, a ruling home that does not exist and a rule-map id with no register entry; it
+runs in CI (`docs-guard.yml`) and as a Stop hook, and never demands a trim inside a code change.
+Finished items move only by `scripts/backlog-archive.mjs`. How it all works:
+`raptor-port/docs/doc-budget.md` §4; what was found and done:
+`raptor-port/docs/superpowers/specs/2026-09-22-backlog-process-attack.md`.
+
