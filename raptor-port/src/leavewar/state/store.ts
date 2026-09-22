@@ -1565,7 +1565,15 @@ export function setPeople(people: Person[]): void {
     return w ? { ...merged, from: w.from, to: w.to, poArchive: w.poArchive } : merged
   })
   const ids = new Set(next.map(p => p.id))
-  for (const id of Object.keys(po)) if (!ids.has(id)) next.push(po[id])
+  /* `.to`, not merely a record (22 Sep 26). The comment above says what this is
+     for and says the other half out loud: a body archived WITHOUT a posting-out
+     window leaves at once, because that ✕ means "should never have been here".
+     The test was membership of `postOuts`, which `windowRecord` fills from
+     EITHER end — so a man with only a JOINING date who was then archived came
+     back anyway. It lasted a session before, because the boot reader discarded
+     a record with no leaving date; now that the reader keeps one (a joining date
+     is an official date too), it would have lasted for good. */
+  for (const id of Object.keys(po)) if (!ids.has(id) && po[id].to) next.push(po[id])
   /* AND A WINDOW THAT ARRIVES WITH THE PROJECTION IS RECORDED (the walk's F1 and
      F2, 22 Sep 26 — two reported defects, one cause).
      This body laid the stored record ON but never took one OFF, and the one

@@ -240,3 +240,46 @@ describe('a post-IN date survives a reload too', () => {
     expect(getState().postOuts).toEqual({})
   })
 })
+
+/* AND THE KEEP RULE MEANS WHAT ITS OWN COMMENT SAYS. `setPeople` keeps a person
+   the projection has LOST if the store holds a window for them, so a posted-out
+   man's leave history still shows in the months before he left — and its comment
+   is explicit about the other case: "A body archived WITHOUT a posting-out
+   window still leaves at once — that ✕ means 'should never have been here'."
+   The test was membership of the record, not the presence of a LEAVING date, so
+   a man with only a JOINING date who was then archived came back anyway. It
+   mattered for a session before (`windowRecord` stores either end); it would
+   have mattered for good once the reader above stopped discarding those
+   records, which is how it was found. */
+describe('the keep rule tests for a LEAVING date, not for any window', () => {
+  const archived = (id: string, fn: () => void) => {
+    ;(PEOPLE as any)[id].archived = true
+    try { fn() } finally { delete (PEOPLE as any)[id].archived }
+  }
+
+  it('a man archived with only a JOINING date does not come back', () => {
+    const be = memoryBackend()
+    reboot(be)
+    const id = anAircrewId()
+    setPostIn(id, '2026-03-01')
+    archived(id, () => {
+      expect(projectPeople().some(x => x.id === id), 'the projection has dropped him').toBe(false)
+      reboot(be)
+      expect(getState().people.find(x => x.id === id),
+        'the ✕ means he should never have been here').toBeUndefined()
+    })
+  })
+
+  it('THE CONTROL: a man archived WITH a leaving date is still kept, as he must be', () => {
+    const be = memoryBackend()
+    reboot(be)
+    const id = anAircrewId()
+    setPostOut(id, '2027-03-01', false)
+    archived(id, () => {
+      reboot(be)
+      const kept = getState().people.find(x => x.id === id)
+      expect(kept, 'his leave history is what the months before he left still show').toBeDefined()
+      expect(kept!.to).toBe('2027-02-28')
+    })
+  })
+})
