@@ -53,13 +53,15 @@ Fable 5.1 and adopted a new model workflow (D67).
 
 ## PROGRESS — session of 23 Sep 26 (night), overwrite as it moves
 
-Commits on the branch since the handoff: `32f2e36a` S1 · `735b83dd` S2 + S11 footer · `1c4a8e17`
-D65 + D66 (S4 S9 S12 S13) · `e81e1fe0` S3 S5 S6 S7 S10 S14 + plan wording. Every fix red first.
-**Still to do:** S8 (phone size — the inline width/height beat the ≤620px rule), S11's POSITION half
-and S15 (both: the window's placement — reset on reopen, clamp on browser shrink; ResizeObserver's
-first call commits a box), Fable's "next five", then items 6–8 below (walk → Fable + Astra reads →
-fix → sheet). Rulings this session: **D68, D69** (read fully; condense notes at the end).
-**Owner asleep; worked autonomously. Nothing merged. Branch not pushed yet this session.**
+**ALL of Fable's S1–S15 and "next five" are dispositioned; the walk is DONE** (four passes, 15
+pictures, no console errors) — `raptor-port/docs/handpass/2026-09-23-allavail-window.md` is the
+evidence sheet. Commits: `32f2e36a` S1 · `735b83dd` S2 + S11 · `1c4a8e17` D65 + D66 · `e81e1fe0` S3
+S5 S6 S7 S10 S14 · `c285ad66` S8 S11 S15 · `d0f16a29` walk W1 · `6e7078d8` walk + W2 + two filed ·
+`11ab372d` the final-read brief. Every fix red first. **In flight: Fable + Astra reading blind**
+(brief: `docs/superpowers/briefs/2026-09-23-allavail-window-final-read-brief.md`), and the full gates.
+**Then:** reconcile both reports → fix → re-walk what the fixes touch → gates → sheet §8–§10 and the
+`Walk:` line → condense these notes (D69) → push the branch → his look → "merge live".
+Rulings this session: **D68, D69**. Owner asleep; autonomous. Nothing merged.
 
 ## Unfinished — in this order
 
