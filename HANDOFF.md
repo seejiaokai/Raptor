@@ -183,7 +183,7 @@ None of these gate a tracker- or storage-only change.
 
 ## In flight
 
-**[OIL-AUTO-REMOVE] + [ALL-AVAIL-REDEF] — BUILT + BUG-CHECKED 21 Sep 26, HELD for "merge live".**
+**LIVE THREAD (23 Sep 26): `[ALL-AVAIL-WINDOW]` on `claude/all-avail-window`, pushed, NOT merged — read `HANDOFF-NEXT.md` and `raptor-port/docs/handpass/2026-09-23-allavail-window-fable-scenarios.md` first. EVERYTHING BELOW THIS LINE IN §In flight HAS MERGED (PR #424, #425) and is history awaiting `[DOC-TRIM]` — do not act on it.** Was: **[OIL-AUTO-REMOVE] + [ALL-AVAIL-REDEF] — BUILT + BUG-CHECKED 21 Sep 26, HELD for "merge live".**
 **NEXT SESSION READS `raptor-port/docs/superpowers/specs/2026-09-21-oil-handpass-handoff.md` FIRST** —
 the job is executing the two scenario lists (Fable's 44, Codex's 24) in the RUNNING app, and that
 file says what is already done by hand so it is not redone. **And read
@@ -625,7 +625,7 @@ wearing a different hat.
 
 ## Deploy — the traps, all still live
 
-**Two channels since 15 Aug 26 — Vercel for speed, Pages for the official
+**SUPERSEDED 23 Sep 26 (D59): the repo is PRIVATE, GitHub Pages is GONE and the publish job is OFF — Vercel is the only viewer (`raptor-kai-e2f5.vercel.app`); the Pages traps below are history until `[DEPLOY-DOCS]` rewrites them.** Was: **Two channels since 15 Aug 26 — Vercel for speed, Pages for the official
 site.** The owner's dev loop felt like ~20 min per change; the fix was to stop
 routing every look through the gated Pages deploy.
 - **Vercel** builds `raptor-port` from the root `vercel.json` and gives every
@@ -818,6 +818,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | file | what it does |
 |---|---|
 | `oilmode.ts` | **The board's "OIL Earn" mode, and the figure reader the green edge shares** (21 Sep 26). The mode's state lives beside `SBDAY` in `state/view.ts` (cleared by the same close and by a day step); this file is its markup, its reads and its three writers (the day blanket, an item, one man on one item). `oilDayFigures` is the ONE figure body the mode and the issued schedule's green bar both read, so a man can never be shown two different answers. Contract: `docs/ui-contracts.md` §OIL on the schedule. |
+| `AvailWindow.tsx` | **The counter's window** ([ALL-AVAIL-WINDOW], 23 Sep 26, IN FLIGHT) — tapping an ALL/ALL AVAIL count chip on the board or the week opens one movable, resizable, NON-BLOCKING window of real pucks: pilots left, WSOs right, one per row, warning flags under each man; with OIL Earn on, a second tab switches men off earning (it REPLACED the mode's in-row crowd). State + position in `pops.ts` (outside React, so editing behind it never resets it). The app's first third-kind transient surface — the outside-click rule does NOT apply; closes on ✕, page/week change, logout (D66). Contract: `docs/ui-contracts.md` §[ALL-AVAIL-WINDOW]. Pinned in `availwin.test.tsx`, `oilcount.test.tsx`, `oilrowpucks.test.tsx`. |
 | `App.tsx` | Login vs Shell + board overlay (the board is a SIBLING of the shell so logout unmounts it). |
 | `Shell.tsx` | Topbar, nav, both schedule pages' chrome, global listeners (click/change/contextmenu/focusout/keydown, drag, pan), banner, memoized sections. The topbar carries the **notification bell** (`#notifyBell`, glows off `bellLit()`, every page/width), the edit page's **undo/redo** (`.tb-hist`, desktop-facing; memo deps carry `HIST.ix`/`HIST.stack.length`/`bellLit()`), and — 22 Aug 26 — the **role chip far right** after Logout (`#roleBadge`, `.abtn.rolechip`, phone-hidden; since 27 Aug 26 it is the admin's VIEW TOGGLE — a button flipping admin↔member view via `store.ts:toggleRole`, inert for a member; the phone's copy lives in the Drawer's Account row, `#drawerRole`) and a **blue `.topbar.editing` tint on Edit Schedule** (redefines `--topbar-a/b` so the phone's sticky burger/mark lead tints in lockstep). The VIEW page's chrome is ONE row since 22 Aug 26 (`#viewChrome`: calendar far left inside `.wkseg`+`#weekSeg`, week buttons, HIGHLIGHT chips — OCU rides the CAT group right of D — then search); the edit seg's calendar sits far left too; the old `#eTitle` "142 Scheduling board" heading is deleted. |
 | `ViewWeek.tsx` / `EditWeek.tsx` | The week surfaces: build `dayHTML` per day, diff strings, swap only changed days, hold scroll; `EditRoster` palette. CURPAGE-gated. Each calls `beginGlide` (`weekglide.ts`) at the top of its repaint, before the DOM swap, so a phone week cross slides instead of flashes. Each also calls `peek.ts:mountPeek(root, html.length, prevPeekKey)` after the live-day diff settles, mounting/refreshing the trailing next-week preview nodes past the live days — a no-op DOM-wise when the key and node count already agree, so an ordinary one-day edit still touches nothing extra. Both also read `view.PEEKLAND` in their landing priority chain (alongside `WEEKJUMP`/`CARRYDAY`/`DPREV`) to land a just-loaded day at the exact x its preview card was clicked at. |

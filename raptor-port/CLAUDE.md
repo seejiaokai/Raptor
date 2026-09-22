@@ -222,7 +222,7 @@ barely more than one.
   sitting open is the intended resting state, not a thing to finish. The 24 Aug
   rule below is kept for its mechanics (where the link is, SSO, no PR-watching);
   its "auto-merge is the default" clause no longer applies.
-- **MODELS (owner, 7 Sep 26) — heavy work runs on Opus 4.8; Fable 5.1 is
+- **MODELS — SUPERSEDED 23 Sep 26 by D67: Opus 5.5 PLANS and BUILDS; Fable 5.1 and Astra REVIEW the plan and the code, never the model that wrote it (both on money / published records / permissions / persistence); when ASTRA builds, Opus 5.5 reviews; a bug Opus 5.5 cannot crack escalates to Fable 5.1. The 7 Sep 26 text below is history.** (Was: MODELS (owner, 7 Sep 26) — heavy work runs on Opus 4.8; Fable 5.1 is
   budget-limited.** The owner prefers Opus 4.8 and Fable 5.1 for work ("they
   hallucinate less and are more correct"); he has plenty of Opus tokens and a
   LIMITED Fable allowance, which he spends deliberately on the SMART work —
@@ -611,7 +611,7 @@ trip felt like ~20 min per change and was unsustainable):
   older "point a browser drive at it" clause). Your drive surface is the local
   `vite preview`, which is the same bundle. It is NOT gated, so a red preview
   is still just a preview; correctness still rides the five gates below.
-- **GitHub Pages stays the OFFICIAL site** — the gated `deploy.yml`, published
+- **SUPERSEDED 23 Sep 26 (D59): the repo is PRIVATE, Pages is GONE, the publish job is OFF — Vercel is the only viewer; `[DEPLOY-DOCS]` owns rewriting the Pages-era text in this file.** Was: **GitHub Pages stays the OFFICIAL site** — the gated `deploy.yml`, published
   only on merge to `main`. Slower (the gates, then a Pages rollout that has
   ranged from 5 s to 10 min and is outside our control), so it is paid ONCE
   per session at the end, not per change — and since 2 Sep 26 only on the

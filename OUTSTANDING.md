@@ -94,7 +94,7 @@ in-flight and risk-reducing** first.
    closes. See the item below.
 **TOP OF THE QUEUE (updated 23 Sep 26).** **[OIL-AUTO-REMOVE] AND [OIL-SEATS-CAN-EARN] ARE BOTH
 MERGED AND LIVE.**
-1) **[ALL-AVAIL-WINDOW]** — **NEXT, and ready to build.** The counters it opens from are now live, its
+1) **[ALL-AVAIL-WINDOW]** — **IN FLIGHT (23 Sep 26) on `claude/all-avail-window`, pushed, not merged: BUILT, the FULL-tier fix-and-walk is next — `HANDOFF-NEXT.md`.** Was: NEXT, and ready to build. The counters it opens from are now live, its
 mock-up is APPROVED and is the design of record (D41), and D38–D41 settle its shape down to the
 pixel. **Do not re-open the design; build to it.** 2) **[DOCS-GUARD]**, scope and order settled by
 D30. 3) **[HUMAN-RETEST]**. 4) **[DOC-TRIM]** — unblocked now that the OIL scaffolding has become
@@ -853,6 +853,8 @@ and `[POSTOUT-LOST]`'s remaining half.
 
 ### [ALL-AVAIL-WINDOW] The counter opens a movable window of PUCKS, not a bubble of names (owner, D38, 22 Sep 26)
 
+**STATUS 23 Sep 26 — BUILT on `claude/all-avail-window`, NOT bug-checked yet.** Both halves work and every seat kind reaches the window (tested). Fable's scenario design is in `raptor-port/docs/handpass/2026-09-23-allavail-window-fable-scenarios.md` with a status table: **S1 — the window paints UNDER the board — is CONFIRMED and must be fixed first**; D65/D66 settle four items; the rest must be reproduced in the real app. **Known gap, deliberately filed:** the D38 flag covers a crowd man's FLIGHT brief and debrief (`crowdClashes`, built, not yet wired); his SIM brief/debrief windows are not reachable from outside the warning pass and are not covered. Next: `HANDOFF-NEXT.md`.
+
 **His words:** *"the current interface to show just names on a bubble … is not intuitive … a window
 that is movable and … resizable and a user can still click and edit/scroll the schedule behind while
 that window is still opened … show the pucks just like how the placeholder shows the personnel and I
@@ -902,6 +904,10 @@ exactly the case he opened this with.
 **Sequencing: AFTER `[OIL-SEATS-CAN-EARN]`**, which builds the counters this window opens from, and
 which settles where they appear. Ruling: `DECISIONS.md` D38; the related ones are D27 (the count is a
 scheduling feature), D36 (the narrow window) and D37 (the count reads as what it is).
+
+### [DEPLOY-DOCS] The Pages-era deploy text is stale since the repo went private (D59, 23 Sep 26)
+
+`raptor-port/CLAUDE.md` §Build & verify and §How to work here, and `HANDOFF.md` §Deploy, still describe GitHub Pages as the official live site, the "done means live" chain ending at Pages, and `seejiaokai.github.io/Raptor` as the page to check. All of it stopped being true on 23 Sep 26: Pages is gone, the publish job is off, Vercel is the only viewer. Marked SUPERSEDED in place at the two most misleading lines; the proper rewrite is its own docs pass (D29 — never trim inside another change). **Tier: NONE.** Do it with `[DOC-TRIM]`, which owns the same two files.
 
 ### [OIL-WORDS] Stop calling OIL "money" in the code comments (owner, D25, 22 Sep 26)
 

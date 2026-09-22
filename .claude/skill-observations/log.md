@@ -2733,3 +2733,63 @@ tends to carry costs (hidden bugs, undoing the plan's intent) that only resurfac
 **Suggested improvement:** Treat a reviewer's suggested fix as a hypothesis with the same standing as their finding: reproduce the defect, apply the fix, and then prove the fix by REMOVING it and watching the test fail. A reviewer reasoning from source alone cannot execute the path they are describing, so their fix is a reading of the mechanism, not a measurement of it — and a precise, confident one is no safer than a vague one. Where two reviewers disagree on a fact, settle it by measuring the fact, never by majority or by which report is more detailed.
 
 **Principle:** A review gives you a finding worth reproducing and a fix worth doubting. The fix is where the reviewer is furthest from the running system and closest to sounding authoritative, and a test that cannot fail without the fix is the only thing that tells you which you got.
+
+### Observation 179: A new floating surface needs a browser test that proves it paints ON TOP
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [ALL-AVAIL-WINDOW] build + a repo-privacy check, Raptor
+**Skill:** raptor-port/docs/bug-check-order.md (§6 roll-call, column 3 'what else is painted on the same pixels')
+**Type:** open-source
+**Phase/Area:** see Skill
+
+**Issue:** A new movable window shipped with z-index 150 while the full-screen board it must float over is 400, so on the board it opened invisibly. 5,727 jsdom tests and the builder's own reading passed it; jsdom has no stacking. Fable's scenario design (§4 rank 1) found it by reading two CSS rules side by side.
+
+**Suggested improvement:** Add to §6: for any NEW overlay/floating surface, the roll-call's third column must name every full-screen or fixed surface it can open over, and a browser test must assert `document.elementFromPoint` at the surface's centre returns the surface itself, on each of them.
+
+**Principle:** Layering is a missing-line defect that only a real browser can see; a new floating surface earns an elementFromPoint assertion over every surface it can open on top of.
+
+### Observation 180: A privacy sweep keyed on the owner's literal terms missed a synonym
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [ALL-AVAIL-WINDOW] build + a repo-privacy check, Raptor
+**Skill:** New skill candidate: identifying-information sweep (or a section in session-handoff / bug-check-order)
+**Type:** open-source
+**Phase/Area:** see Skill
+
+**Issue:** The owner asked for a unit designation and a service name removed 'everywhere'. The sweep grepped exactly those strings and reported clean; an aircraft variant that identifies the same country just as well survived in ~12 files and was only found by chance while reading a guide. The same sweep missed a binary (.pptx) in history.
+
+**Suggested improvement:** When removing identifying information, first enumerate what IDENTIFIES (unit, service, country, variant designations, place names, document citations) with the owner, then sweep for each, and list what kinds of file the sweep cannot read (binaries, history).
+
+**Principle:** Sweep for what identifies, not for the strings named — and state which file kinds the sweep could not see.
+
+### Observation 181: A clean result must state its scope, or it reads wider than it was
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [ALL-AVAIL-WINDOW] build + a repo-privacy check, Raptor
+**Skill:** Cross-cutting principle candidate (reporting checks)
+**Type:** open-source
+**Phase/Area:** see Skill
+
+**Issue:** Two clean verdicts this session were narrower than their wording: 'no restricted material was ever uploaded' (checked markings and demo data, never opened a 222-event syllabus) and 'removed everywhere' (a text sweep; a binary deck kept the term). Both were corrected, but only after a later finding.
+
+**Suggested improvement:** When reporting any check as clean, say in the same sentence what it looked at and what it did not.
+
+**Principle:** A clean verdict is only as wide as what was examined — say the examined scope in the verdict itself.
+
+### Observation 182: The handoff skill names a file the owner does not use as his entry point
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [ALL-AVAIL-WINDOW] build + a repo-privacy check, Raptor
+**Skill:** session-handoff (Step 1 and the template's file path)
+**Type:** open-source
+**Phase/Area:** see Skill
+
+**Issue:** The skill writes raptor-port/docs/session-state.md, but the owner opens every session with 'Read HANDOFF-NEXT.md first'. The previous session wrote a current HANDOFF-NEXT.md and left session-state.md describing merged work — the exact stale-leftover the skill warns about. This session kept the full handoff in HANDOFF-NEXT.md and reduced session-state.md to a pointer.
+
+**Suggested improvement:** Make HANDOFF-NEXT.md the skill's primary output (the owner's entry point) and session-state.md a short pointer that exists only while something is unfinished — or retire it and update CLAUDE.md's promise.
+
+**Principle:** A handoff file is only useful if it is the one the next reader is actually pointed at; match the owner's entry point, not the skill's historical path.

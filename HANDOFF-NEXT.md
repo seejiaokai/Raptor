@@ -1,92 +1,77 @@
-# HANDOFF — 23 Sep 26. `[OIL-SEATS-CAN-EARN]` is LIVE. Next is `[ALL-AVAIL-WINDOW]`.
+# HANDOFF — 23 Sep 26. `[ALL-AVAIL-WINDOW]` is BUILT, not bug-checked. The fix-and-walk is next.
 
-**Pick the branch `main` in the new-chat picker.** Not `claude/oil-seats-can-earn` — that is merged
-and finished. `main` is at `aae10982` and everything below is in it.
-
-## Nothing is in flight
-
-| | |
-|---|---|
-| `[OIL-SEATS-CAN-EARN]` | **MERGED (PR #425) and LIVE.** Deployed page loaded and checked after the merge — clean, no errors, and the weekend warning the owner asked about shows on arrival |
-| The README credentials | **MERGED (PR #426)** — stale and contradicting a decision already made; removed. Not a security change and not recorded as one |
-| Open PRs | none |
-| Working tree | clean |
+**Pick the branch `claude/all-avail-window` in the new-chat picker. NOT `main`** — `main` does not
+have the window. The branch is pushed; no PR is open yet (D60: pushing a branch needs no permission,
+`main` needs his "merge live").
 
 ## Read these first, in this order
 
-1. **`DECISIONS.md` — the WHOLE file.** D53 exists because a session grepped for two named entries
-   and stopped. **D54, D55 and D56 are new on 23 Sep** and D56 changes how you bug-check.
-2. **`OUTSTANDING.md`** — the priority order at the top. Read it before you tell him anything is
-   undecided or missing (D53).
-3. **`raptor-port/docs/bug-check-order.md`** — the standing order. **§2b is NEW (D56)** and will save
-   you time on the very first review you commission.
+1. **`DECISIONS.md` — the WHOLE file** (D53). **D57–D67 are new this session**; D65, D66 and D67 change
+   what you build and who reviews it.
+2. **`raptor-port/docs/handpass/2026-09-23-allavail-window-fable-scenarios.md`** — Fable's scenario
+   design, verbatim, with a status table in front. It is the work list.
+3. **`raptor-port/docs/bug-check-order.md`** — this is FULL tier (money: the earn half switches men off).
+4. `OUTSTANDING.md` `[ALL-AVAIL-WINDOW]` — the brief and the design of record (D38–D41).
 
-## THE NEXT TASK — `[ALL-AVAIL-WINDOW]`
+## Where it started
 
-Its item in `OUTSTANDING.md` is the brief. The short version:
+The owner asked for `[ALL-AVAIL-WINDOW]` built to the approved mock, FULL tier. Mid-session he had the
+then-public repo checked for what a stranger could read: the unit branding came out and he made the
+repo private (merged live, D57–D61). He then had Opus 5.5 (released 22 Sep 26) researched against
+Fable 5.1 and adopted a new model workflow (D67).
 
-Tapping a count chip opens **one movable, resizable window of real pucks** that does **not** block
-the schedule behind it — he scrolls and EDITS while it is open. It replaces both the name bubble and
-the in-row crowd, and the **same window serves both counters**: who is AVAILABLE behind a placeholder,
-and who is CREDITED OIL (where he switches individual pucks off).
+## Shipped
 
-**THE DESIGN IS SETTLED. DO NOT RE-OPEN IT.**
+- **Branding removal + the Pages publish switched off** — merged to `main` (fast-forward `6efa6839`),
+  on Vercel. His look was waived (D61). Nothing else is merged.
 
-- **D41 — the mock-up is APPROVED and is the design of record**: `raptor-port/docs/mock/allavail-window.html`.
-  Changing it now needs his word.
-- **D39** — one puck per row at every width; the counter chip drops the word "free".
-- **D40** — opens **SKINNY at 212px** (186px is the floor, below which a puck clips); the drag handle
-  is the app's own six-dot `⠿` grip. **Build to those numbers rather than re-deriving them.**
-- **D38** — pilots left column, WSOs right; real warning flags on the pucks, clickable.
-- **The mode rule** — tapping the counter always shows WHO IS AVAILABLE, any day. The "who earns OIL"
-  half exists **only while OIL Earn is on**; with the mode off there are no tabs at all.
-- **A puck is a MEASURED 74×15** (`--puck-w`/`--puck-h`, pinned `!important`, watched by the browser
-  geometry gate). **Do not stretch pucks to fill the columns** — the mock gives each man a full ROW
-  instead, which is what makes the list scannable.
+## On the branch, not merged
 
-**Two things that will bite if you do not read them:**
+| Commit | What |
+|---|---|
+| `7735dc82` | The window + its availability half, wired on the board AND the week; two defects the checks found (the week's tap had no test; a posted-out man crashed it) |
+| `7c2953b5` | The earn half — the counter REPLACES the mode's in-row crowd; every seat kind reaches the window (tested); break tests per wire |
+| `e8e88702` | `crowdClashes` in `validate.ts` — the owner's D38 debrief flag — **built, NOT wired into the window, no test yet** |
+| `9f793b2c`, `62a115c9` | The country-specific aircraft type out, outside the Tracker syllabus (D63, D64) |
+| `b2017e6c` | D65/D66 recorded and the window's contract updated — **not built yet** |
 
-1. **This is a THIRD kind of transient surface and the app's first.** Not a `Sheet` (scrim, blocks
-   everything) and not an inline popup (dismisses on an outside click — the 4 Sep 26 standing rule).
-   **It needs its own contract in `docs/ui-contracts.md`, and the outside-click rule must be written
-   down as NOT applying to it**, or a later session will "fix" it.
-2. **D36 is the reason the flags matter.** A man whose ops brief sits inside his standard debrief must
-   APPEAR, flagged, so the scheduler sees the overlap and judges it. **Do not let this drift into
-   filtering him out** — that is the change D36 refuses.
+## Unfinished — in this order
 
-**Tier: at least WALK** (a new surface, a new gesture, a shared drawer). Answer §5's eight questions
-yourself and say the tier out loud before building — the order fires itself, he never picks it.
+1. **S1: the window paints UNDER the board** (`.availwin` z-index 150, `.schedboard` 400). Confirmed
+   against the stylesheet. Fix it first: until then the earn half has no visible door and nothing can
+   be walked on the board. Aim above the board and below the Sheets/modals (420+).
+2. **Wire `crowdClashes` into the window's rows** (S2), with a test that plants the owner's own case:
+   a sortie landing ~15:00 and an ALL AVAIL ops brief 15:20–16:20 — the man must appear FLAGGED.
+3. **Build D65** (a tap selects the man everywhere with OIL Earn off; selects nothing with it on) and
+   **D66** (close on page change, an Edit/View-only switch, a week change, logout).
+4. **Reproduce, then fix, the rest of Fable's list** — each through the real app first, each fixed with
+   a test that was red first (§7.6). S7 (no History line for a switch made in the window) and S3
+   (issued list shown with today's flags) are the next most consequential.
+5. **Add a browser test that touches `.availwin`.** No e2e covers the window, so S1, S8 and S15 are
+   invisible to every gate today.
+6. **The walk** (§7): the scripted driver `raptor-port/scripts/handpass/` (`lib.mjs`, `fixture.mjs`
+   `buildSaturday`), both widths, pictures to `raptor-port/docs/img/handpass/2026-09-23-allavail-window/`,
+   the sheet at `raptor-port/docs/handpass/2026-09-23-allavail-window.md`.
+7. **The two code reads — Fable 5.1 AND Astra, blind to each other**, given the sheet, with the §4
+   finder brief and the D56 exclusion verbatim. **Not Opus: Opus built it** (D67).
+8. Fix → re-walk what the fixes touched → gates → finish the sheet → his look → his "merge live".
 
-## What `[OIL-SEATS-CAN-EARN]` left behind, none of it blocking
+## Gates
 
-`[OIL-READ-LEFTOVERS]` (four findings the final reads raised and the branch deliberately left, one of
-them a question for him), `[STORE-READER-SWEEP]`, `[OIL-REQ-NAMEBOX]`, `[POSTOUT-LOST]`'s remaining
-half, `[OIL-WORDS]`. All filed with their reasoning.
+- **On `7c2953b5`, all watched:** `npm test` 5727/5727 across 355 files · build OK · `tfin.js` 728/0 ·
+  `rulecheck` OK · `test:e2e` 450 passed / 45 skipped / 0 failed.
+- **After it, targeted runs only:** parity + validator + window tests 146/146; logic/validate/parity/
+  aarinstr 100/100; `tfin.js` 728/0; `smoke:tracker` 425/0. **The full `npm test` has NOT run on
+  `b2017e6c` — run it first.**
+- `npm run perf` not run this session. `docsize` fails on the same three files it failed on before
+  the session (`record-decisions.md`, `HANDOFF.md`, `OUTSTANDING.md`); the last two grew a few lines.
+  Owned by `[DOC-TRIM]`.
 
-`[REPO-PRIVATE]` is **parked by him** — he raised making the repo private and sharing it with
-developers, then said "nvm disregard this first". Everything established about it is filed so it is
-not re-derived, including a **measured 37 billed Actions minutes per push**.
+## Open questions
 
-## What this session learned that is worth not re-learning
+- None blocking. D67 was recorded as ADOPTION of his confirming question ("opus 5.5 will be used to
+  plan then let fable and astra review correct?"); if he says he only meant to ask, revert it.
 
-- **A handoff's SYMPTOM is evidence; its CAUSE is a hypothesis.** Two of the five defects had a named
-  cause that was wrong, and one accused a function that already made the check — with a passing test.
-- **Several "independent" defects can share one root.** Two of the five were one bug.
-- **A test proves its assertion, not its title.** Three defects hid behind tests that asserted an
-  ingredient: that a warning *carries* an address (nothing resolved it), that a signature *survives*
-  (true either way on that fixture), a global count as a proxy for a local fact.
-- **Run the roll-call AFTER the fix as well as before**, filling each cell by looking. That is what
-  found the fourth surface.
-- **Verify a reviewer's FIX as carefully as their FINDING.** One came with a confident one-liner that
-  did nothing, because the mechanism it named gates on a different flag.
-- **Run the WHOLE suite after the last change.** A subset let a missing Logic-page row reach CI.
-- **Three unit failures this session were load flakes** — a different file each time, each passing
-  alone. Never run the unit gate beside the browser gates or a code read.
+## Pick up here
 
-## The gates, as they stood at the merge
-
-`npm test` 5707/5707 across 354 files · `npm run build` OK · `node reference/tfin.js` 728/0 ·
-`npm run rulecheck` OK · `npm run test:e2e` 449 passed/45 skipped/1 known flake passing alone ·
-`npm run smoke:tracker` 425/0 · `npm run perf` **4/0, green for the first time**.
-`npm run docsize` fails on three files — two never touched, the third over its ceiling before this
-branch. D29 forbids trimming docs inside a fix; it needs its own pass (`[DOC-TRIM]`).
+Fix S1 (the window's stacking), then wire `crowdClashes` — both before any walking.
