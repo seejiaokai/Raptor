@@ -63,8 +63,16 @@ export interface OilDecisions {
    *  stamp on the rows, so it covers anything added later — and it MASKS the
    *  marks beneath it rather than deleting them (§2.1 item 7, §9.1). */
   blanket?: 1
-  /** item key → 0: this item earns nobody anything. */
-  items?: Record<string, 0>
+  /** item key → the scheduler's mark on the whole item.
+   *  `0` = this item earns nobody anything.
+   *  `1` = this item earns EVERYONE on it, whatever the seat's own default
+   *  ([OIL-SEATS-CAN-EARN], 22 Sep 26). The `1` exists because from step 3 a
+   *  seat can default OFF — an SC spare, an AVALON or BB line, an AVALON desk —
+   *  and D24 says the admin must be able to switch such a line ON. Absent means
+   *  "no decision": the seat's own default answers. NOTHING WRITES THE `1` YET;
+   *  it is the shape the switch needs, landed with the two readers below so the
+   *  guards and the switch stop sharing one boolean. */
+  items?: Record<string, 0 | 1>
   /** `<personId>|<itemKey>` → allow | deny (§9.1). */
   people?: Record<string, OilDecision>
 }
@@ -140,11 +148,32 @@ const clone = <T,>(v: T): T => JSON.parse(JSON.stringify(v))
 
 /* ---- the decision algebra ------------------------------------------------ */
 
-/** Is this item live at all under the day's decisions (blanket + item mark)? */
-function itemOn(ev: OilEvidence, item: string): boolean {
-  if (ev.d.blanket) return false
-  if (item && ev.d.items && ev.d.items[item] === 0) return false
-  return true
+/** TWO READERS, NOT ONE ([OIL-SEATS-CAN-EARN] §4, Fable R2-2). The single
+ *  boolean `itemOn` was doing two jobs: it answered the GUARDS ("may anything
+ *  under this item earn at all?") and it was also read as the SWITCH's own
+ *  state. Once the mark has three values that stops working — six callers treat
+ *  the answer as a boolean, and `!undefined` is true, so making one function
+ *  three-valued would send every puck inert and make every item tap report the
+ *  item masked. So the two questions get two functions and neither can drift.
+ *
+ *  MASKED — can nothing under this item earn? The blanket, or an explicit `0`.
+ *  Semantics identical to the old `itemOn`, inverted so the name says what it
+ *  tests: an item with NO mark is not masked, and neither is a forced-on `1`. */
+export function itemMasked(ev: OilEvidence, item: string): boolean {
+  if (ev.d.blanket) return true
+  return !!(item && ev.d.items && ev.d.items[item] === 0)
+}
+
+/** THE MARK ITSELF — the scheduler's own decision about this item, apart from
+ *  the blanket over it. `undefined` means he has made none, which is what lets
+ *  the switch tell "he turned it off" from "nobody has touched it" (the blanket
+ *  MASKS the marks beneath rather than deleting them, §2.1 item 7, so the mark
+ *  must stay readable underneath one or turning the blanket off would not bring
+ *  the marks back). */
+export function itemMark(ev: OilEvidence, item: string): 0 | 1 | undefined {
+  if (!item || !ev.d.items) return undefined
+  const v = ev.d.items[item]
+  return v === 0 ? 0 : v === 1 ? 1 : undefined
 }
 
 /** The three-state decision for one man on one item; undefined = inherit. */
@@ -157,7 +186,7 @@ export function personDecision(ev: OilEvidence, person: string, item: string): O
  *  is the ordinary rule's own answer (yes for schedule work, the member's own
  *  answer for an input claim). Ineligibility is decided before this is asked. */
 export function earnsFrom(ev: OilEvidence, person: string, item: string, dflt: boolean): boolean {
-  if (!itemOn(ev, item)) return false
+  if (itemMasked(ev, item)) return false
   const dec = personDecision(ev, person, item)
   return dec === 'allow' ? true : dec === 'deny' ? false : dflt
 }
@@ -367,13 +396,57 @@ export function oilEvidence(di: any, day?: any): OilEvidence {
   return { iso: iso as string, earns: true, d: dec, inputs: projectOilInputs(iso as string), sent }
 }
 
+/* ---- the read-only render pass ([OIL-SEATS-CAN-EARN] §5 step 1) -----------
+   Consolidating the mode's item guard onto the evidence turns an O(1) property
+   read into a whole evidence build — the day's work walk plus the input
+   projection — and from step 9 it is asked per row and per puck on every day,
+   every repaint, not just on a weekend inside the mode (Fable R2-7, S4;
+   docs/performance.md Part 1).
+
+   SO IT IS MEMOISED — BUT NEVER ON (day identity, store version), WHICH IS
+   UNSAFE (OSE-T-01, found by the targeted check on the fold). The day is
+   mutated IN PLACE and the version only advances at notify, while the
+   post-mutation epilogue runs VALIDATION first — and validation asks whether
+   the day would earn. A cache filled by the previous paint would hand
+   validation the PRE-change evidence, so switching off the last earning item
+   could leave an obsolete OIL warning standing on the day. The same window
+   covers signing and publication, which read the authoritative answer in the
+   same breath as a mutation.
+
+   So: the authoritative calculation stays UNCACHED, and the cache exists only
+   inside an explicitly opened read-only pass — the two HTML builders, which
+   write nothing. Outside a pass every call recomputes, which is the behaviour
+   this step inherits and must not change.
+
+   Keyed on the day OBJECT as well as the index, because `withDaySnap` swaps a
+   snapshot into `DAYS[di]` for the same index: a pass that spans the swap must
+   MISS rather than serve the live day's answer inside the issued document. */
+let OIL_PASS: Map<number, { d: any; ev: OilEvidence }> | null = null
+
+/** Run `fn` as a read-only pass, memoising each day's evidence for its duration.
+ *  NOTHING INSIDE MAY WRITE `DAYS`, `INPUTS` or `PEOPLE`. A nested pass reuses
+ *  the outer one and only the outermost clears, so the cache can never outlive
+ *  the paint that opened it. */
+export function oilReadPass<T>(fn: () => T): T {
+  const outer = OIL_PASS
+  if (!outer) OIL_PASS = new Map()
+  try { return fn() } finally { if (!outer) OIL_PASS = null }
+}
+
 /** The evidence a DAY OBJECT carries: the frozen block on an issued snapshot,
  *  else the live candidate. This is what every reader should ask — inside a
  *  version preview (ui/html.ts withDaySnap) DAYS[di] IS the snapshot, so the
  *  same call returns the issued answer without the caller knowing. */
 export function oilEvidenceOf(di: any, day?: any): OilEvidence {
   const d = day || DAYS[+di]
-  if (d && d.oilev) return d.oilev as OilEvidence
+  if (d && d.oilev) return d.oilev as OilEvidence      // already frozen: nothing to compute
+  if (OIL_PASS && d) {
+    const hit = OIL_PASS.get(+di)
+    if (hit && hit.d === d) return hit.ev
+    const ev = oilEvidence(di, d)
+    OIL_PASS.set(+di, { d, ev })
+    return ev
+  }
   return oilEvidence(di, d)
 }
 

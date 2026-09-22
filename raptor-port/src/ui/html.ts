@@ -21,6 +21,7 @@ import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
 import { oilBarOf, oilItemOfKey, inputItemKey, oilSentinelSummary } from './oilmode'
+import { oilReadPass } from '../engine/oilev'
 import { STORE_CFG, groundOrder, secOrder } from '../engine'
 
 const editMode=()=>HOOKS.editMode()
@@ -1247,7 +1248,16 @@ export function dayStatHTML(di:any,ed:any){
        the same thing is the clutter the redesign removes. */
     return `${pendChip}${infoChip}${beak}${alpub}${unpub}`;
 }
-export function dayHTML(di:any,ed:any,vsel?:any){
+/* THE ONE READ-ONLY PASS PER DAY ([OIL-SEATS-CAN-EARN] §5 step 1). From step 1
+   the OIL item guard reads the day's whole evidence block instead of an O(1)
+   property, and from step 9 the count is asked on every seat on every repaint —
+   so a builder that asked per row and per puck would rebuild the block dozens of
+   times for one day (Fable R2-7, S4; docs/performance.md Part 1). The builder is
+   a pure string producer, which is exactly the shape the pass requires: nothing
+   inside it writes DAYS, INPUTS or PEOPLE, so the memo cannot serve a stale
+   answer to validation, signing or publication — none of which run in here. */
+export function dayHTML(di:any,ed:any,vsel?:any){ return oilReadPass(()=>dayHTMLBody(di,ed,vsel)); }
+function dayHTMLBody(di:any,ed:any,vsel?:any){
   /* A QUARANTINED (unreadable / preserved / unsupported) LOADED week is read-only,
      and its days are UNAPPROVED (the seed is loaded as a placeholder), so both the
      edit week and the view week's unapproved days reach this shared builder — which

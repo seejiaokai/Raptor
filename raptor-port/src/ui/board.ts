@@ -31,8 +31,9 @@ import { esc } from '../state/view'
 import { notify, notifyBoard, loadWeek } from '../state/store'
 import { CURWEEK } from '../engine/waves'
 import { shiftWeek } from './weeknav'
-import { oilModeOn, dayBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilItemOn, oilItemCellHTML, oilSentinelList } from './oilmode'
+import { oilModeOn, dayBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilItemMasked, oilItemCellHTML, oilSentinelList } from './oilmode'
 import { rowItemKey } from '../engine/oil'
+import { oilReadPass } from '../engine/oilev'
 import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbSansPanel, sbUnavailPanel, labelToTitle, titleToLabel, titleToKind, sbGrip, sbNudge, rowMove, sbSortBtn, boxHTML } from './board-html'
 
 const toast = (...a: any[]) => HOOKS.toast(...a)
@@ -42,7 +43,16 @@ const afterSchedMutate = () => view.afterSchedMutate()
    read-only markup throughout, and no sign-off bar — the frozen record's
    signatures live on the AL record; live sign selects against an old day
    would invite edits against the wrong document. */
-export function boardHTML(di: number, pv?: boolean) {
+/* THE ONE READ-ONLY PASS PER DAY ([OIL-SEATS-CAN-EARN] §5 step 1). From step 1
+   the OIL item guard reads the day's whole evidence block instead of an O(1)
+   property, and from step 9 the count is asked on every seat on every repaint —
+   so a builder that asked per row and per puck would rebuild the block dozens of
+   times for one day (Fable R2-7, S4; docs/performance.md Part 1). The builder is
+   a pure string producer, which is exactly the shape the pass requires: nothing
+   inside it writes DAYS, INPUTS or PEOPLE, so the memo cannot serve a stale
+   answer to validation, signing or publication — none of which run in here. */
+export function boardHTML(di: number, pv?: boolean) { return oilReadPass(() => boardHTMLBody(di, pv)) }
+function boardHTMLBody(di: number, pv?: boolean) {
   /* a QUARANTINED loaded week is read-only and its days are the seed placeholder;
      the board is a third surface that reached the ordinary builder and painted the
      seed as the schedule, with no quarantine indication (Q2R-06). Surface the same
@@ -1233,7 +1243,7 @@ export function boardArmClick(e: MouseEvent) {
        the decision the mask was hiding (Astra + Fable, 21 Sep 26). The item's own
        switch has always refused a tap under the blanket; the person's puck did
        not. Say which mask is on, so the way to change it is obvious. */
-    if (!oilItemOn(di, item)) {
+    if (oilItemMasked(di, item)) {
       e.stopPropagation()
       return toast(oilBlanketOn(di)
         ? 'Nothing on this day earns — turn that off first'

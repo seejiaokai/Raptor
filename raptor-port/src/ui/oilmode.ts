@@ -49,7 +49,7 @@ import { INPUTS, inpId } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { envMin, uniformOil, dayOilWork, oilCapableItems, rowItemKey, groundItemKey, inputItemKey, type OilWork } from '../engine/oil'
-import { landedExtras, oilEvidence, oilEvidenceOf, oilEarnedWork, oilInputEligible, personDecision, type OilEvidence, type OilDecisions } from '../engine/oilev'
+import { landedExtras, oilEvidence, oilEvidenceOf, oilEarnedWork, oilInputEligible, personDecision, itemMasked, itemMark, type OilEvidence, type OilDecisions } from '../engine/oilev'
 import { OILDAY, setOilDay, afterSchedMutate, esc } from '../state/view'
 import { CURWEEK } from '../engine/waves'
 import { stashKeys, stashEditDays } from '../engine/weekstash'
@@ -172,12 +172,32 @@ export function oilFigureFor(di: any, person: any, item?: string): OilAmt {
 
 /* ---- the mode's own reads ------------------------------------------------- */
 
-/** Does this ITEM earn anything at all right now (the blanket and its own mark
- *  together)? What the item's name chip shows. */
-export function oilItemOn(di: any, item: string): boolean {
-  const dec = (DAYS[+di] || {}).oild || {}
-  if (dec.blanket) return false
-  return !(item && dec.items && dec.items[item] === 0)
+/** IS THIS ITEM MASKED — can nothing under it earn (the blanket, or its own
+ *  `0`)? The guard every reader in this file asks before it draws or writes.
+ *
+ *  IT READS THE DAY'S EVIDENCE, NOT THE DAY'S LIVE DECISIONS
+ *  ([OIL-SEATS-CAN-EARN] §5 step 1; F2, confirmed by both reviewers). The rule
+ *  was written twice and the two copies read DIFFERENT SOURCES: this one read
+ *  `DAYS[di].oild` — the live day — while the money read `ev.d`, the block
+ *  frozen onto the issued document. They agree today only because publishing
+ *  swaps one for the other, so it was a seam rather than a live defect; it is
+ *  shut here because every step after this one adds another reader, and the
+ *  screen contradicting the money about a man's earned leave is the failure
+ *  this whole change is built to avoid.
+ *
+ *  Named `masked` rather than `on` deliberately (Fable R2-2). From step 3 the
+ *  mark has three values, and "on" would no longer tell an item nobody has
+ *  touched from one forced on — which is the switch's question, `oilItemMark`
+ *  below, and not this one's. */
+export function oilItemMasked(di: any, item: string): boolean {
+  return itemMasked(evOf(di), item)
+}
+
+/** THE SCHEDULER'S OWN MARK on this item — `0` off, `1` on, absent no decision
+ *  — read apart from the blanket over it, which masks marks rather than
+ *  deleting them. This is the SWITCH's question; `oilItemMasked` is the guards'. */
+export function oilItemMark(di: any, item: string): 0 | 1 | undefined {
+  return itemMark(evOf(di), item)
 }
 
 export function oilBlanketOn(di: any): boolean { return !!((DAYS[+di] || {}).oild || {}).blanket }
@@ -188,7 +208,7 @@ export function oilBlanketOn(di: any): boolean { return !!((DAYS[+di] || {}).oil
  *  is not offered a toggle. */
 export function oilPersonOn(di: any, person: any, item: string): boolean {
   const ev = evOf(di)
-  if (!oilItemOn(di, item)) return false
+  if (oilItemMasked(di, item)) return false
   const dec = personDecision(ev, String(person), item)
   if (dec) return dec === 'allow'
   return itemDefaultFor(ev, String(person), item)
@@ -346,7 +366,7 @@ export function toggleOilItem(di: any, item: string): boolean {
      is the writer's own guard behind it. */
   if (!item || oilBlanketOn(di)) return false
   const dec = decOf(di)
-  const wasOn = oilItemOn(di, item)
+  const wasOn = !oilItemMasked(di, item)
   if (wasOn) { dec.items = dec.items || {}; dec.items[item] = 0 }
   else if (dec.items) delete dec.items[item]
   tidy(di)
@@ -371,7 +391,7 @@ export function toggleOilPerson(di: any, person: any, item: string): boolean {
      The guard sits BEFORE decOf so a masked tap does not even mint an empty
      record. The board refuses the gesture and says which mask is on; this is the
      writer's own belt, so no future caller can repeat it. */
-  if (!oilItemOn(di, item)) return false
+  if (oilItemMasked(di, item)) return false
   const dec = decOf(di)
   const want = !oilPersonOn(di, person, item)
   const dflt = itemDefaultFor(evOf(di), String(person), item)
@@ -488,7 +508,7 @@ export function oilItemCellHTML(di: any, item: string, name: any, cls: string): 
     }
     return `<span class="${cls} oilitem none" title="Nothing on this row can earn OIL, so there is nothing to switch off">${esc(txt) || '&nbsp;'}</span>`
   }
-  const on = oilItemOn(di, item)
+  const on = !oilItemMasked(di, item)
   const blanket = oilBlanketOn(di)
   return `<span class="${cls} oilitem${on ? ' on' : ' off'}" data-oilitem="${esc(item)}" data-oilday="${+di}"`
     + ` title="${blanket ? 'Nothing on this day earns — the day blanket is on' : on ? 'Earns OIL — tap to stop this item earning' : 'Earns nothing — tap to let it earn again'}">${esc(txt) || '&nbsp;'}</span>`
@@ -533,7 +553,7 @@ export function oilSeatHTML(di: any, person: any, item: string, pk: (oil: any) =
      tap could only destroy the decision the mask was hiding. It keeps the man's
      day figure, because he may still be earning from other events; what it loses
      is the tap target and the lie. */
-  if (!oilItemOn(di, item)) {
+  if (oilItemMasked(di, item)) {
     const why = oilBlanketOn(di) ? 'nothing on this day earns' : 'this event earns nobody'
     return `<span class="seat oilpk inert" title="${esc(p.cs)} — ${why}, so this cannot be changed here">`
       + pk({ on: false, amt: oilFigureFor(di, person, item) }) + `</span>`
