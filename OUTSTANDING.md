@@ -897,7 +897,8 @@ half of D36** — availability stays narrow (he IS available) precisely because 
 to SURFACE the clash, not to remove him from the list. Do not let this item drift into "filter him
 out"; that is the change D36 refuses.
 
-**MOCK-UP BUILT 22 Sep 26** — `raptor-port/docs/mock/allavail-window.html`, a working comp in the
+**MOCK-UP BUILT AND APPROVED 22 Sep 26 (D41 — "that mock up looks good"). IT IS THE DESIGN OF
+RECORD; changing it now needs his word.** `raptor-port/docs/mock/allavail-window.html`, a working comp in the
 app's OWN stylesheet (it drags, resizes, and the schedule behind it scrolls and types). Also published
 as an Artifact for him: <https://claude.ai/artifact/3kHfkdRobBjgtmhnyGvkdi>. **He reviewed it across
 three rounds and ruled four times: D39** — one puck per row at every width, and the counter chip drops
