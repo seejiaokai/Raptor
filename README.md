@@ -6,8 +6,7 @@ validation engine that flags crew-rest breaches, double bookings, missing
 briefs and qualification problems, plus an amendment (AL) workflow for
 publishing changes after a day has been signed off.
 
-**Live:** https://seejiaokai.github.io/Raptor/ — sign in with `a` / `a`
-(admin) or `user` / `user` (squadron member).
+**Live:** https://seejiaokai.github.io/Raptor/
 
 A member is not view-only: they add, edit and delete their own personal
 inputs and tick the qualifications they hold. Building the programme —
@@ -15,7 +14,12 @@ accepting an input into it, the Edit Schedule page, editing quals and
 the rules — stays admin.
 
 Demo data only. There is no server — the schedule lives in each browser's
-own localStorage, and the login is a prototype gate, not security.
+own localStorage, and the login is a prototype gate, not security. The
+accounts are hard-coded and the site is public, so nothing here is protected
+by signing in; the credentials are deliberately not printed — not on the
+sign-in card (owner, 24 Aug 26) and, since 23 Sep 26, not here either. They
+had also gone stale, which is how this was noticed: this file still named a
+pair that stopped working a month ago.
 
 ## Running it
 
