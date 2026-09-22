@@ -41,12 +41,15 @@ This is D14's substance, and it applies to every doc, every commit message and e
   long session persists its working context — a handoff, a context doc, a closing note — it writes
   the decisions, the state and the next step, not the conversation. The repo must not bloat.
 
-## 3. Prune on write
+## 3. Prune in its own pass — never inside a fix
 
-**Touching a document means leaving it no longer than you found it, unless the addition is a live
-rule.** Every edit: find one stale line and remove it. A resolved item leaves; a superseded ruling
-becomes a one-line pointer to what replaced it; a "how it was found" story goes to the commit
-message, which is where history belongs.
+**SUPERSEDED 23 Sep 26 (D29 rule 3, [DOCS-GUARD]):** this section used to say "prune on write" —
+every edit leaves the file no longer than it found it. Pruning under the pressure of another change
+is what destroyed two filed items on 22 Sep 26, so it is withdrawn. Now: **a change that touches
+`raptor-port/src` never trims a document**; if a file is over budget the gate reports it as deferred.
+Trimming is its own docs-only pass. In that pass: finished backlog items MOVE to
+`OUTSTANDING-ARCHIVE.md` (never deleted); a superseded ruling becomes a one-line pointer to what
+replaced it; a "how it was found" story goes to the commit message, where history belongs.
 
 Stale is worse than absent — the next session trusts it.
 

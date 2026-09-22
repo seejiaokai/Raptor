@@ -452,7 +452,7 @@ be reported as ready for "merge live". Silence is not an option the format allow
 change, measured line by line against the base — a heading count cannot see a body that was cut or
 doubled. The second says whether the files are within their line budgets:
 
-`Docs: OUTSTANDING <n> items (+<a> −<b>, −<b> all in ARCHIVE) · DECISIONS D<x>–D<y>`
+`Docs: OUTSTANDING <n> items (+<a> −<b>, −<b> all in ARCHIVE) · DECISIONS D<x>–D<y> · homes OK`
 `docsize: OK` — or `docsize: OVER by <n>, deferred (D29)` on a change that touches `raptor-port/src`.
 
 The second value is LEGAL: a code change is never the place to trim the docs (D29 rule 3), so being

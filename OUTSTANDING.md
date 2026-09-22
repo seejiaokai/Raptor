@@ -8,8 +8,13 @@ lose it" list.
 item).
 
 > ## Maintaining this file — do this every time it's touched
-> - **Completed** → move the item to **Done** at the bottom, with the date and a
->   one-line "how it was resolved."
+> **The three D29 rules (owner, 22 Sep 26), enforced by `npm run docsize` in CI and a Stop hook:**
+> 1. **Finished work LEAVES this file** for `OUTSTANDING-ARCHIVE.md` — moved whole, never deleted,
+>    never summarised on the way. (Supersedes "move the item to Done at the bottom".)
+> 2. **A ruling never lives only here.** It gets a D-number in `DECISIONS.md` and a real home.
+> 3. **Never trim this file inside a code change.** Over budget there is deferred; the trim is its
+>    own docs-only pass.
+> - **Item ids are UNIQUE.** A second heading for the same work gets its own id.
 > - **Deferred again / changed** → update the item's status and note why, and
 >   adjust its place in the priority list.
 > - **Re-order the priority list whenever items change** — by *logical* order,
@@ -596,15 +601,15 @@ rules about posted-out and pre-joining rows. Several older documents still read 
 - Came out of it and now standing: the behaviour register, `npm run rulecheck`, the rules-first red
   team as a third review, and the CLAUDE.md standing order to sweep the rules and hand-test against
   them on every build.
-- **TWO NEW OWNER RULINGS, NOT YET BUILT** — `specs/2026-09-20-NEXT-TASK-oil-award-and-oil-warning.md`
-  is the whole task, written for a fresh session: (1) an OIL AWARD stops flagging a leave day (he did
+- **TWO OWNER RULINGS — BUILT 21 Sep 26** (D64/D65, register N13/N14;
+  `specs/2026-09-20-NEXT-TASK-oil-award-and-oil-warning.md` is the record): (1) an OIL AWARD stops flagging a leave day (he did
   NOT rule on `duty` — ask), and (2) warn, on the day AND at publish, when a worked weekend earns
   nobody anything because the duty desk has no times. The second came from him testing DASH on SDO
   for Sun 16 Aug and getting no credit.
 - **Both things that were to be put to the owner are ANSWERED AND BUILT.** The ruling to carry
   forward: **OIL may be credited by hand on ANY day** — the weekend/public-holiday restriction
   belongs to the AUTOMATIC pass, which reads the published schedule, not to a credit the squadron
-  types itself.
+  types itself (D63, register N11).
 
 ### [DOC-TRIM] The repo is too heavy to read (owner, 21 Sep 26 — D14)
 **His words: "theres going to be alot of context for the AI to read ... reading so much context
@@ -974,7 +979,10 @@ half — duty and commitments must reduce the Leave War manning).
 the day's 1. The two are INDEPENDENT: what the schedule earns is never changed by what a person
 typed, and what a person typed is never changed by the schedule.
 
-**What the app does today (wrong under this ruling).** One credit record per person per day. When
+**BUILT — PR #423, 21 Sep 26; ruling D66, register N16.** Everything below is the reasoning as it
+stood BEFORE that build, kept for why; it does not describe the app now.
+
+**What the app did then (wrong under this ruling).** One credit record per person per day. When
 the schedule earns a credit on a day that already holds an award, it TAKES THE AWARD OVER in place
 and stashes it in a snapshot for the unpublish hand-back. Since 21 Sep it keeps the LARGER of the
 two (3), which was the safe reading of a defect Fable found — before that fix it kept only the

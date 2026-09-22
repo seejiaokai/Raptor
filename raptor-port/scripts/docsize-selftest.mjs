@@ -71,5 +71,11 @@ scenario('over a ceiling inside a code change is deferred, not failed', false, c
 scenario('a ceiling moved in a commit that also touches src', true, c => { c.edit('raptor-port/scripts/docsize.mjs', t => t.replace("['DECISIONS.md',                       1,  150,", "['DECISIONS.md',                       1,  400,")); c.edit('raptor-port/src/app.ts', t => t + 'export const b = 2\n'); c.commit('sneak') }, { mustSay: 'touches raptor-port/src' })
 scenario('a ceiling moved in a docs-only commit', false, c => { c.edit('raptor-port/scripts/docsize.mjs', t => t.replace("['DECISIONS.md',                       1,  150,", "['DECISIONS.md',                       1,  400,")); c.commit('raise, with its reason') })
 
+const addRow = (c, home) => c.edit('DECISIONS.md', t => t.replace('|---|---|---|---|\n', `|---|---|---|---|\n| D3 | c | c | ${home} |\n`))
+scenario('a new ruling whose home does not exist (F6)', true, c => addRow(c, '`docs/nowhere.md`'), { mustSay: 'no such file exists' })
+scenario('a new ruling naming a home this change never wrote (D29\'s own defect)', true, c => addRow(c, '`OUTSTANDING.md`'), { mustSay: 'does not touch that file' })
+scenario('a new ruling whose home was written in the same change', false, c => { addRow(c, '`OUTSTANDING.md`'); c.edit('OUTSTANDING.md', t => t + '\nThe ruling D3, carried here.\n') })
+scenario('a new ruling with only a future home ("on build:")', false, c => addRow(c, 'this file; on build: `OUTSTANDING.md`'))
+
 console.log(failed ? `\nSELFTEST FAILED — ${failed} scenario(s) not caught as designed.` : '\nselftest OK — every scenario behaved as designed.')
 process.exit(failed ? 1 : 0)

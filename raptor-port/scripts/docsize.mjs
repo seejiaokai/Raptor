@@ -15,7 +15,8 @@
  *   - a long line now appears more times than it did (this catches doubling).
  * A deliberate exception is declared in a commit message, never in this file:
  *   `Docs-guard-allow: [ITEM-ID]` (lost or duplicated on purpose), `archive-lines`,
- *   `duplicate-lines` — or, before committing, DOCSGUARD_ALLOW=... in the environment.
+ *   `duplicate-lines`, `homes` — or, before committing, DOCSGUARD_ALLOW=... in the environment.
+ * It also reads the home every DECISIONS.md row claims (F6) — job 1b below.
  *
  * JOB 2, THE CEILINGS (F3) — a line budget per always-read file. It must NEVER demand a trim inside
  * a code change (D29 rule 3): a squeeze inside a money change is what made the 22 Sep destruction
@@ -200,6 +201,46 @@ function inventory(allow) {
   return { fails, warns, docsLine }
 }
 
+/* ---------- job 1b: the homes of the rulings (F6) ---------- */
+/* D29's row claimed two homes that did not carry it — the "comment that vouches", committed by the
+   entry written to stop exactly that. So every `| D<n> |` row's last cell is read: each backticked
+   thing that looks like a file must exist, and a row ADDED in this change must have every file it
+   names touched by this change too (a home you did not write is not a home). Paths after "on
+   build:" name a future home and are only checked for existence. Memory entries have no path and
+   are not checked. `Docs-guard-allow: homes` for a deliberate exception. */
+const PATHLIKE = /\/|\.(md|mjs|cjs|js|ts|tsx|sh|json|ya?ml|html|css)$/
+function homes(paths, allow) {
+  const fails = []
+  if (allow.has('homes')) return { fails, ok: true }
+  const all = [...(tryGit('ls-files') || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard') || '').split('\n')].filter(Boolean)
+  const changed = new Set(paths)
+  const resolve = tok => {
+    /* `…/x`, a bare `x.ts` and a folder `…/briefs/` are all shorthand the rows really use */
+    const tail = tok.replace(/^(…|\.\.\.)\//, '').replace(/^(\.\.?\/)+/, '')
+    const bySuffix = () => all.filter(f => tail.endsWith('/') ? ('/' + f).includes('/' + tail) : (f === tail || f.endsWith('/' + tail)))
+    if (tail !== tok.replace(/^(\.\.?\/)+/, '') || !tail.includes('/')) return bySuffix()
+    for (const pre of ['', 'raptor-port/', 'raptor-port/src/', 'raptor-port/docs/', 'raptor-port/docs/superpowers/'])
+      if (existsSync(join(REPO, pre + tail))) return [pre + tail]
+    return bySuffix()
+  }
+  const baseRows = new Set([...readBase(DECISIONS).matchAll(/^\| (D\d+) \|/gm)].map(m => m[1]))
+  for (const line of splitLines(readNow(DECISIONS))) {
+    const m = /^\| (D\d+) \|/.exec(line)
+    if (!m) continue
+    const cells = line.split(' | '), home = cells[cells.length - 1]
+    const isNew = !baseRows.has(m[1]), future = home.search(/on build:/i)
+    for (const tm of home.matchAll(/`([^`]+)`/g)) {
+      const tok = tm[1].trim()
+      if (!PATHLIKE.test(tok) || /[{}*<>\s]/.test(tok)) continue
+      const hit = resolve(tok)
+      if (!hit.length) { fails.push(`${m[1]} names \`${tok}\` as a home, and no such file exists`); continue }
+      if (isNew && (future < 0 || tm.index < future) && !hit.some(h => changed.has(h)))
+        fails.push(`${m[1]} is new and names \`${tok}\` as a home, but this change does not touch that file — write the ruling there too`)
+    }
+  }
+  return { fails, ok: !fails.length }
+}
+
 /* ---------- job 2: the ceilings ---------- */
 const lines = t => { let n = 0; for (let i = 0; i < t.length; i++) if (t.charCodeAt(i) === 10) n++; return n }
 const ROW_RE = /^\s*\['([^']+)',\s*(\d+),\s*(\d+),\s*(\d+)\],?/gm
@@ -261,7 +302,8 @@ console.log(`docsize — measured against ${BASE ? BASE.slice(0, 8) : 'NOTHING (
 if (allow.size) console.log(`  declared exceptions: ${[...allow].join(', ')}\n`)
 
 const inv = inventory(allow)
-let failures = inv.fails.map(f => `inventory: ${f}`)
+const hm = homes(paths, allow)
+let failures = [...inv.fails.map(f => `inventory: ${f}`), ...hm.fails.map(f => `homes: ${f}`)]
 for (const w of inv.warns) console.log(`  note: ${w}`)
 
 let docsizeLine = null
@@ -272,14 +314,14 @@ if (!INVENTORY_ONLY) {
   docsizeLine = c.fails.length ? `docsize: OVER by ${c.fails.length} file(s) — FAIL` : c.deferred.length ? `docsize: OVER by ${c.deferred.reduce((a, b) => a + b, 0)}, deferred (D29)` : 'docsize: OK'
 }
 
-console.log(`\n${inv.docsLine}`)
+console.log(`\n${inv.docsLine} · homes ${hm.ok ? 'OK' : 'FAIL'}`)
 if (docsizeLine) console.log(docsizeLine)
 
 if (failures.length) {
   console.error(`\nFAIL — ${failures.length} problem(s):`)
   for (const f of failures) console.error(`  - ${f}`)
   console.error('\nIf a record was lost, restore it from the base (git show <base>:OUTSTANDING.md) — never "fix" the check.')
-  console.error('If the change is deliberate, say so in the commit: Docs-guard-allow: [ITEM-ID] | archive-lines | duplicate-lines.')
+  console.error('If the change is deliberate, say so in the commit: Docs-guard-allow: [ITEM-ID] | archive-lines | duplicate-lines | homes.')
   console.error('A file over its ceiling on a docs-only change: this change is the trim pass. Raising a ceiling is a')
   console.error('deliberate edit here, with its reason in the commit, in a commit that touches no raptor-port/src.')
   process.exit(1)
