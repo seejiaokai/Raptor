@@ -513,13 +513,19 @@ export function oilSeatDeco(di:any,id:any,key:any,itemOf?:string):{oil:any;chip:
        not a promise that they will be there. */
     const some=sum.earns&&sum.bar==null&&sum.earn>0;
     const txt=sum.unrecorded?'?':some?`${sum.earn} of ${sum.n} earn`:String(sum.n);
+    /* WHICH ANSWER IS THIS ([OIL-SEATS-CAN-EARN] step 10, D37)? Since step 9 the
+       same puck can show two different numbers — the list the day went out with,
+       and the list as things stand today. A number that does not say which is
+       worse than no number, because the scheduler cannot tell whether he is
+       reading a record or a live count. One phrase, used here and on the tap. */
+    const from=ver?' (who was free when this day was issued)':' (who is free as things stand now)';
     const ttl=sum.unrecorded
       ?'This schedule was issued before the app kept a record of who was behind this puck'
-      :!sum.earns
+      :(!sum.earns
         ?`${sum.n} with nothing else on at that time — tap to see them`
         :some?'Some of these men earn OIL and some do not — tap to see each one'
           :sum.bar?`All ${sum.n} earn ${sum.bar==='FO'?'a full day':'half a day'} — tap to see each one`
-            :`None of these ${sum.n} earn OIL today — tap to see each one`;
+            :`None of these ${sum.n} earn OIL today — tap to see each one`)+from;
     return {oil:sum.bar?{bar:sum.bar}:null,
       chip:`<span class="oilcount${some?' some':''}" data-oilsent="${esc(item)}" data-oilday="${+di}" data-oilver="${esc(ver)}" title="${esc(ttl)}">${txt}</span>`};
   }

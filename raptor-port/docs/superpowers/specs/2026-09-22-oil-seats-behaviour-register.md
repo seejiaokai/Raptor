@@ -9,7 +9,7 @@ Built against the plan at
 a ruling with no row here has not been built yet, and that is the point of the
 blank.
 
-**Status: steps 1–9 built.** Steps 10–11 outstanding.
+**Status: every step built (1–11).** What is left is the WALK, then the two code reads, then the owner's look.
 
 ---
 
@@ -37,6 +37,9 @@ blank.
 | **D32** | One list: wherever a puck may land, the switch must also be offered. | steps 3–4 for the exempt kinds; the rest is step 9 | `engine/oilexempt.test.ts` |
 | **D27** | The count shows on every seat, on every day, with the earn mode off — a placeholder dropped anywhere says how many would attend. | step 9a | `ui/oilcount.test.tsx`, `engine/oilsent.test.ts` |
 | **D37** | It reads as what it is — the men with nothing else on at that time — and on a day that earns nothing it does not mention OIL at all. | step 9a | `ui/oilcount.test.tsx` |
+| **D37, which answer** | The count says WHICH list it is — who was free when the day was issued, or who is free as things stand now — and the chip and its tap use the same words for it. | step 10 | `ui/oilwords.test.tsx` |
+| **D31, in plain words** | A row the app has not saved yet says so in the squadron's words, not in the app's. | step 10 | `ui/oilwords.test.tsx` |
+| **[OIL-UNDO-WORDS]** | Undo names an OIL decision as an OIL decision. Taking a man off an event is not a change to the schedule — the mode exists so the schedule cannot move. | step 11 | `undo/oilundo.test.ts` |
 | **D44** | Who was behind a puck is written down when the day is published, on every day. The issued page keeps that list; the working copy shows today's. A schedule issued before the app kept the record says so rather than having an answer invented for it. | step 9a | `engine/oilsent.test.ts`, `ui/oilcount.test.tsx` |
 | **D44, the tap** | The chip carries the version it was drawn in, so tapping an issued page lists the men that page went out with — not whoever is free now. | step 9a | `ui/oilcount.test.tsx` |
 | **D44, the mark** | When the crowd behind a puck on a published day is no longer what it went out with, the day reads as having something pending — on every day, not just a weekend — and the scheduler amends or publishes the end-of-day version. | step 9b | `engine/oilmembership.test.ts` |

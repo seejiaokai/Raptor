@@ -48,6 +48,7 @@ import { DAYS } from '../engine/data'
 import { INPUTS, inpId } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
+import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
 import { envMin, uniformOil, dayOilWork, oilCapableItems, rowItemKey, groundItemKey, inputItemKey, type OilWork } from '../engine/oil'
 import { landedExtras, oilEvidence, oilEvidenceOf, oilEarnedWork, oilInputEligible, oilSentOf, personDecision, itemMasked, itemMark, itemState, spanDefault, type OilEvidence, type OilDecisions } from '../engine/oilev'
 import { OILDAY, setOilDay, afterSchedMutate, esc } from '../state/view'
@@ -383,10 +384,13 @@ export function clearOilPersonDecisions(person: string, item: string): number {
  *  and person mark rather than deleting them, so turning it off brings them all
  *  back exactly as they were. */
 export function setOilBlanket(di: any, on: boolean): void {
-  const dec = decOf(di)
-  if (on) dec.blanket = 1; else delete dec.blanket
-  tidy(di)
-  afterSchedMutate()
+  /* through the OIL command, not the mutation backstop — see SCHED_TYPES.oil */
+  schedWrite(SCHED_TYPES.oil, () => {
+    const dec = decOf(di)
+    if (on) dec.blanket = 1; else delete dec.blanket
+    tidy(di)
+    afterSchedMutate()
+  })
 }
 
 /** Toggle a whole ITEM (§2.1 item 5). Marked items are stored, unmarked ones are
@@ -396,6 +400,9 @@ export function toggleOilItem(di: any, item: string): boolean {
      under it must not rewrite one. The board already refuses this gesture; this
      is the writer's own guard behind it. */
   if (!item || oilBlanketOn(di)) return false
+  /* the guards above run OUTSIDE the command so a refused tap mints no entry at
+     all; everything that writes runs inside it (see SCHED_TYPES.oil) */
+  schedWrite(SCHED_TYPES.oil, () => {
   const dec = decOf(di)
   /* THE CYCLE, AND WHY IT HAS FOUR STOPS RATHER THAN TWO (Fable R2-2).
      This only ever wrote `0` or deleted, so there was no stored value that meant
@@ -421,6 +428,7 @@ export function toggleOilItem(di: any, item: string): boolean {
   }
   tidy(di)
   afterSchedMutate()
+  })
   return !oilItemMasked(di, item)
 }
 
@@ -442,15 +450,19 @@ export function toggleOilPerson(di: any, person: any, item: string): boolean {
      record. The board refuses the gesture and says which mask is on; this is the
      writer's own belt, so no future caller can repeat it. */
   if (oilItemMasked(di, item)) return false
-  const dec = decOf(di)
   const want = !oilPersonOn(di, person, item)
-  const dflt = effectiveDefault(di, evOf(di), String(person), item)
-  dec.people = dec.people || {}
-  const k = `${person}|${item}`
-  if (want === dflt) delete dec.people[k]
-  else dec.people[k] = want ? 'allow' : 'deny'
-  tidy(di)
-  afterSchedMutate()
+  /* the read above and the guards before it run OUTSIDE the command; only the
+     write is inside it, so a refused tap leaves nothing to undo */
+  schedWrite(SCHED_TYPES.oil, () => {
+    const dec = decOf(di)
+    const dflt = effectiveDefault(di, evOf(di), String(person), item)
+    dec.people = dec.people || {}
+    const k = `${person}|${item}`
+    if (want === dflt) delete dec.people[k]
+    else dec.people[k] = want ? 'allow' : 'deny'
+    tidy(di)
+    afterSchedMutate()
+  })
   return want
 }
 
@@ -524,7 +536,9 @@ export function dayBarHTML(di: any, tplBtn: string, canEdit = true): string {
  *  disabled box cannot be tapped. */
 export function oilItemCellHTML(di: any, item: string, name: any, cls: string): string {
   const txt = String(name || '').trim()
-  if (!item) return `<span class="${cls} oilitem none" title="This row has no identity yet — save the day and it can be marked on its own">${esc(txt)}</span>`
+  /* PLAIN WORDS FOR A PLAIN FACT (step 10, D31). This used to say "This row has
+     no identity yet", which is the app talking to itself about its own data. */
+  if (!item) return `<span class="${cls} oilitem none" title="This row has not been saved yet — once the day is saved it can be switched on its own">${esc(txt)}</span>`
   /* AN EVENT THAT CAN NEVER EARN OFFERS NO SWITCH (Fable, 21 Sep 26). The switch
      used to be drawn on every row with an id, so an AVALON line, its desk, an SC
      spare, a cancelled row, an ⓘ row and a desk with no written times all read
@@ -811,12 +825,18 @@ export function oilSentinelList(di: any, item: string): string {
      (Fable correction 2). */
   if (got.state === 'unrecorded') return 'This schedule was issued before the app kept a record of who was behind this puck'
   const people = got.people
-  if (!people.length) return 'Nobody is free for this at that time'
+  /* THE SAME PHRASE THE CHIP ABOVE USES (step 10, D37): which of the two answers
+     this is. Inside an issued document DAYS[di] IS the snapshot, so the block
+     carried on the day is what says so — no second source to drift from. */
+  const from = (DAYS[+di] && (DAYS[+di] as any).oilev)
+    ? ' — who was free when this day was issued'
+    : ' — who is free as things stand now'
+  if (!people.length) return 'Nobody is free for this at that time' + from
   /* on a day that earns nobody anything there are no figures to give — the
      names ARE the answer (D37) */
-  if (!ev.earns) return `${people.length} with nothing else on at that time — ${people.map(p => ((PEOPLE as any)[p] || {}).cs || p).join(', ')}`
+  if (!ev.earns) return `${people.length} with nothing else on at that time${from}: ${people.map(p => ((PEOPLE as any)[p] || {}).cs || p).join(', ')}`
   /* each man as THIS ROW earned him, so the list and the chip above it agree */
   const say = people.map(p => { const a = oilFigureFor(di, p, item)
     return `${((PEOPLE as any)[p] || {}).cs || p} ${a === 'FO' ? 'full day' : a === 'HO' ? 'half day' : 'nothing'}` })
-  return `${people.length} behind this puck — ${say.join(', ')}`
+  return `${people.length} behind this puck${from} — ${say.join(', ')}`
 }

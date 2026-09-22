@@ -812,7 +812,15 @@ Full findings and exact fix steps:
 `raptor-port/docs/superpowers/specs/2026-09-22-backlog-process-attack.md`.
 Rulings: `DECISIONS.md` D29 (the three rules) and **D30** (this order).
 
-### [OIL-UNDO-WORDS] Undo says "a change to the schedule" when it took back an OIL decision (22 Sep 26)
+### [OIL-UNDO-WORDS] — DONE 22 Sep 26, folded into [OIL-SEATS-CAN-EARN] step 11 (NOT merged)
+
+**Resolved:** an OIL decision is now its own command (`sched.oil`) rather than riding the catch-all
+mutation backstop, so the one central describer names it "an OIL decision". Pinned by
+`raptor-port/src/undo/oilundo.test.ts`, which installs the real timeline and reverses a real
+decision. Holding on the branch with the rest of the change until the owner says "merge live".
+The original entry follows.
+
+
 
 Found in the walk while proving fix 5's boundary. Inside OIL Earn, the first two presses of the
 board's Undo correctly reverse the OIL decisions — and each says **"Undid: a change to the
