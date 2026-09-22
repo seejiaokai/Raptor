@@ -1,6 +1,6 @@
 # [OIL-SEATS-CAN-EARN] — the plan, REWRITTEN after round 1 (22 Sep 26)
 
-**Status: ROUND 2 FOLDED IN. Awaiting one targeted check, then buildable.** Two rounds, both
+**Status: BUILDABLE. Two rounds plus a targeted check of the fold, all folded in.** Two rounds, both
 providers, independently and blind to each other. **Round 1:** Fable 7 must-fix + 9 should-fix,
 Codex 7 (4 high) — four changed the plan's SHAPE. **Round 2, on the rewrite:** Codex 5 (4 high),
 Fable 5 must-fix + 4 should-fix — and **three of Codex's five were errors the host introduced while
@@ -191,14 +191,30 @@ version as the record of what actually happened**, so that pending mark is the S
 runs on, not noise — and a change in who was available IS something that happened.
 
 **So Codex OSE-05 was right and the host was wrong.** Membership becomes a first-class snapshot
-value: recorded on every publication, inside the signature binding and the amendment comparison.
+value, **recorded on every publication and inside the PUBLICATION COMPARISON — but NOT inside the
+signature binding** (D45; the fold got this wrong, carrying Codex's round-1 remedy whole while the
+owner had rejected half of it. Caught by the targeted check, OSE-T-03, and it was executable rather
+than cosmetic — the key used for signature binding already includes membership, so an
+availability-only change would have invalidated a signature the owner said it must not). **Two
+projections, not one:** the publication comparison carries membership on every day; the signature
+projection excludes an availability-only membership change while still invalidating on a changed OIL
+decision or anything else approval-relevant.
 **Fable's R2-3 fix 1 is superseded** — do NOT record membership "only where it is money-bearing".
 **Fable's correction 1 still holds and is exactly the owner's own description:** frozen in the
 ISSUED version, live on the WORKING copy, the difference showing as the pending mark. **Fable's
 correction 2 still holds:** one resolver behind all four readers
-(`oilSentinelSummary`, `oilSentinelList`, `oilSentinelPeople`, `oilRowPeople`) — the frozen entry if
-present, else live — or the chip says 27 and the tap says "Nobody is behind this puck on this day".
-**And the chip must carry its version** (Codex OSE-R2-05), or the frozen promise dies on the tap.
+(`oilSentinelSummary`, `oilSentinelList`, `oilSentinelPeople`, `oilRowPeople`), or the chip says 27
+and the tap says "Nobody is behind this puck on this day". **And the chip must carry its version**
+(Codex OSE-R2-05), or the frozen promise dies on the tap.
+
+**But the resolver is NOT "frozen if present, else live" — that would break D44 on the snapshots
+that already exist** (OSE-T-02). A non-earning day records an EMPTY membership today, and older
+issued duty and sim placeholders have no entry at all; falling back to live would let an ISSUED
+version change its own count when someone files leave, which is the one thing D44 forbids. **So the
+resolver takes an explicit issued-or-working context.** Working copy → resolve live. Issued → the
+recorded list, and where a historical snapshot recorded none, say **"membership not recorded"** and
+leave the existing credit semantics alone until it is re-issued. **Live availability is never
+substituted into an issued version.**
 
 **Second time the owner's knowledge of the PROCESS corrected the agent's reasoning about the code.**
 D36 was the first — see §5a, whose lesson is now twice-earned.
@@ -210,9 +226,18 @@ cockpit placeholder briefly starts earning (Fable M4, which reordered the origin
 
 1. **Consolidate the earn rule onto the EVIDENCE, as the TWO functions §4 names**, and **memoise
    here, not at step 9** (Fable R2-7): the mode's check is O(1) today off the live day; on the
-   evidence it builds the whole block per call, and it is called per row and per puck. Memoise
-   `oilEvidence(di)` and `oilDaySpans(di)` on (day identity, store version). No behaviour change —
-   prove it by deleting the duplicate and watching the suite stay green.
+   evidence it builds the whole block per call, and it is called per row and per puck.
+   **BUT NOT keyed on (day identity, store version)** — that is unsafe and would break this step's
+   own "no behaviour change" claim (OSE-T-01). The day is mutated IN PLACE and the version only
+   advances at notify, while the post-mutation epilogue runs VALIDATION first — and validation asks
+   whether the day would earn. A cache filled by the previous paint would answer with the pre-change
+   evidence, so switching off the last earning item could leave an obsolete OIL warning standing.
+   **So: the authoritative calculation stays uncached through mutation, validation, signing and
+   publication, and the cache lives inside an explicit read-only render pass** — or, if one cache is
+   preferred, an invalidation generation advanced before the first post-mutation read, with this step
+   naming that boundary rather than leaning on the notify version. Prove it by priming the cache,
+   toggling the last earning item, and checking the evidence AND the validation before notify runs —
+   plus undo and snapshot rendering.
 2. **The placement refusal** (D33), preflighted per §4, with its reason on every door: drag, armed
    placement, the swap's both ends, and the palette's placeholder row. Plus the non-expanding belt on
    the flying branch. **This ships before step 5.**
@@ -252,10 +277,11 @@ cockpit placeholder briefly starts earning (Fable M4, which reordered the origin
    from weekend-in-mode to every day, every seat, every repaint (memo landed at step 1), so it must
    cite `docs/performance.md` Part 1 and keep the chip as the tap target (Fable S4, S7).
    **ONE RESOLVER behind all four readers** — `oilSentinelSummary`, `oilSentinelList`,
-   `oilSentinelPeople`, `oilRowPeople` — frozen entry if present, else live (Fable correction 2), or
-   the chip says 27 and the tap says "Nobody is behind this puck on this day". **And the chip must
-   carry its VERSION** (Codex OSE-R2-05): the snapshot is installed only while the HTML is generated,
-   so a tap re-reads live evidence and an issued day can show one number and list another.
+   `oilSentinelPeople`, `oilRowPeople` (Fable correction 2), or the chip says 27 and the tap says
+   "Nobody is behind this puck on this day". It takes an **issued-or-working context** and never
+   falls back to live inside an issued version (OSE-T-02). **And the chip must carry its VERSION**
+   (Codex OSE-R2-05): the snapshot is installed only while the HTML is generated, so a tap re-reads
+   live evidence and an issued day can show one number and list another.
 10. **The wording pass** — the refusal (D31) and the count (D37), which must say whether it is the
     issued list or the live one. The switch's five titles shipped at step 3. One vocabulary, read
     side by side on the same screens.
@@ -304,13 +330,17 @@ been holed three times. The claim is deleted rather than re-qualified.** What is
   own before/after test.**
 - **Steps 4–5 change the amendment BOOK, not the money** (Fable R2-3): an issued day gains a live
   membership entry the frozen block lacks, so it reads pending. Correct under D44/D45 — and it is a
-  NAMED EXPECTATION here, because the walk would otherwise report it as a defect. Its variant on an
-  exempt desk (an amendment offered for a decision that moves no money) is the one case to watch.
+  NAMED EXPECTATION here, because the walk would otherwise report it as a defect. **On an exempt desk
+  the same pending mark appears and no credit does** — under D44 the mark follows the membership, not
+  the money, so that is correct rather than the anomaly the rewrite called it.
 - **Lifting the fourth skip** makes existing AVALON desks with a man and no times warn at publish.
   Screen, not money.
 - **The before/after published test is RESTORED**, in the additive direction: publish a Sunday desk
   with the old reader, run the new one, assert the issued credit holds, the day reads pending, and a
-  re-issue moves the money. Exempt-desk variant: no pending, no money.
+  re-issue moves the money. **Exempt-desk variant: PENDING WHEN MEMBERSHIP DIFFERS, and no credit
+  while earning stays off** — not "no pending, no money", which was a leftover of the
+  money-bearing-only rule D44 replaced (OSE-T-04). **Under D44 the pending mark follows the
+  MEMBERSHIP, never the money.**
 
 **Still live:** don't offer a switch where the day cannot measure, or a published day costs a real
 amendment for a decision that moves no money. ALL and ALL AVAIL are two pucks with identical
@@ -428,6 +458,24 @@ findable by driving the app.
 | Fable R2-10 — wording moved too late | §5 step 3 (the switch's five titles ship there) |
 | Fable correction 1 — frozen in the issued version, live on the working copy | §4 — and it is exactly the owner's own description |
 | Fable correction 2 — one resolver behind all four readers | §5 step 9 |
+
+### Targeted check on the fold (not a third round)
+
+The owner capped the rounds and asked for one bounded check of the delta. It **confirmed all five
+round-2 fixes are substantively specified** and found four more — **three the host's own errors in
+the fold, two of those direct contradictions of the owner's own rulings.**
+
+| Finding | Where it now lives |
+|---|---|
+| OSE-T-01 — the memo's invalidation is unsafe: the day is mutated in place, the version advances only at notify, validation runs first | §5 step 1 — uncached through mutation, validation, signing, publication |
+| OSE-T-02 — "frozen if present, else live" lets an ISSUED version change its own count, which D44 forbids | §4 and §5 step 9 — explicit issued-or-working context, "membership not recorded" for a historical gap |
+| OSE-T-03 — the fold still put membership inside the SIGNATURE binding, which D45 rejects, and it was executable | §4 — two projections: comparison yes, signature no |
+| OSE-T-04 — "exempt desk: no pending" is a leftover of the rule D44 replaced | §5 step 8 and §6 — the mark follows membership, not money |
+
+**What this says about the fold, plainly:** the host recorded D44 and D45 correctly in the record and
+then left text contradicting both in the plan. That is the same failure Fable caught at R2-5, in the
+other direction — the ruling written down, the document not made to match. **A ruling is not carried
+by being recorded; it is carried by every document that acts on it.**
 
 **OSE-05/M6 was SETTLED by the owner (D44): frozen everywhere.** The host's contrary arbitration and
 its reversal are both kept in §4, because a reversed call that leaves no trace is how a later session
