@@ -34,7 +34,7 @@ export function flyRef(key:any){const[di,gi,li,ai]=String(key).split('.');
    you drop in. The extras live on the row itself as `more[]` and are addressed
    with an `.xN` suffix on the key the row already had, so amendment marks,
    undo, drag-and-drop and the text funnels all keep working unchanged.
-   A flying line is the one exception — an F-15SG has two seats, so it stays
+   A flying line is the one exception — an F-15 has two seats, so it stays
    FCP + RCP and a third body is refused.
    --------------------------------------------------------------------------- */
 export function rowRef(k:any,a:any){

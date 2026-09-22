@@ -944,7 +944,7 @@ function validateCore(){
     const scPairSeen:any=new Set();
     day.forms.forEach((f:any)=>{
       f.acs.forEach((ac:any)=>{ const p=realP(ac.p),w=realP(ac.w);
-        /* ---- combination matrix (F-15SG Table 1.5-2, owner Aug 5 '26) ----
+        /* ---- combination matrix (F-15 Table 1.5-2, owner Aug 5 '26) ----
            Graded only when the front seat is a CAT A–D or OCU pilot and the
            back seat is a CAT A–D or OCU WSO: an instructor in either seat
            clears the matrix outright — an instructor pilot (IP/IR/FI) flies

@@ -350,7 +350,7 @@ function rejet(html: string): string {
 }
 
 /* Fourth structural divergence, closed the same way. The port grades every
-   properly-seated non-instructor crew through the F-15SG combination matrix
+   properly-seated non-instructor crew through the F-15 combination matrix
    (Table 1.5-2, owner Aug 5 '26); the reference only knows the old two-OCU
    hard rule, and the matrix DOES fire on the seed week (Mon bapster+nick is
    now the crew-solo advisory, Wed krait+wrangler and pike+badger want CO
