@@ -168,8 +168,22 @@ function inventory(allow) {
 
   const liveNowIds = new Set(now.live.map(b => b.id))
   const left = base.live.filter(b => !liveNowIds.has(b.id))
-  for (const b of left) {
-    if (!nowIds.has(b.id) || allow.has(`[${b.id}]`)) continue // already reported as gone, or a declared rename
+  /* Compare what arrived with the item's LAST committed text in the live file, not its text at the
+     base: closing an item with a status line and then moving it is normal, and the edit before the
+     move is an ordinary visible diff. The move itself is what must be exact. */
+  const lastLive = id => {
+    const found = src => blocks(src).find(b => b.id === id)
+    const head = found(tryGit('show', `HEAD:${LIVE}`) || '')
+    if (head) return head
+    for (const c of (tryGit('log', '--format=%H', `${BASE}..HEAD`, '--', LIVE) || '').split('\n').filter(Boolean)) {
+      const b = found(tryGit('show', `${c}~1:${LIVE}`) || '')
+      if (b) return b
+    }
+    return null
+  }
+  for (const b0 of left) {
+    if (!nowIds.has(b0.id) || allow.has(`[${b0.id}]`)) continue // already reported as gone, or a declared rename
+    const b = lastLive(b0.id) || b0
     const missing = nonBlank(b.lines).filter(l => !archNow.has(l))
     if (missing.length) fails.push(`[${b.id}] left ${LIVE} but ${missing.length} of its ${nonBlank(b.lines).length} lines are not in ${ARCHIVE} — truncated on the way? first: "${short(missing[0].trim())}"`)
   }

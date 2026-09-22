@@ -107,8 +107,8 @@ in-flight and risk-reducing** first.
 MERGED AND LIVE.**
 1) **[ALL-AVAIL-WINDOW]** — **NEXT, and ready to build.** The counters it opens from are now live, its
 mock-up is APPROVED and is the design of record (D41), and D38–D41 settle its shape down to the
-pixel. **Do not re-open the design; build to it.** 2) **[DOCS-GUARD]** steps 1–3 DONE 23 Sep 26;
-step 4 waits for the next archive pass. 3) **[HUMAN-RETEST]**. 4) **[DOC-TRIM]** — unblocked now that the OIL scaffolding has become
+pixel. **Do not re-open the design; build to it.** 2) **[DOCS-GUARD]** DONE 23 Sep 26 (archived);
+nothing left. 3) **[HUMAN-RETEST]**. 4) **[DOC-TRIM]** — unblocked now that the OIL scaffolding has become
 archive. 5) The stack resumes at **[DB-STEP]**.
 **Small OIL follow-ups, any time, none blocking:** `[OIL-READ-LEFTOVERS]` (4 items the final reads
 raised and the branch deliberately left), `[STORE-READER-SWEEP]`, `[OIL-REQ-NAMEBOX]`,
@@ -786,21 +786,15 @@ point of view."* He uses it, so his judgment governs. Kept as a RULED item with 
 order §7.6) so a later session cannot rediscover the measurement and "fix" it. Detail: the walk sheet
 §6 item 12.
 
-### [DOCS-GUARD] Nothing detected a destroyed record — steps 1–3 DONE 23 Sep 26; step 4 waits
+### [DOCS-GUARD] Nothing detected a destroyed record — ALL FOUR STEPS DONE 23 Sep 26. CLOSED.
 
-Fable's order (D30), all of it in its order. **Done 23 Sep 26 on `claude/docs-guard`:** step 1
-(F1+F3 — `npm run docsize` now fails a lost, doubled or truncated backlog record by name, runs in CI
-as `docs-guard.yml` and as a Stop hook, and never demands a trim inside a code change), step 2
-(F2+F6 — the texts that ordered trim-on-touch corrected, D72–D75 recorded, every ruling's home
-checked), step 3 (F4 items 1/3/4, F5 items 1–2 — unique ids, true headings, line endings pinned).
-How the gate works: `raptor-port/docs/doc-budget.md` §4.
-
-**Left — step 4, when the next archive pass is actually due, not before:** F5's archive mover
-(`scripts/backlog-archive.mjs <ID>` — refuses a non-unique id, spans to the next heading at either
-level, requires `--homes`, appends bytes, runs the inventory, lists remaining references) and F7
-(D-numbers contiguous and none lost; every `rulecheck` register id exists; decide whether
-`HANDOFF.md`'s open list is a second backlog). Exact steps:
-`raptor-port/docs/superpowers/specs/2026-09-22-backlog-process-attack.md` F5 and F7.
+Fable's order (D30), all of it; step 4 brought forward by the owner's "Ok do it" (D76). Branch
+`claude/docs-guard`. `npm run docsize` fails a lost, doubled or truncated backlog record, a lost or
+doubled D-number, a ruling home that does not exist and a rule-map id with no register entry; it
+runs in CI (`docs-guard.yml`) and as a Stop hook, and never demands a trim inside a code change.
+Finished items move only by `scripts/backlog-archive.mjs`. How it all works:
+`raptor-port/docs/doc-budget.md` §4; what was found and done:
+`raptor-port/docs/superpowers/specs/2026-09-22-backlog-process-attack.md`.
 
 ### [OIL-UNDO-WORDS] — DONE 22 Sep 26, folded into [OIL-SEATS-CAN-EARN] step 11 (NOT merged)
 
