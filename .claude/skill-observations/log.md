@@ -2793,3 +2793,33 @@ tends to carry costs (hidden bugs, undoing the plan's intent) that only resurfac
 **Suggested improvement:** Make HANDOFF-NEXT.md the skill's primary output (the owner's entry point) and session-state.md a short pointer that exists only while something is unfinished — or retire it and update CLAUDE.md's promise.
 
 **Principle:** A handoff file is only useful if it is the one the next reader is actually pointed at; match the owner's entry point, not the skill's historical path.
+
+### Observation 183: A test failing on another test's leftovers can be the product bug, not the test's
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [ALL-AVAIL-WINDOW] bug check — a new unit test failed because the window's footer still carried the previous test's sentence.
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** Phase 1 (root cause) — test-isolation failures
+
+**Issue:** The reflex for a test that fails on state left by an earlier test is to add cleanup to the test. Here the leftover was a real defect — a UI component that is never unmounted kept per-window state in a ref, so the next window a user opened showed the last one's text. The fix was in the product (reset the state where every open/close already passes), and cleanup would have hidden it.
+
+**Suggested improvement:** In Phase 1, add: "When a test fails on state left by a previous test, first ask whether a USER could hit the same carry-over (reopen, navigate, re-login). If yes, it is a product finding — reproduce it as its own test; do not add test cleanup."
+
+**Principle:** Test leakage is evidence about state lifetime; before isolating the test, check whether the product has the same leak.
+
+### Observation 184: Owner wants in-flight notes condensed at the end, as their own commit
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** Long autonomous overnight session; owner warned about context at ~47% and ruled D68 (read fully) and D69 (condense the saved context at the end).
+**Skill:** session-handoff
+**Type:** internal
+**Phase/Area:** Closing a long session — what happens to progress notes written for compaction safety
+
+**Issue:** Writing state into the repo at every clean point keeps a long session compaction-safe, but it leaves a trail of progress notes. The owner asked (D69) that at the end they be summarised down to what the next session needs, in a separate docs-only commit — not left to bloat the repo, and not trimmed inside a fix (D29).
+
+**Suggested improvement:** Add a closing step: "Condense the notes THIS session wrote (progress blocks, working notes) to state + decisions + pointers, as its own docs-only commit, before the handoff is final."
+
+**Principle:** Scaffolding written for resilience has a lifetime; the handoff procedure should end it deliberately.
