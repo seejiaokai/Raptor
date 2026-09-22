@@ -10,6 +10,11 @@ Established 22 Sep 26 by the owner's D29, after a trim made to satisfy the size 
 filed items — one of them a ruling's only home. The live backlog is read at the start of every
 session, so every line there costs every session; this file costs nothing until it is searched.
 
+**Since 23 Sep 26 ([DOCS-GUARD]):** the only way in is `node raptor-port/scripts/backlog-archive.mjs
+<ID> --homes <file>`, and the test for "finished" is no longer the heading's words — every fact a
+later session needs gets a pointer elsewhere FIRST (`OUTSTANDING.md` §Maintaining). The file is
+append-only and the document gate fails any line removed from it.
+
 ---
 
 ### [INP-CSID] Stable ids for personal inputs — DONE (13 Sep 2026, ARCH-STACK 1A item 1)

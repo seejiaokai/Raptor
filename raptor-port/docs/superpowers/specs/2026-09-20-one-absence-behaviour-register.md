@@ -286,7 +286,7 @@ live bids and says so; an admin still gets the instruction, because for him it i
 *Settles:* CURRENT-STATE item A, and with it the reason the duty-cancels-your-bid feature was
 parked — telling the man was the cheap half of that problem.
 
-### N11 — an admin can RECORD that someone worked, on ANY day (DECISIONS D63)
+### N11 — an admin can RECORD that someone worked, on ANY day (DECISIONS D72)
 > "Should we have an option for admin to put FO HO with the ability to input reason, given by.
 > Similar to oil tracker" — and: "the admin can also credit OIL on the leave sheet for convenience.
 > We should enable that even on any day."
@@ -312,7 +312,7 @@ was taken by the posting sheet, which is right nine times out of ten and left hi
 clearing leave that made him open the day. One button through, for that cell only.
 *Settles:* the last asymmetry in N8.
 
-### N13 — an OIL AWARD owes a man a day; it does not say he was at work (DECISIONS D64)
+### N13 — an OIL AWARD owes a man a day; it does not say he was at work (DECISIONS D73)
 > "i want an award of an OIL to stop flagging a leave day. That makes sense." — and, later the
 > same night: "OIL that is credited should just be as simple as he is credited OIL. It shouldn't
 > by default take him as on duty. Affecting the manning present count … It also makes him
@@ -336,7 +336,7 @@ untouched:* the automatic pass — weekend and public-holiday work credits exact
 *Reverses nothing:* N11's "an admin may credit OIL on any day" is what makes the distinction
 necessary, not what it overturns.
 
-### N14 — a worked day that earns nobody anything says so (DECISIONS D65)
+### N14 — a worked day that earns nobody anything says so (DECISIONS D74)
 > "Yes i want a warning." … "I would also like u to give the warning On the day itself, while
 > you're building it And At the moment you publish."
 
@@ -370,7 +370,7 @@ That rule was never about permission: an admin could always close the stage, dec
 nothing else — to change it an admin reopens the war. One not yet approved stays fully editable.
 
 
-### N16 — an award and a worked day ADD UP (21 Sep 26; DECISIONS D66)
+### N16 — an award and a worked day ADD UP (21 Sep 26; DECISIONS D75)
 > "Yes an award and a worked day add up. So it's 4. The auto oil credits don't get affected by
 > manual OIL inputs."
 

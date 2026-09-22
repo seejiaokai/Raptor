@@ -18,30 +18,43 @@ import { execFileSync, spawnSync } from 'node:child_process'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const GATE = join(HERE, 'docsize.mjs')
+const MOVER = join(HERE, 'backlog-archive.mjs')
 
 const item = (id, n) => [`### [${id}] The ${id} item — OPEN`, '', ...Array.from({ length: n }, (_, i) => `Line ${i + 1} of ${id}, long enough to count as a real body line for the doubling check.`), ''].join('\n')
 const LIVE0 = ['# Outstanding', '', '## Items', '', item('ALPHA', 6), item('BRAVO', 6), item('CHARLIE', 6), '## Done', '', item('DELTA', 3)].join('\n')
 const ARCH0 = ['# Archive', '', item('OLD', 3)].join('\n')
+const RULES0 = "const RULES = {\n  X1: 'first rule',\n  X2: 'second rule',\n}\n"
+const REG0 = ['# Register', '', '- **X1** — the first rule.', '', '| X2 | the second rule |', ''].join('\n')
 const DEC0 = ['# DECISIONS', '', '| # | ruling | meaning | home |', '|---|---|---|---|', '| D2 | b | b | `OUTSTANDING.md` |', '| D1 | a | a | `OUTSTANDING.md` |', ''].join('\n')
 
 let failed = 0
-function scenario(name, expectFail, mutate, { mustSay } = {}) {
+/* A throwaway repo holding a tiny backlog, archive, rulings list, rule map and register. */
+function makeRepo(live = LIVE0) {
   const dir = mkdtempSync(join(tmpdir(), 'docsguard-'))
   const g = (...a) => execFileSync('git', a, { cwd: dir, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] })
   const w = (f, t) => { mkdirSync(dirname(join(dir, f)), { recursive: true }); writeFileSync(join(dir, f), t) }
+  g('init', '-q', '-b', 'main')
+  g('config', 'user.email', 'selftest@example.invalid'); g('config', 'user.name', 'selftest'); g('config', 'core.autocrlf', 'false')
+  w('raptor-port/scripts/docsize.mjs', readFileSync(GATE, 'utf8'))
+  w('raptor-port/scripts/backlog-archive.mjs', readFileSync(MOVER, 'utf8'))
+  w('raptor-port/scripts/rulecheck.mjs', RULES0)
+  w('raptor-port/docs/superpowers/specs/x-behaviour-register.md', REG0)
+  w('OUTSTANDING.md', live); w('OUTSTANDING-ARCHIVE.md', ARCH0); w('DECISIONS.md', DEC0)
+  w('raptor-port/src/app.ts', 'export const a = 1\n')
+  w('docs/home.md', 'Where the facts of CHARLIE now live.\n')
+  g('add', '-A'); g('commit', '-q', '-m', 'base')
+  const base = g('rev-parse', 'HEAD').trim()
+  return {
+    dir, base,
+    read: f => readFileSync(join(dir, f), 'utf8'), write: w,
+    commit: (msg) => { g('add', '-A'); g('commit', '-q', '-m', msg) },
+    edit: (f, fn) => w(f, fn(readFileSync(join(dir, f), 'utf8'))),
+  }
+}
+
+function scenario(name, expectFail, mutate, { mustSay } = {}) {
+  const ctx = makeRepo(), dir = ctx.dir, base = ctx.base
   try {
-    g('init', '-q', '-b', 'main')
-    g('config', 'user.email', 'selftest@example.invalid'); g('config', 'user.name', 'selftest'); g('config', 'core.autocrlf', 'false')
-    w('raptor-port/scripts/docsize.mjs', readFileSync(GATE, 'utf8'))
-    w('OUTSTANDING.md', LIVE0); w('OUTSTANDING-ARCHIVE.md', ARCH0); w('DECISIONS.md', DEC0)
-    w('raptor-port/src/app.ts', 'export const a = 1\n')
-    g('add', '-A'); g('commit', '-q', '-m', 'base')
-    const base = g('rev-parse', 'HEAD').trim()
-    const ctx = {
-      read: f => readFileSync(join(dir, f), 'utf8'), write: w,
-      commit: (msg) => { g('add', '-A'); g('commit', '-q', '-m', msg) },
-      edit: (f, fn) => w(f, fn(readFileSync(join(dir, f), 'utf8'))),
-    }
     mutate(ctx)
     const r = spawnSync(process.execPath, ['raptor-port/scripts/docsize.mjs'], { cwd: dir, encoding: 'utf8', env: { ...process.env, DOCSGUARD_BASE: base, DOCSGUARD_ALLOW: '' } })
     const out = r.stdout + r.stderr
@@ -74,11 +87,45 @@ scenario('over a ceiling inside a code change is deferred, not failed', false, c
 scenario('a ceiling moved in a commit that also touches src', true, c => { c.edit('raptor-port/scripts/docsize.mjs', t => t.replace("['DECISIONS.md',                       1,  150,", "['DECISIONS.md',                       1,  400,")); c.edit('raptor-port/src/app.ts', t => t + 'export const b = 2\n'); c.commit('sneak') }, { mustSay: 'touches raptor-port/src' })
 scenario('a ceiling moved in a docs-only commit', false, c => { c.edit('raptor-port/scripts/docsize.mjs', t => t.replace("['DECISIONS.md',                       1,  150,", "['DECISIONS.md',                       1,  400,")); c.commit('raise, with its reason') })
 
+scenario('a ruling number lost from DECISIONS.md (F7)', true, c => c.edit('DECISIONS.md', t => t.replace(/^\| D1 \|.*\n/m, '')), { mustSay: 'D1 is GONE' })
+scenario('a ruling number newly used twice (F7)', true, c => c.edit('DECISIONS.md', t => t.replace('| D2 | b |', '| D1 | b |')), { mustSay: 'D1 now appears 2 times' })
+scenario('a ruling number skipped — a parallel branch holds the range', false, c => { c.edit('DECISIONS.md', t => t.replace('|---|---|---|---|\n', '|---|---|---|---|\n| D9 | z | z | this file |\n')) })
+scenario('a register row deleted while the rule map still names it (F7)', true, c => c.edit('raptor-port/docs/superpowers/specs/x-behaviour-register.md', t => t.replace('- **X1** — the first rule.\n', '')), { mustSay: 'X1 is in' })
+
 const addRow = (c, home) => c.edit('DECISIONS.md', t => t.replace('|---|---|---|---|\n', `|---|---|---|---|\n| D3 | c | c | ${home} |\n`))
 scenario('a new ruling whose home does not exist (F6)', true, c => addRow(c, '`docs/nowhere.md`'), { mustSay: 'no such file exists' })
 scenario('a new ruling naming a home this change never wrote (D29\'s own defect)', true, c => addRow(c, '`OUTSTANDING.md`'), { mustSay: 'does not touch that file' })
 scenario('a new ruling whose home was written in the same change', false, c => { addRow(c, '`OUTSTANDING.md`'); c.edit('OUTSTANDING.md', t => t + '\nThe ruling D3, carried here.\n') })
 scenario('a new ruling with only a future home ("on build:")', false, c => addRow(c, 'this file; on build: `OUTSTANDING.md`'))
+
+/* THE MOVER (F5): it must move exactly, refuse what it cannot do exactly, and undo itself. */
+function mover(name, expectOk, { live, prep, args, check }) {
+  const ctx = makeRepo(live)
+  try {
+    if (prep) prep(ctx)
+    const r = spawnSync(process.execPath, ['raptor-port/scripts/backlog-archive.mjs', ...args], { cwd: ctx.dir, encoding: 'utf8' })
+    const why = check ? check(ctx, r) : ''
+    const ok = (r.status === 0) === expectOk && !why
+    if (!ok) failed++
+    console.log(`${ok ? 'PASS' : 'MISS'}  mover: ${name} — expected ${expectOk ? 'moved' : 'refused'}, got ${r.status === 0 ? 'moved' : 'refused'}${why ? ` (${why})` : ''}`)
+    if (!ok) console.log((r.stdout + r.stderr).split('\n').map(l => '      ' + l).join('\n'))
+  } finally { rmSync(ctx.dir, { recursive: true, force: true }) }
+}
+const has = (c, f, s) => c.read(f).includes(s)
+const CRLF0 = LIVE0.replace(/\n/g, '\r\n')
+mover('a clean move', true, { args: ['CHARLIE', '--homes', 'docs/home.md'], check: (c) =>
+  has(c, 'OUTSTANDING.md', '[CHARLIE]') ? 'still in the backlog'
+  : !has(c, 'OUTSTANDING-ARCHIVE.md', 'Line 6 of CHARLIE') ? 'not in the archive whole'
+  : !has(c, 'OUTSTANDING.md', '## Done') ? 'swallowed the "## Done" heading after it'
+  : !has(c, 'OUTSTANDING.md', '### [DELTA]') ? 'took the next item with it' : '' })
+mover('no --homes', false, { args: ['CHARLIE'], check: c => has(c, 'OUTSTANDING.md', '[CHARLIE]') ? '' : 'moved anyway' })
+mover('a home that shows nothing was written there', false, { prep: c => { c.write('docs/other.md', 'unrelated\n'); c.commit('other') }, args: ['CHARLIE', '--homes', 'docs/other.md'] })
+mover('a duplicate id', false, { live: LIVE0 + '\n' + item('CHARLIE', 1).replace('Line 1 of CHARLIE', 'A second CHARLIE'), args: ['CHARLIE', '--homes', 'docs/home.md'], check: (c, r) => /heads 2 items/.test(r.stderr) ? '' : 'wrong reason' })
+mover('line endings kept byte for byte', true, { live: CRLF0, args: ['CHARLIE', '--homes', 'docs/home.md'], check: c =>
+  !c.read('OUTSTANDING-ARCHIVE.md').includes('Line 6 of CHARLIE, long enough to count as a real body line for the doubling check.\r\n') ? 'the moved lines lost their CRLF'
+  : c.read('OUTSTANDING.md') !== CRLF0.replace(cut(CRLF0, 'CHARLIE')[1], '') ? 'the rest of the backlog changed' : '' })
+mover('puts both files back when the inventory is not clean afterwards', false, { prep: c => c.edit('OUTSTANDING.md', t => cut(t, 'BRAVO')[0]), args: ['CHARLIE', '--homes', 'docs/home.md'], check: (c, r) =>
+  !has(c, 'OUTSTANDING.md', '[CHARLIE]') ? 'CHARLIE was not put back' : has(c, 'OUTSTANDING-ARCHIVE.md', 'CHARLIE') ? 'the archive was not put back' : !/put back/.test(r.stderr) ? 'did not say so' : '' })
 
 console.log(failed ? `\nSELFTEST FAILED — ${failed} scenario(s) not caught as designed.` : '\nselftest OK — every scenario behaved as designed.')
 process.exit(failed ? 1 : 0)

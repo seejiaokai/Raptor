@@ -391,6 +391,9 @@ browser-proven.
 
 ## Open / deferred / queued
 
+> **Not a backlog** (23 Sep 26, [DOCS-GUARD] F7). New deferred work goes ONLY to `OUTSTANDING.md`,
+> which the document gate protects; this section is emptied into it by `[DOC-TRIM]`.
+
 - **STAGE 2 OF THE DATABASE PATH — stable ids: the id half SHIPPED (10 Sep
   26, spec `raptor-port/docs/superpowers/specs/2026-09-10-stable-ids-design.md`).**
   A Tracker student is `{ id, name, pid? }` keyed by an opaque enrolment id

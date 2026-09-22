@@ -241,6 +241,43 @@ function homes(paths, allow) {
   return { fails, ok: !fails.length }
 }
 
+/* ---------- job 1c: the rulings themselves and the rule registers (F7) ---------- */
+/* DECISIONS.md is the only home of some rulings (D29 rule 2), and it too will one day move its
+   oldest rows to a dated section — the same kind of move that destroyed two backlog items. So a
+   D-number at the base must still be there, and none may newly appear twice. Numbers may SKIP:
+   parallel branches hold ranges and the later one renumbers its own (D70), so a gap is legal —
+   a loss is not. And rulecheck.mjs carries a hand-copied map of ruling ids: a register row
+   deleted by accident made nothing red, so every id in that map must still head an entry in a
+   behaviour register. `Docs-guard-allow: D<n>` for a deliberate removal. */
+const RULECHECK = 'raptor-port/scripts/rulecheck.mjs'
+const REGISTERS = 'raptor-port/docs/superpowers/specs'
+function rulings(allow) {
+  const fails = []
+  const dNow = [...readNow(DECISIONS).matchAll(/^\| (D\d+) \|/gm)].map(m => m[1])
+  const dBase = [...readBase(DECISIONS).matchAll(/^\| (D\d+) \|/gm)].map(m => m[1])
+  const cNow = multiset(dNow), cBase = multiset(dBase)
+  for (const d of cBase.keys()) if (!cNow.has(d) && !allow.has(d)) fails.push(`${d} is GONE from ${DECISIONS} — a ruling number is never lost`)
+  for (const [d, n] of cNow) if (n > 1 && n > (cBase.get(d) || 0) && !allow.has(d)) fails.push(`${d} now appears ${n} times in ${DECISIONS} — renumber the later branch's own row (D70)`)
+
+  const src = readNow(RULECHECK)
+  const start = src.indexOf('const RULES = {')
+  if (start >= 0) {
+    const body = src.slice(start, src.indexOf('\n}\n', start))
+    const ids = [...body.matchAll(/^\s+([A-Z]+\d+[a-z]?):/gm)].map(m => m[1])
+    /* the registers, plus the clash-check spec the one-absence register names as its own source
+       for B1–B9 and H1–H6 (B9 and H5 are written only there) */
+    const regs = (tryGit('ls-files', REGISTERS) || '').split('\n').filter(f => /behaviour-register\.md$|arch-stack-4-clash-check\.md$/.test(f))
+    /* an entry is a line that STARTS one — a heading, a bold bullet, a table row, or `B9.` — and
+       carries the id near its start, so `- **H4 / Q13**` heads both */
+    const leads = regs.flatMap(f => splitLines(readNow(f))).filter(l => /^(#{2,4} |- \*\*|\| |\*\*|[A-Z]+\d+[a-z]?\. )/.test(l)).map(l => l.slice(0, 48))
+    for (const id of ids) {
+      const re = new RegExp(`(^|[^A-Za-z0-9])${id}(?![A-Za-z0-9])`)
+      if (!leads.some(l => re.test(l))) fails.push(`${id} is in ${RULECHECK}'s map but heads no entry in any behaviour register — was its row deleted?`)
+    }
+  }
+  return fails
+}
+
 /* ---------- job 2: the ceilings ---------- */
 const lines = t => { let n = 0; for (let i = 0; i < t.length; i++) if (t.charCodeAt(i) === 10) n++; return n }
 const ROW_RE = /^\s*\['([^']+)',\s*(\d+),\s*(\d+),\s*(\d+)\],?/gm
@@ -303,7 +340,7 @@ if (allow.size) console.log(`  declared exceptions: ${[...allow].join(', ')}\n`)
 
 const inv = inventory(allow)
 const hm = homes(paths, allow)
-let failures = [...inv.fails.map(f => `inventory: ${f}`), ...hm.fails.map(f => `homes: ${f}`)]
+let failures = [...inv.fails.map(f => `inventory: ${f}`), ...hm.fails.map(f => `homes: ${f}`), ...rulings(allow).map(f => `rulings: ${f}`)]
 for (const w of inv.warns) console.log(`  note: ${w}`)
 
 let docsizeLine = null

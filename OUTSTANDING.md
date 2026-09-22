@@ -10,7 +10,8 @@ item).
 > ## Maintaining this file — do this every time it's touched
 > **The three D29 rules (owner, 22 Sep 26), enforced by `npm run docsize` in CI and a Stop hook:**
 > 1. **Finished work LEAVES this file** for `OUTSTANDING-ARCHIVE.md` — moved whole, never deleted,
->    never summarised on the way. (Supersedes "move the item to Done at the bottom".) **The test for
+>    never summarised on the way, and ONLY by `node raptor-port/scripts/backlog-archive.mjs <ID>
+>    --homes <file>`, which refuses what it cannot do exactly. (Supersedes "move the item to Done at the bottom".) **The test for
 >    "finished" is never the heading's words** (they go stale — Fable F4): every fact a later session
 >    would need must first have a pointer in a tier-2 doc or a code comment. Write the pointer, THEN
 >    move the item.
@@ -606,7 +607,7 @@ rules about posted-out and pre-joining rows. Several older documents still read 
 - Came out of it and now standing: the behaviour register, `npm run rulecheck`, the rules-first red
   team as a third review, and the CLAUDE.md standing order to sweep the rules and hand-test against
   them on every build.
-- **TWO OWNER RULINGS — BUILT 21 Sep 26** (D64/D65, register N13/N14;
+- **TWO OWNER RULINGS — BUILT 21 Sep 26** (D73/D74, register N13/N14;
   `specs/2026-09-20-NEXT-TASK-oil-award-and-oil-warning.md` is the record): (1) an OIL AWARD stops flagging a leave day (he did
   NOT rule on `duty` — ask), and (2) warn, on the day AND at publish, when a worked weekend earns
   nobody anything because the duty desk has no times. The second came from him testing DASH on SDO
@@ -614,7 +615,7 @@ rules about posted-out and pre-joining rows. Several older documents still read 
 - **Both things that were to be put to the owner are ANSWERED AND BUILT.** The ruling to carry
   forward: **OIL may be credited by hand on ANY day** — the weekend/public-holiday restriction
   belongs to the AUTOMATIC pass, which reads the published schedule, not to a credit the squadron
-  types itself (D63, register N11).
+  types itself (D72, register N11).
 
 ### [DOC-TRIM] The repo is too heavy to read (owner, 21 Sep 26 — D14)
 **His words: "theres going to be alot of context for the AI to read ... reading so much context
@@ -622,15 +623,19 @@ as an AI it starts to hallucinate."** Measured that day: **1,830 lines loaded ev
 whatever the task, plus **2,228 more** at session start. `HANDOFF.md` states its own 550-line
 ceiling inside itself and had reached 961.
 
-- **Policy and tiers: `raptor-port/docs/doc-budget.md`. Gate: `npm run docsize`** — a RATCHET,
-  so ceilings only ever go down. Growth is already stopped; this item is the reduction.
+- **Policy and tiers: `raptor-port/docs/doc-budget.md`. Gate: `npm run docsize`.** Ceilings keep
+  declared headroom and move only in a docs-only commit (corrected 23 Sep 26 — the zero-headroom
+  ratchet was withdrawn, D29). This item is the reduction, and it is a DOCS-ONLY pass.
 - **The one change worth doing FIRST, and on its own** (~30–45 min, compounding on every later
   session): `CLAUDE.md` is 1,539 lines and is loaded every time. Most of that is §Stable
   decisions — historical rulings, which are tier-2 reference, not tier-0 index. Move them to
   `docs/stable-decisions.md` and leave ONE line per topic pointing in. Target ~500 lines.
   Careful work: that section is the project's memory of what must not be relitigated, so move
-  it wholesale, verify nothing is dropped, and lower the ceiling in the same commit.
-- **Then:** `HANDOFF.md` 961 → 400 (current state only; the stories belong in commit messages);
+  it wholesale, verify nothing is dropped, then lower the ceiling — leaving headroom, never to zero.
+- **Then:** `HANDOFF.md` 961 → 400 (current state only; the stories belong in commit messages).
+  **Its "Open / deferred / queued" section is NOT a backlog** ([DOCS-GUARD] F7, 23 Sep 26): empty
+  it into this file item by item — each open thing becomes an item here or a line in a tier-2 doc —
+  so there is ONE backlog to guard, not two;
   `OUTSTANDING.md` 1,210 → 600 (done items out, one short block per live item); `ui-contracts.md`
   is 7,095 lines and needs no budget but does need sub-heads so a session can read one section.
 - **The writing rule that stops it recurring** is in `doc-budget.md` §2: record the DECISION,
@@ -638,7 +643,8 @@ ceiling inside itself and had reached 961.
   same words in two files; a reason earns its place only if it would change a future decision.
   This does NOT thin the reasoning — that is the plain-language rule and it still holds. It
   stops saying the same thing three times.
-- **Prune on write:** touching a doc means leaving it no longer than you found it.
+- **Move finished items with `node raptor-port/scripts/backlog-archive.mjs <ID> --homes <file>`**,
+  never by hand or by a one-off script. (The old "prune on write" is withdrawn — D29 rule 3.)
 
 ### [HUMAN-RETEST] Re-test the earlier builds the way a person uses them (owner, 21 Sep 26)
 **His words: "This also means that all the previous bug tests we did there will be bugs not
@@ -785,7 +791,7 @@ order §7.6) so a later session cannot rediscover the measurement and "fix" it. 
 Fable's order (D30), all of it in its order. **Done 23 Sep 26 on `claude/docs-guard`:** step 1
 (F1+F3 — `npm run docsize` now fails a lost, doubled or truncated backlog record by name, runs in CI
 as `docs-guard.yml` and as a Stop hook, and never demands a trim inside a code change), step 2
-(F2+F6 — the texts that ordered trim-on-touch corrected, D63–D66 recorded, every ruling's home
+(F2+F6 — the texts that ordered trim-on-touch corrected, D72–D75 recorded, every ruling's home
 checked), step 3 (F4 items 1/3/4, F5 items 1–2 — unique ids, true headings, line endings pinned).
 How the gate works: `raptor-port/docs/doc-budget.md` §4.
 
@@ -957,7 +963,7 @@ half — duty and commitments must reduce the Leave War manning).
 the day's 1. The two are INDEPENDENT: what the schedule earns is never changed by what a person
 typed, and what a person typed is never changed by the schedule.
 
-**BUILT — PR #423, 21 Sep 26; ruling D66, register N16.** Everything below is the reasoning as it
+**BUILT — PR #423, 21 Sep 26; ruling D75, register N16.** Everything below is the reasoning as it
 stood BEFORE that build, kept for why; it does not describe the app now.
 
 **What the app did then (wrong under this ruling).** One credit record per person per day. When

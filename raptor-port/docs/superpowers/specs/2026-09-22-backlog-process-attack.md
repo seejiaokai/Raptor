@@ -196,4 +196,11 @@ LF, not CRLF, by then (LF is what `.gitattributes` pins); `[ARCH-STACK-4]` merge
 #422; and a third duplicate id (`[OIL-SEATS-CAN-EARN]`) had appeared since, now renamed. The
 "Status:" lines above describe 22 Sep 26.
 
-**Owed — step 4:** F5's mover and F7, when the next archive pass is actually due.
+**23 Sep 26, same branch — step 4, done on the owner's "Ok do it" (D76, which moves it forward
+from "when the next archive pass is due"):** the mover `scripts/backlog-archive.mjs`, and F7 — no
+D-number lost or doubled (gaps allowed, D70), every `rulecheck` id still heads a register entry,
+and `HANDOFF.md`'s open list declared NOT a backlog, to be emptied into `OUTSTANDING.md` by
+`[DOC-TRIM]` rather than moved in bulk here. Two things measured on the way: B9 and H5 are written
+only in the clash-check spec, never in the register that names it as their source (the check reads
+both); and `[DOC-TRIM]` itself still said "ratchet" and "prune on write" — a fifth trim-on-touch text
+F2's roll-call of four had missed, now corrected. **Nothing owed. `[DOCS-GUARD]` is closed.**
