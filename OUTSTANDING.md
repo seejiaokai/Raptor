@@ -1072,6 +1072,24 @@ ALL AVAIL, the manning counts and every rule that asks who is free.
 **Context.** `raptor-port/docs/handpass/2026-09-21-oil.md` §9 · the red team's §3 in
 `…/specs/2026-09-21-oil-fixplan-redteam-fable.md` · script `scripts/handpass/settle-d4.mjs`.
 
+### [STORE-READER-SWEEP] A stored record read more narrowly than it is written — sweep for more (22 Sep 26)
+
+**TWO INSTANCES FOUND IN ONE FILE IN ONE EVENING, both silent, both about official
+dates.** `readPostOuts` insisted a posting record carry a LEAVING date, so every
+JOINING date `setPostIn` wrote was discarded at the next boot; and `setPeople`'s
+keep rule then tested membership of that record rather than the leaving date it
+means. Both fixed on `claude/oil-seats-can-earn`. Neither was found by a walk or
+a review — they came from re-reading the file around an unrelated fix.
+
+**The shape, so it can be looked for:** a writer grows a new case (a second date,
+a new field, a nullable end) and the untrusted-storage reader beside it is not
+widened with it. The write succeeds, the reload silently drops it, and nothing on
+screen says so. Two spot-checks came back clean (`readPersonEdits` matches
+`setPerson`'s type exactly; `readOilPolicy` covers both its fields) — the rest of
+`leavewar/state/store.ts`'s readers, and the scheduler's own storage seam, have
+not been walked. **Small, mechanical, and worth doing once**: for each reader,
+find its writer and diff the shapes. Priority: with the other small follow-ups.
+
 ### [OIL-RELINK-XWEEK] A request landed in a stashed week keeps the OLD man, and can land twice — OPEN, 22 Sep 26
 
 **Pre-existing, not OIL-caused, and out of scope for this branch** (Fable F8). Two limits that job
