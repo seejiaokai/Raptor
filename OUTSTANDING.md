@@ -825,7 +825,9 @@ and BB lines must OFFER the switch, defaulting to OFF. Today they are wholly ine
 door. **Not a flag flip:** all three are skipped BEFORE anyone enters the calculation (`engine/oil.ts`
 — `saExemptKind`, `f.spare`/`ac.spare`), so no item key and no person window exist for a credit to
 attach to. **Supersedes D15 and D20 on the DOOR only**; D20's second half carries forward (a duty
-block MADE from an AVALON template gets the same treatment).
+block MADE from an AVALON template gets the same treatment). **D35 (22 Sep 26) makes that
+explicit: the SWITCH reaches the template-minted block too**, not only the no-earn default —
+otherwise the same seat answers differently depending on how it was made.
 
 **Half two — ALL AVAIL / ALL, which the OWNER FOUND (22 Sep 26).** A duty desk he added on his phone,
 Dash and ALL AVAIL on it: **on that seat ALL AVAIL credits NOBODY** — the day pays the 2 named people
