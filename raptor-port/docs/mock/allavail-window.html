@@ -1,0 +1,280 @@
+<title>ALL AVAIL Window</title>
+<!-- the app's OWN stylesheet, so this comp is the real palette, not an approximation -->
+<link rel="stylesheet" href="../../src/ui/scheduler.css">
+<style>
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font-family:'Inter Tight',system-ui,sans-serif;
+       display:flex;flex-direction:column;overflow:hidden}
+
+  /* ---- the instruction strip: the only part that is NOT the app ---- */
+  .mk-note{flex:0 0 auto;padding:9px 16px;padding-top:calc(9px + env(safe-area-inset-top,0px));
+    background:#161b22;border-bottom:1px solid var(--edge)}
+  .mk-note b{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);
+    font-weight:700;display:block;margin-bottom:3px}
+  .mk-note span{font-size:12.5px;color:var(--ink-2);line-height:1.5}
+  .mk-note em{font-style:normal;color:var(--ink);font-weight:600}
+
+  /* ---- the pretend board behind, so the window can be proved non-blocking ---- */
+  .mk-board{flex:1;min-height:0;overflow:auto;padding:14px 16px 24px;-webkit-overflow-scrolling:touch}
+  .mk-day{max-width:760px;margin:0 auto 14px;background:var(--panel);border:1px solid var(--edge);
+    border-radius:8px;padding:12px 14px}
+  .mk-day h3{margin:0 0 2px;font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink)}
+  .mk-day .sub{font-size:11px;color:var(--ink-3);margin-bottom:10px}
+  .mk-row{display:grid;grid-template-columns:62px 1fr 160px;gap:10px;align-items:center;
+    padding:7px 0;border-top:1px solid var(--edge)}
+  .mk-row .t{font-size:11.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+  .mk-row .n{font-size:12.5px;color:var(--ink)}
+  .mk-row input{background:var(--bg);border:1px solid var(--edge);color:var(--ink);
+    border-radius:5px;padding:5px 7px;font:inherit;font-size:12px;width:100%;box-sizing:border-box}
+  .mk-row input:focus{outline:2px solid var(--accent);outline-offset:1px}
+  .mk-cnt{display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-family:inherit;
+    background:var(--raised);border:1px solid var(--edge-2);border-radius:999px;
+    padding:3px 10px;font-size:11px;color:var(--ink);font-weight:600}
+  .mk-cnt:hover{border-color:var(--accent)}
+  .mk-cnt b{color:var(--accent);font-weight:800}
+  .mk-oil{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-family:inherit;
+    background:var(--raised);border:1px solid var(--edge-2);border-radius:6px;
+    padding:4px 11px;font-size:11.5px;color:var(--ink-2);font-weight:700;margin-top:8px}
+  .mk-oil.on{border-color:var(--ok,#4A8C64);color:var(--ink);background:rgba(74,140,100,.18)}
+  .mk-oil .dot{width:8px;height:8px;border-radius:50%;background:var(--edge-2)}
+  .mk-oil.on .dot{background:var(--ok,#4A8C64)}
+
+  /* ---- THE PROPOSED WINDOW ---- */
+  .win{position:fixed;z-index:150;right:16px;top:96px;width:440px;height:420px;
+    min-width:268px;min-height:200px;
+    max-width:calc(100vw - 32px);max-height:calc(100vh - 120px);
+    background:var(--panel);border:1px solid var(--edge-2);border-radius:10px;
+    box-shadow:0 18px 44px rgba(0,0,0,.62);display:flex;flex-direction:column;
+    overflow:hidden;resize:both}
+  .win-bar{display:flex;align-items:center;gap:9px;padding:8px 10px;cursor:grab;
+    background:var(--raised);border-bottom:1px solid var(--edge);touch-action:none;flex:0 0 auto}
+  .win-bar:active{cursor:grabbing}
+  .win-grip{color:var(--ink-3);font-size:15px;line-height:1;flex:0 0 auto}
+  .win-ttl{flex:1;min-width:0;font-size:12.5px;font-weight:700;color:var(--ink);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .win-ttl small{display:block;font-size:10.5px;font-weight:500;color:var(--ink-3)}
+  .win-x{background:none;border:1px solid var(--edge-2);color:var(--ink-2);border-radius:5px;
+    width:25px;height:25px;font-size:12px;line-height:1;cursor:pointer;flex:0 0 auto;font-family:inherit}
+  .win-x:hover{border-color:#F0555F;color:var(--ink)}
+
+  .win-tabs{display:flex;background:var(--panel-2);border-bottom:1px solid var(--edge);flex:0 0 auto}
+  .win-tab{flex:1;padding:8px 6px;font-size:11.5px;font-weight:700;color:var(--ink-3);
+    background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;
+    font-family:inherit;letter-spacing:.02em}
+  .win-tab:hover{color:var(--ink-2)}
+  .win-tab.on{color:var(--ink);border-bottom-color:var(--accent);background:var(--panel)}
+  .win-tab .c{color:var(--ink-3);font-weight:600}
+  .win-tab.on .c{color:var(--accent)}
+
+  /* MODE OFF: no tabs at all, just one heading saying what the list is. */
+  .win-one{flex:0 0 auto;padding:8px 10px;background:var(--panel-2);
+    border-bottom:1px solid var(--edge);font-size:11.5px;font-weight:700;color:var(--ink)}
+  .win-one .c{color:var(--accent);font-weight:800}
+  .win-body{flex:1;min-height:0;overflow:auto;padding:9px 10px}
+  .win-body .rcols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .win-body .rcol{min-width:0}
+  /* D39 - ONE PUCK PER ROW at every width: each column is a list running down,
+     not a wrapping grid. A full row per man is what gives his flag and his figure
+     room, which is the whole point of replacing the name bubble. */
+  /* Each man gets his OWN ROW: the puck at its true 74x15 (a measured size the
+     whole app shares - stretching it here would make these pucks a different
+     size from every other puck on screen), and the rest of the row carries the
+     reason when he is flagged. That is what makes the list scannable. */
+  .win-body .rpuck{display:flex;align-items:center;gap:7px;margin:0 0 3px;min-height:17px}
+  .win-body .rwhy{flex:1;min-width:0;font-size:10px;line-height:1.25;color:var(--ink-3)}
+  .win-body .rpuck.flagged .rwhy{color:#E5A83B}
+  .win-body .rpuck.clash .rwhy{color:#F0555F}
+  .win-body .rh{margin-bottom:5px}
+
+  .win-foot{flex:0 0 auto;border-top:1px solid var(--edge);background:var(--panel-2);
+    padding:7px 10px;font-size:11.5px;color:var(--ink-2);display:flex;align-items:center;gap:7px}
+  .win-foot .tag{flex:0 0 auto;font-size:9px;font-weight:800;letter-spacing:.08em;
+    padding:2px 5px;border-radius:3px;background:var(--edge-2);color:var(--ink)}
+  .win-foot .tag.warn{background:#E5A83B;color:#12100a}
+  .win-foot .tag.bad{background:#F0555F;color:#fff}
+  .win-foot .hint{color:var(--ink-3)}
+
+  /* a puck that is switchable in the OIL view reads as pressable */
+  .oilview .rpuck{cursor:pointer}
+  .oilview .rpuck.off .puck{opacity:.4;filter:grayscale(.6)}
+
+  @media (max-width:620px){
+    .win{left:12px;right:12px;width:auto;top:auto;bottom:12px;height:56vh;max-height:56vh}
+    .mk-row{grid-template-columns:56px 1fr;row-gap:6px}
+    .mk-row .cell3{grid-column:1 / -1}
+  }
+</style>
+
+<div class="mk-note">
+  <b>Mock-up</b>
+  <span><em>Drag the bar</em> to move it &middot; <em>drag the bottom-right corner</em> to resize &middot;
+  the schedule behind still scrolls and types &middot; <em>tap a puck</em> for why, or to switch a man off under Who earns OIL</span>
+  <button class="mk-oil" id="oilmode"><span class="dot"></span><span id="oilTxt">OIL Earn &mdash; off</span></button>
+</div>
+
+<div class="mk-board" id="board">
+  <div class="mk-day">
+    <h3>Sunday 19 Jul &middot; Ground Programme</h3>
+    <div class="sub">Public holiday &mdash; this day earns OIL</div>
+    <div class="mk-row"><span class="t">14:00</span><span class="n">Flight brief &mdash; 4 SHIP</span><span class="cell3"><input value="Auth: Comet" aria-label="Remarks"></span></div>
+    <div class="mk-row"><span class="t">15:20</span><span class="n">OPS BRIEF &mdash; ALL AVAIL</span>
+      <span class="cell3"><button class="mk-cnt" id="openA">ALL AVAIL &middot; <b>27</b></button></span></div>
+    <div class="mk-row"><span class="t">16:20</span><span class="n">Step &mdash; WAVE 1</span><span class="cell3"><input value="" placeholder="Remarks" aria-label="Remarks"></span></div>
+    <div class="mk-row"><span class="t">08:00</span><span class="n">SDO desk</span><span class="cell3"><input value="Vandal" aria-label="Duty"></span></div>
+  </div>
+  <div class="mk-day">
+    <h3>Sunday 19 Jul &middot; Common Programme</h3>
+    <div class="sub">Squadron-wide &mdash; affects all</div>
+    <div class="mk-row"><span class="t">17:30</span><span class="n">Safety stand-down &mdash; ALL</span>
+      <span class="cell3"><button class="mk-cnt" id="openB">ALL &middot; <b>31</b></button></span></div>
+    <div class="mk-row"><span class="t">&mdash;</span><span class="n">Mass brief</span><span class="cell3"><input value="" placeholder="Remarks" aria-label="Remarks"></span></div>
+  </div>
+  <div class="mk-day">
+    <h3>Scroll check</h3>
+    <div class="sub">The window stays put while this moves &mdash; it does not block the page</div>
+    <div class="mk-row"><span class="t">09:00</span><span class="n">AMT session</span><span class="cell3"><input value="" placeholder="Remarks" aria-label="Remarks"></span></div>
+    <div class="mk-row"><span class="t">11:00</span><span class="n">OFT session</span><span class="cell3"><input value="" placeholder="Remarks" aria-label="Remarks"></span></div>
+    <div class="mk-row"><span class="t">13:00</span><span class="n">Ground lecture</span><span class="cell3"><input value="" placeholder="Remarks" aria-label="Remarks"></span></div>
+    <div class="mk-row"><span class="t">15:00</span><span class="n">Aircrew tea</span><span class="cell3"><input value="" placeholder="Remarks" aria-label="Remarks"></span></div>
+  </div>
+</div>
+
+<div class="win" id="win">
+  <div class="win-bar" id="bar">
+    <span class="win-grip">&#9783;</span>
+    <span class="win-ttl">OPS BRIEF &middot; ALL AVAIL<small>Sun 19 Jul &middot; 15:20&ndash;16:20</small></span>
+    <button class="win-x" id="close" title="Close" aria-label="Close">&#10005;</button>
+  </div>
+  <div class="win-one" id="one">Who&rsquo;s available <span class="c">27</span></div>
+  <div class="win-tabs" role="tablist" id="tabs" hidden>
+    <button class="win-tab on" id="tabA" role="tab" aria-selected="true">Who&rsquo;s available <span class="c">27</span></button>
+    <button class="win-tab" id="tabB" role="tab" aria-selected="false">Who earns OIL <span class="c">24 of 27</span></button>
+  </div>
+  <div class="win-body" id="body"></div>
+  <div class="win-foot" id="foot"><span class="hint">Tap a puck for why. Two men are flagged.</span></div>
+</div>
+
+<script>
+(function(){
+  var P = [
+    ['Comet','IP',0,'FO'],['Havoc','IP',0,'FO'],['Nomad','A',0,'FO'],['Ranger','A',0,'FO'],
+    ['Sabre','B',0,'FO'],['Vandal','A','c','FO'],['Ace','A',0,'FO'],['Anvil','B',0,'HO'],
+    ['Blade','C',0,'FO'],['Cinch','C',0,'FO'],['Cobra','D',0,'FO'],['Diesel','D',0,'HO'],
+    ['Drifter','OCU',0,'\u2014'],['Talisman','A','db','HO']
+  ];
+  var W = [
+    ['Cinder','IW',0,'FO'],['Dash','IW',0,'FO'],['Fable','C',0,'FO'],['Rune','C',0,'FO'],
+    ['Ryder','B',0,'FO'],['Basher','B',0,'FO'],['Cutter','A',0,'HO'],['Ghost','C',0,'FO'],
+    ['Hex','D',0,'FO'],['Ledger','D',0,'\u2014'],['Quill','C',0,'FO'],['Relay','B',0,'FO'],
+    ['Scope','OCU',0,'\u2014']
+  ];
+  var QC = {OCU:'q-ocu',D:'q-d',C:'q-c',B:'q-b',A:'q-a',IW:'q-ins',IP:'q-ins'};
+  var QT = {OCU:'O',D:'D',C:'C',B:'B',A:'A',IW:'IW',IP:'IP'};
+  var DASH = '\u2014';
+  var WHY = {
+    db:['warn','D','lands 15:00 \u2014 his flight debrief runs to 17:00, so this ops brief sits inside it. Still available; your call.',
+        'debrief to 17:00'],
+    c: ['bad','C','already on the SDO desk 08:00\u201318:00 \u2014 that clashes with this brief.',
+        'SDO desk 08:00\u201318:00']
+  };
+  var off = {};           /* who the scheduler has switched off in the OIL view */
+  var oil = false;        /* which tab is showing */
+  var mode = false;       /* is OIL Earn switched on for the day? */
+
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');}
+
+  function puck(p, wso){
+    var nm=p[0], q=p[1], flag=p[2], amt=p[3];
+    var cls='puck sm'+(wso?' r':'');
+    if(flag==='c') cls+=' warn hard boxred';
+    var chip = flag ? '<span class="lchip l-'+flag+'">'+(flag==='db'?'D':'C')+'</span>' : '';
+    var role;
+    if(oil){
+      role = (off[nm] || amt===DASH)
+        ? '<span class="role oilno">'+DASH+'</span>'
+        : '<span class="role oilamt'+(amt==='HO'?' half':'')+'">'+amt+'</span>';
+    } else {
+      role = '<span class="role '+QC[q]+'">'+QT[q]+'</span>';
+    }
+    var ttl = nm + (flag ? ' \u2014 ' + WHY[flag][2] : '');
+    var rowCls = 'rpuck' + (oil&&off[nm] ? ' off' : '')
+               + (flag==='db' ? ' flagged' : flag==='c' ? ' clash' : '');
+    var why = flag ? '<span class="rwhy">'+esc(WHY[flag][3])+'</span>' : '';
+    return '<span class="'+rowCls+'" data-nm="'+esc(nm)+'" data-flag="'+(flag||'')+'" title="'+esc(ttl)+'">'
+         + '<span class="'+cls+'" tabindex="0">'+chip+'<span class="nm">'+esc(nm)+'</span>'+role+'</span>'
+         + why + '</span>';
+  }
+  function earners(list){
+    return list.filter(function(p){return !off[p[0]] && p[3]!==DASH;}).length;
+  }
+  function col(title, list, wso){
+    var n = oil ? earners(list) : list.length;
+    return '<div class="rcol"><div class="rh">'+title+' &middot; '+n+(oil?' earn':'')+'</div>'
+         + list.map(function(p){return puck(p,wso);}).join('') + '</div>';
+  }
+  function foot(txt, kind, tag){
+    var f=document.getElementById('foot');
+    f.innerHTML = kind ? '<span class="tag '+kind+'">'+tag+'</span><span>'+esc(txt)+'</span>'
+                       : '<span class="hint">'+esc(txt)+'</span>';
+  }
+  function draw(msg){
+    var b=document.getElementById('body');
+    b.className='win-body'+(oil?' oilview':'');
+    b.innerHTML='<div class="rcols">'+col('Pilots',P,false)+col('WSOs',W,true)+'</div>';
+    document.getElementById('tabs').hidden = !mode;
+    document.getElementById('one').hidden = mode;
+    var a=document.getElementById('tabA'), t=document.getElementById('tabB');
+    a.classList.toggle('on',!oil); t.classList.toggle('on',oil);
+    a.setAttribute('aria-selected',String(!oil)); t.setAttribute('aria-selected',String(oil));
+    t.innerHTML='Who earns OIL <span class="c">'+(earners(P)+earners(W))+' of 27</span>';
+    foot(msg || (oil ? 'Tap a puck to stop a man earning from this event.'
+                     : 'Tap a puck for why. Two men are flagged.'));
+  }
+  document.getElementById('body').addEventListener('click', function(e){
+    var r=e.target.closest('.rpuck'); if(!r) return;
+    var nm=r.dataset.nm, flag=r.dataset.flag;
+    if(oil){
+      off[nm]=!off[nm];
+      draw(nm+(off[nm]?' earns nothing from this event.':' earns from this event again.'));
+      return;
+    }
+    if(flag) foot(nm+' \u2014 '+WHY[flag][2], WHY[flag][0], WHY[flag][1]);
+    else foot(nm+' \u2014 nothing else on the programme at this time.');
+  });
+  document.getElementById('oilmode').onclick=function(){
+    mode=!mode; if(!mode) oil=false;
+    this.classList.toggle('on',mode);
+    document.getElementById('oilTxt').innerHTML='OIL Earn &mdash; '+(mode?'on':'off');
+    draw(mode ? 'OIL Earn is on, so the window now offers who earns as well.'
+              : 'OIL Earn is off, so the window shows who is available and nothing else.');
+  };
+  document.getElementById('tabA').onclick=function(){oil=false;draw();};
+  document.getElementById('tabB').onclick=function(){oil=true;draw();};
+  document.getElementById('close').onclick=function(){document.getElementById('win').hidden=true;};
+  document.getElementById('openA').onclick=document.getElementById('openB').onclick=function(){
+    document.getElementById('win').hidden=false;};
+
+  /* drag by the bar - pointer events, so a finger works too */
+  var win=document.getElementById('win'), bar=document.getElementById('bar'), d=null;
+  bar.addEventListener('pointerdown', function(e){
+    if(e.target.closest('.win-x')) return;
+    var r=win.getBoundingClientRect();
+    d={dx:e.clientX-r.left, dy:e.clientY-r.top, w:r.width, h:r.height};
+    win.style.left=r.left+'px'; win.style.top=r.top+'px';
+    win.style.right='auto'; win.style.bottom='auto';
+    win.style.width=r.width+'px'; win.style.height=r.height+'px';
+    bar.setPointerCapture(e.pointerId); e.preventDefault();
+  });
+  bar.addEventListener('pointermove', function(e){
+    if(!d) return;
+    var x=Math.min(Math.max(0,e.clientX-d.dx), Math.max(0,innerWidth-d.w));
+    var y=Math.min(Math.max(0,e.clientY-d.dy), Math.max(0,innerHeight-42));
+    win.style.left=x+'px'; win.style.top=y+'px';
+  });
+  bar.addEventListener('pointerup', function(){d=null;});
+  bar.addEventListener('pointercancel', function(){d=null;});
+
+  draw();
+})();
+</script>

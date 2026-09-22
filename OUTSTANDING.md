@@ -92,11 +92,17 @@ in-flight and risk-reducing** first.
    stops further growth; this is the trim itself. Do it after OIL merges, not before —
    a third of tonight's new lines are that task's scaffolding and become archive the day it
    closes. See the item below.
-**TOP OF THE QUEUE (22 Sep 26).** **[OIL-AUTO-REMOVE] IS MERGED AND CLOSED.** 1) **[OIL-SEATS-CAN-EARN]**
-— the next job, plan written and awaiting its cross-provider red-team, see
-`raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-can-earn-plan.md`. 2) **[DOCS-GUARD]**, whose
-scope and order are settled by D30. 3) **[HUMAN-RETEST]**. 4) **[DOC-TRIM]** — now unblocked, because
-a third of the OIL scaffolding became archive the day it closed.
+**TOP OF THE QUEUE (22 Sep 26, re-ordered after D38).** **[OIL-AUTO-REMOVE] IS MERGED AND CLOSED.**
+1) **[OIL-SEATS-CAN-EARN]** — plan written, awaiting its cross-provider red-team:
+`raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-can-earn-plan.md`. 2) **[ALL-AVAIL-WINDOW]**
+(D38, NEW) — straight after, because it opens FROM the counters that job builds. 3) **[DOCS-GUARD]**,
+scope and order settled by D30. 4) **[HUMAN-RETEST]**. 5) **[DOC-TRIM]** — unblocked now that a third
+of the OIL scaffolding became archive. 6) The stack resumes at **[DB-STEP]**.
+
+**STALE ABOVE, CORRECTED 22 Sep 26:** the "STACK PROGRESS (updated 18 Sep 26)" block says the next
+stack item is step 4 (one Absence record). **Step 4 SHIPPED on 20 Sep 26** — `raptor-port/CLAUDE.md`
+records it (an absence is ONE record, the Raptor Input; `runInbound`/`runOutbound`/`retractLwRow`/
+`ingestFromRaptor` deleted). The stack's real next item is **[DB-STEP]**.
 **Open for the owner:** he has not picked whether to do the one cheap `CLAUDE.md` trim (~30 min,
 a move not a cut, ~700 lines off EVERY later session) as a warm-up before the scenarios, or to
 leave all of [DOC-TRIM] until after the merge. Either is fine; the ratchet already stops growth.
@@ -863,6 +869,53 @@ sites; placement is unrestricted today) and the order of work. **Red-team it acr
 before a line is written.** The
 display-versus-earning cost analysis and the size estimate are in
 `raptor-port/docs/handpass/2026-09-22-oil-walk.md` §11 and §11a. Rulings: `DECISIONS.md` D24, D27, D28.
+
+### [ALL-AVAIL-WINDOW] The counter opens a movable window of PUCKS, not a bubble of names (owner, D38, 22 Sep 26)
+
+**His words:** *"the current interface to show just names on a bubble … is not intuitive … a window
+that is movable and … resizable and a user can still click and edit/scroll the schedule behind while
+that window is still opened … show the pucks just like how the placeholder shows the personnel and I
+can click on the flagging as well … pilot then wso, left right column … Perhaps make a mock up before
+we execute this."*
+
+**ONE WINDOW, TWO JOBS.** Tapping either counter opens the same panel: (a) who is AVAILABLE behind an
+ALL AVAIL / ALL puck, and (b) who is CREDITED OIL — and in (b) he switches individual pucks off.
+Today (a) is a one-line string of names and (b) lives inside the mode's own decoration.
+
+**What makes it different from every panel the app already has:**
+- **MOVABLE and RESIZABLE by the user**, and it **does not block the schedule** — he scrolls AND
+  EDITS behind it while it is open. Not a `Sheet` (scrim + Escape, blocks everything) and not an
+  inline popup (dismisses on an outside click — the 4 Sep 26 standing rule). **This is a THIRD
+  transient-surface kind and the first one the app has; it needs its own contract**, and the outside-
+  click rule has to be stated as not applying to it, or a later session will "fix" it.
+- **Real pucks in the placeholder's own layout** — pilots left column, WSOs right — carrying the same
+  warning flags the rest of the app draws, and clickable.
+
+**WHY THE FLAGS ARE THE POINT, in his example:** a man whose ops brief sits inside his standard
+debrief must APPEAR, flagged, so the scheduler sees the overlap and judges it. **That is the other
+half of D36** — availability stays narrow (he IS available) precisely because the app's job here is
+to SURFACE the clash, not to remove him from the list. Do not let this item drift into "filter him
+out"; that is the change D36 refuses.
+
+**MOCK-UP BUILT 22 Sep 26** — `raptor-port/docs/mock/allavail-window.html`, a working comp in the
+app's OWN stylesheet (it drags, resizes, and the schedule behind it scrolls and types). Also published
+as an Artifact for him: <https://claude.ai/artifact/3kHfkdRobBjgtmhnyGvkdi>. **He reviewed it and ruled
+twice (D39): ONE PUCK PER ROW at every width, and the counter chip drops the word "free".**
+
+**THE MODE RULE, confirmed with him 22 Sep 26.** Tapping the counter always shows WHO IS AVAILABLE —
+any day, OIL or not. The **"Who earns OIL" half exists only while OIL Earn is switched on**; with the
+mode off there are no tabs at all, just the one list, and on an ordinary weekday (which cannot earn)
+it never appears. That is D27 carried through: availability is a scheduling fact, earning is a mode.
+
+**A CONSTRAINT THE BUILD MUST RESPECT:** a puck is a MEASURED 74×15 (`--puck-w`/`--puck-h`, pinned
+with `!important` in `scheduler.css` and watched by the browser geometry gate). Do NOT stretch pucks
+to fill this window's columns. The mock instead gives each man a full ROW — puck at its true size,
+the rest of the row carrying his flag's reason inline, which is what makes the list scannable and is
+exactly the case he opened this with.
+
+**Sequencing: AFTER `[OIL-SEATS-CAN-EARN]`**, which builds the counters this window opens from, and
+which settles where they appear. Ruling: `DECISIONS.md` D38; the related ones are D27 (the count is a
+scheduling feature), D36 (the narrow window) and D37 (the count reads as what it is).
 
 ### [OIL-WORDS] Stop calling OIL "money" in the code comments (owner, D25, 22 Sep 26)
 

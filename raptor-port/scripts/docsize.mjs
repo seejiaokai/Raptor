@@ -31,7 +31,13 @@ const FILES = [
   ['.claude/rules/record-decisions.md',  0,   60,   60],
   ['.claude/rules/plain-language.md',    0,   60,   60],
   ['HANDOFF.md',                         1,  961,  400],
-  ['OUTSTANDING.md',                     1, 1188,  600],
+  /* RAISED 1188 -> 1230, 22 Sep 26, deliberately and with headroom. [ALL-AVAIL-WINDOW] (D38) is a
+     genuinely new live item and the queue was re-ordered around it, +20 lines. Raised rather than
+     paid for by a trim, because D29 rule 3 forbids trimming docs inside another change and an
+     archive pass under a red gate is the exact pressure that destroyed two filed items on 22 Sep.
+     The extra headroom answers Fable's finding that seven of eight gated files sat at ZERO, which
+     is what made every addition a trim. [DOC-TRIM] still owns bringing this to its 600 target. */
+  ['OUTSTANDING.md',                     1, 1230,  600],
   /* DECISIONS.md is append-only and is MEANT to grow, so its ceiling is its target.
      When it reaches it, the oldest decisions move to a dated section of their own and
      the index keeps only the live ones — the same shape as HANDOFF-ARCHIVE. */
