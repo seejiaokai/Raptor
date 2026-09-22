@@ -27,7 +27,14 @@ const REPO = join(ROOT, '..')
 const FILES = [
   ['raptor-port/CLAUDE.md',              0, 1539,  500],
   ['.claude/rules/raptor-executor.md',   0,  108,  108],
-  ['.claude/rules/bug-check.md',         0,   63,   63],
+  /* RAISED 63 -> 76, 23 Sep 26, for a genuinely new live rule and nothing else
+     (owner, D56): a problem living only in data already stored is not a finding,
+     because the demo data is cleared before the database step. It is HERE, in
+     the always-loaded copy, so it is in force before the order is ever opened —
+     which is the whole reason this file exists. The ratchet's own rule allows a
+     raise for a new live rule if the commit says why; this is that, and the
+     ceiling goes no higher without the same justification. */
+  ['.claude/rules/bug-check.md',         0,   76,   76],
   ['.claude/rules/record-decisions.md',  0,   60,   60],
   ['.claude/rules/plain-language.md',    0,   60,   60],
   ['HANDOFF.md',                         1,  961,  400],

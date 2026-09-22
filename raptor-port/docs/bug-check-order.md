@@ -138,6 +138,39 @@ everything-case once and reuses it forever** — that is the same investment, no
 
 ---
 
+## 2b. WHAT IS NOT A FINDING — the demo-data test (owner, D56, 23 Sep 26)
+
+**Owner:** *"Make sure the bug checks dont waste time catching these bugs in the
+future. It will not happen because ill clear all the demo data anyway before
+shiping this app into a real database."*
+
+**A problem that lives ONLY in data already stored is not a finding.** Do not
+spend a reviewer on it, do not add a walk step for it, do not fix it. The app is
+pre-promulgation and its whole store is demo data that **will be cleared before
+the database step** — so the harm has an end date, and building around it buys
+nothing.
+
+**THE GUARD — both must be true, or the rule does not apply:**
+
+1. the harm exists only in data **already stored**, AND
+2. the code is **already correct going forward**.
+
+If the app would do the same thing again to NEW data, it is a real finding and
+this section is irrelevant to it. **"Pre-existing" alone is NOT this rule** —
+§4's own warning still stands, that the dangerous category is old code a new
+feature has just made reachable. The test is about the DATA's future, never about
+the defect's age.
+
+**What it cost to learn.** One session spent about 25 minutes building a sentence
+that can never fire again once the data is cleared (`OIL_OLD_BLOCK`: a day
+published by an older build explaining why it reads "1 pending"). A reviewer
+raised it, the owner asked for it, and the reason that made it moot arrived
+afterwards. Nobody was careless; the information came in the wrong order. **That
+is what this section exists to fix — the brief in §4 now tells both providers
+before they start, so the finding is never produced.**
+
+---
+
 ## 3. The kinds of check — what each is FOR and what each is BLIND to
 
 | The check | What it is, plainly | What it is FOR | What it CANNOT see |
@@ -191,6 +224,16 @@ result in §1.1 and the result in §4 rank 1 — use it verbatim:
 > and the working gesture should exist in the production app. Then rank concrete failure scenarios
 > with setup, action, expected result, and the observation that would disprove correctness. Start
 > with the least-shared or most specialised surface.
+
+**And tell them what is NOT a finding, in the same breath (owner, D56, 23 Sep 26)** — this sentence
+saves more time than anything else in the brief, because it stops the finding being produced rather
+than dispositioned:
+
+> This app is pre-promulgation and its entire stored world is DEMO DATA that will be CLEARED before
+> the database step. **Do not report a problem whose harm exists only in data already stored when
+> the code is already correct going forward** — no migration, no back-compat, no "an existing
+> record would read wrongly". If the app would do it again to NEW data, report it: that is a real
+> finding and this exclusion does not touch it.
 
 Also: demand **exact, step-by-step fix instructions per finding**, not a direction; and demand
 **explicit negatives** ("I checked X and found nothing") — a confident all-clear from one model on
@@ -445,6 +488,12 @@ Use these names in reviews and reports.
 18. **Blank-cell approval** — the check marked passed while part of the matrix is blank or vaguely
     "not applicable".
 19. **Owner-as-QA** — handing him an unverified build and relying on him to find the defects.
+20. **The demo-data defect** *(owner, D56, 23 Sep 26)* — a check, a reviewer or a fix spent on harm
+    that exists only in data already stored, when the code is already right going forward. The data
+    is cleared before the database step; the harm has an end date. Recognise it by the fix being a
+    migration, a back-compat path, or a sentence explaining a record an older build wrote. **Not**
+    to be confused with "pre-existing", which is about the defect's age and says nothing about
+    whether new data still gets hurt (see §2b).
 
 ---
 
