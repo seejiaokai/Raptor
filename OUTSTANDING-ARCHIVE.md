@@ -105,3 +105,72 @@ it's now escaped at display time, so already-saved names are covered too. Verifi
 end to end: merged as **PR #393** to `main` (CI green), deployed, and confirmed on
 the live site (Amendments panel renders normally, no errors). Found by the
 Astra/Codex amendment review; fixed in its own spawned session.
+
+### [OIL-SEATS-CAN-EARN] — MERGED AND LIVE 23 Sep 26 (PR #425). The item as it stood while in flight.
+
+*Kept because the reasoning behind D24/D27/D28/D31/D43 and the two halves of the change are here in
+the words they were settled in. The BUILD's own story is the evidence sheet
+`raptor-port/docs/handpass/2026-09-22-oil-seats.md`.*
+
+**STATUS 22 Sep 26: ALL 11 STEPS BUILT, the FULL-tier WALK DONE, and the five defects it left open
+now FIXED and re-walked, on branch `claude/oil-seats-can-earn`. NOT merged.** What remains before
+"merge live" may be asked for: **both providers reading the finished code, blind to each other**
+(bug-check order §4 rank 2 — this is money), then fixing what they find, re-walking that, the
+gates, and the owner's look.
+**Context → `raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-build-handoff.md`** (the resume
+doc) · **the walk's evidence → `raptor-port/docs/handpass/2026-09-22-oil-seats.md`**, §6a for the
+five and their fixes · **behaviour register →
+`…/specs/2026-09-22-oil-seats-behaviour-register.md`** — the list the rules sweep walks.
+
+**D28 merged two items into this one.** His principle: *"If everywhere in the schedule can earn oil,
+then the all avail or all puck should also be able to earn oil"* — every seat can earn, the DEFAULT
+decides whether it does, the admin can always override. That replaced both his own earlier lean
+(ALL AVAIL not on duty) and the agent's per-seat allow-list, and it removes the class of defect
+rather than enumerating around it. **Nothing earns by default that does not earn today.**
+
+**Half one — the exempt kinds (D24).** *"is it too late to revert that SC spare, Avalon and BB could
+also earn OIL? … But by default they are not going to earn OIL."* SC SPARE, AVALON lines and desks,
+and BB lines must OFFER the switch, defaulting to OFF. Today they are wholly inert — no switch, no
+door. **Not a flag flip:** all three are skipped BEFORE anyone enters the calculation (`engine/oil.ts`
+— `saExemptKind`, `f.spare`/`ac.spare`), so no item key and no person window exist for a credit to
+attach to. **Supersedes D15 and D20 on the DOOR only**; D20's second half carries forward (a duty
+block MADE from an AVALON template gets the same treatment). **D35 (22 Sep 26) makes that
+explicit: the SWITCH reaches the template-minted block too**, not only the no-earn default —
+otherwise the same seat answers differently depending on how it was made.
+
+**Half two — ALL AVAIL / ALL, which the OWNER FOUND (22 Sep 26).** A duty desk he added on his phone,
+Dash and ALL AVAIL on it: **on that seat ALL AVAIL credits NOBODY** — the day pays the 2 named people
+and writes no key for the sentinel, a silent drop. Cause: `putWho` expands a sentinel, `put` drops
+anything that is not a person, and only the Common Programme and Ground Programme PRIMARY seats use
+`putWho` — flying lines, sims, duty desks and **the extras array of every row type** use `put`.
+**PRE-EXISTING** (`main` has the same structure) but newly consequential. Measured in
+`raptor-port/scripts/handpass/w11-duty.mjs`; roll-call table in the walk sheet §11.
+
+**Half three — D27, the display half.** ALL AVAIL / ALL are a SCHEDULING feature: dropped anywhere
+they work out who would be available and SHOW THE COUNT, with OIL Earn OFF. Extends
+`[ALL-AVAIL-REDEF]` (WHO counts as available) by settling WHERE the answer shows.
+
+**ANSWERED — D31 (22 Sep 26).** A seat the rules genuinely cannot MEASURE (no times, zero length,
+cancelled, ⓘ) offers NO switch, and says why on screen instead. That is the ONE boundary on D28:
+every measurable seat offers the switch, but where there is no window a credit would be invented
+rather than earned. The refusal must NAME its reason — never a silent absence.
+
+**RED-TEAMED 22 Sep 26 — BOTH PROVIDERS RETURNED REVISE; the plan is NOT buildable as written.**
+Fable (7 must-fix, 9 should-fix) and Codex/Astra (7, four high), blind to each other, nothing
+rejected, four findings change its shape. **Read `…/2026-09-22-oil-seats-can-earn-review-log.md`
+before touching the plan** (Fable's text verbatim beside it). **D43 settles the default, more
+simply than either reviewer proposed:** the placeholder pucks are ON by default wherever they can
+land, like named people; only the four exempt KINDS default off (D24/D35). That closes the worst
+finding outright — nothing is switched off, so no issued Saturday loses credits silently.
+
+**Tier: FULL** — money, reaches an issued day, adds roll-call rows on every seat type. **Sequencing,
+his: NEXT — `[OIL-AUTO-REMOVE]` merged 22 Sep 26**, so this is unblocked and at the head of the
+queue, ahead of `[OIL-NEXT-TWO]`. **THE PLAN IS WRITTEN:**
+`raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-can-earn-plan.md` — it carries D24/D27/D28/
+D31/D32/D33/D35, the roll-call of all six seat types, four findings read off the code (the earn
+default is ON today; the earn rule is written twice; the sentinel drop is one helper not six call
+sites; placement is unrestricted today) and the order of work. **Red-team it across BOTH providers
+before a line is written.** The
+display-versus-earning cost analysis and the size estimate are in
+`raptor-port/docs/handpass/2026-09-22-oil-walk.md` §11 and §11a. Rulings: `DECISIONS.md` D24, D27, D28.
+

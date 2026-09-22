@@ -92,14 +92,16 @@ in-flight and risk-reducing** first.
    stops further growth; this is the trim itself. Do it after OIL merges, not before —
    a third of tonight's new lines are that task's scaffolding and become archive the day it
    closes. See the item below.
-**TOP OF THE QUEUE (22 Sep 26, re-ordered after D38).** **[OIL-AUTO-REMOVE] IS MERGED AND CLOSED.**
-1) **[OIL-SEATS-CAN-EARN]** — **IN FLIGHT: all 11 steps BUILT, the FULL-tier walk DONE and its five
-defects fixed and re-walked, on `claude/oil-seats-can-earn`. The two code reads are what is left.**
-Resume from `raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-build-handoff.md`.
-Plan: `…/specs/2026-09-22-oil-seats-can-earn-plan.md`. 2) **[ALL-AVAIL-WINDOW]**
-(D38, NEW) — straight after, because it opens FROM the counters that job builds. 3) **[DOCS-GUARD]**,
-scope and order settled by D30. 4) **[HUMAN-RETEST]**. 5) **[DOC-TRIM]** — unblocked now that a third
-of the OIL scaffolding became archive. 6) The stack resumes at **[DB-STEP]**.
+**TOP OF THE QUEUE (updated 23 Sep 26).** **[OIL-AUTO-REMOVE] AND [OIL-SEATS-CAN-EARN] ARE BOTH
+MERGED AND LIVE.**
+1) **[ALL-AVAIL-WINDOW]** — **NEXT, and ready to build.** The counters it opens from are now live, its
+mock-up is APPROVED and is the design of record (D41), and D38–D41 settle its shape down to the
+pixel. **Do not re-open the design; build to it.** 2) **[DOCS-GUARD]**, scope and order settled by
+D30. 3) **[HUMAN-RETEST]**. 4) **[DOC-TRIM]** — unblocked now that the OIL scaffolding has become
+archive. 5) The stack resumes at **[DB-STEP]**.
+**Small OIL follow-ups, any time, none blocking:** `[OIL-READ-LEFTOVERS]` (4 items the final reads
+raised and the branch deliberately left), `[STORE-READER-SWEEP]`, `[OIL-REQ-NAMEBOX]`,
+`[POSTOUT-LOST]`'s remaining half, `[OIL-WORDS]`.
 
 **STALE ABOVE, CORRECTED 22 Sep 26:** the "STACK PROGRESS (updated 18 Sep 26)" block says the next
 stack item is step 4 (one Absence record). **Step 4 SHIPPED on 20 Sep 26** — `raptor-port/CLAUDE.md`
@@ -834,69 +836,20 @@ the fix is to give an OIL decision its own wording rather than inheriting the ge
 `scripts/handpass/j5-undo.mjs`. **Fold into `[OIL-SEATS-CAN-EARN]` or `[OIL-WORDS]`** — not worth its
 own pass.
 
-### [OIL-SEATS-CAN-EARN] Every seat can earn, the default decides — ONE change (owner, D24 + D28, 22 Sep 26)
+### [OIL-SEATS-CAN-EARN] Every seat can earn, the default decides — **MERGED AND LIVE 23 Sep 26 (PR #425). CLOSED.**
 
-**STATUS 22 Sep 26: ALL 11 STEPS BUILT, the FULL-tier WALK DONE, and the five defects it left open
-now FIXED and re-walked, on branch `claude/oil-seats-can-earn`. NOT merged.** What remains before
-"merge live" may be asked for: **both providers reading the finished code, blind to each other**
-(bug-check order §4 rank 2 — this is money), then fixing what they find, re-walking that, the
-gates, and the owner's look.
-**Context → `raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-build-handoff.md`** (the resume
-doc) · **the walk's evidence → `raptor-port/docs/handpass/2026-09-22-oil-seats.md`**, §6a for the
-five and their fixes · **behaviour register →
-`…/specs/2026-09-22-oil-seats-behaviour-register.md`** — the list the rules sweep walks.
-
-**D28 merged two items into this one.** His principle: *"If everywhere in the schedule can earn oil,
-then the all avail or all puck should also be able to earn oil"* — every seat can earn, the DEFAULT
-decides whether it does, the admin can always override. That replaced both his own earlier lean
-(ALL AVAIL not on duty) and the agent's per-seat allow-list, and it removes the class of defect
-rather than enumerating around it. **Nothing earns by default that does not earn today.**
-
-**Half one — the exempt kinds (D24).** *"is it too late to revert that SC spare, Avalon and BB could
-also earn OIL? … But by default they are not going to earn OIL."* SC SPARE, AVALON lines and desks,
-and BB lines must OFFER the switch, defaulting to OFF. Today they are wholly inert — no switch, no
-door. **Not a flag flip:** all three are skipped BEFORE anyone enters the calculation (`engine/oil.ts`
-— `saExemptKind`, `f.spare`/`ac.spare`), so no item key and no person window exist for a credit to
-attach to. **Supersedes D15 and D20 on the DOOR only**; D20's second half carries forward (a duty
-block MADE from an AVALON template gets the same treatment). **D35 (22 Sep 26) makes that
-explicit: the SWITCH reaches the template-minted block too**, not only the no-earn default —
-otherwise the same seat answers differently depending on how it was made.
-
-**Half two — ALL AVAIL / ALL, which the OWNER FOUND (22 Sep 26).** A duty desk he added on his phone,
-Dash and ALL AVAIL on it: **on that seat ALL AVAIL credits NOBODY** — the day pays the 2 named people
-and writes no key for the sentinel, a silent drop. Cause: `putWho` expands a sentinel, `put` drops
-anything that is not a person, and only the Common Programme and Ground Programme PRIMARY seats use
-`putWho` — flying lines, sims, duty desks and **the extras array of every row type** use `put`.
-**PRE-EXISTING** (`main` has the same structure) but newly consequential. Measured in
-`raptor-port/scripts/handpass/w11-duty.mjs`; roll-call table in the walk sheet §11.
-
-**Half three — D27, the display half.** ALL AVAIL / ALL are a SCHEDULING feature: dropped anywhere
-they work out who would be available and SHOW THE COUNT, with OIL Earn OFF. Extends
-`[ALL-AVAIL-REDEF]` (WHO counts as available) by settling WHERE the answer shows.
-
-**ANSWERED — D31 (22 Sep 26).** A seat the rules genuinely cannot MEASURE (no times, zero length,
-cancelled, ⓘ) offers NO switch, and says why on screen instead. That is the ONE boundary on D28:
-every measurable seat offers the switch, but where there is no window a credit would be invented
-rather than earned. The refusal must NAME its reason — never a silent absence.
-
-**RED-TEAMED 22 Sep 26 — BOTH PROVIDERS RETURNED REVISE; the plan is NOT buildable as written.**
-Fable (7 must-fix, 9 should-fix) and Codex/Astra (7, four high), blind to each other, nothing
-rejected, four findings change its shape. **Read `…/2026-09-22-oil-seats-can-earn-review-log.md`
-before touching the plan** (Fable's text verbatim beside it). **D43 settles the default, more
-simply than either reviewer proposed:** the placeholder pucks are ON by default wherever they can
-land, like named people; only the four exempt KINDS default off (D24/D35). That closes the worst
-finding outright — nothing is switched off, so no issued Saturday loses credits silently.
-
-**Tier: FULL** — money, reaches an issued day, adds roll-call rows on every seat type. **Sequencing,
-his: NEXT — `[OIL-AUTO-REMOVE]` merged 22 Sep 26**, so this is unblocked and at the head of the
-queue, ahead of `[OIL-NEXT-TWO]`. **THE PLAN IS WRITTEN:**
-`raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-can-earn-plan.md` — it carries D24/D27/D28/
-D31/D32/D33/D35, the roll-call of all six seat types, four findings read off the code (the earn
-default is ON today; the earn rule is written twice; the sentinel drop is one helper not six call
-sites; placement is unrestricted today) and the order of work. **Red-team it across BOTH providers
-before a line is written.** The
-display-versus-earning cost analysis and the size estimate are in
-`raptor-port/docs/handpass/2026-09-22-oil-walk.md` §11 and §11a. Rulings: `DECISIONS.md` D24, D27, D28.
+Every seat can earn, the DEFAULT decides, the admin can always override (D24/D27/D28); the two
+placeholder pucks behave like named people wherever they can land (D43). The FULL-tier walk left five
+defects; closing them turned up thirteen more — **eighteen in all, each with a test red first** — and
+the last of them was found by the owner asking why the speed gate was failing. **Two of his five were
+one bug and not an OIL bug** (a man's leaving date never saved, so he walked back into the squadron on
+every reload). Both providers read the finished code twice, blind, and agreed on the same four
+findings. Live page checked after the merge.
+**Full detail moved to `OUTSTANDING-ARCHIVE.md` (D29 rule 1).** The story is
+`raptor-port/docs/handpass/2026-09-22-oil-seats.md` (the evidence sheet, §6a the five and §6b the
+reads) and `…/specs/2026-09-22-oil-seats-final-read-reconciled.md`. Rulings: D43–D50, D54, D55.
+**What it deliberately left**: `[OIL-READ-LEFTOVERS]`, `[STORE-READER-SWEEP]`, `[OIL-REQ-NAMEBOX]`,
+and `[POSTOUT-LOST]`'s remaining half.
 
 ### [ALL-AVAIL-WINDOW] The counter opens a movable window of PUCKS, not a bubble of names (owner, D38, 22 Sep 26)
 
@@ -1095,6 +1048,32 @@ These four are what was deliberately left:
 4. **A placeholder that reaches a cockpit by copy draws the jet as crewed** (Fable F8, LOW,
    pre-existing). D47 belts the money on purpose and names this; the screen half is one advisory
    away. A product call, not a defect against the plan.
+
+### [REPO-PRIVATE] Make the repo private and share it with developers — PARKED by the owner (23 Sep 26)
+
+**His words:** *"i would like to make my repo private, and share with developers on my app"*, then
+*"nvm disregard this first"* — so it is PARKED, not decided, and nothing has been changed.
+
+**What was established while it was up, so it is not re-derived:**
+- The repo is **PUBLIC** today and the live site answers **200 to anyone** with the URL, no login.
+  The hard-coded accounts are one search away in `src/state/auth.ts`, so removing credentials from
+  the README was never a security change (it was done anyway — they were STALE and contradicted the
+  24 Aug decision to keep them off the sign-in card).
+- **Pages cannot serve privately.** From a private repo it needs a paid plan, and even then the
+  published site is public — private Pages is enterprise-only. So Pages is not a sharing route at
+  any sensible price. Going private on the free plan simply turns the live site off.
+- **Collaborators** is the sharing route: Settings → Collaborators → add by GitHub username, Write.
+- **The Vercel preview is HIS alone** — it sits behind Vercel's own sign-in, and a developer cannot
+  generate one. Adding them needs a Vercel team seat (the free tier is single-person). **Developers
+  do not need it**: `cd raptor-port && npm install && npm run dev` gives each of them the whole app.
+- **MEASURED, 23 Sep 26 — one push costs 37 BILLED Actions minutes** (31 real minutes over nine
+  jobs; GitHub rounds every job up, so the rounding alone is 6). Public repos are unlimited; private
+  ones are metered. At the commonly-quoted 2,000/month that is ~54 pushes, and one heavy session
+  (23 Sep) used ~220. **His plan and live usage were NOT readable from the session** and should be
+  read off Settings → Billing and plans rather than assumed.
+
+**The recommendation on the table:** private + collaborators with Write + Pages OFF + developers run
+it locally; pay for Vercel seats only if non-developers need to look. **His call, unmade.**
 
 ### [STORE-READER-SWEEP] A stored record read more narrowly than it is written — sweep for more (22 Sep 26)
 
