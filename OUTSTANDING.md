@@ -1089,11 +1089,9 @@ These four are what was deliberately left:
    (Fable F5, LOW). **PART DONE 22 Sep 26, on his "ok fix this first".** The day used to say "1
    pending" with no cell marked and nothing in History, while the chip beside the puck said "?" —
    something changed, nothing said what, and the one place to look was never written down. The day
-   now NAMES it (`OIL_OLD_BLOCK`), so he is not republishing blind. **Still open and his:** whether
-   such a day should raise the mark at all. Leave it and he republishes once per affected day and
-   those men get their OIL (D48's correction-and-republish path); silence it and they are never paid
-   for that seat unless the day is republished for another reason. The register row now states the
-   behaviour either way.
+   now NAMES it (`OIL_OLD_BLOCK`), so he is not republishing blind. **CLOSED — RULED D54 (23 Sep 26,
+   "leave it as it is"): the day raises the mark.** He republishes once per affected day and those
+   men get their OIL. Do not re-open it later as a bug (standing order §7.6).
 4. **A placeholder that reaches a cockpit by copy draws the jet as crewed** (Fable F8, LOW,
    pre-existing). D47 belts the money on purpose and names this; the screen half is one advisory
    away. A product call, not a defect against the plan.
@@ -1232,6 +1230,13 @@ year is handled by the admin's "Reset counters". Decide next session: separate b
 carry-over rules, and which year a leave crossing 31 Dec charges. Context: clash catalogue Q10.
 
 ### [DB-STEP] The shared-database step (Dataverse) — FUTURE MILESTONE
+
+**THE DATA GETS WIPED ON THE WAY IN (owner, D54, 23 Sep 26 — "this app is going to get wiped of
+data before its being brought into a database as these are demo data anyway").** Stated as a PLAN,
+not an option: nothing now in the store has to survive the move. It is the 13 Sep dev-phase rule and
+D22 strengthened — those approved clearing when it was simpler; this says the clearing is going to
+happen, so "the harm lives only in data that already exists, and it is prevented going forward" is
+a reason to STOP, not a cost to weigh. Use it as a test on any finding from here to the database.
 The big future move: Raptor, Leave War and Tracker all run on `localStorage` /
 session today; the target is a shared database (**Dataverse** — `src/storage/`
 seam, `docs/data-model.md`). Large, design-first, its own red-team. Several parked

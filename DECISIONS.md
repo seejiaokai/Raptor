@@ -23,6 +23,12 @@ ruling, or an explicit no. **Not** ordinary task instructions ("run the tests", 
 
 ---
 
+## 23 Sep 2026
+
+| # | His ruling, in his words where short enough | What it means | Where it lives now |
+|---|---|---|---|
+| D54 | *"leave it as it is. any way this app is going to get wiped of data before its being brought into a database as these are demo data anyway"* — asked whether an already-issued weekend carrying a placeholder on a duty desk, a sim seat or an extras line should raise the pending mark the moment `[OIL-SEATS-CAN-EARN]` ships, or stay silent | **THE DAY RAISES THE MARK. LEAVE IT.** Such a day reads "1 pending", he republishes it once, and the men behind that puck get the OIL the issued day never paid them — D48's correction-and-republish path, working as he wrote it. The alternative was silence, which would have left those men unpaid for that seat unless the day were republished for some other reason, and quietly withholding earned leave is the thing this whole job exists to stop. **No code change; the behaviour stands.** What WAS built before he answered is the day's explanation of itself (`OIL_OLD_BLOCK`), because the day used to say "1 pending" with no cell marked and nothing in History while the chip beside the puck said "?" — he asked for that separately ("ok fix this first") and it is right under either answer. **THE REASON IS THE BIGGER HALF AND IT REACHES PAST THIS JOB:** the whole store is demo data and **will be wiped before the database step**, so a one-off amendment on days that already exist costs nothing and is not worth designing around. That is the 13 Sep 26 dev-phase rule and D22 **strengthened** — those said clearing is APPROVED when it is the simpler path; this says the wipe is PLANNED and certain, so "it only affects data that already exists" is now a reason to stop worrying rather than a reason to weigh. Apply it as a test to any future finding: if the harm lives only in stored demo data and is prevented going forward, it is not a defect worth building around | this file; `raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-behaviour-register.md` (the row now states the settled answer); `OUTSTANDING.md` `[OIL-READ-LEFTOVERS]` item 3 (closed as ruled) and `[DB-STEP]` (which now carries the wipe as a stated intention); memory `dev-phase-reset-demo-data-not-migrate` |
+
 ## 22 Sep 2026
 
 | # | His ruling, in his words where short enough | What it means | Where it lives now |
