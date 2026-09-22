@@ -105,7 +105,8 @@ export function withDaySnap(di:any,ver:any,fn:any){
    `fn(false)`: the version no longer resolves (unpublished, undone). It runs in
    the LIVE world, so the caller must treat it as GONE and read nothing. */
 export function withChipWorld<T>(di:any,ver:any,ofw:any,fn:(ok:boolean)=>T):T{
-  if(!ver)return fn(true)
+  /* no version, official world: the view page's draft day (Fable F6) */
+  if(!ver)return ofw?withOfficialWarn(()=>fn(true)):fn(true)
   if(!ofw)return withDaySnap(di,ver,(ok:any)=>fn(!!ok))
   const q=PVQ,o=OFW
   PVQ=true; OFW=true
@@ -559,10 +560,13 @@ export function oilSeatDeco(di:any,id:any,key:any,itemOf?:string):{oil:any;chip:
             :sum.bar?`All ${sum.n} earn ${sum.bar==='FO'?'a full day':'half a day'} — tap to see each one`
               :`None of these ${sum.n} earn OIL today — tap to see each one`)+from;
     return {oil:sum.bar?{bar:sum.bar}:null,
-      /* data-oilofw: drawn on the view page's ISSUED FACE, which wears its
-         OFFICIAL flags — so the window this chip opens can replay that exact
-         world rather than a bare preview's (Fable S3, withChipWorld below) */
-      chip:`<span class="oilcount${some?' some':''}" data-oilsent="${esc(item)}" data-oilday="${+di}" data-oilver="${esc(ver)}"${ver&&OFW?' data-oilofw="1"':''} title="${esc(ttl)}">${txt}</span>`};
+      /* data-oilofw: the chip was drawn in the OFFICIAL flag world — the view
+         page's ISSUED FACE (OFW), or a draft day the view page resolves in the
+         official world (withOfficialWarn — Fable F6: its window drew the
+         working world's flags). The window replays exactly that world
+         (withChipWorld below). A version preview (PV without OFW) never
+         carries it: a past version is read, not checked. */
+      chip:`<span class="oilcount${some?' some':''}" data-oilsent="${esc(item)}" data-oilday="${+di}" data-oilver="${esc(ver)}"${(ver?OFW:WARN===officialWarn())?' data-oilofw="1"':''} title="${esc(ttl)}">${txt}</span>`};
   }
   return {oil:oilBarOf(di,id,item),chip:''};
 }

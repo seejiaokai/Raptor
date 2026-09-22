@@ -15,7 +15,6 @@
        shipping silently. */
 import { afterEach, describe, expect, it } from 'vitest'
 import * as view from './view'
-import * as pops from '../ui/pops'
 
 /* put every registry field into a non-default state, so a clear is observable */
 function dirtyAll() {
@@ -26,7 +25,7 @@ function dirtyAll() {
   view.setHlOpen(true); view.setHlGroup('cat'); view.setInpView('cal'); view.setCalMonth({ y: 2026, m: 7 }); view.setMedAsOf('2026-07-01')
   view.setRestArm(1, 'orig')
   view.setRosDay(4); view.setSecDefOffer(2)
-  pops.setAvailWin({ di: 0, item: 'r:x', ver: '', name: 'OPS BRIEF', when: '', tab: 'who' })
+  view.setAvailWin({ di: 0, item: 'r:x', ver: '', name: 'OPS BRIEF', when: '', tab: 'who' })
 }
 const setsEmpty = () =>
   view.DPREV.size === 0 && view.VWORK.size === 0 && view.AVSHUT.size === 0 && view.PIOPEN.size === 0 &&
@@ -48,7 +47,7 @@ describe('the reset registry', () => {
     expect(view.CALMONTH).toBe(null)
     expect(view.MEDASOF).toBe(null)
     expect(view.RESTARM, 'the load-onto-working-copy confirm resets (leak the registry closed)').toBe(null)
-    expect(pops.AVAILWIN, "the counter's window closes on a login/logout (D66, Fable S12)").toBe(null)
+    expect(view.AVAILWIN, "the counter's window closes on a login/logout (D66, Fable S12)").toBe(null)
   })
 
   it("resetViewState('week') clears the week fields but leaves the session-only page state standing", () => {
@@ -60,7 +59,7 @@ describe('the reset registry', () => {
     expect(view.ROSDAY).toBe(0)
     expect(view.SECDEFOFFER).toBe(null)
     expect(view.RESTARM, 'the working-copy confirm is cancelled by a week swap too').toBe(null)
-    expect(pops.AVAILWIN, "the counter's window closes on a week swap (D66, Fable S4)").toBe(null)
+    expect(view.AVAILWIN, "the counter's window closes on a week swap (D66, Fable S4)").toBe(null)
     /* session-only view state survives a week swap on purpose */
     expect(view.HLGROUP, 'Highlight group tab survives a week swap').toBe('cat')
     expect(view.HLOPEN, 'Highlight fold survives a week swap').toBe(true)
@@ -101,11 +100,7 @@ describe('the reset registry', () => {
 
   it('every VIEW_RESET entry names a real export and carries at least one scope', () => {
     for (const e of view.VIEW_RESET) {
-      /* a field may live in the pop-up state module rather than here — the
-         counter's window (AVAILWIN, D66) is ui/pops.ts state that a page, week
-         or session change must still close — so a name is real if EITHER module
-         exports it. A misspelt or stale entry still fails. */
-      expect((view as any)[e.name] !== undefined || (pops as any)[e.name] !== undefined || ['HISTMODE', 'CARRYDAY', 'HLOPEN', 'INPVIEW', 'CALMONTH', 'MEDASOF', 'ROSDAY', 'SECDEFOFFER'].includes(e.name), `${e.name} is a real view export`).toBe(true)
+      expect((view as any)[e.name] !== undefined || ['HISTMODE', 'CARRYDAY', 'HLOPEN', 'INPVIEW', 'CALMONTH', 'MEDASOF', 'ROSDAY', 'SECDEFOFFER'].includes(e.name), `${e.name} is a real view export`).toBe(true)
       expect(e.scopes.length, `${e.name} has a scope`).toBeGreaterThan(0)
     }
   })

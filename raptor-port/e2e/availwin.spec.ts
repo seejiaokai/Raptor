@@ -190,3 +190,87 @@ test('desktop: a window dragged to the right edge stays reachable when the brows
   await page.click('.availwin .win-x', { timeout: 3000 })
   await expect(page.locator('.availwin')).toBeHidden()
 })
+
+/* ---- the final reads (Astra 3, Fable's placement notes), 23 Sep 26 --------- */
+async function boardWithTwoChips(page: Page) {
+  await login(page, 'a')
+  await go(page, 'editsched')
+  await page.evaluate(() => {
+    const w = window as any
+    w.DAYS[0].allhands = [
+      { prog: 'SAFETY BRIEF', str: '08:00', end: '10:00', who: 'allavail' },
+      { prog: 'OPS BRIEF', str: '14:00', end: '15:00', who: 'allavail' },
+    ]
+    w.afterSchedMutate()
+    w.openScheduler(0)
+  })
+  await page.waitForSelector('#schedBoard:not([hidden]) [data-oilsent]', { state: 'visible' })
+}
+
+/* ASTRA 3 — a desktop box never beats the phone layout. Dragged on a desktop,
+   then the screen narrowed to a phone: the panel is the approved full-width one;
+   back to the desktop, and the position he dragged it to comes back. */
+test('a window dragged on a desktop becomes the phone panel on a phone, and gets its place back after', async ({ page }) => {
+  await page.setViewportSize(DESK)
+  await boardWithChip(page)
+  await openFromBoard(page)
+  await dragBar(page, -400, 120)
+  const dragged = await winRect(page)
+  await page.setViewportSize(PHONE)
+  await page.evaluate(() => (window as any).afterSchedMutate())
+  await page.waitForTimeout(250)
+  const r = await winRect(page)
+  expect(r.left, 'the phone panel, not the desktop box').toBe(12)
+  expect(PHONE.width - r.right).toBe(12)
+  expect(PHONE.height - r.bottom).toBe(12)
+  await page.setViewportSize(DESK)
+  await page.waitForTimeout(250)
+  expect((await winRect(page)).left, 'the desktop place comes back').toBe(dragged.left)
+})
+
+test('phone: a panel dragged down follows a new phone width, bar still reachable', async ({ page }) => {
+  await page.setViewportSize(PHONE)
+  await boardWithChip(page)
+  await openFromBoard(page)
+  await dragBar(page, 0, 200)
+  const down = await winRect(page)
+  expect(down.top, 'it moved down').toBeGreaterThan(400)
+  await page.setViewportSize({ width: 430, height: 932 })
+  await page.evaluate(() => (window as any).afterSchedMutate())
+  await page.waitForTimeout(250)
+  const r = await winRect(page)
+  expect(r.left).toBe(12)
+  expect(430 - r.right, 'full width at the NEW width').toBe(12)
+  expect(r.top, 'its bar is on screen').toBeLessThanOrEqual(932 - 42)
+})
+
+/* a plain TAP on the bar is not a move: the window keeps following its corner */
+test('desktop: a tap on the bar does not pin the window — widening the browser keeps it in its corner', async ({ page }) => {
+  await page.setViewportSize(DESK)
+  await boardWithChip(page)
+  await openFromBoard(page)
+  await page.click('.availwin .win-ttl')
+  await page.setViewportSize({ width: 1700, height: 950 })
+  await page.waitForTimeout(250)
+  expect(1700 - (await winRect(page)).right, 'still hugging the right edge').toBe(16)
+})
+
+/* a second chip tapped while the window is open keeps the place he gave it */
+test('desktop: tapping a second chip while the window is open keeps it where he dragged it', async ({ page }) => {
+  await page.setViewportSize(DESK)
+  await boardWithTwoChips(page)
+  await page.locator('#schedBoard [data-oilsent]:visible').first().click()
+  await page.waitForSelector('.availwin:not([hidden])', { state: 'visible' })
+  await dragBar(page, -500, 100)
+  const placed = await winRect(page)
+  /* sent straight to the chip: the dragged window may be over it, and what is
+     under test is where the window stays, not whether that chip can be reached */
+  await page.evaluate(() => {
+    const c = [...document.querySelectorAll('#schedBoard [data-oilsent]')].filter(e => (e as HTMLElement).offsetParent)[1] as HTMLElement
+    c.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+  })
+  await page.waitForTimeout(300)
+  const r = await winRect(page)
+  expect(await page.locator('.availwin .win-ttl').innerText(), 'the second event is showing').toContain('OPS BRIEF')
+  expect(r.left, 'in the place he put it').toBe(placed.left)
+})

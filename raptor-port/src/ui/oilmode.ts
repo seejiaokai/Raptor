@@ -55,6 +55,7 @@ import { OILDAY, setOilDay, afterSchedMutate, esc } from '../state/view'
 import { CURWEEK } from '../engine/waves'
 import { parseHM, win, hm24 } from '../engine/time'
 import { stashKeys, stashEditDays } from '../engine/weekstash'
+import { whoArr } from '../engine/slots'
 import { isDraftVer } from '../engine/drafts'
 import { undoMark } from '../undo'
 
@@ -833,7 +834,7 @@ export const oilFromWords = (ver: any) => (ver && !isDraftVer(ver) ? OIL_FROM_IS
  *  rather than assumed impossible). A claim is named by WHAT IT IS, never by
  *  what is drawn in its cell — hand-pass finding 14, which produced history
  *  lines like "Sidewinder earns nothing from SidewinderFO". */
-export function oilItemLabel(di: any, item: string): { name: string, when: string, s: number | null, e: number | null, found: boolean } {
+export function oilItemLabel(di: any, item: string): { name: string, when: string, s: number | null, e: number | null, found: boolean, puck: boolean, cx: boolean, info: boolean } {
   const d: any = DAYS[+di] || {}
   const hhmm = (v: any) => { const t = String(v || '').replace(':', '').trim()
     return t.length === 4 ? `${t.slice(0, 2)}:${t.slice(2)}` : t }
@@ -845,41 +846,59 @@ export function oilItemLabel(di: any, item: string): { name: string, when: strin
      open end is left open rather than guessed — a row with no end time cannot
      be said to clash with anything, and inventing one would put a flag on a
      man for a clash that may not exist. */
-  const out = (name: any, a?: any, b?: any, sm?: number | null, em?: number | null, found = true) => {
+  /* `f` — WHAT THE ROW ITSELF SAYS, so a list that cannot be worked out is
+     explained by its real reason (Fable F1, 23 Sep 26): a placeholder still on
+     the row (`puck`), a cancelled row (`cx`), an information-only row (`info`).
+     The OIL walk skips all three, and the window used to call every one of them
+     "no puck on this row any more" while the puck sat there behind it. */
+  const out = (name: any, a?: any, b?: any, sm?: number | null, em?: number | null, found = true,
+               f: { puck?: boolean, cx?: boolean, info?: boolean } = {}) => {
     const w = span(a, b)
     const s0 = sm != null ? sm : parseHM(a), e0 = em != null ? em : parseHM(b)
     const ww = s0 != null && e0 != null ? win(s0, e0) : null
     return { name: String(name || 'This event').trim() || 'This event',
              when: [dayLbl, w].filter(Boolean).join(' · '),
-             s: ww ? ww[0] : null, e: ww ? ww[1] : null, found }
+             s: ww ? ww[0] : null, e: ww ? ww[1] : null, found,
+             puck: !!f.puck, cx: !!f.cx, info: !!f.info }
   }
+  /* the OIL walk's own test for a placeholder: an id that resolves special */
+  const sentOn = (vals: any[]) => vals.some(v => { const id = whoId(v); return !!id && isSpecial(id) })
+  const flags = (r: any, vals: any[]) => ({ puck: sentOn(vals), cx: !!(r && r.cx), info: !!(r && r.info) })
   /* NOT FOUND is said, not guessed (Fable S14): the window outlives the row
      that opened it, and a row deleted behind it must read as GONE — never as a
      confident "0 available" under the old title. */
   const lost = (name: string) => out(name, '', '', null, null, false)
   if (!item) return lost('This event')
-  /* a landed request: the type's LONG name, the same one the history uses.
-     ITS WINDOW IS THE ONE ITS CROWD WAS RESOLVED OVER — `inpWin`, the same call
-     `projectOilInputs` hands the resolver — so an all-day request is the whole
-     day here too, and the flags and the membership measure one window. Its
-     times are stored as MINUTES, so they print through hm24; the string fold
-     the rows use would read 1020 as "10:20" when it means 17:00. */
+  /* A LANDED REQUEST IS READ FROM ITS LANDED ROW ON THE INSTALLED DAY — never
+     from the live Inputs page (Astra 1 + Fable F2, 23 Sep 26, found by both).
+     The row is part of the day, so an issued snapshot keeps the name and the
+     times it went out with, while INPUTS is global and not frozen: reading it
+     here retitled an issued window with TODAY's request, measured its flags
+     over today's times, and called the row gone once the request was deleted —
+     while the issued schedule still showed it. On the working copy the landed
+     row is rebuilt from the live request on every edit, so the two agree.
+     ITS WINDOW IS THE ONE ITS CROWD WAS RESOLVED OVER: the row carries the
+     request's own times (acceptInput writes them), and a row with no usable
+     times is an all-day request, whose crowd `inpWin` resolves over the whole
+     day — so the flags and the membership measure one window. */
   if (item.startsWith('i:')) {
-    const r = (INPUTS as any[]).find(x => x && String(inpId(x)) === item.slice(2))
-    const t = r ? String(r.type || '').trim() : ''
-    if (!r) return lost('Request')
-    const w = inpWin(r)
-    const ok = !!w && w[1] > w[0]
-    return r.allday || r.s == null || r.e == null
-      ? out(t || 'Request', '', '', ok ? w![0] : null, ok ? w![1] : null)
-      : out(t || 'Request', hm24(r.s), hm24(r.e), ok ? w![0] : null, ok ? w![1] : null)
+    const iid = item.slice(2)
+    const g = (d.ground || []).find((x: any) => x && x.src != null && String(x.src) === iid)
+    if (!g) return lost('Request')
+    const s0 = parseHM(g.str), e0 = parseHM(g.end)
+    const timed = s0 != null && e0 != null && s0 !== e0
+    return out(g.prog || 'Request', timed ? g.str : '', timed ? g.end : '', timed ? null : 0, timed ? null : 1439,
+      true, flags(g, [g.who, ...(g.more || [])]))
   }
-  for (const r of (d.ground || [])) if (r && groundItemKey(r) === item) return out(r.prog, r.str, r.end)
-  for (const r of (d.allhands || [])) if (r && rowItemKey(r.rid) === item) return out(r.prog, r.str, r.end)
+  for (const r of (d.ground || [])) if (r && groundItemKey(r) === item)
+    return out(r.prog, r.str, r.end, null, null, true, flags(r, [r.who, ...(r.more || [])]))
+  for (const r of (d.allhands || [])) if (r && rowItemKey(r.rid) === item)
+    return out(r.prog, r.str, r.end, null, null, true, flags(r, [...whoArr(r), ...(r.more || [])]))
   for (const b of (d.dutywaves || [])) for (const r of ((b && b.rows) || []))
-    if (r && rowItemKey(r.rid) === item) return out(r.role, r.str, r.end)
+    if (r && rowItemKey(r.rid) === item) return out(r.role, r.str, r.end, null, null, true, flags(r, [r.id, ...(r.more || [])]))
   for (const k of Object.keys(d.sims || {})) for (const r of ((d.sims[k]) || []))
-    if (r && rowItemKey(r.rid) === item) return out(`${String(k).toUpperCase()} · ${r.label || ''}`.trim(), r.str, r.end)
+    if (r && rowItemKey(r.rid) === item) return out(`${String(k).toUpperCase()} · ${r.label || ''}`.trim(), r.str, r.end,
+      null, null, true, flags(r, [r.p, r.w, ...(r.pax || []), ...(r.more || [])]))
   for (const w of (d.waves || [])) for (const f of ((w && w.formations) || []))
     if (f && rowItemKey(f.rid) === item) return out([f.cs, f.msn].filter(Boolean).join(' · '), f.to, f.ld)
   return lost('This event')
@@ -894,6 +913,24 @@ export function oilRequestName(item: string): string {
   const r = (INPUTS as any[]).find(x => x && String(inpId(x)) === item.slice(2))
   const meta: any = r ? inpMeta(r.type) : null
   return r ? String((meta && meta.name) || inpLabel(r) || '').trim() : ''
+}
+/** WHAT THE HISTORY CALLS AN EVENT — ONE body for the board's line and the
+ *  window's (Fable F5, 23 Sep 26: a switch made in the window on a sim row read
+ *  "OFT · EP1" in History where the same switch from the board read
+ *  "EP1"). Moved here from board.ts so the two can never name one row apart.
+ *  A REQUEST by its long type name (oilRequestName). Anything else by the name
+ *  the mode has drawn in its item cell, read back off the page — the board's
+ *  reading since 21 Sep 26, and valid for the window too, because the earn
+ *  switch exists only while the mode is on, and the mode lives on an open board
+ *  that has drawn those cells. Matched by attribute so no key needs escaping. */
+export function oilItemHistName(di: any, item: string): string {
+  if (!item) return 'this event'
+  const t = oilRequestName(item)
+  if (t) return t
+  if (typeof document === 'undefined') return 'this event'
+  for (const el of Array.from(document.querySelectorAll(`[data-oilitem][data-oilday="${+di}"]`)))
+    if ((el as HTMLElement).dataset.oilitem === item) return ((el.textContent || '').trim()) || 'this event'
+  return 'this event'
 }
 /** THE SENTENCE A SWITCH OF ONE MAN LEAVES — in the history, on the board's
  *  toast and in the window's footer. One body, so a switch made in the window

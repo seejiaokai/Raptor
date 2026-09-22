@@ -12,9 +12,6 @@ import { isLead, isInstr, isOcu } from '../engine/people'
 import { HOOKS, runSchedEpilogue } from '../engine/hooks'
 import { canEditSched, ME } from './auth'
 import { flagDrop } from './dropflag'
-/* the counter's window state (D66 — closed on a page, week or session change).
-   pops.ts is a leaf module with no imports of its own, so this adds no cycle. */
-import { setAvailWin, AVAILWIN } from '../ui/pops'
 
 /* the repaint/gesture call sites inside these verbatim bodies route through
    the hooks — no-ops headless, mapped to the store's notify() when wired */
@@ -347,6 +344,74 @@ export function closeBoardState(){
 export let SECDEFOFFER: number | null = null
 let secDefSeq = 0
 export function setSecDefOffer(v: number | null){ SECDEFOFFER = v; if(v!=null) secDefSeq++ }
+
+/* ---- [ALL-AVAIL-WINDOW] — the counter's window (owner, D38–D41) -----------
+   HELD HERE, not in ui/pops (which re-exports it), so the page, week and
+   session resets below can close it (D66) without state reaching into ui.
+   A THIRD KIND OF TRANSIENT SURFACE, and the app's first. Not a Sheet (scrim,
+   Escape, blocks everything) and not an inline popup (dismisses on an outside
+   click — the 4 Sep 26 standing rule). It stays open while the scheduler
+   SCROLLS AND EDITS the schedule behind it, and it is movable and resizable.
+   Its contract is in docs/ui-contracts.md, which states in writing that the
+   outside-click rule does NOT apply to it — or a later session will "fix" it.
+
+   `ver` is the version the counter chip was drawn in (Codex OSE-R2-05). Empty
+   means the chip came from the working copy. It is carried rather than re-read
+   because the snapshot is installed only while the page is built: reading the
+   live day when the window opens would list whoever is free NOW under a number
+   frozen when the day went out, which is the one thing D44 forbids. */
+export type AvailWin = {
+  di: number
+  item: string
+  ver: string
+  /* the chip was drawn on the view page's ISSUED FACE, which wears its
+     OFFICIAL flags — so the window replays that world, not a bare preview's
+     (Fable S3; html.ts withChipWorld). Absent = not the issued face. */
+  ofw?: boolean
+  /* the event's own words for the title bar, captured at open: the window
+     outlives the row that opened it (he can edit the schedule behind it), and
+     re-deriving the name from a row he has since renamed would retitle the
+     window under him. */
+  name: string
+  when: string
+  /* 'who' = who is available, always offered. 'oil' = who earns, which EXISTS
+     ONLY while OIL Earn is on (the mode rule, confirmed 22 Sep 26). */
+  tab: 'who' | 'oil'
+}
+export let AVAILWIN: AvailWin | null = null
+/* EVERY OPEN AND EVERY CLOSE GOES THROUGH HERE, so this is where a window
+   starts clean: its footer sentence and its position are reset with it. Both
+   used to outlive the window (Fable S11): the footer lived in the component,
+   which is never unmounted, and the position was reset by each caller that
+   remembered to. Open A, tap a man, close, open B — and B's footer still spoke
+   about a man who is not behind B. Found for real on 23 Sep 26, when this
+   file's own tests leaked one window's sentence into the next. */
+export function setAvailWin(v: AvailWin | null) { AVAILWIN = v; AVAILWIN_FOOT = ''; AVAILWIN_BOX = null }
+/* a tab change is a new list, so it starts with the tab's own hint */
+export function setAvailTab(t: 'who' | 'oil') { if (AVAILWIN) AVAILWIN = { ...AVAILWIN, tab: t }; AVAILWIN_FOOT = '' }
+/* THE SENTENCE UNDER THE LIST after a tap — "X — why", or what a switch did.
+   Empty = the tab's own hint. Kept beside the window it belongs to, never in
+   the component, for the reason above. */
+export let AVAILWIN_FOOT = ''
+export function setAvailFoot(s: string) { AVAILWIN_FOOT = s }
+
+/* WHERE THE WINDOW SITS, kept OUTSIDE React on purpose. He edits the schedule
+   behind it, so every keystroke notifies and re-renders; position held in
+   component state would be thrown away on the first one. A drag writes the
+   element's style directly at pointer speed and commits here on release, so
+   dragging never re-renders the app either. null = where the STYLESHEET puts
+   it (Fable S8): the corner on a desktop, the full-width bottom panel on a
+   phone. D40's numbers — it OPENS SKINNY at 212px (two 74px pucks, their gap
+   and ~16px of slack per column) with 186 as the floor, below which a puck
+   clips — live in scheduler.css `.availwin`, and ONLY there: they used to be
+   pinned inline from here as well, and an inline size beats the phone rule. */
+/* `phone`: which LAYOUT the box was made in (Astra 3). A desktop box never
+   applies on a phone, where the stylesheet owns the panel's size, and a phone
+   box never applies on a desktop — each layout keeps its own, so a trip
+   through the other one gives it back. */
+export type AvailBox = { x: number, y: number, w: number, h: number, phone?: boolean }
+export let AVAILWIN_BOX: AvailBox | null = null
+export function setAvailWinBox(b: AvailBox | null) { AVAILWIN_BOX = b }
 export function secDefOfferSeq(){ return secDefSeq }
 /* the two pages that ARE a week, and the scroller each one owns */
 export const WEEK_EL:any={viewsched:'vWeek',editsched:'eWeek'}

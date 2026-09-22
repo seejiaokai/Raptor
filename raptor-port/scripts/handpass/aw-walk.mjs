@@ -113,6 +113,17 @@ await step('3-drag-then-edit-behind', async () => {
   await shot(page, '03-desk-dragged-and-edited-behind')
   return { moved, after: after.rect, stillOpen: after.open }
 })
+/* re-walk after the final reads: F1 — a row whose end is cleared behind the
+   window says WHY nobody is worked out, never "no puck any more" */
+await step('3b-end-cleared-behind', async () => {
+  const gi = await page.evaluate(() => window.DAYS[5].ground.findIndex(x => x.prog === 'OPS BRIEF'))
+  await type(page, `[data-bfld="gr:${DI}.${gi}.end"]`, '')
+  const w = await win()
+  await shot(page, '03b-desk-end-cleared-window-says-why')
+  await type(page, `[data-bfld="gr:${DI}.${gi}.end"]`, '17:00')
+  const back = await win()
+  return { lost: w.lost, one: w.one, backRows: (back.rows || []).length }
+})
 await step('4-close-reopen-corner', async () => {
   await closeWin()
   const w = await openChip(OPS)

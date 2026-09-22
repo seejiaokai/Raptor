@@ -31,7 +31,8 @@ import { useVersion } from './useStore'
 import { canEditSched } from '../state/auth'
 import { esc, selectPerson } from '../state/view'
 import { personPuckHTML, personWarnMsgs, withChipWorld } from './html'
-import { oilModeOn, oilSeatHTML, toggleOilPerson, oilFigureFor, oilBlanketOn, oilItemMasked, oilFromWords, oilItemLabel, oilRequestName, oilPersonSays, evOf } from './oilmode'
+import { oilModeOn, oilSeatHTML, toggleOilPerson, oilFigureFor, oilBlanketOn, oilItemMasked, oilFromWords, oilItemLabel, oilItemHistName, oilPersonSays, evOf } from './oilmode'
+import { draftVerLabel } from '../engine/drafts'
 import { oilSentOf, oilReadPass } from '../engine/oilev'
 import { logAction } from '../engine/editlog'
 import { crowdClashes } from '../engine/validate'
@@ -56,7 +57,13 @@ export function openAvailWinFrom(osn: HTMLElement) {
   const di = +(osn.dataset.oilday || -1), item = osn.dataset.oilsent || '', ver = osn.dataset.oilver || ''
   const ofw = osn.dataset.oilofw === '1'
   const lbl = withChipWorld(di, ver, ofw, () => oilItemLabel(di, item))
+  /* A NEW SUBJECT FOR AN OPEN WINDOW KEEPS ITS PLACE (Fable, final read): he
+     dragged it aside to see the board, and tapping a second chip should not
+     throw it back over what he is looking at. A window opened fresh still
+     starts where the stylesheet puts it (S11). */
+  const keep = AVAILWIN ? AVAILWIN_BOX : null
   setAvailWin({ di, item, ver, ofw, name: lbl.name, when: lbl.when, tab: oilModeOn(di) && !ver ? 'oil' : 'who' })
+  if (keep) setAvailWinBox(keep)
 }
 
 /* D38/D51 — the LEFT column is the pilots and the RIGHT column is the WSOs, so
@@ -67,12 +74,17 @@ export function openAvailWinFrom(osn: HTMLElement) {
    record, never re-derived from a qualification letter. */
 const isWso = (id: string) => ((PEOPLE as any)[id] || {}).seat === 'RCP'
 
+/* THE PHONE LAYOUT — the stylesheet's own breakpoint for the window (the
+   ≤620px rule in scheduler.css), asked of the browser, so the two can never
+   disagree about which layout a box belongs to (Astra 3). */
+const phoneLayout = () => typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia('(max-width:620px)').matches
+
 
 export function AvailWindow() {
   useVersion()
   const open = AVAILWIN
   const el = useRef<HTMLDivElement | null>(null)
-  const drag = useRef<{ dx: number, dy: number, w: number, h: number } | null>(null)
+  const drag = useRef<{ dx: number, dy: number, w: number, h: number, x0: number, y0: number, moved: boolean } | null>(null)
 
   /* WHERE THE WINDOW SITS — ONE BODY for every render and every browser resize
      (Fable S8, S11, S15). He edits the schedule behind it, so every keystroke
@@ -94,8 +106,21 @@ export function AvailWindow() {
     const n = el.current
     if (!n || !AVAILWIN || drag.current) return
     const b = AVAILWIN_BOX
-    if (!b) {
+    const phone = phoneLayout()
+    /* a box made in the OTHER layout is kept, not applied (Astra 3): a desktop
+       size must never beat the phone rule, and a trip through the phone width
+       gives the desktop box back */
+    if (!b || !!b.phone !== phone) {
       n.style.left = n.style.top = n.style.right = n.style.bottom = n.style.width = n.style.height = ''
+      return
+    }
+    if (phone) {
+      /* THE PHONE PANEL IS THE STYLESHEET'S — full width at 12px margins, 62%
+         tall (D41). Only how far he dragged it up or down is his, so only its
+         top is written, clamped so the bar stays on screen. */
+      n.style.left = n.style.right = n.style.width = n.style.height = ''
+      n.style.bottom = 'auto'
+      n.style.top = Math.min(Math.max(0, b.y), Math.max(0, window.innerHeight - 42)) + 'px'
       return
     }
     n.style.right = 'auto'; n.style.bottom = 'auto'
@@ -131,10 +156,16 @@ export function AvailWindow() {
          wrote onto the element, or, once he has a box, one that differs from it. */
       if (drag.current) return
       const b = AVAILWIN_BOX
+      /* ...and a size the STYLESHEET decided is never his: on a phone the
+         panel's size is the phone rule's, and so is the size the window takes
+         on a desktop while it holds a phone box. Committing those overwrote a
+         desktop place on the way through a phone width (caught by the e2e,
+         23 Sep 26), so the desktop position never came back. */
+      if (phoneLayout() || (b && b.phone)) return
       if (!b && !n.style.width && !n.style.height) return
       const r = n.getBoundingClientRect()
       if (b && Math.abs(r.width - b.w) < 1 && Math.abs(r.height - b.h) < 1) return
-      setAvailWinBox({ x: r.left, y: r.top, w: r.width, h: r.height })
+      setAvailWinBox({ x: r.left, y: r.top, w: r.width, h: r.height, phone: false })
     })
     ro.observe(n)
     return () => ro.disconnect()
@@ -258,11 +289,18 @@ export function AvailWindow() {
        empty list under the old title: "Who's available 0 — none —", which reads
        as "nobody is free for OPS BRIEF". Undo brings the row back, and the list
        with it, because this is read afresh on every render. */
-    const lost = !lbl.found
-      ? 'This row is no longer on the schedule.'
-      : sent.state !== 'resolved'
-        ? 'There is no ALL or ALL AVAIL puck on this row any more.'
-        : ''
+    /* ...and the three other reasons the OIL walk skips a row, each named for
+       what it is (Fable F1, 23 Sep 26): he edits behind the window, so a row
+       cancelled, marked information-only or left without a usable time is
+       reached by ordinary use — and every one of them used to read "no puck on
+       this row any more" with the puck sitting there behind it. */
+    const lost = !lbl.found ? 'This row is no longer on the schedule.'
+      : sent.state === 'resolved' ? ''
+      : lbl.cx ? 'This row is cancelled, so nobody is worked out for it.'
+      : lbl.info ? 'This row is information only, so nobody is worked out for it.'
+      : !lbl.puck ? 'There is no ALL or ALL AVAIL puck on this row any more.'
+      : (lbl.s == null || lbl.e == null || lbl.e <= lbl.s) ? 'This row has no usable start and end times, so nobody can be worked out for it.'
+      : ''
     const body = lost
       ? `<div class="win-lost">${esc(lost)}</div>`
       : `<div class="rcols">${col('Pilots', pilots)}${col('WSOs', wsos)}</div>`
@@ -334,7 +372,7 @@ export function AvailWindow() {
          line (Fable S7: it left none, and the window is now the only door to
          switching one crowd member off). */
       const on = toggleOilPerson(di, id, item)
-      const said = oilPersonSays(cs, oilRequestName(item) || m.lbl.name, on)
+      const said = oilPersonSays(cs, oilItemHistName(di, item), on)
       logAction(di, said)
       setAvailFoot(said + '.')
       notify()
@@ -369,7 +407,7 @@ export function AvailWindow() {
     if (!n) return
     if ((e.target as HTMLElement).closest('.win-x')) return
     const r = n.getBoundingClientRect()
-    drag.current = { dx: e.clientX - r.left, dy: e.clientY - r.top, w: r.width, h: r.height }
+    drag.current = { dx: e.clientX - r.left, dy: e.clientY - r.top, w: r.width, h: r.height, x0: e.clientX, y0: e.clientY, moved: false }
     n.style.left = r.left + 'px'; n.style.top = r.top + 'px'
     n.style.right = 'auto'; n.style.bottom = 'auto'
     n.style.width = r.width + 'px'; n.style.height = r.height + 'px'
@@ -384,19 +422,25 @@ export function AvailWindow() {
   const onBarMove = (e: React.PointerEvent) => {
     const d = drag.current, n = el.current
     if (!d || !n) return
+    if (Math.abs(e.clientX - d.x0) > 3 || Math.abs(e.clientY - d.y0) > 3) d.moved = true
     const x = Math.min(Math.max(0, e.clientX - d.dx), Math.max(0, window.innerWidth - d.w))
     /* never let the bar itself go off the bottom: a window dragged past the
        edge could not be grabbed again, and it has no scrim to dismiss it */
     const y = Math.min(Math.max(0, e.clientY - d.dy), Math.max(0, window.innerHeight - 42))
     n.style.left = x + 'px'; n.style.top = y + 'px'
   }
+  /* ONLY A REAL MOVE IS REMEMBERED (Fable, final read): a plain tap on the bar
+     used to turn the stylesheet's placement into a pinned box, so the window
+     stopped following its corner when the browser was widened. A tap puts the
+     stylesheet back in charge. */
   const onBarUp = () => {
-    const n = el.current
-    if (drag.current && n) {
+    const d = drag.current, n = el.current
+    if (d && d.moved && n) {
       const r = n.getBoundingClientRect()
-      setAvailWinBox({ x: r.left, y: r.top, w: r.width, h: r.height })
+      setAvailWinBox({ x: r.left, y: r.top, w: r.width, h: r.height, phone: phoneLayout() })
     }
     drag.current = null
+    if (d && !d.moved) place()
   }
 
   return (
@@ -444,7 +488,9 @@ export function AvailWindow() {
       <div
         className={'win-body' + (oil ? ' oilview' : '')}
         onClick={onBody}
-        dangerouslySetInnerHTML={{ __html: m ? m.body : '' }}
+        /* the belt for a version that vanished by a path nobody listed (Fable
+           F3): say so, never a blank window */
+        dangerouslySetInnerHTML={{ __html: m ? m.body : '<div class="win-lost">This version is no longer available.</div>' }}
       />
 
       {/* WHICH OF THE TWO ANSWERS THIS IS (D37, D44) — the ONE thing the toast
@@ -454,7 +500,10 @@ export function AvailWindow() {
           saying different amounts of truth about the same number. Always on
           screen, never only in the footer, because the footer is overwritten the
           moment he taps a man. */}
-      <div className="win-from">{oilFromWords(ver)}</div>
+      {/* AND WHICH VERSION (Fable F4): a window opened from an older issue, or a
+          plan, outlives the face it came from — "when this day was issued" alone
+          would read as the current issue after the next one goes out */}
+      <div className="win-from">{oilFromWords(ver)}{ver ? ` — ${draftVerLabel(di, ver)}` : ''}</div>
 
       <div className="win-foot"><span className="hint">{hint}</span></div>
     </div>

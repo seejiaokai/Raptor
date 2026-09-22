@@ -31,14 +31,17 @@ import { oilFigureFor } from './oilmode'
 import { openScheduler } from './board'
 import { setOilDay } from '../state/view'
 import * as view from '../state/view'
-import { AVAILWIN } from './pops'
+import { AVAILWIN, setAvailWin } from './pops'
 import { availableFor } from '../leavewar/sync'
 import { loadWeek, resetSession } from '../state/store'
 import { CURWEEK } from '../engine/waves'
 import { shiftWeek } from './weeknav'
 import { stashClear } from '../engine/weekstash'
 import { signOf, setDayApproved, dayCurVer } from '../engine/publish'
-import { validate } from '../engine/validate'
+import { validate, WARN, officialWarn, withOfficialWarn } from '../engine/validate'
+import { acceptInput } from '../engine/slots'
+import { draftVerLabel } from '../engine/drafts'
+import { oilSeatDeco, withChipWorld } from './html'
 import { toggleOilPerson, toggleOilItem, oilFromWords } from './oilmode'
 import { commitUnpublish } from '../state/sched-commit'
 import { elogRows } from '../engine/editlog'
@@ -644,6 +647,102 @@ describe('the row behind the window is deleted, or its puck is (Fable S14)', () 
     await openWin(TUE)
     await act(async () => { (DAYS[TUE] as any).ground[0].who = ''; notify() })
     expect($('.availwin .win-body').textContent || '').toContain('no ALL or ALL AVAIL puck on this row')
+  })
+})
+
+/* ---- the two final reads (Astra + Fable, 23 Sep 26) — each red first ------- */
+describe("a list that cannot be worked out says WHY (Fable F1)", () => {
+  const says = () => $('.availwin .win-body').textContent || ''
+  it('the end time cleared behind it', async () => {
+    puckRow(TUE); await openWin(TUE)
+    await act(async () => { (DAYS[TUE] as any).ground[0].end = ''; notify() })
+    expect(says()).toContain('no usable start and end times')
+    expect(says(), 'the puck is still on the row').not.toContain('no ALL or ALL AVAIL puck')
+  })
+  it('the row cancelled behind it', async () => {
+    puckRow(TUE); await openWin(TUE)
+    await act(async () => { (DAYS[TUE] as any).ground[0].cx = true; notify() })
+    expect(says()).toContain('This row is cancelled')
+  })
+  it('the row marked information-only behind it', async () => {
+    puckRow(TUE); await openWin(TUE)
+    await act(async () => { (DAYS[TUE] as any).ground[0].info = true; notify() })
+    expect(says()).toContain('information only')
+  })
+})
+
+describe('a request row on the issued face is read from the RECORD (Astra 1 = Fable F2)', () => {
+  it("its title and times are the issued ones after the request moves, and it is not 'gone' after it is deleted", async () => {
+    HOOKS.oilSentinel = () => ['plasma', 'stiff']
+    Object.assign(DAYS[SAT] as any, { dutywaves: [], sims: { amt: [], oft: [] }, oild: undefined, ground: [] })
+    const inp: any = { person: 'bane', date: 'Jul 18', allday: false, s: 540, e: 1020, type: 'Meeting', remarks: 'staff work', mod: '2026-07-01' }
+    INPUTS.push(inp)
+    expect(acceptInput(SAT, inp, 'g'), 'the request lands on the ground programme').toBeTruthy()
+    const g = (DAYS[SAT] as any).ground.find((x: any) => x.src)
+    g.more = ['allavail']                                    // D46: a placeholder on a request row
+    ensureRowIds(DAYS)
+    const item = `i:${g.src}`
+    const sg = signOf(SAT); sg.cur = 'ignite'; sg.sked = 'bane'; sg.plan = 'stiff'; sg.appr = 'pump'
+    setDayApproved(SAT, true)
+    const ver = dayCurVer(SAT)
+    inp.s = 780                                              // TODAY the request moves to 13:00
+    await act(async () => { setAvailWin({ di: SAT, item, ver: String(ver), ofw: true, name: 'X', when: '', tab: 'who' }); notify() })
+    expect($('.availwin .win-ttl small').textContent || '', 'the issued times, not 13:00').toContain('09:00')
+    INPUTS.splice(INPUTS.indexOf(inp), 1)                    // ...and then it is deleted
+    await act(async () => { notify() })
+    expect($('.availwin .win-body').textContent || '', 'the issued schedule still shows the row')
+      .not.toContain('no longer on the schedule')
+    await act(async () => { setAvailWin(null); notify() })
+  })
+})
+
+describe('the belt, the version and the history (Fable F3, F4, F5)', () => {
+  it('a version that vanished shows a sentence, never a blank window (F3)', async () => {
+    const item = puckRow(SAT)
+    await act(async () => { setAvailWin({ di: SAT, item, ver: '2026-07-18#9', name: 'OPS BRIEF', when: '', tab: 'who' }); notify() })
+    expect($('.availwin .win-body').textContent || '').toContain('This version is no longer available')
+    await act(async () => { setAvailWin(null); notify() })
+  })
+
+  it('a window read from a version NAMES it (F4)', async () => {
+    const item = puckRow(SAT)
+    const sg = signOf(SAT); sg.cur = 'ignite'; sg.sked = 'bane'; sg.plan = 'stiff'; sg.appr = 'pump'
+    setDayApproved(SAT, true)
+    const ver = String(dayCurVer(SAT))
+    await act(async () => { setAvailWin({ di: SAT, item, ver, name: 'OPS BRIEF', when: '', tab: 'who' }); notify() })
+    expect($('.availwin .win-from').textContent || '').toContain(draftVerLabel(SAT, ver))
+    await act(async () => { setAvailWin(null); notify() })
+  })
+
+  it("a switch on a SIM row reads in History exactly as the board's own switch would (F5)", async () => {
+    HOOKS.oilSentinel = () => ['plasma', 'stiff']
+    Object.assign(DAYS[SAT] as any, { dutywaves: [], ground: [], oild: undefined,
+      sims: { amt: [], oft: [{ label: 'EP-6', str: '1400', end: '1530', p: 'allavail', w: '', pax: [], more: [] }] } })
+    ensureRowIds(DAYS)
+    const item = rowItemKey((DAYS[SAT] as any).sims.oft[0].rid)
+    await open(SAT)
+    await act(async () => { setOilDay(SAT); notify() })
+    await click($(`#sbBoard [data-oilsent="${item}"]`))
+    const cell = ($(`#sbBoard [data-oilitem="${item}"]`).textContent || '').trim()
+    await click(winSeat('plasma').querySelector('.puck'))
+    expect(elogRows(SAT)[0].lbl, 'the name the board draws for the row').toBe(`${cs('plasma')} earns nothing from ${cell}`)
+  })
+})
+
+describe("a draft day on the view page: the window reads the OFFICIAL world, as its face does (Fable F6)", () => {
+  it('the chip carries the world it was drawn in, and the window replays it', () => {
+    puckRow(SAT)
+    const sg = signOf(SAT); sg.cur = 'ignite'; sg.sked = 'bane'; sg.plan = 'stiff'; sg.appr = 'pump'
+    setDayApproved(SAT, true)
+    ;(DAYS[SAT] as any).ground.push({ prog: 'LATE ADD', str: '1000', end: '1100', who: 'bane' })
+    puckRow(TUE)
+    ensureRowIds(DAYS)
+    validate()                                                  // Saturday's working copy now differs from its issue
+    expect(officialWarn() !== WARN, 'the two worlds differ').toBe(true)
+    const drawn = withOfficialWarn(() => oilSeatDeco(TUE, 'allavail', `g:${TUE}.0`).chip)
+    expect(drawn, 'drawn in the official world, it says so').toContain('data-oilofw="1"')
+    expect(oilSeatDeco(TUE, 'allavail', `g:${TUE}.0`).chip, 'drawn in the working world, it does not').not.toContain('data-oilofw')
+    expect(withChipWorld(TUE, '', true, () => WARN === officialWarn()), 'the window reads the official flags').toBe(true)
   })
 })
 

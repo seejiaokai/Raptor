@@ -32,7 +32,7 @@ import { esc } from '../state/view'
 import { notify, notifyBoard, loadWeek } from '../state/store'
 import { CURWEEK } from '../engine/waves'
 import { shiftWeek } from './weeknav'
-import { oilModeOn, dayBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilItemMasked, oilItemCellHTML, oilRequestName, oilPersonSays } from './oilmode'
+import { oilModeOn, dayBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilItemMasked, oilItemCellHTML, oilItemHistName, oilPersonSays } from './oilmode'
 import { rowItemKey } from '../engine/oil'
 import { oilReadPass } from '../engine/oilev'
 import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbSansPanel, sbUnavailPanel, labelToTitle, titleToLabel, titleToKind, sbGrip, sbNudge, rowMove, sbSortBtn, boxHTML } from './board-html'
@@ -739,35 +739,11 @@ export function sortAllCommit() {
    with no change to how any of them behave. */
 const act = (di: any, msg: string) => { logAction(di, msg); return toast(msg) }
 
-/* THE ROW AS THE SCHEDULER READS IT, for the day's history. An OIL decision is
-   addressed by an internal row id, which means nothing to anyone reading the
-   history a week later — and until now an OIL decision left NO history at all,
-   so a man asking why his balance was short could not be answered (Fable,
-   21 Sep 26). The mode has already drawn the row's name in its item cell, so
-   the name is on the page; this reads it back rather than re-deriving it.
-   Matched by attribute rather than by selector so no key needs escaping. */
-const oilItemName = (di: any, item: string): string => {
-  if (!item) return 'this event'
-  /* A CLAIM IS NAMED BY WHAT IT IS, never by what happens to be drawn in its
-     cell (hand pass finding 14, 21 Sep 26). A request's item cell holds the
-     man's own puck, so reading the page back produced lines like "Sidewinder
-     earns nothing from SidewinderFO" — which reads as a glitch on the one
-     record that has to answer "why was my balance short?". The type is what the
-     app calls it everywhere else, so the history calls it that too. */
-  if (item.startsWith('i:')) {
-    /* the LONG name the type carries ("overseas duty"), not the two-letter code
-       on the row — a history line is read cold, a week later, by someone who
-       was not there. An "Other" has no long name and reads by what was typed on
-       it. One body with the window's history line (oilmode.ts). */
-    const t = oilRequestName(item)
-    if (t) return t
-  }
-  const all = document.querySelectorAll(`[data-oilitem][data-oilday="${+di}"]`)
-  for (const el of Array.from(all)) {
-    if ((el as HTMLElement).dataset.oilitem === item) return ((el.textContent || '').trim()) || 'this event'
-  }
-  return 'this event'
-}
+/* THE ROW AS THE SCHEDULER READS IT, for the day's history — one body with the
+   window's switch now (Fable F5): oilmode.ts oilItemHistName, which carries the
+   whole reasoning (a request by its long type name, anything else by the name
+   the mode drew in its item cell). */
+const oilItemName = (di: any, item: string): string => oilItemHistName(di, item)
 
 /* WHAT A DELETED ROW HELD, said once — the log and the toast are the same
    string (act, above), so a description has to stay short. Free text is
