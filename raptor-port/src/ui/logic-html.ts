@@ -192,6 +192,16 @@ export function lgRules(){
        with no times earns nothing; this is the app finally SAYING so. */
     {sev:'hard',code:'OIL_NO_TIMES',
      t:()=>`On a <b>weekend or public holiday</b>, a duty desk with somebody on it and <b>no start and end times</b> earns him nothing — and the day says so, on the day itself and again at the moment it is published. The warning names the desk.<span class="why">OIL is minted strictly from the times written, so a blank desk measures nothing and mints nothing. That is correct — a guess would invent leave out of thin air — but it used to happen in silence: the day was published, no OIL appeared, and nothing said why. A man's leave balance was short and no screen admitted it. The warning sits on the day while it is being built because that is where the fix is free; after the publish, correcting it costs an amendment. A blank desk with nobody on it says nothing — an empty desk owes no one. On an ordinary weekday it says nothing either, since no weekday work earns OIL at all.</span>`},
+    /* A DAY ISSUED BEFORE THESE SEATS COUNTED (owner, 22 Sep 26 — "ok fix this
+       first"). Its sibling above is a row with no usable times; this one is a
+       day whose ISSUED copy predates the app counting the people behind an
+       ALL AVAIL puck on a duty desk, a sim or an extras line. It used to read
+       "1 pending" with no cell marked and nothing in History, while the chip
+       beside the puck said "?" — so the day asked for an amendment it could not
+       explain. Caught by the guard that every code the engine can raise is
+       documented here, which is exactly what that guard is for. */
+    {sev:'adv',code:'OIL_OLD_BLOCK',
+     t:()=>`A <b>weekend or public holiday you already published</b> can say it has <b>something pending</b> the first time this app counts a seat it did not count before — an <b>ALL AVAIL</b> puck on a <b>duty desk</b>, a <b>sim</b>, or an <b>extra people</b> line. Publish the day again and the men behind that puck get their OIL. An Advisory, and only on a day that has already gone out.<span class="why">The issued copy of a day is the squadron's word about what was worked, and it keeps paying exactly what it paid — nothing moves on its own. But the men behind that puck earned nothing from that seat, because the app was not counting it when the day went out, and they should have. So the day raises the ordinary pending mark and waits for the scheduler to acknowledge it, which is what publishing again does. It says this in words rather than leaving a bare "1 pending" behind, because the copy that went out never wrote down who was behind the puck — so there is no cell to mark and nothing to show in History, and a scheduler would otherwise be republishing blind. One amendment per affected day, once.</span>`},
     /* the nought-minute sortie (owner's ruling D49, 22 Sep 26). The rule above
        says the credit follows the timings as scheduled; this is the one place
        where a line's timings cannot be right and the man is paid anyway. */
