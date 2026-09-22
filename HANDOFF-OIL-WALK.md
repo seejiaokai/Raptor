@@ -127,7 +127,7 @@ All are filed as items in `OUTSTANDING.md` — this is the index, not the conten
 | Item | What | Tier |
 |---|---|---|
 | **`[OIL-SEATS-CAN-EARN]`** | §2 above. **The next job.** | FULL |
-| **`[DOCS-GUARD]`** | Fable's F1/F3 and the rest — **nothing in the repo detects a destroyed record**, and a docs-only PR runs ZERO checks. See §4. | docs/scripts only |
+| **`[DOCS-GUARD]`** | Fable's findings in full — **nothing in the repo detects a destroyed record**, and a docs-only PR runs ZERO checks. **Scope and order are SETTLED by D30: do all of it, in Fable's order** (F1+F3, then F2+F6, then F4/F5, then the mover). ~2–2½ h, four sittings, no `src`. See §4. | docs/scripts only |
 | `[OIL-UNDO-WORDS]` | Inside the mode, Undo says "Undid: a change to the schedule" when it took back an OIL decision. One string. | NONE |
 | `[OIL-WORDS]` | Code comments call OIL "money"; it is banked leave (D25). Nothing on screen is wrong. | NONE |
 | `[OIL-PHONE-TARGETS]` | **CLOSED, ruled "leave it" (D26).** Do not re-open or re-file; the 15px measurement is kept so it cannot be rediscovered and "fixed". | — |
@@ -161,7 +161,7 @@ span-move finds the wrong block.
 `raptor-port/docs/superpowers/specs/2026-09-22-backlog-process-attack.md`. It is worth reading before
 touching any of these files. Its headline: **nothing detects a recurrence**, seven of eight gated
 files sit at ZERO headroom, and "never trim inside a fix" is prose with no enforcement — which by this
-repo's own standard is worth nothing. `[DOCS-GUARD]` carries the work.
+repo's own standard is worth nothing. `[DOCS-GUARD]` carries the work, and **D30 settles its scope and order — do all of it, in Fable's order, and do not re-decide that.**
 
 ---
 

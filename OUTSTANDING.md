@@ -780,9 +780,21 @@ and two unbuilt S4 rulings), and the rest of **F4/F5** (the classification rule 
 pointer, THEN move"; `.gitattributes` pinning CRLF; two lying headings; duplicate ids
 `[GLOBAL-UNDO]`/`[S4-BUGHUNT]`; the phantom `[LW-WEEKDAY-WORK]`; a committed archive mover).
 
-**Tier: NONE-to-LOOK** — docs and scripts only, no `raptor-port/src`. ~1h for F1+F3, ~45min for
-F2+F6. Full findings and exact steps:
-`raptor-port/docs/superpowers/specs/2026-09-22-backlog-process-attack.md`. Ruling: `DECISIONS.md` D29.
+**DO ALL OF IT, IN FABLE'S ORDER — owner's D30, 22 Sep 26: _"Nvm I'll do what fable recommend"_.**
+The scope and the sequence are SETTLED; do not re-decide them (the agent offered three different
+recommendations on this in three messages, which is what he ended):
+
+1. **F1 + F3** — the inventory check and the gate that can never demand a trim inside a code change.
+   ~1 h. These make everything after them enforceable, which is why they are first.
+2. **F2 + F6** — the docs-only correction pass, ~45 min, done UNDER the new gate.
+3. **F4 items 1/3/4 and F5 items 1–2** — ~30 min.
+4. **F5's archive mover and F7** — when the next archive pass is actually due.
+
+**Tier: NONE-to-LOOK** — docs and scripts only, no `raptor-port/src`, so it cannot endanger any app
+work; a cheap model can execute it. Total ~2–2½ h, and it splits cleanly into the four sittings above.
+Full findings and exact fix steps:
+`raptor-port/docs/superpowers/specs/2026-09-22-backlog-process-attack.md`.
+Rulings: `DECISIONS.md` D29 (the three rules) and **D30** (this order).
 
 ### [OIL-UNDO-WORDS] Undo says "a change to the schedule" when it took back an OIL decision (22 Sep 26)
 
