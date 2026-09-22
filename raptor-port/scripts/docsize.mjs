@@ -169,7 +169,7 @@ function inventory(allow) {
   const liveNowIds = new Set(now.live.map(b => b.id))
   const left = base.live.filter(b => !liveNowIds.has(b.id))
   for (const b of left) {
-    if (!nowIds.has(b.id)) continue // already reported as gone
+    if (!nowIds.has(b.id) || allow.has(`[${b.id}]`)) continue // already reported as gone, or a declared rename
     const missing = nonBlank(b.lines).filter(l => !archNow.has(l))
     if (missing.length) fails.push(`[${b.id}] left ${LIVE} but ${missing.length} of its ${nonBlank(b.lines).length} lines are not in ${ARCHIVE} — truncated on the way? first: "${short(missing[0].trim())}"`)
   }
