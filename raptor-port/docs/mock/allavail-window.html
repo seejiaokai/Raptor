@@ -44,19 +44,19 @@
   /* D40 - SKINNY BY DEFAULT: two puck columns wide (a puck is a fixed 74px) and
      tall, not a wide panel with dead space beside each list. Drag it wider to
      read the flag reasons beside their pucks instead of under them. */
-  .win{position:fixed;z-index:150;right:16px;top:96px;width:332px;height:520px;
-    min-width:252px;min-height:200px;
+  .win{position:fixed;z-index:150;right:16px;top:96px;width:212px;height:540px;
+    min-width:186px;min-height:200px;
     max-width:calc(100vw - 32px);max-height:calc(100vh - 120px);
     background:var(--panel);border:1px solid var(--edge-2);border-radius:10px;
     box-shadow:0 18px 44px rgba(0,0,0,.62);display:flex;flex-direction:column;
     overflow:hidden;resize:both}
-  .win-bar{display:flex;align-items:center;gap:9px;padding:8px 10px;cursor:grab;
+  .win-bar{display:flex;align-items:center;gap:7px;padding:8px 8px;cursor:grab;
     background:var(--raised);border-bottom:1px solid var(--edge);touch-action:none;flex:0 0 auto}
   .win-bar:active{cursor:grabbing}
   /* the app's OWN drag grip, the same six dots every draggable row and section
      header wears - so the window reads as movable without being explained */
   .win-grip{color:var(--ink-3);font-size:16px;line-height:1;flex:0 0 auto}
-  .win-ttl{flex:1;min-width:0;font-size:12.5px;font-weight:700;color:var(--ink);
+  .win-ttl{flex:1;min-width:0;font-size:12px;font-weight:700;color:var(--ink);
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .win-ttl small{display:block;font-size:10.5px;font-weight:500;color:var(--ink-3)}
   .win-x{background:none;border:1px solid var(--edge-2);color:var(--ink-2);border-radius:5px;
@@ -64,9 +64,10 @@
   .win-x:hover{border-color:#F0555F;color:var(--ink)}
 
   .win-tabs{display:flex;background:var(--panel-2);border-bottom:1px solid var(--edge);flex:0 0 auto}
-  .win-tab{flex:1;padding:8px 6px;font-size:11.5px;font-weight:700;color:var(--ink-3);
-    background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;
-    font-family:inherit;letter-spacing:.02em}
+  /* the window is 212px wide, so the two tab labels WRAP rather than clip */
+  .win-tab{flex:1;min-width:0;padding:7px 5px;font-size:10.5px;font-weight:700;
+    color:var(--ink-3);background:none;border:none;border-bottom:2px solid transparent;
+    cursor:pointer;font-family:inherit;letter-spacing:.01em;line-height:1.25}
   .win-tab:hover{color:var(--ink-2)}
   .win-tab.on{color:var(--ink);border-bottom-color:var(--accent);background:var(--panel)}
   .win-tab .c{color:var(--ink-3);font-weight:600}
@@ -76,8 +77,8 @@
   .win-one{flex:0 0 auto;padding:8px 10px;background:var(--panel-2);
     border-bottom:1px solid var(--edge);font-size:11.5px;font-weight:700;color:var(--ink)}
   .win-one .c{color:var(--accent);font-weight:800}
-  .win-body{flex:1;min-height:0;overflow:auto;padding:9px 10px}
-  .win-body .rcols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .win-body{flex:1;min-height:0;overflow:auto;padding:8px 8px}
+  .win-body .rcols{display:grid;grid-template-columns:1fr 1fr;gap:8px}
   .win-body .rcol{min-width:0}
   /* D39 - ONE PUCK PER ROW at every width: each column is a list running down,
      not a wrapping grid. A full row per man is what gives his flag and his figure
@@ -97,7 +98,8 @@
   .win-body .rh{margin-bottom:5px}
 
   .win-foot{flex:0 0 auto;border-top:1px solid var(--edge);background:var(--panel-2);
-    padding:7px 10px;font-size:11.5px;color:var(--ink-2);display:flex;align-items:center;gap:7px}
+    padding:7px 8px;font-size:10.5px;line-height:1.35;color:var(--ink-2);
+    display:flex;align-items:center;gap:6px}
   .win-foot .tag{flex:0 0 auto;font-size:9px;font-weight:800;letter-spacing:.08em;
     padding:2px 5px;border-radius:3px;background:var(--edge-2);color:var(--ink)}
   .win-foot .tag.warn{background:#E5A83B;color:#12100a}

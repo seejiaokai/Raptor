@@ -901,8 +901,9 @@ out"; that is the change D36 refuses.
 app's OWN stylesheet (it drags, resizes, and the schedule behind it scrolls and types). Also published
 as an Artifact for him: <https://claude.ai/artifact/3kHfkdRobBjgtmhnyGvkdi>. **He reviewed it across
 three rounds and ruled four times: D39** — one puck per row at every width, and the counter chip drops
-the word "free"; **D40** — the window opens SKINNY (two puck columns wide, tall), and its drag handle
-is the app's own six-dot grip, not a dashed or hamburger glyph. A flagged man's reason wraps under his
+the word "free"; **D40** — the window opens SKINNY at **212px wide** (the two 74px pucks, their gap
+and about 16px of slack per column; **186px is the floor**, below which a puck clips), and its drag
+handle is the app's own six-dot grip, not a dashed or hamburger glyph. **Build to those numbers.** A flagged man's reason wraps under his
 puck at that width and moves beside him when the window is dragged wider; it is never dropped.
 
 **THE MODE RULE, confirmed with him 22 Sep 26.** Tapping the counter always shows WHO IS AVAILABLE —
