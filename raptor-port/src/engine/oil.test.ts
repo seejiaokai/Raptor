@@ -102,9 +102,21 @@ describe('dayOilCredits — who earns what from one day blob', () => {
     expect(dayOilCredits(d)).toEqual({ plasma: 0.5 })
   })
 
-  it('an SC SPARE earns nothing — he is standing by at home', () => {
+  /* UPDATED 22 Sep 26 — D24, and the rule it pins is UNCHANGED. These kinds used
+     to be skipped before the OIL walk saw them at all, so "earns nothing" could
+     be proved by their simple absence from the raw walk. D24 makes them reach
+     the walk carrying a default of OFF, so the switch can be offered (D32) and
+     an admin can credit a line that really was work. The assertion therefore
+     moves from ABSENCE to the DEFAULT, which is where the rule now lives — and
+     it is stronger for it: absence could not tell "exempt" from "the walk is
+     broken", and the default plus its control can. The MONEY is unchanged:
+     nothing here is paid unless somebody says so. */
+  it('an SC SPARE earns nothing by default — he is standing by at home', () => {
     const d = day([scWave(shift('07:00', '19:00', [main('plasma'), spare('rocky')]))])
-    expect(dayOilCredits(d)).toEqual({ plasma: 1 })
+    const w = dayOilWork(d, { expandAll: () => [] })
+    expect(w.rocky, 'the spare reaches the walk now, so his line can offer a switch').toBeTruthy()
+    expect(w.rocky.every((x: any) => x.dflt === false), 'and earns nothing by default').toBe(true)
+    expect(w.plasma.every((x: any) => x.dflt === true), 'THE CONTROL: the MAIN is untouched').toBe(true)
   })
 
   it('standing both halves pools to a full day', () => {
@@ -127,12 +139,15 @@ describe('dayOilCredits — who earns what from one day blob', () => {
     expect(dayOilCredits(two)).toEqual({ plasma: 1 })
   })
 
-  it('AVALON and BB earn nothing — seats AND the desks they bring', () => {
+  it('AVALON and BB earn nothing by default — seats AND the desks they bring', () => {
     const av = { label: 'AVALON', kind: 'avalon', standalone: true, noconf: true,
       formations: [shift('07:00', '19:00', [main('plasma')])] }
     const desk = { label: 'AVALON duties', sa: 'avalon', rows: [duty('rocky', '0700', '1900')] }
     const d = { waves: [av], dutywaves: [desk], sims: { amt: [], oft: [] }, ground: [], allhands: [] }
-    expect(dayOilCredits(d)).toEqual({})
+    const w = dayOilWork(d, { expandAll: () => [] })
+    expect(Object.keys(w).sort(), 'both reach the walk now').toEqual(['plasma', 'rocky'])
+    expect(w.plasma.every((x: any) => x.dflt === false), 'the AVALON seat earns nothing by default').toBe(true)
+    expect(w.rocky.every((x: any) => x.dflt === false), 'and neither does its desk').toBe(true)
   })
 
   /* The test above hand-builds a desk with sa:'avalon' — so it pins the ENGINE
@@ -153,7 +168,9 @@ describe('dayOilCredits — who earns what from one day blob', () => {
     const avBlk = man('rocky', blockFromTpl(avTpl!.id))
     expect(avBlk.sa).toBe('avalon')                      // the mint stamped the wave
     expect(avBlk.noconf).toBe(true)
-    expect(dayOilCredits({ waves: [], dutywaves: [avBlk], sims: { amt: [], oft: [] }, ground: [], allhands: [] })).toEqual({})
+    const avWork = dayOilWork({ waves: [], dutywaves: [avBlk], sims: { amt: [], oft: [] }, ground: [], allhands: [] }, { expandAll: () => [] })
+    expect(avWork.rocky, 'the minted AVALON desk reaches the walk').toBeTruthy()
+    expect(avWork.rocky.every((x: any) => x.dflt === false), 'and earns nothing by default — same seat, one answer (D35)').toBe(true)
 
     const plainTpl = tplNamed(null)
     expect(plainTpl, 'a wave-less duty template must exist as the control').toBeTruthy()

@@ -450,12 +450,31 @@ describe('the item switch is only offered where the event can earn', () => {
     expect(cellFor('MORNING BRIEF')?.dataset.oilitem, 'a ground row that earns').toBeTruthy()
     expect(cellFor('SDO')?.dataset.oilitem, 'a duty desk that earns').toBeTruthy()
   })
-  it('OIL7, OIL28 — AVALON, its desk and an ⓘ row offer none', async () => {
-    for (const label of ['AV', 'AVALON DESK', 'NOTICE ONLY']) {
+  /* UPDATED 22 Sep 26 — D24, and BOTH rulings this pins survive it.
+     OIL7 (tapping an item's name stops the whole item earning) is untouched.
+     OIL28 (nothing overrides ineligibility — an allow is permission to count
+     real work, never to invent it) is untouched too: an ⓘ row measures nothing
+     and still offers no switch.
+
+     What moves is the EXAMPLE. This test used AVALON as its illustration of
+     "ineligible", and D24 says AVALON was never ineligible — it was EXEMPT, and
+     exempt has now become a DEFAULT the admin can override. So AVALON and its
+     desk change sides here, and the ⓘ row stays where it was as the control
+     that keeps OIL28 honest. */
+  it('OIL28 — a row that can never earn still offers none', async () => {
+    const el = cellFor('NOTICE ONLY')
+    expect(el, 'the ⓘ row is drawn').toBeTruthy()
+    expect(el!.dataset.oilitem, 'and must not be tappable').toBeFalsy()
+    expect(el!.classList.contains('none'), 'it reads as nothing to switch').toBe(true)
+  })
+
+  it('D24 — AVALON and its desk DO offer one now, and it says they earn nothing', async () => {
+    for (const label of ['AV', 'AVALON DESK']) {
       const el = cellFor(label)
       expect(el, `${label} is drawn`).toBeTruthy()
-      expect(el!.dataset.oilitem, `${label} must not be tappable`).toBeFalsy()
-      expect(el!.classList.contains('none'), `${label} reads as nothing to switch`).toBe(true)
+      expect(el!.dataset.oilitem, `${label} offers the switch — D24's only door`).toBeTruthy()
+      expect(el!.title, `${label} says it earns nothing, and how to change that`)
+        .toMatch(/earns nothing|tap to make it earn/i)
     }
   })
 })

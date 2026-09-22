@@ -22,6 +22,7 @@ import { INPUTS } from './inputs'
 import { PEOPLE, scQualOK } from './people'
 import { validate } from './validate'
 import { makeStandalone } from './waves'
+import { dayOilWork } from './oil'
 import { avSeatHit, scSeatHit } from './events'
 import { blockFromTpl, dutyTplReset, addTpl, setTplWave, setTplRow, DUTY_WAVES } from './dutytpl'
 import { addDayTpl, applyDayTpl, DAYTPL_CFG, dayTplReset } from './daytpl'
@@ -280,16 +281,31 @@ describe('the availability check still holds, against the desk a scheduler actua
 })
 
 describe('AVALON earns no OIL — seats and the template desk alike', () => {
-  it('a MAIN seat, a SPARE seat and the desk change the day\'s credits not at all', () => {
-    /* glass flies on the seed Tuesday and earns her sortie either way — the
-       proof is that AVALON ADDS nothing, so compare against the untouched day */
-    const before = JSON.stringify(dayOilCredits(DAYS[TUE]))
+  /* UPDATED 22 Sep 26 — D24, and the rule it pins is UNCHANGED. These kinds used
+     to be skipped before the OIL walk saw them at all, so "earns nothing" could
+     be proved by their simple absence from the raw walk. D24 makes them reach
+     the walk carrying a default of OFF, so the switch can be offered (D32) and
+     an admin can credit a line that really was work. The assertion therefore
+     moves from ABSENCE to the DEFAULT, which is where the rule now lives — and
+     it is stronger for it: absence could not tell "exempt" from "the walk is
+     broken", and the default plus its control can. The MONEY is unchanged:
+     nothing here is paid unless somebody says so. */
+  it('a MAIN seat, a SPARE seat and the desk all earn nothing BY DEFAULT', () => {
     F().aircraft[0].p = 'split'
     F().aircraft[2].p = 'ignite'
     desk.rows[0].id = 'glass'
     desk.rows[1].id = 'xray'
-    expect(JSON.stringify(dayOilCredits(DAYS[TUE]))).toBe(before)
-    expect(dayOilCredits(DAYS[TUE]).split).toBeUndefined()
+    const w = dayOilWork(DAYS[TUE], { expandAll: () => [] })
+    for (const id of ['split', 'ignite', 'xray']) {
+      expect(w[id], `${id} reaches the walk now`).toBeTruthy()
+      expect(w[id].every((x: any) => x.dflt === false), `${id} earns nothing from AVALON by default`).toBe(true)
+    }
+    /* THE CONTROL, and it is the sharp one: glass is on the AVALON desk AND
+       flying an ordinary sortie the same day. Her AVALON span must default off
+       while her sortie defaults on — one man, two answers, which is exactly what
+       an item-level default could never have expressed. */
+    expect(w.glass.some((x: any) => x.dflt === true), 'her ordinary sortie still earns').toBe(true)
+    expect(w.glass.some((x: any) => x.dflt === false), 'and her AVALON desk does not').toBe(true)
   })
 })
 
@@ -447,10 +463,13 @@ describe('BB carries exactly the AVALON rules', () => {
     INPUTS.push({ person: 'glass', date: 'Jul 14', allday: true, type: 'OL', remarks: '' })
     expect(bw('glass')).toEqual([])
   })
-  it('BB adds no OIL', () => {
-    const before = JSON.stringify(dayOilCredits(DAYS[TUE]))
+  it('BB adds no OIL by default', () => {
     B().aircraft[0].p = 'split'; bdesk.rows[0].id = 'ignite'
-    expect(JSON.stringify(dayOilCredits(DAYS[TUE]))).toBe(before)
+    const w = dayOilWork(DAYS[TUE], { expandAll: () => [] })
+    for (const id of ['split', 'ignite']) {
+      expect(w[id], `${id} reaches the walk now`).toBeTruthy()
+      expect(w[id].every((x: any) => x.dflt === false), `${id} earns nothing from BB by default`).toBe(true)
+    }
   })
 })
 

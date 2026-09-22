@@ -53,9 +53,15 @@ import { whoArr } from './slots'
      everyone available for that window (aircrew minus SANS, the owner's
      28 Aug 26 pick, resolved by the caller). Without a resolver the
      sentinel simply drops, as it always did.
-   NOT earning, deliberately:
+   NOT earning BY DEFAULT, but reachable and switchable (D24/D35, 22 Sep 26 —
+   [OIL-SEATS-CAN-EARN] step 4; they used to be skipped before this walk saw
+   them at all, so no switch could be drawn and no decision could exist):
    - An SC SPARE — standing by at home, reachable but not at work.
-   - AVALON and BB — the whole wave AND the desk block it brings (`dw.sa`).
+   - AVALON and BB — the whole wave AND the desk block it brings (`dw.sa`),
+     including a block MINTED from an AVALON template (D35).
+   Each arrives with `dflt:false`; an item mark of `1`, or an `allow` on one
+   man, is what credits it.
+   NOT earning, deliberately, and nothing switches these on:
    - A cancelled structure at any level (cx) — a duty that did not stand.
    - A row with no readable times: the owner's rule is "based on what timing
      was written", and inventing openEnd/simLen defaults here would mint
@@ -168,7 +174,6 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
        carrying this answer rather than defaulting to yes and paying at once,
        which is F1's silent money. */
     const exemptWave=isStandalone(wv)&&wv.kind!=='sc';
-    if(exemptWave)return;                                // AVALON / BB seats never earn (lifted at step 4)
     const sc=isStandalone(wv);
     (wv.formations||[]).forEach((f:any)=>{
       if(f.cx)return;
@@ -179,7 +184,12 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
                   :(st==null||en==null?null
                     :w2(st-VCONF.reportLead,(en<st?en+1440:en)+VCONF.debrief));
       if(!win)return;
-      if(!f.spare)reach(item);
+      /* A SPARE LINE IS CAPABLE NOW, so the switch is drawn on it (D24/D32:
+         wherever a puck may land the switch must be offered). It used to be
+         hidden here, which is why "SC SPARE offers the switch" had nowhere to
+         appear. A line with no readable times still reaches nothing — that is
+         D31, and it is the `win` test above, not this one. */
+      reach(item);
       (f.aircraft||[]).forEach((ac:any)=>{
         if(ac.cx)return;                                 // a cancelled jet is not work, ever
         /* BOTH SPARE FLAGS (Codex OSE-R2-02). The exclusion this replaces read
@@ -189,7 +199,6 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
            occupant of such a shift ON, and pay a spare shift that has never
            been paid. */
         dflt=!exemptWave&&!f.spare&&!ac.spare;
-        if(f.spare||ac.spare)return;                     // spares stand by, they do not work (lifted at step 4)
         [ac.p,ac.w].forEach((v:any)=>put(v,win));
       });
     });
@@ -213,7 +222,6 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
        reads `dw.sa`). Same shape as the wave above: a default, not an absence;
        the skip is lifted at step 4. */
     const exemptDuty=!!(dw&&saExemptKind(dw.sa));
-    if(exemptDuty)return;                                // the excluded waves' own desks (lifted at step 4)
     (dw.rows||[]).forEach((r:any)=>{
       if(r.cx)return;
       item=rowItemKey(r.rid); dflt=!exemptDuty;
@@ -284,7 +292,13 @@ export function dayOilBlind(day:any):string[]{
   };
   const named=(vs:any[])=>vs.some((v:any)=>{const id=whoId(v);return !!id&&(realP(id)||isSpecial(id));});
   (day.dutywaves||[]).forEach((dw:any)=>{
-    if(dw&&saExemptKind(dw.sa))return;
+    /* THE FOURTH SKIP, LIFTED (plan C4 / Fable S2 — the plan counted three).
+       This is the one that makes an exempt desk SPEAK at publish. While AVALON
+       and BB could not earn at all, a desk of theirs carrying a man and no
+       written times was correctly silent: there was no money to miss. Now that
+       the admin can switch such a desk ON, a blank pair of times is the same
+       trap it is anywhere else — the day publishes, no OIL appears, and nothing
+       says why. Screen, not money: this names the desk, it does not pay it. */
     (dw.rows||[]).forEach((r:any)=>{
       if(r.cx)return;
       if(timed(r.str,r.end))return;
