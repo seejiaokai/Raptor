@@ -265,3 +265,11 @@ time changed.
 - **The repository is public.** No student name, mark or date may enter it. The
   smoke suite checks the seed and the sample file for placeholder names only;
   `bake-user-charts.mjs` re-checks after every bake.
+- **A record deleted seconds after migration, on an already-full store, can be
+  re-copied.** Inherent to resuming a legacy import without a durable ledger:
+  resume cannot tell "never copied" from "copied, then deleted". The
+  `__legacy__/started` marker written before the first copy closes every other
+  case (a persisted record always has its marker), and this one corner is
+  accepted, not open work. **Moved here 22 Sep 26 (D29)** from
+  `[TRK-LEDGER]` in `OUTSTANDING.md`, which was archived: the fact had no other
+  home, and an archived file is searched, never read. Full story: PR #387.

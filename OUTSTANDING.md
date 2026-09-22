@@ -81,7 +81,7 @@ in-flight and risk-reducing** first.
      section for the full result.
 1b. **[TRK-SMOKE] — DONE + MERGED LIVE (17 Sep 26, PR #408, squash `93deab7` on `main`).**
    Code-only cherry-pick; the rest of this branch stayed unmerged. It was NOT a flake: two real
-   causes. See the Done section entry for the
+   causes. See `OUTSTANDING-ARCHIVE.md` for the
    full diagnosis; in short — (a) the add-student box cleared its field a beat after it
    opened, so a machine-speed fill was wiped and the add silently no-op'd; (b) a failing run
    abandoned its preview server, and on Windows even a passing run did, so the next run
@@ -119,7 +119,7 @@ leave all of [DOC-TRIM] until after the merge. Either is fine; the ratchet alrea
 7a. **[CMDL-FINISH] — DONE + LIVE (18 Sep 26, PR #412 build + PR #415 finish).** The one command
    layer is finished for **Leave War + Tracker** (causal both-side envelope, per-record write seam,
    one-envelope-per-Tracker-gesture, guarded lw/trk stores, `TRK_RESTORING`, `sched.als` re-key,
-   cross-provider punch-list). See the item below / the Done section. Its two deferred items fold
+   cross-provider punch-list). DONE + LIVE — see the item below. Its two deferred items fold
    into `[GLOBAL-UNDO]`.
 8. **[GLOBAL-UNDO] — PHASE 1 + PHASE 2 BUILT + MERGED LIVE (18 Sep 26).** The one-global-undo
    re-architecture; absorbs [XWEEK-UNDO] and the whole delete/undo bug family. Live cutover done
@@ -144,7 +144,9 @@ written — Codex red-teamed the design TWICE and reviewing was closed by the ow
 two rule clashes it found, are in
 `raptor-port/docs/superpowers/specs/2026-09-21-oil-behaviour-register.md`.)*
 
-*(Done 12 Sep 2026: **[TRK-IMPORT]** and **[TRK-LEDGER]** — both merged live; see Done.)*
+*(Done 12 Sep 2026: **[TRK-IMPORT]** and **[TRK-LEDGER]** — both merged live, now in `OUTSTANDING-ARCHIVE.md`. [TRK-LEDGER]'s one
+inherent corner — a record deleted just after migration on a full store can be re-copied — was moved to
+`raptor-port/docs/tracker/known-gaps.md` on 22 Sep 26, because the archive is searched and never read.)*
 
 ---
 
@@ -417,7 +419,7 @@ Phase 1 (engine) + phase 2 (live cutover) built, five gates green, driven in the
 (Fable + Codex), merged on his "merge live". Every Undo/Redo — scheduler, board, Leave War — drives
 the ONE timeline; the Unpublish button and off-week undo are live. Shipped behaviour:
 `raptor-port/docs/undo-contract.md`. Review dispositions and the full reasoning for each deferral
-below: `raptor-port/docs/session-state.md`, and `git log -S"GU-P2" -- OUTSTANDING.md`.
+below: `git log -S"GU-P2" -- OUTSTANDING.md` (`docs/session-state.md` was deleted in `d92303b`).
 
 **SEVEN DEFERRALS, all still open, none blocking — they land at the multi-user / DB step:**
 
@@ -467,12 +469,6 @@ from leaving the system entirely, which is a fresh return. The identity model mu
 person move between squadrons with data intact.
 - **Context:** memory `multi-squadron-and-person-transfer`; ties to
   `docs/architecture-direction.md` and [DB-STEP].
-
-### [INP-CSID] Stable ids for personal inputs — DONE (13 Sep 2026, ARCH-STACK 1A item 1)
-Delivered by ARCH-STACK step 1A: personal inputs are filed/accepted/undone/edited by their
-stable opaque `iid` (`newId('i')`), not the content key `inpKey`. Twins file independently and
-the accept guard is a same-input idempotency check; `inpKey` stays only as a display/dedup hint.
-Merged live in PR #396. Finding J (`DU-007`) closed.
 
 ### [TRK-CSID] Give courses & syllabuses their own hidden ids — SPLIT (owner, 13 Sep 26)
 Two passes (courses first — clean; syllabuses second — the tangled global/built-in half).
@@ -906,35 +902,6 @@ July while the demo posts him out in January, so deciding which is right may be 
 **Context.** `raptor-port/docs/handpass/2026-09-21-oil.md` §9 · the red team's §3 in
 `…/specs/2026-09-21-oil-fixplan-redteam-fable.md` · script `scripts/handpass/settle-d4.mjs`.
 
-### [OIL-XWEEK-DENY] A refusal survived a hand-back in a week nobody had loaded — CLOSED, 22 Sep 26
-
-**Money, silent, and both reviewers found it (Fable F1, Codex rank 2).** The clear that kills a
-scheduler's refusal when a request changes hands walked only the LOADED week, and the read-side
-prune merely HIDES a key while somebody else holds the request — so a hand-over and hand-back made
-while a different week was on screen brought a dead refusal back to life. On an already-published
-day nothing flagged it. It vindicated Codex's M1 over the cheaper repair that was chosen.
-
-**CLOSED.** The clear reaches every readable stashed week (`stashEditDays`), skipping the loaded
-week and every byte-frozen one — the hazard this note asked to be respected. The prune stays as the
-guard for exactly those two cases. The week stash joins the input batch on a person change, so ONE
-Undo restores the assignment and the off-week refusal together, proved by a test that fails if the
-enlistment is removed. Commit `26f9de5`; background in the two reviews' §F1 / rank 2.
-
-### [OIL-XWEEK-ELSEWHERE] A cancelled anchor in an unloaded week kept paying — CLOSED, 22 Sep 26
-
-**Money, and pre-existing rather than introduced by job 2** (Fable F2, Codex rank 3; both wanted it
-closed before merge live). A request running into the next week, whose ONE row was CANCELLED in the
-first, went on paying its later days. The build's note named the wrong mechanism — such a request
-does not read "elsewhere", it reads as never-landed, and the money paid it at a short-circuit before
-the row's state was read — so the repair it sketched would never have fired.
-
-**CLOSED.** The standing resolves the anchor's own week and reads its stashed days: no stash entry
-means the week was never edited, so nothing contradicts the man and he is paid; an entry that cannot
-be read does NOT pay (Codex's conservative answer, taken over Fable's degrade-to-seed); a row found
-gives its own state. The short-circuit is gone, and the key now records only what the standing
-decides — earns or does not — so a row merely moving into an unloaded week no longer offers an
-amendment with no money behind it. Commit `7045067`.
-
 ### [OIL-RELINK-XWEEK] A request landed in a stashed week keeps the OLD man, and can land twice — OPEN, 22 Sep 26
 
 **Pre-existing, not OIL-caused, and out of scope for this branch** (Fable F8). Two limits that job
@@ -1078,7 +1045,7 @@ marker (everyone). Clock-free; NOT coupled to EOD.
   `raptor-port/docs/superpowers/specs/2026-09-15-crewrest-flagging-plan-v2.md` (§5 mechanism,
   §11 tests, §14 tricky build spots); review log alongside it.
 - **HEAVY**, test-first, Opus; keep `tfin.js` 728/0; fresh Codex+Fable CODE inspection after
-  build; no merge without "merge live". Owner decisions locked in session-state.md.
+  build; no merge without "merge live". Owner decisions are in `DECISIONS.md`.
 
 ### [FLAG-EXPORT] PDF export — print the PUBLISHED version, CURRENT DAY only + a nicer agency-facing redesign — OPEN (follow-up of [CRP-FLAG])
 THREE halves now (owner, 15–17 Sep 26):
@@ -1125,62 +1092,3 @@ history; git keeps it either way, so deleting saved nothing.
   is referenced, because OUTSTANDING/HANDOFF cite design docs by their date-elided tail.
 - **NOTE (21 Sep 26): this was about disk space, which was never the problem.** The problem is
   how much must be READ per session — that is `[DOC-TRIM]`, a different measure entirely.
-
-### [AMEND-SEL-FOLLOWUPS] Plans-selector 7 follow-ups (incl. the signature-leak bug) — DONE + LIVE 15 Sep 26
-The owner's 15 Sep batch of seven changes, built test-first and merged as **PR #405** (`9ba253c`).
-The one worth remembering: **signatures are PER-PLAN** (his option a) — each saved plan carries
-its own four sign-offs, so signing one never fills another, and a plan whose content moved out
-from under a signature reads empty. The other six were selector wording and layout.
-**Full resolutions are in PR #405 and the commit messages**, which is where a finished batch's
-detail belongs (`doc-budget.md` §3). Nothing outstanding.
-
-### [LW-OPEN] Leave War opens on the war being WORKED — DONE 17 Sep 26
-Owner ruling (17 Sep 26, restating his 7 Sep rule under newest-instruction-wins):
-the tab always opens on the war open for bidding, else closed, else published,
-else draft — never on the one last viewed. Was a REGRESSION, not a missing
-feature: the 8 Sep storage seam made the tab persist, so the stored `current`
-started winning from the second visit; before that nothing was stored and the
-stage pick ran every load, so the rule held by accident.
-**Resolved:** `state/store.ts initStore` now always stage-picks and ignores the
-stored `current` (still recorded at every switch, for the shared database and
-so a switch holds for the rest of the session). Pinned by three tests in
-`state/store.test.ts`, one of which REPLACES an older test that asserted the
-opposite ("remembers which war was on screen across a reload") — reversed by
-owner ruling, noted in place. Gates: vitest 4865/4865, parity 728/0, build,
-e2e (only the 2 known pre-existing failures, proved pre-existing by re-running
-them against a stashed tree), tracker smoke. LIVE-DRIVEN on the built bundle:
-opened on JAN-DEC 26 -> switched to the 27 draft -> switch held -> reload came
-back on JAN-DEC 26 with the bidding border showing, no console errors.
-
-
-### [TRK-IMPORT] Tracker import-conflict refusal — DONE (12 Sep 2026)
-Import now refuses when a file names a *different person* under a callsign already
-on the course, before writing anything — so the existing student is no longer
-silently dropped and their marks orphaned. Rebased on current `main`, full gates
-green, independent Astra/Codex bug-check run **on the fix**: it found the refusal
-scan read only the per-syllabus rosters and missed a course still on the ORIGINAL
-pre-syllabus flat roster (v3:<c>:roster), which a conflicting import could still
-overwrite. Closed that (the scan reads the flat roster + its links too) and made
-the refusal message honest that charts imported first may already be in. Astra
-re-check: sound. Merged as **PR #386**, deployed, confirmed live (Tracker renders,
-no console errors).
-
-### [TRK-LEDGER] Tracker legacy-import ledger (Decision B) — DONE (12 Sep 2026)
-A half-finished first-time legacy import used to seal itself done on the first
-`raptor:` key and hide the rest forever; it now resumes via a per-key ledger and
-grandfathers existing installs. Rebased on `main`, gates green, Astra bug-check on
-the fix found a residual: if the store was so full that even the ledger write
-failed, the next boot grandfathered and lost the rest. Closed with a
-`__legacy__/started` marker written before the first copy, and gated persistence on
-that marker being durable (a persisted record always has its marker). One inherent
-corner documented (a record deleted seconds after migration on an already-full
-store can be re-copied — resume without a durable ledger can't tell "not copied"
-from "copied then deleted"). Astra re-check: sound. Merged as **PR #387**, deployed,
-confirmed live.
-
-### [SEC-ALTIP] AL panel tooltip HTML injection (AM-08) — DONE (11 Sep 2026)
-The amendment sign-off tooltip could run injected code from a crafted callsign;
-it's now escaped at display time, so already-saved names are covered too. Verified
-end to end: merged as **PR #393** to `main` (CI green), deployed, and confirmed on
-the live site (Amendments panel renders normally, no errors). Found by the
-Astra/Codex amendment review; fixed in its own spawned session.
