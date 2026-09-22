@@ -597,11 +597,29 @@ function readPersonEdits(x: unknown): State['personEdits'] | null {
   }
   return out
 }
+/* EITHER END MAKES A WINDOW WORTH KEEPING (22 Sep 26). This insisted on `to`
+   being a string, which was right while a posting-OUT date was the only one
+   there was. `setPostIn` (owner, 20 Sep 26 — "we need a post in button just like
+   post out. Because those dates are official dates") writes the other end
+   through the same `windowRecord`, and the WRITE was always correct: the record
+   reached storage carrying `from` with `to` null. This reader then threw it
+   away, so a man's official joining date was lost on every reload — the same
+   failure, in the same record, as the demo overlay's posting-out window that
+   `setPeople` now captures, and found the same way: by reading this file again
+   after fixing that one.
+   The guard is not loosened, only widened to the shape the writer produces: the
+   id must still match its key, the callsign must still be a string, and at least
+   one end must be a real date with the other a date or null. A record with
+   neither end is not a window and is still dropped — `windowRecord` deletes it
+   rather than storing it, so one could only arrive from a damaged file. */
+const dateEnd = (v: unknown): boolean => v === null || typeof v === 'string'
 function readPostOuts(x: unknown): Record<string, Person> | null {
   if (!isPlainObject(x)) return null
   const out: Record<string, Person> = {}
   for (const [id, v] of Object.entries(x)) {
-    if (!isPlainObject(v) || v.id !== id || typeof v.callsign !== 'string' || typeof v.to !== 'string') continue
+    if (!isPlainObject(v) || v.id !== id || typeof v.callsign !== 'string') continue
+    if (!dateEnd(v.from) || !dateEnd(v.to)) continue
+    if (typeof v.from !== 'string' && typeof v.to !== 'string') continue
     out[id] = v as unknown as Person
   }
   return out

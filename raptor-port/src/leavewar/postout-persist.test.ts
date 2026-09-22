@@ -12,7 +12,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { PEOPLE } from '../engine/people'
 import { initStore as raptorInitStore } from '../state/store'
-import { getState, initStore as lwInitStore, setPeople, setPerson, setPostOut, setRole } from './state/store'
+import { getState, initStore as lwInitStore, setPeople, setPerson, setPostIn, setPostOut, setRole } from './state/store'
 import { memoryBackend, type StorageBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 
@@ -177,5 +177,66 @@ describe('the crowd behind a placeholder does not change across a reload', () =>
       .not.toContain(gone.id)
     expect(availableFor(iso, [8 * 60, 15 * 60]).length,
       'the puck stands for exactly the same men it stood for').toBe(before.length)
+  })
+})
+
+/* AND THE OTHER END OF THE SAME WINDOW — found 22 Sep 26 by re-reading the
+   capture above, not by a walk or a review.
+   `setPostIn` (owner, 20 Sep 26 — "we need a post in button just like post out.
+   Because those dates are official dates") records its window through the same
+   `windowRecord` as `setPostOut`, and the write is correct: the record reaches
+   storage with `from` set and `to` null. The BOOT READER then threw it away,
+   because it insisted `to` be a string — so a man's official joining date was
+   lost on every reload, exactly like the posting-out window above, and in the
+   same file.
+   It is not an OIL defect and it is PRE-EXISTING (the reader predates the
+   post-in button and was never widened for it). It is fixed here because it is
+   the same record, the same body and the same failure — and because a joining
+   date decides who is in the squadron on a date, which reaches the manning
+   counts, ALL AVAIL and therefore what a placeholder pays. */
+describe('a post-IN date survives a reload too', () => {
+  it('the joining date is still on the person after a reboot', () => {
+    const be = memoryBackend()
+    reboot(be)
+    const id = anAircrewId()
+    expect(setPostIn(id, '2026-03-01')).toBe(true)
+    reboot(be)
+    expect(getState().people.find(x => x.id === id)!.from, 'his official joining date').toBe('2026-03-01')
+  })
+
+  it('clearing it clears the record, and the person comes back with no window', () => {
+    const be = memoryBackend()
+    reboot(be)
+    const id = anAircrewId()
+    setPostIn(id, '2026-03-01')
+    setPostIn(id, null)
+    expect(be.read('postouts'), 'both ends clear, so no record at all').toBe('{}')
+    reboot(be)
+    expect(getState().people.find(x => x.id === id)!.from).toBeNull()
+  })
+
+  it('THE CONTROL: both ends together still survive, as they always did', () => {
+    const be = memoryBackend()
+    reboot(be)
+    const id = anAircrewId()
+    setPostIn(id, '2026-03-01')
+    setPostOut(id, '2026-09-01', false)
+    reboot(be)
+    const p = getState().people.find(x => x.id === id)!
+    expect(p.from).toBe('2026-03-01')
+    expect(p.to).toBe('2026-08-31')
+  })
+
+  it('THE CONTROL: untrusted storage is no looser than before', () => {
+    const be = memoryBackend()
+    /* neither end a date, a mismatched id, a missing callsign — all still dropped */
+    be.write('postouts', JSON.stringify({
+      a: { id: 'a', callsign: 'A', from: null, to: null },
+      b: { id: 'zz', callsign: 'B', from: '2027-01-01', to: null },
+      c: { id: 'c', from: '2027-01-01', to: null },
+      d: { id: 'd', callsign: 'D', from: 7, to: null },
+    }))
+    reboot(be)
+    expect(getState().postOuts).toEqual({})
   })
 })
