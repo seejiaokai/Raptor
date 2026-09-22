@@ -753,6 +753,52 @@ point of view."* He uses it, so his judgment governs. Kept as a RULED item with 
 order §7.6) so a later session cannot rediscover the measurement and "fix" it. Detail: the walk sheet
 §6 item 12.
 
+### [DOCS-GUARD] Nothing detects a destroyed record — Fable's F1/F3 (22 Sep 26)
+
+**The one finding that would stop a recurrence, and it is not built.** `docsize.mjs` counts LINES
+only; `npm run docsize` is in no hook, not in `npm test`, and not in CI — `deploy.yml` has
+`paths-ignore: '**.md'`, so **a docs-only PR runs ZERO checks** and one deleting half the backlog
+merges unexamined. D29's three rules reduce the temptation; none detects a bad script.
+
+**F1:** add an inventory pass to `docsize.mjs` — parse item ids from the live + archive files, read
+the HEAD versions via `git show`, and FAIL by name when an id is lost, duplicated, or when any
+non-blank line of a block that left the live file is missing from the archive (**body level, not a
+heading count — that is what passes a file whose bodies are doubled**). Wire it into CI with
+`paths: ['**.md', …docsize.mjs]` and a `.claude/hooks/backlog-guard.sh` **Stop** hook, because Stop
+fires however the edit was made — a python or Bash script included.
+
+**F3:** the gate must never demand a trim inside a code change. Over ceiling AND the diff touches
+`raptor-port/src` → print "deferred to its own pass (D29)" and exit 0; over ceiling and docs-only →
+exit 1, because that IS the trim pass. Seven of eight gated files sit at ZERO headroom while other
+rules require adding lines to two of them during a fix — that is the squeeze that caused the
+destruction. Also: a ceiling constant may change only in a commit touching no `src` file.
+
+**Then F2** (four live texts still order trim-on-touch: the `outstanding-tasks-file` memory,
+`.claude/rules/record-decisions.md` line 37, `doc-budget.md` §3, and docsize's own failure message),
+**F6** (rulings still with no D-number: the award ruling, "OIL may be credited by hand on ANY day",
+and two unbuilt S4 rulings), and the rest of **F4/F5** (the classification rule reworded to "write the
+pointer, THEN move"; `.gitattributes` pinning CRLF; two lying headings; duplicate ids
+`[GLOBAL-UNDO]`/`[S4-BUGHUNT]`; the phantom `[LW-WEEKDAY-WORK]`; a committed archive mover).
+
+**Tier: NONE-to-LOOK** — docs and scripts only, no `raptor-port/src`. ~1h for F1+F3, ~45min for
+F2+F6. Full findings and exact steps:
+`raptor-port/docs/superpowers/specs/2026-09-22-backlog-process-attack.md`. Ruling: `DECISIONS.md` D29.
+
+### [OIL-UNDO-WORDS] Undo says "a change to the schedule" when it took back an OIL decision (22 Sep 26)
+
+Found in the walk while proving fix 5's boundary. Inside OIL Earn, the first two presses of the
+board's Undo correctly reverse the OIL decisions — and each says **"Undid: a change to the
+schedule"**. Taking a man off an event is not a schedule change; the mode exists precisely because
+the schedule must not move while OIL is being decided, so the words contradict the screen they appear
+on. The third press, which leaves the mode, says the right thing ("Left OIL Earn — the next undo
+would change the day itself").
+
+**Tier: NONE** (words only, one string). The label comes from the undo entry's own description, so
+the fix is to give an OIL decision its own wording rather than inheriting the generic one. Evidence:
+`raptor-port/docs/handpass/2026-09-22-oil-walk.md` §5.1; re-run with
+`scripts/handpass/j5-undo.mjs`. **Fold into `[OIL-SEATS-CAN-EARN]` or `[OIL-WORDS]`** — not worth its
+own pass.
+
 ### [OIL-SEATS-CAN-EARN] Every seat can earn, the default decides — ONE change (owner, D24 + D28, 22 Sep 26)
 
 **D28 merged two items into this one.** His principle: *"If everywhere in the schedule can earn oil,
