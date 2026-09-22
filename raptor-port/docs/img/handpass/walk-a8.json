@@ -1,0 +1,282 @@
+{
+ "phSet": "PH",
+ "oilOfferedBeforeWork": [
+  "◧\nOIL Earn"
+ ],
+ "man": "shaft",
+ "manCs": "Anvil",
+ "pub": {
+  "published": true,
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "afterPublish": {
+  "warn": {
+   "head": "⚠ 9 issues",
+   "lines": [
+    "· 4 warnings ·",
+    "tap to review",
+    "Anvil — SXO duty & PH DUTY duty clash",
+    "Gambit — On leave but planned to fly VL ACM",
+    "Nomad — OD clashes with RU BFM — reason: Overseas duty — exercise, off island",
+    "the ground programme has no times — nobody on it earns OIL for this day",
+    "Trident — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+    "Relay — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+    "Trident, Relay — 2 people are double turning: Trident, Relay",
+    "Kraken, Otter — CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required",
+    "Nomad, Pixel — CAT C pilot Nomad with CAT D WSO Pixel in RU BFM — CO approval required"
+   ]
+  },
+  "oilEarnOffered": [
+   "◧\nOIL Earn"
+  ],
+  "pendingWords": [
+   "ORIG",
+   "Unpublish"
+  ],
+  "bars": [
+   {
+    "who": "Trident",
+    "kind": "fo",
+    "title": "Trident · IP · instructor pilot · Tight turn · earns a full day of OIL"
+   },
+   {
+    "who": "Relay",
+    "kind": "fo",
+    "title": "Relay · IW · instructor WSO · Tight turn · earns a full day of OIL"
+   },
+   {
+    "who": "Gambit",
+    "kind": "fo",
+    "title": "Gambit · C · ops wingman · Conflict (two events at once) · earns a full day of O"
+   },
+   {
+    "who": "Hex",
+    "kind": "fo",
+    "title": "Hex · C · ops wingman · earns a full day of OIL"
+   },
+   {
+    "who": "Torch",
+    "kind": "fo",
+    "title": "Torch · C · ops wingman · earns a full day of OIL"
+   },
+   {
+    "who": "Cutter",
+    "kind": "fo",
+    "title": "Cutter · C · ops wingman · earns a full day of OIL"
+   },
+   {
+    "who": "Kraken",
+    "kind": "fo",
+    "title": "Kraken · D · wingman · SANS · Crew pairing — this pairing needs approval · earns"
+   },
+   {
+    "who": "Otter",
+    "kind": "fo",
+    "title": "Otter · D · wingman · SANS · Crew pairing — this pairing needs approval · earns "
+   },
+   {
+    "who": "Trident",
+    "kind": "fo",
+    "title": "Trident · IP · instructor pilot · Tight turn · earns a full day of OIL"
+   },
+   {
+    "who": "Relay",
+    "kind": "fo",
+    "title": "Relay · IW · instructor WSO · Tight turn · earns a full day of OIL"
+   },
+   {
+    "who": "Bolt",
+    "kind": "fo",
+    "title": "Bolt · C · ops wingman · SANS · earns a full day of OIL"
+   },
+   {
+    "who": "Wisp",
+    "kind": "fo",
+    "title": "Wisp · C · ops wingman · earns a full day of OIL"
+   },
+   {
+    "who": "Zenith",
+    "kind": "fo",
+    "title": "Zenith · C · ops wingman · SANS · earns a full day of OIL"
+   },
+   {
+    "who": "Fable",
+    "kind": "fo",
+    "title": "Fable · C · ops wingman · earns a full day of OIL"
+   },
+   {
+    "who": "Nomad",
+    "kind": "fo",
+    "title": "Nomad · C · ops wingman · Conflict (two events at once) · earns a full day of OI"
+   },
+   {
+    "who": "Pixel",
+    "kind": "fo",
+    "title": "Pixel · D · wingman · SANS · Crew pairing — this pairing needs approval · earns "
+   },
+   {
+    "who": "Sidewinder",
+    "kind": "ho",
+    "title": "Sidewinder · IP · instructor pilot · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Anvil",
+    "kind": "fo",
+    "title": "Anvil · IP · instructor pilot · SXO · Conflict (two events at once) · earns a fu"
+   },
+   {
+    "who": "Vector",
+    "kind": "ho",
+    "title": "Vector · C · ops wingman · earns half a day of OIL"
+   },
+   {
+    "who": "Anvil",
+    "kind": "fo",
+    "title": "Anvil · IP · instructor pilot · SXO · Conflict (two events at once) · earns a fu"
+   },
+   {
+    "who": "Havoc",
+    "kind": "ho",
+    "title": "Havoc · IP · instructor pilot · earns half a day of OIL"
+   },
+   {
+    "who": "Ryder",
+    "kind": "ho",
+    "title": "Ryder · C · ops wingman · earns half a day of OIL"
+   },
+   {
+    "who": "Scribe",
+    "kind": "ho",
+    "title": "Scribe · D · wingman · SANS · earns half a day of OIL"
+   },
+   {
+    "who": "Recon",
+    "kind": "ho",
+    "title": "Recon · OCU (ab-initio) · earns half a day of OIL"
+   },
+   {
+    "who": "Quill",
+    "kind": "ho",
+    "title": "Quill · IW · instructor WSO · earns half a day of OIL"
+   },
+   {
+    "who": "Ace",
+    "kind": "ho",
+    "title": "Ace · A · 4-ship FL · earns half a day of OIL"
+   }
+  ],
+  "duties": [
+   {
+    "label": "1st wave",
+    "rows": [
+     "SDO|0800-1400|Sidewinder",
+     "SXO|0800-1400|Anvil",
+     "OPS-O|0800-1400|Vector",
+     "PH DUTY|08:00-16:00|Anvil"
+    ]
+   }
+  ]
+ },
+ "creditAfterPublish": {
+  "found": true,
+  "text": "FO*",
+  "cls": "duty evoff act"
+ },
+ "phCleared": "＋",
+ "afterClear": {
+  "warn": {
+   "head": "⚠ 8 issues",
+   "lines": [
+    "· 3 warnings ·",
+    "tap to review",
+    "Anvil — SXO duty & PH DUTY duty clash",
+    "Gambit — On leave but planned to fly VL ACM",
+    "Nomad — OD clashes with RU BFM — reason: Overseas duty — exercise, off island",
+    "Trident — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+    "Relay — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+    "Trident, Relay — 2 people are double turning: Trident, Relay",
+    "Kraken, Otter — CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required",
+    "Nomad, Pixel — CAT C pilot Nomad with CAT D WSO Pixel in RU BFM — CO approval required"
+   ]
+  },
+  "oilEarnOffered": [],
+  "pendingWords": [
+   "ORIG",
+   "1 pending",
+   "Publish AL1",
+   "Unpublish"
+  ],
+  "bars": [],
+  "duties": [
+   {
+    "label": "1st wave",
+    "rows": [
+     "SDO|0800-1400|Sidewinder",
+     "SXO|0800-1400|Anvil",
+     "OPS-O|0800-1400|Vector",
+     "PH DUTY|08:00-16:00|Anvil"
+    ]
+   }
+  ]
+ },
+ "creditAfterClear": {
+  "found": true,
+  "text": "FO*",
+  "cls": "duty act"
+ },
+ "pub2": {
+  "published": true,
+  "version": "AL1",
+  "signSelects": 4
+ },
+ "afterAL1": {
+  "warn": {
+   "head": "⚠ 8 issues",
+   "lines": [
+    "· 3 warnings ·",
+    "tap to review",
+    "Anvil — SXO duty & PH DUTY duty clash",
+    "Gambit — On leave but planned to fly VL ACM",
+    "Nomad — OD clashes with RU BFM — reason: Overseas duty — exercise, off island",
+    "Trident — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+    "Relay — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+    "Trident, Relay — 2 people are double turning: Trident, Relay",
+    "Kraken, Otter — CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required",
+    "Nomad, Pixel — CAT C pilot Nomad with CAT D WSO Pixel in RU BFM — CO approval required"
+   ]
+  },
+  "oilEarnOffered": [],
+  "pendingWords": [
+   "AL1",
+   "Unpublish"
+  ],
+  "bars": [],
+  "duties": [
+   {
+    "label": "1st wave",
+    "rows": [
+     "SDO|0800-1400|Sidewinder",
+     "SXO|0800-1400|Anvil",
+     "OPS-O|0800-1400|Vector",
+     "PH DUTY|08:00-16:00|Anvil"
+    ]
+   }
+  ]
+ },
+ "creditAfterAL1": {
+  "found": true,
+  "text": "",
+  "cls": " act"
+ },
+ "histHead": "☰ Edit history · 5 changes",
+ "hist": [
+  "WEDNESDAY Duty · PH DUTY set to Anvil Admin · 21/9 23:37",
+  "WEDNESDAY Duty · PH DUTY · end set to 16:00 Admin · 21/9 23:37",
+  "WEDNESDAY Duty · PH DUTY · start set to 08:00 Admin · 21/9 23:37",
+  "WEDNESDAY Duty · PH DUTY · role set to PH DUTY Admin · 21/9 23:37",
+  "WEDNESDAY Duty row added Admin · 21/9 23:37"
+ ],
+ "satVersion": "[\"al\",\"pending\",\"changes\",\"added\",\"als\",\"dayOK\",\"sign\",\"signBind\",\"orig\",\"cur\",\"ridV\",\"amV\"]",
+ "errors": []
+}

@@ -77,7 +77,7 @@ on that tree (superseded by the #373 baseline above; the traps stand):
 
 | gate | reading |
 |---|---|
-| `npm test` | **4670 across 275 files** (13 Sep 26, incl. the course-id 1B-i pins) — two vitest projects, raptor + leavewar. **The RAPTOR project is flaky under load on a busy container** (6 Sep 26): three consecutive runs of one unchanged tree gave a post-teardown unhandled error (React's scheduler finishing work after jsdom went away, reported against `src/ui/odds.test.tsx`), then one failed test, then a clean 2632/2632 — while the branch base ran clean too. Every test passes; it is the exit code that wanders. Re-run before treating it as a finding, and read the "Unhandled Errors" block (obs 85) — this is the same shape as the two already fixed. |
+| `npm test` | **4670 across 275 files** (13 Sep 26, incl. the course-id 1B-i pins) — two vitest projects, raptor + leavewar. **The RAPTOR project is flaky under load on a busy container** (6 Sep 26): three consecutive runs of one unchanged tree gave a post-teardown unhandled error (React's scheduler finishing work after jsdom went away, reported against `src/ui/odds.test.tsx`), then one failed test, then a clean 2632/2632 — while the branch base ran clean too. Every test passes; it is the exit code that wanders. Re-run before treating it as a finding, and read the "Unhandled Errors" block (obs 85) — this is the same shape as the two already fixed. **It is a FAMILY, not one test, and it is LOAD, not the tree (22 Sep 26).** `src/ui/stsaved.test.tsx` joined `odds.test.tsx` in it: two of its cases failed on the two full runs taken while the tracker smoke and the browser gate were running alongside, and passed on the two runs taken alone — 6/6 in isolation, 16/16 run straight after the three new OIL files in one process, and 5449/5449 twice with nothing else going. That file is the expected shape: its subject is a SELF-EXPIRING 1.2s window, so a loaded machine expires it before the assertion. **Do not run the unit gate concurrently with the browser gates**, and do not read a failure from a concurrent run as a finding without re-running it alone. |
 | `node reference/tfin.js` | **728/0** (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
 | `npm run test:e2e` | **lw-phone 128 + lw-desktop 133 passed / 0 failed (21 skipped by project gate); raptor geometry 134 / 0** — three playwright projects, 416 tests, ~12.5 min locally. Two traps from this batch: (a) a `npm run build` DURING a browser run swaps the files the test server serves and fails whatever page load is in flight (one login-timeout red, green on the clean re-run — never rebuild while `test:e2e` runs); (b) a background `npx playwright test` launched WITHOUT `cd raptor-port` runs from the repo root and reports "No tests found" as exit 0. The older lead stands: the desktop carry-day test ("View-only opens on the day Edit was showing", `geometry.spec.ts`) went red once in the drag round and passed alone — for ~5 s after the edit page opens the store notifies ~10 times and each pass re-lands `eWeek.scrollLeft`, which can race `parkOn`'s scroll. |
@@ -177,6 +177,54 @@ None of these gate a tracker- or storage-only change.
 
 
 ## In flight
+
+**[OIL-AUTO-REMOVE] + [ALL-AVAIL-REDEF] — BUILT + BUG-CHECKED 21 Sep 26, HELD for "merge live".**
+**NEXT SESSION READS `raptor-port/docs/superpowers/specs/2026-09-21-oil-handpass-handoff.md` FIRST** —
+the job is executing the two scenario lists (Fable's 44, Codex's 24) in the RUNNING app, and that
+file says what is already done by hand so it is not redone. **And read
+`raptor-port/docs/bug-check-order.md` before any bug check** — the adopted standing order,
+new tonight, which triggers itself via `.claude/rules/bug-check.md`.
+On branch `claude/oil-auto-remove-design`. The build session's own handoff is
+`raptor-port/docs/superpowers/specs/2026-09-21-oil-build-handoff.md`.
+
+**The cross-provider bug check is DONE, and ten defects are fixed** — triage and the ordered plan in
+`…/2026-09-21-oil-bugcheck-fixplan.md`, the two reviews verbatim beside it (`…-fable.md`,
+`…-codex.md`). Fable 5.1 and Astra/Codex, both read-only, neither the model that built it. Four of
+the eight they found were ONE root cause: **the freeze boundary had more doors than `creditFrom`** —
+the war's calendar, the live roster and a landed row's own state were all still read live for money
+on a published day. **Two owner rulings settled it:** R-1, only the issued schedule pays, BOTH
+directions (a holiday declared after publication waits for a republication and the day says so;
+revoking one no longer sweeps money silently); R-2, the two pre-existing money bugs that share that
+root cause are fixed here. Also: a tap under a mask can no longer wipe the decision it hides, an OIL
+decision now reaches the day's history, and the green bar follows the owner's O-1 ruling — shown
+only on the events that COUNTED towards his day.
+
+**The OWNER found two more by hand that neither review could.** Both reviews were static, and a
+missing call site is invisible when every line that IS there is correct. (1) The green strip never
+reached the board's cockpit seats or its Common Programme — so a whole Saturday of flying crews read
+as earning nothing while the money behind them was right. (2) Any advisory chip on a puck covered
+the strip. `docs/feature-impact.md` had already named this exact drift-seam, worded as "a NEW seat
+renderer"; the hole was in two EXISTING ones, and no test saw it because every bar assertion had
+been written against a duty desk or a ground row. **The standing lesson: run the reviews AND drive
+the app — treat "which call sites should have this and do not" as its own question.**
+
+All five gates green after the fixes (5341 unit, build, parity 728/0, e2e, tracker) plus
+`rulecheck`; hand-tested in the running bundle against an enumerated register of 29 rulings, and the
+owner's whole seat list re-checked live (flying · SC MAIN · Common Programme · Standard and SC Shift
+desks earn; SC SPARE · AVALON wave · AVALON desk do not). What shipped, in one line each: ALL / ALL AVAIL now means what the owner said (ground
+crew out, a SANS man in when planned with us, ATT B in, a clashing commitment or tasking out — ONE
+resolver, sharing `engine/avail.ts`'s occupancy answer); a day carries its own **OIL evidence
+block** and money comes only from it (`engine/oilev.ts` — decisions on `Day.oild`, the frozen
+projection + sentinel membership on `Day.oilev`, issued snapshots only); all OIL now waits for
+publication; an OIL-only edit is publishable as ONE amendment item; the board's **OIL Earn** mode;
+and the **green edge** on the puck for weekend/holiday days only.
+Two things the owner must know: a SANS man is now inside ALL AVAIL but still has no Leave War row
+unless "Show SANS" is on (a flagged clash, OIL35), and the deploy carries the standing development
+RESET at its real scope (schema 5 — weeks incl. issued snapshots, inputs and the Leave War cleared
+and re-seeded, which he agreed to as "ok reset"). Register + both clashes:
+`raptor-port/docs/superpowers/specs/2026-09-21-oil-behaviour-register.md`; design:
+`…/2026-09-21-oil-auto-remove-decisions.md`; behaviour: `docs/engine-rules.md` §Weekend/PH work
+earns OIL and `docs/ui-contracts.md` §OIL on the schedule.
 
 **[CMDL-FINISH] — ARCH-STACK step 2 completion — DONE + LIVE.** Merged via PRs #412
 (build), #415 (finish) and #413 (the undo front-door doc); `OUTSTANDING.md` records it as
@@ -719,6 +767,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `data.ts` | The seed week (Jul 13): DAYS with waves/formations/aircraft, duties, sims, ground, programme rows. Plus `WEEK1_DAYS_SNAP`, the pristine model captured at module load for the week selector. Ground/meeting labels are GENERIC (no real unit names) and every callsign is FICTION (the 21 Aug 26 sensitivity scrub). |
 | `week2.ts` | **The second demo week** (Jul 20, 21 Aug 26) — `WEEK2_DAYS`/`WEEK2_DATES`/`WEEK2_INPUTS`, authored to exercise most warning families (crew solo, CO-approval pairing, tight/double turn, double booking, OCU-no-IP, illegal seat, crew-rest breach, long day, medical downchit). Deliberately avoids the two demo blind spots (no ATT B seated, no IRT without an IR, no AAR-currency remark). Not parity-compared. |
 | `weeks-data.ts` | **The loadable-week registry** (21 Aug 26) — `weekBundle(v)` hands `state/store.ts:loadWeek` a fresh deep copy of the chosen week (Jul 13 seed / Jul 20 second / a blank editable `emptyWeek` for any other chip). A leaf module (data/inputs/week2 only), no cycle. Also **`shiftWeekKey(v,n)`** (23 Aug 26) — a `dd/mm/yyyy` ± 7n-day stepper, a deliberate second implementation of `ui/weeknav.ts:shiftWeek` (an engine→ui import would be a layering violation), pinned agreeing with it by test. |
+| `oilev.ts` | **The OIL evidence block** (21 Sep 26, `[OIL-AUTO-REMOVE]`) — the ONE body that says what earns OIL on a day, and the only thing the credit pass reads. Holds the three-state decision algebra (`inherit`/`allow`/`deny`, where nothing overrides ineligibility), the input projection, the frozen sentinel membership, and the deterministic serialisation the publish delta and the signature binding both use. The decisions are COPIED out of the day, never aliased — an early cut handed back the live object and a published document silently rewrote itself (found by hand in the running app). Rules: `docs/engine-rules.md` §Weekend/PH work earns OIL. |
 | `weekctx.ts` | **Cross-week seed reads for `validate.ts`** (23 Aug 26; + `nextMondayWorked`, the seed-side on-set of next week's Monday for the forward run trace and the pre-drop run query, 5 Sep 26) — pure reads off `weekBundle(v)` + the global `INPUTS`, nothing mutated: `seedRunIn(curWeek,maxRun)` walks back up to `maxRun` days before Monday for the consecutive-days run, `prevSundaySeed(curWeek)` shapes the previous week's Sunday like a real `ev[idx-1]` entry (`di:null`, so `markTrace` no-ops) for Monday's crew-rest check, and — added the same day for the forward crew-rest trace — **`nextMondaySeed(curWeek)`** shapes next week's Monday as a phantom "today" (carrying `fly` too, since the phantom pass computes the current day's side of the rule) fed into `validate.ts`'s `crewRestDay` a second time so a late loaded-week Sunday can trace forward onto itself. Its own `bundle(v)` helper is STASH-AWARE (see `weekstash.ts`): `stashHas(v)` is checked before the pure-bundle cache on every call, so a week the scheduler has actually edited feeds these reads its live session state instead of the untouched seed. See its own header comment for the exact window semantics and what a non-loaded, non-stashed week cannot be made to answer (SCHED/publish state, forgotten edits). Docs: `docs/engine-rules.md` §DAYS_RUN, §Crew rest; flow: `docs/feature-impact.md` Flow F. |
 | `weekstash.ts` | **Per-week session stash** (23 Aug 26 — fixes the vanishing-duty bug, see Known issues) — a dumb store, keyed by week-start, of whatever `state/store.ts:loadWeek` last handed it on the way OUT of a week (`stashPut`/`stashGet`/`stashHas`), plus `stashDays(v)` (a fresh, never-cached `{days,dates}` copy in `weekBundle` shape, for `weekctx.ts`'s cross-week reads — since 24 Aug 26 it re-labels each day's `dt` from the freshly derived dates, so a stash written under one loaded year still reads correctly under another at a New Year boundary). Session-only on purpose (owner, 23 Aug 26 — forget-on-exit stays the app's rule, in lockstep with `INPUTS`/Leave War); an entry that fails to parse is silently dropped by `stashDays`, degrading to the pure seed. Holds no opinion about a snapshot's shape — that is state code's call, because WARNOFF lives in `state/view.ts` and the engine may not import `state/`. Flow: `docs/feature-impact.md` Flow E. |
 | `people.ts` | PEOPLE roster (quals, seat, categories), qual ladder (`OCU→D→C→B→A→IW→IP→IR→FI` — instructor-ness lives in CAT, no `ip` flag), `isScheduler`/`isLead`/`isInstr`/`isInstrPilot`/`isOcu`, **`isPersonnel` + the `pers:true`/`seat:'GND'` ground-crew category** (Aug 26 — seeded `torque`/`spanner`/`gizmo`, no CAT; `deriveQuals` short-circuits them), `scShiftKind`, `sanStatus`, `aarNeed`, and **`nameToId` (id-tolerant since 21 Aug 26** — resolves a who-string by callsign OR, failing that, a value that is already a person id; the seed stores bare ids in ground/programme `who`, which the callsign scrub would otherwise have stopped resolving). Also the TWO sentinel placeholders: `allavail` (cs 'ALL AVAIL') and, since 28 Aug 26, `all` (cs 'ALL') — byte-for-byte the same semantics (`special:true`, never validated, no warnings; the palette's Placeholders strip), and on a weekend/PH ground/Common-Programme row either expands to available regular aircrew for the OIL credit (`sync.ts:availableFor`). |
@@ -763,6 +812,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 ### `raptor-port/src/ui/` — components and builders
 | file | what it does |
 |---|---|
+| `oilmode.ts` | **The board's "OIL Earn" mode, and the figure reader the green edge shares** (21 Sep 26). The mode's state lives beside `SBDAY` in `state/view.ts` (cleared by the same close and by a day step); this file is its markup, its reads and its three writers (the day blanket, an item, one man on one item). `oilDayFigures` is the ONE figure body the mode and the issued schedule's green bar both read, so a man can never be shown two different answers. Contract: `docs/ui-contracts.md` §OIL on the schedule. |
 | `App.tsx` | Login vs Shell + board overlay (the board is a SIBLING of the shell so logout unmounts it). |
 | `Shell.tsx` | Topbar, nav, both schedule pages' chrome, global listeners (click/change/contextmenu/focusout/keydown, drag, pan), banner, memoized sections. The topbar carries the **notification bell** (`#notifyBell`, glows off `bellLit()`, every page/width), the edit page's **undo/redo** (`.tb-hist`, desktop-facing; memo deps carry `HIST.ix`/`HIST.stack.length`/`bellLit()`), and — 22 Aug 26 — the **role chip far right** after Logout (`#roleBadge`, `.abtn.rolechip`, phone-hidden; since 27 Aug 26 it is the admin's VIEW TOGGLE — a button flipping admin↔member view via `store.ts:toggleRole`, inert for a member; the phone's copy lives in the Drawer's Account row, `#drawerRole`) and a **blue `.topbar.editing` tint on Edit Schedule** (redefines `--topbar-a/b` so the phone's sticky burger/mark lead tints in lockstep). The VIEW page's chrome is ONE row since 22 Aug 26 (`#viewChrome`: calendar far left inside `.wkseg`+`#weekSeg`, week buttons, HIGHLIGHT chips — OCU rides the CAT group right of D — then search); the edit seg's calendar sits far left too; the old `#eTitle` "142 Scheduling board" heading is deleted. |
 | `ViewWeek.tsx` / `EditWeek.tsx` | The week surfaces: build `dayHTML` per day, diff strings, swap only changed days, hold scroll; `EditRoster` palette. CURPAGE-gated. Each calls `beginGlide` (`weekglide.ts`) at the top of its repaint, before the DOM swap, so a phone week cross slides instead of flashes. Each also calls `peek.ts:mountPeek(root, html.length, prevPeekKey)` after the live-day diff settles, mounting/refreshing the trailing next-week preview nodes past the live days — a no-op DOM-wise when the key and node count already agree, so an ordinary one-day edit still touches nothing extra. Both also read `view.PEEKLAND` in their landing priority chain (alongside `WEEKJUMP`/`CARRYDAY`/`DPREV`) to land a just-loaded day at the exact x its preview card was clicked at. |

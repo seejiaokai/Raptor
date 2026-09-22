@@ -105,10 +105,16 @@ const WAVE: Spec = { label: 'string', night: 'boolean', intimes: ['string'], tra
 const SIM: Spec = { ...FLAGS, label: 'string', str: 'string', end: 'string', rmks: 'string?', p: 'string?', w: 'string?', pax: { $opt: ['string'] }, who: 'string?', more: { $opt: ['string'] }, rid: 'string?' }
 const DUTYROW: Spec = { ...FLAGS, role: 'string', id: 'string', str: 'string', end: 'string', more: { $opt: ['string'] }, rid: 'string?' }
 const DUTYBLOCK: Spec = { label: 'string', rows: [DUTYROW], sa: { $opt: SAKIND }, noconf: 'boolean?', rid: 'string?' }
+/* [OIL-AUTO-REMOVE] — the day's OIL decisions (stored day content) and, on an
+   ISSUED SNAPSHOT'S day copy only, the frozen evidence block. engine/oilev.ts. */
+const OILDEC: Spec = { blanket: { $opt: { $lit: [1] } }, items: { $opt: { $map: 'number' } }, people: { $opt: { $map: 'string' } } }
+const OILINP: Spec = { iid: 'string', person: 'string', type: 'string', asks: 'boolean', acc: 'string', win: { $or: [['number'], 'null'] }, ans: { $or: ['number', 'null'] } }
+const OILEV: Spec = { iso: 'string', earns: 'boolean', d: OILDEC, inputs: [OILINP], sent: { $map: ['string'] } }
 const DAY: Spec = {
   dow: 'string', dt: 'string', wc: 'string', today: 'boolean?', notes: [{ rid: 'string?', t: 'string' }], allhands: [ALLHANDS], waves: [WAVE],
   sims: { amt: [SIM], oft: [SIM] }, dutywaves: [DUTYBLOCK], ground: [GROUND],
   simnotes: 'string?', prognotes: 'string?', dutynotes: 'string?', grndnotes: 'string?', secOrder: { $opt: ['string'] }, gman: 'boolean?',
+  oild: { $opt: OILDEC }, oilev: { $opt: OILEV },
 }
 const SIGNSET: Spec = { cur: 'string', sked: 'string', plan: 'string', appr: 'string' }
 /* Phase 3 (AM-06): the content a signed role is bound to — canonical digest,
@@ -120,7 +126,7 @@ const DAYSNAP: Spec = { d: DAY, c: { $map: 'number' }, fil: { $opt: { $map: 'str
 /* Phase 2 AlRecord: SINGLE-DAY, keyed by its immutable verId; the canonical
    `diff` replaces the old `keys` list, and there is no n/days/n0/adds/structAdds. */
 const ANYV: Spec = { $or: ['string', 'number', 'boolean'] }
-const ALDIFF: Spec = { addr: 'string', kind: { $lit: ['add', 'delete', 'change', 'move', 'input'] }, from: { $opt: ANYV }, to: { $opt: ANYV } }
+const ALDIFF: Spec = { addr: 'string', kind: { $lit: ['add', 'delete', 'change', 'move', 'input', 'oil'] }, from: { $opt: ANYV }, to: { $opt: ANYV } }
 const AL: Spec = { id: 'string', di: 'number', iso: 'string', seq: 'number', snap: DAYSNAP, diff: [ALDIFF], sign: { $map: SIGNSET }, added: { $opt: ['string'] } }
 const ONE: Spec = { $lit: [1] }
 /* [GLOBAL-UNDO] §6.1 — a retired-issuance snapshot (the append-only log, keyed

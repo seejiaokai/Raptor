@@ -1341,3 +1341,43 @@ describe('success toasts (owner audit — a tap with no feedback)', () => {
     expect(toasts).toContain('CSV downloaded')
   })
 })
+
+/* FABLE F6 (22 Sep 26) — AFTER A DISMISSED SHEET, NOBODY WAS TOLD. When a
+   scheduler hands a request to another man and then cancels the OIL question,
+   the new holder is correctly left unanswered — but outside the mode nothing
+   showed it. The row on this page carried no mark (the revise button appears
+   only where an answer EXISTS), the warning list said nothing, and the bell is
+   per-member, so it lights for the man and not for the scheduler who made the
+   change. The member finds it eventually; the scheduler never does. */
+describe('a request with an OIL day nobody has answered says so on its row', () => {
+  const plant = (r: any) => {
+    const row: any = { person: 'bane', type: 'Duty', date: 'Jul 18', allday: true, remarks: 'f6test', mod: 'now', yr: 2026, ...r }
+    inpId(row); INPUTS.unshift(row); return row
+  }
+  const rowOf = (remark: string) => $$('#inBody tr').find(tr => (tr.textContent || '').includes(remark))
+
+  it('the mark is there when nobody has answered, and gone once somebody has', async () => {
+    plant({})
+    await act(async () => { notify() })
+    await showAllDates()
+    const tr = rowOf('f6test')
+    expect(tr, 'the row is on the page').toBeTruthy()
+    expect(tr!.querySelector('[data-oilask]'), 'and it says the question is open').toBeTruthy()
+    expect((tr!.querySelector('[data-oilask]') as HTMLElement).title, 'naming the day').toMatch(/18 Jul/)
+
+    INPUTS[0].oil = { '2026-07-18': 1 }
+    await act(async () => { notify() })
+    const tr2 = rowOf('f6test')
+    expect(tr2!.querySelector('[data-oilask]'), 'answered, so the mark goes').toBeFalsy()
+    expect(tr2!.querySelector('[data-oilrev]'), 'and the revise control takes its place').toBeTruthy()
+  })
+
+  it('THE CONTROL — a type that never asks carries no mark', async () => {
+    plant({ type: 'LL', remarks: 'f6ctrl' })
+    await act(async () => { notify() })
+    await showAllDates()
+    const tr = rowOf('f6ctrl')
+    expect(tr).toBeTruthy()
+    expect(tr!.querySelector('[data-oilask]')).toBeFalsy()
+  })
+})

@@ -37,6 +37,14 @@ import { ridKey, posKey, rowsOf, ensureRowIds } from './rowids'
 export const MAX_DRAFT_NAME = 24
 
 const clone = (o: any) => JSON.parse(JSON.stringify(o))
+/* A DAY COMING BACK ONTO THE WORKING COPY NEVER CARRIES FROZEN OIL EVIDENCE
+   ([OIL-AUTO-REMOVE] §9.3). `daySnap` attaches the block to the issued day copy,
+   so a recovery or a plan swap that clones a snapshot would install a projection
+   of the inputs AS THEY WERE — stale money, silently, because the credit pass
+   reads a present block in preference to deriving one. The live day stores only
+   the DECISIONS (`oild`, ordinary content that must survive the clone) and
+   re-derives everything else on read. */
+const liveDay = (d: any) => { const nd = clone(d); delete nd.oilev; return nd }
 
 /* PER-PLAN SIGN-OFFS (owner, 15 Sep 26 — item 1a): a plan is an alternate VERSION
    of the day and owns its four sign-offs. draftDup/draftSelect stow and load the
@@ -236,7 +244,7 @@ export function draftSelect(di: any, id: any) {
      Mint before the stow (Astra RID-IR-05) so the stowed blob never carries an
      id-less row; a no-op in production where the day already has its ids. */
   if (cur) { ensureRowIds(DAYS); cur.d = clone(DAYS[di]); const s = signSnap(di); cur.sign = s.sign; cur.signBind = s.signBind }
-  const nd = clone(t.d)
+  const nd = liveDay(t.d)
   nd.today = !!(DAYS[di] && DAYS[di].today)
   DAYS[di] = nd
   /* reconcile the ground filing on EVERY replacement, approved or not (P2-QREV-07):
@@ -528,7 +536,7 @@ export function loadVersionToWorkingCopy(di: any, ver: any) {
   if (protectedWeek()) return false   // read-only quarantine — never roll a version over a frozen day (P2-REV2-02)
   const snap = daySnapOf(di, ver)
   if (!snap) return false
-  const nd = clone(snap.d)
+  const nd = liveDay(snap.d)
   nd.today = !!(DAYS[di] && DAYS[di].today)
   DAYS[di] = nd
   reconcileDayFiling(di)   // every replacement, approved or not (P2-QREV-07)

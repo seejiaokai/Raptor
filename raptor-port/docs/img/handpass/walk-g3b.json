@@ -1,0 +1,52 @@
+{
+ "pendingBeforePublish": [
+  "Live working copy",
+  "67 pending"
+ ],
+ "pub": {
+  "published": true,
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "pendingAtPublish": [
+  "Live working copy",
+  "ORIG"
+ ],
+ "taps": {
+  "flying line": true,
+  "SC shift": true,
+  "duty desk": true,
+  "sim": true,
+  "ground row": true,
+  "family day": true,
+  "overseas duty": true,
+  "training claim": true,
+  "blanket on": true,
+  "blanket off": true
+ },
+ "pendingAfter": [
+  "Live working copy",
+  "ORIG",
+  "1 pending",
+  "Publish AL1"
+ ],
+ "panel": {
+  "entry": null
+ },
+ "history": {
+  "head": "☰ Edit history · 10 changes",
+  "lines": [
+   "SATURDAY This day can earn again — the marks underneath are back Admin · 21/9 22:53",
+   "SATURDAY Nothing on this day earns OIL — anything added later is covered too Admin · 21/9 22:53",
+   "SATURDAY Talisman earns nothing from TalismanHO Admin · 21/9 22:53",
+   "SATURDAY Sidewinder earns nothing from SidewinderFO Admin · 21/9 22:53",
+   "SATURDAY Ace earns nothing from FAMILY DAY Admin · 21/9 22:53",
+   "SATURDAY Saber earns nothing from MASS BRIEF Admin · 21/9 22:53",
+   "SATURDAY Cinch earns nothing from BOX Admin · 21/9 22:53",
+   "SATURDAY Fable earns nothing from SDO Admin · 21/9 22:53",
+   "SATURDAY Piston earns nothing from SC Admin · 21/9 22:53",
+   "SATURDAY Ranger earns nothing from VIPER Admin · 21/9 22:53"
+  ]
+ },
+ "errors": []
+}

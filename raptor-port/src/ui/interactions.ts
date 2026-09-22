@@ -14,13 +14,14 @@ import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { notify, loadWeek, commitSetDayApproved, commitPublishALDay } from '../state/store'
 import { schedWrite, schedWriteValue, SCHED_TYPES, commitUnpublish } from '../state/sched-commit'
-import { oilCreditBidAgainst } from '../leavewar/sync'
+import { oilCreditBidAgainst, createOilPeriodFor } from '../leavewar/sync'
 import { scrollToWarnFocus, queueHold, warnWeekId } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
 import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList } from './pops'
 import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
+import { oilSentinelList } from './oilmode'
 import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
 import { pickRosDay } from './pan'
@@ -480,6 +481,15 @@ export function routeClick(e: MouseEvent) {
     return
   }
 
+  /* WHO IS BEHIND AN ALL / ALL AVAIL PUCK, and what each of them earns
+     ([OIL-AUTO-REMOVE] §7.6 / §2.7). Routed here, not in board.ts, because the
+     count chip is drawn on the WEEK as well — it is part of the issued schedule,
+     not a board control — and a document-level handler catches it on both
+     surfaces. Read-only, so no role gate: anybody reading the schedule may ask
+     who the puck stands for. */
+  const osn = t.closest('[data-oilsent]') as HTMLElement | null
+  if (osn) { e.stopPropagation(); HOOKS.toast(oilSentinelList(+(osn.dataset.oilday || -1), osn.dataset.oilsent || '')); return }
+
   /* accepting a personal input — the same control on the week and the board, so
      it is routed here rather than duplicated in board.ts. Promotes the input
      into the ground programme (or files it under Unavailable), through the
@@ -807,6 +817,11 @@ export function routeClick(e: MouseEvent) {
     if (!canEditSched() || view.CURPAGE !== 'editsched') return
     const di = +unp.dataset.unpub!
     if (view.DPREV.has(di)) return
+    /* LEAVE THE MODE FIRST (fix 5, Fable M11). Withdrawing a day changes what
+       the whole day is — it stops paying — and the mode is a screen that says
+       the day underneath does not move. Staying in it afterwards would leave
+       every figure on it describing a document that has just been taken back. */
+    view.setOilDay(null)
     if (oilCreditBidAgainst(di) && !view.unpubArmed(di)) {
       view.setUnpubArm(di)
       HOOKS.toast(`Heads up — ${DAYS[di]?.dow || 'this day'}’s OIL credits are bid against on the Leave War. Unpublishing withdraws them until you republish. Tap again to confirm.`, 'warn')
@@ -950,6 +965,10 @@ export function routeClick(e: MouseEvent) {
   if (drOpen) {
     e.stopPropagation()
     if (!canEditSched() || view.CURPAGE !== 'editsched') return
+    /* and the same on the plans selector (fix 5, Fable M11): everything it
+       offers — loading a saved plan onto the working copy, switching version —
+       replaces the day the mode is describing */
+    view.setOilDay(null)
     planMenu(drOpen, +drOpen.dataset.planmenu!)
     return
   }
@@ -1031,6 +1050,28 @@ export function routeClick(e: MouseEvent) {
      session-only — WARNOFF rides histSnap AND weekStashSnap (`wo`), so a mute
      persists with its week and survives a reload. Caught
      ABOVE the .wln jump so muting a row never also pans to its puck. */
+  /* THE MISSING LEAVE WAR PERIOD, CREATED FROM THE SCHEDULE (owner's ruling
+     D19, 22 Sep 26). The day says a period for that year does not exist and
+     that nothing can be paid for it; this is the way out sitting beside the
+     reason. It lands in DRAFT and takes him to the Leave War, because a period
+     carries bidding dates and a stage — opening it for bidding is his own act,
+     never something a schedule screen does behind him. */
+  const mkp = t.closest('[data-mkperiod]') as HTMLElement | null
+  if (mkp) {
+    e.stopPropagation()
+    if (!canEditSched()) { HOOKS.toast('Only a scheduler can create a leave war period', 'warn'); return }
+    const yr = String(mkp.dataset.mkperiod || '')
+    const made = createOilPeriodFor(yr)
+    if (made === 'created') {
+      HOOKS.toast(`The ${yr} leave war period is created — set its bidding window here`, 'ok')
+      view.setPage('leavewar'); notify()
+    } else if (made === 'overlap') {
+      HOOKS.toast(`A leave war already covers part of ${yr} — open the Leave War and extend it instead`, 'warn')
+    } else {
+      HOOKS.toast(`The ${yr} period could not be created`, 'warn')
+    }
+    return
+  }
   const wo = t.closest('[data-woff]') as HTMLElement | null
   if (wo) {
     e.stopPropagation()

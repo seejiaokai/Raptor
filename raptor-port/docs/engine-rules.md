@@ -1700,18 +1700,63 @@ were `FS`/`HS` until the 28 Aug 26 rename.
     owner's rule is "based on what timing was written", and inventing
     `openEnd`/`simLen` defaults here would mint OIL from a guess (display
     may guess; money may not);
-  - a **ground row carrying `src`** (an accepted personal input) — those
-    are the ask-flow's to credit (`row.oil`, below), never auto: a Saturday
-    dental appointment must not mint OIL uninvited.
-- **The ALL / ALL AVAIL expansion.** A sentinel puck on a ground or Common
-  Programme row expands — via the injected `opts.expandAll`, so
-  `engine/oil.ts` stays Leave-War-free — to everyone available for the
-  event's window (`sync.ts:availableFor`): **regular aircrew only** — no
-  SANS, no ground-crew Personnel, no sentinels or archived bodies — minus
-  anyone an away-making input (`isAway`: leave, medical, OD) overlaps in
-  that window. Without a resolver the sentinel simply drops, as it always
-  did. The ALL puck itself (`people.ts` `all`) is a second sentinel with
-  ALL AVAIL's exact semantics: never validated, no warnings.
+  - a **ground row carrying `src`** (an accepted personal input) — the man who
+    FILED it is the ask-flow's to credit (`row.oil`, below), never auto: a
+    Saturday dental appointment must not mint OIL uninvited.
+    **REVISED 22 Sep 26 (owner, D18 — "for 2 he should earn").** The row is no
+    longer skipped WHOLE. Anyone the SCHEDULER adds to it beside the requester
+    is ordinary scheduled work and earns from it, with his own per-person
+    override; the requester alone stays in the ask-flow. The split matters: if
+    the row went through the schedule half entire, the requester would go with
+    it, where the default is YES — overriding his own No and paying him twice,
+    once as unconditional work and again as his answered claim. The extras take
+    the CLAIM's window, not the row's, because an all-day request lands a row
+    with no times at all (`landedExtras` / `oilEarnedWork` in `engine/oilev.ts`).
+- **The ALL / ALL AVAIL expansion — REDEFINED 21 Sep 26 ([ALL-AVAIL-REDEF]).**
+  A sentinel puck on a ground or Common Programme row expands — via the injected
+  `opts.expandAll`, so `engine/oil.ts` stays Leave-War-free — to the people
+  `sync.ts:availableFor` resolves for the event's window. The owner's words:
+  *"ALL Avail and ALL pucks should not consist of ground crew by default. only
+  SANS that are planned on the programmed on that day with us should be included.
+  Like if they fly, then they should be counted as part of all avail/all. people
+  on ATT B only should still be included. Those on Training, Course, Meeting,
+  Appointment, Duty, Personal, Other, planned for anything on the schedule that
+  conflicts in timing with the rest of the schedule is not part of All avail and
+  ALL."* So, in order:
+  - never a sentinel, an archived body or ground-crew **Personnel** (unchanged);
+  - a **SANS** man ONLY when he is planned on OUR programme that day — named
+    anywhere on it (`avail.ts:dayEngaged`). He is otherwise another squadron's;
+  - not posted in, or posted out, drops him (`inSquadron`, unchanged);
+  - an away-making input — all leave, medical, overseas duty — overlapping the
+    window drops him, **EXCEPT ATT B**, the one type that says "no flying, may
+    still work" (`canWork`);
+  - a **COMMITMENT** overlapping the window drops him (Training, CSE, Meeting,
+    Fly with, Personal, Appointment, Duty, Other). One the scheduler took off the
+    programme (`acc === 'r'`) is dormant and drops nothing;
+  - anything he is **NAMED** for on the day's own schedule that overlaps the
+    window drops him (`avail.ts:personBusy` — the same occupancy the validator
+    and the crew picker read, which is what closes the app's old disagreement
+    between two notions of "available").
+  A SENTINEL NEVER BLOCKS ANOTHER SENTINEL (ruled by the build, not the owner):
+  only NAMED people count as "planned for something", so two overlapping ALL AVAIL
+  rows cannot each empty the other. Without a resolver the sentinel simply drops,
+  as it always did. The ALL puck (`people.ts` `all`) keeps ALL AVAIL's exact
+  semantics — **one behaviour, two names, deliberately** (owner, 21 Sep 26: *"U
+  cant possible force ALL to join, its just like a best effort to join kind of
+  thing"*); do not "fix" the duplication.
+  **HIDING A MAN DOES NOT FORFEIT HIS MONEY** (owner, 21 Sep 26 — "There's no way
+  to credit OIL to SANs even when they are hidden?"). SANS are kept off the Leave
+  War roster unless the squadron turns "Show SANS" on (his 18 Aug 26 rule), which
+  is a DISPLAY choice; until this build it also silently threw the credit away.
+  A credit is stored against the PERSON and the DATE, not against a grid row, so
+  a hidden man holds one perfectly well: it lands while he is hidden and his row
+  arrives carrying it when the switch goes on (`sync.ts:creditable`). The guard
+  keeps its real job — a sentinel and a body the war has no business crediting
+  are still never credited. GROUND CREW are a separate case and unchanged: out of
+  the ALL AVAIL expansion by the rule above, but on the war's roster since his
+  18 Aug ask, so one a scheduler NAMES on a weekend row has always earned from
+  that row. Raised with him 21 Sep 26; no ruling covers it either way.
+  `docs/superpowers/specs/2026-09-21-oil-behaviour-register.md` (OIL35).
 - **The input ask + the `row.oil` field (28 Aug 26).** A duty-&-commitments
   input (`oilAsks` — the `restsInput` eight; Personal and SANS excluded)
   covering a weekend/PH is never credited or skipped silently: saving one
@@ -1735,16 +1780,58 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   page a cyan `.roil` chip (`reviseOil` — rewrites `row.oil` alone, one
   `writeInputsBatch`). Both re-open OilConfirm over every applicable day
   with the standing answers pre-loaded; Save replaces the set wholesale.
-- **Two sources, one envelope, a split publish gate.** `desiredOilCells`
-  gathers per person|date the PUBLISHED schedule — the issued snapshot on
-  approved days, so a draft edit after
-  publish moves nothing until an AL/reissue publishes it, reopening a day
-  takes its credit back, and re-publishing replaces it (reverse-and-replace
-  is the diff against the refreshed snapshot, free) — AND acknowledged
-  input claims, which are deliberately NOT publish-gated: the owner's
-  acknowledgment is their gate. Then ONE `uniformOil(envMin)` verdict
-  across both (his worked example: a 4h morning duty published + a 4h
-  afternoon input acknowledged is one 0800→1700 day → FO; the gap counts).
+- **ONE SOURCE, ONE ENVELOPE, ONE GATE — the OIL EVIDENCE BLOCK (21 Sep 26,
+  `[OIL-AUTO-REMOVE]`, `engine/oilev.ts`).** This REPLACES the old split gate, in
+  which the schedule half read the issued snapshot and the input half read live
+  `INPUTS` with no publication check at all. That split let a member move his own
+  ALREADY-ISSUED credit by revising his OIL answer, produced no amendment when he
+  did, and could never produce one for an **OD** claim, which has no row on the
+  programme to diff.
+  Now a day carries its own answer to what earns, and money comes only from it:
+  - **stored on the day** (`Day.oild`, ordinary content — it rides the snapshot, a
+    parked plan, an undo and the persistence funnel): the whole-day blanket, the
+    per-item marks, and the **three-state** per-person decisions
+    (`inherit` / `allow` / `deny`);
+  - **frozen into the issued snapshot only** (`Day.oilev`, attached by `daySnap`):
+    a projection of every OIL-bearing input covering the date (person, times,
+    type, whether the type asks, and the member's own answer) and the resolved
+    membership of every sentinel event.
+  The live working copy **derives** its block on read and stores nothing derived,
+  so it cannot go stale and a plan brought back months later cannot resurrect an
+  obsolete projection; every clone of a snapshot back onto a working copy strips
+  `oilev` (`drafts.ts:liveDay`). `desiredOilCells` reads the issued block and
+  nothing else (`sync.ts:creditFrom`); a snapshot carrying NO block is PROTECTED,
+  never guessed at, the same rule the pass already applied to an unresolvable
+  snapshot.
+  **ALL OIL NOW WAITS FOR PUBLICATION** — the schedule's and a claim's alike
+  (owner, 21 Sep 26: *"In that case we make it a point to publish everyday so that
+  silently earn nothing wont happen"*, plus *"ok u can set it as a reminder to all
+  schedulers"* — the reminder is the `OIL_UNPUBLISHED` advisory on any weekend or
+  holiday day with money waiting). Then ONE `uniformOil(envMin)` verdict across
+  both halves (his worked example: a 4h morning duty + a 4h afternoon claim, both
+  published, is one 0800→1700 day → FO; the gap counts), and the credit is
+  labelled the SCHEDULE's whenever the schedule earned any of it.
+  **Consequence, accepted:** once a weekend day is published, a member deleting or
+  re-timing his own input no longer moves his credit. Correcting an issued day is
+  unpublish-and-republish under the SAME label, or the end-of-day publish —
+  neither costs an amendment number (owner, 21 Sep 26, verified in `publish.ts`).
+- **AN OIL-ONLY EDIT IS PUBLISHABLE.** The block rides ONE always-present
+  aggregate address per day (`oil:<di>`) on its own delta axis beside the
+  input-filing axis (`publish.ts:oilDelta`), and the signature binds it
+  (`currentBind`). A mark on a published day therefore produces a real delta, a
+  real amendment item and an invalid signature. The item reads *"the OIL decisions
+  on this day changed"* rather than naming each man: one line instead of twelve,
+  and the history still holds the before and after. Per-key addresses were
+  rejected because `canonicalDiff` drops an address whose owning row `rowKeyOf`
+  cannot resolve, and the block owns no row.
+- **THE THREE STATES, and what cannot be overridden.** `inherit` (absent) follows
+  the member's own answer and the ordinary rules; `allow` and `deny` both outrank
+  it, and the member's answer is never overwritten, so lifting an override brings
+  his word back and the Inputs page still shows him what he said. Nothing
+  overrides ineligibility: a dormant input, a cancelled row, a day that cannot
+  earn at all, work with no written times, an SC spare, AVALON/BB and an ⓘ row all
+  stay at nothing whatever the three-state says. **An `allow` is permission to
+  count real work, never permission to invent it.**
   **And the schedule half reads EVERY week, not just the loaded one**
   (owner, 29 Aug 26 — "pull the full day schedule regardless of what's on
   screen"): the loaded week live, every other visited week out of its
@@ -1755,6 +1842,45 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   has published nothing, so live + stash is the whole session; before
   this, navigating off a published weekend let the reverse sweep collect
   its credits.
+- **ONLY THE ISSUED SCHEDULE PAYS, BOTH DIRECTIONS** (owner, 21 Sep 26 — R-1,
+  from the cross-provider bug check; triage in
+  `docs/superpowers/specs/2026-09-21-oil-bugcheck-fixplan.md`). The credit pass
+  used to gate each date on the war's calendar LIVE, before the issued block was
+  ever opened, while whether the day EARNS is frozen into that block — so the two
+  directions disagreed. Revoking a public holiday on a published day swept
+  everybody's day in lieu on the next pass, silently, with no amendment and
+  nothing on screen; declaring one afterwards paid nobody. Now only an unreadable
+  date skips before the snapshot is resolved and the frozen `ev.earns` decides
+  both ways: a day that starts earning after it went out waits to be published
+  again, and `validateCore` says so on the day (`OIL_STALE_DAY`). The block's own
+  ISO must also match the date it is read under, or the date is protected.
+- **THE LIVE ROSTER IS NOT A SECOND MONEY AUTHORITY** (owner, 21 Sep 26 — R-2).
+  `creditable` consulted the current Leave War roster, so archiving a man on the
+  Monday deleted the day in lieu an issued Saturday had already promised him. Who
+  earned was decided at publication and frozen; nothing the roster does
+  afterwards reopens it. The guard now rejects only a SENTINEL — not a person at
+  all. An archived man, a hidden SANS and a NAMED ground-crew body all keep what
+  they earned; the credit lives on the person and the date, so it lands and waits
+  for the row.
+- **A CANCELLED OR ⓘ LANDED ROW EARNS NOTHING** (owner, 21 Sep 26 — R-2). The
+  schedule half skips every `src` row so the accepted claim owns it, and the
+  input half then never looked at the row it had landed on — so cancelling that
+  row, or turning it ⓘ info-only, left the claim paying for work the schedule
+  itself says did not happen. One body decides it now (`oilInputEligible`),
+  shared by the money and the mode, so the board can never offer a toggle on a
+  claim the credit path has already ruled out.
+- **A REMOVED REQUEST IS SILENT EVERYWHERE** (owner, 21 Sep 26). `availableFor`
+  applied that to commitments but not to the away-making types, so a LEAVE,
+  MEDICAL or OVERSEAS DUTY request the scheduler had turned down still kept its
+  man out of ALL AVAIL — missing from the membership frozen into the issued day,
+  and underpaid, with nothing on screen to say why.
+- **A MASK HIDES DECISIONS, IT DOES NOT DELETE THEM** — and that now holds at the
+  WRITER, not only in the reader. The day blanket and an event's switch make
+  `oilPersonOn` answer false for everyone beneath them; reading that masked false
+  back as a man's own answer meant a tap deleted a stored `deny`, or wrote an
+  `allow` over a member's own No, while the puck stayed dim and said nothing.
+  Both writers now refuse under a mask, the board refuses the gesture and names
+  which mask is on, and a masked puck is drawn inert.
 - **Never overwrites.** A date already holding anything else — a leave bid,
   a synced leave cell, a hand-typed marker — is left alone and raised on
   Leave War's clash strip (`kind:'duty'`) for a human; where the same date
@@ -1762,7 +1888,14 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   reconcilers must not fight over one cell). A hand-typed FO/HO matching
   the verdict is taken over in place, like ingest's confirming upgrade.
 
-Tests: `src/engine/oil.test.ts` (the computation),
+The interface — the board's **OIL Earn** mode and the **green edge** on the puck
+— is `docs/ui-contracts.md` §OIL on the schedule. The register of every ruling
+this obeys, and the two clashes it found, is
+`docs/superpowers/specs/2026-09-21-oil-behaviour-register.md`.
+
+Tests: `src/engine/oilev.test.ts` (the evidence block, publishability, the three
+states), `src/ui/oilmode.test.tsx` (the board mode and the green edge),
+`src/engine/oil.test.ts` (the computation),
 `src/leavewar/oilsync.test.ts` (the wire, the partition, the clashes, the
 input claims), `src/ui/oilconfirm.test.tsx` (the ask sheet),
 `counters.test.ts` (earned OIL in the balance and the OIL BAL figure).

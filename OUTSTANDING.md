@@ -54,6 +54,12 @@ Codex) and folded in. Two `[CMDL-FINISH]` items were deferred INTO it and remain
 posting-window rebuild on a postouts restore = CMDLF-002; grouping a whole Import as one undo step),
 plus the phase-2 review deferrals under the item below. **NEXT = step 4 (one Absence record) / [DB-STEP].**
 
+**NEXT AFTER THE OIL BRANCH MERGES (owner, 22 Sep 26 — D24, D27, D28):**
+`[OIL-SEATS-CAN-EARN]` — one change on his principle that every seat can earn, the default decides,
+and the admin can override. It sits immediately after `[OIL-AUTO-REMOVE]` goes live and AHEAD of
+`[OIL-NEXT-TWO]`, in a FRESH chat, at FULL tier. Kept OFF `claude/oil-auto-remove-design`, which is
+at its last gate.
+
 Below is the older item ordering (kept for the non-stack items); land what's **cheap, done, or
 in-flight and risk-reducing** first.
 
@@ -75,12 +81,31 @@ in-flight and risk-reducing** first.
      section for the full result.
 1b. **[TRK-SMOKE] — DONE + MERGED LIVE (17 Sep 26, PR #408, squash `93deab7` on `main`).**
    Code-only cherry-pick; the rest of this branch stayed unmerged. It was NOT a flake: two real
-   causes. See the Done section entry for the
+   causes. See `OUTSTANDING-ARCHIVE.md` for the
    full diagnosis; in short — (a) the add-student box cleared its field a beat after it
    opened, so a machine-speed fill was wiped and the add silently no-op'd; (b) a failing run
    abandoned its preview server, and on Windows even a passing run did, so the next run
    couldn't bind the port and failed on clean code. Both fixed, cross-provider reviewed
    (Codex + Fable), gates green. The follow-up #1 build can run its per-phase gate set.
+1b. **[DOC-TRIM] — NEW, owner 21 Sep 26 (D14), AFTER [OIL-AUTO-REMOVE] merges.**
+   A session reads ~4,000 lines before it can work. The ratchet (`npm run docsize`) already
+   stops further growth; this is the trim itself. Do it after OIL merges, not before —
+   a third of tonight's new lines are that task's scaffolding and become archive the day it
+   closes. See the item below.
+**TOP OF THE QUEUE (21 Sep 26, late).** 1) Finish **[OIL-AUTO-REMOVE]** — the fixes are in and
+pushed; what remains is executing the two scenario lists in the running app, then the owner's
+"merge live". 2) Then **[HUMAN-RETEST]**. 3) Then **[DOC-TRIM]** — after OIL merges, because a
+third of that task's new docs become archive the day it closes.
+**Open for the owner:** he has not picked whether to do the one cheap `CLAUDE.md` trim (~30 min,
+a move not a cut, ~700 lines off EVERY later session) as a warm-up before the scenarios, or to
+leave all of [DOC-TRIM] until after the merge. Either is fine; the ratchet already stops growth.
+
+1a. **[HUMAN-RETEST] — NEW, owner 21 Sep 26, HIGH once [OIL-AUTO-REMOVE] is closed.**
+   Re-run the hands-on pass over EVERY feature whose "bug test" was really a code review plus
+   unit tests. See the item below for the full reasoning — the short version is that the OIL
+   build passed two model reviews and 5328 tests, and the owner then found three defects in
+   minutes by opening the app, all of them surfaces that were never wired up. Any earlier
+   build checked the same way is carrying the same class of defect, unfound.
 2. **[SYNC-INTEG]** — now just the small NON-undo guardrails (medical member-filed,
    clutter-only clear-data, Quals ✕ confirm, doc fix). Low urgency (pre-live); cheap batch.
    *The undo/permission half was pulled out into [GLOBAL-UNDO] (owner, 13 Sep 26).*
@@ -94,7 +119,7 @@ in-flight and risk-reducing** first.
 7a. **[CMDL-FINISH] — DONE + LIVE (18 Sep 26, PR #412 build + PR #415 finish).** The one command
    layer is finished for **Leave War + Tracker** (causal both-side envelope, per-record write seam,
    one-envelope-per-Tracker-gesture, guarded lw/trk stores, `TRK_RESTORING`, `sched.als` re-key,
-   cross-provider punch-list). See the item below / the Done section. Its two deferred items fold
+   cross-provider punch-list). DONE + LIVE — see the item below. Its two deferred items fold
    into `[GLOBAL-UNDO]`.
 8. **[GLOBAL-UNDO] — PHASE 1 + PHASE 2 BUILT + MERGED LIVE (18 Sep 26).** The one-global-undo
    re-architecture; absorbs [XWEEK-UNDO] and the whole delete/undo bug family. Live cutover done
@@ -103,7 +128,25 @@ in-flight and risk-reducing** first.
 9. **[DB-STEP]** / **[XFER]** — the future database milestone and multi-squadron
    transfer; **[TRK-DISK]** (Decision A) is fixed inside [DB-STEP].
 
-*(Done 12 Sep 2026: **[TRK-IMPORT]** and **[TRK-LEDGER]** — both merged live; see Done.)*
+**NEXT, added 21 Sep 26 — the OIL pair, ahead of the numbered list above.**
+**NEXT: a CROSS-PROVIDER BUG CHECK of the OIL build**, then the owner's "merge live". The code was
+written on Opus 5, so the check goes to **Fable 5.1 (high)** and **Astra (Codex, high)**, both, and
+each finding must come back with exact step-by-step fix instructions. Where to point them, what the
+build decided on its own, what the rules walk already found, and the ONE design question still open
+(should the green bar show on every puck a man wears, or only on the events that counted towards his
+day?) are all in `raptor-port/docs/superpowers/specs/2026-09-21-oil-build-handoff.md`.
+
+*(Done 21 Sep 2026: **[ALL-AVAIL-REDEF]** and **[OIL-AUTO-REMOVE]** — built together on branch
+`claude/oil-auto-remove-design`, holding for the owner's "merge live". The line that stood here
+said both "need a Codex red team before anything is written"; that was STALE the day it was
+written — Codex red-teamed the design TWICE and reviewing was closed by the owner's own cap, as
+§9 of the decisions doc records. Corrected in the build's PR. What the build had to obey, and the
+two rule clashes it found, are in
+`raptor-port/docs/superpowers/specs/2026-09-21-oil-behaviour-register.md`.)*
+
+*(Done 12 Sep 2026: **[TRK-IMPORT]** and **[TRK-LEDGER]** — both merged live, now in `OUTSTANDING-ARCHIVE.md`. [TRK-LEDGER]'s one
+inherent corner — a record deleted just after migration on a full store can be re-copied — was moved to
+`raptor-port/docs/tracker/known-gaps.md` on 22 Sep 26, because the archive is searched and never read.)*
 
 ---
 
@@ -312,40 +355,12 @@ what to stop):** `raptor-port/docs/superpowers/specs/2026-09-13-architecture-roo
   when landings become the one Absence record, or a cheap `srcType` on the ground row if it surfaces.
 
 ### [TRK-SMOKE] The `addStudent` tracker smoke check — DONE 17 Sep 26 (committed, NOT merged)
-**Answer to the mandated first question: NOT a flake.** It failed deterministically at one spot
-(the second of two back-to-back adds) and, when the machine was clean, a specific race — proven
-by instrumenting the running app at the failing add and reading the value the box held at submit
-time. Two independent causes, both fixed:
-
-1. **The add-student box wiped the typed name (shipped bug).** The shared in-page dialog cleared
-   its text field to the default in a POST-PAINT step that ran a beat AFTER the box was already
-   fillable. A human types later than that, so a person never hit it — but a machine-speed fill
-   (the smoke suite, a fast paste, a password manager) landed the name before the clear, which
-   then wiped it, so OK submitted a blank and the add silently no-op'd → the roster option never
-   appeared → 15s timeout. FIX (`src/tracker/components/Modals.jsx`): clear the field DURING
-   render, before it is ever shown, so nothing typed can be clobbered. Focus moved to its own
-   effect keyed on the dialog serial (a Fable-review fix — the interim version cancelled the
-   cursor when any background refresh landed within 30ms of opening). Two regression tests pin
-   both, each proven to fail on the pre-fix code.
-2. **Failed runs (and, on Windows, ALL runs) abandoned the preview server.** The harness only
-   tore down at the end-of-file; a timed-out check threw before that and left the vite server
-   holding the strict port, and on Windows even a passing run leaked it because `server.kill()`
-   killed only the shell wrapper, not the vite child. An orphan on the port makes the NEXT run
-   fail to bind — the "stray :4179" and "fails three times running on clean code". FIX
-   (`scripts/tracker/smoke.mjs`): register a teardown (close browser + kill server) BEFORE the
-   browser launches and on any crash, memoised so a second failure can't race ahead of it, with
-   a Windows tree-kill (`taskkill /T /F`) and a bounded browser close.
-
-**Verification.** vitest 4868/0 · build clean · parity 728/0 · tracker units 76/76 (2 new
-regression tests) · `npm run smoke:tracker` 425/0 repeatedly with the server confirmed torn
-down, and a forced browser-launch failure now cleans up too. Cross-provider bug-check: Codex
-(found the teardown-before-launch gap, fixed) + Fable (found the focus regression + a concurrent-
-teardown leak, both fixed). **MERGED LIVE 17 Sep 26 (PR #408, code-only cherry-pick, squash
-`93deab7` on `main`).** Only the tracker fix went live; the rest of the branch stayed unmerged.
-NB the app itself is fast (Tracker tab opens in ~0.4s, instant thereafter); the slowness during
-this work was the leaked servers, not the app.
-
----
+**Not a flake.** Two independent causes, both fixed and both pinned: the shared add-student box
+cleared its text field in a post-paint step that ran AFTER the box had been read (a shipped
+bug, not a test bug), and a second race on back-to-back adds. Proven by instrumenting the
+running app at the failing add and reading what the box actually held at submit time.
+**The full diagnosis is in the commit message**, which is where a how-it-was-found story
+belongs (`doc-budget.md` §3). Nothing outstanding; kept only until it merges.
 
 ### [SYNC-INTEG] Leave War ↔ inputs guardrails (NON-undo part) — small, ready
 A read-only cross-provider audit (Codex + Fable, 13 Sep 26) of DELETE/UNDO across the
@@ -384,162 +399,53 @@ having two separate undo systems over shared data — remove the root, don't pat
 - **Urgency:** low (pre-live). Model: Opus build, gates, no merge without "merge live".
 - **Context:** the build plan above + the 13 Sep sync spec (findings, dispositions).
 
-### [CMDL-FINISH] Finish the command layer for Leave War + Tracker — ARCH-STACK step 2 completion — DONE + LIVE (18 Sep 26)
-**STATUS (18 Sep 26):** DONE + LIVE. P1–P6 (P4 partial) merged as PR #412; the undo front-door doc
-as PR #413 (`docs/undo-contract.md`); the FINISH work — the remaining P4 Tracker gestures,
-`TRK_RESTORING`, registering trkStore guarded, and the cross-provider inspection punch-list — merged
-as **PR #415** (`7889ff5` on `main`), deployed and live-verified (Tracker renders, no console errors).
-All five gates green. Punch-list: 6 fixed (CMDLF-004/005/006/010/012, Fable#7/#8), 2 deferred with
-reasons (**CMDLF-002** postouts-reproject → [GLOBAL-UNDO], marker in `leavewar/state/store.ts`;
-**CMDLF-011** legacy sched.als → reset-demo-data, no fix); importClick left per-write (grouping the
-whole Import is the [GLOBAL-UNDO] import-undo-granularity question). Both deferrals + the seams this
-built are [GLOBAL-UNDO]'s to consume/complete. Detail: `docs/session-state.md`; front-door doc
-`docs/undo-contract.md`.
+### [CMDL-FINISH] Finish the command layer for Leave War + Tracker — DONE + LIVE (18 Sep 26)
 
-The 17 Sep design + dual red-team (Codex + Fable, both REVISE, converged) of `[GLOBAL-UNDO]`
-found that ARCH-STACK step 2 is genuinely finished only for the **scheduler**. Building global
-undo requires the command stream to carry the FULL ripple of one user action as one causal unit,
-and to have a real per-record write-back seam — neither exists yet for Leave War or Tracker.
-Owner decision (17 Sep 26): do this as its **own gated step FIRST**, then build global undo.
-- **What to build (concrete, from the red-team fix specs — see the review log below):**
-  - **The causal both-side envelope (F1/GU-001) — the load-bearing item.** Route the Leave War
-    sync reconcilers as `origin:'projection'` (`commitInputsAs`/`commitSchedAs`/`cmdCommitAs`);
-    route LW `persist()`'s locked/committing branch through a projection commit so a causal write
-    raised inside a reducer JOINS its envelope and a reconciler write raised from a notify becomes
-    a `projection` with `causedBy`; fix `causalSeq` so phase-8 subscriber commits chain `causedBy`.
-  - **Per-record write seam (F8/GU-007):** add `write(entry)` to `EnlistableStore` per store (rebuild
-    live state + derived indexes + baselines, then persist+notify); a scoped per-commit conflict
-    checker reading `expectedRevs`.
-  - **One Tracker gesture = one envelope (GU-004):** group each gesture's synchronous model changes
-    (`popGrade` mark + Last-Flown; add/delete/import) into one transaction before async persistence.
-  - **Off-week capture (GU-003/F6):** register the weekstash as an `EnlistableStore`, OR keep the
-    current off-week edit refusal until it exists (don't claim finding I solved).
-  - **Re-key `sched.als/<id>` by id (F5):** a Step-1 stable-id leak (array-index keys) surfaced here.
-  - **Tracker unsaved structural edits (GU-005):** scope a stream-visible undoable draft so the
-    structural history can eventually retire (may extend into [GLOBAL-UNDO]).
-- **Process:** HEAVY, design-first → cross-provider red-team (both) → Opus build → cross-provider
-  code inspection → gates → hold for "merge live". Note the earlier queued "follow-up #2 latch
-  persist with histPush" folds in here (same command-layer-completion territory).
-- **Model:** design + build on Opus 4.8 (high); red-team + code-inspect on Codex + Fable.
-- **Context (READ FIRST):** the review log `raptor-port/docs/superpowers/specs/2026-09-17-arch-stack-3-global-undo-review-log.md`
-  (all 9+10 findings with exact file:line + step-by-step fix specs) and the Step-2 design
-  `2026-09-16-arch-stack-2-command-layer-design.md`. Global-undo design (gated behind this):
-  `2026-09-17-arch-stack-3-global-undo-design.md` §12.
+ARCH-STACK step 2 completion: the causal both-side envelope, the per-record write seam,
+one-envelope-per-Tracker-gesture, guarded lw/trk stores, `TRK_RESTORING`, `sched.als` re-key, and the
+cross-provider inspection punch-list. Merged as PR #412 (build) + PR #415 (finish), plus the undo
+front-door doc #413. **Two items were deferred INTO `[GLOBAL-UNDO]` and remain open there:** the
+Leave War posting-window rebuild on a postouts restore (CMDLF-002), and grouping a whole Import as
+one undo step.
 
-### [GLOBAL-UNDO] One global per-session undo — PHASE 1 + PHASE 2 BUILT + MERGED LIVE (18 Sep 26)
-**BUILD STATUS (18 Sep 26): phase 1 (engine) + phase 2 (LIVE cutover 2.3–2.6) BUILT, all five gates
-green, driven in the app, dual-reviewed (Fable + Codex) and folded in; MERGED LIVE on owner's "merge
-live".** Every Undo/Redo (scheduler/board/Leave War) drives the ONE timeline; the Unpublish button +
-off-week undo are live. Detail + the review dispositions: `docs/session-state.md`.
+**Still open, tracked in `[SYNC-INTEG]` not here:** P6 a Quals ✕ confirm (superseded by `[RECALL]`);
+P7 a stale "Leave War session-only" line in the ROOT CLAUDE.md (raptor-port's copy is corrected).
 
-**DEFERRED (not blocking; land at the multi-user / DB step):**
-- **[GU-E2E] two LW undo e2e tests quarantined for CI (18 Sep 26).** `undo fired in MOVE mode` and
-  `rapid undo/redo settle` (e2e/leavewar.spec.ts, `test.fixme`) do a SECOND admin drag-select after
-  an edit; on GitHub Actions' headless Linux runners that second drag never arms (persistent, not a
-  timing race — retries don't help). Cause traced to the edit's Raptor→LW sync re-scoping the war
-  (`setViewer(ME)` on every Raptor notify). Passes 100% locally (real bundle, full lw-desktop) and
-  the two single-drag undo tests pass on CI; behaviour also covered by undoaudit/chrome/undo-wire
-  unit tests and driven live. Fix: make the second-admin-drag harness CI-robust (e.g. pin the viewer
-  or drive the setup off a bridge), then un-fixme. Not a product defect.
-- **inherited [CMDL-FINISH] deferrals** — CMDLF-002 (rebuild the Leave War posting-out windows on a
-  `lw.postouts` restore) and whole-Import undo granularity. These were deferred INTO global-undo when
-  the command layer landed; phase 2 keeps `lw.postouts` a deferred collection (its entries are
-  ineligible for undo), so both remain open for a later phase.
-- **[GU-C3] reland conflict/auth coverage (Codex GU-P2-005)** — the restore's `reconcileDayFiling`
-  re-derives `acc` for inputs beyond the entry's closure without expanding the conflict/auth/
-  expectedRevs set. Inert in the synchronous single-user prototype (re-derive-only, never lands a
-  row, `acc` self-heals on loadWeek); real once there are concurrent users / a shared DB. Fix with
-  the per-session undo work below.
-- **[GU-MAYREV] mayReverse button state (Fable#3) — PRODUCT QUESTION for the owner.** `undoState()`
-  enables Undo on the newest ELIGIBLE entry regardless of the actor, and the timeline isn't cleared
-  on logout, so a member behind an admin's edit sees an enabled-but-refused Undo and can't reach
-  their own older entries. Options: grey the button for a non-reversible newest entry, OR skip past
-  non-reversible entries (safe only where keys don't overlap — `undoConflict` guards the rest).
-  Low impact now (effectively one admin user); ties to the future per-session/per-user undo
-  (memory `future-undo-semantics-multiuser`) — clearing the timeline on `resetSession` is the
-  near-term direction.
-- **[GU-E5] input-only undo doesn't snap to its week (Codex GU-P2-006)** — E5 was deliberately
-  dropped in phase 2 (subsumed by the reland). Minor UX (an input-only undo relands on the loaded
-  week; the record restores correctly, only the view doesn't jump).
-- **[GU-LWLOCK] LW lock through notify (Codex GU-P2-008)** — a restore-caused LW projection can push
-  a vestigial legacy-LW history step. No user-facing effect (buttons drive global undo, not the
-  legacy LW stack). Cosmetic; tidy when the legacy LW stack is retired.
-- **[GU-COSMETIC]** resolvePublishDay binds an AL barrier to CURWEEK → a jump-then-refuse on another
-  week (Fable#6, correct outcome); postRestore view-effects (armDrop/prunePreviews) aren't rolled
-  back on a failed restore (Fable#7, drops the armed puck on a rare refusal). Both LOW.
+Full story: `git log` for those PRs, and `docs/undo-contract.md` for the contract it established.
 
-### [GLOBAL-UNDO] design record (Rev 6) — for reference
-`[CMDL-FINISH]` foundation is merged + live.
-The design was hardened over **6 revisions with a dual cross-provider red-team every round** (Codex/
-Astra + Fable, both high): **Rev 5 → Fable APPROVED (build-ready, no further design round); Codex
-REVISE with 6 contained §6 findings, all folded into Rev 6.** The engine took no finding in the last
-two rounds and was hand-verified twice. Design of record:
-`raptor-port/docs/superpowers/specs/2026-09-17-arch-stack-3-global-undo-design.md` **Rev 6**; transcript
-`…-global-undo-review-log.md`; front-door `raptor-port/docs/undo-contract.md`; build handoff
-`raptor-port/docs/session-state.md`. The 18 Sep owner reframe (undo-of-publish = UNPUBLISH
-+ same-label quiet correction) is captured below and in memory `undo-of-publish-semantics`.
+### [GLOBAL-UNDO] One global per-session undo — BUILT + MERGED LIVE (18 Sep 26)
 
-**OWNER DECISION 17 Sep 26 — what an on-the-record undo IS. SUPERSEDES the 16 Sep wording.**
-The boundary was settled first: undo is silent while the shared database has NOT registered
-the publish, and goes on the record once it HAS (an export is NOT a boundary event). The
-remaining question was what the on-the-record form is — and the answer is:
-**just a line in the history saying it was undone.**
+Phase 1 (engine) + phase 2 (live cutover) built, five gates green, driven in the app, dual-reviewed
+(Fable + Codex), merged on his "merge live". Every Undo/Redo — scheduler, board, Leave War — drives
+the ONE timeline; the Unpublish button and off-week undo are live. Shipped behaviour:
+`raptor-port/docs/undo-contract.md`. Review dispositions and the full reasoning for each deferral
+below: `git log -S"GU-P2" -- OUTSTANDING.md` (`docs/session-state.md` was deleted in `d92303b`).
 
-- **NOT** a correcting amendment. The 16 Sep record said "an on-the-record forward withdrawal
-  (= a correcting amendment) — append-only, unique never-reused ids, derived credits
-  recompute, with a one-line heads-up". That is SET ASIDE; newest instruction wins.
-- The owner's stated purpose is traceability — "to prevent silent bugs" — not notifying the
-  squadron. A history line satisfies that purpose.
-- **What it deliberately does NOT do, so nobody re-derives it as a gap:** nothing is pushed to
-  anyone. If the publish had already reached the shared record, others are not actively told
-  it was undone — the undo is discoverable in the history, not announced. The owner's call,
-  made knowingly.
-- STILL BINDING from before: **never ERASE an issued record** — every issuance is kept as its own
-  immutable snapshot; the history line is additive.
-- **UPDATED 18 Sep 26 (SUPERSEDES "never reuse a version id"):** undo of a publish is an explicit
-  **UNPUBLISH** (back to a working copy) + a day-header button; a **quiet correction** then
-  republishes as the **SAME version label** (Original stays Original, AL1 stays AL1), not shown as
-  an amendment — so the LABEL is deliberately reused. A real **amendment** stays the separate act of
-  editing the live working copy and publishing as the next AL. A disseminated correction writes a
-  history line; guardrails: scheduler/admin only, unpublish clears that day's sign-offs, only the
-  latest version is unpublishable. See design §6 + memory `undo-of-publish-semantics`.
+**SEVEN DEFERRALS, all still open, none blocking — they land at the multi-user / DB step:**
 
-**Decision (owner, 13 Sep 26):** replace the current SEPARATE per-section undo stacks
-(schedule / Leave War / Tracker) with ONE global, per-session, per-user undo timeline. The
-whole delete/undo weird-behaviour family exists BECAUSE two independent undo systems sit over
-the same synced data and disagree; one timeline removes that class of bugs at the root instead
-of patching each. **Do this as a dedicated step BEFORE [DB-STEP]** (it unifies the section
-stores' history, which the DB step needs anyway), NOT as a mid-fix patch now.
-- **Absorbs (do not fix separately):** the delete-vs-undo resurrection (finding A/P1), the
-  undo-family bugs (D, E, F, I), the member-undoes-admin permission gap (C/DU-001/P3), per-week
-  undo that survives navigation, and the [XWEEK-UNDO] snap-to-page idea.
-- **Rules to honour (owner):** undo scoped to the LOGIN SESSION (logout clears it), never
-  affects another user, others see every change live from the shared DB; undo only reverses
-  your own actions; a role/viewer PREVIEW must not wipe an admin's undo.
-- **Gate:** must be done before promulgation / real users (the interim bugs are tolerable only
-  because it's demo data).
-- **Clean input+leave undo lands at step 4, NOT before (owner, 16 Sep 26).** A schedule undo that
-  also reverses an accepted LEAVE input's Leave War cell reaches its fully-clean form only once an
-  approved absence is ONE record (ARCH-STACK step 4, one-Absence). Until then the command carries
-  the leave effect in its own inverse data so it can't drift, but the cleanest version is a step-4
-  payoff — don't try to fully solve input+leave undo before step 4.
-- **Undo-of-publish semantics — SUPERSEDED by the 18 Sep UNPUBLISH reframe above (see line 430+).**
-  ~~16 Sep: silent reverse before sent; an on-the-record forward withdrawal (a correcting amendment,
-  never-reused version ids) after.~~ SET ASIDE. The current rule (18 Sep): undo of a publish =
-  UNPUBLISH → quiet-correct → reissue the SAME version LABEL (label reused; each issuance kept as an
-  immutable snapshot; a history line once disseminated); a real amendment is the separate working-copy
-  → next-AL act. Undo stays per-user + per-session (logout clears; never touches another user; won't
-  clobber a later edit); roster/settings edits ARE undoable. See design §6 + memory
-  `undo-of-publish-semantics`.
-- **Context:** the sync spec (findings A/C/D/E/F/I + the red-team on why the two-system patch
-  is the wrong approach); memories `future-undo-semantics-multiuser` (architecture direction),
-  `undo-of-publish-semantics`, `multi-squadron-and-person-transfer`; ties to
-  `docs/architecture-direction.md` + [DB-STEP].
-- **READ FIRST — the front-door doc `raptor-port/docs/undo-contract.md`** (written at CMDL-FINISH
-  completion): the durable, plain summary of the whole command layer — the change stream, the
-  per-store `write()` seam this undo build consumes, and the checklist a new undo feature must
-  satisfy. It condenses the three ARCH-STACK step-2/3 designs into one so this build reads ONE
-  doc, not four. Any future undo development (per-person, whole-import, global) follows it.
+- **[GU-E2E]** two Leave War undo e2e tests `test.fixme`d for CI — a second admin drag-select never
+  arms on the CI runners (traced to the sync re-scoping the war). Passes locally; not a product
+  defect. Fix the harness, then un-fixme.
+- **[CMDLF-002]** rebuild the Leave War posting-out windows on a `lw.postouts` restore, and
+  whole-Import undo granularity — both inherited from `[CMDL-FINISH]`; `lw.postouts` is still a
+  deferred collection.
+- **[GU-C3]** reland conflict/auth coverage — the restore re-derives `acc` beyond the entry's
+  closure without widening the conflict set. Inert single-user; real with concurrent users.
+- **[GU-MAYREV] PRODUCT QUESTION for the owner** — Undo is enabled on the newest eligible entry
+  whatever the actor, and the timeline is not cleared on logout, so a member behind an admin edit
+  sees an enabled-but-refused Undo. Grey it, or skip past non-reversible entries. Clearing the
+  timeline on logout is the near-term direction (memory `future-undo-semantics-multiuser`).
+- **[GU-E5]** an input-only undo does not jump to its week (the record restores correctly).
+- **[GU-LWLOCK]** a restore can push a vestigial legacy-LW history step. No user-facing effect.
+- **[GU-COSMETIC]** an AL barrier bound to the loaded week; view-effects not rolled back on a
+  failed restore. Both LOW.
+
+### [GLOBAL-UNDO] design record (Rev 6) — MOVED OUT 22 Sep 26
+
+The full Rev 6 design record lived here after the work was built, merged and went live on
+18 Sep 26. A backlog is for what is NOT done, and every line of this file is read by every session
+that opens it, so it is retired to git history rather than carried forever: `git log -S"Rev 6"
+-- OUTSTANDING.md` finds it, and the shipped behaviour is in `docs/undo-contract.md`.
 
 ### [RECALL] Fresh recall from archive — FUTURE FEATURE
 An admin recalls an archived person back into Quals. **Behaviour (owner, 13 Sep 26):**
@@ -563,12 +469,6 @@ from leaving the system entirely, which is a fresh return. The identity model mu
 person move between squadrons with data intact.
 - **Context:** memory `multi-squadron-and-person-transfer`; ties to
   `docs/architecture-direction.md` and [DB-STEP].
-
-### [INP-CSID] Stable ids for personal inputs — DONE (13 Sep 2026, ARCH-STACK 1A item 1)
-Delivered by ARCH-STACK step 1A: personal inputs are filed/accepted/undone/edited by their
-stable opaque `iid` (`newId('i')`), not the content key `inpKey`. Twins file independently and
-the accept guard is a same-input idempotency check; `inpKey` stays only as a display/dedup hint.
-Merged live in PR #396. Finding J (`DU-007`) closed.
 
 ### [TRK-CSID] Give courses & syllabuses their own hidden ids — SPLIT (owner, 13 Sep 26)
 Two passes (courses first — clean; syllabuses second — the tangled global/built-in half).
@@ -695,34 +595,123 @@ rules about posted-out and pre-joining rows. Several older documents still read 
   belongs to the AUTOMATIC pass, which reads the published schedule, not to a credit the squadron
   types itself.
 
-### [OIL-AUTO-REMOVE] An admin should be able to take OFF an automatic OIL credit (owner, 21 Sep 26)
-**His words: "Should we allow the admin to remove the OIL credited automatically from the schedule?
-I think we should yeah. Maybe do this in the next chat."** RULED, not built.
+### [DOC-TRIM] The repo is too heavy to read (owner, 21 Sep 26 — D14)
+**His words: "theres going to be alot of context for the AI to read ... reading so much context
+as an AI it starts to hallucinate."** Measured that day: **1,830 lines loaded every session**
+whatever the task, plus **2,228 more** at session start. `HANDOFF.md` states its own 550-line
+ceiling inside itself and had reached 961.
 
-Today the schedule's own credit cannot be removed on the war at all. Tapping it says "change the
-schedule and the OIL follows" — true, and useless when the schedule is RIGHT and the credit is
-wrong. There is no door.
+- **Policy and tiers: `raptor-port/docs/doc-budget.md`. Gate: `npm run docsize`** — a RATCHET,
+  so ceilings only ever go down. Growth is already stopped; this item is the reduction.
+- **The one change worth doing FIRST, and on its own** (~30–45 min, compounding on every later
+  session): `CLAUDE.md` is 1,539 lines and is loaded every time. Most of that is §Stable
+  decisions — historical rulings, which are tier-2 reference, not tier-0 index. Move them to
+  `docs/stable-decisions.md` and leave ONE line per topic pointing in. Target ~500 lines.
+  Careful work: that section is the project's memory of what must not be relitigated, so move
+  it wholesale, verify nothing is dropped, and lower the ceiling in the same commit.
+- **Then:** `HANDOFF.md` 961 → 400 (current state only; the stories belong in commit messages);
+  `OUTSTANDING.md` 1,210 → 600 (done items out, one short block per live item); `ui-contracts.md`
+  is 7,095 lines and needs no budget but does need sub-heads so a session can read one section.
+- **The writing rule that stops it recurring** is in `doc-budget.md` §2: record the DECISION,
+  not the transcript. Quote him only where the exact words are load-bearing; never quote the
+  same words in two files; a reason earns its place only if it would change a future decision.
+  This does NOT thin the reasoning — that is the plain-language rule and it still holds. It
+  stops saying the same thing three times.
+- **Prune on write:** touching a doc means leaving it no longer than you found it.
 
-**The hard part, and the reason it is not a delete button.** The credit is DERIVED: the OIL pass
-mints it from published work on every run and sweeps any it no longer finds. So an admin deleting
-one would watch the next pass put it straight back — worse than no button, because it would look
-like the app ignoring him.
+### [HUMAN-RETEST] Re-test the earlier builds the way a person uses them (owner, 21 Sep 26)
+**His words: "This also means that all the previous bug tests we did there will be bugs not
+captured. Because I didnt test them when i told u that u would test like a human since."** He is
+right, and the OIL build is the proof. It had a two-model cross-provider review and 5341 green
+tests, and he then opened the app and found three defects within minutes: the green OIL strip never
+reached the board's flying seats or its Common Programme; any advisory chip on a puck painted over
+the strip; and in OIL Earn mode the flying seats, the SC shifts and the Common Programme were not
+tappable at all — the mode's one gesture did not work on the biggest part of a weekend schedule.
 
-So it needs a decision about what "remove" MEANS. Three shapes, roughly:
-1. **A standing refusal on that person/date** — the pass records that this credit was withdrawn by
-   hand and stops re-minting it. Durable, survives a republish, and needs somewhere to live.
-2. **Change the evidence instead** — the app helps him get to the thing that earned it (the duty
-   desk, or the accepted input) rather than the credit. No new state; more clicks; does not cover
-   "the schedule is right, the credit is wrong".
-3. **Correct the BALANCE rather than the day** — an OIL tracker correction entry, which already
-   exists. Leaves the day saying he worked, which is true, and fixes the number. Probably the
-   cheapest honest answer, and worth putting to him first.
+**All three are the same shape: a surface that was never wired up.** Every line of code that IS
+there is correct, so reading code cannot find them, and no test caught them because every assertion
+about the strip had been written against a duty desk or a ground row — the two surfaces that DO go
+through the shared renderer. `docs/feature-impact.md` had even NAMED this drift-seam in advance,
+worded as "a new seat renderer"; the hole was in two existing ones.
 
-**Also needs deciding:** whether removing it should say WHY, and whether a member ever sees that it
-was removed. Both matter under [PUB-UNAVAIL]'s concern about published paperwork changing silently.
+**So any earlier feature whose bug check was a code review plus unit tests is carrying this class of
+defect, unfound.** The scope is every build reviewed that way — the amendment core, the command
+layer, the one-absence record, the Leave War wires, the Tracker. The method is the owner's standing
+rule, applied properly: build the real thing in the running app, walk every surface that draws the
+feature, walk every ORDER of gestures, and ask of each screen whether what is drawn is what a person
+would expect to see and can actually use.
 
-**Do it in a fresh chat, and start by putting the three shapes to him** — this is a
-product-direction fork, not an implementation choice.
+**DO THIS AFTER [OIL-AUTO-REMOVE] is closed and merged** (owner: "perhaps the next session we can do
+that after this task is truely completed and free of bugs"). Start from
+`raptor-port/docs/superpowers/specs/2026-09-21-oil-bugcheck-fixplan.md` §"the two the owner found",
+which records why the static pass missed them, and from the scenario lists Fable and Codex wrote for
+the OIL pass — the same scenario-design-then-execute shape is what this needs.
+
+### [OIL-AUTO-REMOVE] Taking OIL off — BUILT 21 Sep 26, holding for "merge live"
+
+> **BUG-CHECKED AND FIXED 21 Sep 26. The remaining job is the hands-on scenario pass.**
+> Cross-provider check by Fable 5.1 and Astra/Codex, both read-only, neither the model that
+> built it. **Ten defects fixed from their reports, plus FOUR the owner found by opening the
+> app, plus his O-1 ruling — all built, tested and pushed (commit `b3d8ee8`).**
+>
+> - **Triage and what was fixed:** `docs/superpowers/specs/2026-09-21-oil-bugcheck-fixplan.md`;
+>   both reviews verbatim beside it. Four of their eight were ONE root cause — the freeze
+>   boundary had more doors than `creditFrom`.
+> - **Owner rulings from it:** R-1 (only the issued schedule pays, BOTH directions) and R-2
+>   (the two pre-existing money bugs share that root cause, so they are fixed here). O-1: the
+>   green bar shows only on the events that COUNTED — BUILT, superseding OIL21. All in
+>   `DECISIONS.md` D1–D3, D15.
+> - **What the reviews could NOT find, and the owner did:** the app draws a puck in six places
+>   and only some were wired to this feature — the board's cockpit seats and Common Programme,
+>   the WEEK's cockpit seats, the mode's own gesture on all three, and a chip painting over the
+>   strip. Every call site is now enumerated and decided. **This is what produced the new
+>   bug-check standing order** (`docs/bug-check-order.md`).
+>
+> **NEXT: execute the two scenario lists in the running app** — Fable's 44 and Codex's 24,
+> `…/specs/2026-09-21-oil-scenarios-{fable,codex}.md`. **Start from
+> `…/specs/2026-09-21-oil-handpass-handoff.md`**, which says what is already walked by hand so
+> it is not redone, names the highest-value scenarios left, and carries the one open question
+> for the owner (a pending OIL change looks identical to one in force).
+>
+> **Gates at that commit:** 5350 unit · build · parity 728/0 · rulecheck OK · tracker 425/0 ·
+> **e2e 446 pass / 1 fail** — a Leave War grid scrollbar test that passes in isolation and
+> fails under full parallel load. Unresolved on purpose: the handoff names the check that
+> settles whether it is ours or pre-existing, and forbids waving it through.
+
+**The three shapes were put to him and he rejected the framing** — rightly. Instead of fighting the
+derived credit, ask about the EVENT at the source. He then designed the interface himself: an
+**"OIL Earn" mode** on the scheduler board that glows every puck earning OIL that day, where the
+admin taps a puck to take a man off one event, or taps an item to stop the whole item earning.
+
+- **The design of record is `…/specs/2026-09-21-oil-auto-remove-decisions.md`** — every owner
+  ruling of that session verbatim, plus the ground truth behind them. Nothing lives only in chat.
+- **Design rulings that must NOT be relitigated** (21 Sep 26, §8/§9 of the decisions doc, which
+  carries each in full): the published schedule is the truth — a full freeze, corrected by
+  unpublish-and-republish under the same label, never an approved-absence carve-out; the
+  development reset ships at its real scope; a sentinel puck goes green when everyone behind
+  it earns the same, the count chip carries the mixed case; ALL and ALL AVAIL stay identical
+  on purpose; NO Leave War removal door; the exception shows as ONE line on the day and a
+  per-person exclusion never appears on the issued schedule.
+- **The design red team was capped at two rounds**, so §9's four answers were never
+  independently reviewed — which is why the post-build check weighted them highest. Done; see
+  the bug-check fix plan.
+- **The owner's mockup** (his own artifact canvas) is a revision behind; redraw before use.
+
+### [ALL-AVAIL-REDEF] What ALL AVAIL and ALL actually mean (owner, 21 Sep 26) — BUILT 21 Sep 26
+His ruling, in short: no ground crew by default; a SANS man only when planned with us that day;
+ATT B still in; anyone whose own tasking clashes in time is out. **His exact words and the full
+before/after table are §2.6 of the decisions doc** — quoted there, not here.
+
+Split out of [OIL-AUTO-REMOVE] because it changes **who gets planted on a row**, not only who gets
+credited, and because it closed a real disagreement: two answers to "is this man available" living
+in one app.
+
+- **Do it WITH or BEFORE [OIL-AUTO-REMOVE]**: the OIL mode's sentinel expansion depends on what ALL
+  AVAIL means.
+- **Consider merging with [LW-COMMIT-MANNING]** below — same root cause, same seam.
+- **It fixes a live bug as a side effect** (§5 of the doc): a man whose Training input was answered
+  "no OIL" is still swept into an ALL AVAIL family day and credited anyway, for an event he is not
+  at. If this item is deferred, that needs its own guard.
 
 ### [LW-COMMIT-MANNING] Duty & commitments must reduce the Leave War manning — the OTHER half of N17 (owner, 21 Sep 26)
 **Owner's words, and he then said to file it: "The manning should only reduce if they are like
@@ -754,6 +743,120 @@ complete team; it should read five and a shortage.
 decision about which of the six types count (a two-hour Appointment is not a day off the programme),
 and the projection is a new seam into the war. Not a line. **Priority: his call — raised with him on
 21 Sep and filed at his word.**
+
+### [OIL-PHONE-TARGETS] The OIL mode's phone tap targets — CLOSED, RULED "leave it" (owner, D26, 22 Sep 26)
+
+**Nothing to build. Do not re-open or re-file as a defect.** At 390px the mode draws 71 tappable
+things, median 15px tall, all under 44px — measured and true. What was wrong was the agent's
+INFERENCE from it; he corrected that directly: *"I can still settle OIL on my phone easily from my
+point of view."* He uses it, so his judgment governs. Kept as a RULED item with its date (standing
+order §7.6) so a later session cannot rediscover the measurement and "fix" it. Detail: the walk sheet
+§6 item 12.
+
+### [DOCS-GUARD] Nothing detects a destroyed record — Fable's F1/F3 (22 Sep 26)
+
+**The one finding that would stop a recurrence, and it is not built.** `docsize.mjs` counts LINES
+only; `npm run docsize` is in no hook, not in `npm test`, and not in CI — `deploy.yml` has
+`paths-ignore: '**.md'`, so **a docs-only PR runs ZERO checks** and one deleting half the backlog
+merges unexamined. D29's three rules reduce the temptation; none detects a bad script.
+
+**F1:** add an inventory pass to `docsize.mjs` — parse item ids from the live + archive files, read
+the HEAD versions via `git show`, and FAIL by name when an id is lost, duplicated, or when any
+non-blank line of a block that left the live file is missing from the archive (**body level, not a
+heading count — that is what passes a file whose bodies are doubled**). Wire it into CI with
+`paths: ['**.md', …docsize.mjs]` and a `.claude/hooks/backlog-guard.sh` **Stop** hook, because Stop
+fires however the edit was made — a python or Bash script included.
+
+**F3:** the gate must never demand a trim inside a code change. Over ceiling AND the diff touches
+`raptor-port/src` → print "deferred to its own pass (D29)" and exit 0; over ceiling and docs-only →
+exit 1, because that IS the trim pass. Seven of eight gated files sit at ZERO headroom while other
+rules require adding lines to two of them during a fix — that is the squeeze that caused the
+destruction. Also: a ceiling constant may change only in a commit touching no `src` file.
+
+**Then F2** (four live texts still order trim-on-touch: the `outstanding-tasks-file` memory,
+`.claude/rules/record-decisions.md` line 37, `doc-budget.md` §3, and docsize's own failure message),
+**F6** (rulings still with no D-number: the award ruling, "OIL may be credited by hand on ANY day",
+and two unbuilt S4 rulings), and the rest of **F4/F5** (the classification rule reworded to "write the
+pointer, THEN move"; `.gitattributes` pinning CRLF; two lying headings; duplicate ids
+`[GLOBAL-UNDO]`/`[S4-BUGHUNT]`; the phantom `[LW-WEEKDAY-WORK]`; a committed archive mover).
+
+**DO ALL OF IT, IN FABLE'S ORDER — owner's D30, 22 Sep 26: _"Nvm I'll do what fable recommend"_.**
+The scope and the sequence are SETTLED; do not re-decide them (the agent offered three different
+recommendations on this in three messages, which is what he ended):
+
+1. **F1 + F3** — the inventory check and the gate that can never demand a trim inside a code change.
+   ~1 h. These make everything after them enforceable, which is why they are first.
+2. **F2 + F6** — the docs-only correction pass, ~45 min, done UNDER the new gate.
+3. **F4 items 1/3/4 and F5 items 1–2** — ~30 min.
+4. **F5's archive mover and F7** — when the next archive pass is actually due.
+
+**Tier: NONE-to-LOOK** — docs and scripts only, no `raptor-port/src`, so it cannot endanger any app
+work; a cheap model can execute it. Total ~2–2½ h, and it splits cleanly into the four sittings above.
+Full findings and exact fix steps:
+`raptor-port/docs/superpowers/specs/2026-09-22-backlog-process-attack.md`.
+Rulings: `DECISIONS.md` D29 (the three rules) and **D30** (this order).
+
+### [OIL-UNDO-WORDS] Undo says "a change to the schedule" when it took back an OIL decision (22 Sep 26)
+
+Found in the walk while proving fix 5's boundary. Inside OIL Earn, the first two presses of the
+board's Undo correctly reverse the OIL decisions — and each says **"Undid: a change to the
+schedule"**. Taking a man off an event is not a schedule change; the mode exists precisely because
+the schedule must not move while OIL is being decided, so the words contradict the screen they appear
+on. The third press, which leaves the mode, says the right thing ("Left OIL Earn — the next undo
+would change the day itself").
+
+**Tier: NONE** (words only, one string). The label comes from the undo entry's own description, so
+the fix is to give an OIL decision its own wording rather than inheriting the generic one. Evidence:
+`raptor-port/docs/handpass/2026-09-22-oil-walk.md` §5.1; re-run with
+`scripts/handpass/j5-undo.mjs`. **Fold into `[OIL-SEATS-CAN-EARN]` or `[OIL-WORDS]`** — not worth its
+own pass.
+
+### [OIL-SEATS-CAN-EARN] Every seat can earn, the default decides — ONE change (owner, D24 + D28, 22 Sep 26)
+
+**D28 merged two items into this one.** His principle: *"If everywhere in the schedule can earn oil,
+then the all avail or all puck should also be able to earn oil"* — every seat can earn, the DEFAULT
+decides whether it does, the admin can always override. That replaced both his own earlier lean
+(ALL AVAIL not on duty) and the agent's per-seat allow-list, and it removes the class of defect
+rather than enumerating around it. **Nothing earns by default that does not earn today.**
+
+**Half one — the exempt kinds (D24).** *"is it too late to revert that SC spare, Avalon and BB could
+also earn OIL? … But by default they are not going to earn OIL."* SC SPARE, AVALON lines and desks,
+and BB lines must OFFER the switch, defaulting to OFF. Today they are wholly inert — no switch, no
+door. **Not a flag flip:** all three are skipped BEFORE anyone enters the calculation (`engine/oil.ts`
+— `saExemptKind`, `f.spare`/`ac.spare`), so no item key and no person window exist for a credit to
+attach to. **Supersedes D15 and D20 on the DOOR only**; D20's second half carries forward (a duty
+block MADE from an AVALON template gets the same treatment). **D35 (22 Sep 26) makes that
+explicit: the SWITCH reaches the template-minted block too**, not only the no-earn default —
+otherwise the same seat answers differently depending on how it was made.
+
+**Half two — ALL AVAIL / ALL, which the OWNER FOUND (22 Sep 26).** A duty desk he added on his phone,
+Dash and ALL AVAIL on it: **on that seat ALL AVAIL credits NOBODY** — the day pays the 2 named people
+and writes no key for the sentinel, a silent drop. Cause: `putWho` expands a sentinel, `put` drops
+anything that is not a person, and only the Common Programme and Ground Programme PRIMARY seats use
+`putWho` — flying lines, sims, duty desks and **the extras array of every row type** use `put`.
+**PRE-EXISTING** (`main` has the same structure) but newly consequential. Measured in
+`raptor-port/scripts/handpass/w11-duty.mjs`; roll-call table in the walk sheet §11.
+
+**Half three — D27, the display half.** ALL AVAIL / ALL are a SCHEDULING feature: dropped anywhere
+they work out who would be available and SHOW THE COUNT, with OIL Earn OFF. Extends
+`[ALL-AVAIL-REDEF]` (WHO counts as available) by settling WHERE the answer shows.
+
+**ANSWERED — D31 (22 Sep 26).** A seat the rules genuinely cannot MEASURE (no times, zero length,
+cancelled, ⓘ) offers NO switch, and says why on screen instead. That is the ONE boundary on D28:
+every measurable seat offers the switch, but where there is no window a credit would be invented
+rather than earned. The refusal must NAME its reason — never a silent absence.
+
+**Tier: FULL** — money, reaches an issued day, adds roll-call rows on every seat type. **Sequencing,
+his: NEXT, after `[OIL-AUTO-REMOVE]` merges**, ahead of `[OIL-NEXT-TWO]`, in a FRESH chat. The
+display-versus-earning cost analysis and the size estimate are in
+`raptor-port/docs/handpass/2026-09-22-oil-walk.md` §11 and §11a. Rulings: `DECISIONS.md` D24, D27, D28.
+
+### [OIL-WORDS] Stop calling OIL "money" in the code comments (owner, D25, 22 Sep 26)
+
+OIL is banked TIME OFF, not pay. **Nothing on screen is wrong** — checked 22 Sep 26, no user-facing
+string says paid, pay or money. The shorthand is in CODE COMMENTS (`ui/oilmode.ts` ~117, 211, 294,
+455, 542, plus `engine/oil*.ts`) and some test names. **Tier: NONE.** Fold into any later pass that
+already touches those files; the definition now heads the OIL behaviour register.
 
 ### [OIL-NEXT-TWO] The two the owner parked until after the bug check (21 Sep 26)
 **His words: "We can do point 2 and 3 later after the 3 things above are done."** The three being
@@ -801,31 +904,14 @@ for will read "earned 4".
 One afternoon. **Ask him before doing it** — it changes two numbers he reads.
 
 ### [OIL-AWARD-ADD] An award and a worked day ADD UP — MERGED to main, 21 Sep 26 (PR #423)
-**DONE.** Rulings N16, N17, N18 and N19, all built, all in the behaviour register, all named by a
-test that `npm run rulecheck` watches. Design: `specs/2026-09-21-oil-award-add-design.md`. What the
-two review rounds found and what was done with each: `-review-log.md` — worth reading before any
-further work on OIL.
 
-- **N16** a day holds ONE earned credit and ONE award, side by side; they ADD UP. The
-  take-over-and-hand-back machinery is retired, which was the point: both silent balance bugs of
-  20–21 Sep lived in its snapshot.
-- **N17** the manning counts BODIES — an OIL credit removes nobody. (Its other half is
-  `[LW-COMMIT-MANNING]`, below, and is NOT done.)
-- **N18** a clash note is amber and holds long enough to read.
-- **N19** an award is ONE number, and it comes in halves at every door.
-
-**Three bugs fixed that were LIVE before this ruling**, all silent: re-typing an award's code on
-the grid destroyed its days and its giver; the OIL tracker's "Save" was three undo steps, so one
-undo left the balance changed; and the unpublish warning measured a balance that ignored expiry.
-
-**The demo now carries the ruling.** Sat 4 Jul, `ammo`: an accepted duty input earns a real credit
-beside a 3-day award, so a fresh boot opens showing four days on one Saturday with the tracker
-listing them apart. Seeded through an INPUT rather than a published day, so the week the reference
-parity gate measures does not move.
-
-**What it cost, recorded because it is the useful part:** across two review rounds and two
-providers, THREE silent balance bugs — two of them made during this session, one of them caused by
-the fix for the other. None would have looked wrong on screen. Every gate was green throughout.
+**DONE.** Rulings N16–N19 built, all in the OIL behaviour register and each named by a test that
+`npm run rulecheck` watches — so the register, not this file, is where they live. Design:
+`specs/2026-09-21-oil-award-add-design.md`; what the two review rounds found and what was done with
+each: `…-review-log.md`, **worth reading before any further OIL work**. The take-over-and-hand-back
+machinery was retired, which was the point — both silent balance bugs of 20–21 Sep lived in its
+snapshot. **One half is NOT done and is tracked separately: `[LW-COMMIT-MANNING]`** (N17's other
+half — duty and commitments must reduce the Leave War manning).
 
 ### [OIL-AWARD-ADD-RULING] The ruling as it was given, kept for the reasoning
 
@@ -863,17 +949,53 @@ for duty, so the engine is ready; the work is in the store and the tracker.
 where both of the night's silent bugs lived; the project's own rule escalates that kind of change.
 Build it test-first and put it through both reviewers.
 
-### [OIL-AWARD-ADD-OLD] The question as it was put to him (superseded above, kept for the reasoning)
-Fable found that a 3-day award on a Saturday fell to 1 day the moment that Saturday was published
-with the man on a desk: the takeover replaced the award wholesale. That is now fixed — the award's
-days, reason and giver ride onto the taken-over record, so the balance never falls.
+### [POSTOUT-LOST] A posted-out man walks back into the squadron on a reload — NEW, 22 Sep 26
 
-**What was NOT decided, because it is his:** whether the two should ADD. Today the day is worth the
-LARGER of the two (the 3-day award), which is what he had before the defect. The argument for
-adding (3 + 1 = 4) is his own 20 Sep reasoning — an award is days he is OWED, the worked Saturday is
-a day he WORKED, and they are different facts. The argument against is that a day is a day and 4
-days of OIL from one Saturday will look like a mistake on the tracker.
-**Ask him; do not assume.** One line of code either way.
+A person's posting-out window is written straight onto the person by the demo overlay and never
+recorded in the persisted posting record. The overlay runs only on a first-ever boot, so once
+anything is saved and the page reloads, the posting is gone and he is available again — which
+reaches the crew picker, ALL AVAIL, the manning counts and every rule that asks who is free, not
+just OIL. Found under a mis-diagnosed OIL report; reproduced (27 members before a reload, 28
+after). Deliberately NOT fixed on the OIL branch: not an OIL defect, and it would widen a money
+change into an availability one. Watch the dev-phase ruling when fixing — the seed flies him in
+July while the demo posts him out in January, so deciding which is right may be most of the job.
+
+**Context.** `raptor-port/docs/handpass/2026-09-21-oil.md` §9 · the red team's §3 in
+`…/specs/2026-09-21-oil-fixplan-redteam-fable.md` · script `scripts/handpass/settle-d4.mjs`.
+
+### [OIL-RELINK-XWEEK] A request landed in a stashed week keeps the OLD man, and can land twice — OPEN, 22 Sep 26
+
+**Pre-existing, not OIL-caused, and out of scope for this branch** (Fable F8). Two limits that job
+2's "one row" premise stands on:
+
+- A person change made while the anchor's week is STASHED cannot reach the row. The relink finds
+  nothing to unaccept, toasts "moved outside the programmed week" and drops the landing mark; when
+  that week loads, the row is re-found and re-marked — but its `who` is still the OLD man. The money
+  goes to the new man through the claim while the programme draws the old one.
+- The duplicate-landing guard scans LOADED days only, so a request landed in week B whose start is
+  then moved into week A gets a SECOND row when week A loads. The two rows can disagree (one
+  cancelled, one live), and the standing reads whichever week is loaded.
+
+The stash-aware read built for `[OIL-XWEEK-ELSEWHERE]` is the same seam a stash-aware relink would
+use. **Context.** `…/specs/2026-09-22-oil-jobs12-codereview-fable.md` §3 F8.
+
+### [LW-SCRUBBER-FLAKY] Leave War e2e tests time out on a saturated machine — PRE-EXISTING (21 Sep 26)
+`e2e/leavewar.spec.ts` "the bottom scrollbar is a year-wide scrubber", lw-desktop only. Under a full
+parallel run it sometimes times out after the SEP month button is clicked: the grid has not scrolled
+within 4s, so the bar's fraction still reads 0. Checked the way the OIL handoff demanded — the SAME
+full run on `main` (bdd51cc) FAILED it (446 passed, 1 failed) while `claude/oil-auto-remove-design`
+PASSED it (447 passed, 0 failed). **Pre-existing; not the OIL branch's.** It also passes in isolation
+(287/0 for the Leave War projects alone). The fault is the test's, not the app's: a fixed 4s poll on
+a year-wide grid redraw. Fix by waiting for the grid's own scroll to settle instead of a wall clock,
+or raise that poll and the twelve-months one beside it. Low priority — it bites only a loaded dev
+box; CI runs three workers with one retry. Logs from both runs are in the 21 Sep evidence sheet,
+`raptor-port/docs/handpass/2026-09-21-oil.md`.
+
+**WIDENED 22 Sep 26 — it is a FAMILY, not one test.** The overnight run on this branch failed a
+different one, `e2e/step4-leavewar.spec.ts` "leave during a course", lw-desktop, and it failed on the
+LOGIN page: the sign-in form had not rendered before the fill timed out. Run on its own it passes in
+six seconds. Same cause, same shape — a fixed wall-clock wait on a loaded box — so the fix is the
+same one, and it belongs to the Leave War e2e suite rather than to any branch.
 
 ### [S4-HUNT-REST] The bug hunt's untouched ground — about three quarters of it (owner, 21 Sep 26)
 The branch turned into a long detour through the rules and the five items, so most of the hunt Fable
@@ -984,7 +1106,7 @@ marker (everyone). Clock-free; NOT coupled to EOD.
   `raptor-port/docs/superpowers/specs/2026-09-15-crewrest-flagging-plan-v2.md` (§5 mechanism,
   §11 tests, §14 tricky build spots); review log alongside it.
 - **HEAVY**, test-first, Opus; keep `tfin.js` 728/0; fresh Codex+Fable CODE inspection after
-  build; no merge without "merge live". Owner decisions locked in session-state.md.
+  build; no merge without "merge live". Owner decisions are in `DECISIONS.md`.
 
 ### [FLAG-EXPORT] PDF export — print the PUBLISHED version, CURRENT DAY only + a nicer agency-facing redesign — OPEN (follow-up of [CRP-FLAG])
 THREE halves now (owner, 15–17 Sep 26):
@@ -1021,90 +1143,13 @@ THREE halves now (owner, 15–17 Sep 26):
 ## Done
 
 ### [REPO-CLEANUP] Repo-wide space/redundancy sweep — DONE, NOTHING REMOVED (18 Sep 26)
-The sweep was run and the conclusion is: **the repo is already tidy; there is nothing worth
-removing.** Do not re-open this without a new reason. What was checked and found:
-- **Source files: 0 dead.** An import-graph scan over all 522 `src` modules (handling
-  extensioned `.js` imports and vitest's glob-loaded `.test.*` entry points) found no file that
-  nothing imports.
-- **Dead CSS: negligible.** A scan of all 8 stylesheets against every source file (including the
-  innerHTML string-builders) flagged ~60 candidate classes, but almost all are **built
-  dynamically** (`seat-${p.seat}`, the `g-*` group family, the `sbi-`/`ic-pick` families) — false
-  positives. The genuinely-dead, single-class rules total **~0.9 KB**, not worth a gated cycle.
-- **Unused exports (`ts-prune`): not actionable.** Output was dominated by the `command/` and
-  `engine/` barrel `index.ts` re-exports and core keep-list symbols (`HOOKS`, `storeBackend`,
-  `VCONF`, `RULE_SPEC`) — flagging them is a false positive; acting on it would be a bug.
-- **Docs: ~0.6 MB of design write-ups for already-shipped features** (board rebuild, Leave War
-  bulk-balance + figures drawer, stores config, the Sep-7 rules audit, tracker interface rework,
-  leave types, plans-selector red-team). These are the only real weight. **Owner's decision:
-  KEEP them all** — leaving a note in the tree is the stronger form of history-keeping (browsable),
-  vs. a git-deleted file that is only recoverable if you know it existed. Git keeps history either
-  way, so deletion would have saved ~0.6 MB for no benefit and a real downside. **No removals made.**
-- Method note for a future sweep: the "referenced nowhere" test must strip the leading `YYYY-MM-DD-`
-  from a doc's filename, because OUTSTANDING/HANDOFF cite design docs by their date-elided tail
-  (`…-amendment-rev4-rev5-review-log.md`); a raw basename grep under-counts references and would
-  mark live-context docs as orphans.
-
-### [AMEND-SEL-FOLLOWUPS] Plans-selector 7 follow-ups (incl. the signature-leak bug) — DONE + LIVE 15 Sep 26
-The owner's 15 Sep batch of 7 changes to the plans-selector redesign, all built test-first on
-`claude/amendment-engine-core` and merged as **PR #405** (merge commit `9ba253c`), which the
-branch is now fully inside. Resolutions: (1) the signature-leak bug — signatures are now
-**per-plan** (owner's option a): each saved plan carries its own four sign-offs, so signing one
-plan never fills another; a plan whose content moved out from under a signature reads empty; a
-later Codex finding (PSF-001) bound signatures to the filing axis too. (2) the amber week banner
-removed entirely. (3) version tag coloured by AL number off the shared palette. (4) tag moved
-left of the 4X4 badge. (5) tag shown on the view-only schedule too. (6) no change needed —
-view-only live faces already show warnings. (7) the board sign-off line is publish-aware.
-Cross-provider bug-checked (Codex + Fable); gates green (unit 4671/0, tfin 728/0, e2e, tracker
-smoke). Housekeeping follow-on tracked under **[REPO-CLEANUP]** above (screenshots deleted
-18 Sep 26; the space sweep is now READY — the [CMDL-FINISH] hold lifted when it merged, 18 Sep 26).
-
-### [LW-OPEN] Leave War opens on the war being WORKED — DONE 17 Sep 26
-Owner ruling (17 Sep 26, restating his 7 Sep rule under newest-instruction-wins):
-the tab always opens on the war open for bidding, else closed, else published,
-else draft — never on the one last viewed. Was a REGRESSION, not a missing
-feature: the 8 Sep storage seam made the tab persist, so the stored `current`
-started winning from the second visit; before that nothing was stored and the
-stage pick ran every load, so the rule held by accident.
-**Resolved:** `state/store.ts initStore` now always stage-picks and ignores the
-stored `current` (still recorded at every switch, for the shared database and
-so a switch holds for the rest of the session). Pinned by three tests in
-`state/store.test.ts`, one of which REPLACES an older test that asserted the
-opposite ("remembers which war was on screen across a reload") — reversed by
-owner ruling, noted in place. Gates: vitest 4865/4865, parity 728/0, build,
-e2e (only the 2 known pre-existing failures, proved pre-existing by re-running
-them against a stashed tree), tracker smoke. LIVE-DRIVEN on the built bundle:
-opened on JAN-DEC 26 -> switched to the 27 draft -> switch held -> reload came
-back on JAN-DEC 26 with the bidding border showing, no console errors.
-
-
-### [TRK-IMPORT] Tracker import-conflict refusal — DONE (12 Sep 2026)
-Import now refuses when a file names a *different person* under a callsign already
-on the course, before writing anything — so the existing student is no longer
-silently dropped and their marks orphaned. Rebased on current `main`, full gates
-green, independent Astra/Codex bug-check run **on the fix**: it found the refusal
-scan read only the per-syllabus rosters and missed a course still on the ORIGINAL
-pre-syllabus flat roster (v3:<c>:roster), which a conflicting import could still
-overwrite. Closed that (the scan reads the flat roster + its links too) and made
-the refusal message honest that charts imported first may already be in. Astra
-re-check: sound. Merged as **PR #386**, deployed, confirmed live (Tracker renders,
-no console errors).
-
-### [TRK-LEDGER] Tracker legacy-import ledger (Decision B) — DONE (12 Sep 2026)
-A half-finished first-time legacy import used to seal itself done on the first
-`raptor:` key and hide the rest forever; it now resumes via a per-key ledger and
-grandfathers existing installs. Rebased on `main`, gates green, Astra bug-check on
-the fix found a residual: if the store was so full that even the ledger write
-failed, the next boot grandfathered and lost the rest. Closed with a
-`__legacy__/started` marker written before the first copy, and gated persistence on
-that marker being durable (a persisted record always has its marker). One inherent
-corner documented (a record deleted seconds after migration on an already-full
-store can be re-copied — resume without a durable ledger can't tell "not copied"
-from "copied then deleted"). Astra re-check: sound. Merged as **PR #387**, deployed,
-confirmed live.
-
-### [SEC-ALTIP] AL panel tooltip HTML injection (AM-08) — DONE (11 Sep 2026)
-The amendment sign-off tooltip could run injected code from a crafted callsign;
-it's now escaped at display time, so already-saved names are covered too. Verified
-end to end: merged as **PR #393** to `main` (CI green), deployed, and confirmed on
-the live site (Amendments panel renders normally, no errors). Found by the
-Astra/Codex amendment review; fixed in its own spawned session.
+**The repo is already tidy; there is nothing worth removing. Do not re-open without a new
+reason.** Checked: 0 dead source files across 522 modules; dead CSS ~0.9 KB (the rest are
+dynamically built class names, false positives); `ts-prune` output was barrel re-exports and
+keep-list symbols, acting on it would be a bug. The only real weight is ~0.6 MB of design
+write-ups for shipped features, and the owner ruled **KEEP** — a note in the tree is browsable
+history; git keeps it either way, so deleting saved nothing.
+- Method note for a future sweep: strip the leading `YYYY-MM-DD-` before testing whether a doc
+  is referenced, because OUTSTANDING/HANDOFF cite design docs by their date-elided tail.
+- **NOTE (21 Sep 26): this was about disk space, which was never the problem.** The problem is
+  how much must be READ per session — that is `[DOC-TRIM]`, a different measure entirely.

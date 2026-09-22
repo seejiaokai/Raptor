@@ -481,3 +481,30 @@ describe('the quals column frame stacks under the frozen column and over the hea
     expect(bodyOf('.qwrap .lift-frame').replace(/z-index:\s*-?\d+;?/, '').trim(), 'z-index only').toBe('')
   })
 })
+
+/* THE GREEN OIL STRIP SURVIVES A CHIP SITTING ON IT (OIL21b, owner 21 Sep 26 —
+   "the green OIL strip on the left side of the puck for Piston is not showing on
+   top of the advisory"). The strip is the puck's own 4px background and the
+   late/advisory chip is its first child with a solid background of its own, over
+   exactly those 4px — so every man wearing a warning on a weekend read as
+   earning nothing. jsdom paints nothing, so the stylesheet is the only witness. */
+describe('OIL21b — the OIL strip is re-drawn on the chip that would cover it', () => {
+  it('a full day draws the strip on the chip as well as the puck', () => {
+    const b = bodyOf('.puck.oilbar-fo .lchip')
+    expect(b, 'the rule exists at all').toBeTruthy()
+    expect(b).toContain('background-image')
+    expect(b).toContain('4px 100%')
+    expect(b).toContain('left top')
+  })
+  it('a half day draws its paler bottom-half strip there too', () => {
+    const b = bodyOf('.puck.oilbar-ho .lchip')
+    expect(b).toContain('background-image')
+    expect(b).toContain('4px 50%')
+    expect(b).toContain('left bottom')
+  })
+  it('it is written as background-image, never the shorthand, so it layers over the chip colour', () => {
+    for (const sel of ['.puck.oilbar-fo .lchip', '.puck.oilbar-ho .lchip']) {
+      expect(bodyOf(sel), `${sel} must not reset the chip's own colour`).not.toMatch(/(^|;)\s*background\s*:/)
+    }
+  })
+})

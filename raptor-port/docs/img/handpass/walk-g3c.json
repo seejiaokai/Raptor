@@ -1,0 +1,38 @@
+{
+ "nameless": "allavail",
+ "ground": [
+  "OCU REVIEW|09:00-11:00|stiff",
+  "ADMIN|13:00-14:00|split",
+  "TRAINING|09:00-12:00|haowen",
+  "DUTY|-|mamba",
+  "MEETING|13:00-14:00|bruise",
+  "(no name)|08:00-12:00|allavail"
+ ],
+ "pub": {
+  "published": true,
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "blankSwitch": [
+  {
+   "live": true,
+   "title": "Earns OIL — tap to stop this item earning",
+   "cls": "ain oilitem on"
+  }
+ ],
+ "tappedBlank": true,
+ "pendingChip": {
+  "found": false
+ },
+ "history": {
+  "head": "☰ Edit history · 5 changes",
+  "lines": [
+   "SATURDAY this event earns nobody any OIL Admin · 21/9 22:55",
+   "SATURDAY Ground · row set to ALL AVAIL Admin · 21/9 22:54",
+   "SATURDAY Ground · row · end set to 12:00 Admin · 21/9 22:54",
+   "SATURDAY Ground · row · start set to 08:00 Admin · 21/9 22:54",
+   "SATURDAY Ground item added Admin · 21/9 22:54"
+  ]
+ },
+ "errors": []
+}

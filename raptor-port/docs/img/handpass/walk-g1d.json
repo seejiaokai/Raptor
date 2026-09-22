@@ -1,0 +1,53 @@
+{
+ "commonOut": {
+  "found": false
+ },
+ "palette": {
+  "found": true,
+  "visible": true,
+  "heading": "",
+  "text": "PLACEHOLDERS · DRAG IN ALL AVAIL ALL PILOTS · 24 FREE Ace A Blade IP Cinch IP Cobra IP Com",
+  "pucks": 126,
+  "classes": [
+   "rpuck",
+   "puck"
+  ],
+  "draggable": 63,
+  "sideText": "⚠ 3 issues | · 1 warning · | tap to review | SXO and OPS DESK have no times — nobody on them earns OIL for this day | ✕ | Basher — No time for the OFT EP-6 brief — SC AM sits inside 13:45–14:00 | ✕ | This day is not publ"
+ },
+ "tryFill": {
+  "seatTargets": 0,
+  "paletteClickable": true,
+  "clicked": true,
+  "armAfterPaletteClick": null,
+  "dayChanged": false
+ },
+ "realDrag": {
+  "mid": {
+   "body": "sb-lock tdrag mdrag dnd",
+   "ghost": true
+  },
+  "changed": false
+ },
+ "inputUndo": {
+  "found": true,
+  "title": "Undo — removes the ground-programme row this created",
+  "dialog": [],
+  "groundBefore": [
+   "OCU REVIEW|09:00-11:00|Saber",
+   "ADMIN|13:00-14:00|Vandal|INFO",
+   "TRAINING|09:00-12:00|Talisman",
+   "DUTY|-|Sidewinder",
+   "MEETING|13:00-14:00|Gambit"
+  ],
+  "groundAfter": [
+   "OCU REVIEW|09:00-11:00|Saber",
+   "ADMIN|13:00-14:00|Vandal|INFO",
+   "TRAINING|09:00-12:00|Talisman",
+   "DUTY|-|Sidewinder"
+  ],
+  "removedARow": true,
+  "stillInMode": true
+ },
+ "errors": []
+}

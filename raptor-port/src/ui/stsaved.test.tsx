@@ -11,7 +11,7 @@
    window is open. These pin the three halves: a changed commit flashes and
    the flash SURVIVES the repaint; an untouched blur claims nothing; and an
    expired window renders clean again (with the registry pruned on read). */
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
@@ -37,7 +37,31 @@ const blur = async (el: Element) => {
 let host: HTMLDivElement
 let root: Root
 
+/* THE WINDOW IS 1400ms OF REAL CLOCK TIME (STSAVED_MS), and three of the tests
+   below read a window opened earlier — one of them across a TEST BOUNDARY
+   ("the board builder re-reads the same window", which reads the key the first
+   test left). So the file was asserting on a race between its own speed and a
+   1.4-second timer.
+
+   It lost that race twice on 22 Sep 26, on the two full-suite runs taken while
+   the tracker smoke and the browser gate were running alongside: vitest's own
+   timings recorded these tests at 1557ms and 2439ms — LONGER than the window
+   they depend on — and the failure was `expected false to be true`, the flash
+   already expired. Reproduced deliberately by stalling 1500ms before the read,
+   which gives the identical assertion failure. The file passes 6/6 alone, so
+   nothing here is wrong about the product: the 1400ms window is the owner's
+   26 Aug contract and is correct.
+
+   FREEZE THE CLOCK, so elapsed REAL time cannot decide the result. Only
+   `Date.now` is stubbed, not the timers, so the deferred-repaint waits in
+   `blur()` still work as they did. The expiry test is untouched by this and
+   still tests expiry: it stamps its own PAST timestamp (`Date.now() - 1`),
+   which is still in the past against a frozen now. */
+const NOW = Date.UTC(2026, 8, 22, 9, 0, 0)
+let nowSpy: ReturnType<typeof vi.spyOn> | null = null
+
 beforeAll(async () => {
+  nowSpy = vi.spyOn(Date, 'now').mockReturnValue(NOW)
   initStore()
   HOOKS.isPhone = () => false
   host = document.createElement('div')
@@ -55,6 +79,7 @@ beforeAll(async () => {
 afterAll(async () => {
   await act(async () => { root.unmount() })
   host.remove()
+  nowSpy?.mockRestore()
 })
 
 describe('the .stsaved confirm on the stores free-text box', () => {

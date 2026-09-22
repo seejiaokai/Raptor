@@ -1,0 +1,25 @@
+{
+ "put": "allavail",
+ "boardRow": {
+  "seatHtml": "<span class=\"seat\" data-slot=\"a:6.0.0\" data-drag=\"1\"><span class=\"puck allavail sm oilbar oilbar-ho\" tabindex=\"0\" data-person=\"allavail\" title=\"ALL AVAIL · earns half a day of OIL\"><span class=\"nm\">ALL AVAIL</span></span></span>",
+  "cellHtml": "<div class=\"ppl\" data-fill=\"a:6.0.+\"><span class=\"seat\" data-slot=\"a:6.0.0\" data-drag=\"1\"><span class=\"puck allavail sm oilbar oilbar-ho\" tabindex=\"0\" data-person=\"allavail\" title=\"ALL AVAIL · earns half a day of OIL\"><span class=\"nm\">ALL AVAIL</span></span></span><span class=\"addz\" aria-hidden=\"true\">+ add</span></div>"
+ },
+ "denied": true,
+ "chips": [
+  {
+   "day": "5",
+   "text": "27",
+   "title": "All 27 earn half a day — tap to see each one",
+   "sent": "r:rmubcmaxl24wz91"
+  },
+  {
+   "day": "6",
+   "text": "44 of 45 earn",
+   "title": "Some of these men earn OIL and some do not — tap to see each one",
+   "sent": "r:rmubeen6mr6t4i8"
+  }
+ ],
+ "found": 1,
+ "list": "45 behind this puck — Ranger nothing, Saber half day, Drifter half day, Ace half day, Warden half day, Hunter half day, Piston half day, Blade half day, Trident half day, Cinch half day, Cobra half day, Sidewinder half day, Anvil half day, Forge half day, Havoc half day, Comet half day, Reaper half day, Vandal half day, Gambit half day, Outlaw half day, Ridge half day, Nomad half day, Saint half day, Diesel half day, Vapor half day, Wildcard half day, Talisman half day, Recon half day, Echo half day, Static half day, Relay half day, Scope half day, Basher half day, Ledger half day, Quill half day, Rune half day, Cinder half day, Hex half day, Vector half day, Ghost half day, Wisp half day, Ryder half day, Cutter half day, Fable half day, Grit half day",
+ "errors": []
+}

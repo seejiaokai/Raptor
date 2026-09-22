@@ -69,6 +69,27 @@ export function shiftWeekKey(v:any,n:any){
   else { for(let i=0;i<days;i++){ d--; if(d<1){m--;if(m<1){m=12;y--;} d=dim(m,y);} } }
   return `${pad(d)}/${pad(m)}/${y}`;
 }
+/* THE MONDAY OF THE WEEK A DATE FALLS IN, as a dd/mm/yyyy week key, from a
+   dateOrd ordinal (yyyymmdd). Needed by the OIL money to find the week a
+   request's ONE row is anchored in when that week is not loaded
+   ([OIL-XWEEK-ELSEWHERE], 22 Sep 26).
+   Date-free, like everything else here: Sakamoto's day-of-week, then walk back
+   to Monday through the same dim() the walkers above use. ui/weeknav.ts's
+   mondayOf does the identical job through Date.UTC — a deliberate drift seam,
+   the same one shiftWeekKey/shiftWeek already carry, and pinned by the same
+   kind of agreement test across month, year and leap boundaries. */
+const SAKAMOTO=[0,3,2,5,0,3,5,1,4,6,2,4];
+export function weekKeyOfOrd(ord:any){
+  const o=+ord; if(!isFinite(o)||o<=0)return '';
+  let y=Math.floor(o/10000), m=Math.floor((o%10000)/100), d=o%100;
+  if(m<1||m>12||d<1)return '';
+  const yy=m<3?y-1:y;
+  const dow=(yy+Math.floor(yy/4)-Math.floor(yy/100)+Math.floor(yy/400)+SAKAMOTO[m-1]+d)%7; // 0=Sun
+  const back=(dow+6)%7;
+  for(let i=0;i<back;i++){ d--; if(d<1){ m--; if(m<1){m=12;y--;} d=dim(m,y); } }
+  const pad=(x:any)=>String(x).padStart(2,'0');
+  return `${pad(d)}/${pad(m)}/${y}`;
+}
 /* the date label a cross-week seed read lands on at CURWEEK's edge: dir -1 is
    the PREVIOUS week's Sunday (crew rest / days-run look back that far), dir
    +1 is the NEXT week's Monday (the Sunday midnight-tail looks that far

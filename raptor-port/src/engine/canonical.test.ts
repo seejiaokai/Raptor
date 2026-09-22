@@ -24,6 +24,9 @@ const clone = <T,>(v: T): T => JSON.parse(JSON.stringify(v))
 const ALL_DAY_KEYS = [
   'dow', 'dt', 'wc', 'today', 'notes', 'allhands', 'waves', 'sims', 'dutywaves',
   'ground', 'simnotes', 'prognotes', 'dutynotes', 'grndnotes', 'secOrder', 'gman',
+  /* the OIL evidence block — excluded from the canonical FIELD map and carried
+     by its own aggregate axis in publish.ts (canonical.ts says why) */
+  'oild', 'oilev',
 ].sort()
 
 /* A controlled day with every content structure present, so the visibility

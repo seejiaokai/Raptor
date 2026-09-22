@@ -40,6 +40,14 @@ export function ALPanel() {
               if (c.del) bits.push(`${c.del} removal${c.del > 1 ? 's' : ''}`)
               if (c.mov) bits.push(`${c.mov} reorder${c.mov > 1 ? 's' : ''}`)
               if (c.inp) bits.push(`${c.inp} input filing${c.inp > 1 ? 's' : ''}`)
+              /* SAY WHAT AN OIL CHANGE IS (fix 3 / Fable F5, 22 Sep 26). The
+                 whole OIL block goes out as ONE item under one per-day address,
+                 so this counted it and then said nothing about it: a day whose
+                 only pending change is what it EARNS read exactly like a day
+                 where somebody retyped a time, and on a day he had not touched
+                 himself the bare count read as a change nobody made. The count
+                 was never wrong; it just had to say what it was. */
+              if (c.oil) bits.push('what this day earns changed')
               return (
                 <div className="al-pubday" key={di}>
                   <span className="al-pd-lbl"><b>{dowShort(di)}</b> · {bits.join(' · ')}</span>

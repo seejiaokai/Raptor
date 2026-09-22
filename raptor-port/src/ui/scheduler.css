@@ -1266,7 +1266,21 @@ body:not(.tdrag) .page.editing .acrow .seat[data-slot]:hover .puck{outline:2px s
    html.ts prints the same literal and is byte-compared to the reference. */
 .puck.sel{background:#1E86FF!important;color:#fff!important;z-index:2;position:relative}
 .puck.sel .nm{color:#fff;font-weight:700}
-.puck.me{background:var(--me)!important;color:#fff!important;box-shadow:0 0 0 2px #F0B6FF,0 0 12px 1px rgba(155,47,174,.7)!important;z-index:2;position:relative}
+/* background-COLOR, not the `background` shorthand (walk find, 22 Sep 26 —
+   hand-pass finding 9). The shorthand resets background-image, and with
+   !important on it no later rule could put one back — so the OIL stripe
+   (.puck.oilbar-fo/-ho, which IS a background-image) was wiped on exactly
+   one puck: the one belonging to whoever you are viewing as. Measured on the
+   built board: the classes were all present (`puck sm oilbar oilbar-ho me`)
+   and the computed background-image was `none`, while every other earning
+   puck showed its gradient. The scheduler's own row is the one he is most
+   likely to check. The !important stays — it is what makes the View-as ring
+   and fill beat the other state rules (see the drag-ghost note below) — it
+   just no longer claims the image layer.
+   KNOWN AND WANTED CONSEQUENCE: a `me` puck in the crew palette that is busy
+   or unavailable now shows the grey blend (.rpuck.busy/.no .puck), which it
+   previously hid. The palette telling you you are busy is honest. */
+.puck.me{background-color:var(--me)!important;color:#fff!important;box-shadow:0 0 0 2px #F0B6FF,0 0 12px 1px rgba(155,47,174,.7)!important;z-index:2;position:relative}
 .puck.me .nm{color:#fff;font-weight:700}
 .puck.hl{box-shadow:0 0 0 2px var(--accent),0 0 10px -1px rgba(59,198,232,.7);border-color:var(--accent)}
 /* half-visible, not gone (owner, 7 Aug 26 — was .18, which made the rest
@@ -2983,6 +2997,9 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .dwlist .witem .wtx{flex:1;min-width:0;overflow-wrap:anywhere}
 .dwlist .witem-mute{flex:0 0 auto;align-self:flex-start;background:none;border:0;color:inherit;opacity:.5;cursor:pointer;font-size:12px;line-height:1.3;padding:0 3px;border-radius:5px}
 .dwlist .witem-mute:hover{opacity:1;background:rgba(255,255,255,.08)}
+/* the ONE check that carries an action (the missing leave war period, D19) — reads as a control, not as another muted glyph */
+.dwlist .witem-act{flex:0 0 auto;align-self:flex-start;background:var(--panel-2);border:1px solid var(--edge-2);color:var(--ink);cursor:pointer;font-size:11px;font-weight:600;line-height:1.3;padding:2px 7px;border-radius:6px;white-space:nowrap}
+.dwlist .witem-act:hover{background:var(--accent);border-color:var(--accent);color:#fff}
 .dwlist .witem.muted{opacity:.55}
 .dwlist .wmuted-h{display:flex;align-items:center;gap:3px;cursor:pointer;font-size:10.5px;color:var(--ink-3);padding:3px 4px;margin-top:1px;border-radius:6px}
 .dwlist .wmuted-h:hover{color:var(--ink-2)}
@@ -3725,6 +3742,16 @@ body.dw-lock{overflow:hidden}
 .sb-warn .wln-mute{flex:0 0 auto;background:none;border:0;color:inherit;opacity:.5;cursor:pointer;font-size:12px;line-height:1.3;padding:0 3px;border-radius:5px}
 .sb-warn .wln-mute:hover{opacity:1;background:rgba(255,255,255,.08)}
 .sb-warn .wln.muted{opacity:.55}
+/* THE WAY OUT, BESIDE THE REASON (owner's ruling D19; walk find, 22 Sep 26).
+   Only the no-leave-war-period check grows an action, and it is the same
+   recipe as the week's .witem-act so the two lists match. The row is allowed
+   to WRAP only when it carries one (:has), so the button drops to its own
+   line instead of squeezing the sentence — this panel is narrow on a desktop
+   and narrower on a phone — and every other warning row keeps its existing
+   single-line shape byte for byte. */
+.sb-warn .wln:has(.wln-act){flex-wrap:wrap}
+.sb-warn .wln-act{flex:0 0 auto;margin-top:3px;background:var(--panel-2);border:1px solid var(--edge-2);color:var(--ink);cursor:pointer;font-size:11px;font-weight:600;line-height:1.3;padding:2px 7px;border-radius:6px;white-space:nowrap}
+.sb-warn .wln-act:hover{background:var(--accent);border-color:var(--accent);color:#fff}
 /* the "N hidden" reveal for muted checks — always shown here (not the phone-only
    caret rule), so a muted check is reachable to un-mute on either width */
 .sb-warn .wmuted-h{display:flex;align-items:center;gap:3px;cursor:pointer;font-size:11px;color:var(--ink-3);padding:4px 7px;margin-top:2px;border-radius:6px}
@@ -5874,3 +5901,121 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .savestat{margin-left:8px;padding:6px 10px;border-radius:10px;font-size:12px;color:var(--ink-2);background:var(--raised);white-space:nowrap}
 .savestat.failed{color:#E5C24A}
 .savestat button{margin-left:4px;padding:2px 8px;border-radius:8px;border:1px solid currentColor;background:transparent;color:inherit;font:inherit;cursor:pointer}
+
+/* ======================================================================
+   OIL ON THE SCHEDULE — [OIL-AUTO-REMOVE], owner 21 Sep 26
+   ====================================================================== */
+/* THE GREEN EDGE (§2.10). The owner asked to see OIL shown POSITIVELY rather
+   than its absence, three treatments were drawn on one real Saturday, and he
+   chose the edge bar: "c looks good."
+     · A bar down the LEFT edge of the puck. FULL height = a full day; the
+       BOTTOM HALF, a shade paler = half a day. Height is the structural signal
+       that survives colour-blindness; the tint is the one that survives being
+       read alone with nothing to compare against.
+     · It costs NO WIDTH — a pseudo-element inside the puck's own box — so no
+       callsign clips and the measured puck geometry (--puck-w/--puck-h and the
+       geometry gate) is untouched.
+     · Weekend / public-holiday days only. Five days a week the schedule is
+       byte-identical, because nothing emits the class at all.
+   THE COLLISION, and the call made. The crew palette ALREADY draws a green
+   left inset on a puck — `.rpuck.standby .puck{box-shadow:inset 2px 0 0
+   var(--ok)}`, meaning "on standby", with a grey twin for "busy" — and a
+   scheduler sees the palette and the board at once on a Saturday with an SC
+   wave. So the OIL bar is deliberately drawn apart from it in three ways at
+   once: a 4px SOLID bar against a 2px inset, its OWN colour token (--oil, a
+   deeper leaf green, not --ok), and only ever on a day that can earn. The
+   palette's mark is NOT changed for this. */
+:root{--oil:#2FA65C; --oil-half:#7FC79A}
+/* DRAWN AS A BACKGROUND GRADIENT, NOT A PSEUDO-ELEMENT. A puck's ::before is
+   RESERVED for the drag ghost's lift veil and its ::after for the SANS edge —
+   lift-css.test.ts pins both, and the veil has to sit on the one pseudo-element
+   the ghost's clone leaves free. A 4px gradient stripe costs no node, no width
+   and no pseudo-element, so it cannot collide with either. */
+.puck.oilbar{background-repeat:no-repeat}
+.puck.oilbar-fo{background-image:linear-gradient(var(--oil),var(--oil));background-size:4px 100%;background-position:left top}
+/* half a day: the BOTTOM HALF only, and a shade paler — height is the signal
+   that survives colour-blindness, the tint the one that survives being read
+   alone with nothing to compare against */
+.puck.oilbar-ho{background-image:linear-gradient(var(--oil-half),var(--oil-half));background-size:4px 50%;background-position:left bottom}
+/* AND IT MUST SURVIVE A CHIP SITTING ON IT (owner, 21 Sep 26 — "the green OIL
+   strip on the left side of the puck for Piston is not showing on top of the
+   advisory"). The stripe is the PUCK's background, and the late/advisory chip is
+   the puck's first child with a solid background of its own — so on any puck
+   wearing one, the chip painted straight over the 4px the stripe lives in and
+   the man read as earning nothing. Re-drawing the same stripe on the chip costs
+   no node and no width and cannot collide with the two reserved
+   pseudo-elements (the ghost's lift veil and the SANS edge). Written as
+   background-image, not the shorthand, so it layers over the chip's own colour;
+   it sits after the .lchip colour rules deliberately, and equal specificity
+   means the later one wins. */
+.puck.oilbar-fo .lchip{background-image:linear-gradient(var(--oil),var(--oil));background-size:4px 100%;background-position:left top;background-repeat:no-repeat}
+.puck.oilbar-ho .lchip{background-image:linear-gradient(var(--oil-half),var(--oil-half));background-size:4px 50%;background-position:left bottom;background-repeat:no-repeat}
+
+/* THE OIL EARN MODE (§2.1). The button lights, the board goes read-only for
+   schedule editing, and every puck that earns glows. Solid glow = a full day,
+   an outline only = a half (§2.1 item 4), so the two are distinct without
+   reading the figure. */
+.sb-panel.oilbar.on{border-color:var(--oil)}
+.mbtn.oilbtn.on{background:var(--oil);border-color:var(--oil);color:#04220f}
+.mbtn.oilblank.on{background:var(--adv);border-color:var(--adv);color:#12100a}
+.oilnote{padding:4px 8px;font-size:11px;color:var(--ink-2)}
+/* a puck that earns: the whole puck rings green. A HALF day is an outline only
+   — the same solid/outline distinction the owner asked for. */
+.puck.oilglow{box-shadow:0 0 0 2px var(--oil),0 0 8px rgba(47,166,92,.5)}
+.puck.oilglow.half{box-shadow:0 0 0 2px var(--oil)}
+.puck.oildim{opacity:.5}
+.puck .role.oilamt{background:var(--oil);color:#04220f}
+.puck .role.oilamt.half{background:var(--oil-half);color:#04220f}
+.puck .role.oilno{background:var(--ink-3);color:var(--panel)}
+/* THE DAY'S CONTROL BAR — Templates + OIL Earn in ONE row (owner, 21 Sep 26:
+   "Perhaps combine them into a single bar? … It can still remain on the phone at
+   that position? just merged", and "a looks better" of the two comps drawn for
+   him). It replaces two full-width panels, each of which cost a row and read as
+   part of the schedule rather than as controls.
+   The buttons take a TINT of the app's own accent, not the solid fill: solid is
+   Done and Publish day, and has to keep meaning "this finishes the job". */
+.daybar .sb-ph{gap:6px}
+.daybar-h{font-family:'Barlow Condensed','Inter Tight',sans-serif;letter-spacing:.09em}
+.daybar-h.on{color:var(--oil)}
+.daybar.oilon{border-color:var(--oil)}
+.mbtn.daybtn{padding:5px 10px;font-size:10.5px;color:var(--ink);
+  background:color-mix(in srgb,var(--accent) 14%,transparent);border-color:var(--accent)}
+.mbtn.daybtn:hover{background:color-mix(in srgb,var(--accent) 24%,transparent)}
+/* the mode's own three: the way out is green, the day blanket amber while it is
+   ON — amber is "look at this", which a day switched off deserves */
+.mbtn.daybtn.done{background:var(--oil);border-color:var(--oil);color:#04220f}
+.mbtn.daybtn.blank{background:color-mix(in srgb,var(--adv) 16%,transparent);border-color:var(--adv)}
+.mbtn.daybtn.blank.on{background:var(--adv);border-color:var(--adv);color:#12100a}
+.daybar-note{padding:6px 11px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-2)}
+/* WHERE EACH PLACEMENT SHOWS. Phone: the bar is the whole control. Desktop: the
+   way IN rides the board's action row, so the bar appears only inside the mode,
+   where it carries the blanket and the instruction rather than a second button. */
+.abtn.sb-daybtn{background:color-mix(in srgb,var(--accent) 14%,transparent);border-color:var(--accent);color:var(--ink)}
+.abtn.sb-oilbtn.on{background:var(--oil);border-color:var(--oil);color:#04220f}
+/* `display:contents` so the two buttons lay out in .sb-actions' flex row exactly
+   as if this wrapper were not there — and `display:none` on a phone, so no
+   invisible element is ever a CHILD of that bar (the geometry gate counts its
+   children to prove they share one line, and a hidden one reads as a second row). */
+.sb-dayctl{display:contents}
+@media (max-width:820px){ .sb-dayctl{display:none} }
+@media (min-width:821px){ .sb-panel.daybar:not(.oilon){display:none} }
+
+/* the item's own switch: its name reads as a control while the mode is on */
+.oilitem{display:flex;align-items:center;padding:0 4px;border-radius:4px;cursor:pointer;
+  font-size:11px;font-weight:600;min-height:20px;border:1px solid transparent;overflow:hidden}
+.oilitem.on{background:rgba(47,166,92,.18);border-color:var(--oil);color:var(--ink)}
+.oilitem.off{background:var(--panel-2);border-color:var(--edge-2);color:var(--ink-3);text-decoration:line-through}
+.oilitem.none{cursor:default;color:var(--ink-3)}
+.seat.oilpk{cursor:pointer}
+.seat.oilpk.inert{cursor:default}
+/* the sentinel's count chip beside an ALL / ALL AVAIL puck (§7.6): plain when
+   the people behind it agree, green with a fraction when they are MIXED — a
+   mixed puck and an earns-nothing puck both wear no bar, so the chip is what
+   tells them apart. */
+.oilcount{display:inline-flex;align-items:center;margin-left:3px;padding:0 4px;border-radius:4px;
+  font-size:9px;font-weight:700;background:var(--panel-2);color:var(--ink-2);border:1px solid var(--edge-2);cursor:pointer}
+.oilcount.some{background:rgba(47,166,92,.2);border-color:var(--oil);color:var(--ink)}
+/* the OIL question nobody has answered yet, on an Inputs row (Fable F6) — the
+   same chip as the revise control, in the warning colour, so it reads as
+   something waiting rather than something already decided */
+.roil.ask{color:var(--warn);border-color:var(--warn)}

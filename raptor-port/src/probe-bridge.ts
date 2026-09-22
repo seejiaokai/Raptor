@@ -15,6 +15,8 @@ import { STORE_CFG, STORE_STD, storeKey, addStore, delStore, renameStore, moveSt
 import { CXR_CFG, CXR_STD, addCxReason, delCxReason, renameCxReason, moveCxReason, cxReasonsSave, cxReasonsLoad, cxReasonsReset, cxrAreStandard } from './engine/cxreasons'
 import { DAYTPL_CFG, DAYTPL_STD, tplFromDay, addDayTpl, delDayTpl, renameDayTpl, moveDayTpl, applyDayTpl, dayTplSave, dayTplLoad, dayTplReset, dayTplAreStandard } from './engine/daytpl'
 import { dayOilCredits, dayOilSpans, envMin, uniformOil, inputOilAmt } from './engine/oil'
+import { oilDayFigures, oilFigureFor, oilItemOfKey } from './ui/oilmode'
+import { oilEvidenceOf, oilEarnedWork } from './engine/oilev'
 import { SCHED, SIGN_ROLES, markEdit, publishALDay, setDayApproved, signOf, dayApproved, alColor, alCount, alDays, signMissing, nextSeq, pendDays, pendCount, approvedDays, daysLabel, daySnapOf, dayVersions, verLabel, dayCurVer } from './engine/publish'
 import { dayKeys } from './engine/restore'
 import { dayDrafts, curDraftId, draftDup, draftSelect, draftRename, draftDelete, draftVerLabel, isDraftVer, rebaseDayPending, loadVersionToWorkingCopy, reconcileIssuedMarks } from './engine/drafts'
@@ -226,6 +228,13 @@ export function installProbeBridge() {
   /* weekend/PH work OIL credit (Leave War wire 4 — the uniform ≤6h/>6h rule
      since 28 Aug 26; scShiftCredit is deleted with the SC-window rule) */
   w.dayOilCredits = dayOilCredits; w.dayOilSpans = dayOilSpans
+  /* THE OIL READERS THE SCREEN ACTUALLY USES (21 Sep 26). dayOilSpans above is
+     the raw day walk; what a puck draws goes through the evidence block and the
+     day's decisions, so a probe that reads only the walk cannot tell a rule from
+     a display fault. These are the bodies the green edge is drawn from. */
+  w.oilDayFigures = oilDayFigures; w.oilFigureFor = oilFigureFor
+  w.oilItemOfKey = oilItemOfKey; w.oilEvidenceOf = oilEvidenceOf
+  w.oilEarnedWork = oilEarnedWork
   w.envMin = envMin; w.uniformOil = uniformOil; w.inputOilAmt = inputOilAmt
   /* the edit log. ELOG is a const object mutated in place (rows.push /
      splice), never reassigned, so a plain reference is enough — unlike

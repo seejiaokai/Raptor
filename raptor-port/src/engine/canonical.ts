@@ -31,9 +31,19 @@ export const DAY_CANONICAL_FIELDS = [
                          published property (owner: a section drag is
                          display-only; CLAUDE.md §Drag-reordering).
    - (row `rid`)       — the identity/join key, not content; handled per row,
-                         never a Day top-level key. */
+                         never a Day top-level key.
+   - oild / oilev      — the OIL evidence block ([OIL-AUTO-REMOVE] §9.2). Both
+                         are excluded from the canonical FIELD map on purpose:
+                         the block owns no row, so one key per fact would change
+                         the digest and still emit no amendment item (canonicalDiff
+                         ignores an address whose owning row rowKeyOf cannot
+                         resolve). It rides its own always-present aggregate axis
+                         instead — publish.ts `oilDelta`, the same shape as the
+                         input-filing axis, which is likewise real content that
+                         DAYS cannot express as a slot key. `oilev` is in addition
+                         DERIVED, and present on issued snapshots only. */
 export const DAY_EXCLUDED_FIELDS = [
-  'dow', 'dt', 'wc', 'today', 'secOrder', 'gman',
+  'dow', 'dt', 'wc', 'today', 'secOrder', 'gman', 'oild', 'oilev',
 ] as const
 
 const U = '␟' // ␟ unit separator — matches the composite separator dayKeys uses
@@ -104,7 +114,7 @@ export function digest(d: any, di: any): string {
    INPUTS. Kept deliberately separate from rebaseDayPending: that stays the
    display-mark path; this is the record's authority.
    ===================================================================== */
-export type DeltaKind = 'change' | 'add' | 'delete' | 'move' | 'input'
+export type DeltaKind = 'change' | 'add' | 'delete' | 'move' | 'input' | 'oil'
 export interface DeltaEntry { addr: string; kind: DeltaKind; from?: string; to?: string }
 
 /* every structural row with a stable id + parent, ancestor-collapsing — the

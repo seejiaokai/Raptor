@@ -14,6 +14,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { blindDesks, dayOilBlind, dayOilCredits, dayOilSpans, dayOilWork, envMin, uniformOil, inputOilAmt, oilWorkWhy } from './oil'
 import { VCONF } from './rules'
 import { PEOPLE } from './people'
+import { blockFromTpl, dutyTplLoad, DUTYTPL_CFG } from './dutytpl'
 
 const SAVE = { oilFullMin: VCONF.oilFullMin, reportLead: VCONF.reportLead, debrief: VCONF.debrief }
 afterEach(() => Object.assign(VCONF, SAVE))
@@ -132,6 +133,36 @@ describe('dayOilCredits — who earns what from one day blob', () => {
     const desk = { label: 'AVALON duties', sa: 'avalon', rows: [duty('rocky', '0700', '1900')] }
     const d = { waves: [av], dutywaves: [desk], sims: { amt: [], oft: [] }, ground: [], allhands: [] }
     expect(dayOilCredits(d)).toEqual({})
+  })
+
+  /* The test above hand-builds a desk with sa:'avalon' — so it pins the ENGINE
+     and nothing else. The owner asked (22 Sep 26) about the path he actually
+     uses: + Block → a template whose "For wave" is AVALON. If blockFromTpl ever
+     stopped stamping the wave onto the minted block, the test above would still
+     pass and a user-made AVALON desk would quietly start paying. This walks the
+     real mint, and the Standard template is the control that proves the day can
+     pay at all. Driven in the app the same day and it agreed. */
+  it('a duty block MINTED from a template carries its wave — an AVALON one earns nothing, a Standard one does (owner, 22 Sep 26; D15)', () => {
+    dutyTplLoad()
+    const man = (id: string, blk: any) => { blk.rows[0].id = id; blk.rows[0].str = '08:00'; blk.rows[0].end = '18:00'; return blk }
+    const tplNamed = (wave: string | null) =>
+      DUTYTPL_CFG.find((t: any) => (t.wave || null) === wave)
+
+    const avTpl = tplNamed('avalon')
+    expect(avTpl, 'the AVALON duty template must exist to be tested').toBeTruthy()
+    const avBlk = man('rocky', blockFromTpl(avTpl!.id))
+    expect(avBlk.sa).toBe('avalon')                      // the mint stamped the wave
+    expect(avBlk.noconf).toBe(true)
+    expect(dayOilCredits({ waves: [], dutywaves: [avBlk], sims: { amt: [], oft: [] }, ground: [], allhands: [] })).toEqual({})
+
+    const plainTpl = tplNamed(null)
+    expect(plainTpl, 'a wave-less duty template must exist as the control').toBeTruthy()
+    const plainBlk = man('rocky', blockFromTpl(plainTpl!.id))
+    expect(plainBlk.sa).toBeUndefined()
+    /* the control: the SAME man, the SAME hours, on a block whose template names
+       no wave — he earns a full day. Without this the assertion above would pass
+       just as happily against a day that pays nobody. */
+    expect(dayOilCredits({ waves: [], dutywaves: [plainBlk], sims: { amt: [], oft: [] }, ground: [], allhands: [] })).toEqual({ rocky: 1 })
   })
 
   it('a SIM row earns by its written times — seats, pax and extras alike', () => {

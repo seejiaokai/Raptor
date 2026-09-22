@@ -20,6 +20,7 @@ import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWORK, CURPA
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
+import { oilBarOf, oilItemOfKey, inputItemKey, oilSentinelSummary } from './oilmode'
 import { STORE_CFG, groundOrder, secOrder } from '../engine'
 
 const editMode=()=>HOOKS.editMode()
@@ -305,10 +306,27 @@ export function legendHTML(){
 /* quotes matter: esc() output lands inside double-quoted attributes in a dozen
    places, so a remark containing a " used to close the attribute — truncating
    the field on the next render and injecting whatever followed */
-export function puck(id:any,warn:any,sm:any,flag:any,dash?:any,trace?:any){
+/* `oil` (7th, optional — [OIL-AUTO-REMOVE] §2.1 item 3 / §2.10): the OIL
+   decoration this puck wears. Two quite different jobs, both of them the man's
+   DAY figure rather than what one event earned:
+     · inside the board's OIL mode, `{on,amt}` glows the puck and prints FO / HO
+       in place of the qualification letter, so every tap shows its consequence;
+     · on the issued schedule, `{bar:'FO'|'HO'}` draws the green edge down the
+       puck's left side — full height for a full day, a shorter paler bar for a
+       half (the owner picked this over a chip: it costs no width, so no callsign
+       clips and the measured puck geometry is untouched).
+   Optional and absent by default, so the ten other call sites and the byte-exact
+   reference parity are unchanged — five days a week nothing is emitted at all. */
+export function puck(id:any,warn:any,sm:any,flag:any,dash?:any,trace?:any,oil?:any){
   const p=PEOPLE[id]; if(!p)return'';
   if(p.special){   // sentinel puck: canonical size, no seat/qual/SANS decoration
-    return `<span class="puck allavail${sm?' sm':''}" tabindex="0" data-person="${id}" title="${esc(p.cs)}"><span class="nm">${esc(p.cs)}</span></span>`;
+    /* A SENTINEL WEARS THE BAR ONLY WHEN THE PEOPLE BEHIND IT AGREE (§7.6, as the
+       owner refined it: "if everyone in the all avail or all puck is granted OIL,
+       it should be green"). ALL / ALL AVAIL is not a person and cannot carry a
+       person's figure — the men behind one puck can earn a full day, a half day
+       and nothing at once — so a MIXED puck wears no bar and its count chip says
+       so instead. The caller decides which of the four states this is. */
+    return `<span class="puck allavail${sm?' sm':''}${oilCls(oil)}" tabindex="0" data-person="${id}" title="${esc(p.cs)}${oilTtl(oil)}"><span class="nm">${esc(p.cs)}</span></span>`;
   }
   const cls=['puck']; if(p.seat==='RCP')cls.push('r'); if(p.pers)cls.push('pers'); if(sm)cls.push('sm');
   if(warn){cls.push('warn'); if(warn==='hard')cls.push('hard'); else if(warn==='note')cls.push('note');}
@@ -344,7 +362,12 @@ export function puck(id:any,warn:any,sm:any,flag:any,dash?:any,trace?:any){
   /* Personnel (ground crew) hold no CAT, so no qualification chip — a white
      puck with just the callsign. Every other person keeps their CAT chip. */
   const chipTxt=QCHIP[p.q], chipCls=QCLASS[p.q];
-  const qchip=p.q?`<span class="role ${chipCls}">${chipTxt}</span>`:'';
+  /* IN OIL MODE THE FIGURE TAKES THE QUALIFICATION LETTER'S PLACE (§2.1 item 3).
+     The letter is not what a scheduler is reading in that mode, and the figure has
+     to be where the eye already goes or the mode looks broken: unticking one puck
+     often changes nothing (another event still spans the day) and occasionally
+     costs half a day, so every tap must show its consequence immediately. */
+  const qchip=(oil&&oil.amt!==undefined)?oilChipHTML(oil):(p.q?`<span class="role ${chipCls}">${chipTxt}</span>`:'');
   /* The trace speaks in the reader's terms — the day it breaks and the time
      this man had to be gone by — rather than the generic threshold label a CR
      chip carries on the day of the breach itself. Only when the trace OWNS the
@@ -370,13 +393,52 @@ export function puck(id:any,warn:any,sm:any,flag:any,dash?:any,trace?:any){
      have. Any other flag keeps its label and the trace appends to it. */
   const ttl=esc(p.cs)+' · '+(p.pers?'Personnel · ground crew':LEVELNAME[p.q])+(p.sxo?' · SXO':'')+(p.san?' · SANS':'')
     +(flag&&!trFlag?' · '+wlbl(CHIP_LABEL[flag]||flag):'')+(trace?' · '+trLbl:'');
-  return `<span class="${cls.join(' ')}" tabindex="0" data-person="${id}" title="${ttl}">${lchip}<span class="nm">${esc(p.cs)}</span>${qchip}</span>`;
+  return `<span class="${cls.join(' ')}${oilCls(oil)}" tabindex="0" data-person="${id}" title="${ttl}${oilTtl(oil)}">${lchip}<span class="nm">${esc(p.cs)}</span>${qchip}</span>`;
+}
+/* THE GREEN EDGE, and the mode's glow — one place, so the two can never drift.
+   `bar` is the issued schedule's mark (§2.10): a 4px SOLID bar down the LEFT
+   edge, full height for a full day, the bottom half and a shade paler for a
+   half — height is the structural signal that survives colour-blindness, the
+   tint is the one that survives being read alone with nothing to compare it to.
+   It deliberately does NOT reuse the palette's standby mark (a 2px INSET green
+   on `.rpuck.standby`): different weight, its own colour token, and it exists
+   only on weekend / public-holiday days, so the two cannot be confused even
+   with the palette and the board on screen together.
+   `on`/`amt` is the OIL mode's own glow — solid for a full day, an outline only
+   for a half (§2.1 item 4). */
+export function oilCls(oil:any){
+  if(!oil)return '';
+  if(oil.bar)return ` oilbar oilbar-${String(oil.bar).toLowerCase()}`;
+  if(oil.amt===undefined)return '';
+  return oil.on?` oilglow${oil.amt==='HO'?' half':''}`:' oildim';
+}
+export function oilTtl(oil:any){
+  if(!oil||!oil.bar)return '';
+  return oil.bar==='FO'?' · earns a full day of OIL':' · earns half a day of OIL';
+}
+/* the figure the mode prints where the qualification letter sits. A dash means
+   "earns nothing from this event" — the man may still have a figure for the day
+   off his OTHER events, which is exactly what the mode is for showing. */
+export function oilChipHTML(oil:any){
+  if(!oil||oil.amt===undefined)return '';
+  if(!oil.on)return `<span class="role oilno" title="Earns nothing from this event">—</span>`;
+  const amt=oil.amt;
+  return `<span class="role oilamt${amt==='HO'?' half':''}" title="${amt==='FO'?'A full day of OIL':amt==='HO'?'Half a day of OIL':'No measurable hours yet'}">${amt||'·'}</span>`;
 }
 
-export function slotCell(id:any,sev:any,key:any,kind:any,editable:any,flag:any,dash?:any,trace?:any){
+export function slotCell(id:any,sev:any,key:any,kind:any,editable:any,flag:any,dash?:any,trace?:any,di?:any){
   const al=alAttr(key);
+  /* THE WEEK'S FLYING SEATS WEAR THE GREEN EDGE TOO (owner, 21 Sep 26). This is
+     the week's own cockpit-seat builder — every flying line and every SC shift —
+     and it called puck() with six arguments, so the 7th (the OIL decoration)
+     was never passed. The week's lSeat comment claimed the mark reached "the
+     flying lines"; it reached everything lSeat draws, and lSeat does not draw
+     these. Same hole as the board's sbSlot, in the other renderer. `di` is
+     optional only so no other caller has to change; the one real caller passes
+     it, and without it the seat simply draws as it always did. */
+  const oil=(id&&di!=null)?oilSeatDeco(di,id,key).oil:null;
   /* preview: no data-slot, no data-drag — the key addresses the LIVE model */
-  if(id) return `<span class="seat"${PV?'':` data-slot="${key}"`}${al}${editable?' data-drag="1"':''}>${puck(id,sev,false,flag,dash,trace)}</span>`;
+  if(id) return `<span class="seat"${PV?'':` data-slot="${key}"`}${al}${editable?' data-drag="1"':''}>${puck(id,sev,false,flag,dash,trace,oil)}</span>`;
   if(editable) return `<span class="seat empty-slot" data-slot="${key}"${al}>+ ${kind}</span>`;
   return `<span class="seat"${al}></span>`;
 }
@@ -408,9 +470,43 @@ export function exemptDeskOwn(di:any,key:any,id:any){
    Draggable in edit mode; renders nothing when empty so cells stay clean. */
 export function lSeat(di:any,id:any,key:any,ed:any){
   if(!(id&&PEOPLE[id]))return '';
+  /* OIL IS SHOWN POSITIVELY ([OIL-AUTO-REMOVE] §2.10) — a green bar down the
+     puck's left edge on a weekend or public holiday, and nothing at all on the
+     other five days. This is the ONE week seat renderer, so the mark reaches the
+     flying lines, the sims, the duty desks, the Ground Programme and the Common
+     Programme from here. A SENTINEL is not a person and carries its own summary
+     instead (§7.6). Deliberately NOT suppressed under a version preview: the bar
+     is part of the issued document, and inside the preview DAYS[di] IS the
+     snapshot, so the figure it shows is the frozen one the credit came from. */
+  const oilDeco=oilSeatDeco(di,id,key);
   const ex=exemptDeskOwn(di,key,id);
-  const inner=ex===undefined?puck(id,sev(di,id),true,chip(di,id),dsh(di,id),traceHit(di,id)):puck(id,ex?'hard':null,true,ex,false,null);
-  return `<span class="seat"${PV?'':` data-slot="${key}"`}${alAttr(key)}${ed?' data-drag="1"':''}>${inner}</span>`;}
+  const inner=ex===undefined?puck(id,sev(di,id),true,chip(di,id),dsh(di,id),traceHit(di,id),oilDeco.oil):puck(id,ex?'hard':null,true,ex,false,null,oilDeco.oil);
+  return `<span class="seat"${PV?'':` data-slot="${key}"`}${alAttr(key)}${ed?' data-drag="1"':''}>${inner}${oilDeco.chip}</span>`;}
+/* THE OIL DECORATION FOR ONE SEAT, in one body shared by the week (lSeat) and
+   the board (sbSeat), so the two surfaces can never show a man a different
+   figure. For a person it is his own day figure; for a resolved ALL / ALL AVAIL
+   puck it is the four-state summary of the people behind it plus the count chip
+   that carries the mixed case. */
+export function oilSeatDeco(di:any,id:any,key:any,itemOf?:string):{oil:any;chip:string}{
+  /* WHICH EVENT this seat belongs to — hoisted, because since O-1 the ordinary
+     person's bar needs it too: the figure is his day, but it is only shown on
+     the events that counted towards it. `itemOf` is for the one puck that has no
+     seat address to resolve — a claim on the inputs strip, which knows its own
+     item directly. */
+  const item=itemOf!=null?itemOf:oilItemOfKey(di,key);
+  if(isSpecial(id)){
+    const sum=oilSentinelSummary(di,item);
+    if(!sum)return {oil:null,chip:''};
+    const some=sum.bar==null&&sum.earn>0;
+    const txt=some?`${sum.earn} of ${sum.n} earn`:String(sum.n);
+    const ttl=some?'Some of these men earn OIL and some do not — tap to see each one'
+      :sum.bar?`All ${sum.n} earn ${sum.bar==='FO'?'a full day':'half a day'} — tap to see each one`
+      :`None of these ${sum.n} earn OIL today — tap to see each one`;
+    return {oil:sum.bar?{bar:sum.bar}:null,
+      chip:`<span class="oilcount${some?' some':''}" data-oilsent="${esc(item)}" data-oilday="${+di}" title="${esc(ttl)}">${txt}</span>`};
+  }
+  return {oil:oilBarOf(di,id,item),chip:''};
+}
 /* the people cell itself — a drop target in edit mode (data-fill) */
 /* the extra bodies dropped onto a row, after its own seats */
 export function moreSeats(di:any,base:any,ed:any){
@@ -726,6 +822,19 @@ const soloTrace=(di:any,pf:any)=>{
   const t=dayTraceHTML(di,pf);
   return t?`<div class="dwbox open"><div class="dwlist solo">${t}</div></div>`:'';
 };
+/* the year whose leave war period is missing, for the one check that offers to
+   create it — '' for every other check, for a member, and whenever a period
+   already covers the day. Asked of the hook, so the button and the sentence
+   beside it cannot ever name different years. */
+/* EXPORTED because the board's side panel draws this same check (boardWarnHTML
+   in ui/board.ts) and carried only the mute ✕ — so on the one surface where a
+   scheduler actually works the day and publishes it, the app named what was
+   missing and offered no way out (walk find, 22 Sep 26, on Sat 6 Feb 28). One
+   body, so the button and the sentence beside it can never name different
+   years, and only this check ever grows an action. */
+export function mkPeriod(w:any,di:any){
+  return w&&w.code==='OIL_NO_PERIOD'&&canEditSched()?HOOKS.oilNoPeriod(+di):'';
+}
 export function dayWarnHTML(di:any){
   const all=(WARN.byDay[di]&&WARN.byDay[di].warns)||[];
   /* When a puck is clicked the box narrows to that person's issues on this day
@@ -796,6 +905,13 @@ export function dayWarnHTML(di:any){
         +`<span class="wbar"></span><span${ed?' class="wtx"':''}><span class="wcode">${esc(wlbl(WCODE[w.code]||w.code))}</span>`
         +`<b>${esc(names)}</b>${names?' — ':''}${esc(w.msg||'')}${sigNew(w)}</span>`
         +(ed?`<button class="witem-mute" data-woff="${di}.${ix}" title="${muted?'Show this check again':'Hide this check — it comes back if the situation changes'}">${muted?'↺':'✕'}</button>`:'')
+        /* THE WAY OUT, BESIDE THE REASON (owner's ruling D19, 22 Sep 26 —
+           "indicate that the leave war period doesn't exist, create it"). Only
+           this one check carries an action, and only for a scheduler: saying
+           what is missing and leaving him to find the Leave War himself is half
+           an answer. The year is read from the SAME hook the warning was
+           written from, never parsed back out of its sentence. */
+        +(mkPeriod(w,di)?`<button class="witem-act" data-mkperiod="${esc(mkPeriod(w,di))}" title="Creates the ${esc(mkPeriod(w,di))} leave war period in draft and takes you to the Leave War to set its bidding window">Create the ${esc(mkPeriod(w,di))} period</button>`:'')
         +`</div>`;
     };
     /* an OFFICIAL-only warning (it clears once the day is signed): struck through,
@@ -919,7 +1035,7 @@ export function flagTag(o:any){return o&&o.flag?'<span class="flagtag" title="Fl
    mark follows); plRmk / the peek remarks spans are the callers. '' when unset,
    so the seed week's markup (and the view-week reference compare) is
    byte-identical. */
-export function fyiTag(o:any){return o&&o.info?'<span class="fyitag" title="Info only — not checked against the rules">ⓘ</span>':'';}
+export function fyiTag(o:any){return o&&o.info?'<span class="fyitag" title="Info only — not checked against the rules, and earns no OIL">ⓘ</span>':'';}
 /* THE MAIN/SPARE BADGE ON A STANDALONE LINE (owner, 24 Aug 26 — "for SC, can
    I have the option to change the line to SPARE from MAIN, vice versa. Either
    a button that goes into remarks. Rather than a default main or spare faded
@@ -1389,7 +1505,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
             return hit?((hit.code==='SC_QUAL'||hit.code==='QUAL')?'Q':'C'):null; };
           const sv=(id:any)=>chk?sev(di,id):(own(id)?'hard':null), cp=(id:any)=>chk?chip(di,id):own(id), dh=(id:any)=>chk?dsh(di,id):false,
                 tr=(id:any)=>chk?traceHit(di,id):null;
-          h+=`<div class="acrow${ai?'':' r1'}${acx}" style="--gr:${ai+1}"><span class="pucks">${slotCell(a.p,sv(a.p),key+'.p','FCP',ed,cp(a.p),dh(a.p),tr(a.p))}${slotCell(a.w,sv(a.w),key+'.w','RCP',ed,cp(a.w),dh(a.w),tr(a.w))}</span></div>
+          h+=`<div class="acrow${ai?'':' r1'}${acx}" style="--gr:${ai+1}"><span class="pucks">${slotCell(a.p,sv(a.p),key+'.p','FCP',ed,cp(a.p),dh(a.p),tr(a.p),di)}${slotCell(a.w,sv(a.w),key+'.w','RCP',ed,cp(a.w),dh(a.w),tr(a.w),di)}</span></div>
               <div class="rmkcell${ai?'':' r1'}${acx}${rmkE}" style="--gr:${ai+1}"${alAttr(`st:${key}`)}>${cxTag(a)}${flagTag(a)}${sa?saRoleHTML(key,a,ed):''}${ted(`fr:${key}`,a.rmks,ed,'ntx',null,ed?'Remarks':null)}${sa?'':stores}</div>`;
         });
         /* AREA strip: full-width row under this formation's aircraft. Rendered whenever
@@ -1554,7 +1670,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
            SAME relink commitInputEdit already does — never a second write path. */
         const seatable=!acc&&ed;
         const pk=PEOPLE[inp.person]
-          ? `<span class="seat"${seatable?` data-inpseat="${esc(inpId(inp))}"`:''}>${puck(inp.person,sev(di,inp.person),true,chip(di,inp.person))}</span>`
+          ? `<span class="seat"${seatable?` data-inpseat="${esc(inpId(inp))}"`:''}>${puck(inp.person,sev(di,inp.person),true,chip(di,inp.person),false,null,oilSeatDeco(di,inp.person,'',inputItemKey(inpId(inp))).oil)}</span>`
           : `<span class="itxt">${esc(inp.person)}</span>`;
         /* the input's own free text now reads in the RMKS column, so the NAME column
            carries the type and every block lines up on the same five columns */

@@ -17,7 +17,8 @@
 // The derived passes are reconciliation, not queues: compute the desired state,
 // diff, write only the difference; a SYNCING flag guards re-entrancy.
 
-import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, oilAsks, withRemarksTail, inputCoversDate, nowStamp } from '../engine/inputs'
+import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, withRemarksTail, inputCoversDate, nowStamp } from '../engine/inputs'
+import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { ME, SESSION } from '../state/auth'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (the cross-seam roster
@@ -27,6 +28,7 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { SCHED, dayApproved, dayCurVer, dayCurVerIn, daySnapIn, daySnapOf, amFormatOf } from '../engine/publish'
 import { blindDesks, dayOilBlind, dayOilWork, inputOilAmt, envMin, uniformOil, oilWorkWhy, type OilWork } from '../engine/oil'
+import { oilEarnedWork, type OilEvidence } from '../engine/oilev'
 import { stashKeys, stashGet, isPreservedWeek } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
@@ -61,6 +63,7 @@ import {
   getVersion,
   setRefusalHook,
   clearRaptorCell,
+  createWar,
   figureCtxOf,
   getState,
   ingestDutyCredit,
@@ -180,6 +183,43 @@ export function installAbsenceDoor(): void {
     const iso = labelToISO(DATES[di])
     return !!iso && isNonWorkingISO(iso)
   }
+  /* the other two facts the OIL evidence block needs from out here: the day's
+     real date, and who an ALL / ALL AVAIL puck stands for ([ALL-AVAIL-REDEF]).
+     Same seam, same reason — the engine cannot ask a war anything. */
+  HOOKS.oilDayISO = (di: number) => labelToISO(DATES[di]) || ''
+  HOOKS.oilSentinel = (iso: string, win: [number, number], day: any) => availableFor(iso, win, day)
+  /* WHICH YEAR'S PERIOD IS MISSING (owner's ruling D19, 22 Sep 26). A weekend
+     COUNTS as a day that earns whether or not a war holds it — that is the
+     calendar, and the predicate above says so. But the credit can only be
+     written into a war that DOES hold the date (`creditFrom`'s own first
+     line), so a day outside every period promised a full day of OIL that
+     nobody could ever be paid, and said nothing about it. The year is the
+     war's fact, not the engine's, so it is handed over already named. */
+  HOOKS.oilNoPeriod = (di: number) => {
+    const iso = labelToISO(DATES[di])
+    if (!iso || !isNonWorkingISO(iso)) return ''
+    return warHolding(getState().wars, iso) ? '' : iso.slice(0, 4)
+  }
+}
+
+/** CREATE THE MISSING PERIOD, from the schedule — the way out the day offers
+ *  beside the reason (owner's ruling D19, 22 Sep 26: "indicate that the leave
+ *  war period doesn't exist, create it").
+ *
+ *  A whole calendar year, named for it, and left in DRAFT: a period carries
+ *  bidding dates and a stage, and opening it for bidding is the admin's own
+ *  act taken when the schedule firms up — so it is never made open from a
+ *  schedule screen. The scheduler is handed to the Leave War afterwards to set
+ *  the window, which is his half of the job.
+ *
+ *  Refusals come straight back from the store, which is where they belong: a
+ *  member gets 'forbidden', and a year another war already reaches gets
+ *  'overlap' rather than a second war over the same dates — a date in two wars
+ *  would let one man hold leave on it twice. */
+export function createOilPeriodFor(year: string): string {
+  const y = String(year || '').trim()
+  if (!/^\d{4}$/.test(y)) return 'backwards'
+  return createWar(y, `${y}-01-01`, `${y}-12-31`)
 }
 /** Re-read the Inputs into the war now and repaint — what a Raptor notify
  *  does in the app; tests that push INPUTS directly call it. */
@@ -661,15 +701,45 @@ export function oilPendingFor(personId: any): { iid: string; iso: string }[] {
   return out
 }
 
-/* Everyone an ALL / ALL AVAIL puck stands for on a non-working day's event
-   (owner, 28 Aug 26 — "it will count everyone who is available for that
-   event"): AIRCREW MINUS SANS, the owner's pick — no ground crew Personnel,
-   no SANS aircrew, never a sentinel or an archived body — minus anyone an
-   away-making input (leave, medical, OD — the palette's own isAway) takes
-   out of the event's window. The war grid needs no separate read: an
-   approved war-side leave exists as an outbound-minted input too, so INPUTS
-   is the one absence record this consults. */
-function availableFor(iso: string, win: [number, number]): string[] {
+/* WHO AN ALL / ALL AVAIL PUCK STANDS FOR ([ALL-AVAIL-REDEF], owner 21 Sep 26 —
+   "ALL Avail and ALL pucks should not consist of ground crew by default. only
+   SANS that are planned on the programmed on that day with us should be
+   included. Like if they fly, then they should be counted as part of all
+   avail/all. people on ATT B only should still be included. Those on Training,
+   Course, Meeting, Appointment, Duty, Personal, Other, planned for anything on
+   the schedule that conflicts in timing with the rest of the schedule is not
+   part of All avail and ALL").
+
+   ONE answer to "is this man available", which is the point: the board and the
+   crew picker already knew who was busy on the programme (engine/avail.ts) and
+   this expansion ignored the schedule entirely — two notions of available living
+   in one app. It now asks the schedule's own body, on the day blob it is
+   measuring, so a frozen snapshot resolves against the day it was issued with.
+
+   The rule, in order:
+   - never a sentinel, an archived body or ground-crew Personnel (unchanged);
+   - a SANS man ONLY when he is planned on OUR programme that day — named
+     anywhere on it (`dayEngaged`). He is otherwise another squadron's;
+   - not posted in, or posted out, drops him (`inSquadron`, unchanged);
+   - an away-making input — all leave, medical, overseas duty — that overlaps
+     the event's window drops him, EXCEPT **ATT B**, the one type in the app
+     that says "no flying, may still work" (`canWork`);
+   - a COMMITMENT that overlaps the window drops him: Training, CSE, Meeting,
+     Fly with, Personal, Appointment, Duty, Other. A commitment the scheduler
+     took off the programme (`acc === 'r'`) is dormant and drops nothing;
+   - anything he is NAMED for on the day's own schedule that overlaps the window
+     drops him (`personBusy` — the same occupancy the validator and the picker
+     read).
+
+   A SENTINEL NEVER BLOCKS ANOTHER SENTINEL (ruled by the build, not the owner —
+   raise it if reopened): only NAMED people count as "planned for something", so
+   two overlapping ALL AVAIL rows cannot each empty the other. `personBusy`
+   gives this for free — it matches a person by id, and a sentinel row names no
+   one.
+
+   The war grid needs no separate read: an approved war-side leave exists as an
+   Input too, so INPUTS is the one absence record this consults. */
+export function availableFor(iso: string, win: [number, number], day?: any): string[] {
   const out: string[] = []
   const isoOrd = +iso.replace(/-/g, '')
   /* the Leave War body, for the posting window (bug pass, 28 Aug 26): a
@@ -678,21 +748,43 @@ function availableFor(iso: string, win: [number, number]): string[] {
      mint a credit the matrix hides behind its not-yet-arrived blank. The
      same inSquadron read the manning counts make. */
   const lwById = new Map(getState().people.map(p => [p.id, p]))
+  /* computed ONCE for the whole walk, not per person: dayEngaged is a full pass
+     over the day, and this loop runs sixty times per sentinel window. */
+  const engaged = day ? dayEngaged(day) : null
+  const covers = (inp: any) => {
+    const a = dateOrd(inp.date, inp.yr)
+    if (a == null) return false
+    const b = inp.endDate ? dateOrd(inp.endDate, inp.yr) ?? a : a
+    return isoOrd >= a && isoOrd <= b
+  }
+  const hits = (inp: any) => { const w = inpWin(inp); return !!w && w[0] < win[1] && win[0] < w[1] }
   for (const id of Object.keys(PEOPLE)) {
     const p: any = (PEOPLE as any)[id]
-    if (!p || p.special || p.archived || p.pers || p.san) continue
+    if (!p || p.special || p.archived || p.pers) continue
+    /* SANS are another squadron's men until they are on our programme for the
+       day. With no day blob to read (a caller that cannot supply one) they stay
+       out, which is the pre-[ALL-AVAIL-REDEF] answer — fail closed. */
+    if (p.san && !(engaged && engaged.has(id))) continue
     const lw = lwById.get(id)
     if (lw && !inSquadron(lw, iso)) continue
-    const away = INPUTS.some((inp: any) => {
-      if (inp.person !== id || !isAway(inp)) return false
-      const a = dateOrd(inp.date, inp.yr)
-      if (a == null) return false
-      const b = inp.endDate ? dateOrd(inp.endDate, inp.yr) ?? a : a
-      if (isoOrd < a || isoOrd > b) return false
-      const w = inpWin(inp)
-      return !!w && w[0] < win[1] && win[0] < w[1]
+    const blocked = INPUTS.some((inp: any) => {
+      /* A REMOVED REQUEST IS SILENT EVERYWHERE (Astra, 21 Sep 26). The dormant
+         test used to sit on the `commit` branch only, so a Training or Meeting
+         the scheduler had turned down correctly stopped speaking — while a
+         LEAVE, MEDICAL or OVERSEAS DUTY he had turned down still kept its man
+         out of ALL AVAIL. He was then missing from the membership frozen into
+         the issued day and earned nothing, with nothing on screen to say why.
+         `inputDormant` has always defined every removed input as silent; this
+         is the one reader that applied it to half the types. */
+      if (inp.person !== id || inp.acc === 'r') return false
+      const away = isAway(inp) && !canWork(inp.type)
+      const commit = isPersonal(inp.type)
+      if (!away && !commit) return false
+      return covers(inp) && hits(inp)
     })
-    if (!away) out.push(id)
+    if (blocked) continue
+    if (engaged && personBusy(day, id).some((w: any) => w[0] < win[1] && win[0] < w[1])) continue
+    out.push(id)
   }
   return out
 }
@@ -744,12 +836,15 @@ function stashOilWeek(v: string): { days: any[], sc: any } | null {
  *    moves nothing until it is published too (the AL/reissue paths), which
  *    is also where reverse-and-replace naturally lives: the snapshot
  *    changes, the diff below follows it;
- *  - ACKNOWLEDGED duty-&-commitments inputs (row.oil — the ask-flow's
- *    answers). Publication does not gate these: the owner's acknowledgment
- *    is their gate. An answer only counts while its day is still covered by
- *    the row's dates AND still reads non-working — a moved input or a
- *    revoked PH leaves the old yes inert, and the reverse sweep collects
- *    the cell. Nothing acknowledged = nothing credited, structurally.
+ *  - ACKNOWLEDGED duty-&-commitments claims, which since [OIL-AUTO-REMOVE]
+ *    (owner, 21 Sep 26 — "we make it a point to publish everyday so that
+ *    silently earn nothing wont happen") ALSO WAIT FOR PUBLICATION: the claim
+ *    rides the day's frozen OIL evidence block, so an answer revised after the
+ *    day went out moves no money until the day is published again. Before this
+ *    an answer moved the credit at once and produced no amendment, and an
+ *    overseas-duty answer could never produce one at all — OD has no row.
+ *    A day that stops reading non-working still stops crediting (checked live
+ *    below), and the reverse sweep collects the cell.
  *
  *  The schedule half reads EVERY week, not just the loaded one (owner,
  *  29 Aug 26 — "pull the full day schedule regardless of what's on
@@ -782,10 +877,58 @@ export interface DesiredOil {
    issued it: the issued evidence is unavailable, so the standing credit is the
    best truth we have (P2-IMPL-01). Never substitute draft content for missing
    issued content, and never reverse-collect a protected date. */
+/* WHAT ONE ISSUED DAY EARNS — the only door money comes through since
+   [OIL-AUTO-REMOVE] (§7.1). The day's own frozen OIL EVIDENCE BLOCK answers
+   everything: the scheduler's decisions, the duty-and-commitments claims
+   projected at publication, and the people each ALL / ALL AVAIL puck stood for.
+   Nothing live is consulted, so revising an answer or filing a leave cannot
+   move an already-issued credit — that now costs a publication, like every
+   other change to an issued day.
+
+   A snapshot carrying NO block was issued by a build that did not store one. Its
+   evidence cannot be reconstructed (rebuilding it from today's unapproved inputs
+   is exactly what §7.5 forbids), so the date is PROTECTED rather than guessed
+   at: the landed credit stands and nothing new is derived — the same rule the
+   pass already applies to an unresolvable snapshot. Returns false to say so. */
+function creditFrom(day: any, iso: string, add: (p: string, iso: string, sp: OilWork[], via?: 'schedule' | 'input') => void): boolean {
+  const ev: OilEvidence | undefined = day && day.oilev
+  /* the block's own date must be the date we are crediting. The evidence carries
+     its ISO precisely so this binding can be checked, and a block that does not
+     match the date it was found under is a misfiled document, not a licence to
+     pay against it — so the date is PROTECTED, exactly like a missing block. */
+  if (!ev || ev.iso !== iso) return false
+  for (const [person, sp] of Object.entries(oilEarnedWork(day, ev))) {
+    /* the two halves POOL into one envelope per person per date, and the credit
+       reads as the SCHEDULE's when the schedule earned any of it — that is the
+       stronger evidence, and it is what the reader would go and look at (owner,
+       21 Sep 26). */
+    add(person, iso, sp, sp.some(w => w.via !== 'input') ? 'schedule' : 'input')
+  }
+  return true
+}
+
 function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: Set<string> } {
-  const { people, wars } = getState()
   const protectedDates = new Set<string>()
-  const known = new Set(people.map(p => p.id))
+  /* HIDING A MAN MUST NOT DESTROY HIS MONEY (owner, 21 Sep 26 — "There's no way
+     to credit OIL to SANs even when they are hidden?"), and neither must
+     ARCHIVING him (Astra, 21 Sep 26, confirmed by the owner as R-2).
+     This guard used to consult the LIVE Leave War roster, which made the roster
+     a second money authority sitting behind `creditFrom`: archive a man on the
+     Monday and the reverse sweep deleted the day in lieu an ISSUED Saturday had
+     already promised him — no amendment, no record, no way to see it happen.
+     Who earned was decided when the day was published and frozen in its
+     evidence; nothing the roster does afterwards may reopen that. A credit lives
+     on the person and the date, not on a grid row, so it lands and waits: turn
+     "Show SANS" on, or bring an archived man back, and his row arrives with
+     everything he earned already in it.
+     What the guard rejects now is the only thing that was never a person: a
+     SENTINEL. A named GROUND-CREW body is deliberately creditable — they ride
+     the Leave War roster (owner, 18 Aug 26) and a scheduler who names one on a
+     weekend row means it (O-2, "leave it", 21 Sep 26). */
+  const creditable = (id: string) => {
+    const p: any = (PEOPLE as any)[id]
+    return !!(p && !p.special)
+  }
   /* person|iso -> that day's work spans; their ENVELOPE faces the threshold */
   const pool = new Map<string, OilWork[]>()
   /* which of those days the PUBLISHED SCHEDULE earned, as opposed to a duty
@@ -794,10 +937,11 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
      stronger evidence, and it is what the reader would go and look at. */
   const fromSchedule = new Set<string>()
   const add = (person: string, iso: string, spans: OilWork[], via: 'schedule' | 'input' = 'schedule') => {
-    /* The same unknown-person guard both leave directions carry: a row
-       naming someone the roster does not hold (ground crew, a sentinel)
-       must not become a grid row no matrix draws. */
-    if (!known.has(person) || !spans.length) return
+    /* The same unknown-person guard both leave directions carry: a row naming
+       someone the war has no business crediting — ground crew, a sentinel —
+       must not become a grid row no matrix draws. A SANS man the war is merely
+       HIDING is not that case (see `creditable` above). */
+    if (!creditable(person) || !spans.length) return
     const k = `${person}|${iso}`
     const arr = pool.get(k) ?? []
     arr.push(...spans)
@@ -813,15 +957,25 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
   const liveUnsupported = amFormatOf(SCHED, CURWEEK) === 'unsupported' || isPreservedWeek(CURWEEK)
   for (let di = 0; di < DAYS.length; di++) {
     const iso = labelToISO(DATES[di])
-    if (!iso || !warHolding(wars, iso) || !isNonWorkingISO(iso)) continue
+    /* ONLY THE ISSUED SCHEDULE PAYS, BOTH DIRECTIONS (owner, 21 Sep 26 — R-1).
+       This gate used to read the war's calendar LIVE, before the issued block
+       was ever opened, and that made the two directions disagree: whether the
+       day EARNS is frozen into the evidence, but whether it is a non-working day
+       at all was answered by today's calendar. So taking a public holiday off a
+       published day swept everybody's day in lieu on the next pass — silently,
+       with no amendment and nothing on screen — while declaring one paid nobody.
+       Now only an unreadable date skips before the snapshot is resolved, and the
+       frozen `ev.earns` decides in both directions. A day that starts earning
+       after it went out waits for a republication, and validateCore says so on
+       the day (OIL_STALE_DAY). */
+    if (!iso) continue
     if (liveUnsupported) { protectedDates.add(iso); continue }
     if (!dayApproved(di)) continue
     /* only ever credit from the RESOLVED ISSUED snapshot — never the live draft.
        No snapshot (an orphaned approved day) → protect it (P2-IMPL-01). */
     const snap = daySnapOf(di, dayCurVer(di))
     if (!snap || !snap.d) { protectedDates.add(iso); continue }
-    const spans = dayOilWork(snap.d, { expandAll: win => availableFor(iso, win) })
-    for (const [person, sp] of Object.entries(spans)) add(person, iso, sp)
+    if (!creditFrom(snap.d, iso, add)) protectedDates.add(iso)
   }
   /* every OTHER week, out of its stash entry — the loaded week is skipped
      (its stash is at best a stale copy of the live model read above) and a
@@ -839,7 +993,9 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
     const stashUnsupported = !wk || amFormatOf(wk.sc, String(v)) === 'unsupported'
     for (let di = 0; di < 7; di++) {
       const iso = weekDayISO(String(v), di)
-      if (!iso || !warHolding(wars, iso) || !isNonWorkingISO(iso)) continue
+      /* the same rule as the loaded week above (R-1): the frozen block decides,
+         never today's calendar. */
+      if (!iso) continue
       if (stashUnsupported) { protectedDates.add(iso); continue }
       if (!(wk!.sc.dayOK || {})[di]) continue
       /* the stash's OWN week key (v = its Monday, dd/mm/yyyy) is the trusted
@@ -849,32 +1005,7 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
          protect the date, never fall back to its stashed draft (P2-IMPL-01). */
       const snap = daySnapIn(wk!.sc, di, dayCurVerIn(wk!.sc, di, String(v)), String(v))
       if (!snap || !snap.d) { protectedDates.add(iso); continue }
-      const spans = dayOilWork(snap.d, { expandAll: win => availableFor(iso, win) })
-      for (const [person, sp] of Object.entries(spans)) add(person, iso, sp)
-    }
-  }
-  for (const row of INPUTS) {
-    if (!row.oil || !oilAsks(row.type) || row.acc === 'r') continue
-    const a = dateOrd(row.date, row.yr)
-    if (a == null) continue
-    const b = row.endDate ? dateOrd(row.endDate, row.yr) ?? a : a
-    /* the acknowledged window, one span per answered day: all-day is the
-       whole day, a timed row its rolled length — the same reading the ask's
-       own suggestion (inputOilAmt) priced */
-    const win: [number, number] = row.allday || row.s == null || row.e == null
-      ? [0, 1439]
-      : [row.s, row.e < row.s ? row.e + 1440 : row.e]
-    if (win[1] <= win[0]) continue
-    for (const [iso, amt] of Object.entries(row.oil as Record<string, number>)) {
-      if (!(typeof amt === 'number' && amt > 0)) continue
-      const o = +String(iso).replace(/-/g, '')
-      if (!(o >= a && o <= b)) continue                    // moved dates → stale yes is inert
-      if (protectedDates.has(iso)) continue                // hands off a protected date entirely (P2-IMPL-01)
-      if (!warHolding(wars, iso)) continue
-      if (!isNonWorkingISO(iso)) continue                  // a day that stopped being PH stops crediting
-      /* the reason is the input's own type name (Training, CSE, Duty…) —
-         the word the owner acknowledged, which is what the tracker shows */
-      add(row.person, iso, [{ s: win[0], e: win[1], src: String(row.type || 'Duty').trim() as OilWork['src'] }], 'input')
+      if (!creditFrom(snap.d, iso, add)) protectedDates.add(iso)
     }
   }
   const out = new Map<string, DesiredOil>()
@@ -964,10 +1095,26 @@ function oilBlindLine(iso: string, day: any, spans: Record<string, OilWork[]>): 
 
 export function publishFlagsBids(di: number): void {
   const iso = labelToISO(DATES[di])
-  if (!iso || !warHolding(rawState().wars, iso) || !isNonWorkingISO(iso) || !dayApproved(di)) return
+  /* THE `warHolding` TEST USED TO BE HERE, AND IT MADE THE BRANCH BELOW DEAD
+     (Codex M8, 21 Sep 26). Returning on "no war" several lines before the code
+     that handles a day no war covers meant that code could never run, so any
+     repair written against it would have shipped nothing. The war is resolved
+     further down, where it is actually needed. */
+  if (!iso || !isNonWorkingISO(iso) || !dayApproved(di)) return
   const snap = daySnapOf(di, dayCurVer(di))
   if (!snap || !snap.d) return
-  const spans = dayOilWork(snap.d, { expandAll: win => availableFor(iso, win) })
+  /* THE WARNING MUST READ THE SAME BLOCK THE MONEY DOES (Fable, 21 Sep 26 — the
+     one caller left resolving a sentinel its own way). It used to walk the raw
+     schedule and expand ALL AVAIL through the LIVE roster, knowing nothing about
+     the day blanket, the event switches or the per-man decisions. So it could
+     tell a scheduler that a man's leave bid now sat on published work when he
+     had been taken off that event and no credit would ever land — sending him
+     looking for a clash that did not exist — and its "earned nobody" sentence
+     could be wrong under a blanket, where everyone has hours and nobody earns.
+     A block-less snapshot is PROTECTED, so there is nothing to warn about. */
+  const ev: OilEvidence | undefined = snap.d.oilev
+  if (!ev) return
+  const spans = oilEarnedWork(snap.d, ev)
   /* ONE MESSAGE, BOTH FACTS (Astra, 21 Sep 26). The strip at the foot of the
      screen is a single element whose text is REPLACED, so speaking twice in the
      same breath showed only the second — and the one that got swallowed was the
@@ -980,7 +1127,15 @@ export function publishFlagsBids(di: number): void {
   /* amber, like the Inputs page's twin (N18, 21 Sep 26): this is a warning,
      not the face the app says "Saved" in. Both exits, because the day with
      no war is exactly the one a reader is least expecting a clash on. */
-  if (!war) { if (lines.length) HOOKS.toast(lines.join(' · '), 'warn'); return }
+  if (!war) {
+    /* AND NOW IT HAS SOMETHING TO SAY (owner's ruling D19, 22 Sep 26).
+       Publishing is exactly the moment the scheduler expects the money to move,
+       so it is the moment to tell him it cannot: no period holds this date, so
+       there is nowhere for the credit to be written. The day's own warning list
+       says the same thing and carries the way out. */
+    lines.push(`there is no leave war period for ${iso.slice(0, 4)}, so no OIL can be paid for this day — create the period on the Leave War`)
+    HOOKS.toast(lines.join(' · '), 'warn'); return
+  }
   const said: string[] = []
   for (const [person, sp] of Object.entries(spans)) {
     const wins = workSpans(sp)

@@ -1,0 +1,821 @@
+{
+ "scIndex": 0,
+ "scP": "pump",
+ "scW": "glass",
+ "sc360": {
+  "mode": [
+   {
+    "key": "pump",
+    "who": "Piston",
+    "id": "pump",
+    "text": "Piston HO",
+    "title": "Piston earns half a day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "glass",
+    "who": "Basher",
+    "id": "glass",
+    "text": "Basher HO",
+    "title": "Basher earns half a day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   }
+  ],
+  "items": [
+   {
+    "key": "r:rmubd0muvbw9i34",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvbw9i34",
+    "text": "Piston HO",
+    "title": "Piston earns half a day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "r:rmubd0muvbw9i34",
+    "text": "Basher HO",
+    "title": "Basher earns half a day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "r:rmubd0muvbw9i34",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvbw9i34",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvbw9i34",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvk1ho6t",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvk1ho6t",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvk1ho6t",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvk1ho6t",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubcl78vzh8qaq",
+    "text": "SDO",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "ain oilitem on"
+   },
+   {
+    "key": "r:rmubcl78vzh8qaq",
+    "text": "Dash FO",
+    "title": "Dash earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   }
+  ],
+  "bar": [
+   {
+    "who": "Piston",
+    "id": "pump",
+    "bar": "ho",
+    "cls": "puck sm oilbar oilbar-ho",
+    "title": "Piston · IP · instructor pilot · SXO · earns half a day of OIL",
+    "row": "⠿ Piston IP Basher IW MAIN CX ■ + ✕"
+   },
+   {
+    "who": "Basher",
+    "id": "glass",
+    "bar": "ho",
+    "cls": "puck r sm oilbar oilbar-ho",
+    "title": "Basher · IW · instructor WSO · SXO · earns half a day of OIL",
+    "row": "⠿ Piston IP Basher IW MAIN CX ■ + ✕"
+   }
+  ]
+ },
+ "sc361": {
+  "mode": [
+   {
+    "key": "pump",
+    "who": "Piston",
+    "id": "pump",
+    "text": "Piston FO",
+    "title": "Piston earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "glass",
+    "who": "Basher",
+    "id": "glass",
+    "text": "Basher FO",
+    "title": "Basher earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   }
+  ],
+  "items": [
+   {
+    "key": "r:rmubd0muvbw9i34",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvbw9i34",
+    "text": "Piston FO",
+    "title": "Piston earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "r:rmubd0muvbw9i34",
+    "text": "Basher FO",
+    "title": "Basher earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "r:rmubd0muvbw9i34",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvbw9i34",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvbw9i34",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvk1ho6t",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvk1ho6t",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvk1ho6t",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvk1ho6t",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubcl78vzh8qaq",
+    "text": "SDO",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "ain oilitem on"
+   },
+   {
+    "key": "r:rmubcl78vzh8qaq",
+    "text": "Dash FO",
+    "title": "Dash earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   }
+  ],
+  "bar": [
+   {
+    "who": "Piston",
+    "id": "pump",
+    "bar": "fo",
+    "cls": "puck sm oilbar oilbar-fo",
+    "title": "Piston · IP · instructor pilot · SXO · earns a full day of OIL",
+    "row": "⠿ Piston IP Basher IW MAIN CX ■ + ✕"
+   },
+   {
+    "who": "Basher",
+    "id": "glass",
+    "bar": "fo",
+    "cls": "puck r sm oilbar oilbar-fo",
+    "title": "Basher · IW · instructor WSO · SXO · earns a full day of OIL",
+    "row": "⠿ Piston IP Basher IW MAIN CX ■ + ✕"
+   }
+  ]
+ },
+ "flyIndex": 1,
+ "nightP": "razer",
+ "nightW": "sufa",
+ "night": {
+  "mode": [
+   {
+    "key": "razer",
+    "who": "Ridge",
+    "id": "razer",
+    "text": "Ridge FO",
+    "title": "Ridge earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "sufa",
+    "who": "Grit",
+    "id": "sufa",
+    "text": "Grit FO",
+    "title": "Grit earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   }
+  ],
+  "items": [
+   {
+    "key": "r:rmubd0muvbw9i34",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvbw9i34",
+    "text": "Piston FO",
+    "title": "Piston earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "r:rmubd0muvbw9i34",
+    "text": "Basher FO",
+    "title": "Basher earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "r:rmubd0muvbw9i34",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvbw9i34",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvbw9i34",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvk1ho6t",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvk1ho6t",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvk1ho6t",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvk1ho6t",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0tw6aobvgb",
+    "text": "NIGHTHAWK",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0tw6aobvgb",
+    "text": "Ridge FO",
+    "title": "Ridge earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "r:rmubd0tw6aobvgb",
+    "text": "Grit FO",
+    "title": "Grit earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "r:rmubcl78vzh8qaq",
+    "text": "SDO",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "ain oilitem on"
+   },
+   {
+    "key": "r:rmubcl78vzh8qaq",
+    "text": "Dash FO",
+    "title": "Dash earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   }
+  ],
+  "bar": [
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": "fo",
+    "cls": "puck sm oilbar oilbar-fo",
+    "title": "Ridge · C · ops wingman · SXO · earns a full day of OIL",
+    "row": "⠿ 20:40 Ridge C Grit C C CX ■ + ✕"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": "fo",
+    "cls": "puck r sm oilbar oilbar-fo",
+    "title": "Grit · C · ops wingman · earns a full day of OIL",
+    "row": "⠿ 20:40 Ridge C Grit C C CX ■ + ✕"
+   }
+  ]
+ },
+ "blindFill": "nact",
+ "zeroFill": "casper",
+ "blindZero": {
+  "mode": [],
+  "items": [
+   {
+    "key": "r:rmubd0muvbw9i34",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvbw9i34",
+    "text": "Piston FO",
+    "title": "Piston earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "r:rmubd0muvbw9i34",
+    "text": "Basher FO",
+    "title": "Basher earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "r:rmubd0muvbw9i34",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvbw9i34",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvbw9i34",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvk1ho6t",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvk1ho6t",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvk1ho6t",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0muvk1ho6t",
+    "text": "SC",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0tw6aobvgb",
+    "text": "NIGHTHAWK",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubd0tw6aobvgb",
+    "text": "Ridge FO",
+    "title": "Ridge earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "r:rmubd0tw6aobvgb",
+    "text": "Grit FO",
+    "title": "Grit earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "r:rmubcl78vzh8qaq",
+    "text": "SDO",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "ain oilitem on"
+   },
+   {
+    "key": "r:rmubcl78vzh8qaq",
+    "text": "Dash FO",
+    "title": "Dash earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   }
+  ],
+  "bar": [
+   {
+    "who": "Warden",
+    "id": "nact",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Warden · IP · instructor pilot · SXO",
+    "row": "⠿ Warden IP + ADD CX■✕"
+   },
+   {
+    "who": "Outlaw",
+    "id": "casper",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Outlaw · C · ops wingman",
+    "row": "⠿ Outlaw C + ADD CX■✕"
+   },
+   {
+    "who": "Warden",
+    "id": "nact",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Warden · IP · instructor pilot · SXO",
+    "row": ""
+   },
+   {
+    "who": "Warden",
+    "id": "nact",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Warden · IP · instructor pilot · SXO",
+    "row": ""
+   },
+   {
+    "who": "Outlaw",
+    "id": "casper",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Outlaw · C · ops wingman",
+    "row": ""
+   }
+  ]
+ },
+ "warnBefore": {
+  "head": "⚠ 2 issues",
+  "lines": [
+   "· 1 warning ·",
+   "tap to review",
+   "BLIND DESK and ZERO DESK have no times — nobody on them earns OIL for this day",
+   "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out"
+  ]
+ },
+ "allItems": [
+  "SC :: Earns OIL — tap to stop this item earning",
+  "Piston FO :: Piston earns a full day — tap to take him off this event",
+  "Basher FO :: Basher earns a full day — tap to take him off this event",
+  "SC :: Earns OIL — tap to stop this item earning",
+  "SC :: Earns OIL — tap to stop this item earning",
+  "SC :: Earns OIL — tap to stop this item earning",
+  "SC :: Earns OIL — tap to stop this item earning",
+  "SC :: Earns OIL — tap to stop this item earning",
+  "SC :: Earns OIL — tap to stop this item earning",
+  "SC :: Earns OIL — tap to stop this item earning",
+  "NIGHTHAWK :: Earns OIL — tap to stop this item earning",
+  "Ridge FO :: Ridge earns a full day — tap to take him off this event",
+  "Grit FO :: Grit earns a full day — tap to take him off this event",
+  "SDO :: Earns OIL — tap to stop this item earning",
+  "Dash FO :: Dash earns a full day — tap to take him off this event"
+ ],
+ "allPeople": [
+  "Piston :: Piston FO :: Piston earns a full day — tap to take him off this event",
+  "Basher :: Basher FO :: Basher earns a full day — tap to take him off this event",
+  "Ridge :: Ridge FO :: Ridge earns a full day — tap to take him off this event",
+  "Grit :: Grit FO :: Grit earns a full day — tap to take him off this event",
+  "Dash :: Dash FO :: Dash earns a full day — tap to take him off this event"
+ ],
+ "blindHasPuck": false,
+ "zeroHasPuck": false,
+ "blindHasItem": false,
+ "zeroHasItem": false,
+ "blindPuckTitle": "Warden · IP · instructor pilot · SXO",
+ "afterBlindTap": [],
+ "blindBarAfterTap": [
+  {
+   "who": "Warden",
+   "id": "nact",
+   "bar": null,
+   "cls": "puck sm sel",
+   "title": "Warden · IP · instructor pilot · SXO",
+   "row": "BLIND DESK Warden IP"
+  }
+ ],
+ "publish": {
+  "published": true,
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "warnAfter": {
+  "head": "⚠ 1 issue",
+  "lines": [
+   "· 1 warning ·",
+   "tap to review",
+   "BLIND DESK and ZERO DESK have no times — nobody on them earns OIL for this day"
+  ]
+ },
+ "barsAfter": [
+  {
+   "who": "Piston",
+   "id": "pump",
+   "bar": "fo",
+   "cls": "puck sm oilbar oilbar-fo dim",
+   "title": "Piston · IP · instructor pilot · SXO · earns a full day of OIL",
+   "row": "⠿ Piston IP Basher IW MAIN CX ■ + ✕"
+  },
+  {
+   "who": "Basher",
+   "id": "glass",
+   "bar": "fo",
+   "cls": "puck r sm oilbar oilbar-fo dim",
+   "title": "Basher · IW · instructor WSO · SXO · earns a full day of OIL",
+   "row": "⠿ Piston IP Basher IW MAIN CX ■ + ✕"
+  },
+  {
+   "who": "Ridge",
+   "id": "razer",
+   "bar": "fo",
+   "cls": "puck sm oilbar oilbar-fo dim",
+   "title": "Ridge · C · ops wingman · SXO · earns a full day of OIL",
+   "row": "⠿ 20:40 Ridge C Grit C C CX ■ + ✕"
+  },
+  {
+   "who": "Grit",
+   "id": "sufa",
+   "bar": "fo",
+   "cls": "puck r sm oilbar oilbar-fo dim",
+   "title": "Grit · C · ops wingman · earns a full day of OIL",
+   "row": "⠿ 20:40 Ridge C Grit C C CX ■ + ✕"
+  },
+  {
+   "who": "Dash",
+   "id": "spaceman",
+   "bar": "fo",
+   "cls": "puck r sm oilbar oilbar-fo dim",
+   "title": "Dash · C · ops wingman · earns a full day of OIL",
+   "row": "⠿ Dash C + ADD CX■✕"
+  },
+  {
+   "who": "Warden",
+   "id": "nact",
+   "bar": null,
+   "cls": "puck sm sel",
+   "title": "Warden · IP · instructor pilot · SXO",
+   "row": "⠿ Warden IP + ADD CX■✕"
+  },
+  {
+   "who": "Outlaw",
+   "id": "casper",
+   "bar": null,
+   "cls": "puck sm dim",
+   "title": "Outlaw · C · ops wingman",
+   "row": "⠿ Outlaw C + ADD CX■✕"
+  },
+  {
+   "who": "Warden",
+   "id": "nact",
+   "bar": null,
+   "cls": "puck sm sel",
+   "title": "Warden · IP · instructor pilot · SXO",
+   "row": ""
+  },
+  {
+   "who": "Warden",
+   "id": "nact",
+   "bar": null,
+   "cls": "puck sm sel",
+   "title": "Warden · IP · instructor pilot · SXO",
+   "row": ""
+  },
+  {
+   "who": "Outlaw",
+   "id": "casper",
+   "bar": null,
+   "cls": "puck sm dim",
+   "title": "Outlaw · C · ops wingman",
+   "row": ""
+  },
+  {
+   "who": "Dash",
+   "id": "spaceman",
+   "bar": null,
+   "cls": "puck r sm dim",
+   "title": "Dash · C · ops wingman",
+   "row": ""
+  }
+ ],
+ "gridSun": {
+  "pump": {
+   "text": "FO*",
+   "cls": "duty weekend act",
+   "mark": null
+  },
+  "glass": {
+   "text": "FO*",
+   "cls": "duty weekend act",
+   "mark": null
+  },
+  "razer": {
+   "text": "FO*",
+   "cls": "duty weekend act",
+   "mark": null
+  },
+  "sufa": {
+   "text": "FO*",
+   "cls": "duty weekend act",
+   "mark": null
+  },
+  "nact": {
+   "text": "",
+   "cls": "weekend act",
+   "mark": null
+  },
+  "casper": {
+   "text": "",
+   "cls": "weekend act",
+   "mark": null
+  },
+  "spaceman": {
+   "text": "FO*",
+   "cls": "duty weekend act",
+   "mark": null
+  }
+ },
+ "gridMon": {
+  "pump": {
+   "text": "",
+   "cls": " act",
+   "mark": null
+  },
+  "glass": {
+   "text": "",
+   "cls": " act",
+   "mark": null
+  },
+  "razer": {
+   "text": "",
+   "cls": " act",
+   "mark": null
+  },
+  "sufa": {
+   "text": "",
+   "cls": " act",
+   "mark": null
+  },
+  "nact": {
+   "text": "",
+   "cls": " act",
+   "mark": null
+  },
+  "casper": {
+   "text": "",
+   "cls": " act",
+   "mark": null
+  },
+  "spaceman": {
+   "text": "",
+   "cls": " act",
+   "mark": null
+  }
+ },
+ "tracker": {
+  "pump": {
+   "found": true,
+   "text": "Piston IP 1 + 1 +1 19 Jul AUTO Weekend/PH FLT 1 left",
+   "entries": [
+    {
+     "testid": "oil-entry-pump-auto:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+1 19 Jul AUTO Weekend/PH FLT 1 left",
+     "buttons": []
+    }
+   ]
+  },
+  "glass": {
+   "found": true,
+   "text": "Basher IW 1 + 1 +1 19 Jul AUTO Weekend/PH FLT 1 left",
+   "entries": [
+    {
+     "testid": "oil-entry-glass-auto:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+1 19 Jul AUTO Weekend/PH FLT 1 left",
+     "buttons": []
+    }
+   ]
+  },
+  "razer": {
+   "found": true,
+   "text": "Ridge C 1 + 1 +1 19 Jul AUTO Weekend/PH FLT 1 left",
+   "entries": [
+    {
+     "testid": "oil-entry-razer-auto:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+1 19 Jul AUTO Weekend/PH FLT 1 left",
+     "buttons": []
+    }
+   ]
+  },
+  "sufa": {
+   "found": true,
+   "text": "Grit C 1 + 1 +1 19 Jul AUTO Weekend/PH FLT 1 left",
+   "entries": [
+    {
+     "testid": "oil-entry-sufa-auto:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+1 19 Jul AUTO Weekend/PH FLT 1 left",
+     "buttons": []
+    }
+   ]
+  },
+  "nact": {
+   "found": true,
+   "text": "Warden IP 0",
+   "entries": []
+  },
+  "casper": {
+   "found": true,
+   "text": "Outlaw C -4.5 − 4.5 −4.5 carried in opening figure · not covered",
+   "entries": [
+    {
+     "testid": "oil-entry-casper-open:casper",
+     "cls": "oil-e take",
+     "text": "−4.5 carried in opening figure · not covered",
+     "buttons": []
+    }
+   ]
+  },
+  "spaceman": {
+   "found": true,
+   "text": "Dash C 3 + 3 +1 carried in opening figure 1 left +1 19 Jul AUTO Weekend/PH Duty 1 left +1 15 Aug FLT 1 left",
+   "entries": [
+    {
+     "testid": "oil-entry-spaceman-open:spaceman",
+     "cls": "oil-e credit",
+     "text": "+1 carried in opening figure 1 left",
+     "buttons": []
+    },
+    {
+     "testid": "oil-entry-spaceman-auto:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+1 19 Jul AUTO Weekend/PH Duty 1 left",
+     "buttons": []
+    },
+    {
+     "testid": "oil-entry-spaceman-award:0:2026-08-15",
+     "cls": "oil-e credit",
+     "text": "+1 15 Aug FLT 1 left",
+     "buttons": [
+      "FLT"
+     ]
+    }
+   ]
+  }
+ },
+ "errors": []
+}

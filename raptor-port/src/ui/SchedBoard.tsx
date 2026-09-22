@@ -9,6 +9,7 @@ import { SBDAY, CURPAGE, DPREV, HISTMODE, toggleHistMode, esc, restArmed, HLSET,
 import { closeHistList, setWeekCal } from './pops'
 import { CalIcon, HistIcon, HlIcon } from './icons'
 import { HlChips } from './hlchips'
+import { oilShown, oilModeOn, toggleOilMode, oilUndoBoundary } from './oilmode'
 import { wireHistBubble, hideHistBub, histBubRecheck } from './histbubble'
 import { daySnapOf, alColor, dayDiscardCount } from '../engine/publish'
 import { verSeq } from '../engine/verid'
@@ -16,7 +17,7 @@ import { isDraftVer, draftVerLabel } from '../engine/drafts'
 import { withDaySnap } from './html'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
-import { boardHTML, boardSignHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, boardTab, closeScheduler, CXT, cxCommit, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, boardDayStep, boardWeekStep, wireDayDots, wireParkedRosScroll, wireWarnSplit } from './board'
+import { boardHTML, boardSignHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, boardTab, closeScheduler, CXT, cxCommit, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, boardDayStep, boardWeekStep, wireDayDots, wireParkedRosScroll, wireWarnSplit, dayTplMenu } from './board'
 import { CXR_CFG, addCxReason, delCxReason, renameCxReason, moveCxReason, cxReasonsSave, cxReasonsReset, cxrAreStandard } from '../engine/cxreasons'
 import { canEditSched } from '../state/auth'
 import { refreshHighlights } from './highlights'
@@ -348,8 +349,52 @@ export function SchedBoard() {
               timeline (globalUndo/globalRedo), disabled + labelled from undoState()
               — so it undoes the last edit wherever it was made (scheduler or Leave
               War), which is what Undo has always meant here. */}
+          {/* TEMPLATES AND OIL EARN, ON A DESKTOP (owner, 21 Sep 26 — he circled
+              the empty stretch of this row: "its currently not that obvious at
+              the current place"). On a PHONE the same two live in the day's own
+              control bar instead (ui/oilmode.ts dayBarHTML), merged into one row
+              at the position they already had — his ask, and it keeps this bar
+              untouched, which is the August rule outright rather than measured
+              around (CLAUDE.md §the phone board is ONE window).
+              The accent TINT is his too: "since settings usually have some blue
+              to it. Make the buttons slightly stand out." Never the solid fill —
+              that is Done and Publish day, meaning "this finishes the job".
+              Templates steps aside inside the mode, where it does nothing; OIL
+              Earn stays, lit green, as the way out. Drawn only where the day can
+              earn, so five days a week this bar is byte-identical to before. */}
+          {/* WRAPPED, and that matters: these two are HIDDEN on a phone, and the
+              geometry gate counts `.sb-actions`' own children to prove every
+              control on that bar shares one line. A `display:none` sibling still
+              answers that query — width 0, top 0 — and read as a second row. The
+              wrapper is `display:contents` on a desktop (so the buttons lay out
+              in this flex row exactly as if it were not there) and `display:none`
+              on a phone, so nothing invisible is ever a child of the bar. The
+              gate's assertion is untouched; it was right. */}
+          <span className="sb-dayctl">
+          {open && HOOKS.editMode() && !oilModeOn(SBDAY) && <button className="abtn sb-daybtn" id="sbTpl" disabled={DPREV.has(SBDAY)}
+            title="Save this day, or apply a saved one"
+            onClick={e => { if (SBDAY != null) dayTplMenu(e.currentTarget as HTMLElement, SBDAY) }}><span className="bi">▤</span><span className="bl"> Templates</span></button>}
+          {open && HOOKS.editMode() && oilShown(SBDAY) && <button className={'abtn sb-daybtn sb-oilbtn' + (oilModeOn(SBDAY) ? ' on' : '')} id="sbOil"
+            aria-pressed={oilModeOn(SBDAY)} disabled={DPREV.has(SBDAY)}
+            title={oilModeOn(SBDAY) ? 'Leave OIL mode and edit the schedule again' : 'Show who earns OIL on this day, and change it'}
+            onClick={() => { if (SBDAY != null) { const on = toggleOilMode(SBDAY); HOOKS.toast(on ? 'OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning' : 'Back to editing the schedule'); notify() } }}>
+            <span className="bi">◧</span><span className="bl"> OIL Earn</span></button>}
+          </span>
+          {/* UNDO STOPS AT THE DOOR OF THE MODE — AND THIS IS THE BUTTON IT HAS
+              TO STOP (walk find, 22 Sep 26). The same guard was already on the
+              PAGE's Undo (#undoBtn, Shell.tsx) and only there, which made it
+              unreachable: the page's top bar sits BEHIND the board's own
+              sticky .sb-top whenever the board is open, and the board is the
+              only place the OIL mode exists. So the one Undo a scheduler can
+              press went straight to globalUndo, and the third press walked
+              back a ground-row change underneath a screen that says the
+              schedule cannot be changed — silently, with the mode still open.
+              Kept identical to Shell.tsx's copy on purpose: two buttons, one
+              rule. oilundo-button.test.tsx presses BOTH through the DOM. */}
           <button className="abtn hbtn" id="sbUndo" title={us.undoLabel ? `Undo — ${us.undoLabel}` : 'Undo'} disabled={!us.canUndo}
-            onClick={() => { const r = globalUndo(); if (!r.ok && r.reason) HOOKS.toast(r.reason, 'warn'); notify() }}><span className="bi">↶</span><span className="bl"> Undo</span></button>
+            onClick={() => {
+              if (oilUndoBoundary()) { HOOKS.toast('Left OIL Earn — the next undo would change the day itself', 'ok'); notify(); return }
+              const r = globalUndo(); if (!r.ok && r.reason) HOOKS.toast(r.reason, 'warn'); notify() }}><span className="bi">↶</span><span className="bl"> Undo</span></button>
           <button className="abtn hbtn" id="sbRedo" title={us.redoLabel ? `Redo — ${us.redoLabel}` : 'Redo'} disabled={!us.canRedo}
             onClick={() => { const r = globalRedo(); if (!r.ok && r.reason) HOOKS.toast(r.reason, 'warn'); notify() }}><span className="bi">↷</span><span className="bl"> Redo</span></button>
           {/* HISTORY (owner, 11 Aug 26) — a VIEW mode, so unlike Sort all and

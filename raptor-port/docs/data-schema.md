@@ -62,6 +62,35 @@ a permanent, **shared** home, rather than saving them for the first time.
 
 ## World 1 — the scheduler
 
+### A day's OIL evidence (`Day.oild`, `Day.oilev` — 21 Sep 26, `[OIL-AUTO-REMOVE]`)
+
+Two fields, and the difference between them is the whole design (`engine/oilev.ts`,
+`docs/engine-rules.md` §Weekend/PH work earns OIL):
+
+- **`oild` — the scheduler's DECISIONS. Day content.** `{ blanket?: 1, items?: {
+  <itemKey>: 0 }, people?: { "<personId>|<itemKey>": 'allow' | 'deny' } }`. Stored on
+  the live day, so it rides the snapshot, a parked plan, an undo and the persistence
+  funnel like any typed time, and changing it is publishable as an amendment. Absent
+  means nothing was decided, so the ordinary rules decide alone — which is why a mark
+  turned on and off again is DELETED rather than left as an empty object.
+- **`oilev` — the FROZEN evidence. On an ISSUED SNAPSHOT'S day copy ONLY.**
+  `{ iso, earns, d: <the decisions>, inputs: [{ iid, person, type, asks, acc, win,
+  ans }], sent: { <itemKey>: personId[] } }`. Attached by `publish.ts:daySnap` and
+  stripped from every clone back onto a working copy (`drafts.ts:liveDay`). It is the
+  ONLY thing the credit pass reads on a published day. **Never present on a live day**
+  — there it is derived on read, so it cannot go stale and a plan restored months
+  later cannot resurrect an obsolete projection.
+
+An item key is `i:<inputId>` for anything derived from an input (including a ground row
+the input landed on — the row is deleted and recreated on every member edit, the input
+is not) and `r:<rowId>` for a hand-built row.
+
+**On the wire to the database:** `oild` is real squadron data and must migrate. `oilev`
+is part of the ISSUED DOCUMENT and must migrate WITH its snapshot — it cannot be
+recomputed later, which is exactly why the cutover clears pre-existing weeks
+(`storage/reset.ts`, schema 5) rather than trying to rebuild evidence nobody stored.
+
+
 ### People (the roster) — `PEOPLE[id]`, `src/engine/people.ts`
 
 One record per person, keyed by a short lowercase id that is the same id

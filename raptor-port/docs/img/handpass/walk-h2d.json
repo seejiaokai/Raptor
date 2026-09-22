@@ -1,0 +1,81 @@
+{
+ "datesNote": [
+  "17 Jul → 20 Jul",
+  "📅 21 Sep → 5 Oct"
+ ],
+ "who": {
+  "v": "shaft",
+  "t": "Anvil"
+ },
+ "type": {
+  "v": "Training",
+  "t": "Training"
+ },
+ "asked": true,
+ "sheet": "OIL — Anvil, Training | ✕ | THIS INPUT COVERS 2 NON-WORKING DAYS (WEEKEND / PH) | Each confirmed day earns FO — a full day of OIL. Which days does it deserve? | All days | Only some days… | No OIL | The credit lands on the Leave War as an FO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it. | Choose an option above | Cancel | Save",
+ "dayBtns": [],
+ "hasSomeDays": true,
+ "dayBtns2": [
+  {
+   "d": "2026-07-18",
+   "t": "18",
+   "cls": "rc-d oc-ask"
+  },
+  {
+   "d": "2026-07-19",
+   "t": "19",
+   "cls": "rc-d oc-ask"
+  }
+ ],
+ "dayBtns3": [
+  {
+   "d": "2026-07-18",
+   "cls": "rc-d oc-ask sel"
+  },
+  {
+   "d": "2026-07-19",
+   "cls": "rc-d oc-ask"
+  }
+ ],
+ "stored": [
+  {
+   "k": "0",
+   "raw": "{\"person\":\"shaft\",\"date\":\"Jul 17\",\"allday\":false,\"s\":360,\"e\":1080,\"yr\":2026,\"endDate\":\"Jul 20\",\"type\":\"Training\",\"remarks\":\"till 20 Jul\",\"mod\":\"2026-09-21\",\"iid\":\"imubeux23gzm1ir\",\"oil\":{\"2026-07-18\":1,\"2026-07-19\":0},\"acc\":\"g\"}"
+  }
+ ],
+ "fri": "no OIL door on this day",
+ "sat": [
+  {
+   "id": "shaft",
+   "kind": "INERT",
+   "fig": "Anvil IP",
+   "title": "Anvil — nothing measurable to earn from here"
+  }
+ ],
+ "sun": [
+  {
+   "id": "shaft",
+   "kind": "INERT",
+   "fig": "Anvil IP",
+   "title": "Anvil — nothing measurable to earn from here"
+  }
+ ],
+ "pubSat": {
+  "published": true,
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "pubSun": {
+  "published": true,
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "credits": {
+  "2026-07-17": "(blank)",
+  "2026-07-18": "(blank)",
+  "2026-07-19": "(blank)",
+  "2026-07-20": "(blank)"
+ },
+ "inputsRow": [],
+ "errors": []
+}

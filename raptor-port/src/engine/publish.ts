@@ -4,13 +4,14 @@ import { keyDay, uniqDays } from './keys'
 import { isScheduler } from './people'
 import { HOOKS } from './hooks'
 import { logEdit } from './editlog'
-import { ridKey, posKey, ridWriteKey, RID_BOOK_VERSION } from './rowids'
+import { ridKey, posKey, ridWriteKey, ensureRowIds, RID_BOOK_VERSION } from './rowids'
 import { canonicalDiff, digest } from './canonical'
 import type { DeltaEntry } from './canonical'
 import { INPUTS, inpId, inputCoversDate } from './inputs'
 import { CURWEEK } from './waves'
 import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './verid'
 import { isPreservedWeek } from './weekstash'
+import { oilEvidence, oilEvidenceKey, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney } from './oilev'
 
 /* the reference calls straight into the UI here; the engine routes those four
    calls through injected hooks (no-ops until the app provides them) so the
@@ -142,7 +143,7 @@ export function dayALs(di:any){di=+di;return SCHED.als.filter((a:any)=>+a.di===d
 /* per-kind counts off a frozen canonical diff — for the AL history and the
    pending summary (kinds: add | delete | change | move | input). */
 export function diffCounts(diff:any){const d=diff||[];const by=(k:any)=>d.filter((e:any)=>e.kind===k).length;
-  return {total:d.length,add:by('add'),del:by('delete'),chg:by('change'),mov:by('move'),inp:by('input')};}
+  return {total:d.length,add:by('add'),del:by('delete'),chg:by('change'),mov:by('move'),inp:by('input'),oil:by('oil')};}
 /* the verId a day is currently showing. The stamped cur[di] counts only while
    its snapshot still resolves; otherwise fall back to the NEWEST surviving issue
    for this day by per-day SEQ, then the Original, then null (never published).
@@ -191,6 +192,15 @@ export function setDayApproved(di:any,on:any){
      changing a published day means editing its working draft and publishing the
      next AL. An `on=false` (or a repeat approve) is a no-op. */
   if(!on||SCHED.dayOK[di])return;
+  /* MINT THE ROW IDS BEFORE ANYTHING READS THE DAY (Fable, 21 Sep 26). §9.3
+     promises publication freezes exactly the value the signature was validated
+     against, and every OIL decision is addressed by a row id — so a row that
+     reached here without one would be compared and signed under one address and
+     frozen under another. daySnap mints on its way past, which is AFTER
+     daySigned and dayDelta have already read the day. Every production add path
+     mints before this point, so no reachable case was found; the mint is
+     idempotent and costs one walk, which is cheaper than relying on that. */
+  ensureRowIds(DAYS);
   if(!daySigned(di))return toast(`${DAYS[di].dow} needs ${signMissing(di).join(', ')} before it can be published`);
   stampAmFormat();   // first publish of a validated empty pre-Phase-2 draft keeps it 'current' (P2-IMPL-04)
   /* the day goes out AS IT STANDS. Everything pending on it up to this moment
@@ -225,8 +235,27 @@ export function setDayApproved(di:any,on:any){
    site the Originals and the whole AL list come back after a reload. Memory-only
    is the dev/test path (MemoryBackend). See CLAUDE.md, WHAT ACTUALLY PERSISTS. */
 export function daySnap(di:any){di=+di;
+  /* "one walk before every baseline and SNAPSHOT" (engine/rowids.ts) — stated
+     as the contract, but only histPush/loadWeek actually ran it, so a row
+     created and published inside one turn could be frozen with no identity. It
+     matters now because the OIL evidence addresses every item by `rid`
+     ([OIL-AUTO-REMOVE] §7.4): an id-less row would freeze a decision-less,
+     sentinel-less item and quietly earn nobody anything. Idempotent, never
+     printed, so parity is untouched. */
+  ensureRowIds(DAYS);
   const c:any={}; Object.keys(SCHED.changes).forEach((k:any)=>{if(keyDay(k)===di)c[k]=SCHED.changes[k];});
-  return {d:JSON.parse(JSON.stringify(DAYS[di])),c,fil:dayFilingFingerprint(di)};}
+  const d=JSON.parse(JSON.stringify(DAYS[di]));
+  /* THE OIL EVIDENCE IS FROZEN HERE, and only here ([OIL-AUTO-REMOVE] §7.1/§9.3).
+     It rides the day COPY, so the issued document carries its own answer to what
+     earns — the credit pass reads snap.d and needs nothing live — while the
+     working copy never stores one and cannot go stale. Every clone of a snapshot
+     back onto the live day (engine/drafts.ts) strips it for the same reason.
+     It is the candidate computed from the day AS IT STANDS AT THIS INSTANT,
+     which is the one the signature was validated against: publishALDay checks
+     the signatures and takes this snapshot in one synchronous step, and nothing
+     between them writes DAYS or INPUTS (alIssue moves SCHED marks only). */
+  d.oilev=oilEvidence(di);
+  return {d,c,fil:dayFilingFingerprint(di)};}
 /* ---- Phase 2: the FILING FINGERPRINT (P2-R3-01 / P2-R4-01) ------------------
    The publication delta has a fourth axis — input filings — that day content
    does NOT carry: filing an input changes INPUTS.acc, not DAYS. To detect a
@@ -258,6 +287,30 @@ function filingDelta(di:any,issuedFil:any):DeltaEntry[]{
   const ids=new Set([...Object.keys(now),...Object.keys(was)]);
   ids.forEach((id:any)=>{ const a=was[id]||'', b=now[id]||''; if(a!==b)out.push({addr:`inp:${di}.${id}`,kind:'input',from:a,to:b}); });
   return out;}
+/* THE OIL EVIDENCE AXIS ([OIL-AUTO-REMOVE] §7.2 / §9.2). A mark on the day
+   record is snapshot-able but NOT publishable on its own: canonicalContent is
+   built from an EXPLICIT field enumeration (restore.ts dayKeys), and
+   canonicalDiff ignores an address that newly appears or disappears unless
+   rowKeyOf recognises its owning row — which it cannot, because the OIL block
+   owns no row. Without this axis a scheduler could mark an item on a published
+   day, get no amendment, and have no way to publish the mark at all, while the
+   pass kept reading the older issued snapshot that does not carry it: marked
+   forever, never in force.
+   So the WHOLE block serialises to ONE always-present value under ONE synthetic
+   per-day address. Always present, so it is always compared; deterministic, so
+   an unchanged block is byte-identical. No key ever appears or disappears.
+   An ABSENT issued block normalises to '' — the same as "nothing decided,
+   everything earns" — so the FIRST change against an older snapshot is detected
+   rather than read as no change. */
+/* BOTH SIDES ARE KEYED WITH THEIR OWN DAY (Codex rank 4, 22 Sep 26). A block
+   frozen before `stand` existed carries no standing, and the only honest place
+   to recover it is the frozen SCHEDULE beside it — so the issued day goes in,
+   not merely its block. Guessing it from `acc` made a cancelled row key
+   `active` on the issued side and `cx` live, which offered an amendment on a
+   day the money already agreed was unchanged. */
+function oilDelta(di:any,issuedDay:any):DeltaEntry[]{
+  const now=oilEvidenceKey(oilEvidence(di),DAYS[+di]), was=oilEvidenceKey((issuedDay||{}).oilev,issuedDay);
+  return now===was?[]:[{addr:`oil:${+di}`,kind:'oil',from:was,to:now}];}
 /* ---- Phase 2: the ONE normalized publication delta (F-02) ------------------
    Eligibility, the panel counts and the stored diff ALL derive from this — never
    from the accumulated pending marks. Compares the live day against the CURRENT
@@ -269,7 +322,7 @@ export function dayDeltaIn(sc:any,di:any,weekKey?:any):DeltaEntry[]{di=+di;
   if(!((sc&&sc.dayOK)||{})[di])return [];
   const ver=dayCurVerIn(sc,di,weekKey), snap=ver!=null?daySnapIn(sc,di,ver,weekKey):null;
   if(!snap||!snap.d)return [];
-  return canonicalDiff(snap.d,DAYS[di],di).concat(filingDelta(di,snap.fil));}
+  return canonicalDiff(snap.d,DAYS[di],di).concat(filingDelta(di,snap.fil)).concat(oilDelta(di,snap.d));}
 export function dayDelta(di:any):DeltaEntry[]{return dayDeltaIn(SCHED,di,CURWEEK);}
 /* the publish trigger + every publication affordance (P2-02/P2-07): a published
    day has changes iff its normalized delta is non-empty. Derived SOLELY from
@@ -306,7 +359,12 @@ export function dayDiscardCount(di:any):number{di=+di;
   if(!dayApproved(di))return 0;
   const ver=dayCurVer(di), snap=ver!=null?daySnapOf(di,ver):null;
   if(!snap||!snap.d)return 0;
-  return canonicalDiff(snap.d,DAYS[di],di).length;}
+  /* the DECISIONS half of the OIL block is day content — a recovery replaces it
+     with the snapshot's, so it counts here. The DERIVED half (the input
+     projection, the frozen sentinel membership) is not: recovery re-derives it
+     from the live inputs and roster, exactly as the filing axis is retained. */
+  const decDrop=oilDecisionsKey((DAYS[di]||{}).oild)!==oilDecisionsKey((snap.d||{}).oild)?1:0;
+  return canonicalDiff(snap.d,DAYS[di],di).length+decDrop;}
 /* THE ONE PLACE records are found by identity (§1, P2-R2-05/P2-R3-03). `ver` is
    a verId (`iso#seq`) — the Original is `iso#0`, an AL is `iso#seq`. It also
    still resolves a `d:<id>` DRAFT blob (unchanged). It MUST validate that the
@@ -624,6 +682,10 @@ export function publishALDay(di:any){
      writeback would otherwise discard the issue on reload (a silent lost AL). */
   if(protectedWeek())return toast(`${(DAYS[di]||{}).dow||'This day'} is locked — it was published by an older version and can’t be amended here`);
   if(!dayApproved(di))return toast(`${DAYS[di].dow} is still draft — publish the day before publishing its changes`);
+  /* the same mint as the first publish above, for the same reason: every read
+     in this turn — the delta, the signature binding, the frozen block — must
+     see one set of row ids (Fable, 21 Sep 26). */
+  ensureRowIds(DAYS);
   /* [GLOBAL-UNDO] §6.1 GU5-001 — a day being CORRECTED (unpublished, then edited)
      may reissue its SAME label even if the correction nets to no delta; an ordinary
      amendment still needs a real change. */
@@ -748,7 +810,12 @@ export function signAt(di:any){return ((SCHED.sign||{})[+di])||EMPTY_SIGN;}
 export function signBindOf(di:any){SCHED.signBind=SCHED.signBind||{}; return (SCHED.signBind[+di]=SCHED.signBind[+di]||{});}
 /* the content fingerprint a signature is bound to, as it stands right now. */
 export function currentBind(di:any){di=+di; const d=DAYS[di];
-  return {dg:d?digest(d,di):'', iso:dayIso(CURWEEK,di), base:dayCurVer(di)||'', rev:(SCHED.curDraft||{})[di]||'', fil:filingKey(di)};}
+  /* the OIL evidence is part of what a signature promises ([OIL-AUTO-REMOVE]
+     §9.3 point 2): the preview, the amendment comparison, the signature binding
+     and publication all call the SAME body, so they cannot disagree about what
+     is being signed. Without it an answer-only change would be publishable on a
+     signature given before the answer moved. */
+  return {dg:d?digest(d,di):'', iso:dayIso(CURWEEK,di), base:dayCurVer(di)||'', rev:(SCHED.curDraft||{})[di]||'', fil:filingKey(di), oil:oilEvidenceKey(oilEvidence(di),d)};}
 /* set a role's signer through the ONE sanctioned write path (ui/Shell.tsx). A
    truthy signer binds that role to the current content; clearing a role drops its
    binding. Tests / a legacy demo book that write signOf(di)[role] directly leave
@@ -765,7 +832,28 @@ function signBoundOk(di:any,role:any,cur?:any){const b=(SCHED.signBind||{})[+di]
      schedFields into the persisted week record, so a pre-filing binding CAN come
      back from storage. Re-signing is therefore the real guard, not a dev-phase
      convenience. */
-  return x.dg===c.dg&&x.iso===c.iso&&x.base===c.base&&x.rev===c.rev&&x.fil===c.fil;}
+  /* the OIL axis normalises absent to '' rather than forcing a re-sign, unlike
+     the filing axis above: a binding written before the evidence block existed
+     carries no oil field, and on a day that earns nothing there is nothing it
+     could have failed to promise. A day that DOES carry evidence still
+     invalidates, because '' and a real block differ. */
+  return x.dg===c.dg&&x.iso===c.iso&&x.base===c.base&&x.rev===c.rev&&x.fil===c.fil&&oilBoundOk(di,x.oil,c.oil);}
+/* A BINDING WRITTEN BEFORE `stand` EXISTED stores the OIL key in the old
+   six-part form, which can never equal today's seven-part one — so every
+   signature given before this build fell off a day whose content had not moved,
+   while the amendment panel (repaired beside it) said that same day was
+   unchanged. One day, two contradictory answers (Codex rank 4, 22 Sep 26).
+   An old string is tested the only way it can be: today's content is written
+   the way HE saw it written, and compared. That alone is NOT enough, and Codex
+   is right to say so — job 2 changed what some days pay without changing
+   anything the old form could show. So the day must also pay today what it paid
+   then. Where it does not, the signature is refused and the day must be signed
+   again, which is the honest answer: the money under it moved. */
+function oilBoundOk(di:any,was:any,now:any){
+  if((was||'')===(now||''))return true;
+  if(!was)return false;
+  const ev=oilEvidence(di);
+  return oilKeyBeforeStand(ev)===was&&!oilUpgradeMovedMoney(DAYS[+di],ev);}
 /* a name only counts while it is still appointed — withdrawing someone's
    Scheduler qual after they signed used to leave the day looking signed — AND
    only while its content binding still holds (AM-06). currentBind is computed at

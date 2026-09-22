@@ -1,0 +1,246 @@
+{
+ "f1": "yeti",
+ "f2": "torque",
+ "f3": "allavail",
+ "_at": "done",
+ "family": [
+  "Ranger",
+  "Saber",
+  "Drifter",
+  "Ace",
+  "Warden",
+  "Hunter",
+  "Piston",
+  "Blade",
+  "Trident",
+  "Cinch",
+  "Cobra",
+  "Sidewinder",
+  "Anvil",
+  "Forge",
+  "Havoc",
+  "Comet",
+  "Reaper",
+  "Vandal",
+  "Gambit",
+  "Outlaw",
+  "Ridge",
+  "Bolt",
+  "Nomad",
+  "Saint",
+  "Diesel",
+  "Vapor",
+  "Wildcard",
+  "Talisman",
+  "Recon",
+  "Echo",
+  "Static",
+  "Relay",
+  "Scope",
+  "Basher",
+  "Ledger",
+  "Quill",
+  "Rune",
+  "Cinder",
+  "Hex",
+  "Vector",
+  "Ghost",
+  "Wisp",
+  "Ryder",
+  "Cutter",
+  "Fable",
+  "Grit"
+ ],
+ "boltInFamily": true,
+ "ratchetInFamily": false,
+ "boltMode": [
+  "Bolt FO :: Bolt earns a full day — tap to take him off this event",
+  "Bolt FO :: Bolt earns a full day — tap to take him off this event"
+ ],
+ "ratchetMode": [
+  "Ratchet FO :: Ratchet earns a full day — tap to take him off this event"
+ ],
+ "publish": {
+  "published": true,
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "sansOffState": {
+  "was": "Show SANS",
+  "now": "Show SANS"
+ },
+ "gridSansOff": {
+  "yeti": {
+   "row": false,
+   "cell": "NO CELL"
+  },
+  "torque": {
+   "row": true,
+   "cell": "FO*"
+  },
+  "bane": {
+   "row": true,
+   "cell": "FO*"
+  },
+  "allavail": {
+   "row": false,
+   "cell": "NO CELL"
+  }
+ },
+ "trackerSansOff": {
+  "yeti": {
+   "found": false
+  },
+  "torque": {
+   "found": true,
+   "text": "Ratchet 1 + 1 +1 19 Jul AUTO Weekend/PH Duty 1 left",
+   "entries": [
+    {
+     "testid": "oil-entry-torque-auto:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+1 19 Jul AUTO Weekend/PH Duty 1 left",
+     "buttons": []
+    }
+   ]
+  },
+  "bane": {
+   "found": true,
+   "text": "Ranger IP 1 + 1 +1 19 Jul AUTO Weekend/PH Duty 1 left",
+   "entries": [
+    {
+     "testid": "oil-entry-bane-auto:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+1 19 Jul AUTO Weekend/PH Duty 1 left",
+     "buttons": []
+    }
+   ]
+  }
+ },
+ "sansOnState": {
+  "was": "Show SANS",
+  "now": "✓ SANS shown"
+ },
+ "gridSansOn": {
+  "yeti": {
+   "row": true,
+   "cell": "FO*"
+  },
+  "torque": {
+   "row": true,
+   "cell": "FO*"
+  },
+  "bane": {
+   "row": true,
+   "cell": "FO*"
+  }
+ },
+ "trackerSansOn": {
+  "yeti": {
+   "found": true,
+   "text": "Bolt C 1 + 1 +1 19 Jul AUTO Weekend/PH Duty 1 left",
+   "entries": [
+    {
+     "testid": "oil-entry-yeti-auto:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+1 19 Jul AUTO Weekend/PH Duty 1 left",
+     "buttons": []
+    }
+   ]
+  },
+  "torque": {
+   "found": true,
+   "text": "Ratchet 1 + 1 +1 19 Jul AUTO Weekend/PH Duty 1 left",
+   "entries": [
+    {
+     "testid": "oil-entry-torque-auto:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+1 19 Jul AUTO Weekend/PH Duty 1 left",
+     "buttons": []
+    }
+   ]
+  },
+  "bane": {
+   "found": true,
+   "text": "Ranger IP 1 + 1 +1 19 Jul AUTO Weekend/PH Duty 1 left",
+   "entries": [
+    {
+     "testid": "oil-entry-bane-auto:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+1 19 Jul AUTO Weekend/PH Duty 1 left",
+     "buttons": []
+    }
+   ]
+  }
+ },
+ "gridOffAgain": {
+  "yeti": {
+   "row": false,
+   "cell": "NO CELL"
+  }
+ },
+ "gridOnAgain": {
+  "yeti": {
+   "row": true,
+   "cell": "FO*"
+  }
+ },
+ "trackerOnAgain": {
+  "yeti": {
+   "found": true,
+   "text": "Bolt C 1 + 1 +1 19 Jul AUTO Weekend/PH Duty 1 left",
+   "entries": [
+    {
+     "testid": "oil-entry-yeti-auto:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+1 19 Jul AUTO Weekend/PH Duty 1 left",
+     "buttons": []
+    }
+   ]
+  }
+ },
+ "archiveDoor": "NO ARCHIVE CONTROL",
+ "archivedFlag": false,
+ "gridArchived": {
+  "bane": {
+   "row": true,
+   "cell": "FO*"
+  }
+ },
+ "trackerArchived": {
+  "bane": {
+   "found": true,
+   "text": "Ranger IP 1 + 1 +1 19 Jul AUTO Weekend/PH Duty 1 left",
+   "entries": [
+    {
+     "testid": "oil-entry-bane-auto:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+1 19 Jul AUTO Weekend/PH Duty 1 left",
+     "buttons": []
+    }
+   ]
+  }
+ },
+ "restoreDoor": "NO RESTORE CONTROL",
+ "restoredFlag": false,
+ "gridRestored": {
+  "bane": {
+   "row": true,
+   "cell": "FO*"
+  }
+ },
+ "trackerRestored": {
+  "bane": {
+   "found": true,
+   "text": "Ranger IP 1 + 1 +1 19 Jul AUTO Weekend/PH Duty 1 left",
+   "entries": [
+    {
+     "testid": "oil-entry-bane-auto:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+1 19 Jul AUTO Weekend/PH Duty 1 left",
+     "buttons": []
+    }
+   ]
+  }
+ },
+ "errors": []
+}

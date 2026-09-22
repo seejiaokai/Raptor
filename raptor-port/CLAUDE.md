@@ -11,6 +11,17 @@ routes to where the detail lives; don't duplicate that detail back here.
 
 ## How to work here
 
+**WRITE HIS RULINGS DOWN AT THE MOMENT HE SAYS THEM — `DECISIONS.md` at the repo root**
+(owner, 21 Sep 26: *"This is a recurring problem. Whenever we discussed something important to
+note down. I dont see u noting them down."*). The cause is not forgetting, it is misclassifying:
+a ruling stated mid-task gets absorbed into the WORK, executed correctly, and that feels handled.
+It is not. Append it to `DECISIONS.md` BEFORE doing the work it implies, name the file that will
+carry it, then make that file carry it — **where it belongs, not where you happen to be working**,
+which is the error that keeps recurring. `DECISIONS.md` is an index, never the only home. Sweep
+for missed rulings before any handoff or closing report, and carry a `Rulings:` line in that
+report. Full rule and the two worked misses: `../.claude/rules/record-decisions.md`; the check
+fires on every message via `../.claude/hooks/record-decisions.sh`.
+
 **THE NEWEST OWNER INSTRUCTION WINS (owner, 17 Sep 26 — "most probably the
 latest instructions I gave is usually the most correct one to follow").** This
 file is full of dated rulings, and some reverse earlier ones. When two rules
@@ -80,6 +91,19 @@ sweep across both providers then found ten more of the same shape in ONE pass,
 four of them August rulings still live after September ones replaced them.
 Reviewing code against itself cannot catch this. Only reading the rules against
 the behaviour can.
+
+**THE BUG-CHECK STANDING ORDER IS `docs/bug-check-order.md` (adopted 21 Sep 26).** Read it before
+any bug check, and follow its tier rule. It absorbs and REPLACES the 16 Sep scenario rule, the
+20 Sep rules sweep above, and the 21 Sep "test like a human" rule — all three live inside it. The
+short form, because it is the one that keeps being broken: **a code review plus green tests is NOT
+a bug check.** Two frontier models reviewed the OIL build and passed it; the owner then found three
+defects by opening the app, all of them surfaces that were never wired up, which reading code
+cannot find. Every bug check now needs a ROLL-CALL (every place the app draws the thing, each with
+a written yes / no-because / MISSING), a WALK of the running app across those surfaces and both
+orders of every gesture, and an evidence sheet with pictures. The closing report carries a
+mandatory `Walk:` line; without it a change cannot be reported ready for "merge live". §4 of that
+file says which jobs to spend Fable and Codex on, and — just as important — which jobs are a waste
+of them.
 
 **The two instruments, both standing.** A per-feature BEHAVIOUR REGISTER in
 plain words, one line per ruling with its id (worked example:
@@ -1492,6 +1516,8 @@ ledger). Read it before any layout/render/drag-touching change.
 |---|---|
 | **The implementation-role policy** (approved-spec discipline, verification without self-approval, review integrity, the closing report) — auto-loads via `paths:` whenever `raptor-port/src`, `e2e`, `probes` or `scripts` are touched, so it is live during any build | `../.claude/rules/raptor-executor.md` |
 | **The plain-language rules, in force EVERY session** (unscoped, so they load before any project file is read — this file's §How to work here stays the source of truth and the why) | `../.claude/rules/plain-language.md` |
+| **EVERY RULING THE OWNER HAS MADE, and the file that carries each one** — append here the moment he rules, before doing the work it implies | `../DECISIONS.md`; the rule `../.claude/rules/record-decisions.md` |
+| **HOW TO BUG-CHECK — the standing order** (the tiers, the roll-call, the walk, the evidence sheet, and which jobs to spend Fable/Codex on). Read before any bug check | `docs/bug-check-order.md`; the two proposals it was merged from are `docs/superpowers/briefs/2026-09-21-bugcheck-method-fable.md` and `…-codex.md` |
 | Validation, VCONF, publishing/AL, auth, history | `docs/engine-rules.md` |
 | **What is stored, every record's fields, the three storage seams** (read before the shared-database step) | `docs/data-schema.md` |
 | **The designed data model for the database step** (entities, ids, Person ↔ Enrolment ↔ Attempt, migration recipe — the technical team's document) | `docs/data-model.md`; the scheduler's declared record types `src/engine/schema.ts` (pinned to the seeds by `schema.test.ts`) |

@@ -1,0 +1,64 @@
+{
+ "rangeLabelBefore": "📅 Calendar view",
+ "picker": null,
+ "month": null,
+ "picked17": false,
+ "picked20": false,
+ "rangeLabelAfter": "📅 Calendar view",
+ "addRow": {
+  "selects": [],
+  "inputs": [],
+  "buttons": [
+   "Add input"
+  ],
+  "text": " Add input"
+ },
+ "filed": {
+  "who": {
+   "v": "dj",
+   "t": "Ace"
+  },
+  "tr": {
+   "v": "Training",
+   "t": "Training"
+  },
+  "asked": 0,
+  "sheet": null,
+  "before2": [],
+  "after2": [],
+  "added": 0
+ },
+ "stored": [
+  {
+   "k": "28",
+   "raw": "{\"person\":\"dj\",\"date\":\"Jan 16\",\"yr\":2026,\"type\":\"OL\",\"remarks\":\"\",\"endDate\":\"Jan 17\",\"allday\":true,\"lw\":\"y2026\",\"mod\":\"2026-01-01\",\"iid\":\"imubcl7981qzzmn\"}"
+  }
+ ],
+ "sat": [
+  {
+   "id": "dj",
+   "kind": "ON",
+   "fig": "Ace HO",
+   "title": "Ace earns half a day — tap to take him off this event"
+  }
+ ],
+ "sun": [],
+ "mon": "no OIL door on this day",
+ "pubSat": {
+  "published": true,
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "pubSun": {
+  "published": true,
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "credits": {
+  "2026-07-17": "(blank)",
+  "2026-07-18": "HO*",
+  "2026-07-19": "(blank)",
+  "2026-07-20": "(blank)"
+ },
+ "errors": []
+}

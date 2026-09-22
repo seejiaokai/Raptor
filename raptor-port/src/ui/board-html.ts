@@ -1,15 +1,18 @@
 /* The scheduler-board panel builders — sbInputsHTML, sbNotesPanel,
    sbProgPanel, sbSimPanel, sbSlot, labelToTitle/titleToLabel — verbatim. */
-import { INPUTS, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge } from '../engine/inputs'
+import { INPUTS, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, isUpchit, oilAsks, sansBadge } from '../engine/inputs'
 import { PEOPLE, whoId } from '../engine/people'
 import { noteText } from '../engine/note'
-import { hhmm, fmtHM } from '../engine/time'
+import { hhmm, fmtHM, parseHM } from '../engine/time'
 import { sevOf, chipOf } from '../engine/validate'
 import { whoArr } from '../engine/slots'
 import { alAttr } from '../engine/publish'
 import { groundOrder } from '../engine/order'
 import { esc, PIOPEN, notePub } from '../state/view'
 import { canEditSched } from '../state/auth'
+import { oilModeOn, oilSeatHTML, oilItemCellHTML, oilItemOfKey, oilRowPeople, inputItemKey } from './oilmode'
+import { rowItemKey, groundItemKey } from '../engine/oil'
+import { oilSeatDeco } from './html'
 import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, dormRowCls, dormRowTitle, sansCardsHTML, notePubTog, ADDZ, exemptDeskOwn } from './html'
 
 /* ONE CLOCK ON THE BOARD — hh:mm (owner, 30 Aug 26, reversing the 29 Aug
@@ -200,13 +203,35 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
        publish.test.ts pin the keyspace) — it simply has no board editor now. */
     s+=`<div class="sb-acols c6r"><span></span><span>Item</span><span>Start</span><span>End</span><span>People</span><span>Rmks</span><span></span></div>`;
     rows.forEach((x:any,ri:any)=>{
-      const arr=whoArr(x);
+      oilRow(rowItemKey(x.rid));
+      const arr=oilModeOn(di)?oilRowPeople(di,whoArr(x),rowItemKey(x.rid),oilWin(x)):whoArr(x);
       /* same hole guard as the week view — an empty .itxt shifts every later puck.
          ro, not pv, for the same reason every gate in this panel was widened
          (reviewer-found residual, 9 Aug 26) — these are the "36 draggable
          seats" the reviewer counted on a read-only board. */
       const inner=arr.map((nm:any,k:any)=>{const id=whoId(nm);
-        if(id&&PEOPLE[id])return `<span class="seat"${ro?'':` data-slot="a:${di}.${ri}.${k}"`}${alAttr(`a:${di}.${ri}.${k}`)}${ro?'':' data-drag="1"'}>${puck(id,ro?null:sevOf(di,id),true,ro?null:chipOf(di,id))}</span>`;
+        /* the same missing decoration as the cockpit seats below (owner,
+           21 Sep 26 — "Common programme should be earning oil"): this builder
+           draws its own seat rather than going through sbSeat, so the green edge
+           never reached the Common Programme on the board. */
+        /* in the mode this seat is a tap target like every other, and it was
+           not one (owner, 21 Sep 26): the Common Programme's NAME was already a
+           switch, so a scheduler could stop the whole item earning but could not
+           take ONE man off it — the same hole as the cockpit seats. */
+        if(id&&PEOPLE[id]&&oilModeOn(di))
+          return oilSeatHTML(di,id,rowItemKey(x.rid),(oil:any)=>puck(id,null,true,null,false,null,oil));
+        /* AND ITS COUNT CHIP, not just its bar (walk find, 22 Sep 26 —
+           hand-pass finding 11). oilSeatDeco returns {oil, chip}: the bar AND
+           the "27" that says how many men an ALL AVAIL placeholder stands for.
+           This builder took `.oil` and threw `.chip` away, so the board's
+           Common Programme drew the half-day bar and the words "earns half a
+           day of OIL" with no number anywhere — while the week showed it. The
+           board is where the day is worked. sbSeat emits both; so does this
+           now. */
+        if(id&&PEOPLE[id]){
+          const deco=oilSeatDeco(di,id,`a:${di}.${ri}.${k}`);
+          return `<span class="seat"${ro?'':` data-slot="a:${di}.${ri}.${k}"`}${alAttr(`a:${di}.${ri}.${k}`)}${ro?'':' data-drag="1"'}>${puck(id,ro?null:sevOf(di,id),true,ro?null:chipOf(di,id),false,null,deco.oil)}${deco.chip}</span>`;
+        }
         return String(nm||'').trim()?`<span class="itxt">${esc(nm)}</span>`:'';}).join('');
       s+=`<div class="sb-arow c6r${rowCls(x)}"${rowMove(`mv:p.${di}.${ri}`,ro)}>`+sbGrip(ro)
         /* the Item box WRAPS AND GROWS like every other free-text board box
@@ -215,7 +240,7 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
            scrolled out of sight). sbTxt → boxHTML mints the `<textarea rows="1">`
            the duty/sim/ground rows already use; the .sb-arow textarea CSS grows
            it. Same funnel key, so nothing downstream changes. */
-        +sbTxt('ain',`ap:${di}.${ri}.prog`,x.prog,'',ro)
+        +sbName(di,'ain',`ap:${di}.${ri}.prog`,x.prog,'',ro)
         +`<input class="atm" data-bfld="ap:${di}.${ri}.str"${alAttr(`ap:${di}.${ri}.str`)}${ro?' disabled':''} value="${esc(fmtHM(x.str))}">`
         +`<input class="atm" data-bfld="ap:${di}.${ri}.end"${alAttr(`ap:${di}.${ri}.end`)}${ro?' disabled':''} value="${esc(fmtHM(x.end))}">`
         /* no "all" ghost on an empty people cell (owner, 26 Aug 26 — "if no
@@ -224,10 +249,10 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
            only); the word said otherwise. Empty cell, same data-fill target. */
         +`<div class="ppl"${ro?'':` data-fill="a:${di}.${ri}.+"`}>${inner}${ro?'':ADDZ}</div>`
         +sbRmk(`ap:${di}.${ri}.rmks`,x.rmks,ro)
-        +(ro?(x.info?`<span class="lctl"><span class="fyitag" title="Info only — not checked against the rules">ⓘ</span></span>`:'')
+        +(ro?(x.info?`<span class="lctl"><span class="fyitag" title="Info only — not checked against the rules, and earns no OIL">ⓘ</span></span>`:'')
         :`<span class="lctl">`+sbNudge(`mv:p.${di}.${ri}`,ro)
         +`<button class="mbtn${x.cx?' on':''}" data-pcx="${di}.${ri}" title="${x.cx?'Restore this item':'Cancel this item (CX)'}">CX</button>`
-        +`<button class="mbtn nfo${x.info?' on':''}" data-pinfo="${di}.${ri}" title="${x.info?'Info only — tap to check this item against the rules again':'Info only — show this item on the programme but never check it against the rules'}">ⓘ</button>`
+        +`<button class="mbtn nfo${x.info?' on':''}" data-pinfo="${di}.${ri}" title="${x.info?'Info only — tap to check this item against the rules again':'Info only — show this item on the programme, never check it against the rules, and never earn OIL from it'}">ⓘ</button>`
         +`<button class="mbtn red${x.flag?' on':''}" data-pflag="${di}.${ri}" title="${x.flag?'Clear the red box':'Red box — flag for the next scheduler'}">■</button>`
         +`<button class="mbtn del" data-pdel="${di}.${ri}" title="Remove this item">✕</button></span>`)+`</div>`;
     });
@@ -269,13 +294,32 @@ export function sbNote(d:any,di:any,key:any,field:any,_ph:any,pv?:any){
    its own page) left them fully live — dragging a name onto a duty row wrote it into the
    model, and a duty/sim/ground/programme text field kept whatever was typed
    into it even though the write was never committed. */
+/* THE ITEM THE ROW BEING BUILT BELONGS TO ([OIL-AUTO-REMOVE] §7.4). Set at the
+   top of each row, exactly as engine/oil.ts's own walk does, so a seat can be
+   tagged with its row's OIL address without threading a parameter through every
+   builder in this file. Read only while the day is in OIL mode. */
+let OILITEM='';
+const oilRow=(item:any)=>{OILITEM=item||'';return '';};
+/* a row's NAME cell: the ordinary editable box, or — in OIL mode — the item's
+   own toggle (§2.1 item 5). The board is read-only for schedule editing while
+   the mode is on, and a disabled box cannot be tapped, so the name is the
+   natural place for the item switch the owner asked for. */
+function sbName(di:any,cls:any,path:any,v:any,ph:any,ro:any,extra?:any){
+  if(oilModeOn(di))return oilItemCellHTML(di,OILITEM,v,cls);
+  return sbTxt(cls,path,v,ph,ro,extra);
+}
 function sbSeat(di:any,key:any,id:any,pv?:any){
   if(!(id&&PEOPLE[id]))return '';
+  /* in OIL mode a seat is a tap target for "does this man earn from THIS
+     event", wearing his figure for the day in place of his CAT letter */
+  if(oilModeOn(di))return oilSeatHTML(di,id,OILITEM,(oil:any)=>puck(id,null,true,null,false,null,oil));
   /* an exempt desk row rings for its OWN rule only — html.ts exemptDeskOwn,
      the one body the week's lSeat reads too */
   const ex=pv?undefined:exemptDeskOwn(di,key,id);
-  const inner=ex===undefined?puck(id,pv?null:sevOf(di,id),true,pv?null:chipOf(di,id)):puck(id,ex?'hard':null,true,ex);
-  return `<span class="seat"${pv?'':` data-slot="${key}"`}${alAttr(key)}${pv?'':' data-drag="1"'}>${inner}</span>`;
+  /* the same green edge the week draws, from the same body (§2.10) */
+  const oilDeco=oilSeatDeco(di,id,key);
+  const inner=ex===undefined?puck(id,pv?null:sevOf(di,id),true,pv?null:chipOf(di,id),false,null,oilDeco.oil):puck(id,ex?'hard':null,true,ex,false,null,oilDeco.oil);
+  return `<span class="seat"${pv?'':` data-slot="${key}"`}${alAttr(key)}${pv?'':' data-drag="1"'}>${inner}${oilDeco.chip}</span>`;
 }
 function sbMore(di:any,base:any,r:any,pv?:any){
   return ((r&&r.more)||[]).map((id:any,i:any)=>sbSeat(di,`${base}.x${i}`,id,pv)).join('');
@@ -307,6 +351,15 @@ function sbTxt(cls:any,path:any,v:any,ph:any,pv:any,extra?:any){
    a pasted value that genuinely starts with a blank line would lose it on
    every repaint. Enter still commits (textedit.ts's routeKeyDown), so a
    hand-typed break cannot get in — a paste is the only way one arrives. */
+/* a row's own window, for resolving a sentinel puck inside it — the same rolled
+   reading engine/oil.ts measures with, so the people shown are exactly the people
+   credited. Unreadable times resolve nobody, which is the OIL rule too. */
+function oilWin(r:any):[number,number]|null{
+  const st=parseHM(r&&r.str), en=parseHM(r&&r.end);
+  if(st==null||en==null)return null;
+  const e=en<st?en+1440:en;
+  return e>st?[st,e]:null;
+}
 export function boxHTML(cls:any,attrs:any,v:any,ph:any){
   const p=ph?` placeholder="${ph}"`:'';
   if(/(^|\s)(atm|tm)(\s|$)/.test(cls))return `<input class="${cls}" ${attrs} value="${esc(fmtHM(v))}"${p}>`;
@@ -327,10 +380,10 @@ function sbRmk(path:any,v:any,pv:any){
    sharing this builder never draw it. On a read-only surface the button gives
    way to a static ⓘ tag, so a reader still sees which items are FYI. */
 function sbRowCtl(pv:any,o:any,addr:any,pre:any,what:any,mv?:any,fyi?:any){
-  return pv?(fyi&&o&&o.info?`<span class="lctl"><span class="fyitag" title="Info only — not checked against the rules">ⓘ</span></span>`:'')
+  return pv?(fyi&&o&&o.info?`<span class="lctl"><span class="fyitag" title="Info only — not checked against the rules, and earns no OIL">ⓘ</span></span>`:'')
     :`<span class="lctl">`+(mv||'')
     +`<button class="mbtn${o.cx?' on':''}" data-${pre}cx="${addr}" title="${o.cx?'Restore '+what:'Cancel '+what+' (CX)'}">CX</button>`
-    +(fyi?`<button class="mbtn nfo${o.info?' on':''}" data-${pre}info="${addr}" title="${o.info?'Info only — tap to check this item against the rules again':'Info only — show this item on the programme but never check it against the rules'}">ⓘ</button>`:'')
+    +(fyi?`<button class="mbtn nfo${o.info?' on':''}" data-${pre}info="${addr}" title="${o.info?'Info only — tap to check this item against the rules again':'Info only — show this item on the programme, never check it against the rules, and never earn OIL from it'}">ⓘ</button>`:'')
     +`<button class="mbtn red${o.flag?' on':''}" data-${pre}flag="${addr}" title="${o.flag?'Clear the red box':'Red box — flag for the next scheduler'}">■</button>`
     +`<button class="mbtn del" data-${pre}del="${addr}" title="Remove ${what}">✕</button></span>`;
 }
@@ -354,6 +407,7 @@ export function sbDutyPanel(d:any,di:any,pv?:any,ro?:any){
        would be hostile, and the slot keys are model indices anyway */
     (dwv.rows||[]).forEach((r:any,ri:any)=>{
       const base=`d:${di}.${wi}.${ri}`, t=`dr:${di}.${wi}.${ri}`;
+      oilRow(rowItemKey(r.rid));
       const inner=(PEOPLE[r.id]?sbSeat(di,base,r.id,ro):(r.id?`<span class="itxt">${esc(r.id)}</span>`:''))+sbMore(di,base,r,ro);
       /* NO PLACEHOLDERS ON A DUTY ROW (owner, 10 Aug 26). They read as typed
          text — an empty role box showed "SDO" and a blank block looked
@@ -361,7 +415,7 @@ export function sbDutyPanel(d:any,di:any,pv?:any,ro?:any){
          Rmks, so the ghost words were saying it twice and lying once. The
          ROLE cell offers its pick-list on click instead (data-rolepick). */
       s+=`<div class="sb-arow c6r${rowCls(r)}"${rowMove(`mv:d.${di}.${wi}.${ri}`,ro)}>`+sbGrip(ro)
-        +sbTxt('ain',`${t}.role`,r.role,'',ro,ro?'':` data-rolepick="${di}.${wi}.${ri}"`)
+        +sbName(di,'ain',`${t}.role`,r.role,'',ro,ro?'':` data-rolepick="${di}.${wi}.${ri}"`)
         +sbTxt('atm',`${t}.str`,r.str,'',ro)+sbTxt('atm',`${t}.end`,r.end,'',ro)
         +`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${inner}${ro?'':ADDZ}</div>`
         +sbRmk(`${t}.rmks`,r.rmks,ro)
@@ -381,6 +435,7 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
     s+=C6;
     rows.forEach((r:any,ri:any)=>{
       const base=`s:${di}.${kind}.${ri}`, t=`sr:${di}.${kind}.${ri}`;
+      oilRow(rowItemKey(r.rid));
       /* A deleted pax HOLDS its index (slots.ts's pax branch splices nothing),
          so the hole must stay VISIBLE: render it as a droppable empty slot,
          not as nothing (owner, 8 Aug 26 — deleting one WSO from the AMT BOX
@@ -450,7 +505,7 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
         pplCell=`<div class="ppl"${ro?'':` data-fill="${base}.+"`}><span class="itxt">${esc(r.who)}</span>${sbMore(di,base,r,ro)}${ro?'':ADDZ}</div>`;
       }
       s+=`<div class="sb-arow c6r${rowCls(r)}"${rowMove(`mv:s.${di}.${kind}.${ri}`,ro)}>`+sbGrip(ro)
-        +sbTxt('ain',`${t}.label`,r.label,'EP SIM',ro)+sbTxt('atm',`${t}.str`,r.str,'',ro)+sbTxt('atm',`${t}.end`,r.end,'',ro)
+        +sbName(di,'ain',`${t}.label`,r.label,'EP SIM',ro)+sbTxt('atm',`${t}.str`,r.str,'',ro)+sbTxt('atm',`${t}.end`,r.end,'',ro)
         +pplCell
         +sbRmk(`${t}.rmks`,r.rmks,ro)
         +sbRowCtl(ro,r,`${di}.${kind}.${ri}`,'sr','this sim',sbNudge(`mv:s.${di}.${kind}.${ri}`,ro))+`</div>`;
@@ -474,9 +529,15 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
     /* same render-time ordering as the week — keys keep their model index */
     groundOrder(rows,d.gman).forEach(({row:x,ri}:any)=>{
       const base=`g:${di}.${ri}`, t=`gr:${di}.${ri}`, id=whoId(x.who);
-      const inner=((id&&PEOPLE[id])?sbSeat(di,base,id,ro):(x.who?`<span class="itxt">${esc(x.who)}</span>`:''))+sbMore(di,base,x,ro);
+      /* a ground row that came from an accepted input is addressed by the INPUT,
+         not the row — the row is deleted and recreated on every member edit
+         ([OIL-AUTO-REMOVE] §7.4). */
+      oilRow(groundItemKey(x));
+      const inner=oilModeOn(di)
+        ? oilRowPeople(di,[x.who,...(x.more||[])],groundItemKey(x),oilWin(x)).map((pid:any)=>sbSeat(di,base,pid,ro)).join('')
+        : ((id&&PEOPLE[id])?sbSeat(di,base,id,ro):(x.who?`<span class="itxt">${esc(x.who)}</span>`:''))+sbMore(di,base,x,ro);
       s+=`<div class="sb-arow c6r${rowCls(x)}${lateRowCls(x)}"${lateRowTitle(x)}${rowMove(`mv:g.${di}.${ri}`,ro)}>`+sbGrip(ro)
-        +sbTxt('ain',`${t}.prog`,x.prog,'OCU PROGRESS REVIEW',ro)+sbTxt('atm',`${t}.str`,x.str,'',ro)+sbTxt('atm',`${t}.end`,x.end,'',ro)
+        +sbName(di,'ain',`${t}.prog`,x.prog,'OCU PROGRESS REVIEW',ro)+sbTxt('atm',`${t}.str`,x.str,'',ro)+sbTxt('atm',`${t}.end`,x.end,'',ro)
         +`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${inner}${ro?'':ADDZ}</div>`
         +sbRmk(`${t}.rmks`,x.rmks,ro)
         +sbRowCtl(ro,x,`${di}.${ri}`,'gr','this item',sbNudge(`mv:g.${di}.${ri}`,ro),true)+`</div>`;
@@ -513,24 +574,52 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
   const RO=ro??pv;
   const sb=isSansAvail(inp.type)&&dt?sansBadge(inp.person,dt):'';
   const sbt=sb?`<span class="sansb" title="SANS availability">${esc(sb)}</span>`:'';
+  /* THE MODE HAS TO REACH A CLAIM WHEREVER IT IS SHOWN ([OIL-AUTO-REMOVE] §2.4,
+     owner: "Overseas duty will show on unavailable on the schedule as OD … the
+     mode must reach it there"). OVERSEAS DUTY IS THE CASE THAT FORCES THIS: it
+     asks for OIL but NEVER lands on the ground programme, so the board's rows
+     alone cannot offer it — and without this the one OIL-earning claim with no
+     row of its own could not be taken off at all. The item address is the
+     INPUT's own id, the same one its landed ground row uses, so the two
+     switches drive one decision and can never disagree.
+     Only a claim that actually asks for OIL is a switch; leave and medical are
+     drawn exactly as before. */
+  const oilItem=(oilModeOn(di)&&oilAsks(inp.type))?inputItemKey(inpId(inp)):'';
   /* the board's half of "even down to changing the puck" — see html.ts's
      inGrp for the week's twin and the full reasoning. `acc` true is the
      Personal Inputs panel (its own Accept control decides that row's fate
      already); `!acc` is Unavailable, the only panel this seat address opens
      on, and only when the row is actually live (not a read-only/preview
      board). */
-  const seatable=!acc&&!RO;
+  const seatable=!acc&&!RO&&!oilItem;
   const pk=PEOPLE[inp.person]
-    ? `<span class="seat"${seatable?` data-inpseat="${esc(inpId(inp))}"`:''}>${puck(inp.person,sevOf(di,inp.person),true,chipOf(di,inp.person))}</span>`
+    ? (oilItem
+      ? oilSeatHTML(di,inp.person,oilItem,(oil:any)=>puck(inp.person,null,true,null,false,null,oil))
+      /* outside the mode the claim's puck wears the man's day figure like every
+         other puck he is on — which is the ONLY place an OD earner is visible.
+         It is addressed by the claim's OWN item since O-1, so the figure shows
+         here only when this claim is one of the things that earned it. */
+      : `<span class="seat"${seatable?` data-inpseat="${esc(inpId(inp))}"`:''}>${puck(inp.person,sevOf(di,inp.person),true,chipOf(di,inp.person),false,null,oilSeatDeco(di,inp.person,'',inputItemKey(inpId(inp))).oil)}</span>`)
     : `<span class="itxt">${esc(inp.person)}</span>`;
-  if(RO){
+  if(RO&&!oilItem){
     const t=inp.allday?'all day':`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
     return `<div class="sbi-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}><span class="sbi-t">${t}</span>${pk}`
       +inpEditLabel(inp,false,inpLabel(inp),`sbi-ty ${inTypeCls(inp.type)}`)
       +sbiRmk(inp,dt)+`</div>`;
   }
   const id=inpId(inp);
-  const fld=(cls:any,f:any,v:any,ph:any)=>boxHTML(cls,`data-ifld="${esc(id)}.${f}"`,v,ph);
+  /* THE MODE IS READ-ONLY, AND THAT HAD TO REACH THIS ROW TOO (fix 5, hand pass
+     §6 row 5). The read-only branch just above is deliberately SKIPPED for a
+     claim carrying an OIL switch, because the switch has to be drawn — and the
+     whole editable row came with it. So the Personal Inputs and Unavailable
+     panels went on taking a typed time, a dropped puck and a tap on the late
+     mark from inside the one screen that exists to stop exactly that, and all
+     three change what a man earns. The switch and his puck stay live; every
+     other control on the row is shut. `oilItem` is set only when the mode is on
+     for this day AND this claim asks for OIL, which is precisely the set of
+     rows that reach here read-only. */
+  const modeRO=!!oilItem;
+  const fld=(cls:any,f:any,v:any,ph:any)=>boxHTML(cls,`data-ifld="${esc(id)}.${f}"${modeRO?' disabled':''}`,v,ph);
   /* the GRIP's own track, kept even though an input row cannot be dragged.
      Every c6r template reserves a leading 18px track, and the phone rule
      (`display:none` on .sb-grip, three columns for the rest) is written
@@ -545,15 +634,18 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
      bug this file already documents). So on a LATE row the item cell becomes a
      wrapper holding the type label plus the chip; a non-late row keeps the bare
      label and is byte-identical to before. */
-  const lc=lateChip(inp);
-  const itemCell=inpEditLabel(inp,true,inpLabel(inp),`sbi-ty inpty ${inTypeCls(inp.type)}`);
+  /* the passive badge inside the mode: it still SAYS the input was late, it just cannot be turned off from here */
+  const lc=modeRO?lateTag(inp):lateChip(inp);
+  const itemCell=oilItem
+    ? oilItemCellHTML(di,oilItem,inpLabel(inp),`sbi-ty inpty ${inTypeCls(inp.type)}`)
+    : inpEditLabel(inp,true,inpLabel(inp),`sbi-ty inpty ${inTypeCls(inp.type)}`);
   return `<div class="sb-arow c6r inprow${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${lateRowCls(inp)}${acc?dormRowCls(inp):''}"${lateRowTitle(inp)||(acc?dormRowTitle(inp):'')}>`
     +sbGrip(true)
     +(lc?`<span class="itemcell">${itemCell}${lc}</span>`:itemCell)
     +fld('atm','str',inpTimeText(inp,'str'),'all day')+fld('atm','end',inpTimeText(inp,'end'),'')
     +`<div class="ppl">${pk}${sbt}</div>`
     +fld('ain rmkin','rmks',inp.remarks||'','remarks')
-    +`<span class="lctl">${acc?accCtl(di,inp):''}</span></div>`;
+    +`<span class="lctl">${acc&&!modeRO?accCtl(di,inp):''}</span></div>`;
 }
 /* ro (5th param, reviewer-found residual 9 Aug 26): accepting an input is a
    write — promotes it into the ground programme through the mutation funnel
@@ -634,7 +726,26 @@ export function sbSansPanel(d:any,di:any,day?:any,ro?:any){
    the AL preview (Aug 26) so a board edit shows what it will go out as.
    pv: no data-slot, no data-drag, no arm target — those keys are live keys. */
 export function sbSlot(di:any,key:any,seat:any,id:any,pv?:any){
-  if(id&&PEOPLE[id])return `<div class="sb-slot"><span class="seat"${pv?'':` data-slot="${key}"`}${alAttr(key)}${pv?'':' data-drag="1"'}>${puck(id,pv?null:sevOf(di,id),true,pv?null:chipOf(di,id))}</span></div>`;
+  /* THE MODE REACHES THE COCKPIT (owner, 21 Sep 26, found by hand). This is the
+     ONLY builder for a flying seat — so every flying line and every SC shift —
+     and it never asked whether OIL mode was on. The mode's whole gesture is
+     "tap a puck to take this man off THIS event", and on a weekend schedule the
+     flying lines and the SC shifts ARE most of the day: a scheduler could take a
+     man off a duty desk or a ground row and off nothing else. Same root cause as
+     the missing green strip, one level up — a surface that was never wired in.
+     Empty seats stay as they are: there is nobody to take off one. */
+  if(id&&PEOPLE[id]&&oilModeOn(di))
+    return `<div class="sb-slot">${oilSeatHTML(di,id,oilItemOfKey(di,key),(oil:any)=>puck(id,null,true,null,false,null,oil))}</div>`;
+  /* THE GREEN EDGE REACHES THE FLYING LINES TOO (owner, 21 Sep 26 — "Flying
+     waves should be earning OIL", "SC MAIN should be earning OIL"). The week's
+     one seat renderer carried the mark to every surface; the BOARD has its own
+     builders, and this one — every cockpit seat, so every flying line and every
+     SC shift — never asked for the decoration at all. The work was earning the
+     whole time (the credit landed, the mode glowed); only the bar was missing,
+     which is exactly the kind of hole a missing call site leaves and no unit
+     test noticed. SPARE seats and AVALON/BB still earn nothing, because
+     dayOilWork skips them — this changes what is DRAWN, never what is owed. */
+  if(id&&PEOPLE[id])return `<div class="sb-slot"><span class="seat"${pv?'':` data-slot="${key}"`}${alAttr(key)}${pv?'':' data-drag="1"'}>${puck(id,pv?null:sevOf(di,id),true,pv?null:chipOf(di,id),false,null,oilSeatDeco(di,id,key).oil)}</span></div>`;
   if(pv)return `<div class="sb-slot"><span class="itxt">— ${seat==='p'?'FCP':'RCP'} empty —</span></div>`;
   return `<div class="sb-slot empty" data-slot="${key}">+ ${seat==='p'?'FCP':'RCP'}</div>`;
 }

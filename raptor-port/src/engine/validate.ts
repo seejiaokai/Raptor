@@ -10,8 +10,9 @@ import { setWorld, setFiling, clearFiling } from './world'
 import { CURWEEK } from './waves'
 import { DAYS } from './data'
 import { dayOilBlind, blindDesks } from './oil'
+import { oilWouldEarn } from './oilev'
 import { keyDay } from './keys'
-import { SCHED, approvedDays, dayDelta, dayCurVer, daySnapOf } from './publish'
+import { SCHED, approvedDays, dayApproved, dayDelta, dayCurVer, daySnapOf } from './publish'
 
 /* the reference guards its header counters with $() lookups; the engine takes
    $ from the hooks (null outside a browser) so the guarded lines stay verbatim */
@@ -1107,6 +1108,72 @@ function validateCore(){
       if(blind.length){
         const {list,verb}=blindDesks(blind);
         add('hard','OIL_NO_TIMES',[],`${list} ${verb} no times — nobody on ${blind.length>1?'them':'it'} earns OIL for this day`);
+      }
+      /* NOBODY EARNS UNTIL THE DAY IS PUBLISHED ([OIL-AUTO-REMOVE] §2.3, owner
+         21 Sep 26). All OIL now lands on publication — the schedule's and a
+         duty-and-commitments claim's alike — which is what lets the board's OIL
+         mode be the single door. The risk he accepted is a weekend nobody
+         bothers to publish paying nobody, and the mitigation he chose is a
+         standing practice of publishing every day PLUS a reminder to every
+         scheduler: "ok u can set it as a reminder to all schedulers."
+         This is that reminder. It speaks only on a day that CAN earn, that has
+         somebody down to earn something, and that has not gone out yet — so it
+         is silent on an ordinary weekday, silent on an empty weekend, and
+         silent the moment the day is published. */
+      /* A WEEKEND NO LEAVE WAR PERIOD COVERS (owner's ruling D19, 22 Sep 26 —
+         "Perhaps indicate that the leave war period doesn't exist, create it").
+         A weekend counts as a day that earns whether or not a war holds it —
+         that is the calendar — but the credit can only be written into a war
+         that DOES hold the date. Driven on Sat 13 Feb 27: the day offered OIL
+         Earn, drew a full green bar, promised a full day, told the scheduler to
+         publish it before the day was out, and then reported "No conflicts
+         flagged for this day" while the war had no cell for that date and never
+         could. The app instructed him to do something that cannot work and
+         reported success. So the day NAMES what is missing, and it keeps saying
+         so after publication — publishing does not fix it, and a day that reads
+         clean is the lie. The way out is offered beside it, on screen. */
+      const noPeriod=oilWouldEarn(di)?HOOKS.oilNoPeriod(di):'';
+      if(noPeriod){
+        add('adv','OIL_NO_PERIOD',[],`There is no leave war period for ${noPeriod}, so no OIL can be paid for this day — create the period on the Leave War`);
+      }
+      /* silent where the period is missing: telling him to publish would be
+         telling him to do the one thing that cannot help */
+      if(!noPeriod&&!dayApproved(di)&&oilWouldEarn(di)){
+        add('adv','OIL_UNPUBLISHED',[],'This day is not published yet, so nobody earns their OIL for it — publish it before the day is out');
+      }
+      /* THE DAY STARTED EARNING AFTER IT WENT OUT (owner, 21 Sep 26 — R-1:
+         "only the issued schedule pays", both directions). A day published as an
+         ordinary working day froze "this day earns nothing"; if the war later
+         calls it a public holiday, the frozen answer still governs and nobody is
+         paid until the day is published again. That is the right rule — money
+         comes from the issued document, not from today's calendar — but it must
+         never be SILENT, or a scheduler sees an unexplained "1 change" on a day
+         he did not touch and nobody is paid for a real holiday. This is what
+         says so. It cannot collide with the reminder above: that one speaks only
+         on an UNPUBLISHED day, this one only on a published one. */
+      if(dayApproved(di)&&oilWouldEarn(di)){
+        const ver=dayCurVer(di), snap:any=ver!=null?daySnapOf(di,ver):null;
+        const frozen=snap&&snap.d&&snap.d.oilev;
+        if(frozen&&!frozen.earns){
+          add('adv','OIL_STALE_DAY',[],'This day started earning OIL after it was published — publish it again so the OIL lands');
+        }
+      }
+    }
+    /* THE MIRROR OF IT (fix 4, hand pass §6 row 4). R-1 runs BOTH directions, and
+       only one of them was speaking. A day published as a holiday that the war
+       later stops calling one goes on paying off its frozen block — correctly,
+       because money comes from the issued document and not from today's calendar
+       — while the screen says nothing at all. The scheduler sees a day that is no
+       longer a holiday, men still credited on the Leave War, and no way to work
+       out which is right or how to change it.
+       It sits OUTSIDE the earning-day block above on purpose: the whole point of
+       this case is that the day is no longer one that earns, so nothing in there
+       would ever run for it. */
+    if(!earnsOil&&dayApproved(di)){
+      const ver=dayCurVer(di), snap:any=ver!=null?daySnapOf(di,ver):null;
+      const frozen=snap&&snap.d&&snap.d.oilev;
+      if(frozen&&frozen.earns){
+        add('adv','OIL_STALE_HOLIDAY',[],'This day stopped being a holiday after it was published — publish it again to withdraw the OIL');
       }
     }
     const SORD:any={hard:0,adv:1,note:2};

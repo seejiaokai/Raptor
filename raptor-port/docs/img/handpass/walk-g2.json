@@ -1,0 +1,263 @@
+{
+ "pub": {
+  "published": true,
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "barsDesktop": [
+  {
+   "who": "ALL AVAIL",
+   "kind": "HALF",
+   "size": "4px 50%",
+   "pos": "0px 100%",
+   "title": "ALL AVAIL · earns half a day of OIL"
+  },
+  {
+   "who": "Saber",
+   "kind": "FULL",
+   "size": "4px 100%",
+   "pos": "0px 0px",
+   "title": "Saber · IP · instructor pilot · SXO · earns a full day of OIL"
+  },
+  {
+   "who": "Torch",
+   "kind": "HALF",
+   "size": "4px 50%",
+   "pos": "0px 100%",
+   "title": "Torch · C · ops wingman · earns half a day of OIL"
+  },
+  {
+   "who": "Ranger",
+   "kind": "HALF",
+   "size": "auto",
+   "pos": "0% 0%",
+   "title": "Ranger · IP · instructor pilot · SXO · earns half a day of OIL"
+  },
+  {
+   "who": "Echo",
+   "kind": "HALF",
+   "size": "4px 50%",
+   "pos": "0px 100%",
+   "title": "Echo · IW · instructor WSO · SXO · earns half a day of OIL"
+  },
+  {
+   "who": "Ridge",
+   "kind": "FULL",
+   "size": "4px 100%",
+   "pos": "0px 0px",
+   "title": "Ridge · C · ops wingman · SXO · earns a full day of OIL"
+  },
+  {
+   "who": "Grit",
+   "kind": "FULL",
+   "size": "4px 100%",
+   "pos": "0px 0px",
+   "title": "Grit · C · ops wingman · earns a full day of OIL"
+  },
+  {
+   "who": "Piston",
+   "kind": "FULL",
+   "size": "4px 100%",
+   "pos": "0px 0px",
+   "title": "Piston · IP · instructor pilot · SXO · earns a full day of OIL"
+  },
+  {
+   "who": "Basher",
+   "kind": "FULL",
+   "size": "4px 100%",
+   "pos": "0px 0px",
+   "title": "Basher · IW · instructor WSO · SXO · No time for the sim brief · earns a full da"
+  },
+  {
+   "who": "Fable",
+   "kind": "FULL",
+   "size": "4px 100%",
+   "pos": "0px 0px",
+   "title": "Fable · C · ops wingman · earns a full day of OIL"
+  },
+  {
+   "who": "Drifter",
+   "kind": "HALF",
+   "size": "4px 50%",
+   "pos": "0px 100%",
+   "title": "Drifter · A · 4-ship FL · SXO · earns half a day of OIL"
+  },
+  {
+   "who": "Cinch",
+   "kind": "HALF",
+   "size": "4px 50%",
+   "pos": "0px 100%",
+   "title": "Cinch · IP · instructor pilot · SXO · earns half a day of OIL"
+  },
+  {
+   "who": "Cinder",
+   "kind": "HALF",
+   "size": "4px 50%",
+   "pos": "0px 100%",
+   "title": "Cinder · B · 2-ship FL · earns half a day of OIL"
+  },
+  {
+   "who": "Reaper",
+   "kind": "HALF",
+   "size": "4px 50%",
+   "pos": "0px 100%",
+   "title": "Reaper · IR · instrument rating exmr · SXO · earns half a day of OIL"
+  },
+  {
+   "who": "Basher",
+   "kind": "FULL",
+   "size": "4px 100%",
+   "pos": "0px 0px",
+   "title": "Basher · IW · instructor WSO · SXO · No time for the sim brief · earns a full da"
+  },
+  {
+   "who": "Saber",
+   "kind": "FULL",
+   "size": "4px 100%",
+   "pos": "0px 0px",
+   "title": "Saber · IP · instructor pilot · SXO · earns a full day of OIL"
+  },
+  {
+   "who": "Talisman",
+   "kind": "HALF",
+   "size": "4px 50%",
+   "pos": "0px 100%",
+   "title": "Talisman · OCU (ab-initio) · earns half a day of OIL"
+  },
+  {
+   "who": "Sidewinder",
+   "kind": "FULL",
+   "size": "4px 100%",
+   "pos": "0px 0px",
+   "title": "Sidewinder · IP · instructor pilot · SXO · earns a full day of OIL"
+  }
+ ],
+ "barCount": {
+  "onBoard": 18,
+  "fo": 9,
+  "ho": 9
+ },
+ "noOilAdmin": false,
+ "errAdmin": [],
+ "memberWeek": {
+  "tag": "member — edit/view week on landing",
+  "scope": "#schedBoard",
+  "bars": [],
+  "nbars": 0,
+  "chips": [
+   {
+    "where": "view week",
+    "t": "27",
+    "title": "All 27 earn half a day — tap to see each one"
+   }
+  ],
+  "oilEarnButtons": [],
+  "oilModeChrome": 0,
+  "noOil": false,
+  "navTabs": [
+   "View-only Sched",
+   "Inputs",
+   "Quals",
+   "Logic",
+   "Leave War",
+   "Tracker",
+   "Help"
+  ]
+ },
+ "memberViewPage": {
+  "tag": "member — View-only Sched",
+  "scope": "#schedBoard",
+  "bars": [],
+  "nbars": 0,
+  "chips": [
+   {
+    "where": "view week",
+    "t": "27",
+    "title": "All 27 earn half a day — tap to see each one"
+   }
+  ],
+  "oilEarnButtons": [],
+  "oilModeChrome": 0,
+  "noOil": false,
+  "navTabs": [
+   "View-only Sched",
+   "Inputs",
+   "Quals",
+   "Logic",
+   "Leave War",
+   "Tracker",
+   "Help"
+  ]
+ },
+ "memberBoardDoor": {
+  "editTabOffered": false,
+  "boardDoors": 0,
+  "canEdit": null
+ },
+ "memberBoard": {
+  "tag": "member — board, if it opened",
+  "scope": "#schedBoard",
+  "bars": [],
+  "nbars": 0,
+  "chips": [
+   {
+    "where": "view week",
+    "t": "27",
+    "title": "All 27 earn half a day — tap to see each one"
+   }
+  ],
+  "oilEarnButtons": [],
+  "oilModeChrome": 0,
+  "noOil": false,
+  "navTabs": [
+   "View-only Sched",
+   "Inputs",
+   "Quals",
+   "Logic",
+   "Leave War",
+   "Tracker",
+   "Help"
+  ]
+ },
+ "memberChipTap": {
+  "text": "27",
+  "title": "All 27 earn half a day — tap to see each one",
+  "popups": []
+ },
+ "errMemberDesktop": [],
+ "memberPhoneWeek": {
+  "tag": "member — week, phone",
+  "scope": "#schedBoard",
+  "bars": [],
+  "nbars": 0,
+  "chips": [
+   {
+    "where": "view week",
+    "t": "27",
+    "title": "All 27 earn half a day — tap to see each one"
+   }
+  ],
+  "oilEarnButtons": [],
+  "oilModeChrome": 0,
+  "noOil": false,
+  "navTabs": []
+ },
+ "memberPhoneView": {
+  "tag": "member — View-only Sched, phone",
+  "scope": "#schedBoard",
+  "bars": [],
+  "nbars": 0,
+  "chips": [
+   {
+    "where": "view week",
+    "t": "27",
+    "title": "All 27 earn half a day — tap to see each one"
+   }
+  ],
+  "oilEarnButtons": [],
+  "oilModeChrome": 0,
+  "noOil": false,
+  "navTabs": []
+ },
+ "errMemberPhone": []
+}

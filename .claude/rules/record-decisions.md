@@ -1,0 +1,60 @@
+# Write his rulings down — at the moment he says them
+
+Unscoped, so it loads before any project file. The record is `DECISIONS.md` at the repo root, and
+`.claude/hooks/record-decisions.sh` fires this check on every message he sends.
+
+## The lapse this exists to stop
+
+**Owner, 21 Sep 26:** *"This is a recurring problem. Whenever we discussed something important to
+note down. I dont see u noting them down. How do we fix your behavior lapse?"*
+
+He is right, and the cause is **not forgetting — it is misclassifying.** A ruling stated mid-task
+gets read as an instruction for the work in front of you. You execute it correctly, and that feels
+like it has been handled. **The work absorbing a ruling is not the record keeping it.** Because the
+work comes out right, nothing feels missing, so the lapse repeats and is only ever caught when he
+asks.
+
+Two from one evening, both caught only because he asked: his instruction that the bug-check order
+must fire itself went into the reminder file that happened to be open at that moment, not into the
+order where it belonged; his ruling that it supersedes the earlier methods went into a commit
+message and a memory, not into the document.
+
+## The rule
+
+**The moment he states something that outlives the current task, append it to `DECISIONS.md`
+BEFORE doing the work it implies.** Not after the work, not at the end of the session, not "once I
+see where it lands".
+
+What counts: a ruling, a product decision, a correction to how you work, a preference, a "leave
+it", an explicit no, a supersession of an earlier ruling, an answer to a question you put to him.
+
+What does not: ordinary task instructions ("run the tests", "check that file", "push it"). Those
+die with the task and belong nowhere.
+
+**Every entry names the file that will now carry it — and then you make that file carry it.**
+`DECISIONS.md` is an INDEX, never the only home. A ruling recorded only there is still lost,
+because nobody reads an index while building. The home is the document the next session will
+actually open: the behaviour register, `engine-rules.md`, `ui-contracts.md`, `OUTSTANDING.md`, the
+standing order, `CLAUDE.md` §Stable decisions.
+
+**Put it where it BELONGS, not where you happen to be working.** That is the specific error both
+misses shared.
+
+## Two catches, because the moment will sometimes be missed
+
+1. **The checkpoint sweep.** Before any handoff, any commit that closes a piece of work, and any
+   report that calls something done: re-read what he actually said this session, list every ruling,
+   and check each one is in `DECISIONS.md` **and** in its real home. This is what catches what the
+   moment missed.
+2. **The report line.** Every closing report carries, beside Status / Changes / Checks / Walk:
+
+   `Rulings: <n> recorded → DECISIONS.md (D<x>–D<y>)` — or `Rulings: none this session`.
+
+   A field that cannot be filled without doing the thing makes a miss visible to HIM, not just to
+   you. That is the same shape as the `Walk:` line, and for the same reason.
+
+## If you notice a ruling you never recorded
+
+Say so plainly and record it, however old. Do not quietly fold it in — he has no way to tell the
+difference between a ruling that was captured and one that merely got done, and that ambiguity is
+the whole problem.

@@ -6957,3 +6957,216 @@ screen:
   dialog render, order, narrowing, the linked chip, the refusal), the smoke
   suite (12 checks after the `addStudent` helper, incl. a real Export
   carrying `links`). Wiring: `docs/data-schema.md` §The person link.
+
+## OIL on the schedule: the "OIL Earn" mode and the green edge (owner, 21 Sep 26)
+
+`[OIL-AUTO-REMOVE]`. Design: `docs/superpowers/specs/2026-09-21-oil-auto-remove-decisions.md`.
+Rules of record: `docs/engine-rules.md` §Weekend/PH work earns OIL. Register of every
+ruling, and the two clashes it found: `…/2026-09-21-oil-behaviour-register.md`.
+Code: `ui/oilmode.ts` (the mode + the figure reader), `ui/html.ts` (`puck`'s 7th
+argument, `oilSeatDeco`, `oilCls`/`oilChipHTML`), `ui/board.ts` + `ui/board-html.ts`
+(the bar, the row switches, the click routes), `scheduler.css` §OIL on the schedule.
+
+### Where it is drawn, and where it is not
+
+**Weekend, public-holiday and off-day-tagged days only.** Five days a week nothing is
+emitted at all — no class, no node, no attribute — so the printed schedule on an
+ordinary Tuesday is byte-identical to before and the reference parity gate is
+untouched (728/0, checked). The day's own name covers Saturday and Sunday; the
+holiday comes from Leave War through `HOOKS.oilEarningDay`.
+
+### The green edge (§2.10 — the owner chose it over a chip: "c looks good")
+
+**A LANDED REQUEST ROW CARRIES TWO KINDS OF MAN (owner, D18, 22 Sep 26).** The man who FILED the
+request wears the edge off his own answer. Anyone the SCHEDULER puts on that row beside him wears
+it as ordinary scheduled work, and each of them can be taken off on his own. So a request row can
+show one man glowing and another dark, and that is correct rather than a fault.
+
+The row's NAME must not say *"Nothing on this row can earn OIL, so there is nothing to switch
+off"* — it said that while the puck on the same line said the man earned a full day (hand pass
+finding 13). A claim row is not switchable as a whole for a different reason, and should say so:
+**"OIL is decided per person on this request."**
+
+
+- **A bar down the LEFT edge of the puck.** Full height = a full day. The BOTTOM HALF,
+  a shade paler = half a day. Height is the structural signal that survives
+  colour-blindness; the tint is the one that survives being read alone with nothing
+  to compare against.
+- **It is the MAN'S DAY — but it is SHOWN ONLY on the events that COUNTED towards it**
+  (owner, 21 Sep 26 — O-1, revising §2.10 / OIL21). There is no such thing as a
+  per-event OIL figure and one must never be invented: the measure runs first-start to
+  last-end across the whole day including the gaps, so a man on four rows that all
+  counted still shows one full day, four times. What changed is WHERE it is drawn. It
+  is withheld on any row that gave him nothing — an ⓘ info-only row, an event switched
+  off, a man the scheduler denied, a row with no written times. Green now means "this
+  row counted towards his day", which is what the mode already says when a puck is
+  tapped off. The owner asked for this on being shown an ⓘ row wearing a bar: *"I
+  thought the green should show for individual pucks on individual events?"* The
+  earlier rule — repeated on every puck he wears — drew green on rows that had given
+  him nothing, which read as the row earning.
+- **It reaches EVERY seat the schedule draws.** The week has one seat renderer; the
+  BOARD has several, and two of them — every cockpit seat (so every flying line and
+  every SC shift) and the Common Programme — built their own markup and never asked
+  for the decoration. The money was right the whole time; only the mark was missing,
+  which made flying crews read as earning nothing on a weekend. Found by the owner in
+  the running app, 21 Sep 26; no unit test saw it because every bar assertion had been
+  made on a duty desk or a ground row. Pinned by `oilmode.test.tsx` §"the green strip
+  reaches every kind of seat the board draws", which walks the seat KINDS.
+- **It survives a chip sitting on it.** The late/advisory chip is the puck's first
+  child with a solid background of its own, painted over the same 4px the stripe
+  lives in — so every man with a warning on a weekend read as earning nothing. The
+  stripe is re-drawn on the chip (`background-image`, not the shorthand, so it layers
+  over the chip's colour), which costs no node and no width.
+- **Drawn as a 4px background-gradient stripe, NOT a pseudo-element.** A puck's
+  `::before` belongs to the drag ghost's lift veil and its `::after` to the SANS edge;
+  `lift-css.test.ts` pins both. A gradient costs no node, no width and no
+  pseudo-element, so no callsign clips and the measured puck geometry is untouched.
+- **Its own colour token `--oil`, deliberately NOT `--ok`.** The crew palette already
+  draws a 2px INSET green on `.rpuck.standby .puck` meaning "on standby", and a
+  scheduler sees the palette and the board at once on a Saturday with an SC wave. The
+  OIL bar is drawn apart from it in three ways at once — a solid 4px bar, a different
+  green, and only on a day that can earn. The palette's mark is NOT changed for this.
+- **It retires the "NO OIL" marking entirely.** Green means earns; no green means earns
+  nothing; no sentence is needed. It needs teaching once — the bar carries a hover
+  title naming the figure in words.
+- **A SENTINEL puck (ALL / ALL AVAIL) wears the bar only when the people behind it
+  agree** (§7.6, as the owner refined it: *"if everyone in the all avail or all puck is
+  granted OIL, it should be green"*). Four states, and the COUNT CHIP beside the puck
+  is what tells the last two apart:
+
+  | behind the puck | the puck | the count chip |
+  |---|---|---|
+  | everyone a FULL day | full-height green bar | plain, `9` |
+  | everyone HALF a day | half-height paler bar | plain, `9` |
+  | nobody earns | no bar | plain, `9` |
+  | **mixed** | **no bar** | **green, `6 of 9 earn`** |
+
+  Tapping the chip lists each man with his own figure. The chip — not the puck — is the
+  tap target: tapping the puck already arms the slot so a scheduler can swap the
+  sentinel for real people, and that must not be taken over. The SHAPE of the list is
+  not yet ruled (the owner asked for hover on a desktop and "something equivalent on
+  the phone"); one tap target behaving the same at both widths is the standing answer
+  until he picks one.
+- **On a published day the bar reads the ISSUED evidence**, because inside the version
+  preview `DAYS[di]` IS the snapshot — so what a reader sees is the figure the money
+  actually came from, and it cannot change under him.
+
+### The mode (§2.1)
+
+- **ONE BAR, headed `THIS DAY`, carrying Templates and OIL Earn** (owner, 21 Sep 26 —
+  "Perhaps combine them into a single bar? … It can still remain on the phone at that
+  position? just merged", then "a looks better" of the two comps drawn for him). It
+  replaced two full-width panels, each with a heading and a sub-line, which cost a row
+  apiece and read as part of the schedule rather than as controls.
+  The buttons take a TINT of the app's accent — his ask, "since settings usually have
+  some blue to it. Make the buttons slightly stand out" — never the solid fill, which
+  is Done and Publish day and must keep meaning "this finishes the job".
+  **ON A DESKTOP the way IN rides the board's own action row instead** (he circled the
+  empty stretch beside Undo / Redo / History), so the bar appears there only once the
+  mode is on, where it is the blanket and the instruction rather than a second button.
+  CSS picks per width; the builder never asks, so a resize answers instantly. The
+  PHONE's top bar is untouched — §The board on a phone is ONE window still holds, and
+  nothing was added to it.
+  **A fit lesson, from the comp that was drawn before this was built:** at 390px
+  "✓ Done with OIL" ran off the right edge; it is "✓ Done". Re-draw the comp before
+  lengthening any label on this bar.
+- **Pressed, it lights and the board goes READ-ONLY for schedule editing.** In the mode
+  a tap on a puck means "take this man off this event" and a tap on an item's name means
+  "stop the whole item earning"; leaving the ordinary write controls live beside that
+  would give one gesture two meanings on the same pixel. One mode at a time, and the lit
+  button says which. It costs one term — `oilm` folded into the board's existing
+  `stoRO`/`mvRO` gate, which every write control already reads.
+- **Every puck that earns GLOWS, and wears its figure where the qualification letter
+  sits** — solid glow = a full day, an outline only = a half. The figure is live on
+  every tap, and it is not optional: the measure is first-start-to-last-end, so
+  unticking one puck often changes nothing (another event still spans the day) and
+  occasionally costs half a day because that event was holding the far end. Without the
+  figure the mode looks broken.
+- **A man the day measures NOTHING for is drawn inert** — no glow, no tap target, a
+  plain puck and a title saying why (a blank-times row, a cancelled one, a spare,
+  AVALON/BB, an ⓘ row, a dormant claim).
+- **An item's NAME is its own switch**, tinted green when it earns and struck through
+  when it does not. It replaces the row's editable name box while the mode is on.
+- **"Nothing today earns"** is the day blanket, offered only inside the mode. It masks
+  every row and person mark rather than deleting them, and the bar's own line says so in
+  words. It fills AMBER while it is on — amber is "look at this", which a day switched
+  off deserves — while the marked states below stay neutral.
+- **A sentinel opens into REAL pucks inside the mode**, or its people could not be
+  tapped at all.
+- **Colour:** the marked state is NEUTRAL. Amber means "look at this" and red means a
+  clash; a deliberate scheduler decision is neither, and borrowing either would make
+  every family day read as a problem. Green is the EARNING state, not the marked one.
+
+### The reminder
+
+A weekend or holiday day that is not published yet and has somebody down to earn carries
+an ADVISORY in the day's checks: *"This day is not published yet, so nobody earns their
+OIL for it — publish it before the day is out."* Silent on a weekday, silent on an empty
+weekend, and silent the moment the day is published. It is the backstop the owner chose
+for the one risk he accepted when all OIL moved behind publication.
+
+### The day with no leave war period (D19, 22 Sep 26)
+
+A weekend counts as a day that earns whether or not a leave war period covers it — that is
+the calendar. But the credit can only be written into a war that HOLDS the date, so a day
+outside every period promised money nobody could ever be paid: it offered OIL Earn, drew a
+full green bar, said it earned a full day, told the scheduler to publish it before the day
+was out, and then reported "No conflicts flagged for this day" while the war had no cell
+for that date.
+
+Now the day's checks carry an ADVISORY naming the year: *"There is no leave war period for
+2028, so no OIL can be paid for this day — create the period on the Leave War."* It keeps
+saying so after the day is published (publishing does not fix it, and a day that reads
+clean is the lie), and the "publish it before the day is out" reminder above stays quiet on
+such a day, because it would be telling him to do the one thing that cannot help. The same
+sentence is added to the strip at the foot of the screen when he publishes.
+
+**The way out sits beside the reason.** A SCHEDULER's copy of that check carries the one
+action any check has: *Create the 2028 period*. It makes a whole-year period named for the
+year, in DRAFT, and moves to the Leave War so he can set the bidding window — opening a
+period for bidding is his own act and is never done behind him from a schedule screen. A
+member sees the reason and is offered nothing. A year another war already reaches is
+refused with a line saying so, rather than made twice.
+
+### The mode is read-only, and where that stops (fix 5, 22 Sep 26)
+
+The board's own schedule boxes were shut when OIL Earn came in; the two crew
+panels beside them were not. A claim's row still took a typed time, still let a
+puck be dropped on it and still toggled the late mark, from inside the one
+screen that exists to stop the day changing while a scheduler decides what it
+pays. That row is drawn at all only so the mode can reach a claim with no
+schedule row of its own — an overseas duty — so it keeps its switch and its puck
+live now and shuts the rest: the times and remarks read as shut boxes, the
+Accept control is gone, and the late mark reads as a badge rather than a button.
+A puck cannot be dragged onto the day at all while the mode is on; the drag says
+why instead of doing nothing.
+
+**Sign and Publish stay open.** They are how the decisions reach the money.
+
+**Undo is not one of the doors to shut.** It already reverses an OIL tap
+correctly and that is worth keeping — it is the natural way to take back a
+mis-tap. What it must not do is keep going: with the mode open it walked back
+whatever the last change was and took a ground-programme row off the day. So
+opening the mode MARKS THE SPOT. Inside, Undo walks back OIL decisions freely
+down to that spot; the press that would reach past it leaves the mode instead
+and says so, and the press after that behaves normally, outside. Leaving the
+mode and re-entering moves the mark with it.
+
+**Unpublishing a day, and the plans selector, close the mode.** Both replace the
+day the mode is describing.
+
+### A day that stopped being a holiday (fix 4, 22 Sep 26)
+
+Only the issued schedule pays, both directions. The forward half already spoke:
+a day published as an ordinary working day that the war LATER calls a holiday
+keeps its frozen "earns nothing", and says *"This day started earning OIL after
+it was published — publish it again so the OIL lands."*
+
+The reverse half said nothing at all. A day published as a holiday that later
+stops being one goes on paying off its frozen block — which is correct, money
+comes from the issued document and not from today's calendar — while the screen
+contradicted the money and offered no way to look. It now says *"This day stopped
+being a holiday after it was published — publish it again to withdraw the OIL."*
+
+A WEEKDAY rule in practice: a Saturday cannot stop being a weekend, so the case
+this covers is a public holiday the war takes back off.

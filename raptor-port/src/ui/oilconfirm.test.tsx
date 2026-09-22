@@ -7,16 +7,26 @@
    (row.oil) in the SAME undo step as the save. Driven through the REAL
    InputEditor over the real store, the upconfirm harness idiom. The demo
    week is Mon 13 – Sun 19 Jul 26, so Jul 18/19 are the weekend. */
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
-import { initStore, setSession, notify, writeInputsBatch, HIST } from '../state/store'
+import { initStore, setSession, notify, writeInputsBatch, HIST, loadWeek } from '../state/store'
 import { INPUTS, oilAsks, inpId } from '../engine/inputs'
+import { PEOPLE } from '../engine/people'
+import { DAYS } from '../engine/data'
+import { inputItemKey, oilEvidence } from '../engine/oilev'
+import { stashClear } from '../engine/weekstash'
+import { globalUndo, installUndo, registerUndoStore, setCutoverModules, setUndoHooks } from '../undo'
+import { _resetTimeline } from '../undo/timeline'
+import { schedStore, schedPostRestore } from '../state/sched-commit'
+import { weekstashStore } from '../state/store'
+import { labelToISO } from '../leavewar/absences'
+import { toggleOilPerson, oilFigureFor } from './oilmode'
 import { HOOKS } from '../engine/hooks'
-import { setInpEdit, INPEDIT } from './pops'
+import { setInpEdit, INPEDIT, OILASK, setOilAsk } from './pops'
 import { CURPAGE, setPage } from '../state/view'
-import { commitInputEdit, draftOf, oilGate, oilAnswered } from './inputedit'
+import { commitInputEdit, draftOf, oilGate, oilAnswered, reassignInput, setInpField } from './inputedit'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -142,7 +152,13 @@ describe('the OIL ask gates a weekend/PH duty-&-commitments save', () => {
 })
 
 describe('the answers belong to the acknowledged commitment', () => {
-  const plant = (r: any) => { writeInputsBatch(() => { INPUTS.unshift({ allday: true, remarks: '', mod: 'now', yr: 2026, ...r }) }); return INPUTS[0] }
+  /* reassignInput opens the editor on the row it asks about, and INPEDIT/OILASK
+     are MODULE state that outlives this file — left set, they decided the
+     result of an unrelated calendar test three files later. Cleaning up at the
+     end of the test that sets them is not enough: a failed assertion never
+     reaches it, and the leak comes back looking like a different bug. */
+  afterEach(() => { setInpEdit(null); setOilAsk(null) })
+  const plant = (r: any) => { const row: any = { allday: true, remarks: '', mod: 'now', yr: 2026, ...r }; inpId(row); writeInputsBatch(() => { INPUTS.unshift(row) }); return INPUTS[0] }
 
   it('a retype OUT of the ask set voids them (the delete half/sans precedent)', () => {
     const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
@@ -156,6 +172,114 @@ describe('the answers belong to the acknowledged commitment', () => {
     const d = draftOf(r); d.person = 'stiff'
     expect(commitInputEdit(r, d)).toBe(true)
     expect(r.oil).toBeUndefined()
+  })
+
+  /* THE HAND PASS'S FINDING 1 (21 Sep 26), diagnosed by both red teams 22 Sep.
+     The test above proves the old man's ANSWERS are voided on a person change.
+     Nothing proved the other half of the same sentence — that the NEW man is
+     then asked. He is not: oilGate prices the new draft against the OLD man's
+     answers, finds the amount unchanged, and reports nothing to ask. The commit
+     then wipes those answers, so the new holder arrives unanswered, and the mode
+     draws unanswered with the wording of a refusal. Reproduced in the running
+     app: Talisman refused and published, the request handed to Ace, and Ace's
+     published Saturday went blank while Talisman's came back. */
+  it("a PERSON change always re-opens the question — the new man is asked, and never inherits the old holder's answers", () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
+
+    /* the control: an untouched draft asks nothing, so a bare 'ask' below
+       cannot be the gate simply asking about everything */
+    expect((oilGate(draftOf(r), r) as any).kind, 'an unchanged draft has nothing to ask').toBe('none')
+
+    const d = draftOf(r); d.person = 'stiff'
+    const g: any = oilGate(d, r)
+    expect(g.kind, 'handing the request to another man must re-open the OIL question').toBe('ask')
+    expect(g.who, 'and it must be asked about the NEW holder').toBe(PEOPLE['stiff'].cs)
+    expect(g.who, 'never about the man who has just left it').not.toBe(PEOPLE['bane'].cs)
+    expect(g.plan.length, 'the Saturday it covers is the day to ask about').toBeGreaterThan(0)
+    expect(Object.keys(g.prev || {}), "the new holder must not arrive with the old man's ticks pre-loaded").toEqual([])
+  })
+
+  /* THE SECOND DOOR (Fable M2, Codex's "any direct reassign helper"). Dragging
+     an Unavailable puck onto another man calls reassignInput, which goes STRAIGHT
+     to commitInputEdit and never near the gate — so the fix above does not reach
+     it, and the new holder still arrives unanswered and drawn as refused.
+     Refusing the drag was the cheaper repair and is the wrong one: the app draws
+     the gesture as available, and a gesture that is invited and then declined is
+     the same defect as finding G5. So the drag REASSIGNS and then raises the
+     question, through the same one-shot hand-off the bell already uses. */
+  it('the drag-reassign raises the OIL question for the new holder, instead of silently skipping it (Fable M2)', () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
+    setOilAsk(null)
+    expect(reassignInput(r.iid, 'stiff')).toBe(true)
+    expect(r.person, 'the reassign itself still happens').toBe('stiff')
+    expect(r.oil, "and the old holder's answers are still voided").toBeUndefined()
+    expect(OILASK, 'the new holder must be asked, not left unanswered').toBe(r.iid)
+
+    /* the control: a type that never asks for OIL must NOT raise the sheet */
+    setOilAsk(null)
+    const leave = plant({ person: 'bane', type: 'LL', date: 'Jul 18', s: 0, e: 1439 })
+    reassignInput(leave.iid, 'stiff')
+    expect(OILASK, 'leave does not earn OIL, so nothing is asked').toBe(null)
+
+    /* reassignInput opens the editor on the row it asks about, and INPEDIT is
+       module state that outlives this file — left set, it decided the result of
+       an unrelated calendar test three files later. Put it back. */
+    setOilAsk(null); setInpEdit(null)
+  })
+
+  /* THE HAND-BACK (Codex scenario 7, real in the code and never tested). Nothing
+     clears a scheduler's refusal when the man it names leaves the request. While
+     someone else holds it the key is dormant and harmless — but hand the request
+     BACK and it is live again, so a refusal everyone believed was cleared takes
+     the man's day a second time. Today it is masked, because he also returns
+     unanswered and reads "earns nothing" either way; the moment the gate above
+     starts asking him properly, the mask comes off and the stale deny decides it. */
+  it('handing a request away CLEARS the old holder’s decision on it, on every loaded day (Codex 7)', () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
+    const item = inputItemKey(r.iid)
+    const sat = DAYS[5]
+    sat.oild = { people: { [`bane|${item}`]: 'deny', [`stiff|${item}`]: 'allow' } }
+    /* a decision about a DIFFERENT request must survive untouched — the control */
+    sat.oild.people['bane|i:someoneelse'] = 'deny'
+
+    const d = draftOf(r); d.person = 'stiff'
+    expect(commitInputEdit(r, d)).toBe(true)
+
+    const ppl = (DAYS[5].oild || {}).people || {}
+    expect(ppl[`bane|${item}`], "the man who has left must carry no decision on a request that is no longer his").toBeUndefined()
+    expect(ppl['bane|i:someoneelse'], 'his decisions on OTHER requests are untouched').toBe('deny')
+  })
+
+  /* THE OTHER HALF OF THE HAND-BACK (Codex M1). The write-side clear above only
+     reaches days that are LOADED. One request can cover a day in a stashed week,
+     and a refusal left there would wait off-screen until that week is opened —
+     Codex's exact warning, and the reason it wanted a whole new addressing
+     concept. It is closed at READ instead, which is cheaper and provably cannot
+     disturb an issued record: oilEvidence runs only on the LIVE day (an issued
+     day carries its own frozen block, written once at publication), and it
+     already works on a COPY of the decisions.
+
+     Pruned only on a positive mismatch — the input exists and names somebody
+     else. An ORPHANED key, whose request is gone entirely, is left alone: it is
+     inert (no input, no span, nothing to decide), and dropping it would move the
+     day's evidence for no reason, which is how job 3's phantom was made. */
+  it('a decision naming somebody who no longer holds the request is inert at READ, without touching the day (Codex M1)', () => {
+    const r = plant({ person: 'stiff', type: 'Duty', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
+    const item = inputItemKey(r.iid)
+    DAYS[5].oild = { people: {
+      [`bane|${item}`]: 'deny',            // the man who USED to hold it
+      [`stiff|${item}`]: 'deny',           // the man who holds it now — the control
+      'bane|r:somerow': 'deny',            // a schedule row, nothing to do with this
+    } }
+
+    const ev = oilEvidence(5)
+    const seen = (ev.d.people || {}) as any
+    expect(seen[`bane|${item}`], 'a decision about a man who no longer holds this request must not be read').toBeUndefined()
+    expect(seen[`stiff|${item}`], "the CURRENT holder's decision still stands").toBe('deny')
+    expect(seen['bane|r:somerow'], 'a decision about a schedule row is never an assignment and is untouched').toBe('deny')
+
+    /* and the day itself is not rewritten — the prune lives in the copy */
+    expect((DAYS[5].oild.people || {})[`bane|${item}`], 'the stored day is left exactly as it was').toBe('deny')
   })
 
   it('an in-place time edit that REPRICES a positive answer voids that day (bug pass, 28 Aug 26)', () => {
@@ -276,5 +400,126 @@ describe('the bell (owner, 28 Aug 26 — the retro notification)', () => {
     inpId(row)
     await act(async () => { writeInputsBatch(() => { INPUTS.unshift(row) }) })
     expect($('#notifyBell')!.className).not.toContain('on')   // ME is bane
+  })
+})
+
+/* [OIL-XWEEK-DENY] — BOTH reviewers found this independently (Fable F1, Codex
+   rank 2), which is the strongest signal the branch produced. Job 1 claimed the
+   write-side clear plus the read-side prune "leave no live stale decision
+   anywhere". They do not. The clear walked only the LOADED week; the prune only
+   HIDES a key while somebody else holds the request. Hand the request away and
+   BACK while a DIFFERENT week is on screen — ordinary, because the Inputs page
+   is global — and the old refusal is live again the moment its week is opened.
+   A man who worked and answered Yes is paid nothing, silently; and if that day
+   was already published the live and frozen keys match, so nothing flags it. */
+describe('a refusal must not survive a hand-over made while its week is off screen', () => {
+  const SCHED_COLLS = ['days', 'sched.book', 'sched.mutes', 'sched.orig', 'sched.als', 'sched.retired', 'inputs', 'plan', 'weekstash']
+  const plant = (r: any) => { const row: any = { allday: true, remarks: 'oiltest', mod: 'now', yr: 2026, ...r }; inpId(row); writeInputsBatch(() => { INPUTS.unshift(row) }); return INPUTS[0] }
+  const handTo = (r: any, person: string) => { const d = draftOf(r); d.person = person; expect(commitInputEdit(r, d)).toBe(true) }
+  const keyOn = (di: number, k: string) => (((DAYS[di] as any).oild || {}).people || {})[k]
+  let hooks: any
+
+  /* the money half needs the two facts the Leave War normally supplies —
+     which days earn, and what date a day index is — so the figure below is the
+     real one and not a hook returning nothing */
+  beforeEach(() => {
+    hooks = { day: HOOKS.oilEarningDay, iso: HOOKS.oilDayISO }
+    HOOKS.oilEarningDay = (di: number) => di === 5 || di === 6
+    HOOKS.oilDayISO = (di: number) => labelToISO((DAYS[di] || {}).dt, 2026) || ''
+    _resetTimeline(); installUndo()
+    setUndoHooks({ postRestore: schedPostRestore })
+    registerUndoStore(schedStore, SCHED_COLLS)
+    registerUndoStore(weekstashStore, ['weekstash'])
+    setCutoverModules(['sched', 'inputs', 'plan'])
+  })
+  afterEach(() => {
+    HOOKS.oilEarningDay = hooks.day; HOOKS.oilDayISO = hooks.iso
+    _resetTimeline(); stashClear(); loadWeek('13/07/2026')
+  })
+
+  it('A → B → A across weeks: the dead refusal is gone and he is paid (Fable F1 / Codex rank 2)', () => {
+    loadWeek('13/07/2026')
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
+    const item = inputItemKey(r.iid)
+    expect(oilFigureFor(5, 'bane', item), 'he earns the Saturday before anyone touches it').toBe('FO')
+    /* the scheduler taps him off, through the mode's own writer */
+    expect(toggleOilPerson(5, 'bane', item), 'the tap takes him off').toBe(false)
+    expect(keyOn(5, `bane|${item}`), 'the mark is on the day').toBe('deny')
+    expect(oilFigureFor(5, 'bane', item), 'and it takes his day').toBe(null)
+
+    /* ...and now the scheduler is looking at a different week */
+    loadWeek('20/07/2026')
+    handTo(r, 'stiff')
+    handTo(r, 'bane')
+    writeInputsBatch(() => { r.oil = { '2026-07-18': 1 } })   // he answers Yes again
+
+    loadWeek('13/07/2026')
+    expect(keyOn(5, `bane|${item}`), 'the refusal died with the assignment it was made about').toBeUndefined()
+    expect(oilFigureFor(5, 'bane', item), 'he worked the Saturday and said Yes').toBe('FO')
+  })
+
+  it('the control — a decision about a DIFFERENT request in that week is untouched', () => {
+    loadWeek('13/07/2026')
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
+    const item = inputItemKey(r.iid)
+    ;(DAYS[5] as any).oild = { people: { [`bane|${item}`]: 'deny', 'bane|i:someoneelse': 'deny' } }
+    loadWeek('20/07/2026')
+    handTo(r, 'stiff')
+    loadWeek('13/07/2026')
+    expect(keyOn(5, `bane|${item}`), 'the one that was handed over goes').toBeUndefined()
+    expect(keyOn(5, 'bane|i:someoneelse'), 'and nothing else is touched').toBe('deny')
+  })
+
+  /* CODEX RANK 2's own requirement: one undo must put back the assignment AND
+     the off-week decision together. Half a step is worse than none — the
+     request back in his name with the refusal about it still deleted means he
+     is PAID over a scheduler's No. Driven through the Undo the app's own button
+     presses, which is the only one that carries the stash. */
+  it('ONE undo puts back the assignment AND the off-week refusal together (Codex rank 2)', () => {
+    loadWeek('13/07/2026')
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
+    const item = inputItemKey(r.iid)
+    toggleOilPerson(5, 'bane', item)
+    loadWeek('20/07/2026')
+    handTo(r, 'stiff')
+    expect(globalUndo().ok, 'the Undo button reverses it').toBe(true)
+    loadWeek('13/07/2026')
+    expect((INPUTS.find((x: any) => inpId(x) === r.iid) as any).person, 'the request is his again').toBe('bane')
+    expect(keyOn(5, `bane|${item}`), 'and so is the refusal').toBe('deny')
+  })
+})
+
+/* CODEX RANK 6 (22 Sep 26) — the in-place time cells are the FOURTH door onto
+   job 1's bug. Both of them — the board's field handler and the week's
+   contenteditable — go through `setInpField`, which goes straight to
+   commitInputEdit. The reprice rule correctly deletes an answer whose hours no
+   longer price it, and then nothing asks: the day reads unanswered and pays
+   nothing until somebody notices the member's bell. There is already a test
+   pinning the deletion; none required the question. */
+describe('editing a request’s times in place raises the OIL question it just invalidated', () => {
+  const plant = (r: any) => { const row: any = { allday: false, remarks: 'oiltest', mod: 'now', yr: 2026, ...r }; inpId(row); writeInputsBatch(() => { INPUTS.unshift(row) }); return INPUTS[0] }
+  afterEach(() => { setOilAsk(null) })
+
+  it('stretching an answered half-day to a full one asks again (Codex rank 6)', () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 8 * 60, e: 10 * 60, oil: { '2026-07-18': 0.5 } })
+    setOilAsk(null)
+    expect(setInpField(r, 'end', '1800')).toBe(true)
+    expect(r.oil, 'the answer no longer prices the hours, so it is void').toBeUndefined()
+    expect(OILASK, 'and the question comes up rather than waiting on a bell').toBe(r.iid)
+  })
+
+  it('THE CONTROL — a remarks-only edit asks nothing', () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 8 * 60, e: 10 * 60, oil: { '2026-07-18': 0.5 } })
+    setOilAsk(null)
+    expect(setInpField(r, 'rmks', 'oiltest refined')).toBe(true)
+    expect(r.oil, 'nothing about the hours moved').toEqual({ '2026-07-18': 0.5 })
+    expect(OILASK).toBe(null)
+  })
+
+  it('THE OTHER CONTROL — a time edit on a weekday asks nothing', () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 15', s: 8 * 60, e: 10 * 60 })
+    setOilAsk(null)
+    expect(setInpField(r, 'end', '1800')).toBe(true)
+    expect(OILASK).toBe(null)
   })
 })

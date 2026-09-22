@@ -27,6 +27,13 @@ const isPhone=()=>HOOKS.isPhone()
    afterSchedMutate read them. setBoardDay carries the reference's day-tab
    rule: changing the board day disarms a slot armed on another day. */
 export let SBDAY:any=null
+/* THE OIL EARN MODE (owner, 21 Sep 26 — [OIL-AUTO-REMOVE] §2.1): the day index
+   whose board is currently in OIL mode, or null. Board state, so it lives beside
+   SBDAY and is cleared by the same close — a mode left armed on a day the
+   scheduler has walked away from would keep the board read-only and keep showing
+   green pucks for a day nobody is looking at. */
+export let OILDAY:any=null
+export function setOilDay(n:any){OILDAY=n==null?null:+n;}
 /* Monotonic board-navigation generation. A swipe settles asynchronously; the
    day value alone cannot distinguish close -> reopen on the same day (ABA).
    Every real open/close/day change advances this token so an older settle can
@@ -280,6 +287,10 @@ export function setBoardDay(n:any){
      redundant close of an already-closed board (null->null). */
   if(n!==SBDAY)NAVGEN++;
   BOARDREV++;
+  /* stepping to another day leaves OIL mode: the mode belongs to ONE day (its
+     button, its glowing pucks and its blanket are all that day's), and carrying
+     it across would make the next day read-only with no button pressed. */
+  if(n!==SBDAY)OILDAY=null;
   SBDAY=n;
 }
 /* The board's full close, shared by setPage (below) and ui/board.ts's

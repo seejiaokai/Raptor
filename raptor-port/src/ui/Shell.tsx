@@ -62,6 +62,7 @@ import { AdminPage } from './AdminPage'
 import { HelpPage } from './HelpPage'
 import { SaveStatus } from './SaveStatus'
 import { bugAlert, unseenReports } from '../state/reports'
+import { oilUndoBoundary } from './oilmode'
 
 /* THE WEEK BANNER IS GONE (owner, 15 Sep 26 — item 2). First the week-STATUS
    text went (each day wears its own green issued-version tag / dashed DRAFT tag);
@@ -323,7 +324,15 @@ export function Shell() {
               list) from the shell itself, so the log is reachable without
               opening the board first. */}
           {page === 'editsched' && <div className="tb-hist">
-            <button className="abtn hbtn" id="undoBtn" title={us.undoLabel ? `Undo — ${us.undoLabel}` : 'Undo'} disabled={!us.canUndo} onClick={() => { const r = globalUndo(); if (!r.ok && r.reason) toast(r.reason, 'warn'); notify() }}><span className="bi">↶</span><span className="bl"> Undo</span></button>
+            <button className="abtn hbtn" id="undoBtn" title={us.undoLabel ? `Undo — ${us.undoLabel}` : 'Undo'} disabled={!us.canUndo} onClick={() => {
+              /* UNDO STOPS AT THE DOOR OF THE MODE (fix 5, 22 Sep 26). Inside OIL
+                 Earn, Undo walks back OIL decisions freely — taking back a mis-tap
+                 is what it is for — but the press that would reach PAST the point
+                 the mode was opened at closes the mode instead of changing the
+                 schedule underneath a screen that says the schedule cannot be
+                 changed. The next press then behaves normally, outside. */
+              if (oilUndoBoundary()) { toast('Left OIL Earn — the next undo would change the day itself', 'ok'); notify(); return }
+              const r = globalUndo(); if (!r.ok && r.reason) toast(r.reason, 'warn'); notify() }}><span className="bi">↶</span><span className="bl"> Undo</span></button>
             <button className="abtn hbtn" id="redoBtn" title={us.redoLabel ? `Redo — ${us.redoLabel}` : 'Redo'} disabled={!us.canRedo} onClick={() => { const r = globalRedo(); if (!r.ok && r.reason) toast(r.reason, 'warn'); notify() }}><span className="bi">↷</span><span className="bl"> Redo</span></button>
             <button className="abtn" id="histBtn" title="Edit history — every change this session"
               onClick={() => { setHistList('all'); notify() }}><span className="bi"><HistIcon /></span><span className="bl"> Edit history</span></button>

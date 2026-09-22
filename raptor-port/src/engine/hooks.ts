@@ -38,6 +38,24 @@ export const HOOKS = {
      Saturday and Sunday from the day's own name; the wire sharpens it to the
      squadron's real non-working days. */
   oilEarningDay: (_di: number): boolean => false,
+  /* THE DAY'S REAL DATE, and WHO AN ALL / ALL AVAIL PUCK STANDS FOR — the two
+     other facts the OIL evidence block needs and the engine cannot know
+     ([OIL-AUTO-REMOVE] §7.1/§7.3, engine/oilev.ts). The date is the week's own
+     calendar (state/store.ts owns DATES' year convention); the sentinel's people
+     are Leave War's answer (`sync.ts:availableFor`), because a posting window and
+     the squadron roster decide half of it. Unset, a day carries no OIL evidence
+     and a sentinel stands for nobody — which is exactly how the engine behaved
+     before this block existed, so a headless run is unchanged. */
+  oilDayISO: (_di: number): string => '',
+  /* THE YEAR WHOSE LEAVE WAR PERIOD IS MISSING, or '' when one covers the day
+     (owner's ruling D19, 22 Sep 26). A weekend needs no period to COUNT as a
+     day that earns — that is the calendar — but the credit can only be written
+     into a war that holds the date, so a day outside every period promised
+     money nobody could ever be paid. The engine cannot ask a war anything, and
+     the year is the war's own fact, so it arrives already named. Unset, nothing
+     is ever missing, which is how a headless run behaved before this. */
+  oilNoPeriod: (_di: number): string => '',
+  oilSentinel: (_iso: string, _win: [number, number], _day: any): string[] => [],
   isPhone: (): boolean => false,
   editMode: (): boolean => false,
   /* who is making this edit, for the edit log (editlog.ts). It arrives as a

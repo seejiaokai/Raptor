@@ -3,7 +3,7 @@
    store's notify(). The CX-with-a-reason dialog state lives here too. */
 import { DAYS } from '../engine/data'
 import { mkNote, noteText } from '../engine/note'
-import { INPUTS, inputCoversDate, inpById, inpTimeText } from '../engine/inputs'
+import { INPUTS, inputCoversDate, inpById, inpTimeText, inpId, inpLabel, inpMeta } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { waveInTime } from '../engine/events'
@@ -18,7 +18,7 @@ import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE } from './html'
+import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod } from './html'
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
@@ -31,6 +31,8 @@ import { esc } from '../state/view'
 import { notify, notifyBoard, loadWeek } from '../state/store'
 import { CURWEEK } from '../engine/waves'
 import { shiftWeek } from './weeknav'
+import { oilModeOn, dayBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilItemOn, oilItemCellHTML, oilSentinelList } from './oilmode'
+import { rowItemKey } from '../engine/oil'
 import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbSansPanel, sbUnavailPanel, labelToTitle, titleToLabel, titleToKind, sbGrip, sbNudge, rowMove, sbSortBtn, boxHTML } from './board-html'
 
 const toast = (...a: any[]) => HOOKS.toast(...a)
@@ -56,7 +58,22 @@ export function boardHTML(di: number, pv?: boolean) {
      routeFocusOut (textedit.ts) checks only canEditSched() — so a blur on
      that field would commit and markEdit in a state the week would never
      have rendered the field in at all. */
-  const stoRO = pv || !HOOKS.editMode()
+  /* OIL MODE MAKES THE BOARD READ-ONLY FOR SCHEDULE EDITING ([OIL-AUTO-REMOVE]
+     §2.1). In the mode a tap means "does this man earn from this event" and an
+     item's name is its own switch — leaving the ordinary write controls live
+     beside that would give one gesture two meanings on the same pixel, and the
+     scheduler cannot see which he is in. One mode at a time, and the lit button
+     says which. Every write control on this board already gates on the same
+     flag, so this costs one term and nothing else. */
+  const oilm = oilModeOn(di)
+  const stoRO = pv || !HOOKS.editMode() || oilm
+  /* MAY THIS READER USE THE MODE AT ALL (Fable, 21 Sep 26)? The phone's day bar
+     drew "OIL Earn" for anyone who could see the day, including a crew member
+     on a read-only board, and the click handler then silently refused it — a
+     control that does nothing. This is deliberately NOT mvRO: mvRO is true
+     *while the mode is on*, so gating the bar on it would take away the "✓ Done"
+     button and trap the scheduler in the mode. Only the editability half. */
+  const canOil = !pv && HOOKS.editMode()
   /* same gate as the stores chips: pv OR not in edit mode. A duty crew who
      still has a board open after navigating away must not get live controls. */
   const mvRO = stoRO
@@ -86,7 +103,11 @@ export function boardHTML(di: number, pv?: boolean) {
   /* The old "Drafts" button that sat here is GONE (owner, 15 Sep 26 — the plans
      selector redesign): plans are now reached from the ONE selector in the sign
      strip (planSelectorHTML → planMenu), so this panel is Templates alone. */
-  const dayTplHead = mvRO ? '' : `<div class="sb-panel dtpl"><div class="sb-ph">Templates <span class="sub">save or apply this day's structure</span><span class="gctl"><button class="mbtn add" data-daytpladd="${di}" title="Save this day, or apply a saved one">Templates</button></span></div></div>`
+  /* THE TWO PANELS ARE ONE BAR NOW (owner, 21 Sep 26) — Templates and OIL Earn
+     together in a single row, where they used to be a full-width panel each with
+     a heading and a sub-line. ui/oilmode.ts dayBarHTML draws it and explains the
+     phone/desktop split. */
+  const tplBtn = mvRO ? '' : `<button class="mbtn daybtn" data-daytpladd="${di}" title="Save this day, or apply a saved one">Templates</button>`
   /* Overall Notes and Common Programme are two separate sections now (owner, 31 Aug
      26 — "split them apart"); each is built and wrapped on its own below (sect). */
   let fly = ''
@@ -195,7 +216,39 @@ export function boardHTML(di: number, pv?: boolean) {
          is what taught this codebase that distinction. */
       fly += `<div class="sb-line${cxOn ? ' cx' : ''}${a.flag ? ' redbox' : ''}"${rowMove(`mv:ac.${key}`, mvRO)}>
         ${sbGrip(mvRO)}
-        ${boxHTML('lin', `data-bfld="${fp}.cs"${alAttr(`${fp}.cs`)}${dis}`, f.cs, '')}
+        ${oilModeOn(di) && ai === 0
+          /* in the mode the line's CALLSIGN is its own switch, exactly as a
+             ground row's name is (OIL7) — "stop this whole line earning".
+             Flying lines and SC shifts had no switch at all until 21 Sep 26,
+             so the only events a scheduler could stop earning were the desks
+             and the programmes (owner, found by hand).
+
+             ONCE PER FORMATION, NOT ONCE PER AIRCRAFT (`ai === 0`; hand pass
+             finding 3, and Codex M2 which found the real reach). The switch
+             addresses the FORMATION (`f.rid`), but this block runs per
+             aircraft, so a formation drew one switch on every row it held —
+             an SC shift on this Saturday drew SIX of the same switch, and
+             nine of the day's switches sat on rows with nobody on them at
+             all. Pressing the one beside an empty spare row did not switch
+             off that row: it switched off the whole shift, and the MAIN crew
+             two rows above lost their day with nothing on screen connecting
+             the two. It is not an SC defect — every multi-aircraft formation
+             had it, which is why the guard is here on the generic renderer
+             and not on a kind check. The later rows keep the ordinary
+             disabled box, so the line still reads the same.
+
+             THE PLAN'S SECOND CLAUSE — "and never on a line nobody is on" —
+             IS DELIBERATELY NOT BUILT (Fable, 22 Sep 26, and it is right).
+             OIL7 says a switch covers a man added LATER, which is exactly why
+             an empty ordinary row keeps its one switch. The empty SC spare
+             rows stop drawing one here only because the item is the FORMATION,
+             not the row. Measured after this change: 14 switches, 14 distinct
+             items, none duplicated, and 4 still on rows with nobody on them —
+             correctly. */
+          ? oilItemCellHTML(di, rowItemKey(f.rid), f.cs, 'lin')
+          /* in the mode the later rows say WHERE the switch went, rather than
+             leaving a scheduler on row two wondering why his row has none */
+          : boxHTML('lin', `data-bfld="${fp}.cs"${alAttr(`${fp}.cs`)}${dis}${oilModeOn(di) ? ' title="Part of the line above — its OIL switch is on the first row"' : ''}`, f.cs, '')}
         ${boxHTML('msn', `data-bfld="${fp}.msn"${alAttr(`${fp}.msn`)}${dis}`, f.msn, '')}
         <div class="sb-bcell">${brSug}<input class="tm" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis} value="${esc(fmtHM(f.br))}"></div>
         <input class="tm" data-bfld="${fp}.to"${alAttr(`${fp}.to`)}${dis} value="${esc(fmtHM(f.to))}">
@@ -294,7 +347,7 @@ export function boardHTML(di: number, pv?: boolean) {
   const secGrip = '<span class="secgrip" title="Drag to reorder this section" aria-label="Reorder this section">⠿</span>'
   const wrapSec = (html: string, k: string) =>
     `<div class="sb-sec" data-secmove="${di}.${k}">${html.replace(/(<div class="(?:sb-ph|ap-h)\b[^>]*>)/, `$1${secGrip}`)}</div>`
-  let b = dayTplHead + secOrder(d).map((k: string) =>
+  let b = dayBarHTML(di, tplBtn, canOil) + secOrder(d).map((k: string) =>
     mvRO ? (sect[k] || '') : (sect[k] ? wrapSec(sect[k], k) : '')).join('')
   return b
 }
@@ -384,6 +437,14 @@ export function boardWarnHTML(di: number) {
       wh += `<div class="wln ${w.sev}${on}${sel}" data-wdi="${di}" data-wix="${ix}" title="Jump to the puck that caused this">`
         + `<span class="wln-t">${wtext(w)}</span>`
         + (canMute ? `<button class="wln-mute" data-woff="${di}.${ix}" title="Hide this check — it comes back if the situation changes">✕</button>` : '')
+        /* THE WAY OUT, BESIDE THE REASON, HERE TOO (owner's ruling D19; walk
+           find, 22 Sep 26). The week's list already carried this and the
+           board's did not, so the surface that tells a scheduler the credit can
+           never land was the one that left him to go and find the Leave War
+           himself. Same helper as the week (mkPeriod), so the button and the
+           sentence cannot name different years, and no other check grows an
+           action. */
+        + (mkPeriod(w, di) ? `<button class="wln-act" data-mkperiod="${esc(mkPeriod(w, di))}" title="Creates the ${esc(mkPeriod(w, di))} leave war period in draft and takes you to the Leave War to set its bidding window">Create the ${esc(mkPeriod(w, di))} period</button>` : '')
         + `</div>`
     })
     if (muted.length) {
@@ -650,6 +711,38 @@ export function sortAllCommit() {
    with no change to how any of them behave. */
 const act = (di: any, msg: string) => { logAction(di, msg); return toast(msg) }
 
+/* THE ROW AS THE SCHEDULER READS IT, for the day's history. An OIL decision is
+   addressed by an internal row id, which means nothing to anyone reading the
+   history a week later — and until now an OIL decision left NO history at all,
+   so a man asking why his balance was short could not be answered (Fable,
+   21 Sep 26). The mode has already drawn the row's name in its item cell, so
+   the name is on the page; this reads it back rather than re-deriving it.
+   Matched by attribute rather than by selector so no key needs escaping. */
+const oilItemName = (di: any, item: string): string => {
+  if (!item) return 'this event'
+  /* A CLAIM IS NAMED BY WHAT IT IS, never by what happens to be drawn in its
+     cell (hand pass finding 14, 21 Sep 26). A request's item cell holds the
+     man's own puck, so reading the page back produced lines like "Sidewinder
+     earns nothing from SidewinderFO" — which reads as a glitch on the one
+     record that has to answer "why was my balance short?". The type is what the
+     app calls it everywhere else, so the history calls it that too. */
+  if (item.startsWith('i:')) {
+    const r = (INPUTS as any[]).find(x => x && String(inpId(x)) === item.slice(2))
+    /* the LONG name the type carries ("overseas duty"), not the two-letter code
+       on the row — a history line is read cold, a week later, by someone who
+       was not there. An "Other" has no long name and reads by what was typed on
+       it, which is exactly what inpLabel already does. */
+    const meta: any = r ? inpMeta(r.type) : null
+    const t = r ? String((meta && meta.name) || inpLabel(r) || '').trim() : ''
+    if (t) return t
+  }
+  const all = document.querySelectorAll(`[data-oilitem][data-oilday="${+di}"]`)
+  for (const el of Array.from(all)) {
+    if ((el as HTMLElement).dataset.oilitem === item) return ((el.textContent || '').trim()) || 'this event'
+  }
+  return 'this event'
+}
+
 /* WHAT A DELETED ROW HELD, said once — the log and the toast are the same
    string (act, above), so a description has to stay short. Free text is
    clipped to ~60 chars with a trailing ellipsis; empty parts are dropped
@@ -855,7 +948,7 @@ export function boardMbtn(e: MouseEvent) {
   if (ds.pinfo != null) {
     const [di, ri] = ds.pinfo.split('.').map(Number); const x = DAYS[di].allhands[ri]
     x.info = !x.info; markEdit(`ap:${di}.${ri}.prog`); afterSchedMutate(); notify()
-    return toast(x.info ? 'Info only — this item is no longer checked against the rules' : 'This item is checked against the rules again')
+    return toast(x.info ? 'Info only — this item is no longer checked against the rules, and earns nobody any OIL' : 'This item is checked against the rules again')
   }
   /* ---- duty / sim / ground rows (the panels added Aug 26) ---------------
      Same shapes as the p* programme branches: adds mark the new row's name
@@ -876,6 +969,22 @@ export function boardMbtn(e: MouseEvent) {
   }
   /* the board's own "Templates" button, at the top of the board content —
      see dayTplMenu above and the boardHTML comment on where the button lives. */
+  /* the OIL Earn button, and the day blanket once the mode is on. A mode switch
+     writes nothing — it only changes what the board draws and what a tap means —
+     so it needs no funnel; the blanket IS a write and goes through it. */
+  if (ds.oilmode != null) {
+    const di = +ds.oilmode
+    const on = toggleOilMode(di)
+    notify()
+    return toast(on ? 'OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning' : 'Back to editing the schedule')
+  }
+  if (ds.oilblank != null) {
+    const di = +ds.oilblank
+    const on = !oilBlanketOn(di)
+    setOilBlanket(di, on)
+    notify()
+    return act(di, on ? 'Nothing on this day earns OIL — anything added later is covered too' : 'This day can earn again — the marks underneath are back')
+  }
   if (ds.daytpladd != null) {
     const di = +ds.daytpladd
     return dayTplMenu(t, di)
@@ -995,7 +1104,7 @@ export function boardMbtn(e: MouseEvent) {
   if (ds.grinfo != null) {
     const [di, ri] = ds.grinfo.split('.').map(Number); const x = DAYS[di].ground[ri]
     x.info = !x.info; markEdit(`gr:${di}.${ri}.prog`); afterSchedMutate(); notify()
-    return toast(x.info ? 'Info only — this item is no longer checked against the rules' : 'This item is checked against the rules again')
+    return toast(x.info ? 'Info only — this item is no longer checked against the rules, and earns nobody any OIL' : 'This item is checked against the rules again')
   }
 }
 
@@ -1109,6 +1218,51 @@ export function boardArmClick(e: MouseEvent) {
   if (!canEditSched() || !HOOKS.editMode()) return
   if (view.DPREV.has(view.SBDAY as any)) return   // same stale-markup guard as boardMbtn
   const t = e.target as HTMLElement
+  /* OIL MODE OWNS EVERY TAP ON THE DAY IT IS ON ([OIL-AUTO-REMOVE] §2.1).
+     FIRST, before the role pick and before every arm branch: in the mode a tap
+     on a puck means "take this man off this event" and a tap on an item's name
+     means "stop the whole item earning" — never arm a slot, never plant a
+     person, never open a pick-list. The board renders read-only in the mode, so
+     nothing below would fire anyway; this is the belt to that braces, and it is
+     what makes the two gestures impossible to confuse. */
+  const opk = t.closest('[data-oilp]') as HTMLElement | null
+  if (opk) {
+    const di = +(opk.dataset.oilday || -1), person = opk.dataset.oilp!, item = opk.dataset.oilitem || ''
+    if (!oilModeOn(di)) return
+    /* UNDER A MASK THIS GESTURE HAS NO MEANING, and letting it through destroyed
+       the decision the mask was hiding (Astra + Fable, 21 Sep 26). The item's own
+       switch has always refused a tap under the blanket; the person's puck did
+       not. Say which mask is on, so the way to change it is obvious. */
+    if (!oilItemOn(di, item)) {
+      e.stopPropagation()
+      return toast(oilBlanketOn(di)
+        ? 'Nothing on this day earns — turn that off first'
+        : 'This event earns nobody any OIL — turn the event back on first')
+    }
+    const on = toggleOilPerson(di, person, item)
+    notify(); e.stopPropagation()
+    const cs = (PEOPLE[person]||{}).cs||person, nm = oilItemName(di, item)
+    return act(di, on ? `${cs} earns OIL from ${nm} again` : `${cs} earns nothing from ${nm}`)
+  }
+  /* the sentinel's count chip: who is behind this puck, and what each of them
+     earns (§7.6 / §2.7). Read-only, so it works outside the mode too — on the
+     issued schedule it lists the FROZEN membership, which is the whole reason
+     that membership is frozen. The SHAPE of this list is not yet ruled: the
+     owner asked for hover on a desktop and "something equivalent on the phone",
+     and one tap target that behaves the same on both is the cheapest honest
+     answer until he picks one. */
+  const osn = t.closest('[data-oilsent]') as HTMLElement | null
+  if (osn) { e.stopPropagation(); return toast(oilSentinelList(+(osn.dataset.oilday || -1), osn.dataset.oilsent || '')) }
+  const oit = t.closest('[data-oilitem]') as HTMLElement | null
+  if (oit) {
+    const di = +(oit.dataset.oilday || -1), item = oit.dataset.oilitem || ''
+    if (!oilModeOn(di)) return
+    if (oilBlanketOn(di)) { e.stopPropagation(); return toast('Nothing on this day earns — turn that off first') }
+    const on = toggleOilItem(di, item)
+    notify(); e.stopPropagation()
+    const nm = oilItemName(di, item)
+    return act(di, on ? `${nm} earns OIL again` : `${nm} earns nobody any OIL`)
+  }
   /* the duty ROLE cell offers its pick-list (owner, 10 Aug 26). Before the
      arm branches, because a ROLE cell is not a seat and must not be treated
      as one — and BEFORE nothing else, so the box still takes typing exactly
@@ -1687,6 +1841,15 @@ export function boardDayStep(n: number) {
 export function boardWeekStep(dir: number) {
   const di = view.SBDAY
   if (di == null) return
+  /* THE MODE BELONGS TO ONE DAY OF ONE WEEK (Fable, 21 Sep 26). Stepping the
+     board left OIL mode switched on at the SAME index of the NEW week: if that
+     day cannot earn, neither way out is drawn — the desktop button and the day
+     bar's own button are both gated on the day earning — while the board stays
+     read-only. Every field greyed, no Done, nothing to do but close the board.
+     Leaving the mode on a week step is what the scheduler means anyway; he
+     stepped away from the day he was deciding about. boardTab clears it only
+     when the day INDEX changes, which a week step does not. */
+  view.setOilDay(null)
   loadWeek(shiftWeek(CURWEEK, dir))
   boardTab(Math.min(di, DAYS.length - 1))
 }

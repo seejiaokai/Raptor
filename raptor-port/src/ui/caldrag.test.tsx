@@ -16,6 +16,7 @@ import { PLANPUCKS, addPlanPuck, addPuckRow, togglePuckPerson } from '../state/p
 import { HOOKS } from '../engine/hooks'
 import { commitChipMove, initCalDrag } from './caldrag'
 import { markLand, pendingLand } from './lift'
+import { OILASK, setOilAsk } from './pops'
 
 /* jsdom 30 (this repo's version, verified directly) constructs a full
    PointerEvent — clientX/clientY, pointerId, pointerType and isPrimary all
@@ -380,5 +381,47 @@ describe('initCalDrag — the pointer machine', () => {
       expect(document.querySelector('.ic-ghost')).toBeFalsy()
       expect(row.date).toBe('Jul 20') // untouched — a cancelled gesture commits nothing
     } finally { off() }
+  })
+})
+
+/* CODEX RANK 5 (22 Sep 26) — the calendar drag is a THIRD door onto job 1's
+   bug. It goes straight to commitInputEdit, so nothing raises the OIL question
+   when the move leaves a covered day unanswered: a Saturday answered Yes,
+   dragged to the Sunday, keeps the Saturday answer (which the row no longer
+   covers, so it is inert) and arrives on a Sunday nobody has answered for. The
+   day pays nothing until somebody notices the member's bell. The drag-reassign
+   door was closed this way; this one was not. */
+describe('the calendar drag raises the OIL question when the move leaves a day unanswered', () => {
+  const answered = () => {
+    const row: any = { person: 'bane', date: 'Jul 18', allday: true, type: 'Duty', remarks: '', mod: 'now', yr: 2026, oil: { '2026-07-18': 1 } }
+    inpId(row); INPUTS.unshift(row); return row
+  }
+
+  afterEach(() => { setOilAsk(null) })
+
+  it('a request answered for the Saturday, dragged to the Sunday, asks about the Sunday (Codex rank 5)', () => {
+    const row = answered()
+    setOilAsk(null)
+    expect(commitChipMove({ kind: 'input', iid: row.iid }, '2026-07-18', '2026-07-19')).toBe(true)
+    expect(row.date, 'it did move').toBe('Jul 19')
+    expect(OILASK, 'and the question came up for it, there and then').toBe(row.iid)
+  })
+
+  it('THE CONTROL — a move that leaves nothing to ask about is silent', () => {
+    /* an ordinary weekday to another weekday: no covered day can earn, so
+       there is no question and the drag must not interrupt anybody */
+    const row: any = { person: 'bane', date: 'Jul 14', allday: true, type: 'Duty', remarks: '', mod: 'now', yr: 2026 }
+    inpId(row); INPUTS.unshift(row)
+    setOilAsk(null)
+    expect(commitChipMove({ kind: 'input', iid: row.iid }, '2026-07-14', '2026-07-15')).toBe(true)
+    expect(OILASK).toBe(null)
+  })
+
+  it('THE OTHER CONTROL — a type that never asks is never asked about', () => {
+    const row: any = { person: 'bane', date: 'Jul 17', allday: true, type: 'LL', remarks: '', mod: 'now', yr: 2026 }
+    inpId(row); INPUTS.unshift(row)
+    setOilAsk(null)
+    expect(commitChipMove({ kind: 'input', iid: row.iid }, '2026-07-17', '2026-07-18')).toBe(true)
+    expect(OILASK).toBe(null)
   })
 })

@@ -5,7 +5,7 @@
    and retargets the legacy Undo/Redo entry points at globalUndo/globalRedo (§9).
 */
 export {
-  installUndo, globalUndo, globalRedo, undoState, mayReverse,
+  installUndo, globalUndo, globalRedo, undoState, undoMark, mayReverse,
   registerUndoStore, setCutoverModules, setUndoHooks,
   subscribeUndo, getUndoVersion,
 } from './timeline'

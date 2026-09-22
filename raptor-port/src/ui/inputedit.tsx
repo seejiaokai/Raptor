@@ -26,13 +26,14 @@ import { PEOPLE, isSpecial } from '../engine/people'
 import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { logAction, elogSweep } from '../engine/editlog'
-import { writeInputsBatch, notify, protectedDates, inputProtected } from '../state/store'
+import { writeInputsBatch, writeInputsBatchWith, weekstashStore, notify, protectedDates, inputProtected } from '../state/store'
 /* The Leave War seam (sync.ts is the one crossing point, CLAUDE.md §The Leave
    War tab): retracting a synced row's war cells when it is edited or deleted
    here — not a new seam, a Raptor-side caller of the existing one. */
 import { oilAskPlan } from '../leavewar/sync'
 import { leaveKey } from '../leavewar/absences'
-import { inputOilAmt } from '../engine/oil'
+import { inputOilAmt, inputItemKey } from '../engine/oil'
+import { clearOilPersonDecisions } from './oilmode'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { stashKeys, stashGet } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
@@ -654,7 +655,18 @@ export function oilGate(draft: any, prevRow: any, force = false):
   if (!n) return { kind: 'refused' }
   const plan = oilAskPlan({ person: draft.person, date: n.date, endDate: n.endDate, yr: baseYear(), allday: !!draft.allday, s: n.s, e: n.e })
   if (!plan.length) return { kind: 'none' }
-  const prev = (prevRow && prevRow.oil) || {}
+  /* THE ANSWERS BELONG TO A MAN, NOT TO THE REQUEST (hand pass finding 1,
+     21 Sep 26; both red teams 22 Sep). Pricing a NEW holder's plan against the
+     OLD holder's answers finds the amount unchanged and reports nothing to ask
+     — so the new man was never asked, the commit below then voided those
+     answers anyway (its own comment already said "the new person must be asked
+     again"), and he arrived unanswered. Unanswered is drawn with the wording of
+     a refusal, so a man who worked was shown as having been refused and paid
+     nothing, silently. Reproduced end to end: Talisman refused and published,
+     the request handed to Ace, Ace's published Saturday blank and Talisman's
+     back. A person change is therefore ALWAYS stale, and the sheet opens with
+     NO ticks pre-loaded — the new holder answers for himself. */
+  const prev = (prevRow && prevRow.person === draft.person && prevRow.oil) || {}
   const stale = plan.some(p => prev[p.iso] == null || (prev[p.iso] !== 0 && prev[p.iso] !== p.amt))
   if (!force && prevRow && !stale) return { kind: 'none' }
   return {
@@ -674,6 +686,22 @@ export function oilAnswered(row: any): boolean {
   if (!row || !oilAsks(row.type) || row.acc === 'r') return false
   const prev = (row.oil || {}) as Record<string, number>
   return oilAskPlan(row).some(p => prev[p.iso] != null)
+}
+/** THE FIRST APPLICABLE DAY NOBODY HAS ANSWERED FOR, or '' (Fable F6,
+ *  22 Sep 26). The mirror of `oilAnswered`, and the sign that was missing
+ *  everywhere outside the mode: when a scheduler hands a request over and then
+ *  cancels the question, the new holder is correctly left unanswered — and the
+ *  row carried no mark, the warning list said nothing, and the bell is
+ *  per-member, so it lit for the man and not for the scheduler who made the
+ *  change. He would never have found it.
+ *
+ *  Derived, like the bell: answer the day, move the request or retype it out of
+ *  the ask set and the row stops matching, with nothing to clear. */
+export function oilUnansweredDay(row: any): string {
+  if (!row || !oilAsks(row.type) || row.acc === 'r') return ''
+  const prev = (row.oil || {}) as Record<string, number>
+  const p = oilAskPlan(row).find(x => prev[x.iso] == null)
+  return p ? p.iso : ''
 }
 /* the one-line standing beside the button: how many applicable days the
    record currently credits */
@@ -932,7 +960,14 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
     return false
   }
-  const ok = writeInputsBatch(() => {
+  /* THE WEEKSTASH JOINS THE BATCH WHEN THE HOLDER MOVES ([OIL-XWEEK-DENY],
+     22 Sep 26). Handing a request over now clears the old holder's refusal out
+     of weeks nobody is looking at as well, and those live in the stash, which
+     `histSnap` does not serialise. Without enlisting it, one undo would put the
+     request back in his name while the refusal it was made about stayed
+     deleted — half a step, which is worse than none. Enlisted only on a person
+     change, so every other edit keeps the cheaper single-store batch. */
+  const ok = (draft.person !== r.person ? (fn: () => void) => writeInputsBatchWith([weekstashStore], fn) : writeInputsBatch)(() => {
     /* A Leave-War-synced row (owner, 17 Aug 26 — full two-way): editing the
        LEAVE ITSELF — its person, type, dates or which half — changes the war
        too. The old grant is WITHDRAWN first, while the row still says what the
@@ -1032,6 +1067,13 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        re-checks coverage live. reassignInput and the calendar drag both land
        here, so they inherit the person rule. */
     if (r.oil && (!oilAsks(r.type) || r.person !== wasPerson)) delete r.oil
+    /* ...and the SCHEDULER's own override on this request dies with the
+       assignment too (Codex scenario 7, 22 Sep 26). Voiding the member's
+       answers above was only half of it: a refusal the scheduler made about the
+       old holder stayed on the day, dormant while someone else held the
+       request, and live again the moment it was handed back. Same batch, so it
+       is one undo step with the person change and the relink. */
+    if (r.person !== wasPerson) clearOilPersonDecisions(String(wasPerson || ''), inputItemKey(String(inpId(r))))
     /* AND a positive answer whose HOURS no longer price what was approved is
        void per day (bug pass, 28 Aug 26): the three gated editors re-ask via
        oilGate, but the board's and week's IN-PLACE cells commit straight
@@ -1159,6 +1201,50 @@ export function reassignInput(iid: any, personId: any) {
   draft.person = personId
   if (!commitInputEdit(r, draft)) return false
   HOOKS.toast(`${PEOPLE[personId].cs} is now unavailable instead of ${was}`, 'ok')
+  /* THE SECOND DOOR ONTO THE SAME BUG (Fable M2, 22 Sep 26). This helper goes
+     straight to commitInputEdit, so the gate's own person-change rule never
+     runs and the new holder arrives unanswered — which the mode then draws with
+     the wording of a refusal. Refusing the drag was the cheaper repair and is
+     the wrong one: the app DRAWS this gesture as available, and inviting a
+     gesture then declining it is the defect G5 is about. So the reassign stands
+     and the question follows. */
+  askOilIfPending(r)
+  return true
+}
+
+/** THE QUESTION FOLLOWS A SAVE THAT LEFT A DAY UNANSWERED — the one body, so
+ *  every door that writes an input straight through `commitInputEdit` raises it
+ *  the same way and none of them can drift (Codex ranks 5 and 6, 22 Sep 26).
+ *
+ *  Three doors reach it: the drag-reassign above, the calendar's date drag, and
+ *  the two in-place time cells (both of which go through `setInpField`, so
+ *  neither the board's handler nor the week's contenteditable can bypass this).
+ *  Each of them correctly voids an answer their edit made stale — a new holder
+ *  has not answered, a moved date was never answered for, hours that no longer
+ *  price an answer kill it — and each of them then relied on the member's
+ *  notification bell being noticed later. The bell is per-member, so the
+ *  SCHEDULER who made the change sees nothing at all, and the day pays nothing
+ *  until somebody happens to look.
+ *
+ *  THE SPLIT THIS SETTLES: Fable reads the bell as the 28 Aug design for these
+ *  two doors and Codex reads them as missing asks. The evidence that decides it
+ *  is the app's own behaviour on the door that WAS closed — the drag-reassign
+ *  asks immediately, on the same surface, with no navigation. Two gestures of
+ *  the same kind, on the same record, answered two different ways is the drift
+ *  the one-body rule exists to stop. The bell remains, for the member and for
+ *  everything nobody was standing in front of.
+ *
+ *  It asks only where there is something to ask: an ask-set type, and a gate
+ *  that reports a covered day with no answer that prices it. A remarks-only
+ *  edit, a weekday move and a type that never earns all pass through silently.
+ *  The editor is mounted at App level, so the sheet opens over whatever surface
+ *  the gesture happened on — no navigation, unlike the bell, which is taking a
+ *  member somewhere. */
+export function askOilIfPending(r: any): boolean {
+  if (!r || !oilAsks(r.type)) return false
+  const g: any = oilGate(draftOf(r), r)
+  if (g.kind !== 'ask') return false
+  setOilAsk(r.iid); setInpEdit(r); notify()
   return true
 }
 
@@ -1211,7 +1297,12 @@ export function setInpField(inp: any, field: 'str' | 'end' | 'rmks', text: any) 
       d.allday = false; d.sTime = hhmm(s); d.eTime = hhmm(e); d.half = halfOf(s, e)
     }
   }
-  return commitInputEdit(inp, d)
+  const ok = commitInputEdit(inp, d)
+  /* the FOURTH door (Codex rank 6): the reprice rule above has just voided any
+     answer these hours no longer price, so the question follows the save rather
+     than waiting on a bell the scheduler cannot even see */
+  if (ok) askOilIfPending(inp)
+  return ok
 }
 /* Deleting an ACCEPTED input used to leave its ground row on the programme for
    good — nothing pointed at it any more, so it could never be removed and it

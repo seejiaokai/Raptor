@@ -2601,3 +2601,63 @@ review already priced out is the exact shape to re-check.
 explicit instructions must be surfaced and re-checked at the moment of deviation, not silently
 absorbed — the review that blessed the plan often already weighed the alternative, and the deviation
 tends to carry costs (hidden bugs, undoing the plan's intent) that only resurface at inspection.
+
+### Observation 170: a unit test that REPLACES the object hides a bug in code that MUTATES it
+
+**Status:** OPEN
+**Date:** 2026-09-21
+**Session context:** Building a feature where a day record gains a new sub-object that is copied into an immutable published snapshot; the UI mutates that sub-object in place.
+**Skill:** test-driven-development (and the project's own hand-test rule)
+**Type:** open-source
+**Phase/Area:** writing the regression test / choosing the fixture's write path
+
+**Issue:** The engine froze a copy of a record into an immutable snapshot, but the "copy" aliased the live object. 5326 unit tests passed, including a purpose-written test for exactly this rule, because every fixture set the state by ASSIGNING a fresh object (`day.decisions = {...}`) while the production UI MUTATES the existing one (`day.decisions.people[k] = 'deny'`). Assignment breaks the alias; mutation exposes it. The bug — an already-published document silently rewriting itself, so the change could never be amended — was found in the first ten minutes of driving the real app, not by the suite.
+
+**Suggested improvement:** When a test sets up state that production code reaches through a different write path, the fixture should USE that path, or mutate the same way it does. Concretely: prefer calling the production writer in the fixture; where that is impractical, mutate in place rather than replace, because replacement is the weaker case and passes for free. A second, cheaper guard for the same class: any function that returns part of a mutable record for storage elsewhere should copy it at the boundary, and a test should assert the two diverge after a mutation.
+
+**Principle:** A fixture that reaches the state by a different route than production tests a different program. Aliasing bugs are invisible to any test that assigns where the app mutates — so the setup's write path is part of what the test asserts, not an implementation detail of the test.
+
+### Observation 171: "hand-test in the running app" earns its cost on integration seams, not on logic
+
+**Status:** OPEN
+**Date:** 2026-09-21
+**Session context:** A project rule requires driving the built app and walking an enumerated list of rulings after every build; this session did it after the unit suite was green.
+**Skill:** verification-before-completion
+**Type:** open-source
+**Phase/Area:** what "verified" means before claiming completion
+
+**Issue:** The unit suite proved every rule in isolation and missed the one defect, which lived in the seam between a UI writer and an engine reader. The hand test found it immediately, because the app is the only place both halves run against the same object. It also surfaced a second, non-defect judgement call (a summary chip counting a figure earned elsewhere) that no unit test would have framed as a question at all.
+
+**Suggested improvement:** State the division explicitly in the verification guidance: unit tests own rules and branches; the live-app pass owns SEAMS — shared mutable state, a writer and a reader that never meet in a test, identity/aliasing, and anything whose correctness depends on the order real gestures happen in. Recommend budgeting the live pass on that basis rather than treating it as a final formality, and recommend that whatever the live pass finds gets a unit test written in the production write path (see the aliasing observation above).
+
+**Principle:** Passing tests and a working program are different claims. The live pass is not a slower repeat of the suite — it is the only check that exercises the seams between components the suite stubs apart, so it should be scoped to those seams rather than to re-proving the logic.
+
+### Observation 172: a hidden element is still a CHILD — layout gates measure the DOM, not the picture
+
+**Status:** OPEN
+**Date:** 2026-09-21
+**Session context:** Adding two controls to a toolbar at desktop width only, hidden by CSS on a phone, in a project whose geometry gate asserts "every control on this bar shares one line".
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** making a change pass an existing layout assertion honestly
+
+**Issue:** The two new buttons were hidden on a phone with `display:none`, and a manual height measurement confirmed the bar had not grown. The layout gate still failed: it enumerated the bar's child elements and counted distinct `top` values, and a `display:none` child reports top 0 and width 0 — a second "row" and a zero-width "control". The tempting fix was to filter hidden elements out of the assertion, which would have weakened a gate that was correct. The right fix was structural: wrap the conditional controls in a `display:contents` span so they lay out identically at the width where they show, and are not children of the measured element at the width where they do not.
+
+**Suggested improvement:** When a change must satisfy an existing structural/layout assertion, treat the assertion as the specification and change the MARKUP, not the assertion. Note the specific trap: `display:none` removes an element from the picture but not from the parent's child list or from `querySelectorAll`, so any measurement that enumerates children sees it. `display:contents` on a wrapper is the tool — it removes the wrapper from layout while letting a media query remove the whole group.
+
+**Principle:** Hiding is not removing. A test that measures structure will see what the eye does not, and when it does, the honest move is to fix the structure rather than to teach the test to look away.
+
+### Observation 173: draw the comp in the product's own components, not in the product's own variables
+
+**Status:** OPEN
+**Date:** 2026-09-21
+**Session context:** A project rule requires showing a visual mockup before writing product code. The first attempt hand-wrote CSS using the app's colour variables; the user's reaction was "why is the font and design so weird".
+**Skill:** impeccable
+**Type:** open-source
+**Phase/Area:** producing a pre-build visual comp
+
+**Issue:** The comp imported the real stylesheet and used the real colour tokens, and still looked nothing like the product: the type ramp, letter-spacing, border radii, paddings and the actual accent hue all live in the component CLASSES, not in the variables. Hand-rolled boxes with correct colours read as a different product, and the user could not judge the proposal through the noise. Redrawing it out of the real class names — inside a real screen, replacing the real nodes — was both faster and immediately judgeable, and it caught a genuine defect (a label overflowing at the narrow width) that the hand-rolled version had hidden by using a different font.
+
+**Suggested improvement:** For a pre-build comp, build from the product's own class names and, where possible, inject it into a running screen so the surrounding chrome is real too. Reach for hand-written CSS only for the genuinely new element, and even then inherit from the nearest existing class. Treat "borrowed the colour variables" as NOT the same as "used the design system".
+
+**Principle:** A mockup's job is to be judged, so it has to be wrong in no way the reviewer can see. Tokens are the smallest part of a design system; the components carry the rest, and a comp that skips them tests the reviewer's imagination instead of the proposal.

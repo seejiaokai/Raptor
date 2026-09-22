@@ -1,0 +1,2065 @@
+{
+ "beforePublish": {
+  "waves": [
+   {
+    "label": "WAVE 1",
+    "f": [
+     {
+      "cs": "VIPER",
+      "to": "10:00",
+      "ld": "11:00",
+      "ac": [
+       "Ranger/Echo"
+      ]
+     },
+     {
+      "cs": "COBRA",
+      "to": "14:00",
+      "ld": "15:30",
+      "ac": [
+       "Ridge/Grit"
+      ]
+     }
+    ]
+   },
+   {
+    "label": "SC",
+    "kind": "sc",
+    "f": [
+     {
+      "cs": "SC",
+      "to": "06:00",
+      "ld": "14:00",
+      "ac": [
+       "Piston/Basher:MAIN",
+       "/:MAIN",
+       "Cobra/Ledger:SPARE",
+       "/:SPARE"
+      ]
+     },
+     {
+      "cs": "SC",
+      "to": "13:00",
+      "ld": "19:00",
+      "ac": [
+       "/:MAIN",
+       "/:MAIN",
+       "/:SPARE",
+       "/:SPARE"
+      ]
+     }
+    ]
+   },
+   {
+    "label": "AVALON",
+    "kind": "avalon",
+    "f": [
+     {
+      "cs": "AV",
+      "to": "09:00",
+      "ld": "12:00",
+      "ac": [
+       "Hunter/Quill:MAIN",
+       "/:MAIN",
+       "/:SPARE",
+       "/:SPARE"
+      ]
+     }
+    ]
+   }
+  ],
+  "duties": [
+   {
+    "label": "Duty",
+    "rows": [
+     "SDO|0800-1800|Fable",
+     "SXO|-|Warden",
+     "OPS DESK|07:00-07:00|Outlaw"
+    ]
+   },
+   {
+    "label": "AVALON",
+    "sa": "avalon",
+    "rows": [
+     "SXO|09:00-12:00|Saint",
+     "OPS O|19:00-07:00|",
+     "RUNNER|19:00-07:00|",
+     "LOG CELL|19:00-07:00|"
+    ]
+   },
+   {
+    "label": "SC Shift",
+    "sa": "sc",
+    "rows": [
+     "SXO AM|07:00-13:00|Drifter",
+     "OPS O AM|07:00-13:00|",
+     "SXO PM|13:00-19:00|",
+     "OPS O PM|13:00-19:00|"
+    ]
+   }
+  ],
+  "sims": {
+   "oft": [
+    "EP-6|14:00-15:30|Reaper/Basher"
+   ],
+   "amt": [
+    "BRIEF|-|",
+    "BOX|09:00-11:00|Cinch,Cinder",
+    "DEBRIEF|-|"
+   ]
+  },
+  "ground": [
+   "OCU REVIEW|09:00-11:00|Saber",
+   "ADMIN|13:00-14:00|Vandal|INFO",
+   "TRAINING|09:00-12:00|Talisman",
+   "DUTY|-|Sidewinder",
+   "MEETING|13:00-14:00|Gambit"
+  ],
+  "prog": [
+   "FAMILY DAY|10:00-14:00|ALL AVAIL",
+   "MASS BRIEF|15:00-16:00|Saber,Torch"
+  ],
+  "pucks": [
+   {
+    "who": "ALL AVAIL",
+    "id": "allavail",
+    "bar": "ho",
+    "cls": "puck allavail sm oilbar oilbar-ho",
+    "title": "ALL AVAIL · earns half a day of OIL"
+   },
+   {
+    "who": "Saber",
+    "id": "stiff",
+    "bar": "fo",
+    "cls": "puck sm oilbar oilbar-fo",
+    "title": "Saber · IP · instructor pilot · SXO · earns a full day of OIL"
+   },
+   {
+    "who": "Torch",
+    "id": "ignite",
+    "bar": "ho",
+    "cls": "puck sm oilbar oilbar-ho",
+    "title": "Torch · C · ops wingman · earns half a day of OIL"
+   },
+   {
+    "who": "Ranger",
+    "id": "bane",
+    "bar": "ho",
+    "cls": "puck sm oilbar oilbar-ho me",
+    "title": "Ranger · IP · instructor pilot · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Echo",
+    "id": "freak",
+    "bar": "ho",
+    "cls": "puck r sm oilbar oilbar-ho",
+    "title": "Echo · IW · instructor WSO · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": "fo",
+    "cls": "puck sm oilbar oilbar-fo",
+    "title": "Ridge · C · ops wingman · SXO · earns a full day of OIL"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": "fo",
+    "cls": "puck r sm oilbar oilbar-fo",
+    "title": "Grit · C · ops wingman · earns a full day of OIL"
+   },
+   {
+    "who": "Piston",
+    "id": "pump",
+    "bar": "fo",
+    "cls": "puck sm oilbar oilbar-fo",
+    "title": "Piston · IP · instructor pilot · SXO · earns a full day of OIL"
+   },
+   {
+    "who": "Basher",
+    "id": "glass",
+    "bar": "fo",
+    "cls": "puck r sm warn oilbar oilbar-fo",
+    "title": "Basher · IW · instructor WSO · SXO · No time for the sim brief · earns a full day of OIL"
+   },
+   {
+    "who": "Cobra",
+    "id": "taipan",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Cobra · IP · instructor pilot"
+   },
+   {
+    "who": "Ledger",
+    "id": "drill",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Ledger · IW · instructor WSO"
+   },
+   {
+    "who": "Hunter",
+    "id": "prowler",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Hunter · IP · instructor pilot"
+   },
+   {
+    "who": "Quill",
+    "id": "nasty",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Quill · IW · instructor WSO"
+   },
+   {
+    "who": "Fable",
+    "id": "plasma",
+    "bar": "fo",
+    "cls": "puck r sm oilbar oilbar-fo",
+    "title": "Fable · C · ops wingman · earns a full day of OIL"
+   },
+   {
+    "who": "Warden",
+    "id": "nact",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Warden · IP · instructor pilot · SXO"
+   },
+   {
+    "who": "Outlaw",
+    "id": "casper",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Outlaw · C · ops wingman"
+   },
+   {
+    "who": "Saint",
+    "id": "salsa",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Saint · B · 2-ship FL"
+   },
+   {
+    "who": "Drifter",
+    "id": "slipway",
+    "bar": "ho",
+    "cls": "puck sm oilbar oilbar-ho",
+    "title": "Drifter · A · 4-ship FL · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Cinch",
+    "id": "snap",
+    "bar": "ho",
+    "cls": "puck sm oilbar oilbar-ho",
+    "title": "Cinch · IP · instructor pilot · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Cinder",
+    "id": "ammo",
+    "bar": "ho",
+    "cls": "puck r sm oilbar oilbar-ho",
+    "title": "Cinder · B · 2-ship FL · earns half a day of OIL"
+   },
+   {
+    "who": "Reaper",
+    "id": "dice",
+    "bar": "ho",
+    "cls": "puck sm oilbar oilbar-ho",
+    "title": "Reaper · IR · instrument rating exmr · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Basher",
+    "id": "glass",
+    "bar": "fo",
+    "cls": "puck r sm warn oilbar oilbar-fo",
+    "title": "Basher · IW · instructor WSO · SXO · No time for the sim brief · earns a full day of OIL"
+   },
+   {
+    "who": "Saber",
+    "id": "stiff",
+    "bar": "fo",
+    "cls": "puck sm oilbar oilbar-fo",
+    "title": "Saber · IP · instructor pilot · SXO · earns a full day of OIL"
+   },
+   {
+    "who": "Talisman",
+    "id": "haowen",
+    "bar": "ho",
+    "cls": "puck sm oilbar oilbar-ho",
+    "title": "Talisman · OCU (ab-initio) · earns half a day of OIL"
+   },
+   {
+    "who": "Vandal",
+    "id": "split",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Vandal · IP · instructor pilot"
+   },
+   {
+    "who": "Gambit",
+    "id": "bruise",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Gambit · C · ops wingman"
+   },
+   {
+    "who": "Sidewinder",
+    "id": "mamba",
+    "bar": "fo",
+    "cls": "puck sm oilbar oilbar-fo",
+    "title": "Sidewinder · IP · instructor pilot · SXO · earns a full day of OIL"
+   },
+   {
+    "who": "Reaper",
+    "id": "dice",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Reaper · IR · instrument rating exmr · SXO"
+   },
+   {
+    "who": "Cinch",
+    "id": "snap",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Cinch · IP · instructor pilot · SXO"
+   },
+   {
+    "who": "Hunter",
+    "id": "prowler",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Hunter · IP · instructor pilot"
+   },
+   {
+    "who": "Ranger",
+    "id": "bane",
+    "bar": null,
+    "cls": "puck sm me",
+    "title": "Ranger · IP · instructor pilot · SXO"
+   },
+   {
+    "who": "Saber",
+    "id": "stiff",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Saber · IP · instructor pilot · SXO"
+   },
+   {
+    "who": "Sidewinder",
+    "id": "mamba",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Sidewinder · IP · instructor pilot · SXO"
+   },
+   {
+    "who": "Warden",
+    "id": "nact",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Warden · IP · instructor pilot · SXO"
+   },
+   {
+    "who": "Saint",
+    "id": "salsa",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Saint · B · 2-ship FL"
+   },
+   {
+    "who": "Gambit",
+    "id": "bruise",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Gambit · C · ops wingman"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Ridge · C · ops wingman · SXO"
+   },
+   {
+    "who": "Torch",
+    "id": "ignite",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Torch · C · ops wingman"
+   },
+   {
+    "who": "Talisman",
+    "id": "haowen",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Talisman · OCU (ab-initio)"
+   },
+   {
+    "who": "Echo",
+    "id": "freak",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Echo · IW · instructor WSO · SXO"
+   },
+   {
+    "who": "Quill",
+    "id": "nasty",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Quill · IW · instructor WSO"
+   },
+   {
+    "who": "Cinder",
+    "id": "ammo",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Cinder · B · 2-ship FL"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Grit · C · ops wingman"
+   },
+   {
+    "who": "Reaper",
+    "id": "dice",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Reaper · IR · instrument rating exmr · SXO"
+   },
+   {
+    "who": "Sidewinder",
+    "id": "mamba",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Sidewinder · IP · instructor pilot · SXO"
+   },
+   {
+    "who": "Warden",
+    "id": "nact",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Warden · IP · instructor pilot · SXO"
+   },
+   {
+    "who": "Gambit",
+    "id": "bruise",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Gambit · C · ops wingman"
+   },
+   {
+    "who": "Outlaw",
+    "id": "casper",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Outlaw · C · ops wingman"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Ridge · C · ops wingman · SXO"
+   },
+   {
+    "who": "Torch",
+    "id": "ignite",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Torch · C · ops wingman"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Grit · C · ops wingman"
+   },
+   {
+    "who": "Sidewinder",
+    "id": "mamba",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Sidewinder · IP · instructor pilot · SXO"
+   },
+   {
+    "who": "Warden",
+    "id": "nact",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Warden · IP · instructor pilot · SXO"
+   },
+   {
+    "who": "Outlaw",
+    "id": "casper",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Outlaw · C · ops wingman"
+   },
+   {
+    "who": "Anvil",
+    "id": "shaft",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Anvil · IP · instructor pilot · SXO"
+   },
+   {
+    "who": "Blade",
+    "id": "slash",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Blade · IP · instructor pilot"
+   },
+   {
+    "who": "Cobra",
+    "id": "taipan",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Cobra · IP · instructor pilot"
+   },
+   {
+    "who": "Comet",
+    "id": "beams",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Comet · IP · instructor pilot"
+   },
+   {
+    "who": "Forge",
+    "id": "chaps",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Forge · IP · instructor pilot"
+   },
+   {
+    "who": "Havoc",
+    "id": "boosh",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Havoc · IP · instructor pilot"
+   },
+   {
+    "who": "Trident",
+    "id": "harpoon",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Trident · IP · instructor pilot"
+   },
+   {
+    "who": "Vandal",
+    "id": "split",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Vandal · IP · instructor pilot"
+   },
+   {
+    "who": "Ace",
+    "id": "dj",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Ace · A · 4-ship FL"
+   },
+   {
+    "who": "Nomad",
+    "id": "pike",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Nomad · C · ops wingman"
+   },
+   {
+    "who": "Diesel",
+    "id": "fantom",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Diesel · D · wingman"
+   },
+   {
+    "who": "Vapor",
+    "id": "vegas",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Vapor · D · wingman"
+   },
+   {
+    "who": "Recon",
+    "id": "prism",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Recon · OCU (ab-initio)"
+   },
+   {
+    "who": "Wildcard",
+    "id": "bapster",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Wildcard · OCU (ab-initio)"
+   },
+   {
+    "who": "Ledger",
+    "id": "drill",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Ledger · IW · instructor WSO"
+   },
+   {
+    "who": "Relay",
+    "id": "dirty",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Relay · IW · instructor WSO"
+   },
+   {
+    "who": "Scope",
+    "id": "stuff",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Scope · IW · instructor WSO"
+   },
+   {
+    "who": "Static",
+    "id": "wolf",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Static · IW · instructor WSO"
+   },
+   {
+    "who": "Rune",
+    "id": "pain",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Rune · B · 2-ship FL"
+   },
+   {
+    "who": "Cutter",
+    "id": "psy",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Cutter · C · ops wingman"
+   },
+   {
+    "who": "Dash",
+    "id": "spaceman",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Dash · C · ops wingman"
+   },
+   {
+    "who": "Ghost",
+    "id": "riddler",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Ghost · C · ops wingman"
+   },
+   {
+    "who": "Hex",
+    "id": "rocky",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Hex · C · ops wingman"
+   },
+   {
+    "who": "Ryder",
+    "id": "xray",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Ryder · C · ops wingman"
+   },
+   {
+    "who": "Vector",
+    "id": "divot",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Vector · C · ops wingman"
+   },
+   {
+    "who": "Wisp",
+    "id": "shrek",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Wisp · C · ops wingman"
+   }
+  ],
+  "warn": [],
+  "version": "DRAFT",
+  "pending": ""
+ },
+ "warnPanel": {
+  "head": "⚠ 3 issues",
+  "lines": [
+   "· 1 warning ·",
+   "tap to review",
+   "SXO and OPS DESK have no times — nobody on them earns OIL for this day",
+   "Basher — No time for the OFT EP-6 brief — SC AM sits inside 13:45–14:00",
+   "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out"
+  ]
+ },
+ "modeOn": {
+  "items": 68,
+  "people": 48,
+  "bar": "Calendar | Saturday Jul 18 · scheduler board | ‹ | Mon 13 | Tue 14 | Wed 15 | Thu 16 | Fri 17 | Sat 18 | Sun 19 | › | 🔍 | ◧ | OIL Earn | ↶ | Undo | ↷ | Redo | History | ⇅ | Sort all | ✓ | Done | ✕ | Close | CAT | TYPE | QUALS"
+ },
+ "modeChrome": {
+  "on": true,
+  "barText": "FAMILY DAY",
+  "counts": {
+   "items": 68,
+   "people": 48,
+   "rows": 0,
+   "sentinels": 0,
+   "blanket": 1,
+   "picks": 0
+  }
+ },
+ "modeItems": [
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "FAMILY DAY",
+   "title": "Earns OIL — tap to stop this item earning"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Ace\nHO",
+   "title": "Ace earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Warden\nHO",
+   "title": "Warden earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Blade\nHO",
+   "title": "Blade earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Trident\nHO",
+   "title": "Trident earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Anvil\nHO",
+   "title": "Anvil earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Forge\nHO",
+   "title": "Forge earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Havoc\nHO",
+   "title": "Havoc earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Comet\nHO",
+   "title": "Comet earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Reaper\nHO",
+   "title": "Reaper earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Vandal\nHO",
+   "title": "Vandal earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Outlaw\nHO",
+   "title": "Outlaw earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Nomad\nHO",
+   "title": "Nomad earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Diesel\nHO",
+   "title": "Diesel earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Vapor\nHO",
+   "title": "Vapor earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Wildcard\nHO",
+   "title": "Wildcard earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Recon\nHO",
+   "title": "Recon earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Static\nHO",
+   "title": "Static earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Relay\nHO",
+   "title": "Relay earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Scope\nHO",
+   "title": "Scope earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Rune\nHO",
+   "title": "Rune earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Hex\nHO",
+   "title": "Hex earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Vector\nHO",
+   "title": "Vector earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Dash\nHO",
+   "title": "Dash earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Ghost\nHO",
+   "title": "Ghost earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Wisp\nHO",
+   "title": "Wisp earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Ryder\nHO",
+   "title": "Ryder earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmaxl24wz91",
+   "text": "Cutter\nHO",
+   "title": "Cutter earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmbb0n9y0uj",
+   "text": "MASS BRIEF",
+   "title": "Earns OIL — tap to stop this item earning"
+  },
+  {
+   "key": "r:rmubcmbb0n9y0uj",
+   "text": "Saber\nFO",
+   "title": "Saber earns a full day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcmbb0n9y0uj",
+   "text": "Torch\nHO",
+   "title": "Torch earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcl96zk43f8n",
+   "text": "VIPER",
+   "title": "Earns OIL — tap to stop this item earning"
+  },
+  {
+   "key": "r:rmubcl96zk43f8n",
+   "text": "Ranger\nHO",
+   "title": "Ranger earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcl96zk43f8n",
+   "text": "Echo\nHO",
+   "title": "Echo earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubclcx3d40u63",
+   "text": "COBRA",
+   "title": "Earns OIL — tap to stop this item earning"
+  },
+  {
+   "key": "r:rmubclcx3d40u63",
+   "text": "Ridge\nFO",
+   "title": "Ridge earns a full day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubclcx3d40u63",
+   "text": "Grit\nFO",
+   "title": "Grit earns a full day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubclgntiqurs0",
+   "text": "SC",
+   "title": "Earns OIL — tap to stop this item earning"
+  },
+  {
+   "key": "r:rmubclgntiqurs0",
+   "text": "Piston\nFO",
+   "title": "Piston earns a full day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubclgntiqurs0",
+   "text": "Basher\nFO",
+   "title": "Basher earns a full day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubclgntiqurs0",
+   "text": "SC",
+   "title": "Earns OIL — tap to stop this item earning"
+  },
+  {
+   "key": "r:rmubclgntiqurs0",
+   "text": "SC",
+   "title": "Earns OIL — tap to stop this item earning"
+  },
+  {
+   "key": "r:rmubclgntiqurs0",
+   "text": "SC",
+   "title": "Earns OIL — tap to stop this item earning"
+  },
+  {
+   "key": "r:rmubclgntd3x2gs",
+   "text": "SC",
+   "title": "Earns OIL — tap to stop this item earning"
+  },
+  {
+   "key": "r:rmubclgntd3x2gs",
+   "text": "SC",
+   "title": "Earns OIL — tap to stop this item earning"
+  },
+  {
+   "key": "r:rmubclgntd3x2gs",
+   "text": "SC",
+   "title": "Earns OIL — tap to stop this item earning"
+  },
+  {
+   "key": "r:rmubclgntd3x2gs",
+   "text": "SC",
+   "title": "Earns OIL — tap to stop this item earning"
+  },
+  {
+   "key": "r:rmubcl78vnjihbq",
+   "text": "SDO",
+   "title": "Earns OIL — tap to stop this item earning"
+  },
+  {
+   "key": "r:rmubcl78vnjihbq",
+   "text": "Fable\nFO",
+   "title": "Fable earns a full day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubclww05qnapm",
+   "text": "SXO AM",
+   "title": "Earns OIL — tap to stop this item earning"
+  },
+  {
+   "key": "r:rmubclww05qnapm",
+   "text": "Drifter\nHO",
+   "title": "Drifter earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubclww02vnxti",
+   "text": "OPS O AM",
+   "title": "Earns OIL — tap to stop this item earning"
+  },
+  {
+   "key": "r:rmubclww0pd2o60",
+   "text": "SXO PM",
+   "title": "Earns OIL — tap to stop this item earning"
+  },
+  {
+   "key": "r:rmubclww021dcvo",
+   "text": "OPS O PM",
+   "title": "Earns OIL — tap to stop this item earning"
+  },
+  {
+   "key": "r:rmubcm24z60pa1q",
+   "text": "BOX",
+   "title": "Earns OIL — tap to stop this item earning"
+  },
+  {
+   "key": "r:rmubcm24z60pa1q",
+   "text": "Cinch\nHO",
+   "title": "Cinch earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcm24z60pa1q",
+   "text": "Cinder\nHO",
+   "title": "Cinder earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubclymnurb7v4",
+   "text": "EP-6",
+   "title": "Earns OIL — tap to stop this item earning"
+  },
+  {
+   "key": "r:rmubclymnurb7v4",
+   "text": "Reaper\nHO",
+   "title": "Reaper earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubclymnurb7v4",
+   "text": "Basher\nFO",
+   "title": "Basher earns a full day — tap to take him off this event"
+  },
+  {
+   "key": "r:rmubcm5adgaphyo",
+   "text": "OCU REVIEW",
+   "title": "Earns OIL — tap to stop this item earning"
+  },
+  {
+   "key": "r:rmubcm5adgaphyo",
+   "text": "Saber\nFO",
+   "title": "Saber earns a full day — tap to take him off this event"
+  },
+  {
+   "key": "i:imubcmj77qa4e76",
+   "text": "Talisman\nHO",
+   "title": "Talisman earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "i:imubcmotlcg0zk3",
+   "text": "Gambit\n—",
+   "title": "Gambit earns nothing from this event — tap to put him back on it"
+  },
+  {
+   "key": "i:imubcmm079vze93",
+   "text": "Sidewinder\nFO",
+   "title": "Sidewinder earns a full day — tap to take him off this event"
+  },
+  {
+   "key": "i:imubcmotlcg0zk3",
+   "text": "Gambit\n—",
+   "title": "Gambit earns nothing from this event — tap to put him back on it"
+  },
+  {
+   "key": "i:imubcmm079vze93",
+   "text": "Sidewinder\nFO",
+   "title": "Sidewinder earns a full day — tap to take him off this event"
+  },
+  {
+   "key": "i:imubcmj77qa4e76",
+   "text": "Talisman\nHO",
+   "title": "Talisman earns half a day — tap to take him off this event"
+  }
+ ],
+ "modePeople": [
+  {
+   "key": "dj",
+   "who": "Ace",
+   "cls": "seat oilpk on",
+   "title": "Ace earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "nact",
+   "who": "Warden",
+   "cls": "seat oilpk on",
+   "title": "Warden earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "slash",
+   "who": "Blade",
+   "cls": "seat oilpk on",
+   "title": "Blade earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "harpoon",
+   "who": "Trident",
+   "cls": "seat oilpk on",
+   "title": "Trident earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "shaft",
+   "who": "Anvil",
+   "cls": "seat oilpk on",
+   "title": "Anvil earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "chaps",
+   "who": "Forge",
+   "cls": "seat oilpk on",
+   "title": "Forge earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "boosh",
+   "who": "Havoc",
+   "cls": "seat oilpk on",
+   "title": "Havoc earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "beams",
+   "who": "Comet",
+   "cls": "seat oilpk on",
+   "title": "Comet earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "dice",
+   "who": "Reaper",
+   "cls": "seat oilpk on",
+   "title": "Reaper earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "split",
+   "who": "Vandal",
+   "cls": "seat oilpk on",
+   "title": "Vandal earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "casper",
+   "who": "Outlaw",
+   "cls": "seat oilpk on",
+   "title": "Outlaw earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "pike",
+   "who": "Nomad",
+   "cls": "seat oilpk on",
+   "title": "Nomad earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "fantom",
+   "who": "Diesel",
+   "cls": "seat oilpk on",
+   "title": "Diesel earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "vegas",
+   "who": "Vapor",
+   "cls": "seat oilpk on",
+   "title": "Vapor earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "bapster",
+   "who": "Wildcard",
+   "cls": "seat oilpk on",
+   "title": "Wildcard earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "prism",
+   "who": "Recon",
+   "cls": "seat oilpk on",
+   "title": "Recon earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "wolf",
+   "who": "Static",
+   "cls": "seat oilpk on",
+   "title": "Static earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "dirty",
+   "who": "Relay",
+   "cls": "seat oilpk on",
+   "title": "Relay earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "stuff",
+   "who": "Scope",
+   "cls": "seat oilpk on",
+   "title": "Scope earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "pain",
+   "who": "Rune",
+   "cls": "seat oilpk on",
+   "title": "Rune earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "rocky",
+   "who": "Hex",
+   "cls": "seat oilpk on",
+   "title": "Hex earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "divot",
+   "who": "Vector",
+   "cls": "seat oilpk on",
+   "title": "Vector earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "spaceman",
+   "who": "Dash",
+   "cls": "seat oilpk on",
+   "title": "Dash earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "riddler",
+   "who": "Ghost",
+   "cls": "seat oilpk on",
+   "title": "Ghost earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "shrek",
+   "who": "Wisp",
+   "cls": "seat oilpk on",
+   "title": "Wisp earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "xray",
+   "who": "Ryder",
+   "cls": "seat oilpk on",
+   "title": "Ryder earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "psy",
+   "who": "Cutter",
+   "cls": "seat oilpk on",
+   "title": "Cutter earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "stiff",
+   "who": "Saber",
+   "cls": "seat oilpk on",
+   "title": "Saber earns a full day — tap to take him off this event"
+  },
+  {
+   "key": "ignite",
+   "who": "Torch",
+   "cls": "seat oilpk on",
+   "title": "Torch earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "bane",
+   "who": "Ranger",
+   "cls": "seat oilpk on",
+   "title": "Ranger earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "freak",
+   "who": "Echo",
+   "cls": "seat oilpk on",
+   "title": "Echo earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "razer",
+   "who": "Ridge",
+   "cls": "seat oilpk on",
+   "title": "Ridge earns a full day — tap to take him off this event"
+  },
+  {
+   "key": "sufa",
+   "who": "Grit",
+   "cls": "seat oilpk on",
+   "title": "Grit earns a full day — tap to take him off this event"
+  },
+  {
+   "key": "pump",
+   "who": "Piston",
+   "cls": "seat oilpk on",
+   "title": "Piston earns a full day — tap to take him off this event"
+  },
+  {
+   "key": "glass",
+   "who": "Basher",
+   "cls": "seat oilpk on",
+   "title": "Basher earns a full day — tap to take him off this event"
+  },
+  {
+   "key": "plasma",
+   "who": "Fable",
+   "cls": "seat oilpk on",
+   "title": "Fable earns a full day — tap to take him off this event"
+  },
+  {
+   "key": "slipway",
+   "who": "Drifter",
+   "cls": "seat oilpk on",
+   "title": "Drifter earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "snap",
+   "who": "Cinch",
+   "cls": "seat oilpk on",
+   "title": "Cinch earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "ammo",
+   "who": "Cinder",
+   "cls": "seat oilpk on",
+   "title": "Cinder earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "dice",
+   "who": "Reaper",
+   "cls": "seat oilpk on",
+   "title": "Reaper earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "glass",
+   "who": "Basher",
+   "cls": "seat oilpk on",
+   "title": "Basher earns a full day — tap to take him off this event"
+  },
+  {
+   "key": "stiff",
+   "who": "Saber",
+   "cls": "seat oilpk on",
+   "title": "Saber earns a full day — tap to take him off this event"
+  },
+  {
+   "key": "haowen",
+   "who": "Talisman",
+   "cls": "seat oilpk on",
+   "title": "Talisman earns half a day — tap to take him off this event"
+  },
+  {
+   "key": "bruise",
+   "who": "Gambit",
+   "cls": "seat oilpk off",
+   "title": "Gambit earns nothing from this event — tap to put him back on it"
+  },
+  {
+   "key": "mamba",
+   "who": "Sidewinder",
+   "cls": "seat oilpk on",
+   "title": "Sidewinder earns a full day — tap to take him off this event"
+  },
+  {
+   "key": "bruise",
+   "who": "Gambit",
+   "cls": "seat oilpk off",
+   "title": "Gambit earns nothing from this event — tap to put him back on it"
+  },
+  {
+   "key": "mamba",
+   "who": "Sidewinder",
+   "cls": "seat oilpk on",
+   "title": "Sidewinder earns a full day — tap to take him off this event"
+  },
+  {
+   "key": "haowen",
+   "who": "Talisman",
+   "cls": "seat oilpk on",
+   "title": "Talisman earns half a day — tap to take him off this event"
+  }
+ ],
+ "signBefore": {
+  "beak": {
+   "text": "Publish day",
+   "disabled": true,
+   "title": "Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday"
+  },
+  "selects": [
+   {
+    "cls": "",
+    "val": ""
+   },
+   {
+    "cls": "",
+    "val": ""
+   },
+   {
+    "cls": "",
+    "val": ""
+   },
+   {
+    "cls": "",
+    "val": ""
+   }
+  ],
+  "chip": "DRAFT"
+ },
+ "publish": {
+  "published": true,
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "afterPublish": {
+  "waves": [
+   {
+    "label": "WAVE 1",
+    "f": [
+     {
+      "cs": "VIPER",
+      "to": "10:00",
+      "ld": "11:00",
+      "ac": [
+       "Ranger/Echo"
+      ]
+     },
+     {
+      "cs": "COBRA",
+      "to": "14:00",
+      "ld": "15:30",
+      "ac": [
+       "Ridge/Grit"
+      ]
+     }
+    ]
+   },
+   {
+    "label": "SC",
+    "kind": "sc",
+    "f": [
+     {
+      "cs": "SC",
+      "to": "06:00",
+      "ld": "14:00",
+      "ac": [
+       "Piston/Basher:MAIN",
+       "/:MAIN",
+       "Cobra/Ledger:SPARE",
+       "/:SPARE"
+      ]
+     },
+     {
+      "cs": "SC",
+      "to": "13:00",
+      "ld": "19:00",
+      "ac": [
+       "/:MAIN",
+       "/:MAIN",
+       "/:SPARE",
+       "/:SPARE"
+      ]
+     }
+    ]
+   },
+   {
+    "label": "AVALON",
+    "kind": "avalon",
+    "f": [
+     {
+      "cs": "AV",
+      "to": "09:00",
+      "ld": "12:00",
+      "ac": [
+       "Hunter/Quill:MAIN",
+       "/:MAIN",
+       "/:SPARE",
+       "/:SPARE"
+      ]
+     }
+    ]
+   }
+  ],
+  "duties": [
+   {
+    "label": "Duty",
+    "rows": [
+     "SDO|0800-1800|Fable",
+     "SXO|-|Warden",
+     "OPS DESK|07:00-07:00|Outlaw"
+    ]
+   },
+   {
+    "label": "AVALON",
+    "sa": "avalon",
+    "rows": [
+     "SXO|09:00-12:00|Saint",
+     "OPS O|19:00-07:00|",
+     "RUNNER|19:00-07:00|",
+     "LOG CELL|19:00-07:00|"
+    ]
+   },
+   {
+    "label": "SC Shift",
+    "sa": "sc",
+    "rows": [
+     "SXO AM|07:00-13:00|Drifter",
+     "OPS O AM|07:00-13:00|",
+     "SXO PM|13:00-19:00|",
+     "OPS O PM|13:00-19:00|"
+    ]
+   }
+  ],
+  "sims": {
+   "oft": [
+    "EP-6|14:00-15:30|Reaper/Basher"
+   ],
+   "amt": [
+    "BRIEF|-|",
+    "BOX|09:00-11:00|Cinch,Cinder",
+    "DEBRIEF|-|"
+   ]
+  },
+  "ground": [
+   "OCU REVIEW|09:00-11:00|Saber",
+   "ADMIN|13:00-14:00|Vandal|INFO",
+   "TRAINING|09:00-12:00|Talisman",
+   "DUTY|-|Sidewinder",
+   "MEETING|13:00-14:00|Gambit"
+  ],
+  "prog": [
+   "FAMILY DAY|10:00-14:00|ALL AVAIL",
+   "MASS BRIEF|15:00-16:00|Saber,Torch"
+  ],
+  "pucks": [
+   {
+    "who": "ALL AVAIL",
+    "id": "allavail",
+    "bar": "ho",
+    "cls": "puck allavail sm oilbar oilbar-ho",
+    "title": "ALL AVAIL · earns half a day of OIL"
+   },
+   {
+    "who": "Saber",
+    "id": "stiff",
+    "bar": "fo",
+    "cls": "puck sm oilbar oilbar-fo",
+    "title": "Saber · IP · instructor pilot · SXO · earns a full day of OIL"
+   },
+   {
+    "who": "Torch",
+    "id": "ignite",
+    "bar": "ho",
+    "cls": "puck sm oilbar oilbar-ho",
+    "title": "Torch · C · ops wingman · earns half a day of OIL"
+   },
+   {
+    "who": "Ranger",
+    "id": "bane",
+    "bar": "ho",
+    "cls": "puck sm oilbar oilbar-ho me",
+    "title": "Ranger · IP · instructor pilot · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Echo",
+    "id": "freak",
+    "bar": "ho",
+    "cls": "puck r sm oilbar oilbar-ho",
+    "title": "Echo · IW · instructor WSO · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": "fo",
+    "cls": "puck sm oilbar oilbar-fo",
+    "title": "Ridge · C · ops wingman · SXO · earns a full day of OIL"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": "fo",
+    "cls": "puck r sm oilbar oilbar-fo",
+    "title": "Grit · C · ops wingman · earns a full day of OIL"
+   },
+   {
+    "who": "Piston",
+    "id": "pump",
+    "bar": "fo",
+    "cls": "puck sm oilbar oilbar-fo",
+    "title": "Piston · IP · instructor pilot · SXO · earns a full day of OIL"
+   },
+   {
+    "who": "Basher",
+    "id": "glass",
+    "bar": "fo",
+    "cls": "puck r sm warn oilbar oilbar-fo",
+    "title": "Basher · IW · instructor WSO · SXO · No time for the sim brief · earns a full day of OIL"
+   },
+   {
+    "who": "Cobra",
+    "id": "taipan",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Cobra · IP · instructor pilot"
+   },
+   {
+    "who": "Ledger",
+    "id": "drill",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Ledger · IW · instructor WSO"
+   },
+   {
+    "who": "Hunter",
+    "id": "prowler",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Hunter · IP · instructor pilot"
+   },
+   {
+    "who": "Quill",
+    "id": "nasty",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Quill · IW · instructor WSO"
+   },
+   {
+    "who": "Fable",
+    "id": "plasma",
+    "bar": "fo",
+    "cls": "puck r sm oilbar oilbar-fo",
+    "title": "Fable · C · ops wingman · earns a full day of OIL"
+   },
+   {
+    "who": "Warden",
+    "id": "nact",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Warden · IP · instructor pilot · SXO"
+   },
+   {
+    "who": "Outlaw",
+    "id": "casper",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Outlaw · C · ops wingman"
+   },
+   {
+    "who": "Saint",
+    "id": "salsa",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Saint · B · 2-ship FL"
+   },
+   {
+    "who": "Drifter",
+    "id": "slipway",
+    "bar": "ho",
+    "cls": "puck sm oilbar oilbar-ho",
+    "title": "Drifter · A · 4-ship FL · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Cinch",
+    "id": "snap",
+    "bar": "ho",
+    "cls": "puck sm oilbar oilbar-ho",
+    "title": "Cinch · IP · instructor pilot · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Cinder",
+    "id": "ammo",
+    "bar": "ho",
+    "cls": "puck r sm oilbar oilbar-ho",
+    "title": "Cinder · B · 2-ship FL · earns half a day of OIL"
+   },
+   {
+    "who": "Reaper",
+    "id": "dice",
+    "bar": "ho",
+    "cls": "puck sm oilbar oilbar-ho",
+    "title": "Reaper · IR · instrument rating exmr · SXO · earns half a day of OIL"
+   },
+   {
+    "who": "Basher",
+    "id": "glass",
+    "bar": "fo",
+    "cls": "puck r sm warn oilbar oilbar-fo",
+    "title": "Basher · IW · instructor WSO · SXO · No time for the sim brief · earns a full day of OIL"
+   },
+   {
+    "who": "Saber",
+    "id": "stiff",
+    "bar": "fo",
+    "cls": "puck sm oilbar oilbar-fo",
+    "title": "Saber · IP · instructor pilot · SXO · earns a full day of OIL"
+   },
+   {
+    "who": "Talisman",
+    "id": "haowen",
+    "bar": "ho",
+    "cls": "puck sm oilbar oilbar-ho",
+    "title": "Talisman · OCU (ab-initio) · earns half a day of OIL"
+   },
+   {
+    "who": "Vandal",
+    "id": "split",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Vandal · IP · instructor pilot"
+   },
+   {
+    "who": "Gambit",
+    "id": "bruise",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Gambit · C · ops wingman"
+   },
+   {
+    "who": "Sidewinder",
+    "id": "mamba",
+    "bar": "fo",
+    "cls": "puck sm oilbar oilbar-fo",
+    "title": "Sidewinder · IP · instructor pilot · SXO · earns a full day of OIL"
+   },
+   {
+    "who": "Reaper",
+    "id": "dice",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Reaper · IR · instrument rating exmr · SXO"
+   },
+   {
+    "who": "Cinch",
+    "id": "snap",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Cinch · IP · instructor pilot · SXO"
+   },
+   {
+    "who": "Hunter",
+    "id": "prowler",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Hunter · IP · instructor pilot"
+   },
+   {
+    "who": "Ranger",
+    "id": "bane",
+    "bar": null,
+    "cls": "puck sm me",
+    "title": "Ranger · IP · instructor pilot · SXO"
+   },
+   {
+    "who": "Saber",
+    "id": "stiff",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Saber · IP · instructor pilot · SXO"
+   },
+   {
+    "who": "Sidewinder",
+    "id": "mamba",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Sidewinder · IP · instructor pilot · SXO"
+   },
+   {
+    "who": "Warden",
+    "id": "nact",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Warden · IP · instructor pilot · SXO"
+   },
+   {
+    "who": "Saint",
+    "id": "salsa",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Saint · B · 2-ship FL"
+   },
+   {
+    "who": "Gambit",
+    "id": "bruise",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Gambit · C · ops wingman"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Ridge · C · ops wingman · SXO"
+   },
+   {
+    "who": "Torch",
+    "id": "ignite",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Torch · C · ops wingman"
+   },
+   {
+    "who": "Talisman",
+    "id": "haowen",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Talisman · OCU (ab-initio)"
+   },
+   {
+    "who": "Echo",
+    "id": "freak",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Echo · IW · instructor WSO · SXO"
+   },
+   {
+    "who": "Quill",
+    "id": "nasty",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Quill · IW · instructor WSO"
+   },
+   {
+    "who": "Cinder",
+    "id": "ammo",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Cinder · B · 2-ship FL"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Grit · C · ops wingman"
+   },
+   {
+    "who": "Reaper",
+    "id": "dice",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Reaper · IR · instrument rating exmr · SXO"
+   },
+   {
+    "who": "Sidewinder",
+    "id": "mamba",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Sidewinder · IP · instructor pilot · SXO"
+   },
+   {
+    "who": "Warden",
+    "id": "nact",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Warden · IP · instructor pilot · SXO"
+   },
+   {
+    "who": "Gambit",
+    "id": "bruise",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Gambit · C · ops wingman"
+   },
+   {
+    "who": "Outlaw",
+    "id": "casper",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Outlaw · C · ops wingman"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Ridge · C · ops wingman · SXO"
+   },
+   {
+    "who": "Torch",
+    "id": "ignite",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Torch · C · ops wingman"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Grit · C · ops wingman"
+   },
+   {
+    "who": "Sidewinder",
+    "id": "mamba",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Sidewinder · IP · instructor pilot · SXO"
+   },
+   {
+    "who": "Warden",
+    "id": "nact",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Warden · IP · instructor pilot · SXO"
+   },
+   {
+    "who": "Outlaw",
+    "id": "casper",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Outlaw · C · ops wingman"
+   },
+   {
+    "who": "Anvil",
+    "id": "shaft",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Anvil · IP · instructor pilot · SXO"
+   },
+   {
+    "who": "Blade",
+    "id": "slash",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Blade · IP · instructor pilot"
+   },
+   {
+    "who": "Cobra",
+    "id": "taipan",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Cobra · IP · instructor pilot"
+   },
+   {
+    "who": "Comet",
+    "id": "beams",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Comet · IP · instructor pilot"
+   },
+   {
+    "who": "Forge",
+    "id": "chaps",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Forge · IP · instructor pilot"
+   },
+   {
+    "who": "Havoc",
+    "id": "boosh",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Havoc · IP · instructor pilot"
+   },
+   {
+    "who": "Trident",
+    "id": "harpoon",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Trident · IP · instructor pilot"
+   },
+   {
+    "who": "Vandal",
+    "id": "split",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Vandal · IP · instructor pilot"
+   },
+   {
+    "who": "Ace",
+    "id": "dj",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Ace · A · 4-ship FL"
+   },
+   {
+    "who": "Nomad",
+    "id": "pike",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Nomad · C · ops wingman"
+   },
+   {
+    "who": "Diesel",
+    "id": "fantom",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Diesel · D · wingman"
+   },
+   {
+    "who": "Vapor",
+    "id": "vegas",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Vapor · D · wingman"
+   },
+   {
+    "who": "Recon",
+    "id": "prism",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Recon · OCU (ab-initio)"
+   },
+   {
+    "who": "Wildcard",
+    "id": "bapster",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Wildcard · OCU (ab-initio)"
+   },
+   {
+    "who": "Ledger",
+    "id": "drill",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Ledger · IW · instructor WSO"
+   },
+   {
+    "who": "Relay",
+    "id": "dirty",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Relay · IW · instructor WSO"
+   },
+   {
+    "who": "Scope",
+    "id": "stuff",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Scope · IW · instructor WSO"
+   },
+   {
+    "who": "Static",
+    "id": "wolf",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Static · IW · instructor WSO"
+   },
+   {
+    "who": "Rune",
+    "id": "pain",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Rune · B · 2-ship FL"
+   },
+   {
+    "who": "Cutter",
+    "id": "psy",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Cutter · C · ops wingman"
+   },
+   {
+    "who": "Dash",
+    "id": "spaceman",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Dash · C · ops wingman"
+   },
+   {
+    "who": "Ghost",
+    "id": "riddler",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Ghost · C · ops wingman"
+   },
+   {
+    "who": "Hex",
+    "id": "rocky",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Hex · C · ops wingman"
+   },
+   {
+    "who": "Ryder",
+    "id": "xray",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Ryder · C · ops wingman"
+   },
+   {
+    "who": "Vector",
+    "id": "divot",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Vector · C · ops wingman"
+   },
+   {
+    "who": "Wisp",
+    "id": "shrek",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Wisp · C · ops wingman"
+   }
+  ],
+  "warn": [],
+  "version": "ORIG",
+  "pending": ""
+ },
+ "errors": []
+}

@@ -1,0 +1,610 @@
+{
+ "desk360": {
+  "mode": [
+   {
+    "key": "spaceman",
+    "who": "Dash",
+    "id": "spaceman",
+    "text": "Dash HO",
+    "title": "Dash earns half a day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   }
+  ],
+  "items": [
+   {
+    "key": "r:rmubcl78vzh8qaq",
+    "text": "SDO",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "ain oilitem on"
+   },
+   {
+    "key": "r:rmubcl78vzh8qaq",
+    "text": "Dash HO",
+    "title": "Dash earns half a day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   }
+  ],
+  "bar": [
+   {
+    "who": "Dash",
+    "id": "spaceman",
+    "bar": "ho",
+    "cls": "puck r sm oilbar oilbar-ho",
+    "title": "Dash · C · ops wingman · earns half a day of OIL",
+    "row": "⠿ Dash C + ADD CX■✕"
+   }
+  ]
+ },
+ "desk361": {
+  "mode": [
+   {
+    "key": "spaceman",
+    "who": "Dash",
+    "id": "spaceman",
+    "text": "Dash FO",
+    "title": "Dash earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   }
+  ],
+  "items": [
+   {
+    "key": "r:rmubcl78vzh8qaq",
+    "text": "SDO",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "ain oilitem on"
+   },
+   {
+    "key": "r:rmubcl78vzh8qaq",
+    "text": "Dash FO",
+    "title": "Dash earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   }
+  ],
+  "bar": [
+   {
+    "who": "Dash",
+    "id": "spaceman",
+    "bar": "fo",
+    "cls": "puck r sm oilbar oilbar-fo",
+    "title": "Dash · C · ops wingman · earns a full day of OIL",
+    "row": "⠿ Dash C + ADD CX■✕"
+   }
+  ]
+ },
+ "seatP": "bane",
+ "seatW": "freak",
+ "sortie360": {
+  "mode": [
+   {
+    "key": "bane",
+    "who": "Ranger",
+    "id": "bane",
+    "text": "Ranger HO",
+    "title": "Ranger earns half a day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "freak",
+    "who": "Echo",
+    "id": "freak",
+    "text": "Echo HO",
+    "title": "Echo earns half a day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   }
+  ],
+  "items": [
+   {
+    "key": "r:rmubcykoo0bqvol",
+    "text": "VIPER",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubcykoo0bqvol",
+    "text": "Ranger HO",
+    "title": "Ranger earns half a day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "r:rmubcykoo0bqvol",
+    "text": "Echo HO",
+    "title": "Echo earns half a day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "r:rmubcl78vzh8qaq",
+    "text": "SDO",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "ain oilitem on"
+   },
+   {
+    "key": "r:rmubcl78vzh8qaq",
+    "text": "Dash FO",
+    "title": "Dash earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   }
+  ],
+  "bar": [
+   {
+    "who": "Ranger",
+    "id": "bane",
+    "bar": "ho",
+    "cls": "puck sm oilbar oilbar-ho me",
+    "title": "Ranger · IP · instructor pilot · SXO · earns half a day of OIL",
+    "row": "⠿ 07:40 Ranger IP Echo IW C CX ■ + ✕"
+   },
+   {
+    "who": "Echo",
+    "id": "freak",
+    "bar": "ho",
+    "cls": "puck r sm oilbar oilbar-ho",
+    "title": "Echo · IW · instructor WSO · SXO · earns half a day of OIL",
+    "row": "⠿ 07:40 Ranger IP Echo IW C CX ■ + ✕"
+   }
+  ]
+ },
+ "sortie361": {
+  "mode": [
+   {
+    "key": "bane",
+    "who": "Ranger",
+    "id": "bane",
+    "text": "Ranger FO",
+    "title": "Ranger earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "freak",
+    "who": "Echo",
+    "id": "freak",
+    "text": "Echo FO",
+    "title": "Echo earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   }
+  ],
+  "items": [
+   {
+    "key": "r:rmubcykoo0bqvol",
+    "text": "VIPER",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubcykoo0bqvol",
+    "text": "Ranger FO",
+    "title": "Ranger earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "r:rmubcykoo0bqvol",
+    "text": "Echo FO",
+    "title": "Echo earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "r:rmubcl78vzh8qaq",
+    "text": "SDO",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "ain oilitem on"
+   },
+   {
+    "key": "r:rmubcl78vzh8qaq",
+    "text": "Dash FO",
+    "title": "Dash earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   }
+  ],
+  "bar": [
+   {
+    "who": "Ranger",
+    "id": "bane",
+    "bar": "fo",
+    "cls": "puck sm oilbar oilbar-fo me",
+    "title": "Ranger · IP · instructor pilot · SXO · earns a full day of OIL",
+    "row": "⠿ 07:40 Ranger IP Echo IW C CX ■ + ✕"
+   },
+   {
+    "who": "Echo",
+    "id": "freak",
+    "bar": "fo",
+    "cls": "puck r sm oilbar oilbar-fo",
+    "title": "Echo · IW · instructor WSO · SXO · earns a full day of OIL",
+    "row": "⠿ 07:40 Ranger IP Echo IW C CX ■ + ✕"
+   }
+  ]
+ },
+ "fill1": "bruise",
+ "fill2": "bruise",
+ "gap360": {
+  "mode": [
+   {
+    "key": "bruise",
+    "who": "Gambit",
+    "id": "bruise",
+    "text": "Gambit HO",
+    "title": "Gambit earns half a day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "bruise",
+    "who": "Gambit",
+    "id": "bruise",
+    "text": "Gambit HO",
+    "title": "Gambit earns half a day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   }
+  ],
+  "items": [
+   {
+    "key": "r:rmubcykoo0bqvol",
+    "text": "VIPER",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubcykoo0bqvol",
+    "text": "Ranger FO",
+    "title": "Ranger earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "r:rmubcykoo0bqvol",
+    "text": "Echo FO",
+    "title": "Echo earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "r:rmubcl78vzh8qaq",
+    "text": "SDO",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "ain oilitem on"
+   },
+   {
+    "key": "r:rmubcl78vzh8qaq",
+    "text": "Dash FO",
+    "title": "Dash earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "r:rmubcyrf9felh0e",
+    "text": "EARLY DESK",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "ain oilitem on"
+   },
+   {
+    "key": "r:rmubcyrf9felh0e",
+    "text": "Gambit HO",
+    "title": "Gambit earns half a day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "r:rmubcyrsq7s5cnn",
+    "text": "LATE DESK",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "ain oilitem on"
+   },
+   {
+    "key": "r:rmubcyrsq7s5cnn",
+    "text": "Gambit HO",
+    "title": "Gambit earns half a day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   }
+  ],
+  "bar": [
+   {
+    "who": "Gambit",
+    "id": "bruise",
+    "bar": "ho",
+    "cls": "puck sm oilbar oilbar-ho",
+    "title": "Gambit · C · ops wingman · earns half a day of OIL",
+    "row": "⠿ Gambit C + ADD CX■✕"
+   },
+   {
+    "who": "Gambit",
+    "id": "bruise",
+    "bar": "ho",
+    "cls": "puck sm oilbar oilbar-ho",
+    "title": "Gambit · C · ops wingman · earns half a day of OIL",
+    "row": "⠿ Gambit C + ADD CX■✕"
+   }
+  ]
+ },
+ "gap361": {
+  "mode": [
+   {
+    "key": "bruise",
+    "who": "Gambit",
+    "id": "bruise",
+    "text": "Gambit FO",
+    "title": "Gambit earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "bruise",
+    "who": "Gambit",
+    "id": "bruise",
+    "text": "Gambit FO",
+    "title": "Gambit earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   }
+  ],
+  "items": [
+   {
+    "key": "r:rmubcykoo0bqvol",
+    "text": "VIPER",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "lin oilitem on"
+   },
+   {
+    "key": "r:rmubcykoo0bqvol",
+    "text": "Ranger FO",
+    "title": "Ranger earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "r:rmubcykoo0bqvol",
+    "text": "Echo FO",
+    "title": "Echo earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "r:rmubcl78vzh8qaq",
+    "text": "SDO",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "ain oilitem on"
+   },
+   {
+    "key": "r:rmubcl78vzh8qaq",
+    "text": "Dash FO",
+    "title": "Dash earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "r:rmubcyrf9felh0e",
+    "text": "EARLY DESK",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "ain oilitem on"
+   },
+   {
+    "key": "r:rmubcyrf9felh0e",
+    "text": "Gambit FO",
+    "title": "Gambit earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "r:rmubcyrsq7s5cnn",
+    "text": "LATE DESK",
+    "title": "Earns OIL — tap to stop this item earning",
+    "cls": "ain oilitem on"
+   },
+   {
+    "key": "r:rmubcyrsq7s5cnn",
+    "text": "Gambit FO",
+    "title": "Gambit earns a full day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   }
+  ],
+  "bar": [
+   {
+    "who": "Gambit",
+    "id": "bruise",
+    "bar": "fo",
+    "cls": "puck sm oilbar oilbar-fo",
+    "title": "Gambit · C · ops wingman · earns a full day of OIL",
+    "row": "⠿ Gambit C + ADD CX■✕"
+   },
+   {
+    "who": "Gambit",
+    "id": "bruise",
+    "bar": "fo",
+    "cls": "puck sm oilbar oilbar-fo",
+    "title": "Gambit · C · ops wingman · earns a full day of OIL",
+    "row": "⠿ Gambit C + ADD CX■✕"
+   }
+  ]
+ },
+ "itemsAtSwitch": [
+  "r:rmubcykoo0bqvol :: VIPER :: Earns OIL — tap to stop this item earning",
+  "r:rmubcykoo0bqvol :: Ranger FO :: Ranger earns a full day — tap to take him off this event",
+  "r:rmubcykoo0bqvol :: Echo FO :: Echo earns a full day — tap to take him off this event",
+  "r:rmubcl78vzh8qaq :: SDO :: Earns OIL — tap to stop this item earning",
+  "r:rmubcl78vzh8qaq :: Dash FO :: Dash earns a full day — tap to take him off this event",
+  "r:rmubcyrf9felh0e :: EARLY DESK :: Earns OIL — tap to stop this item earning",
+  "r:rmubcyrf9felh0e :: Gambit FO :: Gambit earns a full day — tap to take him off this event",
+  "r:rmubcyrsq7s5cnn :: LATE DESK :: Earns OIL — tap to stop this item earning",
+  "r:rmubcyrsq7s5cnn :: Gambit FO :: Gambit earns a full day — tap to take him off this event"
+ ],
+ "earlyItem": {
+  "key": "r:rmubcyrf9felh0e",
+  "text": "EARLY DESK",
+  "title": "Earns OIL — tap to stop this item earning",
+  "cls": "ain oilitem on"
+ },
+ "afterSwitchMode": [
+  {
+   "key": "bruise",
+   "who": "Gambit",
+   "id": "bruise",
+   "text": "Gambit HO",
+   "title": "Gambit earns half a day — tap to take him off this event",
+   "cls": "seat oilpk on"
+  }
+ ],
+ "afterSwitchBars": [
+  {
+   "who": "Gambit",
+   "id": "bruise",
+   "bar": null,
+   "cls": "puck sm",
+   "title": "Gambit · C · ops wingman",
+   "row": "⠿ Gambit C + ADD CX■✕"
+  },
+  {
+   "who": "Gambit",
+   "id": "bruise",
+   "bar": "ho",
+   "cls": "puck sm oilbar oilbar-ho",
+   "title": "Gambit · C · ops wingman · earns half a day of OIL",
+   "row": "⠿ Gambit C + ADD CX■✕"
+  }
+ ],
+ "warn": {
+  "head": "⚠ 1 issue",
+  "lines": [
+   "tap to review",
+   "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out"
+  ]
+ },
+ "publish": {
+  "published": true,
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "barsAfterPublish": [
+  {
+   "who": "Ranger",
+   "id": "bane",
+   "bar": "fo",
+   "cls": "puck sm oilbar oilbar-fo me",
+   "title": "Ranger · IP · instructor pilot · SXO · earns a full day of OIL",
+   "row": "⠿ 07:40 Ranger IP Echo IW C CX ■ + ✕"
+  },
+  {
+   "who": "Echo",
+   "id": "freak",
+   "bar": "fo",
+   "cls": "puck r sm oilbar oilbar-fo",
+   "title": "Echo · IW · instructor WSO · SXO · earns a full day of OIL",
+   "row": "⠿ 07:40 Ranger IP Echo IW C CX ■ + ✕"
+  },
+  {
+   "who": "Dash",
+   "id": "spaceman",
+   "bar": "fo",
+   "cls": "puck r sm oilbar oilbar-fo",
+   "title": "Dash · C · ops wingman · earns a full day of OIL",
+   "row": "⠿ Dash C + ADD CX■✕"
+  },
+  {
+   "who": "Gambit",
+   "id": "bruise",
+   "bar": null,
+   "cls": "puck sm",
+   "title": "Gambit · C · ops wingman",
+   "row": "⠿ Gambit C + ADD CX■✕"
+  },
+  {
+   "who": "Gambit",
+   "id": "bruise",
+   "bar": "ho",
+   "cls": "puck sm oilbar oilbar-ho",
+   "title": "Gambit · C · ops wingman · earns half a day of OIL",
+   "row": "⠿ Gambit C + ADD CX■✕"
+  }
+ ],
+ "grid": {
+  "spaceman": {
+   "text": "FO*",
+   "cls": "duty weekend act",
+   "mark": null
+  },
+  "bane": {
+   "text": "FO*",
+   "cls": "duty weekend act",
+   "mark": null
+  },
+  "freak": {
+   "text": "FO*",
+   "cls": "duty weekend act",
+   "mark": null
+  },
+  "bruise": {
+   "text": "HO*",
+   "cls": "duty weekend act",
+   "mark": null
+  }
+ },
+ "tracker": {
+  "spaceman": {
+   "found": true,
+   "text": "Dash C 3 + 3 +1 carried in opening figure 1 left +1 19 Jul AUTO Weekend/PH Duty 1 left +1 15 Aug FLT 1 left",
+   "entries": [
+    {
+     "testid": "oil-entry-spaceman-open:spaceman",
+     "cls": "oil-e credit",
+     "text": "+1 carried in opening figure 1 left",
+     "buttons": []
+    },
+    {
+     "testid": "oil-entry-spaceman-auto:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+1 19 Jul AUTO Weekend/PH Duty 1 left",
+     "buttons": []
+    },
+    {
+     "testid": "oil-entry-spaceman-award:0:2026-08-15",
+     "cls": "oil-e credit",
+     "text": "+1 15 Aug FLT 1 left",
+     "buttons": [
+      "FLT"
+     ]
+    }
+   ]
+  },
+  "bane": {
+   "found": true,
+   "text": "Ranger IP 1 + 1 +1 19 Jul AUTO Weekend/PH FLT 1 left",
+   "entries": [
+    {
+     "testid": "oil-entry-bane-auto:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+1 19 Jul AUTO Weekend/PH FLT 1 left",
+     "buttons": []
+    }
+   ]
+  },
+  "freak": {
+   "found": true,
+   "text": "Echo IW 1 + 1 +1 19 Jul AUTO Weekend/PH FLT 1 left",
+   "entries": [
+    {
+     "testid": "oil-entry-freak-auto:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+1 19 Jul AUTO Weekend/PH FLT 1 left",
+     "buttons": []
+    }
+   ]
+  },
+  "bruise": {
+   "found": true,
+   "text": "Gambit C 4 + 7 − 3 +4 carried in opening figure −1 24 Feb −1 15 Jul −1 16 Jul 1 left +1.5 2 Feb Exercise recovery 1.5 left +1 6 Jun SQNCDR Night flying week 1 left +0.5 19 Jul AUTO Weekend/PH Duty 0.5 left",
+   "entries": [
+    {
+     "testid": "oil-entry-bruise-open:bruise",
+     "cls": "oil-e credit",
+     "text": "+4 carried in opening figure −1 24 Feb −1 15 Jul −1 16 Jul 1 left",
+     "buttons": []
+    },
+    {
+     "testid": "oil-entry-l5",
+     "cls": "oil-e credit grant",
+     "text": "+1.5 2 Feb Exercise recovery 1.5 left",
+     "buttons": []
+    },
+    {
+     "testid": "oil-entry-dol-2",
+     "cls": "oil-e credit grant",
+     "text": "+1 6 Jun SQNCDR Night flying week 1 left",
+     "buttons": []
+    },
+    {
+     "testid": "oil-entry-bruise-auto:0:2026-07-19",
+     "cls": "oil-e credit",
+     "text": "+0.5 19 Jul AUTO Weekend/PH Duty 0.5 left",
+     "buttons": []
+    }
+   ]
+  }
+ },
+ "errors": []
+}

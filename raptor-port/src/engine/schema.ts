@@ -391,7 +391,24 @@ export type Day = {
   secOrder?: string[]
   /** Ground list frozen to hand order — engine (reorder.ts). */
   gman?: boolean
+  /** THE SCHEDULER'S OIL DECISIONS ([OIL-AUTO-REMOVE] §9.3, engine/oilev.ts):
+   *  the whole-day blanket, the per-item marks and the three-state per-person
+   *  decisions. Day CONTENT — it rides the snapshot, a parked plan and an undo
+   *  like any other field, and changing it is publishable as an amendment.
+   *  Absent = nothing decided, so the ordinary rules decide alone. */
+  oild?: OilDecisions
+  /** THE FROZEN OIL EVIDENCE — on an ISSUED SNAPSHOT'S day copy ONLY, attached
+   *  by `daySnap` and stripped from every clone back onto a working copy. It is
+   *  the whole block (the decisions above, the projected inputs and the resolved
+   *  sentinel membership) as it stood at publication, and it is the ONLY thing
+   *  the credit pass reads on a published day. Never present on a live day —
+   *  there it is derived on read, so it cannot go stale (§9.3). */
+  oilev?: OilEvidence
 }
+
+/* The OIL evidence block's own shapes live beside the body that builds them. */
+import type { OilDecisions, OilEvidence } from './oilev'
+export type { OilDecisions, OilEvidence, OilInputEv, OilDecision } from './oilev'
 
 /* ---------------------------------------------------------------------------
    The publish book — SCHED, src/engine/publish.ts
@@ -403,7 +420,7 @@ export type SignSet = { cur: string; sked: string; plan: string; appr: string }
  *  time: the canonical digest (§5.0), the schedule date, the current issued base
  *  id, and the candidate (plan/draft) revision. A signature is content-valid only
  *  while all four still match the live day; validity is recomputed, never cleared. */
-export type SignBinding = { dg: string; iso: string; base: string; rev: string; fil: string }
+export type SignBinding = { dg: string; iso: string; base: string; rev: string; fil: string; oil?: string }
 /** Per-day, per-role bindings — only roles signed through `setSign` appear. */
 export type SignBindSet = Record<number, Partial<Record<keyof SignSet, SignBinding>>>
 
@@ -427,7 +444,7 @@ export type DaySnapshot = {
 export type DayDraft = { id: string; name: string; d: Day; sign?: SignSet; signBind?: Partial<Record<keyof SignSet, SignBinding>> }
 
 /** One canonical delta entry in an AL's frozen `diff` — engine (canonical.ts `DeltaEntry`). */
-export type AlDiffEntry = { addr: string; kind: 'add' | 'delete' | 'change' | 'move' | 'input'; from?: any; to?: any }
+export type AlDiffEntry = { addr: string; kind: 'add' | 'delete' | 'change' | 'move' | 'input' | 'oil'; from?: any; to?: any }
 
 /** One published amendment (SCHED.als[i]) — engine (`alIssue`). Phase 2: SINGLE-DAY,
  *  identified by its immutable verId; `diff` replaces the old `keys` list. */

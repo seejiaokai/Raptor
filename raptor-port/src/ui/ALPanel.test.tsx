@@ -12,7 +12,7 @@
    break out of the attribute and become live markup. The value must be escaped
    at render time so already-saved names are handled too. Same family as the two
    unescaped sinks found 6 Aug 26. */
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { ALPanel } from './ALPanel'
@@ -20,6 +20,9 @@ import { initStore, notify } from '../state/store'
 import { SCHED, signOf, setDayApproved } from '../engine/publish'
 import { txtSet } from '../engine/slots'
 import { DAYS } from '../engine/data'
+import { HOOKS } from '../engine/hooks'
+import { ensureRowIds } from '../engine/rowids'
+import { setOilBlanket } from './oilmode'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -116,5 +119,43 @@ describe('ALPanel — per-day publish + read-only history', () => {
     expect(tag.getAttribute('onmouseover')).toBeNull()
     // and the full callsign, quote included, is preserved in the tooltip text.
     expect(tag.getAttribute('title')).toContain(evil)
+  })
+})
+
+/* FIX 3 / FABLE F5 — AN OIL-ONLY CHANGE READ AS A BARE "1 change" (22 Sep 26).
+   The whole OIL block goes out as ONE item under one per-day address, so the
+   panel counted it and then said nothing about it: a day whose only pending
+   change is what it EARNS read exactly like a day where somebody retyped a
+   time. The scheduler had no way to tell them apart, and on a day he had not
+   touched himself the count read as a change nobody made. The count is right;
+   it just has to say what it is. */
+describe('the panel says when what a day EARNS is what changed', () => {
+  const SAT = 5, SAT_ISO = '2026-07-18'
+  let saved: any
+  beforeEach(() => {
+    saved = { day: HOOKS.oilEarningDay, iso: HOOKS.oilDayISO }
+    HOOKS.oilEarningDay = (di: number) => di === SAT
+    HOOKS.oilDayISO = (di: number) => (di === SAT ? SAT_ISO : '')
+  })
+  afterEach(() => { HOOKS.oilEarningDay = saved.day; HOOKS.oilDayISO = saved.iso })
+
+  it('names the OIL change instead of counting it silently', async () => {
+    ;(DAYS[SAT] as any).ground = [{ prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' }]
+    ensureRowIds(DAYS)
+    sign(SAT); setDayApproved(SAT, true)
+    /* the ONLY change: a scheduler takes a man off this day's OIL */
+    setOilBlanket(SAT, true)
+    sign(SAT)
+    await render()
+    const line = host.querySelector('.al-pubday .al-pd-lbl')
+    expect(line, 'the day is offered for amendment').toBeTruthy()
+    expect(line!.textContent, 'and it says what moved').toMatch(/earns/i)
+  })
+
+  it('THE CONTROL — an ordinary typed change says nothing about earning', async () => {
+    publishThenAmend(2, 'A TYPED NOTE')
+    await render()
+    const lines = [...host.querySelectorAll('.al-pubday .al-pd-lbl')].map(e => e.textContent || '')
+    expect(lines.join(' | ')).not.toMatch(/earns/i)
   })
 })

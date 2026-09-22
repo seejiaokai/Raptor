@@ -1,0 +1,1070 @@
+{
+ "f1": "chaps",
+ "f2": "chaps",
+ "f3": "chaps",
+ "f4": "FAILED [data-fill=\"a:5.1.+\"]",
+ "e3_start": {
+  "mode": [
+   {
+    "key": "chaps",
+    "who": "Forge",
+    "id": "chaps",
+    "text": "Forge HO",
+    "title": "Forge earns half a day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   },
+   {
+    "key": "chaps",
+    "who": "Forge",
+    "id": "chaps",
+    "text": "Forge HO",
+    "title": "Forge earns half a day — tap to take him off this event",
+    "cls": "seat oilpk on"
+   }
+  ],
+  "items": [
+   "FAMILY DAY :: Earns OIL — tap to stop this item earning",
+   "Ace HO :: Ace earns half a day — tap to take him off this event",
+   "Warden HO :: Warden earns half a day — tap to take him off this event",
+   "Blade HO :: Blade earns half a day — tap to take him off this event",
+   "Trident HO :: Trident earns half a day — tap to take him off this event",
+   "Anvil HO :: Anvil earns half a day — tap to take him off this event",
+   "Havoc HO :: Havoc earns half a day — tap to take him off this event",
+   "Comet HO :: Comet earns half a day — tap to take him off this event",
+   "Reaper HO :: Reaper earns half a day — tap to take him off this event",
+   "Vandal HO :: Vandal earns half a day — tap to take him off this event",
+   "Outlaw HO :: Outlaw earns half a day — tap to take him off this event",
+   "Nomad HO :: Nomad earns half a day — tap to take him off this event",
+   "Diesel HO :: Diesel earns half a day — tap to take him off this event",
+   "Vapor HO :: Vapor earns half a day — tap to take him off this event",
+   "Wildcard HO :: Wildcard earns half a day — tap to take him off this event",
+   "Recon HO :: Recon earns half a day — tap to take him off this event",
+   "Static HO :: Static earns half a day — tap to take him off this event",
+   "Relay HO :: Relay earns half a day — tap to take him off this event",
+   "Scope HO :: Scope earns half a day — tap to take him off this event",
+   "Rune HO :: Rune earns half a day — tap to take him off this event",
+   "Hex HO :: Hex earns half a day — tap to take him off this event",
+   "Vector HO :: Vector earns half a day — tap to take him off this event",
+   "Dash HO :: Dash earns half a day — tap to take him off this event",
+   "Ghost HO :: Ghost earns half a day — tap to take him off this event",
+   "Wisp HO :: Wisp earns half a day — tap to take him off this event",
+   "Ryder HO :: Ryder earns half a day — tap to take him off this event",
+   "Cutter HO :: Cutter earns half a day — tap to take him off this event",
+   "MASS BRIEF :: Earns OIL — tap to stop this item earning",
+   "Saber FO :: Saber earns a full day — tap to take him off this event",
+   "Torch HO :: Torch earns half a day — tap to take him off this event",
+   "VIPER :: Earns OIL — tap to stop this item earning",
+   "Ranger HO :: Ranger earns half a day — tap to take him off this event",
+   "Echo HO :: Echo earns half a day — tap to take him off this event",
+   "COBRA :: Earns OIL — tap to stop this item earning",
+   "Ridge FO :: Ridge earns a full day — tap to take him off this event",
+   "Grit FO :: Grit earns a full day — tap to take him off this event",
+   "SC :: Earns OIL — tap to stop this item earning",
+   "Piston FO :: Piston earns a full day — tap to take him off this event",
+   "Basher FO :: Basher earns a full day — tap to take him off this event",
+   "SC :: Earns OIL — tap to stop this item earning",
+   "SC :: Earns OIL — tap to stop this item earning",
+   "SC :: Earns OIL — tap to stop this item earning",
+   "SC :: Earns OIL — tap to stop this item earning",
+   "SC :: Earns OIL — tap to stop this item earning",
+   "SC :: Earns OIL — tap to stop this item earning",
+   "SC :: Earns OIL — tap to stop this item earning",
+   "SDO :: Earns OIL — tap to stop this item earning",
+   "Fable FO :: Fable earns a full day — tap to take him off this event",
+   "Z DESK :: Earns OIL — tap to stop this item earning",
+   "Forge HO :: Forge earns half a day — tap to take him off this event",
+   "SXO AM :: Earns OIL — tap to stop this item earning",
+   "Drifter HO :: Drifter earns half a day — tap to take him off this event",
+   "OPS O AM :: Earns OIL — tap to stop this item earning",
+   "SXO PM :: Earns OIL — tap to stop this item earning",
+   "OPS O PM :: Earns OIL — tap to stop this item earning",
+   "BOX :: Earns OIL — tap to stop this item earning",
+   "Cinch HO :: Cinch earns half a day — tap to take him off this event",
+   "Cinder HO :: Cinder earns half a day — tap to take him off this event",
+   "EP-6 :: Earns OIL — tap to stop this item earning",
+   "Reaper HO :: Reaper earns half a day — tap to take him off this event",
+   "Basher FO :: Basher earns a full day — tap to take him off this event",
+   "EP-9 :: Earns OIL — tap to stop this item earning",
+   "Forge HO :: Forge earns half a day — tap to take him off this event",
+   "OCU REVIEW :: Earns OIL — tap to stop this item earning",
+   "Saber FO :: Saber earns a full day — tap to take him off this event",
+   "Talisman HO :: Talisman earns half a day — tap to take him off this event",
+   "Gambit — :: Gambit earns nothing from this event — tap to put him back on it",
+   "Sidewinder FO :: Sidewinder earns a full day — tap to take him off this event",
+   "Gambit — :: Gambit earns nothing from this event — tap to put him back on it",
+   "Sidewinder FO :: Sidewinder earns a full day — tap to take him off this event",
+   "Talisman HO :: Talisman earns half a day — tap to take him off this event"
+  ],
+  "bar": [
+   {
+    "who": "Forge",
+    "id": "chaps",
+    "bar": "ho",
+    "cls": "puck sm oilbar oilbar-ho",
+    "title": "Forge · IP · instructor pilot · earns half a day of OIL",
+    "row": "⠿ Forge IP + ADD CX■✕"
+   },
+   {
+    "who": "Forge",
+    "id": "chaps",
+    "bar": "ho",
+    "cls": "puck sm oilbar oilbar-ho",
+    "title": "Forge · IP · instructor pilot · earns half a day of OIL",
+    "row": "⠿ Forge IP + CX■✕"
+   },
+   {
+    "who": "Forge",
+    "id": "chaps",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Forge · IP · instructor pilot",
+    "row": "⠿ Vandal IP Forge IP + ADD CXⓘ■✕"
+   }
+  ]
+ },
+ "_at": "done",
+ "e3_startEverywhere": {
+  "board": [
+   {
+    "who": "Forge",
+    "id": "chaps",
+    "bar": "ho",
+    "cls": "puck sm oilbar oilbar-ho",
+    "title": "Forge · IP · instructor pilot · earns half a day of OIL",
+    "row": "⠿ Forge IP + ADD CX■✕"
+   },
+   {
+    "who": "Forge",
+    "id": "chaps",
+    "bar": "ho",
+    "cls": "puck sm oilbar oilbar-ho",
+    "title": "Forge · IP · instructor pilot · earns half a day of OIL",
+    "row": "⠿ Forge IP + CX■✕"
+   },
+   {
+    "who": "Forge",
+    "id": "chaps",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Forge · IP · instructor pilot",
+    "row": "⠿ Vandal IP Forge IP + ADD CXⓘ■✕"
+   }
+  ],
+  "editWeek": [
+   {
+    "who": "Forge",
+    "id": "chaps",
+    "bar": null,
+    "title": "Forge · IP · instructor pilot",
+    "row": "Forge IP + ADD"
+   },
+   {
+    "who": "Forge",
+    "id": "chaps",
+    "bar": null,
+    "title": "Forge · IP · instructor pilot",
+    "row": ""
+   },
+   {
+    "who": "Forge",
+    "id": "chaps",
+    "bar": null,
+    "title": "Forge · IP · instructor pilot",
+    "row": ""
+   },
+   {
+    "who": "Forge",
+    "id": "chaps",
+    "bar": null,
+    "title": "Forge · IP · instructor pilot",
+    "row": "Forge IP + ADD"
+   },
+   {
+    "who": "Forge",
+    "id": "chaps",
+    "bar": null,
+    "title": "Forge · IP · instructor pilot",
+    "row": ""
+   },
+   {
+    "who": "Forge",
+    "id": "chaps",
+    "bar": "ho",
+    "title": "Forge · IP · instructor pilot · earns half a day of OIL",
+    "row": "Forge IP + ADD"
+   },
+   {
+    "who": "Forge",
+    "id": "chaps",
+    "bar": "ho",
+    "title": "Forge · IP · instructor pilot · earns half a day of OIL",
+    "row": "Forge IP + ADD"
+   },
+   {
+    "who": "Forge",
+    "id": "chaps",
+    "bar": null,
+    "title": "Forge · IP · instructor pilot",
+    "row": "Vandal IP Forge IP + ADD"
+   },
+   {
+    "who": "Forge",
+    "id": "chaps",
+    "bar": null,
+    "title": "Forge · IP · instructor pilot",
+    "row": ""
+   }
+  ],
+  "viewOnly": [
+   {
+    "who": "Forge",
+    "id": "chaps",
+    "bar": null,
+    "title": "Forge · IP · instructor pilot",
+    "row": "Forge IP"
+   },
+   {
+    "who": "Forge",
+    "id": "chaps",
+    "bar": null,
+    "title": "Forge · IP · instructor pilot",
+    "row": "Forge IP"
+   },
+   {
+    "who": "Forge",
+    "id": "chaps",
+    "bar": "ho",
+    "title": "Forge · IP · instructor pilot · earns half a day of OIL",
+    "row": "Forge IP"
+   },
+   {
+    "who": "Forge",
+    "id": "chaps",
+    "bar": "ho",
+    "title": "Forge · IP · instructor pilot · earns half a day of OIL",
+    "row": "Forge IP"
+   },
+   {
+    "who": "Forge",
+    "id": "chaps",
+    "bar": null,
+    "title": "Forge · IP · instructor pilot",
+    "row": "Vandal IP Forge IP"
+   }
+  ]
+ },
+ "e3_massBriefItem": "MASS BRIEF :: Earns OIL — tap to stop this item earning",
+ "e3_massOffMode": [
+  {
+   "key": "chaps",
+   "who": "Forge",
+   "id": "chaps",
+   "text": "Forge HO",
+   "title": "Forge earns half a day — tap to take him off this event",
+   "cls": "seat oilpk on"
+  },
+  {
+   "key": "chaps",
+   "who": "Forge",
+   "id": "chaps",
+   "text": "Forge HO",
+   "title": "Forge earns half a day — tap to take him off this event",
+   "cls": "seat oilpk on"
+  }
+ ],
+ "e3_massOffBars": [
+  {
+   "who": "Forge",
+   "id": "chaps",
+   "bar": "ho",
+   "cls": "puck sm oilbar oilbar-ho",
+   "title": "Forge · IP · instructor pilot · earns half a day of OIL",
+   "row": "⠿ Forge IP + ADD CX■✕"
+  },
+  {
+   "who": "Forge",
+   "id": "chaps",
+   "bar": "ho",
+   "cls": "puck sm oilbar oilbar-ho",
+   "title": "Forge · IP · instructor pilot · earns half a day of OIL",
+   "row": "⠿ Forge IP + CX■✕"
+  },
+  {
+   "who": "Forge",
+   "id": "chaps",
+   "bar": null,
+   "cls": "puck sm",
+   "title": "Forge · IP · instructor pilot",
+   "row": "⠿ Vandal IP Forge IP + ADD CXⓘ■✕"
+  }
+ ],
+ "e3_massBriefItemOff": "MASS BRIEF :: Earns nothing — tap to let it earn again",
+ "e3_zPucksInMode": [
+  "chaps :: Forge HO :: Forge earns half a day — tap to take him off this event",
+  "chaps :: Forge HO :: Forge earns half a day — tap to take him off this event"
+ ],
+ "e3_zMassTapped": null,
+ "e3_zOffMassMode": [
+  "Forge HO :: Forge earns half a day — tap to take him off this event",
+  "Forge HO :: Forge earns half a day — tap to take him off this event"
+ ],
+ "e3_zOffMassBars": [
+  {
+   "who": "Forge",
+   "id": "chaps",
+   "bar": "ho",
+   "cls": "puck sm oilbar oilbar-ho",
+   "title": "Forge · IP · instructor pilot · earns half a day of OIL",
+   "row": "⠿ Forge IP + ADD CX■✕"
+  },
+  {
+   "who": "Forge",
+   "id": "chaps",
+   "bar": "ho",
+   "cls": "puck sm oilbar oilbar-ho",
+   "title": "Forge · IP · instructor pilot · earns half a day of OIL",
+   "row": "⠿ Forge IP + CX■✕"
+  },
+  {
+   "who": "Forge",
+   "id": "chaps",
+   "bar": null,
+   "cls": "puck sm",
+   "title": "Forge · IP · instructor pilot",
+   "row": "⠿ Vandal IP Forge IP + ADD CXⓘ■✕"
+  }
+ ],
+ "e3_warn": {
+  "head": "⚠ 3 issues",
+  "lines": [
+   "· 1 warning ·",
+   "tap to review",
+   "SXO and OPS DESK have no times — nobody on them earns OIL for this day",
+   "Basher — No time for the OFT EP-6 brief — SC AM sits inside 13:45–14:00",
+   "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out"
+  ]
+ },
+ "publishOrig": {
+  "published": true,
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "e3_barsPublished": [
+  {
+   "who": "Forge",
+   "id": "chaps",
+   "bar": "ho",
+   "cls": "puck sm oilbar oilbar-ho",
+   "title": "Forge · IP · instructor pilot · earns half a day of OIL",
+   "row": "⠿ Forge IP + ADD CX■✕"
+  },
+  {
+   "who": "Forge",
+   "id": "chaps",
+   "bar": "ho",
+   "cls": "puck sm oilbar oilbar-ho",
+   "title": "Forge · IP · instructor pilot · earns half a day of OIL",
+   "row": "⠿ Forge IP + CX■✕"
+  },
+  {
+   "who": "Forge",
+   "id": "chaps",
+   "bar": null,
+   "cls": "puck sm",
+   "title": "Forge · IP · instructor pilot",
+   "row": "⠿ Vandal IP Forge IP + ADD CXⓘ■✕"
+  }
+ ],
+ "e3_grid": {
+  "chaps": {
+   "text": "HO*",
+   "cls": "duty weekend act",
+   "mark": null
+  }
+ },
+ "e3_detail": "Forge 2026-07-18 NOW HO ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL Clear +OIL PO PI WHERE IT CAME FROM Earned off the published schedule — change the schedule and the OIL follows. REASON SIM + Duty GIVEN BY Weekend/PH DAYS half a day — worked 08:00–10:00, 11:00–12:00",
+ "e3_tracker": {
+  "chaps": {
+   "found": true,
+   "text": "Forge IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH SIM + Duty 0.5 left",
+   "entries": [
+    {
+     "testid": "oil-entry-chaps-auto:0:2026-07-18",
+     "cls": "oil-e credit",
+     "text": "+0.5 18 Jul AUTO Weekend/PH SIM + Duty 0.5 left",
+     "buttons": []
+    }
+   ]
+  }
+ },
+ "e4_before": [
+  "Ridge :: Ridge FO :: Ridge earns a full day — tap to take him off this event",
+  "Grit :: Grit FO :: Grit earns a full day — tap to take him off this event"
+ ],
+ "e4_ridgeTapped": "razer",
+ "e4_afterTapMode": [
+  "Ridge :: Ridge — :: Ridge earns nothing from this event — tap to put him back on it",
+  "Grit :: Grit FO :: Grit earns a full day — tap to take him off this event"
+ ],
+ "e4_pendingChip": [],
+ "e4_everywhereBeforeAL": {
+  "board": [
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": "⠿ 11:40 Ridge C Grit C C CX ■ + ✕"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": "fo",
+    "cls": "puck r sm oilbar oilbar-fo",
+    "title": "Grit · C · ops wingman · earns a full day of OIL",
+    "row": "⠿ 11:40 Ridge C Grit C C CX ■ + ✕"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": ""
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Grit · C · ops wingman",
+    "row": ""
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": ""
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Grit · C · ops wingman",
+    "row": ""
+   }
+  ],
+  "editWeek": [
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": "Ridge C + ADD"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman · Conflict (two events at once)",
+    "row": "Anvil IP Ghost C C Grit C + ADD"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": ""
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman · Conflict (two events at once)",
+    "row": "C Grit C"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": "Ridge C + ADD"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": ""
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman",
+    "row": "Grit C"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": ""
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman",
+    "row": "Grit C"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": "Ridge C + ADD"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": ""
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman",
+    "row": "Grit C"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": "Ridge C + ADD"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman",
+    "row": "Grit C"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": ""
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": "fo",
+    "title": "Grit · C · ops wingman · earns a full day of OIL",
+    "row": ""
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": ""
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman",
+    "row": ""
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": ""
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman",
+    "row": ""
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": ""
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman",
+    "row": ""
+   }
+  ],
+  "viewOnly": [
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": "Ridge C"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman · Conflict (two events at once)",
+    "row": "Anvil IP Ghost C C Grit C"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman · Conflict (two events at once)",
+    "row": "C Grit C"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": "Ridge C"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman",
+    "row": "Grit C"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman",
+    "row": "Grit C"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": "Ridge C"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman",
+    "row": "Grit C"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": "Ridge C"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman",
+    "row": "Grit C"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": "fo",
+    "title": "Ridge · C · ops wingman · SXO · earns a full day of OIL",
+    "row": ""
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": "fo",
+    "title": "Grit · C · ops wingman · earns a full day of OIL",
+    "row": ""
+   }
+  ]
+ },
+ "e4_gridBeforeAL": {
+  "razer": {
+   "text": "FO*",
+   "cls": "duty weekend act",
+   "mark": null
+  },
+  "sufa": {
+   "text": "FO*",
+   "cls": "duty weekend act",
+   "mark": null
+  }
+ },
+ "e4_signState": {
+  "beak": null,
+  "selects": [
+   {
+    "cls": "",
+    "val": ""
+   },
+   {
+    "cls": "",
+    "val": ""
+   },
+   {
+    "cls": "",
+    "val": ""
+   },
+   {
+    "cls": "",
+    "val": ""
+   }
+  ],
+  "chip": "ORIG"
+ },
+ "publishAL1": {
+  "published": true,
+  "pressed": "Publish AL1",
+  "version": "AL1"
+ },
+ "e4_everywhereAfterAL": {
+  "board": [
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": "⠿ 11:40 Ridge C Grit C C CX ■ + ✕"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": "fo",
+    "cls": "puck r sm oilbar oilbar-fo",
+    "title": "Grit · C · ops wingman · earns a full day of OIL",
+    "row": "⠿ 11:40 Ridge C Grit C C CX ■ + ✕"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": ""
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Grit · C · ops wingman",
+    "row": ""
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "cls": "puck sm",
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": ""
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "cls": "puck r sm",
+    "title": "Grit · C · ops wingman",
+    "row": ""
+   }
+  ],
+  "editWeek": [
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": "Ridge C + ADD"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman · Conflict (two events at once)",
+    "row": "Anvil IP Ghost C C Grit C + ADD"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": ""
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman · Conflict (two events at once)",
+    "row": "C Grit C"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": "Ridge C + ADD"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": ""
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman",
+    "row": "Grit C"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": ""
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman",
+    "row": "Grit C"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": "Ridge C + ADD"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": ""
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman",
+    "row": "Grit C"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": "Ridge C + ADD"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman",
+    "row": "Grit C"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": ""
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": "fo",
+    "title": "Grit · C · ops wingman · earns a full day of OIL",
+    "row": ""
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": ""
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman",
+    "row": ""
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": ""
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman",
+    "row": ""
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": ""
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman",
+    "row": ""
+   }
+  ],
+  "viewOnly": [
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": "Ridge C"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman · Conflict (two events at once)",
+    "row": "Anvil IP Ghost C C Grit C"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman · Conflict (two events at once)",
+    "row": "C Grit C"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": "Ridge C"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman",
+    "row": "Grit C"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman",
+    "row": "Grit C"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": "Ridge C"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman",
+    "row": "Grit C"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": "Ridge C"
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": null,
+    "title": "Grit · C · ops wingman",
+    "row": "Grit C"
+   },
+   {
+    "who": "Ridge",
+    "id": "razer",
+    "bar": null,
+    "title": "Ridge · C · ops wingman · SXO",
+    "row": ""
+   },
+   {
+    "who": "Grit",
+    "id": "sufa",
+    "bar": "fo",
+    "title": "Grit · C · ops wingman · earns a full day of OIL",
+    "row": ""
+   }
+  ]
+ },
+ "e4_gridAfterAL": {
+  "razer": {
+   "text": "",
+   "cls": "weekend act",
+   "mark": null
+  },
+  "sufa": {
+   "text": "FO*",
+   "cls": "duty weekend act",
+   "mark": null
+  }
+ },
+ "e4_tracker": {
+  "razer": {
+   "found": true,
+   "text": "Ridge C 0",
+   "entries": []
+  },
+  "sufa": {
+   "found": true,
+   "text": "Grit C 1 + 1 +1 18 Jul AUTO Weekend/PH FLT 1 left",
+   "entries": [
+    {
+     "testid": "oil-entry-sufa-auto:0:2026-07-18",
+     "cls": "oil-e credit",
+     "text": "+1 18 Jul AUTO Weekend/PH FLT 1 left",
+     "buttons": []
+    }
+   ]
+  }
+ },
+ "e4_history": "History",
+ "errors": []
+}

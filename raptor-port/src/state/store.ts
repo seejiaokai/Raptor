@@ -617,6 +617,10 @@ export function loadWeek(v: any) {
   weekSwapBegin()
   try {
     setCurWeek(v)
+    /* OIL mode belongs to one day of ONE week, so it can never survive a week
+       swap — whichever route got us here (Fable, 21 Sep 26). The board's own
+       step clears it too; this is the backstop for every other caller. */
+    view.setOilDay(null)
     HOOKS.weekSwapped()         // pan.ts drops its arrow-burst corridor (stale-target fix)
     const s = applyWeekModel(v)
     view.bumpNav()              // a week swap invalidates a pending day-template-apply confirm (P2-REV2-07)
