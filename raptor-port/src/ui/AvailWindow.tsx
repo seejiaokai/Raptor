@@ -29,7 +29,7 @@ import { PEOPLE, byCrew } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { useVersion } from './useStore'
 import { canEditSched } from '../state/auth'
-import { esc } from '../state/view'
+import { esc, selectPerson } from '../state/view'
 import { personPuckHTML, personWarnMsgs, withDaySnap } from './html'
 import { oilModeOn, oilSeatHTML, oilSentinelPeople, toggleOilPerson, oilFigureFor, oilBlanketOn, oilFromWords, oilItemLabel } from './oilmode'
 import { crowdClashes } from '../engine/validate'
@@ -197,6 +197,19 @@ export function AvailWindow() {
     const r = t.closest('[data-awp]') as HTMLElement | null
     if (!r) return
     const id = r.dataset.awp || ''
+    /* D65 — WHAT A TAP ON A MAN SELECTS DEPENDS ON THE MODE (owner, 23 Sep 26).
+       OIL Earn OFF: the ordinary puck selection — he lights up blue everywhere
+       on the schedule behind the window, so the scheduler sees every row he is
+       already on — AND the footer still gives his reason. A second tap clears
+       it, as on any puck. OIL Earn ON: the tap only switches him on or off
+       earning and selects NOTHING, matching every other tap inside the mode —
+       on the "who's available" tab too, because the ruling keys it to the mode,
+       not the tab. The window owns this outright and stops the click here: it
+       used to fall through to the document's puck branch and select him in
+       every case (Fable S9). `false` = not a week tap: his reason is already in
+       the footer, so the week's warning boxes are not flung open under him. */
+    e.stopPropagation()
+    if (!mode) selectPerson(id, false)
     if (oil) {
       if (!canEdit) { HOOKS.toast('Only a scheduler can change who earns', 'warn'); return }
       if (oilBlanketOn(di)) { HOOKS.toast('Nothing on this day earns — turn that off first'); return }

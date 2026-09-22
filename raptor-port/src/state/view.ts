@@ -12,6 +12,9 @@ import { isLead, isInstr, isOcu } from '../engine/people'
 import { HOOKS, runSchedEpilogue } from '../engine/hooks'
 import { canEditSched, ME } from './auth'
 import { flagDrop } from './dropflag'
+/* the counter's window state (D66 — closed on a page, week or session change).
+   pops.ts is a leaf module with no imports of its own, so this adds no cycle. */
+import { setAvailWin } from '../ui/pops'
 
 /* the repaint/gesture call sites inside these verbatim bodies route through
    the hooks — no-ops headless, mapped to the store's notify() when wired */
@@ -373,6 +376,14 @@ export function setPage(p:any){
      login that lands where it already was must not reach into the DOM. The
      typeof guard: resetSession routes every login/logout through here, and
      the headless state tests run with no document at all. */
+  /* THE COUNTER'S WINDOW CLOSES ON A PAGE CHANGE (owner D66, 23 Sep 26 —
+     "close it"). It is a schedule tool; floating it over the Leave War grid, the
+     Tracker or the Inputs page is clutter (Fable S13). The switch between Edit
+     Schedule and View-only Sched is a page change too, and closes it for its own
+     reason: the two pages show different versions of the day, so a window opened
+     on one would list the wrong crowd on the other (D44). The week and session
+     halves are in VIEW_RESET below. */
+  if(p!==CURPAGE)setAvailWin(null);
   if(p!==CURPAGE&&typeof document!=='undefined')document.querySelectorAll('.stmenu, .wavemenu').forEach(x=>{
     const off=(x as any)._offClick;
     if(off)document.removeEventListener('click',off);
@@ -708,6 +719,15 @@ export const VIEW_RESET: { name: string; scopes: ResetScope[]; reset: () => void
      confirm cleared by any navigation (login/logout, week swap), so it never carries
      a stale "confirm" across a week. */
   { name:'UNPUBARM', scopes:['session','week'], reset:()=>setUnpubArm(null) },
+  /* [ALL-AVAIL-WINDOW] — the counter's window (owner D66, 23 Sep 26: "close
+     it"). A WEEK swap closes it: the event it was opened from is no longer on
+     screen, and every other per-week transient already resets here. A LOGIN
+     or LOGOUT closes it: the next person must not inherit the last one's
+     window — its title, its day, its issued version (Fable S12). The page
+     change half lives in setPage above. NOT the outside-click rule, which
+     still does not apply to this window: a click on the schedule behind it
+     must never close it (D38). */
+  { name:'AVAILWIN', scopes:['session','week'], reset:()=>setAvailWin(null) },
   /* week-only: the palette day and the "set default?" offer are keyed to the
      week being left; resetSession clears the offer through setPage instead */
   { name:'ROSDAY',     scopes:['week'], reset:()=>setRosDay(0) },

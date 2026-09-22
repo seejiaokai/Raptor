@@ -30,8 +30,13 @@ import { rowItemKey } from '../engine/oil'
 import { oilFigureFor } from './oilmode'
 import { openScheduler } from './board'
 import { setOilDay } from '../state/view'
+import * as view from '../state/view'
 import { AVAILWIN } from './pops'
 import { availableFor } from '../leavewar/sync'
+import { loadWeek, resetSession } from '../state/store'
+import { CURWEEK } from '../engine/waves'
+import { shiftWeek } from './weeknav'
+import { stashClear } from '../engine/weekstash'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -371,6 +376,102 @@ describe('the earning half moves real money, so it is gated and it writes (D43/D
     expect(toasts.join(' '), 'and he is told why, rather than nothing happening')
       .toContain('Only a scheduler')
     await act(async () => { setSession({ user: 'ad', role: 'admin' }); notify() })
+  })
+})
+
+describe('D65 — what a tap on a man selects depends on the mode (owner, 23 Sep 26)', () => {
+  /* "What about like normal all avail puck when not in oil earn mode? I would
+     like a tap on a man to highlight him everywhere as well." — and, for the
+     mode, "For oil earn only Id say no." */
+  afterEach(async () => { await act(async () => { view.selDrop(); notify() }) })
+
+  it('OIL Earn OFF: the tap highlights him everywhere AND the footer gives his reason', async () => {
+    puckRow(TUE)
+    await openWin(TUE)
+    expect(view.SELID, 'nobody selected to begin with').toBeNull()
+    const his = rows().find(r => r.dataset.awp === CROWD[0])!
+    await click(his.querySelector('.puck'))
+    expect(view.SELID, 'the ordinary puck selection — he lights up everywhere').toBe(CROWD[0])
+    expect($('.availwin .win-foot').textContent || '', 'and the window still says why').toContain(cs(CROWD[0]))
+    await click(rows().find(r => r.dataset.awp === CROWD[0])!.querySelector('.puck'))
+    expect(view.SELID, 'a second tap clears it, as on any puck').toBeNull()
+  })
+
+  it('OIL Earn ON, on the earn tab: the tap switches his earning and selects NOBODY', async () => {
+    HOOKS.oilSentinel = () => ['plasma', 'stiff']
+    Object.assign(DAYS[SAT] as any, { dutywaves: [], sims: { amt: [], oft: [] }, oild: undefined })
+    const item = puckRow(SAT)
+    await open(SAT)
+    await act(async () => { setOilDay(SAT); notify() })
+    await click(chipEl())
+    const before = oilFigureFor(SAT, 'plasma', item)
+    expect(before, 'he earns to begin with').toBeTruthy()
+    await click(winSeat('plasma').querySelector('.puck'))
+    expect(oilFigureFor(SAT, 'plasma', item), 'the tap did its one job').toBeFalsy()
+    expect(view.SELID, 'and selected nobody — inside the mode no tap selects').toBeNull()
+  })
+
+  it("OIL Earn ON, on the who's-available tab: the reason, and still no selection", async () => {
+    puckRow(SAT)
+    await open(SAT)
+    await act(async () => { setOilDay(SAT); notify() })
+    await click(chipEl())
+    await click(tabs()[0])
+    await click(rows()[0].querySelector('.puck'))
+    expect($('.availwin .win-foot').textContent || '', 'the reason is given').toContain(' — ')
+    expect(view.SELID, 'the ruling keys it to the MODE, not the tab').toBeNull()
+  })
+})
+
+describe('D66 — the window closes on a page, week or session change (owner, 23 Sep 26)', () => {
+  /* "close it". The outside-click rule still does NOT apply — a click on the
+     schedule behind must never close it (D38) — so the last test here pins that
+     the window survives an ordinary edit behind it. */
+  it('leaving the schedule for another page closes it (Fable S13)', async () => {
+    puckRow(TUE)
+    await openWin(TUE)
+    expect(AVAILWIN, 'open').toBeTruthy()
+    await act(async () => { view.setPage('leavewar'); notify() })
+    expect(AVAILWIN, 'the Leave War does not carry a floating schedule tool').toBeNull()
+    await act(async () => { view.setPage('editsched'); notify() })
+  })
+
+  it('switching between Edit Schedule and View-only Sched closes it too', async () => {
+    puckRow(TUE)
+    await openWin(TUE)
+    await act(async () => { view.setPage('viewsched'); notify() })
+    expect(AVAILWIN, 'the two pages show different versions of the day (D44)').toBeNull()
+    await act(async () => { view.setPage('editsched'); notify() })
+  })
+
+  it('a week change closes it (Fable S4)', async () => {
+    puckRow(TUE)
+    await openWin(TUE)
+    const wk = CURWEEK
+    try {
+      await act(async () => { loadWeek(shiftWeek(wk, 1)); notify() })
+      expect(AVAILWIN, 'the event it came from is no longer on screen').toBeNull()
+    } finally {
+      /* back to the seeded week with nothing stashed, so no later test reads
+         this one's edited Tuesday out of the week store */
+      await act(async () => { stashClear(); loadWeek(wk); stashClear(); notify() })
+    }
+  })
+
+  it('a logout closes it — the next person inherits nothing (Fable S12)', async () => {
+    puckRow(TUE)
+    await openWin(TUE)
+    await act(async () => { resetSession({ user: 'us', role: 'main' }); notify() })
+    expect(AVAILWIN, 'the member does not land on the admin\'s window').toBeNull()
+    await act(async () => { resetSession({ user: 'ad', role: 'admin' }); view.setPage('editsched'); notify() })
+  })
+
+  it('but an ordinary edit behind it does NOT close it — the outside-click rule does not apply (D38)', async () => {
+    puckRow(TUE)
+    await openWin(TUE)
+    await click($('#sbBoard .sb-panel'))
+    await act(async () => { notify() })
+    expect(AVAILWIN, 'still open: editing behind it is the whole point').toBeTruthy()
   })
 })
 
