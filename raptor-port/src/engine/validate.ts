@@ -10,7 +10,7 @@ import { setWorld, setFiling, clearFiling } from './world'
 import { CURWEEK, isStandalone } from './waves'
 import { DAYS } from './data'
 import { dayOilBlind, blindDesks } from './oil'
-import { oilWouldEarn } from './oilev'
+import { oilWouldEarn, oilOldBlockCrowd, oilEvidenceOf } from './oilev'
 import { keyDay } from './keys'
 import { SCHED, approvedDays, dayApproved, dayDelta, dayCurVer, daySnapOf } from './publish'
 
@@ -28,7 +28,8 @@ export const WCODE:any={DOUBLE_BOOK:'Conflict — two events at once',DNIF_FLY:'
   SC_INTIME:'In-time window cut — busy between report and shift start',
   SANS_AVAIL:'SANS availability — planned outside the availability filed',
   OIL_NO_TIMES:'No OIL earned — a row has no usable times',
-  FLT_NO_LEN:'Flight times — take-off and landing are the same'};
+  FLT_NO_LEN:'Flight times — take-off and landing are the same',
+  OIL_OLD_BLOCK:'Published before these seats counted — republish to credit them'};
 /* what a flag PRINTS on the puck. The internal codes stay as they are — they
    key the colours, the ranking and the tooltips — but the squadron reads these
    at 9px on a phone, so the glyphs are short: R for crew rest, B for either
@@ -1209,6 +1210,21 @@ function validateCore(){
         const frozen=snap&&snap.d&&snap.d.oilev;
         if(frozen&&!frozen.earns){
           add('adv','OIL_STALE_DAY',[],'This day started earning OIL after it was published — publish it again so the OIL lands');
+        }
+        /* AND THE OTHER WAY A PUBLISHED DAY'S MONEY MOVES UNDER IT (owner,
+           22 Sep 26 — "ok fix this first"). A day issued before the app counted
+           the people behind an ALL / ALL AVAIL puck on a duty desk, a sim seat or
+           an extras line reads "1 pending" the moment those seats start paying —
+           correctly, because republishing it WOULD credit them — but with no cell
+           marked and nothing in History, because the difference is worked out
+           rather than recorded. Beside the puck the count chip reads "?", since
+           that block never wrote down who was there. Something changed, nothing
+           says what, and the one place to look was never written down.
+           This says it. It does not change what the comparison decides — that is
+           still the owner's question — it stops the day asking for an amendment
+           it cannot explain. */
+        if(frozen&&oilOldBlockCrowd(frozen,oilEvidenceOf(di))){
+          add('adv','OIL_OLD_BLOCK',[],'This day was published before the app counted who is behind an ALL AVAIL puck on a duty desk, a sim or an extras line — publish it again to credit them');
         }
       }
     }

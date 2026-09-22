@@ -42,6 +42,7 @@ import { HOOKS } from './hooks'
 import {
   SCHED, setSign, setDayApproved, dayHasChanges, dayCurVer, daySnapOf, daySigned,
 } from './publish'
+import { validate } from './validate'
 import { ensureRowIds } from './rowids'
 import { rowItemKey } from './oil'
 
@@ -240,5 +241,77 @@ describe('the signature\'s key does not CARRY the crowd, whatever the fixture do
     expect(oilSignKey(oilEvidence(TUE), DAYS[TUE]), 'a weekday has no money to promise').toBe('')
     HOOKS.oilSentinel = () => ['bane']
     expect(oilSignKey(oilEvidence(TUE), DAYS[TUE]), 'and a changed crowd leaves it at nothing').toBe('')
+  })
+})
+
+/* AN ISSUED DAY THAT WAS WRITTEN BEFORE THESE SEATS WERE COUNTED SAYS SO
+   (owner, 22 Sep 26 — "ok fix this first", of the one thing that was untidy
+   either way).
+
+   WHAT HE WOULD HAVE SEEN. A Sunday published weeks ago with ALL AVAIL on the
+   SUN DESK. The day says "1 pending" and offers Publish AL1. Tap to see what
+   changed: nothing is marked and History is empty — the difference is worked
+   out, not recorded, so there is no cell to mark. And beside the puck the count
+   chip reads "?", because the block that went out never wrote down who was
+   behind it. Something changed · I cannot show you what · and the one place you
+   would look was never written down.
+
+   THE SAME BLANK READ TWO WAYS. `oilSentOf` treats an absence in a block with no
+   `mem` flag as UNKNOWN and says so on the chip; `oilDelta` compares an older
+   EARNING block on membership anyway, so it reads the same absence as NOBODY and
+   reports a change. One of them has to speak for the other, and the one that
+   knows least was the one staying quiet.
+
+   This does not decide whether the day should raise the mark at all — that is
+   the owner's open question. It makes the day SAY what it actually knows, which
+   is what he would want under either answer. Same idiom as OIL_STALE_DAY, which
+   exists for the other way a published day's money moves under it. */
+describe('a day issued before these seats were counted says so, instead of a bare "1 pending"', () => {
+  const oldIssuedDeskDay = () => {
+    const item = puckRow(SAT)
+    ;(DAYS[SAT] as any).ground = []
+    ;(DAYS[SAT] as any).dutywaves = [{ label: 'DUTIES', rows: [{ role: 'SUN DESK', str: '0800', end: '1800', id: 'allavail' }] }]
+    ensureRowIds(DAYS)
+    const deskItem = rowItemKey((DAYS[SAT] as any).dutywaves[0].rows[0].rid)
+    signAndPublish(SAT)
+    const snap: any = daySnapOf(SAT, dayCurVer(SAT))
+    /* rewind the frozen block to what the PREVIOUS build wrote: it earns, it
+       carries no `mem` flag, and its walk never reached a duty desk */
+    delete snap.d.oilev.mem
+    delete snap.d.oilev.sent[deskItem]
+    void item
+    return deskItem
+  }
+  const advOn = (di: number, code: string) =>
+    (validate().byDay[di]?.warns ?? []).filter((w: any) => w.code === code)
+
+  it('the day names the reason, so he is not republishing blind', () => {
+    oldIssuedDeskDay()
+    const w = advOn(SAT, 'OIL_OLD_BLOCK')
+    expect(w, 'exactly one, on the day').toHaveLength(1)
+    expect(w[0].sev, 'a prompt, not a refusal').toBe('adv')
+    expect(w[0].msg, 'it says the page predates the record')
+      .toMatch(/issued before|before the app/i)
+    expect(w[0].msg, 'and what publishing again will do').toMatch(/publish/i)
+  })
+
+  it('THE CONTROL: a day issued WITH the record says nothing', () => {
+    puckRow(SAT)
+    signAndPublish(SAT)
+    expect(advOn(SAT, 'OIL_OLD_BLOCK'), 'its block knows who was behind the puck').toHaveLength(0)
+  })
+
+  it('THE CONTROL: an unpublished day says nothing — it has no issued page to be stale', () => {
+    puckRow(SAT)
+    expect(advOn(SAT, 'OIL_OLD_BLOCK')).toHaveLength(0)
+  })
+
+  it('THE CONTROL: an old block with NO puck on the day says nothing', () => {
+    ;(DAYS[SAT] as any).ground = [{ prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' }]
+    ensureRowIds(DAYS)
+    signAndPublish(SAT)
+    const snap: any = daySnapOf(SAT, dayCurVer(SAT))
+    delete snap.d.oilev.mem
+    expect(advOn(SAT, 'OIL_OLD_BLOCK'), 'nothing was ever behind anything here').toHaveLength(0)
   })
 })

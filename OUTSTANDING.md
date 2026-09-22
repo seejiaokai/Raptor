@@ -1086,8 +1086,14 @@ These four are what was deliberately left:
    against `slots.ts`'s trailing-blank trim before changing anything — the array shape is that
    file's contract, not D50's.
 3. **An already-issued weekend carrying a placeholder reads "1 pending" the moment this ships**
-   (Fable F5, LOW). The BEHAVIOUR is right (D44), but the behaviour register promises such a day
-   stays silent. **His call which of the two moves** — the promise or the day.
+   (Fable F5, LOW). **PART DONE 22 Sep 26, on his "ok fix this first".** The day used to say "1
+   pending" with no cell marked and nothing in History, while the chip beside the puck said "?" —
+   something changed, nothing said what, and the one place to look was never written down. The day
+   now NAMES it (`OIL_OLD_BLOCK`), so he is not republishing blind. **Still open and his:** whether
+   such a day should raise the mark at all. Leave it and he republishes once per affected day and
+   those men get their OIL (D48's correction-and-republish path); silence it and they are never paid
+   for that seat unless the day is republished for another reason. The register row now states the
+   behaviour either way.
 4. **A placeholder that reaches a cockpit by copy draws the jet as crewed** (Fable F8, LOW,
    pre-existing). D47 belts the money on purpose and names this; the screen half is one advisory
    away. A product call, not a defect against the plan.

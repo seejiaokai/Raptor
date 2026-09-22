@@ -746,6 +746,32 @@ export function oilSignKey(ev: OilEvidence | null | undefined, day?: any): strin
   return oilKeyNoMem(oilEvidenceKey(ev, day))
 }
 
+/** DOES THIS ISSUED DAY PREDATE THE RECORD OF WHO IS BEHIND ITS PUCKS, AND WOULD
+ *  REPUBLISHING IT PAY SOMEBODY IT DID NOT PAY (owner, 22 Sep 26 — "ok fix this
+ *  first")?
+ *
+ *  A block frozen by an earlier build carries no `mem` flag, and its blanks mean
+ *  "we did not write this down", not "nobody was there" — `oilSentOf` says
+ *  exactly that on the chip. The publication comparison reads an older EARNING
+ *  block on membership anyway, so the same blank makes the day read "1 pending"
+ *  with no cell marked and nothing in History. Something changed · I cannot show
+ *  you what · and the one place you would look was never written down.
+ *
+ *  This does not change either reader. It lets the DAY say what it does know:
+ *  the issued page was written before these seats were counted, and republishing
+ *  will credit the men behind them. True whichever way the bigger question is
+ *  answered, which is why it is built before that question is.
+ *
+ *  Narrow on purpose. Only an issued block that EARNS, carries no `mem`, and has
+ *  a live crowd standing on an item it has no entry for at all — a day whose
+ *  every puck the old build did record stays silent, as it should. */
+export function oilOldBlockCrowd(issued: OilEvidence | null | undefined, live: OilEvidence | null | undefined): boolean {
+  if (!issued || !live || !issued.earns || issued.mem) return false
+  const had = issued.sent || {}
+  return Object.keys(live.sent || {}).some(k =>
+    (live.sent[k] || []).length > 0 && !Object.prototype.hasOwnProperty.call(had, k))
+}
+
 /** THE SAME KEY AS THE BUILD BEFORE `stand` WROTE IT — six parts per claim, not
  *  seven. Kept for exactly one purpose: a signature binding frozen by that build
  *  stores this string, and the only way to ask "is the day still what he signed"
