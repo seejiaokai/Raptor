@@ -3,7 +3,7 @@
    store's notify(). The CX-with-a-reason dialog state lives here too. */
 import { DAYS } from '../engine/data'
 import { mkNote, noteText } from '../engine/note'
-import { INPUTS, inputCoversDate, inpById, inpTimeText, inpId, inpLabel, inpMeta } from '../engine/inputs'
+import { INPUTS, inputCoversDate, inpById, inpTimeText, inpId } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { waveInTime } from '../engine/events'
@@ -22,7 +22,8 @@ import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, day
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
-import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit, setAvailWin } from './pops'
+import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit } from './pops'
+import { openAvailWinFrom } from './AvailWindow'
 import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel, WAVE_BUILTIN, WAVETPL_CFG } from '../engine/wavetpl'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
@@ -31,7 +32,7 @@ import { esc } from '../state/view'
 import { notify, notifyBoard, loadWeek } from '../state/store'
 import { CURWEEK } from '../engine/waves'
 import { shiftWeek } from './weeknav'
-import { oilModeOn, dayBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilItemMasked, oilItemCellHTML, oilItemLabel } from './oilmode'
+import { oilModeOn, dayBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilItemMasked, oilItemCellHTML, oilRequestName, oilPersonSays } from './oilmode'
 import { rowItemKey } from '../engine/oil'
 import { oilReadPass } from '../engine/oilev'
 import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbSansPanel, sbUnavailPanel, labelToTitle, titleToLabel, titleToKind, sbGrip, sbNudge, rowMove, sbSortBtn, boxHTML } from './board-html'
@@ -754,13 +755,11 @@ const oilItemName = (di: any, item: string): string => {
      record that has to answer "why was my balance short?". The type is what the
      app calls it everywhere else, so the history calls it that too. */
   if (item.startsWith('i:')) {
-    const r = (INPUTS as any[]).find(x => x && String(inpId(x)) === item.slice(2))
     /* the LONG name the type carries ("overseas duty"), not the two-letter code
        on the row — a history line is read cold, a week later, by someone who
        was not there. An "Other" has no long name and reads by what was typed on
-       it, which is exactly what inpLabel already does. */
-    const meta: any = r ? inpMeta(r.type) : null
-    const t = r ? String((meta && meta.name) || inpLabel(r) || '').trim() : ''
+       it. One body with the window's history line (oilmode.ts). */
+    const t = oilRequestName(item)
     if (t) return t
   }
   const all = document.querySelectorAll(`[data-oilitem][data-oilday="${+di}"]`)
@@ -1269,7 +1268,7 @@ export function boardArmClick(e: MouseEvent) {
     const on = toggleOilPerson(di, person, item)
     notify(); e.stopPropagation()
     const cs = (PEOPLE[person]||{}).cs||person, nm = oilItemName(di, item)
-    return act(di, on ? `${cs} earns OIL from ${nm} again` : `${cs} earns nothing from ${nm}`)
+    return act(di, oilPersonSays(cs, nm, on))
   }
   /* the sentinel's count chip: who is behind this puck, and what each of them
      earns (§7.6 / §2.7). Read-only, so it works outside the mode too — on the
@@ -1295,19 +1294,11 @@ export function boardArmClick(e: MouseEvent) {
      day went out. Empty means the chip came from the working copy. */
   if (osn) {
     e.stopPropagation()
-    const di = +(osn.dataset.oilday || -1), it = osn.dataset.oilsent || '', ver = osn.dataset.oilver || ''
     /* [ALL-AVAIL-WINDOW] (D38) — this used to be a one-line toast of names, and
        the comment above said so: "until then the toast stands in for it — a
-       placeholder, not a design". This is the window it stood in for. The name
-       and times are captured HERE rather than re-derived later, because the
-       window outlives the row that opened it — he goes on editing behind it. */
-    const lbl = oilItemLabel(di, it)
-    /* WHICH HALF IT OPENS ON. Availability is the default and is always
-       offered; but inside the earn mode the counter IS the door to switching
-       men off — that is the job he opened it for — so it lands on that half
-       and he can still step back to the other tab. With the mode off there is
-       no second tab to land on (the mode rule, 22 Sep 26). */
-    setAvailWin({ di, item: it, ver, name: lbl.name, when: lbl.when, tab: oilModeOn(di) ? 'oil' : 'who' })
+       placeholder, not a design". This is the window it stood in for, opened
+       through the ONE opener the week shares (AvailWindow.tsx). */
+    openAvailWinFrom(osn)
     notify()
     return
   }

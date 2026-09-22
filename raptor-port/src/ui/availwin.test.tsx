@@ -37,6 +37,11 @@ import { loadWeek, resetSession } from '../state/store'
 import { CURWEEK } from '../engine/waves'
 import { shiftWeek } from './weeknav'
 import { stashClear } from '../engine/weekstash'
+import { signOf, setDayApproved, dayCurVer } from '../engine/publish'
+import { validate } from '../engine/validate'
+import { toggleOilPerson, toggleOilItem, oilFromWords } from './oilmode'
+import { commitUnpublish } from '../state/sched-commit'
+import { elogRows } from '../engine/editlog'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -472,6 +477,144 @@ describe('D66 — the window closes on a page, week or session change (owner, 23
     await click($('#sbBoard .sb-panel'))
     await act(async () => { notify() })
     expect(AVAILWIN, 'still open: editing behind it is the whole point').toBeTruthy()
+  })
+})
+
+describe('a published day: the window reads the record, not today (Fable S3, S5)', () => {
+  /* the crowd the step-7 fixtures use, because those two men demonstrably EARN
+     from a Saturday row — so "who earned on the issued day" has an answer */
+  const issuedSat = () => {
+    HOOKS.oilSentinel = () => ['plasma', 'stiff']
+    Object.assign(DAYS[SAT] as any, { dutywaves: [], sims: { amt: [], oft: [] }, oild: undefined })
+    const item = puckRow(SAT)
+    const g = signOf(SAT); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+    setDayApproved(SAT, true)
+    return item
+  }
+  /* TODAY moves on after the day went out: plasma is switched off on the working
+     copy, and stiff is double-booked on two named rows across each other */
+  const todayMovesOn = (item: string) => {
+    toggleOilPerson(SAT, 'plasma', item)
+    ;(DAYS[SAT] as any).ground.push(
+      { prog: 'HQ VISIT', str: '1000', end: '1100', who: 'stiff' },
+      { prog: 'SIM REVIEW', str: '1030', end: '1130', who: 'stiff' })
+    ensureRowIds(DAYS)
+    validate()
+  }
+  const viewChip = () => $('#vWeek .day[data-day="5"] .oilcount')
+  afterEach(async () => {
+    /* the book keys the shared beforeEach does not reset — an unpublish writes
+       both — so no later test inherits a retired Saturday or a "correcting" mark */
+    ;(SCHED as any).retired = {}; (SCHED as any).correcting = {}
+    await act(async () => { view.setPage('editsched'); notify() })
+  })
+
+  it("the view page's issued face: the window wears none of TODAY's flags", async () => {
+    const item = issuedSat()
+    todayMovesOn(item)
+    await act(async () => { view.setPage('viewsched'); notify() })
+    expect(viewChip(), 'the issued face draws the chip').toBeTruthy()
+    expect(viewChip().dataset.oilver, 'and it carries the issued version').toBeTruthy()
+    await click(viewChip())
+    const stiff = rows().find(r => r.dataset.awp === 'stiff')!
+    expect(stiff, 'the issued membership').toBeTruthy()
+    expect(stiff.className, "today's double-booking is not on the record").not.toMatch(/clash|flagged/)
+  })
+
+  /* THE ONE PLACE A VERSION'S CHIP MEETS THE EARN MODE: the board, previewing
+     the issued version through its plan selector, with OIL Earn on. (The view
+     page never has the mode — it ends when the board closes.) */
+  const boardIssuedWin = async () => {
+    await open(SAT)
+    await act(async () => { setOilDay(SAT); view.setDayPreview(SAT, dayCurVer(SAT)); notify() })
+    await click(chipEl())
+  }
+  afterEach(async () => { await act(async () => { view.setDayPreview(SAT, null); notify() }) })
+
+  it("the board's issued preview: the earn tab counts who earned ON THE RECORD, not today", async () => {
+    const item = issuedSat()
+    todayMovesOn(item)
+    await boardIssuedWin()
+    expect(AVAILWIN && AVAILWIN.ver, 'opened from the issued version').toBeTruthy()
+    expect(tabs().length, 'the mode is on, so the earn half is offered').toBe(2)
+    await click(tabs()[1])
+    expect(tabs()[1].textContent || '', 'both men earned on the day as issued — not today\'s 1 of 2')
+      .toContain('2 of 2')
+  })
+
+  it('and its earn half is READ-ONLY — a record is read, never edited', async () => {
+    const item = issuedSat()
+    await boardIssuedWin()
+    await click(tabs()[1])
+    const before = JSON.stringify((DAYS[SAT] as any).oild || {})
+    await click(rows().find(r => r.dataset.awp === 'plasma')!.querySelector('.puck'))
+    expect(JSON.stringify((DAYS[SAT] as any).oild || {}), 'nothing written to the working copy').toBe(before)
+    expect($('.availwin .win-foot').textContent || '', 'and it says where to change it')
+      .toContain('working copy')
+    expect(oilFigureFor(SAT, 'plasma', item), 'he still earns').toBeTruthy()
+  })
+
+  it('UNPUBLISH closes it — the version it was reading is gone (Fable S5)', async () => {
+    issuedSat()
+    await act(async () => { view.setPage('viewsched'); notify() })
+    await click(viewChip())
+    expect(AVAILWIN, 'open on the issued list').toBeTruthy()
+    await act(async () => { commitUnpublish(SAT); notify() })
+    expect(AVAILWIN, 'closed rather than labelling a list it can no longer read').toBeNull()
+  })
+
+  it('a PARKED PLAN is not an issued day — its words say "as things stand now"', () => {
+    expect(oilFromWords('d:abc'), 'a plan keeps no frozen membership').toBe('who is free as things stand now')
+    expect(oilFromWords('2026-07-18#0'), 'an issued version still says so').toBe('who was free when this day was issued')
+  })
+})
+
+describe('the earn half, on the working copy (Fable S6, S7)', () => {
+  const earnSat = async () => {
+    HOOKS.oilSentinel = () => ['plasma', 'stiff']
+    Object.assign(DAYS[SAT] as any, { dutywaves: [], sims: { amt: [], oft: [] }, oild: undefined })
+    const item = puckRow(SAT)
+    await open(SAT)
+    await act(async () => { setOilDay(SAT); notify() })
+    await click(chipEl())
+    return item
+  }
+
+  it('a switch made in the window leaves the SAME history line as the board (S7)', async () => {
+    const item = await earnSat()
+    await click(winSeat('plasma').querySelector('.puck'))
+    expect(oilFigureFor(SAT, 'plasma', item), 'the switch happened').toBeFalsy()
+    const lines = elogRows(SAT).map(r => r.lbl)
+    expect(lines, 'and History can answer "why is my balance short?"')
+      .toContain(`${cs('plasma')} earns nothing from OPS BRIEF`)
+  })
+
+  it("a row switched off by its name: the tap says the BOARD's refusal and writes nothing (S6)", async () => {
+    const item = await earnSat()
+    await act(async () => { toggleOilItem(SAT, item); notify() })
+    const before = JSON.stringify((DAYS[SAT] as any).oild || {})
+    toasts = []
+    await click(rows().find(r => r.dataset.awp === 'plasma')!.querySelector('.puck'))
+    expect(toasts.join(' '), 'the board\'s own words').toContain('This event earns nobody any OIL — turn the event back on first')
+    expect(JSON.stringify((DAYS[SAT] as any).oild || {}), 'no decision written under the mask').toBe(before)
+  })
+})
+
+describe('the row behind the window is deleted, or its puck is (Fable S14)', () => {
+  it('the row deleted: the window SAYS so — never a confident "0 available"', async () => {
+    puckRow(TUE)
+    await openWin(TUE)
+    await act(async () => { (DAYS[TUE] as any).ground = []; notify() })
+    expect($('.availwin .win-body').textContent || '').toContain('no longer on the schedule')
+    expect($('.availwin .win-one').textContent || '', 'no count at all').not.toMatch(/\d/)
+    expect(AVAILWIN, 'it outlives the row — he may undo').toBeTruthy()
+  })
+
+  it('the placeholder dragged off the row: it says THAT', async () => {
+    puckRow(TUE)
+    await openWin(TUE)
+    await act(async () => { (DAYS[TUE] as any).ground[0].who = ''; notify() })
+    expect($('.availwin .win-body').textContent || '').toContain('no ALL or ALL AVAIL puck on this row')
   })
 })
 

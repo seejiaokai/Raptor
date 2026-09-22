@@ -19,9 +19,9 @@ import { scrollToWarnFocus, queueHold, warnWeekId } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
 import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
-import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList, setAvailWin } from './pops'
+import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList } from './pops'
 import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
-import { oilItemLabel, oilModeOn } from './oilmode'
+import { openAvailWinFrom } from './AvailWindow'
 import { withDaySnap } from './html'
 import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
@@ -493,19 +493,12 @@ export function routeClick(e: MouseEvent) {
      drawn in, so an issued page's list is the issued one (OSE-R2-05) */
   if (osn) {
     e.stopPropagation()
-    const di = +(osn.dataset.oilday || -1), it = osn.dataset.oilsent || '', ver = osn.dataset.oilver || ''
     /* [ALL-AVAIL-WINDOW] (D38) — the same window the board opens, opened from
-       the WEEK. Both surfaces draw this chip, so both must open the same thing:
-       a second reader here is how the chip and its tap came to disagree once
-       before (Fable correction 2). Read-only to open; the earn half inside the
-       window gates on the scheduler role of its own. */
-    const lbl = oilItemLabel(di, it)
-    /* WHICH HALF IT OPENS ON. Availability is the default and is always
-       offered; but inside the earn mode the counter IS the door to switching
-       men off — that is the job he opened it for — so it lands on that half
-       and he can still step back to the other tab. With the mode off there is
-       no second tab to land on (the mode rule, 22 Sep 26). */
-    setAvailWin({ di, item: it, ver, name: lbl.name, when: lbl.when, tab: oilModeOn(di) ? 'oil' : 'who' })
+       the WEEK through the same opener (AvailWindow.tsx): both surfaces draw
+       this chip, so both must open the same thing — a second reader here is how
+       the chip and its tap came to disagree once before (Fable correction 2).
+       Read-only to open; the earn half gates on the scheduler role of its own. */
+    openAvailWinFrom(osn)
     notify()
     return
   }

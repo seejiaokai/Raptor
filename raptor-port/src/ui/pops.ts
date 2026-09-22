@@ -134,6 +134,10 @@ export type AvailWin = {
   di: number
   item: string
   ver: string
+  /* the chip was drawn on the view page's ISSUED FACE, which wears its
+     OFFICIAL flags — so the window replays that world, not a bare preview's
+     (Fable S3; html.ts withChipWorld). Absent = not the issued face. */
+  ofw?: boolean
   /* the event's own words for the title bar, captured at open: the window
      outlives the row that opened it (he can edit the schedule behind it), and
      re-deriving the name from a row he has since renamed would retitle the

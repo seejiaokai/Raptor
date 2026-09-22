@@ -30,8 +30,10 @@ import { HOOKS } from '../engine/hooks'
 import { useVersion } from './useStore'
 import { canEditSched } from '../state/auth'
 import { esc, selectPerson } from '../state/view'
-import { personPuckHTML, personWarnMsgs, withDaySnap } from './html'
-import { oilModeOn, oilSeatHTML, oilSentinelPeople, toggleOilPerson, oilFigureFor, oilBlanketOn, oilFromWords, oilItemLabel } from './oilmode'
+import { personPuckHTML, personWarnMsgs, withChipWorld } from './html'
+import { oilModeOn, oilSeatHTML, toggleOilPerson, oilFigureFor, oilBlanketOn, oilItemMasked, oilFromWords, oilItemLabel, oilRequestName, oilPersonSays, evOf } from './oilmode'
+import { oilSentOf, oilReadPass } from '../engine/oilev'
+import { logAction } from '../engine/editlog'
 import { crowdClashes } from '../engine/validate'
 import {
   AVAILWIN, setAvailWin, setAvailTab, AVAILWIN_FOOT, setAvailFoot,
@@ -39,13 +41,22 @@ import {
   AVAILWIN_W, AVAILWIN_MIN_W, AVAILWIN_H, AVAILWIN_MIN_H,
 } from './pops'
 
-/* THE ONE RESOLVER, THROUGH THE VERSION THE CHIP WAS DRAWN IN (Codex
-   OSE-R2-05, D44). Reading the live day here would list whoever is free NOW
-   under a number frozen when the day went out. Empty `ver` = the chip came
-   from the working copy, so the live read is the right one. */
-function crowd(di: number, item: string, ver: string): string[] {
-  const read = () => oilSentinelPeople(di, item)
-  return ver ? withDaySnap(di, ver, read) : read()
+/* OPENING THE WINDOW FROM A COUNT CHIP — one body for the board and the week,
+   which both draw the chip. A second opener is how the chip and its tap came to
+   disagree once before (Fable correction 2). The title is read IN THE CHIP'S
+   WORLD, so an issued chip is titled by the issued row even if it has been
+   renamed since; it is kept as the fallback the window shows if the row is
+   later deleted behind it (S14).
+
+   WHICH HALF IT OPENS ON. Availability is the default and is always offered;
+   inside the earn mode the counter IS the door to switching men off — the job
+   he opened it for — so it lands on that half. Not for a VERSION's chip: a
+   record is read, never edited, so it lands on availability. */
+export function openAvailWinFrom(osn: HTMLElement) {
+  const di = +(osn.dataset.oilday || -1), item = osn.dataset.oilsent || '', ver = osn.dataset.oilver || ''
+  const ofw = osn.dataset.oilofw === '1'
+  const lbl = withChipWorld(di, ver, ofw, () => oilItemLabel(di, item))
+  setAvailWin({ di, item, ver, ofw, name: lbl.name, when: lbl.when, tab: oilModeOn(di) && !ver ? 'oil' : 'who' })
 }
 
 /* D38/D51 — the LEFT column is the pilots and the RIGHT column is the WSOs, so
@@ -95,8 +106,7 @@ export function AvailWindow() {
 
   if (!open) return <div className="availwin" hidden />
 
-  const { di, item, ver, name, when, tab } = open
-  const people = crowd(di, item, ver)
+  const { di, item, ver, ofw, name, when, tab } = open
   const mode = oilModeOn(di)
   /* THE MODE RULE, confirmed with him 22 Sep 26. Tapping the counter always
      shows WHO IS AVAILABLE, any day, OIL or not. The "Who earns OIL" half
@@ -104,20 +114,6 @@ export function AvailWindow() {
      tabs at all, just the one list. That is D27 carried through — availability
      is a scheduling fact, earning is a mode. */
   const oil = mode && tab === 'oil'
-  /* A MAN THE ROSTER NO LONGER HOLDS. An issued day's membership is a FROZEN
-     list of ids (D44), so a man posted out since publication is still in it —
-     he is on the everything-day for exactly this reason. He has no puck to draw
-     and no seat to sort by, and `byCrew` reads `PEOPLE[id].seat` with no guard,
-     so sorting him THREW and took the whole window with it.
-
-     He is not silently dropped either: the chip's number comes from this same
-     list, so a window showing fewer men than the chip counted would be the
-     chip-and-list disagreement that Fable correction 2 exists to stop — in a
-     new place. He is counted, and said out loud under the columns. */
-  const known = people.filter(id => !!(PEOPLE as any)[id])
-  const gone = people.filter(id => !(PEOPLE as any)[id])
-  const pilots = known.filter(id => !isWso(id)).sort(byCrew)
-  const wsos = known.filter(id => isWso(id)).sort(byCrew)
 
   /* Only a scheduler may switch a man off earning. Reading who is available is
      open to anybody — the count chip's own handler says so, and a member
@@ -125,77 +121,122 @@ export function AvailWindow() {
      has a read-only half and an edit half, and the roles differ between them. */
   const canEdit = canEditSched()
 
-  const earners = (ids: string[]) =>
-    ids.filter(id => !!oilFigureFor(di, id, item)).length
+  /* EVERYTHING THE WINDOW SHOWS IS READ IN THE CHIP'S OWN WORLD (Fable S3), and
+     in ONE read-only pass. The crowd, the flags, the figures, the puck marks and
+     the title all come from the version the chip was drawn in — the working
+     copy, a preview, or the issued face with its official flags — never a mix
+     of the record and today. The pass memoises each day's evidence for the
+     length of this render (Fable S10: it was rebuilt five to eight times per man
+     on every keystroke behind the window); nothing inside may write. */
+  const m = withChipWorld(di, ver, ofw, (ok: boolean) => oilReadPass(() => {
+    /* THE VERSION IS GONE — unpublished, or the publish undone (Fable S5).
+       prunePreviews closes the window on those paths; this is the belt, so a
+       path nobody listed can never read on and label today's list "issued". */
+    if (!ok) return null
+    const lbl = oilItemLabel(di, item)
+    const sent = oilSentOf(evOf(di), item)
+    const people = sent.people
 
-  /* EVERY FLAG A MAN WEARS IN THIS WINDOW — ONE BODY, three readers: his row,
-     the tap's sentence, and the count under the list. They were three separate
-     reads of the warning list, which is how the count and the rows could come to
-     disagree the moment a second kind of flag arrived.
+    /* A MAN THE ROSTER NO LONGER HOLDS. An issued day's membership is a FROZEN
+       list of ids (D44), so a man posted out since publication is still in it —
+       he is on the everything-day for exactly this reason. He has no puck to
+       draw and no seat to sort by, and `byCrew` reads `PEOPLE[id].seat` with no
+       guard, so sorting him THREW and took the whole window with it.
+       He is not silently dropped either: the chip's number comes from this same
+       list, so a window showing fewer men than the chip counted would be the
+       chip-and-list disagreement that Fable correction 2 exists to stop — in a
+       new place. He is counted, and said out loud under the columns. */
+    const known = people.filter(id => !!(PEOPLE as any)[id])
+    const gone = people.filter(id => !(PEOPLE as any)[id])
+    const pilots = known.filter(id => !isWso(id)).sort(byCrew)
+    const wsos = known.filter(id => isWso(id)).sort(byCrew)
 
-     THE SECOND KIND IS THE OWNER'S OWN CASE (D36 + D38, Fable S2): this event
-     sitting inside one of his own flying legs' brief or debrief. The warning
-     list can never say it — its pass skips placeholders, so a man only BEHIND
-     one is on no event at all — so it is asked here, of THIS event, through the
-     warning list's own rule and words (validate.ts crowdClashes). It comes
-     FIRST, so among equal flags the one about this event is the one he reads;
-     a red day-wide flag still outranks it (worst first, below).
+    const earners = (ids: string[]) =>
+      ids.filter(id => !!oilFigureFor(di, id, item)).length
 
-     The event's window is read LIVE, every render, so the flag follows the row
-     if he edits its times behind the window. Only on the working copy: an
-     issued face shows its own world's flags or none (Fable S3), and this check
-     reads the live day. */
-  const live = ver ? null : oilItemLabel(di, item)
-  const flagsFor = (id: string) => [
-    ...(live ? crowdClashes(di, id, live.s, live.e, live.name) : []),
-    ...personWarnMsgs(di, id),
-  ]
-  const worstOf = (ws: { sev: string, msg: string }[]) => ws.find(w => w.sev === 'hard') || ws[0]
+    /* EVERY FLAG A MAN WEARS IN THIS WINDOW — ONE BODY, three readers: his row,
+       the tap's sentence, and the count under the list. They were three
+       separate reads of the warning list, which is how the count and the rows
+       could come to disagree the moment a second kind of flag arrived.
 
-  const rowHTML = (id: string) => {
-    const p = (PEOPLE as any)[id]
-    if (!p) return ''
-    /* IN THE OIL VIEW THE PUCK COMES FROM `oilSeatHTML`, not from here. That
-       body owns all five states and their five sentences — inert, masked, on,
-       and the four different reasons a man can be off — and re-deriving any of
-       them here would be a second reader of the same question. It is handed
-       this window's own puck builder, so the flags still come from the one
-       drawer. */
-    const pk = oil
-      ? oilSeatHTML(di, id, item, (o: any) => personPuckHTML(di, id, o))
-      : personPuckHTML(di, id)
-    const worst = worstOf(flagsFor(id))
-    /* D40 — at 212px a flagged man's reason will not fit beside his puck, so it
-       WRAPS onto its own line under him, and sits beside him only when the
-       window is dragged wider. It is never dropped, only moved: the flex-basis
-       in the stylesheet is what decides, not a width test here. */
-    const why = worst
-      ? `<span class="rwhy">${esc(worst.msg)}</span>`
-      : ''
-    const cls = 'rpuck'
-      + (worst ? (worst.sev === 'hard' ? ' clash' : ' flagged') : '')
-    return `<span class="${cls}" data-awp="${esc(id)}">${pk}${why}</span>`
-  }
+       THE SECOND KIND IS THE OWNER'S OWN CASE (D36 + D38, Fable S2): this event
+       sitting inside one of his own flying legs' brief or debrief. The warning
+       list can never say it — its pass skips placeholders, so a man only BEHIND
+       one is on no event at all — so it is asked here, of THIS event, through
+       the warning list's own rule and words (validate.ts crowdClashes). It
+       comes FIRST, so among equal flags the one about this event is the one he
+       reads; a red day-wide flag still outranks it (worst first).
 
-  const col = (title: string, ids: string[]) =>
-    `<div class="rcol"><div class="rh">${esc(title)} &middot; `
-    + (oil ? `${earners(ids)} earn` : String(ids.length))
-    + `</div>`
-    + (ids.length ? ids.map(rowHTML).join('') : `<div class="rnone">&mdash; none &mdash;</div>`)
-    + `</div>`
+       The event's window is read LIVE, every render, so the flag follows the
+       row if he edits its times behind the window. Only on the working copy:
+       it reads the live day's events, and an issued face shows its own world's
+       flags or none (Fable S3). */
+    const own = !ver && lbl.found
+    const flagsFor = (id: string) => [
+      ...(own ? crowdClashes(di, id, lbl.s, lbl.e, lbl.name) : []),
+      ...personWarnMsgs(di, id),
+    ]
+    const worst: Record<string, { sev: string, msg: string } | undefined> = {}
+    for (const id of known) { const ws = flagsFor(id); worst[id] = ws.find(w => w.sev === 'hard') || ws[0] }
 
-  const body = `<div class="rcols">${col('Pilots', pilots)}${col('WSOs', wsos)}</div>`
-    + (gone.length
-      ? `<div class="rgone">${gone.length === 1 ? 'One man' : `${gone.length} men`} behind this puck `
-        + `${gone.length === 1 ? 'is' : 'are'} no longer on the roster.</div>`
-      : '')
+    const rowHTML = (id: string) => {
+      /* IN THE OIL VIEW THE PUCK COMES FROM `oilSeatHTML`, not from here. That
+         body owns all five states and their five sentences — inert, masked, on,
+         and the four different reasons a man can be off — and re-deriving any
+         of them here would be a second reader of the same question. It is
+         handed this window's own puck builder, so the flags still come from the
+         one drawer. */
+      const pk = oil
+        ? oilSeatHTML(di, id, item, (o: any) => personPuckHTML(di, id, o))
+        : personPuckHTML(di, id)
+      const w = worst[id]
+      /* D40 — at 212px a flagged man's reason will not fit beside his puck, so
+         it WRAPS onto its own line under him, and sits beside him only when the
+         window is dragged wider. It is never dropped, only moved: the flex-basis
+         in the stylesheet is what decides, not a width test here. */
+      const why = w ? `<span class="rwhy">${esc(w.msg)}</span>` : ''
+      const cls = 'rpuck' + (w ? (w.sev === 'hard' ? ' clash' : ' flagged') : '')
+      return `<span class="${cls}" data-awp="${esc(id)}">${pk}${why}</span>`
+    }
+    const col = (title: string, ids: string[]) =>
+      `<div class="rcol"><div class="rh">${esc(title)} &middot; `
+      + (oil ? `${earners(ids)} earn` : String(ids.length))
+      + `</div>`
+      + (ids.length ? ids.map(rowHTML).join('') : `<div class="rnone">&mdash; none &mdash;</div>`)
+      + `</div>`
+
+    /* THE ROW IS GONE, OR ITS PLACEHOLDER IS (Fable S14). The window outlives
+       the row that opened it — he edits behind it — so a row deleted, or a puck
+       dragged off it, must read as exactly that. It used to fall through to an
+       empty list under the old title: "Who's available 0 — none —", which reads
+       as "nobody is free for OPS BRIEF". Undo brings the row back, and the list
+       with it, because this is read afresh on every render. */
+    const lost = !lbl.found
+      ? 'This row is no longer on the schedule.'
+      : sent.state !== 'resolved'
+        ? 'There is no ALL or ALL AVAIL puck on this row any more.'
+        : ''
+    const body = lost
+      ? `<div class="win-lost">${esc(lost)}</div>`
+      : `<div class="rcols">${col('Pilots', pilots)}${col('WSOs', wsos)}</div>`
+        + (gone.length
+          ? `<div class="rgone">${gone.length === 1 ? 'One man' : `${gone.length} men`} behind this puck `
+            + `${gone.length === 1 ? 'is' : 'are'} no longer on the roster.</div>`
+          : '')
+    return {
+      lbl, lost, body, worst,
+      n: people.length,
+      earn: earners(people),
+      flagged: known.filter(id => !!worst[id]).length,
+    }
+  }))
 
   const close = () => { setAvailWin(null); notify() }
 
   const onBody = (e: React.MouseEvent) => {
     const t = e.target as HTMLElement
     const r = t.closest('[data-awp]') as HTMLElement | null
-    if (!r) return
+    if (!r || !m) return
     const id = r.dataset.awp || ''
     /* D65 — WHAT A TAP ON A MAN SELECTS DEPENDS ON THE MODE (owner, 23 Sep 26).
        OIL Earn OFF: the ordinary puck selection — he lights up blue everywhere
@@ -210,34 +251,62 @@ export function AvailWindow() {
        the footer, so the week's warning boxes are not flung open under him. */
     e.stopPropagation()
     if (!mode) selectPerson(id, false)
+    const cs = ((PEOPLE as any)[id] || {}).cs || id
     if (oil) {
+      /* A RECORD IS READ, NEVER EDITED. A window opened from an issued or
+         preview chip lists the version's men and figures; a switch here would
+         land on the WORKING copy while the list above it could not move — a tap
+         that seems to do nothing, or flips a man who is not even in today's
+         crowd. The earn half of a version is for reading who earned. */
+      if (ver) { setAvailFoot('This is the day as it was issued. Change who earns on the working copy.'); notify(); return }
       if (!canEdit) { HOOKS.toast('Only a scheduler can change who earns', 'warn'); return }
-      if (oilBlanketOn(di)) { HOOKS.toast('Nothing on this day earns — turn that off first'); return }
-      /* the real write, through the same body the in-row crowd uses, so it
-         lands on the day, rides the snapshot and a publish makes it a real
-         amendment exactly as a tap on the board would */
+      /* UNDER A MASK THE TAP HAS NO MEANING, and it must say so in the board's
+         own words (Fable S6). A man drawn inert or masked carries no switch —
+         the board's `[data-oilp]` never fires for him — but the window's row
+         made him tappable anyway, so the tap reached a write that refused and
+         then said "X earns nothing from this event", which is not why. */
+      if (oilItemMasked(di, item)) {
+        HOOKS.toast(oilBlanketOn(di)
+          ? 'Nothing on this day earns — turn that off first'
+          : 'This event earns nobody any OIL — turn the event back on first')
+        return
+      }
+      const seat = r.querySelector('[data-oilp]') as HTMLElement | null
+      if (!seat) {
+        /* INERT — nothing for him to earn from this event at all. The board
+           would never reach a write here, and neither may the window: a `deny`
+           written for a man with nothing to earn is a decision about nothing,
+           and it would still cost an amendment on a published day. His seat
+           says why; the footer repeats it. */
+        const why = (r.querySelector('.seat.oilpk') as HTMLElement | null)?.title || `${cs} has nothing to earn from this event.`
+        setAvailFoot(why); notify(); return
+      }
+      /* the real write, through the same body the board's tap uses, so it lands
+         on the day, rides the snapshot and a publish makes it a real amendment
+         exactly as a tap on the board would — and it leaves the SAME history
+         line (Fable S7: it left none, and the window is now the only door to
+         switching one crowd member off). */
       const on = toggleOilPerson(di, id, item)
-      const cs = ((PEOPLE as any)[id] || {}).cs || id
-      setAvailFoot(on ? `${cs} earns from this event again.` : `${cs} earns nothing from this event.`)
+      const said = oilPersonSays(cs, oilRequestName(item) || m.lbl.name, on)
+      logAction(di, said)
+      setAvailFoot(said + '.')
       notify()
       return
     }
     /* D38 — "I can click on the flagging as well". The reason is already under
        his puck; the tap gives the FULL sentence, which is the one the warning
        list uses, because a wrapped line is cut to fit and this one is not. */
-    const cs = ((PEOPLE as any)[id] || {}).cs || id
-    const worst = worstOf(flagsFor(id))
-    setAvailFoot(worst
-      ? `${cs} — ${worst.msg}`
+    const w = m.worst[id]
+    setAvailFoot(w
+      ? `${cs} — ${w.msg}`
       : `${cs} — nothing else on the programme at that time.`)
     notify()
   }
 
-  const flagged = [...pilots, ...wsos].filter(id => flagsFor(id).length).length
-  const hint = AVAILWIN_FOOT || (oil
-    ? 'Tap a puck to stop a man earning from this event.'
-    : flagged
-      ? `Tap a puck for why. ${flagged === 1 ? 'One man is' : `${flagged} men are`} flagged.`
+  const hint = !m ? '' : AVAILWIN_FOOT || (m.lost ? '' : oil
+    ? (ver ? 'Who earned OIL on the day as it was issued.' : 'Tap a puck to stop a man earning from this event.')
+    : m.flagged
+      ? `Tap a puck for why. ${m.flagged === 1 ? 'One man is' : `${m.flagged} men are`} flagged.`
       : 'Tap a puck for why.')
 
   const onBarDown = (e: React.PointerEvent) => {
@@ -280,7 +349,7 @@ export function AvailWindow() {
       className="availwin"
       ref={el}
       role="dialog"
-      aria-label={`${name} — who is available`}
+      aria-label={`${m && m.lbl.found ? m.lbl.name : name} — who is available`}
       style={{ width: AVAILWIN_W, height: AVAILWIN_H, minWidth: AVAILWIN_MIN_W, minHeight: AVAILWIN_MIN_H }}
     >
       <div
@@ -295,7 +364,7 @@ export function AvailWindow() {
             app's existing vocabulary for "drag me", so the window reads as
             movable without being explained. */}
         <span className="win-grip" aria-hidden="true">&#10303;</span>
-        <span className="win-ttl">{name}<small>{when}</small></span>
+        <span className="win-ttl">{m && m.lbl.found ? m.lbl.name : name}<small>{m && m.lbl.found ? m.lbl.when : when}</small></span>
         <button className="win-x" onClick={close} title="Close" aria-label="Close">&#10005;</button>
       </div>
 
@@ -304,24 +373,24 @@ export function AvailWindow() {
           <button
             className={'win-tab' + (oil ? '' : ' on')} role="tab" aria-selected={!oil}
             onClick={() => { setAvailTab('who'); notify() }}
-          >Who&rsquo;s available <span className="c">{people.length}</span></button>
+          >Who&rsquo;s available <span className="c">{m && !m.lost ? m.n : '—'}</span></button>
           <button
             className={'win-tab' + (oil ? ' on' : '')} role="tab" aria-selected={oil}
             onClick={() => { setAvailTab('oil'); notify() }}
-          >Who earns OIL <span className="c">{earners(people)} of {people.length}</span></button>
+          >Who earns OIL <span className="c">{m && !m.lost ? `${m.earn} of ${m.n}` : '—'}</span></button>
         </div>
       ) : (
         /* MODE OFF: no tabs at all, just one heading saying what the list is.
            D39 — the counter drops the word "free", and so does this: the
            window's own job is to show the men who are FLAGGED rather than
            assert they are clear, which is exactly the claim D37 warns about. */
-        <div className="win-one">Who&rsquo;s available <span className="c">{people.length}</span></div>
+        <div className="win-one">Who&rsquo;s available <span className="c">{m && !m.lost ? m.n : '—'}</span></div>
       )}
 
       <div
         className={'win-body' + (oil ? ' oilview' : '')}
         onClick={onBody}
-        dangerouslySetInnerHTML={{ __html: body }}
+        dangerouslySetInnerHTML={{ __html: m ? m.body : '' }}
       />
 
       {/* WHICH OF THE TWO ANSWERS THIS IS (D37, D44) — the ONE thing the toast

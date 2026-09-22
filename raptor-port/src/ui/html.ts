@@ -91,6 +91,27 @@ export function withDaySnap(di:any,ver:any,fn:any){
   try { return fn(true) }
   finally { DAYS[di]=d0; SCHED.changes=c0; SCHED.pending=p0; PV=false; PVV=null; PVND=nd }
 }
+/* [ALL-AVAIL-WINDOW] — THE WORLD A COUNT CHIP WAS DRAWN IN, replayed for the
+   window its tap opens (Fable S3, 23 Sep 26). A chip is drawn in one of three
+   worlds and says which: the working copy (no version); a version preview — a
+   past AL, a parked plan — which reads and does not check (PV: no flags); or
+   the view page's ISSUED FACE, which wears its OFFICIAL flags (PV + OFW +
+   withOfficialWarn, exactly as dayIssuedHTML builds it). The window used to
+   replay only the first step — its crowd came through withDaySnap — and read the
+   flags, the figures and the puck marks from the LIVE day, so an issued list
+   wore today's warnings and today's money. Replaying the whole world gives every
+   reader inside the window the answer the chip's own face showed, with no reader
+   needing to know.
+   `fn(false)`: the version no longer resolves (unpublished, undone). It runs in
+   the LIVE world, so the caller must treat it as GONE and read nothing. */
+export function withChipWorld<T>(di:any,ver:any,ofw:any,fn:(ok:boolean)=>T):T{
+  if(!ver)return fn(true)
+  if(!ofw)return withDaySnap(di,ver,(ok:any)=>fn(!!ok))
+  const q=PVQ,o=OFW
+  PVQ=true; OFW=true
+  try{ return withDaySnap(di,ver,(ok:any)=>ok?withOfficialWarn(()=>fn(true)):fn(false)) }
+  finally{ PVQ=q; OFW=o }
+}
 export function dayPreviewHTML(di:any,ver:any,edFallback:any){
   return withDaySnap(di,ver,(ok:any)=>ok?dayHTML(di,false,true):dayHTML(di,edFallback,true))
 }
@@ -538,7 +559,10 @@ export function oilSeatDeco(di:any,id:any,key:any,itemOf?:string):{oil:any;chip:
             :sum.bar?`All ${sum.n} earn ${sum.bar==='FO'?'a full day':'half a day'} — tap to see each one`
               :`None of these ${sum.n} earn OIL today — tap to see each one`)+from;
     return {oil:sum.bar?{bar:sum.bar}:null,
-      chip:`<span class="oilcount${some?' some':''}" data-oilsent="${esc(item)}" data-oilday="${+di}" data-oilver="${esc(ver)}" title="${esc(ttl)}">${txt}</span>`};
+      /* data-oilofw: drawn on the view page's ISSUED FACE, which wears its
+         OFFICIAL flags — so the window this chip opens can replay that exact
+         world rather than a bare preview's (Fable S3, withChipWorld below) */
+      chip:`<span class="oilcount${some?' some':''}" data-oilsent="${esc(item)}" data-oilday="${+di}" data-oilver="${esc(ver)}"${ver&&OFW?' data-oilofw="1"':''} title="${esc(ttl)}">${txt}</span>`};
   }
   return {oil:oilBarOf(di,id,item),chip:''};
 }

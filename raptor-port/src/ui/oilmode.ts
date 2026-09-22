@@ -45,7 +45,7 @@
    reader the issued schedule's green edge shares.
    ===================================================================== */
 import { DAYS } from '../engine/data'
-import { INPUTS, inpId, inpWin } from '../engine/inputs'
+import { INPUTS, inpId, inpWin, inpMeta, inpLabel } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
@@ -55,6 +55,7 @@ import { OILDAY, setOilDay, afterSchedMutate, esc } from '../state/view'
 import { CURWEEK } from '../engine/waves'
 import { parseHM, win, hm24 } from '../engine/time'
 import { stashKeys, stashEditDays } from '../engine/weekstash'
+import { isDraftVer } from '../engine/drafts'
 import { undoMark } from '../undo'
 
 export { rowItemKey, groundItemKey, inputItemKey }
@@ -810,7 +811,12 @@ export function oilItemOfKey(di: any, key: any): string {
  *  copy — because that is the fact both callers already hold. */
 export const OIL_FROM_ISSUED = 'who was free when this day was issued'
 export const OIL_FROM_LIVE = 'who is free as things stand now'
-export const oilFromWords = (ver: any) => (ver ? OIL_FROM_ISSUED : OIL_FROM_LIVE)
+/* A PARKED PLAN IS NOT AN ISSUED DAY ([ALL-AVAIL-WINDOW], 23 Sep 26). A plan
+   is kept WITHOUT a frozen membership (drafts.ts strips `oilev` as it parks the
+   day), so its crowd is worked out now, against the plan's own rows — the live
+   answer. Reading every version as "issued" put a false sentence on the chip's
+   title and in the window whenever the board's plan selector showed a plan. */
+export const oilFromWords = (ver: any) => (ver && !isDraftVer(ver) ? OIL_FROM_ISSUED : OIL_FROM_LIVE)
 /** THE EVENT'S OWN WORDS, for the title bar of [ALL-AVAIL-WINDOW] (D38).
  *
  *  READ FROM THE MODEL, NEVER FROM THE PAGE. board.ts's `oilItemName` reads the
@@ -827,7 +833,7 @@ export const oilFromWords = (ver: any) => (ver ? OIL_FROM_ISSUED : OIL_FROM_LIVE
  *  rather than assumed impossible). A claim is named by WHAT IT IS, never by
  *  what is drawn in its cell — hand-pass finding 14, which produced history
  *  lines like "Sidewinder earns nothing from SidewinderFO". */
-export function oilItemLabel(di: any, item: string): { name: string, when: string, s: number | null, e: number | null } {
+export function oilItemLabel(di: any, item: string): { name: string, when: string, s: number | null, e: number | null, found: boolean } {
   const d: any = DAYS[+di] || {}
   const hhmm = (v: any) => { const t = String(v || '').replace(':', '').trim()
     return t.length === 4 ? `${t.slice(0, 2)}:${t.slice(2)}` : t }
@@ -839,15 +845,19 @@ export function oilItemLabel(di: any, item: string): { name: string, when: strin
      open end is left open rather than guessed — a row with no end time cannot
      be said to clash with anything, and inventing one would put a flag on a
      man for a clash that may not exist. */
-  const out = (name: any, a?: any, b?: any, sm?: number | null, em?: number | null) => {
+  const out = (name: any, a?: any, b?: any, sm?: number | null, em?: number | null, found = true) => {
     const w = span(a, b)
     const s0 = sm != null ? sm : parseHM(a), e0 = em != null ? em : parseHM(b)
     const ww = s0 != null && e0 != null ? win(s0, e0) : null
     return { name: String(name || 'This event').trim() || 'This event',
              when: [dayLbl, w].filter(Boolean).join(' · '),
-             s: ww ? ww[0] : null, e: ww ? ww[1] : null }
+             s: ww ? ww[0] : null, e: ww ? ww[1] : null, found }
   }
-  if (!item) return out('This event')
+  /* NOT FOUND is said, not guessed (Fable S14): the window outlives the row
+     that opened it, and a row deleted behind it must read as GONE — never as a
+     confident "0 available" under the old title. */
+  const lost = (name: string) => out(name, '', '', null, null, false)
+  if (!item) return lost('This event')
   /* a landed request: the type's LONG name, the same one the history uses.
      ITS WINDOW IS THE ONE ITS CROWD WAS RESOLVED OVER — `inpWin`, the same call
      `projectOilInputs` hands the resolver — so an all-day request is the whole
@@ -857,7 +867,7 @@ export function oilItemLabel(di: any, item: string): { name: string, when: strin
   if (item.startsWith('i:')) {
     const r = (INPUTS as any[]).find(x => x && String(inpId(x)) === item.slice(2))
     const t = r ? String(r.type || '').trim() : ''
-    if (!r) return out('Request')
+    if (!r) return lost('Request')
     const w = inpWin(r)
     const ok = !!w && w[1] > w[0]
     return r.allday || r.s == null || r.e == null
@@ -872,8 +882,25 @@ export function oilItemLabel(di: any, item: string): { name: string, when: strin
     if (r && rowItemKey(r.rid) === item) return out(`${String(k).toUpperCase()} · ${r.label || ''}`.trim(), r.str, r.end)
   for (const w of (d.waves || [])) for (const f of ((w && w.formations) || []))
     if (f && rowItemKey(f.rid) === item) return out([f.cs, f.msn].filter(Boolean).join(' · '), f.to, f.ld)
-  return out('This event')
+  return lost('This event')
 }
+/** WHAT THE HISTORY CALLS A REQUEST — the type's LONG name ("overseas duty"),
+ *  or what was typed on an "Other" (hand pass finding 14, 21 Sep 26: a claim is
+ *  named by what it IS, never by what is drawn in its cell). ONE body for the
+ *  board's history line and the window's, so a switch made in either place
+ *  reads the same a week later. '' when the item is not a request. */
+export function oilRequestName(item: string): string {
+  if (!item || !item.startsWith('i:')) return ''
+  const r = (INPUTS as any[]).find(x => x && String(inpId(x)) === item.slice(2))
+  const meta: any = r ? inpMeta(r.type) : null
+  return r ? String((meta && meta.name) || inpLabel(r) || '').trim() : ''
+}
+/** THE SENTENCE A SWITCH OF ONE MAN LEAVES — in the history, on the board's
+ *  toast and in the window's footer. One body, so a switch made in the window
+ *  and the same switch made on the board can never be worded apart (Fable S7:
+ *  the window's switch used to leave no history line at all). */
+export const oilPersonSays = (cs: string, name: string, on: boolean) =>
+  on ? `${cs} earns OIL from ${name} again` : `${cs} earns nothing from ${name}`
 /** THE FOUR STATES OF A SENTINEL PUCK (§7.6, as the owner refined it: "if
  *  everyone in the all avail or all puck is granted OIL, it should be green").
  *  ALL / ALL AVAIL is not a person and cannot carry a person's figure — the men

@@ -14,7 +14,7 @@ import { canEditSched, ME } from './auth'
 import { flagDrop } from './dropflag'
 /* the counter's window state (D66 — closed on a page, week or session change).
    pops.ts is a leaf module with no imports of its own, so this adds no cycle. */
-import { setAvailWin } from '../ui/pops'
+import { setAvailWin, AVAILWIN } from '../ui/pops'
 
 /* the repaint/gesture call sites inside these verbatim bodies route through
    the hooks — no-ops headless, mapped to the store's notify() when wired */
@@ -766,7 +766,16 @@ export function unpubArmed(di:any){ return UNPUBARM!=null && UNPUBARM===+di }
 export function prunePreviews(){ for(const [di,ver] of [...DPREV]){
   if(!daySnapOf(di,ver)){DPREV.delete(di);continue}
   if(typeof ver==='string'&&ver.slice(0,2)==='d:'&&ver==='d:'+curDraftId(di))DPREV.delete(di)
-} }
+}
+  /* THE COUNTER'S WINDOW LIVES AND DIES WITH ITS VERSION, like a preview does
+     (Fable S5). Opened from an issued or plan chip, it lists that version's
+     men under "who was free when this day was issued"; unpublish the day, undo
+     the publish, or bring the plan out, and the version is gone or is now the
+     working copy — so the window closes rather than go on labelling a list it
+     can no longer read. Every path that removes a version already runs this. */
+  const w=AVAILWIN
+  if(w&&w.ver&&(!daySnapOf(w.di,w.ver)||(w.ver.slice(0,2)==='d:'&&w.ver==='d:'+curDraftId(w.di))))setAvailWin(null)
+}
 /* {di,ix,ids:[…],sev,key,code,prevDi,leaveBy} — key = the causing line's
    slot-key, if the warning carries one. The cross-day crew-rest row adds
    panDi/panKey: land on THAT day and THAT line instead, the one case where the
