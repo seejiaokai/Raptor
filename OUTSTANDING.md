@@ -1051,20 +1051,15 @@ These four are what was deliberately left:
 
 ### [REPO-PRIVATE] Make the repo private and share it with developers — HALF DONE 23 Sep 26 (D59)
 
-**DONE, BY HIM, 23 Sep 26 (D59): THE REPO IS PRIVATE.** He reversed his own *"nvm disregard this
-first"* the same day, after a check of the public repo found the unit named in the app. **What
-that already cost and what was done about it, in the same change:** the GitHub Pages site is GONE
-(the API returns 404), so the publish job in `.github/workflows/deploy.yml` is switched OFF — it
-would fail on every push and still bill its minutes — with the gates left running so a red merge is
-still blocked. `README.md`'s live-site line is corrected. **The app is now viewed on VERCEL.**
+**DONE, BY HIM, 23 Sep 26 (D59): THE REPO IS PRIVATE**, reversing his own *"nvm disregard this
+first"* the same day after a check found the unit named in the app. Pages is GONE (API 404), so the
+publish job in `.github/workflows/deploy.yml` is OFF — it would fail every push and still bill —
+with the gates left running. `README.md` corrected. **The app is viewed on VERCEL now.**
 
-**STILL OPEN — the sharing half.** Route: Settings → Collaborators → add by GitHub username with
-Write; developers run it locally and do not need Vercel. **The question that comes with it, unmade:**
-a collaborator on THIS repo sees everything — the uploaded original, the whole history, every
-agent-facing document. If that matters, the answer is the fresh single-commit repo below.
-
-**His original words:** *"i would like to make my repo private, and share with developers on my app"*.
-
+**STILL OPEN — the sharing half** (*"i would like to make my repo private, and share with developers
+on my app"*). Route: Settings → Collaborators, by username, Write; they run it locally and do not
+need Vercel. **Unmade question:** a collaborator here sees the uploaded original, the whole history
+and every agent-facing doc. If that matters, the fresh single-commit repo below is the answer.
 **What was established while it was up, so it is not re-derived:**
 - The repo is **PUBLIC** today and the live site answers **200 to anyone** with the URL, no login.
   The hard-coded accounts are one search away in `src/state/auth.ts`, so removing credentials from
@@ -1086,43 +1081,22 @@ agent-facing document. If that matters, the answer is the fresh single-commit re
 **The recommendation on the table:** private + collaborators with Write + Pages OFF + developers run
 it locally; pay for Vercel seats only if non-developers need to look. **His call, unmade.**
 
-**WHAT A DEVELOPER WOULD ACTUALLY FIND, measured 23 Sep 26** — he asked whether to wipe or mask
-the traces of material he uploaded. The facts, so they are not re-derived:
-- **`raptor-port/reference/scheduler.html` (435 KB) is the original app**, in the open, in `HEAD`.
-  It is also LOAD-BEARING: `npm run test:reference` (the 728/0 line in every report) compares the
-  new app against it byte for byte, and `PORTING.md` describes the whole job as a port of it.
-  Removing it from a shared copy means dropping that gate there.
-- **`RAPTOR-Command-Brief.pptx`** is already gone from the current files but is still in the
-  history (added `d53ce954`, edited twice).
-- **~660 screenshots** under `raptor-port/docs/img/`, all taken by the agent driving the app.
-- **1,296 commits across ~25 branches**, every one carrying a `Co-Authored-By: Claude` line, plus
-  `CLAUDE.md`, `.claude/`, the handoffs, `DECISIONS.md` and the bug-check order — all addressed to
-  an agent. **Masking that is not a wipe, it is rewriting the documentation the project runs on.**
-- **A history rewrite does NOT clean GitHub.** Force-pushing leaves the old objects reachable
-  through pull-request refs and any fork; only GitHub support can purge them. And a worktree does
-  not isolate this — a worktree shares the same history.
-- **The clean route is a FRESH repo with ONE commit**: `raptor-port/` source, what a developer
-  needs to build and run, nothing else; this repo stays private as his working history.
+**WHAT A DEVELOPER WOULD FIND, measured 23 Sep 26.** `raptor-port/reference/scheduler.html` (435 KB)
+is the original app, in the open, and LOAD-BEARING — `npm run test:reference` (the 728/0 line) runs
+it; `PORTING.md` calls the job a port of it. `RAPTOR-Command-Brief.pptx` is gone from the tree but
+lives in three commits, and **slide 1 still carries the service name** (binary, so D58's text sweep
+could not reach it). Plus ~660 agent-taken screenshots, and 1,296 commits across ~25 branches all
+carrying agent attribution and agent-facing docs. **A history rewrite does NOT clean GitHub** —
+old objects stay reachable via PR refs and forks; only support can purge them. **A worktree does
+not isolate any of this; it shares the same history.** The clean route is a FRESH repo with ONE
+commit — app source only — which drops the deck, the original and the archive in a single step.
 
-**CHECKED 23 Sep 26 — NO RESTRICTED MATERIAL WAS EVER UPLOADED. Do not re-run this search.**
-He asked whether evidence of restricted material could be removed or masked. There is none to
-remove. What was actually checked, each one clean: the uploaded original
-`raptor-port/reference/scheduler.html` carries NO classification marking of any kind; the briefing
-deck's 10 slides carry none; the demo data is 63 invented callsigns with no real names, ID numbers,
-emails, phone numbers, DOB, next-of-kin or rank; the stores (TPOD, 2 TKS, NAV, N/C, 3 TKS, CL),
-mission types (ACM, AD, BFM, SAT) and areas (NORTH/SOUTH/EAST/WEST) are generic training vocabulary
-and compass directions. **The only `RESTRICTED` in the repo is the stamp the app PRINTS on
-schedules it generates itself** (`src/ui/printpdf.ts`) — the product working correctly, not a trace
-of anything received. A `.restricted` red-banner style exists in `tracker.css` and nothing renders
-it; dead style.
-
-**ONE THING D58 DID NOT REACH:** slide 1 of `RAPTOR-Command-Brief.pptx` still carries the service
-name. The file is gone from the current tree but lives in three commits of history, and being a
-binary it was not touched by the text sweep. **It needs no action while the repo is private** — but
-it is a reason to share through the fresh single-commit repo below rather than by adding
-collaborators to this one, which would solve the deck, the uploaded original and the whole
-agent-facing archive in a single step.
-
+**NO RESTRICTED MATERIAL WAS EVER UPLOADED — checked 23 Sep 26, do not re-run.** Clean: the uploaded
+original (no marking of any kind), the deck's 10 slides, the demo data (63 invented callsigns, no
+real names/IDs/DOB/next-of-kin/rank), and the stores, mission and area vocabulary (generic training
+terms and compass points). The only `RESTRICTED` is the stamp the app PRINTS on schedules it
+generates (`src/ui/printpdf.ts`) — the product working, not a trace of anything received.
+`tracker.css`'s `.restricted` banner is dead style, rendered nowhere.
 ### [STORE-READER-SWEEP] A stored record read more narrowly than it is written — sweep for more (22 Sep 26)
 
 **TWO INSTANCES FOUND IN ONE FILE IN ONE EVENING, both silent, both about official

@@ -25,7 +25,14 @@ const REPO = join(ROOT, '..')
 
 /* file, tier, CEILING (may only go down), TARGET (doc-budget.md's aim) */
 const FILES = [
-  ['raptor-port/CLAUDE.md',              0, 1539,  500],
+  /* RAISED 1539 -> 1543, 23 Sep 26, for a genuinely new live rule and nothing else (owner, D60):
+     push a BRANCH freely, ASK before `main`. It belongs HERE because it governs what the agent may
+     do without asking, and a rule the agent must check before acting has to be in the always-loaded
+     tier. The file sat EXACTLY at its ceiling, so the four lines had nowhere to go; the entry was
+     tightened from six lines to four FIRST, and only the remainder raised. D29 rule 3 forbids
+     paying for it by trimming someone else's text inside another change. [DOC-TRIM] still owns
+     bringing this file to its 500 target, which is where the real 1,043 lines of slack are. */
+  ['raptor-port/CLAUDE.md',              0, 1543,  500],
   ['.claude/rules/raptor-executor.md',   0,  108,  108],
   /* RAISED 63 -> 76, 23 Sep 26, for a genuinely new live rule and nothing else
      (owner, D56): a problem living only in data already stored is not a finding,

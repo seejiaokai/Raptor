@@ -954,12 +954,10 @@ re-litigate it. Where a reference doc holds the full story, the line keeps the
 decision + a pointer. Owner + date establish authority; keep them.
 
 ### Pipeline & repo invariants
-- **Push a BRANCH freely; ASK before `main`** (owner, 23 Sep 26 — D60, answering "2" of three
-  options). A branch push changes nothing official and gives him a Vercel link to LOOK at, so it
-  needs no permission. `main` stays gated behind his **"merge live"**. The two words are not
-  synonyms — "push" puts work on GitHub, "merge live" makes it the app. The question only arose
-  because D59 took the repo private, which meters Actions minutes; while it was public, pushes
-  were free and there was nothing to ration.
+- **Push a BRANCH freely; ASK before `main`** (owner, 23 Sep 26 — D60). A branch push changes
+  nothing official and gives him a Vercel link to LOOK at, so it needs no permission; `main` stays
+  gated behind his **"merge live"**. "Push" and "merge live" are NOT synonyms. The question only
+  arose because D59 took the repo private, which meters Actions minutes.
 - **Do NOT watch PRs** (owner, 15 Aug 26). The harness auto-watches an opened PR
   and floods the owner's phone with CI/review/Vercel `<wake>` blocks for little
   gain (gates + live page are checked before the PR opens; he leaves no review
