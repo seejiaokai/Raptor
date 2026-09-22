@@ -25,7 +25,7 @@ export function Login() {
   return (
     <div className="login" id="login">
       <div className="login-wrap">
-        {/* the squadron eyebrow ("142 · RSAF") was removed at the owner's ask
+        {/* the squadron eyebrow ("142") was removed at the owner's ask
             (8 Sep 26); the .lb-unit CSS is left in place, unused, harmless */}
         {/* the mark: a raptor in the stoop, wings swept, tail split */}
         <div className="lb-mark">

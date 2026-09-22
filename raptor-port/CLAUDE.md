@@ -1,4 +1,4 @@
-# RAPTOR — 142 SQN Flying Programme (React app)
+# RAPTOR — 142 Flying Programme (React app)
 
 A flying-schedule planner for an F-15SG squadron: a week of flying waves,
 duty crews, sims, ground events and personal inputs, with a validation

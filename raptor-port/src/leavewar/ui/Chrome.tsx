@@ -53,9 +53,9 @@ export function Topbar() {
   const me = viewer ? people.find(p => p.id === viewer) ?? null : null
   return (
     <>
-    {/* The Leave War page's own "142 SQN / LEAVE WAR" mark and "Leave war" nav
+    {/* The Leave War page's own "142 / LEAVE WAR" mark and "Leave war" nav
         pill were REMOVED (owner, 18 Aug 26 — "142 is repeated… takes too much
-        space"). Raptor's shell topbar already carries the 142 SQN identity and
+        space"). Raptor's shell topbar already carries the 142 identity and
         highlights the Leave War tab, so a second copy under it was pure
         duplication and a band of wasted height on a phone. What stays is the
         real controls only: the period picker here, and the stage strip below. */}

@@ -1049,10 +1049,21 @@ These four are what was deliberately left:
    pre-existing). D47 belts the money on purpose and names this; the screen half is one advisory
    away. A product call, not a defect against the plan.
 
-### [REPO-PRIVATE] Make the repo private and share it with developers — PARKED by the owner (23 Sep 26)
+### [REPO-PRIVATE] Make the repo private and share it with developers — HALF DONE 23 Sep 26 (D59)
 
-**His words:** *"i would like to make my repo private, and share with developers on my app"*, then
-*"nvm disregard this first"* — so it is PARKED, not decided, and nothing has been changed.
+**DONE, BY HIM, 23 Sep 26 (D59): THE REPO IS PRIVATE.** He reversed his own *"nvm disregard this
+first"* the same day, after a check of the public repo found the unit named in the app. **What
+that already cost and what was done about it, in the same change:** the GitHub Pages site is GONE
+(the API returns 404), so the publish job in `.github/workflows/deploy.yml` is switched OFF — it
+would fail on every push and still bill its minutes — with the gates left running so a red merge is
+still blocked. `README.md`'s live-site line is corrected. **The app is now viewed on VERCEL.**
+
+**STILL OPEN — the sharing half.** Route: Settings → Collaborators → add by GitHub username with
+Write; developers run it locally and do not need Vercel. **The question that comes with it, unmade:**
+a collaborator on THIS repo sees everything — the uploaded original, the whole history, every
+agent-facing document. If that matters, the answer is the fresh single-commit repo below.
+
+**His original words:** *"i would like to make my repo private, and share with developers on my app"*.
 
 **What was established while it was up, so it is not re-derived:**
 - The repo is **PUBLIC** today and the live site answers **200 to anyone** with the URL, no login.
@@ -1074,6 +1085,24 @@ These four are what was deliberately left:
 
 **The recommendation on the table:** private + collaborators with Write + Pages OFF + developers run
 it locally; pay for Vercel seats only if non-developers need to look. **His call, unmade.**
+
+**WHAT A DEVELOPER WOULD ACTUALLY FIND, measured 23 Sep 26** — he asked whether to wipe or mask
+the traces of material he uploaded. The facts, so they are not re-derived:
+- **`raptor-port/reference/scheduler.html` (435 KB) is the original app**, in the open, in `HEAD`.
+  It is also LOAD-BEARING: `npm run test:reference` (the 728/0 line in every report) compares the
+  new app against it byte for byte, and `PORTING.md` describes the whole job as a port of it.
+  Removing it from a shared copy means dropping that gate there.
+- **`RAPTOR-Command-Brief.pptx`** is already gone from the current files but is still in the
+  history (added `d53ce954`, edited twice).
+- **~660 screenshots** under `raptor-port/docs/img/`, all taken by the agent driving the app.
+- **1,296 commits across ~25 branches**, every one carrying a `Co-Authored-By: Claude` line, plus
+  `CLAUDE.md`, `.claude/`, the handoffs, `DECISIONS.md` and the bug-check order — all addressed to
+  an agent. **Masking that is not a wipe, it is rewriting the documentation the project runs on.**
+- **A history rewrite does NOT clean GitHub.** Force-pushing leaves the old objects reachable
+  through pull-request refs and any fork; only GitHub support can purge them. And a worktree does
+  not isolate this — a worktree shares the same history.
+- **The clean route is a FRESH repo with ONE commit**: `raptor-port/` source, what a developer
+  needs to build and run, nothing else; this repo stays private as his working history.
 
 ### [STORE-READER-SWEEP] A stored record read more narrowly than it is written — sweep for more (22 Sep 26)
 

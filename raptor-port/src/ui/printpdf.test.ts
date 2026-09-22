@@ -17,7 +17,7 @@ describe('schedPrintHTML', () => {
     const html = schedPrintHTML(rows, 'wk')
     expect(html.startsWith('<!doctype')).toBe(true)
     expect(html.endsWith('</html>')).toBe(true)
-    expect(html).toContain('142 SQN — Flying Programme')
+    expect(html).toContain('142 — Flying Programme')
     expect(html).toContain('wk')
     expect(html).toContain('RESTRICTED')                 // the agency-report marking (owner, 16 Sep 26)
     expect(html).toContain('<th>Remarks</th>')           // the report's own column headers

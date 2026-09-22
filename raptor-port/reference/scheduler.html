@@ -6,7 +6,7 @@
      see a whole day block plus the aircrew palette at once, exactly as the
      reference tool does. minimum-scale must be low enough for that. -->
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.2, maximum-scale=6, user-scalable=yes">
-<title>RAPTOR · 142 SQN Flying Programme</title>
+<title>RAPTOR · 142 Flying Programme</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
@@ -1563,7 +1563,7 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 <div class="login" id="login">
  <div class="login-wrap">
 
-  <div class="lb-unit">142 SQN · RSAF</div>
+  <div class="lb-unit">142</div>
   <!-- the mark: a raptor in the stoop, wings swept, tail split -->
   <div class="lb-mark"><svg class="lb-glyph" viewBox="0 -2 60 64" role="img" aria-label="RAPTOR"><path d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z"/></svg><span class="lb-word">RAPTOR</span></div>
   <div class="lb-sub"><b>R</b>eadiness · <b>A</b>vailability · <b>P</b>lanning<br>
@@ -1596,7 +1596,7 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 
 <div class="topbar">
   <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
-  <div class="mark"><svg class="rglyph" viewBox="0 -2 60 64" aria-hidden="true"><path d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z"/></svg><span class="tx"><span class="k">142 SQN · Flying Programme</span><span class="v">RAPTOR</span></span></div>
+  <div class="mark"><svg class="rglyph" viewBox="0 -2 60 64" aria-hidden="true"><path d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z"/></svg><span class="tx"><span class="k">142 · Flying Programme</span><span class="v">RAPTOR</span></span></div>
   <nav class="nav" id="topnav">
     <a data-page="editsched" data-admin>Edit Schedule</a>
     <a data-page="viewsched" class="on">View-only Sched</a>
@@ -1639,7 +1639,7 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
       <div class="searchbox">🔍<input id="searchV" placeholder="name / callsign"></div>
     </div>
   </div>
-  <div class="title"><h1 id="vTitle">Jul 13 – Jul 17</h1><span class="sub mono" id="vSub">142 SQN · week of 13 Jul 26 · all times local</span></div>
+  <div class="title"><h1 id="vTitle">Jul 13 – Jul 17</h1><span class="sub mono" id="vSub">142 · week of 13 Jul 26 · all times local</span></div>
   <div class="schedbanner" id="vBanner"></div>
   <div class="legend" id="vLegend"></div>
   <div class="week" id="vWeek"></div>
@@ -1663,7 +1663,7 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
       <button class="abtn" id="exportSched">Export to Excel</button>
       <div class="right"><div class="searchbox">🔍<input id="searchE" placeholder="name / callsign"></div></div>
     </div>
-    <div class="title"><h1 id="eTitle">142 SQN Scheduling board · Jul 13</h1><span class="sub mono">Edit mode · changes are local to this prototype</span></div>
+    <div class="title"><h1 id="eTitle">142 Scheduling board · Jul 13</h1><span class="sub mono">Edit mode · changes are local to this prototype</span></div>
     <div class="schedbanner" id="eBanner"></div>
     <div class="alpanel" id="alPanel"></div>
     <div class="legend" id="eLegend"></div>
@@ -1883,7 +1883,7 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 
 <script>
 /* =====================================================================
-   142 SQN Flying Programme — prototype (single file, vanilla JS)
+   142 Flying Programme — prototype (single file, vanilla JS)
    Qual ladder: OCU → D → C → B → A → I → CI → IR
    ===================================================================== */
 
@@ -4446,7 +4446,7 @@ function assignTo(key,id){
 }
 $('addGo').onclick=e=>{e.stopPropagation();waveMenu($('addGo'),null);};
 $('throwPucks').onclick=()=>toast('Auto-throw uses the Quals rules to seat crews (stub in prototype).');
-$('exportSched').onclick=()=>exportCSV('142SQN-schedule.csv',schedRows());
+$('exportSched').onclick=()=>exportCSV('142-schedule.csv',schedRows());
 function schedRows(){
   const rows=[['Day','Date','Wave','CS','Mission','Brief','TO','Land','FCP','FCP lvl','RCP','RCP lvl','Area','Area time','Rmks','Stores']];
   DAYS.forEach(d=>(d.waves||[]).forEach(w=>w.formations.forEach(f=>f.aircraft.forEach(a=>{
@@ -6071,7 +6071,7 @@ $('qExport').onclick=()=>{
   Object.keys(PEOPLE).filter(id=>PEOPLE[id].seat===qSeatView&&!PEOPLE[id].archived).forEach(id=>{
     const p=PEOPLE[id]; rows.push([p.cs,(p.name||'').replace(/"/g,''),p.flight,p.office,p.q,...QUAL_COLS.map(c=>p.quals[c.k]?'Y':'')]);
   });
-  exportCSV(`142SQN-LoX-${qSeatView}.csv`,rows);
+  exportCSV(`142-LoX-${qSeatView}.csv`,rows);
 };
 $('qAddQual').onclick=$('qUses').onclick=$('qAdminLink').onclick=()=>toast('Shortcut to the Admin page (Django-style backend in the full build).');
 
@@ -6503,7 +6503,7 @@ $('inAdd').onclick=()=>{
 $('inFPerson').addEventListener('change',e=>{inFPerson=e.target.value;renderInputs();});
 $('inFType').addEventListener('change',e=>{inFType=e.target.value;renderInputs();});
 $('inFSearch').addEventListener('input',e=>{inFSearch=e.target.value.trim();renderInputs();});
-$('inExport').onclick=()=>{const rows=[['Name','Date','Start','End','Type','Remarks']];INPUTS.forEach(r=>rows.push([PEOPLE[r.person]?PEOPLE[r.person].cs:r.person,r.date,r.allday?'all day':hhmm(r.s),r.allday?'all day':hhmm(r.e),r.type,r.remarks]));exportCSV('142SQN-inputs.csv',rows);};
+$('inExport').onclick=()=>{const rows=[['Name','Date','Start','End','Type','Remarks']];INPUTS.forEach(r=>rows.push([PEOPLE[r.person]?PEOPLE[r.person].cs:r.person,r.date,r.allday?'all day':hhmm(r.s),r.allday?'all day':hhmm(r.e),r.type,r.remarks]));exportCSV('142-inputs.csv',rows);};
 $('inBody').addEventListener('click',e=>{const x=e.target.closest('[data-inx]');
   if(!x)return;
   if(SESSION.role!=='admin')return toast('View only — ask a scheduler to remove this','warn');

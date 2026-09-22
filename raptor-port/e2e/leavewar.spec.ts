@@ -3372,13 +3372,13 @@ test('a decision made before the reopen survives it', async ({ page }) => {
 })
 
 // ---- the categorised roster (owner, 18 Aug 26) --------------------------
-// The header no longer repeats "142 SQN / LEAVE WAR"; the roster is grouped
+// The header no longer repeats "142 / LEAVE WAR"; the roster is grouped
 // into the owner's seven categories, colour-coded from Raptor's own CAT
 // palette; ground crew ride it as a white Personnel group; an admin hand-drags
 // the order from the header's ⇅ toggle (the Auto-sort button is gone, 6 Sep 26).
 
 test('the page carries no second squadron mark — the shell is the only identity', async ({ page }) => {
-  // The old "142 SQN / LEAVE WAR" mark and "Leave war" nav pill are removed.
+  // The old "142 / LEAVE WAR" mark and "Leave war" nav pill are removed.
   expect(await page.locator('#page-leavewar .mark, #page-leavewar .nav').count()).toBe(0)
 })
 

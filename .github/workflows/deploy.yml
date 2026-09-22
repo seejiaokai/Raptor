@@ -187,9 +187,18 @@ jobs:
 
   # Publishes only when every gate above is green: a failed or cancelled
   # `needs` job skips this one, so nothing deploys red.
+  #
+  # OFF SINCE 23 Sep 26, when the repo went PRIVATE (D59). GitHub Pages cannot
+  # serve from a private repo on the free plan — the Pages site is gone (the
+  # API returns 404), so this job would fail on every push AND still bill its
+  # Actions minutes, which are metered now that the repo is private (~37 billed
+  # minutes a push, measured 23 Sep 26). The gates above still run and still
+  # block a red merge; only the PUBLISH is disabled. The live app is served by
+  # VERCEL instead. To turn Pages back on: make the repo public again (or buy a
+  # plan that serves private Pages), then drop the `false &&` below.
   deploy:
     needs: [build, unit, geometry, tracker]
-    if: github.event_name != 'pull_request'
+    if: false && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

@@ -67,7 +67,7 @@ export function schedPrintHTML(rows: any[][], weekLabel: string, dayLabel?: (day
   }).join('')
   const now = new Date()
   const gen = `${String(now.getDate()).padStart(2, '0')} ${now.toLocaleString('en', { month: 'short' })} ${now.getFullYear()}, ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
-  return `<!doctype html><html><head><meta charset="utf-8"><title>142 SQN Flying Programme — ${esc(weekLabel)}</title><style>
+  return `<!doctype html><html><head><meta charset="utf-8"><title>142 Flying Programme — ${esc(weekLabel)}</title><style>
 @page{size:A4 portrait;margin:14mm 12mm}
 *{box-sizing:border-box}
 body{font-family:'Segoe UI',system-ui,-apple-system,Arial,sans-serif;color:#1a1a1a;background:#fff;margin:0;font-size:10px;line-height:1.35}
@@ -94,7 +94,7 @@ td.rmk{color:#333}
 tbody tr:nth-child(even) td{background:#fafafa}
 </style></head><body>
 <div class="mark">RESTRICTED</div>
-<header><h1>142 SQN — Flying Programme</h1><div class="wk">${esc(weekLabel)}</div><div class="gen">Generated ${esc(gen)} · published schedule</div></header>
+<header><h1>142 — Flying Programme</h1><div class="wk">${esc(weekLabel)}</div><div class="gen">Generated ${esc(gen)} · published schedule</div></header>
 ${blocks}
 <div class="mark" style="margin-top:10px">RESTRICTED</div>
 </body></html>`

@@ -6,7 +6,10 @@ validation engine that flags crew-rest breaches, double bookings, missing
 briefs and qualification problems, plus an amendment (AL) workflow for
 publishing changes after a day has been signed off.
 
-**Live:** https://seejiaokai.github.io/Raptor/
+**Live:** the GitHub Pages site is GONE. The repo went private on 23 Sep 26 and Pages
+cannot serve from a private repo on the free plan, so that URL is dead and the publish
+job in the deploy workflow is switched off (the gates still run). The app is viewed on
+**Vercel**, behind Vercel's own sign-in. To run it yourself, see *Running it* below.
 
 A member is not view-only: they add, edit and delete their own personal
 inputs and tick the qualifications they hold. Building the programme —
@@ -15,7 +18,7 @@ the rules — stays admin.
 
 Demo data only. There is no server — the schedule lives in each browser's
 own localStorage, and the login is a prototype gate, not security. The
-accounts are hard-coded and the site is public, so nothing here is protected
+accounts are hard-coded and the login is not a security boundary, so nothing here is protected
 by signing in; the credentials are deliberately not printed — not on the
 sign-in card (owner, 24 Aug 26) and, since 23 Sep 26, not here either. They
 had also gone stale, which is how this was noticed: this file still named a

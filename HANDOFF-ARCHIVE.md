@@ -2761,7 +2761,7 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
 - **LEAVE WAR — CATEGORISED ROSTER + HEADER TRIM (18 Aug 26, owner: "fix how
   the top of the leave war looks… 142 is repeated… categorise the personnel
   into SXO, IP, OPS P, IWSO, OPS W, OCU, Personnel").** The page's own
-  "142 SQN / LEAVE WAR" mark and "Leave war" nav pill are DELETED (Raptor's
+  "142 / LEAVE WAR" mark and "Leave war" nav pill are DELETED (Raptor's
   shell already carries the identity and the active tab) — the header is one
   slim control strip now. The roster draws in seven colour-coded groups
   (`engine/people.ts:groupOf`/`GROUP_ORDER`), ops crew split by CAT A→D on
