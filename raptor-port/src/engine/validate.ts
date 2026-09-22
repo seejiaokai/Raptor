@@ -1,16 +1,16 @@
-import { PEOPLE, isSpecial, realP, isOcu, isInstr, isInstrPilot, aarOK, aarInstrOK, scShiftKind, scQualOK } from './people'
+import { PEOPLE, isSpecial, realP, whoId, isOcu, isInstr, isInstrPilot, aarOK, aarInstrOK, scShiftKind, scQualOK } from './people'
 import { isDownchit, isLeave, isUnavail, canSpare, canWork, shiftHardInput, restsInput, inpLabel, inpMeta } from './inputs'
 import { VCONF, SHIFT_HARD } from './rules'
-import { overlap, hm24, lgT } from './time'
+import { overlap, hm24, lgT, parseHM } from './time'
 import { collectEvents, shiftEvHard, scSeatHits, avSeatHits } from './events'
 import { HOOKS } from './hooks'
 import { sansGate, SANS_LABEL } from './avail'
 import { seedRunIn, prevSundaySeed, nextMondaySeed, nextMondayWorked, windowDiverges, windowFiling, filingDivergesAt } from './weekctx'
 import { setWorld, setFiling, clearFiling } from './world'
-import { CURWEEK } from './waves'
+import { CURWEEK, isStandalone } from './waves'
 import { DAYS } from './data'
 import { dayOilBlind, blindDesks } from './oil'
-import { oilWouldEarn } from './oilev'
+import { oilWouldEarn, oilOldBlockCrowd, oilEvidenceOf } from './oilev'
 import { keyDay } from './keys'
 import { SCHED, approvedDays, dayApproved, dayDelta, dayCurVer, daySnapOf } from './publish'
 
@@ -27,7 +27,9 @@ export const WCODE:any={DOUBLE_BOOK:'Conflict — two events at once',DNIF_FLY:'
   SHIFT_SOFT:'On shift — also down for a ground event',
   SC_INTIME:'In-time window cut — busy between report and shift start',
   SANS_AVAIL:'SANS availability — planned outside the availability filed',
-  OIL_NO_TIMES:'No OIL earned — a duty desk has no times'};
+  OIL_NO_TIMES:'No OIL earned — a row has no usable times',
+  FLT_NO_LEN:'Flight times — take-off and landing are the same',
+  OIL_OLD_BLOCK:'Published before these seats counted — republish to credit them'};
 /* what a flag PRINTS on the puck. The internal codes stay as they are — they
    key the colours, the ranking and the tooltips — but the squadron reads these
    at 9px on a phone, so the glyphs are short: R for crew rest, B for either
@@ -119,6 +121,35 @@ export function workSpan(evs:any){
   return {s,e,span:e-s,ef};
 }
 export function dayEvents(di:any,id:any){const m=EVD[di]; return (m&&m[id])||[];}
+/* A NOUGHT-MINUTE SORTIE — ONE BODY, THREE READERS (D49, owner 22 Sep 26).
+   The warning below asks it, and so do both surfaces that DRAW the line: the
+   week (ui/html.ts) and the board (ui/board.ts), because the ruling is that the
+   day says the times are wrong ON THE LINE, not only in the list on the right.
+   Written once here rather than re-derived beside each renderer — a rule read in
+   two places is a drift seam (CLAUDE.md §the robustness doctrine), and this one
+   would drift into a line wearing a mark no warning explains, or a warning about
+   a line wearing no mark.
+   The CREW test is part of the rule, not an extra: a line nobody is on raises no
+   warning, so it must carry no mark either. */
+export function fltNoLen(f:any):boolean{
+  if(!f||f.cx)return false;
+  const st=parseHM(f.to),en=parseHM(f.ld);
+  if(st==null||en==null||st!==en)return false;
+  const crew:any[]=[];
+  (f.aircraft||[]).forEach((ac:any)=>{if(!ac.cx){crew.push(ac.p);crew.push(ac.w);}});
+  return crew.some((v:any)=>{const id=whoId(v);return !!id&&(realP(id)||isSpecial(id));});
+}
+/* the sentence, shared by the warning and by every marked box's own words, so a
+   scheduler reading the box is told the same thing as the list.
+   TWO SENTENCES, BECAUSE THEY ARE TWO DIFFERENT FACTS (22 Sep 26, the
+   independent code read). D49 is a ruling about a SORTIE: the man reported three
+   hours before and debriefed for two after, so the half day is real work
+   whatever the written times say. A STANDALONE wave — SC MAIN, SC SPARE,
+   AVALON, BB — has no such padding; its window IS the written window, so typed
+   08:00–08:00 it measures nothing and pays nobody. Telling a scheduler that
+   shift "still earns from the report and debrief" was false, on the wave the
+   squadron works most weekends, about money. */
+export const FLT_NO_LEN_SAYS=(st:any,sa?:any)=>`takes off and lands at the same time (${hm24(st)}) — one of the two is wrong; ${sa?'a shift with no length earns nobody any OIL until it is fixed':'the day still earns from the report and debrief'}`;
 function validateCore(){
   const ev=collectEvents(), all:any[]=[], byDay:any[]=[], sev:any={}, chip:any={}, dash:any={}, trace:any={};
   REST={}; EVD={};
@@ -1102,12 +1133,35 @@ function validateCore(){
        at all, so a blank desk on a Tuesday is ordinary and must say nothing.
        The weekend comes from the day's own name; the holiday from the hook,
        because only Leave War holds that answer. */
+    /* A NOUGHT-MINUTE SORTIE ([OIL-SEATS-CAN-EARN] step 8; D49, owner 22 Sep 26
+       — "It should still earn — leave it as it is"). A line typed with the same
+       take-off and landing STILL PAYS the man: he reported and debriefed, so he
+       was at work whatever the times say. Both reviewers read that half day as
+       the app paying off its own padding and asked for the line to be refused;
+       the only reason it is not is a fact about how the squadron runs, which the
+       code cannot hold. The ruling stands and nothing about the money changes.
+       What was missing is that one of the two times is plainly wrong and no
+       screen said so. This says it — on ANY day, because a nought-minute sortie
+       is wrong on a Tuesday as well, and as an ADVISORY, because the line is not
+       being refused. It names the line, not the crew: the times are the
+       scheduler's to fix and no pilot's fault. */
+    ((DAYS[di]||{}).waves||[]).forEach((wv:any,gi:any)=>{
+      (wv.formations||[]).forEach((f:any,li:any)=>{
+        if(!fltNoLen(f))return;
+        add('adv','FLT_NO_LEN',[],`${f.cs||wv.label||'A flying line'} ${FLT_NO_LEN_SAYS(parseHM(f.to),isStandalone(wv))}`,`ff:${di}.${gi}.${li}.ld`);
+      });
+    });
     const earnsOil=day.dow==='Saturday'||day.dow==='Sunday'||HOOKS.oilEarningDay(di);
     if(earnsOil){
       const blind=dayOilBlind(DAYS[di]||{});
       if(blind.length){
         const {list,verb}=blindDesks(blind);
-        add('hard','OIL_NO_TIMES',[],`${list} ${verb} no times — nobody on ${blind.length>1?'them':'it'} earns OIL for this day`);
+        /* "no USABLE times" (the follow-up code read, G1). "No times" was true
+           of every row this named until a nought-minute standalone shift joined
+           the list: that shift HAS two times typed on it, and being told it has
+           none is a sentence a scheduler can see is false while he is looking at
+           them. Unusable covers both — a blank pair and an equal one. */
+        add('hard','OIL_NO_TIMES',[],`${list} ${verb} no usable times — nobody on ${blind.length>1?'them':'it'} earns OIL for this day`);
       }
       /* NOBODY EARNS UNTIL THE DAY IS PUBLISHED ([OIL-AUTO-REMOVE] §2.3, owner
          21 Sep 26). All OIL now lands on publication — the schedule's and a
@@ -1156,6 +1210,21 @@ function validateCore(){
         const frozen=snap&&snap.d&&snap.d.oilev;
         if(frozen&&!frozen.earns){
           add('adv','OIL_STALE_DAY',[],'This day started earning OIL after it was published — publish it again so the OIL lands');
+        }
+        /* AND THE OTHER WAY A PUBLISHED DAY'S MONEY MOVES UNDER IT (owner,
+           22 Sep 26 — "ok fix this first"). A day issued before the app counted
+           the people behind an ALL / ALL AVAIL puck on a duty desk, a sim seat or
+           an extras line reads "1 pending" the moment those seats start paying —
+           correctly, because republishing it WOULD credit them — but with no cell
+           marked and nothing in History, because the difference is worked out
+           rather than recorded. Beside the puck the count chip reads "?", since
+           that block never wrote down who was there. Something changed, nothing
+           says what, and the one place to look was never written down.
+           This says it. It does not change what the comparison decides — that is
+           still the owner's question — it stops the day asking for an amendment
+           it cannot explain. */
+        if(frozen&&oilOldBlockCrowd(frozen,oilEvidenceOf(di))){
+          add('adv','OIL_OLD_BLOCK',[],'This day was published before the app counted who is behind an ALL AVAIL puck on a duty desk, a sim or an extras line — publish it again to credit them');
         }
       }
     }

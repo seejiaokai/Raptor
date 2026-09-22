@@ -1712,6 +1712,28 @@ were `FS`/`HS` until the 28 Aug 26 rename.
     once as unconditional work and again as his answered claim. The extras take
     the CLAIM's window, not the row's, because an all-day request lands a row
     with no times at all (`landedExtras` / `oilEarnedWork` in `engine/oilev.ts`).
+- **A NOUGHT-MINUTE SORTIE STILL EARNS (owner's ruling D49, 22 Sep 26 — "It
+  should still earn, leave it as it is").** A flying line typed with the SAME
+  take-off and landing pays its crew exactly as it always did. On the face of it
+  it should not: the sortie measures nothing, and the whole half day comes from
+  the three hours of report the rules add before take-off and the two of debrief
+  after landing. Both reviewers read that as the app paying off its own padding
+  and asked for the line to be refused. The owner overruled it and the plan's
+  §5 step 8 with it: the man reported and debriefed, so he was in squadron
+  whatever the times say. **Nothing here is to be "fixed" back** —
+  `engine/oilflighttimes.test.ts` names the ruling so the next reviewer meets it.
+  What the app does instead is SAY the times cannot be right:
+  - **`FLT_NO_LEN`, an Advisory, on the line, on any day.** A nought-minute
+    sortie is a slip of the keyboard on a Tuesday as much as on a Saturday, and
+    fixing it while the day is being built is free where fixing it afterwards
+    costs an amendment. It names the LINE, not the crew — the times are the
+    scheduler's to correct. An overnight line is not a mistake (D42) and stays
+    silent, and an empty or cancelled line says nothing either.
+  - **A flying line with crew and NO readable times joins the blind list** — the
+    same `OIL_NO_TIMES` warning the duty desks have carried since 20 Sep 26.
+    That one genuinely earns nobody anything, so it keeps those words; the
+    nought-minute line must never borrow them, because it pays.
+
 - **The ALL / ALL AVAIL expansion — REDEFINED 21 Sep 26 ([ALL-AVAIL-REDEF]).**
   A sentinel puck on a ground or Common Programme row expands — via the injected
   `opts.expandAll`, so `engine/oil.ts` stays Leave-War-free — to the people

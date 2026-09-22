@@ -46,6 +46,19 @@ MISSING, not whether the code is wrong), **both of them reading the code** only 
 records, permissions or persistence — and **never another static review when what is missing is
 someone running the app.** That last one has a name now: review pile-on.
 
+## WHAT IS NOT A FINDING (owner, D56, 23 Sep 26) — read this BEFORE you spend anything
+
+*"Make sure the bug checks dont waste time catching these bugs in the future. It will not happen
+because ill clear all the demo data anyway before shiping this app into a real database."*
+
+**A problem that lives ONLY in data already stored is not a finding.** No reviewer, no walk step, no
+fix. The whole store is demo data and is CLEARED before the database step.
+
+**Both must be true or the rule does not apply:** the harm exists only in data already stored, AND
+the code is already correct going forward. If new data would be hurt too, it is a real finding.
+**"Pre-existing" alone is NOT this** — that is about the defect's age; this is about the data's
+future. Put the exclusion in the REVIEWER'S BRIEF so the finding is never produced (order §2b, §4).
+
 ## If you catch yourself about to skip it
 
 Say so to him, plainly, and say why. A skipped check he agreed to is a decision; a skipped check he

@@ -2,7 +2,7 @@ import { DAYS } from '../engine/data'
 import { INPUTS, inpId } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { keyDay } from '../engine/keys'
-import { slotVal, setSlotVal, fillSlot, armTargetExists } from '../engine/slots'
+import { slotVal, setSlotVal, fillSlot, armTargetExists, sentinelSeatOK } from '../engine/slots'
 import { popReorderedDay } from '../engine/reorder'
 import { slotBar, personCount } from '../engine/avail'
 import { validate, WARN, officialWarn } from '../engine/validate'
@@ -828,7 +828,24 @@ export function warnFocusMap(){
   /* a focused warning always owns the highlight, even inside a person focus —
      the box stays narrowed to the clicked person, the lighting follows the
      warning's whole crew */
-  if(WFOCUS){const m=new Map();m.set(WFOCUS.di,{ids:new Set(WFOCUS.ids),sev:WFOCUS.sev});
+  /* A FOCUS THAT HAS OUTLIVED ITS WARNING LETS GO (22 Sep 26, the follow-up code
+     read). This returned a map for WFOCUS without ever asking whether the warning
+     was still there — so fixing the fault while it was focused left the whole
+     week dimmed with NOTHING lit and nothing on screen saying why. Measured on
+     the board: lit 2 → 0, dimmed 80 → 80, warning gone from the list.
+     The shape was always reachable — any warning can be repaired while focused —
+     but D49's nought-minute line made it the natural path, because the gesture
+     that shows you the fault is one tap from the gesture that repairs it: do as
+     the warning asks and the screen dies.
+     Matched on the warning's CODE and KEY, never its index: `validate()` rebuilds
+     the list wholesale, so an index is a different warning a moment later. Every
+     setter carries both (ui/interactions.ts). A day-spanning warning has no key
+     and compares '' to '', which is right — its code is enough to find it. */
+  if(WFOCUS){
+    const g=displayedByDay(WFOCUS.di), ws=(g&&g.warns)||[]
+    const live=ws.some((w:any)=>w.code===WFOCUS.code&&String(w.key||'')===String(WFOCUS.key||''))
+    if(!live)return null
+    const m=new Map();m.set(WFOCUS.di,{ids:new Set(WFOCUS.ids),sev:WFOCUS.sev});
     return {map:m,echo:new Set(WFOCUS.ids),sev:WFOCUS.sev};}
   if(PFOCUS)return null;          // a clicked puck alone uses the ordinary selection highlight
   if(!DWOPEN.size)return null;
@@ -905,6 +922,15 @@ export function placeArmed(id:any){
      slot arms (13 Aug 26) — tap the placeholder in the slot, then tap the
      same placeholder on the palette's row. */
   if(!/\.\+$/.test(key)&&slotVal(base)===id){toast(`${PEOPLE[id].cs} — already in that seat`);return false;}
+  /* THE SECOND REFUSAL, AND THE ONLY HARD ONE (D33, 22 Sep 26;
+     [OIL-SEATS-CAN-EARN] step 2). Asked BEFORE the write, not after it: a
+     placeholder that plants and is then warned about has already drawn the jet
+     as crewed with nobody on it, and `isSpecial` keeps it out of every
+     validation path, so the warning the plant-then-warn rule promises would
+     never come. The seat stays ARMED — a refusal is not a completed placement,
+     and making the scheduler re-arm the seat to try a real man would charge him
+     for the app's own rule. */
+  if(!sentinelSeatOK(base,id)){toast(`${PEOPLE[id].cs} — ${slotBar(id,base)}`,'warn');return false;}
   /* A DARKENED NAME PLANTS TOO (owner, 13 Aug 26 — "everything plants,
      warning after"). The tap used to refuse where a drag warned-and-allowed,
      so the two ways of planting the same man disagreed. The reason is on the

@@ -7,7 +7,7 @@ import { INPUTS, inputCoversDate, inpById, inpTimeText, inpId, inpLabel, inpMeta
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { waveInTime } from '../engine/events'
-import { WARN, validate, WCODE, wlbl } from '../engine/validate'
+import { WARN, validate, WCODE, wlbl, fltNoLen, FLT_NO_LEN_SAYS } from '../engine/validate'
 import { hhmm, fmtHM, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr, unacceptInput, TIME_TXT } from '../engine/slots'
@@ -18,7 +18,7 @@ import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod } from './html'
+import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap } from './html'
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
@@ -31,8 +31,9 @@ import { esc } from '../state/view'
 import { notify, notifyBoard, loadWeek } from '../state/store'
 import { CURWEEK } from '../engine/waves'
 import { shiftWeek } from './weeknav'
-import { oilModeOn, dayBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilItemOn, oilItemCellHTML, oilSentinelList } from './oilmode'
+import { oilModeOn, dayBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilItemMasked, oilItemCellHTML, oilSentinelList } from './oilmode'
 import { rowItemKey } from '../engine/oil'
+import { oilReadPass } from '../engine/oilev'
 import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbSansPanel, sbUnavailPanel, labelToTitle, titleToLabel, titleToKind, sbGrip, sbNudge, rowMove, sbSortBtn, boxHTML } from './board-html'
 
 const toast = (...a: any[]) => HOOKS.toast(...a)
@@ -42,7 +43,16 @@ const afterSchedMutate = () => view.afterSchedMutate()
    read-only markup throughout, and no sign-off bar — the frozen record's
    signatures live on the AL record; live sign selects against an old day
    would invite edits against the wrong document. */
-export function boardHTML(di: number, pv?: boolean) {
+/* THE ONE READ-ONLY PASS PER DAY ([OIL-SEATS-CAN-EARN] §5 step 1). From step 1
+   the OIL item guard reads the day's whole evidence block instead of an O(1)
+   property, and from step 9 the count is asked on every seat on every repaint —
+   so a builder that asked per row and per puck would rebuild the block dozens of
+   times for one day (Fable R2-7, S4; docs/performance.md Part 1). The builder is
+   a pure string producer, which is exactly the shape the pass requires: nothing
+   inside it writes DAYS, INPUTS or PEOPLE, so the memo cannot serve a stale
+   answer to validation, signing or publication — none of which run in here. */
+export function boardHTML(di: number, pv?: boolean) { return oilReadPass(() => boardHTMLBody(di, pv)) }
+function boardHTMLBody(di: number, pv?: boolean) {
   /* a QUARANTINED loaded week is read-only and its days are the seed placeholder;
      the board is a third surface that reached the ordinary builder and painted the
      seed as the schedule, with no quarantine indication (Q2R-06). Surface the same
@@ -183,6 +193,23 @@ export function boardHTML(di: number, pv?: boolean) {
          optional ghost never changes this row's grid-item count — see the
          mobile column notes in scheduler.css. */
       const brief = minus(f.to, VCONF.briefLead)
+      /* D49's MARK, ON THE LINE (owner, 22 Sep 26; the walk's rules-sweep FAIL
+         3) — the board's half of the same change as the week's (ui/html.ts).
+         A line typed with the same take-off and landing still earns; what was
+         missing is that the two boxes never said one of them must be wrong, so
+         the only place it showed was the list on the right. `fltNoLen` is the
+         engine's one body for the rule, shared with the warning itself, so a
+         marked box and a raised warning can never disagree. `data-warnkey` is
+         what the warning's own key resolves to when it is tapped
+         (highlights.ts anchorEl) — before this the tap moved nothing at all. */
+      const noLen = fltNoLen(f)
+      const badCls = noLen ? ' badtm' : ''
+      const badAtt = noLen
+        /* the ADDRESS only on live paper, like the week's (ui/html.ts): a
+           frozen version preview keeps the MARK — the line went out that way —
+           but answers to no live warning. */
+        ? `${pv ? '' : ` data-warnkey="${fp}.ld"`} title="${esc((f.cs || w.label || 'A flying line') + ' ' + FLT_NO_LEN_SAYS(parseHM(f.to), sa))}"`
+        : ''
       /* stoRO, not !pv (reviewer-found residual, 9 Aug 26): the ghost is a
          SEPARATE clickable element from the .tm brief input right next to
          it (interactions.ts's routeClick, data-bacc branch) — disabling
@@ -251,8 +278,8 @@ export function boardHTML(di: number, pv?: boolean) {
           : boxHTML('lin', `data-bfld="${fp}.cs"${alAttr(`${fp}.cs`)}${dis}${oilModeOn(di) ? ' title="Part of the line above — its OIL switch is on the first row"' : ''}`, f.cs, '')}
         ${boxHTML('msn', `data-bfld="${fp}.msn"${alAttr(`${fp}.msn`)}${dis}`, f.msn, '')}
         <div class="sb-bcell">${brSug}<input class="tm" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis} value="${esc(fmtHM(f.br))}"></div>
-        <input class="tm" data-bfld="${fp}.to"${alAttr(`${fp}.to`)}${dis} value="${esc(fmtHM(f.to))}">
-        <input class="tm" data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)}${dis} value="${esc(fmtHM(f.ld))}">
+        <input class="tm${badCls}"${badAtt} data-bfld="${fp}.to"${alAttr(`${fp}.to`)}${dis} value="${esc(fmtHM(f.to))}">
+        <input class="tm${badCls}"${badAtt} data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)}${dis} value="${esc(fmtHM(f.ld))}">
         <div class="sb-seatpair">${sbSlot(di, key + '.p', 'p', a.p, stoRO)}${sbSlot(di, key + '.w', 'w', a.w, stoRO)}</div>
         <div class="sb-rcell"${alAttr(`st:${key}`)}>
           ${sa ? saRoleHTML(key, a, !stoRO) : ''}
@@ -1233,7 +1260,7 @@ export function boardArmClick(e: MouseEvent) {
        the decision the mask was hiding (Astra + Fable, 21 Sep 26). The item's own
        switch has always refused a tap under the blanket; the person's puck did
        not. Say which mask is on, so the way to change it is obvious. */
-    if (!oilItemOn(di, item)) {
+    if (oilItemMasked(di, item)) {
       e.stopPropagation()
       return toast(oilBlanketOn(di)
         ? 'Nothing on this day earns — turn that off first'
@@ -1247,12 +1274,30 @@ export function boardArmClick(e: MouseEvent) {
   /* the sentinel's count chip: who is behind this puck, and what each of them
      earns (§7.6 / §2.7). Read-only, so it works outside the mode too — on the
      issued schedule it lists the FROZEN membership, which is the whole reason
-     that membership is frozen. The SHAPE of this list is not yet ruled: the
-     owner asked for hover on a desktop and "something equivalent on the phone",
-     and one tap target that behaves the same on both is the cheapest honest
-     answer until he picks one. */
+     that membership is frozen.
+
+     THE SHAPE OF THIS LIST IS NOW RULED, AND THIS IS NOT IT (D38-D41, 22 Sep 26
+     - the comment above used to say "not yet ruled", which was true when it was
+     written and stale within the day). The bubble of names is REPLACED by a
+     movable, resizable, non-blocking window of real pucks - pilots left, WSOs
+     right, carrying the app's own warning flags, clickable - and the SAME window
+     serves both counters: who is available behind a placeholder, and who is
+     credited OIL, where individual pucks are switched off. The mock-up at
+     docs/mock/allavail-window.html is the approved design of record. It is filed
+     as [ALL-AVAIL-WINDOW], job 2 in OUTSTANDING.md, straight after this one,
+     because it opens FROM the counters this job builds. Until then the toast
+     below stands in for it - a placeholder, not a design. */
   const osn = t.closest('[data-oilsent]') as HTMLElement | null
-  if (osn) { e.stopPropagation(); return toast(oilSentinelList(+(osn.dataset.oilday || -1), osn.dataset.oilsent || '')) }
+  /* THE VERSION THE CHIP WAS DRAWN IN ([OIL-SEATS-CAN-EARN] step 9, Codex
+     OSE-R2-05). The snapshot is installed only while the page is being built,
+     so by the time this tap happens the live day is back in place — reading it
+     here would list whoever is free NOW under a number that was frozen when the
+     day went out. Empty means the chip came from the working copy. */
+  if (osn) {
+    e.stopPropagation()
+    const di = +(osn.dataset.oilday || -1), it = osn.dataset.oilsent || '', ver = osn.dataset.oilver || ''
+    return toast(ver ? withDaySnap(di, ver, () => oilSentinelList(di, it)) : oilSentinelList(di, it))
+  }
   const oit = t.closest('[data-oilitem]') as HTMLElement | null
   if (oit) {
     const di = +(oit.dataset.oilday || -1), item = oit.dataset.oilitem || ''

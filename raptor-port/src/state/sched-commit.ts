@@ -371,6 +371,11 @@ export const SCHED_TYPES = {
   sign: 'sched.sign',
   signClear: 'sched.signClear',
   warnMute: 'sched.warnMute',
+  /* [OIL-SEATS-CAN-EARN] step 11 / [OIL-UNDO-WORDS]. An OIL decision rode the
+     `mutate` backstop, so undo called it "a change to the schedule" — inside a
+     mode that exists precisely because the schedule must NOT move while OIL is
+     being decided. Its own type is what lets the undo bubble name it. */
+  oil: 'sched.oil',
   draftRename: 'sched.draft.rename',
   draftDelete: 'sched.draft.delete',
 } as const

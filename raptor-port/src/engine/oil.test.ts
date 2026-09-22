@@ -74,17 +74,23 @@ describe('dayOilWork — each span carries its kind', () => {
     expect(dayOilSpans(d).rocky).toEqual([[480, 840]])
   })
   it('the Ground and Common Programme are Duty, ALL pucks included', () => {
+    /* the Common Programme row carries a `rid` because a row holding a
+       PLACEHOLDER now needs one: the day's frozen membership is written per
+       item, so a row with no id has nowhere to record who it stood for and
+       gathers nobody ([OIL-SEATS-CAN-EARN] step 5, engine/oilexpand.test.ts).
+       Every real row is minted one; only a hand-built blob like this can lack
+       it. The assertion below is untouched. */
     const d = day([], [], {
       ground: [{ prog: 'G', str: '0800', end: '1000', who: 'plasma' }],
-      allhands: [{ prog: 'Brief', str: '1000', end: '1100', who: 'all' }],
+      allhands: [{ prog: 'Brief', rid: 'a1', str: '1000', end: '1100', who: 'all' }],
     })
     const w = dayOilWork(d, { expandAll: () => ['rocky'] })
     expect(w.plasma.map(x => x.src)).toEqual(['Duty'])
     expect(w.rocky.map(x => x.src)).toEqual(['Duty'])
   })
   it('oilWorkWhy joins the distinct kinds in first-seen order', () => {
-    expect(oilWorkWhy([{ s: 0, e: 1, src: 'FLT' }, { s: 1, e: 2, src: 'SIM' }, { s: 2, e: 3, src: 'FLT' }])).toBe('FLT + SIM')
-    expect(oilWorkWhy([{ s: 0, e: 1, src: 'Duty' }])).toBe('Duty')
+    expect(oilWorkWhy([{ s: 0, e: 1, src: 'FLT', dflt: true }, { s: 1, e: 2, src: 'SIM', dflt: true }, { s: 2, e: 3, src: 'FLT', dflt: true }])).toBe('FLT + SIM')
+    expect(oilWorkWhy([{ s: 0, e: 1, src: 'Duty', dflt: true }])).toBe('Duty')
   })
 })
 
@@ -102,9 +108,21 @@ describe('dayOilCredits — who earns what from one day blob', () => {
     expect(dayOilCredits(d)).toEqual({ plasma: 0.5 })
   })
 
-  it('an SC SPARE earns nothing — he is standing by at home', () => {
+  /* UPDATED 22 Sep 26 — D24, and the rule it pins is UNCHANGED. These kinds used
+     to be skipped before the OIL walk saw them at all, so "earns nothing" could
+     be proved by their simple absence from the raw walk. D24 makes them reach
+     the walk carrying a default of OFF, so the switch can be offered (D32) and
+     an admin can credit a line that really was work. The assertion therefore
+     moves from ABSENCE to the DEFAULT, which is where the rule now lives — and
+     it is stronger for it: absence could not tell "exempt" from "the walk is
+     broken", and the default plus its control can. The MONEY is unchanged:
+     nothing here is paid unless somebody says so. */
+  it('an SC SPARE earns nothing by default — he is standing by at home', () => {
     const d = day([scWave(shift('07:00', '19:00', [main('plasma'), spare('rocky')]))])
-    expect(dayOilCredits(d)).toEqual({ plasma: 1 })
+    const w = dayOilWork(d, { expandAll: () => [] })
+    expect(w.rocky, 'the spare reaches the walk now, so his line can offer a switch').toBeTruthy()
+    expect(w.rocky.every((x: any) => x.dflt === false), 'and earns nothing by default').toBe(true)
+    expect(w.plasma.every((x: any) => x.dflt === true), 'THE CONTROL: the MAIN is untouched').toBe(true)
   })
 
   it('standing both halves pools to a full day', () => {
@@ -127,12 +145,15 @@ describe('dayOilCredits — who earns what from one day blob', () => {
     expect(dayOilCredits(two)).toEqual({ plasma: 1 })
   })
 
-  it('AVALON and BB earn nothing — seats AND the desks they bring', () => {
+  it('AVALON and BB earn nothing by default — seats AND the desks they bring', () => {
     const av = { label: 'AVALON', kind: 'avalon', standalone: true, noconf: true,
       formations: [shift('07:00', '19:00', [main('plasma')])] }
     const desk = { label: 'AVALON duties', sa: 'avalon', rows: [duty('rocky', '0700', '1900')] }
     const d = { waves: [av], dutywaves: [desk], sims: { amt: [], oft: [] }, ground: [], allhands: [] }
-    expect(dayOilCredits(d)).toEqual({})
+    const w = dayOilWork(d, { expandAll: () => [] })
+    expect(Object.keys(w).sort(), 'both reach the walk now').toEqual(['plasma', 'rocky'])
+    expect(w.plasma.every((x: any) => x.dflt === false), 'the AVALON seat earns nothing by default').toBe(true)
+    expect(w.rocky.every((x: any) => x.dflt === false), 'and neither does its desk').toBe(true)
   })
 
   /* The test above hand-builds a desk with sa:'avalon' — so it pins the ENGINE
@@ -153,7 +174,9 @@ describe('dayOilCredits — who earns what from one day blob', () => {
     const avBlk = man('rocky', blockFromTpl(avTpl!.id))
     expect(avBlk.sa).toBe('avalon')                      // the mint stamped the wave
     expect(avBlk.noconf).toBe(true)
-    expect(dayOilCredits({ waves: [], dutywaves: [avBlk], sims: { amt: [], oft: [] }, ground: [], allhands: [] })).toEqual({})
+    const avWork = dayOilWork({ waves: [], dutywaves: [avBlk], sims: { amt: [], oft: [] }, ground: [], allhands: [] }, { expandAll: () => [] })
+    expect(avWork.rocky, 'the minted AVALON desk reaches the walk').toBeTruthy()
+    expect(avWork.rocky.every((x: any) => x.dflt === false), 'and earns nothing by default — same seat, one answer (D35)').toBe(true)
 
     const plainTpl = tplNamed(null)
     expect(plainTpl, 'a wave-less duty template must exist as the control').toBeTruthy()
@@ -205,8 +228,10 @@ describe('dayOilCredits — who earns what from one day blob', () => {
   })
 
   it('an ALL / ALL AVAIL sentinel on a programme or ground row expands via the resolver, or drops without one', () => {
-    const d = day([], [], { allhands: [{ prog: 'All hands', str: '0800', end: '1200', who: 'all' }],
-      ground: [{ prog: 'Sweep', str: '1300', end: '1400', who: 'allavail' }] })
+    /* both rows carry a `rid` for the reason above: a placeholder only gathers
+       people on a row that has an address to freeze them under */
+    const d = day([], [], { allhands: [{ prog: 'All hands', rid: 'a1', str: '0800', end: '1200', who: 'all' }],
+      ground: [{ prog: 'Sweep', rid: 'g1', str: '1300', end: '1400', who: 'allavail' }] })
     expect(dayOilCredits(d)).toEqual({})               // no resolver: sentinel drops, as ever
     const seen: any[] = []
     const credits = dayOilCredits(d, { expandAll: (win) => { seen.push(win); return ['plasma'] } })

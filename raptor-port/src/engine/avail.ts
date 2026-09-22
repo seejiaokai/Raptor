@@ -6,7 +6,7 @@ import { SHIFT_HARD, VCONF } from './rules'
 import { isStandalone, scSpare, saExempt, saExemptKind } from './waves'
 import { WARN, restClear, dayEvents, crossDayIfPlaced } from './validate'
 import { waveWindows, inpShow, shiftEvHard, seatIntime, scSeatHit, avSeatHit } from './events'
-import { whoArr, rowRef, XKEY } from './slots'
+import { whoArr, rowRef, XKEY, sentinelSeatOK, SENTINEL_JET_BAR } from './slots'
 import { keyDay } from './keys'
 /* busy windows [s,e] for one person on a day (fly/duty/sim/ground) */
 export function personBusy(d:any,id:any){
@@ -310,7 +310,13 @@ export function sansGate(id:any,dt:any,domain:any,s:any,e:any):any{
    moved cannot break its own crew rest), so the hover reason describes the
    schedule AFTER the move, not before. Omitted by every other caller. */
 export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
-  const p=PEOPLE[id]; if(!p||p.special)return '';
+  const p=PEOPLE[id]; if(!p)return '';
+  /* THE ONE HARD REFUSAL (D33). A placeholder is silent on every seat it is
+     allowed on — it is not a person and no rule measures it — but on a jet it
+     is refused, and the refusal has to SAY SO here, because this is the body the
+     drag ghost, the drop message and the palette's struck-out row all read. One
+     string, one source: ui cannot spell it differently. */
+  if(p.special)return sentinelSeatOK(key,id)?'':SENTINEL_JET_BAR;
   const r=rules||slotRules(key);
   /* an ⓘ info-only row raises nothing after planting (it never enters the event
      stream), so the picker must raise nothing before it — the standing rule that

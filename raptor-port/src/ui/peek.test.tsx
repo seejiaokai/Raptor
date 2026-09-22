@@ -169,3 +169,34 @@ describe('1C — sim who is free text in the peek preview', () => {
     expect(html).not.toContain('Ranger')       // never resolved to the callsign puck
   })
 })
+
+/* D49'S MARK REACHES THE PEEK — found by the roll-call written with the fix
+   (docs/handpass/2026-09-22-oil-seats.md §2), not by the walk itself.
+   This file has its OWN copy of the week's flying-line markup, deliberately: it
+   must never read the live DAYS/SCHED. That is also why a mark added to
+   `ui/html.ts` does not arrive here on its own, and why a line whose take-off
+   and landing are the same minute would print here as an ordinary one — on the
+   only surface that shows next week. The predicate is the engine's, shared with
+   the warning and the two live surfaces, so the four cannot drift. */
+describe('a nought-minute flying line is marked in the peek too (D49)', () => {
+  const flyDay = (to: string, ld: string, crew = 'bane'): any => ({
+    dt: '13/07/2026', notes: [], sims: { amt: [], oft: [] }, dutywaves: [], ground: [], allhands: [],
+    waves: [{ label: 'WAVE 1', formations: [{ cs: 'RAP 1', msn: 'X', to, ld, aircraft: [{ p: crew, w: '' }] }] }],
+  })
+  const marks = (html: string) => { const d = document.createElement('div'); d.innerHTML = html; return [...d.querySelectorAll('.badtm')] }
+
+  it('both time cells wear the mark, and say why where they sit', () => {
+    const m = marks(peekDayHTML(flyDay('10:00', '10:00'), 0, false))
+    expect(m.length, 'the take-off cell and the landing cell').toBe(2)
+    for (const x of m) expect(x.getAttribute('title') || '').toMatch(/same time|one of the two/i)
+  })
+
+  it('THE CONTROL: an ordinary line, an overnight line and a line with no times are untouched', () => {
+    for (const [to, ld] of [['09:00', '11:00'], ['23:00', '01:00'], ['', '']])
+      expect(marks(peekDayHTML(flyDay(to, ld), 0, false)).length, `${to || 'blank'}–${ld || 'blank'}`).toBe(0)
+  })
+
+  it('a line NOBODY is on is not marked — the mark follows the warning exactly', () => {
+    expect(marks(peekDayHTML(flyDay('10:00', '10:00', ''), 0, false)).length).toBe(0)
+  })
+})

@@ -1087,7 +1087,15 @@ describe('board lifecycle', () => {
     expect(view.armedKey(), 'the hole arms like any empty seat').toBe('s:0.amt.1.pax.1')
     await act(async () => { view.armDrop(); setSlotVal('s:0.amt.1.pax.1', 'drill'); afterSchedMutate() })
     expect(slotVal('s:0.amt.1.pax.1')).toBe('drill')
-    expect($$('#sbBoard .sb-slot.empty.pax').length, 'the hole is gone once refilled').toBe(0)
+    /* NARROWED 22 Sep 26 (D50 — a sim row always shows one spare seat, even when
+       it is full). This counted every empty pax slot on the WHOLE board, which
+       was a fair proxy for "this hole is gone" only while a full sim row drew no
+       spare at all. It now draws one on purpose, so the board-wide count is no
+       longer zero and the proxy would fail on a deliberate behaviour — which is
+       pinned by its own file, ui/simspare.test.tsx. The assertion is put back on
+       the thing the sentence names: THIS index no longer holds a hole. */
+    expect($(`#sbBoard .sb-slot.empty.pax[data-slot="s:0.amt.1.pax.1"]`),
+      'the hole is gone once refilled').toBeFalsy()
     await act(async () => { const { closeScheduler } = await import('./board'); closeScheduler(); notify() })
   })
 

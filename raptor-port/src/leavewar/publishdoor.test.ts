@@ -165,7 +165,7 @@ describe('publishing a weekend nobody earns OIL for', () => {
     expect(spoke).toBeTruthy()
     expect(spoke).toContain('Saturday 18 Jul')
     expect(spoke).toContain('SDO')
-    expect(spoke).toContain('no start and end times')
+    expect(spoke).toContain('no usable times')
   })
 
   it('says NOTHING when the desks are properly timed — the seed Saturday earns', () => {
@@ -193,7 +193,7 @@ describe('publishing a weekend nobody earns OIL for', () => {
     wave.rows[0].str = ''; wave.rows[0].end = ''                              // and a desk is blank
     expect(setCell('plasma', SAT, 'LL')).toBe(true)                           // …on a live bid
     publish(5)
-    const spoke = said.find(m => m.includes('no start and end times'))
+    const spoke = said.find(m => m.includes('no usable times'))
     expect(spoke).toBeTruthy()
     expect(spoke).toContain('still live')
   })
@@ -210,7 +210,7 @@ describe('publishing a weekend nobody earns OIL for', () => {
     expect(spoke).toBeTruthy()
     expect(spoke).toContain('SDO')
     expect(spoke).not.toContain('SXO')
-    expect(spoke).toContain('no start and end times')
+    expect(spoke).toContain('no usable times')
   })
 })
 

@@ -1088,9 +1088,12 @@ function oilBlindLine(iso: string, day: any, spans: Record<string, OilWork[]>): 
   /* "the SDO desk has", but "the ground programme has" — the wrapper only fits
      a duty desk's bare role name (Fable, 21 Sep 26). */
   const desks = desk ? `the ${list} desk${blind.length > 1 ? 's' : ''} ${verb}` : `${list} ${verb}`
+  /* "no USABLE times", for the same reason as the day's own warning (the
+     follow-up code read, G1): a nought-minute standalone shift is on this list
+     and it HAS two times typed on it. */
   return earners
-    ? `${when}: ${desks} no start and end times, so nobody on ${blind.length > 1 ? 'them' : 'it'} earns OIL`
-    : `${when} earned nobody any OIL — ${desks} no start and end times`
+    ? `${when}: ${desks} no usable times, so nobody on ${blind.length > 1 ? 'them' : 'it'} earns OIL`
+    : `${when} earned nobody any OIL — ${desks} no usable times`
 }
 
 export function publishFlagsBids(di: number): void {

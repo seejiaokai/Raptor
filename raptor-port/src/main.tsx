@@ -75,6 +75,25 @@ async function boot(): Promise<void> {
   /* same order as before the seam: the boot sync's writes are the world the
      session STARTS in, and both history baselines are taken after it */
   wireLeaveWarSync()
+  /* AND AGAIN, BECAUSE THE WIRE IS WHAT TELLS THE ENGINE WHICH DAYS CAN EARN
+     (owner, 22 Sep 26 — "could it be a real problem", of the speed check). It
+     was, and it was not a speed problem. `wireLeaveWarSync` → `installAbsenceDoor`
+     installs `oilEarningDay`, `oilDayISO`, `oilSentinel` and `oilNoPeriod`;
+     until it runs they are the inert defaults, so `oilWouldEarn` answers FALSE
+     for every weekend and the two advisories that depend on it —
+     OIL_UNPUBLISHED ("this day is not published yet, so nobody earns their OIL
+     for it", the warning the owner asked for on 20 Sep 26) and OIL_NO_PERIOD —
+     are absent from the first paint. They appeared the moment anything else was
+     edited, because that revalidate found the hooks: two untouched weekend days
+     growing a warning box out of a weekday edit, which is exactly what the speed
+     gate's "a day-1 edit rewrites only day 1" check was reporting.
+     It reaches the squadron as the failure that warning exists to prevent — a
+     weekend earning nobody anything and saying nothing about it.
+     This is the SAME fault as the validate above, one layer out: that one was
+     added when the demo world's inputs landed after the warnings were computed.
+     Warnings are derived state, so re-deriving is cheap and idempotent, and both
+     history baselines are still taken after it. */
+  validate()
   histInit()
   lwHistInit()
 

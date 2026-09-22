@@ -687,7 +687,10 @@ describe('a weekend duty desk with no times warns on the day itself', () => {
        the wider claim could be false. It says the part it can stand behind —
        the publish message, which does know, still uses the owner's own words
        when the day truly earns nobody anything. */
-    expect(w[0].msg).toBe('SDO has no times — nobody on it earns OIL for this day')
+    /* "no USABLE times" since 22 Sep 26 (the follow-up code read, G1): a
+       nought-minute standalone shift joined this list and HAS two times typed
+       on it, so "no times" would be false in front of the scheduler. */
+    expect(w[0].msg).toBe('SDO has no usable times — nobody on it earns OIL for this day')
     expect(w[0].sev).toBe('hard')
   })
 
@@ -711,7 +714,7 @@ describe('a weekend duty desk with no times warns on the day itself', () => {
     blank(5)
     const w = warnsOn(5)
     expect(w).toHaveLength(1)
-    expect(w[0].msg).toBe('SDO and SXO have no times — nobody on them earns OIL for this day')
+    expect(w[0].msg).toBe('SDO and SXO have no usable times — nobody on them earns OIL for this day')
   })
 })
 

@@ -1,13 +1,22 @@
-# HANDOFF — the OIL walk is done, the branch is READY AND UNMERGED (22 Sep 26)
+# HANDOFF — the OIL walk is done and the branch is **MERGED** (22 Sep 26)
+
+> **CLOSED OUT 22 Sep 26.** He gave **"merge live"** and **WAIVED his five-minute look** (D34).
+> `[OIL-AUTO-REMOVE]` is on `main` as squash commit `a2d0853`, every check green on the merged head.
+> **Nobody eyeballed the walked Saturday** — the evidence is the walk and the gates.
+> He then ruled on the open question and three more: **D31–D35**, all in `DECISIONS.md`.
+> **The next job's plan is written:**
+> `raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-can-earn-plan.md` — read that, not §2 below,
+> which is now the background rather than the instruction. Everything else here still holds,
+> especially §5's driver traps.
 
 **Read this file first, then nothing else until you reach "What to read next".**
 
 Branch **`claude/oil-auto-remove-design`**, PR **#424**, **63 commits ahead of `main`, mergeable,
 no conflicts, every CI check green**. Working tree clean, everything pushed.
 
-**IT IS NOT MERGED, AND THAT IS DELIBERATE.** Two things are outstanding and both are the owner's:
-his five-minute look on the walked Saturday, and his explicit **"merge live"**. He was asked; he
-chose to hand off to a fresh chat instead. Do not merge without that phrase.
+**MERGED 22 Sep 26** on his "merge live", with his five-minute look waived (D34). The paragraph that
+stood here said it was deliberately unmerged and must not be merged without that phrase; the phrase
+was given. Kept, corrected rather than deleted, so the record shows what the condition WAS.
 
 Preview (his surface, not yours — it sits behind Vercel SSO):
 `https://raptor-git-claude-oil-auto-remove-design-kai-e2f5.vercel.app`

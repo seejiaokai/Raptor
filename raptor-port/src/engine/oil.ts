@@ -53,9 +53,15 @@ import { whoArr } from './slots'
      everyone available for that window (aircrew minus SANS, the owner's
      28 Aug 26 pick, resolved by the caller). Without a resolver the
      sentinel simply drops, as it always did.
-   NOT earning, deliberately:
+   NOT earning BY DEFAULT, but reachable and switchable (D24/D35, 22 Sep 26 —
+   [OIL-SEATS-CAN-EARN] step 4; they used to be skipped before this walk saw
+   them at all, so no switch could be drawn and no decision could exist):
    - An SC SPARE — standing by at home, reachable but not at work.
-   - AVALON and BB — the whole wave AND the desk block it brings (`dw.sa`).
+   - AVALON and BB — the whole wave AND the desk block it brings (`dw.sa`),
+     including a block MINTED from an AVALON template (D35).
+   Each arrives with `dflt:false`; an item mark of `1`, or an `allow` on one
+   man, is what credits it.
+   NOT earning, deliberately, and nothing switches these on:
    - A cancelled structure at any level (cx) — a duty that did not stand.
    - A row with no readable times: the owner's rule is "based on what timing
      was written", and inventing openEnd/simLen defaults here would mint
@@ -97,7 +103,20 @@ export type OilWorkSrc='FLT'|'SIM'|'Duty';
    what SURVIVES an ordinary member edit: an input-derived row by the INPUT's own
    id, a hand-built row by its `rid`. `via` says which half of the evidence
    produced it — the schedule, or a duty-and-commitments claim. */
-export interface OilWork{s:number;e:number;src:OilWorkSrc;item?:string;via?:'schedule'|'input'}
+/* `dflt` is THE SEAT'S OWN ANSWER before anyone decides anything: does this
+   piece of work earn by default? It rides the SPAN and not the item because one
+   `item` is stamped per ROW and every occupant takes it — a duty row's named man
+   and an ALL AVAIL in its extras share one address, and an SC formation's MAIN
+   and SPARE seats share one address. An item-level default would therefore have
+   to answer for both at once, which is exactly the finding Codex OSE-01 and
+   Fable M3 reached from opposite directions. The span is the only thing that is
+   not shared.
+
+   EVERYTHING IS `true` UNTIL THE FOUR EXEMPT KINDS ARRIVE (D28: nothing earns
+   less than it does today). The kinds that will carry `false` — an SC SPARE
+   seat, an AVALON or BB line, an AVALON desk — are still skipped before this
+   walk reaches them; step 4 lifts those skips and they arrive already off. */
+export interface OilWork{s:number;e:number;src:OilWorkSrc;item?:string;dflt:boolean;via?:'schedule'|'input'}
 /* THE ITEM ADDRESS GRAMMAR, in one place so the walk below, the evidence block
    and the board's OIL mode can never spell it differently. A row with no rid
    yet has NO item address: it cannot be marked individually (the day blanket
@@ -110,9 +129,12 @@ export const groundItemKey=(g:any)=>(g&&g.src)?inputItemKey(g.src):rowItemKey(g&
 
 /* every person's work for one day blob, each span tagged with its kind:
    id -> {s,e,src}[]. The envelope of a person's spans is the day's measure.
-   opts.expandAll resolves a sentinel puck (ALL / ALL AVAIL) on a ground or
-   Common Programme row into the people it stands for at that window. */
-export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:string)=>string[];onItem?:(item:string)=>void}){
+   opts.expandAll resolves a sentinel puck (ALL / ALL AVAIL) into the people it
+   stands for at that window. It is asked on every seat a placeholder may sit
+   on — ground rows, duty desks, sim seats and passengers, the Common Programme,
+   and every extras line — but NEVER on a flying line's cockpit, and never for a
+   row that has no id yet (see `putAny`). */
+export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:string)=>string[];onItem?:(item:string,dflt:boolean)=>void}){
   const out:Record<string,OilWork[]>={};
   /* EVERY ROW THIS WALK REACHES WITH REAL TIMES, whether or not anybody is
      sitting on it (21 Sep 26). The mode needs to know which events CAN earn so
@@ -120,30 +142,74 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
      desk, an SC spare, a cancelled or ⓘ row, a desk with no times. Reported
      from THIS walk rather than from a second rulebook, so the switch and the
      money can never disagree about what is capable of earning. */
-  const reach=(it:string)=>{ if(opts&&opts.onItem)opts.onItem(it); };
+  /* THE ROW'S OWN ANSWER TRAVELS WITH IT (walk, 22 Sep 26). `reach` used to
+     report only that a row CAN earn, so an EMPTY exempt row — an AVALON RUNNER
+     with nobody on it — had nothing to say and the switch fell through to
+     "Earns OIL — tap to stop this item earning". Tapping that would have cost a
+     real amendment on a published day for a decision that moves no money, which
+     is the same fault step 2 fixed for rows that can never earn at all. The
+     default is decided once, here, in the walk that also decides the money, so
+     the two cannot drift. */
+  const reach=(it:string,dfl:boolean)=>{ if(opts&&opts.onItem)opts.onItem(it,dfl); };
   const rid=(v:any)=>{const id=whoId(v);return realP(id)?id:null;};
   let src:OilWorkSrc='Duty';
   /* the item each span is being collected for — set at the top of every row so
      a span can never be tagged with its neighbour's address */
   let item='';
-  const put=(v:any,win:[number,number]|null)=>{if(!win)return;const id=rid(v);if(id)(out[id]=out[id]||[]).push({s:win[0],e:win[1],src,item,via:'schedule'});};
+  /* and the seat's own default, set beside it for the same reason. A placeholder
+     expands through `put` like any other body, so the crowd INHERITS the seat's
+     answer rather than carrying one of its own — which is D43 in one line. */
+  let dflt=true;
+  const put=(v:any,win:[number,number]|null)=>{if(!win)return;const id=rid(v);if(id)(out[id]=out[id]||[]).push({s:win[0],e:win[1],src,item,dflt,via:'schedule'});};
   const w2=(st:any,en:any):[number,number]|null=>{
     if(st==null||en==null)return null;
     if(en<st)en+=1440;
     return en>st?[st,en]:null;   // a zero-length row measures nothing and mints nothing
   };
-  /* a who value that names a sentinel (by id or callsign) expands or drops */
-  const putWho=(v:any,win:[number,number]|null,more?:any[])=>{
-    if(win){
-      const id=whoId(v);
-      if(id&&isSpecial(id)){ if(opts&&opts.expandAll)opts.expandAll(win,item).forEach((p:any)=>put(p,win)); }
-      else put(v,win);
+  /* A SEAT A PLACEHOLDER MAY SIT ON ([OIL-SEATS-CAN-EARN] step 5). A who value
+     naming ALL or ALL AVAIL (by id or callsign) stands for the people who would
+     attend, so it expands into them and each one is credited exactly as a typed
+     name is (D43). Anything else goes straight through.
+
+     THIS USED TO BE THE GROUND ROW'S AND THE COMMON PROGRAMME'S PRIMARY SEATS
+     ONLY, which is the owner's Sunday desk: he put ALL AVAIL on a duty desk,
+     published the day, and nobody earned a thing, because every other seat used
+     the bare `put` above and `put` drops anything that is not a person. Duty
+     desks, sim seats, sim passengers and every extras line now come through
+     here as well. The FLYING branch deliberately does not — see the belt below.
+
+     AN UNIDENTIFIED ROW GATHERS NOBODY. The day's frozen membership is written
+     per ITEM (`oilev.ts`: `if (item) sent[item] = people`), so a row with no id
+     yet has nowhere to record who it stood for: it would draw a crowd in the
+     mode and pay none of them through the evidence, the screen and the money
+     disagreeing about the same row. Every painted row is minted an id by the
+     mutation, load, publish and draft paths alike, so in practice this never
+     fires — it is the belt, and `oilexpand.test.ts` pins it. */
+  const putAny=(v:any,win:[number,number]|null)=>{
+    if(!win)return;
+    const id=whoId(v);
+    if(id&&isSpecial(id)){
+      if(!item)return;                                   // no address: nowhere to freeze the crowd
+      if(opts&&opts.expandAll)opts.expandAll(win,item).forEach((p:any)=>put(p,win));
+      return;
     }
-    (more||[]).forEach((m:any)=>put(m,win));
+    put(v,win);
+  };
+  /* a seat and the extras line under it, which answer the same way */
+  const putWho=(v:any,win:[number,number]|null,more?:any[])=>{
+    putAny(v,win);
+    (more||[]).forEach((m:any)=>putAny(m,win));
   };
   src='FLT';
   (day.waves||[]).forEach((wv:any)=>{
-    if(isStandalone(wv)&&wv.kind!=='sc')return;          // AVALON / BB seats never earn
+    /* THE EXEMPT KINDS NOW HAVE A DEFAULT INSTEAD OF AN ABSENCE (D24/D35,
+       [OIL-SEATS-CAN-EARN] step 3b). An AVALON or BB wave earns nothing BY
+       DEFAULT rather than being unable to earn at all, so the admin can switch
+       one on when it really was work. The skip a line below still keeps them out
+       of this walk entirely — step 4 removes it, and they then arrive already
+       carrying this answer rather than defaulting to yes and paying at once,
+       which is F1's silent money. */
+    const exemptWave=isStandalone(wv)&&wv.kind!=='sc';
     const sc=isStandalone(wv);
     (wv.formations||[]).forEach((f:any)=>{
       if(f.cx)return;
@@ -154,9 +220,29 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
                   :(st==null||en==null?null
                     :w2(st-VCONF.reportLead,(en<st?en+1440:en)+VCONF.debrief));
       if(!win)return;
-      if(!f.spare)reach(item);
+      /* A SPARE LINE IS CAPABLE NOW, so the switch is drawn on it (D24/D32:
+         wherever a puck may land the switch must be offered). It used to be
+         hidden here, which is why "SC SPARE offers the switch" had nowhere to
+         appear. A line with no readable times still reaches nothing — that is
+         D31, and it is the `win` test above, not this one. */
+      reach(item,!exemptWave&&!f.spare);
       (f.aircraft||[]).forEach((ac:any)=>{
-        if(ac.cx||f.spare||ac.spare)return;              // spares stand by, they do not work
+        if(ac.cx)return;                                 // a cancelled jet is not work, ever
+        /* BOTH SPARE FLAGS (Codex OSE-R2-02). The exclusion this replaces read
+           `f.spare||ac.spare`, and a saved SC formation can carry the
+           FORMATION-level flag with none on the aircraft row. Naming only the
+           aircraft one — which the first rewrite did — would default every
+           occupant of such a shift ON, and pay a spare shift that has never
+           been paid. */
+        dflt=!exemptWave&&!f.spare&&!ac.spare;
+        /* THE NON-EXPANDING BELT, and it is the bare `put` on purpose (D33/D36,
+           Fable M4.5). A placeholder is refused in a cockpit at every door, but
+           data can arrive by COPY — a captured day template or a parked plan
+           bypasses those doors — so the money keeps its own guard rather than
+           trusting the doors alone. And the window here is report→debrief, three
+           hours wider each side than availability: handing it to the expander
+           would gather the men the squadron deliberately schedules around an ops
+           brief (D36, plan §5a) and pay every one of them. */
         [ac.p,ac.w].forEach((v:any)=>put(v,win));
       });
     });
@@ -164,42 +250,52 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
   src='SIM';
   ['amt','oft'].forEach((k:any)=>((day.sims||{})[k]||[]).forEach((r:any)=>{
     if(r.cx)return;
-    item=rowItemKey(r.rid);
+    item=rowItemKey(r.rid); dflt=true;
     const win=w2(parseHM(r.str),parseHM(r.end));
     if(!win)return;
-    reach(item);
+    reach(item,true);
     /* the same id set events.ts rowIds enumerates: seats, pax, extras — sim who
        is free text (1C), never a person */
     [r.p,r.w].concat(r.pax||[]).concat(r.more||[])
-      .forEach((v:any)=>put(v,win));
+      .forEach((v:any)=>putAny(v,win));
   }));
   src='Duty';
   (day.dutywaves||[]).forEach((dw:any)=>{
-    if(dw&&saExemptKind(dw.sa))return;                   // the excluded waves' own desks
+    /* the desk an exempt wave brings with it (D35 — and it reaches a block
+       MINTED from an AVALON template too, because the mint stamps `sa` and this
+       reads `dw.sa`). Same shape as the wave above: a default, not an absence;
+       the skip is lifted at step 4. */
+    const exemptDuty=!!(dw&&saExemptKind(dw.sa));
     (dw.rows||[]).forEach((r:any)=>{
       if(r.cx)return;
-      item=rowItemKey(r.rid);
+      item=rowItemKey(r.rid); dflt=!exemptDuty;
       const win=w2(parseHM(r.str),parseHM(r.end));
       if(!win)return;
-      reach(item);
-      [r.id,...(r.more||[])].forEach((v:any)=>put(v,win));
+      reach(item,!exemptDuty);
+      [r.id,...(r.more||[])].forEach((v:any)=>putAny(v,win));
     });
   });
   (day.ground||[]).forEach((g:any)=>{
     if(g.cx||g.src)return;                               // src = an accepted input: the ask-flow's
     if(g.info)return;                                    // ⓘ info-only: shown, never worked — mints no OIL
-    item=groundItemKey(g);
-    { const gw=w2(parseHM(g.str),parseHM(g.end)); if(gw)reach(item); putWho(g.who,gw,g.more); }
+    item=groundItemKey(g); dflt=true;
+    { const gw=w2(parseHM(g.str),parseHM(g.end)); if(gw)reach(item,true); putWho(g.who,gw,g.more); }
   });
   (day.allhands||[]).forEach((x:any)=>{
     if(x.cx)return;
     if(x.info)return;                                    // ⓘ info-only: mints no OIL
-    item=rowItemKey(x.rid);
+    item=rowItemKey(x.rid); dflt=true;
     const win=w2(parseHM(x.str),parseHM(x.end));
     if(!win)return;
-    reach(item);
-    whoArr(x).forEach((v:any)=>putWho(v,win));
-    (x.more||[]).forEach((m:any)=>put(m,win));
+    reach(item,true);
+    /* the Common Programme's own extras array joins the rest. Nothing on screen
+       drops a puck there — its "extras" append to the `who` list beside it — but
+       the engine reads `more` as tasked work everywhere else (events.ts), and a
+       day that arrived by copy or import can carry one. Leaving it as the single
+       extras line that silently swallowed a placeholder would be a hole with no
+       reason behind it. */
+    whoArr(x).forEach((v:any)=>putAny(v,win));
+    (x.more||[]).forEach((m:any)=>putAny(m,win));
   });
   return out;
 }
@@ -245,8 +341,50 @@ export function dayOilBlind(day:any):string[]{
     return e>s;
   };
   const named=(vs:any[])=>vs.some((v:any)=>{const id=whoId(v);return !!id&&(realP(id)||isSpecial(id));});
+  /* A FLYING LINE WITH CREW ON IT AND NO READABLE TIMES ([OIL-SEATS-CAN-EARN]
+     step 8, as D49 left it). The duty desks below have been named here since
+     20 Sep 26, when the owner asked for the warning on the day itself; a flying
+     line was never added and it fails in exactly the same way — the day
+     publishes, no OIL appears, and no screen admits why.
+     A line whose take-off and landing are the SAME is deliberately NOT named
+     here. It still earns (D49 — the man reported and debriefed), so "nobody on
+     it earns OIL" would be false about it; the day says what is wrong with
+     THOSE times separately, as an advisory on the line.
+     A SHIFT IS THE OTHER WAY ROUND (22 Sep 26, the independent code read). A
+     STANDALONE wave — SC MAIN, SC SPARE, AVALON, BB — has no report and no
+     debrief: its window IS the written window, so typed 08:00–08:00 it measures
+     nothing and pays nobody, exactly like a desk with no times. D49 never
+     reached it (it is a ruling about a sortie), and on the wave the squadron
+     actually works at weekends this is precisely the silent-nothing the owner
+     asked to be warned about on 20 Sep 26. So it IS named. */
+  const readable=(st:any,en:any)=>parseHM(st)!=null&&parseHM(en)!=null;
+  const zeroShift=(wv:any,f:any)=>isStandalone(wv)&&parseHM(f.to)!=null&&parseHM(f.to)===parseHM(f.ld);
+  (day.waves||[]).forEach((wv:any)=>{
+    (wv.formations||[]).forEach((f:any)=>{
+      if(f.cx)return;
+      if(readable(f.to,f.ld)&&!zeroShift(wv,f))return;
+      const crew:any[]=[];
+      (f.aircraft||[]).forEach((ac:any)=>{if(!ac.cx){crew.push(ac.p);crew.push(ac.w);}});
+      if(!named(crew))return;
+      /* NAMED THE WAY THE WRAPPER EXPECTS (the follow-up code read, G1). A bare
+         name is wrapped as "the X desk has…", which fits a duty desk's role and
+         nothing else — the ground programme and the two sims already dodge it by
+         naming themselves "the ground programme", "the AMT sim", and that `the `
+         prefix IS `blindDesks`'s own test. A flying row named bare became "the
+         RAP 1 desk" in the publish message, and the nought-minute shift became
+         "the SC desk". It is a line, or a shift; say so. */
+      const nm=String(f.cs||wv.label||'');
+      add(nm?`the ${nm} ${isStandalone(wv)?'shift':'line'}`:(isStandalone(wv)?'a flying shift':'a flying line'));
+    });
+  });
   (day.dutywaves||[]).forEach((dw:any)=>{
-    if(dw&&saExemptKind(dw.sa))return;
+    /* THE FOURTH SKIP, LIFTED (plan C4 / Fable S2 — the plan counted three).
+       This is the one that makes an exempt desk SPEAK at publish. While AVALON
+       and BB could not earn at all, a desk of theirs carrying a man and no
+       written times was correctly silent: there was no money to miss. Now that
+       the admin can switch such a desk ON, a blank pair of times is the same
+       trap it is anywhere else — the day publishes, no OIL appears, and nothing
+       says why. Screen, not money: this names the desk, it does not pay it. */
     (dw.rows||[]).forEach((r:any)=>{
       if(r.cx)return;
       if(timed(r.str,r.end))return;
@@ -313,5 +451,16 @@ export function dayOilCredits(day:any,opts?:{expandAll?:(win:[number,number],ite
 export function oilCapableItems(day:any):Set<string>{
   const out=new Set<string>();
   dayOilWork(day,{expandAll:()=>[],onItem:(it:string)=>{if(it)out.add(it);}});
+  return out;
+}
+/** WHAT A MAN PUT ON THIS ROW WOULD GET, before anybody decides anything —
+ *  `item -> true | false`. The switch needs this for a row NOBODY is standing on
+ *  yet: counting the men there gives zero on and zero off, which used to fall
+ *  through to "earns", and on an exempt kind that is the screen telling the
+ *  admin something false about money. Same walk as `oilCapableItems` and the
+ *  money itself, so it cannot disagree with either. */
+export function oilItemDefaults(day:any):Map<string,boolean>{
+  const out=new Map<string,boolean>();
+  dayOilWork(day,{expandAll:()=>[],onItem:(it:string,dfl:boolean)=>{if(it&&!out.has(it))out.set(it,dfl);}});
   return out;
 }

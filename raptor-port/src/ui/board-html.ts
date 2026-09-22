@@ -10,7 +10,7 @@ import { alAttr } from '../engine/publish'
 import { groundOrder } from '../engine/order'
 import { esc, PIOPEN, notePub } from '../state/view'
 import { canEditSched } from '../state/auth'
-import { oilModeOn, oilSeatHTML, oilItemCellHTML, oilItemOfKey, oilRowPeople, inputItemKey } from './oilmode'
+import { oilModeOn, oilSeatHTML, oilItemCellHTML, oilItemOfKey, oilRowPeople, oilClaimWin, inputItemKey } from './oilmode'
 import { rowItemKey, groundItemKey } from '../engine/oil'
 import { oilSeatDeco } from './html'
 import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, dormRowCls, dormRowTitle, sansCardsHTML, notePubTog, ADDZ, exemptDeskOwn } from './html'
@@ -408,7 +408,15 @@ export function sbDutyPanel(d:any,di:any,pv?:any,ro?:any){
     (dwv.rows||[]).forEach((r:any,ri:any)=>{
       const base=`d:${di}.${wi}.${ri}`, t=`dr:${di}.${wi}.${ri}`;
       oilRow(rowItemKey(r.rid));
-      const inner=(PEOPLE[r.id]?sbSeat(di,base,r.id,ro):(r.id?`<span class="itxt">${esc(r.id)}</span>`:''))+sbMore(di,base,r,ro);
+      /* INSIDE THE MODE A DESK SHOWS THE PEOPLE IT PAYS ([OIL-SEATS-CAN-EARN]
+         step 7, register OIL8). A placeholder on the desk or under it opens into
+         the men it stands for, each with his own puck, so one can be taken off
+         the crowd; drawn as one inert body the row's whole switch was the only
+         door, all of them or none. Step 5 made this desk EARN — a crowd being
+         paid with no way to correct it is worse than one not paid at all. */
+      const inner=oilModeOn(di)
+        ? oilRowPeople(di,[r.id,...(r.more||[])],rowItemKey(r.rid),oilWin(r)).map((pid:any)=>sbSeat(di,base,pid,ro)).join('')
+        : (PEOPLE[r.id]?sbSeat(di,base,r.id,ro):(r.id?`<span class="itxt">${esc(r.id)}</span>`:''))+sbMore(di,base,r,ro);
       /* NO PLACEHOLDERS ON A DUTY ROW (owner, 10 Aug 26). They read as typed
          text — an empty role box showed "SDO" and a blank block looked
          staffed. The column headings above already say Role / Start / End /
@@ -423,6 +431,26 @@ export function sbDutyPanel(d:any,di:any,pv?:any,ro?:any){
     });
   });
   return s+sbNote(d,di,'dtn','dutynotes','e.g. SDO swapped — Bane has the PHA at 1700, Pike covers the last hour.',ro)+`</div></div>`;
+}
+/* D50 — A SIM ROW ALWAYS SHOWS ONE SPARE SEAT, EVEN WHEN IT IS FULL (owner,
+   22 Sep 26, during the walk: "Keep one spare seat showing").
+   Every other kind of row carries a thin drop strip under its people, so there
+   is always somewhere that means "another body". The seat grid hides that strip
+   on purpose (`.ppl.fcprcp .addz` in scheduler.css) and padded its seats to an
+   EVEN count — which leaves a spare only when the count is ODD. A sim row
+   holding an even number of people therefore had no door at all, and the drag a
+   scheduler would naturally make landed on a seated man and replaced him with
+   nothing on screen to say so. It costs one row of height on a full sim row; the
+   owner was shown that cost and chose it over filing the gap.
+   THE TEST IS "IS THERE AN EMPTY SEAT", not "is the count even": on a row whose
+   own FCP or RCP is still empty that seat IS the door, so nothing is added and
+   the height is only spent where it buys something. A pair is opened rather than
+   a single slot because the grid is two columns wide and the pairing carries
+   seat identity — a lone slot with a hole beside it reads as a gap, which is the
+   same reason the odd-count padding exists at all.
+   Read-only boards draw no empty seats at all, so they are left alone. */
+function simSpare(cells:string,slot:(i:any)=>string,from:number,ro:any):string{
+  return ro||/sb-slot empty/.test(cells)?cells:cells+slot(from)+slot(from+1);
 }
 export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
   const sims=d.sims||{};
@@ -470,9 +498,10 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
           /* pad to an even count (>=2) so every pair is complete — the trailing
              slot of an odd crew is a droppable RCP, not a gap */
           const n=Math.max(2,r.pax.length+(r.pax.length%2));
-          const cells=Array.from({length:n},(_:any,pi:any)=>{const k=`${base}.pax.${pi}`, id=r.pax[pi];
+          const paxSlot=(pi:any)=>{const k=`${base}.pax.${pi}`, id=r.pax[pi];
             return (id&&PEOPLE[id])?sbSeat(di,k,id,ro)
-              :(ro?'':`<span class="sb-slot empty pax" data-slot="${k}" title="Empty seat — tap or drop a puck to fill">+</span>`);}).join('');
+              :(ro?'':`<span class="sb-slot empty pax" data-slot="${k}" title="Empty seat — tap or drop a puck to fill">+</span>`);};
+          const cells=simSpare(Array.from({length:n},(_:any,pi:any)=>paxSlot(pi)).join(''),paxSlot,n,ro);
           pplCell=`<div class="ppl fcprcp"${ro?'':` data-fill="${base}.+"`}>${cells}${sbMore(di,base,r,ro)}${ro?'':ADDZ}</div>`;
         }else{
           const seats=r.pax.map((id:any,pi:any)=>{
@@ -497,12 +526,26 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
           :(ro?'':`<span class="sb-slot empty" data-slot="${k}" title="${lbl} — tap or drop a puck to fill">+</span>`);
         let cells=seatCell(`${base}.p`,r.p,'FCP')+seatCell(`${base}.w`,r.w,'RCP');
         const more=r.more||[], n=more.length+(more.length%2);
-        for(let i=0;i<n;i++){const id=more[i];
-          cells+=(id&&PEOPLE[id])?sbSeat(di,`${base}.x${i}`,id,ro)
-            :(ro?'':`<span class="sb-slot empty pax" data-slot="${base}.x${i}" title="Instructor / observer — tap or drop a puck to fill">+</span>`);}
-        pplCell=`<div class="ppl fcprcp"${ro?'':` data-fill="${base}.+"`}>${cells}${ro?'':ADDZ}</div>`;
+        const xSlot=(i:any)=>{const id=more[i];
+          return (id&&PEOPLE[id])?sbSeat(di,`${base}.x${i}`,id,ro)
+            :(ro?'':`<span class="sb-slot empty pax" data-slot="${base}.x${i}" title="Instructor / observer — tap or drop a puck to fill">+</span>`);};
+        for(let i=0;i<n;i++)cells+=xSlot(i);
+        pplCell=`<div class="ppl fcprcp"${ro?'':` data-fill="${base}.+"`}>${simSpare(cells,xSlot,n,ro)}${ro?'':ADDZ}</div>`;
       }else{
         pplCell=`<div class="ppl"${ro?'':` data-fill="${base}.+"`}><span class="itxt">${esc(r.who)}</span>${sbMore(di,base,r,ro)}${ro?'':ADDZ}</div>`;
+      }
+      /* INSIDE THE MODE THE SIM SHOWS THE PEOPLE IT PAYS ([OIL-SEATS-CAN-EARN]
+         step 7, register OIL8). The seat grid, the pairing and the empty drop
+         slots are all about PLANNING the row, and planning is off in the mode —
+         so the cell becomes the plain list of everyone the day credits from this
+         row, with a placeholder opened into the men it stands for. Exactly the
+         set the walk collects (seats, passengers, extras), so the screen cannot
+         show one crowd while the money pays another. */
+      if(oilModeOn(di)){
+        pplCell=`<div class="ppl">`
+          +oilRowPeople(di,[r.p,r.w].concat(r.pax||[]).concat(r.more||[]),rowItemKey(r.rid),oilWin(r))
+            .map((pid:any)=>sbSeat(di,base,pid,ro)).join('')
+          +`</div>`;
       }
       s+=`<div class="sb-arow c6r${rowCls(r)}"${rowMove(`mv:s.${di}.${kind}.${ri}`,ro)}>`+sbGrip(ro)
         +sbName(di,'ain',`${t}.label`,r.label,'EP SIM',ro)+sbTxt('atm',`${t}.str`,r.str,'',ro)+sbTxt('atm',`${t}.end`,r.end,'',ro)
@@ -534,7 +577,10 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
          ([OIL-AUTO-REMOVE] §7.4). */
       oilRow(groundItemKey(x));
       const inner=oilModeOn(di)
-        ? oilRowPeople(di,[x.who,...(x.more||[])],groundItemKey(x),oilWin(x)).map((pid:any)=>sbSeat(di,base,pid,ro)).join('')
+        /* a row that came from an accepted REQUEST resolves its placeholder
+           against the REQUEST's window, not its own times: an all-day request
+           lands a row with no times at all ([OIL-SEATS-CAN-EARN] step 6). */
+        ? oilRowPeople(di,[x.who,...(x.more||[])],groundItemKey(x),x.src?oilClaimWin(di,x.src):oilWin(x)).map((pid:any)=>sbSeat(di,base,pid,ro)).join('')
         : ((id&&PEOPLE[id])?sbSeat(di,base,id,ro):(x.who?`<span class="itxt">${esc(x.who)}</span>`:''))+sbMore(di,base,x,ro);
       s+=`<div class="sb-arow c6r${rowCls(x)}${lateRowCls(x)}"${lateRowTitle(x)}${rowMove(`mv:g.${di}.${ri}`,ro)}>`+sbGrip(ro)
         +sbName(di,'ain',`${t}.prog`,x.prog,'OCU PROGRESS REVIEW',ro)+sbTxt('atm',`${t}.str`,x.str,'',ro)+sbTxt('atm',`${t}.end`,x.end,'',ro)

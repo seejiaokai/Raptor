@@ -19,7 +19,8 @@ import { PEOPLE } from '../engine/people'
 import { INPUTS, inpId } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { SCHED, signOf, setDayApproved } from '../engine/publish'
-import { toggleOilPerson, oilModeOn } from './oilmode'
+import { toggleOilPerson, toggleOilItem, oilModeOn, oilItemMasked, oilItemMark } from './oilmode'
+import { oilEvidence, oilEvidenceOf, oilEarnedWork, oilWouldEarn, oilReadPass, itemMasked } from '../engine/oilev'
 import { ensureRowIds } from '../engine/rowids'
 import { rowItemKey, inputItemKey } from '../engine/oil'
 import { makeStandalone } from '../engine/waves'
@@ -81,6 +82,15 @@ const addRow = (di: number, r: any) => { DAYS[di].ground = (rows(di) || []).conc
    read-only, and a read-only row carries no move address. The Ground Programme
    renders time-sorted, and every fixture below is written in time order. */
 const groundRowEl = (ri: number) => $$('#sbBoard .sb-panel.grnd .sb-arow.c6r')[ri]
+/* A DAY WHOSE ONLY EARNING WORK IS ONE GROUND ROW. The seed day carries flying,
+   duty and sim content of its own, so "switch off the last earning item" cannot
+   be expressed on it — the day would still earn from everything else. Used only
+   where the property under test is about the day's LAST item. */
+const onlyEarningRow = (di: number) => {
+  const d: any = DAYS[di]
+  d.waves = []; d.dutywaves = []; d.sims = {}; d.allhands = []; d.ground = []
+  return addRow(di, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+}
 
 describe('the button is drawn only where a day can earn (§2.8)', () => {
   it('OIL1, OIL18 — a weekend day offers it, an ordinary weekday does not', async () => {
@@ -440,12 +450,31 @@ describe('the item switch is only offered where the event can earn', () => {
     expect(cellFor('MORNING BRIEF')?.dataset.oilitem, 'a ground row that earns').toBeTruthy()
     expect(cellFor('SDO')?.dataset.oilitem, 'a duty desk that earns').toBeTruthy()
   })
-  it('OIL7, OIL28 — AVALON, its desk and an ⓘ row offer none', async () => {
-    for (const label of ['AV', 'AVALON DESK', 'NOTICE ONLY']) {
+  /* UPDATED 22 Sep 26 — D24, and BOTH rulings this pins survive it.
+     OIL7 (tapping an item's name stops the whole item earning) is untouched.
+     OIL28 (nothing overrides ineligibility — an allow is permission to count
+     real work, never to invent it) is untouched too: an ⓘ row measures nothing
+     and still offers no switch.
+
+     What moves is the EXAMPLE. This test used AVALON as its illustration of
+     "ineligible", and D24 says AVALON was never ineligible — it was EXEMPT, and
+     exempt has now become a DEFAULT the admin can override. So AVALON and its
+     desk change sides here, and the ⓘ row stays where it was as the control
+     that keeps OIL28 honest. */
+  it('OIL28 — a row that can never earn still offers none', async () => {
+    const el = cellFor('NOTICE ONLY')
+    expect(el, 'the ⓘ row is drawn').toBeTruthy()
+    expect(el!.dataset.oilitem, 'and must not be tappable').toBeFalsy()
+    expect(el!.classList.contains('none'), 'it reads as nothing to switch').toBe(true)
+  })
+
+  it('D24 — AVALON and its desk DO offer one now, and it says they earn nothing', async () => {
+    for (const label of ['AV', 'AVALON DESK']) {
       const el = cellFor(label)
       expect(el, `${label} is drawn`).toBeTruthy()
-      expect(el!.dataset.oilitem, `${label} must not be tappable`).toBeFalsy()
-      expect(el!.classList.contains('none'), `${label} reads as nothing to switch`).toBe(true)
+      expect(el!.dataset.oilitem, `${label} offers the switch — D24's only door`).toBeTruthy()
+      expect(el!.title, `${label} says it earns nothing, and how to change that`)
+        .toMatch(/earns nothing|tap to make it earn/i)
     }
   })
 })
@@ -597,3 +626,106 @@ describe('the history names a claim by what it IS, not by the puck in its cell',
     expect(said, 'and not the puck text beside it').not.toMatch(/FO|HO/)
   })
 })
+
+/* =====================================================================
+   [OIL-SEATS-CAN-EARN] STEP 1 — the earn rule consolidated onto the EVIDENCE
+   Plan: docs/superpowers/specs/2026-09-22-oil-seats-can-earn-plan.md §4, §5 step 1.
+
+   Two reviewers confirmed F2 independently: the rule "does this item earn" is
+   written TWICE and the two copies read DIFFERENT SOURCES — the mode read the
+   live day's own decisions, the money read the frozen block on the issued
+   document. They agree today only because publishing swaps one for the other,
+   so this is a seam, not a live defect; it is shut now because every later step
+   adds a reader, and a seam with five readers is not closed by hand.
+
+   The state below is CONSTRUCTED rather than reached through the app, for the
+   same reason: the two sources cannot be made to disagree through any gesture
+   today. So this proves the SEAM is shut — one source behind both answers — and
+   nothing about a user scenario. Named accordingly. */
+describe('the item guard reads the day\'s EVIDENCE, never the day\'s live decisions', () => {
+  it('a frozen block that masks an item is obeyed by the screen, not just by the money', async () => {
+    const row = addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    const item = rowItemKey(row.rid)
+    /* the frozen answer says this item earns nobody; the live day carries no
+       mark at all — the exact shape F2 describes */
+    ;(DAYS[SAT] as any).oilev = { ...oilEvidence(SAT), d: { items: { [item]: 0 } } }
+    const work = oilEarnedWork(DAYS[SAT], oilEvidenceOf(SAT))
+    expect(work.bane, 'the MONEY reads the frozen block and pays him nothing').toBeFalsy()
+    expect(oilItemMasked(SAT, item), 'and the SCREEN must read the same block').toBe(true)
+  })
+
+  it('the raw mark is readable apart from the blanket, so the switch can tell them apart', async () => {
+    const row = addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    const item = rowItemKey(row.rid)
+    expect(oilItemMark(SAT, item), 'an untouched item carries no mark').toBeUndefined()
+    ;(DAYS[SAT] as any).oild = { items: { [item]: 0 } }
+    expect(oilItemMark(SAT, item), 'switched off, it carries the 0').toBe(0)
+    ;(DAYS[SAT] as any).oild = { blanket: 1, items: { [item]: 0 } }
+    expect(oilItemMasked(SAT, item), 'the blanket masks it').toBe(true)
+    expect(oilItemMark(SAT, item), 'but the mark beneath the blanket is still readable').toBe(0)
+  })
+})
+
+/* THE MEMO'S SAFETY (plan §5 step 1, OSE-T-01 — the targeted check found this
+   and it is the reason the cache is NOT keyed on the day and the store version).
+   The day is mutated IN PLACE and the version only advances at notify, while the
+   epilogue runs VALIDATION first. A cache filled by the previous paint would
+   answer validation with the PRE-change evidence, so switching off the last
+   earning item would leave an obsolete OIL warning standing on the day.
+
+   So the authoritative calculation stays uncached, and the cache lives only
+   inside an explicit read-only render pass. These are GUARD tests: they pass
+   against today's uncached code too. They bite the moment anyone reaches for a
+   version-keyed cache, which is the break test recorded in the evidence sheet. */
+describe('the OIL evidence is never served from a cache across a change', () => {
+  it('switching off the last earning item is seen by validation before any repaint', async () => {
+    /* the day is stripped to ONE earning item on purpose: the property under
+       test is what happens when the LAST one is switched off, which is the case
+       that can leave an obsolete OIL warning standing */
+    const row = onlyEarningRow(SAT)
+    const item = rowItemKey(row.rid)
+    await open(SAT)
+    /* prime whatever cache a paint fills: the board has just been drawn */
+    expect(oilWouldEarn(SAT), 'the day earns before the switch').toBe(true)
+    /* the real gesture, and then the question validation asks — with no notify
+       between them, which is exactly the window the epilogue runs in */
+    toggleOilItem(SAT, item)
+    expect(oilWouldEarn(SAT), 'and nothing earns the instant it is switched off').toBe(false)
+  })
+
+  it('the AUTHORITATIVE body is never cached, even with a pass open', async () => {
+    /* the half of OSE-T-01 the pass boundary does not cover: validation, signing
+       and publication read the authoritative calculation, and they can run in
+       the same breath as a mutation. So `oilEvidence` itself must never consult
+       the memo — only `oilEvidenceOf` may, and only inside a pass. */
+    const row = onlyEarningRow(SAT)
+    const item = rowItemKey(row.rid)
+    oilReadPass(() => { oilEvidenceOf(SAT) })
+    ;(DAYS[SAT] as any).oild = { items: { [item]: 0 } }
+    oilReadPass(() => {
+      expect(itemMasked(oilEvidence(SAT), item), 'the fresh build sees the new mark').toBe(true)
+    })
+  })
+
+  it('a read pass does not outlive itself — a change after it closes is seen', async () => {
+    const row = onlyEarningRow(SAT)
+    const item = rowItemKey(row.rid)
+    oilReadPass(() => { oilItemMasked(SAT, item); oilWouldEarn(SAT) })
+    toggleOilItem(SAT, item)
+    expect(oilItemMasked(SAT, item), 'the cache died with the pass').toBe(true)
+    expect(oilWouldEarn(SAT), 'and the money agrees').toBe(false)
+  })
+
+  it('one pass holds two different days apart', async () => {
+    const a = addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    const b = addRow(6, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    HOOKS.oilEarningDay = (di: number) => di === SAT || di === 6
+    HOOKS.oilDayISO = (di: number) => (di === SAT ? SAT_ISO : di === 6 ? '2026-07-19' : '2026-07-15')
+    ;(DAYS[SAT] as any).oild = { items: { [rowItemKey(a.rid)]: 0 } }
+    oilReadPass(() => {
+      expect(oilItemMasked(SAT, rowItemKey(a.rid)), 'the Saturday item is off').toBe(true)
+      expect(oilItemMasked(6, rowItemKey(b.rid)), 'the Sunday item is not').toBe(false)
+    })
+  })
+})
+

@@ -92,10 +92,19 @@ in-flight and risk-reducing** first.
    stops further growth; this is the trim itself. Do it after OIL merges, not before —
    a third of tonight's new lines are that task's scaffolding and become archive the day it
    closes. See the item below.
-**TOP OF THE QUEUE (21 Sep 26, late).** 1) Finish **[OIL-AUTO-REMOVE]** — the fixes are in and
-pushed; what remains is executing the two scenario lists in the running app, then the owner's
-"merge live". 2) Then **[HUMAN-RETEST]**. 3) Then **[DOC-TRIM]** — after OIL merges, because a
-third of that task's new docs become archive the day it closes.
+**TOP OF THE QUEUE (22 Sep 26, re-ordered after D38).** **[OIL-AUTO-REMOVE] IS MERGED AND CLOSED.**
+1) **[OIL-SEATS-CAN-EARN]** — **IN FLIGHT: all 11 steps BUILT, the FULL-tier walk DONE and its five
+defects fixed and re-walked, on `claude/oil-seats-can-earn`. The two code reads are what is left.**
+Resume from `raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-build-handoff.md`.
+Plan: `…/specs/2026-09-22-oil-seats-can-earn-plan.md`. 2) **[ALL-AVAIL-WINDOW]**
+(D38, NEW) — straight after, because it opens FROM the counters that job builds. 3) **[DOCS-GUARD]**,
+scope and order settled by D30. 4) **[HUMAN-RETEST]**. 5) **[DOC-TRIM]** — unblocked now that a third
+of the OIL scaffolding became archive. 6) The stack resumes at **[DB-STEP]**.
+
+**STALE ABOVE, CORRECTED 22 Sep 26:** the "STACK PROGRESS (updated 18 Sep 26)" block says the next
+stack item is step 4 (one Absence record). **Step 4 SHIPPED on 20 Sep 26** — `raptor-port/CLAUDE.md`
+records it (an absence is ONE record, the Raptor Input; `runInbound`/`runOutbound`/`retractLwRow`/
+`ingestFromRaptor` deleted). The stack's real next item is **[DB-STEP]**.
 **Open for the owner:** he has not picked whether to do the one cheap `CLAUDE.md` trim (~30 min,
 a move not a cut, ~700 lines off EVERY later session) as a warm-up before the scenarios, or to
 leave all of [DOC-TRIM] until after the merge. Either is fine; the ratchet already stops growth.
@@ -647,7 +656,13 @@ that after this task is truely completed and free of bugs"). Start from
 which records why the static pass missed them, and from the scenario lists Fable and Codex wrote for
 the OIL pass — the same scenario-design-then-execute shape is what this needs.
 
-### [OIL-AUTO-REMOVE] Taking OIL off — BUILT 21 Sep 26, holding for "merge live"
+### [OIL-AUTO-REMOVE] Taking OIL off — **MERGED 22 Sep 26 (D34). CLOSED.**
+
+**Live on `main` as of 22 Sep 26**, every check green, on his "merge live". **His five-minute look
+was WAIVED** — the evidence is the walk and the gates, not an owner sighting; do not assume the
+walked Saturday was eyeballed. The walk's own evidence sheet is
+`raptor-port/docs/handpass/2026-09-22-oil-walk.md`. **Stays live in this file, not archived**, because
+it warns a later session off re-doing the four walk defects and off assuming the owner looked.
 
 > **BUG-CHECKED AND FIXED 21 Sep 26. The remaining job is the hands-on scenario pass.**
 > Cross-provider check by Fable 5.1 and Astra/Codex, both read-only, neither the model that
@@ -796,7 +811,15 @@ Full findings and exact fix steps:
 `raptor-port/docs/superpowers/specs/2026-09-22-backlog-process-attack.md`.
 Rulings: `DECISIONS.md` D29 (the three rules) and **D30** (this order).
 
-### [OIL-UNDO-WORDS] Undo says "a change to the schedule" when it took back an OIL decision (22 Sep 26)
+### [OIL-UNDO-WORDS] — DONE 22 Sep 26, folded into [OIL-SEATS-CAN-EARN] step 11 (NOT merged)
+
+**Resolved:** an OIL decision is now its own command (`sched.oil`) rather than riding the catch-all
+mutation backstop, so the one central describer names it "an OIL decision". Pinned by
+`raptor-port/src/undo/oilundo.test.ts`, which installs the real timeline and reverses a real
+decision. Holding on the branch with the rest of the change until the owner says "merge live".
+The original entry follows.
+
+
 
 Found in the walk while proving fix 5's boundary. Inside OIL Earn, the first two presses of the
 board's Undo correctly reverse the OIL decisions — and each says **"Undid: a change to the
@@ -812,6 +835,16 @@ the fix is to give an OIL decision its own wording rather than inheriting the ge
 own pass.
 
 ### [OIL-SEATS-CAN-EARN] Every seat can earn, the default decides — ONE change (owner, D24 + D28, 22 Sep 26)
+
+**STATUS 22 Sep 26: ALL 11 STEPS BUILT, the FULL-tier WALK DONE, and the five defects it left open
+now FIXED and re-walked, on branch `claude/oil-seats-can-earn`. NOT merged.** What remains before
+"merge live" may be asked for: **both providers reading the finished code, blind to each other**
+(bug-check order §4 rank 2 — this is money), then fixing what they find, re-walking that, the
+gates, and the owner's look.
+**Context → `raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-build-handoff.md`** (the resume
+doc) · **the walk's evidence → `raptor-port/docs/handpass/2026-09-22-oil-seats.md`**, §6a for the
+five and their fixes · **behaviour register →
+`…/specs/2026-09-22-oil-seats-behaviour-register.md`** — the list the rules sweep walks.
 
 **D28 merged two items into this one.** His principle: *"If everywhere in the schedule can earn oil,
 then the all avail or all puck should also be able to earn oil"* — every seat can earn, the DEFAULT
@@ -846,10 +879,76 @@ cancelled, ⓘ) offers NO switch, and says why on screen instead. That is the ON
 every measurable seat offers the switch, but where there is no window a credit would be invented
 rather than earned. The refusal must NAME its reason — never a silent absence.
 
+**RED-TEAMED 22 Sep 26 — BOTH PROVIDERS RETURNED REVISE; the plan is NOT buildable as written.**
+Fable (7 must-fix, 9 should-fix) and Codex/Astra (7, four high), blind to each other, nothing
+rejected, four findings change its shape. **Read `…/2026-09-22-oil-seats-can-earn-review-log.md`
+before touching the plan** (Fable's text verbatim beside it). **D43 settles the default, more
+simply than either reviewer proposed:** the placeholder pucks are ON by default wherever they can
+land, like named people; only the four exempt KINDS default off (D24/D35). That closes the worst
+finding outright — nothing is switched off, so no issued Saturday loses credits silently.
+
 **Tier: FULL** — money, reaches an issued day, adds roll-call rows on every seat type. **Sequencing,
-his: NEXT, after `[OIL-AUTO-REMOVE]` merges**, ahead of `[OIL-NEXT-TWO]`, in a FRESH chat. The
+his: NEXT — `[OIL-AUTO-REMOVE]` merged 22 Sep 26**, so this is unblocked and at the head of the
+queue, ahead of `[OIL-NEXT-TWO]`. **THE PLAN IS WRITTEN:**
+`raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-can-earn-plan.md` — it carries D24/D27/D28/
+D31/D32/D33/D35, the roll-call of all six seat types, four findings read off the code (the earn
+default is ON today; the earn rule is written twice; the sentinel drop is one helper not six call
+sites; placement is unrestricted today) and the order of work. **Red-team it across BOTH providers
+before a line is written.** The
 display-versus-earning cost analysis and the size estimate are in
 `raptor-port/docs/handpass/2026-09-22-oil-walk.md` §11 and §11a. Rulings: `DECISIONS.md` D24, D27, D28.
+
+### [ALL-AVAIL-WINDOW] The counter opens a movable window of PUCKS, not a bubble of names (owner, D38, 22 Sep 26)
+
+**His words:** *"the current interface to show just names on a bubble … is not intuitive … a window
+that is movable and … resizable and a user can still click and edit/scroll the schedule behind while
+that window is still opened … show the pucks just like how the placeholder shows the personnel and I
+can click on the flagging as well … pilot then wso, left right column … Perhaps make a mock up before
+we execute this."*
+
+**ONE WINDOW, TWO JOBS.** Tapping either counter opens the same panel: (a) who is AVAILABLE behind an
+ALL AVAIL / ALL puck, and (b) who is CREDITED OIL — and in (b) he switches individual pucks off.
+Today (a) is a one-line string of names and (b) lives inside the mode's own decoration.
+
+**What makes it different from every panel the app already has:**
+- **MOVABLE and RESIZABLE by the user**, and it **does not block the schedule** — he scrolls AND
+  EDITS behind it while it is open. Not a `Sheet` (scrim + Escape, blocks everything) and not an
+  inline popup (dismisses on an outside click — the 4 Sep 26 standing rule). **This is a THIRD
+  transient-surface kind and the first one the app has; it needs its own contract**, and the outside-
+  click rule has to be stated as not applying to it, or a later session will "fix" it.
+- **Real pucks in the placeholder's own layout** — pilots left column, WSOs right — carrying the same
+  warning flags the rest of the app draws, and clickable.
+
+**WHY THE FLAGS ARE THE POINT, in his example:** a man whose ops brief sits inside his standard
+debrief must APPEAR, flagged, so the scheduler sees the overlap and judges it. **That is the other
+half of D36** — availability stays narrow (he IS available) precisely because the app's job here is
+to SURFACE the clash, not to remove him from the list. Do not let this item drift into "filter him
+out"; that is the change D36 refuses.
+
+**MOCK-UP BUILT AND APPROVED 22 Sep 26 (D41 — "that mock up looks good"). IT IS THE DESIGN OF
+RECORD; changing it now needs his word.** `raptor-port/docs/mock/allavail-window.html`, a working comp in the
+app's OWN stylesheet (it drags, resizes, and the schedule behind it scrolls and types). Also published
+as an Artifact for him: <https://claude.ai/artifact/3kHfkdRobBjgtmhnyGvkdi>. **He reviewed it across
+three rounds and ruled four times: D39** — one puck per row at every width, and the counter chip drops
+the word "free"; **D40** — the window opens SKINNY at **212px wide** (the two 74px pucks, their gap
+and about 16px of slack per column; **186px is the floor**, below which a puck clips), and its drag
+handle is the app's own six-dot grip, not a dashed or hamburger glyph. **Build to those numbers.** A flagged man's reason wraps under his
+puck at that width and moves beside him when the window is dragged wider; it is never dropped.
+
+**THE MODE RULE, confirmed with him 22 Sep 26.** Tapping the counter always shows WHO IS AVAILABLE —
+any day, OIL or not. The **"Who earns OIL" half exists only while OIL Earn is switched on**; with the
+mode off there are no tabs at all, just the one list, and on an ordinary weekday (which cannot earn)
+it never appears. That is D27 carried through: availability is a scheduling fact, earning is a mode.
+
+**A CONSTRAINT THE BUILD MUST RESPECT:** a puck is a MEASURED 74×15 (`--puck-w`/`--puck-h`, pinned
+with `!important` in `scheduler.css` and watched by the browser geometry gate). Do NOT stretch pucks
+to fill this window's columns. The mock instead gives each man a full ROW — puck at its true size,
+the rest of the row carrying his flag's reason inline, which is what makes the list scannable and is
+exactly the case he opened this with.
+
+**Sequencing: AFTER `[OIL-SEATS-CAN-EARN]`**, which builds the counters this window opens from, and
+which settles where they appear. Ruling: `DECISIONS.md` D38; the related ones are D27 (the count is a
+scheduling feature), D36 (the narrow window) and D37 (the count reads as what it is).
 
 ### [OIL-WORDS] Stop calling OIL "money" in the code comments (owner, D25, 22 Sep 26)
 
@@ -949,19 +1048,71 @@ for duty, so the engine is ready; the work is in the store and the tracker.
 where both of the night's silent bugs lived; the project's own rule escalates that kind of change.
 Build it test-first and put it through both reviewers.
 
-### [POSTOUT-LOST] A posted-out man walks back into the squadron on a reload — NEW, 22 Sep 26
+### [POSTOUT-LOST] A posted-out man walks back into the squadron on a reload — **FIXED 22 Sep 26 on `claude/oil-seats-can-earn`** (not merged)
 
-A person's posting-out window is written straight onto the person by the demo overlay and never
-recorded in the persisted posting record. The overlay runs only on a first-ever boot, so once
-anything is saved and the page reloads, the posting is gone and he is available again — which
-reaches the crew picker, ALL AVAIL, the manning counts and every rule that asks who is free, not
-just OIL. Found under a mis-diagnosed OIL report; reproduced (27 members before a reload, 28
-after). Deliberately NOT fixed on the OIL branch: not an OIL defect, and it would widen a money
-change into an availability one. Watch the dev-phase ruling when fixing — the seed flies him in
-July while the demo posts him out in January, so deciding which is right may be most of the job.
+**FIXED, because it caused TWO of the five defects the OIL walk left open** — the day that reopens
+asking for an amendment nobody made, and the count chip that says one more man than the war pays.
+Measured side by side they are one fault: the issued day froze 27 men behind the placeholder, the
+reload gave the live copy 28, and the difference is the man who left in January. The OIL code was
+doing exactly what D44/D45 say. Deferring this last session was right on the evidence then and
+wrong once the cause was measured. **The fix:** a posting window arriving ON the projected person
+is recorded in the store's own posting record, in the body that already lays that record back on
+(`leavewar/state/store.ts` `setPeople`) — so a window with no record behind it is a state the store
+cannot be left in. Pinned by `src/leavewar/postout-persist.test.ts` (4 new cases, red first);
+re-walked by `scripts/handpass/rw-03-pending-and-count.mjs`, four days, all clean. Full story:
+`raptor-port/docs/handpass/2026-09-22-oil-seats.md` §6a.
+
+**STILL OPEN, and still this item's:** the seed flies that man in July while the demo posts him out
+in January. He is reliably posted out now, so the contradiction is STABLE rather than intermittent.
+Demo data, breaks nothing; the dev-phase ruling says clear it rather than migrate. Decide it when
+the demo seed is next touched. *The original entry:* the window was written onto the person by the
+demo overlay and never saved, so after any reload he was available again — reaching the crew picker,
+ALL AVAIL, the manning counts and every rule that asks who is free.
 
 **Context.** `raptor-port/docs/handpass/2026-09-21-oil.md` §9 · the red team's §3 in
 `…/specs/2026-09-21-oil-fixplan-redteam-fable.md` · script `scripts/handpass/settle-d4.mjs`.
+
+### [OIL-READ-LEFTOVERS] The four the two final code reads raised and this branch did not act on (22 Sep 26)
+
+Both providers read the finished OIL branch blind to each other and returned the SAME four defects;
+three were already fixed and the fourth (a nought-minute SC/AVALON/BB shift saying it still earns)
+was fixed in the same session. Reports and the reconciliation:
+`raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-final-read-{fable,codex,reconciled}.md`.
+These four are what was deliberately left:
+
+1. **The saved-plan preview's chip and its tap disagree about which list it is** (Fable F3, LOW).
+   Wording, on a surface `[ALL-AVAIL-WINDOW]` replaces. Do it there or not at all.
+2. **The second spare sim seat leaves a hole in the stored crew array** (Fable F4, LOW). Check it
+   against `slots.ts`'s trailing-blank trim before changing anything — the array shape is that
+   file's contract, not D50's.
+3. **An already-issued weekend carrying a placeholder reads "1 pending" the moment this ships**
+   (Fable F5, LOW). **PART DONE 22 Sep 26, on his "ok fix this first".** The day used to say "1
+   pending" with no cell marked and nothing in History, while the chip beside the puck said "?" —
+   something changed, nothing said what, and the one place to look was never written down. The day
+   now NAMES it (`OIL_OLD_BLOCK`), so he is not republishing blind. **CLOSED — RULED D54 (23 Sep 26,
+   "leave it as it is"): the day raises the mark.** He republishes once per affected day and those
+   men get their OIL. Do not re-open it later as a bug (standing order §7.6).
+4. **A placeholder that reaches a cockpit by copy draws the jet as crewed** (Fable F8, LOW,
+   pre-existing). D47 belts the money on purpose and names this; the screen half is one advisory
+   away. A product call, not a defect against the plan.
+
+### [STORE-READER-SWEEP] A stored record read more narrowly than it is written — sweep for more (22 Sep 26)
+
+**TWO INSTANCES FOUND IN ONE FILE IN ONE EVENING, both silent, both about official
+dates.** `readPostOuts` insisted a posting record carry a LEAVING date, so every
+JOINING date `setPostIn` wrote was discarded at the next boot; and `setPeople`'s
+keep rule then tested membership of that record rather than the leaving date it
+means. Both fixed on `claude/oil-seats-can-earn`. Neither was found by a walk or
+a review — they came from re-reading the file around an unrelated fix.
+
+**The shape, so it can be looked for:** a writer grows a new case (a second date,
+a new field, a nullable end) and the untrusted-storage reader beside it is not
+widened with it. The write succeeds, the reload silently drops it, and nothing on
+screen says so. Two spot-checks came back clean (`readPersonEdits` matches
+`setPerson`'s type exactly; `readOilPolicy` covers both its fields) — the rest of
+`leavewar/state/store.ts`'s readers, and the scheduler's own storage seam, have
+not been walked. **Small, mechanical, and worth doing once**: for each reader,
+find its writer and diff the shapes. Priority: with the other small follow-ups.
 
 ### [OIL-RELINK-XWEEK] A request landed in a stashed week keeps the OLD man, and can land twice — OPEN, 22 Sep 26
 
@@ -1079,6 +1230,13 @@ year is handled by the admin's "Reset counters". Decide next session: separate b
 carry-over rules, and which year a leave crossing 31 Dec charges. Context: clash catalogue Q10.
 
 ### [DB-STEP] The shared-database step (Dataverse) — FUTURE MILESTONE
+
+**THE DATA GETS WIPED ON THE WAY IN (owner, D54, 23 Sep 26 — "this app is going to get wiped of
+data before its being brought into a database as these are demo data anyway").** Stated as a PLAN,
+not an option: nothing now in the store has to survive the move. It is the 13 Sep dev-phase rule and
+D22 strengthened — those approved clearing when it was simpler; this says the clearing is going to
+happen, so "the harm lives only in data that already exists, and it is prevented going forward" is
+a reason to STOP, not a cost to weigh. Use it as a test on any finding from here to the database.
 The big future move: Raptor, Leave War and Tracker all run on `localStorage` /
 session today; the target is a shared database (**Dataverse** — `src/storage/`
 seam, `docs/data-model.md`). Large, design-first, its own red-team. Several parked
@@ -1137,6 +1295,27 @@ THREE halves now (owner, 15–17 Sep 26):
   - **Process:** produce 1–2 rendered sample PDFs for the owner to PICK before finalizing
     (his "show a picture before product code" rule); nothing merges without "merge live".
 - Separate gated PR after [CRP-FLAG]. Context: [CRP-FLAG]'s review log + the sample image.
+
+### [OIL-REQ-NAMEBOX] A man typed into a REQUEST row's name box in place of the requester earns nothing — OPEN, 22 Sep 26
+
+**Deferred deliberately during `[OIL-SEATS-CAN-EARN]` step 6, not missed.** That step made a
+PLACEHOLDER on an accepted request's row count the people it stands for, in the name box and in the
+extras line alike. It left one case alone: a real, named person dragged into the name box in place
+of the man who filed the request. He does no worse than before — he earned nothing there yesterday
+either — but he is plainly doing the work, and D18 ("for 2 he should earn") is the same argument
+that got the extras line paid.
+
+**Why it was left.** In every path the app has, that box holds the requester, and the money already
+pays him from his own answer. Crediting "whoever is in the box" would move money on a case nobody
+has reported, inside a step whose scope the plan fixed. Doing it silently is exactly the shape the
+OIL build keeps getting bitten by.
+
+**What to do.** Put it to the owner as a walk question — can the scheduler put someone ELSE in a
+request row's name box, and if so should he earn from it? If yes, it is one line in
+`landedExtras` (treat the name box like the extras, the requester still excluded) plus a test.
+**Priority: with the other small OIL follow-ups, after the walk.**
+**Context:** `raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-can-earn-plan.md` §5 step 6;
+the body is `raptor-port/src/engine/oilev.ts` `landedExtras`, and its own comment says why.
 
 ---
 

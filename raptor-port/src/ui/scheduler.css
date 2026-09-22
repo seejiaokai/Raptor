@@ -1391,9 +1391,16 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
    +ADD showing") — a bare dashed outline, like an empty flying seat. A cell that
    already holds a puck keeps its zone bare; the affordance is only where needed. */
 .schedboard .ppl[data-fill]:not(:has(.puck)):not(:has(.itxt)) .addz{border-color:var(--edge-2)}
-/* the seat grid (.fcprcp — sims, and the flying-seat pairs) auto-adds rows as
-   pucks land, so it never packs edge-to-edge and swaps; it needs no trailing
-   zone, and a full-width one would cost every seat cell a permanent row. */
+/* the seat grid (.fcprcp — sims, and the flying-seat pairs) needs no trailing
+   zone: a full-width one would cost EVERY seat cell a permanent row, where the
+   grid can carry its own door for nothing on the rows that need one.
+   CORRECTED 22 Sep 26 (D50). This said the grid "auto-adds rows as pucks land,
+   so it never packs edge-to-edge and swaps". That was true of an ODD number of
+   people and FALSE of an even one: a full sim row showed no spare seat and no
+   strip, so the drag a scheduler would make landed on a seated man and replaced
+   him silently. The door is now the grid's own — board-html.ts `simSpare` opens
+   a spare pair whenever no empty seat is left — which is why this rule stands
+   rather than being lifted. */
 .schedboard .ppl.fcprcp .addz{display:none}
 /* the WEEK seat grid still spans its always-present strip across both columns */
 .ppl.fcprcp .addz{grid-column:1/-1}
@@ -3350,6 +3357,20 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   .plist .pl-row .rmk .ntx{min-width:0}
   .allhands .ah-row .ppl,.plist .pl-row .ppl{padding-left:2px}
   .allhands .ah-cols>:nth-child(4),.plist .pl-cols>:nth-child(4){padding-left:2px}
+  /* A SEAT'S DECORATION WRAPS UNDER ITS PUCK RATHER THAN OUT OF THE COLUMN
+     (the walk's S1, 22 Sep 26). The people column here is exactly ONE puck wide
+     on a row that holds one, and a puck is a measured 74px — so anything drawn
+     BESIDE it (today the ALL / ALL AVAIL count chip) hung 23px out into the
+     RMKS column and was painted under the remarks box. A press at the chip's own
+     centre put a caret in the schedule instead of opening the list of who is
+     behind the puck, which on a published day is the record of who was paid.
+     `max-width` is what does the work — the seat is `flex:0 0 auto`, so without
+     it the chip simply widens the seat past its cell — and the wrap is what
+     catches the chip once it can no longer sit alongside. It costs one short
+     line of height, and only on a row that actually carries a decoration: a bare
+     puck is exactly the column's width and never wraps. Pinned in
+     e2e/geometry.spec.ts, because jsdom reports every rect as 0x0. */
+  .allhands .ah-row .ppl .seat,.plist .pl-row .ppl .seat{flex-wrap:wrap;max-width:100%;row-gap:2px}
 }
 /* ---- small phones (360px Android, iPhone SE/mini) ----
    Same FIVE-column layout as every other width — CS/MSN | B/TO | LD | FCP/RCP | RMKS —
@@ -4395,6 +4416,24 @@ button.sarole:hover{border-color:var(--accent);color:var(--accent);opacity:1}
    grid item to a seven-track template (see lateRowCls in ui/html.ts), so it
    wears an inset amber edge instead — the .redbox idiom, no node, no track. */
 .sb-arow.lateinp{box-shadow:inset 3px 0 0 var(--adv)}
+/* D49's MARK ON THE LINE (owner, 22 Sep 26; the walk's rules-sweep FAIL 3): the
+   take-off and landing boxes of a line typed with the SAME time for both. The
+   line still earns — that is the ruling — so this is the advisory colour and an
+   EDGE, never a refusal: it says one of the two numbers must be wrong and leaves
+   the scheduler to say which. The .redbox idiom again (an inset shadow, no node,
+   no grid track), so it costs nothing on a row whose columns are already counted
+   to the pixel on a phone. Both surfaces wear it: the week's cell is a div, the
+   board's box is the typed input itself. */
+.badtm{box-shadow:inset 0 0 0 1px var(--adv);border-radius:4px}
+input.tm.badtm{border-color:var(--adv)}
+/* and when the warning in the list is the one being read, the box it names
+   lights — the same `wfoc`/`advf` vocabulary a clicked warning uses on a puck,
+   because it is the same gesture. Without it a tap on a line already on screen
+   had nothing to show: the scroll had nowhere to go. Stronger than the resting
+   mark and in the same colour, so it reads as "this one" rather than as a
+   different kind of problem. */
+.badtm.wfoc{box-shadow:inset 0 0 0 2px var(--hard),0 0 10px rgba(240,85,95,.45)}
+.badtm.wfoc.advf{box-shadow:inset 0 0 0 2px var(--adv),0 0 10px rgba(229,168,59,.45)}
 /* THE CLICKABLE LATE CHIP on a live board input row (owner, 21 Aug 26). It
    rides the ITEM cell beside the type label, wrapped in `.itemcell` so it does
    not add an eighth c6r grid track (see lateChip in board-html.ts). Solid amber
@@ -6005,6 +6044,12 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
   font-size:11px;font-weight:600;min-height:20px;border:1px solid transparent;overflow:hidden}
 .oilitem.on{background:rgba(47,166,92,.18);border-color:var(--oil);color:var(--ink)}
 .oilitem.off{background:var(--panel-2);border-color:var(--edge-2);color:var(--ink-3);text-decoration:line-through}
+/* OFF BY DEFAULT, not switched off by hand — the four exempt kinds (D24). It
+   must not be green (green says "earning", and these earn nothing) and it must
+   not be struck out (nobody struck it out; one tap turns it on). Quiet, upright,
+   clearly still a control. Added after the 22 Sep 26 walk found an AVALON line
+   painted green while its own words said it earns nothing. */
+.oilitem.dflt{background:var(--panel-2);border-color:var(--edge-2);color:var(--ink-2)}
 .oilitem.none{cursor:default;color:var(--ink-3)}
 .seat.oilpk{cursor:pointer}
 .seat.oilpk.inert{cursor:default}

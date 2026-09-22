@@ -597,11 +597,38 @@ function readPersonEdits(x: unknown): State['personEdits'] | null {
   }
   return out
 }
+/* EITHER END MAKES A WINDOW WORTH KEEPING (22 Sep 26). This insisted on `to`
+   being a string, which was right while a posting-OUT date was the only one
+   there was. `setPostIn` (owner, 20 Sep 26 — "we need a post in button just like
+   post out. Because those dates are official dates") writes the other end
+   through the same `windowRecord`, and the WRITE was always correct: the record
+   reached storage carrying `from` with `to` null. This reader then threw it
+   away, so a man's official joining date was lost on every reload — the same
+   failure, in the same record, as the demo overlay's posting-out window that
+   `setPeople` now captures, and found the same way: by reading this file again
+   after fixing that one.
+   The guard is not loosened, only widened to the shape the writer produces: the
+   id must still match its key, the callsign must still be a string, and at least
+   one end must be a real date with the other a date or null. A record with
+   neither end is not a window and is still dropped — `windowRecord` deletes it
+   rather than storing it, so one could only arrive from a damaged file. */
+/* A DATE HAS TO LOOK LIKE A DATE (the follow-up code read). The first version
+   of this accepted any string, and a nonsense `from` is not inert: it is laid
+   onto the live person, where `inSquadron` compares it LEXICALLY against real
+   `yyyy-mm-dd` values. "June 15" sorts after every 2026 date, so the man reads
+   as not yet arrived on every day of the year — out of availability, out of the
+   manning counts, out of every crowd a placeholder stands for, silently.
+   The same `^\d{4}-\d{2}-\d{2}$` shape `setPostOut`/`setPostIn` demand at the
+   write, so the reader now asks for exactly what the writer promises. */
+const isDay = (v: unknown): v is string => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v)
+const dateEnd = (v: unknown): boolean => v === null || isDay(v)
 function readPostOuts(x: unknown): Record<string, Person> | null {
   if (!isPlainObject(x)) return null
   const out: Record<string, Person> = {}
   for (const [id, v] of Object.entries(x)) {
-    if (!isPlainObject(v) || v.id !== id || typeof v.callsign !== 'string' || typeof v.to !== 'string') continue
+    if (!isPlainObject(v) || v.id !== id || typeof v.callsign !== 'string') continue
+    if (!dateEnd(v.from) || !dateEnd(v.to)) continue
+    if (!isDay(v.from) && !isDay(v.to)) continue
     out[id] = v as unknown as Person
   }
   return out
@@ -1547,9 +1574,59 @@ export function setPeople(people: Person[]): void {
     return w ? { ...merged, from: w.from, to: w.to, poArchive: w.poArchive } : merged
   })
   const ids = new Set(next.map(p => p.id))
-  for (const id of Object.keys(po)) if (!ids.has(id)) next.push(po[id])
-  state = withCurrent({ ...state, people: next })
-  notify()
+  /* `.to`, not merely a record (22 Sep 26). The comment above says what this is
+     for and says the other half out loud: a body archived WITHOUT a posting-out
+     window leaves at once, because that ✕ means "should never have been here".
+     The test was membership of `postOuts`, which `windowRecord` fills from
+     EITHER end — so a man with only a JOINING date who was then archived came
+     back anyway. It lasted a session before, because the boot reader discarded
+     a record with no leaving date; now that the reader keeps one (a joining date
+     is an official date too), it would have lasted for good. */
+  for (const id of Object.keys(po)) if (!ids.has(id) && po[id].to) next.push(po[id])
+  /* AND A WINDOW THAT ARRIVES WITH THE PROJECTION IS RECORDED (the walk's F1 and
+     F2, 22 Sep 26 — two reported defects, one cause).
+     This body laid the stored record ON but never took one OFF, and the one
+     writer that puts a window straight onto a person is the demo overlay
+     (state/demoworld.ts, first boot only). So the single window the app writes
+     for itself was the single window it never saved: next reload the man was
+     back in the squadron, and every reader of who is available answered
+     differently with nobody having touched anything.
+     On an ISSUED day that is money. The men behind an ALL / ALL AVAIL puck are
+     frozen at publication (D44), so the working copy gained a man the issued
+     copy did not have — the day reopened as "1 pending" and cleared its four
+     signatures for an amendment nobody made, and the count beside the puck read
+     one higher than the Leave War would ever pay.
+     It is caught HERE, not in the overlay, because this is the one body that
+     owns the record: catching it at the seam makes "a window on a person with no
+     record behind it" a state the store cannot be left in, rather than a rule
+     the next writer has to remember. `setPostOut` already records its own, so
+     this never fires for it; an admin who CLEARS a window leaves no window to
+     catch, so a cleared one is never resurrected. */
+  const caught: Record<string, Person> = {}
+  for (const p of next) if (!po[p.id] && (p.from != null || p.to != null)) caught[p.id] = p
+  const got = Object.keys(caught).length > 0
+  state = withCurrent({ ...state, people: next, ...(got ? { postOuts: { ...po, ...caught } } : {}) })
+  /* A CAPTURE IS A PROJECTION, NEVER AN EDIT (the independent code read, F6).
+     At boot the command router is not on yet — `LW_READY` is set by
+     `lwHistInit`, which main.tsx calls AFTER the demo world installs — so this
+     is a raw seed persist and nothing more, which is what it should be. If it
+     ever fires AFTER boot, a bare `persistNotify` at idle would route as
+     `lw.edit`: a change-stream envelope and an UNDO STEP for a change nobody
+     made, labelled as a Leave War edit. `lwSyncTurn` files it as the
+     reconciliation it is.
+     Nothing reaches it today — `projectPeople` emits no window, `setPerson`
+     cannot carry one, and the global undo DEFERS `lw.postouts` — so this is a
+     belt. It stops being one the day `[GLOBAL-UNDO]` phase 5 lifts that
+     deferral: an undo of a posting-out would then restore the RECORD without
+     re-laying the person, and the next roster change would re-capture the
+     window the admin had just undone, silently and persisted.
+     `lwSyncTurn` ALONE IS NOT ENOUGH, and the test is what showed it: the
+     router's gate is `HIST.lock || cmdIsCommitting()`, not the turn flag, so a
+     bare `lwSyncTurn(persistNotify)` at idle still fell straight through to
+     `lw.edit` and the turn's trailing projection never armed. `locked` is what
+     puts it on the reconciler's branch — the same pairing `sync.ts` uses for
+     `runOilPass`. */
+  if (got) { if (LW_READY) lwSyncTurn(() => locked(persistNotify)); else persistNotify() } else notify()
 }
 
 /**

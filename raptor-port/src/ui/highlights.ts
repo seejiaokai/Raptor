@@ -96,6 +96,32 @@ export function refreshHighlights(){
     const isFocus=matchHL||isSel;
     if(focusActive&&!isFocus)el.classList.add('dim');
   });
+  /* A WARNING ABOUT A BOX LIGHTS THE BOX (walk, 22 Sep 26). Every other warning
+     lights the MAN it names; D49's nought-minute sortie names the LINE and
+     deliberately no crew — the times are the scheduler's to fix and no pilot's
+     fault — so there is no puck for the loop above to light, and the tap had
+     nothing to show for itself. Making the scroll resolve was only half: on a
+     line already on screen a scroll with nowhere to go leaves the press with no
+     visible answer at all, which is the complaint the walk made.
+     The SAME two classes the pucks use, so the app has one vocabulary for "this
+     is what you just clicked" rather than two; the styling is scoped per element
+     kind in scheduler.css. Cleared on every pass, like the puck classes, so a
+     focus that moves or clears takes the light with it. Cheap: nothing carries
+     `data-warnkey` unless a warning addresses it. */
+  document.querySelectorAll('[data-warnkey]').forEach((el:any)=>{
+    el.classList.remove('wfoc','advf');
+    if(!wf||!WFOCUS||el.dataset.warnkey!==WFOCUS.key)return;
+    /* NEVER INSIDE A FROZEN PAGE (the follow-up code read). The puck loop above
+       excludes `.pv-frozen` for a reason — WARN is live and a preview is what
+       the squadron was actually given, so today's focus has no business lighting
+       last week's paper. The box path has to obey the same rule, and by the same
+       test, or a live warning glows on an old line that happens to sit at the
+       same address. `wf` carries the second half: it is null once the focused
+       warning no longer exists (state/view.ts), so a focus that has outlived its
+       cause lights nothing here either. */
+    if(el.closest('.pv-frozen,.preview'))return;
+    el.classList.add('wfoc'); if(WFOCUS.sev!=='hard')el.classList.add('advf');
+  });
   paintArm();      // every render rebuilds the slots, so the ring is re-hung here
   paintSelRings(); // after paintArm, so an armed element can keep its own ring
   paintFreshAdds();// the ~6s blue box on a just-added row / line / wave / block
@@ -226,10 +252,20 @@ export function paintSelRings(){
    's:0.oft.1' can never claim 's:0.oft.12.p'. Preview markup emits no
    data-slot (slotCell/lSeat drop it under PV), so an anchor never resolves
    into a frozen version — exactly the fallback we want there. */
+/* `data-warnkey` (walk, 22 Sep 26) is the THIRD address, and the only one a
+   warning about a BOX rather than a person can use. `data-slot`/`data-fill`
+   address people cells and seats, so a warning whose key names a typed box —
+   D49's nought-minute sortie names the landing time — resolved nothing, fell
+   through to the puck heuristic, found no `who` to look for, and returned null.
+   The tap then scrolled to the day and lit nobody, which reads exactly like a
+   click that did not register. Any renderer that draws a box a warning names
+   puts the warning's own key on it and the gesture works; nothing else is
+   needed, and no other warning is affected, because only a box that carries the
+   attribute can answer to one. */
 export function anchorEl(root:any,key:any){
   if(!key)return null
-  for(const el of root.querySelectorAll('[data-slot],[data-fill]')){
-    const k=(el as any).dataset.slot||(el as any).dataset.fill
+  for(const el of root.querySelectorAll('[data-slot],[data-fill],[data-warnkey]')){
+    const k=(el as any).dataset.slot||(el as any).dataset.fill||(el as any).dataset.warnkey
     if(k===key||(k&&k.indexOf(key+'.')===0))return el as any
   }
   return null

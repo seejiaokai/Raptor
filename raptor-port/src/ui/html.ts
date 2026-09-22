@@ -9,7 +9,7 @@ import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef } from '../engine/sl
 /* RANK left with the focus-scoped trace: ranking the CR chip against the day's
    own worst is traceLeads' job now, in the engine, so both the chip and the
    click that follows it read one test */
-import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn } from '../engine/validate'
+import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, FLT_NO_LEN_SAYS } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
 import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned } from '../engine/publish'
 import { verSeq } from '../engine/verid'
@@ -21,6 +21,7 @@ import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
 import { oilBarOf, oilItemOfKey, inputItemKey, oilSentinelSummary } from './oilmode'
+import { oilReadPass } from '../engine/oilev'
 import { STORE_CFG, groundOrder, secOrder } from '../engine'
 
 const editMode=()=>HOOKS.editMode()
@@ -497,13 +498,47 @@ export function oilSeatDeco(di:any,id:any,key:any,itemOf?:string):{oil:any;chip:
   if(isSpecial(id)){
     const sum=oilSentinelSummary(di,item);
     if(!sum)return {oil:null,chip:''};
-    const some=sum.bar==null&&sum.earn>0;
-    const txt=some?`${sum.earn} of ${sum.n} earn`:String(sum.n);
-    const ttl=some?'Some of these men earn OIL and some do not — tap to see each one'
-      :sum.bar?`All ${sum.n} earn ${sum.bar==='FO'?'a full day':'half a day'} — tap to see each one`
-      :`None of these ${sum.n} earn OIL today — tap to see each one`;
+    /* THE VERSION THE CHIP WAS DRAWN IN (Codex OSE-R2-05). The snapshot is
+       installed only while this HTML is being built; a tap happens long after,
+       when DAYS[di] is the live day again. Without this the chip on an issued
+       page would count the men it went out with and the tap would list whoever
+       is free today — one number, a different list, on the same puck. Empty
+       means the working copy, which is what a tap should read there. */
+    const ver=PV&&PVV!=null?String(PVV):'';
+    /* THE COUNT NOW SHOWS ON EVERY DAY ([OIL-SEATS-CAN-EARN] step 9, D27), so
+       the words have to fit a day that earns nobody anything. Saying "None of
+       these 9 earn OIL today" on a Tuesday would be true and useless — nobody
+       earns OIL on a Tuesday. On such a day the count IS the whole answer, and
+       D37 says to read it as what it is: who has nothing else on at that time,
+       not a promise that they will be there. */
+    /* NO SINGLE AMOUNT IS TWO DIFFERENT STATES, and reading them as one put a
+       false sentence about money on the face of an issued day (walk, 22 Sep 26).
+       `bar` is null whenever the men behind the puck do not all get the SAME
+       amount — which is true both when some earn nothing AND when every one of
+       them earns but at two different rates. The second case was drawn with the
+       first's words: a chip reading "30 of 30 earn" captioned "Some of these men
+       earn OIL and some do not". Two sentences contradicting each other on one
+       puck, over money, on a published document. They are split here. */
+    const mixedAmt=sum.earns&&sum.bar==null&&sum.n>0&&sum.earn===sum.n;   // all earn, at different amounts
+    const partial=sum.earns&&sum.bar==null&&sum.earn>0&&sum.earn<sum.n;   // some earn, some do not
+    const some=mixedAmt||partial;
+    const txt=sum.unrecorded?'?':mixedAmt?`All ${sum.n} earn`:partial?`${sum.earn} of ${sum.n} earn`:String(sum.n);
+    /* WHICH ANSWER IS THIS ([OIL-SEATS-CAN-EARN] step 10, D37)? Since step 9 the
+       same puck can show two different numbers — the list the day went out with,
+       and the list as things stand today. A number that does not say which is
+       worse than no number, because the scheduler cannot tell whether he is
+       reading a record or a live count. One phrase, used here and on the tap. */
+    const from=ver?' (who was free when this day was issued)':' (who is free as things stand now)';
+    const ttl=sum.unrecorded
+      ?'This schedule was issued before the app kept a record of who was behind this puck'
+      :(!sum.earns
+        ?`${sum.n} with nothing else on at that time — tap to see them`
+        :mixedAmt?`All ${sum.n} earn — some a full day, some half a day — tap to see each one`
+          :partial?'Some of these men earn OIL and some do not — tap to see each one'
+            :sum.bar?`All ${sum.n} earn ${sum.bar==='FO'?'a full day':'half a day'} — tap to see each one`
+              :`None of these ${sum.n} earn OIL today — tap to see each one`)+from;
     return {oil:sum.bar?{bar:sum.bar}:null,
-      chip:`<span class="oilcount${some?' some':''}" data-oilsent="${esc(item)}" data-oilday="${+di}" title="${esc(ttl)}">${txt}</span>`};
+      chip:`<span class="oilcount${some?' some':''}" data-oilsent="${esc(item)}" data-oilday="${+di}" data-oilver="${esc(ver)}" title="${esc(ttl)}">${txt}</span>`};
   }
   return {oil:oilBarOf(di,id,item),chip:''};
 }
@@ -1247,7 +1282,16 @@ export function dayStatHTML(di:any,ed:any){
        the same thing is the clutter the redesign removes. */
     return `${pendChip}${infoChip}${beak}${alpub}${unpub}`;
 }
-export function dayHTML(di:any,ed:any,vsel?:any){
+/* THE ONE READ-ONLY PASS PER DAY ([OIL-SEATS-CAN-EARN] §5 step 1). From step 1
+   the OIL item guard reads the day's whole evidence block instead of an O(1)
+   property, and from step 9 the count is asked on every seat on every repaint —
+   so a builder that asked per row and per puck would rebuild the block dozens of
+   times for one day (Fable R2-7, S4; docs/performance.md Part 1). The builder is
+   a pure string producer, which is exactly the shape the pass requires: nothing
+   inside it writes DAYS, INPUTS or PEOPLE, so the memo cannot serve a stale
+   answer to validation, signing or publication — none of which run in here. */
+export function dayHTML(di:any,ed:any,vsel?:any){ return oilReadPass(()=>dayHTMLBody(di,ed,vsel)); }
+function dayHTMLBody(di:any,ed:any,vsel?:any){
   /* A QUARANTINED (unreadable / preserved / unsupported) LOADED week is read-only,
      and its days are UNAPPROVED (the seed is loaded as a placeholder), so both the
      edit week and the view week's unapproved days reach this shared builder — which
@@ -1441,12 +1485,36 @@ export function dayHTML(di:any,ed:any,vsel?:any){
            two rows. Remarks now sit right of the pucks at every width, one row per
            aircraft, so the twins are gone. */
         const spans=`--gs:${rows}`;
+        /* D49's MARK, ON THE LINE (owner, 22 Sep 26; the walk's rules-sweep FAIL
+           3). A line typed with the same take-off and landing still earns — that
+           is the ruling — but the day has to SAY the two times cannot both be
+           right, and it said so only in the list on the right: the row itself was
+           byte-for-byte a correct line's. The two boxes one of which is wrong now
+           wear the advisory edge and carry the reason in their own words, so a
+           scheduler reading the line is told without opening anything.
+           `data-warnkey` is the ADDRESS the warning's own key resolves to
+           (ui/highlights.ts anchorEl), which is what makes tapping the warning
+           scroll here; the key is built the same way validate.ts builds it.
+           Emitted only on a line that actually raises the warning, so an ordinary
+           week's markup — and the reference parity compare — is untouched. */
+        const noLen=fltNoLen(f);
+        const badCls=noLen?' badtm':'';
+        /* THE ADDRESS ONLY ON LIVE PAPER (the follow-up code read, G2). The
+           MARK belongs on a frozen version preview — a line that went out with
+           two identical times went out that way, and the issued page should say
+           so. The ADDRESS does not: the highlight pass refuses to decorate a
+           `.pv-frozen` preview on purpose (WARN is live, the preview is what the
+           squadron was given), and `anchorEl`'s own contract says a preview
+           emits nothing for a warning to resolve into. Emitting it everywhere
+           broke both — a focused live warning lit a box inside last week's
+           paper, and the tap could scroll into one. */
+        const badAtt=noLen?`${PV?'':` data-warnkey="${fp}.ld"`} title="${esc((f.cs||w.label||'A flying line')+' '+FLT_NO_LEN_SAYS(parseHM(f.to),sa))}"`:'';
         h+=`<div class="form${rowCls(f)}">
           <div class="fcell csmsn" style="${spans}">${cxTag(f)}${flagTag(f)}<b><span class="mdot" style="background:${sa?'var(--san)':`var(--${mColor(f.msn)})`}"></span>${ted(fp+'.cs',f.cs,ed,'ntx')}</b>${ted(fp+'.msn',f.msn,ed,'','i')}</div>
           ${sa
-            ? `<div class="fcell bto" style="${spans}">${ted(fp+'.to',f.to,ed,'ntx','span')}</div>`
-            : `<div class="fcell bto" style="${spans}">${brSug}${ted(fp+'.br',brShown,ed,'','b')}${ted(fp+'.to',f.to,ed,'','span')}</div>`}
-          <div class="fcell ld" style="${spans}">${ted(fp+'.ld',f.ld,ed,'ntx')}</div>`;
+            ? `<div class="fcell bto${badCls}"${badAtt} style="${spans}">${ted(fp+'.to',f.to,ed,'ntx','span')}</div>`
+            : `<div class="fcell bto${badCls}"${badAtt} style="${spans}">${brSug}${ted(fp+'.br',brShown,ed,'','b')}${ted(fp+'.to',f.to,ed,'','span')}</div>`}
+          <div class="fcell ld${badCls}"${badAtt} style="${spans}">${ted(fp+'.ld',f.ld,ed,'ntx')}</div>`;
         f.aircraft.forEach((a:any,ai:any)=>{
           const key=`${di}.${gi}.${li}.${ai}`, o=a.opts||{};
           /* edit mode shows the on-chips (click one to remove it) plus C, which

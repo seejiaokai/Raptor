@@ -6,6 +6,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["--prefix", "raptor-port", "vite", "preview", "raptor-port", "--port", "4180", "--strictPort"],
       "port": 4180
+    },
+    {
+      "name": "raptor-walk",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["--prefix", "raptor-port", "vite", "preview", "raptor-port", "--port", "4173", "--strictPort"],
+      "port": 4173
     }
   ]
 }

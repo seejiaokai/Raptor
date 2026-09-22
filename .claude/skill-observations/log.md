@@ -2661,3 +2661,75 @@ tends to carry costs (hidden bugs, undoing the plan's intent) that only resurfac
 **Suggested improvement:** For a pre-build comp, build from the product's own class names and, where possible, inject it into a running screen so the surrounding chrome is real too. Reach for hand-written CSS only for the genuinely new element, and even then inherit from the nearest existing class. Treat "borrowed the colour variables" as NOT the same as "used the design system".
 
 **Principle:** A mockup's job is to be judged, so it has to be wrong in no way the reviewer can see. Tokens are the smallest part of a design system; the components carry the rest, and a comp that skips them tests the reviewer's imagination instead of the proposal.
+
+### Observation 174: A handoff's diagnosis of a defect is a hypothesis, not a finding — measure before fixing
+
+**Status:** OPEN
+**Date:** 2026-09-22
+**Session context:** Picking up a written handoff that listed five open defects, each with a named cause, and starting the fix work.
+**Skill:** New skill candidate: receiving-a-handoff (or an addition to `receiving-code-review`)
+**Type:** open-source
+**Phase/Area:** Acting on a prior session's findings
+
+**Issue:** The handoff named a cause for each defect in the same breath as the symptom ("the count chip includes a man who has posted out; the money side makes an in-the-squadron check and X does not"). Two of the five causes were wrong. The symptom was real and reproducible; the named mechanism was not. Reading the code showed the accused function DID make the check and had a passing test for it. Driving the built app and dumping the two data structures side by side showed the true cause: a completely different record was not being persisted, so the world changed under a reload — and that single cause produced TWO of the five listed defects, which the handoff had written up as unrelated. Fixing as written would have produced two patches in the wrong place and left the real fault live.
+
+**Suggested improvement:** Treat a handoff's SYMPTOM as evidence and its CAUSE as a hypothesis to be re-proved. Before writing any fix, reproduce the symptom on the real artefact and measure the mechanism independently; only then accept or replace the named cause. Also check whether several listed defects share one measured cause before fixing any of them — a written list of independent items is exactly where a common root hides, because the person who wrote it met each symptom on a different day.
+
+**Principle:** The author of a finding is usually right about WHAT they saw and often wrong about WHY. Observations survive the handoff; explanations do not. Re-derive the mechanism from the artefact before acting on it, and re-check whether the items are as independent as the list makes them look.
+
+### Observation 175: A test that asserts the ingredient is not a test of the behaviour
+
+**Status:** OPEN
+**Date:** 2026-09-22
+**Skill:** `test-driven-development` (and `verification-before-completion`)
+**Type:** open-source
+**Phase/Area:** Writing the assertion
+**Session context:** Fixing five defects found by a hands-on pass over a running app, each of which already had passing unit tests nearby.
+
+**Issue:** Three of the five defects sat behind tests that asserted an INGREDIENT of the behaviour rather than the behaviour. One asserted that a warning "carries an address ending in .ld" — true, and the address resolved to nothing, so tapping the warning did nothing. One asserted that a signature stays valid when availability changes — true on its fixture, and it stayed true when the underlying rule was deliberately broken, because the fixture happened to satisfy both readings. One asserted that an empty slot count was zero across a whole screen, which was a proxy for "this particular hole was filled" and broke the moment a different, correct change added slots elsewhere. In each case the test's SENTENCE described the behaviour and its ASSERTION described something adjacent and cheaper to check.
+
+**Suggested improvement:** After writing an assertion, ask what could be broken while it still passes — then break exactly that and watch. If nothing goes red, the assertion is watching an ingredient, not the behaviour. Two specific shapes worth naming: asserting that an identifier/address/key EXISTS rather than that something RESOLVES it, and asserting a global count as a stand-in for a local fact. Prefer resolving the address through the same body production uses, and scope counts to the thing the sentence names.
+
+**Principle:** A passing test proves its assertion, not its title. The gap between the two is where defects live, and the only way to measure that gap is to break the behaviour on purpose and see whether the test notices.
+
+### Observation 176: A reused dev server silently tests the previous build
+
+**Status:** OPEN
+**Date:** 2026-09-22
+**Skill:** `verification-before-completion`
+**Type:** open-source
+**Phase/Area:** Running browser-level checks
+
+**Issue:** A layout fix was verified by a real-browser test whose runner is configured to reuse an already-running preview server. The server was serving a build made before the fix, so the test failed identically before and after the change — which reads exactly like "the fix does not work" and invites a second, unnecessary fix. The only signal was the timing: an assertion that failed by precisely the same measured amount after a change that should have altered it.
+
+**Suggested improvement:** When a browser-level check is expected to change and does not, rebuild the artefact the server is serving BEFORE re-examining the change. Where the runner reuses an existing server, treat "rebuild" as part of the check rather than part of the build. A measured value that is bit-identical across a change that should have moved it is a stale-artefact signature, not a failure signature.
+
+**Principle:** A test that loads an artefact is only as current as the artefact. When a result is suspiciously unchanged, suspect the pipeline before the change — the same failure twice is more often one stale input than two real faults.
+
+### Observation 177: Write the coverage table AFTER the fix, not only before it
+
+**Status:** OPEN
+**Date:** 2026-09-22
+**Skill:** `verification-before-completion` (and any project-level "list every place this appears" practice)
+**Type:** open-source
+**Phase/Area:** Confirming a fix is complete
+
+**Issue:** A project practice requires enumerating every place the app draws the thing a feature attaches to, each with a written yes / no-because / missing. It is normally run BEFORE building, to find surfaces the feature was never wired to. Here the same table was written AFTER a fix, to record what had been covered — and while filling one cell the claim being written down ("this surface prints plain text, so it cannot show the mark") turned out to be false on inspection: that surface keeps its own private copy of the markup precisely so it never reads live state, which is exactly why a change to the shared renderer does not reach it. The fix had been declared complete on three surfaces and was missing on a fourth. Nothing else in the session would have found it: the tests were written from the same list, and the hands-on pass had not covered that surface either.
+
+**Suggested improvement:** Run the enumeration twice — once before building, to find what to wire, and once after, as the completion check. In the second pass, every cell must be VERIFIED rather than recalled: open the file that draws it. Treat "it doesn't draw that, so it can't be affected" as a claim to check, never a reason to skip a row — a surface that keeps a private copy of shared markup is the commonest place a shared fix fails to arrive, and the reason it has a private copy is usually a good one that has nothing to do with the fix.
+
+**Principle:** A completeness table is only worth the cell you were least sure of. Writing one after the work is not bookkeeping — it is the check, and it only works if each cell is filled by looking rather than by remembering.
+
+### Observation 178: Verify a reviewer's FIX as carefully as their FINDING
+
+**Status:** OPEN
+**Date:** 2026-09-22
+**Skill:** `receiving-code-review`
+**Type:** open-source
+**Phase/Area:** Acting on review feedback
+
+**Issue:** Two independent expert reviews came back on the same work. The practice of reproducing each FINDING before acting was followed and caught two errors — one reviewer's claim about start-up order was wrong (settled by reading the actual sequence, not by taking the other reviewer's side), and a finding in one report was already fixed. But the same scepticism was not initially applied to a reviewer's proposed FIX. One came with a precise one-line change and a confident explanation of why it worked. Applied as given, it did not work: the mechanism it named was gated on a different flag than the reviewer assumed, so the code silently kept its old behaviour. What exposed it was not re-reading the fix — it was that the test written to pin it passed with the fix removed, which forced a hunt for an observable that could actually distinguish the two paths.
+
+**Suggested improvement:** Treat a reviewer's suggested fix as a hypothesis with the same standing as their finding: reproduce the defect, apply the fix, and then prove the fix by REMOVING it and watching the test fail. A reviewer reasoning from source alone cannot execute the path they are describing, so their fix is a reading of the mechanism, not a measurement of it — and a precise, confident one is no safer than a vague one. Where two reviewers disagree on a fact, settle it by measuring the fact, never by majority or by which report is more detailed.
+
+**Principle:** A review gives you a finding worth reproducing and a fix worth doubting. The fix is where the reviewer is furthest from the running system and closest to sounding authoritative, and a test that cannot fail without the fix is the only thing that tells you which you got.

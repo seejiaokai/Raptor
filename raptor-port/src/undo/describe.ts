@@ -23,6 +23,11 @@ const TYPE_PHRASE: Record<string, string> = {
   'sched.unpublish': 'taking a published day back',
   'sched.discard': 'clearing a day’s draft changes',
   'sched.sign': 'a sign-off',
+  /* NOT "a change to the schedule" ([OIL-UNDO-WORDS], found by driving the app
+     22 Sep 26). Taking a man off an event does not move the schedule — the earn
+     mode exists so that it cannot — so the generic label contradicted the very
+     screen the bubble appeared on. */
+  'sched.oil': 'an OIL decision',
   'sched.signClear': 'clearing a sign-off',
   'inputs.write': 'a personal input',
   'inputs.batch': 'a batch of inputs',

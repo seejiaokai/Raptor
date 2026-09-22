@@ -25,7 +25,7 @@ import { INPUTS } from './inputs'
 import { HOOKS } from './hooks'
 import { SCHED, daySnap, dayDelta, dayHasChanges, dayApproved, setDayApproved, publishALDay, signOf, setSign, daySigned, dayCurVer, daySnapOf, currentBind, diffCounts, dayDiscardCount } from './publish'
 import { ensureRowIds } from './rowids'
-import { oilEvidence, oilEvidenceOf, oilEarnedWork, oilEvidenceKey, oilDecisionsKey, oilWouldEarn, inputItemKey, rowItemKey, groundItemKey } from './oilev'
+import { oilEvidence, oilEvidenceOf, oilEarnedWork, oilEvidenceKey, oilSignKey, oilDecisionsKey, oilWouldEarn, inputItemKey, rowItemKey, groundItemKey } from './oilev'
 import { envMin, uniformOil } from './oil'
 import { stashPut, stashClear } from './weekstash'
 
@@ -281,10 +281,20 @@ describe('a snapshot with no block is PROTECTED, never guessed at (§9.4)', () =
 
 describe('the snapshot the signature was validated against is the one frozen (§9.3 point 3)', () => {
   it('daySnap freezes the same value currentBind reports', () => {
+    /* TWO PROJECTIONS OF ONE BLOCK since [OIL-SEATS-CAN-EARN] step 9b (D45): the
+       signature binds to everything about the block EXCEPT who was behind its
+       pucks, because a change in availability must never invalidate a signature;
+       the publication comparison carries membership so that change still raises
+       the pending mark. So this pins BOTH — the signature's own projection is
+       what it was validated against, and the comparison sees no change at the
+       instant of publishing. Comparing the signature's value against the
+       comparison's would be comparing two different questions. */
     groundRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'allavail' })
     const before = (currentBind(SAT) as any).oil
+    const liveKey = oilEvidenceKey(oilEvidence(SAT), DAYS[SAT])
     const snap: any = daySnap(SAT)
-    expect(oilEvidenceKey(snap.d.oilev)).toBe(before)
+    expect(oilSignKey(snap.d.oilev), 'what the signature promised').toBe(before)
+    expect(oilEvidenceKey(snap.d.oilev, snap.d), 'and nothing reads as changed the moment it goes out').toBe(liveKey)
   })
 })
 

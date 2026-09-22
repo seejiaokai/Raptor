@@ -11,7 +11,7 @@ import { INPUTS, inpId, inputCoversDate } from './inputs'
 import { CURWEEK } from './waves'
 import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './verid'
 import { isPreservedWeek } from './weekstash'
-import { oilEvidence, oilEvidenceKey, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney } from './oilev'
+import { oilEvidence, oilEvidenceKey, oilSignKey, oilKeyNoMem, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney } from './oilev'
 
 /* the reference calls straight into the UI here; the engine routes those four
    calls through injected hooks (no-ops until the app provides them) so the
@@ -309,7 +309,18 @@ function filingDelta(di:any,issuedFil:any):DeltaEntry[]{
    `active` on the issued side and `cx` live, which offered an amendment on a
    day the money already agreed was unchanged. */
 function oilDelta(di:any,issuedDay:any):DeltaEntry[]{
-  const now=oilEvidenceKey(oilEvidence(di),DAYS[+di]), was=oilEvidenceKey((issuedDay||{}).oilev,issuedDay);
+  const w=(issuedDay||{}).oilev;
+  /* CAN THE TWO SIDES BE COMPARED ON MEMBERSHIP AT ALL ([OIL-SEATS-CAN-EARN]
+     step 9b)? Only where the issued side actually recorded it. A block frozen
+     before membership was kept on every day recorded NONE on a day that earns
+     nothing — reading that absence as "the crowd changed" would offer an
+     amendment nobody made, on every already-published weekday carrying a puck.
+     That is the manufactured-amendment shape this branch has now met three
+     times, and it is cheaper to refuse the comparison than to explain it.
+     An older EARNING block did record membership, so it is still compared on
+     it — that signal is real and predates this step. */
+  const mem=!!(w&&(w.mem||w.earns));
+  const now=oilEvidenceKey(oilEvidence(di),DAYS[+di],mem), was=oilEvidenceKey(w,issuedDay,mem);
   return now===was?[]:[{addr:`oil:${+di}`,kind:'oil',from:was,to:now}];}
 /* ---- Phase 2: the ONE normalized publication delta (F-02) ------------------
    Eligibility, the panel counts and the stored diff ALL derive from this — never
@@ -815,7 +826,11 @@ export function currentBind(di:any){di=+di; const d=DAYS[di];
      and publication all call the SAME body, so they cannot disagree about what
      is being signed. Without it an answer-only change would be publishable on a
      signature given before the answer moved. */
-  return {dg:d?digest(d,di):'', iso:dayIso(CURWEEK,di), base:dayCurVer(di)||'', rev:(SCHED.curDraft||{})[di]||'', fil:filingKey(di), oil:oilEvidenceKey(oilEvidence(di),d)};}
+  /* THE SIGNATURE'S PROJECTION, NOT THE COMPARISON'S (D45, step 9b). A change in
+     availability never invalidates a signature — the pending mark is how that
+     change is acknowledged — so membership is left out of what a signature binds
+     to. Everything else about the block still binds. */
+  return {dg:d?digest(d,di):'', iso:dayIso(CURWEEK,di), base:dayCurVer(di)||'', rev:(SCHED.curDraft||{})[di]||'', fil:filingKey(di), oil:oilSignKey(oilEvidence(di),d)};}
 /* set a role's signer through the ONE sanctioned write path (ui/Shell.tsx). A
    truthy signer binds that role to the current content; clearing a role drops its
    binding. Tests / a legacy demo book that write signOf(di)[role] directly leave
@@ -852,8 +867,15 @@ function signBoundOk(di:any,role:any,cur?:any){const b=(SCHED.signBind||{})[+di]
 function oilBoundOk(di:any,was:any,now:any){
   if((was||'')===(now||''))return true;
   if(!was)return false;
+  /* A BINDING STORED BEFORE THE TWO PROJECTIONS SPLIT carries the membership
+     tail inside it ([OIL-SEATS-CAN-EARN] step 9b). Left alone, every signature
+     given before this build would fall off its day the moment anybody filed
+     leave — which is precisely what D45 forbids, and the same shape as the
+     `stand` break below. The stored string is therefore compared on everything
+     EXCEPT that tail. */
+  if(oilKeyNoMem(was)===(now||''))return true;
   const ev=oilEvidence(di);
-  return oilKeyBeforeStand(ev)===was&&!oilUpgradeMovedMoney(DAYS[+di],ev);}
+  return oilKeyNoMem(oilKeyBeforeStand(ev))===oilKeyNoMem(was)&&!oilUpgradeMovedMoney(DAYS[+di],ev);}
 /* a name only counts while it is still appointed — withdrawing someone's
    Scheduler qual after they signed used to leave the day looking signed — AND
    only while its content binding still holds (AM-06). currentBind is computed at

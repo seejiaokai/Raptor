@@ -4867,3 +4867,115 @@ test.describe('slow-computer diet', () => {
     expect(await page.evaluate(() => document.querySelector('#eWeek .day[data-day]')!.getBoundingClientRect().width), 'same width once shown').toBe(parked.dayWidth)
   })
 })
+
+/* THE COUNT CHIP STAYS INSIDE ITS OWN COLUMN ON A PHONE — the walk's S1,
+   22 Sep 26 (docs/handpass/parts/2026-09-22-oil-seats-surfaces.md).
+
+   On the EDIT WEEK at phone width a row carrying an ALL / ALL AVAIL placeholder
+   ALONE gives its people column exactly ONE puck of width — and the puck is
+   exactly that wide — so the count chip beside it hung out into the RMKS column
+   and was painted UNDER the remarks box. Pressing the chip typed a caret into
+   the schedule instead of opening the list of who is behind the puck, and that
+   chip is the only way to see who a published day paid.
+
+   Only a real browser can prove it: the fault is entirely geometry and paint
+   order, and every rect in jsdom is 0x0. Both halves are asserted, because
+   either alone can pass while the chip is still unusable — it must sit inside
+   its column AND be the thing a finger actually lands on. */
+test('phone: the placeholder count chip sits inside its column and takes its own press', async ({ page }) => {
+  await page.setViewportSize(PHONE)
+  await login(page, 'a')
+  await go(page, 'editsched')
+  await page.evaluate(() => {
+    const w = window as any
+    w.DAYS[0].allhands = [{ prog: 'SAFETY BRIEF', str: '08:00', end: '10:00', who: 'allavail' }]
+    w.afterSchedMutate()
+  })
+  await page.waitForSelector('#eWeek .day[data-day="0"] .ah-row .oilcount', { state: 'visible' })
+
+  const m = await page.evaluate(() => {
+    const chip = document.querySelector('#eWeek .day[data-day="0"] .ah-row .oilcount') as HTMLElement
+    const cell = chip.closest('.ppl') as HTMLElement
+    const c = chip.getBoundingClientRect(), p = cell.getBoundingClientRect()
+    const hit = document.elementFromPoint(c.left + c.width / 2, c.top + c.height / 2)
+    return {
+      spill: Math.round(c.right - p.right),
+      inside: c.right <= p.right + 1 && c.left >= p.left - 1,
+      onTop: !!hit && (hit === chip || chip.contains(hit)),
+      landed: hit ? (hit as HTMLElement).className : '(nothing)',
+      width: Math.round(c.width),
+    }
+  })
+  expect(m.width, 'the chip is drawn').toBeGreaterThan(0)
+  expect(m.inside, `the chip overhangs its people column by ${m.spill}px`).toBe(true)
+  expect(m.onTop, `a press at the chip's own centre landed on "${m.landed}"`).toBe(true)
+})
+
+/* THE CONTROL: the same row on a DESKTOP was always correct, and must stay so. */
+test('desktop: the same chip is inside its column and on top', async ({ page }) => {
+  await page.setViewportSize(DESK)
+  await login(page, 'a')
+  await go(page, 'editsched')
+  await page.evaluate(() => {
+    const w = window as any
+    w.DAYS[0].allhands = [{ prog: 'SAFETY BRIEF', str: '08:00', end: '10:00', who: 'allavail' }]
+    w.afterSchedMutate()
+  })
+  await page.waitForSelector('#eWeek .day[data-day="0"] .ah-row .oilcount', { state: 'visible' })
+  const m = await page.evaluate(() => {
+    const chip = document.querySelector('#eWeek .day[data-day="0"] .ah-row .oilcount') as HTMLElement
+    const cell = chip.closest('.ppl') as HTMLElement
+    const c = chip.getBoundingClientRect(), p = cell.getBoundingClientRect()
+    const hit = document.elementFromPoint(c.left + c.width / 2, c.top + c.height / 2)
+    return { inside: c.right <= p.right + 1, onTop: !!hit && (hit === chip || chip.contains(hit)) }
+  })
+  expect(m.inside).toBe(true)
+  expect(m.onTop).toBe(true)
+})
+
+/* THE WEEKEND'S OIL WARNINGS MUST BE THERE ON ARRIVAL, not after the scheduler
+   happens to touch something else (owner, 22 Sep 26 — "could it be a real
+   problem", after the speed check flagged two untouched days repainting).
+
+   It was a real problem, and not a speed one. `validate()` runs at boot BEFORE
+   `wireLeaveWarSync()` installs the hooks that tell the engine which days can
+   earn OIL — so at first paint `oilWouldEarn` answers false for every weekend,
+   and the advisory the owner asked for on 20 Sep 26 ("this day is not published
+   yet, so nobody earns their OIL for it") is absent. Fill a man into a seat on
+   any OTHER day and the revalidate finds the hooks, and the warning appears on
+   two days nobody touched. That is what the speed check was seeing: not a
+   wasteful repaint, a warning arriving late.
+
+   It reaches the squadron as the exact failure that warning exists to prevent —
+   a weekend that earns nobody anything, saying nothing about it, until an
+   unrelated edit. Present on `main`, so it shipped with [OIL-AUTO-REMOVE].
+
+   Driven in the REAL bundle because the fault IS the boot order in main.tsx,
+   which no unit test executes. */
+test('the weekend says it is unpublished from the first paint, not after an unrelated edit', async ({ page }) => {
+  await page.setViewportSize(DESK)
+  await login(page, 'a')
+  await go(page, 'editsched')
+  await page.waitForFunction(() => document.querySelectorAll('#eWeek .day[data-day]').length === 7, null, { timeout: 15000 })
+
+  const codesOn = (di: number) => page.evaluate((d) => {
+    const g = (window as any).WARN?.byDay?.[d]
+    return ((g && g.warns) || []).map((w: any) => w.code)
+  }, di)
+
+  const satFirst = await codesOn(5)
+  const sunFirst = await codesOn(6)
+  expect(satFirst, 'the Saturday says so on arrival').toContain('OIL_UNPUBLISHED')
+  expect(sunFirst, 'and so does the Sunday').toContain('OIL_UNPUBLISHED')
+
+  /* and an edit on a WEEKDAY must not change what those two days say */
+  await page.evaluate(() => {
+    const w = window as any
+    const s = document.querySelector('#eWeek [data-day="1"] .seat[data-slot$=".p"]') as HTMLElement
+    const ids = Object.keys(w.PEOPLE).filter((x: string) => !w.PEOPLE[x].special)
+    w.fillSlot(s.dataset.slot, ids[9]); w.afterSchedMutate()
+  })
+  await page.waitForTimeout(250)
+  expect(await codesOn(5), 'a Tuesday edit does not change what Saturday says').toEqual(satFirst)
+  expect(await codesOn(6), 'nor the Sunday').toEqual(sunFirst)
+})

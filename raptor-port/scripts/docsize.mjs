@@ -27,11 +27,30 @@ const REPO = join(ROOT, '..')
 const FILES = [
   ['raptor-port/CLAUDE.md',              0, 1539,  500],
   ['.claude/rules/raptor-executor.md',   0,  108,  108],
-  ['.claude/rules/bug-check.md',         0,   63,   63],
+  /* RAISED 63 -> 76, 23 Sep 26, for a genuinely new live rule and nothing else
+     (owner, D56): a problem living only in data already stored is not a finding,
+     because the demo data is cleared before the database step. It is HERE, in
+     the always-loaded copy, so it is in force before the order is ever opened —
+     which is the whole reason this file exists. The ratchet's own rule allows a
+     raise for a new live rule if the commit says why; this is that, and the
+     ceiling goes no higher without the same justification. */
+  ['.claude/rules/bug-check.md',         0,   76,   76],
   ['.claude/rules/record-decisions.md',  0,   60,   60],
   ['.claude/rules/plain-language.md',    0,   60,   60],
   ['HANDOFF.md',                         1,  961,  400],
-  ['OUTSTANDING.md',                     1, 1188,  600],
+  /* RAISED 1188 -> 1230, 22 Sep 26, deliberately and with headroom. [ALL-AVAIL-WINDOW] (D38) is a
+     genuinely new live item and the queue was re-ordered around it, +20 lines. Raised rather than
+     paid for by a trim, because D29 rule 3 forbids trimming docs inside another change and an
+     archive pass under a red gate is the exact pressure that destroyed two filed items on 22 Sep.
+     The extra headroom answers Fable's finding that seven of eight gated files sat at ZERO, which
+     is what made every addition a trim. [DOC-TRIM] still owns bringing this to its 600 target. */
+  /* 1230 -> 1240, 22 Sep 26, the SECOND raise today and the last one that should pass
+     unremarked. Thirteen rulings landed today (D31-D43) and the OIL red-team added a pointer
+     the next session must read. The agent tightened its OWN new text by 3 lines first rather
+     than trimming anyone else's entries - D29 rule 3 forbids a trim inside another change, and
+     squeezing prose to hit a number is the pressure that destroyed two filed items last week.
+     If a third raise is wanted, do [DOC-TRIM] instead: this file is 1234 against a 600 target. */
+  ['OUTSTANDING.md',                     1, 1240,  600],
   /* DECISIONS.md is append-only and is MEANT to grow, so its ceiling is its target.
      When it reaches it, the oldest decisions move to a dated section of their own and
      the index keeps only the live ones — the same shape as HANDOFF-ARCHIVE. */

@@ -39,6 +39,7 @@ import { stashDays, stashGenOf } from '../engine/weekstash'
 import { shiftWeek } from './weeknav'
 import { esc } from '../state/view'
 import { fmtT, storesView, rowCls, cxTag, flagTag, fyiTag, plCols, areaText, atimeText, lCell, saRoleText } from './html'
+import { fltNoLen, FLT_NO_LEN_SAYS } from '../engine/validate'
 
 /* a plain, non-interactive puck — the same visual identity (qual chip, RCP
    tint, SANS line) as html.ts's `puck()`, minus everything that function
@@ -86,12 +87,26 @@ function peekFormation(w: any, f: any): string {
   const brief = minus(f.to, VCONF.briefLead)
   const brShown = parseHM(f.br) != null ? f.br : brief
   const spans = `--gs:${rows}`
+  /* D49's MARK REACHES THE PEEK TOO (owner, 22 Sep 26; found by the roll-call
+     written with the fix, not by the walk). This column has its OWN copy of the
+     week's flying-line markup — deliberately, because it must never read the
+     live DAYS/SCHED — so a mark added to `ui/html.ts` does not arrive here, and
+     a line whose take-off and landing are the same minute would print as an
+     ordinary one on the only surface that shows next week. It wears the edge
+     and says why; it offers no tap, because a peek column is inert and carries
+     no warning list of its own. `fltNoLen` is the engine's one body for the
+     rule, so this cannot drift from the warning or from the two live surfaces
+     — and it takes the formation alone, which is exactly what this file has:
+     a day blob from the seed or the stash, never a day index. */
+  const noLen = fltNoLen(f)
+  const badCls = noLen ? ' badtm' : ''
+  const badAtt = noLen ? ` title="${esc((f.cs || w.label || 'A flying line') + ' ' + FLT_NO_LEN_SAYS(parseHM(f.to), sa))}"` : ''
   let h = `<div class="form${rowCls(f)}">`
     + `<div class="fcell csmsn" style="${spans}">${cxTag(f)}${flagTag(f)}<b><span class="mdot" style="background:${sa ? 'var(--san)' : `var(--${mColor(f.msn)})`}"></span>${esc(f.cs || '')}</b>${f.msn ? `<i>${esc(f.msn)}</i>` : ''}</div>`
     + (sa
-      ? `<div class="fcell bto" style="${spans}"><span>${esc(f.to || '')}</span></div>`
-      : `<div class="fcell bto" style="${spans}"><b>${esc(brShown || '')}</b><span>${esc(f.to || '')}</span></div>`)
-    + `<div class="fcell ld" style="${spans}">${esc(f.ld || '')}</div>`
+      ? `<div class="fcell bto${badCls}"${badAtt} style="${spans}"><span>${esc(f.to || '')}</span></div>`
+      : `<div class="fcell bto${badCls}"${badAtt} style="${spans}"><b>${esc(brShown || '')}</b><span>${esc(f.to || '')}</span></div>`)
+    + `<div class="fcell ld${badCls}"${badAtt} style="${spans}">${esc(f.ld || '')}</div>`
   ;(f.aircraft || []).forEach((a: any, ai: number) => {
     const acx = (f.cx ? '' : rowCls(a)) + ((sa && a.spare) ? ' spare' : '')
     const stores = sa ? '' : storesView(a.opts || {})
