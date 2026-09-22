@@ -1,9 +1,15 @@
 # [OIL-SEATS-CAN-EARN] — the plan, REWRITTEN after round 1 (22 Sep 26)
 
-**Status: REWRITE, awaiting round 2. Not built.** Round 1 returned **REVISE from both providers** —
-Fable 5.1 (7 must-fix, 9 should-fix) and Codex/GPT-6 Astra (7 findings, 4 high), independently and
-blind to each other. Nothing was rejected. Four findings changed the plan's SHAPE, so this is a
-rebuild, not a patch.
+**Status: ROUND 2 FOLDED IN. Awaiting one targeted check, then buildable.** Two rounds, both
+providers, independently and blind to each other. **Round 1:** Fable 7 must-fix + 9 should-fix,
+Codex 7 (4 high) — four changed the plan's SHAPE. **Round 2, on the rewrite:** Codex 5 (4 high),
+Fable 5 must-fix + 4 should-fix — and **three of Codex's five were errors the host introduced while
+fixing round 1**, which is the argument for the second round having existed. Nothing was rejected in
+either round. The owner then settled four questions (D43–D46), two of which closed findings outright.
+
+**The round cap is reached — there is no round 3.** The owner asked for ONE targeted check of the
+delta instead: did round 2 get folded in correctly, and does anything new appear. After that the
+next checks are a different kind — both providers reading the finished CODE, and the WALK.
 
 **Read first:** `2026-09-22-oil-seats-can-earn-review-log.md` (both reviews, the host's disposition
 on every finding, where they agreed and diverged) and `2026-09-22-oil-seats-can-earn-review-fable.md`
@@ -13,8 +19,9 @@ Tier **FULL** under `raptor-port/docs/bug-check-order.md` §5: money (D25 — ea
 a new gesture, a new surface, a shared drawer. Build on Opus high, WALK the running app, then both
 providers read the finished code blind to each other. **The walk goes before the reads.**
 
-**§9 lists every round-1 finding and where it is now handled.** Round 2 should check that table
-first: a finding with no row there has been lost.
+**§9 lists every finding from BOTH rounds and where each is handled.** Check that table first: a
+finding with no row there has been lost. Round 2 found exactly that — two findings marked handled
+were handled in name only.
 
 ---
 
@@ -42,10 +49,24 @@ with its reason printed**, never a silent absence.
 | **D37** | The count reads as **what it is** — who has nothing else on the programme at that time — not as a promise. |
 | **D42** | An overnight line earns **the day it sits on**; the day the hours spill into earns nothing from it. |
 | **D43** | **The placeholder pucks are ON by default, everywhere they can land** — like named people. Only the four exempt KINDS default off. |
+| **D44** | **Who was behind a puck is FROZEN at publication on EVERY day**, earning or not. Issued = frozen; working copy = live; the difference is the pending mark. |
+| **D45** | **A change in availability NEVER invalidates a signature.** The pending mark is the whole mechanism, the same on every day. **The principle under it is a standing test:** nothing on a published schedule may change without the scheduler acknowledging it. |
+| **D46** | **The placeholder is allowed on an accepted REQUEST row and credits by default — no exception to D43 anywhere.** Removing the puck removes the crediting (immediately when unpublished; on re-issue when published). |
 
 **D43 supersedes** the "placeholder defaults off" reading of D27, the previous version of this plan
 (its §5 step 3), and **both reviewers' recommendations**. It is simpler than either and it closes the
-review's worst finding outright — see §6.
+review's worst finding outright — see §6. **D27, D28, D32 and D33 now carry that amendment in
+`DECISIONS.md`**; Fable R2-5 caught that they did not, which was the host breaking the owner's own
+rule about correcting stale text in the same change.
+
+**D46 rejects Fable R2-4 and the host's agreement with it.** Both wanted the puck refused on a
+request row; the owner took the no-carve-outs answer after checking that removing a puck removes its
+crediting. So step 6 KEEPS its third freeze path rather than losing it.
+
+**D44 and D45 fit together, checked:** because the list is frozen, a change in availability alone
+never moves a credit — the issued day keeps paying the people it was issued with. Money moves only
+on a re-issue, and a re-issue is signed through the ordinary amendment flow. So credits can never
+move without a signature behind them, which is why D45 leaves no hole.
 
 **Two ruling CLASHES this change must resolve out loud, not silently:**
 
@@ -118,11 +139,31 @@ corrected four claims** — the corrections are C1–C4 and were the host's own 
 duty wave where `saExemptKind(dw.sa)`. **Everything else is `true`, including people a placeholder
 expands to** (D43 — the placeholder needs no rule of its own; it inherits the seat's).
 
-**The item mark becomes three-state.** `OilDecisions.items` widens from `Record<string,0>` to
-`Record<string,0|1>`; `itemOn` returns `false` (blanket or `0`), `true` (`1`) or `undefined`;
-`earnsFrom` becomes: item `false` → no; an explicit person decision wins next; item `true` → yes;
-otherwise **the span's own default**. So with no marks at all, a shift's MAIN earns and its SPARE
-does not, from one address.
+**The default rides the SPAN — and the predicate covers BOTH spare flags.** A span is stamped
+`false` for `f.spare` **and** `ac.spare` (the old exclusion checks both; the rewrite named only one,
+Codex OSE-R2-02), a standalone wave that is not SC, and a duty wave where `saExemptKind(dw.sa)`.
+
+**The item mark becomes three-state — as TWO functions, not one** (Fable R2-2). Consolidating a
+three-valued answer into the existing callers would break them: six of them treat it as a boolean,
+and `!undefined` is true, so every puck would go inert and every item tap would toast "masked".
+So step 1 lands **`oilItemMasked(di,item): boolean`** (blanket or `0`) for the four guards —
+semantics unchanged — and **`oilItemMark(di,item): 0|1|undefined`** for the switch. Plus
+**`itemState(di,item): 'on'|'off'|'mixed'`** for drawing, because an SC shift legitimately holds
+both. `earnsFrom`: item `false` → no; an explicit person decision next; item `true` → yes; otherwise
+the span's own default.
+
+**Nothing writes the `1` today** — `toggleOilItem` only writes `0` or deletes, so an AVALON line
+could never be switched ON and D24's switch would draw and do nothing. The cycle becomes: unset-on
+→ `0`; unset-off or mixed → `1`; `1` → `0`; `0` → delete.
+
+**The MODE's own default must move with the money's** (Fable R2-1, the sharpest finding of round 2,
+and the same defect Codex OSE-R2-01 found from the opposite end). The rewrite changed `earnsFrom`
+and left `itemDefaultFor`, which returns `true` with no claim. Traced: a default-off SPARE man draws
+GLOWING while the money pays him nothing, and his tap writes `deny` for a credit he never had —
+`allow` is unreachable, **so D24's only door would not exist**. Fix: a shared `spanDefault(day, ev,
+person, item)` in the engine, read by `itemDefaultFor` AND `oilEarnedWork`, so screen and money
+cannot disagree. And `toggleOilPerson` must compare against the **effective** default under the item
+mark (`mark === 1 ? true : spanDefault`), or a man on a line forced on can never be taken off.
 
 **An activated spare is credited by tapping the man** (Fable M2 option A). No new address, and D24's
 words — "the admin can just easily click credit OIL" — are satisfied. *Fallback if the walk shows
@@ -167,35 +208,57 @@ D36 was the first — see §5a, whose lesson is now twice-earned.
 Each step lands green before the next. **The refusal ships before the expansion, never after**, or a
 cockpit placeholder briefly starts earning (Fable M4, which reordered the original plan).
 
-1. **Consolidate the earn rule onto the EVIDENCE.** One function; the mode and the money both call
-   it. No behaviour change — prove it by deleting the duplicate and watching the suite stay green.
+1. **Consolidate the earn rule onto the EVIDENCE, as the TWO functions §4 names**, and **memoise
+   here, not at step 9** (Fable R2-7): the mode's check is O(1) today off the live day; on the
+   evidence it builds the whole block per call, and it is called per row and per puck. Memoise
+   `oilEvidence(di)` and `oilDaySpans(di)` on (day identity, store version). No behaviour change —
+   prove it by deleting the duplicate and watching the suite stay green.
 2. **The placement refusal** (D33), preflighted per §4, with its reason on every door: drag, armed
    placement, the swap's both ends, and the palette's placeholder row. Plus the non-expanding belt on
    the flying branch. **This ships before step 5.**
-3. **Span defaults and the three-state item mark** (§4). Land it with every `dflt` set `true` and the
-   suite green — that proves the "no behaviour change" claim — then stamp the four exempt kinds
-   `false` in the same step's second commit.
+3. **Span defaults, the two item functions, and the shared `spanDefault`** (§4). Land it with every
+   `dflt` set `true` and the suite green — but **the proof must include the MODE rendering and the
+   person default, not only the money** (Fable R2-2: a green suite that never opens the mode proves
+   nothing). Then stamp the exempt kinds `false` in the same step's second commit. **Ship the switch
+   wording WITH this step, not at step 10** (Fable R2-10): from here the switch has five states and
+   `oilOffReason` needs its fifth — otherwise the mode spends steps 4–10 telling the admin a man
+   "earns nothing from this event — tap to put him back on it" about a man who was never on it.
 4. **Let the exempt kinds into the walk** (D24/D35), **all four skips** (C4), including the
    template-minted path, pinned by a test with a control the way D20's second half was.
 5. **Expand the placeholder everywhere it can land** — the owner's Sunday desk. Red first: a test
    that reproduces it and fails. Covers ground `more`, duty `id`/`more`, sim `p`/`w`/`pax`/`more`
    (C3 — not "any row").
-6. **The accepted-input claim path**, its own step because it is its own money route: resolve and
-   freeze placeholder extras from the claim's authoritative window, preserve the requester's own
-   answer, and update `landedExtras`, eligibility, decision pruning and switch presentation together.
-   **Do not simply remove the `src` exclusion** — that would pay requesters through the unconditional
-   schedule path.
+6. **The accepted-input claim path**, its own step because it is its own money route. **BOTH the
+   primary name box AND the extras** — the rewrite covered only the extras, and a placeholder can sit
+   in either (Codex OSE-R2-04; this was Fable S1 handled in name only). Resolve and freeze from the
+   claim's authoritative window, preserve the requester's own answer, and update `landedExtras`,
+   eligibility, decision pruning and switch presentation together. **Do not simply remove the `src`
+   exclusion** — that would pay requesters through the unconditional schedule path. **D46 keeps this
+   path**: the crowd credits by default here like anywhere else.
 7. **Open a placeholder into real pucks in the mode** on duty rows, sim rows and extras (OIL8), so a
    man can be taken off a crowd individually.
 8. **Capability excludes a zero-length WRITTEN interval** (C2): validate `to`/`ld` before the padding
    is added, and derive both capability and the visible refusal reason from that one validation.
    Overnight intervals stay legitimate (D42), and D36's availability window is untouched.
-9. **Show the count outside the mode** on every seat in §7, **frozen per §4 (D44)**, memoised per
-   (day, version) — this moves from weekend-in-mode to every day, every seat, every repaint, so it
-   must cite `docs/performance.md` Part 1 and keep the chip as the tap target (Fable S4, S7).
-10. **The wording pass** — the refusal (D31), the count (D37), and the mixed-default item switch,
-    whose two current titles are not exhaustive once one item holds both default-on and default-off
-    spans (Fable S8). One pass, one vocabulary, read side by side on the same screens.
+   **THIS STEP CHANGES HISTORICAL MONEY and needs its own guard** (Codex OSE-R2-03): an issued
+   Saturday flight with take-off and landing at the same minute pays a half day today and would pay
+   nothing afterwards, because the money is recomputed from the frozen day and the reverse sweep then
+   deletes the credit with no amendment. Old issued evidence must be held to the rule it was issued
+   under, and the correction must be visible in the amendment comparison — an old signature must not
+   authorise changed money. Prove it: an old zero-length snapshot keeps its credit until an explicit
+   correction; a new one is refused with D31's reason; publishing the correction moves the Leave War
+   cell. Valid-flight and placeholder snapshots as controls.
+9. **Show the count outside the mode** on every seat in §7, **frozen per §4 (D44)** — this moves
+   from weekend-in-mode to every day, every seat, every repaint (memo landed at step 1), so it must
+   cite `docs/performance.md` Part 1 and keep the chip as the tap target (Fable S4, S7).
+   **ONE RESOLVER behind all four readers** — `oilSentinelSummary`, `oilSentinelList`,
+   `oilSentinelPeople`, `oilRowPeople` — frozen entry if present, else live (Fable correction 2), or
+   the chip says 27 and the tap says "Nobody is behind this puck on this day". **And the chip must
+   carry its VERSION** (Codex OSE-R2-05): the snapshot is installed only while the HTML is generated,
+   so a tap re-reads live evidence and an issued day can show one number and list another.
+10. **The wording pass** — the refusal (D31) and the count (D37), which must say whether it is the
+    issued list or the live one. The switch's five titles shipped at step 3. One vocabulary, read
+    side by side on the same screens.
 11. `[OIL-UNDO-WORDS]` — one string — folded in if convenient.
 
 ## 5a. THE TRAP THAT ALMOST GOT BUILT — read before touching availability
@@ -221,17 +284,33 @@ only someone who runs the squadron can say which one is right.
 
 ## 6. The risks worth attacking
 
-**The publication freeze**, still the serious one. It holds for every seat whose span carries a
-non-empty item, and fails silently in four places this plan must close: a rid-less row (item `''` is
-never frozen); a non-earning day (§4's arbitration); the claim path (step 6); and the flying branch
-if it ever expands (step 2's belt). Its failure mode is confirmed silent — the specific path is the
-Leave War's reverse sweep removing cells with nothing on screen.
+**The publication freeze**, still the serious one. Its failure mode is confirmed silent — the path
+is the Leave War's reverse sweep removing cells with nothing on screen. Three of the four holes are
+closed by steps of this plan: the non-earning day by D44, the claim path by step 6, the flying branch
+by step 2's belt. **The fourth — a rid-less row — is closed BY CONSTRUCTION** and should be pinned
+rather than listed as open (Fable R2-8): every painted row is minted an id by the mutation, load,
+publish and draft paths alike. Step 5 pins it: `put` never expands for an empty item, and a rid-less
+row credits nobody.
 
-**What D43 REMOVED from this section, and it was the worst item in it.** Round 1's headline finding
-was that switching the two currently-paying seats OFF would recompute already-issued Saturdays and
-delete landed credits with no amendment. **Nothing is switched off, so that path cannot be taken** —
-no data reset, no upgrade guard, no before/after published-credit test. The exempt kinds pose no
-equivalent risk: they earn nothing today and default off, so an issued day computes identically.
+**What D43 removed, and what it did NOT.** Round 1's headline finding was that switching the two
+currently-paying seats OFF would recompute already-issued Saturdays and delete landed credits with no
+amendment. **Nothing is switched off, so THAT route is closed.**
+
+**The host then over-claimed — three times — that "an issued day computes identically", and it has
+been holed three times. The claim is deleted rather than re-qualified.** What is actually true:
+
+- **Step 8 changes historical money by a different route** (Codex OSE-R2-03): a zero-length flight on
+  an issued day pays today and would pay nothing afterwards. **Step 8 carries its own guard and its
+  own before/after test.**
+- **Steps 4–5 change the amendment BOOK, not the money** (Fable R2-3): an issued day gains a live
+  membership entry the frozen block lacks, so it reads pending. Correct under D44/D45 — and it is a
+  NAMED EXPECTATION here, because the walk would otherwise report it as a defect. Its variant on an
+  exempt desk (an amendment offered for a decision that moves no money) is the one case to watch.
+- **Lifting the fourth skip** makes existing AVALON desks with a man and no times warn at publish.
+  Screen, not money.
+- **The before/after published test is RESTORED**, in the additive direction: publish a Sunday desk
+  with the old reader, run the new one, assert the issued credit holds, the day reads pending, and a
+  re-issue moves the money. Exempt-desk variant: no pending, no money.
 
 **Still live:** don't offer a switch where the day cannot measure, or a published day costs a real
 amendment for a decision that moves no money. ALL and ALL AVAIL are two pucks with identical
@@ -271,6 +350,21 @@ The four exempt KINDS, which are about real people, not the pucks:
 
 **Roles:** the count is a READ a member sees on View-only Sched; the switch is the admin's. Both
 halves enforced at the page and the write path, never the nav.
+
+**A SURFACE axis, which round 1's table lacked entirely** (Fable R2-9): board at phone and desktop,
+edit week, view week, **the version preview — the only place "as issued" is visible, so it MUST be
+walked**, the CSV export (flying seats only — a written NO-because), and the next-week peek.
+
+**Control rows, so the walk can tell a change from a coincidence:** an SC-template desk (not exempt)
+that earns today and must still earn; a cockpit holding a placeholder that arrived by COPY, which
+must credit nobody; and the mixed SC shift's switch at both widths.
+
+**One layout question the walk must answer rather than assume:** where 27 opened pucks go in a sim
+row's people cell at phone width.
+
+**And a second "free" count sits on the same screen:** the Available-crew panel says "Pilots · N
+free" from a different body than the puck's count. Two answers to one word, in view at once — a D37
+wording item, not a defect.
 
 **The Leave War side, which round 1 found missing entirely:** the OIL tracker figure per man; the
 FO/HO cell on the date; the clash strip when one of the crowd has leave that day; and the reverse
@@ -315,6 +409,29 @@ findable by driving the app.
 | Fable S8 — mixed-default item wording | §5 step 10 |
 | Fable S9 — issued days read "pending" | §6 |
 
-**OSE-05/M6 is now SETTLED by the owner (D44): frozen everywhere.** The host's contrary arbitration
-and its reversal are both kept above, because a reversed call that leaves no trace is how a later
-session re-derives the wrong answer.
+### Round 2
+
+| Finding | Where it now lives |
+|---|---|
+| Codex OSE-R2-01 / Fable R2-1 — the read changed, the write did not; a default-off man draws glowing and cannot be credited | §4 (`spanDefault` shared by screen and money; effective default in the person toggle), §5 step 3. **Both reviewers, opposite ends, one defect — treat as certain.** |
+| Codex OSE-R2-02 — the span predicate omitted formation-level `f.spare` | §4 (both flags named) |
+| Codex OSE-R2-03 — step 8 changes historical money | §5 step 8 (its own guard and test), §6 |
+| Codex OSE-R2-04 — half of the claim finding lost: the primary name box | §5 step 6 (both seats) |
+| Codex OSE-R2-05 — the chip carries no version, so the tap re-reads live | §5 step 9 |
+| Fable R2-2 — three-state breaks six boolean callers; nothing writes the `1` | §4 (two functions + `itemState`), §5 steps 1 and 3 |
+| Fable R2-3 — "computes identically" is false for the amendment book | §6 (the claim deleted, the expectations named, the test restored) |
+| Fable R2-4 — the placeholder on a request row | **closed by D46** — allowed, credits by default, no carve-out |
+| Fable R2-5 — D43 not written into the rulings it supersedes | **FIXED** — D27, D28, D32, D33 annotated in `DECISIONS.md` |
+| Fable R2-7 — memoise at step 1, not step 9 | §5 step 1 |
+| Fable R2-8 — the rid-less row is closed by construction | §6, pinned at step 5 |
+| Fable R2-9 — roll-call still missing a surface axis and controls | §7 |
+| Fable R2-10 — wording moved too late | §5 step 3 (the switch's five titles ship there) |
+| Fable correction 1 — frozen in the issued version, live on the working copy | §4 — and it is exactly the owner's own description |
+| Fable correction 2 — one resolver behind all four readers | §5 step 9 |
+
+**OSE-05/M6 was SETTLED by the owner (D44): frozen everywhere.** The host's contrary arbitration and
+its reversal are both kept in §4, because a reversed call that leaves no trace is how a later session
+re-derives the wrong answer. **Note what that episode shows about model review:** Fable tested the
+host's position and found it held; Codex declined to re-argue it when explicitly invited. Both left a
+wrong answer standing. Only the owner had the fact that settled it — the squadron's end-of-day
+process. **That is the second time (D36 was the first), and it is why §5a exists.**
