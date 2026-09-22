@@ -160,12 +160,19 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
   };
   src='FLT';
   (day.waves||[]).forEach((wv:any)=>{
-    if(isStandalone(wv)&&wv.kind!=='sc')return;          // AVALON / BB seats never earn
+    /* THE EXEMPT KINDS NOW HAVE A DEFAULT INSTEAD OF AN ABSENCE (D24/D35,
+       [OIL-SEATS-CAN-EARN] step 3b). An AVALON or BB wave earns nothing BY
+       DEFAULT rather than being unable to earn at all, so the admin can switch
+       one on when it really was work. The skip a line below still keeps them out
+       of this walk entirely — step 4 removes it, and they then arrive already
+       carrying this answer rather than defaulting to yes and paying at once,
+       which is F1's silent money. */
+    const exemptWave=isStandalone(wv)&&wv.kind!=='sc';
+    if(exemptWave)return;                                // AVALON / BB seats never earn (lifted at step 4)
     const sc=isStandalone(wv);
     (wv.formations||[]).forEach((f:any)=>{
       if(f.cx)return;
       item=rowItemKey(f.rid);                            // the LINE is the item a scheduler taps
-      dflt=true;
       const st=parseHM(f.to),en=parseHM(f.ld);
       /* SC shift = its written window; a flying line = report → land+debrief */
       const win=sc?w2(st,en)
@@ -174,7 +181,15 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
       if(!win)return;
       if(!f.spare)reach(item);
       (f.aircraft||[]).forEach((ac:any)=>{
-        if(ac.cx||f.spare||ac.spare)return;              // spares stand by, they do not work
+        if(ac.cx)return;                                 // a cancelled jet is not work, ever
+        /* BOTH SPARE FLAGS (Codex OSE-R2-02). The exclusion this replaces read
+           `f.spare||ac.spare`, and a saved SC formation can carry the
+           FORMATION-level flag with none on the aircraft row. Naming only the
+           aircraft one — which the first rewrite did — would default every
+           occupant of such a shift ON, and pay a spare shift that has never
+           been paid. */
+        dflt=!exemptWave&&!f.spare&&!ac.spare;
+        if(f.spare||ac.spare)return;                     // spares stand by, they do not work (lifted at step 4)
         [ac.p,ac.w].forEach((v:any)=>put(v,win));
       });
     });
@@ -193,10 +208,15 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
   }));
   src='Duty';
   (day.dutywaves||[]).forEach((dw:any)=>{
-    if(dw&&saExemptKind(dw.sa))return;                   // the excluded waves' own desks
+    /* the desk an exempt wave brings with it (D35 — and it reaches a block
+       MINTED from an AVALON template too, because the mint stamps `sa` and this
+       reads `dw.sa`). Same shape as the wave above: a default, not an absence;
+       the skip is lifted at step 4. */
+    const exemptDuty=!!(dw&&saExemptKind(dw.sa));
+    if(exemptDuty)return;                                // the excluded waves' own desks (lifted at step 4)
     (dw.rows||[]).forEach((r:any)=>{
       if(r.cx)return;
-      item=rowItemKey(r.rid); dflt=true;
+      item=rowItemKey(r.rid); dflt=!exemptDuty;
       const win=w2(parseHM(r.str),parseHM(r.end));
       if(!win)return;
       reach(item);
