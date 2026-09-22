@@ -13,9 +13,10 @@ REVIEW = 'weekly review 23 Sep 26'
 
 GROUPS = {
     '1': ('verification-before-completion', 'Common Failures rows / long-run pattern / browser-checks.md',
-          [5, 6, 17, 18, 20, 33, 35, 40, 44, 48, 49, 65, 83, 84, 85, 87, 105, 119, 134, 136, 152, 159, 176, 177]),
+          [5, 6, 17, 18, 20, 33, 35, 40, 44, 48, 49, 65, 78, 79, 82, 83, 84, 85, 87, 105, 119, 134, 136, 152, 159,
+           176, 177]),
     '2': ('systematic-debugging', 'reproduce / recent-change / working-example lines, the flaky block, device-only-bugs.md',
-          [52, 61, 67, 70, 124, 133, 138, 160, 167]),
+          [52, 61, 67, 70, 124, 133, 138, 160, 161, 167]),
     '3': ('test-driven-development', 'Verify RED/GREEN additions and writing-good-tests.md',
           [13, 63, 125, 139, 143, 145, 149, 155, 170, 172, 175]),
     '4': ('writing-plans', 'plan-file check, per-task browser check, Model line, standing orders, No-Placeholders items, self-review 4-9',
@@ -34,8 +35,8 @@ GROUPS = {
     '11': ('task-observer', 'numbering across branches, close-it-where-you-apply-it, review Step 3, the pinned log location, the second log folded in',
            [62, 186, 187, 189]),
     '12': ('impeccable project config', 'detector.ignoreFiles for the engine and test files', [43]),
-    '13': ('machine-local memory notes', 'Windows exit code, per-section convergence, when not to commission a pre-build guide',
-           [154, 162, 164, 165]),
+    '13': ('machine-local memory notes', 'Windows exit code, per-section convergence, when not to commission a pre-build guide, quoting layers',
+           [154, 162, 164, 165, 190]),
 }
 
 CLAUDE = 'raptor-port/CLAUDE.md'
@@ -48,7 +49,6 @@ REFLECTED = {
     16: CLAUDE + ' §Rules-engine robustness doctrine',
     **{n: CLAUDE + ' §Build & verify (stop a server by its port)' for n in (15, 21, 66, 121, 140, 142, 146)},
     34: UIC + ' (a fix that landed in the wrong media block)',
-    82: UIC + ' (frozen name column; override block placement)',
     36: 'raptor-port/docs/bug-check-order.md and OUTSTANDING.md [HUMAN-RETEST]',
     37: 'raptor-port/docs/engine-rules.md §Weekend/PH work earns OIL (derives on read)',
     38: CLAUDE + ' §Time format',
@@ -63,13 +63,11 @@ REFLECTED = {
     74: '.claude/rules/plain-language.md (loaded every session)',
     185: '.claude/rules/plain-language.md (loaded every session)',
     76: UIC + ' (compositor-layer section)', 81: UIC + ' (compositor-layer section)',
-    78: UIC + ' (what a drag looks like)', 79: UIC + ' (frozen-column grip)',
     86: UIC + ' (page stays usable behind a sheet)', 88: UIC + ' (page stays usable behind a sheet)',
     115: CLAUDE + ' §Product bar (state the expected time before the first task)',
     123: PERF + ' §The perf gate (desktop and phone)',
     157: 'the machine-local memory note astra-codex-cli-available (runner command, --host mapping)',
     168: 'the machine-local memory note astra-codex-cli-available (runner command, --host mapping)',
-    161: 'raptor-port/scripts/tracker/smoke.mjs (process-tree teardown)',
     171: 'raptor-port/docs/bug-check-order.md §3 (the walk owns the seams)',
 }
 DECLINED = {
@@ -77,6 +75,13 @@ DECLINED = {
     31: 'a quirk of one GitHub listing tool; too narrow for a guide',
     141: 'a one-off masking job; the standing rule (synthetic demo data, tripwire-tested) is in raptor-port/docs/architecture-direction.md §5, and the repo is private (D59)',
     166: 'a one-off parse error (`*/` inside a block comment); too narrow for a guide',
+}
+# Where one observation's lesson is split between a change and a place that already carried it.
+NOTES = {
+    62: 'its module-mock half is in test-driven-development/writing-good-tests.md',
+    119: 'its read-the-CI-result-after-each-push half is already in raptor-port/CLAUDE.md §How to work here',
+    153: 'its compact-only-at-a-clean-point half is already in the owner\'s global instructions',
+    46: 'the self-review now hands the same checks to an independent reviewer of the plan',
 }
 OPEN = {
     42: 'needs a small code change (a root-level script or hook), not a guide change',
@@ -133,7 +138,8 @@ def emit(groups, date, out):
             continue
         skill, what, nums = GROUPS[g]
         for n in nums:
-            statuses[n] = 'ACTIONED (%s) — Applied to %s: %s (%s, owner-approved)' % (date, skill, what, REVIEW)
+            note = ('; ' + NOTES[n]) if n in NOTES else ''
+            statuses[n] = 'ACTIONED (%s) — Applied to %s: %s%s (%s, owner-approved)' % (date, skill, what, note, REVIEW)
     json.dump({str(k): v for k, v in sorted(statuses.items())}, open(out, 'w', encoding='utf-8'), ensure_ascii=False, indent=0)
     print('wrote %d statuses for groups %s to %s' % (len(statuses), ','.join(chosen), out))
 

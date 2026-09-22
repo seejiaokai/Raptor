@@ -2833,3 +2833,18 @@ tends to carry costs (hidden bugs, undoing the plan's intent) that only resurfac
 **Suggested improvement:** Two lines. In Acting on Observations: whenever an observation's lesson is applied anywhere — a skill, a project doc, a rules file — mark it ACTIONED in the same change, naming where it went. In the review's Step 3: cross-check each observation against the project's own docs, not only the skills, before proposing a change; a lesson already written there is closed as "already reflected".
 
 **Principle:** A backlog is only as honest as its closing discipline. Mark at the moment of applying, and let reviews search where lessons actually land, or a list of done work poses as open work and invites duplication.
+
+### Observation 190: Code written through two quoting layers arrives with its escapes turned into real characters
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** The skill review, on the Windows desktop (git-bash). Twice a script was patched by a Python snippet fed through a bash heredoc; the `\n` and `\t` escapes meant for the target file's source arrived as real newlines and tabs — printf format strings split across lines, awk patterns holding literal tab characters. Both files still ran, which is why the first was nearly committed.
+**Skill:** machine-local memory (tooling on this desktop)
+**Type:** internal
+**Phase/Area:** editing files with scripts
+
+**Issue:** Each quoting layer (the tool call, the heredoc, the Python string literal) may consume one level of escaping, and which one did is invisible until the output is read back. The damage is silent when the mangled file still runs.
+
+**Suggested improvement:** Write any file whose content contains escape sequences with a file-writing tool, not through a heredoc'd script string; if a script must write it, read the result back and count tab and carriage-return bytes before committing.
+
+**Principle:** Every quoting layer is an interpreter. Generated source that passes through more than one should be written by a tool with no quoting layer, or verified byte-for-byte after writing.

@@ -43,12 +43,13 @@ if ! awk -v n="$n" '
 fi
 
 # The shared header: the Goal / Architecture lines, then the Global Constraints
-# section up to the next "---" rule or level-1/2 heading (code fences respected).
+# section up to the next "---" rule or the next heading of ANY level — a plan
+# may run straight from its constraints into "### Task 1" (code fences respected).
 shared=$(awk '
   /^```/ { infence = !infence }
   !infence && !ingc && /^\*\*(Goal|Architecture):\*\*/ { print; print ""; next }
   !infence && /^## Global Constraints/ { ingc = 1; print; next }
-  ingc && !infence && (/^---[ \t]*$/ || /^#{1,2}[ \t]/) { exit }
+  ingc && !infence && (/^---[ \t]*$/ || /^#+[ \t]/) { exit }
   ingc { print }
 ' "$plan")
 

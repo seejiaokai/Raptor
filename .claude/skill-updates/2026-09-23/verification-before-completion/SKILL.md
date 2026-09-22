@@ -98,11 +98,15 @@ Skip any step = lying, not verifying
 ❌ "Linter passed" (linter doesn't check compilation)
 ```
 
-**Long check runs:**
+**Long check runs** — the command must still FAIL when the check fails:
 ```
-✅ cmd > run.log 2>&1; echo "exit=$?"; tail -20 run.log   (verdict kept; search the file if red)
+✅ cmd > run.log 2>&1; rc=$?; tail -20 run.log; exit $rc                   (bash)
+✅ cmd *> run.log; $rc = $LASTEXITCODE; Get-Content run.log -Tail 20; exit $rc   (PowerShell)
 ❌ cmd | tail -5   (reports tail's exit status; the failure detail is gone and costs a full re-run)
+❌ cmd > run.log 2>&1; tail run.log   (same trap: the last command's status is tail's)
 ```
+The whole log stays in the file — search it when the run is red instead of
+running it again.
 
 **Requirements:**
 ```

@@ -289,8 +289,11 @@ If systematic investigation reveals issue is truly environmental, timing-depende
 
 **But:** 95% of "no root cause" cases are incomplete investigation.
 
-**"Flaky" is a hypothesis, never a diagnosis — and never fixed with a retry
-or a longer timeout.** Ask first:
+**"Flaky" is a hypothesis, never a diagnosis.** Never paper over an
+uninvestigated flaky TEST or check with a retry or a longer timeout — that
+hides the mechanism. The handling above (a bounded retry, monitoring) is for a
+genuinely external condition in the product itself, once the investigation has
+proven one. For a flaky check, ask first:
 - What does the check assert that the system does not promise? A background
   loop, a timer or a deferred write racing the assertion makes the outcome
   depend on how fast the runner is.
@@ -300,8 +303,10 @@ or a longer timeout.** Ask first:
   announcing itself.
 
 A failure that moves between runs, lies outside your change and passes on its
-own is not your change's — say so, with that evidence, and record it. It is
-still a defect in the test or the environment.
+own is a hypothesis that it is not yours — not an exoneration: your change
+can leak a timer, a global or a server into whichever test runs next. Compare
+the same run on the code before your change (or CI), and name the mechanism,
+before calling it unrelated. Either way, record it — it is still a defect.
 
 ## Supporting Techniques
 

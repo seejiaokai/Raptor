@@ -123,8 +123,11 @@ skip a slow install), that link is now something you did not author for the
 repo, and `git add -A` / `git add .` will commit it: an ignore pattern ending
 in `/` (`node_modules/`) matches a directory, never a symlink. In such a
 worktree, stage files by name — during a conflict,
-`git diff --name-only --diff-filter=U` lists them — and before pushing a big
-merge check `git diff --stat` against its base for a stray link. A committed
+`git diff --name-only --diff-filter=U` lists them. Before pushing a big merge,
+run `git diff --summary BASE...HEAD | grep 'mode 120000'` — a link shows as
+`create mode 120000` (`--stat` cannot show it: a link looks like a one-line
+file). Better still, write dependency ignores without the trailing slash
+(`node_modules`, not `node_modules/`) so a link is ignored too. A committed
 link can overwrite the real dependency folder in every checkout that merges it.
 
 ## Step 3: Verify Clean Baseline

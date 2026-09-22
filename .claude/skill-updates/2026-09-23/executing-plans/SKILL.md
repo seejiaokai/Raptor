@@ -17,13 +17,15 @@ Load plan, review critically, execute all tasks, report when complete.
 
 ### Step 1: Load and Review Plan
 1. Ensure an isolated workspace: use using-git-worktrees to create one or verify the existing one
-2. Check the premise before building. A plan or handoff describes the world
-   when it was written: `git fetch`, then for the branch it names,
-   `git log --oneline origin/main..BRANCH` (empty = everything on it already
-   landed) and `git log --oneline BRANCH..origin/main` (what it is missing);
-   read the state of any pull request it mentions. A file the handoff names but the tree lacks is more
-   often an un-pulled branch than a wrong path. If the work already landed,
-   stop and say so instead of rebuilding it.
+2. Check the premise before building — a plan or handoff describes the world
+   when it was written. `git fetch`, then:
+   - `git status -sb`: "behind N" means fast-forward first. A file the handoff
+     names but the tree lacks is more often an un-pulled branch than a wrong
+     path.
+   - For the branch it names: `git log --oneline origin/main..BRANCH` (empty =
+     everything on it already landed) and `git log --oneline BRANCH..origin/main`
+     (what it is missing). Read the state of any pull request it mentions.
+   - If the work already landed, stop and say so instead of rebuilding it.
 3. Read plan file
 4. Review critically - identify any questions or concerns about the plan
 5. If concerns: Raise them with your human partner before starting

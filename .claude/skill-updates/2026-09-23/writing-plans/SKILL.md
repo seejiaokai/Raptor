@@ -97,7 +97,7 @@ only as a sentence in an index does not fire.
 ````markdown
 ### Task N: [Component Name]
 
-**Model:** [who builds it, at what effort, and why — one line]
+**Model:** [model · thinking level · why, one line — the task's completion report repeats it]
 
 **Files:**
 - Create: `exact/path/to/file.py`
@@ -179,9 +179,11 @@ or "X is a pure function" names the check that proved it — X's real signature
 and side effects (globals it writes, live state it reads), or the value read
 off the real target in a browser. A blanket rule does not reach a place you
 have not checked (a CSS `*` never matches a pseudo-element). For a plan
-touching three or more modules also check: import cycles the plan creates,
-every existing reader of a rule it changes, helpers it assumes exist, and any
-internal id the screen would print.
+touching three or more modules also check — and hand the same four checks to
+an independent reviewer of the plan, because the author shares the plan's
+blind spots: import cycles the plan creates, every existing reader of a rule
+it changes, helpers it assumes exist, and any internal id the screen would
+print.
 
 **5. Replacement code:** For each code block that REPLACES existing lines,
 list the guards and early returns in the original and confirm each survives

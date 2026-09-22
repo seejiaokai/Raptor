@@ -1,3 +1,19 @@
+diff --git a/.claude/skill-updates/2026-09-23/_config/.impeccable/config.json b/.claude/skill-updates/2026-09-23/_config/.impeccable/config.json
+new file mode 100644
+index 00000000..2517246d
+--- /dev/null
++++ b/.claude/skill-updates/2026-09-23/_config/.impeccable/config.json
+@@ -0,0 +1,10 @@
++{
++  "detector": {
++    "ignoreRules": [],
++    "ignoreFiles": [
++      "raptor-port/src/engine/**",
++      "**/*.test.*"
++    ],
++    "ignoreValues": []
++  }
++}
 diff --git a/.claude/hooks/task-observer-session-start.sh b/.claude/skill-updates/2026-09-23/_hooks/task-observer-session-start.sh
 index 277a9f28..a4a6d3fa 100644
 --- a/.claude/hooks/task-observer-session-start.sh
@@ -21,15 +37,22 @@ index 277a9f28..a4a6d3fa 100644
  EOF
  
 diff --git a/.claude/skills/SUPERPOWERS-VENDORED.md b/.claude/skill-updates/2026-09-23/_notes/SUPERPOWERS-VENDORED.md
-index 0db7e08d..eb9d1872 100644
+index 0db7e08d..1454ee3b 100644
 --- a/.claude/skills/SUPERPOWERS-VENDORED.md
 +++ b/.claude/skill-updates/2026-09-23/_notes/SUPERPOWERS-VENDORED.md
-@@ -18,7 +18,25 @@ did not.
+@@ -18,7 +18,7 @@ did not.
  1. **Cross-references de-namespaced.** Upstream skills call each other as
     `superpowers:test-driven-development`; a repo-level skill is invoked by its
     bare name, so the `superpowers:` prefix was stripped from all 26 references.
 -   No other edits — the skill bodies are upstream's.
 +   Beyond that, the skill bodies were upstream's until change 3.
+ 2. **The SessionStart hook is vendored but NOT wired in.** Upstream ships a hook
+    that injects the whole `using-superpowers` skill into every session as
+    `<EXTREMELY_IMPORTANT>` context. The adapted script is at
+@@ -28,11 +28,31 @@ did not.
+    Without the hook the skills still work normally — the Skill tool matches them
+    on their descriptions. The hook only makes `using-superpowers` unconditional,
+    at a cost of ~8K of context on every session start in this repo.
 +3. **Local lessons from the skill review of 23 Sep 26** (owner-approved;
 +   `.claude/skills/TASK-OBSERVER-VENDORED.md` §Reviews in this repo says why
 +   lessons land in skills). An upstream refresh overwrites these — re-apply
@@ -37,21 +60,18 @@ index 0db7e08d..eb9d1872 100644
 +
 +   | Skill | What was added |
 +   |---|---|
-+   | `verification-before-completion` | seven rows in Common Failures; the "long check runs" pattern; new `browser-checks.md` |
++   | `verification-before-completion` | seven rows in Common Failures; the "long check runs" pattern (bash + PowerShell); new `browser-checks.md` |
 +   | `systematic-debugging` | reproduce / recent-change / working-example lines; the "flaky is a hypothesis" block; new `device-only-bugs.md`; pointer to `raptor-port/docs/performance.md` |
 +   | `test-driven-development` | Verify RED/GREEN additions (green-before-implementation, reverting only the fix, races, shared fixtures, deliberate behaviour changes); `writing-good-tests.md` additions |
-+   | `writing-plans` | plan-file check, per-task browser check, `Model:` line, standing orders, three No-Placeholders items, self-review checks 4-9 |
-+   | `subagent-driven-development` | pre-flight items, brief contents, machine rules, safe parallelism, DONE_WITH_CONCERNS, decisions-vs-premises, what rides a fix round, ledger/turn-boundary/stop lines, pre-final-review deviation list; `implementer-prompt.md`, `task-reviewer-prompt.md`; `scripts/task-brief` prepends the plan's shared header |
++   | `writing-plans` | plan-file check, per-task browser check, `Model:` line, standing orders, three No-Placeholders items, self-review checks 4-9 (4 hands its checks to an independent plan reviewer) |
++   | `subagent-driven-development` | pre-flight items, brief contents, machine rules, safe parallelism, DONE_WITH_CONCERNS (incl. settling a disputed number), decisions-vs-premises in the text AND the flowchart, minors ride an open round, FIX_BASE after interleaved commits, ledger/turn-boundary/stop lines, pre-final-review deviation list; `implementer-prompt.md`, `task-reviewer-prompt.md`, `re-review-prompt.md` (optional minors, FIX_BASE); `scripts/task-brief` prepends the plan's shared header |
 +   | `dispatching-parallel-agents` | three Common Mistakes pairs; "When Agents Share the Working Tree or the Machine" |
-+   | `brainstorming` | visual-first layout rounds; enumerate "every"; layered-rule decision table; trap hunt; the mock-on-the-real-app fallback |
++   | `brainstorming` | visual-first layout rounds; enumerate "every"; layered-rule decision table; trap hunt; search stylesheet comments for a device; reversed rules list their old pins; the offer-as-an-answer exception; mocks drawn on the real app (local/preview build, never production) |
 +   | `requesting-code-review` | line-ending check before review; `code-reviewer.md` "Shared state and data" checklist + one Testing item |
 +   | `receiving-code-review` | finding / diagnosis / fix as three claims; two-of-a-kind; "can't happen" needs proof |
-+   | `executing-plans` | premise check before building; deviation list before review |
-+   | `using-git-worktrees` | the symlinked-dependencies staging trap |
- 2. **The SessionStart hook is vendored but NOT wired in.** Upstream ships a hook
-    that injects the whole `using-superpowers` skill into every session as
-    `<EXTREMELY_IMPORTANT>` context. The adapted script is at
-@@ -32,7 +50,9 @@ did not.
++   | `executing-plans` | premise check before building (`git status -sb`, merged/behind); deviation list before review |
++   | `using-git-worktrees` | the symlinked-dependencies staging trap (`--summary` check, ignore without trailing slash) |
+ 
  ## Updating
  
  There is no auto-update. Re-clone upstream, copy `skills/` over, and re-apply
@@ -84,7 +104,7 @@ index 75b26177..001ea1f3 100644
  
  - **The skill's default log location does not persist on web/phone** — an
 diff --git a/.claude/skills/brainstorming/SKILL.md b/.claude/skill-updates/2026-09-23/brainstorming/SKILL.md
-index 789c3a19..2373a7ea 100644
+index 789c3a19..43d0c68a 100644
 --- a/.claude/skills/brainstorming/SKILL.md
 +++ b/.claude/skill-updates/2026-09-23/brainstorming/SKILL.md
 @@ -22,7 +22,7 @@ Every project goes through this process. A todo list, a single-function utility,
@@ -122,7 +142,7 @@ index 789c3a19..2373a7ea 100644
 -**This offer MUST be its own message.** Only the offer — no clarifying question, summary, or other content. Wait for the user's response. If they accept, start the server with `--open` so their browser opens to the first screen automatically. If they decline, continue text-only and don't offer again unless they raise it.
 +**This offer MUST be its own message.** Only the offer — no clarifying question, summary, or other content. Wait for the user's response. If they accept, start the server with `--open` so their browser opens to the first screen automatically. If they decline, continue text-only and don't offer again unless they raise it. One exception: when the visual question IS the design section awaiting approval, "show me a picture first" can be one of that question's answers instead of a separate message.
 +
-+**When the companion cannot open a browser** (a remote or phone session), draw the options on the real running app instead: load the real build, reach the real state by real actions, inject the proposed change into the live page, screenshot it at the widths the app ships, and SEND the images.
++**Prefer drawing the options on the real running app** whenever it can be driven — and always when the companion cannot open a browser (a remote or phone session). Use a local or preview build with throwaway data, never production: load it, reach the real state by real actions, inject the proposed change into the page, screenshot it at the widths the app ships, and SEND the images. With no safe build to drive, rebuild the captured real markup and styles as an isolated mock instead. A hand-drawn comp is the last resort.
 +- Build from the product's own components — its class names, cloned from an existing element of the same kind — not just its colour variables: borrowed colours alone read as a different product, and the reviewer ends up judging the noise.
 +- Give every injected node a class name the app has never used (a `mock-` prefix): the host stylesheet styles anything it recognises.
 +- A layout cost you mention (a row's height, how many days fit) is read off the rendered page, never estimated — a guessed cost puts a false price on the options.
@@ -176,10 +196,10 @@ index 3fa091b3..f6d966a2 100644
  
  **Related failures:** Fixing one might fix others - investigate together first
 diff --git a/.claude/skills/executing-plans/SKILL.md b/.claude/skill-updates/2026-09-23/executing-plans/SKILL.md
-index 20452595..9611712f 100644
+index 20452595..78553cf6 100644
 --- a/.claude/skills/executing-plans/SKILL.md
 +++ b/.claude/skill-updates/2026-09-23/executing-plans/SKILL.md
-@@ -17,10 +17,17 @@ Load plan, review critically, execute all tasks, report when complete.
+@@ -17,10 +17,19 @@ Load plan, review critically, execute all tasks, report when complete.
  
  ### Step 1: Load and Review Plan
  1. Ensure an isolated workspace: use using-git-worktrees to create one or verify the existing one
@@ -187,13 +207,15 @@ index 20452595..9611712f 100644
 -3. Review critically - identify any questions or concerns about the plan
 -4. If concerns: Raise them with your human partner before starting
 -5. If no concerns: Create todos for the plan items and proceed
-+2. Check the premise before building. A plan or handoff describes the world
-+   when it was written: `git fetch`, then for the branch it names,
-+   `git log --oneline origin/main..BRANCH` (empty = everything on it already
-+   landed) and `git log --oneline BRANCH..origin/main` (what it is missing);
-+   read the state of any pull request it mentions. A file the handoff names but the tree lacks is more
-+   often an un-pulled branch than a wrong path. If the work already landed,
-+   stop and say so instead of rebuilding it.
++2. Check the premise before building — a plan or handoff describes the world
++   when it was written. `git fetch`, then:
++   - `git status -sb`: "behind N" means fast-forward first. A file the handoff
++     names but the tree lacks is more often an un-pulled branch than a wrong
++     path.
++   - For the branch it names: `git log --oneline origin/main..BRANCH` (empty =
++     everything on it already landed) and `git log --oneline BRANCH..origin/main`
++     (what it is missing). Read the state of any pull request it mentions.
++   - If the work already landed, stop and say so instead of rebuilding it.
 +3. Read plan file
 +4. Review critically - identify any questions or concerns about the plan
 +5. If concerns: Raise them with your human partner before starting
@@ -201,7 +223,7 @@ index 20452595..9611712f 100644
  
  ### Step 2: Execute Tasks
  
-@@ -33,6 +40,10 @@ For each task:
+@@ -33,6 +42,10 @@ For each task:
  ### Step 3: Complete Development
  
  After all tasks complete and verified:
@@ -413,10 +435,33 @@ index b4a3dcc5..4cb7a609 100644
    `git fetch origin main && git checkout -B <branch> origin/main`
    Otherwise it stacks commits onto already-merged history.
 diff --git a/.claude/skills/subagent-driven-development/SKILL.md b/.claude/skill-updates/2026-09-23/subagent-driven-development/SKILL.md
-index 412e12df..db0df377 100644
+index 412e12df..0c069e38 100644
 --- a/.claude/skills/subagent-driven-development/SKILL.md
 +++ b/.claude/skill-updates/2026-09-23/subagent-driven-development/SKILL.md
-@@ -136,6 +136,18 @@ a ledger file, not only in todos.
+@@ -57,7 +57,9 @@ digraph process {
+         "Generate review package, dispatch task reviewer (./task-reviewer-prompt.md)" [shape=box];
+         "Spec ✅ and quality approved?" [shape=diamond];
+         "Finding conflicts with plan text?" [shape=diamond];
++        "Does that plan text record a decision (a chosen behaviour or trade-off)?" [shape=diamond];
+         "Ask human partner which governs" [shape=box];
++        "Rule for the stated intent; fix corrects plan/spec text; ledger the evidence" [shape=box];
+         "Fix round R of 5: R≤3 resume implementer; R≥4 fresh implementer, more capable model" [shape=box];
+         "Dispatch scoped re-review (./re-review-prompt.md)" [shape=box];
+         "All findings addressed?" [shape=diamond];
+@@ -85,8 +87,11 @@ digraph process {
+     "Generate review package, dispatch task reviewer (./task-reviewer-prompt.md)" -> "Spec ✅ and quality approved?";
+     "Spec ✅ and quality approved?" -> "Append completion to ledger, mark todo complete" [label="yes"];
+     "Spec ✅ and quality approved?" -> "Finding conflicts with plan text?" [label="no"];
+-    "Finding conflicts with plan text?" -> "Ask human partner which governs" [label="yes"];
++    "Finding conflicts with plan text?" -> "Does that plan text record a decision (a chosen behaviour or trade-off)?" [label="yes"];
++    "Does that plan text record a decision (a chosen behaviour or trade-off)?" -> "Ask human partner which governs" [label="yes"];
++    "Does that plan text record a decision (a chosen behaviour or trade-off)?" -> "Rule for the stated intent; fix corrects plan/spec text; ledger the evidence" [label="no - a technical premise the finding disproves"];
+     "Ask human partner which governs" -> "Fix round R of 5: R≤3 resume implementer; R≥4 fresh implementer, more capable model";
++    "Rule for the stated intent; fix corrects plan/spec text; ledger the evidence" -> "Fix round R of 5: R≤3 resume implementer; R≥4 fresh implementer, more capable model";
+     "Finding conflicts with plan text?" -> "Fix round R of 5: R≤3 resume implementer; R≥4 fresh implementer, more capable model" [label="no"];
+     "Fix round R of 5: R≤3 resume implementer; R≥4 fresh implementer, more capable model" -> "Dispatch scoped re-review (./re-review-prompt.md)";
+     "Dispatch scoped re-review (./re-review-prompt.md)" -> "All findings addressed?";
+@@ -136,6 +141,18 @@ a ledger file, not only in todos.
  - The ledger is your recovery map: the commits it names exist in git even
    when your context no longer remembers creating them. After compaction,
    trust the ledger and `git log` over your own recollection.
@@ -435,7 +480,7 @@ index 412e12df..db0df377 100644
  - `git clean -fdx` will destroy the workspace (it's git-ignored scratch); if
    that happens, recover from `git log`.
  
-@@ -147,6 +159,9 @@ Before dispatching Task 1, scan the plan once for conflicts:
+@@ -147,6 +164,9 @@ Before dispatching Task 1, scan the plan once for conflicts:
  - tasks that contradict each other or the plan's Global Constraints
  - anything the plan explicitly mandates that the review rubric treats as a
    defect (a test that asserts nothing, verbatim duplication of a logic block)
@@ -445,7 +490,7 @@ index 412e12df..db0df377 100644
  
  Present everything you find to your human partner as one batched question —
  each finding beside the plan text that mandates it, asking which governs —
-@@ -214,6 +229,16 @@ and fix-round diffs need it.
+@@ -214,6 +234,16 @@ and fix-round diffs need it.
    (5) the report-file path and report contract. Exact values (numbers,
    magic strings, signatures, test cases) appear only in the brief. Never
    make a subagent read the whole plan file.
@@ -462,7 +507,7 @@ index 412e12df..db0df377 100644
  - **Report file:** name the implementer's report file after the brief
    (brief `…/task-N-brief.md` → report `…/task-N-report.md`) and put it in
    the dispatch prompt. The implementer writes the full report there and
-@@ -227,7 +252,11 @@ and fix-round diffs need it.
+@@ -227,7 +257,11 @@ and fix-round diffs need it.
    a pointer to that ledger entry in the dispatch.
  - Record the implementer's agent identity from the dispatch result —
    fix-loop rounds 1-3 resume this agent.
@@ -475,16 +520,24 @@ index 412e12df..db0df377 100644
  
  Template: [implementer-prompt.md](implementer-prompt.md)
  
-@@ -237,7 +266,7 @@ Implementer subagents report one of four statuses. Handle each appropriately:
+@@ -237,7 +271,7 @@ Implementer subagents report one of four statuses. Handle each appropriately:
  
  **DONE:** Generate the review package (`scripts/review-package PLAN_FILE BASE HEAD`, from this skill's directory — it prints the unique file path it wrote; BASE is the commit you recorded before dispatching the implementer — never `HEAD~1`, which silently drops all but the last commit of a multi-commit task), then dispatch the task reviewer with the printed path.
  
 -**DONE_WITH_CONCERNS:** The implementer completed the work but flagged doubts. Read the concerns before proceeding. If the concerns are about correctness or scope, address them before review. If they're observations (e.g., "this file is getting large"), note them and proceed to review.
-+**DONE_WITH_CONCERNS:** The implementer completed the work but flagged doubts. Read the concerns before proceeding. If the concerns are about correctness or scope, address them before review. If they're observations (e.g., "this file is getting large"), note them and proceed to review. A concern that names a requirement the implementer left undone ("beyond the brief — their call") is neither: resume the implementer to finish it before the review, and review the combined diff. An implementer whose measured value disagrees with a number in the brief reports it here; neither the code nor the test is bent to match silently.
++**DONE_WITH_CONCERNS:** The implementer completed the work but flagged doubts. Read the concerns before proceeding. If the concerns are about correctness or scope, address them before review. If they're observations (e.g., "this file is getting large"), note them and proceed to review. A concern that names a requirement the implementer left undone ("beyond the brief — their call") is neither: resume the implementer to finish it before the review, and review the combined diff. An implementer whose measured value disagrees with a number in the brief reports it here; neither the code nor the test is bent to match silently. You settle it: check the measured value against the fixture, correct the brief and the plan, and ledger it — a number is yours to verify, never a question for your human partner.
  
  **NEEDS_CONTEXT:** The implementer needs information that wasn't provided. Provide the missing context and re-dispatch.
  
-@@ -316,6 +345,13 @@ Before the loop starts, two routes leave it immediately:
+@@ -310,12 +344,20 @@ Before the loop starts, two routes leave it immediately:
+   (`Task <N>: minor (deferred): <one-liner>`), and point the final
+   whole-branch review at that list so it can triage which must be fixed
+   before merge. A roll-up nobody reads is a silent discard. Minor findings
+-  never enter the loop.
++  never trigger or extend a round; they may only ride one that is already
++  open (see "What rides along" below).
+ - A finding labeled plan-mandated — or any finding that conflicts with
+   what the plan's text requires — is the human's decision, like any plan
    contradiction: present the finding and the plan text, ask which governs.
    Do not dismiss the finding because the plan mandates it, and do not
    dispatch a fix that contradicts the plan without asking.
@@ -498,7 +551,7 @@ index 412e12df..db0df377 100644
  Everything else enters the loop. A fix round is one fix dispatch plus one
  scoped re-review. Five rounds maximum per task:
  
-@@ -340,6 +376,22 @@ output; dispatch the re-review once all three are present. Name the
+@@ -340,8 +382,27 @@ output; dispatch the re-review once all three are present. Name the
  covering test files in the fix message — a one-line fix does not need the
  whole suite.
  
@@ -519,9 +572,15 @@ index 412e12df..db0df377 100644
 +  search for the constant finds nothing.
 +
  **The re-review is scoped.** Run `scripts/review-package PLAN_FILE FIX_BASE HEAD`
- where FIX_BASE is the head the previous review saw, and dispatch
+-where FIX_BASE is the head the previous review saw, and dispatch
++where FIX_BASE is the head the previous review saw — or, when other work's
++commits landed in between, the commit just before the fix's first commit,
++named in the ledger (otherwise the re-review reads someone else's diff) — and
++dispatch
  [re-review-prompt.md](re-review-prompt.md) with the findings list, the
-@@ -401,6 +453,13 @@ requesting-code-review's
+ brief, the report file, and the printed diff path. The re-reviewer verdicts
+ each finding ADDRESSED or NOT ADDRESSED and flags new breakage in the fix
+@@ -401,6 +462,13 @@ requesting-code-review's
  the ledger's deferred-minor and parked lines so it can triage which must be
  fixed before merge.
  
@@ -564,8 +623,62 @@ index fbe441e2..7baf29d8 100644
      - Self-review findings (if any)
      - Any issues or concerns
  
+diff --git a/.claude/skills/subagent-driven-development/re-review-prompt.md b/.claude/skill-updates/2026-09-23/subagent-driven-development/re-review-prompt.md
+index 18b0fb8a..8b3b5a85 100644
+--- a/.claude/skills/subagent-driven-development/re-review-prompt.md
++++ b/.claude/skill-updates/2026-09-23/subagent-driven-development/re-review-prompt.md
+@@ -25,12 +25,21 @@ Subagent (general-purpose):
+ 
+     [FINDINGS]
+ 
++    ## Optional, Not Blocking
++
++    [OPTIONAL_MINORS]
++
++    Minor findings the controller sent along with this round, if any. Verdict
++    each ADDRESSED or DEFERRED. A DEFERRED item never keeps the round open and
++    never counts against it.
++
+     ## The Fix
+ 
+     Read the implementer's report (fix reports are appended at the end):
+     [REPORT_FILE]
+ 
+-    **Fix base:** [FIX_BASE_SHA] (the head the previous review saw)
++    **Fix base:** [FIX_BASE_SHA] (the head the previous review saw, or the
++    commit just before the fix when other work landed in between)
+     **Head:** [HEAD_SHA]
+     **Diff file:** [DIFF_FILE]
+ 
+@@ -75,6 +84,9 @@ Subagent (general-purpose):
+       evidence. "Attempted" is not addressed: the specific defect must no
+       longer exist.
+ 
++    Then, for each optional minor (if any): **[one-liner]** — ADDRESSED |
++    DEFERRED.
++
+     ### New Breakage in the Fix Diff
+ 
+     Anything the fix itself broke or introduced, with severity
+@@ -97,10 +109,14 @@ Subagent (general-purpose):
+ - `[BRIEF_FILE]` — the task brief file (same file the implementer worked from)
+ - `[FINDINGS]` — the Critical/Important findings and spec gaps from the
+   previous review, copied verbatim, one per bullet
++- `[OPTIONAL_MINORS]` — the task's ledgered Minor findings sent along with
++  this round, one per bullet, or "None"
+ - `[REPORT_FILE]` — the implementer's report file (fix reports appended)
+-- `[FIX_BASE_SHA]` — the head the previous review saw
++- `[FIX_BASE_SHA]` — the head the previous review saw; when other work's
++  commits landed in between, the commit just before the fix's first commit
+ - `[HEAD_SHA]` — current commit
+ - `[DIFF_FILE]` — the path `scripts/review-package PLAN_FILE FIX_BASE HEAD` printed
+ 
+ **Re-reviewer returns:** per-finding verdicts (ADDRESSED / NOT ADDRESSED),
+-new breakage in the fix diff, out-of-scope observations, and a round verdict.
++per-minor verdicts (ADDRESSED / DEFERRED — never blocking), new breakage in
++the fix diff, out-of-scope observations, and a round verdict.
 diff --git a/.claude/skills/subagent-driven-development/scripts/task-brief b/.claude/skill-updates/2026-09-23/subagent-driven-development/scripts/task-brief
-index 612e14a1..21af1563 100644
+index 612e14a1..4d7d53f2 100644
 --- a/.claude/skills/subagent-driven-development/scripts/task-brief
 +++ b/.claude/skill-updates/2026-09-23/subagent-driven-development/scripts/task-brief
 @@ -3,6 +3,13 @@
@@ -582,7 +695,7 @@ index 612e14a1..21af1563 100644
  # Usage: task-brief PLAN_FILE TASK_NUMBER [OUTFILE]
  # Default OUTFILE: <repo-root>/.superpowers/sdd/<plan-basename>/task-<N>-brief.md
  # (per plan and per worktree; concurrent runs of the SAME plan in the same
-@@ -25,17 +32,44 @@ else
+@@ -25,17 +32,45 @@ else
    out="$dir/task-${n}-brief.md"
  fi
  
@@ -597,12 +710,13 @@ index 612e14a1..21af1563 100644
 +fi
 +
 +# The shared header: the Goal / Architecture lines, then the Global Constraints
-+# section up to the next "---" rule or level-1/2 heading (code fences respected).
++# section up to the next "---" rule or the next heading of ANY level — a plan
++# may run straight from its constraints into "### Task 1" (code fences respected).
 +shared=$(awk '
 +  /^```/ { infence = !infence }
 +  !infence && !ingc && /^\*\*(Goal|Architecture):\*\*/ { print; print ""; next }
 +  !infence && /^## Global Constraints/ { ingc = 1; print; next }
-+  ingc && !infence && (/^---[ \t]*$/ || /^#{1,2}[ \t]/) { exit }
++  ingc && !infence && (/^---[ \t]*$/ || /^#+[ \t]/) { exit }
 +  ingc { print }
 +' "$plan")
 +
@@ -655,7 +769,7 @@ index fefaea8a..765bd706 100644
  
      Compare the diff against What Was Requested:
 diff --git a/.claude/skills/systematic-debugging/SKILL.md b/.claude/skill-updates/2026-09-23/systematic-debugging/SKILL.md
-index e1a0a350..8e1838cd 100644
+index e1a0a350..79b2e9c7 100644
 --- a/.claude/skills/systematic-debugging/SKILL.md
 +++ b/.claude/skill-updates/2026-09-23/systematic-debugging/SKILL.md
 @@ -60,12 +60,24 @@ You MUST complete each phase before proceeding to the next.
@@ -693,12 +807,15 @@ index e1a0a350..8e1838cd 100644
  
  2. **Compare Against References**
     - If implementing pattern, read reference implementation COMPLETELY
-@@ -274,6 +289,20 @@ If systematic investigation reveals issue is truly environmental, timing-depende
+@@ -274,6 +289,25 @@ If systematic investigation reveals issue is truly environmental, timing-depende
  
  **But:** 95% of "no root cause" cases are incomplete investigation.
  
-+**"Flaky" is a hypothesis, never a diagnosis — and never fixed with a retry
-+or a longer timeout.** Ask first:
++**"Flaky" is a hypothesis, never a diagnosis.** Never paper over an
++uninvestigated flaky TEST or check with a retry or a longer timeout — that
++hides the mechanism. The handling above (a bounded retry, monitoring) is for a
++genuinely external condition in the product itself, once the investigation has
++proven one. For a flaky check, ask first:
 +- What does the check assert that the system does not promise? A background
 +  loop, a timer or a deferred write racing the assertion makes the outcome
 +  depend on how fast the runner is.
@@ -708,13 +825,15 @@ index e1a0a350..8e1838cd 100644
 +  announcing itself.
 +
 +A failure that moves between runs, lies outside your change and passes on its
-+own is not your change's — say so, with that evidence, and record it. It is
-+still a defect in the test or the environment.
++own is a hypothesis that it is not yours — not an exoneration: your change
++can leak a timer, a global or a server into whichever test runs next. Compare
++the same run on the code before your change (or CI), and name the mechanism,
++before calling it unrelated. Either way, record it — it is still a defect.
 +
  ## Supporting Techniques
  
  These techniques are part of systematic debugging and available in this directory:
-@@ -281,3 +310,8 @@ These techniques are part of systematic debugging and available in this director
+@@ -281,3 +315,8 @@ These techniques are part of systematic debugging and available in this director
  - **`root-cause-tracing.md`** - Trace bugs backward through call stack to find original trigger
  - **`defense-in-depth.md`** - Add validation at multiple layers after finding root cause
  - **`condition-based-waiting.md`** - Replace arbitrary timeouts with condition polling
@@ -919,10 +1038,10 @@ index c39b7376..d8905678 100644
  part of the contract, assert them — a fake that accepts anything verifies
  nothing. Give each branch (success, error, malformed) its own fixture or
 diff --git a/.claude/skills/using-git-worktrees/SKILL.md b/.claude/skill-updates/2026-09-23/using-git-worktrees/SKILL.md
-index 1381dacb..97c3df7c 100644
+index 1381dacb..7fc6f4f5 100644
 --- a/.claude/skills/using-git-worktrees/SKILL.md
 +++ b/.claude/skill-updates/2026-09-23/using-git-worktrees/SKILL.md
-@@ -118,6 +118,15 @@ if [ -f pyproject.toml ]; then poetry install; fi
+@@ -118,6 +118,18 @@ if [ -f pyproject.toml ]; then poetry install; fi
  if [ -f go.mod ]; then go mod download; fi
  ```
  
@@ -931,15 +1050,18 @@ index 1381dacb..97c3df7c 100644
 +repo, and `git add -A` / `git add .` will commit it: an ignore pattern ending
 +in `/` (`node_modules/`) matches a directory, never a symlink. In such a
 +worktree, stage files by name — during a conflict,
-+`git diff --name-only --diff-filter=U` lists them — and before pushing a big
-+merge check `git diff --stat` against its base for a stray link. A committed
++`git diff --name-only --diff-filter=U` lists them. Before pushing a big merge,
++run `git diff --summary BASE...HEAD | grep 'mode 120000'` — a link shows as
++`create mode 120000` (`--stat` cannot show it: a link looks like a one-line
++file). Better still, write dependency ignores without the trailing slash
++(`node_modules`, not `node_modules/`) so a link is ignored too. A committed
 +link can overwrite the real dependency folder in every checkout that merges it.
 +
  ## Step 3: Verify Clean Baseline
  
  Run tests to ensure workspace starts clean:
 diff --git a/.claude/skills/verification-before-completion/SKILL.md b/.claude/skill-updates/2026-09-23/verification-before-completion/SKILL.md
-index 7d45333c..c7646fea 100644
+index 7d45333c..13324475 100644
 --- a/.claude/skills/verification-before-completion/SKILL.md
 +++ b/.claude/skill-updates/2026-09-23/verification-before-completion/SKILL.md
 @@ -46,6 +46,13 @@ Skip any step = lying, not verifying
@@ -956,15 +1078,19 @@ index 7d45333c..c7646fea 100644
  
  ## Red Flags - STOP
  
-@@ -91,6 +98,12 @@ Skip any step = lying, not verifying
+@@ -91,6 +98,16 @@ Skip any step = lying, not verifying
  ❌ "Linter passed" (linter doesn't check compilation)
  ```
  
-+**Long check runs:**
++**Long check runs** — the command must still FAIL when the check fails:
 +```
-+✅ cmd > run.log 2>&1; echo "exit=$?"; tail -20 run.log   (verdict kept; search the file if red)
++✅ cmd > run.log 2>&1; rc=$?; tail -20 run.log; exit $rc                   (bash)
++✅ cmd *> run.log; $rc = $LASTEXITCODE; Get-Content run.log -Tail 20; exit $rc   (PowerShell)
 +❌ cmd | tail -5   (reports tail's exit status; the failure detail is gone and costs a full re-run)
++❌ cmd > run.log 2>&1; tail run.log   (same trap: the last command's status is tail's)
 +```
++The whole log stays in the file — search it when the run is red instead of
++running it again.
 +
  **Requirements:**
  ```
@@ -1064,7 +1190,7 @@ index 00000000..261d2701
 +- Run the unit tests locally the way CI partitions them (per project), or a
 +  timing-order difference will surface only in CI.
 diff --git a/.claude/skills/writing-plans/SKILL.md b/.claude/skill-updates/2026-09-23/writing-plans/SKILL.md
-index eba9be60..a6b92c12 100644
+index eba9be60..acfa5358 100644
 --- a/.claude/skills/writing-plans/SKILL.md
 +++ b/.claude/skill-updates/2026-09-23/writing-plans/SKILL.md
 @@ -17,6 +17,10 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
@@ -1106,7 +1232,7 @@ index eba9be60..a6b92c12 100644
  ````markdown
  ### Task N: [Component Name]
  
-+**Model:** [who builds it, at what effort, and why — one line]
++**Model:** [model · thinking level · why, one line — the task's completion report repeats it]
 +
  **Files:**
  - Create: `exact/path/to/file.py`
@@ -1129,7 +1255,7 @@ index eba9be60..a6b92c12 100644
  
  ## Self-Review
  
-@@ -145,6 +174,39 @@ After writing the complete plan, look at the spec with fresh eyes and check the
+@@ -145,6 +174,41 @@ After writing the complete plan, look at the spec with fresh eyes and check the
  
  **3. Type consistency:** Do the types, method signatures, and property names you used in later tasks match what you defined in earlier tasks? A function called `clearLayers()` in Task 3 but `clearFullLayers()` in Task 7 is a bug.
  
@@ -1138,9 +1264,11 @@ index eba9be60..a6b92c12 100644
 +and side effects (globals it writes, live state it reads), or the value read
 +off the real target in a browser. A blanket rule does not reach a place you
 +have not checked (a CSS `*` never matches a pseudo-element). For a plan
-+touching three or more modules also check: import cycles the plan creates,
-+every existing reader of a rule it changes, helpers it assumes exist, and any
-+internal id the screen would print.
++touching three or more modules also check — and hand the same four checks to
++an independent reviewer of the plan, because the author shares the plan's
++blind spots: import cycles the plan creates, every existing reader of a rule
++it changes, helpers it assumes exist, and any internal id the screen would
++print.
 +
 +**5. Replacement code:** For each code block that REPLACES existing lines,
 +list the guards and early returns in the original and confirm each survives

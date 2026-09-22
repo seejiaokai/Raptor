@@ -24,6 +24,15 @@ rest has converged. A section added late (an owner reframe) needs its own one or
 two rounds even after everything else is settled — say so to the owner rather
 than calling the whole design unsettled.
 
+## Append to `python-edits-crlf-trap.md` (observation #190)
+
+**The same edit scripts have a second trap: quoting layers eat escapes.** A
+Python snippet fed through a bash heredoc to write source code turned its `\n`
+and `\t` into real newlines and tabs (23 Sep 26, twice) — the files still ran,
+so nothing failed. Write any file whose content holds escape sequences with the
+Write tool; if a script must write it, count the tab and CR bytes in the result
+before committing.
+
 ## Append to `reviewer-must-give-detailed-fix-specs.md` (observation #154)
 
 **When NOT to commission a separate pre-build "execution guide":** when the

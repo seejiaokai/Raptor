@@ -57,7 +57,9 @@ digraph process {
         "Generate review package, dispatch task reviewer (./task-reviewer-prompt.md)" [shape=box];
         "Spec ✅ and quality approved?" [shape=diamond];
         "Finding conflicts with plan text?" [shape=diamond];
+        "Does that plan text record a decision (a chosen behaviour or trade-off)?" [shape=diamond];
         "Ask human partner which governs" [shape=box];
+        "Rule for the stated intent; fix corrects plan/spec text; ledger the evidence" [shape=box];
         "Fix round R of 5: R≤3 resume implementer; R≥4 fresh implementer, more capable model" [shape=box];
         "Dispatch scoped re-review (./re-review-prompt.md)" [shape=box];
         "All findings addressed?" [shape=diamond];
@@ -85,8 +87,11 @@ digraph process {
     "Generate review package, dispatch task reviewer (./task-reviewer-prompt.md)" -> "Spec ✅ and quality approved?";
     "Spec ✅ and quality approved?" -> "Append completion to ledger, mark todo complete" [label="yes"];
     "Spec ✅ and quality approved?" -> "Finding conflicts with plan text?" [label="no"];
-    "Finding conflicts with plan text?" -> "Ask human partner which governs" [label="yes"];
+    "Finding conflicts with plan text?" -> "Does that plan text record a decision (a chosen behaviour or trade-off)?" [label="yes"];
+    "Does that plan text record a decision (a chosen behaviour or trade-off)?" -> "Ask human partner which governs" [label="yes"];
+    "Does that plan text record a decision (a chosen behaviour or trade-off)?" -> "Rule for the stated intent; fix corrects plan/spec text; ledger the evidence" [label="no - a technical premise the finding disproves"];
     "Ask human partner which governs" -> "Fix round R of 5: R≤3 resume implementer; R≥4 fresh implementer, more capable model";
+    "Rule for the stated intent; fix corrects plan/spec text; ledger the evidence" -> "Fix round R of 5: R≤3 resume implementer; R≥4 fresh implementer, more capable model";
     "Finding conflicts with plan text?" -> "Fix round R of 5: R≤3 resume implementer; R≥4 fresh implementer, more capable model" [label="no"];
     "Fix round R of 5: R≤3 resume implementer; R≥4 fresh implementer, more capable model" -> "Dispatch scoped re-review (./re-review-prompt.md)";
     "Dispatch scoped re-review (./re-review-prompt.md)" -> "All findings addressed?";
@@ -266,7 +271,7 @@ Implementer subagents report one of four statuses. Handle each appropriately:
 
 **DONE:** Generate the review package (`scripts/review-package PLAN_FILE BASE HEAD`, from this skill's directory — it prints the unique file path it wrote; BASE is the commit you recorded before dispatching the implementer — never `HEAD~1`, which silently drops all but the last commit of a multi-commit task), then dispatch the task reviewer with the printed path.
 
-**DONE_WITH_CONCERNS:** The implementer completed the work but flagged doubts. Read the concerns before proceeding. If the concerns are about correctness or scope, address them before review. If they're observations (e.g., "this file is getting large"), note them and proceed to review. A concern that names a requirement the implementer left undone ("beyond the brief — their call") is neither: resume the implementer to finish it before the review, and review the combined diff. An implementer whose measured value disagrees with a number in the brief reports it here; neither the code nor the test is bent to match silently.
+**DONE_WITH_CONCERNS:** The implementer completed the work but flagged doubts. Read the concerns before proceeding. If the concerns are about correctness or scope, address them before review. If they're observations (e.g., "this file is getting large"), note them and proceed to review. A concern that names a requirement the implementer left undone ("beyond the brief — their call") is neither: resume the implementer to finish it before the review, and review the combined diff. An implementer whose measured value disagrees with a number in the brief reports it here; neither the code nor the test is bent to match silently. You settle it: check the measured value against the fixture, correct the brief and the plan, and ledger it — a number is yours to verify, never a question for your human partner.
 
 **NEEDS_CONTEXT:** The implementer needs information that wasn't provided. Provide the missing context and re-dispatch.
 
@@ -339,7 +344,8 @@ Before the loop starts, two routes leave it immediately:
   (`Task <N>: minor (deferred): <one-liner>`), and point the final
   whole-branch review at that list so it can triage which must be fixed
   before merge. A roll-up nobody reads is a silent discard. Minor findings
-  never enter the loop.
+  never trigger or extend a round; they may only ride one that is already
+  open (see "What rides along" below).
 - A finding labeled plan-mandated — or any finding that conflicts with
   what the plan's text requires — is the human's decision, like any plan
   contradiction: present the finding and the plan text, ask which governs.
@@ -393,7 +399,10 @@ whole suite.
   search for the constant finds nothing.
 
 **The re-review is scoped.** Run `scripts/review-package PLAN_FILE FIX_BASE HEAD`
-where FIX_BASE is the head the previous review saw, and dispatch
+where FIX_BASE is the head the previous review saw — or, when other work's
+commits landed in between, the commit just before the fix's first commit,
+named in the ledger (otherwise the re-review reads someone else's diff) — and
+dispatch
 [re-review-prompt.md](re-review-prompt.md) with the findings list, the
 brief, the report file, and the printed diff path. The re-reviewer verdicts
 each finding ADDRESSED or NOT ADDRESSED and flags new breakage in the fix
