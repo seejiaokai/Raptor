@@ -9,7 +9,7 @@ import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef } from '../engine/sl
 /* RANK left with the focus-scoped trace: ranking the CR chip against the day's
    own worst is traceLeads' job now, in the engine, so both the chip and the
    click that follows it read one test */
-import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn } from '../engine/validate'
+import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, FLT_NO_LEN_SAYS } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
 import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned } from '../engine/publish'
 import { verSeq } from '../engine/verid'
@@ -1485,12 +1485,27 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
            two rows. Remarks now sit right of the pucks at every width, one row per
            aircraft, so the twins are gone. */
         const spans=`--gs:${rows}`;
+        /* D49's MARK, ON THE LINE (owner, 22 Sep 26; the walk's rules-sweep FAIL
+           3). A line typed with the same take-off and landing still earns — that
+           is the ruling — but the day has to SAY the two times cannot both be
+           right, and it said so only in the list on the right: the row itself was
+           byte-for-byte a correct line's. The two boxes one of which is wrong now
+           wear the advisory edge and carry the reason in their own words, so a
+           scheduler reading the line is told without opening anything.
+           `data-warnkey` is the ADDRESS the warning's own key resolves to
+           (ui/highlights.ts anchorEl), which is what makes tapping the warning
+           scroll here; the key is built the same way validate.ts builds it.
+           Emitted only on a line that actually raises the warning, so an ordinary
+           week's markup — and the reference parity compare — is untouched. */
+        const noLen=fltNoLen(f);
+        const badCls=noLen?' badtm':'';
+        const badAtt=noLen?` data-warnkey="${fp}.ld" title="${esc((f.cs||w.label||'A flying line')+' '+FLT_NO_LEN_SAYS(parseHM(f.to)))}"`:'';
         h+=`<div class="form${rowCls(f)}">
           <div class="fcell csmsn" style="${spans}">${cxTag(f)}${flagTag(f)}<b><span class="mdot" style="background:${sa?'var(--san)':`var(--${mColor(f.msn)})`}"></span>${ted(fp+'.cs',f.cs,ed,'ntx')}</b>${ted(fp+'.msn',f.msn,ed,'','i')}</div>
           ${sa
-            ? `<div class="fcell bto" style="${spans}">${ted(fp+'.to',f.to,ed,'ntx','span')}</div>`
-            : `<div class="fcell bto" style="${spans}">${brSug}${ted(fp+'.br',brShown,ed,'','b')}${ted(fp+'.to',f.to,ed,'','span')}</div>`}
-          <div class="fcell ld" style="${spans}">${ted(fp+'.ld',f.ld,ed,'ntx')}</div>`;
+            ? `<div class="fcell bto${badCls}"${badAtt} style="${spans}">${ted(fp+'.to',f.to,ed,'ntx','span')}</div>`
+            : `<div class="fcell bto${badCls}"${badAtt} style="${spans}">${brSug}${ted(fp+'.br',brShown,ed,'','b')}${ted(fp+'.to',f.to,ed,'','span')}</div>`}
+          <div class="fcell ld${badCls}"${badAtt} style="${spans}">${ted(fp+'.ld',f.ld,ed,'ntx')}</div>`;
         f.aircraft.forEach((a:any,ai:any)=>{
           const key=`${di}.${gi}.${li}.${ai}`, o=a.opts||{};
           /* edit mode shows the on-chips (click one to remove it) plus C, which

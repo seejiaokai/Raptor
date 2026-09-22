@@ -182,3 +182,63 @@ describe('an already-published day must not light up the moment this ships', () 
     expect(dayHasChanges(SAT), 'and a real difference still shows').toBe(true)
   })
 })
+
+/* THE KEY'S OWN CONTENT — WRITTEN 22 Sep 26, AFTER A BREAK TEST PROVED THE AXIS
+   WAS PINNED AND THE KEY WAS NOT (the walk, docs/handpass/2026-09-22-oil-seats.md §8).
+   Putting membership back into the signature's key — the exact D45 regression
+   this file exists to prevent — left 1,914 tests green. The tests above pass
+   either way, because on their fixture the two projections happen to agree: the
+   men behind the puck do not move between the signature and the read.
+   So the rule was watched at one remove, through a behaviour that a fixture can
+   satisfy by accident. These watch the key itself. They are cheap, they cannot
+   pass by luck, and they name the one thing a future edit must not do. */
+describe('the signature\'s key does not CARRY the crowd, whatever the fixture does', () => {
+  it('the same day, two different crowds, ONE signature key', async () => {
+    const { oilEvidence, oilSignKey } = await import('./oilev')
+    puckRow(SAT)
+    const a = oilSignKey(oilEvidence(SAT), DAYS[SAT])
+    expect(a, 'the day earns, so it has a key at all').toBeTruthy()
+    HOOKS.oilSentinel = () => ['bane']                       // three men file leave
+    const b = oilSignKey(oilEvidence(SAT), DAYS[SAT])
+    expect(b, 'a change in who is available is not a change of mind about the schedule').toBe(a)
+  })
+
+  it('and the crowd is not hiding inside it under another name', async () => {
+    const { oilEvidence, oilSignKey } = await import('./oilev')
+    puckRow(SAT)
+    /* a decision on the row, so the key is NOT empty and the check has something
+       to bite on — an empty string would pass "does not contain" for free */
+    ;(DAYS[SAT] as any).oild = { people: { [`plasma|${rowItemKey((DAYS[SAT] as any).ground[0].rid)}`]: 'deny' } }
+    const key = oilSignKey(oilEvidence(SAT), DAYS[SAT])
+    expect(key.length, 'there is a real key to inspect').toBeGreaterThan('2026-07-18||'.length)
+    for (const man of ['bane', 'stiff'])
+      expect(key, `${man} is only in the crowd, so he must not appear in what a signature binds to`).not.toContain(man)
+    expect(key, 'a man the SCHEDULER decided about is a different matter — that is approval').toContain('plasma')
+  })
+
+  it('THE CONTROL: the PUBLICATION key does carry it, or the pending mark could not exist', async () => {
+    const { oilEvidence, oilEvidenceKey } = await import('./oilev')
+    puckRow(SAT)
+    const a = oilEvidenceKey(oilEvidence(SAT), DAYS[SAT])
+    HOOKS.oilSentinel = () => ['bane']
+    expect(oilEvidenceKey(oilEvidence(SAT), DAYS[SAT]),
+      'the two projections are different questions and must give different answers').not.toBe(a)
+  })
+
+  it('THE CONTROL: everything else about the block still moves the signature key', async () => {
+    const { oilEvidence, oilSignKey } = await import('./oilev')
+    const item = puckRow(SAT)
+    const a = oilSignKey(oilEvidence(SAT), DAYS[SAT])
+    ;(DAYS[SAT] as any).oild = { items: { [item]: 0 } }      // the scheduler stops the row earning
+    expect(oilSignKey(oilEvidence(SAT), DAYS[SAT]),
+      'that IS a change of mind about what was approved').not.toBe(a)
+  })
+
+  it('a day that earns nobody anything binds a signature to no OIL key at all', async () => {
+    const { oilEvidence, oilSignKey } = await import('./oilev')
+    puckRow(TUE)
+    expect(oilSignKey(oilEvidence(TUE), DAYS[TUE]), 'a weekday has no money to promise').toBe('')
+    HOOKS.oilSentinel = () => ['bane']
+    expect(oilSignKey(oilEvidence(TUE), DAYS[TUE]), 'and a changed crowd leaves it at nothing').toBe('')
+  })
+})

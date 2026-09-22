@@ -1548,8 +1548,30 @@ export function setPeople(people: Person[]): void {
   })
   const ids = new Set(next.map(p => p.id))
   for (const id of Object.keys(po)) if (!ids.has(id)) next.push(po[id])
-  state = withCurrent({ ...state, people: next })
-  notify()
+  /* AND A WINDOW THAT ARRIVES WITH THE PROJECTION IS RECORDED (the walk's F1 and
+     F2, 22 Sep 26 — two reported defects, one cause).
+     This body laid the stored record ON but never took one OFF, and the one
+     writer that puts a window straight onto a person is the demo overlay
+     (state/demoworld.ts, first boot only). So the single window the app writes
+     for itself was the single window it never saved: next reload the man was
+     back in the squadron, and every reader of who is available answered
+     differently with nobody having touched anything.
+     On an ISSUED day that is money. The men behind an ALL / ALL AVAIL puck are
+     frozen at publication (D44), so the working copy gained a man the issued
+     copy did not have — the day reopened as "1 pending" and cleared its four
+     signatures for an amendment nobody made, and the count beside the puck read
+     one higher than the Leave War would ever pay.
+     It is caught HERE, not in the overlay, because this is the one body that
+     owns the record: catching it at the seam makes "a window on a person with no
+     record behind it" a state the store cannot be left in, rather than a rule
+     the next writer has to remember. `setPostOut` already records its own, so
+     this never fires for it; an admin who CLEARS a window leaves no window to
+     catch, so a cleared one is never resurrected. */
+  const caught: Record<string, Person> = {}
+  for (const p of next) if (!po[p.id] && (p.from != null || p.to != null)) caught[p.id] = p
+  const got = Object.keys(caught).length > 0
+  state = withCurrent({ ...state, people: next, ...(got ? { postOuts: { ...po, ...caught } } : {}) })
+  if (got) persistNotify(); else notify()
 }
 
 /**

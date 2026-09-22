@@ -226,10 +226,20 @@ export function paintSelRings(){
    's:0.oft.1' can never claim 's:0.oft.12.p'. Preview markup emits no
    data-slot (slotCell/lSeat drop it under PV), so an anchor never resolves
    into a frozen version — exactly the fallback we want there. */
+/* `data-warnkey` (walk, 22 Sep 26) is the THIRD address, and the only one a
+   warning about a BOX rather than a person can use. `data-slot`/`data-fill`
+   address people cells and seats, so a warning whose key names a typed box —
+   D49's nought-minute sortie names the landing time — resolved nothing, fell
+   through to the puck heuristic, found no `who` to look for, and returned null.
+   The tap then scrolled to the day and lit nobody, which reads exactly like a
+   click that did not register. Any renderer that draws a box a warning names
+   puts the warning's own key on it and the gesture works; nothing else is
+   needed, and no other warning is affected, because only a box that carries the
+   attribute can answer to one. */
 export function anchorEl(root:any,key:any){
   if(!key)return null
-  for(const el of root.querySelectorAll('[data-slot],[data-fill]')){
-    const k=(el as any).dataset.slot||(el as any).dataset.fill
+  for(const el of root.querySelectorAll('[data-slot],[data-fill],[data-warnkey]')){
+    const k=(el as any).dataset.slot||(el as any).dataset.fill||(el as any).dataset.warnkey
     if(k===key||(k&&k.indexOf(key+'.')===0))return el as any
   }
   return null

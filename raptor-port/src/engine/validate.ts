@@ -120,6 +120,27 @@ export function workSpan(evs:any){
   return {s,e,span:e-s,ef};
 }
 export function dayEvents(di:any,id:any){const m=EVD[di]; return (m&&m[id])||[];}
+/* A NOUGHT-MINUTE SORTIE — ONE BODY, THREE READERS (D49, owner 22 Sep 26).
+   The warning below asks it, and so do both surfaces that DRAW the line: the
+   week (ui/html.ts) and the board (ui/board.ts), because the ruling is that the
+   day says the times are wrong ON THE LINE, not only in the list on the right.
+   Written once here rather than re-derived beside each renderer — a rule read in
+   two places is a drift seam (CLAUDE.md §the robustness doctrine), and this one
+   would drift into a line wearing a mark no warning explains, or a warning about
+   a line wearing no mark.
+   The CREW test is part of the rule, not an extra: a line nobody is on raises no
+   warning, so it must carry no mark either. */
+export function fltNoLen(f:any):boolean{
+  if(!f||f.cx)return false;
+  const st=parseHM(f.to),en=parseHM(f.ld);
+  if(st==null||en==null||st!==en)return false;
+  const crew:any[]=[];
+  (f.aircraft||[]).forEach((ac:any)=>{if(!ac.cx){crew.push(ac.p);crew.push(ac.w);}});
+  return crew.some((v:any)=>{const id=whoId(v);return !!id&&(realP(id)||isSpecial(id));});
+}
+/* the sentence, shared by the warning and by every marked box's own words, so a
+   scheduler reading the box is told the same thing as the list */
+export const FLT_NO_LEN_SAYS=(st:any)=>`takes off and lands at the same time (${hm24(st)}) — one of the two is wrong; the day still earns from the report and debrief`;
 function validateCore(){
   const ev=collectEvents(), all:any[]=[], byDay:any[]=[], sev:any={}, chip:any={}, dash:any={}, trace:any={};
   REST={}; EVD={};
@@ -1117,13 +1138,8 @@ function validateCore(){
        scheduler's to fix and no pilot's fault. */
     ((DAYS[di]||{}).waves||[]).forEach((wv:any,gi:any)=>{
       (wv.formations||[]).forEach((f:any,li:any)=>{
-        if(f.cx)return;
-        const st=parseHM(f.to),en=parseHM(f.ld);
-        if(st==null||en==null||st!==en)return;
-        const crew:any[]=[];
-        (f.aircraft||[]).forEach((ac:any)=>{if(!ac.cx){crew.push(ac.p);crew.push(ac.w);}});
-        if(!crew.some((v:any)=>{const id=whoId(v);return !!id&&(realP(id)||isSpecial(id));}))return;
-        add('adv','FLT_NO_LEN',[],`${f.cs||wv.label||'A flying line'} takes off and lands at the same time (${hm24(st)}) — one of the two is wrong; the day still earns from the report and debrief`,`ff:${di}.${gi}.${li}.ld`);
+        if(!fltNoLen(f))return;
+        add('adv','FLT_NO_LEN',[],`${f.cs||wv.label||'A flying line'} ${FLT_NO_LEN_SAYS(parseHM(f.to))}`,`ff:${di}.${gi}.${li}.ld`);
       });
     });
     const earnsOil=day.dow==='Saturday'||day.dow==='Sunday'||HOOKS.oilEarningDay(di);

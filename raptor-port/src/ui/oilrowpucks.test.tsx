@@ -96,6 +96,16 @@ const sim = (row: any) => {
   return (DAYS[SAT] as any).sims.oft[0]
 }
 const enter = async () => { await open(SAT); await click(oilBtn()) }
+const prog = (row: any) => {
+  ;(DAYS[SAT] as any).allhands = [{ prog: 'SAFETY BRIEF', str: '0800', end: '1000', ...row }]
+  ensureRowIds(DAYS)
+  return (DAYS[SAT] as any).allhands[0]
+}
+const ground = (row: any) => {
+  ;(DAYS[SAT] as any).ground = [{ prog: 'STORES CHECK', str: '0900', end: '1100', ...row }]
+  ensureRowIds(DAYS)
+  return (DAYS[SAT] as any).ground[0]
+}
 
 describe('a DUTY DESK opens its crowd (OIL8)', () => {
   it('a placeholder ON the desk draws the men behind it, each one tappable', async () => {
@@ -188,5 +198,81 @@ describe('the controls — nothing else about these rows changes', () => {
     await open(SAT)
     expect($('#sbBoard .sb-panel.duty .puck.allavail'), 'the placeholder is the body on the desk').toBeTruthy()
     expect(seatsIn('duty').length, 'and no earn pucks at all').toBe(0)
+  })
+})
+
+/* THE COMMON PROGRAMME — WRITTEN 22 Sep 26, AFTER A BREAK TEST PROVED IT HAD NO
+   TEST AT ALL (the walk, docs/handpass/2026-09-22-oil-seats.md §8).
+   OIL8 says a placeholder opens into real pucks "on a duty desk, a sim row and
+   every extras line, not just a ground row" — and the file was written to the
+   surfaces step 7 ADDED, so the two that already worked were never asserted.
+   Breaking the Common Programme's crowd opening on purpose left all 3,301 unit
+   tests green, while the same break turned 4 red on a duty desk, 4 on a sim and
+   3 on a ground row. By proof, this surface had no test.
+   It is also one of the three surfaces the owner found unwired by hand on
+   21 Sep 26, which is the reason it is worth the minute: a surface that already
+   works is exactly where the next unwiring goes unnoticed. */
+describe('the COMMON PROGRAMME opens its crowd (OIL8)', () => {
+  it('a placeholder ON a programme row draws the men behind it, each one tappable', async () => {
+    prog({ who: 'allavail' })
+    await enter()
+    expect($('#sbBoard .sb-panel.prog .puck.allavail'), 'the placeholder itself is gone in the mode').toBeFalsy()
+    expect(namesIn('prog')).toEqual(['plasma', 'stiff'])
+    expect(seatsIn('prog').filter(s => s.classList.contains('inert')).length,
+      'none of them may be inert — the money is paying them').toBe(0)
+  })
+
+  it('a placeholder BESIDE a named man — a programme row holds its people in one list', async () => {
+    prog({ who: ['rocky', 'allavail'] })
+    await enter()
+    expect(namesIn('prog'), 'the named man keeps his place and the crowd joins him').toEqual(['plasma', 'rocky', 'stiff'])
+  })
+
+  it('ONE MAN IS TAKEN OFF, and the rest of the row is untouched', async () => {
+    const r = prog({ who: 'allavail' })
+    await enter()
+    await click(seatsIn('prog').find(s => s.dataset.oilp === 'plasma')!)
+    expect((DAYS[SAT] as any).oild.people[`plasma|${rowItemKey(r.rid)}`]).toBe('deny')
+    expect(seatsIn('prog').find(s => s.dataset.oilp === 'stiff')!.classList.contains('on'), 'untouched').toBe(true)
+  })
+
+  it('a row of NAMED men draws exactly the men on it', async () => {
+    prog({ who: ['rocky', 'divot'] })
+    await enter()
+    expect(namesIn('prog')).toEqual(['divot', 'rocky'])
+  })
+
+  it('a row with NO WRITTEN TIMES resolves nobody rather than inventing a crowd', async () => {
+    prog({ who: 'allavail', str: '', end: '' })
+    await enter()
+    expect(namesIn('prog')).toEqual([])
+  })
+
+  it('OUT of the mode the row is drawn exactly as it always was', async () => {
+    prog({ who: 'allavail' })
+    await open(SAT)
+    expect($('#sbBoard .sb-panel.prog .puck.allavail'), 'the placeholder is the body on the row').toBeTruthy()
+    expect(seatsIn('prog').length, 'and no earn pucks at all').toBe(0)
+  })
+})
+
+/* THE GROUND PROGRAMME, for the same reason. The break test turned 3 red here,
+   so it is not unwatched — but those three live in other files and none of them
+   is named for OIL8, so a reader of this file would take the surface for
+   uncovered. One block, so the register's row and the surfaces it names are in
+   one place. */
+describe('a GROUND ROW opens its crowd (OIL8)', () => {
+  it('a placeholder on a ground row draws the men behind it', async () => {
+    ground({ who: 'allavail' })
+    await enter()
+    expect(namesIn('grnd')).toEqual(['plasma', 'stiff'])
+  })
+
+  it('one man is taken off, and the rest are untouched', async () => {
+    const r = ground({ who: 'allavail' })
+    await enter()
+    await click(seatsIn('grnd').find(s => s.dataset.oilp === 'stiff')!)
+    expect((DAYS[SAT] as any).oild.people[`stiff|${rowItemKey(r.rid)}`]).toBe('deny')
+    expect(seatsIn('grnd').find(s => s.dataset.oilp === 'plasma')!.classList.contains('on')).toBe(true)
   })
 })

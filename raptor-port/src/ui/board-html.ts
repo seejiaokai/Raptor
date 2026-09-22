@@ -432,6 +432,26 @@ export function sbDutyPanel(d:any,di:any,pv?:any,ro?:any){
   });
   return s+sbNote(d,di,'dtn','dutynotes','e.g. SDO swapped — Bane has the PHA at 1700, Pike covers the last hour.',ro)+`</div></div>`;
 }
+/* D50 — A SIM ROW ALWAYS SHOWS ONE SPARE SEAT, EVEN WHEN IT IS FULL (owner,
+   22 Sep 26, during the walk: "Keep one spare seat showing").
+   Every other kind of row carries a thin drop strip under its people, so there
+   is always somewhere that means "another body". The seat grid hides that strip
+   on purpose (`.ppl.fcprcp .addz` in scheduler.css) and padded its seats to an
+   EVEN count — which leaves a spare only when the count is ODD. A sim row
+   holding an even number of people therefore had no door at all, and the drag a
+   scheduler would naturally make landed on a seated man and replaced him with
+   nothing on screen to say so. It costs one row of height on a full sim row; the
+   owner was shown that cost and chose it over filing the gap.
+   THE TEST IS "IS THERE AN EMPTY SEAT", not "is the count even": on a row whose
+   own FCP or RCP is still empty that seat IS the door, so nothing is added and
+   the height is only spent where it buys something. A pair is opened rather than
+   a single slot because the grid is two columns wide and the pairing carries
+   seat identity — a lone slot with a hole beside it reads as a gap, which is the
+   same reason the odd-count padding exists at all.
+   Read-only boards draw no empty seats at all, so they are left alone. */
+function simSpare(cells:string,slot:(i:any)=>string,from:number,ro:any):string{
+  return ro||/sb-slot empty/.test(cells)?cells:cells+slot(from)+slot(from+1);
+}
 export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
   const sims=d.sims||{};
   let s=`<div class="sb-panel simr"><div class="sb-ph">Sims <span class="sub">AMT and OFT rows</span></div><div class="sb-pb">`;
@@ -478,9 +498,10 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
           /* pad to an even count (>=2) so every pair is complete — the trailing
              slot of an odd crew is a droppable RCP, not a gap */
           const n=Math.max(2,r.pax.length+(r.pax.length%2));
-          const cells=Array.from({length:n},(_:any,pi:any)=>{const k=`${base}.pax.${pi}`, id=r.pax[pi];
+          const paxSlot=(pi:any)=>{const k=`${base}.pax.${pi}`, id=r.pax[pi];
             return (id&&PEOPLE[id])?sbSeat(di,k,id,ro)
-              :(ro?'':`<span class="sb-slot empty pax" data-slot="${k}" title="Empty seat — tap or drop a puck to fill">+</span>`);}).join('');
+              :(ro?'':`<span class="sb-slot empty pax" data-slot="${k}" title="Empty seat — tap or drop a puck to fill">+</span>`);};
+          const cells=simSpare(Array.from({length:n},(_:any,pi:any)=>paxSlot(pi)).join(''),paxSlot,n,ro);
           pplCell=`<div class="ppl fcprcp"${ro?'':` data-fill="${base}.+"`}>${cells}${sbMore(di,base,r,ro)}${ro?'':ADDZ}</div>`;
         }else{
           const seats=r.pax.map((id:any,pi:any)=>{
@@ -505,10 +526,11 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
           :(ro?'':`<span class="sb-slot empty" data-slot="${k}" title="${lbl} — tap or drop a puck to fill">+</span>`);
         let cells=seatCell(`${base}.p`,r.p,'FCP')+seatCell(`${base}.w`,r.w,'RCP');
         const more=r.more||[], n=more.length+(more.length%2);
-        for(let i=0;i<n;i++){const id=more[i];
-          cells+=(id&&PEOPLE[id])?sbSeat(di,`${base}.x${i}`,id,ro)
-            :(ro?'':`<span class="sb-slot empty pax" data-slot="${base}.x${i}" title="Instructor / observer — tap or drop a puck to fill">+</span>`);}
-        pplCell=`<div class="ppl fcprcp"${ro?'':` data-fill="${base}.+"`}>${cells}${ro?'':ADDZ}</div>`;
+        const xSlot=(i:any)=>{const id=more[i];
+          return (id&&PEOPLE[id])?sbSeat(di,`${base}.x${i}`,id,ro)
+            :(ro?'':`<span class="sb-slot empty pax" data-slot="${base}.x${i}" title="Instructor / observer — tap or drop a puck to fill">+</span>`);};
+        for(let i=0;i<n;i++)cells+=xSlot(i);
+        pplCell=`<div class="ppl fcprcp"${ro?'':` data-fill="${base}.+"`}>${simSpare(cells,xSlot,n,ro)}${ro?'':ADDZ}</div>`;
       }else{
         pplCell=`<div class="ppl"${ro?'':` data-fill="${base}.+"`}><span class="itxt">${esc(r.who)}</span>${sbMore(di,base,r,ro)}${ro?'':ADDZ}</div>`;
       }

@@ -4867,3 +4867,68 @@ test.describe('slow-computer diet', () => {
     expect(await page.evaluate(() => document.querySelector('#eWeek .day[data-day]')!.getBoundingClientRect().width), 'same width once shown').toBe(parked.dayWidth)
   })
 })
+
+/* THE COUNT CHIP STAYS INSIDE ITS OWN COLUMN ON A PHONE — the walk's S1,
+   22 Sep 26 (docs/handpass/parts/2026-09-22-oil-seats-surfaces.md).
+
+   On the EDIT WEEK at phone width a row carrying an ALL / ALL AVAIL placeholder
+   ALONE gives its people column exactly ONE puck of width — and the puck is
+   exactly that wide — so the count chip beside it hung out into the RMKS column
+   and was painted UNDER the remarks box. Pressing the chip typed a caret into
+   the schedule instead of opening the list of who is behind the puck, and that
+   chip is the only way to see who a published day paid.
+
+   Only a real browser can prove it: the fault is entirely geometry and paint
+   order, and every rect in jsdom is 0x0. Both halves are asserted, because
+   either alone can pass while the chip is still unusable — it must sit inside
+   its column AND be the thing a finger actually lands on. */
+test('phone: the placeholder count chip sits inside its column and takes its own press', async ({ page }) => {
+  await page.setViewportSize(PHONE)
+  await login(page, 'a')
+  await go(page, 'editsched')
+  await page.evaluate(() => {
+    const w = window as any
+    w.DAYS[0].allhands = [{ prog: 'SAFETY BRIEF', str: '08:00', end: '10:00', who: 'allavail' }]
+    w.afterSchedMutate()
+  })
+  await page.waitForSelector('#eWeek .day[data-day="0"] .ah-row .oilcount', { state: 'visible' })
+
+  const m = await page.evaluate(() => {
+    const chip = document.querySelector('#eWeek .day[data-day="0"] .ah-row .oilcount') as HTMLElement
+    const cell = chip.closest('.ppl') as HTMLElement
+    const c = chip.getBoundingClientRect(), p = cell.getBoundingClientRect()
+    const hit = document.elementFromPoint(c.left + c.width / 2, c.top + c.height / 2)
+    return {
+      spill: Math.round(c.right - p.right),
+      inside: c.right <= p.right + 1 && c.left >= p.left - 1,
+      onTop: !!hit && (hit === chip || chip.contains(hit)),
+      landed: hit ? (hit as HTMLElement).className : '(nothing)',
+      width: Math.round(c.width),
+    }
+  })
+  expect(m.width, 'the chip is drawn').toBeGreaterThan(0)
+  expect(m.inside, `the chip overhangs its people column by ${m.spill}px`).toBe(true)
+  expect(m.onTop, `a press at the chip's own centre landed on "${m.landed}"`).toBe(true)
+})
+
+/* THE CONTROL: the same row on a DESKTOP was always correct, and must stay so. */
+test('desktop: the same chip is inside its column and on top', async ({ page }) => {
+  await page.setViewportSize(DESK)
+  await login(page, 'a')
+  await go(page, 'editsched')
+  await page.evaluate(() => {
+    const w = window as any
+    w.DAYS[0].allhands = [{ prog: 'SAFETY BRIEF', str: '08:00', end: '10:00', who: 'allavail' }]
+    w.afterSchedMutate()
+  })
+  await page.waitForSelector('#eWeek .day[data-day="0"] .ah-row .oilcount', { state: 'visible' })
+  const m = await page.evaluate(() => {
+    const chip = document.querySelector('#eWeek .day[data-day="0"] .ah-row .oilcount') as HTMLElement
+    const cell = chip.closest('.ppl') as HTMLElement
+    const c = chip.getBoundingClientRect(), p = cell.getBoundingClientRect()
+    const hit = document.elementFromPoint(c.left + c.width / 2, c.top + c.height / 2)
+    return { inside: c.right <= p.right + 1, onTop: !!hit && (hit === chip || chip.contains(hit)) }
+  })
+  expect(m.inside).toBe(true)
+  expect(m.onTop).toBe(true)
+})

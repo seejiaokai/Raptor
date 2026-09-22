@@ -47,7 +47,11 @@ blank.
 | **No amendment nobody made** | A day published before the app kept this record does not light up the moment the change ships. | step 9b | `engine/oilmembership.test.ts` |
 | **OIL7** | Tapping an item's name stops the whole item earning, so a man added later does not earn silently. | unchanged | `ui/oilmode.test.tsx` |
 | **OIL28** | Nothing overrides ineligibility. An "allow" is permission to count real work, never to invent it. | unchanged | `ui/oilmode.test.tsx` |
-| **OIL8** | A placeholder opens into real pucks inside the mode, so one man can be taken off a crowd — on a duty desk, a sim row and every extras line, not just a ground row. | step 7 | `ui/oilrowpucks.test.tsx`, `ui/oilclaimcrowd.test.tsx` |
+| **OIL8** | A placeholder opens into real pucks inside the mode, so one man can be taken off a crowd — on a duty desk, a sim row and every extras line, and on the Common Programme and a ground row. | step 7 | `ui/oilrowpucks.test.tsx` (every surface, incl. the Common Programme block written 22 Sep 26 after a break test proved that one had no test), `ui/oilclaimcrowd.test.tsx` |
+| **D49, on the line** | A flying line typed with the same take-off and landing still earns — and the two time boxes SAY one of them must be wrong, on the board and on both weeks, with the reason in the box's own words. Tapping the warning goes to that line. | the walk, 22 Sep 26 | `ui/fltnolen-mark.test.tsx`, `engine/oilflighttimes.test.ts` |
+| **D50** | A sim row always shows one spare seat, even when it is full — so another body can be put on it without replacing a man who is already there. | the walk, 22 Sep 26 | `ui/simspare.test.tsx` |
+| **The crowd does not change by itself** | Who a placeholder stands for is the same tomorrow as today unless somebody changed something. A posting-out window written at boot is SAVED, so a man who left the squadron does not walk back in on a reload — which used to raise a pending mark nobody made and put one more man on the count than the Leave War would pay. | the walk, 22 Sep 26 | `leavewar/postout-persist.test.ts` |
+| **The count is reachable** | The count chip sits inside its own column and takes its own press at every width — on a phone it wraps under the puck rather than out into the remarks box. | the walk, 22 Sep 26 | `e2e/geometry.spec.ts` |
 
 ## The three supersessions this change makes, named out loud
 

@@ -93,11 +93,10 @@ in-flight and risk-reducing** first.
    a third of tonight's new lines are that task's scaffolding and become archive the day it
    closes. See the item below.
 **TOP OF THE QUEUE (22 Sep 26, re-ordered after D38).** **[OIL-AUTO-REMOVE] IS MERGED AND CLOSED.**
-1) **[OIL-SEATS-CAN-EARN]** — **IN FLIGHT: steps 1–4 of 11 BUILT, committed and pushed on
-`claude/oil-seats-can-earn`; steps 5–11, the WALK and the two code reads still to go.** Resume from
-`raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-build-handoff.md` — it names what is built,
-what is left verbatim from the plan's §5, the decisions taken this session and the traps already hit.
-Plan: `raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-can-earn-plan.md`. 2) **[ALL-AVAIL-WINDOW]**
+1) **[OIL-SEATS-CAN-EARN]** — **IN FLIGHT: all 11 steps BUILT, the FULL-tier walk DONE and its five
+defects fixed and re-walked, on `claude/oil-seats-can-earn`. The two code reads are what is left.**
+Resume from `raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-build-handoff.md`.
+Plan: `…/specs/2026-09-22-oil-seats-can-earn-plan.md`. 2) **[ALL-AVAIL-WINDOW]**
 (D38, NEW) — straight after, because it opens FROM the counters that job builds. 3) **[DOCS-GUARD]**,
 scope and order settled by D30. 4) **[HUMAN-RETEST]**. 5) **[DOC-TRIM]** — unblocked now that a third
 of the OIL scaffolding became archive. 6) The stack resumes at **[DB-STEP]**.
@@ -837,16 +836,15 @@ own pass.
 
 ### [OIL-SEATS-CAN-EARN] Every seat can earn, the default decides — ONE change (owner, D24 + D28, 22 Sep 26)
 
-**STATUS 22 Sep 26: IN FLIGHT — steps 1–4 of 11 built, committed and pushed on branch
-`claude/oil-seats-can-earn`. NOT merged; the owner has not said "merge live" and must not be asked
-until the FULL-tier walk is done.**
-**Context → `raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-build-handoff.md`** — the
-resume doc: what landed, what is left (verbatim from the plan's §5, which is not to be resequenced),
-the decisions taken during the build, and the traps already paid for.
-**Behaviour register → `raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-behaviour-register.md`**
-— the list the rules sweep walks in the running app.
-Gates at the checkpoint: vitest 5514/5514 · build OK · parity 728/0 · rulecheck OK. The two browser
-gates have NOT been run yet.
+**STATUS 22 Sep 26: ALL 11 STEPS BUILT, the FULL-tier WALK DONE, and the five defects it left open
+now FIXED and re-walked, on branch `claude/oil-seats-can-earn`. NOT merged.** What remains before
+"merge live" may be asked for: **both providers reading the finished code, blind to each other**
+(bug-check order §4 rank 2 — this is money), then fixing what they find, re-walking that, the
+gates, and the owner's look.
+**Context → `raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-build-handoff.md`** (the resume
+doc) · **the walk's evidence → `raptor-port/docs/handpass/2026-09-22-oil-seats.md`**, §6a for the
+five and their fixes · **behaviour register →
+`…/specs/2026-09-22-oil-seats-behaviour-register.md`** — the list the rules sweep walks.
 
 **D28 merged two items into this one.** His principle: *"If everywhere in the schedule can earn oil,
 then the all avail or all puck should also be able to earn oil"* — every seat can earn, the DEFAULT
@@ -1050,16 +1048,26 @@ for duty, so the engine is ready; the work is in the store and the tracker.
 where both of the night's silent bugs lived; the project's own rule escalates that kind of change.
 Build it test-first and put it through both reviewers.
 
-### [POSTOUT-LOST] A posted-out man walks back into the squadron on a reload — NEW, 22 Sep 26
+### [POSTOUT-LOST] A posted-out man walks back into the squadron on a reload — **FIXED 22 Sep 26 on `claude/oil-seats-can-earn`** (not merged)
 
-A person's posting-out window is written straight onto the person by the demo overlay and never
-recorded in the persisted posting record. The overlay runs only on a first-ever boot, so once
-anything is saved and the page reloads, the posting is gone and he is available again — which
-reaches the crew picker, ALL AVAIL, the manning counts and every rule that asks who is free, not
-just OIL. Found under a mis-diagnosed OIL report; reproduced (27 members before a reload, 28
-after). Deliberately NOT fixed on the OIL branch: not an OIL defect, and it would widen a money
-change into an availability one. Watch the dev-phase ruling when fixing — the seed flies him in
-July while the demo posts him out in January, so deciding which is right may be most of the job.
+**FIXED, because it caused TWO of the five defects the OIL walk left open** — the day that reopens
+asking for an amendment nobody made, and the count chip that says one more man than the war pays.
+Measured side by side they are one fault: the issued day froze 27 men behind the placeholder, the
+reload gave the live copy 28, and the difference is the man who left in January. The OIL code was
+doing exactly what D44/D45 say. Deferring this last session was right on the evidence then and
+wrong once the cause was measured. **The fix:** a posting window arriving ON the projected person
+is recorded in the store's own posting record, in the body that already lays that record back on
+(`leavewar/state/store.ts` `setPeople`) — so a window with no record behind it is a state the store
+cannot be left in. Pinned by `src/leavewar/postout-persist.test.ts` (4 new cases, red first);
+re-walked by `scripts/handpass/rw-03-pending-and-count.mjs`, four days, all clean. Full story:
+`raptor-port/docs/handpass/2026-09-22-oil-seats.md` §6a.
+
+**STILL OPEN, and still this item's:** the seed flies that man in July while the demo posts him out
+in January. He is reliably posted out now, so the contradiction is STABLE rather than intermittent.
+Demo data, breaks nothing; the dev-phase ruling says clear it rather than migrate. Decide it when
+the demo seed is next touched. *The original entry:* the window was written onto the person by the
+demo overlay and never saved, so after any reload he was available again — reaching the crew picker,
+ALL AVAIL, the manning counts and every rule that asks who is free.
 
 **Context.** `raptor-port/docs/handpass/2026-09-21-oil.md` §9 · the red team's §3 in
 `…/specs/2026-09-21-oil-fixplan-redteam-fable.md` · script `scripts/handpass/settle-d4.mjs`.

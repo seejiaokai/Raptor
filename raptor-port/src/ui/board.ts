@@ -7,7 +7,7 @@ import { INPUTS, inputCoversDate, inpById, inpTimeText, inpId, inpLabel, inpMeta
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { waveInTime } from '../engine/events'
-import { WARN, validate, WCODE, wlbl } from '../engine/validate'
+import { WARN, validate, WCODE, wlbl, fltNoLen, FLT_NO_LEN_SAYS } from '../engine/validate'
 import { hhmm, fmtHM, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr, unacceptInput, TIME_TXT } from '../engine/slots'
@@ -193,6 +193,20 @@ function boardHTMLBody(di: number, pv?: boolean) {
          optional ghost never changes this row's grid-item count — see the
          mobile column notes in scheduler.css. */
       const brief = minus(f.to, VCONF.briefLead)
+      /* D49's MARK, ON THE LINE (owner, 22 Sep 26; the walk's rules-sweep FAIL
+         3) — the board's half of the same change as the week's (ui/html.ts).
+         A line typed with the same take-off and landing still earns; what was
+         missing is that the two boxes never said one of them must be wrong, so
+         the only place it showed was the list on the right. `fltNoLen` is the
+         engine's one body for the rule, shared with the warning itself, so a
+         marked box and a raised warning can never disagree. `data-warnkey` is
+         what the warning's own key resolves to when it is tapped
+         (highlights.ts anchorEl) — before this the tap moved nothing at all. */
+      const noLen = fltNoLen(f)
+      const badCls = noLen ? ' badtm' : ''
+      const badAtt = noLen
+        ? ` data-warnkey="${fp}.ld" title="${esc((f.cs || w.label || 'A flying line') + ' ' + FLT_NO_LEN_SAYS(parseHM(f.to)))}"`
+        : ''
       /* stoRO, not !pv (reviewer-found residual, 9 Aug 26): the ghost is a
          SEPARATE clickable element from the .tm brief input right next to
          it (interactions.ts's routeClick, data-bacc branch) — disabling
@@ -261,8 +275,8 @@ function boardHTMLBody(di: number, pv?: boolean) {
           : boxHTML('lin', `data-bfld="${fp}.cs"${alAttr(`${fp}.cs`)}${dis}${oilModeOn(di) ? ' title="Part of the line above — its OIL switch is on the first row"' : ''}`, f.cs, '')}
         ${boxHTML('msn', `data-bfld="${fp}.msn"${alAttr(`${fp}.msn`)}${dis}`, f.msn, '')}
         <div class="sb-bcell">${brSug}<input class="tm" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis} value="${esc(fmtHM(f.br))}"></div>
-        <input class="tm" data-bfld="${fp}.to"${alAttr(`${fp}.to`)}${dis} value="${esc(fmtHM(f.to))}">
-        <input class="tm" data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)}${dis} value="${esc(fmtHM(f.ld))}">
+        <input class="tm${badCls}"${badAtt} data-bfld="${fp}.to"${alAttr(`${fp}.to`)}${dis} value="${esc(fmtHM(f.to))}">
+        <input class="tm${badCls}"${badAtt} data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)}${dis} value="${esc(fmtHM(f.ld))}">
         <div class="sb-seatpair">${sbSlot(di, key + '.p', 'p', a.p, stoRO)}${sbSlot(di, key + '.w', 'w', a.w, stoRO)}</div>
         <div class="sb-rcell"${alAttr(`st:${key}`)}>
           ${sa ? saRoleHTML(key, a, !stoRO) : ''}

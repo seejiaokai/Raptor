@@ -87,3 +87,95 @@ describe('untrusted storage', () => {
     expect(getState().postOuts).toEqual({})
   })
 })
+
+/* THE DEMO OVERLAY'S OWN WINDOW — the walk's F1 and F2, 22 Sep 26, which were
+   reported as two separate defects and are one.
+   `installDemoWorld` puts the demo's posting-out date straight onto the
+   projected person and hands the list to `setPeople`. `setPeople` LAID the
+   stored record back onto the projection but never TOOK one from it, so the one
+   window the app writes at boot was the one window it never saved. On the next
+   reload the man was back in the squadron, and everything that asks who is
+   available answered differently from the day before — with nobody having
+   touched anything.
+   On an issued day that is money: the men behind an ALL / ALL AVAIL puck are
+   frozen when the day is published, so the live copy gained a man the issued
+   copy did not have. The day then read "1 pending" and cleared its four
+   signatures for an amendment nobody made (F1), and the count beside the puck
+   said one more than the Leave War would ever pay (F2).
+   This is why the capture lives in `setPeople` rather than in the demo overlay:
+   it is the one body that owns laying the record on, so it is the one body that
+   can guarantee a window never exists on a person without a record behind it. */
+describe('a posting window that arrives WITH the projection is recorded too', () => {
+  it('survives a reboot — the demo overlay is not a special case', () => {
+    const be = memoryBackend()
+    reboot(be)
+    const id = anAircrewId()
+    /* exactly what installDemoWorld does: the date onto the person, then install */
+    const people = projectPeople().map(p => (p.id === id ? { ...p, to: '2026-01-13' } : p))
+    setPeople(people)
+    expect(JSON.parse(be.read('postouts')!)[id]?.to, 'the window is written down where it lives').toBe('2026-01-13')
+    reboot(be)
+    expect(getState().people.find(x => x.id === id)!.to, 'and it is still there next time').toBe('2026-01-13')
+  })
+
+  it('a later projection with NO window does not resurrect a cleared one', () => {
+    const be = memoryBackend()
+    reboot(be)
+    const id = anAircrewId()
+    setPeople(projectPeople().map(p => (p.id === id ? { ...p, to: '2026-01-13' } : p)))
+    setPostOut(id, null)                                   // the admin takes it off
+    setPeople(projectPeople())                             // the next re-projection
+    expect(be.read('postouts'), 'a cleared window stays cleared').toBe('{}')
+    reboot(be)
+    expect(getState().people.find(x => x.id === id)!.to).toBeNull()
+  })
+
+  it('THE CONTROL: an ordinary projection with no windows writes no record', () => {
+    const be = memoryBackend()
+    reboot(be)
+    const before = be.read('postouts')
+    setPeople(projectPeople())
+    expect(be.read('postouts'), 'nothing to record, nothing written').toBe(before)
+  })
+
+  it('the real boot path keeps the demo man out of the squadron after a reload', async () => {
+    const { installDemoWorld } = await import('./state/demoworld')
+    const be = memoryBackend()
+    lwInitStore(be)
+    installDemoWorld(false)
+    setRole('admin')
+    const gone = getState().people.filter(p => p.to)
+    expect(gone.length, 'the demo posts exactly one man out').toBeGreaterThan(0)
+    const id = gone[0].id, to = gone[0].to
+    reboot(be)
+    expect(getState().people.find(x => x.id === id)!.to, 'and he stays posted out').toBe(to)
+  })
+})
+
+/* AND THE CONSEQUENCE, PINNED WHERE IT BITES. The two walk findings were not
+   about a stored field: they were about a puck standing for a different set of
+   men today than it stood for yesterday. `availableFor` is the one body that
+   answers who is behind an ALL / ALL AVAIL puck, and it is what the frozen
+   membership is written from, so this is the assertion that would have gone red
+   on the night: the same question, the same answer, across a reload. */
+describe('the crowd behind a placeholder does not change across a reload', () => {
+  it('a man posted out by the demo is out of it before AND after', async () => {
+    const { availableFor } = await import('./sync')
+    const { installDemoWorld } = await import('./state/demoworld')
+    const be = memoryBackend()
+    lwInitStore(be)
+    installDemoWorld(false)
+    setRole('admin')
+    const gone = getState().people.find(p => p.to)!
+    const after = (gone.to as string) + ''
+    /* a date the man's own window has already closed on */
+    const iso = after < '2026-07-19' ? '2026-07-19' : '2099-01-01'
+    const before = availableFor(iso, [8 * 60, 15 * 60])
+    expect(before, 'he left the squadron before this date').not.toContain(gone.id)
+    reboot(be)
+    expect(availableFor(iso, [8 * 60, 15 * 60]), 'and a reload does not bring him back')
+      .not.toContain(gone.id)
+    expect(availableFor(iso, [8 * 60, 15 * 60]).length,
+      'the puck stands for exactly the same men it stood for').toBe(before.length)
+  })
+})

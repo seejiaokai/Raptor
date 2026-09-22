@@ -2661,3 +2661,47 @@ tends to carry costs (hidden bugs, undoing the plan's intent) that only resurfac
 **Suggested improvement:** For a pre-build comp, build from the product's own class names and, where possible, inject it into a running screen so the surrounding chrome is real too. Reach for hand-written CSS only for the genuinely new element, and even then inherit from the nearest existing class. Treat "borrowed the colour variables" as NOT the same as "used the design system".
 
 **Principle:** A mockup's job is to be judged, so it has to be wrong in no way the reviewer can see. Tokens are the smallest part of a design system; the components carry the rest, and a comp that skips them tests the reviewer's imagination instead of the proposal.
+
+### Observation 174: A handoff's diagnosis of a defect is a hypothesis, not a finding — measure before fixing
+
+**Status:** OPEN
+**Date:** 2026-09-22
+**Session context:** Picking up a written handoff that listed five open defects, each with a named cause, and starting the fix work.
+**Skill:** New skill candidate: receiving-a-handoff (or an addition to `receiving-code-review`)
+**Type:** open-source
+**Phase/Area:** Acting on a prior session's findings
+
+**Issue:** The handoff named a cause for each defect in the same breath as the symptom ("the count chip includes a man who has posted out; the money side makes an in-the-squadron check and X does not"). Two of the five causes were wrong. The symptom was real and reproducible; the named mechanism was not. Reading the code showed the accused function DID make the check and had a passing test for it. Driving the built app and dumping the two data structures side by side showed the true cause: a completely different record was not being persisted, so the world changed under a reload — and that single cause produced TWO of the five listed defects, which the handoff had written up as unrelated. Fixing as written would have produced two patches in the wrong place and left the real fault live.
+
+**Suggested improvement:** Treat a handoff's SYMPTOM as evidence and its CAUSE as a hypothesis to be re-proved. Before writing any fix, reproduce the symptom on the real artefact and measure the mechanism independently; only then accept or replace the named cause. Also check whether several listed defects share one measured cause before fixing any of them — a written list of independent items is exactly where a common root hides, because the person who wrote it met each symptom on a different day.
+
+**Principle:** The author of a finding is usually right about WHAT they saw and often wrong about WHY. Observations survive the handoff; explanations do not. Re-derive the mechanism from the artefact before acting on it, and re-check whether the items are as independent as the list makes them look.
+
+### Observation 175: A test that asserts the ingredient is not a test of the behaviour
+
+**Status:** OPEN
+**Date:** 2026-09-22
+**Skill:** `test-driven-development` (and `verification-before-completion`)
+**Type:** open-source
+**Phase/Area:** Writing the assertion
+**Session context:** Fixing five defects found by a hands-on pass over a running app, each of which already had passing unit tests nearby.
+
+**Issue:** Three of the five defects sat behind tests that asserted an INGREDIENT of the behaviour rather than the behaviour. One asserted that a warning "carries an address ending in .ld" — true, and the address resolved to nothing, so tapping the warning did nothing. One asserted that a signature stays valid when availability changes — true on its fixture, and it stayed true when the underlying rule was deliberately broken, because the fixture happened to satisfy both readings. One asserted that an empty slot count was zero across a whole screen, which was a proxy for "this particular hole was filled" and broke the moment a different, correct change added slots elsewhere. In each case the test's SENTENCE described the behaviour and its ASSERTION described something adjacent and cheaper to check.
+
+**Suggested improvement:** After writing an assertion, ask what could be broken while it still passes — then break exactly that and watch. If nothing goes red, the assertion is watching an ingredient, not the behaviour. Two specific shapes worth naming: asserting that an identifier/address/key EXISTS rather than that something RESOLVES it, and asserting a global count as a stand-in for a local fact. Prefer resolving the address through the same body production uses, and scope counts to the thing the sentence names.
+
+**Principle:** A passing test proves its assertion, not its title. The gap between the two is where defects live, and the only way to measure that gap is to break the behaviour on purpose and see whether the test notices.
+
+### Observation 176: A reused dev server silently tests the previous build
+
+**Status:** OPEN
+**Date:** 2026-09-22
+**Skill:** `verification-before-completion`
+**Type:** open-source
+**Phase/Area:** Running browser-level checks
+
+**Issue:** A layout fix was verified by a real-browser test whose runner is configured to reuse an already-running preview server. The server was serving a build made before the fix, so the test failed identically before and after the change — which reads exactly like "the fix does not work" and invites a second, unnecessary fix. The only signal was the timing: an assertion that failed by precisely the same measured amount after a change that should have altered it.
+
+**Suggested improvement:** When a browser-level check is expected to change and does not, rebuild the artefact the server is serving BEFORE re-examining the change. Where the runner reuses an existing server, treat "rebuild" as part of the check rather than part of the build. A measured value that is bit-identical across a change that should have moved it is a stale-artefact signature, not a failure signature.
+
+**Principle:** A test that loads an artefact is only as current as the artefact. When a result is suspiciously unchanged, suspect the pipeline before the change — the same failure twice is more often one stale input than two real faults.

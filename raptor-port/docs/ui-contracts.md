@@ -815,8 +815,22 @@ whole board out from under the finger (owner, 26 Aug 26 — "can the screen be
 stable when I try to add in more pucks … the puck will not fill up the entire
 width"). The "+ add" text stays hidden throughout; only a dashed edge marks it,
 faint while a drag/arm is live and bright on the hovered cell. The seat grid
-(`.fcprcp`, sims + flying pairs) auto-adds rows and never packs edge-to-edge, so
-its zone is `display:none`. The week keeps its own always-present full-width
+(`.fcprcp`, sims + flying pairs) has its zone `display:none` — a full-width strip
+would cost EVERY seat cell a permanent row, where the grid can carry its own door
+for nothing on the rows that need one.
+**D50 (owner, 22 Sep 26 — "Keep one spare seat showing"): A SIM ROW ALWAYS SHOWS
+ONE SPARE SEAT, EVEN WHEN IT IS FULL.** The old reason given here — "auto-adds
+rows and never packs edge-to-edge" — was true of an ODD number of people and
+false of an even one, and the walk found what that cost: a full sim row had no
+empty seat and no strip, so the drag a scheduler would naturally make landed on a
+seated man and REPLACED him with nothing on screen to say so. `board-html.ts`'s
+`simSpare` now opens a spare PAIR whenever the cell holds no empty seat. The test
+is "is there an empty seat", not "is the count even": a row whose own FCP or RCP
+is still empty already HAS its door and gains nothing, so the one row of height
+is only spent where it buys something. A pair rather than a lone slot, because
+the grid is two columns and the pairing carries seat identity — the same reason
+the odd-count padding exists. Read-only boards draw no empty seats at all and are
+untouched. Pinned in `ui/simspare.test.tsx`. The week keeps its own always-present full-width
 strip. Pinned in `board.test.tsx` (presence) and `e2e/geometry.spec.ts` (the
 steady height + trailing gap). Row mbtns: `dr*/sr*/gr*` cx
 (CxDialog) / flag / del, `dwadd/dwdel/dradd`, `sradd`, `gradd` (board.ts).
@@ -2899,10 +2913,23 @@ first add wins and keeps the first item's anchor. `parity.test.ts` strips
 positively in `validate.test.ts` ("warnings carry the causing line's
 slot-key").
 
+**A warning about a BOX, not a person, anchors on `data-warnkey` (22 Sep 26).**
+`data-slot`/`data-fill` address people cells and seats, so a warning whose key
+names a TYPED BOX resolved nothing at all: D49's nought-minute sortie names the
+landing time, so the tap fell through to the puck heuristic, found no `who` to
+look for, and moved nothing — which reads exactly like a click that did not
+register. A renderer that draws a box a warning names puts the warning's own key
+on it as `data-warnkey`, and the gesture works on every surface at once. Nothing
+else changes: only a box that carries the attribute can answer to a key, so no
+other warning's landing moves. The two boxes of a nought-minute line are the one
+user today (`ui/html.ts`, `ui/board.ts`); they also wear `.badtm`, the advisory
+edge, so the line SAYS the times cannot both be right without anything being
+opened — which is the half of D49 the walk found missing.
+
 **Which puck wins.** The anchor first: `anchorEl` (exported from
-`highlights.ts`) finds the element whose `data-slot`/`data-fill` equals the
-key or extends it through a `.` — segment-safe, so `s:0.oft.1` can never
-claim `s:0.oft.12.p` — then `closest('.acrow,.pl-row,.ah-row,.sb-line,.sb-arow')`
+`highlights.ts`) finds the element whose `data-slot`/`data-fill`/`data-warnkey`
+equals the key or extends it through a `.` — segment-safe, so `s:0.oft.1` can
+never claim `s:0.oft.12.p` — then `closest('.acrow,.pl-row,.ah-row,.sb-line,.sb-arow')`
 recovers the row and the flagged person's puck INSIDE that row is the
 destination (the row element itself when the name is only free text there).
 The board renders every section under the same keys, so anchors resolve there
