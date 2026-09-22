@@ -103,3 +103,90 @@ test('the window sits above the board and below every dialog layer', async ({ pa
   expect(z.dialogs.length, 'the app mounts its dialog layers').toBeGreaterThan(0)
   for (const d of z.dialogs) expect(d.z, `"${d.what}" must cover the window`).toBeGreaterThan(z.win)
 })
+
+/* ---- WHERE THE WINDOW SITS (Fable S8, S11, S15) ------------------------------
+   The window's position is the one part of it that is pure geometry: jsdom
+   reports every rect as 0x0, so none of this can be pinned anywhere else. */
+const winRect = (page: Page) => page.evaluate(() => {
+  const r = (document.querySelector('.availwin:not([hidden])') as HTMLElement).getBoundingClientRect()
+  return { left: Math.round(r.left), top: Math.round(r.top), right: Math.round(r.right), bottom: Math.round(r.bottom), width: Math.round(r.width), height: Math.round(r.height) }
+})
+async function openFromBoard(page: Page) {
+  await page.click('#schedBoard [data-oilsent]')
+  await page.waitForSelector('.availwin:not([hidden])', { state: 'visible' })
+}
+async function dragBar(page: Page, dx: number, dy: number) {
+  const b = (await page.locator('.availwin .win-ttl').boundingBox())!
+  await page.mouse.move(b.x + 10, b.y + b.height / 2)
+  await page.mouse.down()
+  await page.mouse.move(b.x + 10 + dx / 2, b.y + b.height / 2 + dy / 2)
+  await page.mouse.move(b.x + 10 + dx, b.y + b.height / 2 + dy)
+  await page.mouse.up()
+}
+
+/* S8 — THE PHONE IS THE DESIGN OF RECORD TOO (D41). The approved mock opens the
+   window at phone width as a full-width panel anchored to the bottom, 62% of
+   the screen tall. The build pinned an inline 212x540 on the element, and an
+   inline size beats the stylesheet's phone rule — so on his phone it came up as
+   a 212px column pinned bottom-left. */
+test('phone: the window opens as the full-width bottom panel of the approved design (S8)', async ({ page }) => {
+  await page.setViewportSize(PHONE)
+  await boardWithChip(page)
+  await openFromBoard(page)
+  const r = await winRect(page)
+  expect(r.left, 'a 12px margin on the left').toBe(12)
+  expect(PHONE.width - r.right, 'and on the right — full width').toBe(12)
+  expect(PHONE.height - r.bottom, 'anchored 12px above the bottom').toBe(12)
+  expect(Math.abs(r.height - Math.round(PHONE.height * 0.62)), '62% of the screen tall').toBeLessThanOrEqual(1)
+})
+
+test('desktop: the window opens skinny in the top-right corner, 212 wide (D40)', async ({ page }) => {
+  await page.setViewportSize(DESK)
+  await boardWithChip(page)
+  await openFromBoard(page)
+  const r = await winRect(page)
+  expect(r.width, 'the skinny default').toBe(212)
+  expect(DESK.width - r.right, 'the corner').toBe(16)
+  expect(r.top).toBe(96)
+})
+
+/* S11 — every window starts where the stylesheet puts it. A drag used to leave
+   its position on the element, which is reused between windows, so the NEXT
+   window opened where the last one had been dragged. */
+test('desktop: a window dragged, closed and opened again comes back to its corner (S11)', async ({ page }) => {
+  await page.setViewportSize(DESK)
+  await boardWithChip(page)
+  await openFromBoard(page)
+  await dragBar(page, -500, 150)
+  const moved = await winRect(page)
+  expect(DESK.width - moved.right, 'the drag moved it').toBeGreaterThan(400)
+  /* and a re-render — he goes on editing behind it — leaves it where he put it */
+  await page.evaluate(() => (window as any).afterSchedMutate())
+  await page.waitForTimeout(100)
+  expect((await winRect(page)).left, 'a re-render does not throw it back').toBe(moved.left)
+  await page.click('.availwin .win-x')
+  await openFromBoard(page)
+  const again = await winRect(page)
+  expect(DESK.width - again.right, 'the new window opens in the corner, not where the last was dragged').toBe(16)
+  expect(again.top).toBe(96)
+})
+
+/* S15 — a shrink must never strand it. The window has no scrim and no Escape:
+   the ✕ on its bar is the ONLY way to close it, so a bar pushed off-screen by a
+   narrower browser (or a rotated tablet) is a window that can never be closed. */
+test('desktop: a window dragged to the right edge stays reachable when the browser narrows (S15)', async ({ page }) => {
+  await page.setViewportSize(DESK)
+  await boardWithChip(page)
+  await openFromBoard(page)
+  await dragBar(page, 0, 300)
+  const before = await winRect(page)
+  expect(DESK.width - before.right, 'still at the right edge').toBeLessThan(40)
+  await page.setViewportSize({ width: 900, height: 700 })
+  await page.waitForTimeout(200)
+  const after = await winRect(page)
+  expect(after.right, 'its right edge is on screen').toBeLessThanOrEqual(900)
+  expect(after.left, 'and its left edge').toBeGreaterThanOrEqual(0)
+  expect(after.top, 'its bar is on screen').toBeLessThanOrEqual(700 - 42)
+  await page.click('.availwin .win-x', { timeout: 3000 })
+  await expect(page.locator('.availwin')).toBeHidden()
+})

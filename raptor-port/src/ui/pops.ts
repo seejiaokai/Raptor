@@ -169,10 +169,11 @@ export function setAvailFoot(s: string) { AVAILWIN_FOOT = s }
    behind it, so every keystroke notifies and re-renders; position held in
    component state would be thrown away on the first one. A drag writes the
    element's style directly at pointer speed and commits here on release, so
-   dragging never re-renders the app either. null = the default corner.
-   D40: it OPENS SKINNY at 212px — two 74px pucks, their gap and ~16px of slack
-   per column — and 186 is the floor, below which a puck clips. Build to those
-   numbers rather than re-deriving them. */
-export const AVAILWIN_W = 212, AVAILWIN_MIN_W = 186, AVAILWIN_H = 540, AVAILWIN_MIN_H = 200
+   dragging never re-renders the app either. null = where the STYLESHEET puts
+   it (Fable S8): the corner on a desktop, the full-width bottom panel on a
+   phone. D40's numbers — it OPENS SKINNY at 212px (two 74px pucks, their gap
+   and ~16px of slack per column) with 186 as the floor, below which a puck
+   clips — live in scheduler.css `.availwin`, and ONLY there: they used to be
+   pinned inline from here as well, and an inline size beats the phone rule. */
 export let AVAILWIN_BOX: { x: number, y: number, w: number, h: number } | null = null
 export function setAvailWinBox(b: { x: number, y: number, w: number, h: number } | null) { AVAILWIN_BOX = b }

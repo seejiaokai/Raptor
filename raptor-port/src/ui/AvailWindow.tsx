@@ -38,7 +38,6 @@ import { crowdClashes } from '../engine/validate'
 import {
   AVAILWIN, setAvailWin, setAvailTab, AVAILWIN_FOOT, setAvailFoot,
   AVAILWIN_BOX, setAvailWinBox,
-  AVAILWIN_W, AVAILWIN_MIN_W, AVAILWIN_H, AVAILWIN_MIN_H,
 } from './pops'
 
 /* OPENING THE WINDOW FROM A COUNT CHIP — one body for the board and the week,
@@ -74,20 +73,46 @@ export function AvailWindow() {
   const el = useRef<HTMLDivElement | null>(null)
   const drag = useRef<{ dx: number, dy: number, w: number, h: number } | null>(null)
 
-  /* PUT THE WINDOW BACK WHERE HE LEFT IT, on every render. He edits the
-     schedule behind it, so every keystroke notifies and re-renders this; a box
-     held in component state would be thrown away on the first one, and the
-     window would jump back to the corner mid-drag-and-type. */
-  useLayoutEffect(() => {
+  /* WHERE THE WINDOW SITS — ONE BODY for every render and every browser resize
+     (Fable S8, S11, S15). He edits the schedule behind it, so every keystroke
+     re-renders this; the box lives in the module, never in component state, or
+     the window would jump back to the corner mid-drag-and-type.
+     · NO BOX: the STYLESHEET places and sizes it — the top-right corner at 212
+       wide on a desktop, the full-width bottom panel on a phone (the approved
+       design, D41). So every inline position and size is CLEARED: the element is
+       reused between windows, and a drag's left/top left on it used to open the
+       next window where the last one had been dragged (S11), while the inline
+       212x540 React used to pin beat the phone rule outright (S8).
+     · A BOX (he dragged or resized it): put it back where he left it, then CLAMP
+       it into the screen, so a browser narrowed or a tablet turned after the
+       drag never strands the bar — and with it the ✕, the only way to close a
+       window that has no scrim and no Escape (S15). The clamp is for display
+       only: the box keeps where he put it, so a browser widened again gives it
+       back. Never while a drag is in flight, which writes the element itself. */
+  const place = () => {
     const n = el.current
-    if (!n || !open) return
+    if (!n || !AVAILWIN || drag.current) return
     const b = AVAILWIN_BOX
-    if (b) {
-      n.style.left = b.x + 'px'; n.style.top = b.y + 'px'
-      n.style.right = 'auto'; n.style.bottom = 'auto'
-      n.style.width = b.w + 'px'; n.style.height = b.h + 'px'
+    if (!b) {
+      n.style.left = n.style.top = n.style.right = n.style.bottom = n.style.width = n.style.height = ''
+      return
     }
-  })
+    n.style.right = 'auto'; n.style.bottom = 'auto'
+    n.style.width = b.w + 'px'; n.style.height = b.h + 'px'
+    /* measured AFTER the size is written, so the stylesheet's max-width and
+       max-height have had their say on a screen smaller than the box */
+    const r = n.getBoundingClientRect()
+    const x = Math.min(Math.max(0, b.x), Math.max(0, window.innerWidth - r.width))
+    const y = Math.min(Math.max(0, b.y), Math.max(0, window.innerHeight - 42))
+    n.style.left = x + 'px'; n.style.top = y + 'px'
+  }
+  useLayoutEffect(place)
+  /* a browser resize moves nothing in React, so it re-places the window itself */
+  useEffect(() => {
+    if (!open) return
+    window.addEventListener('resize', place)
+    return () => window.removeEventListener('resize', place)
+  }, [open && open.di, open && open.item])
 
   /* A RESIZE IS COMMITTED WITHOUT A RE-RENDER, for the same reason a drag is.
      CSS `resize` fires no pointer events of its own, so the observer is the
@@ -97,7 +122,17 @@ export function AvailWindow() {
     const n = el.current
     if (!n || !open || typeof ResizeObserver === 'undefined') return
     const ro = new ResizeObserver(() => {
+      /* ONLY A SIZE HE CHOSE IS REMEMBERED. The observer also fires for the
+         window's first layout and for every size the STYLESHEET decides — the
+         phone's full-width panel, a browser resized — and committing those froze
+         the window at pixel values on its very first frame, so it could never
+         follow the phone rule again. A size he chose is one the resize handle
+         wrote onto the element, or, once he has a box, one that differs from it. */
+      if (drag.current) return
+      const b = AVAILWIN_BOX
+      if (!b && !n.style.width && !n.style.height) return
       const r = n.getBoundingClientRect()
+      if (b && Math.abs(r.width - b.w) < 1 && Math.abs(r.height - b.h) < 1) return
       setAvailWinBox({ x: r.left, y: r.top, w: r.width, h: r.height })
     })
     ro.observe(n)
@@ -350,7 +385,6 @@ export function AvailWindow() {
       ref={el}
       role="dialog"
       aria-label={`${m && m.lbl.found ? m.lbl.name : name} — who is available`}
-      style={{ width: AVAILWIN_W, height: AVAILWIN_H, minWidth: AVAILWIN_MIN_W, minHeight: AVAILWIN_MIN_H }}
     >
       <div
         className="win-bar"
