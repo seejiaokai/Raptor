@@ -31,6 +31,7 @@ import { oilFigureFor } from './oilmode'
 import { openScheduler } from './board'
 import { setOilDay } from '../state/view'
 import { AVAILWIN } from './pops'
+import { availableFor } from '../leavewar/sync'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -243,6 +244,77 @@ describe('THE FLAGS ARE THE POINT — a clash is SHOWN, never filtered out (D36/
   })
 })
 
+/* THE OWNER'S OWN CASE, END TO END (D36 + D38; Fable S2, 23 Sep 26).
+   "click on his puck and know that the ops brief he's scheduled for as all avail
+   is inbetween the standard debrief time". A man who lands at 15:00 is free from
+   dekit (D36 keeps availability narrow ON PURPOSE), so he is rightly IN the
+   crowd behind a 15:30 ops brief — and the window must FLAG that the brief sits
+   inside his 15:00–17:00 debrief. The warning list can never say it: its pass
+   skips placeholders, so a man only BEHIND one is on no event at all.
+
+   THE REAL RESOLVER, not the stub the rest of this file uses. A stub puts the
+   man in the crowd whatever the rules say, and then "he is listed" proves the
+   fixture. Here the app's own availability rule decides he belongs, which is the
+   other half of the owner's example — flagged, AND still listed. */
+describe("the owner's case — an ops brief inside a man's own debrief is FLAGGED (D38)", () => {
+  const FLYER = 'bane'     // a pilot, in the demo roster
+  const STAYER = 'harpoon' // not on the line; nothing else booked across the brief
+  const debriefDay = (di: number, brief: [string, string]) => {
+    const d = DAYS[di] as any
+    /* a clean day: one sortie, landing 15:00, and the ops brief. Nothing else,
+       so every flag in the window comes from THIS pair and nothing in the seed */
+    d.waves = [{ label: 'WAVE 1', night: false, intimes: [], traffic: [], formations: [
+      { cs: 'VL', msn: 'BFM', to: '13:30', ld: '15:00',
+        aircraft: [{ p: FLYER, w: 'freak', area: '', rmks: '', opts: {} }] }] }]
+    d.dutywaves = []; d.sims = { amt: [], oft: [] }; d.allhands = []
+    d.ground = [{ prog: 'OPS BRIEF', str: brief[0], end: brief[1], who: 'allavail' }]
+    ensureRowIds(DAYS)
+  }
+  const rowOf = (id: string) => rows().find(r => r.dataset.awp === id)
+  beforeEach(() => {
+    HOOKS.oilSentinel = (iso: string, w: [number, number], day: any) => availableFor(iso, w, day)
+  })
+
+  it('he lands 15:00 and the ops brief is 15:30–16:30: he is LISTED, and FLAGGED with the debrief', async () => {
+    debriefDay(TUE, ['15:30', '16:30'])
+    await openWin(TUE)
+    const his = rowOf(FLYER)
+    expect(his, 'free from dekit, so the app\'s own rule puts him in the crowd (D36)').toBeTruthy()
+    expect(his!.className, 'and he wears the amber flag, not the red one').toContain('flagged')
+    expect(his!.textContent || '', 'his reason names the debrief').toContain('debrief')
+    await click(his!.querySelector('.puck'))
+    /* the warning list's OWN sentence for a debrief (one body, validate.ts
+       debriefSays) — so the window and the list can never word it differently */
+    expect($('.availwin .win-foot').textContent || '', 'a tap gives the full sentence')
+      .toContain('Not enough time to attend the VL BFM debrief — OPS BRIEF sits inside 15:00–17:00')
+  })
+
+  it('a man with nothing else on is listed CLEAN — the flag is about HIS debrief, not the day', async () => {
+    debriefDay(TUE, ['15:30', '16:30'])
+    await openWin(TUE)
+    const other = rowOf(STAYER)
+    expect(other, 'he is in the crowd').toBeTruthy()
+    expect(other!.className, 'and carries no flag').not.toMatch(/flagged|clash/)
+  })
+
+  it('an ops brief AFTER his debrief is over flags nothing — the window is not "he flew today"', async () => {
+    debriefDay(TUE, ['17:00', '18:00'])
+    await openWin(TUE)
+    const his = rowOf(FLYER)
+    expect(his, 'still listed').toBeTruthy()
+    expect(his!.className, 'no flag: 17:00 is the end of his 15:00–17:00 debrief').not.toMatch(/flagged|clash/)
+  })
+
+  it('and the hint under the list COUNTS him — the rows and the count are one reading', async () => {
+    debriefDay(TUE, ['15:30', '16:30'])
+    await openWin(TUE)
+    expect(rowOf(FLYER)!.className, 'he is flagged').toContain('flagged')
+    const n = rows().filter(r => /flagged|clash/.test(r.className)).length
+    expect($('.availwin .win-foot').textContent || '', 'the count under the list matches the rows')
+      .toContain(n === 1 ? 'One man is flagged' : `${n} men are flagged`)
+  })
+})
+
 describe('the earning half moves real money, so it is gated and it writes (D43/D44)', () => {
   /* NOTE: this does NOT create the row. `puckRow` rewrites `ground` and
      ensureRowIds mints a FRESH id, so calling it again would leave the caller
@@ -299,6 +371,45 @@ describe('the earning half moves real money, so it is gated and it writes (D43/D
     expect(toasts.join(' '), 'and he is told why, rather than nothing happening')
       .toContain('Only a scheduler')
     await act(async () => { setSession({ user: 'ad', role: 'admin' }); notify() })
+  })
+})
+
+describe('every window starts clean (Fable S11)', () => {
+  /* Open A, tap a man, close it, open B: B's footer used to carry A's sentence
+     about a man who is not behind B, because the sentence lived in a component
+     that is never unmounted. Reproduced for real on 23 Sep 26 — this file's
+     own tests leaked one window's sentence into the next. */
+  it("a window opened after another shows its OWN hint, not the last tap's sentence", async () => {
+    ;(DAYS[TUE] as any).ground = [
+      { prog: 'OPS BRIEF', str: '0900', end: '1000', who: 'allavail' },
+      { prog: 'SAFETY BRIEF', str: '1400', end: '1500', who: 'allavail' },
+    ]
+    ensureRowIds(DAYS)
+    await open(TUE)
+    const chips = () => $$('#sbBoard .sb-panel.grnd .oilcount')
+    expect(chips().length, 'two rows, two chips').toBe(2)
+    await click(chips()[0])
+    await click(rows()[0].querySelector('.puck'))
+    const first = $('.availwin .win-foot').textContent || ''
+    expect(first, 'the tap wrote a sentence about the man').toContain(' — ')
+    await click($('.availwin .win-x'))
+    await click(chips()[1])
+    expect($('.availwin .win-ttl').textContent || '', 'the second window is open').toContain('SAFETY BRIEF')
+    expect($('.availwin .win-foot').textContent || '', 'and it opens on its own hint')
+      .toMatch(/^Tap a puck/)
+  })
+
+  it('and switching tab starts that tab on its own hint too', async () => {
+    puckRow(SAT)
+    await open(SAT)
+    await act(async () => { setOilDay(SAT); notify() })
+    await click(chipEl())
+    await click(tabs()[0])
+    await click(rows()[0].querySelector('.puck'))
+    expect($('.availwin .win-foot').textContent || '').toContain(' — ')
+    await click(tabs()[1])
+    expect($('.availwin .win-foot').textContent || '', 'the earn tab explains its own tap')
+      .toContain('Tap a puck to stop a man earning')
   })
 })
 

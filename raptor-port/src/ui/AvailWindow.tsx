@@ -31,9 +31,10 @@ import { useVersion } from './useStore'
 import { canEditSched } from '../state/auth'
 import { esc } from '../state/view'
 import { personPuckHTML, personWarnMsgs, withDaySnap } from './html'
-import { oilModeOn, oilSeatHTML, oilSentinelPeople, toggleOilPerson, oilFigureFor, oilBlanketOn, oilFromWords } from './oilmode'
+import { oilModeOn, oilSeatHTML, oilSentinelPeople, toggleOilPerson, oilFigureFor, oilBlanketOn, oilFromWords, oilItemLabel } from './oilmode'
+import { crowdClashes } from '../engine/validate'
 import {
-  AVAILWIN, setAvailWin, setAvailTab,
+  AVAILWIN, setAvailWin, setAvailTab, AVAILWIN_FOOT, setAvailFoot,
   AVAILWIN_BOX, setAvailWinBox,
   AVAILWIN_W, AVAILWIN_MIN_W, AVAILWIN_H, AVAILWIN_MIN_H,
 } from './pops'
@@ -61,7 +62,6 @@ export function AvailWindow() {
   const open = AVAILWIN
   const el = useRef<HTMLDivElement | null>(null)
   const drag = useRef<{ dx: number, dy: number, w: number, h: number } | null>(null)
-  const foot = useRef<string>('')
 
   /* PUT THE WINDOW BACK WHERE HE LEFT IT, on every render. He edits the
      schedule behind it, so every keystroke notifies and re-renders this; a box
@@ -128,6 +128,30 @@ export function AvailWindow() {
   const earners = (ids: string[]) =>
     ids.filter(id => !!oilFigureFor(di, id, item)).length
 
+  /* EVERY FLAG A MAN WEARS IN THIS WINDOW — ONE BODY, three readers: his row,
+     the tap's sentence, and the count under the list. They were three separate
+     reads of the warning list, which is how the count and the rows could come to
+     disagree the moment a second kind of flag arrived.
+
+     THE SECOND KIND IS THE OWNER'S OWN CASE (D36 + D38, Fable S2): this event
+     sitting inside one of his own flying legs' brief or debrief. The warning
+     list can never say it — its pass skips placeholders, so a man only BEHIND
+     one is on no event at all — so it is asked here, of THIS event, through the
+     warning list's own rule and words (validate.ts crowdClashes). It comes
+     FIRST, so among equal flags the one about this event is the one he reads;
+     a red day-wide flag still outranks it (worst first, below).
+
+     The event's window is read LIVE, every render, so the flag follows the row
+     if he edits its times behind the window. Only on the working copy: an
+     issued face shows its own world's flags or none (Fable S3), and this check
+     reads the live day. */
+  const live = ver ? null : oilItemLabel(di, item)
+  const flagsFor = (id: string) => [
+    ...(live ? crowdClashes(di, id, live.s, live.e, live.name) : []),
+    ...personWarnMsgs(di, id),
+  ]
+  const worstOf = (ws: { sev: string, msg: string }[]) => ws.find(w => w.sev === 'hard') || ws[0]
+
   const rowHTML = (id: string) => {
     const p = (PEOPLE as any)[id]
     if (!p) return ''
@@ -140,8 +164,7 @@ export function AvailWindow() {
     const pk = oil
       ? oilSeatHTML(di, id, item, (o: any) => personPuckHTML(di, id, o))
       : personPuckHTML(di, id)
-    const ws = personWarnMsgs(di, id)
-    const worst = ws.find(w => w.sev === 'hard') || ws[0]
+    const worst = worstOf(flagsFor(id))
     /* D40 — at 212px a flagged man's reason will not fit beside his puck, so it
        WRAPS onto its own line under him, and sits beside him only when the
        window is dragged wider. It is never dropped, only moved: the flex-basis
@@ -167,7 +190,7 @@ export function AvailWindow() {
         + `${gone.length === 1 ? 'is' : 'are'} no longer on the roster.</div>`
       : '')
 
-  const close = () => { setAvailWin(null); setAvailWinBox(null); notify() }
+  const close = () => { setAvailWin(null); notify() }
 
   const onBody = (e: React.MouseEvent) => {
     const t = e.target as HTMLElement
@@ -182,7 +205,7 @@ export function AvailWindow() {
          amendment exactly as a tap on the board would */
       const on = toggleOilPerson(di, id, item)
       const cs = ((PEOPLE as any)[id] || {}).cs || id
-      foot.current = on ? `${cs} earns from this event again.` : `${cs} earns nothing from this event.`
+      setAvailFoot(on ? `${cs} earns from this event again.` : `${cs} earns nothing from this event.`)
       notify()
       return
     }
@@ -190,16 +213,15 @@ export function AvailWindow() {
        his puck; the tap gives the FULL sentence, which is the one the warning
        list uses, because a wrapped line is cut to fit and this one is not. */
     const cs = ((PEOPLE as any)[id] || {}).cs || id
-    const ws = personWarnMsgs(di, id)
-    const worst = ws.find(w => w.sev === 'hard') || ws[0]
-    foot.current = worst
+    const worst = worstOf(flagsFor(id))
+    setAvailFoot(worst
       ? `${cs} — ${worst.msg}`
-      : `${cs} — nothing else on the programme at that time.`
+      : `${cs} — nothing else on the programme at that time.`)
     notify()
   }
 
-  const flagged = [...pilots, ...wsos].filter(id => personWarnMsgs(di, id).length).length
-  const hint = foot.current || (oil
+  const flagged = [...pilots, ...wsos].filter(id => flagsFor(id).length).length
+  const hint = AVAILWIN_FOOT || (oil
     ? 'Tap a puck to stop a man earning from this event.'
     : flagged
       ? `Tap a puck for why. ${flagged === 1 ? 'One man is' : `${flagged} men are`} flagged.`
@@ -268,11 +290,11 @@ export function AvailWindow() {
         <div className="win-tabs" role="tablist">
           <button
             className={'win-tab' + (oil ? '' : ' on')} role="tab" aria-selected={!oil}
-            onClick={() => { setAvailTab('who'); foot.current = ''; notify() }}
+            onClick={() => { setAvailTab('who'); notify() }}
           >Who&rsquo;s available <span className="c">{people.length}</span></button>
           <button
             className={'win-tab' + (oil ? ' on' : '')} role="tab" aria-selected={oil}
-            onClick={() => { setAvailTab('oil'); foot.current = ''; notify() }}
+            onClick={() => { setAvailTab('oil'); notify() }}
           >Who earns OIL <span className="c">{earners(people)} of {people.length}</span></button>
         </div>
       ) : (

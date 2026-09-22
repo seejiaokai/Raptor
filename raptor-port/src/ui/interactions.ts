@@ -19,7 +19,7 @@ import { scrollToWarnFocus, queueHold, warnWeekId } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
 import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
-import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList, setAvailWin, setAvailWinBox } from './pops'
+import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList, setAvailWin } from './pops'
 import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
 import { oilItemLabel, oilModeOn } from './oilmode'
 import { withDaySnap } from './html'
@@ -506,7 +506,6 @@ export function routeClick(e: MouseEvent) {
        and he can still step back to the other tab. With the mode off there is
        no second tab to land on (the mode rule, 22 Sep 26). */
     setAvailWin({ di, item: it, ver, name: lbl.name, when: lbl.when, tab: oilModeOn(di) ? 'oil' : 'who' })
-    setAvailWinBox(null)
     notify()
     return
   }

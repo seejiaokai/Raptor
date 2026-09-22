@@ -4,7 +4,7 @@ import { VCONF, SHIFT_HARD } from './rules'
 import { overlap, hm24, lgT, parseHM } from './time'
 import { collectEvents, shiftEvHard, scSeatHits, avSeatHits } from './events'
 import { HOOKS } from './hooks'
-import { sansGate, SANS_LABEL, personBusy } from './avail'
+import { sansGate, SANS_LABEL } from './avail'
 import { seedRunIn, prevSundaySeed, nextMondaySeed, nextMondayWorked, windowDiverges, windowFiling, filingDivergesAt } from './weekctx'
 import { setWorld, setFiling, clearFiling } from './world'
 import { CURWEEK, isStandalone } from './waves'
@@ -135,9 +135,6 @@ export const legBriefWin=(lg:any):[number,number]=>[lg.brief,lg.to]
 export const legDebriefWin=(lg:any):[number,number]=>[lg.ld,lg.ld+VCONF.debrief]
 export const noBriefSays=(lg:any,what:string)=>{const [bs,bt]=legBriefWin(lg)
   return `No time for the ${lg.label} flight brief — ${what} sits inside ${hm24(bs)}–${hm24(bt)} (brief ${hm24(bs)})`}
-/* the DOUBLE_BOOK wording for two different events (the loop below builds the
-   same sentence inline for its own two-lines case) */
-export const clashSays=(a:string,b:string)=>`${a} & ${b} clash`
 export const debriefSays=(lg:any,what:string)=>{const [ls,de]=legDebriefWin(lg)
   return `Not enough time to attend the ${lg.label} debrief — ${what} sits inside ${hm24(ls)}–${hm24(de)} (land + ${lgT(VCONF.debrief)})`}
 
@@ -160,31 +157,23 @@ export const debriefSays=(lg:any,what:string)=>{const [ls,de]=legDebriefWin(lg)
  *
  *  Flight brief and debrief only. The SIM brief/debrief windows are built
  *  inside the pass from the day's private sim table and are not reachable from
- *  here; that half is filed in OUTSTANDING.md rather than guessed at. */
+ *  here; that half is filed in OUTSTANDING.md rather than guessed at.
+ *
+ *  THE WORKING COPY ONLY — the window does not ask this under an issued
+ *  version. It reads the LIVE day's events (EVD), and an issued face shows the
+ *  flags of its OWN world or none (Fable S3): a man booked since publication is
+ *  surfaced by the pending mark and the working copy's live crowd, which drops
+ *  him (D44/D45), never by painting today onto the record. That is also why
+ *  there is no red "booked elsewhere" half here any more. It was written for
+ *  exactly that issued case; on the working copy it could never fire, because
+ *  the crowd is resolved with this same day's `personBusy` and already leaves
+ *  every busy man out. A check that cannot fire is a comment that vouches. */
 export function crowdClashes(di:any,id:any,s:number|null,e:number|null,label:string):{sev:string,msg:string}[]{
   const p=PEOPLE[id]
   /* ground crew carry no flight brief of their own to lose — the same
      exemption the pass above makes */
   if(!p||isSpecial(id)||p.pers||s==null||e==null)return [];
   const out:{sev:string,msg:string}[]=[];
-  /* BOOKED ON SOMETHING ELSE ACROSS THIS EVENT — red, in the app's own clash
-     words. GATED ON `personBusy`, THE VERY TEST THE CROWD ITSELF USES
-     (leavewar/sync.ts availableFor): a man whose busy window overlaps the event
-     is left OUT of a live crowd. So on the working copy nobody in the crowd can
-     ever trip this — which is the point, because a second test with a slightly
-     different edge would paint false red on men the crowd just called free.
-
-     Where it DOES fire is the case that matters: an ISSUED day's membership is
-     frozen at publication (D44), so a man booked on a desk AFTER the day went
-     out is still in the issued crowd, and the window must show him red rather
-     than let the frozen list read as though nothing changed (D45: nothing on a
-     published schedule may change without the scheduler seeing it). The busy
-     test decides; the day's events only supply the NAME of what he is on. */
-  const d=DAYS[+di];
-  if(d&&personBusy(d,id).some((w:any)=>overlap(s,e,w[0],w[1]))){
-    const names=[...new Set(dayEvents(di,id).filter((o:any)=>o&&o.s!=null&&o.e!=null&&overlap(s,e,o.s,o.e)).map((o:any)=>o.label))];
-    out.push({sev:'hard',msg:clashSays(label,names.join(', ')||'something else on the programme')});
-  }
   dayEvents(di,id).filter((x:any)=>x&&x.kind==='fly').forEach((lg:any)=>{
     const [bs,bt]=legBriefWin(lg), [ls,de]=legDebriefWin(lg);
     if(bs!=null&&bt!=null&&overlap(s,e,bs,bt))out.push({sev:'adv',msg:noBriefSays(lg,label)});

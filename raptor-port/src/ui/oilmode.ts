@@ -45,7 +45,7 @@
    reader the issued schedule's green edge shares.
    ===================================================================== */
 import { DAYS } from '../engine/data'
-import { INPUTS, inpId } from '../engine/inputs'
+import { INPUTS, inpId, inpWin } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
@@ -53,7 +53,7 @@ import { envMin, uniformOil, dayOilWork, oilCapableItems, rowItemKey, groundItem
 import { landedExtras, oilEvidence, oilEvidenceOf, oilEarnedWork, oilInputEligible, oilSentOf, personDecision, itemMasked, itemMark, itemState, spanDefault, type OilEvidence, type OilDecisions } from '../engine/oilev'
 import { OILDAY, setOilDay, afterSchedMutate, esc } from '../state/view'
 import { CURWEEK } from '../engine/waves'
-import { parseHM, win } from '../engine/time'
+import { parseHM, win, hm24 } from '../engine/time'
 import { stashKeys, stashEditDays } from '../engine/weekstash'
 import { undoMark } from '../undo'
 
@@ -848,13 +848,21 @@ export function oilItemLabel(di: any, item: string): { name: string, when: strin
              s: ww ? ww[0] : null, e: ww ? ww[1] : null }
   }
   if (!item) return out('This event')
-  /* a landed request: the type's LONG name, the same one the history uses; its
-     own times are minutes already, and an all-day request has no window */
+  /* a landed request: the type's LONG name, the same one the history uses.
+     ITS WINDOW IS THE ONE ITS CROWD WAS RESOLVED OVER — `inpWin`, the same call
+     `projectOilInputs` hands the resolver — so an all-day request is the whole
+     day here too, and the flags and the membership measure one window. Its
+     times are stored as MINUTES, so they print through hm24; the string fold
+     the rows use would read 1020 as "10:20" when it means 17:00. */
   if (item.startsWith('i:')) {
     const r = (INPUTS as any[]).find(x => x && String(inpId(x)) === item.slice(2))
     const t = r ? String(r.type || '').trim() : ''
-    if (r) return r.allday ? out(t || 'Request') : out(t || 'Request', '', '', r.s, r.e)
-    return out('Request')
+    if (!r) return out('Request')
+    const w = inpWin(r)
+    const ok = !!w && w[1] > w[0]
+    return r.allday || r.s == null || r.e == null
+      ? out(t || 'Request', '', '', ok ? w![0] : null, ok ? w![1] : null)
+      : out(t || 'Request', hm24(r.s), hm24(r.e), ok ? w![0] : null, ok ? w![1] : null)
   }
   for (const r of (d.ground || [])) if (r && groundItemKey(r) === item) return out(r.prog, r.str, r.end)
   for (const r of (d.allhands || [])) if (r && rowItemKey(r.rid) === item) return out(r.prog, r.str, r.end)

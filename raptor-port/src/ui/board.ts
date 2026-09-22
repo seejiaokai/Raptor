@@ -22,7 +22,7 @@ import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, day
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
-import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit, setAvailWin, setAvailWinBox } from './pops'
+import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit, setAvailWin } from './pops'
 import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel, WAVE_BUILTIN, WAVETPL_CFG } from '../engine/wavetpl'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
@@ -1308,7 +1308,6 @@ export function boardArmClick(e: MouseEvent) {
        and he can still step back to the other tab. With the mode off there is
        no second tab to land on (the mode rule, 22 Sep 26). */
     setAvailWin({ di, item: it, ver, name: lbl.name, when: lbl.when, tab: oilModeOn(di) ? 'oil' : 'who' })
-    setAvailWinBox(null)
     notify()
     return
   }

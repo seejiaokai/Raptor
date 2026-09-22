@@ -145,8 +145,21 @@ export type AvailWin = {
   tab: 'who' | 'oil'
 }
 export let AVAILWIN: AvailWin | null = null
-export function setAvailWin(v: AvailWin | null) { AVAILWIN = v }
-export function setAvailTab(t: 'who' | 'oil') { if (AVAILWIN) AVAILWIN = { ...AVAILWIN, tab: t } }
+/* EVERY OPEN AND EVERY CLOSE GOES THROUGH HERE, so this is where a window
+   starts clean: its footer sentence and its position are reset with it. Both
+   used to outlive the window (Fable S11): the footer lived in the component,
+   which is never unmounted, and the position was reset by each caller that
+   remembered to. Open A, tap a man, close, open B — and B's footer still spoke
+   about a man who is not behind B. Found for real on 23 Sep 26, when this
+   file's own tests leaked one window's sentence into the next. */
+export function setAvailWin(v: AvailWin | null) { AVAILWIN = v; AVAILWIN_FOOT = ''; AVAILWIN_BOX = null }
+/* a tab change is a new list, so it starts with the tab's own hint */
+export function setAvailTab(t: 'who' | 'oil') { if (AVAILWIN) AVAILWIN = { ...AVAILWIN, tab: t }; AVAILWIN_FOOT = '' }
+/* THE SENTENCE UNDER THE LIST after a tap — "X — why", or what a switch did.
+   Empty = the tab's own hint. Kept beside the window it belongs to, never in
+   the component, for the reason above. */
+export let AVAILWIN_FOOT = ''
+export function setAvailFoot(s: string) { AVAILWIN_FOOT = s }
 
 /* WHERE THE WINDOW SITS, kept OUTSIDE React on purpose. He edits the schedule
    behind it, so every keystroke notifies and re-renders; position held in
