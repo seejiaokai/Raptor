@@ -49,8 +49,21 @@ Stale is worse than absent — the next session trusts it.
 
 ## 4. The gate
 
-`npm run docsize` fails when a tier-0 or tier-1 file is over budget. It is a **ratchet**: the
-recorded ceiling can only ever go DOWN. Raising one is a deliberate, argued edit in the same
-change, exactly like the DOM ceilings in `performance.md`.
+`npm run docsize` does two jobs ([DOCS-GUARD], 23 Sep 26 — Fable's attack on D29, owner D30):
 
-Run it with the other gates. It is instant.
+- **The inventory.** Every filed backlog item must survive the change: it fails, by name, when an
+  item is gone from both `OUTSTANDING.md` and `OUTSTANDING-ARCHIVE.md`, when an id is newly
+  duplicated, when an archive line is removed, when an item moved to the archive arrived
+  truncated, or when a body line is newly doubled. It runs in CI (`docs-guard.yml`, which exists
+  because docs-only changes otherwise run no checks at all) and as a Stop hook at the end of every
+  turn. A deliberate exception is declared in the commit: `Docs-guard-allow: [ID]`.
+- **The ceilings.** Each always-read file has a line ceiling. **Over a ceiling inside a code change
+  is reported and deferred, never failed** — a code change is never where docs get trimmed (D29
+  rule 3). Over a ceiling on a docs-only change fails, because that change is the trim pass.
+
+**Ceilings carry headroom; they are no longer a ratchet.** The old rule lowered a ceiling to the
+file's new size after every trim, which left zero headroom, so every mandatory addition during a fix
+tripped the gate — the squeeze behind the 22 Sep 26 destruction. That clause is withdrawn (D29 as
+corrected). Moving a ceiling is a deliberate, argued edit with its reason in the commit, in a
+commit that touches no `raptor-port/src` file (the gate checks this). Its self-test,
+`scripts/docsize-selftest.mjs`, replays the destruction and must stay green.

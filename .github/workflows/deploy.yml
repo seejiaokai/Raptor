@@ -31,18 +31,26 @@ name: Deploy to GitHub Pages
 # imported anywhere in src/), so a session-handoff or HANDOFF.md edit merges
 # without a 5-minute gate and without a pointless Pages redeploy. The skip
 # fires only when EVERY changed file matches; a PR mixing code and docs still
-# runs the full gates.
+# runs the full gates. The document gate's own files are skipped too (23 Sep 26,
+# [DOCS-GUARD]): they are run by docs-guard.yml, and nothing in src/ imports
+# them — without this, every edit to the guard would bill a full gate run.
 on:
   push:
     branches: [main]
     paths-ignore:
       - '**.md'
       - '.claude/**'
+      - '.gitattributes'
+      - 'raptor-port/scripts/docsize*.mjs'
+      - '.github/workflows/docs-guard.yml'
   pull_request:
     branches: [main]
     paths-ignore:
       - '**.md'
       - '.claude/**'
+      - '.gitattributes'
+      - 'raptor-port/scripts/docsize*.mjs'
+      - '.github/workflows/docs-guard.yml'
   workflow_dispatch:
 
 permissions:

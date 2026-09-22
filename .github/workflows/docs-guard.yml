@@ -1,0 +1,52 @@
+# THE DOCUMENT GATE IN CI — [DOCS-GUARD] F1 (Fable's attack on D29, 22 Sep 26; owner D30).
+#
+# deploy.yml skips every change made only of `**.md` and `.claude/**` (nothing there reaches the
+# built app), which meant a docs-only pull request ran ZERO checks: one that deleted half the
+# backlog would have merged unexamined. This job is that missing check, and it is deliberately
+# small — no install, no build, just Node and git — because the repo is PRIVATE since 23 Sep 26
+# (D59) and every run bills Actions minutes (about one per run).
+#
+# It runs the gate's own self-test first (proof it still catches a destroyed record), then the gate
+# against the change's base: the PR's base commit, or the previous tip of main on a push.
+name: Docs guard
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '**.md'
+      - '.claude/**'
+      - '.gitattributes'
+      - 'raptor-port/scripts/docsize*.mjs'
+      - '.github/workflows/docs-guard.yml'
+  push:
+    branches: [main]
+    paths:
+      - '**.md'
+      - '.claude/**'
+      - '.gitattributes'
+      - 'raptor-port/scripts/docsize*.mjs'
+      - '.github/workflows/docs-guard.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-guard-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  docs-guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # the gate reads the base versions of the backlog with `git show`
+      - name: Self-test — the gate still catches a destroyed record
+        run: node raptor-port/scripts/docsize-selftest.mjs
+      - name: Inventory and ceilings against the base
+        env:
+          DOCSGUARD_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: node raptor-port/scripts/docsize.mjs

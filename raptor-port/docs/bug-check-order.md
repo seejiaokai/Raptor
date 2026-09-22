@@ -447,6 +447,18 @@ walked and why** · the gate counts · what the walk found and each disposition.
 or, in those words, `Walk: NOT DONE — <reason>`. A WALK or FULL change with no Walk line **cannot**
 be reported as ready for "merge live". Silence is not an option the format allows.
 
+**And two lines about the documents, copied from the output of `npm run docsize`, never retyped**
+([DOCS-GUARD], Fable F3/F8, 23 Sep 26). The first says whether every filed record survived the
+change, measured line by line against the base — a heading count cannot see a body that was cut or
+doubled. The second says whether the files are within their line budgets:
+
+`Docs: OUTSTANDING <n> items (+<a> −<b>, −<b> all in ARCHIVE) · DECISIONS D<x>–D<y>`
+`docsize: OK` — or `docsize: OVER by <n>, deferred (D29)` on a change that touches `raptor-port/src`.
+
+The second value is LEGAL: a code change is never the place to trim the docs (D29 rule 3), so being
+over budget there is reported and left for its own docs-only pass. On a docs-only change, over
+budget is a failure — that change IS the trim pass.
+
 **The owner checks five things, in a minute:**
 
 1. Is there a sheet, linked from the report? No sheet, no walk.
