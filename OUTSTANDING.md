@@ -93,8 +93,11 @@ in-flight and risk-reducing** first.
    a third of tonight's new lines are that task's scaffolding and become archive the day it
    closes. See the item below.
 **TOP OF THE QUEUE (22 Sep 26, re-ordered after D38).** **[OIL-AUTO-REMOVE] IS MERGED AND CLOSED.**
-1) **[OIL-SEATS-CAN-EARN]** — plan written, awaiting its cross-provider red-team:
-`raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-can-earn-plan.md`. 2) **[ALL-AVAIL-WINDOW]**
+1) **[OIL-SEATS-CAN-EARN]** — **IN FLIGHT: steps 1–4 of 11 BUILT, committed and pushed on
+`claude/oil-seats-can-earn`; steps 5–11, the WALK and the two code reads still to go.** Resume from
+`raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-build-handoff.md` — it names what is built,
+what is left verbatim from the plan's §5, the decisions taken this session and the traps already hit.
+Plan: `raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-can-earn-plan.md`. 2) **[ALL-AVAIL-WINDOW]**
 (D38, NEW) — straight after, because it opens FROM the counters that job builds. 3) **[DOCS-GUARD]**,
 scope and order settled by D30. 4) **[HUMAN-RETEST]**. 5) **[DOC-TRIM]** — unblocked now that a third
 of the OIL scaffolding became archive. 6) The stack resumes at **[DB-STEP]**.
@@ -825,6 +828,17 @@ the fix is to give an OIL decision its own wording rather than inheriting the ge
 own pass.
 
 ### [OIL-SEATS-CAN-EARN] Every seat can earn, the default decides — ONE change (owner, D24 + D28, 22 Sep 26)
+
+**STATUS 22 Sep 26: IN FLIGHT — steps 1–4 of 11 built, committed and pushed on branch
+`claude/oil-seats-can-earn`. NOT merged; the owner has not said "merge live" and must not be asked
+until the FULL-tier walk is done.**
+**Context → `raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-build-handoff.md`** — the
+resume doc: what landed, what is left (verbatim from the plan's §5, which is not to be resequenced),
+the decisions taken during the build, and the traps already paid for.
+**Behaviour register → `raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-behaviour-register.md`**
+— the list the rules sweep walks in the running app.
+Gates at the checkpoint: vitest 5514/5514 · build OK · parity 728/0 · rulecheck OK. The two browser
+gates have NOT been run yet.
 
 **D28 merged two items into this one.** His principle: *"If everywhere in the schedule can earn oil,
 then the all avail or all puck should also be able to earn oil"* — every seat can earn, the DEFAULT
