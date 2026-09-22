@@ -1104,6 +1104,25 @@ the traces of material he uploaded. The facts, so they are not re-derived:
 - **The clean route is a FRESH repo with ONE commit**: `raptor-port/` source, what a developer
   needs to build and run, nothing else; this repo stays private as his working history.
 
+**CHECKED 23 Sep 26 — NO RESTRICTED MATERIAL WAS EVER UPLOADED. Do not re-run this search.**
+He asked whether evidence of restricted material could be removed or masked. There is none to
+remove. What was actually checked, each one clean: the uploaded original
+`raptor-port/reference/scheduler.html` carries NO classification marking of any kind; the briefing
+deck's 10 slides carry none; the demo data is 63 invented callsigns with no real names, ID numbers,
+emails, phone numbers, DOB, next-of-kin or rank; the stores (TPOD, 2 TKS, NAV, N/C, 3 TKS, CL),
+mission types (ACM, AD, BFM, SAT) and areas (NORTH/SOUTH/EAST/WEST) are generic training vocabulary
+and compass directions. **The only `RESTRICTED` in the repo is the stamp the app PRINTS on
+schedules it generates itself** (`src/ui/printpdf.ts`) — the product working correctly, not a trace
+of anything received. A `.restricted` red-banner style exists in `tracker.css` and nothing renders
+it; dead style.
+
+**ONE THING D58 DID NOT REACH:** slide 1 of `RAPTOR-Command-Brief.pptx` still carries the service
+name. The file is gone from the current tree but lives in three commits of history, and being a
+binary it was not touched by the text sweep. **It needs no action while the repo is private** — but
+it is a reason to share through the fresh single-commit repo below rather than by adding
+collaborators to this one, which would solve the deck, the uploaded original and the whole
+agent-facing archive in a single step.
+
 ### [STORE-READER-SWEEP] A stored record read more narrowly than it is written — sweep for more (22 Sep 26)
 
 **TWO INSTANCES FOUND IN ONE FILE IN ONE EVENING, both silent, both about official
