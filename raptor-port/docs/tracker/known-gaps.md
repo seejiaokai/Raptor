@@ -1,5 +1,17 @@
 # TRACKER — known gaps
 
+> **The route to the database (owner, 23 Sep 26 — D120).** Before the database step he EXPORTS
+> his hand-drawn charts (the balls, their positions and lines, and every event detail), WIPES the
+> app, then IMPORTS that file into the Tracker. So a Tracker bug that route already removes is not
+> a finding and is never chased: anything living only in data stored today (every student, mark,
+> date and course now here is demo data), the start-up converters that upgrade OLDER stored data
+> (`migrateCourseIds`, `migrateSylIds`, `migrateIds`, the legacy `ocu:` import), and reading OLDER
+> file formats (he imports the file he has just exported). **The other half:** that round trip is
+> the ONE path his charts survive by, so a CURRENT-format export or import that loses or changes a
+> ball, a line, a position, a font, a chart name or order, a hidden chart or any event detail is a
+> real finding, the highest one — and everything the Tracker does to NEW data after the wipe
+> (marking, students, dates, pace, chart edits) still has to work.
+>
 > **Vendored into RAPTOR 7 Sep 26** (`src/tracker/`, the Tracker tab) from
 > `github.com/seejiaokai/Tracker` at `bf9a47a`. This file carries over what
 > that app knew about itself and did not fix, plus the three things the merge

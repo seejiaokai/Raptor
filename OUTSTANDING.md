@@ -654,6 +654,9 @@ ceiling inside itself and had reached 961.
 feature per chat. Amendment chat: port 4173, rulings from D90. Tracker chat: port 4180, rulings from
 D120. Never two full gate runs at once (false failures under load). The order of the other three
 (change-recording, the absence record, the Leave War links) is not ruled: propose it and ask.
+**Tracker scope (D120):** his charts reach the database by export → wipe → import, so the older-data
+converters and old file formats are NOT walked; the current export → wipe → import round trip is
+walked FIRST (`docs/tracker/known-gaps.md`, head note).
 **His words: "This also means that all the previous bug tests we did there will be bugs not
 captured. Because I didnt test them when i told u that u would test like a human since."** He is
 right, and the OIL build is the proof. It had a two-model cross-provider review and 5341 green
@@ -1273,6 +1276,10 @@ not an option: nothing now in the store has to survive the move. It is the 13 Se
 D22 strengthened — those approved clearing when it was simpler; this says the clearing is going to
 happen, so "the harm lives only in data that already exists, and it is prevented going forward" is
 a reason to STOP, not a cost to weigh. Use it as a test on any finding from here to the database.
+**The Tracker's hand-drawn charts are the exception, and they travel by EXPORT → WIPE → IMPORT
+(owner, D120, 23 Sep 26):** he exports them, the app is wiped, he imports the file. So the current
+Export and Import of charts must be faithful at this step; the older-data converters and old file
+formats need not be (`docs/tracker/known-gaps.md`, head note).
 The big future move: Raptor, Leave War and Tracker all run on `localStorage` /
 session today; the target is a shared database (**Dataverse** — `src/storage/`
 seam, `docs/data-model.md`). Large, design-first, its own red-team. Several parked
