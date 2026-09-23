@@ -202,7 +202,14 @@ Each wire broken once, the app rebuilt, the smoke block and/or the phone walk ru
 
 ## 9. Gates
 
-FILLED IN BELOW.
+On the final code (commit `ed29319b` + docs), 24 Sep 26, one at a time at below-normal priority while the demo chat
+had the PC (D125, D133), each started only below 55 % load: unit **5819 / 5819** (358 files) · build clean · tfin
+**728 / 0** · rulecheck OK · smoke **442 / 442** (431 + the 11 new checks) · e2e **467 passed**, 48 skipped (the
+same as the pinch fix's run) · `docsize` every record accounted for (OVER by 84, deferred — D29).
+**The smoke suite's first run stopped at check 261** on its own known intermittent (the "+ Add" student box, the
+`TRK-SMOKE` timeout its own comment describes — a desktop mouse path none of this change runs); the rerun on the same
+code passed 442 / 442. Red first, for the record: the 8 checks of the first fix failed on the old code with the
+other 431 green; the 3 added for the reads failed on the first fix (`red-reads`).
 
 ## 10. The two code reads
 
@@ -255,3 +262,5 @@ quick follow-up:
 3. Pinch the canvas, then ✓ Done editing chart → the part of the chart that was in the middle is still in the middle.
 4. Now pinch the chart → it zooms normally; nothing shrinks or disappears off the left (his report).
 5. One finger alone still drags a ball, as before.
+
+`Walk: docs/handpass/2026-09-23-tracker-pinch-ball.md · 76 pictures · 30 surfaces · 44 orders (phone; 42 tablet, 7 sideways) · MISSING: 0 (all fixed red-first; 3 older problems stay filed: [TRK-EDIT-SIDEWAYS], [TRK-TAP-AFTER-DRAG], and the two questions in [TRK-PINCH-ASK])`
