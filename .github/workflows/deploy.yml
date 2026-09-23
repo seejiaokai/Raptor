@@ -102,6 +102,21 @@ jobs:
         working-directory: raptor-port
     steps:
       - uses: actions/checkout@v4
+      # KEEP THE REPO'S OWN LINE ENDINGS (the first run on the PC, 23 Sep 26,
+      # failed two unit files on exactly this). Git for Windows is installed
+      # with core.autocrlf=true, so this fresh clone came out CRLF — while the
+      # owner's own checkout says false in its .git/config, which is why every
+      # local run passed. src/testing/refwin.ts patches the reference app by
+      # exact text that spans a line break, and found nothing to patch. So: set
+      # false for THIS clone only (never the owner's own Git settings) and lay
+      # every file down again exactly as stored — LF where the repo is LF, and
+      # the handful of CRLF files still CRLF, as on his desktop.
+      - name: Keep the repo's own line endings
+        working-directory: .
+        run: |
+          git config core.autocrlf false
+          git rm -r --cached --quiet .
+          git reset --hard --quiet HEAD
       - uses: actions/setup-node@v4
         with:
           node-version: 22
