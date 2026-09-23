@@ -1,0 +1,46 @@
+{
+  "rows": [
+    {
+      "step": "F-A: the whole backup carries the deleted 2024's typed details",
+      "pass": true,
+      "said": "{\"ST-01\":{\"name\":\"DEL24 R4\"}}"
+    },
+    {
+      "step": "F-G: TR-3 switched to a lecture pulls Last Flown back to 20/09",
+      "pass": true,
+      "said": "2026-09-25 → 2026-09-20"
+    },
+    {
+      "step": "F-B: the event list refuses the deleted-but-unsaved code",
+      "pass": true,
+      "said": "“ACG-04” was deleted from this chart and that is not saved yet. Press ✓ Save changes first (its marks are removed then), or Undo to bring it back."
+    },
+    {
+      "step": "F-E: DCO pressed with the year half-typed is dated a real day",
+      "pass": true,
+      "said": "box read \"0002-09-23\" when DCO was pressed; the mark is dated 2026-09-23"
+    },
+    {
+      "step": "F-D: Logout by keyboard mid-import keeps the session and the question",
+      "pass": true,
+      "said": "before \"“2026” already exists.\n\nReplace it, or add the incoming one \" after \"“2026” already exists.\n\nReplace it, or add the incoming one \"; signed in true"
+    },
+    {
+      "step": "F-A: 2024 stays deleted after the import",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "F-A: ↺ Restore after the wipe brings back what was typed on it",
+      "pass": true,
+      "said": "ST-01 DEL24 R4 Type: Lecture · 3.0 Hrs Crew: — Prerequisites: — Edit"
+    },
+    {
+      "step": "F-C: the \"as new\" copy keeps Tx's own crew wording",
+      "pass": true,
+      "said": "copy \"Tx 2026 (new) ✎\"; Tx crew \"IP / UW, UP / IW\"; copy row: BFM-3 Basic Fighting Manoeuvres-3 Type: 2 x F-15SG Crew: IP / UW, UP / IW Prerequisites: AAM-07, BFM-2 Edit"
+    }
+  ],
+  "errorsA": [],
+  "errorsB": []
+}
