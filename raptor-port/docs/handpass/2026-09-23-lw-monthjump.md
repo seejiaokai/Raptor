@@ -311,3 +311,10 @@ session, before SEC-003. **Fix:** `captureGitInfo: { commit: false, diff: false 
 
 **LW-103's test, red first:** "the open-bidding outline moves with the rows when the manning Archive opens"
 — without the fix the outline sat **22px** off the header after the Archive opened (3/3); with it, on it.
+
+## 18. The owner's look, and the merge
+
+**His look: DONE** (not waived) — on the branch's Vercel preview, on his phone, before the merge: *"Yup I've
+looked at it it's good. Once u are done merge live."* The last branch run (`9193c6e2`, on his PC as a service)
+was green; `main` had not moved, so the branch merged straight in on his "merge live", with these notes riding
+the same push (one run on `main`, none extra on the branch).

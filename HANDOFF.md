@@ -183,7 +183,7 @@ None of these gate a tracker- or storage-only change.
 
 ## In flight
 
-**LIVE THREAD (23 Sep 26): PR #428 `claude/lw-monthjump-phone` is OPEN, DONE and CHECKED — it waits for his "merge live". Read `HANDOFF-NEXT.md` first.** It carries the D87 test fixes, the checks moved to his PC (D89; a Windows service since 23 Sep 26), the `[LW-MONTHJUMP-PHONE]` + `[LW-HBAR-RESYNC]` + frozen-bar fixes and rulings D87–D154. Two chats run beside it (D153 the Tracker bug check, D154 a presentation/demo video). `[ALL-AVAIL-WINDOW]` and `[DOCS-GUARD]` are live on `main`.
+**MERGED (23 Sep 26): PR #428 `claude/lw-monthjump-phone` is on `main`, on his "merge live" after his own look. Read `HANDOFF-NEXT.md` first.** It carries the D87 test fixes, the checks moved to his PC (D89; a Windows service since 23 Sep 26), the `[LW-MONTHJUMP-PHONE]` + `[LW-HBAR-RESYNC]` + frozen-bar fixes and rulings D87–D154. Two chats run beside it (D153 the Tracker bug check, D154 a presentation/demo video). `[ALL-AVAIL-WINDOW]` and `[DOCS-GUARD]` are live on `main`.
 **NEXT SESSION READS `raptor-port/docs/superpowers/specs/2026-09-21-oil-handpass-handoff.md` FIRST** —
 the job is executing the two scenario lists (Fable's 44, Codex's 24) in the RUNNING app, and that
 file says what is already done by hand so it is not redone. **And read
