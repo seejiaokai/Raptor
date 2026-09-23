@@ -611,7 +611,7 @@ trip felt like ~20 min per change and was unsustainable):
   older "point a browser drive at it" clause). Your drive surface is the local
   `vite preview`, which is the same bundle. It is NOT gated, so a red preview
   is still just a preview; correctness still rides the five gates below.
-- **SUPERSEDED 23 Sep 26 (D59): the repo is PRIVATE, Pages is GONE, the publish job is OFF — Vercel is the only viewer; `[DEPLOY-DOCS]` owns rewriting the Pages-era text in this file.** Was: **GitHub Pages stays the OFFICIAL site** — the gated `deploy.yml`, published
+- **SUPERSEDED 23 Sep 26 (D59): the repo is PRIVATE, Pages is GONE, the publish job is OFF — Vercel is the only viewer (D88, later the same day: he will make it PUBLIC again for now, for GitHub's faster free machines — check which it is before relying on billed minutes; old branches still carry the D58 designation); `[DEPLOY-DOCS]` owns rewriting the Pages-era text in this file.** Was: **GitHub Pages stays the OFFICIAL site** — the gated `deploy.yml`, published
   only on merge to `main`. Slower (the gates, then a Pages rollout that has
   ranged from 5 s to 10 min and is outside our control), so it is paid ONCE
   per session at the end, not per change — and since 2 Sep 26 only on the
@@ -957,7 +957,7 @@ decision + a pointer. Owner + date establish authority; keep them.
 - **Push a BRANCH freely; ASK before `main`** (owner, 23 Sep 26 — D60). A branch push changes
   nothing official and gives him a Vercel link to LOOK at, so it needs no permission; `main` stays
   gated behind his **"merge live"**. "Push" and "merge live" are NOT synonyms. The question only
-  arose because D59 took the repo private, which meters Actions minutes.
+  arose because D59 took the repo private, which meters Actions minutes (D88: public again for now).
 - **Do NOT watch PRs** (owner, 15 Aug 26). The harness auto-watches an opened PR
   and floods the owner's phone with CI/review/Vercel `<wake>` blocks for little
   gain (gates + live page are checked before the PR opens; he leaves no review
