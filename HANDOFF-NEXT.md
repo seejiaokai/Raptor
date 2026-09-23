@@ -1,4 +1,13 @@
-# HANDOFF — 23 Sep 26. `[ALL-AVAIL-WINDOW]` and `[DOCS-GUARD]` are LIVE on `main`. Next: `[HUMAN-RETEST]`.
+# HANDOFF — 23 Sep 26. `[ALL-AVAIL-WINDOW]` and `[DOCS-GUARD]` are LIVE on `main`. Next: the Leave War fix (D150), then `[HUMAN-RETEST]`.
+
+## NEXT CHAT (owner, D150): the Leave War phone bug — only once `claude/lw-monthjump-phone` is MERGED
+
+That branch (PR #428) carries the D87 test fixes and moves GitHub's checks onto his own PC (D89, a
+self-hosted runner). After his "merge live", pick `main` and fix `[LW-MONTHJUMP-PHONE]` in `OUTSTANDING.md`:
+on a phone a month button can land a day short (evidence and pictures:
+`raptor-port/docs/handpass/2026-09-23-lw-monthjump.md`). Bug-check order, WALK tier. `[LW-HBAR-RESYNC]` is the
+same grid's small scrollbar item, if it fits. This goes ahead of `[HUMAN-RETEST]` (D85/D86) as the newer
+word on "next" — he was told, and can reorder.
 
 **Pick `main` in the new-chat picker.** `claude/docs-guard` is merged — don't pick it.
 
