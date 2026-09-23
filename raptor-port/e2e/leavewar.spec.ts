@@ -1208,6 +1208,46 @@ test('the frozen bar is in step with the grid the moment it appears', async ({ p
   }
 })
 
+// A COLUMN THAT WIDENS WHILE THE DATES ARE FROZEN RE-MEASURES THE FROZEN BAR
+// (Astra LW-102, 23 Sep 26). The bar's columns are measured copies of the grid's,
+// re-measured on a zoom, a resize or a scroll — never on a change of CONTENT. So
+// a wider chip placed while the header was frozen left every frozen date to its
+// right off its column until a scroll un-stuck the bar. A half-day OIL chip
+// ("*OIL") widens a narrow March column by ~10px (measured). Planted through the
+// localhost probe, and named for what it proves: ANY content change that widens
+// a column, not the bid gesture itself. Desktop, where the whole year is drawn
+// first — so no later month draw can re-measure the bar for us.
+test('a column that widens while the dates are frozen re-measures the frozen bar', async ({ page }) => {
+  desktopOnly()
+  await lwRole(page, 'admin')
+  await page.locator('[data-testid="month-MAR"]').click()
+  await page.locator('[data-testid="head-2026-03-17"]').waitFor({ state: 'attached' })
+  await gridAtRest(page, '2026-03-01')
+  await expect.poll(() => page.evaluate(() => new Set([...document.querySelectorAll<HTMLElement>('#page-leavewar .mx-wrap .mxhead th[data-testid^="head-"]')]
+    .map(e => e.dataset.testid!.slice(5, 12))).size), { timeout: 9000 }).toBe(12)
+  const down = await page.evaluate(() => {
+    const head = document.querySelector('#page-leavewar .mx-wrap tbody.mxhead')!.getBoundingClientRect()
+    const bar = document.querySelector('.topbar')!.getBoundingClientRect()
+    return Math.round(window.scrollY + head.top - bar.bottom + 60)
+  })
+  await page.evaluate(y => window.scrollTo(0, y), down)
+  await expect(page.locator('[data-testid="sticky-head"]')).toBeVisible()
+  // how far the bar's copy of a date sits from the grid's own column (0 = in step)
+  const off = (d: string) => page.evaluate(dd => {
+    const real = [...document.querySelectorAll<HTMLElement>('#page-leavewar .mx-wrap tbody.mxhead tr:last-child th.day')]
+    const copy = [...document.querySelectorAll<HTMLElement>('[data-testid="sticky-head"] .mxfixed-scroll tr:last-child th.day')]
+    const i = real.findIndex(e => e.dataset.testid === `head-${dd}`)
+    return i < 0 || !copy[i] ? null : copy[i]!.getBoundingClientRect().x - real[i]!.getBoundingClientRect().x
+  }, d)
+  expect(Math.abs((await off('2026-03-24'))!), 'in step before the change').toBeLessThan(2)
+  const width = () => page.evaluate(() => document.querySelector('[data-testid="head-2026-03-17"]')!.getBoundingClientRect().width)
+  const before = await width()
+  expect(await page.evaluate(() => (window as any).lwSetCell('slipway', '2026-03-17', '*OIL'))).toBe(true)
+  await expect.poll(width).toBeGreaterThan(before + 5)
+  await expect(page.locator('[data-testid="sticky-head"]')).toBeVisible()
+  expect(Math.abs((await off('2026-03-24'))!), 'the frozen 24 March still sits over the grid\'s').toBeLessThan(2)
+})
+
 // Published-stage remarks editing (owner, 27 Aug 26): once the war is
 // published, a tap on an approved leave opens a note editor. An admin does it
 // for anyone (a member for their own is pinned in remarks.test.tsx); the note

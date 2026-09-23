@@ -35,13 +35,14 @@ name: Deploy to GitHub Pages
 # runs the full gates. The document gate's own files are skipped too (23 Sep 26,
 # [DOCS-GUARD]): they are run by docs-guard.yml, and nothing in src/ imports
 # them — without this, every edit to the guard would bill a full gate run.
+# `.gitattributes` is NOT skipped any more (Fable CI-PATHS-001, 23 Sep 26): it decides the bytes every
+# job checks out — line endings broke the PC runner's first trial — so a change to it runs the gates.
 on:
   push:
     branches: [main]
     paths-ignore:
       - '**.md'
       - '.claude/**'
-      - '.gitattributes'
       - 'raptor-port/scripts/docsize*.mjs'
       - 'raptor-port/scripts/backlog-archive.mjs'
       - '.github/workflows/docs-guard.yml'
@@ -50,7 +51,6 @@ on:
     paths-ignore:
       - '**.md'
       - '.claude/**'
-      - '.gitattributes'
       - 'raptor-port/scripts/docsize*.mjs'
       - 'raptor-port/scripts/backlog-archive.mjs'
       - '.github/workflows/docs-guard.yml'
@@ -103,6 +103,18 @@ jobs:
   #     run falls to GitHub's machines below instead (their `if` is the exact
   #     complement, so a run is never left with no gate). GitHub's own advice:
   #     almost never let a public repo reach a self-hosted runner.
+  #     THIS GUARD IS NOT A WALL AGAINST ANYONE WHO CAN EDIT THIS FILE (Astra
+  #     SEC-101, 23 Sep 26): a pull request runs the workflow as the PR itself
+  #     wrote it, so a collaborator's PR could drop the `if` or add a job aimed
+  #     at the PC. Today nobody but the owner can push, so it holds. BEFORE HE
+  #     ADDS ANY COLLABORATOR (D59's stated plan): remove the runner from this
+  #     repo first (Settings → Actions → Runners) and set CI_ON_GITHUB=true, or
+  #     move the runner to a separate owner-only CI repo — `[REPO-PRIVATE]`.
+  #   - REQUIRED CHECKS (Fable CI-REQ-001): none exist — a free private repo
+  #     cannot have them (the API answers "Upgrade to GitHub Pro"), so merging
+  #     rests on his "merge live" and the agent reading this run's result. If
+  #     they ever exist, require `all gates (your PC)` AND the split names: a
+  #     job skipped by its `if` reports Success to a required check.
   #   - THE RUNNER'S ACCOUNT (Astra SEC-002): never an Administrator. As a Windows
   #     service it runs under a restricted account (NETWORK SERVICE at least; a
   #     dedicated standard user with no access to his profile is better).

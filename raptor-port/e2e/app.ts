@@ -72,18 +72,35 @@ export async function settle(page: Page, sel: string, from?: number, axis: 'x' |
  *  watched: on a desktop the grid goes on drawing the earlier months to the LEFT
  *  for seconds after a jump, each draw re-anchored so nothing on screen moves —
  *  waiting for the scroller to go still waited for the whole year. (Moved here
- *  from step4-leavewar.spec.ts on 23 Sep 26 so the month-strip tests share it.) */
+ *  from step4-leavewar.spec.ts on 23 Sep 26 so the month-strip tests share it.)
+ *
+ *  A move of ≤1px counts as still (Fable TEST-001, 23 Sep 26): the anchor
+ *  correction only acts on shifts over 1px, so the desktop's background fill
+ *  can nudge a landed header by a pixel for as long as it is drawing the year —
+ *  the likeliest reason this wait ran to the time limit on GitHub's slow
+ *  machine. A real slide (the phone fault was 20px) is still motion. And it
+ *  FAILS BY NAME — a header that is not drawn, or never holds still within 15s
+ *  — instead of spinning silently into the test's own timeout. */
 export async function gridAtRest(page: Page, date: string) {
-  await page.evaluate(async d => {
-    const x = () => document.querySelector(`[data-testid="head-${d}"]`)?.getBoundingClientRect().x ?? NaN
-    let last = NaN, same = 0, since = performance.now()
-    while (same < 8 || performance.now() - since < 250) {
+  const res = await page.evaluate(async d => {
+    const cell = () => document.querySelector(`[data-testid="head-${d}"]`)
+    const t0 = performance.now()
+    while (!cell()) {
+      if (performance.now() - t0 > 5000) return `gridAtRest: head-${d} is not drawn`
       await new Promise(r => requestAnimationFrame(() => r(null)))
-      const now = Math.round(x())
-      if (now === last) same++
+    }
+    const x = () => cell()?.getBoundingClientRect().x ?? NaN
+    let last = x(), same = 0, since = performance.now()
+    while (same < 8 || performance.now() - since < 250) {
+      if (performance.now() - t0 > 15000) return `gridAtRest: head-${d} never held still (last x ${last})`
+      await new Promise(r => requestAnimationFrame(() => r(null)))
+      const now = x()
+      if (Math.abs(now - last) <= 1) same++
       else { last = now; same = 0; since = performance.now() }
     }
+    return null
   }, date)
+  if (res) throw new Error(res)
 }
 
 /* Warning navigation moves BOTH axes — the week is placed horizontally by hand

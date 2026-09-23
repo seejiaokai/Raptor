@@ -136,6 +136,17 @@ function rowInWindow(p: Person, win: string, spans?: RecordSpans): boolean {
   return true
 }
 
+/** Whether two frozen-header pins measured the same bar — its box and every
+ *  column width, to a hundredth of a pixel. A re-pin that finds nothing moved
+ *  keeps the old pin, so re-measuring after a change costs no re-render. */
+function sameStuck(
+  a: { top: number; left: number; width: number; cols: number[] },
+  b: { top: number; left: number; width: number; cols: number[] },
+): boolean {
+  if (a.top !== b.top || a.left !== b.left || a.width !== b.width || a.cols.length !== b.cols.length) return false
+  return a.cols.every((w, i) => Math.abs(w - b.cols[i]!) < 0.01)
+}
+
 /* The ground-crew free-text role-label editor (`PersLabel`) was REMOVED
    (owner, 28 Aug 26 — "i can edit personnel, dont need to show that, just leave
    it as the callsign/name"). In Rearrange, a ground-crew row used to turn its
@@ -1615,8 +1626,25 @@ export function Matrix() {
   // rest, where the anchor correction absorbs the difference.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const widthGen = useMemo(() => ({}), [version, visWindow, folded, countsOpen, arranging])
-  const widthGenRef = useRef(widthGen)
-  widthGenRef.current = widthGen
+  // The CURRENT token lives in a ref, because one input never reaches a render:
+  // the manning Archive is CountRows' own state (a tap there must not re-render
+  // this grid), so it replaces the token directly (`onArchiveChange`). A render
+  // only overwrites the ref when its own inputs moved, never with a stale memo.
+  const widthGenRef = useRef<object>(widthGen)
+  const widthGenSeenRef = useRef(widthGen)
+  if (widthGenSeenRef.current !== widthGen) { widthGenSeenRef.current = widthGen; widthGenRef.current = widthGen }
+  // What a width change must refresh, published by the effects that own it: the
+  // strip/cache/placeholder/bottom-bar geometry, and the frozen header's pinned
+  // column widths (Astra LW-102 — both used to wait for a zoom, a resize or a
+  // scroll, so a wider chip placed while the header was frozen left its dates
+  // off the columns beneath). Called on every token change below.
+  const remeasureRef = useRef<() => void>(() => {})
+  const repinRef = useRef<() => void>(() => {})
+  const onArchiveChange = useCallback(() => {
+    widthGenRef.current = {}
+    remeasureRef.current()
+    repinRef.current()
+  }, [])
 
   /* THE CONFIGURED GROUPS (owner, 28 Aug 26 — the admin group editor). With the
      default list these answer exactly as the old `groupOf` / `GROUP_LABEL` did,
@@ -1857,9 +1885,13 @@ export function Matrix() {
         const cells = Array.from(head.querySelectorAll('tr:last-child > th')) as HTMLElement[]
         const cols = cells.map(c => c.getBoundingClientRect().width)
         if (cols.length === 0 || cols.some(w => !w)) return prev
-        return { top: topEdge, left: wr.left, width: wr.width, cols }
+        const next = { top: topEdge, left: wr.left, width: wr.width, cols }
+        // A forced re-pin that measured the same bar keeps the old object, so
+        // re-measuring on every store change costs no re-render of this grid.
+        return prev && sameStuck(prev, next) ? prev : next
       })
     }
+    repinRef.current = () => pin(true)
     const onScroll = () => pin(false)
     // A rotate/resize fires BEFORE iOS has settled the new viewport, so an
     // immediate read would take the OLD geometry — re-measure on the next two
@@ -1877,6 +1909,7 @@ export function Matrix() {
     window.visualViewport?.addEventListener('resize', remeasure)
     onScroll()
     return () => {
+      repinRef.current = () => {}
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', remeasure)
       window.removeEventListener('orientationchange', remeasure)
@@ -1897,6 +1930,17 @@ export function Matrix() {
     // where it crosses under the top bar — and so whether the mirror is stuck at
     // all — moves with it.
   }, [period.id, drawnDates.length, colWin?.lo, colWin?.hi, zoom, visWindow, folded, arranging, figuresOpen])
+
+  // ...and RE-PIN on any change that can widen a column while the bar is up
+  // (Astra LW-102, 23 Sep 26): a wider chip or an event written by anyone, the
+  // manning rows, the Archive (via `onArchiveChange`). Measured on the built
+  // bundle: a half-day OIL chip ("*OIL") widens a narrow day column by ~10px,
+  // and every frozen date to its right then sat that far off its column until
+  // a scroll un-stuck the bar. A layout effect, so the fresh widths land in the
+  // frame the change paints in; the value check in `pin` makes it free when
+  // nothing moved. Pinned by "a column that widens while the dates are frozen
+  // re-measures the frozen bar" (e2e/leavewar.spec.ts).
+  useLayoutEffect(() => { repinRef.current() }, [widthGen])
 
   // The mirror starts life at the grid's current horizontal position, and the
   // two scrollers keep each other in lockstep from then on. Assigning an
@@ -2752,6 +2796,7 @@ export function Matrix() {
     // the widths it just measured. measureHbar/syncHbar too: the proxy spacer
     // tracks the grid's scroll width and the thumb its position.
     const remeasure = () => { applyPlaceholders(); measureStripGeo(); measureStrip(); measureHbar(); syncHbar() }
+    remeasureRef.current = remeasure
     remeasure()
     window.addEventListener('resize', remeasure)
     return () => window.removeEventListener('resize', remeasure)
@@ -2781,8 +2826,13 @@ export function Matrix() {
     // move — including the ones nobody has thought of yet — and on none of the
     // renders in between. `figuresOpen` stays beside it because it is what
     // takes the width back to `undefined` on close.
+    // `widthGen` (23 Sep 26, Astra LW-102): anything that can widen a drawn
+    // column — a chip, an event, the manning rows — moves every month edge
+    // after it, and this is the only thing that re-measures them (and stamps
+    // the drawn months' widths as exact under the new rows). The Archive's
+    // change never reaches a render, so `onArchiveChange` calls it directly.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [zoom, visWindow, period.id, drawnDates.length, colWin?.lo, colWin?.hi, arranging, figuresOpen, drawerAt?.width])
+  }, [zoom, visWindow, period.id, drawnDates.length, colWin?.lo, colWin?.hi, arranging, figuresOpen, drawerAt?.width, widthGen])
 
   // Put the anchored column back after a row-set repaint (see anchorRef).
   // Layout effect, not effect: the correction must land in the same frame as
@@ -3560,6 +3610,7 @@ export function Matrix() {
                 padR={padR}
                 phL={phL}
                 phR={phR}
+                onArchiveChange={onArchiveChange}
               />
             )}
             {/* The month strip, now a row of the grid so it sits between the

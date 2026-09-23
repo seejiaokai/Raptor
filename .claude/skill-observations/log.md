@@ -372,3 +372,18 @@ code separately from its output, and never let the same line that runs a gate al
 **Suggested improvement:** For any hand-held setup: (1) the copy/record step comes BEFORE any button that could close or complete the dialog; (2) each step names what the screen should show next (e.g. the exact folder in the prompt), so a wrong turn is visible at once; (3) give a recovery line for the likely mistake up front; (4) verify the result read-only afterwards and say where things actually ended up.
 
 **Principle:** A non-technical user follows the screen, not the plan; write each step so the screen confirms it, and order steps so no single click can lose information needed later.
+
+### Observation 209: Who can modify a local CI runner's files includes the AI tools' own sandbox accounts
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** Moving a repo's checks onto the owner's Windows PC as a self-hosted runner service; an independent reviewer flagged the install folder's inherited permissions.
+**Skill:** security-review (and any skill that sets up local services)
+**Type:** open-source
+**Phase/Area:** threat model — local accounts
+
+**Issue:** The runner folder sat under C:\ and inherited "Authenticated Users: Modify", so any local account could replace the runner's binaries, which then run as the service account on every CI job. "It's a personal PC with one user" was the natural dismissal — but listing the enabled local accounts showed two more: the sandbox accounts a coding agent's CLI creates to run commands. The reviewer's finding was sharper than it looked because the "other local user" was the agent tooling itself.
+
+**Suggested improvement:** In security-review, for anything installed as a local service or runner: enumerate ENABLED local accounts (not just "who uses this PC"), check the install folder's inherited ACL, and prefer a folder that does not inherit broad write rights (or remove them) before trusting the service account's restriction.
+
+**Principle:** A restricted service account only helps if nobody else can rewrite what it runs; count every local account — including tool-created sandbox users — as a potential writer.

@@ -164,6 +164,7 @@ under other inputs is no longer exact):
 | Which people's rows show (row window: posted in/out) | YES — a hidden row's chips stop widening its columns | `visWindow` |
 | A folded category | YES — its rows leave the table | `folded` |
 | The manning rows (collapsed / forced open in Rearrange) | YES — they are rows of the same table | `countsOpen`, `arranging` |
+| The manning **Archive** opened / closed (admin, Rearrange) | YES — its rows are cells of the same table. **MISSING from the first fix; found by Astra (LW-101)** — it is CountRows' own state and never reaches a render | `onArchiveChange` (the block tells the grid) |
 | Cell contents: bids, events, OIL, the roster, SANS | YES | the store's `version` |
 | The zoom step | YES, every width | the cache's own key |
 | A different war | YES, different months | the cache's own key |
@@ -254,3 +255,31 @@ it passes 12/12 three times, and that test takes 5.1/4.8s on the old code and 5.
 same speed, so not this change. · build OK · `tfin.js` 728/0 · `test:e2e` **465 passed / 46 skipped / 0
 failed** (was 461/45: the four new tests and one phone skip) · `smoke:tracker` 425/0 · rulecheck OK ·
 docsize `OVER by 4, deferred (D29)` (OUTSTANDING, inside a code change).
+
+## 14. The two independent reads, and what each finding became
+
+Brief: `docs/superpowers/briefs/2026-09-23-lw-fixes-inspection.md` (the order's finder wording and the
+D56 exclusion, verbatim). **Astra** (Codex CLI, `gpt-6-astra`, high effort, read-only, the runner's
+`inspect` mode on everything since `416751d4` including the round-2 CI fixes never re-read) and **Fable 5.1**
+(Claude CLI, safe mode, Read/Glob/Grep only) — launched together, blind to each other, on commit `8ddb32b4`.
+Both: REVISE.
+
+| Finding | Who | What it said | Disposition |
+|---|---|---|---|
+| LW-101 · the Archive is a width input `widthGen` did not see | Astra (Fable's explicit negative said nothing was missing — the order's cheapest pointer) | CountRows' own `archiveOpen` shows rows that can widen a day column without changing any Matrix input | **Confirmed, FIXED**: the block calls `onArchiveChange` after its rows go in/out (a layout effect); the grid replaces its width token and re-measures, still without re-rendering. Tests: `counts.test.tsx` (the block's call, once per open/close, after the DOM changed) and `archivewire.test.tsx` (Matrix passes it) — both **red on `8ddb32b4`, green now** |
+| LW-102 · geometry not refreshed on a content change | Astra | the frozen bar's pinned column widths, `--lwx-max`, the strip cache and the bottom bar were re-measured only on zoom/resize/scroll/war/window changes | **Confirmed (pre-existing on `main`), FIXED**: the re-measure and a value-checked frozen-bar re-pin run on every `widthGen` change. Test "a column that widens while the dates are frozen re-measures the frozen bar": **red 3/3 on `8ddb32b4` (24 March 8.8px off after a `*OIL` chip widened 17 March), green 3/3 now**; frame-by-frame re-check: 266 frames with the bar, 0 out of step |
+| TEST-001 · `gridAtRest` can spin to the time limit | Fable | no bound, NaN never equals NaN, and the ≤1px desktop-fill nudge counted as motion | **FIXED**: named errors (not drawn in 5s / never still in 15s); ≤1px counts as still — a real slide (20px) still does not |
+| CI-PATHS-001 · `.gitattributes` skipped the gates | Fable | it changes the bytes every job checks out | **FIXED**: removed from both `paths-ignore` lists |
+| CI-REQ-001 · a skipped required check reads as Success | Fable | deleting `CI_ON_GITHUB` could let a red PC run merge if the split names are required | **Not reachable today — checked**: `main` has no protection and no required checks (the API: "Upgrade to GitHub Pro"); the rule for the day they exist is written into `deploy.yml` |
+| SEC-101 · the PC guard lives in YAML a PR can change | Astra | a collaborator's PR runs its own workflow, so it could aim a job at his PC | **Not reachable today** (no collaborator can push). Written into `deploy.yml` and `[REPO-PRIVATE]`: **before any collaborator is added, remove the runner from this repo (or move it to an owner-only CI repo)** |
+| SEC-102 · any local account can modify the runner's files | Astra | `Authenticated Users: Modify` inherited from `C:\` onto `C:\actions-runner` | **Confirmed** — and sharper than stated: this PC has two Codex-sandbox accounts besides the owner's. A security setting, so **his to run** (the agent may not): four `icacls`/service lines, handed to him with the reason |
+
+## 15. Gates on the final tree (after the review fixes)
+
+`npm test` **5762/5762** · build OK · `tfin.js` 728/0 · `test:e2e` **466 passed / 47 skipped / 0 failed** ·
+`smoke:tracker` 425/0 · rulecheck OK · docsize `OVER by 36 (OUTSTANDING) and 1 (DECISIONS), deferred (D29)`.
+One unit test needed its FAKE LAYOUT corrected, not its expectation: `monthstrip.test.tsx` stubbed each
+month's on-screen position as a fixed number — right only while the grid measured once, at rest, before
+the scroll. The grid now re-measures after any change that can widen a column, so a re-measure after the
+simulated scroll read every month 1800px off (FEB for AUG). The stubs now move with `scrollLeft`, as a
+browser's rectangles do; every expected month is unchanged, and the file's other ten tests pass as before.

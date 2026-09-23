@@ -658,7 +658,9 @@ D120. Never two full gate runs at once (false failures under load). The order of
 **D153 (23 Sep 26): the TRACKER chat starts NOW, on its own worktree from `main`, beside the Leave War
 fix on `claude/lw-monthjump-phone`** — which still merges FIRST. Tracker chat: preview 4180, e2e
 `E2E_PORT=4182`, smoke `SMOKE_PORT=4181`, rulings from D120; never a full gate run while the Leave War
-chat or the PC runner (`gh run list`) is mid-run.
+chat or the PC runner (`gh run list`) is mid-run. **D154: a third chat builds a presentation to
+commanders and a demo video** on its own worktree (preview 4185, rulings from D170) — record the video
+after the Leave War fixes merge (`main` still shows the frozen-bar jump); D58 holds for the deck/video.
 **His words: "This also means that all the previous bug tests we did there will be bugs not
 captured. Because I didnt test them when i told u that u would test like a human since."** He is
 right, and the OIL build is the proof. It had a two-model cross-provider review and 5341 green
@@ -934,6 +936,12 @@ e2e on 4273 / smoke on 4279), the old jobs behind `CI_ON_GITHUB`. Trials on the 
 green), and it exposes FAST-machine races the slow runner hid — the phone month test is red there until
 `[LW-MONTHJUMP-PHONE]` is fixed, so `CI_ON_GITHUB=true` was set 23 Sep 26; DELETE it after that fix. Astra's second
 read added: the PC runs only HIS OWN changes in a PRIVATE repo, and the runner never as Administrator.
+**23 Sep 26, afternoon:** the runner is a Windows SERVICE (`actions.runner.seejiaokai-Raptor.JK`) under
+NT AUTHORITY\NETWORK SERVICE, auto-start, installed by him at `C:\actions-runner\actions-runner`
+(one folder deeper than the first copy — never delete `C:\actions-runner`). Astra's third read (SEC-102):
+`Authenticated Users` inherit MODIFY on that folder from `C:\`, and the PC has two Codex-sandbox
+accounts besides his — the four-line `icacls` fix is HIS to run (evidence sheet §14); check it with
+`icacls C:\actions-runner\actions-runner\bin\RunnerService.exe` (no `Authenticated Users` line).
 
 ### [LW-HBAR-RESYNC] The Leave War bottom scrollbar is left out of step after a drag (23 Sep 26)
 
@@ -1144,6 +1152,10 @@ with the gates left running. `README.md` corrected. **The app is viewed on VERCE
 on my app"*). Route: Settings → Collaborators, by username, Write; they run it locally and do not
 need Vercel. **Unmade question:** a collaborator here sees the uploaded original, the whole history
 and every agent-facing doc. If that matters, the fresh single-commit repo below is the answer.
+**BEFORE THE FIRST COLLABORATOR IS ADDED (Astra SEC-101, 23 Sep 26): take the self-hosted runner off
+this repo** (Settings → Actions → Runners → JK → Remove) and set `CI_ON_GITHUB=true` — or move the
+runner to a separate owner-only CI repo. A pull request runs its own copy of the workflow, so the
+guard in `deploy.yml` cannot stop a collaborator's PR from aiming a job at his PC.
 **What was established while it was up, so it is not re-derived:**
 - The repo is **PUBLIC** today and the live site answers **200 to anyone** with the URL, no login.
   The hard-coded accounts are one search away in `src/state/auth.ts`, so removing credentials from
