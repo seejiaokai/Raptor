@@ -281,14 +281,22 @@ export default function Header() {
             not. The slot keeps its width whether the button is there or
             not: a header that grows on the first edit shifts the whole chart down
             and slides everything out from under the pointer mid-drag. */}
+        {/* The status comes FIRST and Save LAST, so ✓ Save changes is the far-
+            right item of the bar (R96 desktop; R97 the owner's phone ask, 9 Sep
+            26) — with the words after it, a phone put a cut-off "● unsave…" in
+            that spot. The slot is ONE fixed width on a desktop, button or no
+            button: the words shorten (…, the whole of them on hover) to make
+            room, so the first edit can no longer push Save onto a second row and
+            slide the chart down under the pointer at a laptop width
+            ([HUMAN-RETEST] w3-F5, w3-F6). */}
         <span className="saveslot">
-          {dirty ? <button className="sm dirty" id="saveChanges" title="Save your changes to the syllabus — events, prerequisites and lines" onClick={core.saveChangesClick}>✓ Save changes ●</button> : null}
           {/* Green here while the orange button is showing would tell the user
               their work is both safe and at risk at once (the status reports
               the last write; the button, the flow edits still waiting). Keep
               the words, drop the green until nothing is outstanding. Errors
               stay red. */}
-          <span id="saveStat" className={'savestat ' + (dirty && core.saveStat.cls === 'ok' ? '' : core.saveStat.cls)}>{core.saveStat.text}</span>
+          <span id="saveStat" title={core.saveStat.text} className={'savestat ' + (dirty && core.saveStat.cls === 'ok' ? '' : core.saveStat.cls)}>{core.saveStat.text}</span>
+          {dirty ? <button className="sm dirty" id="saveChanges" title="Save your changes to the syllabus — events, prerequisites and lines" onClick={core.saveChangesClick}>✓ Save changes ●</button> : null}
         </span>
       </div>
     </header>

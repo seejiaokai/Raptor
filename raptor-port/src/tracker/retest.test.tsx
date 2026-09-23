@@ -452,6 +452,33 @@ describe('[HUMAN-RETEST] the Tracker — a deleted built-in rides the backup (ro
   })
 })
 
+describe('[HUMAN-RETEST] the Tracker — the details bubble belongs to its chart (round three: w3-F1)', () => {
+  it('w3-F1 — switching the phone to Info, or leaving the Tracker tab, takes the bubble away', async () => {
+    if (C.sylDirty) await C.saveChangesClick()
+    const { default: App } = await import('./App.jsx')
+    const host = document.createElement('div'); host.className = 'host'; document.body.appendChild(host)
+    const root = createRoot(host)
+    await act(async () => { root.render(<App active={true} />) })
+    const bubble = () => document.getElementById('detailBubble')
+    const el = document.createElement('div'); document.body.appendChild(el)
+    C.toggleDetails()
+    try {
+      C.showEventBubble('ST-01', el)
+      expect(bubble()!.style.display, 'the premise: the bubble is up').toBe('block')
+      await act(async () => { (host.querySelector('[data-view="info"]') as HTMLButtonElement).click() })
+      expect(bubble()!.style.display, 'gone over the Info half').toBe('none')
+      await act(async () => { (host.querySelector('[data-view="flow"]') as HTMLButtonElement).click() })
+      C.showEventBubble('ST-01', el)
+      expect(bubble()!.style.display).toBe('block')
+      await act(async () => { root.render(<App active={false} />) })            /* another Raptor page */
+      expect(bubble()!.style.display, 'gone when the Tracker tab leaves the screen').toBe('none')
+    } finally {
+      C.toggleDetails(); el.remove()
+      await act(async () => { root.unmount() }); host.remove()
+    }
+  })
+})
+
 describe('[HUMAN-RETEST] the Tracker — logging out with unsaved chart edits asks first (round three: D129)', () => {
   async function dirty(name: string) {
     if (C.sylDirty) await C.saveChangesClick()
@@ -652,7 +679,7 @@ describe('[HUMAN-RETEST] the Tracker — marking, Last Flown, deleting a ball, l
     if (C.roster.length < 3) { const p = C.addStudent(); await answer('LULL THREE'); await p; added = C.roster.find((r: any) => r.name === 'LULL THREE')?.id || null; C.setActive(s) }
     expect(C.roster.length, 'the premise: three on the course').toBeGreaterThanOrEqual(3)
     const { default: SidePanel } = await import('./components/SidePanel.jsx')
-    const Live = () => { useSyncExternalStore(C.subscribe, C.getVersion); return <SidePanel /> }
+    const Live = () => { useSyncExternalStore(C.subscribe, C.getVersion); return <SidePanel zoom={1} /> }
     C.openLullCopy(s)
     const host = await render(<Live />)
     const all = host.querySelector('#lullCopyAll') as HTMLInputElement

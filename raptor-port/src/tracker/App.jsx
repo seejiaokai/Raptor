@@ -82,6 +82,13 @@ export default function App({ active = true }) {
      measuring a hidden element and would land nowhere. */
   useEffect(() => { core.setTabSink(setTab); return () => core.setTabSink(null); }, []);
 
+  /* The details bubble belongs to the chart that raised it: gone when the
+     phone switches to its other half, and when the Tracker tab leaves the
+     screen. Back on the Flow half, the chart re-fits to the width it now has
+     ([HUMAN-RETEST] w3-F1, w3-F2). */
+  useEffect(() => { core.hideDetailBubble(); if (tab === 'flow') core.refitAfterShow(); }, [tab]);
+  useEffect(() => { if (!active) core.hideDetailBubble(); }, [active]);
+
   useEffect(() => {
     /* no document handlers until the boot has succeeded (review CSID-R2-03) —
        nothing to drive while the fail-closed panel or the loading state is up */

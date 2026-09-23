@@ -9,10 +9,18 @@ export default function Pop() {
   useLayoutEffect(() => {
     if (!p || !ref.current) { setPosn(null); return; }
     const r = ref.current.getBoundingClientRect();
+    /* Never past the screen's edges. On a phone turned sideways (844×390) the
+       pop-up is taller than the screen: flipped above the ball it opened 73px
+       above the top, its title, Not done and DCO out of reach and nothing to
+       scroll ([HUMAN-RETEST] w3-F3). It is held on screen and, when taller
+       than the screen, scrolls inside itself. */
+    const maxH = Math.max(120, innerHeight - 16), h = Math.min(r.height, maxH);
     let x = p.x, y = p.y + 12;
     if (x + r.width > innerWidth - 8) x = innerWidth - r.width - 8;
-    if (y + r.height > innerHeight - 8) y = p.y - r.height - 12;
-    setPosn({ x, y });
+    if (y + h > innerHeight - 8) y = p.y - h - 12;
+    y = Math.max(8, Math.min(y, innerHeight - 8 - h));
+    x = Math.max(8, x);
+    setPosn({ x, y, maxH });
   }, [p]);
 
   if (!p) return null;
@@ -21,7 +29,7 @@ export default function Pop() {
   const done = core.isDone(s, p.id);
   const fd = core.failDates(s, p.id);
   const style = posn
-    ? { display: 'block', left: posn.x + 'px', top: posn.y + 'px' }
+    ? { display: 'block', left: posn.x + 'px', top: posn.y + 'px', maxHeight: posn.maxH + 'px', overflowY: 'auto' }
     : { display: 'block', left: p.x + 'px', top: (p.y + 12) + 'px', visibility: 'hidden' };
 
   return (

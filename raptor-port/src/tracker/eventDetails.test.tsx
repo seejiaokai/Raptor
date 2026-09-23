@@ -26,7 +26,7 @@ describe('the helpers', () => {
   it('realFlatEdits drops what equals the base table unless it was typed on purpose (__kept)', () => {
     const id = 'ST-01', base = EI[id]
     expect(base && base.name, 'the premise: ST-01 ships a name').toBeTruthy()
-    const out = realFlatEdits({ [id]: { name: base.name, crew: 'TYPED', __kept: [] }, 'ACG-01': { name: EI['ACG-01'].name, __kept: ['name'] } }, EI)
+    const out: any = realFlatEdits({ [id]: { name: base.name, crew: 'TYPED', __kept: [] }, 'ACG-01': { name: EI['ACG-01'].name, __kept: ['name'] } }, EI)
     expect(out[id]).toEqual({ crew: 'TYPED' })
     expect(out['ACG-01'], 'a deliberate field equal to the base survives').toEqual({ name: EI['ACG-01'].name })
   })

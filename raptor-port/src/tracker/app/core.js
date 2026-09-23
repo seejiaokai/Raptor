@@ -2817,6 +2817,15 @@ function fitPhoneWidth(chartW) {
   const avail = board.clientWidth - parseFloat(cs.paddingLeft || 0) - parseFloat(cs.paddingRight || 0);
   if (avail > 0) flowZoom = Math.min(1, Math.max(0.1, Math.floor((avail / chartW) * 100) / 100));
 }
+/* Re-fit once the chart is on screen again. A resize or a phone turned while
+   the Info tab hid the chart measured a 0-wide box, so the fit was skipped —
+   and nothing re-fitted when Flow came back: the chart sat at the old zoom,
+   842px of it in a 390px screen, until "reset" ([HUMAN-RETEST] w3-F2). */
+export function refitAfterShow() {
+  if (typeof window === 'undefined' || zoomIsMine || arrangeMode) return;
+  const run = () => { const svg = document.getElementById('flowSvg'); if (!svg) return; fitPhoneWidth(parseFloat(svg.getAttribute('width')) || 0); applyFlowZoom(); notify(); };
+  if (typeof requestAnimationFrame !== 'undefined') requestAnimationFrame(run); else run();
+}
 function applyFlowZoom() {
   const w = document.querySelector('#board .flowwrap'); if (w) w.style.zoom = arrangeMode ? 1 : flowZoom;
   padBoard();
@@ -3800,7 +3809,12 @@ function settleLastFlown(s) {
     && !!d.handSyll === !!was.handSyll && !!d.handCurr === !!was.handCurr) return;
   dates[s] = d; stamp(d); saveDates(s); renderSide();
 }
-function hideDetailBubble() { const b = document.getElementById('detailBubble'); if (b) b.style.display = 'none'; }
+/* Exported: the bubble is ONE element on the page body, so it outlived the
+   chart that raised it — over the phone's Info tab, over the Leave War grid,
+   and (behind the sign-in card) over the next person's first page. App.jsx
+   hides it when the phone switches half and when the Tracker tab goes off
+   screen; the session end hides it at a logout ([HUMAN-RETEST] w3-F1). */
+export function hideDetailBubble() { const b = document.getElementById('detailBubble'); if (b) b.style.display = 'none'; }
 function showDetailBubble(id, anchorEl, html) {
   let b = document.getElementById('detailBubble');
   if (!b) { b = document.createElement('div'); b.id = 'detailBubble'; document.body.appendChild(b); }
