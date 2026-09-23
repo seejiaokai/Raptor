@@ -1427,6 +1427,18 @@ scrolling? (Both reads asked; the sheet's §11.) (3) His look card, on his iPhon
 `raptor-port/docs/handpass/2026-09-23-tracker-pinch-ball.md` §12 — Safari is the one browser no walk here drives, and
 one line of the fix (the board holding both fingers) is proven only there.
 
+### [TRK-SMOKE-ADD-RACE] The smoke suite's "+ Add" step can still lose a typed name (24 Sep 26)
+**Place:** after `[TRK-PINCH-ASK]`, before the next Tracker change that touches the smoke suite. Seen twice on
+24 Sep 26: a local smoke run (check 261, an add straight after syllabus switches) and PR #431's first run on his PC
+(check 231, an add straight after a roster pick) — both at the step's own `waitForFunction` on `#dlgInput`, whose
+comment calls it "the residual behind the intermittent TRK-SMOKE timeout after the reset-on-render fix" (the 17 Sep
+fix, `[TRK-SMOKE]`). Not caused by PR #431 — its changes do not run on that desktop mouse path; the whole suite passed
+442/442 on the same code, and an isolated probe (a syllabus switch or a roster pick, then at once an add, 24 times)
+lost nothing on either PR #431's build or `main`'s. Both stops came while the PC was busy, and both straight after a
+save or a load had started — a background notify re-rendering the controlled input. **Do:** instrument the running app
+at the failing add under load (as the 17 Sep fix did) and fix the re-render, not the wait; until then, a stop there
+is re-run once WITH this item cited, never silently.
+
 ### [TRK-TAP-AFTER-DRAG] The first tap on a button after dragging or pinching the chart does nothing (23 Sep 26)
 **Place:** ask him first — seen only in the test browser's touch emulation, not yet on a real iPhone. Straight
 after a one-finger drag or a pinch on the chart, the first tap on − (or the ✎ menu) is lost; the second works.

@@ -1,9 +1,9 @@
-# HANDOFF — 24 Sep 26 (night). `[TRK-PINCH-DRAGS-BALL]` and his "left side cut off" report — done, merging on D133 (his advance "merge live", this session only). Before it: the Tracker `[HUMAN-RETEST]` and PR #428's Leave War fixes, both on `main`.
+# HANDOFF — 24 Sep 26 (night). `[TRK-PINCH-DRAGS-BALL]` and his "left side cut off" report — MERGED as PR #431 on D133 (his advance "merge live", this session only; his look waived). Before it: the Tracker `[HUMAN-RETEST]` and PR #428's Leave War fixes, both on `main`.
 
 **Pick `main` in the new-chat picker.** Before acting: `git fetch`, `gh run list --branch main --limit 3` — the
 Tracker merge's own check run on his PC may still have been going when this was written; confirm it went green.
 
-## `[TRK-PINCH-DRAGS-BALL]` + his "left side cut off" report — DONE; merges on D133 (24 Sep 26, night)
+## `[TRK-PINCH-DRAGS-BALL]` + his "left side cut off" report — MERGED as PR #431 on D133 (24 Sep 26, night)
 
 Branch `claude/tracker-pinch-drags-ball`, FULL tier: sheet `raptor-port/docs/handpass/2026-09-23-tracker-pinch-ball.md`.
 A pinch in Edit chart layout now moves nothing (the second finger takes back whatever the first did — ball, group,
@@ -11,9 +11,10 @@ line, Delete, Merge, handles; nothing stored, nothing on the command stream); le
 view behind (his cut-off chart) and holds the middle going in and out. Walked 93/93 with two real fingers (phone,
 sideways, tablet), 15 of 16 wires break-tested red (B13 is Safari-only), Astra's scenarios + both final reads (Fable,
 Astra) dispositioned and fixed red-first, all gates green. **D133: he gave "merge live" in advance for this work only**
-— it merges once the PR's checks on his PC are green; if the PR is still OPEN when you read this, its checks were not
-green: read them first, do not re-merge on D133 in a later session (it covered this session only). His look was
-waived: the card is §12 of the sheet, and `[TRK-PINCH-ASK]` holds it with his two feel questions — ask him next.
+— merged after the PR's checks on his PC went green (the first run stopped on the smoke suite's known "+ Add" race,
+now filed as `[TRK-SMOKE-ADD-RACE]`; re-run once with the evidence in the sheet §9). D133 covered this session only.
+His look was waived: the card is §12 of the sheet, and `[TRK-PINCH-ASK]` holds it with his two feel questions — ask
+him next.
 
 ## The Tracker pinch fix — MERGED on his "merge live" (23 Sep 26, night)
 
@@ -42,7 +43,8 @@ course; an import never deletes marks). Left from it, none blocking: `[TRK-RETES
 2. **`[HUMAN-RETEST]` continues** — the Tracker is done; the amendment system's re-test (D85/D86: port 4173, rulings
    from D90) has not started. The order of the other three (change-recording, the absence record, the Leave War
    links) is not ruled: propose it and ask. One heavy run at a time on his PC (D86, D125).
-3. Filed, none blocking: `[TRK-PINCH-ASK]` (his two feel questions + his iPhone look — ask first), `[TRK-RETEST-NOTES]`,
+3. Filed, none blocking: `[TRK-PINCH-ASK]` (his two feel questions + his iPhone look — ask first), `[TRK-SMOKE-ADD-RACE]`
+   (the smoke suite's "+ Add" step can still lose a name under load), `[TRK-RETEST-NOTES]`,
    `[LW-FROZEN-BAR-GAP]` (a one-frame blink), `[LW-FIGSEL-SLOW]` (a slow unit test).
 4. A docs-only trim pass (D29): DECISIONS is over its ceiling.
 5. Before ANY collaborator: take the runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).

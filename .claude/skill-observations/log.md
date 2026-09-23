@@ -569,3 +569,18 @@ code separately from its output, and never let the same line that runs a gate al
 **Suggested improvement:** In §7 add: "When a change redraws or removes the element under a held finger (or relies on which element receives the lift), list how each engine the owner uses delivers those events, and add a synthetic check per difference — dispatch the other engine's event sequence directly on the element it would reach. Name in the sheet any line that only a real device can prove, and make the owner's look card test it."
 
 **Principle:** A walk proves behaviour in the engine it ran; where engines are known to differ, reproduce the other engine's event sequence synthetically and name what only the real device can confirm.
+
+### Observation 222: An intermittent gate stop gets evidence and a filed item before its one re-run
+
+**Status:** OPEN
+**Date:** 2026-09-24
+**Session context:** [TRK-PINCH-DRAGS-BALL] — PR #431's check run on the owner's PC stopped in the Tracker smoke suite on a step an earlier session had fixed and recorded as "no longer re-run-and-hope"; the same step had stopped once in a local run of the same code.
+**Skill:** raptor-port/docs/bug-check-order.md (§9 gates); the project's CI habits (HANDOFF "no re-run-and-hope")
+**Type:** open-source
+**Phase/Area:** gates — an intermittent failure blocking a merge
+
+**Issue:** Two stops in three full runs looked like a regression. What settled it without guessing: (1) reading which code the failing step runs and confirming the change does not act there; (2) an isolated probe of exactly that step, repeated 24 times on the change's build AND on the base's build (0 and 0); (3) the full suite passing on the same code; (4) the step's own comment naming a known residual race. Only then one re-run — with the residual filed as its own backlog item and the evidence written into the sheet — which passed. Re-running first would have been "hope"; refusing to merge forever would have blocked on a race the change did not touch.
+
+**Suggested improvement:** In §9 add: "A gate that stops intermittently is not re-run until (a) the failing step's code path is checked against the diff, (b) the step is reproduced in isolation on the change's build and on the base's, and (c) the residual is filed with that evidence. Then one re-run, citing the item. Two stops on the change's build and none on the base's in the isolated probe is a regression — stop."
+
+**Principle:** Re-running a flaky gate is legitimate only after evidence shows the change is not the cause and the flake is filed; the re-run is a decision on the record, never a hope.

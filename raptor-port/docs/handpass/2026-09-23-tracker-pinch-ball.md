@@ -1,7 +1,8 @@
 # A pinch in Edit chart layout moves nothing; the editing view stays there — FULL-tier evidence sheet (23–24 Sep 26)
 
-Branch `claude/tracker-pinch-drags-ball` (from `main` after PR #430). Two faults on one seam, both where Edit chart
-layout meets a pinch:
+Branch `claude/tracker-pinch-drags-ball` (from `main` after PR #430) — **MERGED 24 Sep 26 as PR #431 on D133** (his
+"merge live" given in advance for this session's work; his look waived — §12). Two faults on one seam, both where Edit
+chart layout meets a pinch:
 
 1. **`[TRK-PINCH-DRAGS-BALL]`** — F-B of `2026-09-23-tracker-pinch.md`, filed by the agent: a pinch whose first finger
    lands on a ball also drags that ball; it moves, an undo step appears, the move saves itself.
@@ -210,6 +211,10 @@ same as the pinch fix's run) · `docsize` every record accounted for (OVER by 84
 `TRK-SMOKE` timeout its own comment describes — a desktop mouse path none of this change runs); the rerun on the same
 code passed 442 / 442. Red first, for the record: the 8 checks of the first fix failed on the old code with the
 other 431 green; the 3 added for the reads failed on the first fix (`red-reads`).
+**PR #431's checks on his PC:** the first run stopped in the smoke suite at check 231 — the same "+ Add" race
+(`[TRK-SMOKE-ADD-RACE]`, filed), straight after a roster pick. Before any re-run: that path runs none of this change,
+and an isolated probe (24 adds straight after a syllabus switch or a roster pick) lost nothing on this build or
+`main`'s. Re-run once, citing the filed item: all gates green. Merged.
 
 ## 10. The two code reads
 
