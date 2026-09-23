@@ -651,6 +651,8 @@ routing every look through the gated Pages deploy.
 - **SINCE 23 Sep 26 (D89) THE DEFAULT IS ONE JOB ON THE OWNER'S PC** — a self-hosted Windows runner,
   the `pc` job in `deploy.yml` (private repo = GitHub's 2-core machines, `[CI-TWO-CORES]`). The
   parallel jobs below are the way back: set the repo variable `CI_ON_GITHUB` to `true`.
+- **Never push to a branch while its pull request's checks are running (owner, D151)** — the push restarts
+  the whole run and cancels the one in progress, even a notes-only push. Batch notes; push when it is done.
 - **The gates run as PARALLEL JOBS since 3 Sep 26 (owner ask: "shorten the
   time taken to merge live").** Measured on #354's publish, the last
   single-job run: 17m26s end to end = install+build 20s, vitest 9m41s

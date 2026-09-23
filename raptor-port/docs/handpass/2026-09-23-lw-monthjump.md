@@ -96,8 +96,9 @@ problem in the scrim waits, the no-document handling or the filing callers; the 
 not load-bearing on these paths; the throttle switch is inert unset and survives the reload. Its two findings
 are decisions for the owner, not fixes: **001** — the reload test is still at the 30s edge at 3x with other
 tests running; the remaining lever is a longer limit for that one test, which needs his word because D87 chose
-waits. **002** — the phone test needs the APP fix (spec folded into `[LW-MONTHJUMP-PHONE]`). Edits after the
-inspected commit are docs only: this section, the backlog entry, the skill-observation log.
+waits. **002** — the phone test needs the APP fix (spec folded into `[LW-MONTHJUMP-PHONE]`). **That read
+covers `5b38ecef` only.** Everything after it — the checks moved to his PC (`deploy.yml`, the e2e port in
+`playwright.config.ts`), the scrubber test's wait, the notes — goes to a SECOND, fresh Astra read.
 
 **GitHub (PR #428), all 12 checks green — with one retry.** On GitHub's own machine the "LL 14–18 Jul" test
 passed first time at 27.8s (it failed twice on 23 Sep); the reload test timed out once (31.5s) and passed on
@@ -106,3 +107,10 @@ gives a private repo a 2-core machine where a public one gets 4 (GitHub's runner
 parallel check doubled at that moment (desktop browser leg 5–6 → 10–11 min, scheduler unit tests 5–9 → 13–20
 min) while the one single-threaded check (Tracker) did not move — and CI still runs 3 browser tests at once,
 a setting chosen for 4 cores. Filed as `[CI-TWO-CORES]`.
+
+**Then on his own PC (D89, the self-hosted runner "JK"), three trial runs of the whole set:** run 1 failed two
+unit files — Git for Windows' CRLF default on the runner's fresh clone (fixed: that clone keeps the repo's
+line endings); run 2 failed the Leave War scrubber test (the app's 250ms drag window; the test now waits it
+out, `[LW-HBAR-RESYNC]` filed); run 3: everything passed except the phone month test — the app bug above,
+which shows on a fast machine. Time on the PC: ~14 min for a green run (unit tests 4.7 min, browser tests
+3.7 min, Tracker smoke ~4.5 min). Until the phone fix (D150), the checks run on GitHub (`CI_ON_GITHUB=true`).

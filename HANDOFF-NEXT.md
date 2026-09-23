@@ -5,9 +5,12 @@
 That branch (PR #428) carries the D87 test fixes and moves GitHub's checks onto his own PC (D89, a
 self-hosted runner). After his "merge live", pick `main` and fix `[LW-MONTHJUMP-PHONE]` in `OUTSTANDING.md`:
 on a phone a month button can land a day short (evidence and pictures:
-`raptor-port/docs/handpass/2026-09-23-lw-monthjump.md`). Bug-check order, WALK tier. `[LW-HBAR-RESYNC]` is the
-same grid's small scrollbar item, if it fits. This goes ahead of `[HUMAN-RETEST]` (D85/D86) as the newer
-word on "next" — he was told, and can reorder.
+`raptor-port/docs/handpass/2026-09-23-lw-monthjump.md`). Bug-check order, WALK tier. **Include `[LW-HBAR-RESYNC]`**,
+the same grid's scrollbar item (his word, D150). He confirmed this goes ahead of `[HUMAN-RETEST]` (D85/D86).
+**Then put the checks back on his PC:** delete the repo variable `CI_ON_GITHUB` (set to `true` on 23 Sep 26 only
+because the phone test is red on his fast PC until that fix), push, and see the `all gates (your PC)` job go
+green. Then walk him through making the runner a Windows service (GitHub: remove the runner, add it again,
+answer **Y** to "run as service", Enter for the account). Never push while checks are running (D151).
 
 **Pick `main` in the new-chat picker.** `claude/docs-guard` is merged — don't pick it.
 

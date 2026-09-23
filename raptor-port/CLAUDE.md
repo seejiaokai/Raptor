@@ -957,7 +957,7 @@ decision + a pointer. Owner + date establish authority; keep them.
 - **Push a BRANCH freely; ASK before `main`** (owner, 23 Sep 26 — D60). A branch push changes
   nothing official and gives him a Vercel link to LOOK at, so it needs no permission; `main` stays
   gated behind his **"merge live"**. "Push" and "merge live" are NOT synonyms. The question only
-  arose because D59 took the repo private, which meters Actions minutes (D89: checks move to his PC).
+  arose because D59 took the repo private, which meters Actions minutes (D89: checks move to his PC). **Never push while a pull request's checks are running** (D151): any push restarts them and cancels the run in progress.
 - **Do NOT watch PRs** (owner, 15 Aug 26). The harness auto-watches an opened PR
   and floods the owner's phone with CI/review/Vercel `<wake>` blocks for little
   gain (gates + live page are checked before the PR opens; he leaves no review

@@ -918,21 +918,20 @@ group, not an investigation; a second failure of the same group is new evidence 
 
 ### [CI-TWO-CORES] GitHub's machine halved when the repo went private — the checks are tuned for 4 cores (23 Sep 26)
 
-Private repo = GitHub's 2-core machines (public = 4): from the switch (22 Sep ~17:40 UTC) every parallel
-check doubled (desktop browser leg 5–6 → 10–11 min, scheduler unit tests to ~20) while the one-threaded
-Tracker check did not move, and a run billed ~60 of the month's minutes (Free 2,000 · Pro 3,000; Pro buys
-minutes, not speed). **CHOSEN (D89): the checks run on HIS PC** — a Windows self-hosted runner ("JK",
+Private repo = GitHub's 2-core machines (public = 4): from the switch (22 Sep ~17:40 UTC) every parallel check
+doubled (a run ~20 min) and billed ~60 of the month's minutes (Free 2,000 · Pro 3,000 — minutes, not speed). **CHOSEN (D89): the checks run on HIS PC** — a Windows self-hosted runner ("JK",
 registered 23 Sep 26 by hand in an admin window; a Windows service is next). BUILT on
 `claude/lw-monthjump-phone`: the `pc` job in `deploy.yml` (one job, cmd shell, line endings as stored,
-e2e on 4273 / smoke on 4279), the old jobs behind `CI_ON_GITHUB`. A fast PC exposes FAST-machine races
-the slow runner hid: `[LW-MONTHJUMP-PHONE]`, `[LW-HBAR-RESYNC]`. Tier NONE.
+e2e on 4273 / smoke on 4279), the old jobs behind `CI_ON_GITHUB`. Trials on the PC: every gate runs (~14 min
+green), and it exposes FAST-machine races the slow runner hid — the phone month test is red there until
+`[LW-MONTHJUMP-PHONE]` is fixed, so `CI_ON_GITHUB=true` was set 23 Sep 26 to merge; DELETE it after that fix.
 
 ### [LW-HBAR-RESYNC] The Leave War bottom scrollbar is left out of step after a drag (23 Sep 26)
 
 After the bar is dragged the grid→bar follow is off for 250ms (`Matrix.tsx` `syncHbar`, `hbarUserTsRef`)
 and nothing re-syncs when that ends, so a grid move inside the window leaves the thumb stale until the next
 grid scroll — forced 5/5 (drag, then SEP at once: grid at September, thumb at 0). The e2e now waits it
-out. Fix: one trailing `syncHbar` when the window closes. Minor (a person is slower); LOOK tier.
+out. Fix: one trailing `syncHbar` when the window closes. **In the next chat, with the phone fix (D150).**
 
 ### [OIL-PERSONAL-PLACEHOLDER] A placeholder on a landed "Personal" request row draws no count (23 Sep 26)
 
