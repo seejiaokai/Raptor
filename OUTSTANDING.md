@@ -118,7 +118,7 @@ raised and the branch deliberately left), `[STORE-READER-SWEEP]`, `[OIL-REQ-NAME
 owner's filmed frozen-bar jump, and archived; MERGED to `main` 23 Sep 26 on his "merge live" (look done). Left from it:
 `[LW-FROZEN-BAR-GAP]` (a one-frame blink, below `[ALL-AVAIL-WINDOW]`). **Tracker, 23 Sep 26 (night):** his
 pinch-zoom report is FIXED and MERGED on his "merge live" (`claude/tracker-pinch-anchor`, walked, gates green);
-filed from it `[TRK-PINCH-DRAGS-BALL]` (the next Tracker job), `[TRK-EDIT-SIDEWAYS]`, `[TRK-TAP-AFTER-DRAG]`. `[CI-TWO-CORES]` — DONE and
+filed from it `[TRK-PINCH-DRAGS-BALL]` (BUILT on `claude/tracker-pinch-drags-ball`, with his "left side cut off" report; bug check in progress), `[TRK-EDIT-SIDEWAYS]`, `[TRK-TAP-AFTER-DRAG]`. `[CI-TWO-CORES]` — DONE and
 archived: the checks run on his PC as a Windows service, its folder permissions tightened.
 
 **STALE ABOVE, CORRECTED 22 Sep 26:** the "STACK PROGRESS (updated 18 Sep 26)" block says the next
@@ -1414,7 +1414,11 @@ Marked **his call** where the answer is product direction, not a defect.
   fixed save corner (w3-F5); the button says what matters.
 
 ### [TRK-PINCH-DRAGS-BALL] A pinch in Edit chart layout with a finger on a ball drags that ball (23 Sep 26)
-**Place:** the next Tracker job — it changes his saved layout by accident. Found walking the pinch fix
+**BUILT on `claude/tracker-pinch-drags-ball` (24 Sep 26), FULL-tier bug check in progress — sheet
+`raptor-port/docs/handpass/2026-09-23-tracker-pinch-ball.md`.** Carries the owner's report of the same night
+too — *"the left side of the tracker chart is cut off"*: leaving Edit chart layout left its canvas's pan and
+zoom on the ordinary chart, where the next pinch painted them on (fixed on the same branch). Archive on merge.
+Found walking the pinch fix
 (`raptor-port/docs/handpass/2026-09-23-tracker-pinch.md` F-B). In Edit chart layout, a first finger that
 lands ON a ball starts that ball's drag; the second finger makes it a pinch, but the drag carries on: the
 ball moves (36px on a phone), an undo step appears, and the move saves itself. Older than the pinch fix.

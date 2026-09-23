@@ -36,7 +36,9 @@ const BREAKS = [
   { id: 'B5', wire: "leaving Edit chart layout leaves the canvas's pan and zoom behind", old: "    renderBoard();   /* the ordinary chart: renderBoard puts `view` back to the identity */", new: "    const keepV = { ...view }; renderBoard(); view = keepV;", run: ['block', 'walk'] },
   { id: 'B6', wire: 'going in keeps the middle in the middle', old: "    place(); settle(place);\n  } else {", new: "  } else {", run: ['block'] },
   { id: 'B7', wire: 'coming out re-cuts the slack before placing', old: "if (!c || arrangeMode) return; applyFlowZoom(); const m = mid();", new: "if (!c || arrangeMode) return; const m = mid();", run: ['block', 'walk'] },
-  { id: 'B8', wire: 'a lift is heard on the window', old: "  window.addEventListener('pointerup', drop, true); window.addEventListener('pointercancel', drop, true); el.addEventListener('pointerleave', drop);", new: "  el.addEventListener('pointerup', drop, true); el.addEventListener('pointercancel', drop, true); el.addEventListener('pointerleave', drop);", run: ['walk'] },
+  /* B8 was "a lift is heard on the window": broken, nothing went red in two runs of
+     the walk (the board's own pointerleave already drops such a finger — E18), so
+     the window listener was taken out rather than kept untested (24 Sep 26). */
 ]
 const want = (process.env.BREAKS || '').split(',').filter(Boolean)
 const clean = readFileSync(CORE, 'utf8')

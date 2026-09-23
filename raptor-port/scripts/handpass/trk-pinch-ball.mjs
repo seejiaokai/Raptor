@@ -31,15 +31,21 @@ const note = (name, pass, detail = '', extra = {}) => { rows.push({ name, pass, 
 /* the first finger lands on (x,y); after `lead` px of its own movement a second
    lands `gap` px to its right (or at `second`); then the two spread apart */
 async function pinchFrom(page, cdp, { x, y, lead = 0, gap = 70, second = null, spread = 5, steps = 12, dir = 'out' }) {
-  if (dir === 'in') { gap = 130; spread = -4 }   /* fingers apart, closing — so the cases alternate and the canvas stays aimable */
+  if (dir === 'in') { gap = 130; spread = -4 }   /* fingers apart, closing — so the canvas stays aimable */
+  /* the second finger goes on whichever side of the first has room on the chart:
+     a finger placed off the screen never touches down, and one finger is a drag */
+  const edge = await page.evaluate(() => { const r = document.getElementById('board').getBoundingClientRect(); return { l: Math.max(r.left, 0), r: Math.min(r.right, innerWidth) } })
+  const reach = gap + Math.max(0, spread) * steps
+  const side = (second || x + reach < edge.r - 4 || x - lead - reach < edge.l + 4) ? 1 : -1
   const t = (type, touchPoints) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints })
   await t('touchStart', [{ x, y, id: 1 }]); await page.waitForTimeout(40)
   for (let i = 1; i <= 3 && lead; i++) { await t('touchMove', [{ x: x - lead * i / 3, y, id: 1 }]); await page.waitForTimeout(16) }
-  const x1 = x - lead, p2 = second || { x: x1 + gap, y }
+  const x1 = x - lead, p2 = second || { x: x1 + side * gap, y }
+  const dx = second ? Math.sign(p2.x - x1) || 1 : side
   await t('touchStart', [{ x: x1, y, id: 1 }, { x: p2.x, y: p2.y, id: 2 }]); await page.waitForTimeout(30)
-  for (let i = 1; i <= steps; i++) { await t('touchMove', [{ x: x1 - spread * i, y, id: 1 }, { x: p2.x + spread * i, y: p2.y, id: 2 }]); await page.waitForTimeout(16) }
+  for (let i = 1; i <= steps; i++) { await t('touchMove', [{ x: x1 - dx * spread * i, y, id: 1 }, { x: p2.x + dx * spread * i, y: p2.y, id: 2 }]); await page.waitForTimeout(16) }
   await t('touchEnd', []); await page.waitForTimeout(400)
-  return { x: (x1 - spread * steps + p2.x + spread * steps) / 2, y: (y + p2.y) / 2 }
+  return { x: (x1 + p2.x) / 2, y: (y + p2.y) / 2 }
 }
 
 /* Everything a pinch in Edit chart layout must leave alone, and the zoom it must
@@ -139,19 +145,19 @@ async function ensureView(page) {
 }
 
 /* one Edit-layout pinch case: set up, pinch, compare */
-async function editCase(page, cdp, label, name, { setup = null, at, lead = 0, second = null, keys = KEEP, picture = null, check = null, keepView = false }) {
+async function editCase(page, cdp, label, name, { setup = null, at, lead = 0, second = null, keys = KEEP, picture = null, check = null, keepView = false, atLimit = false, dir = null }) {
   if (!keepView) await ensureView(page)
   if (setup) await setup()
   const p = await at()
   if (!p) { note(`${label}: ${name}`, false, 'nothing on screen to start on'); return null }
   const a = await look(page)
   if (picture) { await mark(page, p); await shot(page, `${TAG}-${label}-${picture}-1-before`); await unmark(page) }
-  const end = await pinchFrom(page, cdp, { x: p.x, y: p.y, lead, second, dir: (await scaleNow(page)) > 1.2 ? 'in' : 'out' })
+  const end = await pinchFrom(page, cdp, { x: p.x, y: p.y, lead, second, dir: dir || ((await scaleNow(page)) > 1.2 ? 'in' : 'out') })
   const z = await look(page)
   if (picture) { await mark(page, end); await shot(page, `${TAG}-${label}-${picture}-2-after`); await unmark(page) }
   const d = diff(a, z, keys), zoomed = a.view !== z.view
   const extra = check ? await check(a, z) : { ok: true, detail: '' }
-  note(`${label}: ${name}`, !d.length && zoomed && extra.ok,
+  note(`${label}: ${name}`, !d.length && (zoomed || atLimit) && extra.ok,
     (d.length ? `changed: ${d.join(', ')} (undo ${a.undo}→${z.undo}, lines ${a.nLines}→${z.nLines}, balls ${a.nBalls}→${z.nBalls}, Save ${a.save}→${z.save}) ` : '') +
     (zoomed ? '' : 'the pinch did not zoom ') + (extra.detail || ''), { changed: d })
   return { a, z }
@@ -234,7 +240,7 @@ async function walk(size, label, { edit = true } = {}) {
     }
     /* a line of our own to work on, drawn through the Line tool */
     const p0 = await bareAt(page, 120)
-    const L1 = p0 && await drawLine(page, p0, { x: p0.x + 110, y: p0.y })
+    const L1 = p0 && await drawLine(page, p0, { x: p0.x + 110, y: p0.y + 50 })
     if (!L1) note(`${label}: E9–E13 line cases`, false, 'could not draw a line to work on')
     else {
       await editCase(page, cdp, label, 'E9 Delete — the first finger on a drawn line: the line stays', {
@@ -242,6 +248,10 @@ async function walk(size, label, { edit = true } = {}) {
       })
       await editCase(page, cdp, label, 'E10 Delete — the first finger on a ball: the ball stays', { at: B })
       await editCase(page, cdp, label, 'E11 Connect — the first finger on a ball starts no link', { setup: () => tool(page, 'Connect'), at: B })
+      await editCase(page, cdp, label, 'E11b Text — the first finger on a ball opens no editor', {
+        setup: () => tool(page, 'Text'), at: B,
+        check: async () => { const open = await page.evaluate(() => !!document.getElementById('editModal')); return { ok: !open, detail: open ? 'the ball editor opened' : '' } },
+      })
       /* E12: Edit lines — select the line with a tap, then pinch from each of its squares */
       await tool(page, 'Edit lines')
       for (const kind of ['lend', 'lvert']) {
@@ -270,6 +280,31 @@ async function walk(size, label, { edit = true } = {}) {
         const u1 = (await look(page)).undo
         note(`${label}: E13d the armed merge still completes with the next tap (line one stayed armed)`, u1 === u0 + 1, `undo ${u0}→${u1}`)
       } else note(`${label}: E13b–d Merge on crossing lines`, false, 'could not draw the crossing line')
+      /* E12c: Edit lines on a PREREQUISITE ARROW — tap it, then pinch from its
+         blue bend square and from each orange end */
+      /* from the chart's opening view (the cases above zoom it about) */
+      await editOff(page); await page.click('#fzReset'); await page.waitForTimeout(250); await editOn(page); await tool(page, 'Edit lines')
+      const arrow = await page.evaluate(() => {
+        const b = document.getElementById('board').getBoundingClientRect(), bot = Math.min(b.bottom, innerHeight), rt = Math.min(b.right, innerWidth)
+        for (const h of document.querySelectorAll('#flowSvg .edgehit')) {
+          const L = h.getTotalLength(); if (L < 40) continue
+          for (const t of [0.5, 0.35, 0.65, 0.2, 0.8]) {
+            const q = h.getPointAtLength(L * t), m = h.getScreenCTM(), x = q.x * m.a + q.y * m.c + m.e, y = q.x * m.b + q.y * m.d + m.f
+            const hit = document.elementFromPoint(x, y)
+            if (x > b.left + 30 && x < rt - 30 && y > b.top + 40 && y < bot - 40 && hit && hit.closest && hit.closest('.edgehit') === h) return { x, y }
+          }
+        }
+        return null
+      })
+      if (!arrow) note(`${label}: E12c Edit lines — a prerequisite arrow's squares`, false, 'no prerequisite arrow clear on screen')
+      else {
+        for (const [kind, sel] of [['bend', '.linehandle'], ['end', '.endhandle']]) {
+          await page.mouse.click(arrow.x, arrow.y); await page.waitForTimeout(250)
+          const sq = await page.evaluate(sel => { const h = document.querySelector(`#flowSvg ${sel}`); if (!h) return null; const r = h.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 } }, sel)
+          if (!sq) { note(`${label}: E12c Edit lines — a prerequisite arrow's ${kind} square`, false, 'the square did not show after tapping the arrow'); continue }
+          await editCase(page, cdp, label, `E12c Edit lines — the first finger on a prerequisite arrow's ${kind} square: nothing moves`, { keepView: true, at: async () => sq, picture: `E12c-${kind}` })
+        }
+      }
     }
     /* E13e (Astra 10): an unsaved structure edit is waiting (the lines above lit
        ✓ Save changes) — a pinch on a ball keeps it lit and adds nothing */
@@ -339,6 +374,28 @@ async function walk(size, label, { edit = true } = {}) {
         note(`${label}: E18 fingers slid off the chart and lifted over the bar — the next single finger still drags a ball`, z.balls !== a.balls && z.undo === a.undo + 1, `undo ${a.undo}→${z.undo}; ball ${z.balls !== a.balls ? 'moved' : 'did not move'}`)
       }
     }
+    /* E19 (Astra 16): at the 400% ceiling a pinch cannot zoom — a pinch that
+       starts on a ball there must still move nothing */
+    {
+      await ensureView(page); await tool(page, 'Move')
+      /* zoom in about a ball, the fingers either side of it (on its edge or off it), so a ball is on screen at 400% */
+      for (let i = 0; i < 6 && (await scaleNow(page)) < 3.99; i++) {
+        const c = await B(); if (!c) break
+        const r = await ballAt(page, c.id), d0 = Math.max(50, r.w + 24)
+        await pinch(page, cdp, { cx: c.x, cy: c.y, d0, d1: Math.min(d0 * 2.2, 300) })
+      }
+      const k = await scaleNow(page)
+      if (k < 3.99) note(`${label}: E19 at the zoom ceiling`, false, `could not reach 400% (${Math.round(k * 100)}%)`)
+      else await editCase(page, cdp, label, 'E19 at the 400% ceiling — a pinch starting on a ball moves nothing', {
+        keepView: true, atLimit: true, dir: 'out',
+        at: async () => (await ballNearMiddle(page)) || await page.evaluate(() => {
+          const bd = document.getElementById('board').getBoundingClientRect(), rt = Math.min(bd.right, innerWidth), bot = Math.min(bd.bottom, innerHeight)
+          for (let y = bd.top + 40; y < bot - 40; y += 12) for (let x = bd.left + 40; x < rt - 110; x += 12) { const e = document.elementFromPoint(x, y); if (e && e.closest && e.closest('.ball')) return { x, y } }
+          return null
+        }),
+      })
+      await editOff(page); await page.click('#fzReset'); await page.waitForTimeout(250); await editOn(page)
+    }
     /* E16: the pinch on bare canvas still keeps the chart under the fingers */
     {
       const p = await emptySpot(page)
@@ -407,6 +464,34 @@ async function walk(size, label, { edit = true } = {}) {
     const z = await page.evaluate(() => +getComputedStyle(document.querySelector('#board .flowwrap')).zoom), f1 = await fromMid(page, near)
     await shot(page, `${TAG}-${label}-M4-normal-300`)
     note(`${label}: M4 an editing canvas zoomed to ${Math.round(k * 100)}% comes back at ${Math.round(z * 100)}% with the middle held`, z <= 3 && held(f0, f1) <= 3, `${near} ${held(f0, f1)}px from where holding the middle puts it`)
+  }
+
+  /* ---- M5 (phone): a zoom chosen in Edit chart layout is the user's own — the
+     Info tab and back does not snap it back to fit ---- */
+  if (label === 'phone') {
+    await page.click('#fzReset'); await page.waitForTimeout(250)
+    await editOn(page)
+    const q = await emptySpot(page); if (q) await pinch(page, cdp, { cx: q.x, cy: q.y, d0: 70, d1: 150 })
+    await editOff(page)
+    const z0 = await page.evaluate(() => document.getElementById('fzPct').textContent)
+    await page.tap('#page-tracker button[data-view="info"]'); await page.waitForTimeout(300)
+    await page.tap('#page-tracker button[data-view="flow"]'); await page.waitForTimeout(500)
+    const z1 = await page.evaluate(() => document.getElementById('fzPct').textContent)
+    note(`${label}: M5 a zoom chosen in Edit chart layout stays after the Info tab and back`, z0 === z1, `${z0} → ${z1}`)
+    /* ---- M6 (phone): logging out from inside Edit chart layout leaves nothing of
+       its view behind for the next person ---- */
+    await editOn(page)
+    const q2 = await emptySpot(page); if (q2) await pinch(page, cdp, { cx: q2.x, cy: q2.y, d0: 60, d1: 160, dx: 40, dy: -40 })
+    const { logout, login, toTracker } = await import('./trk-lib.mjs')
+    const out = logout(page)
+    /* the unsaved chart edits of this walk: Logout asks (D129) — discard them */
+    try { await page.waitForSelector('#dlgModal', { state: 'visible', timeout: 3000 }); await page.locator('#dlgModal button', { hasText: /Discard/ }).first().click() } catch (_) {}
+    await out
+    await login(page, 'u'); await toTracker(page)
+    const s = await ballNearMiddle(page)
+    if (s) await pinchFrom(page, cdp, { x: s.x, y: s.y })
+    const vp = await page.evaluate(() => document.getElementById('viewport').getAttribute('transform'))
+    note(`${label}: M6 logged out from Edit chart layout — the next login's pinch zooms a clean chart`, /^translate\(0(\.0)?,0(\.0)?\) scale\(1(\.000)?\)$/.test(vp), vp)
   }
 
   note(`${label}: no console or page errors`, errors.length === 0, errors.slice(0, 3).join(' | '))

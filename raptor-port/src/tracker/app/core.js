@@ -3184,8 +3184,9 @@ function enablePinchZoom(el) {
     if (pts.size === 1 && arrangeMode) holdFirstFinger();
     if (pts.size === 2) {
       const a = [...pts.values()], m = mid(a);
-      pinching = true; perfOn();
-      if (arrangeMode) takeBackFirstFinger();
+      pinching = true;
+      if (arrangeMode) takeBackFirstFinger();   /* may redraw the board, so before perfOn marks it */
+      perfOn();
       start = { d: dist(a) || 1, k: view.k, z: flowZoom };
       if (arrangeMode) {
         start.o = canvasOrigin();
@@ -3222,13 +3223,12 @@ function enablePinchZoom(el) {
       if (pinching) { pinching = false; if (!arrangeMode) zoomIsMine = true; flushView(); perfOff(); notify(); }
     }
   };
-  /* A lift is heard on the WINDOW: the element a finger landed on can be redrawn
-     away mid-gesture (the take-back above redraws the board), and a finger that
-     then lifts off the board would never reach it — a finger counted forever
-     turns every later single touch into a pinch. pointerleave stays a plain
-     listener on the board: it does not bubble, so in the capture phase it would
-     fire for every ball a finger slides off, mid-pinch. */
-  window.addEventListener('pointerup', drop, true); window.addEventListener('pointercancel', drop, true); el.addEventListener('pointerleave', drop);
+  /* pointerleave stays a plain listener: it does not bubble, so in the capture
+     phase it would fire for every ball a finger slides off, mid-pinch. It also
+     drops a finger whose target the take-back redrew away and that then lifts off
+     the board (walked: E18 of docs/handpass/2026-09-23-tracker-pinch-ball.md; a
+     window-level lift listener was tried and no check needed it — break test B8). */
+  el.addEventListener('pointerup', drop, true); el.addEventListener('pointercancel', drop, true); el.addEventListener('pointerleave', drop);
 }
 /* Left/right scrolling for the flow board. */
 function enableHScroll(el) {
