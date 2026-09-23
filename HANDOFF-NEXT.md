@@ -1,6 +1,9 @@
 # HANDOFF — 23 Sep 26. `[ALL-AVAIL-WINDOW]` and `[DOCS-GUARD]` are LIVE on `main`. Next: `[HUMAN-RETEST]`.
 
-## The Tracker `[HUMAN-RETEST]` — IN PROGRESS on `claude/tracker-human-retest-8d3411` (not merged)
+## The Tracker `[HUMAN-RETEST]` — PAUSED (D155) on `claude/tracker-human-retest-8d3411` (not merged)
+
+**Paused by the owner, 23 Sep 26 (D155): the demo video comes first.** Resume from this section when
+he says so — merge `main` in first, as below.
 
 **FIRST, merge `main` into this branch (D78):** the Leave War's PR #428 merged at 16:56 (`87e9f0d6`;
 rulings on main run to D154 — no clash with D120–D124). Its `playwright.config.ts` hunk is

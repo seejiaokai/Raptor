@@ -654,6 +654,8 @@ ceiling inside itself and had reached 961.
 feature per chat. Amendment chat: port 4173, rulings from D90. Tracker chat: port 4180, rulings from
 D120. Never two full gate runs at once (false failures under load). The order of the other three
 (change-recording, the absence record, the Leave War links) is not ruled: propose it and ask.
+**Tracker: PAUSED 23 Sep 26 (D155) — the demo video first.** Resume on `claude/tracker-human-retest-8d3411`
+from `HANDOFF-NEXT.md`'s Tracker section; merge `main` in first (D78).
 **Tracker scope (D120):** his charts reach the database by export → wipe → import, so the older-data
 converters and old file formats are NOT walked; the current export → wipe → import round trip is
 walked FIRST (`docs/tracker/known-gaps.md`, head note).
