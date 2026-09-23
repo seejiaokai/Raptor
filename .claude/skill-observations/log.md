@@ -41,7 +41,7 @@ cannot fail silently — make the bare form work, or make it refuse loudly.
 
 ### Observation 43: Design hook scans engine and test files where design rules cannot apply
 
-**Status:** OPEN — approved by the owner (D71, 2026-09-23) but held back: add `.impeccable/config.json` = `{"detector":{"ignoreRules":[],"ignoreFiles":["raptor-port/src/engine/**","**/*.test.*"],"ignoreValues":[]}}` (what `hook-admin.mjs ignore-file` writes) in the next change that touches code, because a config-only merge would bill a full CI run
+**Status:** ACTIONED (2026-09-23) — `.impeccable/config.json` added with exactly the contents approved in D71, riding the `[ALL-AVAIL-WINDOW]` merge (the next change that touches code)
 **Date:** 2026-09-01
 **Session context:** Bug hunt #3 (reorder/drag machinery) — edits to src/engine/reorder.ts and two test files
 **Skill:** impeccable (hooks)
