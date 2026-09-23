@@ -108,7 +108,7 @@ MERGED AND LIVE.**
 1) **[ALL-AVAIL-WINDOW]** — **LIVE on `main` (23 Sep 26), after his look on Vercel and his "merge live"; no phone resize corner (D77).** Was: NEXT, and ready to build. The counters it opens from are now live, its
 mock-up is APPROVED and is the design of record (D41), and D38–D41 settle its shape down to the
 pixel. **Do not re-open the design; build to it.** 2) **[DOCS-GUARD]** LIVE 23 Sep 26 (archived);
-nothing left. 3) **[HUMAN-RETEST]**. 4) **[DOC-TRIM]** — unblocked now that the OIL scaffolding has become
+nothing left. 3) **[HUMAN-RETEST]** — the Tracker part MERGED 23 Sep 26 (his look done); the amendment system next. 4) **[DOC-TRIM]** — unblocked now that the OIL scaffolding has become
 archive. 5) The stack resumes at **[DB-STEP]**.
 **Small OIL follow-ups, any time, none blocking:** `[OIL-READ-LEFTOVERS]` (4 items the final reads
 raised and the branch deliberately left), `[STORE-READER-SWEEP]`, `[OIL-REQ-NAMEBOX]`,
@@ -666,6 +666,8 @@ fixes are live on `main`); it resumes on his word, bringing `main` in first (D78
 **D125 (23 Sep 26): the Tracker chat RESUMES** beside the demo chat, on `claude/tracker-human-retest-8d3411`
 (`main` merged in) — the demo has first call on the PC: heavy runs one at a time, only on a quiet PC, and the
 Tracker pauses at its next clean point if the demo slows.
+**THE TRACKER PART IS DONE — MERGED to `main` 23 Sep 26 on his "merge live", after his look** (evidence
+`raptor-port/docs/handpass/2026-09-23-tracker.md`; rulings D120–D132). Next here: the amendment system (D86), then the three.
 **Tracker scope (D120):** his charts reach the database by export → wipe → import, so the older-data
 converters and old file formats are NOT walked; the current export → wipe → import round trip is
 walked FIRST (`docs/tracker/known-gaps.md`, head note).
