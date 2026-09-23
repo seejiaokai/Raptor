@@ -183,7 +183,7 @@ None of these gate a tracker- or storage-only change.
 
 ## In flight
 
-**LIVE THREAD (23 Sep 26): PR #428 `claude/lw-monthjump-phone` is OPEN and NOT merged (D152) — read `HANDOFF-NEXT.md` first.** It carries the D87 test fixes, the checks moved to his PC (D89) and rulings D87–D152; the next chat fixes `[LW-MONTHJUMP-PHONE]` + `[LW-HBAR-RESYNC]` on it, deletes `CI_ON_GITHUB`, then it merges. `[ALL-AVAIL-WINDOW]` and `[DOCS-GUARD]` are live on `main`; `[HUMAN-RETEST]` follows the Leave War fix.
+**LIVE THREAD (23 Sep 26): PR #428 `claude/lw-monthjump-phone` is OPEN, DONE and CHECKED — it waits for his "merge live". Read `HANDOFF-NEXT.md` first.** It carries the D87 test fixes, the checks moved to his PC (D89; a Windows service since 23 Sep 26), the `[LW-MONTHJUMP-PHONE]` + `[LW-HBAR-RESYNC]` + frozen-bar fixes and rulings D87–D154. Two chats run beside it (D153 the Tracker bug check, D154 a presentation/demo video). `[ALL-AVAIL-WINDOW]` and `[DOCS-GUARD]` are live on `main`.
 **NEXT SESSION READS `raptor-port/docs/superpowers/specs/2026-09-21-oil-handpass-handoff.md` FIRST** —
 the job is executing the two scenario lists (Fable's 44, Codex's 24) in the RUNNING app, and that
 file says what is already done by hand so it is not redone. **And read
@@ -650,7 +650,9 @@ routing every look through the gated Pages deploy.
   to 17 min serial, which is the next bullet.
 - **SINCE 23 Sep 26 (D89) THE DEFAULT IS ONE JOB ON THE OWNER'S PC** — a self-hosted Windows runner,
   the `pc` job in `deploy.yml` (private repo = GitHub's 2-core machines, `[CI-TWO-CORES]`). The
-  parallel jobs below are the way back: set the repo variable `CI_ON_GITHUB` to `true`.
+  parallel jobs below are the way back: set the repo variable `CI_ON_GITHUB` to `true`. The runner is a
+  Windows SERVICE under NETWORK SERVICE at `C:\actions-runner\actions-runner` (never delete
+  `C:\actions-runner`); take it OFF the repo before any collaborator is added (`deploy.yml`, SEC-101).
 - **Never push to a branch while its pull request's checks are running (owner, D151)** — the push restarts
   the whole run and cancels the one in progress, even a notes-only push. Batch notes; push when it is done.
 - **The gates run as PARALLEL JOBS since 3 Sep 26 (owner ask: "shorten the

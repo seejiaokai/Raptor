@@ -1,70 +1,43 @@
-# HANDOFF — 23 Sep 26. PR #428 is OPEN and NOT merged (D152): the next chat fixes the Leave War bugs ON ITS BRANCH, then everything merges together.
+# HANDOFF — 23 Sep 26 (afternoon). PR #428 `claude/lw-monthjump-phone`: the Leave War fixes are DONE and checked; it waits for his "merge live".
 
-**Pick `claude/lw-monthjump-phone` in the new-chat picker — NOT `main`.** Before acting: `git fetch`, and
-check PR #428's state (open when this was written) — this file describes the world when it was written.
+**Pick `claude/lw-monthjump-phone` in the new-chat picker while PR #428 is open; `main` once it has merged.**
+Before acting: `git fetch`, `gh pr view 428 --json state`, and `gh run list --branch claude/lw-monthjump-phone
+--limit 3` — this file was written just before the push, so the PC run's result and Astra's re-read of the
+review fixes are in PR #428 and the chat, not here.
 
-## Where it started
+## Where it stands
 
-He asked for the three Leave War browser tests filed as `[LW-MONTHJUMP-PHONE]` to be made robust on a slow
-machine — test-only, waiting on what each needs, not a fixed time (**D87**) — with red-before / green-after
-proof. Two were slow-machine timeouts and are fixed. The third (the phone month-jump test) turned out to be
-catching an APP bug that shows on FAST machines, so it was left unchanged and filed. Along the way GitHub's
-slowness was traced to the private repo's 2-core machines, and the checks were moved onto his own PC (**D89**).
+- **Fixed, red-before/green-after, walked on phone and desktop with pictures** (evidence sheet
+  `raptor-port/docs/handpass/2026-09-23-lw-monthjump.md` PART TWO, §8–§15): `[LW-MONTHJUMP-PHONE]` (a
+  remembered month width counts as exact only under the rows it was measured with), `[LW-HBAR-RESYNC]`
+  (one catch-up follow when the scrollbar's drag hold ends), the owner's filmed frozen-bar jump (placed
+  before its first paint; the scroll-linked animation held until it starts), the same one-frame-late
+  placement on the bottom scrollbar and the Quals frozen header, and the review round (the manning Archive
+  as a width input; the frozen bar re-measures on any content change). Both items ARCHIVED.
+- **Read by Astra and Fable, blind** — every finding dispositioned in §14. Astra re-read the review fixes.
+- **Gates (local, final tree):** 5762/5762 · build · 728/0 · e2e 466/47/0 · smoke 425/0 · rulecheck · docsize
+  deferred (OUTSTANDING +36, DECISIONS +1 — D29, its own pass).
+- **The checks run on his PC again:** `CI_ON_GITHUB` deleted; the runner is a Windows service under NETWORK
+  SERVICE at `C:\actions-runner\actions-runner` (never delete `C:\actions-runner`).
 
-## Shipped — on the branch, NOT merged
+## Open, in order
 
-- The two desktop scenarios in `raptor-port/e2e/step4-leavewar.spec.ts` wait on conditions, not pauses;
-  the reload one reads each person's figures from one sheet opening. Proof tables:
-  `raptor-port/docs/handpass/2026-09-23-lw-monthjump.md` §3–§4 (whole browser suite unchanged, 461/0).
-- An opt-in slow-browser switch, `E2E_CPU_THROTTLE=<n>` (`raptor-port/e2e/app.ts`).
-- The checks run on HIS PC by default: the `pc` job in `.github/workflows/deploy.yml` (a self-hosted Windows
-  runner, "JK"), GitHub's machines when the repo variable `CI_ON_GITHUB` is `true`. After Astra's second read:
-  the PC runs only HIS OWN changes in a PRIVATE repo (anything else goes to GitHub), least-privilege token,
-  no persisted checkout credential, pinned `PORT_URL`/`APP_URL`, a line-ending step that stops on any error.
-- The Leave War scrubber test waits out the app's own 250ms drag window (`raptor-port/e2e/leavewar.spec.ts`).
-- PR #428 — open when written. Its last GitHub run (on the variable, GitHub's machines): see Gates.
+1. His "merge live" for PR #428 (his own look first if he wants it — Vercel, a phone: SEP then MAR lands
+   on the 1st; scroll the Leave War page down past the dates: the bar appears in place, no slide).
+2. The runner folder's permissions (Astra SEC-102) — his four lines (evidence sheet §14); check with
+   `icacls C:\actions-runner\actions-runner\bin\RunnerService.exe` (no `Authenticated Users` line).
+3. `[LW-FROZEN-BAR-GAP]` — a one-frame blink as the frozen bar appears (filed, not fixed).
+4. A docs-only trim pass (D29): OUTSTANDING and DECISIONS are over their ceilings.
+5. Before ANY collaborator: take the runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).
 
-## Unfinished — the next chat's job, in this order
+## Parallel chats (D153, D154)
 
-1. **Fix `[LW-MONTHJUMP-PHONE]`** (app, bug-check order WALK tier, phone): the spec is in `OUTSTANDING.md`
-   (Astra's, matching the builder's); the evidence and both pictures are the evidence sheet §5. Then make
-   the phone test measure only once the grid has held still past the rest window — drop its first-success
-   poll, which can pass on a sample taken before the shift.
-2. **Fix `[LW-HBAR-RESYNC]`** (his word, D150): one trailing `syncHbar` when the 250ms drag window closes.
-3. **Delete the repo variable `CI_ON_GITHUB`** (set 23 Sep 26 only because the phone test is red on his fast
-   PC until step 1), push ONCE, and see `all gates (your PC)` go green. Never push while a run is going (D151).
-4. **The runner as a Windows service, under a RESTRICTED account** (Astra SEC-002 — never Administrator):
-   GitHub → Settings → Actions → Runners → JK → Remove (he runs the removal command it shows, in
-   `C:\actions-runner`), then add it again from "New self-hosted runner", answering **Y** to "run as service"
-   and giving a non-admin account (NETWORK SERVICE at least; a dedicated standard user is better). He was
-   asked to close the Administrator window that was running it by hand.
-5. **An independent read before "merge live"**: Astra's round-2 fixes (the guard, permissions, pinned URLs,
-   exit codes, the Pages note) have NOT been re-inspected — hand them to the reader with the Leave War fix.
-6. If the checks must ever run on GitHub's machines again: try the ±1px tolerance in `gridAtRest` first.
-7. Merge on his "merge live". `[HUMAN-RETEST]` (D85/D86) comes after — he confirmed Leave War first.
-
-## Gates
-
-- Last full LOCAL run on this branch (before the CI move): `npm test` 5760/5760 · build OK · `tfin.js` 728/0 ·
-  `test:e2e` 461 passed / 45 skipped / 0 failed · `smoke:tracker` 425/0 · rulecheck OK · docsize OK.
-- On his PC (trial 3, `570dd471`): every gate ran; the only red was the phone month test — the app bug.
-- On GitHub (private, 2-core, `416751d4`): RED — the LL scenario timed out twice, the reload one once (inside
-  `gridAtRest`, passed on retry), and the untouched flash test failed twice. The step4 waits are NOT yet robust
-  on GitHub's private machine; candidate fix: let `gridAtRest` tolerate ±1px (evidence sheet, end of §7).
-- `probes:adapted` / `perf`: not run (no UI change on this branch).
-
-## Open questions
-
-- Public repo vs his PC as the runner: recommended staying private on his PC (private, free, ~14 min a green
-  run vs ~9 on public GitHub, ~20 on private GitHub); he has not decided. If it ever goes public, remove
-  the runner from the repo first — the guard already sends public runs to GitHub's machines.
+- **The Tracker bug check** (`[HUMAN-RETEST]`), worktree branch `claude/tracker-human-retest-8d3411`:
+  preview 4180, e2e 4182, smoke 4181, rulings from D120.
+- **A presentation to commanders + a demo video**, its own worktree: preview 4185, rulings from D170.
+  Record the video AFTER #428 merges (`main` still shows the frozen-bar jump); D58 holds.
+- Never two full gate runs at once, the PC runner's included; one merge at a time (D78).
 
 ## Rulings this session
 
-D87 (wait on what a test needs) · D88 (go public — reversed by D89) · D89 (checks on his PC) · D150 (Leave
-War first, including the scrollbar item) · D151 (never push while a PR's checks run) · D152 (don't merge yet;
-fix, then merge together). D150–D152 sit above D86's D120+ start; a clash is settled by D78.
-
-## Pick up here
-
-Fix `[LW-MONTHJUMP-PHONE]` on `claude/lw-monthjump-phone`, bug-check order first.
+D153 (the Tracker check runs in parallel) · D154 (the presentation/video chat).
