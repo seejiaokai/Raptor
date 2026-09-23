@@ -1,0 +1,53 @@
+{
+  "rows": [
+    {
+      "step": "A: + Add asked",
+      "note": "Add a crew member From the squadron roster Recon Pilot · OCU Talisman Pilot · OCU Wildcard Pilot · OCU Tally WSO · OCU Zulu WSO · OCU Ace Pilot · A Anvil Pilot "
+    },
+    {
+      "step": "A: students on KEEP TEST",
+      "note": "ALPHA"
+    },
+    {
+      "step": "A: ST-01 after DCO",
+      "note": "[\"#000000\"]"
+    },
+    {
+      "step": "A: delete asked",
+      "note": "Delete course KEEP TEST? (marks remain in storage) Cancel OK"
+    },
+    {
+      "step": "A: re-creating \"KEEP TEST\" brings its student back, as the delete promised (\"marks remain in storage\")",
+      "pass": false,
+      "said": "students now: []; ST-01 [\"#ffffff\"]"
+    },
+    {
+      "step": "A: is there any other door back to the deleted course? (course ✎ menu items)",
+      "note": "✎ + Add course ✎ Rename course ⇅ Reorder courses 🗑 Delete course"
+    },
+    {
+      "step": "B–D run on course",
+      "note": "26ABSG · students STUDENT A, STUDENT B"
+    },
+    {
+      "step": "B: the details window's Type/format hint is D64's wording",
+      "pass": true,
+      "said": "e.g. Lecture, OFT/AMT, 2 x F-15"
+    },
+    {
+      "step": "B: Show All's inline editor carries the same Type/format hint (D64)",
+      "pass": true,
+      "said": "e.g. Lecture, OFT/AMT, 2 x F-15"
+    },
+    {
+      "step": "C: where Details mode says \"tap Edit details\", an Edit details control is there to tap",
+      "pass": true,
+      "said": "bubble: \"NODETAIL-1 No details yet — turn ⓘ off, then tap the ball and ✎ Edit details.\" · controls in it: \"none\""
+    },
+    {
+      "step": "D: after a keyboard switch to",
+      "note": "Tx 2026 — pop-up closed (opened as \"ST-01 · STUDENT A\")"
+    }
+  ],
+  "errors": []
+}

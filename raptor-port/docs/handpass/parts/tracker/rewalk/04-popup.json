@@ -1,0 +1,41 @@
+{
+  "rows": [
+    {
+      "step": "roster",
+      "note": "STUDENT A, STUDENT B"
+    },
+    {
+      "step": "1. a tap on the ball's centre opens the pop-up",
+      "pass": true,
+      "said": "ST-01 · STUDENT A"
+    },
+    {
+      "step": "1a. a press on EMPTY CHART closes it (standing rule: outside click)",
+      "pass": true,
+      "said": "closed"
+    },
+    {
+      "step": "2. switching CHART closes the pop-up",
+      "pass": true,
+      "said": "closed"
+    },
+    {
+      "step": "3. remove asked",
+      "note": "Remove STUDENT A from 2026? Their marks, dates, pace and lull periods on this syllabus are deleted. Cancel OK"
+    },
+    {
+      "step": "3. removing the pop-up's student closes the pop-up",
+      "pass": true,
+      "said": "closed"
+    },
+    {
+      "step": "4. course now",
+      "note": "EMPTY COURSE"
+    },
+    {
+      "step": "4. a tap on a ball with NO students",
+      "note": "opens nothing"
+    }
+  ],
+  "errors": []
+}

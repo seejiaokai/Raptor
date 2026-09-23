@@ -1,0 +1,162 @@
+{
+  "rows": [
+    {
+      "step": "D126: a name typed on Tx does not show on 2026",
+      "pass": true,
+      "said": "BFM-5 Basic Fighting Manoeuvres-5not done Type: 2 x F-15SG Crew: IP / UW, UP / IW Prerequisites: BFM-4, AAM-08, JMP-02 Edit"
+    },
+    {
+      "step": "D126: Tx keeps what was typed on Tx, and 2026's hours never reach it",
+      "pass": true,
+      "said": "BFM-5 TX NAME FIVE Type: 2 x F-15SG Crew: IP / W, UP / IW or IP Prerequisites: AAM-08, JMP-02, BFM-4 Edit"
+    },
+    {
+      "step": "W1-9: the one-chart file",
+      "note": "4 charts offered, 1 ticked; charts in file: sb2026; details carried for: sb2026; done message \"Exported as “OCU-syllabus-2026-09-23.json”. It contains 1 of 4 charts — no student names or marks. OK\""
+    },
+    {
+      "step": "W1-4: a charts-only file of 1 of 4 charts says so",
+      "pass": true,
+      "said": "Exported as “OCU-syllabus-2026-09-23.json”. It contains 1 of 4 charts — no student names or marks. OK"
+    },
+    {
+      "step": "W1-9: the import asked",
+      "note": "“2026” already exists. Replace it, or add the incoming one under a new name? [Skip this one/Add as new/Replace it] || Brought in 2026. Everyone’s marks are untouched. It is saved. [OK]"
+    },
+    {
+      "step": "W1-7: the per-chart question offers \"Skip this one\", not \"Cancel\"",
+      "pass": true,
+      "said": "Skip this one / Add as new / Replace it"
+    },
+    {
+      "step": "D122: Tx keeps its own detail after an import of 2026",
+      "pass": true,
+      "said": "BFM-3 B-SIDE NAME Type: 2 x F-15SG Crew: IP / UW, UP / IW Prerequisites: AAM-07, BFM-2 Edit"
+    },
+    {
+      "step": "D122: an event not on the imported chart is never touched",
+      "pass": true,
+      "said": "DAAR AG ONLY EDIT Type: F-15SG Crew: IP / UW, UP / IP Prerequisites: TR-4, INT(S)-2 Edit"
+    },
+    {
+      "step": "D122: the imported chart has the file's detail",
+      "pass": true,
+      "said": "BFM-3 A-SIDE NAMEnot done Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: BFM-2, AAM-07 Edit"
+    },
+    {
+      "step": "D127: the delete asked",
+      "note": "Delete syllabus “2024”? This removes its flow, its layout and every student’s marks on it, in every course. It is a built-in — you can bring it back later from ⇅ Reorder. Cancel OK"
+    },
+    {
+      "step": "A: charts before the backup",
+      "note": "2026 OLD · Tx 2026 · A/G - A/A 2026 · SKETCH · 2026 RESET · 2026"
+    },
+    {
+      "step": "W1-4: students + one chart is NOT called a full backup",
+      "pass": true,
+      "said": "Exported as “OCU-syllabus-WITH-STUDENTS-2026-09-23.json”. It CONTAINS student names and marks, with 1 of 6 charts — NOT a full backup; only send it to someone entitled to see them. OK"
+    },
+    {
+      "step": "D127: the whole backup names the deleted built-in",
+      "pass": true,
+      "said": "[\"sb2024\"]"
+    },
+    {
+      "step": "W1-3: the file does not stack SKETCH's balls",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "W1-4: the whole charts backup says every chart",
+      "pass": true,
+      "said": "Exported as “OCU-syllabus-2026-09-23.json”. It contains every chart — no student names or marks. OK"
+    },
+    {
+      "step": "B: the import asked",
+      "note": "“2026 OLD” already exists. Replace it, or add the incoming one under a || “Tx 2026” already exists. Replace it, or add the incoming one under a  || “A/G - A/A 2026” already exists. Replace it, or add the incoming one u || Brought in 2026 OLD, A/G - A/A 2026, SKETCH, 2026 RESET, 2026. Everyon"
+    },
+    {
+      "step": "W1-6: the import is not refused",
+      "pass": true,
+      "said": "Brought in 2026 OLD, A/G - A/A 2026, SKETCH, 2026 RESET, 2026. Everyone’s marks are untouched. It is saved. Skipped, left as they are here: Tx 2026. Deleted, as in the backup: 2024 (↺ Restore in ⇅ Reorder brings it back)."
+    },
+    {
+      "step": "W1-7: the closing report names the skipped chart",
+      "pass": true,
+      "said": "Brought in 2026 OLD, A/G - A/A 2026, SKETCH, 2026 RESET, 2026. Everyone’s marks are untouched. It is saved. Skipped, left as they are here: Tx 2026. Deleted, as in the backup: 2024 (↺ Restore in ⇅ Reorder brings it back)."
+    },
+    {
+      "step": "D127: the closing report names the chart kept deleted",
+      "pass": true,
+      "said": "Brought in 2026 OLD, A/G - A/A 2026, SKETCH, 2026 RESET, 2026. Everyone’s marks are untouched. It is saved. Skipped, left as they are here: Tx 2026. Deleted, as in the backup: 2024 (↺ Restore in ⇅ Reorder brings it back)."
+    },
+    {
+      "step": "D127: 2024 is not in the dropdown after the import",
+      "pass": true,
+      "said": "2026 OLD · Tx 2026 · A/G - A/A 2026 · SKETCH · 2026 RESET · 2026"
+    },
+    {
+      "step": "W1-6: both \"2026 OLD\" and \"2026\" came in by their names",
+      "pass": true,
+      "said": "2026 OLD · Tx 2026 · A/G - A/A 2026 · SKETCH · 2026 RESET · 2026"
+    },
+    {
+      "step": "D127: 2024 waits in ⇅ Reorder as deleted, restorable",
+      "pass": true,
+      "said": "2024"
+    },
+    {
+      "step": "W1-3: SKETCH comes back where the board drew it, not stacked",
+      "pass": true,
+      "said": "A {\"SK-01\":{\"x\":75,\"y\":31},\"SK-02\":{\"x\":33,\"y\":123},\"SK-03\":{\"x\":117,\"y\":123}} | B {\"SK-01\":{\"x\":75,\"y\":31},\"SK-02\":{\"x\":33,\"y\":123},\"SK-03\":{\"x\":117,\"y\":123}}"
+    },
+    {
+      "step": "W1-3: the Reset copy comes back on the course map it showed",
+      "pass": true,
+      "said": "210 balls; moved: none"
+    },
+    {
+      "step": "D126: the 2026 details ride their chart through the round trip",
+      "pass": true,
+      "said": "BFM-5 Basic Fighting Manoeuvres-5not done Type: 2 x F-15SG · 7.7 Hrs Crew: IP / UW, UP / IW Prerequisites: BFM-4, AAM-08, JMP-02 Edit"
+    }
+  ],
+  "askedB": [
+    {
+      "msg": "“2026 OLD” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Skip this one",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“Tx 2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Skip this one",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "cancel"
+    },
+    {
+      "msg": "“A/G - A/A 2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Skip this one",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "Brought in 2026 OLD, A/G - A/A 2026, SKETCH, 2026 RESET, 2026. Everyone’s marks are untouched. It is saved. Skipped, left as they are here: Tx 2026. Deleted, as in the backup: 2024 (↺ Restore in ⇅ Reorder brings it back).",
+      "btns": [
+        "OK"
+      ],
+      "ans": "ok"
+    }
+  ],
+  "errorsA": [],
+  "errorsB": []
+}

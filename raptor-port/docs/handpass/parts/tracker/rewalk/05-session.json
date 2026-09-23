@@ -1,0 +1,51 @@
+{
+  "rows": [
+    {
+      "step": "admin: DCO lands on ST-01",
+      "pass": true,
+      "said": "[\"#ffffff\",\"#ffffff\"] → [\"#000000\",\"#ffffff\"]"
+    },
+    {
+      "step": "admin: the undo arrow now",
+      "note": "{\"disabled\":false,\"title\":\"Undo the mark on ST-01 for STUDENT A (Ctrl+Z)\"}"
+    },
+    {
+      "step": "admin: Details mode on?",
+      "note": "1"
+    },
+    {
+      "step": "member: the undo arrow is EMPTY after someone else's session (undo is per login session)",
+      "pass": true,
+      "said": "{\"disabled\":true,\"title\":\"Nothing to undo\"}"
+    },
+    {
+      "step": "member: Details mode did not carry over from the admin",
+      "pass": true,
+      "said": "off"
+    },
+    {
+      "step": "member: the chart is drawn after the login (obs #122)",
+      "pass": true,
+      "said": "210 balls"
+    },
+    {
+      "step": "admin: Save changes waiting?",
+      "note": "1"
+    },
+    {
+      "step": "member: not dropped into the admin's chart-edit mode",
+      "pass": true,
+      "said": "off"
+    },
+    {
+      "step": "member: no \"Save changes\" for someone else's unsaved chart edit",
+      "pass": false,
+      "said": "Save changes offered"
+    },
+    {
+      "step": "member: the unsaved ball \"UNSAVED-1\" on the chart?",
+      "note": "1"
+    }
+  ],
+  "errors": []
+}

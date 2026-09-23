@@ -1,0 +1,163 @@
+{
+  "rows": [
+    {
+      "step": "14: a member has no ⇪ File menu",
+      "pass": false,
+      "said": "bar: sub · sub · menu · sub · menu · detailsBtn · trUndoBtn · trRedoBtn · showAllBtn · menu · findwrap · barHideBtn · hspacer · saveslot"
+    },
+    {
+      "step": "14: a member still has the Syllabus ✎ and Course ✎ menus and ✓ Save slot",
+      "pass": true,
+      "said": "badge \"Member\""
+    },
+    {
+      "step": "14: with the Export window open, at the ADMIN badge",
+      "note": "div#copyOverlay is on top of it"
+    },
+    {
+      "step": "14: after one press on the badge",
+      "note": "{\"badge\":\"Admin\",\"exportOpen\":false,\"file\":true}"
+    },
+    {
+      "step": "14 / R4: flipping to member view closes the Export window and hides ⇪ File",
+      "pass": false,
+      "said": "badge Member; Export window closed; File SHOWN"
+    },
+    {
+      "step": "14 / R4: the badge itself can be pressed while the Export window is open (the flip closes it)",
+      "pass": false,
+      "said": "the first press only closed the Export window (the backdrop covers the badge); a second press flipped"
+    },
+    {
+      "step": "14 / R4: flipping back to admin brings ⇪ File back",
+      "pass": true,
+      "said": "badge Admin"
+    },
+    {
+      "step": "14: set-up",
+      "note": "exported 4 charts; then moved ACG-03 translate(331.0,307.0) → translate(481.0,307.0) (the file still has translate(331.0,307.0))"
+    },
+    {
+      "step": "14: at the first \"Replace it?\" question — keyboard",
+      "note": "{\"cover\":\"div#dlgOverlay is on top of it\",\"reached\":true,\"badge\":\"Member\",\"file\":true,\"questionStillUp\":true,\"q\":\"“2024” already exists.\\n\\nReplace it, or add the incoming one \"}"
+    },
+    {
+      "step": "14: the import went on to ask / say",
+      "note": "\"“2024” already exists. Replace it, or add the incoming one u\" → ok || \"“2026” already exists. Replace it, or add the incoming one u\" → ok || \"“Tx 2026” already exists. Replace it, or add the incoming on\" → ok || \"“A/G - A/A 2026” already exists. Replace it, or add the inco\" → ok || \"Brought in 2024, 2026, Tx 2026, A/G - A/A 2026. Everyone’s m\" → ok"
+    },
+    {
+      "step": "14: after flipping to member view mid-import, the import STOPS writing (Astra #12 expectation)",
+      "pass": false,
+      "said": "view as Member; 2026 ACG-03 went BACK to the file's place — the import kept writing charts in member view (translate(331.0,307.0)); File menu shown"
+    },
+    {
+      "step": "14: at the first question — pointer press on the badge",
+      "note": "{\"cover\":\"div#dlgOverlay is on top of it\",\"badge\":\"Admin\",\"questionStillUp\":true,\"sameQuestion\":false,\"questionNow\":\"“2026” already exists. Replace it, or add the incoming one under a new\"}"
+    },
+    {
+      "step": "14: that import then asked / said",
+      "note": "\"“2024” already exists. Replace it, or add the incoming one u\" → ok || \"“Tx 2026” already exists. Replace it, or add the incoming on\" → ok || \"“A/G - A/A 2026” already exists. Replace it, or add the inco\" → ok || \"Brought in 2026, Tx 2026, A/G - A/A 2026. Everyone’s marks a\" → ok"
+    },
+    {
+      "step": "14: afterwards",
+      "note": "view as Admin; File shown"
+    }
+  ],
+  "kbd": {
+    "cover": "div#dlgOverlay is on top of it",
+    "reached": true,
+    "badge": "Member",
+    "file": true,
+    "questionStillUp": true,
+    "q": "“2024” already exists.\n\nReplace it, or add the incoming one "
+  },
+  "ptr": {
+    "cover": "div#dlgOverlay is on top of it",
+    "badge": "Admin",
+    "questionStillUp": true,
+    "sameQuestion": false,
+    "questionNow": "“2026” already exists. Replace it, or add the incoming one under a new"
+  },
+  "askedK": [
+    {
+      "msg": "“2024” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“Tx 2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“A/G - A/A 2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "Brought in 2024, 2026, Tx 2026, A/G - A/A 2026. Everyone’s marks are untouched. It is saved.",
+      "btns": [
+        "OK"
+      ],
+      "ans": "ok"
+    }
+  ],
+  "askedP": [
+    {
+      "msg": "“2024” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“Tx 2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“A/G - A/A 2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "Brought in 2026, Tx 2026, A/G - A/A 2026. Everyone’s marks are untouched. It is saved.",
+      "btns": [
+        "OK"
+      ],
+      "ans": "ok"
+    }
+  ],
+  "errors": []
+}

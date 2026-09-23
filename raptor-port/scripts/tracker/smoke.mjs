@@ -1638,7 +1638,10 @@ const phoneFlow = await pg.evaluate(() => {
      being overridden by a shorthand further down the stylesheet. */
   return {
     clientW: bd.clientWidth, scrollW: bd.scrollWidth,
-    roomBelow: Math.round(parseFloat(getComputedStyle(bd).paddingBottom) || 0),
+    /* since 23 Sep 26 most of the room is a spacer inside the box (::after), not
+       padding — padding set the box's smallest height and pushed the zoom
+       control off a phone turned on its side ([HUMAN-RETEST] w3-F3) */
+    roomBelow: Math.round((parseFloat(getComputedStyle(bd).paddingBottom) || 0) + (parseFloat(getComputedStyle(bd, '::after').height) || 0)),
     zoom: z,
   };
 });
@@ -1646,7 +1649,7 @@ ok('on a phone the chart fits the screen width, so it only scrolls up and down',
   phoneFlow.scrollW <= phoneFlow.clientW + 1,
   `${phoneFlow.scrollW}px of chart in ${phoneFlow.clientW}px of screen`);
 ok('a phone can scroll well past the end of the chart, clear of the zoom control',
-  phoneFlow.roomBelow >= 130, `${phoneFlow.roomBelow}px of padding under the chart`);
+  phoneFlow.roomBelow >= 130, `${phoneFlow.roomBelow}px of room under the chart`);
 
 /* ---- the phone bar shows every control, in two rows ----
    It used to be ONE row that scrolled sideways with its scrollbar suppressed:

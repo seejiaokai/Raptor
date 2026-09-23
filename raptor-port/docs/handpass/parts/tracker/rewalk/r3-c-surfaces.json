@@ -1,0 +1,114 @@
+{
+  "rows": [
+    {
+      "step": "w3-F1: the bubble goes when the phone switches to Info",
+      "pass": true,
+      "said": "before {\"shown\":true,\"text\":\"ST-01 Squadron Welcome Type: Lecture · 3.0 Hrs\",\"x\":236,\"y\":469,\"w\":145,\"h\":82} after {\"shown\":false}"
+    },
+    {
+      "step": "w3-F1: …and when another page is opened",
+      "pass": true,
+      "said": "before {\"shown\":true,\"text\":\"ACG-01 Course Introduction and Aircraft Overview Type: Lecture · 1.5 Hrs Prerequisites: ST-01\",\"x\":86,\"y\":541,\"w\":260,\"h\":119} after {\"shown\":false}"
+    },
+    {
+      "step": "w3-F2: turned sideways on Info, then Flow — the chart takes the sideways fit",
+      "pass": true,
+      "said": "sideways fit 92%; got {\"chart\":\"92%\",\"sw\":844,\"cw\":844}"
+    },
+    {
+      "step": "w3-F2: turned upright on Info, then Flow — the chart fits the width again (no sideways wander)",
+      "pass": true,
+      "said": "upright fit 40%; got {\"chart\":\"40%\",\"sw\":390,\"cw\":390}"
+    },
+    {
+      "step": "w3-F6: ✓ Save changes is the far-right item of its row on a phone",
+      "pass": true,
+      "said": "{\"saveRight\":382,\"rowRight\":382,\"w\":390}"
+    },
+    {
+      "step": "phone errors",
+      "note": "none"
+    },
+    {
+      "step": "w3-F3: the pop-up opens on the screen (not above its top)",
+      "pass": true,
+      "said": "{\"x\":476,\"y\":8,\"w\":210,\"h\":374,\"r\":686,\"b\":382}"
+    },
+    {
+      "step": "w3-F3: DCO is reachable",
+      "pass": true,
+      "said": "{\"x\":583.5,\"y\":40.9375,\"width\":92.5,\"height\":28}"
+    },
+    {
+      "step": "w3-F3: …and a tap on it grades",
+      "pass": true,
+      "said": "[\"#000000\",\"#ffffff\"]"
+    },
+    {
+      "step": "w3-F3: the chart zoom control is on the screen at 844×390",
+      "pass": true,
+      "said": "{\"x\":0,\"y\":357,\"w\":844,\"h\":33,\"r\":844,\"b\":390} — screen height 390"
+    },
+    {
+      "step": "landscape errors",
+      "note": "none"
+    },
+    {
+      "step": "w3-F5 at 1200px: the first edit does not grow the bar or move the chart",
+      "pass": true,
+      "said": "{\"barH\":51,\"boardTop\":313} → {\"barH\":51,\"boardTop\":313}"
+    },
+    {
+      "step": "w3-F5 at 1200px: Done editing does not grow it either",
+      "pass": true,
+      "said": "{\"barH\":51,\"boardTop\":179}"
+    },
+    {
+      "step": "w3-F5 at 1200px: Save sits in the far-right corner of the one row",
+      "pass": true,
+      "said": "{\"saveRight\":1184,\"barRight\":1200,\"saveTop\":117,\"barTop\":103}"
+    },
+    {
+      "step": "1200px errors",
+      "note": "none"
+    },
+    {
+      "step": "w3-F5 at 1250px: the first edit does not grow the bar or move the chart",
+      "pass": true,
+      "said": "{\"barH\":51,\"boardTop\":313} → {\"barH\":51,\"boardTop\":313}"
+    },
+    {
+      "step": "w3-F5 at 1250px: Done editing does not grow it either",
+      "pass": true,
+      "said": "{\"barH\":51,\"boardTop\":179}"
+    },
+    {
+      "step": "w3-F5 at 1250px: Save sits in the far-right corner of the one row",
+      "pass": true,
+      "said": "{\"saveRight\":1234,\"barRight\":1250,\"saveTop\":117,\"barTop\":103}"
+    },
+    {
+      "step": "1250px errors",
+      "note": "none"
+    },
+    {
+      "step": "w3-F5 at 1440px: the first edit does not grow the bar or move the chart",
+      "pass": true,
+      "said": "{\"barH\":51,\"boardTop\":267} → {\"barH\":51,\"boardTop\":267}"
+    },
+    {
+      "step": "w3-F5 at 1440px: Done editing does not grow it either",
+      "pass": true,
+      "said": "{\"barH\":51,\"boardTop\":133}"
+    },
+    {
+      "step": "w3-F5 at 1440px: Save sits in the far-right corner of the one row",
+      "pass": true,
+      "said": "{\"saveRight\":1424,\"barRight\":1440,\"saveTop\":71,\"barTop\":57}"
+    },
+    {
+      "step": "1440px errors",
+      "note": "none"
+    }
+  ]
+}
