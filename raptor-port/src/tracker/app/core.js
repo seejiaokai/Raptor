@@ -4371,6 +4371,14 @@ async function planSylSweep(sylId, fallback) {
    copy (a change from before, acceptable under the reset, §6). Colon allowed (§8). */
 export async function dupSyl() {
   const srcId = curSylId();
+  /* The copy is made from the chart AS IT IS ON SCREEN, and switching to it then
+     dropped the original's unsaved edits without a word — the edits moved into
+     the copy and left the original ([HUMAN-RETEST] Fable #3). Ask which. */
+  if (sylDirty) {
+    const c = await uiChoice('You have unsaved flow edits on “' + sylName(srcId) + '”. The copy is made from the chart as it is on screen.\n\nKeep the edits on “' + sylName(srcId) + '” too?', 'Yes — save them on both', 'No — only in the copy');
+    if (c === 'cancel') return;
+    if (c === 'ok') await persistSyl();
+  }
   const nm = ((await uiPrompt('Name for the duplicated syllabus:', sylName(srcId) + ' copy')) || '').trim();
   if (!nm) return;
   if (SYLS.some(e => e.name === nm)) { await uiAlert('A syllabus with that name already exists.'); return; }
@@ -4403,6 +4411,9 @@ export async function dupSyl() {
 
 /* Add syllabus: a brand-new EMPTY sheet (no events, no marks). */
 export async function addSyl() {
+  /* adding switches to the new sheet, which drops the chart's unsaved flow
+     edits — ask, as the Syllabus dropdown does ([HUMAN-RETEST] Fable #3) */
+  if (!await leaveFlowEdits('Discard them and add a new syllabus?')) return;
   const nm = ((await uiPrompt('Name for the new (empty) syllabus:', 'New syllabus')) || '').trim();
   if (!nm) return;
   if (SYLS.some(e => e.name === nm)) { await uiAlert('A syllabus with that name already exists.'); return; }
@@ -5107,7 +5118,17 @@ export async function applyStudents(students, links, version) {
    cannot mix. For a full backup they tick it; the dialog and the confirmation
    both say which kind of file was written. */
 export let copyOpen = false, copyOpts = { charts: true, students: false }, copyPick = {};
-export function openCopy() {
+export async function openCopy() {
+  /* Export writes what the STORE holds (collectCharts reads each chart's saved
+     definition), so a ball added or linked and not yet saved was missing from
+     the file with no word said — and that file is the one his charts reach the
+     database by (D120; [HUMAN-RETEST] Fable #2). Ask first. No await happens
+     when nothing is unsaved, so the window still opens on the click. */
+  if (sylDirty) {
+    const c = await uiChoice('You have unsaved flow edits on “' + curSylName() + '”.\n\nSave them first, so the exported file includes them?', 'Save, then export', 'Export without them');
+    if (c === 'cancel') return;
+    if (c === 'ok') await persistSyl();
+  }
   copyOpts = { charts: true, students: false };
   /* copyPick keys by syllabus ID now (§9); the modal labels each by name. */
   copyPick = {}; orderedSylIds().forEach(id => { copyPick[id] = (id === curSylId()); });
@@ -5116,6 +5137,8 @@ export function openCopy() {
 export function closeCopy() { copyOpen = false; notify(); }
 export function setCopyOpt(which, on) { copyOpts = { ...copyOpts, [which]: !!on }; notify(); }
 export function setCopyPick(id, on) { copyPick = { ...copyPick, [id]: !!on }; notify(); }
+/* the Export window's All / None ([HUMAN-RETEST] Fable #5) */
+export function setCopyPickAll(on) { const p = {}; orderedSylIds().forEach(id => { p[id] = !!on; }); copyPick = p; notify(); }
 
 export async function saveCopyClick() {
   const ids = Object.keys(copyPick).filter(id => copyPick[id]);
@@ -5240,6 +5263,11 @@ export async function importClick() {
   const pick = (typeof window !== 'undefined' && window.__pickOpenForTests) || FS.pickOpen;
   const picked = await pick();                 /* no await before this — gesture */
   if (!picked) return;
+  /* An import reloads the chart on screen from the store, so its unsaved flow
+     edits were lost — and the orange Save changes stayed lit over a chart with
+     nothing left to save ([HUMAN-RETEST] Fable #3). Asked AFTER the pick: the
+     picker must be the first thing the click does. */
+  if (!await leaveFlowEdits('Discard them and bring the file in?')) return;
   let obj; try { obj = JSON.parse(picked.text); } catch (_) { await uiAlert('That file is not readable as JSON.'); return; }
   let parsed; try { parsed = FMT.readFile(obj); } catch (e) { await uiAlert(e.message); return; }
   let norm; try { norm = normalizeImport(parsed); } catch (e) { await uiAlert(e.message); return; }

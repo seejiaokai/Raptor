@@ -55,8 +55,14 @@ export function DlgModal() {
   const pick = key => core.dlgClose({ pick: key });
   return (
     <>
-      <div className="overlay" id="dlgOverlay" style={{ zIndex: 70, display: 'block' }} onClick={cancel}></div>
-      <div className="modal" id="dlgModal" style={{ zIndex: 71, width: 'min(420px, 92vw)', display: 'block' }}>
+      {/* The TOP of the Tracker's ladder (100/101): a question or a refusal is
+          always answered before anything under it, whichever window raised it.
+          At 70/71 it sat UNDER the Export window (90/91), Show All (80/81) and
+          the details window (90/91), so Export's "Tick at least one syllabus."
+          was drawn behind the window that asked it ([HUMAN-RETEST] Fable #6,
+          23 Sep 26). Raptor's own overlays (400+) stay above the whole tab. */}
+      <div className="overlay" id="dlgOverlay" style={{ zIndex: 100, display: 'block' }} onClick={cancel}></div>
+      <div className="modal" id="dlgModal" style={{ zIndex: 101, width: 'min(420px, 92vw)', display: 'block' }}>
         <div id="dlgMsg" style={{ fontSize: 13.5, whiteSpace: 'pre-wrap', marginBottom: 12 }}>{d.msg}</div>
         {list && (
           <>
@@ -350,7 +356,15 @@ function CopyModalInner() {
             ? '⚠ This copy will contain real names and marks. Only send it to someone entitled to see them.'
             : 'Names and marks stay out — safe to send.'}
         </div>
-        <div className="mini" style={{ marginBottom: 6 }}>Syllabi to include ({picked} ticked)</div>
+        {/* All / None (the [HUMAN-RETEST] walk, 23 Sep 26 — Fable #5): the list
+            still opens on the chart on screen (the 7 Aug safety default), but
+            the backup before the database move carries EVERY chart (D120), and
+            ticking them one by one is how one gets missed. */}
+        <div className="mini" style={{ marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ flex: 1 }}>Syllabi to include ({picked} ticked)</span>
+          <button className="sm" id="copyTickAll" onClick={() => core.setCopyPickAll(true)}>All</button>
+          <button className="sm" id="copyTickNone" onClick={() => core.setCopyPickAll(false)}>None</button>
+        </div>
         <div id="copySylList" style={{ maxHeight: '30vh', overflow: 'auto', border: '1px solid var(--line)', borderRadius: 8, padding: 6 }}>
           {ids.map(id => (
             <label key={id} style={{ display: 'block', padding: '2px 4px' }}>

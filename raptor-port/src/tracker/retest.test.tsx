@@ -8,7 +8,7 @@
    vitest gives every file its own module instance, and these tests switch
    charts, add courses and import files. */
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { act } from 'react'
+import { act, useSyncExternalStore } from 'react'
 import { createRoot } from 'react-dom/client'
 import * as core from './app/core.js'
 import * as FMT from './app/fileFormat.js'
@@ -236,5 +236,103 @@ describe('[HUMAN-RETEST] the Tracker — what the walk found', () => {
     await C.switchSyllabus(other); await C.whenLoaded()
     expect(C.pop, 'the pop-up belonged to the chart that is gone').toBeNull()
     await C.switchSyllabus(back); await C.whenLoaded()
+  })
+})
+
+describe('[HUMAN-RETEST] the Tracker — the Export window (round two)', () => {
+  it('Fable #6 — a question raised from inside the Export window is drawn ON TOP of it', async () => {
+    const { CopyModal, DlgModal } = await import('./components/Modals.jsx')
+    C.openCopy()
+    C.setCopyOpt('charts', false); C.setCopyOpt('students', false)
+    const p = C.saveCopyClick()                         /* "Tick charts, students, or both." */
+    await until(() => C.dlg)
+    const host = await render(<><CopyModal /><DlgModal /></>)
+    const z = (sel: string) => Number((host.querySelector(sel) as HTMLElement).style.zIndex)
+    expect(z('#dlgOverlay'), 'the question\u2019s shade is above the Export window').toBeGreaterThan(z('#copyModal'))
+    expect(z('#dlgModal'), 'and the question above its own shade').toBeGreaterThan(z('#dlgOverlay'))
+    C.dlgClose(true); await p; C.closeCopy(); host.remove()
+  })
+
+  it('Fable #5 — the Export window can tick every chart at once, and untick them all (D120: the backup carries every chart)', async () => {
+    const { CopyModal } = await import('./components/Modals.jsx')
+    /* the app redraws on every store change through App's subscription; this
+       stands in for it, so the ticks are read off a REDRAWN window */
+    const Live = () => { useSyncExternalStore(C.subscribe, C.getVersion); return <CopyModal /> }
+    C.openCopy()
+    const ids = C.orderedSylIds()
+    expect(ids.filter((id: string) => C.copyPick[id]).length, 'it still opens on the chart on screen only (R18)').toBe(1)
+    const host = await render(<Live />)
+    await act(async () => { (host.querySelector('#copyTickAll') as HTMLButtonElement).click() })
+    expect(ids.every((id: string) => C.copyPick[id]), 'All ticks every chart').toBe(true)
+    expect([...host.querySelectorAll('#copySylList input')].every(i => (i as HTMLInputElement).checked)).toBe(true)
+    await act(async () => { (host.querySelector('#copyTickNone') as HTMLButtonElement).click() })
+    expect(ids.some((id: string) => C.copyPick[id]), 'None unticks them').toBe(false)
+    C.closeCopy(); host.remove()
+  })
+})
+
+describe('[HUMAN-RETEST] the Tracker — unsaved chart edits are never dropped or left out without a word (round two)', () => {
+  /* a structure edit that waits for ✓ Save changes: a ball added in edit mode */
+  async function dirty(name: string) {
+    if (!C.arrangeMode) C.toggleArrange()
+    const p = C.addModule('acad'); await answer(name); await p
+    C.toggleArrange()
+    expect(C.sylDirty, 'the premise: an unsaved flow edit').toBe(true)
+  }
+  async function clean() { if (C.sylDirty) await C.saveChangesClick() }
+
+  it('Fable #2 — Export asks to save first, and the file then carries the unsaved ball (D120)', async () => {
+    await clean(); await dirty('LATE-2')
+    const p = C.openCopy()
+    await until(() => C.dlg && /unsaved flow edits/.test(C.dlg.msg))
+    C.dlgClose(true)                                   /* Save, then export */
+    await p
+    expect(C.sylDirty, 'saved').toBe(false)
+    expect(C.copyOpen, 'the Export window opens').toBe(true)
+    const f = await C.collectCharts([C.curSylId()])
+    expect(f.syllabi[C.curSylId()].some((e: any) => e.id === 'LATE-2'), 'the file has the ball').toBe(true)
+    C.closeCopy()
+  })
+
+  it('Fable #3 — + Add syllabus asks before dropping unsaved edits; No keeps them', async () => {
+    await clean(); await dirty('LATE-3A')
+    const n = C.SYLS.length
+    const p = C.addSyl()
+    await until(() => C.dlg); expect(C.dlg.msg).toMatch(/unsaved flow edits/)
+    C.dlgClose(false); await p
+    expect(C.SYLS.length, 'nothing added').toBe(n)
+    expect(C.sylDirty, 'the edit is still there').toBe(true)
+    await clean()
+  })
+
+  it('Fable #3 — Duplicate asks, and "save them on both" keeps the edit on the original too', async () => {
+    await clean(); await dirty('LATE-3B')
+    const src = C.curSylId()
+    const p = C.dupSyl()
+    await until(() => C.dlg); expect(C.dlg.msg).toMatch(/unsaved flow edits/)
+    C.dlgClose(true)                                   /* save them on both */
+    await answer('DUP THREE'); await p; await C.whenLoaded()
+    expect(C.curSylName()).toBe('DUP THREE')
+    expect(C.byid['LATE-3B'], 'the copy has it').toBeTruthy()
+    const orig = await C.collectCharts([src])
+    expect(orig.syllabi[src].some((e: any) => e.id === 'LATE-3B'), 'and so does the original').toBe(true)
+    const d = C.delSyl(); await answer(true); await d; await C.whenLoaded()
+    await C.switchSyllabus(src); await C.whenLoaded()
+  })
+
+  it('Fable #3 — Import asks before a file reloads the chart over unsaved edits; No brings nothing in', async () => {
+    await clean(); await dirty('LATE-3C')
+    const before = JSON.stringify(C.orderedSylIds())
+    const charts = await C.collectCharts(C.orderedSylIds())
+    ;(window as any).__pickOpenForTests = async () => ({ name: 'b.json', text: JSON.stringify(FMT.buildFile({ savedAt: 'x', charts })) })
+    try {
+      const p = C.importClick()
+      await until(() => C.dlg); expect(C.dlg.msg).toMatch(/unsaved flow edits/)
+      C.dlgClose(false); await p
+    } finally { delete (window as any).__pickOpenForTests }
+    expect(C.sylDirty, 'the edit is still there').toBe(true)
+    expect(C.byid['LATE-3C']).toBeTruthy()
+    expect(JSON.stringify(C.orderedSylIds())).toBe(before)
+    await clean()
   })
 })

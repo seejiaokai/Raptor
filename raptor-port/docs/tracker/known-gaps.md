@@ -248,10 +248,13 @@ he reports it again, ask which button he pressed and what the status line said.
 - **`scrollHeight` never reports less than `clientHeight`**, so "fits exactly"
   and "fits with room" look identical — measure the content.
 - **z-index ladder inside the tab:** `.modal` 60 · `.lullcal` 70 ·
-  `#dlgModal`/`#ordModal` 71 · `#showAllPanel` 81 · `#infoModal` 91. Header
-  menus 50, the phone search strip 52. Anything new that opens over Show All
-  must clear 81. (All of these sit inside `#page-tracker`; Raptor's own
-  overlays — the drawer at 440, the board at 400 — are above the lot.)
+  `#ordModal` 71 · `#showAllPanel` 81 · `#infoModal` / `#copyModal` 91 ·
+  **`#dlgModal` 101 — the question box is the TOP, always** (it was 71, under
+  the Export window, so Export's own refusals were drawn behind it —
+  [HUMAN-RETEST] 23 Sep 26). Header menus 50, the phone search strip 52.
+  Anything new that opens over Show All must clear 81, and stay under 100.
+  (All of these sit inside `#page-tracker`; Raptor's own overlays — the
+  drawer at 440, the board at 400 — are above the lot.)
 - **The desktop bar has no spare width at 1440** — one added control wraps it
   onto two rows and costs 44px of chart; the heading hides below 1600px to pay
   for the search box. The phone bar is two rows, bought by trimming captions
