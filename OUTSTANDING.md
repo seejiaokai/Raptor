@@ -926,9 +926,10 @@ each test runs ~3x slower than on the desktop and the long Leave War scenarios b
 the reload test timed out once, passed on retry). A run now bills ~60 of the month's included minutes (Free
 2,000 · Pro 3,000; blocked when used up without a payment method). **Pro does NOT buy a bigger machine** —
 larger runners need an organization on GitHub Team. **CHOSEN (D89): run the checks on HIS PC — a Windows
-self-hosted runner** (free, faster; private repo only). He registers it (the token never comes to the
-agent); the agent adapts `deploy.yml` to Windows, gives the e2e and smoke servers their own ports (4173
-and 4180 are the chats', D86), and keeps a switch back to GitHub's machines. Tier NONE (CI settings).
+self-hosted runner** (free, faster; private repo only). He registered it 23 Sep 26 ("JK", run by hand in
+an admin window for the trial; making it a Windows service is the next step). BUILT on
+`claude/lw-monthjump-phone`: the `pc` job in `deploy.yml` (one job, cmd shell, e2e on port 4273 and the
+smoke on 4279 via `E2E_PORT`/`SMOKE_PORT`), the old jobs behind the `CI_ON_GITHUB` variable. Tier NONE.
 
 ### [OIL-PERSONAL-PLACEHOLDER] A placeholder on a landed "Personal" request row draws no count (23 Sep 26)
 

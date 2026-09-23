@@ -13,7 +13,8 @@
 # browser projects three quarters of the geometry time. Splitting by the
 # projects each runner already defines (vitest: raptor / leavewar;
 # Playwright: raptor / lw-phone / lw-desktop) puts each suite on its own
-# runner; the repo is public, so the extra runners cost nothing. `deploy`
+# runner (free while the repo was public — since D89 the default is ONE job
+# on the owner's own PC, the `pc` job below; these split legs are the way back). `deploy`
 # still waits on EVERY gate, so nothing publishes red. MEASURED on the first
 # parallel PR run: 8m28s end to end (was 16m16s serial on the same tree) —
 # build 41s, unit raptor 4m38s, unit leavewar 8m24s, geometry 2m29s / 3m17s
@@ -68,9 +69,65 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # THE GATES RUN ON THE OWNER'S OWN PC (D89, 23 Sep 26). When the repo went
+  # private (D59) GitHub's machines for it halved — 2 cores instead of 4 — so
+  # every parallel leg below doubled (desktop browser leg 5–6 → 10–11 min, the
+  # scheduler's unit tests up to 20) and a run began billing ~60 minutes of the
+  # monthly allowance ([CI-TWO-CORES]). He registered his Windows PC as a
+  # self-hosted runner instead: free, and fast enough that ONE job running the
+  # five gates in turn, each using the whole machine, beats the split legs.
+  #   - THE WAY BACK: set the repository variable CI_ON_GITHUB to `true`
+  #     (Settings → Secrets and variables → Actions → Variables) and the
+  #     original split jobs below run on GitHub's machines instead — for when the
+  #     PC is off: a job waiting for an offline runner fails after 24 hours.
+  #   - PORTS: this PC also hosts the chats' previews on 4173/4180 (D86), so the
+  #     browser gate and the Tracker smoke serve on their own ports here.
+  #   - SHELL: cmd, not PowerShell — a machine's script policy can refuse the
+  #     PowerShell wrapper, and cmd hands each step's exit code straight back.
+  #     One gate per step, so a failure is named by the step that failed.
+  #   - A check running here at the same moment as a chat's own full test run
+  #     shares the processor, which can fail a timing-sensitive test (D86's
+  #     reason): a red here while a chat was testing earns ONE re-run first.
+  pc:
+    name: all gates (your PC)
+    if: vars.CI_ON_GITHUB != 'true'
+    runs-on: [self-hosted, Windows, X64]
+    timeout-minutes: 45
+    env:
+      E2E_PORT: '4273'
+      SMOKE_PORT: '4279'
+    defaults:
+      run:
+        shell: cmd
+        working-directory: raptor-port
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Reference suite
+        run: node reference/tfin.js
+      - name: Unit tests
+        run: npm test
+      - name: Install Chromium
+        run: npx playwright install chromium
+      # six at a time, not the split legs' three: this is one job on a 16-thread
+      # machine, with headroom left for the server and the owner's own work
+      - name: Browser tests
+        run: npx playwright test --workers=6
+      - name: Tracker smoke
+        run: npm run smoke:tracker
+
+  # ---- GitHub's own machines: only when CI_ON_GITHUB is `true` (above) ----
+
   # Type-check + bundle, the 728-assertion parity suite, and (on main) the
   # artifact `deploy` publishes. Under a minute; the test jobs run beside it.
   build:
+    if: vars.CI_ON_GITHUB == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -102,6 +159,7 @@ jobs:
   # instead of cancelling the others half way through.
   unit:
     name: unit (${{ matrix.project }}${{ matrix.shard && format(' {0}', matrix.shard) || '' }})
+    if: vars.CI_ON_GITHUB == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -138,6 +196,7 @@ jobs:
   # 3-worker / one-retry CI settings from 15 Aug 26.
   geometry:
     name: geometry (${{ matrix.project }})
+    if: vars.CI_ON_GITHUB == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -172,6 +231,7 @@ jobs:
   # serves the bundle itself like they do.
   tracker:
     name: tracker (smoke)
+    if: vars.CI_ON_GITHUB == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

@@ -648,6 +648,9 @@ routing every look through the gated Pages deploy.
   absorbs a residual flake visibly (the reporter logs retried passes). That
   made the checking wait ~2–3 min in August; by 3 Sep 26 the suites had grown
   to 17 min serial, which is the next bullet.
+- **SINCE 23 Sep 26 (D89) THE DEFAULT IS ONE JOB ON THE OWNER'S PC** — a self-hosted Windows runner,
+  the `pc` job in `deploy.yml` (private repo = GitHub's 2-core machines, `[CI-TWO-CORES]`). The
+  parallel jobs below are the way back: set the repo variable `CI_ON_GITHUB` to `true`.
 - **The gates run as PARALLEL JOBS since 3 Sep 26 (owner ask: "shorten the
   time taken to merge live").** Measured on #354's publish, the last
   single-job run: 17m26s end to end = install+build 20s, vitest 9m41s
