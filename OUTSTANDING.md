@@ -922,6 +922,14 @@ is a LOAD-sensitive timing test, not a defect the window introduced — the same
 `[LW-SCRUBBER-FLAKY]` (the test's own comment already records the desktop half of it as "the one flaky
 assertion in the suite"). **Worth making robust** (poll until the grid's draw has settled, not a
 fixed 5s), because a red CI run on a busy runner costs a re-run. WALK tier (Leave War grid, phone).
+**Two more of the family, on GitHub's runner (23 Sep 26, the `[ALL-AVAIL-WINDOW]` merge):** in
+`e2e/step4-leavewar.spec.ts` (lw-desktop), "LL 14–18 Jul, then ATT C 16–17 Jul … undo restores" timed
+out at 30s twice (33.6s, 34.4s — it took 23.1s on the previous green run) and "a reload (not ?fresh)
+keeps every filed leave …" is flaky on EVERY run (31s, then passes on retry). The whole lw-desktop
+job ran ~19% slower, evenly, while the other jobs held their times. **Measured NOT the window:** the
+same project on the desktop, before (`b945b8c2`) vs after, 164/164 both in 1.8m, per-test median
+ratio 1.02; the first test takes ~13s locally. They sit near a 30s budget on a slow VM — make them
+wait on what they need, or give the suite a longer per-test budget on CI.
 
 ### [OIL-PERSONAL-PLACEHOLDER] A placeholder on a landed "Personal" request row draws no count (23 Sep 26)
 
