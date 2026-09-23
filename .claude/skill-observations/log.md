@@ -494,3 +494,18 @@ code separately from its output, and never let the same line that runs a gate al
 **Suggested improvement:** In §7.2 / §2a: "Phone AND desktop is two sizes of one shape. Walk a SHORT screen too (a phone on its side, a laptop window of 700px height) for any surface built as a viewport-tall column; measure every control against the screen edges, not only the control being changed." And a CSS note for column layouts: scroll room belongs inside the scroll box (a spacer), never as padding on it.
 
 **Principle:** Width is not the only axis; a full-height column must be walked at a short height, and every edge-docked control measured, not just the one in the finding.
+
+### Observation 217: Two fixes from one walk can point at each other — a door one removes, the other's words still name
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [HUMAN-RETEST] the Tracker — the full gates after three fix rounds; the vendored browser suite had not been run since round one.
+**Skill:** raptor-port/docs/bug-check-order.md (§5 FULL order — gates between the walk's fixes and the reads)
+**Type:** open-source
+**Phase/Area:** fixing — interaction between fixes
+
+**Issue:** Round one fixed F4 (the details bubble must say how to reach the details editor: "tap the ball, then ✎ Edit details") and F9 (on a chart with nobody on it, a tap opens NO pop-up). Each was right alone and each had its own red-first test. Together, on a studentless chart, the hint named a door F9 had just removed. Nothing caught it for two rounds because the surface's own browser suite was not run between rounds; its first run stopped on exactly this (a step tapping a ball for details on such a chart).
+
+**Suggested improvement:** In §5: "Run the surface's own suite after EACH fix round, not once at the end. And when a fix removes or gates a door, search for every sentence on screen that names that door (the roll-call's 'what else points here' column)."
+
+**Principle:** A fix that closes a door must find every hint that still points through it; run the whole surface's suite after each round so two correct fixes cannot quietly contradict.
