@@ -2,6 +2,11 @@
 
 ## The Tracker `[HUMAN-RETEST]` — IN PROGRESS on `claude/tracker-human-retest-8d3411` (not merged)
 
+**FIRST, merge `main` into this branch (D78):** the Leave War's PR #428 merged at 16:56 (`87e9f0d6`;
+rulings on main run to D154 — no clash with D120–D124). Its `playwright.config.ts` hunk is
+byte-identical to this branch's, so no conflict there; expect conflicts only in `DECISIONS.md`,
+`OUTSTANDING.md` and this file — keep BOTH sides' rows. Hold any full gate run until
+`gh run list --branch main --limit 1` shows main's own run completed.
 **Pick that branch in the new-chat picker.** Read `raptor-port/docs/handpass/2026-09-23-tracker.md`
 §0 FIRST — it says what is done, what the three walkers found, and exactly what is next (rebuild,
 re-walk the fixes, fix the "still to fix" lists and D122–D124, full gates, the two code reads, his
