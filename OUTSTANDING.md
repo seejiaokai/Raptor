@@ -665,6 +665,7 @@ chat or the PC runner (`gh run list`) is mid-run. **D154: a third chat builds a 
 commanders and a demo video** on its own worktree (preview 4185, rulings from D170); D58 holds for the
 deck/video. **D155: the Tracker chat is PAUSED** at its own handoff — the demo video first (the Leave War
 fixes are live on `main`); it resumes on his word, bringing `main` in first (D78).
+**D135 (24 Sep 26): the demo is DONE** — the PC is no longer shared with it; D86's one-full-run-at-a-time stands.
 **D125 (23 Sep 26): the Tracker chat RESUMES** beside the demo chat, on `claude/tracker-human-retest-8d3411`
 (`main` merged in) — the demo has first call on the PC: heavy runs one at a time, only on a quiet PC, and the
 Tracker pauses at its next clean point if the demo slows.

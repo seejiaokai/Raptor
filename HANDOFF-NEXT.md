@@ -47,12 +47,11 @@ course; an import never deletes marks). Left from it, none blocking: `[TRK-RETES
 
 ## Next, in order
 
-1. **The presentation/demo-video chat (D154) is the current work** — preview 4185, rulings from D170; D58 holds
-   (no unit designation). `main` now has the Leave War fixes and the Tracker's.
+1. **The presentation/demo-video work (D154) is DONE (D135, 24 Sep 26)** — the PC is no longer shared with it; D86's
+   one-full-run-at-a-time and "not while the PC runner is mid-run" still stand. D58 holds (no unit designation).
 2. **`[HUMAN-RETEST]` continues — THE AMENDMENT SYSTEM is next** (the Tracker half is done): D85/D86 — port 4173,
    rulings from D90, FULL tier, the Tracker's sheet `raptor-port/docs/handpass/2026-09-23-tracker.md` is the worked
-   example. It runs beside the demo chat: the demo has first call on the PC (D125) — heavy runs one at a time, only on
-   a quiet PC. The order of the other three (change-recording, the absence record, the Leave War links) is not ruled:
+   example. The demo is done (D135): the PC is its own, heavy runs still one at a time. The order of the other three (change-recording, the absence record, the Leave War links) is not ruled:
    propose it and ask.
 2a. **`main`'s Docs guard is RED since 24 Sep 26** — not a defect: `OUTSTANDING.md` (1,400) and `DECISIONS.md` (150)
    were over their ceilings after the Tracker merges (a code change defers that), so every notes-only commit fails
