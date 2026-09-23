@@ -7305,6 +7305,10 @@ one and the window would jump back to the corner mid-drag. A drag writes the
 element's style directly at pointer speed and commits on release, so dragging
 never repaints the board he is supposed to still be reading.
 
+**No resize on a phone — by his ruling (D77, 23 Sep 26).** A browser's own resize
+grip needs a mouse, so on a phone the window MOVES but does not resize. He was
+offered a touch drag-corner and said leave it. Do not build one or re-ask.
+
 **Where it sits (bug check, 23 Sep 26).** With no box of his, the STYLESHEET
 places it — the top-right corner at 212 wide on a desktop, and on a phone
 (≤620px) the approved full-width bottom panel, 12px margins, 62% tall. A box is
