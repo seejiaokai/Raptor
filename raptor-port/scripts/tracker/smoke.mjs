@@ -4128,6 +4128,79 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
   await pp.close();
 }
 
+/* ---- a pinch zooms about the fingers (owner, 23 Sep 26: "does not follow
+   where my fingers open or close, it's like off to the top left") ----
+   The pinch kept "the chart point under the fingers" as if the chart began at
+   the board's very corner. It does not: it sits inside the board's padding
+   and, since 9 Sep 26, half a view of slack — so the anchor landed that far
+   below-right of the fingers and the chart ran off up-left (807px on a phone
+   zooming 40% → 133%). Edit chart layout measured from the board instead of its
+   canvas. Real fingers through Chromium's touch input; the ball the fingers
+   start on must end under them — and under where they END when they slide. */
+{
+  const pp = await b.newPage({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  await openTracker(pp); await pp.waitForSelector('#flowSvg .ball'); await pp.waitForTimeout(400);
+  const cdp = await pp.context().newCDPSession(pp);
+  const pinch = async (cx, cy, d0, d1, dx, dy) => {
+    const at = (d, x, y) => [{ x: x - d / 2, y, id: 1 }, { x: x + d / 2, y, id: 2 }];
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: at(d0, cx, cy) });
+    for (let i = 1; i <= 12; i++) {
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: at(d0 + (d1 - d0) * i / 12, cx + dx * i / 12, cy + dy * i / 12) });
+      await pp.waitForTimeout(16);
+    }
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await pp.waitForTimeout(300);
+    return { x: cx + dx, y: cy + dy };
+  };
+  /* the ball nearest the middle of the chart area (clear of its edges, so both
+     fingers land on the chart), and where a ball sits on screen */
+  const midBall = () => pp.evaluate(() => {
+    const bd = document.getElementById('board').getBoundingClientRect();
+    const mx = bd.left + bd.width / 2, my = bd.top + bd.height * 0.45; let best = null;
+    for (const g of document.querySelectorAll('#flowSvg .ball')) {
+      const r = g.getBoundingClientRect(); if (!r.width) continue;
+      const x = r.left + r.width / 2, y = r.top + r.height / 2;
+      if (x < bd.left + 100 || x > bd.right - 100 || y < bd.top + 90 || y > bd.bottom - 90) continue;
+      const d = Math.hypot(x - mx, y - my); if (!best || d < best.d) best = { id: g.dataset.id, x, y, d };
+    }
+    return best;
+  });
+  const ballAt = id => pp.evaluate(id => { const r = document.querySelector(`#flowSvg .ball[data-id="${id}"]`).getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; }, id);
+  const scale = () => pp.evaluate(() => getComputedStyle(document.querySelector('#board .flowwrap')).zoom + ' ' + document.getElementById('viewport').getAttribute('transform'));
+  const onFingers = async (name, d0, d1, dx = 0, dy = 0) => {
+    const s = await midBall();
+    if (!s) { ok(name, false, 'no ball clear of the edges to pinch on'); return; }
+    const k0 = await scale(), end = await pinch(s.x, s.y, d0, d1, dx, dy), a = await ballAt(s.id), k1 = await scale();
+    const off = Math.round(Math.hypot(a.x - end.x, a.y - end.y));
+    ok(name, off <= 6 && k1 !== k0, `${s.id} ends ${off}px from the fingers; ${k0} → ${k1}`);
+  };
+  await onFingers('phone: a pinch out keeps the ball under the fingers', 60, 200);
+  await onFingers('phone: a pinch in keeps the ball under the fingers', 200, 90);
+  await onFingers('phone: fingers that slide while pinching carry the ball with them', 70, 170, -40, -70);
+  /* Edit chart layout: on EMPTY canvas, read through the canvas's own screen
+     matrix — a finger that lands on a ball there starts dragging that ball
+     (a separate problem, filed as [TRK-PINCH-DRAGS-BALL]), which would muddy
+     what this measures. */
+  await pp.click('#sylMenuBtn'); await pp.waitForTimeout(150); await pp.click('#arrangeBtn'); await pp.waitForTimeout(600);
+  const spot = await pp.evaluate(() => {
+    const s0 = document.getElementById('flowSvg').getBoundingClientRect(), b0 = document.getElementById('board').getBoundingClientRect();
+    const s = { l: Math.max(s0.left, b0.left), t: Math.max(s0.top, b0.top), r: Math.min(s0.right, b0.right, innerWidth), b: Math.min(s0.bottom, b0.bottom, innerHeight) };
+    const onBall = (x, y) => { const e = document.elementFromPoint(x, y); return !e || !!e.closest('.ball'); };
+    for (let y = s.t + 60; y < s.b - 60; y += 11) for (let x = s.l + 110; x < s.r - 110; x += 11) {
+      let clear = true; for (let d = 0; d <= 100 && clear; d += 10) if (onBall(x - d, y) || onBall(x + d, y)) clear = false;
+      if (clear) return { x, y };
+    }
+    return null;
+  });
+  const chartAt = p => pp.evaluate(p => { const q = new DOMPoint(p.x, p.y).matrixTransform(document.getElementById('viewport').getScreenCTM().inverse()); return { x: q.x, y: q.y }; }, p);
+  if (!spot) ok('phone, Edit chart layout: a pinch keeps the chart under the fingers', false, 'no empty canvas to pinch on');
+  else {
+    const c0 = await chartAt(spot), k0 = await scale(), end = await pinch(spot.x, spot.y, 60, 180, 30, -50), c1 = await chartAt(end), k1 = await scale();
+    const k = +((k1.match(/scale\(([\d.]+)\)/) || [0, 1])[1]), off = Math.round(Math.hypot(c1.x - c0.x, c1.y - c0.y) * k);
+    ok('phone, Edit chart layout: a pinch keeps the chart under the fingers', off <= 6 && k1 !== k0, `the chart point under the fingers moved ${off}px; ${k0} → ${k1}`);
+  }
+  await pp.close();   /* edit mode is a view, not a save: closing leaves nothing behind */
+}
+
 /* ---- ONE Import for both jobs (9 Sep 26, owner: "is it possible to just have
    1 button?") ----
    A chart drawn up elsewhere and the whole export back in after the database

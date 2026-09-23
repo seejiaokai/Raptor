@@ -116,7 +116,9 @@ raised and the branch deliberately left), `[STORE-READER-SWEEP]`, `[OIL-REQ-NAME
 `[OIL-PERSONAL-PLACEHOLDER]` and `[CROWD-SIM-BRIEF]` (both below `[ALL-AVAIL-WINDOW]`).
 `[LW-MONTHJUMP-PHONE]` and `[LW-HBAR-RESYNC]` — FIXED on `claude/lw-monthjump-phone` (PR #428) with the
 owner's filmed frozen-bar jump, and archived; MERGED to `main` 23 Sep 26 on his "merge live" (look done). Left from it:
-`[LW-FROZEN-BAR-GAP]` (a one-frame blink, below `[ALL-AVAIL-WINDOW]`). `[CI-TWO-CORES]` — DONE and
+`[LW-FROZEN-BAR-GAP]` (a one-frame blink, below `[ALL-AVAIL-WINDOW]`). **Tracker, 23 Sep 26 (night):** his
+pinch-zoom report is FIXED on `claude/tracker-pinch-anchor` (walked, gates green) — waiting on his look and "merge
+live"; filed from it `[TRK-PINCH-DRAGS-BALL]` (the next Tracker job), `[TRK-EDIT-SIDEWAYS]`, `[TRK-TAP-AFTER-DRAG]`. `[CI-TWO-CORES]` — DONE and
 archived: the checks run on his PC as a Windows service, its folder permissions tightened.
 
 **STALE ABOVE, CORRECTED 22 Sep 26:** the "STACK PROGRESS (updated 18 Sep 26)" block says the next
@@ -1410,6 +1412,26 @@ Marked **his call** where the answer is product direction, not a defect.
 - **A `scheduler.css` comment says a dozing page's insides read 0×0** — they report full boxes. (w3 O5)
 - **At 1200px the status beside ✓ Save changes shortens to "● un…"** (whole on hover) — the price of the
   fixed save corner (w3-F5); the button says what matters.
+
+### [TRK-PINCH-DRAGS-BALL] A pinch in Edit chart layout with a finger on a ball drags that ball (23 Sep 26)
+**Place:** the next Tracker job — it changes his saved layout by accident. Found walking the pinch fix
+(`raptor-port/docs/handpass/2026-09-23-tracker-pinch.md` F-B). In Edit chart layout, a first finger that
+lands ON a ball starts that ball's drag; the second finger makes it a pinch, but the drag carries on: the
+ball moves (36px on a phone), an undo step appears, and the move saves itself. Older than the pinch fix.
+The shape of the fix: the moment a second finger lands, cancel the ball's drag and put it back — no move,
+no undo step, nothing saved. **FULL tier** (it touches a saved change): both reads, not one.
+
+### [TRK-EDIT-SIDEWAYS] Edit chart layout on a sideways phone leaves the chart no room (23 Sep 26)
+**Place:** after `[TRK-PINCH-DRAGS-BALL]`. At 844×390 the tool strip fills the screen and the chart area is
+0px — nothing to see, drag or pinch (picture `docs/img/handpass/2026-09-23-tracker-pinch/after-phone-sideways-edit-no-room.png`).
+Upright it keeps 446px. Older than the pinch fix (F-C in its sheet). A layout job: fold or scroll the strip sideways.
+
+### [TRK-TAP-AFTER-DRAG] The first tap on a button after dragging or pinching the chart does nothing (23 Sep 26)
+**Place:** ask him first — seen only in the test browser's touch emulation, not yet on a real iPhone. Straight
+after a one-finger drag or a pinch on the chart, the first tap on − (or the ✎ menu) is lost; the second works.
+The finger's down and up both reach the button, but no press follows. Same on the live code before the pinch
+fix; a mouse click is fine (F-D in `raptor-port/docs/handpass/2026-09-23-tracker-pinch.md`). If he has
+never noticed it on his phone, close it as an emulation quirk.
 
 ### [TRK-BAKE-STALE] The chart-baking script no longer runs (found 23 Sep 26)
 `raptor-port/scripts/tracker/bake-user-charts.mjs` resolves `src/data/…` from `scripts/` (the folder
