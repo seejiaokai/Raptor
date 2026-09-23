@@ -124,6 +124,10 @@ function checkCharts(c, version, otherCat) {
      it carries the one-table `eventInfo` above instead) */
   if (c.eventInfoBySyl != null && !isDetailsTable(c.eventInfoBySyl))
     throw new Error('The event details in that file are damaged, so it has not been opened.');
+  /* D127: a whole backup names the built-ins deleted when it was written —
+     only ids this app ships */
+  if (c.deleted != null && (!Array.isArray(c.deleted) || c.deleted.some(id => !isBuiltinSylId(id) || !builtinSylById(id))))
+    throw new Error('The list of deleted charts in that file is damaged, so it has not been opened.');
   checkSylcat(c.sylcat, 'charts');
   /* A v3 file (version 3) is ID-native: its charts keys are syllabus ids, every
      one MUST be labelled by the sylcat (reference completeness, review

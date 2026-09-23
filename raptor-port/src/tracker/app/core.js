@@ -15,7 +15,7 @@ import { storage, flushNow, loadLatest } from '../storage.js';
 import * as FMT from './fileFormat.js';
 import * as FS from './fileStore.js';
 import { findEvents } from './eventOrder.js';
-import { onTrackerSessionEnd } from '../role.js';
+import { onTrackerSessionEnd, onBeforeTrackerLogout } from '../role.js';
 import { getPeople, onPeople, whoami } from '../people.js';
 import { mintId, isEntry, upgradeCourseBlock, reconcileIds } from './ids.js';
 import { mintCourseId, isCourseEntry, isCourseId, isReservedCourseName, upgradeCourses, reconcileCourseIds } from './courseIds.js';
@@ -65,9 +65,23 @@ const refreshCourses = notify;
    to undo the admin's mark, still in Details mode, and dropped into chart
    editing over the admin's unsaved draft. Plain state only, no redraw: at a
    logout the section is not on screen, and the next mount redraws the board.
-   An UNSAVED chart edit is deliberately kept — it waits behind ✓ Save changes,
-   the one place such work waits, and is never thrown away without a word. */
+   An unsaved chart edit is ASKED ABOUT before the Logout ever gets here (D129,
+   onBeforeTrackerLogout above); on any other session end it is kept behind
+   ✓ Save changes, never thrown away without a word. */
 onTrackerSessionEnd(() => endSession());
+/* BEFORE the logout, not after (owner, 23 Sep 26 — D129): unsaved chart edits
+   ask Save / Discard / Stay, over the Tracker tab (`show`), so the next person
+   never lands on someone else's half-done chart. Save writes them (✓ Save
+   changes); Discard reloads the chart from the store; Stay keeps the session. */
+onBeforeTrackerLogout(async show => {
+  if (!sylDirty) return true;
+  if (show) show();
+  const c = await uiChoice('You have unsaved chart edits on “' + curSylName() + '”.\n\nSave them before logging out?', 'Save them', 'Discard them', 'Stay');
+  if (c === 'cancel') return false;
+  if (c === 'ok') await persistSyl();
+  else { clearDirty(); if (arrangeMode) toggleArrange(); await loadCourse(course); refreshSyl(); renderBoard(); renderSide(); }
+  return true;
+});
 function endSession() {
   undoStack = []; redoStack = [];
   if (dlg) dlgClose(null);            /* a half-answered question: cancelled */
@@ -299,7 +313,7 @@ function trkCollectionOf(k) {
   if (last === 'syls' || last === 'syl') return 'trk.syls';   // kSyls (catalogue defs) + kSyl (per-course flow def)
   if (last === 'sylcat' || last === 'sylorder' || last === 'sylhidden' || last === 'syltomb') return 'trk.catalogue';
   if (last === 'eventinfo') return 'trk.eventinfo';
-  if (last === 'courses') return 'trk.courses';       // v3:courses — the course list
+  if (last === 'courses' || last === 'delcourses') return 'trk.courses';   // v3:courses — the course list; v3:delcourses — the deleted ones (D128)
   if (p.indexOf('lay') >= 0) return 'trk.layout';   // v3:master:lay:<syl> or v3:lay:<c>:<name>
   // NB: the one-shot migration flags (…:sylreset / …:sylcatmig / …:syljournal /
   // …:idmig / …:rostermig / …:courseidmig / …:idmap), the view-prefs (…:last /
@@ -458,6 +472,7 @@ function trkWriteRecords(entries) {
   if (entries.some(e => e.collection === 'trk.catalogue' || e.collection === 'trk.eventinfo')) trkReloadGlobalsFromMem();
   // the globals that steer the pointers, always re-read from mem
   COURSES = sParse(memGet(kCourses), [], 'array');
+  DELCOURSES = sParse(memGet(kDelCourses), [], 'array').filter(isCourseEntry);
   const courseGone = COURSES.length > 0 && !COURSES.some(c => isCourseEntry(c) && c.id === course);
   if (courseGone) { const first = COURSES.find(isCourseEntry); course = first ? first.id : course; }
   customDefs = sParse(memGet(kSyls(course)), {}, 'object');
@@ -4340,12 +4355,41 @@ export async function renCourse() {
   refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
   setSaveStatus('renamed ' + oldNm + ' → ' + v, 'ok');
 }
+/* A DELETED COURSE CAN BE RESTORED (owner, 23 Sep 26 — D128). Delete always
+   kept the course's records ("marks remain in storage"), but nothing on any
+   screen brought them back: re-creating the name started EMPTY under a new id
+   ([HUMAN-RETEST] F12). The entry now moves to a deleted list, and the course
+   ⇅ Reorder window offers ↺ Restore — the same door deleted built-in charts
+   have — bringing it back under its own id, students and marks intact. */
+const kDelCourses = 'v3:delcourses';
+export let DELCOURSES = [];
+async function loadDelCourses() {
+  DELCOURSES = sParse(await sGet(kDelCourses), [], 'array').filter(c => isCourseEntry(c) && !COURSES.some(x => isCourseEntry(x) && x.id === c.id));
+}
+export function deletedCourses() { return DELCOURSES.slice(); }
 export async function delCourse() {
   if (COURSES.length <= 1) { await uiAlert('Keep at least one course.'); return; }
   if (!await leaveFlowEdits('Discard them and delete the course?')) return;
-  if (!await uiConfirm('Delete course ' + curCourseName() + '? (marks remain in storage)')) return;
-  COURSES = COURSES.filter(c => c.id !== course); await saveCourses();
+  if (!await uiConfirm('Delete course ' + curCourseName() + '?\n\nIts students and marks are kept: ↺ Restore in ⇅ Reorder courses brings it back.')) return;
+  const gone = COURSES.find(c => c.id === course);
+  trkGesture(() => {
+    COURSES = COURSES.filter(c => c.id !== course); saveCourses();
+    if (gone && isCourseEntry(gone)) { DELCOURSES = [...DELCOURSES.filter(c => c.id !== gone.id), { id: gone.id, name: gone.name }]; sSet(kDelCourses, JSON.stringify(DELCOURSES)); }
+  });
   await loadCourse(COURSES[0] && COURSES[0].id); refreshCourses(); refreshActive(); renderBoard(); renderSide();
+}
+/* Back into the dropdown, at the end, under its own id. A course made since
+   under the same name keeps it; the restored one says so in its name. */
+export async function restoreCourse(id) {
+  const e = DELCOURSES.find(c => c.id === id); if (!e) return;
+  let nm = e.name;
+  if (COURSES.some(c => isCourseEntry(c) && c.name === nm)) { let n = 2; nm = e.name + ' (restored)'; while (COURSES.some(c => c.name === nm)) nm = e.name + ' (restored ' + (n++) + ')'; }
+  trkGesture(() => {
+    DELCOURSES = DELCOURSES.filter(c => c.id !== id); sSet(kDelCourses, JSON.stringify(DELCOURSES));
+    COURSES = [...COURSES, { id, name: nm }]; saveCourses();
+  });
+  refreshCourses();
+  setSaveStatus('restored course “' + nm + '”', 'ok');
 }
 
 /* ---------- syllabus editor (JSON modal) ---------- */
@@ -4880,6 +4924,7 @@ async function reloadFromStore() {
   const keepActive = active;
   const keepCal = calView;
   await loadCourses();
+  await loadDelCourses();
   try { await loadSylPrefs(); } catch (_) {}
   await loadSylCat();
   if (bootError) { notify(); return; }   /* an invalid stored id fails closed (CSID-B07); App shows the reload panel */
@@ -4908,7 +4953,7 @@ function sylcatEntryOf(id) {
 }
 /* Charts: everything that draws the flow. Never a person. Id-keyed since 1B-ii,
    carrying a sylcat that labels every id. */
-export async function collectCharts(ids) {
+export async function collectCharts(ids, opts) {
   const list = (ids && ids.length) ? ids : orderedSylIds();
   const syllabi = {}, layouts = {}, order = [], sylcat = [];
   for (const id of list) {
@@ -4924,7 +4969,13 @@ export async function collectCharts(ids) {
      ([HUMAN-RETEST] W1-9; D122). */
   const eventInfoBySyl = {};
   for (const id of order) if (eventInfo[id] && Object.keys(eventInfo[id]).length) eventInfoBySyl[id] = JSON.parse(JSON.stringify(eventInfo[id]));
-  return { order, syllabi, layouts, eventInfoBySyl, sylcat };
+  const out = { order, syllabi, layouts, eventInfoBySyl, sylcat };
+  /* A backup of EVERY chart also names the built-ins he deleted, so after
+     export → wipe → import they stay deleted — the wiped app ships them all
+     (owner, 23 Sep 26 — D127; [HUMAN-RETEST] F8). Never on a file of some
+     charts: a chart handed over must not delete anything at the other end. */
+  if (opts && opts.deleted) out.deleted = BUILTIN_SYL.filter(b => SYL_TOMB[b.id]).map(b => b.id);
+  return out;
 }
 
 /* Students: everything that names or grades a person. Never a chart.
@@ -5329,7 +5380,7 @@ export async function saveCopyClick() {
   if (pickSave) { handle = await pickSave(name); if (!handle) return; }
   else if (FS.canWriteInPlace()) { handle = await FS.pickSave(name); if (!handle) return; }
   const text = JSON.stringify(FMT.buildFile({
-    charts: opts.charts ? await collectCharts(ids) : null,
+    charts: opts.charts ? await collectCharts(ids, { deleted: ids.length === orderedSylIds().length }) : null,
     students: opts.students ? await collectStudents() : null, savedAt }), null, 2);
   try {
     if (handle) await FS.writeTo(handle, text); else FS.downloadInstead(name, text);
@@ -5458,7 +5509,7 @@ export async function importClick() {
   if (!hasCharts && !parsed.contains.students) { await uiAlert('That file holds no charts and no students.'); return; }
   const catById = new Map(((charts && charts.sylcat) || []).map(e => [e.id, e]));
   const addAsNew = Object.create(null);   /* fileId → freshly minted id; students follow */
-  const done = [], skipped = [];
+  const done = [], skipped = [], keptDeleted = [];
   const wanted = Object.create(null);     /* store id → the name the file gives it */
   if (hasCharts) {
     for (const id of charts.order) {
@@ -5506,6 +5557,23 @@ export async function importClick() {
       if (e && e.name !== want && !SYLS.some(x => x.id !== id && x.name === want)) { e.name = want; relabelled = true; }
     }
     if (relabelled) { await saveSylCat(); refreshSyl(); }
+    /* the built-ins the backup names as deleted stay deleted (D127): hidden and
+       tombstoned exactly as ⇅ Reorder's delete leaves one, so ↺ Restore brings it
+       back. Nothing filed under it is swept — a chart import never touches a mark
+       (the rule applyCharts keeps) — and the last chart is never taken away. */
+    for (const id of (Array.isArray(charts.deleted) ? charts.deleted : [])) {
+      if (!isBuiltinSylId(id) || !sylEntry(id) || orderedSylIds().length <= 1) continue;
+      const nm = sylName(id);
+      if (curSylId() === id) await switchSylNow(firstOtherSylId(id));
+      trkGesture(() => {
+        SYLS = SYLS.filter(e => e.id !== id);
+        if (!isHidden(id)) SYL_HIDDEN.push(id); SYL_TOMB[id] = 1;
+        SYL_ORDER = SYL_ORDER.filter(x => x !== id);
+        saveSylCat(); saveSylPrefs(); saveSylOrder();
+      });
+      keptDeleted.push(nm);
+    }
+    if (keptDeleted.length) refreshSyl();
     const fileIds = charts.order.filter(id => (charts.syllabi || {})[id]);
     if (fileIds.length > 1) {
       const inFile = fileIds.map(id => (has(addAsNew, id) ? addAsNew[id] : id)).filter(id => sylEntry(id));
@@ -5543,7 +5611,8 @@ export async function importClick() {
   }
   const what = [done.length ? 'brought in ' + done.join(', ') : null, people ? 'students & marks restored' : null].filter(Boolean).join(' · ');
   if (what) setSaveStatus(what, 'ok');
-  const skip = skipped.length ? '\n\nSkipped, left as they are here: ' + skipped.join(', ') + '.' : '';
+  const skip = (skipped.length ? '\n\nSkipped, left as they are here: ' + skipped.join(', ') + '.' : '')
+    + (keptDeleted.length ? '\n\nDeleted, as in the backup: ' + keptDeleted.join(', ') + ' (↺ Restore in ⇅ Reorder brings ' + (keptDeleted.length === 1 ? 'it' : 'them') + ' back).' : '');
   await uiAlert((what
     ? what.charAt(0).toUpperCase() + what.slice(1) + '.\n\n' + (people ? 'It is saved.' : 'Everyone’s marks are untouched. It is saved.')
     : 'Nothing was brought in.') + skip);
@@ -5593,6 +5662,7 @@ export async function init() {
      course nobody has opened since the upgrade and find stale records. (After
      migrateSylIds these are no-ops — the reset flagged every course.) */
   await migrateAllCourses();
+  await loadDelCourses();   /* D128 — after the course-id conversion, which the entries depend on */
   await loadSylPrefs();
   /* the catalogue index (written by the migration), then the boot reconcile
      (add newly-shipped built-ins, repoint base on a shipped rename, respect a

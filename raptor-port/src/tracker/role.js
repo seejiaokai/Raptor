@@ -21,3 +21,18 @@
 const sessionSubs = new Set()
 export function endTrackerSession() { sessionSubs.forEach(f => { try { f() } catch (_) {} }) }
 export function onTrackerSessionEnd(f) { sessionSubs.add(f); return () => sessionSubs.delete(f) }
+
+/* ASK BEFORE A LOGOUT (owner, 23 Sep 26 — D129): logging out with unsaved chart
+   edits asks Save / Discard / Stay first, so the next person on the browser
+   never lands on someone else's half-done chart (the F10 fix had kept it waiting
+   behind ✓ Save changes for whoever signed in next). Raptor's Logout awaits this
+   BEFORE resetSession; core.js answers once it has loaded (a Tracker never
+   opened has nothing unsaved). `show` brings the Tracker tab to the front first,
+   so the question is asked over the chart it is about, whatever page the person
+   pressed Logout on. Resolves true to log out, false to stay. */
+let beforeLogout = null
+export function onBeforeTrackerLogout(f) { beforeLogout = f }
+export async function trackerMayLogOut(show) {
+  if (!beforeLogout) return true
+  try { return (await beforeLogout(show)) !== false } catch (_) { return true }
+}

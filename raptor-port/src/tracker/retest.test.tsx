@@ -409,6 +409,123 @@ describe('[HUMAN-RETEST] the Tracker — event details belong to their chart (ro
   })
 })
 
+describe('[HUMAN-RETEST] the Tracker — a deleted built-in rides the backup (round three: D127, F8)', () => {
+  /* the real Export window, its file caught through the save-picker hook */
+  async function exportVia(tick: 'all' | 'one') {
+    let text = ''
+    ;(window as any).__pickSaveForTests = async (name: string) => ({ name, createWritable: async () => ({ write: async (t: string) => { text = t }, close: async () => {} }) })
+    try {
+      await C.openCopy()
+      C.setCopyPickAll(tick === 'all')
+      if (tick === 'one') C.setCopyPick(C.curSylId(), true)
+      const p = C.saveCopyClick(); await answer(true); await p
+    } finally { delete (window as any).__pickSaveForTests }
+    return JSON.parse(text)
+  }
+  it('D127 — a backup of every chart remembers a deleted built-in; importing it keeps that chart deleted, and says so', async () => {
+    if (C.sylDirty) await C.saveChangesClick()
+    const b24 = C.sylIdOf('2024')
+    await C.switchSyllabus(b24); await C.whenLoaded()
+    const d = C.delSyl(); await answer(true); await d; await C.whenLoaded()
+    expect(C.orderedSylIds(), 'the premise: 2024 is deleted').not.toContain(b24)
+    const whole = await exportVia('all')
+    expect(whole.charts.deleted, 'the whole backup names it').toContain(b24)
+    const one = await exportVia('one')
+    expect(one.charts.deleted, 'a one-chart file (a chart handed over) never carries deletions').toBeUndefined()
+    /* the wiped app has every built-in */
+    await C.restoreHiddenSyl(b24)
+    expect(C.orderedSylIds()).toContain(b24)
+    ;(window as any).__pickOpenForTests = async () => ({ name: 'b.json', text: JSON.stringify(whole) })
+    let closing = ''
+    try {
+      const p = C.importClick()
+      for (;;) { await until(() => C.dlg); if (/already exists/.test(C.dlg.msg)) { C.dlgClose(true); await tick(); continue } closing = C.dlg.msg; C.dlgClose(true); break }
+      await p
+    } finally { delete (window as any).__pickOpenForTests }
+    await C.whenLoaded()
+    expect(C.orderedSylIds(), 'it stays deleted, as before the wipe').not.toContain(b24)
+    expect(C.hiddenBuiltins().map((b: any) => b.id), 'still restorable from ⇅ Reorder').toContain(b24)
+    expect(closing, 'the closing report names it').toMatch(/2024/)
+    await C.restoreHiddenSyl(b24)
+    await C.saveOrderList(C.orderedSylIds().map((id: string) => C.sylName(id)).sort((a: string, b: string) => (a === '2024' ? -1 : b === '2024' ? 1 : 0)))
+    await C.whenLoaded()
+  })
+})
+
+describe('[HUMAN-RETEST] the Tracker — logging out with unsaved chart edits asks first (round three: D129)', () => {
+  async function dirty(name: string) {
+    if (C.sylDirty) await C.saveChangesClick()
+    if (!C.arrangeMode) C.toggleArrange()
+    const p = C.addModule('acad'); await answer(name); await p
+    C.toggleArrange()
+    expect(C.sylDirty, 'the premise: an unsaved chart edit').toBe(true)
+  }
+  /* both Logout buttons (the top bar's, the phone drawer's) go through one function */
+  const logOut = async () => ((await import('../ui/logout')) as any).logOut as (() => Promise<boolean>) | undefined
+  it('D129 — Stay keeps the session and the edit; Discard drops the edit and logs out; Save keeps the edit and logs out', async () => {
+    const out = await logOut()
+    expect(typeof out, 'one logout that asks the Tracker first').toBe('function')
+    await dirty('LOGOUT-1')
+    let p = out!()
+    await until(() => C.dlg); expect(C.dlg.msg).toMatch(/unsaved chart edits/i)
+    C.dlgClose(false); expect(await p, 'Stay').toBe(false)
+    expect(C.sylDirty, 'the edit is still there').toBe(true)
+    p = out!(); await until(() => C.dlg); C.dlgClose('__alt__')           /* Discard them */
+    expect(await p).toBe(true)
+    expect(C.sylDirty, 'discarded').toBe(false)
+    expect(C.byid['LOGOUT-1'], 'the ball is gone').toBeFalsy()
+    resetSession({ user: 'ad', role: 'admin' })
+    await dirty('LOGOUT-2')
+    p = out!(); await until(() => C.dlg); C.dlgClose(true)                /* Save them */
+    expect(await p).toBe(true)
+    expect(C.sylDirty).toBe(false)
+    expect((await C.collectCharts([C.curSylId()])).syllabi[C.curSylId()].some((e: any) => e.id === 'LOGOUT-2'), 'saved').toBe(true)
+    resetSession({ user: 'ad', role: 'admin' })
+    const d = C.delSyl(); await until(() => C.dlg); C.dlgClose('__alt__'); await d; await C.whenLoaded()   /* revert 2026 */
+  })
+  it('D129 — nothing unsaved: no question, straight out', async () => {
+    if (C.sylDirty) await C.saveChangesClick()
+    const out = await logOut()
+    expect(await out!()).toBe(true)
+    expect(C.dlg).toBeNull()
+    resetSession({ user: 'ad', role: 'admin' })
+  })
+})
+
+describe('[HUMAN-RETEST] the Tracker — a deleted course can be restored (round three: D128, F12)', () => {
+  it('D128 — delete says how to get it back; ↺ Restore in the course ⇅ Reorder window brings it back with its students and marks', async () => {
+    if (C.sylDirty) await C.saveChangesClick()
+    const home = C.course
+    const a = C.addCourse(); await answer('KEEP D128'); await a; await C.whenLoaded()
+    const cid = C.course
+    const s1 = C.addStudent(); await answer('ALPHA D128'); await s1
+    const s = C.roster.find((r: any) => r.name === 'ALPHA D128').id
+    C.setActive(s); C.openPop('ST-01', at); await C.popGrade('dco')
+    const d = C.delCourse()
+    await until(() => C.dlg && /Delete course/.test(C.dlg.msg))
+    expect(C.dlg.msg, 'the question names the way back').toMatch(/Restore/)
+    expect(C.dlg.msg, 'and not the old promise with no door').not.toMatch(/marks remain in storage/)
+    C.dlgClose(true); await d; await C.whenLoaded()
+    expect(C.COURSES.map((c: any) => c.id), 'gone from the dropdown').not.toContain(cid)
+    expect(C.deletedCourses().map((c: any) => c.id), 'listed as deleted').toContain(cid)
+    /* the course ⇅ Reorder window offers it */
+    const { OrdModal } = await import('./components/Modals.jsx')
+    C.openOrdCourse()
+    const host = await render(<OrdModal />)
+    const row = [...host.querySelectorAll('#ordHidden .ordrow')].find(r => (r.querySelector('.onm') || {}).textContent === 'KEEP D128')!
+    const btn = row && row.querySelector('button') as HTMLButtonElement
+    expect(btn, 'a ↺ Restore row for the deleted course').toBeTruthy()
+    await act(async () => { btn.click() }); await C.whenLoaded()
+    C.closeOrd(); host.remove()
+    expect(C.COURSES.map((c: any) => c.id), 'back in the dropdown under its own id').toContain(cid)
+    await C.switchCourse(cid); await C.whenLoaded()
+    expect(C.roster.map((r: any) => r.name), 'its student is back').toContain('ALPHA D128')
+    expect(C.gradeOf(s, 'ST-01'), 'with the mark').toBe('dco')
+    const d2 = C.delCourse(); await answer(true); await d2; await C.whenLoaded()
+    if (C.course !== home) { await C.switchCourse(home); await C.whenLoaded() }
+  })
+})
+
 describe('[HUMAN-RETEST] the Tracker — marking, Last Flown, deleting a ball, lulls (round three: D123, D124, W2-F2..F6)', () => {
   const lf = (s: string) => ({ syll: (C.dates[s] || {}).lastSyll || null, curr: (C.dates[s] || {}).lastCurr || null })
   const dayOf = (s: string, id: string) => (((C.marks as any)[s] || {})[id] || {}).d || null

@@ -263,12 +263,20 @@ function OrdModalInner({ mode }) {
   const cfg = ORD_MODES[mode] || ORD_MODES.syllabus;
   const [list, setList] = useState(() => cfg.read());
   const fromRef = useRef(null);
-  /* Deleted built-ins can only be restored for syllabi; courses and crew have
-     no shipped originals to come back from. */
-  /* deleted built-ins to offer for restore — {id,name} (§9 CSID2-09) */
-  const hid = mode === 'syllabus' ? core.hiddenBuiltins() : [];
+  /* What can come back: deleted built-in syllabi, and deleted courses (owner,
+     23 Sep 26 — D128; their records were always kept). Crew has none — a
+     removed student's marks are deleted, and the question says so. */
+  /* {id,name} each (§9 CSID2-09) */
+  const hid = mode === 'syllabus' ? core.hiddenBuiltins() : mode === 'course' ? core.deletedCourses() : [];
   const move = (i, j) => setList(l => { const a = [...l]; [a[i], a[j]] = [a[j], a[i]]; return a; });
   const restore = async item => {
+    if (mode === 'course') {
+      await core.restoreCourse(item.id);
+      /* the name may have gained "(restored)" beside a course made since */
+      const label = core.courseName(item.id) || item.name;
+      setList(l => (l.includes(label) ? l : [...l, label]));
+      return;
+    }
     await core.restoreHiddenSyl(item.id);
     /* the actual label may have gained a suffix (ensureUniqueLabel), so read it
        back rather than reuse the shipped name (review CSID-REV-11) */
@@ -307,12 +315,14 @@ function OrdModalInner({ mode }) {
         </div>
         {hid.length > 0 && (
           <div id="ordHiddenWrap" style={{ marginTop: 12 }}>
-            <div className="mini" style={{ marginBottom: 6 }}>Deleted built-in syllabi — restore to bring one back into the dropdown.</div>
+            <div className="mini" style={{ marginBottom: 6 }}>{mode === 'course'
+              ? 'Deleted courses — restore to bring one back into the dropdown, with its students and marks.'
+              : 'Deleted built-in syllabi — restore to bring one back into the dropdown.'}</div>
             <div id="ordHidden" style={{ maxHeight: '22vh', overflow: 'auto', border: '1px solid var(--line)', borderRadius: 8 }}>
               {hid.map(item => (
                 <div key={item.id} className="ordrow">
                   <span className="onm">{item.name}</span><span className="otag">deleted</span>
-                  <button title="Restore this built-in syllabus" onClick={() => restore(item)}>↺ Restore</button>
+                  <button title={mode === 'course' ? 'Restore this course' : 'Restore this built-in syllabus'} onClick={() => restore(item)}>↺ Restore</button>
                 </div>
               ))}
             </div>
