@@ -10,10 +10,13 @@ heavy run at a time, and pause at the next clean point if he says the demo is sl
 **`main` is merged in (D78, done 23 Sep 26 on resuming)** — both sides' rows kept; this branch's
 notebook entries renumbered #211–#213 past main's #199–#210.
 **Pick that branch in the new-chat picker.** Read `raptor-port/docs/handpass/2026-09-23-tracker.md`
-§0 FIRST — its **Progress** line says exactly where the work is. As of the resumed session: every
-"still to fix" item and D122–D129 BUILT red-first and re-walked green (§8, §12); the full gates were
-running; next the two blind code reads (brief `raptor-port/docs/superpowers/briefs/2026-09-23-tracker-final-read-brief.md`),
-fix, re-walk, his look card. FULL tier. Ports: preview 4180, smoke 4181, e2e 4182. Rulings: **D120–D129**
+§0 FIRST — its **Progress** line says exactly where the work is. **State at the end of the resumed
+session: the bug check is DONE and waiting on HIM** — every finding fixed red-first and walked; the two
+blind reads done and every finding fixed (§11); the final gates green on the finished code (§10). What
+is left: his five-minute look (§13, on the branch's Vercel preview
+`https://raptor-git-claude-tracker-human-retest-8d3411-kai-e2f5.vercel.app`), his answers to the three
+questions in §13, then his "merge live" (a PR is not open yet — open one when he says so; the PC runs its
+checks then, D151: never push to it while they run). FULL tier. Ports: preview 4180, smoke 4181, e2e 4182. Rulings: **D120–D129**
 (the charts' route to the database; one access for admin and member; imports never wipe typed
 details; Last Flown; deleting a ball wipes its marks; resuming beside the demo; details per chart; a
 backup remembers a deleted chart; a course restore door; logout asks). Never run a full gate while
