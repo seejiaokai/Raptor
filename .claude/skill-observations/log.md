@@ -222,3 +222,50 @@ the same chain as the commit.
 
 **Principle:** Trimming a check's output with a pipe also throws away its verdict. Read a gate's exit
 code separately from its output, and never let the same line that runs a gate also act on it.
+
+## 2026-09-23 — [HUMAN-RETEST] the Tracker
+
+### Observation 199: A scripted gesture that "fails" is the driver's until the picture says otherwise
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [HUMAN-RETEST] hands-on re-test of the Tracker tab (Raptor), driven by Playwright scripts. Numbered past every entry on the pushed branches (max 198); a parallel chat may also be appending on an unpushed branch.
+**Skill:** raptor-port/docs/bug-check-order.md (§7.2 "Stand up the real thing")
+**Type:** open-source
+**Phase/Area:** the walk — driving a surface with its own gestures
+
+**Issue:** Two scripted steps failed in ways that read like app defects: "the header intercepts pointer events" on a ball, and a ball drag that did not move the ball. Both were the driver's: a generic scroll-into-view had left the ball above the chart's own scroll box (under the toolbar), and in the chart's edit mode the wheel ZOOMS and the view pans by dragging empty space, so a wheel-scroll never moved it. The screenshot showed it in one look; the error text alone would have produced two false findings.
+
+**Suggested improvement:** In §7.2, add: "The driver moves the view with the surface's OWN gesture (its scroll, its drag-to-pan) and checks the target sits inside the scroll box before acting. A scripted gesture that fails is looked at on its picture before it is called a defect."
+
+**Principle:** A driver that moves the view differently from a person manufactures defects; look at the picture before believing a failed gesture.
+
+### Observation 200: A fix or ruling applied to ONE of two places that draw or write the same thing — twice in one tab
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [HUMAN-RETEST] the Tracker — the walk found a wording ruling applied to one of two editors that carry the same box, and a data-leak fix applied to one of two writers of the same record.
+**Skill:** raptor-port/docs/bug-check-order.md (§6 the roll-call) and raptor-port/CLAUDE.md (the robustness doctrine's "grep for the old wording")
+**Type:** open-source
+**Phase/Area:** fixing — reach of a fix
+
+**Issue:** A ruling changed a hint's wording in the details window; Show All's inline editor, which shows the same box, kept the old words. Earlier, a leak (one chart's event details stored as every chart's) was fixed in the details window's writer; the chart editor's ball box, a second writer of the same record, kept the leak. The standing "grep for the old wording" rule existed both times. Both were found only by walking both surfaces.
+
+**Suggested improvement:** Add to §6: "A wording ruling, or a fix to a writer, gets its own small roll-call in the same commit — every place that draws that text or writes that record — and the fix is STRUCTURAL: one shared constant or one shared body, with a test that renders or drives each place."
+
+**Principle:** When several places draw or write the same thing, make them share one body and test every place; a "remember to grep" rule is already known to fail.
+
+### Observation 201: Walkers need the artifact frozen while the host fixes in parallel
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [HUMAN-RETEST] the Tracker — three parallel walkers drove the built preview while the host wrote fixes for findings already confirmed.
+**Skill:** raptor-port/docs/bug-check-order.md (§4, the fan-out paragraph from D16)
+**Type:** open-source
+**Phase/Area:** fan-out walks — sharing one running build
+
+**Issue:** The walkers drive the production build served from the working tree's output folder; a host rebuild mid-walk would swap the bundle under them and mix pre- and post-fix behaviour in one walk. So while they walked, the host could only typecheck without emitting and run unit tests, and the rebuild, the full gates and the re-walk waited for their reports. Separately: fresh browser contexts isolate storage, so the walkers shared ONE preview port with no clash — the "own port each" advice is unnecessary when every walker starts a fresh context.
+
+**Suggested improvement:** In §4's fan-out paragraph: "Walkers may share one preview (a fresh browser context each isolates storage). While they walk, nobody rebuilds that preview: the host fixing in parallel typechecks with no output and runs unit tests; the rebuild, the gates and the re-walk of the fixes come after the walkers report."
+
+**Principle:** Parallel checks against one running artifact need that artifact frozen; name who may change it, and when.

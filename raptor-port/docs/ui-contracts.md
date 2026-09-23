@@ -7005,8 +7005,9 @@ screen:
   unchanged. With nobody in the bridge (a standalone Tracker) the dialog is
   byte-identical to the old prompt. A linked student's roster chip carries
   `.linked` (a small accent dot before the name) and the title "On the
-  squadron roster as <callsign>". Names containing a colon are refused at
-  every add/rename with one message. Pins: `tracker.test.tsx` (the live
+  squadron roster as <callsign>". A COURSE name containing a colon is refused
+  with one message; since 13 Sep 26 a student, syllabus or chart name may carry
+  one (a label, not a key — [TRK-CSID] §8). Pins: `tracker.test.tsx` (the live
   dialog render, order, narrowing, the linked chip, the refusal), the smoke
   suite (12 checks after the `addStudent` helper, incl. a real Export
   carrying `links`). Wiring: `docs/data-schema.md` §The person link.

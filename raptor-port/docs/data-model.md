@@ -1023,7 +1023,8 @@ a callsign can be masked, pseudonymised or restricted per role without
 breaking a foreign key or losing history. `Person`, `Enrolment` and `EditLog`
 are the only tables carrying a person's name at all.
 
-The repository is public and stays that way: the roster, weeks, inputs and
+The repository has been PRIVATE since 23 Sep 26 (D59 — it was public when this
+was written), and the rule is unchanged: the roster, weeks, inputs and
 Tracker fixtures committed to it are **invented demo data** and placeholder
 names. No real name, date or mark is ever committed, and the shared database
 is never seeded from the demo world (section 7).

@@ -73,10 +73,13 @@
 >   name is a label (renamed by the pencil on each chip, `renameStudent`, id
 >   and records untouched — 10 Sep 26) and may contain a colon. Nothing
 >   flows back to Raptor yet (no pucks, no quals) — `pid` is the hook for
->   that. Deleting a course leaves its records in storage the way it leaves
->   its marks (a safety net): re-create a course under the same name and its
->   old roster comes back, entries, links and marks together — coherent, but
->   worth knowing. Export carries the entries (no `links` block); Import
+>   that. Deleting a course leaves its records in storage, and its question
+>   still says "(marks remain in storage)" — but **since course ids (13 Sep 26)
+>   nothing brings them back**: a course re-created under the same name gets a
+>   NEW id and starts empty, and no screen offers a restore, so the records are
+>   orphaned (kept, invisible, not exported). The old "re-create it by name and
+>   the roster comes back" safety net is gone — walked 23 Sep 26 ([HUMAN-RETEST]
+>   F12); a restore door or an honest delete is the owner's call. Export carries the entries (no `links` block); Import
 >   reads both the entry shape and a legacy string roster with its `links`.
 >   **Import matches the file's students to the enrolments the course already
 >   has (bug-check, 10 Sep 26 — `ids.js reconcileIds`):** by person id first,
@@ -92,7 +95,9 @@
 >   `+ Add`, remove, reorder and duplicate-syllabus with a notice, so the old
 >   name-keyed roster is never overwritten. The gap: no component reads the
 >   flag — the Students card shows an EMPTY list and a `+ Add` that looks
->   live until pressed. A one-line notice in the card is the follow-up. The
+>   live until pressed. (A one-line notice in the card was the follow-up; it is
+>   moot under D120 — only OLDER stored data can end up held, and that is wiped
+>   before the database.) The
 >   way out is a reload that converts (or an Import, which converts the
 >   course through the same migration). Narrow edge of that Import route: if
 >   the interrupted run had already moved a mark under its parked `idmap` id
@@ -135,9 +140,10 @@ may be deleted until the owner has saved a file, reopened it, and said in his ow
 words that his syllabi are inside. No check stands in for that. Stop and ask.
 
 **The unreproduced save bug.** A second save once appeared to do nothing; never
-reproduced. `writeTo` verifies by reading back; failures say `NOT SAVED`; the
-toolbar shows `saved N KB at HH:MM` — if he reports it again, ask whether that
-time changed.
+reproduced. Since 9 Sep 26 there is no bound file to save to — ⤓ Export writes a
+whole copy, `writeTo` verifies it by reading back, and a failure says `copy NOT
+saved`; the toolbar's old `saved N KB at HH:MM` line went with the bound file. If
+he reports it again, ask which button he pressed and what the status line said.
 
 **Worth raising when he next looks:**
 - **The toolbar hides on demand** (owner, 9 Sep 26 — phone ask, "have the
@@ -201,8 +207,11 @@ time changed.
   coalesce keystrokes), a failure is its own step as before.
 - `SA(S)-3` on Tx: the source document contradicts itself. **User chose keep,
   twice, 8 Aug.**
-- The edit-mode hint overlays the colour legend. Move it if he misses the
-  legend.
+- The edit-mode hint no longer covers the colour legend at rest (fixed 2 Sep 26,
+  pinned in the smoke suite); only a tool hint long enough to wrap — the Line
+  tool's — spills over it while that tool is picked. Since 23 Sep 26 a 1.8 s
+  FLASH message also shows outside edit mode, floating over the legend without
+  taking a tap ([HUMAN-RETEST]: those messages had been written to a hidden line).
 
 ## Things that will bite you (carried, still true)
 
@@ -274,9 +283,11 @@ time changed.
   here on purpose — the record-oriented storage door with acknowledged durable
   writes and revision checks is the `[DB-STEP]` (RC5) that closes it for every
   migration at once; a bespoke journal/lock now would be thrown away by it.
-- **The repository is public.** No student name, mark or date may enter it. The
-  smoke suite checks the seed and the sample file for placeholder names only;
-  `bake-user-charts.mjs` re-checks after every bake.
+- **No student name, mark or date may enter the repository.** (The reason given
+  here was "the repository is public"; it has been PRIVATE since 23 Sep 26 — D59
+  — and the rule stands: collaborators will read it.) The smoke suite checks the
+  seed and the sample file for placeholder names only; `bake-user-charts.mjs`
+  re-checks after every bake.
 - **A record deleted seconds after migration, on an already-full store, can be
   re-copied.** Inherent to resuming a legacy import without a durable ledger:
   resume cannot tell "never copied" from "copied, then deleted". The

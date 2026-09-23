@@ -297,8 +297,9 @@ export function Shell() {
           <a data-page="logic" role="button" tabIndex={0} className={page === 'logic' ? 'on' : ''} onClick={() => nav('logic')} onKeyDown={navKey('logic')}>Logic</a>
           <a data-page="leavewar" role="button" tabIndex={0} className={page === 'leavewar' ? 'on' : ''} onClick={() => nav('leavewar')} onKeyDown={navKey('leavewar')}>Leave War</a>
           {/* the OCU progress Tracker (7 Sep 26) — a work tab for everyone,
-              after Leave War; edits are the admin's (tracker/app/core.js
-              readOnly, written from resetSession) */}
+              after Leave War; everyone edits there, only its File menu
+              (Import / Export) is the admin's (owner's second word, 7 Sep 26 —
+              tracker/role.js, written from resetSession) */}
           <a data-page="tracker" role="button" tabIndex={0} className={page === 'tracker' ? 'on' : ''} onClick={() => nav('tracker')} onKeyDown={navKey('tracker')}>Tracker</a>
           {/* Help is for EVERYONE (owner, 25 Aug 26 — "allows anyone to type
               in Bug reports") — after the work tabs, before the admin-only

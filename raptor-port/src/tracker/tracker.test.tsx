@@ -7,7 +7,7 @@
      view-as-member toggle flips it both ways (state/store.ts resetSession /
      toggleRole → tracker/role.js);
    · the lock is enforced at the WRITE PATH in core.js, not only at the
-     affordance — Open, Import and Save a copy refuse a locked caller — while
+     affordance — Import and Export (the old Open / Save a copy) refuse a locked caller — while
      everything else (marking, edit mode, the editors, students, dates) stays
      open to everyone (owner, 7 Sep 26: "allowed for both admin and member
      for all access, except the file portion which is admin only");
