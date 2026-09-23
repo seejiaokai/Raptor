@@ -180,9 +180,13 @@ export function infoHtml(id, where) {
   if (d.crew) rows.push('<b>Crew:</b> ' + escapeId(d.crew));
   { const p = preText(id); if (p) rows.push('<b>Prerequisites:</b> ' + escapeId(p)); }
   const nm = d.name ? ('<div style="font-weight:600;margin-bottom:3px">' + escapeId(d.name) + '</div>') : '';
+  /* With nobody on the chart a tap opens no pop-up (F9), so its ✎ Edit details
+     is not a door there — ☰ Show All's Edit is (the gates' smoke run found the
+     two fixes pointing at each other, 23 Sep 26). */
   const none = where !== 'bubble' ? 'No details yet — tap Edit details.'
-    : showDetails ? 'No details yet — turn ⓘ off, then tap the ball and ✎ Edit details.'
-      : 'No details yet — tap the ball, then ✎ Edit details.';
+    : !roster.length ? 'No details yet — ☰ Show All → Edit to add them.'
+      : showDetails ? 'No details yet — turn ⓘ off, then tap the ball and ✎ Edit details.'
+        : 'No details yet — tap the ball, then ✎ Edit details.';
   return nm + (rows.length ? rows.join('<br>') : '<span class="mini">' + none + '</span>');
 }
 /* The grey hint in the "Type / format" box — ONE string for both editors that
@@ -3577,7 +3581,7 @@ export function ballTap(id, ev) {
      titled "ST-01 ·" whose every grade, counter and date box does nothing
      ([HUMAN-RETEST] F9, 23 Sep 26). The Students card beside it already offers
      + Add. */
-  if (!active) { flashHint('No students on this chart yet — add one with + Add in the Students card to start marking.'); return; }
+  if (!active) { flashHint('No students on this chart yet — add one with + Add in the Students card to start marking. Event details: ☰ Show All → Edit.'); return; }
   openPop(id, ev);
 }
 

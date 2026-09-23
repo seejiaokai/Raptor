@@ -452,6 +452,31 @@ describe('[HUMAN-RETEST] the Tracker — a deleted built-in rides the backup (ro
   })
 })
 
+describe('[HUMAN-RETEST] the Tracker — a chart with nobody on it still says where its details are edited (gates G-1)', () => {
+  it('G-1 — with no students a tap opens no pop-up (F9), so neither the bubble nor the notice may point at its ✎ Edit details', async () => {
+    if (C.sylDirty) await C.saveChangesClick()
+    const home = C.course
+    const p = C.addCourse(); await answer('EMPTY G1'); await p; await C.whenLoaded()
+    const el = document.createElement('div'); document.body.appendChild(el)
+    try {
+      expect(C.roster.length, 'the premise: nobody on the course').toBe(0)
+      C.toggleArrange(); const q = C.addModule('acad'); await answer('NODET-G1'); await q; C.toggleArrange()
+      if (C.sylDirty) await C.saveChangesClick()
+      C.toggleDetails(); C.showEventBubble('NODET-G1', el)
+      const txt = document.getElementById('detailBubble')!.textContent || ''
+      C.toggleDetails()
+      expect(txt, 'no door that is not there').not.toMatch(/tap the ball/)
+      expect(txt, 'the door this chart has').toMatch(/Show All/)
+      C.ballTap('ST-01', { ...at, target: { closest: () => null } })
+      expect(C.hintFlash || '', 'the notice names it too').toMatch(/Show All/)
+    } finally {
+      el.remove()
+      const d = C.delCourse(); await answer(true); await d; await C.whenLoaded()
+      if (C.course !== home) { await C.switchCourse(home); await C.whenLoaded() }
+    }
+  })
+})
+
 describe('[HUMAN-RETEST] the Tracker — the details bubble belongs to its chart (round three: w3-F1)', () => {
   it('w3-F1 — switching the phone to Info, or leaving the Tracker tab, takes the bubble away', async () => {
     if (C.sylDirty) await C.saveChangesClick()
