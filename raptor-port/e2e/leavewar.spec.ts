@@ -1239,13 +1239,50 @@ test('a column that widens while the dates are frozen re-measures the frozen bar
     const i = real.findIndex(e => e.dataset.testid === `head-${dd}`)
     return i < 0 || !copy[i] ? null : copy[i]!.getBoundingClientRect().x - real[i]!.getBoundingClientRect().x
   }, d)
-  expect(Math.abs((await off('2026-03-24'))!), 'in step before the change').toBeLessThan(2)
+  // A missing date must FAIL, not measure as 0 (Astra TEST-002: Math.abs(null) is 0)
+  const offOf = async (d: string) => {
+    const o = await off(d)
+    expect(o, `the bar and the grid both draw ${d}`).not.toBeNull()
+    return Math.abs(o!)
+  }
+  expect(await offOf('2026-03-24'), 'in step before the change').toBeLessThan(2)
   const width = () => page.evaluate(() => document.querySelector('[data-testid="head-2026-03-17"]')!.getBoundingClientRect().width)
   const before = await width()
   expect(await page.evaluate(() => (window as any).lwSetCell('slipway', '2026-03-17', '*OIL'))).toBe(true)
   await expect.poll(width).toBeGreaterThan(before + 5)
   await expect(page.locator('[data-testid="sticky-head"]')).toBeVisible()
-  expect(Math.abs((await off('2026-03-24'))!), 'the frozen 24 March still sits over the grid\'s').toBeLessThan(2)
+  expect(await offOf('2026-03-24'), 'the frozen 24 March still sits over the grid\'s').toBeLessThan(2)
+})
+
+// THE OPEN-BIDDING OUTLINE MOVES WITH THE ROWS WHEN THE MANNING ARCHIVE OPENS
+// (Astra LW-103, 23 Sep 26 — pre-existing on `main`). The Archive's rows sit
+// ABOVE the dates, so opening it pushes the header and the roster down; the green
+// outline is placed off the header, and its own re-measure never hears a change
+// that is local to the manning block — so it stayed at the old top, cutting
+// across the header, until the next store change or zoom. Desktop, whole year
+// drawn first, so no later month draw can re-measure it for us.
+test('the open-bidding outline moves with the rows when the manning Archive opens', async ({ page }) => {
+  desktopOnly()
+  await lwRole(page, 'admin')
+  await expect.poll(() => page.evaluate(() => new Set([...document.querySelectorAll<HTMLElement>('#page-leavewar .mx-wrap .mxhead th[data-testid^="head-"]')]
+    .map(e => e.dataset.testid!.slice(5, 12))).size), { timeout: 9000 }).toBe(12)
+  await page.locator('[data-testid="roster-arrange"]').click()
+  await page.locator('[data-testid="manning-hide-ip"]').click()
+  await expect(page.locator('[data-testid="manning-archive"]')).toBeVisible()
+  // where the outline's top sits against the dates header's (0 = on it)
+  const gap = () => page.evaluate(() => {
+    const box = document.querySelector('[data-testid="bid-box"]')?.getBoundingClientRect()
+    const head = document.querySelector('#page-leavewar .mx-wrap tbody.mxhead')?.getBoundingClientRect()
+    return box && head ? box.top - head.top : null
+  })
+  const before = await gap()
+  expect(before, 'the war is open for bidding, so the outline is drawn').not.toBeNull()
+  expect(Math.abs(before!)).toBeLessThanOrEqual(1)
+  await page.locator('[data-testid="manning-archive"]').click()
+  await expect(page.locator('[data-testid="count-ip"]')).toBeVisible()
+  const after = await gap()
+  expect(after).not.toBeNull()
+  expect(Math.abs(after!), 'the outline follows the header down').toBeLessThanOrEqual(1)
 })
 
 // Published-stage remarks editing (owner, 27 Aug 26): once the war is

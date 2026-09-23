@@ -140,6 +140,11 @@ jobs:
       PORT_URL: 'http://localhost:4273/'
       SMOKE_PORT: '4279'
       APP_URL: ''
+      # A git credential prompt must FAIL at once, never wait (23 Sep 26): the runner is a service
+      # with no screen, and the first run under it hung 30 minutes on Git's credential manager
+      # (Playwright's git-info fetch — now switched off in playwright.config.ts; this is the belt).
+      GIT_TERMINAL_PROMPT: '0'
+      GCM_INTERACTIVE: 'never'
     defaults:
       run:
         shell: cmd

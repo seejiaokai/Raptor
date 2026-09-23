@@ -387,3 +387,18 @@ code separately from its output, and never let the same line that runs a gate al
 **Suggested improvement:** In security-review, for anything installed as a local service or runner: enumerate ENABLED local accounts (not just "who uses this PC"), check the install folder's inherited ACL, and prefer a folder that does not inherit broad write rights (or remove them) before trusting the service account's restriction.
 
 **Principle:** A restricted service account only helps if nobody else can rewrite what it runs; count every local account — including tool-created sandbox users — as a potential writer.
+
+### Observation 210: A CI runner moved into a Windows service can hang forever on a credential prompt nobody can see
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** The first check run on the owner's PC after its GitHub runner became a Windows service (NETWORK SERVICE); the browser-test step sat 30 minutes doing nothing.
+**Skill:** systematic-debugging (Phase 1, environment differences)
+**Type:** open-source
+**Phase/Area:** diagnosing a hung CI step
+
+**Issue:** Trial runs of the same workflow had passed when the runner ran by hand in the owner's desktop session. As a service, the browser step hung with near-zero CPU, no browser processes and nothing on its port. The live log was not readable locally (buffered), so the process table did the diagnosis: parent/child chains and creation times (not command lines — another account's are hidden) showed a git process started two seconds into the step, waiting in the credential manager. The test tool fetches from the remote in CI to describe the diff; a security fix earlier the same day had stopped the checkout storing a token; and a service has no screen for a sign-in prompt.
+
+**Suggested improvement:** Phase 1: "When a step that used to pass hangs after an environment change (interactive → service, user → service account), check for anything waiting on interaction: credential managers, UAC, first-run prompts. With idle CPU, read the process tree's creation times to find what started when the step began." And for CI on a self-hosted service: set  and  so a prompt fails instead of waiting, and switch off tools' optional network look-ups.
+
+**Principle:** A service cannot answer a prompt; anything that might ask one must be made to fail fast, or the job waits until its timeout with no error at all.

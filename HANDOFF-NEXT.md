@@ -2,8 +2,8 @@
 
 **Pick `claude/lw-monthjump-phone` in the new-chat picker while PR #428 is open; `main` once it has merged.**
 Before acting: `git fetch`, `gh pr view 428 --json state`, and `gh run list --branch claude/lw-monthjump-phone
---limit 3` — this file was written just before the push, so the PC run's result and Astra's re-read of the
-review fixes are in PR #428 and the chat, not here.
+--limit 3` — this file was written just before the final push, so the PC run's result is in PR #428's
+checks and the chat, not here.
 
 ## Where it stands
 
@@ -14,7 +14,10 @@ review fixes are in PR #428 and the chat, not here.
   before its first paint; the scroll-linked animation held until it starts), the same one-frame-late
   placement on the bottom scrollbar and the Quals frozen header, and the review round (the manning Archive
   as a width input; the frozen bar re-measures on any content change). Both items ARCHIVED.
-- **Read by Astra and Fable, blind** — every finding dispositioned in §14. Astra re-read the review fixes.
+- **Read by Astra and Fable, blind** — every finding dispositioned in §14; Astra's re-read of the fixes
+  found two more (the bidding outline on the Archive — fixed; a vacuous test check — fixed), §16.
+- **The first run as a service HUNG** in the browser gate on a hidden git sign-in prompt — cause and fix in
+  §17 (Playwright's git-info fetch switched off; git prompts made to fail at once).
 - **Gates (local, final tree):** 5762/5762 · build · 728/0 · e2e 466/47/0 · smoke 425/0 · rulecheck · docsize
   deferred (OUTSTANDING +36, DECISIONS +1 — D29, its own pass).
 - **The checks run on his PC again:** `CI_ON_GITHUB` deleted; the runner is a Windows service under NETWORK

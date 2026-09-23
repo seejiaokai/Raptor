@@ -283,3 +283,31 @@ month's on-screen position as a fixed number — right only while the grid measu
 the scroll. The grid now re-measures after any change that can widen a column, so a re-measure after the
 simulated scroll read every month 1800px off (FEB for AUG). The stubs now move with `scrollLeft`, as a
 browser's rectangles do; every expected month is unchanged, and the file's other ten tests pass as before.
+
+## 16. Astra's re-read of the review fixes (fresh `inspect` session on `8ddb32b4`..`6ce79d20`)
+
+REVISE, three items. **LW-103 (medium, pre-existing):** the Archive's change did not re-measure the green
+open-bidding outline, which is placed off the header — the Archive's rows sit ABOVE the dates, so the outline
+kept its old top across the header. **FIXED:** `onArchiveChange` also runs the outline's own (value-checked)
+measure. Test "the open-bidding outline moves with the rows when the manning Archive opens". **TEST-002
+(low):** the new frozen-bar test measured a missing date as 0 (`Math.abs(null)`); **FIXED** — a missing date now
+fails by name. **SEC-102 (high):** still open — his four `icacls` lines, held until the PC run ends (the first
+line stops the runner). Its negatives: no new `scrollLeft` write in the refresh path, no refresh loop, the
+`monthstrip.test.tsx` stub change models a browser honestly, `.gitattributes` out of both ignore lists.
+
+## 17. The first run on his PC as a SERVICE — found stuck, and why
+
+`CI_ON_GITHUB` deleted, pushed `6ce79d20`: the routing worked (`all gates (your PC)` ran; the four GitHub
+jobs skipped themselves), and install, build, the original-app suite, **all unit tests** and the browser
+install passed on the PC under NETWORK SERVICE. Then the browser gate sat **30 minutes with no browser
+started and nothing listening on its port**. Read off the PC's process table (read-only): two seconds after
+the step began, the runner's own `git` was sitting in **Git Credential Manager**. Cause: under CI, Playwright
+gathers git facts for its HTML report and, for a pull request, runs `git fetch origin <base>` — the
+checkout keeps no token (`persist-credentials: false`, Astra SEC-003) and a Windows service has no screen,
+so the sign-in prompt could never appear. The trial runs passed because they ran in his own logged-in
+session, before SEC-003. **Fix:** `captureGitInfo: { commit: false, diff: false }` in
+`playwright.config.ts` (we never read that data — the run now needs no network), and `GIT_TERMINAL_PROMPT=0`,
+`GCM_INTERACTIVE=never` in the `pc` job so any future prompt FAILS at once. The stuck run was cancelled.
+
+**LW-103's test, red first:** "the open-bidding outline moves with the rows when the manning Archive opens"
+— without the fix the outline sat **22px** off the header after the Archive opened (3/3); with it, on it.

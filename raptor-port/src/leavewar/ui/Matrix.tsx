@@ -1640,10 +1640,16 @@ export function Matrix() {
   // off the columns beneath). Called on every token change below.
   const remeasureRef = useRef<() => void>(() => {})
   const repinRef = useRef<() => void>(() => {})
+  // ...and the open-bidding outline (Astra LW-103, pre-existing): the Archive's
+  // rows sit ABOVE the dates, so opening it pushes the header and roster down,
+  // and the outline — placed off the header — kept its old top until the next
+  // store change or zoom. Its own effect never hears a change local to the block.
+  const measureBidBoxRef = useRef<() => void>(() => {})
   const onArchiveChange = useCallback(() => {
     widthGenRef.current = {}
     remeasureRef.current()
     repinRef.current()
+    measureBidBoxRef.current()
   }, [])
 
   /* THE CONFIGURED GROUPS (owner, 28 Aug 26 — the admin group editor). With the
@@ -2967,6 +2973,7 @@ export function Matrix() {
     const next = { left, top, width: right - left, height: tr.bottom - hr.top, cutL, cutR }
     setBidBox(prev => (prev && prev.left === next.left && prev.top === next.top && prev.width === next.width && prev.height === next.height && prev.cutL === next.cutL && prev.cutR === next.cutR ? prev : next))
   }
+  measureBidBoxRef.current = measureBidBox // this render's, for `onArchiveChange`
   useLayoutEffect(() => {
     measureBidBox()
     window.addEventListener('resize', measureBidBox)

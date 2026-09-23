@@ -910,6 +910,17 @@ NT AUTHORITY\NETWORK SERVICE, auto-start, installed by him at `C:\actions-runner
 `Authenticated Users` inherit MODIFY on that folder from `C:\`, and the PC has two Codex-sandbox
 accounts besides his — the four-line `icacls` fix is HIS to run (evidence sheet §14); check it with
 `icacls C:\actions-runner\actions-runner\bin\RunnerService.exe` (no `Authenticated Users` line).
+The first run AS A SERVICE hung 30 min in the browser gate: Playwright's CI git-info `git fetch` waited on
+Git Credential Manager, which a service cannot show (no stored token since SEC-003). Fixed:
+`captureGitInfo` off in `playwright.config.ts`; `GIT_TERMINAL_PROMPT=0`/`GCM_INTERACTIVE=never` in the job.
+
+### [LW-FIGSEL-SLOW] One Leave War unit test times out under a full parallel run (23 Sep 26)
+
+`src/leavewar/ui/figselect.test.tsx` "an undo, a stage change and the drawer toggle all drop it" takes ~4–5s
+alone (3.9s on the final tree; the same on the code before the Leave War fixes) but ran past its 20s limit in
+2 of 3 full `npm test` runs on the owner's PC on 23 Sep 26 (another chat's worktree active). Pre-existing,
+load-only. Fix: split its three drop cases into three tests (each renders the whole year once), or give it its
+own longer limit — not a pause. Evidence: `raptor-port/docs/handpass/2026-09-23-lw-monthjump.md` §13/§15.
 
 ### [LW-FROZEN-BAR-GAP] For one frame no dates header shows while the page scrolls it away (23 Sep 26)
 
