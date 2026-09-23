@@ -19,6 +19,12 @@
 > marked done, so a flight corrected to an earlier day, or un-marked, pulls it back (it used to only
 > ever move forward); a briefly empty date box is not a day flown. **Deleting a ball (D124):** wipes
 > its marks, so a new ball with the same code starts ungraded. Both fixes pending (walker W2-F2/F3/F7).
+> **Four more (owner, 23 Sep 26 — D126–D129, fixes pending):** event details belong to the chart they
+> were typed on, never every chart with that code (D126 — so an export carries each chart's own details
+> and an import writes only the imported charts'); the export file remembers a deleted built-in chart,
+> which stays deleted after the import (D127); a deleted course is listed in the course ⇅ Reorder
+> window with ↺ Restore, students and marks intact (D128); logging out with unsaved chart edits asks
+> Save / Discard / Stay first (D129).
 >
 > **Vendored into RAPTOR 7 Sep 26** (`src/tracker/`, the Tracker tab) from
 > `github.com/seejiaokai/Tracker` at `bf9a47a`. This file carries over what
