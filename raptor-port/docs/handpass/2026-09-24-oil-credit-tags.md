@@ -132,6 +132,8 @@ The final walk re-ran on the same finished build: nothing cut, no errors, both w
 
 ## 9. His look (on the branch's Vercel preview)
 
+**DONE by him before "merge live" (D156, 24 Sep 26):** *"I've looked, merge"*.
+
 1. Edit Schedule → Saturday 18 Jul → sign the four boxes → Publish day.
 2. Leave War → ◷ OIL tracker → Fable's box reads **AUTO**, and **Weekend/PH** under it on the right. Nothing ends in "…".
 3. Press − until it stops, then + until it stops → still whole at every step.
