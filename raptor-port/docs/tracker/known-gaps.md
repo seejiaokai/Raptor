@@ -11,6 +11,10 @@
 > ball, a line, a position, a font, a chart name or order, a hidden chart or any event detail is a
 > real finding, the highest one — and everything the Tracker does to NEW data after the wipe
 > (marking, students, dates, pace, chart edits) still has to work.
+> **And (owner, 23 Sep 26 — D122):** an import may reset student marks (grades, failures), but it
+> must NEVER wipe an event's typed details — hours, prerequisites, crew pairing, name, format. It
+> brings in the file's own detail edits and never puts shipped wording back over one made here
+> (walker finding W1-9: a one-chart import did exactly that to other charts — fix pending).
 >
 > **Vendored into RAPTOR 7 Sep 26** (`src/tracker/`, the Tracker tab) from
 > `github.com/seejiaokai/Tracker` at `bf9a47a`. This file carries over what
