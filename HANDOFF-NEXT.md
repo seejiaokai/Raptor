@@ -22,8 +22,8 @@ sideways, tablet), 15 of 16 wires break-tested red (B13 is Safari-only), Astra's
 Astra) dispositioned and fixed red-first, all gates green. **D133: he gave "merge live" in advance for this work only**
 — merged after the PR's checks on his PC went green (the first run stopped on the smoke suite's known "+ Add" race,
 now filed as `[TRK-SMOKE-ADD-RACE]`; re-run once with the evidence in the sheet §9). D133 covered this session only.
-His look was waived: the card is §12 of the sheet, and `[TRK-PINCH-ASK]` holds it with his two feel questions — ask
-him next.
+His look was waived: the card is §12 of the sheet, held by `[TRK-PINCH-ASK]`; his two feel questions are answered
+(**D134: keep both as built**). The live app: `https://raptor-kai-e2f5.vercel.app` (his Vercel sign-in first).
 
 ## The Tracker pinch fix — MERGED on his "merge live" (23 Sep 26, night)
 
@@ -49,13 +49,20 @@ course; an import never deletes marks). Left from it, none blocking: `[TRK-RETES
 
 1. **The presentation/demo-video chat (D154) is the current work** — preview 4185, rulings from D170; D58 holds
    (no unit designation). `main` now has the Leave War fixes and the Tracker's.
-2. **`[HUMAN-RETEST]` continues** — the Tracker is done; the amendment system's re-test (D85/D86: port 4173, rulings
-   from D90) has not started. The order of the other three (change-recording, the absence record, the Leave War
-   links) is not ruled: propose it and ask. One heavy run at a time on his PC (D86, D125).
-3. Filed, none blocking: `[TRK-PINCH-ASK]` (his two feel questions + his iPhone look — ask first), `[TRK-SMOKE-ADD-RACE]`
+2. **`[HUMAN-RETEST]` continues — THE AMENDMENT SYSTEM is next** (the Tracker half is done): D85/D86 — port 4173,
+   rulings from D90, FULL tier, the Tracker's sheet `raptor-port/docs/handpass/2026-09-23-tracker.md` is the worked
+   example. It runs beside the demo chat: the demo has first call on the PC (D125) — heavy runs one at a time, only on
+   a quiet PC. The order of the other three (change-recording, the absence record, the Leave War links) is not ruled:
+   propose it and ask.
+2a. **`main`'s Docs guard is RED since 24 Sep 26** — not a defect: `OUTSTANDING.md` (1,400) and `DECISIONS.md` (150)
+   were over their ceilings after the Tracker merges (a code change defers that), so every notes-only commit fails
+   until `[DOC-TRIM]`'s docs-only pass. That pass needs HIS decision first: when `DECISIONS.md` reaches its ceiling,
+   do its oldest rows move to a dated archive, or does its ceiling rise? (`docsize.mjs` says it is not decided.) Never
+   raise a ceiling to turn the check green without his word.
+3. Filed, none blocking: `[TRK-PINCH-ASK]` (his iPhone look), `[TRK-SMOKE-ADD-RACE]`
    (the smoke suite's "+ Add" step can still lose a name under load), `[TRK-RETEST-NOTES]`,
    `[LW-FROZEN-BAR-GAP]` (a one-frame blink), `[LW-FIGSEL-SLOW]` (a slow unit test).
-4. A docs-only trim pass (D29): DECISIONS is over its ceiling.
+4. `[DOC-TRIM]` — see 2a.
 5. Before ANY collaborator: take the runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).
 
 ## The checks run on HIS PC
