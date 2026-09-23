@@ -1,0 +1,105 @@
+{
+  "rows": [
+    {
+      "step": "4: the Export window offers",
+      "note": "2024 · 2026 · Tx 2026 · A/G - A/A 2026 — \"Syllabi to include (1 ticked)\""
+    },
+    {
+      "step": "4: every chart is ticked when it opens (a backup made in good faith carries everything)",
+      "pass": false,
+      "said": "1 of 4 ticked (the chart on screen only)"
+    },
+    {
+      "step": "4: there is a way to tick every chart at once",
+      "pass": false,
+      "said": "controls in the window: tick-box copyCharts, tick-box copyStudents, tick-box 2024, tick-box 2026, tick-box Tx 2026, tick-box A/G - A/A 2026, button \"Cancel\", button \"Export\""
+    },
+    {
+      "step": "5a: the refusal the app raised",
+      "note": "Tick charts, students, or both."
+    },
+    {
+      "step": "5a: the refusal is readable ON TOP (the screen centre is the message box)",
+      "pass": false,
+      "said": "at the screen centre: div — inside the Export window; at the message's OK button: label — inside the Export window"
+    },
+    {
+      "step": "5a: after pressing where the message's OK is",
+      "note": "Export window still open; message still hidden behind the Export window; the press TOGGLED a chart tick-box in the Export window ([false,true,false,false] → [true,true,false,false])"
+    },
+    {
+      "step": "5a: after Cancel on the Export window",
+      "note": "the message is on top only now: \"Tick charts, students, or both.\""
+    },
+    {
+      "step": "5b: the refusal the app raised",
+      "note": "Tick at least one syllabus."
+    },
+    {
+      "step": "5b: the refusal is readable ON TOP",
+      "pass": false,
+      "said": "at the screen centre: div — inside the Export window; at the message's OK button: label — inside the Export window"
+    },
+    {
+      "step": "5b: pressing Export again while the message waits",
+      "note": "message on top: NO; Export window open: true"
+    },
+    {
+      "step": "5b: after Cancel on the Export window",
+      "note": "the message is on top only now: \"Tick at least one syllabus.\""
+    },
+    {
+      "step": "15: Students is unticked when the window opens, and again after ticking it and cancelling",
+      "pass": true,
+      "said": "first open unticked; after tick + Cancel, reopened unticked; the warning line when ticked: \"⚠ This copy will contain real names and marks. Only send it to someone entitled to see them.\""
+    },
+    {
+      "step": "15: a file WITH students: suggested name says WITH-STUDENTS (R19)",
+      "pass": true,
+      "said": "OCU-syllabus-WITH-STUDENTS-2026-09-23.json"
+    },
+    {
+      "step": "15: …and the done message warns it holds names and marks (R18)",
+      "pass": true,
+      "said": "Exported as “OCU-syllabus-WITH-STUDENTS-2026-09-23.json”. It CONTAINS student names and marks — a full backup; only send it to someone entitled to see them. OK"
+    },
+    {
+      "step": "15: the file carries",
+      "note": "charts: 1 chart(s); students: 1 course(s)"
+    },
+    {
+      "step": "15: after an export WITH students, the next open has Students unticked again",
+      "pass": true,
+      "said": "unticked"
+    },
+    {
+      "step": "15: a charts-only file: plain name, and the done message says charts only",
+      "pass": true,
+      "said": "OCU-syllabus-2026-09-23.json — \"Exported as “OCU-syllabus-2026-09-23.json”. It contains charts only — no student names or marks. OK\""
+    },
+    {
+      "step": "15: the charts-only file names nobody",
+      "pass": true,
+      "said": "no students block"
+    }
+  ],
+  "offers": [
+    "2024",
+    "2026",
+    "Tx 2026",
+    "A/G - A/A 2026"
+  ],
+  "controls": [
+    "tick-box copyCharts",
+    "tick-box copyStudents",
+    "tick-box 2024",
+    "tick-box 2026",
+    "tick-box Tx 2026",
+    "tick-box A/G - A/A 2026",
+    "button \"Cancel\"",
+    "button \"Export\""
+  ],
+  "msg1": "Tick charts, students, or both.",
+  "msg2": "Tick at least one syllabus.",
+  "errors": []
+}

@@ -6,7 +6,8 @@ import { useEffect } from 'react'
 import { PEOPLE } from '../engine/people'
 import { SESSION, ME, setMe, canToggleRole } from '../state/auth'
 import { CURPAGE } from '../state/view'
-import { notify, setPage, resetSession, toggleRole } from '../state/store'
+import { notify, setPage, toggleRole } from '../state/store'
+import { logOut } from './logout'
 import { DRAWER, setDrawer, setWeekCal, setInsights } from './pops'
 import { useVersion } from './useStore'
 
@@ -92,7 +93,7 @@ export function Drawer() {
             not. Clear it here so a second login in the same tab does not
             reopen the drawer from the previous user's session. */}
         <div className="drawer-row"><button className="abtn" id="drawerLogout"
-          onClick={() => { setDrawer(false); resetSession(null); notify() }}>Logout</button>
+          onClick={() => { setDrawer(false); void logOut() }}>Logout</button>
           {/* the phone home of the admin's role toggle (owner, 27 Aug 26) —
               the topbar badge is hidden on the tight phone bar, so the
               switch lives here; same LOGINROLE gate, so a member account

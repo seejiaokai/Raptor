@@ -151,4 +151,20 @@ describe('reconcileSylIds (store id wins; built-ins by deterministic id)', () =>
     expect(conflicts, 'the label clash is not a conflict — identity is by id').toEqual([])
     expect(remapped, 'the built-in id is authoritative, not remapped').toEqual({})
   })
+  it('[HUMAN-RETEST] W1-6 — after the wipe, a copy named "2026" comes in beside the built-in the FILE renamed "2026 OLD"', () => {
+    /* he renamed the built-in 2026 to "2026 OLD", then called a copy "2026",
+       and exported both. The wiped app still has the built-in under "2026" —
+       but the file renames it, so by the time the copy lands that name is free.
+       The whole import used to be refused. */
+    const wiped = [{ id: 'sb2026', name: '2026', base: '2026' }]
+    const file = [{ id: 'sb2026', name: '2026 OLD', base: '2026', userNamed: true }, { id: 'scCOPY', name: '2026' }]
+    const { remapped, conflicts } = reconcileSylIds(file, wiped)
+    expect(conflicts, 'no refusal').toEqual([])
+    expect(remapped, 'the copy keeps its own id — it is not the built-in').toEqual({})
+  })
+  it('W1-6 guard — a file that does NOT rename the store chart still meets it by name', () => {
+    const wiped = [{ id: 'sb2026', name: '2026', base: '2026' }]
+    const { conflicts } = reconcileSylIds([{ id: 'sb2026', name: '2026', base: '2026' }, { id: 'scCOPY', name: '2026' }], wiped)
+    expect(conflicts.length, 'two charts would wear one name — refused as before').toBe(1)
+  })
 })

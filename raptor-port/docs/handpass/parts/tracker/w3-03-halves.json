@@ -1,0 +1,62 @@
+{
+  "rows": [
+    {
+      "step": "phone: on arrival ONE half (Flow)",
+      "pass": true,
+      "said": "{\"flow\":true,\"info\":false,\"tabs\":true,\"rootCls\":\"tr-root tab-flow\",\"w\":390}"
+    },
+    {
+      "step": "phone: Info tab → the panel alone",
+      "pass": true,
+      "said": "{\"flow\":false,\"info\":true,\"tabs\":true,\"rootCls\":\"tr-root tab-info\",\"w\":390}"
+    },
+    {
+      "step": "phone: Leave War and back → still ONE half (Info kept)",
+      "pass": true,
+      "said": "{\"flow\":false,\"info\":true,\"tabs\":true,\"rootCls\":\"tr-root tab-info\",\"w\":390}"
+    },
+    {
+      "step": "phone: a Raptor refresh on the Tracker (View as Blade) → still ONE half",
+      "pass": true,
+      "said": "{\"flow\":false,\"info\":true,\"tabs\":true,\"rootCls\":\"tr-root tab-info\",\"w\":390}"
+    },
+    {
+      "step": "phone: Inputs and back → ONE half",
+      "pass": true,
+      "said": "{\"flow\":false,\"info\":true,\"tabs\":true,\"rootCls\":\"tr-root tab-info\",\"w\":390}"
+    },
+    {
+      "step": "phone: Flow, Edit Schedule and back → ONE half (Flow kept)",
+      "pass": true,
+      "said": "{\"flow\":true,\"info\":false,\"tabs\":true,\"rootCls\":\"tr-root tab-flow\",\"w\":390}"
+    },
+    {
+      "step": "phone: \"View as member\" while on the Tracker → still ONE half, File menu gone",
+      "pass": true,
+      "said": "{\"flow\":true,\"info\":false,\"tabs\":true,\"rootCls\":\"tr-root tab-flow\",\"w\":390} page tracker"
+    },
+    {
+      "step": "phone errors",
+      "note": "none"
+    },
+    {
+      "step": "1000px wide: ONE half, with the Flow/Info tabs",
+      "pass": true,
+      "said": "{\"flow\":true,\"info\":false,\"tabs\":true,\"rootCls\":\"tr-root tab-flow\",\"w\":1000}"
+    },
+    {
+      "step": "1100px wide: both columns, no tabs",
+      "pass": true,
+      "said": "{\"flow\":true,\"info\":true,\"tabs\":false,\"rootCls\":\"tr-root tab-flow\",\"w\":1100}"
+    },
+    {
+      "step": "1040px wide: back to ONE half",
+      "pass": true,
+      "said": "{\"flow\":true,\"info\":false,\"tabs\":true,\"rootCls\":\"tr-root tab-flow\",\"w\":1040}"
+    },
+    {
+      "step": "desk errors",
+      "note": "none"
+    }
+  ]
+}

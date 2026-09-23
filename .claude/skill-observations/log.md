@@ -402,3 +402,110 @@ code separately from its output, and never let the same line that runs a gate al
 **Suggested improvement:** Phase 1: "When a step that used to pass hangs after an environment change (interactive → service, user → service account), check for anything waiting on interaction: credential managers, UAC, first-run prompts. With idle CPU, read the process tree's creation times to find what started when the step began." And for CI on a self-hosted service: set  and  so a prompt fails instead of waiting, and switch off tools' optional network look-ups.
 
 **Principle:** A service cannot answer a prompt; anything that might ask one must be made to fail fast, or the job waits until its timeout with no error at all.
+
+## 2026-09-23 — [HUMAN-RETEST] the Tracker
+
+### Observation 211: A scripted gesture that "fails" is the driver's until the picture says otherwise
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [HUMAN-RETEST] hands-on re-test of the Tracker tab (Raptor), driven by Playwright scripts. Numbered past every entry on the pushed branches (max 198); first written as #199–#201 on `claude/tracker-human-retest-8d3411` and renumbered #211–#213 when `main` (with the Leave War chat's #199–#210) was merged in.
+**Skill:** raptor-port/docs/bug-check-order.md (§7.2 "Stand up the real thing")
+**Type:** open-source
+**Phase/Area:** the walk — driving a surface with its own gestures
+
+**Issue:** Two scripted steps failed in ways that read like app defects: "the header intercepts pointer events" on a ball, and a ball drag that did not move the ball. Both were the driver's: a generic scroll-into-view had left the ball above the chart's own scroll box (under the toolbar), and in the chart's edit mode the wheel ZOOMS and the view pans by dragging empty space, so a wheel-scroll never moved it. The screenshot showed it in one look; the error text alone would have produced two false findings.
+
+**Suggested improvement:** In §7.2, add: "The driver moves the view with the surface's OWN gesture (its scroll, its drag-to-pan) and checks the target sits inside the scroll box before acting. A scripted gesture that fails is looked at on its picture before it is called a defect."
+
+**Principle:** A driver that moves the view differently from a person manufactures defects; look at the picture before believing a failed gesture.
+
+### Observation 212: A fix or ruling applied to ONE of two places that draw or write the same thing — twice in one tab
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [HUMAN-RETEST] the Tracker — the walk found a wording ruling applied to one of two editors that carry the same box, and a data-leak fix applied to one of two writers of the same record.
+**Skill:** raptor-port/docs/bug-check-order.md (§6 the roll-call) and raptor-port/CLAUDE.md (the robustness doctrine's "grep for the old wording")
+**Type:** open-source
+**Phase/Area:** fixing — reach of a fix
+
+**Issue:** A ruling changed a hint's wording in the details window; Show All's inline editor, which shows the same box, kept the old words. Earlier, a leak (one chart's event details stored as every chart's) was fixed in the details window's writer; the chart editor's ball box, a second writer of the same record, kept the leak. The standing "grep for the old wording" rule existed both times. Both were found only by walking both surfaces.
+
+**Suggested improvement:** Add to §6: "A wording ruling, or a fix to a writer, gets its own small roll-call in the same commit — every place that draws that text or writes that record — and the fix is STRUCTURAL: one shared constant or one shared body, with a test that renders or drives each place."
+
+**Principle:** When several places draw or write the same thing, make them share one body and test every place; a "remember to grep" rule is already known to fail.
+
+### Observation 213: Walkers need the artifact frozen while the host fixes in parallel
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [HUMAN-RETEST] the Tracker — three parallel walkers drove the built preview while the host wrote fixes for findings already confirmed.
+**Skill:** raptor-port/docs/bug-check-order.md (§4, the fan-out paragraph from D16)
+**Type:** open-source
+**Phase/Area:** fan-out walks — sharing one running build
+
+**Issue:** The walkers drive the production build served from the working tree's output folder; a host rebuild mid-walk would swap the bundle under them and mix pre- and post-fix behaviour in one walk. So while they walked, the host could only typecheck without emitting and run unit tests, and the rebuild, the full gates and the re-walk waited for their reports. Separately: fresh browser contexts isolate storage, so the walkers shared ONE preview port with no clash — the "own port each" advice is unnecessary when every walker starts a fresh context.
+
+**Suggested improvement:** In §4's fan-out paragraph: "Walkers may share one preview (a fresh browser context each isolates storage). While they walk, nobody rebuilds that preview: the host fixing in parallel typechecks with no output and runs unit tests; the rebuild, the gates and the re-walk of the fixes come after the walkers report."
+
+**Principle:** Parallel checks against one running artifact need that artifact frozen; name who may change it, and when.
+
+### Observation 214: A walker's own "should" script is the re-walk — send its output to a second folder, and read its FAILs against the fixed flow
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [HUMAN-RETEST] the Tracker, resumed — re-walking every fix the three walkers never saw (they drove the build from before the fixes).
+**Skill:** raptor-port/docs/bug-check-order.md (§5 "re-walk only what the fixes touched"; §9 the evidence)
+**Type:** open-source
+**Phase/Area:** the re-walk after fixes
+
+**Issue:** The walkers had written their scripts as assertions of the RIGHT behaviour (PASS = correct), so re-running them on the new build was the re-walk for free — but by default they overwrite the first walk's pictures and results, which are the evidence of the defect. And three re-walk "FAILs" were the fix itself changing the flow: Export now offers to save the unsaved edit, so the script's later steps ("the dropdown asks about the unsaved edit") had nothing unsaved left to test; and a refusal now drawn ON TOP of the Export window blocked the old script's click behind it (a crash that proves the fix).
+
+**Suggested improvement:** In §5/§9: "Write walk scripts as assertions of the correct behaviour so they re-run as the re-walk. Give the driver an output-folder switch and re-walk into a separate folder — the first walk's pictures are the defect's evidence. Read every re-walk FAIL against the NEW flow before calling it a regression: a step whose premise the fix consumed is re-walked with a fresh premise, not reported."
+
+**Principle:** A re-run of a pre-fix script proves the fix only where its premises still hold; keep the before-evidence, and re-establish premises the fix itself removed.
+
+### Observation 215: A decision recorded as "left as it is today" can hide a two-part rule — read it as behaviour, not as licence to simplify
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [HUMAN-RETEST] the Tracker — building D123 (Last Flown is the latest day actually flown), whose record also says a hand-typed Last Flown is "left as it is today".
+**Skill:** raptor-port/docs/bug-check-order.md (§5 question 8, the rules sweep) and .claude/rules/record-decisions.md
+**Type:** open-source
+**Phase/Area:** turning a ruling into code
+
+**Issue:** The obvious build — "work Last Flown out from the flights marked done" — would also have overridden a day typed by hand the moment any older flight was marked, which is NOT how it behaves today (a typed day stands until a LATER flight). The ruling's last sentence kept that half unchanged; honouring both halves needed a small marker on the stored record (typed-by-hand) so a derived value never silently replaces a typed one. The first draft of the test had the wrong expectation until the sentence was re-read as a behaviour to preserve.
+
+**Suggested improvement:** In the rules sweep: "When a ruling leaves part of a behaviour 'as it is today', write that part down as its own test against today's behaviour BEFORE building the new half — the new half must not absorb it."
+
+**Principle:** "Unchanged" clauses in a ruling are requirements too; pin them with a test before building the changed part.
+
+### Observation 216: A layout that passes at the two standard sizes can still break at a SHORT one — padding on a scroll box sets its smallest height
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [HUMAN-RETEST] the Tracker, re-walk after fixes — a phone turned on its side (844×390).
+**Skill:** raptor-port/docs/bug-check-order.md (§7.2 both widths; §2a the cross-platform row)
+**Type:** open-source
+**Phase/Area:** the walk — viewport coverage
+
+**Issue:** The chart's "room to scroll past the last event" was bottom padding on the scrolling box. At 390×844 and 1440×900 (the two sizes every check used) the box was tall enough, so nothing showed. In the 165px a phone on its side leaves, padding (which a box can never shrink below) made the box 182px and pushed the zoom control off the bottom of the screen. The first fix round had made the pop-up fit the same screen and the re-walk only caught the zoom control because it measured every control against the screen edge, not just the one being fixed.
+
+**Suggested improvement:** In §7.2 / §2a: "Phone AND desktop is two sizes of one shape. Walk a SHORT screen too (a phone on its side, a laptop window of 700px height) for any surface built as a viewport-tall column; measure every control against the screen edges, not only the control being changed." And a CSS note for column layouts: scroll room belongs inside the scroll box (a spacer), never as padding on it.
+
+**Principle:** Width is not the only axis; a full-height column must be walked at a short height, and every edge-docked control measured, not just the one in the finding.
+
+### Observation 217: Two fixes from one walk can point at each other — a door one removes, the other's words still name
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [HUMAN-RETEST] the Tracker — the full gates after three fix rounds; the vendored browser suite had not been run since round one.
+**Skill:** raptor-port/docs/bug-check-order.md (§5 FULL order — gates between the walk's fixes and the reads)
+**Type:** open-source
+**Phase/Area:** fixing — interaction between fixes
+
+**Issue:** Round one fixed F4 (the details bubble must say how to reach the details editor: "tap the ball, then ✎ Edit details") and F9 (on a chart with nobody on it, a tap opens NO pop-up). Each was right alone and each had its own red-first test. Together, on a studentless chart, the hint named a door F9 had just removed. Nothing caught it for two rounds because the surface's own browser suite was not run between rounds; its first run stopped on exactly this (a step tapping a ball for details on such a chart).
+
+**Suggested improvement:** In §5: "Run the surface's own suite after EACH fix round, not once at the end. And when a fix removes or gates a door, search for every sentence on screen that names that door (the roll-call's 'what else points here' column)."
+
+**Principle:** A fix that closes a door must find every hint that still points through it; run the whole surface's suite after each round so two correct fixes cannot quietly contradict.

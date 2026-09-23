@@ -1,0 +1,87 @@
+{
+  "rows": [
+    {
+      "step": "A: 2026 · BFM-3 details before anything",
+      "note": "BFM-3 Basic Fighting Manoeuvres-3 Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: BFM-2, AAM-07"
+    },
+    {
+      "step": "A: Tx · BFM-3 details (the short course's own)",
+      "note": "BFM-3 Basic Fighting Manoeuvres-3 Type: 2 x F-15SG Crew: IP / UW, UP / IW Prerequisites: AAM-07, BFM-2"
+    },
+    {
+      "step": "A: Tx · the ball box pre-fills Crew with",
+      "note": "IP / UW, UP / IW"
+    },
+    {
+      "step": "C: a text-only edit on Tx leaves 2026's BFM-3 details alone",
+      "pass": true,
+      "said": "before: \"BFM-3 Basic Fighting Manoeuvres-3 Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: BFM-2, AAM-07\"  after: \"BFM-3 Basic Fighting Manoeuvres-3 Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: BFM-2, AAM-07\""
+    },
+    {
+      "step": "B: Select all + Font 11.5 sets every label to 11.5px",
+      "pass": true,
+      "said": "before 8.5px,7px → after 11.5px"
+    },
+    {
+      "step": "A: the dropdown follows the order set in the window",
+      "pass": true,
+      "said": "Zulu blank · 2024 · Tx 2026 · A/G - A/A 2026 · Alpha copy · 2026"
+    },
+    {
+      "step": "A: the file records the order",
+      "note": "Zulu blank · 2024 · Tx 2026 · A/G - A/A 2026 · Alpha copy · 2026"
+    },
+    {
+      "step": "A→B: the chart ORDER survives export → wipe → import",
+      "pass": true,
+      "said": "A Zulu blank · 2024 · Tx 2026 · A/G - A/A 2026 · Alpha copy · 2026  |  B Zulu blank · 2024 · Tx 2026 · A/G - A/A 2026 · Alpha copy · 2026"
+    },
+    {
+      "step": "A→B: the \"✎ edited\" marks",
+      "note": "A Zulu blank ✎ · 2024 · Tx 2026 ✎ · A/G - A/A 2026 · Alpha copy ✎ · 2026 ✎  |  B Zulu blank ✎ · 2024 · Tx 2026 ✎ · A/G - A/A 2026 · Alpha copy ✎ · 2026"
+    },
+    {
+      "step": "A→B: the 2026 fonts survive (11.5px everywhere)",
+      "pass": true,
+      "said": "11.5px"
+    },
+    {
+      "step": "B: 2026 · BFM-3 details after the import",
+      "note": "BFM-3 Basic Fighting Manoeuvres-3 Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: BFM-2, AAM-07"
+    }
+  ],
+  "orderA": [
+    "Zulu blank",
+    "2024",
+    "Tx 2026",
+    "A/G - A/A 2026",
+    "Alpha copy",
+    "2026"
+  ],
+  "orderB": [
+    "Zulu blank",
+    "2024",
+    "Tx 2026",
+    "A/G - A/A 2026",
+    "Alpha copy",
+    "2026"
+  ],
+  "marksA": [
+    "Zulu blank ✎",
+    "2024",
+    "Tx 2026 ✎",
+    "A/G - A/A 2026",
+    "Alpha copy ✎",
+    "2026 ✎"
+  ],
+  "marksB": [
+    "Zulu blank ✎",
+    "2024",
+    "Tx 2026 ✎",
+    "A/G - A/A 2026",
+    "Alpha copy ✎",
+    "2026"
+  ],
+  "errorsA": [],
+  "errorsB": []
+}

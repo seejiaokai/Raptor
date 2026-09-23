@@ -1,0 +1,103 @@
+{
+  "rows": [
+    {
+      "step": "0. Currency card at the start",
+      "note": "{\"lastSyll\":\"\",\"lastCurr\":\"\",\"downDays\":\"\",\"upchit\":\"\",\"kv\":[\"Days since syllabus—\",\"Days since currency—\"]}"
+    },
+    {
+      "step": "1.1 TR-2 pop-up: \"Done on (when marked) — sets Last Flown\", box = today",
+      "pass": true,
+      "said": "{\"t\":\"TR-2 · STUDENT A\",\"cap\":\"Done on (when marked) — sets Last Flown\",\"box\":\"2026-09-23\"}"
+    },
+    {
+      "step": "1.2 DCO lands dated today (23/09/26)",
+      "pass": true,
+      "said": "{\"g\":\"dco\",\"f\":0,\"d\":\"2026-09-23\",\"at\":\"2026-09-23T07:03:52.690Z\",\"by\":\"Admin\"}"
+    },
+    {
+      "step": "1.3 …and both Last Flown boxes read today",
+      "pass": true,
+      "said": "{\"lastSyll\":\"2026-09-23\",\"lastCurr\":\"2026-09-23\",\"downDays\":\"\",\"upchit\":\"\",\"kv\":[\"Days since syllabus0d\",\"Days since currency0d\"]}"
+    },
+    {
+      "step": "2.1 reopened: caption now \"Done on — sets Last Flown\", box holds the mark's day",
+      "pass": true,
+      "said": "{\"cap\":\"Done on — sets Last Flown\",\"box\":\"2026-09-23\"}"
+    },
+    {
+      "step": "2.2 changing the box after re-dates the mark (21/09/26)",
+      "pass": true,
+      "said": "{\"g\":\"dco\",\"f\":0,\"d\":\"2026-09-21\",\"at\":\"2026-09-23T07:03:54.595Z\",\"by\":\"Admin\"}"
+    },
+    {
+      "step": "2.3 Last Flown follows TR-2 back to 21/09 — the only flight now happened on the 21st (R47: \"a flight's day is its Last Flown\")",
+      "pass": false,
+      "said": "Last Flown (Syllabus) 2026-09-23 · (Currency) 2026-09-23 · [\"Days since syllabus0d\",\"Days since currency0d\"]"
+    },
+    {
+      "step": "3.1 before a grade the box only sets the day the grade will carry (nothing marked yet)",
+      "pass": true,
+      "said": "box=2026-09-15 mark=null"
+    },
+    {
+      "step": "3.2 DCO lands dated the CHANGED day (15/09/26)",
+      "pass": true,
+      "said": "{\"g\":\"dco\",\"f\":0,\"d\":\"2026-09-15\",\"at\":\"2026-09-23T07:03:57.293Z\",\"by\":\"Admin\"}"
+    },
+    {
+      "step": "3.3 marking the older flight does NOT drag Last Flown back",
+      "pass": true,
+      "said": "was 2026-09-23, now 2026-09-23 / 2026-09-23"
+    },
+    {
+      "step": "4.1 a later flight (24/09) moves Last Flown forward",
+      "pass": true,
+      "said": "{\"m\":{\"g\":\"dco\",\"f\":0,\"d\":\"2026-09-24\",\"at\":\"2026-09-23T07:03:59.826Z\",\"by\":\"Admin\"},\"cur\":[\"2026-09-24\",\"2026-09-24\"]}"
+    },
+    {
+      "step": "5.1 DPCO lands dated the box's day (22/09/26)",
+      "pass": true,
+      "said": "{\"g\":\"dpco\",\"f\":0,\"d\":\"2026-09-22\",\"at\":\"2026-09-23T07:04:01.992Z\",\"by\":\"Admin\"}"
+    },
+    {
+      "step": "5.2 Marginal lands dated today",
+      "pass": true,
+      "said": "{\"g\":\"marg\",\"f\":0,\"d\":\"2026-09-23\",\"at\":\"2026-09-23T07:04:03.318Z\",\"by\":\"Admin\"}"
+    },
+    {
+      "step": "6.1 Not done drops TR-3's day",
+      "pass": true,
+      "said": "{\"g\":0,\"f\":0,\"at\":\"2026-09-23T07:04:04.668Z\",\"by\":\"Admin\"}"
+    },
+    {
+      "step": "6.2 reopened, TR-3 reads \"Done on (when marked)\" with today in the box",
+      "pass": true,
+      "said": "{\"cap\":\"Done on (when marked) — sets Last Flown\",\"box\":\"2026-09-23\"}"
+    },
+    {
+      "step": "6.3 N.A. drops TR-4's day",
+      "pass": true,
+      "said": "{\"g\":\"na\",\"f\":0,\"at\":\"2026-09-23T07:04:06.450Z\",\"by\":\"Admin\"}"
+    },
+    {
+      "step": "6.4 with TR-4 (the 24/09 flight) no longer flown, Last Flown no longer claims 24/09",
+      "pass": false,
+      "said": "Last Flown (Syllabus) 2026-09-24 · (Currency) 2026-09-24 — flights still marked done: TR-2 21/09, TR-5(P) 22/09, TR-1(P) 23/09"
+    },
+    {
+      "step": "7. Details bubble on TR-5(P) gives the mark's day, dd/mm/yy",
+      "pass": true,
+      "said": "TR-5(P) Transition-5 Type: 1 x F-15SG Crew: UP / IRE Prerequisites: TR-4 (P), IEPE, Min 9 hrs on type STUDENT A: DPCO on 22/09/26"
+    },
+    {
+      "step": "7. Details bubble on TR-2 gives the mark's day, dd/mm/yy",
+      "pass": true,
+      "said": "TR-2 Transition-02 Type: 2 x F-15SG (can be effective/incomplete with 1) Crew: IP / UW, UP / IP Prerequisites: TR-1(P), TR(S)-4 STUDENT A: DCO on 21/09/26"
+    },
+    {
+      "step": "8. the Currency card's own lines",
+      "note": "[\"Days since syllabus-1d\",\"Days since currency-1d\"]"
+    }
+  ],
+  "errors": []
+}

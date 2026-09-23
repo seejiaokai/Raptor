@@ -1,0 +1,17 @@
+{
+  "rows": [
+    {
+      "step": "sideways, Flow chart",
+      "note": "{\"chart\":\"92%\",\"sw\":844,\"cw\":844}"
+    },
+    {
+      "step": "turned upright while on Info, then Flow: the chart fits the upright width (no sideways scroll)",
+      "pass": false,
+      "said": "{\"chart\":\"92%\",\"sw\":842,\"cw\":390}"
+    },
+    {
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

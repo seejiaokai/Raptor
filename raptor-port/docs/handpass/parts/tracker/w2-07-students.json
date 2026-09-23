@@ -1,0 +1,112 @@
+{
+  "rows": [
+    {
+      "step": "M.1 member (us): the chip ✎ renames — and upper-cases — the student",
+      "pass": true,
+      "said": "asked \"Rename “STUDENT B” to: Cancel OK\" → crew [\"STUDENT A\",\"MEMBER REN\"]"
+    },
+    {
+      "step": "M errors",
+      "note": "[]"
+    },
+    {
+      "step": "1.0 Raptor people",
+      "note": "63 in all; 58 should be offered; excluded: Ratchet[ground], Cotter[ground], Widget[ground], ALL AVAIL[archived][placeholder], ALL[archived][placeholder]"
+    },
+    {
+      "step": "1.1 + Add opens \"Add a crew member\" · \"From the squadron roster\" · a \"Search by callsign\" box · \"Or type a callsign\"",
+      "pass": true,
+      "said": "{\"msg\":\"Add a crew member\",\"listTitle\":\"From the squadron roster\",\"filterPh\":\"Search by callsign\",\"inputPh\":\"Or type a callsign\",\"focus\":\"dlgFilter\"}"
+    },
+    {
+      "step": "1.2 it lists every person who could be placed on a course — no archived, no ALL / ALL AVAIL, no ground crew",
+      "pass": true,
+      "said": "58 rows; leaked []; missing []"
+    },
+    {
+      "step": "1.3 OCU first, pilots before WSOs, then callsign; each row reads like \"Pilot · OCU\"",
+      "pass": true,
+      "said": "Recon (Pilot · OCU), Talisman (Pilot · OCU), Wildcard (Pilot · OCU), Tally (WSO · OCU), Zulu (WSO · OCU), Ace (Pilot · A) …"
+    },
+    {
+      "step": "1.4 typing \"Re\" narrows the list",
+      "pass": true,
+      "said": "58 → 4: Recon, Reaper, Rebel, Relay"
+    },
+    {
+      "step": "1.5 the full callsign leaves one row; Enter picks it: the chip is UPPER-CASED, wears the dot, and says \"On the squadron roster as Recon\"",
+      "pass": true,
+      "said": "{\"sole\":[\"Recon\"],\"added\":{\"t\":\"3 RECON\",\"linked\":true,\"title\":\"On the squadron roster as Recon\"}}"
+    },
+    {
+      "step": "1.6 picking the same person again adds nobody — it lands on the existing student",
+      "pass": true,
+      "said": "chips 3 → 3; crew now RECON"
+    },
+    {
+      "step": "1.7 typing that callsign (lower case) in \"Or type a callsign\" lands on the same student too",
+      "pass": true,
+      "said": "chips 3; crew RECON"
+    },
+    {
+      "step": "2.1 renaming to a name another student has is refused, with a message",
+      "pass": true,
+      "said": "\"A student named STUDENT B is already on this course. Pick a different name.\" · crew [\"STUDENT A\",\"STUDENT B\",\"RECON\"]"
+    },
+    {
+      "step": "2.2 a colon is allowed in a student name (upper-cased: OPS:1)",
+      "pass": true,
+      "said": "[\"STUDENT A\",\"STUDENT B\",\"OPS:1\"]"
+    },
+    {
+      "step": "2.3 mark then rename: the mark stays and the new name shows everywhere (dropdown, chip, key ball, card headings, ↶)",
+      "pass": true,
+      "said": "{\"crew\":\"ALPHA ONE\",\"chip\":\"1 ALPHA ONE | 2 STUDENT B | 3 OPS:1\",\"key\":\"cmuds2ahs31ayp8 | ALPHA ONE | STUDENT B | OPS:1\",\"heads\":\"— ALPHA ONE | — ALPHA ONE | — ALPHA ONE | — ALPHA ONE\",\"undo\":\"Undo the mark on ST-01 for ALPHA ONE (Ctrl+Z)\"}"
+    },
+    {
+      "step": "2.4 rename then mark: the pop-up names ALPHA ONE and the mark lands",
+      "pass": true,
+      "said": "ST-02 · ALPHA ONE"
+    },
+    {
+      "step": "2.5 after a reload: ONE student (same hidden id), named ALPHA ONE, both marks under it",
+      "pass": true,
+      "said": "{\"crew\":[\"ALPHA ONE\",\"STUDENT B\",\"OPS:1\"],\"rosters\":[[\"ALPHA ONE\"]],\"marks\":[[\"ST-01\",\"ST-02\"]]}"
+    },
+    {
+      "step": "3.1 × asks \"Remove OPS:1 from 2026? Their marks, dates, pace and lull periods on this syllabus are deleted.\"",
+      "pass": true,
+      "said": "Remove OPS:1 from 2026? Their marks, dates, pace and lull periods on this syllabus are deleted. Cancel OK"
+    },
+    {
+      "step": "3.2 their undo steps go with them (↶ no longer names OPS:1)",
+      "pass": true,
+      "said": "Undo the mark on ST-03 for OPS:1 (Ctrl+Z) → Nothing to undo"
+    },
+    {
+      "step": "3.3 adding the same person back starts CLEAN (no marks, baseline pace, no lull periods, a new id)",
+      "pass": true,
+      "said": "{\"crew\":\"RECON\",\"pace\":\"2\",\"lulls\":[],\"sameId\":false}"
+    },
+    {
+      "step": "4.1 ⇅ Reorder (▼ on the first) changes the Crew dropdown order and re-slices the balls (ALPHA ONE's DCO moves to slice 2)",
+      "pass": true,
+      "said": "{\"list\":[\"ALPHA ONE\",\"STUDENT B\",\"RECON\"],\"before\":[\"ALPHA ONE\",\"STUDENT B\",\"RECON\"],\"afterO\":[\"STUDENT B\",\"ALPHA ONE\",\"RECON\"],\"st01Before\":[\"#000000\",\"#ffffff\",\"#ffffff\"],\"st01After\":[\"#ffffff\",\"#000000\",\"#ffffff\"]}"
+    },
+    {
+      "step": "4.2 the order and the slices survive a reload",
+      "pass": true,
+      "said": "{\"crew\":[\"STUDENT B\",\"ALPHA ONE\",\"RECON\"],\"st01\":[\"#ffffff\",\"#000000\",\"#ffffff\"]}"
+    },
+    {
+      "step": "5.0 on Tx 2026 the crew list is",
+      "note": "[]"
+    },
+    {
+      "step": "5.1 added to Tx 2026, the same person is the SAME student: same hidden id, pace 4.5 and the lull period came with them",
+      "pass": true,
+      "said": "{\"sameId\":true,\"pace\":\"4.5\",\"lulls\":[\"21/09/26→22/09/26\"],\"on2026\":[\"21/09/26→22/09/26\"]}"
+    }
+  ],
+  "errors": []
+}

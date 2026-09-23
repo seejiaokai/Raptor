@@ -1,0 +1,134 @@
+{
+  "rows": [
+    {
+      "step": "1.1 + Set lull period opens the calendar",
+      "pass": true,
+      "said": "Set lull period — STUDENT A ✕"
+    },
+    {
+      "step": "1.2 arrows by month",
+      "note": "[{\"prev\":[563,301],\"next\":[857,301],\"month\":\"September 2026\",\"step\":\"Pick the first day of the period.\",\"h\":431},{\"prev\":[563,301],\"next\":[857,301],\"month\":\"October 2026\",\"step\":\"Pick the first day of the period.\",\"h\":431},{\"prev\":[563,301],\"next\":[857,301],\"month\":\"November 2026\",\"step\":\"Pick the first day of the period.\",\"h\":431},{\"prev\":[563,301],\"next\":[857,301],\"month\":\"October 2026\",\"step\":\"Pick the first day of the period.\",\"h\":431}]"
+    },
+    {
+      "step": "1.3 the month arrows only change month — no day is picked",
+      "pass": true,
+      "said": "Pick the first day of the period."
+    },
+    {
+      "step": "1.4 the ‹ › arrows do not move as the month changes (R115)",
+      "pass": true,
+      "said": "September 2026 ‹563,301 ›857,301 | October 2026 ‹563,301 ›857,301 | November 2026 ‹563,301 ›857,301 | October 2026 ‹563,301 ›857,301"
+    },
+    {
+      "step": "1.5 first click sets the start (\"Start 20/10/26 — now pick the last day.\")",
+      "pass": true,
+      "said": "Start 20/10/26 — now pick the last day."
+    },
+    {
+      "step": "1.6 …and the arrows are still where they were after that click",
+      "pass": true,
+      "said": "‹563,301→563,301 ›857,301→857,301 (box height 431→431)"
+    },
+    {
+      "step": "1.7 second click sets the end — it saves and closes",
+      "pass": true,
+      "said": "calendar closed"
+    },
+    {
+      "step": "1.8 the chip reads 20/10/26→31/10/26 — day first (R51, a 31st proves it)",
+      "pass": true,
+      "said": "[\"20/10/26→31/10/26\"]"
+    },
+    {
+      "step": "1.9 A's projected end before → after the lull",
+      "note": "27/09/28 → 09/10/28"
+    },
+    {
+      "step": "2.1 tapping the chip reopens the calendar to CHANGE it, on the period's month",
+      "pass": true,
+      "said": "Change lull period — STUDENT A ✕ · October 2026"
+    },
+    {
+      "step": "2.2 a month arrow pressed between the two clicks keeps the start",
+      "pass": true,
+      "said": "Start 22/10/26 — now pick the last day. · November 2026"
+    },
+    {
+      "step": "2.3 the period is changed, not added (22/10/26→02/11/26)",
+      "pass": true,
+      "said": "[\"22/10/26→02/11/26\"]"
+    },
+    {
+      "step": "3.1 Escape after only the first click closes it and saves nothing",
+      "pass": true,
+      "said": "[\"22/10/26→02/11/26\"]"
+    },
+    {
+      "step": "3.2 a press OUTSIDE after only the first click closes it and saves nothing",
+      "pass": true,
+      "said": "[\"22/10/26→02/11/26\"]"
+    },
+    {
+      "step": "3.3 changing an existing period, half-picked then outside: the period is untouched",
+      "pass": true,
+      "said": "[\"22/10/26→02/11/26\"]"
+    },
+    {
+      "step": "4.0 two periods + a mark on ST-01",
+      "note": "[\"22/10/26→02/11/26\",\"07/12/26→11/12/26\"] · ↶ {\"off\":false,\"t\":\"Undo the mark on ST-01 for STUDENT A (Ctrl+Z)\"}"
+    },
+    {
+      "step": "4.1 the × on a lull chip asks before removing the period",
+      "pass": false,
+      "said": "no question — gone at once: [\"22/10/26→02/11/26\"]"
+    },
+    {
+      "step": "4.2 ↶ after the × says",
+      "note": "{\"off\":false,\"t\":\"Undo the mark on ST-01 for STUDENT A (Ctrl+Z)\"}"
+    },
+    {
+      "step": "4.3 ↶ brings the removed period back",
+      "pass": false,
+      "said": "periods [\"22/10/26→02/11/26\"] · what ↶ did instead: ST-01 wedges now [\"#ffffff\",\"#ffffff\"]"
+    },
+    {
+      "step": "5.0 A lull belongs to ONE student: B has none of A's periods",
+      "pass": true,
+      "said": "[]"
+    },
+    {
+      "step": "5.1 B's own period",
+      "note": "[\"29/09/26→30/09/26\"]"
+    },
+    {
+      "step": "5.2 ⧉ Copy to… lists the other students with a tick each",
+      "pass": true,
+      "said": "{\"text\":\"Copy STUDENT A’s lull periods to ✕ STUDENT B VISITOR This replaces their periods with a copy of STUDENT A’s. Cancel Copy\",\"boxes\":[\"STUDENT B\",\"VISITOR\"],\"buttons\":[\"✕\",\"Cancel\",\"Copy [disabled]\"]}"
+    },
+    {
+      "step": "5.3 …and a SELECT ALL (R53: \"ticks other students (with select all)\")",
+      "pass": false,
+      "said": "boxes [\"STUDENT B\",\"VISITOR\"] buttons [\"✕\",\"Cancel\",\"Copy [disabled]\"]"
+    },
+    {
+      "step": "5.4 Copy REPLACES B's periods with a copy of A's",
+      "pass": true,
+      "said": "[\"22/10/26→02/11/26\"]"
+    },
+    {
+      "step": "5.5 the unticked VISITOR is untouched",
+      "pass": true,
+      "said": "[]"
+    },
+    {
+      "step": "6.1 with one student, ⧉ Copy to… is disabled",
+      "pass": true,
+      "said": "{\"disabled\":true,\"title\":\"Copy these periods onto other students\"}"
+    },
+    {
+      "step": "9. the month the calendar showed when each pick began (it opens on the last month looked at)",
+      "note": "[\"October 2026\",\"October 2026\",\"October 2026\",\"November 2026\",\"November 2026\",\"September 2026\",\"October 2026\",\"December 2026\",\"December 2026\",\"December 2026\",\"September 2026\"]"
+    }
+  ],
+  "errors": []
+}

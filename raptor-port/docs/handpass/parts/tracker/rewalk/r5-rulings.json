@@ -1,0 +1,15 @@
+{
+  "rows": [
+    {
+      "step": "D130: the new ACG-06 carries nothing that was typed on the deleted one",
+      "pass": true,
+      "said": "before delete: ACG-06 Hydraulic Systemsnot done Type: Lecture · 3.5 Hrs Crew: — Prerequisites:  | new ball: ACG-06 Hydraulic Systemsnot done Type: Lecture · 3.5 Hrs Crew: — Prerequisites: "
+    },
+    {
+      "step": "D131: the delete question says the course comes back in this browser",
+      "pass": true,
+      "said": "Delete course D131 COURSE?\n\nIts students and marks are kept: ↺ Restore in ⇅ Reorder courses brings it back in this browser."
+    }
+  ],
+  "errors": []
+}

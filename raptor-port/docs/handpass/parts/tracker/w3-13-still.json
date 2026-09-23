@@ -1,0 +1,61 @@
+{
+  "rows": [
+    {
+      "step": "lull calendar: ‹ and › hold still across 24 month changes",
+      "pass": true,
+      "said": "{\"#lullPrev\":\"563,301,20x20\",\"#lullNext\":\"857,301,20x20\",\"#lullCal\":\"550,235,340x431\"} · months October 2026 … September 2027"
+    },
+    {
+      "step": "…and Escape closed it without saving a half period",
+      "pass": true,
+      "said": "none"
+    },
+    {
+      "step": "↶ ↷ hold still: nothing to undo → a mark → undo → redo",
+      "pass": true,
+      "said": "[\"600,71,29x22 / 637,71,29x22\",\"600,71,29x22 / 637,71,29x22\",\"600,71,29x22 / 637,71,29x22\",\"600,71,29x22 / 637,71,29x22\"]"
+    },
+    {
+      "step": "chart zoom after 10 × −",
+      "note": "10%"
+    },
+    {
+      "step": "chart zoom − / + / reset hold still from 10% to 300%",
+      "pass": true,
+      "said": "{\"#fzOut\":\"47,872,26x23\",\"#fzIn\":\"119,872,26x23\",\"#fzReset\":\"149,874,42x19\",\"#fzPct\":\"77,875,38x17\"}"
+    },
+    {
+      "step": "panel zoom − / + / reset hold still from 10% to 160%",
+      "pass": true,
+      "said": "{\"#szOut\":\"1288,872,26x23\",\"#szIn\":\"1360,872,26x23\",\"#szReset\":\"1391,874,42x19\"}"
+    },
+    {
+      "step": "Save slot: ✓ Save changes appears and nothing on the bar moves (the slot keeps its place)",
+      "pass": false,
+      "said": ".saveslot: 1252,68,172x28 → 1133,68,291x28"
+    },
+    {
+      "step": "…and it goes again with nothing moving",
+      "pass": true,
+      "said": ".saveslot: 1252,68,172x28 → 1246,68,178x28"
+    },
+    {
+      "step": "desk errors",
+      "note": "none"
+    },
+    {
+      "step": "phone: ✓ Save changes sits at the far right of its row",
+      "pass": false,
+      "said": "Save {\"x\":193,\"y\":88,\"w\":105,\"h\":23,\"r\":298,\"b\":111}; bar right 390; status \"● unsaved flow edits — hit “Save changes”\""
+    },
+    {
+      "step": "phone: the bar is the same height with it (R97) and nothing else moved",
+      "pass": true,
+      "said": ".saveslot: 320,86,62x27 → 193,86,189x27"
+    },
+    {
+      "step": "phone errors",
+      "note": "none"
+    }
+  ]
+}

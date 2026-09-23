@@ -1,0 +1,129 @@
+{
+  "rows": [
+    {
+      "step": "A: + Add syllabus → on SKETCH",
+      "pass": true,
+      "said": "SKETCH ✎"
+    },
+    {
+      "step": "A: the JSON editor",
+      "note": "saved, no error line"
+    },
+    {
+      "step": "A: ✓ Save changes lit after 📋 Edit events",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "A: ✓ Save changes pressed → the chart is saved",
+      "pass": true,
+      "said": "● syllabus “SKETCH” saved"
+    },
+    {
+      "step": "A: SKETCH on screen",
+      "note": "SK-01 translate(33.0,31.0) · SK-02 translate(33.0,123.0)"
+    },
+    {
+      "step": "A: Duplicate → on the copy",
+      "pass": true,
+      "said": "2026 RESET ✎"
+    },
+    {
+      "step": "A: ↺ Reset layout asked",
+      "note": "Reset this syllabus back to the course-map layout? This puts every box back where the map has it AND deletes all 82 lines drawn on this chart. Cancel OK"
+    },
+    {
+      "step": "A: after Reset layout",
+      "note": "Save changes dark (the reset saved itself)"
+    },
+    {
+      "step": "A: 2026 RESET on screen",
+      "note": "210 balls at 210 distinct places; ST-01 translate(471.0,31.0), ACG-03 translate(331.0,307.0)"
+    },
+    {
+      "step": "A: what the FILE holds for SKETCH",
+      "note": "SK-01 {\"x\":60,\"y\":60}, SK-02 {\"x\":60,\"y\":60}"
+    },
+    {
+      "step": "A: what the FILE holds for 2026 RESET",
+      "note": "210 ball positions, 1 distinct; e.g. ST-01 {\"x\":60,\"y\":60}"
+    },
+    {
+      "step": "A: export done message",
+      "note": "Exported as “OCU-syllabus-2026-09-23.json”. It contains charts only — no student names or marks. OK"
+    },
+    {
+      "step": "B: the import asked",
+      "note": "“2024” already exists. Replace it, or add the incoming one under a new name? || “2026” already exists. Replace it, or add the incoming one under a new name? || “Tx 2026” already exists. Replace it, or add the incoming one under a new name? || “A/G - A/A 2026” already exists. Replace it, or add the incoming one under a new || Brought in 2024, 2026, Tx 2026, A/G - A/A 2026, SKETCH, 2026 RESET. Everyone’s m"
+    },
+    {
+      "step": "B: charts",
+      "note": "2024 ✎ · 2026 ✎ · Tx 2026 ✎ · A/G - A/A 2026 ✎ · SKETCH ✎ · 2026 RESET ✎"
+    },
+    {
+      "step": "B: SKETCH's two balls are where the app drew them before the wipe (not stacked)",
+      "pass": false,
+      "said": "before translate(33.0,31.0) / translate(33.0,123.0)  |  after translate(31.0,31.0) / translate(31.0,31.0)"
+    },
+    {
+      "step": "B: 2026 RESET's balls are where the course map had them before the wipe (not stacked)",
+      "pass": false,
+      "said": "210 balls at 1 distinct places after the import (before: 210); 210 balls moved"
+    }
+  ],
+  "skA": [
+    "translate(33.0,31.0)",
+    "translate(33.0,123.0)"
+  ],
+  "skB": [
+    "translate(31.0,31.0)",
+    "translate(31.0,31.0)"
+  ],
+  "asked": [
+    {
+      "msg": "“2024” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“Tx 2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“A/G - A/A 2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "Brought in 2024, 2026, Tx 2026, A/G - A/A 2026, SKETCH, 2026 RESET. Everyone’s marks are untouched. It is saved.",
+      "btns": [
+        "OK"
+      ],
+      "ans": "ok"
+    }
+  ],
+  "errorsA": [],
+  "errorsB": []
+}

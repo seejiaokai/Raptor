@@ -1,0 +1,208 @@
+{
+  "rows": [
+    {
+      "step": "A: charts on a fresh app",
+      "note": "2024 · 2026 · Tx 2026 · A/G - A/A 2026"
+    },
+    {
+      "step": "A: arrange mode on (Syllabus ✎ → Edit chart layout)",
+      "pass": true,
+      "said": "✓ Done editing chart"
+    },
+    {
+      "step": "A: drag ACG-03 → it moves",
+      "pass": true,
+      "said": "translate(331.0,307.0) → translate(471.0,337.0)"
+    },
+    {
+      "step": "A: Line tool draws a free line",
+      "pass": true,
+      "said": "290 → 292 strokes"
+    },
+    {
+      "step": "A: after connect — arrange on? hint",
+      "note": "1 | "
+    },
+    {
+      "step": "A: Connect ST-02 → ACG-05 redraws the prerequisite lines",
+      "pass": true,
+      "said": "292 → 292 strokes (a new link can join an existing run)"
+    },
+    {
+      "step": "A: + Flight asked",
+      "note": "Name for the new flight event: Cancel OK"
+    },
+    {
+      "step": "A: after + Flight — arrange on? dlg?",
+      "note": "1 | dlg 0 "
+    },
+    {
+      "step": "A: + Flight adds one ball",
+      "pass": true,
+      "said": "HAND-01"
+    },
+    {
+      "step": "A: Text tool opens the event box on the new ball",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "A: after Save in the event box",
+      "note": "no error line"
+    },
+    {
+      "step": "A: the new ball now reads",
+      "note": "[{\"id\":\"HAND-01\",\"t\":\"translate(347.5,315.0)\",\"txt\":\"Hand one\",\"fs\":\"\"}]"
+    },
+    {
+      "step": "A: double-click AVI-01 → event box saved",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "A: Select all + Font 10 changes the labels",
+      "pass": false,
+      "said": " / "
+    },
+    {
+      "step": "A: \"✓ Save changes\" is offered after structure edits",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "A: Save changes clears the button",
+      "pass": true,
+      "said": "● syllabus “2026” saved (overrides the built-in)"
+    },
+    {
+      "step": "A: ⓘ + tap shows an \"Edit details\" door",
+      "pass": false,
+      "said": "no Edit details found after tapping ACG-01 with ⓘ on"
+    },
+    {
+      "step": "A: Duplicate → switched to the copy",
+      "pass": true,
+      "said": "2026 hand copy ✎"
+    },
+    {
+      "step": "A: + Sim on the empty chart adds a ball",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "A: delete 2024 asked",
+      "note": "Delete syllabus “2024”? This removes its flow, its layout and every student’s marks on it, in every course. It is a built-in — you can bring it back later from ⇅ Reorder. Cancel OK"
+    },
+    {
+      "step": "A: charts before export",
+      "note": "2026 ✎ · Tx mine · A/G - A/A 2026 · 2026 hand copy ✎ · Blank hand ✎"
+    },
+    {
+      "step": "A: the Export window offers",
+      "note": "2026 · Tx mine · A/G - A/A 2026 · 2026 hand copy · Blank hand — 1 ticked when it opens"
+    },
+    {
+      "step": "A: export confirmation",
+      "note": "Exported as “OCU-syllabus-2026-09-23.json”. It contains charts only — no student names or marks. OK"
+    },
+    {
+      "step": "A: the file holds charts",
+      "note": "sb2026, sbtx2026, sbagaa2026, scmudqgdju0k7p0u, scmudqgg7nk2p69p"
+    },
+    {
+      "step": "B: the import asked",
+      "note": "“2026” already exists. Replace it, or add the incoming one under a new name?  ||  “Tx mine” already exists. Replace it, or add the incoming one under a new name?  ||  “A/G - A/A 2026” already exists. Replace it, or add the incoming one under a new name?  ||  Brought in 2026, Tx mine, A/G - A/A 2026, 2026 hand copy, Blank hand. Everyone’s marks are untouched. It is saved."
+    },
+    {
+      "step": "B: charts after import",
+      "note": "2024 · 2026 ✎ · Tx mine ✎ · A/G - A/A 2026 ✎ · 2026 hand copy ✎ · Blank hand ✎"
+    },
+    {
+      "step": "ROUND TRIP: same charts, same order",
+      "pass": false,
+      "said": "A 2026 ✎ · Tx mine · A/G - A/A 2026 · 2026 hand copy ✎ · Blank hand ✎  |  B 2024 · 2026 ✎ · Tx mine ✎ · A/G - A/A 2026 ✎ · 2026 hand copy ✎ · Blank hand ✎"
+    },
+    {
+      "step": "ROUND TRIP: \"2026\" every ball (id, place, label, font)",
+      "pass": true,
+      "said": "211 balls; differing 0; extra in B 0"
+    },
+    {
+      "step": "ROUND TRIP: \"2026\" every line",
+      "pass": true,
+      "said": "292 vs 292 strokes"
+    },
+    {
+      "step": "ROUND TRIP: \"Tx mine\" every ball (id, place, label, font)",
+      "pass": true,
+      "said": "200 balls; differing 0; extra in B 0"
+    },
+    {
+      "step": "ROUND TRIP: \"Tx mine\" every line",
+      "pass": true,
+      "said": "279 vs 279 strokes"
+    },
+    {
+      "step": "ROUND TRIP: \"A/G - A/A 2026\" every ball (id, place, label, font)",
+      "pass": true,
+      "said": "211 balls; differing 0; extra in B 0"
+    },
+    {
+      "step": "ROUND TRIP: \"A/G - A/A 2026\" every line",
+      "pass": true,
+      "said": "283 vs 283 strokes"
+    },
+    {
+      "step": "ROUND TRIP: \"2026 hand copy\" every ball (id, place, label, font)",
+      "pass": true,
+      "said": "211 balls; differing 0; extra in B 0"
+    },
+    {
+      "step": "ROUND TRIP: \"2026 hand copy\" every line",
+      "pass": true,
+      "said": "292 vs 292 strokes"
+    },
+    {
+      "step": "ROUND TRIP: \"Blank hand\" every ball (id, place, label, font)",
+      "pass": true,
+      "said": "1 balls; differing 0; extra in B 0"
+    },
+    {
+      "step": "ROUND TRIP: \"Blank hand\" every line",
+      "pass": true,
+      "said": "1 vs 1 strokes"
+    },
+    {
+      "step": "ROUND TRIP: B has a chart A did not",
+      "note": "2024"
+    },
+    {
+      "step": "ROUND TRIP: every event detail",
+      "pass": true,
+      "said": ""
+    }
+  ],
+  "orderA": [
+    "2026 ✎",
+    "Tx mine",
+    "A/G - A/A 2026",
+    "2026 hand copy ✎",
+    "Blank hand ✎"
+  ],
+  "orderB": [
+    "2024",
+    "2026 ✎",
+    "Tx mine ✎",
+    "A/G - A/A 2026 ✎",
+    "2026 hand copy ✎",
+    "Blank hand ✎"
+  ],
+  "asked": [
+    "“2026” already exists. Replace it, or add the incoming one under a new name?",
+    "“Tx mine” already exists. Replace it, or add the incoming one under a new name?",
+    "“A/G - A/A 2026” already exists. Replace it, or add the incoming one under a new name?",
+    "Brought in 2026, Tx mine, A/G - A/A 2026, 2026 hand copy, Blank hand. Everyone’s marks are untouched. It is saved."
+  ],
+  "errorsA": [],
+  "errorsB": []
+}

@@ -1,0 +1,20 @@
+{
+  "rows": [
+    {
+      "step": "A: exported while on screen",
+      "note": "1 chart(s): 2026 RESET ON"
+    },
+    {
+      "step": "3b: a reset copy exported WHILE ON SCREEN comes back where the screen had its balls",
+      "pass": false,
+      "said": "210 of 210 balls in a different place after the round trip; e.g. ST-01 translate(471.0,31.0) → translate(243.0,31.0), ACG-03 translate(331.0,307.0) → translate(159.0,307.0)"
+    },
+    {
+      "step": "3b: SKETCH exported WHILE ON SCREEN comes back where the screen had its balls",
+      "pass": true,
+      "said": "before SK-01 translate(33.0,31.0) / SK-02 translate(33.0,123.0) | after SK-01 translate(33.0,31.0) / SK-02 translate(33.0,123.0)"
+    }
+  ],
+  "errorsA": [],
+  "errorsB": []
+}

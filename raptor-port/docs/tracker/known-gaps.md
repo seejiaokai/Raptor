@@ -1,19 +1,50 @@
 # TRACKER — known gaps
 
+> **The route to the database (owner, 23 Sep 26 — D120).** Before the database step he EXPORTS
+> his hand-drawn charts (the balls, their positions and lines, and every event detail), WIPES the
+> app, then IMPORTS that file into the Tracker. So a Tracker bug that route already removes is not
+> a finding and is never chased: anything living only in data stored today (every student, mark,
+> date and course now here is demo data), the start-up converters that upgrade OLDER stored data
+> (`migrateCourseIds`, `migrateSylIds`, `migrateIds`, the legacy `ocu:` import), and reading OLDER
+> file formats (he imports the file he has just exported). **The other half:** that round trip is
+> the ONE path his charts survive by, so a CURRENT-format export or import that loses or changes a
+> ball, a line, a position, a font, a chart name or order, a hidden chart or any event detail is a
+> real finding, the highest one — and everything the Tracker does to NEW data after the wipe
+> (marking, students, dates, pace, chart edits) still has to work.
+> **And (owner, 23 Sep 26 — D122):** an import may reset student marks (grades, failures), but it
+> must NEVER wipe an event's typed details — hours, prerequisites, crew pairing, name, format. It
+> brings in the file's own detail edits and never puts shipped wording back over one made here
+> (walker finding W1-9: a one-chart import did exactly that to other charts — BUILT 23 Sep 26 with D126).
+> **Last Flown (D123, 23 Sep 26):** the latest day actually flown — worked out from the flights
+> marked done, so a flight corrected to an earlier day, or un-marked, pulls it back (it used to only
+> ever move forward); a briefly empty date box is not a day flown. **Deleting a ball (D124):** wipes
+> its marks, so a new ball with the same code starts ungraded. Both BUILT 23 Sep 26 (walker W2-F2/F3/F7);
+> a day typed by hand into Last Flown stands until a later flight (the `handSyll`/`handCurr` marks).
+> **Four more (owner, 23 Sep 26 — D126–D129, BUILT the same day):** event details belong to the chart they
+> were typed on, never every chart with that code (D126 — so an export carries each chart's own details
+> and an import writes only the imported charts'); the export file remembers a deleted built-in chart,
+> which stays deleted after the import (D127); a deleted course is listed in the course ⇅ Reorder
+> window with ↺ Restore, students and marks intact (D128); logging out with unsaved chart edits asks
+> Save / Discard / Stay first (D129).
+> **Three more (owner, 23 Sep 26, BUILT):** deleting a ball also deletes the details typed on it (D130);
+> a backup does not carry a deleted course — restore it before exporting; the delete question says "in this
+> browser" (D131); an import never deletes anyone's marks — a ball the imported chart no longer has keeps
+> its marks out of sight, and importing the old chart back brings them back (D132).
+>
 > **Vendored into RAPTOR 7 Sep 26** (`src/tracker/`, the Tracker tab) from
 > `github.com/seejiaokai/Tracker` at `bf9a47a`. This file carries over what
 > that app knew about itself and did not fix, plus the three things the merge
 > changed. Read it with the merge in mind:
 >
-> - **One role rule exists now.** The standalone app had none. Inside Raptor
->   the owner's rule (his second word, 7 Sep 26) is *everyone edits; only the
->   file portion is the admin's*: marking, charts, students, courses and
->   syllabi are open to every login, while ⇪ Import and ⤓ Export need the
->   admin. The flag rides the Raptor login
->   (`state/store.ts resetSession`/`toggleRole` → `tracker/role.js` → `core.js
->   fileLocked`), is enforced at those entry points in `core.js` and
->   mirrored by `Header.jsx` (the File menu not drawn). Never persisted. The
->   vendored smoke suite drives as the admin throughout;
+> - **No role rule — admin and member have the same access (owner, 23 Sep 26 —
+>   D121).** The standalone app had no roles, and since D121 neither has the
+>   Tracker inside Raptor: marking, charts, students, courses, syllabi AND the
+>   File menu (⇪ Import, ⤓ Export) are every login's. This supersedes the
+>   7 Sep 26 second word, "everyone edits; only the file portion is the
+>   admin's", whose lock (`core.js fileLocked`, written from Raptor's login
+>   and the view-as flip through `tracker/role.js`) is gone. `role.js` now
+>   carries only the login-session end (`resetSession`), which clears the
+>   Tracker's undo, windows and modes ([HUMAN-RETEST] F10).
 >   `src/tracker/tracker.test.tsx` pins the member shape.
 > - **The cloud-sync layers are GONE.** `sync/cloud.js` (Dataverse/Firebase)
 >   and `sync/local.js` (a SharePoint file, falling back to localStorage) were
@@ -61,10 +92,14 @@
 >   name is a label (renamed by the pencil on each chip, `renameStudent`, id
 >   and records untouched — 10 Sep 26) and may contain a colon. Nothing
 >   flows back to Raptor yet (no pucks, no quals) — `pid` is the hook for
->   that. Deleting a course leaves its records in storage the way it leaves
->   its marks (a safety net): re-create a course under the same name and its
->   old roster comes back, entries, links and marks together — coherent, but
->   worth knowing. Export carries the entries (no `links` block); Import
+>   that. Deleting a course leaves its records in storage **and lists the course
+>   in ⇅ Reorder courses under "Deleted courses", whose ↺ Restore brings it back
+>   under its own id, students and marks intact** (owner, 23 Sep 26 — D128;
+>   [HUMAN-RETEST] F12 found the old "(marks remain in storage)" with no door
+>   since course ids, 13 Sep 26). A course re-created under the same name is a
+>   NEW, empty course; restoring the old one beside it names it "(restored)". A
+>   deleted course does NOT ride an Export (the students block carries the live
+>   courses) — restore it first to back it up. Export carries the entries (no `links` block); Import
 >   reads both the entry shape and a legacy string roster with its `links`.
 >   **Import matches the file's students to the enrolments the course already
 >   has (bug-check, 10 Sep 26 — `ids.js reconcileIds`):** by person id first,
@@ -80,7 +115,9 @@
 >   `+ Add`, remove, reorder and duplicate-syllabus with a notice, so the old
 >   name-keyed roster is never overwritten. The gap: no component reads the
 >   flag — the Students card shows an EMPTY list and a `+ Add` that looks
->   live until pressed. A one-line notice in the card is the follow-up. The
+>   live until pressed. (A one-line notice in the card was the follow-up; it is
+>   moot under D120 — only OLDER stored data can end up held, and that is wiped
+>   before the database.) The
 >   way out is a reload that converts (or an Import, which converts the
 >   course through the same migration). Narrow edge of that Import route: if
 >   the interrupted run had already moved a mark under its parked `idmap` id
@@ -123,9 +160,10 @@ may be deleted until the owner has saved a file, reopened it, and said in his ow
 words that his syllabi are inside. No check stands in for that. Stop and ask.
 
 **The unreproduced save bug.** A second save once appeared to do nothing; never
-reproduced. `writeTo` verifies by reading back; failures say `NOT SAVED`; the
-toolbar shows `saved N KB at HH:MM` — if he reports it again, ask whether that
-time changed.
+reproduced. Since 9 Sep 26 there is no bound file to save to — ⤓ Export writes a
+whole copy, `writeTo` verifies it by reading back, and a failure says `copy NOT
+saved`; the toolbar's old `saved N KB at HH:MM` line went with the bound file. If
+he reports it again, ask which button he pressed and what the status line said.
 
 **Worth raising when he next looks:**
 - **The toolbar hides on demand** (owner, 9 Sep 26 — phone ask, "have the
@@ -189,8 +227,11 @@ time changed.
   coalesce keystrokes), a failure is its own step as before.
 - `SA(S)-3` on Tx: the source document contradicts itself. **User chose keep,
   twice, 8 Aug.**
-- The edit-mode hint overlays the colour legend. Move it if he misses the
-  legend.
+- The edit-mode hint no longer covers the colour legend at rest (fixed 2 Sep 26,
+  pinned in the smoke suite); only a tool hint long enough to wrap — the Line
+  tool's — spills over it while that tool is picked. Since 23 Sep 26 a 1.8 s
+  FLASH message also shows outside edit mode, floating over the legend without
+  taking a tap ([HUMAN-RETEST]: those messages had been written to a hidden line).
 
 ## Things that will bite you (carried, still true)
 
@@ -227,10 +268,13 @@ time changed.
 - **`scrollHeight` never reports less than `clientHeight`**, so "fits exactly"
   and "fits with room" look identical — measure the content.
 - **z-index ladder inside the tab:** `.modal` 60 · `.lullcal` 70 ·
-  `#dlgModal`/`#ordModal` 71 · `#showAllPanel` 81 · `#infoModal` 91. Header
-  menus 50, the phone search strip 52. Anything new that opens over Show All
-  must clear 81. (All of these sit inside `#page-tracker`; Raptor's own
-  overlays — the drawer at 440, the board at 400 — are above the lot.)
+  `#ordModal` 71 · `#showAllPanel` 81 · `#infoModal` / `#copyModal` 91 ·
+  **`#dlgModal` 101 — the question box is the TOP, always** (it was 71, under
+  the Export window, so Export's own refusals were drawn behind it —
+  [HUMAN-RETEST] 23 Sep 26). Header menus 50, the phone search strip 52.
+  Anything new that opens over Show All must clear 81, and stay under 100.
+  (All of these sit inside `#page-tracker`; Raptor's own overlays — the
+  drawer at 440, the board at 400 — are above the lot.)
 - **The desktop bar has no spare width at 1440** — one added control wraps it
   onto two rows and costs 44px of chart; the heading hides below 1600px to pay
   for the search box. The phone bar is two rows, bought by trimming captions
@@ -262,9 +306,11 @@ time changed.
   here on purpose — the record-oriented storage door with acknowledged durable
   writes and revision checks is the `[DB-STEP]` (RC5) that closes it for every
   migration at once; a bespoke journal/lock now would be thrown away by it.
-- **The repository is public.** No student name, mark or date may enter it. The
-  smoke suite checks the seed and the sample file for placeholder names only;
-  `bake-user-charts.mjs` re-checks after every bake.
+- **No student name, mark or date may enter the repository.** (The reason given
+  here was "the repository is public"; it has been PRIVATE since 23 Sep 26 — D59
+  — and the rule stands: collaborators will read it.) The smoke suite checks the
+  seed and the sample file for placeholder names only; `bake-user-charts.mjs`
+  re-checks after every bake.
 - **A record deleted seconds after migration, on an already-full store, can be
   re-copied.** Inherent to resuming a legacy import without a durable ledger:
   resume cannot tell "never copied" from "copied, then deleted". The

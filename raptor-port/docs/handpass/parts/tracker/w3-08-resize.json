@@ -1,0 +1,78 @@
+{
+  "rows": [
+    {
+      "step": "1. Info tab open at 390 → widen to 1440: both columns show",
+      "pass": true,
+      "said": "{\"flow\":true,\"info\":true,\"tabs\":false,\"rootCls\":\"tr-root tab-info\",\"w\":1440}"
+    },
+    {
+      "step": "1. …narrow again: ONE half (the Info tab it was on)",
+      "pass": true,
+      "said": "{\"flow\":false,\"info\":true,\"tabs\":true,\"rootCls\":\"tr-root tab-info\",\"w\":390}"
+    },
+    {
+      "step": "2. pop-up at 390",
+      "note": "null"
+    },
+    {
+      "step": "2. widen with the pop-up open: it is still on screen and whole",
+      "pass": false,
+      "said": "null"
+    },
+    {
+      "step": "2. …narrow again: still on screen and whole (every button reachable)",
+      "pass": false,
+      "said": "null"
+    },
+    {
+      "step": "3. search strip at 390",
+      "note": "{\"panel\":{\"x\":6,\"y\":123,\"w\":378,\"h\":38,\"r\":384,\"b\":161,\"inside\":true},\"list\":{\"x\":7,\"y\":164,\"w\":376,\"h\":257,\"r\":383,\"b\":421,\"inside\":true}}"
+    },
+    {
+      "step": "3. widen with the strip open: the box sits inline in the bar, 🔍 gone",
+      "pass": true,
+      "said": "{\"box\":{\"x\":817,\"y\":70,\"w\":112,\"h\":24,\"r\":929,\"b\":94,\"inside\":true},\"panel\":{\"x\":817,\"y\":70,\"w\":172,\"h\":24,\"r\":989,\"b\":94,\"inside\":true},\"btn\":null,\"list\":{\"x\":817,\"y\":98,\"w\":327,\"h\":257,\"r\":1144,\"b\":355,\"inside\":true},\"hdr\":{\"x\":0,\"y\":57,\"w\":1440,\"h\":51,\"r\":1440,\"b\":108}}"
+    },
+    {
+      "step": "3. …narrow again",
+      "note": "{\"panel\":{\"x\":6,\"y\":123,\"w\":378,\"h\":38,\"r\":384,\"b\":161,\"inside\":true},\"list\":{\"x\":7,\"y\":164,\"w\":376,\"h\":257,\"r\":383,\"b\":421,\"inside\":true},\"btn\":{\"x\":130,\"y\":88,\"w\":29,\"h\":23,\"r\":159,\"b\":111,\"inside\":true}}"
+    },
+    {
+      "step": "4. lull calendar at 390",
+      "note": "{\"x\":25,\"y\":207,\"w\":340,\"h\":431,\"r\":365,\"b\":637,\"inside\":true}"
+    },
+    {
+      "step": "4. widen with the lull calendar open: on screen and whole",
+      "pass": true,
+      "said": "{\"x\":550,\"y\":235,\"w\":340,\"h\":431,\"r\":890,\"b\":665,\"inside\":true}"
+    },
+    {
+      "step": "4. …narrow again: on screen and whole",
+      "pass": true,
+      "said": "{\"x\":25,\"y\":207,\"w\":340,\"h\":431,\"r\":365,\"b\":637,\"inside\":true}"
+    },
+    {
+      "step": "5. a chart zoom set by hand (+ +) is kept through widen and narrow",
+      "pass": true,
+      "said": "fit 100% → mine 120% → 1440: 120% → 390: 120%"
+    },
+    {
+      "step": "5. after \"reset\" the chart re-fits on its own again (turned sideways: a new fit)",
+      "pass": false,
+      "said": "reset 40%; at 844x390 92% (sideways wander false)"
+    },
+    {
+      "step": "6. desktop chart zoom 80% and panel 90%: kept through a trip to 390 and back",
+      "pass": true,
+      "said": "1440 {\"chart\":\"80%\",\"panel\":\"90%\",\"sw\":1084,\"cw\":1084,\"top\":1709} → 390 {\"chart\":\"80%\",\"panel\":\"90%\",\"sw\":736,\"cw\":390,\"top\":1709} → 1440 {\"chart\":\"80%\",\"panel\":\"90%\",\"sw\":1084,\"cw\":1084,\"top\":1709}"
+    },
+    {
+      "step": "6. the chart's scroll after the trip (was 1709)",
+      "note": "1709"
+    },
+    {
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

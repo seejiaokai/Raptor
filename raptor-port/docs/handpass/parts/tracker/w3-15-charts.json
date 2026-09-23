@@ -1,0 +1,95 @@
+{
+  "rows": [
+    {
+      "step": "start",
+      "note": "[\"2024\",\"2026\",\"Tx 2026\",\"A/G - A/A 2026\"] on 2026"
+    },
+    {
+      "step": "A. ✎ Rename syllabus: the label changes, the mark stays",
+      "pass": true,
+      "said": "asked \"Rename syllabus “2026” to: Cancel OK\" · now \"2026 MAIN\" · ST-01 [\"#000000\",\"#ffffff\"]"
+    },
+    {
+      "step": "A. renaming to a name already used (\"Tx 2026\") is refused",
+      "pass": true,
+      "said": "A syllabus named “Tx 2026” already exists."
+    },
+    {
+      "step": "F. ⧉ Duplicate asked",
+      "note": "\"Name for the duplicated syllabus: Cancel OK\" → now on \"2026 MAIN copy ✎\" · students []"
+    },
+    {
+      "step": "F. ↶ before the delete",
+      "note": "{\"disabled\":true,\"title\":\"Nothing to undo\"}"
+    },
+    {
+      "step": "F. deleting a CUSTOM chart says it cannot be undone",
+      "pass": true,
+      "said": "Delete syllabus “2026 MAIN copy”? This removes its flow, its layout and every student’s marks on it, in every course. This cannot be undone."
+    },
+    {
+      "step": "F. …and after it, ↶ does not offer to undo it",
+      "pass": true,
+      "said": "{\"disabled\":true,\"title\":\"Nothing to undo\"} · now on \"2026 MAIN\" · list [\"2024\",\"2026 MAIN\",\"Tx 2026\",\"A/G - A/A 2026\"]"
+    },
+    {
+      "step": "F. ⇅ Reorder after deleting the custom — deleted list",
+      "note": "none shown"
+    },
+    {
+      "step": "B. 2024 has students",
+      "note": "[]"
+    },
+    {
+      "step": "B. 🗑 on an unedited built-in asks, naming what goes and how to bring it back",
+      "pass": true,
+      "said": "Delete syllabus “2024”? This removes its flow, its layout and every student’s marks on it, in every course. It is a built-in — you can bring it back later from ⇅ Reorder."
+    },
+    {
+      "step": "B. …OK: 2024 leaves the dropdown",
+      "pass": true,
+      "said": "[\"2026 MAIN\",\"Tx 2026\",\"A/G - A/A 2026\"] on 2026 MAIN"
+    },
+    {
+      "step": "D. ⇅ Reorder lists 2024 under \"Deleted built-in syllabi\"",
+      "pass": true,
+      "said": "Deleted built-in syllabi — restore to bring one back into the dropdown. 2024 deleted ↺ Restore"
+    },
+    {
+      "step": "D. after ↺ Restore, the list reads",
+      "note": "☰ 2026 MAIN built-in ▲ ▼ ☰ Tx 2026 built-in ▲ ▼ ☰ A/G - A/A 2026 built-in ▲ ▼ ☰ 2024 built-in ▲ ▼"
+    },
+    {
+      "step": "D. 2024 is back, shipped (tag \"built-in\", not edited) and with no students",
+      "pass": true,
+      "said": "dropdown [\"2026 MAIN\",\"Tx 2026\",\"A/G - A/A 2026\",\"2024\"] · row \"☰ 2024 built-in ▲ ▼\" · students [] · card \"STUDENTS ⇅ Reorder + Add No students on this course yet. Add one to start tracking progress.\""
+    },
+    {
+      "step": "C. Tx 2026 with a saved edit reads",
+      "note": "Tx 2026 ✎"
+    },
+    {
+      "step": "C. 🗑 on an EDITED built-in offers \"Delete it\" or \"Revert edits only\"",
+      "pass": true,
+      "said": "“Tx 2026” is a built-in syllabus that has saved edits. Delete it outright, or just throw away your edits and keep the shipped version? · buttons [\"Cancel\",\"Revert edits only\",\"Delete it\"]"
+    },
+    {
+      "step": "C. Revert edits only: Tx 2026 stays, its ✎ mark and the added ball are gone",
+      "pass": true,
+      "said": "now on \"Tx 2026\" · dropdown [\"2026 MAIN\",\"Tx 2026\",\"A/G - A/A 2026\",\"2024\"] · TX-EDIT 0 · status \"● “Tx 2026” reverted to built-in\""
+    },
+    {
+      "step": "E. left",
+      "note": "[\"2024\"]"
+    },
+    {
+      "step": "E. the last syllabus cannot go: \"Keep at least one syllabus.\"",
+      "pass": true,
+      "said": "Keep at least one syllabus."
+    },
+    {
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

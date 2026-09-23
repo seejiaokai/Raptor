@@ -1,0 +1,22 @@
+{
+  "rows": [
+    {
+      "step": "A. enter, drag a ball, Done editing: the view is back where it was (scroll and zoom)",
+      "pass": true,
+      "said": "before {\"top\":36,\"left\":0,\"zoom\":\"40%\",\"sw\":390,\"cw\":390} → after {\"top\":36,\"left\":0,\"zoom\":\"40%\",\"sw\":390,\"cw\":390} (dragged ACG-02)"
+    },
+    {
+      "step": "B. pinched in while arranging, then Done editing: the chart is left at",
+      "note": "{\"top\":672,\"left\":520,\"zoom\":\"147%\",\"sw\":1713,\"cw\":390}"
+    },
+    {
+      "step": "B. \"reset\" brings back the fit to the width",
+      "pass": true,
+      "said": "{\"top\":212,\"left\":0,\"zoom\":\"40%\",\"sw\":390,\"cw\":390}"
+    },
+    {
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

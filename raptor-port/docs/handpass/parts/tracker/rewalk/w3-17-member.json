@@ -1,0 +1,137 @@
+{
+  "rows": [
+    {
+      "step": "member: signed in as a member and on the Tracker",
+      "pass": true,
+      "said": "MEMBER"
+    },
+    {
+      "step": "member: ⇪ File on the bar?",
+      "note": "shown"
+    },
+    {
+      "step": "marking: DCO on ST-01",
+      "pass": true,
+      "said": "[\"#ffffff\",\"#ffffff\"] → [\"#000000\",\"#ffffff\"]"
+    },
+    {
+      "step": "marking: + a failure on ST-02",
+      "pass": true,
+      "said": "1"
+    },
+    {
+      "step": "undo is there for the member (↶ lit, names the step)",
+      "pass": true,
+      "said": "Undo the failure count on ST-02 for STUDENT A (Ctrl+Z)"
+    },
+    {
+      "step": "Edit chart layout: + Test → ✓ Save changes",
+      "pass": true,
+      "said": "● syllabus “2026” saved (overrides the built-in)"
+    },
+    {
+      "step": "Course ✎: + Add course",
+      "pass": true,
+      "said": "MEMC"
+    },
+    {
+      "step": "Course ✎: ✎ Rename course",
+      "pass": true,
+      "said": "MEMC2"
+    },
+    {
+      "step": "Course ✎: ⇅ Reorder courses",
+      "pass": true,
+      "said": "[\"26ABSG\",\"MEMC2\"]"
+    },
+    {
+      "step": "Course ✎: 🗑 Delete course",
+      "pass": true,
+      "said": "Delete course MEMC2? (marks remain in storage) → [\"26ABSG\"]"
+    },
+    {
+      "step": "Syllabus ✎: ✎ Rename syllabus",
+      "pass": true,
+      "said": "2026 M ✎"
+    },
+    {
+      "step": "Syllabus ✎: ⧉ Duplicate syllabus",
+      "pass": true,
+      "said": "2026 M copy ✎"
+    },
+    {
+      "step": "Syllabus ✎: 🗑 Delete syllabus (the copy)",
+      "pass": true,
+      "said": "[\"2024\",\"2026 M ✎\",\"Tx 2026\",\"A/G - A/A 2026\"]"
+    },
+    {
+      "step": "Syllabus ✎: + Add syllabus",
+      "pass": true,
+      "said": "MEMSYL ✎"
+    },
+    {
+      "step": "Syllabus ✎: ⇅ Reorder syllabi",
+      "pass": true,
+      "said": "[\"2024\",\"2026 M ✎\",\"Tx 2026\",\"MEMSYL ✎\",\"A/G - A/A 2026\"]"
+    },
+    {
+      "step": "students: + Add (roster pick Recon)",
+      "pass": true,
+      "said": "[\"1 STUDENT A\",\"2 STUDENT B\",\"3 RECON\"]"
+    },
+    {
+      "step": "students: ✎ rename",
+      "pass": true,
+      "said": "[\"1 STUDENT A\",\"2 STUDENT B\",\"3 MEMBER RENAMED\"]"
+    },
+    {
+      "step": "students: ⇅ Reorder crew",
+      "pass": true,
+      "said": "[\"1 STUDENT B\",\"2 STUDENT A\",\"3 MEMBER RENAMED\"]"
+    },
+    {
+      "step": "students: × remove (asks first)",
+      "pass": true,
+      "said": "Remove MEMBER RENAMED from 2026 M? Their marks, dates, pace and lull periods on this syllabus are deleted."
+    },
+    {
+      "step": "dates: Last Flown (Syllabus), down days, upchit take",
+      "pass": true,
+      "said": "Days since syllabus 3d Days since currency 3d (−2 down = 1d)"
+    },
+    {
+      "step": "pace: Set pace, End date A, End date B take",
+      "pass": true,
+      "said": "SET PACE /wk 26/01/28 projected end END DATE A 5.3 /wk req. pace END DATE B 4.0 /wk req. pace"
+    },
+    {
+      "step": "lulls: + Set lull period (two clicks)",
+      "pass": true,
+      "said": "10/09/26 → 15/09/26 ×"
+    },
+    {
+      "step": "lulls: Copy to… STUDENT B",
+      "pass": true,
+      "said": "10/09/26 → 15/09/26 ×"
+    },
+    {
+      "step": "Show All: Edit → hours saved",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "event details: ✎ Edit details → saved (the pop-up shows it)",
+      "pass": true,
+      "said": "Member-edited name Type: Lecture · 1.5 Hrs Prerequisites: ST-01"
+    },
+    {
+      "step": "ⓘ Details mode on / off",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

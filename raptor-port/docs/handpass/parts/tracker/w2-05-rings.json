@@ -1,0 +1,93 @@
+{
+  "rows": [
+    {
+      "step": "1.0 A, nothing marked: ringed",
+      "note": "ST-01, ST-02, ST-06, ST-03, ST-04, ST-05, JMP-01, EPT-01, ST-16, AAS-04, ST-09, ST-11 …(25)"
+    },
+    {
+      "step": "1.1 ST-01 done for A → A's rings: ACG-01 ringed, ST-01 not",
+      "pass": true,
+      "said": "ringed: ST-02, ACG-01, ST-06, ST-03, ST-04, ST-05, JMP-01, EPT-01, ST-16, AAS-04"
+    },
+    {
+      "step": "1.2 pick B → the rings are B's: ST-01 ringed, ACG-01 not (the owner's 9 Sep screenshot)",
+      "pass": true,
+      "said": "ringed: ST-01, ST-02, ST-06, ST-03, ST-04, ST-05, JMP-01, EPT-01, ST-16, AAS-04"
+    },
+    {
+      "step": "2.1 picking B (nothing marked) lands on the chart's FIRST event, ST-01, centred",
+      "pass": false,
+      "said": "ST-01 off centre by {\"dx\":-26,\"dy\":0}; view {\"top\":4673,\"left\":0} → {\"top\":73,\"left\":0}"
+    },
+    {
+      "step": "2.2 picking A lands on A's latest mark (TR-3), centred",
+      "pass": false,
+      "said": "TR-3 off centre by {\"dx\":-246,\"dy\":0}"
+    },
+    {
+      "step": "2.3 picking a student never changes the syllabus",
+      "pass": true,
+      "said": "2026"
+    },
+    {
+      "step": "2.4 a Crew pick closes an open grading pop-up",
+      "pass": true,
+      "said": "open before true, after false"
+    },
+    {
+      "step": "3.1 a press on B's wedge picks B (the Crew dropdown follows)",
+      "pass": true,
+      "said": "crew: STUDENT B"
+    },
+    {
+      "step": "3.2 …opens nothing",
+      "pass": true,
+      "said": "nothing open"
+    },
+    {
+      "step": "3.3 …and the view does not move",
+      "pass": true,
+      "said": "{\"top\":257,\"left\":0} → {\"top\":257,\"left\":0}"
+    },
+    {
+      "step": "3.4 a press on the picked student's own wedge opens grading for them",
+      "pass": true,
+      "said": "ACG-02 · STUDENT B"
+    },
+    {
+      "step": "4.1 a press on the centre opens grading for the PICKED student (B)",
+      "pass": true,
+      "said": "ACG-02 · STUDENT B"
+    },
+    {
+      "step": "4.2 B's wedge takes the DPCO colour, A's does not",
+      "pass": true,
+      "said": "[\"#ffffff\",\"#1f6dff\"]"
+    },
+    {
+      "step": "4.3 the picked student's wedge wears a cyan EDGE, never a fill (the DPCO colour still shows)",
+      "pass": true,
+      "said": "{\"wi\":\"1\",\"fill\":\"none\",\"stroke\":\"#36c2ff\",\"width\":\"2.4\"}"
+    },
+    {
+      "step": "4.4 EVERY ball edges B's wedge in cyan",
+      "pass": true,
+      "said": "{\"balls\":210,\"edged\":210}"
+    },
+    {
+      "step": "5.1 grading BFM-3 (far down) leaves the view where it is",
+      "pass": true,
+      "said": "{\"top\":4673,\"left\":0} → {\"top\":4673,\"left\":0}"
+    },
+    {
+      "step": "5.2 + and − a failure there leave the view where it is",
+      "pass": true,
+      "said": "{\"top\":4673,\"left\":0} → + {\"top\":4673,\"left\":0} → − {\"top\":4673,\"left\":0}"
+    },
+    {
+      "step": "6. a press on B's red tick on BFM-3 (A picked) hits a line",
+      "note": "opened grading for BFM-3 · STUDENT A (B was not picked)"
+    }
+  ],
+  "errors": []
+}

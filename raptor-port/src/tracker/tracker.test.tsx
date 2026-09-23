@@ -1,25 +1,20 @@
 // @vitest-environment jsdom
 /* The Tracker tab's seam into Raptor (7 Sep 26, the Tracker merge).
-   Three things this pins, none of which the vendored smoke suite
-   (scripts/tracker/smoke.mjs) can see because it always drives as the admin:
-   · the FILE LOCK rides the Raptor session — a member login (and a logout)
-     locks the file portion, an admin login unlocks it, and the admin's
-     view-as-member toggle flips it both ways (state/store.ts resetSession /
-     toggleRole → tracker/role.js);
-   · the lock is enforced at the WRITE PATH in core.js, not only at the
-     affordance — Open, Import and Save a copy refuse a locked caller — while
-     everything else (marking, edit mode, the editors, students, dates) stays
-     open to everyone (owner, 7 Sep 26: "allowed for both admin and member
-     for all access, except the file portion which is admin only");
-   · the affordance half matches: the header hides only the File menu for a
-     member and keeps every other control.
-   The flag lives in role.js so Raptor can write it WITHOUT loading the chart
-   engine — a regression there would put ~280 KB of syllabus data back into
-   Raptor's first download; the last test guards that by construction. */
+   What this pins that the vendored smoke suite (scripts/tracker/smoke.mjs)
+   cannot see, because it always drives as the admin:
+   · the Tracker reads NO role — admin and member have the same access
+     authority, the File menu (Import, Export) included (owner, 23 Sep 26 —
+     D121, superseding the 7 Sep "except the file portion which is admin
+     only"): a member login, a logout and the admin's view-as flip change
+     nothing the Tracker draws or allows;
+   · the seam Raptor still uses is the login SESSION (tracker/role.js, called
+     from state/store.ts resetSession) — retest.test.tsx F10 pins what it ends;
+   · role.js stays import-free so Raptor reaches it WITHOUT loading the chart
+     engine — a regression there would put ~280 KB of syllabus data back into
+     Raptor's first download; the seam test guards that by construction. */
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
-import { isFileLocked, setFileLocked } from './role.js'
 import { getPeople, setPeople, setWhoami } from './people.js'
 import { projectForTracker, wireTrackerPeople } from './peoplewire'
 import * as core from './app/core.js'
@@ -37,35 +32,11 @@ import { useSyncExternalStore } from 'react'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 const $ = (sel: string) => document.querySelector(sel)
 
-describe('the file lock rides the Raptor session (store.ts → tracker/role.js)', () => {
+describe('D121 — the Tracker reads no role: admin and member have the same access (owner, 23 Sep 26)', () => {
   beforeEach(() => { initStore() })
 
-  it('a member login locks the file portion, an admin login unlocks it, a logout locks it', () => {
+  it('a member grades, edits and manages — the pop-up and the editors open', () => {
     resetSession({ user: 'us', role: 'main' })
-    expect(isFileLocked()).toBe(true)
-    expect(core.fileLocked).toBe(true)
-    resetSession({ user: 'ad', role: 'admin' })
-    expect(isFileLocked()).toBe(false)
-    expect(core.fileLocked).toBe(false)
-    resetSession(null)
-    expect(isFileLocked()).toBe(true)
-  })
-
-  it("the admin's view-as-member toggle flips it both ways", () => {
-    resetSession({ user: 'ad', role: 'admin' })
-    expect(core.fileLocked).toBe(false)
-    toggleRole()
-    expect(core.fileLocked).toBe(true)
-    toggleRole()
-    expect(core.fileLocked).toBe(false)
-  })
-})
-
-describe('only the file portion is locked, at the write path (core.js)', () => {
-  beforeEach(() => { setFileLocked(false) })
-
-  it('a member still grades, edits and manages — the pop-up and the editors open', () => {
-    setFileLocked(true)
     core.openPop('ST-01', { clientX: 10, clientY: 10 })
     expect(core.pop).toEqual({ id: 'ST-01', x: 10, y: 10 })
     core.closePop()
@@ -78,33 +49,35 @@ describe('only the file portion is locked, at the write path (core.js)', () => {
     core.openLullCopy('sSTUDENTA'); expect(core.lullCopy).toEqual({ from: 'sSTUDENTA', picked: [] }); core.closeLullCopy()
   })
 
-  it('Save a copy refuses a member and opens for the admin', () => {
-    setFileLocked(true)
+  it('Export opens for a member exactly as for the admin', () => {
+    resetSession({ user: 'us', role: 'main' })
     core.openCopy()
-    expect(core.copyOpen).toBe(false)
-    setFileLocked(false)
+    expect(core.copyOpen, 'a member opens Export').toBe(true)
+    core.closeCopy()
+    resetSession({ user: 'ad', role: 'admin' })
     core.openCopy()
-    expect(core.copyOpen).toBe(true)
+    expect(core.copyOpen, 'so does the admin').toBe(true)
     core.closeCopy()
   })
 
-  it('locking mid-session closes an open Save a copy dialog', () => {
+  it("the admin's view-as-member flip leaves an open Export window open — same person, same access", () => {
+    resetSession({ user: 'ad', role: 'admin' })
     core.openCopy()
+    toggleRole()
     expect(core.copyOpen).toBe(true)
-    setFileLocked(true)
-    expect(core.copyOpen).toBe(false)
+    toggleRole()
+    core.closeCopy()
   })
 
-  it('Import and Export are guarded at their entry points', () => {
+  it('no entry point reads a role any more — the old admin lock is gone from the code', () => {
     const src = readFileSync(join(__dirname, 'app/core.js'), 'utf8')
-    for (const fn of ['importClick', 'openCopy', 'saveCopyClick'])
-      expect(src, fn).toMatch(new RegExp(`export (async )?function ${fn}\\([^)]*\\) \\{ if \\(fileLocked\\) return;`))
-    /* and nothing else is — the standalone app's other writes are everyone's */
-    expect((src.match(/if \(fileLocked\) return;/g) || []).length).toBe(3)
+    expect(src).not.toMatch(/if \(fileLocked\)/)
+    expect(src).not.toMatch(/export let fileLocked/)
+    expect((core as any).fileLocked).toBeUndefined()
   })
 })
 
-describe('the header hides only the File menu for a member', () => {
+describe('the header: one bar for every login (D121 — it hid the File menu from a member until 23 Sep 26)', () => {
   const render = async () => {
     const host = document.createElement('div')
     document.body.appendChild(host)
@@ -116,25 +89,24 @@ describe('the header hides only the File menu for a member', () => {
   const EVERYONE = ['activeSel', 'showAllBtn', 'hSearchBtn', 'courseSel', 'courseMenuBtn', 'sylSel', 'sylMenuBtn', 'arrangeBtn', 'detailsBtn', 'trUndoBtn', 'trRedoBtn', 'saveStat']
 
   it('admin: every control including the File menu', async () => {
-    setFileLocked(false)
+    resetSession({ user: 'ad', role: 'admin' })
     await render()
     for (const id of [...EVERYONE, 'fileMenuBtn']) expect($('#' + id), id).toBeTruthy()
   })
 
-  it('member: everything but the File menu', async () => {
-    setFileLocked(true)
+  /* D121 (owner, 23 Sep 26): the same bar for a member — it hid the File menu
+     from 7 Sep until this ruling */
+  it('member: every control, the File menu (Import, Export) included', async () => {
+    resetSession({ user: 'us', role: 'main' })
     await render()
-    for (const id of EVERYONE) expect($('#' + id), id).toBeTruthy()
-    expect($('#fileMenuBtn')).toBeNull()
-    expect($('#importFileBtn')).toBeNull()
-    expect($('#exportBtn')).toBeNull()
+    for (const id of [...EVERYONE, 'fileMenuBtn', 'importFileBtn', 'exportBtn']) expect($('#' + id), id).toBeTruthy()
+    resetSession({ user: 'ad', role: 'admin' })
   })
 
   /* 9 Sep 26 (owner: "I thought it should be auto synced … isn't it
      duplicating"): the file is a format, not a store. The Save button watches
      flow edits only and the File menu is three one-way moves. */
   it('the File menu is ONE Import and ONE Export — nothing binds or names a file', async () => {
-    setFileLocked(false)
     await render()
     for (const id of ['importFileBtn', 'exportBtn']) expect($('#' + id), id).toBeTruthy()
     for (const id of ['openFileBtn', 'saveCopyBtn', 'importSylBtn', 'restoreBtn', 'openFileName', 'lastSaved', 'optCharts', 'optStudents'])
@@ -145,7 +117,6 @@ describe('the header hides only the File menu for a member', () => {
      pencils beside their dropdowns; the standalone Edit button folded into the
      Syllabus pencil as its first item; Details mode became a compact ⓘ icon. */
   it('Edit chart folds into the Syllabus pencil; Course/Syllabus are ✎ icons; Details is an ⓘ icon', async () => {
-    setFileLocked(false)
     await render()
     /* Edit chart layout is the FIRST item inside the Syllabus pencil menu... */
     const sylPanel = $('#sylMenuPanel')!
@@ -514,7 +485,7 @@ describe('a second mount redraws the chart (logout → login)', () => {
 })
 
 describe('the seam stays light', () => {
-  it('Raptor writes the lock through role.js, never by importing core.js', () => {
+  it('Raptor ends the Tracker session through role.js, never by importing core.js', () => {
     const store = readFileSync(join(__dirname, '../state/store.ts'), 'utf8')
     expect(store).toMatch(/from '\.\.\/tracker\/role\.js'/)
     expect(store).not.toMatch(/from '[^']*tracker\/app\//)
@@ -584,7 +555,7 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     if (C.sylDirty) await C.saveChangesClick()
   })
   afterAll(() => board.remove())
-  beforeEach(() => { setPeople(P); setWhoami(null); setFileLocked(false); document.body.querySelectorAll('.host').forEach(h => h.remove()) })
+  beforeEach(() => { setPeople(P); setWhoami(null); document.body.querySelectorAll('.host').forEach(h => h.remove()) })
 
   it('the projection: OCU first, pilots before WSOs, then callsign — no archived, sentinel or ground body, five fields each', () => {
     const l = projectForTracker(PEOPLE)
@@ -1002,13 +973,13 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     const rm = C.removeStudent(t.id); await answer(true); await rm
   })
 
-  it('a rename is NOT admin-gated — it works while the file portion is locked (everyone edits)', async () => {
+  it('a rename works for a member — the Tracker has no admin-only edits (D121)', async () => {
     let p: Promise<any> = C.addStudent(); await answer('renlock'); await p; await C.whenLoaded()
     const l = C.byName('RENLOCK')!
-    setFileLocked(true)
+    resetSession({ user: 'us', role: 'main' })
     p = C.renameStudent(l.id); await answer('renfree'); await p; await C.whenLoaded()
-    expect(C.byName('RENFREE')!.id, 'the file lock gates Import/Export, not editing students').toBe(l.id)
-    setFileLocked(false)
+    expect(C.byName('RENFREE')!.id, 'a member renames like anyone').toBe(l.id)
+    resetSession({ user: 'ad', role: 'admin' })
     const rm = C.removeStudent(l.id); await answer(true); await rm
   })
 

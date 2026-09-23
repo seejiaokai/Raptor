@@ -1,0 +1,13 @@
+{
+  "rows": [
+    {
+      "step": "while arranging, the first structure edit (+ Test)",
+      "note": "admin 1200: bar 51→87, chart moved 36px · admin 1230: bar 51→51, chart still · admin 1260: bar 51→51, chart still · admin 1280: bar 51→51, chart still · admin 1300: bar 51→51, chart still · admin 1320: bar 51→51, chart still · admin 1340: bar 51→51, chart still · member 1200: bar 51→51, chart still · member 1230: bar 51→51, chart still · member 1260: bar 51→51, chart still · member 1280: bar 51→51, chart still · member 1300: bar 51→51, chart still · member 1320: bar 51→51, chart still · member 1340: bar 51→51, chart still"
+    },
+    {
+      "step": "no desktop width makes the chart slide when ✓ Save changes first appears",
+      "pass": false,
+      "said": "admin 1200: bar 51→87, chart moved 36px"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "rows": [
+    {
+      "step": "admin: bubble up on ACG-02",
+      "note": "{\"shown\":true,\"text\":\"ACG-02 Propulsion System Type: Lecture · 4.0 Hrs Prerequisites: ACG-01, ST-02\",\"x\":12,\"y\":267,\"w\":185,\"h\":100}"
+    },
+    {
+      "step": "sign-in screen: the bubble is still switched on (the sign-in screen is drawn over it — picture)",
+      "note": "{\"shown\":false}"
+    },
+    {
+      "step": "member signs in: the admin's Tracker bubble is NOT floating over their first page",
+      "pass": true,
+      "said": "page viewsched · {\"shown\":false}"
+    },
+    {
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

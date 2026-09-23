@@ -275,10 +275,13 @@ const set = async (label, val) => {
   const l = pg.locator('.saedit label').filter({ hasText: label }).first();
   await l.locator('input, textarea').first().fill(val);
 };
+/* "Reset to doc" puts the document's wording back in the BOXES and Save keeps
+   it ([HUMAN-RETEST] w3-F4, 23 Sep 26 — it used to save on the press, so the
+   Cancel beside it cancelled nothing, and this helper pressed Cancel after it) */
 const resetRow = async id => {
   await row(id).locator('button.sedit').click(); await pg.waitForSelector('.saedit');
-  await pg.locator('.saedit-btns button', { hasText: 'Reset to doc' }).click(); await pg.waitForTimeout(400);
-  await pg.locator('.saedit-btns button', { hasText: 'Cancel' }).click(); await pg.waitForTimeout(250);
+  await pg.locator('.saedit-btns button', { hasText: 'Reset to doc' }).click(); await pg.waitForTimeout(300);
+  await pg.locator('.saedit-btns button.primary').click(); await pg.waitForTimeout(400);
 };
 
 /* Show All is a plain button in the bar again (2 Sep): the View menu that held
@@ -319,6 +322,13 @@ await row('ST-01').locator('button.sedit').click(); await pg.waitForSelector('.s
 await set('Name', 'DISCARD ME');
 await pg.locator('.saedit-btns button', { hasText: 'Cancel' }).click(); await pg.waitForTimeout(300);
 ok('cancel discards edits', (await row('ST-01').locator('.snm').textContent()) === 'SMOKE TEST NAME');
+
+await row('ST-01').locator('button.sedit').click(); await pg.waitForSelector('.saedit');
+await pg.locator('.saedit-btns button', { hasText: 'Reset to doc' }).click(); await pg.waitForTimeout(300);
+ok('Reset to doc fills the boxes with the document (w3-F4)',
+  await pg.locator('.saedit label').filter({ hasText: 'Name' }).first().locator('input').inputValue() === 'Squadron Welcome');
+await pg.locator('.saedit-btns button', { hasText: 'Cancel' }).click(); await pg.waitForTimeout(300);
+ok('…and Cancel after it keeps what was typed (w3-F4)', (await row('ST-01').locator('.snm').textContent()) === 'SMOKE TEST NAME');
 
 await resetRow('ST-01');
 ok('reset to doc restores source values', (await row('ST-01').locator('.snm').textContent()) === 'Squadron Welcome');
@@ -653,7 +663,12 @@ const imported = await pg.evaluate(async () => {
      coalesce); the app reads the whiteboard, this raw read must wait for it. */
   await new Promise(r => setTimeout(r, 600));
   const all = JSON.parse(localStorage['raptor:tracker/v3:master:syls']);
-  return { added: (all[newId] || []).length, original: (all[id] || []).length,
+  /* the ORIGINAL read the way the app reads it: a built-in whose events are the
+     shipped ones holds no stored override since 23 Sep 26 ([HUMAN-RETEST] R-1 —
+     a fonts-only Save used to file one), so the stored list alone can be empty
+     for a chart that is intact */
+  const orig = (await t.collectCharts([id])).syllabi[id] || [];
+  return { added: (all[newId] || []).length, original: orig.length,
            marks: Object.keys(localStorage).filter(k => k.includes(':m:')).length, marksBefore };
 });
 ok('importing as new creates a separate syllabus', imported.added === 4, `${imported.added} events`);
@@ -1628,7 +1643,10 @@ const phoneFlow = await pg.evaluate(() => {
      being overridden by a shorthand further down the stylesheet. */
   return {
     clientW: bd.clientWidth, scrollW: bd.scrollWidth,
-    roomBelow: Math.round(parseFloat(getComputedStyle(bd).paddingBottom) || 0),
+    /* since 23 Sep 26 most of the room is a spacer inside the box (::after), not
+       padding — padding set the box's smallest height and pushed the zoom
+       control off a phone turned on its side ([HUMAN-RETEST] w3-F3) */
+    roomBelow: Math.round((parseFloat(getComputedStyle(bd).paddingBottom) || 0) + (parseFloat(getComputedStyle(bd, '::after').height) || 0)),
     zoom: z,
   };
 });
@@ -1636,7 +1654,7 @@ ok('on a phone the chart fits the screen width, so it only scrolls up and down',
   phoneFlow.scrollW <= phoneFlow.clientW + 1,
   `${phoneFlow.scrollW}px of chart in ${phoneFlow.clientW}px of screen`);
 ok('a phone can scroll well past the end of the chart, clear of the zoom control',
-  phoneFlow.roomBelow >= 130, `${phoneFlow.roomBelow}px of padding under the chart`);
+  phoneFlow.roomBelow >= 130, `${phoneFlow.roomBelow}px of room under the chart`);
 
 /* ---- the phone bar shows every control, in two rows ----
    It used to be ONE row that scrolled sideways with its scrollbar suppressed:
@@ -2794,20 +2812,29 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
     await wipe();
     await pg.selectOption('#sylSel', await pg.evaluate(() =>
       [...document.querySelectorAll('#sylSel option')].find(o => o.textContent.startsWith('Tx 2026')).value)); await pg.waitForTimeout(1000);
-    await openDetails('SA-5');
-    const filled = await pg.locator('#infoModal input').first().inputValue();
+    /* After the wipe Tx has nobody on it, and a tap on a ball with nobody to
+       mark opens no pop-up ([HUMAN-RETEST] F9) — so its details are edited from
+       ☰ Show All, the door that chart has (the one the bubble now names). */
+    const saName = () => pg.locator('.saedit label').filter({ hasText: 'Name' }).first().locator('input');
+    const saEditSA5 = async () => {
+      await openShowAll(); await pg.fill('#saSearch', 'SA-5'); await pg.waitForTimeout(250);
+      await row('SA-5').locator('button.sedit').click(); await pg.waitForSelector('.saedit');
+    };
+    await saEditSA5();
+    const filled = await saName().inputValue();
     const stripped = filled.replace(/\s*\(Refer to.*?\)\s*/i, '').trim();
-    await pg.locator('#infoModal input').first().fill(stripped);
-    await pg.locator('#infoModal button', { hasText: /save/i }).first().click();
-    await pg.waitForTimeout(600);
+    await saName().fill(stripped);
+    await pg.locator('.saedit-btns button.primary').click(); await pg.waitForTimeout(600);
+    await pg.click('#saClose').catch(() => {}); await pg.waitForTimeout(200);
     await openTracker(pg); await pg.waitForSelector('#flowSvg .ball');
     await pg.selectOption('#sylSel', await pg.evaluate(() =>
       [...document.querySelectorAll('#sylSel option')].find(o => o.textContent.startsWith('Tx 2026')).value)).catch(() => {}); await pg.waitForTimeout(1000);
-    await openDetails('SA-5');
-    const back = await pg.locator('#infoModal input').first().inputValue();
+    await saEditSA5();
+    const back = await saName().inputValue();
     ok('deleting a syllabus-specific note stays deleted after a reload',
       back === stripped, `typed "${stripped}", reopened as "${back}"`);
-    await pg.click('#ifCancel').catch(() => {}); await pg.waitForTimeout(300);
+    await pg.locator('.saedit-btns button', { hasText: 'Cancel' }).click().catch(() => {});
+    await pg.click('#saClose').catch(() => {}); await pg.waitForTimeout(300);
   }
 
   /* 6. Pace and lulls: carried on rename, gone on remove.
@@ -3041,6 +3068,13 @@ const sylOptions = await pg.evaluate(() => [...document.getElementById('sylSel')
 ok('the syllabus picker offers Tx 2026', !!txOpt, sylOptions.join(' | '));
 await pg.selectOption('#sylSel', txOpt);
 await pg.waitForTimeout(800);
+/* The clean slate leaves Tx with nobody on it, and a tap on a ball with nobody
+   to mark opens no pop-up ([HUMAN-RETEST] F9) — so put someone on Tx the way a
+   trainer does (+ Add), and the pop-up's ✎ Edit details is there to press. */
+if (await pg.evaluate(() => !document.querySelectorAll('.c-students .chip').length)) {
+  await pg.click('#addStu'); await pg.waitForSelector('#dlgInput');
+  await pg.fill('#dlgInput', 'SMOKE TX'); await pg.click('#dlgOk'); await pg.waitForTimeout(600);
+}
 await clickBall('BFM-5'); await pg.waitForTimeout(300);
 await pg.click('#popEditInfo'); await pg.waitForSelector('#infoModal');
 const txInfo = await pg.evaluate(() => ({
@@ -3052,21 +3086,26 @@ ok('Tx BFM-5 shows the BCTM BFM-7 profile, not the long course\'s',
   JSON.stringify(txInfo));
 await pg.click('#ifCancel'); await pg.waitForTimeout(200);
 
-/* Opening a FILE must not clobber those profiles. Files carry the whole info
-   table, and applyCharts used to store it verbatim as user overrides — which
-   sit ABOVE the per-syllabus profiles, so one open froze every bubble to the
-   long course's words. Replay exactly that: apply a charts payload whose
-   eventInfo is the full baked table, then look at Tx BFM-5 again. */
-const fileClobber = await pg.evaluate(async () => {
+/* Opening a FILE must not clobber those profiles. Files written before D126
+   (23 Sep 26 — details belong to their chart) carried the WHOLE baked info
+   table as one `eventInfo`, and applyCharts once stored it verbatim as user
+   overrides — which sit ABOVE the per-syllabus profiles, so one open froze
+   every bubble to the long course's words. Replay exactly that old file,
+   bringing in 2026: nothing redundant may be stored, and Tx — not in the file —
+   must keep its own profile. */
+const { EVENT_INFO: BAKED_INFO } = await import('../../src/tracker/data/eventInfo.js');
+const fileClobber = await pg.evaluate(async baked => {
   const core = window.__coreForTests;
-  const full = {};
-  const snap = await core.collectCharts([core.sylIdOf('2026')]); /* full baked table + edits */
-  Object.assign(full, snap.eventInfo);
-  await core.applyCharts({ order: [], syllabi: {}, layouts: {}, eventInfo: full }, {});
-  /* since the seam the Tracker's data lands in BrowserBackend under "raptor:tracker/" */
-  const stored = JSON.parse(localStorage.getItem('raptor:tracker/v3:eventinfo') || '{}');
-  return { storedKeys: Object.keys(stored).length, sentKeys: Object.keys(full).length };
-});
+  const id = core.sylIdOf('2026');
+  const snap = await core.collectCharts([id]);
+  const full = JSON.parse(JSON.stringify(baked));   /* the full baked table, as an old file carried it */
+  await core.applyCharts({ order: [id], syllabi: snap.syllabi, layouts: {}, sylcat: snap.sylcat, eventInfo: full }, { ids: [id] });
+  /* since the seam the Tracker's data lands in BrowserBackend under "raptor:tracker/";
+     since D126 per chart, under v3:master:eventinfo */
+  const stored = JSON.parse(localStorage.getItem('raptor:tracker/v3:master:eventinfo') || '{}');
+  const n = Object.values(stored).reduce((a, b) => a + Object.keys(b || {}).length, 0);
+  return { storedKeys: n, sentKeys: Object.keys(full).length };
+}, BAKED_INFO);
 await clickBall('BFM-5'); await pg.waitForTimeout(300);
 await pg.click('#popEditInfo'); await pg.waitForSelector('#infoModal');
 const infoAfterFile = await pg.evaluate(() => ({

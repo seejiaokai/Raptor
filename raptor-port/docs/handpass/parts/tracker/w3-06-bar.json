@@ -1,0 +1,146 @@
+{
+  "rows": [
+    {
+      "step": "desk: the bar reads left to right as ruled",
+      "pass": true,
+      "said": "Crew · Course · Course ✎ · Syllabus · Syllabus ✎ · ⓘ · ↶ · ↷ · ☰ Show All · ⇪ File · Find · ⌃ · status"
+    },
+    {
+      "step": "desk: one row at 1440",
+      "pass": true,
+      "said": "header 51px; centres 82–82.5"
+    },
+    {
+      "step": "desk: a structure edit shows ✓ Save changes",
+      "pass": true,
+      "said": "{\"n\":\"✓ Save changes\",\"x\":1133,\"r\":1240,\"y\":71,\"h\":23}"
+    },
+    {
+      "step": "desk: …alone at the far right (a gap after ⌃, nothing to its right but the status)",
+      "pass": false,
+      "said": "⌃ ends at 996, Save 1133–1240, bar ends 1440"
+    },
+    {
+      "step": "desk: the bar is the same height with and without it",
+      "pass": true,
+      "said": "51 → 51"
+    },
+    {
+      "step": "desk: no other control moved when it appeared",
+      "pass": true,
+      "said": "none moved"
+    },
+    {
+      "step": "desk: the status beside it",
+      "note": "● unsaved flow edits — hit “Save changes”"
+    },
+    {
+      "step": "desk: after saving, the button goes and the bar keeps its height",
+      "pass": true,
+      "said": "51px · status \"● syllabus “2026” saved (overrides the built-in)\""
+    },
+    {
+      "step": "desk: ⌃ hides the bar; a slim strip names the crew member and offers \"Show bar\"",
+      "pass": true,
+      "said": "⌄ STUDENT A Show bar"
+    },
+    {
+      "step": "desk: the chart grows into the space",
+      "pass": true,
+      "said": "735 → 760px"
+    },
+    {
+      "step": "desk: hidden survives a reload (sign in again, back on the Tracker: still the strip)",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "desk: \"Show bar\" brings the bar back",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "desk: shown survives a reload too",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "desk Find: typing \"ST\" lists the matches under the box, the first ringed and lit",
+      "pass": true,
+      "said": "{\"value\":\"ST\",\"stat\":\"1 of 17\",\"listShown\":true,\"rows\":17,\"first\":[\"ST-01\",\"ST-02\",\"ST-06\",\"ST-03\"],\"lit\":\"ST-01\",\"ring\":[\"ST-01\"],\"pageY\":0,\"boardTop\":73}"
+    },
+    {
+      "step": "desk Find: more text narrows it (\"ST-1\")",
+      "pass": true,
+      "said": "17 → 10: ST-16,ST-16B,ST-11,ST-10"
+    },
+    {
+      "step": "desk Find: ↓ ↓ moves the ring and the lit row together",
+      "pass": true,
+      "said": "{\"lit\":\"ST-11\",\"ring\":[\"ST-11\"],\"stat\":\"3 of 10\"}"
+    },
+    {
+      "step": "desk Find: ↑ moves back",
+      "pass": true,
+      "said": "{\"lit\":\"ST-16B\",\"ring\":[\"ST-16B\"]}"
+    },
+    {
+      "step": "desk Find: Enter walks forward",
+      "pass": true,
+      "said": "{\"lit\":\"ST-11\",\"ring\":[\"ST-11\"],\"stat\":\"3 of 10\"}"
+    },
+    {
+      "step": "desk Find: clicking a row rings that ball, keeps the text, shuts the list",
+      "pass": true,
+      "said": "{\"value\":\"ST-1\",\"stat\":\"1 of 10\",\"listShown\":false,\"rows\":0,\"first\":[],\"lit\":null,\"ring\":[\"ST-16\"],\"pageY\":0,\"boardTop\":2306}"
+    },
+    {
+      "step": "desk Find: clicking back in reopens the list",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "desk Find: walking 40 rows down a long list (\"A\") never scrolls the PAGE",
+      "pass": true,
+      "said": "74 rows; page scrollY 0; bar top 57"
+    },
+    {
+      "step": "desk Find: Escape clears it (text, ring, list)",
+      "pass": true,
+      "said": "{\"value\":\"\",\"stat\":\"\",\"listShown\":false,\"rows\":0,\"first\":[],\"lit\":null,\"ring\":[],\"pageY\":0,\"boardTop\":368}"
+    },
+    {
+      "step": "desk Find: ✕ clears it",
+      "pass": true,
+      "said": "{\"value\":\"\",\"stat\":\"\",\"listShown\":false,\"rows\":0,\"first\":[],\"lit\":null,\"ring\":[],\"pageY\":0,\"boardTop\":368}"
+    },
+    {
+      "step": "desk Find: a search that finds nothing leaves the chart where it was (ring and scroll kept) and says \"no match\"",
+      "pass": true,
+      "said": "{\"before\":{\"ring\":[\"ST-05\"],\"top\":2027},\"after\":{\"ring\":[\"ST-05\"],\"top\":2027,\"stat\":\"no match\",\"list\":false}}"
+    },
+    {
+      "step": "desk errors",
+      "note": "none"
+    },
+    {
+      "step": "phone: 🔍 opens a full-width strip under the bar",
+      "pass": true,
+      "said": "{\"x\":6,\"y\":123,\"w\":378,\"h\":38,\"r\":384,\"b\":161}"
+    },
+    {
+      "step": "phone: its list is full width",
+      "pass": true,
+      "said": "{\"x\":7,\"y\":164,\"w\":376,\"h\":257,\"r\":383,\"b\":421}"
+    },
+    {
+      "step": "phone: a tap on a row rings that ball and shuts the list (keyboard away)",
+      "pass": true,
+      "said": "{\"rid\":\"ACG-04\",\"ring\":[\"ACG-04\"],\"list\":false,\"focus\":\"\"}"
+    },
+    {
+      "step": "phone errors",
+      "note": "none"
+    }
+  ]
+}

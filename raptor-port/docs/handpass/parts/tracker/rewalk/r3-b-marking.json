@@ -1,0 +1,160 @@
+{
+  "rows": [
+    {
+      "step": "W2-F2 set-up: TR-2 done 15/09 → Last Flown 15/09",
+      "pass": true,
+      "said": "2026-09-15"
+    },
+    {
+      "step": "W2-F2: retyping the day key by key sets Last Flown to 17/09, never today",
+      "pass": true,
+      "said": "{\"lastSyll\":\"2026-09-17\",\"lastCurr\":\"2026-09-17\",\"downDays\":\"\",\"upchit\":\"\",\"kv\":[\"Days since syllabus6d\",\"Days since currency6d\"]}"
+    },
+    {
+      "step": "D123: a later flight moves Last Flown to 21/09",
+      "pass": true,
+      "said": "2026-09-21"
+    },
+    {
+      "step": "D123: correcting TR-3 to 16/09 pulls Last Flown back to the latest flown (TR-2, 17/09)",
+      "pass": true,
+      "said": "2026-09-17"
+    },
+    {
+      "step": "D123: un-marking TR-2 pulls it back to TR-3 (16/09)",
+      "pass": true,
+      "said": "2026-09-16"
+    },
+    {
+      "step": "D123: nothing flown — Last Flown is empty",
+      "pass": true,
+      "said": "{\"lastSyll\":\"\",\"lastCurr\":\"\",\"downDays\":\"\",\"upchit\":\"\",\"kv\":[\"Days since syllabus—\",\"Days since currency—\"]}"
+    },
+    {
+      "step": "D123: a day typed by hand (30/09) stands when an older flight is marked",
+      "pass": true,
+      "said": "2026-09-30"
+    },
+    {
+      "step": "D123: a later flight (02/10) moves it",
+      "pass": true,
+      "said": "2026-10-02"
+    },
+    {
+      "step": "W2-F6: ↶ keeps the chart where it is",
+      "pass": true,
+      "said": "{\"top\":4673,\"left\":0} → {\"top\":4673,\"left\":0}"
+    },
+    {
+      "step": "W2-F6: ↷ keeps it too",
+      "pass": true,
+      "said": "{\"top\":4673,\"left\":0} → {\"top\":4673,\"left\":0}"
+    },
+    {
+      "step": "D124: the delete question says the marks go at Save changes",
+      "pass": true,
+      "said": "Delete ACG-03 from this syllabus?\n\nEvery student’s marks on it are removed when you press ✓ Save changes."
+    },
+    {
+      "step": "D124: a deleted-but-unsaved code waits for the save",
+      "pass": true,
+      "said": "“ACG-03” was deleted from this chart and that is not saved yet. Press ✓ Save changes first (its marks are removed then), or Undo to bring it back."
+    },
+    {
+      "step": "D124: the new ball with the deleted code is ungraded and carries no failure",
+      "pass": true,
+      "said": "ACG-03 · STUDENT A Not done DCO DPCO Marginal N.A. Close Done on (when marked) Fails: − 0 + Failed on Fuel System Type: Lecture · 2.5 Hrs ✎ Edit details"
+    },
+    {
+      "step": "W2-F4: the × asks first",
+      "pass": true,
+      "said": "Remove STUDENT A’s lull period 10/09/26 → 14/09/26?"
+    },
+    {
+      "step": "W2-F4: Cancel keeps it",
+      "pass": true,
+      "said": "10/09/26→14/09/26"
+    },
+    {
+      "step": "W2-F4: OK removes it",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "W2-F5: Copy to… has a Select all row",
+      "pass": true,
+      "said": "crew: STUDENT A, STUDENT B, THIRD R3"
+    },
+    {
+      "step": "W2-F5: Select all ticks everyone else",
+      "pass": true,
+      "said": "2 of 2"
+    },
+    {
+      "step": "w3-F4: no \"Reset to doc\" on a ball the user made",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "w3-F4: Reset to doc fills the boxes with the doc",
+      "pass": true,
+      "said": "doc \"Course Introduction and Aircraft Overview\" shown \"Course Introduction and Aircraft Overview\""
+    },
+    {
+      "step": "w3-F4: …and Cancel keeps what was saved",
+      "pass": true,
+      "said": "ACG-01 MINE R3not done Type: Lecture · 1.5 Hrs Crew: — Prerequisites: ST-01 Edit"
+    },
+    {
+      "step": "R-1: a fonts-only save leaves the untouched built-in unmarked",
+      "pass": true,
+      "said": "A/G - A/A 2026"
+    },
+    {
+      "step": "D128: the delete question names the way back",
+      "pass": true,
+      "said": "Delete course KEEP R3?\n\nIts students and marks are kept: ↺ Restore in ⇅ Reorder courses brings it back."
+    },
+    {
+      "step": "D128: the course leaves the dropdown",
+      "pass": true,
+      "said": "26ABSG"
+    },
+    {
+      "step": "D128: ⇅ Reorder courses lists it with ↺ Restore",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "D128: restored with its student and mark",
+      "pass": true,
+      "said": "crew ALPHA R3; ST-01 wedges [\"#000000\"]"
+    },
+    {
+      "step": "D129: Logout from another page asks first, over the Tracker tab",
+      "pass": true,
+      "said": "page tracker; \"You have unsaved chart edits on “2026”.\n\nSave them before logging out?\" [Stay / Discard them / Save them]"
+    },
+    {
+      "step": "D129: Stay keeps the session and the edit",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "D129: Discard logs out",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "D129: …and the next person does not find the draft",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "D129: Save them keeps the edit, saved",
+      "pass": true,
+      "said": ""
+    }
+  ],
+  "errors": []
+}

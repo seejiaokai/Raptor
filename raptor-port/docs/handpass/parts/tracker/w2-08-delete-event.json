@@ -1,0 +1,42 @@
+{
+  "rows": [
+    {
+      "step": "0. ACG-03 marked",
+      "note": "{\"wedges\":[\"#000000\",\"#1f6dff\"],\"overall\":\"OVERALL — STUDENT A 0.5% COMPLETE 1 DONE 209 REMAINING Flights 0/41 · 0% Acad / Spec 1/106\"}"
+    },
+    {
+      "step": "0b. in edit mode, ACG-03's arrows",
+      "note": "ACG-02→ACG-03, ACG-03→ACG-08"
+    },
+    {
+      "step": "1.1 the Delete tool asks, then removes ACG-03 and its arrows",
+      "pass": true,
+      "said": "{\"asked\":\"Delete ACG-03 from this syllabus? Cancel OK\",\"arrows\":\"ACG-02→ACG-03, ACG-03→ACG-08 → none\",\"status\":\"● 1 event deleted — Undo restores them\"}"
+    },
+    {
+      "step": "1.2 ↶ brings ACG-03 back in the same place, with its arrows and both marks",
+      "pass": true,
+      "said": "{\"tip\":\"Undo a chart edit (Ctrl+Z)\",\"arrows\":\"ACG-02→ACG-03, ACG-03→ACG-08\",\"wedges\":[\"#000000\",\"#1f6dff\"],\"place\":\"translate(331.0,307.0) → translate(331.0,307.0)\"}"
+    },
+    {
+      "step": "2.1 deleted, saved, reloaded: ACG-03 is gone",
+      "pass": true,
+      "said": "{\"overallAfterDelete\":\"OVERALL — STUDENT A 0.0% COMPLETE 0 DONE 209 REMAINING Flights 0/41 · 0% Acad / Spec 0/105\",\"overallAfterReload\":\"OVERALL — STUDENT A 0.0% COMPLETE 0 DONE 209 REMAINING Flights 0/41 · 0% Acad / Spec 0/105\"}"
+    },
+    {
+      "step": "3.0 + Acad asked",
+      "note": "Name for the new acad event: Cancel OK"
+    },
+    {
+      "step": "3.1 the NEW ball \"ACG-03\" starts with no marks (the old event's marks do not reappear)",
+      "pass": false,
+      "said": "{\"wedges\":[\"#000000\",\"#1f6dff\"],\"oldWere\":[\"#000000\",\"#1f6dff\"]}"
+    },
+    {
+      "step": "3.2 …and after Save changes and a reload it still has none",
+      "pass": false,
+      "said": "{\"wedges\":[\"#000000\",\"#1f6dff\"],\"popUp\":{\"count\":\"1\",\"list\":[\"ACG-03 23/09/26\"],\"failOn\":\"2026-09-23\",\"doneOn\":\"2026-09-23\",\"caption\":\"Done on\"},\"overall\":\"OVERALL — STUDENT A 0.5% COMPLETE 1 DONE 209 REMAINING Flights 0/41 · 0% Acad / Spec 1/106\"}"
+    }
+  ],
+  "errors": []
+}

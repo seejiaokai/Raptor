@@ -1,0 +1,13 @@
+{
+  "rows": [
+    {
+      "step": "1200px, arranging: the first structure edit does not grow the bar or move the chart",
+      "pass": false,
+      "said": "bar 51 → 87px; chart top 313 → 349; status \"● saved\""
+    },
+    {
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

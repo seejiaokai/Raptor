@@ -1,0 +1,139 @@
+{
+  "rows": [
+    {
+      "step": "desk: ☰ Show All is on the bar",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "desk: the phone's Show All tab is not drawn",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "desk 2026: every group in number order",
+      "pass": true,
+      "said": "45 groups, 210 rows"
+    },
+    {
+      "step": "desk 2026: group order",
+      "note": "ST ACG CFT T AVI IAT OPS TR(S) RDR EW AAW JMP EPT AAM TR EPE IEPE/IPC AAS INT(S) AHC BFM ACM(S) INT LASDT(S) LASDT ACM TI(S) DCA(S) TI DCA AGR AGD AGS AGW SA(S) SA NVG NTR(S) NTR SAN SAT(S) SAT SATN DAAR NAAR"
+    },
+    {
+      "step": "desk 2026: groups where ST-9-vs-ST-10 is exercised",
+      "note": "none (all zero-padded)"
+    },
+    {
+      "step": "desk 2024: every group in number order",
+      "pass": true,
+      "said": "45 groups, 212 rows"
+    },
+    {
+      "step": "desk 2024: group order",
+      "note": "ST ACG CFT T AVI IAT OPS TR(S) RDR EW AAW JMP EPT AAM TR EPE AAS INT(S) AHC BFM ACM(S) ACM INT TI(S) TI DCA(S) DCA AGR AGD LASDT(S) SA(S) LASDT AGS AGW SA NTR(S) NVG NTR SAN SAT(S) SAT SATN NAAR NAAR 2 DAAR"
+    },
+    {
+      "step": "desk 2024: groups where ST-9-vs-ST-10 is exercised",
+      "note": "none (all zero-padded)"
+    },
+    {
+      "step": "desk Tx 2026: every group in number order",
+      "pass": true,
+      "said": "43 groups, 200 rows"
+    },
+    {
+      "step": "desk Tx 2026: group order",
+      "note": "ST ACG CFT T AVI IAT OPS TR(S) RDR EW AAW JMP EPT AAM TR EPE IEPE/IPC AAS INT(S) AHC BFM ACM(S) INT LASDT(S) LASDT ACM TI(S) TI AGR AGD AGS AGW SA(S) SA NVG NTR(S) NTR SAN SAT(S) SAT SATN DAAR NAAR"
+    },
+    {
+      "step": "desk Tx 2026: groups where ST-9-vs-ST-10 is exercised",
+      "note": "none (all zero-padded)"
+    },
+    {
+      "step": "desk A/G - A/A 2026: every group in number order",
+      "pass": true,
+      "said": "46 groups, 211 rows"
+    },
+    {
+      "step": "desk A/G - A/A 2026: group order",
+      "note": "ST ACG CFT T AVI IAT OPS TR(S) RDR EPT JMP TR EW EPE AAS IEPE/IPC AAW AAM INT(S) AHC DAAR INT AGR LASDT(S) LASDT AGS AGD AGW SA(S) SA BFM ACM ACM(S) TI(S) TI DCA(S) DCA DAAR/NAAR NVG NTR(S) NTR SAN SAT(S) SAT SATN NAAR"
+    },
+    {
+      "step": "desk A/G - A/A 2026: groups where ST-9-vs-ST-10 is exercised",
+      "note": "none (all zero-padded)"
+    },
+    {
+      "step": "desk: typing \"ST\" shows the ST family alone",
+      "pass": true,
+      "said": "17 rows: ST-01,ST-02,ST-03,ST-04,ST-05,ST-06,ST-09,ST-10,ST-11,ST-12,ST-13,ST-14,ST-15,ST-16,ST-16B,ST-17,ST-18"
+    },
+    {
+      "step": "desk: …in number order",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "desk: typing \"acg\" (lower case) shows the ACG family",
+      "pass": true,
+      "said": "9 rows: ACG-01,ACG-02,ACG-03,ACG-04,ACG-05,ACG-06,ACG-07,ACG-08,ACG-09"
+    },
+    {
+      "step": "desk: a word (\"Welcome\") searches the names",
+      "pass": true,
+      "said": "ST-01 «ST-01 Squadron Welcomenot done Type: Lecture · 3.0 Hrs Crew:»"
+    },
+    {
+      "step": "desk: a crew word (\"FSI\") finds rows whose crew says so",
+      "pass": true,
+      "said": "45 rows, e.g. CFT-01,CFT-02,CFT-03,CFT-04,IAT-01"
+    },
+    {
+      "step": "desk: a search that matches nothing says so",
+      "pass": true,
+      "said": "No matches."
+    },
+    {
+      "step": "desk: Escape closes Show All",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "desk errors",
+      "note": "none"
+    },
+    {
+      "step": "phone: ☰ Show All is NOT on the bar",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "phone: the Show All tab is there",
+      "pass": true,
+      "said": "{\"x\":260.671875,\"y\":122.5,\"width\":121.328125,\"height\":30}"
+    },
+    {
+      "step": "phone: its title reads \"All events\" on one short line",
+      "pass": true,
+      "said": "{\"text\":\"All events\",\"h\":22,\"lineH\":22}"
+    },
+    {
+      "step": "phone: same grouping, number order",
+      "pass": true,
+      "said": "ST ACG CFT T AVI IAT OPS TR(S)"
+    },
+    {
+      "step": "phone: typing \"ACG\" shows that family",
+      "pass": true,
+      "said": "9 rows"
+    },
+    {
+      "step": "phone: Close shuts it",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "phone errors",
+      "note": "none"
+    }
+  ]
+}

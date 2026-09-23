@@ -1,0 +1,46 @@
+{
+  "rows": [
+    {
+      "step": "1. nothing unsaved: a reload asks nothing",
+      "pass": true,
+      "said": "[]"
+    },
+    {
+      "step": "2. unsaved edit made — ✓ Save changes shown",
+      "note": "1"
+    },
+    {
+      "step": "2. reload after \"stay\"",
+      "note": "did not complete (the page stayed): page.reload: Timeout 4000ms exceeded."
+    },
+    {
+      "step": "2. with an unsaved edit a reload ASKS first (beforeunload)",
+      "pass": true,
+      "said": "[\"beforeunload\"]"
+    },
+    {
+      "step": "2. …answering \"stay\" keeps the page and the edit",
+      "pass": true,
+      "said": "UNLOAD-1 1, Save 1"
+    },
+    {
+      "step": "3. answering \"leave\": the page reloads and the unsaved ball is gone",
+      "pass": true,
+      "said": "[\"beforeunload\"] · UNLOAD-1 0"
+    },
+    {
+      "step": "3. …the chart still draws and ⤢ Fit works (the lost ball's position does not upset it)",
+      "pass": true,
+      "said": "210 balls"
+    },
+    {
+      "step": "4. closing the tab with an unsaved edit asks first",
+      "pass": true,
+      "said": "[\"beforeunload\"]"
+    },
+    {
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

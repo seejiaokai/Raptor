@@ -6886,16 +6886,15 @@ screen:
   empty on a remount). Hidden it dozes (`.page.doze`); its document-level key
   and click listeners switch off while another tab is up (`App.jsx`'s `active`
   effect), so Escape/Delete on a Raptor page never reach the chart editor.
-- **Everyone edits; only the FILE portion is the admin's** (owner, 7 Sep 26,
-  his second word — "allowed for both admin and member for all access, except
-  the file portion which is admin only"). Marking, Edit mode, the Course and
-  Syllabus menus, students, dates, pace and lull periods behave exactly as in
-  the standalone app for every login. A member (and a logged-out session, and
-  an admin viewing as member) does not get the **File** menu — ⇪ Import,
-  ⤓ Export — and the entry points behind it refuse at the write path in
-  `core.js` (`fileLocked`); ✓ Save
-  changes stays for everyone (it writes flow edits to the store — nothing
-  else, since 9 Sep 26). Pins: `src/tracker/tracker.test.tsx`.
+- **Admin and member have the same access — the File menu too** (owner,
+  23 Sep 26 — D121: "For the tracker, admin and member should have the same
+  access authority", superseding the 7 Sep 26 second word's "…except the file
+  portion which is admin only"). Marking, Edit mode, the Course and Syllabus
+  menus, students, dates, pace, lull periods, ✓ Save changes AND the **File**
+  menu (⇪ Import, ⤓ Export) behave the same for every login, as in the
+  standalone app; the Tracker reads no role, and the admin's view-as flip
+  changes nothing on the tab. Pins: `src/tracker/tracker.test.tsx` (the
+  D121 block and the header's one bar).
 - **On a phone, ONE half at a time — and the switch rides the Tracker's own
   element.** Below 1050px the Flow chart / Info tabs show either the chart
   column or the side panel, never both stacked; the class that decides
@@ -7024,11 +7023,52 @@ screen:
   unchanged. With nobody in the bridge (a standalone Tracker) the dialog is
   byte-identical to the old prompt. A linked student's roster chip carries
   `.linked` (a small accent dot before the name) and the title "On the
-  squadron roster as <callsign>". Names containing a colon are refused at
-  every add/rename with one message. Pins: `tracker.test.tsx` (the live
+  squadron roster as <callsign>". A COURSE name containing a colon is refused
+  with one message; since 13 Sep 26 a student, syllabus or chart name may carry
+  one (a label, not a key — [TRK-CSID] §8). Pins: `tracker.test.tsx` (the live
   dialog render, order, narrowing, the linked chip, the refusal), the smoke
   suite (12 checks after the `addStudent` helper, incl. a real Export
   carrying `links`). Wiring: `docs/data-schema.md` §The person link.
+- **What the [HUMAN-RETEST] walk settled (23 Sep 26 — rulings D122–D129;
+  evidence `docs/handpass/2026-09-23-tracker.md`; pins `src/tracker/retest.test.tsx`).**
+  - **Event details belong to their chart (D126).** A detail typed on Tx stays on
+    Tx; every editor (the details window, Show All's row editor, the chart
+    editor's ball box) writes to the chart on screen only. A duplicate reads
+    exactly as its source, details included. **"Reset to doc"** refills the
+    boxes with the document's wording and saves nothing until Save (Cancel keeps
+    what was there); a ball the user made has no document and no button.
+  - **Files (D120's round trip).** An export carries each chart's OWN details; an
+    import writes details only into the charts brought in — the file's edit wins
+    where it speaks, nothing typed here is wiped (D122). A backup of EVERY chart
+    names the built-ins deleted when it was written, and they stay deleted
+    after the import (D127). Never-dragged balls export where the board draws
+    them. Each "already exists" question's third button reads **Skip this
+    one**; the closing report names what was skipped and what was kept
+    deleted. The Export done message says "a full backup" only for every chart
+    plus the students.
+  - **Marking.** Last Flown is the latest day actually flown, worked out from
+    the done flights; a correction or un-mark pulls it back; a day typed by
+    hand stands until a later flight (D123). A "Done on" box half-typed is
+    never a day. Deleting a ball says its marks go at ✓ Save changes, and they
+    do, in every course (D124), with the details typed on it (D130) and any
+    student's "last worked" pointer to it; a deleted-but-unsaved code cannot be
+    re-added until the save (+ Add and 📋 Edit events alike). An IMPORT never
+    deletes a mark: a ball the imported chart lacks keeps its marks out of sight
+    (D132). ↶ ↷ keep the chart's view. A lull period's × asks first;
+    Copy to… has a Select all row.
+  - **Courses and the session.** A deleted course waits in ⇅ Reorder courses
+    under "Deleted courses" with ↺ Restore — back under its own id, students and
+    marks intact (D128). Logout — the top bar's or the phone drawer's, ONE
+    function (`src/ui/logout.ts`) — asks Save them / Discard them / Stay when
+    chart edits are unsaved, over the Tracker tab, before the session ends (D129).
+  - **Surfaces.** ✓ Save changes is the far-right item of its row, desktop and
+    phone; on a desktop the save corner is one fixed width (the status words
+    shorten, whole on hover), so the first edit never wraps the bar. The details
+    bubble goes when the phone switches half or the tab leaves the screen. Back
+    on the Flow half the chart re-fits. The grading pop-up stays on screen and
+    scrolls inside itself when taller than it; the phone's room below the last
+    event is a spacer inside the chart box, so a phone on its side keeps the
+    zoom control on screen.
 
 ## OIL on the schedule: the "OIL Earn" mode and the green edge (owner, 21 Sep 26)
 

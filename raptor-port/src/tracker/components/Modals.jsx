@@ -55,8 +55,14 @@ export function DlgModal() {
   const pick = key => core.dlgClose({ pick: key });
   return (
     <>
-      <div className="overlay" id="dlgOverlay" style={{ zIndex: 70, display: 'block' }} onClick={cancel}></div>
-      <div className="modal" id="dlgModal" style={{ zIndex: 71, width: 'min(420px, 92vw)', display: 'block' }}>
+      {/* The TOP of the Tracker's ladder (100/101): a question or a refusal is
+          always answered before anything under it, whichever window raised it.
+          At 70/71 it sat UNDER the Export window (90/91), Show All (80/81) and
+          the details window (90/91), so Export's "Tick at least one syllabus."
+          was drawn behind the window that asked it ([HUMAN-RETEST] Fable #6,
+          23 Sep 26). Raptor's own overlays (400+) stay above the whole tab. */}
+      <div className="overlay" id="dlgOverlay" style={{ zIndex: 100, display: 'block' }} onClick={cancel}></div>
+      <div className="modal" id="dlgModal" style={{ zIndex: 101, width: 'min(420px, 92vw)', display: 'block' }}>
         <div id="dlgMsg" style={{ fontSize: 13.5, whiteSpace: 'pre-wrap', marginBottom: 12 }}>{d.msg}</div>
         {list && (
           <>
@@ -89,7 +95,7 @@ export function DlgModal() {
             onKeyDown={e => { if (e.key === 'Enter') ok(); }} />
         )}
         <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-          {d.cancel && <button id="dlgCancel" onClick={cancel}>Cancel</button>}
+          {d.cancel && <button id="dlgCancel" onClick={cancel}>{d.cancelLabel || 'Cancel'}</button>}
           {d.alt && <button id="dlgAlt" onClick={() => core.dlgClose('__alt__')}>{d.alt}</button>}
           <button className="primary" id="dlgOk" onClick={ok}>{d.ok}</button>
         </div>
@@ -159,9 +165,14 @@ function InfoModalInner({ id }) {
   const [hrs, setHrs] = useState(init.hrs || '');
   const [crew, setCrew] = useState(init.crew || '');
   const [pre, setPre] = useState(init.pre || '');
-  const reset = async () => {
-    await core.resetInfo();
-    const d = core.infoFor(id);
+  /* "Reset to doc" puts the source document's wording back in the BOXES; Save
+     keeps it, Cancel drops it. It used to save on the press, so the Cancel
+     beside it cancelled nothing, and on a ball the user made — which has no
+     document — it blanked every field with no way back ([HUMAN-RETEST] w3-F4).
+     No document, no button. */
+  const hasDoc = core.hasDocInfo(id);
+  const reset = () => {
+    const d = core.docInfoFor(id);
     setName(d.name || ''); setFmtV(d.fmt || ''); setHrs(d.hrs || ''); setCrew(d.crew || ''); setPre(d.pre || '');
   };
   return (
@@ -171,12 +182,14 @@ function InfoModalInner({ id }) {
       <div className="modal" id="infoModal" style={{ zIndex: 91, width: 'min(440px,94vw)', display: 'block' }}>
         <h2 id="infoTitle">{id} — details</h2>
         <div className="field"><label>Name</label><input id="ifName" style={{ flex: 1 }} value={name} onChange={e => setName(e.target.value)} /></div>
-        <div className="field"><label>Type / format</label><input id="ifFmt" style={{ flex: 1 }} placeholder="e.g. Lecture, OFT/AMT, 2 x F-15" value={fmtV} onChange={e => setFmtV(e.target.value)} /></div>
+        <div className="field"><label>Type / format</label><input id="ifFmt" style={{ flex: 1 }} placeholder={core.FMT_HINT} value={fmtV} onChange={e => setFmtV(e.target.value)} /></div>
         <div className="field"><label>Hours</label><input id="ifHrs" style={{ width: 120 }} placeholder="e.g. 1.5 Hrs" value={hrs} onChange={e => setHrs(e.target.value)} /></div>
         <div className="field" style={{ alignItems: 'flex-start' }}><label>Crew</label><textarea id="ifCrew" placeholder="e.g. UP/UW, IP/IW/FSI" value={crew} onChange={e => setCrew(e.target.value)} /></div>
         <div className="field" style={{ alignItems: 'flex-start' }}><label>Prerequisites</label><textarea id="ifPre" placeholder="e.g. AVI-02, AVI-03, AVI-04" value={pre} onChange={e => setPre(e.target.value)} /></div>
         <div style={{ display: 'flex', gap: 8, marginTop: 12, justifyContent: 'flex-end' }}>
-          <button id="ifReset" title="Revert to the value from the source document" style={{ marginRight: 'auto' }} onClick={reset}>Reset to doc</button>
+          {hasDoc
+            ? <button id="ifReset" title="Put the source document's wording back in the boxes — Save keeps it, Cancel doesn't" style={{ marginRight: 'auto' }} onClick={reset}>Reset to doc</button>
+            : <span style={{ marginRight: 'auto' }} />}
           <button id="ifCancel" onClick={core.closeInfo}>Cancel</button>
           <button className="primary" id="ifSave" onClick={() => core.saveInfo({ name, fmt: fmtV, hrs, crew, pre })}>Save</button>
         </div>
@@ -250,12 +263,20 @@ function OrdModalInner({ mode }) {
   const cfg = ORD_MODES[mode] || ORD_MODES.syllabus;
   const [list, setList] = useState(() => cfg.read());
   const fromRef = useRef(null);
-  /* Deleted built-ins can only be restored for syllabi; courses and crew have
-     no shipped originals to come back from. */
-  /* deleted built-ins to offer for restore — {id,name} (§9 CSID2-09) */
-  const hid = mode === 'syllabus' ? core.hiddenBuiltins() : [];
+  /* What can come back: deleted built-in syllabi, and deleted courses (owner,
+     23 Sep 26 — D128; their records were always kept). Crew has none — a
+     removed student's marks are deleted, and the question says so. */
+  /* {id,name} each (§9 CSID2-09) */
+  const hid = mode === 'syllabus' ? core.hiddenBuiltins() : mode === 'course' ? core.deletedCourses() : [];
   const move = (i, j) => setList(l => { const a = [...l]; [a[i], a[j]] = [a[j], a[i]]; return a; });
   const restore = async item => {
+    if (mode === 'course') {
+      await core.restoreCourse(item.id);
+      /* the name may have gained "(restored)" beside a course made since */
+      const label = core.courseName(item.id) || item.name;
+      setList(l => (l.includes(label) ? l : [...l, label]));
+      return;
+    }
     await core.restoreHiddenSyl(item.id);
     /* the actual label may have gained a suffix (ensureUniqueLabel), so read it
        back rather than reuse the shipped name (review CSID-REV-11) */
@@ -294,12 +315,14 @@ function OrdModalInner({ mode }) {
         </div>
         {hid.length > 0 && (
           <div id="ordHiddenWrap" style={{ marginTop: 12 }}>
-            <div className="mini" style={{ marginBottom: 6 }}>Deleted built-in syllabi — restore to bring one back into the dropdown.</div>
+            <div className="mini" style={{ marginBottom: 6 }}>{mode === 'course'
+              ? 'Deleted courses — restore to bring one back into the dropdown, with its students and marks.'
+              : 'Deleted built-in syllabi — restore to bring one back into the dropdown.'}</div>
             <div id="ordHidden" style={{ maxHeight: '22vh', overflow: 'auto', border: '1px solid var(--line)', borderRadius: 8 }}>
               {hid.map(item => (
                 <div key={item.id} className="ordrow">
                   <span className="onm">{item.name}</span><span className="otag">deleted</span>
-                  <button title="Restore this built-in syllabus" onClick={() => restore(item)}>↺ Restore</button>
+                  <button title={mode === 'course' ? 'Restore this course' : 'Restore this built-in syllabus'} onClick={() => restore(item)}>↺ Restore</button>
                 </div>
               ))}
             </div>
@@ -350,7 +373,15 @@ function CopyModalInner() {
             ? '⚠ This copy will contain real names and marks. Only send it to someone entitled to see them.'
             : 'Names and marks stay out — safe to send.'}
         </div>
-        <div className="mini" style={{ marginBottom: 6 }}>Syllabi to include ({picked} ticked)</div>
+        {/* All / None (the [HUMAN-RETEST] walk, 23 Sep 26 — Fable #5): the list
+            still opens on the chart on screen (the 7 Aug safety default), but
+            the backup before the database move carries EVERY chart (D120), and
+            ticking them one by one is how one gets missed. */}
+        <div className="mini" style={{ marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ flex: 1 }}>Syllabi to include ({picked} ticked)</span>
+          <button className="sm" id="copyTickAll" onClick={() => core.setCopyPickAll(true)}>All</button>
+          <button className="sm" id="copyTickNone" onClick={() => core.setCopyPickAll(false)}>None</button>
+        </div>
         <div id="copySylList" style={{ maxHeight: '30vh', overflow: 'auto', border: '1px solid var(--line)', borderRadius: 8, padding: 6 }}>
           {ids.map(id => (
             <label key={id} style={{ display: 'block', padding: '2px 4px' }}>

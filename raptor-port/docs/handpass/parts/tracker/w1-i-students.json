@@ -1,0 +1,401 @@
+{
+  "rows": [
+    {
+      "step": "A: crew at start",
+      "note": "STUDENT A, STUDENT B"
+    },
+    {
+      "step": "A: + Add offered the roster",
+      "note": "Recon Pilot · OCU | Talisman Pilot · OCU | Wildcard Pilot · OCU … picked → \"RECON\""
+    },
+    {
+      "step": "A: two students added — one from the roster, one typed",
+      "pass": true,
+      "said": "STUDENT A, STUDENT B, RECON, TYPED ONE"
+    },
+    {
+      "step": "A: P — ACG-01 fails recorded",
+      "note": "2"
+    },
+    {
+      "step": "A: T — ST-01 fails recorded",
+      "note": "1"
+    },
+    {
+      "step": "A: P on screen",
+      "note": "{\"overall\":\"1.4% COMPLETE 3 DONE 206 REMAINING\",\"lastSyll\":\"2026-09-15\",\"lastCurr\":\"2026-09-16\",\"downDays\":\"3\",\"upchit\":\"2026-09-20\",\"daysSince\":\"Days since syllabus 8d Days since currency 7d (−3 down = 4d)\",\"epw\":\"3.5\",\"endA\":\"2026-12-01\",\"endB\":\"2027-01-15\",\"paceCard\":\"SET PACE /wk 14/11/27 projected end END DATE A 22.5 /wk req. pace END DATE B 13.2 /wk req. pace\",\"fails\":[\"ACG-01 — 1st failure on ACG-01 · 05/09/26\",\"ACG-01X — 2nd failure on ACG-01 · 10/09/26\"],\"lulls\":\"28/09/26 → 02/10/26 ×\"} {\"linked\":true,\"title\":\"On the squadron roster as Recon\"}"
+    },
+    {
+      "step": "A: P ACG-01 bubble",
+      "note": "ACG-01 Course Introduction and Aircraft Overview Type: Lecture · 1.5 Hrs Prerequisites: ST-01 RECON: Marginal on 12/09/26 Failed: ACG-01 05/09/26 · ACG-01X 10/09/26"
+    },
+    {
+      "step": "13 / R19: the suggested file name says WITH-STUDENTS",
+      "pass": true,
+      "said": "OCU-syllabus-WITH-STUDENTS-2026-09-23.json"
+    },
+    {
+      "step": "13 / R18: the done message warns the file holds names and marks",
+      "pass": true,
+      "said": "Exported as “OCU-syllabus-WITH-STUDENTS-2026-09-23.json”. It CONTAINS student names and marks — a full backup; only send it to someone entitled to see them. OK"
+    },
+    {
+      "step": "13 / R35: P in the file",
+      "note": "roster entry {\"id\":\"smudrxzlvxproqd\",\"name\":\"RECON\",\"pid\":\"prism\"}; ST-01 mark {\"g\":\"dco\",\"f\":0,\"d\":\"2026-09-01\",\"at\":\"2026-09-23T07:21:19.618Z\",\"by\":\"Admin\"}"
+    },
+    {
+      "step": "13 / R35: a mark in the file carries who and when (by / at)",
+      "pass": true,
+      "said": "{\"g\":\"dco\",\"f\":0,\"d\":\"2026-09-01\",\"at\":\"2026-09-23T07:21:19.618Z\",\"by\":\"Admin\"}"
+    },
+    {
+      "step": "B: crew in the wiped app",
+      "note": "STUDENT A, STUDENT B"
+    },
+    {
+      "step": "13 / R16: the import asks ONCE whether to bring the students and marks in too",
+      "pass": true,
+      "said": "This file also contains students and marks. Bring them in too? A student already here who is ALSO in the file will have their marks replaced by the file’s. Anyone the file does not name keeps theirs, untouched."
+    },
+    {
+      "step": "13 / R23: the question says a student ALSO in the file has their marks replaced; anyone not named keeps theirs",
+      "pass": true,
+      "said": "This file also contains students and marks. Bring them in too? A student already here who is ALSO in the file will have their marks replaced by the file’s. Anyone the file does not name keeps theirs, untouched."
+    },
+    {
+      "step": "B: the closing message",
+      "note": "Brought in 2024, 2026, Tx 2026, A/G - A/A 2026 · students & marks restored. It is saved."
+    },
+    {
+      "step": "13 / R21: the file's students land on the SAME students — no name twice on the course",
+      "pass": true,
+      "said": "A: STUDENT A, STUDENT B, RECON, TYPED ONE  |  B: STUDENT A, STUDENT B, RECON, TYPED ONE"
+    },
+    {
+      "step": "13: P (from the roster: RECON) — everything on screen matches after export → wipe → import",
+      "pass": true,
+      "said": "4 events, currency, pace, failures, lulls, chip — identical"
+    },
+    {
+      "step": "13: T (typed: TYPED ONE) — everything on screen matches after export → wipe → import",
+      "pass": true,
+      "said": "4 events, currency, pace, failures, lulls, chip — identical"
+    },
+    {
+      "step": "13: STUDENT A (the demo name, matched by name) — everything on screen matches after export → wipe → import",
+      "pass": true,
+      "said": "4 events, currency, pace, failures, lulls, chip — identical"
+    },
+    {
+      "step": "13: the new course 27TEST came in",
+      "pass": true,
+      "said": "26ABSG, 27TEST"
+    },
+    {
+      "step": "13: C STUDENT on 27TEST — everything on screen matches after export → wipe → import",
+      "pass": true,
+      "said": "4 events, currency, pace, failures, lulls, chip — identical"
+    },
+    {
+      "step": "13 / R16: answering No — the closing message says marks are untouched",
+      "pass": true,
+      "said": "Brought in 2024, 2026, Tx 2026, A/G - A/A 2026. Everyone’s marks are untouched. It is saved."
+    },
+    {
+      "step": "13 / R17: No → nobody from the file added to the course",
+      "pass": true,
+      "said": "STUDENT A, STUDENT B"
+    },
+    {
+      "step": "13 / R16: No → the file's course 27TEST is not added",
+      "pass": true,
+      "said": "26ABSG"
+    },
+    {
+      "step": "13 / R17: No → STUDENT A's own marks untouched (and the file's mark for her did not come in)",
+      "pass": true,
+      "said": "ST-01 \"ST-01 Squadron Welcome Type: Lecture · 3.0 Hrs\" · ST-02 \"ST-02 Checklist Introduction Type: Lecture · 0.5 Hrs STUDENT A: DPCO on 21/09/26\""
+    }
+  ],
+  "P": "RECON",
+  "T": "TYPED ONE",
+  "snapA": {
+    "P": {
+      "ev": {
+        "ST-01": "ST-01 Squadron Welcome Type: Lecture · 3.0 Hrs RECON: DCO on 01/09/26",
+        "ST-02": "ST-02 Checklist Introduction Type: Lecture · 0.5 Hrs RECON: DPCO on 23/09/26",
+        "ACG-01": "ACG-01 Course Introduction and Aircraft Overview Type: Lecture · 1.5 Hrs Prerequisites: ST-01 RECON: Marginal on 12/09/26 Failed: ACG-01 05/09/26 · ACG-01X 10/09/26",
+        "ACG-02": "ACG-02 Propulsion System Type: Lecture · 4.0 Hrs Prerequisites: ACG-01, ST-02 RECON: N.A."
+      },
+      "side": {
+        "overall": "1.4% COMPLETE 3 DONE 206 REMAINING",
+        "lastSyll": "2026-09-15",
+        "lastCurr": "2026-09-16",
+        "downDays": "3",
+        "upchit": "2026-09-20",
+        "daysSince": "Days since syllabus 8d Days since currency 7d (−3 down = 4d)",
+        "epw": "3.5",
+        "endA": "2026-12-01",
+        "endB": "2027-01-15",
+        "paceCard": "SET PACE /wk 14/11/27 projected end END DATE A 22.5 /wk req. pace END DATE B 13.2 /wk req. pace",
+        "fails": [
+          "ACG-01 — 1st failure on ACG-01 · 05/09/26",
+          "ACG-01X — 2nd failure on ACG-01 · 10/09/26"
+        ],
+        "lulls": "28/09/26 → 02/10/26 ×"
+      },
+      "chip": {
+        "linked": true,
+        "title": "On the squadron roster as Recon"
+      }
+    },
+    "T": {
+      "ev": {
+        "ST-01": "ST-01 Squadron Welcome Type: Lecture · 3.0 Hrs TYPED ONE: Marginal on 18/08/26 Failed: ST-01 20/08/26",
+        "ST-02": "ST-02 Checklist Introduction Type: Lecture · 0.5 Hrs",
+        "ACG-01": "ACG-01 Course Introduction and Aircraft Overview Type: Lecture · 1.5 Hrs Prerequisites: ST-01 TYPED ONE: DCO on 25/08/26",
+        "ACG-02": "ACG-02 Propulsion System Type: Lecture · 4.0 Hrs Prerequisites: ACG-01, ST-02"
+      },
+      "side": {
+        "overall": "1.0% COMPLETE 2 DONE 208 REMAINING",
+        "lastSyll": "2026-08-30",
+        "lastCurr": "2026-08-31",
+        "downDays": "1",
+        "upchit": "",
+        "daysSince": "Days since syllabus 24d Days since currency 23d (−1 down = 22d)",
+        "epw": "1.5",
+        "endA": "2027-03-01",
+        "endB": "2027-04-01",
+        "paceCard": "SET PACE /wk 21/05/29 projected end END DATE A 9.2 /wk req. pace END DATE B 7.7 /wk req. pace",
+        "fails": [
+          "ST-01 — 1st failure on ST-01 · 20/08/26"
+        ],
+        "lulls": "14/09/26 → 18/09/26 ×"
+      },
+      "chip": {
+        "linked": false,
+        "title": null
+      }
+    },
+    "SA": {
+      "ev": {
+        "ST-01": "ST-01 Squadron Welcome Type: Lecture · 3.0 Hrs STUDENT A: DCO on 02/09/26",
+        "ST-02": "ST-02 Checklist Introduction Type: Lecture · 0.5 Hrs",
+        "ACG-01": "ACG-01 Course Introduction and Aircraft Overview Type: Lecture · 1.5 Hrs Prerequisites: ST-01",
+        "ACG-02": "ACG-02 Propulsion System Type: Lecture · 4.0 Hrs Prerequisites: ACG-01, ST-02"
+      },
+      "side": {
+        "overall": "0.5% COMPLETE 1 DONE 209 REMAINING",
+        "lastSyll": "",
+        "lastCurr": "",
+        "downDays": "",
+        "upchit": "",
+        "daysSince": "Days since syllabus — Days since currency —",
+        "epw": "2",
+        "endA": "",
+        "endB": "",
+        "paceCard": "SET PACE /wk 24/09/28 projected end END DATE A — req. pace END DATE B — req. pace",
+        "fails": [],
+        "lulls": "none"
+      },
+      "chip": {
+        "linked": false,
+        "title": null
+      }
+    }
+  },
+  "snapB": {
+    "P": {
+      "ev": {
+        "ST-01": "ST-01 Squadron Welcome Type: Lecture · 3.0 Hrs RECON: DCO on 01/09/26",
+        "ST-02": "ST-02 Checklist Introduction Type: Lecture · 0.5 Hrs RECON: DPCO on 23/09/26",
+        "ACG-01": "ACG-01 Course Introduction and Aircraft Overview Type: Lecture · 1.5 Hrs Prerequisites: ST-01 RECON: Marginal on 12/09/26 Failed: ACG-01 05/09/26 · ACG-01X 10/09/26",
+        "ACG-02": "ACG-02 Propulsion System Type: Lecture · 4.0 Hrs Prerequisites: ACG-01, ST-02 RECON: N.A."
+      },
+      "side": {
+        "overall": "1.4% COMPLETE 3 DONE 206 REMAINING",
+        "lastSyll": "2026-09-15",
+        "lastCurr": "2026-09-16",
+        "downDays": "3",
+        "upchit": "2026-09-20",
+        "daysSince": "Days since syllabus 8d Days since currency 7d (−3 down = 4d)",
+        "epw": "3.5",
+        "endA": "2026-12-01",
+        "endB": "2027-01-15",
+        "paceCard": "SET PACE /wk 14/11/27 projected end END DATE A 22.5 /wk req. pace END DATE B 13.2 /wk req. pace",
+        "fails": [
+          "ACG-01 — 1st failure on ACG-01 · 05/09/26",
+          "ACG-01X — 2nd failure on ACG-01 · 10/09/26"
+        ],
+        "lulls": "28/09/26 → 02/10/26 ×"
+      },
+      "chip": {
+        "linked": true,
+        "title": "On the squadron roster as Recon"
+      }
+    },
+    "T": {
+      "ev": {
+        "ST-01": "ST-01 Squadron Welcome Type: Lecture · 3.0 Hrs TYPED ONE: Marginal on 18/08/26 Failed: ST-01 20/08/26",
+        "ST-02": "ST-02 Checklist Introduction Type: Lecture · 0.5 Hrs",
+        "ACG-01": "ACG-01 Course Introduction and Aircraft Overview Type: Lecture · 1.5 Hrs Prerequisites: ST-01 TYPED ONE: DCO on 25/08/26",
+        "ACG-02": "ACG-02 Propulsion System Type: Lecture · 4.0 Hrs Prerequisites: ACG-01, ST-02"
+      },
+      "side": {
+        "overall": "1.0% COMPLETE 2 DONE 208 REMAINING",
+        "lastSyll": "2026-08-30",
+        "lastCurr": "2026-08-31",
+        "downDays": "1",
+        "upchit": "",
+        "daysSince": "Days since syllabus 24d Days since currency 23d (−1 down = 22d)",
+        "epw": "1.5",
+        "endA": "2027-03-01",
+        "endB": "2027-04-01",
+        "paceCard": "SET PACE /wk 21/05/29 projected end END DATE A 9.2 /wk req. pace END DATE B 7.7 /wk req. pace",
+        "fails": [
+          "ST-01 — 1st failure on ST-01 · 20/08/26"
+        ],
+        "lulls": "14/09/26 → 18/09/26 ×"
+      },
+      "chip": {
+        "linked": false,
+        "title": null
+      }
+    },
+    "SA": {
+      "ev": {
+        "ST-01": "ST-01 Squadron Welcome Type: Lecture · 3.0 Hrs STUDENT A: DCO on 02/09/26",
+        "ST-02": "ST-02 Checklist Introduction Type: Lecture · 0.5 Hrs",
+        "ACG-01": "ACG-01 Course Introduction and Aircraft Overview Type: Lecture · 1.5 Hrs Prerequisites: ST-01",
+        "ACG-02": "ACG-02 Propulsion System Type: Lecture · 4.0 Hrs Prerequisites: ACG-01, ST-02"
+      },
+      "side": {
+        "overall": "0.5% COMPLETE 1 DONE 209 REMAINING",
+        "lastSyll": "",
+        "lastCurr": "",
+        "downDays": "",
+        "upchit": "",
+        "daysSince": "Days since syllabus — Days since currency —",
+        "epw": "2",
+        "endA": "",
+        "endB": "",
+        "paceCard": "SET PACE /wk 24/09/28 projected end END DATE A — req. pace END DATE B — req. pace",
+        "fails": [],
+        "lulls": "none"
+      },
+      "chip": {
+        "linked": false,
+        "title": null
+      }
+    }
+  },
+  "askedB": [
+    {
+      "msg": "“2024” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“Tx 2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“A/G - A/A 2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "This file also contains students and marks. Bring them in too? A student already here who is ALSO in the file will have their marks replaced by the file’s. Anyone the file does not name keeps theirs, untouched.",
+      "btns": [
+        "Cancel",
+        "OK"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "Brought in 2024, 2026, Tx 2026, A/G - A/A 2026 · students & marks restored. It is saved.",
+      "btns": [
+        "OK"
+      ],
+      "ans": "ok"
+    }
+  ],
+  "askedC": [
+    {
+      "msg": "“2024” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“Tx 2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“A/G - A/A 2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "This file also contains students and marks. Bring them in too? A student already here who is ALSO in the file will have their marks replaced by the file’s. Anyone the file does not name keeps theirs, untouched.",
+      "btns": [
+        "Cancel",
+        "OK"
+      ],
+      "ans": "cancel"
+    },
+    {
+      "msg": "Brought in 2024, 2026, Tx 2026, A/G - A/A 2026. Everyone’s marks are untouched. It is saved.",
+      "btns": [
+        "OK"
+      ],
+      "ans": "ok"
+    }
+  ],
+  "errorsA": [],
+  "errorsB": [],
+  "errorsC": []
+}

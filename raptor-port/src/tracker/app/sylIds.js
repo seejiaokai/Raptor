@@ -188,9 +188,18 @@ export function buildUnionSylcat(chartsSylcat, studentsSylcat) {
    Returns { remapped: fileId→storeId, conflicts }. */
 export function reconcileSylIds(sylcat, existing) {
   const listIn = (sylcat || []).filter(isSylEntry);
+  /* A store chart the FILE also carries under a name the user gave it
+     (userNamed) takes that name on import (upsertSylEntry adopts it), so its
+     OLD name is free by the time the file's charts land. Matching against the
+     old name refused the whole post-wipe import when he had renamed the
+     built-in "2026" to "2026 OLD" and called a copy "2026" ([HUMAN-RETEST]
+     W1-6): the file's "2026" met the wiped app's built-in, still named "2026". */
+  const renamedByFile = Object.create(null);
+  for (const e of listIn) if (e.userNamed === true) renamedByFile[e.id] = e.name;
   const byName = Object.create(null), storeIds = new Set();
-  for (const e of (existing || [])) {
-    if (!isSylEntry(e)) continue;
+  for (const e0 of (existing || [])) {
+    if (!isSylEntry(e0)) continue;
+    const e = has(renamedByFile, e0.id) ? { ...e0, name: renamedByFile[e0.id] } : e0;
     if (!has(byName, e.name)) byName[e.name] = e;
     storeIds.add(e.id);
   }

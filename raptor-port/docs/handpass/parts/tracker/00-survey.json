@@ -1,0 +1,1390 @@
+{
+  "desk-admin": {
+    "inv": {
+      "ctl": [
+        {
+          "tag": "select",
+          "id": "activeSel",
+          "cls": "",
+          "text": "STUDENT A\nSTUDENT B",
+          "title": "",
+          "disabled": false,
+          "box": [
+            46,
+            67,
+            111,
+            30
+          ]
+        },
+        {
+          "tag": "select",
+          "id": "courseSel",
+          "cls": "",
+          "text": "26ABSG",
+          "title": "",
+          "disabled": false,
+          "box": [
+            204,
+            67,
+            89,
+            30
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "courseMenuBtn",
+          "cls": "sm icon",
+          "text": "✎",
+          "title": "Edit courses — add, rename, reorder or delete",
+          "disabled": false,
+          "box": [
+            301,
+            71,
+            32,
+            22
+          ]
+        },
+        {
+          "tag": "select",
+          "id": "sylSel",
+          "cls": "",
+          "text": "2024\n2026\nTx 2026\nA/G - A/A 2026",
+          "title": "",
+          "disabled": false,
+          "box": [
+            387,
+            67,
+            125,
+            30
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "sylMenuBtn",
+          "cls": "sm icon",
+          "text": "✎",
+          "title": "Edit the syllabus — chart layout, duplicate, rename, reorder or delete",
+          "disabled": false,
+          "box": [
+            520,
+            71,
+            32,
+            22
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "detailsBtn",
+          "cls": "sm icon",
+          "text": "ⓘ",
+          "title": "Show each event's title, type, crew & prerequisites on hover (tap on a phone) — ",
+          "disabled": false,
+          "box": [
+            560,
+            71,
+            32,
+            22
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "trUndoBtn",
+          "cls": "sm icon",
+          "text": "↶",
+          "title": "Nothing to undo",
+          "disabled": true,
+          "box": [
+            600,
+            71,
+            29,
+            22
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "trRedoBtn",
+          "cls": "sm icon",
+          "text": "↷",
+          "title": "Nothing to redo",
+          "disabled": true,
+          "box": [
+            637,
+            71,
+            29,
+            22
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "showAllBtn",
+          "cls": "sm",
+          "text": "☰ Show All",
+          "title": "Show name, crew & prerequisites for every event",
+          "disabled": false,
+          "box": [
+            674,
+            71,
+            71,
+            23
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "fileMenuBtn",
+          "cls": "sm",
+          "text": "⇪ File ▾",
+          "title": "Bring a file in, or export a copy",
+          "disabled": false,
+          "box": [
+            753,
+            72,
+            56,
+            21
+          ]
+        },
+        {
+          "tag": "input",
+          "id": "hSearch",
+          "cls": "",
+          "text": "",
+          "title": "",
+          "disabled": false,
+          "box": [
+            817,
+            70,
+            112,
+            24
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "hSearchClear",
+          "cls": "sm",
+          "text": "✕",
+          "title": "Clear the search",
+          "disabled": false,
+          "box": [
+            934,
+            71,
+            23,
+            23
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "barHideBtn",
+          "cls": "sm icon barhide",
+          "text": "⌃",
+          "title": "Hide this bar to make more room for the chart",
+          "disabled": false,
+          "box": [
+            970,
+            71,
+            26,
+            22
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "fzOut",
+          "cls": "",
+          "text": "−",
+          "title": "Zoom out",
+          "disabled": false,
+          "box": [
+            47,
+            872,
+            26,
+            23
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "fzIn",
+          "cls": "",
+          "text": "+",
+          "title": "Zoom in",
+          "disabled": false,
+          "box": [
+            119,
+            872,
+            26,
+            23
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "fzReset",
+          "cls": "sm",
+          "text": "reset",
+          "title": "Reset zoom",
+          "disabled": false,
+          "box": [
+            149,
+            874,
+            42,
+            19
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "ordCrew",
+          "cls": "sm",
+          "text": "⇅ Reorder",
+          "title": "Change the order crew appear in the dropdown and which slice of every ball is th",
+          "disabled": false,
+          "box": [
+            1300,
+            157,
+            67,
+            21
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "addStu",
+          "cls": "sm",
+          "text": "+ Add",
+          "title": "",
+          "disabled": false,
+          "box": [
+            1372,
+            157,
+            44,
+            21
+          ]
+        },
+        {
+          "tag": "input",
+          "id": "lastSyll",
+          "cls": "",
+          "text": "",
+          "title": "",
+          "disabled": false,
+          "box": [
+            1242,
+            990,
+            126,
+            31
+          ]
+        },
+        {
+          "tag": "input",
+          "id": "lastCurr",
+          "cls": "",
+          "text": "",
+          "title": "",
+          "disabled": false,
+          "box": [
+            1242,
+            1025,
+            126,
+            31
+          ]
+        },
+        {
+          "tag": "input",
+          "id": "downDays",
+          "cls": "",
+          "text": "",
+          "title": "",
+          "disabled": false,
+          "box": [
+            1242,
+            1061,
+            80,
+            28
+          ]
+        },
+        {
+          "tag": "input",
+          "id": "upchit",
+          "cls": "",
+          "text": "",
+          "title": "",
+          "disabled": false,
+          "box": [
+            1242,
+            1094,
+            126,
+            31
+          ]
+        },
+        {
+          "tag": "input",
+          "id": "epwIn",
+          "cls": "",
+          "text": "2",
+          "title": "",
+          "disabled": false,
+          "box": [
+            1125,
+            1408,
+            52,
+            28
+          ]
+        },
+        {
+          "tag": "input",
+          "id": "targetIn",
+          "cls": "",
+          "text": "",
+          "title": "",
+          "disabled": false,
+          "box": [
+            1125,
+            1487,
+            127,
+            31
+          ]
+        },
+        {
+          "tag": "input",
+          "id": "targetIn2",
+          "cls": "",
+          "text": "",
+          "title": "",
+          "disabled": false,
+          "box": [
+            1280,
+            1487,
+            127,
+            31
+          ]
+        },
+        {
+          "tag": "span",
+          "id": "failTitle",
+          "cls": "failTitle",
+          "text": "FAILURES",
+          "title": "Every failure with its date",
+          "disabled": false,
+          "box": [
+            1115,
+            1647,
+            55,
+            16
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "setLullBtn",
+          "cls": "sm",
+          "text": "+ Set lull period",
+          "title": "",
+          "disabled": false,
+          "box": [
+            1115,
+            1772,
+            92,
+            21
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "copyLullBtn",
+          "cls": "sm",
+          "text": "⧉ Copy to…",
+          "title": "Copy these periods onto other students",
+          "disabled": false,
+          "box": [
+            1213,
+            1772,
+            79,
+            21
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "szOut",
+          "cls": "",
+          "text": "−",
+          "title": "Zoom out",
+          "disabled": false,
+          "box": [
+            1288,
+            872,
+            26,
+            23
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "szIn",
+          "cls": "",
+          "text": "+",
+          "title": "Zoom in",
+          "disabled": false,
+          "box": [
+            1360,
+            872,
+            26,
+            23
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "szReset",
+          "cls": "sm",
+          "text": "reset",
+          "title": "Reset zoom",
+          "disabled": false,
+          "box": [
+            1391,
+            874,
+            42,
+            19
+          ]
+        }
+      ],
+      "balls": 210,
+      "bodyCls": "tr-on",
+      "trCls": "page on"
+    },
+    "st": {
+      "course": "26ABSG",
+      "syl": "2026",
+      "courses": [],
+      "syls": [],
+      "roster": [],
+      "events": 0
+    },
+    "errors": []
+  },
+  "phone-admin": {
+    "inv": {
+      "ctl": [
+        {
+          "tag": "select",
+          "id": "activeSel",
+          "cls": "",
+          "text": "STUDENT A\nSTUDENT B",
+          "title": "",
+          "disabled": false,
+          "box": [
+            8,
+            54,
+            88,
+            26
+          ]
+        },
+        {
+          "tag": "select",
+          "id": "courseSel",
+          "cls": "",
+          "text": "26ABSG",
+          "title": "",
+          "disabled": false,
+          "box": [
+            102,
+            54,
+            81,
+            26
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "courseMenuBtn",
+          "cls": "sm icon",
+          "text": "✎",
+          "title": "Edit courses — add, rename, reorder or delete",
+          "disabled": false,
+          "box": [
+            189,
+            56,
+            28,
+            22
+          ]
+        },
+        {
+          "tag": "select",
+          "id": "sylSel",
+          "cls": "",
+          "text": "2024\n2026\nTx 2026\nA/G - A/A 2026",
+          "title": "",
+          "disabled": false,
+          "box": [
+            223,
+            54,
+            88,
+            26
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "sylMenuBtn",
+          "cls": "sm icon",
+          "text": "✎",
+          "title": "Edit the syllabus — chart layout, duplicate, rename, reorder or delete",
+          "disabled": false,
+          "box": [
+            317,
+            56,
+            28,
+            22
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "detailsBtn",
+          "cls": "sm icon",
+          "text": "ⓘ",
+          "title": "Show each event's title, type, crew & prerequisites on hover (tap on a phone) — ",
+          "disabled": false,
+          "box": [
+            351,
+            56,
+            28,
+            22
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "trUndoBtn",
+          "cls": "sm icon",
+          "text": "↶",
+          "title": "Nothing to undo",
+          "disabled": true,
+          "box": [
+            8,
+            88,
+            25,
+            22
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "trRedoBtn",
+          "cls": "sm icon",
+          "text": "↷",
+          "title": "Nothing to redo",
+          "disabled": true,
+          "box": [
+            39,
+            88,
+            25,
+            22
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "fileMenuBtn",
+          "cls": "sm",
+          "text": "⇪ File ▾",
+          "title": "Bring a file in, or export a copy",
+          "disabled": false,
+          "box": [
+            71,
+            89,
+            54,
+            21
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "hSearchBtn",
+          "cls": "sm",
+          "text": "🔍",
+          "title": "Find an event on the chart",
+          "disabled": false,
+          "box": [
+            130,
+            88,
+            29,
+            23
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "barHideBtn",
+          "cls": "sm icon barhide",
+          "text": "⌃",
+          "title": "Hide this bar to make more room for the chart",
+          "disabled": false,
+          "box": [
+            165,
+            88,
+            22,
+            22
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "cls": "active",
+          "text": "🗺 Flow chart",
+          "title": "",
+          "disabled": false,
+          "box": [
+            8,
+            123,
+            121,
+            30
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "cls": "",
+          "text": "ⓘ Info",
+          "title": "",
+          "disabled": false,
+          "box": [
+            134,
+            123,
+            121,
+            30
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "showAllTab",
+          "cls": "",
+          "text": "☰ Show All",
+          "title": "",
+          "disabled": false,
+          "box": [
+            261,
+            123,
+            121,
+            30
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "fzOut",
+          "cls": "",
+          "text": "−",
+          "title": "Zoom out",
+          "disabled": false,
+          "box": [
+            7,
+            816,
+            26,
+            23
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "fzIn",
+          "cls": "",
+          "text": "+",
+          "title": "Zoom in",
+          "disabled": false,
+          "box": [
+            79,
+            816,
+            26,
+            23
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "fzReset",
+          "cls": "sm",
+          "text": "reset",
+          "title": "Reset zoom",
+          "disabled": false,
+          "box": [
+            109,
+            818,
+            42,
+            19
+          ]
+        }
+      ],
+      "balls": 210,
+      "bodyCls": "tr-on",
+      "trCls": "page on"
+    },
+    "st": {
+      "course": "26ABSG",
+      "syl": "2026",
+      "courses": [],
+      "syls": [],
+      "roster": [],
+      "events": 0
+    },
+    "errors": []
+  },
+  "desk-member": {
+    "inv": {
+      "ctl": [
+        {
+          "tag": "select",
+          "id": "activeSel",
+          "cls": "",
+          "text": "STUDENT A\nSTUDENT B",
+          "title": "",
+          "disabled": false,
+          "box": [
+            46,
+            67,
+            111,
+            30
+          ]
+        },
+        {
+          "tag": "select",
+          "id": "courseSel",
+          "cls": "",
+          "text": "26ABSG",
+          "title": "",
+          "disabled": false,
+          "box": [
+            204,
+            67,
+            89,
+            30
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "courseMenuBtn",
+          "cls": "sm icon",
+          "text": "✎",
+          "title": "Edit courses — add, rename, reorder or delete",
+          "disabled": false,
+          "box": [
+            301,
+            71,
+            32,
+            22
+          ]
+        },
+        {
+          "tag": "select",
+          "id": "sylSel",
+          "cls": "",
+          "text": "2024\n2026\nTx 2026\nA/G - A/A 2026",
+          "title": "",
+          "disabled": false,
+          "box": [
+            387,
+            67,
+            125,
+            30
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "sylMenuBtn",
+          "cls": "sm icon",
+          "text": "✎",
+          "title": "Edit the syllabus — chart layout, duplicate, rename, reorder or delete",
+          "disabled": false,
+          "box": [
+            520,
+            71,
+            32,
+            22
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "detailsBtn",
+          "cls": "sm icon",
+          "text": "ⓘ",
+          "title": "Show each event's title, type, crew & prerequisites on hover (tap on a phone) — ",
+          "disabled": false,
+          "box": [
+            560,
+            71,
+            32,
+            22
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "trUndoBtn",
+          "cls": "sm icon",
+          "text": "↶",
+          "title": "Nothing to undo",
+          "disabled": true,
+          "box": [
+            600,
+            71,
+            29,
+            22
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "trRedoBtn",
+          "cls": "sm icon",
+          "text": "↷",
+          "title": "Nothing to redo",
+          "disabled": true,
+          "box": [
+            637,
+            71,
+            29,
+            22
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "showAllBtn",
+          "cls": "sm",
+          "text": "☰ Show All",
+          "title": "Show name, crew & prerequisites for every event",
+          "disabled": false,
+          "box": [
+            674,
+            71,
+            71,
+            23
+          ]
+        },
+        {
+          "tag": "input",
+          "id": "hSearch",
+          "cls": "",
+          "text": "",
+          "title": "",
+          "disabled": false,
+          "box": [
+            753,
+            70,
+            112,
+            24
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "hSearchClear",
+          "cls": "sm",
+          "text": "✕",
+          "title": "Clear the search",
+          "disabled": false,
+          "box": [
+            870,
+            71,
+            23,
+            23
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "barHideBtn",
+          "cls": "sm icon barhide",
+          "text": "⌃",
+          "title": "Hide this bar to make more room for the chart",
+          "disabled": false,
+          "box": [
+            906,
+            71,
+            26,
+            22
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "fzOut",
+          "cls": "",
+          "text": "−",
+          "title": "Zoom out",
+          "disabled": false,
+          "box": [
+            47,
+            872,
+            26,
+            23
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "fzIn",
+          "cls": "",
+          "text": "+",
+          "title": "Zoom in",
+          "disabled": false,
+          "box": [
+            119,
+            872,
+            26,
+            23
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "fzReset",
+          "cls": "sm",
+          "text": "reset",
+          "title": "Reset zoom",
+          "disabled": false,
+          "box": [
+            149,
+            874,
+            42,
+            19
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "ordCrew",
+          "cls": "sm",
+          "text": "⇅ Reorder",
+          "title": "Change the order crew appear in the dropdown and which slice of every ball is th",
+          "disabled": false,
+          "box": [
+            1300,
+            157,
+            67,
+            21
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "addStu",
+          "cls": "sm",
+          "text": "+ Add",
+          "title": "",
+          "disabled": false,
+          "box": [
+            1372,
+            157,
+            44,
+            21
+          ]
+        },
+        {
+          "tag": "input",
+          "id": "lastSyll",
+          "cls": "",
+          "text": "",
+          "title": "",
+          "disabled": false,
+          "box": [
+            1242,
+            990,
+            126,
+            31
+          ]
+        },
+        {
+          "tag": "input",
+          "id": "lastCurr",
+          "cls": "",
+          "text": "",
+          "title": "",
+          "disabled": false,
+          "box": [
+            1242,
+            1025,
+            126,
+            31
+          ]
+        },
+        {
+          "tag": "input",
+          "id": "downDays",
+          "cls": "",
+          "text": "",
+          "title": "",
+          "disabled": false,
+          "box": [
+            1242,
+            1061,
+            80,
+            28
+          ]
+        },
+        {
+          "tag": "input",
+          "id": "upchit",
+          "cls": "",
+          "text": "",
+          "title": "",
+          "disabled": false,
+          "box": [
+            1242,
+            1094,
+            126,
+            31
+          ]
+        },
+        {
+          "tag": "input",
+          "id": "epwIn",
+          "cls": "",
+          "text": "2",
+          "title": "",
+          "disabled": false,
+          "box": [
+            1125,
+            1408,
+            52,
+            28
+          ]
+        },
+        {
+          "tag": "input",
+          "id": "targetIn",
+          "cls": "",
+          "text": "",
+          "title": "",
+          "disabled": false,
+          "box": [
+            1125,
+            1487,
+            127,
+            31
+          ]
+        },
+        {
+          "tag": "input",
+          "id": "targetIn2",
+          "cls": "",
+          "text": "",
+          "title": "",
+          "disabled": false,
+          "box": [
+            1280,
+            1487,
+            127,
+            31
+          ]
+        },
+        {
+          "tag": "span",
+          "id": "failTitle",
+          "cls": "failTitle",
+          "text": "FAILURES",
+          "title": "Every failure with its date",
+          "disabled": false,
+          "box": [
+            1115,
+            1647,
+            55,
+            16
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "setLullBtn",
+          "cls": "sm",
+          "text": "+ Set lull period",
+          "title": "",
+          "disabled": false,
+          "box": [
+            1115,
+            1772,
+            92,
+            21
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "copyLullBtn",
+          "cls": "sm",
+          "text": "⧉ Copy to…",
+          "title": "Copy these periods onto other students",
+          "disabled": false,
+          "box": [
+            1213,
+            1772,
+            79,
+            21
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "szOut",
+          "cls": "",
+          "text": "−",
+          "title": "Zoom out",
+          "disabled": false,
+          "box": [
+            1288,
+            872,
+            26,
+            23
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "szIn",
+          "cls": "",
+          "text": "+",
+          "title": "Zoom in",
+          "disabled": false,
+          "box": [
+            1360,
+            872,
+            26,
+            23
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "szReset",
+          "cls": "sm",
+          "text": "reset",
+          "title": "Reset zoom",
+          "disabled": false,
+          "box": [
+            1391,
+            874,
+            42,
+            19
+          ]
+        }
+      ],
+      "balls": 210,
+      "bodyCls": "tr-on",
+      "trCls": "page on"
+    },
+    "st": {
+      "course": "26ABSG",
+      "syl": "2026",
+      "courses": [],
+      "syls": [],
+      "roster": [],
+      "events": 0
+    },
+    "errors": []
+  },
+  "phone-member": {
+    "inv": {
+      "ctl": [
+        {
+          "tag": "select",
+          "id": "activeSel",
+          "cls": "",
+          "text": "STUDENT A\nSTUDENT B",
+          "title": "",
+          "disabled": false,
+          "box": [
+            8,
+            54,
+            88,
+            26
+          ]
+        },
+        {
+          "tag": "select",
+          "id": "courseSel",
+          "cls": "",
+          "text": "26ABSG",
+          "title": "",
+          "disabled": false,
+          "box": [
+            102,
+            54,
+            81,
+            26
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "courseMenuBtn",
+          "cls": "sm icon",
+          "text": "✎",
+          "title": "Edit courses — add, rename, reorder or delete",
+          "disabled": false,
+          "box": [
+            189,
+            56,
+            28,
+            22
+          ]
+        },
+        {
+          "tag": "select",
+          "id": "sylSel",
+          "cls": "",
+          "text": "2024\n2026\nTx 2026\nA/G - A/A 2026",
+          "title": "",
+          "disabled": false,
+          "box": [
+            223,
+            54,
+            88,
+            26
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "sylMenuBtn",
+          "cls": "sm icon",
+          "text": "✎",
+          "title": "Edit the syllabus — chart layout, duplicate, rename, reorder or delete",
+          "disabled": false,
+          "box": [
+            317,
+            56,
+            28,
+            22
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "detailsBtn",
+          "cls": "sm icon",
+          "text": "ⓘ",
+          "title": "Show each event's title, type, crew & prerequisites on hover (tap on a phone) — ",
+          "disabled": false,
+          "box": [
+            351,
+            56,
+            28,
+            22
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "trUndoBtn",
+          "cls": "sm icon",
+          "text": "↶",
+          "title": "Nothing to undo",
+          "disabled": true,
+          "box": [
+            8,
+            88,
+            25,
+            22
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "trRedoBtn",
+          "cls": "sm icon",
+          "text": "↷",
+          "title": "Nothing to redo",
+          "disabled": true,
+          "box": [
+            39,
+            88,
+            25,
+            22
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "hSearchBtn",
+          "cls": "sm",
+          "text": "🔍",
+          "title": "Find an event on the chart",
+          "disabled": false,
+          "box": [
+            71,
+            88,
+            29,
+            23
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "barHideBtn",
+          "cls": "sm icon barhide",
+          "text": "⌃",
+          "title": "Hide this bar to make more room for the chart",
+          "disabled": false,
+          "box": [
+            106,
+            88,
+            22,
+            22
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "cls": "active",
+          "text": "🗺 Flow chart",
+          "title": "",
+          "disabled": false,
+          "box": [
+            8,
+            123,
+            121,
+            30
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "",
+          "cls": "",
+          "text": "ⓘ Info",
+          "title": "",
+          "disabled": false,
+          "box": [
+            134,
+            123,
+            121,
+            30
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "showAllTab",
+          "cls": "",
+          "text": "☰ Show All",
+          "title": "",
+          "disabled": false,
+          "box": [
+            261,
+            123,
+            121,
+            30
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "fzOut",
+          "cls": "",
+          "text": "−",
+          "title": "Zoom out",
+          "disabled": false,
+          "box": [
+            7,
+            816,
+            26,
+            23
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "fzIn",
+          "cls": "",
+          "text": "+",
+          "title": "Zoom in",
+          "disabled": false,
+          "box": [
+            79,
+            816,
+            26,
+            23
+          ]
+        },
+        {
+          "tag": "button",
+          "id": "fzReset",
+          "cls": "sm",
+          "text": "reset",
+          "title": "Reset zoom",
+          "disabled": false,
+          "box": [
+            109,
+            818,
+            42,
+            19
+          ]
+        }
+      ],
+      "balls": 210,
+      "bodyCls": "tr-on",
+      "trCls": "page on"
+    },
+    "st": {
+      "course": "26ABSG",
+      "syl": "2026",
+      "courses": [],
+      "syls": [],
+      "roster": [],
+      "events": 0
+    },
+    "errors": []
+  }
+}

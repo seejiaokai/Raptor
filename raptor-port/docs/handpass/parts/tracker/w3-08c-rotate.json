@@ -1,0 +1,26 @@
+{
+  "rows": [
+    {
+      "step": "control — turned sideways on the Flow tab",
+      "note": "40% → 92%"
+    },
+    {
+      "step": "control — and back upright",
+      "note": "40%"
+    },
+    {
+      "step": "turned sideways ON THE INFO TAB, then Flow: the chart takes the landscape fit",
+      "pass": false,
+      "said": "landscape fit is 92%; got {\"chart\":\"40%\",\"sw\":844,\"cw\":844}"
+    },
+    {
+      "step": "a tap on ST-01 still opens the grading pop-up",
+      "pass": true,
+      "said": "{\"x\":216,\"y\":-128,\"w\":210,\"h\":378,\"r\":426,\"b\":250}"
+    },
+    {
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

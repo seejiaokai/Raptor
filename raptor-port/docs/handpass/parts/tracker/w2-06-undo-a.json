@@ -1,0 +1,115 @@
+{
+  "rows": [
+    {
+      "step": "A.1 member: ↶ ↷ are on the bar, greyed, \"Nothing to undo / redo\"",
+      "pass": true,
+      "said": "{\"undo\":{\"off\":true,\"t\":\"Nothing to undo\"},\"redo\":{\"off\":true,\"t\":\"Nothing to redo\"}}"
+    },
+    {
+      "step": "A.2 member: after a mark, ↶ lights and names it (\"Undo the mark on ST-01 for STUDENT A (Ctrl+Z)\")",
+      "pass": true,
+      "said": "Undo the mark on ST-01 for STUDENT A (Ctrl+Z)"
+    },
+    {
+      "step": "A.3 member: ↶ takes the mark back; ↷ names it (\"Redo the mark on ST-01 …(Ctrl+Y)\")",
+      "pass": true,
+      "said": "{\"undo\":{\"off\":true,\"t\":\"Nothing to undo\"},\"redo\":{\"off\":false,\"t\":\"Redo the mark on ST-01 for STUDENT A (Ctrl+Y)\"}}"
+    },
+    {
+      "step": "A.4 member: ↷ puts it back",
+      "pass": true,
+      "said": "[\"#000000\",\"#ffffff\"]"
+    },
+    {
+      "step": "A errors",
+      "note": "[]"
+    },
+    {
+      "step": "B.0 the Currency card after the four boxes",
+      "note": "{\"lastSyll\":\"2026-09-18\",\"lastCurr\":\"2026-09-19\",\"downDays\":\"2\",\"upchit\":\"2026-09-20\",\"kv\":[\"Days since syllabus5d\",\"Days since currency4d (−2 down = 2d)\"]}"
+    },
+    {
+      "step": "B.0b ACG-05 dragged",
+      "note": "translate(521.0,307.0) → translate(601.0,339.0); Save changes showing: 0"
+    },
+    {
+      "step": "B.1 seven steps are in the one history",
+      "pass": true,
+      "said": "{\"undo\":7,\"redo\":0}"
+    },
+    {
+      "step": "B.2 ↶ ×7 takes them back newest first, each tooltip naming its step",
+      "pass": true,
+      "said": "[\"Undo a chart edit (Ctrl+Z)\",\"Undo Last Flown (Currency) for STUDENT A (Ctrl+Z)\",\"Undo Last Flown (Syllabus) for STUDENT A (Ctrl+Z)\",\"Undo the upchit date for STUDENT A (Ctrl+Z)\",\"Undo the down days for STUDENT A (Ctrl+Z)\",\"Undo the failure count on ST-02 for STUDENT A (Ctrl+Z)\",\"Undo the mark on ST-01 for STUDENT A (Ctrl+Z)\"]"
+    },
+    {
+      "step": "B.3 the screen after each ↶",
+      "note": "[{\"i\":0,\"save\":1,\"acg05\":\"translate(521.0,307.0)\",\"lastSyll\":\"2026-09-18\",\"lastCurr\":\"2026-09-19\",\"down\":\"2\",\"upchit\":\"2026-09-20\",\"st02f\":1,\"st01\":\"#000000\"},{\"i\":1,\"save\":1,\"acg05\":\"translate(521.0,307.0)\",\"lastSyll\":\"2026-09-18\",\"lastCurr\":\"2026-09-18\",\"down\":\"2\",\"upchit\":\"2026-09-20\",\"st02f\":1,\"st01\":\"#000000\"},{\"i\":2,\"save\":1,\"acg05\":\"translate(521.0,307.0)\",\"lastSyll\":\"\",\"lastCurr\":\"\",\"down\":\"2\",\"upchit\":\"2026-09-20\",\"st02f\":1,\"st01\":\"#000000\"},{\"i\":3,\"save\":1,\"acg05\":\"translate(521.0,307.0)\",\"lastSyll\":\"\",\"lastCurr\":\"\",\"down\":\"2\",\"upchit\":\"\",\"st02f\":1,\"st01\":\"#000000\"},{\"i\":4,\"save\":1,\""
+    },
+    {
+      "step": "B.4 undoing the chart edit put ACG-05 back and lit ✓ Save changes (R110)",
+      "pass": true,
+      "said": "{\"i\":0,\"save\":1,\"acg05\":\"translate(521.0,307.0)\",\"lastSyll\":\"2026-09-18\",\"lastCurr\":\"2026-09-19\",\"down\":\"2\",\"upchit\":\"2026-09-20\",\"st02f\":1,\"st01\":\"#000000\"}"
+    },
+    {
+      "step": "B.5 after ↶ ×7 everything is back to the start (no marks, no failures, empty boxes)",
+      "pass": true,
+      "said": "{\"i\":6,\"save\":1,\"acg05\":\"translate(521.0,307.0)\",\"lastSyll\":\"\",\"lastCurr\":\"\",\"down\":\"\",\"upchit\":\"\",\"st02f\":0,\"st01\":\"#ffffff\"}"
+    },
+    {
+      "step": "B.6 ↶ now greyed",
+      "pass": true,
+      "said": "{\"off\":true,\"t\":\"Nothing to undo\"}"
+    },
+    {
+      "step": "B.7 ↷ ×7 redoes them oldest first, each named",
+      "pass": true,
+      "said": "[\"Redo the mark on ST-01 for STUDENT A (Ctrl+Y)\",\"Redo the failure count on ST-02 for STUDENT A (Ctrl+Y)\",\"Redo the down days for STUDENT A (Ctrl+Y)\",\"Redo the upchit date for STUDENT A (Ctrl+Y)\",\"Redo Last Flown (Syllabus) for STUDENT A (Ctrl+Y)\",\"Redo Last Flown (Currency) for STUDENT A (Ctrl+Y)\",\"Redo a chart edit (Ctrl+Y)\"]"
+    },
+    {
+      "step": "B.8 …and everything is back as it was after the seven steps",
+      "pass": true,
+      "said": "{\"cur\":[\"2026-09-18\",\"2026-09-19\",\"2\",\"2026-09-20\"],\"st01\":\"#000000\"}"
+    },
+    {
+      "step": "C.1 Ctrl+Z (pop-up open for B) takes back A's ACG-01 mark, switches the Crew picker to A and closes the pop-up",
+      "pass": true,
+      "said": "{\"popWas\":\"ST-06 · STUDENT B\",\"crew\":\"STUDENT A\",\"popOpen\":false,\"acg01\":[\"#ffffff\",\"#ffffff\"]}"
+    },
+    {
+      "step": "D.1 eight quick keystrokes into Upchit = ONE undo step",
+      "pass": true,
+      "said": "stack 7 → 8; box 2026-10-01"
+    },
+    {
+      "step": "D.2 one ↶ puts Upchit back to what it held before the typing",
+      "pass": true,
+      "said": "now 2026-09-20 (was 2026-09-20)"
+    },
+    {
+      "step": "D.3 typed slowly (2.3 s between the year's digits): steps recorded / what one ↶ shows in the box",
+      "note": "4 steps; after one ↶ the box holds \"0202-11-02\""
+    },
+    {
+      "step": "D.4 a failure's day changed twice quickly (→12/09 →14/09), one ↶ returns it to the ORIGINAL day",
+      "pass": true,
+      "said": "original 2026-09-23 → 2026-09-14 → after one ↶ 2026-09-23"
+    },
+    {
+      "step": "K.1 grading far down keeps the view (R62)",
+      "pass": true,
+      "said": "{\"top\":4673,\"left\":0} → {\"top\":4673,\"left\":0}"
+    },
+    {
+      "step": "K.2 ↶ of that grade keeps the view too (the person is looking at the ball they undid)",
+      "pass": false,
+      "said": "{\"top\":4673,\"left\":0} → ↶ {\"top\":368,\"left\":0}"
+    },
+    {
+      "step": "K.3 ↷ keeps the view",
+      "pass": true,
+      "said": "→ ↷ {\"top\":368,\"left\":0}"
+    }
+  ],
+  "errors": []
+}

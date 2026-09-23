@@ -12,9 +12,12 @@ function SaEdit({ id, onDone }) {
   });
   const set = k => e => setV(s => ({ ...s, [k]: e.target.value }));
   const save = async () => { await core.saveInfoFor(id, v); onDone(); };
-  const reset = async () => {
-    await core.resetInfoFor(id);
-    const d = core.infoFor(id);
+  /* the doc's wording back in the boxes, nothing saved until Save; no button
+     where there is no document (a ball the user made) — [HUMAN-RETEST] w3-F4,
+     the same as the details window */
+  const hasDoc = core.hasDocInfo(id);
+  const reset = () => {
+    const d = core.docInfoFor(id);
     setV({ name: d.name || '', fmt: d.fmt || '', hrs: d.hrs || '', crew: d.crew || '', pre: d.pre || '' });
   };
   /* Prerequisites is a free-text override; left blank the row falls back to the chart
@@ -28,12 +31,12 @@ function SaEdit({ id, onDone }) {
   return (
     <div className="saedit" onKeyDown={onKey}>
       <label>Name<input value={v.name} onChange={set('name')} autoFocus /></label>
-      <label>Type / format<input value={v.fmt} onChange={set('fmt')} placeholder="e.g. Lecture, OFT/AMT" /></label>
+      <label>Type / format<input value={v.fmt} onChange={set('fmt')} placeholder={core.FMT_HINT} /></label>
       <label>Hours<input value={v.hrs} onChange={set('hrs')} placeholder="e.g. 1.5 Hrs" /></label>
       <label>Crew<textarea rows={2} value={v.crew} onChange={set('crew')} placeholder="e.g. UP/UW, IP/IW/FSI" /></label>
       <label className="full">Prerequisites<textarea rows={2} value={v.pre} onChange={set('pre')} placeholder={chartPre ? 'from the chart: ' + chartPre : 'e.g. AVI-02, AVI-03, AVI-04'} /></label>
       <div className="saedit-btns">
-        <button className="sm" title="Revert to the value from the source document" onClick={reset}>Reset to doc</button>
+        {hasDoc ? <button className="sm" title="Put the source document's wording back in the boxes — Save keeps it, Cancel doesn't" onClick={reset}>Reset to doc</button> : null}
         <button className="sm" onClick={onDone}>Cancel</button>
         <button className="sm primary" onClick={save}>Save</button>
       </div>

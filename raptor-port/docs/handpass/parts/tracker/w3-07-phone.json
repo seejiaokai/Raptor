@@ -1,0 +1,80 @@
+{
+  "rows": [
+    {
+      "step": "admin: the phone bar is TWO rows (R102)",
+      "pass": true,
+      "said": "2 rows — row 1: STUDENT A STUD | 26ABSG | ✎ | 2024 2026 Tx 2 | ✎ | ⓘ // row 2: ↶ | ↷ | ⇪ File ▾ | 🔍 | ⌃ | ● saved; bar 70px"
+    },
+    {
+      "step": "admin: Crew is the leftmost control; the bar does not scroll sideways",
+      "pass": true,
+      "said": "{\"crewLeft\":8,\"leftmost\":8,\"sideways\":false}"
+    },
+    {
+      "step": "admin: the Crew box on a phone",
+      "note": "{\"w\":88,\"picked\":\"STUDENT A\",\"need\":68}"
+    },
+    {
+      "step": "R101: the chart fits the width (no sideways wander)",
+      "pass": true,
+      "said": "{\"zoom\":\"40%\",\"sw\":390,\"cw\":390}"
+    },
+    {
+      "step": "R101: zoom + + then \"reset\" returns to the fit, not 100%",
+      "pass": true,
+      "said": "fit 40% → ++ 60% (sideways true) → reset 40%"
+    },
+    {
+      "step": "R101: you can scroll well past the last event, clear of the zoom control",
+      "pass": true,
+      "said": "{\"atEnd\":true,\"lastBallBottom\":296,\"zoomCtlTop\":811,\"boardBottom\":811,\"gap\":516}"
+    },
+    {
+      "step": "Info tab cards",
+      "note": "c-students@198,164 186x150 · c-overall@7,164 186x150 · c-next@7,319 186x95 · c-plan@198,319 186x95 · wide c-curr@7,420 377x138 · wide c-pace@7,564 377x111 · c-fails@198,681 186x65 · c-lull@7,681 186x65"
+    },
+    {
+      "step": "R103: every statistic but Lull periods fits one screen (two students), no scrolling",
+      "pass": true,
+      "said": "all end above 813; panel scroll 656 vs 656"
+    },
+    {
+      "step": "R104: the last row is Lull periods + Failures, side by side",
+      "pass": true,
+      "said": "{\"lull\":[7,681],\"fails\":[198,681],\"lastTop\":681}"
+    },
+    {
+      "step": "R104: the Students card is the same size as Overall beside it",
+      "pass": true,
+      "said": "{\"students\":[186,150,164],\"overall\":[186,150,164]}"
+    },
+    {
+      "step": "R105: Set pace + End date A + End date B on ONE row, no date box past its box or the card",
+      "pass": true,
+      "said": "[{\"t\":\"Set pace\",\"top\":586,\"l\":13,\"r\":132,\"inR\":60,\"inL\":19},{\"t\":\"End date A\",\"top\":586,\"l\":136,\"r\":255,\"inR\":249,\"inL\":142},{\"t\":\"End date B\",\"top\":586,\"l\":259,\"r\":378,\"inR\":372,\"inL\":265}]"
+    },
+    {
+      "step": "R106: the Info panel's zoom reads 100%",
+      "pass": true,
+      "said": "100%"
+    },
+    {
+      "step": "admin errors",
+      "note": "none"
+    },
+    {
+      "step": "member: the phone bar is TWO rows (R102)",
+      "pass": true,
+      "said": "2 rows — row 1: STUDENT A STUD | 26ABSG | ✎ | 2024 2026 Tx 2 | ✎ | ⓘ // row 2: ↶ | ↷ | 🔍 | ⌃ | ● saved; bar 70px"
+    },
+    {
+      "step": "member: Crew is the leftmost control; the bar does not scroll sideways",
+      "pass": true,
+      "said": "{\"crewLeft\":8,\"leftmost\":8,\"sideways\":false}"
+    },
+    {
+      "step": "member errors",
+      "note": "none"
+    }
+  ]
+}

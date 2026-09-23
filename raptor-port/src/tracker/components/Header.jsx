@@ -160,12 +160,10 @@ export default function Header() {
      dialog; the store is the record now, marks save themselves, and the File
      menu is import/export only. */
   const dirty = core.sylDirty;
-  /* THE FILE PORTION IS THE ADMIN'S (owner, 7 Sep 26): a member gets every
-     other control on this bar — the pickers, the Course and Syllabus menus,
-     Edit, Details and Save changes — and not the File menu (Import, Export).
-     The entry points behind it are guarded in core.js too; this is the
-     affordance half. */
-  const fileLocked = core.fileLocked;
+  /* ONE BAR FOR EVERYONE (owner, 23 Sep 26 — D121: "admin and member should
+     have the same access authority"). The File menu (Import, Export) was the
+     admin's from 7 Sep 26 and was hidden from a member here; it is drawn for
+     every login now, and core.js reads no role. */
 
   return (
     <header>
@@ -215,8 +213,12 @@ export default function Header() {
         <Menu id="syl" label="✎" icon active={core.arrangeMode} title="Edit the syllabus — chart layout, duplicate, rename, reorder or delete">
           <button className="sm" id="arrangeBtn" title="Draw and move events, prerequisites and lines on the chart" onClick={core.toggleArrange}>{core.arrangeMode ? '✓ Done editing chart' : '✎ Edit chart layout'}</button>
           <div className="msep" />
-          <button className="sm" id="dupSyl" title="Make an exact copy of the current syllabus, including every student's marks" onClick={core.dupSyl}>⧉ Duplicate syllabus</button>
-          <button className="sm" id="addSyl" title="Create a new syllabus from the current structure with a clean slate (no marks)" onClick={core.addSyl}>+ Add syllabus</button>
+          {/* The words say what the two do since 13 Sep 26 ("keep charts, reset
+              marks"): a duplicate is the flow and layout with NO students, and
+              + Add syllabus is an empty sheet. They had promised marks and "the
+              current structure" ([HUMAN-RETEST] F2/F3, 23 Sep 26). */}
+          <button className="sm" id="dupSyl" title="Make a copy of the current syllabus — the same events, lines and layout — with no students or marks" onClick={core.dupSyl}>⧉ Duplicate syllabus</button>
+          <button className="sm" id="addSyl" title="Create a new, empty syllabus — no events, no marks — to draw from scratch" onClick={core.addSyl}>+ Add syllabus</button>
           <button className="sm" id="renSyl" title="Rename the current syllabus (built-ins included)" onClick={core.renSyl}>✎ Rename syllabus</button>
           <button className="sm" id="ordSyl" title="Change the order syllabi appear in the dropdown" onClick={core.openOrd}>⇅ Reorder syllabi</button>
           <div className="msep" />
@@ -249,10 +251,10 @@ export default function Header() {
             marks); Export a copy — the backup before the database move, or a
             handover. One Import, not an Import + a Restore (owner, same day:
             "is it possible to just have 1 button?"). */}
-        {fileLocked ? null : <Menu id="file" label="⇪ File" title="Bring a file in, or export a copy">
+        <Menu id="file" label="⇪ File" title="Bring a file in, or export a copy">
           <button className="sm" id="importFileBtn" title="Bring flow charts in from a file — and, if it holds them, students & marks (it asks first)" onClick={core.importClick}>⇪ Import…</button>
           <button className="sm" id="exportBtn" title="Save a copy of the Tracker's data to a file — a backup, or a chart to hand over" onClick={core.openCopy}>⤓ Export…</button>
-        </Menu>}
+        </Menu>
 
         {/* Find event moved to the far right of the choose/act group (owner,
             9 Sep 26). On a phone it is a 🔍 that opens a full-width strip. */}
@@ -279,14 +281,22 @@ export default function Header() {
             not. The slot keeps its width whether the button is there or
             not: a header that grows on the first edit shifts the whole chart down
             and slides everything out from under the pointer mid-drag. */}
+        {/* The status comes FIRST and Save LAST, so ✓ Save changes is the far-
+            right item of the bar (R96 desktop; R97 the owner's phone ask, 9 Sep
+            26) — with the words after it, a phone put a cut-off "● unsave…" in
+            that spot. The slot is ONE fixed width on a desktop, button or no
+            button: the words shorten (…, the whole of them on hover) to make
+            room, so the first edit can no longer push Save onto a second row and
+            slide the chart down under the pointer at a laptop width
+            ([HUMAN-RETEST] w3-F5, w3-F6). */}
         <span className="saveslot">
-          {dirty ? <button className="sm dirty" id="saveChanges" title="Save your changes to the syllabus — events, prerequisites and lines" onClick={core.saveChangesClick}>✓ Save changes ●</button> : null}
           {/* Green here while the orange button is showing would tell the user
               their work is both safe and at risk at once (the status reports
               the last write; the button, the flow edits still waiting). Keep
               the words, drop the green until nothing is outstanding. Errors
               stay red. */}
-          <span id="saveStat" className={'savestat ' + (dirty && core.saveStat.cls === 'ok' ? '' : core.saveStat.cls)}>{core.saveStat.text}</span>
+          <span id="saveStat" title={core.saveStat.text} className={'savestat ' + (dirty && core.saveStat.cls === 'ok' ? '' : core.saveStat.cls)}>{core.saveStat.text}</span>
+          {dirty ? <button className="sm dirty" id="saveChanges" title="Save your changes to the syllabus — events, prerequisites and lines" onClick={core.saveChangesClick}>✓ Save changes ●</button> : null}
         </span>
       </div>
     </header>
