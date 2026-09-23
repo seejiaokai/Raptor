@@ -184,3 +184,18 @@ trains the reader to ignore it on in-scope ones.
 **Suggested improvement:** Add a closing step: "Condense the notes THIS session wrote (progress blocks, working notes) to state + decisions + pointers, as its own docs-only commit, before the handoff is final."
 
 **Principle:** Scaffolding written for resilience has a lifetime; the handoff procedure should end it deliberately.
+
+### Observation 197: A handoff's "reply with" card gets pasted back with the choice still unfilled
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** Merging a finished feature branch; the previous session's closing report gave the owner a ready-to-paste reply containing an inline choice
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** closing report / ready-to-paste opening prompt
+
+**Issue:** The closing report handed the owner a paste-ready reply with an inline choice written as a template slot (`Phone resize: <build a corner handle / leave it>`). He pasted it verbatim with the slot unfilled, together with "merge live" — and then asked "should I merge live?". The next session could not act: one half of the message authorised an irreversible step, while the other half still carried a choice that had to be made before that step. It had to stop and ask, and his answer was again free text.
+
+**Suggested improvement:** In the handoff skill's closing-report guidance: never embed a choice inside a paste-ready prompt as a `<a / b>` slot. Put each open choice to the user as its own numbered question (or a structured question tool, where one exists) BEFORE the paste-ready prompt, and give one complete prompt per option — or leave the choice out of the prompt and have the next session ask it first.
+
+**Principle:** A paste-ready prompt is only paste-ready if it can be sent unchanged. A template slot inside it for a non-technical user will be sent unfilled, and an irreversible instruction sitting beside it then becomes ambiguous.
