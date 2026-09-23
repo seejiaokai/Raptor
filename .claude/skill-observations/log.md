@@ -39,32 +39,6 @@ cannot fail silently — make the bare form work, or make it refuse loudly.
 
 ## 2026-09-06
 
-### Observation 43: Design hook scans engine and test files where design rules cannot apply
-
-**Status:** ACTIONED (2026-09-23) — `.impeccable/config.json` added with exactly the contents approved in D71, riding the `[ALL-AVAIL-WINDOW]` merge (the next change that touches code)
-**Date:** 2026-09-01
-**Session context:** Bug hunt #3 (reorder/drag machinery) — edits to src/engine/reorder.ts and two test files
-**Skill:** impeccable (hooks)
-**Type:** open-source
-**Phase/Area:** hooks — file filtering
-
-**Issue:** The impeccable design-detector hook fired on every edit to
-`src/engine/reorder.ts` (a pure TypeScript engine file) and `*.test.tsx`
-files, each time reporting "no deterministic design-quality issues found",
-then suppressed itself after 6 edits on the engine file and suggested
-`/impeccable audit` — on a file with no UI in it. Pure noise: no design rule
-can apply to an engine module or a test file.
-
-**Suggested improvement:** The hook's default file filter should exclude
-`*.test.*` and paths matching engine/data layers (or include only files that
-emit markup/styles — `.css`, `.tsx` components, html-emitting `.ts`). The
-skill's `hooks ignore-file` verb exists; the improvement is shipping sensible
-default exclusions so users don't need to discover it.
-
-**Principle:** A hook that watches file edits should scope itself to files
-its rules can possibly apply to; firing "no issues" on out-of-scope files
-trains the reader to ignore it on in-scope ones.
-
 ### Observation 120: Vendoring a whole app as a tab is a repeatable recipe — worth a skill
 
 **Status:** OPEN — deferred by the owner (D73, 2026-09-23): write the "whole app as a new tab" guide only if a third app is brought in as a tab
@@ -584,3 +558,33 @@ code separately from its output, and never let the same line that runs a gate al
 **Suggested improvement:** In §9 add: "A gate that stops intermittently is not re-run until (a) the failing step's code path is checked against the diff, (b) the step is reproduced in isolation on the change's build and on the base's, and (c) the residual is filed with that evidence. Then one re-run, citing the item. Two stops on the change's build and none on the base's in the isolated probe is a regression — stop."
 
 **Principle:** Re-running a flaky gate is legitimate only after evidence shows the change is not the cause and the flake is filed; the re-run is a decision on the record, never a hope.
+
+### Observation 225: A second sign-in in a walk or e2e test brings back a demo world without its OIL story
+
+**Status:** OPEN
+**Date:** 2026-09-24
+**Session context:** Fixing the OIL tracker's cut credit-box labels (branch claude/oil-credit-tags); writing the red e2e test and the walk script. Numbered past 223-224 in case the parallel demo chat appends to its own copy of this log.
+**Skill:** run
+**Type:** internal
+**Phase/Area:** Driving the app — setting up a fixture before walking it
+
+**Issue:** The test first re-signed-in as admin (`openLeaveWar(page, 'a')` after the beforeEach's member login). That sign-in reloads the page, and a fresh demo world that nobody has written to yet comes back WITHOUT its Leave War OIL story (openings, awards, grants) while the days taken (Inputs) survive — so rows read "taken · not covered", a new grant is consumed by the old takes and folds into the archive, and the test looked for a box that was not there. It cost three runs to see. A world written to once (any Leave War write) persists whole. Harmless to real data (D56), but it bites every test or walk that reloads before its first write — and a demo recording that reloads.
+
+**Suggested improvement:** In the run skill's browser-driven pattern (and the e2e helpers' header): "Change role without reloading (`lwRole` + `raptorRole`), or make one write before any reload; never re-sign-in mid-fixture on a fresh demo world."
+
+**Principle:** A seeded demo world may be only partly persisted until its first write; a fixture that reloads before writing is testing a different world. Change state in place, or write before you reload.
+
+### Observation 226: To assert that text stayed on one line, count line positions, not client rects
+
+**Status:** OPEN
+**Date:** 2026-09-24
+**Session context:** The same OIL tracker fix — pinning that an award's "· 3 days" moves to the next line whole.
+**Skill:** New skill candidate: browser layout assertions (or verification-before-completion)
+**Type:** open-source
+**Phase/Area:** Writing layout assertions in a real browser
+
+**Issue:** The check `el.getClientRects().length > 1` reported "· 3 days" as split over two lines when it was on one: the span holds three text pieces (" · ", "3", " days" — JSX interpolation makes separate text nodes), and each piece gets its own rect on the SAME line. Only measuring the rects' tops showed it.
+
+**Suggested improvement:** Wherever a skill tells the agent to assert wrapping in a browser: count distinct rounded `top` values of `getClientRects()`, never the number of rects; and print the rects once before trusting a new layout check.
+
+**Principle:** A browser returns one rect per inline fragment, not per line; any "is it on one line" assertion must count line positions. Before trusting a new measurement, look at its raw numbers once.

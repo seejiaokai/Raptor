@@ -3912,6 +3912,111 @@ test('the OIL tracker has its own − / + beside RANGE, on one row; a phone open
   await page.locator('[data-testid="oil-close"]').click()
 })
 
+/** Every word on the OIL tracker's credit boxes that a reader cannot read in
+ *  full — the labels on the top line and the reason under them: its own text
+ *  runs past it (the "…"), or it pokes out of its box (the box clips it).
+ *  Empty means every one reads whole. */
+async function cutOilLabels(page: Page): Promise<string[]> {
+  return page.evaluate(() => {
+    const cut: string[] = []
+    for (const box of document.querySelectorAll<HTMLElement>('[data-testid="oil-list"] .oil-e')) {
+      const b = box.getBoundingClientRect()
+      for (const el of box.querySelectorAll<HTMLElement>('.l1 span, .l2, .l2 span, .l2 button')) {
+        const r = el.getBoundingClientRect()
+        if (el.scrollWidth > el.clientWidth + 1 || r.left < b.left - 1 || r.right > b.right + 1 || r.bottom > b.bottom + 1) cut.push(`${box.dataset.testid}: "${el.textContent}"`)
+      }
+    }
+    return cut
+  })
+}
+
+/** The credit box's own layout, which the wrap must not cost: the amount
+ *  starts the top line at the left, every label ("Auto", the giver) ends at
+ *  the right edge whichever line it lands on, and an award's "· 3 days" or
+ *  work hours move down WHOLE, never split over two lines. */
+async function misplacedOilLabels(page: Page): Promise<string[]> {
+  return page.evaluate(() => {
+    const bad: string[] = []
+    for (const box of document.querySelectorAll<HTMLElement>('[data-testid="oil-list"] .oil-e')) {
+      const l1 = box.querySelector<HTMLElement>('.l1')
+      if (!l1) continue
+      const line = l1.getBoundingClientRect()
+      const amt = l1.querySelector<HTMLElement>('.amt')
+      if (amt && amt.getBoundingClientRect().left - line.left > 1) bad.push(`${box.dataset.testid}: the amount is not at the left`)
+      for (const by of l1.querySelectorAll<HTMLElement>('.by')) if (line.right - by.getBoundingClientRect().right > 1) bad.push(`${box.dataset.testid}: "${by.textContent}" is not at the right`)
+      // one rect per text piece (" · ", "3", " days"), so count LINES, not rects
+      for (const h of box.querySelectorAll<HTMLElement>('.oil-notebtn .oil-hrs')) if (new Set([...h.getClientRects()].map(r => Math.round(r.top))).size > 1) bad.push(`${box.dataset.testid}: "${h.textContent}" is split over two lines`)
+    }
+    return bad
+  })
+}
+
+// 24 Sep 26, found recording the demo video: an AUTOMATIC credit carries two
+// labels on its top line — "Auto" and who gave it ("Weekend/PH", or "Duty
+// input") — and the pair could not fit a 150px box beside "+1 18 Jul": both
+// came out cut, "AU…" and "Weeken…". The zoom could not help, because the
+// text scales with the box. The walk then found the reason line doing the
+// same to the app's own words after a reason: the demo's correction lost its
+// "· correction", and Ammo's award its "· 3 days". Every label and every
+// reason on every credit box reads in full, at every zoom step, on both
+// widths — the longest giver an admin can type (40 characters) and the
+// longest reason (120) included.
+//   The fresh demo holds no automatic credit, so this earns one the way the
+// app does: Saturday 18 Jul (the demo week is 13–19 Jul 26) signed and
+// published, which credits Fable (`plasma`, on its duty) "Weekend/PH".
+test('every label and reason on an OIL credit box reads in full, at every zoom step', async ({ page }) => {
+  const LONG_GIVER = 'OC Ops, on behalf of the Commanding Offr'   // MAX_GIVEN_BY is 40
+  const LONG_REASON = 'Detachment support over the long weekend, covering the ground party, the recovery and the two days of post-exercise work'  // MAX_REASON is 120
+  // admin WITHOUT a re-login: a second sign-in reloads the page, and a demo
+  // world nobody has written to yet comes back without its OIL story — the
+  // very boxes this test reads
+  await lwRole(page, 'admin')
+  await raptorRole(page, 'admin')
+  await page.evaluate(() => {
+    const g = (window as any).signOf(5); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+    ;(window as any).renderEditWeek()
+  })
+  await go(page, 'editsched')
+  await page.locator('button[data-beak="5"]').click()
+  await expect.poll(() => page.evaluate(() => (window as any).dayApproved(5))).toBe(true)
+  await go(page, 'leavewar')
+  await page.waitForSelector('[data-testid="row-slipway"]')
+  await putDrawerAway(page)
+
+  await page.locator('[data-testid="oil-tracker"]').click()
+  await expect(page.locator('[data-testid="oil-sheet"]')).toBeVisible()
+  await page.locator('[data-testid="oil-name-slipway"]').click()
+  await page.locator('[data-testid="oil-amt"]').fill('1')
+  await page.locator('[data-testid="oil-reason"]').fill(LONG_REASON)
+  await page.locator('[data-testid="oil-given"]').fill(LONG_GIVER)
+  await page.locator('[data-testid="oil-credit-save"]').click()
+  await expect(page.locator('[data-testid="oil-credit-panel"]')).toHaveCount(0)
+  const list = page.locator('[data-testid="oil-list"]')
+  await expect(list.locator('.oil-e .by', { hasText: LONG_GIVER })).toHaveCount(1)
+  await expect(list.locator('.oil-e .l2', { hasText: LONG_REASON })).toHaveCount(1)
+  // the demo's own two: a correction, and an award whose worth follows its reason
+  await expect(list.locator('[data-testid="oil-entry-dol-3"] .l2')).toHaveText('Correction: double credit · correction')
+  await expect(list.locator('[data-testid="oil-row-ammo"] .oil-notebtn', { hasText: '3 days' })).toHaveText('Exercise recovery · 3 days')
+  const auto = list.locator('[data-testid="oil-row-plasma"] .oil-e', { has: page.locator('.by.auto') })
+  await expect(auto).toHaveCount(1)
+  await expect(auto.locator('.by.auto')).toHaveText('Auto')
+  await expect(auto.locator('.by:not(.auto)')).toHaveText('Weekend/PH')
+
+  const zoomOut = page.locator('[data-testid="oil-zoom-out"]')
+  const zoomIn = page.locator('[data-testid="oil-zoom-in"]')
+  while (await zoomOut.isEnabled()) await zoomOut.click()
+  const steps: string[] = []
+  for (;;) {
+    const z = await list.locator('table.oil-grid').evaluate(el => (el as HTMLElement).style.zoom || '1')
+    steps.push(z)
+    expect(await cutOilLabels(page), `at zoom ${z}`).toEqual([])
+    expect(await misplacedOilLabels(page), `at zoom ${z}`).toEqual([])
+    if (!(await zoomIn.isEnabled())) break
+    await zoomIn.click()
+  }
+  expect(steps).toEqual(['0.6', '0.8', '1', '1.2', '1.4'])
+})
+
 // Owner, 6 Sep 26: with the zoom gone from the strip, the twelve months sit on
 // ONE line on a phone (they always did on a desktop), inside the viewport.
 test('the month strip is one line of twelve, inside the viewport', async ({ page }) => {

@@ -146,7 +146,10 @@ export const DEMO_OIL: { recs: Recs; ledger: Ledger } = {
     tata: { '2026-02-07': award('FO', 'FLT'), '2026-03-21': award('FO', 'Duty') },
     miles: { '2026-05-09': award('FO', 'FLT + SIM') },
     /* 4 Jul is the ADD-UP day (N16): this 3-day award sits beside the credit
-       the accepted Duty input earns, so the Saturday is worth FOUR. */
+       the accepted Duty input earns, so the Saturday is worth FOUR — once it
+       earns. The input earns only from a PUBLISHED day, and a fresh demo
+       publishes nothing, so a fresh boot's tracker shows the award's three
+       and no automatic box (seen 24 Sep 26, walking the OIL tracker). */
     dusk: { '2026-07-04': award('FO', 'Exercise recovery', 3, 'OC Ops'), '2026-08-08': award('HO', 'SIM') },
     cage: { '2026-08-15': award('FO', 'FLT') },
     skin: { '2026-08-29': award('FO', 'Duty') },
