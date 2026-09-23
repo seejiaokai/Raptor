@@ -1,7 +1,6 @@
-# HANDOFF — 23 Sep 26. `[ALL-AVAIL-WINDOW]` is LIVE on `main`. Next: `[DOCS-GUARD]`.
+# HANDOFF — 23 Sep 26. `[ALL-AVAIL-WINDOW]` and `[DOCS-GUARD]` are LIVE on `main`. Next: `[HUMAN-RETEST]`.
 
-**Pick `main` in the new-chat picker** — unless you are continuing the docs guard, which runs in its
-own chat on **`claude/docs-guard`** (worktree `.claude/worktrees/ecstatic-mcnulty-c984d5`).
+**Pick `main` in the new-chat picker.** `claude/docs-guard` is merged — don't pick it.
 
 ## What went live
 
@@ -15,16 +14,14 @@ three files as `main` (`[DOC-TRIM]`). No app code changed in the merge, so the w
 Also rode along: `.impeccable/config.json` (D71's held-back design-checker skip list; note #43
 actioned).
 
-## When `claude/docs-guard` merges — it goes second, so it brings `main` in first
+## Then `[DOCS-GUARD]` went live — what it changes for every session
 
-1. `git fetch origin && git merge origin/main` on that branch.
-2. **`DECISIONS.md`:** `main` now holds D69–D73 (skill review) and **D77** (phone resize, this
-   branch). The docs guard's D70–D76 CLASH with D70–D73 — renumber its rows to **D78 upward** and
-   update their mentions in every file that quotes them.
-3. **`.claude/skill-observations/log.md`:** keep `main`'s side (the reviewed notebook, highest note
-   **#197**); re-append the docs guard's own new notes at the end, renumbered from #198.
-   `MERGE-NOTE.md` is gone — both branches it covered are in.
-4. Full gates on the merged tree, then his "merge live".
+`npm run docsize` now fails a lost, doubled or cut-short backlog item, a lost or doubled D-number, a
+ruling home that does not exist, and a rule-map id with no register entry. It runs at the end of
+every turn (a Stop hook) and on every PR and push to `main` (`docs-guard.yml`), and it never asks
+for a trim inside a code change. **Move a finished item ONLY with
+`node raptor-port/scripts/backlog-archive.mjs <ID> --homes <file>`.** Closing reports carry its
+`Docs:` and `docsize:` lines (bug-check order §9). Details: `raptor-port/docs/doc-budget.md` §4.
 
 ## Rulings this session
 
@@ -32,14 +29,17 @@ actioned).
 in `DECISIONS.md`, the window's section of `raptor-port/docs/ui-contracts.md`, and `OUTSTANDING.md`.
 **D85 + D86** — `[HUMAN-RETEST]` starts with the Tracker, and the amendment system runs beside it in
 parallel. Recorded in `DECISIONS.md` and `OUTSTANDING.md` [HUMAN-RETEST].
+**D78–D84** (the docs guard's chat) — parallel chats merge one at a time and the later one renumbers
+(D78); four older rulings given numbers (D79–D82); step 4 done early (D83); a Leave War desktop
+timeout on GitHub gets ONE re-run of the failed group, not an investigation (D84).
 
 ## Next: `[HUMAN-RETEST]`, two chats in parallel (D85, D86)
 
-After the docs guard is live: one chat re-tests **the amendment system** (port 4173, rulings from
+One chat re-tests **the amendment system** (port 4173, rulings from
 D90), another in its own worktree re-tests **the Tracker** (port 4180, rulings from D120). Never
 two full gate runs at once. Whichever merges second brings `main` in first.
 
 ## Queue after this
 
-`[DOCS-GUARD]` (in flight), then `[HUMAN-RETEST]`, `[DOC-TRIM]`, `[DB-STEP]`. Filed from the window,
+`[HUMAN-RETEST]`, `[DOC-TRIM]`, `[DB-STEP]`. Filed from the window,
 none blocking: `[OIL-PERSONAL-PLACEHOLDER]`, `[CROWD-SIM-BRIEF]`, `[LW-MONTHJUMP-PHONE]`.

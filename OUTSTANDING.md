@@ -107,7 +107,7 @@ in-flight and risk-reducing** first.
 MERGED AND LIVE.**
 1) **[ALL-AVAIL-WINDOW]** — **LIVE on `main` (23 Sep 26), after his look on Vercel and his "merge live"; no phone resize corner (D77).** Was: NEXT, and ready to build. The counters it opens from are now live, its
 mock-up is APPROVED and is the design of record (D41), and D38–D41 settle its shape down to the
-pixel. **Do not re-open the design; build to it.** 2) **[DOCS-GUARD]** DONE 23 Sep 26 (archived);
+pixel. **Do not re-open the design; build to it.** 2) **[DOCS-GUARD]** LIVE 23 Sep 26 (archived);
 nothing left. 3) **[HUMAN-RETEST]**. 4) **[DOC-TRIM]** — unblocked now that the OIL scaffolding has become
 archive. 5) The stack resumes at **[DB-STEP]**.
 **Small OIL follow-ups, any time, none blocking:** `[OIL-READ-LEFTOVERS]` (4 items the final reads
@@ -903,6 +903,8 @@ job ran ~19% slower, evenly, while the other jobs held their times. **Measured N
 same project on the desktop, before (`b945b8c2`) vs after, 164/164 both in 1.8m, per-test median
 ratio 1.02; the first test takes ~13s locally. They sit near a 30s budget on a slow VM — make them
 wait on what they need, or give the suite a longer per-test budget on CI.
+**Not only load (23 Sep 26, the docs-guard merge):** the phone test was red again (`-20`) in the
+full run AND alone, on code identical to `main`, with the machine at ~11% CPU.
 **Until then (owner, D84):** a Leave War desktop timeout on GitHub gets ONE re-run of the failed
 group, not an investigation; a second failure of the same group is new evidence — stop and report.
 
