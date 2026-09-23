@@ -31,6 +31,12 @@ actioned).
 **D77** — leave the phone resize corner: on a phone the window moves but does not resize. Recorded
 in `DECISIONS.md`, the window's section of `raptor-port/docs/ui-contracts.md`, and `OUTSTANDING.md`.
 
+## Next: `[HUMAN-RETEST]`, two chats in parallel (D85, D86)
+
+After the docs guard is live: one chat re-tests **the amendment system** (port 4173, rulings from
+D90), another in its own worktree re-tests **the Tracker** (port 4180, rulings from D120). Never
+two full gate runs at once. Whichever merges second brings `main` in first.
+
 ## Queue after this
 
 `[DOCS-GUARD]` (in flight), then `[HUMAN-RETEST]`, `[DOC-TRIM]`, `[DB-STEP]`. Filed from the window,
