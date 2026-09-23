@@ -6881,6 +6881,15 @@ screen:
   Measured 7 Sep 26: root 103→900 at 1440×900 (bar 103), 49→844 at 390×844
   (bar 49), document exactly the viewport, nothing of the tab visible on any
   other page (no fixed element, the `#detailBubble` hidden).
+- **A pinch in Edit chart layout only zooms** (24 Sep 26, `[TRK-PINCH-DRAGS-BALL]`; D134 keeps it as built).
+  Whatever the first finger started — a ball or group drag, a selection box, a line begun or finished, a line's
+  squares, a Delete or Merge on a drawn line — is taken back the moment a second finger lands: the chart, its stored
+  layout, both undo lists, ✓ Save changes, the selection and a half-drawn line are as they were, and nothing reaches
+  the store or the command stream. **However long the first finger had been down** — a deliberate drag joined by a
+  second finger goes back too (D134). After a pinch, **the finger left down does nothing until it lifts**, in both
+  modes (D134). Going in and out of Edit chart layout holds the point in the middle of the chart; its canvas's pan
+  and zoom never reach the ordinary chart. Evidence and pins: `docs/handpass/2026-09-23-tracker-pinch-ball.md`, the
+  smoke suite's `[TRK-PINCH-DRAGS-BALL]` block.
 - **Kept mounted once visited** (the Leave War rule, for a harder reason: the
   flow board is drawn imperatively once by `core.init()` and would come back
   empty on a remount). Hidden it dozes (`.page.doze`); its document-level key

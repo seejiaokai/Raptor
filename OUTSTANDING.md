@@ -1418,12 +1418,10 @@ Marked **his call** where the answer is product direction, not a defect.
 0px — nothing to see, drag or pinch (picture `docs/img/handpass/2026-09-23-tracker-pinch/after-phone-sideways-edit-no-room.png`).
 Upright it keeps 446px. Older than the pinch fix (F-C in its sheet). A layout job: fold or scroll the strip sideways.
 
-### [TRK-PINCH-ASK] Two feel questions from the pinch fix, and his iPhone look (24 Sep 26)
-**Place:** ask at his next Tracker session — nothing is broken; `[TRK-PINCH-DRAGS-BALL]` merged on D133 without his
-look. (1) A ball dragged ON PURPOSE and then joined by a second finger goes back to where the drag began (the take-back
-does not tell a deliberate drag from a pinch that started on a ball) — keep, or keep a drag that has already moved?
-(2) After a pinch, the finger left down does nothing until lifted (as before, both modes) — or should it carry on
-scrolling? (Both reads asked; the sheet's §11.) (3) His look card, on his iPhone on the live app:
+### [TRK-PINCH-ASK] His iPhone look at the pinch fix (24 Sep 26)
+**Place:** his next Tracker session — nothing is broken; `[TRK-PINCH-DRAGS-BALL]` merged on D133 without his look.
+The two feel questions are ANSWERED — **D134: keep both as built** (a deliberate drag joined by a second finger goes
+back; the finger left down after a pinch does nothing). Left: his look card, on his iPhone on the live app:
 `raptor-port/docs/handpass/2026-09-23-tracker-pinch-ball.md` §12 — Safari is the one browser no walk here drives, and
 one line of the fix (the board holding both fingers) is proven only there.
 

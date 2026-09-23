@@ -247,8 +247,8 @@ rows red — `red-reads` below), then fixed.
   should carry on scrolling; that is a feel question, put to him, not built.
 - **A zoom chosen in Edit chart layout is now the user's own** (as a pinch or + / − already was): without it, the
   next redraw on a phone snapped it back to fit (M5).
-- **For him to answer (both reads asked):** (1) a ball dragged on purpose and THEN joined by a second finger snaps back —
-  keep that, or keep a drag that has already moved? (2) after a pinch, should the finger left down carry on scrolling?
+- **Answered — D134, "1 & 2 keep that no change":** (1) a ball dragged on purpose and THEN joined by a second finger
+  snaps back — kept; (2) after a pinch, the finger left down does nothing until it lifts — kept.
 - **The iPhone.** Fable's F1 is about how Safari delivers a lift; all three of its fixes are in, two proven here with
   simulated lost lifts, the third (the board holding both fingers) only on a real iPhone. D133 merged without his look,
   so the look card below is where that is checked.
