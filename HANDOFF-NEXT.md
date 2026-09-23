@@ -1,5 +1,15 @@
 # HANDOFF — 23 Sep 26. `[ALL-AVAIL-WINDOW]` and `[DOCS-GUARD]` are LIVE on `main`. Next: `[HUMAN-RETEST]`.
 
+## The Tracker `[HUMAN-RETEST]` — IN PROGRESS on `claude/tracker-human-retest-8d3411` (not merged)
+
+**Pick that branch in the new-chat picker.** Read `raptor-port/docs/handpass/2026-09-23-tracker.md`
+§0 FIRST — it says what is done, what the three walkers found, and exactly what is next (rebuild,
+re-walk the fixes, fix the "still to fix" lists and D122–D124, full gates, the two code reads, his
+look). FULL tier. Ports: preview 4180, smoke 4181, e2e 4182 (`E2E_PORT` now works). Rulings this
+chat: **D120–D124** (the charts' route to the database; one access for admin and member; imports
+never wipe typed details; Last Flown; deleting a ball wipes its marks). Never run a full gate while
+another chat's is running (D86) — the Leave War chat messages before its PC runs.
+
 **Pick `main` in the new-chat picker.** `claude/docs-guard` is merged — don't pick it.
 
 ## What went live
