@@ -14,7 +14,7 @@ import { storage, flushNow, loadLatest } from '../storage.js';
 import * as FMT from './fileFormat.js';
 import * as FS from './fileStore.js';
 import { findEvents } from './eventOrder.js';
-import { isFileLocked, onFileLocked, onTrackerSessionEnd } from '../role.js';
+import { onTrackerSessionEnd } from '../role.js';
 import { getPeople, onPeople, whoami } from '../people.js';
 import { mintId, isEntry, upgradeCourseBlock, reconcileIds } from './ids.js';
 import { mintCourseId, isCourseEntry, isCourseId, isReservedCourseName, upgradeCourses, reconcileCourseIds } from './courseIds.js';
@@ -48,21 +48,15 @@ const refreshSyl = notify;
 const refreshActive = notify;
 const refreshCourses = notify;
 
-/* ---------- FILE ACCESS: the Raptor role seam (7 Sep 26, the Tracker merge) ----------
-   The standalone app had no roles at all. Inside Raptor the owner's rule
-   (his second word, 7 Sep 26) is: everyone — admin and member alike — marks,
-   edits charts and manages students, courses and syllabi exactly as before;
-   ONLY the file portion is the admin's: ⇪ Import, ⤓ Export (📁 Open /
-   ⊕ Import syllabus / ⤓ Save a copy until 9 Sep 26). ✓ Save changes
-   stays for everyone — it writes flow edits to the store and nothing else.
-   The flag is written by Raptor's resetSession (every
-   login/logout) and the admin's view-as-member toggle, through role.js;
-   never persisted, never re-read, so it can never disagree with the session
-   actually looking at the page. Enforced at the WRITE PATH (the three file
-   entry points below open with `if (fileLocked) return`), not only at the
-   affordance (Header.jsx hides the File menu). */
-export let fileLocked = isFileLocked();
-onFileLocked(next => { if (next === fileLocked) return; fileLocked = next; if (fileLocked) copyOpen = false; notify(); });
+/* ---------- ACCESS: no roles in the Tracker (owner, 23 Sep 26 — D121) ----------
+   "For the tracker, admin and member should have the same access authority."
+   Everyone marks, edits charts, manages students, courses and syllabi, AND uses
+   the File menu (⇪ Import, ⤓ Export) — the standalone app's shape, where there
+   were no roles at all. This supersedes the 7 Sep 26 second word ("…except the
+   file portion which is admin only"), whose lock (`fileLocked`, written from
+   Raptor's login through role.js and checked at the three file entry points
+   and the File menu) is gone: the Tracker reads no role. What role.js still
+   carries is the login SESSION, below. */
 /* A login or a logout ends the Tracker's SESSION (role.js; Raptor's
    resetSession). Undo is per login session and never reaches another user
    (owner, 13 Sep 26), and the modes and windows the last person left open are
@@ -5100,9 +5094,10 @@ export async function applyStudents(students, links, version) {
    file-unsaved flag, the Charts/Students boxes on the menu and the file name
    on the toolbar. What stays is two one-way moves between the store and a
    file — ⇪ Import (a file in: charts always, students & marks only after a
-   yes) and ⤓ Export (a copy out) — and the admin lock on both (`fileLocked`,
-   mirrored by Header.jsx). Every entry point still runs its picker before
-   any await: the browser spends the click. */
+   yes) and ⤓ Export (a copy out) — open to everyone since 23 Sep 26 (D121:
+   admin and member have the same access; the admin lock that stood here is
+   gone). Every entry point still runs its picker before any await: the
+   browser spends the click. */
 
 /* ---------- Export: a copy of the store as a file ----------
    The backup before the database move, or a chart to hand over. Students start
@@ -5112,7 +5107,7 @@ export async function applyStudents(students, links, version) {
    cannot mix. For a full backup they tick it; the dialog and the confirmation
    both say which kind of file was written. */
 export let copyOpen = false, copyOpts = { charts: true, students: false }, copyPick = {};
-export function openCopy() { if (fileLocked) return;
+export function openCopy() {
   copyOpts = { charts: true, students: false };
   /* copyPick keys by syllabus ID now (§9); the modal labels each by name. */
   copyPick = {}; orderedSylIds().forEach(id => { copyPick[id] = (id === curSylId()); });
@@ -5122,7 +5117,7 @@ export function closeCopy() { copyOpen = false; notify(); }
 export function setCopyOpt(which, on) { copyOpts = { ...copyOpts, [which]: !!on }; notify(); }
 export function setCopyPick(id, on) { copyPick = { ...copyPick, [id]: !!on }; notify(); }
 
-export async function saveCopyClick() { if (fileLocked) return;
+export async function saveCopyClick() {
   const ids = Object.keys(copyPick).filter(id => copyPick[id]);
   if (!copyOpts.charts && !copyOpts.students) { await uiAlert('Tick charts, students, or both.'); return; }
   if (copyOpts.charts && !ids.length) { await uiAlert('Tick at least one syllabus.'); return; }
@@ -5238,7 +5233,7 @@ function remapStudentsSyl(students, re) {
   if (Array.isArray(students.sylcat)) out.sylcat = students.sylcat.map(e => ({ ...e, id: re(e.id) }));
   return out;
 }
-export async function importClick() { if (fileLocked) return;
+export async function importClick() {
   /* Playwright cannot drive the OS file picker and the bundled module
      namespace cannot be patched (its exports are getters), so the smoke suite
      hands a file in through window.__pickOpenForTests instead. */

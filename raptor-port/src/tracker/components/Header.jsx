@@ -160,12 +160,10 @@ export default function Header() {
      dialog; the store is the record now, marks save themselves, and the File
      menu is import/export only. */
   const dirty = core.sylDirty;
-  /* THE FILE PORTION IS THE ADMIN'S (owner, 7 Sep 26): a member gets every
-     other control on this bar — the pickers, the Course and Syllabus menus,
-     Edit, Details and Save changes — and not the File menu (Import, Export).
-     The entry points behind it are guarded in core.js too; this is the
-     affordance half. */
-  const fileLocked = core.fileLocked;
+  /* ONE BAR FOR EVERYONE (owner, 23 Sep 26 — D121: "admin and member should
+     have the same access authority"). The File menu (Import, Export) was the
+     admin's from 7 Sep 26 and was hidden from a member here; it is drawn for
+     every login now, and core.js reads no role. */
 
   return (
     <header>
@@ -253,10 +251,10 @@ export default function Header() {
             marks); Export a copy — the backup before the database move, or a
             handover. One Import, not an Import + a Restore (owner, same day:
             "is it possible to just have 1 button?"). */}
-        {fileLocked ? null : <Menu id="file" label="⇪ File" title="Bring a file in, or export a copy">
+        <Menu id="file" label="⇪ File" title="Bring a file in, or export a copy">
           <button className="sm" id="importFileBtn" title="Bring flow charts in from a file — and, if it holds them, students & marks (it asks first)" onClick={core.importClick}>⇪ Import…</button>
           <button className="sm" id="exportBtn" title="Save a copy of the Tracker's data to a file — a backup, or a chart to hand over" onClick={core.openCopy}>⤓ Export…</button>
-        </Menu>}
+        </Menu>
 
         {/* Find event moved to the far right of the choose/act group (owner,
             9 Sep 26). On a phone it is a 🔍 that opens a full-width strip. */}

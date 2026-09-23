@@ -6867,16 +6867,15 @@ screen:
   empty on a remount). Hidden it dozes (`.page.doze`); its document-level key
   and click listeners switch off while another tab is up (`App.jsx`'s `active`
   effect), so Escape/Delete on a Raptor page never reach the chart editor.
-- **Everyone edits; only the FILE portion is the admin's** (owner, 7 Sep 26,
-  his second word — "allowed for both admin and member for all access, except
-  the file portion which is admin only"). Marking, Edit mode, the Course and
-  Syllabus menus, students, dates, pace and lull periods behave exactly as in
-  the standalone app for every login. A member (and a logged-out session, and
-  an admin viewing as member) does not get the **File** menu — ⇪ Import,
-  ⤓ Export — and the entry points behind it refuse at the write path in
-  `core.js` (`fileLocked`); ✓ Save
-  changes stays for everyone (it writes flow edits to the store — nothing
-  else, since 9 Sep 26). Pins: `src/tracker/tracker.test.tsx`.
+- **Admin and member have the same access — the File menu too** (owner,
+  23 Sep 26 — D121: "For the tracker, admin and member should have the same
+  access authority", superseding the 7 Sep 26 second word's "…except the file
+  portion which is admin only"). Marking, Edit mode, the Course and Syllabus
+  menus, students, dates, pace, lull periods, ✓ Save changes AND the **File**
+  menu (⇪ Import, ⤓ Export) behave the same for every login, as in the
+  standalone app; the Tracker reads no role, and the admin's view-as flip
+  changes nothing on the tab. Pins: `src/tracker/tracker.test.tsx` (the
+  D121 block and the header's one bar).
 - **On a phone, ONE half at a time — and the switch rides the Tracker's own
   element.** Below 1050px the Flow chart / Info tabs show either the chart
   column or the side panel, never both stacked; the class that decides

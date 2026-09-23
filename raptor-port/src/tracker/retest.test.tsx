@@ -12,7 +12,6 @@ import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import * as core from './app/core.js'
 import * as FMT from './app/fileFormat.js'
-import { setFileLocked } from './role.js'
 import Header from './components/Header.jsx'
 import ShowAllPanel from './components/ShowAllPanel.jsx'
 import { InfoModal } from './components/Modals.jsx'
@@ -55,7 +54,6 @@ beforeAll(async () => {
   resetSession({ user: 'ad', role: 'admin' })
   board = document.createElement('div'); board.id = 'board'; document.body.appendChild(board)
   await C.init()
-  setFileLocked(false)
 })
 afterAll(() => { board.remove(); document.querySelectorAll('.host').forEach(h => h.remove()) })
 

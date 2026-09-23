@@ -967,7 +967,7 @@ ownership** by the person's `User` where the own-row rule applies. C R U D
 | `LeaveBid` | C R U D (decide, move) | R, C U **own** while `stage = open` | `personId` = my person — the `canEditRow` rule the store already enforces |
 | `LeaveOpening`, `LeaveLedger`, `LeaveCounter` | C R U D | R **own** | `personId` = my person |
 | `LeavePersonProfile` | C R U D | R | — |
-| `Course`, `Syllabus`, `TrainingEvent`, `EventPrerequisite`, `Layout`, `CoursePlan`, `Enrolment`, `Attempt` | C R U D | C R U D | — (**everyone edits** the Tracker — owner, 7 Sep 26; only Import / Export, which are not table operations, are the admin's) |
+| `Course`, `Syllabus`, `TrainingEvent`, `EventPrerequisite`, `Layout`, `CoursePlan`, `Enrolment`, `Attempt` | C R U D | C R U D | — (**everyone edits** the Tracker — owner, 7 Sep 26; since D121, 23 Sep 26, Import / Export too: admin and member have the same access) |
 
 **The server enforces, the browser mirrors.** Every rule above is a
 privilege on the store (a Dataverse security role) and a check at the API's

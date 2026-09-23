@@ -36,7 +36,7 @@ import * as view from './view'
 import { histPush, histInit, histSnap, histRestore, schedFields } from './history'
 import { setSession as authSetSession, canEditSched, SESSION, ACCOUNTS, canToggleRole, setEffectiveRole, setLgEdit, setMe } from './auth'
 import { setRole as lwSetRole } from '../leavewar/state/store'
-import { setFileLocked as trSetFileLocked, endTrackerSession } from '../tracker/role.js'
+import { endTrackerSession } from '../tracker/role.js'
 import { isHydrated, weekSwapBegin, weekSwapEnd } from './persist'
 import { deferEffect, CmdRefused } from '../command'
 import type { EnlistableStore, RecordEntry, CommitResult } from '../command'
@@ -325,15 +325,14 @@ export function resetSession(s: any) {
      store neither persists nor re-reads it, so nothing can disagree with
      the session that is actually looking at the page. */
   lwSetRole(s && s.role === 'admin' ? 'admin' : 'member')
-  /* the Tracker tab rides the same seam (7 Sep 26): everyone marks and edits
-     there, but its FILE portion (Import / Export) is the admin's — a member
-     login, and a logout, lock it. Same discipline as the Leave War role above:
-     one production writer here, one in toggleRole, never persisted
-     (tracker/app/core.js fileLocked). And the Tracker's own session ends here
-     too — its undo history, open windows and modes (undo is per login session,
-     owner 13 Sep 26; [HUMAN-RETEST] F10). toggleRole does NOT end it: the
-     view-as flip is the same person looking through the other role's eyes. */
-  trSetFileLocked(!(s && s.role === 'admin'))
+  /* the Tracker tab rides the same seam (7 Sep 26), but reads NO role: admin
+     and member have the same access there, File menu included (owner,
+     23 Sep 26 — D121, superseding the 7 Sep "file portion is the admin's" lock
+     that used to be written here and in toggleRole). What it takes from a
+     login or logout is the end of its own SESSION — its undo history, open
+     windows and modes (undo is per login session, owner 13 Sep 26;
+     [HUMAN-RETEST] F10). toggleRole does NOT end it: the view-as flip is the
+     same person looking through the other role's eyes. */
   endTrackerSession()
   /* and the log itself goes. It is stamped with WHO made each change, so
      carrying it across a logout would show the incoming user a list of
@@ -377,7 +376,6 @@ export function toggleRole() {
     setLgEdit(false)
   }
   lwSetRole(toAdmin ? 'admin' : 'member')
-  trSetFileLocked(!toAdmin)
   notify()
 }
 
