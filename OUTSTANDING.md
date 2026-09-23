@@ -118,7 +118,7 @@ raised and the branch deliberately left), `[STORE-READER-SWEEP]`, `[OIL-REQ-NAME
 owner's filmed frozen-bar jump, and archived; MERGED to `main` 23 Sep 26 on his "merge live" (look done). Left from it:
 `[LW-FROZEN-BAR-GAP]` (a one-frame blink, below `[ALL-AVAIL-WINDOW]`). **Tracker, 23 Sep 26 (night):** his
 pinch-zoom report is FIXED and MERGED on his "merge live" (`claude/tracker-pinch-anchor`, walked, gates green);
-filed from it `[TRK-PINCH-DRAGS-BALL]` (the next Tracker job), `[TRK-EDIT-SIDEWAYS]`, `[TRK-TAP-AFTER-DRAG]`. `[CI-TWO-CORES]` — DONE and
+filed from it `[TRK-PINCH-DRAGS-BALL]` (with his "left side cut off" report — FULL-tier checked and MERGED 24 Sep 26 on D133, archived; left from it `[TRK-PINCH-ASK]`), `[TRK-EDIT-SIDEWAYS]`, `[TRK-TAP-AFTER-DRAG]`. `[CI-TWO-CORES]` — DONE and
 archived: the checks run on his PC as a Windows service, its folder permissions tightened.
 
 **STALE ABOVE, CORRECTED 22 Sep 26:** the "STACK PROGRESS (updated 18 Sep 26)" block says the next
@@ -1413,18 +1413,19 @@ Marked **his call** where the answer is product direction, not a defect.
 - **At 1200px the status beside ✓ Save changes shortens to "● un…"** (whole on hover) — the price of the
   fixed save corner (w3-F5); the button says what matters.
 
-### [TRK-PINCH-DRAGS-BALL] A pinch in Edit chart layout with a finger on a ball drags that ball (23 Sep 26)
-**Place:** the next Tracker job — it changes his saved layout by accident. Found walking the pinch fix
-(`raptor-port/docs/handpass/2026-09-23-tracker-pinch.md` F-B). In Edit chart layout, a first finger that
-lands ON a ball starts that ball's drag; the second finger makes it a pinch, but the drag carries on: the
-ball moves (36px on a phone), an undo step appears, and the move saves itself. Older than the pinch fix.
-The shape of the fix: the moment a second finger lands, cancel the ball's drag and put it back — no move,
-no undo step, nothing saved. **FULL tier** (it touches a saved change): both reads, not one.
-
 ### [TRK-EDIT-SIDEWAYS] Edit chart layout on a sideways phone leaves the chart no room (23 Sep 26)
 **Place:** after `[TRK-PINCH-DRAGS-BALL]`. At 844×390 the tool strip fills the screen and the chart area is
 0px — nothing to see, drag or pinch (picture `docs/img/handpass/2026-09-23-tracker-pinch/after-phone-sideways-edit-no-room.png`).
 Upright it keeps 446px. Older than the pinch fix (F-C in its sheet). A layout job: fold or scroll the strip sideways.
+
+### [TRK-PINCH-ASK] Two feel questions from the pinch fix, and his iPhone look (24 Sep 26)
+**Place:** ask at his next Tracker session — nothing is broken; `[TRK-PINCH-DRAGS-BALL]` merged on D133 without his
+look. (1) A ball dragged ON PURPOSE and then joined by a second finger goes back to where the drag began (the take-back
+does not tell a deliberate drag from a pinch that started on a ball) — keep, or keep a drag that has already moved?
+(2) After a pinch, the finger left down does nothing until lifted (as before, both modes) — or should it carry on
+scrolling? (Both reads asked; the sheet's §11.) (3) His look card, on his iPhone on the live app:
+`raptor-port/docs/handpass/2026-09-23-tracker-pinch-ball.md` §12 — Safari is the one browser no walk here drives, and
+one line of the fix (the board holding both fingers) is proven only there.
 
 ### [TRK-TAP-AFTER-DRAG] The first tap on a button after dragging or pinching the chart does nothing (23 Sep 26)
 **Place:** ask him first — seen only in the test browser's touch emulation, not yet on a real iPhone. Straight

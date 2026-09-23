@@ -266,3 +266,18 @@ The first run AS A SERVICE hung 30 min in the browser gate: Playwright's CI git-
 Git Credential Manager, which a service cannot show (no stored token since SEC-003). Fixed:
 `captureGitInfo` off in `playwright.config.ts`; `GIT_TERMINAL_PROMPT=0`/`GCM_INTERACTIVE=never` in the job.
 
+
+*Moved here 2026-09-24 by backlog-archive.mjs. Forward facts: `raptor-port/docs/handpass/2026-09-23-tracker-pinch-ball.md`, `HANDOFF-NEXT.md`.*
+
+### [TRK-PINCH-DRAGS-BALL] A pinch in Edit chart layout with a finger on a ball drags that ball (23 Sep 26)
+**BUILT on `claude/tracker-pinch-drags-ball` (24 Sep 26), FULL-tier bug check in progress — sheet
+`raptor-port/docs/handpass/2026-09-23-tracker-pinch-ball.md`.** Carries the owner's report of the same night
+too — *"the left side of the tracker chart is cut off"*: leaving Edit chart layout left its canvas's pan and
+zoom on the ordinary chart, where the next pinch painted them on (fixed on the same branch). Archive on merge.
+Found walking the pinch fix
+(`raptor-port/docs/handpass/2026-09-23-tracker-pinch.md` F-B). In Edit chart layout, a first finger that
+lands ON a ball starts that ball's drag; the second finger makes it a pinch, but the drag carries on: the
+ball moves (36px on a phone), an undo step appears, and the move saves itself. Older than the pinch fix.
+The shape of the fix: the moment a second finger lands, cancel the ball's drag and put it back — no move,
+no undo step, nothing saved. **FULL tier** (it touches a saved change): both reads, not one.
+

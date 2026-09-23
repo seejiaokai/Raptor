@@ -524,3 +524,48 @@ code separately from its output, and never let the same line that runs a gate al
 **Suggested improvement:** In §7: "A gesture step asserts the EFFECT a person sees, in screen terms, not that a value moved: for a zoom, the thing under the fingers stays under them (measure its on-screen position before and after, against where the fingers end); for a drag, the thing follows the finger. Drive multi-finger gestures for real (CDP touch points), in BOTH modes a surface has." Add the pinch driver (scripts/handpass/trk-pinch.mjs) as the worked example.
 
 **Principle:** "Did the value change?" passes a gesture that goes to the wrong place; assert the relationship the user relies on (under the finger stays under the finger), measured on screen.
+
+### Observation 219: A red-first test must be red for the RIGHT reason — read the failure, prove the premise
+
+**Status:** OPEN
+**Date:** 2026-09-24
+**Session context:** [TRK-PINCH-DRAGS-BALL] — red-first browser checks for "a pinch starting on a drawn line with Delete leaves the line".
+**Skill:** raptor-port/docs/bug-check-order.md (§8.4 red first, and the break test)
+**Type:** open-source
+**Phase/Area:** building the regression test before the fix
+
+**Issue:** The new check went red on the unfixed code — twice — and both times for the wrong reason. First, an earlier case had left the Line tool mid-line, so the test's own "draw a line" step failed ("no line could be drawn"). Second, the check's own setup click deleted the line: a freshly drawn line stays SELECTED, and pressing the Delete tool button with a line selected deletes it on the spot — so "the line was deleted" was the test's doing, not the pinch's. A third check ("a line exists") passed vacuously because the chart ships 82 drawn lines. On the fixed code the same setup step then made the check fail, which is how it surfaced. Separately, a mode-switch measurement read chart coordinates through the SVG's getScreenCTM on a CSS-zoomed ancestor and reported 135 px of drift that was the measurement, not the app (ball rectangles said 1 px).
+
+**Suggested improvement:** In §8.4 add: "Red first is not enough — read the red. The failure's detail must name the defect's own effect (the ball moved, the undo step appeared), not a setup step. Each case asserts its PREMISE (the object it acts on exists, is the one it created, the tool is the one it chose, nothing else is selected) before the action, and identifies what it made by id, never by a count the fixture already satisfies. Measure positions with element rectangles, not a transform matrix, where CSS zoom is in play."
+
+**Principle:** A test that fails on the bug for the wrong reason proves nothing and will lie again on the fixed code; check that each red names the defect's own effect and that every precondition is asserted, not assumed.
+
+### Observation 220: A fix across a mode switch must wait for the layout the switch causes
+
+**Status:** OPEN
+**Date:** 2026-09-24
+**Session context:** [TRK-PINCH-DRAGS-BALL] — keeping the chart steady going in and out of Edit chart layout.
+**Skill:** raptor-port/docs/bug-check-order.md (§7 the walk — the order list); raptor-port/docs/ui-contracts.md
+**Type:** open-source
+**Phase/Area:** implementation / measurement
+
+**Issue:** The placement was computed synchronously inside the toggle, but the UI framework only draws the new chrome (a tool strip 240 px tall appears above the board, a zoom bar leaves below) on its next render — so the board moved AFTER the placement, and the chart jumped 239 px the other way. Coming out, a margin cut for the old, smaller board left no room to centre the point. Both were visible only by timing samples (click → microtask → animation frame): the board's size changed between the microtask and the first frame.
+
+**Suggested improvement:** When a change keeps something steady across a mode switch, place it again in the first animation frame after the switch (after the framework has laid out the new chrome, before paint), recompute any size-derived padding first, and assert "the point in the middle stays in the middle" rather than "nothing moved on screen" — the viewport itself moves.
+
+**Principle:** Anything anchored across a UI state change must be anchored against the layout AFTER the change settles, and the check must measure relative to the moved viewport, not absolute screen positions.
+
+### Observation 221: A walk in one browser engine cannot see another engine's event delivery — simulate it on purpose
+
+**Status:** OPEN
+**Date:** 2026-09-24
+**Session context:** [TRK-PINCH-DRAGS-BALL] — Fable's final read (F1): Safari can deliver a touch's later events to the element it landed on even after a redraw removed it; the walk used Chromium, which retargets them.
+**Skill:** raptor-port/docs/bug-check-order.md (§7 the walk; §8 making checks find)
+**Type:** open-source
+**Phase/Area:** the walk — device/engine coverage
+
+**Issue:** Every gesture check passed in Chromium while the change redrew the element under a held finger — exactly the case where engines differ. The fix could not be walked on the owner's real device. What made it testable here was dispatching synthetic pointer events the way the other engine would (a lift sent to the now-detached element; two touches whose lifts never arrive) — and that simulated check then found an unrelated real defect in Chromium too: after the heal, the next touch still missed its ball because a stale 36 px scroll made the chart hop on the first redraw.
+
+**Suggested improvement:** In §7 add: "When a change redraws or removes the element under a held finger (or relies on which element receives the lift), list how each engine the owner uses delivers those events, and add a synthetic check per difference — dispatch the other engine's event sequence directly on the element it would reach. Name in the sheet any line that only a real device can prove, and make the owner's look card test it."
+
+**Principle:** A walk proves behaviour in the engine it ran; where engines are known to differ, reproduce the other engine's event sequence synthetically and name what only the real device can confirm.

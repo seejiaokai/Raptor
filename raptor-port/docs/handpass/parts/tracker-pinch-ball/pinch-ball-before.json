@@ -1,0 +1,461 @@
+{
+  "rows": [
+    {
+      "name": "phone: N1 the ordinary chart — a pinch starting on a ball opens no grading pop-up and marks nothing",
+      "pass": true,
+      "detail": "pop-up false; bubble false; undo 0→0"
+    },
+    {
+      "name": "phone: N1 the ordinary chart in ⓘ Details mode, the second finger on another ball — a pinch starting on a ball opens no details bubble and marks nothing",
+      "pass": true,
+      "detail": "pop-up false; bubble false; undo 0→0"
+    },
+    {
+      "name": "phone: opening Edit chart layout leaves the chart where it was",
+      "pass": false,
+      "detail": "ACG-04 moved 0,-216px"
+    },
+    {
+      "name": "phone: E1 Move — the first finger on a ball: the pinch moves nothing",
+      "pass": false,
+      "detail": "changed: balls, undo, lay (undo 0→1, lines 82→82, balls 210→210, Save false→false) ",
+      "changed": [
+        "balls",
+        "undo",
+        "lay"
+      ]
+    },
+    {
+      "name": "phone: E2 Move — the first finger has already moved the ball 15px when the second lands",
+      "pass": false,
+      "detail": "changed: balls, undo, lay (undo 1→2, lines 82→82, balls 210→210, Save false→false) ",
+      "changed": [
+        "balls",
+        "undo",
+        "lay"
+      ]
+    },
+    {
+      "name": "phone: E3 Move — both fingers on balls",
+      "pass": false,
+      "detail": "changed: balls, lines, undo, lay (undo 2→3, lines 82→82, balls 210→210, Save false→false) ",
+      "changed": [
+        "balls",
+        "lines",
+        "undo",
+        "lay"
+      ]
+    },
+    {
+      "name": "phone: E4 Select (nothing selected) — the first finger on a ball",
+      "pass": false,
+      "detail": "changed: balls, lines, undo, lay, sel (undo 3→4, lines 82→82, balls 210→210, Save false→false) ",
+      "changed": [
+        "balls",
+        "lines",
+        "undo",
+        "lay",
+        "sel"
+      ]
+    },
+    {
+      "name": "phone: E5 Select all, then a finger on one of them — the whole chart stays",
+      "pass": false,
+      "detail": "changed: balls, lines, undo, lay, sel (undo 4→5, lines 82→82, balls 210→210, Save false→false) ",
+      "changed": [
+        "balls",
+        "lines",
+        "undo",
+        "lay",
+        "sel"
+      ]
+    },
+    {
+      "name": "phone: E6 Select, everything selected — the first finger on bare canvas: no box, the selection kept",
+      "pass": false,
+      "detail": "changed: sel (undo 5→5, lines 82→82, balls 210→210, Save false→false) ",
+      "changed": [
+        "sel"
+      ]
+    },
+    {
+      "name": "phone: E7 Line — a pinch on bare canvas draws no line",
+      "pass": false,
+      "detail": "changed: lines, undo, save, lay, overlay (undo 5→6, lines 82→83, balls 210→210, Save false→true) the pinch did not zoom ",
+      "changed": [
+        "lines",
+        "undo",
+        "save",
+        "lay",
+        "overlay"
+      ]
+    },
+    {
+      "name": "phone: E8 Line — a line half-drawn by one tap: a pinch leaves it half-drawn",
+      "pass": false,
+      "detail": "changed: lines, undo, lay (undo 6→7, lines 83→84, balls 210→210, Save true→true) the pinch did not zoom ",
+      "changed": [
+        "lines",
+        "undo",
+        "lay"
+      ]
+    },
+    {
+      "name": "phone: E8b the half-drawn line still ends with the next tap",
+      "pass": false,
+      "detail": "lines 83 → after the pinch 84 → after the tap 84"
+    },
+    {
+      "name": "phone: E9 Delete — the first finger on a drawn line: the line stays",
+      "pass": false,
+      "detail": "nothing on screen to start on"
+    },
+    {
+      "name": "phone: E10 Delete — the first finger on a ball: the ball stays",
+      "pass": false,
+      "detail": "changed: lines, undo, lay, overlay (undo 9→10, lines 84→85, balls 210→210, Save true→true) the pinch did not zoom ",
+      "changed": [
+        "lines",
+        "undo",
+        "lay",
+        "overlay"
+      ]
+    },
+    {
+      "name": "phone: E11 Connect — the first finger on a ball starts no link",
+      "pass": true,
+      "detail": "",
+      "changed": []
+    },
+    {
+      "name": "phone: E12 Edit lines — a selected line's end square",
+      "pass": false,
+      "detail": "no end square shown",
+      "skipped": false
+    },
+    {
+      "name": "phone: E12 Edit lines — a selected line's corner square",
+      "pass": true,
+      "detail": "a straight line has no corner square — none to start on",
+      "skipped": true
+    },
+    {
+      "name": "phone: E13 Merge — the first finger on a drawn line picks nothing",
+      "pass": false,
+      "detail": "nothing on screen to start on"
+    },
+    {
+      "name": "phone: E13b–d Merge on crossing lines",
+      "pass": false,
+      "detail": "could not draw the crossing line"
+    },
+    {
+      "name": "phone: E13e Move — with an unsaved edit waiting, a pinch on a ball keeps ✓ Save changes and adds nothing",
+      "pass": false,
+      "detail": "changed: balls, undo, lay (undo 10→11, lines 85→85, balls 210→210, Save true→true) ",
+      "changed": [
+        "balls",
+        "undo",
+        "lay"
+      ]
+    },
+    {
+      "name": "phone: E14 after an undo — a pinch on a ball keeps ↷ (redo) and ↶ as they were",
+      "pass": false,
+      "detail": "changed: balls, undo, redo, lay (undo 11→12, lines 85→85, balls 210→210, Save true→true) ",
+      "changed": [
+        "balls",
+        "undo",
+        "redo",
+        "lay"
+      ]
+    },
+    {
+      "name": "phone: E15 pinch, lift one finger, carry on with the other — nothing moves",
+      "pass": false,
+      "detail": "changed: balls, lines, undo, lay"
+    },
+    {
+      "name": "phone: E15b pinch, lift the FIRST finger, carry on with the second — nothing moves",
+      "pass": false,
+      "detail": "changed: balls, lines, undo, lay"
+    },
+    {
+      "name": "phone: E16 a pinch on bare canvas keeps the chart under the fingers",
+      "pass": true,
+      "detail": "0.7px"
+    },
+    {
+      "name": "phone: E17 one finger still drags a ball — it moves, one undo step, saved, Save changes not lit",
+      "pass": true,
+      "detail": "undo 14→15; stored changed; Save true→true"
+    },
+    {
+      "name": "phone: \"✓ Done editing chart\" leaves the chart where it was",
+      "pass": false,
+      "detail": "ACG-04 moved 193,-25px"
+    },
+    {
+      "name": "phone: M3 after Edit chart layout, a pinch zooms the chart it shows — nothing shrinks or slides off the left",
+      "pass": false,
+      "detail": "the chart's own transform translate(-745.6,-1586.6) scale(1.446); shows 145% → 293%, drawn at 293%; T-02 3516px from the fingers"
+    },
+    {
+      "name": "phone: M4 an editing canvas zoomed to 400% comes back at 300% with the middle held",
+      "pass": false,
+      "detail": "1211px"
+    },
+    {
+      "name": "phone: no console or page errors",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "phone-sideways: N1 the ordinary chart — a pinch starting on a ball opens no grading pop-up and marks nothing",
+      "pass": true,
+      "detail": "pop-up false; bubble false; undo 0→0"
+    },
+    {
+      "name": "phone-sideways: N1 the ordinary chart (Details mode)",
+      "pass": true,
+      "detail": "not walked — no ball (or pair of balls) clear of the edges in this chart area",
+      "skipped": true
+    },
+    {
+      "name": "phone-sideways: opening Edit chart layout leaves the chart where it was",
+      "pass": false,
+      "detail": "ST-01 moved 0,34px"
+    },
+    {
+      "name": "phone-sideways: Edit chart layout cases",
+      "pass": true,
+      "detail": "not walked — 0px of chart on screen ([TRK-EDIT-SIDEWAYS], filed)",
+      "skipped": true
+    },
+    {
+      "name": "phone-sideways: \"✓ Done editing chart\" leaves the chart where it was",
+      "pass": false,
+      "detail": "ST-01 moved 0,-88px"
+    },
+    {
+      "name": "phone-sideways: M3 after Edit chart layout, a pinch zooms the chart it shows — nothing shrinks or slides off the left",
+      "pass": false,
+      "detail": "the chart's own transform translate(0.0,-66.0) scale(0.920); shows 92% → 187%, drawn at 187%; ACG-01 206px from the fingers"
+    },
+    {
+      "name": "phone-sideways: no console or page errors",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "tablet: N1 the ordinary chart — a pinch starting on a ball opens no grading pop-up and marks nothing",
+      "pass": true,
+      "detail": "pop-up false; bubble false; undo 0→0"
+    },
+    {
+      "name": "tablet: N1 the ordinary chart in ⓘ Details mode, the second finger on another ball — a pinch starting on a ball opens no details bubble and marks nothing",
+      "pass": true,
+      "detail": "pop-up false; bubble false; undo 0→0"
+    },
+    {
+      "name": "tablet: opening Edit chart layout leaves the chart where it was",
+      "pass": false,
+      "detail": "ACG-02 moved 0,-277px"
+    },
+    {
+      "name": "tablet: E1 Move — the first finger on a ball: the pinch moves nothing",
+      "pass": false,
+      "detail": "changed: balls, lines, undo, lay (undo 0→1, lines 82→82, balls 210→210, Save false→false) ",
+      "changed": [
+        "balls",
+        "lines",
+        "undo",
+        "lay"
+      ]
+    },
+    {
+      "name": "tablet: E2 Move — the first finger has already moved the ball 15px when the second lands",
+      "pass": false,
+      "detail": "changed: balls, lines, undo, lay (undo 1→2, lines 82→82, balls 210→210, Save false→false) ",
+      "changed": [
+        "balls",
+        "lines",
+        "undo",
+        "lay"
+      ]
+    },
+    {
+      "name": "tablet: E3 Move — both fingers on balls",
+      "pass": false,
+      "detail": "changed: balls, undo, lay (undo 2→3, lines 82→82, balls 210→210, Save false→false) ",
+      "changed": [
+        "balls",
+        "undo",
+        "lay"
+      ]
+    },
+    {
+      "name": "tablet: E4 Select (nothing selected) — the first finger on a ball",
+      "pass": false,
+      "detail": "changed: balls, lines, undo, lay (undo 3→4, lines 82→82, balls 210→210, Save false→false) ",
+      "changed": [
+        "balls",
+        "lines",
+        "undo",
+        "lay"
+      ]
+    },
+    {
+      "name": "tablet: E5 Select all, then a finger on one of them — the whole chart stays",
+      "pass": false,
+      "detail": "changed: balls, lines, undo, lay, sel (undo 4→5, lines 82→82, balls 210→210, Save false→false) ",
+      "changed": [
+        "balls",
+        "lines",
+        "undo",
+        "lay",
+        "sel"
+      ]
+    },
+    {
+      "name": "tablet: E6 Select, everything selected — the first finger on bare canvas: no box, the selection kept",
+      "pass": false,
+      "detail": "changed: sel (undo 5→5, lines 82→82, balls 210→210, Save false→false) ",
+      "changed": [
+        "sel"
+      ]
+    },
+    {
+      "name": "tablet: E7 Line — a pinch on bare canvas draws no line",
+      "pass": false,
+      "detail": "changed: lines, undo, save, lay, overlay (undo 5→6, lines 82→83, balls 210→210, Save false→true) the pinch did not zoom ",
+      "changed": [
+        "lines",
+        "undo",
+        "save",
+        "lay",
+        "overlay"
+      ]
+    },
+    {
+      "name": "tablet: E8 Line — a line half-drawn by one tap: a pinch leaves it half-drawn",
+      "pass": false,
+      "detail": "changed: lines, undo, lay (undo 6→7, lines 83→84, balls 210→210, Save true→true) the pinch did not zoom ",
+      "changed": [
+        "lines",
+        "undo",
+        "lay"
+      ]
+    },
+    {
+      "name": "tablet: E8b the half-drawn line still ends with the next tap",
+      "pass": false,
+      "detail": "lines 83 → after the pinch 84 → after the tap 85"
+    },
+    {
+      "name": "tablet: E9 Delete — the first finger on a drawn line: the line stays",
+      "pass": false,
+      "detail": "nothing on screen to start on"
+    },
+    {
+      "name": "tablet: E10 Delete — the first finger on a ball: the ball stays",
+      "pass": false,
+      "detail": "changed: lines, undo, lay, overlay (undo 10→11, lines 85→86, balls 210→210, Save true→true) the pinch did not zoom ",
+      "changed": [
+        "lines",
+        "undo",
+        "lay",
+        "overlay"
+      ]
+    },
+    {
+      "name": "tablet: E11 Connect — the first finger on a ball starts no link",
+      "pass": true,
+      "detail": "",
+      "changed": []
+    },
+    {
+      "name": "tablet: E12 Edit lines — a selected line's end square",
+      "pass": false,
+      "detail": "no end square shown",
+      "skipped": false
+    },
+    {
+      "name": "tablet: E12 Edit lines — a selected line's corner square",
+      "pass": true,
+      "detail": "a straight line has no corner square — none to start on",
+      "skipped": true
+    },
+    {
+      "name": "tablet: E13 Merge — the first finger on a drawn line picks nothing",
+      "pass": false,
+      "detail": "nothing on screen to start on"
+    },
+    {
+      "name": "tablet: E13b–d Merge on crossing lines",
+      "pass": false,
+      "detail": "could not draw the crossing line"
+    },
+    {
+      "name": "tablet: E13e Move — with an unsaved edit waiting, a pinch on a ball keeps ✓ Save changes and adds nothing",
+      "pass": false,
+      "detail": "changed: balls, undo, lay (undo 11→12, lines 86→86, balls 210→210, Save true→true) ",
+      "changed": [
+        "balls",
+        "undo",
+        "lay"
+      ]
+    },
+    {
+      "name": "tablet: E14 after an undo — a pinch on a ball keeps ↷ (redo) and ↶ as they were",
+      "pass": false,
+      "detail": "changed: balls, undo, redo, lay (undo 12→13, lines 86→86, balls 210→210, Save true→true) ",
+      "changed": [
+        "balls",
+        "undo",
+        "redo",
+        "lay"
+      ]
+    },
+    {
+      "name": "tablet: E15 pinch, lift one finger, carry on with the other — nothing moves",
+      "pass": false,
+      "detail": "changed: balls, undo, lay"
+    },
+    {
+      "name": "tablet: E15b pinch, lift the FIRST finger, carry on with the second — nothing moves",
+      "pass": false,
+      "detail": "changed: balls, undo, lay"
+    },
+    {
+      "name": "tablet: E16 a pinch on bare canvas keeps the chart under the fingers",
+      "pass": true,
+      "detail": "1.4px"
+    },
+    {
+      "name": "tablet: E17 one finger still drags a ball — it moves, one undo step, saved, Save changes not lit",
+      "pass": true,
+      "detail": "undo 15→16; stored changed; Save true→true"
+    },
+    {
+      "name": "tablet: \"✓ Done editing chart\" leaves the chart where it was",
+      "pass": false,
+      "detail": "ACG-02 moved 505,227px"
+    },
+    {
+      "name": "tablet: M3 after Edit chart layout, a pinch zooms the chart it shows — nothing shrinks or slides off the left",
+      "pass": false,
+      "detail": "the chart's own transform translate(-331.9,-90.0) scale(1.446); shows 145% → 293%, drawn at 293%; ACG-03 520px from the fingers"
+    },
+    {
+      "name": "tablet: M4 an editing canvas zoomed to 400% comes back at 300% with the middle held",
+      "pass": false,
+      "detail": "110px"
+    },
+    {
+      "name": "tablet: no console or page errors",
+      "pass": true,
+      "detail": ""
+    }
+  ]
+}

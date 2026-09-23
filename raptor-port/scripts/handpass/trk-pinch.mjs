@@ -12,6 +12,7 @@
 
    Pictures carry a red cross where the fingers' midpoint is (an annotation for
    the picture only — pointer-events none, added after the gesture). */
+import { pathToFileURL } from 'node:url'
 import { open, shot, save, PHONE } from './trk-lib.mjs'
 
 const TAG = process.env.PINCH_TAG || 'run'
@@ -19,11 +20,11 @@ const rows = []
 const note = (name, r) => { rows.push({ name, ...r }); console.log(`${r.pass ? 'PASS' : 'FAIL'}  ${name}  ${r.detail || ''}`) }
 const TOL = 6   /* px: a finger is ~40px wide, so 6 is well inside "under the fingers" */
 
-async function touchCdp(page) { return page.context().newCDPSession(page) }
+export async function touchCdp(page) { return page.context().newCDPSession(page) }
 
 /* Two fingers set horizontally about (cx,cy), spread from d0 to d1 apart, the
    midpoint sliding by (dx,dy) over the gesture. */
-async function pinch(page, cdp, { cx, cy, d0, d1, dx = 0, dy = 0, steps = 14 }) {
+export async function pinch(page, cdp, { cx, cy, d0, d1, dx = 0, dy = 0, steps = 14 }) {
   const pts = (d, mx, my) => [{ x: mx - d / 2, y: my, id: 1 }, { x: mx + d / 2, y: my, id: 2 }]
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: pts(d0, cx, cy) })
   await page.waitForTimeout(30)
@@ -37,7 +38,7 @@ async function pinch(page, cdp, { cx, cy, d0, d1, dx = 0, dy = 0, steps = 14 }) 
   return { x: cx + dx, y: cy + dy }
 }
 /* One finger dragging the board (the ordinary scroll). */
-async function drag(page, cdp, { x, y, dx, dy, steps = 10 }) {
+export async function drag(page, cdp, { x, y, dx, dy, steps = 10 }) {
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y, id: 3 }] })
   for (let i = 1; i <= steps; i++) {
     await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x + dx * i / steps, y: y + dy * i / steps, id: 3 }] })
@@ -49,7 +50,7 @@ async function drag(page, cdp, { x, y, dx, dy, steps = 10 }) {
 
 /* The ball nearest the middle of the visible board, and its centre on screen
    (the board clipped to the screen; a margin so both fingers land on it). */
-const pickBall = page => page.evaluate(() => {
+export const pickBall = page => page.evaluate(() => {
   const b0 = document.getElementById('board').getBoundingClientRect()
   const bd = { left: b0.left, right: Math.min(b0.right, innerWidth), top: b0.top, bottom: Math.min(b0.bottom, innerHeight) }
   const mY = Math.min(60, (bd.bottom - bd.top) * 0.3)
@@ -65,23 +66,23 @@ const pickBall = page => page.evaluate(() => {
   } }
   return best
 })
-const ballAt = (page, id) => page.evaluate(id => {
+export const ballAt = (page, id) => page.evaluate(id => {
   const g = document.querySelector(`#flowSvg .ball[data-id="${CSS.escape(id)}"]`); if (!g) return null
   const r = g.getBoundingClientRect()
   return { x: r.left + r.width / 2, y: r.top + r.height / 2 }
 }, id)
-const hitAt = (page, p) => page.evaluate(p => { const e = document.elementFromPoint(p.x, p.y); const g = e && e.closest && e.closest('.ball'); return g ? g.dataset.id : null }, p)
-const zoomNow = page => page.evaluate(() => {
+export const hitAt = (page, p) => page.evaluate(p => { const e = document.elementFromPoint(p.x, p.y); const g = e && e.closest && e.closest('.ball'); return g ? g.dataset.id : null }, p)
+export const zoomNow = page => page.evaluate(() => {
   const w = document.querySelector('#board .flowwrap'); const t = document.querySelector('#viewport')
   return { flow: +(getComputedStyle(w).zoom || 1), view: t ? t.getAttribute('transform') : '' }
 })
-const mark = (page, p) => page.evaluate(p => {
+export const mark = (page, p) => page.evaluate(p => {
   let m = document.getElementById('__pinchmark')
   if (!m) { m = document.createElement('div'); m.id = '__pinchmark'; document.body.appendChild(m) }
   m.style.cssText = `position:fixed;left:${p.x - 14}px;top:${p.y - 14}px;width:28px;height:28px;pointer-events:none;z-index:99999;` +
     'background:linear-gradient(#e11 0 0) center/28px 3px no-repeat,linear-gradient(#e11 0 0) center/3px 28px no-repeat;border:2px solid #e11;border-radius:50%'
 }, p)
-const unmark = page => page.evaluate(() => { const m = document.getElementById('__pinchmark'); if (m) m.remove() })
+export const unmark = page => page.evaluate(() => { const m = document.getElementById('__pinchmark'); if (m) m.remove() })
 
 /* One pinch case: pick the ball, pinch on it, measure. */
 async function pinchCase(page, cdp, name, { d0, d1, dx = 0, dy = 0, picture = null }) {
@@ -104,8 +105,8 @@ async function pinchCase(page, cdp, name, { d0, d1, dx = 0, dy = 0, picture = nu
 /* Edit chart layout: the chart point under the fingers, read off the canvas's
    own screen matrix, must still be under them at the end. On EMPTY canvas —
    a finger on a ball starts that ball's drag (filed separately, below). */
-const chartAt = (page, p) => page.evaluate(p => { const q = new DOMPoint(p.x, p.y).matrixTransform(document.getElementById('viewport').getScreenCTM().inverse()); return { x: q.x, y: q.y } }, p)
-const emptySpot = page => page.evaluate(() => {
+export const chartAt = (page, p) => page.evaluate(p => { const q = new DOMPoint(p.x, p.y).matrixTransform(document.getElementById('viewport').getScreenCTM().inverse()); return { x: q.x, y: q.y } }, p)
+export const emptySpot = page => page.evaluate(() => {
   const s0 = document.getElementById('flowSvg').getBoundingClientRect(), b0 = document.getElementById('board').getBoundingClientRect()
   const s = { left: Math.max(s0.left, b0.left), top: Math.max(s0.top, b0.top), right: Math.min(s0.right, b0.right, innerWidth), bottom: Math.min(s0.bottom, b0.bottom, innerHeight) }
   const hit = (x, y) => { const e = document.elementFromPoint(x, y); return !e || !!(e.closest && e.closest('.ball')) }
@@ -220,10 +221,14 @@ async function phoneWalk(size, label) {
   await browser.close()
 }
 
-await phoneWalk(PHONE, 'phone')
-await phoneWalk({ width: 844, height: 390 }, 'phone-sideways')
-await phoneWalk({ width: 1366, height: 1024 }, 'tablet')
+/* The touch helpers above are shared with trk-pinch-ball.mjs ([TRK-PINCH-DRAGS-BALL]),
+   so this walk runs only when it is the script named on the command line. */
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  await phoneWalk(PHONE, 'phone')
+  await phoneWalk({ width: 844, height: 390 }, 'phone-sideways')
+  await phoneWalk({ width: 1366, height: 1024 }, 'tablet')
 
-const filed = rows.filter(r => !r.pass && r.filed).length, failed = rows.filter(r => !r.pass && !r.filed).length
-console.log(`\n${rows.filter(r => r.pass).length}/${rows.length} passed; ${filed} FILED (the older problems, not this fix); ${failed} unexpected`)
-save(`pinch-${TAG}`, { rows })
+  const filed = rows.filter(r => !r.pass && r.filed).length, failed = rows.filter(r => !r.pass && !r.filed).length
+  console.log(`\n${rows.filter(r => r.pass).length}/${rows.length} passed; ${filed} FILED (the older problems, not this fix); ${failed} unexpected`)
+  save(`pinch-${TAG}`, { rows })
+}

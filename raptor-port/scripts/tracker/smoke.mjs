@@ -4201,6 +4201,191 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
   await pp.close();   /* edit mode is a view, not a save: closing leaves nothing behind */
 }
 
+/* ---- [TRK-PINCH-DRAGS-BALL] a pinch in Edit chart layout moves nothing, and
+   the editing view stays in Edit chart layout (23 Sep 26) ----
+   One finger does things on the editing canvas the moment it lands: it picks a
+   ball (or a selected group) up, starts a line, and with Delete it removes a
+   drawn line on the spot. A pinch starts with one finger, so every pinch that
+   began on a ball dragged that ball — it moved, an undo step appeared, and the
+   move saved itself. The second finger now takes all of that back.
+   And the owner's report the same night — "the left side of the tracker chart
+   is cut off": leaving Edit chart layout kept the editing canvas's pan and zoom
+   behind, and the next pinch on the ordinary chart painted them onto it — the
+   chart shrank to a fraction of the zoom it showed and slid under its left
+   edge. Going in and out also ignored the slack round the chart (9 Sep 26), so
+   the chart jumped (121px on a phone going in). Real fingers, through Chromium's
+   touch input. */
+{
+  const pp = await b.newPage({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  await openTracker(pp); await pp.waitForSelector('#flowSvg .ball'); await pp.waitForTimeout(400);
+  const cdp = await pp.context().newCDPSession(pp);
+  const touch = (type, touchPoints) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints });
+  /* the first finger lands on (x,y) and, after `lead` px of its own movement, a
+     second lands to its right; then the two spread apart — or, once the chart
+     is zoomed well in, close together, so a pinch always has room to zoom */
+  const pinchFrom = async (x, y, lead = 0) => {
+    const k = await pp.evaluate(() => { const t = document.getElementById('viewport').getAttribute('transform') || ''; const m = t.match(/scale\(([\d.]+)\)/); return m ? +m[1] : 1; });
+    const inward = k > 2, gap = inward ? 130 : 70, step = inward ? -4 : 5;
+    await touch('touchStart', [{ x, y, id: 1 }]); await pp.waitForTimeout(40);
+    for (let i = 1; i <= 3 && lead; i++) { await touch('touchMove', [{ x: x - lead * i / 3, y, id: 1 }]); await pp.waitForTimeout(16); }
+    const x1 = x - lead;
+    await touch('touchStart', [{ x: x1, y, id: 1 }, { x: x1 + gap, y, id: 2 }]); await pp.waitForTimeout(30);
+    for (let i = 1; i <= 12; i++) { await touch('touchMove', [{ x: x1 - step * i, y, id: 1 }, { x: x1 + gap + step * i, y, id: 2 }]); await pp.waitForTimeout(16); }
+    await touch('touchEnd', []); await pp.waitForTimeout(400);
+  };
+  /* everything a pinch must leave alone: every ball's place, the drawn lines,
+     both undo lists, ✓ Save changes, the stored layout — and the zoom it must change */
+  const look = () => pp.evaluate(() => {
+    const lay = {}; for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (/:lay:/.test(k)) lay[k] = localStorage.getItem(k); }
+    const u = window.__undoForTests();
+    return { balls: [...document.querySelectorAll('#flowSvg .ball')].map(g => g.dataset.id + '@' + g.getAttribute('transform')).join('|'),
+      lines: document.querySelectorAll('#flowSvg .linehit').length, undo: u.undo, redo: u.redo,
+      save: !!document.getElementById('saveChanges'), lay: JSON.stringify(lay),
+      view: document.getElementById('viewport').getAttribute('transform'),
+      /* the command stream: a cancelled first finger leaves no envelope (Astra, final read #1) */
+      cmd: typeof window.commandStreamLen === 'function' ? window.commandStreamLen() : -1 };
+  });
+  const same = (a, z) => ['balls', 'lines', 'undo', 'redo', 'save', 'lay', 'cmd'].filter(k => a[k] !== z[k]);
+  const ballNearMiddle = () => pp.evaluate(() => {
+    const bd = document.getElementById('board').getBoundingClientRect(), bot = Math.min(bd.bottom, innerHeight);
+    const mx = bd.left + bd.width / 2, my = (bd.top + bot) / 2; let best = null;
+    for (const g of document.querySelectorAll('#flowSvg .ball')) {
+      const r = g.getBoundingClientRect(); if (!r.width) continue;
+      const x = r.left + r.width / 2, y = r.top + r.height / 2;
+      if (x < bd.left + 60 || x > bd.right - 140 || y < bd.top + 40 || y > bot - 40) continue;
+      const d = Math.hypot(x - mx, y - my); if (!best || d < best.d) best = { id: g.dataset.id, x, y, d };
+    }
+    return best;
+  });
+  const emptyAt = () => pp.evaluate(() => {
+    const s0 = document.getElementById('flowSvg').getBoundingClientRect(), b0 = document.getElementById('board').getBoundingClientRect();
+    const s = { l: Math.max(s0.left, b0.left), t: Math.max(s0.top, b0.top), r: Math.min(s0.right, b0.right, innerWidth), b: Math.min(s0.bottom, b0.bottom, innerHeight) };
+    const busy = (x, y) => { const e = document.elementFromPoint(x, y); return !e || !!(e.closest('.ball') || e.closest('.linehit') || e.closest('.edgehit')); };
+    for (let y = s.t + 50; y < s.b - 50; y += 9) for (let x = s.l + 30; x < s.r - 130; x += 9) {
+      let clear = true; for (let d = 0; d <= 130 && clear; d += 10) if (busy(x + d, y)) clear = false;
+      if (clear) return { x, y };
+    }
+    return null;
+  });
+  const tool = async label => { await pp.locator('#arrTools button', { hasText: label }).first().click(); await pp.waitForTimeout(150); };
+  /* where a ball sits from the middle of the chart area, and its drawn size: the
+     board itself moves at the switch (the tool strip lands above it), so the
+     promise is that the point in the MIDDLE stays in the middle */
+  const fromMid = id => pp.evaluate(id => {
+    const b = document.getElementById('board'), r = b.getBoundingClientRect(), g = document.querySelector(`#flowSvg .ball[data-id="${id}"]`).getBoundingClientRect();
+    return { x: g.left + g.width / 2 - (r.left + b.clientLeft + b.clientWidth / 2), y: g.top + g.height / 2 - (r.top + b.clientTop + b.clientHeight / 2), w: g.width };
+  }, id);
+  const held = (a, z) => Math.round(Math.hypot(z.x - a.x * z.w / a.w, z.y - a.y * z.w / a.w));
+  const doneEditing = async () => {
+    await pp.click('#sylMenuBtn'); await pp.waitForTimeout(150);
+    if (!(await pp.locator('#arrangeBtn').isVisible())) { await pp.click('#sylMenuBtn'); await pp.waitForTimeout(150); }
+    await pp.click('#arrangeBtn'); await pp.waitForTimeout(500);
+  };
+
+  /* going in and out keeps the point in the middle of the chart area in the middle */
+  const keepId = (await ballNearMiddle()).id, k0 = await fromMid(keepId);
+  await pp.click('#sylMenuBtn'); await pp.waitForTimeout(150); await pp.click('#arrangeBtn'); await pp.waitForTimeout(600);
+  const k1 = await fromMid(keepId);
+  ok('phone: opening Edit chart layout keeps the middle of the chart in the middle', held(k0, k1) <= 2,
+    `${keepId} ${held(k0, k1)}px from where holding the middle puts it`);
+
+  const cases = [
+    ['Move, the first finger on a ball', null, 0],
+    ['Move, the first finger on a ball that has already moved it', null, 15],
+    ['Select all, then a finger on one of them', 'Select all', 0],
+  ];
+  for (const [name, pick, lead] of cases) {
+    if (pick) { await tool('Move'); await pp.locator('#selectAllBtn').click(); await pp.waitForTimeout(150); await tool('Select'); }
+    const s = await ballNearMiddle(), a = await look();
+    await pinchFrom(s.x, s.y, lead);
+    const z = await look(), moved = same(a, z);
+    ok(`phone, Edit chart layout — ${name}: the pinch zooms and changes nothing else`, !moved.length && a.view !== z.view,
+      moved.length ? `changed: ${moved.join(', ')} (${s.id}; undo ${a.undo}→${z.undo})` : `${a.view} → ${z.view}`);
+  }
+  /* Delete removes a drawn line on the finger's landing: draw one with two taps
+     (the chart ships with drawn lines of its own, so find the NEW one), then
+     pinch with the first finger on its middle */
+  { const ids = () => pp.evaluate(() => [...document.querySelectorAll('#flowSvg .linehit')].map(h => h.dataset.lid));
+    const p = await emptyAt(), before = await ids();
+    await tool('Move'); await tool('Line');
+    if (p) { await pp.mouse.click(p.x, p.y); await pp.waitForTimeout(150); await pp.mouse.click(p.x + 120, p.y); await pp.waitForTimeout(300); }
+    const lid = (await ids()).find(id => !before.includes(id));
+    const mid = lid && await pp.evaluate(lid => { const h = document.querySelector(`#flowSvg .linehit[data-lid="${lid}"]`); const q = h.getPointAtLength(h.getTotalLength() / 2), m = h.getScreenCTM(); return { x: q.x * m.a + m.e, y: q.y * m.d + m.f }; }, lid);
+    /* Move first: a new line is left SELECTED, and pressing 🗑 Delete with a line
+       selected deletes it on the spot — the tool button, not the pinch */
+    await tool('Move'); await tool('Delete');
+    const a = await look();
+    if (mid) await pinchFrom(mid.x, mid.y);
+    const z = await look(), d = same(a, z);
+    const still = lid && await pp.evaluate(lid => !!document.querySelector(`#flowSvg .linehit[data-lid="${lid}"]`), lid);
+    ok('phone, Edit chart layout — Delete: a pinch starting on a drawn line leaves the line', !!mid && still && !d.length,
+      mid ? (d.length || !still ? 'changed: ' + d.join(', ') + ` (the line ${still ? 'is still there' : 'was deleted'})` : '') : 'no line could be drawn to test on'); }
+
+  /* Edit lines: a finger on a selected drawn line's END square drags it (and
+     unhooks it the moment it lands); a pinch that starts there moves nothing
+     (Fable, final read F2 — the gate for break test B3) */
+  { const ids = () => pp.evaluate(() => [...document.querySelectorAll('#flowSvg .linehit')].map(h => h.dataset.lid));
+    const p = await emptyAt(), before = await ids();
+    await tool('Move'); await tool('Line');
+    if (p) { await pp.mouse.click(p.x, p.y); await pp.waitForTimeout(150); await pp.mouse.click(p.x + 110, p.y + 40); await pp.waitForTimeout(300); }
+    const lid = (await ids()).find(id => !before.includes(id));
+    await tool('Move'); await tool('Edit lines');
+    const mid = lid && await pp.evaluate(lid => { const h = document.querySelector(`#flowSvg .linehit[data-lid="${lid}"]`); const q = h.getPointAtLength(h.getTotalLength() / 2), m = h.getScreenCTM(); return { x: q.x * m.a + m.e, y: q.y * m.d + m.f }; }, lid);
+    if (mid) { await pp.mouse.click(mid.x, mid.y); await pp.waitForTimeout(250); }
+    const sq = await pp.evaluate(() => { const h = document.querySelector('#flowSvg .lend'); if (!h) return null; const r = h.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; });
+    const a = await look();
+    if (sq) await pinchFrom(sq.x, sq.y);
+    const z = await look(), d = same(a, z);
+    ok("phone, Edit chart layout — Edit lines: a pinch starting on a line's end square moves nothing", !!sq && !d.length, sq ? (d.length ? 'changed: ' + d.join(', ') : '') : 'no end square to start on');
+    await tool('Move'); }
+  /* pinch from a ball, lift the second finger, carry on with the first: nothing
+     moves (the gate for break test B4) */
+  { const s = await ballNearMiddle(), a = await look();
+    if (s) {
+      await touch('touchStart', [{ x: s.x, y: s.y, id: 1 }]); await pp.waitForTimeout(40);
+      await touch('touchStart', [{ x: s.x, y: s.y, id: 1 }, { x: s.x + 70, y: s.y, id: 2 }]);
+      for (let i = 1; i <= 6; i++) { await touch('touchMove', [{ x: s.x - 4 * i, y: s.y, id: 1 }, { x: s.x + 70 + 4 * i, y: s.y, id: 2 }]); await pp.waitForTimeout(16); }
+      await touch('touchEnd', [{ x: s.x - 24, y: s.y, id: 1 }]); await pp.waitForTimeout(30);
+      for (let i = 1; i <= 8; i++) { await touch('touchMove', [{ x: s.x - 24 - 8 * i, y: s.y + 6 * i, id: 1 }]); await pp.waitForTimeout(16); }
+      await touch('touchEnd', []); await pp.waitForTimeout(400);
+    }
+    const z = await look(), d = same(a, z);
+    ok('phone, Edit chart layout — pinch, lift one finger, carry on with the other: nothing moves', !!s && !d.length, s ? (d.length ? 'changed: ' + d.join(', ') : '') : 'no ball'); }
+  /* two touches whose lifts never arrived (Safari can lose a lift when the chart is
+     redrawn under the finger): the next real finger is a new first touch and drags
+     a ball (Fable, final read F1) */
+  { const s = await ballNearMiddle();
+    if (s) await pp.evaluate(s => {
+      const g = document.elementFromPoint(s.x, s.y), svg = document.getElementById('flowSvg');
+      const pe = (type, id, prim, el, x) => el.dispatchEvent(new PointerEvent(type, { pointerId: id, pointerType: 'touch', isPrimary: prim, bubbles: true, cancelable: true, clientX: x, clientY: s.y }));
+      pe('pointerdown', 901, true, g, s.x); pe('pointerdown', 902, false, svg, s.x + 60);
+    }, s);
+    await pp.waitForTimeout(100);
+    const b0 = await ballNearMiddle(), a = await look();
+    if (b0) { await touch('touchStart', [{ x: b0.x, y: b0.y, id: 3 }]); for (let i = 1; i <= 8; i++) { await touch('touchMove', [{ x: b0.x + 5 * i, y: b0.y + 3 * i, id: 3 }]); await pp.waitForTimeout(16); } await touch('touchEnd', []); await pp.waitForTimeout(500); }
+    const z = await look();
+    ok('phone, Edit chart layout — two lost lifts: the next finger is a new touch and still drags a ball', !!b0 && z.balls !== a.balls && z.undo === a.undo + 1, `undo ${a.undo}→${z.undo}`); }
+  /* the Line tool: its first finger starts a line and its second finished it */
+  await tool('Move'); await tool('Line');
+  { const p = await emptyAt(), a = await look();
+    if (!p) ok('phone, Edit chart layout — Line: a pinch draws no line', false, 'no empty canvas');
+    else { await pinchFrom(p.x, p.y); const z = await look(), d = same(a, z);
+      ok('phone, Edit chart layout — Line: a pinch draws no line', !d.length && a.view !== z.view, d.length ? 'changed: ' + d.join(', ') + ` (lines ${a.lines}→${z.lines})` : ''); } }
+  /* leaving: the chart stays put, and a pinch afterwards zooms the chart it shows */
+  await tool('Move');
+  const k2 = await fromMid(keepId);
+  await doneEditing();
+  const k3 = await fromMid(keepId);
+  ok('phone: "✓ Done editing chart" keeps the middle of the chart in the middle', held(k2, k3) <= 2,
+    `${keepId} ${held(k2, k3)}px from where holding the middle puts it`);
+  const s = (await ballNearMiddle()) || await pp.evaluate(() => { const r = document.getElementById('board').getBoundingClientRect(); return { x: r.left + r.width / 3, y: r.top + 150 }; });
+  await pinchFrom(s.x, s.y);
+  const vp = await pp.evaluate(() => document.getElementById('viewport').getAttribute('transform'));
+  ok('phone: after Edit chart layout a pinch zooms the ordinary chart — its editing view stays behind (left side not cut off)',
+    /^translate\(0(\.0)?,0(\.0)?\) scale\(1(\.000)?\)$/.test(vp), vp);
+  await pp.close();
+}
+
 /* ---- ONE Import for both jobs (9 Sep 26, owner: "is it possible to just have
    1 button?") ----
    A chart drawn up elsewhere and the whole export back in after the database

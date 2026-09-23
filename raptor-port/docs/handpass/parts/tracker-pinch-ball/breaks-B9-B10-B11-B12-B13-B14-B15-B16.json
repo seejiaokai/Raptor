@@ -1,0 +1,71 @@
+[
+  {
+    "id": "B9",
+    "wire": "a layout save waits while a first finger is held (Astra #1)",
+    "red": [
+      "smoke:FAIL  phone, Edit chart layout — Delete: a pinch starting on a drawn line leaves the line — changed: lay, cmd (the line is still there)",
+      "walk:FAIL  phone: E8 Line — a line half-drawn by one tap: a pinch leaves it half-drawn, its instruction too  changed: lay, cmd (undo 0→0, lines 82→82, balls 210→210, Save false→false)",
+      "walk:FAIL  phone: E9 Delete — the first finger on a drawn line: the line stays  changed: lay, cmd, stat (undo 2→2, lines 84→84, balls 210→210, Save true→true)"
+    ]
+  },
+  {
+    "id": "B10",
+    "wire": "a key or a press off the chart ends the take-back window (Astra #2, Fable F3)",
+    "red": [
+      "walk:FAIL  phone: E20 Ctrl+Z with a finger held, then a pinch — the undo stays done  undo 5→4→5; redo 0→1→0; balls BACK to before the undo",
+      "walk:FAIL  phone: E20b a click on ↶ with a finger held, then a pinch — the undo stays done  undo 6→5→6; redo 0→1→0; balls BACK to before the undo",
+      "walk:FAIL  phone: E20c ✓ Save changes with a finger held, then a pinch — the save stands  Save changes true→false→true; undo 6→0→6"
+    ]
+  },
+  {
+    "id": "B11",
+    "wire": "a primary touch heals lost lifts (Fable F1)",
+    "red": [
+      "smoke:FAIL  phone, Edit chart layout — two lost lifts: the next finger is a new touch and still drags a ball — undo 2→2",
+      "smoke:FAIL  phone, Edit chart layout — Line: a pinch draws no line",
+      "walk:FAIL  phone: E21 two lifts lost — the next finger is a new touch and still drags a ball  undo 0→0; ball did not move",
+      "walk:FAIL  phone: E22 a lift on a removed element  could not draw a line to tap",
+      "walk:FAIL  phone: E23 a mouse drag with a pinch in the middle of it still finishes and saves  stored unchanged; undo 0→0",
+      "walk:FAIL  phone: E18 fingers slid off the chart and lifted over the bar — the next single finger still drags a ball  undo 0→0; ball did not move",
+      "walk:FAIL  phone: E19 at the zoom ceiling  could not reach 400% (114%)",
+      "walk:FAIL  phone: E16 a pinch on bare canvas keeps the chart under the fingers  36.3px",
+      "walk:FAIL  phone: E17 one finger still drags a ball — it moves, one undo step, saved, Save changes not lit  undo 0→0; stored unchanged; Save false→false"
+    ]
+  },
+  {
+    "id": "B12",
+    "wire": "the lift is heard on the element the finger landed on (Fable F1)",
+    "red": [
+      "walk:FAIL  phone: E22 a Delete tap whose lift lands on the removed line — stored at the lift, and the next finger still drags  line redrawn away under the finger; stored unchanged; commands 9→9; next "
+    ]
+  },
+  {
+    "id": "B13",
+    "wire": "the board holds both fingers once a pinch starts (Fable F1 — Safari only)",
+    "red": []
+  },
+  {
+    "id": "B14",
+    "wire": "a mouse drag is not the pinch's to stop (Fable F4)",
+    "red": [
+      "walk:FAIL  phone: E23 a mouse drag with a pinch in the middle of it still finishes and saves  stored unchanged; undo 4→5"
+    ]
+  },
+  {
+    "id": "B15",
+    "wire": "the editing canvas is cut to size once the tool strip lands (the hop)",
+    "red": [
+      "walk:FAIL  phone: E1 Move — the first finger on a ball: the pinch moves nothing  changed: hop (undo 0→0, lines 82→82, balls 210→210, Save false→false)",
+      "walk:FAIL  phone: E4 Select (nothing selected) — the first finger on a ball  nothing on screen to start on",
+      "walk:FAIL  phone: E13e Move — with an unsaved edit waiting, a pinch on a ball keeps ✓ Save changes and adds nothing  changed: hop (undo 4→4, lines 85→85, balls 210→210, Save true→true)"
+    ]
+  },
+  {
+    "id": "B16",
+    "wire": "the take-back puts the instruction back (Astra #3)",
+    "red": [
+      "walk:FAIL  phone: E8 Line — a line half-drawn by one tap: a pinch leaves it half-drawn, its instruction too  changed: hint2 (undo 0→0, lines 82→82, balls 210→210, Save false→false)",
+      "walk:FAIL  phone: E13c Merge — line one armed by a tap, the first finger on line two: no merge, the instruction kept  changed: hint2 (undo 3→3, lines 85→85, balls 210→210, Save true→true)"
+    ]
+  }
+]
