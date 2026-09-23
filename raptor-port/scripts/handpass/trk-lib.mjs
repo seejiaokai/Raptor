@@ -17,6 +17,7 @@
 */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
+import { tmpdir } from 'node:os'
 import { fileURLToPath } from 'node:url'
 import { chromium } from '@playwright/test'
 
@@ -25,6 +26,9 @@ export const ROOT = resolve(HERE, '..', '..')                     // raptor-port
 export const SHOTS = process.env.HP_SHOTS || resolve(ROOT, 'docs/img/handpass/2026-09-23-tracker')
 export const OUT = resolve(ROOT, 'docs/handpass/parts/tracker')   // per-script JSON results
 export const BASE = process.env.HP_URL || 'http://localhost:4180'
+/* big, regenerable artefacts (exported files, whole-chart snapshots) stay OUT of
+   the repo (D69 — no bloat); a re-run rebuilds them */
+export const TMP = process.env.HP_TMP || resolve(tmpdir(), 'trk-handpass')
 
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
 const launchOptions = existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {}
@@ -47,7 +51,7 @@ function assertStateOrigin(state) {
     who: 'a' admin (ad/a) or 'u' squadron member (us/us). */
 export async function open({ size = DESK, who = 'a', state = null, tracker = true, touch = false } = {}) {
   if (state) assertStateOrigin(state)
-  mkdirSync(SHOTS, { recursive: true }); mkdirSync(OUT, { recursive: true })
+  mkdirSync(SHOTS, { recursive: true }); mkdirSync(OUT, { recursive: true }); mkdirSync(TMP, { recursive: true })
   const browser = await chromium.launch({ headless: true, ...launchOptions })
   const ctx = await browser.newContext({
     viewport: size, ...(state ? { storageState: state } : {}),

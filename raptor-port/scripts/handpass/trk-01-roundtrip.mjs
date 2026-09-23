@@ -24,10 +24,10 @@
    the same code either way. */
 import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { open, shot, save, core, dlg, log, reveal, DESK, SHOTS } from './trk-lib.mjs'
+import { open, shot, save, core, dlg, log, reveal, DESK, TMP } from './trk-lib.mjs'
 
 const L = log()
-const FILE = resolve(SHOTS, '..', '..', '..', 'handpass', 'parts', 'tracker', 'roundtrip-export.json')
+const FILE = resolve(TMP, 'roundtrip-export.json')
 
 const sleep = ms => new Promise(r => setTimeout(r, ms))
 const ball = (page, id) => page.locator(`#flowSvg .ball[data-id="${id}"]`).first()
@@ -294,6 +294,7 @@ for (const name of Object.keys(ca)) {
 for (const name of Object.keys(cb)) if (!ca[name]) L.note(`ROUND TRIP: B has a chart A did not`, name)
 const infoKeys = Object.keys(snapA.eventInfo || {}).filter(k => JSON.stringify(snapA.eventInfo[k]) !== JSON.stringify((snapB.eventInfo || {})[k]))
 L.ok('ROUND TRIP: every event detail', !infoKeys.length, infoKeys.slice(0, 5).join(', '))
-save('01-roundtrip', { rows: L.rows, snapA, snapB, asked, errorsA: A.errors, errorsB: B.errors })
+writeFileSync(resolve(TMP, '01-snapshots.json'), JSON.stringify({ snapA, snapB }))
+save('01-roundtrip', { rows: L.rows, orderA: snapA.order, orderB: snapB.order, asked, errorsA: A.errors, errorsB: B.errors })
 console.log(`\nerrors A ${A.errors.length}: ${A.errors.slice(0, 5).join(' | ')}`)
 console.log(`errors B ${B.errors.length}: ${B.errors.slice(0, 5).join(' | ')}`)

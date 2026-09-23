@@ -12,10 +12,10 @@
    (see walk 1's harness note). */
 import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { open, shot, save, core, dlg, log, reveal, DESK, OUT } from './trk-lib.mjs'
+import { open, shot, save, core, dlg, log, reveal, DESK, TMP } from './trk-lib.mjs'
 
 const L = log()
-const FILE = resolve(OUT, 'roundtrip2-export.json')
+const FILE = resolve(TMP, 'roundtrip2-export.json')
 const sleep = ms => new Promise(r => setTimeout(r, ms))
 const ball = (page, id) => page.locator(`#flowSvg .ball[data-id="${id}"]`).first()
 async function menu(page, which, item) {
