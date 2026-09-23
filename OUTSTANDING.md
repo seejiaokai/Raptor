@@ -1380,6 +1380,50 @@ the body is `raptor-port/src/engine/oilev.ts` `landedExtras`, and its own commen
 
 ---
 
+### [TRK-RETEST-NOTES] The Tracker walk's smaller notes — filed, not fixed (23 Sep 26)
+**Place:** after the Tracker `[HUMAN-RETEST]` merges; none blocks it. Found by the three walkers
+(`raptor-port/docs/handpass/parts/tracker/w1.md`, `w2.md`, `w3.md`), each with its picture there.
+Marked **his call** where the answer is product direction, not a defect.
+- **Entering ✎ Edit chart layout moves a scrolled chart** 190–240px (ACG-04 500 → 262; back to 449, not
+  500) — the code means to keep the view (`toggleArrange`); the arrange canvas drops the centring slack
+  (`padBoard`) without moving the scroll by it. A real defect, small. (w2 off-list)
+- **The Failures card still counts failures on an N.A. event** while the ball hides its ticks — his call. (w2 N1)
+- **The X labels follow the order failures were RECORDED, not their days**; − takes back the last
+  recorded — his call. (w2 N2)
+- **Ctrl+Z right after a pace / end-date / lull change takes back an OLDER mark** (those are not in the
+  history; the ↶ tooltip is honest, the key is not). (w2 N3)
+- **A slowly typed date undoes through half-typed years** (Upchit read 02/11/0202) — the Done-on box
+  now ignores half-typed years (W2-F2); the Last Flown, down-days and upchit boxes do not. (w2 N4)
+- **A press on another student's red failure tick grades the picked student** instead of picking the
+  owner of that slice (a thin target). (w2 N5)
+- **+ Set lull period opens on the last month looked at**, not this month. (w2 N6)
+- **A future "Done on" day is accepted** (Currency then reads "−1d") — his call; D123 lets it come back
+  down. (w2 N7)
+- **After a students import a course new to the app is added after the app's own courses** (the
+  course-order twin of F6); students are demo data under D120, so low. (w1 O3)
+- **On a phone the Crew box reads "STUDEN…" for every student** (88px at every width under 1050). (w3 O1)
+- **A + Add dialog left open while the roster changes keeps its old list** (keyboard-only). (w3 O3)
+- **At 844×390 Raptor's own top bar is 149px** (the desktop menu in two rows) — a shell matter; the
+  Tracker's column now fits under it (w3-F3). (w3 O4)
+- **A `scheduler.css` comment says a dozing page's insides read 0×0** — they report full boxes. (w3 O5)
+- **At 1200px the status beside ✓ Save changes shortens to "● un…"** (whole on hover) — the price of the
+  fixed save corner (w3-F5); the button says what matters.
+
+### [TRK-BAKE-STALE] The chart-baking script no longer runs (found 23 Sep 26)
+`raptor-port/scripts/tracker/bake-user-charts.mjs` resolves `src/data/…` from `scripts/` (the folder
+does not exist — the data is `src/tracker/data/`), reads name-keyed charts (before the 13 Sep ids) and
+the one-table `eventInfo` (before D126). The D120 route (export → wipe → import) does not need it; fix
+it only if baking a chart into the shipped data comes back. **Place:** low, after `[TRK-RETEST-NOTES]`.
+
+### [DOCSGUARD-MERGE] The docs guard reads a merged branch's pre-merge history as its own moves (23 Sep 26)
+`npm run docsize` walks every commit since the base that touched `OUTSTANDING.md`. On a branch that
+merged `main` in (D78), that includes the branch's commits from BEFORE the merge, whose copy of an item
+`main` later rewrote and archived — so it reports "left OUTSTANDING.md but N lines did not arrive" for
+a move that happened, and was checked, on `main` (`[LW-MONTHJUMP-PHONE]` on the Tracker branch). The
+Tracker branch records it with the guard's own `Docs-guard-allow:` trailer. **Fix, not done here (a
+gate is not edited to pass a change):** skip an item already archived AT THE BASE — its move was
+checked on the base's own history. **Place:** before the next branch that merges `main` in.
+
 ## Done
 
 ### [REPO-CLEANUP] Repo-wide space/redundancy sweep — DONE, NOTHING REMOVED (18 Sep 26)

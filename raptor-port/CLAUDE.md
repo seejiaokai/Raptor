@@ -827,7 +827,7 @@ standalone app's SharePoint/Dataverse/Firebase layers were dropped; the shared
 database replaces this file when it arrives). **The store is the record; the
 .json file is a FORMAT, not a store** (owner, 9 Sep 26 — "I thought it should
 be auto synced … isn't it duplicating"): marks, dates, students, event
-details and a moved ball save themselves, ✓ Save changes writes STRUCTURE
+details (PER CHART — D126) and a moved ball save themselves, ✓ Save changes writes STRUCTURE
 edits (events, prerequisites, lines, fonts) to the store and nothing else,
 and the File menu is TWO one-way moves — ⇪ Import (a file in: charts
 always, chart by chart with replace/add-as-new; students & marks only after
@@ -838,7 +838,7 @@ wrote back to — is gone; don't re-add a bound file. **Nothing of it boots in
 `main.tsx`** — the screen is a lazy chunk and `core.init()` runs on the tab's
 first mount, which is also why the section is KEPT MOUNTED afterwards (the flow
 board is drawn imperatively once). **Three seams cross the boundary, and only
-three:** `resetSession` ends the Tracker's login session through `tracker/role.js` (a
+three:** `resetSession` ends the Tracker's login session through `tracker/role.js`, and every Logout (`ui/logout.ts`) first asks it about unsaved chart edits (D129) (a
 no-import module — importing `core.js` there would put ~280 KB of syllabus data
 into every Raptor visit; `tracker.test.tsx` guards it); `TrackerPage.tsx` is
 the page; and **the people bridge `tracker/people.js`** (9 Sep 26, same

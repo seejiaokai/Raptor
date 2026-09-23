@@ -14,12 +14,13 @@
 > **And (owner, 23 Sep 26 — D122):** an import may reset student marks (grades, failures), but it
 > must NEVER wipe an event's typed details — hours, prerequisites, crew pairing, name, format. It
 > brings in the file's own detail edits and never puts shipped wording back over one made here
-> (walker finding W1-9: a one-chart import did exactly that to other charts — fix pending).
+> (walker finding W1-9: a one-chart import did exactly that to other charts — BUILT 23 Sep 26 with D126).
 > **Last Flown (D123, 23 Sep 26):** the latest day actually flown — worked out from the flights
 > marked done, so a flight corrected to an earlier day, or un-marked, pulls it back (it used to only
 > ever move forward); a briefly empty date box is not a day flown. **Deleting a ball (D124):** wipes
-> its marks, so a new ball with the same code starts ungraded. Both fixes pending (walker W2-F2/F3/F7).
-> **Four more (owner, 23 Sep 26 — D126–D129, fixes pending):** event details belong to the chart they
+> its marks, so a new ball with the same code starts ungraded. Both BUILT 23 Sep 26 (walker W2-F2/F3/F7);
+> a day typed by hand into Last Flown stands until a later flight (the `handSyll`/`handCurr` marks).
+> **Four more (owner, 23 Sep 26 — D126–D129, BUILT the same day):** event details belong to the chart they
 > were typed on, never every chart with that code (D126 — so an export carries each chart's own details
 > and an import writes only the imported charts'); the export file remembers a deleted built-in chart,
 > which stays deleted after the import (D127); a deleted course is listed in the course ⇅ Reorder
@@ -87,13 +88,14 @@
 >   name is a label (renamed by the pencil on each chip, `renameStudent`, id
 >   and records untouched — 10 Sep 26) and may contain a colon. Nothing
 >   flows back to Raptor yet (no pucks, no quals) — `pid` is the hook for
->   that. Deleting a course leaves its records in storage, and its question
->   still says "(marks remain in storage)" — but **since course ids (13 Sep 26)
->   nothing brings them back**: a course re-created under the same name gets a
->   NEW id and starts empty, and no screen offers a restore, so the records are
->   orphaned (kept, invisible, not exported). The old "re-create it by name and
->   the roster comes back" safety net is gone — walked 23 Sep 26 ([HUMAN-RETEST]
->   F12); a restore door or an honest delete is the owner's call. Export carries the entries (no `links` block); Import
+>   that. Deleting a course leaves its records in storage **and lists the course
+>   in ⇅ Reorder courses under "Deleted courses", whose ↺ Restore brings it back
+>   under its own id, students and marks intact** (owner, 23 Sep 26 — D128;
+>   [HUMAN-RETEST] F12 found the old "(marks remain in storage)" with no door
+>   since course ids, 13 Sep 26). A course re-created under the same name is a
+>   NEW, empty course; restoring the old one beside it names it "(restored)". A
+>   deleted course does NOT ride an Export (the students block carries the live
+>   courses) — restore it first to back it up. Export carries the entries (no `links` block); Import
 >   reads both the entry shape and a legacy string roster with its `links`.
 >   **Import matches the file's students to the enrolments the course already
 >   has (bug-check, 10 Sep 26 — `ids.js reconcileIds`):** by person id first,

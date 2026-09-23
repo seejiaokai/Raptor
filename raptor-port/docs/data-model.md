@@ -188,17 +188,20 @@ what must precede it.
 | `type` | string | yes | event type (`type`) |
 | `phase` | string | yes | chart phase (`phase`) |
 | `sequence` | int | yes | `seq` — order within the phase |
-| `name` | string | no | from `eventInfo[eventId].name` |
-| `format` | string | no | from `eventInfo[eventId].fmt` |
-| `hours` | decimal | no | from `eventInfo[eventId].hrs`, **stored as a number** |
+| `name` | string | no | from `eventInfo[syllabusId][eventId].name` over the chart's shipped wording |
+| `format` | string | no | from `eventInfo[syllabusId][eventId].fmt` over the shipped wording |
+| `hours` | decimal | no | from `eventInfo[syllabusId][eventId].hrs` over the shipped wording, **stored as a number** |
 
 Relationships: n–1 `Syllabus`; self-relation through `EventPrerequisite`
 (`eventId`, `prerequisiteEventId`, both ref TrainingEvent, unique together) —
 the `prereqs` string array today; 1–n `Attempt`.
 From today: `charts.syllabi[name][i]` = `{ id, type, seq, prereqs, phase, _b }`
-plus `charts.eventInfo`. `_b` is drawing state and moves to `Layout`.
+plus `charts.eventInfoBySyl`. `_b` is drawing state and moves to `Layout`.
+**Details are per chart since 23 Sep 26 (D126)** — a detail typed on one chart
+never shows on another chart with the same code, which is exactly the row this
+table already is (one TrainingEvent per syllabus + code).
 App change: the event's details stop living in a second container keyed by
-event id; `hrs` stops being free text.
+chart and event id; `hrs` stops being free text.
 
 ### Enrolment
 
@@ -762,7 +765,7 @@ worlds' keys.
 | `raptor:leavewar/personedits` | `LeavePersonProfile.band`; `Person.sxo` | `band` to the profile; `sxo` folds onto the person row; the `seat` override is **dropped** (the person's seat is the seat). The override record disappears |
 | `raptor:leavewar/postouts` | `LeavePersonProfile.fromDate` / `toDate` / `poArchive` | An entry exists today only while `to` is set; a profile row is created for each |
 | `raptor:tracker/v3:master:syls` | `Syllabus` + `TrainingEvent` (+ `EventPrerequisite`) | Chart per row, event per row; `prereqs` strings resolve to event ids within the same syllabus |
-| `raptor:tracker/v3:eventinfo` | `TrainingEvent.name` / `format` / `hours` | Merge into the event row; parse `hrs` to a number, refuse and report anything that will not parse |
+| `raptor:tracker/v3:master:eventinfo` (per chart, D126; the old one-table `v3:eventinfo` is a converted backup) | `TrainingEvent.name` / `format` / `hours` | Merge each chart's entry into that chart's event row over the shipped wording; parse `hrs` to a number, refuse and report anything that will not parse |
 | `raptor:tracker/v3:lay` | `Layout` | One row per chart, geometry JSON verbatim (including each event's `_b`) |
 | `raptor:tracker/v3:courses` | `Course` | One row per name, `sortIndex` from the array order |
 | `raptor:tracker/v3:<course>:<syl>:roster` | `Enrolment` | One row per student name on that roster, `sortIndex` from the array order |

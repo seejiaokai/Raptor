@@ -449,3 +449,48 @@ code separately from its output, and never let the same line that runs a gate al
 **Suggested improvement:** In §4's fan-out paragraph: "Walkers may share one preview (a fresh browser context each isolates storage). While they walk, nobody rebuilds that preview: the host fixing in parallel typechecks with no output and runs unit tests; the rebuild, the gates and the re-walk of the fixes come after the walkers report."
 
 **Principle:** Parallel checks against one running artifact need that artifact frozen; name who may change it, and when.
+
+### Observation 214: A walker's own "should" script is the re-walk — send its output to a second folder, and read its FAILs against the fixed flow
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [HUMAN-RETEST] the Tracker, resumed — re-walking every fix the three walkers never saw (they drove the build from before the fixes).
+**Skill:** raptor-port/docs/bug-check-order.md (§5 "re-walk only what the fixes touched"; §9 the evidence)
+**Type:** open-source
+**Phase/Area:** the re-walk after fixes
+
+**Issue:** The walkers had written their scripts as assertions of the RIGHT behaviour (PASS = correct), so re-running them on the new build was the re-walk for free — but by default they overwrite the first walk's pictures and results, which are the evidence of the defect. And three re-walk "FAILs" were the fix itself changing the flow: Export now offers to save the unsaved edit, so the script's later steps ("the dropdown asks about the unsaved edit") had nothing unsaved left to test; and a refusal now drawn ON TOP of the Export window blocked the old script's click behind it (a crash that proves the fix).
+
+**Suggested improvement:** In §5/§9: "Write walk scripts as assertions of the correct behaviour so they re-run as the re-walk. Give the driver an output-folder switch and re-walk into a separate folder — the first walk's pictures are the defect's evidence. Read every re-walk FAIL against the NEW flow before calling it a regression: a step whose premise the fix consumed is re-walked with a fresh premise, not reported."
+
+**Principle:** A re-run of a pre-fix script proves the fix only where its premises still hold; keep the before-evidence, and re-establish premises the fix itself removed.
+
+### Observation 215: A decision recorded as "left as it is today" can hide a two-part rule — read it as behaviour, not as licence to simplify
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [HUMAN-RETEST] the Tracker — building D123 (Last Flown is the latest day actually flown), whose record also says a hand-typed Last Flown is "left as it is today".
+**Skill:** raptor-port/docs/bug-check-order.md (§5 question 8, the rules sweep) and .claude/rules/record-decisions.md
+**Type:** open-source
+**Phase/Area:** turning a ruling into code
+
+**Issue:** The obvious build — "work Last Flown out from the flights marked done" — would also have overridden a day typed by hand the moment any older flight was marked, which is NOT how it behaves today (a typed day stands until a LATER flight). The ruling's last sentence kept that half unchanged; honouring both halves needed a small marker on the stored record (typed-by-hand) so a derived value never silently replaces a typed one. The first draft of the test had the wrong expectation until the sentence was re-read as a behaviour to preserve.
+
+**Suggested improvement:** In the rules sweep: "When a ruling leaves part of a behaviour 'as it is today', write that part down as its own test against today's behaviour BEFORE building the new half — the new half must not absorb it."
+
+**Principle:** "Unchanged" clauses in a ruling are requirements too; pin them with a test before building the changed part.
+
+### Observation 216: A layout that passes at the two standard sizes can still break at a SHORT one — padding on a scroll box sets its smallest height
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [HUMAN-RETEST] the Tracker, re-walk after fixes — a phone turned on its side (844×390).
+**Skill:** raptor-port/docs/bug-check-order.md (§7.2 both widths; §2a the cross-platform row)
+**Type:** open-source
+**Phase/Area:** the walk — viewport coverage
+
+**Issue:** The chart's "room to scroll past the last event" was bottom padding on the scrolling box. At 390×844 and 1440×900 (the two sizes every check used) the box was tall enough, so nothing showed. In the 165px a phone on its side leaves, padding (which a box can never shrink below) made the box 182px and pushed the zoom control off the bottom of the screen. The first fix round had made the pop-up fit the same screen and the re-walk only caught the zoom control because it measured every control against the screen edge, not just the one being fixed.
+
+**Suggested improvement:** In §7.2 / §2a: "Phone AND desktop is two sizes of one shape. Walk a SHORT screen too (a phone on its side, a laptop window of 700px height) for any surface built as a viewport-tall column; measure every control against the screen edges, not only the control being changed." And a CSS note for column layouts: scroll room belongs inside the scroll box (a spacer), never as padding on it.
+
+**Principle:** Width is not the only axis; a full-height column must be walked at a short height, and every edge-docked control measured, not just the one in the finding.

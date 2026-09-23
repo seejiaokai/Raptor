@@ -7029,6 +7029,43 @@ screen:
   dialog render, order, narrowing, the linked chip, the refusal), the smoke
   suite (12 checks after the `addStudent` helper, incl. a real Export
   carrying `links`). Wiring: `docs/data-schema.md` §The person link.
+- **What the [HUMAN-RETEST] walk settled (23 Sep 26 — rulings D122–D129;
+  evidence `docs/handpass/2026-09-23-tracker.md`; pins `src/tracker/retest.test.tsx`).**
+  - **Event details belong to their chart (D126).** A detail typed on Tx stays on
+    Tx; every editor (the details window, Show All's row editor, the chart
+    editor's ball box) writes to the chart on screen only. A duplicate reads
+    exactly as its source, details included. **"Reset to doc"** refills the
+    boxes with the document's wording and saves nothing until Save (Cancel keeps
+    what was there); a ball the user made has no document and no button.
+  - **Files (D120's round trip).** An export carries each chart's OWN details; an
+    import writes details only into the charts brought in — the file's edit wins
+    where it speaks, nothing typed here is wiped (D122). A backup of EVERY chart
+    names the built-ins deleted when it was written, and they stay deleted
+    after the import (D127). Never-dragged balls export where the board draws
+    them. Each "already exists" question's third button reads **Skip this
+    one**; the closing report names what was skipped and what was kept
+    deleted. The Export done message says "a full backup" only for every chart
+    plus the students.
+  - **Marking.** Last Flown is the latest day actually flown, worked out from
+    the done flights; a correction or un-mark pulls it back; a day typed by
+    hand stands until a later flight (D123). A "Done on" box half-typed is
+    never a day. Deleting a ball says its marks go at ✓ Save changes, and they
+    do, in every course (D124); a deleted-but-unsaved code cannot be re-added
+    until the save. ↶ ↷ keep the chart's view. A lull period's × asks first;
+    Copy to… has a Select all row.
+  - **Courses and the session.** A deleted course waits in ⇅ Reorder courses
+    under "Deleted courses" with ↺ Restore — back under its own id, students and
+    marks intact (D128). Logout — the top bar's or the phone drawer's, ONE
+    function (`src/ui/logout.ts`) — asks Save them / Discard them / Stay when
+    chart edits are unsaved, over the Tracker tab, before the session ends (D129).
+  - **Surfaces.** ✓ Save changes is the far-right item of its row, desktop and
+    phone; on a desktop the save corner is one fixed width (the status words
+    shorten, whole on hover), so the first edit never wraps the bar. The details
+    bubble goes when the phone switches half or the tab leaves the screen. Back
+    on the Flow half the chart re-fits. The grading pop-up stays on screen and
+    scrolls inside itself when taller than it; the phone's room below the last
+    event is a spacer inside the chart box, so a phone on its side keeps the
+    zoom control on screen.
 
 ## OIL on the schedule: the "OIL Earn" mode and the green edge (owner, 21 Sep 26)
 

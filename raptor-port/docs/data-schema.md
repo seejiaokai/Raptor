@@ -423,8 +423,19 @@ refuses one.
 
 ### Keys (`raptor:tracker/*` on the built site; legacy `ocu:*`) and prefs (`ocuLocal:*`)
 
-`v3:master`, `v3:courses`, `v3:lay`, `v3:eventinfo`, `v3:seedstamp` hold
-the containers below. Since the seam the Tracker's data flows through the
+`v3:master`, `v3:courses`, `v3:lay`, `v3:seedstamp` hold
+the containers below. **Event details are PER CHART since 23 Sep 26 (D126)** —
+`v3:master:eventinfo` = `{ sylId: { eventId: { name?, fmt?, hrs?, crew?, pre? } } }`,
+only the fields that differ from that chart's shipped wording (the base table
+plus a built-in's own profile); an emptied field is stored as `''`. The old
+one-table key `v3:eventinfo` (`{ eventId: fields }`, shown on every chart with
+that code) is converted ONCE when the new key is absent — each edit laid on
+every chart that has the event — and then left untouched as a backup
+(`app/eventDetails.js`). **Deleted courses (D128)** are `v3:delcourses` =
+`{ id, name }[]`; their records stay filed under the id, and ⇅ Reorder courses
+restores one. A Last Flown record (`…:d:<id>`) may carry `handSyll` /
+`handCurr: true` — the day in that box was typed by hand and stands until a
+later flight (D123). Since the seam the Tracker's data flows through the
 whiteboard and lands under `raptor:tracker/<key>` (e.g. `raptor:tracker/v3:master:syls`);
 the legacy `ocu:*` keys are imported once. `ocuLocal:*` holds this browser's
 last course and crew member — a view preference, written straight to
@@ -436,7 +447,10 @@ localStorage (NOT through the whiteboard), kept outside the shared prefix by des
 charts   = { order: string[],
              syllabi:  { name: event[] },        // event = { id, type, seq, prereqs: string[], phase, _b }
              layouts:  { name: object },
-             eventInfo: { eventId: { name, fmt, hrs } } }
+             eventInfoBySyl: { sylId: { eventId: { name?, fmt?, hrs?, crew?, pre? } } },  // D126: each chart's OWN edits
+             deleted: sylId[] }   // D127: a backup of EVERY chart names the built-ins deleted when written
+             // a file written before D126 carries `eventInfo: { eventId: fields }` (one table)
+             // instead; import lays its real edits on the imported charts only
 
 students = { courses: string[],
              byCourse: { course: {
