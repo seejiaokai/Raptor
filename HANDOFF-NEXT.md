@@ -14,12 +14,12 @@ notebook entries renumbered #211–#213 past main's #199–#210.
 session: the bug check is DONE and waiting on HIM** — every finding fixed red-first and walked; the two
 blind reads done and every finding fixed (§11); the final gates green on the finished code (§10). What
 is left: his five-minute look (§13 — his three questions there are ANSWERED, D130–D132, and built; on the branch's Vercel preview
-`https://raptor-git-claude-tracker-human-retest-8d3411-kai-e2f5.vercel.app`), his answers to the three
-questions in §13, then his "merge live" (a PR is not open yet — open one when he says so; the PC runs its
-checks then, D151: never push to it while they run). FULL tier. Ports: preview 4180, smoke 4181, e2e 4182. Rulings: **D120–D129**
+`https://raptor-git-claude-tracker-human-retest-8d3411-kai-e2f5.vercel.app`), then his "merge live" (a PR is not open yet — open one when he says so; the PC runs its
+checks then, D151: never push to it while they run). FULL tier. Ports: preview 4180, smoke 4181, e2e 4182. Rulings: **D120–D132**
 (the charts' route to the database; one access for admin and member; imports never wipe typed
 details; Last Flown; deleting a ball wipes its marks; resuming beside the demo; details per chart; a
-backup remembers a deleted chart; a course restore door; logout asks). Never run a full gate while
+backup remembers a deleted chart; a course restore door; logout asks; a deleted ball's typed details go
+with it; a backup does not carry a deleted course; an import never deletes marks). Never run a full gate while
 another chat's is running (D86) — and the demo has first call on the PC (D125).
 
 
