@@ -1,6 +1,7 @@
 # The Tracker pinch zoom follows the fingers — WALK-tier evidence sheet (23 Sep 26)
 
-Branch `claude/tracker-pinch-anchor` (from `main` after PR #429). **The owner, on the live app the same
+Branch `claude/tracker-pinch-anchor` (from `main` after PR #429) — **merged on his "merge live", 23 Sep 26.**
+**The owner, on the live app the same
 evening:** *"The tracker zoom in and out does not follow where my fingers open or close, it's like off to
 the top left it's a bug."* Pictures: `docs/img/handpass/2026-09-23-tracker-pinch/` (a red cross marks the
 fingers' midpoint). Walk driver: `scripts/handpass/trk-pinch.mjs` (two real fingers through Chromium's own
