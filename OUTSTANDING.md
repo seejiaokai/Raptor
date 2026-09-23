@@ -908,8 +908,8 @@ read added: the PC runs only HIS OWN changes in a PRIVATE repo, and the runner n
 NT AUTHORITY\NETWORK SERVICE, auto-start, installed by him at `C:\actions-runner\actions-runner`
 (one folder deeper than the first copy — never delete `C:\actions-runner`). Astra's third read (SEC-102):
 `Authenticated Users` inherit MODIFY on that folder from `C:\`, and the PC has two Codex-sandbox
-accounts besides his — the four-line `icacls` fix is HIS to run (evidence sheet §14); check it with
-`icacls C:\actions-runner\actions-runner\bin\RunnerService.exe` (no `Authenticated Users` line).
+accounts besides his — **FIXED BY HIM 23 Sep 26, 16:38** (the four `icacls` lines, evidence sheet §14);
+verified: only Administrators, SYSTEM and the runner's own group may change its files, Users read; online.
 The first run AS A SERVICE hung 30 min in the browser gate: Playwright's CI git-info `git fetch` waited on
 Git Credential Manager, which a service cannot show (no stored token since SEC-003). Fixed:
 `captureGitInfo` off in `playwright.config.ts`; `GIT_TERMINAL_PROMPT=0`/`GCM_INTERACTIVE=never` in the job.

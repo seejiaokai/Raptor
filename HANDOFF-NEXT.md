@@ -27,8 +27,7 @@ checks and the chat, not here.
 
 1. His "merge live" for PR #428 (his own look first if he wants it — Vercel, a phone: SEP then MAR lands
    on the 1st; scroll the Leave War page down past the dates: the bar appears in place, no slide).
-2. The runner folder's permissions (Astra SEC-102) — his four lines (evidence sheet §14); check with
-   `icacls C:\actions-runner\actions-runner\bin\RunnerService.exe` (no `Authenticated Users` line).
+2. ~~The runner folder's permissions (Astra SEC-102)~~ — DONE by him 23 Sep 26, 16:38, and verified.
 3. `[LW-FROZEN-BAR-GAP]` — a one-frame blink as the frozen bar appears (filed, not fixed).
 4. A docs-only trim pass (D29): OUTSTANDING and DECISIONS are over their ceilings.
 5. Before ANY collaborator: take the runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).

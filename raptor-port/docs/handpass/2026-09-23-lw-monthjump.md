@@ -272,7 +272,7 @@ Both: REVISE.
 | CI-PATHS-001 · `.gitattributes` skipped the gates | Fable | it changes the bytes every job checks out | **FIXED**: removed from both `paths-ignore` lists |
 | CI-REQ-001 · a skipped required check reads as Success | Fable | deleting `CI_ON_GITHUB` could let a red PC run merge if the split names are required | **Not reachable today — checked**: `main` has no protection and no required checks (the API: "Upgrade to GitHub Pro"); the rule for the day they exist is written into `deploy.yml` |
 | SEC-101 · the PC guard lives in YAML a PR can change | Astra | a collaborator's PR runs its own workflow, so it could aim a job at his PC | **Not reachable today** (no collaborator can push). Written into `deploy.yml` and `[REPO-PRIVATE]`: **before any collaborator is added, remove the runner from this repo (or move it to an owner-only CI repo)** |
-| SEC-102 · any local account can modify the runner's files | Astra | `Authenticated Users: Modify` inherited from `C:\` onto `C:\actions-runner` | **Confirmed** — and sharper than stated: this PC has two Codex-sandbox accounts besides the owner's. A security setting, so **his to run** (the agent may not): four `icacls`/service lines, handed to him with the reason |
+| SEC-102 · any local account can modify the runner's files | Astra | `Authenticated Users: Modify` inherited from `C:\` onto `C:\actions-runner` | **Confirmed** — and sharper than stated: this PC has two Codex-sandbox accounts besides the owner's. A security setting, so **his to run** (the agent may not) — **DONE by him at 16:38**; verified read-only: `Authenticated Users` gone from the folder, the runner folder and its programs; runner online |
 
 ## 15. Gates on the final tree (after the review fixes)
 
