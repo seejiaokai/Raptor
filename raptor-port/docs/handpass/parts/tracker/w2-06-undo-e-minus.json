@@ -1,0 +1,19 @@
+{
+  "rows": [
+    {
+      "step": "+ + (10/09) → −",
+      "note": "{\"two\":[\"ST-02 23/09/26\",\"ST-02X 10/09/26\"],\"afterMinus\":[\"ST-02 23/09/26\"],\"tip\":\"Undo the failure count on ST-02 for STUDENT A (Ctrl+Z)\"}"
+    },
+    {
+      "step": "↶ of the − brings the removed failure back WITH its day (ST-02X 10/09/26)",
+      "pass": true,
+      "said": "[\"ST-02 23/09/26\",\"ST-02X 10/09/26\"]"
+    },
+    {
+      "step": "↷ takes it away again",
+      "pass": true,
+      "said": "[\"ST-02 23/09/26\"]"
+    }
+  ],
+  "errors": []
+}

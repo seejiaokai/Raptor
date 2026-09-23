@@ -1,0 +1,84 @@
+{
+  "rows": [
+    {
+      "step": "1.0 A at the start",
+      "note": "{\"epw\":\"2\",\"a\":\"\",\"b\":\"\",\"proj\":\"27/09/28\"}"
+    },
+    {
+      "step": "1.1 the pace box can be EMPTIED (stays empty, no snap back) and retyped",
+      "pass": true,
+      "said": "{\"emptied\":\"\",\"now\":\"3\"}"
+    },
+    {
+      "step": "1.2 a new pace moves the projected end",
+      "pass": true,
+      "said": "27/09/28 → 26/01/28"
+    },
+    {
+      "step": "1.3 End date A and B take typed days and each shows its req. pace",
+      "pass": true,
+      "said": "{\"a\":\"2026-12-15\",\"b\":\"2027-01-31\",\"req\":[\"17.7 /wk\",\"11.3 /wk\"]}"
+    },
+    {
+      "step": "2.1 B does not inherit A's pace or dates",
+      "pass": true,
+      "said": "{\"epw\":\"2\",\"a\":\"\",\"b\":\"\"}"
+    },
+    {
+      "step": "2.2 B set",
+      "note": "{\"epw\":\"1.5\",\"a\":\"2027-03-01\",\"b\":\"\",\"proj\":\"30/05/29\",\"req\":[\"9.2 /wk\",\"—\"]}"
+    },
+    {
+      "step": "2.3 back on A: A's own values are still there",
+      "pass": true,
+      "said": "{\"epw\":\"3\",\"a\":\"2026-12-15\",\"b\":\"2027-01-31\"}"
+    },
+    {
+      "step": "3.0 after the reload the Crew picker is on",
+      "note": "STUDENT A"
+    },
+    {
+      "step": "3.1 after a reload A keeps 3 /wk, 15/12/26, 31/01/27",
+      "pass": true,
+      "said": "{\"epw\":\"3\",\"a\":\"2026-12-15\",\"b\":\"2027-01-31\"}"
+    },
+    {
+      "step": "3.2 after a reload B keeps 1.5 /wk, 01/03/27",
+      "pass": true,
+      "said": "{\"epw\":\"1.5\",\"a\":\"2027-03-01\",\"b\":\"\"}"
+    },
+    {
+      "step": "4.0 two marks made (ST-01, ACG-01); ↶ says",
+      "note": "{\"off\":false,\"t\":\"Undo the mark on ACG-01 for STUDENT A (Ctrl+Z)\"}"
+    },
+    {
+      "step": "4.1 after changing the pace, ↶ does NOT claim to undo the pace",
+      "pass": true,
+      "said": "tooltip: \"Undo the mark on ACG-01 for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "4.2 Ctrl+Z pressed right after the pace change: the pace / ACG-01 / the status line",
+      "note": "{\"pace\":\"4\",\"acg01\":[\"#ffffff\",\"#ffffff\"],\"status\":\"● saved\"}"
+    },
+    {
+      "step": "4.3 …the pace change is NOT taken back, and a mark made BEFORE it is (ACG-01 → not done), with no word on screen",
+      "pass": true,
+      "said": "{\"pace\":\"4\",\"acg01\":\"#ffffff\",\"status\":\"● saved\"}"
+    },
+    {
+      "step": "4.4 after changing End date A, ↶ says",
+      "note": "\"Undo the mark on ST-01 for STUDENT A (Ctrl+Z)\""
+    },
+    {
+      "step": "4.5 ↶ leaves End date A as typed and takes back the ST-01 mark instead (as its tooltip said)",
+      "pass": true,
+      "said": "{\"a\":\"2026-11-30\",\"st01\":\"#ffffff\"}"
+    },
+    {
+      "step": "4.6 after adding a lull, ↶ does not claim it (nothing left to undo — greyed)",
+      "pass": true,
+      "said": "{\"off\":true,\"t\":\"Nothing to undo\"} lulls [\"11/09/26→12/09/26\"]"
+    }
+  ],
+  "errors": []
+}

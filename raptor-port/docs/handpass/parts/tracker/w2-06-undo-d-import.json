@@ -1,0 +1,20 @@
+{
+  "rows": [
+    {
+      "step": "1. an Export changes nothing, so ↶ still offers the mark",
+      "pass": true,
+      "said": "{\"before\":\"Undo the mark on ST-01 for STUDENT A (Ctrl+Z)\",\"after\":\"Undo the mark on ST-01 for STUDENT A (Ctrl+Z)\",\"said\":\"Exported as “OCU-syllabus-2026-09-23.json”. It contains charts only — no student names or marks. OK\"}"
+    },
+    {
+      "step": "2. after an Import, ↶ and ↷ are greyed (R110)",
+      "pass": true,
+      "said": "{\"asked\":\"“2026” already exists. Replace it, or add the incoming one under a new name?\",\"closing\":\"Brought in 2026. Everyone’s marks are untouched. It is saved. OK\",\"undo\":{\"undo\":{\"off\":true,\"t\":\"Nothing to undo\"},\"redo\":{\"off\":true,\"t\":\"Nothing to redo\"}}}"
+    },
+    {
+      "step": "3. the charts-only Import left the mark alone",
+      "pass": true,
+      "said": "[\"#000000\",\"#ffffff\"]"
+    }
+  ],
+  "errors": []
+}

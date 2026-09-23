@@ -1,0 +1,27 @@
+{
+  "rows": [
+    {
+      "step": "1. TR-2 DCO on 15/09",
+      "note": "{\"mark\":{\"g\":\"dco\",\"f\":0,\"d\":\"2026-09-15\",\"at\":\"2026-09-23T07:20:32.637Z\",\"by\":\"Admin\"},\"last\":\"2026-09-15\"}"
+    },
+    {
+      "step": "2. the values the box passed through while \"17092026\" was typed",
+      "note": "[\"2026-09-01\",\"2026-09-17\",\"\",\"2026-09-17\",\"0002-09-17\",\"0020-09-17\",\"0202-09-17\",\"2026-09-17\"]"
+    },
+    {
+      "step": "3. the mark ends on the typed day (17/09)",
+      "pass": true,
+      "said": "{\"g\":\"dco\",\"f\":0,\"d\":\"2026-09-17\",\"at\":\"2026-09-23T07:20:34.423Z\",\"by\":\"Admin\"}"
+    },
+    {
+      "step": "4. Last Flown ends on 17/09 — the flight's day — not on TODAY (23/09)",
+      "pass": false,
+      "said": "Last Flown (Syllabus) 2026-09-23 · (Currency) 2026-09-23 · [\"Days since syllabus0d\",\"Days since currency0d\"]"
+    },
+    {
+      "step": "5. TR-3 DCO on 10/09 → Last Flown",
+      "note": "2026-09-23"
+    }
+  ],
+  "errors": []
+}

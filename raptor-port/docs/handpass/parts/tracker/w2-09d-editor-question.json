@@ -1,0 +1,38 @@
+{
+  "rows": [
+    {
+      "step": "8 ball editor: a press OUTSIDE closes it",
+      "pass": true,
+      "said": "opened true; pressed (60,600) on #overlay; closed"
+    },
+    {
+      "step": "8 ball editor: Escape closes it",
+      "pass": true,
+      "said": "opened true; Escape → closed"
+    },
+    {
+      "step": "9.1 Escape on the question answers NO and closes ONLY the question — the editor stays open, the ball stays",
+      "pass": true,
+      "said": "{\"q\":\"Delete ACG-04 from this syllabus?\",\"question\":false,\"editor\":true,\"ball\":true}"
+    },
+    {
+      "step": "9.2 a press OUTSIDE the question box (on #dlgOverlay)",
+      "note": "{\"question\":\"closed\",\"editor\":\"still open\",\"ball\":\"still there\"}"
+    },
+    {
+      "step": "9.2a …answers NO: nothing deleted",
+      "pass": true,
+      "said": "{\"question\":\"closed\",\"editor\":\"still open\",\"ball\":\"still there\"}"
+    },
+    {
+      "step": "10. \"Remove STUDENT B from 2026? Their marks, dates, pace and lull periods on this syllabus are deleted.\" — a press outside it (on #dlgOverlay)",
+      "note": "{\"question\":\"closed\",\"studentB\":\"still on the course\"}"
+    },
+    {
+      "step": "10a …answers NO: STUDENT B stays",
+      "pass": true,
+      "said": "{\"question\":\"closed\",\"studentB\":\"still on the course\"}"
+    }
+  ],
+  "errors": []
+}

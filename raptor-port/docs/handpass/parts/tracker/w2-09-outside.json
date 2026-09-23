@@ -1,0 +1,100 @@
+{
+  "rows": [
+    {
+      "step": "1 lull calendar: a press OUTSIDE closes it",
+      "pass": true,
+      "said": "opened true; pressed (60,470) on div.lullback; closed"
+    },
+    {
+      "step": "1 lull calendar: Escape closes it",
+      "pass": true,
+      "said": "opened true; Escape → closed"
+    },
+    {
+      "step": "1 lull calendar: nothing half-saved by either",
+      "pass": true,
+      "said": "[]"
+    },
+    {
+      "step": "2 Copy to…: a press OUTSIDE closes it",
+      "pass": true,
+      "said": "opened true; pressed (60,470) on div.lullback; closed"
+    },
+    {
+      "step": "2 Copy to…: Escape closes it",
+      "pass": true,
+      "said": "opened true; Escape → closed"
+    },
+    {
+      "step": "3 failures list: a press OUTSIDE closes it",
+      "pass": true,
+      "said": "opened true; pressed (60,470) on div.lullback; closed"
+    },
+    {
+      "step": "3 failures list: Escape closes it",
+      "pass": true,
+      "said": "opened true; Escape → closed"
+    },
+    {
+      "step": "4 Show All: a press OUTSIDE closes it",
+      "pass": true,
+      "said": "opened true; pressed (60,470) on #saOverlay; closed"
+    },
+    {
+      "step": "4 Show All: Escape closes it",
+      "pass": true,
+      "said": "opened true; Escape → closed"
+    },
+    {
+      "step": "5 Export window: a press OUTSIDE closes it",
+      "pass": true,
+      "said": "opened true; pressed (60,470) on #copyOverlay; closed"
+    },
+    {
+      "step": "5 Export window: Escape closes it",
+      "pass": true,
+      "said": "opened true; Escape → closed"
+    },
+    {
+      "step": "6 details editor: a press OUTSIDE closes it",
+      "pass": true,
+      "said": "opened true; pressed (60,470) on #infoOverlay; closed"
+    },
+    {
+      "step": "6 details editor: Escape closes it",
+      "pass": true,
+      "said": "opened true; Escape → closed"
+    },
+    {
+      "step": "7a reorder list (crew): a press OUTSIDE closes it",
+      "pass": true,
+      "said": "opened true; pressed (60,470) on #ordOverlay; closed"
+    },
+    {
+      "step": "7a reorder list (crew): Escape closes it",
+      "pass": true,
+      "said": "opened true; Escape → closed"
+    },
+    {
+      "step": "7b reorder list (syllabus): a press OUTSIDE closes it",
+      "pass": true,
+      "said": "opened true; pressed (60,470) on #ordOverlay; closed"
+    },
+    {
+      "step": "7b reorder list (syllabus): Escape closes it",
+      "pass": true,
+      "said": "opened true; Escape → closed"
+    },
+    {
+      "step": "7c reorder list (course): a press OUTSIDE closes it",
+      "pass": true,
+      "said": "opened true; pressed (60,470) on #ordOverlay; closed"
+    },
+    {
+      "step": "7c reorder list (course): Escape closes it",
+      "pass": true,
+      "said": "opened true; Escape → closed"
+    }
+  ],
+  "errors": []
+}

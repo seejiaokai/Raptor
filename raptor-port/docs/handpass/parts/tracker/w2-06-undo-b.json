@@ -1,0 +1,83 @@
+{
+  "rows": [
+    {
+      "step": "E.0 after a failure on 11/09 and TR-2 DCO on 19/09",
+      "note": "{\"st02\":{\"f\":1,\"fd\":[\"2026-09-11\"],\"at\":\"2026-09-23T07:18:44.560Z\"},\"fchips\":[\"ST-02@2026-09-11\"],\"tr2\":{\"g\":\"dco\",\"d\":\"2026-09-19\",\"at\":\"2026-09-23T07:18:46.842Z\"},\"last\":[\"2026-09-19\",\"2026-09-19\"],\"undo\":\"Undo the mark on TR-2 for STUDENT A (Ctrl+Z)\",\"redo\":\"Nothing to redo\"}"
+    },
+    {
+      "step": "E.1 ↶ the grade: TR-2 not done, its day gone, Last Flown back to empty",
+      "pass": true,
+      "said": "{\"st02\":{\"f\":1,\"fd\":[\"2026-09-11\"],\"at\":\"2026-09-23T07:18:44.560Z\"},\"fchips\":[\"ST-02@2026-09-11\"],\"tr2\":null,\"last\":[\"\",\"\"],\"undo\":\"Undo the failure count on ST-02 for STUDENT A (Ctrl+Z)\",\"redo\":\"Redo the mark on TR-2 for STUDENT A (Ctrl+Y)\"}"
+    },
+    {
+      "step": "E.2 ↷ the grade: TR-2 DCO on 19/09 again, Last Flown 19/09, the SAME stamp",
+      "pass": true,
+      "said": "{\"st02\":{\"f\":1,\"fd\":[\"2026-09-11\"],\"at\":\"2026-09-23T07:18:44.560Z\"},\"fchips\":[\"ST-02@2026-09-11\"],\"tr2\":{\"g\":\"dco\",\"d\":\"2026-09-19\",\"at\":\"2026-09-23T07:18:46.842Z\"},\"last\":[\"2026-09-19\",\"2026-09-19\"],\"undo\":\"Undo the mark on TR-2 for STUDENT A (Ctrl+Z)\",\"redo\":\"Nothing to redo\"}"
+    },
+    {
+      "step": "E.3 ↶ ↶: the failure goes too (count 0, no chip)",
+      "pass": true,
+      "said": "{\"st02\":{\"f\":0},\"fchips\":[],\"tr2\":null,\"last\":[\"\",\"\"],\"undo\":\"Nothing to undo\",\"redo\":\"Redo the failure count on ST-02 for STUDENT A (Ctrl+Y)\"}"
+    },
+    {
+      "step": "E.4 ↷: the failure is back WITH ITS DAY (11/09), not today",
+      "pass": true,
+      "said": "{\"st02\":{\"f\":1,\"fd\":[\"2026-09-11\"],\"at\":\"2026-09-23T07:18:44.560Z\"},\"fchips\":[\"ST-02@2026-09-11\"],\"tr2\":null,\"last\":[\"\",\"\"],\"undo\":\"Undo the failure count on ST-02 for STUDENT A (Ctrl+Z)\",\"redo\":\"Redo the mark on TR-2 for STUDENT A (Ctrl+Y)\"}"
+    },
+    {
+      "step": "E.5 ↷: the grade is back with its day and Last Flown",
+      "pass": true,
+      "said": "{\"st02\":{\"f\":1,\"fd\":[\"2026-09-11\"],\"at\":\"2026-09-23T07:18:44.560Z\"},\"fchips\":[\"ST-02@2026-09-11\"],\"tr2\":{\"g\":\"dco\",\"d\":\"2026-09-19\",\"at\":\"2026-09-23T07:18:46.842Z\"},\"last\":[\"2026-09-19\",\"2026-09-19\"],\"undo\":\"Undo the mark on TR-2 for STUDENT A (Ctrl+Z)\",\"redo\":\"Nothing to redo\"}"
+    },
+    {
+      "step": "E.6 re-dating TR-2 to 17/09 is ONE step named \"the date on TR-2\"; ↶ → 19/09, ↷ → 17/09",
+      "pass": true,
+      "said": "{\"tip\":\"Undo the date on TR-2 for STUDENT A (Ctrl+Z)\",\"after\":\"2026-09-17\",\"undo\":\"2026-09-19\",\"redo\":\"2026-09-17\",\"lastFlown\":[[\"2026-09-23\",\"2026-09-23\"],[\"2026-09-19\",\"2026-09-19\"],[\"2026-09-23\",\"2026-09-23\"]]}"
+    },
+    {
+      "step": "E.7 the pop-up's Done on box shows the redone day (17/09)",
+      "pass": true,
+      "said": "{\"count\":\"0\",\"list\":[],\"failOn\":\"2026-09-23\",\"doneOn\":\"2026-09-17\",\"caption\":\"Done on — sets Last Flown\"}"
+    },
+    {
+      "step": "F.1 a syllabus switch greys ↶ and ↷ (and they stay greyed on the way back)",
+      "pass": true,
+      "said": "{\"before\":\"Undo the mark on ST-01 for STUDENT A (Ctrl+Z)\",\"onTx\":[\"Nothing to undo\",\"Nothing to redo\"],\"back\":[\"Nothing to undo\",\"Nothing to redo\"]}"
+    },
+    {
+      "step": "F.2 a course switch greys ↶ (new course, and back on 26ABSG)",
+      "pass": true,
+      "said": "{\"before\":\"Undo the mark on ST-03 for STUDENT A (Ctrl+Z)\",\"newCourse\":\"Nothing to undo\",\"back\":\"Nothing to undo\"}"
+    },
+    {
+      "step": "F.3 ✓ Save changes greys ↶ — the chart edit AND the mark made before it",
+      "pass": true,
+      "said": "{\"before\":\"Undo a chart edit (Ctrl+Z)\",\"after\":[\"Nothing to undo\",\"Nothing to redo\"]}"
+    },
+    {
+      "step": "H.1 + Add is not an undo step: ↶ still names the ST-05 mark",
+      "pass": true,
+      "said": "Undo the mark on ST-05 for STUDENT A (Ctrl+Z) → Undo the mark on ST-05 for STUDENT A (Ctrl+Z) (crew now NEWBIE)"
+    },
+    {
+      "step": "H.2 removing NEWBIE takes their step with them (↶ no longer names NEWBIE)",
+      "pass": true,
+      "said": "{\"before\":\"Undo the mark on ST-01 for NEWBIE (Ctrl+Z)\",\"question\":\"Remove NEWBIE from 2026? Their marks, dates, pace and lull periods on this syllabus are deleted. Cancel OK\",\"after\":\"Undo the mark on ST-05 for STUDENT A (Ctrl+Z)\"}"
+    },
+    {
+      "step": "H.3 a rename is not an undo step, and ↶ names the step by the NEW name",
+      "pass": true,
+      "said": "Undo the mark on ST-05 for ALPHA (Ctrl+Z)"
+    },
+    {
+      "step": "H.4 an event-details save is not an undo step: ↶ names the mark, takes the mark, leaves the new name",
+      "pass": true,
+      "said": "{\"tip\":\"Undo the mark on ST-05 for ALPHA (Ctrl+Z)\",\"was\":\"Local Area Orientation / Transition Phase Briefing\",\"details\":\"W2 RENAMED EVENT Type: Lecture · 2.0 Hrs\",\"st05\":[\"#ffffff\",\"#ffffff\"]}"
+    },
+    {
+      "step": "H.5 after a COURSE rename / a SYLLABUS rename, ↶ says",
+      "note": "[\"Undo the mark on ST-06 for ALPHA (Ctrl+Z)\",\"Undo the mark on ST-06 for ALPHA (Ctrl+Z)\"]"
+    }
+  ],
+  "errors": []
+}

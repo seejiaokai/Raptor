@@ -1,0 +1,163 @@
+{
+  "rows": [
+    {
+      "step": "roster",
+      "note": "STUDENT A, STUDENT B · crew picked: STUDENT A"
+    },
+    {
+      "step": "1.0 a press on ST-02 opens the grading pop-up",
+      "pass": true,
+      "said": "ST-02 · STUDENT A"
+    },
+    {
+      "step": "1.1 \"Failed on\" starts at today (23 Sep 26)",
+      "pass": true,
+      "said": "{\"count\":\"0\",\"list\":[],\"failOn\":\"2026-09-23\",\"doneOn\":\"2026-09-23\",\"caption\":\"Done on (when marked)\"}"
+    },
+    {
+      "step": "1.2 + records one failure, dated today, listed under the counter",
+      "pass": true,
+      "said": "{\"count\":\"1\",\"list\":[\"ST-02 23/09/26\"],\"failOn\":\"2026-09-23\",\"doneOn\":\"2026-09-23\",\"caption\":\"Done on (when marked)\"}"
+    },
+    {
+      "step": "1.3 the \"Failed on\" box takes a typed day (10/09/2026) and the pop-up stays open",
+      "pass": true,
+      "said": "box=2026-09-10"
+    },
+    {
+      "step": "1.4 the second + lands on the CHANGED day: ST-02 23/09/26, ST-02X 10/09/26",
+      "pass": true,
+      "said": "[\"ST-02 23/09/26\",\"ST-02X 10/09/26\"]"
+    },
+    {
+      "step": "1.5 the ball wears two red ticks",
+      "pass": true,
+      "said": "ticks=2"
+    },
+    {
+      "step": "1.6 − with two failures [23/09 recorded first, 10/09 recorded second] leaves",
+      "note": "[\"ST-02 23/09/26\"] (count 1)"
+    },
+    {
+      "step": "1.6a − takes one failure back (count 2 → 1)",
+      "pass": true,
+      "said": "1"
+    },
+    {
+      "step": "1.7 + again (box still 10/09) → two failures",
+      "pass": true,
+      "said": "[\"ST-02 23/09/26\",\"ST-02X 10/09/26\"]"
+    },
+    {
+      "step": "1.8 Escape closes the pop-up",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "1.9 ACG-01 +1",
+      "note": "{\"count\":\"1\",\"list\":[\"ACG-01 23/09/26\"],\"failOn\":\"2026-09-23\",\"doneOn\":\"2026-09-23\",\"caption\":\"Done on (when marked)\"}"
+    },
+    {
+      "step": "2.1 one chip per failure, worst event first: ST-02, ST-02X, ACG-01",
+      "pass": true,
+      "said": "[\"ST-02\",\"ST-02X\",\"ACG-01\"]"
+    },
+    {
+      "step": "2.2 the total counts FAILURES (3), not events (2)",
+      "pass": true,
+      "said": "3 fails · heading \"Failures — STUDENT A3 fails\""
+    },
+    {
+      "step": "2.3 hovering ST-02X shows its day in a bubble (10/09/26)",
+      "pass": true,
+      "said": "ST-02X Checklist Introduction STUDENT A: 2nd failure of 2 on ST-02 Failed on: 10/09/26"
+    },
+    {
+      "step": "3.1 the Failures title opens the full list, one row + date box per failure",
+      "pass": true,
+      "said": "[{\"chip\":\"ST-02\",\"d\":\"2026-09-23\",\"t\":\"ST-02 1st failure · Checklist Introduction\"},{\"chip\":\"ST-02X\",\"d\":\"2026-09-10\",\"t\":\"ST-02X 2nd failure · Checklist Introduction\"},{\"chip\":\"ACG-01\",\"d\":\"2026-09-23\",\"t\":\"ACG-01 1st failure · Course Introduction and Aircraft Overview\"}]"
+    },
+    {
+      "step": "3.2 re-dating ST-02X in the list re-dates its chip (12/09/26)",
+      "pass": true,
+      "said": "box=2026-09-12 chip title=\"ST-02X — 2nd failure on ST-02 · 12/09/26\""
+    },
+    {
+      "step": "3.3 an emptied box leaves the failure UNDATED, not deleted (3 rows, 3 chips, ACG-01 \"date not recorded\")",
+      "pass": true,
+      "said": "box=\"\" rows [\"ST-02=2026-09-23\",\"ST-02X=2026-09-12\",\"ACG-01=(empty)\"] chip \"ACG-01 — 1st failure on ACG-01 · date not recorded\""
+    },
+    {
+      "step": "3.4 Escape closes the full list",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "3.5 what is stored for STUDENT A (read-only)",
+      "note": "[{\"ST-02\":{\"g\":0,\"f\":2,\"fd\":[\"2026-09-23\",\"2026-09-12\"],\"at\":\"2026-09-23T07:02:21.155Z\",\"by\":\"Admin\"},\"ACG-01\":{\"g\":0,\"f\":1,\"fd\":[null],\"at\":\"2026-09-23T07:02:22.254Z\",\"by\":\"Admin\"}}]"
+    },
+    {
+      "step": "3.6 the ST-02 pop-up list reads the re-dated day (ST-02X 12/09/26)",
+      "pass": true,
+      "said": "[\"ST-02 23/09/26\",\"ST-02X 12/09/26\"]"
+    },
+    {
+      "step": "4.1 picking STUDENT B: the Failures card is B's (none)",
+      "pass": true,
+      "said": "Failures — STUDENT B · []"
+    },
+    {
+      "step": "4.2 pop-up now titled",
+      "note": "ACG-02 · STUDENT B"
+    },
+    {
+      "step": "4.3 B's card shows only B's failure (ACG-02, 1 fail)",
+      "pass": true,
+      "said": "[\"ACG-02\"] 1 fail"
+    },
+    {
+      "step": "4.4 B's chip bubble names B and B's day",
+      "pass": true,
+      "said": "ACG-02 Propulsion System STUDENT B: 1st failure of 1 on ACG-02 Failed on: 23/09/26"
+    },
+    {
+      "step": "4.5 B's full list is B's",
+      "pass": true,
+      "said": "Failures — STUDENT B 1 fail ✕ [\"ACG-02\"]"
+    },
+    {
+      "step": "4.6 back to A: A's record is back (ST-02, ST-02X, ACG-01)",
+      "pass": true,
+      "said": "[\"ST-02\",\"ST-02X\",\"ACG-01\"]"
+    },
+    {
+      "step": "5.1 ST-02 marked N.A.: no red ticks while N.A.",
+      "pass": true,
+      "said": "ticks=0 wedges [\"#cdbb8e\",\"#ffffff\"]"
+    },
+    {
+      "step": "5.2 the Failures card while ST-02 is N.A.",
+      "note": "[\"ST-02\",\"ST-02X\",\"ACG-01\"] 3 fails"
+    },
+    {
+      "step": "5.3 + on an N.A. event is refused (count unchanged)",
+      "pass": true,
+      "said": "count 2 → 2"
+    },
+    {
+      "step": "5.4 …and its refusal \"“ST-02” is marked N.A., so it cannot be failed.\" is VISIBLE somewhere on screen",
+      "pass": false,
+      "said": "found: [{\"text\":\"“ST-02” is marked N.A., so it cannot be failed.\",\"id\":\"arrhint\",\"cls\":\"arrhint\",\"visible\":false,\"box\":[0,0,0,0]}] · the hint line: {\"text\":\"“ST-02” is marked N.A., so it cannot be failed.\",\"display\":\"none\"}"
+    },
+    {
+      "step": "5.5 two seconds later the hint line holds",
+      "note": "\"Select: drag a box on empty space to pick several balls, then drag any of them to move the group.\""
+    },
+    {
+      "step": "5.6 back to Marginal → the two ticks return",
+      "pass": true,
+      "said": "ticks=2 wedges [\"#27d64a\",\"#ffffff\"]"
+    }
+  ],
+  "errors": []
+}

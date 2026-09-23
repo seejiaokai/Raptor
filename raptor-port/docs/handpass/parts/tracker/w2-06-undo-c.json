@@ -1,0 +1,55 @@
+{
+  "rows": [
+    {
+      "step": "J.1 on the chart: Ctrl+Z undoes, Ctrl+Y redoes, Ctrl+Shift+Z redoes",
+      "pass": true,
+      "said": "Control+z→#ffffff | Control+y→#000000 | Control+z→#ffffff | Control+Shift+z→#000000"
+    },
+    {
+      "step": "J.2 Ctrl+Z inside the Find box does not reach the Tracker's history (ST-05 stays marked)",
+      "pass": true,
+      "said": "stack 1→typed 1→Ctrl+Z 1; ST-05 #000000; box now \"S\""
+    },
+    {
+      "step": "J.2 Ctrl+Z inside the Down Days number box does not reach the Tracker's history (ST-05 stays marked)",
+      "pass": true,
+      "said": "stack 1→typed 2→Ctrl+Z 2; ST-05 #000000; box now \"\""
+    },
+    {
+      "step": "J.2 Ctrl+Z inside the pace box does not reach the Tracker's history (ST-05 stays marked)",
+      "pass": true,
+      "said": "stack 2→typed 2→Ctrl+Z 2; ST-05 #000000; box now \"2\""
+    },
+    {
+      "step": "J.3 under a question box (Remove STUDENT B?) Ctrl+Z does nothing to the Tracker",
+      "pass": true,
+      "said": "question up true, still up true; stack 2→2; ST-05 #000000"
+    },
+    {
+      "step": "J.4 Escape answers the question \"no\": STUDENT B stays",
+      "pass": true,
+      "said": "B chips: 1"
+    },
+    {
+      "step": "J.5 Ctrl+Z / Ctrl+Y pressed on the Inputs tab never touch the Tracker",
+      "pass": true,
+      "said": "ST-05 #000000; ↶ before \"Undo the down days for STUDENT A (Ctrl+Z)\" after \"Undo the down days for STUDENT A (Ctrl+Z)\"; stack {\"undo\":2,\"redo\":0} → {\"undo\":2,\"redo\":0}"
+    },
+    {
+      "step": "L.1 Edit Schedule's Undo takes back ITS OWN edit (the remark), and names it",
+      "pass": true,
+      "said": "{\"before\":{\"off\":true,\"t\":\"Undo\"},\"afterEdit\":{\"off\":false,\"t\":\"Undo — a note on the schedule\"},\"remarkShown\":true,\"removedByUndo\":true}"
+    },
+    {
+      "step": "L.2 …pressed until greyed (and Ctrl+Z there too), it never reaches the Tracker mark on ST-06",
+      "pass": true,
+      "said": "{\"afterFirstUndo\":{\"off\":true,\"t\":\"Undo\"},\"finally\":{\"off\":true,\"t\":\"Undo\"},\"st06\":[\"#000000\",\"#ffffff\"],\"trackerUndo\":\"Undo the mark on ST-06 for STUDENT A (Ctrl+Z)\"}"
+    },
+    {
+      "step": "L.3 the Tracker's ↶ takes back its own ST-06 mark and never the schedule's remark",
+      "pass": true,
+      "said": "{\"st06\":\"#ffffff\",\"remarkStillThere\":true,\"schedUndoBefore\":{\"off\":false,\"t\":\"Undo — a note on the schedule\"},\"schedUndoAfter\":{\"off\":false,\"t\":\"Undo — a note on the schedule\"}}"
+    }
+  ],
+  "errors": []
+}
