@@ -3,6 +3,15 @@
 **Pick `main` in the new-chat picker.** Before acting: `git fetch`, `gh run list --branch main --limit 3` — the
 Tracker merge's own check run on his PC may still have been going when this was written; confirm it went green.
 
+## The OIL tracker's credit boxes read in full — branch `claude/oil-credit-tags`, MERGED on his "merge live" (D156, 24 Sep 26)
+
+Found by the demo chat while recording: an automatic credit's "Auto" and "Weekend/PH" came out "AU… Weeken…"; the walk
+found the reason line cutting "· correction" / "· not covered" / "· 3 days" the same way. Fixed in `oiltracker.css` (the
+box's words wrap, never cut), WALK tier, sheet `raptor-port/docs/handpass/2026-09-24-oil-credit-tags.md`, all gates green.
+**D156:** he looked at the preview and said "merge live", and chose to run the pull request's checks on his PC while the
+demo chat was busy on it (against the agent's advice to wait); merged once they were green. **Open question put to him:** the demo's
+awards for Dash (15 Aug) and Vector (29 Aug) are dated after the schedule's demo week (13–19 Jul) — intended?
+
 ## `[TRK-PINCH-DRAGS-BALL]` + his "left side cut off" report — MERGED as PR #431 on D133 (24 Sep 26, night)
 
 Branch `claude/tracker-pinch-drags-ball`, FULL tier: sheet `raptor-port/docs/handpass/2026-09-23-tracker-pinch-ball.md`.

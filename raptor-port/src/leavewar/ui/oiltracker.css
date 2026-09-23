@@ -278,12 +278,34 @@
     text-align: left;
     font-size: 11px;
   }
-  .oil-e .l1 { display: flex; align-items: baseline; gap: 5px; width: 100%; }
+  /* The top line: the amount and the date on the left, the labels on the
+     right — "Auto" and who gave it ("Weekend/PH", "Duty input", or whatever
+     name an admin typed, up to 40 characters). The line WRAPS: a label that
+     cannot sit beside the amount and date drops to a line of its own, still
+     on the right (the date's `margin-right:auto` holds line one apart; the
+     `flex-end` right-aligns a line that holds only labels), and a giver wider
+     than the whole box wraps its own words rather than being cut.
+       24 Sep 26, found recording the demo video: every label here used to be
+     one line, clipped with "…" at 60% of the box, so an automatic credit's two
+     labels read "AU…" and "Weeken…" beside "+1 18 Jul". The tracker's zoom
+     could not help — the text scales with the box. The price is a taller box
+     on a credit that carries both labels; the row grows to the tallest box,
+     as it already does for a credit with several takes.
+       `white-space: normal` is load-bearing: every grid cell is `nowrap`
+     (`.oil-grid td`), and a label inherits it — without it a long giver stays
+     one line and runs out of the box however much room the line gives it. */
+  .oil-e .l1 { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: baseline; column-gap: 5px; row-gap: 0; width: 100%; }
   .oil-e .l1 .amt { font-size: 13px; font-weight: 800; color: #8FE0A8; font-variant-numeric: tabular-nums; }
-  .oil-e .l1 .dt { color: var(--ink-3); }
-  .oil-e .l1 .by { margin-left: auto; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%; }
+  .oil-e .l1 .dt { color: var(--ink-3); margin-right: auto; }
+  .oil-e .l1 .by { color: var(--ink-3); max-width: 100%; white-space: normal; text-align: right; overflow-wrap: anywhere; }
   .oil-e .l1 .by.auto { color: #7FB3C2; letter-spacing: .06em; font-size: 10.5px; text-transform: uppercase; }
-  .oil-e .l2 { display: block; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+  /* The reason line WRAPS too, for the same reason and found by the same walk
+     (24 Sep 26): cut to one line with "…", it was the app's OWN words after a
+     reason that went — the demo's correction lost "· correction", Casper's
+     uncovered opening "· not covered", Ammo's award "· 3 days". A reason is
+     at most 120 characters (MAX_REASON), so the worst case is a few lines on
+     one box, never a runaway; the award's reason button below wraps with it. */
+  .oil-e .l2 { display: block; color: var(--ink-2); white-space: normal; overflow-wrap: anywhere; width: 100%; }
   .oil-e .l2.noting { display: flex; gap: 4px; align-items: center; white-space: normal; }
   .oil-e .l2.noting .oil-text { min-width: 0; flex: 1 1 60px; padding: 3px 6px; }
   /* The last line sinks to the BOTTOM of the box (`margin-top:auto` — the
@@ -328,9 +350,11 @@
     cursor: pointer;
     font-family: inherit;
     max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    /* wraps with the reason line above (24 Sep 26) — it carries the reason,
+       the work hours and the days, and the days are the credit's worth */
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-align: left;
   }
 
   /* The in-place editor a grant box turns into. */
@@ -418,7 +442,6 @@
     .oil-grid .f.c2 { left: 88px; width: 56px; min-width: 56px; max-width: 56px; }
     .oil-grid .f.c3 { left: 144px; width: 16px; min-width: 16px; max-width: 16px; }
     .oil-e { width: 132px; min-width: 132px; max-width: 132px; }
-    .oil-e .l1 { flex-wrap: wrap; row-gap: 0; }
     .oil-e.editing { width: 260px; min-width: 260px; max-width: 260px; }
     /* The tools row must stay two lines on a phone: the subtitle goes, the
        chips tighten (still ≥36px tall to tap). */
@@ -472,6 +495,10 @@
  * an admin reads down the list for, the hours are the detail he checks when a
  * day has gone amber. */
 #page-leavewar .oil-e .oil-hrs { color: var(--ink-2); font-variant-numeric: tabular-nums; }
+/* The reason button wraps (24 Sep 26, above), but "· 3 days" and the hours
+   are one reading each: they move to the next line WHOLE, never as "· 3" over
+   "days". */
+#page-leavewar .oil-e .oil-notebtn .oil-hrs { white-space: nowrap; }
 
 /* The editing row WRAPS, and the reason keeps a floor it cannot be squeezed
    below. Without both, the two hours boxes took the whole width of a credit

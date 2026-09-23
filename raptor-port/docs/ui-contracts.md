@@ -5621,6 +5621,23 @@ the sticky header scale with the boxes; a phone opens it at 0.8, a desktop at
 RANGE · − · + · ? · ⚙, measured at 360px). Pinned in `oiltracker.test.tsx`
 (order, ends) and `e2e/leavewar.spec.ts` (beside RANGE on SHOW's row, inside
 the viewport, phone 0.8 / desktop none, step up and back).
+**A credit box's words WRAP; none is ever cut with "…"** (24 Sep 26, found
+recording the demo video — an automatic credit's "Auto" and "Weekend/PH" came
+out "AU…" "Weeken…"). The box stays its fixed 150px (132px on a phone); what
+does not fit moves down a line instead. Top line: amount and date on the left
+(the date's `margin-right: auto`), the labels — "Auto", then the giver — on the
+right, and a label that cannot sit beside the date drops to its own line, still
+right-aligned (`justify-content: flex-end`); a giver of up to 40 characters
+wraps its own words (`white-space: normal` — every grid cell is `nowrap`, so it
+must be said). The reason line and an award's reason button wrap too, so the
+app's own words after a reason — "· correction", "· not covered", "· 3 days" —
+always show; "· 3 days" and the work hours move down whole. The price is a
+taller box, and the row grows to its tallest box (as it already did for a
+credit with several takes); the zoom scales all of it together, so the layout
+is the same at every step. Pinned in `e2e/leavewar.spec.ts` "every label and
+reason on an OIL credit box reads in full" (both widths, all five zoom steps,
+a 40-character giver and a 120-character reason; nothing cut, amount left,
+labels right, days whole).
 
 **The month strip is ONE line of twelve on a phone too (owner, 6 Sep 26 — "shift
 the months to be fitted to 1 row instead, since the +- is moved to another
