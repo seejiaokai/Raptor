@@ -115,7 +115,8 @@ raised and the branch deliberately left), `[STORE-READER-SWEEP]`, `[OIL-REQ-NAME
 `[POSTOUT-LOST]`'s remaining half, `[OIL-WORDS]`, and from the window's bug check
 `[OIL-PERSONAL-PLACEHOLDER]` and `[CROWD-SIM-BRIEF]` (both below `[ALL-AVAIL-WINDOW]`).
 `[LW-MONTHJUMP-PHONE]` — its desktop half is done (D87); what is left is an APP bug: on a phone a
-month button can land a day short (below `[ALL-AVAIL-WINDOW]`).
+month button can land a day short (below `[ALL-AVAIL-WINDOW]`). `[CI-TWO-CORES]` — GitHub's checks
+run 2x slower since the repo went private; a free settings fix is filed, the owner's call (below it).
 
 **STALE ABOVE, CORRECTED 22 Sep 26:** the "STACK PROGRESS (updated 18 Sep 26)" block says the next
 stack item is step 4 (one Absence record). **Step 4 SHIPPED on 20 Sep 26** — `raptor-port/CLAUDE.md`
@@ -914,6 +915,19 @@ the first-success poll (today a sample taken before the shift can pass it). **No
 purpose:** waiting longer between taps does not stop it, and pacing around it would hide the bug.
 **Until then (owner, D84):** a Leave War desktop timeout on GitHub gets ONE re-run of the failed
 group, not an investigation; a second failure of the same group is new evidence — stop and report.
+
+### [CI-TWO-CORES] GitHub's machine halved when the repo went private — the checks are tuned for 4 cores (23 Sep 26)
+
+GitHub gives a PRIVATE repo a 2-core machine; a public one gets 4 (its runner reference). From the switch
+(22 Sep ~17:40 UTC) every parallel check doubled: desktop browser leg 5–6 → 10–11 min, scheduler unit tests
+5–9 → 13–20 min (now the slowest leg, so a whole run takes ~20 min); the single-threaded Tracker check did not
+move. `playwright.config.ts` still runs 3 browser tests at once on CI — chosen for 4 cores — so on 2 cores
+each test runs ~3x slower than on the desktop and the long Leave War scenarios brush the 30s limit (PR #428:
+the reload test timed out once, passed on retry). A run now bills ~60 of the month's included minutes (Free
+2,000 · Pro 3,000; blocked when used up without a payment method). **Pro does NOT buy a bigger machine** —
+larger runners need an organization on GitHub Team. **Free fix, not built:** 2 browser tests at a time on CI,
+and split `unit (raptor)` and `geometry (lw-desktop)` across two machines each — measure on the first run.
+**Owner's call** (it moves billed minutes); asked 23 Sep 26. Tier NONE (CI settings only).
 
 ### [OIL-PERSONAL-PLACEHOLDER] A placeholder on a landed "Personal" request row draws no count (23 Sep 26)
 

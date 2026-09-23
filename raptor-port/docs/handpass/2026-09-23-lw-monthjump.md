@@ -98,3 +98,11 @@ are decisions for the owner, not fixes: **001** — the reload test is still at 
 tests running; the remaining lever is a longer limit for that one test, which needs his word because D87 chose
 waits. **002** — the phone test needs the APP fix (spec folded into `[LW-MONTHJUMP-PHONE]`). Edits after the
 inspected commit are docs only: this section, the backlog entry, the skill-observation log.
+
+**GitHub (PR #428), all 12 checks green — with one retry.** On GitHub's own machine the "LL 14–18 Jul" test
+passed first time at 27.8s (it failed twice on 23 Sep); the reload test timed out once (31.5s) and passed on
+the automatic retry (12.5s). Why GitHub is this slow: the repo went PRIVATE on 22 Sep ~17:40 UTC, and GitHub
+gives a private repo a 2-core machine where a public one gets 4 (GitHub's runner reference). Every
+parallel check doubled at that moment (desktop browser leg 5–6 → 10–11 min, scheduler unit tests 5–9 → 13–20
+min) while the one single-threaded check (Tracker) did not move — and CI still runs 3 browser tests at once,
+a setting chosen for 4 cores. Filed as `[CI-TWO-CORES]`.
