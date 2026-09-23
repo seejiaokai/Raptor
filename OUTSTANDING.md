@@ -634,6 +634,9 @@ ceiling inside itself and had reached 961.
 - **Prune on write:** touching a doc means leaving it no longer than you found it.
 
 ### [HUMAN-RETEST] Re-test the earlier builds the way a person uses them (owner, 21 Sep 26)
+**ORDER (D85, 23 Sep 26): START WITH THE TRACKER, one feature per session.** The order after it is
+not ruled: propose it and ask (the agent's lean: the amendment system, the absence record and the
+change-recording before `[DB-STEP]`, because they decide what the database stores).
 **His words: "This also means that all the previous bug tests we did there will be bugs not
 captured. Because I didnt test them when i told u that u would test like a human since."** He is
 right, and the OIL build is the proof. It had a two-model cross-provider review and 5341 green
