@@ -18,7 +18,7 @@
    The file name ends in `leavewar.spec.ts` so the lw-desktop / lw-phone
    projects in playwright.config.ts pick it up. */
 import { expect, test, type Page } from '@playwright/test'
-import { go, login, lwRole, lwView } from './app'
+import { go, gridAtRest, login, lwRole, lwView } from './app'
 
 const isPhone = () => test.info().project.name === 'lw-phone'
 const desktopOnly = () => test.skip(isPhone(), 'mouse drag-select / desktop-only path')
@@ -53,21 +53,35 @@ async function backToWar(page: Page) {
   await putDrawerAway(page)
 }
 
-/** Bring a month on screen through the month strip and wait for the grid. */
+/* EVERY WAIT BELOW WAITS ON A CONDITION, NOT A CLOCK (owner, D87, 23 Sep 26 —
+   [LW-MONTHJUMP-PHONE]). These helpers used to pause a fixed 100–700ms after
+   each step: too short on a slow GitHub runner, pure dead time on a fast one,
+   and it added up — the long scenarios below sat near the 30s limit and timed
+   out there. `E2E_CPU_THROTTLE=3` (e2e/app.ts) reproduces that runner on a
+   desktop. */
+
+const sheetScrim = (page: Page) => page.locator('[data-testid="sheet-scrim"]')
+
+/** Bring a month on screen through the month strip and wait until it is drawn
+ *  and the grid has come to rest over it. */
 async function showMonth(page: Page, iso: string) {
+  const first = `${iso.slice(0, 8)}01`
   await page.locator(`[data-testid="month-${MON[+iso.slice(5, 7) - 1]!.toUpperCase()}"]`).click()
-  await page.waitForTimeout(700)
+  await page.locator(`[data-testid="head-${first}"]`).waitFor({ state: 'attached' })
+  await gridAtRest(page, first) // e2e/app.ts — waits for the landed header to hold still
 }
 
 const cell = (page: Page, p: string, d: string) => page.locator(`[data-testid="cell-${p}-${d}"]`)
 const chip = (page: Page, p: string, d: string) => cell(page, p, d).locator('.c')
 const mark = (page: Page, p: string, d: string) => page.locator(`[data-testid="mark-${p}-${d}"]`)
 
-/** Tap a cell (scrolling it into view first). */
+/** Tap a cell (scrolling it into view first) and wait for the sheet it opens —
+ *  every Leave War sheet is built on the one Sheet wrapper, which draws the
+ *  scrim, so a scrim on screen is "the tap landed". */
 async function tap(page: Page, p: string, d: string) {
   await cell(page, p, d).scrollIntoViewIfNeeded()
   await cell(page, p, d).click()
-  await page.waitForTimeout(250)
+  await expect(sheetScrim(page)).toBeVisible()
 }
 
 /** The tap list's lines, as text. */
@@ -75,31 +89,48 @@ async function listLines(page: Page): Promise<string[]> {
   await expect(page.locator('[data-testid="daylist-sheet"]')).toBeVisible()
   return page.locator('[data-testid="daylist"] li .dl-main').allTextContents()
 }
-/** Close whatever sheet is up (after "OK, seen" clears a day's last mark the
- *  open sheet can turn into the plain cell sheet, so close by Escape too). */
+/** Close whatever sheet is up, and wait until none is (after "OK, seen" clears
+ *  a day's last mark the open sheet can turn into the plain cell sheet, so
+ *  close by Escape too — pressed again only while a sheet is still up). */
 async function closeList(page: Page) {
   if (await page.locator('[data-testid="daylist-close"]').count()) await page.locator('[data-testid="daylist-close"]').click()
-  for (let i = 0; i < 3 && (await page.locator('[data-testid="sheet-scrim"]').count()); i++) {
-    await page.keyboard.press('Escape')
-    await page.waitForTimeout(150)
-  }
-  await page.waitForTimeout(150)
+  await expect(async () => {
+    if (await sheetScrim(page).count()) await page.keyboard.press('Escape')
+    await expect(sheetScrim(page)).toHaveCount(0, { timeout: 1000 })
+  }).toPass()
 }
 
-/** One figure for one person, read from the callsign's "every figure" sheet
- *  (it computes afresh when it opens, so it reads the truth even where the
- *  balance COLUMN is stale — see the BUG test for that). */
-async function figure(page: Page, p: string, fig: 'lve' | 'oil' | 'medtot'): Promise<number> {
+type Fig = 'lve' | 'oil' | 'medtot'
+/** A person's figures, read from the callsign's "every figure" sheet in ONE
+ *  opening (it computes afresh when it opens, so it reads the truth even where
+ *  the balance COLUMN is stale — see the BUG test for that). Each opening and
+ *  closing repaints the grid, which is the slow part on a slow machine, so a
+ *  caller that needs three figures asks for all three at once. */
+async function figures<F extends Fig>(page: Page, p: string, want: readonly F[]): Promise<Record<F, number>> {
   await page.locator(`[data-testid="person-${p}"]`).scrollIntoViewIfNeeded()
   await page.locator(`[data-testid="person-${p}"]`).click()
-  const v = await page.locator(`[data-testid="pfig-${fig}"] .fb`).textContent()
+  const got = {} as Record<F, number>
+  for (const f of want) got[f] = Number(await page.locator(`[data-testid="pfig-${f}"] .fb`).textContent())
   await page.locator('[data-testid="pfig-close"]').click()
-  await page.waitForTimeout(100)
-  return Number(v)
+  await expect(sheetScrim(page)).toHaveCount(0)
+  return got
+}
+/** One figure for one person — `figures` with a single ask. */
+async function figure(page: Page, p: string, fig: Fig): Promise<number> {
+  return (await figures(page, p, [fig]))[fig]
 }
 
-async function undo(page: Page) { await page.locator('[data-testid="lw-undo"]').click(); await page.waitForTimeout(350) }
-async function redo(page: Page) { await page.locator('[data-testid="lw-redo"]').click(); await page.waitForTimeout(350) }
+/* Undo and redo do their work inside the click (Chrome.tsx calls the one
+   timeline directly), so there is nothing to sit out; each waits only for the
+   pair to show the move, and every caller then waits on what it checks. */
+async function undo(page: Page) {
+  await page.locator('[data-testid="lw-undo"]').click()
+  await expect(page.locator('[data-testid="lw-redo"]')).toBeEnabled()
+}
+async function redo(page: Page) {
+  await page.locator('[data-testid="lw-redo"]').click()
+  await expect(page.locator('[data-testid="lw-undo"]')).toBeEnabled()
+}
 
 async function clearToast(page: Page) {
   await page.evaluate(() => { const t = document.getElementById('toastEl'); if (t) t.textContent = '' })
@@ -143,15 +174,24 @@ async function fileOnInputsPage(page: Page, f: Filing) {
     await page.locator('#inEndT').fill(f.end!)
   }
   await clearToast(page)
+  const before = await page.evaluate(() => (window as any).INPUTS.length as number)
   await page.locator('#inAdd').click()
-  // a medical with no certificate asks first — file it with none
+  /* The add decides inside the click, one of three ways: a medical with no
+     certificate ASKS first, or it files, or it is refused on the toast. Wait
+     for whichever it was. (A fixed 150ms look for the question used to sit
+     here: on a slow machine the question came later, was missed, and the
+     filing never happened.) Filing always adds at least one row — a cut
+     leave comes back as its pieces — so a count that moved means filed. */
+  const outcome = (withAsk: boolean) => page.waitForFunction(([n, ask]) =>
+    (ask && !!document.querySelector('[data-testid="docconf"]'))
+    || (window as any).INPUTS.length !== n
+    || !!document.getElementById('toastEl')?.textContent, [before, withAsk] as const)
+  await outcome(true)
   const nodoc = page.locator('[data-testid="docconf-nodoc"]')
-  if (await nodoc.isVisible().catch(() => false)) await nodoc.click()
-  else {
-    await page.waitForTimeout(150)
-    if (await nodoc.isVisible().catch(() => false)) await nodoc.click()
+  if (await nodoc.count()) {
+    await nodoc.click()                                   // file it with none
+    await outcome(false)
   }
-  await page.waitForTimeout(250)
 }
 
 /** Plant a background filing through the real inputs door (localhost hook). */
@@ -312,8 +352,9 @@ test('LL 14–18 Jul, then ATT C 16–17 Jul on the Inputs page: the leave is cu
   await expect(chip(page, P, '2026-07-16')).toHaveText('C')
   await expect(chip(page, P, '2026-07-17')).toHaveText('C')
   await expect(chip(page, P, '2026-07-18')).toHaveText('LL')
-  expect(await figure(page, P, 'lve')).toBe(lve1 + 2)
-  expect(await figure(page, P, 'medtot')).toBe(2)
+  const cut = await figures(page, P, ['lve', 'medtot'])
+  expect(cut.lve).toBe(lve1 + 2)
+  expect(cut.medtot).toBe(2)
 
   await undo(page)
   const back = await inputsOf(page, P)
@@ -589,19 +630,27 @@ test('a reload (not ?fresh) keeps every filed leave, cut, notice and post-out �
   })
   await go(page, 'inputs')
   await backToWar(page)
+  const pick = [['ammo', '2026-02-11'], ['slipway', '2026-07-14'], ['slipway', '2026-07-16'], ['dj', '2026-07-22'], ['bruise', '2026-02-12'], ['casper', '2026-07-13']] as const
   const snapshot = async () => {
     const who = ['ammo', 'slipway', 'dj', 'bruise', 'casper']
     const figs: string[] = []
-    for (const p of who) figs.push(`${p}:${await figure(page, p, 'lve')}/${await figure(page, p, 'oil')}/${await figure(page, p, 'medtot')}`)
-    return page.evaluate(([who, figs]) => {
-      const pick = [['ammo', '2026-02-11'], ['slipway', '2026-07-14'], ['slipway', '2026-07-16'], ['dj', '2026-07-22'], ['bruise', '2026-02-12'], ['casper', '2026-07-13']]
+    for (const p of who) {
+      const f = await figures(page, p, ['lve', 'oil', 'medtot'])
+      figs.push(`${p}:${f.lve}/${f.oil}/${f.medtot}`)
+    }
+    // Every compared cell must be DRAWN before it is read. After a jump the
+    // grid draws the rest of the year in the background, and a cell not drawn
+    // yet reads as undefined — on both sides alike, so the comparison would
+    // pass without having compared anything.
+    for (const [p, d] of pick) await cell(page, p, d).waitFor({ state: 'attached' })
+    return page.evaluate(([who, figs, pick]) => {
       return {
         cells: pick.map(([p, d]) => { const td = document.querySelector(`[data-testid="cell-${p}-${d}"]`); return `${p}@${d}=${td?.textContent}` }),
         inputs: (window as any).INPUTS.filter((r: any) => (who as string[]).includes(r.person)).map((r: any) => `${r.person}:${r.type}:${r.date}:${r.endDate ?? ''}:${r.s}-${r.e}`).sort(),
         total: (window as any).INPUTS.length,
         figs,
       }
-    }, [who, figs] as const)
+    }, [who, figs, pick] as const)
   }
   await showMonth(page, '2026-07-14'); await showMonth(page, '2026-02-11')
   const before = await snapshot()

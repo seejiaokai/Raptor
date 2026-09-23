@@ -1,5 +1,23 @@
 import type { Page } from '@playwright/test'
 
+/* A SLOW MACHINE, ON DEMAND (23 Sep 26, [LW-MONTHJUMP-PHONE]). GitHub's runner
+   can be two to three times slower than a desktop, and a test that passes only
+   because the machine is fast is a red run waiting to happen there.
+   `E2E_CPU_THROTTLE=3 npx playwright test …` slows everything the PAGE does —
+   script, layout, paint — that many times over, through Chromium's own CPU
+   throttling (DevTools' "3x slowdown"), so a timing assumption fails on the
+   desktop first. Unset, it does nothing. Every test logs in, so login() is the
+   one place it needs to be.
+
+   The rule it serves (owner, D87): a browser test that fails on a slow machine
+   is fixed by making it WAIT ON WHAT IT NEEDS — the element, the state, the
+   grid at rest — not on a fixed time, which is too short on a slow runner and
+   dead time on a fast one. */
+async function slowMachine(page: Page) {
+  const rate = Number(process.env.E2E_CPU_THROTTLE)
+  if (rate > 1) await (await page.context().newCDPSession(page)).send('Emulation.setCPUThrottlingRate', { rate })
+}
+
 /* Login is ad/a for full edit, us/us for the member (owner, 24 Aug 26). The
    username is lowercased before matching but the PASSWORD is compared
    exactly. The parameter keeps its historical 'a' | 'user' shape so the 100+
@@ -7,6 +25,7 @@ import type { Page } from '@playwright/test'
    real credentials. */
 export async function login(page: Page, who: 'a' | 'user' = 'a') {
   await page.goto('/')
+  await slowMachine(page)
   await page.fill('#luser', who === 'a' ? 'ad' : 'us')
   await page.fill('#lpass', who === 'a' ? 'a' : 'us')
   await page.click('#loginForm button[type=submit]')
@@ -43,6 +62,45 @@ export async function settle(page: Page, sel: string, from?: number, axis: 'x' |
     }
     return last
   }, [sel, from, axis] as const)
+}
+
+/** Wait until a Leave War month jump has stopped moving ON SCREEN: the landed
+ *  month's header holds its place for eight frames AND for longer than the
+ *  grid's own 120ms "at rest" pause (Matrix SCROLL_REST_MS), since the
+ *  corrections that follow a jump run after that pause. Its screen position is
+ *  what a later click or drag lands on. The scroller itself is deliberately NOT
+ *  watched: on a desktop the grid goes on drawing the earlier months to the LEFT
+ *  for seconds after a jump, each draw re-anchored so nothing on screen moves —
+ *  waiting for the scroller to go still waited for the whole year. (Moved here
+ *  from step4-leavewar.spec.ts on 23 Sep 26 so the month-strip tests share it.)
+ *
+ *  A move of ≤1px counts as still (Fable TEST-001, 23 Sep 26): the anchor
+ *  correction only acts on shifts over 1px, so the desktop's background fill
+ *  can nudge a landed header by a pixel for as long as it is drawing the year —
+ *  the likeliest reason this wait ran to the time limit on GitHub's slow
+ *  machine. A real slide (the phone fault was 20px) is still motion. And it
+ *  FAILS BY NAME — a header that is not drawn, or never holds still within 15s
+ *  — instead of spinning silently into the test's own timeout. */
+export async function gridAtRest(page: Page, date: string) {
+  const res = await page.evaluate(async d => {
+    const cell = () => document.querySelector(`[data-testid="head-${d}"]`)
+    const t0 = performance.now()
+    while (!cell()) {
+      if (performance.now() - t0 > 5000) return `gridAtRest: head-${d} is not drawn`
+      await new Promise(r => requestAnimationFrame(() => r(null)))
+    }
+    const x = () => cell()?.getBoundingClientRect().x ?? NaN
+    let last = x(), same = 0, since = performance.now()
+    while (same < 8 || performance.now() - since < 250) {
+      if (performance.now() - t0 > 15000) return `gridAtRest: head-${d} never held still (last x ${last})`
+      await new Promise(r => requestAnimationFrame(() => r(null)))
+      const now = x()
+      if (Math.abs(now - last) <= 1) same++
+      else { last = now; same = 0; since = performance.now() }
+    }
+    return null
+  }, date)
+  if (res) throw new Error(res)
 }
 
 /* Warning navigation moves BOTH axes — the week is placed horizontally by hand

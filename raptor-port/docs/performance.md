@@ -456,10 +456,13 @@ through sourcemaps for the JS split, paired A/B runs.
 16. **Placeholders + draw-while-moving** (5 Sep). The scroller is year-wide from
     first paint; months draw in place while scroll still moves. · Undrawn months
     are one placeholder cell per side, real width; the fill draws in motion (right
-    always; left only over an already-measured width; estimated-width left grow and
-    prunes wait for rest). · *Invariant:* every row (header included) has identical
-    cell structure (WebKit); never draw an estimated-width month left of view
-    mid-scroll. · `colwindow.ts`.
+    always; left only over a width measured under the rows now on screen —
+    `widthExact`, since a row that left can narrow a month ([LW-MONTHJUMP-PHONE],
+    23 Sep 26); any other left grow and prunes wait for rest). · *Invariant:* every
+    row (header included) has identical cell structure (WebKit); never draw a
+    month left of view mid-scroll unless its width is EXACT under the current rows
+    (`widthGen`: store version, row window, folds, manning rows, the Archive). ·
+    `colwindow.ts`, `Matrix.tsx`.
 
 17. **The cost of drawing one month, halved** (6 Sep). Each drawn month costs about
     half; fill and scroll are smoother. · (a) placeholder widths moved from a

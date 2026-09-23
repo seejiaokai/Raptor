@@ -163,6 +163,25 @@ describe('the manning rows can be reordered and hidden (admin)', () => {
     expect(screen.queryByTestId('count-ip')).toBeNull()
   })
 
+  // THE ARCHIVE TELLS THE GRID ([LW-MONTHJUMP-PHONE] review, Astra LW-101, 23 Sep
+  // 26). Its rows are cells of the grid's own table, so opening or closing it can
+  // change a day column's width — and the grid caches month widths and pins the
+  // frozen header's. It stays this block's own state (a tap must not re-render the
+  // whole grid), so the grid hears through `onArchiveChange`: once per open, once
+  // per close, never on mount — and only AFTER the rows are in (or out of) the
+  // DOM, since that is what the grid then measures.
+  it('opening and closing the Archive tells the grid, after its rows are in or out', () => {
+    const rowsAtCall: number[] = []
+    render(<table><CountRows verdicts={verdicts} dates={['d1']} order={[]} hidden={['ip']}
+      arranging admin onInfo={() => {}}
+      onArchiveChange={() => rowsAtCall.push(document.querySelectorAll('[data-testid="count-ip"]').length)} /></table>)
+    expect(rowsAtCall).toEqual([])
+    fireEvent.click(screen.getByTestId('manning-archive'))
+    expect(rowsAtCall).toEqual([1])
+    fireEvent.click(screen.getByTestId('manning-archive'))
+    expect(rowsAtCall).toEqual([1, 0])
+  })
+
   // The grip moved to the LEFT of the counter name (owner, 5 Sep 26 — "move the
   // rearrange 6 dots to the left of the start of the titles"); the eye stays
   // centred alone in the balance box. Pin both homes so a refactor can't quietly

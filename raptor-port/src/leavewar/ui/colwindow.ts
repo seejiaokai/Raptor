@@ -22,7 +22,11 @@
 // landed LEFT of the view. Two rules keep that from ever showing:
 //  · a month that has been drawn before keeps its MEASURED width in the
 //    placeholder (Matrix `monthPxRef`), so re-drawing it moves nothing — and
-//    that is every month a reader scrolls back over;
+//    that is every month a reader scrolls back over — PROVIDED the grid's rows
+//    are the ones it was measured with: a row that widened some of its columns
+//    (a posted-out man's leave) and has since left the roster makes the month
+//    draw narrower, so a width measured under other rows counts as an estimate
+//    for the rule below (Matrix `widthExact`, [LW-MONTHJUMP-PHONE] 23 Sep 26);
 //  · a month whose width is still an estimate is drawn LEFT of the view only
 //    at rest, where the existing anchor correction (`anchorRef`) absorbs the
 //    error invisibly; to the RIGHT of the view an estimate is harmless (nothing
@@ -103,9 +107,10 @@ export function stepToward(
  *  Only GROWTH: a prune moves nothing the reader needs and, on the left, would
  *  need a scroll correction that kills a fling — it waits for rest. Growth on
  *  the RIGHT is always safe (nothing on screen moves). Growth on the LEFT is
- *  safe only when that month's width is already KNOWN — it was drawn before, so
- *  its placeholder is exactly as wide as the month and the swap moves nothing;
- *  an estimated width could be off by a few pixels and would hop the content
+ *  safe only when that month's width is already KNOWN — it was drawn before,
+ *  under the rows on screen now, so its placeholder is exactly as wide as the
+ *  month and the swap moves nothing; an estimated width, or one measured while
+ *  other rows showed, could be off by a few pixels and would hop the content
  *  under the finger, so that case waits for rest and the anchor correction. */
 export function stepAllowedInMotion(win: ColWin, next: ColWin, widthKnown: (month: number) => boolean): boolean {
   const growsR = next.hi > win.hi

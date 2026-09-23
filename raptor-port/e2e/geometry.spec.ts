@@ -4149,6 +4149,42 @@ test.describe('the frozen callsign column', () => {
     const gW = await page.locator('.qwrap').evaluate(el => el.getBoundingClientRect().width)
     expect(Math.abs(mW - gW), 'the frozen bar spans the grid, not the old orientation').toBeLessThan(2)
   })
+
+  /* THE FROZEN HEADER IS IN STEP THE MOMENT IT APPEARS (23 Sep 26). The owner
+     filmed the Leave War's frozen date bar showing the start of its row and then
+     jumping sideways each time the page scrolled down; this bar is the same
+     mechanism and was placed the same one frame late — after its first paint, so
+     a table scrolled sideways flashed its first columns. A check after a wait can
+     never see that, so this reads the bar in the task that inserts it (a
+     MutationObserver fires after the commit and before any paint). */
+  test('phone: the frozen header is in step with the table the moment it appears', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'quals')
+    await page.waitForSelector('#qtbl td.qname')
+    const sideways = await page.evaluate(() => {
+      const wrap = document.querySelector('.qwrap') as HTMLElement
+      wrap.scrollLeft = 400
+      return wrap.scrollLeft
+    })
+    expect(sideways, 'the table really scrolled sideways').toBeGreaterThan(200)
+    await page.evaluate(() => {
+      const w = window as any
+      w.__qAt = null
+      const mo = new MutationObserver(() => {
+        const m = document.querySelector('[data-testid="qsticky-head"] .qfixed-scroll') as HTMLElement | null
+        if (!m) return
+        mo.disconnect()
+        w.__qAt = { mirror: m.scrollLeft, grid: (document.querySelector('.qwrap') as HTMLElement).scrollLeft }
+      })
+      mo.observe(document.body, { childList: true, subtree: true })
+    })
+    await page.evaluate(() => window.scrollTo(0, 700))   // slide the real header under the top bar
+    await expect(page.locator('[data-testid="qsticky-head"]')).toBeVisible()
+    const at = await page.evaluate(() => (window as any).__qAt)
+    expect(at, 'the bar was seen as it appeared').not.toBeNull()
+    expect(Math.abs(at.mirror - at.grid), 'the frozen header starts where the table is, not at its first column').toBeLessThan(2)
+  })
 })
 
 /* ONE LIFT, EVERY DRAG (owner, 6 Sep 26) — a quals COLUMN is a composite thing

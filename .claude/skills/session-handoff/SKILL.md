@@ -46,10 +46,14 @@ handoff yourself would now break the owner's rule. End the session on
 "pushed, PR open, awaiting merge live", hand him the Vercel preview link, and
 say so in chat. **An open PR awaiting "merge live" is the NORMAL end state,
 not an Unfinished item.**
-**A docs-only handoff has NO checks** (15 Aug 26 — `deploy.yml`
-`paths-ignore` skips the workflow when every changed file is `**.md` or
-`.claude/**`), so do not wait for a "build" check that will never appear.
-Only a handoff riding a code change runs the gates.
+**A docs-only handoff has NO checks ONLY if its whole pull request is docs**
+(15 Aug 26 — `deploy.yml` `paths-ignore` skips the workflow when every changed
+file is `**.md` or `.claude/**`). GitHub judges a pull request's WHOLE diff, not
+the last push: once the PR carries code, a notes-only push re-runs every gate
+AND cancels the run in progress (corrected 23 Sep 26, after exactly that; owner
+D151 — never push while a PR's checks are running). So check
+`gh run list --branch <branch> --limit 1` first, and push the handoff only when
+no run is going.
 
 "Unfinished" means any of: work not yet pushed or not yet handed to the owner
 (a pushed PR AWAITING his "merge live" is the normal end state, not

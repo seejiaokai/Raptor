@@ -662,8 +662,13 @@ export function QualsPage() {
 
   /* start the mirror at the grid's current sideways position the instant it
      mounts, so its first painted frame is already in step (Leave War's own
-     on-show sync); from then on onXScroll keeps the two locked. */
-  useEffect(() => {
+     on-show sync); from then on onXScroll keeps the two locked. A LAYOUT effect,
+     which runs before the browser paints the new bar: as a plain effect it ran
+     after, so a table scrolled sideways showed its first columns for one frame
+     and then jumped — the fault the owner filmed on the Leave War's frozen bar
+     (23 Sep 26), which is the same mechanism. Pinned by "the frozen header is in
+     step with the table on the first frame it shows" (e2e/geometry.spec.ts). */
+  useLayoutEffect(() => {
     if (stuck && mirrorRef.current && wrapRef.current) mirrorRef.current.scrollLeft = wrapRef.current.scrollLeft
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stuck])
