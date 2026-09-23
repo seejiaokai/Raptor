@@ -52,11 +52,11 @@ function makeRepo(live = LIVE0) {
   }
 }
 
-function scenario(name, expectFail, mutate, { mustSay } = {}) {
+function scenario(name, expectFail, mutate, { mustSay, base: baseOverride } = {}) {
   const ctx = makeRepo(), dir = ctx.dir, base = ctx.base
   try {
     mutate(ctx)
-    const r = spawnSync(process.execPath, ['raptor-port/scripts/docsize.mjs'], { cwd: dir, encoding: 'utf8', env: { ...process.env, DOCSGUARD_BASE: base, DOCSGUARD_ALLOW: '' } })
+    const r = spawnSync(process.execPath, ['raptor-port/scripts/docsize.mjs'], { cwd: dir, encoding: 'utf8', env: { ...process.env, DOCSGUARD_BASE: baseOverride ?? base, DOCSGUARD_ALLOW: '' } })
     const out = r.stdout + r.stderr
     const didFail = r.status !== 0
     const said = !mustSay || out.includes(mustSay)
@@ -128,6 +128,56 @@ mover('line endings kept byte for byte', true, { live: CRLF0, args: ['CHARLIE', 
   : c.read('OUTSTANDING.md') !== CRLF0.replace(cut(CRLF0, 'CHARLIE')[1], '') ? 'the rest of the backlog changed' : '' })
 mover('puts both files back when the inventory is not clean afterwards', false, { prep: c => c.edit('OUTSTANDING.md', t => cut(t, 'BRAVO')[0]), args: ['CHARLIE', '--homes', 'docs/home.md'], check: (c, r) =>
   !has(c, 'OUTSTANDING.md', '[CHARLIE]') ? 'CHARLIE was not put back' : has(c, 'OUTSTANDING-ARCHIVE.md', 'CHARLIE') ? 'the archive was not put back' : !/put back/.test(r.stderr) ? 'did not say so' : '' })
+
+/* ---- Astra's review, 23 Sep 26: one scenario per finding, and the gaps it named ---- */
+const moveTo = (c, id, shape) => { const [rest, blk] = cut(c.read('OUTSTANDING.md'), id); c.write('OUTSTANDING.md', rest); c.edit('OUTSTANDING-ARCHIVE.md', t => t + '\n' + shape(blk)) }
+scenario('a line cut on the move that also exists in ANOTHER archived item (A1)', true, c => {
+  c.edit('OUTSTANDING.md', t => t.replace('Line 3 of CHARLIE, long enough to count as a real body line for the doubling check.', 'Owner: Ops'))
+  c.edit('OUTSTANDING-ARCHIVE.md', t => t + '\nOwner: Ops\n'); c.commit('prep')
+  moveTo(c, 'CHARLIE', b => b.replace('Owner: Ops\n', ''))
+}, { mustSay: 'did not all arrive' })
+scenario('one of two identical lines dropped on the move', true, c => {
+  c.edit('OUTSTANDING.md', t => t.replace('Line 3 of CHARLIE, long enough to count as a real body line for the doubling check.', 'Same.').replace('Line 4 of CHARLIE, long enough to count as a real body line for the doubling check.', 'Same.')); c.commit('prep')
+  moveTo(c, 'CHARLIE', b => b.replace('Same.\n', ''))
+}, { mustSay: 'did not all arrive' })
+scenario('an item ADDED on the branch, committed, then archived truncated (A2)', true, c => {
+  c.edit('OUTSTANDING.md', t => t + '\n' + item('ECHO', 5)); c.commit('add ECHO')
+  moveTo(c, 'ECHO', b => b.split('\n').slice(0, 3).join('\n') + '\n'); c.commit('archive ECHO')
+}, { mustSay: '[ECHO] left' })
+scenario('a ruling home DELETED from disk (A5)', true, c => { c.edit('DECISIONS.md', t => t.replace('| D2 | b | b | `OUTSTANDING.md` |', '| D2 | b | b | `docs/home.md` |')); c.commit('point D2 at home'); rmSync(join(c.dir, 'docs/home.md')) }, { mustSay: 'no such file exists' })
+scenario('a body line that only MENTIONS the allow syntax grants nothing (A6)', true, c => { c.edit('OUTSTANDING.md', t => cut(t, 'BRAVO')[0]); c.commit('drop BRAVO\n\nDocs-guard-allow: [BRAVO]\nThis is an example only, not an approval.') }, { mustSay: '[BRAVO] is GONE' })
+scenario('a new rule whose register is new and not yet staged (A7)', false, c => { c.edit('raptor-port/scripts/rulecheck.mjs', t => t.replace("  X2: 'second rule',\n", "  X2: 'second rule',\n  X3: 'third rule',\n")); c.write('raptor-port/docs/superpowers/specs/new-behaviour-register.md', '- **X3** — the third rule.\n') })
+scenario('an unusable DOCSGUARD_BASE still falls back and catches a loss', true, c => c.edit('OUTSTANDING.md', t => cut(t, 'BRAVO')[0]), { base: 'not-a-commit', mustSay: '[BRAVO] is GONE' })
+
+const FENCED = LIVE0.replace('Line 2 of CHARLIE, long enough to count as a real body line for the doubling check.\n', 'Line 2 of CHARLIE, long enough to count as a real body line for the doubling check.\n~~~md\n## This is code, not a section\n~~~\n````md\n```\n## Nor is this\n```\n````\n')
+mover('an item holding ~~~ and nested ```` code blocks moves WHOLE (A3)', true, { live: FENCED, args: ['CHARLIE', '--homes', 'docs/home.md'], check: c =>
+  has(c, 'OUTSTANDING.md', 'Line 6 of CHARLIE') ? 'left the tail behind' : !has(c, 'OUTSTANDING-ARCHIVE.md', '## Nor is this') ? 'lost the code block' : '' })
+mover('an id already in the archive', false, { prep: c => { c.edit('OUTSTANDING-ARCHIVE.md', t => t + '\n' + item('CHARLIE', 1).replace('Line 1 of CHARLIE', 'An older CHARLIE')); c.commit('old') }, args: ['CHARLIE', '--homes', 'docs/home.md'], check: (c, r) => /already heads an item/.test(r.stderr) ? '' : 'wrong reason' })
+mover('a home that does not exist', false, { args: ['CHARLIE', '--homes', 'docs/nowhere.md'], check: (c, r) => /no such file/.test(r.stderr) ? '' : 'wrong reason' })
+mover('a Windows backslash home that was changed on the branch (A9)', true, { prep: c => c.write('docs/other.md', 'facts, written just now\n'), args: ['CHARLIE', '--homes', 'docs\\other.md'] })
+mover('a home outside the repo', false, { args: ['CHARLIE', '--homes', '../outside.md'], check: (c, r) => /inside the repo/.test(r.stderr) ? '' : 'wrong reason' })
+
+/* THE STOP HOOK (A8) — needs bash; skipped, and said so, where there is none. */
+const HOOK = join(HERE, '..', '..', '.claude', 'hooks', 'backlog-guard.sh')
+const bash = spawnSync('bash', ['--version'], { encoding: 'utf8' }).status === 0
+function hook(name, expect, { prep, input }) {
+  if (!bash) { console.log(`SKIP  hook: ${name} — no bash here`); return }
+  const ctx = makeRepo()
+  try {
+    if (prep) prep(ctx)
+    const r = spawnSync('bash', [HOOK], { input, encoding: 'utf8', env: { ...process.env, CLAUDE_PROJECT_DIR: ctx.dir } })
+    const ok = r.status === expect
+    if (!ok) failed++
+    console.log(`${ok ? 'PASS' : 'MISS'}  hook: ${name} — expected exit ${expect}, got ${r.status}`)
+    if (!ok) console.log((r.stdout + r.stderr).split('\n').map(l => '      ' + l).join('\n'))
+  } finally { rmSync(ctx.dir, { recursive: true, force: true }) }
+}
+const loseBravo = c => c.edit('OUTSTANDING.md', t => cut(t, 'BRAVO')[0])
+hook('clean', 0, { input: '{}' })
+hook('a lost record hands the turn back', 2, { prep: loseBravo, input: '{"stop_hook_active":false}' })
+hook('already holding the turn, with odd JSON spacing, lets go', 0, { prep: loseBravo, input: '{\n  "stop_hook_active" :\n  true\n}' })
+hook('over a line ceiling never blocks a turn', 0, { prep: c => c.edit('DECISIONS.md', t => t + 'x\n'.repeat(200)), input: '{}' })
+hook('no gate script in the project', 0, { prep: c => rmSync(join(c.dir, 'raptor-port/scripts/docsize.mjs')), input: '{}' })
 
 console.log(failed ? `\nSELFTEST FAILED — ${failed} scenario(s) not caught as designed.` : '\nselftest OK — every scenario behaved as designed.')
 process.exit(failed ? 1 : 0)

@@ -35,7 +35,9 @@ const git = (...a) => { try { return execFileSync('git', a, { cwd: REPO, encodin
 const args = process.argv.slice(2)
 const id = (args.find(a => !a.startsWith('--') && args[args.indexOf(a) - 1] !== '--homes') || '').replace(/^\[|\]$/g, '')
 const hi = args.indexOf('--homes')
-const homes = hi >= 0 && args[hi + 1] ? args[hi + 1].split(',').map(s => s.trim()).filter(Boolean) : []
+/* Homes as git paths from the repo root, `/`-separated, so a Windows `docs\facts.md` matches what
+   git reports (Astra); an absolute path or one climbing out of the repo is refused below. */
+const homes = hi >= 0 && args[hi + 1] ? args[hi + 1].split(',').map(s => s.trim().replace(/\\/g, '/').replace(/^(\.\/)+/, '')).filter(Boolean) : []
 const dry = args.includes('--dry-run')
 if (!/^[A-Z][A-Z0-9-]+$/.test(id)) die('usage: backlog-archive.mjs <ITEM-ID> --homes <file>[,<file>...] [--dry-run]')
 
@@ -44,14 +46,24 @@ const withEnds = t => t.match(/[^\n]*\n|[^\n]+$/g) || []
 const live = readFileSync(join(REPO, LIVE), 'utf8')
 const arch = readFileSync(join(REPO, ARCHIVE), 'utf8')
 
+/* The same code-block rule as docsize.mjs's fenceStep — keep the two identical: opens on 3+
+   backticks or tildes, closes only on the SAME character, at least as long, with nothing after. */
+function fenceStep(fence, line) {
+  const f = /^ {0,3}(`{3,}|~{3,})(.*)$/.exec(line)
+  if (!f) return fence
+  if (fence) return f[1][0] === fence.ch && f[1].length >= fence.len && !f[2].trim() ? null : fence
+  return { ch: f[1][0], len: f[1].length }
+}
+
 /* Every item heading, fence-aware, as { id, start line, end line (exclusive) }. */
 function items(text) {
   const ls = withEnds(text), heads = []
-  let fence = false
+  let fence = null
   ls.forEach((l, i) => {
     const s = l.replace(/\r?\n$/, '')
-    if (/^\s*```/.test(s)) { fence = !fence; return }
-    if (!fence && /^#{1,3} /.test(s)) heads.push({ i, id: (/^### \[([A-Z][A-Z0-9-]+)\]/.exec(s) || [])[1] || null })
+    const was = fence
+    fence = fenceStep(fence, s)
+    if (!was && !fence && /^#{1,3} /.test(s)) heads.push({ i, id: (/^### \[([A-Z][A-Z0-9-]+)\]/.exec(s) || [])[1] || null })
   })
   return { ls, list: heads.map((h, k) => ({ id: h.id, from: h.i, to: k + 1 < heads.length ? heads[k + 1].i : ls.length })).filter(h => h.id) }
 }
@@ -66,6 +78,7 @@ if (!homes.length) die(`--homes is required: name the file(s) where [${id}]'s st
 const base = (git('merge-base', 'HEAD', 'origin/main') || git('merge-base', 'HEAD', 'main') || 'HEAD').trim()
 const changed = new Set([...git('diff', '--name-only', base).split('\n'), ...git('ls-files', '--others', '--exclude-standard').split('\n')].filter(Boolean))
 for (const h of homes) {
+  if (/^([A-Za-z]:|\/)/.test(h) || h.split('/').includes('..')) die(`--homes ${h}: give a path from the repo root, inside the repo.`)
   if (!existsSync(join(REPO, h))) die(`--homes ${h}: no such file (paths are from the repo root).`)
   if (h === LIVE || h === ARCHIVE) die(`--homes ${h}: the backlog cannot be the home of what leaves it.`)
   const mentions = readFileSync(join(REPO, h), 'utf8').includes(id)

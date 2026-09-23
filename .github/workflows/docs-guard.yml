@@ -11,24 +11,13 @@
 name: Docs guard
 
 on:
+  # NO path filter (Astra, 23 Sep 26): the gate reads more than docs — rulecheck.mjs's rule map, and
+  # any file a ruling names as its home, which can be a source file a code-only PR deletes. So it
+  # runs on every PR and every push to main. It is one billed minute against the full gates' ~37.
   pull_request:
     branches: [main]
-    paths:
-      - '**.md'
-      - '.claude/**'
-      - '.gitattributes'
-      - 'raptor-port/scripts/docsize*.mjs'
-      - 'raptor-port/scripts/backlog-archive.mjs'
-      - '.github/workflows/docs-guard.yml'
   push:
     branches: [main]
-    paths:
-      - '**.md'
-      - '.claude/**'
-      - '.gitattributes'
-      - 'raptor-port/scripts/docsize*.mjs'
-      - 'raptor-port/scripts/backlog-archive.mjs'
-      - '.github/workflows/docs-guard.yml'
   workflow_dispatch:
 
 permissions:

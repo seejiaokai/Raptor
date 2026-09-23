@@ -114,29 +114,39 @@ function changedPaths() {
 }
 const touchesSrc = paths => paths.some(p => p.startsWith('raptor-port/src/'))
 
-/* Declared exceptions: `Docs-guard-allow:` lines in the commits since the base, plus the env. */
+/* Declared exceptions: `Docs-guard-allow:` TRAILERS on the commits since the base, read by git's own
+   trailer parser — so the line must sit in the message's final trailer block, and a body line that
+   merely mentions the syntax grants nothing (Astra, 23 Sep 26) — plus the env. */
 function allowances() {
   const tokens = new Set()
   const add = s => s.split(/[,\s]+/).map(t => t.trim()).filter(Boolean).forEach(t => tokens.add(t))
   if (process.env.DOCSGUARD_ALLOW) add(process.env.DOCSGUARD_ALLOW)
-  if (BASE) {
-    const msgs = tryGit('log', `${BASE}..HEAD`, '--format=%B') || ''
-    for (const m of msgs.matchAll(/^Docs-guard-allow:\s*(.+)$/gim)) add(m[1])
-  }
+  if (BASE) add(tryGit('log', `${BASE}..HEAD`, '--format=%(trailers:key=Docs-guard-allow,valueonly)') || '')
   return tokens
 }
 
 /* ---------- job 1: the inventory ---------- */
 const ID_RE = /^### \[([A-Z][A-Z0-9-]+)\]/
+/* A code block's `# lines` are not headings. A block opens on 3+ backticks or tildes (up to three
+   spaces in) and closes only on the SAME character, at least as long, with nothing after it — so a
+   ```-example inside a ````-block, or a ~~~ block, cannot flip the state (Astra, 23 Sep 26).
+   backlog-archive.mjs carries the same function; keep the two identical. */
+function fenceStep(fence, line) {
+  const f = /^ {0,3}(`{3,}|~{3,})(.*)$/.exec(line)
+  if (!f) return fence
+  if (fence) return f[1][0] === fence.ch && f[1].length >= fence.len && !f[2].trim() ? null : fence
+  return { ch: f[1][0], len: f[1].length }
+}
 /* An item runs from its heading to the next heading at EITHER level: `## Done` sits between two
    items, and a span to the next `### [` alone would swallow it (Fable F5). */
 function blocks(text) {
   const ls = splitLines(text), out = []
-  let cur = null, fence = false
+  let cur = null, fence = null
   for (const l of ls) {
-    if (/^\s*```/.test(l)) fence = !fence // a `# comment` inside a code block is not a heading
-    const m = fence ? null : ID_RE.exec(l)
-    if (!fence && (m || /^#{1,3} /.test(l))) { if (cur) out.push(cur); cur = m ? { id: m[1], lines: [l] } : null; continue }
+    const was = fence
+    fence = fenceStep(fence, l)
+    const m = was || fence ? null : ID_RE.exec(l)
+    if (!was && !fence && (m || /^#{1,3} /.test(l))) { if (cur) out.push(cur); cur = m ? { id: m[1], lines: [l] } : null; continue }
     if (cur) cur.lines.push(l)
   }
   if (cur) out.push(cur)
@@ -168,6 +178,7 @@ function inventory(allow) {
 
   const liveNowIds = new Set(now.live.map(b => b.id))
   const left = base.live.filter(b => !liveNowIds.has(b.id))
+  const liveCommits = BASE ? (tryGit('log', '--format=%H', `${BASE}..HEAD`, '--', LIVE) || '').split('\n').filter(Boolean) : []
   /* Compare what arrived with the item's LAST committed text in the live file, not its text at the
      base: closing an item with a status line and then moving it is normal, and the edit before the
      move is an ordinary visible diff. The move itself is what must be exact. */
@@ -175,17 +186,24 @@ function inventory(allow) {
     const found = src => blocks(src).find(b => b.id === id)
     const head = found(tryGit('show', `HEAD:${LIVE}`) || '')
     if (head) return head
-    for (const c of (tryGit('log', '--format=%H', `${BASE}..HEAD`, '--', LIVE) || '').split('\n').filter(Boolean)) {
+    for (const c of liveCommits) {
       const b = found(tryGit('show', `${c}~1:${LIVE}`) || '')
       if (b) return b
     }
     return null
   }
-  for (const b0 of left) {
-    if (!nowIds.has(b0.id) || allow.has(`[${b0.id}]`)) continue // already reported as gone, or a declared rename
-    const b = lastLive(b0.id) || b0
-    const missing = nonBlank(b.lines).filter(l => !archNow.has(l))
-    if (missing.length) fails.push(`[${b.id}] left ${LIVE} but ${missing.length} of its ${nonBlank(b.lines).length} lines are not in ${ARCHIVE} — truncated on the way? first: "${short(missing[0].trim())}"`)
+  /* Every item that was live at the base OR in any commit since (one added on the branch and archived
+     later is still a move — Astra) and is now archived instead is compared line for line, counting
+     repeats, with ITS OWN archived block — never with the archive as a whole, where a missing line
+     that happens to exist in some other archived item would hide the cut (Astra). */
+  const everLive = new Map(base.live.map(b => [b.id, b]))
+  for (const c of liveCommits) for (const b of blocks(tryGit('show', `${c}:${LIVE}`) || '')) if (!everLive.has(b.id)) everLive.set(b.id, b)
+  for (const [id, b0] of everLive) {
+    if (liveNowIds.has(id) || !now.arch.some(a => a.id === id) || allow.has(`[${id}]`)) continue
+    const b = lastLive(id) || b0
+    const arrived = multiset(nonBlank(now.arch.filter(a => a.id === id).flatMap(a => a.lines)))
+    const missing = [...multiset(nonBlank(b.lines))].filter(([l, n]) => (arrived.get(l) || 0) < n).map(([l]) => l)
+    if (missing.length) fails.push(`[${id}] left ${LIVE} but ${missing.length} of its ${nonBlank(b.lines).length} distinct lines did not all arrive in its archived block — truncated on the way? first: "${short(missing[0].trim())}"`)
   }
 
   if (!allow.has('duplicate-lines')) for (const f of [LIVE, ARCHIVE]) {
@@ -226,7 +244,8 @@ const PATHLIKE = /\/|\.(md|mjs|cjs|js|ts|tsx|sh|json|ya?ml|html|css)$/
 function homes(paths, allow) {
   const fails = []
   if (allow.has('homes')) return { fails, ok: true }
-  const all = [...(tryGit('ls-files') || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard') || '').split('\n')].filter(Boolean)
+  /* only files that exist NOW — `git ls-files` still lists a tracked file this change deleted (Astra) */
+  const all = [...(tryGit('ls-files') || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard') || '').split('\n')].filter(f => f && existsSync(join(REPO, f)))
   const changed = new Set(paths)
   const resolve = tok => {
     /* `…/x`, a bare `x.ts` and a folder `…/briefs/` are all shorthand the rows really use */
@@ -280,7 +299,8 @@ function rulings(allow) {
     const ids = [...body.matchAll(/^\s+([A-Z]+\d+[a-z]?):/gm)].map(m => m[1])
     /* the registers, plus the clash-check spec the one-absence register names as its own source
        for B1–B9 and H1–H6 (B9 and H5 are written only there) */
-    const regs = (tryGit('ls-files', REGISTERS) || '').split('\n').filter(f => /behaviour-register\.md$|arch-stack-4-clash-check\.md$/.test(f))
+    const listed = [...(tryGit('ls-files', REGISTERS) || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard', '--', REGISTERS) || '').split('\n')] // a new, untracked register counts (Astra)
+    const regs = [...new Set(listed)].filter(f => /behaviour-register\.md$|arch-stack-4-clash-check\.md$/.test(f))
     /* an entry is a line that STARTS one — a heading, a bold bullet, a table row, or `B9.` — and
        carries the id near its start, so `- **H4 / Q13**` heads both */
     const leads = regs.flatMap(f => splitLines(readNow(f))).filter(l => /^(#{2,4} |- \*\*|\| |\*\*|[A-Z]+\d+[a-z]?\. )/.test(l)).map(l => l.slice(0, 48))
