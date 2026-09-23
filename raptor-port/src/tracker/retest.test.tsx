@@ -450,6 +450,33 @@ describe('[HUMAN-RETEST] the Tracker — a deleted built-in rides the backup (ro
     await C.saveOrderList(C.orderedSylIds().map((id: string) => C.sylName(id)).sort((a: string, b: string) => (a === '2024' ? -1 : b === '2024' ? 1 : 0)))
     await C.whenLoaded()
   })
+
+  it('Fable F-A / Astra #1 — the details typed on a deleted built-in ride the whole backup, so ↺ Restore after the wipe brings them back (D127)', async () => {
+    if (C.sylDirty) await C.saveChangesClick()
+    const b24 = C.sylIdOf('2024')
+    await C.switchSyllabus(b24); await C.whenLoaded()
+    await C.saveInfoFor('ST-01', { ...C.infoFor('ST-01'), name: 'DEL24 NAME' })
+    const d = C.delSyl(); await answer(true); await d; await C.whenLoaded()
+    const whole = await exportVia('all')
+    expect(((whole.charts.eventInfoBySyl || {})[b24] || {})['ST-01'], 'the file carries them').toEqual({ name: 'DEL24 NAME' })
+    /* the wiped app: 2024 live, nothing typed on it */
+    await C.restoreHiddenSyl(b24); await C.switchSyllabus(b24); await C.whenLoaded()
+    await C.resetInfoFor('ST-01')
+    expect(C.infoFor('ST-01').name).not.toBe('DEL24 NAME')
+    ;(window as any).__pickOpenForTests = async () => ({ name: 'b.json', text: JSON.stringify(whole) })
+    try {
+      const p = C.importClick()
+      for (;;) { await until(() => C.dlg); if (/already exists/.test(C.dlg.msg)) { C.dlgClose(true); await tick(); continue } C.dlgClose(true); break }
+      await p
+    } finally { delete (window as any).__pickOpenForTests }
+    await C.whenLoaded()
+    expect(C.orderedSylIds(), 'kept deleted').not.toContain(b24)
+    await C.restoreHiddenSyl(b24); await C.switchSyllabus(b24); await C.whenLoaded()
+    expect(C.infoFor('ST-01').name, 'Restore brings back what was typed').toBe('DEL24 NAME')
+    await C.resetInfoFor('ST-01')
+    await C.saveOrderList(C.orderedSylIds().map((id: string) => C.sylName(id)).sort((a: string, b: string) => (a === '2024' ? -1 : b === '2024' ? 1 : 0)))
+    await C.whenLoaded()
+  })
 })
 
 describe('[HUMAN-RETEST] the Tracker — a chart with nobody on it still says where its details are edited (gates G-1)', () => {
@@ -535,12 +562,133 @@ describe('[HUMAN-RETEST] the Tracker — logging out with unsaved chart edits as
     resetSession({ user: 'ad', role: 'admin' })
     const d = C.delSyl(); await until(() => C.dlg); C.dlgClose('__alt__'); await d; await C.whenLoaded()   /* revert 2026 */
   })
+  it('Fable F-D — a Logout pressed (by keyboard) while a Tracker question is up waits for the answer', async () => {
+    if (C.sylDirty) await C.saveChangesClick()
+    const out = await logOut()
+    const q = C.uiConfirm('A question in the middle of something')
+    await until(() => C.dlg)
+    expect(await out!(), 'the session is kept').toBe(false)
+    expect(C.dlg, 'the question is still there to answer').not.toBeNull()
+    C.dlgClose(false); await q
+    resetSession({ user: 'ad', role: 'admin' })
+  })
+
   it('D129 — nothing unsaved: no question, straight out', async () => {
     if (C.sylDirty) await C.saveChangesClick()
     const out = await logOut()
     expect(await out!()).toBe(true)
     expect(C.dlg).toBeNull()
     resetSession({ user: 'ad', role: 'admin' })
+  })
+})
+
+describe('[HUMAN-RETEST] the Tracker — the two code reads (Fable + Astra, 23 Sep 26)', () => {
+  const lf = (s: string) => ((C.dates[s] || {}).lastSyll || null)
+  const dayOf = (s: string, id: string) => (((C.marks as any)[s] || {})[id] || {}).d || null
+  async function on26() {
+    if (C.arrangeMode) C.toggleArrange()
+    if (C.sylDirty) await C.saveChangesClick()
+    if (C.curSylId() !== C.sylIdOf('2026')) { await C.switchSyllabus(C.sylIdOf('2026')); await C.whenLoaded() }
+    if (!C.active && C.roster.length) C.setActive(C.roster[0].id)
+    return C.active
+  }
+  async function revert26() {
+    await on26()
+    if (C.sylHasOwnDef(C.sylIdOf('2026'))) { const d = C.delSyl(); await until(() => C.dlg); C.dlgClose('__alt__'); await d; await C.whenLoaded() }
+  }
+  async function grade(id: string, day: string | null, g = 'dco') { C.openPop(id, at); if (day) C.popDoneChanged(day); await C.popGrade(g) }
+  async function setType(id: string, type: string) {
+    C.toggleArrange(); C.openEdit(id)
+    const ev = C.byid[id], d = C.infoFor(id)
+    expect(await C.saveEdit({ text: ev.label || ev.id, type, num: '', crew: d.crew || '', pre: d.pre || '', links: (ev.prereqs || []).join(', ') })).toBeNull()
+    C.toggleArrange(); await C.saveChangesClick()
+  }
+
+  it('Fable F-G / Astra #2 — changing a ball between flight and not-flight re-settles Last Flown (D123)', async () => {
+    const s = await on26()
+    for (const id of ['TR-2', 'TR-3']) if (C.gradeOf(s, id)) await grade(id, null, '0')
+    await C.setLastSyll(s, '')
+    await grade('TR-2', '2026-09-20'); await grade('TR-3', '2026-09-25')
+    expect(lf(s)).toBe('2026-09-25')
+    await setType('TR-3', 'acad')
+    expect(lf(s), 'the later one is no longer a flight: back to 20/09').toBe('2026-09-20')
+    await setType('TR-3', 'flight')
+    expect(lf(s), 'a flight again: forward to 25/09').toBe('2026-09-25')
+    for (const id of ['TR-2', 'TR-3']) await grade(id, null, '0')
+    await revert26()
+  })
+
+  it('Fable F-E — a year still being typed when DCO is pressed is not the flight\'s day', async () => {
+    const s = await on26()
+    C.openPop('TR-2', at); C.popDoneChanged('0002-09-23'); await C.popGrade('dco')
+    expect(dayOf(s, 'TR-2')).toBe(C.isoToday())
+    await grade('TR-2', null, '0')
+  })
+
+  it('Fable F-B — 📋 Edit events cannot put back a deleted-but-unsaved code with its old marks (D124)', async () => {
+    const s = await on26()
+    await grade('ACG-04', null, 'dco')
+    C.toggleArrange(); C.openEdit('ACG-04')
+    const d = C.deleteFromEditModal(); await answer(true); await d
+    const err = await C.saveSylText(JSON.stringify([...C.SYL, { id: 'ACG-04', type: 'acad' }]))
+    expect(err, 'refused, with the way on').toMatch(/not saved yet/)
+    expect(C.byid['ACG-04'], 'not put back').toBeFalsy()
+    C.closeModal(); await C.doUndo(); C.toggleArrange()
+    expect(C.byid['ACG-04'], 'undo brings it back').toBeTruthy()
+    expect(C.gradeOf(s, 'ACG-04'), '…with its mark').toBe('dco')
+    await grade('ACG-04', null, '0'); if (C.sylDirty) await C.saveChangesClick(); await revert26()
+  })
+
+  it('Astra #4 — deleting a ball also forgets it as a student\'s last worked event (D124)', async () => {
+    const s = await on26()
+    await grade('ACG-05', null, 'dco')
+    expect(C.showLastEdit(s), 'the premise: ACG-05 is the last worked').toBe(true)
+    C.toggleArrange(); C.openEdit('ACG-05'); const d = C.deleteFromEditModal(); await answer(true); await d
+    C.toggleArrange(); await C.saveChangesClick()
+    C.toggleArrange(); const p = C.addModule('acad'); await answer('ACG-05'); await p; C.toggleArrange(); await C.saveChangesClick()
+    expect(C.showLastEdit(s), 'a new, ungraded ACG-05 is not their last work').toBe(false)
+    await revert26()
+  })
+
+  it('Fable F-C — importing a built-in "as new" keeps that chart\'s own wording, as ⧉ Duplicate does (D126)', async () => {
+    await on26()
+    const tx = C.sylIdOf('Tx 2026')
+    await C.switchSyllabus(tx); await C.whenLoaded()
+    const txCrew = C.infoFor('BFM-3').crew
+    const charts = await C.collectCharts([tx])
+    ;(window as any).__pickOpenForTests = async () => ({ name: 'tx.json', text: JSON.stringify(FMT.buildFile({ savedAt: 'x', charts })) })
+    try {
+      const p = C.importClick()
+      await until(() => C.dlg && /already exists/.test(C.dlg.msg)); C.dlgClose('__alt__')      /* Add as new */
+      await until(() => C.dlg && C.dlg.input); C.dlgClose('TX HANDOVER')
+      await until(() => C.dlg); C.dlgClose(true); await p                                    /* the closing report */
+    } finally { delete (window as any).__pickOpenForTests }
+    await C.whenLoaded()
+    const nid = C.sylIdOf('TX HANDOVER')
+    await C.switchSyllabus(nid); await C.whenLoaded()
+    expect(C.infoFor('BFM-3').crew, "Tx's own crew wording, not the long course's").toBe(txCrew)
+    const d = C.delSyl(); await answer(true); await d; await C.whenLoaded()
+  })
+
+  it('Astra #3 — a rolled-back change puts the screen back too (event details, deleted courses)', async () => {
+    await on26()
+    const before = C.infoFor('ACG-02').name
+    const snap = C.trkStore.capture()
+    await C.saveInfoFor('ACG-02', { ...C.infoFor('ACG-02'), name: 'ROLLED BACK' })
+    C.trkStore.restore(snap)
+    expect(C.infoFor('ACG-02').name, 'the detail is back').toBe(before)
+    const home = C.course
+    const a = C.addCourse(); await answer('ROLLBACK C'); await a; await C.whenLoaded()
+    const cid = C.course
+    const snap2 = C.trkStore.capture()
+    const del = C.delCourse(); await answer(true); await del; await C.whenLoaded()
+    expect(C.deletedCourses().map((c: any) => c.id)).toContain(cid)
+    C.trkStore.restore(snap2)
+    expect(C.deletedCourses().map((c: any) => c.id), 'the deleted list is back as it was').not.toContain(cid)
+    expect(C.COURSES.map((c: any) => c.id)).toContain(cid)
+    await C.switchCourse(cid); await C.whenLoaded()
+    const del2 = C.delCourse(); await answer(true); await del2; await C.whenLoaded()
+    if (C.course !== home) { await C.switchCourse(home); await C.whenLoaded() }
   })
 })
 

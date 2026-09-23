@@ -143,7 +143,10 @@ function checkCharts(c, version, otherCat) {
        (buildUnionSylcat); the file boundary only needs every ref to be labelled
        SOMEWHERE in the file. */
     const catIds = new Set([...(c.sylcat || []), ...(otherCat || [])].filter(isSylEntry).map(e => e.id));
-    const refs = new Set([...(c.order || []), ...Object.keys(c.syllabi || {}), ...Object.keys(c.layouts || {}), ...Object.keys(c.eventInfoBySyl || {})]);
+    /* a details key a deleted built-in names needs no label — it has no chart in
+       the file, and the `deleted` check above already holds it to a shipped id (D127) */
+    const deletedIds = new Set(Array.isArray(c.deleted) ? c.deleted : [])
+    const refs = new Set([...(c.order || []), ...Object.keys(c.syllabi || {}), ...Object.keys(c.layouts || {}), ...Object.keys(c.eventInfoBySyl || {}).filter(id => !deletedIds.has(id))]);
     /* a v3 file is ID-NATIVE (its version is the provenance, review CSID-REV-04):
        EVERY chart reference must be a valid syllabus id, labelled by the union,
        and an sb… id must be one this app ships — a nonconforming v3 reference is

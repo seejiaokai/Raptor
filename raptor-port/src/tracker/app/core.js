@@ -74,6 +74,11 @@ onTrackerSessionEnd(() => endSession());
    never lands on someone else's half-done chart. Save writes them (✓ Save
    changes); Discard reloads the chart from the store; Stay keeps the session. */
 onBeforeTrackerLogout(async show => {
+  /* A question already up is answered first: a Logout reached by keyboard (the
+     question's shade stops the mouse, not Tab) used to cancel it, and the job
+     behind it — an import — carried on into the next person's session (the two
+     code reads, Fable F-D). */
+  if (dlg) { if (show) show(); return false; }
   if (!sylDirty) return true;
   if (show) show();
   const c = await uiChoice('You have unsaved chart edits on “' + curSylName() + '”.\n\nSave them before logging out?', 'Save them', 'Discard them', 'Stay');
@@ -361,6 +366,11 @@ export const trkStore = {
     // layer (plan/roster/marks/dates/layout) from the restored mem with
     // rebuildSyl=false, so SYL/byid survive.
     course = snap.course; COURSES = snap.courses.slice();
+    /* the GLOBAL lets too — the catalogue, the event details, the deleted
+       courses — or a rolled-back change stayed on screen (the two code reads,
+       Astra #3) */
+    trkReloadGlobalsFromMem();
+    DELCOURSES = sParse(memGet(kDelCourses), [], 'array').filter(c => isCourseEntry(c) && !COURSES.some(x => isCourseEntry(x) && x.id === c.id));
     SYL = snap.syl; byid = {}; SYL.forEach(e => byid[e.id] = e);
     TRK_SIG++;
     trkReloadCurrentFromMem(false);
@@ -476,7 +486,7 @@ function trkWriteRecords(entries) {
   if (entries.some(e => e.collection === 'trk.catalogue' || e.collection === 'trk.eventinfo')) trkReloadGlobalsFromMem();
   // the globals that steer the pointers, always re-read from mem
   COURSES = sParse(memGet(kCourses), [], 'array');
-  DELCOURSES = sParse(memGet(kDelCourses), [], 'array').filter(isCourseEntry);
+  DELCOURSES = sParse(memGet(kDelCourses), [], 'array').filter(c => isCourseEntry(c) && !COURSES.some(x => isCourseEntry(x) && x.id === c.id));
   const courseGone = COURSES.length > 0 && !COURSES.some(c => isCourseEntry(c) && c.id === course);
   if (courseGone) { const first = COURSES.find(isCourseEntry); course = first ? first.id : course; }
   customDefs = sParse(memGet(kSyls(course)), {}, 'object');
@@ -3696,7 +3706,9 @@ export async function popGrade(v) {
     /* A grade that means "accomplished" is dated the day it is pressed (the box
        in the pop-up, today unless changed first); Not done and N.A. carry no
        day, so the date goes with the grade. */
-    if (DONE.has(v)) m.d = popDoneDate || isoToday(); else delete m.d;
+    /* a year still being typed (0002…) is not a day: today, as for an empty box
+       (the two code reads, Fable F-E) */
+    if (DONE.has(v)) m.d = isWholeDay(popDoneDate) ? popDoneDate : isoToday(); else delete m.d;
     stamp(m);
     saveMarks(s);
     /* any change to a flight's grade — done, taken back, N.A. — can move Last
@@ -4400,6 +4412,8 @@ export async function delCourse() {
    under the same name keeps it; the restored one says so in its name. */
 export async function restoreCourse(id) {
   const e = DELCOURSES.find(c => c.id === id); if (!e) return;
+  /* already live (a belt: no control reaches this) — just drop the stale entry */
+  if (COURSES.some(c => isCourseEntry(c) && c.id === id)) { DELCOURSES = DELCOURSES.filter(c => c.id !== id); await sSet(kDelCourses, JSON.stringify(DELCOURSES)); refreshCourses(); return; }
   let nm = e.name;
   if (COURSES.some(c => isCourseEntry(c) && c.name === nm)) { let n = 2; nm = e.name + ' (restored)'; while (COURSES.some(c => c.name === nm)) nm = e.name + ' (restored ' + (n++) + ')'; }
   trkGesture(() => {
@@ -4423,6 +4437,12 @@ export async function saveSylText(text) {
       if (!e.id || !e.type) throw new Error('Event ' + i + ' needs id and type');
       e.phase = e.phase || 'Unphased'; e.seq = (e.seq != null) ? e.seq : i; e.prereqs = e.prereqs || [];
     });
+    /* the same refusal as + Add (D124): a code deleted from this chart and not
+       saved yet still has its marks filed, so putting it back through the list
+       would bring them back with it (the two code reads, Fable F-B) */
+    const gone = (sylSource(curSylId()) || []).map(e => e && e.id).filter(x => x && !byid[x]);
+    const back = arr.map(e => e.id).filter(x => gone.includes(x));
+    if (back.length) throw new Error('“' + back.join(', ') + '” was deleted from this chart and that is not saved yet. Press ✓ Save changes first (its marks are removed then), or Undo to bring it back.');
     pushUndo(); SYL = arr; byid = {}; SYL.forEach(e => byid[e.id] = e); markDirty(); closeModal(); refreshSyl(); renderBoard(); renderSide();
     return null;
   } catch (err) { return err.message; }
@@ -4450,7 +4470,7 @@ export async function persistSyl() {
      back as it was, marks and all (the edit's own undo). */
   const saved = sylSource(id) || [];
   const gone = saved.map(e => e && e.id).filter(x => x && !byid[x]);
-  if (gone.length) await wipeEventMarks(id, gone, saved);
+  await sweepChart(id, new Set(gone), saved, SYL);
   /* Built-ins are editable: the saved version is stored as an override under the
      built-in's id and takes precedence when the syllabus is loaded (sylSource). */
   /* A built-in whose events are exactly the shipped ones is not an edit — a
@@ -4533,33 +4553,50 @@ async function planSylSweep(sylId, fallback) {
    then every write in ONE gesture — delSyl's pattern. A student whose wiped marks
    included a flight has Last Flown settled again (D123). `def` is the chart as it
    was, for which events were flights. */
-async function wipeEventMarks(sylId, ids, def) {
-  const kill = new Set(ids);
-  const flight = new Set([...(def || []), ...(sylId === curSylId() ? SYL : [])].filter(e => e && e.type === 'flight').map(e => e.id));
-  const stillFlight = id => flight.has(id) && !kill.has(id);
-  const writes = [];
+/* ONE sweep for a chart whose events changed at a save (or a revert), across
+   every course that uses the chart: the marks of the events taken off it go
+   (D124), a student's "last worked" pointer to one of them goes with them (the
+   two code reads, Astra #4 — else a new ball with that code read as their last
+   work), and Last Flown is settled again from the flights as the chart now has
+   them (D123) — also when a ball merely changed between flight and not-flight
+   (the two code reads, Fable F-G / Astra #2). `before` / `after` are the event
+   lists as saved and as they will be. READ first, then every write in ONE
+   gesture — delSyl's pattern. */
+async function sweepChart(sylId, kill, before, after) {
+  const flights = list => new Set((list || []).filter(e => e && e.type === 'flight').map(e => e.id));
+  const was = flights(before), now = flights(after);
+  const typeMoved = [...new Set([...was, ...now])].some(x => !kill.has(x) && was.has(x) !== now.has(x));
+  if (!kill.size && !typeMoved) return;
+  const isFlightNow = x => now.has(x) && !kill.has(x);
+  const writes = [], dels = [];
   for (const c of await allCourseNamespaces()) {
     const pre = 'v3:' + c + ':' + sylId + ':m:';
     for (const k of ((await storage.list(pre)).keys || [])) {
       const m = sParse(await sGet(k), null, 'object'); if (!m) continue;
-      const hit = Object.keys(m).filter(id => kill.has(id)); if (!hit.length) continue;
-      for (const id of hit) delete m[id];
+      const hit = Object.keys(m).filter(x => kill.has(x));
       const s = k.slice(pre.length);
-      writes.push({ k, v: JSON.stringify(m), c, s, m });
-      if (hit.some(id => flight.has(id))) {
+      if (hit.length) { for (const x of hit) delete m[x]; writes.push({ k, v: JSON.stringify(m), c, s, m }); }
+      if (typeMoved || hit.some(x => was.has(x))) {
         const dk = kDatesFor(c, sylId, s);
-        const d = settledDates(sParse(await sGet(dk), null, 'object'), latestFlown(m, stillFlight));
-        stamp(d);
-        writes.push({ k: dk, v: JSON.stringify(d), c, s, d });
+        const d0 = sParse(await sGet(dk), null, 'object');
+        const d = settledDates(d0, latestFlown(m, isFlightNow));
+        const same = d0 && (d0.lastSyll || null) === (d.lastSyll || null) && (d0.lastCurr || null) === (d.lastCurr || null) && !!d0.handSyll === !!d.handSyll && !!d0.handCurr === !!d.handCurr;
+        if (!same) { stamp(d); writes.push({ k: dk, v: JSON.stringify(d), c, s, d }); }
+      }
+    }
+    if (kill.size) {
+      for (const k of ((await storage.list('v3:' + c + ':last:')).keys || [])) {
+        try { const rec = JSON.parse((await sGet(k)) || 'null'); if (rec && rec.syl === sylId && kill.has(rec.event)) dels.push({ k, c, s: k.slice(('v3:' + c + ':last:').length) }); } catch (_) {}
       }
     }
   }
-  if (!writes.length) return;
+  if (!writes.length && !dels.length) return;
   trkGesture(() => {
     for (const w of writes) {
       sSet(w.k, w.v);
       if (w.c === course && sylId === curSylId()) { if (w.m) marks[w.s] = w.m; if (w.d) dates[w.s] = w.d; }
     }
+    for (const x of dels) { delKey(x.k); if (x.c === course) lastEdit[x.s] = null; }
   });
 }
 /* dupSyl / addSyl are catalogue-only now: mint an sc… id, file the def+layout
@@ -4694,7 +4731,7 @@ export async function delSyl() {
       const edited = customDefs[id] || [], shipped = SYLLABI[builtinBaseOf(id)] || [];
       const back = new Set(shipped.map(e => e && e.id));
       const gone = edited.map(e => e && e.id).filter(x => x && !back.has(x));
-      if (gone.length) await wipeEventMarks(id, gone, edited);
+      await sweepChart(id, new Set(gone), edited, shipped);
       delete customDefs[id];
       await sSet(kSyls(course), JSON.stringify(customDefs));
       if (typeof flushNow === 'function') { try { await flushNow(); } catch (_) {} }
@@ -4992,7 +5029,14 @@ export async function collectCharts(ids, opts) {
      export → wipe → import they stay deleted — the wiped app ships them all
      (owner, 23 Sep 26 — D127; [HUMAN-RETEST] F8). Never on a file of some
      charts: a chart handed over must not delete anything at the other end. */
-  if (opts && opts.deleted) out.deleted = BUILTIN_SYL.filter(b => SYL_TOMB[b.id]).map(b => b.id);
+  if (opts && opts.deleted) {
+    out.deleted = BUILTIN_SYL.filter(b => SYL_TOMB[b.id]).map(b => b.id);
+    /* and what was typed on them, so ↺ Restore after the wipe brings it back as it
+       would have before (D127 "exactly as before the wipe"; the two code reads,
+       Fable F-A / Astra #1). The file format accepts a details key a deleted id
+       names without a chart of its own. */
+    for (const id of out.deleted) if (eventInfo[id] && Object.keys(eventInfo[id]).length) eventInfoBySyl[id] = JSON.parse(JSON.stringify(eventInfo[id]));
+  }
   return out;
 }
 
@@ -5116,7 +5160,21 @@ export async function applyCharts(charts, opts) {
   let infoTouched = false;
   for (const { src, target, events } of pairs) {
     const shipped = shippedOfSyl(target);
-    const incoming = bySyl ? bySyl[src] : (flatEdits ? blockFromFlat(flatEdits, (events || []).map(e => e && e.id), shipped) : null);
+    let incoming = bySyl ? bySyl[src] : (flatEdits ? blockFromFlat(flatEdits, (events || []).map(e => e && e.id), shipped) : null);
+    /* A built-in brought in AS NEW becomes a custom chart, which has no shipped
+       profile of its own: the file's block holds only what differed from the
+       built-in's profile, so the profile itself is laid under it — the copy
+       reads as the chart in the file did, as ⧉ Duplicate's copy does (D126;
+       the two code reads, Fable F-C). */
+    if (target !== src && isBuiltinSylId(src) && !isBuiltinSylId(target)) {
+      const prof = {};
+      for (const e of (events || [])) {
+        if (!e || !e.id) continue;
+        const d = diffDetails(shippedDetails(EVENT_INFO, EVENT_INFO_BY_SYL, null, e.id), shippedDetails(EVENT_INFO, EVENT_INFO_BY_SYL, builtinBaseOf(src), e.id));
+        if (d) prof[e.id] = d;
+      }
+      incoming = mergeBlock(prof, incoming || {}, shipped);
+    }
     if (!incoming || !Object.keys(incoming).length) continue;
     const merged = mergeBlock(eventInfo[target], incoming, shipped);
     if (Object.keys(merged).length) eventInfo[target] = merged; else delete eventInfo[target];
@@ -5579,8 +5637,18 @@ export async function importClick() {
        tombstoned exactly as ⇅ Reorder's delete leaves one, so ↺ Restore brings it
        back. Nothing filed under it is swept — a chart import never touches a mark
        (the rule applyCharts keeps) — and the last chart is never taken away. */
+    const delInfo = charts.eventInfoBySyl && typeof charts.eventInfoBySyl === 'object' ? charts.eventInfoBySyl : {};
+    let delInfoTouched = false;
     for (const id of (Array.isArray(charts.deleted) ? charts.deleted : [])) {
-      if (!isBuiltinSylId(id) || !sylEntry(id) || orderedSylIds().length <= 1) continue;
+      if (!isBuiltinSylId(id)) continue;
+      /* its typed details come home with it, whatever happens to the chart */
+      if (delInfo[id]) {
+        const shipped = x => shippedDetails(EVENT_INFO, EVENT_INFO_BY_SYL, builtinBaseOf(id), x);
+        const merged = mergeBlock(eventInfo[id], delInfo[id], shipped);
+        if (Object.keys(merged).length) eventInfo[id] = merged; else delete eventInfo[id];
+        delInfoTouched = true;
+      }
+      if (!sylEntry(id) || orderedSylIds().length <= 1) continue;
       const nm = sylName(id);
       if (curSylId() === id) await switchSylNow(firstOtherSylId(id));
       trkGesture(() => {
@@ -5591,6 +5659,7 @@ export async function importClick() {
       });
       keptDeleted.push(nm);
     }
+    if (delInfoTouched) await saveEventInfo();
     if (keptDeleted.length) refreshSyl();
     const fileIds = charts.order.filter(id => (charts.syllabi || {})[id]);
     if (fileIds.length > 1) {
