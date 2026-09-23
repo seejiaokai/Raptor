@@ -30,6 +30,8 @@ actioned).
 
 **D77** — leave the phone resize corner: on a phone the window moves but does not resize. Recorded
 in `DECISIONS.md`, the window's section of `raptor-port/docs/ui-contracts.md`, and `OUTSTANDING.md`.
+**D85 + D86** — `[HUMAN-RETEST]` starts with the Tracker, and the amendment system runs beside it in
+parallel. Recorded in `DECISIONS.md` and `OUTSTANDING.md` [HUMAN-RETEST].
 
 ## Next: `[HUMAN-RETEST]`, two chats in parallel (D85, D86)
 
