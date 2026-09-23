@@ -2867,7 +2867,35 @@ function padBoard() {
   boardPad = { x, y };
   w.style.padding = `${(y / z).toFixed(2)}px ${(x / z).toFixed(2)}px`;
 }
-/* Anchored at the middle of the current view, the same way pinch zoom anchors
+/* The anchor maths every zoom of the flow chart shares — the + / − buttons and
+   the pinch. It used to be written twice, and when the slack above arrived
+   (9 Sep 26) only the buttons' copy learned about it: the pinch still treated
+   the chart as starting at the board's very corner, so its anchor landed the
+   board's padding plus half a view below-right of the fingers and the chart
+   ran off up-left (owner, 23 Sep 26: "does not follow where my fingers open or
+   close"; 807px on a phone going 40% → 133%). One body now, two callers.
+   Where the chart's own top-left corner sits, in screen pixels from the board's
+   outer edge with the board scrolled to 0,0: border, padding, then the slack. */
+function chartOrigin(board) {
+  const cs = getComputedStyle(board);
+  return { x: board.clientLeft + (parseFloat(cs.paddingLeft) || 0) + boardPad.x,
+           y: board.clientTop + (parseFloat(cs.paddingTop) || 0) + boardPad.y };
+}
+/* The chart point (unzoomed chart pixels) under a screen point given in
+   pixels from the board's outer edge. */
+function chartPointAt(board, sx, sy) {
+  const o = chartOrigin(board);
+  return { x: (board.scrollLeft + sx - o.x) / flowZoom, y: (board.scrollTop + sy - o.y) / flowZoom };
+}
+/* Scroll so chart point c sits under screen point (sx, sy) at the zoom now in
+   force. Runs AFTER applyFlowZoom: the slack can change with the zoom (the
+   sideways half exists only once the chart is wider than the board). */
+function placeChartPoint(board, c, sx, sy) {
+  void board.scrollWidth; /* force reflow, or the new scroll range is stale and clamps */
+  const o = chartOrigin(board);
+  board.scrollLeft = o.x + c.x * flowZoom - sx; board.scrollTop = o.y + c.y * flowZoom - sy;
+}
+/* Anchored at the middle of the current view, the same way a pinch anchors
    under the fingers. Without the scroll correction, CSS zoom rescales the whole
    page under an unchanged scroll position and the viewport lands on a different
    part of the chart. */
@@ -2875,13 +2903,10 @@ export function setFlowZoom(z) {
   zoomIsMine = true;
   const board = document.getElementById('board');
   if (board && !arrangeMode && flowZoom > 0) {
-    const ox = board.clientWidth / 2, oy = board.clientHeight / 2;
-    /* boardPad is screen-constant slack, so take it off before dividing by the
-       zoom and put the fresh one back after (padBoard runs inside applyFlowZoom). */
-    const cx = (board.scrollLeft + ox - boardPad.x) / flowZoom, cy = (board.scrollTop + oy - boardPad.y) / flowZoom;
+    const sx = board.clientLeft + board.clientWidth / 2, sy = board.clientTop + board.clientHeight / 2;
+    const c = chartPointAt(board, sx, sy);
     flowZoom = z; applyFlowZoom();
-    void board.scrollWidth; /* force reflow, or the new scroll range is stale and clamps */
-    board.scrollLeft = boardPad.x + cx * z - ox; board.scrollTop = boardPad.y + cy * z - oy;
+    placeChartPoint(board, c, sx, sy);
   } else { flowZoom = z; applyFlowZoom(); }
   notify();
 }
@@ -3062,7 +3087,7 @@ function wireBoard() {
     svg.style.cursor = 'grab';
     svg.addEventListener('wheel', e => {
       e.preventDefault();
-      const r = svg.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top;
+      const o = canvasOrigin(), mx = e.clientX - o.x, my = e.clientY - o.y;
       const f = Math.pow(1.0015, -e.deltaY); const k2 = Math.min(4, Math.max(0.1, view.k * f));
       view.x = mx - (mx - view.x) * (k2 / view.k); view.y = my - (my - view.y) * (k2 / view.k); view.k = k2; schedView();
     }, { passive: false });
@@ -3074,7 +3099,20 @@ function wireBoard() {
   enableHScroll(document.getElementById('board'));
   enablePinchZoom(document.getElementById('board'));   /* two-finger zoom, both modes */
 }
-/* Two-finger pinch zoom on the flow chart. */
+/* Where Edit chart layout's canvas starts on screen: the SVG's own box, inside
+   its border. The view transform (view.x / view.y) is measured from here. The
+   wheel always measured from the SVG; the pinch measured from the board, a
+   padding and a border away, so its anchor missed by that much times the zoom
+   change (180px on a phone). */
+function canvasOrigin() {
+  const svg = document.getElementById('flowSvg'); if (!svg) return { x: 0, y: 0 };
+  const r = svg.getBoundingClientRect(), cs = getComputedStyle(svg);
+  return { x: r.left + (parseFloat(cs.borderLeftWidth) || 0), y: r.top + (parseFloat(cs.borderTopWidth) || 0) };
+}
+/* Two-finger pinch zoom on the flow chart. The chart point under the fingers
+   when the second one lands stays under their midpoint for the whole gesture
+   — so fingers that drift or slide while pinching carry the chart with them,
+   the way a map does, instead of zooming about the spot they started on. */
 let pinching = false;
 function enablePinchZoom(el) {
   if (!el || el.__pinch) return; el.__pinch = true;
@@ -3085,12 +3123,16 @@ function enablePinchZoom(el) {
     if (e.pointerType === 'mouse') return;
     pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pts.size === 2) {
-      const a = [...pts.values()], r = el.getBoundingClientRect(), m = mid(a);
+      const a = [...pts.values()], m = mid(a);
       pinching = true; perfOn();
-      start = { d: dist(a) || 1, m,
-        k: view.k, vx: view.x, vy: view.y,
-        z: flowZoom, sl: el.scrollLeft, st: el.scrollTop,
-        ox: m.x - r.left, oy: m.y - r.top };
+      start = { d: dist(a) || 1, k: view.k, z: flowZoom };
+      if (arrangeMode) {
+        start.o = canvasOrigin();
+        start.p = { x: (m.x - start.o.x - view.x) / view.k, y: (m.y - start.o.y - view.y) / view.k };
+      } else {
+        start.r = el.getBoundingClientRect();
+        start.c = chartPointAt(el, m.x - start.r.left, m.y - start.r.top);
+      }
     }
   }, { passive: false });
   el.addEventListener('pointermove', e => {
@@ -3098,19 +3140,17 @@ function enablePinchZoom(el) {
     pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pts.size !== 2 || !start) return;
     e.preventDefault();
-    const a = [...pts.values()];
+    const a = [...pts.values()], m = mid(a);
     const f = (dist(a) || 1) / start.d;
     if (arrangeMode) {
       const k2 = Math.min(4, Math.max(0.1, start.k * f));
       view.k = k2;
-      view.x = start.ox - (start.ox - start.vx) * (k2 / start.k);
-      view.y = start.oy - (start.oy - start.vy) * (k2 / start.k);
+      view.x = m.x - start.o.x - start.p.x * k2;
+      view.y = m.y - start.o.y - start.p.y * k2;
       schedView();
     } else {
-      const z2 = Math.min(3, Math.max(0.1, +(start.z * f).toFixed(3)));
-      const cx = (start.sl + start.ox) / start.z, cy = (start.st + start.oy) / start.z;
-      flowZoom = z2; applyFlowZoom();
-      el.scrollLeft = cx * z2 - start.ox; el.scrollTop = cy * z2 - start.oy;
+      flowZoom = Math.min(3, Math.max(0.1, +(start.z * f).toFixed(3))); applyFlowZoom();
+      placeChartPoint(el, start.c, m.x - start.r.left, m.y - start.r.top);
     }
   }, { passive: false });
   const drop = e => {

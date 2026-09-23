@@ -509,3 +509,18 @@ code separately from its output, and never let the same line that runs a gate al
 **Suggested improvement:** In §5: "Run the surface's own suite after EACH fix round, not once at the end. And when a fix removes or gates a door, search for every sentence on screen that names that door (the roll-call's 'what else points here' column)."
 
 **Principle:** A fix that closes a door must find every hint that still points through it; run the whole surface's suite after each round so two correct fixes cannot quietly contradict.
+
+### Observation 218: A gesture check must measure what the person sees, not that a value changed
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** The owner's live report the evening the Tracker [HUMAN-RETEST] merged: "the zoom does not follow where my fingers open or close". The FULL-tier walk had pinched in Edit chart layout and passed it. (Numbered past main's highest, #217; a parallel branch may hold the same number — renumber on merge, rule 4.)
+**Skill:** raptor-port/docs/bug-check-order.md (§7 the walk; §4 the door check for a gesture)
+**Type:** open-source
+**Phase/Area:** the walk — what a gesture step asserts
+
+**Issue:** The walk's pinch step recorded "the pinch zooms (100% → 147%)" and passed. The zoom was aimed 800px away from the fingers on a phone — the bug was in WHERE it zoomed, which the step never measured. Nobody had driven two fingers at all in the normal chart view, because two-finger input looked hard to script; it is one CDP call (Input.dispatchTouchEvent with two touchPoints) and gives real pointer events.
+
+**Suggested improvement:** In §7: "A gesture step asserts the EFFECT a person sees, in screen terms, not that a value moved: for a zoom, the thing under the fingers stays under them (measure its on-screen position before and after, against where the fingers end); for a drag, the thing follows the finger. Drive multi-finger gestures for real (CDP touch points), in BOTH modes a surface has." Add the pinch driver (scripts/handpass/trk-pinch.mjs) as the worked example.
+
+**Principle:** "Did the value change?" passes a gesture that goes to the wrong place; assert the relationship the user relies on (under the finger stays under the finger), measured on screen.

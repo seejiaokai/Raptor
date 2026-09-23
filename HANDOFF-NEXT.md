@@ -3,6 +3,15 @@
 **Pick `main` in the new-chat picker.** Before acting: `git fetch`, `gh run list --branch main --limit 3` — the
 Tracker merge's own check run on his PC may still have been going when this was written; confirm it went green.
 
+## The Tracker pinch fix — MERGED on his "merge live" (23 Sep 26, night)
+
+His report from the live app: the chart's pinch zoom did not follow his fingers ("off to the top left"). Fixed
+on `claude/tracker-pinch-anchor` (one anchor body for the pinch and the + / − buttons), walked on phone /
+sideways / tablet, gates green, merged on his "merge live" after the PC's checks. Sheet:
+`raptor-port/docs/handpass/2026-09-23-tracker-pinch.md`. Filed from it: `[TRK-PINCH-DRAGS-BALL]` (the next
+Tracker job, FULL tier), `[TRK-EDIT-SIDEWAYS]`, `[TRK-TAP-AFTER-DRAG]` (asked him whether he has seen it on
+his phone — not answered yet; ask again before working on it).
+
 ## The Tracker `[HUMAN-RETEST]` — DONE and merged (23 Sep 26)
 
 Branch `claude/tracker-human-retest-8d3411`, merged to `main` on his "merge live" after his look on its Vercel
