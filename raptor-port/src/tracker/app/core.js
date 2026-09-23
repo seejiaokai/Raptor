@@ -749,43 +749,37 @@ function layoutNodeCount(lay) {
   for (const k in lay) { if (k.indexOf('__') === 0) continue; const v = lay[k]; if (v && typeof v.x === 'number' && typeof v.y === 'number') n++; }
   return n;
 }
-/* Pick the built-in default layout that shares the most event IDs with the current SYL. */
-function bestDefaultLayout() {
-  const ids = new Set(SYL.map(e => e.id)); let best = null, bestN = 0;
+/* Pick the built-in default layout that shares the most event IDs with a chart's
+   events (the one on screen by default). */
+function bestDefaultLayout(evs) {
+  const ids = new Set((evs || SYL).map(e => e.id)); let best = null, bestN = 0;
   for (const k in DEFAULT_LAYOUTS) { const dl = DEFAULT_LAYOUTS[k]; if (!dl) continue; let n = 0; for (const id in dl) if (ids.has(id)) n++; if (n > bestN) { bestN = n; best = dl; } }
   return best;
 }
-/* Build a COMPLETE {id:{x,y}} for every event in the current SYL. */
-async function snapshotLayout(srcId) {
-  const out = {}; let saved = null;
-  try { const r = await sGet(kLayoutFor(course, srcId)); if (r) saved = JSON.parse(r); } catch (_) {}
-  const own = defaultLayoutOf(srcId), borrow = bestDefaultLayout();
-  const auto = computeFlow().pos;
-  SYL.forEach(e => {
-    const id = e.id;
-    const p = (layout && layout[id]) || (saved && saved[id]) || (own && own[id]) || (borrow && borrow[id]) || auto[id] || { x: 60, y: 60 };
-    out[id] = { x: p.x, y: p.y };
-  });
-  /* carry over line-routing metadata so arrows/merges/fonts copy too */
-  if (layout && layout.__edgeMeta) out.__edgeMeta = JSON.parse(JSON.stringify(layout.__edgeMeta));
-  if (layout && layout.__merges) out.__merges = JSON.parse(JSON.stringify(layout.__merges));
-  if (layout && layout.__unmerges) out.__unmerges = JSON.parse(JSON.stringify(layout.__unmerges));
-  if (layout && layout.__font) out.__font = JSON.parse(JSON.stringify(layout.__font));
-  if (layout && layout.__lines) out.__lines = JSON.parse(JSON.stringify(layout.__lines));
-  if (layout && layout.__derived) out.__derived = JSON.parse(JSON.stringify(layout.__derived));
-  return out;
-}
-/* Like snapshotLayout(), but for ANY syllabus: takes the event list rather than
-   reading the live SYL, so a file can carry syllabi that are not on screen. */
+/* Build a COMPLETE {id:{x,y}} for every event in the current SYL — the
+   duplicate's copy. The same rule as an export, so a copy lands where the board
+   drew the original. */
+async function snapshotLayout(srcId) { return layoutSnapshotFor(srcId, SYL); }
+/* EVERY ball's place, for ANY chart — on screen or not — by THE BOARD'S OWN
+   RULE (nodePos): a place the user gave it; else the built-in's own course map
+   (a custom chart borrows the built-in map that shares the most of its events);
+   else the automatic flow. A chart that is not on screen used to have no map to
+   borrow and no automatic flow, so every ball it had never dragged was written
+   at 60,60 and came back stacked in one corner after export → wipe → import;
+   one on screen fell back to the automatic flow while the board drew the
+   borrowed map, so a ↺ Reset copy came back re-laid ([HUMAN-RETEST] W1-3, the
+   D120 route). */
 export async function layoutSnapshotFor(sylId, events) {
   const out = {};
   let saved = null;
   try { const r = await sGet(kLayoutFor(course, sylId)); if (r) saved = JSON.parse(r); } catch (_) {}
   const own = defaultLayoutOf(sylId);
   const live = (sylId === curSylId() && layout) ? layout : null;
-  const auto = (sylId === curSylId()) ? computeFlow().pos : {};
-  (events || []).forEach(e => {
-    const p = (live && live[e.id]) || (saved && saved[e.id]) || (own && own[e.id])
+  const evs = JSON.parse(JSON.stringify(events || []));      /* computeFlow scribbles on what it is given */
+  const map = own || bestDefaultLayout(evs);
+  const auto = computeFlow(evs).pos;
+  evs.forEach(e => {
+    const p = (live && live[e.id]) || (saved && saved[e.id]) || (map && map[e.id])
       || auto[e.id] || { x: 60, y: 60 };
     out[e.id] = { x: p.x, y: p.y };
   });
@@ -2000,8 +1994,11 @@ function ballGroup(ev, available) {
   <text class="${dark}" x="${cx}" y="${cy + 3}" text-anchor="middle" style="font-size:${ballFontFor(ev.id)}px">${label}</text></g>${num}${cap}</g>`;
 }
 
-/* Continuous top-to-bottom flow following the real prerequisite graph. */
-function computeFlow() {
+/* Continuous top-to-bottom flow following the real prerequisite graph. Takes
+   any chart's events (the one on screen by default) so an export can place a
+   chart that is not on screen exactly as the board would ([HUMAN-RETEST] W1-3). */
+function computeFlow(evs) {
+  const EV = evs || SYL; const by = {}; EV.forEach(e => { by[e.id] = e; });
   const COL = 84, ROW = 92, R = 29;
   const level = {};
   /* `busy` breaks prerequisite loops. Without it a chart where A waits for B
@@ -2014,26 +2011,26 @@ function computeFlow() {
   function lvl(id) {
     if (level[id] != null) return level[id];
     if (busy[id]) return 0;
-    const e = byid[id]; if (!e) return 0;
-    const ps = (e.prereqs || []).filter(p => byid[p]); if (!ps.length) return level[id] = 0;
+    const e = by[id]; if (!e) return 0;
+    const ps = (e.prereqs || []).filter(p => by[p]); if (!ps.length) return level[id] = 0;
     busy[id] = 1;
     let m = 0; ps.forEach(p => { m = Math.max(m, lvl(p) + 1); });
     delete busy[id];
     return level[id] = m;
   }
-  SYL.forEach(e => lvl(e.id));
+  EV.forEach(e => lvl(e.id));
   // place root 'feeder' events (no prereqs but feed a mid-chain node) just above what they feed
-  const _kids = {}; SYL.forEach(e => (e.prereqs || []).forEach(p => { if (byid[p]) (_kids[p] = _kids[p] || []).push(e.id); }));
-  SYL.forEach(e => { if ((e.prereqs || []).filter(p => byid[p]).length === 0) { const ch = _kids[e.id] || []; if (ch.length) { level[e.id] = Math.max(0, Math.min(...ch.map(c => level[c])) - 1); } } });
+  const _kids = {}; EV.forEach(e => (e.prereqs || []).forEach(p => { if (by[p]) (_kids[p] = _kids[p] || []).push(e.id); }));
+  EV.forEach(e => { if ((e.prereqs || []).filter(p => by[p]).length === 0) { const ch = _kids[e.id] || []; if (ch.length) { level[e.id] = Math.max(0, Math.min(...ch.map(c => level[c])) - 1); } } });
   const byLevel = {}; let maxL = 0;
-  SYL.forEach(e => { const L = level[e.id]; (byLevel[L] = byLevel[L] || []).push(e); maxL = Math.max(maxL, L); });
+  EV.forEach(e => { const L = level[e.id]; (byLevel[L] = byLevel[L] || []).push(e); maxL = Math.max(maxL, L); });
   const slot = {};
   Object.keys(byLevel).forEach(L => { byLevel[L].sort((a, b) => a.seq - b.seq); byLevel[L].forEach((e, i) => slot[e.id] = i); });
-  const kids = {}; SYL.forEach(e => (e.prereqs || []).forEach(p => { if (byid[p]) (kids[p] = kids[p] || []).push(e.id); }));
+  const kids = {}; EV.forEach(e => (e.prereqs || []).forEach(p => { if (by[p]) (kids[p] = kids[p] || []).push(e.id); }));
   for (let pass = 0; pass < 8; pass++) {
     for (let L = 1; L <= maxL; L++) {
       const arr = byLevel[L] || [];
-      arr.forEach(e => { const ps = (e.prereqs || []).filter(p => byid[p]).map(p => slot[p]); e._b = ps.length ? ps.reduce((x, y) => x + y, 0) / ps.length : slot[e.id]; });
+      arr.forEach(e => { const ps = (e.prereqs || []).filter(p => by[p]).map(p => slot[p]); e._b = ps.length ? ps.reduce((x, y) => x + y, 0) / ps.length : slot[e.id]; });
       arr.sort((a, b) => a._b - b._b || a.seq - b.seq); arr.forEach((e, i) => slot[e.id] = i);
     }
     for (let L = maxL - 1; L >= 0; L--) {

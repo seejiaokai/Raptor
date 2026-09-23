@@ -363,6 +363,41 @@ describe('[HUMAN-RETEST] the Tracker — event details belong to their chart (ro
     C.closeShowAll(); sa.remove()
   })
 
+  it('W1-3 (D120) — balls never dragged are exported where the board draws them, on screen or off, never stacked in one corner', async () => {
+    await on(y26())
+    /* what the board draws, read off the drawn chart */
+    const drawn = () => Object.fromEntries([...document.querySelectorAll('#flowSvg .ball')].map(g => {
+      const m = /translate\(([-\d.]+),([-\d.]+)\)/.exec(g.getAttribute('transform') || '')!
+      return [(g as HTMLElement).dataset.id, { x: Math.round(+m[1] + 29), y: Math.round(+m[2] + 29) }]
+    }))
+    /* the board prints each place to a tenth of a pixel, off the ball's corner: within 1px is the same place */
+    const far = (lay: any, want: any) => Object.keys(want).filter(id => !lay[id] || Math.abs(lay[id].x - want[id].x) > 1 || Math.abs(lay[id].y - want[id].y) > 1)
+    /* 1 — a chart filled through the event list, nothing dragged */
+    const p = C.addSyl(); await answer('SKETCH W13'); await p; await C.whenLoaded()
+    const sk = C.curSylId()
+    expect(await C.saveSylText(JSON.stringify([{ id: 'SK-01', type: 'acad' }, { id: 'SK-02', type: 'flight', prereqs: ['SK-01'] }]))).toBeNull()
+    await C.saveChangesClick()
+    const onScreen = drawn()
+    await on(y26())
+    const off = (await C.collectCharts([sk])).layouts[sk]
+    expect(off['SK-01'], 'not both in one corner').not.toEqual(off['SK-02'])
+    expect(far(off, { 'SK-01': onScreen['SK-01'], 'SK-02': onScreen['SK-02'] }), 'exported off screen = where the board drew them').toEqual([])
+    await on(sk); const d1 = C.delSyl(); await answer(true); await d1; await C.whenLoaded()
+    /* 2 — a copy of 2026 put back to the course map with ↺ Reset layout */
+    await on(y26())
+    const q = C.dupSyl(); await answer('RESET W13'); await q; await C.whenLoaded()
+    const rc = C.curSylId()
+    C.toggleArrange(); const r = C.resetLayoutClick(); await answer(true); await r; C.toggleArrange()
+    if (C.sylDirty) await C.saveChangesClick()
+    const board = drawn()
+    const live = (await C.collectCharts([rc])).layouts[rc]
+    expect(far(live, board), 'on screen: the file holds the course map the board shows, not the automatic layout').toEqual([])
+    await on(y26())
+    const away = (await C.collectCharts([rc])).layouts[rc]
+    expect(far(away, board), 'off screen: the same').toEqual([])
+    await on(rc); const d2 = C.delSyl(); await answer(true); await d2; await C.whenLoaded()
+  })
+
   it('re-walk R-1 — Save changes after a fonts-only edit does not mark an untouched built-in "✎ edited" (the F7 rule at its second writer)', async () => {
     await on(ag())
     expect(C.sylHasOwnDef(ag()), 'the premise: untouched').toBe(false)
