@@ -1102,6 +1102,10 @@ These four are what was deliberately left:
 
 ### [REPO-PRIVATE] Make the repo private and share it with developers — HALF DONE 23 Sep 26 (D59)
 
+**23 Sep 26, later (D88): he said "I'll make it public for now"** — for GitHub's free 4-core machines
+(`[CI-TWO-CORES]`). Flagged before the switch: 146 old branches on GitHub still carry the D58 unit
+designation IN THEIR FILES (the page title), and `main`'s history holds it in 14 commits.
+
 **DONE, BY HIM, 23 Sep 26 (D59): THE REPO IS PRIVATE**, reversing his own *"nvm disregard this
 first"* the same day after a check found the unit named in the app. Pages is GONE (API 404), so the
 publish job in `.github/workflows/deploy.yml` is OFF — it would fail every push and still bill —
