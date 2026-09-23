@@ -202,6 +202,17 @@ FILLED IN BELOW.
 - **A zoom chosen in Edit chart layout is now the user's own** (as a pinch or + / − already was): without it, the
   next redraw on a phone snapped it back to fit (M5).
 
-## 12. His look (the branch's Vercel preview, on his phone)
+## 12. His look — WAIVED for the merge by D133; the card, for the live app
 
-FILLED IN BELOW.
+**D133 (24 Sep 26, going to sleep):** *"For this session only after u are done u can merge live."* The merge goes
+ahead without his look, once everything above is green and both reads are dealt with — flagged to him that this
+skips the look. The card stays here so he can do it on the live app, and anything that is not what he meant is a
+quick follow-up:
+
+1. Tracker → Syllabus ✎ → Edit chart layout. Put one finger on a ball and pinch → the chart zooms; the ball stays put,
+   ↶ does not light, nothing is saved.
+2. Same with ▣ Select all first → nothing moves. With ╱ Line → no line is drawn. With 🗑 Delete, one finger on a
+   drawn line → the line stays.
+3. Pinch the canvas, then ✓ Done editing chart → the part of the chart that was in the middle is still in the middle.
+4. Now pinch the chart → it zooms normally; nothing shrinks or disappears off the left (his report).
+5. One finger alone still drags a ball, as before.

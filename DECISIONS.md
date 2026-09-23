@@ -24,6 +24,12 @@ ruling, or an explicit no. **Not** ordinary task instructions ("run the tests", 
 
 ---
 
+## 24 Sep 2026
+
+| # | His ruling, in his words where short enough | What it means | Where it lives now |
+|---|---|---|---|
+| D133 | *"For this session only after u are done u can merge live"* — said going to sleep (*"I'm going to sleep u have control"*), during the `[TRK-PINCH-DRAGS-BALL]` bug check; the same night: *"I'm running the raptor demo in the other chat, so the computer will be slightly slower, u have lesser priority in resources, once it's free then u can ramp up again if required"* | **A "MERGE LIVE" GIVEN IN ADVANCE, FOR THIS SESSION'S WORK ONLY** — branch `claude/tracker-pinch-drags-ball` (`[TRK-PINCH-DRAGS-BALL]` and his "the left side of the tracker chart is cut off" report). The agent merges it to `main` once it is DONE: every gate green on the final code, both code reads (Fable + Astra) done and every finding dispositioned, the walk re-run on the final code, no conflicts with `main`, and the PR's checks on his PC green. **It waives his five-minute look for this change** (bug-check order §12 "explicitly waived") — flagged to him in chat that it skips the look; the look card stays in the sheet for him to do on the live app. Heavy runs (the gates, the PR's checks on his PC) wait while the demo is using the PC (D125 restated). **Carries to no other branch and no later session** — D60's "ask before `main`" stands everywhere else | `raptor-port/docs/handpass/2026-09-23-tracker-pinch-ball.md` §12; `HANDOFF-NEXT.md` |
+
 ## 23 Sep 2026
 
 | # | His ruling, in his words where short enough | What it means | Where it lives now |
