@@ -95,7 +95,8 @@ function endSession() {
   infoId = null; editId = null; ordMode = null; sylModalOpen = false; showAllOpen = false; copyOpen = false;
   showDetails = false; hideDetailBubble();
   if (arrangeMode) {
-    arrangeMode = false; connectSrc = null; drawing = null; selBalls = new Set(); tool = 'move';
+    /* `view` is the editing canvas's pan and zoom: it stays in Edit chart layout */
+    arrangeMode = false; connectSrc = null; drawing = null; selBalls = new Set(); tool = 'move'; view = { x: 0, y: 0, k: 1 };
     if (sylDirty) setSaveStatus('unsaved flow edits — hit “Save changes”', 'saving');
   }
   hintFlash = null;
@@ -2760,20 +2761,6 @@ export function fitView() {
   const cw = board.clientWidth - 24, ch = board.clientHeight - 24;
   view.k = Math.min(cw / b.W, ch / b.H, 1.4); view.x = (cw - b.W * view.k) / 2; view.y = 8; applyView();
 }
-/* --- keep the view steady when toggling Arrange --- */
-function captureViewFromScroll() {
-  const board = document.getElementById('board'); if (!board) return;
-  view.k = flowZoom;
-  view.x = -board.scrollLeft;
-  view.y = -board.scrollTop;
-}
-function restoreScrollFromView() {
-  const board = document.getElementById('board'); if (!board) return;
-  flowZoom = Math.min(3, Math.max(0.1, view.k));
-  applyFlowZoom();
-  board.scrollLeft = Math.max(0, -view.x);
-  board.scrollTop = Math.max(0, -view.y);
-}
 export function renderBoard() {
   const board = document.getElementById('board');
   if (!board) return;
@@ -2956,20 +2943,24 @@ function wireBoard() {
     const lh = document.querySelector('#flowSvg .linehandle');
     if (lh && selEdge) {
       lh.addEventListener('pointerdown', e => {
+        if (pinching) return;   /* a second finger starts nothing: it is a pinch */
         e.stopPropagation();
         const key = selEdge; pushUndo();
         const mv = ev2 => { const pt = svgPt(ev2); edgeMeta[key] = { ...(edgeMeta[key] || {}), mid: { x: Math.round(pt.x), y: Math.round(pt.y) } }; schedDragPaint(); };
-        const up = () => { window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); markDirty(); saveLayout(); wireBoard(); };
-        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up);
+        const stop = () => { window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); };
+        const up = () => { fingerStop = null; stop(); markDirty(); saveLayout(); wireBoard(); };
+        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); fingerStop = stop;
       });
     }
     /* drag a line end onto a blue N/E/S/W point to snap / reconnect */
     document.querySelectorAll('#flowSvg .endhandle').forEach(h => {
       h.addEventListener('pointerdown', e => {
+        if (pinching) return;
         e.stopPropagation(); const end = h.dataset.end;
         const mv = ev2 => { const pt = svgPt(ev2); h.setAttribute('cx', pt.x.toFixed(1)); h.setAttribute('cy', pt.y.toFixed(1)); highlightPort(pt); };
-        const up = ev2 => { window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); applyEndSnap(end, svgPt(ev2)); };
-        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up);
+        const stop = () => { window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); };
+        const up = ev2 => { fingerStop = null; stop(); applyEndSnap(end, svgPt(ev2)); };
+        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); fingerStop = stop;
       });
     });
     document.querySelectorAll('#flowSvg .linehit').forEach(h => {
@@ -2980,6 +2971,7 @@ function wireBoard() {
         if (insertBend(selLine, svgPt(e))) flashHint('Bend added — drag the blue square to shape it.');
       });
       h.addEventListener('pointerdown', e => {
+        if (pinching) return;
         if (tool === 'line' && drawing) return;
         if (tool === 'delball') { e.stopPropagation(); deleteLine(h.dataset.lid); return; }
         if (tool === 'merge' || tool === 'unmerge') { e.stopPropagation(); e.preventDefault(); mergeClick(lkey(h.dataset.lid)); return; }
@@ -2989,6 +2981,7 @@ function wireBoard() {
     });
     document.querySelectorAll('#flowSvg .lvert').forEach(h => {
       h.addEventListener('pointerdown', e => {
+        if (pinching) return;
         e.stopPropagation(); e.preventDefault();
         const id = h.dataset.lid, i = +h.dataset.i, L = lineById(id); if (!L) return;
         const P0 = L.pts.map(p => ({ x: p.x, y: p.y }));
@@ -3001,15 +2994,17 @@ function wireBoard() {
           if (i < p.length - 1) { if (nextV) p[i + 1].x = pt.x; else p[i + 1].y = pt.y; }
           p[i].x = pt.x; p[i].y = pt.y; refreshLine(id);
         };
+        const stop = () => { window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); };
         const up = () => {
-          window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up);
+          fingerStop = null; stop();
           if (moved) { pushUndo(); markDirty(); saveLayout(); } renderBoard();
         };
-        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up);
+        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); fingerStop = stop;
       });
     });
     document.querySelectorAll('#flowSvg .lend').forEach(h => {
       h.addEventListener('pointerdown', e => {
+        if (pinching) return;
         e.stopPropagation(); e.preventDefault();
         const id = h.dataset.lid, i = +h.dataset.i, L = lineById(id); if (!L) return;
         const first = (i === 0), key = first ? 'a' : 'b';
@@ -3024,8 +3019,9 @@ function wireBoard() {
           h.setAttribute('cx', pt.x.toFixed(1)); h.setAttribute('cy', pt.y.toFixed(1));
           highlightPort(pt);
         };
+        const stop = () => { window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); };
         const up = ev2 => {
-          window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up);
+          fingerStop = null; stop();
           pushUndo();
           const pt = svgPt(ev2), sn = snapAnchor(pt, id);
           const dst = sn ? { x: sn.x, y: sn.y } : pt;
@@ -3035,7 +3031,7 @@ function wireBoard() {
           markDirty(); saveLayout(); renderBoard(); renderSide();
           flashHint(made.length ? ('Linked ' + made.join(', ')) : (sn ? 'End connected.' : 'End left loose — nothing linked yet.'));
         };
-        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up);
+        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); fingerStop = stop;
       });
     });
   } else {
@@ -3044,6 +3040,7 @@ function wireBoard() {
   if (arrangeMode) {
     /* arrange: pan the viewport transform, wheel to zoom */
     svg.addEventListener('pointerdown', e => {
+      if (pinching) return;   /* the second finger of a pinch: no pan, no box, no line end */
       if (tool === 'line') {
         if (e.target.closest('.lend') || e.target.closest('.lvert')) return;
         e.preventDefault(); e.stopPropagation();
@@ -3073,12 +3070,13 @@ function wireBoard() {
     });
     installGlobalPan();
     svg.addEventListener('pointermove', e => {
+      if (pinching) { pan = null; return; }   /* pinching fingers neither pan nor steer a half-drawn line */
       if (tool === 'line' && drawing) {
         const cp = svgPt(e); const c0 = drawing.pts[0];
         if (Math.abs(cp.x - c0.x) < 12) cp.x = c0.x; else if (Math.abs(cp.y - c0.y) < 12) cp.y = c0.y;
         drawing.cur = cp; refreshPreview(); highlightPort(cp); return;
       }
-      if (pinching) { pan = null; return; } if (!pan) return;
+      if (!pan) return;
       view.x = pan.vx + (e.clientX - pan.x0); view.y = pan.vy + (e.clientY - pan.y0); schedView();
     });
     const endPan = () => { if (pan) flushView(); pan = null; svg.style.cursor = 'grab'; perfOff(); };
@@ -3109,10 +3107,71 @@ function canvasOrigin() {
   const r = svg.getBoundingClientRect(), cs = getComputedStyle(svg);
   return { x: r.left + (parseFloat(cs.borderLeftWidth) || 0), y: r.top + (parseFloat(cs.borderTopWidth) || 0) };
 }
+/* Edit chart layout's twin of chartPointAt / placeChartPoint: its canvas pans
+   and zooms by `view` instead of by scrolling. Points in client pixels; `o` is
+   canvasOrigin(), passed in when the caller already holds it. */
+function canvasPointAt(cx, cy, o = canvasOrigin()) { return { x: (cx - o.x - view.x) / view.k, y: (cy - o.y - view.y) / view.k }; }
+function placeCanvasPoint(c, cx, cy, o = canvasOrigin()) { view.x = cx - o.x - c.x * view.k; view.y = cy - o.y - c.y * view.k; }
+
+/* [TRK-PINCH-DRAGS-BALL] (23 Sep 26) — a pinch starts with ONE finger, and in
+   Edit chart layout one finger acts the moment it lands: it picks a ball (or a
+   selected group) up and moves it, starts a selection box, starts or finishes a
+   drawn line, grabs a line's handle, and with Delete or Merge acts on a drawn
+   line on the spot. So every pinch that began on a ball dragged it — the ball
+   moved, an undo step appeared and the move saved itself (F-B of
+   docs/handpass/2026-09-23-tracker-pinch.md). The second finger says the person
+   meant to zoom, so it takes all of that back: the chart, its stored layout,
+   both undo lists, ✓ Save changes, the selection and a half-drawn line return
+   to how they were the moment the first finger landed. A pan is not taken back
+   — it changes nothing, and the zoom anchors on the view it left. Walked:
+   docs/handpass/2026-09-23-tracker-pinch-ball.md.
+   `firstFinger` is that moment; `fingerStop` ends the gesture the first finger
+   started (its listeners and in-flight state) — each such gesture sets it when
+   it begins and clears it when it ends. The only store write a first finger can
+   make here is the chart's layout (a drag saves on its drop, which the pinch
+   stops; Delete, Merge and a finished line save at once), so that one key is
+   put back — deleted again if it was not stored before. */
+let firstFinger = null, fingerStop = null;
+function holdFirstFinger() {
+  const k = kLayout();
+  firstFinger = { syl: JSON.stringify(SYL), lay: JSON.stringify(layout), key: k, had: k in mem, stored: mem[k],
+    undo: undoStack.slice(), redo: redoStack.slice(), dirty: sylDirty,
+    sel: [...selBalls].join('\u0000'), selLine, selEdge, mergeFirst, connectSrc, drawing: drawing ? JSON.stringify(drawing) : null };
+}
+function takeBackFirstFinger() {
+  const f = firstFinger, stop = fingerStop; firstFinger = null; fingerStop = null;
+  if (stop) stop();
+  pan = null;
+  if (!f) return;
+  const same = JSON.stringify(SYL) === f.syl && JSON.stringify(layout) === f.lay && sylDirty === f.dirty
+    && undoStack.length === f.undo.length && undoStack[undoStack.length - 1] === f.undo[f.undo.length - 1]
+    && redoStack.length === f.redo.length && redoStack[redoStack.length - 1] === f.redo[f.redo.length - 1]
+    && [...selBalls].join('\u0000') === f.sel && selLine === f.selLine && selEdge === f.selEdge
+    && mergeFirst === f.mergeFirst && connectSrc === f.connectSrc && (drawing ? JSON.stringify(drawing) : null) === f.drawing;
+  if (!same) {
+    /* the chart the way the Tracker's own undo restores one (applyHist) */
+    const sylChanged = JSON.stringify(SYL) !== f.syl;
+    SYL = JSON.parse(f.syl); byid = {}; SYL.forEach(e => byid[e.id] = e);
+    layout = JSON.parse(f.lay); loadEdgeMeta();
+    undoStack = f.undo; redoStack = f.redo; sylDirty = f.dirty;
+    selBalls = new Set(f.sel ? f.sel.split('\u0000') : []); selLine = f.selLine; selEdge = f.selEdge;
+    mergeFirst = f.mergeFirst; connectSrc = f.connectSrc; drawing = f.drawing ? JSON.parse(f.drawing) : null;
+    alignGuides = []; hintFlash = null;
+    /* a restore, not a new edit: off the command stream, like applyHist's save */
+    if ((f.key in mem) !== f.had || mem[f.key] !== f.stored)
+      trkRestoring(() => { if (f.had) sSet(f.key, f.stored); else delKey(f.key); });
+    renderBoard(); if (sylChanged) renderSide();
+  } else if (stop) renderBoard();   /* a handle or a box moved on screen only */
+}
+
 /* Two-finger pinch zoom on the flow chart. The chart point under the fingers
    when the second one lands stays under their midpoint for the whole gesture
    — so fingers that drift or slide while pinching carry the chart with them,
-   the way a map does, instead of zooming about the spot they started on. */
+   the way a map does, instead of zooming about the spot they started on.
+   The fingers are counted in the CAPTURE phase, so the pinch sees the second
+   finger before that finger's own ball, line or canvas handler runs — those
+   start nothing while `pinching` is on — and sees every finger even where a
+   handler stops the event (the Line tool and the line handles do). */
 let pinching = false;
 function enablePinchZoom(el) {
   if (!el || el.__pinch) return; el.__pinch = true;
@@ -3122,19 +3181,21 @@ function enablePinchZoom(el) {
   el.addEventListener('pointerdown', e => {
     if (e.pointerType === 'mouse') return;
     pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pts.size === 1 && arrangeMode) holdFirstFinger();
     if (pts.size === 2) {
       const a = [...pts.values()], m = mid(a);
       pinching = true; perfOn();
+      if (arrangeMode) takeBackFirstFinger();
       start = { d: dist(a) || 1, k: view.k, z: flowZoom };
       if (arrangeMode) {
         start.o = canvasOrigin();
-        start.p = { x: (m.x - start.o.x - view.x) / view.k, y: (m.y - start.o.y - view.y) / view.k };
+        start.p = canvasPointAt(m.x, m.y, start.o);
       } else {
         start.r = el.getBoundingClientRect();
         start.c = chartPointAt(el, m.x - start.r.left, m.y - start.r.top);
       }
     }
-  }, { passive: false });
+  }, { capture: true, passive: false });
   el.addEventListener('pointermove', e => {
     if (!pts.has(e.pointerId)) return;
     pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
@@ -3143,18 +3204,17 @@ function enablePinchZoom(el) {
     const a = [...pts.values()], m = mid(a);
     const f = (dist(a) || 1) / start.d;
     if (arrangeMode) {
-      const k2 = Math.min(4, Math.max(0.1, start.k * f));
-      view.k = k2;
-      view.x = m.x - start.o.x - start.p.x * k2;
-      view.y = m.y - start.o.y - start.p.y * k2;
+      view.k = Math.min(4, Math.max(0.1, start.k * f));
+      placeCanvasPoint(start.p, m.x, m.y, start.o);
       schedView();
     } else {
       flowZoom = Math.min(3, Math.max(0.1, +(start.z * f).toFixed(3))); applyFlowZoom();
       placeChartPoint(el, start.c, m.x - start.r.left, m.y - start.r.top);
     }
-  }, { passive: false });
+  }, { capture: true, passive: false });
   const drop = e => {
-    pts.delete(e.pointerId);
+    if (!pts.delete(e.pointerId)) return;   /* not a finger this board is counting */
+    if (!pts.size) firstFinger = null;
     if (pts.size < 2) {
       start = null;
       /* A pinch is the user taking the zoom over, the same as pressing + or −:
@@ -3162,7 +3222,13 @@ function enablePinchZoom(el) {
       if (pinching) { pinching = false; if (!arrangeMode) zoomIsMine = true; flushView(); perfOff(); notify(); }
     }
   };
-  el.addEventListener('pointerup', drop); el.addEventListener('pointercancel', drop); el.addEventListener('pointerleave', drop);
+  /* A lift is heard on the WINDOW: the element a finger landed on can be redrawn
+     away mid-gesture (the take-back above redraws the board), and a finger that
+     then lifts off the board would never reach it — a finger counted forever
+     turns every later single touch into a pinch. pointerleave stays a plain
+     listener on the board: it does not bubble, so in the capture phase it would
+     fire for every ball a finger slides off, mid-pinch. */
+  window.addEventListener('pointerup', drop, true); window.addEventListener('pointercancel', drop, true); el.addEventListener('pointerleave', drop);
 }
 /* Left/right scrolling for the flow board. */
 function enableHScroll(el) {
@@ -3273,11 +3339,13 @@ export async function addModule(type) {
 let groupDrag = null, marquee = null;
 function startMarquee(e, svg) {
   const p0 = svgPt(e); marquee = { x0: p0.x, y0: p0.y, rect: null }; try { svg.setPointerCapture(e.pointerId); } catch (_) {}
+  fingerStop = () => { svg.removeEventListener('pointermove', mv); svg.removeEventListener('pointerup', up); marquee = null; const gl = document.getElementById('bandLayer'); if (gl) gl.innerHTML = ''; };
   const mv = ev => {
     const p = svgPt(ev); const x = Math.min(marquee.x0, p.x), y = Math.min(marquee.y0, p.y), w = Math.abs(p.x - marquee.x0), h = Math.abs(p.y - marquee.y0); marquee.rect = { x, y, w, h };
     const gl = document.getElementById('bandLayer'); if (gl) gl.innerHTML = `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="rgba(54,194,255,0.12)" stroke="#36c2ff" stroke-width="0.8" stroke-dasharray="4 3"/>`;
   };
   const up = () => {
+    fingerStop = null;
     svg.removeEventListener('pointermove', mv); svg.removeEventListener('pointerup', up);
     const gl = document.getElementById('bandLayer'); if (gl) gl.innerHTML = '';
     const r = marquee && marquee.rect; marquee = null;
@@ -3292,6 +3360,7 @@ function startGroupDrag(ev) {
   const p = svgPt(ev), start = {}; selBalls.forEach(bid => { const bp = nodePos(bid); start[bid] = { x: bp.x, y: bp.y }; });
   groupDrag = { px: p.x, py: p.y, start, moved: false, snap: { syl: JSON.stringify(SYL), lay: JSON.stringify(layout) }, pushed: false }; try { g.setPointerCapture(ev.pointerId); } catch (e) {}
   g.addEventListener('pointermove', onGroupDrag); g.addEventListener('pointerup', endGroupDrag); g.addEventListener('pointercancel', endGroupDrag);
+  fingerStop = () => { g.removeEventListener('pointermove', onGroupDrag); g.removeEventListener('pointerup', endGroupDrag); g.removeEventListener('pointercancel', endGroupDrag); groupDrag = null; perfOff(); };
 }
 function onGroupDrag(ev) {
   if (!groupDrag) return; const p = svgPt(ev); const dx = p.x - groupDrag.px, dy = p.y - groupDrag.py;
@@ -3304,15 +3373,16 @@ function onGroupDrag(ev) {
   schedDragPaint();
 }
 function endGroupDrag(ev) {
-  if (!groupDrag) return; const g = ev.currentTarget;
+  if (!groupDrag) return; const g = ev.currentTarget; fingerStop = null;
   g.removeEventListener('pointermove', onGroupDrag); g.removeEventListener('pointerup', endGroupDrag); g.removeEventListener('pointercancel', endGroupDrag);
   const moved = groupDrag.moved; groupDrag = null; flushDragPaint(); perfOff(); if (moved) { saveLayout(); renderBoard(); }
 }
 function startDrag(ev) {
-  if (!arrangeMode) return; if (tool === 'select') { startGroupDrag(ev); return; } if (tool !== 'move') return;
+  if (!arrangeMode || pinching) return; if (tool === 'select') { startGroupDrag(ev); return; } if (tool !== 'move') return;
   ev.preventDefault(); const g = ev.currentTarget, id = g.dataset.id, p = svgPt(ev), cur = nodePos(id);
   drag = { id, g, dx: p.x - cur.x, dy: p.y - cur.y, moved: false, snap: { syl: JSON.stringify(SYL), lay: JSON.stringify(layout) }, pushed: false }; perfOn(); try { g.setPointerCapture(ev.pointerId); } catch (e) {}
   g.addEventListener('pointermove', onDrag); g.addEventListener('pointerup', endDrag); g.addEventListener('pointercancel', endDrag);
+  fingerStop = () => { g.removeEventListener('pointermove', onDrag); g.removeEventListener('pointerup', endDrag); g.removeEventListener('pointercancel', endDrag); drag = null; alignGuides = []; perfOff(); };
 }
 function onDrag(ev) {
   if (!drag) return; const p = svgPt(ev); let nx = p.x - drag.dx, ny = p.y - drag.dy;
@@ -3333,7 +3403,7 @@ function drawGuides() {
   gl.innerHTML = alignGuides.map(g => g.v ? `<line x1="${g.p}" y1="0" x2="${g.p}" y2="${bd.H}" stroke="#36c2ff" stroke-width="0.7" stroke-dasharray="4 4"/>` : `<line x1="0" y1="${g.p}" x2="${bd.W}" y2="${g.p}" stroke="#36c2ff" stroke-width="0.7" stroke-dasharray="4 4"/>`).join('');
 }
 function endDrag(ev) {
-  if (!drag) return; const g = drag.g;
+  if (!drag) return; const g = drag.g; fingerStop = null;
   g.removeEventListener('pointermove', onDrag); g.removeEventListener('pointerup', endDrag); g.removeEventListener('pointercancel', endDrag);
   const moved = drag.moved; drag = null; alignGuides = []; flushDragPaint(); const gl = document.getElementById('bandLayer'); if (gl) gl.innerHTML = ''; perfOff(); if (moved) { saveLayout(); wireBoard(); }
 }
@@ -4820,12 +4890,45 @@ export async function delSyl() {
   }
 }
 
+/* Going in and out of Edit chart layout keeps the point of the chart in the
+   middle of the board in the middle, at the same zoom — through the anchor
+   bodies the zoom uses (chartPointAt / placeChartPoint, canvasPointAt /
+   placeCanvasPoint). It used to copy the scroll into the canvas's pan and back,
+   blind to the slack round the chart (9 Sep 26): the chart jumped 216px going
+   in on a phone and landed elsewhere coming out. And it left the canvas's pan
+   and zoom (`view`) behind on the ordinary chart, where the next pinch painted
+   them on as a transform — the chart shrank below the zoom it showed and slid
+   under its left edge (owner, 23 Sep 26: "the left side of the tracker chart is
+   cut off"). Outside Edit chart layout `view` is the identity, always.
+   A zoom changed while editing is the user's own, as a pinch or + / − is
+   (zoomIsMine), or the next redraw on a phone snapped it back to fit.
+   The board itself moves at the switch — the tool strip lands above it (240px
+   on a phone) and the zoom bar below leaves — on React's next render, after
+   this returns; so the point is placed now and again once that has landed,
+   before the frame is painted (coming out, the slack is re-cut for the board's
+   new height first: cut for the old one, it left no room to centre a point
+   near the chart's top). */
 export function toggleArrange() {
-  arrangeMode = !arrangeMode;
-  /* Capture the framing FIRST (see original comments). */
-  if (arrangeMode) { captureViewFromScroll(); setTool('move'); renderBoard(); applyView(); }
-  else {
-    connectSrc = null; const keep = { x: view.x, y: view.y, k: view.k }; renderBoard(); view = keep; restoreScrollFromView();
+  const board = document.getElementById('board');
+  const mid = () => ({ x: board.clientLeft + board.clientWidth / 2, y: board.clientTop + board.clientHeight / 2 });   /* from the board's outer edge */
+  const midOnScreen = () => { const r = board.getBoundingClientRect(), m = mid(); return { x: r.left + m.x, y: r.top + m.y }; };
+  const settle = fn => { if (typeof requestAnimationFrame !== 'undefined') requestAnimationFrame(fn); };
+  if (!arrangeMode) {
+    const c = board && flowZoom > 0 ? chartPointAt(board, mid().x, mid().y) : null;
+    arrangeMode = true;
+    view = { x: 0, y: 0, k: flowZoom };
+    setTool('move'); renderBoard();
+    const place = () => { if (!c || !arrangeMode) return; const m = midOnScreen(); placeCanvasPoint(c, m.x, m.y); applyView(); };
+    place(); settle(place);
+  } else {
+    let c = null; if (board && document.getElementById('flowSvg')) { const m = midOnScreen(); c = canvasPointAt(m.x, m.y); }
+    const k = Math.min(3, Math.max(0.1, view.k)), was = flowZoom;
+    arrangeMode = false; connectSrc = null;
+    renderBoard();   /* the ordinary chart: renderBoard puts `view` back to the identity */
+    flowZoom = k; if (k !== was) zoomIsMine = true; applyFlowZoom();
+    /* the slack is half a view, so it is re-cut for the board's settled size first */
+    const place = () => { if (!c || arrangeMode) return; applyFlowZoom(); const m = mid(); placeChartPoint(board, c, m.x, m.y); };
+    place(); settle(place);
     if (sylDirty) setSaveStatus('unsaved flow edits — hit “Save changes”', 'saving');
   }
   notify();
