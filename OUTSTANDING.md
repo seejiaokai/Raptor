@@ -906,7 +906,7 @@ back at March the window regrows February within 160ms of the jump, the fill eng
 remembered width as exact, and on a touch screen skips the re-anchor "in motion" (`Matrix.tsx`,
 `!(inMotion && coarsePointer())`). February now draws 20px narrower, so March slides 20px left —
 one day at the phone's 0.8 zoom. A slower machine regrows after 160ms, gets re-anchored, passes.
-**NEXT CHAT, once this branch is merged (owner, D150). Fix (app, WALK tier, phone) — Astra's spec:** in `Matrix.tsx`'s fill
+**NEXT CHAT, on this same branch, BEFORE it merges (owner, D152 — supersedes D150's order). Fix (app, WALK tier, phone) — Astra's spec:** in `Matrix.tsx`'s fill
 effect, let a recent programmatic jump (`Date.now() - jumpAtRef.current < 1200`) override the
 coarse-pointer/in-motion suppression and take `anchorNow` before `setColWin` (and/or forget remembered
 widths when the row set changes) — without bringing back the fling-killing scroll write (30 Aug). Then
@@ -924,7 +924,8 @@ registered 23 Sep 26 by hand in an admin window; a Windows service is next). BUI
 `claude/lw-monthjump-phone`: the `pc` job in `deploy.yml` (one job, cmd shell, line endings as stored,
 e2e on 4273 / smoke on 4279), the old jobs behind `CI_ON_GITHUB`. Trials on the PC: every gate runs (~14 min
 green), and it exposes FAST-machine races the slow runner hid — the phone month test is red there until
-`[LW-MONTHJUMP-PHONE]` is fixed, so `CI_ON_GITHUB=true` was set 23 Sep 26 to merge; DELETE it after that fix.
+`[LW-MONTHJUMP-PHONE]` is fixed, so `CI_ON_GITHUB=true` was set 23 Sep 26; DELETE it after that fix. Astra's second
+read added: the PC runs only HIS OWN changes in a PRIVATE repo, and the runner never as Administrator.
 
 ### [LW-HBAR-RESYNC] The Leave War bottom scrollbar is left out of step after a drag (23 Sep 26)
 

@@ -183,7 +183,7 @@ None of these gate a tracker- or storage-only change.
 
 ## In flight
 
-**LIVE THREAD (23 Sep 26): `[ALL-AVAIL-WINDOW]` and `[DOCS-GUARD]` are LIVE on `main` (23 Sep 26); `[HUMAN-RETEST]` is next — read `HANDOFF-NEXT.md` first. EVERYTHING BELOW THIS LINE IN §In flight HAS MERGED (PR #424, #425) and is history awaiting `[DOC-TRIM]` — do not act on it.** Was: **[OIL-AUTO-REMOVE] + [ALL-AVAIL-REDEF] — BUILT + BUG-CHECKED 21 Sep 26, HELD for "merge live".**
+**LIVE THREAD (23 Sep 26): PR #428 `claude/lw-monthjump-phone` is OPEN and NOT merged (D152) — read `HANDOFF-NEXT.md` first.** It carries the D87 test fixes, the checks moved to his PC (D89) and rulings D87–D152; the next chat fixes `[LW-MONTHJUMP-PHONE]` + `[LW-HBAR-RESYNC]` on it, deletes `CI_ON_GITHUB`, then it merges. `[ALL-AVAIL-WINDOW]` and `[DOCS-GUARD]` are live on `main`; `[HUMAN-RETEST]` follows the Leave War fix.
 **NEXT SESSION READS `raptor-port/docs/superpowers/specs/2026-09-21-oil-handpass-handoff.md` FIRST** —
 the job is executing the two scenario lists (Fable's 44, Codex's 24) in the RUNNING app, and that
 file says what is already done by hand so it is not redone. **And read

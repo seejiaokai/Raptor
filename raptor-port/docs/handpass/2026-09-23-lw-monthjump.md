@@ -114,3 +114,14 @@ line endings); run 2 failed the Leave War scrubber test (the app's 250ms drag wi
 out, `[LW-HBAR-RESYNC]` filed); run 3: everything passed except the phone month test — the app bug above,
 which shows on a fast machine. Time on the PC: ~14 min for a green run (unit tests 4.7 min, browser tests
 3.7 min, Tracker smoke ~4.5 min). Until the phone fix (D150), the checks run on GitHub (`CI_ON_GITHUB=true`).
+
+**Astra's second read (Codex CLI, high effort), blind, on `416751d4` — everything after `5b38ecef`: REVISE,
+seven findings, all accepted and fixed in the next commit.** SEC-001: the PC job had no guard on WHO could run
+code there — now only his own changes in a private repo, everything else to GitHub (the exact complement, so
+no run is left without a gate); SEC-002: the runner must never run as Administrator (handoff step 4); SEC-003:
+least-privilege token, Pages rights on `deploy` only, no persisted checkout credential; CI-001: `PORT_URL` /
+`APP_URL` pinned so a leftover machine setting cannot point a gate at another checkout; CI-002: the
+line-ending step stops on any error; CI-003: the Pages way-back note completed; DOC-001: the D150 numbering
+note corrected. Its negatives: the switch covers every value of `CI_ON_GITHUB` with no gateless green; ports
+4273/4279 clash with nothing; the scrubber wait cannot be shortened by scheduling and the product defect stays
+filed, not hidden. **These fixes are not yet re-inspected** — the next chat's read covers them.

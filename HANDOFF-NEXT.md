@@ -1,57 +1,66 @@
-# HANDOFF — 23 Sep 26. `[ALL-AVAIL-WINDOW]` and `[DOCS-GUARD]` are LIVE on `main`. Next: the Leave War fix (D150), then `[HUMAN-RETEST]`.
+# HANDOFF — 23 Sep 26. PR #428 is OPEN and NOT merged (D152): the next chat fixes the Leave War bugs ON ITS BRANCH, then everything merges together.
 
-## NEXT CHAT (owner, D150): the Leave War phone bug — only once `claude/lw-monthjump-phone` is MERGED
+**Pick `claude/lw-monthjump-phone` in the new-chat picker — NOT `main`.** Before acting: `git fetch`, and
+check PR #428's state (open when this was written) — this file describes the world when it was written.
 
-That branch (PR #428) carries the D87 test fixes and moves GitHub's checks onto his own PC (D89, a
-self-hosted runner). After his "merge live", pick `main` and fix `[LW-MONTHJUMP-PHONE]` in `OUTSTANDING.md`:
-on a phone a month button can land a day short (evidence and pictures:
-`raptor-port/docs/handpass/2026-09-23-lw-monthjump.md`). Bug-check order, WALK tier. **Include `[LW-HBAR-RESYNC]`**,
-the same grid's scrollbar item (his word, D150). He confirmed this goes ahead of `[HUMAN-RETEST]` (D85/D86).
-**Then put the checks back on his PC:** delete the repo variable `CI_ON_GITHUB` (set to `true` on 23 Sep 26 only
-because the phone test is red on his fast PC until that fix), push, and see the `all gates (your PC)` job go
-green. Then walk him through making the runner a Windows service (GitHub: remove the runner, add it again,
-answer **Y** to "run as service", Enter for the account). Never push while checks are running (D151).
+## Where it started
 
-**Pick `main` in the new-chat picker.** `claude/docs-guard` is merged — don't pick it.
+He asked for the three Leave War browser tests filed as `[LW-MONTHJUMP-PHONE]` to be made robust on a slow
+machine — test-only, waiting on what each needs, not a fixed time (**D87**) — with red-before / green-after
+proof. Two were slow-machine timeouts and are fixed. The third (the phone month-jump test) turned out to be
+catching an APP bug that shows on FAST machines, so it was left unchanged and filed. Along the way GitHub's
+slowness was traced to the private repo's 2-core machines, and the checks were moved onto his own PC (**D89**).
 
-## What went live
+## Shipped — on the branch, NOT merged
 
-The counter's movable window of pucks (D38–D41), bug-checked at FULL tier — the record is
-`raptor-port/docs/handpass/2026-09-23-allavail-window.md`. He looked on Vercel, then said "merge
-live". It went to `main` AFTER the skill review (#427), with `main` merged in first and every gate
-re-run on the combined tree: `npm test` 5760/5760 · build OK · `tfin.js` 728/0 · rulecheck OK ·
-`test:e2e` 461 passed / 0 failed · `smoke:tracker` 425/0 · `perf` 4/0 · `docsize` red on the same
-three files as `main` (`[DOC-TRIM]`). No app code changed in the merge, so the walk stands.
+- The two desktop scenarios in `raptor-port/e2e/step4-leavewar.spec.ts` wait on conditions, not pauses;
+  the reload one reads each person's figures from one sheet opening. Proof tables:
+  `raptor-port/docs/handpass/2026-09-23-lw-monthjump.md` §3–§4 (whole browser suite unchanged, 461/0).
+- An opt-in slow-browser switch, `E2E_CPU_THROTTLE=<n>` (`raptor-port/e2e/app.ts`).
+- The checks run on HIS PC by default: the `pc` job in `.github/workflows/deploy.yml` (a self-hosted Windows
+  runner, "JK"), GitHub's machines when the repo variable `CI_ON_GITHUB` is `true`. After Astra's second read:
+  the PC runs only HIS OWN changes in a PRIVATE repo (anything else goes to GitHub), least-privilege token,
+  no persisted checkout credential, pinned `PORT_URL`/`APP_URL`, a line-ending step that stops on any error.
+- The Leave War scrubber test waits out the app's own 250ms drag window (`raptor-port/e2e/leavewar.spec.ts`).
+- PR #428 — open when written. Its last GitHub run (on the variable, GitHub's machines): see Gates.
 
-Also rode along: `.impeccable/config.json` (D71's held-back design-checker skip list; note #43
-actioned).
+## Unfinished — the next chat's job, in this order
 
-## Then `[DOCS-GUARD]` went live — what it changes for every session
+1. **Fix `[LW-MONTHJUMP-PHONE]`** (app, bug-check order WALK tier, phone): the spec is in `OUTSTANDING.md`
+   (Astra's, matching the builder's); the evidence and both pictures are the evidence sheet §5. Then make
+   the phone test measure only once the grid has held still past the rest window — drop its first-success
+   poll, which can pass on a sample taken before the shift.
+2. **Fix `[LW-HBAR-RESYNC]`** (his word, D150): one trailing `syncHbar` when the 250ms drag window closes.
+3. **Delete the repo variable `CI_ON_GITHUB`** (set 23 Sep 26 only because the phone test is red on his fast
+   PC until step 1), push ONCE, and see `all gates (your PC)` go green. Never push while a run is going (D151).
+4. **The runner as a Windows service, under a RESTRICTED account** (Astra SEC-002 — never Administrator):
+   GitHub → Settings → Actions → Runners → JK → Remove (he runs the removal command it shows, in
+   `C:\actions-runner`), then add it again from "New self-hosted runner", answering **Y** to "run as service"
+   and giving a non-admin account (NETWORK SERVICE at least; a dedicated standard user is better). He was
+   asked to close the Administrator window that was running it by hand.
+5. **An independent read before "merge live"**: Astra's round-2 fixes (the guard, permissions, pinned URLs,
+   exit codes, the Pages note) have NOT been re-inspected — hand them to the reader with the Leave War fix.
+6. Merge on his "merge live". `[HUMAN-RETEST]` (D85/D86) comes after — he confirmed Leave War first.
 
-`npm run docsize` now fails a lost, doubled or cut-short backlog item, a lost or doubled D-number, a
-ruling home that does not exist, and a rule-map id with no register entry. It runs at the end of
-every turn (a Stop hook) and on every PR and push to `main` (`docs-guard.yml`), and it never asks
-for a trim inside a code change. **Move a finished item ONLY with
-`node raptor-port/scripts/backlog-archive.mjs <ID> --homes <file>`.** Closing reports carry its
-`Docs:` and `docsize:` lines (bug-check order §9). Details: `raptor-port/docs/doc-budget.md` §4.
+## Gates
+
+- Last full LOCAL run on this branch (before the CI move): `npm test` 5760/5760 · build OK · `tfin.js` 728/0 ·
+  `test:e2e` 461 passed / 45 skipped / 0 failed · `smoke:tracker` 425/0 · rulecheck OK · docsize OK.
+- On his PC (trial 3, `570dd471`): every gate ran; the only red was the phone month test — the app bug.
+- `probes:adapted` / `perf`: not run (no UI change on this branch).
+
+## Open questions
+
+- Public repo vs his PC as the runner: recommended staying private on his PC (private, free, ~14 min a green
+  run vs ~9 on public GitHub, ~20 on private GitHub); he has not decided. If it ever goes public, remove
+  the runner from the repo first — the guard already sends public runs to GitHub's machines.
 
 ## Rulings this session
 
-**D77** — leave the phone resize corner: on a phone the window moves but does not resize. Recorded
-in `DECISIONS.md`, the window's section of `raptor-port/docs/ui-contracts.md`, and `OUTSTANDING.md`.
-**D85 + D86** — `[HUMAN-RETEST]` starts with the Tracker, and the amendment system runs beside it in
-parallel. Recorded in `DECISIONS.md` and `OUTSTANDING.md` [HUMAN-RETEST].
-**D78–D84** (the docs guard's chat) — parallel chats merge one at a time and the later one renumbers
-(D78); four older rulings given numbers (D79–D82); step 4 done early (D83); a Leave War desktop
-timeout on GitHub gets ONE re-run of the failed group, not an investigation (D84).
+D87 (wait on what a test needs) · D88 (go public — reversed by D89) · D89 (checks on his PC) · D150 (Leave
+War first, including the scrollbar item) · D151 (never push while a PR's checks run) · D152 (don't merge yet;
+fix, then merge together). D150–D152 sit above D86's D120+ start; a clash is settled by D78.
 
-## Next: `[HUMAN-RETEST]`, two chats in parallel (D85, D86)
+## Pick up here
 
-One chat re-tests **the amendment system** (port 4173, rulings from
-D90), another in its own worktree re-tests **the Tracker** (port 4180, rulings from D120). Never
-two full gate runs at once. Whichever merges second brings `main` in first.
-
-## Queue after this
-
-`[HUMAN-RETEST]`, `[DOC-TRIM]`, `[DB-STEP]`. Filed from the window,
-none blocking: `[OIL-PERSONAL-PLACEHOLDER]`, `[CROWD-SIM-BRIEF]`, `[LW-MONTHJUMP-PHONE]`.
+Fix `[LW-MONTHJUMP-PHONE]` on `claude/lw-monthjump-phone`, bug-check order first.

@@ -297,3 +297,18 @@ code separately from its output, and never let the same line that runs a gate al
 **Suggested improvement:** In Phase 1's "Check Recent Changes → Environmental differences", add: "A run on a NEW checkout (CI, a fresh clone, a new worktree) inherits the machine's defaults, not your repo's local config. When local is green and a fresh checkout is red, diff the checkouts' settings (line endings, `git config --show-origin`) before the code — and rehearse the fix on a fresh clone before re-running the slow pipeline."
 
 **Principle:** "It works on this machine" can hide a per-checkout setting; a fresh checkout is a different environment even on the same computer. Rehearse an environment fix on a disposable copy before paying for another full pipeline run.
+
+### Observation 204: A "docs-only" push to a pull request that carries code re-runs every check and cancels the running one
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [LW-MONTHJUMP-PHONE] / [CI-TWO-CORES] — recording a ruling while a trial run of the checks was going on the owner's PC.
+**Skill:** session-handoff (Step 1, the "docs-only handoff has NO checks" paragraph)
+**Type:** open-source
+**Phase/Area:** Step 1 — pushing the handoff
+
+**Issue:** The skill said a docs-only handoff runs no checks, because the workflow's `paths-ignore` skips docs. That holds for a push to `main`, not for a pull request: GitHub evaluates a `pull_request` path filter against the WHOLE pull request's diff, so once the PR carries code, a notes-only push starts the full gate run again — and the workflow's `concurrency: cancel-in-progress` cancelled a trial run 7 minutes in. The owner then ruled D151 (never push while a PR's checks are running). The paragraph was corrected in place under the skill's own Rule 7.
+
+**Suggested improvement:** Keep the corrected paragraph; in Step 1's closing checklist add "check that no check run is in progress on the branch before the final push".
+
+**Principle:** A path filter's scope differs by event: on a pull request it sees the whole PR, not your last commit. Before any push to a branch with an open PR, check whether a run is going — the push restarts it, whatever it contains.

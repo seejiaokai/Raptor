@@ -56,10 +56,12 @@ on:
       - '.github/workflows/docs-guard.yml'
   workflow_dispatch:
 
+# Least privilege (Astra, 23 Sep 26): every job reads the code and nothing else.
+# The Pages rights live on the `deploy` job alone, which is the only job that
+# ever used them — the gates, and above all the one on the owner's own PC, must
+# not carry a Pages-capable token or be able to ask for an OIDC one.
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 # Main deploys keep the single serialized "pages" group. PR runs get a group
 # per PR instead of joining it — inside one shared group, cancel-in-progress
@@ -88,20 +90,39 @@ jobs:
   #   - A check running here at the same moment as a chat's own full test run
   #     shares the processor, which can fail a timing-sensitive test (D86's
   #     reason): a red here while a chat was testing earns ONE re-run first.
+  #   - WHO MAY RUN CODE ON HIS PC (Astra SEC-001, 23 Sep 26): only HIS OWN
+  #     changes, in a PRIVATE repo — pushed by his account, from a branch of this
+  #     repo, never a fork. A public repo, a fork's pull request or anyone else's
+  #     run falls to GitHub's machines below instead (their `if` is the exact
+  #     complement, so a run is never left with no gate). GitHub's own advice:
+  #     almost never let a public repo reach a self-hosted runner.
+  #   - THE RUNNER'S ACCOUNT (Astra SEC-002): never an Administrator. As a Windows
+  #     service it runs under a restricted account (NETWORK SERVICE at least; a
+  #     dedicated standard user with no access to his profile is better).
+  #   - PORT_URL / APP_URL are pinned too (Astra CI-001): either one left in the
+  #     machine's environment would point a gate at another checkout's preview.
   pc:
     name: all gates (your PC)
-    if: vars.CI_ON_GITHUB != 'true'
+    if: >-
+      vars.CI_ON_GITHUB != 'true'
+      && github.event.repository.private
+      && github.actor == github.repository_owner
+      && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: [self-hosted, Windows, X64]
     timeout-minutes: 45
     env:
       E2E_PORT: '4273'
+      PORT_URL: 'http://localhost:4273/'
       SMOKE_PORT: '4279'
+      APP_URL: ''
     defaults:
       run:
         shell: cmd
         working-directory: raptor-port
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       # KEEP THE REPO'S OWN LINE ENDINGS (the first run on the PC, 23 Sep 26,
       # failed two unit files on exactly this). Git for Windows is installed
       # with core.autocrlf=true, so this fresh clone came out CRLF — while the
@@ -110,13 +131,15 @@ jobs:
       # exact text that spans a line break, and found nothing to patch. So: set
       # false for THIS clone only (never the owner's own Git settings) and lay
       # every file down again exactly as stored — LF where the repo is LF, and
-      # the handful of CRLF files still CRLF, as on his desktop.
+      # the handful of CRLF files still CRLF, as on his desktop. Each line stops
+      # the step on its own failure: cmd reports only the LAST command's code,
+      # which would let a failed first line pass as success (Astra CI-002).
       - name: Keep the repo's own line endings
         working-directory: .
         run: |
-          git config core.autocrlf false
-          git rm -r --cached --quiet .
-          git reset --hard --quiet HEAD
+          git config core.autocrlf false || exit /b 1
+          git rm -r --cached --quiet . || exit /b 1
+          git reset --hard --quiet HEAD || exit /b 1
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -137,15 +160,22 @@ jobs:
       - name: Tracker smoke
         run: npm run smoke:tracker
 
-  # ---- GitHub's own machines: only when CI_ON_GITHUB is `true` (above) ----
+  # ---- GitHub's own machines: when CI_ON_GITHUB is `true`, or whenever the run
+  # ---- is not the owner's own, in a private repo (the complement of `pc`) ----
 
   # Type-check + bundle, the 728-assertion parity suite, and (on main) the
   # artifact `deploy` publishes. Under a minute; the test jobs run beside it.
   build:
-    if: vars.CI_ON_GITHUB == 'true'
+    if: >-
+      vars.CI_ON_GITHUB == 'true'
+      || !github.event.repository.private
+      || github.actor != github.repository_owner
+      || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -174,7 +204,11 @@ jobs:
   # instead of cancelling the others half way through.
   unit:
     name: unit (${{ matrix.project }}${{ matrix.shard && format(' {0}', matrix.shard) || '' }})
-    if: vars.CI_ON_GITHUB == 'true'
+    if: >-
+      vars.CI_ON_GITHUB == 'true'
+      || !github.event.repository.private
+      || github.actor != github.repository_owner
+      || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository)
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -187,6 +221,8 @@ jobs:
             shard: 2/2
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -211,7 +247,11 @@ jobs:
   # 3-worker / one-retry CI settings from 15 Aug 26.
   geometry:
     name: geometry (${{ matrix.project }})
-    if: vars.CI_ON_GITHUB == 'true'
+    if: >-
+      vars.CI_ON_GITHUB == 'true'
+      || !github.event.repository.private
+      || github.actor != github.repository_owner
+      || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository)
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -219,6 +259,8 @@ jobs:
         project: [raptor, lw-phone, lw-desktop]
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -246,10 +288,16 @@ jobs:
   # serves the bundle itself like they do.
   tracker:
     name: tracker (smoke)
-    if: vars.CI_ON_GITHUB == 'true'
+    if: >-
+      vars.CI_ON_GITHUB == 'true'
+      || !github.event.repository.private
+      || github.actor != github.repository_owner
+      || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -280,11 +328,19 @@ jobs:
   # minutes a push, measured 23 Sep 26). The gates above still run and still
   # block a red merge; only the PUBLISH is disabled. The live app is served by
   # VERCEL instead. To turn Pages back on: make the repo public again (or buy a
-  # plan that serves private Pages), then drop the `false &&` below.
+  # plan that serves private Pages), drop the `false &&` below, AND make sure the
+  # gates run on GitHub's machines — since D89 the default gate is the `pc` job,
+  # which uploads no Pages artifact, and a skipped `needs` job skips this one
+  # (Astra CI-003). A public repo already routes the gates there (the guard on
+  # `pc`); a private one needs CI_ON_GITHUB=true.
   deploy:
     needs: [build, unit, geometry, tracker]
     if: false && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
