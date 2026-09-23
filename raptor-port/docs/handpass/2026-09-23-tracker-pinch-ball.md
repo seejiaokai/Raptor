@@ -92,6 +92,11 @@ the smoke suite's zoom) and landed somewhere else coming out (−269, −91 px).
 | straight after an undo | — | **MISSING** (↷ lost) | ↷ kept | E14 |
 | lift either finger, carry on | — | **MISSING** | nothing moves | E15, E15b |
 | fingers slide off the chart, lift over the bar | — | — | the next single finger still drags | E18 |
+| an undo from the keyboard / ↶ / ✓ Save changes while a finger is held | — | (no take-back existed) | the undo / save stands | E20, E20b, E20c |
+| lifts lost (Safari's way) | — | **MISSING** (every later touch a pinch) | heals on the next touch; the lift heard where it landed | E21, E22, smoke |
+| a mouse drag with a pinch in the middle | — | — | finishes and saves | E23 |
+| the moment the second finger lands | — | **MISSING** (the chart hopped 36 px) | the chart does not move | every E row ("hop") |
+| the command stream / the save indicator | — | **MISSING** (a cancelled save left an envelope) | untouched | every E row, smoke |
 | at the 400 % ceiling | the pinch cannot zoom | **MISSING** | nothing moves | E19 |
 | the ordinary chart — a ball / ⓘ Details | tap actions | has it (no click) | same | N1 ×2 |
 | going in (Edit chart layout) | — | **MISSING** (216 px jump) | the middle held | M1, smoke |
@@ -105,11 +110,14 @@ the smoke suite's zoom) and landed somewhere else coming out (−269, −91 px).
 
 ## 5. Orders walked (`pinch-ball-before.json` → `pinch-ball-after.json`)
 
-| Size | Unfixed code | Fixed code |
-|---|---|---|
-| Phone 390×844 | **7 / 29** | **38 / 38** |
-| Sideways 844×390 (Edit chart layout has no room there — only the switch is walked) | **4 / 7** | **7 / 7** |
-| Tablet 1366×1024 | **7 / 29** | **36 / 36** |
+| Size | Unfixed code (first walk) | Unfixed code, the full final set (phone) | Fixed code (final) |
+|---|---|---|---|
+| Phone 390×844 | **7 / 29** | **12 / 36** (`pinch-ball-before2.json`) | **44 / 44** |
+| Sideways 844×390 (Edit chart layout has no room there — only the switch is walked) | **4 / 7** | — | **7 / 7** |
+| Tablet 1366×1024 | **7 / 29** | — | **42 / 42** |
+
+The rows added for the two reads (E20–E23, the command stream, the hint, the hop) went red on the fix as it stood before
+them (`red-reads`, phone 30 / 44) and pass now.
 
 The unfixed numbers, in the app's words: a pinch starting on a ball moved it and added an undo step every time (E1–E5,
 tablet the same); with Line it drew and saved a line and did not zoom at all (E7, E8); with Delete it took the line
@@ -150,6 +158,15 @@ Each wire broken once, the app rebuilt, the smoke block and/or the phone walk ru
 | B6 going in holds the middle (placement removed) | 1 — smoke "opening … keeps the middle" (221 px) |
 | B7 coming out re-cuts the slack first | 1 — smoke "Done … keeps the middle" (82 px) |
 | B8 a lift heard on the window | **0 — in two runs** → the window listener was TAKEN OUT (the board's own pointerleave already drops such a finger; E18 walks it) rather than kept untested |
+| **After the two reads** (`breaks-B9-…-B16.json`) | |
+| B9 a layout save waits while a first finger is held | 3 — smoke Delete (`cmd`, `lay`), walk E8, E9 |
+| B10 a key / a press off the chart ends the take-back window | 3 — walk E20, E20b, E20c |
+| B11 a primary touch heals lost lifts | 9 — smoke "two lost lifts"; walk E21 and every touch after it |
+| B12 the lift heard on the element it landed on | 1 — walk E22 (the Delete not stored at the lift) |
+| B13 the board holds both fingers once a pinch starts | **0 — declared**: it matters only where a browser keeps sending a finger's events to a removed element (Safari, Fable F1); Chromium re-targets them. Kept, not proven here — his iPhone is its check |
+| B14 a mouse drag is not the pinch's to stop | 1 — walk E23 |
+| B15 the editing canvas cut to size once the strip lands | 3 — walk E1, E13e (`hop`) |
+| B16 the take-back puts the instruction back | 2 — walk E8, E13c (`hint2`) |
 
 ## 7. Astra's scenarios — dispositions
 
@@ -189,7 +206,24 @@ FILLED IN BELOW.
 
 ## 10. The two code reads
 
-FILLED IN BELOW.
+Fable 5.1 (a subagent) and Astra (Codex, gpt-5.6-sol, high), blind to each other, both read-only, given this sheet
+and `docs/superpowers/briefs/2026-09-23-tracker-pinch-ball-final-read-brief.md`; neither built it (D67). Reports
+verbatim beside this sheet: `2026-09-23-tracker-pinch-ball-astra-final-read.md`, `…-fable-final-read.md`. Every
+finding reproduced as a check that failed on the code before its fix (the smoke block 9/11, the phone walk's new
+rows red — `red-reads` below), then fixed.
+
+| Finding | Who | Disposition |
+|---|---|---|
+| A cancelled Delete / Merge / finished line left a `user` envelope on the command stream for a change that no longer existed (the take-back restored the store off the stream) | Astra #1 high (Fable asked the same, Q3) | **fixed** — a layout save WAITS while a first finger is held and is made once at the lift, never if it becomes a pinch: nothing stored, nothing on the stream. Red first: smoke Delete "changed: cmd", walk E8 / E9 |
+| An undo (Ctrl+Z, or ↶ / ✓ Save changes on the bar) made while a finger was held was wiped by the take-back | Astra #2 medium, Fable F3 low | **fixed** — a key, or a press off the chart or by a mouse, ends the take-back window first; the snapshot names its chart and is never laid over another. Red first: walk E20 (undo erased), E20c (the save undone) |
+| The take-back wiped the instruction ("Now click where it ends…") and a cancelled save flashed "saved" | Astra #3 low | **fixed** — the instruction comes back for the time it had left; the held save never runs. Red first: walk E8 / E13c (the hint the moment the second finger lands), E9 (the save indicator) |
+| Safari can deliver a lift to the element a finger landed on after a redraw removed it; the board never hears it and every later touch reads as a pinch | Fable F1 high (conditional) | **fixed three ways** — a primary touch heals any finger still counted (red first: smoke "two lost lifts", walk E21); the lift is also heard on the element it landed on (red first: walk E22 — the Delete stored at the lift, and the next finger drags); the board holds both fingers once a pinch starts — the one line Chromium cannot prove (break test B13), left to his iPhone |
+| Two wires had no gate check (B3, B4 went red only in the walk) | Fable F2 | **fixed** — the smoke block gains a line's end square and "lift one finger, carry on" |
+| A mouse drag with a pinch in the middle of it was stopped and never saved | Fable F4 low | **fixed** — only a finger's gesture hands the take-back its stop. Red first: walk E23 |
+| **Found by the lost-lift check (neither read):** the editing canvas was cut before the tool strip landed, so the board kept a 36 px scroll and the first take-back's redraw made the whole chart hop under the fingers | the walk | **fixed** — the canvas is cut to size once the strip has landed. Red first: walk E1 "hop" |
+| Astra Q1 / Fable Q1 — the finger left down after a pinch; a deliberate long drag joined by a second finger | both | his call — §11 |
+| Astra Q3 — a pen counts as a finger | Astra | kept: a pen plus a finger is a pinch, as on any map |
+| Fable Q2 — the iPhone check before the merge | Fable | D133 waived his look; the iPhone is the one device no walk here drives — §11 and the look card |
 
 ## 11. Calls made, and questions for him
 
@@ -201,6 +235,11 @@ FILLED IN BELOW.
   should carry on scrolling; that is a feel question, put to him, not built.
 - **A zoom chosen in Edit chart layout is now the user's own** (as a pinch or + / − already was): without it, the
   next redraw on a phone snapped it back to fit (M5).
+- **For him to answer (both reads asked):** (1) a ball dragged on purpose and THEN joined by a second finger snaps back —
+  keep that, or keep a drag that has already moved? (2) after a pinch, should the finger left down carry on scrolling?
+- **The iPhone.** Fable's F1 is about how Safari delivers a lift; all three of its fixes are in, two proven here with
+  simulated lost lifts, the third (the board holding both fingers) only on a real iPhone. D133 merged without his look,
+  so the look card below is where that is checked.
 
 ## 12. His look — WAIVED for the merge by D133; the card, for the live app
 

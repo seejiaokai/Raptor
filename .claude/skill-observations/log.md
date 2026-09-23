@@ -554,3 +554,18 @@ code separately from its output, and never let the same line that runs a gate al
 **Suggested improvement:** When a change keeps something steady across a mode switch, place it again in the first animation frame after the switch (after the framework has laid out the new chrome, before paint), recompute any size-derived padding first, and assert "the point in the middle stays in the middle" rather than "nothing moved on screen" — the viewport itself moves.
 
 **Principle:** Anything anchored across a UI state change must be anchored against the layout AFTER the change settles, and the check must measure relative to the moved viewport, not absolute screen positions.
+
+### Observation 221: A walk in one browser engine cannot see another engine's event delivery — simulate it on purpose
+
+**Status:** OPEN
+**Date:** 2026-09-24
+**Session context:** [TRK-PINCH-DRAGS-BALL] — Fable's final read (F1): Safari can deliver a touch's later events to the element it landed on even after a redraw removed it; the walk used Chromium, which retargets them.
+**Skill:** raptor-port/docs/bug-check-order.md (§7 the walk; §8 making checks find)
+**Type:** open-source
+**Phase/Area:** the walk — device/engine coverage
+
+**Issue:** Every gesture check passed in Chromium while the change redrew the element under a held finger — exactly the case where engines differ. The fix could not be walked on the owner's real device. What made it testable here was dispatching synthetic pointer events the way the other engine would (a lift sent to the now-detached element; two touches whose lifts never arrive) — and that simulated check then found an unrelated real defect in Chromium too: after the heal, the next touch still missed its ball because a stale 36 px scroll made the chart hop on the first redraw.
+
+**Suggested improvement:** In §7 add: "When a change redraws or removes the element under a held finger (or relies on which element receives the lift), list how each engine the owner uses delivers those events, and add a synthetic check per difference — dispatch the other engine's event sequence directly on the element it would reach. Name in the sheet any line that only a real device can prove, and make the owner's look card test it."
+
+**Principle:** A walk proves behaviour in the engine it ran; where engines are known to differ, reproduce the other engine's event sequence synthetically and name what only the real device can confirm.
