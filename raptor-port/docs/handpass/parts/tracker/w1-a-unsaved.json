@@ -1,0 +1,210 @@
+{
+  "rows": [
+    {
+      "step": "A: charts",
+      "note": "2024 · 2026 · Tx 2026 · A/G - A/A 2026 — on 2026"
+    },
+    {
+      "step": "1: + Flight asked",
+      "note": "Name for the new flight event: Cancel OK"
+    },
+    {
+      "step": "1: LATE-1 is on the chart",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "1: LATE-1 now needs ST-01 (details bubble)",
+      "pass": true,
+      "said": "LATE-1 Prerequisites: ST-01"
+    },
+    {
+      "step": "1: ✓ Save changes is lit (the edit is unsaved)",
+      "pass": true,
+      "said": "● unsaved flow edits — hit “Save changes”"
+    },
+    {
+      "step": "1: Export warned or offered to save the unsaved edit first",
+      "pass": false,
+      "said": "no question — the Export window opened straight away"
+    },
+    {
+      "step": "1: the Export window offered",
+      "note": "2024 · 2026 · Tx 2026 · A/G - A/A 2026 — 1 ticked at open; done message: \"Exported as “OCU-syllabus-2026-09-23.json”. It contains charts only — no student names or marks. OK\""
+    },
+    {
+      "step": "1: the exported 2026 chart holds LATE-1 (the chart as it stands on screen)",
+      "pass": false,
+      "said": "events in the file's 2026: 210; LATE-1 ABSENT; its position absent from the layout too"
+    },
+    {
+      "step": "1: after Export the edit is still unsaved on screen (nothing silently saved)",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "2a: the Syllabus dropdown asks about the unsaved edits (R88 baseline)",
+      "pass": true,
+      "said": "You have unsaved flow edits on “2026”. Discard them and switch to “Tx 2026”?"
+    },
+    {
+      "step": "2a: \"Cancel\" keeps 2026 and the edit",
+      "pass": true,
+      "said": "2026"
+    },
+    {
+      "step": "2b: + Add syllabus asks about the unsaved edits first",
+      "pass": false,
+      "said": "first question: \"Name for the new (empty) syllabus:\""
+    },
+    {
+      "step": "2b: now on",
+      "note": "W1 ADDED ✎ — Save changes dark; status \"● added empty syllabus “W1 ADDED”\""
+    },
+    {
+      "step": "2b: back on 2026 — LATE-1 kept, or at least the loss was asked about",
+      "pass": false,
+      "said": "LATE-1 GONE; Save changes dark"
+    },
+    {
+      "step": "2c: set-up — LATE-2 on 2026, unsaved",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "2c: Duplicate asks about the unsaved edits first",
+      "pass": false,
+      "said": "first question: \"Name for the duplicated syllabus:\""
+    },
+    {
+      "step": "2c: the copy",
+      "note": "2026 copy ✎ — LATE-2 on the copy: yes; Save changes dark"
+    },
+    {
+      "step": "2c: back on 2026 — LATE-2 kept, or its loss asked about",
+      "pass": false,
+      "said": "LATE-2 on 2026 GONE (it went into the copy only); Save changes dark"
+    },
+    {
+      "step": "2d: set-up — LATE-3 on 2026, unsaved",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "2d: Import asks about the unsaved edits before bringing charts in",
+      "pass": false,
+      "said": "questions: \"“2024” already exists. Replace it, or add the incoming one under a new name?\" | \"“2026” already exists. Replace it, or add the incoming one under a new name?\" | \"“Tx 2026” already exists. Replace it, or add the incoming one under a new name?\" | \"“A/G - A/A 2026” already exists. Replace it, or add the incoming one under a new name?\" | \"Brought in 2024, 2026, Tx 2026, A/G - A/A 2026. Eve"
+    },
+    {
+      "step": "2d: after the import",
+      "note": "on 2026 ✎ — LATE-3 GONE; ✓ Save changes LIT; status \"● brought in 2024, 2026, Tx 2026, A/G - A/A 2026\""
+    },
+    {
+      "step": "2d: ✓ Save changes is not left lit over a chart that has nothing unsaved",
+      "pass": false,
+      "said": "LATE-3 gone, Save lit"
+    },
+    {
+      "step": "B: the import asked",
+      "note": "“2024” already exists. Replace it, or add the incoming one under a new name? || “2026” already exists. Replace it, or add the incoming one under a new name? || “Tx 2026” already exists. Replace it, or add the incoming one under a new name? || “A/G - A/A 2026” already exists. Replace it, or add the incoming one under a new name? || Brought in 2024, 2026, Tx 2026, A/G - A/A 2026. Everyone’s marks are untouched. It is saved."
+    },
+    {
+      "step": "1: after export → wipe → import, 2026 carries LATE-1 (edited before Export, unsaved)",
+      "pass": false,
+      "said": "LATE-1 is NOT in the imported chart"
+    }
+  ],
+  "exportPre": null,
+  "asked": [
+    {
+      "msg": "“2024” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“Tx 2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“A/G - A/A 2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "Brought in 2024, 2026, Tx 2026, A/G - A/A 2026. Everyone’s marks are untouched. It is saved.",
+      "btns": [
+        "OK"
+      ],
+      "ans": "ok"
+    }
+  ],
+  "askedB": [
+    {
+      "msg": "“2024” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“Tx 2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“A/G - A/A 2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "Brought in 2024, 2026, Tx 2026, A/G - A/A 2026. Everyone’s marks are untouched. It is saved.",
+      "btns": [
+        "OK"
+      ],
+      "ans": "ok"
+    }
+  ],
+  "errorsA": [],
+  "errorsB": []
+}

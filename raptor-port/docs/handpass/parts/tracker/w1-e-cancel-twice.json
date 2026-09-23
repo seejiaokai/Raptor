@@ -1,0 +1,223 @@
+{
+  "rows": [
+    {
+      "step": "A: hand moves",
+      "note": "2026 ACG-03 translate(331.0,307.0) → translate(471.0,337.0); Tx ACG-03 translate(331.0,307.0) → translate(211.0,347.0); charts 2024 · 2026 · Tx 2026 · A/G - A/A 2026 · 2026 COPY E ✎"
+    },
+    {
+      "step": "A: exported",
+      "note": "2024 · 2026 · Tx 2026 · A/G - A/A 2026 · 2026 COPY E"
+    },
+    {
+      "step": "B: the import asked / said",
+      "note": "\"“2024” already exists. Replace it, or add the incoming one under a new name?\" → ok || \"“2026” already exists. Replace it, or add the incoming one under a new name?\" → cancel || \"“Tx 2026” already exists. Replace it, or add the incoming one under a new name?\" → ok || \"“A/G - A/A 2026” already exists. Replace it, or add the incoming one under a new name?\" → ok || \"Brought in 2024, Tx 2026, A/G - A/A 2026, 2026 COPY E. Everyone’s marks are untouched. It is saved.\" → ok"
+    },
+    {
+      "step": "B: the closing message",
+      "note": "Brought in 2024, Tx 2026, A/G - A/A 2026, 2026 COPY E. Everyone’s marks are untouched. It is saved."
+    },
+    {
+      "step": "B: does the closing message mention the chart that was NOT brought in?",
+      "note": "no — it lists only what came in"
+    },
+    {
+      "step": "B: after Cancel, 2026 is the wiped app's own 2026 (the hand move did not come in)",
+      "pass": true,
+      "said": "ACG-03 translate(331.0,307.0) (shipped translate(331.0,307.0), his move translate(471.0,337.0))"
+    },
+    {
+      "step": "B: the charts answered Replace came in (Tx's hand move is there)",
+      "pass": true,
+      "said": "Tx ACG-03 translate(211.0,347.0) (his move translate(211.0,347.0))"
+    },
+    {
+      "step": "B: charts after",
+      "note": "2024 ✎ · 2026 · Tx 2026 ✎ · A/G - A/A 2026 ✎ · 2026 COPY E ✎"
+    },
+    {
+      "step": "C: the second import asked",
+      "note": "\"“2024” already exists. Replace it, or add the incoming one under a new\" || \"“2026” already exists. Replace it, or add the incoming one under a new\" || \"“Tx 2026” already exists. Replace it, or add the incoming one under a \" || \"“A/G - A/A 2026” already exists. Replace it, or add the incoming one u\" || \"“2026 COPY E” already exists. Replace it, or add the incoming one unde\" || \"Brought in 2024, 2026, Tx 2026, A/G - A/A 2026, 2026 COPY E. Everyone’\""
+    },
+    {
+      "step": "C: no duplicate charts after the second import",
+      "pass": true,
+      "said": "after 1st: 2024 ✎ · 2026 ✎ · Tx 2026 ✎ · A/G - A/A 2026 ✎ · 2026 COPY E ✎  |  after 2nd: 2024 ✎ · 2026 ✎ · Tx 2026 ✎ · A/G - A/A 2026 ✎ · 2026 COPY E ✎"
+    },
+    {
+      "step": "C: the order is unchanged by the second import",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "C: every ball and line on every chart is where the first import put it",
+      "pass": true,
+      "said": "5 charts identical"
+    },
+    {
+      "step": "C: his hand moves survived both imports",
+      "pass": true,
+      "said": "2026 ACG-03 translate(471.0,337.0), Tx translate(211.0,347.0)"
+    }
+  ],
+  "askedB": [
+    {
+      "msg": "“2024” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "cancel"
+    },
+    {
+      "msg": "“Tx 2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“A/G - A/A 2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "Brought in 2024, Tx 2026, A/G - A/A 2026, 2026 COPY E. Everyone’s marks are untouched. It is saved.",
+      "btns": [
+        "OK"
+      ],
+      "ans": "ok"
+    }
+  ],
+  "asked1": [
+    {
+      "msg": "“2024” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“Tx 2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“A/G - A/A 2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "Brought in 2024, 2026, Tx 2026, A/G - A/A 2026, 2026 COPY E. Everyone’s marks are untouched. It is saved.",
+      "btns": [
+        "OK"
+      ],
+      "ans": "ok"
+    }
+  ],
+  "asked2": [
+    {
+      "msg": "“2024” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“Tx 2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“A/G - A/A 2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "“2026 COPY E” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "Brought in 2024, 2026, Tx 2026, A/G - A/A 2026, 2026 COPY E. Everyone’s marks are untouched. It is saved.",
+      "btns": [
+        "OK"
+      ],
+      "ans": "ok"
+    }
+  ],
+  "labels1": [
+    "2024 ✎",
+    "2026 ✎",
+    "Tx 2026 ✎",
+    "A/G - A/A 2026 ✎",
+    "2026 COPY E ✎"
+  ],
+  "labels2": [
+    "2024 ✎",
+    "2026 ✎",
+    "Tx 2026 ✎",
+    "A/G - A/A 2026 ✎",
+    "2026 COPY E ✎"
+  ],
+  "errorsA": [],
+  "errorsB": [],
+  "errorsC": []
+}

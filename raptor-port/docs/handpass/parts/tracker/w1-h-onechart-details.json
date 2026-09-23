@@ -1,0 +1,53 @@
+{
+  "rows": [
+    {
+      "step": "1: 2026 BFM-3 after the edit",
+      "note": "BFM-3 A-SIDE NAMEnot done Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: BFM-2, AAM-07 Edit"
+    },
+    {
+      "step": "1: …and Tx 2026 BFM-3 at the same moment",
+      "note": "BFM-3 A-SIDE NAME Type: 2 x F-15SG Crew: IP / UW, UP / IW Prerequisites: AAM-07, BFM-2 Edit"
+    },
+    {
+      "step": "2: exported",
+      "note": "sb2026 — the file also carries event details for 225 events (incl. DAAR: true)"
+    },
+    {
+      "step": "3: before the import",
+      "note": "Tx BFM-3: BFM-3 B-SIDE NAME Type: 2 x F-15SG Crew: IP / UW, UP / IW Prerequisites: AAM-07, BFM-2 Edit  ‖  A/G DAAR: DAAR AG ONLY EDIT Type: F-15SG Crew: IP / UW, UP / IP Prerequisites: TR-4, INT(S)-2 Edit  ‖  2026 BFM-3: BFM-3 B-SIDE NAMEnot done Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: BFM-2, AAM-07 Edit"
+    },
+    {
+      "step": "4: the import asked / said",
+      "note": "\"“2026” already exists. Replace it, or add the incoming one under a new name?\" → ok || \"Brought in 2026. Everyone’s marks are untouched. It is saved.\" → ok"
+    },
+    {
+      "step": "12: Tx 2026's BFM-3 is unchanged by importing a 2026-only file",
+      "pass": false,
+      "said": "before: BFM-3 B-SIDE NAME Type: 2 x F-15SG Crew: IP / UW, UP / IW Prerequisites: AAM-07, BFM-2 Edit  |  after: BFM-3 A-SIDE NAME Type: 2 x F-15SG Crew: IP / UW, UP / IW Prerequisites: AAM-07, BFM-2 Edit"
+    },
+    {
+      "step": "12: A/G - A/A 2026's DAAR (not on 2026 at all) is unchanged by importing a 2026-only file",
+      "pass": false,
+      "said": "before: DAAR AG ONLY EDIT Type: F-15SG Crew: IP / UW, UP / IP Prerequisites: TR-4, INT(S)-2 Edit  |  after: DAAR Dissimilar/Day Air-to-Air Refresher (as per A/G - A/A 2026 course map) Type: F-15SG Crew: IP / UW, UP / IP Prerequisites: TR-4, INT(S)-2 Edit"
+    }
+  ],
+  "asked": [
+    {
+      "msg": "“2026” already exists. Replace it, or add the incoming one under a new name?",
+      "btns": [
+        "Cancel",
+        "Add as new",
+        "Replace it"
+      ],
+      "ans": "ok"
+    },
+    {
+      "msg": "Brought in 2026. Everyone’s marks are untouched. It is saved.",
+      "btns": [
+        "OK"
+      ],
+      "ans": "ok"
+    }
+  ],
+  "errors": []
+}

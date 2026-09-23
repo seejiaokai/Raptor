@@ -1,0 +1,70 @@
+{
+  "rows": [
+    {
+      "step": "A: the built-in 2026 renamed \"2026 OLD\"",
+      "pass": true,
+      "said": "Rename syllabus “2026” to: Cancel OK → 2026 OLD"
+    },
+    {
+      "step": "A: Duplicate made",
+      "note": "2026 OLD copy ✎"
+    },
+    {
+      "step": "A: the copy renamed \"2026\" (the name is free here)",
+      "pass": true,
+      "said": "Rename syllabus “2026 OLD copy” to: Cancel OK → 2026 ✎"
+    },
+    {
+      "step": "A: charts before Export",
+      "note": "2024 · 2026 OLD · Tx 2026 · A/G - A/A 2026 · 2026 ✎"
+    },
+    {
+      "step": "A: the file holds",
+      "note": "2024 (built-in) · 2026 OLD (built-in) · Tx 2026 (built-in) · A/G - A/A 2026 (built-in) · 2026 (custom)"
+    },
+    {
+      "step": "B: charts in the wiped app",
+      "note": "2024 · 2026 · Tx 2026 · A/G - A/A 2026"
+    },
+    {
+      "step": "B: the import said",
+      "note": "\"That file could not be brought in: the syllabus “2026” is a different chart than one already here. Rename one, then import again — nothing has been changed.\""
+    },
+    {
+      "step": "B: the import brings both in with their names (no refusal)",
+      "pass": false,
+      "said": "charts after: 2024 · 2026 · Tx 2026 · A/G - A/A 2026"
+    },
+    {
+      "step": "B: followed the message — renamed the wiped app's \"2026\" to",
+      "note": "2026 OLD"
+    },
+    {
+      "step": "B: the second import said",
+      "note": "\"“2024” already exists. Replace it, or add the incoming one under a new name?\" || \"“2026 OLD” already exists. Replace it, or add the incoming one under a new name?\" || \"“Tx 2026” already exists. Replace it, or add the incoming one under a new name?\" || \"“A/G - A/A 2026” already exists. Replace it, or add the incoming one under a new name?\" || \"Brought in 2024, 2026 OLD, Tx 2026, A/G - A/A 2026, 2026. Everyone’s marks are untouched. It is saved.\""
+    },
+    {
+      "step": "B: after the renaming the message asks for, the import goes through with both names",
+      "pass": true,
+      "said": "charts: 2024 ✎ · 2026 OLD ✎ · Tx 2026 ✎ · A/G - A/A 2026 ✎ · 2026 ✎; the copy's moved ACG-03 is where it was"
+    }
+  ],
+  "labelsA": [
+    "2024",
+    "2026 OLD",
+    "Tx 2026",
+    "A/G - A/A 2026",
+    "2026 ✎"
+  ],
+  "asked": [
+    {
+      "msg": "That file could not be brought in: the syllabus “2026” is a different chart than one already here. Rename one, then import again — nothing has been changed.",
+      "btns": [
+        "OK"
+      ],
+      "ans": "ok"
+    }
+  ],
+  "errorsA": [],
+  "errorsB": []
+}

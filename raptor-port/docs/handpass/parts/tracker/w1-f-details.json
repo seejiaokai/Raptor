@@ -1,0 +1,138 @@
+{
+  "rows": [
+    {
+      "step": "A: before any edit",
+      "note": "2026 · BFM-5: BFM-5 Basic Fighting Manoeuvres-5not done Type: 2 x F-15SG Crew: IP / UW, UP / IW Prerequisites: BFM-4, AAM-08, JMP-02 Edit  ‖  2026 · BFM-3: BFM-3 Basic Fighting Manoeuvres-3not done Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: BFM-2, AAM-07 Edit  ‖  Tx 2026 · BFM-5: BFM-5 Basic Fighting Manoeuvres-5 (Refer to BCTM BFM-7) Type: 2 x F-15SG Crew: IP / W, UP / IW or IP Prerequisites: AAM-08, JMP-02, BFM-4 Edit  ‖  Tx 2026 · BFM-3: BFM-3 Basic Fighting Manoeuvres-3 Type: 2 x F-15SG Crew: IP / UW, UP / IW Prerequisites: AAM-07, BFM-2 Edit"
+    },
+    {
+      "step": "a: Tx BFM-5 → ✎ Edit details",
+      "note": "pop-up \"BFM-5 ·\"; the window was filled with name \"Basic Fighting Manoeuvres-5 (Refer to BCTM BFM-7)\""
+    },
+    {
+      "step": "b: Tx BFM-3 → ✎ Edit details",
+      "note": "crew was \"IP / UW, UP / IW\" → \"IP / UW, UP / IP\""
+    },
+    {
+      "step": "R83: renaming BFM-5 on Tx leaves 2026's BFM-5 name alone",
+      "pass": false,
+      "said": "2026 BFM-5 now reads: BFM-5 TX NAME FIVEnot done Type: 2 x F-15SG Crew: IP / UW, UP / IW Prerequisites: BFM-4, AAM-08, JMP-02 Edit"
+    },
+    {
+      "step": "c: 2026 BFM-5 → Show All → Edit",
+      "note": "the editor was filled with {\"Hours\":\"\"} → now \"BFM-5 TX NAME FIVEnot done Type: 2 x F-15SG · 7.7 Hrs Crew: IP / UW, UP / IW Prerequisites: BFM-4, AAM-08, JMP-02 Edit\""
+    },
+    {
+      "step": "A: after the three edits",
+      "note": "2026 · BFM-5: BFM-5 TX NAME FIVEnot done Type: 2 x F-15SG · 7.7 Hrs Crew: IP / UW, UP / IW Prerequisites: BFM-4, AAM-08, JMP-02 Edit  ‖  2026 · BFM-3: BFM-3 Basic Fighting Manoeuvres-3not done Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: BFM-2, AAM-07 Edit  ‖  Tx 2026 · BFM-5: BFM-5 TX NAME FIVE Type: 2 x F-15SG · 7.7 Hrs Crew: IP / W, UP / IW or IP Prerequisites: AAM-08, JMP-02, BFM-4 Edit  ‖  Tx 2026 · BFM-3: BFM-3 Basic Fighting Manoeuvres-3 Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: AAM-07, BFM-2 Edit"
+    },
+    {
+      "step": "R83: the Hours edit made on 2026 stays on 2026 (Tx's BFM-5 does not take it)",
+      "pass": false,
+      "said": "Tx BFM-5: BFM-5 TX NAME FIVE Type: 2 x F-15SG · 7.7 Hrs Crew: IP / W, UP / IW or IP Prerequisites: AAM-08, JMP-02, BFM-4 Edit"
+    },
+    {
+      "step": "b: Tx BFM-3 reads the crew typed on Tx",
+      "pass": true,
+      "said": "BFM-3 Basic Fighting Manoeuvres-3 Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: AAM-07, BFM-2 Edit"
+    },
+    {
+      "step": "A: the file's details for BFM-5 / BFM-3",
+      "note": "{\"name\":\"TX NAME FIVE\",\"fmt\":\"2 x F-15SG\",\"crew\":\"IP / UW, UP / IW\",\"pre\":\"\",\"hrs\":\"7.7 Hrs\"} / {\"name\":\"Basic Fighting Manoeuvres-3\",\"fmt\":\"2 x F-15SG\",\"crew\":\"IP / UW, UP / IP\",\"pre\":\"\",\"__kept\":[\"crew\"]}"
+    },
+    {
+      "step": "B: after export → wipe → import",
+      "note": "2026 · BFM-5: BFM-5 TX NAME FIVEnot done Type: 2 x F-15SG · 7.7 Hrs Crew: IP / UW, UP / IW Prerequisites: BFM-4, AAM-08, JMP-02 Edit  ‖  2026 · BFM-3: BFM-3 Basic Fighting Manoeuvres-3not done Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: BFM-2, AAM-07 Edit  ‖  Tx 2026 · BFM-5: BFM-5 TX NAME FIVE Type: 2 x F-15SG · 7.7 Hrs Crew: IP / W, UP / IW or IP Prerequisites: AAM-08, JMP-02, BFM-4 Edit  ‖  Tx 2026 · BFM-3: BFM-3 Basic Fighting Manoeuvres-3 Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: AAM-07, BFM-2 Edit"
+    },
+    {
+      "step": "round trip: 2026 · BFM-5 reads the same in the bubble and Show All",
+      "pass": true,
+      "said": "BFM-5 TX NAME FIVEnot done Type: 2 x F-15SG · 7.7 Hrs Crew: IP / UW, UP / IW Prerequisites: BFM-4, AAM-08, JMP-02 Edit"
+    },
+    {
+      "step": "round trip: 2026 · BFM-3 reads the same in the bubble and Show All",
+      "pass": true,
+      "said": "BFM-3 Basic Fighting Manoeuvres-3not done Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: BFM-2, AAM-07 Edit"
+    },
+    {
+      "step": "round trip: Tx 2026 · BFM-5 reads the same in the bubble and Show All",
+      "pass": true,
+      "said": "BFM-5 TX NAME FIVE Type: 2 x F-15SG · 7.7 Hrs Crew: IP / W, UP / IW or IP Prerequisites: AAM-08, JMP-02, BFM-4 Edit"
+    },
+    {
+      "step": "round trip: Tx 2026 · BFM-3 reads the same in the bubble and Show All",
+      "pass": true,
+      "said": "BFM-3 Basic Fighting Manoeuvres-3 Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: AAM-07, BFM-2 Edit"
+    },
+    {
+      "step": "Fable #21: Tx BFM-5 shows the Tx name after the wipe",
+      "pass": true,
+      "said": "BFM-5 TX NAME FIVE Type: 2 x F-15SG · 7.7 Hrs Crew: IP / W, UP / IW or IP Prerequisites: AAM-08, JMP-02, BFM-4 Edit"
+    },
+    {
+      "step": "Fable #21: 2026 BFM-5 shows the LONG-course name and the Hours edit after the wipe",
+      "pass": false,
+      "said": "BFM-5 TX NAME FIVEnot done Type: 2 x F-15SG · 7.7 Hrs Crew: IP / UW, UP / IW Prerequisites: BFM-4, AAM-08, JMP-02 Edit"
+    },
+    {
+      "step": "Fable #23: Tx BFM-3 still reads 2026's crew wording after the wipe (the \"kept on purpose\" marker rode the file)",
+      "pass": true,
+      "said": "BFM-3 Basic Fighting Manoeuvres-3 Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: AAM-07, BFM-2 Edit"
+    }
+  ],
+  "base": {
+    "2026 · BFM-5": {
+      "bubble": "BFM-5 Basic Fighting Manoeuvres-5 Type: 2 x F-15SG Crew: IP / UW, UP / IW Prerequisites: BFM-4, AAM-08, JMP-02",
+      "showAll": "BFM-5 Basic Fighting Manoeuvres-5not done Type: 2 x F-15SG Crew: IP / UW, UP / IW Prerequisites: BFM-4, AAM-08, JMP-02 Edit"
+    },
+    "2026 · BFM-3": {
+      "bubble": "BFM-3 Basic Fighting Manoeuvres-3 Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: BFM-2, AAM-07",
+      "showAll": "BFM-3 Basic Fighting Manoeuvres-3not done Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: BFM-2, AAM-07 Edit"
+    },
+    "Tx 2026 · BFM-5": {
+      "bubble": "BFM-5 Basic Fighting Manoeuvres-5 (Refer to BCTM BFM-7) Type: 2 x F-15SG Crew: IP / W, UP / IW or IP Prerequisites: AAM-08, JMP-02, BFM-4",
+      "showAll": "BFM-5 Basic Fighting Manoeuvres-5 (Refer to BCTM BFM-7) Type: 2 x F-15SG Crew: IP / W, UP / IW or IP Prerequisites: AAM-08, JMP-02, BFM-4 Edit"
+    },
+    "Tx 2026 · BFM-3": {
+      "bubble": "BFM-3 Basic Fighting Manoeuvres-3 Type: 2 x F-15SG Crew: IP / UW, UP / IW Prerequisites: AAM-07, BFM-2",
+      "showAll": "BFM-3 Basic Fighting Manoeuvres-3 Type: 2 x F-15SG Crew: IP / UW, UP / IW Prerequisites: AAM-07, BFM-2 Edit"
+    }
+  },
+  "beforeExport": {
+    "2026 · BFM-5": {
+      "bubble": "BFM-5 TX NAME FIVE Type: 2 x F-15SG · 7.7 Hrs Crew: IP / UW, UP / IW Prerequisites: BFM-4, AAM-08, JMP-02",
+      "showAll": "BFM-5 TX NAME FIVEnot done Type: 2 x F-15SG · 7.7 Hrs Crew: IP / UW, UP / IW Prerequisites: BFM-4, AAM-08, JMP-02 Edit"
+    },
+    "2026 · BFM-3": {
+      "bubble": "BFM-3 Basic Fighting Manoeuvres-3 Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: BFM-2, AAM-07",
+      "showAll": "BFM-3 Basic Fighting Manoeuvres-3not done Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: BFM-2, AAM-07 Edit"
+    },
+    "Tx 2026 · BFM-5": {
+      "bubble": "BFM-5 TX NAME FIVE Type: 2 x F-15SG · 7.7 Hrs Crew: IP / W, UP / IW or IP Prerequisites: AAM-08, JMP-02, BFM-4",
+      "showAll": "BFM-5 TX NAME FIVE Type: 2 x F-15SG · 7.7 Hrs Crew: IP / W, UP / IW or IP Prerequisites: AAM-08, JMP-02, BFM-4 Edit"
+    },
+    "Tx 2026 · BFM-3": {
+      "bubble": "BFM-3 Basic Fighting Manoeuvres-3 Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: AAM-07, BFM-2",
+      "showAll": "BFM-3 Basic Fighting Manoeuvres-3 Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: AAM-07, BFM-2 Edit"
+    }
+  },
+  "after": {
+    "2026 · BFM-5": {
+      "bubble": "BFM-5 TX NAME FIVE Type: 2 x F-15SG · 7.7 Hrs Crew: IP / UW, UP / IW Prerequisites: BFM-4, AAM-08, JMP-02",
+      "showAll": "BFM-5 TX NAME FIVEnot done Type: 2 x F-15SG · 7.7 Hrs Crew: IP / UW, UP / IW Prerequisites: BFM-4, AAM-08, JMP-02 Edit"
+    },
+    "2026 · BFM-3": {
+      "bubble": "BFM-3 Basic Fighting Manoeuvres-3 Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: BFM-2, AAM-07",
+      "showAll": "BFM-3 Basic Fighting Manoeuvres-3not done Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: BFM-2, AAM-07 Edit"
+    },
+    "Tx 2026 · BFM-5": {
+      "bubble": "BFM-5 TX NAME FIVE Type: 2 x F-15SG · 7.7 Hrs Crew: IP / W, UP / IW or IP Prerequisites: AAM-08, JMP-02, BFM-4",
+      "showAll": "BFM-5 TX NAME FIVE Type: 2 x F-15SG · 7.7 Hrs Crew: IP / W, UP / IW or IP Prerequisites: AAM-08, JMP-02, BFM-4 Edit"
+    },
+    "Tx 2026 · BFM-3": {
+      "bubble": "BFM-3 Basic Fighting Manoeuvres-3 Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: AAM-07, BFM-2",
+      "showAll": "BFM-3 Basic Fighting Manoeuvres-3 Type: 2 x F-15SG Crew: IP / UW, UP / IP Prerequisites: AAM-07, BFM-2 Edit"
+    }
+  },
+  "errorsA": [],
+  "errorsB": []
+}
