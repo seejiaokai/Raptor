@@ -15,6 +15,10 @@
 > must NEVER wipe an event's typed details — hours, prerequisites, crew pairing, name, format. It
 > brings in the file's own detail edits and never puts shipped wording back over one made here
 > (walker finding W1-9: a one-chart import did exactly that to other charts — fix pending).
+> **Last Flown (D123, 23 Sep 26):** the latest day actually flown — worked out from the flights
+> marked done, so a flight corrected to an earlier day, or un-marked, pulls it back (it used to only
+> ever move forward); a briefly empty date box is not a day flown. **Deleting a ball (D124):** wipes
+> its marks, so a new ball with the same code starts ungraded. Both fixes pending (walker W2-F2/F3/F7).
 >
 > **Vendored into RAPTOR 7 Sep 26** (`src/tracker/`, the Tracker tab) from
 > `github.com/seejiaokai/Tracker` at `bf9a47a`. This file carries over what
