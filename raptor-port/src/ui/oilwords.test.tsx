@@ -32,7 +32,7 @@ import { ensureRowIds } from '../engine/rowids'
 import { rowItemKey } from '../engine/oil'
 import { undoState } from '../undo'
 import { oilSeatDeco, withDaySnap } from './html'
-import { oilSentinelList, oilItemCellHTML } from './oilmode'
+import { oilFromWords, oilItemCellHTML } from './oilmode'
 import { openScheduler } from './board'
 import { setOilDay } from '../state/view'
 
@@ -99,23 +99,33 @@ describe('the count says WHICH list it is (D37, step 10)', () => {
     expect(chip, 'the scheduler is looking at a live count').toContain('as things stand now')
   })
 
+  /* THE TAP OPENS [ALL-AVAIL-WINDOW] NOW (D38-D41), so the second half of each
+     of these reads the window's phrase rather than a toast's. What is asserted
+     is unchanged and is the point: the chip and the thing its tap opens must say
+     which of the two answers they are showing, in ONE vocabulary. They used to
+     reach that answer by two different routes — the chip from the version it was
+     drawn in, the sentence from whether the day carried a frozen block — and the
+     first build of the window dropped the phrase entirely. It is one exported
+     body now (`oilFromWords`), so this is structural rather than a coincidence. */
   it('on an ISSUED page it is the list the day went out with', () => {
-    const item = puckRow(SAT)
+    puckRow(SAT)
     publish(SAT)
     const ver = dayCurVer(SAT)
     const chip = withDaySnap(SAT, ver, () => oilSeatDeco(SAT, 'allavail', `g:${SAT}.0`).chip)
     expect(chip, 'this is a record, not a live count').toContain('when this day was issued')
     expect(chip).not.toContain('as things stand now')
-    const said = withDaySnap(SAT, ver, () => oilSentinelList(SAT, item))
-    expect(said, 'and the tap says the same thing, in the same words').toContain('when this day was issued')
+    expect(oilFromWords(ver), 'and the window says the same thing, in the same words')
+      .toContain('when this day was issued')
   })
 
-  it('the chip and its tap use ONE vocabulary, not two', () => {
-    const item = puckRow(SAT)
+  it('the chip and the window it opens use ONE vocabulary, not two', () => {
+    puckRow(SAT)
     const chip = oilSeatDeco(SAT, 'allavail', `g:${SAT}.0`).chip
-    const said = oilSentinelList(SAT, item)
     expect(chip).toContain('as things stand now')
-    expect(said).toContain('as things stand now')
+    expect(oilFromWords('')).toContain('as things stand now')
+    /* the chip builds its own title from this same body, so the two cannot
+       drift without this test going red */
+    expect(chip, 'the chip quotes the shared phrase verbatim').toContain(oilFromWords(''))
   })
 })
 

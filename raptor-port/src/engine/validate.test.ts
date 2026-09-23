@@ -306,7 +306,7 @@ describe('an IRT needs an IR examiner (NO_IR)', () => {
   })
 })
 
-/* ---- the combination matrix (F-15SG Table 1.5-2, owner Aug 5 '26) ---------
+/* ---- the combination matrix (F-15 Table 1.5-2, owner Aug 5 '26) ---------
    Front seat CAT A–D or OCU vs back seat CAT A–D or OCU; instructors clear
    it outright and mis-seated bodies belong to the QUAL rules. Unlike NO_IR
    this DOES fire on the seed week — refwin patches the same rule into the

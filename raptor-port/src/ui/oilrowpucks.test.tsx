@@ -96,6 +96,32 @@ const sim = (row: any) => {
   return (DAYS[SAT] as any).sims.oft[0]
 }
 const enter = async () => { await open(SAT); await click(oilBtn()) }
+
+/* ---- THE DOOR MOVED INTO THE WINDOW ([ALL-AVAIL-WINDOW], D38) --------------
+   Step 7 built an INLINE crowd: inside the mode a placeholder became the
+   individual pucks of the men behind it, drawn along the row. It was built for a
+   real reason — step 5 made those seats EARN, and paying a crowd the scheduler
+   cannot correct is worse than not paying it.
+
+   The owner then ruled that the window replaces that in-row crowd (D38), so the
+   door is now: the row shows the PLACEHOLDER and its counter, the counter opens
+   the window, and the window is where one man is taken off.
+
+   THE THING STEP 7 GUARANTEED IS WHAT THESE STILL CHECK, seat kind by seat kind:
+   that every place a placeholder can land HAS a door, and that the door works.
+   That is the roll-call, written as tests — and it is a stronger check than the
+   old one, because it walks the whole route a scheduler actually takes instead
+   of asserting that some pucks were drawn. */
+const chipOn = (panel: string) => $(`#sbBoard .sb-panel.${panel} .oilcount`)
+const openWin = async (panel: string) => {
+  const c = chipOn(panel)
+  expect(c, `the ${panel} placeholder has a counter to tap — this IS the door`).toBeTruthy()
+  await click(c)
+  expect($('.availwin'), 'and it opens the window').toBeTruthy()
+}
+const winSeats = () => ($$('.availwin .seat.oilpk') as HTMLElement[])
+const winNames = () => winSeats().map(s => s.dataset.oilp).sort()
+const winSeat = (id: string) => winSeats().find(s => s.dataset.oilp === id)!
 const prog = (row: any) => {
   ;(DAYS[SAT] as any).allhands = [{ prog: 'SAFETY BRIEF', str: '0800', end: '1000', ...row }]
   ensureRowIds(DAYS)
@@ -108,29 +134,36 @@ const ground = (row: any) => {
 }
 
 describe('a DUTY DESK opens its crowd (OIL8)', () => {
-  it('a placeholder ON the desk draws the men behind it, each one tappable', async () => {
+  it('a placeholder ON the desk keeps its counter, and the counter opens the crowd', async () => {
     desk({ id: 'allavail' })
     await enter()
-    expect($('#sbBoard .sb-panel.duty .puck.allavail'), 'the placeholder itself is gone in the mode').toBeFalsy()
-    expect(namesIn('duty')).toEqual(['plasma', 'stiff'])
-    expect(seatsIn('duty').filter(s => s.classList.contains('inert')).length,
+    expect($('#sbBoard .sb-panel.duty .puck.allavail'), 'the placeholder STAYS a placeholder now').toBeTruthy()
+    await openWin('duty')
+    expect(winNames()).toEqual(['plasma', 'stiff'])
+    expect(winSeats().filter(s => s.classList.contains('inert')).length,
       'none of them may be inert — the money is paying them').toBe(0)
   })
 
-  it('a placeholder in the desk\'s EXTRAS line, beside a named man', async () => {
+  it('a placeholder in the desk EXTRAS line, beside a named man', async () => {
     desk({ id: 'rocky', more: ['allavail'] })
     await enter()
-    expect(namesIn('duty'), 'the named man keeps his place and the crowd joins him').toEqual(['plasma', 'rocky', 'stiff'])
+    /* the named man keeps his own puck on the ROW, where he always was; the
+       crowd behind the placeholder is what moved into the window */
+    expect(($$('#sbBoard .sb-panel.duty .seat.oilpk') as HTMLElement[]).map(s => s.dataset.oilp))
+      .toEqual(['rocky'])
+    await openWin('duty')
+    expect(winNames()).toEqual(['plasma', 'stiff'])
   })
 
-  it('ONE MAN IS TAKEN OFF, and the rest of the desk is untouched', async () => {
+  it('ONE MAN IS TAKEN OFF in the window, and the rest of the desk is untouched', async () => {
     const r = desk({ id: 'allavail' })
     await enter()
+    await openWin('duty')
     const item = rowItemKey(r.rid)
-    await click(seatsIn('duty').find(s => s.dataset.oilp === 'plasma')!)
+    await click(winSeat('plasma').querySelector('.puck'))
     expect((DAYS[SAT] as any).oild.people[`plasma|${item}`]).toBe('deny')
-    expect(seatsIn('duty').find(s => s.dataset.oilp === 'plasma')!.classList.contains('off')).toBe(true)
-    expect(seatsIn('duty').find(s => s.dataset.oilp === 'stiff')!.classList.contains('on'), 'untouched').toBe(true)
+    expect(winSeat('plasma').classList.contains('off')).toBe(true)
+    expect(winSeat('stiff').classList.contains('on'), 'untouched').toBe(true)
   })
 })
 
@@ -138,28 +171,32 @@ describe('a SIM ROW opens its crowd (OIL8)', () => {
   it('a placeholder in a SEAT', async () => {
     sim({ p: 'allavail' })
     await enter()
-    expect($('#sbBoard .sb-panel.simr .puck.allavail'), 'the placeholder itself is gone').toBeFalsy()
-    expect(namesIn('simr')).toEqual(['plasma', 'stiff'])
+    expect($('#sbBoard .sb-panel.simr .puck.allavail'), 'the placeholder stays').toBeTruthy()
+    await openWin('simr')
+    expect(winNames()).toEqual(['plasma', 'stiff'])
   })
 
   it('a placeholder among the PASSENGERS', async () => {
     sim({ pax: ['rocky', 'allavail'] })
     await enter()
-    expect(namesIn('simr')).toEqual(['plasma', 'rocky', 'stiff'])
+    await openWin('simr')
+    expect(winNames()).toEqual(['plasma', 'stiff'])
   })
 
   it('a placeholder on the EXTRAS line', async () => {
     sim({ p: 'rocky', more: ['allavail'] })
     await enter()
-    expect(namesIn('simr')).toEqual(['plasma', 'rocky', 'stiff'])
+    await openWin('simr')
+    expect(winNames()).toEqual(['plasma', 'stiff'])
   })
 
-  it('one man is taken off a sim crowd on his own', async () => {
+  it('one man is taken off a sim crowd on his own, in the window', async () => {
     const r = sim({ p: 'allavail' })
     await enter()
-    await click(seatsIn('simr').find(s => s.dataset.oilp === 'stiff')!)
+    await openWin('simr')
+    await click(winSeat('stiff').querySelector('.puck'))
     expect((DAYS[SAT] as any).oild.people[`stiff|${rowItemKey(r.rid)}`]).toBe('deny')
-    expect(seatsIn('simr').find(s => s.dataset.oilp === 'plasma')!.classList.contains('on'), 'untouched').toBe(true)
+    expect(winSeat('plasma').classList.contains('on'), 'untouched').toBe(true)
   })
 })
 
@@ -213,27 +250,32 @@ describe('the controls — nothing else about these rows changes', () => {
    21 Sep 26, which is the reason it is worth the minute: a surface that already
    works is exactly where the next unwiring goes unnoticed. */
 describe('the COMMON PROGRAMME opens its crowd (OIL8)', () => {
-  it('a placeholder ON a programme row draws the men behind it, each one tappable', async () => {
+  it('a placeholder ON a programme row keeps its counter, and it opens the crowd', async () => {
     prog({ who: 'allavail' })
     await enter()
-    expect($('#sbBoard .sb-panel.prog .puck.allavail'), 'the placeholder itself is gone in the mode').toBeFalsy()
-    expect(namesIn('prog')).toEqual(['plasma', 'stiff'])
-    expect(seatsIn('prog').filter(s => s.classList.contains('inert')).length,
+    expect($('#sbBoard .sb-panel.prog .puck.allavail'), 'the placeholder STAYS a placeholder now').toBeTruthy()
+    await openWin('prog')
+    expect(winNames()).toEqual(['plasma', 'stiff'])
+    expect(winSeats().filter(s => s.classList.contains('inert')).length,
       'none of them may be inert — the money is paying them').toBe(0)
   })
 
-  it('a placeholder BESIDE a named man — a programme row holds its people in one list', async () => {
+  it('a placeholder BESIDE a named man — the man stays on the row, the crowd is in the window', async () => {
     prog({ who: ['rocky', 'allavail'] })
     await enter()
-    expect(namesIn('prog'), 'the named man keeps his place and the crowd joins him').toEqual(['plasma', 'rocky', 'stiff'])
+    expect(($$('#sbBoard .sb-panel.prog .seat.oilpk') as HTMLElement[]).map(s => s.dataset.oilp))
+      .toEqual(['rocky'])
+    await openWin('prog')
+    expect(winNames()).toEqual(['plasma', 'stiff'])
   })
 
-  it('ONE MAN IS TAKEN OFF, and the rest of the row is untouched', async () => {
+  it('ONE MAN IS TAKEN OFF in the window, and the rest of the row is untouched', async () => {
     const r = prog({ who: 'allavail' })
     await enter()
-    await click(seatsIn('prog').find(s => s.dataset.oilp === 'plasma')!)
+    await openWin('prog')
+    await click(winSeat('plasma').querySelector('.puck'))
     expect((DAYS[SAT] as any).oild.people[`plasma|${rowItemKey(r.rid)}`]).toBe('deny')
-    expect(seatsIn('prog').find(s => s.dataset.oilp === 'stiff')!.classList.contains('on'), 'untouched').toBe(true)
+    expect(winSeat('stiff').classList.contains('on'), 'untouched').toBe(true)
   })
 
   it('a row of NAMED men draws exactly the men on it', async () => {
@@ -262,17 +304,19 @@ describe('the COMMON PROGRAMME opens its crowd (OIL8)', () => {
    uncovered. One block, so the register's row and the surfaces it names are in
    one place. */
 describe('a GROUND ROW opens its crowd (OIL8)', () => {
-  it('a placeholder on a ground row draws the men behind it', async () => {
+  it('a placeholder on a ground row keeps its counter, and it opens the crowd', async () => {
     ground({ who: 'allavail' })
     await enter()
-    expect(namesIn('grnd')).toEqual(['plasma', 'stiff'])
+    await openWin('grnd')
+    expect(winNames()).toEqual(['plasma', 'stiff'])
   })
 
-  it('one man is taken off, and the rest are untouched', async () => {
+  it('one man is taken off in the window, and the rest are untouched', async () => {
     const r = ground({ who: 'allavail' })
     await enter()
-    await click(seatsIn('grnd').find(s => s.dataset.oilp === 'stiff')!)
+    await openWin('grnd')
+    await click(winSeat('stiff').querySelector('.puck'))
     expect((DAYS[SAT] as any).oild.people[`stiff|${rowItemKey(r.rid)}`]).toBe('deny')
-    expect(seatsIn('grnd').find(s => s.dataset.oilp === 'plasma')!.classList.contains('on')).toBe(true)
+    expect(winSeat('plasma').classList.contains('on')).toBe(true)
   })
 })

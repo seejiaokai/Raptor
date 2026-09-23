@@ -344,6 +344,74 @@ export function closeBoardState(){
 export let SECDEFOFFER: number | null = null
 let secDefSeq = 0
 export function setSecDefOffer(v: number | null){ SECDEFOFFER = v; if(v!=null) secDefSeq++ }
+
+/* ---- [ALL-AVAIL-WINDOW] — the counter's window (owner, D38–D41) -----------
+   HELD HERE, not in ui/pops (which re-exports it), so the page, week and
+   session resets below can close it (D66) without state reaching into ui.
+   A THIRD KIND OF TRANSIENT SURFACE, and the app's first. Not a Sheet (scrim,
+   Escape, blocks everything) and not an inline popup (dismisses on an outside
+   click — the 4 Sep 26 standing rule). It stays open while the scheduler
+   SCROLLS AND EDITS the schedule behind it, and it is movable and resizable.
+   Its contract is in docs/ui-contracts.md, which states in writing that the
+   outside-click rule does NOT apply to it — or a later session will "fix" it.
+
+   `ver` is the version the counter chip was drawn in (Codex OSE-R2-05). Empty
+   means the chip came from the working copy. It is carried rather than re-read
+   because the snapshot is installed only while the page is built: reading the
+   live day when the window opens would list whoever is free NOW under a number
+   frozen when the day went out, which is the one thing D44 forbids. */
+export type AvailWin = {
+  di: number
+  item: string
+  ver: string
+  /* the chip was drawn on the view page's ISSUED FACE, which wears its
+     OFFICIAL flags — so the window replays that world, not a bare preview's
+     (Fable S3; html.ts withChipWorld). Absent = not the issued face. */
+  ofw?: boolean
+  /* the event's own words for the title bar, captured at open: the window
+     outlives the row that opened it (he can edit the schedule behind it), and
+     re-deriving the name from a row he has since renamed would retitle the
+     window under him. */
+  name: string
+  when: string
+  /* 'who' = who is available, always offered. 'oil' = who earns, which EXISTS
+     ONLY while OIL Earn is on (the mode rule, confirmed 22 Sep 26). */
+  tab: 'who' | 'oil'
+}
+export let AVAILWIN: AvailWin | null = null
+/* EVERY OPEN AND EVERY CLOSE GOES THROUGH HERE, so this is where a window
+   starts clean: its footer sentence and its position are reset with it. Both
+   used to outlive the window (Fable S11): the footer lived in the component,
+   which is never unmounted, and the position was reset by each caller that
+   remembered to. Open A, tap a man, close, open B — and B's footer still spoke
+   about a man who is not behind B. Found for real on 23 Sep 26, when this
+   file's own tests leaked one window's sentence into the next. */
+export function setAvailWin(v: AvailWin | null) { AVAILWIN = v; AVAILWIN_FOOT = ''; AVAILWIN_BOX = null }
+/* a tab change is a new list, so it starts with the tab's own hint */
+export function setAvailTab(t: 'who' | 'oil') { if (AVAILWIN) AVAILWIN = { ...AVAILWIN, tab: t }; AVAILWIN_FOOT = '' }
+/* THE SENTENCE UNDER THE LIST after a tap — "X — why", or what a switch did.
+   Empty = the tab's own hint. Kept beside the window it belongs to, never in
+   the component, for the reason above. */
+export let AVAILWIN_FOOT = ''
+export function setAvailFoot(s: string) { AVAILWIN_FOOT = s }
+
+/* WHERE THE WINDOW SITS, kept OUTSIDE React on purpose. He edits the schedule
+   behind it, so every keystroke notifies and re-renders; position held in
+   component state would be thrown away on the first one. A drag writes the
+   element's style directly at pointer speed and commits here on release, so
+   dragging never re-renders the app either. null = where the STYLESHEET puts
+   it (Fable S8): the corner on a desktop, the full-width bottom panel on a
+   phone. D40's numbers — it OPENS SKINNY at 212px (two 74px pucks, their gap
+   and ~16px of slack per column) with 186 as the floor, below which a puck
+   clips — live in scheduler.css `.availwin`, and ONLY there: they used to be
+   pinned inline from here as well, and an inline size beats the phone rule. */
+/* `phone`: which LAYOUT the box was made in (Astra 3). A desktop box never
+   applies on a phone, where the stylesheet owns the panel's size, and a phone
+   box never applies on a desktop — each layout keeps its own, so a trip
+   through the other one gives it back. */
+export type AvailBox = { x: number, y: number, w: number, h: number, phone?: boolean }
+export let AVAILWIN_BOX: AvailBox | null = null
+export function setAvailWinBox(b: AvailBox | null) { AVAILWIN_BOX = b }
 export function secDefOfferSeq(){ return secDefSeq }
 /* the two pages that ARE a week, and the scroller each one owns */
 export const WEEK_EL:any={viewsched:'vWeek',editsched:'eWeek'}
@@ -373,6 +441,14 @@ export function setPage(p:any){
      login that lands where it already was must not reach into the DOM. The
      typeof guard: resetSession routes every login/logout through here, and
      the headless state tests run with no document at all. */
+  /* THE COUNTER'S WINDOW CLOSES ON A PAGE CHANGE (owner D66, 23 Sep 26 —
+     "close it"). It is a schedule tool; floating it over the Leave War grid, the
+     Tracker or the Inputs page is clutter (Fable S13). The switch between Edit
+     Schedule and View-only Sched is a page change too, and closes it for its own
+     reason: the two pages show different versions of the day, so a window opened
+     on one would list the wrong crowd on the other (D44). The week and session
+     halves are in VIEW_RESET below. */
+  if(p!==CURPAGE)setAvailWin(null);
   if(p!==CURPAGE&&typeof document!=='undefined')document.querySelectorAll('.stmenu, .wavemenu').forEach(x=>{
     const off=(x as any)._offClick;
     if(off)document.removeEventListener('click',off);
@@ -708,6 +784,15 @@ export const VIEW_RESET: { name: string; scopes: ResetScope[]; reset: () => void
      confirm cleared by any navigation (login/logout, week swap), so it never carries
      a stale "confirm" across a week. */
   { name:'UNPUBARM', scopes:['session','week'], reset:()=>setUnpubArm(null) },
+  /* [ALL-AVAIL-WINDOW] — the counter's window (owner D66, 23 Sep 26: "close
+     it"). A WEEK swap closes it: the event it was opened from is no longer on
+     screen, and every other per-week transient already resets here. A LOGIN
+     or LOGOUT closes it: the next person must not inherit the last one's
+     window — its title, its day, its issued version (Fable S12). The page
+     change half lives in setPage above. NOT the outside-click rule, which
+     still does not apply to this window: a click on the schedule behind it
+     must never close it (D38). */
+  { name:'AVAILWIN', scopes:['session','week'], reset:()=>setAvailWin(null) },
   /* week-only: the palette day and the "set default?" offer are keyed to the
      week being left; resetSession clears the offer through setPage instead */
   { name:'ROSDAY',     scopes:['week'], reset:()=>setRosDay(0) },
@@ -746,7 +831,16 @@ export function unpubArmed(di:any){ return UNPUBARM!=null && UNPUBARM===+di }
 export function prunePreviews(){ for(const [di,ver] of [...DPREV]){
   if(!daySnapOf(di,ver)){DPREV.delete(di);continue}
   if(typeof ver==='string'&&ver.slice(0,2)==='d:'&&ver==='d:'+curDraftId(di))DPREV.delete(di)
-} }
+}
+  /* THE COUNTER'S WINDOW LIVES AND DIES WITH ITS VERSION, like a preview does
+     (Fable S5). Opened from an issued or plan chip, it lists that version's
+     men under "who was free when this day was issued"; unpublish the day, undo
+     the publish, or bring the plan out, and the version is gone or is now the
+     working copy — so the window closes rather than go on labelling a list it
+     can no longer read. Every path that removes a version already runs this. */
+  const w=AVAILWIN
+  if(w&&w.ver&&(!daySnapOf(w.di,w.ver)||(w.ver.slice(0,2)==='d:'&&w.ver==='d:'+curDraftId(w.di))))setAvailWin(null)
+}
 /* {di,ix,ids:[…],sev,key,code,prevDi,leaveBy} — key = the causing line's
    slot-key, if the warning carries one. The cross-day crew-rest row adds
    panDi/panKey: land on THAT day and THAT line instead, the one case where the

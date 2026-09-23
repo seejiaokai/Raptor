@@ -20,7 +20,7 @@ import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWORK, CURPA
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
-import { oilBarOf, oilItemOfKey, inputItemKey, oilSentinelSummary } from './oilmode'
+import { oilBarOf, oilItemOfKey, inputItemKey, oilSentinelSummary, oilFromWords } from './oilmode'
 import { oilReadPass } from '../engine/oilev'
 import { STORE_CFG, groundOrder, secOrder } from '../engine'
 
@@ -90,6 +90,28 @@ export function withDaySnap(di:any,ver:any,fn:any){
   PV=true; PVV=ver; PVND=nd0
   try { return fn(true) }
   finally { DAYS[di]=d0; SCHED.changes=c0; SCHED.pending=p0; PV=false; PVV=null; PVND=nd }
+}
+/* [ALL-AVAIL-WINDOW] — THE WORLD A COUNT CHIP WAS DRAWN IN, replayed for the
+   window its tap opens (Fable S3, 23 Sep 26). A chip is drawn in one of three
+   worlds and says which: the working copy (no version); a version preview — a
+   past AL, a parked plan — which reads and does not check (PV: no flags); or
+   the view page's ISSUED FACE, which wears its OFFICIAL flags (PV + OFW +
+   withOfficialWarn, exactly as dayIssuedHTML builds it). The window used to
+   replay only the first step — its crowd came through withDaySnap — and read the
+   flags, the figures and the puck marks from the LIVE day, so an issued list
+   wore today's warnings and today's money. Replaying the whole world gives every
+   reader inside the window the answer the chip's own face showed, with no reader
+   needing to know.
+   `fn(false)`: the version no longer resolves (unpublished, undone). It runs in
+   the LIVE world, so the caller must treat it as GONE and read nothing. */
+export function withChipWorld<T>(di:any,ver:any,ofw:any,fn:(ok:boolean)=>T):T{
+  /* no version, official world: the view page's draft day (Fable F6) */
+  if(!ver)return ofw?withOfficialWarn(()=>fn(true)):fn(true)
+  if(!ofw)return withDaySnap(di,ver,(ok:any)=>fn(!!ok))
+  const q=PVQ,o=OFW
+  PVQ=true; OFW=true
+  try{ return withDaySnap(di,ver,(ok:any)=>ok?withOfficialWarn(()=>fn(true)):fn(false)) }
+  finally{ PVQ=q; OFW=o }
 }
 export function dayPreviewHTML(di:any,ver:any,edFallback:any){
   return withDaySnap(di,ver,(ok:any)=>ok?dayHTML(di,false,true):dayHTML(di,edFallback,true))
@@ -528,7 +550,7 @@ export function oilSeatDeco(di:any,id:any,key:any,itemOf?:string):{oil:any;chip:
        and the list as things stand today. A number that does not say which is
        worse than no number, because the scheduler cannot tell whether he is
        reading a record or a live count. One phrase, used here and on the tap. */
-    const from=ver?' (who was free when this day was issued)':' (who is free as things stand now)';
+    const from=` (${oilFromWords(ver)})`;
     const ttl=sum.unrecorded
       ?'This schedule was issued before the app kept a record of who was behind this puck'
       :(!sum.earns
@@ -538,7 +560,13 @@ export function oilSeatDeco(di:any,id:any,key:any,itemOf?:string):{oil:any;chip:
             :sum.bar?`All ${sum.n} earn ${sum.bar==='FO'?'a full day':'half a day'} — tap to see each one`
               :`None of these ${sum.n} earn OIL today — tap to see each one`)+from;
     return {oil:sum.bar?{bar:sum.bar}:null,
-      chip:`<span class="oilcount${some?' some':''}" data-oilsent="${esc(item)}" data-oilday="${+di}" data-oilver="${esc(ver)}" title="${esc(ttl)}">${txt}</span>`};
+      /* data-oilofw: the chip was drawn in the OFFICIAL flag world — the view
+         page's ISSUED FACE (OFW), or a draft day the view page resolves in the
+         official world (withOfficialWarn — Fable F6: its window drew the
+         working world's flags). The window replays exactly that world
+         (withChipWorld below). A version preview (PV without OFW) never
+         carries it: a past version is read, not checked. */
+      chip:`<span class="oilcount${some?' some':''}" data-oilsent="${esc(item)}" data-oilday="${+di}" data-oilver="${esc(ver)}"${(ver?OFW:WARN===officialWarn())?' data-oilofw="1"':''} title="${esc(ttl)}">${txt}</span>`};
   }
   return {oil:oilBarOf(di,id,item),chip:''};
 }
@@ -643,6 +671,32 @@ export function notePubTog(k:any,pub:any){
    fly, and the owner read that as a bug (13 Aug 26; it was the panel lying,
    not the engine). The grids still list each man once: the wave rows keep
    only the partially-free, the all-day crew keep their own group. */
+/* ---- what [ALL-AVAIL-WINDOW] draws, exported rather than copied (D38) ----
+   The window draws REAL PUCKS carrying the same warning flags the rest of the
+   app draws. Both helpers live HERE, beside the four PV-gated lookups they use,
+   and are exported instead of being re-derived in the window's own file.
+
+   THE REASON IS NOT TIDINESS. `sev`/`chip`/`dsh`/`traceHit` each null out under
+   PV — a frozen snapshot must not read live WARN — and a second reader that
+   forgot that gate would flag an ISSUED document from today's warnings. That is
+   the same shape as the defect D44 exists to stop, and the codebase has already
+   paid for it once (the chip and its tap were two readers, which is how a chip
+   reading 27 sat over a tap saying nobody was behind the puck). One drawer. */
+export function personPuckHTML(di:any,id:any,oil?:any){
+  return puck(id,sev(di,id),true,chip(di,id),dsh(di,id),traceHit(di,id),oil)
+}
+/* Every warning this man carries on this day, worst first, in the words the
+   warning list already uses. D36/D38: the window SHOWS the clash and lets the
+   scheduler judge it — it must never filter the man out, which is the change
+   D36 refuses. Returns [] under PV for the same reason the flags do. */
+export function personWarnMsgs(di:any,id:any):{sev:string,msg:string}[]{
+  if(PV&&!OFW)return []
+  const g=WARN.byDay&&WARN.byDay[+di]
+  return (((g&&g.warns)||[]) as any[])
+    .filter(w=>w&&(w.who||[]).includes(String(id)))
+    .map(w=>({sev:String(w.sev||'note'),msg:String(w.msg||'')}))
+    .filter(w=>w.msg)
+}
 export function availHTML(d:any,di:any,ed:any){
   const A=availByWave(d);
   /* in edit mode an available puck is a drag source — drag it straight onto a line,

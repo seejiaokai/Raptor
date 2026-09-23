@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* THE ONE WAY A FINISHED ITEM LEAVES THE BACKLOG — [DOCS-GUARD] step 4, F5 (Fable, 22 Sep 26;
- * owner D30 and D76).
+ * owner D30 and D83).
  *
  *   node raptor-port/scripts/backlog-archive.mjs <ITEM-ID> --homes <file>[,<file>...] [--dry-run]
  *

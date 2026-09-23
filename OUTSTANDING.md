@@ -105,14 +105,17 @@ in-flight and risk-reducing** first.
    closes. See the item below.
 **TOP OF THE QUEUE (updated 23 Sep 26).** **[OIL-AUTO-REMOVE] AND [OIL-SEATS-CAN-EARN] ARE BOTH
 MERGED AND LIVE.**
-1) **[ALL-AVAIL-WINDOW]** — **NEXT, and ready to build.** The counters it opens from are now live, its
+1) **[ALL-AVAIL-WINDOW]** — **LIVE on `main` (23 Sep 26), after his look on Vercel and his "merge live"; no phone resize corner (D77).** Was: NEXT, and ready to build. The counters it opens from are now live, its
 mock-up is APPROVED and is the design of record (D41), and D38–D41 settle its shape down to the
 pixel. **Do not re-open the design; build to it.** 2) **[DOCS-GUARD]** DONE 23 Sep 26 (archived);
 nothing left. 3) **[HUMAN-RETEST]**. 4) **[DOC-TRIM]** — unblocked now that the OIL scaffolding has become
 archive. 5) The stack resumes at **[DB-STEP]**.
 **Small OIL follow-ups, any time, none blocking:** `[OIL-READ-LEFTOVERS]` (4 items the final reads
 raised and the branch deliberately left), `[STORE-READER-SWEEP]`, `[OIL-REQ-NAMEBOX]`,
-`[POSTOUT-LOST]`'s remaining half, `[OIL-WORDS]`.
+`[POSTOUT-LOST]`'s remaining half, `[OIL-WORDS]`, and from the window's bug check
+`[OIL-PERSONAL-PLACEHOLDER]` and `[CROWD-SIM-BRIEF]` (both below `[ALL-AVAIL-WINDOW]`).
+`[LW-MONTHJUMP-PHONE]` — a Leave War phone e2e that fails under machine load, on `main` too (below
+`[ALL-AVAIL-WINDOW]`).
 
 **STALE ABOVE, CORRECTED 22 Sep 26:** the "STACK PROGRESS (updated 18 Sep 26)" block says the next
 stack item is step 4 (one Absence record). **Step 4 SHIPPED on 20 Sep 26** — `raptor-port/CLAUDE.md`
@@ -607,7 +610,7 @@ rules about posted-out and pre-joining rows. Several older documents still read 
 - Came out of it and now standing: the behaviour register, `npm run rulecheck`, the rules-first red
   team as a third review, and the CLAUDE.md standing order to sweep the rules and hand-test against
   them on every build.
-- **TWO OWNER RULINGS — BUILT 21 Sep 26** (D73/D74, register N13/N14;
+- **TWO OWNER RULINGS — BUILT 21 Sep 26** (D80/D81, register N13/N14;
   `specs/2026-09-20-NEXT-TASK-oil-award-and-oil-warning.md` is the record): (1) an OIL AWARD stops flagging a leave day (he did
   NOT rule on `duty` — ask), and (2) warn, on the day AND at publish, when a worked weekend earns
   nobody anything because the duty desk has no times. The second came from him testing DASH on SDO
@@ -615,7 +618,7 @@ rules about posted-out and pre-joining rows. Several older documents still read 
 - **Both things that were to be put to the owner are ANSWERED AND BUILT.** The ruling to carry
   forward: **OIL may be credited by hand on ANY day** — the weekend/public-holiday restriction
   belongs to the AUTOMATIC pass, which reads the published schedule, not to a credit the squadron
-  types itself (D72, register N11).
+  types itself (D79, register N11).
 
 ### [DOC-TRIM] The repo is too heavy to read (owner, 21 Sep 26 — D14)
 **His words: "theres going to be alot of context for the AI to read ... reading so much context
@@ -647,6 +650,10 @@ ceiling inside itself and had reached 961.
   never by hand or by a one-off script. (The old "prune on write" is withdrawn — D29 rule 3.)
 
 ### [HUMAN-RETEST] Re-test the earlier builds the way a person uses them (owner, 21 Sep 26)
+**ORDER (D85 + D86, 23 Sep 26): TWO CHATS IN PARALLEL — THE TRACKER and THE AMENDMENT SYSTEM**, one
+feature per chat. Amendment chat: port 4173, rulings from D90. Tracker chat: port 4180, rulings from
+D120. Never two full gate runs at once (false failures under load). The order of the other three
+(change-recording, the absence record, the Leave War links) is not ruled: propose it and ask.
 **His words: "This also means that all the previous bug tests we did there will be bugs not
 captured. Because I didnt test them when i told u that u would test like a human since."** He is
 right, and the OIL build is the proof. It had a two-model cross-provider review and 5341 green
@@ -826,6 +833,8 @@ and `[POSTOUT-LOST]`'s remaining half.
 
 ### [ALL-AVAIL-WINDOW] The counter opens a movable window of PUCKS, not a bubble of names (owner, D38, 22 Sep 26)
 
+**STATUS 23 Sep 26 — LIVE ON `main`** (his look on Vercel, then "merge live"; merged after the skill review, full gates re-run on the combined tree). Was: BUG-CHECKED AT FULL TIER on `claude/all-avail-window`. Walked on the real bundle (four passes, both widths), every Fable scenario dispositioned, both final reads (Fable + Astra, blind) reconciled and fixed, each fix red first. Evidence: `raptor-port/docs/handpass/2026-09-23-allavail-window.md`. **Waiting on: his look, then his "merge live"** — the browser gate is green (a load-sensitive Leave War test is filed as `[LW-MONTHJUMP-PHONE]`). Left open and filed: `[OIL-PERSONAL-PLACEHOLDER]`, `[CROWD-SIM-BRIEF]`; one question for him: on a phone the window moves but cannot be resized (D38 said "resizable") — **ANSWERED D77: leave it, no phone resize corner.**
+
 **His words:** *"the current interface to show just names on a bubble … is not intuitive … a window
 that is movable and … resizable and a user can still click and edit/scroll the schedule behind while
 that window is still opened … show the pucks just like how the placeholder shows the personnel and I
@@ -875,6 +884,49 @@ exactly the case he opened this with.
 **Sequencing: AFTER `[OIL-SEATS-CAN-EARN]`**, which builds the counters this window opens from, and
 which settles where they appear. Ruling: `DECISIONS.md` D38; the related ones are D27 (the count is a
 scheduling feature), D36 (the narrow window) and D37 (the count reads as what it is).
+
+### [LW-MONTHJUMP-PHONE] A Leave War phone e2e fails under machine load — on `main` too (23 Sep 26)
+
+`e2e/leavewar.spec.ts` "a month button works from wherever the grid already is" (lw-phone): March
+lands 20px short of the frozen edge (`-20`, needs `>= -1`). **Red 3/3 on `main`'s own code** (a
+throwaway worktree of `6efa6839`) and red on `claude/all-avail-window` — while two review agents were
+running on the same machine; **it then PASSED in the full run once they had finished** (461/0). So it
+is a LOAD-sensitive timing test, not a defect the window introduced — the same family as
+`[LW-SCRUBBER-FLAKY]` (the test's own comment already records the desktop half of it as "the one flaky
+assertion in the suite"). **Worth making robust** (poll until the grid's draw has settled, not a
+fixed 5s), because a red CI run on a busy runner costs a re-run. WALK tier (Leave War grid, phone).
+**Two more of the family, on GitHub's runner (23 Sep 26, the `[ALL-AVAIL-WINDOW]` merge):** in
+`e2e/step4-leavewar.spec.ts` (lw-desktop), "LL 14–18 Jul, then ATT C 16–17 Jul … undo restores" timed
+out at 30s twice (33.6s, 34.4s — it took 23.1s on the previous green run) and "a reload (not ?fresh)
+keeps every filed leave …" is flaky on EVERY run (31s, then passes on retry). The whole lw-desktop
+job ran ~19% slower, evenly, while the other jobs held their times. **Measured NOT the window:** the
+same project on the desktop, before (`b945b8c2`) vs after, 164/164 both in 1.8m, per-test median
+ratio 1.02; the first test takes ~13s locally. They sit near a 30s budget on a slow VM — make them
+wait on what they need, or give the suite a longer per-test budget on CI.
+**Until then (owner, D84):** a Leave War desktop timeout on GitHub gets ONE re-run of the failed
+group, not an investigation; a second failure of the same group is new evidence — stop and report.
+
+### [OIL-PERSONAL-PLACEHOLDER] A placeholder on a landed "Personal" request row draws no count (23 Sep 26)
+
+Found by Fable's scenario design, confirmed by reading (not walked). A "Personal" request can land on
+the ground programme (`ground:true`) but never asks the OIL question (`oilAsks` excludes it), and the
+request half of the evidence only records a placeholder's crowd for ASKING types — so ALL / ALL AVAIL
+dropped on such a row gets no membership: no count chip, no window, on any day. D27 says the count
+shows wherever the puck lands; D46 lets it land on a request row. **Pre-existing on `main`** (the
+membership code is `[OIL-SEATS-CAN-EARN]`'s), rare in practice. The fix touches the OIL evidence
+(`engine/oilev.ts` — record the crowd for any landed row standing a placeholder, earning or not), so
+it is FULL tier and wants both readers. Evidence: `raptor-port/docs/handpass/2026-09-23-allavail-window.md` §3.
+
+### [CROWD-SIM-BRIEF] The D38 flag does not cover a crowd man's SIM brief/debrief (23 Sep 26)
+
+The window flags an event that sits inside a crowd man's own FLIGHT brief or debrief (`crowdClashes`,
+`engine/validate.ts`). His SIM brief/debrief windows are built inside the warning pass from its
+private sim table and are not reachable from outside it, so a sim man behind an ALL AVAIL is listed
+clean. Needs the sim windows lifted into one body, as the flight ones were. WALK tier.
+
+### [DEPLOY-DOCS] The Pages-era deploy text is stale since the repo went private (D59, 23 Sep 26)
+
+`raptor-port/CLAUDE.md` §Build & verify and §How to work here, and `HANDOFF.md` §Deploy, still describe GitHub Pages as the official live site, the "done means live" chain ending at Pages, and `seejiaokai.github.io/Raptor` as the page to check. All of it stopped being true on 23 Sep 26: Pages is gone, the publish job is off, Vercel is the only viewer. Marked SUPERSEDED in place at the two most misleading lines; the proper rewrite is its own docs pass (D29 — never trim inside another change). **Tier: NONE.** Do it with `[DOC-TRIM]`, which owns the same two files.
 
 ### [OIL-WORDS] Stop calling OIL "money" in the code comments (owner, D25, 22 Sep 26)
 
@@ -947,7 +999,7 @@ half — duty and commitments must reduce the Leave War manning).
 the day's 1. The two are INDEPENDENT: what the schedule earns is never changed by what a person
 typed, and what a person typed is never changed by the schedule.
 
-**BUILT — PR #423, 21 Sep 26; ruling D75, register N16.** Everything below is the reasoning as it
+**BUILT — PR #423, 21 Sep 26; ruling D82, register N16.** Everything below is the reasoning as it
 stood BEFORE that build, kept for why; it does not describe the app now.
 
 **What the app did then (wrong under this ruling).** One credit record per person per day. When
@@ -1072,7 +1124,7 @@ original (no marking of any kind), the deck's 10 slides, the demo data (63 inven
 real names/IDs/DOB/next-of-kin/rank), and the stores, mission and area vocabulary (generic training
 terms and compass points). The only `RESTRICTED` is the stamp the app PRINTS on schedules it
 generates (`src/ui/printpdf.ts`) — the product working, not a trace of anything received.
-`tracker.css`'s `.restricted` banner is dead style, rendered nowhere.
+`tracker.css`'s `.restricted` banner is dead style, rendered nowhere. **That check never opened the Tracker's SYLLABUS data** (222 events of course content) — and he has since ruled it OUT OF SCOPE (D62): leave it, never flag it again. Every other mention of the aircraft type is now "fighter squadron" or the bare "F-15" (D63, D64) — only that syllabus data keeps it.
 ### [STORE-READER-SWEEP] A stored record read more narrowly than it is written — sweep for more (22 Sep 26)
 
 **TWO INSTANCES FOUND IN ONE FILE IN ONE EVENING, both silent, both about official

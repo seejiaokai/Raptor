@@ -170,13 +170,21 @@ describe('the mode itself (§2.1)', () => {
     expect((DAYS[SAT] as any).oild.people, 'the person mark survived underneath').toBeTruthy()
   })
 
-  it('OIL8, OIL15 — a sentinel opens into REAL pucks inside the mode', async () => {
+  /* [ALL-AVAIL-WINDOW] (D38) — OIL8/OIL15 still hold, through the new door: the
+     sentinel now STAYS a sentinel on the row and its counter opens the window
+     that holds the men behind it. The rulings are about the men being reachable
+     and switchable, not about where they are drawn. */
+  it('OIL8, OIL15 — a sentinel keeps its counter, and the counter opens the men', async () => {
     addRow(SAT, { prog: 'ALL HANDS', str: '1000', end: '1600', who: 'allavail' })
     await open(SAT)
     await click(oilBtn())
     const el = groundRowEl(2)
-    expect(el.querySelector('.puck.allavail'), 'the sentinel itself is gone in the mode').toBeFalsy()
-    expect([...el.querySelectorAll('.seat.oilpk')].length, 'the men behind it are drawn').toBe(2)
+    expect(el.querySelector('.puck.allavail'), 'the sentinel STAYS a sentinel now').toBeTruthy()
+    const chip = el.querySelector('.oilcount') as HTMLElement
+    expect(chip, 'and carries its counter — the door to the men behind it').toBeTruthy()
+    await click(chip)
+    expect([...$('.availwin').querySelectorAll('.seat.oilpk')].length,
+      'the men behind it are drawn, and each is switchable').toBe(2)
   })
 
   it('OIL28, OIL31 — a man with nothing measurable to earn from is drawn inert, not tappable', async () => {

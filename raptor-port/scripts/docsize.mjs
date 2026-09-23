@@ -71,8 +71,8 @@ const FILES = [
      The bug-check order §7.6 requires a MISSING to be filed here during a fix, so it too carries
      declared headroom. [DOC-TRIM] owns the 600 target — as its own docs-only pass. */
   ['OUTSTANDING.md',                     1, 1400,  600],
-  /* DECISIONS.md is append-only and is MEANT to grow, so its ceiling is its target. What happens
-     when it reaches it is [DOCS-GUARD] step 4 (F7) — not decided yet, and not to be improvised. */
+  /* DECISIONS.md is append-only and is MEANT to grow, so its ceiling is its target. Moving its oldest
+     rows out when it reaches it is not decided; whoever does it, job 1c below fails a lost D-number. */
   ['DECISIONS.md',                       1,  150,  150],
 ]
 const TIER0_TARGET = 600
@@ -278,7 +278,7 @@ function homes(paths, allow) {
 /* DECISIONS.md is the only home of some rulings (D29 rule 2), and it too will one day move its
    oldest rows to a dated section — the same kind of move that destroyed two backlog items. So a
    D-number at the base must still be there, and none may newly appear twice. Numbers may SKIP:
-   parallel branches hold ranges and the later one renumbers its own (D70), so a gap is legal —
+   parallel branches hold ranges and the later one renumbers its own (D78), so a gap is legal —
    a loss is not. And rulecheck.mjs carries a hand-copied map of ruling ids: a register row
    deleted by accident made nothing red, so every id in that map must still head an entry in a
    behaviour register. `Docs-guard-allow: D<n>` for a deliberate removal. */
@@ -290,7 +290,7 @@ function rulings(allow) {
   const dBase = [...readBase(DECISIONS).matchAll(/^\| (D\d+) \|/gm)].map(m => m[1])
   const cNow = multiset(dNow), cBase = multiset(dBase)
   for (const d of cBase.keys()) if (!cNow.has(d) && !allow.has(d)) fails.push(`${d} is GONE from ${DECISIONS} — a ruling number is never lost`)
-  for (const [d, n] of cNow) if (n > 1 && n > (cBase.get(d) || 0) && !allow.has(d)) fails.push(`${d} now appears ${n} times in ${DECISIONS} — renumber the later branch's own row (D70)`)
+  for (const [d, n] of cNow) if (n > 1 && n > (cBase.get(d) || 0) && !allow.has(d)) fails.push(`${d} now appears ${n} times in ${DECISIONS} — renumber the later branch's own row (D78)`)
 
   const src = readNow(RULECHECK)
   const start = src.indexOf('const RULES = {')

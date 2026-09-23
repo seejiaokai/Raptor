@@ -171,7 +171,7 @@ function InfoModalInner({ id }) {
       <div className="modal" id="infoModal" style={{ zIndex: 91, width: 'min(440px,94vw)', display: 'block' }}>
         <h2 id="infoTitle">{id} — details</h2>
         <div className="field"><label>Name</label><input id="ifName" style={{ flex: 1 }} value={name} onChange={e => setName(e.target.value)} /></div>
-        <div className="field"><label>Type / format</label><input id="ifFmt" style={{ flex: 1 }} placeholder="e.g. Lecture, OFT/AMT, 2 x F-15SG" value={fmtV} onChange={e => setFmtV(e.target.value)} /></div>
+        <div className="field"><label>Type / format</label><input id="ifFmt" style={{ flex: 1 }} placeholder="e.g. Lecture, OFT/AMT, 2 x F-15" value={fmtV} onChange={e => setFmtV(e.target.value)} /></div>
         <div className="field"><label>Hours</label><input id="ifHrs" style={{ width: 120 }} placeholder="e.g. 1.5 Hrs" value={hrs} onChange={e => setHrs(e.target.value)} /></div>
         <div className="field" style={{ alignItems: 'flex-start' }}><label>Crew</label><textarea id="ifCrew" placeholder="e.g. UP/UW, IP/IW/FSI" value={crew} onChange={e => setCrew(e.target.value)} /></div>
         <div className="field" style={{ alignItems: 'flex-start' }}><label>Prerequisites</label><textarea id="ifPre" placeholder="e.g. AVI-02, AVI-03, AVI-04" value={pre} onChange={e => setPre(e.target.value)} /></div>

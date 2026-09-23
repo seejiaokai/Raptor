@@ -21,7 +21,7 @@ import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList } from './pops'
 import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
-import { oilSentinelList } from './oilmode'
+import { openAvailWinFrom } from './AvailWindow'
 import { withDaySnap } from './html'
 import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
@@ -493,8 +493,13 @@ export function routeClick(e: MouseEvent) {
      drawn in, so an issued page's list is the issued one (OSE-R2-05) */
   if (osn) {
     e.stopPropagation()
-    const di = +(osn.dataset.oilday || -1), it = osn.dataset.oilsent || '', ver = osn.dataset.oilver || ''
-    HOOKS.toast(ver ? withDaySnap(di, ver, () => oilSentinelList(di, it)) : oilSentinelList(di, it))
+    /* [ALL-AVAIL-WINDOW] (D38) — the same window the board opens, opened from
+       the WEEK through the same opener (AvailWindow.tsx): both surfaces draw
+       this chip, so both must open the same thing — a second reader here is how
+       the chip and its tap came to disagree once before (Fable correction 2).
+       Read-only to open; the earn half gates on the scheduler role of its own. */
+    openAvailWinFrom(osn)
+    notify()
     return
   }
 

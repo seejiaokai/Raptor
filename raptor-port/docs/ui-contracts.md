@@ -7223,3 +7223,129 @@ being a holiday after it was published — publish it again to withdraw the OIL.
 
 A WEEKDAY rule in practice: a Saturday cannot stop being a weekend, so the case
 this covers is a public holiday the war takes back off.
+
+## [ALL-AVAIL-WINDOW] — the counter's window, the app's THIRD transient surface (owner, D38–D41, 23 Sep 26)
+
+**THE OUTSIDE-CLICK RULE DOES NOT APPLY TO THIS SURFACE.** Read that before
+changing anything here. The app has two transient surfaces and this is a third
+kind:
+
+| Kind | How it dismisses | Blocks the page? |
+|---|---|---|
+| A **Sheet** | a scrim, and Escape | **Yes** — everything under it is trapped |
+| An **inline popup** (the stores box, the day pop) | an **outside click**, and any page change | No, but it goes the moment you touch anything |
+| **This window** | **its own ✕ button; a PAGE change (D66); a switch between Edit and View-only; a WEEK change; logout — never a click on the schedule** | **No** |
+
+**Closing, as ruled (D66, 23 Sep 26):** it closes when he changes page — it is a schedule tool, and
+floating it over Leave War or the Tracker is clutter. It also closes on a switch between Edit Schedule
+and View-only Sched (the two show different versions of the day, D44), on a week change (the event it
+was opened from is gone), and on logout (the next person must not inherit it). **A tap on a man (D65):**
+with OIL Earn OFF it highlights him everywhere on the schedule — the ordinary puck selection — as well
+as showing his reason; with OIL Earn ON it only switches him on or off and selects nothing, on either
+tab, matching every other tap inside the mode.
+
+It must survive an outside click, because the whole point of it is that the
+scheduler **scrolls and EDITS the schedule behind it while it is open** — his
+words: *"a user can still click and edit/scroll the schedule behind while that
+window is still opened"*. A dismiss-on-outside-click would close it on the first
+edit he made, which is the one thing it exists to allow.
+
+This is written down because the 4 Sep 26 standing rule says a floating panel
+closes on an outside click, and that rule is right for every other floating panel
+in the app. Without this paragraph a later session reads that rule, finds this
+window breaking it, and "fixes" it.
+
+**What it is.** Tapping either counter chip — on the board **or on the week**,
+both draw it — opens one window of real pucks. Pilots in the left column, WSOs in
+the right (the same pairing the sim seat grid uses). One puck per row at every
+width, because a full row per man is what gives his flag and his figure room;
+that is the whole reason it replaced the bubble of names.
+
+**ONE WINDOW, TWO JOBS.** Who is AVAILABLE behind an ALL AVAIL / ALL placeholder,
+and — only while OIL Earn is on — who is CREDITED OIL, where individual men are
+switched off. With the mode off there are **no tabs at all**, just the one list:
+availability is a scheduling fact, earning is a mode (D27). Inside the mode the
+window opens on the earning half, because that is the job the counter was tapped
+for, and availability stays the first tab so he can step back to it.
+
+**Numbers, from D40 — build to them rather than re-deriving them.** It opens
+**212px** wide (two 74px pucks, their gap, ~16px of slack per column) with a
+**186px floor**, below which a puck clips. Its drag handle is the app's own
+six-dot grip `⠿`, the same glyph every draggable row and section header wears —
+not taste, but the app's existing vocabulary for "drag me". A flagged man's
+reason wraps onto its own line under him at that width and moves beside him when
+the window is dragged wider; **it is never dropped, only moved.**
+
+**A PUCK IS NEVER STRETCHED to fill a column.** `--puck-w`/`--puck-h` are pinned
+`!important` and watched by the browser geometry gate; a puck stretched here
+would be a different size from every other puck on screen.
+
+**THE FLAGS ARE THE POINT, and this is where it can go wrong.** A man whose ops
+brief sits inside his standard debrief must APPEAR, FLAGGED, so the scheduler
+sees the overlap and judges it. **Do not "fix" this list by filtering flagged men
+out of it** — that is the change D36 refuses, and the availability window stays
+narrow precisely because the app's job here is to surface the clash rather than
+remove the man. `availwin.test.tsx` fails if a later session does it anyway.
+
+**It replaced the in-row crowd too, not just the bubble of names.** Inside the
+earn mode a placeholder used to expand into the individual pucks of the men
+behind it, drawn along the row ([OIL-SEATS-CAN-EARN] step 7). The row now keeps
+the placeholder and its counter, and the counter is the door. The door was not
+removed, it moved — and step 7's guarantee still holds, seat kind by seat kind,
+in `oilrowpucks.test.tsx`: duty desk, duty extras, sim seat, sim passengers, sim
+extras, Common Programme, Common Programme beside a named man, ground row.
+It also removed a divergence: the WEEK never expanded a placeholder inline, so
+the two surfaces drew the same row two different ways inside the mode.
+
+**Position and size live outside React**, in `state/view.ts` (re-exported by
+`pops.ts`, the SECDEFOFFER precedent — the page, week and session resets live in
+state). He edits the schedule behind the window, so every keystroke notifies and
+re-renders it; a box held in component state would be thrown away on the first
+one and the window would jump back to the corner mid-drag. A drag writes the
+element's style directly at pointer speed and commits on release, so dragging
+never repaints the board he is supposed to still be reading.
+
+**No resize on a phone — by his ruling (D77, 23 Sep 26).** A browser's own resize
+grip needs a mouse, so on a phone the window MOVES but does not resize. He was
+offered a touch drag-corner and said leave it. Do not build one or re-ask.
+
+**Where it sits (bug check, 23 Sep 26).** With no box of his, the STYLESHEET
+places it — the top-right corner at 212 wide on a desktop, and on a phone
+(≤620px) the approved full-width bottom panel, 12px margins, 62% tall. A box is
+his only after a real drag or resize (a plain tap on the bar is not one), and it
+belongs to the LAYOUT it was made in: a desktop box never applies on a phone,
+where only how far he dragged the panel up or down is his. Shown boxes are
+clamped into the screen so the bar and its ✕ — the only way to close it — can
+never be stranded. Every fresh open starts clean (footer and position); a new
+subject tapped while it is open keeps its place. **Stacking: z-index 410** —
+above the board (400), below every dialog (420–480); the toast (540) shows over it.
+
+**It reads the world its chip was drawn in — ALL of it.** The chip says which:
+the working copy, a version preview (a past AL or a parked plan: read, not
+checked — no flags), the view page's issued face (its OFFICIAL flags), or a
+draft day the view page resolves in the official world (`data-oilver` /
+`data-oilofw`). The crowd, the flags, the figures, the puck marks and the title
+all come from that one world (`html.ts withChipWorld`), and the window names the
+version it reads. A landed request row is read from its landed row on the
+installed day, never from the live Inputs page. **A version's earn half is
+read-only** — a switch there would land on the working copy while the record
+above it could not move (no screen route reaches it: a preview turns OIL Earn
+off and disables it). **The D38 flag** (this event inside his own flight brief or
+debrief) is computed from the working copy's flights live, from the RECORD's
+flights on the issued face, and not at all on a plain preview.
+
+**When the list cannot be worked out it says WHY**, by the real reason: the row
+is no longer on the schedule; it is cancelled; it is information only; there is
+no ALL / ALL AVAIL puck on it any more; it has no usable start and end — never a
+confident "0 available". A version that vanished reads "This version is no
+longer available". Undo brings a deleted row, and its list, back.
+
+**A man the roster no longer holds is COUNTED AND SAID OUT LOUD**, under the
+columns, never dropped. An issued day's membership is a frozen list of ids
+(D44), so a man posted out since publication is still in it. Dropping him would
+make the window show fewer men than the chip above it counted — the
+chip-and-list disagreement Fable correction 2 exists to stop, in a new place.
+
+**It says WHICH of the two answers it is showing** — who was free when the day
+was issued, or who is free as things stand now — in the same words the chip's own
+title uses, from one shared body (`oilFromWords`). They were two readers once.

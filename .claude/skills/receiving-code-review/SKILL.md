@@ -85,6 +85,35 @@ IF conflicts with your human partner's prior decisions:
 
 **your human partner's rule:** "External feedback - be skeptical, but check carefully"
 
+### A Finding, Its Diagnosis, and Its Fix Are Three Claims
+
+A reviewer reading source cannot run the path they describe, so check each
+part on its own:
+
+- **The symptom** is usually right — reproduce it.
+- **The named cause** is a hypothesis. Re-derive it from the running system
+  before fixing, and check whether several findings share one cause — a list
+  of "independent" items is exactly where a common root hides. The same goes
+  for a diagnosis written in a handoff or by an earlier session.
+- **The suggested fix** is a hypothesis too, however precise and confident.
+  Apply it, then REMOVE it and watch the pinning test fail. A test that still
+  passes with the fix removed has proven nothing about the fix.
+
+Where two reviewers disagree on a fact, measure the fact — never settle it by
+majority or by whichever report is more detailed.
+
+### Two of a Kind Is a Family
+
+Two findings of the same class are a sample, not the population. State the
+rule they break in one sentence, list every place that rule applies, check
+each, and fix the whole list — another review round would only sample again.
+
+### "Can't Happen" Needs Proof
+
+Declining a finding as theoretical needs a positive argument: what would have
+to be true for it to fire, and why no real path makes that true. "I couldn't
+think of how" is not that argument.
+
 ## YAGNI Check for "Professional" Features
 
 ```

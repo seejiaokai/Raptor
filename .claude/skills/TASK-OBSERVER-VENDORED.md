@@ -49,15 +49,52 @@ session-start hook. Both were added:
 (leave `PostToolUse`/`Stop`) and remove the CLAUDE.md paragraph. The skill then
 still works on description-match, just not automatically every session.
 
+## Reviews in this repo (23 Sep 26)
+
+How this repo runs the skill's review procedure (`references/weekly-review.md`),
+where that procedure's defaults do not fit a git repo with vendored skills:
+
+- **ONE log, in the repo:** `.claude/skill-observations/log.md`, committed. This
+  pins the skill's "unless the user's configuration pins it elsewhere": never
+  create a second log under `~/.claude/projects/<id>/…/skill-observations/`,
+  even though that is the skill's default stable path — the repo is the only
+  store every device and web session shares. (A second log did appear there on
+  15 Sep 26 and no review ever saw it.)
+- **Where lessons land:** in the skills — a few lines in the section they belong
+  to, or a reference file inside the skill for longer material. **Not** in
+  `raptor-port/CLAUDE.md` or `.claude/rules/`: those load every session and are
+  capped by the docsize ratchet (D14). A lesson already stated there is closed as
+  "already reflected", not copied into a skill.
+- **Vendored skills are forked on purpose.** Every local change is listed in that
+  skill's `*-VENDORED.md` register, so an upstream refresh re-applies it instead
+  of silently erasing it.
+- **Staging:** drafts go to `.claude/skill-updates/<date>/`, never over the live
+  skills, until the owner approves. Installing = copying the approved drafts over
+  the live files on the review branch; going live = his "merge live" (D60).
+- **Who reads the drafts (owner, D70):** Fable AND Astra, one round each, before
+  he approves — never the model that wrote them.
+- **Clean up when the review ends (owner, D69):** after installing, delete the
+  holding folder (git keeps the drafts), move the resolved entries to
+  `archive/` the same day, and delete the review's handoff note once merged.
+- **Parallel branches are parallel log writers.** When two branches' logs meet at
+  a merge, keep the reviewed side and re-append the other side's new entries at
+  the end with fresh numbers.
+
+## Local changes to the vendored skill
+
+- **23 Sep 26 review:** `SKILL.md` Numbering discipline gained item 4
+  (parallel branches are parallel log writers) and Acting on Observations
+  gained "Close it where you apply it"; `references/weekly-review.md` Step 3
+  now also searches the project's own docs and settles where lessons land.
+  The session-start hook's message pins the ONE log location (above). An
+  upstream refresh overwrites these files: re-apply them
+  (`git log -p -- .claude/skills/task-observer`).
+
 ## Known caveats (not bugs)
 
-- **The observation log does not persist on web/phone.** The skill writes to
-  `[workspace folder]/skill-observations/log.md` on a STABLE path; an ephemeral
-  container has none, so the log is torn down with the session. The skill's
-  handoff-doc mode (`references/environments.md`) is the intended fallback —
-  collect observations in-session and hand them off — or commit the log into the
-  repo (e.g. under `docs/`) if it should genuinely last. Nothing here sets up
-  persistent storage; that is left to the skill's runtime behaviour.
+- **The skill's default log location does not persist on web/phone** — an
+  ephemeral container has no stable folder. That is why this repo commits the
+  log (§Reviews in this repo above); nothing else is needed.
 - **Overlap with this repo's own handoff machinery.** `HANDOFF.md`,
   `docs/session-state.md` and the `session-handoff` skill already cover durable
   cross-session state. task-observer's handoff-doc mode is adjacent but aimed at

@@ -218,7 +218,7 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
            not one (owner, 21 Sep 26): the Common Programme's NAME was already a
            switch, so a scheduler could stop the whole item earning but could not
            take ONE man off it — the same hole as the cockpit seats. */
-        if(id&&PEOPLE[id]&&oilModeOn(di))
+        if(id&&PEOPLE[id]&&!PEOPLE[id].special&&oilModeOn(di))
           return oilSeatHTML(di,id,rowItemKey(x.rid),(oil:any)=>puck(id,null,true,null,false,null,oil));
         /* AND ITS COUNT CHIP, not just its bar (walk find, 22 Sep 26 —
            hand-pass finding 11). oilSeatDeco returns {oil, chip}: the bar AND
@@ -312,7 +312,14 @@ function sbSeat(di:any,key:any,id:any,pv?:any){
   if(!(id&&PEOPLE[id]))return '';
   /* in OIL mode a seat is a tap target for "does this man earn from THIS
      event", wearing his figure for the day in place of his CAT letter */
-  if(oilModeOn(di))return oilSeatHTML(di,id,OILITEM,(oil:any)=>puck(id,null,true,null,false,null,oil));
+  /* A PLACEHOLDER IS NOT A PERSON AND HAS NO FIGURE TO WEAR ([ALL-AVAIL-WINDOW],
+     D38). ALL / ALL AVAIL stands for men who can earn a full day, a half day and
+     nothing at once, so it falls through to the ordinary drawing below and gets
+     the sentinel's four-state bar AND ITS COUNT CHIP — the same thing the week
+     has always drawn for it. Tapping that chip opens the window, which is where
+     the men behind it are now switched off one by one. Without this the mode
+     would draw a placeholder as though it were a man with a day figure. */
+  if(oilModeOn(di)&&!PEOPLE[id].special)return oilSeatHTML(di,id,OILITEM,(oil:any)=>puck(id,null,true,null,false,null,oil));
   /* an exempt desk row rings for its OWN rule only — html.ts exemptDeskOwn,
      the one body the week's lSeat reads too */
   const ex=pv?undefined:exemptDeskOwn(di,key,id);

@@ -92,17 +92,30 @@ const landed = (over: any = {}, row: any = {}) => {
 }
 
 describe('the crowd on a request row is drawn, and every man in it is tappable', () => {
-  it('the placeholder opens into REAL pucks, not one inert body', async () => {
+  /* [ALL-AVAIL-WINDOW] (D38) — the crowd behind a placeholder moved OUT of the
+     row and into the window. A REQUEST ROW is its own seat kind and gets its own
+     mark in the roll-call: the requester keeps his puck on the row where he
+     always was, the placeholder beside him keeps its counter, and the counter is
+     the door to the men it stands for. */
+  it('the requester stays on the row; the placeholder keeps its counter', async () => {
     landed()
     await open(SAT)
     await click(oilBtn())
     const el = groundRowEl()
-    expect(el.querySelector('.puck.allavail'), 'the placeholder itself is gone in the mode').toBeFalsy()
+    expect(el.querySelector('.puck.allavail'), 'the placeholder STAYS a placeholder now').toBeTruthy()
     const seats = [...el.querySelectorAll('.seat.oilpk')] as HTMLElement[]
-    expect(seats.length, 'the man who filed it, and the two he stands beside').toBe(3)
+    expect(seats.map(s => s.dataset.oilp), 'the man who filed it keeps his own puck').toEqual(['bane'])
     expect(seats.filter(s => s.classList.contains('inert')).length,
-      'NONE of them may be inert — the money is paying all three').toBe(0)
-    expect(seats.every(s => !!s.dataset.oilp), 'and each one is a tap target').toBe(true)
+      'and he may not be inert — the money is paying him').toBe(0)
+    const chip = el.querySelector('.oilcount') as HTMLElement
+    expect(chip, 'the placeholder has a counter — this IS the door').toBeTruthy()
+    await click(chip)
+    const w = $('.availwin')
+    expect(w, 'and it opens the window').toBeTruthy()
+    const inWin = ([...w.querySelectorAll('.seat.oilpk')] as HTMLElement[])
+    expect(inWin.map(s => s.dataset.oilp).sort(), 'the two he stands beside').toEqual(['plasma', 'stiff'])
+    expect(inWin.filter(s => s.classList.contains('inert')).length,
+      'NONE of them may be inert — the money is paying them').toBe(0)
   })
 
   it('the row does not claim nothing on it can earn', async () => {
@@ -114,26 +127,30 @@ describe('the crowd on a request row is drawn, and every man in it is tappable',
     expect(cell.title).not.toContain('Nothing on this row can earn')
   })
 
-  it('tapping one man takes HIM off and leaves the rest of the crowd alone', async () => {
+  it('tapping one man in the window takes HIM off and leaves the rest alone', async () => {
     landed()
     await open(SAT)
     await click(oilBtn())
-    const seat = $$('#sbBoard .sb-panel.grnd .seat.oilpk').find(s => s.dataset.oilp === 'plasma')!
-    await click(seat)
+    await click(groundRowEl().querySelector('.oilcount'))
+    const inWin = () => ([...$('.availwin').querySelectorAll('.seat.oilpk')] as HTMLElement[])
+    await click(inWin().find(s => s.dataset.oilp === 'plasma')!.querySelector('.puck'))
     expect((DAYS[SAT] as any).oild.people[`plasma|${ITEM}`], 'a decision about that one man').toBe('deny')
-    const after = $$('#sbBoard .sb-panel.grnd .seat.oilpk')
-    expect(after.find(s => s.dataset.oilp === 'plasma')!.classList.contains('off'), 'he is off').toBe(true)
-    expect(after.find(s => s.dataset.oilp === 'stiff')!.classList.contains('on'), 'the other man is untouched').toBe(true)
-    expect(after.find(s => s.dataset.oilp === 'bane')!.classList.contains('on'), 'and so is the requester').toBe(true)
+    expect(inWin().find(s => s.dataset.oilp === 'plasma')!.classList.contains('off'), 'he is off').toBe(true)
+    expect(inWin().find(s => s.dataset.oilp === 'stiff')!.classList.contains('on'), 'the other man is untouched').toBe(true)
+    /* and the REQUESTER, who is on the row rather than in the window, is
+       untouched too — D18 says he earns from his own landed request */
+    const onRow = ([...groundRowEl().querySelectorAll('.seat.oilpk')] as HTMLElement[])
+    expect(onRow.find(s => s.dataset.oilp === 'bane')!.classList.contains('on'), 'and so is the requester').toBe(true)
   })
 
-  it('AN ALL-DAY REQUEST still draws its crowd — the row carries no times at all', async () => {
-    landed({ allday: true, s: 0, e: 1439 }, { str: '', end: '' })
+  it('AN ALL-DAY REQUEST still reaches its crowd — the row carries no times at all', async () => {
+    landed({ allday: true, s: 0, e: 0 }, { str: '', end: '' })
     await open(SAT)
     await click(oilBtn())
-    const seats = [...groundRowEl().querySelectorAll('.seat.oilpk')] as HTMLElement[]
-    expect(seats.map(s => s.dataset.oilp).sort(), 'the request carries the window, not the row')
-      .toEqual(['bane', 'plasma', 'stiff'])
+    await click(groundRowEl().querySelector('.oilcount'))
+    const inWin = ([...$('.availwin').querySelectorAll('.seat.oilpk')] as HTMLElement[])
+    expect(inWin.map(s => s.dataset.oilp).sort(), 'the REQUEST window resolves the crowd, not the row window')
+      .toEqual(['plasma', 'stiff'])
   })
 
   it('THE CONTROL: a request row with no placeholder is drawn exactly as before', async () => {

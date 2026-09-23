@@ -1,6 +1,6 @@
 # RAPTOR — 142 Flying Programme (React app)
 
-A flying-schedule planner for an F-15SG squadron: a week of flying waves,
+A flying-schedule planner for a fighter squadron: a week of flying waves,
 duty crews, sims, ground events and personal inputs, with a validation
 engine that flags crew-rest breaches, double bookings, missing briefs and
 qualification problems, plus an amendment (AL) workflow for publishing
@@ -222,7 +222,7 @@ barely more than one.
   sitting open is the intended resting state, not a thing to finish. The 24 Aug
   rule below is kept for its mechanics (where the link is, SSO, no PR-watching);
   its "auto-merge is the default" clause no longer applies.
-- **MODELS (owner, 7 Sep 26) — heavy work runs on Opus 4.8; Fable 5.1 is
+- **MODELS — SUPERSEDED 23 Sep 26 by D67: Opus 5.5 PLANS and BUILDS; Fable 5.1 and Astra REVIEW the plan and the code, never the model that wrote it (both on money / published records / permissions / persistence); when ASTRA builds, Opus 5.5 reviews; a bug Opus 5.5 cannot crack escalates to Fable 5.1. The 7 Sep 26 text below is history.** (Was: MODELS (owner, 7 Sep 26) — heavy work runs on Opus 4.8; Fable 5.1 is
   budget-limited.** The owner prefers Opus 4.8 and Fable 5.1 for work ("they
   hallucinate less and are more correct"); he has plenty of Opus tokens and a
   LIMITED Fable allowance, which he spends deliberately on the SMART work —
@@ -281,17 +281,17 @@ barely more than one.
   shape, which tests to run) so it never explores. Agents return diffs
   and conclusions, never file dumps. Small precise work stays inline —
   spawning an agent costs more than a one-file fix.
-- **Token discipline.** Never let a tool dump raw output — pipe logs
-  through `tail`/`grep`, ask GitHub MCP tools for `minimal_output: true`,
-  paginate 5–10, and prefer a 2-line `curl | grep` over a full API object
-  when checking one field. Never read `reference/` whole (6.6k lines) —
-  `grep` it; same for any file over ~300 lines (Grep or offset/limit Reads).
-  While iterating run only the affected test file
-  (`npx vitest run <file>`); the full gate set ONCE, before the PR — not
-  between the sub-changes of a batch. Four full passes is ~20 wasted minutes,
-  and that is a real reading from 10 Aug 26, not a caution.
-  Trust this index instead of re-exploring. Prefer a fresh
-  session per task; a long conversation re-sends itself every turn.
+- **Token discipline.** Never let a tool dump raw output — send a long run to
+  a file, keep its exit code, and `tail`/`grep` the FILE (a pipe hides the
+  exit code), ask GitHub MCP tools for `minimal_output: true`, paginate 5–10,
+  and prefer a 2-line `curl | grep` over a full API object when checking one
+  field. Never read `reference/` whole (6.6k lines) — `grep` it; same for any
+  file over ~300 lines (Grep or offset/limit Reads). While iterating run only
+  the affected test file (`npx vitest run <file>`); the full gate set ONCE,
+  before the PR — not between the sub-changes of a batch. Four full passes is
+  ~20 wasted minutes, and that is a real reading from 10 Aug 26, not a
+  caution. Trust this index instead of re-exploring. Prefer a fresh session
+  per task; a long conversation re-sends itself every turn.
 
 **The rules-engine robustness doctrine (owner, 21 Aug 26 — "Remember
 this").** Any change that touches the rules engine carries a standing bar:
@@ -611,7 +611,7 @@ trip felt like ~20 min per change and was unsustainable):
   older "point a browser drive at it" clause). Your drive surface is the local
   `vite preview`, which is the same bundle. It is NOT gated, so a red preview
   is still just a preview; correctness still rides the five gates below.
-- **GitHub Pages stays the OFFICIAL site** — the gated `deploy.yml`, published
+- **SUPERSEDED 23 Sep 26 (D59): the repo is PRIVATE, Pages is GONE, the publish job is OFF — Vercel is the only viewer; `[DEPLOY-DOCS]` owns rewriting the Pages-era text in this file.** Was: **GitHub Pages stays the OFFICIAL site** — the gated `deploy.yml`, published
   only on merge to `main`. Slower (the gates, then a Pages rollout that has
   ranged from 5 s to 10 min and is outside our control), so it is paid ONCE
   per session at the end, not per change — and since 2 Sep 26 only on the

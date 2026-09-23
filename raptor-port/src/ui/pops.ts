@@ -116,3 +116,13 @@ export function closeHistList() {
   HISTGROUP = false
   HISTOPEN.clear()
 }
+
+/* ---- [ALL-AVAIL-WINDOW] — the counter's window (owner, D38–D41) -----------
+   DEFINED IN state/view.ts and re-exported here, on the SECDEFOFFER precedent
+   above: a page, week or session change must close it (D66), and those reset
+   paths live in state and cannot reach into ui/pops. The whole contract is
+   written beside the definitions there. (It lived here first, and view.ts
+   imported it back — a loop between the two files, behind a comment that
+   wrongly called this one a leaf. Caught at the final read, 23 Sep 26.) */
+export { AVAILWIN, setAvailWin, setAvailTab, AVAILWIN_FOOT, setAvailFoot, AVAILWIN_BOX, setAvailWinBox } from '../state/view'
+export type { AvailWin, AvailBox } from '../state/view'

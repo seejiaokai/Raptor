@@ -184,7 +184,7 @@ display-versus-earning cost analysis and the size estimate are in
 
 ### [DOCS-GUARD] Nothing detected a destroyed record — ALL FOUR STEPS DONE 23 Sep 26. CLOSED.
 
-Fable's order (D30), all of it; step 4 brought forward by the owner's "Ok do it" (D76). Branch
+Fable's order (D30), all of it; step 4 brought forward by the owner's "Ok do it" (D83). Branch
 `claude/docs-guard`. `npm run docsize` fails a lost, doubled or truncated backlog record, a lost or
 doubled D-number, a ruling home that does not exist and a rule-map id with no register entry; it
 runs in CI (`docs-guard.yml`) and as a Stop hook, and never demands a trim inside a code change.

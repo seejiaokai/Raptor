@@ -6064,3 +6064,124 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
    same chip as the revise control, in the warning colour, so it reads as
    something waiting rather than something already decided */
 .roil.ask{color:var(--warn);border-color:var(--warn)}
+
+/* ============ [ALL-AVAIL-WINDOW] · the counter's window ============ */
+/* Owner D38-D41; the approved design of record is docs/mock/allavail-window.html.
+   A THIRD KIND OF TRANSIENT SURFACE and the app's first: it does NOT block the
+   schedule behind it, so there is no scrim and no outside-click dismissal.
+   docs/ui-contracts.md carries the contract, including that the 4 Sep 26
+   outside-click rule does not apply here.
+
+   EVERY CLASS BELOW IS SCOPED UNDER .availwin ON PURPOSE. The mock borrowed the
+   crew roster's own class names (.rpuck/.rcol/.rcols/.rh/.rwhy) because it was a
+   standalone comp linking this stylesheet — but in the real app those names are
+   the EDIT BOARD'S ROSTER, and three of its modifiers (.rpuck.standby/.busy/.no,
+   around line 790) are NOT scoped to .eroster. Unscoped, this window would sit in
+   their blast radius and they in its. Scoping is what keeps the mock's markup
+   readable against the design of record without either surface reaching the
+   other. The one global rule that DOES apply is the -webkit-user-drag:none near
+   the top, which is wanted here too.
+
+   STACKING: 410 — ABOVE the scheduler board (400) and BELOW every dialog layer
+   (the Inputs day popover 420, History's bubble 430, the drawer 440, the
+   confirm pop-ups 460, the modals 470, the + Wave menu 480). It shipped at 150,
+   which is under the board: both are root-level fixed siblings, so on the board
+   — where the earn half lives — the counter opened a window nobody could see or
+   close (Fable S1, 23 Sep 26). Above the board because the window is a tool he
+   works WITH the board, behind it; below the dialogs because those block the
+   page on purpose, and a floating list must never cover a question the app is
+   asking. e2e/availwin.spec.ts presses the window on the board at both widths
+   and reads this ladder from the built stylesheet. */
+.availwin{position:fixed;z-index:410;right:16px;top:96px;
+  width:var(--awin-w,212px);height:var(--awin-h,540px);
+  min-width:186px;min-height:200px;
+  max-width:calc(100vw - 32px);max-height:calc(100vh - 120px);
+  background:var(--panel);border:1px solid var(--edge-2);border-radius:10px;
+  box-shadow:0 18px 44px rgba(0,0,0,.62);display:flex;flex-direction:column;
+  overflow:hidden;resize:both}
+.availwin[hidden]{display:none}
+
+.availwin .win-bar{display:flex;align-items:center;gap:7px;padding:8px;cursor:grab;
+  background:var(--raised);border-bottom:1px solid var(--edge);touch-action:none;flex:0 0 auto}
+.availwin .win-bar:active{cursor:grabbing}
+/* D40 - the app's OWN six-dot grip, the same glyph every draggable row and
+   section header wears, so the window reads as movable without being explained */
+.availwin .win-grip{color:var(--ink-3);font-size:16px;line-height:1;flex:0 0 auto}
+.availwin .win-ttl{flex:1;min-width:0;font-size:12px;font-weight:700;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.availwin .win-ttl small{display:block;font-size:10.5px;font-weight:500;color:var(--ink-3)}
+.availwin .win-x{background:none;border:1px solid var(--edge-2);color:var(--ink-2);
+  border-radius:5px;width:25px;height:25px;font-size:12px;line-height:1;cursor:pointer;
+  flex:0 0 auto;font-family:inherit}
+.availwin .win-x:hover{border-color:#F0555F;color:var(--ink)}
+
+.availwin .win-tabs{display:flex;background:var(--panel-2);border-bottom:1px solid var(--edge);flex:0 0 auto}
+/* the window opens 212px wide, so the two tab labels WRAP rather than clip */
+.availwin .win-tab{flex:1;min-width:0;padding:7px 5px;font-size:10.5px;font-weight:700;
+  color:var(--ink-3);background:none;border:none;border-bottom:2px solid transparent;
+  cursor:pointer;font-family:inherit;letter-spacing:.01em;line-height:1.25}
+.availwin .win-tab:hover{color:var(--ink-2)}
+.availwin .win-tab.on{color:var(--ink);border-bottom-color:var(--accent);background:var(--panel)}
+.availwin .win-tab .c{color:var(--ink-3);font-weight:600}
+.availwin .win-tab.on .c{color:var(--accent)}
+/* MODE OFF: no tabs at all, just one heading saying what the list is */
+.availwin .win-one{flex:0 0 auto;padding:8px 10px;background:var(--panel-2);
+  border-bottom:1px solid var(--edge);font-size:11.5px;font-weight:700;color:var(--ink)}
+.availwin .win-one .c{color:var(--accent);font-weight:800}
+
+.availwin .win-body{flex:1;min-height:0;overflow:auto;padding:8px;-webkit-overflow-scrolling:touch}
+.availwin .rcols{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.availwin .rcol{min-width:0}
+.availwin .rh{margin:0 0 5px;font-family:'Barlow Condensed','Inter Tight',sans-serif;
+  text-transform:uppercase;letter-spacing:.06em;font-size:9px;font-weight:700;color:var(--ink-3)}
+.availwin .rnone{font-size:10px;color:var(--ink-3);font-style:italic;padding:2px 0}
+/* D39 - ONE PUCK PER ROW AT EVERY WIDTH: each column is a list running down, not
+   a wrapping grid. A full row per man is what gives his flag and his figure room,
+   which is the whole point of replacing the bubble of names. */
+.availwin .rpuck{display:flex;align-items:center;gap:6px;margin:0 0 3px;
+  min-height:17px;flex-wrap:wrap}
+/* THE PUCK KEEPS ITS MEASURED 74x15 AND IS NEVER STRETCHED TO FILL THE COLUMN.
+   --puck-w/--puck-h are pinned !important at the top of this file and watched by
+   the browser geometry gate; a puck stretched here would be a different size from
+   every other puck on screen. The mock gives each man a full ROW instead, which is
+   what makes the list scannable. `.seat` is the wrapper oilSeatHTML puts round a
+   puck inside the earn view, so it must not stretch either. */
+.availwin .rpuck>.puck,.availwin .rpuck>.seat{flex:0 0 auto}
+/* D40 - flex-basis 92px: below that the reason has no room beside the 74px puck,
+   so it WRAPS onto its own line under him, and sits beside him again when the
+   window is dragged wider. It is never dropped, only moved. */
+.availwin .rwhy{flex:1 1 92px;min-width:0;font-size:10px;line-height:1.3;
+  color:var(--ink-3);padding-left:2px}
+.availwin .rpuck.flagged .rwhy{color:#E5A83B}
+.availwin .rpuck.clash .rwhy{color:#F0555F}
+/* a puck that is switchable in the earn view reads as pressable */
+.availwin .win-body.oilview .rpuck{cursor:pointer}
+
+.availwin .win-foot{flex:0 0 auto;border-top:1px solid var(--edge);background:var(--panel-2);
+  padding:7px 8px;font-size:10.5px;line-height:1.35;color:var(--ink-2);
+  display:flex;align-items:center;gap:6px}
+.availwin .win-foot .hint{color:var(--ink-3)}
+
+/* THE PHONE: a full-width panel anchored to the bottom, 62% of the screen —
+   the approved mock's phone rule (D41). Its max-width is restated for the 12px
+   margins: the desktop cap (100vw - 32px) left the panel 8px short of its right
+   margin, 12 on the left and 20 on the right, a quirk the mock itself carries.
+   Only reachable now that no inline size is pinned over this rule (Fable S8). */
+@media (max-width:620px){
+  .availwin{left:12px;right:12px;width:auto;top:auto;bottom:12px;height:62vh;max-height:62vh;max-width:calc(100vw - 24px)}
+}
+/* WHICH ANSWER THE LIST IS (D37/D44) — always on screen, under the body rather
+   than in the footer, because the footer is overwritten the moment he taps a man.
+   It sits above .win-foot so the reading order is: the men, what this list IS,
+   then the hint about what a tap does. */
+.availwin .win-from{flex:0 0 auto;border-top:1px solid var(--edge);background:var(--panel-2);
+  padding:5px 8px;font-size:9.5px;line-height:1.3;color:var(--ink-3);font-style:italic}
+/* A man the roster no longer holds (an issued day's frozen membership can name
+   one). Counted and said out loud rather than dropped, so the window and the
+   chip above it never disagree about how many are behind the puck. */
+/* THE ROW IS GONE, or its placeholder is (Fable S14) — said plainly in the
+   list's place, never an empty list under the old title that reads as "nobody
+   is free". Undo brings the row, and the list, back. */
+.availwin .win-lost{padding:10px 4px;font-size:11px;line-height:1.4;color:var(--ink-2);font-style:italic}
+.availwin .rgone{margin-top:6px;padding-top:6px;border-top:1px dashed var(--edge-2);
+  font-size:10px;line-height:1.35;color:var(--ink-3)}

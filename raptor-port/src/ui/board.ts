@@ -3,7 +3,7 @@
    store's notify(). The CX-with-a-reason dialog state lives here too. */
 import { DAYS } from '../engine/data'
 import { mkNote, noteText } from '../engine/note'
-import { INPUTS, inputCoversDate, inpById, inpTimeText, inpId, inpLabel, inpMeta } from '../engine/inputs'
+import { INPUTS, inputCoversDate, inpById, inpTimeText, inpId } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { waveInTime } from '../engine/events'
@@ -23,6 +23,7 @@ import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
 import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit } from './pops'
+import { openAvailWinFrom } from './AvailWindow'
 import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel, WAVE_BUILTIN, WAVETPL_CFG } from '../engine/wavetpl'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
@@ -31,7 +32,7 @@ import { esc } from '../state/view'
 import { notify, notifyBoard, loadWeek } from '../state/store'
 import { CURWEEK } from '../engine/waves'
 import { shiftWeek } from './weeknav'
-import { oilModeOn, dayBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilItemMasked, oilItemCellHTML, oilSentinelList } from './oilmode'
+import { oilModeOn, dayBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilItemMasked, oilItemCellHTML, oilItemHistName, oilPersonSays } from './oilmode'
 import { rowItemKey } from '../engine/oil'
 import { oilReadPass } from '../engine/oilev'
 import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbSansPanel, sbUnavailPanel, labelToTitle, titleToLabel, titleToKind, sbGrip, sbNudge, rowMove, sbSortBtn, boxHTML } from './board-html'
@@ -738,37 +739,11 @@ export function sortAllCommit() {
    with no change to how any of them behave. */
 const act = (di: any, msg: string) => { logAction(di, msg); return toast(msg) }
 
-/* THE ROW AS THE SCHEDULER READS IT, for the day's history. An OIL decision is
-   addressed by an internal row id, which means nothing to anyone reading the
-   history a week later — and until now an OIL decision left NO history at all,
-   so a man asking why his balance was short could not be answered (Fable,
-   21 Sep 26). The mode has already drawn the row's name in its item cell, so
-   the name is on the page; this reads it back rather than re-deriving it.
-   Matched by attribute rather than by selector so no key needs escaping. */
-const oilItemName = (di: any, item: string): string => {
-  if (!item) return 'this event'
-  /* A CLAIM IS NAMED BY WHAT IT IS, never by what happens to be drawn in its
-     cell (hand pass finding 14, 21 Sep 26). A request's item cell holds the
-     man's own puck, so reading the page back produced lines like "Sidewinder
-     earns nothing from SidewinderFO" — which reads as a glitch on the one
-     record that has to answer "why was my balance short?". The type is what the
-     app calls it everywhere else, so the history calls it that too. */
-  if (item.startsWith('i:')) {
-    const r = (INPUTS as any[]).find(x => x && String(inpId(x)) === item.slice(2))
-    /* the LONG name the type carries ("overseas duty"), not the two-letter code
-       on the row — a history line is read cold, a week later, by someone who
-       was not there. An "Other" has no long name and reads by what was typed on
-       it, which is exactly what inpLabel already does. */
-    const meta: any = r ? inpMeta(r.type) : null
-    const t = r ? String((meta && meta.name) || inpLabel(r) || '').trim() : ''
-    if (t) return t
-  }
-  const all = document.querySelectorAll(`[data-oilitem][data-oilday="${+di}"]`)
-  for (const el of Array.from(all)) {
-    if ((el as HTMLElement).dataset.oilitem === item) return ((el.textContent || '').trim()) || 'this event'
-  }
-  return 'this event'
-}
+/* THE ROW AS THE SCHEDULER READS IT, for the day's history — one body with the
+   window's switch now (Fable F5): oilmode.ts oilItemHistName, which carries the
+   whole reasoning (a request by its long type name, anything else by the name
+   the mode drew in its item cell). */
+const oilItemName = (di: any, item: string): string => oilItemHistName(di, item)
 
 /* WHAT A DELETED ROW HELD, said once — the log and the toast are the same
    string (act, above), so a description has to stay short. Free text is
@@ -1269,24 +1244,24 @@ export function boardArmClick(e: MouseEvent) {
     const on = toggleOilPerson(di, person, item)
     notify(); e.stopPropagation()
     const cs = (PEOPLE[person]||{}).cs||person, nm = oilItemName(di, item)
-    return act(di, on ? `${cs} earns OIL from ${nm} again` : `${cs} earns nothing from ${nm}`)
+    return act(di, oilPersonSays(cs, nm, on))
   }
   /* the sentinel's count chip: who is behind this puck, and what each of them
      earns (§7.6 / §2.7). Read-only, so it works outside the mode too — on the
      issued schedule it lists the FROZEN membership, which is the whole reason
      that membership is frozen.
 
-     THE SHAPE OF THIS LIST IS NOW RULED, AND THIS IS NOT IT (D38-D41, 22 Sep 26
-     - the comment above used to say "not yet ruled", which was true when it was
-     written and stale within the day). The bubble of names is REPLACED by a
-     movable, resizable, non-blocking window of real pucks - pilots left, WSOs
-     right, carrying the app's own warning flags, clickable - and the SAME window
-     serves both counters: who is available behind a placeholder, and who is
-     credited OIL, where individual pucks are switched off. The mock-up at
-     docs/mock/allavail-window.html is the approved design of record. It is filed
-     as [ALL-AVAIL-WINDOW], job 2 in OUTSTANDING.md, straight after this one,
-     because it opens FROM the counters this job builds. Until then the toast
-     below stands in for it - a placeholder, not a design. */
+     IT OPENS [ALL-AVAIL-WINDOW], BUILT 23 Sep 26 (D38-D41). This comment has now
+     said three different things about the same tap, which is worth knowing: it
+     once said the shape was "not yet ruled" (stale within the day the owner
+     ruled), then that a toast "stands in for it - a placeholder, not a design".
+     Both are gone. The bubble of names IS the window now: movable, resizable,
+     non-blocking, real pucks with the app's own warning flags, pilots left and
+     WSOs right - and the SAME window serves both counters, who is available
+     behind a placeholder and who is credited OIL, where individual pucks are
+     switched off. Design of record: docs/mock/allavail-window.html, approved
+     D41. Contract: docs/ui-contracts.md, which states that the outside-click
+     rule does NOT apply to this surface. */
   const osn = t.closest('[data-oilsent]') as HTMLElement | null
   /* THE VERSION THE CHIP WAS DRAWN IN ([OIL-SEATS-CAN-EARN] step 9, Codex
      OSE-R2-05). The snapshot is installed only while the page is being built,
@@ -1295,8 +1270,13 @@ export function boardArmClick(e: MouseEvent) {
      day went out. Empty means the chip came from the working copy. */
   if (osn) {
     e.stopPropagation()
-    const di = +(osn.dataset.oilday || -1), it = osn.dataset.oilsent || '', ver = osn.dataset.oilver || ''
-    return toast(ver ? withDaySnap(di, ver, () => oilSentinelList(di, it)) : oilSentinelList(di, it))
+    /* [ALL-AVAIL-WINDOW] (D38) — this used to be a one-line toast of names, and
+       the comment above said so: "until then the toast stands in for it — a
+       placeholder, not a design". This is the window it stood in for, opened
+       through the ONE opener the week shares (AvailWindow.tsx). */
+    openAvailWinFrom(osn)
+    notify()
+    return
   }
   const oit = t.closest('[data-oilitem]') as HTMLElement | null
   if (oit) {

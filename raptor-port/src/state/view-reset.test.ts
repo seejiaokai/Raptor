@@ -25,6 +25,7 @@ function dirtyAll() {
   view.setHlOpen(true); view.setHlGroup('cat'); view.setInpView('cal'); view.setCalMonth({ y: 2026, m: 7 }); view.setMedAsOf('2026-07-01')
   view.setRestArm(1, 'orig')
   view.setRosDay(4); view.setSecDefOffer(2)
+  view.setAvailWin({ di: 0, item: 'r:x', ver: '', name: 'OPS BRIEF', when: '', tab: 'who' })
 }
 const setsEmpty = () =>
   view.DPREV.size === 0 && view.VWORK.size === 0 && view.AVSHUT.size === 0 && view.PIOPEN.size === 0 &&
@@ -46,6 +47,7 @@ describe('the reset registry', () => {
     expect(view.CALMONTH).toBe(null)
     expect(view.MEDASOF).toBe(null)
     expect(view.RESTARM, 'the load-onto-working-copy confirm resets (leak the registry closed)').toBe(null)
+    expect(view.AVAILWIN, "the counter's window closes on a login/logout (D66, Fable S12)").toBe(null)
   })
 
   it("resetViewState('week') clears the week fields but leaves the session-only page state standing", () => {
@@ -57,6 +59,7 @@ describe('the reset registry', () => {
     expect(view.ROSDAY).toBe(0)
     expect(view.SECDEFOFFER).toBe(null)
     expect(view.RESTARM, 'the working-copy confirm is cancelled by a week swap too').toBe(null)
+    expect(view.AVAILWIN, "the counter's window closes on a week swap (D66, Fable S4)").toBe(null)
     /* session-only view state survives a week swap on purpose */
     expect(view.HLGROUP, 'Highlight group tab survives a week swap').toBe('cat')
     expect(view.HLOPEN, 'Highlight fold survives a week swap').toBe(true)

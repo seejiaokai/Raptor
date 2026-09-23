@@ -121,6 +121,67 @@ export function workSpan(evs:any){
   return {s,e,span:e-s,ef};
 }
 export function dayEvents(di:any,id:any){const m=EVD[di]; return (m&&m[id])||[];}
+/* THE TWO WINDOWS A FLYING LEG CLAIMS BEYOND ITS AIRBORNE TIME, and the words
+   for each — ONE BODY, two readers. The warning list below reads them for a
+   man's own commitments; [ALL-AVAIL-WINDOW] reads them for an event he stands
+   behind a placeholder on (crowdClashes, next). Extracted 23 Sep 26 so the two
+   can never disagree about what a debrief IS: if the pad or the wording ever
+   changes, both change together. The numbers and the sentences are exactly the
+   ones the loop used to build inline, so the warning list is byte-identical.
+
+   Brief is the line's own brief time (the hard line, never T/O − 3h) to T/O;
+   debrief is land to land + the debrief pad. Both amber (owner, 4 Aug 26). */
+export const legBriefWin=(lg:any):[number,number]=>[lg.brief,lg.to]
+export const legDebriefWin=(lg:any):[number,number]=>[lg.ld,lg.ld+VCONF.debrief]
+export const noBriefSays=(lg:any,what:string)=>{const [bs,bt]=legBriefWin(lg)
+  return `No time for the ${lg.label} flight brief — ${what} sits inside ${hm24(bs)}–${hm24(bt)} (brief ${hm24(bs)})`}
+export const debriefSays=(lg:any,what:string)=>{const [ls,de]=legDebriefWin(lg)
+  return `Not enough time to attend the ${lg.label} debrief — ${what} sits inside ${hm24(ls)}–${hm24(de)} (land + ${lgT(VCONF.debrief)})`}
+
+/** [ALL-AVAIL-WINDOW] — DOES AN EVENT HE STANDS BEHIND A PLACEHOLDER ON SIT
+ *  INSIDE ONE OF HIS OWN FLYING LEGS' BRIEF OR DEBRIEF? (owner, D36 + D38.)
+ *
+ *  THE OWNER'S OWN EXAMPLE, and the reason the window exists: "click on his
+ *  puck and know that the ops brief he's scheduled for as all avail is in
+ *  between the standard debrief time". A man who lands at 15:00 is AVAILABLE
+ *  from dekit (D36 keeps the availability window narrow, on purpose), so he is
+ *  rightly in the crowd behind a 15:20 ops brief — and the app's job is to FLAG
+ *  that the brief sits inside his 15:00–17:00 debrief, not to remove him.
+ *
+ *  WHY THE WARNING LIST CANNOT SAY IT ALREADY: the pass above deliberately
+ *  skips placeholders (`!isSpecial`), because a placeholder is not a body on a
+ *  seat and ringing it would be wrong. So a man who is only BEHIND one is never
+ *  treated as being on that event, and this clash is raised nowhere. This asks
+ *  the same rule about that one event, for that one man, without adding
+ *  anything to the warning list — which stays byte-identical to the reference.
+ *
+ *  Flight brief and debrief only. The SIM brief/debrief windows are built
+ *  inside the pass from the day's private sim table and are not reachable from
+ *  here; that half is filed in OUTSTANDING.md rather than guessed at.
+ *
+ *  WHICH WORLD'S EVENTS. By default the LIVE day's (EVD) — the working copy.
+ *  A caller reading an ISSUED face hands in that version's own events (`evs`,
+ *  rebuilt with collectEvents while the snapshot is installed), so the issued
+ *  face flags what the RECORD says and never paints today onto it (Fable S3):
+ *  a man booked since publication is surfaced by the pending mark and the
+ *  working copy's live crowd, which drops him (D44/D45). That is also why there
+ *  is no red "booked elsewhere" half here any more. It was written for exactly
+ *  that issued case; on the working copy it could never fire, because the crowd
+ *  is resolved with this same day's `personBusy` and already leaves every busy
+ *  man out. A check that cannot fire is a comment that vouches. */
+export function crowdClashes(di:any,id:any,s:number|null,e:number|null,label:string,evs?:any[]):{sev:string,msg:string}[]{
+  const p=PEOPLE[id]
+  /* ground crew carry no flight brief of their own to lose — the same
+     exemption the pass above makes */
+  if(!p||isSpecial(id)||p.pers||s==null||e==null)return [];
+  const out:{sev:string,msg:string}[]=[];
+  (evs||dayEvents(di,id)).filter((x:any)=>x&&x.kind==='fly').forEach((lg:any)=>{
+    const [bs,bt]=legBriefWin(lg), [ls,de]=legDebriefWin(lg);
+    if(bs!=null&&bt!=null&&overlap(s,e,bs,bt))out.push({sev:'adv',msg:noBriefSays(lg,label)});
+    if(ls!=null&&overlap(s,e,ls,de))out.push({sev:'adv',msg:debriefSays(lg,label)});
+  });
+  return out;
+}
 /* A NOUGHT-MINUTE SORTIE — ONE BODY, THREE READERS (D49, owner 22 Sep 26).
    The warning below asks it, and so do both surfaces that DRAW the line: the
    week (ui/html.ts) and the board (ui/board.ts), because the ruling is that the
@@ -773,15 +834,15 @@ function validateCore(){
       if(PEOPLE[id]&&PEOPLE[id].pers)return;
       const legs=byE[id].filter((e:any)=>e.kind==='fly'), others=byE[id].filter((e:any)=>e.kind!=='fly');
       legs.forEach((lg:any)=>{
-        const bs=lg.brief, de=lg.ld+VCONF.debrief;   // brief time is the hardline, not T/O − 3h
+        const [bs,bt]=legBriefWin(lg), [ls,de]=legDebriefWin(lg);   // brief time is the hardline, not T/O − 3h
         const hits=(s:any,e:any)=>others.filter((o:any)=>overlap(s,e,o.s,o.e)).map((o:any)=>o.label)
           .concat(timedInput.filter((i:any)=>i.id===id&&overlap(s,e,i.s,i.e)).map((i:any)=>i.type));
-        const hb=hits(bs,lg.to);
+        const hb=hits(bs,bt);
         if(hb.length){markChip(di,id,'NB');markRing(di,id,'adv');
-          add('adv','NO_BRIEF',[id],`No time for the ${lg.label} flight brief — ${hb.join(', ')} sits inside ${hm24(bs)}–${hm24(lg.to)} (brief ${hm24(bs)})`,lg.slot);}
-        const hd=hits(lg.ld,de);
+          add('adv','NO_BRIEF',[id],noBriefSays(lg,hb.join(', ')),lg.slot);}
+        const hd=hits(ls,de);
         if(hd.length){markChip(di,id,'DB');markRing(di,id,'adv');
-          add('adv','DEBRIEF',[id],`Not enough time to attend the ${lg.label} debrief — ${hd.join(', ')} sits inside ${hm24(lg.ld)}–${hm24(de)} (land + ${lgT(VCONF.debrief)})`,lg.slot);}
+          add('adv','DEBRIEF',[id],debriefSays(lg,hd.join(', ')),lg.slot);}
       });
     });
     /* ---- sim brief / debrief windows -------------------------------------
@@ -873,7 +934,7 @@ function validateCore(){
     const scPairSeen:any=new Set();
     day.forms.forEach((f:any)=>{
       f.acs.forEach((ac:any)=>{ const p=realP(ac.p),w=realP(ac.w);
-        /* ---- combination matrix (F-15SG Table 1.5-2, owner Aug 5 '26) ----
+        /* ---- combination matrix (F-15 Table 1.5-2, owner Aug 5 '26) ----
            Graded only when the front seat is a CAT A–D or OCU pilot and the
            back seat is a CAT A–D or OCU WSO: an instructor in either seat
            clears the matrix outright — an instructor pilot (IP/IR/FI) flies

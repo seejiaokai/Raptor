@@ -126,6 +126,37 @@ Return: Summary of what you found and what you fixed.
 **❌ Vague output:** "Fix it" - you don't know what changed
 **✅ Specific:** "Return summary of root cause and changes"
 
+**❌ Your paraphrase as the oracle:** "expect exactly one warning" written from memory — the agent verifies your sentence, and a wrong one comes back as a confident false finding
+**✅ The source of truth:** point at the rule document or the test that pins the behaviour, have the agent derive the expected result from it, and label each FAIL "contradicts the doc" or "contradicts the brief"
+
+**❌ UI tests through the back door:** tests that call the state setter directly pass even when the button is never wired to it
+**✅ Through the control:** at least one test per interactive control clicks the real rendered control and checks what the user sees
+
+**❌ Research split by topic for an "everywhere X" feature:** each agent returns a list, and nobody knows which hits need edits
+**✅ Split by code boundary** (each package or app, plus the docs), and have each agent classify every hit: "derives automatically", "hand-written — must edit", or "a test pins the exact list"
+
+## When Agents Share the Working Tree or the Machine
+
+Parallel agents share one filesystem and one machine but not one view of
+them — an agent sees another's side effects, never its intent. Say it in the
+brief:
+
+- **Who owns which files.** A second writer's brief lists the files another
+  agent owns as read-only, with an escape hatch: "report the change you need
+  instead of making it". You apply cross-boundary edits when you integrate.
+- **Scratch files go in each agent's own scratch folder**, never the repo
+  tree. An untracked file an agent did not create belongs to someone else —
+  never delete or "restore" it.
+- **Machine resources:** which test suites, ports and folders are already in
+  use. Agents run named test files in the foreground, one at a time, and
+  never re-run a suite they already started — backgrounded full runs pile up
+  until none finishes.
+- **Never commit a tree an agent is still writing**, whatever a hook or
+  reminder says; push only history that is already committed.
+- **A stop applies to agents too.** If work must pause (plan mode, "stop"),
+  stop every running agent that can write, then check `git status` and undo
+  partial edits.
+
 ## When NOT to Use
 
 **Related failures:** Fixing one might fix others - investigate together first

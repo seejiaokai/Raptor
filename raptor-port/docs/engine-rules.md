@@ -542,7 +542,7 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   copies; `refwin.ts:resim()` (sim) and `refwin.ts:rejet()` (jet) excise them
   from the in-memory copy — each fires nowhere on the seed, so WARN stays
   byte-equal, and the excision stops a later fixture reopening the seam.
-- **The combination matrix (F-15SG Table 1.5-2, owner Aug 5 '26)** grades a
+- **The combination matrix (F-15 Table 1.5-2, owner Aug 5 '26)** grades a
   crewed aircraft — the jet only, not the sim box — whenever the front seat
   is a CAT A–D or OCU pilot AND the back seat is a CAT A–D or OCU WSO. An
   instructor in either seat clears the matrix outright (an instructor pilot
@@ -556,7 +556,7 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
     WSO — "not an authorised combination". This code SUPERSEDES the old
     two-OCU hard rule; the two-OCU pairing is now the advisory below.
   - `CREW_SOLO`, adv: OCU pilot + OCU WSO — a crew solo, only allowed for
-    sorties designated under the F-15SG Basic Course Syllabus.
+    sorties designated under the F-15 Basic Course Syllabus.
   - `CO_APPROVAL`, adv: D+C, C+D and D+D (pilot+WSO) — CO approval required.
   Unlike `NO_IR`, the matrix DOES fire on the seed week (Mon bapster+nick is
   the crew-solo advisory, Wed krait+wrangler and pike+badger want CO

@@ -37,7 +37,7 @@ This is D14's substance, and it applies to every doc, every commit message and e
 - **This is not the plain-language rule's opposite.** That rule says never thin the reasoning, only
   the vocabulary. This one says do not say the same thing three times. Both can hold: say it once,
   fully, in ordinary words.
-- **Chat context saved into the repo is SUMMARISED, never dumped** (owner, D71, 23 Sep 26). When a
+- **Chat context saved into the repo is SUMMARISED, never dumped** (owner, D69, 23 Sep 26). When a
   long session persists its working context — a handoff, a context doc, a closing note — it writes
   the decisions, the state and the next step, not the conversation. The repo must not bloat.
 
@@ -67,7 +67,7 @@ Stale is worse than absent — the next session trusts it.
   is reported and deferred, never failed** — a code change is never where docs get trimmed (D29
   rule 3). Over a ceiling on a docs-only change fails, because that change is the trim pass.
 - **The rulings.** No D-number in `DECISIONS.md` may be lost or newly doubled (numbers may skip —
-  parallel branches hold ranges, D70), every file a ruling names as its home must exist, and every
+  parallel branches hold ranges, D78), every file a ruling names as its home must exist, and every
   ruling id in `scripts/rulecheck.mjs`'s map must still head an entry in a behaviour register.
 
 **Moving a finished item** is `node scripts/backlog-archive.mjs <ID> --homes <file>` (from the repo

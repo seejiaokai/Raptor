@@ -46,6 +46,13 @@ Skip any step = lying, not verifying
 | Regression test works | Red-green cycle verified | Test passes once |
 | Agent completed | VCS diff shows changes | Agent reports "success" |
 | Requirements met | Line-by-line checklist | Tests passing |
+| "X still works / is unchanged" (a behaviour someone named) | Found the code that does X — or say "I couldn't find X" | Repeating their description back |
+| A check passed | The check's own exit status and summary, error count included | Output piped through `tail`/`grep` (the pipe reports the filter's success); "0 failed" beside "Errors 1" |
+| A failure is unrelated to the change | An independent run agrees: CI, or the same test on the code before the change | Re-running it locally |
+| A screen change works | Driven in a real browser in every state it appears — [browser-checks.md](browser-checks.md) | Tests with no layout engine; one screenshot at rest |
+| Pushed / committed / clean | `git status -sb` read in this turn | Remembering that you pushed |
+| Fixed everywhere it applies | The list of every place, re-checked AFTER the fix, each by opening it | The list written before building |
+| "You'll see X when you do Y" (a check step for someone else) | Did Y on the built app and saw X | Writing it from what the feature was meant to do |
 
 ## Red Flags - STOP
 
@@ -90,6 +97,16 @@ Skip any step = lying, not verifying
 ✅ [Run build] [See: exit 0] "Build passes"
 ❌ "Linter passed" (linter doesn't check compilation)
 ```
+
+**Long check runs** — the command must still FAIL when the check fails:
+```
+✅ cmd > run.log 2>&1; rc=$?; tail -20 run.log; exit $rc                   (bash)
+✅ cmd *> run.log; $rc = $LASTEXITCODE; Get-Content run.log -Tail 20; exit $rc   (PowerShell)
+❌ cmd | tail -5   (reports tail's exit status; the failure detail is gone and costs a full re-run)
+❌ cmd > run.log 2>&1; tail run.log   (same trap: the last command's status is tail's)
+```
+The whole log stays in the file — search it when the run is red instead of
+running it again.
 
 **Requirements:**
 ```

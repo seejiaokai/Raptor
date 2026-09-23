@@ -45,7 +45,7 @@
    reader the issued schedule's green edge shares.
    ===================================================================== */
 import { DAYS } from '../engine/data'
-import { INPUTS, inpId } from '../engine/inputs'
+import { INPUTS, inpId, inpWin, inpMeta, inpLabel } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
@@ -53,7 +53,10 @@ import { envMin, uniformOil, dayOilWork, oilCapableItems, rowItemKey, groundItem
 import { landedExtras, oilEvidence, oilEvidenceOf, oilEarnedWork, oilInputEligible, oilSentOf, personDecision, itemMasked, itemMark, itemState, spanDefault, type OilEvidence, type OilDecisions } from '../engine/oilev'
 import { OILDAY, setOilDay, afterSchedMutate, esc } from '../state/view'
 import { CURWEEK } from '../engine/waves'
+import { parseHM, win, hm24 } from '../engine/time'
 import { stashKeys, stashEditDays } from '../engine/weekstash'
+import { whoArr } from '../engine/slots'
+import { isDraftVer } from '../engine/drafts'
 import { undoMark } from '../undo'
 
 export { rowItemKey, groundItemKey, inputItemKey }
@@ -729,14 +732,28 @@ export function oilClaimWin(di: any, src: any): [number, number] | null {
 
 /** Every person a ROW shows in the mode, in order: its named crew with any
  *  sentinel opened out into the real people it stands for (§2.1 item 6). */
-export function oilRowPeople(di: any, whos: any[], item: string, win: [number, number] | null): string[] {
+/* THE ROW'S OWN PEOPLE — and since [ALL-AVAIL-WINDOW] (D38) a PLACEHOLDER STAYS
+   A PLACEHOLDER HERE, in the earn mode as well as outside it.
+
+   It used to expand: inside the mode a placeholder became the individual pucks
+   of the men behind it, drawn along the row, each tappable to take one man off
+   ([OIL-SEATS-CAN-EARN] step 7). That door was built for a real reason — step 5
+   made those seats EARN, and paying a crowd the scheduler cannot correct is
+   worse than not paying it. THE DOOR HAS NOT BEEN REMOVED, IT HAS MOVED: the
+   counter chip now opens the window, and the window is where a man is switched
+   off. That is what the owner asked for in D38 — the window replaces the
+   in-row crowd as well as the bubble of names.
+
+   It also removes a divergence rather than adding one: the WEEK never expanded
+   a placeholder inline, so the board and the week drew the same row two
+   different ways inside the mode. They agree now.
+
+   What it still does is dedupe and drop an id the roster no longer holds, which
+   is why the call sites keep calling it rather than reading `who` raw. */
+export function oilRowPeople(di: any, whos: any[], item: string, _win?: [number, number] | null): string[] {
   const out: string[] = []
   const push = (id: any) => { if (id && (PEOPLE as any)[id] && out.indexOf(id) < 0) out.push(id) }
-  for (const v of whos) {
-    const id = whoId(v)
-    if (id && isSpecial(id)) { if (win) oilSentinelPeople(di, item, win).forEach(push) }
-    else push(id)
-  }
+  for (const v of whos) push(whoId(v))
   return out
 }
 
@@ -778,6 +795,149 @@ export function oilItemOfKey(di: any, key: any): string {
   return ''
 }
 
+/** WHICH OF THE TWO ANSWERS IS THIS? (step 10, D37; D44.) Since the count
+ *  shows on every day, the same puck can show two different numbers — the list
+ *  the day WENT OUT with, and the list as things stand today. A number that does
+ *  not say which is worse than no number, because the scheduler cannot tell
+ *  whether he is reading a record or a live count.
+ *
+ *  ONE BODY, so the chip and the window cannot drift. They used to be two: the
+ *  chip decided from the version it was drawn in, the tap's sentence decided
+ *  from whether the day carried a frozen block. Both reached the same answer by
+ *  different routes, which is the exact shape that once put a chip reading 27
+ *  over a tap saying nobody was behind the puck. `oilwords.test.tsx` asserts the
+ *  two share a vocabulary; this makes that structural rather than a coincidence.
+ *
+ *  The argument is the VERSION the chip was drawn in — empty means the working
+ *  copy — because that is the fact both callers already hold. */
+export const OIL_FROM_ISSUED = 'who was free when this day was issued'
+export const OIL_FROM_LIVE = 'who is free as things stand now'
+/* A PARKED PLAN IS NOT AN ISSUED DAY ([ALL-AVAIL-WINDOW], 23 Sep 26). A plan
+   is kept WITHOUT a frozen membership (drafts.ts strips `oilev` as it parks the
+   day), so its crowd is worked out now, against the plan's own rows — the live
+   answer. Reading every version as "issued" put a false sentence on the chip's
+   title and in the window whenever the board's plan selector showed a plan. */
+export const oilFromWords = (ver: any) => (ver && !isDraftVer(ver) ? OIL_FROM_ISSUED : OIL_FROM_LIVE)
+/** THE EVENT'S OWN WORDS, for the title bar of [ALL-AVAIL-WINDOW] (D38).
+ *
+ *  READ FROM THE MODEL, NEVER FROM THE PAGE. board.ts's `oilItemName` reads the
+ *  name back off a `[data-oilitem]` cell, which is right for a history line —
+ *  the mode has already drawn it there. It is WRONG here for two reasons: those
+ *  cells exist only while the earn mode is on, and the window opens on any day
+ *  with the mode off (the mode rule, 22 Sep 26); and the window outlives the row
+ *  that opened it, because he goes on editing the schedule behind it.
+ *
+ *  Every kind of row the placeholder may land on is walked, because D33 lets it
+ *  land nearly everywhere: a ground row, a Common Programme row, a duty desk, a
+ *  sim row, and a flying line (refused today, but the engine keeps a belt for
+ *  data that arrived by copy before the refusal existed — so it is walked here
+ *  rather than assumed impossible). A claim is named by WHAT IT IS, never by
+ *  what is drawn in its cell — hand-pass finding 14, which produced history
+ *  lines like "Sidewinder earns nothing from SidewinderFO". */
+export function oilItemLabel(di: any, item: string): { name: string, when: string, s: number | null, e: number | null, found: boolean, puck: boolean, cx: boolean, info: boolean } {
+  const d: any = DAYS[+di] || {}
+  const hhmm = (v: any) => { const t = String(v || '').replace(':', '').trim()
+    return t.length === 4 ? `${t.slice(0, 2)}:${t.slice(2)}` : t }
+  const span = (a: any, b: any) => { const x = hhmm(a), y = hhmm(b)
+    return x && y ? `${x}–${y}` : x || y || '' }
+  const dayLbl = String(d.dt || d.dow || '').trim()
+  /* THE EVENT'S WINDOW IN MINUTES, as well as its words: [ALL-AVAIL-WINDOW]
+     asks whether it sits inside a crowd man's own brief or debrief (D38). An
+     open end is left open rather than guessed — a row with no end time cannot
+     be said to clash with anything, and inventing one would put a flag on a
+     man for a clash that may not exist. */
+  /* `f` — WHAT THE ROW ITSELF SAYS, so a list that cannot be worked out is
+     explained by its real reason (Fable F1, 23 Sep 26): a placeholder still on
+     the row (`puck`), a cancelled row (`cx`), an information-only row (`info`).
+     The OIL walk skips all three, and the window used to call every one of them
+     "no puck on this row any more" while the puck sat there behind it. */
+  const out = (name: any, a?: any, b?: any, sm?: number | null, em?: number | null, found = true,
+               f: { puck?: boolean, cx?: boolean, info?: boolean } = {}) => {
+    const w = span(a, b)
+    const s0 = sm != null ? sm : parseHM(a), e0 = em != null ? em : parseHM(b)
+    const ww = s0 != null && e0 != null ? win(s0, e0) : null
+    return { name: String(name || 'This event').trim() || 'This event',
+             when: [dayLbl, w].filter(Boolean).join(' · '),
+             s: ww ? ww[0] : null, e: ww ? ww[1] : null, found,
+             puck: !!f.puck, cx: !!f.cx, info: !!f.info }
+  }
+  /* the OIL walk's own test for a placeholder: an id that resolves special */
+  const sentOn = (vals: any[]) => vals.some(v => { const id = whoId(v); return !!id && isSpecial(id) })
+  const flags = (r: any, vals: any[]) => ({ puck: sentOn(vals), cx: !!(r && r.cx), info: !!(r && r.info) })
+  /* NOT FOUND is said, not guessed (Fable S14): the window outlives the row
+     that opened it, and a row deleted behind it must read as GONE — never as a
+     confident "0 available" under the old title. */
+  const lost = (name: string) => out(name, '', '', null, null, false)
+  if (!item) return lost('This event')
+  /* A LANDED REQUEST IS READ FROM ITS LANDED ROW ON THE INSTALLED DAY — never
+     from the live Inputs page (Astra 1 + Fable F2, 23 Sep 26, found by both).
+     The row is part of the day, so an issued snapshot keeps the name and the
+     times it went out with, while INPUTS is global and not frozen: reading it
+     here retitled an issued window with TODAY's request, measured its flags
+     over today's times, and called the row gone once the request was deleted —
+     while the issued schedule still showed it. On the working copy the landed
+     row is rebuilt from the live request on every edit, so the two agree.
+     ITS WINDOW IS THE ONE ITS CROWD WAS RESOLVED OVER: the row carries the
+     request's own times (acceptInput writes them), and a row with no usable
+     times is an all-day request, whose crowd `inpWin` resolves over the whole
+     day — so the flags and the membership measure one window. */
+  if (item.startsWith('i:')) {
+    const iid = item.slice(2)
+    const g = (d.ground || []).find((x: any) => x && x.src != null && String(x.src) === iid)
+    if (!g) return lost('Request')
+    const s0 = parseHM(g.str), e0 = parseHM(g.end)
+    const timed = s0 != null && e0 != null && s0 !== e0
+    return out(g.prog || 'Request', timed ? g.str : '', timed ? g.end : '', timed ? null : 0, timed ? null : 1439,
+      true, flags(g, [g.who, ...(g.more || [])]))
+  }
+  for (const r of (d.ground || [])) if (r && groundItemKey(r) === item)
+    return out(r.prog, r.str, r.end, null, null, true, flags(r, [r.who, ...(r.more || [])]))
+  for (const r of (d.allhands || [])) if (r && rowItemKey(r.rid) === item)
+    return out(r.prog, r.str, r.end, null, null, true, flags(r, [...whoArr(r), ...(r.more || [])]))
+  for (const b of (d.dutywaves || [])) for (const r of ((b && b.rows) || []))
+    if (r && rowItemKey(r.rid) === item) return out(r.role, r.str, r.end, null, null, true, flags(r, [r.id, ...(r.more || [])]))
+  for (const k of Object.keys(d.sims || {})) for (const r of ((d.sims[k]) || []))
+    if (r && rowItemKey(r.rid) === item) return out(`${String(k).toUpperCase()} · ${r.label || ''}`.trim(), r.str, r.end,
+      null, null, true, flags(r, [r.p, r.w, ...(r.pax || []), ...(r.more || [])]))
+  for (const w of (d.waves || [])) for (const f of ((w && w.formations) || []))
+    if (f && rowItemKey(f.rid) === item) return out([f.cs, f.msn].filter(Boolean).join(' · '), f.to, f.ld)
+  return lost('This event')
+}
+/** WHAT THE HISTORY CALLS A REQUEST — the type's LONG name ("overseas duty"),
+ *  or what was typed on an "Other" (hand pass finding 14, 21 Sep 26: a claim is
+ *  named by what it IS, never by what is drawn in its cell). ONE body for the
+ *  board's history line and the window's, so a switch made in either place
+ *  reads the same a week later. '' when the item is not a request. */
+export function oilRequestName(item: string): string {
+  if (!item || !item.startsWith('i:')) return ''
+  const r = (INPUTS as any[]).find(x => x && String(inpId(x)) === item.slice(2))
+  const meta: any = r ? inpMeta(r.type) : null
+  return r ? String((meta && meta.name) || inpLabel(r) || '').trim() : ''
+}
+/** WHAT THE HISTORY CALLS AN EVENT — ONE body for the board's line and the
+ *  window's (Fable F5, 23 Sep 26: a switch made in the window on a sim row read
+ *  "OFT · EP1" in History where the same switch from the board read
+ *  "EP1"). Moved here from board.ts so the two can never name one row apart.
+ *  A REQUEST by its long type name (oilRequestName). Anything else by the name
+ *  the mode has drawn in its item cell, read back off the page — the board's
+ *  reading since 21 Sep 26, and valid for the window too, because the earn
+ *  switch exists only while the mode is on, and the mode lives on an open board
+ *  that has drawn those cells. Matched by attribute so no key needs escaping. */
+export function oilItemHistName(di: any, item: string): string {
+  if (!item) return 'this event'
+  const t = oilRequestName(item)
+  if (t) return t
+  if (typeof document === 'undefined') return 'this event'
+  for (const el of Array.from(document.querySelectorAll(`[data-oilitem][data-oilday="${+di}"]`)))
+    if ((el as HTMLElement).dataset.oilitem === item) return ((el.textContent || '').trim()) || 'this event'
+  return 'this event'
+}
+/** THE SENTENCE A SWITCH OF ONE MAN LEAVES — in the history, on the board's
+ *  toast and in the window's footer. One body, so a switch made in the window
+ *  and the same switch made on the board can never be worded apart (Fable S7:
+ *  the window's switch used to leave no history line at all). */
+export const oilPersonSays = (cs: string, name: string, on: boolean) =>
+  on ? `${cs} earns OIL from ${name} again` : `${cs} earns nothing from ${name}`
 /** THE FOUR STATES OF A SENTINEL PUCK (§7.6, as the owner refined it: "if
  *  everyone in the all avail or all puck is granted OIL, it should be green").
  *  ALL / ALL AVAIL is not a person and cannot carry a person's figure — the men
@@ -826,28 +986,12 @@ export function oilSentinelSummary(di: any, item: string):
   return { bar: all('FO') ? 'FO' : all('HO') ? 'HO' : null, n, earn, earns: true }
 }
 
-/** The people behind a sentinel, each with his own figure, in the words the
- *  count chip's tap shows. */
-export function oilSentinelList(di: any, item: string): string {
-  const ev = evOf(di)
-  const got = oilSentOf(ev, item)
-  /* THE SAME BODY THE CHIP ABOVE IT ASKED. They were two readers, which is how
-     a chip reading 27 could sit over a tap saying "Nobody is behind this puck"
-     (Fable correction 2). */
-  if (got.state === 'unrecorded') return 'This schedule was issued before the app kept a record of who was behind this puck'
-  const people = got.people
-  /* THE SAME PHRASE THE CHIP ABOVE USES (step 10, D37): which of the two answers
-     this is. Inside an issued document DAYS[di] IS the snapshot, so the block
-     carried on the day is what says so — no second source to drift from. */
-  const from = (DAYS[+di] && (DAYS[+di] as any).oilev)
-    ? ' — who was free when this day was issued'
-    : ' — who is free as things stand now'
-  if (!people.length) return 'Nobody is free for this at that time' + from
-  /* on a day that earns nobody anything there are no figures to give — the
-     names ARE the answer (D37) */
-  if (!ev.earns) return `${people.length} with nothing else on at that time${from}: ${people.map(p => ((PEOPLE as any)[p] || {}).cs || p).join(', ')}`
-  /* each man as THIS ROW earned him, so the list and the chip above it agree */
-  const say = people.map(p => { const a = oilFigureFor(di, p, item)
-    return `${((PEOPLE as any)[p] || {}).cs || p} ${a === 'FO' ? 'full day' : a === 'HO' ? 'half day' : 'nothing'}` })
-  return `${people.length} behind this puck${from} — ${say.join(', ')}`
-}
+/* `oilSentinelList` LIVED HERE and is deleted with [ALL-AVAIL-WINDOW] (D38).
+   It built the one-line string of names the count chip's tap used to toast —
+   the "bubble of names" the owner called not intuitive. The window replaced it,
+   and nothing in the app called this any more; only tests did, which is a
+   function no user can reach being kept alive by its own coverage. Its two real
+   assertions were not lost: the issued-versus-live read moved onto
+   `oilSentinelPeople` (the one resolver, which the window calls), and the
+   which-answer-is-this phrase became `oilFromWords` above, shared with the chip
+   so the two cannot drift. See oilcount.test.tsx and oilwords.test.tsx. */

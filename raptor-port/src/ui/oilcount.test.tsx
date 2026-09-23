@@ -35,9 +35,10 @@ import { SCHED, signOf, setDayApproved, dayCurVer } from '../engine/publish'
 import { ensureRowIds } from '../engine/rowids'
 import { rowItemKey } from '../engine/oil'
 import { oilSeatDeco, withDaySnap } from './html'
-import { oilSentinelList } from './oilmode'
-import { openScheduler } from './board'
+import { oilSentinelPeople, oilFromWords } from './oilmode'
+import { openScheduler, closeScheduler } from './board'
 import { setOilDay } from '../state/view'
+import * as view from '../state/view'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -131,22 +132,58 @@ describe('the count shows on every day, with the mode off (D27)', () => {
   })
 })
 
+/* THE TAP NOW OPENS [ALL-AVAIL-WINDOW] (D38-D41), so these assertions moved with
+   the surface. They used to read a one-line toast of names; the toast is gone and
+   a test that still asserted it would be proving something no user can reach.
+   What is being checked has NOT changed: the chip's number and the list its tap
+   opens are the same answer, which is Fable correction 2 — they were two readers
+   once, which is how a chip reading 27 came to sit over a tap saying nobody was
+   behind the puck. */
 describe('the number and the list are the same answer (Fable correction 2)', () => {
-  it('tapping the chip names the men it counted, on a weekday', async () => {
+  it('tapping the chip opens the window, naming the men it counted', async () => {
     puckRow(TUE)
     await open(TUE)
     await click(chipEl())
-    const said = toasts.join(' ')
-    expect(said, 'the same two the chip counted').toContain('2 with nothing else on')
-    expect(said.toLowerCase(), 'and still no talk of OIL on a Tuesday').not.toContain('oil')
+    const w = $('.availwin')
+    expect(w, 'the tap opens the window').toBeTruthy()
+    const said = w.textContent || ''
+    expect(said, 'the same two the chip counted').toContain('2')
     for (const id of CROWD) expect(said, `${id} is named`).toContain((PEOPLE as any)[id].cs)
+    expect(said.toLowerCase(), 'and still no talk of OIL on a Tuesday').not.toContain('oil')
+  })
+
+  it('the two columns are pilots LEFT and WSOs RIGHT (D38/D51)', async () => {
+    puckRow(TUE)
+    await open(TUE)
+    await click(chipEl())
+    const cols = $$('.availwin .rcol .rh').map(h => (h.textContent || '').trim())
+    expect(cols.length, 'two columns, never one wrapped list').toBe(2)
+    expect(cols[0], 'pilots first').toMatch(/^PILOTS/i)
+    expect(cols[1], 'WSOs second').toMatch(/^WSOS/i)
+  })
+
+  it('ONE PUCK PER ROW — a column is a list running down, not a wrapping grid (D39)', async () => {
+    puckRow(TUE)
+    await open(TUE)
+    await click(chipEl())
+    const rows = $$('.availwin .rpuck')
+    expect(rows.length, 'one row per man the chip counted').toBe(CROWD.length)
+    for (const r of rows) expect(r.querySelectorAll('.puck').length, 'exactly one puck in a row').toBe(1)
   })
 
   it('and it never says "nobody" about a puck the chip has just counted', async () => {
     puckRow(TUE)
     await open(TUE)
     await click(chipEl())
-    expect(toasts.join(' ')).not.toContain('Nobody is behind this puck')
+    expect(($('.availwin').textContent || '')).not.toContain('Nobody is behind this puck')
+  })
+
+  it('WITH THE MODE OFF THERE ARE NO TABS AT ALL — just the one list (the mode rule)', async () => {
+    puckRow(TUE)
+    await open(TUE)
+    await click(chipEl())
+    expect($$('.availwin .win-tab').length, 'earning is a mode; availability is not').toBe(0)
+    expect($('.availwin .win-one'), 'one heading instead').toBeTruthy()
   })
 })
 
@@ -166,15 +203,22 @@ describe('an issued day answers from the document it was drawn in (D44, OSE-R2-0
     expect(drawn).toContain('data-oilver=""')
   })
 
-  it('THE TAP READS THE ISSUED LIST, not whoever happens to be free now', () => {
+  it('THE WINDOW READS THE ISSUED LIST, not whoever happens to be free now', () => {
     const item = puckRow(SAT)
     publish(SAT)
     const ver = dayCurVer(SAT)
     HOOKS.oilSentinel = () => ['plasma']                  // the crowd changes after the day went out
-    const live = oilSentinelList(SAT, item)
-    const issued = withDaySnap(SAT, ver, () => oilSentinelList(SAT, item))
-    expect(issued, 'the issued page lists the men it was issued with').toContain('2 behind this puck')
-    expect(live, 'and the working copy shows today\'s answer').toContain('1 behind this puck')
+    const live = oilSentinelPeople(SAT, item)
+    const issued = withDaySnap(SAT, ver, () => oilSentinelPeople(SAT, item))
+    expect(issued.length, 'the issued page lists the men it was issued with').toBe(2)
+    expect(live.length, 'and the working copy shows what is true today').toBe(1)
+    /* The window carries the version the chip was drawn in for exactly this
+       reason (D44 / Codex OSE-R2-05): the snapshot is installed only while the
+       page is built, so a window that re-read the live day when it opened would
+       list whoever is free NOW under a number frozen when the day went out. And
+       it SAYS which of the two it is showing, in the chip's own words. */
+    expect(oilFromWords(ver)).toBe('who was free when this day was issued')
+    expect(oilFromWords('')).toBe('who is free as things stand now')
   })
 })
 
@@ -183,5 +227,44 @@ describe('what must NOT carry a count', () => {
     puckRow(SAT)
     await open(SAT)
     expect($$('#sbBoard .peek .oilcount').length, 'the roll-call says it must not').toBe(0)
+  })
+})
+
+/* THE WEEK'S OWN TAP — FOUND BY A BREAK TEST, 23 Sep 26, and it had NO test at
+   all. Cutting the week handler's wire to the window left all 1,686 component
+   tests green, which is the proof §8.4 asks for: that surface was unwired as far
+   as the suite could tell.
+
+   THE CHIP IS DRAWN ON BOTH SURFACES BY ONE BODY (`oilSeatDeco`, "shared by the
+   week (lSeat) and the board (sbSeat)"), and interactions.ts routes the week's
+   tap precisely because the chip is part of the ISSUED SCHEDULE, not a board
+   control. So there were always two doors and only one of them was ever opened
+   by a test — the same shape as the three defects the owner found by hand on
+   21 Sep 26, every one of them a surface a finished rule was never wired to. */
+describe('the WEEK opens the same window as the board (both surfaces draw the chip)', () => {
+  const weekChip = () => $('#eWeek .oilcount')
+
+  it('the week draws the count chip at all', async () => {
+    puckRow(TUE)
+    await act(async () => { notify() })
+    expect(weekChip(), 'the chip is part of the schedule, not a board control').toBeTruthy()
+  })
+
+  it('and tapping it there opens the window, with the board CLOSED', async () => {
+    puckRow(TUE)
+    /* the board must genuinely be shut. Both handlers are document-level, so a
+       board left open by an earlier test could answer this click first — and the
+       test would pass through the BOARD's wire while claiming to prove the
+       week's, which is the very thing the break test just showed is untested. */
+    await act(async () => { closeScheduler(); notify() })
+    /* asked of the MODEL, not the markup: closeScheduler leaves the board's
+       shell in the DOM and only drops the day it was showing, so a DOM test
+       here would fail on a board that is genuinely shut. */
+    expect(view.SBDAY, 'this is the week, not the board').toBeNull()
+    await click(weekChip())
+    const w = $('.availwin')
+    expect(w, 'the week tap opens the same window').toBeTruthy()
+    const said = w.textContent || ''
+    for (const id of CROWD) expect(said, `${id} is named`).toContain((PEOPLE as any)[id].cs)
   })
 })
