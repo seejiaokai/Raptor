@@ -28,7 +28,7 @@ function SaEdit({ id, onDone }) {
   return (
     <div className="saedit" onKeyDown={onKey}>
       <label>Name<input value={v.name} onChange={set('name')} autoFocus /></label>
-      <label>Type / format<input value={v.fmt} onChange={set('fmt')} placeholder="e.g. Lecture, OFT/AMT" /></label>
+      <label>Type / format<input value={v.fmt} onChange={set('fmt')} placeholder={core.FMT_HINT} /></label>
       <label>Hours<input value={v.hrs} onChange={set('hrs')} placeholder="e.g. 1.5 Hrs" /></label>
       <label>Crew<textarea rows={2} value={v.crew} onChange={set('crew')} placeholder="e.g. UP/UW, IP/IW/FSI" /></label>
       <label className="full">Prerequisites<textarea rows={2} value={v.pre} onChange={set('pre')} placeholder={chartPre ? 'from the chart: ' + chartPre : 'e.g. AVI-02, AVI-03, AVI-04'} /></label>

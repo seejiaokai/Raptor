@@ -14,7 +14,7 @@ import { storage, flushNow, loadLatest } from '../storage.js';
 import * as FMT from './fileFormat.js';
 import * as FS from './fileStore.js';
 import { findEvents } from './eventOrder.js';
-import { isFileLocked, onFileLocked } from '../role.js';
+import { isFileLocked, onFileLocked, onTrackerSessionEnd } from '../role.js';
 import { getPeople, onPeople, whoami } from '../people.js';
 import { mintId, isEntry, upgradeCourseBlock, reconcileIds } from './ids.js';
 import { mintCourseId, isCourseEntry, isCourseId, isReservedCourseName, upgradeCourses, reconcileCourseIds } from './courseIds.js';
@@ -63,6 +63,31 @@ const refreshCourses = notify;
    affordance (Header.jsx hides the File menu). */
 export let fileLocked = isFileLocked();
 onFileLocked(next => { if (next === fileLocked) return; fileLocked = next; if (fileLocked) copyOpen = false; notify(); });
+/* A login or a logout ends the Tracker's SESSION (role.js; Raptor's
+   resetSession). Undo is per login session and never reaches another user
+   (owner, 13 Sep 26), and the modes and windows the last person left open are
+   theirs — the [HUMAN-RETEST] walk (23 Sep 26, F10) found the next login able
+   to undo the admin's mark, still in Details mode, and dropped into chart
+   editing over the admin's unsaved draft. Plain state only, no redraw: at a
+   logout the section is not on screen, and the next mount redraws the board.
+   An UNSAVED chart edit is deliberately kept — it waits behind ✓ Save changes,
+   the one place such work waits, and is never thrown away without a word. */
+onTrackerSessionEnd(() => endSession());
+function endSession() {
+  undoStack = []; redoStack = [];
+  if (dlg) dlgClose(null);            /* a half-answered question: cancelled */
+  pop = null; popDoneDate = ''; popFailDate = '';
+  failLog = null; lullPick = null; lullCopy = null;
+  infoId = null; editId = null; ordMode = null; sylModalOpen = false; showAllOpen = false; copyOpen = false;
+  showDetails = false; hideDetailBubble();
+  if (arrangeMode) {
+    arrangeMode = false; connectSrc = null; drawing = null; selBalls = new Set(); tool = 'move';
+    if (sylDirty) setSaveStatus('unsaved flow edits — hit “Save changes”', 'saving');
+  }
+  hintFlash = null;
+  searchHit = null; searchQ = ''; searchCount = 0; searchAt = 0; searchHits = [];
+  notify();
+}
 
 export const DEFAULT_SYLLABUS = SYLLABI[DEFAULT_SYL_NAME];
 export const TYPE_COLOR = { flight: '#19b6e8', acad: '#27d64a', test: '#ff4040', sim: '#ffe000', device: '#b063ff' };
@@ -113,14 +138,27 @@ export function preText(id) {
   const d = infoFor(id); if (d.pre) return d.pre;
   const e = byid[id]; const ps = e && e.prereqs || []; return ps.length ? ps.join(', ') : '';
 }
-export function infoHtml(id) {
+/* `where` is 'bubble' for the floating details bubble. The grading pop-up
+   prints the same text right above its own ✎ Edit details button, so there
+   "tap Edit details" is a door; the bubble has no button, and in Details mode
+   the pop-up is switched off — so the bubble says how to reach it instead
+   ([HUMAN-RETEST] F4, 23 Sep 26). */
+export function infoHtml(id, where) {
   const d = infoFor(id); const rows = [];
   if (d.fmt) rows.push('<b>Type:</b> ' + escapeId(d.fmt) + (d.hrs ? ' · ' + escapeId(d.hrs) : ''));
   if (d.crew) rows.push('<b>Crew:</b> ' + escapeId(d.crew));
   { const p = preText(id); if (p) rows.push('<b>Prerequisites:</b> ' + escapeId(p)); }
   const nm = d.name ? ('<div style="font-weight:600;margin-bottom:3px">' + escapeId(d.name) + '</div>') : '';
-  return nm + (rows.length ? rows.join('<br>') : '<span class="mini">No details yet — tap Edit details.</span>');
+  const none = where !== 'bubble' ? 'No details yet — tap Edit details.'
+    : showDetails ? 'No details yet — turn ⓘ off, then tap the ball and ✎ Edit details.'
+      : 'No details yet — tap the ball, then ✎ Edit details.';
+  return nm + (rows.length ? rows.join('<br>') : '<span class="mini">' + none + '</span>');
 }
+/* The grey hint in the "Type / format" box — ONE string for both editors that
+   carry that box, the details window (Modals.jsx) and Show All's inline editor
+   (ShowAllPanel.jsx). D64 (owner, 23 Sep 26) changed it in the first only; the
+   second kept the old words until the [HUMAN-RETEST] walk (F11). */
+export const FMT_HINT = 'e.g. Lecture, OFT/AMT, 2 x F-15';
 export const NEXT_CATS = [
   { key: 'CFT', label: 'Next CFT', pred: e => /^CFT/.test(e.id) },
   { key: 'IAT', label: 'Next IAT', pred: e => /^IAT/.test(e.id) },
@@ -1624,6 +1662,11 @@ async function loadCourseNow(c, restoreLastSyllabus) {
   /* A ring left over from another syllabus would re-light the moment the user
      came back to it. Cleared without redrawing: every caller renders anyway. */
   searchHit = null; searchQ = ''; searchCount = 0; searchAt = 0; searchHits = [];
+  /* The grading pop-up belongs to one event on the chart that is going away. A
+     press on the dropdown closes it (the outside-click rule), but a KEYBOARD
+     switch has no press — it left the pop-up up over the new chart, where its
+     buttons would grade that chart's same-code ball ([HUMAN-RETEST] F13). */
+  pop = null; hideDetailBubble();
   /* History belongs to the chart it was recorded on. Switching COURSE never
      went through clearDirty, so an Undo pressed afterwards stamped the old
      course's chart onto the new one's syllabus and saved it immediately. */
@@ -3228,14 +3271,17 @@ export async function saveEdit(vals) {
   /* drop edge styling for links that no longer exist, then apply the new set */
   (ev.prereqs || []).forEach(p => { if (!list.includes(p)) delete edgeMeta[ekey(p, ev.id)]; });
   ev.prereqs = list;
-  /* crew + prereq note are event-info overrides: merge, don't clobber name/fmt/hrs */
+  /* crew + prereq note are event-info overrides: merge, don't clobber name/fmt/hrs.
+     Written through writeInfo, the details window's own body: this box is
+     pre-filled from the chart ON SCREEN, so on a renumbered syllabus (Tx) its
+     untouched fields are that syllabus's profile, and diffing them against the
+     global base stored the profile as a global override — one text-only edit of
+     BFM-3 on Tx rewrote 2026's BFM-3 crew line ([HUMAN-RETEST] F5, 23 Sep 26;
+     the details window was fixed for exactly this on SA-5, this box was not). */
   {
     const cur = infoFor(editId);
-    const o = { name: cur.name || '', fmt: cur.fmt || '', hrs: cur.hrs || '',
-      crew: vals.crew.trim(), pre: vals.pre.trim() };
-    const base = EVENT_INFO[editId] || {}; const diff = {};
-    Object.keys(o).forEach(k => { if (o[k] !== (base[k] || '')) diff[k] = o[k]; });
-    if (Object.keys(diff).length) eventInfo[editId] = diff; else delete eventInfo[editId];
+    writeInfo(editId, { name: cur.name || '', fmt: cur.fmt || '', hrs: cur.hrs || '',
+      crew: vals.crew.trim(), pre: vals.pre.trim() });
     await saveEventInfo();
   }
   markDirty(); await saveLayout(); closeEdit(); refreshSyl(); renderBoard(); renderSide();
@@ -3413,10 +3459,13 @@ export function renderKeyBall() {
     labels += `<text x="${x.toFixed(0)}" y="${(y + 7).toFixed(0)}" text-anchor="${anchor}" font-size="${on ? 21 : 19}" font-weight="${on ? 800 : 700}" fill="${on ? '#5ec8ff' : '#e9ecf2'}">${escapeId(r ? r.name : '')}</text>`;
   }
   /* Wide and short: the names run out to either side, so the box wants the shape
-     of a name, not of a circle. */
+     of a name, not of a circle. The centre names the COURSE: `course` has been
+     the course's hidden id since 13 Sep 26 (course ids), and this line kept
+     printing it — a code like "cmudq0…" in the middle of the Students card
+     ([HUMAN-RETEST] F1, 23 Sep 26). */
   return `<div style="text-align:center;margin-top:6px"><svg viewBox="-95 6 340 140" width="340" height="140" style="max-width:100%;height:auto">
   ${segs}<circle cx="${cx}" cy="${cy}" r="${rI}" fill="#f6c21a" stroke="#0007"/>
-  <text x="${cx}" y="${cy + 4}" text-anchor="middle" font-size="11" font-weight="700">${escapeId(course)}</text>${labels}</svg></div>`;
+  <text x="${cx}" y="${cy + 4}" text-anchor="middle" font-size="11" font-weight="700">${escapeId(curCourseName())}</text>${labels}</svg></div>`;
 }
 
 /* ---------- popover ---------- */
@@ -3451,6 +3500,11 @@ export function ballTap(id, ev) {
     const r = roster[+w.dataset.wi];
     if (r && r.id !== active) { setActive(r.id, { land: false }); return; }
   }
+  /* Nobody on this chart, nobody to grade: say so rather than open a pop-up
+     titled "ST-01 ·" whose every grade, counter and date box does nothing
+     ([HUMAN-RETEST] F9, 23 Sep 26). The Students card beside it already offers
+     + Add. */
+  if (!active) { flashHint('No students on this chart yet — add one with + Add in the Students card to start marking.'); return; }
   openPop(id, ev);
 }
 
@@ -3655,7 +3709,7 @@ function showDetailBubble(id, anchorEl, html) {
   /* The event's details, then the selected student's own record on it (grade,
      the day, each failure's day) — so the bubble answers for the person the
      chart is showing, not only for the event. */
-  b.innerHTML = html != null ? html : `<div class="dbId">${escapeId(id)}</div>${infoHtml(id)}${markHtml(active, id)}`;
+  b.innerHTML = html != null ? html : `<div class="dbId">${escapeId(id)}</div>${infoHtml(id, 'bubble')}${markHtml(active, id)}`;
   b.style.display = 'block'; b.style.left = '-9999px'; b.style.top = '0px';
   const r = anchorEl.getBoundingClientRect();
   const bw = b.offsetWidth, bh = b.offsetHeight, gap = 8, vw = innerWidth, vh = innerHeight;
@@ -3707,12 +3761,20 @@ export function closeInfo() { infoId = null; notify(); }
 export async function saveInfoFor(id, vals) {
   if (!id) return;
   const t = v => (v == null ? '' : String(v)).trim();
-  const o = { name: t(vals.name), fmt: t(vals.fmt), hrs: t(vals.hrs), crew: t(vals.crew), pre: t(vals.pre) };
-  /* Compare against what the box was FILLED with — base plus this syllabus's own
-     profile — not the base alone. The editor pre-fills from infoFor(), so on a
-     renumbered syllabus (Tx) an untouched field differs from the global base and
-     used to be stored as a global override, pushing Tx wording onto every chart.
-     One save of SA-5 on Tx did exactly that. */
+  writeInfo(id, { name: t(vals.name), fmt: t(vals.fmt), hrs: t(vals.hrs), crew: t(vals.crew), pre: t(vals.pre) });
+  /* Event details save themselves to the store like a mark does — no button to
+     press (they used to also flag the user's file unsaved; gone 9 Sep 26). */
+  await saveEventInfo(); renderBoard(); renderSide();
+}
+/* THE one body that turns what an editor holds into the stored override — used
+   by the details window (saveInfoFor) and by the chart editor's ball box
+   (saveEdit), so the two can never drift apart again ([HUMAN-RETEST] F5).
+   Compare against what the box was FILLED with — base plus this syllabus's own
+   profile — not the base alone. The editors pre-fill from infoFor(), so on a
+   renumbered syllabus (Tx) an untouched field differs from the global base and
+   used to be stored as a global override, pushing Tx wording onto every chart.
+   One save of SA-5 on Tx did exactly that. */
+function writeInfo(id, o) {
   const base = Object.assign({}, EVENT_INFO[id] || {}, (EVENT_INFO_BY_SYL[curBase()] || {})[id] || {});
   const plain = EVENT_INFO[id] || {};
   const diff = {}; const kept = [];
@@ -3725,9 +3787,6 @@ export async function saveInfoFor(id, vals) {
   });
   if (kept.length) diff.__kept = kept;
   if (Object.keys(diff).filter(k => k !== '__kept').length) eventInfo[id] = diff; else delete eventInfo[id];
-  /* Event details save themselves to the store like a mark does — no button to
-     press (they used to also flag the user's file unsaved; gone 9 Sep 26). */
-  await saveEventInfo(); renderBoard(); renderSide();
 }
 export async function resetInfoFor(id) {
   if (!id) return;
@@ -4368,7 +4427,9 @@ export async function addSyl() {
     await switchSylNow(id);
     refreshSyl(); refreshActive(); renderBoard(); renderSide();
     setSaveStatus('added empty syllabus “' + nm + '”', 'ok');
-    if (!arrangeMode) flashHint('Empty sheet ready — hit “✎ Edit”, then use + Flight / + Acad / + Test / + Sim / + CFT to add events.');
+    /* the Edit button this used to name folded into the Syllabus ✎ menu on
+       9 Sep 26 as "Edit chart layout" ([HUMAN-RETEST] F3) */
+    if (!arrangeMode) flashHint('Empty sheet ready — Syllabus ✎ → Edit chart layout, then use + Flight / + Acad / + Test / + Sim / + CFT/IAT/EPT to add events.');
   } catch (err) {
     await uiAlert('The syllabus was added, but switching to it failed — reloading.\n\n' + ((err && err.message) || err));
     await loadCourse(course); refreshSyl(); refreshActive(); renderBoard(); renderSide();
@@ -4768,6 +4829,13 @@ function upsertSylEntry(id, label, fileEntry, isAddNew) {
      never overwrites a local one. */
   if (fileUserNamed && label) { e.name = ensureUniqueLabel(id, label); e.userNamed = true; }
 }
+/* Two event lists are the same chart definition when they match field for
+   field — ignoring `_b`, computeFlow's scratch value, which it writes onto the
+   event objects it lays out and so can ride into an export. */
+function sameDef(a, b) {
+  const strip = l => JSON.stringify((l || []).map(e => { const c = { ...e }; delete c._b; return c; }));
+  return strip(a) === strip(b);
+}
 export async function applyCharts(charts, opts) {
   const o = opts || {};
   const list = (o.ids && o.ids.length) ? o.ids : (charts.order || Object.keys(charts.syllabi || {}));
@@ -4777,7 +4845,14 @@ export async function applyCharts(charts, opts) {
     const events = (charts.syllabi || {})[src];
     if (!events) continue;
     const target = (o.mode === 'add' && o.rename && o.rename.from === src) ? o.rename.to : src;
-    customDefs[target] = JSON.parse(JSON.stringify(events));
+    /* A built-in coming in EXACTLY as shipped is not an edit. Stored as an
+       override it read "✎ edited" in the dropdown, offered "Revert edits only"
+       for a chart nobody touched, and would stop following a corrected shipped
+       version — after the export → wipe → import route every built-in came back
+       that way (D120; [HUMAN-RETEST] F7). */
+    const shipped = isBuiltinSylId(target) ? SYLLABI[builtinBaseOf(target)] : null;
+    if (shipped && sameDef(events, shipped)) delete customDefs[target];
+    else customDefs[target] = JSON.parse(JSON.stringify(events));
     const lay = (charts.layouts || {})[src];
     if (lay) await sSet(kLayoutFor(course, target), JSON.stringify(lay));
     if (SYL_TOMB[target]) delete SYL_TOMB[target];
@@ -5196,6 +5271,21 @@ export async function importClick() { if (fileLocked) return;
       const newId = mintSylId();
       await applyCharts(charts, { ids: [id], mode: 'add', rename: { from: id, to: newId, label: to } });
       addAsNew[id] = newId; done.push(to);
+    }
+    /* THE FILE'S ORDER. Each chart above comes in on its own (applyCharts with
+       `ids`), and only a whole-block applyCharts ever applied the order the file
+       saved — a path this button never takes, so export → wipe → import put his
+       hand-drawn charts back in the default order (D120; [HUMAN-RETEST] F6). A
+       file carrying MORE than one chart is a backup coming home: the charts it
+       carries take its order, ahead of any chart it does not carry (a shipped
+       built-in he had deleted, say). A ONE-chart file is a chart handed over and
+       keeps its place at the end — importing one chart never reshuffles the rest.
+       A chart added as new follows its new id. */
+    const fileIds = charts.order.filter(id => (charts.syllabi || {})[id]);
+    if (fileIds.length > 1) {
+      const inFile = fileIds.map(id => (has(addAsNew, id) ? addAsNew[id] : id)).filter(id => sylEntry(id));
+      SYL_ORDER = [...inFile, ...SYL_ORDER.filter(id => !inFile.includes(id))];
+      await saveSylOrder(); refreshSyl();
     }
   }
   let people = false;

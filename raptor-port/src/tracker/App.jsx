@@ -164,8 +164,16 @@ export default function App({ active = true }) {
           hiding all three for as long as edit mode was on. A hint long enough
           to wrap spills below that line, over the legend, for as long as that
           tool is selected — the rare case, not the resting state. */}
+      {/* A FLASH shows outside edit mode too: messages written for everyone —
+          "“X” is marked N.A., so it cannot be failed.", the empty-sheet guidance
+          after + Add syllabus, "No students on this chart yet" — went to this
+          line while it was display:none, so nobody ever saw them ([HUMAN-RETEST],
+          23 Sep 26 — Fable #8). Only the LINE shows; the wrapper keeps its
+          one-line reservation for edit mode alone, so a 1.8 s flash floats over
+          the legend (and, pointer-events none, never takes a tap) instead of
+          pushing the chart down and back up. */}
       <div className={'arrhintwrap' + (core.arrangeMode ? ' on' : '')}>
-        <div className={'arrhint' + (core.arrangeMode ? ' on' : '')} id="arrhint">{core.hintFlash || core.hintBase}</div>
+        <div className={'arrhint' + ((core.arrangeMode || core.hintFlash) ? ' on' : '')} id="arrhint">{core.hintFlash || core.hintBase}</div>
       </div>
       {/* In normal flow, not floating: its text never changes while it is up,
           so there is nothing for the chart to jump about, and on a phone it

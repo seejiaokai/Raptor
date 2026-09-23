@@ -215,8 +215,12 @@ export default function Header() {
         <Menu id="syl" label="✎" icon active={core.arrangeMode} title="Edit the syllabus — chart layout, duplicate, rename, reorder or delete">
           <button className="sm" id="arrangeBtn" title="Draw and move events, prerequisites and lines on the chart" onClick={core.toggleArrange}>{core.arrangeMode ? '✓ Done editing chart' : '✎ Edit chart layout'}</button>
           <div className="msep" />
-          <button className="sm" id="dupSyl" title="Make an exact copy of the current syllabus, including every student's marks" onClick={core.dupSyl}>⧉ Duplicate syllabus</button>
-          <button className="sm" id="addSyl" title="Create a new syllabus from the current structure with a clean slate (no marks)" onClick={core.addSyl}>+ Add syllabus</button>
+          {/* The words say what the two do since 13 Sep 26 ("keep charts, reset
+              marks"): a duplicate is the flow and layout with NO students, and
+              + Add syllabus is an empty sheet. They had promised marks and "the
+              current structure" ([HUMAN-RETEST] F2/F3, 23 Sep 26). */}
+          <button className="sm" id="dupSyl" title="Make a copy of the current syllabus — the same events, lines and layout — with no students or marks" onClick={core.dupSyl}>⧉ Duplicate syllabus</button>
+          <button className="sm" id="addSyl" title="Create a new, empty syllabus — no events, no marks — to draw from scratch" onClick={core.addSyl}>+ Add syllabus</button>
           <button className="sm" id="renSyl" title="Rename the current syllabus (built-ins included)" onClick={core.renSyl}>✎ Rename syllabus</button>
           <button className="sm" id="ordSyl" title="Change the order syllabi appear in the dropdown" onClick={core.openOrd}>⇅ Reorder syllabi</button>
           <div className="msep" />
