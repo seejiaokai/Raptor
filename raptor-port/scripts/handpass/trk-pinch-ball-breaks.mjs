@@ -39,6 +39,15 @@ const BREAKS = [
   /* B8 was "a lift is heard on the window": broken, nothing went red in two runs of
      the walk (the board's own pointerleave already drops such a finger — E18), so
      the window listener was taken out rather than kept untested (24 Sep 26). */
+  /* after the two final reads (Astra #1–#3, Fable F1–F4) */
+  { id: 'B9', wire: 'a layout save waits while a first finger is held (Astra #1)', old: "  if (firstFinger && !TRK_RESTORING) { firstFinger.save = true; return; }\n", new: '', run: ['block', 'walk'] },
+  { id: 'B10', wire: 'a key or a press off the chart ends the take-back window (Astra #2, Fable F3)', old: "  window.addEventListener('keydown', () => { if (firstFinger) releaseFirstFinger(); }, true);\n  window.addEventListener('pointerdown', e => { if (firstFinger && (e.pointerType === 'mouse' || !el.contains(e.target))) releaseFirstFinger(); }, true);\n", new: '', run: ['walk'] },
+  { id: 'B11', wire: 'a primary touch heals lost lifts (Fable F1)', old: "    if (e.isPrimary && pts.size) { pts.clear(); start = null; if (pinching) { pinching = false; perfOff(); } releaseFirstFinger(); }\n", new: '', run: ['block', 'walk'] },
+  { id: 'B12', wire: 'the lift is heard on the element the finger landed on (Fable F1)', old: "    if (t0 && t0 !== el && t0.addEventListener) { t0.addEventListener('pointerup', drop, { once: true }); t0.addEventListener('pointercancel', drop, { once: true }); }\n", new: '', run: ['walk'] },
+  { id: 'B13', wire: 'the board holds both fingers once a pinch starts (Fable F1 — Safari only)', old: "      for (const id of pts.keys()) { try { el.setPointerCapture(id); } catch (_) {} }\n", new: '', run: ['walk'] },
+  { id: 'B14', wire: 'a mouse drag is not the pinch\'s to stop (Fable F4)', old: "  if (ev.pointerType !== 'mouse') fingerStop = drag.stop;", new: '  fingerStop = drag.stop;', run: ['walk'] },
+  { id: 'B15', wire: 'the editing canvas is cut to size once the tool strip lands (the hop)', old: 'fitCanvas(); if (!c) return;', new: 'if (!c) return;', run: ['walk'] },
+  { id: 'B16', wire: 'the take-back puts the instruction back (Astra #3)', old: '    if (left > 0) flashHint(f.hint, left); else hintFlash = null;', new: '    hintFlash = null;', run: ['walk'] },
 ]
 const want = (process.env.BREAKS || '').split(',').filter(Boolean)
 const clean = readFileSync(CORE, 'utf8')
@@ -61,5 +70,5 @@ try {
   sh('npm run build')
   rmSync(BLOCK, { force: true })
 }
-writeFileSync(resolve(ROOT, 'docs/handpass/parts/tracker-pinch-ball/breaks.json'), JSON.stringify(out, null, 2))
+writeFileSync(resolve(ROOT, 'docs/handpass/parts/tracker-pinch-ball/' + (want.length ? 'breaks-' + want.join('-') : 'breaks') + '.json'), JSON.stringify(out, null, 2))
 console.log('\ncore.js restored and rebuilt clean')
