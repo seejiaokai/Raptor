@@ -1,0 +1,94 @@
+{
+  "rows": [
+    {
+      "step": "A. on the Tracker",
+      "note": "{\"y\":0,\"sh\":900,\"ih\":900,\"trOn\":true}"
+    },
+    {
+      "step": "A. a wheel over the legend / bar / top bar, End, PageDown — the PAGE does not move",
+      "pass": true,
+      "said": "{\"y\":0,\"sh\":900,\"ih\":900,\"trOn\":true}"
+    },
+    {
+      "step": "A. …while the chart and the panel scroll inside their own boxes",
+      "pass": true,
+      "said": "{\"board\":1273,\"side\":600,\"page\":0}"
+    },
+    {
+      "step": "B. on the Tracker, Ctrl+Z takes the mark back and Ctrl+Y puts it back (the keys are live here)",
+      "pass": true,
+      "said": "marked [\"#000000\",\"#ffffff\"] undone [\"#ffffff\",\"#ffffff\"] redone [\"#000000\",\"#ffffff\"]"
+    },
+    {
+      "step": "C. on Inputs, nothing of the Tracker shows (Show All was open when we left)",
+      "pass": true,
+      "said": "{\"sectionClass\":\"page doze\",\"hitPoints\":[],\"bubble\":false}"
+    },
+    {
+      "step": "C. leaving the Tracker gives the page its scrolling back (body lock off)",
+      "pass": true,
+      "said": "{\"y\":0,\"sh\":900,\"ih\":900,\"trOn\":false}"
+    },
+    {
+      "step": "C. a wheel on the Inputs page scrolls the page",
+      "note": "{\"y\":0,\"sh\":900,\"ih\":900,\"trOn\":false}"
+    },
+    {
+      "step": "C. on Edit Schedule, nothing of the Tracker shows",
+      "pass": true,
+      "said": "{\"sectionClass\":\"page doze\",\"hitPoints\":[],\"bubble\":false}"
+    },
+    {
+      "step": "C. back on the Tracker: Show All is STILL open (Escape on the other pages did not reach it)",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "C. …and the mark is still there (Ctrl+Z on Inputs and on Edit Schedule did not undo it)",
+      "pass": true,
+      "said": "[\"#000000\",\"#ffffff\"] → [\"#000000\",\"#ffffff\"]"
+    },
+    {
+      "step": "C. …and the chart is kept: same chart, crew, balls and scroll",
+      "pass": true,
+      "said": "{\"t\":368,\"l\":0,\"balls\":210,\"syl\":\"2026\",\"crew\":\"STUDENT A\"} → {\"t\":368,\"l\":0,\"balls\":210,\"syl\":\"2026\",\"crew\":\"STUDENT A\"}"
+    },
+    {
+      "step": "D. ST-02 brought into view",
+      "note": "true"
+    },
+    {
+      "step": "D. on the Tracker, Delete with ST-02 selected asks to delete it (the key is live here)",
+      "pass": true,
+      "said": "Delete ST-02 from this syllabus?"
+    },
+    {
+      "step": "D. Delete / Backspace on the Quals page did not reach the chart (no question, ST-02 still there)",
+      "pass": true,
+      "said": "no question · ST-02 balls: 1"
+    },
+    {
+      "step": "E. an ALL AVAIL row on Saturday's Common Programme",
+      "note": "row 0 · allavail"
+    },
+    {
+      "step": "E. the ALL AVAIL count chip opens its window",
+      "pass": true,
+      "said": "open"
+    },
+    {
+      "step": "E. opening the Tracker tab closes the ALL AVAIL window (D66)",
+      "pass": true,
+      "said": "reached the Tracker via the board covers the nav — closed it with its own Close first (window still open); window elements shown: 0"
+    },
+    {
+      "step": "E. back on Edit Schedule the window stays closed",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

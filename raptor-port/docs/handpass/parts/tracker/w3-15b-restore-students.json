@@ -1,0 +1,26 @@
+{
+  "rows": [
+    {
+      "step": "2024: students after + Add \"student a\"",
+      "note": "[\"STUDENT A\"]"
+    },
+    {
+      "step": "2024: ST-01 for STUDENT A",
+      "note": "[\"#000000\"]"
+    },
+    {
+      "step": "restored 2024 comes back with NO students (the one added before the delete is gone)",
+      "pass": true,
+      "said": "[] · card \"STUDENTS ⇅ Reorder + Add No students on this course yet. Add one to start tracking progress.\""
+    },
+    {
+      "step": "…while STUDENT A keeps the ST-01 mark on 2026",
+      "pass": true,
+      "said": "[\"#000000\",\"#ffffff\"] → [\"#000000\",\"#ffffff\"] · crew [\"STUDENT A\",\"STUDENT B\"]"
+    },
+    {
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

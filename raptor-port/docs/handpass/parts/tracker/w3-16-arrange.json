@@ -1,0 +1,94 @@
+{
+  "rows": [
+    {
+      "step": "R90: turning edit on adds or removes no bar button",
+      "pass": true,
+      "said": "same"
+    },
+    {
+      "step": "R91: the Syllabus ✎ lights while editing and its first item reads \"✓ Done editing chart\"",
+      "pass": true,
+      "said": "✓ Done editing chart"
+    },
+    {
+      "step": "R90: ⤢ Fit and ↺ Reset layout are in the strip",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "R90: the strip sits below the bar and above the chart — never over it",
+      "pass": true,
+      "said": "{\"bar\":[57,108],\"strip\":[108,216],\"hint\":[216,242],\"legend\":[242,267],\"chart\":[267,900]}"
+    },
+    {
+      "step": "R93: at rest (Move) the hint is ONE line and does not cover the legend",
+      "pass": true,
+      "said": "hint {\"x\":0,\"y\":216,\"w\":1440,\"h\":26,\"r\":1440,\"b\":242} · legend {\"x\":0,\"y\":242,\"w\":1440,\"h\":25,\"r\":1440,\"b\":267} · \"Move: drag a ball (snap-aligns to others). Drag empty space to pan.\""
+    },
+    {
+      "step": "the top ball ST-01 is what a press at its centre hits",
+      "pass": true,
+      "said": "ball"
+    },
+    {
+      "step": "…and it drags",
+      "pass": true,
+      "said": "translate(471.0,31.0) → translate(511.0,56.0)"
+    },
+    {
+      "step": "↶ put it back",
+      "note": "translate(471.0,31.0) (was translate(471.0,31.0))"
+    },
+    {
+      "step": "the bottom-most ball ST-18 is what a press at its centre hits",
+      "pass": true,
+      "said": "ball"
+    },
+    {
+      "step": "…and it drags",
+      "pass": true,
+      "said": "translate(251.0,10243.0) → translate(211.0,10218.0)"
+    },
+    {
+      "step": "R93: the Line tool's hint",
+      "note": "44px tall (2 lines) — covers the colour legend · \"Line: click to start, then click where it should end — two clicks and it is done. Right an…\""
+    },
+    {
+      "step": "R93: switching through every tool never moves the chart",
+      "pass": true,
+      "said": "ACG-02 stayed at 515,522"
+    },
+    {
+      "step": "hint height per tool (px)",
+      "note": "{\"▣ Select\":26,\"→ Connect\":26,\"🗑 Delete\":26,\"✎ Text\":26,\"╱ Line\":44,\"❐ Edit lines\":26,\"✕ Merge\":26,\"⌢ Unmerge\":26,\"✋ Move\":26}"
+    },
+    {
+      "step": "a line drawn on 2026",
+      "note": "drawn lines 82 → 83 · Save waiting 1"
+    },
+    {
+      "step": "R92: ↺ Reset layout warns that the drawn lines go too",
+      "pass": true,
+      "said": "Reset this syllabus back to the course-map layout? This puts every box back where the map has it AND deletes all 83 lines drawn on this chart."
+    },
+    {
+      "step": "R92: …OK clears them",
+      "pass": true,
+      "said": "drawn lines 83 → 0"
+    },
+    {
+      "step": "R92: …and ↶ brings them back",
+      "pass": true,
+      "said": "drawn lines 0 → 83"
+    },
+    {
+      "step": "item 2 on new balls: Show All lists Z-2, Z-9, Z-10 in that order (ST-9 before ST-10)",
+      "pass": true,
+      "said": "[\"Z-2\",\"Z-9\",\"Z-10\"]"
+    },
+    {
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

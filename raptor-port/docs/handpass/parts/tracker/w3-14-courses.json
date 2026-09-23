@@ -1,0 +1,151 @@
+{
+  "rows": [
+    {
+      "step": "start",
+      "note": "courses [\"26ABSG\"], heading \"26ABSG PROGRESS TRACKER\""
+    },
+    {
+      "step": "A. ✎ Rename course → upper-cased, the dropdown and the heading follow",
+      "pass": true,
+      "said": "asked \"Rename course “26ABSG” to: Cancel OK\" · now \"26ABSG ALPHA\" · heading \"26ABSG ALPHA PROGRESS TRACKER\""
+    },
+    {
+      "step": "A. …a label only: the same students and the mark are still there",
+      "pass": true,
+      "said": "[\"STUDENT A\",\"STUDENT B\"] · ST-01 [\"#000000\",\"#ffffff\"]"
+    },
+    {
+      "step": "C. + Add course → lands at the TOP, empty",
+      "pass": true,
+      "said": "asked \"New course name (e.g. 26BBSG): Cancel OK\" · order [\"26BBSG\",\"26ABSG ALPHA\"] · status \"● course 26BBSG created on the 2026 syllabus — add students to begin\" · card \"STUDENTS ⇅ Reorder + Add No students on this course yet. Add one to start tracking progress.\""
+    },
+    {
+      "step": "B. rename to a taken name is refused, with a message, nothing renamed",
+      "pass": true,
+      "said": "said: \"A course named 26BBSG already exists.\" · course \"26ABSG ALPHA\""
+    },
+    {
+      "step": "B. rename to a colon is refused, with a message, nothing renamed",
+      "pass": true,
+      "said": "said: \"A name can't contain a colon (:), because the app uses it to file the record.\" · course \"26ABSG ALPHA\""
+    },
+    {
+      "step": "B. rename to \"courses\" is refused, with a message, nothing renamed",
+      "pass": true,
+      "said": "said: \"“COURSES” is a name the app reserves internally — pick a different course name.\" · course \"26ABSG ALPHA\""
+    },
+    {
+      "step": "B. rename to \"master\" is refused, with a message, nothing renamed",
+      "pass": true,
+      "said": "said: \"“MASTER” is a name the app reserves internally — pick a different course name.\" · course \"26ABSG ALPHA\""
+    },
+    {
+      "step": "B. rename to \"syllabus edit\" is refused, with a message, nothing renamed",
+      "pass": true,
+      "said": "said: \"“SYLLABUS EDIT” is a name the app reserves internally — pick a different course name.\" · course \"26ABSG ALPHA\""
+    },
+    {
+      "step": "B. + Add course \"master\" is refused too",
+      "pass": true,
+      "said": "said: \"“MASTER” is a name the app reserves internally — pick a different course name.\""
+    },
+    {
+      "step": "E. an unsaved edit (arrange → + Test → Done, no Save): Save button shown",
+      "note": "1"
+    },
+    {
+      "step": "E. switching course asks first",
+      "pass": true,
+      "said": "You have unsaved flow edits on “2026”. Discard them and switch to course “26BBSG”?"
+    },
+    {
+      "step": "E. …Cancel: still on the course, the edit and ✓ Save changes still there",
+      "pass": true,
+      "said": "course \"26ABSG ALPHA\", Save 1, UNS-1 1"
+    },
+    {
+      "step": "E. …OK: switches, the Save button goes, the status stops claiming unsaved edits",
+      "pass": true,
+      "said": "course \"26BBSG\", status \"● switched to 26BBSG\""
+    },
+    {
+      "step": "E. …and back on the first course the discarded ball is gone",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "E. + Add course asks about the unsaved edit first",
+      "pass": true,
+      "said": "You have unsaved flow edits on “2026”. Discard them and add a course?"
+    },
+    {
+      "step": "E. ✎ Rename course asks about the unsaved edit first",
+      "pass": true,
+      "said": "You have unsaved flow edits on “2026”. Discard them and rename the course?"
+    },
+    {
+      "step": "E. 🗑 Delete course asks about the unsaved edit first",
+      "pass": true,
+      "said": "You have unsaved flow edits on “2026”. Discard them and delete the course?"
+    },
+    {
+      "step": "E. switching the chart asks about the unsaved edit first",
+      "pass": true,
+      "said": "You have unsaved flow edits on “2026”. Discard them and switch to “Tx 2026”?"
+    },
+    {
+      "step": "E. after four Cancels: same course, same chart, the edit still waiting",
+      "pass": true,
+      "said": "course \"26ABSG ALPHA\", chart \"2026\", Save 1"
+    },
+    {
+      "step": "E (off-list, Fable #3). + Add syllabus with an unsaved edit — the first thing it says",
+      "note": "Name for the new (empty) syllabus:"
+    },
+    {
+      "step": "E (off-list, Fable #3). ⧉ Duplicate syllabus with an unsaved edit — the first thing it says",
+      "note": "Name for the duplicated syllabus:"
+    },
+    {
+      "step": "E. after cancelling those: Save still waiting?",
+      "note": "1"
+    },
+    {
+      "step": "D. delete 26BBSG asked",
+      "note": "Delete course 26BBSG? (marks remain in storage)"
+    },
+    {
+      "step": "D. courses now",
+      "note": "[\"26ABSG ALPHA\"]"
+    },
+    {
+      "step": "D. with one course left, Delete says \"Keep at least one course.\"",
+      "pass": true,
+      "said": "Keep at least one course."
+    },
+    {
+      "step": "D. …and the course is still there",
+      "pass": true,
+      "said": "[\"26ABSG ALPHA\"]"
+    },
+    {
+      "step": "F. ⇅ Reorder courses: the dropdown follows",
+      "pass": true,
+      "said": "[\"26DDSG\",\"26CCSG\",\"26ABSG ALPHA\"] → [\"26CCSG\",\"26ABSG ALPHA\",\"26DDSG\"]"
+    },
+    {
+      "step": "F. ⇅ Reorder syllabi: the dropdown follows",
+      "pass": true,
+      "said": "[\"2024\",\"2026 ✎\",\"Tx 2026\",\"A/G - A/A 2026\"] → [\"A/G - A/A 2026\",\"2024\",\"2026 ✎\",\"Tx 2026\"]"
+    },
+    {
+      "step": "F. both orders survive a reload",
+      "pass": true,
+      "said": "courses [\"26CCSG\",\"26ABSG ALPHA\",\"26DDSG\"] · syllabi [\"A/G - A/A 2026\",\"2024\",\"2026 ✎\",\"Tx 2026\"]"
+    },
+    {
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

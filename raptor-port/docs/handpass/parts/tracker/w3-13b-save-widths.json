@@ -1,0 +1,40 @@
+{
+  "rows": [
+    {
+      "step": "1060px: ✓ Save changes appears — the bar keeps its height and the chart does not move",
+      "pass": true,
+      "said": "bar 87 → 87px; chart top 215 → 215"
+    },
+    {
+      "step": "1060 errors",
+      "note": "none"
+    },
+    {
+      "step": "1150px: ✓ Save changes appears — the bar keeps its height and the chart does not move",
+      "pass": true,
+      "said": "bar 87 → 87px; chart top 215 → 215"
+    },
+    {
+      "step": "1150 errors",
+      "note": "none"
+    },
+    {
+      "step": "1250px: ✓ Save changes appears — the bar keeps its height and the chart does not move",
+      "pass": false,
+      "said": "bar 51 → 87px; chart top 179 → 215"
+    },
+    {
+      "step": "1250 errors",
+      "note": "none"
+    },
+    {
+      "step": "1350px: ✓ Save changes appears — the bar keeps its height and the chart does not move",
+      "pass": true,
+      "said": "bar 51 → 51px; chart top 179 → 179"
+    },
+    {
+      "step": "1350 errors",
+      "note": "none"
+    }
+  ]
+}

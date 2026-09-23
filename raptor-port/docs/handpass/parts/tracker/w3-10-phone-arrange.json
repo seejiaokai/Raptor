@@ -1,0 +1,71 @@
+{
+  "rows": [
+    {
+      "step": "10. arrange on: the tool strip",
+      "note": "214px tall in 8 rows (y 119–332); the chart's box 654px → 446px tall (53% of the screen); hint {\"x\":0,\"y\":332,\"w\":390,\"h\":26,\"r\":390,\"b\":359}; tabs {\"x\":0,\"y\":359,\"w\":390,\"h\":39,\"r\":390,\"b\":398}"
+    },
+    {
+      "step": "10. the tool strip leaves a usable chart (at least a third of the screen)",
+      "pass": true,
+      "said": "446px of chart"
+    },
+    {
+      "step": "10. dragging",
+      "note": "{\"id\":\"ACG-02\",\"x\":215.9071044921875,\"y\":436.5471954345703}"
+    },
+    {
+      "step": "10. a finger drag moves ACG-02",
+      "pass": true,
+      "said": "translate(471.0,215.0) → translate(616.0,315.0)"
+    },
+    {
+      "step": "10. …with no ✓ Save changes needed (a moved ball saves itself)",
+      "pass": true,
+      "said": "● saved"
+    },
+    {
+      "step": "10. a two-finger pinch in arrange mode",
+      "note": "translate(0.0,-36.0) scale(0.400) → translate(-520.0,-727.8) scale(1.467)"
+    },
+    {
+      "step": "10. Done editing → the view comes back where it was (scroll and zoom)",
+      "pass": false,
+      "said": "before {\"top\":36,\"left\":0,\"zoom\":\"40%\"} → after {\"top\":728,\"left\":520,\"zoom\":\"147%\"}"
+    },
+    {
+      "step": "10. the move survives a reload (ACG-02 stays where it was dropped)",
+      "pass": true,
+      "said": "after Done translate(616.0,315.0) → after reload translate(616.0,315.0)"
+    },
+    {
+      "step": "10 errors",
+      "note": "none"
+    },
+    {
+      "step": "11. landscape 844x390 — what is left for the chart",
+      "note": "{\"topbar\":{\"y\":0,\"h\":149,\"b\":149},\"bar\":{\"y\":149,\"h\":38,\"b\":187},\"tabs\":{\"y\":187,\"h\":39,\"b\":226},\"board\":{\"y\":226,\"h\":182,\"b\":408},\"zoomCtl\":{\"y\":408,\"h\":33,\"b\":440}}"
+    },
+    {
+      "step": "11. landscape, top ball ST-01: every part of the grading pop-up is on screen",
+      "pass": false,
+      "said": "pop-up -73–305 in a 390px screen (fixed, overflow visible); off screen: title, grades"
+    },
+    {
+      "step": "11. top: after a finger drag over the pop-up",
+      "note": "{\"editDetails\":[265,295],\"title\":[-63,-47],\"pageY\":0,\"open\":true}"
+    },
+    {
+      "step": "11. landscape, bottom ball ST-01: every part of the grading pop-up is on screen",
+      "pass": false,
+      "said": "pop-up -73–305 in a 390px screen (fixed, overflow visible); off screen: title, grades"
+    },
+    {
+      "step": "11. bottom: after a finger drag over the pop-up",
+      "note": "{\"editDetails\":[265,295],\"title\":[-63,-47],\"pageY\":0,\"open\":true}"
+    },
+    {
+      "step": "11 errors",
+      "note": "none"
+    }
+  ]
+}

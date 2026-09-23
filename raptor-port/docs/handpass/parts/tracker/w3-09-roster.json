@@ -1,0 +1,93 @@
+{
+  "rows": [
+    {
+      "step": "1. + Add lists",
+      "note": "58 people; first: Recon Pilot · OCU | Talisman Pilot · OCU | Wildcard Pilot · OCU | Tally WSO · OCU | Zulu WSO · OCU; last: Vector WSO · C | Wisp WSO · C"
+    },
+    {
+      "step": "1. the list has its heading, search box and the type-a-callsign box",
+      "pass": true,
+      "said": "From the squadron roster · Or type a callsign"
+    },
+    {
+      "step": "2. Quals: + Add person ZULU9 (Pilot, OCU)",
+      "note": "ZULU9 added"
+    },
+    {
+      "step": "2. the + Add dialog left OPEN across the trip — lists ZULU9?",
+      "note": "no (the old list) · 58 rows"
+    },
+    {
+      "step": "2. reopened, + Add lists ZULU9 (OCU pilots first)",
+      "pass": true,
+      "said": "row 4 of 59: ZULU9 Pilot · OCU; rows 1-4: Recon Pilot · OCU | Talisman Pilot · OCU | Wildcard Pilot · OCU | ZULU9 Pilot · OCU"
+    },
+    {
+      "step": "3. search \"zulu9\" + Enter adds ZULU9, upper-cased, as a LINKED chip with the tooltip",
+      "pass": true,
+      "said": "[\"ZULU9 Pilot · OCU\"] → {\"text\":\"3 ZULU9\",\"linked\":true,\"title\":\"On the squadron roster as ZULU9\"}"
+    },
+    {
+      "step": "4. Quals edit mode — the callsign box found",
+      "note": "ZULU9"
+    },
+    {
+      "step": "4. Quals said",
+      "note": "ZULU9 is now YANKEE9 — every puck follows"
+    },
+    {
+      "step": "4. the chip after the rename",
+      "note": "{\"text\":\"3 ZULU9\",\"linked\":true,\"title\":\"On the squadron roster as YANKEE9\"}"
+    },
+    {
+      "step": "4. the student's label stays ZULU9 while the tooltip names the new callsign (label ≠ link, by design)",
+      "pass": true,
+      "said": "{\"text\":\"3 ZULU9\",\"linked\":true,\"title\":\"On the squadron roster as YANKEE9\"}"
+    },
+    {
+      "step": "4. the Crew dropdown reads",
+      "note": "STUDENT A, STUDENT B, ZULU9"
+    },
+    {
+      "step": "5. Quals: archived — the Archived section",
+      "note": "▸ Archived · 1"
+    },
+    {
+      "step": "5. the chip after the archive",
+      "note": "{\"text\":\"3 ZULU9\",\"linked\":false,\"title\":\"\"}"
+    },
+    {
+      "step": "5. the chip is still there with its marks, but no longer claims the roster link",
+      "pass": true,
+      "said": "{\"text\":\"3 ZULU9\",\"linked\":false,\"title\":\"\"}"
+    },
+    {
+      "step": "5. + Add no longer lists the archived person",
+      "pass": true,
+      "said": "58 rows"
+    },
+    {
+      "step": "5. typing \"zulu9\" in the box lands on the existing student — no second ZULU9",
+      "pass": true,
+      "said": "chips 3 → 3 · status \"● saved\""
+    },
+    {
+      "step": "6. Quals said",
+      "note": "YANKEE9 restored to the roster"
+    },
+    {
+      "step": "6. restored: the chip is linked again (dot + tooltip)",
+      "pass": true,
+      "said": "{\"text\":\"3 ZULU9\",\"linked\":true,\"title\":\"On the squadron roster as YANKEE9\"}"
+    },
+    {
+      "step": "6. picking YANKEE9 again from + Add lands on the same student (the person link) — no duplicate",
+      "pass": true,
+      "said": "[{\"text\":\"1 STUDENT A\",\"linked\":false,\"title\":\"\"},{\"text\":\"2 STUDENT B\",\"linked\":false,\"title\":\"\"},{\"text\":\"3 ZULU9\",\"linked\":true,\"title\":\"On the squadron roster as YANKEE9\"}] · status \"● saved\""
+    },
+    {
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

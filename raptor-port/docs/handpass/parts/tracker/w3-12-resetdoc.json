@@ -1,0 +1,58 @@
+{
+  "rows": [
+    {
+      "step": "+ Acad asked",
+      "note": "Name for the new acad event: Cancel OK"
+    },
+    {
+      "step": "saved",
+      "note": "● syllabus “2026” saved (overrides the built-in)"
+    },
+    {
+      "step": "the details window for MY-01 opens with",
+      "note": "{\"name\":\"\",\"fmt\":\"\",\"hrs\":\"\",\"crew\":\"\",\"pre\":\"\"} · Reset button title: Revert to the value from the source document"
+    },
+    {
+      "step": "the details are saved (Show All shows them)",
+      "pass": true,
+      "said": "MY-01 My own lecturenot done Type: — · 2.0 Hrs Crew: IP / UP Prerequisites: — Edit"
+    },
+    {
+      "step": "reopened, the window shows",
+      "note": "{\"name\":\"My own lecture\",\"fmt\":\"\",\"hrs\":\"2.0 Hrs\",\"crew\":\"IP / UP\",\"pre\":\"\"}"
+    },
+    {
+      "step": "Reset to doc — did it ask first?",
+      "note": "no question"
+    },
+    {
+      "step": "Reset to doc — the window now shows",
+      "note": "{\"name\":\"\",\"fmt\":\"\",\"hrs\":\"\",\"crew\":\"\",\"pre\":\"\"}"
+    },
+    {
+      "step": "Reset to doc on a ball the user made keeps what they typed (there is no document to go back to) — or at least asks first",
+      "pass": false,
+      "said": "after Reset + Cancel, Show All reads: MY-01 not done Crew: — Prerequisites: — Edit"
+    },
+    {
+      "step": "the ↶ arrow after the wipe",
+      "note": "{\"disabled\":true,\"title\":\"Nothing to undo\"}"
+    },
+    {
+      "step": "Show All inline editor: saved",
+      "note": "MY-01 Typed againnot done Crew: — Prerequisites: — Edit"
+    },
+    {
+      "step": "Show All inline \"Reset to doc\" — the editor now shows",
+      "note": "[\"\",\"\",\"\",\"\",\"\"]"
+    },
+    {
+      "step": "…after Cancel the row reads",
+      "note": "MY-01 not done Crew: — Prerequisites: — Edit"
+    },
+    {
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

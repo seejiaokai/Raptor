@@ -1,0 +1,101 @@
+{
+  "rows": [
+    {
+      "step": "phone: ⓘ on → the hint says Details mode and \"Marking is off.\", with Turn off",
+      "pass": true,
+      "said": "Details mode — click an event for its brief. Marking is off.Turn off"
+    },
+    {
+      "step": "phone: a tap on ST-01 shows its bubble",
+      "pass": true,
+      "said": "ST-01 Squadron Welcome Type: Lecture · 3.0 Hrs"
+    },
+    {
+      "step": "phone: …and does not open grading",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "phone: switching to the Info tab puts the bubble away",
+      "pass": false,
+      "said": "{\"shown\":true,\"text\":\"ST-01 Squadron Welcome Type: Lecture · 3.0 Hrs\",\"x\":236,\"y\":469,\"w\":145,\"h\":82} {\"flow\":false,\"info\":true,\"tabs\":true,\"rootCls\":\"tr-root tab-info\",\"w\":390}"
+    },
+    {
+      "step": "phone: bubble back up on ACG-01",
+      "note": "{\"shown\":true,\"text\":\"ACG-01 Course Introduction and Aircraft Overview Type: Lecture · 1.5 Hrs Prerequisites: ST-01\",\"x\":86,\"y\":566,\"w\":260,\"h\":119}"
+    },
+    {
+      "step": "phone: going to Leave War puts the bubble away",
+      "pass": false,
+      "said": "{\"shown\":true,\"text\":\"ACG-01 Course Introduction and Aircraft Overview Type: Lecture · 1.5 Hrs Prerequisites: ST-01\",\"x\":86,\"y\":566,\"w\":260,\"h\":119}"
+    },
+    {
+      "step": "phone: back on the Tracker — Details mode still on?",
+      "note": "yes (hint shown)"
+    },
+    {
+      "step": "phone: …and the bubble on return",
+      "note": "{\"shown\":true,\"text\":\"ACG-01 Course Introduction and Aircraft Overview Type: Lecture · 1.5 Hrs Prerequisites: ST-01\",\"x\":86,\"y\":566,\"w\":260,\"h\":119}"
+    },
+    {
+      "step": "phone: bubble up on ACG-02",
+      "note": "{\"shown\":true,\"text\":\"ACG-02 Propulsion System Type: Lecture · 4.0 Hrs Prerequisites: ACG-01, ST-02\",\"x\":12,\"y\":508,\"w\":185,\"h\":100}"
+    },
+    {
+      "step": "phone: logging out puts the bubble away (not over the sign-in card)",
+      "pass": false,
+      "said": "{\"shown\":true,\"text\":\"ACG-02 Propulsion System Type: Lecture · 4.0 Hrs Prerequisites: ACG-01, ST-02\",\"x\":12,\"y\":508,\"w\":185,\"h\":100}"
+    },
+    {
+      "step": "phone: after logout → login, Details mode",
+      "note": "STILL ON (known F10 — carries across a login)"
+    },
+    {
+      "step": "phone: Turn off switches Details mode off (hint gone, ⓘ unlit)",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "phone: …and a tap grades again (the pop-up opens)",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "phone errors",
+      "note": "none"
+    },
+    {
+      "step": "desk: hovering a ball in Details mode shows the bubble",
+      "pass": true,
+      "said": "ST-01 Squadron Welcome Type: Lecture · 3.0 Hrs"
+    },
+    {
+      "step": "desk: clicking it keeps the bubble and opens no grading",
+      "pass": true,
+      "said": ""
+    },
+    {
+      "step": "desk: on Leave War the bubble is gone",
+      "pass": true,
+      "said": "{\"shown\":false}"
+    },
+    {
+      "step": "desk: bubble up again",
+      "note": "{\"shown\":true,\"text\":\"ST-01 Squadron Welcome Type: Lecture · 3.0 Hrs\",\"x\":554,\"y\":459,\"w\":145,\"h\":82}"
+    },
+    {
+      "step": "desk: leaving by KEYBOARD with the pointer still on the ball — the bubble is gone on Leave War",
+      "pass": true,
+      "said": "{\"shown\":false}"
+    },
+    {
+      "step": "desk: after the Tracker, the (long) Logic page scrolls with the wheel",
+      "pass": true,
+      "said": "{\"y\":900,\"sh\":8657,\"trOn\":false}"
+    },
+    {
+      "step": "desk errors",
+      "note": "none"
+    }
+  ]
+}

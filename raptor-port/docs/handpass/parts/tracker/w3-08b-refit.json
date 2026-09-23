@@ -1,0 +1,48 @@
+{
+  "rows": [
+    {
+      "step": "(a) arrival at 390",
+      "note": "{\"chart\":\"40%\",\"sw\":390,\"cw\":390}"
+    },
+    {
+      "step": "(a) Info tab → wider than 1050 and back → Flow tab: the chart is fitted to the width again",
+      "pass": false,
+      "said": "arrival {\"chart\":\"40%\",\"sw\":390,\"cw\":390} → after {\"chart\":\"100%\",\"sw\":912,\"cw\":390}"
+    },
+    {
+      "step": "(a) control: the same trip made on the Flow tab",
+      "note": "{\"chart\":\"40%\",\"sw\":390,\"cw\":390}"
+    },
+    {
+      "step": "(a) \"reset\" puts it right",
+      "note": "{\"chart\":\"40%\",\"sw\":390,\"cw\":390}"
+    },
+    {
+      "step": "errors",
+      "note": "none"
+    },
+    {
+      "step": "(b) ST-01 at 390",
+      "note": "{\"x\":203.37600708007812,\"y\":471.8760070800781,\"width\":25.24798583984375,\"height\":25.247955322265625}"
+    },
+    {
+      "step": "(b) a click on ST-01 opens the pop-up at 390",
+      "pass": true,
+      "said": "{\"x\":172,\"y\":94,\"w\":210,\"h\":378,\"r\":382,\"b\":472}"
+    },
+    {
+      "step": "(b) widen with it open: still on screen, whole",
+      "pass": true,
+      "said": "{\"x\":172,\"y\":94,\"w\":210,\"h\":385,\"r\":382,\"b\":479}"
+    },
+    {
+      "step": "(b) narrow again: still on screen, whole",
+      "pass": true,
+      "said": "{\"x\":172,\"y\":94,\"w\":210,\"h\":378,\"r\":382,\"b\":472}"
+    },
+    {
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

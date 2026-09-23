@@ -1,0 +1,95 @@
+{
+  "rows": [
+    {
+      "step": "desk: chips on the panel",
+      "note": "next:CFT-01 next:IAT-01 next:TR(S)-1 next:TR-1(P) plan:ST-01 plan:ST-02"
+    },
+    {
+      "step": "desk next CFT-01: mouse-over shows the details bubble",
+      "pass": true,
+      "said": "CFT-01 Cockpit Familiarisation Trainer-01 Type: OFT/AMT Crew: UP/UW, IP/IW/FSI Prerequisites: ACG-09, ST-06"
+    },
+    {
+      "step": "desk next CFT-01: moving off puts it away",
+      "pass": true,
+      "said": "{\"shown\":false}"
+    },
+    {
+      "step": "desk next CFT-01: click snaps the chart to the ball and rings it",
+      "pass": true,
+      "said": "before {\"ringed\":false,\"rings\":0,\"dx\":-26,\"dy\":-6556,\"inView\":false,\"find\":\"\"} → after {\"ringed\":true,\"rings\":1,\"dx\":-26,\"dy\":0,\"inView\":true,\"find\":\"CFT-01\"}"
+    },
+    {
+      "step": "desk next: ✕ in Find takes the ring off",
+      "pass": true,
+      "said": "{\"ringed\":false,\"rings\":0,\"dx\":-26,\"dy\":349,\"inView\":false,\"find\":\"\"}"
+    },
+    {
+      "step": "desk plan ST-02: mouse-over shows the details bubble",
+      "pass": true,
+      "said": "ST-02 Checklist Introduction Type: Lecture · 0.5 Hrs"
+    },
+    {
+      "step": "desk plan ST-02: moving off puts it away",
+      "pass": true,
+      "said": "{\"shown\":false}"
+    },
+    {
+      "step": "desk plan ST-02: click snaps the chart to the ball and rings it",
+      "pass": true,
+      "said": "before {\"ringed\":false,\"rings\":0,\"dx\":94,\"dy\":-7361,\"inView\":false,\"find\":\"\"} → after {\"ringed\":true,\"rings\":1,\"dx\":94,\"dy\":0,\"inView\":true,\"find\":\"ST-02\"}"
+    },
+    {
+      "step": "desk plan: ✕ in Find takes the ring off",
+      "pass": true,
+      "said": "{\"ringed\":false,\"rings\":0,\"dx\":94,\"dy\":-161,\"inView\":true,\"find\":\"\"}"
+    },
+    {
+      "step": "desk errors",
+      "note": "none"
+    },
+    {
+      "step": "phone: the Info tab shows the panel only",
+      "pass": true,
+      "said": "{\"flow\":false,\"info\":true,\"tabs\":true,\"rootCls\":\"tr-root tab-info\",\"w\":390}"
+    },
+    {
+      "step": "phone: chips",
+      "note": "next:CFT-01 next:IAT-01 next:TR(S)-1 next:TR-1(P) plan:ST-01 plan:ST-02"
+    },
+    {
+      "step": "phone ST-01: a long press shows the bubble",
+      "pass": true,
+      "said": "ST-01 Squadron Welcome Type: Lecture · 3.0 Hrs"
+    },
+    {
+      "step": "phone ST-01: …and does NOT leave the Info tab",
+      "pass": true,
+      "said": "{\"flow\":false,\"info\":true,\"tabs\":true,\"rootCls\":\"tr-root tab-info\",\"w\":390}"
+    },
+    {
+      "step": "phone: the next touch anywhere puts the bubble away",
+      "pass": true,
+      "said": "{\"shown\":false}"
+    },
+    {
+      "step": "phone ST-01: a tap switches to the Flow chart",
+      "pass": true,
+      "said": "{\"flow\":true,\"info\":false,\"tabs\":true,\"rootCls\":\"tr-root tab-flow\",\"w\":390}"
+    },
+    {
+      "step": "phone ST-01: …and lands on the ball, ringed",
+      "pass": true,
+      "said": "{\"ringed\":true,\"rings\":1,\"dx\":21,\"dy\":0,\"inView\":true,\"find\":\"ST-01\"}"
+    },
+    {
+      "step": "phone next CFT-01: tap → Flow, ringed, in view",
+      "pass": true,
+      "said": "{\"ringed\":true,\"rings\":1,\"dx\":21,\"dy\":0,\"inView\":true,\"find\":\"CFT-01\"}"
+    },
+    {
+      "step": "phone errors",
+      "note": "none"
+    }
+  ]
+}
