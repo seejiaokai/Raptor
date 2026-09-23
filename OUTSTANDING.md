@@ -925,9 +925,10 @@ move. `playwright.config.ts` still runs 3 browser tests at once on CI — chosen
 each test runs ~3x slower than on the desktop and the long Leave War scenarios brush the 30s limit (PR #428:
 the reload test timed out once, passed on retry). A run now bills ~60 of the month's included minutes (Free
 2,000 · Pro 3,000; blocked when used up without a payment method). **Pro does NOT buy a bigger machine** —
-larger runners need an organization on GitHub Team. **Free fix, not built:** 2 browser tests at a time on CI,
-and split `unit (raptor)` and `geometry (lw-desktop)` across two machines each — measure on the first run.
-**Owner's call** (it moves billed minutes); asked 23 Sep 26. Tier NONE (CI settings only).
+larger runners need an organization on GitHub Team. **CHOSEN (D89): run the checks on HIS PC — a Windows
+self-hosted runner** (free, faster; private repo only). He registers it (the token never comes to the
+agent); the agent adapts `deploy.yml` to Windows, gives the e2e and smoke servers their own ports (4173
+and 4180 are the chats', D86), and keeps a switch back to GitHub's machines. Tier NONE (CI settings).
 
 ### [OIL-PERSONAL-PLACEHOLDER] A placeholder on a landed "Personal" request row draws no count (23 Sep 26)
 
@@ -1102,9 +1103,9 @@ These four are what was deliberately left:
 
 ### [REPO-PRIVATE] Make the repo private and share it with developers — HALF DONE 23 Sep 26 (D59)
 
-**23 Sep 26, later (D88): he said "I'll make it public for now"** — for GitHub's free 4-core machines
-(`[CI-TWO-CORES]`). Flagged before the switch: 146 old branches on GitHub still carry the D58 unit
-designation IN THEIR FILES (the page title), and `main`'s history holds it in 14 commits.
+**23 Sep 26, later: D88 ("I'll make it public for now") was REVERSED by D89 before he switched — it
+stays PRIVATE** and the checks move to his own PC (`[CI-TWO-CORES]`). Why it mattered: 146 old branches
+on GitHub still carry the D58 unit designation IN THEIR FILES, and `main`'s history in 14 commits.
 
 **DONE, BY HIM, 23 Sep 26 (D59): THE REPO IS PRIVATE**, reversing his own *"nvm disregard this
 first"* the same day after a check found the unit named in the app. Pages is GONE (API 404), so the
