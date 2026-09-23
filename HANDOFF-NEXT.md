@@ -3,6 +3,15 @@
 **Pick `main` in the new-chat picker.** Before acting: `git fetch`, `gh run list --branch main --limit 3` — the
 Tracker merge's own check run on his PC may still have been going when this was written; confirm it went green.
 
+## `[TRK-PINCH-DRAGS-BALL]` + his "left side cut off" report — IN PROGRESS on `claude/tracker-pinch-drags-ball` (24 Sep 26, night)
+
+FULL-tier bug check; sheet `raptor-port/docs/handpass/2026-09-23-tracker-pinch-ball.md`. Built, walked 81/81 (two
+real fingers, phone / sideways / tablet), break-tested, Astra's scenarios dispositioned. **D133: he gave "merge live"
+IN ADVANCE for this session's work only** (going to sleep) — the agent merges once every gate is green on the final
+code, both reads (Fable + Astra) are dispositioned, the walk re-run and the PR's checks on his PC green, with heavy
+runs waiting while the demo uses the PC (D125). It waives his look for this change; the look card is §12 of the
+sheet. It does NOT carry to any other branch or session.
+
 ## The Tracker pinch fix — MERGED on his "merge live" (23 Sep 26, night)
 
 His report from the live app: the chart's pinch zoom did not follow his fingers ("off to the top left"). Fixed
