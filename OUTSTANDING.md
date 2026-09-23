@@ -94,7 +94,7 @@ in-flight and risk-reducing** first.
    closes. See the item below.
 **TOP OF THE QUEUE (updated 23 Sep 26).** **[OIL-AUTO-REMOVE] AND [OIL-SEATS-CAN-EARN] ARE BOTH
 MERGED AND LIVE.**
-1) **[ALL-AVAIL-WINDOW]** — **BUG-CHECKED (FULL), on `claude/all-avail-window`, pushed, not merged — his look, then "merge live" (`HANDOFF-NEXT.md`).** Was: NEXT, and ready to build. The counters it opens from are now live, its
+1) **[ALL-AVAIL-WINDOW]** — **LIVE on `main` (23 Sep 26), after his look on Vercel and his "merge live"; no phone resize corner (D77).** Was: NEXT, and ready to build. The counters it opens from are now live, its
 mock-up is APPROVED and is the design of record (D41), and D38–D41 settle its shape down to the
 pixel. **Do not re-open the design; build to it.** 2) **[DOCS-GUARD]**, scope and order settled by
 D30. 3) **[HUMAN-RETEST]**. 4) **[DOC-TRIM]** — unblocked now that the OIL scaffolding has become
@@ -856,7 +856,7 @@ and `[POSTOUT-LOST]`'s remaining half.
 
 ### [ALL-AVAIL-WINDOW] The counter opens a movable window of PUCKS, not a bubble of names (owner, D38, 22 Sep 26)
 
-**STATUS 23 Sep 26 (night) — BUG-CHECKED AT FULL TIER on `claude/all-avail-window`, pushed, NOT merged.** Walked on the real bundle (four passes, both widths), every Fable scenario dispositioned, both final reads (Fable + Astra, blind) reconciled and fixed, each fix red first. Evidence: `raptor-port/docs/handpass/2026-09-23-allavail-window.md`. **Waiting on: his look, then his "merge live"** — the browser gate is green (a load-sensitive Leave War test is filed as `[LW-MONTHJUMP-PHONE]`). Left open and filed: `[OIL-PERSONAL-PLACEHOLDER]`, `[CROWD-SIM-BRIEF]`; one question for him: on a phone the window moves but cannot be resized (D38 said "resizable") — **ANSWERED D77: leave it, no phone resize corner.**
+**STATUS 23 Sep 26 — LIVE ON `main`** (his look on Vercel, then "merge live"; merged after the skill review, full gates re-run on the combined tree). Was: BUG-CHECKED AT FULL TIER on `claude/all-avail-window`. Walked on the real bundle (four passes, both widths), every Fable scenario dispositioned, both final reads (Fable + Astra, blind) reconciled and fixed, each fix red first. Evidence: `raptor-port/docs/handpass/2026-09-23-allavail-window.md`. **Waiting on: his look, then his "merge live"** — the browser gate is green (a load-sensitive Leave War test is filed as `[LW-MONTHJUMP-PHONE]`). Left open and filed: `[OIL-PERSONAL-PLACEHOLDER]`, `[CROWD-SIM-BRIEF]`; one question for him: on a phone the window moves but cannot be resized (D38 said "resizable") — **ANSWERED D77: leave it, no phone resize corner.**
 
 **His words:** *"the current interface to show just names on a bubble … is not intuitive … a window
 that is movable and … resizable and a user can still click and edit/scroll the schedule behind while
