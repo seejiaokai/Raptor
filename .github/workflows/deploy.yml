@@ -13,7 +13,8 @@
 # browser projects three quarters of the geometry time. Splitting by the
 # projects each runner already defines (vitest: raptor / leavewar;
 # Playwright: raptor / lw-phone / lw-desktop) puts each suite on its own
-# runner; the repo is public, so the extra runners cost nothing. `deploy`
+# runner (free while the repo was public — since D89 the default is ONE job
+# on the owner's own PC, the `pc` job below; these split legs are the way back). `deploy`
 # still waits on EVERY gate, so nothing publishes red. MEASURED on the first
 # parallel PR run: 8m28s end to end (was 16m16s serial on the same tree) —
 # build 41s, unit raptor 4m38s, unit leavewar 8m24s, geometry 2m29s / 3m17s
@@ -34,13 +35,14 @@ name: Deploy to GitHub Pages
 # runs the full gates. The document gate's own files are skipped too (23 Sep 26,
 # [DOCS-GUARD]): they are run by docs-guard.yml, and nothing in src/ imports
 # them — without this, every edit to the guard would bill a full gate run.
+# `.gitattributes` is NOT skipped any more (Fable CI-PATHS-001, 23 Sep 26): it decides the bytes every
+# job checks out — line endings broke the PC runner's first trial — so a change to it runs the gates.
 on:
   push:
     branches: [main]
     paths-ignore:
       - '**.md'
       - '.claude/**'
-      - '.gitattributes'
       - 'raptor-port/scripts/docsize*.mjs'
       - 'raptor-port/scripts/backlog-archive.mjs'
       - '.github/workflows/docs-guard.yml'
@@ -49,16 +51,17 @@ on:
     paths-ignore:
       - '**.md'
       - '.claude/**'
-      - '.gitattributes'
       - 'raptor-port/scripts/docsize*.mjs'
       - 'raptor-port/scripts/backlog-archive.mjs'
       - '.github/workflows/docs-guard.yml'
   workflow_dispatch:
 
+# Least privilege (Astra, 23 Sep 26): every job reads the code and nothing else.
+# The Pages rights live on the `deploy` job alone, which is the only job that
+# ever used them — the gates, and above all the one on the owner's own PC, must
+# not carry a Pages-capable token or be able to ask for an OIDC one.
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 # Main deploys keep the single serialized "pages" group. PR runs get a group
 # per PR instead of joining it — inside one shared group, cancel-in-progress
@@ -68,12 +71,141 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # THE GATES RUN ON THE OWNER'S OWN PC (D89, 23 Sep 26). When the repo went
+  # private (D59) GitHub's machines for it halved — 2 cores instead of 4 — so
+  # every parallel leg below doubled (desktop browser leg 5–6 → 10–11 min, the
+  # scheduler's unit tests up to 20) and a run began billing ~60 minutes of the
+  # monthly allowance ([CI-TWO-CORES]). He registered his Windows PC as a
+  # self-hosted runner instead: free, and fast enough that ONE job running the
+  # five gates in turn, each using the whole machine, beats the split legs.
+  #   - THE WAY BACK: set the repository variable CI_ON_GITHUB to `true`
+  #     (Settings → Secrets and variables → Actions → Variables) and the
+  #     original split jobs below run on GitHub's machines instead — for when the
+  #     PC is off: a job waiting for an offline runner fails after 24 hours.
+  #     Known there (23 Sep 26): on the private repo's 2-core machine the two long
+  #     Leave War scenarios in e2e/step4-leavewar.spec.ts timed out even after
+  #     they were taught to wait on conditions (D87) — the likeliest lever is a
+  #     ±1px tolerance in `gridAtRest` (e2e/app.ts), which watches a header to
+  #     the pixel while the desktop's background fill can nudge it by ≤1px. A
+  #     Leave War desktop timeout there earns ONE re-run of the failed group,
+  #     not an investigation; a second failure is new evidence (D84).
+  #   - PORTS: this PC also hosts the chats' previews on 4173/4180 (D86), so the
+  #     browser gate and the Tracker smoke serve on their own ports here.
+  #   - SHELL: cmd, not PowerShell — a machine's script policy can refuse the
+  #     PowerShell wrapper, and cmd hands each step's exit code straight back.
+  #     One gate per step, so a failure is named by the step that failed.
+  #   - A check running here at the same moment as a chat's own full test run
+  #     shares the processor, which can fail a timing-sensitive test (D86's
+  #     reason): a red here while a chat was testing earns ONE re-run first.
+  #   - WHO MAY RUN CODE ON HIS PC (Astra SEC-001, 23 Sep 26): only HIS OWN
+  #     changes, in a PRIVATE repo — pushed by his account, from a branch of this
+  #     repo, never a fork. A public repo, a fork's pull request or anyone else's
+  #     run falls to GitHub's machines below instead (their `if` is the exact
+  #     complement, so a run is never left with no gate). GitHub's own advice:
+  #     almost never let a public repo reach a self-hosted runner.
+  #     THIS GUARD IS NOT A WALL AGAINST ANYONE WHO CAN EDIT THIS FILE (Astra
+  #     SEC-101, 23 Sep 26): a pull request runs the workflow as the PR itself
+  #     wrote it, so a collaborator's PR could drop the `if` or add a job aimed
+  #     at the PC. Today nobody but the owner can push, so it holds. BEFORE HE
+  #     ADDS ANY COLLABORATOR (D59's stated plan): remove the runner from this
+  #     repo first (Settings → Actions → Runners) and set CI_ON_GITHUB=true, or
+  #     move the runner to a separate owner-only CI repo — `[REPO-PRIVATE]`.
+  #   - REQUIRED CHECKS (Fable CI-REQ-001): none exist — a free private repo
+  #     cannot have them (the API answers "Upgrade to GitHub Pro"), so merging
+  #     rests on his "merge live" and the agent reading this run's result. If
+  #     they ever exist, require `all gates (your PC)` AND the split names: a
+  #     job skipped by its `if` reports Success to a required check.
+  #   - THE RUNNER'S ACCOUNT (Astra SEC-002): never an Administrator. As a Windows
+  #     service it runs under a restricted account (NETWORK SERVICE at least; a
+  #     dedicated standard user with no access to his profile is better).
+  #     DONE 23 Sep 26: the service `actions.runner.seejiaokai-Raptor.JK` runs as
+  #     NT AUTHORITY\NETWORK SERVICE, starts with the PC, and lives in
+  #     C:\actions-runner\actions-runner (one folder deeper than the first,
+  #     hand-run copy, which is left unused in C:\actions-runner — so never
+  #     delete C:\actions-runner itself). He installed it himself; its sign-up
+  #     code is his credential (D89).
+  #   - PORT_URL / APP_URL are pinned too (Astra CI-001): either one left in the
+  #     machine's environment would point a gate at another checkout's preview.
+  pc:
+    name: all gates (your PC)
+    if: >-
+      vars.CI_ON_GITHUB != 'true'
+      && github.event.repository.private
+      && github.actor == github.repository_owner
+      && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: [self-hosted, Windows, X64]
+    timeout-minutes: 45
+    env:
+      E2E_PORT: '4273'
+      PORT_URL: 'http://localhost:4273/'
+      SMOKE_PORT: '4279'
+      APP_URL: ''
+      # A git credential prompt must FAIL at once, never wait (23 Sep 26): the runner is a service
+      # with no screen, and the first run under it hung 30 minutes on Git's credential manager
+      # (Playwright's git-info fetch — now switched off in playwright.config.ts; this is the belt).
+      GIT_TERMINAL_PROMPT: '0'
+      GCM_INTERACTIVE: 'never'
+    defaults:
+      run:
+        shell: cmd
+        working-directory: raptor-port
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      # KEEP THE REPO'S OWN LINE ENDINGS (the first run on the PC, 23 Sep 26,
+      # failed two unit files on exactly this). Git for Windows is installed
+      # with core.autocrlf=true, so this fresh clone came out CRLF — while the
+      # owner's own checkout says false in its .git/config, which is why every
+      # local run passed. src/testing/refwin.ts patches the reference app by
+      # exact text that spans a line break, and found nothing to patch. So: set
+      # false for THIS clone only (never the owner's own Git settings) and lay
+      # every file down again exactly as stored — LF where the repo is LF, and
+      # the handful of CRLF files still CRLF, as on his desktop. Each line stops
+      # the step on its own failure: cmd reports only the LAST command's code,
+      # which would let a failed first line pass as success (Astra CI-002).
+      - name: Keep the repo's own line endings
+        working-directory: .
+        run: |
+          git config core.autocrlf false || exit /b 1
+          git rm -r --cached --quiet . || exit /b 1
+          git reset --hard --quiet HEAD || exit /b 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Reference suite
+        run: node reference/tfin.js
+      - name: Unit tests
+        run: npm test
+      - name: Install Chromium
+        run: npx playwright install chromium
+      # six at a time, not the split legs' three: this is one job on a 16-thread
+      # machine, with headroom left for the server and the owner's own work
+      - name: Browser tests
+        run: npx playwright test --workers=6
+      - name: Tracker smoke
+        run: npm run smoke:tracker
+
+  # ---- GitHub's own machines: when CI_ON_GITHUB is `true`, or whenever the run
+  # ---- is not the owner's own, in a private repo (the complement of `pc`) ----
+
   # Type-check + bundle, the 728-assertion parity suite, and (on main) the
   # artifact `deploy` publishes. Under a minute; the test jobs run beside it.
   build:
+    if: >-
+      vars.CI_ON_GITHUB == 'true'
+      || !github.event.repository.private
+      || github.actor != github.repository_owner
+      || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -102,6 +234,11 @@ jobs:
   # instead of cancelling the others half way through.
   unit:
     name: unit (${{ matrix.project }}${{ matrix.shard && format(' {0}', matrix.shard) || '' }})
+    if: >-
+      vars.CI_ON_GITHUB == 'true'
+      || !github.event.repository.private
+      || github.actor != github.repository_owner
+      || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository)
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -114,6 +251,8 @@ jobs:
             shard: 2/2
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -138,6 +277,11 @@ jobs:
   # 3-worker / one-retry CI settings from 15 Aug 26.
   geometry:
     name: geometry (${{ matrix.project }})
+    if: >-
+      vars.CI_ON_GITHUB == 'true'
+      || !github.event.repository.private
+      || github.actor != github.repository_owner
+      || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository)
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -145,6 +289,8 @@ jobs:
         project: [raptor, lw-phone, lw-desktop]
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -172,9 +318,16 @@ jobs:
   # serves the bundle itself like they do.
   tracker:
     name: tracker (smoke)
+    if: >-
+      vars.CI_ON_GITHUB == 'true'
+      || !github.event.repository.private
+      || github.actor != github.repository_owner
+      || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -205,11 +358,19 @@ jobs:
   # minutes a push, measured 23 Sep 26). The gates above still run and still
   # block a red merge; only the PUBLISH is disabled. The live app is served by
   # VERCEL instead. To turn Pages back on: make the repo public again (or buy a
-  # plan that serves private Pages), then drop the `false &&` below.
+  # plan that serves private Pages), drop the `false &&` below, AND make sure the
+  # gates run on GitHub's machines — since D89 the default gate is the `pc` job,
+  # which uploads no Pages artifact, and a skipped `needs` job skips this one
+  # (Astra CI-003). A public repo already routes the gates there (the guard on
+  # `pc`); a private one needs CI_ON_GITHUB=true.
   deploy:
     needs: [build, unit, geometry, tracker]
     if: false && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

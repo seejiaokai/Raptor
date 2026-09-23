@@ -192,3 +192,77 @@ Finished items move only by `scripts/backlog-archive.mjs`. How it all works:
 `raptor-port/docs/doc-budget.md` §4; what was found and done:
 `raptor-port/docs/superpowers/specs/2026-09-22-backlog-process-attack.md`.
 
+
+*Moved here 2026-09-23 by backlog-archive.mjs. Forward facts: `raptor-port/docs/handpass/2026-09-23-lw-monthjump.md`, `.github/workflows/deploy.yml`, `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-MONTHJUMP-PHONE] On a phone a month button can land a day short — an APP bug; the phone test is right (23 Sep 26)
+
+**The desktop half is DONE** (branch `claude/lw-monthjump-phone`, owner D87): the two
+`e2e/step4-leavewar.spec.ts` scenarios that timed out on GitHub ("LL 14–18 Jul … undo restores",
+"a reload (not ?fresh) …") now wait on what each step needs, not fixed 100–700ms pauses, and the
+reload one reads a person's three figures from ONE opening of their sheet, not three. Measured with
+the new slow-browser switch (`E2E_CPU_THROTTLE=3`, `e2e/app.ts`): the reload test went from failing
+at 2x slower to passing at 3x (29s, at the edge; 4x still fails); the other from failing 2 of 3 at 4x
+to passing 3 of 3 (28s).
+Evidence: `raptor-port/docs/handpass/2026-09-23-lw-monthjump.md`.
+**The phone half was misread as load — it is the app, and it shows on a FAST machine.**
+`e2e/leavewar.spec.ts` "a month button works from wherever the grid already is" (lw-phone) fails
+10/10 run alone on a quiet desktop and passes in a busy full run. Paced like a person (1s, SEP,
+1.5s, MAR) it lands March a whole day short about half the time — 1 March under the frozen name
+column (both pictures in the evidence sheet). **Measured:** February is drawn at the open with a
+posted-out man's row showing (ignite) and its width is remembered; by September his row is hidden;
+back at March the window regrows February within 160ms of the jump, the fill engine treats the
+remembered width as exact, and on a touch screen skips the re-anchor "in motion" (`Matrix.tsx`,
+`!(inMotion && coarsePointer())`). February now draws 20px narrower, so March slides 20px left —
+one day at the phone's 0.8 zoom. A slower machine regrows after 160ms, gets re-anchored, passes.
+**FIXED 23 Sep 26 on `claude/lw-monthjump-phone` (evidence sheet PART TWO, §8–§14): not the jump-override
+below but its root — a remembered width counts as exact only under the rows it was measured with
+(`widthGen`/`widthExact`), which also stops the same hop in a backward finger fling; phone test red 3/3 →
+green 3/3; the test now measures once, after February is drawn and the grid holds still.** Was:
+**NEXT CHAT, on this same branch, BEFORE it merges (owner, D152 — supersedes D150's order). Fix (app, WALK tier, phone) — Astra's spec:** in `Matrix.tsx`'s fill
+effect, let a recent programmatic jump (`Date.now() - jumpAtRef.current < 1200`) override the
+coarse-pointer/in-motion suppression and take `anchorNow` before `setColWin` (and/or forget remembered
+widths when the row set changes) — without bringing back the fling-killing scroll write (30 Aug). Then
+make the test wait for the March header to hold still past the rest/fill window before asserting; drop
+the first-success poll (today a sample taken before the shift can pass it). **Not paced in the test on
+purpose:** waiting longer between taps does not stop it, and pacing around it would hide the bug.
+**Until then (owner, D84):** a Leave War desktop timeout on GitHub gets ONE re-run of the failed
+group, not an investigation; a second failure of the same group is new evidence — stop and report.
+
+
+*Moved here 2026-09-23 by backlog-archive.mjs. Forward facts: `raptor-port/docs/handpass/2026-09-23-lw-monthjump.md`, `raptor-port/src/leavewar/ui/Matrix.tsx`.*
+
+### [LW-HBAR-RESYNC] The Leave War bottom scrollbar is left out of step after a drag (23 Sep 26)
+
+After the bar is dragged the grid→bar follow is off for 250ms (`Matrix.tsx` `syncHbar`, `hbarUserTsRef`)
+and nothing re-syncs when that ends, so a grid move inside the window leaves the thumb stale until the next
+grid scroll — forced 5/5 (drag, then SEP at once: grid at September, thumb at 0). The e2e now waits it
+out. Fix: one trailing `syncHbar` when the window closes. **In the next chat, with the phone fix (D150).**
+**FIXED 23 Sep 26 on `claude/lw-monthjump-phone`, with `[LW-MONTHJUMP-PHONE]` and the owner's filmed
+frozen-bar jump** — red 5/5 before, green 5/5 after; evidence sheet PART TWO
+(`raptor-port/docs/handpass/2026-09-23-lw-monthjump.md` §8–§14). Archive both once the branch merges.
+
+
+*Moved here 2026-09-23 by backlog-archive.mjs. Forward facts: `.github/workflows/deploy.yml`, `HANDOFF.md`.*
+
+### [CI-TWO-CORES] GitHub's machine halved when the repo went private — the checks are tuned for 4 cores (23 Sep 26)
+
+Private repo = GitHub's 2-core machines (public = 4): from the switch (22 Sep ~17:40 UTC) every parallel check
+doubled (a run ~20 min) and billed ~60 of the month's minutes (Free 2,000 · Pro 3,000 — minutes, not speed). **CHOSEN (D89): the checks run on HIS PC** — a Windows self-hosted runner ("JK",
+registered 23 Sep 26 by hand in an admin window; a Windows service is next). BUILT on
+`claude/lw-monthjump-phone`: the `pc` job in `deploy.yml` (one job, cmd shell, line endings as stored,
+e2e on 4273 / smoke on 4279), the old jobs behind `CI_ON_GITHUB`. Trials on the PC: every gate runs (~14 min
+green), and it exposes FAST-machine races the slow runner hid — the phone month test is red there until
+`[LW-MONTHJUMP-PHONE]` is fixed, so `CI_ON_GITHUB=true` was set 23 Sep 26 — **DELETED the same afternoon, with
+the fix in; the next push ran on the PC** (PR #428's checks). Astra's second
+read added: the PC runs only HIS OWN changes in a PRIVATE repo, and the runner never as Administrator.
+**23 Sep 26, afternoon:** the runner is a Windows SERVICE (`actions.runner.seejiaokai-Raptor.JK`) under
+NT AUTHORITY\NETWORK SERVICE, auto-start, installed by him at `C:\actions-runner\actions-runner`
+(one folder deeper than the first copy — never delete `C:\actions-runner`). Astra's third read (SEC-102):
+`Authenticated Users` inherit MODIFY on that folder from `C:\`, and the PC has two Codex-sandbox
+accounts besides his — **FIXED BY HIM 23 Sep 26, 16:38** (the four `icacls` lines, evidence sheet §14);
+verified: only Administrators, SYSTEM and the runner's own group may change its files, Users read; online.
+The first run AS A SERVICE hung 30 min in the browser gate: Playwright's CI git-info `git fetch` waited on
+Git Credential Manager, which a service cannot show (no stored token since SEC-003). Fixed:
+`captureGitInfo` off in `playwright.config.ts`; `GIT_TERMINAL_PROMPT=0`/`GCM_INTERACTIVE=never` in the job.
+

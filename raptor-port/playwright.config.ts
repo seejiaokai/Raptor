@@ -26,6 +26,15 @@ const PORT = process.env.E2E_PORT || '4173'
    `npm run test:e2e` builds and serves the port itself. */
 export default defineConfig({
   testDir: './e2e',
+  /* NO git information, ever (23 Sep 26). Under CI, Playwright gathers git
+     facts for its HTML report unless told not to — and for a pull request that
+     means `git fetch origin <base>` over the network. The checkout keeps no
+     token (`persist-credentials: false`, Astra SEC-003), and on the owner's PC
+     the runner is a Windows SERVICE with no screen, so Git's credential manager
+     waited for a sign-in that could never appear: the browser gate's first run
+     there sat 30 minutes with no browser started, until it was cancelled. We
+     never read that report data, so the test run needs no network at all. */
+  captureGitInfo: { commit: false, diff: false },
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   /* One CI retry — added 15 Aug 26 with the worker bump below, after the

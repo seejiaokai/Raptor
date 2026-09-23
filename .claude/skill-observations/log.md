@@ -223,13 +223,193 @@ the same chain as the commit.
 **Principle:** Trimming a check's output with a pipe also throws away its verdict. Read a gate's exit
 code separately from its output, and never let the same line that runs a gate also act on it.
 
-## 2026-09-23 — [HUMAN-RETEST] the Tracker
-
-### Observation 199: A scripted gesture that "fails" is the driver's until the picture says otherwise
+### Observation 199: A "load-sensitive" test that fails alone on a quiet machine — replay it at human pace before pacing the test
 
 **Status:** OPEN
 **Date:** 2026-09-23
-**Session context:** [HUMAN-RETEST] hands-on re-test of the Tracker tab (Raptor), driven by Playwright scripts. Numbered past every entry on the pushed branches (max 198); a parallel chat may also be appending on an unpushed branch.
+**Session context:** [LW-MONTHJUMP-PHONE] — making three browser tests robust on a slow machine, test-only.
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** Phase 1 (root cause) and condition-based-waiting.md — timing failures
+
+**Issue:** The backlog recorded a phone test as failing "under machine load". Measured, it failed 10/10 run alone on a quiet desktop and PASSED inside a busy full run. Settling the grid between the two taps did not stop it; replaying the scenario at a person's pace (1s, tap, 1.5s, tap) still landed the view a day short about half the time. Cause: an app-side 160ms "in motion" window — a fast machine regrows a month inside it and skips a re-anchor; a slow one lands outside it. Pacing or settling the test would have made it pass while the product stayed wrong.
+
+**Suggested improvement:** In Phase 1 (and condition-based-waiting.md "When to use"), add: "Before you pace or settle a timing-sensitive test, replay its scenario at human pace and on both a slowed and an unloaded machine. If a person at ordinary speed can reach the failing outcome, it is a product finding: file it, keep the test honest, and do not pace the test around it." Extends Observation 195 from state leakage to timing.
+
+**Principle:** A timing failure is a product bug whenever a user at ordinary pace can reach it. Pace a test only to what a user does, never past the bug — and "load-sensitive" can mean it fails on FAST machines.
+
+### Observation 200: Reproduce a slow CI runner on demand, and prove a flake fix at that slowness
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [LW-MONTHJUMP-PHONE] — two browser scenarios timed out only on GitHub's runner.
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** condition-based-waiting.md — verifying the fix
+
+**Issue:** The timeouts happened only on the CI runner; locally every run passed, so "red before" was impossible to show. Chromium CPU throttling (CDP `Emulation.setCPUThrottlingRate`, behind an opt-in env var) at 2x–4x reproduced the exact failures on the desktop, calibrated against the runner's own durations (a 10s local test took 23s green and over 30s red there). It turned the fix into a table: 3 runs per slowdown, before and after, same bundle.
+
+**Suggested improvement:** Add a "Prove it on a slow machine" section to condition-based-waiting.md: make the slowness reproducible (CPU throttling for browsers, or an N-core busy load), calibrate the factor from the CI durations, and run each changed test several times per factor before and after. Report where it still breaks.
+
+**Principle:** A flake fix is proven only at the slowness that caused it. Make that slowness reproducible, measure against it, and state the factor at which the fix stops holding.
+
+### Observation 201: A condition wait must watch what the next step uses, not a broader proxy
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [LW-MONTHJUMP-PHONE] — replacing fixed pauses with condition waits.
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** condition-based-waiting.md — choosing the condition
+
+**Issue:** A "grid at rest" wait watched both the scroller's position and the target element. On desktop the grid keeps drawing months to the LEFT for seconds after a jump, each draw re-anchored so nothing visible moves — but the scroller position changes with every draw. The wait therefore waited for the whole background fill, and the step got slower than the fixed pause it replaced. Watching only the target element's on-screen position (what the next click lands on) fixed it.
+
+**Suggested improvement:** In condition-based-waiting.md "Common Mistakes", add: "Waiting on a proxy — a condition that also changes for unrelated background work turns the wait into waiting for that work. Watch exactly the state the next action depends on."
+
+**Principle:** A condition wait should observe precisely the state the next action consumes; a broader proxy silently couples the test to unrelated background work.
+
+### Observation 202: When removing a pause, check what each read returns if its target is not there yet
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [LW-MONTHJUMP-PHONE] — a reload test compared cell contents before and after a reload.
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** condition-based-waiting.md — false passes
+
+**Issue:** The test read grid cells by `querySelector(...)?.textContent` before and after a reload and compared the two lists. A cell not drawn yet read `undefined` — on BOTH sides alike — so the comparison could pass without comparing anything. The fixed pause had only been hiding this by usually giving the grid time to draw.
+
+**Suggested improvement:** In condition-based-waiting.md, add: "For every read that follows a removed pause, ask what it returns when its target does not exist yet. A symmetric empty value (undefined/null/'') in a before/after comparison is a false pass — wait for each target to exist first."
+
+**Principle:** A comparison between two reads is only a check if both reads are guaranteed to have found something; symmetric emptiness passes silently.
+
+### Observation 203: Green locally, red on a CI runner on the SAME machine — compare the checkout's settings before the code
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [CI-TWO-CORES] — moving a repo's CI onto the owner's own Windows PC (self-hosted runner).
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** Phase 1 (root cause) — environment differences
+
+**Issue:** The first CI run on the owner's PC failed two unit test files that passed on that very PC minutes earlier. Same machine, same code, same Node — but not the same checkout: the runner makes a FRESH clone, which took Git for Windows' system default (`core.autocrlf=true`) and came out CRLF, while the owner's working copy had `core.autocrlf=false` in its own `.git/config`. A test helper patched a reference file by exact text spanning a line break and found nothing. `git config --show-origin --get-all core.autocrlf` named the cause in one command; a fresh-clone rehearsal proved the fix (scoped to the runner's clone, never the user's global settings) before spending a 15-minute CI run.
+
+**Suggested improvement:** In Phase 1's "Check Recent Changes → Environmental differences", add: "A run on a NEW checkout (CI, a fresh clone, a new worktree) inherits the machine's defaults, not your repo's local config. When local is green and a fresh checkout is red, diff the checkouts' settings (line endings, `git config --show-origin`) before the code — and rehearse the fix on a fresh clone before re-running the slow pipeline."
+
+**Principle:** "It works on this machine" can hide a per-checkout setting; a fresh checkout is a different environment even on the same computer. Rehearse an environment fix on a disposable copy before paying for another full pipeline run.
+
+### Observation 204: A "docs-only" push to a pull request that carries code re-runs every check and cancels the running one
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [LW-MONTHJUMP-PHONE] / [CI-TWO-CORES] — recording a ruling while a trial run of the checks was going on the owner's PC.
+**Skill:** session-handoff (Step 1, the "docs-only handoff has NO checks" paragraph)
+**Type:** open-source
+**Phase/Area:** Step 1 — pushing the handoff
+
+**Issue:** The skill said a docs-only handoff runs no checks, because the workflow's `paths-ignore` skips docs. That holds for a push to `main`, not for a pull request: GitHub evaluates a `pull_request` path filter against the WHOLE pull request's diff, so once the PR carries code, a notes-only push starts the full gate run again — and the workflow's `concurrency: cancel-in-progress` cancelled a trial run 7 minutes in. The owner then ruled D151 (never push while a PR's checks are running). The paragraph was corrected in place under the skill's own Rule 7.
+
+**Suggested improvement:** Keep the corrected paragraph; in Step 1's closing checklist add "check that no check run is in progress on the branch before the final push".
+
+**Principle:** A path filter's scope differs by event: on a pull request it sees the whole PR, not your last commit. Before any push to a branch with an open PR, check whether a run is going — the push restarts it, whatever it contains.
+
+### Observation 205: A check made after a wait can never see a one-frame defect — read the state in the task that inserts the element
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** Leave War frozen date bar "scrolling rapidly horizontally" (the owner filmed his desktop with his phone); three follower bars were each placed one painted frame late.
+**Skill:** systematic-debugging (Phase 1, reproduce) and test-driven-development (writing the red test)
+**Type:** open-source
+**Phase/Area:** reproducing a flash/jump; the regression test for it
+
+**Issue:** Four existing tests of the frozen header all passed: each scrolled the page, waited 200–400ms, then measured — by which time the jump was over. The defect lived in exactly ONE painted frame (the element mounted and its position was set in an effect that runs after paint). It was reproduced by sampling from inside the page on every animation frame (a requestAnimationFrame loop recording the bar's offset from the grid it copies), and pinned by a test that reads the element inside a MutationObserver callback — which fires after the framework's commit and before the browser can paint. A roll-call of every element that "appears, then gets positioned" found the same one-frame-late shape in two more bars.
+
+**Suggested improvement:** systematic-debugging Phase 1: "If the report is a flash, a jump or a flicker, a post-wait assertion cannot see it. Reproduce by sampling per frame from inside the page; pin it with a check that runs in the same task as the change (a MutationObserver callback), never after a timeout." test-driven-development, Verify RED: "a test that waits before asserting passes on a one-frame defect."
+
+**Principle:** Measure a transient defect at the moment it happens; a settle-wait is exactly what hides it.
+
+### Observation 206: Identical numbers before and after a fix have two explanations — I told the owner one before checking
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** Proving red-before/green-after for three Leave War fixes on a locally built bundle.
+**Skill:** systematic-debugging (Red Flags) / verification-before-completion
+**Type:** open-source
+**Phase/Area:** interpreting a re-run
+
+**Issue:** The green-after run reproduced the red-before failure numbers to the decimal. I told the owner "that run was invalid — the previous run's server was left running, so it tested the old app" and only then checked: the run HAD rebuilt; the result was real and the fix was incomplete (a second, browser-level cause remained). Two explanations fitted the evidence — "the run did not test the fix" and "the fix does not work" — and I reported one as fact. Corrected in the next message after checking the build log.
+
+**Suggested improvement:** systematic-debugging, Red Flags: "Identical results before and after a change mean either the change did nothing or the run did not exercise it. Run the one check that tells them apart (build timestamp, served bundle, server reuse) BEFORE stating either to anyone."
+
+**Principle:** Before reporting a cause, run the one check that distinguishes it from the other explanation that fits the same evidence.
+
+### Observation 207: A red-first test that passes on the old code has found a second cure hiding in the scenario
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [LW-HBAR-RESYNC] — a month pressed inside the scrollbar's 250ms drag hold must still move the thumb.
+**Skill:** test-driven-development (Verify RED)
+**Type:** open-source
+**Phase/Area:** Verify RED — the test fails for the right reason
+
+**Issue:** The rewritten test passed 3 of 3 on the unfixed code. Its jump (January → September) also hid a posted-out man's row; that row change made the grid re-measure ~200ms later, AFTER the hold had ended, which re-synced the thumb — an incidental cure unrelated to the fix. Moving the scenario to months where no row comes or goes (found by listing the rows each month shows) made the old code fail 5 of 5 and the fixed code pass 5 of 5.
+
+**Suggested improvement:** In Verify RED: "If the test passes on the old code, do not just tighten the assertion — find what healed the symptom in that scenario and choose one where only the fix can make it pass. List the side effects of each step (here: which rows each month shows) to find it."
+
+**Principle:** A red-first failure must come from the missing fix, not from timing; when the old code passes, the scenario contains a second path to the right answer.
+
+### Observation 208: Step-by-step instructions to a non-technical user must put "copy it" BEFORE the button that can take it away, and say what the screen should show
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** Guiding the owner to re-register his PC's GitHub runner as a Windows service (a credential step the agent must not do itself).
+**Skill:** New skill candidate: guiding a non-technical user through a setup the agent may not perform
+**Type:** internal
+**Phase/Area:** writing the numbered steps
+
+**Issue:** The steps said "click Remove, copy the command it shows". He clicked through and the runner was removed on GitHub with the command never copied, leaving the PC's copy still registered (recovered by moving its dead registration files aside). He also followed the page's own Download box into a NEW nested folder, so the service now runs from `C:\actions-runner\actions-runner` — harmless, but a later "tidy up the old folder" would delete the live one. He asked for the steps again once, mid-way.
+
+**Suggested improvement:** For any hand-held setup: (1) the copy/record step comes BEFORE any button that could close or complete the dialog; (2) each step names what the screen should show next (e.g. the exact folder in the prompt), so a wrong turn is visible at once; (3) give a recovery line for the likely mistake up front; (4) verify the result read-only afterwards and say where things actually ended up.
+
+**Principle:** A non-technical user follows the screen, not the plan; write each step so the screen confirms it, and order steps so no single click can lose information needed later.
+
+### Observation 209: Who can modify a local CI runner's files includes the AI tools' own sandbox accounts
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** Moving a repo's checks onto the owner's Windows PC as a self-hosted runner service; an independent reviewer flagged the install folder's inherited permissions.
+**Skill:** security-review (and any skill that sets up local services)
+**Type:** open-source
+**Phase/Area:** threat model — local accounts
+
+**Issue:** The runner folder sat under C:\ and inherited "Authenticated Users: Modify", so any local account could replace the runner's binaries, which then run as the service account on every CI job. "It's a personal PC with one user" was the natural dismissal — but listing the enabled local accounts showed two more: the sandbox accounts a coding agent's CLI creates to run commands. The reviewer's finding was sharper than it looked because the "other local user" was the agent tooling itself.
+
+**Suggested improvement:** In security-review, for anything installed as a local service or runner: enumerate ENABLED local accounts (not just "who uses this PC"), check the install folder's inherited ACL, and prefer a folder that does not inherit broad write rights (or remove them) before trusting the service account's restriction.
+
+**Principle:** A restricted service account only helps if nobody else can rewrite what it runs; count every local account — including tool-created sandbox users — as a potential writer.
+
+### Observation 210: A CI runner moved into a Windows service can hang forever on a credential prompt nobody can see
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** The first check run on the owner's PC after its GitHub runner became a Windows service (NETWORK SERVICE); the browser-test step sat 30 minutes doing nothing.
+**Skill:** systematic-debugging (Phase 1, environment differences)
+**Type:** open-source
+**Phase/Area:** diagnosing a hung CI step
+
+**Issue:** Trial runs of the same workflow had passed when the runner ran by hand in the owner's desktop session. As a service, the browser step hung with near-zero CPU, no browser processes and nothing on its port. The live log was not readable locally (buffered), so the process table did the diagnosis: parent/child chains and creation times (not command lines — another account's are hidden) showed a git process started two seconds into the step, waiting in the credential manager. The test tool fetches from the remote in CI to describe the diff; a security fix earlier the same day had stopped the checkout storing a token; and a service has no screen for a sign-in prompt.
+
+**Suggested improvement:** Phase 1: "When a step that used to pass hangs after an environment change (interactive → service, user → service account), check for anything waiting on interaction: credential managers, UAC, first-run prompts. With idle CPU, read the process tree's creation times to find what started when the step began." And for CI on a self-hosted service: set  and  so a prompt fails instead of waiting, and switch off tools' optional network look-ups.
+
+**Principle:** A service cannot answer a prompt; anything that might ask one must be made to fail fast, or the job waits until its timeout with no error at all.
+
+## 2026-09-23 — [HUMAN-RETEST] the Tracker
+
+### Observation 211: A scripted gesture that "fails" is the driver's until the picture says otherwise
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [HUMAN-RETEST] hands-on re-test of the Tracker tab (Raptor), driven by Playwright scripts. Numbered past every entry on the pushed branches (max 198); first written as #199–#201 on `claude/tracker-human-retest-8d3411` and renumbered #211–#213 when `main` (with the Leave War chat's #199–#210) was merged in.
 **Skill:** raptor-port/docs/bug-check-order.md (§7.2 "Stand up the real thing")
 **Type:** open-source
 **Phase/Area:** the walk — driving a surface with its own gestures
@@ -240,7 +420,7 @@ code separately from its output, and never let the same line that runs a gate al
 
 **Principle:** A driver that moves the view differently from a person manufactures defects; look at the picture before believing a failed gesture.
 
-### Observation 200: A fix or ruling applied to ONE of two places that draw or write the same thing — twice in one tab
+### Observation 212: A fix or ruling applied to ONE of two places that draw or write the same thing — twice in one tab
 
 **Status:** OPEN
 **Date:** 2026-09-23
@@ -255,7 +435,7 @@ code separately from its output, and never let the same line that runs a gate al
 
 **Principle:** When several places draw or write the same thing, make them share one body and test every place; a "remember to grep" rule is already known to fail.
 
-### Observation 201: Walkers need the artifact frozen while the host fixes in parallel
+### Observation 213: Walkers need the artifact frozen while the host fixes in parallel
 
 **Status:** OPEN
 **Date:** 2026-09-23

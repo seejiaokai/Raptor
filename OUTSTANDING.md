@@ -114,8 +114,10 @@ archive. 5) The stack resumes at **[DB-STEP]**.
 raised and the branch deliberately left), `[STORE-READER-SWEEP]`, `[OIL-REQ-NAMEBOX]`,
 `[POSTOUT-LOST]`'s remaining half, `[OIL-WORDS]`, and from the window's bug check
 `[OIL-PERSONAL-PLACEHOLDER]` and `[CROWD-SIM-BRIEF]` (both below `[ALL-AVAIL-WINDOW]`).
-`[LW-MONTHJUMP-PHONE]` — a Leave War phone e2e that fails under machine load, on `main` too (below
-`[ALL-AVAIL-WINDOW]`).
+`[LW-MONTHJUMP-PHONE]` and `[LW-HBAR-RESYNC]` — FIXED on `claude/lw-monthjump-phone` (PR #428) with the
+owner's filmed frozen-bar jump, and archived; MERGED to `main` 23 Sep 26 on his "merge live" (look done). Left from it:
+`[LW-FROZEN-BAR-GAP]` (a one-frame blink, below `[ALL-AVAIL-WINDOW]`). `[CI-TWO-CORES]` — DONE and
+archived: the checks run on his PC as a Windows service, its folder permissions tightened.
 
 **STALE ABOVE, CORRECTED 22 Sep 26:** the "STACK PROGRESS (updated 18 Sep 26)" block says the next
 stack item is step 4 (one Absence record). **Step 4 SHIPPED on 20 Sep 26** — `raptor-port/CLAUDE.md`
@@ -654,8 +656,16 @@ ceiling inside itself and had reached 961.
 feature per chat. Amendment chat: port 4173, rulings from D90. Tracker chat: port 4180, rulings from
 D120. Never two full gate runs at once (false failures under load). The order of the other three
 (change-recording, the absence record, the Leave War links) is not ruled: propose it and ask.
-**Tracker: PAUSED 23 Sep 26 (D155) — the demo video first.** Resume on `claude/tracker-human-retest-8d3411`
-from `HANDOFF-NEXT.md`'s Tracker section; merge `main` in first (D78).
+**D153 (23 Sep 26): the TRACKER chat starts NOW, on its own worktree from `main`, beside the Leave War
+fix on `claude/lw-monthjump-phone`** — which still merges FIRST. Tracker chat: preview 4180, e2e
+`E2E_PORT=4182`, smoke `SMOKE_PORT=4181`, rulings from D120; never a full gate run while the Leave War
+chat or the PC runner (`gh run list`) is mid-run. **D154: a third chat builds a presentation to
+commanders and a demo video** on its own worktree (preview 4185, rulings from D170); D58 holds for the
+deck/video. **D155: the Tracker chat is PAUSED** at its own handoff — the demo video first (the Leave War
+fixes are live on `main`); it resumes on his word, bringing `main` in first (D78).
+**D125 (23 Sep 26): the Tracker chat RESUMES** beside the demo chat, on `claude/tracker-human-retest-8d3411`
+(`main` merged in) — the demo has first call on the PC: heavy runs one at a time, only on a quiet PC, and the
+Tracker pauses at its next clean point if the demo slows.
 **Tracker scope (D120):** his charts reach the database by export → wipe → import, so the older-data
 converters and old file formats are NOT walked; the current export → wipe → import round trip is
 walked FIRST (`docs/tracker/known-gaps.md`, head note).
@@ -890,28 +900,26 @@ exactly the case he opened this with.
 which settles where they appear. Ruling: `DECISIONS.md` D38; the related ones are D27 (the count is a
 scheduling feature), D36 (the narrow window) and D37 (the count reads as what it is).
 
-### [LW-MONTHJUMP-PHONE] A Leave War phone e2e fails under machine load — on `main` too (23 Sep 26)
+### [LW-FIGSEL-SLOW] One Leave War unit test times out under a full parallel run (23 Sep 26)
 
-`e2e/leavewar.spec.ts` "a month button works from wherever the grid already is" (lw-phone): March
-lands 20px short of the frozen edge (`-20`, needs `>= -1`). **Red 3/3 on `main`'s own code** (a
-throwaway worktree of `6efa6839`) and red on `claude/all-avail-window` — while two review agents were
-running on the same machine; **it then PASSED in the full run once they had finished** (461/0). So it
-is a LOAD-sensitive timing test, not a defect the window introduced — the same family as
-`[LW-SCRUBBER-FLAKY]` (the test's own comment already records the desktop half of it as "the one flaky
-assertion in the suite"). **Worth making robust** (poll until the grid's draw has settled, not a
-fixed 5s), because a red CI run on a busy runner costs a re-run. WALK tier (Leave War grid, phone).
-**Two more of the family, on GitHub's runner (23 Sep 26, the `[ALL-AVAIL-WINDOW]` merge):** in
-`e2e/step4-leavewar.spec.ts` (lw-desktop), "LL 14–18 Jul, then ATT C 16–17 Jul … undo restores" timed
-out at 30s twice (33.6s, 34.4s — it took 23.1s on the previous green run) and "a reload (not ?fresh)
-keeps every filed leave …" is flaky on EVERY run (31s, then passes on retry). The whole lw-desktop
-job ran ~19% slower, evenly, while the other jobs held their times. **Measured NOT the window:** the
-same project on the desktop, before (`b945b8c2`) vs after, 164/164 both in 1.8m, per-test median
-ratio 1.02; the first test takes ~13s locally. They sit near a 30s budget on a slow VM — make them
-wait on what they need, or give the suite a longer per-test budget on CI.
-**Not only load (23 Sep 26, the docs-guard merge):** the phone test was red again (`-20`) in the
-full run AND alone, on code identical to `main`, with the machine at ~11% CPU.
-**Until then (owner, D84):** a Leave War desktop timeout on GitHub gets ONE re-run of the failed
-group, not an investigation; a second failure of the same group is new evidence — stop and report.
+`src/leavewar/ui/figselect.test.tsx` "an undo, a stage change and the drawer toggle all drop it" takes ~4–5s
+alone (3.9s on the final tree; the same on the code before the Leave War fixes) but ran past its 20s limit in
+2 of 3 full `npm test` runs on the owner's PC on 23 Sep 26 (another chat's worktree active). Pre-existing,
+load-only. Fix: split its three drop cases into three tests (each renders the whole year once), or give it its
+own longer limit — not a pause. Evidence: `raptor-port/docs/handpass/2026-09-23-lw-monthjump.md` §13/§15.
+
+### [LW-FROZEN-BAR-GAP] For one frame no dates header shows while the page scrolls it away (23 Sep 26)
+
+Found by the frame-by-frame pictures of the frozen-bar fix (evidence sheet §11, frame 1 of
+`fixed-desktop-frozen-bar-first-frames.png`). When the page scrolls the real dates header up under the
+top bar, the frozen copy arrives ONE painted frame later — it is React state set in the window's scroll
+handler, so it renders on the next frame — and that frame has no header at all. **Pre-existing, and not
+the owner's "scrolling rapidly horizontally"** (that jump is fixed): a blink, not a slide. Fix direction:
+in `Matrix.tsx`'s stuck effect, commit the change of stuck-or-not synchronously (`flushSync`) — ONLY when
+it changes, never per scroll event, because the whole grid re-renders on it — or keep the bar mounted and
+show/hide it outside React; either needs a speed check (the re-render would land inside the scroll
+frame). The Quals page's frozen header has the same shape. **Place:** the next Leave War polish item,
+after `[HUMAN-RETEST]`; show him first — he may not see a one-frame blink at all.
 
 ### [OIL-PERSONAL-PLACEHOLDER] A placeholder on a landed "Personal" request row draws no count (23 Sep 26)
 
@@ -1086,6 +1094,10 @@ These four are what was deliberately left:
 
 ### [REPO-PRIVATE] Make the repo private and share it with developers — HALF DONE 23 Sep 26 (D59)
 
+**23 Sep 26, later: D88 ("I'll make it public for now") was REVERSED by D89 before he switched — it
+stays PRIVATE** and the checks move to his own PC (`[CI-TWO-CORES]`). Why it mattered: 146 old branches
+on GitHub still carry the D58 unit designation IN THEIR FILES, and `main`'s history in 14 commits.
+
 **DONE, BY HIM, 23 Sep 26 (D59): THE REPO IS PRIVATE**, reversing his own *"nvm disregard this
 first"* the same day after a check found the unit named in the app. Pages is GONE (API 404), so the
 publish job in `.github/workflows/deploy.yml` is OFF — it would fail every push and still bill —
@@ -1095,6 +1107,10 @@ with the gates left running. `README.md` corrected. **The app is viewed on VERCE
 on my app"*). Route: Settings → Collaborators, by username, Write; they run it locally and do not
 need Vercel. **Unmade question:** a collaborator here sees the uploaded original, the whole history
 and every agent-facing doc. If that matters, the fresh single-commit repo below is the answer.
+**BEFORE THE FIRST COLLABORATOR IS ADDED (Astra SEC-101, 23 Sep 26): take the self-hosted runner off
+this repo** (Settings → Actions → Runners → JK → Remove) and set `CI_ON_GITHUB=true` — or move the
+runner to a separate owner-only CI repo. A pull request runs its own copy of the workflow, so the
+guard in `deploy.yml` cannot stop a collaborator's PR from aiming a job at his PC.
 **What was established while it was up, so it is not re-derived:**
 - The repo is **PUBLIC** today and the live site answers **200 to anyone** with the URL, no login.
   The hard-coded accounts are one search away in `src/state/auth.ts`, so removing credentials from

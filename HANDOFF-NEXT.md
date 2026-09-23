@@ -1,16 +1,14 @@
-# HANDOFF — 23 Sep 26. `[ALL-AVAIL-WINDOW]` and `[DOCS-GUARD]` are LIVE on `main`. Next: `[HUMAN-RETEST]`.
+# HANDOFF — 23 Sep 26 (evening). PR #428 MERGED on his "merge live" (his look done): the Leave War fixes and the checks-on-his-PC move are on `main`.
 
-## The Tracker `[HUMAN-RETEST]` — PAUSED (D155) on `claude/tracker-human-retest-8d3411` (not merged)
+## The Tracker `[HUMAN-RETEST]` — RESUMED (D125) on `claude/tracker-human-retest-8d3411` (not merged)
 
-**Paused by the owner, 23 Sep 26 (D155): the demo video comes first.** Resume from this section when
-he says so — merge `main` in first, as below. (D155 itself is recorded on `main` by the Leave War chat;
-this branch's copy was dropped so the merge brings in one row, not two.)
+**Resumed by the owner, 23 Sep 26 (D125, superseding D155's pause):** it runs beside the demo chat, and the
+demo has first call on the PC — check the PC's load before any heavy run (full gates, parallel walkers), one
+heavy run at a time, and pause at the next clean point if he says the demo is slow or he is recording.
+`main` was merged in on resuming (D78).
 
-**FIRST, merge `main` into this branch (D78):** the Leave War's PR #428 merged at 16:56 (`87e9f0d6`;
-rulings on main run to D154 — no clash with D120–D124). Its `playwright.config.ts` hunk is
-byte-identical to this branch's, so no conflict there; expect conflicts only in `DECISIONS.md`,
-`OUTSTANDING.md` and this file — keep BOTH sides' rows. Hold any full gate run until
-`gh run list --branch main --limit 1` shows main's own run completed.
+**`main` is merged in (D78, done 23 Sep 26 on resuming)** — both sides' rows kept; this branch's
+notebook entries renumbered #211–#213 past main's #199–#210.
 **Pick that branch in the new-chat picker.** Read `raptor-port/docs/handpass/2026-09-23-tracker.md`
 §0 FIRST — it says what is done, what the three walkers found, and exactly what is next (rebuild,
 re-walk the fixes, fix the "still to fix" lists and D122–D124, full gates, the two code reads, his
@@ -19,46 +17,31 @@ chat: **D120–D124** (the charts' route to the database; one access for admin a
 never wipe typed details; Last Flown; deleting a ball wipes its marks). Never run a full gate while
 another chat's is running (D86) — the Leave War chat messages before its PC runs.
 
-**Pick `main` in the new-chat picker.** `claude/docs-guard` is merged — don't pick it.
 
-## What went live
+**Pick `main` in the new-chat picker.** Before acting: `git fetch`, `gh run list --branch main --limit 2` — the
+merge's own check run on his PC was still going when this was written; confirm it went green.
 
-The counter's movable window of pucks (D38–D41), bug-checked at FULL tier — the record is
-`raptor-port/docs/handpass/2026-09-23-allavail-window.md`. He looked on Vercel, then said "merge
-live". It went to `main` AFTER the skill review (#427), with `main` merged in first and every gate
-re-run on the combined tree: `npm test` 5760/5760 · build OK · `tfin.js` 728/0 · rulecheck OK ·
-`test:e2e` 461 passed / 0 failed · `smoke:tracker` 425/0 · `perf` 4/0 · `docsize` red on the same
-three files as `main` (`[DOC-TRIM]`). No app code changed in the merge, so the walk stands.
+## What landed
 
-Also rode along: `.impeccable/config.json` (D71's held-back design-checker skip list; note #43
-actioned).
+`[LW-MONTHJUMP-PHONE]`, `[LW-HBAR-RESYNC]`, the owner's filmed frozen-bar jump, the same one-frame-late
+placement on the bottom scrollbar and the Quals frozen header, and the review-round fixes (the manning Archive
+as a width input; the frozen bar and the bidding outline re-measure on changes). Evidence:
+`raptor-port/docs/handpass/2026-09-23-lw-monthjump.md` PART TWO. The checks run on HIS PC — a Windows service
+under NETWORK SERVICE at `C:\actions-runner\actions-runner` (never delete `C:\actions-runner`); its folder
+permissions were tightened by him (Astra SEC-102, done).
 
-## Then `[DOCS-GUARD]` went live — what it changes for every session
+## Next, in order
 
-`npm run docsize` now fails a lost, doubled or cut-short backlog item, a lost or doubled D-number, a
-ruling home that does not exist, and a rule-map id with no register entry. It runs at the end of
-every turn (a Stop hook) and on every PR and push to `main` (`docs-guard.yml`), and it never asks
-for a trim inside a code change. **Move a finished item ONLY with
-`node raptor-port/scripts/backlog-archive.mjs <ID> --homes <file>`.** Closing reports carry its
-`Docs:` and `docsize:` lines (bug-check order §9). Details: `raptor-port/docs/doc-budget.md` §4.
+1. **The presentation/demo-video chat (D154) is the current work (D155)** — `main` has the Leave War fixes.
+   Preview 4185, rulings from D170; D58 holds (no unit designation).
+2. **`[HUMAN-RETEST]` — the Tracker chat is PAUSED (D155)** at its own handoff on
+   `claude/tracker-human-retest-8d3411` (D153 ports 4180/4182/4181, rulings from D120); it resumes on his
+   word and merges `main` in first (D78).
+3. Filed from this work: `[LW-FROZEN-BAR-GAP]` (a one-frame blink), `[LW-FIGSEL-SLOW]` (a slow unit test).
+4. A docs-only trim pass (D29): DECISIONS is over its ceiling.
+5. Before ANY collaborator: take the runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).
 
-## Rulings this session
+## How pushes cost runs (his question, 23 Sep 26)
 
-**D77** — leave the phone resize corner: on a phone the window moves but does not resize. Recorded
-in `DECISIONS.md`, the window's section of `raptor-port/docs/ui-contracts.md`, and `OUTSTANDING.md`.
-**D85 + D86** — `[HUMAN-RETEST]` starts with the Tracker, and the amendment system runs beside it in
-parallel. Recorded in `DECISIONS.md` and `OUTSTANDING.md` [HUMAN-RETEST].
-**D78–D84** (the docs guard's chat) — parallel chats merge one at a time and the later one renumbers
-(D78); four older rulings given numbers (D79–D82); step 4 done early (D83); a Leave War desktop
-timeout on GitHub gets ONE re-run of the failed group, not an investigation (D84).
-
-## Next: `[HUMAN-RETEST]`, two chats in parallel (D85, D86)
-
-One chat re-tests **the amendment system** (port 4173, rulings from
-D90), another in its own worktree re-tests **the Tracker** (port 4180, rulings from D120). Never
-two full gate runs at once. Whichever merges second brings `main` in first.
-
-## Queue after this
-
-`[HUMAN-RETEST]`, `[DOC-TRIM]`, `[DB-STEP]`. Filed from the window,
-none blocking: `[OIL-PERSONAL-PLACEHOLDER]`, `[CROWD-SIM-BRIEF]`, `[LW-MONTHJUMP-PHONE]`.
+Any push to a branch with an open PR re-runs the whole check set, even notes-only (D151's reason). Notes wait
+and ride along with the next real change or the merge; the merge itself earns one run on `main`.

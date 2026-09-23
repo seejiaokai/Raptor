@@ -2442,7 +2442,9 @@ mirror reuses `qualsHead`/`qualsGrpRow` (one source for the markup — no drift
 seam), sizes its columns from a colgroup of the live-measured header widths
 (`table-layout:fixed`) so they land over the grid's, and is its own thin
 horizontal scroller kept in lockstep with `.qwrap` (one-way grid → mirror, the
-Leave War fling lesson) so the frozen callsign column's own sticky-left works
+Leave War fling lesson — and placed before its first paint by a layout effect,
+23 Sep 26, pinned by "phone: the frozen header is in step with the table the
+moment it appears") so the frozen callsign column's own sticky-left works
 inside it. `z-index:55` sits under the top bar's 60. A click on a heading in the
 bar still sorts. Browser-only — jsdom has no layout, so the mirror never mounts
 there (`quals.test.tsx` pins its absence); the freeze is verified on the live
@@ -5838,7 +5840,18 @@ history; THIS block is the recipe to copy. Six pieces, in order:
    state, flipped by an IntersectionObserver / scroll measure). It pins just
    below the app top bar's lower edge. The real header stays in the grid; the
    mirror is a throwaway overlay that appears on freeze and unmounts on
-   scroll-back up.
+   scroll-back up. **It is PLACED BEFORE ITS FIRST PAINT** (owner's video,
+   23 Sep 26 — it flashed the start of the year, then jumped sideways): the
+   seeding is a layout effect, and in the `.lw-sda` path it also holds the
+   translated table with an inline translate until the animation's `ready`,
+   because a freshly created scroll-driven animation is not applied on its
+   creation frame; `lwx-follow` states its `from`, so the hold never blends
+   into it. **It RE-MEASURES whenever a column can have widened under it** —
+   any store change, the row window, folds, the manning rows, the Archive
+   (`widthGen`; value-checked, so free when nothing moved). Pinned by "the
+   frozen bar is in step with the grid the moment it appears" and "a column
+   that widens while the dates are frozen re-measures the frozen bar". Still
+   open: it arrives one frame after the real header leaves (`[LW-FROZEN-BAR-GAP]`).
 
 3. **The horizontal follow is COMPOSITOR-driven where the browser can, JS
    where it can't** — feature-gated, so nothing regresses on old browsers or in
@@ -6254,7 +6267,12 @@ The contract, in the order a reader meets it:
   hatch marks a placeholder for the beat before its month lands. A month's
   width is MEASURED once it has been drawn and kept by war+zoom
   (`monthPxRef`), so a pruned month's placeholder is exactly its width and
-  re-drawing it moves nothing; a month never yet drawn takes an estimate (the
+  re-drawing it moves nothing — while the rows are the ones it was measured
+  with: a row that widened some of its columns (a posted-out man's leave) and
+  has since left draws the month narrower, so every cached width is stamped
+  with the rows it was measured under (`widthGen`) and only a matching stamp
+  counts as exact (`widthExact`, [LW-MONTHJUMP-PHONE] 23 Sep 26 — a phone MAR
+  tap after SEP landed a day short); a month never yet drawn takes an estimate (the
   average day width × its days, `avgDayWRef`). Why this is safe where the 3
   Sep "no spacers" rule (22 distinct day-column widths) said it wasn't: an
   estimate's error only matters LEFT of the view, and such a month is never
@@ -6264,8 +6282,9 @@ The contract, in the order a reader meets it:
   This container has no WebKit, so the owner's iPhone is the gate for that.
 - **Months are drawn IN PLACE while the scroll is still moving** — growth
   only (`colwindow.ts stepAllowedInMotion`): to the RIGHT of the view always
-  (nothing on screen moves), to the LEFT only over a month whose width is
-  already measured (the swap is width-for-width, so nothing hops); a prune,
+  (nothing on screen moves), to the LEFT only over a month whose width was
+  measured under the rows on screen now (`widthExact` — the swap is then
+  width-for-width, so nothing hops); a prune,
   and a left grow over an estimated width, wait for scroll REST (the 120 ms
   idle), where the anchor correction (`anchorRef`) hides the shift. On a
   touch screen the in-motion left grow skips the anchor altogether — the

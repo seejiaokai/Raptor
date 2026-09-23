@@ -2512,7 +2512,15 @@
    max scrollLeft (--lwx-max, set from JS) across the grid's whole scroll range,
    so the bar's day columns ride the grid's own compositor scroll. See the
    `.lw-sda` rules above. */
+/* The `from` is stated, never left implicit (23 Sep 26): an implicit start
+   borrows the element's own transform, and Matrix.tsx holds the bar with an
+   INLINE translate for the one frame before the browser starts this animation
+   (so the bar's first frame is in step — the owner's video of it jumping). For
+   the frame the two overlapped, the animation blended from that held value and
+   the bar landed 1,819px off. With both ends fixed, the animation's answer is
+   −progress × travel whatever else sits on the element. */
 @keyframes lwx-follow {
+  from { transform: translateX(0px); }
   to { transform: translateX(calc(-1 * var(--lwx-max, 0) * 1px)); }
 }
 

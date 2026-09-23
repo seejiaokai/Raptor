@@ -125,12 +125,19 @@ function layoutYear(offset: number) {
   wrap.querySelector<HTMLElement>('.bal')!.getBoundingClientRect = rect(118, 44)
 
   // The columns AT REST: month N starts at N*300 in the scroller's content,
-  // and December's last day ends the content at 3600.
+  // and December's last day ends the content at 3600. A rectangle is where a
+  // column sits ON SCREEN, so — as in a browser — it moves left as the grid
+  // scrolls: read at call time, not fixed. (They used to be fixed, which was
+  // only right while the grid measured once, at rest, before the move. Since
+  // 23 Sep 26 the grid re-measures after any change that can widen a column —
+  // Astra LW-102 — so a fixed stub read after the move put every month 1800px
+  // off and the readout said FEB with the view on AUG.)
+  const onScreen = (left: number, width: number) => () => rect(left - wrap.scrollLeft, width)()
   const firsts = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
   firsts.forEach((mm, i) => {
-    screen.getByTestId(`head-2026-${mm}-01`).getBoundingClientRect = rect(i * 300, 41)
+    screen.getByTestId(`head-2026-${mm}-01`).getBoundingClientRect = onScreen(i * 300, 41)
   })
-  screen.getByTestId('head-2026-12-31').getBoundingClientRect = rect(3600 - 41, 41)
+  screen.getByTestId('head-2026-12-31').getBoundingClientRect = onScreen(3600 - 41, 41)
 
   if (!Object.getOwnPropertyDescriptor(wrap, 'scrollLeft')?.configurable) {
     let at = 0

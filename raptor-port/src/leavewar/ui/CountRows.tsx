@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent, RefCallback } from 'react'
 import type { DayVerdict } from '../engine'
 import { toggleManningRow } from '../state/store'
@@ -22,6 +22,7 @@ export function CountRows({
   padR,
   phL,
   phR,
+  onArchiveChange,
 }: {
   verdicts: Record<string, DayVerdict>
   dates: string[]
@@ -53,6 +54,10 @@ export function CountRows({
   padR?: boolean
   phL?: RefCallback<HTMLTableCellElement>
   phR?: RefCallback<HTMLTableCellElement>
+  /** Called once the Archive's rows have gone in or out of the DOM. They are
+   *  cells of the grid's own table, so they can change a day column's width —
+   *  Matrix re-measures on it (see there). Wired by Matrix. */
+  onArchiveChange?: () => void
 }) {
   const editing = arranging && admin
   // THE ARCHIVE (owner, 5 Sep 26 — "a row to open below the counter row that's
@@ -65,6 +70,18 @@ export function CountRows({
   // and it shuts again when Rearrange ends, so every visit starts closed.
   const [archiveOpen, setArchiveOpen] = useState(false)
   useEffect(() => { if (!editing) setArchiveOpen(false) }, [editing])
+  // ...but its rows ARE rows of the grid's table, and their numbers can widen a
+  // day column. The grid caches month widths and pins the frozen header's
+  // column widths, so it has to hear about it — without being re-rendered
+  // ([LW-MONTHJUMP-PHONE] review, Astra LW-101, 23 Sep 26). A layout effect, so
+  // the rows are already in (or out of) the DOM when the grid measures. Not on
+  // the first run: a block that mounts closed has changed nothing.
+  const archiveMountedRef = useRef(false)
+  useLayoutEffect(() => {
+    if (!archiveMountedRef.current) { archiveMountedRef.current = true; return }
+    onArchiveChange?.()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [archiveOpen])
 
   // `requirementFor` can swap in a wholly different rule set per date via
   // `overrides[date]` — nothing constrains an override's rules to the same
