@@ -60,12 +60,24 @@ You MUST complete each phase before proceeding to the next.
    - What are the exact steps?
    - Does it happen every time?
    - If not reproducible → gather more data, don't guess
+   - Run it several times and note WHERE it fails: the same spot every time
+     is deterministic (it depends on accumulated state), not flaky
+   - If it will not reproduce, stop re-running it. Instrument a PASSING run:
+     log the state the failing check depends on at each step. The mechanism
+     is present on every run; only the outcome varies
+   - Can't run the failing device or browser at all? See
+     `device-only-bugs.md`
 
 3. **Check Recent Changes**
    - What changed that could cause this?
    - Git diff, recent commits
    - New dependencies, config changes
    - Environmental differences
+   - Did YOUR last change cause it? A symptom that appears right after a fix
+     may be the fix's side effect on top of behaviour the app had on
+     purpose — ask what the user expected before removing a deliberate rule
+   - A cause someone else wrote down (a handoff, a review, an earlier chat)
+     is a hypothesis: trust the symptom, re-measure the mechanism
 
 4. **Gather Evidence in Multi-Component Systems**
 
@@ -124,6 +136,9 @@ You MUST complete each phase before proceeding to the next.
 1. **Find Working Examples**
    - Locate similar working code in same codebase
    - What works that's similar to what's broken?
+   - "This looks different" on screen: read the element's computed style and
+     diff it against a neighbour that looks right, before theorising from
+     the screenshot
 
 2. **Compare Against References**
    - If implementing pattern, read reference implementation COMPLETELY
@@ -274,6 +289,25 @@ If systematic investigation reveals issue is truly environmental, timing-depende
 
 **But:** 95% of "no root cause" cases are incomplete investigation.
 
+**"Flaky" is a hypothesis, never a diagnosis.** Never paper over an
+uninvestigated flaky TEST or check with a retry or a longer timeout — that
+hides the mechanism. The handling above (a bounded retry, monitoring) is for a
+genuinely external condition in the product itself, once the investigation has
+proven one. For a flaky check, ask first:
+- What does the check assert that the system does not promise? A background
+  loop, a timer or a deferred write racing the assertion makes the outcome
+  depend on how fast the runner is.
+- What leaked between runs? A server a failed run never stopped holds its
+  port and fails the next run; the pile-up looks random.
+- Did it start right after a timing change? Then it is that change's bug
+  announcing itself.
+
+A failure that moves between runs, lies outside your change and passes on its
+own is a hypothesis that it is not yours — not an exoneration: your change
+can leak a timer, a global or a server into whichever test runs next. Compare
+the same run on the code before your change (or CI), and name the mechanism,
+before calling it unrelated. Either way, record it — it is still a defect.
+
 ## Supporting Techniques
 
 These techniques are part of systematic debugging and available in this directory:
@@ -281,3 +315,8 @@ These techniques are part of systematic debugging and available in this director
 - **`root-cause-tracing.md`** - Trace bugs backward through call stack to find original trigger
 - **`defense-in-depth.md`** - Add validation at multiple layers after finding root cause
 - **`condition-based-waiting.md`** - Replace arbitrary timeouts with condition polling
+- **`device-only-bugs.md`** - Bugs you cannot reproduce here: phone-only, or seen only in a recording
+
+**Performance problems:** name no cause before measuring. This project's
+method and its measured dead ends are in `raptor-port/docs/performance.md`
+("measure first", "Dead ends") — read them before proposing a fix.

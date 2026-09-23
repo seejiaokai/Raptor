@@ -383,10 +383,10 @@ browser-proven.
   against the Vercel preview; if the grid ever misaligns there, the revert is
   one commit. This is why the device pass below is his, not something CI closes.
 
-- **The observer log is committed** at `.claude/skill-observations/log.md` (it
-  now carries entries through #124, landed across the merged PRs), so it
-  survives the container. Its weekly review is overdue whenever the owner wants
-  one.
+- **The observer log is committed** at `.claude/skill-observations/log.md` — the
+  ONE log, never a second outside the repo. Reviewed 23 Sep 26 (D71): 178
+  resolved notes moved to `archive/`, 4 still open. How reviews run here:
+  `.claude/skills/TASK-OBSERVER-VENDORED.md` §Reviews in this repo.
 
 
 ## Open / deferred / queued
@@ -916,7 +916,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `scripts/handpass/` | **The walk's driver and every scenario script**, committed on purpose so the next session re-runs a finding instead of rediscovering it. `lib.mjs` is the driver (open/board/tap/type/put/publish/oilMode/go, and it REFUSES a saved world captured on another port rather than silently restoring an empty one); `seat-lib.mjs` adds the roll-call helpers. Run from that folder with `HP_STATE` and `HP_SHOTS` set. |
 | `docs/mock/` | **Approved visual designs of record**, in the app's own stylesheet so they are pixel-faithful — not sketches to argue with. `allavail-window.html` is D41's approved design for `[ALL-AVAIL-WINDOW]`. The house rule (owner, 7 Aug 26) is that a visual direction gets a picture before any product code. |
 | `docs/probe-sweep.md` | The full probe → reference → port results table, and the performance gate's reasoning. |
-| `../BUG-TESTING.md` (repo ROOT, beside this file) | **The bug-testing tracker (27 Aug 26)** — one row per shipped batch, ⬜ / 🟡 / ✅, so the owner can have bug testing done batch by batch and nothing is missed. Answers only "what has been bug-tested, and what still needs it?"; open WORK stays in `HANDOFF.md` and the story of each change stays in `git log`. It also carries the passes-on-record table (what each sweep actually covered) and a risk-ordered queue whose Tier 1 is the silent-failure work — engine, roles, dates, saved data. **Every behaviour PR adds its row**; docs-only PRs are listed at the foot as needing no pass. Record a CLEAN pass too — otherwise "not yet tested" and "tested, all good" look identical. |
+| `../BUG-TESTING.md` (repo ROOT, beside this file) | **RETIRED 23 Sep 26 (owner, D72)** — the old batch-by-batch bug-testing list (27 Aug 26), kept as history only: nothing adds rows to it and no handoff checks it (it had not been kept since 10 Sep). Each change's bug check is now recorded in its evidence sheet under `docs/handpass/` (the standing order, `docs/bug-check-order.md`), and re-testing older features is `[HUMAN-RETEST]` in `../OUTSTANDING.md`. |
 | `docs/feature-impact.md` | The surfaces any change can touch (warnings, layout, history, board, edit/view-only, desktop/mobile, quals, availability, publishing, export, roles), the generic FLOWS one edit travels, and the drift-seams where two copies of a rule fall out of step (owner, 12 Aug 26). Walk every non-trivial change against it, and keep it true in the same PR. |
 | `docs/remarks-vocabulary.md` | Every piece of text a scheduler can TYPE that turns a rule on — the seat tags, AAR, late show, IRT, the sim brief lead — plus the things that look like text triggers and are not. Written in a user guide's voice, for the guide the owner wants (10 Aug 26). A new text trigger belongs here as well as in `engine-rules.md`. |
 | `docs/superpowers/specs/leavewar-sync.md` | The Leave War ⇄ Raptor sync DESIGN (16 Aug 26, spec only): wire 0 roster unification, wires 1–2 approved-leave⇄input both ways on the existing `ingestFromRaptor`/`outboundToRaptor` primitives, wire 3 counters (derived — the wire IS the decrement), wire 4 the owner's OIL rule (as designed: SC lines + duty rows from written timings, VCONF-editable thresholds, FS/HS credits — since renamed FO/HO and reworked 28 Aug 26 to one uniform threshold over a widened set plus the input ask-flow, the measure corrected 29 Aug 26 to the day's start-to-finish envelope; the file's status block carries the built shape and the rework record). Build sync work FROM this file. |

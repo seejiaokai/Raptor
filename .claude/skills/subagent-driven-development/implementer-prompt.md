@@ -47,6 +47,16 @@ Subagent (general-purpose):
     While iterating, run the focused test for what you're changing; run the
     full suite once before committing, not after every edit.
 
+    The brief is the requirement, but check it against the code it touches:
+    - A number the brief expects that disagrees with what you measure: report
+      it (DONE_WITH_CONCERNS). Never bend the code or the test to match.
+    - A test the brief specifies that cannot reach the code it claims to pin
+      (a loop bound, a fixture that skips the branch): fix the test and report
+      the deviation — a test that passes without reaching its target proves
+      nothing.
+    - Code in the brief that replaces lines holding a type or shape guard:
+      keep the guard unless the brief says why it goes.
+
     ## Code Organization
 
     You reason best about code you can hold in context at once, and your edits are more
@@ -122,6 +132,7 @@ Subagent (general-purpose):
       - RED: command run, relevant failing output before implementation, and why the failure was expected
       - GREEN: command run and relevant passing output after implementation
     - Files changed
+    - Every test you deleted or rewrote, by file and title
     - Self-review findings (if any)
     - Any issues or concerns
 

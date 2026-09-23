@@ -213,6 +213,14 @@ act of memory.
    the race. The pattern for shared logs written by parallel agents is
    check-then-act-then-verify.
 
+4. *Parallel branches are parallel writers.* A log kept in a repository has
+   one counter per branch, and the pre-check above sees only yours. Number
+   past any entries you know exist on other open branches (your own or a
+   sibling session's) and say so in the entry. When two branches' logs meet
+   at a merge, keep one side's entries as they are and re-append the other
+   side's new entries at the end with fresh numbers, correcting any
+   cross-reference to them.
+
 **Log-write safety — never let a mutation span entry boundaries:** When
 mutating the log programmatically (marking entries ACTIONED/DECLINED,
 archiving, renumbering), a greedy or DOTALL pattern over the whole file can
@@ -429,6 +437,12 @@ creation: load `references/skill-authoring.md` first and follow its editing
 and staging rules. If an observation reveals a principle that applies to
 skills generally, propose it for the cross-cutting principles file (see the
 same reference).
+
+**Close it where you apply it.** Whenever an observation's lesson lands
+anywhere — a skill, a project doc, a rules file, by you or at the user's
+request mid-task — mark that entry ACTIONED in the same change, naming where
+it went. A lesson applied but left OPEN reads as open work, gets logged again
+by the next session that meets it, and turns the next review into a search.
 
 ## Quick Reference
 

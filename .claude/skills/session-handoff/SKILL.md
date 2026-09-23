@@ -15,12 +15,11 @@ plain-language and complete.
 
 ## Step 1 — decide whether a file is warranted
 
-This project ships once per session, at the end (PR → merge → deploy —
-`CLAUDE.md` §How to work here, owner 10 Aug 26; it used to ship every green
-change as it landed). So the shipment normally happens just BEFORE this skill
-runs, and most sessions still end with nothing in flight — but the one PR now
-carries the whole session, which makes "did it merge" the single question that
-decides everything below. Check first, then branch:
+Work accumulates on the session's branch and reaches `main` only on the
+owner's "merge live" (`CLAUDE.md` §How to work here; D60 — pushing the branch
+needs no permission, `main` always does). So most sessions end with the branch
+pushed and waiting for him — the normal end state, not unfinished business
+(below). Check first, then branch:
 
 - **Nothing unfinished** → say so in chat, two lines, and write no file. The
   repo and `git log` already tell the next session everything it needs. A
@@ -87,12 +86,15 @@ session needs the pointer — never as the reason the file exists.
    (Nate's original skill forbids git here. That is right for a persistent
    local machine and wrong for us: the next session cannot read this chat but
    can read git, so git is the reliable half of the handoff.)
-3. **GitHub** — PR numbers and whether they merged, whether the Pages deploy
-   went green, any PR left under watch. Two channels exist since 15 Aug 26
-   (`CLAUDE.md` §Build & verify): the ungated **Vercel** per-branch preview for
-   fast cross-device review, and **GitHub Pages** as the official gated site.
-   "Deploy went green" still means Pages — a preview is not a ship.
-4. **Plan file**, if one drove the session (`/root/.claude/plans/*.md`).
+3. **GitHub** — each PR's number and state, READ now, whether its checks
+   passed, and any PR left under watch. The owner merges between sessions, so
+   the file records merge state as "PR #N — open when this was written; check
+   before acting", never as a bare "not merged" the next session will trust.
+   The app is viewed on **Vercel** (a link per branch). The old GitHub Pages
+   site was switched off on 23 Sep 26 (D59) — there is no Pages deploy to
+   report.
+4. **Plan file**, if one drove the session (the harness's `plans/` folder:
+   `~/.claude/plans/` on a desktop, `/root/.claude/plans/` in a web container).
 
 Nothing further — no broad Glob sweeps, no filesystem audit. If you did not
 touch it this session, it does not belong in the handoff. (Step 3's check is
@@ -110,17 +112,22 @@ This is a **bounded** check, not the filesystem audit Step 2 rules out. One
 command, over this session's diff only:
 
 ```
-git diff --name-status <session-start-commit>...origin/main
+git diff --name-status <session-start-commit>...HEAD
 ```
 
-**`origin/main...HEAD` is the WRONG range here, and it fails silently.** This
-project merges before the handoff runs (Step 1), so by the time you get here
-`HEAD` and `origin/main` are usually the same commit — that diff is empty and
-the check reports a clean bill on a session that added three files. Use the
-commit the session STARTED from, which is the parent of your first commit:
-`git log --oneline -8` will show it, or take it from the merge you just made.
-Corrected 11 Aug 26, after the empty-range version would have passed a session
-that had added two test files and moved four numbers.
+**The range must start at the commit the session STARTED from and end at your
+own `HEAD`** — the parent of your first commit (`git log --oneline -8` shows
+it). Both wrong ranges fail silently, reporting a clean bill on a session that
+added files: `origin/main...HEAD` was empty back when sessions merged before
+the handoff (11 Aug 26), and `<start>...origin/main` is empty now that work
+waits on the branch for "merge live" — the session's commits are not on
+`main` yet (corrected 23 Sep 26).
+
+**If a merge to `main` happened this session** — yours or the owner's —
+re-read the WHOLE §In flight section of `HANDOFF.md` and reconcile every entry
+against `git log origin/main`, not only the entries this session's diff
+touched. A "current state" section must hold nothing already done, and the
+staleness an earlier session left sits in lines your diff never touched.
 
 For each path it reports, confirm — by reading `HANDOFF.md`, not from
 memory:
@@ -186,14 +193,16 @@ stable structure is the point.
 <2-3 sentences: what the owner asked for, constraints that emerged>
 
 ## Shipped
-- <change> — PR #<n>, merged/open, deploy green/red/pending
+- <change> — PR #<n>, state when written: open/merged; checks green/red
 
 ## Unfinished
 - <item> — <what state it is in, what is left to do>
 
 ## Branch state
+- Before acting on anything in this file: `git fetch`, and check the branch
+  and PR states it names — it describes the world when it was written.
 - Designated branch: `claude/<name>`
-- Its PR is <merged / open #n / none>.
+- Its PR: <#n, open or merged when written / none>.
 - If MERGED, the next session must reset before starting new work:
   `git fetch origin main && git checkout -B <branch> origin/main`
   Otherwise it stacks commits onto already-merged history.

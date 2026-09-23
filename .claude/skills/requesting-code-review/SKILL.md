@@ -29,6 +29,16 @@ BASE_SHA=$(git rev-parse HEAD~1)  # or origin/main
 HEAD_SHA=$(git rev-parse HEAD)
 ```
 
+Before dispatching, make sure the diff is content, not noise. On a Windows
+checkout a tool that rewrites a whole file can flip its line endings, and the
+diff then reads as a total rewrite that buries the real change. Compare the
+two stats; a file far larger in the first has flipped — restore its endings
+(a binary-safe rewrite, not `sed`) before anyone reads the diff:
+```bash
+git diff --stat $BASE_SHA..$HEAD_SHA
+git diff --ignore-cr-at-eol --stat $BASE_SHA..$HEAD_SHA
+```
+
 **2. Dispatch code reviewer subagent:**
 
 Dispatch a `general-purpose` subagent, filling the template at [code-reviewer.md](code-reviewer.md)

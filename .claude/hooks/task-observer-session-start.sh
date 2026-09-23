@@ -25,11 +25,12 @@ are captured throughout the session. When loading any skill, also check the
 observation log for OPEN observations tagged to it and apply their insights even
 if the skill file has not been updated yet.
 
-Persistence note: this repo's web/phone sessions run in an ephemeral container
-with no stable workspace folder, so the observation log will not survive on its
-own — use the skill's handoff-doc mode (references/environments.md) and offer the
-handoff as the session winds down, or commit the log into the repo if it should
-persist. Provenance/opt-out: .claude/skills/TASK-OBSERVER-VENDORED.md.
+Log location, pinned for this repo: the ONE observation log is
+.claude/skill-observations/log.md, committed with the work — on every device
+and in web sessions alike. Never create another under
+~/.claude/projects/.../skill-observations/ (the skill's default path): no review
+ever sees it. How reviews run here, and provenance/opt-out:
+.claude/skills/TASK-OBSERVER-VENDORED.md.
 </task-observer-activation>
 EOF
 

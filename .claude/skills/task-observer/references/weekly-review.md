@@ -118,9 +118,14 @@ configuration.
 
 **Step 3 — cross-check observations.** Evaluate every OPEN observation
 against every skill — not just the skill named in its header; Principles
-often generalise. Build skill → [relevant observations]. Interactive:
-present all of it and await approval. Autonomous: apply the approval policy
-above and continue.
+often generalise. Also search the project's own docs and rule files for each
+lesson: sessions often fix a lesson where it hurt and leave its entry OPEN,
+and a lesson already written there is closed as "already reflected", not
+copied into a skill. Where skills are vendored or read-only, settle once —
+and record where the next review will read it — where lessons land (fork with
+a register of local changes, a companion skill, or project docs). Build skill
+→ [relevant observations]. Interactive: present all of it and await approval.
+Autonomous: apply the approval policy above and continue.
 
 **Step 4 — cross-check principles.** Flag every skill that doesn't yet
 comply with each active cross-cutting principle.

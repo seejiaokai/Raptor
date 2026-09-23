@@ -1,5 +1,10 @@
 # RAPTOR — bug-testing tracker
 
+> **RETIRED 23 Sep 26 (owner, D72). Kept as history only — do not add rows.** It had not
+> been kept since 10 Sep. Each change's bug check is now recorded in its evidence sheet under
+> `raptor-port/docs/handpass/` (the standing order, `raptor-port/docs/bug-check-order.md`), and
+> re-testing older features is `[HUMAN-RETEST]` in `OUTSTANDING.md`.
+
 A running list of **every shipped batch**, so full bug-testing can be done
 **batch by batch** and nothing is missed. Who built a batch doesn't matter
 here — every batch gets checked.

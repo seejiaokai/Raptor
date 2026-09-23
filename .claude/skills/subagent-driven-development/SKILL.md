@@ -57,7 +57,9 @@ digraph process {
         "Generate review package, dispatch task reviewer (./task-reviewer-prompt.md)" [shape=box];
         "Spec ✅ and quality approved?" [shape=diamond];
         "Finding conflicts with plan text?" [shape=diamond];
+        "Does that plan text record a decision (a chosen behaviour or trade-off)?" [shape=diamond];
         "Ask human partner which governs" [shape=box];
+        "Rule for the stated intent; fix corrects plan/spec text; ledger the evidence" [shape=box];
         "Fix round R of 5: R≤3 resume implementer; R≥4 fresh implementer, more capable model" [shape=box];
         "Dispatch scoped re-review (./re-review-prompt.md)" [shape=box];
         "All findings addressed?" [shape=diamond];
@@ -85,8 +87,11 @@ digraph process {
     "Generate review package, dispatch task reviewer (./task-reviewer-prompt.md)" -> "Spec ✅ and quality approved?";
     "Spec ✅ and quality approved?" -> "Append completion to ledger, mark todo complete" [label="yes"];
     "Spec ✅ and quality approved?" -> "Finding conflicts with plan text?" [label="no"];
-    "Finding conflicts with plan text?" -> "Ask human partner which governs" [label="yes"];
+    "Finding conflicts with plan text?" -> "Does that plan text record a decision (a chosen behaviour or trade-off)?" [label="yes"];
+    "Does that plan text record a decision (a chosen behaviour or trade-off)?" -> "Ask human partner which governs" [label="yes"];
+    "Does that plan text record a decision (a chosen behaviour or trade-off)?" -> "Rule for the stated intent; fix corrects plan/spec text; ledger the evidence" [label="no - a technical premise the finding disproves"];
     "Ask human partner which governs" -> "Fix round R of 5: R≤3 resume implementer; R≥4 fresh implementer, more capable model";
+    "Rule for the stated intent; fix corrects plan/spec text; ledger the evidence" -> "Fix round R of 5: R≤3 resume implementer; R≥4 fresh implementer, more capable model";
     "Finding conflicts with plan text?" -> "Fix round R of 5: R≤3 resume implementer; R≥4 fresh implementer, more capable model" [label="no"];
     "Fix round R of 5: R≤3 resume implementer; R≥4 fresh implementer, more capable model" -> "Dispatch scoped re-review (./re-review-prompt.md)";
     "Dispatch scoped re-review (./re-review-prompt.md)" -> "All findings addressed?";
@@ -136,6 +141,18 @@ a ledger file, not only in todos.
 - The ledger is your recovery map: the commits it names exist in git even
   when your context no longer remembers creating them. After compaction,
   trust the ledger and `git log` over your own recollection.
+- A ledger line says "pushed" only after the push result is read, and any
+  statement about commit or push state — in the ledger or to your human
+  partner — is read from git (`git status -sb`) in the same turn. A
+  remembered push is a guess.
+- Background implementers leave the tree dirty for minutes. If a hook or
+  reminder nags about uncommitted or unpushed work at a turn boundary, triage
+  by git state: HEAD moved and tree clean → push; the tree holds a running
+  helper's files → wait for its completion. Never commit a tree a helper is
+  still writing.
+- If your human partner switches to plan mode or says stop, stop every
+  running helper that can write, check `git status`, undo partial edits, and
+  re-dispatch with the same brief after approval.
 - `git clean -fdx` will destroy the workspace (it's git-ignored scratch); if
   that happens, recover from `git log`.
 
@@ -147,6 +164,9 @@ Before dispatching Task 1, scan the plan once for conflicts:
 - tasks that contradict each other or the plan's Global Constraints
 - anything the plan explicitly mandates that the review rubric treats as a
   defect (a test that asserts nothing, verbatim duplication of a logic block)
+- a plan that defers every browser check to its last task — each task that
+  changes the screen should run the check that can see it
+- a code block that replaces existing lines and drops a guard they had
 
 Present everything you find to your human partner as one batched question —
 each finding beside the plan text that mandates it, asking which governs —
@@ -214,6 +234,16 @@ and fix-round diffs need it.
   (5) the report-file path and report contract. Exact values (numbers,
   magic strings, signatures, test cases) appear only in the brief. Never
   make a subagent read the whole plan file.
+- **What the brief must also carry:** the plan's Global Constraints —
+  `scripts/task-brief` writes the plan's Goal, Architecture and Global
+  Constraints at the top of every brief; glance at the printed brief to
+  confirm they are there. And add to the dispatch what no test name reveals:
+  the ordering contracts of the code being changed ("this command raises its
+  dialog before its first await, so a guard here must be synchronous").
+- **Machine rules, whenever you run gates while helpers work:** say which
+  suites, ports and folders you own; helpers run only named test files, in
+  the foreground, one at a time, and never re-run a suite they already
+  started. An agent cannot see another's intent, only its side effects.
 - **Report file:** name the implementer's report file after the brief
   (brief `…/task-N-brief.md` → report `…/task-N-report.md`) and put it in
   the dispatch prompt. The implementer writes the full report there and
@@ -227,7 +257,11 @@ and fix-round diffs need it.
   a pointer to that ledger entry in the dispatch.
 - Record the implementer's agent identity from the dispatch result —
   fix-loop rounds 1-3 resume this agent.
-- Never dispatch multiple implementation subagents in parallel (conflicts).
+- Never dispatch multiple implementation subagents in parallel on
+  overlapping files (conflicts). What is safe: a read-only reviewer beside the
+  next implementer, always; a second implementer only on a provably separate
+  set of files — counting, for a task whose review is still open, the files
+  its fix round may touch.
 
 Template: [implementer-prompt.md](implementer-prompt.md)
 
@@ -237,7 +271,7 @@ Implementer subagents report one of four statuses. Handle each appropriately:
 
 **DONE:** Generate the review package (`scripts/review-package PLAN_FILE BASE HEAD`, from this skill's directory — it prints the unique file path it wrote; BASE is the commit you recorded before dispatching the implementer — never `HEAD~1`, which silently drops all but the last commit of a multi-commit task), then dispatch the task reviewer with the printed path.
 
-**DONE_WITH_CONCERNS:** The implementer completed the work but flagged doubts. Read the concerns before proceeding. If the concerns are about correctness or scope, address them before review. If they're observations (e.g., "this file is getting large"), note them and proceed to review.
+**DONE_WITH_CONCERNS:** The implementer completed the work but flagged doubts. Read the concerns before proceeding. If the concerns are about correctness or scope, address them before review. If they're observations (e.g., "this file is getting large"), note them and proceed to review. A concern that names a requirement the implementer left undone ("beyond the brief — their call") is neither: resume the implementer to finish it before the review, and review the combined diff. An implementer whose measured value disagrees with a number in the brief reports it here; neither the code nor the test is bent to match silently. You settle it: check the measured value against the fixture, correct the brief and the plan, and ledger it — a number is yours to verify, never a question for your human partner.
 
 **NEEDS_CONTEXT:** The implementer needs information that wasn't provided. Provide the missing context and re-dispatch.
 
@@ -310,12 +344,20 @@ Before the loop starts, two routes leave it immediately:
   (`Task <N>: minor (deferred): <one-liner>`), and point the final
   whole-branch review at that list so it can triage which must be fixed
   before merge. A roll-up nobody reads is a silent discard. Minor findings
-  never enter the loop.
+  never trigger or extend a round; they may only ride one that is already
+  open (see "What rides along" below).
 - A finding labeled plan-mandated — or any finding that conflicts with
   what the plan's text requires — is the human's decision, like any plan
   contradiction: present the finding and the plan text, ask which governs.
   Do not dismiss the finding because the plan mandates it, and do not
   dispatch a fix that contradicts the plan without asking.
+  **Escalate decisions, not premises.** That rule is for plan text that
+  records a CHOICE (a behaviour, a trade-off). When the plan text rests on a
+  technical premise the finding proves false, and the design's intent is
+  stated elsewhere, rule for the intent yourself: the fix round also corrects
+  the plan/spec sentence, and the ledger records your ruling with its
+  evidence. A question your human partner cannot answer in their own terms is
+  not their decision.
 Everything else enters the loop. A fix round is one fix dispatch plus one
 scoped re-review. Five rounds maximum per task:
 
@@ -340,8 +382,27 @@ output; dispatch the re-review once all three are present. Name the
 covering test files in the fix message — a one-line fix does not need the
 whole suite.
 
+**What rides along, and what a fix brief must say:**
+- Minor findings never TRIGGER a round, but when a round is open anyway, send
+  that task's ledgered minors with it under a separate "optional, not
+  blocking" heading; the re-review verdicts them ADDRESSED or DEFERRED without
+  extending the loop. The implementer who still holds the context fixes them
+  in minutes.
+- Two findings of one class: state the rule they break and have the round fix
+  every place it applies, not the two named sites (receiving-code-review).
+- "Delete X and what depends on it": build the dependents by tracing what
+  reads X and what those write — never from a name two features happen to
+  share — and write into the brief what STAYS beside what goes.
+- A round that changes a value or behaviour an earlier round documented
+  re-reads every sentence about that behaviour. Search for the old
+  behaviour's wording, not only the number: prose describes effects, so a
+  search for the constant finds nothing.
+
 **The re-review is scoped.** Run `scripts/review-package PLAN_FILE FIX_BASE HEAD`
-where FIX_BASE is the head the previous review saw, and dispatch
+where FIX_BASE is the head the previous review saw — or, when other work's
+commits landed in between, the commit just before the fix's first commit,
+named in the ledger (otherwise the re-review reads someone else's diff) — and
+dispatch
 [re-review-prompt.md](re-review-prompt.md) with the findings list, the
 brief, the report file, and the printed diff path. The re-reviewer verdicts
 each finding ADDRESSED or NOT ADDRESSED and flags new breakage in the fix
@@ -400,6 +461,13 @@ requesting-code-review's
 [code-reviewer.md](../requesting-code-review/code-reviewer.md). Point it at
 the ledger's deferred-minor and parked lines so it can triage which must be
 fixed before merge.
+
+Before dispatching it, compare the branch with the plan's explicit
+instructions ("remove X", "add Y") and list every one the build did not
+follow, with its reason, in the ledger and in the review brief. A "better
+idea" that arrived mid-build is a surfaced decision, not something the
+reviewer has to discover — the plan's review often priced that alternative
+already.
 
 If the final whole-branch review returns findings, dispatch ONE fix subagent
 with the complete findings list — not one fixer per finding.

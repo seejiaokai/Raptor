@@ -75,6 +75,15 @@ Subagent (general-purpose):
     Warnings or other noise in the implementer's reported test output are
     findings — test output should be pristine.
 
+    Two things in the report are findings, not footnotes: a new test that
+    was green BEFORE the implementation (it may be vacuous, on the wrong
+    fixture, or testing something already built — the report must say
+    which), and a deleted or rewritten test the brief did not name. When a
+    new test file switches shared state (a loaded period, a global), running
+    one of its tests on its own is the specific doubt that justifies a
+    focused run: a leaked switch can leave later tests passing on an empty
+    fixture.
+
     ## Part 1: Spec Compliance
 
     Compare the diff against What Was Requested:
