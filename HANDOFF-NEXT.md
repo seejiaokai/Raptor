@@ -3,7 +3,8 @@
 ## The Tracker `[HUMAN-RETEST]` — PAUSED (D155) on `claude/tracker-human-retest-8d3411` (not merged)
 
 **Paused by the owner, 23 Sep 26 (D155): the demo video comes first.** Resume from this section when
-he says so — merge `main` in first, as below.
+he says so — merge `main` in first, as below. (D155 itself is recorded on `main` by the Leave War chat;
+this branch's copy was dropped so the merge brings in one row, not two.)
 
 **FIRST, merge `main` into this branch (D78):** the Leave War's PR #428 merged at 16:56 (`87e9f0d6`;
 rulings on main run to D154 — no clash with D120–D124). Its `playwright.config.ts` hunk is
