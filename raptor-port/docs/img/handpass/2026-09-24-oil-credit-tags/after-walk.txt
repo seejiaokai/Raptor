@@ -1,0 +1,102 @@
+
+=== after · desktop ===
+  Saturday 18 Jul signed and published through the screen
+  (no grid cell for Fable 18 Jul in view)
+  credited through the bar: Drifter +1 given by a 40-character name; Wolf +1 with no giver
+  Fable automatic box: oil-entry-plasma-auto:0:2026-07-18
+  opens at zoom 1
+  picture: after-desktop-sheet-default.png
+  zoom 0.6: Fable box {"w":90,"h":44,"l1":"+1@5,2 | 18 Jul@17,4 | Auto@67,4 | Weekend/PH@46,13"}
+  zoom 0.6: Drifter long-giver box {"w":90,"h":52,"l1":"+1@5,2 | 24 Sep@17,4 | OC Ops, on behalf of the Commanding Offr@5,13"}
+  zoom 0.6: cut text = none
+  picture: after-desktop-fable-z0.6.png
+  picture: after-desktop-drifter-z0.6.png
+  zoom 0.8: Fable box {"w":120,"h":58,"l1":"+1@6,3 | 18 Jul@23,4 | Auto@89,5 | Weekend/PH@62,17"}
+  zoom 0.8: Drifter long-giver box {"w":120,"h":69,"l1":"+1@6,3 | 24 Sep@23,4 | OC Ops, on behalf of the Commanding Offr@6,17"}
+  zoom 0.8: cut text = none
+  picture: after-desktop-fable-z0.8.png
+  picture: after-desktop-drifter-z0.8.png
+  zoom 1: Fable box {"w":150,"h":72,"l1":"+1@8,4 | 18 Jul@28,6 | Auto@112,7 | Weekend/PH@78,21"}
+  zoom 1: Drifter long-giver box {"w":150,"h":87,"l1":"+1@8,4 | 24 Sep@28,6 | OC Ops, on behalf of the Commanding Offr@8,21"}
+  zoom 1: cut text = none
+  picture: after-desktop-fable-z1.png
+  picture: after-desktop-drifter-z1.png
+  zoom 1.2: Fable box {"w":180,"h":87,"l1":"+1@10,5 | 18 Jul@34,7 | Auto@134,8 | Weekend/PH@94,25"}
+  zoom 1.2: Drifter long-giver box {"w":180,"h":104,"l1":"+1@10,5 | 24 Sep@34,7 | OC Ops, on behalf of the Commanding Offr@10,25"}
+  zoom 1.2: cut text = none
+  picture: after-desktop-fable-z1.2.png
+  picture: after-desktop-drifter-z1.2.png
+  zoom 1.4: Fable box {"w":210,"h":101,"l1":"+1@11,6 | 18 Jul@40,9 | Auto@157,10 | Weekend/PH@110,29"}
+  zoom 1.4: Drifter long-giver box {"w":210,"h":121,"l1":"+1@11,6 | 24 Sep@40,9 | OC Ops, on behalf of the Commanding Offr@11,29"}
+  zoom 1.4: cut text = none
+  picture: after-desktop-fable-z1.4.png
+  picture: after-desktop-drifter-z1.4.png
+  picture: after-desktop-row-ammo.png
+  picture: after-desktop-row-slash.png
+  picture: after-desktop-row-casper.png
+  picture: after-desktop-row-shrek.png
+  picture: after-desktop-row-bruise.png
+  picture: after-desktop-row-wolf.png
+  archive open: cut text = []
+  picture: after-desktop-archive-drifter.png
+  expiry 6 months, archive open: expired boxes = 8; cut text = []
+  picture: after-desktop-expired-prowler.png
+  picture: after-desktop-editing-grant.png
+  picture: after-desktop-noting-award.png
+  (the sheet closed on the role switch; reopened)
+  member view: rows 50, boxes 33, reason buttons 0; cut text = []
+  picture: after-desktop-member-fable.png
+  picture: after-desktop-member-ammo.png
+  page scrolls sideways: false
+  errors: none
+
+=== after · phone ===
+  Saturday 18 Jul signed and published through the screen
+  (no grid cell for Fable 18 Jul in view)
+  credited through the bar: Drifter +1 given by a 40-character name; Wolf +1 with no giver
+  Fable automatic box: oil-entry-plasma-auto:0:2026-07-18
+  opens at zoom 0.8
+  picture: after-phone-sheet-default.png
+  zoom 0.6: Fable box {"w":79,"h":44,"l1":"+1@5,2 | 18 Jul@17,4 | Auto@56,4 | Weekend/PH@36,13"}
+  zoom 0.6: Drifter long-giver box {"w":79,"h":52,"l1":"+1@5,2 | 24 Sep@17,4 | OC Ops, on behalf of the Commanding Offr@5,13"}
+  zoom 0.6: cut text = none
+  picture: after-phone-fable-z0.6.png
+  picture: after-phone-drifter-z0.6.png
+  zoom 0.8: Fable box {"w":106,"h":58,"l1":"+1@6,3 | 18 Jul@23,4 | Auto@75,5 | Weekend/PH@48,17"}
+  zoom 0.8: Drifter long-giver box {"w":106,"h":69,"l1":"+1@6,3 | 24 Sep@23,4 | OC Ops, on behalf of the Commanding Offr@6,17"}
+  zoom 0.8: cut text = none
+  picture: after-phone-fable-z0.8.png
+  picture: after-phone-drifter-z0.8.png
+  zoom 1: Fable box {"w":132,"h":72,"l1":"+1@8,4 | 18 Jul@28,6 | Auto@94,7 | Weekend/PH@60,21"}
+  zoom 1: Drifter long-giver box {"w":132,"h":87,"l1":"+1@8,4 | 24 Sep@28,6 | OC Ops, on behalf of the Commanding Offr@8,21"}
+  zoom 1: cut text = none
+  picture: after-phone-fable-z1.png
+  picture: after-phone-drifter-z1.png
+  zoom 1.2: Fable box {"w":158,"h":87,"l1":"+1@10,5 | 18 Jul@34,7 | Auto@113,8 | Weekend/PH@72,25"}
+  zoom 1.2: Drifter long-giver box {"w":158,"h":104,"l1":"+1@10,5 | 24 Sep@34,7 | OC Ops, on behalf of the Commanding Offr@10,25"}
+  zoom 1.2: cut text = none
+  picture: after-phone-fable-z1.2.png
+  picture: after-phone-drifter-z1.2.png
+  zoom 1.4: Fable box {"w":185,"h":101,"l1":"+1@11,6 | 18 Jul@40,9 | Auto@132,10 | Weekend/PH@85,29"}
+  zoom 1.4: Drifter long-giver box {"w":185,"h":121,"l1":"+1@11,6 | 24 Sep@40,9 | OC Ops, on behalf of the Commanding Offr@11,29"}
+  zoom 1.4: cut text = none
+  picture: after-phone-fable-z1.4.png
+  picture: after-phone-drifter-z1.4.png
+  picture: after-phone-row-ammo.png
+  picture: after-phone-row-slash.png
+  picture: after-phone-row-casper.png
+  picture: after-phone-row-shrek.png
+  picture: after-phone-row-bruise.png
+  picture: after-phone-row-wolf.png
+  archive open: cut text = []
+  picture: after-phone-archive-drifter.png
+  expiry 6 months, archive open: expired boxes = 8; cut text = []
+  picture: after-phone-expired-prowler.png
+  picture: after-phone-editing-grant.png
+  picture: after-phone-noting-award.png
+  (the sheet closed on the role switch; reopened)
+  member view: rows 50, boxes 33, reason buttons 0; cut text = []
+  picture: after-phone-member-fable.png
+  picture: after-phone-member-ammo.png
+  page scrolls sideways: false
+  errors: none

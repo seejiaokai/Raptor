@@ -186,4 +186,4 @@ async function run(kind) {
 
 const which = process.argv[4] ? [process.argv[4]] : ['desktop', 'phone']
 for (const k of which) await run(k)
-writeFileSync(`${OUT}/${TAG}-walk.log`, log.join('\n') + '\n')
+writeFileSync(`${OUT}/${TAG}-walk.txt`, log.join('\n') + '\n')

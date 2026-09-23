@@ -4,7 +4,7 @@ Branch `claude/oil-credit-tags` (from `main` at `41120f78`). **Found recording t
 (the separate demo chat): on Fable's new automatic credit the two small words beside "+1 18 Jul" came out
 **"AU… Weeken…"** instead of **"AUTO"** and **"Weekend/PH"**, and the tracker's − / + zoom could not help —
 the words grow with the box. Pictures: `docs/img/handpass/2026-09-24-oil-credit-tags/`. Walk driver:
-`scripts/handpass/oil-credit-tags.mjs` (its own log beside the pictures: `after-walk.log`).
+`scripts/handpass/oil-credit-tags.mjs` (its own log beside the pictures: `after-walk.txt`).
 
 ## 1. The eight questions → WALK
 
