@@ -64,6 +64,28 @@ export async function settle(page: Page, sel: string, from?: number, axis: 'x' |
   }, [sel, from, axis] as const)
 }
 
+/** Wait until a Leave War month jump has stopped moving ON SCREEN: the landed
+ *  month's header holds its place for eight frames AND for longer than the
+ *  grid's own 120ms "at rest" pause (Matrix SCROLL_REST_MS), since the
+ *  corrections that follow a jump run after that pause. Its screen position is
+ *  what a later click or drag lands on. The scroller itself is deliberately NOT
+ *  watched: on a desktop the grid goes on drawing the earlier months to the LEFT
+ *  for seconds after a jump, each draw re-anchored so nothing on screen moves —
+ *  waiting for the scroller to go still waited for the whole year. (Moved here
+ *  from step4-leavewar.spec.ts on 23 Sep 26 so the month-strip tests share it.) */
+export async function gridAtRest(page: Page, date: string) {
+  await page.evaluate(async d => {
+    const x = () => document.querySelector(`[data-testid="head-${d}"]`)?.getBoundingClientRect().x ?? NaN
+    let last = NaN, same = 0, since = performance.now()
+    while (same < 8 || performance.now() - since < 250) {
+      await new Promise(r => requestAnimationFrame(() => r(null)))
+      const now = Math.round(x())
+      if (now === last) same++
+      else { last = now; same = 0; since = performance.now() }
+    }
+  }, date)
+}
+
 /* Warning navigation moves BOTH axes — the week is placed horizontally by hand
    onto the day's snap point, then scrollIntoView does the vertical. Neither
    settle() alone proves the motion is over, so wait for the pair to go quiet

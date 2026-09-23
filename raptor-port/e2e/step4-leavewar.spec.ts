@@ -18,7 +18,7 @@
    The file name ends in `leavewar.spec.ts` so the lw-desktop / lw-phone
    projects in playwright.config.ts pick it up. */
 import { expect, test, type Page } from '@playwright/test'
-import { go, login, lwRole, lwView } from './app'
+import { go, gridAtRest, login, lwRole, lwView } from './app'
 
 const isPhone = () => test.info().project.name === 'lw-phone'
 const desktopOnly = () => test.skip(isPhone(), 'mouse drag-select / desktop-only path')
@@ -68,28 +68,7 @@ async function showMonth(page: Page, iso: string) {
   const first = `${iso.slice(0, 8)}01`
   await page.locator(`[data-testid="month-${MON[+iso.slice(5, 7) - 1]!.toUpperCase()}"]`).click()
   await page.locator(`[data-testid="head-${first}"]`).waitFor({ state: 'attached' })
-  await gridAtRest(page, first)
-}
-
-/** Wait until a month jump has stopped moving ON SCREEN: the landed month's
- *  header holds its place for eight frames AND for longer than the grid's own
- *  120ms "at rest" pause (Matrix SCROLL_REST_MS), since the corrections that
- *  follow a jump run after that pause. Its screen position is what a later
- *  click or drag lands on. The scroller itself is deliberately NOT watched: on
- *  a desktop the grid goes on drawing the earlier months to the LEFT for
- *  seconds after a jump, each draw re-anchored so nothing on screen moves —
- *  waiting for the scroller to go still waited for the whole year. */
-async function gridAtRest(page: Page, date: string) {
-  await page.evaluate(async d => {
-    const x = () => document.querySelector(`[data-testid="head-${d}"]`)?.getBoundingClientRect().x ?? NaN
-    let last = NaN, same = 0, since = performance.now()
-    while (same < 8 || performance.now() - since < 250) {
-      await new Promise(r => requestAnimationFrame(() => r(null)))
-      const now = Math.round(x())
-      if (now === last) same++
-      else { last = now; same = 0; since = performance.now() }
-    }
-  }, date)
+  await gridAtRest(page, first) // e2e/app.ts — waits for the landed header to hold still
 }
 
 const cell = (page: Page, p: string, d: string) => page.locator(`[data-testid="cell-${p}-${d}"]`)

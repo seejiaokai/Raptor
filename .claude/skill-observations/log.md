@@ -312,3 +312,63 @@ code separately from its output, and never let the same line that runs a gate al
 **Suggested improvement:** Keep the corrected paragraph; in Step 1's closing checklist add "check that no check run is in progress on the branch before the final push".
 
 **Principle:** A path filter's scope differs by event: on a pull request it sees the whole PR, not your last commit. Before any push to a branch with an open PR, check whether a run is going — the push restarts it, whatever it contains.
+
+### Observation 205: A check made after a wait can never see a one-frame defect — read the state in the task that inserts the element
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** Leave War frozen date bar "scrolling rapidly horizontally" (the owner filmed his desktop with his phone); three follower bars were each placed one painted frame late.
+**Skill:** systematic-debugging (Phase 1, reproduce) and test-driven-development (writing the red test)
+**Type:** open-source
+**Phase/Area:** reproducing a flash/jump; the regression test for it
+
+**Issue:** Four existing tests of the frozen header all passed: each scrolled the page, waited 200–400ms, then measured — by which time the jump was over. The defect lived in exactly ONE painted frame (the element mounted and its position was set in an effect that runs after paint). It was reproduced by sampling from inside the page on every animation frame (a requestAnimationFrame loop recording the bar's offset from the grid it copies), and pinned by a test that reads the element inside a MutationObserver callback — which fires after the framework's commit and before the browser can paint. A roll-call of every element that "appears, then gets positioned" found the same one-frame-late shape in two more bars.
+
+**Suggested improvement:** systematic-debugging Phase 1: "If the report is a flash, a jump or a flicker, a post-wait assertion cannot see it. Reproduce by sampling per frame from inside the page; pin it with a check that runs in the same task as the change (a MutationObserver callback), never after a timeout." test-driven-development, Verify RED: "a test that waits before asserting passes on a one-frame defect."
+
+**Principle:** Measure a transient defect at the moment it happens; a settle-wait is exactly what hides it.
+
+### Observation 206: Identical numbers before and after a fix have two explanations — I told the owner one before checking
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** Proving red-before/green-after for three Leave War fixes on a locally built bundle.
+**Skill:** systematic-debugging (Red Flags) / verification-before-completion
+**Type:** open-source
+**Phase/Area:** interpreting a re-run
+
+**Issue:** The green-after run reproduced the red-before failure numbers to the decimal. I told the owner "that run was invalid — the previous run's server was left running, so it tested the old app" and only then checked: the run HAD rebuilt; the result was real and the fix was incomplete (a second, browser-level cause remained). Two explanations fitted the evidence — "the run did not test the fix" and "the fix does not work" — and I reported one as fact. Corrected in the next message after checking the build log.
+
+**Suggested improvement:** systematic-debugging, Red Flags: "Identical results before and after a change mean either the change did nothing or the run did not exercise it. Run the one check that tells them apart (build timestamp, served bundle, server reuse) BEFORE stating either to anyone."
+
+**Principle:** Before reporting a cause, run the one check that distinguishes it from the other explanation that fits the same evidence.
+
+### Observation 207: A red-first test that passes on the old code has found a second cure hiding in the scenario
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [LW-HBAR-RESYNC] — a month pressed inside the scrollbar's 250ms drag hold must still move the thumb.
+**Skill:** test-driven-development (Verify RED)
+**Type:** open-source
+**Phase/Area:** Verify RED — the test fails for the right reason
+
+**Issue:** The rewritten test passed 3 of 3 on the unfixed code. Its jump (January → September) also hid a posted-out man's row; that row change made the grid re-measure ~200ms later, AFTER the hold had ended, which re-synced the thumb — an incidental cure unrelated to the fix. Moving the scenario to months where no row comes or goes (found by listing the rows each month shows) made the old code fail 5 of 5 and the fixed code pass 5 of 5.
+
+**Suggested improvement:** In Verify RED: "If the test passes on the old code, do not just tighten the assertion — find what healed the symptom in that scenario and choose one where only the fix can make it pass. List the side effects of each step (here: which rows each month shows) to find it."
+
+**Principle:** A red-first failure must come from the missing fix, not from timing; when the old code passes, the scenario contains a second path to the right answer.
+
+### Observation 208: Step-by-step instructions to a non-technical user must put "copy it" BEFORE the button that can take it away, and say what the screen should show
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** Guiding the owner to re-register his PC's GitHub runner as a Windows service (a credential step the agent must not do itself).
+**Skill:** New skill candidate: guiding a non-technical user through a setup the agent may not perform
+**Type:** internal
+**Phase/Area:** writing the numbered steps
+
+**Issue:** The steps said "click Remove, copy the command it shows". He clicked through and the runner was removed on GitHub with the command never copied, leaving the PC's copy still registered (recovered by moving its dead registration files aside). He also followed the page's own Download box into a NEW nested folder, so the service now runs from `C:\actions-runner\actions-runner` — harmless, but a later "tidy up the old folder" would delete the live one. He asked for the steps again once, mid-way.
+
+**Suggested improvement:** For any hand-held setup: (1) the copy/record step comes BEFORE any button that could close or complete the dialog; (2) each step names what the screen should show next (e.g. the exact folder in the prompt), so a wrong turn is visible at once; (3) give a recovery line for the likely mistake up front; (4) verify the result read-only afterwards and say where things actually ended up.
+
+**Principle:** A non-technical user follows the screen, not the plan; write each step so the screen confirms it, and order steps so no single click can lose information needed later.

@@ -655,6 +655,10 @@ ceiling inside itself and had reached 961.
 feature per chat. Amendment chat: port 4173, rulings from D90. Tracker chat: port 4180, rulings from
 D120. Never two full gate runs at once (false failures under load). The order of the other three
 (change-recording, the absence record, the Leave War links) is not ruled: propose it and ask.
+**D153 (23 Sep 26): the TRACKER chat starts NOW, on its own worktree from `main`, beside the Leave War
+fix on `claude/lw-monthjump-phone`** — which still merges FIRST. Tracker chat: preview 4180, e2e
+`E2E_PORT=4182`, smoke `SMOKE_PORT=4181`, rulings from D120; never a full gate run while the Leave War
+chat or the PC runner (`gh run list`) is mid-run.
 **His words: "This also means that all the previous bug tests we did there will be bugs not
 captured. Because I didnt test them when i told u that u would test like a human since."** He is
 right, and the OIL build is the proof. It had a two-model cross-provider review and 5341 green
@@ -906,6 +910,10 @@ back at March the window regrows February within 160ms of the jump, the fill eng
 remembered width as exact, and on a touch screen skips the re-anchor "in motion" (`Matrix.tsx`,
 `!(inMotion && coarsePointer())`). February now draws 20px narrower, so March slides 20px left —
 one day at the phone's 0.8 zoom. A slower machine regrows after 160ms, gets re-anchored, passes.
+**FIXED 23 Sep 26 on `claude/lw-monthjump-phone` (evidence sheet PART TWO, §8–§14): not the jump-override
+below but its root — a remembered width counts as exact only under the rows it was measured with
+(`widthGen`/`widthExact`), which also stops the same hop in a backward finger fling; phone test red 3/3 →
+green 3/3; the test now measures once, after February is drawn and the grid holds still.** Was:
 **NEXT CHAT, on this same branch, BEFORE it merges (owner, D152 — supersedes D150's order). Fix (app, WALK tier, phone) — Astra's spec:** in `Matrix.tsx`'s fill
 effect, let a recent programmatic jump (`Date.now() - jumpAtRef.current < 1200`) override the
 coarse-pointer/in-motion suppression and take `anchorNow` before `setColWin` (and/or forget remembered
@@ -933,6 +941,22 @@ After the bar is dragged the grid→bar follow is off for 250ms (`Matrix.tsx` `s
 and nothing re-syncs when that ends, so a grid move inside the window leaves the thumb stale until the next
 grid scroll — forced 5/5 (drag, then SEP at once: grid at September, thumb at 0). The e2e now waits it
 out. Fix: one trailing `syncHbar` when the window closes. **In the next chat, with the phone fix (D150).**
+**FIXED 23 Sep 26 on `claude/lw-monthjump-phone`, with `[LW-MONTHJUMP-PHONE]` and the owner's filmed
+frozen-bar jump** — red 5/5 before, green 5/5 after; evidence sheet PART TWO
+(`raptor-port/docs/handpass/2026-09-23-lw-monthjump.md` §8–§14). Archive both once the branch merges.
+
+### [LW-FROZEN-BAR-GAP] For one frame no dates header shows while the page scrolls it away (23 Sep 26)
+
+Found by the frame-by-frame pictures of the frozen-bar fix (evidence sheet §11, frame 1 of
+`fixed-desktop-frozen-bar-first-frames.png`). When the page scrolls the real dates header up under the
+top bar, the frozen copy arrives ONE painted frame later — it is React state set in the window's scroll
+handler, so it renders on the next frame — and that frame has no header at all. **Pre-existing, and not
+the owner's "scrolling rapidly horizontally"** (that jump is fixed): a blink, not a slide. Fix direction:
+in `Matrix.tsx`'s stuck effect, commit the change of stuck-or-not synchronously (`flushSync`) — ONLY when
+it changes, never per scroll event, because the whole grid re-renders on it — or keep the bar mounted and
+show/hide it outside React; either needs a speed check (the re-render would land inside the scroll
+frame). The Quals page's frozen header has the same shape. **Place:** the next Leave War polish item,
+after `[HUMAN-RETEST]`; show him first — he may not see a one-frame blink at all.
 
 ### [OIL-PERSONAL-PLACEHOLDER] A placeholder on a landed "Personal" request row draws no count (23 Sep 26)
 

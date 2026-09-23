@@ -1303,11 +1303,12 @@ export function Matrix() {
   const phR = useCallback(phHook('r'), [])
   // Each month's MEASURED width (layout px, zoom divided out) once it has been
   // drawn, by war+zoom: a pruned month's placeholder is then exactly as wide as
-  // the month, so re-drawing it moves nothing. A month never drawn falls back to
-  // an estimate (the average day width × its days) — see colwindow.ts for why
-  // that estimate is never swapped for the real month LEFT of the view while the
-  // scroll is moving.
-  const monthPxRef = useRef<{ key: string; px: (number | null)[] }>({ key: '', px: [] })
+  // the month, so re-drawing it moves nothing — provided the grid's rows are
+  // still the ones it was measured with, which is what `gen` records (see
+  // `widthGen` below). A month never drawn falls back to an estimate (the
+  // average day width × its days) — see colwindow.ts for why that estimate is
+  // never swapped for the real month LEFT of the view while the scroll is moving.
+  const monthPxRef = useRef<{ key: string; px: (number | null)[]; gen: (object | null)[] }>({ key: '', px: [], gen: [] })
   // Is the Leave War tab on screen right now? A ref, not React state, so the
   // fill loop below can read it every idle beat without a re-render, and
   // flipping it (state/screen.ts) never repaints the ~25k-node grid. Seeded from
@@ -1596,6 +1597,27 @@ export function Matrix() {
     return next
   })
 
+  // WHICH ROWS A MEASURED MONTH WIDTH IS TRUE FOR ([LW-MONTHJUMP-PHONE], 23 Sep
+  // 26). A day column is as wide as the widest thing any DRAWN row puts in it
+  // (auto table layout), so the same month is narrower once a row that widened
+  // it has gone. Measured on the owner's PC: February, measured at the open
+  // while a posted-out man's row (ignite) still showed, drew 20px narrower after
+  // SEP had hidden him — and a MAR tap on a phone then slid 1 March under the
+  // frozen name column, because the fill engine swapped February's placeholder
+  // for the real month mid-scroll trusting the old width, with the touch-screen
+  // re-anchor skipped. This token changes whenever anything that sets a column's
+  // width can have changed — the store's data (bids, events, the roster), the
+  // row window, a folded group, the manning rows — and every cached width is
+  // stamped with the token it was measured under (`measureStripGeo`). An older
+  // stamp is still the best number for the placeholder, so nothing moves when
+  // the token changes; it is just no longer EXACT, and `widthExact` keeps the
+  // fill engine from swapping it in under a moving scroll: that step waits for
+  // rest, where the anchor correction absorbs the difference.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const widthGen = useMemo(() => ({}), [version, visWindow, folded, countsOpen, arranging])
+  const widthGenRef = useRef(widthGen)
+  widthGenRef.current = widthGen
+
   /* THE CONFIGURED GROUPS (owner, 28 Aug 26 — the admin group editor). With the
      default list these answer exactly as the old `groupOf` / `GROUP_LABEL` did,
      so an untouched squadron is unchanged. Read once per render and shared by
@@ -1880,18 +1902,46 @@ export function Matrix() {
   // two scrollers keep each other in lockstep from then on. Assigning an
   // unchanged scrollLeft fires no event, so the pair settles instead of
   // ping-ponging.
-  useEffect(() => {
+  //
+  // A LAYOUT effect, so the position is set BEFORE the bar's first frame is
+  // painted (owner's video, 23 Sep 26 — "the frozen bar scrolling rapidly
+  // horizontally when they scroll the page down"). The bar mounts afresh every
+  // time the page scrolls it into view, and as a plain effect this ran AFTER
+  // that first paint: for one frame the day columns sat at the START of the
+  // year, then jumped to where the grid was — 5,135px on a desktop parked in
+  // August, measured on the built bundle, every time the page scrolled down.
+  // Pinned by "the frozen bar is in step with the grid the moment it appears"
+  // (e2e/leavewar.spec.ts).
+  useLayoutEffect(() => {
     if (stuck && mirrorRef.current && wrapRef.current) {
       const w = wrapRef.current
       if (sdaActive) {
         // Scroll-driven path: the track must NOT be scrolled (the inner table is
         // translated instead — a scrollLeft here would double the travel). Just
-        // make sure the bar knows the grid's travel the instant it appears, so
-        // its very first painted frame is already in step; a stale or zero
+        // make sure the bar knows the grid's travel before it appears, so its
+        // very first painted frame is already in step; a stale or zero
         // --lwx-max would pin the day columns at the left until the next layout.
         // On the bar's own box, not `.mx-outer`: a custom property changing on
         // the grid's ancestor re-styles the whole grid (see applyPlaceholders).
         mirrorRef.current.style.setProperty('--lwx-max', String(Math.max(0, (w.scrollWidth - w.clientWidth) / zoom)))
+        // ...AND hold the day columns where the grid is until the browser has
+        // STARTED the scroll-linked animation. Knowing the travel was not
+        // enough: a freshly created animation is not applied on the frame it is
+        // created in (measured on the built bundle — the bar's first frame had
+        // no transform at all with `--lwx-max` already set), so the year's first
+        // columns still flashed. This inline translate is the same number the
+        // animation will produce (its keyframe runs 0 → −travel across the
+        // whole scroll range, so at scrollLeft s it sits at −s/zoom); once the
+        // animation runs it outranks an inline style anyway, and the hold is
+        // dropped then, so it can never go stale on a later scroll. The
+        // keyframe's `from` is STATED for this (matrix.css `lwx-follow`): an
+        // implicit one would start from this held value and blend with it.
+        const anim = mirrorRef.current.querySelector<HTMLElement>('.mxfixed-anim')
+        const run = anim?.getAnimations?.()[0]
+        if (anim && run) {
+          anim.style.transform = `translateX(${-w.scrollLeft / zoom}px)`
+          run.ready.then(() => { anim.style.transform = '' }, () => { anim.style.transform = '' })
+        }
       } else {
         // JS-mirror fallback: start the mirror at the grid's position.
         mirrorRef.current.scrollLeft = w.scrollLeft
@@ -1901,8 +1951,11 @@ export function Matrix() {
   }, [stuck])
 
   // The bottom scrollbar starts at the grid's current position the moment it
-  // appears, so its thumb is never a frame out of step on show.
-  useEffect(() => { if (hbar) syncHbar() }, [hbar])
+  // appears, so its thumb is never a frame out of step on show. A LAYOUT effect
+  // for the reason the frozen header's is (above): the bar mounts afresh each
+  // time the page scrolls it into view, and a plain effect placed the thumb one
+  // painted frame late — at the start of the year, then a jump.
+  useLayoutEffect(() => { if (hbar) syncHbar() }, [hbar])
 
   // Show / hide / size the bottom scrollbar on vertical page scroll and on
   // resize. Re-bound on the layout signals that change the grid's scroll width
@@ -1945,12 +1998,27 @@ export function Matrix() {
   // scrollWidth — so the follow is a straight copy of scrollLeft, no year-space
   // estimate needed. Suppressed for a beat after the bar itself is dragged
   // (`hbarUserTsRef`), so the grid never writes the thumb back out from under
-  // the finger; it re-settles once the drag is done. No-op when the bar is not
-  // shown (ref is null).
+  // the finger. No-op when the bar is not shown (ref is null).
+  //
+  // ...and ONE catch-up follow when that beat ends ([LW-HBAR-RESYNC], 23 Sep
+  // 26). A follow asked for inside the beat used to be dropped, and nothing
+  // asked again until the grid next scrolled — so a month button pressed
+  // straight after a drag moved the grid to September and left the thumb at
+  // January (forced 5 of 5; one run in four on the owner's fast PC). The
+  // catch-up re-runs this, so a drag still going when it fires just waits
+  // another beat. Pinned by the scrubber test in e2e/leavewar.spec.ts.
+  const HBAR_HOLD_MS = 250
+  const hbarCatchUpRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const syncHbar = () => {
     const h = hbarRef.current, wrap = wrapRef.current
     if (!h || !wrap) return
-    if (Date.now() - hbarUserTsRef.current < 250) return
+    const hold = HBAR_HOLD_MS - (Date.now() - hbarUserTsRef.current)
+    if (hold > 0) {
+      if (hbarCatchUpRef.current == null) {
+        hbarCatchUpRef.current = setTimeout(() => { hbarCatchUpRef.current = null; syncHbar() }, hold + 10)
+      }
+      return
+    }
     const v = Math.min(Math.max(0, h.scrollWidth - h.clientWidth), Math.max(0, wrap.scrollLeft))
     if (Math.abs(h.scrollLeft - v) <= 1) return
     hbarWantRef.current = v
@@ -2250,8 +2318,11 @@ export function Matrix() {
     measureAvgDayW(drawn, frozen)
     const win = colWinRef.current
     const lo = win?.lo ?? 0
-    const px = monthPxCache()
-    for (let i = 0; i < drawn.length; i++) px[lo + i] = (drawn[i]!.right - drawn[i]!.left) / zoom
+    const cache = monthPxCache()
+    for (let i = 0; i < drawn.length; i++) {
+      cache.px[lo + i] = (drawn[i]!.right - drawn[i]!.left) / zoom
+      cache.gen[lo + i] = widthGenRef.current // measured under THESE rows (see widthGen)
+    }
     // One span per month of the WAR, drawn or placeholder — the undrawn months
     // laid out at their placeholder widths on either side of the measured ones,
     // so the readout lights the month a placeholder stands for and the fill
@@ -2288,20 +2359,29 @@ export function Matrix() {
   }
   // The per-month width cache for this war+zoom (a zoom step changes every
   // width; a new war is a new set of months) — started fresh when the key moves.
-  const monthPxCache = (): (number | null)[] => {
+  const monthPxCache = () => {
     const key = `${period.id}|${zoom}`
-    if (monthPxRef.current.key !== key) monthPxRef.current = { key, px: months.map(() => null) }
-    return monthPxRef.current.px
+    if (monthPxRef.current.key !== key) monthPxRef.current = { key, px: months.map(() => null), gen: months.map(() => null) }
+    return monthPxRef.current
   }
   // A month's width in LAYOUT px (the table's own space, zoom divided out — the
   // placeholder's `width` is set in that space): measured if it has ever been
   // drawn, else the average day width × its days, else a plain guess for the
-  // beat before the first measurement.
+  // beat before the first measurement. A width measured under different rows
+  // is still used here — it is the best number there is, and changing the
+  // placeholder under the reader would move the grid for nothing.
   const monthPx = (m: number): number => {
-    const cached = monthPxCache()[m]
+    const cached = monthPxCache().px[m]
     if (cached != null) return cached
     const a = avgDayWRef.current
     return (a ? a.avg / zoom : 30) * (yearMonths.monthDays[m] ?? 30)
+  }
+  // Will drawing month `m` in place of its placeholder move nothing? Only when
+  // its width was measured under the rows on screen NOW (`widthGen`) — the one
+  // case where the placeholder is exactly as wide as the month it stands for.
+  const widthExact = (m: number): boolean => {
+    const c = monthPxCache()
+    return c.px[m] != null && c.gen[m] === widthGenRef.current
   }
   // Size the placeholder cells: the sum of the undrawn months on each side,
   // written as an inline width on every registered placeholder cell (each
@@ -2464,7 +2544,11 @@ export function Matrix() {
       kickFillRef.current()
     }, SCROLL_REST_MS)
   }
-  useEffect(() => () => { if (idleRef.current) clearTimeout(idleRef.current); stopPump() }, [])
+  useEffect(() => () => {
+    if (idleRef.current) clearTimeout(idleRef.current)
+    if (hbarCatchUpRef.current) clearTimeout(hbarCatchUpRef.current)
+    stopPump()
+  }, [])
 
   // The WINDOW half measured when the war changes (that rebuilds every column)
   // and when a month draw lands (the view may now sit over real columns where
@@ -2578,7 +2662,9 @@ export function Matrix() {
       const next = stepToward(win, months.length, tLo, tHi)
       if (next.lo === win.lo && next.hi === win.hi) return    // parked — kickFillRef resumes
       const inMotion = moving()
-      if (inMotion && !stepAllowedInMotion(win, next, m => monthPxCache()[m] != null)) {
+      // `widthExact`, not "measured once": a month measured while other rows
+      // showed is not the width it will draw at now ([LW-MONTHJUMP-PHONE]).
+      if (inMotion && !stepAllowedInMotion(win, next, widthExact)) {
         // Not safe under a moving scroll: look again once the moving window has
         // passed. The scroll-rest kick itself lands INSIDE that window (it fires
         // 120 ms after the last scroll event, the window is 160), so it cannot be
@@ -2591,10 +2677,11 @@ export function Matrix() {
       // A month added or dropped on the LEFT shifts the content; keep the reader's
       // column in place with the same anchor the jump path uses. At rest that is
       // invisible. In motion the step only ever swaps a placeholder for a month
-      // of the SAME width, so the shift is nil — and on a touch screen the anchor
-      // is skipped altogether, because the `scrollLeft` write that would fix a
-      // stray pixel is exactly what kills a fling (the 30 Aug history). A
-      // rightward step writes none.
+      // of the SAME width — `widthExact` above, measured under the rows on screen
+      // now — so the shift is nil, and on a touch screen the anchor is skipped
+      // altogether, because the `scrollLeft` write that would fix a stray pixel
+      // is exactly what kills a fling (the 30 Aug history). A rightward step
+      // writes none.
       if (next.lo !== win.lo && !(inMotion && coarsePointer())) {
         const wrap = wrapRef.current
         if (wrap) { anchorRef.current = anchorNow(wrap); colShiftRef.current = true }

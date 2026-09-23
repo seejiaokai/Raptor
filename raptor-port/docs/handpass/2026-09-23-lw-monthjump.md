@@ -136,3 +136,121 @@ machine.** Likely lever for the next chat: `gridAtRest` watches the landed heade
 desktop's background fill can nudge it by ≤1px (the anchor corrects only >1px), so on a very slow machine
 the wait can last the whole year's fill — a ±1px tolerance is the candidate fix. D84's one re-run was not
 spent: no merge is pending (D152).
+
+---
+
+# PART TWO — the app fixes (23 Sep 26, afternoon; D150, D152)
+
+Same branch. The owner's ask: fix `[LW-MONTHJUMP-PHONE]` and `[LW-HBAR-RESYNC]` by the bug-check order,
+then move the checks back to his PC. **Mid-session he filmed a third fault** (a phone video of his
+desktop): *"the frozen bar scrolling rapidly horizontally when they scroll the page down. Looks untidy
+too"* — a Leave War bug, so fixed here too (announced to him; no objection).
+
+## 8. The eight questions → WALK
+
+Money, the published record, saved data, a new gesture, a new surface, roles, the warning list — **NO**
+(the fixes move where a month is drawn and where two bars sit; nothing is stored, paid or ruled on; the
+width cache is memory for one visit). **A shared drawer — YES:** the column-window engine decides what
+every row, the dates header, the manning rows, the event rows and the frozen header copy draw, and the
+frozen-bar fault sat in a placement pattern three bars share. → **WALK**.
+
+## 9. The roll-calls
+
+**9.1 What can change a day column's width** — the inputs `widthGen` must follow (a width measured
+under other inputs is no longer exact):
+
+| Input | Changes a column's width? | Covered by |
+|---|---|---|
+| Which people's rows show (row window: posted in/out) | YES — a hidden row's chips stop widening its columns | `visWindow` |
+| A folded category | YES — its rows leave the table | `folded` |
+| The manning rows (collapsed / forced open in Rearrange) | YES — they are rows of the same table | `countsOpen`, `arranging` |
+| Cell contents: bids, events, OIL, the roster, SANS | YES | the store's `version` |
+| The zoom step | YES, every width | the cache's own key |
+| A different war | YES, different months | the cache's own key |
+| The figures drawer | MUST NOT — an overlay drawn over the days, not cells in the table | — |
+| Rearrange's wider name column | MUST NOT for day columns (frozen column only) — covered anyway via `arranging` | — |
+
+**9.2 Every bar that appears and is then placed to follow a sideways scroller** (the frozen-bar fault):
+
+| Bar | Had the one-frame-late placement? | Now |
+|---|---|---|
+| Leave War frozen date bar (phone + desktop) | YES — filmed by the owner | fixed: placed before paint, animation held |
+| Leave War bottom scrollbar (desktop) | YES — the thumb flashed at January | fixed: placed before paint |
+| Quals page frozen header (phone; desktop when it overflows) | YES — flashed its first columns | fixed: placed before paint |
+| Raptor's week scrollbar (desktop) | MUST NOT, because it is one standing element shown and placed in the same call (`pan.ts hsSync`) | — |
+| Leave War frozen name column (phone) | MUST NOT, because it never follows sideways; it is hidden until its top is measured | — |
+| The Tracker's flow board | no such bar | — |
+
+**9.3 Every way the grid moves while the bottom scrollbar's thumb must follow:** the month strip, the
+under-manned jump, a war switch, a zoom step, a wheel or trackpad, the bar itself. All of them reach the
+thumb through the grid's own scroll handler, so the one catch-up covers every one of them.
+
+## 10. Red before, green after (the fixes set aside, then put back; same tests, same machine)
+
+| Test | Old code | Fixed code |
+|---|---|---|
+| a month button works from wherever the grid already is — **phone** | **FAILED 3/3** (1 March 20px under the frozen column) | passed 3/3 |
+| the same — desktop (never had the bug) | passed 3/3 | passed 3/3 |
+| the bottom scrollbar … the bar then slides it (pressed inside the drag's hold) | **FAILED 5/5** (thumb left at 0.21) | passed 5/5 |
+| the frozen bar is in step with the grid the moment it appears — phone + desktop | **FAILED 6/6** (4,482–5,531px off) | passed 6/6 |
+| the bottom scrollbar shows the grid's place the moment it appears | **FAILED 2/3** (timing-dependent, like the fault) | passed 3/3 |
+| phone: the Quals frozen header is in step the moment it appears | **FAILED 3/3** (400px off) | passed 3/3 |
+
+**Two honest detours, both caught by the red-first rule.** (1) The first frozen-bar fix (a layout effect)
+was NOT enough: a freshly created scroll-driven animation is not applied on its first frame, so the bar
+still painted the year's start once; measured frame by frame, then held by hand. That hold then exposed
+a second fault — the animation's implicit start borrowed the held value and blended, a one-frame 1,819px
+jump — fixed by stating the keyframe's start. After both: 534 frames with the bar showing across two
+scripted scroll runs, **zero** out of step by more than 2px. (2) The scrollbar test first passed on the OLD
+code: its jump also hid a posted-out man's row, and that row change re-measured the grid late enough to
+carry the thumb along. It now parks past January first (the only month whose rows differ), where
+nothing but the catch-up can move the thumb.
+
+## 11. The walk — the built bundle, iPhone-13 emulation (touch) and a 1440×900 desktop
+
+Scripted (D17), on the same production build the checks ran; every number read from inside the page.
+Pictures: `docs/img/handpass/2026-09-23-lw-monthjump/fixed-*.png`.
+
+| Surface · order | Result |
+|---|---|
+| Phone · SEP → MAR at once (the reported order) | 1 March −0.1px from the frozen edge — **on it** (was −20px, a day short) · `fixed-phone-sep-then-mar-lands-on-the-1st.png` |
+| Phone · MAR → SEP (the reverse) | −0.3px |
+| Phone · paced like a person (JAN, 1s, SEP, 1.5s, MAR), ×3 | −0.1px each time (was short 2–3 times in 4) |
+| Phone · → DEC, then DEC → FEB (January drawn to the left of it) | −0.2px, +0.8px · `fixed-phone-dec-then-feb.png` |
+| Phone · a finger flick back from September | the grid moved to August, months drew, no error (no momentum in a scripted touch — see §12) |
+| Phone · the frozen bar appearing, ×3 | 40 frames each, worst **0px** off · `fixed-phone-frozen-bar-in-step.png` |
+| Desktop · SEP → MAR | +0.1px · `fixed-desktop-sep-then-mar.png` |
+| Desktop · the frozen bar appearing, parked in August, ×3 | 36–37 frames each, worst 1.2px (a constant sub-2px offset, present before this change and inside the existing test's 2px) · `fixed-desktop-frozen-bar-in-step.png` |
+| Desktop · the painted frames themselves (Chrome's screencast) | the bar's FIRST frame shows AUG 01 in place — no January, no slide · `fixed-desktop-frozen-bar-first-frames.png` |
+| Desktop · drag the bottom bar, press SEP inside the hold | thumb 0.21 inside the hold → **0.774** after it (September); grid on SEP 01 · `fixed-desktop-drag-then-sep.png` |
+| Desktop · the bottom bar appearing (page back up from its foot) | thumb 0.774 = grid 0.774 on its first frame |
+| Quals · phone, table scrolled 400px, page down | the frozen header's first frame at 400 = the table's 400 · `fixed-quals-phone-frozen-header-in-step.png` |
+| Quals · desktop | the table fits the screen — nothing to follow sideways |
+| Errors in the browser, whole walk | **none** |
+
+**One more thing the frame-by-frame pictures showed — filed, not fixed.** When the page scrolls the
+dates header away, the frozen copy arrives ONE frame late, so that frame shows no dates header at all
+(frame 1 of `fixed-desktop-frozen-bar-first-frames.png`). It was there before this change too; it is a
+blink, not the sideways slide the owner filmed. Filed as `[LW-FROZEN-BAR-GAP]` with a fix direction.
+
+## 12. What was NOT walked, and why
+
+- **The iPhone itself (WebKit).** Walked in Chromium's iPhone emulation only. Whether iOS takes the
+  scroll-linked path or the older one, both are now placed before the first paint; the owner's own look
+  on his phone is the check that covers WebKit.
+- **A real finger fling with momentum.** A scripted touch has none, so "no hop mid-fling" rests on the
+  rule the fix enforces (a left draw over a width measured under other rows waits for rest), not a walk.
+- **The under-manned jump and a war switch.** Both go through the same jump function and the same fill
+  engine as the month strip; not driven separately. The demo has one war.
+- **The bottom scrollbar's thumb in a picture** — headless Chromium does not paint that scrollbar, so
+  its proof is the numbers above and the test that failed 5/5 before.
+- **A slow machine.** Not re-run under the CPU-throttle switch; the phone fault lives on a FAST machine.
+
+## 13. Gates on the final tree (before the two reads)
+
+`npm test` 5759/5760 — **one timeout under load**: `figselect.test.tsx` "an undo, a stage change and the
+drawer toggle all drop it" (20s limit) during the full run, with the Tracker chat's worktree active; alone
+it passes 12/12 three times, and that test takes 5.1/4.8s on the old code and 5.1/4.9s on the new —
+same speed, so not this change. · build OK · `tfin.js` 728/0 · `test:e2e` **465 passed / 46 skipped / 0
+failed** (was 461/45: the four new tests and one phone skip) · `smoke:tracker` 425/0 · rulecheck OK ·
+docsize `OVER by 4, deferred (D29)` (OUTSTANDING, inside a code change).

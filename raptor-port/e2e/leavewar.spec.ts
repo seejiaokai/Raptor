@@ -20,7 +20,7 @@
    unchanged because the map preserves seat and band and the mapped
    people's own SXO flags match the seed's. */
 import { expect, test, type Locator, type Page } from '@playwright/test'
-import { go, lwRole, lwView, openLeaveWar, raptorRole, scrollTo } from './app'
+import { go, gridAtRest, lwRole, lwView, openLeaveWar, raptorRole, scrollTo } from './app'
 
 const CAL_MONTHS = [
   'JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
@@ -586,19 +586,30 @@ test('a month button scrolls the grid to that month', async ({ page }) => {
 // Pressing a second month from wherever the first one left the grid is the
 // ordinary way this gets used, and it is the case an absolute `scrollLeft =`
 // gets wrong once the grid is already scrolled.
+//
+// MEASURED ONCE, AFTER THE GRID HAS HELD STILL — never on the first good sample
+// ([LW-MONTHJUMP-PHONE], 23 Sep 26). After the jump the grid goes on drawing the
+// months around March, February among them, to the LEFT of the view. On a phone
+// that draw used to trust the width February was measured at when the war
+// opened, while a posted-out man's row (ignite) still showed; SEP had hidden
+// him since, February drew 20px narrower, and March slid a day under the
+// frozen column a fraction of a second after landing. The poll that stood here
+// could pass on a frame taken before the slide. So this waits for the draw that
+// moved it (February) and for the landed header to hold still, then measures.
+// Not paced on purpose: waiting longer between the taps did not stop the bug,
+// and pacing around it would hide it.
 test('a month button works from wherever the grid already is', async ({ page }) => {
   await page.locator('[data-testid="month-SEP"]').click()
   await expect(page.locator('[data-testid="head-2026-09-01"]')).toHaveCount(1)
   await page.locator('[data-testid="month-MAR"]').click()
-  // Each jump draws its own window and lands its month at the frozen edge;
-  // two jumps' scroll offsets are not comparable (each is "the start of its
-  // own window"), so the landing is the claim — polled, because the
-  // draw+scroll lands a render after the click.
-  await expect.poll(async () => {
-    const h = await page.locator('[data-testid="head-2026-03-01"]').boundingBox()
-    const b = await page.locator('.mx-wrap .mxhead th.bal').boundingBox()
-    return h && b ? Math.round(h.x - (b.x + b.width)) : -999
-  }, { timeout: 5000 }).toBeGreaterThanOrEqual(-1)
+  await page.locator('[data-testid="head-2026-03-01"]').waitFor({ state: 'attached' })
+  await page.locator('[data-testid="head-2026-02-01"]').waitFor({ state: 'attached' })
+  await gridAtRest(page, '2026-03-01')
+  // Each jump draws its own window and lands its month AT the frozen edge —
+  // not under it (a day short) and not a column clear of it (a day long).
+  const at = (await page.locator('[data-testid="head-2026-03-01"]').boundingBox())!
+  const edge = (await page.locator('.mx-wrap .mxhead th.bal').boundingBox())!
+  expect(Math.abs(at.x - (edge.x + edge.width)), '1 March sits at the frozen edge').toBeLessThanOrEqual(2)
   // Whether SEPTEMBER is still drawn after the second jump is a claim only on
   // the phone. There the window rolls with the view (one month behind, three
   // ahead), so a jump from September to March rebuilds the window around March
@@ -610,10 +621,6 @@ test('a month button works from wherever the grid already is', async ({ page }) 
   // runner's speed, not the grid's behaviour — this line was the one flaky
   // assertion in the suite (5 Sep 26, ~1 in 2 locally, red on CI too).
   if (isPhone()) await expect(page.locator('[data-testid="head-2026-09-01"]')).toHaveCount(0)
-
-  const head = (await page.locator('[data-testid="head-2026-03-01"]').boundingBox())!
-  const bal = (await page.locator('.mx-wrap .mxhead th.bal').boundingBox())!
-  expect(head.x).toBeGreaterThanOrEqual(bal.x + bal.width - 1)
 })
 
 // The strip has to be reachable on a phone without itself becoming a
@@ -1151,6 +1158,54 @@ test('the date header freezes on desktop when the page scrolls down', async ({ p
   await expect(page.locator('[data-testid="sticky-head"]')).toBeVisible()
   await page.evaluate(() => window.scrollTo(0, 0))
   await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(0)   // thaws back
+})
+
+// THE FROZEN BAR IS IN STEP THE MOMENT IT APPEARS, at both widths (owner's
+// video, 23 Sep 26 — "the frozen bar scrolling rapidly horizontally when they
+// scroll the page down. Looks untidy too"). The bar is mounted afresh every time
+// the page scrolls it into view, and it used to be told where the grid was only
+// AFTER its first frame had painted: that frame showed the START of the year,
+// the next jumped to the grid — 5,135px on a desktop parked in August, measured
+// on the built bundle, every single time. The other frozen-header tests measure
+// after a wait, which is exactly why none of them saw it. This one reads the bar
+// in the very task that inserts it — a MutationObserver fires after the commit
+// and before the browser can paint — and does it three times over, down and back
+// up, the way he scrolled.
+test('the frozen bar is in step with the grid the moment it appears', async ({ page }) => {
+  await page.locator('[data-testid="month-AUG"]').click()
+  await page.locator('[data-testid="head-2026-08-01"]').waitFor({ state: 'attached' })
+  await gridAtRest(page, '2026-08-01')
+  // far enough down that the dates header has slid up under the app's top bar
+  const down = await page.evaluate(() => {
+    const head = document.querySelector('#page-leavewar .mx-wrap tbody.mxhead')!.getBoundingClientRect()
+    const bar = document.querySelector('.topbar')!.getBoundingClientRect()
+    return Math.round(window.scrollY + head.top - bar.bottom + 60)
+  })
+  for (let round = 1; round <= 3; round++) {
+    await page.evaluate(() => {
+      const w = window as any
+      w.__barAt = undefined
+      const mo = new MutationObserver(() => {
+        const bar = document.querySelector('[data-testid="sticky-head"]')
+        if (!bar) return
+        mo.disconnect()
+        // the scrolling layer's own day cells, by position (the copy carries no
+        // test ids); the frozen overlay beside it holds no day cells at all
+        const real = [...document.querySelectorAll<HTMLElement>('#page-leavewar .mx-wrap tbody.mxhead tr:last-child th.day')]
+        const copy = [...bar.querySelectorAll<HTMLElement>('.mxfixed-scroll tr:last-child th.day')]
+        const i = real.findIndex(e => e.dataset.testid === 'head-2026-08-01')
+        w.__barAt = i < 0 || !copy[i] ? null : copy[i].getBoundingClientRect().x - real[i].getBoundingClientRect().x
+      })
+      mo.observe(document.body, { childList: true, subtree: true })
+    })
+    await page.evaluate(y => window.scrollTo(0, y), down)
+    await expect(page.locator('[data-testid="sticky-head"]')).toBeVisible()
+    const off = await page.evaluate(() => (window as any).__barAt)
+    expect(off, `round ${round}: the bar was seen as it appeared`).not.toBeNull()
+    expect(Math.abs(off), `round ${round}: the bar's 1 August sits over the grid's`).toBeLessThan(2)
+    await page.evaluate(() => window.scrollTo(0, 0))
+    await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(0)
+  }
 })
 
 // Published-stage remarks editing (owner, 27 Aug 26): once the war is
@@ -4342,20 +4397,70 @@ test('the bottom scrollbar is a year-wide scrubber; the desktop grid fills the w
   // Reverse: driving the grid by the month strip moves the thumb to match —
   // September sits about three-quarters along the year.
   //
-  // First let the drag above END. The app switches the thumb's follow OFF for
-  // 250ms after the bar itself is dragged (Matrix.tsx `syncHbar`,
-  // `hbarUserTsRef`), so the thumb is never written out from under a finger —
-  // and nothing re-syncs it when that window closes. A jump clicked inside the
-  // window therefore leaves the thumb at 0 for good: the one-in-four red on the
-  // owner's fast PC (23 Sep 26, [CI-TWO-CORES]). A person cannot get from the
-  // bar to the month strip in 250ms, so this waits out THE APP'S OWN WINDOW:
-  // a timed rule is the one thing a timed wait is the honest condition for
-  // (D87 bans guessing how long work takes, which this is not).
-  // The missing re-sync is filed as [LW-HBAR-RESYNC].
-  await page.waitForTimeout(300)
-  await page.locator('[data-testid="month-SEP"]').click()
+  // PRESSED INSIDE THE DRAG'S HOLD, on purpose ([LW-HBAR-RESYNC], 23 Sep 26).
+  // The app holds the thumb still for 250ms after the bar itself is dragged
+  // (Matrix.tsx `syncHbar`), so it is never written out from under a finger —
+  // and it used to DROP a follow asked for inside that hold, for good: a month
+  // pressed then moved the grid to September and left the thumb at January
+  // (forced 5 of 5; one run in four on the owner's fast PC). It now catches up
+  // when the hold ends.
+  //
+  // Parked past JANUARY first. At the war's start a posted-out man's row
+  // (ignite) shows, and a jump that hides it makes the grid re-measure a moment
+  // later — which happened to carry the thumb along and hid the bug (measured:
+  // pressed from January, the old code passed 3 of 3). From March on no row
+  // comes or goes, so nothing but the catch-up can move the thumb.
+  await dragTo(0.2)
+  await expect(page.locator('[data-testid="row-ignite"]')).toHaveCount(0)
+  await gridAtRest(page, '2026-03-15')
+  // The drag and the press are driven from inside the page, so the press lands
+  // inside the hold on any machine, fast or slow — but two frames apart, as a
+  // hand's would be: the bar's own scroll event arrives on the next frame, and
+  // a press in the SAME frame as the drag (which no person can make) would have
+  // that late event carry the grid back to the drag.
+  await bar.evaluate(async el => {
+    el.scrollLeft = Math.round((el.scrollWidth - el.clientWidth) * 0.21)
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))
+    document.querySelector<HTMLElement>('[data-testid="month-SEP"]')!.click()
+  })
   await expect.poll(() => bar.evaluate(el => (el.scrollLeft / (el.scrollWidth - el.clientWidth))), { timeout: 4000 })
     .toBeGreaterThan(0.6)
   const f = await bar.evaluate(el => el.scrollLeft / (el.scrollWidth - el.clientWidth))
   expect(f).toBeLessThan(0.85)
+})
+
+// ...and the bar is PLACED the moment it appears. It goes when the page is
+// scrolled to its foot (the grid's own scrollbar is on screen there) and comes
+// back when the page scrolls up — mounted afresh each time, and it used to be
+// told where the grid was only after its first frame had painted, the same
+// one-frame-late path as the frozen date bar the owner filmed (23 Sep 26): the
+// thumb flashed at January, then jumped. Read in the very task that inserts it
+// (a MutationObserver fires after the commit and before any paint).
+test('the bottom scrollbar shows the grid\'s place the moment it appears', async ({ page }) => {
+  desktopOnly()
+  await page.locator('[data-testid="month-AUG"]').click()
+  await page.locator('[data-testid="head-2026-08-01"]').waitFor({ state: 'attached' })
+  await gridAtRest(page, '2026-08-01')
+  await expect(page.locator('.mx-hbar')).toBeVisible()
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight))
+  await expect(page.locator('.mx-hbar')).toHaveCount(0)
+  await page.evaluate(() => {
+    const w = window as any
+    w.__thumbAt = null
+    const mo = new MutationObserver(() => {
+      const h = document.querySelector<HTMLElement>('#page-leavewar .mx-hbar')
+      if (!h) return
+      mo.disconnect()
+      const g = document.querySelector<HTMLElement>('#page-leavewar .mx-wrap')!
+      const hm = h.scrollWidth - h.clientWidth, gm = g.scrollWidth - g.clientWidth
+      w.__thumbAt = { bar: hm > 0 ? h.scrollLeft / hm : 0, grid: gm > 0 ? g.scrollLeft / gm : 0 }
+    })
+    mo.observe(document.body, { childList: true, subtree: true })
+  })
+  await page.evaluate(() => window.scrollTo(0, 0))
+  await expect(page.locator('.mx-hbar')).toBeVisible()
+  const t = await page.evaluate(() => (window as any).__thumbAt)
+  expect(t, 'the bar was seen as it appeared').not.toBeNull()
+  expect(t.grid, 'the grid is parked well along the year').toBeGreaterThan(0.4)
+  expect(Math.abs(t.bar - t.grid), 'the thumb starts where the grid is, not at January').toBeLessThan(0.02)
 })

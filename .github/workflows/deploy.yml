@@ -82,6 +82,13 @@ jobs:
   #     (Settings → Secrets and variables → Actions → Variables) and the
   #     original split jobs below run on GitHub's machines instead — for when the
   #     PC is off: a job waiting for an offline runner fails after 24 hours.
+  #     Known there (23 Sep 26): on the private repo's 2-core machine the two long
+  #     Leave War scenarios in e2e/step4-leavewar.spec.ts timed out even after
+  #     they were taught to wait on conditions (D87) — the likeliest lever is a
+  #     ±1px tolerance in `gridAtRest` (e2e/app.ts), which watches a header to
+  #     the pixel while the desktop's background fill can nudge it by ≤1px. A
+  #     Leave War desktop timeout there earns ONE re-run of the failed group,
+  #     not an investigation; a second failure is new evidence (D84).
   #   - PORTS: this PC also hosts the chats' previews on 4173/4180 (D86), so the
   #     browser gate and the Tracker smoke serve on their own ports here.
   #   - SHELL: cmd, not PowerShell — a machine's script policy can refuse the
@@ -99,6 +106,12 @@ jobs:
   #   - THE RUNNER'S ACCOUNT (Astra SEC-002): never an Administrator. As a Windows
   #     service it runs under a restricted account (NETWORK SERVICE at least; a
   #     dedicated standard user with no access to his profile is better).
+  #     DONE 23 Sep 26: the service `actions.runner.seejiaokai-Raptor.JK` runs as
+  #     NT AUTHORITY\NETWORK SERVICE, starts with the PC, and lives in
+  #     C:\actions-runner\actions-runner (one folder deeper than the first,
+  #     hand-run copy, which is left unused in C:\actions-runner — so never
+  #     delete C:\actions-runner itself). He installed it himself; its sign-up
+  #     code is his credential (D89).
   #   - PORT_URL / APP_URL are pinned too (Astra CI-001): either one left in the
   #     machine's environment would point a gate at another checkout's preview.
   pc:
