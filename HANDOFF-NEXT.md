@@ -14,10 +14,11 @@ permissions were tightened by him (Astra SEC-102, done).
 
 ## Next, in order
 
-1. **`[HUMAN-RETEST]` — the Tracker chat is running** on `claude/tracker-human-retest-8d3411` (D153: preview
-   4180, e2e 4182, smoke 4181, rulings from D120). It merges `main` in before its own merge (D78).
-2. **The presentation/demo-video chat (D154)** may record now — `main` has the Leave War fixes. Preview 4185,
-   rulings from D170; D58 holds (no unit designation).
+1. **The presentation/demo-video chat (D154) is the current work (D155)** — `main` has the Leave War fixes.
+   Preview 4185, rulings from D170; D58 holds (no unit designation).
+2. **`[HUMAN-RETEST]` — the Tracker chat is PAUSED (D155)** at its own handoff on
+   `claude/tracker-human-retest-8d3411` (D153 ports 4180/4182/4181, rulings from D120); it resumes on his
+   word and merges `main` in first (D78).
 3. Filed from this work: `[LW-FROZEN-BAR-GAP]` (a one-frame blink), `[LW-FIGSEL-SLOW]` (a slow unit test).
 4. A docs-only trim pass (D29): DECISIONS is over its ceiling.
 5. Before ANY collaborator: take the runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).

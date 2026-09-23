@@ -116,8 +116,8 @@ raised and the branch deliberately left), `[STORE-READER-SWEEP]`, `[OIL-REQ-NAME
 `[OIL-PERSONAL-PLACEHOLDER]` and `[CROWD-SIM-BRIEF]` (both below `[ALL-AVAIL-WINDOW]`).
 `[LW-MONTHJUMP-PHONE]` and `[LW-HBAR-RESYNC]` — FIXED on `claude/lw-monthjump-phone` (PR #428) with the
 owner's filmed frozen-bar jump, and archived; MERGED to `main` 23 Sep 26 on his "merge live" (look done). Left from it:
-`[LW-FROZEN-BAR-GAP]` (a one-frame blink, below `[ALL-AVAIL-WINDOW]`). `[CI-TWO-CORES]` — the checks
-run on his PC (a Windows service); the runner folder's permissions are his to tighten (below it).
+`[LW-FROZEN-BAR-GAP]` (a one-frame blink, below `[ALL-AVAIL-WINDOW]`). `[CI-TWO-CORES]` — DONE and
+archived: the checks run on his PC as a Windows service, its folder permissions tightened.
 
 **STALE ABOVE, CORRECTED 22 Sep 26:** the "STACK PROGRESS (updated 18 Sep 26)" block says the next
 stack item is step 4 (one Absence record). **Step 4 SHIPPED on 20 Sep 26** — `raptor-port/CLAUDE.md`
@@ -660,8 +660,9 @@ D120. Never two full gate runs at once (false failures under load). The order of
 fix on `claude/lw-monthjump-phone`** — which still merges FIRST. Tracker chat: preview 4180, e2e
 `E2E_PORT=4182`, smoke `SMOKE_PORT=4181`, rulings from D120; never a full gate run while the Leave War
 chat or the PC runner (`gh run list`) is mid-run. **D154: a third chat builds a presentation to
-commanders and a demo video** on its own worktree (preview 4185, rulings from D170) — record the video
-after the Leave War fixes merge (`main` still shows the frozen-bar jump); D58 holds for the deck/video.
+commanders and a demo video** on its own worktree (preview 4185, rulings from D170); D58 holds for the
+deck/video. **D155: the Tracker chat is PAUSED** at its own handoff — the demo video first (the Leave War
+fixes are live on `main`); it resumes on his word, bringing `main` in first (D78).
 **His words: "This also means that all the previous bug tests we did there will be bugs not
 captured. Because I didnt test them when i told u that u would test like a human since."** He is
 right, and the OIL build is the proof. It had a two-model cross-provider review and 5341 green
@@ -892,27 +893,6 @@ exactly the case he opened this with.
 **Sequencing: AFTER `[OIL-SEATS-CAN-EARN]`**, which builds the counters this window opens from, and
 which settles where they appear. Ruling: `DECISIONS.md` D38; the related ones are D27 (the count is a
 scheduling feature), D36 (the narrow window) and D37 (the count reads as what it is).
-
-### [CI-TWO-CORES] GitHub's machine halved when the repo went private — the checks are tuned for 4 cores (23 Sep 26)
-
-Private repo = GitHub's 2-core machines (public = 4): from the switch (22 Sep ~17:40 UTC) every parallel check
-doubled (a run ~20 min) and billed ~60 of the month's minutes (Free 2,000 · Pro 3,000 — minutes, not speed). **CHOSEN (D89): the checks run on HIS PC** — a Windows self-hosted runner ("JK",
-registered 23 Sep 26 by hand in an admin window; a Windows service is next). BUILT on
-`claude/lw-monthjump-phone`: the `pc` job in `deploy.yml` (one job, cmd shell, line endings as stored,
-e2e on 4273 / smoke on 4279), the old jobs behind `CI_ON_GITHUB`. Trials on the PC: every gate runs (~14 min
-green), and it exposes FAST-machine races the slow runner hid — the phone month test is red there until
-`[LW-MONTHJUMP-PHONE]` is fixed, so `CI_ON_GITHUB=true` was set 23 Sep 26 — **DELETED the same afternoon, with
-the fix in; the next push ran on the PC** (PR #428's checks). Astra's second
-read added: the PC runs only HIS OWN changes in a PRIVATE repo, and the runner never as Administrator.
-**23 Sep 26, afternoon:** the runner is a Windows SERVICE (`actions.runner.seejiaokai-Raptor.JK`) under
-NT AUTHORITY\NETWORK SERVICE, auto-start, installed by him at `C:\actions-runner\actions-runner`
-(one folder deeper than the first copy — never delete `C:\actions-runner`). Astra's third read (SEC-102):
-`Authenticated Users` inherit MODIFY on that folder from `C:\`, and the PC has two Codex-sandbox
-accounts besides his — **FIXED BY HIM 23 Sep 26, 16:38** (the four `icacls` lines, evidence sheet §14);
-verified: only Administrators, SYSTEM and the runner's own group may change its files, Users read; online.
-The first run AS A SERVICE hung 30 min in the browser gate: Playwright's CI git-info `git fetch` waited on
-Git Credential Manager, which a service cannot show (no stored token since SEC-003). Fixed:
-`captureGitInfo` off in `playwright.config.ts`; `GIT_TERMINAL_PROMPT=0`/`GCM_INTERACTIVE=never` in the job.
 
 ### [LW-FIGSEL-SLOW] One Leave War unit test times out under a full parallel run (23 Sep 26)
 

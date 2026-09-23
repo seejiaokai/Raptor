@@ -242,3 +242,27 @@ out. Fix: one trailing `syncHbar` when the window closes. **In the next chat, wi
 frozen-bar jump** — red 5/5 before, green 5/5 after; evidence sheet PART TWO
 (`raptor-port/docs/handpass/2026-09-23-lw-monthjump.md` §8–§14). Archive both once the branch merges.
 
+
+*Moved here 2026-09-23 by backlog-archive.mjs. Forward facts: `.github/workflows/deploy.yml`, `HANDOFF.md`.*
+
+### [CI-TWO-CORES] GitHub's machine halved when the repo went private — the checks are tuned for 4 cores (23 Sep 26)
+
+Private repo = GitHub's 2-core machines (public = 4): from the switch (22 Sep ~17:40 UTC) every parallel check
+doubled (a run ~20 min) and billed ~60 of the month's minutes (Free 2,000 · Pro 3,000 — minutes, not speed). **CHOSEN (D89): the checks run on HIS PC** — a Windows self-hosted runner ("JK",
+registered 23 Sep 26 by hand in an admin window; a Windows service is next). BUILT on
+`claude/lw-monthjump-phone`: the `pc` job in `deploy.yml` (one job, cmd shell, line endings as stored,
+e2e on 4273 / smoke on 4279), the old jobs behind `CI_ON_GITHUB`. Trials on the PC: every gate runs (~14 min
+green), and it exposes FAST-machine races the slow runner hid — the phone month test is red there until
+`[LW-MONTHJUMP-PHONE]` is fixed, so `CI_ON_GITHUB=true` was set 23 Sep 26 — **DELETED the same afternoon, with
+the fix in; the next push ran on the PC** (PR #428's checks). Astra's second
+read added: the PC runs only HIS OWN changes in a PRIVATE repo, and the runner never as Administrator.
+**23 Sep 26, afternoon:** the runner is a Windows SERVICE (`actions.runner.seejiaokai-Raptor.JK`) under
+NT AUTHORITY\NETWORK SERVICE, auto-start, installed by him at `C:\actions-runner\actions-runner`
+(one folder deeper than the first copy — never delete `C:\actions-runner`). Astra's third read (SEC-102):
+`Authenticated Users` inherit MODIFY on that folder from `C:\`, and the PC has two Codex-sandbox
+accounts besides his — **FIXED BY HIM 23 Sep 26, 16:38** (the four `icacls` lines, evidence sheet §14);
+verified: only Administrators, SYSTEM and the runner's own group may change its files, Users read; online.
+The first run AS A SERVICE hung 30 min in the browser gate: Playwright's CI git-info `git fetch` waited on
+Git Credential Manager, which a service cannot show (no stored token since SEC-003). Fixed:
+`captureGitInfo` off in `playwright.config.ts`; `GIT_TERMINAL_PROMPT=0`/`GCM_INTERACTIVE=never` in the job.
+
