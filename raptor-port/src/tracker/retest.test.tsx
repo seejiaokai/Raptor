@@ -271,6 +271,248 @@ describe('[HUMAN-RETEST] the Tracker — the Export window (round two)', () => {
   })
 })
 
+describe('[HUMAN-RETEST] the Tracker — event details belong to their chart (round three: D126, D122, W1-8, W1-9, w3-F4)', () => {
+  const y26 = () => C.sylIdOf('2026'), tx = () => C.sylIdOf('Tx 2026'), ag = () => C.sylIdOf('A/G - A/A 2026')
+  async function on(id: string) { if (C.sylDirty) await C.saveChangesClick(); if (C.curSylId() !== id) { await C.switchSyllabus(id); await C.whenLoaded() } }
+  async function put(id: string, ev: string, f: Record<string, string>) { await on(id); await C.saveInfoFor(ev, { ...C.infoFor(ev), ...f }) }
+  async function read(id: string, ev: string) { await on(id); return C.infoFor(ev) }
+  async function unset(id: string, ev: string) { await on(id); await C.resetInfoFor(ev) }
+
+  it('D126 / W1-8 — a detail typed on Tx stays on Tx, and one typed on 2026 stays on 2026', async () => {
+    await put(tx(), 'BFM-5', { name: 'TX NAME FIVE' })
+    expect((await read(y26(), 'BFM-5')).name, "2026's BFM-5 keeps its own name").not.toBe('TX NAME FIVE')
+    await put(y26(), 'BFM-5', { hrs: '7.7 Hrs' })
+    const t = await read(tx(), 'BFM-5')
+    expect(t.name, 'Tx keeps what was typed on Tx').toBe('TX NAME FIVE')
+    expect(t.hrs, "2026's hours never reach Tx").not.toBe('7.7 Hrs')
+    await unset(tx(), 'BFM-5'); await unset(y26(), 'BFM-5')
+  })
+
+  it('D122 / W1-9 — importing ONE chart leaves every other chart’s typed details alone', async () => {
+    await put(y26(), 'BFM-3', { name: 'A-SIDE NAME' })
+    const file = await C.collectCharts([y26()])
+    await put(tx(), 'BFM-3', { name: 'B-SIDE NAME' })
+    await put(ag(), 'DAAR', { name: 'AG ONLY EDIT' })
+    await on(y26()); await importFile(file)
+    expect((await read(tx(), 'BFM-3')).name, "Tx's own edit survives an import of 2026").toBe('B-SIDE NAME')
+    expect((await read(ag(), 'DAAR')).name, 'an event not on the imported chart is never touched').toBe('AG ONLY EDIT')
+    expect((await read(y26(), 'BFM-3')).name, 'the imported chart has the file’s detail').toBe('A-SIDE NAME')
+    await unset(tx(), 'BFM-3'); await unset(ag(), 'DAAR'); await unset(y26(), 'BFM-3')
+  })
+
+  it('D122 — the imported chart takes the file’s detail edits and keeps a detail typed here that the file does not speak to', async () => {
+    await put(y26(), 'BFM-3', { name: 'FILE NAME' })
+    const file = await C.collectCharts([y26()])
+    await put(y26(), 'BFM-3', { name: 'LOCAL NAME' })
+    await put(y26(), 'BFM-4', { hrs: '9.9 Hrs' })
+    await importFile(file)
+    expect((await read(y26(), 'BFM-3')).name, 'the file’s edit comes in').toBe('FILE NAME')
+    expect((await read(y26(), 'BFM-4')).hrs, 'a typed detail the file does not carry is never wiped').toBe('9.9 Hrs')
+    await unset(y26(), 'BFM-3'); await unset(y26(), 'BFM-4')
+  })
+
+  it('D122 — a file written before D126 (one table for every chart) brings its details onto the imported chart only', async () => {
+    const file: any = await C.collectCharts([y26()])
+    delete file.eventInfoBySyl
+    file.eventInfo = { 'BFM-3': { name: 'FLAT NAME' } }
+    await on(y26()); await importFile(file)
+    expect((await read(y26(), 'BFM-3')).name).toBe('FLAT NAME')
+    expect((await read(tx(), 'BFM-3')).name, 'Tx, not in the file, is untouched').not.toBe('FLAT NAME')
+    await unset(y26(), 'BFM-3')
+  })
+
+  it('D126 — a duplicate reads exactly as the chart it was copied from, details included', async () => {
+    await put(tx(), 'BFM-5', { name: 'TX DUP NAME' })
+    const shipCrew = (await read(tx(), 'BFM-3')).crew
+    const p = C.dupSyl(); await answer('TX DUP'); await p; await C.whenLoaded()
+    expect(C.curSylName()).toBe('TX DUP')
+    expect(C.infoFor('BFM-5').name, 'the typed detail came with the copy').toBe('TX DUP NAME')
+    expect(C.infoFor('BFM-3').crew, "and Tx's own shipped wording, not the long course's").toBe(shipCrew)
+    const d = C.delSyl(); await answer(true); await d; await C.whenLoaded()
+    await unset(tx(), 'BFM-5')
+  })
+
+  it('w3-F4 — "Reset to doc" is offered only where there IS a doc, fills the boxes, and saves nothing until Save', async () => {
+    await on(y26())
+    const doc = C.infoFor('ACG-01').name
+    await C.saveInfoFor('ACG-01', { ...C.infoFor('ACG-01'), name: 'MY OWN NAME' })
+    C.openInfo('ACG-01')
+    const a = await render(<InfoModal />)
+    const reset = a.querySelector('#ifReset') as HTMLButtonElement
+    expect(reset, 'a shipped event offers Reset to doc').toBeTruthy()
+    await act(async () => { reset.click() })
+    expect((a.querySelector('#ifName') as HTMLInputElement).value, 'the box shows the doc again').toBe(doc)
+    expect(C.infoFor('ACG-01').name, 'but nothing is saved yet').toBe('MY OWN NAME')
+    await act(async () => { (a.querySelector('#ifCancel') as HTMLButtonElement).click() })
+    expect(C.infoFor('ACG-01').name, 'Cancel keeps what was there').toBe('MY OWN NAME')
+    a.remove()
+    await C.resetInfoFor('ACG-01')
+    /* a ball the user made has no source document: no button promising one */
+    C.toggleArrange()
+    const p = C.addModule('acad'); await answer('MY-01'); await p
+    C.toggleArrange(); await C.saveChangesClick()
+    C.openInfo('MY-01')
+    const b = await render(<InfoModal />)
+    expect(b.querySelector('#ifReset'), 'no Reset to doc where there is no doc').toBeNull()
+    C.closeInfo(); b.remove()
+    C.openShowAll()
+    const sa = await render(<ShowAllPanel />)
+    const row = [...sa.querySelectorAll('.sarow')].find(r => (r.querySelector('.sid') || {}).textContent === 'MY-01')!
+    await act(async () => { (row.querySelector('button.sedit') as HTMLButtonElement).click() })
+    expect([...sa.querySelectorAll('.saedit button')].some(x => /Reset to doc/.test(x.textContent || '')), "nor in Show All's editor").toBe(false)
+    C.closeShowAll(); sa.remove()
+  })
+
+  it('re-walk R-1 — Save changes after a fonts-only edit does not mark an untouched built-in "✎ edited" (the F7 rule at its second writer)', async () => {
+    await on(ag())
+    expect(C.sylHasOwnDef(ag()), 'the premise: untouched').toBe(false)
+    C.toggleArrange(); C.setFont(10); C.toggleArrange()
+    expect(C.sylDirty).toBe(true)
+    await C.saveChangesClick()
+    expect(C.sylHasOwnDef(ag()), 'its events are exactly the shipped ones').toBe(false)
+    expect(C.currentFont(), 'the font change is kept').toBe(10)
+  })
+})
+
+describe('[HUMAN-RETEST] the Tracker — marking, Last Flown, deleting a ball, lulls (round three: D123, D124, W2-F2..F6)', () => {
+  const lf = (s: string) => ({ syll: (C.dates[s] || {}).lastSyll || null, curr: (C.dates[s] || {}).lastCurr || null })
+  const dayOf = (s: string, id: string) => (((C.marks as any)[s] || {})[id] || {}).d || null
+  async function setup() {
+    if (C.arrangeMode) C.toggleArrange()
+    if (C.sylDirty) await C.saveChangesClick()
+    if (C.curSylId() !== C.sylIdOf('2026')) { await C.switchSyllabus(C.sylIdOf('2026')); await C.whenLoaded() }
+    if (!C.active && C.roster.length) C.setActive(C.roster[0].id)
+    const s = C.active
+    for (const id of ['TR-2', 'TR-3', 'TR-4', 'AHC-1']) if (C.gradeOf(s, id)) { C.openPop(id, at); await C.popGrade('0') }
+    await C.setLastSyll(s, ''); await C.setLastCurr(s, '')
+    await drain()
+    return s
+  }
+  async function grade(id: string, day: string, g = 'dco') { C.openPop(id, at); C.popDoneChanged(day); await C.popGrade(g) }
+
+  it('the premise: TR-2, TR-3, TR-4 and AHC-1 are flights on 2026', async () => {
+    await setup()
+    for (const id of ['TR-2', 'TR-3', 'TR-4', 'AHC-1']) expect(C.byid[id] && C.byid[id].type, id).toBe('flight')
+  })
+
+  it('W2-F2 — a "Done on" box left empty for a moment while a day is retyped is not a day flown', async () => {
+    const s = await setup()
+    await grade('TR-2', '2026-09-15')
+    expect(lf(s).syll).toBe('2026-09-15')
+    C.openPop('TR-2', at)
+    await C.popDoneChanged('')                    /* the box, mid-typing */
+    expect(dayOf(s, 'TR-2'), 'the flight keeps its day').toBe('2026-09-15')
+    expect(lf(s).syll, 'Last Flown is not today').toBe('2026-09-15')
+    await C.popDoneChanged('2026-09-17')
+    expect(dayOf(s, 'TR-2')).toBe('2026-09-17')
+    expect(lf(s)).toEqual({ syll: '2026-09-17', curr: '2026-09-17' })
+    C.closePop()
+  })
+
+  it('D123 / W2-F3 — Last Flown is the latest day actually flown, whatever order the flights were entered', async () => {
+    const s = await setup()
+    await grade('TR-2', '2026-09-23')
+    await grade('TR-3', '2026-09-21')
+    expect(lf(s).syll, 'an older flight entered after a newer one does not drag it back (R50)').toBe('2026-09-23')
+    C.openPop('TR-2', at); await C.popDoneChanged('2026-09-20'); C.closePop()
+    expect(lf(s), 'correcting the newer flight to an earlier day pulls it back to the latest flown').toEqual({ syll: '2026-09-21', curr: '2026-09-21' })
+    C.openPop('TR-3', at); await C.popGrade('0')
+    expect(lf(s).syll, 'un-marking a flight pulls it back to the latest flight still flown').toBe('2026-09-20')
+    await grade('TR-4', '2026-09-24')
+    expect(lf(s).syll).toBe('2026-09-24')
+    C.openPop('TR-4', at); await C.popGrade('na')
+    expect(lf(s).syll, 'a future day taken back comes back down').toBe('2026-09-20')
+    C.openPop('TR-2', at); await C.popGrade('0')
+    expect(lf(s), 'nothing flown — nothing to show').toEqual({ syll: null, curr: null })
+  })
+
+  it('D123 — a Last Flown typed by hand still stands until a later flight moves it (left as it is today)', async () => {
+    const s = await setup()
+    await C.setLastSyll(s, '2026-09-30')
+    await grade('TR-3', '2026-09-21')
+    expect(lf(s).syll, 'an older flight leaves the typed day').toBe('2026-09-30')
+    await grade('TR-2', '2026-10-02')
+    expect(lf(s).syll, 'a later flight moves it').toBe('2026-10-02')
+    C.openPop('TR-2', at); await C.popDoneChanged('2026-09-25'); C.closePop()
+    expect(lf(s).syll, 'and from then on it is worked out from the flights').toBe('2026-09-25')
+    await setup()
+  })
+
+  it('W2-F6 — ↶ and ↷ keep the chart where it is, as grading does (R62)', async () => {
+    const s = await setup()
+    const board = document.getElementById('board')!
+    board.scrollTop = 900; board.scrollLeft = 40
+    C.openPop('ACG-05', at); await C.popGrade('dco')
+    expect(board.scrollTop, 'the premise: grading keeps the view').toBe(900)
+    await C.doUndo()
+    expect(board.scrollTop, 'undo keeps it').toBe(900)
+    await C.doRedo()
+    expect(board.scrollTop, 'redo keeps it').toBe(900)
+    expect(C.gradeOf(s, 'ACG-05')).toBe('dco')
+    C.openPop('ACG-05', at); await C.popGrade('0'); await drain()
+  })
+
+  it('D124 / W2-F7 — deleting a ball and saving wipes its marks, so a new ball with that code starts ungraded', async () => {
+    const s = await setup()
+    const other = C.roster.find((r: any) => r.id !== s)?.id
+    C.openPop('ACG-03', at); await C.popFail(1); await C.popGrade('dco')
+    if (other) { C.setActive(other); C.openPop('ACG-03', at); await C.popGrade('dpco'); C.setActive(s) }
+    expect(C.gradeOf(s, 'ACG-03')).toBe('dco')
+    C.toggleArrange()
+    /* the ball editor's own Delete ball (the production route) */
+    C.openEdit('ACG-03')
+    const d = C.deleteFromEditModal()
+    await until(() => C.dlg); expect(C.dlg.msg, 'the question says the marks go').toMatch(/marks/i)
+    C.dlgClose(true); await d
+    await C.doUndo()
+    expect(C.byid['ACG-03'], 'undo before saving brings the ball back').toBeTruthy()
+    expect(C.gradeOf(s, 'ACG-03'), '…with its marks, as it was').toBe('dco')
+    C.openEdit('ACG-03'); const d2 = C.deleteFromEditModal(); await answer(true); await d2
+    C.toggleArrange(); await C.saveChangesClick()
+    C.toggleArrange()
+    const p = C.addModule('acad'); await answer('ACG-03'); await p
+    C.toggleArrange(); await C.saveChangesClick()
+    expect(C.gradeOf(s, 'ACG-03'), 'the new ball is not graded').toBe(0)
+    expect(((C.marks[s] || {})['ACG-03'] || {}).f || 0, 'and carries no failure').toBe(0)
+    if (other) { expect(C.gradeOf(other, 'ACG-03'), "nor for the other student").toBe(0) }
+    /* put 2026 back to its shipped events for the tests after this one */
+    const d3 = C.delSyl(); await until(() => C.dlg); C.dlgClose('__alt__'); await d3; await C.whenLoaded()
+    expect(C.sylHasOwnDef(C.sylIdOf('2026'))).toBe(false)
+  })
+
+  it('W2-F4 — a lull period is removed only after a question', async () => {
+    const s = await setup()
+    /* the lull calendar's own two clicks */
+    C.openLullPicker(s); await C.lullDayClick('2026-10-20'); await C.lullDayClick('2026-10-31')
+    expect(C.lulls[s].length, 'the premise: one period').toBe(1)
+    const p = C.removeLull(s, 0)
+    await until(() => C.dlg); expect(C.dlg.msg).toMatch(/20\/10\/26/)
+    C.dlgClose(false); await p
+    expect(C.lulls[s].length, 'No keeps it').toBe(1)
+    const q = C.removeLull(s, 0); await answer(true); await q
+    expect(C.lulls[s].length, 'Yes removes it').toBe(0)
+  })
+
+  it('W2-F5 — Copy to… has a "select all" row (the 7 Aug approved design)', async () => {
+    const s = await setup()
+    /* a course of three, so there are two others to tick (the + Add route) */
+    let added: string | null = null
+    if (C.roster.length < 3) { const p = C.addStudent(); await answer('LULL THREE'); await p; added = C.roster.find((r: any) => r.name === 'LULL THREE')?.id || null; C.setActive(s) }
+    expect(C.roster.length, 'the premise: three on the course').toBeGreaterThanOrEqual(3)
+    const { default: SidePanel } = await import('./components/SidePanel.jsx')
+    const Live = () => { useSyncExternalStore(C.subscribe, C.getVersion); return <SidePanel /> }
+    C.openLullCopy(s)
+    const host = await render(<Live />)
+    const all = host.querySelector('#lullCopyAll') as HTMLInputElement
+    expect(all, 'a select-all box').toBeTruthy()
+    await act(async () => { all.click() })
+    const others = C.roster.filter((r: any) => r.id !== s).map((r: any) => r.id)
+    expect([...C.lullCopy.picked].sort(), 'it ticks everyone else').toEqual([...others].sort())
+    C.closeLullCopy(); host.remove()
+    if (added) { const r = C.removeStudent(added); await answer(true); await r }
+  })
+})
+
 describe('[HUMAN-RETEST] the Tracker — unsaved chart edits are never dropped or left out without a word (round two)', () => {
   /* a structure edit that waits for ✓ Save changes: a ball added in edit mode */
   async function dirty(name: string) {

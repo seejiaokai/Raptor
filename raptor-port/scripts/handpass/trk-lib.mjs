@@ -24,7 +24,7 @@ import { chromium } from '@playwright/test'
 const HERE = dirname(fileURLToPath(import.meta.url))
 export const ROOT = resolve(HERE, '..', '..')                     // raptor-port/
 export const SHOTS = process.env.HP_SHOTS || resolve(ROOT, 'docs/img/handpass/2026-09-23-tracker')
-export const OUT = resolve(ROOT, 'docs/handpass/parts/tracker')   // per-script JSON results
+export const OUT = process.env.HP_OUT || resolve(ROOT, 'docs/handpass/parts/tracker')   // per-script JSON results (HP_OUT: a re-walk keeps the first walk's)
 export const BASE = process.env.HP_URL || 'http://localhost:4180'
 /* big, regenerable artefacts (exported files, whole-chart snapshots) stay OUT of
    the repo (D69 — no bloat); a re-run rebuilds them */

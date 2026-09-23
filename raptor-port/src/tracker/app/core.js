@@ -9,6 +9,7 @@
 import { SYLLABI, SYL_NAMES, DEFAULT_SYL_NAME, DEFAULT_SYL_ORDER } from '../data/syllabi.js';
 import { DEFAULT_LAYOUTS } from '../data/layouts.js';
 import { EVENT_INFO, EVENT_INFO_BY_SYL } from '../data/eventInfo.js';
+import { shippedDetails, diffDetails, scrubBlock, mergeBlock, realFlatEdits, blockFromFlat, isDetailsTable } from './eventDetails.js';
 import { SEED_STATE, SEED_STAMP } from '../data/seedState.js';
 import { storage, flushNow, loadLatest } from '../storage.js';
 import * as FMT from './fileFormat.js';
@@ -88,44 +89,66 @@ export const TYPE_COLOR = { flight: '#19b6e8', acad: '#27d64a', test: '#ff4040',
 const DARKC = new Set(['sim', 'acad', 'na', 'flight', 'test', 'device']); // labels needing dark text on light fills
 export const GRADE_FILL = { dco: '#000000', dpco: '#1f6dff', marg: '#27d64a', na: '#cdbb8e' };
 export const DONE = new Set(['dco', 'dpco', 'marg']);
+/* Event details, PER CHART (owner, 23 Sep 26 — D126): { [sylId]: { [eventId]:
+   fields } }, only what differs from that chart's shipped wording. One table
+   keyed by event code (the old 'v3:eventinfo') let a detail typed on Tx show on
+   2026 and let an import of one chart reset another's (W1-8, W1-9, D122). The
+   helpers and the reasoning: app/eventDetails.js. */
 export let eventInfo = {}; export let showDetails = false;
-/* Keep only fields that genuinely differ from the baked base. Files used to
-   carry the WHOLE info table and applyCharts stored it verbatim, freezing every
-   event to the values of the day the file was saved — which sat above the
-   per-syllabus profiles and quietly clobbered them. Scrubbing on load heals
-   stores polluted that way; it never touches a real user edit. */
-/* __kept marks fields the user typed deliberately even though they match the
-   baked base. That happens on a renumbered syllabus: Tx's SA-5 ships with
-   "(Refer to BCTM SA-6)" on the end, so deleting that note leaves exactly the
-   base wording — indistinguishable, by value alone, from a field a file merely
-   carried along. Scrubbing pruned it and the note came back on the next load.
-   The marker is what tells the two apart; a file's bulk table has none, so it
-   is still pruned exactly as before. */
-function scrubEventInfo() {
-  for (const k of Object.keys(eventInfo)) {
-    const base = EVENT_INFO[k] || {}; const o = eventInfo[k]; const diff = {};
-    const kept = Array.isArray(o.__kept) ? o.__kept : [];
-    Object.keys(o).forEach(f => {
-      if (f === '__kept') return;
-      if ((o[f] || '') !== (base[f] || '') || kept.includes(f)) diff[f] = o[f];
-    });
-    const stillKept = kept.filter(f => f in diff);
-    if (stillKept.length) diff.__kept = stillKept;
-    if (Object.keys(diff).filter(f => f !== '__kept').length) eventInfo[k] = diff; else delete eventInfo[k];
+const kEventInfo = () => SYL_NS + ':eventinfo';
+const kEventInfoFlat = 'v3:eventinfo';          /* the old one-table shape: read once, to convert */
+/* the chart's shipped wording for one event — the base table, then the
+   built-in's own profile (the short course renumbers sorties, so e.g. its
+   BFM-5 flies the BFM-7 profile) */
+function shippedFor(sylId, id) { return shippedDetails(EVENT_INFO, EVENT_INFO_BY_SYL, baseOf(sylId), id); }
+const shippedOfSyl = sylId => id => shippedFor(sylId, id);
+async function loadEventInfo() {
+  const r = await sGet(kEventInfo());
+  if (r != null && r !== '') { eventInfo = sParse(r, {}, 'object'); if (!isDetailsTable(eventInfo)) eventInfo = {}; }
+  else { eventInfo = await convertFlatEventInfo(); if (Object.keys(eventInfo).length) await saveEventInfo(); }
+  for (const sid of Object.keys(eventInfo)) {
+    eventInfo[sid] = scrubBlock(eventInfo[sid], shippedOfSyl(sid));
+    if (!Object.keys(eventInfo[sid]).length) delete eventInfo[sid];
   }
 }
-async function loadEventInfo() {
-  try { const r = await sGet('v3:eventinfo'); eventInfo = r ? JSON.parse(r) : {}; } catch (e) { eventInfo = {}; }
-  scrubEventInfo();
+/* ONE-TIME: a browser that typed details before D126 holds them in the old
+   one-table key, where each one showed on EVERY chart with that code. His typed
+   details are real work — they are part of the charts he exports on the way to
+   the database (D120) — so they are carried over, not dropped: each edit lands
+   on every chart that has the event, so every chart reads exactly as it did.
+   The old key is left in place, untouched (a backup, never read again once the
+   new one exists). Chart definitions are read from storage here, not from the
+   live lets: at boot they are not loaded yet. */
+async function convertFlatEventInfo() {
+  let flat = null;
+  try { flat = sParse(await sGet(kEventInfoFlat), null, 'object'); } catch (_) { flat = null; }
+  const edits = realFlatEdits(flat, EVENT_INFO);
+  if (!Object.keys(edits).length) return {};
+  const defs = sParse(await sGet(kSyls()), {}, 'object') || {};
+  const ids = new Set([...SYLS.map(e => e.id), ...Object.keys(SYL_TOMB || {}).filter(isSylId)]);
+  const out = {};
+  for (const sid of ids) {
+    const def = (has(defs, sid) && Array.isArray(defs[sid])) ? defs[sid] : (baseOf(sid) ? SYLLABI[baseOf(sid)] : (isBuiltinSylId(sid) ? SYLLABI[builtinBaseOf(sid)] : null));
+    if (!Array.isArray(def)) continue;
+    const base = baseOf(sid) || (isBuiltinSylId(sid) ? builtinBaseOf(sid) : null);
+    const b = blockFromFlat(edits, def.map(e => e && e.id), id => shippedDetails(EVENT_INFO, EVENT_INFO_BY_SYL, base, id));
+    if (Object.keys(b).length) out[sid] = b;
+  }
+  return out;
 }
-async function saveEventInfo() { await sSet('v3:eventinfo', JSON.stringify(eventInfo)); }
-/* Base info, then the active syllabus's own profile for that id (the short
-   course renumbers sorties, so e.g. its BFM-5 flies the BFM-7 profile), then
-   the user's own edits on top. */
-export function infoFor(id) {
-  const bySyl = (EVENT_INFO_BY_SYL[curBase()] || {})[id];
-  return Object.assign({}, EVENT_INFO[id] || {}, bySyl || {}, eventInfo[id] || {});
+async function saveEventInfo() { await sSet(kEventInfo(), JSON.stringify(eventInfo)); }
+/* The chart's shipped wording, then what was typed on THIS chart. `sylId`
+   defaults to the chart on screen — every surface draws that one. */
+export function infoFor(id, sylId) {
+  const sid = sylId || curSylId();
+  return Object.assign({}, shippedFor(sid, id), ((eventInfo[sid] || {})[id]) || {});
 }
+/* What the source document says for this event on this chart (no typed
+   edit) — what "Reset to doc" puts back in the boxes. */
+export function docInfoFor(id) { return shippedFor(curSylId(), id); }
+/* Is there a document at all? A ball the user made has none, so the button
+   that promises one is not offered ([HUMAN-RETEST] w3-F4). */
+export function hasDocInfo(id) { const d = docInfoFor(id); return ['name', 'fmt', 'hrs', 'crew', 'pre'].some(f => !!d[f]); }
 /* Prereq wording for display: the free-text note if there is one, otherwise the
    actual chart links. */
 export function preText(id) {
@@ -409,7 +432,8 @@ function trkReloadGlobalsFromMem() {
   SYL_HIDDEN = Array.isArray(hid) ? hid.filter(isSylId) : [];
   const tomb = sParse(memGet(kSylTomb()), {}, 'object');
   SYL_TOMB = (tomb && typeof tomb === 'object') ? tomb : {};
-  eventInfo = sParse(memGet('v3:eventinfo'), {}, 'object') || {};
+  eventInfo = sParse(memGet(kEventInfo()), {}, 'object') || {};
+  if (!isDetailsTable(eventInfo)) eventInfo = {};
 }
 /* [CMDL-FINISH] §3 (F8/GU-007, M1/R4-003/R4-004) — the batch, delete-aware,
    per-collection record write for the undo seam, driven by the key-grammar→scope
@@ -1802,10 +1826,10 @@ let _dlgRes = null;
    still resolves the typed text. Without a list the dialog is the old prompt
    to the byte — the extra fields are null/false/'' and DlgModal draws nothing
    for them. */
-function _dlgShow(msg, { input = false, def = '', cancel = true, ok = 'OK', alt = null, list = null, filter = false, placeholder = '', listTitle = '' } = {}) {
+function _dlgShow(msg, { input = false, def = '', cancel = true, cancelLabel = 'Cancel', ok = 'OK', alt = null, list = null, filter = false, placeholder = '', listTitle = '' } = {}) {
   return new Promise(res => {
     _dlgRes = res;
-    dlg = { msg, input, def, cancel, ok, alt, list, filter, placeholder, listTitle };
+    dlg = { msg, input, def, cancel, cancelLabel, ok, alt, list, filter, placeholder, listTitle };
     dlgSerial++;
     notify();
   });
@@ -1825,8 +1849,8 @@ export async function uiPick(msg, list, { input = false, placeholder = '', listT
   return v === null ? null : (v + '');
 }
 /* Three-way ask: returns 'ok', 'alt' or 'cancel'. */
-export async function uiChoice(msg, okLabel, altLabel) {
-  const r = await _dlgShow(msg, { ok: okLabel, alt: altLabel });
+export async function uiChoice(msg, okLabel, altLabel, cancelLabel) {
+  const r = await _dlgShow(msg, { ok: okLabel, alt: altLabel, cancelLabel: cancelLabel || 'Cancel' });
   return r === '__alt__' ? 'alt' : (r === true ? 'ok' : 'cancel');
 }
 
@@ -2619,7 +2643,10 @@ async function applyMarkHist(u) {
   if (pop) closePop();
   if (active !== s) { active = s; prefSet('lastCrew:' + course, s); refreshActive(); }
   await trkRestoring(() => saveMarks(s)); if (dates[s]) await trkRestoring(() => saveDates(s));
-  renderBoard(); renderSide();
+  /* keep the view: the person is looking at the ball they are taking back, as
+     grading keeps it (R62) — a plain redraw threw the chart back to its top
+     ([HUMAN-RETEST] W2-F6) */
+  redrawKeepView();
 }
 /* The snapshot that a step's reverse pushes onto the other stack: the SAME
    kind as the entry it undoes, taken from the live state before it is applied. */
@@ -3153,6 +3180,13 @@ export async function addModule(type) {
   let id = ((await uiPrompt('Name for the new ' + type + ' event:')) || '').trim();
   if (!id) return;
   if (byid[id]) { await uiAlert('An event with that name already exists.'); return; }
+  /* A code deleted from this chart and not saved yet still has its marks filed
+     (they go at ✓ Save changes — D124). A new ball given it now would come up
+     graded with the deleted ball's marks, so it waits for the save. */
+  if ((sylSource(curSylId()) || []).some(e => e && e.id === id)) {
+    await uiAlert('“' + id + '” was deleted from this chart and that is not saved yet. Press ✓ Save changes first (its marks are removed then), or Undo to bring it back.');
+    return;
+  }
   pushUndo();
   const maxSeq = SYL.reduce((m, e) => Math.max(m, e.seq || 0), 0);
   SYL.push({ id, type, seq: maxSeq + 1, prereqs: [], phase: 'Custom' });
@@ -3375,8 +3409,20 @@ function stamp(rec) {
 }
 
 /* ---------- side panel actions (inputs live in <SidePanel/>) ---------- */
-export async function setLastSyll(s, v) { pushMarkUndo(s, 'Last Flown (Syllabus)', 'lastSyll'); dates[s].lastSyll = v; dates[s].lastCurr = v; stamp(dates[s]); await saveDates(s); renderSide(); }
-export async function setLastCurr(s, v) { pushMarkUndo(s, 'Last Flown (Currency)', 'lastCurr'); dates[s].lastCurr = v; stamp(dates[s]); await saveDates(s); renderSide(); }
+/* A day typed by hand stands until a later flight moves it (D123) — the hand
+   marks say so; an emptied box stands for nothing. */
+export async function setLastSyll(s, v) {
+  pushMarkUndo(s, 'Last Flown (Syllabus)', 'lastSyll');
+  const d = dates[s]; d.lastSyll = v; d.lastCurr = v;
+  if (v) { d.handSyll = true; d.handCurr = true; } else { delete d.handSyll; delete d.handCurr; }
+  stamp(d); await saveDates(s); renderSide();
+}
+export async function setLastCurr(s, v) {
+  pushMarkUndo(s, 'Last Flown (Currency)', 'lastCurr');
+  const d = dates[s]; d.lastCurr = v;
+  if (v) d.handCurr = true; else delete d.handCurr;
+  stamp(d); await saveDates(s); renderSide();
+}
 export async function setDownDays(s, v) { pushMarkUndo(s, 'the down days', 'downDays'); dates[s].downDays = v; stamp(dates[s]); await saveDates(s); renderSide(); }
 export async function setUpchit(s, v) { pushMarkUndo(s, 'the upchit date', 'upchit'); dates[s].upchit = v; stamp(dates[s]); await saveDates(s); renderSide(); }
 /* v is kept verbatim — an empty or half-typed box must stay as typed. epwOf()
@@ -3384,8 +3430,14 @@ export async function setUpchit(s, v) { pushMarkUndo(s, 'the upchit date', 'upch
 export async function setEpw(s, v) { pace[s] = { ...paceOf(s), epw: v }; await savePace(s); renderSide(); }
 export async function setTarget(s, v) { pace[s] = { ...paceOf(s), target: v }; await savePace(s); renderSide(); }
 export async function setTarget2(s, v) { pace[s] = { ...paceOf(s), target2: v }; await savePace(s); renderSide(); }
+/* Asks first: adding a period takes two deliberate clicks, and removing one
+   took one stray tap on its ×, with no undo — lull periods are not in the
+   history ([HUMAN-RETEST] W2-F4). */
 export async function removeLull(s, i) {
-  (lulls[s] = lulls[s] || []).splice(i, 1); await saveLulls(s); renderSide();
+  const l = (lulls[s] || [])[i]; if (!l) return;
+  if (!await uiConfirm('Remove ' + nameOf(s) + '’s lull period ' + fmt(parseD(l.start)) + ' → ' + fmt(parseD(l.end)) + '?')) return;
+  const now = lulls[s] || []; const at = now.indexOf(l); if (at < 0) return;
+  now.splice(at, 1); await saveLulls(s); renderSide();
 }
 export function calPrev() { calView = new Date(calView.getFullYear(), calView.getMonth() - 1, 1); notify(); }
 export function calNext() { calView = new Date(calView.getFullYear(), calView.getMonth() + 1, 1); notify(); }
@@ -3426,6 +3478,12 @@ export function toggleLullCopy(s, on) {
   if (!lullCopy) return;
   const picked = on ? [...new Set([...lullCopy.picked, s])] : lullCopy.picked.filter(x => x !== s);
   lullCopy = { ...lullCopy, picked }; notify();
+}
+/* the tick-list's "select all" row — the approved 7 Aug design promised it
+   ([HUMAN-RETEST] W2-F5; R53) */
+export function setLullCopyAll(on) {
+  if (!lullCopy) return;
+  lullCopy = { ...lullCopy, picked: on ? roster.map(r => r.id).filter(id => id !== lullCopy.from) : [] }; notify();
 }
 export async function applyLullCopy() {
   if (!lullCopy) return;
@@ -3616,7 +3674,9 @@ export async function popGrade(v) {
     if (DONE.has(v)) m.d = popDoneDate || isoToday(); else delete m.d;
     stamp(m);
     saveMarks(s);
-    if (byid[popId] && byid[popId].type === 'flight' && DONE.has(v)) flownOn(s, m.d);
+    /* any change to a flight's grade — done, taken back, N.A. — can move Last
+       Flown, up or down (D123) */
+    if (byid[popId] && byid[popId].type === 'flight') settleLastFlown(s);
   });
   redrawKeepView(); closePop();
 }
@@ -3652,9 +3712,17 @@ export function popFailDateChanged(v) { popFailDate = v; notify(); }
 export async function popDoneChanged(v) {
   const s = active; const popId = pop && pop.id;
   popDoneDate = v; notify();
+  /* While a day is retyped, the date box passes through EMPTY (after the "0"
+     of "09" it holds no full date) and through half-typed years (0002, 0020,
+     0202…). An empty box used to re-date the flight to TODAY for that instant,
+     and Last Flown followed ([HUMAN-RETEST] W2-F2). Only a whole, real day
+     re-dates a mark; a grade pressed on an empty box still takes today. */
+  if (!isWholeDay(v)) return;
   if (!popId || !s || !DONE.has(gradeOf(s, popId))) return;
-  await setDoneDate(s, popId, v || isoToday());
+  await setDoneDate(s, popId, v);
 }
+/* a yyyy-mm-dd a person could mean — not blank, not a year still being typed */
+function isWholeDay(v) { return typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) && v >= '1900-01-01'; }
 export async function setDoneDate(s, id, iso) {
   if (!s || !marks[s] || !marks[s][id] || !DONE.has(gradeOf(s, id))) return;
   trkGesture(() => {   // [CMDL-FINISH] §4 (Class A) — re-date + a flight's Last-Flown as ONE envelope
@@ -3662,7 +3730,7 @@ export async function setDoneDate(s, id, iso) {
     marks[s][id].d = iso || isoToday();
     stamp(marks[s][id]);
     saveMarks(s); renderSide();
-    if (byid[id] && byid[id].type === 'flight') flownOn(s, marks[s][id].d);
+    if (byid[id] && byid[id].type === 'flight') settleLastFlown(s);
   });
 }
 /* Re-date ONE failure — the i-th (oldest first) on an event — from the full
@@ -3684,17 +3752,41 @@ export async function setFailDate(s, id, i, iso) {
 export let failLog = null;   /* the student, while the list is up */
 export function openFailLog(s) { if (!s) return; failLog = s; notify(); }
 export function closeFailLog() { failLog = null; notify(); }
-/* A flight marked done moves Last Flown FORWARD only. Recording an older sortie
-   after a newer one used to drag both dates back to the older day, so "days
-   since" jumped up and the currency and flex bars went red for a flight that
-   had in fact happened since. The user's rule, 2 Sep: the most recent flight
-   always wins. The two boxes in the panel still accept any date by hand. */
-async function flownOn(s, d) {
-  dates[s] = dates[s] || { lastSyll: null, lastCurr: null };
-  const later = (a, b) => (a && a > b) ? a : b;   /* ISO yyyy-mm-dd compares as text */
-  const nc = later(dates[s].lastCurr, d), ns = later(dates[s].lastSyll, d);
-  if (nc === dates[s].lastCurr && ns === dates[s].lastSyll) return;
-  dates[s].lastCurr = nc; dates[s].lastSyll = ns; stamp(dates[s]); await saveDates(s); renderSide();
+/* LAST FLOWN IS THE LATEST DAY ACTUALLY FLOWN (owner, 23 Sep 26 — D123): worked
+   out from the flights marked done, whatever order they were entered in. So an
+   older sortie recorded after a newer one never drags it back (the 2 Sep rule,
+   "the most recent flight always wins"), AND correcting a flight to an earlier
+   day, or taking it back, pulls it back to the latest flight still flown — the
+   old forward-only ratchet could not come back down, even from a future day
+   ([HUMAN-RETEST] W2-F3). A day TYPED into either box by hand stands until a
+   later flight moves it, as before (D123 leaves that as it is): `handSyll` /
+   `handCurr` mark a typed day, and a flight that reaches it takes over. */
+function latestFlown(m, isFlight) {
+  let best = null;
+  for (const id of Object.keys(m || {})) {
+    const r = m[id];
+    if (!r || !DONE.has(r.g) || !isWholeDay(r.d) || !isFlight(id)) continue;
+    if (!best || r.d > best) best = r.d;
+  }
+  return best;
+}
+/* the dates record after a change to the flights: pure, so the ball-delete
+   sweep (D124) can settle a course that is not on screen the same way */
+function settledDates(d0, flown) {
+  const d = Object.assign({ lastSyll: null, lastCurr: null }, d0 || {});
+  const keep = (cur, hand) => !!(hand && cur && (!flown || cur > flown));
+  const hs = keep(d.lastSyll, d.handSyll), hc = keep(d.lastCurr, d.handCurr);
+  d.lastSyll = hs ? d.lastSyll : flown; d.lastCurr = hc ? d.lastCurr : flown;
+  if (hs) d.handSyll = true; else delete d.handSyll;
+  if (hc) d.handCurr = true; else delete d.handCurr;
+  return d;
+}
+function settleLastFlown(s) {
+  const was = dates[s] || { lastSyll: null, lastCurr: null };
+  const d = settledDates(was, latestFlown(marks[s], id => !!(byid[id] && byid[id].type === 'flight')));
+  if ((d.lastSyll || null) === (was.lastSyll || null) && (d.lastCurr || null) === (was.lastCurr || null)
+    && !!d.handSyll === !!was.handSyll && !!d.handCurr === !!was.handCurr) return;
+  dates[s] = d; stamp(d); saveDates(s); renderSide();
 }
 function hideDetailBubble() { const b = document.getElementById('detailBubble'); if (b) b.style.display = 'none'; }
 function showDetailBubble(id, anchorEl, html) {
@@ -3761,30 +3853,25 @@ export async function saveInfoFor(id, vals) {
   await saveEventInfo(); renderBoard(); renderSide();
 }
 /* THE one body that turns what an editor holds into the stored override — used
-   by the details window (saveInfoFor) and by the chart editor's ball box
-   (saveEdit), so the two can never drift apart again ([HUMAN-RETEST] F5).
-   Compare against what the box was FILLED with — base plus this syllabus's own
-   profile — not the base alone. The editors pre-fill from infoFor(), so on a
-   renumbered syllabus (Tx) an untouched field differs from the global base and
-   used to be stored as a global override, pushing Tx wording onto every chart.
-   One save of SA-5 on Tx did exactly that. */
+   by the details window (saveInfoFor), Show All's editor and the chart editor's
+   ball box (saveEdit), so they can never drift apart again ([HUMAN-RETEST] F5).
+   It writes to the chart ON SCREEN only (D126), comparing against what that
+   chart shipped with — the base plus its own profile — so an untouched field is
+   never stored, and nothing typed here reaches another chart. */
 function writeInfo(id, o) {
-  const base = Object.assign({}, EVENT_INFO[id] || {}, (EVENT_INFO_BY_SYL[curBase()] || {})[id] || {});
-  const plain = EVENT_INFO[id] || {};
-  const diff = {}; const kept = [];
-  Object.keys(o).forEach(k => {
-    if (o[k] === (base[k] || '')) return;
-    diff[k] = o[k];
-    /* Deliberate, but equal to the baked base — only a marker keeps the scrub
-       on the next load from deciding it was redundant and dropping it. */
-    if (o[k] === (plain[k] || '')) kept.push(k);
-  });
-  if (kept.length) diff.__kept = kept;
-  if (Object.keys(diff).filter(k => k !== '__kept').length) eventInfo[id] = diff; else delete eventInfo[id];
+  const sid = curSylId();
+  const d = diffDetails(shippedFor(sid, id), o);
+  const blk = Object.assign({}, eventInfo[sid] || {});
+  if (d) blk[id] = d; else delete blk[id];
+  if (Object.keys(blk).length) eventInfo[sid] = blk; else delete eventInfo[sid];
 }
+/* Drop what was typed on this chart for one event (the chart reads its doc
+   again). The editors' "Reset to doc" no longer calls this — it refills the
+   boxes and Save decides ([HUMAN-RETEST] w3-F4: it used to save on the press,
+   so the window's Cancel beside it cancelled nothing). */
 export async function resetInfoFor(id) {
   if (!id) return;
-  delete eventInfo[id]; await saveEventInfo(); renderBoard(); notify();
+  writeInfo(id, docInfoFor(id)); await saveEventInfo(); renderBoard(); notify();
 }
 export async function saveInfo(vals) {
   const id = infoId; if (!id) return;
@@ -4299,12 +4386,26 @@ function clearDirty() { sylDirty = false; undoStack = []; redoStack = []; notify
 export async function persistSyl() {
   const id = curSylId();
   if (!sylDirty && sylHasOwnDef(id)) { setSaveStatus('no changes to save', 'ok'); return true; }
+  /* D124: an event this save takes off the chart takes its marks with it, in
+     every course — undoing the delete before this press still brings the ball
+     back as it was, marks and all (the edit's own undo). */
+  const saved = sylSource(id) || [];
+  const gone = saved.map(e => e && e.id).filter(x => x && !byid[x]);
+  if (gone.length) await wipeEventMarks(id, gone, saved);
   /* Built-ins are editable: the saved version is stored as an override under the
      built-in's id and takes precedence when the syllabus is loaded (sylSource). */
-  customDefs[id] = JSON.parse(JSON.stringify(SYL));
+  /* A built-in whose events are exactly the shipped ones is not an edit — a
+     save of font or line changes alone (those live in the layout) used to store
+     the untouched event list as an override, so the chart read "✎ edited",
+     offered "Revert edits only" for nothing, and came back unmarked after an
+     export → import. The same rule the import follows ([HUMAN-RETEST] F7; the
+     re-walk found this second writer, 23 Sep 26). */
+  const shipped = isBuiltinSylId(id) ? SYLLABI[builtinBaseOf(id)] : null;
+  if (shipped && sameDef(SYL, shipped)) delete customDefs[id];
+  else customDefs[id] = JSON.parse(JSON.stringify(SYL));
   await sSet(kSyls(course), JSON.stringify(customDefs));
   clearDirty(); refreshSyl(); renderBoard(); renderSide();
-  setSaveStatus('syllabus “' + sylName(id) + '” saved' + (isBuiltinSylId(id) ? ' (overrides the built-in)' : ''), 'ok');
+  setSaveStatus('syllabus “' + sylName(id) + '” saved' + (isBuiltinSylId(id) && sylHasOwnDef(id) ? ' (overrides the built-in)' : ''), 'ok');
   return true;
 }
 
@@ -4366,6 +4467,42 @@ async function planSylSweep(sylId, fallback) {
   }
   return { dels, planFixes };
 }
+/* DELETING A BALL WIPES ITS MARKS (owner, 23 Sep 26 — D124: "deleting a ball
+   should also wipe its marks and a new ball with the same code dont come up
+   graded"). Marks are filed under the event's CODE, per course and chart, so the
+   sweep covers every course that uses this chart. READ first (the storage scans),
+   then every write in ONE gesture — delSyl's pattern. A student whose wiped marks
+   included a flight has Last Flown settled again (D123). `def` is the chart as it
+   was, for which events were flights. */
+async function wipeEventMarks(sylId, ids, def) {
+  const kill = new Set(ids);
+  const flight = new Set([...(def || []), ...(sylId === curSylId() ? SYL : [])].filter(e => e && e.type === 'flight').map(e => e.id));
+  const stillFlight = id => flight.has(id) && !kill.has(id);
+  const writes = [];
+  for (const c of await allCourseNamespaces()) {
+    const pre = 'v3:' + c + ':' + sylId + ':m:';
+    for (const k of ((await storage.list(pre)).keys || [])) {
+      const m = sParse(await sGet(k), null, 'object'); if (!m) continue;
+      const hit = Object.keys(m).filter(id => kill.has(id)); if (!hit.length) continue;
+      for (const id of hit) delete m[id];
+      const s = k.slice(pre.length);
+      writes.push({ k, v: JSON.stringify(m), c, s, m });
+      if (hit.some(id => flight.has(id))) {
+        const dk = kDatesFor(c, sylId, s);
+        const d = settledDates(sParse(await sGet(dk), null, 'object'), latestFlown(m, stillFlight));
+        stamp(d);
+        writes.push({ k: dk, v: JSON.stringify(d), c, s, d });
+      }
+    }
+  }
+  if (!writes.length) return;
+  trkGesture(() => {
+    for (const w of writes) {
+      sSet(w.k, w.v);
+      if (w.c === course && sylId === curSylId()) { if (w.m) marks[w.s] = w.m; if (w.d) dates[w.s] = w.d; }
+    }
+  });
+}
 /* dupSyl / addSyl are catalogue-only now: mint an sc… id, file the def+layout
    under it, add the entry. NO mark copy — the student layer starts EMPTY on the
    copy (a change from before, acceptable under the reset, §6). Colon allowed (§8). */
@@ -4392,10 +4529,21 @@ export async function dupSyl() {
   const id = mintSylId();
   const defCopy = JSON.parse(JSON.stringify(SYL));
   const layoutSnap = await snapshotLayout(srcId);
+  /* The copy reads exactly as the chart it came from, details included
+     (D126: details belong to a chart, so the copy takes this chart's). A copy is
+     a custom chart with no shipped profile of its own, so what the source SHOWS
+     — its profile and its typed edits — is written onto the copy as its own. */
+  const infoCopy = {};
+  for (const e of defCopy) {
+    if (!e || !e.id) continue;
+    const d = diffDetails(shippedDetails(EVENT_INFO, EVENT_INFO_BY_SYL, null, e.id), infoFor(e.id, srcId));
+    if (d) infoCopy[e.id] = d;
+  }
   trkGesture(() => {
     customDefs[id] = defCopy;
     sSet(kSyls(course), JSON.stringify(customDefs));
     sSet(kLayoutFor(course, id), JSON.stringify(layoutSnap));
+    if (Object.keys(infoCopy).length) { eventInfo[id] = infoCopy; saveEventInfo(); }
     SYLS.push({ id, name: ensureUniqueLabel(id, nm) }); saveSylCat();
     if (!SYL_ORDER.includes(id)) { SYL_ORDER.push(id); saveSylOrder(); }
   });
@@ -4482,6 +4630,12 @@ export async function delSyl() {
     if (c === 'cancel') return;
     if (c === 'ok') confirmed = true;
     if (c === 'alt') {
+      /* an event the edits had added goes with the revert — and its marks with
+         it, as a deleted ball's do (D124) */
+      const edited = customDefs[id] || [], shipped = SYLLABI[builtinBaseOf(id)] || [];
+      const back = new Set(shipped.map(e => e && e.id));
+      const gone = edited.map(e => e && e.id).filter(x => x && !back.has(x));
+      if (gone.length) await wipeEventMarks(id, gone, edited);
       delete customDefs[id];
       await sSet(kSyls(course), JSON.stringify(customDefs));
       if (typeof flushNow === 'function') { try { await flushNow(); } catch (_) {} }
@@ -4507,6 +4661,9 @@ export async function delSyl() {
       delete customDefs[id];
       sSet(kSyls(course), JSON.stringify(customDefs));
       delKey(kLayoutFor(course, id));
+      /* a custom chart's details go with it (it cannot come back); a built-in
+         keeps them, so a restore from ⇅ Reorder brings back what was typed */
+      if (!isB && eventInfo[id]) { delete eventInfo[id]; saveEventInfo(); }
       SYL_ORDER = SYL_ORDER.filter(x => x !== id);
       saveSylCat(); saveSylPrefs(); saveSylOrder();
     });
@@ -4630,9 +4787,12 @@ async function deleteEvents(ids) {
   if (!list.length) return false;
   const names = list.map(id => byid[id].label || id);
   const preview = names.slice(0, 12).join(', ') + (names.length > 12 ? ' … (+' + (names.length - 12) + ' more)' : '');
+  /* D124: its marks go with it — said here, because the question used to say
+     only "Delete ACG-03?" and the marks stayed filed under the code, so a new
+     ball later given that code came up already graded ([HUMAN-RETEST] W2-F7). */
   const msg = list.length === 1
-    ? 'Delete ' + names[0] + ' from this syllabus?'
-    : 'Delete these ' + list.length + ' events from this syllabus?\n\n' + preview;
+    ? 'Delete ' + names[0] + ' from this syllabus?\n\nEvery student’s marks on it are removed when you press ✓ Save changes.'
+    : 'Delete these ' + list.length + ' events from this syllabus?\n\n' + preview + '\n\nEvery student’s marks on them are removed when you press ✓ Save changes.';
   if (!await uiConfirm(msg)) return false;
   pushUndo();
   const kill = new Set(list);
@@ -4761,9 +4921,13 @@ export async function collectCharts(ids) {
     layouts[id] = await layoutSnapshotFor(id, syllabi[id]);
     sylcat.push(sylcatEntryOf(id));
   }
-  const ei = JSON.parse(JSON.stringify(EVENT_INFO));
-  for (const k in (eventInfo || {})) ei[k] = Object.assign({}, ei[k] || {}, eventInfo[k]);
-  return { order, syllabi, layouts, eventInfo: ei, sylcat };
+  /* each exported chart's OWN detail edits, keyed by the chart (D126), and
+     nothing else: the file used to carry the whole baked table, and an import
+     of one chart then put that table back over every other chart's edits
+     ([HUMAN-RETEST] W1-9; D122). */
+  const eventInfoBySyl = {};
+  for (const id of order) if (eventInfo[id] && Object.keys(eventInfo[id]).length) eventInfoBySyl[id] = JSON.parse(JSON.stringify(eventInfo[id]));
+  return { order, syllabi, layouts, eventInfoBySyl, sylcat };
 }
 
 /* Students: everything that names or grades a person. Never a chart.
@@ -4845,7 +5009,7 @@ export async function applyCharts(charts, opts) {
   const o = opts || {};
   const list = (o.ids && o.ids.length) ? o.ids : (charts.order || Object.keys(charts.syllabi || {}));
   const catById = new Map((charts.sylcat || []).map(e => [e.id, e]));
-  const applied = [];
+  const applied = [], pairs = [];
   for (const src of list) {
     const events = (charts.syllabi || {})[src];
     if (!events) continue;
@@ -4865,7 +5029,7 @@ export async function applyCharts(charts, opts) {
     const label = (o.mode === 'add' && o.rename && o.rename.from === src) ? o.rename.label : (catById.get(src) ? catById.get(src).name : null);
     upsertSylEntry(target, label, catById.get(src), o.mode === 'add');
     if (!SYL_ORDER.includes(target)) SYL_ORDER.push(target);
-    applied.push(target);
+    applied.push(target); pairs.push({ src, target, events });
   }
   /* The file records the order the user put their charts in. Only on a whole-file
      open — importing one syllabus must not reshuffle everything else. */
@@ -4875,11 +5039,24 @@ export async function applyCharts(charts, opts) {
     SYL_ORDER = [...inFile, ...rest];
   }
   await sSet(kSyls(course), JSON.stringify(customDefs));
-  if (charts.eventInfo) {
-    for (const k in charts.eventInfo) eventInfo[k] = Object.assign({}, eventInfo[k] || {}, charts.eventInfo[k]);
-    scrubEventInfo(); /* the file carries the whole table; keep only real edits */
-    await saveEventInfo();
+  /* Event details: ONLY the charts brought in, and never wiping a detail typed
+     here (D122, D126). A file carries each chart's own edits; the file's edit
+     wins where it speaks, everything else typed on the chart stays. A file
+     written before D126 carries one table for every chart — its real edits are
+     laid onto each imported chart that has the event, as the old build showed
+     them, and on no other chart ([HUMAN-RETEST] W1-9). */
+  const bySyl = charts.eventInfoBySyl && typeof charts.eventInfoBySyl === 'object' ? charts.eventInfoBySyl : null;
+  const flatEdits = !bySyl && charts.eventInfo ? realFlatEdits(charts.eventInfo, EVENT_INFO) : null;
+  let infoTouched = false;
+  for (const { src, target, events } of pairs) {
+    const shipped = shippedOfSyl(target);
+    const incoming = bySyl ? bySyl[src] : (flatEdits ? blockFromFlat(flatEdits, (events || []).map(e => e && e.id), shipped) : null);
+    if (!incoming || !Object.keys(incoming).length) continue;
+    const merged = mergeBlock(eventInfo[target], incoming, shipped);
+    if (Object.keys(merged).length) eventInfo[target] = merged; else delete eventInfo[target];
+    infoTouched = true;
   }
+  if (infoTouched) await saveEventInfo();
   await saveSylCat(); await saveSylPrefs(); await saveSylOrder();
   await loadCourse(course);
   refreshSyl(); renderBoard(); renderSide();
@@ -5164,9 +5341,16 @@ export async function saveCopyClick() {
   }
   closeCopy();
   setSaveStatus('', 'ok'); notify();
+  /* "A full backup" only when it IS one: every chart AND the students. A file
+     with the students and one chart of four was called a full backup — on the
+     route to the database that is the file that loses the other three
+     ([HUMAN-RETEST] W1-4). */
+  const all = orderedSylIds().length, n = opts.charts ? ids.length : 0;
+  const chartsLine = !opts.charts ? 'no charts' : (n === all ? 'every chart' : n + ' of ' + all + ' charts');
   await uiAlert('Exported as “' + (handle ? handle.name : name) + '”.\n\n'
-    + (opts.students ? 'It CONTAINS student names and marks — a full backup; only send it to someone entitled to see them.'
-      : 'It contains charts only — no student names or marks.'));
+    + (opts.students
+      ? 'It CONTAINS student names and marks, with ' + chartsLine + (opts.charts && n === all ? ' — a full backup' : ' — NOT a full backup') + '; only send it to someone entitled to see them.'
+      : 'It contains ' + chartsLine + ' — no student names or marks.'));
 }
 
 /* ONE import for both of the owner's jobs (9 Sep 26 — "is it possible to just
@@ -5211,6 +5395,7 @@ export function normalizeImport(parsed) {
     const out = { ...charts };
     if (charts.syllabi) out.syllabi = rk(charts.syllabi);
     if (charts.layouts) out.layouts = rk(charts.layouts);
+    if (charts.eventInfoBySyl) out.eventInfoBySyl = rk(charts.eventInfoBySyl);   /* D126: details ride with their chart's id */
     if (Array.isArray(charts.order)) out.order = charts.order.map(re);
     if (Array.isArray(charts.sylcat)) out.sylcat = charts.sylcat.map(e => ({ ...e, id: re(e.id) }));
     charts = out;
@@ -5276,19 +5461,28 @@ export async function importClick() {
   if (!hasCharts && !parsed.contains.students) { await uiAlert('That file holds no charts and no students.'); return; }
   const catById = new Map(((charts && charts.sylcat) || []).map(e => [e.id, e]));
   const addAsNew = Object.create(null);   /* fileId → freshly minted id; students follow */
-  const done = [];
+  const done = [], skipped = [];
+  const wanted = Object.create(null);     /* store id → the name the file gives it */
   if (hasCharts) {
     for (const id of charts.order) {
       if (!(charts.syllabi || {})[id]) continue;
       const label = catById.get(id) ? catById.get(id).name : (sylName(id) || id);
       if (!sylEntry(id)) {   /* new here — bring it straight in (colon allowed, §8) */
-        await applyCharts(charts, { ids: [id], mode: 'replace' }); done.push(label); continue;
+        await applyCharts(charts, { ids: [id], mode: 'replace' }); done.push(label); wanted[id] = label; continue;
       }
+      /* The third answer SKIPS this chart and the import carries on. It read
+         "Cancel", so a person pressing it to stop the whole import saw it keep
+         going, and the closing report never named the chart left behind
+         ([HUMAN-RETEST] W1-7). A press outside the box skips too. */
       const c = await uiChoice(
         '“' + label + '” already exists.\n\nReplace it, or add the incoming one under a new name?',
-        'Replace it', 'Add as new');
-      if (c === 'cancel') continue;
-      if (c === 'ok') { await applyCharts(charts, { ids: [id], mode: 'replace' }); done.push(label); continue; }
+        'Replace it', 'Add as new', 'Skip this one');
+      if (c === 'cancel') { skipped.push(label); continue; }
+      if (c === 'ok') {
+        await applyCharts(charts, { ids: [id], mode: 'replace' }); done.push(label);
+        if (catById.get(id) && catById.get(id).userNamed) wanted[id] = label;
+        continue;
+      }
       const to = ((await uiPrompt('Name for the incoming syllabus:', label + ' (new)')) || '').trim();
       if (!to || SYLS.some(e => e.name === to)) { await uiAlert('That name is blank or already taken.'); continue; }
       const newId = mintSylId();
@@ -5304,6 +5498,17 @@ export async function importClick() {
        built-in he had deleted, say). A ONE-chart file is a chart handed over and
        keeps its place at the end — importing one chart never reshuffles the rest.
        A chart added as new follows its new id. */
+    /* A chart that came in while the name it carries was still held by another
+       chart here got a " (2)" on it — the file's order decides which lands first
+       (a renamed built-in whose old name a copy now wears: [HUMAN-RETEST] W1-6).
+       Once every chart is in, give each the name the file gives it if that name
+       is free now. */
+    let relabelled = false;
+    for (const id of Object.keys(wanted)) {
+      const e = sylEntry(id), want = wanted[id];
+      if (e && e.name !== want && !SYLS.some(x => x.id !== id && x.name === want)) { e.name = want; relabelled = true; }
+    }
+    if (relabelled) { await saveSylCat(); refreshSyl(); }
     const fileIds = charts.order.filter(id => (charts.syllabi || {})[id]);
     if (fileIds.length > 1) {
       const inFile = fileIds.map(id => (has(addAsNew, id) ? addAsNew[id] : id)).filter(id => sylEntry(id));
@@ -5341,9 +5546,10 @@ export async function importClick() {
   }
   const what = [done.length ? 'brought in ' + done.join(', ') : null, people ? 'students & marks restored' : null].filter(Boolean).join(' · ');
   if (what) setSaveStatus(what, 'ok');
-  await uiAlert(what
+  const skip = skipped.length ? '\n\nSkipped, left as they are here: ' + skipped.join(', ') + '.' : '';
+  await uiAlert((what
     ? what.charAt(0).toUpperCase() + what.slice(1) + '.\n\n' + (people ? 'It is saved.' : 'Everyone’s marks are untouched. It is saved.')
-    : 'Nothing was brought in.');
+    : 'Nothing was brought in.') + skip);
   notify();
 }
 

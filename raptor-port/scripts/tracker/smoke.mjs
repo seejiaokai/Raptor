@@ -275,10 +275,13 @@ const set = async (label, val) => {
   const l = pg.locator('.saedit label').filter({ hasText: label }).first();
   await l.locator('input, textarea').first().fill(val);
 };
+/* "Reset to doc" puts the document's wording back in the BOXES and Save keeps
+   it ([HUMAN-RETEST] w3-F4, 23 Sep 26 — it used to save on the press, so the
+   Cancel beside it cancelled nothing, and this helper pressed Cancel after it) */
 const resetRow = async id => {
   await row(id).locator('button.sedit').click(); await pg.waitForSelector('.saedit');
-  await pg.locator('.saedit-btns button', { hasText: 'Reset to doc' }).click(); await pg.waitForTimeout(400);
-  await pg.locator('.saedit-btns button', { hasText: 'Cancel' }).click(); await pg.waitForTimeout(250);
+  await pg.locator('.saedit-btns button', { hasText: 'Reset to doc' }).click(); await pg.waitForTimeout(300);
+  await pg.locator('.saedit-btns button.primary').click(); await pg.waitForTimeout(400);
 };
 
 /* Show All is a plain button in the bar again (2 Sep): the View menu that held
@@ -319,6 +322,13 @@ await row('ST-01').locator('button.sedit').click(); await pg.waitForSelector('.s
 await set('Name', 'DISCARD ME');
 await pg.locator('.saedit-btns button', { hasText: 'Cancel' }).click(); await pg.waitForTimeout(300);
 ok('cancel discards edits', (await row('ST-01').locator('.snm').textContent()) === 'SMOKE TEST NAME');
+
+await row('ST-01').locator('button.sedit').click(); await pg.waitForSelector('.saedit');
+await pg.locator('.saedit-btns button', { hasText: 'Reset to doc' }).click(); await pg.waitForTimeout(300);
+ok('Reset to doc fills the boxes with the document (w3-F4)',
+  await pg.locator('.saedit label').filter({ hasText: 'Name' }).first().locator('input').inputValue() === 'Squadron Welcome');
+await pg.locator('.saedit-btns button', { hasText: 'Cancel' }).click(); await pg.waitForTimeout(300);
+ok('…and Cancel after it keeps what was typed (w3-F4)', (await row('ST-01').locator('.snm').textContent()) === 'SMOKE TEST NAME');
 
 await resetRow('ST-01');
 ok('reset to doc restores source values', (await row('ST-01').locator('.snm').textContent()) === 'Squadron Welcome');
@@ -3052,20 +3062,24 @@ ok('Tx BFM-5 shows the BCTM BFM-7 profile, not the long course\'s',
   JSON.stringify(txInfo));
 await pg.click('#ifCancel'); await pg.waitForTimeout(200);
 
-/* Opening a FILE must not clobber those profiles. Files carry the whole info
-   table, and applyCharts used to store it verbatim as user overrides — which
-   sit ABOVE the per-syllabus profiles, so one open froze every bubble to the
-   long course's words. Replay exactly that: apply a charts payload whose
-   eventInfo is the full baked table, then look at Tx BFM-5 again. */
+/* Opening a FILE must not clobber those profiles. Files written before D126
+   (23 Sep 26 — details belong to their chart) carried the WHOLE baked info
+   table as one `eventInfo`, and applyCharts once stored it verbatim as user
+   overrides — which sit ABOVE the per-syllabus profiles, so one open froze
+   every bubble to the long course's words. Replay exactly that old file,
+   bringing in 2026: nothing redundant may be stored, and Tx — not in the file —
+   must keep its own profile. */
 const fileClobber = await pg.evaluate(async () => {
   const core = window.__coreForTests;
-  const full = {};
-  const snap = await core.collectCharts([core.sylIdOf('2026')]); /* full baked table + edits */
-  Object.assign(full, snap.eventInfo);
-  await core.applyCharts({ order: [], syllabi: {}, layouts: {}, eventInfo: full }, {});
-  /* since the seam the Tracker's data lands in BrowserBackend under "raptor:tracker/" */
-  const stored = JSON.parse(localStorage.getItem('raptor:tracker/v3:eventinfo') || '{}');
-  return { storedKeys: Object.keys(stored).length, sentKeys: Object.keys(full).length };
+  const id = core.sylIdOf('2026');
+  const snap = await core.collectCharts([id]);
+  const full = JSON.parse(JSON.stringify(core.EVENT_INFO));   /* the full baked table, as an old file carried it */
+  await core.applyCharts({ order: [id], syllabi: snap.syllabi, layouts: {}, sylcat: snap.sylcat, eventInfo: full }, { ids: [id] });
+  /* since the seam the Tracker's data lands in BrowserBackend under "raptor:tracker/";
+     since D126 per chart, under v3:master:eventinfo */
+  const stored = JSON.parse(localStorage.getItem('raptor:tracker/v3:master:eventinfo') || '{}');
+  const n = Object.values(stored).reduce((a, b) => a + Object.keys(b || {}).length, 0);
+  return { storedKeys: n, sentKeys: Object.keys(full).length };
 });
 await clickBall('BFM-5'); await pg.waitForTimeout(300);
 await pg.click('#popEditInfo'); await pg.waitForSelector('#infoModal');

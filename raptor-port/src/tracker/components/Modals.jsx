@@ -95,7 +95,7 @@ export function DlgModal() {
             onKeyDown={e => { if (e.key === 'Enter') ok(); }} />
         )}
         <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-          {d.cancel && <button id="dlgCancel" onClick={cancel}>Cancel</button>}
+          {d.cancel && <button id="dlgCancel" onClick={cancel}>{d.cancelLabel || 'Cancel'}</button>}
           {d.alt && <button id="dlgAlt" onClick={() => core.dlgClose('__alt__')}>{d.alt}</button>}
           <button className="primary" id="dlgOk" onClick={ok}>{d.ok}</button>
         </div>
@@ -165,9 +165,14 @@ function InfoModalInner({ id }) {
   const [hrs, setHrs] = useState(init.hrs || '');
   const [crew, setCrew] = useState(init.crew || '');
   const [pre, setPre] = useState(init.pre || '');
-  const reset = async () => {
-    await core.resetInfo();
-    const d = core.infoFor(id);
+  /* "Reset to doc" puts the source document's wording back in the BOXES; Save
+     keeps it, Cancel drops it. It used to save on the press, so the Cancel
+     beside it cancelled nothing, and on a ball the user made — which has no
+     document — it blanked every field with no way back ([HUMAN-RETEST] w3-F4).
+     No document, no button. */
+  const hasDoc = core.hasDocInfo(id);
+  const reset = () => {
+    const d = core.docInfoFor(id);
     setName(d.name || ''); setFmtV(d.fmt || ''); setHrs(d.hrs || ''); setCrew(d.crew || ''); setPre(d.pre || '');
   };
   return (
@@ -182,7 +187,9 @@ function InfoModalInner({ id }) {
         <div className="field" style={{ alignItems: 'flex-start' }}><label>Crew</label><textarea id="ifCrew" placeholder="e.g. UP/UW, IP/IW/FSI" value={crew} onChange={e => setCrew(e.target.value)} /></div>
         <div className="field" style={{ alignItems: 'flex-start' }}><label>Prerequisites</label><textarea id="ifPre" placeholder="e.g. AVI-02, AVI-03, AVI-04" value={pre} onChange={e => setPre(e.target.value)} /></div>
         <div style={{ display: 'flex', gap: 8, marginTop: 12, justifyContent: 'flex-end' }}>
-          <button id="ifReset" title="Revert to the value from the source document" style={{ marginRight: 'auto' }} onClick={reset}>Reset to doc</button>
+          {hasDoc
+            ? <button id="ifReset" title="Put the source document's wording back in the boxes — Save keeps it, Cancel doesn't" style={{ marginRight: 'auto' }} onClick={reset}>Reset to doc</button>
+            : <span style={{ marginRight: 'auto' }} />}
           <button id="ifCancel" onClick={core.closeInfo}>Cancel</button>
           <button className="primary" id="ifSave" onClick={() => core.saveInfo({ name, fmt: fmtV, hrs, crew, pre })}>Save</button>
         </div>

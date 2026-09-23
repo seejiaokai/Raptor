@@ -74,6 +74,14 @@ function LullCopy() {
           <b>Copy {core.nameOf(c.from)}’s lull periods to</b>
           <button className="sm" id="lullCopyClose" onClick={core.closeLullCopy}>✕</button>
         </div>
+        {/* "a tick-list of the other students on the course plus a 'select all'
+            row" — the approved 7 Aug design ([HUMAN-RETEST] W2-F5) */}
+        {others.length > 1 && (
+          <label className="sub lullpick lullall">
+            <input type="checkbox" id="lullCopyAll" checked={others.every(r => c.picked.includes(r.id))}
+              onChange={e => core.setLullCopyAll(e.target.checked)} /> <b>Select all</b>
+          </label>
+        )}
         {others.length
           ? others.map(r => (
             <label className="sub lullpick" key={r.id}>

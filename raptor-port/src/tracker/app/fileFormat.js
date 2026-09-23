@@ -3,7 +3,11 @@
 
    Shapes (fixed here so every caller agrees):
      charts   = { order: string[], syllabi: {name: event[]},
-                  layouts: {name: object}, eventInfo: object }
+                  layouts: {name: object},
+                  eventInfoBySyl: {sylId: {eventId: object}} }
+                (D126, 23 Sep 26: each chart's OWN typed details, keyed by the
+                chart; a file written before it carries `eventInfo: object`,
+                one table for every chart, which import still reads)
      students = { courses: string[],
                   byCourse: {course: {plan: object, lulls: object, pace: object,
                     bySyllabus: {syl: {
@@ -33,6 +37,7 @@
    docs/superpowers/sdd/2026-09-10-stable-ids/ */
 import { isCourseId, isCourseEntry, isReservedCourseName } from './courseIds.js'
 import { isSylId, isSylEntry, isBuiltinSylId, builtinSylById } from './sylIds.js'
+import { isDetailsTable } from './eventDetails.js'
 
 export const FILE_FORMAT = 'ocu-tracker';
 /* v3 ([TRK-CSID] 1B-ii): syllabus IDENTITY joins course and student ids. Charts
@@ -115,6 +120,10 @@ function checkCharts(c, version, otherCat) {
     throw new Error('The chart positions in that file are damaged, so it has not been opened.');
   if (c.eventInfo != null && !isPlainObject(c.eventInfo))
     throw new Error('The event details in that file are damaged, so it has not been opened.');
+  /* D126: each chart's own details, keyed by the chart (a file written before
+     it carries the one-table `eventInfo` above instead) */
+  if (c.eventInfoBySyl != null && !isDetailsTable(c.eventInfoBySyl))
+    throw new Error('The event details in that file are damaged, so it has not been opened.');
   checkSylcat(c.sylcat, 'charts');
   /* A v3 file (version 3) is ID-native: its charts keys are syllabus ids, every
      one MUST be labelled by the sylcat (reference completeness, review
@@ -130,7 +139,7 @@ function checkCharts(c, version, otherCat) {
        (buildUnionSylcat); the file boundary only needs every ref to be labelled
        SOMEWHERE in the file. */
     const catIds = new Set([...(c.sylcat || []), ...(otherCat || [])].filter(isSylEntry).map(e => e.id));
-    const refs = new Set([...(c.order || []), ...Object.keys(c.syllabi || {}), ...Object.keys(c.layouts || {})]);
+    const refs = new Set([...(c.order || []), ...Object.keys(c.syllabi || {}), ...Object.keys(c.layouts || {}), ...Object.keys(c.eventInfoBySyl || {})]);
     /* a v3 file is ID-NATIVE (its version is the provenance, review CSID-REV-04):
        EVERY chart reference must be a valid syllabus id, labelled by the union,
        and an sb… id must be one this app ships — a nonconforming v3 reference is
