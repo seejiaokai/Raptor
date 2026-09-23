@@ -114,8 +114,8 @@ archive. 5) The stack resumes at **[DB-STEP]**.
 raised and the branch deliberately left), `[STORE-READER-SWEEP]`, `[OIL-REQ-NAMEBOX]`,
 `[POSTOUT-LOST]`'s remaining half, `[OIL-WORDS]`, and from the window's bug check
 `[OIL-PERSONAL-PLACEHOLDER]` and `[CROWD-SIM-BRIEF]` (both below `[ALL-AVAIL-WINDOW]`).
-`[LW-MONTHJUMP-PHONE]` — a Leave War phone e2e that fails under machine load, on `main` too (below
-`[ALL-AVAIL-WINDOW]`).
+`[LW-MONTHJUMP-PHONE]` — its desktop half is done (D87); what is left is an APP bug: on a phone a
+month button can land a day short (below `[ALL-AVAIL-WINDOW]`).
 
 **STALE ABOVE, CORRECTED 22 Sep 26:** the "STACK PROGRESS (updated 18 Sep 26)" block says the next
 stack item is step 4 (one Absence record). **Step 4 SHIPPED on 20 Sep 26** — `raptor-port/CLAUDE.md`
@@ -885,26 +885,31 @@ exactly the case he opened this with.
 which settles where they appear. Ruling: `DECISIONS.md` D38; the related ones are D27 (the count is a
 scheduling feature), D36 (the narrow window) and D37 (the count reads as what it is).
 
-### [LW-MONTHJUMP-PHONE] A Leave War phone e2e fails under machine load — on `main` too (23 Sep 26)
+### [LW-MONTHJUMP-PHONE] On a phone a month button can land a day short — an APP bug; the phone test is right (23 Sep 26)
 
-`e2e/leavewar.spec.ts` "a month button works from wherever the grid already is" (lw-phone): March
-lands 20px short of the frozen edge (`-20`, needs `>= -1`). **Red 3/3 on `main`'s own code** (a
-throwaway worktree of `6efa6839`) and red on `claude/all-avail-window` — while two review agents were
-running on the same machine; **it then PASSED in the full run once they had finished** (461/0). So it
-is a LOAD-sensitive timing test, not a defect the window introduced — the same family as
-`[LW-SCRUBBER-FLAKY]` (the test's own comment already records the desktop half of it as "the one flaky
-assertion in the suite"). **Worth making robust** (poll until the grid's draw has settled, not a
-fixed 5s), because a red CI run on a busy runner costs a re-run. WALK tier (Leave War grid, phone).
-**Two more of the family, on GitHub's runner (23 Sep 26, the `[ALL-AVAIL-WINDOW]` merge):** in
-`e2e/step4-leavewar.spec.ts` (lw-desktop), "LL 14–18 Jul, then ATT C 16–17 Jul … undo restores" timed
-out at 30s twice (33.6s, 34.4s — it took 23.1s on the previous green run) and "a reload (not ?fresh)
-keeps every filed leave …" is flaky on EVERY run (31s, then passes on retry). The whole lw-desktop
-job ran ~19% slower, evenly, while the other jobs held their times. **Measured NOT the window:** the
-same project on the desktop, before (`b945b8c2`) vs after, 164/164 both in 1.8m, per-test median
-ratio 1.02; the first test takes ~13s locally. They sit near a 30s budget on a slow VM — make them
-wait on what they need, or give the suite a longer per-test budget on CI.
-**Not only load (23 Sep 26, the docs-guard merge):** the phone test was red again (`-20`) in the
-full run AND alone, on code identical to `main`, with the machine at ~11% CPU.
+**The desktop half is DONE** (branch `claude/lw-monthjump-phone`, owner D87): the two
+`e2e/step4-leavewar.spec.ts` scenarios that timed out on GitHub ("LL 14–18 Jul … undo restores",
+"a reload (not ?fresh) …") now wait on what each step needs, not fixed 100–700ms pauses, and the
+reload one reads a person's three figures from ONE opening of their sheet, not three. Measured with
+the new slow-browser switch (`E2E_CPU_THROTTLE=3`, `e2e/app.ts`): the reload test went from failing
+at 2x slower to passing at 3x (29s, at the edge; 4x still fails); the other from failing 2 of 3 at 4x
+to passing 3 of 3 (28s).
+Evidence: `raptor-port/docs/handpass/2026-09-23-lw-monthjump.md`.
+**The phone half was misread as load — it is the app, and it shows on a FAST machine.**
+`e2e/leavewar.spec.ts` "a month button works from wherever the grid already is" (lw-phone) fails
+10/10 run alone on a quiet desktop and passes in a busy full run. Paced like a person (1s, SEP,
+1.5s, MAR) it lands March a whole day short about half the time — 1 March under the frozen name
+column (both pictures in the evidence sheet). **Measured:** February is drawn at the open with a
+posted-out man's row showing (ignite) and its width is remembered; by September his row is hidden;
+back at March the window regrows February within 160ms of the jump, the fill engine treats the
+remembered width as exact, and on a touch screen skips the re-anchor "in motion" (`Matrix.tsx`,
+`!(inMotion && coarsePointer())`). February now draws 20px narrower, so March slides 20px left —
+one day at the phone's 0.8 zoom. A slower machine regrows after 160ms, gets re-anchored, passes.
+**Fix (app, WALK tier, phone):** let the fill engine's left grow honour the jump exception the anchor
+effect already has (`jumpAtRef`), and/or forget remembered widths when the row set changes — without
+bringing back the fling-killing scroll write (30 Aug). Then make the test measure only once the grid
+is at rest (today a sample taken before the shift can pass it). **Not paced in the test on purpose:**
+waiting longer between taps does not stop it, and pacing around it would hide the bug.
 **Until then (owner, D84):** a Leave War desktop timeout on GitHub gets ONE re-run of the failed
 group, not an investigation; a second failure of the same group is new evidence — stop and report.
 
