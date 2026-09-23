@@ -88,3 +88,13 @@ motion" — February draws 571px, March slides 20px left. Filed with its fix dir
 
 Gates on the final tree: `npm test` 5760/5760 · build OK · `tfin.js` 728/0 · `test:e2e` 461 passed / 45
 skipped / 0 failed · `smoke:tracker` 425/0 · rulecheck OK · docsize OK.
+
+**Astra (Codex CLI, default model, high effort), blind, on commit `5b38ecef` — verdict REVISE, no defect in
+the diff.** Its explicit negatives: the combined figure reads keep every prior assertion; the cell waits close
+the undefined-equals-undefined false pass; every caller of the changed steps walked on BOTH projects with no
+problem in the scrim waits, the no-document handling or the filing callers; the `login()`/`go()` pauses are
+not load-bearing on these paths; the throttle switch is inert unset and survives the reload. Its two findings
+are decisions for the owner, not fixes: **001** — the reload test is still at the 30s edge at 3x with other
+tests running; the remaining lever is a longer limit for that one test, which needs his word because D87 chose
+waits. **002** — the phone test needs the APP fix (spec folded into `[LW-MONTHJUMP-PHONE]`). Edits after the
+inspected commit are docs only: this section, the backlog entry, the skill-observation log.

@@ -222,3 +222,63 @@ the same chain as the commit.
 
 **Principle:** Trimming a check's output with a pipe also throws away its verdict. Read a gate's exit
 code separately from its output, and never let the same line that runs a gate also act on it.
+
+### Observation 199: A "load-sensitive" test that fails alone on a quiet machine — replay it at human pace before pacing the test
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [LW-MONTHJUMP-PHONE] — making three browser tests robust on a slow machine, test-only.
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** Phase 1 (root cause) and condition-based-waiting.md — timing failures
+
+**Issue:** The backlog recorded a phone test as failing "under machine load". Measured, it failed 10/10 run alone on a quiet desktop and PASSED inside a busy full run. Settling the grid between the two taps did not stop it; replaying the scenario at a person's pace (1s, tap, 1.5s, tap) still landed the view a day short about half the time. Cause: an app-side 160ms "in motion" window — a fast machine regrows a month inside it and skips a re-anchor; a slow one lands outside it. Pacing or settling the test would have made it pass while the product stayed wrong.
+
+**Suggested improvement:** In Phase 1 (and condition-based-waiting.md "When to use"), add: "Before you pace or settle a timing-sensitive test, replay its scenario at human pace and on both a slowed and an unloaded machine. If a person at ordinary speed can reach the failing outcome, it is a product finding: file it, keep the test honest, and do not pace the test around it." Extends Observation 195 from state leakage to timing.
+
+**Principle:** A timing failure is a product bug whenever a user at ordinary pace can reach it. Pace a test only to what a user does, never past the bug — and "load-sensitive" can mean it fails on FAST machines.
+
+### Observation 200: Reproduce a slow CI runner on demand, and prove a flake fix at that slowness
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [LW-MONTHJUMP-PHONE] — two browser scenarios timed out only on GitHub's runner.
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** condition-based-waiting.md — verifying the fix
+
+**Issue:** The timeouts happened only on the CI runner; locally every run passed, so "red before" was impossible to show. Chromium CPU throttling (CDP `Emulation.setCPUThrottlingRate`, behind an opt-in env var) at 2x–4x reproduced the exact failures on the desktop, calibrated against the runner's own durations (a 10s local test took 23s green and over 30s red there). It turned the fix into a table: 3 runs per slowdown, before and after, same bundle.
+
+**Suggested improvement:** Add a "Prove it on a slow machine" section to condition-based-waiting.md: make the slowness reproducible (CPU throttling for browsers, or an N-core busy load), calibrate the factor from the CI durations, and run each changed test several times per factor before and after. Report where it still breaks.
+
+**Principle:** A flake fix is proven only at the slowness that caused it. Make that slowness reproducible, measure against it, and state the factor at which the fix stops holding.
+
+### Observation 201: A condition wait must watch what the next step uses, not a broader proxy
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [LW-MONTHJUMP-PHONE] — replacing fixed pauses with condition waits.
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** condition-based-waiting.md — choosing the condition
+
+**Issue:** A "grid at rest" wait watched both the scroller's position and the target element. On desktop the grid keeps drawing months to the LEFT for seconds after a jump, each draw re-anchored so nothing visible moves — but the scroller position changes with every draw. The wait therefore waited for the whole background fill, and the step got slower than the fixed pause it replaced. Watching only the target element's on-screen position (what the next click lands on) fixed it.
+
+**Suggested improvement:** In condition-based-waiting.md "Common Mistakes", add: "Waiting on a proxy — a condition that also changes for unrelated background work turns the wait into waiting for that work. Watch exactly the state the next action depends on."
+
+**Principle:** A condition wait should observe precisely the state the next action consumes; a broader proxy silently couples the test to unrelated background work.
+
+### Observation 202: When removing a pause, check what each read returns if its target is not there yet
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [LW-MONTHJUMP-PHONE] — a reload test compared cell contents before and after a reload.
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** condition-based-waiting.md — false passes
+
+**Issue:** The test read grid cells by `querySelector(...)?.textContent` before and after a reload and compared the two lists. A cell not drawn yet read `undefined` — on BOTH sides alike — so the comparison could pass without comparing anything. The fixed pause had only been hiding this by usually giving the grid time to draw.
+
+**Suggested improvement:** In condition-based-waiting.md, add: "For every read that follows a removed pause, ask what it returns when its target does not exist yet. A symmetric empty value (undefined/null/'') in a before/after comparison is a false pass — wait for each target to exist first."
+
+**Principle:** A comparison between two reads is only a check if both reads are guaranteed to have found something; symmetric emptiness passes silently.

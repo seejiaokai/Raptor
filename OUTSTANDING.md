@@ -905,11 +905,13 @@ back at March the window regrows February within 160ms of the jump, the fill eng
 remembered width as exact, and on a touch screen skips the re-anchor "in motion" (`Matrix.tsx`,
 `!(inMotion && coarsePointer())`). February now draws 20px narrower, so March slides 20px left —
 one day at the phone's 0.8 zoom. A slower machine regrows after 160ms, gets re-anchored, passes.
-**Fix (app, WALK tier, phone):** let the fill engine's left grow honour the jump exception the anchor
-effect already has (`jumpAtRef`), and/or forget remembered widths when the row set changes — without
-bringing back the fling-killing scroll write (30 Aug). Then make the test measure only once the grid
-is at rest (today a sample taken before the shift can pass it). **Not paced in the test on purpose:**
-waiting longer between taps does not stop it, and pacing around it would hide the bug.
+**Fix (app, WALK tier, phone) — Astra's spec, which matches the builder's:** in `Matrix.tsx`'s fill
+effect, let a recent programmatic jump (`Date.now() - jumpAtRef.current < 1200`) override the
+coarse-pointer/in-motion suppression and take `anchorNow` before `setColWin` (and/or forget remembered
+widths when the row set changes) — without bringing back the fling-killing scroll write (30 Aug). Then
+make the test wait for the March header to hold still past the rest/fill window before asserting; drop
+the first-success poll (today a sample taken before the shift can pass it). **Not paced in the test on
+purpose:** waiting longer between taps does not stop it, and pacing around it would hide the bug.
 **Until then (owner, D84):** a Leave War desktop timeout on GitHub gets ONE re-run of the failed
 group, not an investigation; a second failure of the same group is new evidence — stop and report.
 
