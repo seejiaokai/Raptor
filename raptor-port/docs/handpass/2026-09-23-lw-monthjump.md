@@ -125,3 +125,14 @@ line-ending step stops on any error; CI-003: the Pages way-back note completed; 
 note corrected. Its negatives: the switch covers every value of `CI_ON_GITHUB` with no gateless green; ports
 4273/4279 clash with nothing; the scrubber wait cannot be shortened by scheduling and the product defect stays
 filed, not hidden. **These fixes are not yet re-inspected** — the next chat's read covers them.
+
+**GitHub again, on `416751d4` (private repo, 2-core machine, 3 tests at once) — RED, and it matters.** The
+"LL 14–18 Jul" scenario timed out twice (34.7s, 35.1s); the reload scenario timed out once (30.7s — inside
+`gridAtRest`) and passed on retry; an untouched test, "the box whose number changed flashes, once", failed
+twice. The first GitHub run of the same step4 code had passed the LL scenario at 27.8s: that machine varies
+widely, and under three concurrent tests it is harsher than the local 3x throttle. So: **robust on his PC
+(every trial passed them) and on a reproducible 3x-slower browser; NOT yet robust on GitHub's private
+machine.** Likely lever for the next chat: `gridAtRest` watches the landed header to the pixel, and the
+desktop's background fill can nudge it by ≤1px (the anchor corrects only >1px), so on a very slow machine
+the wait can last the whole year's fill — a ±1px tolerance is the candidate fix. D84's one re-run was not
+spent: no merge is pending (D152).

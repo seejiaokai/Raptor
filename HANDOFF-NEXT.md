@@ -40,13 +40,17 @@ slowness was traced to the private repo's 2-core machines, and the checks were m
    asked to close the Administrator window that was running it by hand.
 5. **An independent read before "merge live"**: Astra's round-2 fixes (the guard, permissions, pinned URLs,
    exit codes, the Pages note) have NOT been re-inspected — hand them to the reader with the Leave War fix.
-6. Merge on his "merge live". `[HUMAN-RETEST]` (D85/D86) comes after — he confirmed Leave War first.
+6. If the checks must ever run on GitHub's machines again: try the ±1px tolerance in `gridAtRest` first.
+7. Merge on his "merge live". `[HUMAN-RETEST]` (D85/D86) comes after — he confirmed Leave War first.
 
 ## Gates
 
 - Last full LOCAL run on this branch (before the CI move): `npm test` 5760/5760 · build OK · `tfin.js` 728/0 ·
   `test:e2e` 461 passed / 45 skipped / 0 failed · `smoke:tracker` 425/0 · rulecheck OK · docsize OK.
 - On his PC (trial 3, `570dd471`): every gate ran; the only red was the phone month test — the app bug.
+- On GitHub (private, 2-core, `416751d4`): RED — the LL scenario timed out twice, the reload one once (inside
+  `gridAtRest`, passed on retry), and the untouched flash test failed twice. The step4 waits are NOT yet robust
+  on GitHub's private machine; candidate fix: let `gridAtRest` tolerate ±1px (evidence sheet, end of §7).
 - `probes:adapted` / `perf`: not run (no UI change on this branch).
 
 ## Open questions
