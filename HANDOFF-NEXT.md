@@ -13,7 +13,7 @@ notebook entries renumbered #211–#213 past main's #199–#210.
 §0 FIRST — its **Progress** line says exactly where the work is. **State at the end of the resumed
 session: the bug check is DONE and waiting on HIM** — every finding fixed red-first and walked; the two
 blind reads done and every finding fixed (§11); the final gates green on the finished code (§10). What
-is left: his five-minute look (§13, on the branch's Vercel preview
+is left: his five-minute look (§13 — his three questions there are ANSWERED, D130–D132, and built; on the branch's Vercel preview
 `https://raptor-git-claude-tracker-human-retest-8d3411-kai-e2f5.vercel.app`), his answers to the three
 questions in §13, then his "merge live" (a PR is not open yet — open one when he says so; the PC runs its
 checks then, D151: never push to it while they run). FULL tier. Ports: preview 4180, smoke 4181, e2e 4182. Rulings: **D120–D129**
