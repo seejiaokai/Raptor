@@ -4341,6 +4341,18 @@ test('the bottom scrollbar is a year-wide scrubber; the desktop grid fills the w
 
   // Reverse: driving the grid by the month strip moves the thumb to match —
   // September sits about three-quarters along the year.
+  //
+  // First let the drag above END. The app switches the thumb's follow OFF for
+  // 250ms after the bar itself is dragged (Matrix.tsx `syncHbar`,
+  // `hbarUserTsRef`), so the thumb is never written out from under a finger —
+  // and nothing re-syncs it when that window closes. A jump clicked inside the
+  // window therefore leaves the thumb at 0 for good: the one-in-four red on the
+  // owner's fast PC (23 Sep 26, [CI-TWO-CORES]). A person cannot get from the
+  // bar to the month strip in 250ms, so this waits out THE APP'S OWN WINDOW:
+  // a timed rule is the one thing a timed wait is the honest condition for
+  // (D87 bans guessing how long work takes, which this is not).
+  // The missing re-sync is filed as [LW-HBAR-RESYNC].
+  await page.waitForTimeout(300)
   await page.locator('[data-testid="month-SEP"]').click()
   await expect.poll(() => bar.evaluate(el => (el.scrollLeft / (el.scrollWidth - el.clientWidth))), { timeout: 4000 })
     .toBeGreaterThan(0.6)

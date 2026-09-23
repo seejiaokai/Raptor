@@ -282,3 +282,18 @@ code separately from its output, and never let the same line that runs a gate al
 **Suggested improvement:** In condition-based-waiting.md, add: "For every read that follows a removed pause, ask what it returns when its target does not exist yet. A symmetric empty value (undefined/null/'') in a before/after comparison is a false pass — wait for each target to exist first."
 
 **Principle:** A comparison between two reads is only a check if both reads are guaranteed to have found something; symmetric emptiness passes silently.
+
+### Observation 203: Green locally, red on a CI runner on the SAME machine — compare the checkout's settings before the code
+
+**Status:** OPEN
+**Date:** 2026-09-23
+**Session context:** [CI-TWO-CORES] — moving a repo's CI onto the owner's own Windows PC (self-hosted runner).
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** Phase 1 (root cause) — environment differences
+
+**Issue:** The first CI run on the owner's PC failed two unit test files that passed on that very PC minutes earlier. Same machine, same code, same Node — but not the same checkout: the runner makes a FRESH clone, which took Git for Windows' system default (`core.autocrlf=true`) and came out CRLF, while the owner's working copy had `core.autocrlf=false` in its own `.git/config`. A test helper patched a reference file by exact text spanning a line break and found nothing. `git config --show-origin --get-all core.autocrlf` named the cause in one command; a fresh-clone rehearsal proved the fix (scoped to the runner's clone, never the user's global settings) before spending a 15-minute CI run.
+
+**Suggested improvement:** In Phase 1's "Check Recent Changes → Environmental differences", add: "A run on a NEW checkout (CI, a fresh clone, a new worktree) inherits the machine's defaults, not your repo's local config. When local is green and a fresh checkout is red, diff the checkouts' settings (line endings, `git config --show-origin`) before the code — and rehearse the fix on a fresh clone before re-running the slow pipeline."
+
+**Principle:** "It works on this machine" can hide a per-checkout setting; a fresh checkout is a different environment even on the same computer. Rehearse an environment fix on a disposable copy before paying for another full pipeline run.

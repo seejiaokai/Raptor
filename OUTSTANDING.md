@@ -918,18 +918,21 @@ group, not an investigation; a second failure of the same group is new evidence 
 
 ### [CI-TWO-CORES] GitHub's machine halved when the repo went private — the checks are tuned for 4 cores (23 Sep 26)
 
-GitHub gives a PRIVATE repo a 2-core machine; a public one gets 4 (its runner reference). From the switch
-(22 Sep ~17:40 UTC) every parallel check doubled: desktop browser leg 5–6 → 10–11 min, scheduler unit tests
-5–9 → 13–20 min (now the slowest leg, so a whole run takes ~20 min); the single-threaded Tracker check did not
-move. `playwright.config.ts` still runs 3 browser tests at once on CI — chosen for 4 cores — so on 2 cores
-each test runs ~3x slower than on the desktop and the long Leave War scenarios brush the 30s limit (PR #428:
-the reload test timed out once, passed on retry). A run now bills ~60 of the month's included minutes (Free
-2,000 · Pro 3,000; blocked when used up without a payment method). **Pro does NOT buy a bigger machine** —
-larger runners need an organization on GitHub Team. **CHOSEN (D89): run the checks on HIS PC — a Windows
-self-hosted runner** (free, faster; private repo only). He registered it 23 Sep 26 ("JK", run by hand in
-an admin window for the trial; making it a Windows service is the next step). BUILT on
-`claude/lw-monthjump-phone`: the `pc` job in `deploy.yml` (one job, cmd shell, e2e on port 4273 and the
-smoke on 4279 via `E2E_PORT`/`SMOKE_PORT`), the old jobs behind the `CI_ON_GITHUB` variable. Tier NONE.
+Private repo = GitHub's 2-core machines (public = 4): from the switch (22 Sep ~17:40 UTC) every parallel
+check doubled (desktop browser leg 5–6 → 10–11 min, scheduler unit tests to ~20) while the one-threaded
+Tracker check did not move, and a run billed ~60 of the month's minutes (Free 2,000 · Pro 3,000; Pro buys
+minutes, not speed). **CHOSEN (D89): the checks run on HIS PC** — a Windows self-hosted runner ("JK",
+registered 23 Sep 26 by hand in an admin window; a Windows service is next). BUILT on
+`claude/lw-monthjump-phone`: the `pc` job in `deploy.yml` (one job, cmd shell, line endings as stored,
+e2e on 4273 / smoke on 4279), the old jobs behind `CI_ON_GITHUB`. A fast PC exposes FAST-machine races
+the slow runner hid: `[LW-MONTHJUMP-PHONE]`, `[LW-HBAR-RESYNC]`. Tier NONE.
+
+### [LW-HBAR-RESYNC] The Leave War bottom scrollbar is left out of step after a drag (23 Sep 26)
+
+After the bar is dragged the grid→bar follow is off for 250ms (`Matrix.tsx` `syncHbar`, `hbarUserTsRef`)
+and nothing re-syncs when that ends, so a grid move inside the window leaves the thumb stale until the next
+grid scroll — forced 5/5 (drag, then SEP at once: grid at September, thumb at 0). The e2e now waits it
+out. Fix: one trailing `syncHbar` when the window closes. Minor (a person is slower); LOOK tier.
 
 ### [OIL-PERSONAL-PLACEHOLDER] A placeholder on a landed "Personal" request row draws no count (23 Sep 26)
 
