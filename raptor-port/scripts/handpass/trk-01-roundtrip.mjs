@@ -68,7 +68,7 @@ async function drawn(page) {
     const balls = [...svg.querySelectorAll('.ball')].map(g => {
       const t = g.getAttribute('transform') || ''
       const txt = [...g.querySelectorAll('text')].map(x => x.textContent).join('|')
-      const fs = [...g.querySelectorAll('text')].map(x => x.getAttribute('font-size')).join('|')
+      const fs = [...g.querySelectorAll('text')].map(x => x.style.fontSize || x.getAttribute('font-size') || '').join('|')   // the size rides a style (ballFontFor), not an attribute
       return { id: g.dataset.id, t, txt, fs }
     }).sort((a, b) => a.id.localeCompare(b.id))
     /* every stroke that is not part of a ball: prerequisite arrows and free lines */
@@ -174,7 +174,7 @@ if (await pa.locator('#editModal').count()) {
 await pa.click('#selectAllBtn'); await sleep(200)
 await pa.fill('#fontIn', '10'); await sleep(400)
 const afterFont = await drawn(pa)
-L.ok('A: Select all + Font 10 changes the labels', afterFont.balls.some(b => /10/.test(b.fs)), afterFont.balls.slice(0, 2).map(b => b.fs).join(' / '))
+L.ok('A: Select all + Font 10 changes the labels', afterFont.balls.some(b => /10px/.test(b.fs)), afterFont.balls.slice(0, 2).map(b => b.fs).join(' / '))
 await pa.keyboard.press('Escape'); await sleep(150)
 
 await shot(pa, '01-A-2026-drawn')

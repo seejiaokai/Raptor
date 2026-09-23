@@ -159,7 +159,10 @@ export async function dlg(page, { value = null, ok = true, timeout = 5000 } = {}
   await page.waitForSelector('#dlgModal', { state: 'visible', timeout })
   const text = (await page.locator('#dlgModal').innerText()).trim()
   if (value != null) {
-    const inp = page.locator('#dlgModal input:visible, #dlgModal textarea:visible').first()
+    /* the + Add picker carries a search box (#dlgFilter) ABOVE the type-a-name box
+       (#dlgInput): a typed value belongs in #dlgInput when there is one */
+    const own = page.locator('#dlgInput:visible')
+    const inp = (await own.count()) ? own.first() : page.locator('#dlgModal input:visible, #dlgModal textarea:visible').first()
     if (await inp.count()) await inp.fill(String(value))
   }
   const btns = page.locator('#dlgModal button:visible')
