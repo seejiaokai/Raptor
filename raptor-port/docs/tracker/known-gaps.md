@@ -26,6 +26,10 @@
 > which stays deleted after the import (D127); a deleted course is listed in the course ⇅ Reorder
 > window with ↺ Restore, students and marks intact (D128); logging out with unsaved chart edits asks
 > Save / Discard / Stay first (D129).
+> **Three more (owner, 23 Sep 26, BUILT):** deleting a ball also deletes the details typed on it (D130);
+> a backup does not carry a deleted course — restore it before exporting; the delete question says "in this
+> browser" (D131); an import never deletes anyone's marks — a ball the imported chart no longer has keeps
+> its marks out of sight, and importing the old chart back brings them back (D132).
 >
 > **Vendored into RAPTOR 7 Sep 26** (`src/tracker/`, the Tracker tab) from
 > `github.com/seejiaokai/Tracker` at `bf9a47a`. This file carries over what

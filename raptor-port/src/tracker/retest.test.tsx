@@ -639,6 +639,19 @@ describe('[HUMAN-RETEST] the Tracker — the two code reads (Fable + Astra, 23 S
     await grade('ACG-04', null, '0'); if (C.sylDirty) await C.saveChangesClick(); await revert26()
   })
 
+  it('D130 — deleting a ball also deletes the details typed on it; a new ball with that code starts with nothing typed', async () => {
+    await on26()
+    const doc = C.docInfoFor('ACG-06').name
+    await C.saveInfoFor('ACG-06', { ...C.infoFor('ACG-06'), name: 'TYPED ON 06', hrs: '9 Hrs' })
+    C.toggleArrange(); C.openEdit('ACG-06'); const d = C.deleteFromEditModal(); await answer(true); await d
+    C.toggleArrange(); await C.saveChangesClick()
+    C.toggleArrange(); const p = C.addModule('acad'); await answer('ACG-06'); await p; C.toggleArrange(); await C.saveChangesClick()
+    expect(C.infoFor('ACG-06').name, 'nothing typed comes back').toBe(doc)
+    expect(C.infoFor('ACG-06').hrs || '', 'nor the hours').not.toBe('9 Hrs')
+    expect(((await C.collectCharts([C.curSylId()])).eventInfoBySyl[C.curSylId()] || {})['ACG-06'], 'and nothing rides the export for it').toBeUndefined()
+    await revert26()
+  })
+
   it('Astra #4 — deleting a ball also forgets it as a student\'s last worked event (D124)', async () => {
     const s = await on26()
     await grade('ACG-05', null, 'dco')
@@ -705,6 +718,7 @@ describe('[HUMAN-RETEST] the Tracker — a deleted course can be restored (round
     await until(() => C.dlg && /Delete course/.test(C.dlg.msg))
     expect(C.dlg.msg, 'the question names the way back').toMatch(/Restore/)
     expect(C.dlg.msg, 'and not the old promise with no door').not.toMatch(/marks remain in storage/)
+    expect(C.dlg.msg, 'D131: it promises no more than it does').toMatch(/in this browser/)
     C.dlgClose(true); await d; await C.whenLoaded()
     expect(C.COURSES.map((c: any) => c.id), 'gone from the dropdown').not.toContain(cid)
     expect(C.deletedCourses().map((c: any) => c.id), 'listed as deleted').toContain(cid)

@@ -7050,8 +7050,11 @@ screen:
     the done flights; a correction or un-mark pulls it back; a day typed by
     hand stands until a later flight (D123). A "Done on" box half-typed is
     never a day. Deleting a ball says its marks go at ✓ Save changes, and they
-    do, in every course (D124); a deleted-but-unsaved code cannot be re-added
-    until the save. ↶ ↷ keep the chart's view. A lull period's × asks first;
+    do, in every course (D124), with the details typed on it (D130) and any
+    student's "last worked" pointer to it; a deleted-but-unsaved code cannot be
+    re-added until the save (+ Add and 📋 Edit events alike). An IMPORT never
+    deletes a mark: a ball the imported chart lacks keeps its marks out of sight
+    (D132). ↶ ↷ keep the chart's view. A lull period's × asks first;
     Copy to… has a Select all row.
   - **Courses and the session.** A deleted course waits in ⇅ Reorder courses
     under "Deleted courses" with ↺ Restore — back under its own id, students and

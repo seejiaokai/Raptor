@@ -4400,7 +4400,7 @@ export function deletedCourses() { return DELCOURSES.slice(); }
 export async function delCourse() {
   if (COURSES.length <= 1) { await uiAlert('Keep at least one course.'); return; }
   if (!await leaveFlowEdits('Discard them and delete the course?')) return;
-  if (!await uiConfirm('Delete course ' + curCourseName() + '?\n\nIts students and marks are kept: ↺ Restore in ⇅ Reorder courses brings it back.')) return;
+  if (!await uiConfirm('Delete course ' + curCourseName() + '?\n\nIts students and marks are kept: ↺ Restore in ⇅ Reorder courses brings it back in this browser.')) return;   /* "in this browser": a backup does not carry a deleted course (D131) */
   const gone = COURSES.find(c => c.id === course);
   trkGesture(() => {
     COURSES = COURSES.filter(c => c.id !== course); saveCourses();
@@ -4590,13 +4590,21 @@ async function sweepChart(sylId, kill, before, after) {
       }
     }
   }
-  if (!writes.length && !dels.length) return;
+  /* and what was typed on them (D130 — "delete them too"): details belong to
+     the chart (D126), so it is this chart's entries that go */
+  const typed = eventInfo[sylId] ? [...kill].filter(x => eventInfo[sylId][x]) : [];
+  if (!writes.length && !dels.length && !typed.length) return;
   trkGesture(() => {
     for (const w of writes) {
       sSet(w.k, w.v);
       if (w.c === course && sylId === curSylId()) { if (w.m) marks[w.s] = w.m; if (w.d) dates[w.s] = w.d; }
     }
     for (const x of dels) { delKey(x.k); if (x.c === course) lastEdit[x.s] = null; }
+    if (typed.length) {
+      const blk = Object.assign({}, eventInfo[sylId]); for (const x of typed) delete blk[x];
+      if (Object.keys(blk).length) eventInfo[sylId] = blk; else delete eventInfo[sylId];
+      saveEventInfo();
+    }
   });
 }
 /* dupSyl / addSyl are catalogue-only now: mint an sc… id, file the def+layout
@@ -5132,6 +5140,10 @@ export async function applyCharts(charts, opts) {
     const shipped = isBuiltinSylId(target) ? SYLLABI[builtinBaseOf(target)] : null;
     if (shipped && sameDef(events, shipped)) delete customDefs[target];
     else customDefs[target] = JSON.parse(JSON.stringify(events));
+    /* A ball the file's chart no longer has keeps its students' marks, out of
+       sight — an import never deletes anyone's marks; importing the old chart
+       back brings them back (owner, 23 Sep 26 — D132; the D124 wipe is a
+       ✓ Save changes / Revert thing only). */
     const lay = (charts.layouts || {})[src];
     if (lay) await sSet(kLayoutFor(course, target), JSON.stringify(lay));
     if (SYL_TOMB[target]) delete SYL_TOMB[target];
