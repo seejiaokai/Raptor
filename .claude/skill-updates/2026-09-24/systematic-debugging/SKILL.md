@@ -69,27 +69,30 @@ You MUST complete each phase before proceeding to the next.
      `device-only-bugs.md`
    - A flash, a jump or a flicker lives in ONE painted frame, so a check made
      after a wait can never see it. Reproduce it by sampling inside the page on
-     every animation frame; pin it with a check that runs in the same task as
-     the change (a `MutationObserver` callback runs before the browser paints),
-     never after a timeout
+     every animation frame; pin it with a `MutationObserver` armed before the
+     action, measuring in its callback — it runs at the microtask checkpoint,
+     before the next rendering opportunity — never after a timeout
 
 3. **Check Recent Changes**
    - What changed that could cause this?
    - Git diff, recent commits
    - New dependencies, config changes
    - Environmental differences:
-     - A NEW checkout (CI, a fresh clone, a new worktree) inherits the
-       machine's defaults, not your working copy's local config. Local green
-       and a fresh checkout red: diff the checkouts' settings (line endings;
-       `git config --show-origin --get-all <key>`) before the code, and
-       rehearse the fix on a throwaway clone before paying for another slow
-       pipeline run
+     - A fresh clone or a CI checkout lacks your clone's local config and
+       falls back to the machine's defaults (a linked worktree shares its
+       repository's config, unless per-worktree config is switched on). Local
+       green and a fresh checkout red: diff the checkouts' settings (line
+       endings; `git config --show-origin --get-all <key>`) before the code,
+       and rehearse the fix on a throwaway clone before paying for another
+       slow pipeline run
      - A step that hangs after moving from your session to a service (or to
        another account) may be waiting on a person: a credential manager, an
        elevation prompt, a first-run question. With the CPU idle, the process
-       tree's creation times show what started when the step began. A service
-       can answer no prompt — make each one fail fast (for git,
-       `GIT_TERMINAL_PROMPT=0`) and switch off optional network look-ups
+       tree's creation times (another account's command lines are hidden)
+       show what started when the step began. A service can answer no prompt
+       — make each one fail fast (for Git on Windows, both
+       `GIT_TERMINAL_PROMPT=0` and `GCM_INTERACTIVE=never`) and switch off
+       optional network look-ups
    - Did YOUR last change cause it? A symptom that appears right after a fix
      may be the fix's side effect on top of behaviour the app had on
      purpose — ask what the user expected before removing a deliberate rule
@@ -329,7 +332,7 @@ proven one. For a flaky check, ask first:
   own test; don't add test cleanup.
 - Can a person at ordinary pace reach the failing outcome? Then it is a
   product bug, however "load-sensitive" it looks — see
-  `condition-based-waiting.md` §Before You Pace a Test.
+  `condition-based-waiting.md` §Before You Pace or Settle a Test.
 
 A failure that moves between runs, lies outside your change and passes on its
 own is a hypothesis that it is not yours — not an exoneration: your change

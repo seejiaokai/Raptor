@@ -28,7 +28,7 @@ he approves it under, and what the status line will say.
 | 195 | ACTIONED | 2 | systematic-debugging: the flaky-check questions (a test's leftovers can be the product's bug) |
 | 196 | ACTIONED | 5 | session-handoff Step 3 (condense this chat's own scaffolding, its own docs-only commit — D69) |
 | 197 | ACTIONED | 5 | session-handoff Rule 9 (the opening line is sendable unchanged — no choice slot inside it) |
-| 198 | ACTIONED | H | already reflected: verification-before-completion Common Failures "A check passed" row and the long-check-runs pattern; raptor-port/CLAUDE.md §Token discipline |
+| 198 | ACTIONED | 4 | verification-before-completion "Long check runs": a gate chained into a commit (its pipe-eats-the-verdict half was already in the Common Failures row and raptor-port/CLAUDE.md §Token discipline) |
 | 199 | ACTIONED | 2 | systematic-debugging/condition-based-waiting.md "Before you pace a test" (replay at human pace first) + a pointer in the SKILL.md flaky questions |
 | 200 | ACTIONED | 2 | systematic-debugging/condition-based-waiting.md "Before you pace a test" (make the CI's slowness reproducible; prove the fix at it) |
 | 201 | ACTIONED | 2 | systematic-debugging/condition-based-waiting.md Common Mistakes (waiting on a proxy) |
@@ -43,7 +43,7 @@ he approves it under, and what the status line will say.
 | 210 | ACTIONED | 2 | systematic-debugging Phase 1 step 3 (a service cannot answer a prompt); the concrete fix is already in `.github/workflows/deploy.yml` |
 | 211 | ACTIONED | 1 | raptor-port/docs/bug-check-order.md §7.2 (the driver moves the view with the surface's own gesture; a failed gesture is looked at on its picture first) |
 | 212 | ACTIONED | 1 | raptor-port/docs/bug-check-order.md §6 (a wording ruling or a writer fix gets its own small roll-call; the fix shares one body) |
-| 213 | ACTIONED | 1 | raptor-port/docs/bug-check-order.md §4 (with D16: walkers share one preview, fresh context each; nobody rebuilds it while they walk) |
+| 213 | ACTIONED | 1 | raptor-port/docs/bug-check-order.md §4, beside D16 (nobody rebuilds the build walkers are served; the host typechecks and unit-tests meanwhile) — its "one shared preview" half NOT applied: D16's recorded recipe gives each walker its own port, and only he can narrow that |
 | 214 | ACTIONED | 1 | raptor-port/docs/bug-check-order.md §5 (the re-walk: walk scripts assert the right behaviour, re-walk into a second folder, read FAILs against the new flow) |
 | 215 | ACTIONED | 1 | raptor-port/docs/bug-check-order.md §8 (a ruling's "as it is today" half is pinned by a test before the new half is built) |
 | 216 | ACTIONED | 1 | raptor-port/docs/bug-check-order.md §7.2 (walk a SHORT screen too; measure every edge-docked control) |
@@ -69,14 +69,34 @@ he approves it under, and what the status line will say.
 1. **The bug-check order** — 11 lessons + the D16/D17 homes: `_docs/raptor-port/docs/bug-check-order.md`.
 2. **systematic-debugging** — 9 lessons: `systematic-debugging/SKILL.md`, `condition-based-waiting.md`.
 3. **test-driven-development** — 2 lessons + the test halves of #205 and #235.
-4. **verification-before-completion** — 5 lessons: `SKILL.md`, `browser-checks.md`.
+4. **verification-before-completion** — 6 lessons: `SKILL.md`, `browser-checks.md`.
 5. **session-handoff** — 3 lessons.
 6. **task-observer** — 1 lesson (and its `TASK-OBSERVER-VENDORED.md` register line).
 7. **writing-plans** — 1 lesson.
 8. **The gates and deploy doc** — 2 lessons: `_docs/raptor-port/docs/gates-and-deploy.md`.
 9. **Memory notes on this machine** — 4 lessons: `_memory/additions.md`.
 10. **The backlog** — 1 item for #42: `_docs/OUTSTANDING-item.md`.
-- **H — housekeeping**: 3 closed as already reflected (#198, #204, #230). **Kept OPEN**: #120, #122 (D73).
+- **H — housekeeping**: 2 closed as already reflected (#204, #230). **Kept OPEN**: #120, #122 (D73).
+
+## After the two reads (Fable 5.1 high, Astra gpt-5.6-sol high — both REVISE; reports `fable.md`, `astra.md`)
+
+Every finding was checked against the live files and taken, with these settlements:
+- **D16's "own port" (Astra 1 vs Fable's note):** the reviewers disagreed on whether #213's "one shared preview"
+  narrows the owner's ruling. D16's row records the recipe with "its own port", so the draft now keeps D16 as
+  recorded and applies only #213's freeze half. Narrowing it is his call, and the saving is small.
+- **D17 (Fable 5 vs Astra's "faithful"):** the ruling's own words begin "For a long hand pass"; the draft had
+  dropped that condition, so it is restored (D138).
+- **#198 (Fable 7 vs Astra's "closable"):** the observation's lesson is the chain that COMMITTED after a piped
+  gate; nothing live says that, so one "Long check runs" line is added and #198 moves from H to group 4.
+- Merged where both raised the same point: #222's threshold (Fable 8, Astra 6), #231's control case (Fable 9,
+  Astra 5), §7.7's bridge calls (Fable 3, Astra 11), #210's creation times and `GCM_INTERACTIVE` (Fable 11, Astra 3).
+- Taken as written: Fable 1 (the filing push IS the re-run), 2 (D138's guard on condensing), 4 (#234 includes
+  `raptor-executor.md`), 6 ("pace or settle"), 10 (the Updating note names change 4); Astra 2 (a linked worktree
+  shares its repo's config), 4 (`elementFromPoint` may hit a child), 7 (a touch sequence, not one call), 8 (a
+  `MutationObserver` runs at the microtask checkpoint, not "the same task"), 9 (the premise list as examples),
+  10 (platform behaviour that IS the requirement is exercised on every OS).
+- Added after the reads, not reviewed: the direct review-launch commands in the #229 memory block (the two used
+  here). One round each (D70); no second round.
 
 The superpowers skills' local changes are registered in `_notes/SUPERPOWERS-VENDORED.md` (change 4) so an
 upstream refresh re-applies them.

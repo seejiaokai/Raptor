@@ -203,8 +203,11 @@ found-but-unrecorded.
 **Condense this chat's own scaffolding** (owner, D69): the progress notes it
 wrote into the repo to survive a compaction — a running block in an evidence
 sheet, a context doc's working log — are cut down to state, decisions and
-pointers when the work closes, as their OWN docs-only commit before the final
-push. Only what THIS chat wrote, and never inside a fix (D29).
+pointers when the work closes, keeping every rule, condition, date and reason
+(D138 — when in doubt, move the block whole to `raptor-port/docs/archive/` with
+`backlog-archive.mjs --move` instead of rewording it), as their OWN docs-only
+commit before the final push. Only what THIS chat wrote, and never inside a fix
+(D29).
 
 ## Step 4 — the template (this chat's block)
 

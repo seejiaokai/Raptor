@@ -129,13 +129,13 @@ Confirm:
 
 **Proving an existing fix red:** revert only the lines that ARE the fix — never the whole file when it also holds other uncommitted work — and read the message: it must be the defect's own failure, not a missing-function error.
 
-**Read the red — it must name the defect's own effect.** A red from a setup step (the test could not draw its line; its own click deleted the thing it meant to test) proves nothing, and will lie again on the fixed code. Before the action, each case asserts its PREMISE: the object it acts on exists and is the one this test made — found by its id, never by a count the fixture already satisfies — the tool is the one it chose, and nothing else is selected. Where CSS zoom is in play, measure positions with element rectangles, not a transform matrix.
+**Read the red — it must name the defect's own effect.** A red from a setup step (the test could not draw its line; its own click deleted the thing it meant to test) proves nothing, and will lie again on the fixed code. Before the action, each case asserts its PREMISES — e.g. the object it acts on exists and is the one this case created, the intended tool or mode is active, nothing else is selected — and identifies what it created by a unique handle (an id), never by a count or aggregate the fixture may already satisfy. For rendered geometry, use a measurement that includes every transform in play (element rectangles include CSS zoom; an SVG's screen matrix under a CSS-zoomed ancestor may not).
 
 **Races:** write the losing order down as steps, and make the test force that order — hook the boundary (the storage read, the network call) and perform the competing write from inside it. Assert that the hook fired, so a green test cannot be one that never reached the race. Adding a delay and hoping is not a race test.
 
-**A flash or a jump** lives in one painted frame: a test that waits before it asserts passes on it. Assert in the same task as the change (a `MutationObserver` callback runs before the browser paints).
+**A flash or a jump** lives in one painted frame: a test that waits before it asserts passes on it. Arm a `MutationObserver` before the action and measure in its callback — it runs at the microtask checkpoint, before the next rendering opportunity.
 
-**Failure paths:** inject the fault at the call you mean to fail — a stub, or a module loaded first that makes the Nth call throw — never through the platform's rules (a read-only file, a lock), which fault on one operating system and not another. Then break the recovery once and watch the test go red.
+**Failure paths:** for a recovery test, inject the fault at the call you mean to fail — a stub, or a module loaded first that makes the Nth call throw — not through a platform rule (a read-only file, a lock), which faults on one operating system and not another. Where the platform's behaviour itself is the requirement, exercise it on every supported operating system instead. Then break the recovery once and watch the test go red.
 
 **Suites that share one running fixture:** a test that changes shared state runs after every test that reads the old state, or gets a fixture of its own.
 

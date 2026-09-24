@@ -31,11 +31,11 @@ digraph when_to_use {
 - Testing actual timing behavior (debounce, throttle intervals)
 - Always document WHY if using arbitrary timeout
 
-## Before You Pace a Test
+## Before You Pace or Settle a Test
 
-A timing failure is a product bug whenever a person at ordinary speed can reach it.
+A timing failure is a product bug whenever a person at ordinary speed can reach it — and a condition wait can hide it as well as a pause can.
 
-- **Replay the scenario at human pace first**, on a slowed machine and on an unloaded one. If a person can land on the failing outcome, file it as a finding and keep the test honest — never pace or settle the test past it. "Load-sensitive" can mean it fails on FAST machines: an app-side "in motion" window that a fast machine finishes inside and a slow one lands outside.
+- **Replay the scenario at human pace first** — before adding a pause, a settle or a condition wait — on a slowed machine and on an unloaded one. If a person can land on the failing outcome, file it as a finding and keep the test honest — never pace or settle the test past it. "Load-sensitive" can mean it fails on FAST machines: an app-side "in motion" window that a fast machine finishes inside and a slow one lands outside.
 - **Make the slow runner's slowness reproducible, then prove the fix at it.** For a browser: CPU throttling (Chromium's `Emulation.setCPUThrottlingRate` over CDP, behind an opt-in switch) or an N-core busy load. Calibrate the factor from the CI's own durations (a test that takes 10s here and 23s there is roughly 2x). Run each changed test several times per factor, before and after the fix, on the same build — and report the factor at which it still breaks.
 
 ## Core Pattern

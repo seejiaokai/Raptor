@@ -10,8 +10,9 @@ belong in this machine's memory notes, which live beside it (the 23 Sep 26 revie
 rulings, the plan on disk — rather than pasting them into the brief: a ruling he makes while they read then
 reaches them for free. If he rules mid-review, record it in the live file at once, let the reviews in flight
 finish, and redo only the findings the ruling invalidates — never restart the round. And hand Codex, by path,
-the area rules files the change touches (`.claude/rules/decisions/<area>.md`): it loads none of `.claude/rules/`
-by itself (D140, `.claude/rules/doc-structure.md`).
+every `.claude/rules/**/*.md` whose `paths:` match the changed files — the area rulings under `decisions/` AND
+`raptor-executor.md` (never bypass the independent reviewer): it loads none of `.claude/rules/` by itself (D140,
+`.claude/rules/doc-structure.md`).
 
 ## Append to `prefer-codex-for-bug-checks-fable-scarce.md` (observation #229)
 
@@ -21,7 +22,11 @@ takes `--effort low|medium|high|xhigh|max` (it becomes the Claude CLI's `--effor
 `--effort high` on every review call meant to run at high. An in-chat helper started with a model override gets
 its agent definition's `effort:` or the model's default — NOT this chat's level; if he wants in-chat Fable
 helpers pinned, offer a project agent definition (`model: fable`, `effort: high`), which applies from the next
-session.
+session. **Direct read-only reads at a stated level (both used, and working, for the 24 Sep 26 skill review):**
+Fable — `claude -p --model claude-fable-5-1 --effort high --output-format text --permission-prompts none
+--safe-mode --strict-mcp-config --mcp-config '{"mcpServers":{}}' --tools Read,Glob,Grep --allowedTools
+Read,Glob,Grep --permission-mode dontAsk --no-chrome < prompt.txt > report.md` (the runner's own review flags);
+Astra — the `codex exec … -c model_reasoning_effort=high -s read-only …` line in `astra-codex-cli-available.md`.
 
 ## New file `guiding-him-through-setup-steps.md` (observation #208), and its line in `MEMORY.md`
 

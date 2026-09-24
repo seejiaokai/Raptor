@@ -18,8 +18,10 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   older note in the `unit (raptor)` row below ("a docs-only push … starts no new one") predates that measurement.
 - **An intermittent gate stop gets evidence and a filed item BEFORE its one re-run** (24 Sep 26, PR #431): check
   the failing step's code path against the diff; reproduce that step alone, repeatedly, on the change's build
-  AND on the base's; file the residual as a backlog item with that evidence — then ONE re-run, citing the item.
-  Stops on the change's build and none on the base's is a regression: stop there. Re-running first is hoping;
+  AND on the base's; file the residual as a backlog item with that evidence. The push that files it IS the one
+  re-run — on a pull request that carries code, any push restarts every gate (D151) — so never add a
+  `gh run rerun` on top of it, and never push while a run is still going. Two or more stops on the change's
+  build and none on the base's, in that isolated probe, is a regression: stop there. Re-running first is hoping;
   refusing to merge forever blocks on a race the change never touched. (A known family, already measured and
   filed, keeps its own rule — D84.)
 - **There is no GitHub Pages site** (D59, 23 Sep 26): the publish job is off, and every Pages trap below is history.

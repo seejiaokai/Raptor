@@ -107,6 +107,7 @@ Skip any step = lying, not verifying
 ✅ cmd *> run.log; $rc = $LASTEXITCODE; Get-Content run.log -Tail 20; exit $rc   (PowerShell)
 ❌ cmd | tail -5   (reports tail's exit status; the failure detail is gone and costs a full re-run)
 ❌ cmd > run.log 2>&1; tail run.log   (same trap: the last command's status is tail's)
+❌ gate | tail -4 && git add -A && git commit …   (the chain commits on tail's 0 — read the gate's exit code in its own command before you write the commit)
 ```
 The whole log stays in the file — search it when the run is red instead of
 running it again.

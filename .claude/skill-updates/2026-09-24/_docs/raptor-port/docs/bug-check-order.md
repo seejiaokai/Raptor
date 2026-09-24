@@ -255,15 +255,14 @@ an area the other found a defect in is the cheapest possible pointer to a real b
 7. Every confirmed defect gets a regression test and a row in the roll-call.
 
 **A long walk is FANNED OUT across parallel helpers, not walked serially (owner, D16, 21 Sep 26).** The
-helpers are Opus — a helper is never a downgrade — and no two share a fixture: each walks its own world, and
-each is handed the fixture recipe rather than left to rediscover it. The price of the speed: a helper's
-"found nothing" is weaker evidence than the host's own look, so each returns PICTURES and a filled table, and
-the host REPRODUCES every finding before it enters the evidence sheet. **Isolation is the point, not the port**
-(23 Sep 26): walkers may share ONE preview when each starts a fresh browser context, which gives each its own
-storage and so its own copy of the demo data — the "own port" in D16's recipe is not needed then. **While they
-walk, nobody rebuilds that preview:** a rebuild swaps the bundle under them and mixes pre-fix and post-fix
-behaviour in one walk. The host fixing in parallel typechecks without writing output and runs unit tests; the
-rebuild, the gates and the re-walk of the fixes wait for the walkers' reports.
+helpers are Opus agents, and each walks its own WORLD — its own port, its own fresh browser context, its own
+copy of the demo data — so no two share a fixture; each is handed the fixture recipe rather than left to
+rediscover it. The price of the speed: a helper's "found nothing" is weaker evidence than the host's own look,
+so each returns PICTURES and a filled table, and the host REPRODUCES every finding before it enters the
+evidence sheet. **While they walk, nobody rebuilds the build they are served** (23 Sep 26): a rebuild swaps the
+bundle under them and mixes pre-fix and post-fix behaviour in one walk. The host fixing in parallel typechecks
+without writing output and runs unit tests; the rebuild, the gates and the re-walk of the fixes wait for the
+walkers' reports.
 
 **The owner's trigger rule, in one line:**
 
@@ -391,8 +390,9 @@ inside the puck, over exactly the strip the mark occupies (column 3).
 **And two from later walks (23 Sep 26):**
 
 - **A new floating surface names every surface it can open over.** Its third-column answer lists every
-  full-screen or fixed surface beneath it, and a browser test on each asserts that
-  `document.elementFromPoint` at the new surface's centre returns the surface itself. Layering is a missing
+  full-screen or fixed surface beneath it, and a browser test on each asserts that the element at the new
+  surface's centre is the surface or inside it (`hit = document.elementFromPoint(x, y)`;
+  `hit === surface || surface.contains(hit)`). Layering is a missing
   line only a real browser can see: a window shipped stacked below the full-screen board it had to float
   over, and opened invisibly there, while every test passed.
 - **A wording ruling, or a fix to one writer of a record, gets its own small roll-call in the same commit** —
@@ -422,12 +422,13 @@ session does not rebuild it from memory. Extended in the same change whenever a 
 desktop width, with the browser's error list watched throughout. Any error during the walk is a
 finding.
 
-- **Drive it with a SCRIPTED real browser from the start (owner, D17, 21 Sep 26)**, not the in-app browser
-  panel. Both run the real bundle, but the panel is one click per message, resizes under you and times out on
-  screenshots, so the pictures this order requires come out unusable. The scripted driver replays a whole day
-  in about a minute, saves full-size pictures to disk, and is what makes handing the walk to parallel helpers
-  possible (§4). The reusable driver: `raptor-port/scripts/handpass/` (its shared helpers are `lib.mjs`).
-  Looking at the pictures is still the agent's job — the tool changed, the looking did not.
+- **For a long hand pass, drive it with a SCRIPTED real browser from the start (owner, D17, 21 Sep 26)**, not
+  the in-app browser panel. Both run the real bundle, but the panel is one click per message, resizes under you
+  and times out on screenshots, so the pictures this order requires come out unusable. The scripted driver
+  replays a whole day in about a minute, saves full-size pictures to disk, and is what makes handing the walk to
+  parallel helpers possible (§4). The reusable drivers live in `raptor-port/scripts/handpass/` — use the
+  surface's own helper (`lib.mjs` for the scheduler and OIL walks, `trk-lib.mjs` for the Tracker). Looking at
+  the pictures is still the agent's job — the tool changed, the looking did not.
 - **The driver moves the view the way a person does** (23 Sep 26) — with the surface's own scroll or
   drag-to-pan (in some modes the wheel zooms instead), and checks the target sits inside its scroll box before
   acting. A scripted gesture that fails is looked at on its picture before it is called a defect: a generic
@@ -455,17 +456,21 @@ fix; ruled "leave it" by the owner, with the date; or filed in `OUTSTANDING.md` 
 the order. **"Rare" is not a disposition unless a scenario proves it rare.**
 
 **7.7 Create the fixture through the app's own controls.** If the state cannot be reached that way,
-that IS the finding — a missing door. Do not inject it and call the route tested. **Change role in place,
-never by signing in again mid-fixture** (24 Sep 26): on a fresh demo world a sign-in reloads the page, and a
-world nobody has written to yet comes back WITHOUT its Leave War OIL story while its Inputs survive — the walk
-then runs against a different world. Switch roles with `lwRole` / `raptorRole` (`raptor-port/e2e/app.ts`, the
-probe bridge), or make one write before any reload.
+that IS the finding — a missing door. Do not inject it and call the route tested. **Never sign in again
+mid-fixture on a fresh demo world** (24 Sep 26): a sign-in reloads the page, and a world nobody has written to
+yet comes back WITHOUT its Leave War OIL story while its Inputs survive — the walk then runs against a different
+world. Make one write before any reload (the app's own controls, this rule's first sentence); or, when the
+fixture must stay unwritten, change the role in place through the localhost probe bridge — `window.lwSetRole` /
+`window.raptorRole` via `page.evaluate` in a walk script, or their Playwright wrappers `lwRole` / `raptorRole`
+(`raptor-port/e2e/app.ts`) in an e2e test. That changes only the role a person would reach by signing in, not
+the world.
 
 **7.8 A gesture step asserts what the person SEES, in screen terms — never only that a value moved** (23 Sep
 26). For a zoom, what was under the fingers stays under them: measure its on-screen position before and after,
 against where the fingers end. For a drag, the thing follows the finger. A pinch that "zoomed 100% → 147%"
-passed while aiming 800px away from the fingers. Drive multi-finger gestures for real — one CDP call
-(`Input.dispatchTouchEvent` with two touch points) gives real pointer events — in EVERY mode the surface has.
+passed while aiming 800px away from the fingers. Drive multi-finger gestures for real — an
+`Input.dispatchTouchEvent` sequence over CDP (`touchStart`, one or more `touchMove`, `touchEnd`) with two touch
+points gives real pointer events — in EVERY mode the surface has.
 Worked example: `raptor-port/scripts/handpass/trk-pinch.mjs`.
 
 **7.9 A walk proves the engine it ran in** (24 Sep 26). When a change redraws or removes the element under a

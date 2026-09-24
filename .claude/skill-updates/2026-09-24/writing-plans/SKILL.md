@@ -55,7 +55,9 @@ owned by someone who never wrote that code.
 A migration of shared records or documents (moving, splitting or renaming
 what other readers depend on) starts with its checks: the FIRST task writes
 the target structure's rules as executable checks and proves each can fail
-(replay the known failure modes; run it once against the old structure). The
+(replay the known failure modes in a self-test, with a control run against the
+previous checker — the one without the new rule — recording the expected fail
+or pass for each case). The
 migration tasks then run under those checks, and reviewers get the checker's
 report of what left and did not arrive rather than the whole diff. Checks
 written after a migration can only audit it.
