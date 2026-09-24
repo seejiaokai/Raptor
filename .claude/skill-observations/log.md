@@ -708,3 +708,18 @@ code separately from its output, and never let the same line that runs a gate al
 **Suggested improvement:** In the brief-building step, add: list the host's path-scoped rules files whose paths match the changed files and hand them to the reviewer by path. A change to these skills is read by Fable and Astra before the owner approves it (D70).
 
 **Principle:** Context that loads automatically for one provider must be handed explicitly to the other; a cross-provider brief names it by path.
+
+### Observation 235: A fault arranged through the operating system fails on one system only — the gate's self-test was green here and red in CI
+
+**Status:** OPEN
+**Date:** 2026-09-24
+**Session context:** Opening the spring clean's PR; its Docs guard ran on GitHub's Linux machine for the first time
+**Skill:** verification-before-completion
+**Type:** open-source
+**Phase/Area:** what counts as evidence that a check passes
+
+**Issue:** The branch reported its gate self-test "97/97" from local runs on Windows. The first CI run (Linux) failed one scenario: it forced a "second write fails" path by making the destination file read-only. Windows refuses to replace a read-only file by rename; Linux allows it — so on Linux there was no fault and the scenario reported a MISS. Nothing in the code under test was wrong: the test's fault existed on one OS only, and the CI job had never run on the branch because no PR was opened until the very end.
+
+**Suggested improvement:** (1) When CI runs a check on a different OS from the local run, a local green is evidence for the local OS only — say so in the report, and get the CI run (or the same OS) before calling it green. (2) Inject faults at the call you mean to fail (e.g. a preloaded module that makes the Nth call throw), never through platform file semantics (permissions, locks, read-only bits) — and prove each injected fault by breaking the recovery path once and watching the test go red.
+
+**Principle:** A fault arranged through the platform tests the platform; inject it at the call you mean to fail. A green run is evidence only for the environment it ran in.
