@@ -1,5 +1,6 @@
 import { DAYS } from './data'
-import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, moveKey, trackStructuralAdd, isDeleteKey, isMoveKey, protectedWeek } from './publish'
+import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, moveKey, trackStructuralAdd, isDeleteKey, isMoveKey, protectedWeek, filingRestorePlan } from './publish'
+import { inputProtected } from './quarantine'
 import { dayKeys } from './restore'
 import { reconcileDayFiling } from './slots'
 import { keyDay } from './keys'
@@ -531,6 +532,9 @@ export function draftDelete(di: any, id: any) {
    is published — publishing the loaded-then-edited copy becomes the next AL.
    The single undo step is the UI caller's afterSchedMutate(), the same contract
    draftSelect and restoreDayVersion carry. Refuses (false) an unknown version. */
+/* the requests the last load had to leave as filed (they also cover another published day, or their row is landed
+   elsewhere) — read by the Load handler's message, right after the load */
+export let LOADLEFT: string[] = []
 export function loadVersionToWorkingCopy(di: any, ver: any) {
   di = +di
   if (protectedWeek()) return false   // read-only quarantine — never roll a version over a frozen day (P2-REV2-02)
@@ -540,6 +544,14 @@ export function loadVersionToWorkingCopy(di: any, ver: any) {
   nd.today = !!(DAYS[di] && DAYS[di].today)
   DAYS[di] = nd
   reconcileDayFiling(di)   // every replacement, approved or not (P2-QREV-07)
+  /* …AND PUT BACK WHAT THAT VERSION HAD FILED (owner, D98, 25 Sep 26): a request the scheduler had taken off (or
+     filed under Unavailable, or accepted) since goes back to the state the version froze, so the day reads exactly
+     as that version — nothing pending. HERE ONLY, never in the general reconcile above: done there, a plan switched
+     away and back turned a deliberate removal into a fresh request that flags (Fable's earlier read). What cannot be
+     put back without moving another day is left as filed and named (LOADLEFT, for the caller's message). */
+  const plan = filingRestorePlan(di, snap.fil)
+  plan.put.forEach(({ inp, want }) => { if (inputProtected(inp)) return; if (want) inp.acc = want; else delete inp.acc })
+  LOADLEFT = plan.left
   if (dayApproved(di)) {
     rebaseDayPending(di)
   } else {

@@ -156,7 +156,7 @@ describe('the picker (dayTplMenu, opened from either entry point)', () => {
     }
   })
 
-  it('applies to a PUBLISHED day’s working draft (no reopen), leaving the issued version untouched', async () => {
+  it('REFUSES on a PUBLISHED day, with the reason on screen — the day untouched (D96)', async () => {
     await resetLib()
     await click($('#eWeek .day[data-day="0"] .dt.sb-open'))
     await click($('#sbBoard [data-daytpladd="0"]'))
@@ -172,16 +172,19 @@ describe('the picker (dayTplMenu, opened from either entry point)', () => {
     const real = HOOKS.toast
     HOOKS.toast = (m: any) => { toasts.push(String(m)) }
     try {
-      /* Phase 2 (P2-R3-04): no "reopen first" — with no working-draft edits at
-         risk the template applies straight onto the working draft; the issued
-         records + current pointer are untouched, and publishing it is the next AL. */
+      /* D96 (owner, 25 Sep 26 — "4 refuse") REPLACES Phase 2's reading (P2-R3-04) that took a template on a
+         published day as a working-draft edit: the picker draws every template DISABLED with the reason, and the
+         day is left exactly as it was. */
       await click($('#eWeek .day[data-day="2"] .dt.sb-open'))
       await click($('#sbBoard [data-daytpladd="2"]'))
-      await click($('.wavemenu [data-daytplpick]'))
+      const pick = $('.wavemenu [data-daytplpick]') as HTMLButtonElement
+      expect(pick.disabled, 'the template is drawn, but disabled').toBe(true)
+      expect(pick.title).toMatch(/is published — a template can't be applied to a published day/)
+      expect($('.wavemenu .wm-refuse')?.textContent, 'the reason is on screen').toMatch(/can't be applied to a published day/)
+      expect($('.wavemenu [data-daytplsave]'), 'saving this day as a template stays open').toBeTruthy()
       expect(dayApproved(2), 'still published').toBe(true)
       expect(SCHED.cur[2], 'the current issued pointer is untouched').toBe(origId)
-      expect(JSON.stringify(DAYS[2]), 'the working draft took the template').not.toBe(before)
-      expect(toasts.join(' ')).toContain('working draft')
+      expect(JSON.stringify(DAYS[2]), 'the day did not take the template').toBe(before)
     } finally {
       HOOKS.toast = real
       SCHED.pending = {}; delete SCHED.dayOK[2]; delete (SCHED.orig as any)[2]; delete (SCHED.cur as any)[2]; delete (SCHED.sign as any)[2]

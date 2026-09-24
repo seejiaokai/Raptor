@@ -334,17 +334,22 @@ describe('a removal survives a plan switched away and back (Fable final read #2,
 
 /* walk W4-F3 (24 Sep 26). A load puts back the version's CONTENT and leaves the input filings as they are (the
    design of record — publish.ts dayDiscardCount, P2-REREVIEW-08 — and Fable's door list), so an input taken off
-   and then brought back by a load keeps its "removed" mark while its row is on the programme. What was wrong was
+   and then brought back by a load kept its "removed" mark while its row was on the programme (until D98, below). What was wrong was
    the dead control: "→ Ground" on it did nothing and said nothing. Whether a load should also put the input back
    on is a question for him ([AMEND-LOAD-FILING]); the final read (Fable #2) showed the first attempt to re-file
    it turned removals into fresh inputs elsewhere. */
 describe('an input brought back by a load (W4-F3)', () => {
-  it('the load puts back content, not the filing — the input stays removed, as designed', () => {
+  /* D98 (owner, 25 Sep 26 — back to what was published means nothing pending) REPLACES "the load leaves the filing
+     alone": a load puts back what the version had filed too, from its own frozen record, in the load alone (the
+     plan-switch round trip just above still keeps a deliberate removal removed — the general reconcile is untouched). */
+  it('the load puts the request back as the version had it — the day reads exactly as that version (D98)', () => {
     const inp = meeting()
     acceptInput(MON, inp, 'g'); publishDay(MON)
     unacceptInput(MON, inp)                                 // off the programme: parked 'r'
+    expect(dayDelta(MON).length, 'taking it off is pending').toBeGreaterThan(0)
     expect(loadVersionToWorkingCopy(MON, dayCurVer(MON))).toBe(true)
-    expect(inp.acc, 'the filing is not part of what a load replaces').toBe('r')
+    expect(inp.acc, 'on the programme again, as the version filed it').toBe('g')
+    expect(dayDelta(MON), 'nothing pending: the day is the version').toEqual([])
   })
   it('"→ Ground" on an input already on the programme says so instead of doing nothing', () => {
     const inp = meeting()
@@ -500,6 +505,10 @@ describe('the view page\'s pending hint never takes a warning ring\'s place (Fab
     const rules = css.replace(/\/\*[\s\S]*?\*\//g, '').split('}')
     const onPuck = rules.filter((r) => /(^|,)\s*\.seat\[data-alp\]\s+\.puck\s*(,|\{)/.test(r) && /outline\s*:/.test(r))
     expect(onPuck, 'an outline on the puck hides the dashed and dotted rings').toEqual([])
-    expect(rules.some((r) => /#vWeek\s+\.seat\[data-alp\]\s*\{[^]*outline\s*:/.test(r)), 'the seat carries it on the view page').toBe(true)
+    /* D93 (24 Sep 26, built 25 Sep 26 — "View-only Sched included") SUPERSEDES the seat outline this line pinned: a
+       waiting change is a hollow ALn TAG in the seat's corner on every surface, the view page's working-draft face
+       too; no outline on the seat or the puck, so no ring can be hidden or faked */
+    expect(rules.some((r) => /#vWeek\s+\.seat\[data-alp\]\s*\{[^]*outline\s*:/.test(r)), 'no outline on the view page’s seat either (D93)').toBe(false)
+    expect(rules.some((r) => /(^|,)\s*\.seat\[data-aln\]::after\s*\{[^]*content\s*:/.test(r)), 'the hollow ALn tag, on every surface (D93)').toBe(true)
   })
 })

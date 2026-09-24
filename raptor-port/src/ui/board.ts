@@ -21,6 +21,7 @@ import { HIST } from '../state/history'
 import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap } from './html'
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
+import { DAYTPL_PUBLISHED_MSG } from '../engine/daytpl'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
 import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit } from './pops'
 import { openAvailWinFrom } from './AvailWindow'
@@ -684,12 +685,13 @@ export function dayTplArmKey(di: any, id: any): string {
    'noop' (applyDayTpl declined). A published day's apply is a WORKING-DRAFT edit
    that publishes as the next AL (§9 / P2-R3-04); the issued records + current
    pointer are untouched. */
-export function pickDayTpl(di: any, id: any): 'armed' | 'applied' | 'noop' {
+export function pickDayTpl(di: any, id: any): 'armed' | 'applied' | 'noop' | 'refused' {
   di = +di
-  if (dayApproved(di) && dayHasChanges(di)) {
-    const armKey = dayTplArmKey(di, id)
-    if (DAYTPL_ARM !== armKey) { DAYTPL_ARM = armKey; return 'armed' }
-  }
+  /* D96 (25 Sep 26): a published day never takes a template — refused FIRST, before anything arms (Fable F4: the
+     old order armed on the first pick, "pick it again to confirm", then went silent on the second). The confirm
+     that used to guard a published day's working-draft edits has nothing left to guard; 'armed' is no longer
+     returned, and dayTplArmKey stays only for its own tests. */
+  if (dayApproved(di)) { DAYTPL_ARM = null; return 'refused' }
   DAYTPL_ARM = null
   /* disarm any crew slot armed on THIS day BEFORE the replacement — a whole-day
      swap leaves the slot's address occupied by a new row, so afterSchedMutate's
@@ -1472,9 +1474,14 @@ export function dayTplMenu(anchor: HTMLElement, di: any) {
   if (!canEditSched() || !HOOKS.editMode()) return
   di = +di
   const d = DAYS[di]; if (!d) return
-  const html = `<h5>Day templates — ${esc(d.dow)}</h5><div class="wm-row" style="flex-direction:column;align-items:stretch">`
+  /* a PUBLISHED day: every template is drawn but disabled, with the reason on screen (D96 — the house rule for a
+     refusal: say why, at the door); saving this day AS a template stays open */
+  const pub = dayApproved(di), why = DAYTPL_PUBLISHED_MSG(d.dow)
+  const html = `<h5>Day templates — ${esc(d.dow)}</h5>`
+    + (pub && DAYTPL_CFG.length ? `<div class="wm-note wm-refuse">${esc(why)}</div>` : '')
+    + `<div class="wm-row" style="flex-direction:column;align-items:stretch">`
     + (DAYTPL_CFG.length
-      ? DAYTPL_CFG.map((t: any) => `<button class="wm" data-daytplpick="${esc(t.id)}">${esc(t.title || 'Untitled')}<span class="wm-sub">${esc(dayTplSummary(t))}</span></button>`).join('')
+      ? DAYTPL_CFG.map((t: any) => `<button class="wm" data-daytplpick="${esc(t.id)}"${pub ? ` disabled aria-disabled="true" title="${esc(why)}"` : ''}>${esc(t.title || 'Untitled')}<span class="wm-sub">${esc(dayTplSummary(t))}</span></button>`).join('')
       : `<div class="wm-note">No saved templates yet — save this day to start the library.</div>`)
     + `</div><div class="wm-row" style="flex-direction:column;align-items:stretch">`
     + `<button class="wm" data-daytplsave="1">+ Save this day as a template</button></div>`
@@ -1504,6 +1511,7 @@ export function dayTplMenu(anchor: HTMLElement, di: any) {
        key is week/draft/template/content scoped (P2-IMPL-10) and the apply
        disarms any crew slot on the day first (P2-IMPL-11) — both in pickDayTpl. */
     const r = pickDayTpl(di, id)
+    if (r === 'refused') { close(); toast(DAYTPL_PUBLISHED_MSG(d.dow)); e.stopPropagation(); return }
     if (r === 'armed') {
       close()
       toast(`Applying "${t ? t.title : 'template'}" replaces your unpublished edits on ${d.dow} — open Templates and pick it again to confirm`)

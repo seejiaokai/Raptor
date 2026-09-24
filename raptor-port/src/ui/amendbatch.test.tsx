@@ -7,8 +7,10 @@ import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { DAYS } from '../engine/data'
-import { INPUTS } from '../engine/inputs'
-import { SCHED, signOf, setSign, setDayApproved, dayDelta, dayDiscardCount, alCount, dayShownPendCount } from '../engine/publish'
+import { INPUTS, inpId } from '../engine/inputs'
+import { acceptInput, unacceptInput } from '../engine/slots'
+import { loadVersionToWorkingCopy, LOADLEFT } from '../engine/drafts'
+import { SCHED, signOf, setSign, setDayApproved, dayDelta, dayDiscardCount, alCount, dayShownPendCount, dayCurVer } from '../engine/publish'
 import { validate, WARN } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
 import { initStore, writeSlot } from '../state/store'
@@ -157,6 +159,43 @@ describe('item 3 — the Signed line names who signed the version on screen (D95
   it('no line on a day not yet published', () => {
     expect(line(weekEdit(MON))).toBe('')
     expect(line(boardStrip(MON))).toBe('')
+  })
+})
+
+describe('item 6 — "Load onto working copy" puts back what that version had filed (D98, AM6, AM20)', () => {
+  const req = () => {
+    const inp: any = { person: 'bane', date: 'Jul 13', allday: true, type: 'Meeting', remarks: 'D98 test', mod: '2026-07-01' }
+    INPUTS.push(inp); return inp
+  }
+  it('a request taken off since is back on, the day reads exactly as the version, and the confirm counted it', () => {
+    const inp = req()
+    acceptInput(MON, inp, 'g'); publishDay(MON)
+    unacceptInput(MON, inp)                                    // off the programme since the Original
+    expect(inp.acc).toBe('r')
+    expect(dayDiscardCount(MON), '"Discard N edits": the row taken off AND its filing').toBe(2)
+    expect(loadVersionToWorkingCopy(MON, dayCurVer(MON))).toBe(true)
+    expect(inp.acc, 'on the programme again').toBe('g')
+    expect(dayDelta(MON), 'nothing pending').toEqual([])
+    expect(LOADLEFT).toEqual([])
+  })
+  it('a request filed AFTER the version comes off again and reads fresh — the version never had it', () => {
+    publishDay(MON)
+    const inp = req()
+    acceptInput(MON, inp, 'u')                                  // filed under Unavailable on the working copy
+    expect(loadVersionToWorkingCopy(MON, dayCurVer(MON))).toBe(true)
+    expect(inp.acc || '', 'fresh, as at the Original').toBe('')
+    expect(dayDelta(MON)).toEqual([])
+  })
+  it('a request covering ANOTHER published day is left as filed — loading Monday never moves Tuesday (AM1; Fable F3, Astra 3)', () => {
+    const inp: any = { person: 'bane', date: 'Jul 13', endDate: 'Jul 14', allday: true, type: 'LL', remarks: 'D98 two-day', mod: '2026-07-01' }
+    INPUTS.push(inp)
+    publishDay(MON)                                             // Monday issued with the leave fresh
+    inp.acc = 'u'; publishDay(1)                                // Tuesday issued with it filed under Unavailable
+    const tueBefore = dayDelta(1).length
+    expect(loadVersionToWorkingCopy(MON, dayCurVer(MON))).toBe(true)
+    expect(inp.acc, 'left as Tuesday was issued').toBe('u')
+    expect(dayDelta(1).length, 'Tuesday did not move').toBe(tueBefore)
+    expect(LOADLEFT, 'and the load names it').toContain(inpId(inp))
   })
 })
 

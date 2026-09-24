@@ -10,7 +10,7 @@ import { PEOPLE, isSpecial } from '../engine/people'
 import { dayApproved, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek, alColor, nextSeq } from '../engine/publish'
 import { posKey } from '../engine/rowids'
 import { openPendList, closePendList } from './pendlist'
-import { draftSelect, draftVerLabel, loadVersionToWorkingCopy } from '../engine/drafts'
+import { draftSelect, draftVerLabel, loadVersionToWorkingCopy, LOADLEFT } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
@@ -1003,9 +1003,14 @@ export function routeClick(e: MouseEvent) {
        line. It loads onto the WORKING COPY only: the issued schedule the view
        page shows is untouched (SCHED.cur unchanged) until a new AL is published,
        which is the whole point of the reword from the old instant rollback. */
+    /* the requests the load could not put back as that version had them — each also covers another published day,
+       or its row stands on another day (D98 applied without moving another day: AM1; Fable F3) — are named, so a
+       day that still reads pending says why */
+    const left = LOADLEFT.length
     const said = `${DAYS[di].dow}: ${verLabel(ver)} loaded onto the working copy`
       + (dayApproved(di) ? ` — viewers still see ${verLabel(dayCurVer(di))} until you publish` : '')
       + (replaced ? ` · ${replaced} unpublished edit${replaced === 1 ? '' : 's'} replaced` : '')
+      + (left ? ` · ${left} request${left === 1 ? '' : 's'} also cover${left === 1 ? 's' : ''} another day — left as filed` : '')
     logAction(di, said)
     HOOKS.toast(said)
     notify(); return

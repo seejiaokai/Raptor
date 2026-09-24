@@ -420,8 +420,40 @@ export function dayDiscardCount(di:any):number{di=+di;
      projection, the frozen sentinel membership) is not: recovery re-derives it
      from the live inputs and roster, exactly as the filing axis is retained. */
   const decDrop=oilDecisionsKey((DAYS[di]||{}).oild)!==oilDecisionsKey((snap.d||{}).oild)?1:0;
-  /* counted in the ONE unit (D109): a man moved is one edit here too, as on the day head */
-  return canonicalUnits(snap.d,DAYS[di],di).length+decDrop;}
+  /* counted in the ONE unit (D109): a man moved is one edit here too, as on the day head — and, since the load puts
+     back what the version had filed (D98, drafts.ts loadVersionToWorkingCopy), each request filing it will put back
+     is an edit it replaces too (the filing axis was excluded while the load left filings alone, P2-REREVIEW-08).
+     Only those it CAN put back: one it must leave (it also covers another published day, or its row is landed
+     elsewhere) is not replaced, so it is not counted. */
+  return canonicalUnits(snap.d,DAYS[di],di).length+decDrop+filingRestorePlan(di,snap.fil,snap.d).put.length;}
+/* WHAT A LOAD CAN PUT BACK OF A VERSION'S FILINGS (owner, D98, 25 Sep 26 — "if the change results in going back to the
+   same as the published schedule … it shouldnt show as pending"). For every request covering this day: the state
+   the version froze (`fil`, snapshot's filing fingerprint; absent = fresh), set only where it can be true without
+   moving anything else — a request's filing is ONE value for every day it covers (INPUTS.acc), and loading one day
+   must never change another (AM1; Fable F3, Astra 3):
+     · "on the programme" ('g') only where its row is on a loaded day — the load has just put the version's rows back;
+     · never away from 'g' while its row stands on a loaded day (a request accepted onto another day stays there);
+     · never to a state another PUBLISHED day it covers was issued with a different one of.
+   Returns what to set (`put`) and what must be left as filed (`left`, by input id) — the load says so. Pure; the
+   load applies it (drafts.ts), and the discard count above counts it, so the confirm and the load agree. `dayAfter`
+   is this day as the load will leave it (the version's content) — the discard count asks BEFORE the load, when the
+   row it will put back is not on the live day yet; the load itself asks after, with the day already replaced. */
+export function filingRestorePlan(di:any,fil:any,dayAfter?:any):{put:Array<{inp:any,want:string}>,left:string[]}{di=+di;
+  const dt=(DAYS[di]||{}).dt, put:any[]=[], left:string[]=[];
+  if(dt==null)return {put,left};
+  (INPUTS||[]).forEach((inp:any)=>{
+    if(!inputCoversDate(inp,dt))return;
+    const id=inpId(inp), want=String(((fil||{})[id])||''), cur=String(inp.acc||'');
+    if(cur===want)return;
+    const landed=DAYS.some((d0:any,j:number)=>{const d=(j===di&&dayAfter)?dayAfter:d0; return ((d&&d.ground)||[]).some((g:any)=>g&&g.src===id);});
+    if(want==='g'?!landed:landed){left.push(id);return;}
+    for(let dj=0;dj<DAYS.length;dj++){ if(dj===di)continue; const d=DAYS[dj];
+      if(!d||!inputCoversDate(inp,d.dt)||!dayApproved(dj))continue;
+      const v=dayCurVer(dj), sn=v!=null?daySnapOf(dj,v):null;
+      if(sn&&sn.fil&&String(sn.fil[id]||'')!==want){left.push(id);return;} }
+    put.push({inp,want});
+  });
+  return {put,left};}
 /* THE ONE PLACE records are found by identity (§1, P2-R2-05/P2-R3-03). `ver` is
    a verId (`iso#seq`) — the Original is `iso#0`, an AL is `iso#seq`. It also
    still resolves a `d:<id>` DRAFT blob (unchanged). It MUST validate that the

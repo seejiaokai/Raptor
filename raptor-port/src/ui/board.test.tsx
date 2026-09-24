@@ -2284,21 +2284,19 @@ describe('day-template apply — arm scoping and slot disarm (P2-IMPL-10 / 11)',
     }
   })
 
-  it('a first pick ARMS a published day with edits; an unchanged pick confirms, a CHANGED one re-arms (P2-IMPL-10)', () => {
+  /* D96 (25 Sep 26) replaces the published-day confirm (P2-IMPL-10): a published day is REFUSED on the first pick,
+     before anything arms — with or without unpublished edits, and whatever happens between taps */
+  it('a published day refuses every pick — with edits or without — and never arms (D96)', () => {
     const d0 = JSON.parse(JSON.stringify(DAYS[0]))
     const t = addDayTpl(0)!
     try {
-      sgn(0); setDayApproved(0, true)                         // freezes the Original
-      ;(DAYS[0] as any).notes.push('AN EDIT')                 // a real unpublished edit → delta 1
-      expect(dayApproved(0)).toBe(true)
-      expect(pickDayTpl(0, t.id), 'first pick arms').toBe('armed')
-      /* the working draft changes between taps → the scoped arm key no longer
-         matches, so it must RE-arm rather than silently apply (this is the same
-         staleness that let a bare `${di}:${id}` key carry across weeks). */
-      ;(DAYS[0] as any).notes.push('ANOTHER EDIT')
-      expect(pickDayTpl(0, t.id), 'a changed working draft re-arms').toBe('armed')
-      /* an unchanged confirming pick applies */
-      expect(pickDayTpl(0, t.id), 'the confirming pick applies').toBe('applied')
+      sgn(0); setDayApproved(0, true)
+      expect(pickDayTpl(0, t.id), 'no edits').toBe('refused')
+      ;(DAYS[0] as any).notes.push('AN EDIT')
+      const before = JSON.stringify(DAYS[0])
+      expect(pickDayTpl(0, t.id), 'with an unpublished edit').toBe('refused')
+      expect(pickDayTpl(0, t.id), 'and again — no second pick applies').toBe('refused')
+      expect(JSON.stringify(DAYS[0]), 'the day is untouched').toBe(before)
     } finally {
       DAYS[0] = d0
       const ix = DAYTPL_CFG.findIndex((x: any) => x.id === t.id); if (ix >= 0) DAYTPL_CFG.splice(ix, 1)
@@ -2348,19 +2346,4 @@ describe('day-template apply — arm scoping and slot disarm (P2-IMPL-10 / 11)',
     } finally { view.setPage(wasPage) }
   })
 
-  it('a first pick arms; a navigation before the second pick re-arms rather than applying (P2-REV2-07)', () => {
-    const d0 = JSON.parse(JSON.stringify(DAYS[0]))
-    const t = addDayTpl(0)!
-    try {
-      sgn(0); setDayApproved(0, true)
-      ;(DAYS[0] as any).notes.push('AN EDIT')                 // a real unpublished edit → delta 1
-      expect(pickDayTpl(0, t.id), 'first pick arms').toBe('armed')
-      view.bumpNav()                                          // navigate away and back (content unchanged)
-      expect(pickDayTpl(0, t.id), 'the navigation forced a fresh confirm').toBe('armed')
-      expect(pickDayTpl(0, t.id), 'now the confirming pick applies').toBe('applied')
-    } finally {
-      DAYS[0] = d0
-      const ix = DAYTPL_CFG.findIndex((x: any) => x.id === t.id); if (ix >= 0) DAYTPL_CFG.splice(ix, 1)
-    }
-  })
 })

@@ -308,7 +308,7 @@ describe('the edit page (tfin)', () => {
     await signDay(0)
     await click($(`#eWeek button[data-alpub="0"]`))         // AL1 goes out
     expect(chip()!.textContent, 'tag names AL1 after issue').toBe('AL1')
-    expect($$(`#eWeek .day[data-day="0"] .verchip`).length).toBe(1)
+    expect($$(`#eWeek .day[data-day="0"] .day-head .verchip`).length, 'one tag on the head (the Signed line below it carries its own, D102)').toBe(1)
     /* load the Original onto the working copy — the issued version stays AL1
        (owner, 16 Aug 26), so the tag still reads AL1 and the working copy now
        differs from AL1, which shows as pending */

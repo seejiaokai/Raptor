@@ -964,7 +964,8 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
    the caret that says it opens. */
 .day-head .dpendbtn,.sb-pub .dpendbtn{font-family:inherit;line-height:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:3px}
 .dpendbtn:hover{background:rgba(229,194,74,.22);border-color:rgba(229,194,74,.7)}
-.dpendbtn .dpc{font-size:8px;line-height:1}
+/* the caret is drawn, not written, so the chip still reads "N pending" to everything that reads its words */
+.dpendbtn::after{content:'▾';font-size:8px;line-height:1}
 /* THE PENDING LIST — the approved mock-up's look (docs/mock/pending-list.html), in the app's tokens. Body-level,
    above the board (the board sheet is 400) and the History bubble (430), below the modals (470). Its own list
    scrolls once it runs past the screen (D100); pendlist.ts caps the height to the visible area. */

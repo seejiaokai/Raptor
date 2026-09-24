@@ -1355,7 +1355,7 @@ export function dayStatHTML(di:any,ed:any){
        there goes out as an amendment). */
     const pendBtn=nd&&ed&&ok&&!PV&&canEditSched();
     const pendChip=!nd?'':pendBtn
-      ? `<button class="dpend dpendbtn" data-pendlist="${di}" aria-haspopup="dialog" title="See the ${nd} change${nd>1?'s':''} waiting to go out as AL${nextSeq(di)} on ${d.dow}, and go to each">${nd}&nbsp;pending<span class="dpc" aria-hidden="true">▾</span></button>`
+      ? `<button class="dpend dpendbtn" data-pendlist="${di}" aria-haspopup="dialog" title="See the ${nd} change${nd>1?'s':''} waiting to go out as AL${nextSeq(di)} on ${d.dow}, and go to each">${nd}&nbsp;pending</button>`
       : `<span class="dpend" title="${nd} ${ok?'change':'unpublished edit'}${nd>1?'s':''} on this day${ok?' — ahead of the issued schedule until you publish an AL':' — publish the day before publishing an AL'}">${nd}&nbsp;pending</span>`;
     const sgOK=daySigned(di);
     /* THE BEAK (§9, closes BUG-2): on a NEVER-published day it first-approves
