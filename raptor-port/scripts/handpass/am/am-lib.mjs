@@ -149,7 +149,13 @@ export async function planMenuItems(page, di) {
         : e.dataset.planpv != null ? 'look:' + e.dataset.planpv : e.dataset.plandup != null ? '+alt' : '?' })))
 }
 
-/** Tap a plans-menu row whose text matches `re` (the menu must be open). */
+/** Tap a plans-menu row whose text matches `re` (the menu must be open). CAREFUL: the live row's caption
+    names the issued version ("differences from Original go out as AL1") — to LOOK at an issued version,
+    use planMenuLook, which only matches the issued rows. */
+export async function planMenuLook(page, re) {
+  await page.locator('.wm[data-planpv]:visible').filter({ hasText: re }).first().click()
+  await page.waitForTimeout(700)
+}
 export async function planMenuPick(page, re) {
   const it = page.locator('.wm:visible').filter({ hasText: re }).first()
   await it.click()
@@ -181,7 +187,8 @@ export async function viewHead(page, di) {
 
 /** The toast text currently on screen (the app's own messages). */
 export async function toastText(page) {
-  return page.evaluate(() => [...document.querySelectorAll('.toast, #toast, [class*=toast]')].map(e => e.innerText.trim()).filter(Boolean).join(' | '))
+  /* the app's one toast element (ui/toast.ts) — faded, never removed, so read it while it is shown */
+  return page.evaluate(() => { const t = document.getElementById('toastEl'); return t && t.style.opacity !== '0' ? (t.textContent || '').trim() : '' })
 }
 
 export { go }
