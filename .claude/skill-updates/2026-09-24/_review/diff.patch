@@ -1,0 +1,412 @@
+diff --git a/.claude/skills/systematic-debugging/SKILL.md b/.claude/skill-updates/2026-09-24/systematic-debugging/SKILL.md
+index 79b2e9c7..e90e04df 100644
+--- a/.claude/skills/systematic-debugging/SKILL.md
++++ b/.claude/skill-updates/2026-09-24/systematic-debugging/SKILL.md
+@@ -67,12 +67,29 @@ You MUST complete each phase before proceeding to the next.
+      is present on every run; only the outcome varies
+    - Can't run the failing device or browser at all? See
+      `device-only-bugs.md`
++   - A flash, a jump or a flicker lives in ONE painted frame, so a check made
++     after a wait can never see it. Reproduce it by sampling inside the page on
++     every animation frame; pin it with a check that runs in the same task as
++     the change (a `MutationObserver` callback runs before the browser paints),
++     never after a timeout
+ 
+ 3. **Check Recent Changes**
+    - What changed that could cause this?
+    - Git diff, recent commits
+    - New dependencies, config changes
+-   - Environmental differences
++   - Environmental differences:
++     - A NEW checkout (CI, a fresh clone, a new worktree) inherits the
++       machine's defaults, not your working copy's local config. Local green
++       and a fresh checkout red: diff the checkouts' settings (line endings;
++       `git config --show-origin --get-all <key>`) before the code, and
++       rehearse the fix on a throwaway clone before paying for another slow
++       pipeline run
++     - A step that hangs after moving from your session to a service (or to
++       another account) may be waiting on a person: a credential manager, an
++       elevation prompt, a first-run question. With the CPU idle, the process
++       tree's creation times show what started when the step began. A service
++       can answer no prompt — make each one fail fast (for git,
++       `GIT_TERMINAL_PROMPT=0`) and switch off optional network look-ups
+    - Did YOUR last change cause it? A symptom that appears right after a fix
+      may be the fix's side effect on top of behaviour the app had on
+      purpose — ask what the user expected before removing a deliberate rule
+@@ -238,6 +255,10 @@ If you catch yourself thinking:
+ - "Pattern says X but I'll adapt it differently"
+ - "Here are the main problems: [lists fixes without investigation]"
+ - Proposing solutions before tracing data flow
++- "That run must have been stale" (or "the fix works") about numbers that are
++  identical before and after a change — either the change did nothing or the
++  run never exercised it. Run the one check that tells them apart (the build
++  time, the bundle actually served, a reused server) before saying either
+ - **"One more fix attempt" (when already tried 2+)**
+ - **Each fix reveals new problem in different place**
+ 
+@@ -301,6 +322,14 @@ proven one. For a flaky check, ask first:
+   port and fails the next run; the pile-up looks random.
+ - Did it start right after a timing change? Then it is that change's bug
+   announcing itself.
++- Could a USER leave the same state behind? A test failing on what an earlier
++  test left (a component that is never unmounted keeps per-window state) is
++  evidence about state lifetime: if a user can reach the same carry-over —
++  reopen, navigate, sign in again — it is a product bug. Reproduce it as its
++  own test; don't add test cleanup.
++- Can a person at ordinary pace reach the failing outcome? Then it is a
++  product bug, however "load-sensitive" it looks — see
++  `condition-based-waiting.md` §Before You Pace a Test.
+ 
+ A failure that moves between runs, lies outside your change and passes on its
+ own is a hypothesis that it is not yours — not an exoneration: your change
+diff --git a/.claude/skills/systematic-debugging/condition-based-waiting.md b/.claude/skill-updates/2026-09-24/systematic-debugging/condition-based-waiting.md
+index 70994f77..bb6a973b 100644
+--- a/.claude/skills/systematic-debugging/condition-based-waiting.md
++++ b/.claude/skill-updates/2026-09-24/systematic-debugging/condition-based-waiting.md
+@@ -31,6 +31,13 @@ digraph when_to_use {
+ - Testing actual timing behavior (debounce, throttle intervals)
+ - Always document WHY if using arbitrary timeout
+ 
++## Before You Pace a Test
++
++A timing failure is a product bug whenever a person at ordinary speed can reach it.
++
++- **Replay the scenario at human pace first**, on a slowed machine and on an unloaded one. If a person can land on the failing outcome, file it as a finding and keep the test honest — never pace or settle the test past it. "Load-sensitive" can mean it fails on FAST machines: an app-side "in motion" window that a fast machine finishes inside and a slow one lands outside.
++- **Make the slow runner's slowness reproducible, then prove the fix at it.** For a browser: CPU throttling (Chromium's `Emulation.setCPUThrottlingRate` over CDP, behind an opt-in switch) or an N-core busy load. Calibrate the factor from the CI's own durations (a test that takes 10s here and 23s there is roughly 2x). Run each changed test several times per factor, before and after the fix, on the same build — and report the factor at which it still breaks.
++
+ ## Core Pattern
+ 
+ ```typescript
+@@ -92,6 +99,12 @@ See `condition-based-waiting-example.ts` in this directory for complete implemen
+ **❌ Stale data:** Cache state before loop
+ **✅ Fix:** Call getter inside loop for fresh data
+ 
++**❌ Waiting on a proxy:** a condition that also changes for unrelated background work (a scroll position that moves with every background redraw) turns the wait into waiting for that work — slower than the pause it replaced
++**✅ Fix:** Watch exactly the state the next action consumes (the on-screen position of the element it will click)
++
++**❌ Reading what is not there yet:** once a pause is gone, a read of a target that has not appeared returns `undefined`/`null`/`''` — on BOTH sides of a before/after comparison alike, so the comparison passes without comparing anything
++**✅ Fix:** For every read that followed the removed pause, wait for its target to exist first
++
+ ## When Arbitrary Timeout IS Correct
+ 
+ ```typescript
+diff --git a/.claude/skills/test-driven-development/SKILL.md b/.claude/skill-updates/2026-09-24/test-driven-development/SKILL.md
+index 744fd999..1bccf093 100644
+--- a/.claude/skills/test-driven-development/SKILL.md
++++ b/.claude/skill-updates/2026-09-24/test-driven-development/SKILL.md
+@@ -123,14 +123,20 @@ Confirm:
+ - Failure message is expected
+ - Fails because feature missing (not typos)
+ 
+-**Test passes?** You're testing existing behavior. Fix test. A test that is green before the implementation is a finding, not a footnote — it is vacuous, on the wrong fixture, or testing something already built; say which before going on. The usual culprits: an empty collection (assert it is non-empty first) and shared state an earlier test switched and never restored.
++**Test passes?** You're testing existing behavior. Fix test. A test that is green before the implementation is a finding, not a footnote — it is vacuous, on the wrong fixture, or testing something already built; say which before going on. The usual culprits: an empty collection (assert it is non-empty first) and shared state an earlier test switched and never restored. Or the scenario holds a second path to the right answer: a side effect of one of its steps heals the symptom (a jump that also changes which rows are drawn, so the view re-measures and re-syncs on its own). Don't just tighten the assertion — list what each step changes, and pick a scenario where only the fix can make it pass.
+ 
+ **Test errors?** Fix error, re-run until it fails correctly.
+ 
+ **Proving an existing fix red:** revert only the lines that ARE the fix — never the whole file when it also holds other uncommitted work — and read the message: it must be the defect's own failure, not a missing-function error.
+ 
++**Read the red — it must name the defect's own effect.** A red from a setup step (the test could not draw its line; its own click deleted the thing it meant to test) proves nothing, and will lie again on the fixed code. Before the action, each case asserts its PREMISE: the object it acts on exists and is the one this test made — found by its id, never by a count the fixture already satisfies — the tool is the one it chose, and nothing else is selected. Where CSS zoom is in play, measure positions with element rectangles, not a transform matrix.
++
+ **Races:** write the losing order down as steps, and make the test force that order — hook the boundary (the storage read, the network call) and perform the competing write from inside it. Assert that the hook fired, so a green test cannot be one that never reached the race. Adding a delay and hoping is not a race test.
+ 
++**A flash or a jump** lives in one painted frame: a test that waits before it asserts passes on it. Assert in the same task as the change (a `MutationObserver` callback runs before the browser paints).
++
++**Failure paths:** inject the fault at the call you mean to fail — a stub, or a module loaded first that makes the Nth call throw — never through the platform's rules (a read-only file, a lock), which fault on one operating system and not another. Then break the recovery once and watch the test go red.
++
+ **Suites that share one running fixture:** a test that changes shared state runs after every test that reads the old state, or gets a fixture of its own.
+ 
+ ### GREEN - Minimal Code
+diff --git a/.claude/skills/verification-before-completion/SKILL.md b/.claude/skill-updates/2026-09-24/verification-before-completion/SKILL.md
+index 13324475..b34c56db 100644
+--- a/.claude/skills/verification-before-completion/SKILL.md
++++ b/.claude/skill-updates/2026-09-24/verification-before-completion/SKILL.md
+@@ -53,6 +53,9 @@ Skip any step = lying, not verifying
+ | Pushed / committed / clean | `git status -sb` read in this turn | Remembering that you pushed |
+ | Fixed everywhere it applies | The list of every place, re-checked AFTER the fix, each by opening it | The list written before building |
+ | "You'll see X when you do Y" (a check step for someone else) | Did Y on the built app and saw X | Writing it from what the feature was meant to do |
++| Clean / nothing found / never happened | The verdict names what was examined AND what was not — which files, which kinds (binaries? the history?), which terms | "Clean", with its scope left for the reader to assume |
++| Removed everywhere (a name, a secret, an identifier) | A sweep for everything that identifies it — synonyms, variants, codes, not only the words you were given — and the file kinds the sweep could not read, named | A search for the literal strings you were given |
++| It passes on another machine, or in CI | That environment's own run of the exact commit | A green run on another operating system or checkout — a fault arranged through the platform (a read-only file, a lock) may fault on one only |
+ 
+ ## Red Flags - STOP
+ 
+diff --git a/.claude/skills/verification-before-completion/browser-checks.md b/.claude/skill-updates/2026-09-24/verification-before-completion/browser-checks.md
+index 261d2701..4caf369a 100644
+--- a/.claude/skills/verification-before-completion/browser-checks.md
++++ b/.claude/skill-updates/2026-09-24/verification-before-completion/browser-checks.md
+@@ -53,6 +53,15 @@ below is a way a real session "verified" a screen change and was wrong.
+   tuned to today's fonts; "no outline" is `outline-style: none`, not
+   `outline-width: 0px`; compare a rect with a rect, never with a rounded
+   integer.
++- "Is it on one line?" counts the distinct (rounded) `top` values of
++  `getClientRects()`, never the number of rects: a browser returns one rect
++  per inline fragment, and one line of interpolated text is several text
++  nodes. Print a new measurement's raw numbers once before trusting it.
++- Across a mode switch the view itself moves, and the framework draws the new
++  chrome only on its next render. Place and measure after the first
++  animation frame that follows the switch, and assert what stays put
++  relative to the view ("the point in the middle stays in the middle"), not
++  absolute screen positions.
+ 
+ ## CSS Placement
+ 
+diff --git a/.claude/skills/session-handoff/SKILL.md b/.claude/skill-updates/2026-09-24/session-handoff/SKILL.md
+index 5125570f..7ca99a57 100644
+--- a/.claude/skills/session-handoff/SKILL.md
++++ b/.claude/skill-updates/2026-09-24/session-handoff/SKILL.md
+@@ -146,7 +146,11 @@ memory:
+   stayed unmapped for weeks exactly this way.
+ - **A known issue RESOLVED** → its `OUTSTANDING.md` item LEAVES, by
+   `node raptor-port/scripts/backlog-archive.mjs <ID> --homes <file>` —
+-  never left in place as a "RESOLVED" note. Its contract goes to the right
++  never left in place as a "RESOLVED" note. Before it leaves, walk EVERY
++  deliverable the item ever named — its oldest blocks included — and mark
++  each done, filed as its own item, or dropped by a ruling: a status line's
++  "the only thing left is X" is a summary, not a check (24 Sep 26: one missed
++  a second leftover). Its contract goes to the right
+   structured doc first (`engine-rules`, `ui-contracts`, `feature-impact`,
+   `performance`); its story goes in the commit message — that is what makes
+   `git log` the changelog. **A known issue CREATED** → an `OUTSTANDING.md`
+@@ -196,6 +200,12 @@ Fix what you find, in this session's final commit. If a gap is real but
+ outside what you were asked to do, put it in **Unfinished** — never leave it
+ found-but-unrecorded.
+ 
++**Condense this chat's own scaffolding** (owner, D69): the progress notes it
++wrote into the repo to survive a compaction — a running block in an evidence
++sheet, a context doc's working log — are cut down to state, decisions and
++pointers when the work closes, as their OWN docs-only commit before the final
++push. Only what THIS chat wrote, and never inside a fix (D29).
++
+ ## Step 4 — the template (this chat's block)
+ 
+ Same structure every time. Write "none" rather than dropping a line —
+@@ -244,4 +254,8 @@ stable structure is the point.
+    redone the thing the 4 Sep and 24 Sep 26 cuts undid.
+ 9. **Every handoff ends with his opening line for the fresh chat** — the branch
+    to pick in the new-chat picker and "Read `HANDOFF.md`, the `claude/<name>`
+-   block under `## Now`" — ready to paste (his standing instruction).
++   block under `## Now`" — ready to paste (his standing instruction). Ready to
++   paste means it goes out UNCHANGED: never put a choice inside it as a
++   `<a / b>` slot — he will send it unfilled, beside an instruction that
++   cannot wait. Ask each open choice as its own numbered question first, or
++   give one complete line per option.
+diff --git a/.claude/skills/task-observer/SKILL.md b/.claude/skill-updates/2026-09-24/task-observer/SKILL.md
+index ad9e778c..c6fd492e 100644
+--- a/.claude/skills/task-observer/SKILL.md
++++ b/.claude/skill-updates/2026-09-24/task-observer/SKILL.md
+@@ -219,7 +219,13 @@ act of memory.
+    sibling session's) and say so in the entry. When two branches' logs meet
+    at a merge, keep one side's entries as they are and re-append the other
+    side's new entries at the end with fresh numbers, correcting any
+-   cross-reference to them.
++   cross-reference to them. The check that reads another branch's log
++   (`git show <branch>:<path>`) can fail silently: Git Bash on Windows
++   rewrites the `rev:path` argument into a Windows path unless
++   `MSYS_NO_PATHCONV=1` is set, and a failure hidden by `2>/dev/null` reads
++   as "no entries there". Run it on the CURRENT branch first — it must
++   return your own highest number before its "none" for any other branch is
++   believed.
+ 
+ **Log-write safety — never let a mutation span entry boundaries:** When
+ mutating the log programmatically (marking entries ACTIONED/DECLINED,
+diff --git a/.claude/skills/writing-plans/SKILL.md b/.claude/skill-updates/2026-09-24/writing-plans/SKILL.md
+index acfa5358..648e6245 100644
+--- a/.claude/skills/writing-plans/SKILL.md
++++ b/.claude/skill-updates/2026-09-24/writing-plans/SKILL.md
+@@ -52,6 +52,14 @@ task still runs every gate once; deferring the only check that can see a
+ change to the last task turns each task's findings into one big closing slice
+ owned by someone who never wrote that code.
+ 
++A migration of shared records or documents (moving, splitting or renaming
++what other readers depend on) starts with its checks: the FIRST task writes
++the target structure's rules as executable checks and proves each can fail
++(replay the known failure modes; run it once against the old structure). The
++migration tasks then run under those checks, and reviewers get the checker's
++report of what left and did not arrive rather than the whole diff. Checks
++written after a migration can only audit it.
++
+ ## Bite-Sized Task Granularity
+ 
+ **Each step is one action (2-5 minutes):**
+diff --git a/raptor-port/docs/bug-check-order.md b/.claude/skill-updates/2026-09-24/_docs/raptor-port/docs/bug-check-order.md
+index fcf84884..03f0637b 100644
+--- a/raptor-port/docs/bug-check-order.md
++++ b/.claude/skill-updates/2026-09-24/_docs/raptor-port/docs/bug-check-order.md
+@@ -254,6 +254,17 @@ an area the other found a defect in is the cheapest possible pointer to a real b
+ 6. Settle disagreements with evidence, never by confidence or majority.
+ 7. Every confirmed defect gets a regression test and a row in the roll-call.
+ 
++**A long walk is FANNED OUT across parallel helpers, not walked serially (owner, D16, 21 Sep 26).** The
++helpers are Opus — a helper is never a downgrade — and no two share a fixture: each walks its own world, and
++each is handed the fixture recipe rather than left to rediscover it. The price of the speed: a helper's
++"found nothing" is weaker evidence than the host's own look, so each returns PICTURES and a filled table, and
++the host REPRODUCES every finding before it enters the evidence sheet. **Isolation is the point, not the port**
++(23 Sep 26): walkers may share ONE preview when each starts a fresh browser context, which gives each its own
++storage and so its own copy of the demo data — the "own port" in D16's recipe is not needed then. **While they
++walk, nobody rebuilds that preview:** a rebuild swaps the bundle under them and mixes pre-fix and post-fix
++behaviour in one walk. The host fixing in parallel typechecks without writing output and runs unit tests; the
++rebuild, the gates and the re-walk of the fixes wait for the walkers' reports.
++
+ **The owner's trigger rule, in one line:**
+ 
+ > Call one other model whenever a change affects more than one surface, door, role or app
+@@ -340,6 +351,16 @@ fixes touched → gates → finish the sheet → the owner's look → his "merge
+ The walk goes **before** the reads, so the reviewers read the final code and can check the
+ roll-call for gaps — reading for absence works when there is a list in hand.
+ 
++**Between fix rounds, run the touched surface's own suite — not once at the end** (23 Sep 26). Two fixes that
++are each right can contradict each other: a hint that names a door, beside a fix that removed that door. And
++when a fix removes or gates a door, search every sentence on screen that names it.
++
++**The re-walk** (23 Sep 26). Write walk scripts as assertions of the RIGHT behaviour (a PASS means correct), so
++re-running them on the fixed build IS the re-walk. Send it to a separate output folder — the first walk's
++pictures are the defect's evidence. Read every re-walk FAIL against the NEW flow before calling it a
++regression: a step whose premise the fix itself consumed (nothing unsaved is left to test; a refusal now drawn
++on top of the window it used to hide behind) is walked again with a fresh premise, not reported.
++
+ ---
+ 
+ ## 6. The roll-call — the defence against "never wired up"
+@@ -367,6 +388,18 @@ inside the puck, over exactly the strip the mark occupies (column 3).
+ - **A comment that vouches for coverage names the test that proves it, or it is deleted.** A
+   comment is a claim, not a proof.
+ 
++**And two from later walks (23 Sep 26):**
++
++- **A new floating surface names every surface it can open over.** Its third-column answer lists every
++  full-screen or fixed surface beneath it, and a browser test on each asserts that
++  `document.elementFromPoint` at the new surface's centre returns the surface itself. Layering is a missing
++  line only a real browser can see: a window shipped stacked below the full-screen board it had to float
++  over, and opened invisibly there, while every test passed.
++- **A wording ruling, or a fix to one writer of a record, gets its own small roll-call in the same commit** —
++  every place that draws that text or writes that record. The fix is STRUCTURAL (one shared constant or one
++  shared body), with a test that renders or drives each place. The "grep for the old wording" rule already
++  existed both times this failed.
++
+ ---
+ 
+ ## 7. The walk
+@@ -389,6 +422,21 @@ session does not rebuild it from memory. Extended in the same change whenever a
+ desktop width, with the browser's error list watched throughout. Any error during the walk is a
+ finding.
+ 
++- **Drive it with a SCRIPTED real browser from the start (owner, D17, 21 Sep 26)**, not the in-app browser
++  panel. Both run the real bundle, but the panel is one click per message, resizes under you and times out on
++  screenshots, so the pictures this order requires come out unusable. The scripted driver replays a whole day
++  in about a minute, saves full-size pictures to disk, and is what makes handing the walk to parallel helpers
++  possible (§4). The reusable driver: `raptor-port/scripts/handpass/` (its shared helpers are `lib.mjs`).
++  Looking at the pictures is still the agent's job — the tool changed, the looking did not.
++- **The driver moves the view the way a person does** (23 Sep 26) — with the surface's own scroll or
++  drag-to-pan (in some modes the wheel zooms instead), and checks the target sits inside its scroll box before
++  acting. A scripted gesture that fails is looked at on its picture before it is called a defect: a generic
++  scroll-into-view that parks the target under a toolbar manufactures findings.
++- **Walk a SHORT screen as well as the two widths** (23 Sep 26) — a phone on its side, a 700px-tall laptop
++  window — for any surface built as a viewport-tall column, and measure EVERY edge-docked control against the
++  screen edges, not only the one being changed. (Room to scroll past the end goes inside the scroll box as a
++  spacer, never as padding on it: padding sets the box's smallest height.)
++
+ **7.3 Walk the surfaces, not the rulings.** This is the difference that cost the OIL build three
+ defects. A ruling about something SHOWN or TAPPED gets **one mark per surface**. A ruling about
+ MONEY gets **one mark per order**.
+@@ -407,7 +455,25 @@ fix; ruled "leave it" by the owner, with the date; or filed in `OUTSTANDING.md`
+ the order. **"Rare" is not a disposition unless a scenario proves it rare.**
+ 
+ **7.7 Create the fixture through the app's own controls.** If the state cannot be reached that way,
+-that IS the finding — a missing door. Do not inject it and call the route tested.
++that IS the finding — a missing door. Do not inject it and call the route tested. **Change role in place,
++never by signing in again mid-fixture** (24 Sep 26): on a fresh demo world a sign-in reloads the page, and a
++world nobody has written to yet comes back WITHOUT its Leave War OIL story while its Inputs survive — the walk
++then runs against a different world. Switch roles with `lwRole` / `raptorRole` (`raptor-port/e2e/app.ts`, the
++probe bridge), or make one write before any reload.
++
++**7.8 A gesture step asserts what the person SEES, in screen terms — never only that a value moved** (23 Sep
++26). For a zoom, what was under the fingers stays under them: measure its on-screen position before and after,
++against where the fingers end. For a drag, the thing follows the finger. A pinch that "zoomed 100% → 147%"
++passed while aiming 800px away from the fingers. Drive multi-finger gestures for real — one CDP call
++(`Input.dispatchTouchEvent` with two touch points) gives real pointer events — in EVERY mode the surface has.
++Worked example: `raptor-port/scripts/handpass/trk-pinch.mjs`.
++
++**7.9 A walk proves the engine it ran in** (24 Sep 26). When a change redraws or removes the element under a
++held finger — or relies on which element receives the lift — list how each engine the owner uses delivers
++those events (Safari can send a touch's later events to the element it landed on even after a redraw removed
++it; Chromium retargets them), and add a synthetic check per difference: dispatch the other engine's sequence
++directly on the element it would reach. Name in the evidence sheet every line only a real device can prove,
++and put it on the owner's look card.
+ 
+ ---
+ 
+@@ -428,6 +494,10 @@ that IS the finding — a missing door. Do not inject it and call the route test
+ 5. **The other model designs the scenarios.** The builder's tests encode the builder's picture of
+    the feature and share its blind spots.
+ 6. **Reviewers are handed the roll-call and asked for absences**, not only for errors.
++7. **A ruling's "left as it is today" half is a requirement too** (23 Sep 26). Before building the changed half,
++   pin the unchanged half with a test against today's behaviour, so the new half cannot absorb it. (Last Flown
++   worked out from the flights marked done would have overwritten a day typed by hand the moment any OLDER
++   flight was marked — the ruling had kept that half as it was.)
+ 
+ ---
+ 
+diff --git a/raptor-port/docs/gates-and-deploy.md b/.claude/skill-updates/2026-09-24/_docs/raptor-port/docs/gates-and-deploy.md
+index 6d0e8cf6..b8c86f6f 100644
+--- a/raptor-port/docs/gates-and-deploy.md
++++ b/.claude/skill-updates/2026-09-24/_docs/raptor-port/docs/gates-and-deploy.md
+@@ -16,6 +16,12 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
+ - **Never push while a PR's checks are running** (D151, measured 23 Sep 26): GitHub judges the WHOLE pull request,
+   so once it carries code any push — even notes-only — restarts every gate and cancels the run in progress. The
+   older note in the `unit (raptor)` row below ("a docs-only push … starts no new one") predates that measurement.
++- **An intermittent gate stop gets evidence and a filed item BEFORE its one re-run** (24 Sep 26, PR #431): check
++  the failing step's code path against the diff; reproduce that step alone, repeatedly, on the change's build
++  AND on the base's; file the residual as a backlog item with that evidence — then ONE re-run, citing the item.
++  Stops on the change's build and none on the base's is a regression: stop there. Re-running first is hoping;
++  refusing to merge forever blocks on a race the change never touched. (A known family, already measured and
++  filed, keeps its own rule — D84.)
+ - **There is no GitHub Pages site** (D59, 23 Sep 26): the publish job is off, and every Pages trap below is history.
+   The app is seen on VERCEL: a preview per branch (his surface — the agent's is the local `vite preview`) and the
+   live app from `main`. **"Done" after "merge live" means live on Vercel** (D143): merge → `main`'s run green on
+@@ -313,7 +319,11 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
+ ## The checks run on HIS PC
+ 
+ A Windows service under NETWORK SERVICE at `C:\actions-runner\actions-runner` (never delete `C:\actions-runner`);
+-its folder permissions were tightened by him (Astra SEC-102, done). PR #428's evidence (the Leave War fixes):
++its folder permissions were tightened by him (Astra SEC-102, done). Why that mattered: the folder inherited
++"Authenticated Users: Modify" from `C:\`, and this PC has more local accounts than its one user — the coding
++tools create sandbox accounts of their own — so any of them could have replaced what the service runs on every
++check. Any future local service: list the ENABLED local accounts and the folder's inherited permissions before
++trusting the service account. PR #428's evidence (the Leave War fixes):
+ `raptor-port/docs/handpass/2026-09-23-lw-monthjump.md` PART TWO.
+ 
+ ## How pushes cost runs (his question, 23 Sep 26)
+diff --git a/.claude/skills/SUPERPOWERS-VENDORED.md b/.claude/skill-updates/2026-09-24/_notes/SUPERPOWERS-VENDORED.md
+index 1454ee3b..7740c2df 100644
+--- a/.claude/skills/SUPERPOWERS-VENDORED.md
++++ b/.claude/skill-updates/2026-09-24/_notes/SUPERPOWERS-VENDORED.md
+@@ -46,6 +46,15 @@ did not.
+    | `receiving-code-review` | finding / diagnosis / fix as three claims; two-of-a-kind; "can't happen" needs proof |
+    | `executing-plans` | premise check before building (`git status -sb`, merged/behind); deviation list before review |
+    | `using-git-worktrees` | the symlinked-dependencies staging trap (`--summary` check, ignore without trailing slash) |
++4. **Local lessons from the skill review of 24 Sep 26** (owner-approved; the same rules as change 3 — an
++   upstream refresh overwrites these, re-apply them).
++
++   | Skill | What was added |
++   |---|---|
++   | `systematic-debugging` | Phase 1: a one-frame defect (sample per frame, pin in the same task); two "environmental differences" (a fresh checkout's defaults, a service that cannot answer a prompt); Red Flags: identical before/after numbers; the flaky questions: a test's leftovers as the product's bug, human pace; `condition-based-waiting.md`: "Before You Pace a Test" (human pace first, reproduce the CI's slowness) and two Common Mistakes (waiting on a proxy, reading what is not there yet) |
++   | `test-driven-development` | Verify RED: the second cure in a scenario; read the red (premises, ids not counts); a flash or a jump; failure paths injected at the call |
++   | `verification-before-completion` | three Common Failures rows (a clean verdict's scope, "removed everywhere", green elsewhere); `browser-checks.md`: line positions not rects, measuring across a mode switch |
++   | `writing-plans` | Task Right-Sizing: a migration of shared records starts with its checks |
+ 
+ ## Updating
+ 
+diff --git a/.claude/skills/TASK-OBSERVER-VENDORED.md b/.claude/skill-updates/2026-09-24/_notes/TASK-OBSERVER-VENDORED.md
+index f299ac32..c94cd91d 100644
+--- a/.claude/skills/TASK-OBSERVER-VENDORED.md
++++ b/.claude/skill-updates/2026-09-24/_notes/TASK-OBSERVER-VENDORED.md
+@@ -89,6 +89,9 @@ where that procedure's defaults do not fit a git repo with vendored skills:
+   The session-start hook's message pins the ONE log location (above). An
+   upstream refresh overwrites these files: re-apply them
+   (`git log -p -- .claude/skills/task-observer`).
++- **24 Sep 26 review:** `SKILL.md` Numbering discipline item 4 gained the
++  cross-branch check's silent failure (Git Bash rewrites `rev:path` unless
++  `MSYS_NO_PATHCONV=1`) and "run it on the current branch first".
+ 
+ ## Known caveats (not bugs)
+ 
