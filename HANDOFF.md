@@ -30,6 +30,29 @@ the later merge keeps both (D78).
 - **Branch:** `claude/amendment-retest`, cut from `main` at `bff76c1b`; pushed; its PR none when written.
 - **Gates:** not run — docs only so far; `npm run docsize` OK.
 - **Open questions for him:** none.
+- **READ FIRST — his settled amendment rules; ask him NOTHING these already settle** (he asked, 24 Sep 26: "I don't
+  want to repeat myself"; D53 and `.claude/rules/record-decisions.md` §Read it before you ask him anything). They are
+  in four kinds of place, and the rulings file is only one of them:
+  1. `.claude/rules/decisions/scheduler.md` — the amendment rulings AND its §Settled before this list. Open it with the
+     Read tool first: it loads by itself only when a scheduler or amendment file is read. Also `oil.md` (a published
+     day and a rule change D48/D49; a day's OIL = its latest published version D142) and, already loaded,
+     `how-we-work.md` (D147 the order; D148 Undo reverses only your own changes).
+  2. This PC's memory notes (the rulings of 11–18 Sep 26 live ONLY there and in the design records):
+     `amendment-per-day-isolated` (each day its own track, never the week — "do not reopen"),
+     `published-day-input-is-pending-amendment`, `amendment-plan-activation-is-plain-edit` (no keep/revert screen),
+     `plans-selector-redesign-locked` (built and merged — do not re-open), `undo-of-publish-semantics` (the NEWEST,
+     18 Sep, wins: undo of a publish = unpublish), `future-undo-semantics-multiuser`, `oil-truth-latest-published-version`.
+  3. The design records: `raptor-port/docs/superpowers/specs/2026-09-11-amendment-model-decisions.md` (his decisions
+     and the mock-ups), the frozen spec `…/2026-09-12-amendment-core-build-brief.md`, the plan
+     `…/2026-09-12-amendment-core-build-plan.md`; `raptor-port/docs/engine-rules.md` (publishing/AL),
+     `raptor-port/docs/ui-contracts.md` §Amendment marks.
+  4. `OUTSTANDING.md` `[AMEND]` (what is left), `[HUMAN-RETEST]` (the older-amendment unpublish and BUG 1 it must
+     walk), `[EOD]`, `[CRP-FLAG]`; and `DECISIONS-ARCHIVE.md` (replaced rulings) — searched, so no replaced rule is
+     treated as live. Where two disagree, the NEWER wins (the newest-instruction rule); say which one you set aside.
+  **First job of the re-test: gather all of it into ONE amendment behaviour register** —
+  `raptor-port/docs/superpowers/specs/<date>-amendment-behaviour-register.md`, one line per rule with its date and
+  source, like the OIL register — the bug-check order's rules sweep. It becomes the list the walk tests against, and
+  the only questions left for him are real gaps or real clashes between two of his rules.
 - **Pick up here:** `[HUMAN-RETEST]` — the amendment system, FULL tier (`raptor-port/docs/bug-check-order.md`): port
   4173, rulings from D90 (D86). He is away ~6 hours from 24 Sep 26 night: work without waiting — file any question
   for him in `OUTSTANDING.md` and this block rather than stopping; never merge; leave the branch pushed, ready for
