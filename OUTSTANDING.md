@@ -49,8 +49,8 @@ list (13–23 Sep 26), its finished entries and the "In plain terms" block are i
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
 **His order:**
-1. **[HUMAN-RETEST]** — the amendment system is DONE on `claude/amendment-retest`, waiting for his look and "merge
-   live"; next, in HIS order (D147, 24 Sep 26): the absence record TOGETHER with [S4-HUNT-REST], then change-recording,
+1. **[HUMAN-RETEST]** — the amendment system MERGED 25 Sep 26 (PR #434); its decided batch is built overnight on
+   `claude/amendment-batch` (D112, the spec `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`); next, in HIS order (D147, 24 Sep 26): the absence record TOGETHER with [S4-HUNT-REST], then change-recording,
    then the Leave War links LAST (with the 7 Sep phone check).
    *(24 Sep 26: the change-recording re-test also carries [UNDO-ROSTER-SETTINGS] and D148 — both the one undo's.)*
 2. **[S4-HUNT-REST]** — the bug hunt's untouched ground, in his own 1–7 order, walked WITH the absence-record re-test
@@ -306,7 +306,7 @@ War links LAST, with the 7 Sep phone check folded in.
 *(Its lines on which chat ran when — D153, D154, D155, D135, D125, every one spent — moved 24 Sep 26 to `OUTSTANDING-ARCHIVE.md`. The Tracker part is merged; the demo is done.)*
 **THE TRACKER PART IS DONE — MERGED to `main` 23 Sep 26 on his "merge live", after his look** (evidence
 `raptor-port/docs/handpass/2026-09-23-tracker.md`; rulings D120–D132).
-**THE AMENDMENT SYSTEM PART IS DONE on `claude/amendment-retest` (24 Sep 26) — waiting for his look and his "merge live"**
+**THE AMENDMENT SYSTEM PART IS DONE — MERGED to `main` 25 Sep 26 on his "merge live" (PR #434), after his look (all six steps; his three points became D107–D109 and the batch)**
 (evidence `raptor-port/docs/handpass/2026-09-24-amendment.md`, his look card §13; the register
 `raptor-port/docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`; its questions `[AMEND-D45-FILING]`,
 `[AMEND-PHONE-APPROVER]`, `[AMEND-TEMPLATE-PUBLISHED]`, `[AMEND-NYS-WORDING]`, `[AMEND-REISSUE-DOOR]`,

@@ -16,41 +16,31 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/amendment-batch -->
-### `claude/amendment-batch` — the amendment batch, built overnight (D112); written 25 Sep 26 — verify before use
-- **Where it stands:** PR #434 (the amendment re-test) MERGED to `main` on his "merge live", 25 Sep 26. This branch is cut
-  from that `main` and carries his look's rulings D107–D111 and the ORIG mock-up (`raptor-port/docs/mock/orig-tag.html`,
-  picked: A1). No app code yet.
-- **Next:** build `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md` (14 items) in a FRESH chat, overnight,
-  without waiting for him — **D112**: follow the spec's Overnight section (its order, its stop rule, FULL tier); file a
-  question with a recommendation and carry on; never merge. *(Provisional block — the handoff rewrites it.)*
-<!-- /now -->
-
-<!-- now:claude/amendment-retest -->
-### `claude/amendment-retest` — the amendment re-test (done) and his answers to it; written 25 Sep 26 — verify before use
-- **Where it started:** 24 Sep 26: `[HUMAN-RETEST]`, the amendment system, FULL tier, work without waiting. Then, on
-  25 Sep 26, his look at the re-test's leftovers: mock-ups of the real app and his answers, recorded as D91–D105.
-- **Shipped (on the branch, NOT merged):** the re-test — the register, the evidence sheet
-  `raptor-port/docs/handpass/2026-09-24-amendment.md` (§13 is his five-minute look card), every fix red first — and the
-  mock-ups `raptor-port/docs/mock/amend-seat-marks.html`, `amend-answers.html`, `pending-list.html` with their makers
-  in `raptor-port/scripts/handpass/am/`. PR #434 — open when written; check before acting.
-- **Unfinished:** none of the re-test's own work. **His decisions of 24–25 Sep 26 are ONE build batch, not yet built:**
-  `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md` (11 items: tag-only marks, board rings, the
-  "Signed ALn" line, template refusal, the two-state marker, the load fix, wipe-on-any-pending, the pending list, the
-  bubble, the phone keyboard gap). Also filed: `[AVAILWIN-PREVIEW-BAR]`, `[AMEND-SMALL-SEEN]`, `[UNDO-ROSTER-SETTINGS]`.
-- **Branch:** `claude/amendment-retest`, cut from `main` at `bff76c1b`. If it has MERGED: `git fetch origin main && git
-  checkout -B <branch> origin/main` before new work; the batch goes on a fresh branch from `main`.
-- **Gates:** see `## Gate baseline` (this branch's final code, one watched run); `npm run probes:adapted` **6 / 6** (129
-  checks — the probes now fall back to Playwright's own browser, and audit-async's step 3, stale since 13 Sep 26, looks
-  for the input's id) · `npm run perf` **4 / 0** (week 5134 / 5450 nodes, board 1024 / 1150).
-- **Open questions for him:** none from this chat — every question he was asked is answered (D91–D105) or closed.
-- **Pick up here:** his five-minute look at PR #434 (evidence sheet §13) and his "merge live"; then build the batch in
-  `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md` (FULL tier; Opus 5.5 builds, Fable and Astra read).
+### `claude/amendment-batch` — the amendment batch, to build OVERNIGHT without him (D112); written 25 Sep 26 — verify before use
+- **Where it started:** his five-minute look at PR #434 (the amendment re-test) passed all six steps, step 6 on his own
+  iPhone; PR #434 MERGED to `main` on his "merge live", 25 Sep 26 (merge `301a11fc`; `main`'s run green on GitHub's
+  machines, live on Vercel). His look raised three points, each reproduced and now ruled: D107 (Edit history's jump keeps
+  him on the page he is on), D108 → D110 → D111 (the ORIG tag stands out — picked **A1, the seal**, from
+  `raptor-port/docs/mock/orig-tag.html`), D109 (a move counts as ONE pending change). Then **D112**: build the batch
+  overnight in a fresh chat while he sleeps — until **11:00 his time (UTC+8)**; if the chat fills up it compacts itself after saving its state here.
+- **Shipped:** on this branch, docs only — the rulings D107–D112, the backlog items `[HIST-JUMP-STAYS]`,
+  `[ORIG-TAG-STANDOUT]`, `[MOVE-COUNTS-ONE]`, the ORIG mock-up and its three makers (`raptor-port/scripts/handpass/am/mk-orig-tag*.mjs`),
+  the batch spec's items 12–14 and its **Overnight** section. Pushed; no PR yet (a branch push runs no checks).
+- **Unfinished:** the whole batch — 14 items, no app code yet: `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`.
+- **Branch:** `claude/amendment-batch`, cut from `main` at `301a11fc`; no PR. Open ONE PR once code lands (GitHub's
+  machines run it while the repo is public, D106 — about 11 min a run; never push while it runs, D151).
+- **Gates:** not run on this branch (no code yet). `main`'s code = PR #434's final code: see `## Gate baseline`.
+- **Open questions for him:** none — every one this chat put to him is answered (D107–D112).
+- **Pick up here:** the batch spec's **Overnight** section, in its order — the plan and one scenario/red-team round by
+  Fable and Astra first, then items 14 → 7 → 8/9/12/10 → 5 → 1/2/13/3 → 4/6 → 11, the stop rule by ~08:00 his time, FULL tier,
+  the PR open and green, ONE notification before 11:00 his time. **Never merge** (D112). Mark D112 SPENT when the night ends.
 <!-- /now -->
 
 ## Next, in order
 
-1. **`[HUMAN-RETEST]`** — the amendment system is DONE on `claude/amendment-retest`, waiting for his look and "merge
-   live" (evidence `raptor-port/docs/handpass/2026-09-24-amendment.md`). Next, in his order (D147): the absence record
+1. **The amendment batch** — overnight on `claude/amendment-batch` (D112; the `## Now` block above), then his look and
+   "merge live". **`[HUMAN-RETEST]`** — the amendment system MERGED 25 Sep 26 (PR #434; evidence
+   `raptor-port/docs/handpass/2026-09-24-amendment.md`). Next, in his order (D147): the absence record
    together with `[S4-HUNT-REST]`, then change-recording (with D148 and `[UNDO-ROSTER-SETTINGS]`), then the Leave War
    links last. The two evidence sheets (Tracker 23 Sep, amendment 24 Sep) are the worked examples.
 2. Then his after-the-hunt order: `[PUB-UNAVAIL]` → `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]` → the OIL award fix and the
@@ -61,8 +51,8 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 24 Sep 26, `claude/amendment-retest`'s final code (waiting for "merge live"), one run on a
-quiet PC (`raptor-port/docs/handpass/2026-09-24-amendment.md` §10): unit **5855 / 5855** (360 files) · build clean ·
+The latest counts watched — 24 Sep 26, `claude/amendment-retest`'s final code (MERGED to `main` 25 Sep 26, PR #434; `main`'s
+run green on GitHub's machines), one run on a quiet PC (`raptor-port/docs/handpass/2026-09-24-amendment.md` §10): unit **5855 / 5855** (360 files) · build clean ·
 tfin **728 / 0** · e2e **469 passed**, 48 skipped · smoke **442 / 0** · rulecheck OK · docsize OK (`OUTSTANDING.md` 2 lines
 over its tripwire, deferred by the gate to a documents-only pass, D29). Restate a count only from a
 run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his

@@ -33,7 +33,7 @@ and his order after the re-test (D147): the absence record with `[S4-HUNT-REST]`
 
 ## Overnight — how the batch is built while he sleeps (D112, 25 Sep 26)
 
-He sleeps about 8 hours from the handoff; the batch is built in a FRESH chat on `claude/amendment-batch` without waiting
+He sleeps from about 02:40 to **11:00 his time (UTC+8; 03:00 UTC)**, 25 Sep 26; the batch is built in a FRESH chat on `claude/amendment-batch` without waiting
 for him. Opus 5.5 at high effort builds; Fable 5.1 (high) and Astra review, never the builder (D67).
 
 **The order** — what later items read is built first; every fix and every item red first:
@@ -52,7 +52,7 @@ for him. Opus 5.5 at high effort builds; Fable 5.1 (high) and Astra review, neve
 7. **The phone keyboard gap (item 11).** Chromium cannot show an iPhone keyboard: build from the visual viewport and
    put it on his morning card for his own phone.
 
-**The stop rule.** About 5 hours in, or with the chat two-thirds full, STOP BUILDING: what is built gets the whole FULL
+**The stop rule.** By about **08:00 his time** (5 hours in), or with the chat two-thirds full, STOP BUILDING: what is built gets the whole FULL
 check; what is not stays filed with where it stopped. A check is never skipped to fit an item in.
 
 **FULL tier** (bug-check order §5): the rules sweep against the register
@@ -65,7 +65,8 @@ the pull request open and green. **Nothing merges:** `main` waits for his look a
 **A question** goes into `OUTSTANDING.md` with a recommendation, and the work carries on (D112). A ruled item is never
 re-decided.
 
-**If the chat fills up:** see the handoff block in `HANDOFF.md` for his answer.
+**If the chat fills up:** it compacts itself and carries on — his "Yes", 25 Sep 26 (D112) — after writing its state
+into the repo first: the handoff block, the evidence sheet, the commit messages (D68).
 
-**In the morning he gets** ONE notification: what was built and checked, what was not and why, the pull request, the
+**In the morning he gets**, before 11:00 his time, ONE notification: what was built and checked, what was not and why, the pull request, the
 branch's Vercel link, and a five-minute look card.

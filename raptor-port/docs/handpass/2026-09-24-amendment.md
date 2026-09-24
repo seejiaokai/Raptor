@@ -12,8 +12,8 @@ scripts: `raptor-port/scripts/handpass/am/` (shared helpers `am-lib.mjs`).
   parallel walkers (W1–W4, reports in `parts/`); every finding fixed red first or filed (§3) — `7c69bd58` (F1–F5),
   `767799ae` (the walkers' findings) and the code reads' commit after it; the gates on the final code (§10); Fable's
   and Astra's final code reads (§11); the re-walk, three rounds (§12); his look card (§13).
-- **Waiting on him:** his five-minute look and his "merge live" (the branch is pushed; never merged by the agent);
-  six questions, each filed with a recommendation (§3).
+- **Closed:** his five-minute look passed all six steps and PR #434 MERGED on his "merge live", 25 Sep 26 (§13). Every
+  question he was asked is answered (D91–D105); his look's three points are D107–D109, in the amendment batch.
 
 ## 1. The eight questions → FULL
 
