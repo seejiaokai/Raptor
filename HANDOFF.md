@@ -16,30 +16,33 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/amendment-batch -->
-### `claude/amendment-batch` — the amendment batch, to build OVERNIGHT without him (D112); written 25 Sep 26 — verify before use
-- **Where it started:** his five-minute look at PR #434 (the amendment re-test) passed all six steps, step 6 on his own
-  iPhone; PR #434 MERGED to `main` on his "merge live", 25 Sep 26 (merge `301a11fc`; `main`'s run green on GitHub's
-  machines, live on Vercel). His look raised three points, each reproduced and now ruled: D107 (Edit history's jump keeps
-  him on the page he is on), D108 → D110 → D111 (the ORIG tag stands out — picked **A1, the seal**, from
-  `raptor-port/docs/mock/orig-tag.html`), D109 (a move counts as ONE pending change). Then **D112**: build the batch
-  overnight in a fresh chat while he sleeps — until **11:00 his time (UTC+8)**; if the chat fills up it compacts itself after saving its state here.
-- **Shipped:** on this branch, docs only — the rulings D107–D112, the backlog items `[HIST-JUMP-STAYS]`,
-  `[ORIG-TAG-STANDOUT]`, `[MOVE-COUNTS-ONE]`, the ORIG mock-up and its three makers (`raptor-port/scripts/handpass/am/mk-orig-tag*.mjs`),
-  the batch spec's items 12–14 and its **Overnight** section. Pushed; no PR yet (a branch push runs no checks).
-- **Unfinished:** the whole batch — 14 items, no app code yet: `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`.
-- **Branch:** `claude/amendment-batch`, cut from `main` at `301a11fc`; no PR. Open ONE PR once code lands (GitHub's
-  machines run it while the repo is public, D106 — about 11 min a run; never push while it runs, D151).
-- **Gates:** not run on this branch (no code yet). `main`'s code = PR #434's final code: see `## Gate baseline`.
-- **Open questions for him:** none — every one this chat put to him is answered (D107–D112).
-- **Pick up here:** the batch spec's **Overnight** section, in its order — the plan and one scenario/red-team round by
-  Fable and Astra first, then items 14 → 7 → 8/9/12/10 → 5 → 1/2/13/3 → 4/6 → 11, the stop rule by ~08:00 his time, FULL tier,
-  the PR open and green, ONE notification before 11:00 his time. **Never merge** (D112). Mark D112 SPENT when the night ends.
+### `claude/amendment-batch` — the amendment batch, BUILT overnight (D112), waiting for his look and "merge live"; written 25 Sep 26 — verify before use
+- **Where it started:** his look at PR #434 passed; it MERGED to `main` 25 Sep 26 (`301a11fc`). His three points became
+  D107–D111, and D112 had a fresh chat build the whole batch overnight without him (D112 is now SPENT).
+- **Shipped (on this branch, pushed, ONE pull request open — never merged):** all 14 items of
+  `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`, FULL tier: Fable and Astra's scenario round; the
+  build, each item red first; three walkers on the production build, desktop and phone (B1 74/76, B2 138/138, B3
+  132/144 — every finding fixed and re-walked, or filed); 13 break tests; Fable and Astra's blind code reads (five
+  findings, all fixed, each break-tested, re-walked 7/7 desktop and phone). The record:
+  `raptor-port/docs/handpass/2026-09-25-amendment-batch.md` (§8 is his five-minute look card). The batch's eleven
+  backlog items are closed and archived.
+- **Unfinished:** nothing of the batch. Not walked, and why: the sheet's §7 (a REAL iPhone keyboard is the one that
+  needs him — look card step 4).
+- **Branch:** `claude/amendment-batch`, from `main` at `301a11fc`; its one PR (`gh pr list --head claude/amendment-batch`).
+  GitHub's machines run the checks while the repo is public (D106, ~11 min); never push while they run (D151).
+- **Gates:** the full set green on the final code — `## Gate baseline`.
+- **Open questions for him (on the look card, each with a recommendation, filed):** `[MOVE-REPLACE-ONE]` (a
+  replacement in one seat counts one — keep it? recommended yes); `[REQUEST-OFF-ONE]` (a request taken off a published
+  day counts two — make it one? recommended yes).
+- **Pick up here:** his look (the sheet's §8, on the branch's Vercel link) → his answers to the two questions (either
+  is a small change in `canonical.ts` / `publish.ts`, each with its test named in its backlog item) → "merge live" →
+  the merge chain in `.claude/rules/shipping.md`. Then `## Next` below.
 <!-- /now -->
 
 ## Next, in order
 
-1. **The amendment batch** — overnight on `claude/amendment-batch` (D112; the `## Now` block above), then his look and
-   "merge live". **`[HUMAN-RETEST]`** — the amendment system MERGED 25 Sep 26 (PR #434; evidence
+1. **The amendment batch** — BUILT overnight on `claude/amendment-batch` (D112; the `## Now` block above): his look,
+   his two answers, then "merge live". **`[HUMAN-RETEST]`** — the amendment system MERGED 25 Sep 26 (PR #434; evidence
    `raptor-port/docs/handpass/2026-09-24-amendment.md`). Next, in his order (D147): the absence record
    together with `[S4-HUNT-REST]`, then change-recording (with D148 and `[UNDO-ROSTER-SETTINGS]`), then the Leave War
    links last. The two evidence sheets (Tracker 23 Sep, amendment 24 Sep) are the worked examples.
@@ -51,10 +54,10 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 24 Sep 26, `claude/amendment-retest`'s final code (MERGED to `main` 25 Sep 26, PR #434; `main`'s
-run green on GitHub's machines), one run on a quiet PC (`raptor-port/docs/handpass/2026-09-24-amendment.md` §10): unit **5855 / 5855** (360 files) · build clean ·
-tfin **728 / 0** · e2e **469 passed**, 48 skipped · smoke **442 / 0** · rulecheck OK · docsize OK (`OUTSTANDING.md` 2 lines
-over its tripwire, deferred by the gate to a documents-only pass, D29). Restate a count only from a
+The latest counts watched — 25 Sep 26, `claude/amendment-batch`'s final code (the amendment batch, not yet merged), one run
+on a quiet PC (`raptor-port/docs/handpass/2026-09-25-amendment-batch.md` §6): unit **5903 / 5903** (363 files) · build clean ·
+tfin **728 / 0** · e2e **471 passed**, 48 skipped · smoke **442 / 0** · rulecheck OK · docsize OK. `main` (PR #434) stands at
+5855 unit and 469 e2e until the batch merges. Restate a count only from a
 run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his
 PC: `raptor-port/docs/gates-and-deploy.md`.
 

@@ -143,13 +143,58 @@ when the fix is taken out (checked, 25 Sep 26 ~04:40):
 | Fable 3 (new) | three comments and an unreachable message still said a published day takes a template as a draft | replaced with a pointer to D96; the dead message removed | — (text) |
 | Fable 4 (process) | §6 and §7 below were empty | filled | — |
 
+**The re-walk of what the reads' fixes touched** (`scripts/handpass/am/hr-03-batch-reads.mjs`, production build,
+desktop 1440×900 and phone 390×844, pictures `docs/img/handpass/2026-09-25-amendment-batch/rewalk-reads/`):
+**7/7 on each, the browser error list empty.** A — three men on FLIGHT SAFETY STAND-DOWN, published; Havoc taken off by
+right-click and Reaper dragged onto Ranger (the two swap): the board and the week read **2 pending**, the list "Havoc →
+taken off" and "order changed", the Amendments panel "Mon · 2 changes". B — ALL AVAIL added to MASS BRIEF beside FAMILY
+DAY's on the saved week's Saturday, published as AL1; Ghost files leave: **1 change**, its line "2 placeholders · who
+they stand for" with FAMILY DAY and MASS BRIEF each on their own line (Ghost → no longer free), each a tap; the MASS
+BRIEF tap stays on Edit Schedule and marks that row, in view. Looked at: `phone/B-1-pending-list-two-rows.png`,
+`desktop/A-2-pending-list.png`. Seen in passing and filed, not this batch's: the swap inside one crowd says "Reaper —
+already on FLIGHT SAFETY STAND-DOWN" (`[CROWD-SWAP-SAYS-BUSY]`).
+
 **Under D56, not findings** (Fable): signatures given before this build on days that already had changes waiting fall
 off once; ALs issued before carry no item count and read their record's length. Both live only in stored data; the
 code is right going forward.
 
 ## 6. Gates
 
+One full run, in order, on the final code (after the reads' fixes, commit `1c38a269`), 25 Sep 26 ~04:55–05:10 his
+time, nothing else running on the PC:
+
+| gate | result |
+|---|---|
+| unit (`npm test`) | **5903 / 5903** (363 files) — was 5855 on `main` |
+| build | clean |
+| the original's assertions (`node reference/tfin.js`) | **728 / 0** |
+| browser geometry (`npm run test:e2e`) | **471 passed**, 48 skipped (the same 48 as `main`) |
+| the Tracker's suite (`npm run smoke:tracker`) | **442 / 0** |
+| `npm run rulecheck` | OK — every ruling named by a test or in the recorded baseline |
+| `npm run docsize` | OK — every record accounted for |
+
+Walk: 3 walkers + the host's re-walks, desktop 1440×900 and phone 390×844, admin and member, the production build;
+every item's surfaces in the roll-call walked or listed in §7 with its reason; the browser error list empty in every run.
+
 ## 7. What was NOT walked, and why
+
+Each is either pinned by a unit test that drives the same function, or left to his look — never assumed:
+
+| not walked in the browser | why | what stands instead |
+|---|---|---|
+| a REAL iPhone keyboard over the board (item 11) | Chromium cannot raise an iPhone keyboard; two emulations are evidence, not proof | his look card, step 4 |
+| a pinch-zoomed phone with the keyboard up | the board deliberately leaves a zoomed page alone; not emulated | — (behaviour unchanged by design) |
+| the board's DASHED late-show ring (D94) | no man in the demo week could be given a sanctioned late show through the app — the one made had his breach bound by an earlier duty, which the rule rightly refuses (B2 S1) | the board passes the week's marks through the one reading (`puckMarks`); unit-pinned in `amendbatch.test.tsx` item 2; the dotted and solid rings WERE walked |
+| the grey (note) ring under a change | no note-level man was made | the same one reading; tags-not-rings measured on every other ring |
+| a desk holder dragged onto his own desk's extras (1, not 2) | the drag did not land in the walk's world (B1 X-1) | `pendunits.test.ts` (holder and extras are two places) |
+| a leave deleted again → the four sign-offs return (D103, ALL AVAIL) | the walk's script could not reach the leave's ✕ on the Inputs table (B1 X-5b) | `oilmembership.test.ts` D103 block (both directions); the wipe half WAS walked |
+| a traffic / area change on a published day in the list | not in the walkers' worlds | `pendlist` words for every cell kind, unit-pinned |
+| Unpublish the Original, then re-publish: the Signed line on the re-issued Original (Fable) | found by the code read after the walk | partly: `amendbatch.test.tsx` item 3 pins that the Original keeps its four and that the line reads the exact version on screen; the re-publish itself is NOT pinned |
+| Undo straight after a publish (Fable) | found by the code read after the walk | NOT pinned by this batch — the one undo itself is unchanged by it |
+| a parked plan as the working copy with the pending list open (Fable) | found by the code read after the walk | partly: the list reads the same one body as the count, and the plan switch's count was walked (B1 plans); the open list over a parked plan is NOT pinned |
+| a two-day request with rows on BOTH days | the app lands a request as ONE row, so the shape cannot be made through the app (B3) | both shapes it can make were walked (B3 F2) and Fable's case is unit-pinned (§5a) |
+| the template refusal on the phone BOARD | the phone board has no Templates button; the phone reaches templates from the week, which was walked | — |
+| the regression sweep on a phone; phone pictures of the duty, sim, ground and programme seats | the brief asked for desktop only; the phone checks read every changed seat by computed style (16 per surface) | the computed checks |
 
 ## 8. His five-minute look
 
