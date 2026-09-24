@@ -648,3 +648,18 @@ code separately from its output, and never let the same line that runs a gate al
 **Suggested improvement:** Built: `backlog-archive.mjs --move` (exact-once start anchor, `--to-line` or `--section`, one line ending, lands exactly once, inventory clean, else every file put back) and `docsize.mjs --moves` (multiset of removed vs added non-blank lines across all Markdown touched — the residue is exactly what a meaning reviewer must read). Teach both in the always-loaded doc-structure rule.
 
 **Principle:** A move is verifiable only as "everything that left arrived"; give the mover exact anchors and rollback, and give the reviewer the residue — the lines that did not arrive — rather than the whole diff.
+
+### Observation 231: Build the enforcement before the migration, and let it check the migration
+
+**Status:** OPEN
+**Date:** 2026-09-24
+**Session context:** Spring clean ([DOC-TRIM]) — restructuring the repo's documents so sessions load by relevance
+**Skill:** New skill candidate: doc-restructure (with task-observer's own log-safety rules as prior art)
+**Type:** open-source
+**Phase/Area:** ordering of a large documentation migration
+
+**Issue:** The misfiling checks and the exact mover were built and self-tested BEFORE any large move. During the moves they caught three of the migration's own slips at once — a new archive folder outside the one docs tree, two new reference docs no map named, and new always-loaded rule files nobody had registered — each refused with its fix named. Had the checks come after the moves, all three would have been baked into the result and found (if ever) by a reviewer.
+
+**Suggested improvement:** For any structural migration of shared documents: (1) write the rules of the target structure as executable checks first, (2) replay the known failure modes in a self-test (including a control case against the OLD checker, to prove each test can fail), (3) only then migrate, letting the checks gate every step, and (4) hand reviewers the residue report (what left and did not arrive), not the whole diff.
+
+**Principle:** Enforcement written after a migration can only audit it; enforcement written before it shapes it. Build the check, prove it can fail, then let it gate the work.

@@ -85,7 +85,13 @@ const FILES = [
   /* 961 -> 1000, 23 Sep 26 ([DOCS-GUARD] step 1). Already at 969: the two OIL merges (#424, #425)
      added lines inside code changes, which is exactly what F3 now allows and defers. HANDOFF must
      accept a known-issue entry during a fix (CLAUDE.md), so it carries declared headroom. */
-  ['HANDOFF.md',                         1, 1000],
+  /* 1000 -> 250, 24 Sep 26 (the spring clean, D140): HANDOFF.md became the ONE current-state handoff — a block per
+     chat under ## Now, the order, the standing facts; its history, file map and traps moved whole to their homes
+     (86 lines left). The room is for parallel chats' blocks; a crossing means a merged block or a story is sitting
+     there (the session-handoff skill removes those), never "cut to fit". HANDOFF-NEXT.md is its three-line
+     signpost — a tight ceiling so it can never grow back into a second handoff. */
+  ['HANDOFF.md',                         1,  250],
+  ['HANDOFF-NEXT.md',                    1,   12],
   /* 1240 -> 1400, 23 Sep 26 ([DOCS-GUARD] step 1). Already at 1335 through the same two merges.
      The bug-check order §7.6 requires a MISSING to be filed here during a fix, so it too carries
      declared headroom. [DOC-TRIM] owns the 600 target — as its own docs-only pass. */

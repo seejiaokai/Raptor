@@ -601,6 +601,11 @@ fixes are live on `main`); it resumes on his word, bringing `main` in first (D78
 Tracker pauses at its next clean point if the demo slows.
 **THE TRACKER PART IS DONE — MERGED to `main` 23 Sep 26 on his "merge live", after his look** (evidence
 `raptor-port/docs/handpass/2026-09-23-tracker.md`; rulings D120–D132). Next here: the amendment system (D86), then the three.
+**Added 24 Sep 26 (the spring clean, from `HANDOFF.md` §Open as Fable classified it):** the amendment walk includes
+unpublishing an OLDER amendment — the 11 Sep review's "BUG 1" (the day left contradictory) looks dissolved by the
+supersede-never-retract rebuild (`unpublishAL` is gone), which only a walk can confirm; and the Leave War half of
+the 7 Sep 26 device pass (the figures drawer, the bulk balance entry, the 6 Sep phone fixes) was never given his
+iPhone look — fold it into the Leave War links walk.
 **Tracker scope (D120):** his charts reach the database by export → wipe → import, so the older-data
 converters and old file formats are NOT walked; the current export → wipe → import round trip is
 walked FIRST (`docs/tracker/known-gaps.md`, head note).
@@ -1084,6 +1089,12 @@ save signal) and the Tracker's dropped SharePoint/Dataverse/Firebase layers.
   systematic-debugging / test-driven-development / `/code-review` / `/security-review`); and any
   Postgres-specific tuning tool does NOT apply — the DB is Dataverse, not Postgres.
 
+- **The notional TODAY stays pinned to the demo week until real data arrives**
+  (owner, 24 Aug 26). `weeknav.ts`'s `TODAY = '13/07/2026'` drives only the
+  today-ring/dot on the week pickers; every time-STAMP already reads the device
+  clock. When the demo is replaced, point that one literal (and nothing else) at
+  the device date.
+
 ### [CRP-FLAG] Live flagging on the PUBLISHED schedule — DESIGNED + RED-TEAMED, ready to build (15 Sep 26)
 Show live warnings (crew rest incl. cross-day/past-midnight, the 7-day work rule, timing
 clashes) on the published/signed schedule again — today publishing a day hides them. Model:
@@ -1226,3 +1237,51 @@ Tracker branch records it with the guard's own `Docs-guard-allow:` trailer. **Fi
 gate is not edited to pass a change):** skip an item already archived AT THE BASE — its move was
 checked on the base's own history. **Place:** before the next branch that merges `main` in.
 
+### [LW-RESET-ORDER] A "back to the default order" control for the Leave War roster — his call, build only if he asks (moved from HANDOFF.md, 24 Sep 26)
+
+- **OWNER'S CALL — no "back to the default order" control since Auto-sort went
+  (6 Sep 26).** A hand-arranged Leave War roster stays arranged until dragged
+  back; the store's `autoSortRoster` still exists. Offered: a "Reset order" line
+  in ⚙ Settings. Build only if he asks.
+
+### [LW-DESKTOP-ZOOM] The desktop Leave War grid opens at zoom 1 — his call, one line if he wants it out (moved from HANDOFF.md, 24 Sep 26)
+
+- **OWNER'S CALL — the desktop Leave War grid opens at zoom 1** (6 Sep 26; the
+  phone opens one step out because the ask came from the phone). One line in
+  `Matrix.tsx` (`zoom` initial state) if he wants the desktop out too.
+
+### [ADMIN-DISPLAY] An Admin "Display" area of per-section fold defaults — awaiting his go-ahead, do NOT build without it (moved from HANDOFF.md, 24 Sep 26)
+
+- **QUEUED, awaiting the owner's go-ahead — an Admin "Display" area (owner,
+  26 Aug 26; do NOT build without his confirmation).** Remove the wave
+  Shown/Hidden toggle (`WAVEHIDE`) from Admin → Squadron config and replace it
+  with a "Display" category holding per-section open/collapsed fold defaults,
+  set separately for View schedule, Edit schedule and the Scheduler board —
+  generalising the `PIOPEN` fold idiom to every section.
+
+### [USER-GUIDE] A user guide for users and admins — wanted, not started, not urgent (moved from HANDOFF.md, 24 Sep 26)
+
+- **A USER GUIDE is wanted, for users and admins** (owner, 10 Aug 26). Not
+  started, not urgent. The half that can't be worked out by looking at the
+  screen is already collected in `docs/remarks-vocabulary.md` — **keep that
+  file true as rules are added.** Still to gather: the day/AL publishing flow,
+  the roles split, what each warning means in practice, the phone gestures.
+
+### [QUALS-MEMBER-SCOPE] May a member edit ANY row on the Quals page? — a question for him (moved from HANDOFF.md, 24 Sep 26)
+
+  - **Member Quals-editing scope** — a member in Quals editing mode can tick/edit
+    ANY row's table contents (callsign, CAT, SXO, SANS). The 5 Aug decision reads
+    that as intended, but it sits oddly beside the Inputs page's own-row-only
+    rule; if own-row-only quals is wanted, the gate belongs in the same three
+    places the authority-sweep fix touched.
+
+### [TRK-PALETTE-ASK] The Tracker's own dark palette, or Raptor's? — ask him once (filed 24 Sep 26)
+From the 7 Sep 26 device pass (`HANDOFF.md` §Open, "OWNER'S DEVICE PASS", archived 24 Sep 26 in
+`raptor-port/docs/archive/handoff-2026-09-24.md`): one open question rode the retired bug-testing list's row
+#376 — whether the Tracker keeps its own dark palette or takes Raptor's. It was recorded nowhere else. Ask him
+once, in his next Tracker session; build nothing until he answers.
+
+### [DEMO-AWARD-DATES-ASK] Are the demo's two OIL awards meant to fall after the demo week? — ask him once (filed 24 Sep 26)
+Put to him by the OIL credit-tags chat (`HANDOFF-NEXT.md`, 24 Sep 26, archived the same day): the demo's awards
+for Dash (15 Aug) and Vector (29 Aug) are dated after the schedule's demo week (13–19 Jul) — intended? Demo data
+only, wiped before the database (D54), so not a defect under D56; one answer closes it.

@@ -195,3 +195,27 @@ Each stage is independently deployable and reversible; none needs the next.
   added beneath them.
 - Not separate deployable apps yet. The seams make that a later, mechanical
   split if a module ever needs its own release cadence.
+
+## Parked direction — the Power Apps code app (owner, 1 Sep 26; moved whole from `HANDOFF.md`, 24 Sep 26)
+
+- **PARKED DIRECTION (owner, 1 Sep 26 — "we will get back to this next time;
+  in the meantime just assume this is for a database. Status quo").** The
+  intended end state, recorded so it isn't re-derived: a Power Apps CODE APP
+  (this Vite/React build hosted in the M365 tenant, the same play-URL shape as
+  the squadron's facility-booking app, behind a go.gov.sg short link); M365
+  sign-in replacing the prototype `ACCOUNTS`; an admin-managed access table
+  tagging each work email to a puck and a role; anyone signed in but not yet
+  tagged sees the programme as a GUEST (no puck, no bids, no own-inputs); an
+  upchit nudge to the person via Teams from a scheduled flow. Licensing is
+  confirmed (every account is paid). Open tenant-admin questions: code apps
+  enabled in the environment; Dataverse available. NOTHING of this is built —
+  keep every write through the store doorway (`HOOKS.storeBackend`, Leave War's
+  `state/storage.ts`) so the backend swap stays bounded.
+  **Decided 10 Sep 26: the technical expert (Manfred) designs the Dataverse
+  tables himself.** `raptor-port/docs/data-model.md` is our PROPOSAL and
+  `data-schema.md` the INVENTORY he works from; the handover note is
+  `raptor-port/docs/handover-dataverse.md`. When he shares his schema, we
+  write ONE adapter behind the storage doorway to HIS tables (passing
+  `src/storage/` `contractTests`), then the one-time import, then sign-in. Do
+  NOT pre-build an adapter, tables or tenant pieces before that. Stage 2
+  (stable ids) is ours, independent, and goes first.
