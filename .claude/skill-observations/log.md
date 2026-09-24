@@ -43,3 +43,18 @@ resolved statuses always carry their resolution date
 **Principle:** A guard against double-initialisation is also a guard against re-initialisation; wherever a host can recreate the guest's DOM, the guest needs a redraw path that is not the init path — and the test that proves it must cross the host's own lifecycle boundaries, not just the guest's.
 
 ## 2026-09-23 — [HUMAN-RETEST] the Tracker
+
+### Observation 236: While the owner is answering a list, record each answer briefly and stay in the conversation
+
+**Status:** OPEN
+**Date:** 2026-09-24
+**Session context:** The owner answered a numbered list of backlog questions in several messages; after "1-4 yes" the agent cut a new branch, rewrote the handoff and the backlog's priority list before replying, and he interrupted: "we havent answered all the questions, what are u doing".
+**Skill:** New skill candidate: owner Q&A rounds (or `.claude/rules/record-decisions.md`)
+**Type:** internal
+**Phase/Area:** recording rulings mid-conversation
+
+**Issue:** "Record a ruling the moment he says it" was carried out as the whole downstream job (new branch, homes in three documents, the handoff rewritten) between his first and second answers, so the conversation stalled and he could not tell what was happening.
+
+**Suggested improvement:** When he is answering a list, record each answer as its rulings row plus its minimal home in one quick step, reply in one line ("recorded, next?"), and do the wider set-up (branch, handoff, backlog reshuffle) once the round ends — saying so.
+
+**Principle:** Recording a decision at the moment it is made should be quick and quiet; the work the decision implies can wait for the end of the conversation it belongs to.
