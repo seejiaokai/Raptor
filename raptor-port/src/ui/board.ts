@@ -18,7 +18,7 @@ import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap } from './html'
+import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap } from './html'
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
@@ -389,7 +389,11 @@ function boardHTMLBody(di: number, pv?: boolean) {
    surfaces share, A5). The strip used to go blank here, older than the 15 Sep
    redesign that moved the two into it ([HUMAN-RETEST] walk W2-F1, 24 Sep 26). */
 export function boardSignHTML(di: number, pv?: boolean) {
-  if (pv) return `<div class="signoff board-sign" id="sbSignBar"><div class="sb-pub">${planSelectorHTML(di)}${verTagHTML(di)}</div></div>`
+  /* who signed the version on screen, above the sign-off boxes (D95, D102): under a preview the previewed version
+     (this strip is built outside the snapshot swap, so it names it itself — Fable F8), else the published version
+     the working copy sits on */
+  const signed = signedLineHTML(di, pv ? view.DPREV.get(di) : (dayApproved(di) ? dayCurVer(di) : null))
+  if (pv) return `<div class="signoff board-sign" id="sbSignBar">${signed}<div class="sb-pub">${planSelectorHTML(di)}${verTagHTML(di)}</div></div>`
   /* the desktop "view all changes" entry heads this element, above the
      sign-off bar, exactly as it did when both lived at the top of #sbBoard */
   /* Publish controls, "same as edit schedule" (owner ask): dayStatHTML is the
@@ -413,7 +417,7 @@ export function boardSignHTML(di: number, pv?: boolean) {
      beside the tag from the SAME body the week head uses (nysMarkHTML) — the board is
      the working copy too ([HUMAN-RETEST] walk S5, 24 Sep 26). */
   return histLineHTML('histln-top')
-    + `<div class="signoff board-sign" id="sbSignBar">${signoffHTML(di, true)}`
+    + `<div class="signoff board-sign" id="sbSignBar">${signed}${signoffHTML(di, true)}`
     + `<div class="sb-pub">${planSelectorHTML(di)}${verTagHTML(di)}${nysMarkHTML(di)}${dayStatHTML(di, ed)}</div></div>`
 }
 

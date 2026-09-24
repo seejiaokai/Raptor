@@ -15,7 +15,8 @@ import { initStore, writeSlot } from '../state/store'
 import { commitPublishALDay } from '../state/sched-commit'
 import { setSession } from '../state/auth'
 import { setPage, DPREV, VWORK, setUnpubArm, setRestArm } from '../state/view'
-import { dayHTML, dayInfoHTML } from './html'
+import { dayHTML, dayInfoHTML, viewDayHTML, dayPreviewHTML } from './html'
+import { PEOPLE } from '../engine/people'
 import { boardSignHTML, boardHTML } from './board'
 import { ALPanel } from './ALPanel'
 
@@ -103,6 +104,59 @@ describe('item 2 — the board draws the dashed and dotted rings as the edit wee
     /* the dash belongs to a printed CR flag (html.ts puck); where he carries none the ring is not his to dash —
        so assert the board and the week agree, whatever this demo day prints */
     expect(chipped.map(p => /\bboxdash\b/.test(p.className))).toEqual(classes(weekEdit(MON), fly).map(c => /\bboxdash\b/.test(c)).slice(0, chipped.length))
+  })
+})
+
+describe('item 13 — the ORIG tag is the seal (D111, AM22)', () => {
+  it('a published Original wears the drawn tick and no AL colour, on the week head and the board strip', () => {
+    publishDay(MON)
+    for (const surf of [weekEdit, boardStrip]) {
+      const t = surf(MON).querySelector('.verchip.orig') as HTMLElement
+      expect(t, 'the ORIG tag').toBeTruthy()
+      expect(t.querySelector('svg.vtick'), 'the drawn tick').toBeTruthy()
+      expect(t.textContent).toBe('ORIG')
+      expect(t.hasAttribute('data-alc'), 'never an AL colour').toBe(false)
+    }
+  })
+})
+
+describe('item 3 — the Signed line names who signed the version on screen (D95, D102)', () => {
+  const signAs = (di: number, names: string[]) => ['cur', 'sked', 'plan', 'appr'].forEach((r, i) => setSign(di, r, names[i]!))
+  const line = (root: HTMLElement) => root.querySelector('.signedln')?.textContent || ''
+  const cs = (id: string) => (PEOPLE as any)[id].cs
+  const viewFace = (di: number) => { setPage('viewsched'); try { return el(viewDayHTML(di)) } finally { setPage('editsched') } }
+  it('the Original keeps its four, and every surface names them — the view page too, for a member as for the scheduler', () => {
+    signAs(MON, ['ignite', 'bane', 'stiff', 'pump']); setDayApproved(MON, true)
+    expect(SCHED.orig[MON].sign[MON].appr, 'kept on the record').toBe(cs('pump'))
+    for (const [name, root] of [['week', weekEdit(MON)], ['board', boardStrip(MON)], ['view', viewFace(MON)]] as const) {
+      expect(line(root), name).toMatch(/^Signed/)
+      expect(line(root), name).toContain('ORIG')
+      expect(line(root), name).toContain(cs('pump'))
+    }
+    setSession({ user: 'us', role: 'member' } as any)
+    try { expect(line(viewFace(MON)), 'a member reads it').toContain(cs('pump')) } finally { setSession({ user: 'ad', role: 'admin' } as any) }
+  })
+  it('an amendment names ITS four; a preview of the Original names the Original\'s; the live sign-off boxes never show', () => {
+    signAs(MON, ['ignite', 'bane', 'stiff', 'pump']); setDayApproved(MON, true)
+    writeSlot(`d:${MON}.0.1`, 'glass')
+    signAs(MON, ['ignite', 'stiff', 'bane', 'bane'])      // AL1 signed by others
+    commitPublishALDay(MON)
+    expect(line(weekEdit(MON)), 'the live copy sits on AL1').toContain('AL1')
+    writeSlot(`d:${MON}.0.1`, 'wolf')
+    signAs(MON, ['ignite', 'pump', 'pump', 'pump'])       // the NEXT issue's boxes, half-signed
+    const w = line(weekEdit(MON))
+    expect(w, 'still the published AL1 — not the boxes for the next one').toContain('AL1')
+    expect((w.match(new RegExp(cs('pump'), 'g')) || []).length, 'the live boxes\' Pump is not on the line').toBe(0)
+    expect(line(viewFace(MON))).toContain('AL1')
+    DPREV.set(MON, SCHED.orig[MON].id)
+    try {
+      expect(line(el(dayPreviewHTML(MON, SCHED.orig[MON].id, false))), 'the week under a preview of the Original').toContain('ORIG')
+      expect(line(el(boardSignHTML(MON, true))), 'the board\'s preview strip').toContain('ORIG')
+    } finally { DPREV.clear() }
+  })
+  it('no line on a day not yet published', () => {
+    expect(line(weekEdit(MON))).toBe('')
+    expect(line(boardStrip(MON))).toBe('')
   })
 })
 

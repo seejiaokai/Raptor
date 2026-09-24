@@ -249,13 +249,18 @@ export function setDayApproved(di:any,on:any){
      claimed to have "changed" every field the schedulers had ever typed. */
   Object.keys(SCHED.pending).forEach((k:any)=>{if(keyDay(k)===di)delete SCHED.pending[k];});
   Object.keys(SCHED.added||{}).forEach((k:any)=>{if(keyDay(k)===di)delete SCHED.added[k];});
+  /* WHO SIGNED THE ORIGINAL IS KEPT, as an amendment's record keeps its four (owner, D95 + D102, 25 Sep 26 — the
+     Signed line names who signed each published version, the Original included). It used to be cleared unkept by
+     the signClear below, so nothing anywhere could say who approved a day's first issue. Read BEFORE the clear,
+     in the same shape alIssue stores (sign:{[di]:{cur,sked,plan,appr}}, callsigns). */
+  const origSign=signNames(di);
   SCHED.dayOK[di]=1; signClear(di);          // the signature is spent on the issue
   /* Original = the day as FIRST published, per-day sequence 0. Its immutable
      verId (dayIso#0) is what the resolvers name it by, and cur is stamped to it
      so the day now shows its Original. Frozen forever once issued. */
   SCHED.orig=SCHED.orig||{};
   const iso=dayIso(CURWEEK,di);
-  SCHED.orig[di]={id:verId(iso,0),...daySnap(di)};
+  SCHED.orig[di]={id:verId(iso,0),...daySnap(di),sign:{[di]:origSign}};
   SCHED.cur=SCHED.cur||{}; SCHED.cur[di]=verId(iso,0);
   if(SCHED.correcting)delete SCHED.correcting[di];   // [GLOBAL-UNDO] §6.1 — reissuing the Original closes any correction
   reflow(); histPush();
@@ -995,6 +1000,15 @@ export function signClear(di:any){SCHED.sign[+di]={cur:'',sked:'',plan:'',appr:'
 /* the PARKED plans' sign-offs (each plan stows its own, AM12) — a pulled-back day re-signs every plan,
    by the Unpublish button and by Undo alike (AM34, AM32; walk W2 Fable 5-11 and walk W3, 24 Sep 26) */
 export function signClearPlans(di:any){((SCHED.drafts||{})[+di]||[]).forEach((t:any)=>{ if(t){ t.sign={cur:'',sked:'',plan:'',appr:''}; t.signBind={}; } });}
+/* WHO SIGNED A PUBLISHED VERSION (D95, D102): the four callsigns frozen on its record — an amendment's since Phase 2,
+   the Original's since 25 Sep 26 — or null for a version with none recorded (a plan, a draft, a record older than
+   the keeping). NEVER the live sign-off boxes: those sign the NEXT issue, and the view page must not show them (AM5). */
+export function verSigners(di:any,ver:any):any{di=+di;
+  if(typeof ver!=='string'||!isValidVerId(ver))return null;
+  const rec=verSeq(ver)===0?((SCHED.orig||{})[di]&&(SCHED.orig||{})[di].id===ver?SCHED.orig[di]:null)
+    :(SCHED.als||[]).find((a:any)=>a&&a.id===ver&&+a.di===di);
+  const g=rec&&rec.sign&&rec.sign[di];
+  return g&&SIGN_ROLES.some((r:any)=>g[r[0]])?g:null;}
 export function signNames(di:any){const g=signAt(di),o:any={};SIGN_ROLES.forEach((r:any)=>{const p=PEOPLE[g[r[0]]];o[r[0]]=p?p.cs:'';});return o;}
 export function signPeople(schedOnly:any,keep?:any){
   const ids=Object.keys(PEOPLE).filter((id:any)=>!PEOPLE[id].special&&!PEOPLE[id].archived

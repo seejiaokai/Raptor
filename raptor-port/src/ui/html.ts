@@ -11,7 +11,7 @@ import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef } from '../engine/sl
    click that follows it read one test */
 import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, FLT_NO_LEN_SAYS } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
-import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayShownPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned } from '../engine/publish'
+import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayShownPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned, verSigners } from '../engine/publish'
 import { verSeq } from '../engine/verid'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
@@ -265,10 +265,37 @@ export function verTagHTML(di:any){
   if(cv==null) return ''   // published with no snapshot — probe/import state
   /* COLOUR BY AL NUMBER (owner, 15 Sep 26 — item 3): AL1 cyan, AL2 amber, AL3
      green, … off the SAME data-alc palette the amendment marks use (one source, so
-     the tag and the marks can never drift). ORIG stays grey, DRAFT dashed. */
-  return verSeq(cv)===0
-    ? `<span class="verchip orig" title="${esc(DAYS[di]?.dow||'')} is issued as the Original">ORIG</span>`
-    : `<span class="verchip" data-alc="${verSeq(cv)}" title="${esc(DAYS[di]?.dow||'')} is issued as ${verLabel(cv)}">${verLabel(cv)}</span>`
+     the tag and the marks can never drift). DRAFT dashed. ORIG is the SEAL (D111). */
+  return verChipHTML(cv,`${esc(DAYS[di]?.dow||'')} is issued as ${verSeq(cv)===0?'the Original':verLabel(cv)}`)
+}
+/* THE ORIG TAG STANDS OUT — "A1, THE SEAL" (owner, D108 → D110 → D111, 25 Sep 26: "I think ORG indicated at the top
+   that is currently grey could stand out more, so that people know that the scheduled is published" … "A1"). A faint
+   white wash, a thin light outline and a drawn tick in a white disc before "ORIG" — no colour, so it can never read
+   as an AL colour (AL4 is white, D110: B's green read as AL3's), and the tick says the day is published. Built from
+   the mock-up's variant `s` (raptor-port/scripts/handpass/am/mk-orig-tag-refine.mjs). A drawn tick, not a typed ✓:
+   crisper at 10px. Replaces AM22's "grey ORIG" (15 Sep 26). ONE drawer for every version tag — the day head on the
+   edit week and View-only Sched, the board's strip (verTagHTML) and the Signed line (signedLineHTML). */
+const ORIG_TICK=`<svg class="vtick" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><circle cx="6" cy="6" r="6"/><path d="M3.3 6.2l1.8 1.8 3.6-3.8"/></svg>`
+export function verChipHTML(ver:any,title:string){
+  return verSeq(ver)===0
+    ? `<span class="verchip orig" title="${title}">${ORIG_TICK}ORIG</span>`
+    : `<span class="verchip" data-alc="${verSeq(ver)}" title="${title}">${verLabel(ver)}</span>`
+}
+/* THE "SIGNED ALn" LINE (owner, D95 + D102, 25 Sep 26 — "view only schedule should also see who signed off each
+   publish/amendment … doesnt take much space" · "A looks nice, just apply A concept to the scheduler board too. and
+   edit schedule"). One slim line under the day head: "SIGNED", the version's tag, and the four who signed it — the
+   role before each name on a desktop, names only on a phone (CSS). `ver` is the version ON SCREEN, passed in by
+   the caller because it differs by surface (Fable F8, Astra 7): the issued face and a preview draw inside the
+   snapshot swap (PVV); a live working copy names the published version it sits on; the board's preview strip is
+   built outside the swap and passes DPREV's version itself. The names come from that version's frozen record
+   (publish.ts verSigners) — never the live sign-off boxes, which sign the NEXT issue (AM5). Nothing for a plan or a
+   version with no signers recorded. Everyone who reads the page sees it, members included (D95). */
+export function signedLineHTML(di:any,ver:any){
+  const g=verSigners(di,ver); if(!g)return ''
+  const name=(k:any,lbl:string)=>`<span class="sl-n" title="${esc(lbl)}"><i>${esc(lbl.replace(' BY',''))}</i>${esc(g[k]||'—')}</span>`
+  return `<div class="signedln">`
+    +`<span class="sl-h">Signed</span>${verChipHTML(ver,`Signed as ${verSeq(ver)===0?'the Original':verLabel(ver)}`)}`
+    +SIGN_ROLES.map((r:any)=>name(r[0],r[1])).join('')+`</div>`
 }
 /* "NOT YET SIGNED" (owner, 16 Sep 26 — register AM24): on the WORKING copy of a published
    day whose content differs from its signed, issued version — derived from the canonical
@@ -1454,6 +1481,9 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
         : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}${(ed||vsel)?`<span class="dhtpl">${ed?`<button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button>`:''}${planSelectorHTML(di)}</span>`:''}<span class="dhver">${verTagHTML(di)}${nysMarkHTML(di)}</span>
       <span class="badge" title="Aircraft per wave · standalone lines after the slash">${dayCount(d)}</span>
       <span class="dstat">${(!ed&&!vsel)?viewVerSelHTML(di):''}${dayStatHTML(di,ed)}</span></div>`
+      /* who signed the version on screen (D95, D102) — the previewed / issued one inside the swap, else the
+         published version the working copy sits on; nothing on a day not yet published */
+      +(ok?signedLineHTML(di,PV?PVV:dayCurVer(di)):'')
       +pvBar
       /* THE .dhtpl SPAN carries the day's edit chrome, between the date (.dt) and
          the turn-pattern badge: the Templates button and the plans selector
