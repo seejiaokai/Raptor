@@ -43,8 +43,10 @@ the later merge keeps both (D78).
   for the input's id) · `npm run perf` **4 / 0** (week 5134 / 5450 nodes, board 1024 / 1150).
 - **Open questions for him (filed, none blocking the merge):** `[AMEND-D45-FILING]`, `[AMEND-PHONE-APPROVER]`,
   `[AMEND-TEMPLATE-PUBLISHED]`, `[AMEND-NYS-WORDING]`, `[AMEND-REISSUE-DOOR]`, `[AMEND-LOAD-FILING]` — each with the
-  agent's recommendation in its item; and the two on the mock-up page — build D92, tags only (`[AMEND-MARK-RING-CLASH]`)?
-  make the board draw the dashed and dotted rings (`[BOARD-RING-STROKES]`)? — record each answer in `scheduler.md`.
+  agent's recommendation in its item. 25 Sep 26: D93–D96 recorded (tags-only approved; board rings yes; View-only Sched
+  shows who signed; templates refused on a published day). Still his: leave-wipes-sign-offs (`[AMEND-D45-FILING]`), A+B
+  or B only (`[AMEND-PHONE-APPROVER]`), the two-state marker (`[AMEND-NYS-WORDING]`), Reissue (`[AMEND-REISSUE-DOOR]`),
+  load puts the request back (`[AMEND-LOAD-FILING]`) — pictures: `raptor-port/docs/mock/amend-answers.html`.
 - **Pick up here:** his five-minute look (evidence sheet §13) and his "merge live"; then his order (D147): the absence
   record together with `[S4-HUNT-REST]` — `[HUMAN-RETEST]` in `OUTSTANDING.md`.
 <!-- /now -->

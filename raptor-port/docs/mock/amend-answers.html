@@ -1,0 +1,114 @@
+<title>Signers and Load-back</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter+Tight:wght@400;500;600;700&display=swap">
+<style>
+  /* the app's own palette and faces (raptor-port/src/ui/scheduler.css); every picture is the dark app, so the page
+     commits to that one dark look on purpose and paints every colour itself */
+  :root{color-scheme:dark;
+    --bg:#0B0D10;--panel:#14181D;--raised:#20262E;--edge:#2A313A;--edge-2:#39424D;
+    --ink:#F1F4F7;--ink-2:#B6C0CB;--ink-3:#8A96A3;--al1:#3BC6E8;--al1-ink:#052A34;--al2:#E5C24A}
+  html,body{background:var(--bg);color:var(--ink)}
+  body{font-family:'Inter Tight',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:15px;line-height:1.55;
+    padding-inline:16px;padding-block:20px 56px}
+  .wrap{max-width:1160px;margin:0 auto;display:flex;flex-direction:column;gap:34px}
+  .lbl{font-family:'Barlow Condensed','Arial Narrow',sans-serif;text-transform:uppercase;letter-spacing:.12em;font-weight:700;font-size:12px;color:var(--ink-3)}
+  h1{font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:800;font-size:34px;line-height:1.05;letter-spacing:.02em;margin:0;text-wrap:balance}
+  h2{font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:800;font-size:25px;line-height:1.1;letter-spacing:.03em;margin:0;text-wrap:balance}
+  h3{font-size:13px;font-weight:700;margin:0;color:var(--ink-2);text-transform:uppercase;letter-spacing:.08em}
+  p{margin:0;max-width:68ch;color:var(--ink-2)}
+  p b,li b{color:var(--ink);font-weight:600}
+  header{display:flex;flex-direction:column;gap:12px;border-bottom:1px solid var(--edge);padding-bottom:20px}
+  .switch{display:inline-flex;gap:4px;padding:3px;border:1px solid var(--edge-2);border-radius:8px;background:var(--panel);align-self:flex-start}
+  .switch button{font:inherit;font-size:13px;font-weight:600;color:var(--ink-2);background:none;border:0;border-radius:6px;padding:6px 14px;cursor:pointer}
+  .switch button[aria-pressed="true"]{background:var(--raised);color:var(--ink);box-shadow:inset 0 0 0 1px var(--edge-2)}
+  .switch button:focus-visible{outline:2px solid var(--al1);outline-offset:2px}
+  section{display:flex;flex-direction:column;gap:14px}
+  .story{display:flex;flex-direction:column;gap:8px}
+  .surface{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:12px}
+  .pair{display:flex;flex-wrap:wrap;gap:14px 18px;align-items:flex-start}
+  .pair figure.shot{flex:0 1 auto}
+  .steps3{display:flex;flex-direction:column;gap:12px}
+  figure.shot{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+  figure.shot img{display:block;max-width:100%;height:auto;border:1px solid var(--edge);border-radius:6px;background:#000}
+  figcaption{font-size:13px;color:var(--ink-3);max-width:60ch}
+  .gone{display:flex;flex-direction:column;gap:6px}
+  .gone p{font-size:13px;color:var(--ink-3);border:1px dashed var(--edge-2);border-radius:6px;padding:10px 12px;max-width:552px}
+  .tag{align-self:flex-start;font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:800;font-size:12px;
+    letter-spacing:.1em;text-transform:uppercase;border-radius:4px;padding:1px 7px}
+  .tag.today{color:var(--ink-2);border:1px solid var(--edge-2)}
+  .tag.fix{color:var(--al1-ink);background:var(--al1)}
+  .tag.plain{color:var(--ink-3);padding-inline:0}
+  .ask{border:1px solid var(--al1);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;
+    background:linear-gradient(0deg,rgba(59,198,232,.06),rgba(59,198,232,.06)),var(--panel)}
+  .rec{color:var(--al1);font-weight:600}
+  .note{font-size:13px;color:var(--ink-3);border-left:2px solid var(--edge-2);padding-left:10px;max-width:72ch}
+  body[data-w="desktop"] .w-phone,body[data-w="phone"] .w-desktop{display:none}
+  @media (max-width:720px){h1{font-size:29px} h2{font-size:22px}}
+</style>
+<div class="wrap">
+  <header>
+    <span class="lbl">Amendment questions 3 and 7 · pictures of the real app</span>
+    <h1>Who signed each version, and loading a version back</h1>
+    <p>Both made in the app the way a scheduler would, on your branch’s demo week. “Proposed” pictures are the same
+      screen with the change laid on top; nothing in the app was changed.</p>
+    <div class="switch" role="group" aria-label="Picture width">
+      <button id="w-desktop" type="button" aria-pressed="true" data-set="desktop">Desktop</button>
+      <button id="w-phone" type="button" aria-pressed="false" data-set="phone">Phone</button>
+    </div>
+  </header>
+
+  <section>
+    <span class="lbl">Question 3 · who signed, on View-only Sched</span>
+    <div class="story">
+      <h2>Wednesday: the Original, AL1 and AL2, each signed by different people</h2>
+      <p>Two small additions, for everyone who reads View-only Sched:</p>
+    </div>
+    <div class="surface"><h3>A · One slim line under the day’s head — the version on screen</h3><div class="pair"><figure class="shot"><span class="tag today">Today</span><img class="w-desktop" src="img/view-signers/desktop-head-today.png" width="558" height="170" alt="Wednesday on View-only Sched: the version tag, nothing about who signed it." loading="lazy"><img class="w-phone" src="img/view-signers/phone-head-today.png" width="372" height="170" alt="Wednesday on View-only Sched: the version tag, nothing about who signed it. (phone)" loading="lazy"><figcaption>Wednesday on View-only Sched: the version tag, nothing about who signed it.</figcaption></figure><figure class="shot"><span class="tag fix">Proposed</span><img class="w-desktop" src="img/view-signers/desktop-head-signed.png" width="558" height="170" alt="One slim line under the head: who signed the version on screen. On a phone the names only, in the order of the four boxes." loading="lazy"><img class="w-phone" src="img/view-signers/phone-head-signed.png" width="372" height="170" alt="One slim line under the head: who signed the version on screen. On a phone the names only, in the order of the four boxes. (phone)" loading="lazy"><figcaption>One slim line under the head: who signed the version on screen. On a phone the names only, in the order of the four boxes.</figcaption></figure></div></div>
+    <div class="surface"><h3>B · The ⓘ day panel — every version, the history</h3><div class="pair"><figure class="shot"><span class="tag today">Today</span><img class="w-desktop" src="img/view-signers/desktop-panel-today.png" width="526" height="199" alt="The ⓘ day panel lists the amendments, not who signed them — and not the Original." loading="lazy"><img class="w-phone" src="img/view-signers/phone-panel-today.png" width="352" height="199" alt="The ⓘ day panel lists the amendments, not who signed them — and not the Original. (phone)" loading="lazy"><figcaption>The ⓘ day panel lists the amendments, not who signed them — and not the Original.</figcaption></figure><figure class="shot"><span class="tag fix">Proposed</span><img class="w-desktop" src="img/view-signers/desktop-panel-signed.png" width="526" height="259" alt="Every published version with its four signers: the Original, AL1, AL2." loading="lazy"><img class="w-phone" src="img/view-signers/phone-panel-signed.png" width="352" height="385" alt="Every published version with its four signers: the Original, AL1, AL2. (phone)" loading="lazy"><figcaption>Every published version with its four signers: the Original, AL1, AL2.</figcaption></figure></div></div>
+    <p class="note">One thing the build must add: an amendment already keeps a record of its four signers, but the
+      Original does not — its sign-offs are cleared without being kept. From the build on, every Original keeps them;
+      only days published in today’s demo would show no names for their Original, and the demo is wiped anyway.</p>
+  </section>
+
+  <section class="ask">
+    <span class="lbl">Your call on 3</span>
+    <p><b>Both A and B, or B only?</b> <span class="rec">My recommendation: both</span> — the line answers “who signed
+      what I’m looking at” without a tap, and the panel keeps the history. B alone adds no space at all to the page.</p>
+  </section>
+
+  <section>
+    <span class="lbl">Question 7 · loading a version back</span>
+    <div class="story">
+      <h2>Tuesday: Hex’s dentist appointment, taken off, then AL1 loaded back</h2>
+    </div>
+    <div class="surface"><h3>1 · The appointment goes out in AL1</h3><div class="steps3"><figure class="shot"><span class="tag plain">The day’s head</span><img class="w-desktop" src="img/load-input/desktop-1-head.png" width="552" height="60" alt="AL1 is out; nothing waiting." loading="lazy"><img class="w-phone" src="img/load-input/phone-1-head.png" width="366" height="100" alt="AL1 is out; nothing waiting. (phone)" loading="lazy"><figcaption>AL1 is out; nothing waiting.</figcaption></figure><figure class="shot"><span class="tag plain">The appointment on the programme</span><img class="w-desktop" src="img/load-input/desktop-1-ground.png" width="552" height="59" alt="On Tuesday’s programme with AL1’s tag." loading="lazy"><img class="w-phone" src="img/load-input/phone-1-ground.png" width="366" height="57" alt="On Tuesday’s programme with AL1’s tag. (phone)" loading="lazy"><figcaption>On Tuesday’s programme with AL1’s tag.</figcaption></figure><figure class="shot"><span class="tag plain">His request, under Personal Inputs</span><img class="w-desktop" src="img/load-input/desktop-1-input.png" width="552" height="40" alt="Every request on the day is on the programme." loading="lazy"><img class="w-phone" src="img/load-input/phone-1-input.png" width="366" height="39" alt="Every request on the day is on the programme. (phone)" loading="lazy"><figcaption>Every request on the day is on the programme.</figcaption></figure></div></div>
+    <div class="surface"><h3>2 · You take it off</h3><div class="steps3"><figure class="shot"><span class="tag plain">The day’s head</span><img class="w-desktop" src="img/load-input/desktop-2-head.png" width="552" height="91" alt="“2 pending”: taking it off is an amendment waiting to go out." loading="lazy"><img class="w-phone" src="img/load-input/phone-2-head.png" width="366" height="129" alt="“2 pending”: taking it off is an amendment waiting to go out. (phone)" loading="lazy"><figcaption>“2 pending”: taking it off is an amendment waiting to go out.</figcaption></figure><div class="gone"><span class="tag plain">The appointment on the programme</span><p>Gone from the day.</p></div><figure class="shot"><span class="tag plain">His request, under Personal Inputs</span><img class="w-desktop" src="img/load-input/desktop-2-input.png" width="552" height="69" alt="His request now reads “removed”." loading="lazy"><img class="w-phone" src="img/load-input/phone-2-input.png" width="366" height="77" alt="His request now reads “removed”. (phone)" loading="lazy"><figcaption>His request now reads “removed”.</figcaption></figure></div></div>
+    <div class="surface"><h3>3 · You change your mind and load AL1 onto the working copy — today</h3><div class="steps3"><figure class="shot"><span class="tag plain">The day’s head</span><img class="w-desktop" src="img/load-input/desktop-3-head.png" width="552" height="91" alt="Still “1 pending” — the day says it differs from AL1, and the next amendment is locked until signed." loading="lazy"><img class="w-phone" src="img/load-input/phone-3-head.png" width="366" height="129" alt="Still “1 pending” — the day says it differs from AL1, and the next amendment is locked until signed. (phone)" loading="lazy"><figcaption>Still “1 pending” — the day says it differs from AL1, and the next amendment is locked until signed.</figcaption></figure><figure class="shot"><span class="tag plain">The appointment on the programme</span><img class="w-desktop" src="img/load-input/desktop-3-ground.png" width="552" height="59" alt="Back on the day, from AL1." loading="lazy"><img class="w-phone" src="img/load-input/phone-3-ground.png" width="366" height="57" alt="Back on the day, from AL1. (phone)" loading="lazy"><figcaption>Back on the day, from AL1.</figcaption></figure><figure class="shot"><span class="tag plain">His request, under Personal Inputs</span><img class="w-desktop" src="img/load-input/desktop-3-input.png" width="552" height="69" alt="But his request still reads “removed” — beside the very row it is for." loading="lazy"><img class="w-phone" src="img/load-input/phone-3-input.png" width="366" height="77" alt="But his request still reads “removed” — beside the very row it is for. (phone)" loading="lazy"><figcaption>But his request still reads “removed” — beside the very row it is for.</figcaption></figure></div>
+      <p class="note">So the day never gets back to AL1: the appointment is on the programme while its own request says it
+        was taken off, and the day keeps saying there is a change to publish. Today the way out is to delete the row
+        and accept the request again.</p></div>
+    <div class="surface"><h3>Proposed · loading AL1 puts the request back too</h3>
+      <p>The day becomes exactly what AL1 was — the three pictures in step 1: the appointment on the programme, the
+        request on the programme, nothing waiting. The load’s confirm would count it among the edits it replaces.</p></div>
+  </section>
+
+  <section class="ask">
+    <span class="lbl">Your call on 7</span>
+    <p><b>Should “Load onto working copy” also put back a request you had taken off?</b>
+      <span class="rec">My recommendation: yes</span> — then “Load AL1” always means the day as AL1 went out.</p>
+  </section>
+</div>
+<script>
+  (function () {
+    var body = document.body, pick = 'desktop'
+    try { pick = localStorage.getItem('answers.w') || (matchMedia('(max-width:720px)').matches ? 'phone' : 'desktop') } catch (e) {}
+    function set(w) {
+      body.setAttribute('data-w', w)
+      document.querySelectorAll('.switch button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.set === w)) })
+      try { localStorage.setItem('answers.w', w) } catch (e) {}
+    }
+    document.querySelectorAll('.switch button').forEach(function (b) { b.addEventListener('click', function () { set(b.dataset.set) }) })
+    set(pick === 'phone' ? 'phone' : 'desktop')
+  })()
+</script>

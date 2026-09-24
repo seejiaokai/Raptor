@@ -1010,6 +1010,8 @@ and walk both widths with a flagged View-as puck. LOOK tier on one shared puck r
 a puck. **Place:** any time, none blocking; a good one to ride the next scheduler change.
 
 ### [AMEND-D45-FILING] Does D45 also cover a leave landing on a published day? — a question for him (24 Sep 26)
+**25 Sep 26 — he asked first what breaks a published day's signature and what is live on a published day; answered in
+chat from `currentBind`/`signBoundOk`/`signRoleOk` (`raptor-port/src/engine/publish.ts`).** The question stands.
 Found by the amendment re-test's rules sweep (`raptor-port/docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`
 §Q3). Two of his rulings overlap and the newer does not clearly cover the case (D90's limit), so it is asked, not
 guessed. **D45 (22 Sep 26):** *"a change in who was available never invalidates a signature — the pending mark is
@@ -1023,6 +1025,15 @@ until he answers** (the leave clears the sign-offs). Either answer is small to b
 amendment re-test's look card.
 
 ### [AMEND-PHONE-APPROVER] On a phone, who approved each amendment is shown nowhere — a question for him (24 Sep 26)
+**Mock-up (25 Sep 26, his ask):** `raptor-port/docs/mock/amend-answers.html` §Question 3 (maker
+`raptor-port/scripts/handpass/am/mk-view-signers.mjs`): A — one slim "Signed ALn" line under the day head on View-only
+Sched (roles on desktop, names only on a phone); B — the ⓘ panel lists every version with its four signers. Asked: A+B
+(recommended) or B only. **Build gap found:** an AL record keeps its signers (`SCHED.als[].sign`), the Original does
+not — `setDayApproved` clears the sign-offs without keeping them (`raptor-port/src/engine/publish.ts`); the build stores
+them on `SCHED.orig[di]`.
+**ANSWERED 25 Sep 26 — D95, wider than asked:** View-only Sched shows who signed off each published version (the
+original and every amendment), for everyone who reads it, compactly; a mock-up first, at his ask. The recommendation
+below (the approver alone, in the ⓘ panel) is superseded by it.
 Found by the amendment re-test's roll-call (`raptor-port/docs/handpass/2026-09-24-amendment.md` §4, R10; Fable 5-4).
 The desktop's Amendments panel lists every issued amendment with its day, its item count and who APPROVED it (the
 four signers in its tooltip) and the "N days with changes to publish" summary. On a phone (≤ 820px) that panel is
@@ -1047,6 +1058,8 @@ second after the absence record) — it is the one undo's own subject; build it 
 changes). Walk it first: confirm on screen that Undo stays greyed or skips a roster / settings edit.
 
 ### [AMEND-TEMPLATE-PUBLISHED] A day template applied to a published day — a question for him (24 Sep 26)
+**DECIDED 25 Sep 26 — D96 ("4 refuse"): refused on a published day, with the reason on screen; build it with the D92
+batch.**
 Found by the amendment re-test's walker W2 (`raptor-port/docs/handpass/parts/2026-09-24-amendment-w2.md` W2-F2). Applying a
 day template to a published day rebuilds the day from the template's rows, and a template row is always a NEW row (a
 copy strips its identity — `raptor-port/src/engine/daytpl.ts`), so: (1) saving Tuesday as a template and applying it
@@ -1061,6 +1074,10 @@ answer if templates on a published day are rare. Undo puts the day back today, s
 **Place:** waiting on him.
 
 ### [AMEND-NYS-WORDING] "Not yet signed" beside four valid sign-offs — a wording question for him (24 Sep 26)
+**25 Sep 26 — found while answering him:** the marker never looks at the sign-offs (`notYetSigned` = published AND
+`dayHasChanges`), so it reads "Not yet signed" in the ORDINARY flow too — change, all four sign, not yet published.
+Recommendation put to him: two states — "Not yet signed" while any of the four is missing, "Not yet published" once
+all four are valid. Waiting on his word.
 Found by the amendment re-test's walker W4 (`raptor-port/docs/handpass/parts/2026-09-24-amendment-w4.md` §3.5, P6). His
 D45 (22 Sep 26) keeps the sign-offs valid when only who-is-available changes (a leave for a man behind an ALL AVAIL puck):
 the day then shows "1 pending", four green sign-offs, an open "Publish AL1" — and, beside the tag, **"Not yet signed"**
@@ -1100,6 +1117,9 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
 **Place:** any time; items 6–8 with the Leave War links re-test (D147, last).
 
 ### [AMEND-REISSUE-DOOR] An Unpublish made by mistake, with nothing to correct, cannot be put back once Undo is gone — a question for him (24 Sep 26)
+**25 Sep 26 — his question "if i unpublish and change something and republish, will i still see reissue AL1 button?"**,
+answered: no — Unpublish puts the working copy back to the version before; the button shows only while nothing has
+changed since, and any change turns it into the ordinary "Publish AL1" (a new AL1). Waiting on his yes/no.
 Found by the amendment re-test's final code read (Fable #4, `raptor-port/docs/handpass/2026-09-24-amendment-fable-final-read.md`).
 Unpublish is one tap on a weekday (two where OIL is bid against) and a standing action — it survives a sign-out; Undo
 does not. The engine allows the pulled-back day to go out again under the SAME label even when nothing changed (the
@@ -1138,6 +1158,7 @@ draws a changed puck, with a geometry pin (e2e) that every ring's stroke survive
 his word (the mock-up's other half, a mark for an emptied seat, was declined — D91).
 
 ### [BOARD-RING-STROKES] The board draws every warning ring solid: no dashed late show, no dotted crew-rest cause (found 24 Sep 26)
+**DECIDED 25 Sep 26 — D94 ("1. yes"): the board draws all three rings as the week does; build it with the D92 batch.**
 Found while making the examples for [AMEND-MARK-RING-CLASH] (the mock-up's "Also found"). **What a person sees:** on the edit
 week a crew-rest breach sanctioned by a LATE SHOW remark rings DASHED, and the day that causes tomorrow's breach rings
 DOTTED — `raptor-port/docs/ui-contracts.md` §Three crew-rest rings, "on every puck of that man on the causing day". On
@@ -1148,6 +1169,8 @@ to him on the mock-up page:** make the board match the week (pass the day's dash
 the geometry gate already measures the rings). LOOK tier. **Place:** after [AMEND-MARK-RING-CLASH]; waiting on his word.
 
 ### [AMEND-LOAD-FILING] Should "Load onto working copy" also put back an input the scheduler had taken off? — a question for him (24 Sep 26)
+**Example shown (25 Sep 26, his ask "can u explain with examples or mock ups?"):** `raptor-port/docs/mock/amend-answers.html`
+§Question 7 (maker `raptor-port/scripts/handpass/am/mk-load-input.mjs`) — the real flow, three steps; waiting on his word.
 Found by the amendment re-test (walker W4, F3: `raptor-port/docs/handpass/parts/2026-09-24-amendment-w4.md`; the final
 read, Fable #2). **Today, by design** (`raptor-port/src/engine/publish.ts` `dayDiscardCount`, P2-REREVIEW-08): a load
 puts back the version's CONTENT and leaves every input's filing as it is. So: take an input off a published day (its
