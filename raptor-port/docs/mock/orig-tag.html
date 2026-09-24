@@ -1,0 +1,100 @@
+<title>ORIG Tag Options</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter+Tight:wght@400;500;600;700&display=swap">
+<style>
+  /* the app's own palette and faces (raptor-port/src/ui/scheduler.css); every picture is the dark app, so the page
+     commits to that one dark look on purpose and paints every colour itself */
+  :root{color-scheme:dark;
+    --bg:#0B0D10;--panel:#14181D;--raised:#20262E;--edge:#2A313A;--edge-2:#39424D;
+    --ink:#F1F4F7;--ink-2:#B6C0CB;--ink-3:#8A96A3;--al1:#3BC6E8;--al1-ink:#052A34;--ok:#57C97A}
+  html,body{background:var(--bg);color:var(--ink)}
+  body{font-family:'Inter Tight',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:15px;line-height:1.55;
+    padding-inline:16px;padding-block:20px 56px;margin:0}
+  .wrap{max-width:1160px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+  .lbl{font-family:'Barlow Condensed','Arial Narrow',sans-serif;text-transform:uppercase;letter-spacing:.12em;font-weight:700;font-size:12px;color:var(--ink-3)}
+  h1{font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:800;font-size:34px;line-height:1.05;letter-spacing:.02em;margin:0;text-wrap:balance}
+  h3{font-size:14px;font-weight:700;margin:0;color:var(--ink)}
+  p{margin:0;max-width:70ch;color:var(--ink-2)}
+  p b{color:var(--ink);font-weight:600}
+  header{display:flex;flex-direction:column;gap:12px;border-bottom:1px solid var(--edge);padding-bottom:20px}
+  .switch{display:inline-flex;gap:4px;padding:3px;border:1px solid var(--edge-2);border-radius:8px;background:var(--panel);align-self:flex-start}
+  .switch button{font:inherit;font-size:13px;font-weight:600;color:var(--ink-2);background:none;border:0;border-radius:6px;padding:6px 14px;cursor:pointer}
+  .switch button[aria-pressed="true"]{background:var(--raised);color:var(--ink);box-shadow:inset 0 0 0 1px var(--edge-2)}
+  .switch button:focus-visible{outline:2px solid var(--al1);outline-offset:2px}
+  section{display:flex;flex-direction:column;gap:14px}
+  .surface{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:12px}
+  .oh{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .steps3{display:flex;flex-direction:column;gap:12px}
+  figure.shot{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+  figure.shot img{display:block;max-width:100%;height:auto;border:1px solid var(--edge);border-radius:6px;background:#000}
+  figcaption{font-size:13px;color:var(--ink-3);max-width:60ch}
+  .tag{align-self:flex-start;font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:800;font-size:12px;
+    letter-spacing:.1em;text-transform:uppercase;border-radius:4px;padding:1px 7px}
+  .tag.today{color:var(--ink-2);border:1px solid var(--edge-2)}
+  .tag.fix{color:var(--al1-ink);background:var(--al1)}
+  .tag.plain{color:var(--ink-3);padding-inline:0}
+  .ask{border:1px solid var(--al1);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;
+    background:linear-gradient(0deg,rgba(59,198,232,.06),rgba(59,198,232,.06)),var(--panel)}
+  .rec{color:var(--al1);font-weight:600}
+  .note{font-size:13px;color:var(--ink-3);border-left:2px solid var(--edge-2);padding-left:10px;max-width:72ch}
+  body[data-w="desktop"] .w-phone,body[data-w="phone"] .w-desktop{display:none}
+  @media (max-width:720px){h1{font-size:29px}}
+</style>
+<div class="wrap">
+  <header>
+    <span class="lbl">Your look at PR #434 · point 3 · pictures of the real app</span>
+    <h1>Making ORIG say “published”</h1>
+    <p>Made in the app the way a scheduler would, on the demo week: <b>Monday</b> published as the Original with one
+      change already waiting (so ORIG sits beside “Not yet signed”, the busiest it gets), <b>Tuesday</b> published and
+      amended to AL1, <b>Wednesday</b> still a draft. Each option is the same screen with the change laid on top;
+      nothing in the app was changed. The pictures are at their real size on each screen.</p>
+    <div class="switch" role="group" aria-label="Picture width">
+      <button type="button" aria-pressed="true" data-set="desktop">Desktop</button>
+      <button type="button" aria-pressed="false" data-set="phone">Phone</button>
+    </div>
+  </header>
+
+  <section>
+    <div class="surface"><div class="oh"><span class="tag today">Today</span><h3>The grey ORIG</h3></div>
+      <p>Beside the coloured AL tags and the dashed DRAFT, the grey reads as “not done yet”.</p>
+      <div class="steps3"><figure class="shot"><span class="tag plain">Edit Schedule — Monday, published, one change waiting</span><img class="w-desktop" src="img/orig-tag/desktop-today-week-0.png" width="558" height="83" alt="Monday’s head on the edit week." loading="lazy"><img class="w-phone" src="img/orig-tag/phone-today-week-0.png" width="372" height="121" alt="Monday’s head on the edit week. (phone)" loading="lazy"><figcaption>Monday’s head on the edit week.</figcaption></figure><figure class="shot"><span class="tag plain">Edit Schedule — Tuesday, at AL1</span><img class="w-desktop" src="img/orig-tag/desktop-today-week-1.png" width="558" height="52" alt="An amended day: the coloured tag already stands out." loading="lazy"><img class="w-phone" src="img/orig-tag/phone-today-week-1.png" width="372" height="92" alt="An amended day: the coloured tag already stands out. (phone)" loading="lazy"><figcaption>An amended day: the coloured tag already stands out.</figcaption></figure><figure class="shot"><span class="tag plain">Edit Schedule — Wednesday, a draft</span><img class="w-desktop" src="img/orig-tag/desktop-today-week-2.png" width="558" height="83" alt="A draft: the dashed DRAFT tag." loading="lazy"><img class="w-phone" src="img/orig-tag/phone-today-week-2.png" width="372" height="93" alt="A draft: the dashed DRAFT tag. (phone)" loading="lazy"><figcaption>A draft: the dashed DRAFT tag.</figcaption></figure><figure class="shot"><span class="tag plain">The scheduler board — Monday</span><img class="w-desktop" src="img/orig-tag/desktop-today-board.png" width="1076" height="33" alt="The board’s strip for Monday." loading="lazy"><img class="w-phone" src="img/orig-tag/phone-today-board.png" width="334" height="61" alt="The board’s strip for Monday. (phone)" loading="lazy"><figcaption>The board’s strip for Monday.</figcaption></figure><figure class="shot"><span class="tag plain">View-only Sched — Monday as issued</span><img class="w-desktop" src="img/orig-tag/desktop-today-view.png" width="558" height="54" alt="What the squadron sees." loading="lazy"><img class="w-phone" src="img/orig-tag/phone-today-view.png" width="372" height="95" alt="What the squadron sees. (phone)" loading="lazy"><figcaption>What the squadron sees.</figcaption></figure></div></div>
+  </section>
+
+  <section>
+    <div class="surface"><div class="oh"><span class="tag fix">Option A</span><h3>A ticked outline: “✓ ORIG”</h3></div>
+      <p>A bright outline and a tick, no fill. It reads as a stamp, a shape no other tag has, and with no colour it cannot be mistaken for an amendment’s colour.</p>
+      <div class="steps3"><figure class="shot"><span class="tag plain">Edit Schedule — Monday, published, one change waiting</span><img class="w-desktop" src="img/orig-tag/desktop-a-week-0.png" width="558" height="83" alt="Monday’s head on the edit week." loading="lazy"><img class="w-phone" src="img/orig-tag/phone-a-week-0.png" width="372" height="121" alt="Monday’s head on the edit week. (phone)" loading="lazy"><figcaption>Monday’s head on the edit week.</figcaption></figure><figure class="shot"><span class="tag plain">The scheduler board — Monday</span><img class="w-desktop" src="img/orig-tag/desktop-a-board.png" width="1076" height="33" alt="The board’s strip for Monday." loading="lazy"><img class="w-phone" src="img/orig-tag/phone-a-board.png" width="334" height="61" alt="The board’s strip for Monday. (phone)" loading="lazy"><figcaption>The board’s strip for Monday.</figcaption></figure><figure class="shot"><span class="tag plain">View-only Sched — Monday as issued</span><img class="w-desktop" src="img/orig-tag/desktop-a-view.png" width="558" height="54" alt="What the squadron sees." loading="lazy"><img class="w-phone" src="img/orig-tag/phone-a-view.png" width="372" height="95" alt="What the squadron sees. (phone)" loading="lazy"><figcaption>What the squadron sees.</figcaption></figure></div><p class="note">The AL tags and the DRAFT tag stay as they are.</p></div>
+  </section>
+
+  <section>
+    <div class="surface"><div class="oh"><span class="tag fix">Option B</span><h3>A ticked green: “✓ ORIG”</h3></div>
+      <p>Filled in the green the app already uses for “signed” (the sign-off line turns this green once all four have signed). The loudest of the three.</p>
+      <div class="steps3"><figure class="shot"><span class="tag plain">Edit Schedule — Monday, published, one change waiting</span><img class="w-desktop" src="img/orig-tag/desktop-b-week-0.png" width="558" height="83" alt="Monday’s head on the edit week." loading="lazy"><img class="w-phone" src="img/orig-tag/phone-b-week-0.png" width="372" height="121" alt="Monday’s head on the edit week. (phone)" loading="lazy"><figcaption>Monday’s head on the edit week.</figcaption></figure><figure class="shot"><span class="tag plain">The scheduler board — Monday</span><img class="w-desktop" src="img/orig-tag/desktop-b-board.png" width="1076" height="33" alt="The board’s strip for Monday." loading="lazy"><img class="w-phone" src="img/orig-tag/phone-b-board.png" width="334" height="61" alt="The board’s strip for Monday. (phone)" loading="lazy"><figcaption>The board’s strip for Monday.</figcaption></figure><figure class="shot"><span class="tag plain">View-only Sched — Monday as issued</span><img class="w-desktop" src="img/orig-tag/desktop-b-view.png" width="558" height="54" alt="What the squadron sees." loading="lazy"><img class="w-phone" src="img/orig-tag/phone-b-view.png" width="372" height="95" alt="What the squadron sees. (phone)" loading="lazy"><figcaption>What the squadron sees.</figcaption></figure></div><p class="note">AL3’s tag is also green, a brighter one. The words (“✓ ORIG” against “AL3”) keep them apart, and the Original never paints marks on the schedule, so AL3’s marks stay the only green ones.</p></div>
+  </section>
+
+  <section>
+    <div class="surface"><div class="oh"><span class="tag fix">Option C</span><h3>The word: “● Published” before the tag</h3></div>
+      <p>Every published day says “Published” before its tag, the Original and every amendment alike. The tags themselves stay as they are.</p>
+      <div class="steps3"><figure class="shot"><span class="tag plain">Edit Schedule — Monday, published, one change waiting</span><img class="w-desktop" src="img/orig-tag/desktop-c-week-0.png" width="558" height="110" alt="Monday’s head on the edit week." loading="lazy"><img class="w-phone" src="img/orig-tag/phone-c-week-0.png" width="372" height="145" alt="Monday’s head on the edit week. (phone)" loading="lazy"><figcaption>Monday’s head on the edit week.</figcaption></figure><figure class="shot"><span class="tag plain">Edit Schedule — Tuesday, at AL1</span><img class="w-desktop" src="img/orig-tag/desktop-c-week-1.png" width="558" height="80" alt="The word appears on amended days too." loading="lazy"><img class="w-phone" src="img/orig-tag/phone-c-week-1.png" width="372" height="92" alt="The word appears on amended days too. (phone)" loading="lazy"><figcaption>The word appears on amended days too.</figcaption></figure><figure class="shot"><span class="tag plain">The scheduler board — Monday</span><img class="w-desktop" src="img/orig-tag/desktop-c-board.png" width="1076" height="33" alt="The board’s strip for Monday." loading="lazy"><img class="w-phone" src="img/orig-tag/phone-c-board.png" width="334" height="89" alt="The board’s strip for Monday. (phone)" loading="lazy"><figcaption>The board’s strip for Monday.</figcaption></figure><figure class="shot"><span class="tag plain">View-only Sched — Monday as issued</span><img class="w-desktop" src="img/orig-tag/desktop-c-view.png" width="558" height="83" alt="What the squadron sees." loading="lazy"><img class="w-phone" src="img/orig-tag/phone-c-view.png" width="372" height="95" alt="What the squadron sees. (phone)" loading="lazy"><figcaption>What the squadron sees.</figcaption></figure></div><p class="note">The cost: the extra word pushes the edit week’s day head onto a third row on a desktop, and the board’s strip onto a third row on a phone, on every published day.</p></div>
+  </section>
+  <section class="ask">
+    <span class="lbl">Your pick</span>
+    <p><b>A, B or C?</b> <span class="rec">My recommendation: B.</span> It stands out the most, it costs no space on any
+      screen, and green already means “signed” in the app. If the green feels too close to AL3, A is the safe choice.
+      C says it in words, but takes a row on every published day.</p>
+  </section>
+</div>
+<script>
+  (function () {
+    var body = document.body, pick = 'desktop'
+    try { pick = localStorage.getItem('origtag.w') || (matchMedia('(max-width:720px)').matches ? 'phone' : 'desktop') } catch (e) {}
+    function set(w) {
+      body.setAttribute('data-w', w)
+      document.querySelectorAll('.switch button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.set === w)) })
+      try { localStorage.setItem('origtag.w', w) } catch (e) {}
+    }
+    document.querySelectorAll('.switch button').forEach(function (b) { b.addEventListener('click', function () { set(b.dataset.set) }) })
+    set(pick === 'phone' ? 'phone' : 'desktop')
+  })()
+</script>
