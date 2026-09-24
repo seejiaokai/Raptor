@@ -270,6 +270,13 @@ silent path runs live; the logged path is unit-modelled via `MemoryDoor`. An exp
 
 ---
 
+**Whose changes Undo reverses (owner, D148, 24 Sep 26 — "5 agree").** Undo only ever reverses the signed-in
+person's OWN changes, and their list clears when they sign out. It never greys out because someone else changed
+something since, and never undoes another person's change: in the database era, an admin can still undo his own
+change after a second admin has made one. If someone else has since changed the very same thing, Undo refuses and
+says who — it never overwrites their newer work. Settles `[GU-MAYREV]` in `[GLOBAL-UNDO]`; extends the 13 Sep 26
+direction (undo per login session, never affecting another user).
+
 ## 5. The checklist — plugging a NEW module or a NEW undo feature in
 
 Any new app/tab/module, and any new undo capability, MUST satisfy this. Raise it in the design step,

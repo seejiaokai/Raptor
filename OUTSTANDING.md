@@ -70,13 +70,14 @@ first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [T
 (before the next Tracker change that touches the smoke suite), [TRK-TAP-AFTER-DRAG] (ask him first),
 [TRK-BAKE-STALE] (low). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] and [RULING-HOMES-AUDIT] (any time, docs only),
-[BG-CWD-GUARD] (ask him first: it adds a hook).
+[BG-CWD-GUARD] (ask him first: it adds a hook). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
+FULL-tier build, any time).
 
 **Waiting on him — no order exists:** [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
 D147), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
-[REPO-PRIVATE]'s sharing half, the GU-MAYREV product question inside [GLOBAL-UNDO], [EOD] (design first; no slot
+[REPO-PRIVATE]'s sharing half, [EOD] (design first; no slot
 ruled), [CRP-FLAG]'s remainder and then [FLAG-EXPORT], the [AMEND] leftovers, and the questions filed on 24 Sep 26 —
-[LW-RESET-ORDER], [LW-DESKTOP-ZOOM], [ADMIN-DISPLAY], [QUALS-MEMBER-SCOPE], [TRK-PALETTE-ASK],
+[LW-RESET-ORDER], [LW-DESKTOP-ZOOM], [ADMIN-DISPLAY], [TRK-PALETTE-ASK],
 [DEMO-AWARD-DATES-ASK] — with [USER-GUIDE] (wanted, not urgent) and [PERF-RESIDUALS] (two of them change wording
 or feel — his call).
 
@@ -247,7 +248,7 @@ below: `git log -S"GU-P2" -- OUTSTANDING.md` (`docs/session-state.md` was delete
   deferred collection.
 - **[GU-C3]** reland conflict/auth coverage — the restore re-derives `acc` beyond the entry's
   closure without widening the conflict set. Inert single-user; real with concurrent users.
-- **[GU-MAYREV] PRODUCT QUESTION for the owner** — Undo is enabled on the newest eligible entry
+- **[GU-MAYREV] ANSWERED (D148, 24 Sep 26): Undo reverses only the signed-in person's own changes, clears on sign-out, and refuses (saying who) if someone else has since changed the same thing — `raptor-port/docs/undo-contract.md` §4. Build it with the amendment or change-recording work. The question as it was put:** — Undo is enabled on the newest eligible entry
   whatever the actor, and the timeline is not cleared on logout, so a member behind an admin edit
   sees an enabled-but-refused Undo. Grey it, or skip past non-reversible entries. Clearing the
   timeline on logout is the near-term direction (memory `future-undo-semantics-multiuser`).
@@ -936,6 +937,9 @@ it only if baking a chart into the shipped data comes back. **Place:** low, afte
 
 ### [QUALS-MEMBER-SCOPE] May a member edit ANY row on the Quals page? — a question for him (moved from HANDOFF.md, 24 Sep 26)
 
+**ANSWERED (D149, 24 Sep 26) — now a small build:** a member edits his OWN row only, and every column of it (SXO and
+SCHEDULER included); an admin edits any row. The gate goes at the page and the write path, with a test per column;
+permissions, so FULL tier. **Place:** any time, none blocking. The question as it was put:
   - **Member Quals-editing scope** — a member in Quals editing mode can tick/edit
     ANY row's table contents (callsign, CAT, SXO, SANS). The 5 Aug decision reads
     that as intended, but it sits oddly beside the Inputs page's own-row-only

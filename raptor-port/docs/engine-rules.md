@@ -2713,7 +2713,7 @@ the squadron's programme*, not read vs write:
 |---|---|---|
 | Inputs — add / edit / delete | **yes** | yes |
 | Inputs — choosing WHO an input is for | no — always the view-as person | yes |
-| Quals — `Enable editing`: tick a qualification, edit initials / flight / CAT | **yes** | yes |
+| Quals — `Enable editing`: tick a qualification, edit initials / flight / CAT | **yes — his OWN row only, every column of it incl. SXO and SCHEDULER (D149, 24 Sep 26; to build: today a member can still edit any row)** | yes, any row |
 | Quals — `Edit quals` (which columns the LoX carries) | no | yes |
 | Quals — `Add person` (put someone on the roster) | no | yes |
 | Quals — archive a person (the row's ✕) / Restore from the Archived drawer | no | yes |
