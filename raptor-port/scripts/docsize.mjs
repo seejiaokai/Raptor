@@ -447,6 +447,40 @@ function ceilings(codeChange) {
   return { fails, deferred }
 }
 
+/* ---------- --moves: did every line that left a document arrive somewhere? (D138, 24 Sep 26) ----------
+   A move is exact only if the text it took out of one file is found, the same number of times, in the
+   files it went to. This compares, across every Markdown file the change touches (committed, staged,
+   unstaged and new), each non-blank line REMOVED against the lines ADDED, and lists what left and did not
+   arrive anywhere. That list is exactly the set a meaning check must read by eye: a rewrite, a pointer
+   edit, or a real loss. A REPORT, never a failure — a deliberate rewrite is legitimate (D138 sends it to
+   two reviewers instead). */
+if (process.argv.includes('--moves')) {
+  const removed = new Map(), added = new Map(), byFile = new Map()
+  const bump = (m, l) => m.set(l, (m.get(l) || 0) + 1)
+  let file = null
+  const diff = BASE ? (tryGit('diff', '-U0', '--no-color', '--no-renames', BASE, '--', '*.md') || '') : ''
+  for (const raw of diff.split('\n')) {
+    if (raw.startsWith('+++ ') || raw.startsWith('--- ')) { if (raw.startsWith('--- ')) file = raw.slice(6); continue }
+    if (raw.startsWith('diff --git')) { file = raw.split(' b/')[1]; continue }
+    const l = raw.slice(1).replace(/\r$/, '').trimEnd()
+    if (!l.trim()) continue
+    if (raw[0] === '-') { bump(removed, l); if (!byFile.has(l)) byFile.set(l, file) }
+    else if (raw[0] === '+') bump(added, l)
+  }
+  for (const f of (tryGit('ls-files', '--others', '--exclude-standard', '--', '*.md') || '').split('\n').filter(Boolean))
+    for (const l of splitLines(readNow(f))) if (l.trim()) bump(added, l.trimEnd())
+  const lost = [...removed].filter(([l, n]) => (added.get(l) || 0) < n)
+  const perFile = new Map()
+  for (const [l, n] of lost) { const f = byFile.get(l) || '?'; perFile.set(f, [...(perFile.get(f) || []), [l, n - (added.get(l) || 0)]]) }
+  const total = [...removed.values()].reduce((a, b) => a + b, 0)
+  console.log(`--moves, against ${BASE ? BASE.slice(0, 8) : 'NOTHING'}: ${total} non-blank line(s) left a Markdown file; ${lost.reduce((a, [, n]) => a + n, 0)} did not arrive anywhere (a rewrite, a pointer edit — or a loss):`)
+  for (const [f, ls] of perFile) {
+    console.log(`\n  ${f} — ${ls.length}`)
+    for (const [l, n] of ls) console.log(`    ${n > 1 ? `(x${n}) ` : ''}${l.length > 150 ? l.slice(0, 147) + '...' : l}`)
+  }
+  process.exit(0)
+}
+
 /* ---------- run ---------- */
 const allow = allowances()
 const paths = changedPaths()
