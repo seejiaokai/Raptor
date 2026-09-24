@@ -71,7 +71,7 @@ first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [T
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SMOKE-ADD-RACE]
 (before the next Tracker change that touches the smoke suite), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
-The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [BOARD-KEYBOARD-GAP] (phone; small). The amendment batch, all decided 24–25 Sep 26 (D91–D105, D107–D108), ONE build after the re-test merges — `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`: [PENDING-SUMMARY], [AMEND-PHONE-APPROVER], [AMEND-TEMPLATE-PUBLISHED], [AMEND-NYS-WORDING], [AMEND-LOAD-FILING], [AMEND-MARK-RING-CLASH] (design approved, D93 — to build) and [BOARD-RING-STROKES] (his question), [HIST-JUMP-STAYS] and [ORIG-TAG-STANDOUT] (his look at PR #434, D107–D108; the ORIG tag waits on a mock-up), [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [BOARD-KEYBOARD-GAP] (phone; small). The amendment batch, all decided 24–25 Sep 26 (D91–D105, D107–D109), ONE build after the re-test merges — `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`: [PENDING-SUMMARY], [AMEND-PHONE-APPROVER], [AMEND-TEMPLATE-PUBLISHED], [AMEND-NYS-WORDING], [AMEND-LOAD-FILING], [AMEND-MARK-RING-CLASH] (design approved, D93 — to build) and [BOARD-RING-STROKES] (his question), [HIST-JUMP-STAYS], [ORIG-TAG-STANDOUT] and [MOVE-COUNTS-ONE] (his look at PR #434, D107–D109; the ORIG tag waits on his pick of the mock-up), [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] and [RULING-HOMES-AUDIT] (any time, docs only),
 [BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
 FULL-tier build, any time).
@@ -1124,6 +1124,14 @@ Edit history button added to Edit Schedule's top bar on 23 Aug 26 reused it). On
 on the page you are on — take the view to the change on the week and mark it; on the board, today's jump stays.
 **Build with the amendment batch** (item 12 of `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`),
 as ONE "take me to this change" shared with the pending list's tap (item 8). WALK tier inside the batch's FULL.
+
+### [MOVE-COUNTS-ONE] A man moved to another place on the same day counts as ONE pending change (D109, 25 Sep 26)
+Found in his look at PR #434: moving Warden from MET + NOTAM BRIEF to an empty SODB read "2 pending" (each row it
+touched), and Reaper put into the emptied row left it at 2. **His ruling (D109): a move counts as one.** Pair a man (or
+a placeholder) taken off one place and put on another place of the same day into one move; swaps are two; times,
+areas and remarks one per box. ONE counting body for every count (day head, Amendments panel, ⓘ panel, plan-switch
+message, "Discard N edits", the pending list). **Build with the amendment batch** (item 14) — the pending list's
+lines (item 8) read a move as one line. FULL tier inside the batch (the published record).
 
 ### [ORIG-TAG-STANDOUT] The ORIG tag stands out, so a published day reads as published (D108, 25 Sep 26)
 His ask in the same look: the Original's grey tag is too quiet — people should see the day is published. Changes the

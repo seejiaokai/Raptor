@@ -1,7 +1,7 @@
 # The amendment batch — everything he decided on 24–25 Sep 26, to build in ONE chat
 
 Written 25 Sep 26 at the close of the `claude/amendment-retest` chat (context full), so the build chat starts from one
-list. Every item is a recorded ruling (`.claude/rules/decisions/scheduler.md`, D91–D105; items 12–13 added from his look at PR #434, D107–D108) with a backlog item in
+list. Every item is a recorded ruling (`.claude/rules/decisions/scheduler.md`, D91–D105; items 12–14 added from his look at PR #434, D107–D109) with a backlog item in
 `OUTSTANDING.md`; the mock-ups are pictures of the real app, their makers committed under
 `raptor-port/scripts/handpass/am/` (run against the build on :4173). **Build it after PR #434 merges** (his "merge live"),
 on a fresh branch from `main`. Tier: **FULL** — it touches sign-offs and the published face (bug-check order §5);
@@ -23,6 +23,7 @@ phone.
 | 11 | **Phone: typing on the board shows the schedule behind above the keyboard** | (his bug report) | `[BOARD-KEYBOARD-GAP]` | `raptor-port/docs/img/bugs/2026-09-25-board-keyboard-gap.png` | `.schedboard` is `position:fixed; inset:0`; follow the visual viewport or hold the page still; reproduce with History on and off |
 | 12 | **A tap on a change in Edit history keeps him on the page he is on** — from Edit Schedule it takes the view to the change on the week and marks it; it never opens the board. On the board, today's jump stays | D107 | `[HIST-JUMP-STAYS]` | reproduced 25 Sep 26 (his look at PR #434) | `jumpToChange` (`raptor-port/src/ui/interactions.ts`) calls `boardTab`, which opens the board. Build ONE "take me to this change" for this AND item 8's tap, landing on the current page; phone: step the edit week to the day, then scroll. A key the week does not draw says so on screen (the board's `NO_BOARD_CELL` is the worked example) |
 | 13 | **The ORIG tag stands out** so a published day reads as published — not grey | D108 | `[ORIG-TAG-STANDOUT]` | mock-up FIRST, his pick before building | One drawer (`verTagHTML`, `.verchip.orig` in `scheduler.css`) on the edit week, the board and View-only Sched. Must not read as an AL colour (AL4 is white) or a warning. Register AM22 changes |
+| 14 | **A move counts as ONE pending change** — a man (or a placeholder) taken off one place and put on another of the same day is one; a swap is two; times, areas, remarks one per box | D109 | `[MOVE-COUNTS-ONE]` | reproduced 25 Sep 26 (his look: Warden MET + NOTAM → SODB read "2 pending") | Every count reads ONE body: `dayShownPendCount`, `dayDiscardCount`, the Amendments panel, the ⓘ panel, the plan-switch toast and item 8's list (a move = one line, "Warden: MET + NOTAM BRIEF → SODB"). The AL's stored diff and the marks are unchanged. Register AM23 |
 
 **Not to build (ruled):** a mark for a man taken off a seat (D91); a "Reissue AL1" button (D101 — Publish AL1 is the way
 back after an Unpublish, walked).
