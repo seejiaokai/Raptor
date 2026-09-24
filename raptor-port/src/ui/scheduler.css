@@ -4035,11 +4035,9 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
 /* a list past its height scrolls inside the bubble (owner, D105, 25 Sep 26): only such a list takes the pointer
    (histbubble.ts paint adds .scroll), and it keeps the scroll to itself rather than handing it to the page */
 .hb-all.scroll{pointer-events:auto;overscroll-behavior:contain;touch-action:pan-y}
-/* …and with a mouse the whole bubble takes the pointer (Fable F7): the pointer crossing from the cell onto the
-   bubble must land ON the bubble, or the cell's mouseout sees whatever lies under it and puts the bubble down
-   before the list can be scrolled. The bubble sits above or below its cell, never on it, so the cell's own hover
-   and click are untouched; a phone keeps the through-tap (pointer-events:none) the History contract pins. */
-@media (hover:hover) and (pointer:fine){.histbub{pointer-events:auto}}
+/* (the bubble ITSELF stays pointer-events:none on every device — the History contract the geometry gate pins: it
+   never takes a tap or a hover meant for the board. A mouse reaches a long list through a short grace before the
+   bubble goes down — histbubble.ts — not by the bubble taking the pointer.) */
 .hb-all .hb-chg{display:block}
 .hb-all .hb-who{display:block;margin-top:1px}
 /* THE ONE TAPPABLE THING IN A BUBBLE THAT IS OTHERWISE pointer-events:none.

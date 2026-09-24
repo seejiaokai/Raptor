@@ -3949,8 +3949,9 @@ thing this app writes to storage.
 ## History on the board (owner, 11 Aug 26)
 
 **25 Sep 26 (D105, D107):** the bubble stays — hover on a desktop, tap on a phone — and a long one SCROLLS inside
-itself (its list takes the pointer only once it overflows; with a mouse the whole bubble takes it, so the pointer
-can cross from the cell into it); and a tap on a change in the listed view lands on the page you are on — see
+itself (its list takes the pointer only once it overflows — the bubble itself stays pointer-events:none, the
+contract the geometry gate pins; with a mouse a long story waits a moment after the pointer leaves its cell, so the
+pointer can cross into the list); and a tap on a change in the listed view lands on the page you are on — see
 §The pending list, the one jump, and what the day head says.
 
 A view mode on the scheduler board: with it on, a detail says who changed it,

@@ -60,10 +60,15 @@ function box() {
      can scroll within that bubble to see the list"). Its list takes the pointer only once it overflows (paint,
      below), so the desktop pointer may travel from the cell INTO the bubble to scroll it: leaving the bubble is
      what puts it down then, unless the pointer went back onto the cell it belongs to. */
-  bub.addEventListener('mouseleave', (e: any) => {
+  /* the scrolling list is the only part that takes the pointer (the bubble stays pointer-events:none, the History
+     contract): entering it cancels the grace the cell's mouseout started; leaving it for anything but the list or
+     its own cell puts the bubble down */
+  bub.addEventListener('mouseover', () => { if (!HOOKS.isPhone()) clearTimeout(hideT) })
+  bub.addEventListener('mouseout', (e: any) => {
     if (pinned || HOOKS.isPhone()) return
-    const to = cellOf(e.relatedTarget)
-    if (to && to === anchor) return
+    const to = e.relatedTarget as HTMLElement | null
+    if (to && to.closest && to.closest('.histbub')) return
+    if (cellOf(to) === anchor) return
     hideHistBub()
   })
   document.body.appendChild(bub)
@@ -181,6 +186,7 @@ function chgHTML(r: ELogRow) {
 }
 
 function show(el: HTMLElement) {
+  clearTimeout(hideT)            // a grace left running by the last cell's mouseout (below) must not take this one down
   const key = keyOf(el)
   if (!key) return hideHistBub()
   const row = elogFor(key)
@@ -308,9 +314,12 @@ export function wireHistBubble(el: HTMLElement) {
        naive version flickered once per character crossing an input's text */
     const to = cellOf(e.relatedTarget)
     if (to && to === anchor) return
-    /* into the bubble itself — to scroll a long one (D105); the bubble's own mouseleave puts it down */
+    /* into the bubble's own scrolling list — to scroll a long one (D105); its mouseout puts it down */
     const into = e.relatedTarget as HTMLElement | null
     if (into && into.closest && into.closest('.histbub')) return
+    /* a LONG story gets a short grace, so the pointer can cross the gap between the cell and the bubble and reach
+       its list (the list is the only part that takes the pointer); a short one goes at once, as it always did */
+    if (bub && bub.querySelector('.hb-all.scroll')) { clearTimeout(hideT); hideT = setTimeout(hideHistBub, 350); return }
     hideHistBub()
   }
   const tap = (e: any) => {
