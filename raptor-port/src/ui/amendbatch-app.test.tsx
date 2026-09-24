@@ -16,6 +16,7 @@ import { HOOKS } from '../engine/hooks'
 import * as view from '../state/view'
 import { setHistList } from './pops'
 import { closePendList } from './pendlist'
+import { openScheduler, closeScheduler } from './board'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -134,5 +135,29 @@ describe('Edit history keeps him on the page he is on (D107)', () => {
     expect(view.SBDAY, 'the board did not open').toBeNull()
     expect($(`#eWeek .day[data-day="${MON}"] [data-slot="d:${MON}.0.2"]`)?.classList.contains('chgflash')).toBe(true)
     await act(async () => { view.setHistMode(false); notify() })
+  })
+})
+
+describe('a phone keyboard never shows the page behind the board (item 11, his bug report 25 Sep 26)', () => {
+  it('the board follows the visible area as the keyboard shrinks and pans it, and the page behind is not painted', async () => {
+    const vv: any = new EventTarget(); Object.assign(vv, { offsetTop: 0, offsetLeft: 0, height: 800, width: 390, scale: 1 })
+    const had = Object.getOwnPropertyDescriptor(window, 'visualViewport')
+    Object.defineProperty(window, 'visualViewport', { value: vv, configurable: true })
+    try {
+      await act(async () => { openScheduler(MON); notify() })
+      const b = $('#schedBoard')!
+      expect(b.style.height, 'sized to what is visible').toBe('800px')
+      expect(document.body.classList.contains('sb-open'), 'the page behind is not painted').toBe(true)
+      vv.offsetTop = 120; vv.height = 420                        // the keyboard comes up and the view pans
+      await act(async () => { vv.dispatchEvent(new Event('resize')); vv.dispatchEvent(new Event('scroll')) })
+      expect(b.style.top).toBe('120px'); expect(b.style.height).toBe('420px')
+      vv.scale = 2                                               // a pinch zoom is left alone
+      await act(async () => { vv.dispatchEvent(new Event('resize')) })
+      expect(b.style.height, 'zoomed with the page, as always').toBe('')
+      await act(async () => { closeScheduler(); notify() })
+      expect(document.body.classList.contains('sb-open')).toBe(false)
+    } finally {
+      if (had) Object.defineProperty(window, 'visualViewport', had); else delete (window as any).visualViewport
+    }
   })
 })

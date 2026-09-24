@@ -83,11 +83,35 @@ export function SchedBoard() {
     if (!open) return
     const el = document.scrollingElement || document.documentElement
     const y = el.scrollTop, x = el.scrollLeft
-    document.body.classList.add('sb-lock')
+    document.body.classList.add('sb-lock', 'sb-open')
     return () => {
-      document.body.classList.remove('sb-lock')
+      document.body.classList.remove('sb-lock', 'sb-open')
       el.scrollTop = y; el.scrollLeft = x
     }
+  }, [open])
+
+  /* NOTHING BEHIND THE BOARD SHOWS ABOVE A PHONE KEYBOARD (his bug report, 25 Sep 26 — "as the keyboard shows, u can
+     see a small area of the edit or view only schedule behind the scheduler board"; picture
+     docs/img/bugs/2026-09-25-board-keyboard-gap.png). The board is position:fixed, inset:0 — sized to the LAYOUT
+     viewport — while a phone keyboard shrinks and pans the VISUAL one, so the page behind could scroll into the strip
+     between the board and the keyboard. Two halves, each enough on its own: the board FOLLOWS the visible area (its
+     top and height from window.visualViewport, re-read on every resize and pan — the History bubble's and the Leave
+     War sheet's own signal), and the page behind is not painted while the board is open (body.sb-open, CSS), so a gap
+     could only ever show the board's own background. A pinch zoom (scale > 1) is left alone: the board zooms with the
+     page, as it always has. Chromium cannot raise an iPhone keyboard, so the real proof is his phone (the look card);
+     the walk shrinks the visual viewport by script. */
+  useEffect(() => {
+    if (!open) return
+    const vv = (window as any).visualViewport, r = rootRef.current
+    if (!vv || !r) return
+    const clear = () => { r.style.top = ''; r.style.bottom = ''; r.style.height = '' }
+    const fit = () => {
+      if (vv.scale > 1.01) return clear()
+      r.style.top = Math.round(vv.offsetTop) + 'px'; r.style.bottom = 'auto'; r.style.height = Math.round(vv.height) + 'px'
+    }
+    fit()
+    vv.addEventListener('resize', fit); vv.addEventListener('scroll', fit)
+    return () => { vv.removeEventListener('resize', fit); vv.removeEventListener('scroll', fit); clear() }
   }, [open])
 
   /* wires HOOKS.closeBoardDialogs — state/view.ts's closeBoardState() calls
