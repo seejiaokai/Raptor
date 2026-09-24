@@ -49,15 +49,14 @@ list (13–23 Sep 26), its finished entries and the "In plain terms" block are i
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
 **His order:**
-1. **[DOC-TRIM]** — the spring clean (D138–D141), on `claude/spring-clean`; then its leftovers (the item says which).
-2. **[HUMAN-RETEST]** — THE AMENDMENT SYSTEM next (D85/D86); then change-recording, the absence record and the Leave
+1. **[HUMAN-RETEST]** — THE AMENDMENT SYSTEM next (D85/D86); then change-recording, the absence record and the Leave
    War links, in an order he has NOT set — propose it and ask.
-3. **[S4-HUNT-REST]** — the bug hunt's untouched ground, in his own 1–7 order. Its place beside item 2's three is
+2. **[S4-HUNT-REST]** — the bug hunt's untouched ground, in his own 1–7 order. Its place beside item 1's three is
    not ruled (its ground IS the absence record): ask, never assume.
-4. **[BACKLOG-ORDER]** — "after the hunt" (21 Sep 26): [PUB-UNAVAIL] → [LW-LOCKMARK] → [LW-WEEKDAY-WORK] (talk to
+3. **[BACKLOG-ORDER]** — "after the hunt" (21 Sep 26): [PUB-UNAVAIL] → [LW-LOCKMARK] → [LW-WEEKDAY-WORK] (talk to
    him before building any of it) → [DB-STEP], then the [AMEND] work queued behind it. The architecture comes first,
    then the individual bugs (D144): the stack ([ARCH-STACK]) resumes at [DB-STEP], with its step 6 still to come.
-5. **Before ANY collaborator is added** — an event, not a slot: take the checks runner off this repo (SEC-101, in
+4. **Before ANY collaborator is added** — an event, not a slot: take the checks runner off this repo (SEC-101, in
    [REPO-PRIVATE]).
 
 **Any time, none blocking — the small OIL follow-ups:** [OIL-READ-LEFTOVERS] (its items 1, 2, 4),
@@ -68,8 +67,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SMOKE-ADD-RACE]
 (before the next Tracker change that touches the smoke suite), [TRK-TAP-AFTER-DRAG] (ask him first),
-[TRK-BAKE-STALE] (low). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] (with
-the next code change).
+[TRK-BAKE-STALE] (low). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+[RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] (any time, docs only).
 
 **Waiting on him — no order exists:** [OIL-AWARD-IS-A-GRANT] (needs his go), [OIL-EARNED-VS-GRANTED] (his figure —
 ask first), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
@@ -290,6 +289,20 @@ retry (more likely on iPhone). Never fixed, not logged as a limitation.
   than a piecemeal patch in three places. Or pull earlier on request.
 
 ### [DOC-TRIM] The repo is too heavy to read (owner, 21 Sep 26 — D14)
+**CLOSED 24 Sep 26 — the spring clean is built on `claude/spring-clean`, checked, and offered for his "merge live".**
+A fresh chat reads ~58k tokens before it starts work, not ~118k (the spring clean's measure). `raptor-port/CLAUDE.md`
+keeps what every task needs; each area's settled decisions and architecture moved whole to its file under
+`.claude/rules/decisions/`, which loads by itself; `HANDOFF.md` is the one handoff, current state only; this file holds
+live items only; how a change ships and where each new fact goes are always loaded (`.claude/rules/shipping.md`,
+`.claude/rules/doc-structure.md`). Both meaning checks (D138) done, by Fable and Astra, every finding fixed; the
+session-handoff skill change approved (D145); the old worktrees are gone from his PC. **Every line figure and target
+below is the plan as it was written — WITHDRAWN by D141 (no line targets: is each block needed where it sits?).
+History, not a goal.** Nor was `docs/stable-decisions.md` (below) ever made: those decisions went to the area files
+(D140). **Its lasting facts live in:** `raptor-port/docs/doc-budget.md` (the policy and tiers),
+`.claude/rules/doc-structure.md` (where each fact goes, and when it leaves), `raptor-port/scripts/docsize.mjs` (the
+gate and its tripwires), and the plan, red teams and meaning checks,
+`raptor-port/docs/superpowers/specs/2026-09-24-spring-clean-*.md`. **Its two leftovers are their own items:**
+`[RULINGS-LF-PIN]` and `[DOC-SUBHEADS]`. D139 (spend freely, for this job) is SPENT.
 **THE RULINGS AND THE BACKLOG PASS — DONE 24 Sep 26 (D136 + D137; checked by Fable and Astra).** The rulings are split by
 area into `.claude/rules/decisions/` — How we work loads in every session, each other area by itself when its files are
 read — with `DECISIONS.md` as the map and replaced/spent rulings in `DECISIONS-ARCHIVE.md`; 14 finished items left this
@@ -1037,3 +1050,21 @@ day-strings sort, the JS-bound drop, hover-boundary repaints, the `body.dnd` dec
 call; two are the owner's call because they change wording or feel. The ledger and each one's measurement:
 `raptor-port/docs/performance.md` (Part 2; §Dead ends says what not to retry). **Place:** when a speed complaint
 or a board change comes near one of them; put the two that change wording or feel to him first.
+
+### [RULINGS-LF-PIN] Pin the rulings files to LF line endings, with the next change that runs the checks (filed 24 Sep 26)
+A leftover of `[DOC-TRIM]` (archived 24 Sep 26). `.gitattributes` pins `OUTSTANDING.md`, `OUTSTANDING-ARCHIVE.md`,
+`DECISIONS.md` and `HANDOFF.md` to LF ([DOCS-GUARD] F4, 23 Sep 26), so no script or editor setting can rewrite every
+line of them at once — a whole-file diff is where a destroyed record hides. The rulings split (D137) added
+`DECISIONS-ARCHIVE.md` and the area files under `.claude/rules/decisions/`, which are NOT pinned; all of them are LF
+today (checked 24 Sep 26 with `git ls-files --eol`). Add them — a pattern for the folder covers a new area file too.
+**Place:** ride the next change that starts the full checks on his PC anyway: `.gitattributes` is not on the deploy
+workflow's docs-only skip list, so a change to it alone starts a full run (D89, D151), which a docs pass must not do.
+
+### [DOC-SUBHEADS] The long reference docs need sub-headings, so a chat can read one section (filed 24 Sep 26)
+A leftover of `[DOC-TRIM]` (archived 24 Sep 26), which named it on 21 Sep 26 — `ui-contracts.md` "needs sub-heads so a
+session can read one section" — and the spring clean did not do it. The rule it breaks is tier 2's in
+`raptor-port/docs/doc-budget.md` §1: "no section over ~150 lines without sub-heads". Counted 24 Sep 26 (runs of over
+150 lines with no heading line), all in `raptor-port/docs/`: `ui-contracts.md` 13 (the longest 469 lines),
+`engine-rules.md` 5 (its §Validation runs 927 lines), `feature-impact.md` 1 (550), `performance.md` 1 (313). Adding
+headings rewords nothing; anything more is a move (D138, `backlog-archive.mjs --move`). Docs only — no full check
+run. **Place:** any time, none blocking; sooner if a chat has to read one of those sections whole.
