@@ -37,7 +37,8 @@ whole in `raptor-port/docs/archive/raptor-claude-md-2026-09-24.md`. The rulings 
 - **Vercel is HIS surface, never your drive target** (24 Aug 26): it sits behind his Vercel sign-in, so he can
   open it and your browser cannot (it answers with a 302 to `vercel.com/sso-api`). Your fast surface is the
   local `npm run build && npx vite preview` — the same bundle, byte for byte (`raptor-port/CLAUDE.md`
-  §Build & verify).
+  §Build & verify). The preview is NOT a gate (15 Aug 26): `vercel.json` at the repo root builds `raptor-port`
+  for every push, untested, so a red preview is still just a preview — correctness rides the gates.
 
 ## Ship once per session, at the end (owner, 10 Aug 26)
 Build and verify everything locally as you go, then ONE PR carries the lot. **Shipping is not how you test**:

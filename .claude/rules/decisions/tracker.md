@@ -8,6 +8,17 @@ paths:
   - raptor-port/docs/**/*trk*
   - raptor-port/scripts/handpass/trk-*.mjs
   - raptor-port/src/ui/logout.ts
+  # the seams where the Tracker meets the rest of the app (widened 24 Sep 26, the spring clean's red team):
+  # its architecture below binds these files too, so a session editing them must load it
+  - raptor-port/src/main.tsx
+  - raptor-port/src/state/store.ts
+  - raptor-port/src/storage/**
+  - raptor-port/src/command/**
+  - raptor-port/src/undo/**
+  - raptor-port/src/ui/Shell.tsx
+  - raptor-port/docs/data-schema.md
+  - raptor-port/docs/data-model.md
+  - raptor-port/docs/undo-contract.md
 ---
 
 # Rulings — the Tracker
@@ -16,6 +27,12 @@ paths:
 Tracker from anywhere else picks these up too. The general rulings are in `.claude/rules/decisions/how-we-work.md`, loaded in every session; the map of every ruling and how to add or retire one: `DECISIONS.md`. Newest first; each row keeps the date it was recorded.
 **Also read** — in How we work, so already loaded: **D62** and **D63** (the Tracker's syllabus data is out of
 every privacy sweep; the aircraft type elsewhere reads "F-15" or "fighter squadron").
+
+**Where the detail lives:** its architecture — §Architecture at the foot of this file (moved from
+`raptor-port/CLAUDE.md`, 24 Sep 26); its screen — `raptor-port/docs/ui-contracts.md` §The Tracker tab; its gaps and
+carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores — `raptor-port/docs/data-schema.md`
+§World 3; the model for the database step — `raptor-port/docs/data-model.md`; its browser suite —
+`raptor-port/scripts/tracker/smoke.mjs`; its files — `raptor-port/docs/file-map.md`.
 
 | # | Date | His ruling, in his words where short enough | What it means | Where it lives now |
 |---|---|---|---|---|
@@ -33,3 +50,114 @@ every privacy sweep; the aircraft type elsewhere reads "F-15" or "fighter squadr
 | D121 | 23 Sep 26 | *"For the tracker, admin and member should have the same access authority"* — said during the Tracker's `[HUMAN-RETEST]` | **IN THE TRACKER A MEMBER CAN DO EVERYTHING AN ADMIN CAN — THE FILE MENU TOO.** Supersedes the one exception in his 7 Sep 26 second word (*"…except the file portion which is admin only"*): ⇪ Import and ⤓ Export stop being admin-only, and the Tracker no longer reads the login's role at all. **The agent's reading, stated to him so he can correct it:** everything else in the Tracker was already everyone's, so "the same access authority" can only change the File menu. **What it means in practice, told to him:** a member can Import a file (replacing a chart after its question, and bringing in students and marks after its one yes) and Export a copy (with student names and marks when ticked — the Export window's warning stays). The rest of the app's roles are untouched | `raptor-port/CLAUDE.md` (the Tracker paragraph and its Where-things-live row); `raptor-port/docs/tracker/known-gaps.md` (preamble); `raptor-port/docs/ui-contracts.md` §The Tracker tab; `raptor-port/src/tracker/role.js` |
 | D120 | 23 Sep 26 | *"before i bring this app into the database, i will export the syllabus that is already hand drawn by me which consist of the pokeball and all the syllabus details out. Then wipe the app, then upload the data into the tracker. So based on this workflow, i dont want u to chase bugs that is already mitigated by this"* — said as the Tracker's `[HUMAN-RETEST]` began | **THE TRACKER'S CHARTS REACH THE DATABASE BY EXPORT → WIPE → IMPORT, SO A BUG THAT ROUTE ALREADY REMOVES IS NOT A FINDING.** It is D56 applied to the Tracker, with the route named. **Dropped from every Tracker check:** anything that lives only in data stored today (every student, mark, date and course in the Tracker now is demo data); the start-up converters that upgrade OLDER stored data (course ids, chart ids, student ids, the old `ocu:` keys) — nothing written from now on passes through them; and reading OLDER file formats, because the file he imports is the one he has just exported. **What it makes MORE important — the agent's reading, stated to him so he can correct it:** that round trip is now the ONE path by which his hand-drawn charts survive, so a CURRENT export or import that loses or changes a ball, a line, a position, a font, a chart name or any event detail is a real finding, and the highest one. And marking, students, dates and everything else the Tracker does must still work — new data after the wipe goes through all of it. **The guard D56 set still holds:** if the app would do it again to NEW data, it is a finding | `raptor-port/docs/tracker/known-gaps.md` (the head note "The route to the database"); `raptor-port/docs/superpowers/briefs/2026-09-23-tracker-retest-scenarios-brief.md` (the reviewers are told); `OUTSTANDING.md` [HUMAN-RETEST] and [DB-STEP] |
 | D64 | 23 Sep 26 | His instruction that the Tracker's grey hint text in the event box's format field should read the bare type too. **His exact words are not reproduced, for the same reason as D58 and D63** — in substance: "only the grey hint text in the format field, change it to F-15" | **NARROWS D62 AND D63 — the Tracker is no longer left ENTIRELY.** The one hint the event box shows in its "Type / format" field now reads "e.g. Lecture, OFT/AMT, 2 x F-15". **Everything else about the Tracker stays exactly as D62 ruled:** its syllabus data (the 52 mentions inside `raptor-port/src/tracker/data/`) and the smoke-test lines that assert that data are still out of scope and still left. The newer ruling wins where they overlap (newest-instruction-wins); the D62 and D63 rows are marked so a later reader does not follow the older "leave the whole Tracker" | `raptor-port/src/tracker/components/Modals.jsx` (the hint); the D62 and D63 rows below, now marked narrowed; memory `app-carries-no-unit-designation` |
+
+## Architecture — moved from `raptor-port/CLAUDE.md` §Architecture rules (24 Sep 26)
+
+The Tracker's architecture rules, MOVED WHOLE, word for word (D138), so they load with this area instead of
+in every chat (D140). The rules every area shares — the store, the mutation and persistence funnels, what
+persists, the one command layer — stay in `raptor-port/CLAUDE.md` §Architecture rules. Paths inside this
+section are relative to `raptor-port/` (as they were in that file).
+
+**The Tracker tab is a THIRD app with a THIRD store** (vendored 7 Sep 26,
+`src/tracker/`, from `seejiaokai/Tracker` — plain JavaScript/JSX, `allowJs`,
+bodies are verbatim ports like `src/engine/`). Its state is module `let`s in
+`tracker/app/core.js` with its own subscribe/notify; its storage goes through
+ONE doorway, `tracker/storage.js` (inside Raptor it goes through the whiteboard
+under `raptor:tracker/…`; the bare `ocu:` localStorage path is the standalone/
+no-target fallback, and legacy `ocu:` keys are imported once — corrected
+17 Sep 26, see `docs/data-schema.md` §World 3 — the
+standalone app's SharePoint/Dataverse/Firebase layers were dropped; the shared
+database replaces this file when it arrives). **The store is the record; the
+.json file is a FORMAT, not a store** (owner, 9 Sep 26 — "I thought it should
+be auto synced … isn't it duplicating"): marks, dates, students, event
+details (PER CHART — D126) and a moved ball save themselves, ✓ Save changes writes STRUCTURE
+edits (events, prerequisites, lines, fonts) to the store and nothing else,
+and the File menu is TWO one-way moves — ⇪ Import (a file in: charts
+always, chart by chart with replace/add-as-new; students & marks only after
+an explicit yes — one button for both "a chart drawn up elsewhere" and "the
+whole export back in after the database move", owner's ask) and ⤓ Export (a
+backup before the database move, or a handover). The old model — 📁 Open binding a live file handle that Save changes
+wrote back to — is gone; don't re-add a bound file. **Nothing of it boots in
+`main.tsx`** — the screen is a lazy chunk and `core.init()` runs on the tab's
+first mount, which is also why the section is KEPT MOUNTED afterwards (the flow
+board is drawn imperatively once). **Three seams cross the boundary, and only
+three:** `resetSession` ends the Tracker's login session through `tracker/role.js`, and every Logout (`ui/logout.ts`) first asks it about unsaved chart edits (D129) (a
+no-import module — importing `core.js` there would put ~280 KB of syllabus data
+into every Raptor visit; `tracker.test.tsx` guards it); `TrackerPage.tsx` is
+the page; and **the people bridge `tracker/people.js`** (9 Sep 26, same
+no-import shape as `role.js`): `TrackerPage.tsx` wires `tracker/peoplewire.ts`
+once, which projects Raptor's `PEOPLE` into the bridge on every notify
+(signature-guarded, like Leave War's `reprojectRoster`) and hands it
+`HOOKS.whoami()`. That is how a person from the squadron roster is picked into
+a course (the Students card's `+ Add` lists the roster above the free-text box)
+and how every mark and date write is stamped `by`/`at`. **A student is an
+ENROLMENT ID (stable ids, 10 Sep 26)**: a roster entry is `{ id, name, pid? }`,
+every per-student key (`:m:`, `:d:`, `pace:`, `lulls:`, `last:`, `lastStudent`)
+takes the id, `nameOf`/`byName`/`pidOf`/`linkedPerson` read the entry, and the
+`v3:links` record is gone (folded into `pid` by `migrateIds`, once per course,
+resumable and read-back-verified — `app/ids.js` is the one converter, shared
+with Import). Same person or same name on the course = the same enrolment
+(`findEnrolment`, course-wide, hidden charts included). **A COURSE is a
+COURSE ID too (stable ids, 13 Sep 26 — ARCH-STACK 1B-i)**: `COURSES` is
+`{ id, name }[]`, `course` is the current course's id, every per-course key
+files under the id (`v3:<courseId>:…`), so **renaming a course is a label
+change that moves nothing** (`renCourse` sets the entry's name; the old
+copy-verify-delete apparatus is gone). `app/courseIds.js` is the one converter
+(mint/upgrade/reconcile), and `migrateCourseIds` re-bases a name-keyed browser
+once — resumable, read-back-verified, a `storage.list()` prefix-move with an
+explicit reserved-namespace skiplist (`courses`/`links`/`master`/`lay`/`SYLLABUS
+EDIT`) and a fail-closed preflight (a reserved or colon-bearing legacy course
+name stops the boot: `bootError` → App's reload panel, no board, no writers). It
+also translates the `v3:links` payload (keyed by course name) to the id. Import
+carries `{id,name}` courses (file v2), reconciles a file's course ids to the
+store's by name (store id wins, conflicts refused), and refuses a reserved name
+or a non-`^c[0-9a-z]+$` id at the file boundary. **A SYLLABUS is a SYLLABUS ID too
+(stable ids, 13 Sep 26 — `[TRK-CSID]` 1B-ii, DONE).** The global chart catalogue
+is `SYLS` = `{id,name,base?,userNamed?}[]` (`v3:master:sylcat`); built-ins carry a
+DETERMINISTIC shipped id from the `BUILTIN_SYL` table in `app/sylIds.js`
+(`sb2024`/`sb2026`/`sbtx2026`/`sbagaa2026`, the same on every browser — so an
+imported built-in matches by id with no reconcile), user charts a minted `sc…`
+id; grammar `^s[bc][0-9a-z]+$`. `base` (the canonical shipped SYLLABI key a
+built-in draws its def/layout/event-info from) is AUTHORITATIVE from the table,
+never trusted from a file. So **renaming a syllabus is a label change that moves
+nothing** (`renSyl` sets the entry name + `userNamed`; the old moveSylData /
+tombstone-and-shadow / SYL_ALIAS apparatus is gone), delete is a real sweep
+(records under the id removed in every course + every course's plan repaired;
+built-in tombstoned so the boot reconcile never re-offers it; hidden ≠ deleted),
+and duplicate copies the flow+layout under a fresh id with an EMPTY student layer.
+The conversion is **"keep charts, reset marks"** (owner): `migrateSylIds` (one
+converter, `app/sylIds.js` shared with Import) converts the global catalogue IN
+PLACE via a durable **payload journal** (compute-once, whole-object writes,
+`purge = sources ∖ destinations`, verify after all purges; two flags
+`kSylCatMig`/`kSylReset`) — every hand-drawn chart + layout kept, legacy layout
+event-ids translated onto the shipped ids (`padId`/`SPECIAL`, incl. `__font`) —
+and RESETS the per-(course,syllabus) student layer (rosters/marks/dates/pace/lulls
+cleared, plan `sylName→sylId`, demo pair re-seeded). Boot reconcile
+(`reconcileBuiltins`, also in `reloadFromStore`) adds newly-shipped built-ins,
+repoints `base` on a shipped rename, respects `userNamed`. `plan.sylId` replaces
+`plan.sylName`; `curSylId()` keys `kMarks`/`kDates`/`kLayout`. **Import guardrail
+(owner, §19):** charts import from ANY backup (v1/v2 name-keyed upgrade to ids on
+read, v3 reconcile by id/name); **student marks/dates/rosters/plan pointers import
+ONLY from an id-native v3 file carrying a `sylcat`** — a pre-v3 or unresolved
+student block is REFUSED with a plain message (no name→built-in guessing in the
+file path; charts still import). File version → 3. **Colon relaxed (owner):
+syllabus and chart names MAY contain a colon now** (a label, like a student name);
+COURSE names keep the refusal. A student name is a label and may carry one. The
+pencil on each Students-card chip renames that
+label (`core.js:renameStudent`, 10 Sep 26 — everyone may, like + Add and
+Remove; refuses a name another enrolment on the course already holds; the id
+and every id-keyed record are untouched). **The Tracker will be
+exported back out as a standalone app** (owner, 9 Sep 26), where students are
+typed and nothing feeds the bridge — so every Raptor-fed feature degrades to the
+old behaviour when the bridge is empty (`+ Add` with no roster IS the old
+prompt, pinned), and Raptor-specific code stays in `people.js` /
+`peoplewire.ts` / `TrackerPage.tsx` plus the one `people.length` branch. Design:
+`docs/superpowers/specs/2026-09-09-schema-hardening-design.md`; the target
+model for the database step: `docs/data-model.md`. **Everyone
+does everything — marking, charts, students, courses, syllabi AND the File menu
+(Import / Export): admin and member have the same access** (owner, D121,
+23 Sep 26, superseding the 7 Sep "file portion is the admin's"); the Tracker
+reads no role, so never add an admin gate to it. CSS is scoped under
+`#page-tracker` with five Raptor collisions reset at the top of the wrapper.
+Gaps and the carried-over traps: `docs/tracker/known-gaps.md`; the working loop
+with the owner's chart file: `scripts/tracker/bake-user-charts.mjs`.

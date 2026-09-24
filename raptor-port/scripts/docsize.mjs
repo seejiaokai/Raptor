@@ -61,9 +61,11 @@ const INVENTORY_ONLY = process.argv.includes('--inventory')
    ceiling RISES here, with its reason, in a docs-only commit. */
 const FILES = [
   /* 1539 -> 1543, 23 Sep 26 (owner, D60): push a BRANCH freely, ASK before `main` — a rule the
-     agent must check before acting, so it belongs in the always-loaded tier. [DOC-TRIM] still owns
-     bringing this file to its 500 target. */
-  ['raptor-port/CLAUDE.md',              0, 1543],
+     agent must check before acting, so it belongs in the always-loaded tier.
+     1543 -> 760, 24 Sep 26 (the spring clean, D140 + D141): each area's settled decisions and
+     architecture moved WHOLE to its area file, the shipping rules to .claude/rules/shipping.md, the
+     Pages-era text to raptor-port/docs/archive/ — 702 lines left, the rest is room. A tripwire, not a target. */
+  ['raptor-port/CLAUDE.md',              0,  760],
   ['.claude/rules/raptor-executor.md',   0,  108],
   /* 63 -> 76, 23 Sep 26 (owner, D56): data-only problems are not findings, in the always-loaded
      copy so it is in force before the order is opened. */
@@ -98,9 +100,13 @@ const FILES = [
   ['DECISIONS.md',                       1,   80],
   ['.claude/rules/decisions/how-we-work.md', 0, 150],
   ['.claude/rules/decisions/oil.md',     2,  120],
-  ['.claude/rules/decisions/scheduler.md', 2, 100],
-  ['.claude/rules/decisions/tracker.md', 2,  100],
-  ['.claude/rules/decisions/leave-war.md', 2, 60],
+  /* 100 -> 560, 240, 360 — 24 Sep 26 (the spring clean, D140): each area file now also carries that area's
+     settled decisions from before the rulings list and (Leave War, Tracker) its architecture, moved WHOLE from
+     raptor-port/CLAUDE.md so they load only with the area's files. Set at what they hold plus room for the
+     rulings to keep growing (D136: a rulings file is never trimmed to fit). */
+  ['.claude/rules/decisions/scheduler.md', 2, 560],
+  ['.claude/rules/decisions/tracker.md', 2,  240],
+  ['.claude/rules/decisions/leave-war.md', 2, 360],
 ]
 const RULING_CEILING = f => f === DECISIONS || f.startsWith(RULINGS_DIR + '/')
 
