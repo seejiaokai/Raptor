@@ -625,6 +625,10 @@ rules about posted-out and pre-joining rows. Several older documents still read 
   types itself (D79, register N11).
 
 ### [DOC-TRIM] The repo is too heavy to read (owner, 21 Sep 26 — D14)
+**D136 (24 Sep 26) — HOW `DECISIONS.md` IS KEPT, decided:** raise its ceiling, sort it by area (Tracker, Leave War,
+Scheduler & amendments, OIL, How we work) keeping each row's date; only replaced rulings and spent one-off permissions
+may move to a dated archive. **Next pass (notes only, turns `main`'s red Docs guard green):** that, plus finished
+items out of this file with `backlog-archive.mjs`.
 **His words: "theres going to be alot of context for the AI to read ... reading so much context
 as an AI it starts to hallucinate."** Measured that day: **1,830 lines loaded every session**
 whatever the task, plus **2,228 more** at session start. `HANDOFF.md` states its own 550-line

@@ -94,3 +94,13 @@ Three failures made it, and each one is worth recognising on sight:
 picked" — none of it is evidence about today. The rulings file is. Where the two disagree, the
 rulings file wins and **you fix the comment in the same change** (the newest-instruction-wins rule
 already says so).
+
+## Keeping the list whole — never shrink it by moving live rulings out (D136, 24 Sep 26)
+
+**Owner:** *"If you archive an old ruling would it be lost and not read even tho it's applicable? … anything I change
+you will have the context of the ruling."* An archived ruling a chat does not know about is one it will not look for.
+So when `DECISIONS.md` meets its size budget, the BUDGET rises; the file is **sorted by area** (Tracker, Leave War,
+Scheduler & amendments, OIL, How we work), every row keeping its date, and a session working on an area reads that
+whole section. Only a ruling **replaced by a later one**, or a **one-off permission spent on the day**, may move to a
+dated archive — marked, never deleted, and still searched before asking him anything. `docsize` proves no D-number is
+lost in a reshuffle.

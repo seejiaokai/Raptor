@@ -55,9 +55,9 @@ course; an import never deletes marks). Left from it, none blocking: `[TRK-RETES
    propose it and ask.
 2a. **`main`'s Docs guard is RED since 24 Sep 26** — not a defect: `OUTSTANDING.md` (1,400) and `DECISIONS.md` (150)
    were over their ceilings after the Tracker merges (a code change defers that), so every notes-only commit fails
-   until `[DOC-TRIM]`'s docs-only pass. That pass needs HIS decision first: when `DECISIONS.md` reaches its ceiling,
-   do its oldest rows move to a dated archive, or does its ceiling rise? (`docsize.mjs` says it is not decided.) Never
-   raise a ceiling to turn the check green without his word.
+   until `[DOC-TRIM]`'s docs-only pass. **Decided — D136:** raise `DECISIONS.md`'s ceiling and sort it by area (each
+   row keeps its date); only replaced rulings and spent one-off permissions may move to a dated archive; finished
+   `OUTSTANDING.md` items move with `backlog-archive.mjs`. That pass is the NEXT job.
 3. Filed, none blocking: `[TRK-PINCH-ASK]` (his iPhone look), `[TRK-SMOKE-ADD-RACE]`
    (the smoke suite's "+ Add" step can still lose a name under load), `[TRK-RETEST-NOTES]`,
    `[LW-FROZEN-BAR-GAP]` (a one-frame blink), `[LW-FIGSEL-SLOW]` (a slow unit test).

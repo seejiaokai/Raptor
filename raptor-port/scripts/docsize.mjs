@@ -71,8 +71,10 @@ const FILES = [
      The bug-check order §7.6 requires a MISSING to be filed here during a fix, so it too carries
      declared headroom. [DOC-TRIM] owns the 600 target — as its own docs-only pass. */
   ['OUTSTANDING.md',                     1, 1400,  600],
-  /* DECISIONS.md is append-only and is MEANT to grow, so its ceiling is its target. Moving its oldest
-     rows out when it reaches it is not decided; whoever does it, job 1c below fails a lost D-number. */
+  /* DECISIONS.md is append-only and is MEANT to grow, so its ceiling is its target. DECIDED 24 Sep 26
+     (D136, .claude/rules/record-decisions.md): at the ceiling the CEILING RISES and the file is sorted by
+     area — live rulings never move out; only replaced ones and spent one-off permissions may go to a
+     dated archive. Job 1c below still fails a lost D-number. */
   ['DECISIONS.md',                       1,  150,  150],
 ]
 const TIER0_TARGET = 600
