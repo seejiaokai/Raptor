@@ -62,6 +62,8 @@ half).
   building".
 
 ## The checks
+- **While the repo is public for a short period (D106, 25 Sep 26)** the checks run on GitHub's machines (the workflow sends a
+  public repo there by itself) and his PC's runner stays STOPPED; when it goes private again, the runner starts again.
 - **They run on HIS PC** (D89): one job, a Windows service, the `pc` job in `.github/workflows/deploy.yml`; the
   way back to GitHub's own machines is the repo variable `CI_ON_GITHUB=true`. Never two full gate runs at once,
   and never a full local run while his PC's runner is mid-run (D86).
