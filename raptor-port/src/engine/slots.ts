@@ -447,7 +447,15 @@ export function acceptInput(di:any,inp:any,dest:any){
     const ver=dayCurVer(di), snap:any=ver!=null?daySnapOf(di,ver):null;
     const ig:any[]=(snap&&snap.d&&snap.d.ground)||[];
     const ix=ig.findIndex((r:any)=>r&&r.src===key&&r.rid);
-    if(ix>=0&&!(d.ground||[]).some((r:any)=>r&&r.rid===ig[ix].rid)){   /* never mint a second row with one id */ rid=ig[ix].rid; ri=Math.min(ix,d.ground.length); }
+    if(ix>=0&&!(d.ground||[]).some((r:any)=>r&&r.rid===ig[ix].rid)){   /* never mint a second row with one id */
+      rid=ig[ix].rid;
+      /* back BESIDE ITS ISSUED NEIGHBOURS — before the first surviving row that followed it in the issued
+         version — not at its issued index: once an earlier issued row is gone, or under a hand-set order, that
+         index is somewhere else, and the day read "1 reorder" for a row that went back where it was (the
+         amendment re-test's final read, Fable #5, 24 Sep 26) */
+      const after=ig.slice(ix+1).map((r:any)=>r&&r.rid).filter(Boolean);
+      const nx=(d.ground||[]).findIndex((r:any)=>r&&after.includes(r.rid));
+      ri=nx>=0?nx:d.ground.length; }
   }
   /* who is the stable person ID (ARCH-STACK 1C, 14 Sep 26; was PEOPLE[id].cs).
      inp.person is already an id, and the renderers resolve who→id→cs (whoId), so
@@ -601,14 +609,9 @@ export function reconcileDayFiling(di:any){
   const dt=(DAYS[+di]||{}).dt; if(dt==null)return;
   INPUTS.forEach((inp:any)=>{
     if(!inputCoversDate(inp,dt)||inputProtected(inp))return;
-    /* 'u' (a global filing DECISION with no ground row) is not a per-week ground landing —
-       untouched. 'r' (dormant) is untouched too UNLESS the replacement brought its row back:
-       a dormant input has no row by definition (unacceptInput removes it), so a row carrying
-       its id that a load, a plan switch or an undo put back IS its landing — "Load AL1" must put
-       the day back to AL1, input and all. Left 'r', the day read "1 input filing" against the
-       very version it had just loaded, and the input's → Ground refused silently because its
-       row was already there ([HUMAN-RETEST] amendment re-test, walk W4-F3, 24 Sep 26). */
-    if(inp.acc==='u')return;
+    /* 'u' (a global filing DECISION with no ground row) and 'r' (dormant) are not
+       per-week ground landings — untouched. */
+    if(inp.acc==='u'||inp.acc==='r')return;
     /* is there a ground row for this input on ANY loaded day? Scanned by content
        key directly (NOT acceptedDay, which early-returns unless acc is already
        'g' and so cannot re-derive) — the same scan reconcileLandedAcc uses. */
@@ -619,7 +622,7 @@ export function reconcileDayFiling(di:any){
        row a replacement RESTORED (a draft round-trip) is re-filed 'g' — the old
        delete-only form left it stranded, phantom-amending on the next navigation. */
     if(landed){ if(inp.acc!=='g'&&isPersonal(inp.type))inp.acc='g'; }
-    else if(inp.acc==='g')delete inp.acc;   /* a dormant 'r' with no row stays parked */
+    else if(inp.acc==='g')delete inp.acc;
   });
 }
 export function unacceptInput(di:any,inp:any){

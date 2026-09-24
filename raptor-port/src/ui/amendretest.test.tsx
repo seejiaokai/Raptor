@@ -35,11 +35,11 @@ import { initStore, notify, writeText } from '../state/store'
 import { commitPublishALDay } from '../state/sched-commit'
 import { setSession } from '../state/auth'
 import {
-  setPage, DPREV, VWORK, setUnpubArm, unpubArmed, setRestArm, restArmed,
+  setPage, DPREV, VWORK, setUnpubArm, unpubArmed, setRestArm, restArmed, setBoardDay,
 } from '../state/view'
 import { dayHTML, dayInfoHTML, viewDayHTML } from './html'
 import { boardSignHTML, switchDraft } from './board'
-import { draftDup, dayDrafts } from '../engine/drafts'
+import { draftDup, dayDrafts, draftSelect, curDraftId } from '../engine/drafts'
 import { setOilBlanket } from './oilmode'
 import { ALPanel } from './ALPanel'
 import { readFileSync } from 'node:fs'
@@ -51,7 +51,8 @@ import { loadVersionToWorkingCopy } from '../engine/drafts'
 import { sbUnavailPanel } from './board-html'
 import { routeClick } from './interactions'
 import { DraftsModal } from './DraftsModal'
-import { setDraftsEdit } from './pops'
+import { setDraftsEdit, setDayPop } from './pops'
+import { DayPop } from './Modals'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -219,6 +220,23 @@ describe('the one-shot confirms clear on any navigation (walk S13)', () => {
     setPage('editsched')
     expect(unpubArmed(SAT)).toBe(true)
   })
+  /* the final code read (Astra #1, 24 Sep 26): a board day change and closing / reopening the board are
+     navigation too — the page-change fix above did not reach them, so a confirm armed on Saturday's board
+     survived a step to Friday and back and ONE tap then withdrew Saturday's OIL */
+  it('a board day change, or closing and reopening the board, drops them too', () => {
+    setPage('editsched')
+    setBoardDay(SAT); setUnpubArm(SAT); setRestArm(SAT, 'x')
+    setBoardDay(SAT)                                // a repaint of the same day is not a navigation
+    expect(unpubArmed(SAT)).toBe(true)
+    setBoardDay(SAT - 1); setBoardDay(SAT)          // step away and back
+    expect(unpubArmed(SAT), 'the step away drops the Unpublish confirm').toBe(false)
+    expect(restArmed(SAT, 'x'), 'and the Load confirm').toBe(false)
+    setUnpubArm(SAT); setRestArm(SAT, 'x')
+    setBoardDay(null); setBoardDay(SAT)             // close the board, reopen it on the same day
+    expect(unpubArmed(SAT)).toBe(false)
+    expect(restArmed(SAT, 'x')).toBe(false)
+    setBoardDay(null)
+  })
 })
 
 /* ===================================================================== batch 2
@@ -274,16 +292,59 @@ describe('taking an issued input off and putting it back is a round trip, not an
     expect(acceptInput(MON, inp, 'g')).toBe(true)          // put back
     expect(dayDelta(MON), 'identical to the issued version again').toEqual([])
   })
+  /* the final code read (Fable #5, 24 Sep 26): it went back at its ISSUED index — which, once an issued row
+     before it had been removed, or under a hand-set order, is not where its neighbours now are, so the day
+     read "1 removal · 1 reorder" for a row that went back where it was */
+  it('with a hand-set order and an earlier row removed, it goes back beside its issued neighbours (AM20)', () => {
+    const inp = meeting()
+    const d: any = DAYS[MON]
+    d.ground = [{ prog: 'A FIRST', str: '07:00', end: '07:30', who: '' }]
+    expect(acceptInput(MON, inp, 'g')).toBe(true)          // [A, the input's row]
+    d.ground.push({ prog: 'C LAST', str: '06:00', end: '06:30', who: '' })   // [A, B, C] — out of time order
+    d.gman = true                                           // the order on screen is the hand-set one
+    ensureRowIds(DAYS)
+    publishDay(MON)
+    d.ground.splice(0, 1)                                   // A removed: a real removal
+    expect(unacceptInput(MON, inp)).toBe(true)              // B taken off…
+    expect(acceptInput(MON, inp, 'g')).toBe(true)          // …and put back
+    const delta = dayDelta(MON)
+    expect(delta.filter((e: any) => e.kind === 'move'), 'no reorder').toEqual([])
+    expect(delta.filter((e: any) => e.kind === 'delete').length, 'the one removal, A').toBe(1)
+  })
 })
 
-describe('loading a version back re-links an input whose row it brings back (W4-F3)', () => {
-  it('the input is on the programme again, and the day matches the loaded version', () => {
+/* the final code read (Fable #2, 24 Sep 26): the W4-F3 re-link first rode on the general filing reconcile, so
+   ANY replacement that brought a removed input's row back filed it as landed — and the next one that dropped the
+   row again made it FRESH: a plan switched away and back turned a deliberate removal into an input that flags and
+   re-lands itself (AM43b). Only a version LOAD re-links now; a plan switch keeps the removal, as it always did. */
+describe('a removal survives a plan switched away and back (Fable final read #2, AM43b)', () => {
+  it('the input taken off Plan B is still removed when Plan B comes back', () => {
+    const inp = meeting()
+    expect(acceptInput(MON, inp, 'g')).toBe(true)          // on the programme
+    draftDup(MON)                                           // Plan A stowed with the row; Plan B live, its copy
+    const [a] = dayDrafts(MON)
+    const b = curDraftId(MON)
+    expect(unacceptInput(MON, inp)).toBe(true)              // taken off Plan B
+    expect(inp.acc).toBe('r')
+    draftSelect(MON, a.id)                                  // over to Plan A, which still carries the row
+    draftSelect(MON, b)                                     // and back
+    expect(inp.acc, 'still removed, not a fresh input that flags').toBe('r')
+  })
+})
+
+/* walk W4-F3 (24 Sep 26). A load puts back the version's CONTENT and leaves the input filings as they are (the
+   design of record — publish.ts dayDiscardCount, P2-REREVIEW-08 — and Fable's door list), so an input taken off
+   and then brought back by a load keeps its "removed" mark while its row is on the programme. What was wrong was
+   the dead control: "→ Ground" on it did nothing and said nothing. Whether a load should also put the input back
+   on is a question for him ([AMEND-LOAD-FILING]); the final read (Fable #2) showed the first attempt to re-file
+   it turned removals into fresh inputs elsewhere. */
+describe('an input brought back by a load (W4-F3)', () => {
+  it('the load puts back content, not the filing — the input stays removed, as designed', () => {
     const inp = meeting()
     acceptInput(MON, inp, 'g'); publishDay(MON)
     unacceptInput(MON, inp)                                 // off the programme: parked 'r'
     expect(loadVersionToWorkingCopy(MON, dayCurVer(MON))).toBe(true)
-    expect(inp.acc, 'its row is back, so it is landed').toBe('g')
-    expect(dayDelta(MON), 'nothing left to publish').toEqual([])
+    expect(inp.acc, 'the filing is not part of what a load replaces').toBe('r')
   })
   it('"→ Ground" on an input already on the programme says so instead of doing nothing', () => {
     const inp = meeting()
@@ -392,5 +453,53 @@ describe('publishing an amendment never freezes a stale mark into the issued rec
     expect((SCHED.als as any[]).length, 'AL1 went out').toBe(1)
     expect(SCHED.changes[k], 'the detail back at its issued value is not "changed at AL1"').toBeUndefined()
     expect((SCHED.als as any[])[0].diff.length, 'one item — the real change').toBe(1)
+  })
+})
+
+/* the final code read (Astra #2, 24 Sep 26). The ⓘ opened beside the view page's ISSUED face summarised the
+   working copy behind it — its waves, aircraft, duties, ground items, crew — so a member saw the shape of work
+   nobody had published. It reads the document the face shows (AM5; working-copy state never on the issued
+   face, AM24). The viewer's own Working-draft peek, and the edit page, are the working copy. */
+describe('the ⓘ beside the issued face describes the issued version (Astra #2, AM5, AM24)', () => {
+  let host: HTMLDivElement, root: Root
+  beforeAll(() => { host = document.createElement('div'); document.body.appendChild(host); root = createRoot(host) })
+  afterAll(() => { act(() => root.unmount()); host.remove(); setDayPop(null) })
+  const groundItems = () => {
+    const r = [...host.querySelectorAll('#dayPopBody .dip-r')].find((x) => x.querySelector('.k')?.textContent === 'Ground items')
+    return r?.querySelector('.v')?.textContent
+  }
+  it('a ground item added after publishing is counted on the working copy only', async () => {
+    publishDay(MON)
+    const issued = ((DAYS[MON] as any).ground || []).filter((g: any) => !g.cx).length
+    ;(DAYS[MON] as any).ground.push({ prog: 'UNPUBLISHED BRIEF', str: '10:00', end: '11:00', who: '' })
+    ensureRowIds(DAYS)
+    setDayPop(MON)
+    try {
+      setPage('viewsched')
+      await act(async () => { root.render(<DayPop />); notify() })
+      expect(groundItems(), 'beside the issued face: the issued version').toBe(String(issued))
+      VWORK.add(MON)
+      await act(async () => { notify() })
+      expect(groundItems(), 'beside the Working-draft peek: the working copy').toBe(String(issued + 1))
+      VWORK.clear()
+      setPage('editsched')
+      await act(async () => { notify() })
+      expect(groundItems(), 'on the edit page: the working copy').toBe(String(issued + 1))
+    } finally { VWORK.clear(); setPage('editsched'); setDayPop(null) }
+  })
+})
+
+/* the final code read (Fable #3, 24 Sep 26). W2-F6 moved the view page's neutral pending hint from a
+   box-shadow (which the red ring's !important hid) to an OUTLINE on the puck — and an outline on the puck
+   out-ranks the sanctioned-late (dashed) and crew-rest (dotted) rings, which are outlines too, so those rings
+   vanished instead. The hint sits on the SEAT around the puck now, on the view page only, where no ring is
+   drawn; the rings stay on the puck. A stylesheet guard, since the test browser paints nothing (AM19, AM51). */
+describe('the view page\'s pending hint never takes a warning ring\'s place (Fable final read #3, AM19)', () => {
+  it('no rule draws it as an outline on the puck; it is the seat\'s', () => {
+    const css = readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'scheduler.css'), 'utf8')
+    const rules = css.replace(/\/\*[\s\S]*?\*\//g, '').split('}')
+    const onPuck = rules.filter((r) => /(^|,)\s*\.seat\[data-alp\]\s+\.puck\s*(,|\{)/.test(r) && /outline\s*:/.test(r))
+    expect(onPuck, 'an outline on the puck hides the dashed and dotted rings').toEqual([])
+    expect(rules.some((r) => /#vWeek\s+\.seat\[data-alp\]\s*\{[^]*outline\s*:/.test(r)), 'the seat carries it on the view page').toBe(true)
   })
 })

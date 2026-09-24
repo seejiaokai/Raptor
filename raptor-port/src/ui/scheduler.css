@@ -1658,13 +1658,14 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
    working. board.ts now emits the attribute on .sb-rcell too; this is its
    other half. */
 .seat[data-alp]{position:relative}
-/* an OUTLINE, not a box-shadow ([HUMAN-RETEST] walk W2-F6, 24 Sep 26): every warning ring
-   (.puck.boxred / .boxdash, the "you" ring) is a box-shadow with !important, so a
-   shadow-drawn hint vanished on exactly the pucks a viewer most needs to read — a pending
-   change on a man who is also flagged. The edit surfaces' AL-coloured mark below was
-   already an outline and so already coexisted with the ring; this is its neutral twin
-   (register AM19: "the view-only page keeps the neutral DASHED hint"). */
-.seat[data-alp] .puck{outline:1.5px dashed rgba(242,214,153,.75);outline-offset:1px}
+/* the view page's neutral pending hint sits on the SEAT, around the puck ([HUMAN-RETEST] the
+   amendment re-test, 24 Sep 26; register AM19 "the view-only page keeps the neutral DASHED hint").
+   Drawn on the puck it always lost to a warning ring: as a box-shadow it vanished under the red
+   ring's !important shadow (walk W2-F6), and as an outline it then out-ranked the sanctioned-late
+   (dashed) and crew-rest (dotted) rings, which are outlines too, and hid THEM (the final read,
+   Fable #3). On the seat, no ring competes. The view page only: the edit surfaces draw their own
+   AL-coloured mark on the puck (below). */
+#vWeek .seat[data-alp]{outline:1.5px dashed rgba(242,214,153,.75);outline-offset:1px;border-radius:4px}
 .areacell[data-alp],.timecell[data-alp],.rmkcell[data-alp],.intimes[data-alp],.sb-rcell[data-alp]{
   outline:1px dashed rgba(242,214,153,.6);outline-offset:-1px;border-radius:4px}
 /* ---- the AL preview (data-aln): pending edits on a PUBLISHED day, painted in

@@ -291,6 +291,11 @@ export function setBoardDay(n:any){
      button, its glowing pucks and its blanket are all that day's), and carrying
      it across would make the next day read-only with no button pressed. */
   if(n!==SBDAY)OILDAY=null;
+  /* …and it drops an armed one-shot confirm ("Withdraw — confirm", "Discard N edits & load — confirm")
+     like every other navigation: the page-change fix did not reach a board day step or a close and
+     reopen, so a confirm armed on Saturday's board survived a step to Friday and back, and ONE tap then
+     withdrew Saturday's OIL (the amendment re-test's final read, Astra #1, 24 Sep 26) */
+  if(n!==SBDAY){ RESTARM=null; UNPUBARM=null }
   SBDAY=n;
 }
 /* The board's full close, shared by setPage (below) and ui/board.ts's

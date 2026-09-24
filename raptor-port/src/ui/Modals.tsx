@@ -13,32 +13,42 @@ import { markEdit } from '../engine/publish'
 import { esc, afterSchedMutate, dayDisplaysOfficial } from '../state/view'
 import { SESSION } from '../state/auth'
 import { notify } from '../state/store'
-import { dayInfoHTML } from './html'
+import { dayInfoHTML, issuedFaceVer, withChipWorld } from './html'
 import { DAYPOP, setDayPop, INSIGHTS, setInsights, AIRKEY, setAirKey } from './pops'
 import { useVersion } from './useStore'
 
 export function DayPop() {
   useVersion()
   if (DAYPOP == null) return <div className="airpop" id="dayPop" hidden />
-  const d = DAYS[DAYPOP]
+  const di = DAYPOP
   validate()
-  const wc = dayCount(d)
+  /* the panel reads the document the day's face SHOWS (the amendment re-test's final read, Astra #2,
+     24 Sep 26). Beside the view page's issued face that is the issued version — its title count and its
+     "What this day is tasking" were read from the working copy behind it, so a member saw the shape of
+     work nobody had published (AM5, AM24). withChipWorld replays the face exactly as dayIssuedHTML draws
+     it: the issued snapshot, with its official flags. Every other face is the live day, as before. */
+  const draw = () => {
+    const d = DAYS[di], wc = dayCount(d)
+    /* resolve the day's warnings in the SAME world the week/view renders them
+       (Codex CRP-I2-002): a view-page day that shows OFFICIAL flags — a published
+       day, or a draft day carrying a published-neighbour breach — must not have its
+       details panel report "clean" off the working copy. Aliased = a no-op. */
+    return { title: `${d.dow} · ${d.dt}` + (wc ? ` · ${wc}` : ''), body: dayInfoHTML(di) }
+  }
+  const face = issuedFaceVer(di)
+  const { title, body } = face != null ? withChipWorld(di, face, true, () => draw())
+    : dayDisplaysOfficial(di) ? withOfficialWarn(draw) : draw()
   const close = () => { setDayPop(null); notify() }
   return (
     <div className="airpop" id="dayPop" onClick={e => { if ((e.target as HTMLElement).id === 'dayPop') close() }}>
       <div className="airpop-box" style={{ width: 520 }}>
-        <div className="airpop-head"><b id="dayPopTitle">{`${d.dow} · ${d.dt}` + (wc ? ` · ${wc}` : '')}</b><button className="x" id="dayPopClose" onClick={close}>✕</button></div>
+        <div className="airpop-head"><b id="dayPopTitle">{title}</b><button className="x" id="dayPopClose" onClick={close}>✕</button></div>
         {/* scroll the list INSIDE its own height (owner, 26 Aug 26 — the Close
             button was landing in the middle of a long issues list). maxHeight
             without overflow lets the content paint straight through the footer;
             overflow:auto keeps the list scrolling and the footer pinned below. */}
-        {/* resolve the day's warnings in the SAME world the week/view renders them
-            (Codex CRP-I2-002): a view-page day that shows OFFICIAL flags — a published
-            day, or a draft day carrying a published-neighbour breach — must not have its
-            details panel report "clean" off the working copy. Content still reads live
-            DAYS (a draft shows its working content, unchanged). Aliased = a no-op. */}
         <div className="airpop-body" id="dayPopBody" style={{ maxHeight: '62vh', overflow: 'auto', overscrollBehavior: 'contain' }}
-          dangerouslySetInnerHTML={{ __html: dayDisplaysOfficial(DAYPOP) ? withOfficialWarn(() => dayInfoHTML(DAYPOP)) : dayInfoHTML(DAYPOP) }} />
+          dangerouslySetInnerHTML={{ __html: body }} />
         <div className="airpop-foot"><span style={{ flex: 1 }}></span><button className="abtn primary" id="dayPopDone" onClick={close}>Close</button></div>
       </div>
     </div>

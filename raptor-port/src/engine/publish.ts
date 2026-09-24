@@ -9,6 +9,7 @@ import { canonicalDiff, digest } from './canonical'
 import type { DeltaEntry } from './canonical'
 import { INPUTS, inpId, inputCoversDate } from './inputs'
 import { CURWEEK } from './waves'
+import { groundOrder } from './order'
 import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './verid'
 import { isPreservedWeek } from './weekstash'
 import { oilEvidence, oilEvidenceKey, oilSignKey, oilKeyNoMem, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney } from './oilev'
@@ -853,7 +854,15 @@ export function currentBind(di:any){di=+di; const d=DAYS[di];
      availability never invalidates a signature — the pending mark is how that
      change is acknowledged — so membership is left out of what a signature binds
      to. Everything else about the block still binds. */
-  return {dg:d?digest(d,di):'', iso:dayIso(CURWEEK,di), base:dayCurVer(di)||'', rev:(SCHED.curDraft||{})[di]||'', fil:filingKey(di), oil:oilSignKey(oilEvidence(di),d)};}
+  /* …and the order the GROUND PROGRAMME is shown in (the amendment re-test's final read, Fable #1,
+     24 Sep 26). The digest keys ground rows by their raw place in the array, but the amendment compares the
+     order on screen — and a first drag freezes the shown order into the array before it moves, so a drag
+     could leave the array exactly as it was: "1 reorder" pending, the four still green, and "Publish AL"
+     issuing the reorder on signatures given for the old order (AM10, AM11). */
+  /* recorded as the shown order of the array's positions: the digest already binds each position's
+     content, so the pair fixes what is shown — and it does not move when row ids are minted before a publish */
+  const gord=d?groundOrder(d.ground,d.gman).map((x:any)=>x.ri).join(','):'';
+  return {dg:d?digest(d,di):'', iso:dayIso(CURWEEK,di), base:dayCurVer(di)||'', rev:(SCHED.curDraft||{})[di]||'', fil:filingKey(di), oil:oilSignKey(oilEvidence(di),d), gord};}
 /* set a role's signer through the ONE sanctioned write path (ui/Shell.tsx). A
    truthy signer binds that role to the current content; clearing a role drops its
    binding. Tests / a legacy demo book that write signOf(di)[role] directly leave
@@ -875,7 +884,9 @@ function signBoundOk(di:any,role:any,cur?:any){const b=(SCHED.signBind||{})[+di]
      carries no oil field, and on a day that earns nothing there is nothing it
      could have failed to promise. A day that DOES carry evidence still
      invalidates, because '' and a real block differ. */
-  return x.dg===c.dg&&x.iso===c.iso&&x.base===c.base&&x.rev===c.rev&&x.fil===c.fil&&oilBoundOk(di,x.oil,c.oil);}
+  /* the ground order axis, like the filing axis: a binding written before it existed (no gord) cannot prove
+     the order was approved, so it re-signs — on a day with ground rows; with none there is no order to prove */
+  return x.dg===c.dg&&x.iso===c.iso&&x.base===c.base&&x.rev===c.rev&&x.fil===c.fil&&(x.gord||'')===(c.gord||'')&&oilBoundOk(di,x.oil,c.oil);}
 /* A BINDING WRITTEN BEFORE `stand` EXISTED stores the OIL key in the old
    six-part form, which can never equal today's seven-part one — so every
    signature given before this build fell off a day whose content had not moved,

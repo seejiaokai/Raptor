@@ -113,6 +113,13 @@ export function withChipWorld<T>(di:any,ver:any,ofw:any,fn:(ok:boolean)=>T):T{
   try{ return withDaySnap(di,ver,(ok:any)=>ok?withOfficialWarn(()=>fn(true)):fn(false)) }
   finally{ PVQ=q; OFW=o }
 }
+/* the version a day's face shows on View-only Sched when it is a published day's ISSUED face (viewDayHTML's
+   first branch → dayIssuedHTML: the current issued version) — else null. A reader of that face (the ⓘ panel)
+   replays it with withChipWorld(di, ver, true, …) and so reads the same document with the same official
+   flags, never the working copy behind it (the amendment re-test's final read, Astra #2, 24 Sep 26: the ⓘ
+   there totalled the working copy's waves, aircraft, duties and crew, to members too — AM5, AM24). */
+export function issuedFaceVer(di:any){di=+di;
+  return (CURPAGE==='viewsched'&&dayApproved(di)&&!VWORK.has(di)&&!protectedWeek())?dayCurVer(di):null}
 export function dayPreviewHTML(di:any,ver:any,edFallback:any){
   return withDaySnap(di,ver,(ok:any)=>ok?dayHTML(di,false,true):dayHTML(di,edFallback,true))
 }
