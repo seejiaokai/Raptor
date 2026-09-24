@@ -68,7 +68,7 @@ Scheduler & amendments and OIL each load BY THEMSELVES when a file in that area 
 (which file holds which D-number); replaced rulings and spent one-off permissions are in `DECISIONS-ARCHIVE.md`.
 A new ruling: a row at the top of its area's table, mark any row it replaces, then
 `node raptor-port/scripts/backlog-archive.mjs --rulings` (moves marked rows, rewrites the map). `docsize` fails —
-in CI and at the end of every turn — until the map matches. Next number: D138 (D90–D119 are the amendment chat's).
+in CI and at the end of every turn — until the map matches. The next number: `DECISIONS.md` §Parallel branches.
 
 ## The checks run on HIS PC
 

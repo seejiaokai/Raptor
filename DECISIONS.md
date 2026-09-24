@@ -30,8 +30,8 @@ it: `.claude/rules/record-decisions.md`; closing reports carry a `Rulings:` line
 "merge live", ONE AT A TIME; whichever merges later merges `main` in first, and if a D-number
 clashes, the later branch renumbers ITS OWN rows — never the ones already on `main`. So numbers
 may SKIP (a parallel branch can hold a range); a number is never reused and never lost. The next
-number follows `main`'s own run (D137 → D138), skipping any range a parallel chat holds (D90–D119 is the
-amendment chat's; the D150s were the Leave War and Tracker chats' and are spent).
+number is one above the highest of `main`'s own run below D150 (the map shows it), skipping any range a
+parallel chat holds (D90–D119 is the amendment chat's; D150–D156 are used).
 
 **What counts.** A ruling ("do it this way from now on"), a product decision ("green only where it
 counted"), a correction to how I work, a preference, a "leave it", a supersession of an earlier
@@ -44,7 +44,7 @@ ruling, or an explicit no. **Not** ordinary task instructions ("run the tests", 
 
 | Area | File | Loads by itself | Rulings, newest first |
 |---|---|---|---|
-| How we work | `.claude/rules/decisions/how-we-work.md` | in EVERY session | D137, D136, D135, D151, D89, D87, D86, D85, D84, D78, D73, D72, D70, D69, D68, D67, D63, D62, D60, D59, D58, D57, D56, D54, D53, D30, D29, D23, D22, D17, D16, D14, D13, D12, D11, D10, D9, D8, D7, D6, D5, D4 |
+| How we work | `.claude/rules/decisions/how-we-work.md` | in EVERY session | D138, D137, D136, D135, D151, D89, D87, D86, D85, D84, D78, D73, D72, D70, D69, D68, D67, D63, D62, D60, D59, D58, D57, D56, D54, D53, D30, D29, D23, D22, D17, D16, D14, D13, D12, D11, D10, D9, D8, D7, D6, D5, D4 |
 | Tracker | `.claude/rules/decisions/tracker.md` | when a Tracker file is read (its code, docs, scripts, evidence) | D134, D132, D131, D130, D129, D128, D127, D126, D124, D123, D122, D121, D120, D64 |
 | Leave War | `.claude/rules/decisions/leave-war.md` | when a Leave War file is read (its code, docs, e2e, evidence) | — |
 | Scheduler & amendments | `.claude/rules/decisions/scheduler.md` | when a scheduler, board, engine, amendment or storage file is read | D77, D66, D65, D51, D50, D47, D45, D44, D41, D40, D39, D38, D37, D36, D33, D27 |
