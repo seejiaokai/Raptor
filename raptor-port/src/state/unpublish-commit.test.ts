@@ -6,8 +6,9 @@ import { beforeEach, afterEach, describe, expect, it } from 'vitest'
 import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
 import {
-  SCHED, signOf, dayApproved, dayHasChanges, dayVersions, daySnapOf, dayCurVer, nextSeq,
+  SCHED, signOf, dayApproved, dayHasChanges, dayVersions, daySnapOf, dayCurVer, nextSeq, dayDelta, setSign, daySigned,
 } from '../engine/publish'
+import { draftDup, draftSelect, dayDrafts } from '../engine/drafts'
 import { txtSet } from '../engine/slots'
 import { CURWEEK } from '../engine/waves'
 import { initStore } from './store'
@@ -43,7 +44,7 @@ beforeEach(() => {
 afterEach(() => { unsub() })
 
 describe('unpublish an Original → a plain draft, the Original retired', () => {
-  it('drops dayOK, retires the Original as its own snapshot, declares an unpublish boundary', () => {
+  it('drops dayOK, retires the Original as its own snapshot, declares an unpublish boundary (AM4, AM32)', () => {
     sign(0); commitSetDayApproved(0, true)
     const origId = (SCHED.orig as any)[0].id
     caught = []
@@ -66,7 +67,7 @@ describe('unpublish an Original → a plain draft, the Original retired', () => 
 })
 
 describe('unpublish an AL → the working copy re-opens, Original stays current', () => {
-  it('retracts AL1, re-opens its marks as pending, cur falls back to the Original', () => {
+  it('retracts AL1, re-opens its marks as pending, cur falls back to the Original (AM37c)', () => {
     sign(0); commitSetDayApproved(0, true)
     const origId = (SCHED.orig as any)[0].id
     txtSet('dn:0.0', 'AMENDED NOTE'); sign(0); commitPublishALDay(0)
@@ -86,6 +87,46 @@ describe('unpublish an AL → the working copy re-opens, Original stays current'
   })
 })
 
+/* [HUMAN-RETEST] the amendment system, walk S1 (Fable 5-3, 24 Sep 26). AM20: a pending mark
+   means "differs from what was issued", not "was touched". Unpublishing AL1 makes the version
+   UNDER it current again, so a change already put back to that version's value must not come
+   back as a dotted mark — the head, the sign line and the panel (all the canonical delta) would
+   say one thing while the cell said another. */
+describe('unpublish re-opens only what still differs from the version under it (walk S1)', () => {
+  it('a change put back to the older value leaves no phantom pending mark (AM20)', () => {
+    sign(0); commitSetDayApproved(0, true)                  // Original: VL takes off 12:40
+    const was = (DAYS[0] as any).waves[0].formations[0].to
+    txtSet('ff:0.0.0.to', '13:10'); txtSet('dn:0.0', 'AL1 NOTE')
+    sign(0); commitPublishALDay(0)                          // AL1 carries both
+    txtSet('ff:0.0.0.to', was)                              // the time put back to the Original's
+    commitUnpublish(0)                                      // AL1 off → the Original is current
+    const pend = Object.keys(SCHED.pending)
+    expect(pend.some(k => k.startsWith('dn:0.')), 'the note still differs from the Original').toBe(true)
+    expect(pend.some(k => /^ff:0\..*\.to$/.test(k)), 'the time equals the Original — no mark').toBe(false)
+    expect(dayDelta(0).length).toBe(1)
+  })
+})
+
+/* [HUMAN-RETEST] walk W2 (Fable 5-11 / W2-Q1, 24 Sep 26). AM34 (owner, 18 Sep 26): unpublish
+   "clears that day's sign-offs (re-sign on republish)". Each plan carries its own sign-offs
+   (AM12), and a PARKED plan's were never spent, so after an unpublish they came back green the
+   moment the day was back at the version they were signed against — and with a change of their
+   own they unlocked "Publish AL1" on signatures given before the withdrawn AL existed. The newer,
+   specific rule (AM34) wins over the general revert rule (AM11): every plan of the day re-signs. */
+describe('unpublish clears the sign-offs of EVERY plan of the day, parked ones too (AM34)', () => {
+  const bind = (di: number) => { setSign(di, 'cur', 'ignite'); setSign(di, 'sked', 'bane'); setSign(di, 'plan', 'stiff'); setSign(di, 'appr', 'pump') }
+  it('a parked plan signed before the withdrawn AL comes back unsigned', () => {
+    bind(0); commitSetDayApproved(0, true)                 // the Original goes out (signatures spent)
+    txtSet('dn:0.0', 'PLAN A OWN CHANGE'); bind(0)          // the live day (it will be Plan A) carries a change, signed
+    draftDup(0)                                             // Plan A stowed WITH those signatures; Plan B live
+    const [a] = dayDrafts(0)
+    txtSet('dn:0.1', 'PLAN B CHANGE'); bind(0); commitPublishALDay(0)   // Plan B goes out as AL1
+    commitUnpublish(0)                                      // AL1 withdrawn: the Original is current again
+    draftSelect(0, a.id)                                    // bring the parked Plan A out
+    expect(daySigned(0), 'its pre-AL1 signatures must not unlock a republish').toBe(false)
+  })
+})
+
 describe('only the LATEST version is unpublishable', () => {
   it('peels AL1 first, then the Original', () => {
     sign(0); commitSetDayApproved(0, true)
@@ -101,7 +142,7 @@ describe('only the LATEST version is unpublishable', () => {
 })
 
 describe('same-label reissue + the correcting flag (§6.1 GU5-001)', () => {
-  it('reissues AL1 under the SAME label even when the correction nets to no delta', () => {
+  it('reissues AL1 under the SAME label even when the correction nets to no delta (AM33)', () => {
     txtSet('dn:0.0', 'NOTE-A'); sign(0); commitSetDayApproved(0, true)   // Original froze NOTE-A
     txtSet('dn:0.0', 'NOTE-B'); sign(0); commitPublishALDay(0)           // AL1: NOTE-B
     const al1 = (SCHED.als as any[])[0].id
@@ -115,7 +156,7 @@ describe('same-label reissue + the correcting flag (§6.1 GU5-001)', () => {
     expect(reAls[0].id).toBe(al1)            // SAME label
     expect((SCHED.correcting as any)[0]).toBeUndefined()   // flag cleared on reissue
   })
-  it('nextSeq frees the retracted seq so a reissue reuses the label', () => {
+  it('nextSeq frees the retracted seq so a reissue reuses the label (AM37b)', () => {
     sign(0); commitSetDayApproved(0, true)
     txtSet('dn:0.0', 'X'); sign(0); commitPublishALDay(0)
     expect(nextSeq(0)).toBe(2)               // AL1 issued → next is 2
@@ -134,7 +175,7 @@ describe('readers never pick a retired record', () => {
   })
 })
 
-describe('dissemination governs the logged flag (§6.6)', () => {
+describe('dissemination governs the logged flag (§6.6) (AM35)', () => {
   it('an undisseminated retract is logged:false (silent)', () => {
     sign(0); commitSetDayApproved(0, true)
     const origId = (SCHED.orig as any)[0].id

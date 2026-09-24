@@ -44,6 +44,10 @@ export interface UndoEntry {
   eligible: boolean         // false until the entry's module(s) are cut over (§7)
   undone: boolean
   undoneAt?: number         // monotonic stamp for the redo LIFO pick (R3-06)
+  /* an undone entry a later NEW change forked away from (§4.3: "any newer entry committed after
+     E's undo shares a key" — permanently, not only while that newer entry stands). It is never
+     redone and never blocks a redo (walk W3 F-w3-2, 24 Sep 26). Still `undone` for every other reader. */
+  abandoned?: boolean
 }
 
 export type { Actor, Boundary, Change, Scope, Module }

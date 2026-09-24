@@ -20,10 +20,14 @@
 
    Run: node probes/adapted/audit-async.cjs   (needs vite preview on 4173) */
 const { chromium } = require('playwright')
+/* the container's browser when it is there, Playwright's own otherwise (the repo's fallback — perf-port.cjs,
+   playwright.config.ts): hard-wired to the container path, these probes could not run on the Windows desktop
+   at all, which is how audit-async's stale step 3 went unnoticed (amendment re-test, 24 Sep 26) */
+const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
 const URL = process.env.PORT_URL || 'http://localhost:4173/'
 
 ;(async () => {
-  const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' })
+  const b = await chromium.launch(require('fs').existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
   const ctx = await b.newContext({ viewport: { width: 1600, height: 1000 } })
   const p = await ctx.newPage(); p.setDefaultTimeout(15000)
   /* a page exception is a defect and fails the run; console noise is printed
@@ -122,7 +126,7 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
         out.i3type = inp.type
         out.i3 = (chipOf(0, inp.person) || 'none') + '/' + (sevOf(0, inp.person) || 'none')
         acceptInput(0, inp, 'g'); afterSchedMutate()
-        out.i3seen = (d.ground || []).some(g => g.src === inpKey(inp)) ? 'on the programme' : 'nowhere'
+        out.i3seen = (d.ground || []).some(g => g.src === inp.iid) ? 'on the programme' : 'nowhere'   // the row is filed under the input's id since 13 Sep 26 (ARCH-STACK 1A), no longer its content key
         unacceptInput(0, inp); delete inp.acc; ff.aircraft[0].p = ''; afterSchedMutate()
       }
     }

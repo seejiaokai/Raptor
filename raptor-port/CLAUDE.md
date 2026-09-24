@@ -34,7 +34,9 @@ followed and which you set aside. A rule with no date loses to a dated one.
 If the newer ruling doesn't clearly cover the case, ask rather than pick.
 This exists because a superseded rule that still read as live got a fix merged
 without him on 9 Sep 26 — when you notice that shape, fix the stale text in the
-same PR instead of just working around it.
+same PR instead of just working around it. **Re-confirmed 24 Sep 26 (D90, now a row
+in `../.claude/rules/decisions/how-we-work.md`, loaded in every session):** *"i think
+latest rule is the most correct?"* — said while starting the amendment re-test.
 
 **Reach 95% confidence before building.** If the request could reasonably
 mean two different things, or a choice would materially change the result,

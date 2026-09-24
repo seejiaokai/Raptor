@@ -139,7 +139,7 @@ describe('undo of a real publish, driven by the timeline, retracts the day', () 
     expect(daySigned(0)).toBe(false)
   })
 
-  it('a LOGGED (disclosed) retired audit line survives an undo of the unpublish (Codex GU-P2-001)', () => {
+  it('a LOGGED (disclosed) retired audit line survives an undo of the unpublish (Codex GU-P2-001) (AM35)', () => {
     sign(0); commitSetDayApproved(0, true)
     const id = (SCHED.orig as any)[0].id
     commitUnpublish(0)                                   // retract → retired entry appended

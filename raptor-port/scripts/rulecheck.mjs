@@ -100,6 +100,78 @@ const RULES = {
   OIL27: 'an OIL-only edit is publishable, as ONE amendment item',
   OIL28: 'an allow counts real work; it never invents it',
   OIL29: 'derived on the live copy, frozen only on the issued one',
+  /* THE AMENDMENT SYSTEM — docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md
+     ([HUMAN-RETEST], 24 Sep 26). Its LIVE and PARTLY BUILT lines; AM38 (D148, not built),
+     AM43 ([PUB-UNAVAIL], not built) and AM52 (EOD, deferred) are left out until they exist. */
+  AM1: 'each day publishes and numbers on its own track — never the week',
+  AM2: 'a day is a stack of frozen issued versions under one working copy',
+  AM3: 'every issued version has its own identity tied to its date and year',
+  AM4: 'an issued version is never edited in place and never erased',
+  AM5: 'viewers see the issued version; the working copy is labelled when they look',
+  AM6: 'an older version comes back only by loading it and publishing the NEXT amendment',
+  AM7: 'no publish-all-days, no two-person approval, no rule versioning',
+  AM8: 'first publish is "Publish day": the Original carries no amendment marks',
+  AM9: 'after that, "Publish AL<n>" for that day only, only when it really differs',
+  AM10: 'all four sign every publish, bound to the content they signed',
+  AM11: 'a content change wipes the sign-offs; putting it back restores them',
+  AM12: 'each plan carries its own sign-offs',
+  AM13: 'a change in who was available never invalidates a signature (D45)',
+  AM14: 'a filing-only change must be signed for too (PSF-001)',
+  AM15: 'the sign-off line says what publishing will do; no button with nothing to publish',
+  AM15b: '"All signed — no changes to publish right now"',
+  AM16: 'only appointed schedulers sign three roles; a signed name stays offered',
+  AM17: 'only the scheduler publishes, signs, unpublishes, loads or switches plans',
+  AM18: 'amendment marks are a published-day thing — a draft day shows none',
+  AM19: 'pending dotted in the coming AL colour, issued solid; the view page a neutral hint',
+  AM20: 'a pending mark means "differs from what was issued", not "was touched"',
+  AM21: 'a removal and a reorder on a published day are real amendment items',
+  AM21b: 'wave drag / MAIN-SPARE flip / accepted input ride an AL; section drag does not',
+  AM22: 'the version tag: ORIG grey, ALn coloured by number, DRAFT dashed, left of the count',
+  AM23: 'every count of a day\'s unpublished changes agrees with the day head',
+  AM24: '"Not yet signed" on every working copy of a changed published day, never the issued face',
+  AM25: 'the Amendments panel: per-day publish with the kinds, the issued list with approvers',
+  AM26: 'a day holds alternative plans before AND after it is published',
+  AM27: 'bringing out a saved plan is plain editing — no review screen',
+  AM28: 'the plans selector (locked design)',
+  AM29: 'plans lettered and renamable; deleting down to one clears them',
+  AM30: 'a stored plan being looked at never wears the issued clothes',
+  AM31: 'the view page: look at plans on a draft day; issued or working once published',
+  AM32: 'undo of a published day = Unpublish, a standing button',
+  AM33: 'unpublish = correct quietly, reissue the SAME label',
+  AM34: 'unpublish: scheduler only, clears the sign-offs, latest version only',
+  AM35: 'the label is reused, nothing is erased; silent until a database saw it',
+  AM36: 'the only boundary is the shared database — never an export or a logout',
+  AM37: 'unpublishing a day whose OIL is already spent warns first',
+  AM37b: 'correcting an issued day costs no amendment number',
+  AM37c: 'unpublishing an AL re-opens its changes; the Original makes a plain draft',
+  AM39: 'publishing is its own undo step; an undo there runs Unpublish',
+  AM39b: 'one undo that takes you there; a bubble says what it did; a clash is refused',
+  AM39c: 'undo cannot reach behind a later publish of that day',
+  AM39d: 'roster and settings edits are undoable and never amendments',
+  AM40: 'nothing on a published schedule changes without the scheduler acknowledging it',
+  AM41: 'a request filed live on a published day lands on the working copy as pending',
+  AM42: 'who stood behind ALL / ALL AVAIL is frozen at publication (D44)',
+  AM43b: 'an input not yet landed still counts for its warnings',
+  AM44: 'an issued day keeps what it went out with when a rule changes under it (D48)',
+  AM45: 'an issued weekend with a placeholder may read pending — leave it (D54)',
+  AM46: 'a day\'s OIL comes from its latest published version (D142)',
+  AM47: 'only the issued schedule earns, both directions (D2)',
+  AM48: 'each day\'s OIL from that day alone; an unreadable week keeps its credits',
+  AM48a: 'who earned is decided at publication and frozen',
+  AM48b: 'ALL OIL waits for publication',
+  AM48c: 'publishing a weekend keeps a clashing undecided bid and flags the day',
+  AM48d: 'a weekend that earns nobody, or has no Leave War period, says so',
+  AM49: 'History: who changed what, when, from what — this session only',
+  AM49b: 'the board\'s sign-off reads like the week\'s; on a phone sign-off, checks, panels',
+  AM49c: '"Clear old clutter" deletes no saved week',
+  AM50: 'export is the scheduler\'s snapshot of the PUBLISHED schedule',
+  AM51: 'a published day shows its warnings again',
+  AM51b: 'the view page shows the warnings of the face it shows',
+  AM51c: 'a published day shows everything a draft shows; an old version or plan preview none',
+  AM51d: 'a draft day breaking a published neighbour flags on both views',
+  AM51e: 'the issued face is the same for admin and member; the working peek is open to all',
+  AM51f: 'divergence is anchored on the calendar date, no clock, no EOD coupling',
+  AM51g: 'no tally on the publish button, no publish-or-discard reminder',
 }
 
 /* Rules with no test naming them on 20 Sep 26. The check fails if this set
@@ -108,7 +180,11 @@ const RULES = {
    tests exercise by version rather than by name) are the two OIL rulings no test
    names yet — both are wording/version facts checked by eye in the live-view
    pass, and they are listed here so they stay visible rather than silent. */
-const BASELINE = new Set(['Q9', 'Q11', 'Q12', 'Q14', 'Q15', 'OIL19', 'OIL26'])
+/* The AMENDMENT rules below had no test that pins them WHOLE on 24 Sep 26 (the re-test's mapping, in the
+   register's §Coverage): most are pinned in PART, AM7 and AM44 by nothing. Named-by-nothing is the honest
+   state, so they are baselined here to stay visible; shrink the list as each gains a whole-rule test. */
+const BASELINE = new Set(['Q9', 'Q11', 'Q12', 'Q14', 'Q15', 'OIL19', 'OIL26',
+  'AM7', 'AM8', 'AM15', 'AM17', 'AM25', 'AM26', 'AM27', 'AM30', 'AM36', 'AM37', 'AM39', 'AM39d', 'AM44', 'AM45', 'AM48', 'AM48a', 'AM49', 'AM49b', 'AM50', 'AM51', 'AM51b', 'AM51c', 'AM51d', 'AM51e', 'AM51f', 'AM51g'])
 
 const TEST_DIRS = [join(ROOT, 'src'), join(ROOT, 'e2e')]
 const isTest = (f) => /\.(test|spec)\.(ts|tsx)$/.test(f)

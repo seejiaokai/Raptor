@@ -556,7 +556,7 @@ describe('text edits carry amendment marks (area/atime commit + AL colouring)', 
     await act(async () => { afterSchedMutate(); notify() })
   })
 
-  it('an edited remark on a draft day carries no mark, then its AL colour once issued', async () => {
+  it('an edited remark on a draft day carries no mark, then its AL colour once issued (AM18)', async () => {
     const { SCHED } = await import('../engine/publish')
     const { txtGet, txtSet } = await import('../engine/slots')
     await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)

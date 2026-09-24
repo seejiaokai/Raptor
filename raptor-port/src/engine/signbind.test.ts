@@ -15,8 +15,10 @@ import { PEOPLE } from './people'
 import { INPUTS } from './inputs'
 import {
   SCHED, signOf, signMissing, daySigned, setSign, signBindOf,
-  setDayApproved, dayApproved, dayCurVer,
+  setDayApproved, dayApproved, dayCurVer, dayDelta,
 } from './publish'
+import { moveGroundRow } from './reorder'
+import { ensureRowIds } from './rowids'
 import { digest } from './canonical'
 import { dayIso, verId } from './verid'
 import { CURWEEK } from './waves'
@@ -72,7 +74,7 @@ describe('a signature binds to the content it signed (AM-06)', () => {
     expect(daySigned(0)).toBe(true)              // the still-matching signature stands
   })
 
-  it('publishing is refused while a signature is stale', () => {
+  it('publishing is refused while a signature is stale (AM10)', () => {
     signAll(0)
     editContent(0)
     setDayApproved(0, true)
@@ -134,7 +136,7 @@ describe('legacy / unbound signatures stay backward-compatible', () => {
 
 
 describe('a signature binds to the FILING axis too (owner, 15 Sep 26 - Codex PSF-001)', () => {
-  it('a filing change on a signed day invalidates it; reverting the filing restores it', () => {
+  it('a filing change on a signed day invalidates it; reverting the filing restores it (AM14)', () => {
     /* an input that covers day 0's date; acc '' is excluded from filingKey (empty ==
        absent), so signing captures the day WITHOUT it, and flipping acc to a real
        filing state is a genuine filing change dayDelta would count. */
@@ -151,5 +153,25 @@ describe('a signature binds to the FILING axis too (owner, 15 Sep 26 - Codex PSF
     } finally {
       const i = INPUTS.indexOf(covering); if (i >= 0) INPUTS.splice(i, 1)
     }
+  })
+})
+
+/* the amendment re-test's final read (Fable #1, 24 Sep 26). A manual reorder of the ground programme is an
+   amendment the day counts ("1 reorder"), but the digest keys ground rows by their RAW position, and the first
+   drag on a day freezes the displayed order into the array before moving — so a drag can leave the raw array
+   exactly as it was while the order on screen changed. The four sign-offs then stayed valid and "Publish AL"
+   issued the reorder on signatures given for the old order (AM10: bound to the content they signed; AM11). */
+describe('a ground-programme reorder invalidates the sign-offs (AM10, AM11)', () => {
+  it('dragging one row above another on a published day blanks the four', () => {
+    const d: any = DAYS[0]
+    d.ground = [{ prog: 'B LATER', str: '09:00', end: '10:00', who: '' }, { prog: 'A EARLIER', str: '08:00', end: '09:00', who: '' }]
+    delete d.gman                                          // shown by time: A, then B — kept in the array as B, A
+    ensureRowIds(DAYS)
+    signAll(0); setDayApproved(0, true)                    // published
+    signAll(0)                                             // signed for the next amendment
+    expect(daySigned(0)).toBe(true)
+    expect(moveGroundRow(0, 0, 1)).toBeTruthy()            // drag B above A: the array ends as it began, the screen does not
+    expect(dayDelta(0).some((e: any) => e.kind === 'move'), 'the day counts the reorder').toBe(true)
+    expect(daySigned(0), 'so it must be signed for again').toBe(false)
   })
 })

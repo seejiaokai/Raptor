@@ -246,7 +246,7 @@ describe('the green edge on the issued schedule (§2.10, §7.6)', () => {
 })
 
 describe('the publish reminder (§2.3)', () => {
-  it('OIL11, OIL33 — an unpublished weekend day with somebody down to earn says so', async () => {
+  it('OIL11, OIL33 — an unpublished weekend day with somebody down to earn says so (AM48b)', async () => {
     addRow(SAT, { prog: 'ALL DAY', str: '0800', end: '1700', who: 'bane' })
     /* the strip is DERIVED state: in the app every edit ends in
        afterSchedMutate, which re-validates. The fixture writes DAYS directly,

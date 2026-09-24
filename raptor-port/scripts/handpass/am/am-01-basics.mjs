@@ -1,0 +1,38 @@
+/* Survey walk: Monday through sign → Publish day → edit → Publish AL1 → Unpublish, on the edit week.
+   Checks the helpers and gives the roll-call its first real look. */
+process.env.HP_SHOTS ||= 'C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-09-24-amendment/survey'
+const L = await import('./am-lib.mjs')
+const { open, editWeek, signDay, publishDay, publishAL, unpublish, head, book, marks, editText, shot, viewHead, toastText } = L
+const { browser, page, errors } = await open({ fresh: true })
+const log = (k, v) => console.log(k.padEnd(18), typeof v === 'string' ? v : JSON.stringify(v))
+await editWeek(page)
+log('mon head 0', await head(page, 0))
+log('sign', await signDay(page, 0))
+log('mon head signed', await head(page, 0))
+log('publish day', await publishDay(page, 0))
+log('toast', await toastText(page))
+log('mon head pub', await head(page, 0))
+await shot(page, 's01-mon-published', page.locator('#eWeek .day[data-day="0"] .day-head'))
+// find a note or a text cell on Monday to edit
+const keys = await page.evaluate(() => [...document.querySelectorAll('#eWeek .day[data-day="0"] [data-txt]')].map(e => e.dataset.txt).slice(0, 12))
+log('txt keys', keys)
+const k = keys.find(x => x.startsWith('dn:')) || keys[0]
+await editText(page, k, 'AMEND TEST NOTE')
+log('mon head edited', await head(page, 0))
+log('marks', await marks(page, '#eWeek .day[data-day="0"]'))
+await shot(page, 's02-mon-pending', page.locator('#eWeek .day[data-day="0"]'))
+log('sign again', await signDay(page, 0))
+log('mon head resigned', await head(page, 0))
+log('publish AL', await publishAL(page, 0))
+log('toast', await toastText(page))
+log('mon head AL1', await head(page, 0))
+log('marks AL1', await marks(page, '#eWeek .day[data-day="0"]'))
+log('book', await book(page))
+await shot(page, 's03-mon-al1', page.locator('#eWeek .day[data-day="0"]'))
+log('unpublish', await unpublish(page, 0))
+log('toast', await toastText(page))
+log('mon head unpub', await head(page, 0))
+log('book', await book(page))
+log('view', await viewHead(page, 0))
+console.log('errors', errors)
+await browser.close()

@@ -621,6 +621,15 @@ many pending or issued items are removals. It never paints the row that moved
 up into the deleted address. Schedule CSV export contains the resulting live
 schedule, so the removed row is absent rather than exported as a phantom line.
 
+**A man taken off a seat leaves no mark either — by ruling** (owner, 24 Sep 26 — D91:
+"Dont do the man taken off seat"). Emptying a duty desk, a Common Programme row or a
+sim seat on a published day is a pending change like any other — counted, listed in
+the Amendments panel and History, carried by the AL's comparison — but the seat simply
+reads empty on the edit week, the board and the issued face; an emptied cockpit seat
+keeps only the "ALn" badge the week already shows once it is issued. A mark for it (a
+faded, crossed-out name, or an empty marked box) was drawn in a mock-up and declined —
+it is not a defect, and is not to be re-filed as one.
+
 ## Version preview (edit week + board only)
 
 The day-head `<select data-dver>` (emitted only when `dayHTML` gets its
@@ -663,7 +672,8 @@ buttons, and Publish AL is hidden under a preview (A3). RETIRED by this redesign
 `verSelHTML`/`dverSelectHTML`/`verSelBoardHTML`, the `<select data-dver>` on edit
 surfaces, the green `.livebtn` "Live copy" pill, the `.ddraft` "Publishes …"
 chip, and the week-status banner text (`Shell.tsx` `banner()` keeps only the AL
-roll). Plans are lettered A/B/C (`drafts.ts` `nextName`, C1 — lowest unused
+roll — *stale: the AL roll went too, 15 Sep 26 follow-up 2; the banner holds only the RULES MODIFIED
+stamp (marked 24 Sep 26, register AM22)*). Plans are lettered A/B/C (`drafts.ts` `nextName`, C1 — lowest unused
 letter); deleting down to ONE clears the day's plans back to "Live working copy"
 (B1). **The VIEW page keeps its own pickers unchanged** (`viewDraftSelHTML`
 `data-dver` + the `d:` frozen preview, and `viewVerSelHTML` `data-vwork`) — the
@@ -705,7 +715,7 @@ alternative must never wear the issued document's clothes, on any surface.
 Known limitation: personal-INPUTS sections and the day-info pop show LIVE
 data inside a preview — inputs are not part of the issued document.
 
-## The day-head version chip — now INSIDE the published stamp
+## The day-head version chip — now INSIDE the published stamp *(heading stale since 15 Sep 26: the stamp is retired and the version tag, `verTagHTML`, sits left of the "4 X 4" count — §Version preview; register AM22)*
 
 One `.dal` chip per day = `dayCurVer(di)`, everywhere (view page, edit week,
 and — since `dayStatHTML` became the board's own publish-strip builder too,
@@ -1599,7 +1609,7 @@ Every creation path calls it — the two board `+ Add` dialogs (via
 `commitNewInput`'s non-`toGround` branch), the Inputs page's own `add()`, and
 the boot/week-load pass (`autoAcceptSeedInputs`, `initStore`/`loadWeek`). Leave,
 medical, SANS and a PUBLISHED day are silent no-ops: a late input on an issued
-day stays under Personal Inputs (no surprise amendment), and the crew picker's
+day stays under Personal Inputs (no surprise amendment) *(SUPERSEDED for the interactive path 16 Sep 26 — marked 24 Sep 26 by the amendment re-test, per D90: a request a person files LIVE on a published day lands on the WORKING copy as a pending amendment — the count rises, the issued face stays frozen until the next publish; only the boot / week-load pass still leaves a published day alone. `engine/slots.ts` `autoAcceptInput(row, onApproved)`; register AM41.)*, and the crew picker's
 input-aware busy-check still warns about it either way (`engine-rules.md`
 §Personal input clash). The manual `Accept`/`Undo` controls and the round-trip
 are unchanged — removing an auto-landed row returns the input to Personal

@@ -32,8 +32,8 @@ beforeEach(() => {
   _resetDisclosure()
 })
 
-describe('the Unpublish button visibility gate (§6.4 / C10)', () => {
-  it('appears on the edit surface of a published day', () => {
+describe('the Unpublish button visibility gate (§6.4 / C10) (AM37c)', () => {
+  it('appears on the edit surface of a published day (AM32)', () => {
     sign(0); commitSetDayApproved(0, true)
     expect(dayApproved(0)).toBe(true)
     expect(dayStatHTML(0, true)).toContain('data-unpub="0"')

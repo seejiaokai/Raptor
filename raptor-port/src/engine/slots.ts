@@ -1,6 +1,6 @@
 import { DAYS } from './data'
 import { PEOPLE, nameToId, whoId, ID_BY_CS, isSpecial } from './people'
-import { SCHED, markEdit, markDeletion, deletionWasIssued, markInputFiling, markStructuralAdd, dayApproved, dropRowMarks, protectedWeek } from './publish'
+import { SCHED, markEdit, markDeletion, deletionWasIssued, markInputFiling, markStructuralAdd, dayApproved, dropRowMarks, protectedWeek, dayCurVer, daySnapOf } from './publish'
 import { parseHM, hhmm, hmOK } from './time'
 import { INPUTS, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx } from './inputs'
 import { shiftKeys } from './keys'
@@ -434,17 +434,48 @@ export function acceptInput(di:any,inp:any,dest:any){
   const key=inpId(inp);
   if(DAYS.some((dd:any)=>((dd&&dd.ground)||[]).some((r:any)=>r.src===key)))return false;
   d.ground=d.ground||[];
-  const ri=d.ground.length;
+  /* PUTTING AN ISSUED LANDING BACK IS A ROUND TRIP, NOT A NEW ROW ([HUMAN-RETEST] the amendment
+     system, walk W4-F2, 24 Sep 26; register AM20). On a published day whose CURRENT issued
+     version already carries this input's landed row, re-landing it restores THAT row's identity
+     (its rid) at the place it held — otherwise the comparison with the issued document read
+     "an issued row removed + a new row added": a two-item amendment on a day identical to what
+     was issued, and publishable on the old sign-offs (content-equal, so they still matched).
+     The values are minted from the input exactly as any landing's are, so a real difference
+     (the scheduler had retimed the issued row) still shows as the change it is. */
+  let ri=d.ground.length, rid:any=null;
+  if(dayApproved(di)){
+    const ver=dayCurVer(di), snap:any=ver!=null?daySnapOf(di,ver):null;
+    const ig:any[]=(snap&&snap.d&&snap.d.ground)||[];
+    const ix=ig.findIndex((r:any)=>r&&r.src===key&&r.rid);
+    if(ix>=0&&!(d.ground||[]).some((r:any)=>r&&r.rid===ig[ix].rid)){   /* never mint a second row with one id */
+      rid=ig[ix].rid;
+      /* back BESIDE ITS ISSUED NEIGHBOURS — before the first surviving row that followed it in the issued
+         version — not at its issued index: once an earlier issued row is gone, or under a hand-set order, that
+         index is somewhere else, and the day read "1 reorder" for a row that went back where it was (the
+         amendment re-test's final read, Fable #5, 24 Sep 26) */
+      const after=ig.slice(ix+1).map((r:any)=>r&&r.rid).filter(Boolean);
+      const nx=(d.ground||[]).findIndex((r:any)=>r&&after.includes(r.rid));
+      ri=nx>=0?nx:d.ground.length; }
+  }
   /* who is the stable person ID (ARCH-STACK 1C, 14 Sep 26; was PEOPLE[id].cs).
      inp.person is already an id, and the renderers resolve who→id→cs (whoId), so
      the landed row prints the callsign unchanged while a rename moves nothing.
      Title is the TYPE and the submitter's remarks land in the row's rmks cell
      (owner, Aug 26): 'APPOINTMENT · dental review', not one mashed title. */
-  d.ground.push({prog:inpLabel(inp).toUpperCase(),
+  const row:any={prog:inpLabel(inp).toUpperCase(),
                  str:inp.allday?'':hhmm(inp.s), end:inp.allday?'':hhmm(inp.e),
                  who:inp.person,
-                 rmks:inp.remarks||'', src:key, srcType:inp.type});
+                 rmks:inp.remarks||'', src:key, srcType:inp.type};
+  if(rid)row.rid=rid;
+  d.ground.splice(ri,0,row);
   inp.acc='g';
+  if(rid){
+    /* the restored row is the ISSUED one, not a draft addition: mark the edit (so the funnel's
+       history + reconcile run) without registering a structural add, which would make a later
+       removal of it read as "never issued" */
+    markEdit(`gr:${di}.${ri}.prog`);
+    return true;
+  }
   /* markStructuralAdd, not trackStructuralAdd+noteChange (owner audit, 15 Aug
      26 — every OTHER new ground row gets a ~6s blue box, an accepted input's
      did not). The key is the row's first FIELD (gr:di.ri.prog), matching

@@ -9,6 +9,7 @@ import { canonicalDiff, digest } from './canonical'
 import type { DeltaEntry } from './canonical'
 import { INPUTS, inpId, inputCoversDate } from './inputs'
 import { CURWEEK } from './waves'
+import { groundOrder } from './order'
 import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './verid'
 import { isPreservedWeek } from './weekstash'
 import { oilEvidence, oilEvidenceKey, oilSignKey, oilKeyNoMem, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney } from './oilev'
@@ -174,6 +175,18 @@ export function dayCurVerIn(sc:any,di:any,weekKey?:any){di=+di;
   return (o&&o.id&&daySnapIn(sc,di,o.id,weekKey))?o.id:null;}
 export function dayCurVer(di:any){return dayCurVerIn(SCHED,di,CURWEEK);}
 export function dayPendCount(di:any){return Object.keys(SCHED.pending).filter((k:any)=>keyDay(k)===di).length;}
+/* THE ONE COUNT a person reads as a day's unpublished changes (register AM23, [HUMAN-RETEST]
+   the amendment system, 24 Sep 26). On a PUBLISHED day it is the canonical delta against the
+   issued version — the same authority as publish eligibility — never the raw pending marks: a
+   change with no cell (what the day earns, an input filing) raises no mark, and a filing round
+   trip can leave an inert one behind, so a raw count read "nothing unpublished" beside a
+   "Publish AL1" button, or an edit that is not there. On a never-published day the draft marks
+   ARE the count. The day head, the ⓘ day panel and the plan-switch message all read this. */
+export function dayShownPendCount(di:any){di=+di;return dayApproved(di)?dayDelta(di).length:dayPendCount(di);}
+/* the marks "Discard marks" may clear: those on days never published (F-01 — a published day's
+   divergence is published or put back, never silently dropped). The Amendments panel enables
+   its button off this, so it is never offered when it could clear nothing (walk S2). */
+export function discardableCount(){const orig=SCHED.orig||{};return Object.keys(SCHED.pending).filter((k:any)=>!orig[keyDay(k)]).length;}
 export function pendDays(){return uniqDays(Object.keys(SCHED.pending));}
 /* pending edits only become publishable amendments once their day is published —
    changes to a day that is still draft are just draft work, not an amendment */
@@ -719,8 +732,13 @@ export function publishALDay(di:any){
    Original, and clear only the draft-build marks on never-published days. */
 export function discardPending(){
   const orig=SCHED.orig||{};
-  Object.keys(SCHED.pending).forEach((k:any)=>{ if(!orig[keyDay(k)])delete SCHED.pending[k]; });
-  reflow(); histPush(); toast('Pending marks cleared');
+  /* say what actually happened (walk S2, 24 Sep 26): it used to toast "Pending marks cleared"
+     even when every mark sat on a published day and nothing was touched. */
+  let n=0, kept=0;
+  Object.keys(SCHED.pending).forEach((k:any)=>{ if(!orig[keyDay(k)]){delete SCHED.pending[k]; n++;} else kept++; });
+  if(!n)return toast('Nothing to clear — the changes are on published days: publish them as an amendment, or put them back');
+  reflow(); histPush();
+  toast(`Cleared ${n} draft mark${n===1?'':'s'}`+(kept?' · published days keep their changes until you publish them or put them back':''));
 }
 /* ---- [GLOBAL-UNDO] §6.5 — UNPUBLISH: retract a published day to a working copy
    ---------------------------------------------------------------------------
@@ -773,6 +791,12 @@ export function unpublishDay(di:any,opts:any={}):any{di=+di;
   const rec=seq===0?null:(SCHED.als||[]).find((a:any)=>String(a&&a.id)===String(id));
   const added:any[]=(rec&&rec.added)||[];
   retireIssued(di,id,{clearSigns:true,append:opts.append!==false,logged:!!opts.disclosed,by:opts.by});
+  /* …and EVERY plan of the day re-signs (AM34, owner 18 Sep 26: unpublish "clears that day's
+     sign-offs — re-sign on republish"). Each plan carries its own sign-offs (AM12) and a PARKED
+     plan's were never spent, so they revived the moment the day was back at the version they
+     were signed against, and could unlock a republish on signatures given before the withdrawn
+     version existed ([HUMAN-RETEST] walk W2, Fable 5-11, 24 Sep 26). */
+  signClearPlans(di);
   if(seq===0){
     // retract the Original → a plain draft (its build marks were consumed at issue)
     delete SCHED.dayOK[di];
@@ -830,7 +854,15 @@ export function currentBind(di:any){di=+di; const d=DAYS[di];
      availability never invalidates a signature — the pending mark is how that
      change is acknowledged — so membership is left out of what a signature binds
      to. Everything else about the block still binds. */
-  return {dg:d?digest(d,di):'', iso:dayIso(CURWEEK,di), base:dayCurVer(di)||'', rev:(SCHED.curDraft||{})[di]||'', fil:filingKey(di), oil:oilSignKey(oilEvidence(di),d)};}
+  /* …and the order the GROUND PROGRAMME is shown in (the amendment re-test's final read, Fable #1,
+     24 Sep 26). The digest keys ground rows by their raw place in the array, but the amendment compares the
+     order on screen — and a first drag freezes the shown order into the array before it moves, so a drag
+     could leave the array exactly as it was: "1 reorder" pending, the four still green, and "Publish AL"
+     issuing the reorder on signatures given for the old order (AM10, AM11). */
+  /* recorded as the shown order of the array's positions: the digest already binds each position's
+     content, so the pair fixes what is shown — and it does not move when row ids are minted before a publish */
+  const gord=d?groundOrder(d.ground,d.gman).map((x:any)=>x.ri).join(','):'';
+  return {dg:d?digest(d,di):'', iso:dayIso(CURWEEK,di), base:dayCurVer(di)||'', rev:(SCHED.curDraft||{})[di]||'', fil:filingKey(di), oil:oilSignKey(oilEvidence(di),d), gord};}
 /* set a role's signer through the ONE sanctioned write path (ui/Shell.tsx). A
    truthy signer binds that role to the current content; clearing a role drops its
    binding. Tests / a legacy demo book that write signOf(di)[role] directly leave
@@ -852,7 +884,9 @@ function signBoundOk(di:any,role:any,cur?:any){const b=(SCHED.signBind||{})[+di]
      carries no oil field, and on a day that earns nothing there is nothing it
      could have failed to promise. A day that DOES carry evidence still
      invalidates, because '' and a real block differ. */
-  return x.dg===c.dg&&x.iso===c.iso&&x.base===c.base&&x.rev===c.rev&&x.fil===c.fil&&oilBoundOk(di,x.oil,c.oil);}
+  /* the ground order axis, like the filing axis: a binding written before it existed (no gord) cannot prove
+     the order was approved, so it re-signs — on a day with ground rows; with none there is no order to prove */
+  return x.dg===c.dg&&x.iso===c.iso&&x.base===c.base&&x.rev===c.rev&&x.fil===c.fil&&(x.gord||'')===(c.gord||'')&&oilBoundOk(di,x.oil,c.oil);}
 /* A BINDING WRITTEN BEFORE `stand` EXISTED stores the OIL key in the old
    six-part form, which can never equal today's seven-part one — so every
    signature given before this build fell off a day whose content had not moved,
@@ -913,6 +947,9 @@ export function signShown(di:any){const b=(SCHED.signBind||{})[+di]; const cur=s
     o[k]=(who&&b&&b[k]&&!signBoundOk(di,k,cur))?'':who;});
   return o;}
 export function signClear(di:any){SCHED.sign[+di]={cur:'',sked:'',plan:'',appr:''}; if(SCHED.signBind)SCHED.signBind[+di]={};}
+/* the PARKED plans' sign-offs (each plan stows its own, AM12) — a pulled-back day re-signs every plan,
+   by the Unpublish button and by Undo alike (AM34, AM32; walk W2 Fable 5-11 and walk W3, 24 Sep 26) */
+export function signClearPlans(di:any){((SCHED.drafts||{})[+di]||[]).forEach((t:any)=>{ if(t){ t.sign={cur:'',sked:'',plan:'',appr:''}; t.signBind={}; } });}
 export function signNames(di:any){const g=signAt(di),o:any={};SIGN_ROLES.forEach((r:any)=>{const p=PEOPLE[g[r[0]]];o[r[0]]=p?p.cs:'';});return o;}
 export function signPeople(schedOnly:any,keep?:any){
   const ids=Object.keys(PEOPLE).filter((id:any)=>!PEOPLE[id].special&&!PEOPLE[id].archived

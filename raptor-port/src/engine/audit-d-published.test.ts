@@ -204,7 +204,7 @@ describe('a sort that moves an AL-tinted block keeps the tint and records the mo
    always counts; a still-draft added row reordered then deleted before its AL is
    still the net no-op it always was. */
 describe('a reorder of identical-looking issued rows still records on a published day', () => {
-  it('two same-value duty rows swapped mint a durable reorder that reconcile keeps and the AL carries', () => {
+  it('two same-value duty rows swapped mint a durable reorder that reconcile keeps and the AL carries (AM21)', () => {
     const d = scramble()
     d.dutywaves = [{ label: 'DESK', rows: [
       { role: 'SDO', id: 'a', str: '0700', end: '1300', rmks: 'alpha' },

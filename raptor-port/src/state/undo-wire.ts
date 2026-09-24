@@ -125,8 +125,8 @@ function resolvePublishDay(id: string): { weekId: string; di: number } | null {
    - bumpLwHistEpoch(): signal the LW matrix to drop any in-flight drag/select.
    Runs INSIDE the restore reducer, so it precedes the deferred reflow — the same
    order histApply uses (armDrop/prunePreviews before reflow). */
-function postRestore(entry: UndoEntry, dir: 'undo' | 'redo'): void {
-  schedPostRestore(entry, dir)
+function postRestore(entry: UndoEntry, dir: 'undo' | 'redo', pulledBack: Array<{ weekId: string; di: number }>): void {
+  schedPostRestore(entry, dir, pulledBack)
   armDrop()
   prunePreviews()
   bumpLwHistEpoch()

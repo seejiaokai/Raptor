@@ -75,7 +75,7 @@ describe('the MAIN/SPARE badge on an SC line', () => {
     expect(h).not.toContain('data-sarole=')
   })
 
-  it('clicking the badge flips the line SPARE -> MAIN, marks it pending, and the engine follows', async () => {
+  it('clicking the badge flips the line SPARE -> MAIN, marks it pending, and the engine follows (AM21b)', async () => {
     await act(async () => { setPage('editsched'); notify() })
     const w = DAYS[0].waves[WI], f = w.formations[0]
     const ai = f.aircraft.findIndex((a: any) => a.spare)

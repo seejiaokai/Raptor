@@ -203,7 +203,7 @@ describe('an issued day answers from the document it was drawn in (D44, OSE-R2-0
     expect(drawn).toContain('data-oilver=""')
   })
 
-  it('THE WINDOW READS THE ISSUED LIST, not whoever happens to be free now', () => {
+  it('THE WINDOW READS THE ISSUED LIST, not whoever happens to be free now (AM42)', () => {
     const item = puckRow(SAT)
     publish(SAT)
     const ver = dayCurVer(SAT)

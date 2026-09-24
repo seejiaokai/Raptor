@@ -125,7 +125,7 @@ describe('accepting a personal input', () => {
      Aug 26, alongside the flashAdded fix above) — the same field key
      board.ts's own "+ Item" marks pending on, which is also what lets the
      AL-amended tint (alAttr) reach the row's own prog field now. */
-  it('marks the new row pending so it reaches the next AL', () => {
+  it('marks the new row pending so it reaches the next AL (AM21b)', () => {
     const inp = findInp('Meeting')!
     const ri = DAYS[0].ground.length
     acceptInput(0, inp, 'g')
@@ -297,7 +297,7 @@ describe('the validator gate on personal inputs', () => {
     expect(inp0.some((x: any) => isPersonal(x.type))).toBe(true)      // bruise / vinci / yeti count
   })
 
-  it('an un-actioned personal input clashes at once; promoting it moves the voice to the row', () => {
+  it('an un-actioned personal input clashes at once; promoting it moves the voice to the row (AM43b)', () => {
     const id = ((collectEvents()[0].fly || []).find((e: any) => !isSpecial(e.id)) || {}).id
     expect(id).toBeTruthy()
     INPUTS.push({ person: id, date: DAYS[0].dt, allday: false, s: 300, e: 1380, type: 'Meeting', remarks: 'staff work', mod: '' })

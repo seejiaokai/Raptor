@@ -65,7 +65,7 @@ describe('publish drives the credit', () => {
     expect(ownedBy('plasma', SAT)).toMatchObject({ state: 'approved', source: 'raptor' })
   })
 
-  it('an unpublished day earns nothing — a draft duty is not the squadron\'s word', () => {
+  it('an unpublished day earns nothing — a draft duty is not the squadron\'s word (AM48b)', () => {
     runOilPass()
     expect(cellOf('plasma', SAT)).toBeUndefined()
   })
@@ -127,7 +127,7 @@ describe('reverse-and-replace — the credit follows the issued document', () =>
   /* Phase 2 removed the reopen take-back: a published day is frozen and can only
      be changed by a NEW AL. So "reopen takes the credit back" is gone; the credit
      follows the CURRENT issued version, which a new AL updates. */
-  it('a new AL with shorter hours replaces FO with HO — the credit follows the current issued version', () => {
+  it('a new AL with shorter hours replaces FO with HO — the credit follows the current issued version (AM46)', () => {
     publish(5)
     runOilPass()
     expect(cellOf('plasma', SAT)).toBe('FO')
@@ -304,7 +304,7 @@ describe('OIL11, OIL13 — an acknowledged input credits once the day is PUBLISH
      anything the issued evidence has since got wrong (spec §7.3). */
   const amend = (di: number) => { sign(di); publishALDay(di) }
 
-  it('an answered yes mints the cell only once the day is published', () => {
+  it('an answered yes mints the cell only once the day is published (AM48b)', () => {
     plant({ person: 'bane', type: 'Duty', date: 'Jul 18', oil: { [SAT]: 1 } })
     runOilPass()
     expect(cellOf('bane', SAT), 'nothing published — nothing earned').toBeUndefined()
@@ -330,7 +330,7 @@ describe('OIL11, OIL13 — an acknowledged input credits once the day is PUBLISH
     expect(cellOf('bane', SAT)).toBeUndefined()
   })
 
-  it('deleting the input leaves the issued credit standing until the day is published again', () => {
+  it('deleting the input leaves the issued credit standing until the day is published again (AM46)', () => {
     const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', oil: { [SAT]: 1 } })
     publish(5)
     runOilPass()
@@ -709,7 +709,7 @@ describe('publishing a day no leave war period covers says so (Codex M8 + D19)',
      them inherits it (loadweek.test.ts's rule) */
   afterEach(() => { loadWeek('13/07/2026') })
 
-  it('the strip names the missing period instead of staying silent', () => {
+  it('the strip names the missing period instead of staying silent (AM48d)', () => {
     installAbsenceDoor()
     loadWeek('07/02/2028')
     const sat = DATES.findIndex((d: any) => /Feb 12/.test(String(d)))

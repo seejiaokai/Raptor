@@ -283,7 +283,7 @@ describe('loadWeek', () => {
      Phase 2 removed the reopen take-back (setDayApproved(di,false) is a no-op),
      so the round-trip now happens with the day STILL published — the input
      stays refused (never lands) and must still never be parked dormant. */
-  it('an input filed onto a published day is not parked dormant after a week round-trip', () => {
+  it('an input filed onto a published day is not parked dormant after a week round-trip (AM41)', () => {
     SCHED.dayOK[0] = 1                           // Monday published (mark set directly — the sign-off gate is not under test)
     const inp: any = { person: 'divot', date: 'Jul 13', type: 'Training', allday: false, s: 540, e: 660, _t: true }
     INPUTS.push(inp)

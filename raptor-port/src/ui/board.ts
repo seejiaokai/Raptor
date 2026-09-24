@@ -11,14 +11,14 @@ import { WARN, validate, WCODE, wlbl, fltNoLen, FLT_NO_LEN_SAYS } from '../engin
 import { hhmm, fmtHM, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr, unacceptInput, TIME_TXT } from '../engine/slots'
-import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayPendCount, dayHasChanges, verLabel, nextSeq, dropRowMarks, protectedWeek, dayVersions } from '../engine/publish'
+import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayShownPendCount, dayHasChanges, verLabel, nextSeq, dropRowMarks, protectedWeek, dayVersions } from '../engine/publish'
 import { logAction, ELOG } from '../engine/editlog'
 import { hideHistBub } from './histbubble'
 import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap } from './html'
+import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap } from './html'
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
@@ -381,10 +381,15 @@ function boardHTMLBody(di: number, pv?: boolean) {
 }
 
 /* The day's sign-off bar as its own element, so the Live Checks panel can sit
-   directly below it (owner, 14 Aug 26). Empty on a frozen preview, exactly as
-   it was inline — a past version's signatures live on the AL record. */
+   directly below it (owner, 14 Aug 26). On a frozen preview the sign-off pills and
+   every publish door stay away — a past version's signatures live on the AL record —
+   but the PLANS SELECTOR and the VERSION TAG stay, as they do on the week: the
+   selector's amber "👁 AL1" says what you are looking at and is the way to another
+   version, the tag says what the day IS (register AM28 — the one selector both
+   surfaces share, A5). The strip used to go blank here, older than the 15 Sep
+   redesign that moved the two into it ([HUMAN-RETEST] walk W2-F1, 24 Sep 26). */
 export function boardSignHTML(di: number, pv?: boolean) {
-  if (pv) return ''
+  if (pv) return `<div class="signoff board-sign" id="sbSignBar"><div class="sb-pub">${planSelectorHTML(di)}${verTagHTML(di)}</div></div>`
   /* the desktop "view all changes" entry heads this element, above the
      sign-off bar, exactly as it did when both lived at the top of #sbBoard */
   /* Publish controls, "same as edit schedule" (owner ask): dayStatHTML is the
@@ -404,10 +409,12 @@ export function boardSignHTML(di: number, pv?: boolean) {
      surfaces; verTagHTML is the green issued-version tag (dashed DRAFT while
      unpublished) that replaced the "✓ Published · ALn" stamp. The selector's
      data-planmenu routes through routeClick (document level), exactly as this
-     strip's data-alpub / data-beak already do. */
+     strip's data-alpub / data-beak already do. The "Not yet signed" marker rides
+     beside the tag from the SAME body the week head uses (nysMarkHTML) — the board is
+     the working copy too ([HUMAN-RETEST] walk S5, 24 Sep 26). */
   return histLineHTML('histln-top')
     + `<div class="signoff board-sign" id="sbSignBar">${signoffHTML(di, true)}`
-    + `<div class="sb-pub">${planSelectorHTML(di)}${verTagHTML(di)}${dayStatHTML(di, ed)}</div></div>`
+    + `<div class="sb-pub">${planSelectorHTML(di)}${verTagHTML(di)}${nysMarkHTML(di)}${dayStatHTML(di, ed)}</div></div>`
 }
 
 export function boardWarnHTML(di: number) {
@@ -1544,7 +1551,9 @@ export function switchDraft(di: any, id: any) {
      record, exactly as it is for a rollback or an applied template */
   let said = `Switched to "${t.name}" — this is now the live ${d.dow}`
   if (pub && cv != null) {
-    const n = dayPendCount(di)
+    /* the day head's own count (AM23): a plan that differs only in what the day earns, or
+       in a filing, is still a difference ([HUMAN-RETEST] walk S3 / Astra rank 5, 24 Sep 26) */
+    const n = dayShownPendCount(di)
     said += n ? ` · ${n} difference${n > 1 ? 's' : ''} from ${verLabel(cv)} pending`
       : ` · matches ${verLabel(cv)} — nothing pending`
   }

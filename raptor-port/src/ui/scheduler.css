@@ -1658,7 +1658,14 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
    working. board.ts now emits the attribute on .sb-rcell too; this is its
    other half. */
 .seat[data-alp]{position:relative}
-.seat[data-alp] .puck{box-shadow:0 0 0 1.5px rgba(242,214,153,.75)}
+/* the view page's neutral pending hint sits on the SEAT, around the puck ([HUMAN-RETEST] the
+   amendment re-test, 24 Sep 26; register AM19 "the view-only page keeps the neutral DASHED hint").
+   Drawn on the puck it always lost to a warning ring: as a box-shadow it vanished under the red
+   ring's !important shadow (walk W2-F6), and as an outline it then out-ranked the sanctioned-late
+   (dashed) and crew-rest (dotted) rings, which are outlines too, and hid THEM (the final read,
+   Fable #3). On the seat, no ring competes. The view page only: the edit surfaces draw their own
+   AL-coloured mark on the puck (below). */
+#vWeek .seat[data-alp]{outline:1.5px dashed rgba(242,214,153,.75);outline-offset:1px;border-radius:4px}
 .areacell[data-alp],.timecell[data-alp],.rmkcell[data-alp],.intimes[data-alp],.sb-rcell[data-alp]{
   outline:1px dashed rgba(242,214,153,.6);outline-offset:-1px;border-radius:4px}
 /* ---- the AL preview (data-aln): pending edits on a PUBLISHED day, painted in
@@ -1704,6 +1711,10 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
 .alpanel .al-h{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:9.5px;font-weight:700;color:var(--ink-3);margin-bottom:5px}
 .alpanel .al-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-2)}
 .alpanel .al-pend{font-weight:700;color:var(--ink-3)}
+/* each day with changes waiting is its own line, laid out like the row above: the label ran straight
+   into its own "Publish ALn" button with no gap ([HUMAN-RETEST] walk W1, 24 Sep 26) */
+.alpanel .al-pubdays{display:flex;flex-direction:column;gap:5px;margin-top:6px}
+.alpanel .al-pubday{display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-2)}
 .alpanel .al-pend.on{color:#F2D699}
 .alpanel select{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink);border-radius:6px;padding:3px 6px;font-size:11.5px;font-family:inherit}
 .alpanel .al-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
@@ -4008,6 +4019,11 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
 /* an added or removed row is not a value change, so it does not pretend to be
    one — it prints as the sentence it is, in the ink of a thing that happened */
 .hl-what.struct{color:var(--ink)}
+/* …and a sentence row IS the whole line, so it shrinks and wraps like the value text beside a
+   detail does: sized by the `.hl-what` label rule above (never shrink) it ran off the right edge
+   and lost the words that matter — "…viewers still see AL1 un…" ([HUMAN-RETEST] walk W3 F-w3-5,
+   24 Sep 26; AM49) */
+.hl-row>.hl-what.struct{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
 .hl-chg{color:var(--ink);flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
 .hl-meta{margin-left:auto;color:var(--ink-3);font-size:10.5px;white-space:nowrap;flex:0 0 auto}
 .hl-empty{color:var(--ink-3);font-size:12px;line-height:1.6;padding:6px 0}

@@ -52,8 +52,11 @@ export interface UndoHooks {
   /* §6.2/C5 — a per-entry scheduler adjustment run INSIDE the restore reducer (so
      its mutation is enlisted/derived into the envelope), AFTER the inverse writes.
      Undo of a PUBLISH boundary clears the day's sign-offs (re-sign on republish,
-     GU5-005) rather than restoring the pre-publish signed state the inverse carries. */
-  postRestore?(entry: UndoEntry, dir: 'undo' | 'redo'): void
+     GU5-005) rather than restoring the pre-publish signed state the inverse carries.
+     `pulledBack` (walk W3 F-w3-1, 24 Sep 26) — the days whose publication, made AFTER
+     this entry, has since been undone: the entry's recorded images predate that
+     publish, so they still carry the sign-offs it spent, and must not hand them back. */
+  postRestore?(entry: UndoEntry, dir: 'undo' | 'redo', pulledBack: Array<{ weekId: string; di: number }>): void
   /* the CURRENT effective actor for mayReverse (§5); defaults to deriveActor(). */
   currentActor?(): Actor
 }
@@ -227,8 +230,35 @@ function recordEntry(env: CommitEnvelope): void {
   entry.label = describeEntry(entry)
   entries.push(entry)
   bySeq.set(entry.seq, entry)
+  abandonForkedRedo(entry)
   trackExpectation(env)
   bumpUndo()
+}
+
+/* §4.3 — "refuse redo of E if … any newer entry committed after E's undo shares a key". That makes E
+   dead for good the moment such a change is committed, but the code only refused E while the newer
+   entry stood; E stayed an "earlier undone change" and, once the newer entry was undone too, refused
+   ITS redo with "redo that first" — which no control can do, since Redo only ever offers the most
+   recently undone (walk W3 F-w3-2, 24 Sep 26: sign Friday, undo, sign Saturday, undo, Redo → stuck).
+   So a NEW change ABANDONS every undone entry it shares a record with — the redo tail a classic undo
+   stack drops — and, transitively, every undone entry NEWER than an abandoned one that shares a record
+   with it (its images were built on top of it: redoing it would bring half of the abandoned step
+   back). An undone entry touching none of those records stays redoable, as before. Called again as a
+   projection child widens the entry's closure. */
+function abandonForkedRedo(fresh: UndoEntry): void {
+  const freshKeys = keySet(fresh)
+  const dead: UndoEntry[] = []
+  for (const o of entries) {
+    if (o === fresh || !o.undone || o.abandoned) continue
+    if (sharesKeys(keySet(o), freshKeys)) { o.abandoned = true; dead.push(o) }
+  }
+  for (let i = 0; i < dead.length; i++) {
+    const d = dead[i], dk = keySet(d)
+    for (const o of entries) {
+      if (o === fresh || !o.undone || o.abandoned || o.seq <= d.seq) continue
+      if (sharesKeys(keySet(o), dk)) { o.abandoned = true; dead.push(o) }
+    }
+  }
 }
 
 /* fold a causal projection child into its root entry's closure (§3.1). */
@@ -245,6 +275,7 @@ function foldProjection(rootSeq: number, env: CommitEnvelope): void {
   entry.inverse = invertClosure(entry.forward)
   Object.assign(entry.revs, env.revs || {})
   entry.label = describeEntry(entry)
+  abandonForkedRedo(entry)   // the child's records fork the timeline too (F-w3-2)
   trackExpectation(env)
   bumpUndo()
 }
@@ -360,6 +391,23 @@ function computePubBar(): Map<string, number> {
   }
   return bar
 }
+/* §6.2/C5 — the days whose publication, made AFTER `entry`, has since been undone (an abandoned one
+   too: it was still pulled back). GU5-005: "a published day that is pulled back always re-signs on
+   republish, whether pulled back by Undo or by the button" — the publish SPENT the day's sign-offs, but
+   every older entry's recorded images (the sign-offs ride one week-wide record) still carry them, so
+   undoing or redoing such an entry handed them back and "Publish day" worked with nobody re-signing
+   (walk W3 F-w3-1, 24 Sep 26). postRestore clears them again. Errs towards clearing: a day unpublished
+   by the button in between re-signs as well, which costs a re-sign and never lets a day out unsigned. */
+function pulledBackDays(entry: UndoEntry): Array<{ weekId: string; di: number }> {
+  const out: Array<{ weekId: string; di: number }> = []
+  for (const e of entries) {
+    if (e === entry || !e.undone || e.seq <= entry.seq || e.boundary?.kind !== 'publish') continue
+    const d = resolveBoundaryDay(e)
+    if (d && !out.some(x => x.weekId === d.weekId && x.di === d.di)) out.push(d)
+  }
+  return out
+}
+
 /* the weekId#di a scheduler-week change belongs to (days / sched.orig carry di). */
 function dayKeysOf(entry: UndoEntry): string[] {
   const out: string[] = []
@@ -381,7 +429,9 @@ function undoConflict(entry: UndoEntry): string | null {
   const pubBar = computePubBar()
   for (const dk of dayKeysOf(entry)) {
     const pb = pubBar.get(dk)
-    if (pb != null && pb > entry.seq) return 'A day on this week was published after that change — take the published day back first, or edit the working copy.'
+    /* name the door the scheduler has — the day's Unpublish button (register AM39c; it said "take the
+       published day back", which no control is called — [HUMAN-RETEST] amendment re-test, 24 Sep 26) */
+    if (pb != null && pb > entry.seq) return 'A day on this week was published after that change — tap Unpublish on that day first, or edit its working copy.'
   }
   // non-linear: a newer not-undone entry shares a key (§4.3). An INELIGIBLE newer
   // entry (a deferred-collection closure) is still a hard barrier — refuse whole,
@@ -401,7 +451,8 @@ function redoConflict(entry: UndoEntry): string | null {
   const keys = keySet(entry)
   for (const o of entries) {
     if (o === entry) continue
-    if (o.undone && o.seq < entry.seq && sharesKeys(keySet(o), keys)) {
+    // an ABANDONED entry is never redone, so it can never be "redone first" (F-w3-2)
+    if (o.undone && !o.abandoned && o.seq < entry.seq && sharesKeys(keySet(o), keys)) {
       return 'An earlier undone change touches the same thing — redo that first.'
     }
     if (!o.undone && o.seq > entry.seq && sharesKeys(keySet(o), keys)) {
@@ -436,6 +487,7 @@ function applyRestore(entry: UndoEntry, changes: Change[], dir: 'undo' | 'redo')
     if (expected.has(k)) expectedRevs[k] = expected.get(k)!
   }
   const cur = currentActor()
+  const pulledBack = pulledBackDays(entry)   // read BEFORE the apply, from the timeline as it stands
   const r = commitAs(
     {
       type: 'undo.restore',
@@ -448,7 +500,7 @@ function applyRestore(entry: UndoEntry, changes: Change[], dir: 'undo' | 'redo')
           // rolls back every earlier store's snapshot (publish closures are multi-store).
           for (const [store] of byStore) txn.enlist(store)
           for (const [store, list] of byStore) store.write!(list, { allowIssued: true, restore: true })
-          if (hooks.postRestore) hooks.postRestore(entry, dir)
+          if (hooks.postRestore) hooks.postRestore(entry, dir, pulledBack)
         } finally { if (relock) relock() }
       },
     },
@@ -496,7 +548,7 @@ function newestUndoable(): UndoEntry | null {
 function mostRecentlyUndone(): UndoEntry | null {
   let best: UndoEntry | null = null
   for (const e of entries) {
-    if (e.undone && isEligible(e) && (best == null || (e.undoneAt ?? 0) > (best.undoneAt ?? 0))) best = e
+    if (e.undone && !e.abandoned && isEligible(e) && (best == null || (e.undoneAt ?? 0) > (best.undoneAt ?? 0))) best = e
   }
   return best
 }

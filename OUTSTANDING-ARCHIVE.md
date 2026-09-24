@@ -1075,3 +1075,125 @@ ceiling inside itself and had reached 961.
 - **Move finished items with `node raptor-port/scripts/backlog-archive.mjs <ID> --homes <file>`**,
   never by hand or by a one-off script. (The old "prune on write" is withdrawn — D29 rule 3.)
 
+
+*Moved here 2026-09-24 by backlog-archive.mjs ([LW-DESKTOP-ZOOM]). Forward facts: `.claude/rules/decisions/leave-war.md`.*
+
+### [LW-DESKTOP-ZOOM] The desktop Leave War grid opens at zoom 1 — his call, one line if he wants it out (moved from HANDOFF.md, 24 Sep 26)
+
+- **OWNER'S CALL — the desktop Leave War grid opens at zoom 1** (6 Sep 26; the
+  phone opens one step out because the ask came from the phone). One line in
+  `Matrix.tsx` (`zoom` initial state) if he wants the desktop out too.
+
+
+*Moved here 2026-09-24 by backlog-archive.mjs ([TRK-TAP-AFTER-DRAG]). Forward facts: `.claude/rules/decisions/tracker.md`.*
+
+### [TRK-TAP-AFTER-DRAG] The first tap on a button after dragging or pinching the chart does nothing (23 Sep 26)
+**Place:** ask him first — seen only in the test browser's touch emulation, not yet on a real iPhone. Straight
+after a one-finger drag or a pinch on the chart, the first tap on − (or the ✎ menu) is lost; the second works.
+The finger's down and up both reach the button, but no press follows. Same on the live code before the pinch
+fix; a mouse click is fine (F-D in `raptor-port/docs/handpass/2026-09-23-tracker-pinch.md`). If he has
+never noticed it on his phone, close it as an emulation quirk.
+
+
+*Moved here 2026-09-24 by backlog-archive.mjs ([DEMO-AWARD-DATES-ASK]). Forward facts: `.claude/rules/decisions/oil.md`.*
+
+### [DEMO-AWARD-DATES-ASK] Are the demo's two OIL awards meant to fall after the demo week? — ask him once (filed 24 Sep 26)
+Put to him by the OIL credit-tags chat (`HANDOFF-NEXT.md`, 24 Sep 26, archived the same day): the demo's awards
+for Dash (15 Aug) and Vector (29 Aug) are dated after the schedule's demo week (13–19 Jul) — intended? Demo data
+only, wiped before the database (D54), so not a defect under D56; one answer closes it.
+
+
+*Moved here 2026-09-24 by backlog-archive.mjs ([POSTOUT-LOST]). Forward facts: `.claude/rules/decisions/oil.md`.*
+
+### [POSTOUT-LOST] A posted-out man walks back into the squadron on a reload — **FIXED 22 Sep 26 on `claude/oil-seats-can-earn`** (not merged)
+
+**FIXED, because it caused TWO of the five defects the OIL walk left open** — the day that reopens
+asking for an amendment nobody made, and the count chip that says one more man than the war pays.
+Measured side by side they are one fault: the issued day froze 27 men behind the placeholder, the
+reload gave the live copy 28, and the difference is the man who left in January. The OIL code was
+doing exactly what D44/D45 say. Deferring this last session was right on the evidence then and
+wrong once the cause was measured. **The fix:** a posting window arriving ON the projected person
+is recorded in the store's own posting record, in the body that already lays that record back on
+(`leavewar/state/store.ts` `setPeople`) — so a window with no record behind it is a state the store
+cannot be left in. Pinned by `src/leavewar/postout-persist.test.ts` (4 new cases, red first);
+re-walked by `scripts/handpass/rw-03-pending-and-count.mjs`, four days, all clean. Full story:
+`raptor-port/docs/handpass/2026-09-22-oil-seats.md` §6a.
+
+**STILL OPEN, and still this item's:** the seed flies that man in July while the demo posts him out
+in January. He is reliably posted out now, so the contradiction is STABLE rather than intermittent.
+Demo data, breaks nothing; the dev-phase ruling says clear it rather than migrate. Decide it when
+the demo seed is next touched. *The original entry:* the window was written onto the person by the
+demo overlay and never saved, so after any reload he was available again — reaching the crew picker,
+ALL AVAIL, the manning counts and every rule that asks who is free.
+
+**Context.** `raptor-port/docs/handpass/2026-09-21-oil.md` §9 · the red team's §3 in
+`…/specs/2026-09-21-oil-fixplan-redteam-fable.md` · script `scripts/handpass/settle-d4.mjs`.
+
+
+*Moved here 2026-09-24 by backlog-archive.mjs ([AMEND-EMPTY-SEAT-MARK]). Forward facts: `.claude/rules/decisions/scheduler.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [AMEND-EMPTY-SEAT-MARK] A man taken off a desk, a programme row or a sim seat leaves no amendment mark anywhere (found 24 Sep 26)
+**CLOSED 24 Sep 26 — RULED D91 ("Dont do the man taken off seat"), after he saw the mock-up: no mark is built; the
+seat reads empty, the change is counted and listed.** The rule now lives in `raptor-port/docs/ui-contracts.md`
+§Amendment marks on screen and the register's AM19.
+Found by the amendment re-test's walker W1 (`raptor-port/docs/handpass/parts/2026-09-24-amendment-w1.md` W1-2; roll-call
+R3/R5/R7). Register AM19: a pending change is dotted in its AL's colour, an issued one solid. **What a person sees:** on a
+published day, take Outlaw off the OPS DESK, Torch off a Common Programme row, Basher off a sim seat — the head counts
+each, the Amendments panel lists them, History records them, the AL's diff carries them — but the row itself looks like
+a desk that was always empty: "+ ADD" on the week, an empty box on the board, and after publishing nothing on the view
+page's issued face either (13 changes, 10 visible marks). An emptied COCKPIT seat is half covered: the week shows the
+"AL1" badge once published, but not while pending, and the board never marks it. **Why not fixed in the re-test:** an
+emptied list seat is not drawn at all (`raptor-port/src/ui/html.ts` `lSeat`, `raptor-port/src/ui/board-html.ts` `sbSeat`;
+the board's empty cockpit seat `sbSlot`), so there is nothing to carry the mark — it needs a LOOK for "somebody was
+taken off here", on three surfaces, one of them (the view week) held byte-identical to the original app by the
+reference gate. **Mock-up** (24 Sep 26, his ask): `raptor-port/docs/mock/amend-seat-marks.html`, also a private page
+(https://claude.ai/artifact/H3GvtWrSdGM7u6NRLkXAhk); its maker `raptor-port/scripts/handpass/am/mk-seat-marks.mjs` holds
+the proposal's CSS. **Waiting for his three picks:** the ghost (recommended) or Option B; how long it stays; the mark on
+the seat. **To do:** then build it FULL tier (the issued face is a published record). **Place:** after the re-test merges.
+
+
+*Moved here 2026-09-25 by backlog-archive.mjs ([AMEND-REISSUE-DOOR]). Forward facts: `.claude/rules/decisions/scheduler.md`.*
+
+### [AMEND-REISSUE-DOOR] An Unpublish made by mistake, with nothing to correct, cannot be put back once Undo is gone — a question for him (24 Sep 26)
+**CLOSED 25 Sep 26 — RULED D101: no Reissue button; Publish AL1 is the way back (walked). Nothing to build.**
+**25 Sep 26 — WALKED, and the finding does not hold.** His question ("if i unpublish and change something and
+republish, will i still see reissue AL1 button?") was first answered wrongly by the agent ("Unpublish puts the
+working copy back to the version before") — corrected to him the same hour. In the app (scratch walks, the build on
+:4173): Monday at AL1 → Unpublish → ORIG, "2 pending", "Publish AL1" (locked until signed) → sign → "Publish AL1 — 2
+changes"; and Fable's own case, a weekend AL1 adding a man who earns OIL (Wisp onto Saturday's OPS DESK) → Unpublish
+("Withdraw — confirm") → ORIG, "1 pending", Wisp still on the desk, "Publish AL1" offered. Unpublish keeps the
+withdrawn AL's changes on the working copy as pending (`unpublishDay`, AM37c), so the ordinary Publish AL1 is the way
+back, after a sign-out too. Recommended to him: drop the Reissue button; waiting on his word to close. Pictured for him
+(his ask, 25 Sep 26): `raptor-port/docs/mock/amend-answers.html` §Question 6, maker `raptor-port/scripts/handpass/am/mk-unpublish.mjs`.
+Found by the amendment re-test's final code read (Fable #4, `raptor-port/docs/handpass/2026-09-24-amendment-fable-final-read.md`).
+Unpublish is one tap on a weekday (two where OIL is bid against) and a standing action — it survives a sign-out; Undo
+does not. The engine allows the pulled-back day to go out again under the SAME label even when nothing changed (the
+"correcting" flag, GU5-001), but no screen offers it: by AM15 the publish button stays hidden when there is nothing to
+publish, so after a sign-out the only way to get AL1 back is to change something and publish that — and on a weekend
+the men's OIL stays withdrawn until then (D142). **The question:** should a day pulled back by Unpublish, with
+nothing changed, show a "Reissue AL1" button (the week head and the Amendments panel)? **The agent's recommendation:**
+yes — it is the undo of an Unpublish that outlives the session, and AM15's reason (no button with nothing to publish)
+does not reach a day whose issued version was just withdrawn. Kept as built (AM15) until he answers; the look card's
+step 3 describes today's behaviour. **Where:** `raptor-port/src/ui/html.ts` `dayStatHTML`; `raptor-port/src/engine/publish.ts`
+`pendingPublishDays`. **Place:** waiting on him.
+
+
+*Moved here 2026-09-25 by backlog-archive.mjs ([AMEND-D45-FILING]). Forward facts: `.claude/rules/decisions/scheduler.md`.*
+
+### [AMEND-D45-FILING] Does D45 also cover a leave landing on a published day? — a question for him (24 Sep 26)
+**CLOSED 25 Sep 26 — RULED D103: any pending change wipes the sign-offs, so a leave landing on a published day keeps
+wiping them (as built). The build of D103 lives in `[PENDING-SUMMARY]`.**
+**25 Sep 26 — he asked first what breaks a published day's signature and what is live on a published day; answered in
+chat from `currentBind`/`signBoundOk`/`signRoleOk` (`raptor-port/src/engine/publish.ts`).** The question stands.
+Found by the amendment re-test's rules sweep (`raptor-port/docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`
+§Q3). Two of his rulings overlap and the newer does not clearly cover the case (D90's limit), so it is asked, not
+guessed. **D45 (22 Sep 26):** *"a change in who was available never invalidates a signature — the pending mark is
+the whole mechanism"* — given about the crowd behind an ALL / ALL AVAIL puck. **PSF-001 (15 Sep 26, his "close it
+now"):** an input accepted onto a published day, or filed under Unavailable (a leave, a course), DOES clear the
+day's sign-offs, like any content change — so the working copy must be re-signed before its next amendment goes
+out. **The question, in his words' terms:** when a man's leave lands on a day already published, should the
+sign-offs for the next amendment be wiped (as today), or stay, with only the pending mark showing? **Kept as built
+until he answers** (the leave clears the sign-offs). Either answer is small to build: the signature's filing check
+(`raptor-port/src/engine/publish.ts` `currentBind` → `filingKey`). **Place:** waiting on him; ask with the
+amendment re-test's look card.
+

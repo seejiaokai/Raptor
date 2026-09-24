@@ -16,7 +16,8 @@ data. It is the map; the full designs behind it are:
   Leave War + Tracker: the per-store `write()` seam, one-gesture-one-envelope, the causal
   both-side envelope, off-week capture. (Built; this is what added `write()`.)
 - `docs/superpowers/specs/2026-09-17-arch-stack-3-global-undo-design.md` — step 3, the one global
-  undo that will CONSUME everything below. Designed, not yet built; gated behind CMDL-FINISH.
+  undo that will CONSUME everything below. Designed, not yet built; gated behind CMDL-FINISH. *(Stale:
+  BUILT and merged live 18 Sep 26 — `OUTSTANDING.md` `[GLOBAL-UNDO]`; marked 24 Sep 26.)*
 
 The command core is `src/command/`: `commit.ts` (the engine), `types.ts` (the contracts),
 `latch.ts` (suppression contexts), `registry.ts` (the logical-record map), plus `actor.ts`,
@@ -269,6 +270,13 @@ silent path runs live; the logged path is unit-modelled via `MemoryDoor`. An exp
 `undo-of-publish-semantics`.
 
 ---
+
+**Whose changes Undo reverses (owner, D148, 24 Sep 26 — "5 agree").** Undo only ever reverses the signed-in
+person's OWN changes, and their list clears when they sign out. It never greys out because someone else changed
+something since, and never undoes another person's change: in the database era, an admin can still undo his own
+change after a second admin has made one. If someone else has since changed the very same thing, Undo refuses and
+says who — it never overwrites their newer work. Settles `[GU-MAYREV]` in `[GLOBAL-UNDO]`; extends the 13 Sep 26
+direction (undo per login session, never affecting another user).
 
 ## 5. The checklist — plugging a NEW module or a NEW undo feature in
 

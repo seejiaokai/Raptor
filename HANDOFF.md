@@ -15,52 +15,46 @@ the later merge keeps both (D78).
 
 ## Now
 
-<!-- now:claude/spring-clean -->
-### `claude/spring-clean` — the spring clean (`[DOC-TRIM]`, closed) and the 24 Sep skills review, written 24 Sep 26 (late night) — verify before use
-- **Where it started:** his ask (D138–D141, then D140's "weave it into my workflow"): every chat reads only what the
-  job needs and finds the rest, new information follows the structure by itself, nothing reworded on the way. Plan,
-  both red teams and what changed after them: `raptor-port/docs/superpowers/specs/2026-09-24-spring-clean-plan.md` (§7 wins).
-- **Shipped:** all on the branch, pushed, NOT merged; its PR is open, waiting for his "merge live".
-  `raptor-port/CLAUDE.md` 1,543 → ~705 lines (area decisions and architecture moved whole to the area files),
-  `HANDOFF.md` 984 → ~90 (the one handoff), `OUTSTANDING.md` live items only; `.claude/rules/shipping.md` and
-  `doc-structure.md` (always loaded); the exact mover and the misfiling checks (self-test 97/97); both meaning checks
-  (Fable, Astra) done and fixed; the session-handoff skill change approved (D145); `[DOC-TRIM]` closed and moved whole
-  to the archive, so no line target is left in a live file; D139 spent and archived. A fresh chat reads ~58k tokens
-  before work, not ~118k. **Then, on his word ("review the skills lessons then merge"), the 24 Sep 26 skills review,
-  approved whole (D146, spent and archived):** all 44 open lessons dispositioned — installed into five skills, the
-  bug-check order (which now also carries D16 and D17, whose rows had always named it as their home) and the gates
-  doc; four into this PC's memory notes; the notebook archived down to #120/#122 (D73). Fable and Astra read the
-  drafts once each (D70), 22 fixes applied; their reports are in git (the holding folder's history, D69).
-- **Unfinished:** nothing on this branch. Filed, not blocking: `[RULINGS-LF-PIN]` and `[DOC-SUBHEADS]` (the item's two
-  leftovers — the second one was missing from this block's earlier "only leftover"), `[BG-CWD-GUARD]` and
-  `[RULING-HOMES-AUDIT]` (from the review), `[DOC-POINTERS-CODE]`, `[PERF-RESIDUALS]`.
-- **Branch:** `claude/spring-clean`; its PR: `gh pr list --head claude/spring-clean`. If it has MERGED, the next chat
-  removes this block and resets before new work: `git fetch origin main && git checkout -B <branch> origin/main` —
-  otherwise it stacks commits onto already-merged history.
-- **Gates:** not run — docs and the document-gate scripts only (bug-check tier NONE); `npm run docsize` OK and
-  `node raptor-port/scripts/docsize-selftest.mjs` 97/97 on the final commit; the PR runs only the Docs guard.
-- **Open questions for him:** none.
-- **Pick up here:** he gave "merge live" for after the review, so this chat merges PR #433 once its Docs guard is green
-  → `main`'s checks (only the Docs guard, docs-only) → Vercel reports the live app READY → one notification (D143).
-  Check `gh pr view 433`: merged → remove this block and `## Next` item 1; still open → merge it on his word.
+<!-- now:claude/amendment-retest -->
+### `claude/amendment-retest` — the amendment re-test (done) and his answers to it; written 25 Sep 26 — verify before use
+- **Where it started:** 24 Sep 26: `[HUMAN-RETEST]`, the amendment system, FULL tier, work without waiting. Then, on
+  25 Sep 26, his look at the re-test's leftovers: mock-ups of the real app and his answers, recorded as D91–D105.
+- **Shipped (on the branch, NOT merged):** the re-test — the register, the evidence sheet
+  `raptor-port/docs/handpass/2026-09-24-amendment.md` (§13 is his five-minute look card), every fix red first — and the
+  mock-ups `raptor-port/docs/mock/amend-seat-marks.html`, `amend-answers.html`, `pending-list.html` with their makers
+  in `raptor-port/scripts/handpass/am/`. PR #434 — open when written; check before acting.
+- **Unfinished:** none of the re-test's own work. **His decisions of 24–25 Sep 26 are ONE build batch, not yet built:**
+  `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md` (11 items: tag-only marks, board rings, the
+  "Signed ALn" line, template refusal, the two-state marker, the load fix, wipe-on-any-pending, the pending list, the
+  bubble, the phone keyboard gap). Also filed: `[AVAILWIN-PREVIEW-BAR]`, `[AMEND-SMALL-SEEN]`, `[UNDO-ROSTER-SETTINGS]`.
+- **Branch:** `claude/amendment-retest`, cut from `main` at `bff76c1b`. If it has MERGED: `git fetch origin main && git
+  checkout -B <branch> origin/main` before new work; the batch goes on a fresh branch from `main`.
+- **Gates:** see `## Gate baseline` (this branch's final code, one watched run); `npm run probes:adapted` **6 / 6** (129
+  checks — the probes now fall back to Playwright's own browser, and audit-async's step 3, stale since 13 Sep 26, looks
+  for the input's id) · `npm run perf` **4 / 0** (week 5134 / 5450 nodes, board 1024 / 1150).
+- **Open questions for him:** none from this chat — every question he was asked is answered (D91–D105) or closed.
+- **Pick up here:** his five-minute look at PR #434 (evidence sheet §13) and his "merge live"; then build the batch in
+  `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md` (FULL tier; Opus 5.5 builds, Fable and Astra read).
 <!-- /now -->
 
 ## Next, in order
 
-1. **The spring clean and the 24 Sep skills review — PR #433, merging on his word** (the `claude/spring-clean` block
-   above); docs only.
-2. **`[HUMAN-RETEST]` — THE AMENDMENT SYSTEM** (D85/D86): port 4173, rulings from D90, FULL tier; the Tracker's
-   evidence sheet `raptor-port/docs/handpass/2026-09-23-tracker.md` is the worked example. The order of the other
-   three (change-recording, the absence record, the Leave War links) is NOT ruled: propose it and ask.
+1. **`[HUMAN-RETEST]`** — the amendment system is DONE on `claude/amendment-retest`, waiting for his look and "merge
+   live" (evidence `raptor-port/docs/handpass/2026-09-24-amendment.md`). Next, in his order (D147): the absence record
+   together with `[S4-HUNT-REST]`, then change-recording (with D148 and `[UNDO-ROSTER-SETTINGS]`), then the Leave War
+   links last. The two evidence sheets (Tracker 23 Sep, amendment 24 Sep) are the worked examples.
+2. Then his after-the-hunt order: `[PUB-UNAVAIL]` → `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]` → the OIL award fix and the
+   small OIL follow-ups as one batch (D147) → `[DB-STEP]`. The whole list: `OUTSTANDING.md`'s priority list.
 3. Filed, none blocking: `[TRK-PINCH-ASK]` (his iPhone look), `[TRK-SMOKE-ADD-RACE]`, `[TRK-RETEST-NOTES]`,
    `[LW-FROZEN-BAR-GAP]`, `[LW-FIGSEL-SLOW]`. Everything else: `OUTSTANDING.md`'s priority list.
 4. **Before ANY collaborator:** take the checks runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).
 
 ## Gate baseline
 
-The latest counts watched on `main`'s code — 24 Sep 26, the OIL credit-tags branch, one run on a quiet PC
-(`raptor-port/docs/handpass/2026-09-24-oil-credit-tags.md` §8): unit **5819 / 5819** (358 files) · build clean ·
-tfin **728 / 0** · e2e **469 passed**, 48 skipped · smoke **442 / 0** · rulecheck OK. Restate a count only from a
+The latest counts watched — 24 Sep 26, `claude/amendment-retest`'s final code (waiting for "merge live"), one run on a
+quiet PC (`raptor-port/docs/handpass/2026-09-24-amendment.md` §10): unit **5855 / 5855** (360 files) · build clean ·
+tfin **728 / 0** · e2e **469 passed**, 48 skipped · smoke **442 / 0** · rulecheck OK · docsize OK (`OUTSTANDING.md` 2 lines
+over its tripwire, deferred by the gate to a documents-only pass, D29). Restate a count only from a
 run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his
 PC: `raptor-port/docs/gates-and-deploy.md`.
 

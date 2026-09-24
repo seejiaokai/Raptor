@@ -212,7 +212,7 @@ describe('1 · lifecycle: unpublished day → sign → publish the Original', ()
 
 /* ===================================================================== 2 */
 describe('2 · editing after publish: pending on the edit surfaces, frozen for the viewer', () => {
-  it('one note edit reads as exactly one pending item on the edit week and the board', () => {
+  it('one note edit reads as exactly one pending item on the edit week and the board (AM9)', () => {
     publishDay(DI)
     writeText('dn:0.0', 'SCHEDULER WIP')
     expect(dayPendCount(DI)).toBe(1)
@@ -228,7 +228,7 @@ describe('2 · editing after publish: pending on the edit surfaces, frozen for t
     expect(cell.getAttribute('data-alc')).toBeNull()
   })
 
-  it('the ISSUED FACE is byte-identical after an edit — no content and no "Not Yet Signed" marker leak', () => {
+  it('the ISSUED FACE is byte-identical after an edit — no content and no "Not Yet Signed" marker leak (AM5)', () => {
     /* the strong guarantee: the viewer does not see the scheduler's work in progress —
        not one byte of the issued face moves (withDaySnap swaps DAYS/changes/pending for
        the frozen snapshot, so even the pending count in the day head cannot leak). Since
@@ -246,7 +246,7 @@ describe('2 · editing after publish: pending on the edit surfaces, frozen for t
     expect(after, 'the issued face is byte-identical — the viewer sees the published truth').toBe(before)
   })
 
-  it('the WORKING choice shows the edit, under a banner and an amber Working-draft stamp', () => {
+  it('the WORKING choice shows the edit, under a banner and an amber Working-draft stamp (AM5)', () => {
     publishDay(DI)
     writeText('dn:0.0', 'SCHEDULER WIP')
     toggleViewWork(DI, true)
@@ -300,7 +300,7 @@ describe('2 · editing after publish: pending on the edit surfaces, frozen for t
 })
 
 /* ===================================================================== 3 */
-describe('3 · edit-and-revert: a round trip must leave NOTHING pending', () => {
+describe('3 · edit-and-revert: a round trip must leave NOTHING pending (AM20)', () => {
   /* The owner's own complaint, 16 Aug 26: "if original was 0830, I change to
      0835 you show an edit dotted line, but when I switch back to 0830 it
      shouldn't register as a change". A pending mark means "differs from the
@@ -329,7 +329,7 @@ describe('3 · edit-and-revert: a round trip must leave NOTHING pending', () => 
     expect(Object.keys(SCHED.pending)).toEqual([])
   })
 
-  it('(a) a TIME cell changed and changed back — the owner’s 0830→0835→0830', () => {
+  it('(a) a TIME cell changed and changed back — the owner’s 0830→0835→0830 (AM9)', () => {
     publishDay(DI)
     writeText('ff:0.0.0.to', '12:45')
     expect(Object.keys(SCHED.pending)).toEqual(['ff:0.0.0.to'].map(rk))
@@ -397,7 +397,7 @@ describe('3 · edit-and-revert: a round trip must leave NOTHING pending', () => 
 })
 
 /* ===================================================================== 4 */
-describe('4 · structural round trip on a published day: add then delete nets out', () => {
+describe('4 · structural round trip on a published day: add then delete nets out (AM21)', () => {
   it('+ Wave then ✕ Wave leaves no pending item and no false removal', () => {
     /* engine-rules §Publishing: "a row added after issue, reordered, and
        deleted again before its AL is a net no-op: its pending add key is
@@ -515,7 +515,7 @@ describe('5 · drafts on a published day: the diff is rebased against the ISSUED
 
 /* ===================================================================== 6 */
 describe('6 · load a version onto the working copy: the viewer keeps seeing the issued AL', () => {
-  it('loading the Original after AL1 leaves SCHED.cur at AL1 and pends the difference', () => {
+  it('loading the Original after AL1 leaves SCHED.cur at AL1 and pends the difference (AM6)', () => {
     /* owner, 16 Aug 26 — "the view only schedule should still see AL1, it
        shouldn't go to Original without me publishing the working copy". This
        is the whole reason "Restore this version" became "Load onto working
