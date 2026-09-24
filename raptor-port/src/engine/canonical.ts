@@ -254,3 +254,165 @@ export function canonicalDiff(prevD: any, newD: any, di: any): DeltaEntry[] {
 
   return out
 }
+
+/* =====================================================================
+   THE COUNTING UNIT (owner, D109, 25 Sep 26 — "A move counts as one").
+   canonicalDiff above is the RECORD — one entry per cell that differs, and it is
+   what an amendment stores and what eligibility reads; D109 leaves it exactly as
+   it is. This is the unit a PERSON counts it in, which every "N pending" reads
+   (publish.ts dayPendingItems): a man, or a placeholder, taken off one place and
+   put on another place of the same day is ONE change, where the record holds two
+   cells; a swap is two; times, areas and remarks stay one per box.
+   A PLACE is where a man stands: a single seat (a flying seat, a sim's front or
+   back seat) or one row's whole crowd (a programme row's list, a duty row's desk
+   holder and extras, a sim row's passengers and extras, a ground row's who and
+   extras) — so a man shifting inside one row's list, or a list closing up behind
+   a man taken out, is not a change of its own. Places are named by ROW ID
+   (ridKey), resolved in each day on its own, so a reorder never makes two
+   different rows compare (the record's own rule, P2-R2-03).
+   Pairing: per place, what it held and no longer holds is OFF, the reverse ON;
+   a token OFF at one place and ON at another is one move. Left-over events count
+   ONE per place (a man only taken off, only added, or a replacement in the same
+   box — the plan's GAP call, filed for him). A place whose crowd changed with no
+   man arriving or leaving (the desk holder and an extra trading places) still
+   counts one, so the unit list is empty exactly when the record is — a count of
+   0 beside a "Publish AL" button is the one outcome this must never produce. Only
+   rows present on BOTH sides pair; a man inside an added or removed row belongs
+   to that row's add / delete. */
+export type UnitKind = DeltaKind | 'reseat' | 'people'
+export interface PendUnit {
+  kind: UnitKind
+  /* where the change sits on the LIVE day, as the positional address the screens draw
+     (data-slot / data-bfld), '' when nothing is left to point at (a removal, a reorder,
+     a filing, the OIL block). `jump` lists fall-backs in order. */
+  addr: string
+  jump: string[]
+  /* the rid-anchored addresses this unit covers — what the edit log is keyed by */
+  keys: string[]
+  entry?: DeltaEntry            // the record entry, for every unit that is not a person unit
+  token?: string                // a 'reseat': the man (id) or placeholder that moved
+  from?: string; to?: string    // a 'reseat': the place he left / arrived at (live positional)
+  off?: string[]; on?: string[] // a 'people' unit: who left / arrived at this place (tokens)
+  place?: string                // a 'people' unit: the place's positional address on the live day
+}
+/* the addresses that hold a man or a placeholder — the dayKeys grammar (restore.ts):
+   a flying seat has no prefix; a:/d:/s:/g: are the programme, duty, sim and ground
+   crews. sr:'s `who` is free text, never a person (ARCH-STACK 1C). */
+export function isPersonAddr(a: any): boolean {
+  const s = String(a), c = s.indexOf(':')
+  if (c < 0) return /^\d+\.[^.]+\.[^.]+\.[^.]+\.[pw]$/.test(s)
+  const p = s.slice(0, c)
+  return p === 'a' || p === 'd' || p === 's' || p === 'g'
+}
+function placeOf(k: string): string {
+  const c = k.indexOf(':'); if (c < 0) return k            // a flying seat is its own place
+  const p = k.slice(0, c), a = k.slice(c + 1).split('.')
+  if (p === 'a') return `a:${a[0]}.${a[1]}`
+  if (p === 'd') return `d:${a[0]}.${a[1]}.${a[2]}`
+  if (p === 'g') return `g:${a[0]}.${a[1]}`
+  if (p === 's') return (a[3] === 'p' || a[3] === 'w') ? k : `s:${a[0]}.${a[1]}.${a[2]}.X`
+  return k
+}
+/* the id of the row that owns a place — an aircraft for a flying seat */
+function placeRow(pl: string): string {
+  const c = pl.indexOf(':'), p = c < 0 ? '' : pl.slice(0, c), a = (c < 0 ? pl : pl.slice(c + 1)).split('.')
+  if (!p) return String(a[3])
+  if (p === 'a' || p === 'g') return String(a[1])
+  return String(a[2])                                       // d: (block, row) · s: (kind, row)
+}
+/* a place's own cell on the live day, then its row's head, for the jump */
+function placeJump(pl: string, nowArr: any[]): string[] {
+  const c = pl.indexOf(':'), p = c < 0 ? '' : pl.slice(0, c), a = (c < 0 ? pl : pl.slice(c + 1)).split('.')
+  const cand = !p ? [pl]
+    : p === 'a' ? [`a:${a[0]}.${a[1]}.0`, `ap:${a[0]}.${a[1]}.prog`]
+    : p === 'd' ? [`d:${a[0]}.${a[1]}.${a[2]}`, `dr:${a[0]}.${a[1]}.${a[2]}.role`]
+    : p === 'g' ? [`g:${a[0]}.${a[1]}`, `gr:${a[0]}.${a[1]}.prog`]
+    : (a[3] === 'p' || a[3] === 'w') ? [pl, `sr:${a[0]}.${a[1]}.${a[2]}.label`]
+    : [`s:${a[0]}.${a[1]}.${a[2]}.x0`, `s:${a[0]}.${a[1]}.${a[2]}.pax.0`, `sr:${a[0]}.${a[1]}.${a[2]}.label`]
+  return cand.map(k => posKey(k, nowArr)).filter((k: any): k is string => !!k)
+}
+/* per place, its cells (rid key → value) on one day */
+function peopleOf(d: any, di: number): Map<string, Map<string, string>> {
+  const arr: any[] = []; arr[di] = d
+  const out = new Map<string, Map<string, string>>()
+  dayKeys(d, di).forEach((v: any, k: any) => {
+    if (!isPersonAddr(k)) return
+    const rk = ridKey(k, arr), pl = placeOf(rk)
+    let m = out.get(pl); if (!m) { m = new Map(); out.set(pl, m) }
+    m.set(rk, String(v == null ? '' : v))
+  })
+  return out
+}
+/* the jump address of a record entry that is not a person cell: the cell itself, the
+   area strip for the decomposed area / area-time addresses, nothing for the entries
+   that have no cell left (a removal, a reorder, a filing, the OIL block) */
+function entryJump(e: DeltaEntry): string[] {
+  if (e.kind === 'delete' || e.kind === 'move' || e.kind === 'input' || e.kind === 'oil') return []
+  const a = String(e.addr), c = a.indexOf(':'), p = c < 0 ? '' : a.slice(0, c), r = a.slice(c + 1).split('.')
+  if (p === 'fa' || p === 'aa') return [`ar:${r[0]}.${r[1]}.${r[2]}`]
+  if (p === 'ft' || p === 'au') return [`at:${r[0]}.${r[1]}.${r[2]}`]
+  return [a]
+}
+export function canonicalUnits(prevD: any, newD: any, di: any): PendUnit[] {
+  di = +di
+  const diff = canonicalDiff(prevD, newD, di)
+  const nowArr: any[] = []; nowArr[di] = newD
+  const prevArr: any[] = []; prevArr[di] = prevD
+  const out: PendUnit[] = []
+  const personEntries: DeltaEntry[] = []
+  diff.forEach((e: DeltaEntry) => {
+    if (isPersonAddr(e.addr)) { personEntries.push(e); return }
+    const jump = entryJump(e)
+    /* the log key: a field's own address, rid-anchored in the live day (an area edit is
+       logged under its ar:/at: strip, which is also where it jumps to) */
+    const keys = jump.length ? jump.map(k => ridKey(k, nowArr)) : []
+    out.push({ kind: e.kind, addr: jump[0] || '', jump, keys, entry: e })
+  })
+  if (!personEntries.length) return out
+
+  const was = peopleOf(prevD, di), now = peopleOf(newD, di)
+  const rowIds = (d: any) => new Set(rowsOf(d).map((r: any) => r && r.rid).filter(Boolean))
+  const wasRows = rowIds(prevD), nowRows = rowIds(newD)
+  /* a row with no id (a legacy day) pairs by position, canonicalDiff's own fallback */
+  const survives = (pl: string) => { const r = placeRow(pl); return /^\d+$/.test(r) || (wasRows.has(r) && nowRows.has(r)) }
+  const bag = (m: Map<string, string> | undefined) => { const b = new Map<string, number>(); (m ? [...m.values()] : []).forEach(v => { if (v) b.set(v, (b.get(v) || 0) + 1) }); return b }
+  const minus = (a: Map<string, number>, b: Map<string, number>) => { const o: string[] = []; a.forEach((n, v) => { for (let i = (b.get(v) || 0); i < n; i++) o.push(v) }); return o.sort() }
+  const same = (a?: Map<string, string>, b?: Map<string, string>) => {
+    const x = a || new Map(), y = b || new Map(); if (x.size !== y.size) return false
+    for (const [k, v] of x) if (y.get(k) !== v) return false
+    return true
+  }
+  type Ev = { tok: string; pl: string; used: boolean }
+  const offs: Ev[] = [], ons: Ev[] = [], changed: string[] = []
+  const places = [...new Set([...was.keys(), ...now.keys()])].filter(survives).sort()
+  places.forEach(pl => {
+    const a = was.get(pl), b = now.get(pl)
+    if (same(a, b)) return
+    changed.push(pl)
+    const wb = bag(a), nb = bag(b)
+    minus(wb, nb).forEach(tok => offs.push({ tok, pl, used: false }))
+    minus(nb, wb).forEach(tok => ons.push({ tok, pl, used: false }))
+  })
+  const keysOf = (pl: string) => [...new Set([...(was.get(pl)?.keys() || []), ...(now.get(pl)?.keys() || [])])]
+  const posOf = (pl: string) => placeJump(pl, nowArr)
+  const person: PendUnit[] = []
+  /* pair each man's departures with his arrivals, deterministically (place order) */
+  offs.forEach(o => {
+    const i = ons.findIndex(x => !x.used && x.tok === o.tok && x.pl !== o.pl)
+    if (i < 0) return
+    const to = ons[i]!; o.used = true; to.used = true
+    const toJ = posOf(to.pl), fromJ = posOf(o.pl)
+    person.push({ kind: 'reseat', token: o.tok, addr: toJ[0] || '', jump: toJ, keys: [...keysOf(o.pl), ...keysOf(to.pl)], from: fromJ[0] || '', to: toJ[0] || '' })
+  })
+  changed.forEach(pl => {
+    const myOff = offs.filter(x => x.pl === pl), myOn = ons.filter(x => x.pl === pl)
+    const left = myOff.filter(x => !x.used), came = myOn.filter(x => !x.used)
+    const hadEvents = myOff.length + myOn.length > 0
+    if (hadEvents && !left.length && !came.length) return          // every man here moved — the moves carry it
+    const j = posOf(pl)
+    person.push({ kind: 'people', place: j[0] || '', addr: j[0] || '', jump: j, keys: keysOf(pl), off: left.map(x => x.tok), on: came.map(x => x.tok) })
+  })
+  /* the invariant, belt and braces: a person cell differs, so something must count */
+  if (!person.length) personEntries.forEach(e => { const j = [String(e.addr)]; person.push({ kind: 'people', place: j[0]!, addr: j[0]!, jump: j, keys: [ridKey(e.addr, nowArr)], off: e.from ? [e.from] : [], on: e.to ? [e.to] : [] }) })
+  return out.concat(person)
+}

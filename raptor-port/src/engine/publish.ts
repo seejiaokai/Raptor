@@ -5,8 +5,8 @@ import { isScheduler } from './people'
 import { HOOKS } from './hooks'
 import { logEdit } from './editlog'
 import { ridKey, posKey, ridWriteKey, ensureRowIds, RID_BOOK_VERSION } from './rowids'
-import { canonicalDiff, digest } from './canonical'
-import type { DeltaEntry } from './canonical'
+import { canonicalDiff, canonicalUnits, digest } from './canonical'
+import type { DeltaEntry, PendUnit } from './canonical'
 import { INPUTS, inpId, inputCoversDate } from './inputs'
 import { CURWEEK } from './waves'
 import { groundOrder } from './order'
@@ -136,9 +136,11 @@ export function daysLabel(list:any){return list.length?list.map(dowShort).join('
    [di]. What was ISSUED is frozen on the record (the `diff` and the `snap`) and
    never recalculated; the live keys still drive the marks on screen. */
 export function alDays(rec:any){ if(!rec)return []; return rec.di!=null?[+rec.di]:[]; }
-/* the item count is the length of the frozen canonical diff (§3 — counts derive
-   from the diff, not from a live key list that a later delete could shrink). */
-export function alCount(rec:any){return rec&&rec.diff?rec.diff.length:0;}
+/* the item count is frozen on the record at issue (§3 — never from a live key list a later
+   delete could shrink). Since D109 (25 Sep 26) it is counted in the same unit "N pending" was
+   (`units`, stored by alIssue — a man moved is one item, not two cells); a record issued before
+   that falls back to its diff's length. */
+export function alCount(rec:any){return !rec?0:rec.units!=null?+rec.units:rec.diff?rec.diff.length:0;}
 /* the per-day sequence numbers this day has issued, ascending (1 = AL1 …). */
 export function dayALs(di:any){di=+di;return SCHED.als.filter((a:any)=>+a.di===di).map((a:any)=>+a.seq).sort((a:any,b:any)=>a-b);}
 /* per-kind counts off a frozen canonical diff — for the AL history and the
@@ -182,7 +184,32 @@ export function dayPendCount(di:any){return Object.keys(SCHED.pending).filter((k
    trip can leave an inert one behind, so a raw count read "nothing unpublished" beside a
    "Publish AL1" button, or an edit that is not there. On a never-published day the draft marks
    ARE the count. The day head, the ⓘ day panel and the plan-switch message all read this. */
-export function dayShownPendCount(di:any){di=+di;return dayApproved(di)?dayDelta(di).length:dayPendCount(di);}
+export function dayShownPendCount(di:any){di=+di;return dayApproved(di)?dayPendingItems(di).length:dayPendCount(di);}
+/* THE ONE COUNTING BODY (owner, D109, 25 Sep 26 — "A move counts as one"). The same comparison
+   publication uses (the live day against the CURRENT issued version: the canonical diff, the
+   input-filing axis, the OIL axis — dayDeltaIn below), counted in the unit a person counts in:
+   a man or a placeholder taken off one place and put on another of the same day is ONE item,
+   where the record holds two cells (canonical.ts canonicalUnits). EVERY count reads this — the
+   day head's "N pending", the ⓘ panel, the plan-switch message, the sign-off line's "N changes
+   to publish", the Amendments panel, the publish message, the stored AL's item count, the load's
+   "Discard N edits" (content only) and the pending list itself, whose rows ARE these items — so
+   no two of them can disagree. It is empty exactly when dayDelta is (canonicalUnits' invariant),
+   so eligibility (dayHasChanges) and the count can never read "0 pending" beside a Publish button.
+   What goes out — the stored diff — and the marks on screen are unchanged (D109). */
+export type PendItem = PendUnit & { axis: 'content'|'filing'|'oil' };
+export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
+  if(!((sc&&sc.dayOK)||{})[di])return [];
+  const ver=dayCurVerIn(sc,di,weekKey), snap=ver!=null?daySnapIn(sc,di,ver,weekKey):null;
+  if(!snap||!snap.d)return [];
+  const items:PendItem[]=canonicalUnits(snap.d,DAYS[di],di).map((u:any)=>({...u,axis:'content'}));
+  filingDelta(di,snap.fil).forEach((e:any)=>items.push({kind:'input',addr:'',jump:[],keys:[],entry:e,axis:'filing'}));
+  oilDelta(di,snap.d).forEach((e:any)=>items.push({kind:'oil',addr:'',jump:[],keys:[],entry:e,axis:'oil'}));
+  return items;}
+export function dayPendingItems(di:any):PendItem[]{return dayPendingItemsIn(SCHED,di,CURWEEK);}
+/* the per-kind split of a day's items, the shape diffCounts gives a stored diff — for the
+   Amendments panel's "N changes · N removals · N reorders · N input filings" */
+export function itemCounts(items:any){const d=items||[];const by=(k:any)=>d.filter((e:any)=>e.kind===k).length;
+  return {total:d.length,add:by('add'),del:by('delete'),chg:d.length-by('add')-by('delete')-by('move')-by('input')-by('oil'),mov:by('move'),inp:by('input'),oil:by('oil')};}
 /* the marks "Discard marks" may clear: those on days never published (F-01 — a published day's
    divergence is published or put back, never silently dropped). The Amendments panel enables
    its button off this, so it is never offered when it could clear nothing (walk S2). */
@@ -388,7 +415,8 @@ export function dayDiscardCount(di:any):number{di=+di;
      projection, the frozen sentinel membership) is not: recovery re-derives it
      from the live inputs and roster, exactly as the filing axis is retained. */
   const decDrop=oilDecisionsKey((DAYS[di]||{}).oild)!==oilDecisionsKey((snap.d||{}).oild)?1:0;
-  return canonicalDiff(snap.d,DAYS[di],di).length+decDrop;}
+  /* counted in the ONE unit (D109): a man moved is one edit here too, as on the day head */
+  return canonicalUnits(snap.d,DAYS[di],di).length+decDrop;}
 /* THE ONE PLACE records are found by identity (§1, P2-R2-05/P2-R3-03). `ver` is
    a verId (`iso#seq`) — the Original is `iso#0`, an AL is `iso#seq`. It also
    still resolves a `d:<id>` DRAFT blob (unchanged). It MUST validate that the
@@ -675,6 +703,9 @@ export function alIssue(di:any){di=+di;
   /* the canonical delta vs the CURRENT issued version, captured BEFORE the marks
      move to changes — this is the frozen record of what this AL changed. */
   const diff=dayDelta(di);
+  /* …and its COUNT in the unit "N pending" read a moment ago (D109): the record keeps every
+     cell, the person reads "1 item" for a man moved, as the day head said */
+  const units=dayPendingItems(di).length;
   const keys=Object.keys(SCHED.pending).filter((k:any)=>keyDay(k)===di);
   /* a still-outstanding draft add on this day becomes part of the frozen
      snapshot, so it wears this AL's colour and its live-only marker is cleared. */
@@ -688,11 +719,11 @@ export function alIssue(di:any){di=+di;
   const sign=signNames(di);
   /* freeze the day AFTER its marks are on — this is the document */
   const snap=daySnap(di);
-  SCHED.als.push({id,di,iso,seq,snap,diff,sign:{[di]:sign},added});
+  SCHED.als.push({id,di,iso,seq,snap,diff,units,sign:{[di]:sign},added});
   SCHED.cur=SCHED.cur||{}; SCHED.cur[di]=id;   // issuing makes it current
   signClear(di);
   reflow(); histPush();   // publishing is its own undo step, not a silent baseline shift
-  return {seq,id,sign,count:diff.length};
+  return {seq,id,sign,count:units};
 }
 /* publish ONE day's changes as its next per-day AL (P2-08 — never publish-all).
    Gates on dayHasChanges (the canonical delta, F-02), NOT on a live pending
@@ -850,10 +881,12 @@ export function currentBind(di:any){di=+di; const d=DAYS[di];
      and publication all call the SAME body, so they cannot disagree about what
      is being signed. Without it an answer-only change would be publishable on a
      signature given before the answer moved. */
-  /* THE SIGNATURE'S PROJECTION, NOT THE COMPARISON'S (D45, step 9b). A change in
-     availability never invalidates a signature — the pending mark is how that
-     change is acknowledged — so membership is left out of what a signature binds
-     to. Everything else about the block still binds. */
+  /* THE SIGNATURE'S PROJECTION, NOT THE COMPARISON'S (D45, step 9b) — the OIL key
+     below still leaves membership out, and everything else about the block still
+     binds through it. BUT D45's signature half was REPLACED on 25 Sep 26 by D103
+     ("any change on a published day wipes the sign-offs"): on a published day the
+     `pd` axis binds the whole pending comparison, membership included, so a changed
+     crowd now DOES take the four down there, and putting it back restores them. */
   /* …and the order the GROUND PROGRAMME is shown in (the amendment re-test's final read, Fable #1,
      24 Sep 26). The digest keys ground rows by their raw place in the array, but the amendment compares the
      order on screen — and a first drag freezes the shown order into the array before it moves, so a drag
@@ -862,7 +895,17 @@ export function currentBind(di:any){di=+di; const d=DAYS[di];
   /* recorded as the shown order of the array's positions: the digest already binds each position's
      content, so the pair fixes what is shown — and it does not move when row ids are minted before a publish */
   const gord=d?groundOrder(d.ground,d.gman).map((x:any)=>x.ri).join(','):'';
-  return {dg:d?digest(d,di):'', iso:dayIso(CURWEEK,di), base:dayCurVer(di)||'', rev:(SCHED.curDraft||{})[di]||'', fil:filingKey(di), oil:oilSignKey(oilEvidence(di),d), gord};}
+  return {dg:d?digest(d,di):'', iso:dayIso(CURWEEK,di), base:dayCurVer(di)||'', rev:(SCHED.curDraft||{})[di]||'', fil:filingKey(di), oil:oilSignKey(oilEvidence(di),d), gord, pd:pendingKey(di)};}
+/* ANY PENDING CHANGE WIPES THE SIGN-OFFS (owner, D103, 25 Sep 26 — his own idea: "why dont we just wipe the
+   sign offs for any changes to the schedule?"). ONE rule: something waiting means sign again. So a signature on
+   a PUBLISHED day also binds to the whole pending comparison itself — every entry of dayDelta, the same body
+   "N pending" and eligibility read — which reaches what the other axes deliberately leave out: a change in who
+   is behind ALL / ALL AVAIL (the membership the OIL key above omits — REPLACES D45's signature half), an
+   edited request's times, a Quals or posting change. Nothing "clears" it: validity is recomputed on every read,
+   so putting the change back restores the four (AM11). On a day not yet published nothing is pending (no issued
+   version to differ from) and the key is '' — its content axes above are the whole binding, as before. */
+function pendingKey(di:any):string{
+  return dayDelta(di).map((e:any)=>`${e.addr}${'␟'}${e.kind}${'␟'}${e.from??''}${'␟'}${e.to??''}`).sort().join('\n');}
 /* set a role's signer through the ONE sanctioned write path (ui/Shell.tsx). A
    truthy signer binds that role to the current content; clearing a role drops its
    binding. Tests / a legacy demo book that write signOf(di)[role] directly leave
@@ -886,7 +929,9 @@ function signBoundOk(di:any,role:any,cur?:any){const b=(SCHED.signBind||{})[+di]
      invalidates, because '' and a real block differ. */
   /* the ground order axis, like the filing axis: a binding written before it existed (no gord) cannot prove
      the order was approved, so it re-signs — on a day with ground rows; with none there is no order to prove */
-  return x.dg===c.dg&&x.iso===c.iso&&x.base===c.base&&x.rev===c.rev&&x.fil===c.fil&&(x.gord||'')===(c.gord||'')&&oilBoundOk(di,x.oil,c.oil);}
+  /* …and the pending comparison (D103): a binding written before it existed reads '' — which is exactly what a
+     day with nothing waiting has, so it stands there and falls the moment anything is pending */
+  return x.dg===c.dg&&x.iso===c.iso&&x.base===c.base&&x.rev===c.rev&&x.fil===c.fil&&(x.gord||'')===(c.gord||'')&&(x.pd||'')===(c.pd||'')&&oilBoundOk(di,x.oil,c.oil);}
 /* A BINDING WRITTEN BEFORE `stand` EXISTED stores the OIL key in the old
    six-part form, which can never equal today's seven-part one — so every
    signature given before this build fell off a day whose content had not moved,

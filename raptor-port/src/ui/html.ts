@@ -1984,7 +1984,7 @@ export function signoffHTML(di:any,full:any){
         miss.length ? `${miss.length} to sign${full?' · '+miss.map(why).join(', '):stale.length?' · '+stale.map(why).join(', '):''}`
         : !dayApproved(di) ? 'Signed — this day can be published'
         : (()=>{const cv=dayCurVer(di); if(cv==null) return 'Signed';   // approved but no resolvable snapshot (probe/import) → no ALNaN label (Fable #3)
-            const chg=dayDelta(di).length;
+            const chg=dayShownPendCount(di);   // the ONE count the day head shows (D109 — a man moved is one change)
             return chg
               ? `Published at ${esc(verLabel(cv))} · ${chg} change${chg>1?'s':''} to publish — Publish AL${nextSeq(di)}`
               : `Published at ${esc(verLabel(cv))} — no changes to publish`;})()

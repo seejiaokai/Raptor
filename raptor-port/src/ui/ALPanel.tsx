@@ -5,7 +5,7 @@
    exactly that day (publishALDay). The issued-AL list below is READ-ONLY
    history (no unpublish ✕ — take-backs are gone), its counts from the frozen
    diff. The week-wide AL-number dropdown is gone. */
-import { SCHED, pendingPublishDays, discardableCount, nextSeq, daySigned, signMissing, dowShort, diffCounts, dayDelta, verLabel, alCount, SIGN_ROLES } from '../engine/publish'
+import { SCHED, pendingPublishDays, discardableCount, nextSeq, daySigned, signMissing, dowShort, diffCounts, dayPendingItems, itemCounts, verLabel, alCount, SIGN_ROLES } from '../engine/publish'
 import { esc, DPREV } from '../state/view'
 import { notify, commitPublishALDay, commitDiscardPending } from '../state/store'
 import { useVersion } from './useStore'
@@ -32,7 +32,9 @@ export function ALPanel() {
       {pubDays.length
         ? <div className="al-pubdays">
             {pubDays.map((di: number) => {
-              const c = diffCounts(dayDelta(di)), seq = nextSeq(di), signed = daySigned(di)
+              /* the ONE counting body (D109): the same items the day head counts, so a man moved
+                 reads "1 change" here as it does there */
+              const c = itemCounts(dayPendingItems(di)), seq = nextSeq(di), signed = daySigned(di)
               /* PREVIEW GUARD (owner, 15 Sep 26 — A3, Codex PS-001): while the
                  day is showing a frozen version, "Publish AL" would publish the
                  LIVE working copy, not the thing on screen. Hiding the day-head /
