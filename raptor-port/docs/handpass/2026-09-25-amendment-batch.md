@@ -76,6 +76,25 @@ skills observation (#245).
 
 ## 5. Break tests
 
+Each wired piece broken once on purpose (the file restored after each; the script is kept in the chat's scratch
+folder — the table is the record). Every break turned a named test red:
+
+| broken on purpose | test that went red |
+|---|---|
+| the count reads the raw record, not the one body (item 14) | `amendbatch.test.tsx` item 14 — also done red-first while building |
+| the signature ignores the pending comparison (item 7, `pd`) | `oilmembership.test.ts` D103 block (2) — also red-first |
+| the marker never says "Not yet published" (item 5) | `amendbatch.test.tsx` item 5 — also red-first |
+| the board passes no warning marks (item 2) | `amendbatch.test.tsx` item 2 |
+| the ORIG seal loses its tick (item 13) | `amendbatch.test.tsx` item 13 |
+| the Original does not keep its four (item 3) | `amendbatch.test.tsx` item 3 (2) |
+| the picker applies over a published day (item 4) | `board.test.tsx` (D96) |
+| the engine applies over a published day (item 4) | `daytpl.test.ts` (D96, AM58) |
+| the load does not put filings back (item 6) | `amendbatch.test.tsx` item 6 + `amendretest.test.tsx` (3) |
+| the pending chip is never a button (item 8) | `amendbatch-app.test.tsx` (4) |
+| the jump always opens the board (item 12) | `amendbatch-app.test.tsx` (2) |
+| the board does not follow the visible area (item 11) | `amendbatch-app.test.tsx` |
+| no hollow waiting tag (item 1) | `amendretest.test.tsx` (the stylesheet guard, rewritten to D93) |
+
 ## 6. Gates
 
 ## 7. What was NOT walked, and why
