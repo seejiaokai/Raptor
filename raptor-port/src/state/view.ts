@@ -449,6 +449,12 @@ export function setPage(p:any){
      on one would list the wrong crowd on the other (D44). The week and session
      halves are in VIEW_RESET below. */
   if(p!==CURPAGE)setAvailWin(null);
+  /* THE ONE-SHOT CONFIRMS CLEAR ON ANY NAVIGATION (their own doctrine, RESTARM / UNPUBARM
+     below): a page change — and so the admin's View-as-member flip, which changes page —
+     drops an armed "Discard N edits & load" and an armed "Withdraw — confirm", so coming
+     back asks again instead of withdrawing OIL on one tap ([HUMAN-RETEST] walk S13, Fable
+     5-8, Astra rank 33, 24 Sep 26). A stay on the same page keeps them. */
+  if(p!==CURPAGE){ RESTARM=null; UNPUBARM=null }
   if(p!==CURPAGE&&typeof document!=='undefined')document.querySelectorAll('.stmenu, .wavemenu').forEach(x=>{
     const off=(x as any)._offClick;
     if(off)document.removeEventListener('click',off);

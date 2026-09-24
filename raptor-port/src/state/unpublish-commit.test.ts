@@ -6,7 +6,7 @@ import { beforeEach, afterEach, describe, expect, it } from 'vitest'
 import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
 import {
-  SCHED, signOf, dayApproved, dayHasChanges, dayVersions, daySnapOf, dayCurVer, nextSeq,
+  SCHED, signOf, dayApproved, dayHasChanges, dayVersions, daySnapOf, dayCurVer, nextSeq, dayDelta,
 } from '../engine/publish'
 import { txtSet } from '../engine/slots'
 import { CURWEEK } from '../engine/waves'
@@ -83,6 +83,26 @@ describe('unpublish an AL → the working copy re-opens, Original stays current'
     expect(dayHasChanges(0)).toBe(true)
     // the day is marked as correcting AL1's label
     expect((SCHED.correcting as any)[0]).toBe(al1)
+  })
+})
+
+/* [HUMAN-RETEST] the amendment system, walk S1 (Fable 5-3, 24 Sep 26). AM20: a pending mark
+   means "differs from what was issued", not "was touched". Unpublishing AL1 makes the version
+   UNDER it current again, so a change already put back to that version's value must not come
+   back as a dotted mark — the head, the sign line and the panel (all the canonical delta) would
+   say one thing while the cell said another. */
+describe('unpublish re-opens only what still differs from the version under it (walk S1)', () => {
+  it('a change put back to the older value leaves no phantom pending mark', () => {
+    sign(0); commitSetDayApproved(0, true)                  // Original: VL takes off 12:40
+    const was = (DAYS[0] as any).waves[0].formations[0].to
+    txtSet('ff:0.0.0.to', '13:10'); txtSet('dn:0.0', 'AL1 NOTE')
+    sign(0); commitPublishALDay(0)                          // AL1 carries both
+    txtSet('ff:0.0.0.to', was)                              // the time put back to the Original's
+    commitUnpublish(0)                                      // AL1 off → the Original is current
+    const pend = Object.keys(SCHED.pending)
+    expect(pend.some(k => k.startsWith('dn:0.')), 'the note still differs from the Original').toBe(true)
+    expect(pend.some(k => /^ff:0\..*\.to$/.test(k)), 'the time equals the Original — no mark').toBe(false)
+    expect(dayDelta(0).length).toBe(1)
   })
 })
 

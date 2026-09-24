@@ -174,6 +174,18 @@ export function dayCurVerIn(sc:any,di:any,weekKey?:any){di=+di;
   return (o&&o.id&&daySnapIn(sc,di,o.id,weekKey))?o.id:null;}
 export function dayCurVer(di:any){return dayCurVerIn(SCHED,di,CURWEEK);}
 export function dayPendCount(di:any){return Object.keys(SCHED.pending).filter((k:any)=>keyDay(k)===di).length;}
+/* THE ONE COUNT a person reads as a day's unpublished changes (register AM23, [HUMAN-RETEST]
+   the amendment system, 24 Sep 26). On a PUBLISHED day it is the canonical delta against the
+   issued version — the same authority as publish eligibility — never the raw pending marks: a
+   change with no cell (what the day earns, an input filing) raises no mark, and a filing round
+   trip can leave an inert one behind, so a raw count read "nothing unpublished" beside a
+   "Publish AL1" button, or an edit that is not there. On a never-published day the draft marks
+   ARE the count. The day head, the ⓘ day panel and the plan-switch message all read this. */
+export function dayShownPendCount(di:any){di=+di;return dayApproved(di)?dayDelta(di).length:dayPendCount(di);}
+/* the marks "Discard marks" may clear: those on days never published (F-01 — a published day's
+   divergence is published or put back, never silently dropped). The Amendments panel enables
+   its button off this, so it is never offered when it could clear nothing (walk S2). */
+export function discardableCount(){const orig=SCHED.orig||{};return Object.keys(SCHED.pending).filter((k:any)=>!orig[keyDay(k)]).length;}
 export function pendDays(){return uniqDays(Object.keys(SCHED.pending));}
 /* pending edits only become publishable amendments once their day is published —
    changes to a day that is still draft are just draft work, not an amendment */
@@ -719,8 +731,13 @@ export function publishALDay(di:any){
    Original, and clear only the draft-build marks on never-published days. */
 export function discardPending(){
   const orig=SCHED.orig||{};
-  Object.keys(SCHED.pending).forEach((k:any)=>{ if(!orig[keyDay(k)])delete SCHED.pending[k]; });
-  reflow(); histPush(); toast('Pending marks cleared');
+  /* say what actually happened (walk S2, 24 Sep 26): it used to toast "Pending marks cleared"
+     even when every mark sat on a published day and nothing was touched. */
+  let n=0, kept=0;
+  Object.keys(SCHED.pending).forEach((k:any)=>{ if(!orig[keyDay(k)]){delete SCHED.pending[k]; n++;} else kept++; });
+  if(!n)return toast('Nothing to clear — the changes are on published days: publish them as an amendment, or put them back');
+  reflow(); histPush();
+  toast(`Cleared ${n} draft mark${n===1?'':'s'}`+(kept?' · published days keep their changes until you publish them or put them back':''));
 }
 /* ---- [GLOBAL-UNDO] §6.5 — UNPUBLISH: retract a published day to a working copy
    ---------------------------------------------------------------------------

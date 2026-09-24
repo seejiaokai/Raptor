@@ -39,6 +39,7 @@ import { INPUTS, mintInpIds } from '../engine/inputs'
 import { reconcileDayFiling } from '../engine/slots'
 import { ensureRowIds } from '../engine/rowids'
 import { SCHED, setDayApproved, publishALDay, discardPending, unpublishDay, dayCurVer, signClear } from '../engine/publish'
+import { reconcileIssuedMarks } from '../engine/drafts'
 import { CURWEEK } from '../engine/waves'
 import { HIST, histSnap, histRestore, setSchedResync } from './history'
 import { setSchedEpilogueHook, HOOKS } from '../engine/hooks'
@@ -549,6 +550,12 @@ export function commitUnpublish(di: number): CommitResult {
       const actor = deriveActor()
       const id = unpublishDay(di, { by: actor.personId ?? actor.id, disclosed })
       if (!id) throw new CmdRefused(`unpublish: day ${di} has no retractable latest version`)
+      /* the marks re-opened from the retracted AL are re-checked against the version that is
+         current NOW (AM20 — a mark means "differs from what was issued"): a change already
+         put back to that version's value must not come back as a dotted mark while the head,
+         the sign line and the panel say otherwise ([HUMAN-RETEST] walk S1, Fable 5-3, 24 Sep
+         26). The same reconcile every edit runs, inside this one command, so it undoes with it. */
+      reconcileIssuedMarks()
       txn.boundary({ kind: 'unpublish', ids: [id], crossable: !disclosed })
       applyEnd()
       cmdDeferEffect(() => { prunePreviews(); HOOKS.reflow(); HOOKS.histPush() })
