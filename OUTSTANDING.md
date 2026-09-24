@@ -486,7 +486,7 @@ retry (more likely on iPhone). Never fixed, not logged as a limitation.
   than a piecemeal patch in three places. Or pull earlier on request.
 
 ### [S4-BUGHUNT-MERGED] MERGED to main (PR #422, 21 Sep 26) — 34 commits. Kept for what it SET ASIDE.
-**Read `HANDOFF-S4-BUGHUNT.md`, then `raptor-port/docs/superpowers/specs/2026-09-20-CURRENT-STATE.md`
+**Read `docs/archive/HANDOFF-S4-BUGHUNT.md` (archived 24 Sep 26), then `raptor-port/docs/superpowers/specs/2026-09-20-CURRENT-STATE.md`
 and nothing else first.** That spec is the single destination: what is built, what is parked, and the
 RULES SET ASIDE today that must not be re-applied — B4's "overlap means no credit", BOTH halves of
 B5 (the bid-door refusal AND "publishing replaces an undecided bid"), §26.3's refusal of leave over

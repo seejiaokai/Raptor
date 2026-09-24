@@ -603,3 +603,48 @@ code separately from its output, and never let the same line that runs a gate al
 **Suggested improvement:** In the brief-building step, require the brief to point reviewers at the LIVE source-of-truth files (the ruling/decision record, the plan file on disk) rather than paste them, and add a fold-in step: when the owner rules mid-review, record it in the live file at once, let in-flight reviews finish, and re-scope only the findings the ruling invalidates instead of restarting the round.
 
 **Principle:** A review brief should reference the live record, not snapshot it; a decision that lands while reviewers read then reaches them for free, and only the invalidated findings need redoing.
+
+### Observation 228: A repo skill drifted from what sessions actually do — the handoff went to a file the skill never names
+
+**Status:** OPEN
+**Date:** 2026-09-24
+**Session context:** Spring clean ([DOC-TRIM]) mapping every file a fresh chat reads
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** Step 1 (where the handoff is written) and Step 3 (the HANDOFF.md shape)
+
+**Issue:** The skill writes `raptor-port/docs/session-state.md` and keeps open items in `HANDOFF.md` §Open, but for days sessions had been writing a root `HANDOFF-NEXT.md` instead, and the backlog rules ([DOCS-GUARD] F7) had already declared `HANDOFF.md` §Open "not a backlog". A fresh chat met three handoff files; the one the skill maintains was a four-line stub kept alive only so a promise in CLAUDE.md held. Nothing flagged the drift because nothing compares a skill’s named files with what sessions actually write.
+
+**Suggested improvement:** When the spring clean makes `HANDOFF.md` the one handoff (D140), rewrite Steps 1/3/4 to write that file’s `## Now` block (one per chat), send open residue to `OUTSTANDING.md`, and retire `session-state.md`. Add a line to Rule 7: if the session wrote its handoff somewhere the skill does not name, fix the skill in the same commit.
+
+**Principle:** A skill that names specific files must be checked against where sessions actually write; when practice and skill disagree, one of them is wrong and the other silently accumulates.
+
+### Observation 229: Helpers started with a model override do not inherit the chat’s thinking level
+
+**Status:** OPEN
+**Date:** 2026-09-24
+**Session context:** Spring clean; the owner asked what thinking level Fable helpers run at when the chat is on Opus 5.5 max
+**Skill:** claudex-loop
+**Type:** open-source
+**Phase/Area:** reviewer launch — model and effort
+
+**Issue:** The Agent tool takes a model but no effort; per the Claude Code docs a subagent uses its own definition’s `effort:` frontmatter, else the model’s default — it does NOT inherit the parent’s effort (extended thinking itself is inherited). The Claudex runner passes `--effort` only when asked, else the CLI’s own default; his settings set none. So "Fable at high" was an assumption in both routes.
+
+**Suggested improvement:** In the reviewer-launch step, pass `--effort high` explicitly on every Claudex call that should run at high, and offer a project agent definition (`model: fable`, `effort: high`) when the owner wants in-chat Fable helpers pinned — it applies from the next session.
+
+**Principle:** A reviewer’s thinking level is a launch parameter, not an inheritance; state it explicitly at every launch route or you are reviewing at an unknown depth.
+
+### Observation 230: Moving text between documents needs an exact mover and a "left but never arrived" report
+
+**Status:** OPEN
+**Date:** 2026-09-24
+**Session context:** Spring clean — moving whole sections of CLAUDE.md, HANDOFF.md and OUTSTANDING.md under the owner’s "a summary never changes the meaning" (D138)
+**Skill:** New skill candidate: doc-mover (lives in backlog-archive.mjs --move + docsize.mjs --moves)
+**Type:** open-source
+**Phase/Area:** the move itself and its verification
+
+**Issue:** A hand move (or a one-off script) had already destroyed two backlog items on 22 Sep 26. The existing mover only handled whole backlog items and ruling rows; a section, a paragraph or a bullet run had no exact route, and nothing checked that every line which LEFT a document ARRIVED somewhere.
+
+**Suggested improvement:** Built: `backlog-archive.mjs --move` (exact-once start anchor, `--to-line` or `--section`, one line ending, lands exactly once, inventory clean, else every file put back) and `docsize.mjs --moves` (multiset of removed vs added non-blank lines across all Markdown touched — the residue is exactly what a meaning reviewer must read). Teach both in the always-loaded doc-structure rule.
+
+**Principle:** A move is verifiable only as "everything that left arrived"; give the mover exact anchors and rollback, and give the reviewer the residue — the lines that did not arrive — rather than the whole diff.

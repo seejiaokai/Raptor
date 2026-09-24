@@ -1864,6 +1864,11 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   has published nothing, so live + stash is the whole session; before
   this, navigating off a published weekend let the reverse sweep collect
   its credits.
+- **A DAY’S OIL COMES FROM ITS LATEST PUBLISHED VERSION, HOWEVER OLD THE DAY — NO LOCK, NO CLOCK**
+  (owner, 20 Sep 26 — D142, recorded 24 Sep 26). The latest amendment, or the EOD if that is the latest,
+  is what happened: a later amendment or EOD that takes a man off a past day takes that day’s OIL away
+  (confirmed by him), and an issued EOD is the final word on the day. It superseded the 11 Sep "lock earned
+  OIL on an already-worked day" lean; there is no lock to build.
 - **ONLY THE ISSUED SCHEDULE PAYS, BOTH DIRECTIONS** (owner, 21 Sep 26 — R-1,
   from the cross-provider bug check; triage in
   `docs/superpowers/specs/2026-09-21-oil-bugcheck-fixplan.md`). The credit pass

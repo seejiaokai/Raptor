@@ -22,7 +22,7 @@ paths:
   - raptor-port/docs/**/*allavail*
   - raptor-port/docs/**/*one-absence*
   - raptor-port/scripts/handpass/**
-  - HANDOFF-OIL-WALK.md
+  - docs/archive/HANDOFF-OIL-WALK.md
 ---
 
 # Rulings — OIL (off in lieu: earned leave)
@@ -36,6 +36,7 @@ work, already loaded: **D54** (an issued weekend carrying a placeholder raises t
 
 | # | Date | His ruling, in his words where short enough | What it means | Where it lives now |
 |---|---|---|---|---|
+| D142 | 24 Sep 26 | His ruling of 20 Sep 26, recorded 24 Sep from the memory entry `oil-truth-latest-published-version` — his exact words were not kept; found unrecorded by the spring clean, when `[OIL]` turned out to contradict it | **A DAY’S OIL COMES FROM ITS LATEST PUBLISHED VERSION — THE LATEST AMENDMENT, OR THE EOD IF THAT IS THE LATEST — HOWEVER LONG AGO THE DAY WAS. NO LOCK, NO CLOCK.** The published record IS what happened, so there is no "was the day actually worked?" test. **The consequence he confirmed:** a later amendment or EOD that takes a man off a past day takes that day’s OIL away from him; to keep it, do not take him off. An EOD, once published, is the final word on the day. **Supersedes the 11 Sep 26 lean** (`[OIL]`, "lock earned OIL on an already-worked day"), which never had a D-number; D2 (only the issued schedule pays, both directions) is the same rule’s freeze half | `raptor-port/docs/engine-rules.md` (§Weekend/PH work earns OIL, beside "ONLY THE ISSUED SCHEDULE PAYS"); memory `oil-truth-latest-published-version` |
 | D82 | 23 Sep 26 | *"Yes an award and a worked day add up. So it's 4. The auto oil credits don't get affected by manual OIL inputs."* (21 Sep 26; recorded 23 Sep under [DOCS-GUARD] F6) | **AN OIL AWARD AND A WORKED DAY ADD UP.** A 3-day award on a Saturday he then works is worth 4; the schedule's credit and a typed award never change each other. BUILT and merged (PR #423) | `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-register.md` N16 |
 | D81 | 23 Sep 26 | *"Yes i want a warning."* — after a Sunday duty desk with no times earned nobody anything (20 Sep 26; recorded 23 Sep under F6) | **A WORKED WEEKEND THAT EARNS NOBODY ANY OIL SAYS SO** — on the day and at publish, with the reason (e.g. the desk has no times). BUILT 21 Sep 26 | `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-register.md` N14 |
 | D80 | 23 Sep 26 | *"i want an award of an OIL to stop flagging a leave day. That makes sense."* (20 Sep 26; recorded 23 Sep under F6) | **AN OIL AWARD DOES NOT FLAG A LEAVE DAY** — it says a man is owed a day, not where he was. He did NOT rule on whether an award counts him on duty for manning; ask before changing that. BUILT 21 Sep 26 | `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-register.md` N13 |

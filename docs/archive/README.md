@@ -8,3 +8,7 @@ where they are (`OUTSTANDING-ARCHIVE.md`, `DECISIONS-ARCHIVE.md`, `HANDOFF-ARCHI
 
 | File | What it was | Moved here |
 |---|---|---|
+| `HANDOFF-OIL-WALK.md` | The handoff for the OIL walk (22 Sep 26) — closed; its job merged (D34) | 24 Sep 26, from the repo root |
+| `HANDOFF-S4-BUGHUNT.md` | The handoff for the S4 bug hunt (21 Sep 26) — closed; merged as PR #422 | 24 Sep 26, from the repo root |
+| `BUG-TESTING.md` | The batch-by-batch bug-testing list — RETIRED 23 Sep 26 (D72); the bug-check order's evidence sheets replace it | 24 Sep 26, from the repo root |
+| `raptor-claude-md-2026-09-24.md` | Passages moved out of `raptor-port/CLAUDE.md` in the spring clean — superseded or absorbed | written 24 Sep 26 |
