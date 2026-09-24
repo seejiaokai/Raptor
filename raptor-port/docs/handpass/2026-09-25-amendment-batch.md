@@ -72,7 +72,39 @@ also the class of the week's date button that OPENS the board — and the click 
 `closest('…, .sb-open, …')`, so on `<body>` it matched every click. Renamed `sb-board-up` (`dd4bedca`). Logged as a
 skills observation (#245).
 
-## 4. The walk — (filled from the walkers' reports and the host's reproduction)
+## 4. The walk — three walkers, each its own browser world, on the production build (D16)
+
+The brief: `docs/superpowers/briefs/2026-09-25-amendment-batch-walk-brief.md`. Reports (every check, its result and
+its picture): `parts/2026-09-25-amendment-batch-b1.md`, `-b2.md`, `-b3.md`. Scripts: `scripts/handpass/am/b1-*`,
+`b2-*`, `b3-*` (assertions of the right behaviour — re-running them is the re-walk). Pictures:
+`docs/img/handpass/2026-09-25-amendment-batch/{b1,b2,b3}/` (200), the re-walk's in `…/rewalk/` (41). Desktop 1440×900
+(DPR 1 and 3) and phone 390×844; admin and member; the edit week, the board, View-only Sched's issued face and its
+working-draft peek. The browser error list stayed EMPTY in every run.
+
+| walker | items | checks | result |
+|---|---|---|---|
+| B1 | 14, 7, 8, 9, 12, 5 — the count, the signatures, the list, who/when, the jump, the marker | 76 | 74 pass; 2 fail = finding B1-1 (and its knock-on) |
+| B2 | 1, 2, 13, 3 — tags not rings, the board's rings, the seal, the Signed line | 138 | 138 pass; the dashed late-show ring could not be made through the app (S1) |
+| B3 | 4, 6, 11, 10 + a regression sweep | 144 | 132 pass; 12 fail = findings B3-F1, F2, F3 |
+
+**Findings and dispositions** (each reproduced by the host before fixing — the re-walk scripts are the reproduction):
+
+| finding | disposition |
+|---|---|
+| B1-1 ✕ on an accepted request's row counts TWO (the row + the request's filing) — the same as before the batch | **filed for him** `[REQUEST-OFF-ONE]` (recommended: one), on the look card |
+| B1-2 a change in who stands behind ALL AVAIL read only "What this day earns · changed" — no row, no man, no tap | **fixed** `f885b65b` — the line names the row and the men and goes to the row; re-walked: "FAMILY DAY · who it stands for — Ghost → no longer free" |
+| B3-F1 a refused template row looked and lit exactly like a live one | **fixed** `c063ea6b` — dimmed, no pointer, no hover; re-walked 4/4 |
+| B3-F2 loading Monday quietly cleared Tuesday's waiting change for a two-day request | **fixed** `c063ea6b` — a request covering another loaded day is never set by a load; where the version takes away the ONE row it stood on, the older reconcile (P2-REV2-05) truthfully takes it off the programme and the other day reads that too — now NAMED in the message ("1 request came off the programme with its row — Tue reads that too"). Re-walked: the row-on-Tuesday case passes whole; the row-on-Monday case now names it (the walker's old expectation, "left as filed", is not reachable without breaking D98) |
+| B3-F3 on a desktop the History bubble vanished on the way to its long list | **fixed** `c063ea6b` — the grace is not cut by what the pointer crosses; re-walked: every path (4–20 steps, with and without pauses) reaches the list |
+| B3 the pending list stayed put when the page scrolled under it | **fixed** `c063ea6b` — it closes on a page scroll (its own list scrolling does not) |
+| B2-S3 the tag slightly covers the top of a puck's qualification letter | **as approved** — the mock-up's placement (D93); legible |
+| B2-S4 Ranger (View as) still glows | **already filed** `[PUCK-FLAG-GLOW]` (D164), not this batch |
+| B3 Unpublish says nothing | **already filed** `[AMEND-SMALL-SEEN]` item 1 |
+| B3 the phone keyboard emulation moved the focused field below the visible area | **his iPhone** — real Safari scrolls the focused field into view itself; the look card asks him |
+
+**The host's own look** (the browser pane, desktop): the pending list open on a published Monday — "Waiting to go
+out as AL1 · 3 changes", "Sidewinder · SDO → OPS-O · Admin 25/9 03:47", the ORIG seal with its tick, "Not yet
+published", the Amendments panel agreeing (3 changes).
 
 ## 5. Break tests
 
