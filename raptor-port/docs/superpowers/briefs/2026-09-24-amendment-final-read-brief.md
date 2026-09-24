@@ -36,6 +36,28 @@ names what was NOT walked (§9) — those are the best places to look.
   you — read `.claude/rules/decisions/scheduler.md`, `oil.md`, `how-we-work.md` and `.claude/rules/raptor-executor.md`
   by path.
 
+## What changed after this brief was first written (the walkers' findings, `767799ae`)
+
+The four walkers' reports landed after the first five fixes (`7c69bd58`); the evidence sheet §3 lists every finding
+and its disposition. The second fix commit, `767799ae`, is the part of the diff least looked at so far — read it
+hardest:
+
+- **Undo and the sign-offs** (`src/undo/timeline.ts` `pulledBackDays`, `abandonForkedRedo`; `src/state/sched-commit.ts`
+  `schedPostRestore`; `src/engine/publish.ts` `signClearPlans`): a restore of an older step re-clears the sign-offs of
+  every day whose later publication was undone; a NEW change after an undo drops from Redo the undone steps it shares
+  a record with, and transitively those built on them. Is either rule wrong anywhere — a restore that now clears a
+  signature it should keep, a redo that is now refused or allowed wrongly, a Leave War or plan undo affected?
+- **The publish step** (`commitPublishALDay` runs `reconcileIssuedMarks` first): can that reconcile ever drop a REAL
+  change's mark, or touch another day?
+- **Re-accepting an issued input** (`src/engine/slots.ts` `acceptInput`, `reconcileDayFiling`): the issued row's id
+  and place are restored — any case where that id is already taken, the row moved, or a plan is live?
+- **The issued face's count** (`src/ui/html.ts` `dayStatHTML`, `dayInfoHTML`): any other issued-face reader of the
+  working copy's state?
+- **The Leave War lane** (`src/leavewar/sync.ts` `oilDaySig`): the day's checks re-run when what a day earns moves —
+  any loop, any lag left, any other war write that should re-check?
+- **The rest:** the Unavailable row's Undo, the board's preview strip, the plan editor's page gate, the sign-off
+  line's wording, the Edit history footnote and wrapping, the Logic page's four new lines.
+
 ## The brief itself — the standing order's wording, verbatim
 
 > Do not merely review the changed code. Starting from the user promise and the applicable

@@ -8,11 +8,14 @@ scripts: `raptor-port/scripts/handpass/am/` (shared helpers `am-lib.mjs`).
 
 ## 0. Where this stands (kept current — read this first after a compaction or in a new chat)
 
-- **Done:** the register (the rules sweep); the scenario brief; the walk helpers; the survey walk (§6 S0).
-- **Running / next:** Fable + Astra scenario design → the fanned-out walk → fixes → gates → the two code reads →
-  re-walk → the look card.
-- **He is away (~6 h from 24 Sep 26 night):** questions go to `OUTSTANDING.md` and the handoff block, never a
-  stop. Never merge; push the branch at the end.
+- **Done:** the register (the rules sweep); both scenario designs; the roll-call walk; four parallel walkers (W1–W4,
+  reports in `parts/`); every finding fixed red first or filed (§3) — code commits `7c69bd58` (F1–F5) and `767799ae`
+  (the walkers' findings); the host's re-walk of F1–F5 (§12).
+- **Next:** the gates on the new build → Fable + Astra final code reads (brief:
+  `docs/superpowers/briefs/2026-09-24-amendment-final-read-brief.md`) → fix → re-walk what `767799ae` and the read
+  fixes touched → the look card → push.
+- **He is away (~6 h from 24 Sep 26, early afternoon):** questions go to `OUTSTANDING.md` and the handoff block,
+  never a stop. Never merge; push the branch at the end.
 
 ## 1. The eight questions → FULL
 
@@ -45,18 +48,42 @@ blind to each other, with this sheet in hand; a re-walk of what the fixes touche
   undo does today at the amendment boundaries (after a sign-out, as the other role) so that re-test starts from
   evidence.
 
-## 3. Findings so far (running list — dispositions in §8)
+## 3. Every finding (walkers W1–W4 in `parts/2026-09-24-amendment-w{1..4}.md`; the host's roll-call; both scenario reads)
 
 | # | finding | found by | rule | status |
 |---|---|---|---|---|
-| F1 | The scheduler board never drew "Not yet signed" — the week head did, for the same working copy | roll-call R4 (desktop + phone); Fable 5-5; Astra F1 | AM24 | **FIXED** `7c69bd58` — one shared body (`nysMarkHTML`) for both surfaces; red first |
-| F2 | The ⓘ day panel and the plan-switch message counted raw marks; the head counts the real difference — an OIL-only change read "nothing pending" beside "Publish AL1", a filing round trip left "1 unpublished edit" | Fable 5-2; Astra F2 + rank 5 | AM23 | **FIXED** `7c69bd58` — `dayShownPendCount`, one count for all three; red first |
-| F3 | "Discard marks" was offered, and said "Pending marks cleared", when every mark sat on a published day and nothing could be cleared | Fable 5-1; Astra F3 | F-01 (Phase 2) | **FIXED** `7c69bd58` — offered only when it can clear something; says how many; red first |
-| F4 | Unpublishing AL1 re-opened a change that had already been put back to the Original's value as a dotted mark (the phantom) | Fable 5-3 (walk S1) | AM20 | **FIXED** `7c69bd58` — the re-opened marks are reconciled inside the unpublish command; red first |
-| F5 | An armed "Withdraw — confirm" (and "Discard N edits & load") survived a page change and the View-as-member flip, so the second tap after coming back skipped the warning | Fable 5-8; Astra rank 33 | the confirms' own "any navigation clears" rule | **FIXED** `7c69bd58`; red first |
-| — | The Amendments panel is hidden on a phone (≤820px) — the day head's Publish AL and the ⓘ panel carry it there, but not the approver list | roll-call R10 phone; Fable 5-4 | none found | see §8 (a question or a deliberate phone choice) |
+| F1 | The scheduler board never drew "Not yet signed" — the week head did, for the same working copy | roll-call R4; Fable 5-5; Astra F1; W1-6 | AM24 | **FIXED** `7c69bd58` — one shared body (`nysMarkHTML`); red first |
+| F2 | The ⓘ panel and the plan-switch message counted raw marks; the head counts the real difference | Fable 5-2; Astra F2 + rank 5; W1-7; W2-F3, W2-F4; W4-P1 | AM23 | **FIXED** `7c69bd58` — `dayShownPendCount`; red first |
+| F3 | "Discard marks" offered (and "Pending marks cleared") when nothing could be cleared; the panel's sentence claimed changes | Fable 5-1; Astra F3; W1-5 | F-01, AM25, AM15b | **FIXED** `7c69bd58`; red first |
+| F4 | Unpublish re-opened a change already put back as a dotted mark (the phantom) | Fable 5-3; W1-1 | AM20 | **FIXED** `7c69bd58`; red first |
+| F5 | An armed "Withdraw — confirm" / "Discard N edits & load" survived a page change and the View-as-member flip | Fable 5-8; Astra 33; W2-F5; F-w3-3; W4-F6 | the confirms' "any navigation clears" | **FIXED** `7c69bd58`; red first |
+| W1-1b | …and the next publish froze any stale dotted mark into the issued record as "changed at ALn" (the count came from the real difference) | W1-1 (the re-issue half); S31 second shape | AM20, AM19 | **FIXED** `767799ae` — marks reconciled before an AL goes out; red first (proved red without the fix) |
+| W1-2 | A man taken off a duty desk, a Common Programme row or a sim seat leaves NO mark, pending or issued, on any surface; an emptied cockpit seat is unmarked on the board and, while pending, on the week | W1 roll-call R3/R5/R7 | AM19 | **OPEN — filed** `[AMEND-EMPTY-SEAT-MARK]`: needs a look for an emptied list seat (none exists), and the view week is held byte-identical to the original app; counted, listed in History and in the AL's diff meanwhile |
+| W1-3 | The view page's ISSUED face read "1 pending" after a filing-only change — to members too — and its ⓘ "1 unpublished edit" | W1 (S15, S3B2) | AM24, AM5 | **FIXED** `767799ae`; red first |
+| W1-4 = W4-F2 | Taking an issued input off and accepting it again left "2 pending · 1 removal", sign-offs cleared, "Publish AL2" live — for a day identical to what was issued | W1 S3B; W4 | AM20 | **FIXED** `767799ae` — re-accept restores the issued row; red first |
+| W2-F1 | The board lost its plans selector and version tag while an issued version was looked at | W2 | AM28 | **FIXED** `767799ae`; red first |
+| W2-F2 | A day template applied to a published day counts every row removed and re-added (31 changes for identical content) and takes the day's accepted inputs off the programme | W2 | AM20, AM23 | **OPEN — a question for him**, filed `[AMEND-TEMPLATE-PUBLISHED]` (refuse on a published day / keep matching rows and accepted inputs / leave) |
+| W2-F6 | On the view page's working-draft peek a pending puck that also wears a red ring showed no pending hint | W2 | AM19 | **FIXED** `767799ae` (the puck in a pending seat wears a dashed outline) — re-walk pending |
+| W2-F7 | On the desktop board the ALL AVAIL window, opened from a preview, docks over the preview bar ("Load onto working copy" hidden) | W2 | R14 painted-with | **OPEN — filed** `[AVAILWIN-PREVIEW-BAR]` (low; it can be dragged aside) |
+| W2-F8 | The plan editor came back over View-only Sched, where its Select does nothing | W2; Astra rank 30 | door check | **FIXED** `767799ae`; red first |
+| F-w3-1 | Undo past an undone publish handed back the sign-offs it spent — all four through another day's sign-off — and "Publish day" worked unsigned | W3 | AM34, AM32, AM39c; GU5-005 | **FIXED** `767799ae` (parked plans too); red first |
+| F-w3-2 | Redo stuck: "redo that first", which no control can do | W3 | AM39b | **FIXED** `767799ae` — a new change drops the undone steps it replaced from Redo; red first |
+| F-w3-4 | Edit history's footnote said the schedule clears on reload | W3 | AM49 | **FIXED** `767799ae` |
+| F-w3-5 | Edit history's sentence lines ran off the right edge | W3 | AM49 | **FIXED** `767799ae` (CSS) — re-walk pending |
+| F-w3-6 | Four green sign-off names and just "1 to sign": nothing said which signer no longer counts | W3 | AM16, AM15b | **FIXED** `767799ae`; red first |
+| W4-F1 | A holiday declared on the Leave War after publishing: the day's advisory appeared only after a reload | W4 | AM47 | **FIXED** `767799ae`; red first |
+| W4-F3 | Load AL1 onto the working copy left an un-accepted input "removed"; its "→ Ground" then did nothing, silently | W4 | the load replaces content; no silent control | **FIXED** `767799ae`; red first |
+| W4-F4 | An input filed under Unavailable had no way back from its row | W4 | AM14 | **FIXED** `767799ae`; red first |
+| W4-F5 | Four OIL advisories printed their internal code as their heading | W4 | plain wording | **FIXED** `767799ae` — headings, and a line each on the Logic page |
+| — | The Amendments panel is hidden on a phone; no phone surface names who approved an AL | roll-call R10; Fable 5-4; W1 Q-b | none | **a question**, filed `[AMEND-PHONE-APPROVER]` |
+| — | "Not yet signed" beside four still-valid sign-offs and an open "Publish AL1" (D45 keeps them valid) | W4 P6 | AM24 vs D45 | **a question** (wording), filed `[AMEND-NYS-WORDING]` |
 
-*(the walkers' own findings are added as their reports land)*
+Seen in passing and filed, not amendment rules: the phone Leave War figure sheet jumps the grid to 1 January (W4 P2);
+the bid sheet says a weekend LL costs a day (W4 P3); a phone drag-off removes silently (W4 P5); Saturday's "Published
+AL1" toast is replaced at once by the OIL warning, and Unpublish says nothing (W1); Undo of a time change says "a note
+on the schedule" (W1, for the change-recording re-test); five-letter callsigns drawn "…" on the edit week, the solid
+"AL1" tag clipped at 390px, the desktop week's left arrow over the first sign-off pill (W1); AL7 and AL8 the same
+orange (W1 Q-a). All in `[AMEND-SMALL-SEEN]`.
 
 ## 4. The roll-call — every place the app draws amendment state
 

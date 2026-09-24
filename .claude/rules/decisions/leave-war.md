@@ -256,7 +256,10 @@ The owner's clash rules run at ONE seat inside the Raptor inputs door
 (`leavewar/inputgate.ts` via `state/inputgate-hook.ts`: sick cuts leave, no
 overlapping leave / leave over a medical / leave over recorded work, a
 clashing input replaces an undecided bid with a notice) — and on undo/redo, and
-publishing a weekend/PH day replaces a clashing bid inside the publish command.
+publishing a weekend/PH day replaces a clashing bid inside the publish command. *(SUPERSEDED 20–21 Sep 26 — marked
+24 Sep 26 by the amendment re-test, per D90: "keep the bid and flag the day, both ways" — publishing KEEPS a clashing
+undecided bid and flags the day; `leavewar/sync.ts` `publishFlagsBids`, pinned by `leavewar/publishdoor.test.ts`;
+register AM48c.)*
 Rules of record: `docs/superpowers/specs/2026-09-20-arch-stack-4-clash-check.md`.
 Weekend/holiday WORK — the
 PUBLISHED schedule plus acknowledged Duty-&-commitments input claims

@@ -70,12 +70,12 @@ first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [T
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SMOKE-ADD-RACE]
 (before the next Tracker change that touches the smoke suite), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
-The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build). The amendment re-test's leftovers — [AMEND-EMPTY-SEAT-MARK] (after it merges; a picture first), [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] and [RULING-HOMES-AUDIT] (any time, docs only),
 [BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
 FULL-tier build, any time).
 
-**Waiting on him — no order exists:** [AMEND-D45-FILING] and [AMEND-PHONE-APPROVER] (questions from the amendment re-test, 24 Sep 26), [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
+**Waiting on him — no order exists:** [AMEND-D45-FILING], [AMEND-PHONE-APPROVER], [AMEND-TEMPLATE-PUBLISHED] and [AMEND-NYS-WORDING] (questions from the amendment re-test, 24 Sep 26), [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
 D147), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
 [REPO-PRIVATE]'s sharing half, [EOD] (design first; no slot
 ruled), [CRP-FLAG]'s remainder and then [FLAG-EXPORT], the [AMEND] leftovers, [ADMIN-DISPLAY] ("next time we revisit",
@@ -1038,3 +1038,67 @@ and settings edits ARE undoable — ordinary user changes, never amendments. The
 renaming a callsign or changing a Logic setting cannot be undone. **Place:** the change-recording re-test (D147,
 second after the absence record) — it is the one undo's own subject; build it there with D148 (undo only your own
 changes). Walk it first: confirm on screen that Undo stays greyed or skips a roster / settings edit.
+
+### [AMEND-EMPTY-SEAT-MARK] A man taken off a desk, a programme row or a sim seat leaves no amendment mark anywhere (found 24 Sep 26)
+Found by the amendment re-test's walker W1 (`raptor-port/docs/handpass/parts/2026-09-24-amendment-w1.md` W1-2; roll-call
+R3/R5/R7). Register AM19: a pending change is dotted in its AL's colour, an issued one solid. **What a person sees:** on a
+published day, take Outlaw off the OPS DESK, Torch off a Common Programme row, Basher off a sim seat — the head counts
+each, the Amendments panel lists them, History records them, the AL's diff carries them — but the row itself looks like
+a desk that was always empty: "+ ADD" on the week, an empty box on the board, and after publishing nothing on the view
+page's issued face either (13 changes, 10 visible marks). An emptied COCKPIT seat is half covered: the week shows the
+"AL1" badge once published, but not while pending, and the board never marks it. **Why not fixed in the re-test:** an
+emptied list seat is not drawn at all (`raptor-port/src/ui/html.ts` `lSeat`, `raptor-port/src/ui/board-html.ts` `sbSeat`;
+the board's empty cockpit seat `sbSlot`), so there is nothing to carry the mark — it needs a LOOK for "somebody was
+taken off here", on three surfaces, one of them (the view week) held byte-identical to the original app by the
+reference gate. **To do:** a picture first (the house rule for a visual direction), then build it FULL tier (the issued
+face is a published record). **Place:** after the amendment re-test merges; not blocking.
+
+### [AMEND-TEMPLATE-PUBLISHED] A day template applied to a published day — a question for him (24 Sep 26)
+Found by the amendment re-test's walker W2 (`raptor-port/docs/handpass/parts/2026-09-24-amendment-w2.md` W2-F2). Applying a
+day template to a published day rebuilds the day from the template's rows, and a template row is always a NEW row (a
+copy strips its identity — `raptor-port/src/engine/daytpl.ts`), so: (1) saving Tuesday as a template and applying it
+straight back reads **"31 changes · 15 removals"** for a day identical to what was issued — publishing that AL would
+claim every row was removed and re-added (AM20, AM23: a mark means "differs from what was issued"); (2) the day's
+ACCEPTED inputs (a Fly-with, a Meeting, an Appointment) are taken off the programme, because the template's rows carry
+no link to them — members' accepted requests quietly leave the day. **The question:** on a published day, should
+applying a template (a) be refused, (b) keep every row that matches what was issued and every accepted input, counting
+only real differences, or (c) stay as it is (the day is rebuilt, and the amendment says so)? **The agent's
+recommendation:** (b) — it keeps the amendment true and the members' requests on the programme; (a) is the cheap safe
+answer if templates on a published day are rare. Undo puts the day back today, so nothing is lost by waiting.
+**Place:** waiting on him.
+
+### [AMEND-NYS-WORDING] "Not yet signed" beside four valid sign-offs — a wording question for him (24 Sep 26)
+Found by the amendment re-test's walker W4 (`raptor-port/docs/handpass/parts/2026-09-24-amendment-w4.md` §3.5, P6). His
+D45 (22 Sep 26) keeps the sign-offs valid when only who-is-available changes (a leave for a man behind an ALL AVAIL puck):
+the day then shows "1 pending", four green sign-offs, an open "Publish AL1" — and, beside the tag, **"Not yet signed"**
+(AM24, 16 Sep 26: the marker shows whenever a published day has unpublished changes). It is the rule working, but it
+reads as a contradiction. **The question:** should the marker then read something else ("Not yet published"), or hide
+while the sign-offs cover the change? **Kept as built until he answers.** Small either way (`nysMarkHTML`,
+`raptor-port/src/ui/html.ts`; `notYetSigned`, `raptor-port/src/engine/publish.ts`). **Place:** waiting on him; ask
+with the amendment re-test's look card.
+
+### [AVAILWIN-PREVIEW-BAR] On the desktop board the ALL AVAIL window, opened from a preview, covers the preview bar (found 24 Sep 26)
+Found by the amendment re-test's walker W2 (W2-F7). Saturday's board → plans selector → Original → tap the ALL AVAIL
+count: the window docks top-right (`raptor-port/src/ui/scheduler.css`, its default right/top) exactly over the board's
+preview bar — "Load onto working copy" hidden, "← Back to live copy" mostly covered. It can be dragged aside by its
+grip; the week and the phone board are fine. **To do:** open it below the bar when the board is previewing (or dock
+it clear of the bar always). LOOK tier. **Place:** low; with the next [ALL-AVAIL-WINDOW] or board change.
+
+### [AMEND-SMALL-SEEN] Small things the amendment re-test saw in passing (24 Sep 26)
+None breaks an amendment rule; each is a line to fix or ask about, from the walkers' reports
+(`raptor-port/docs/handpass/parts/2026-09-24-amendment-w1.md` §5, `-w4.md` §6):
+1. **Saturday's "Published AL1 · 14 items" toast** is replaced in the same instant by the OIL warning; the person only
+   ever sees the warning. **Unpublish** says nothing at all (only the tag changes) — AM15b's principle would favour a word.
+2. **Undo of a take-off time change** says "Undid: a note on the schedule" (AM39b: say what it did) — for the
+   change-recording re-test, with [UNDO-ROSTER-SETTINGS].
+3. **Five-letter callsigns** (VIPER, COBRA) drawn "…" in the edit week's callsign column; on the phone board they wrap
+   ("VIP/R").
+4. At 390px the solid **"AL1" tag** beside a time is clipped to "AL"; on the desktop week the **left scroll arrow** sits
+   over the first sign-off pill of the leftmost day.
+5. **AL7 and AL8** are the same orange; the register names no colour past AL7 (ask him if it matters).
+6. **Leave War, phone:** a man's figure sheet sends the grid back to 1 January, and it stays there after the sheet
+   closes (desktop keeps its place).
+7. **Leave War bid sheet:** placing an LL bid on a weekend asks "That takes Fable to -1 ANNUAL", though a weekend LL
+   charges nothing (his figure stays 0).
+8. **A phone drag-off** removes a puck silently; right-click says "Fable removed".
+**Place:** any time; items 6–8 with the Leave War links re-test (D147, last).

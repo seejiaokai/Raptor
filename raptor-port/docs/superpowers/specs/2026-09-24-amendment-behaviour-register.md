@@ -181,6 +181,14 @@ rest past midnight and timing clashes · AM51b–AM51g the drawn pages, the role
 boundary, the end-of-session reminder. The walk (the evidence sheet) covers many of these by hand; a test is the
 guard that keeps them.
 
+**Later the same day (`767799ae`), five came off the baseline** — the walkers' fixes named them in tests that failed
+first: **AM28** (the board keeps the plans selector and tag under a preview), **AM34** (Unpublish, and Undo of a
+publish, clear every plan's sign-offs, parked ones included), **AM39b** (Redo never stuck behind a step a new change
+replaced), **AM39c** (an Undo past an undone publish never hands its spent sign-offs back, and the redo lands published
+with them cleared), **AM47** (a holiday declared on the Leave War after publishing raises the day's advisory at once).
+What each still misses of its line above is unchanged where not named here (AM28's menu order, AM34's admin-only
+refusal, AM39b's jump and bubble on screen).
+
 ## Z. The clashes — which rule wins (D90: the newer one)
 
 | # | the older rule, set aside | the newer rule, followed |
@@ -241,6 +249,15 @@ this branch:**
   its record says whether it also reaches a person's own leave or other input landing on the day. So the newer
   ruling does not clearly cover the case (D90's limit): **kept as built (a filing clears the sign-offs) until he
   answers.** Filed in `OUTSTANDING.md`.
+- **Q4 — two of his rulings read against each other on screen: "Not yet signed" beside four VALID sign-offs.**
+  AM24 (16 Sep 26) shows the marker whenever a published day has unpublished changes; D45 (22 Sep 26) keeps the
+  sign-offs valid when only who-is-available changed. Both hold, and together the day reads "Not yet signed" beside
+  four green names and an open "Publish AL1" (walker W4). A wording question, not a defect: **kept as built until he
+  answers.** Filed `[AMEND-NYS-WORDING]`.
+- **Q5 — a day template applied to a published day.** No ruling covers it. By identity every template row is new, so
+  applying the day's own template back reads "31 changes · 15 removals" for identical content (AM20, AM23 say a mark
+  means a real difference), and the day's accepted inputs leave the programme (walker W2). Refuse, keep what matches,
+  or leave it — his call. Filed `[AMEND-TEMPLATE-PUBLISHED]`.
 - **Not a question — the history line for a correction nobody else had seen.** The 18 Sep summary says "a quiet
   line in the history records the correction"; his 17 Sep words decide the case it does not spell out: *"as long
   as if I publish and undo and it didn't hit the database there isn't a need to put it in the records history"*.
