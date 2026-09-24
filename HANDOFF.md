@@ -31,7 +31,8 @@ the later merge keeps both (D78).
   counts, the sign-offs bound to the ground programme's shown order. The PR: opened with this push — `gh pr view
   claude/amendment-retest`; its checks run on his PC.
 - **Unfinished:** none of the re-test's own work. Filed, not fixed: `[AMEND-EMPTY-SEAT-MARK]` (no mark where a man is
-  taken off a desk / programme row / sim seat — needs a picture first), `[AMEND-MARK-RING-CLASH]`,
+  taken off a desk / programme row / sim seat) and `[AMEND-MARK-RING-CLASH]` — the mock-up he asked for is made
+  (`raptor-port/docs/mock/amend-seat-marks.html`) and waits for his three picks, listed in the first item;
   `[AVAILWIN-PREVIEW-BAR]`, `[AMEND-SMALL-SEEN]`; for the change-recording re-test: D148 (not built),
   `[UNDO-ROSTER-SETTINGS]`, the Undo wording in `[AMEND-SMALL-SEEN]` item 2.
 - **Branch:** `claude/amendment-retest`, cut from `main` at `bff76c1b` (`main` had not moved when written); it also
@@ -42,7 +43,8 @@ the later merge keeps both (D78).
   for the input's id) · `npm run perf` **4 / 0** (week 5134 / 5450 nodes, board 1024 / 1150).
 - **Open questions for him (filed, none blocking the merge):** `[AMEND-D45-FILING]`, `[AMEND-PHONE-APPROVER]`,
   `[AMEND-TEMPLATE-PUBLISHED]`, `[AMEND-NYS-WORDING]`, `[AMEND-REISSUE-DOOR]`, `[AMEND-LOAD-FILING]` — each with the
-  agent's recommendation in its item.
+  agent's recommendation in its item; and the mock-up's three picks (`[AMEND-EMPTY-SEAT-MARK]`) — record each answer
+  in `scheduler.md` the moment he gives it.
 - **Pick up here:** his five-minute look (evidence sheet §13) and his "merge live"; then his order (D147): the absence
   record together with `[S4-HUNT-REST]` — `[HUMAN-RETEST]` in `OUTSTANDING.md`.
 <!-- /now -->

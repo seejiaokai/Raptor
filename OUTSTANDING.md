@@ -1057,8 +1057,10 @@ page's issued face either (13 changes, 10 visible marks). An emptied COCKPIT sea
 emptied list seat is not drawn at all (`raptor-port/src/ui/html.ts` `lSeat`, `raptor-port/src/ui/board-html.ts` `sbSeat`;
 the board's empty cockpit seat `sbSlot`), so there is nothing to carry the mark — it needs a LOOK for "somebody was
 taken off here", on three surfaces, one of them (the view week) held byte-identical to the original app by the
-reference gate. **To do:** a picture first (the house rule for a visual direction), then build it FULL tier (the issued
-face is a published record). **Place:** after the amendment re-test merges; not blocking.
+reference gate. **Mock-up** (24 Sep 26, his ask): `raptor-port/docs/mock/amend-seat-marks.html`, also a private page
+(https://claude.ai/artifact/H3GvtWrSdGM7u6NRLkXAhk); its maker `raptor-port/scripts/handpass/am/mk-seat-marks.mjs` holds
+the proposal's CSS. **Waiting for his three picks:** the ghost (recommended) or Option B; how long it stays; the mark on
+the seat. **To do:** then build it FULL tier (the issued face is a published record). **Place:** after the re-test merges.
 
 ### [AMEND-TEMPLATE-PUBLISHED] A day template applied to a published day — a question for him (24 Sep 26)
 Found by the amendment re-test's walker W2 (`raptor-port/docs/handpass/parts/2026-09-24-amendment-w2.md` W2-F2). Applying a
@@ -1133,9 +1135,9 @@ puck, and so are the sanctioned-late (dashed) and crew-rest trace (dotted) rings
 scheduler editing a published day does not see those two rings on a man whose seat has an unpublished change. The same
 clash on the VIEW page was fixed in the re-test (its neutral hint moved onto the seat around the puck); the edit
 surfaces' mark is an established look (`raptor-port/docs/ui-contracts.md` §Amendment marks), so moving it is a visual
-change to show him first. **To do:** draw the edit surfaces' mark on the seat too (as the view page now does), or give
-the two rings a way through; a picture of both first. LOOK tier. **Place:** with [AMEND-EMPTY-SEAT-MARK] (same surfaces,
-same picture).
+change to show him first: the mock-up's §2 (`[AMEND-EMPTY-SEAT-MARK]`). **To do:** once he picks, draw the edit surfaces'
+mark on the seat too (as the view page now does), or give the two rings a way through. LOOK tier. **Place:** with
+[AMEND-EMPTY-SEAT-MARK] (same surfaces, same picture).
 
 ### [AMEND-LOAD-FILING] Should "Load onto working copy" also put back an input the scheduler had taken off? — a question for him (24 Sep 26)
 Found by the amendment re-test (walker W4, F3: `raptor-port/docs/handpass/parts/2026-09-24-amendment-w4.md`; the final
