@@ -71,7 +71,7 @@ first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [T
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SMOKE-ADD-RACE]
 (before the next Tracker change that touches the smoke suite), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
-The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build). The amendment re-test's leftovers — [AMEND-MARK-RING-CLASH] (examples shown; on his word) and [BOARD-RING-STROKES] (his question), [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build). The amendment re-test's leftovers — [AMEND-MARK-RING-CLASH] (design approved, D93 — to build) and [BOARD-RING-STROKES] (his question), [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] and [RULING-HOMES-AUDIT] (any time, docs only),
 [BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
 FULL-tier build, any time).
@@ -1133,7 +1133,7 @@ remarks keep their marks. **Why, measured:** the published ring covers the thin 
 first mock-up: the mark moved onto the seat) was dropped on measurement — a seat is exactly its puck's 74×15 box and a
 crew pair sits 3px apart, so at real size (DPR 1) the mark and a dotted ring sit half a pixel apart and blur into one,
 and any larger offset runs into the next puck. The view page's neutral hint, moved onto the seat by the re-test, has
-A's geometry: check it where it can meet a ring when B is built. **To do:** on his word, build D92 on every surface that
+A's geometry: check it where it can meet a ring when B is built. **Design APPROVED 24 Sep 26 (D93, "the fix looks good").** **To do:** build D92 on every surface that
 draws a changed puck, with a geometry pin (e2e) that every ring's stroke survives a published and a waiting change. **Place:** next, on
 his word (the mock-up's other half, a mark for an emptied seat, was declined — D91).
 
