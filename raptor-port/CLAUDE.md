@@ -954,16 +954,8 @@ re-litigate it. Where a reference doc holds the full story, the line keeps the
 decision + a pointer. Owner + date establish authority; keep them.
 
 ### Pipeline & repo invariants
-- **Push a BRANCH freely; ASK before `main`** (owner, 23 Sep 26 — D60). A branch push changes
-  nothing official and gives him a Vercel link to LOOK at, so it needs no permission; `main` stays
-  gated behind his **"merge live"**. "Push" and "merge live" are NOT synonyms. The question only
-  arose because D59 took the repo private, which meters Actions minutes (D89: checks move to his PC). **Never push while a pull request's checks are running** (D151): any push restarts them and cancels the run in progress.
-- **Do NOT watch PRs** (owner, 15 Aug 26). The harness auto-watches an opened PR
-  and floods the owner's phone with CI/review/Vercel `<wake>` blocks for little
-  gain (gates + live page are checked before the PR opens; he leaves no review
-  comments). Call `unsubscribe_pr_activity` immediately after opening any PR;
-  never leave one watched. Doesn't change the ship-to-live duty. An explicit
-  "babysit this PR" ask overrides, for that PR only.
+- **Push a BRANCH freely; ASK before `main`** (D60) and **never push while a PR's checks run** (D151) — moved 24 Sep 26 to `../.claude/rules/shipping.md`, loaded in every chat.
+- **Do NOT watch PRs** (15 Aug 26) — moved 24 Sep 26 to `../.claude/rules/shipping.md` §Pull requests, loaded in every chat.
 - `reference/` is **read-only** — the spec for existing behaviour. New features go
   beyond it but must not break it.
 - The engine's original **generator is DELETED** (git history keeps it). Never
@@ -1531,11 +1523,16 @@ ledger). Read it before any layout/render/drag-touching change.
 | **Storage: the whiteboard, postman, backends, boot gate** | `src/storage/` — the ONE route to a backend (whiteboard → postman → Memory/Browser backend); `src/state/persist.ts` hydrates/persists live scheduler state. **The persistence rule itself now lives in §Architecture rules ("The persistence funnel") — read it there.** **Medical documents (photos/PDFs) are too big for that text seam, so they get their OWN per-browser drawer** — IndexedDB `raptor-docs` (`src/storage/docstore.ts`), wired by `docBoot` from `main.tsx` on the browser backend only; `state/docs`' in-memory map is the sync read path, `docAdd` writes through, `docBoot` hydrates it at boot (8 Sep 26). What is stored: `docs/data-schema.md`. |
 | Rendering, drag & drop, text editing, AL marks | `docs/ui-contracts.md` |
 | **Which surfaces a feature touches + how one edit flows** | `docs/feature-impact.md` |
-| Open work, known gaps, the deploy traps, full file map | `../HANDOFF.md` (a short current-state doc — keep it that way) |
-| The history — how each past thing was found, fixed and shipped | `../HANDOFF-ARCHIVE.md` (a FROZEN snapshot as of 4 Sep 26; search it, never read it whole, never append to it) then `git log` |
+| **Where things stand and what is next — the ONE handoff** (a block per chat under `## Now`; a new chat reads it first). Since 24 Sep 26 (D140) it holds current state only | `../HANDOFF.md` |
+| **Open work — the ONE backlog** (the priority list first; a finished item leaves for its archive by script) | `../OUTSTANDING.md` (finished: `../OUTSTANDING-ARCHIVE.md`, searched) |
+| **Every source file and what it does** — edit it in the same change that adds, removes or renames a file | `docs/file-map.md` |
+| **How the gates and the deploy mislead; the checks on his PC** — read before trusting or re-running a red check | `docs/gates-and-deploy.md` |
+| **How a change ships** — the branch loop, "merge live", what "done" means (always loaded) | `../.claude/rules/shipping.md` |
+| **Where each kind of new fact goes, and when it leaves** (always loaded; D140, D141) | `../.claude/rules/doc-structure.md`; the policy and tiers `docs/doc-budget.md` |
+| The history — how each past thing was found, fixed and shipped | `../HANDOFF-ARCHIVE.md` (a FROZEN snapshot as of 4 Sep 26; search it, never read it whole, never append to it); finished documents and passages moved out since, each unchanged: `docs/archive/` (its `README.md` lists them); then `git log` |
 | Probe → reference → port results | `docs/probe-sweep.md` |
 | What changed recently | `git log --oneline` (not duplicated here) |
-| Last session's leftovers, **if any** | `docs/session-state.md` (absent = nothing was pending) |
+| Last session's leftovers | the chat's own block under `## Now` in `../HANDOFF.md` (the old `docs/session-state.md` retired to `docs/archive/` on 24 Sep 26) |
 | The rules engine | `src/engine/` — `validate.ts` is the heart |
 | Store / UI state / undo | `src/state/` |
 | Components + HTML builders | `src/ui/` |

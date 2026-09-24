@@ -17,7 +17,7 @@ So this file adds the forcing function, not a new opinion.
 | **1 — read at session start** | `HANDOFF.md`, `OUTSTANDING.md`, `DECISIONS.md` (the rulings map) | **No line target (D141) — a ceiling per file is a TRIPWIRE (§4).** OUTSTANDING is a backlog: priority list + one short block per LIVE item; anything done moves out. |
 | **2 — read when working in that area** | `engine-rules.md`, `ui-contracts.md`, `feature-impact.md`, `bug-check-order.md`, `data-*.md`; and each area's rulings `.claude/rules/decisions/<area>.md`, which LOAD BY THEMSELVES when a file matching their `paths:` is read (D137) — and, since D140, carry that area’s settled decisions and architecture too; `docs/file-map.md`; `docs/gates-and-deploy.md` | No line budget (the rulings files: a ceiling each that RISES, never a trim — D136). Must be navigable: headed sections, no section over ~150 lines without sub-heads. |
 | **3 — read only for that one task** | `docs/superpowers/specs/*`, `briefs/*`, review and scenario files | None. Never read unless the task names it. **Never linked from tier 0.** |
-| **4 — archive** | `HANDOFF-ARCHIVE.md`, `OUTSTANDING-ARCHIVE.md`, `DECISIONS-ARCHIVE.md`, `docs/archive/` (finished documents and passages), superseded specs | None. Searched, never read. |
+| **4 — archive** | `HANDOFF-ARCHIVE.md`, `OUTSTANDING-ARCHIVE.md`, `DECISIONS-ARCHIVE.md`, `raptor-port/docs/archive/` (finished documents and passages), superseded specs | None. Searched, never read. |
 
 **The rule that makes tiering work: a tier-0 file may not contain a tier-2 explanation.** It carries
 the decision in one line and a pointer. That is the whole job of an index.

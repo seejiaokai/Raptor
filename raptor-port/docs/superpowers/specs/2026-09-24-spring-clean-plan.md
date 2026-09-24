@@ -177,3 +177,37 @@ run on his PC).
   does it break something (parallel chats, the skill's "absent file = nothing pending" promise)?
 - Is the Shipping block's reading of "done" after D59 right, or is it inventing a rule?
 - What in the new structure would still let the repo bloat again, and is the gate the right forcing function?
+
+---
+
+## 7. After the red team — what changed (24 Sep 26)
+
+Both reviews are saved beside this file (`…-redteam-astra.md`, `…-redteam-fable.md`). Nothing moved before
+this section was written. **Where this section and §1–§6 disagree, this section wins.**
+
+**New rulings on the way:** D142 (a day's OIL comes from its latest published version — found unrecorded),
+**D143 (his answer: "done" after "merge live" means LIVE ON VERCEL — merge → his PC's checks green → Vercel's
+production deployment for that commit READY → one notification with the link; his look replaces the agent's)**,
+D144 (fix the architecture first, then the individual bugs — un-numbered since 13 Sep, would have left with O1).
+
+| Finding | Disposition |
+|---|---|
+| `raptor-port/CLAUDE.md` is not read by a root-only session (Astra 1, Fable 7) | The shipping rules go to a NEW always-loaded `.claude/rules/shipping.md`; `doc-structure.md` (always loaded) names the project guide and the four area files by path, and says the automatic load fires on the Read tool, not on shell reads — before planning in an area, open its file. |
+| Globs miss shared seams (Astra 2, Fable 5) | `leave-war.md` and `tracker.md` `paths:` widened as both listed; the cost (opening `store.ts` loads all three area files) is accepted (D68). |
+| C7 (robustness doctrine) is cross-cutting (Fable 6) | **Dropped — it stays in CLAUDE.md.** |
+| C8 (the 20 Sep sweep) is not fully inside the bug-check order (Fable 2) | **Dropped — it stays in CLAUDE.md.** |
+| "Done" invented (Astra 6, Fable 3) | **Asked him — D143.** |
+| The Shipping block must carry Fable's list (Fable 3) | `shipping.md` carries every item on Fable's list, each with its date; D60/D86/D89/D151 pointed to, not restated. Checked by both. |
+| C2/C4 overlap, C10 overlap (Astra 7, Fable 4) | The heading + intro of "Leave War grid & scheduler render/drag performance" moves ONCE, with the scheduler bullets; the Leave War bullets get a new one-line heading and intro (a listed rewrite). C10's ranges are disjoint, and the login selectors + "week is up" line STAY (still used on Windows). |
+| Mover gaps (Astra 8, Fable 12) | Hardened: fence-aware anchors, `--create-under`, final newline, real paths inside the repo, temp-copy-then-rename with full put-back, a unique ONE-line pointer that must name the destination file, refusal of a block holding a `### [ID]` item or a `| D<n> |` row, a note when `--section` runs to the end. `--moves` also lists lines ADDED that left nowhere (the rewrites). Self-tested. `.gitattributes` LF pins stay held back (a `.gitattributes` change starts a full run on his PC; the mover already refuses mixed endings). |
+| `HANDOFF-ARCHIVE.md` is frozen (Astra 9) | **Kept frozen.** Handoff history goes to a new dated file in the archive folder. |
+| The archive folder sits at the root while CLAUDE.md's `docs/` means `raptor-port/docs/` (Fable 11) | The archive folder moves to **`raptor-port/docs/archive/`**, and the four stray tier-3 files under the root `docs/` join `raptor-port/docs/`, so there is ONE docs tree. |
+| One handoff: parallel chats and "absent = nothing pending" (Astra 3, Fable 1, 15) | `HANDOFF.md ## Now` holds one block per branch between `<!-- now:<branch> -->` and `<!-- /now -->` markers; a chat rewrites only its own block at every handoff (even "nothing pending"); another chat's block is removed only after `git fetch` shows its work merged and its open residue is filed; newest block first; the later merge keeps both (D78). `HANDOFF-NEXT.md` stays as a three-line signpost (his opening line keeps working); `session-state.md` goes to the archive; he is given the new opening line. |
+| Enforcement (Astra 5, Fable 13, 14) | The Stop hook stays inventory-only (D29: a size never blocks a turn). New MISFILING checks run inside the inventory, so they fire at the end of every turn: a new Markdown file at the root outside the allowlist (README, HANDOFF, HANDOFF-NEXT, the three archives, OUTSTANDING, DECISIONS, CLAUDE, AGENTS); an always-loaded rules file not registered in the gate; two `## Now` blocks for one branch; a new top-level `raptor-port/docs/*.md` not named in the map; a WARNING for a `## Now` block whose branch is already merged. Ceilings stay CI-side tripwires; the targets go (D141). |
+| `[DOCSGUARD-MERGE]` (Astra 4) | Fixed in this pass, with a self-test replaying the merge: an item already archived at the base is not re-audited from a merged branch's older history. |
+| Stale pointers and rows that arrive stale (Astra 10, 11, Fable 9, 10) | Every live pointer is a listed rewrite. Rows false on arrival in the moved file map are fixed in a separate commit after the pure move. `HANDOFF.md` keeps a `## Moved` index (old section → new home), and CLAUDE.md §Stable decisions an index using the exact sub-heading text code comments cite. Paths inside `raptor-port/src` and `e2e` are NOT edited in this docs pass (it would start a full run on his PC and turn the ceilings to "deferred"): filed as `[DOC-POINTERS-CODE]`. |
+| `[DEPLOY-DOCS]` operational files (Astra 12) | Stays open for the workflow header/comments and `live-check.mjs` — a code-carrying change, not this pass. |
+| D141 targets in `[DOC-TRIM]`; Astra briefs (Astra 13) | `[DOC-TRIM]` is rewritten on closing, with no targets; `doc-structure.md` says a brief for Astra names the area files. Review skills are NOT changed in this pass. |
+| Two homes (Fable 8) | `doc-structure.md` is the short form and points to `doc-budget.md`; HANDOFF's map becomes one line to CLAUDE.md §Where things live (the rows only it had move there); owner questions stay where D137 put them. |
+| Superseded passages kept in place (Fable 14c) | The MODELS bullet and "Delegate frugally" stay: each mixes a live 17 Sep rule with its history, and splitting them risks meaning. |
+| D67 independence (Fable 16) | The meaning check: **Fable** reads the CLAUDE.md moves and every rewrite; **Astra** reads everything, including the `HANDOFF.md`/`OUTSTANDING.md` moves that follow Fable's own classifications; Opus is the Claude-side reader of those. |

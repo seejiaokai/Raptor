@@ -20,8 +20,8 @@
  *     back exactly as they were;
  *   - it prints every remaining mention of the id, because pointers to a moved item need a hand
  *     look — a script cannot know which of them should now say "archived". */
-import { readFileSync, writeFileSync, existsSync } from 'node:fs'
-import { join, dirname } from 'node:path'
+import { readFileSync, writeFileSync, existsSync, realpathSync, renameSync, rmSync } from 'node:fs'
+import { join, dirname, relative, isAbsolute } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { execFileSync, spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
@@ -113,99 +113,137 @@ if (args.includes('--rulings')) {
  *
  *   node raptor-port/scripts/backlog-archive.mjs --move <file> --from "<exact first line>"
  *        (--to-line "<exact last line>" | --section) --dest <file>
- *        [--under "<exact heading line>"] [--pointer "<one line left in its place>"] [--dry-run]
+ *        [--under "<exact heading line>" [--create-under]] (--pointer "<one line left in its place>" | --no-pointer)
+ *        [--dry-run]
  *
  * A block that is no longer needed where it sits goes, WHOLE, to where it is read less often — an area's
  * file, a reference doc, an archive (`.claude/rules/doc-structure.md`). "A summary never changes the
  * meaning" (D138) is only as good as the move, and a move by hand is how two backlog items were destroyed on
- * 22 Sep 26. So this refuses anything it cannot do exactly:
- *   - the first line must occur EXACTLY ONCE in the source (a line that repeats is the wrong anchor);
- *   - the block ends at the next occurrence of --to-line (which must exist, once, after the start), or with
- *     --section at the next heading of the same or a higher level (outside code blocks), or at the end;
- *   - the bytes move unchanged — and source and destination must share one line ending, or it stops;
- *   - with --under, the block lands at the END of that heading's section in the destination (the heading
- *     is created once at the end of the file if it is not there); without it, at the end of the file;
- *   - afterwards the block must appear in the destination exactly once and no longer in the source, and
- *     the document gate's inventory must be clean — or EVERY file is put back as it was.
- * It prints the block's line count and SHA-256, the manifest line a meaning check (D138) works from. */
+ * 22 Sep 26. So this refuses anything it cannot do exactly (hardened on Astra's red team, 24 Sep 26):
+ *   - both paths must stay inside the repo once links are resolved, and must be two different files;
+ *   - the first line must occur EXACTLY ONCE in the source, OUTSIDE any code block (a line that repeats, or
+ *     an example inside a fence, is the wrong anchor);
+ *   - the block ends at --to-line (exactly one occurrence at or after the start, outside a code block), or
+ *     with --section at the next heading of the same or a higher level outside code blocks, or at the end;
+ *   - the bytes move unchanged: source and destination must share one line ending and end in a newline;
+ *   - with --under, the block lands at the END of that heading's section; a heading that is not there is
+ *     refused unless --create-under says to add it at the end of the file; without --under, at the end;
+ *   - a pointer is a deliberate choice: --pointer (ONE line, naming the destination file, unique in the source
+ *     afterwards) or --no-pointer (when an index elsewhere already points to it) — one of the two, always;
+ *   - a block holding a backlog item (`### [ID]`) or a ruling row (`| D<n> |`) is refused: those have their
+ *     own movers, which check homes and the map (a plain move would pass the inventory and skip both);
+ *   - both results are built and checked in memory, written to temporary copies, read back, and only then
+ *     put in place; any failure puts both files back; afterwards the block must be in the destination
+ *     exactly once and gone from the source, and the gate's inventory must be clean — or both files go back.
+ * It prints the block's line count and SHA-256 — the manifest line a meaning check (D138) works from.
+ * Self-tested in scripts/docsize-selftest.mjs ("mover: --move …"). */
 if (args.includes('--move')) {
   const opt = k => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : undefined }
   const norm = p => (p || '').replace(/\\/g, '/').replace(/^(\.\/)+/, '')
   const src = norm(opt('--move')), dest = norm(opt('--dest'))
   const from = opt('--from'), toLine = opt('--to-line'), under = opt('--under'), pointer = opt('--pointer')
-  const section = args.includes('--section'), dryM = args.includes('--dry-run')
-  if (!src || !dest || from === undefined || (!toLine && !section)) die('usage: --move <file> --from "<first line>" (--to-line "<last line>" | --section) --dest <file> [--under "<heading>"] [--pointer "<line>"] [--dry-run]')
+  const section = args.includes('--section'), createUnder = args.includes('--create-under'), dryM = args.includes('--dry-run')
+  const noPointer = args.includes('--no-pointer')
+  if (!src || !dest || from === undefined || !!toLine === section || (pointer === undefined) === !noPointer) die('usage: --move <file> --from "<first line>" (--to-line "<last line>" | --section) --dest <file> [--under "<heading>" [--create-under]] (--pointer "<line>" | --no-pointer) [--dry-run]')
+  if (pointer !== undefined && /[\r\n]/.test(pointer)) die('--pointer must be ONE line.')
+  if (pointer !== undefined && !pointer.includes(dest.split('/').pop())) die(`--pointer must name the destination (${dest.split('/').pop()}), so every pointer can be found by searching for the file it points to.`)
+  const realRepo = realpathSync(REPO)
   for (const f of [src, dest]) {
     if (/^([A-Za-z]:|\/)/.test(f) || f.split('/').includes('..')) die(`${f}: give a path from the repo root, inside the repo.`)
     if (!existsSync(join(REPO, f))) die(`${f}: no such file (create the destination with its header first).`)
+    const rel = relative(realRepo, realpathSync(join(REPO, f)))
+    if (!rel || rel.startsWith('..') || isAbsolute(rel)) die(`${f}: resolves outside the repo (a link?) — refusing.`)
   }
-  if (src === dest) die('the source and the destination are the same file — a move within a file is an ordinary edit.')
+  if (realpathSync(join(REPO, src)) === realpathSync(join(REPO, dest))) die('the source and the destination are the same file — a move within a file is an ordinary edit.')
   const withEndsM = t => t.match(/[^\n]*\n|[^\n]+$/g) || []
   const bare = l => l.replace(/\r?\n$/, '')
+  const fenced = lines => { let fence = null; return lines.map(l => { const was = fence; fence = fenceStep(fence, bare(l)); return !!(was || fence) }) }
+  const count = (t, b) => t.split(b).length - 1
   const srcText = readFileSync(join(REPO, src), 'utf8'), destText = readFileSync(join(REPO, dest), 'utf8')
   const eolOf = t => (t.includes('\r\n') ? '\r\n' : '\n')
   const mixed = t => t.includes('\r\n') && /(^|[^\r])\n/.test(t)
   if (mixed(srcText) || mixed(destText) || (destText.includes('\n') && eolOf(srcText) !== eolOf(destText))) die(`${src} and ${dest} do not share one line ending — moving the bytes would mix them. Fix the endings first.`)
+  for (const [f, t] of [[src, srcText], [dest, destText]]) if (t && !t.endsWith('\n')) die(`${f} does not end in a newline — add one first, so the bytes can move unchanged.`)
   const eolM = eolOf(srcText)
-  const ls = withEndsM(srcText)
+  const ls = withEndsM(srcText), inF = fenced(ls)
   const starts = ls.map((l, i) => (bare(l) === from ? i : -1)).filter(i => i >= 0)
   if (starts.length !== 1) die(`--from must match exactly ONE line of ${src}; it matches ${starts.length}. Quote the whole line, exactly.`)
   const s = starts[0]
+  if (inF[s]) die(`--from is a line inside a code block in ${src} — anchor on a line outside it.`)
   let e // exclusive
   if (section) {
     const lvl = (/^(#{1,6}) /.exec(from) || [])[1]
     if (!lvl) die('--section needs --from to be a heading line (# … ######).')
-    let fence = null
     e = ls.length
     for (let i = s + 1; i < ls.length; i++) {
-      const was = fence
-      fence = fenceStep(fence, bare(ls[i]))
-      const h = !was && !fence && /^(#{1,6}) /.exec(bare(ls[i]))
+      const h = !inF[i] && /^(#{1,6}) /.exec(bare(ls[i]))
       if (h && h[1].length <= lvl.length) { e = i; break }
     }
   } else {
     const ends = ls.map((l, i) => (i >= s && bare(l) === toLine ? i : -1)).filter(i => i >= 0)
     if (ends.length !== 1) die(`--to-line must match exactly ONE line of ${src} at or after the start; it matches ${ends.length}.`)
+    if (inF[ends[0]]) die(`--to-line is a line inside a code block in ${src} — end on a line outside it.`)
     e = ends[0] + 1
   }
-  let blockM = ls.slice(s, e).join('')
-  if (!blockM.endsWith('\n')) blockM += eolM
+  if (section && e === ls.length) console.log(`note: the section runs to the end of ${src}.`)
+  for (let i = s; i < e; i++) {
+    if (inF[i]) continue
+    if (/^### \[[A-Z][A-Z0-9-]+\]/.test(bare(ls[i]))) die(`the block holds a backlog item (${bare(ls[i]).slice(0, 40)}…) — move items with: backlog-archive.mjs <ID> --homes <file>.`)
+    if (/^\|\s*D\d+\s*\|/.test(bare(ls[i]))) die(`the block holds a ruling row (${bare(ls[i]).slice(0, 12)}…) — rulings move with: backlog-archive.mjs --rulings.`)
+  }
+  const head0 = ls.slice(0, s).join(''), tail0 = ls.slice(e).join('')
+  const blockM = ls.slice(s, e).join('')
   if (destText.includes(blockM)) die(`${dest} already holds this exact block — it was moved already, or it is a copy. Nothing written.`)
-  if (srcText.split(blockM).length - 1 !== 1) die(`the block occurs more than once in ${src} — refusing to guess which copy moves.`)
-  const newSrc = ls.slice(0, s).join('') + (pointer !== undefined ? pointer + eolM : '') + ls.slice(e).join('')
+  if (count(srcText, blockM) !== 1) die(`the block occurs more than once in ${src} — refusing to guess which copy moves.`)
+  const newSrc = head0 + (pointer !== undefined ? pointer + eolM : '') + tail0
   /* where it lands: the end of --under's section, else the end of the file, one blank line before it */
-  const dl = withEndsM(destText)
+  const dl = withEndsM(destText), inD = fenced(dl)
   let at = dl.length, head = ''
   if (under !== undefined) {
     const hits = dl.map((l, i) => (bare(l) === under ? i : -1)).filter(i => i >= 0)
     if (hits.length > 1) die(`--under matches ${hits.length} lines of ${dest}; it must match one.`)
     if (hits.length === 1) {
+      if (inD[hits[0]]) die(`--under is a line inside a code block in ${dest}.`)
       const lvl = ((/^(#{1,6}) /.exec(under) || [])[1] || '#######').length
-      let fence = null
       for (let i = hits[0] + 1; i < dl.length; i++) {
-        const was = fence
-        fence = fenceStep(fence, bare(dl[i]))
-        const h = !was && !fence && /^(#{1,6}) /.exec(bare(dl[i]))
+        const h = !inD[i] && /^(#{1,6}) /.exec(bare(dl[i]))
         if (h && h[1].length <= lvl) { at = i; break }
       }
       while (at > hits[0] + 1 && !bare(dl[at - 1]).trim()) at-- // land before the section's trailing blank lines
-    } else head = under + eolM + eolM
+    } else if (createUnder) head = under + eolM + eolM
+    else die(`--under "${under}" is not a line of ${dest}. Check the heading, or add --create-under to create it at the end of the file.`)
   }
   const before = dl.slice(0, at).join('')
-  const sep = !before ? '' : (before.endsWith('\n') ? '' : eolM) + (before.replace(/\r?\n$/, '').endsWith('\n') || !before.trim() ? '' : eolM)
+  /* one blank line between what is there and what arrives: none if the text before already ends blank */
+  const lastBefore = at > 0 ? bare(dl[at - 1]) : ''
+  const sep = !before.trim() ? '' : (lastBefore.trim() ? eolM : '')
   const rest = dl.slice(at).join('')
   const newDest = before + sep + head + blockM + (rest && bare(rest.split('\n')[0]).trim() ? eolM : '') + rest
+  /* every check in memory first — nothing is written until the result is known to be right */
+  if (count(newDest, blockM) !== 1 || count(newSrc, blockM) !== 0) die(`internal: the block would be in ${dest} ${count(newDest, blockM)} time(s) and in ${src} ${count(newSrc, blockM)} — nothing written.`)
+  if (!newDest.startsWith(before) || !newDest.endsWith(rest) || !newSrc.startsWith(head0) || !newSrc.endsWith(tail0)) die('internal: text around the move would change — nothing written.')
+  if (pointer !== undefined && withEndsM(newSrc).filter(l => bare(l) === pointer).length !== 1) die(`--pointer would occur more than once in ${src} — make it unique.`)
   const hash = createHash('sha256').update(blockM).digest('hex').slice(0, 16)
   console.log(`${src} lines ${s + 1}–${e} (${e - s} lines, sha256 ${hash}) → ${dest}${under ? ` under "${under}"` : ''}${pointer !== undefined ? ' · pointer left' : ''}`)
   if (dryM) { console.log('--dry-run: nothing written.'); process.exit(0) }
-  writeFileSync(join(REPO, src), newSrc)
-  writeFileSync(join(REPO, dest), newDest)
-  const back = msg => { writeFileSync(join(REPO, src), srcText); writeFileSync(join(REPO, dest), destText); die(msg) }
-  const landed = readFileSync(join(REPO, dest), 'utf8').split(blockM).length - 1
-  const left = readFileSync(join(REPO, src), 'utf8').split(blockM).length - 1
-  if (landed !== 1 || left !== 0) back(`after writing, the block is in ${dest} ${landed} time(s) and still in ${src} ${left} time(s) — both files were put back.`)
+  const files = [[src, srcText, newSrc], [dest, destText, newDest]]
+  const putBack = why => {
+    const stuck = []
+    for (const [f, old] of files) { try { if (readFileSync(join(REPO, f), 'utf8') !== old) writeFileSync(join(REPO, f), old) } catch { stuck.push(f) } }
+    for (const [f] of files) { try { rmSync(join(REPO, f) + '.docmove-tmp', { force: true }) } catch { /* a leftover temp copy is harmless */ } }
+    die(stuck.length ? `${why} — AND ${stuck.join(', ')} could not be put back: restore from git (git checkout -- <file>) before anything else.` : `${why} — both files were put back exactly as they were.`)
+  }
+  try {
+    for (const [f, , t] of files) {
+      writeFileSync(join(REPO, f) + '.docmove-tmp', t)
+      if (readFileSync(join(REPO, f) + '.docmove-tmp', 'utf8') !== t) throw new Error(`the temporary copy of ${f} did not read back as written`)
+    }
+    for (const [f] of files) renameSync(join(REPO, f) + '.docmove-tmp', join(REPO, f))
+  } catch (err) { putBack(`writing failed (${err.code || err.message})`) }
+  const landed = count(readFileSync(join(REPO, dest), 'utf8'), blockM), left = count(readFileSync(join(REPO, src), 'utf8'), blockM)
+  if (landed !== 1 || left !== 0) putBack(`after writing, the block is in ${dest} ${landed} time(s) and still in ${src} ${left} time(s)`)
   const r = spawnSync(process.execPath, [GATE, '--inventory'], { cwd: REPO, encoding: 'utf8' })
-  if (r.status !== 0) { console.error(r.stdout + r.stderr); back('the inventory was not clean after the move, so both files were put back exactly as they were.') }
+  if (r.status !== 0) { console.error(r.stdout + r.stderr); putBack('the inventory was not clean after the move') }
   console.log('moved; the block landed once and the inventory is clean.')
   process.exit(0)
 }

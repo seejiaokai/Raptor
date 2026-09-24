@@ -1,7 +1,7 @@
 # Storage seam — design (stage 1 of 4)
 
 **Date:** 8 Sep 26 · **Branch:** `claude/storage-seam` · **Status:** implemented
-on `claude/storage-seam` (plan: `docs/superpowers/plans/2026-09-08-storage-seam.md`, at the repo root).
+on `claude/storage-seam` (plan: `raptor-port/docs/superpowers/plans/2026-09-08-storage-seam.md`; it sat at the repo root until 24 Sep 26).
 
 The end state is RAPTOR on Dataverse, shared by the whole squadron, with
 live-ish collaboration. This spec covers **stage 1 only**: one storage

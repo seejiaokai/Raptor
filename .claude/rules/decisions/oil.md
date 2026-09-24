@@ -22,7 +22,7 @@ paths:
   - raptor-port/docs/**/*allavail*
   - raptor-port/docs/**/*one-absence*
   - raptor-port/scripts/handpass/**
-  - docs/archive/HANDOFF-OIL-WALK.md
+  - raptor-port/docs/archive/HANDOFF-OIL-WALK.md
 ---
 
 # Rulings — OIL (off in lieu: earned leave)
