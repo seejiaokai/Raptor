@@ -25,7 +25,15 @@ const LIVE0 = ['# Outstanding', '', '## Items', '', item('ALPHA', 6), item('BRAV
 const ARCH0 = ['# Archive', '', item('OLD', 3)].join('\n')
 const RULES0 = "const RULES = {\n  X1: 'first rule',\n  X2: 'second rule',\n}\n"
 const REG0 = ['# Register', '', '- **X1** — the first rule.', '', '| X2 | the second rule |', ''].join('\n')
-const DEC0 = ['# DECISIONS', '', '| # | ruling | meaning | home |', '|---|---|---|---|', '| D2 | b | b | `OUTSTANDING.md` |', '| D1 | a | a | `OUTSTANDING.md` |', ''].join('\n')
+/* The rulings in the D137 shape: rows live in an AREA file, DECISIONS.md holds only the map, and the
+   archive holds one row already marked as replaced. */
+const AREA = '.claude/rules/decisions/general.md'
+const AREA0 = ['# Rulings — general', '', '| # | Date | ruling | meaning | home |', '|---|---|---|---|---|', '| D2 | 21 Sep 26 | b | b | `OUTSTANDING.md` |', '| D1 | 21 Sep 26 | a | a | `OUTSTANDING.md` |', ''].join('\n')
+const DARCH0 = ['# Archive', '', '## Moved 21 Sep 26', '', '| # | Date | ruling | meaning | home |', '|---|---|---|---|---|', '| D0 | 20 Sep 26 | **REPLACED BY D1 (21 Sep 26).** z | z | `OUTSTANDING.md` |', ''].join('\n')
+const mapRow = (area, file, ids) => '| ' + area + ' | ' + '`' + file + '`' + ' | always | ' + ids + ' |'
+const DEC0 = ['# DECISIONS', '', '| Area | File | Loads by itself | Rulings |', '|---|---|---|---|', mapRow('General', AREA, 'D2, D1'), mapRow('Archive', 'DECISIONS-ARCHIVE.md', 'D0'), ''].join('\n')
+/* point one map row at a new list of D-numbers */
+const setMap = (c, file, ids) => c.edit('DECISIONS.md', t => t.split('\n').map(l => l.includes('`' + file + '`') ? l.replace(/\| [^|]*\|$/, '| ' + ids + ' |') : l).join('\n'))
 
 let failed = 0
 /* A throwaway repo holding a tiny backlog, archive, rulings list, rule map and register. */
@@ -39,7 +47,7 @@ function makeRepo(live = LIVE0) {
   w('raptor-port/scripts/backlog-archive.mjs', readFileSync(MOVER, 'utf8'))
   w('raptor-port/scripts/rulecheck.mjs', RULES0)
   w('raptor-port/docs/superpowers/specs/x-behaviour-register.md', REG0)
-  w('OUTSTANDING.md', live); w('OUTSTANDING-ARCHIVE.md', ARCH0); w('DECISIONS.md', DEC0)
+  w('OUTSTANDING.md', live); w('OUTSTANDING-ARCHIVE.md', ARCH0); w('DECISIONS.md', DEC0); w(AREA, AREA0); w('DECISIONS-ARCHIVE.md', DARCH0)
   w('raptor-port/src/app.ts', 'export const a = 1\n')
   w('docs/home.md', 'Where the facts of CHARLIE now live.\n')
   g('add', '-A'); g('commit', '-q', '-m', 'base')
@@ -86,15 +94,30 @@ scenario('a live id renamed while its old id survives elsewhere — undeclared',
 scenario('the same rename, declared in the commit', false, c => { c.edit('OUTSTANDING-ARCHIVE.md', t => t + '\n' + item('BRAVO', 1).replace('Line 1 of BRAVO', 'The archived record of BRAVO')); c.commit('archive a BRAVO record'); renameLive(c); c.commit('rename\n\nDocs-guard-allow: [BRAVO]') })
 scenario('over a ceiling on a docs-only change', true, c => c.edit('DECISIONS.md', t => t + 'x\n'.repeat(200)), { mustSay: 'over its ceiling' })
 scenario('over a ceiling inside a code change is deferred, not failed', false, c => { c.edit('DECISIONS.md', t => t + 'x\n'.repeat(200)); c.edit('raptor-port/src/app.ts', t => t + 'export const b = 2\n') }, { mustSay: 'deferred (D29)' })
-scenario('a ceiling moved in a commit that also touches src', true, c => { c.edit('raptor-port/scripts/docsize.mjs', t => t.replace("['DECISIONS.md',                       1,  150,", "['DECISIONS.md',                       1,  400,")); c.edit('raptor-port/src/app.ts', t => t + 'export const b = 2\n'); c.commit('sneak') }, { mustSay: 'touches raptor-port/src' })
-scenario('a ceiling moved in a docs-only commit', false, c => { c.edit('raptor-port/scripts/docsize.mjs', t => t.replace("['DECISIONS.md',                       1,  150,", "['DECISIONS.md',                       1,  400,")); c.commit('raise, with its reason') })
+scenario('a ceiling moved in a commit that also touches src', true, c => { c.edit('raptor-port/scripts/docsize.mjs', t => t.replace("['DECISIONS.md',                       1,   80,", "['DECISIONS.md',                       1,  400,")); c.edit('raptor-port/src/app.ts', t => t + 'export const b = 2\n'); c.commit('sneak') }, { mustSay: 'touches raptor-port/src' })
+scenario('a ceiling moved in a docs-only commit', false, c => { c.edit('raptor-port/scripts/docsize.mjs', t => t.replace("['DECISIONS.md',                       1,   80,", "['DECISIONS.md',                       1,  400,")); c.commit('raise, with its reason') })
 
-scenario('a ruling number lost from DECISIONS.md (F7)', true, c => c.edit('DECISIONS.md', t => t.replace(/^\| D1 \|.*\n/m, '')), { mustSay: 'D1 is GONE' })
-scenario('a ruling number newly used twice (F7)', true, c => c.edit('DECISIONS.md', t => t.replace('| D2 | b |', '| D1 | b |')), { mustSay: 'D1 now appears 2 times' })
-scenario('a ruling number skipped — a parallel branch holds the range', false, c => { c.edit('DECISIONS.md', t => t.replace('|---|---|---|---|\n', '|---|---|---|---|\n| D9 | z | z | this file |\n')) })
+scenario('a ruling number lost from its area file (F7)', true, c => c.edit(AREA, t => t.replace(/^\| D1 \|.*\n/m, '')), { mustSay: 'D1 is GONE' })
+scenario('a ruling number newly used twice (F7)', true, c => c.edit(AREA, t => t.replace('| D2 | 21 Sep 26 | b |', '| D1 | 21 Sep 26 | b |')), { mustSay: 'D1 now appears 2 times' })
+scenario('a ruling number skipped — a parallel branch holds the range', false, c => { c.edit(AREA, t => t.replace('|---|---|---|---|---|\n', '|---|---|---|---|---|\n| D9 | 21 Sep 26 | z | z | this file |\n')); setMap(c, AREA, 'D9, D2, D1') })
+
+/* THE STRUCTURE KEEPS ITSELF (D137) — a ruling in the map file, a map out of step, a marked row left live,
+   a row copied to two areas: each FAILS by name; a clean move between areas passes. */
+const OTHER = '.claude/rules/decisions/other.md'
+const addOther = (c, ids) => c.edit('DECISIONS.md', t => t.replace('| Archive |', mapRow('Other', OTHER, ids) + '\n| Archive |'))
+scenario('the rulings in the D137 shape, unchanged', false, () => {})
+scenario('a ruling written in DECISIONS.md instead of its area', true, c => c.edit('DECISIONS.md', t => t + '\n| D9 | 21 Sep 26 | z | z | this file |\n'), { mustSay: 'is written in DECISIONS.md' })
+scenario('a new ruling the map does not list', true, c => c.edit(AREA, t => t.replace('|---|---|---|---|---|\n', '|---|---|---|---|---|\n| D9 | 21 Sep 26 | z | z | this file |\n')), { mustSay: 'does not match the files' })
+scenario('the map listing a ruling its file does not hold', true, c => setMap(c, AREA, 'D2, D1, D7'), { mustSay: 'does not match the files' })
+scenario('a replaced ruling left in its area file', true, c => c.edit(AREA, t => t.replace('| D1 | 21 Sep 26 | a |', '| D1 | 21 Sep 26 | **REPLACED BY D2 (21 Sep 26).** a |')), { mustSay: 'backlog-archive.mjs --rulings' })
+scenario('a spent permission left in its area file', true, c => c.edit(AREA, t => t.replace('| D1 | 21 Sep 26 | a |', '| D1 | 21 Sep 26 | **SPENT 21 Sep 26 — merged.** a |')), { mustSay: 'marked replaced/spent' })
+scenario('an archived row without its mark', true, c => c.edit('DECISIONS-ARCHIVE.md', t => t.replace('**REPLACED BY D1 (21 Sep 26).** ', '')), { mustSay: 'without its mark' })
+scenario('a ruling copied into a second area file', true, c => { c.write(OTHER, AREA0.replace('general', 'other').replace(/^\| D2 .*\n/m, '')); addOther(c, 'D1') }, { mustSay: 'D1 now appears 2 times' })
+scenario('an area file the map does not name', true, c => c.write(OTHER, '# Rulings — other\n'), { mustSay: 'is not in the map' })
+scenario('a ruling MOVED to another area, the map updated', false, c => { c.write(OTHER, AREA0.replace('general', 'other').replace(/^\| D2 .*\n/m, '')); c.edit(AREA, t => t.replace(/^\| D1 .*\n/m, '')); addOther(c, 'D1'); setMap(c, AREA, 'D2') })
 scenario('a register row deleted while the rule map still names it (F7)', true, c => c.edit('raptor-port/docs/superpowers/specs/x-behaviour-register.md', t => t.replace('- **X1** — the first rule.\n', '')), { mustSay: 'X1 is in' })
 
-const addRow = (c, home) => c.edit('DECISIONS.md', t => t.replace('|---|---|---|---|\n', `|---|---|---|---|\n| D3 | c | c | ${home} |\n`))
+const addRow = (c, home) => { c.edit(AREA, t => t.replace('|---|---|---|---|---|\n', `|---|---|---|---|---|\n| D3 | 21 Sep 26 | c | c | ${home} |\n`)); setMap(c, AREA, 'D3, D2, D1') }
 scenario('a new ruling whose home does not exist (F6)', true, c => addRow(c, '`docs/nowhere.md`'), { mustSay: 'no such file exists' })
 scenario('a new ruling naming a home this change never wrote (D29\'s own defect)', true, c => addRow(c, '`OUTSTANDING.md`'), { mustSay: 'does not touch that file' })
 scenario('a new ruling whose home was written in the same change', false, c => { addRow(c, '`OUTSTANDING.md`'); c.edit('OUTSTANDING.md', t => t + '\nThe ruling D3, carried here.\n') })
@@ -144,7 +167,7 @@ scenario('an item ADDED on the branch, committed, then archived truncated (A2)',
   c.edit('OUTSTANDING.md', t => t + '\n' + item('ECHO', 5)); c.commit('add ECHO')
   moveTo(c, 'ECHO', b => b.split('\n').slice(0, 3).join('\n') + '\n'); c.commit('archive ECHO')
 }, { mustSay: '[ECHO] left' })
-scenario('a ruling home DELETED from disk (A5)', true, c => { c.edit('DECISIONS.md', t => t.replace('| D2 | b | b | `OUTSTANDING.md` |', '| D2 | b | b | `docs/home.md` |')); c.commit('point D2 at home'); rmSync(join(c.dir, 'docs/home.md')) }, { mustSay: 'no such file exists' })
+scenario('a ruling home DELETED from disk (A5)', true, c => { c.edit(AREA, t => t.replace('| D2 | 21 Sep 26 | b | b | `OUTSTANDING.md` |', '| D2 | 21 Sep 26 | b | b | `docs/home.md` |')); c.commit('point D2 at home'); rmSync(join(c.dir, 'docs/home.md')) }, { mustSay: 'no such file exists' })
 scenario('a body line that only MENTIONS the allow syntax grants nothing (A6)', true, c => { c.edit('OUTSTANDING.md', t => cut(t, 'BRAVO')[0]); c.commit('drop BRAVO\n\nDocs-guard-allow: [BRAVO]\nThis is an example only, not an approval.') }, { mustSay: '[BRAVO] is GONE' })
 scenario('a new rule whose register is new and not yet staged (A7)', false, c => { c.edit('raptor-port/scripts/rulecheck.mjs', t => t.replace("  X2: 'second rule',\n", "  X2: 'second rule',\n  X3: 'third rule',\n")); c.write('raptor-port/docs/superpowers/specs/new-behaviour-register.md', '- **X3** — the third rule.\n') })
 scenario('an unusable DOCSGUARD_BASE still falls back and catches a loss', true, c => c.edit('OUTSTANDING.md', t => cut(t, 'BRAVO')[0]), { base: 'not-a-commit', mustSay: '[BRAVO] is GONE' })
@@ -156,6 +179,18 @@ mover('an id already in the archive', false, { prep: c => { c.edit('OUTSTANDING-
 mover('a home that does not exist', false, { args: ['CHARLIE', '--homes', 'docs/nowhere.md'], check: (c, r) => /no such file/.test(r.stderr) ? '' : 'wrong reason' })
 mover('a Windows backslash home that was changed on the branch (A9)', true, { prep: c => c.write('docs/other.md', 'facts, written just now\n'), args: ['CHARLIE', '--homes', 'docs\\other.md'] })
 mover('a home outside the repo', false, { args: ['CHARLIE', '--homes', '../outside.md'], check: (c, r) => /inside the repo/.test(r.stderr) ? '' : 'wrong reason' })
+
+/* THE RULING MOVER (backlog-archive.mjs --rulings, D137): it moves a marked row whole, keeps the map true,
+   and puts every file back when the inventory is not clean afterwards. */
+mover('--rulings moves a replaced ruling to the archive and rewrites the map', true, { prep: c => { c.edit(AREA, t => t.replace('| D1 | 21 Sep 26 | a |', '| D1 | 21 Sep 26 | **REPLACED BY D2 (21 Sep 26).** a |')); c.commit('mark D1') }, args: ['--rulings'], check: c =>
+  has(c, AREA, '| D1 |') ? 'D1 is still live'
+  : !has(c, 'DECISIONS-ARCHIVE.md', '| D1 | 21 Sep 26 | **REPLACED BY D2 (21 Sep 26).** a | a | `OUTSTANDING.md` |') ? 'D1 did not arrive whole'
+  : !c.read('DECISIONS.md').includes('| always | D0, D1 |') || !c.read('DECISIONS.md').includes('general.md` | always | D2 |') ? 'the map was not rewritten'
+  : !/^## Moved /m.test(c.read('DECISIONS-ARCHIVE.md').split('| D0 |')[1]) ? 'no dated heading over the day it moved' : '' })
+mover('--rulings puts a NEW ruling into the map', true, { prep: c => c.edit(AREA, t => t.replace('|---|---|---|---|---|\n', '|---|---|---|---|---|\n| D9 | 21 Sep 26 | z | z | this file |\n')), args: ['--rulings'], check: c =>
+  !c.read('DECISIONS.md').includes('general.md` | always | D9, D2, D1 |') ? 'the map does not list D9 first' : '' })
+mover('--rulings puts every file back when the inventory is not clean afterwards', false, { prep: c => { c.edit('OUTSTANDING.md', t => cut(t, 'BRAVO')[0]); c.edit(AREA, t => t.replace('| D1 | 21 Sep 26 | a |', '| D1 | 21 Sep 26 | **SPENT 21 Sep 26 — used.** a |')) }, args: ['--rulings'], check: (c, r) =>
+  !has(c, AREA, '| D1 |') ? 'D1 was not put back' : has(c, 'DECISIONS-ARCHIVE.md', '| D1 |') ? 'the archive was not put back' : !/put back/.test(r.stderr) ? 'did not say so' : '' })
 
 /* THE STOP HOOK (A8) — needs bash; skipped, and said so, where there is none. */
 const HOOK = join(HERE, '..', '..', '.claude', 'hooks', 'backlog-guard.sh')

@@ -99,7 +99,7 @@ on clean `main` and both pass in CI on Linux (a merged-green PR's own checks
 confirm it), so they are a Windows browser/layout/touch-emulation quirk — trust
 CI for them, don't chase them locally. (`smoke:tracker`'s `addStudent` timeout
 that used to sit beside these was a REAL bug, not a Windows quirk — DIAGNOSED +
-FIXED 17 Sep 26, see [TRK-SMOKE] in OUTSTANDING.md; no longer re-run-and-hope.)
+FIXED 17 Sep 26, see [TRK-SMOKE] in OUTSTANDING-ARCHIVE.md; no longer re-run-and-hope.)
 None of these gate a tracker- or storage-only change.
 
 **How the gates lie — the durable traps, worth more than any count:**
@@ -232,7 +232,7 @@ and re-seeded, which he agreed to as "ok reset"). Register + both clashes:
 earns OIL and `docs/ui-contracts.md` §OIL on the schedule.
 
 **[CMDL-FINISH] — ARCH-STACK step 2 completion — DONE + LIVE.** Merged via PRs #412
-(build), #415 (finish) and #413 (the undo front-door doc); `OUTSTANDING.md` records it as
+(build), #415 (finish) and #413 (the undo front-door doc); `OUTSTANDING-ARCHIVE.md` records it as
 live. This entry said "held for merge live" on branch `claude/cmdl-finish-p4` until
 21 Sep 26, months of sessions after it landed — corrected here; the branch is spent.
 Two items were deferred OUT of it and are still open under `[GLOBAL-UNDO]`: the Leave War

@@ -588,3 +588,18 @@ code separately from its output, and never let the same line that runs a gate al
 **Suggested improvement:** Wherever a skill tells the agent to assert wrapping in a browser: count distinct rounded `top` values of `getClientRects()`, never the number of rects; and print the rects once before trusting a new layout check.
 
 **Principle:** A browser returns one rect per inline fragment, not per line; any "is it on one line" assertion must count line positions. Before trusting a new measurement, look at its raw numbers once.
+
+### Observation 227: An owner ruling that lands mid-review makes a frozen review brief stale — point reviewers at the live file
+
+**Status:** OPEN
+**Date:** 2026-09-24
+**Session context:** [DOC-TRIM] notes-only pass. The plan (sort DECISIONS.md into area sections) was frozen into a brief and sent to Fable and Astra in parallel; while they read, the owner ruled D137 (split the rulings into auto-loaded per-area files), which changed the plan's form.
+**Skill:** claudex-loop
+**Type:** open-source
+**Phase/Area:** plan review — building the reviewer brief; folding findings
+
+**Issue:** Both reviewers were briefed on a snapshot of the plan. They caught the new ruling only because the brief told them to read the live rulings file, where the builder had recorded D137 before continuing — both then flagged "the design is superseded by D137" as their first finding, and their classification findings still carried over. Had the brief been self-contained, one or both rounds would have reviewed a dead design.
+
+**Suggested improvement:** In the brief-building step, require the brief to point reviewers at the LIVE source-of-truth files (the ruling/decision record, the plan file on disk) rather than paste them, and add a fold-in step: when the owner rules mid-review, record it in the live file at once, let in-flight reviews finish, and re-scope only the findings the ruling invalidates instead of restarting the round.
+
+**Principle:** A review brief should reference the live record, not snapshot it; a decision that lands while reviewers read then reaches them for free, and only the invalidated findings need redoing.

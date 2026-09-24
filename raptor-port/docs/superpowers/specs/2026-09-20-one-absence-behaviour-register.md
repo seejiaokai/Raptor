@@ -374,6 +374,9 @@ nothing else — to change it an admin reopens the war. One not yet approved sta
 > "Yes an award and a worked day add up. So it's 4. The auto oil credits don't get affected by
 > manual OIL inputs."
 
+*The ruling as first given, and the reasoning before it was built (PR #423): backlog `[OIL-AWARD-ADD-RULING]`, in
+`OUTSTANDING-ARCHIVE.md` since 24 Sep 26.*
+
 A 3-day award on a Saturday the man then works is worth **four** — the award's three plus the
 day's one. The two are INDEPENDENT: what the published schedule earns is never changed by what a
 person typed, and what a person typed is never changed by the schedule.

@@ -1,5 +1,10 @@
 # [CMDL-FINISH] Finish the command layer for Leave War + Tracker — ARCH-STACK step 2 completion — DESIGN (Rev 4 — LOCKED 17 Sep 26, round-4 APPROVED)
 
+> **DONE + LIVE (18 Sep 26):** built and merged as PR #412 (build) and PR #415 (finish), with the undo front door
+> PR #413 (`docs/undo-contract.md`). Still open, and carried elsewhere: the Leave War posting-window rebuild on a
+> restore (CMDLF-002) and whole-Import undo granularity, in `OUTSTANDING.md` `[GLOBAL-UNDO]`; P6/P7, in
+> `[SYNC-INTEG]`. The backlog item `[CMDL-FINISH]` moved to `OUTSTANDING-ARCHIVE.md` 24 Sep 26.
+
 > **STATUS: LOCKED / BUILD-READY (17 Sep 26).** Round-4 confirm: **Fable 5.1 APPROVED/SHIP-READY**
 > ("Rev 4 is build-ready; patch F4-1 in the LOCK commit, then start P1; no round 5"); **Codex/GPT-6
 > Astra** confirmed all round-3 folds CLOSED, its 4 new items = the same three LOCK patches below —

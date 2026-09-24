@@ -1,5 +1,9 @@
 # [ARCH-STACK] Step 3 — one global undo — DESIGN (Rev 6, 18 Sep 26 — BUILD-READY)
 
+> **Backlog, 24 Sep 26:** this document IS the Rev 6 record the backlog stub `[GLOBAL-UNDO-REV6]` pointed at. Built
+> and live 18 Sep 26; the shipped behaviour is `docs/undo-contract.md`; the seven open deferrals stay in
+> `OUTSTANDING.md` `[GLOBAL-UNDO]`. The stub moved to `OUTSTANDING-ARCHIVE.md`.
+
 > **Status:** Rev 6 — **BUILD-READY. Design phase CLOSED.** Round-5 review: **Fable 5.1 (high)
 > APPROVED** ("build-ready for phases 1–4, no further design round; fold R5-01 before phase 5,
 > R5-02/R5-08/R5-10 into the phase-1 doc, R5-04 doc cleanup"); Codex/Astra returned REVISE with 6

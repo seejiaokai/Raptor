@@ -33,7 +33,76 @@ const die = msg => { console.error(`backlog-archive: ${msg}`); process.exit(1) }
 const git = (...a) => { try { return execFileSync('git', a, { cwd: REPO, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }) } catch { return '' } }
 
 const args = process.argv.slice(2)
-const id = (args.find(a => !a.startsWith('--') && args[args.indexOf(a) - 1] !== '--homes') || '').replace(/^\[|\]$/g, '')
+
+/* --rulings — THE ONE WAY A RULING LEAVES THE LIVE LIST (owner, D136 + D137, 24 Sep 26), and the way the
+   map in DECISIONS.md is kept true. A ruling that a later one wholly REPLACES, or a one-off permission once
+   SPENT, is marked at the head of its ruling cell (DECISIONS.md, step 2); this moves every marked row out
+   of its area file under .claude/rules/decisions/ to the foot of DECISIONS-ARCHIVE.md, under the heading
+   of the day it moved, byte for byte — then rewrites the map's last column from what each file now holds
+   (a NEW ruling therefore reaches the map the same way). Like the item mover it runs the gate's inventory
+   afterwards and puts EVERY file back if that is not clean. */
+if (args.includes('--rulings')) {
+  const DIR = '.claude/rules/decisions', DEC = 'DECISIONS.md', ARCHR = 'DECISIONS-ARCHIVE.md'
+  const MARKED = /^\*\*(?:(?:REPLACED|REVERSED|SUPERSEDED|ENDED) BY D\d+|SPENT\b)/
+  const rowId = l => (/^\| (D\d+) \|/.exec(l) || [])[1]
+  /* this block runs before the item mover's own helpers are defined below, so it carries its own */
+  const lineEnds = t => t.match(/[^\n]*\n|[^\n]+$/g) || []
+  const dryRun = args.includes('--dry-run')
+  const areas = [...new Set([...git('ls-files', '--', DIR).split('\n'), ...git('ls-files', '--others', '--exclude-standard', '--', DIR).split('\n')])]
+    .filter(f => f.endsWith('.md') && existsSync(join(REPO, f))).sort()
+  const files = [...areas, ARCHR, DEC].filter(f => existsSync(join(REPO, f)))
+  const before = new Map(files.map(f => [f, readFileSync(join(REPO, f), 'utf8')]))
+  const after = new Map(before)
+  const moved = []
+  for (const f of areas) {
+    const keep = []
+    for (const l of lineEnds(after.get(f))) {
+      const s = l.replace(/\r?\n$/, '')
+      if (rowId(s) && MARKED.test(s.split(' | ')[2] || '')) moved.push({ d: rowId(s), from: f, line: l.endsWith('\n') ? l : l + '\n' })
+      else keep.push(l)
+    }
+    after.set(f, keep.join(''))
+  }
+  if (moved.length) {
+    if (!after.has(ARCHR)) die(`${ARCHR} does not exist — it must, before a ruling can move there.`)
+    let a = after.get(ARCHR)
+    const eolA = a.includes('\r\n') ? '\r\n' : '\n'
+    const now = new Date(), day = `${now.getDate()} ${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][now.getMonth()]} ${String(now.getFullYear()).slice(2)}`
+    const heads = [...a.matchAll(/^## Moved (.+?)\r?$/gm)]
+    if (!a.endsWith('\n')) a += eolA
+    if (!heads.length || heads[heads.length - 1][1] !== day) a += `${eolA}## Moved ${day}${eolA}${eolA}| # | Date | His ruling, in his words where short enough | What it means | Where it lives now |${eolA}|---|---|---|---|---|${eolA}`
+    after.set(ARCHR, a + moved.map(m => m.line).join(''))
+  }
+  /* the map: each row's last column = the D-numbers its file now holds, in the file's own order */
+  const idsOf = f => lineEnds(after.get(f) || '').map(l => rowId(l)).filter(Boolean)
+  const MAP_ROW = /^(\| [^|]+? \| `([^`]+)` \| [^|]*? \| )([^|]*?)( \|\s*)$/
+  let mapChanged = 0
+  after.set(DEC, lineEnds(after.get(DEC)).map(l => {
+    const eolL = l.match(/\r?\n$/)?.[0] || ''
+    const m = MAP_ROW.exec(l.replace(/\r?\n$/, ''))
+    if (!m || !(m[2] === ARCHR || m[2].startsWith(DIR + '/')) || !after.has(m[2])) return l
+    const list = idsOf(m[2]).join(', ') || '—'
+    if (list === m[3]) return l
+    mapChanged++
+    return m[1] + list + m[4] + eolL
+  }).join(''))
+  const unmapped = [...areas, ARCHR].filter(f => after.has(f) && !lineEnds(after.get(DEC)).some(l => l.includes('`' + f + '`')))
+  console.log(moved.length ? moved.map(m => `${m.d}: ${m.from} → ${ARCHR}`).join('\n') : 'No marked ruling to move.')
+  console.log(mapChanged ? `The map in ${DEC}: ${mapChanged} row(s) rewritten from the files.` : `The map in ${DEC} already matches the files.`)
+  if (unmapped.length) console.log(`NOT in the map — add a row for each by hand (area, file, when it loads), then run this again: ${unmapped.join(', ')}`)
+  if (dryRun) { console.log('--dry-run: nothing written.'); process.exit(0) }
+  for (const [f, t] of after) if (t !== before.get(f)) writeFileSync(join(REPO, f), t)
+  const r = spawnSync(process.execPath, [GATE, '--inventory'], { cwd: REPO, encoding: 'utf8' })
+  if (r.status !== 0) {
+    for (const [f, t] of before) writeFileSync(join(REPO, f), t)
+    console.error(r.stdout + r.stderr)
+    die('the inventory was not clean afterwards, so EVERY file was put back exactly as it was.')
+  }
+  console.log('done; the inventory is clean.')
+  process.exit(0)
+}
+
+const id =(args.find(a => !a.startsWith('--') && args[args.indexOf(a) - 1] !== '--homes') || '').replace(/^\[|\]$/g, '')
 const hi = args.indexOf('--homes')
 /* Homes as git paths from the repo root, `/`-separated, so a Windows `docs\facts.md` matches what
    git reports (Astra); an absolute path or one climbing out of the repo is refused below. */

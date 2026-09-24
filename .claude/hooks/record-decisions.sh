@@ -19,9 +19,12 @@ Before acting on this message: does it contain a DECISION, RULING, PREFERENCE,
 CORRECTION, "leave it", explicit NO, or a supersession of something earlier —
 anything that outlives the task in front of you?
 
-If yes: append it to DECISIONS.md FIRST — his words, what it means, and the file
-that will now carry it — and then make sure that file actually carries it. The
-work absorbing a ruling is not the record keeping it.
+If yes: record it FIRST, in its AREA's file under .claude/rules/decisions/ (the
+map and the three steps are at the head of DECISIONS.md) — his words, what it
+means, and the file that will now carry it — then make sure that file actually
+carries it. If it replaces an earlier ruling, mark that one and run
+`node raptor-port/scripts/backlog-archive.mjs --rulings`. The work absorbing a
+ruling is not the record keeping it.
 
 If no (an ordinary task instruction), ignore this and carry on.
 

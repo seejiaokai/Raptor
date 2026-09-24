@@ -44,6 +44,13 @@ const SELF = 'raptor-port/scripts/docsize.mjs'
 const LIVE = 'OUTSTANDING.md'
 const ARCHIVE = 'OUTSTANDING-ARCHIVE.md'
 const DECISIONS = 'DECISIONS.md'
+/* THE RULINGS ARE SPLIT BY AREA (owner, D136 + D137, 24 Sep 26): one file per area under RULINGS_DIR —
+   How we work loads in every session, each other area loads by itself when a file in that area is read
+   (its `paths:`) — the replaced and spent ones in RULINGS_ARCHIVE, and DECISIONS.md is the front door
+   holding only the MAP of which file carries which D-number. Every check on the rulings reads all of
+   them together, so a row moved between files is a move, never a loss. */
+const RULINGS_DIR = '.claude/rules/decisions'
+const RULINGS_ARCHIVE = 'DECISIONS-ARCHIVE.md'
 const INVENTORY_ONLY = process.argv.includes('--inventory')
 
 /* file, tier, CEILING, TARGET (doc-budget.md's aim). Keep one row per line in exactly this shape:
@@ -60,8 +67,10 @@ const FILES = [
   /* 60 -> 100, 23 Sep 26 ([DOCS-GUARD] step 1). The file had ALREADY grown to 95 with the ceiling
      unmoved — the D53 "read it before you ask him anything" rule, a genuinely live rule — and
      nothing noticed, because this gate ran nowhere. Raised to what is true plus a little room,
-     never paid for by trimming a live rule. */
-  ['.claude/rules/record-decisions.md',  0,  100,   60],
+     never paid for by trimming a live rule. 100 -> 125, 24 Sep 26 (owner, D136 + D137): the rule for
+     keeping the rulings whole and split by area, and how a new or replaced ruling is filed, are live
+     rules every session must carry — the same argument. */
+  ['.claude/rules/record-decisions.md',  0,  125,   60],
   ['.claude/rules/plain-language.md',    0,   60,   60],
   /* 961 -> 1000, 23 Sep 26 ([DOCS-GUARD] step 1). Already at 969: the two OIL merges (#424, #425)
      added lines inside code changes, which is exactly what F3 now allows and defers. HANDOFF must
@@ -71,12 +80,21 @@ const FILES = [
      The bug-check order §7.6 requires a MISSING to be filed here during a fix, so it too carries
      declared headroom. [DOC-TRIM] owns the 600 target — as its own docs-only pass. */
   ['OUTSTANDING.md',                     1, 1400,  600],
-  /* DECISIONS.md is append-only and is MEANT to grow, so its ceiling is its target. DECIDED 24 Sep 26
-     (D136, .claude/rules/record-decisions.md): at the ceiling the CEILING RISES and the file is sorted by
-     area — live rulings never move out; only replaced ones and spent one-off permissions may go to a
-     dated archive. Job 1c below still fails a lost D-number. */
-  ['DECISIONS.md',                       1,  150,  150],
+  /* THE RULINGS (owner, D136 + D137, 24 Sep 26). They are MEANT to grow, so each ceiling is its target,
+     and a rulings file is NEVER trimmed to fit: at a ceiling, archive what is replaced or spent
+     (DECISIONS.md, step 2) and then RAISE the ceiling here, with the reason. DECISIONS.md is now only
+     the front door and the map (was 150 with every row in it). How we work loads in EVERY session, so
+     it is tier 0; each other area loads only when a file in that area is read, so it is tier 2. Set
+     24 Sep 26 at roughly two to three times each file's size on the day it was split — "increase the
+     budget to be safe". DECISIONS-ARCHIVE.md has no ceiling: searched, never loaded. */
+  ['DECISIONS.md',                       1,   80,   80],
+  ['.claude/rules/decisions/how-we-work.md', 0, 150, 150],
+  ['.claude/rules/decisions/oil.md',     2,  120,  120],
+  ['.claude/rules/decisions/scheduler.md', 2, 100, 100],
+  ['.claude/rules/decisions/tracker.md', 2,  100,  100],
+  ['.claude/rules/decisions/leave-war.md', 2, 60,   60],
 ]
+const RULING_CEILING = f => f === DECISIONS || f.startsWith(RULINGS_DIR + '/')
 const TIER0_TARGET = 600
 
 /* ---------- git plumbing ---------- */
@@ -105,6 +123,24 @@ const BASE = findBase()
 const readNow = f => existsSync(join(REPO, f)) ? readFileSync(join(REPO, f), 'utf8') : ''
 const readBase = f => (BASE && tryGit('show', `${BASE}:${f}`)) || ''
 const splitLines = t => t.split('\n').map(l => l.replace(/\r$/, ''))
+
+/* Every file that may hold a ruling row, now and at the base: the map, the archive, and each area file
+   (tracked or not yet — a new area file counts the moment it exists). */
+const areaFilesNow = () => [...new Set([...(tryGit('ls-files', '--', RULINGS_DIR) || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard', '--', RULINGS_DIR) || '').split('\n')])]
+  .filter(f => f.endsWith('.md') && existsSync(join(REPO, f))).sort()
+const areaFilesBase = () => BASE ? (tryGit('ls-tree', '-r', '--name-only', BASE, '--', RULINGS_DIR) || '').split('\n').filter(f => f.endsWith('.md')) : []
+const rulingFiles = when => [DECISIONS, ...(when === 'base' ? areaFilesBase() : areaFilesNow()), RULINGS_ARCHIVE]
+/* { d: 'D12', file, line } for every `| D<n> |` row */
+const rulingRows = when => rulingFiles(when).flatMap(f => splitLines(when === 'base' ? readBase(f) : readNow(f))
+  .filter(l => /^\| D\d+ \|/.test(l)).map(line => ({ d: /^\| (D\d+) \|/.exec(line)[1], file: f, line })))
+/* A row whose ruling cell OPENS with a replaced or spent mark belongs in the archive (DECISIONS.md, step 2). */
+const MARKED = /^\*\*(?:(?:REPLACED|REVERSED|SUPERSEDED|ENDED) BY D\d+|SPENT\b)/
+const rulingCell = line => (line.split(' | ')[2] || '')
+/* The map: DECISIONS.md's rows whose second cell is a backticked ruling file; the last cell lists its D-numbers. */
+const MAP_ROW = /^\| ([^|]+?) \| `([^`]+)` \| ([^|]*?) \| ([^|]*?) \|\s*$/
+const readMap = text => splitLines(text).map(l => MAP_ROW.exec(l)).filter(m => m && (m[2] === RULINGS_ARCHIVE || m[2].startsWith(RULINGS_DIR + '/')))
+  .map(m => ({ area: m[1], file: m[2], ids: m[4].match(/D\d+/g) || [] }))
+const MOVER_CMD = 'node raptor-port/scripts/backlog-archive.mjs --rulings'
 
 /* Every path changed since the base: committed, staged, unstaged and untracked. */
 function changedPaths() {
@@ -226,8 +262,8 @@ function inventory(allow) {
   const baseLiveIds = new Set(base.live.map(b => b.id))
   const added = [...liveNowIds].filter(id => !baseLiveIds.has(id)).length
   const allInArchive = left.every(b => now.arch.some(a => a.id === b.id))
-  const dNow = [...readNow(DECISIONS).matchAll(/^\| D(\d+) \|/gm)].map(m => +m[1])
-  const dBase = new Set([...readBase(DECISIONS).matchAll(/^\| D(\d+) \|/gm)].map(m => +m[1]))
+  const dNow = rulingRows('now').map(r => +r.d.slice(1))
+  const dBase = new Set(rulingRows('base').map(r => +r.d.slice(1)))
   const dNew = dNow.filter(n => !dBase.has(n)).sort((a, b) => a - b)
   const dRange = dNow.length ? `D${Math.min(...dNow)}–D${Math.max(...dNow)}` : 'none'
   const docsLine = `Docs: OUTSTANDING ${liveNowIds.size} items (+${added} −${left.length}${left.length ? (allInArchive ? `, −${left.length} all in ARCHIVE` : ', NOT all in ARCHIVE') : ''})` +
@@ -258,10 +294,9 @@ function homes(paths, allow) {
       if (existsSync(join(REPO, pre + tail))) return [pre + tail]
     return bySuffix()
   }
-  const baseRows = new Set([...readBase(DECISIONS).matchAll(/^\| (D\d+) \|/gm)].map(m => m[1]))
-  for (const line of splitLines(readNow(DECISIONS))) {
+  const baseRows = new Set(rulingRows('base').map(r => r.d))
+  for (const { line } of rulingRows('now')) {
     const m = /^\| (D\d+) \|/.exec(line)
-    if (!m) continue
     const cells = line.split(' | '), home = cells[cells.length - 1]
     const isNew = !baseRows.has(m[1]), future = home.search(/on build:/i)
     for (const tm of home.matchAll(/`([^`]+)`/g)) {
@@ -277,9 +312,9 @@ function homes(paths, allow) {
 }
 
 /* ---------- job 1c: the rulings themselves and the rule registers (F7) ---------- */
-/* DECISIONS.md is the only home of some rulings (D29 rule 2), and it too will one day move its
-   oldest rows to a dated section — the same kind of move that destroyed two backlog items. So a
-   D-number at the base must still be there, and none may newly appear twice. Numbers may SKIP:
+/* The rulings files are the only home of some rulings (D29 rule 2), and rows MOVE between them — to
+   an area, to the archive — the same kind of move that destroyed two backlog items. So a D-number at
+   the base must still be there, in some rulings file, and none may newly appear twice. Numbers may SKIP:
    parallel branches hold ranges and the later one renumbers its own (D78), so a gap is legal —
    a loss is not. And rulecheck.mjs carries a hand-copied map of ruling ids: a register row
    deleted by accident made nothing red, so every id in that map must still head an entry in a
@@ -288,11 +323,36 @@ const RULECHECK = 'raptor-port/scripts/rulecheck.mjs'
 const REGISTERS = 'raptor-port/docs/superpowers/specs'
 function rulings(allow) {
   const fails = []
-  const dNow = [...readNow(DECISIONS).matchAll(/^\| (D\d+) \|/gm)].map(m => m[1])
-  const dBase = [...readBase(DECISIONS).matchAll(/^\| (D\d+) \|/gm)].map(m => m[1])
+  const rowsNow = rulingRows('now')
+  const dNow = rowsNow.map(r => r.d)
+  const dBase = rulingRows('base').map(r => r.d)
   const cNow = multiset(dNow), cBase = multiset(dBase)
-  for (const d of cBase.keys()) if (!cNow.has(d) && !allow.has(d)) fails.push(`${d} is GONE from ${DECISIONS} — a ruling number is never lost`)
-  for (const [d, n] of cNow) if (n > 1 && n > (cBase.get(d) || 0) && !allow.has(d)) fails.push(`${d} now appears ${n} times in ${DECISIONS} — renumber the later branch's own row (D78)`)
+  for (const d of cBase.keys()) if (!cNow.has(d) && !allow.has(d)) fails.push(`${d} is GONE from the rulings (${DECISIONS}, ${RULINGS_DIR}/, ${RULINGS_ARCHIVE}) — a ruling number is never lost`)
+  for (const [d, n] of cNow) if (n > 1 && n > (cBase.get(d) || 0) && !allow.has(d)) fails.push(`${d} now appears ${n} times across the rulings files — a row is MOVED, never copied; and a clash with a parallel branch renumbers that branch's own row (D78)`)
+
+  /* THE STRUCTURE KEEPS ITSELF (D137). A ruling lives in its AREA's file, never in the map file; a row
+     marked replaced or spent does not stay live; the archive holds only marked rows; and the map agrees
+     with the files — so "DECISIONS.md D38" always lands, and an old habit fails loudly, not silently. */
+  const areas = new Set(areaFilesNow())
+  for (const r of rowsNow) {
+    if (r.file === DECISIONS) fails.push(`${r.d} is written in ${DECISIONS} — a ruling lives in its area's file under ${RULINGS_DIR}/ (the map in ${DECISIONS} names them); move the row there, then run: ${MOVER_CMD}`)
+    else if (areas.has(r.file) && MARKED.test(rulingCell(r.line))) fails.push(`${r.d} is marked replaced/spent but is still in ${r.file} — move it to the archive: ${MOVER_CMD}`)
+    else if (r.file === RULINGS_ARCHIVE && !MARKED.test(rulingCell(r.line))) fails.push(`${r.d} is in ${RULINGS_ARCHIVE} without its mark — an archived row opens its ruling cell with **REPLACED BY D<n>** or **SPENT <date>** (${DECISIONS}, step 2)`)
+  }
+  if (areas.size || readMap(readNow(DECISIONS)).length) {
+    const map = readMap(readNow(DECISIONS))
+    const byFile = new Map()
+    for (const m of map) {
+      if (byFile.has(m.file)) fails.push(`the map in ${DECISIONS} lists \`${m.file}\` twice`)
+      byFile.set(m.file, new Set(m.ids))
+      if (!existsSync(join(REPO, m.file))) fails.push(`the map in ${DECISIONS} names \`${m.file}\`, and no such file exists`)
+    }
+    for (const f of [...areas, RULINGS_ARCHIVE]) if (!byFile.has(f) && existsSync(join(REPO, f))) fails.push(`\`${f}\` holds rulings but is not in the map in ${DECISIONS} — add its row, then run: ${MOVER_CMD}`)
+    const stale = []
+    for (const r of rowsNow) if (r.file !== DECISIONS && byFile.has(r.file) && !byFile.get(r.file).has(r.d)) stale.push(`${r.d} (in ${r.file.split('/').pop()})`)
+    for (const [f, ids] of byFile) for (const d of ids) if (!rowsNow.some(r => r.d === d && r.file === f)) stale.push(`${d} (listed under ${f.split('/').pop()}, not in it)`)
+    if (stale.length) fails.push(`the map in ${DECISIONS} does not match the files — ${stale.slice(0, 6).join(', ')}${stale.length > 6 ? ` and ${stale.length - 6} more` : ''}; run: ${MOVER_CMD}`)
+  }
 
   const src = readNow(RULECHECK)
   const start = src.indexOf('const RULES = {')
@@ -355,7 +415,7 @@ function ceilings(codeChange) {
     let note = ''
     if (n > ceiling) {
       if (codeChange) { deferred.push(n - ceiling); note = `   OVER by ${n - ceiling} — code change: do NOT trim here (D29); deferred to its own pass` }
-      else { fails.push(`${f} is ${n - ceiling} line(s) over its ceiling of ${ceiling}`); note = `   *** OVER CEILING by ${n - ceiling} ***` }
+      else { fails.push(`${f} is ${n - ceiling} line(s) over its ceiling of ${ceiling}${RULING_CEILING(f) ? ' — a rulings file is NEVER trimmed (D136): archive what is replaced or spent, then RAISE this ceiling with its reason' : ''}`); note = `   *** OVER CEILING by ${n - ceiling} ***` }
     }
     console.log(`  ${pad(f, 38)} ${pad(tier, 5)} ${pad(n, 7)} ${pad(ceiling, 8)} ${target}${note}`)
   }
@@ -395,6 +455,7 @@ if (failures.length) {
   for (const f of failures) console.error(`  - ${f}`)
   console.error('\nIf a record was lost, restore it from the base (git show <base>:OUTSTANDING.md) — never "fix" the check.')
   console.error('If the change is deliberate, say so in the commit: Docs-guard-allow: [ITEM-ID] | archive-lines | duplicate-lines | homes.')
+  console.error(`A rulings map out of step, or a replaced/spent ruling still live: ${MOVER_CMD} fixes both.`)
   console.error('A file over its ceiling on a docs-only change: this change is the trim pass. Raising a ceiling is a')
   console.error('deliberate edit here, with its reason in the commit, in a commit that touches no raptor-port/src.')
   process.exit(1)

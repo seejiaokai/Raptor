@@ -1,5 +1,9 @@
 # [S4-BUGHUNT] — the merged scenario hunt plan (20 Sep 26)
 
+> **24 Sep 26:** the hunt ran and MERGED as PR #422 (21 Sep 26) — what it built and the rules it set aside:
+> `specs/2026-09-20-CURRENT-STATE.md`. The planned ground it never reached continues as `OUTSTANDING.md`
+> `[S4-HUNT-REST]`. The backlog item `[S4-BUGHUNT]` moved to `OUTSTANDING-ARCHIVE.md`.
+
 Branch `claude/s4-bughunt`, off `main` at `e904d44` (the merge of ARCH-STACK step 4, one absence
 record). Scope is §3 of `plans/2026-09-20-arch-stack-4-test-coverage.md` — the ten untested areas —
 and nothing else. Rules of record: `specs/2026-09-20-arch-stack-4-clash-check.md` (B1–B9, H1–H6,

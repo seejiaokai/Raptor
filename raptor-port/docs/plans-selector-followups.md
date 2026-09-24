@@ -159,7 +159,7 @@ Do this only once the seven fixes above are merged; it is not part of the featur
    lines dropped from this doc. The doc itself is kept because step 2 below is still open.
 2. **Repo-wide space / redundancy sweep — DONE (18 Sep 26); NOTHING REMOVED, by owner's choice.**
    The sweep was run and found the repo already tidy — see the `[REPO-CLEANUP]` entry in
-   `OUTSTANDING.md` §Done for the full result. In short: **zero dead source files** (all 522
+   `OUTSTANDING-ARCHIVE.md` (moved from the backlog 24 Sep 26) for the full result. In short: **zero dead source files** (all 522
    `src` modules import-graph-checked), only **~0.9 KB** of genuinely-dead CSS (the rest is built
    dynamically at runtime), and the only real weight was **~0.6 MB of design write-ups for
    already-shipped features** — which the owner chose to **KEEP** for history-keeping (a note left

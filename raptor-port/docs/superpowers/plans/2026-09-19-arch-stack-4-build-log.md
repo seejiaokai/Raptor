@@ -1,5 +1,11 @@
 # ARCH-STACK step 4 — build log (one absence record)
 
+> **DONE — merged to `main` as PR #421 (20 Sep 26), the cross-provider code inspection and the scenario tester
+> folded in; the backlog item `[ARCH-STACK-4]` moved to `OUTSTANDING-ARCHIVE.md` 24 Sep 26.** Deferred on purpose
+> and still open: yearly balances `[LEAVE-YEAR]`, a published day's Unavailable list `[PUB-UNAVAIL]`, and OIL
+> itself as a read-time derivation (design §7) — filed beside `[OIL-AWARD-IS-A-GRANT]`. The one-absence model as
+> built is described in `raptor-port/CLAUDE.md` §Architecture (the Leave War paragraph).
+
 Branch `claude/db-step4-one-absence`. The design is FINAL (10 rounds + the owner's clash answers):
 `docs/superpowers/specs/2026-09-19-arch-stack-4-one-absence-design.md` (later sections override
 earlier) and `…-clash-catalogue.md` (owner answers + the agreed main-code order override the design).

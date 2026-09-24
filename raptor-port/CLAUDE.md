@@ -11,13 +11,13 @@ routes to where the detail lives; don't duplicate that detail back here.
 
 ## How to work here
 
-**WRITE HIS RULINGS DOWN AT THE MOMENT HE SAYS THEM — `DECISIONS.md` at the repo root**
+**WRITE HIS RULINGS DOWN AT THE MOMENT HE SAYS THEM — one file per area, `DECISIONS.md` is the map**
 (owner, 21 Sep 26: *"This is a recurring problem. Whenever we discussed something important to
 note down. I dont see u noting them down."*). The cause is not forgetting, it is misclassifying:
 a ruling stated mid-task gets absorbed into the WORK, executed correctly, and that feels handled.
-It is not. Append it to `DECISIONS.md` BEFORE doing the work it implies, name the file that will
+It is not. File it in its area's rulings file BEFORE doing the work it implies, name the file that will
 carry it, then make that file carry it — **where it belongs, not where you happen to be working**,
-which is the error that keeps recurring. `DECISIONS.md` is an index, never the only home. Sweep
+which is the error that keeps recurring. The rulings are an index, never the only home. Sweep
 for missed rulings before any handoff or closing report, and carry a `Rulings:` line in that
 report. Full rule and the two worked misses: `../.claude/rules/record-decisions.md`; the check
 fires on every message via `../.claude/hooks/record-decisions.sh`.
@@ -1520,7 +1520,7 @@ ledger). Read it before any layout/render/drag-touching change.
 |---|---|
 | **The implementation-role policy** (approved-spec discipline, verification without self-approval, review integrity, the closing report) — auto-loads via `paths:` whenever `raptor-port/src`, `e2e`, `probes` or `scripts` are touched, so it is live during any build | `../.claude/rules/raptor-executor.md` |
 | **The plain-language rules, in force EVERY session** (unscoped, so they load before any project file is read — this file's §How to work here stays the source of truth and the why) | `../.claude/rules/plain-language.md` |
-| **EVERY RULING THE OWNER HAS MADE, and the file that carries each one** — append here the moment he rules, before doing the work it implies | `../DECISIONS.md`; the rule `../.claude/rules/record-decisions.md` |
+| **EVERY RULING THE OWNER HAS MADE, and the file that carries each one** — one file per area, filed the moment he rules, before the work it implies; How we work loads every session, each other area when its files are read (D137) | `../DECISIONS.md` (the map) → `../.claude/rules/decisions/`, replaced ones `../DECISIONS-ARCHIVE.md`; the rule `../.claude/rules/record-decisions.md` |
 | **HOW TO BUG-CHECK — the standing order** (the tiers, the roll-call, the walk, the evidence sheet, and which jobs to spend Fable/Codex on). Read before any bug check | `docs/bug-check-order.md`; the two proposals it was merged from are `docs/superpowers/briefs/2026-09-21-bugcheck-method-fable.md` and `…-codex.md` |
 | Validation, VCONF, publishing/AL, auth, history | `docs/engine-rules.md` |
 | **What is stored, every record's fields, the three storage seams** (read before the shared-database step) | `docs/data-schema.md` |

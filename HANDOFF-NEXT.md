@@ -1,4 +1,4 @@
-# HANDOFF — 24 Sep 26 (night). `[TRK-PINCH-DRAGS-BALL]` and his "left side cut off" report — MERGED as PR #431 on D133 (his advance "merge live", this session only; his look waived). Before it: the Tracker `[HUMAN-RETEST]` and PR #428's Leave War fixes, both on `main`.
+# HANDOFF — 24 Sep 26 (night). **The rulings are now split by area and load by relevance (D136 + D137) — read §How rulings are kept, below.** `[TRK-PINCH-DRAGS-BALL]` and his "left side cut off" report — MERGED as PR #431 on D133 (his advance "merge live", this session only; his look waived). Before it: the Tracker `[HUMAN-RETEST]` and PR #428's Leave War fixes, both on `main`.
 
 **Pick `main` in the new-chat picker.** Before acting: `git fetch`, `gh run list --branch main --limit 3` — the
 Tracker merge's own check run on his PC may still have been going when this was written; confirm it went green.
@@ -53,16 +53,22 @@ course; an import never deletes marks). Left from it, none blocking: `[TRK-RETES
    rulings from D90, FULL tier, the Tracker's sheet `raptor-port/docs/handpass/2026-09-23-tracker.md` is the worked
    example. The demo is done (D135): the PC is its own, heavy runs still one at a time. The order of the other three (change-recording, the absence record, the Leave War links) is not ruled:
    propose it and ask.
-2a. **`main`'s Docs guard is RED since 24 Sep 26** — not a defect: `OUTSTANDING.md` (1,400) and `DECISIONS.md` (150)
-   were over their ceilings after the Tracker merges (a code change defers that), so every notes-only commit fails
-   until `[DOC-TRIM]`'s docs-only pass. **Decided — D136:** raise `DECISIONS.md`'s ceiling and sort it by area (each
-   row keeps its date); only replaced rulings and spent one-off permissions may move to a dated archive; finished
-   `OUTSTANDING.md` items move with `backlog-archive.mjs`. That pass is the NEXT job.
+2a. **DONE 24 Sep 26 — `main`'s Docs guard green again.** The rulings pass (D136, then D137 the same hour) and 14
+   finished items out of `OUTSTANDING.md` (1,479 → ~1,200), both read beforehand by Fable and Astra.
 3. Filed, none blocking: `[TRK-PINCH-ASK]` (his iPhone look), `[TRK-SMOKE-ADD-RACE]`
    (the smoke suite's "+ Add" step can still lose a name under load), `[TRK-RETEST-NOTES]`,
    `[LW-FROZEN-BAR-GAP]` (a one-frame blink), `[LW-FIGSEL-SLOW]` (a slow unit test).
-4. `[DOC-TRIM]` — see 2a.
+4. `[DOC-TRIM]` — what is left: `raptor-port/CLAUDE.md` → 500, `HANDOFF.md` → 400, `OUTSTANDING.md` → 600 (its item).
 5. Before ANY collaborator: take the runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).
+
+## How rulings are kept (D136 + D137, 24 Sep 26)
+
+One file per area under `.claude/rules/decisions/`: **How we work loads in every session**; Tracker, Leave War,
+Scheduler & amendments and OIL each load BY THEMSELVES when a file in that area is read. `DECISIONS.md` is the map
+(which file holds which D-number); replaced rulings and spent one-off permissions are in `DECISIONS-ARCHIVE.md`.
+A new ruling: a row at the top of its area's table, mark any row it replaces, then
+`node raptor-port/scripts/backlog-archive.mjs --rulings` (moves marked rows, rewrites the map). `docsize` fails —
+in CI and at the end of every turn — until the map matches. Next number: D138 (D90–D119 are the amendment chat's).
 
 ## The checks run on HIS PC
 

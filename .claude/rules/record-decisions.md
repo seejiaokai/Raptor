@@ -1,7 +1,8 @@
 # Write his rulings down — at the moment he says them
 
-Unscoped, so it loads before any project file. The record is `DECISIONS.md` at the repo root, and
-`.claude/hooks/record-decisions.sh` fires this check on every message he sends.
+Unscoped, so it loads before any project file. The record is one file per AREA under
+`.claude/rules/decisions/`, with `DECISIONS.md` at the repo root as the front door and map (D137 — the last
+section below), and `.claude/hooks/record-decisions.sh` fires this check on every message he sends.
 
 ## The lapse this exists to stop
 
@@ -21,9 +22,9 @@ message and a memory, not into the document.
 
 ## The rule
 
-**The moment he states something that outlives the current task, append it to `DECISIONS.md`
-BEFORE doing the work it implies.** Not after the work, not at the end of the session, not "once I
-see where it lands".
+**The moment he states something that outlives the current task, add it to its area's rulings file
+BEFORE doing the work it implies** (the three steps are at the head of `DECISIONS.md`). Not after the
+work, not at the end of the session, not "once I see where it lands".
 
 What counts: a ruling, a product decision, a correction to how you work, a preference, a "leave
 it", an explicit no, a supersession of an earlier ruling, an answer to a question you put to him.
@@ -32,7 +33,7 @@ What does not: ordinary task instructions ("run the tests", "check that file", "
 die with the task and belong nowhere.
 
 **Every entry names the file that will now carry it — and then you make that file carry it.**
-`DECISIONS.md` is an INDEX, never the only home. A ruling recorded only there is still lost,
+The rulings list is an INDEX, never the only home. A ruling recorded only there is still lost,
 because nobody reads an index while building. The home is the document the next session will
 actually open: the behaviour register, `engine-rules.md`, `ui-contracts.md`, the standing order,
 `CLAUDE.md` §Stable decisions. **Never `OUTSTANDING.md` alone** (D29 rule 2, 23 Sep 26): the backlog
@@ -45,11 +46,12 @@ misses shared.
 
 1. **The checkpoint sweep.** Before any handoff, any commit that closes a piece of work, and any
    report that calls something done: re-read what he actually said this session, list every ruling,
-   and check each one is in `DECISIONS.md` **and** in its real home. This is what catches what the
-   moment missed.
+   and check each one is in its area's rulings file **and** in its real home — and that every ruling
+   it REPLACED, and every one-off permission it SPENT, is marked and archived (`DECISIONS.md` step 2).
+   This is what catches what the moment missed.
 2. **The report line.** Every closing report carries, beside Status / Changes / Checks / Walk:
 
-   `Rulings: <n> recorded → DECISIONS.md (D<x>–D<y>)` — or `Rulings: none this session`.
+   `Rulings: <n> recorded → <area file(s)> (D<x>–D<y>)` — or `Rulings: none this session`.
 
    A field that cannot be filled without doing the thing makes a miss visible to HIM, not just to
    you. That is the same shape as the `Walk:` line, and for the same reason.
@@ -76,8 +78,10 @@ u didn't save this to outstanding?"* — the answer was no. Saving was never the
 ### The check
 
 **Before you tell him something is undecided, before you put ANY choice to him, and before you call
-anything missing or unbuilt: search `DECISIONS.md` and `OUTSTANDING.md`.** Not the code. Not the
-specs folder. Those two files, by keyword, every time. It costs one search.
+anything missing or unbuilt: search the rulings and the backlog** — `.claude/rules/decisions/` (every
+area, not only the ones loaded: an area loads only when one of its files is READ, so a notes-only or
+design session has none of them), `DECISIONS-ARCHIVE.md` and `OUTSTANDING.md`. Not the code. Not the
+specs folder. Those, by keyword, every time. It costs one search.
 
 Three failures made it, and each one is worth recognising on sight:
 
@@ -91,16 +95,27 @@ Three failures made it, and each one is worth recognising on sight:
    claim is still true, search for its subject, never its phrasing.
 
 **A code comment is dated the moment it is written.** "Not yet ruled", "TODO", "the owner has not
-picked" — none of it is evidence about today. The rulings file is. Where the two disagree, the
-rulings file wins and **you fix the comment in the same change** (the newest-instruction-wins rule
+picked" — none of it is evidence about today. The rulings are. Where the two disagree, the
+rulings win and **you fix the comment in the same change** (the newest-instruction-wins rule
 already says so).
 
-## Keeping the list whole — never shrink it by moving live rulings out (D136, 24 Sep 26)
+## Keeping the list whole, and read by relevance (D136 + D137, 24 Sep 26)
 
 **Owner:** *"If you archive an old ruling would it be lost and not read even tho it's applicable? … anything I change
 you will have the context of the ruling."* An archived ruling a chat does not know about is one it will not look for.
-So when `DECISIONS.md` meets its size budget, the BUDGET rises; the file is **sorted by area** (Tracker, Leave War,
-Scheduler & amendments, OIL, How we work), every row keeping its date, and a session working on an area reads that
-whole section. Only a ruling **replaced by a later one**, or a **one-off permission spent on the day**, may move to a
-dated archive — marked, never deleted, and still searched before asking him anything. `docsize` proves no D-number is
-lost in a reshuffle.
+So the list is **never shrunk by moving a live ruling out**: at a size budget the BUDGET rises. Only a ruling
+**replaced by a later one**, or a **one-off permission once spent**, leaves — to `DECISIONS-ARCHIVE.md`, marked,
+never deleted, still searched before asking him anything.
+
+**And the same day (D137):** *"general rules should be read each session or rules that are applicable should be
+read, once we venture into things concerning other areas then that should be automatically read too … I don't want
+to bloat the ai to context that doesn't matter."* So the rulings are **split by area**, one file each under
+`.claude/rules/decisions/` — Tracker, Leave War, Scheduler & amendments, OIL, How we work — every row keeping its date:
+- **How we work loads in every session** (no `paths:`); **each other area loads by itself** when a session READS a
+  file matching its `paths:` — so work that strays into a second area picks that area up too. Choose paths
+  generously: a ruling missed costs more than one loaded (D68).
+- **A ruling spanning two areas** sits in the one it mostly governs; the other file's "Also read" line names it.
+- **Filing is mechanical** (`DECISIONS.md`, steps 1–3): a row at the top of its area's table, the replaced or spent
+  row marked, then `node raptor-port/scripts/backlog-archive.mjs --rulings` moves marked rows and rewrites the map.
+  `docsize` — in CI and at the end of every turn — fails on a lost or doubled D-number, a map out of step, a marked
+  row still live, or a row written in `DECISIONS.md` itself. A NEW area gets its own file, `paths:` and map row.

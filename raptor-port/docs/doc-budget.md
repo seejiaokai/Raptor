@@ -13,9 +13,9 @@ So this file adds the forcing function, not a new opinion.
 
 | Tier | What is in it | Budget |
 |---|---|---|
-| **0 — always loaded**, every session, no choice | `raptor-port/CLAUDE.md`, `.claude/rules/*.md` | **600 lines total.** Index and live rules ONLY. |
-| **1 — read at session start** | `HANDOFF.md`, `OUTSTANDING.md`, `DECISIONS.md` | **HANDOFF 400. DECISIONS 150.** OUTSTANDING is a backlog: priority list + one short block per LIVE item; anything done moves out. |
-| **2 — read when working in that area** | `engine-rules.md`, `ui-contracts.md`, `feature-impact.md`, `bug-check-order.md`, `data-*.md` | No line budget. Must be navigable: headed sections, no section over ~150 lines without sub-heads. |
+| **0 — always loaded**, every session, no choice | `raptor-port/CLAUDE.md`, `.claude/rules/*.md` without `paths:` — incl. the general rulings `.claude/rules/decisions/how-we-work.md` | **600 lines total.** Index and live rules ONLY. (The general rulings are over that on purpose: he wants them read every session — D137.) |
+| **1 — read at session start** | `HANDOFF.md`, `OUTSTANDING.md`, `DECISIONS.md` (the rulings map) | **HANDOFF 400. The map 80.** OUTSTANDING is a backlog: priority list + one short block per LIVE item; anything done moves out. |
+| **2 — read when working in that area** | `engine-rules.md`, `ui-contracts.md`, `feature-impact.md`, `bug-check-order.md`, `data-*.md`; and each area's rulings `.claude/rules/decisions/<area>.md`, which LOAD BY THEMSELVES when a file matching their `paths:` is read (D137) | No line budget (the rulings files: a ceiling each that RISES, never a trim — D136). Must be navigable: headed sections, no section over ~150 lines without sub-heads. |
 | **3 — read only for that one task** | `docs/superpowers/specs/*`, `briefs/*`, review and scenario files | None. Never read unless the task names it. **Never linked from tier 0.** |
 | **4 — archive** | `HANDOFF-ARCHIVE.md`, superseded specs | None. Searched, never read. |
 
@@ -48,8 +48,9 @@ every edit leaves the file no longer than it found it. Pruning under the pressur
 is what destroyed two filed items on 22 Sep 26, so it is withdrawn. Now: **a change that touches
 `raptor-port/src` never trims a document**; if a file is over budget the gate reports it as deferred.
 Trimming is its own docs-only pass. In that pass: finished backlog items MOVE to
-`OUTSTANDING-ARCHIVE.md` (never deleted); a superseded ruling becomes a one-line pointer to what
-replaced it; a "how it was found" story goes to the commit message, where history belongs.
+`OUTSTANDING-ARCHIVE.md` (never deleted); a ruling REPLACED by a later one moves WHOLE to
+`DECISIONS-ARCHIVE.md`, marked (D136 — it is never cut to a pointer: that reversed the old "one-line
+pointer" rule here); a "how it was found" story goes to the commit message, where history belongs.
 
 Stale is worse than absent — the next session trusts it.
 
@@ -66,14 +67,19 @@ Stale is worse than absent — the next session trusts it.
 - **The ceilings.** Each always-read file has a line ceiling. **Over a ceiling inside a code change
   is reported and deferred, never failed** — a code change is never where docs get trimmed (D29
   rule 3). Over a ceiling on a docs-only change fails, because that change is the trim pass.
-- **The rulings.** No D-number in `DECISIONS.md` may be lost or newly doubled (numbers may skip —
-  parallel branches hold ranges, D78), every file a ruling names as its home must exist, and every
-  ruling id in `scripts/rulecheck.mjs`'s map must still head an entry in a behaviour register.
+- **The rulings.** No D-number may be lost or newly doubled across the rulings files (`DECISIONS.md`,
+  `.claude/rules/decisions/`, `DECISIONS-ARCHIVE.md`; numbers may skip — parallel branches hold ranges,
+  D78), every file a ruling names as its home must exist, and every ruling id in
+  `scripts/rulecheck.mjs`'s map must still head an entry in a behaviour register. **The structure keeps
+  itself (D137):** it fails if the map in `DECISIONS.md` disagrees with the files, if a row marked
+  replaced or spent is still in an area file, if an archived row lacks its mark, or if a row is written
+  in `DECISIONS.md` itself instead of its area's file.
 
 **Moving a finished item** is `node scripts/backlog-archive.mjs <ID> --homes <file>` (from the repo
 root: `raptor-port/scripts/…`) — never a hand edit or a one-off script. It refuses a duplicate id,
 refuses without a named home for the item's facts, moves the bytes unchanged, and puts both files
-back if the inventory is not clean afterwards.
+back if the inventory is not clean afterwards. **Retiring a ruling** is the same script with `--rulings`: it
+moves every row marked replaced or spent to `DECISIONS-ARCHIVE.md` and rewrites the map from the files.
 
 **Ceilings carry headroom; they are no longer a ratchet.** The old rule lowered a ceiling to the
 file's new size after every trim, which left zero headroom, so every mandatory addition during a fix
