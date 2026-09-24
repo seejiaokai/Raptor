@@ -16,6 +16,14 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
 - **Never push while a PR's checks are running** (D151, measured 23 Sep 26): GitHub judges the WHOLE pull request,
   so once it carries code any push — even notes-only — restarts every gate and cancels the run in progress. The
   older note in the `unit (raptor)` row below ("a docs-only push … starts no new one") predates that measurement.
+- **An intermittent gate stop gets evidence and a filed item BEFORE its one re-run** (24 Sep 26, PR #431): check
+  the failing step's code path against the diff; reproduce that step alone, repeatedly, on the change's build
+  AND on the base's; file the residual as a backlog item with that evidence. The push that files it IS the one
+  re-run — on a pull request that carries code, any push restarts every gate (D151) — so never add a
+  `gh run rerun` on top of it, and never push while a run is still going. Two or more stops on the change's
+  build and none on the base's, in that isolated probe, is a regression: stop there. Re-running first is hoping;
+  refusing to merge forever blocks on a race the change never touched. (A known family, already measured and
+  filed, keeps its own rule — D84.)
 - **There is no GitHub Pages site** (D59, 23 Sep 26): the publish job is off, and every Pages trap below is history.
   The app is seen on VERCEL: a preview per branch (his surface — the agent's is the local `vite preview`) and the
   live app from `main`. **"Done" after "merge live" means live on Vercel** (D143): merge → `main`'s run green on
@@ -313,7 +321,11 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 ## The checks run on HIS PC
 
 A Windows service under NETWORK SERVICE at `C:\actions-runner\actions-runner` (never delete `C:\actions-runner`);
-its folder permissions were tightened by him (Astra SEC-102, done). PR #428's evidence (the Leave War fixes):
+its folder permissions were tightened by him (Astra SEC-102, done). Why that mattered: the folder inherited
+"Authenticated Users: Modify" from `C:\`, and this PC has more local accounts than its one user — the coding
+tools create sandbox accounts of their own — so any of them could have replaced what the service runs on every
+check. Any future local service: list the ENABLED local accounts and the folder's inherited permissions before
+trusting the service account. PR #428's evidence (the Leave War fixes):
 `raptor-port/docs/handpass/2026-09-23-lw-monthjump.md` PART TWO.
 
 ## How pushes cost runs (his question, 23 Sep 26)

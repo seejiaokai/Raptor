@@ -68,7 +68,8 @@ first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [T
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SMOKE-ADD-RACE]
 (before the next Tracker change that touches the smoke suite), [TRK-TAP-AFTER-DRAG] (ask him first),
 [TRK-BAKE-STALE] (low). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
-[RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] (any time, docs only).
+[RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] and [RULING-HOMES-AUDIT] (any time, docs only),
+[BG-CWD-GUARD] (ask him first: it adds a hook).
 
 **Waiting on him — no order exists:** [OIL-AWARD-IS-A-GRANT] (needs his go), [OIL-EARNED-VS-GRANTED] (his figure —
 ask first), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
@@ -989,3 +990,24 @@ session can read one section" — and the spring clean did not do it. The rule i
 `engine-rules.md` 5 (its §Validation runs 927 lines), `feature-impact.md` 1 (550), `performance.md` 1 (313). Adding
 headings rewords nothing; anything more is a move (D138, `backlog-archive.mjs --move`). Docs only — no full check
 run. **Place:** any time, none blocking; sooner if a chat has to read one of those sections whole.
+
+### [BG-CWD-GUARD] A backgrounded npm command that starts at the repo root dies at once — guard it, don't re-warn (filed 24 Sep 26)
+From the skills notebook, observation #42 (1 Sep 26), which the 23 Sep and 24 Sep reviews both judged a code or
+config change, not a guide change (D146). A `run_in_background` shell starts at the REPO ROOT, where there is no
+`package.json`, so a bare `npm run …` fails instantly — and the wrapper's exit code can read 0. The bold warning in
+`raptor-port/CLAUDE.md` §Build & verify is text, and it has been broken three times. **The fix is structural:** a
+`PreToolUse` hook (under `.claude/`, so no full check run) that refuses a backgrounded `npm` command without
+`cd raptor-port`, or a root `package.json` whose scripts `cd raptor-port && npm run …` (it would start the full
+checks and could change what Vercel detects). **Place:** any time, none blocking — but ask him first: a hook runs in
+every chat, and it is standing configuration.
+
+### [RULING-HOMES-AUDIT] Check once that each ruling's named home really carries it (filed 24 Sep 26)
+Found in the 24 Sep 26 skills review (D146): D16 and D17 named `raptor-port/docs/bug-check-order.md` as their home,
+and no commit had ever written them there (the review wrote them in). The document gate checks only that a named
+home EXISTS — and, for a new row, that the change touched it — never that it carries the ruling. A read-only audit
+the same day found 24 more rows whose named homes never mention their number: D5–D13, D53, D58, D63 (How we work);
+D1–D3, D15, D28, D31, D32, D43, D52 (OIL); D39, D51 (Scheduler); D64 (Tracker). Most predate the numbering and carry
+the content unnumbered (the 21 Sep bug-check rulings are the order's own text). **The job, docs only:** check each
+by CONTENT once; write any that is missing into its home; add the D-number beside content that is there, so a later
+audit is mechanical — then consider making the gate require a NEW row's document homes to cite its number.
+**Place:** any time, none blocking.

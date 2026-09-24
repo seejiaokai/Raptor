@@ -219,7 +219,13 @@ act of memory.
    sibling session's) and say so in the entry. When two branches' logs meet
    at a merge, keep one side's entries as they are and re-append the other
    side's new entries at the end with fresh numbers, correcting any
-   cross-reference to them.
+   cross-reference to them. The check that reads another branch's log
+   (`git show <branch>:<path>`) can fail silently: Git Bash on Windows
+   rewrites the `rev:path` argument into a Windows path unless
+   `MSYS_NO_PATHCONV=1` is set, and a failure hidden by `2>/dev/null` reads
+   as "no entries there". Run it on the CURRENT branch first — it must
+   return your own highest number before its "none" for any other branch is
+   believed.
 
 **Log-write safety — never let a mutation span entry boundaries:** When
 mutating the log programmatically (marking entries ACTIONED/DECLINED,

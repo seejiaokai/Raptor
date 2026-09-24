@@ -16,7 +16,7 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/spring-clean -->
-### `claude/spring-clean` — the spring clean (`[DOC-TRIM]`, closed), written 24 Sep 26 (late night) — verify before use
+### `claude/spring-clean` — the spring clean (`[DOC-TRIM]`, closed) and the 24 Sep skills review, written 24 Sep 26 (late night) — verify before use
 - **Where it started:** his ask (D138–D141, then D140's "weave it into my workflow"): every chat reads only what the
   job needs and finds the rest, new information follows the structure by itself, nothing reworded on the way. Plan,
   both red teams and what changed after them: `raptor-port/docs/superpowers/specs/2026-09-24-spring-clean-plan.md` (§7 wins).
@@ -26,24 +26,29 @@ the later merge keeps both (D78).
   `doc-structure.md` (always loaded); the exact mover and the misfiling checks (self-test 97/97); both meaning checks
   (Fable, Astra) done and fixed; the session-handoff skill change approved (D145); `[DOC-TRIM]` closed and moved whole
   to the archive, so no line target is left in a live file; D139 spent and archived. A fresh chat reads ~58k tokens
-  before work, not ~118k.
+  before work, not ~118k. **Then, on his word ("review the skills lessons then merge"), the 24 Sep 26 skills review,
+  approved whole (D146, spent and archived):** all 44 open lessons dispositioned — installed into five skills, the
+  bug-check order (which now also carries D16 and D17, whose rows had always named it as their home) and the gates
+  doc; four into this PC's memory notes; the notebook archived down to #120/#122 (D73). Fable and Astra read the
+  drafts once each (D70), 22 fixes applied; their reports are in git (the holding folder's history, D69).
 - **Unfinished:** nothing on this branch. Filed, not blocking: `[RULINGS-LF-PIN]` and `[DOC-SUBHEADS]` (the item's two
-  leftovers — the second one was missing from this block's earlier "only leftover"), `[DOC-POINTERS-CODE]`,
-  `[PERF-RESIDUALS]`.
+  leftovers — the second one was missing from this block's earlier "only leftover"), `[BG-CWD-GUARD]` and
+  `[RULING-HOMES-AUDIT]` (from the review), `[DOC-POINTERS-CODE]`, `[PERF-RESIDUALS]`.
 - **Branch:** `claude/spring-clean`; its PR: `gh pr list --head claude/spring-clean`. If it has MERGED, the next chat
   removes this block and resets before new work: `git fetch origin main && git checkout -B <branch> origin/main` —
   otherwise it stacks commits onto already-merged history.
 - **Gates:** not run — docs and the document-gate scripts only (bug-check tier NONE); `npm run docsize` OK and
   `node raptor-port/scripts/docsize-selftest.mjs` 97/97 on the final commit; the PR runs only the Docs guard.
-- **Open questions for him:** none — "merge live" is his call when he is happy.
-- **Pick up here:** on his "merge live" — merge once the PR's Docs guard is green → `main`'s checks (only the Docs
-  guard, for a docs-only change) → Vercel reports the live app READY → one notification with the link ("done" = live
-  on Vercel, D143).
+- **Open questions for him:** none.
+- **Pick up here:** he gave "merge live" for after the review, so this chat merges PR #433 once its Docs guard is green
+  → `main`'s checks (only the Docs guard, docs-only) → Vercel reports the live app READY → one notification (D143).
+  Check `gh pr view 433`: merged → remove this block and `## Next` item 1; still open → merge it on his word.
 <!-- /now -->
 
 ## Next, in order
 
-1. **The spring clean waits for his "merge live"** — its PR is open (the `claude/spring-clean` block above); docs only.
+1. **The spring clean and the 24 Sep skills review — PR #433, merging on his word** (the `claude/spring-clean` block
+   above); docs only.
 2. **`[HUMAN-RETEST]` — THE AMENDMENT SYSTEM** (D85/D86): port 4173, rulings from D90, FULL tier; the Tracker's
    evidence sheet `raptor-port/docs/handpass/2026-09-23-tracker.md` is the worked example. The order of the other
    three (change-recording, the absence record, the Leave War links) is NOT ruled: propose it and ask.

@@ -146,7 +146,11 @@ memory:
   stayed unmapped for weeks exactly this way.
 - **A known issue RESOLVED** → its `OUTSTANDING.md` item LEAVES, by
   `node raptor-port/scripts/backlog-archive.mjs <ID> --homes <file>` —
-  never left in place as a "RESOLVED" note. Its contract goes to the right
+  never left in place as a "RESOLVED" note. Before it leaves, walk EVERY
+  deliverable the item ever named — its oldest blocks included — and mark
+  each done, filed as its own item, or dropped by a ruling: a status line's
+  "the only thing left is X" is a summary, not a check (24 Sep 26: one missed
+  a second leftover). Its contract goes to the right
   structured doc first (`engine-rules`, `ui-contracts`, `feature-impact`,
   `performance`); its story goes in the commit message — that is what makes
   `git log` the changelog. **A known issue CREATED** → an `OUTSTANDING.md`
@@ -196,6 +200,15 @@ Fix what you find, in this session's final commit. If a gap is real but
 outside what you were asked to do, put it in **Unfinished** — never leave it
 found-but-unrecorded.
 
+**Condense this chat's own scaffolding** (owner, D69): the progress notes it
+wrote into the repo to survive a compaction — a running block in an evidence
+sheet, a context doc's working log — are cut down to state, decisions and
+pointers when the work closes, keeping every rule, condition, date and reason
+(D138 — when in doubt, move the block whole to `raptor-port/docs/archive/` with
+`backlog-archive.mjs --move` instead of rewording it), as their OWN docs-only
+commit before the final push. Only what THIS chat wrote, and never inside a fix
+(D29).
+
 ## Step 4 — the template (this chat's block)
 
 Same structure every time. Write "none" rather than dropping a line —
@@ -244,4 +257,8 @@ stable structure is the point.
    redone the thing the 4 Sep and 24 Sep 26 cuts undid.
 9. **Every handoff ends with his opening line for the fresh chat** — the branch
    to pick in the new-chat picker and "Read `HANDOFF.md`, the `claude/<name>`
-   block under `## Now`" — ready to paste (his standing instruction).
+   block under `## Now`" — ready to paste (his standing instruction). Ready to
+   paste means it goes out UNCHANGED: never put a choice inside it as a
+   `<a / b>` slot — he will send it unfilled, beside an instruction that
+   cannot wait. Ask each open choice as its own numbered question first, or
+   give one complete line per option.

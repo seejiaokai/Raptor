@@ -254,6 +254,16 @@ an area the other found a defect in is the cheapest possible pointer to a real b
 6. Settle disagreements with evidence, never by confidence or majority.
 7. Every confirmed defect gets a regression test and a row in the roll-call.
 
+**A long walk is FANNED OUT across parallel helpers, not walked serially (owner, D16, 21 Sep 26).** The
+helpers are Opus agents, and each walks its own WORLD — its own port, its own fresh browser context, its own
+copy of the demo data — so no two share a fixture; each is handed the fixture recipe rather than left to
+rediscover it. The price of the speed: a helper's "found nothing" is weaker evidence than the host's own look,
+so each returns PICTURES and a filled table, and the host REPRODUCES every finding before it enters the
+evidence sheet. **While they walk, nobody rebuilds the build they are served** (23 Sep 26): a rebuild swaps the
+bundle under them and mixes pre-fix and post-fix behaviour in one walk. The host fixing in parallel typechecks
+without writing output and runs unit tests; the rebuild, the gates and the re-walk of the fixes wait for the
+walkers' reports.
+
 **The owner's trigger rule, in one line:**
 
 > Call one other model whenever a change affects more than one surface, door, role or app
@@ -340,6 +350,16 @@ fixes touched → gates → finish the sheet → the owner's look → his "merge
 The walk goes **before** the reads, so the reviewers read the final code and can check the
 roll-call for gaps — reading for absence works when there is a list in hand.
 
+**Between fix rounds, run the touched surface's own suite — not once at the end** (23 Sep 26). Two fixes that
+are each right can contradict each other: a hint that names a door, beside a fix that removed that door. And
+when a fix removes or gates a door, search every sentence on screen that names it.
+
+**The re-walk** (23 Sep 26). Write walk scripts as assertions of the RIGHT behaviour (a PASS means correct), so
+re-running them on the fixed build IS the re-walk. Send it to a separate output folder — the first walk's
+pictures are the defect's evidence. Read every re-walk FAIL against the NEW flow before calling it a
+regression: a step whose premise the fix itself consumed (nothing unsaved is left to test; a refusal now drawn
+on top of the window it used to hide behind) is walked again with a fresh premise, not reported.
+
 ---
 
 ## 6. The roll-call — the defence against "never wired up"
@@ -367,6 +387,19 @@ inside the puck, over exactly the strip the mark occupies (column 3).
 - **A comment that vouches for coverage names the test that proves it, or it is deleted.** A
   comment is a claim, not a proof.
 
+**And two from later walks (23 Sep 26):**
+
+- **A new floating surface names every surface it can open over.** Its third-column answer lists every
+  full-screen or fixed surface beneath it, and a browser test on each asserts that the element at the new
+  surface's centre is the surface or inside it (`hit = document.elementFromPoint(x, y)`;
+  `hit === surface || surface.contains(hit)`). Layering is a missing
+  line only a real browser can see: a window shipped stacked below the full-screen board it had to float
+  over, and opened invisibly there, while every test passed.
+- **A wording ruling, or a fix to one writer of a record, gets its own small roll-call in the same commit** —
+  every place that draws that text or writes that record. The fix is STRUCTURAL (one shared constant or one
+  shared body), with a test that renders or drives each place. The "grep for the old wording" rule already
+  existed both times this failed.
+
 ---
 
 ## 7. The walk
@@ -389,6 +422,22 @@ session does not rebuild it from memory. Extended in the same change whenever a 
 desktop width, with the browser's error list watched throughout. Any error during the walk is a
 finding.
 
+- **For a long hand pass, drive it with a SCRIPTED real browser from the start (owner, D17, 21 Sep 26)**, not
+  the in-app browser panel. Both run the real bundle, but the panel is one click per message, resizes under you
+  and times out on screenshots, so the pictures this order requires come out unusable. The scripted driver
+  replays a whole day in about a minute, saves full-size pictures to disk, and is what makes handing the walk to
+  parallel helpers possible (§4). The reusable drivers live in `raptor-port/scripts/handpass/` — use the
+  surface's own helper (`lib.mjs` for the scheduler and OIL walks, `trk-lib.mjs` for the Tracker). Looking at
+  the pictures is still the agent's job — the tool changed, the looking did not.
+- **The driver moves the view the way a person does** (23 Sep 26) — with the surface's own scroll or
+  drag-to-pan (in some modes the wheel zooms instead), and checks the target sits inside its scroll box before
+  acting. A scripted gesture that fails is looked at on its picture before it is called a defect: a generic
+  scroll-into-view that parks the target under a toolbar manufactures findings.
+- **Walk a SHORT screen as well as the two widths** (23 Sep 26) — a phone on its side, a 700px-tall laptop
+  window — for any surface built as a viewport-tall column, and measure EVERY edge-docked control against the
+  screen edges, not only the one being changed. (Room to scroll past the end goes inside the scroll box as a
+  spacer, never as padding on it: padding sets the box's smallest height.)
+
 **7.3 Walk the surfaces, not the rulings.** This is the difference that cost the OIL build three
 defects. A ruling about something SHOWN or TAPPED gets **one mark per surface**. A ruling about
 MONEY gets **one mark per order**.
@@ -407,7 +456,29 @@ fix; ruled "leave it" by the owner, with the date; or filed in `OUTSTANDING.md` 
 the order. **"Rare" is not a disposition unless a scenario proves it rare.**
 
 **7.7 Create the fixture through the app's own controls.** If the state cannot be reached that way,
-that IS the finding — a missing door. Do not inject it and call the route tested.
+that IS the finding — a missing door. Do not inject it and call the route tested. **Never sign in again
+mid-fixture on a fresh demo world** (24 Sep 26): a sign-in reloads the page, and a world nobody has written to
+yet comes back WITHOUT its Leave War OIL story while its Inputs survive — the walk then runs against a different
+world. Make one write before any reload (the app's own controls, this rule's first sentence); or, when the
+fixture must stay unwritten, change the role in place through the localhost probe bridge — `window.lwSetRole` /
+`window.raptorRole` via `page.evaluate` in a walk script, or their Playwright wrappers `lwRole` / `raptorRole`
+(`raptor-port/e2e/app.ts`) in an e2e test. That changes only the role a person would reach by signing in, not
+the world.
+
+**7.8 A gesture step asserts what the person SEES, in screen terms — never only that a value moved** (23 Sep
+26). For a zoom, what was under the fingers stays under them: measure its on-screen position before and after,
+against where the fingers end. For a drag, the thing follows the finger. A pinch that "zoomed 100% → 147%"
+passed while aiming 800px away from the fingers. Drive multi-finger gestures for real — an
+`Input.dispatchTouchEvent` sequence over CDP (`touchStart`, one or more `touchMove`, `touchEnd`) with two touch
+points gives real pointer events — in EVERY mode the surface has.
+Worked example: `raptor-port/scripts/handpass/trk-pinch.mjs`.
+
+**7.9 A walk proves the engine it ran in** (24 Sep 26). When a change redraws or removes the element under a
+held finger — or relies on which element receives the lift — list how each engine the owner uses delivers
+those events (Safari can send a touch's later events to the element it landed on even after a redraw removed
+it; Chromium retargets them), and add a synthetic check per difference: dispatch the other engine's sequence
+directly on the element it would reach. Name in the evidence sheet every line only a real device can prove,
+and put it on the owner's look card.
 
 ---
 
@@ -428,6 +499,10 @@ that IS the finding — a missing door. Do not inject it and call the route test
 5. **The other model designs the scenarios.** The builder's tests encode the builder's picture of
    the feature and share its blind spots.
 6. **Reviewers are handed the roll-call and asked for absences**, not only for errors.
+7. **A ruling's "left as it is today" half is a requirement too** (23 Sep 26). Before building the changed half,
+   pin the unchanged half with a test against today's behaviour, so the new half cannot absorb it. (Last Flown
+   worked out from the flights marked done would have overwritten a day typed by hand the moment any OLDER
+   flight was marked — the ruling had kept that half as it was.)
 
 ---
 

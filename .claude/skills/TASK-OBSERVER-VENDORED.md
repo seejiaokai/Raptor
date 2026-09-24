@@ -89,6 +89,9 @@ where that procedure's defaults do not fit a git repo with vendored skills:
   The session-start hook's message pins the ONE log location (above). An
   upstream refresh overwrites these files: re-apply them
   (`git log -p -- .claude/skills/task-observer`).
+- **24 Sep 26 review (owner-approved, D146):** `SKILL.md` Numbering discipline item 4 gained the
+  cross-branch check's silent failure (Git Bash rewrites `rev:path` unless
+  `MSYS_NO_PATHCONV=1`) and "run it on the current branch first".
 
 ## Known caveats (not bugs)
 

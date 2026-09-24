@@ -31,6 +31,13 @@ digraph when_to_use {
 - Testing actual timing behavior (debounce, throttle intervals)
 - Always document WHY if using arbitrary timeout
 
+## Before You Pace or Settle a Test
+
+A timing failure is a product bug whenever a person at ordinary speed can reach it — and a condition wait can hide it as well as a pause can.
+
+- **Replay the scenario at human pace first** — before adding a pause, a settle or a condition wait — on a slowed machine and on an unloaded one. If a person can land on the failing outcome, file it as a finding and keep the test honest — never pace or settle the test past it. "Load-sensitive" can mean it fails on FAST machines: an app-side "in motion" window that a fast machine finishes inside and a slow one lands outside.
+- **Make the slow runner's slowness reproducible, then prove the fix at it.** For a browser: CPU throttling (Chromium's `Emulation.setCPUThrottlingRate` over CDP, behind an opt-in switch) or an N-core busy load. Calibrate the factor from the CI's own durations (a test that takes 10s here and 23s there is roughly 2x). Run each changed test several times per factor, before and after the fix, on the same build — and report the factor at which it still breaks.
+
 ## Core Pattern
 
 ```typescript
@@ -91,6 +98,12 @@ See `condition-based-waiting-example.ts` in this directory for complete implemen
 
 **❌ Stale data:** Cache state before loop
 **✅ Fix:** Call getter inside loop for fresh data
+
+**❌ Waiting on a proxy:** a condition that also changes for unrelated background work (a scroll position that moves with every background redraw) turns the wait into waiting for that work — slower than the pause it replaced
+**✅ Fix:** Watch exactly the state the next action consumes (the on-screen position of the element it will click)
+
+**❌ Reading what is not there yet:** once a pause is gone, a read of a target that has not appeared returns `undefined`/`null`/`''` — on BOTH sides of a before/after comparison alike, so the comparison passes without comparing anything
+**✅ Fix:** For every read that followed the removed pause, wait for its target to exist first
 
 ## When Arbitrary Timeout IS Correct
 
