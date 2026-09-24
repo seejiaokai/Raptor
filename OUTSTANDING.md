@@ -553,6 +553,8 @@ git), `.git` 178 MB (48 MB unpacked). GitHub's copy is ~125 MB; only a fresh sin
 6. **Leave the evidence pictures** (sessions never read them; git keeps them anyway; the [REPO-CLEANUP] keep ruling).
 7. **Checks:** `docsize` green; **Fable and Astra each given every before/after pair, asked only whether any rule,
    condition, date or reason changed or vanished** (D138). Target ~120k → ~45–50k per session start. ~3–4 h, 1–2 sessions.
+   **D139 (24 Sep 26):** for this job, Opus 5.5 and Fable 5.1 may be spent freely on the work and the reviews, Astra
+   reviews (about half its allowance left, fine) — never the model that wrote a thing checking it.
 **His words: "theres going to be alot of context for the AI to read ... reading so much context
 as an AI it starts to hallucinate."** Measured that day: **1,830 lines loaded every session**
 whatever the task, plus **2,228 more** at session start. `HANDOFF.md` states its own 550-line
