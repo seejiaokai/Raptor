@@ -16,32 +16,34 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/spring-clean -->
-### `claude/spring-clean` — the spring clean (`[DOC-TRIM]`), written 24 Sep 26 (night) — verify before use
+### `claude/spring-clean` — the spring clean (`[DOC-TRIM]`, closed), written 24 Sep 26 (late night) — verify before use
 - **Where it started:** his ask (D138–D141, then D140's "weave it into my workflow"): every chat reads only what the
   job needs and finds the rest, new information follows the structure by itself, nothing reworded on the way. Plan,
   both red teams and what changed after them: `raptor-port/docs/superpowers/specs/2026-09-24-spring-clean-plan.md` (§7 wins).
-- **Shipped:** all on the branch, pushed, NOT merged, no PR yet. `raptor-port/CLAUDE.md` 1,543 → ~705 lines (area
-  decisions and architecture moved whole to the area files), `HANDOFF.md` 984 → ~90 (the one handoff),
-  `OUTSTANDING.md` live items only; `.claude/rules/shipping.md` and `doc-structure.md` (always loaded); the exact
-  mover and the misfiling checks (self-test 97/97); both meaning checks (Fable, Astra) done and fixed; the
-  session-handoff skill change approved (D145). A fresh chat reads ~58k tokens before work, not ~118k.
-- **Unfinished:** close `[DOC-TRIM]` — rewrite it without line targets (D141); its only leftover is the
-  `.gitattributes` LF pin, which rides the next code change — and mark D139 SPENT (`--rulings`). Filed, not blocking:
-  `[DOC-POINTERS-CODE]`, `[PERF-RESIDUALS]`.
-- **Branch:** `claude/spring-clean`; its PR none when written. If it has MERGED, the next chat resets before new work:
-  `git fetch origin main && git checkout -B <branch> origin/main` — otherwise it stacks commits onto
-  already-merged history.
+- **Shipped:** all on the branch, pushed, NOT merged; its PR is open, waiting for his "merge live".
+  `raptor-port/CLAUDE.md` 1,543 → ~705 lines (area decisions and architecture moved whole to the area files),
+  `HANDOFF.md` 984 → ~90 (the one handoff), `OUTSTANDING.md` live items only; `.claude/rules/shipping.md` and
+  `doc-structure.md` (always loaded); the exact mover and the misfiling checks (self-test 97/97); both meaning checks
+  (Fable, Astra) done and fixed; the session-handoff skill change approved (D145); `[DOC-TRIM]` closed and moved whole
+  to the archive, so no line target is left in a live file; D139 spent and archived. A fresh chat reads ~58k tokens
+  before work, not ~118k.
+- **Unfinished:** nothing on this branch. Filed, not blocking: `[RULINGS-LF-PIN]` and `[DOC-SUBHEADS]` (the item's two
+  leftovers — the second one was missing from this block's earlier "only leftover"), `[DOC-POINTERS-CODE]`,
+  `[PERF-RESIDUALS]`.
+- **Branch:** `claude/spring-clean`; its PR: `gh pr list --head claude/spring-clean`. If it has MERGED, the next chat
+  removes this block and resets before new work: `git fetch origin main && git checkout -B <branch> origin/main` —
+  otherwise it stacks commits onto already-merged history.
 - **Gates:** not run — docs and the document-gate scripts only (bug-check tier NONE); `npm run docsize` OK and
-  `node raptor-port/scripts/docsize-selftest.mjs` 97/97 on the final commit.
+  `node raptor-port/scripts/docsize-selftest.mjs` 97/97 on the final commit; the PR runs only the Docs guard.
 - **Open questions for him:** none — "merge live" is his call when he is happy.
-- **Pick up here:** close `[DOC-TRIM]` and mark D139 spent, commit, open the PR (docs only — the Docs guard runs),
-  then tell him it is ready for "merge live"; "done" = live on Vercel (D143).
+- **Pick up here:** on his "merge live" — merge once the PR's Docs guard is green → `main`'s checks (only the Docs
+  guard, for a docs-only change) → Vercel reports the live app READY → one notification with the link ("done" = live
+  on Vercel, D143).
 <!-- /now -->
 
 ## Next, in order
 
-1. **Finish the spring clean and offer it for "merge live"** — after both meaning checks (D138) and his approval of
-   the session-handoff skill change (D70).
+1. **The spring clean waits for his "merge live"** — its PR is open (the `claude/spring-clean` block above); docs only.
 2. **`[HUMAN-RETEST]` — THE AMENDMENT SYSTEM** (D85/D86): port 4173, rulings from D90, FULL tier; the Tracker's
    evidence sheet `raptor-port/docs/handpass/2026-09-23-tracker.md` is the worked example. The order of the other
    three (change-recording, the absence record, the Leave War links) is NOT ruled: propose it and ask.

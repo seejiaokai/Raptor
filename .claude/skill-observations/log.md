@@ -663,3 +663,48 @@ code separately from its output, and never let the same line that runs a gate al
 **Suggested improvement:** For any structural migration of shared documents: (1) write the rules of the target structure as executable checks first, (2) replay the known failure modes in a self-test (including a control case against the OLD checker, to prove each test can fail), (3) only then migrate, letting the checks gate every step, and (4) hand reviewers the residue report (what left and did not arrive), not the whole diff.
 
 **Principle:** Enforcement written after a migration can only audit it; enforcement written before it shapes it. Build the check, prove it can fail, then let it gate the work.
+
+### Observation 232: A handoff's "its only leftover is X" was incomplete — re-read the whole item before closing it
+
+**Status:** OPEN
+**Date:** 2026-09-24
+**Session context:** Closing the spring clean's backlog item ([DOC-TRIM]) from the previous chat's handoff block
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the block's "Unfinished" line — how the leftovers of an item about to close are listed
+
+**Issue:** The handoff said the item's only leftover was one config-file pin. Re-reading the whole item before closing it found a second deliverable it had named since its first version (sub-headings for the long reference docs) — never done, filed nowhere else. The handoff had summarised the latest plan's leftovers, not the whole item's; trusting it would have archived an open job with the item.
+
+**Suggested improvement:** Where the skill writes "Unfinished" for a backlog item that is about to close, list the leftovers by walking EVERY deliverable the item ever named, oldest block included, each marked done / filed as <id> / dropped by a ruling. The closing session repeats that walk instead of trusting the line.
+
+**Principle:** A summary of what is left is a claim, not a check. Before closing a record, re-derive what is left from the whole record, its oldest parts included.
+
+### Observation 233: On Windows Git Bash, `git show <branch>:<path>` is silently mangled — the parallel-branch numbering check reads "none"
+
+**Status:** OPEN
+**Date:** 2026-09-24
+**Session context:** Numbering discipline rule 4 (number past entries on other open branches) before appending to this log
+**Skill:** task-observer
+**Type:** open-source
+**Phase/Area:** How to Log → Numbering discipline, rule 4 (parallel branches)
+
+**Issue:** The natural check — `git show origin/<branch>:.claude/skill-observations/log.md | grep …` in a loop, errors sent to /dev/null — reported no entries for EVERY branch, the current one included: Git Bash (MSYS) rewrites the `rev:path` argument into a Windows path and git fails. With the error hidden, the failure reads as "no other branch has entries", the unsafe answer. `MSYS_NO_PATHCONV=1` fixed it and the real maxima appeared.
+
+**Suggested improvement:** In rule 4, give the cross-branch check with a built-in sanity test: run it on the CURRENT branch first and require it to return the local maximum before trusting "none" for any other branch; note `MSYS_NO_PATHCONV=1` for Git Bash on Windows.
+
+**Principle:** A check whose failure looks like "nothing found" must first prove it can find something — run it on a known-positive case before trusting its negatives.
+
+### Observation 234: A red team's "not in this pass" had no home — cross-provider briefs should hand over the path-scoped rules
+
+**Status:** OPEN
+**Date:** 2026-09-24
+**Session context:** Closing the spring clean ([DOC-TRIM]); checking each red-team disposition had a live home before the item left the backlog
+**Skill:** claudex-loop
+**Type:** open-source
+**Phase/Area:** building the reviewer brief for the other provider (also codex-review)
+
+**Issue:** The spring clean's red team (Astra/Codex) asked that a brief for Codex name the rules files of every area the change touches, because Codex loads none of the host's path-scoped rules by itself. The disposition put that rule in the always-loaded structure doc (D140, `.claude/rules/doc-structure.md`) and left the review skills' brief templates "NOT changed in this pass" — a deferral filed nowhere, so it would have left with the closed item.
+
+**Suggested improvement:** In the brief-building step, add: list the host's path-scoped rules files whose paths match the changed files and hand them to the reviewer by path. A change to these skills is read by Fable and Astra before the owner approves it (D70).
+
+**Principle:** Context that loads automatically for one provider must be handed explicitly to the other; a cross-provider brief names it by path.
