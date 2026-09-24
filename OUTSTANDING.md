@@ -1152,6 +1152,11 @@ unclear whether History mode has to be on — reproduce both ways. **To do:** re
 open, or size the board to the visible area). LOOK tier, phone only. **Place:** with the board items; small.
 
 ### [PENDING-SUMMARY] Tap "N pending" to see what changed, by whom and when — his idea (25 Sep 26), waiting on his word
+**Part (2) DECIDED 25 Sep 26 — D99: "N pending" is a button listing the day's waiting changes; tapping one takes the
+view to it. Parts (1), (3), (4) still his; mock-up first.**
+**Mock-up (25 Sep 26):** `raptor-port/docs/mock/pending-list.html` (maker `raptor-port/scripts/handpass/am/mk-pending-list.mjs`)
+— "N pending ▾" opens the net list (where, before → after, who, when; "earlier" where the record is gone), a tap jumps.
+Part (3), asked 25 Sep 26 whether tracking by "View as" is worth it before the database: the agent recommended not.
 His words: *"why dont we just wipe the sign offs for any changes to the schedule? And any type of change to that schedule
 will show a pending. And the scheduler can click on pending and see a summary of what changed. by who & time. Would this
 be like the edit history function? (except that im thinking of changing to seeing who the member callsign is instead of

@@ -1,0 +1,83 @@
+<title>Pending List</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter+Tight:wght@400;500;600;700&display=swap">
+<style>
+  /* the app's own palette and faces (raptor-port/src/ui/scheduler.css); every picture is the dark app, so the page
+     commits to that one dark look on purpose and paints every colour itself */
+  :root{color-scheme:dark;
+    --bg:#0B0D10;--panel:#14181D;--raised:#20262E;--edge:#2A313A;--edge-2:#39424D;
+    --ink:#F1F4F7;--ink-2:#B6C0CB;--ink-3:#8A96A3;--al1:#3BC6E8;--al1-ink:#052A34;--al2:#E5C24A}
+  html,body{background:var(--bg);color:var(--ink)}
+  body{font-family:'Inter Tight',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:15px;line-height:1.55;
+    padding-inline:16px;padding-block:20px 56px}
+  .wrap{max-width:1160px;margin:0 auto;display:flex;flex-direction:column;gap:34px}
+  .lbl{font-family:'Barlow Condensed','Arial Narrow',sans-serif;text-transform:uppercase;letter-spacing:.12em;font-weight:700;font-size:12px;color:var(--ink-3)}
+  h1{font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:800;font-size:34px;line-height:1.05;letter-spacing:.02em;margin:0;text-wrap:balance}
+  h2{font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:800;font-size:25px;line-height:1.1;letter-spacing:.03em;margin:0;text-wrap:balance}
+  h3{font-size:13px;font-weight:700;margin:0;color:var(--ink-2);text-transform:uppercase;letter-spacing:.08em}
+  p{margin:0;max-width:68ch;color:var(--ink-2)}
+  p b,li b{color:var(--ink);font-weight:600}
+  header{display:flex;flex-direction:column;gap:12px;border-bottom:1px solid var(--edge);padding-bottom:20px}
+  .switch{display:inline-flex;gap:4px;padding:3px;border:1px solid var(--edge-2);border-radius:8px;background:var(--panel);align-self:flex-start}
+  .switch button{font:inherit;font-size:13px;font-weight:600;color:var(--ink-2);background:none;border:0;border-radius:6px;padding:6px 14px;cursor:pointer}
+  .switch button[aria-pressed="true"]{background:var(--raised);color:var(--ink);box-shadow:inset 0 0 0 1px var(--edge-2)}
+  .switch button:focus-visible{outline:2px solid var(--al1);outline-offset:2px}
+  section{display:flex;flex-direction:column;gap:14px}
+  .story{display:flex;flex-direction:column;gap:8px}
+  .surface{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:12px}
+  .pair{display:flex;flex-wrap:wrap;gap:14px 18px;align-items:flex-start}
+  .pair figure.shot{flex:0 1 auto}
+  .steps3{display:flex;flex-direction:column;gap:12px}
+  figure.shot{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+  figure.shot img{display:block;max-width:100%;height:auto;border:1px solid var(--edge);border-radius:6px;background:#000}
+  figcaption{font-size:13px;color:var(--ink-3);max-width:60ch}
+  .gone{display:flex;flex-direction:column;gap:6px}
+  .gone p{font-size:13px;color:var(--ink-3);border:1px dashed var(--edge-2);border-radius:6px;padding:10px 12px;max-width:552px}
+  .tag{align-self:flex-start;font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:800;font-size:12px;
+    letter-spacing:.1em;text-transform:uppercase;border-radius:4px;padding:1px 7px}
+  .tag.today{color:var(--ink-2);border:1px solid var(--edge-2)}
+  .tag.fix{color:var(--al1-ink);background:var(--al1)}
+  .tag.plain{color:var(--ink-3);padding-inline:0}
+  .ask{border:1px solid var(--al1);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;
+    background:linear-gradient(0deg,rgba(59,198,232,.06),rgba(59,198,232,.06)),var(--panel)}
+  .rec{color:var(--al1);font-weight:600}
+  .note{font-size:13px;color:var(--ink-3);border-left:2px solid var(--edge-2);padding-left:10px;max-width:72ch}
+  body[data-w="desktop"] .w-phone,body[data-w="phone"] .w-desktop{display:none}
+  @media (max-width:720px){h1{font-size:29px} h2{font-size:22px}}
+</style>
+<div class="wrap">
+  <header>
+    <span class="lbl">Amendments · your pending button</span>
+    <h1>Tap “pending” to see what will go out — and jump to it</h1>
+    <p>Monday in the real app, at AL1, with four changes waiting: one from the demo, three made just now (Piston and
+      Outlaw swap seats on the 19:20 RU line; a remark on the 19:45 VL line). The list is laid on top of the real screen;
+      nothing in the app was changed.</p>
+    <div class="switch" role="group" aria-label="Picture width">
+      <button id="w-desktop" type="button" aria-pressed="true" data-set="desktop">Desktop</button>
+      <button id="w-phone" type="button" aria-pressed="false" data-set="phone">Phone</button>
+    </div>
+  </header>
+  <section>
+    <div class="surface"><h3>1 · Today</h3><figure class="shot"><span class="tag today">Today</span><img class="w-desktop" src="img/pending-list/desktop-1-today.png" width="558" height="90" alt="Monday on the edit week: “4 pending” — but not what, or where." loading="lazy"><img class="w-phone" src="img/pending-list/phone-1-today.png" width="372" height="128" alt="Monday on the edit week: “4 pending” — but not what, or where. (phone)" loading="lazy"><figcaption>Monday on the edit week: “4 pending” — but not what, or where.</figcaption></figure></div>
+    <div class="surface"><h3>2 · Tap “4 pending”</h3><figure class="shot"><span class="tag fix">Proposed</span><img class="w-desktop" src="img/pending-list/desktop-2-list.png" width="558" height="340" alt="What will go out as AL2 — where, before → after, who and when." loading="lazy"><img class="w-phone" src="img/pending-list/phone-2-list.png" width="390" height="348" alt="What will go out as AL2 — where, before → after, who and when. (phone)" loading="lazy"><figcaption>What will go out as AL2 — where, before → after, who and when.</figcaption></figure></div>
+    <div class="surface"><h3>3 · Tap a change</h3><figure class="shot"><span class="tag fix">Proposed</span><img class="w-desktop" src="img/pending-list/desktop-3-jump.png" width="534" height="107" alt="The view goes to it and marks it for a moment (here: Outlaw, jet 1 pilot)." loading="lazy"><img class="w-phone" src="img/pending-list/phone-3-jump.png" width="348" height="117" alt="The view goes to it and marks it for a moment (here: Outlaw, jet 1 pilot). (phone)" loading="lazy"><figcaption>The view goes to it and marks it for a moment (here: Outlaw, jet 1 pilot).</figcaption></figure></div>
+    <p class="note">The list shows only what will actually go out — the difference from the published version; a change you
+      made and put back is not on it. <b>Who and when:</b> today the app knows them only for changes made since the page
+      was opened, and only as the shared account (“Admin”); the older change reads “earlier”. With the database, each
+      change carries the person’s own callsign and the time, however long ago it was made.</p>
+  </section>
+</div>
+<script>
+  (function () {
+    var body = document.body, pick = 'desktop'
+    try { pick = localStorage.getItem('answers.w') || (matchMedia('(max-width:720px)').matches ? 'phone' : 'desktop') } catch (e) {}
+    function set(w) {
+      body.setAttribute('data-w', w)
+      document.querySelectorAll('.switch button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.set === w)) })
+      try { localStorage.setItem('answers.w', w) } catch (e) {}
+    }
+    document.querySelectorAll('.switch button').forEach(function (b) { b.addEventListener('click', function () { set(b.dataset.set) }) })
+    set(pick === 'phone' ? 'phone' : 'desktop')
+  })()
+</script>
