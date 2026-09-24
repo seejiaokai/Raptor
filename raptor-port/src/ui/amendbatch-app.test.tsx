@@ -111,6 +111,14 @@ describe('"N pending ▾" opens what will go out, and a row takes the view there
     expect($('#pendList')).toBeNull()
   })
 
+  it('the page scrolling under it closes it; its own list scrolling does not (walker B3)', async () => {
+    await click(monHead()!.querySelector('[data-pendlist]'))
+    await act(async () => { $('#pendList .pl-list')!.dispatchEvent(new Event('scroll', { bubbles: false })) })
+    expect($('#pendList'), 'its own list scrolling').toBeTruthy()
+    await act(async () => { document.dispatchEvent(new Event('scroll')) })
+    expect($('#pendList'), 'the page scrolled under it').toBeNull()
+  })
+
   it('the count stays a plain chip where the list does not belong: View-only Sched, a preview, a draft day', async () => {
     await act(async () => { view.VWORK.add(MON); view.setPage('viewsched'); notify() })
     const vh = $(`#vWeek .day[data-day="${MON}"] .day-head`)

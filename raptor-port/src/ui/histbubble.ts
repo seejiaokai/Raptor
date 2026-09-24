@@ -28,6 +28,13 @@ import { HISTMODE, esc } from '../state/view'
 let bub: HTMLDivElement | null = null
 let anchor: HTMLElement | null = null
 let hideT: any = null
+/* the SHORT GRACE a long story gets once the pointer leaves its cell (D105 — so a mouse can reach the scrolling list):
+   running while `grace` is set; anything the pointer crosses on the way does not restart or cut it (walker B3,
+   25 Sep 26: the gap between the cell and the bubble is itself an element, and hiding on it took the bubble down on
+   the first step of every hand-like path) */
+let grace = false
+function startGrace() { if (grace) return; grace = true; clearTimeout(hideT); hideT = setTimeout(() => { grace = false; hideHistBub() }, 350) }
+function stopGrace() { if (grace) { grace = false; clearTimeout(hideT) } }
 /* EXPANDED — every change to this detail, not just the newest (owner, 11 Aug
    26). PINNED — it stays until something puts it down, rather than following
    the pointer out or timing out. The two are separate because they arrive
@@ -63,7 +70,7 @@ function box() {
   /* the scrolling list is the only part that takes the pointer (the bubble stays pointer-events:none, the History
      contract): entering it cancels the grace the cell's mouseout started; leaving it for anything but the list or
      its own cell puts the bubble down */
-  bub.addEventListener('mouseover', () => { if (!HOOKS.isPhone()) clearTimeout(hideT) })
+  bub.addEventListener('mouseover', () => { if (!HOOKS.isPhone()) stopGrace() })
   bub.addEventListener('mouseout', (e: any) => {
     if (pinned || HOOKS.isPhone()) return
     const to = e.relatedTarget as HTMLElement | null
@@ -91,7 +98,7 @@ export function histBubRecheck() {
 }
 
 export function hideHistBub() {
-  clearTimeout(hideT)
+  clearTimeout(hideT); grace = false
   if (anchor) { restoreTitle(anchor); anchor = null }
   if (bub && bub.isConnected) bub.remove()
   bub = null
@@ -186,7 +193,7 @@ function chgHTML(r: ELogRow) {
 }
 
 function show(el: HTMLElement) {
-  clearTimeout(hideT)            // a grace left running by the last cell's mouseout (below) must not take this one down
+  stopGrace()                    // a grace left running by the last cell's mouseout (below) must not take this one down
   const key = keyOf(el)
   if (!key) return hideHistBub()
   const row = elogFor(key)
@@ -305,7 +312,7 @@ export function wireHistBubble(el: HTMLElement) {
   const over = (e: any) => {
     if (!HISTMODE || HOOKS.isPhone() || pinned) return
     const c = cellOf(e.target)
-    if (!c) return hideHistBub()
+    if (!c) { if (grace) return; return hideHistBub() }   // on its way to a long story's list, the grace decides
     if (c !== anchor) show(c)
   }
   const out = (e: any) => {
@@ -319,7 +326,7 @@ export function wireHistBubble(el: HTMLElement) {
     if (into && into.closest && into.closest('.histbub')) return
     /* a LONG story gets a short grace, so the pointer can cross the gap between the cell and the bubble and reach
        its list (the list is the only part that takes the pointer); a short one goes at once, as it always did */
-    if (bub && bub.querySelector('.hb-all.scroll')) { clearTimeout(hideT); hideT = setTimeout(hideHistBub, 350); return }
+    if (bub && bub.querySelector('.hb-all.scroll')) { startGrace(); return }
     hideHistBub()
   }
   const tap = (e: any) => {

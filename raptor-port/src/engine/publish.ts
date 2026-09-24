@@ -448,7 +448,7 @@ export function dayDiscardCount(di:any):number{di=+di;
    must never change another (AM1; Fable F3, Astra 3):
      · "on the programme" ('g') only where its row is on a loaded day — the load has just put the version's rows back;
      · never away from 'g' while its row stands on a loaded day (a request accepted onto another day stays there);
-     · never to a state another PUBLISHED day it covers was issued with a different one of.
+     · never for a request that covers ANOTHER loaded day at all — its one filing value is that day's too.
    Returns what to set (`put`) and what must be left as filed (`left`, by input id) — the load says so. Pure; the
    load applies it (drafts.ts), and the discard count above counts it, so the confirm and the load agree. `dayAfter`
    is this day as the load will leave it (the version's content) — the discard count asks BEFORE the load, when the
@@ -462,10 +462,11 @@ export function filingRestorePlan(di:any,fil:any,dayAfter?:any):{put:Array<{inp:
     if(cur===want)return;
     const landed=DAYS.some((d0:any,j:number)=>{const d=(j===di&&dayAfter)?dayAfter:d0; return ((d&&d.ground)||[]).some((g:any)=>g&&g.src===id);});
     if(want==='g'?!landed:landed){left.push(id);return;}
-    for(let dj=0;dj<DAYS.length;dj++){ if(dj===di)continue; const d=DAYS[dj];
-      if(!d||!inputCoversDate(inp,d.dt)||!dayApproved(dj))continue;
-      const v=dayCurVer(dj), sn=v!=null?daySnapOf(dj,v):null;
-      if(sn&&sn.fil&&String(sn.fil[id]||'')!==want){left.push(id);return;} }
+    /* a request's filing is ONE value for every day it covers, so changing it changes every other loaded day it
+       covers too — their pending count, their flags, a waiting change on their working copy (walker B3, 25 Sep 26:
+       comparing only with the other day's ISSUED state let a load of Monday silently clear Tuesday's waiting change).
+       One day's load never moves another day (AM1): such a request is left as filed, and the load says so. */
+    if(DAYS.some((d:any,dj:number)=>dj!==di&&d&&inputCoversDate(inp,d.dt))){left.push(id);return;}
     put.push({inp,want});
   });
   return {put,left};}

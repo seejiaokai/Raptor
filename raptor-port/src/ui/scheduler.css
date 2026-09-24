@@ -3953,7 +3953,10 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
 .wavemenu .wm-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px}
 .wavemenu button.wm{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink);border-radius:8px;
   padding:7px 11px;font-size:12px;font-weight:700;cursor:pointer;text-align:left}
-.wavemenu button.wm:hover{border-color:var(--accent);color:var(--accent)}
+.wavemenu button.wm:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+/* a row that cannot be chosen LOOKS it (walker B3, 25 Sep 26 — a template refused on a published day, D96, was drawn and
+   lit on hover exactly like a live one): dimmed, no pointer, no hover */
+.wavemenu button.wm:disabled{opacity:.45;cursor:not-allowed}
 .wavemenu button.wm.sa{border-color:rgba(178,77,234,.45);color:#DDA9F5}
 .wavemenu button.wm.sa:hover{border-color:var(--san);color:var(--san)}
 .wavemenu .wm-note{font-size:10.5px;color:var(--ink-3);line-height:1.4;margin:-4px 0 8px}

@@ -10,7 +10,7 @@ import { PEOPLE, isSpecial } from '../engine/people'
 import { dayApproved, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek, alColor, nextSeq } from '../engine/publish'
 import { posKey } from '../engine/rowids'
 import { openPendList, closePendList } from './pendlist'
-import { draftSelect, draftVerLabel, loadVersionToWorkingCopy, LOADLEFT } from '../engine/drafts'
+import { draftSelect, draftVerLabel, loadVersionToWorkingCopy, LOADLEFT, LOADMOVED } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
@@ -1007,10 +1007,14 @@ export function routeClick(e: MouseEvent) {
        or its row stands on another day (D98 applied without moving another day: AM1; Fable F3) — are named, so a
        day that still reads pending says why */
     const left = LOADLEFT.length
+    /* …and a request whose one row the version took away is off the programme on the other days it covers too — named,
+       never silent (walker B3) */
+    const movedDays = [...new Set(LOADMOVED.flatMap(m => m.days))]
     const said = `${DAYS[di].dow}: ${verLabel(ver)} loaded onto the working copy`
       + (dayApproved(di) ? ` — viewers still see ${verLabel(dayCurVer(di))} until you publish` : '')
       + (replaced ? ` · ${replaced} unpublished edit${replaced === 1 ? '' : 's'} replaced` : '')
       + (left ? ` · ${left} request${left === 1 ? '' : 's'} also cover${left === 1 ? 's' : ''} another day — left as filed` : '')
+      + (LOADMOVED.length ? ` · ${LOADMOVED.length} request${LOADMOVED.length === 1 ? '' : 's'} came off the programme with ${LOADMOVED.length === 1 ? 'its' : 'their'} row — ${movedDays.join(', ')} ${movedDays.length === 1 ? 'reads' : 'read'} that too` : '')
     logAction(di, said)
     HOOKS.toast(said)
     notify(); return

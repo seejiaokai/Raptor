@@ -259,7 +259,13 @@ export function openPendList(di: number, anchor: HTMLElement, go: (keys: string[
     closePendList()
   }
   const key = (e: any) => { if (e.key === 'Escape') closePendList() }
+  /* the page scrolling under it leaves the list pointing at nothing (walker B3, 25 Sep 26) — it goes, as a menu does;
+     its own list scrolling is not the page */
+  const scroll = (e: any) => { const t = e.target as any; if (t && t.closest && t.closest('#pendList')) return; closePendList() }
   document.addEventListener('pointerdown', down, true)
   document.addEventListener('keydown', key, true)
-  off = () => { document.removeEventListener('pointerdown', down, true); document.removeEventListener('keydown', key, true) }
+  document.addEventListener('scroll', scroll, true)
+  window.addEventListener('resize', closePendList)
+  off = () => { document.removeEventListener('pointerdown', down, true); document.removeEventListener('keydown', key, true)
+    document.removeEventListener('scroll', scroll, true); window.removeEventListener('resize', closePendList) }
 }

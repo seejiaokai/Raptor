@@ -1,6 +1,7 @@
 import { DAYS } from './data'
 import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, moveKey, trackStructuralAdd, isDeleteKey, isMoveKey, protectedWeek, filingRestorePlan } from './publish'
 import { inputProtected } from './quarantine'
+import { INPUTS, inputCoversDate, inpId } from './inputs'
 import { dayKeys } from './restore'
 import { reconcileDayFiling } from './slots'
 import { keyDay } from './keys'
@@ -535,11 +536,22 @@ export function draftDelete(di: any, id: any) {
 /* the requests the last load had to leave as filed (they also cover another published day, or their row is landed
    elsewhere) — read by the Load handler's message, right after the load */
 export let LOADLEFT: string[] = []
+/* …and the requests whose filing the load DID change although they cover another loaded day (their row went with the
+   version), with those days' short names — the message names them */
+export let LOADMOVED: Array<{ id: string, days: string[] }> = []
 export function loadVersionToWorkingCopy(di: any, ver: any) {
   di = +di
   if (protectedWeek()) return false   // read-only quarantine — never roll a version over a frozen day (P2-REV2-02)
   const snap = daySnapOf(di, ver)
   if (!snap) return false
+  /* which requests covering this day also cover ANOTHER loaded day, and how they are filed now — so a filing the load
+     changes there too is NAMED (walker B3, 25 Sep 26). A request's filing is one value for every day it covers: the
+     load never sets such a one (filingRestorePlan), but when the version takes away the one row a request stood on,
+     the reconcile below must take it off the programme (P2-REV2-05 — "on the programme" with no row is a lie), and
+     the other day it covers then reads that too. That is the truth, not a slip; it must not be silent. */
+  const dt0 = (DAYS[di] || {}).dt
+  const multi = INPUTS.filter((inp: any) => inputCoversDate(inp, dt0) && DAYS.some((d: any, dj: number) => dj !== di && d && inputCoversDate(inp, d.dt)))
+    .map((inp: any) => ({ inp, was: inp.acc || '' }))
   const nd = liveDay(snap.d)
   nd.today = !!(DAYS[di] && DAYS[di].today)
   DAYS[di] = nd
@@ -552,6 +564,9 @@ export function loadVersionToWorkingCopy(di: any, ver: any) {
   const plan = filingRestorePlan(di, snap.fil)
   plan.put.forEach(({ inp, want }) => { if (inputProtected(inp)) return; if (want) inp.acc = want; else delete inp.acc })
   LOADLEFT = plan.left
+  LOADMOVED = multi.filter(x => (x.inp.acc || '') !== x.was).map(x => ({ id: inpId(x.inp),
+    days: DAYS.map((d: any, dj: number) => (dj !== di && d && inputCoversDate(x.inp, d.dt)) ? String(d.dow || '').slice(0, 3) : '').filter(Boolean) }))
+  LOADLEFT = LOADLEFT.filter(id => !LOADMOVED.some(m => m.id === id))
   if (dayApproved(di)) {
     rebaseDayPending(di)
   } else {

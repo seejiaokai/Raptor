@@ -9,7 +9,7 @@ import { createRoot } from 'react-dom/client'
 import { DAYS } from '../engine/data'
 import { INPUTS, inpId } from '../engine/inputs'
 import { acceptInput, unacceptInput } from '../engine/slots'
-import { loadVersionToWorkingCopy, LOADLEFT } from '../engine/drafts'
+import { loadVersionToWorkingCopy, LOADLEFT, LOADMOVED } from '../engine/drafts'
 import { SCHED, signOf, setSign, setDayApproved, dayDelta, dayDiscardCount, alCount, dayShownPendCount, dayCurVer } from '../engine/publish'
 import { validate, WARN } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
@@ -185,6 +185,21 @@ describe('item 6 — "Load onto working copy" puts back what that version had fi
     expect(loadVersionToWorkingCopy(MON, dayCurVer(MON))).toBe(true)
     expect(inp.acc || '', 'fresh, as at the Original').toBe('')
     expect(dayDelta(MON)).toEqual([])
+  })
+  it('a request whose one row the version takes away comes off the programme on the other day too — and the load NAMES it (walker B3)', () => {
+    publishDay(MON); publishDay(1)                              // both days issued before the request existed
+    const inp: any = { person: 'bane', date: 'Jul 13', endDate: 'Jul 14', allday: true, type: 'Meeting', remarks: 'B3 two-day', mod: '2026-07-02' }
+    INPUTS.push(inp)
+    acceptInput(MON, inp, 'g')                                  // its one row lands on Monday; Tuesday now reads it too
+    expect(dayDelta(1).length, 'Tuesday waits on the filing').toBeGreaterThan(0)
+    const tue = JSON.stringify(dayDelta(1))
+    void tue
+    expect(loadVersionToWorkingCopy(MON, dayCurVer(MON))).toBe(true)
+    /* Monday's version never had the request's row, so the load takes it away (D98) — and a request "on the programme"
+       with no row anywhere is taken off (P2-REV2-05). Tuesday therefore reads it too: the truth, so it is NAMED */
+    expect(inp.acc || '', 'off the programme with its row').toBe('')
+    expect(LOADMOVED.map(m => m.id), 'the load names it').toContain(inpId(inp))
+    expect(LOADMOVED[0]!.days, 'and the other day').toEqual(['Tue'])
   })
   it('a request covering ANOTHER published day is left as filed — loading Monday never moves Tuesday (AM1; Fable F3, Astra 3)', () => {
     const inp: any = { person: 'bane', date: 'Jul 13', endDate: 'Jul 14', allday: true, type: 'LL', remarks: 'D98 two-day', mod: '2026-07-01' }

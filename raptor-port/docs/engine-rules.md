@@ -2337,8 +2337,8 @@ line (`docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`).**
 - **A load puts back what the version filed (D98, AM6).** `loadVersionToWorkingCopy` sets every request covering the
   day to the filing state the loaded version froze (`snap.fil`), in the load alone — never the general reconcile —
   and only where that moves no other day (`filingRestorePlan`: 'g' only with its row on a loaded day; never away from
-  'g' while its row stands elsewhere; never to a state another published day it covers was issued with a different
-  one of). What it cannot put back is left as filed and named in the load's message; `dayDiscardCount` counts what
+  'g' while its row stands elsewhere; never for a request that covers ANOTHER loaded day at all — its one filing value
+  is that day's too, so changing it would move that day; walker B3, 25 Sep 26). What it cannot put back is left as filed and named in the load's message; `dayDiscardCount` counts what
   it will put back.
 - **A day template is refused on a published day (D96).** `applyDayTpl` returns false on a published day — see
   §Day templates.
