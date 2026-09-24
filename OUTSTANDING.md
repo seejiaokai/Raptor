@@ -74,7 +74,7 @@ The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small b
 [BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
 FULL-tier build, any time).
 
-**Waiting on him — no order exists:** [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
+**Waiting on him — no order exists:** [AMEND-D45-FILING] (a question from the amendment re-test, 24 Sep 26), [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
 D147), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
 [REPO-PRIVATE]'s sharing half, [EOD] (design first; no slot
 ruled), [CRP-FLAG]'s remainder and then [FLAG-EXPORT], the [AMEND] leftovers, [ADMIN-DISPLAY] ("next time we revisit",
@@ -95,12 +95,16 @@ walk defects and off assuming he looked at the walked Saturday (his look was wai
 numbering, AM-01 version ids (`engine/verid.ts`), AM-06 signatures bound to content, Phase 2 (the reopen control
 gone). AM-02's migration was dropped on his word (14 Sep 26: reset, don't migrate). **Left:** AM-04 (frozen
 availability in the canonical content — `publish.ts` says it is not done), the publish-entry validation matrix,
-AM-09 (durable write/lease), and PSF-001 (a filing-only change publishing on stale signatures — his call). The
+AM-09 (durable write/lease). *(Corrected 24 Sep 26 by the amendment re-test: PSF-001 — a filing-only change
+publishing on stale signatures — is NOT open: he answered it 15 Sep 26, "close it now", and it is built; register
+AM14 in `raptor-port/docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`.)* The
 heading and the lines below about "building on `claude/amendment-engine-core`" and "Opus 4.8" are history.
 Rebuild the publish/amend/version model: per-day isolated numbering (never
 week-wide), published = immutable, every change a new AL, supersede-never-retract,
 undo cannot cross a publish, load-old-version → republish-as-next-AL as the safe
-recovery path.
+recovery path. *(Superseded in part 18 Sep 26, marked 24 Sep 26 per D90: undo of a published day = UNPUBLISH it;
+a quiet correction republishes under the SAME label; every issuance is still kept, never erased — register
+AM32–AM37c.)*
 - **Decisions RESOLVED (owner, 12 Sep 26):** plans SURVIVE as backups; ALL FOUR roles
   re-sign every amendment; crew SEE the live draft (issued stays authority). OIL for
   this build = latest AL/Original per day, per-day, read-failure protection (the
@@ -996,3 +1000,16 @@ a flagged View-as puck shows the same plain red ring (solid or dashed) as every 
 "this is you" fill and ring. Read the precedence notes near `.puck.me` first (every puck rule carrying `!important`)
 and walk both widths with a flagged View-as puck. LOOK tier on one shared puck rule — check every surface that draws
 a puck. **Place:** any time, none blocking; a good one to ride the next scheduler change.
+
+### [AMEND-D45-FILING] Does D45 also cover a leave landing on a published day? — a question for him (24 Sep 26)
+Found by the amendment re-test's rules sweep (`raptor-port/docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`
+§Q3). Two of his rulings overlap and the newer does not clearly cover the case (D90's limit), so it is asked, not
+guessed. **D45 (22 Sep 26):** *"a change in who was available never invalidates a signature — the pending mark is
+the whole mechanism"* — given about the crowd behind an ALL / ALL AVAIL puck. **PSF-001 (15 Sep 26, his "close it
+now"):** an input accepted onto a published day, or filed under Unavailable (a leave, a course), DOES clear the
+day's sign-offs, like any content change — so the working copy must be re-signed before its next amendment goes
+out. **The question, in his words' terms:** when a man's leave lands on a day already published, should the
+sign-offs for the next amendment be wiped (as today), or stay, with only the pending mark showing? **Kept as built
+until he answers** (the leave clears the sign-offs). Either answer is small to build: the signature's filing check
+(`raptor-port/src/engine/publish.ts` `currentBind` → `filingKey`). **Place:** waiting on him; ask with the
+amendment re-test's look card.
