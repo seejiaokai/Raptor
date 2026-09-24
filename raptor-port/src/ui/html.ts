@@ -1304,7 +1304,15 @@ export function dayStatHTML(di:any,ed:any){
        the read-only "✓ Published"/version stamp on a published day — the
        unpublished VIEW page keeps its plain "Draft" stamp (that IS byte-parity
        with the reference on the seed week; only the published branch changed). */
-    const pendChip=nd?`<span class="dpend" title="${nd} ${ok?'change':'unpublished edit'}${nd>1?'s':''} on this day${ok?' — ahead of the issued schedule until you publish an AL':' — publish the day before publishing an AL'}">${nd}&nbsp;pending</span>`:'';
+    /* on a PUBLISHED day's working copy, on the edit surfaces, the count is a BUTTON that opens the list of what
+       will go out (owner, D99 + D100, 25 Sep 26 — ui/pendlist.ts, routed by data-pendlist in interactions.ts).
+       Never on the view page, never under a preview (its count is the live one captured before the swap, PVND,
+       and the list would read the live day while the screen shows a frozen one), never on a draft day (nothing
+       there goes out as an amendment). */
+    const pendBtn=nd&&ed&&ok&&!PV&&canEditSched();
+    const pendChip=!nd?'':pendBtn
+      ? `<button class="dpend dpendbtn" data-pendlist="${di}" aria-haspopup="dialog" title="See the ${nd} change${nd>1?'s':''} waiting to go out as AL${nextSeq(di)} on ${d.dow}, and go to each">${nd}&nbsp;pending<span class="dpc" aria-hidden="true">▾</span></button>`
+      : `<span class="dpend" title="${nd} ${ok?'change':'unpublished edit'}${nd>1?'s':''} on this day${ok?' — ahead of the issued schedule until you publish an AL':' — publish the day before publishing an AL'}">${nd}&nbsp;pending</span>`;
     const sgOK=daySigned(di);
     /* THE BEAK (§9, closes BUG-2): on a NEVER-published day it first-approves
        (Publish day). On a PUBLISHED day it renders NOTHING here — a published

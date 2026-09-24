@@ -351,6 +351,13 @@ export function scrollToWarnFocus(){
     : document.querySelector('#'+warnWeekId()+' .day[data-day="'+pdi+'"]');
   if(!root)return;
   const tgt=warnTarget(root,WFOCUS.ids,pkey)||root;
+  bringIntoView(root,tgt,onBoard?null:warnWeekId());
+}
+/* PUT A DAY'S CELL IN FRONT OF THE READER — the warning jump's own recipe, shared since 25 Sep 26 with the
+   one "take me to this change" (interactions.ts jumpToChange, D107), which lands on the WEEK when the board
+   is not open. `root` is the day box (or the board wrap), `tgt` the cell, `weekId` the week the day sits in
+   ('eWeek' / 'vWeek'), or null on the board, where there is no sideways pan to make. */
+export function bringIntoView(root:any,tgt:any,weekId:string|null){
   /* The week is snap-scrolled (.week{scroll-snap-type:x mandatory} with
      .day{scroll-snap-align:start}), and inline:'center' asks to rest at a
      position that is NOT a snap point — the browser re-snaps afterwards to
@@ -358,8 +365,8 @@ export function scrollToWarnFocus(){
      whole day past the one you clicked. So place the day by hand first, onto
      its snap point, instantly; then scrollIntoView only has the vertical left
      to do and inline:'nearest' keeps it from fighting the snap back. */
-  if(!onBoard){
-    const week:any=document.getElementById(warnWeekId());
+  if(weekId){
+    const week:any=document.getElementById(weekId);
     /* HOLD THE LATERAL VIEW (owner, 6 Aug 26). The pan above used to run on
        every click, so a warning on the day you were already reading — sitting
        comfortably mid-screen — snapped that day hard to the left edge and

@@ -937,6 +937,40 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .day-head .dal.orig,.sb-pub .dal.orig{background:var(--ink-3)}
 .day-head .dpend,.sb-pub .dpend{font-size:10px;font-weight:700;color:#F2D699;background:rgba(229,194,74,.12);
   border:1px solid rgba(229,194,74,.4);padding:1px 7px;border-radius:999px;white-space:nowrap}
+/* "N pending ▾" — the same chip, as the button that opens the list of what will go out (owner, D99 + D100,
+   25 Sep 26; ui/pendlist.ts). A button's own font and box are reset so it reads exactly as the chip did, plus
+   the caret that says it opens. */
+.day-head .dpendbtn,.sb-pub .dpendbtn{font-family:inherit;line-height:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:3px}
+.dpendbtn:hover{background:rgba(229,194,74,.22);border-color:rgba(229,194,74,.7)}
+.dpendbtn .dpc{font-size:8px;line-height:1}
+/* THE PENDING LIST — the approved mock-up's look (docs/mock/pending-list.html), in the app's tokens. Body-level,
+   above the board (the board sheet is 400) and the History bubble (430), below the modals (470). Its own list
+   scrolls once it runs past the screen (D100); pendlist.ts caps the height to the visible area. */
+.pendlist{position:fixed;z-index:440;width:min(380px,calc(100vw - 16px));display:flex;flex-direction:column;
+  background:var(--panel);border:1px solid var(--edge-2);border-radius:10px;box-shadow:0 14px 34px -12px rgba(0,0,0,.8);
+  padding:10px 10px 8px;font-size:12px;overflow:hidden}
+.pendlist .pl-head{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--ink);margin:0 2px 8px;flex:0 0 auto}
+.pendlist .pl-head .verchip{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:10px;font-weight:800;letter-spacing:.06em;padding:1px 6px;border-radius:5px}
+.pendlist .pl-list{overflow-y:auto;overscroll-behavior:contain;min-height:0;flex:1 1 auto}
+.pendlist .pl-item{display:grid;grid-template-columns:1fr auto;gap:1px 10px;width:100%;text-align:left;
+  padding:7px 8px;border-radius:7px;background:none;border:0;font:inherit;color:inherit}
+.pendlist button.pl-item{cursor:pointer}
+.pendlist button.pl-item:hover,.pendlist button.pl-item:focus-visible{background:rgba(229,194,74,.10);outline:none}
+.pendlist .pl-item+.pl-item{border-top:1px solid var(--edge)}
+.pendlist .pl-item.still{opacity:.82}
+.pendlist .pl-where{font-weight:600;color:var(--ink)}
+.pendlist .pl-chg{grid-column:1/2;color:var(--ink-2)}
+.pendlist .pl-chg s{color:var(--ink-3)}
+.pendlist .pl-chg b{color:#F2D699;font-weight:600}
+.pendlist .pl-who{grid-column:2/3;grid-row:1/3;align-self:center;text-align:right;font-size:11px;color:var(--ink-3);white-space:nowrap}
+.pendlist .pl-none{color:var(--ink-3);padding:6px 8px}
+.pendlist .pl-foot{font-size:10.5px;color:var(--ink-3);margin:8px 4px 0;flex:0 0 auto}
+.pendlist .pl-foot:empty{display:none}
+/* THE BRIEF MARK a jump leaves on the change it lands on (D99, D107 — the one "take me to this change",
+   interactions.ts): a ring in the colour of the AL the day's changes go out as, fading, then gone. */
+.chgflash{animation:chgflash 1.4s ease-out 1;border-radius:5px}
+@keyframes chgflash{0%{box-shadow:0 0 0 3px var(--chgc,#E5C24A)}70%{box-shadow:0 0 0 3px var(--chgc,#E5C24A)}100%{box-shadow:0 0 0 3px transparent}}
+@media (prefers-reduced-motion:reduce){.chgflash{animation-duration:1.4s;animation-timing-function:steps(1,end)}}
 /* PUBLISH DAY is the primary action on a day, so it wears the same blue as the
    banner buttons rather than looking like one more grey chip. Published flips it
    green (and it is then the reopen control); unsigned darkens it — see the
@@ -3958,6 +3992,9 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
 .hb-all{list-style:none;margin:4px 0 0;padding:0;max-height:40vh;overflow-y:auto}
 .hb-all li{padding:4px 0;border-top:1px solid var(--edge)}
 .hb-all li:first-child{border-top:none}
+/* a list past its height scrolls inside the bubble (owner, D105, 25 Sep 26): only such a list takes the pointer
+   (histbubble.ts paint adds .scroll), and it keeps the scroll to itself rather than handing it to the page */
+.hb-all.scroll{pointer-events:auto;overscroll-behavior:contain;touch-action:pan-y}
 .hb-all .hb-chg{display:block}
 .hb-all .hb-who{display:block;margin-top:1px}
 /* THE ONE TAPPABLE THING IN A BUBBLE THAT IS OTHERWISE pointer-events:none.
