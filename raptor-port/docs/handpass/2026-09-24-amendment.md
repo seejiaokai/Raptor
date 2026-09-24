@@ -299,6 +299,13 @@ On the branch's Vercel link, signed in as admin, Edit Schedule. About five minut
 6. **Your phone.** Open Monday's board: the same "Not yet signed", "N pending" and Unpublish as on the desktop; tap a
    sign-off box and check the name list opens (only a real iPhone proves that).
 
+**His look, 25 Sep 26:** step 6 confirmed on his own iPhone ("For 6 yes" — the board shows "Not yet signed", "2 pending" and
+Unpublish, and the sign-off name list opens). Three points raised on the way, each reproduced on this branch the same
+night: a moved puck counts 2 pending (as designed — the count is the rows that differ from the issued day, AM23; put to
+him with a recommendation to keep it); Edit history on Edit Schedule jumps to the board (on `main` too — D107,
+`[HIST-JUMP-STAYS]`); the grey ORIG tag should stand out (D108, `[ORIG-TAG-STANDOUT]`). None is a defect of this branch;
+the two rulings are items 12–13 of the amendment batch. The card's two questions below were answered since (D96, D97).
+
 **Two questions ride with the card** (filed, nothing waits on them): should applying a day template to an already
 published day be refused, or keep what matches (`[AMEND-TEMPLATE-PUBLISHED]`)? And should "Not yet signed" read
 differently when the four sign-offs are still valid (`[AMEND-NYS-WORDING]`)? The two from this morning stand too:
