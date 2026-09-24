@@ -6,11 +6,13 @@ paths:
   - raptor-port/docs/**/*tracker*
   - raptor-port/docs/**/*tracker*/**
   - raptor-port/docs/**/*trk*
+  - raptor-port/scripts/handpass/trk-*.mjs
+  - raptor-port/src/ui/logout.ts
 ---
 
 # Rulings — the Tracker
 
-**Loads by itself** whenever a session reads a Tracker file (the paths above), so work that strays into the
+**Loads by itself** whenever a session reads a Tracker file (the `paths:` at the top of this file), so work that strays into the
 Tracker from anywhere else picks these up too. The general rulings are in `.claude/rules/decisions/how-we-work.md`, loaded in every session; the map of every ruling and how to add or retire one: `DECISIONS.md`. Newest first; each row keeps the date it was recorded.
 **Also read** — in How we work, so already loaded: **D62** and **D63** (the Tracker's syllabus data is out of
 every privacy sweep; the aircraft type elsewhere reads "F-15" or "fighter squadron").

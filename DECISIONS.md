@@ -30,7 +30,8 @@ it: `.claude/rules/record-decisions.md`; closing reports carry a `Rulings:` line
 "merge live", ONE AT A TIME; whichever merges later merges `main` in first, and if a D-number
 clashes, the later branch renumbers ITS OWN rows — never the ones already on `main`. So numbers
 may SKIP (a parallel branch can hold a range); a number is never reused and never lost. The next
-number is one above the highest in the map, unless a parallel branch holds that range.
+number follows `main`'s own run (D137 → D138), skipping any range a parallel chat holds (D90–D119 is the
+amendment chat's; the D150s were the Leave War and Tracker chats' and are spent).
 
 **What counts.** A ruling ("do it this way from now on"), a product decision ("green only where it
 counted"), a correction to how I work, a preference, a "leave it", a supersession of an earlier

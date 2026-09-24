@@ -6,6 +6,8 @@ paths:
   - raptor-port/src/undo/**
   - raptor-port/src/command/**
   - raptor-port/src/storage/**
+  - raptor-port/src/*.ts*
+  - raptor-port/src/testing/**
   - raptor-port/e2e/**
   - raptor-port/probes/**
   - raptor-port/docs/engine-rules.md
@@ -23,7 +25,7 @@ paths:
 # Rulings — the scheduler and amendments
 
 **Loads by itself** whenever a session reads a scheduler, board, engine, amendment or storage file (the
-paths above). The general rulings are in `.claude/rules/decisions/how-we-work.md`, loaded in every session; the map of every ruling and how to add or retire one: `DECISIONS.md`. Newest first; each row keeps the date it was recorded.
+`paths:` at the top of this file). The general rulings are in `.claude/rules/decisions/how-we-work.md`, loaded in every session; the map of every ruling and how to add or retire one: `DECISIONS.md`. Newest first; each row keeps the date it was recorded.
 **Also read** — in `oil.md` (it loads by itself with the placeholder, publishing and OIL files): **D28, D31,
 D32, D43, D46, D52** (what the ALL / ALL AVAIL pucks earn wherever they may land — the earning list follows
 the landing list), **D48, D49** (a published day and a rule change), **D19** (a weekend no Leave War period

@@ -15,7 +15,8 @@ item).
 >    "finished" is never the heading's words** (they go stale — Fable F4): every fact a later session
 >    would need must first have a pointer in a tier-2 doc or a code comment. Write the pointer, THEN
 >    move the item.
-> 2. **A ruling never lives only here.** It gets a D-number in `DECISIONS.md` and a real home.
+> 2. **A ruling never lives only here.** It gets a D-number in its area's rulings file (`.claude/rules/decisions/`;
+>    the map is `DECISIONS.md`) and a real home.
 > 3. **Never trim this file inside a code change.** Over budget there is deferred; the trim is its
 >    own docs-only pass.
 > - **Item ids are UNIQUE.** A second heading for the same work gets its own id.

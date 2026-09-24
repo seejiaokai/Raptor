@@ -3,15 +3,22 @@ paths:
   - raptor-port/src/**/*oil*
   - raptor-port/src/**/*Oil*
   - raptor-port/src/leavewar/**
-  - raptor-port/src/engine/avail.ts
-  - raptor-port/src/engine/publish.ts
-  - raptor-port/src/ui/AvailWindow.tsx
+  - raptor-port/src/**/*avail*
+  - raptor-port/src/**/*Avail*
+  - raptor-port/src/**/*publish*
+  - raptor-port/src/**/*Publish*
+  - raptor-port/e2e/*leavewar*
   - raptor-port/src/ui/board-html.ts
   - raptor-port/src/ui/interactions.ts
   - raptor-port/docs/engine-rules.md
   - raptor-port/docs/ui-contracts.md
   - raptor-port/docs/leavewar/**
+  - raptor-port/docs/**/*leavewar*
+  - raptor-port/docs/**/*lw-*
+  - raptor-port/docs/**/*lw-*/**
   - raptor-port/docs/**/*oil*
+  - raptor-port/docs/**/*oil*/**
+  - raptor-port/docs/handpass/parts/blocks-*
   - raptor-port/docs/**/*allavail*
   - raptor-port/docs/**/*one-absence*
   - raptor-port/scripts/handpass/**
@@ -21,7 +28,7 @@ paths:
 # Rulings — OIL (off in lieu: earned leave)
 
 **Loads by itself** whenever a session reads an OIL, Leave War, placeholder-puck or publishing file (the
-paths above). The general rulings are in `.claude/rules/decisions/how-we-work.md`, loaded in every session; the map of every ruling and how to add or retire one: `DECISIONS.md`. Newest first; each row keeps the date it was recorded.
+`paths:` at the top of this file). The general rulings are in `.claude/rules/decisions/how-we-work.md`, loaded in every session; the map of every ruling and how to add or retire one: `DECISIONS.md`. Newest first; each row keeps the date it was recorded.
 **Also read** — in `scheduler.md` (it loads by itself with any board or engine file): **D27, D33, D47** (where
 the ALL / ALL AVAIL pucks may land and where they are refused), **D36–D41, D51** (who counts as available,
 and the window that lists them), **D44, D45** (the crowd frozen at publication; the pending mark). In How we

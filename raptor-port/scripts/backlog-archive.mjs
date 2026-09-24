@@ -44,7 +44,7 @@ const args = process.argv.slice(2)
 if (args.includes('--rulings')) {
   const DIR = '.claude/rules/decisions', DEC = 'DECISIONS.md', ARCHR = 'DECISIONS-ARCHIVE.md'
   const MARKED = /^\*\*(?:(?:REPLACED|REVERSED|SUPERSEDED|ENDED) BY D\d+|SPENT\b)/
-  const rowId = l => (/^\| (D\d+) \|/.exec(l) || [])[1]
+  const rowId = l => (/^\|\s*(D\d+)\s*\|/.exec(l) || [])[1] // loose, like the gate's ROW_ID
   /* this block runs before the item mover's own helpers are defined below, so it carries its own */
   const lineEnds = t => t.match(/[^\n]*\n|[^\n]+$/g) || []
   const dryRun = args.includes('--dry-run')
@@ -56,9 +56,13 @@ if (args.includes('--rulings')) {
   const moved = []
   for (const f of areas) {
     const keep = []
+    let fence = null
     for (const l of lineEnds(after.get(f))) {
       const s = l.replace(/\r?\n$/, '')
-      if (rowId(s) && MARKED.test(s.split(' | ')[2] || '')) moved.push({ d: rowId(s), from: f, line: l.endsWith('\n') ? l : l + '\n' })
+      /* a row inside a code block is an example, never a ruling to move (Astra, 24 Sep 26) */
+      const was = fence
+      fence = fenceStep(fence, s)
+      if (!was && !fence && rowId(s) && MARKED.test(s.split('|').map(x => x.trim())[3] || '')) moved.push({ d: rowId(s), from: f, line: l.endsWith('\n') ? l : l + '\n' })
       else keep.push(l)
     }
     after.set(f, keep.join(''))
@@ -74,13 +78,15 @@ if (args.includes('--rulings')) {
     after.set(ARCHR, a + moved.map(m => m.line).join(''))
   }
   /* the map: each row's last column = the D-numbers its file now holds, in the file's own order */
-  const idsOf = f => lineEnds(after.get(f) || '').map(l => rowId(l)).filter(Boolean)
+  const outsideFences = ls => { let fence = null; return ls.map(l => { const was = fence; fence = fenceStep(fence, l.replace(/\r?\n$/, '')); return !was && !fence }) }
+  const idsOf = f => { const ls = lineEnds(after.get(f) || ''), out = outsideFences(ls); return ls.map((l, i) => out[i] && rowId(l)).filter(Boolean) }
   const MAP_ROW = /^(\| [^|]+? \| `([^`]+)` \| [^|]*? \| )([^|]*?)( \|\s*)$/
   let mapChanged = 0
-  after.set(DEC, lineEnds(after.get(DEC)).map(l => {
+  const decLines = lineEnds(after.get(DEC)), decOut = outsideFences(decLines)
+  after.set(DEC, decLines.map((l, i) => {
     const eolL = l.match(/\r?\n$/)?.[0] || ''
-    const m = MAP_ROW.exec(l.replace(/\r?\n$/, ''))
-    if (!m || !(m[2] === ARCHR || m[2].startsWith(DIR + '/')) || !after.has(m[2])) return l
+    const m = decOut[i] && MAP_ROW.exec(l.replace(/\r?\n$/, ''))
+    if (!m ||!(m[2] === ARCHR || m[2].startsWith(DIR + '/')) || !after.has(m[2])) return l
     const list = idsOf(m[2]).join(', ') || '—'
     if (list === m[3]) return l
     mapChanged++

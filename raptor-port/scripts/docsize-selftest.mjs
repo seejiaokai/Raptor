@@ -114,6 +114,16 @@ scenario('a spent permission left in its area file', true, c => c.edit(AREA, t =
 scenario('an archived row without its mark', true, c => c.edit('DECISIONS-ARCHIVE.md', t => t.replace('**REPLACED BY D1 (21 Sep 26).** ', '')), { mustSay: 'without its mark' })
 scenario('a ruling copied into a second area file', true, c => { c.write(OTHER, AREA0.replace('general', 'other').replace(/^\| D2 .*\n/m, '')); addOther(c, 'D1') }, { mustSay: 'D1 now appears 2 times' })
 scenario('an area file the map does not name', true, c => c.write(OTHER, '# Rulings — other\n'), { mustSay: 'is not in the map' })
+/* An example row inside a code block is not a ruling (Astra's final read, 24 Sep 26). */
+scenario('a lost ruling "replaced" by an example row in a code block', true, c => c.edit(AREA, t => t.replace(/^\| D1 \|.*\n/m, '') + '\n~~~md\n| D1 | 21 Sep 26 | an example | x | this file |\n~~~\n'), { mustSay: 'D1 is GONE' })
+scenario('the map listing a ruling twice', true, c => setMap(c, AREA, 'D2, D1, D1'), { mustSay: 'twice under' })
+/* Fable's final read, 24 Sep 26: a ruling filed and then dropped on the SAME branch, a row typed with odd
+   spacing, and a mark naming a ruling that does not exist. */
+const addD9 = (c, row) => { c.edit(AREA, t => t.replace('|---|---|---|---|---|\n', '|---|---|---|---|---|\n' + row + '\n')); setMap(c, AREA, 'D9, D2, D1') }
+scenario('a ruling added in one commit and dropped in a later one', true, c => { addD9(c, '| D9 | 21 Sep 26 | z | z | this file |'); c.commit('file D9'); c.edit(AREA, t => t.replace(/^\| D9 \|.*\n/m, '')); setMap(c, AREA, 'D2, D1') }, { mustSay: 'D9 is GONE' })
+scenario('a row typed with odd spacing is failed for its shape', true, c => addD9(c, '|D9| 21 Sep 26 | z | z | this file |'), { mustSay: 'not in the shape' })
+scenario('an oddly spaced row, committed, then dropped', true, c => { addD9(c, '|D9 | 21 Sep 26 | z | z | this file |'); c.commit('file D9'); c.edit(AREA, t => t.replace(/^\|D9 \|.*\n/m, '')); setMap(c, AREA, 'D2, D1') }, { mustSay: 'D9 is GONE' })
+scenario('a mark naming a ruling that does not exist', true, c => c.edit('DECISIONS-ARCHIVE.md', t => t.replace('**REPLACED BY D1 (21 Sep 26).**', '**REPLACED BY D1370 (21 Sep 26).**')), { mustSay: 'no such ruling exists' })
 scenario('a ruling MOVED to another area, the map updated', false, c => { c.write(OTHER, AREA0.replace('general', 'other').replace(/^\| D2 .*\n/m, '')); c.edit(AREA, t => t.replace(/^\| D1 .*\n/m, '')); addOther(c, 'D1'); setMap(c, AREA, 'D2') })
 scenario('a register row deleted while the rule map still names it (F7)', true, c => c.edit('raptor-port/docs/superpowers/specs/x-behaviour-register.md', t => t.replace('- **X1** — the first rule.\n', '')), { mustSay: 'X1 is in' })
 
@@ -187,6 +197,8 @@ mover('--rulings moves a replaced ruling to the archive and rewrites the map', t
   : !has(c, 'DECISIONS-ARCHIVE.md', '| D1 | 21 Sep 26 | **REPLACED BY D2 (21 Sep 26).** a | a | `OUTSTANDING.md` |') ? 'D1 did not arrive whole'
   : !c.read('DECISIONS.md').includes('| always | D0, D1 |') || !c.read('DECISIONS.md').includes('general.md` | always | D2 |') ? 'the map was not rewritten'
   : !/^## Moved /m.test(c.read('DECISIONS-ARCHIVE.md').split('| D0 |')[1]) ? 'no dated heading over the day it moved' : '' })
+mover('--rulings leaves a marked example row inside a code block where it is', true, { prep: c => { c.edit(AREA, t => t + '\n~~~md\n| D8 | 21 Sep 26 | **SPENT 21 Sep 26 — an example.** x | x | this file |\n~~~\n'); c.commit('example') }, args: ['--rulings'], check: c =>
+  !has(c, AREA, '| D8 |') ? 'the example was moved' : has(c, 'DECISIONS-ARCHIVE.md', '| D8 |') ? 'the example reached the archive' : c.read('DECISIONS.md').includes('D8') ? 'the example reached the map' : '' })
 mover('--rulings puts a NEW ruling into the map', true, { prep: c => c.edit(AREA, t => t.replace('|---|---|---|---|---|\n', '|---|---|---|---|---|\n| D9 | 21 Sep 26 | z | z | this file |\n')), args: ['--rulings'], check: c =>
   !c.read('DECISIONS.md').includes('general.md` | always | D9, D2, D1 |') ? 'the map does not list D9 first' : '' })
 mover('--rulings puts every file back when the inventory is not clean afterwards', false, { prep: c => { c.edit('OUTSTANDING.md', t => cut(t, 'BRAVO')[0]); c.edit(AREA, t => t.replace('| D1 | 21 Sep 26 | a |', '| D1 | 21 Sep 26 | **SPENT 21 Sep 26 — used.** a |')) }, args: ['--rulings'], check: (c, r) =>

@@ -130,15 +130,20 @@ const areaFilesNow = () => [...new Set([...(tryGit('ls-files', '--', RULINGS_DIR
   .filter(f => f.endsWith('.md') && existsSync(join(REPO, f))).sort()
 const areaFilesBase = () => BASE ? (tryGit('ls-tree', '-r', '--name-only', BASE, '--', RULINGS_DIR) || '').split('\n').filter(f => f.endsWith('.md')) : []
 const rulingFiles = when => [DECISIONS, ...(when === 'base' ? areaFilesBase() : areaFilesNow()), RULINGS_ARCHIVE]
-/* { d: 'D12', file, line } for every `| D<n> |` row */
-const rulingRows = when => rulingFiles(when).flatMap(f => splitLines(when === 'base' ? readBase(f) : readNow(f))
-  .filter(l => /^\| D\d+ \|/.test(l)).map(line => ({ d: /^\| (D\d+) \|/.exec(line)[1], file: f, line })))
+/* Lines outside code blocks: an example row inside a ``` block is not a ruling, and must neither stand in
+   for a lost one nor be moved as one (Astra, 24 Sep 26). fenceStep is job 1's rule, hoisted. */
+const unfenced = ls => { let fence = null; return ls.filter(l => { const was = fence; fence = fenceStep(fence, l); return !was && !fence }) }
+/* { d: 'D12', file, line } for every `| D<n> |` row — read loosely (`|D12|`, `| D12  |`), so a row typed
+   with odd spacing is still counted and protected, and then failed for its shape (Fable, 24 Sep 26) */
+const ROW_ID = /^\|\s*(D\d+)\s*\|/
+const rulingRowsIn = (f, text) => unfenced(splitLines(text)).filter(l => ROW_ID.test(l)).map(line => ({ d: ROW_ID.exec(line)[1], file: f, line }))
+const rulingRows = when => rulingFiles(when).flatMap(f => rulingRowsIn(f, when === 'base' ? readBase(f) : readNow(f)))
 /* A row whose ruling cell OPENS with a replaced or spent mark belongs in the archive (DECISIONS.md, step 2). */
 const MARKED = /^\*\*(?:(?:REPLACED|REVERSED|SUPERSEDED|ENDED) BY D\d+|SPENT\b)/
-const rulingCell = line => (line.split(' | ')[2] || '')
+const rulingCell = line => (line.split('|').map(s => s.trim())[3] || '')
 /* The map: DECISIONS.md's rows whose second cell is a backticked ruling file; the last cell lists its D-numbers. */
 const MAP_ROW = /^\| ([^|]+?) \| `([^`]+)` \| ([^|]*?) \| ([^|]*?) \|\s*$/
-const readMap = text => splitLines(text).map(l => MAP_ROW.exec(l)).filter(m => m && (m[2] === RULINGS_ARCHIVE || m[2].startsWith(RULINGS_DIR + '/')))
+const readMap = text => unfenced(splitLines(text)).map(l => MAP_ROW.exec(l)).filter(m => m && (m[2] === RULINGS_ARCHIVE || m[2].startsWith(RULINGS_DIR + '/')))
   .map(m => ({ area: m[1], file: m[2], ids: m[4].match(/D\d+/g) || [] }))
 const MOVER_CMD = 'node raptor-port/scripts/backlog-archive.mjs --rulings'
 
@@ -296,7 +301,7 @@ function homes(paths, allow) {
   }
   const baseRows = new Set(rulingRows('base').map(r => r.d))
   for (const { line } of rulingRows('now')) {
-    const m = /^\| (D\d+) \|/.exec(line)
+    const m = ROW_ID.exec(line)
     const cells = line.split(' | '), home = cells[cells.length - 1]
     const isNew = !baseRows.has(m[1]), future = home.search(/on build:/i)
     for (const tm of home.matchAll(/`([^`]+)`/g)) {
@@ -327,7 +332,16 @@ function rulings(allow) {
   const dNow = rowsNow.map(r => r.d)
   const dBase = rulingRows('base').map(r => r.d)
   const cNow = multiset(dNow), cBase = multiset(dBase)
-  for (const d of cBase.keys()) if (!cNow.has(d) && !allow.has(d)) fails.push(`${d} is GONE from the rulings (${DECISIONS}, ${RULINGS_DIR}/, ${RULINGS_ARCHIVE}) — a ruling number is never lost`)
+  /* Every number the rulings held at the base OR in any commit since — a ruling filed on a branch and
+     dropped by a later commit (a bad merge of a branch still in the one-file shape) is a loss too, the
+     same way the backlog check reads every commit (Fable, 24 Sep 26). A D78 renumbering declares
+     `Docs-guard-allow: D<old>`. */
+  const ever = new Set(dBase)
+  const since = BASE ? (tryGit('log', '--format=%H', `${BASE}..HEAD`, '--', DECISIONS, RULINGS_ARCHIVE, RULINGS_DIR) || '').split('\n').filter(Boolean) : []
+  for (const c of since)
+    for (const f of [DECISIONS, RULINGS_ARCHIVE, ...(tryGit('ls-tree', '-r', '--name-only', c, '--', RULINGS_DIR) || '').split('\n').filter(f => f.endsWith('.md'))])
+      for (const r of rulingRowsIn(f, tryGit('show', `${c}:${f}`) || '')) ever.add(r.d)
+  for (const d of ever) if (!cNow.has(d) && !allow.has(d)) fails.push(`${d} is GONE from the rulings (${DECISIONS}, ${RULINGS_DIR}/, ${RULINGS_ARCHIVE}) — a ruling number is never lost${cBase.has(d) ? '' : ' (it was added in a commit since the base)'}`)
   for (const [d, n] of cNow) if (n > 1 && n > (cBase.get(d) || 0) && !allow.has(d)) fails.push(`${d} now appears ${n} times across the rulings files — a row is MOVED, never copied; and a clash with a parallel branch renumbers that branch's own row (D78)`)
 
   /* THE STRUCTURE KEEPS ITSELF (D137). A ruling lives in its AREA's file, never in the map file; a row
@@ -335,6 +349,10 @@ function rulings(allow) {
      with the files — so "DECISIONS.md D38" always lands, and an old habit fails loudly, not silently. */
   const areas = new Set(areaFilesNow())
   for (const r of rowsNow) {
+    /* the shape every tool here reads: `| D<n> | <d> Mon yy | ruling | meaning | home |` */
+    if (!/^\| D\d+ \| \d{1,2} [A-Z][a-z]{2} \d{2} \| /.test(r.line)) fails.push(`${r.d}'s row in ${r.file} is not in the shape "| ${r.d} | <date, e.g. 24 Sep 26> | ruling | meaning | home |" — fix its spacing and date cell`)
+    const by = /^\*\*(?:REPLACED|REVERSED|SUPERSEDED|ENDED) BY (D\d+)/.exec(rulingCell(r.line))
+    if (by && !dNow.includes(by[1])) fails.push(`${r.d} is marked replaced by ${by[1]}, and no such ruling exists`)
     if (r.file === DECISIONS) fails.push(`${r.d} is written in ${DECISIONS} — a ruling lives in its area's file under ${RULINGS_DIR}/ (the map in ${DECISIONS} names them); move the row there, then run: ${MOVER_CMD}`)
     else if (areas.has(r.file) && MARKED.test(rulingCell(r.line))) fails.push(`${r.d} is marked replaced/spent but is still in ${r.file} — move it to the archive: ${MOVER_CMD}`)
     else if (r.file === RULINGS_ARCHIVE && !MARKED.test(rulingCell(r.line))) fails.push(`${r.d} is in ${RULINGS_ARCHIVE} without its mark — an archived row opens its ruling cell with **REPLACED BY D<n>** or **SPENT <date>** (${DECISIONS}, step 2)`)
@@ -344,6 +362,8 @@ function rulings(allow) {
     const byFile = new Map()
     for (const m of map) {
       if (byFile.has(m.file)) fails.push(`the map in ${DECISIONS} lists \`${m.file}\` twice`)
+      const twice = m.ids.filter((d, i) => m.ids.indexOf(d) !== i)
+      if (twice.length) fails.push(`the map in ${DECISIONS} lists ${[...new Set(twice)].join(', ')} twice under \`${m.file}\` — run: ${MOVER_CMD}`)
       byFile.set(m.file, new Set(m.ids))
       if (!existsSync(join(REPO, m.file))) fails.push(`the map in ${DECISIONS} names \`${m.file}\`, and no such file exists`)
     }

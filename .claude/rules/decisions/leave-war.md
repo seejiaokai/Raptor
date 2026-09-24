@@ -5,13 +5,16 @@ paths:
   - raptor-port/e2e/*leavewar*
   - raptor-port/docs/**/*leavewar*
   - raptor-port/docs/**/*lw-*
+  - raptor-port/docs/**/*lw-*/**
   - raptor-port/docs/**/*one-absence*
   - raptor-port/docs/**/*arch-stack-4*
+  - raptor-port/scripts/handpass/lw-*.mjs
+  - raptor-port/scripts/handpass/seat-lw-*.mjs
 ---
 
 # Rulings — the Leave War
 
-**Loads by itself** whenever a session reads a Leave War file (the paths above). The general rulings are in `.claude/rules/decisions/how-we-work.md`, loaded in every session; the map of every ruling and how to add or retire one: `DECISIONS.md`. Newest first; each row keeps the date it was recorded.
+**Loads by itself** whenever a session reads a Leave War file (the `paths:` at the top of this file). The general rulings are in `.claude/rules/decisions/how-we-work.md`, loaded in every session; the map of every ruling and how to add or retire one: `DECISIONS.md`. Newest first; each row keeps the date it was recorded.
 **No ruling is filed under the Leave War alone yet.** Its decisions from before this list began are
 `raptor-port/CLAUDE.md` §Stable decisions → Leave War roster & display. **The OIL rulings load with every
 Leave War file** (OIL is leave the war banks) — among them **D79, D80, D81, D82** (a hand-typed award: any

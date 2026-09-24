@@ -20,11 +20,11 @@ CORRECTION, "leave it", explicit NO, or a supersession of something earlier —
 anything that outlives the task in front of you?
 
 If yes: record it FIRST, in its AREA's file under .claude/rules/decisions/ (the
-map and the three steps are at the head of DECISIONS.md) — his words, what it
-means, and the file that will now carry it — then make sure that file actually
-carries it. If it replaces an earlier ruling, mark that one and run
-`node raptor-port/scripts/backlog-archive.mjs --rulings`. The work absorbing a
-ruling is not the record keeping it.
+three steps are at the head of DECISIONS.md) — his words, what it means, and the
+file that will now carry it; mark any row it replaces or one-off permission it
+spends; then run `node raptor-port/scripts/backlog-archive.mjs --rulings` (it puts
+the new number into the map and archives marked rows). Then make sure the named
+file actually carries it. The work absorbing a ruling is not the record keeping it.
 
 If no (an ordinary task instruction), ignore this and carry on.
 
