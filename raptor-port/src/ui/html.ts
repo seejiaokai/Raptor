@@ -75,6 +75,16 @@ const traceHit=(di:any,id:any)=>(PV&&!OFW)?null:traceOf(di,id)
 const chip=(di:any,id:any)=>{ if(PV&&!OFW)return null
   const t=traceLeads(di,id); return t?traceChip(t):chipOf(di,id) }
 const dsh=(di:any,id:any)=>(PV&&!OFW)?false:dashOf(di,id)
+/* A PUCK'S FOUR WARNING MARKS, the week's reading, for the scheduler BOARD too (owner, D94, 25 Sep 26 — "make the
+   board draw the dashed and dotted rings, like the edit week?" "1. yes"). The board drew every ring solid: its
+   seats passed no dash and no trace, so a sanctioned late show rang solid and the day causing tomorrow's crew-rest
+   breach rang not at all. ONE reading, so the two surfaces cannot drift: the severity, the printed flag (the
+   trace's CR / 7 caption where the trace owns it — traceLeads, via chip), the dash and the trace. `off` is the
+   caller's own "no marks here" (a frozen preview, a read-only row) — exactly what it gated before. */
+export function puckMarks(di:any,id:any,off?:any){
+  if(off)return {sev:null,flag:null,dash:false,trace:null}
+  return {sev:sev(di,id),flag:chip(di,id),dash:dsh(di,id),trace:traceHit(di,id)}
+}
 /* the ONE place the snapshot may stand in for the live model. finally is not
    optional: a throw mid-build with the swap live would leave the old day
    installed as the real schedule — a silent history rewrite on the next

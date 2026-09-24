@@ -13,7 +13,7 @@ import { canEditSched } from '../state/auth'
 import { oilModeOn, oilSeatHTML, oilItemCellHTML, oilItemOfKey, oilRowPeople, oilClaimWin, inputItemKey } from './oilmode'
 import { rowItemKey, groundItemKey } from '../engine/oil'
 import { oilSeatDeco } from './html'
-import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, dormRowCls, dormRowTitle, sansCardsHTML, notePubTog, ADDZ, exemptDeskOwn } from './html'
+import { ORD, puck, puckMarks, rowCls, accCtl, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, dormRowCls, dormRowTitle, sansCardsHTML, notePubTog, ADDZ, exemptDeskOwn } from './html'
 
 /* ONE CLOCK ON THE BOARD — hh:mm (owner, 30 Aug 26, reversing the 29 Aug
    4-digit pass: "most of the timing format is 08:00 … make sure everything
@@ -230,7 +230,8 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
            now. */
         if(id&&PEOPLE[id]){
           const deco=oilSeatDeco(di,id,`a:${di}.${ri}.${k}`);
-          return `<span class="seat"${ro?'':` data-slot="a:${di}.${ri}.${k}"`}${alAttr(`a:${di}.${ri}.${k}`)}${ro?'':' data-drag="1"'}>${puck(id,ro?null:sevOf(di,id),true,ro?null:chipOf(di,id),false,null,deco.oil)}${deco.chip}</span>`;
+          const m=puckMarks(di,id,ro);   // the week's four marks, dashed and dotted rings included (D94)
+          return `<span class="seat"${ro?'':` data-slot="a:${di}.${ri}.${k}"`}${alAttr(`a:${di}.${ri}.${k}`)}${ro?'':' data-drag="1"'}>${puck(id,m.sev,true,m.flag,m.dash,m.trace,deco.oil)}${deco.chip}</span>`;
         }
         return String(nm||'').trim()?`<span class="itxt">${esc(nm)}</span>`:'';}).join('');
       s+=`<div class="sb-arow c6r${rowCls(x)}"${rowMove(`mv:p.${di}.${ri}`,ro)}>`+sbGrip(ro)
@@ -325,7 +326,9 @@ function sbSeat(di:any,key:any,id:any,pv?:any){
   const ex=pv?undefined:exemptDeskOwn(di,key,id);
   /* the same green edge the week draws, from the same body (§2.10) */
   const oilDeco=oilSeatDeco(di,id,key);
-  const inner=ex===undefined?puck(id,pv?null:sevOf(di,id),true,pv?null:chipOf(di,id),false,null,oilDeco.oil):puck(id,ex?'hard':null,true,ex,false,null,oilDeco.oil);
+  /* the week's four marks, dashed and dotted rings included (D94); an exempt seat keeps its own rule */
+  const m=puckMarks(di,id,pv)
+  const inner=ex===undefined?puck(id,m.sev,true,m.flag,m.dash,m.trace,oilDeco.oil):puck(id,ex?'hard':null,true,ex,false,null,oilDeco.oil);
   return `<span class="seat"${pv?'':` data-slot="${key}"`}${alAttr(key)}${pv?'':' data-drag="1"'}>${inner}${oilDeco.chip}</span>`;
 }
 function sbMore(di:any,base:any,r:any,pv?:any){
@@ -801,7 +804,8 @@ export function sbSlot(di:any,key:any,seat:any,id:any,pv?:any){
      which is exactly the kind of hole a missing call site leaves and no unit
      test noticed. SPARE seats and AVALON/BB still earn nothing, because
      dayOilWork skips them — this changes what is DRAWN, never what is owed. */
-  if(id&&PEOPLE[id])return `<div class="sb-slot"><span class="seat"${pv?'':` data-slot="${key}"`}${alAttr(key)}${pv?'':' data-drag="1"'}>${puck(id,pv?null:sevOf(di,id),true,pv?null:chipOf(di,id),false,null,oilSeatDeco(di,id,key).oil)}</span></div>`;
+  const m=puckMarks(di,id,pv)   // the week's four marks, dashed and dotted rings included (D94)
+  if(id&&PEOPLE[id])return `<div class="sb-slot"><span class="seat"${pv?'':` data-slot="${key}"`}${alAttr(key)}${pv?'':' data-drag="1"'}>${puck(id,m.sev,true,m.flag,m.dash,m.trace,oilSeatDeco(di,id,key).oil)}</span></div>`;
   if(pv)return `<div class="sb-slot"><span class="itxt">— ${seat==='p'?'FCP':'RCP'} empty —</span></div>`;
   return `<div class="sb-slot empty" data-slot="${key}">+ ${seat==='p'?'FCP':'RCP'}</div>`;
 }

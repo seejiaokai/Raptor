@@ -97,6 +97,9 @@ export function jumpToChange(key: string | string[], di: any) {
   hideHistBub()
   const onBoard = view.SBDAY != null
   if (onBoard && di != null && view.SBDAY !== +di) boardTab(+di)
+  /* a day being looked at as an older version draws no working cells to land on — the change lives on the live
+     copy, so go back to it first (Fable F6: the jump said "no longer on this day" about a live detail) */
+  if (!onBoard && di != null && view.DPREV.has(+di)) view.setDayPreview(+di, null)
   notify()
   setTimeout(() => {
     const root: any = onBoard
