@@ -118,6 +118,16 @@ describe('a move counts as ONE pending change (D109, AM23)', () => {
     expect(u[0].order).toBe(true)
   })
 
+  it('a man taken off a crowd AND the rest re-ordered is TWO; a list merely closing up is ONE (Astra’s code read)', () => {
+    const was = day({ allhands: [prog('MET + NOTAM BRIEF', ['warden', 'reaper', 'tally'], 'P1'), prog('SODB', [], 'P2')] })
+    const a = clone(was); a.allhands[0].who = ['tally', 'warden']
+    expect(units(was, a).length, 'Reaper off + the survivors re-ordered').toBe(2)
+    const b = clone(was); b.allhands[0].who = ['warden', 'tally']
+    expect(units(was, b).length, 'Reaper off, the list closes up').toBe(1)
+    const c = clone(was); c.allhands[0].who = ['tally', 'warden']; c.allhands[1].who = ['reaper']
+    expect(units(was, c).map(x => x.kind).sort(), 'Reaper moved + the survivors re-ordered').toEqual(['people', 'reseat'])
+  })
+
   it('two men taken off one row’s crowd are TWO — a man only taken off is one (Fable S1d, Astra 5)', () => {
     const was = day({ allhands: [prog('MET + NOTAM BRIEF', ['warden', 'reaper', 'tally'], 'P1')] }), now = clone(was)
     now.allhands[0].who = ['tally']

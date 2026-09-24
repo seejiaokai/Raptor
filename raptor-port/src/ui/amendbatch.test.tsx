@@ -186,6 +186,18 @@ describe('item 6 — "Load onto working copy" puts back what that version had fi
     expect(inp.acc || '', 'fresh, as at the Original').toBe('')
     expect(dayDelta(MON)).toEqual([])
   })
+  it('a two-day request whose row the version PUTS BACK on this day is back on the programme — never "taken off" beside its own row (Fable’s code read #1)', () => {
+    const inp: any = { person: 'bane', date: 'Jul 13', endDate: 'Jul 14', allday: true, type: 'Meeting', remarks: 'Fable two-day', mod: '2026-07-02' }
+    INPUTS.push(inp)
+    acceptInput(MON, inp, 'g')                                  // its one row lands on Monday
+    publishDay(MON); publishDay(1)                              // both issued with it on the programme
+    unacceptInput(MON, inp)                                     // ✕ — the row goes, the request reads "taken off"
+    expect(inp.acc).toBe('r')
+    expect(loadVersionToWorkingCopy(MON, dayCurVer(MON))).toBe(true)
+    expect(inp.acc, 'on the programme with its row').toBe('g')
+    expect(dayDelta(MON), 'Monday reads exactly as its Original').toEqual([])
+    expect(LOADMOVED.find(m => m.id === inpId(inp)), 'the load names Tuesday').toMatchObject({ on: true, days: ['Tue'] })
+  })
   it('a request whose one row the version takes away comes off the programme on the other day too — and the load NAMES it (walker B3)', () => {
     publishDay(MON); publishDay(1)                              // both days issued before the request existed
     const inp: any = { person: 'bane', date: 'Jul 13', endDate: 'Jul 14', allday: true, type: 'Meeting', remarks: 'B3 two-day', mod: '2026-07-02' }
@@ -236,6 +248,23 @@ describe('item 14 — a move counts as ONE, and every count reads the one body (
   })
 })
 
+describe('a man taken off a crowd AND the rest re-ordered is TWO on every surface (Astra’s code read, D109, AM23)', () => {
+  it('the day head, the discard count, the pending list, the publish and the issued AL all say 2', async () => {
+    const { pendListHTML } = await import('./pendlist')
+    ;(DAYS[MON] as any).allhands.push({ prog: 'SQN PHOTO', str: '12:00', end: '13:00', rmks: '', who: ['bane', 'stiff', 'mamba'] })
+    publishDay(MON)
+    ;(DAYS[MON] as any).allhands.at(-1).who = ['mamba', 'bane']   // Stiff off, and the two left re-ordered
+    expect(dayShownPendCount(MON)).toBe(2)
+    expect(num(weekEdit(MON).querySelector('.dpend')?.textContent), "the week's day head").toBe(2)
+    expect(dayDiscardCount(MON), `the load's "Discard N edits"`).toBe(2)
+    expect(el(pendListHTML(MON)).querySelector('.pl-head')?.textContent, 'the pending list').toMatch(/· 2 changes$/)
+    sign(MON)
+    const said = withToasts(() => commitPublishALDay(MON))
+    expect(said.join(' | ')).toMatch(/Published AL1 · 2 items /)
+    expect(alCount(SCHED.als[0]), "the issued AL's item count").toBe(2)
+  })
+})
+
 describe('the pending list says WHO and WHERE when the crowd behind a placeholder moved (walker B1, 25 Sep 26; D99, AM53)', () => {
   it('names the row and the man who dropped out, and the line can be tapped', async () => {
     const { pendListHTML } = await import('./pendlist')
@@ -251,6 +280,25 @@ describe('the pending list says WHO and WHERE when the crowd behind a placeholde
       expect(t, 'the row').toContain('FAMILY DAY')
       expect(t, 'the man who dropped out').toContain((PEOPLE as any).stiff.cs)
       expect(l.querySelector('button.pl-item'), 'a place to go').toBeTruthy()
+    } finally { HOOKS.oilSentinel = saved; HOOKS.oilDayISO = iso }
+  })
+})
+
+describe('several placeholders’ crowds moved: still ONE change, each row named and reachable (Astra’s code read, D109, AM53)', () => {
+  it('the one line carries a tap for each row', async () => {
+    const { pendListHTML } = await import('./pendlist')
+    const saved = HOOKS.oilSentinel, iso = HOOKS.oilDayISO
+    ;(DAYS[MON] as any).ground.push({ prog: 'FAMILY DAY', str: '09:00', end: '17:00', who: 'allavail' })
+    ;(DAYS[MON] as any).allhands.push({ prog: 'SQN PHOTO', str: '12:00', end: '13:00', rmks: '', who: ['all'] })
+    HOOKS.oilDayISO = (di: number) => (di === MON ? '2026-07-13' : '')
+    HOOKS.oilSentinel = () => ['bane', 'stiff']
+    try {
+      publishDay(MON)
+      HOOKS.oilSentinel = () => ['bane']
+      const l = el(pendListHTML(MON)), t = l.textContent || ''
+      expect(l.querySelector('.pl-head')?.textContent, 'still one change').toMatch(/· 1 change$/)
+      expect(t).toContain('FAMILY DAY'); expect(t).toContain('SQN PHOTO')
+      expect(l.querySelectorAll('button.pl-sub').length, 'a tap for each row').toBe(2)
     } finally { HOOKS.oilSentinel = saved; HOOKS.oilDayISO = iso }
   })
 })

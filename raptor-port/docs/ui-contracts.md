@@ -654,7 +654,9 @@ without (a removal, a reorder, a filing, what the day earns) is listed but not t
 the sign-off line's "N changes to publish", the Amendments panel, the plan-switch message, "Discard N edits", the
 publish message and an issued AL's "N items" — reads `dayPendingItems`: a man (or a placeholder) taken off one place
 and put on another of the SAME day is ONE ("Warden: MET + NOTAM BRIEF → SODB"), a swap two, a man only taken off or
-only added one, times / areas / remarks one per box, a crowd re-ordered one. A desk's holder and its extras are two
+only added one, times / areas / remarks one per box, a crowd re-ordered one, a man taken off while the rest are
+re-ordered two. When the crowds behind SEVERAL placeholders changed it is still one change (what the day earns), and
+its line lists each row on its own, each its own tap (Astra's code read, 25 Sep 26). A desk's holder and its extras are two
 places. What goes out (the stored diff) and the marks are unchanged. A replacement in one seat counts one — the gap
 filed as `[MOVE-REPLACE-ONE]`.
 

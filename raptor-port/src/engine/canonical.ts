@@ -429,6 +429,16 @@ export function canonicalUnits(prevD: any, newD: any, di: any): PendUnit[] {
   })
   pairPass((o, n) => o.both && n.both)
   pairPass((o, n) => o.both || n.both)
+  /* THE SURVIVORS' ORDER (Astra's code read, 25 Sep 26): a man taken off a crowd AND the rest re-ordered is two
+     changes, not one. Compare the order of the men on the list on BOTH sides — each occurrence counted apart, so two
+     ALL AVAILs never merge — so a list merely closing up behind a man taken out keeps their order and adds nothing. */
+  const reordered = (pl: string) => {
+    if (!isList(pl)) return false
+    const seq = (m?: Map<string, string>) => { const c = new Map<string, number>()
+      return [...(m ? m.values() : [])].filter(Boolean).map(v => { const n = (c.get(v) || 0) + 1; c.set(v, n); return v + '\u241f' + n }) }
+    const a = seq(was.get(pl)), b = seq(now.get(pl)), sa = new Set(a), sb = new Set(b)
+    return a.filter(x => sb.has(x)).join('\n') !== b.filter(x => sa.has(x)).join('\n')
+  }
   changed.forEach(pl => {
     const myOff = offs.filter(x => x.pl === pl), myOn = ons.filter(x => x.pl === pl)
     const left = myOff.filter(x => !x.used), came = myOn.filter(x => !x.used)
@@ -436,9 +446,11 @@ export function canonicalUnits(prevD: any, newD: any, di: any): PendUnit[] {
     const unit = (off: string[], on: string[], order = false): PendUnit =>
       ({ kind: 'people', place: j[0] || '', addr: j[0] || '', jump: j, keys: keysOf(pl), off, on, ...(order ? { order } : {}) })
     if (!myOff.length && !myOn.length) { person.push(unit([], [], true)); return }   // the same people, re-ordered
-    if (!left.length && !came.length) return                                         // every man here moved — the moves carry it
+    const order = reordered(pl)
+    if (!left.length && !came.length) { if (order) person.push(unit([], [], true)); return }   // every man here moved — the moves carry it
     if (isList(pl)) { left.forEach(x => person.push(unit([x.tok], []))); came.forEach(x => person.push(unit([], [x.tok]))) }
     else person.push(unit(left.map(x => x.tok), came.map(x => x.tok)))
+    if (order) person.push(unit([], [], true))
   })
   /* the invariant, belt and braces: a person cell differs, so something must count */
   if (!person.length) personEntries.forEach(e => { const j = [String(e.addr)]; person.push({ kind: 'people', place: j[0]!, addr: j[0]!, jump: j, keys: [ridKey(e.addr, nowArr)], off: e.from ? [e.from] : [], on: e.to ? [e.to] : [] }) })

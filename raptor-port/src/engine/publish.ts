@@ -12,6 +12,7 @@ import { CURWEEK } from './waves'
 import { groundOrder } from './order'
 import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './verid'
 import { isPreservedWeek } from './weekstash'
+import { inputProtected } from './quarantine'   // functions only both ways, so the import loop is safe
 import { oilEvidence, oilEvidenceKey, oilSignKey, oilKeyNoMem, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney } from './oilev'
 
 /* the reference calls straight into the UI here; the engine routes those four
@@ -460,8 +461,15 @@ export function filingRestorePlan(di:any,fil:any,dayAfter?:any):{put:Array<{inp:
     if(!inputCoversDate(inp,dt))return;
     const id=inpId(inp), want=String(((fil||{})[id])||''), cur=String(inp.acc||'');
     if(cur===want)return;
-    const landed=DAYS.some((d0:any,j:number)=>{const d=(j===di&&dayAfter)?dayAfter:d0; return ((d&&d.ground)||[]).some((g:any)=>g&&g.src===id);});
+    if(inputProtected(inp))return;   // a quarantined week's request is never touched — in the one plan both callers read (Fable's read, #2)
+    const has=(d:any)=>((d&&d.ground)||[]).some((g:any)=>g&&g.src===id);
+    const landed=DAYS.some((d0:any,j:number)=>has((j===di&&dayAfter)?dayAfter:d0));
     if(want==='g'?!landed:landed){left.push(id);return;}
+    /* the version's OWN row for it stands on this very day: "on the programme" is then the fact, whatever other day the
+       request also covers — leaving it "taken off" beside its standing row would be the dangling state P2-REV2-05
+       forbids the other way round, and the next AL would freeze it (Fable's code read, #1). The other day reads it too;
+       the load names that (LOADMOVED). */
+    if(want==='g'&&has((dayAfter||DAYS[di]))){put.push({inp,want});return;}
     /* a request's filing is ONE value for every day it covers, so changing it changes every other loaded day it
        covers too — their pending count, their flags, a waiting change on their working copy (walker B3, 25 Sep 26:
        comparing only with the other day's ISSUED state let a load of Monday silently clear Tuesday's waiting change).

@@ -31,6 +31,8 @@ import { esc } from '../state/view'
 let box: HTMLDivElement | null = null
 let openDi: number | null = null
 let items: PendItem[] = []
+/* the per-row places of a multi-row line (several placeholders' crowds), by "item.row" — read by the click */
+let targets: Record<string, string[]> = {}
 let off: (() => void) | null = null
 export function pendListOpen() { return openDi }
 
@@ -145,12 +147,16 @@ export function pendItemWords(di: number, it: PendItem): Words {
      live evidence says who it stands for now; the difference names the row and the men. A change in the scheduler's
      own earning decisions keeps the plain wording. */
   const crowd = crowdChange(di)
-  if (crowd) return { ...crowd, ...none, jump: crowd.keys.length > 0 }
+  if (crowd && crowd.length === 1) return { ...crowd[0]!, ...none, jump: crowd[0]!.keys.length > 0 }
+  /* several placeholders' crowds moved: still ONE change (what the day earns is one item, D109's count), but each row
+     is named and reachable on its own line (Astra's code read, 25 Sep 26 — "+ N more" hid the rest) */
+  if (crowd && crowd.length > 1) return { where: `${crowd.length} placeholders · who they stand for`, from: '', to: '', ...none, jump: false, rows: crowd } as any
   return { where: 'What this day earns', from: '', to: 'changed', ...none, jump: false }
 }
 /* the rows whose placeholder crowd differs from what the day went out with: its name, who left, who joined, and the
    row's cells to jump to */
-function crowdChange(di: number): { where: string, from: string, to: string, keys: string[] } | null {
+type CrowdRow = { where: string, from: string, to: string, keys: string[] }
+function crowdChange(di: number): CrowdRow[] | null {
   const snap: any = daySnapOf(di, dayCurVer(di)); if (!snap || !snap.d) return null
   const was: any = (snap.d.oilev && snap.d.oilev.sent) || {}, now: any = oilEvidence(di).sent || {}
   const diff = [...new Set([...Object.keys(was), ...Object.keys(now)])].map(item => {
@@ -158,10 +164,12 @@ function crowdChange(di: number): { where: string, from: string, to: string, key
     return { item, off: [...a].filter(x => !b.has(x)), on: [...b].filter(x => !a.has(x)) }
   }).filter(x => x.off.length || x.on.length)
   if (!diff.length) return null
-  const d: any = DAYS[di], first = rowByItem(d, di, diff[0]!.item)
-  const where = (first ? first.name : 'A placeholder') + (diff.length > 1 ? ` + ${diff.length - 1} more` : '') + ' · who it stands for'
-  const off = diff.flatMap(x => x.off), on = diff.flatMap(x => x.on)
-  return { where, from: names(off), to: on.length ? names(on) : 'no longer free', keys: first ? first.keys : [] }
+  const d: any = DAYS[di]
+  return diff.map(x => {
+    const row = rowByItem(d, di, x.item)
+    return { where: (row ? row.name : 'A placeholder') + ' · who it stands for', from: names(x.off),
+      to: x.on.length ? names(x.on) : 'no longer free', keys: row ? row.keys : [] }
+  })
 }
 /* an OIL item key (`r:<row id>`) back to its row on the live day: the row's name and its cells, puck first */
 function rowByItem(d: any, di: number, item: string): { name: string, keys: string[] } | null {
@@ -206,6 +214,14 @@ export function pendListHTML(di: number): string {
       ? `<span class="pl-chg">${w.from ? `<s>${esc(w.from)}</s>` : ''}${w.from && w.to ? ' → ' : ''}${w.to ? `<b>${esc(w.to)}</b>` : ''}</span>` : ''
     const who = w.who ? `<span class="pl-who">${esc(w.who)}${w.when ? `<br>${esc(w.when)}` : ''}</span>` : '<span class="pl-who"></span>'
     const body = `<span class="pl-where">${esc(w.where)}</span>${who}${chg}`
+    const rows: CrowdRow[] | undefined = (w as any).rows
+    if (rows && rows.length) {
+      rows.forEach((r, j) => { targets[`${i}.${j}`] = r.keys })
+      return `<div class="pl-item still pl-multi"><span class="pl-where">${esc(w.where)}</span><span class="pl-who"></span>`
+        + rows.map((r, j) => `<button class="pl-sub" data-pltarget="${i}.${j}"${r.keys.length ? '' : ' disabled'} title="Go to this row">`
+          + `<span class="pl-where">${esc(r.where)}</span><span class="pl-chg">${r.from ? `<s>${esc(r.from)}</s>` : ''}${r.from && r.to ? ' → ' : ''}${r.to ? `<b>${esc(r.to)}</b>` : ''}</span></button>`).join('')
+        + `</div>`
+    }
     return w.jump
       ? `<button class="pl-item" data-plix="${i}" title="Go to this change">${body}</button>`
       : `<div class="pl-item still" title="This change has no place of its own on the schedule to go to">${body}</div>`
@@ -218,7 +234,7 @@ export function pendListHTML(di: number): string {
 export function closePendList() {
   if (off) { off(); off = null }
   if (box && box.isConnected) box.remove()
-  box = null; openDi = null; items = []
+  box = null; openDi = null; items = []; targets = {}
 }
 /* anchored under the chip, clamped into the VISIBLE viewport (a phone keyboard or pinch-zoom moves it — the
    History bubble's rule) */
@@ -244,6 +260,8 @@ export function openPendList(di: number, anchor: HTMLElement, go: (keys: string[
   box = b; openDi = di
   place(b, anchor)
   b.addEventListener('click', (e: any) => {
+    const sub = (e.target as HTMLElement).closest('[data-pltarget]') as HTMLElement | null
+    if (sub) { const k = targets[sub.dataset.pltarget!]; closePendList(); if (k && k.length) go(k, di); return }
     const hit = (e.target as HTMLElement).closest('[data-plix]') as HTMLElement | null
     if (!hit) return
     const it = items[+hit.dataset.plix!]

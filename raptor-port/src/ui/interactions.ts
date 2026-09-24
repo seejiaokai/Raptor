@@ -1014,7 +1014,7 @@ export function routeClick(e: MouseEvent) {
       + (dayApproved(di) ? ` — viewers still see ${verLabel(dayCurVer(di))} until you publish` : '')
       + (replaced ? ` · ${replaced} unpublished edit${replaced === 1 ? '' : 's'} replaced` : '')
       + (left ? ` · ${left} request${left === 1 ? '' : 's'} also cover${left === 1 ? 's' : ''} another day — left as filed` : '')
-      + (LOADMOVED.length ? ` · ${LOADMOVED.length} request${LOADMOVED.length === 1 ? '' : 's'} came off the programme with ${LOADMOVED.length === 1 ? 'its' : 'their'} row — ${movedDays.join(', ')} ${movedDays.length === 1 ? 'reads' : 'read'} that too` : '')
+      + (LOADMOVED.length ? ` · ${LOADMOVED.length} request${LOADMOVED.length === 1 ? '' : 's'} ${LOADMOVED.every(m => m.on) ? 'came back onto' : LOADMOVED.some(m => m.on) ? 'moved on or off' : 'came off'} the programme with ${LOADMOVED.length === 1 ? 'its' : 'their'} row — ${movedDays.join(', ')} ${movedDays.length === 1 ? 'reads' : 'read'} that too` : '')
     logAction(di, said)
     HOOKS.toast(said)
     notify(); return

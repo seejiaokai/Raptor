@@ -981,6 +981,12 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .pendlist button.pl-item:hover,.pendlist button.pl-item:focus-visible{background:rgba(229,194,74,.10);outline:none}
 .pendlist .pl-item+.pl-item{border-top:1px solid var(--edge)}
 .pendlist .pl-item.still{opacity:.82}
+/* several placeholders' crowds in the one change: each row its own line, its own tap (Astra's code read, 25 Sep 26) */
+.pendlist .pl-item.pl-multi{opacity:1}
+.pendlist .pl-sub{grid-column:1/-1;display:grid;gap:1px;width:100%;text-align:left;background:none;border:0;border-left:2px solid var(--edge-2);
+  margin:4px 0 0;padding:3px 0 3px 8px;font:inherit;color:inherit;cursor:pointer;border-radius:0 5px 5px 0}
+.pendlist .pl-sub:hover,.pendlist .pl-sub:focus-visible{background:rgba(229,194,74,.10);outline:none}
+.pendlist .pl-sub:disabled{cursor:default}
 .pendlist .pl-where{font-weight:600;color:var(--ink)}
 .pendlist .pl-chg{grid-column:1/2;color:var(--ink-2)}
 .pendlist .pl-chg s{color:var(--ink-3)}

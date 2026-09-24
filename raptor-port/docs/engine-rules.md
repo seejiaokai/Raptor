@@ -2322,7 +2322,9 @@ line (`docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`).**
   `publish.ts dayPendingItems`: the same comparison publication uses (`dayDeltaIn` — the canonical diff against the
   current issued version, the filing axis, the OIL axis), counted by `canonical.ts canonicalUnits` in the unit a
   person counts in — a man or placeholder taken off one PLACE and put on another of the same day is one item; a
-  swap two; a man only taken off or only added one; a crowd re-ordered one; a replacement in one seat one (a gap,
+  swap two; a man only taken off or only added one; a crowd re-ordered one — and a man taken off a list WHILE the rest
+  are re-ordered two (the survivors' order compared on its own, each occurrence apart; a list merely closing up adds
+  nothing — Astra's code read, 25 Sep 26); a replacement in one seat one (a gap,
   `[MOVE-REPLACE-ONE]`). A place is a seat (a flying seat, a sim's FCP / RCP, a desk's holder, a ground row's `who`)
   or a list (a programme who-list, a desk's or ground row's extras, a sim's passengers or extras), named by row id.
   The list is empty exactly when `dayDelta` is. The STORED diff is unchanged; an issued AL also stores `units`, its
@@ -2338,7 +2340,10 @@ line (`docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`).**
   day to the filing state the loaded version froze (`snap.fil`), in the load alone — never the general reconcile —
   and only where that moves no other day (`filingRestorePlan`: 'g' only with its row on a loaded day; never away from
   'g' while its row stands elsewhere; never for a request that covers ANOTHER loaded day at all — its one filing value
-  is that day's too, so changing it would move that day; walker B3, 25 Sep 26). What it cannot put back is left as filed and named in the load's message; `dayDiscardCount` counts what
+  is that day's too, so changing it would move that day; walker B3, 25 Sep 26) — EXCEPT that a request whose
+  version row stands on the loaded day itself goes back on the programme, whatever other day it covers (a filing
+  "taken off" beside its own standing row is the dangling state P2-REV2-05 forbids; that other day reads it and the
+  message names it — Fable's code read, 25 Sep 26); a request of a protected week is never touched, in the one plan. What it cannot put back is left as filed and named in the load's message; `dayDiscardCount` counts what
   it will put back.
 - **A day template is refused on a published day (D96).** `applyDayTpl` returns false on a published day — see
   §Day templates.

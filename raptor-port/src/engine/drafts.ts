@@ -538,7 +538,7 @@ export function draftDelete(di: any, id: any) {
 export let LOADLEFT: string[] = []
 /* …and the requests whose filing the load DID change although they cover another loaded day (their row went with the
    version), with those days' short names — the message names them */
-export let LOADMOVED: Array<{ id: string, days: string[] }> = []
+export let LOADMOVED: Array<{ id: string, on: boolean, days: string[] }> = []
 export function loadVersionToWorkingCopy(di: any, ver: any) {
   di = +di
   if (protectedWeek()) return false   // read-only quarantine — never roll a version over a frozen day (P2-REV2-02)
@@ -562,9 +562,9 @@ export function loadVersionToWorkingCopy(di: any, ver: any) {
      away and back turned a deliberate removal into a fresh request that flags (Fable's earlier read). What cannot be
      put back without moving another day is left as filed and named (LOADLEFT, for the caller's message). */
   const plan = filingRestorePlan(di, snap.fil)
-  plan.put.forEach(({ inp, want }) => { if (inputProtected(inp)) return; if (want) inp.acc = want; else delete inp.acc })
+  plan.put.forEach(({ inp, want }) => { if (want) inp.acc = want; else delete inp.acc })   // the plan already skips a quarantined request
   LOADLEFT = plan.left
-  LOADMOVED = multi.filter(x => (x.inp.acc || '') !== x.was).map(x => ({ id: inpId(x.inp),
+  LOADMOVED = multi.filter(x => (x.inp.acc || '') !== x.was).map(x => ({ id: inpId(x.inp), on: x.inp.acc === 'g',
     days: DAYS.map((d: any, dj: number) => (dj !== di && d && inputCoversDate(x.inp, d.dt)) ? String(d.dow || '').slice(0, 3) : '').filter(Boolean) }))
   LOADLEFT = LOADLEFT.filter(id => !LOADMOVED.some(m => m.id === id))
   if (dayApproved(di)) {

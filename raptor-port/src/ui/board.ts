@@ -680,12 +680,9 @@ export function dayTplArmKey(di: any, id: any): string {
   return [CURWEEK, di, id, curDraftId(di) || '', view.navGen(), JSON.stringify(t), JSON.stringify(DAYS[di])].join('␟')
 }
 /* Decide + perform a day-template pick, extracted from the menu handler so the
-   arm scoping and the slot disarm are unit-testable (P2-IMPL-10/11). Returns
-   'armed' (a published day with unpublished edits on its FIRST matching pick —
-   the caller toasts the confirm prompt), 'applied' (the template was applied), or
-   'noop' (applyDayTpl declined). A published day's apply is a WORKING-DRAFT edit
-   that publishes as the next AL (§9 / P2-R3-04); the issued records + current
-   pointer are untouched. */
+   slot disarm is unit-testable (P2-IMPL-11). Returns 'refused' on a PUBLISHED day (D96, 25 Sep 26 — a template is
+   refused there; the caller says DAYTPL_PUBLISHED_MSG), 'applied', or 'noop' (applyDayTpl declined). 'armed' — the
+   old confirm before a published day's working-draft apply (P2-R3-04, P2-IMPL-10) — is no longer returned. */
 export function pickDayTpl(di: any, id: any): 'armed' | 'applied' | 'noop' | 'refused' {
   di = +di
   /* D96 (25 Sep 26): a published day never takes a template — refused FIRST, before anything arms (Fable F4: the
@@ -1504,13 +1501,9 @@ export function dayTplMenu(anchor: HTMLElement, di: any) {
     const b = e.target.closest('[data-daytplpick]'); if (!b) return
     const id = b.dataset.daytplpick
     const t = DAYTPL_CFG.find((x: any) => x.id === id)
-    /* PUBLISHED DAY (§9 / P2-R3-04): no "reopen" any more — applying a template
-       is a WORKING-DRAFT edit that publishes as the next AL (applyDayTpl leaves
-       the issued records + current pointer untouched). Because it REPLACES any
-       unpublished working-draft edits, it takes a confirming SECOND pick when
-       such edits exist (pickDayTpl arms the first, applies the second). The arm
-       key is week/draft/template/content scoped (P2-IMPL-10) and the apply
-       disarms any crew slot on the day first (P2-IMPL-11) — both in pickDayTpl. */
+    /* A PUBLISHED DAY REFUSES a template (D96, 25 Sep 26) — pickDayTpl says so before anything arms; its rows are
+       drawn disabled above, so this is the belt for a stale menu. A draft day applies it (P2-IMPL-11 disarms the day's
+       crew slot first, in pickDayTpl). */
     const r = pickDayTpl(di, id)
     if (r === 'refused') { close(); toast(DAYTPL_PUBLISHED_MSG(d.dow)); e.stopPropagation(); return }
     if (r === 'armed') {
@@ -1526,9 +1519,7 @@ export function dayTplMenu(anchor: HTMLElement, di: any) {
          keyed to ONE funnel address, and a whole-day replace has no single
          address to hang a blue box on. A named toast carries the news instead. */
       notify()
-      toast(dayApproved(di)
-        ? `Applied "${t ? t.title : 'template'}" to ${d.dow}'s working draft — publish AL${nextSeq(di)} to issue it`
-        : `Applied "${t ? t.title : 'template'}" to ${d.dow}`)
+      toast(`Applied "${t ? t.title : 'template'}" to ${d.dow}`)   // only ever a draft day since D96
       logAction(di, `Day template "${t ? t.title : 'template'}" applied`)
     }
     e.stopPropagation()

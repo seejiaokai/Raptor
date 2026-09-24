@@ -127,6 +127,26 @@ folder — the table is the record). Every break turned a named test red:
 | the board does not follow the visible area (item 11) | `amendbatch-app.test.tsx` |
 | no hollow waiting tag (item 1) | `amendretest.test.tsx` (the stylesheet guard, rewritten to D93) |
 
+## 5a. The two code reads — Fable and Astra, blind to each other, given the finished code and this sheet
+
+Their reports, unchanged: `2026-09-25-amendment-batch-fable-read.md`, `2026-09-25-amendment-batch-astra-read.md`.
+Both passed the signature binding, the one counting body, the per-paint memo, the Original's signers, the template
+refusal and the tags-not-rings; each found what the other did not. Every finding was fixed with a test that goes red
+when the fix is taken out (checked, 25 Sep 26 ~04:40):
+
+| finding | what was wrong, in the app's words | fix | pinned by |
+|---|---|---|---|
+| Astra 1 (high, new) | take a man off a crowd AND re-order the rest: the day said **1 pending**, not 2 — also when the man was moved to another row | the survivors' order is compared on its own (each occurrence apart, so two ALL AVAILs never merge); a list merely closing up still adds nothing | `pendunits.test.ts` (three cases); `amendbatch.test.tsx` — the day head, "Discard N edits", the pending list, the publish and the issued AL all say 2 |
+| Astra 2 (moderate, new) | two placeholders' crowds changed: the list named the first row "+ 1 more" and only the first could be tapped | still ONE change (D109's count), but each row has its own line and its own tap | `amendbatch.test.tsx` (the multi-row line) |
+| Fable 1 (on `main` too) | a two-day request taken off, then its day's version loaded: its row came back but it still read "taken off", and "left as filed" was said — AL1 would have frozen that | when the version's row stands on the loaded day, the request is put back on the programme; the load says "came back onto the programme with its row — Tue reads that too" | `amendbatch.test.tsx` item 6 |
+| Fable 2 (new) | "Discard N edits" could count a request of a protected week the load then does not touch | the one plan skips it; both readers agree | the plan's single body (both callers read it) |
+| Fable 3 (new) | three comments and an unreachable message still said a published day takes a template as a draft | replaced with a pointer to D96; the dead message removed | — (text) |
+| Fable 4 (process) | §6 and §7 below were empty | filled | — |
+
+**Under D56, not findings** (Fable): signatures given before this build on days that already had changes waiting fall
+off once; ALs issued before carry no item count and read their record's length. Both live only in stored data; the
+code is right going forward.
+
 ## 6. Gates
 
 ## 7. What was NOT walked, and why
