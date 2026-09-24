@@ -28,10 +28,16 @@
  * file's new size after every trim — zero headroom — and Fable measured seven of eight files sitting
  * at exactly zero, so every mandatory addition during a fix tripped the gate. That clause is
  * WITHDRAWN (D29 as corrected). Raise or lower a ceiling only as a deliberate, argued edit with the
- * reason in the commit, in a commit that touches no src. TARGET is where doc-budget.md says each
- * file should end up; over target is reported, never failed — [DOC-TRIM] owns that.
+ * reason in the commit, in a commit that touches no src. There are no TARGETS any more (owner, D141, 24 Sep 26):
+ * a ceiling is a tripwire — crossing it means "move what does not belong here", never "cut to a number".
  *
- * Flags: --inventory runs job 1 only (the Stop hook .claude/hooks/backlog-guard.sh uses it).
+ * JOB 1d, MISFILING (owner, D140, 24 Sep 26) — a document put where the structure has no place for it: a new
+ * root .md outside ROOT_ALLOW, a document outside the one docs tree, an always-loaded rules file nobody
+ * registered, two HANDOFF.md ## Now blocks for one branch, a new reference doc no map names. Where each fact
+ * belongs is `.claude/rules/doc-structure.md`. It runs with the inventory, so the Stop hook enforces it.
+ *
+ * Flags: --inventory runs job 1 only (the Stop hook .claude/hooks/backlog-guard.sh uses it); --moves lists
+ * every line that left a Markdown file on this branch and arrived nowhere (the reading list of a D138 check).
  * The closing report copies the `Docs:` and `docsize:` lines this prints (bug-check-order §9). */
 import { readFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
@@ -80,7 +86,7 @@ const FILES = [
   ['.claude/rules/plain-language.md',    0,   60],
   /* NEW 24 Sep 26 (owner, D140 + D143): the two rule files every chat carries so the structure and the way a
      change ships are in force before any project file is read. Ceilings set at what they hold plus room. */
-  ['.claude/rules/doc-structure.md',     0,  120],
+  ['.claude/rules/doc-structure.md',     0,  100],
   ['.claude/rules/shipping.md',          0,  110],
   /* 961 -> 1000, 23 Sep 26 ([DOCS-GUARD] step 1). Already at 969: the two OIL merges (#424, #425)
      added lines inside code changes, which is exactly what F3 now allows and defers. HANDOFF must

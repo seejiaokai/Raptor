@@ -3,7 +3,9 @@
 # no filed backlog record was destroyed. A STOP hook, not an edit hook, on purpose: on 22 Sep 26 the
 # destruction was done by a script run through the shell, which an Edit/Write hook never sees; Stop
 # fires however the edit was made. It runs only the inventory half of the document gate — a file
-# over its line budget must never block a turn (that is D29 rule 3's whole point).
+# over its line budget must never block a turn (that is D29 rule 3's whole point). Since 24 Sep 26 the
+# inventory also carries the MISFILING checks (D140: a document put where the structure has no place for
+# it) — those are about where a file sits, never its size, so they may block a turn.
 #
 # Exit 2 hands the failure back to the agent to fix before it stops. If the agent is already being
 # held by this hook (stop_hook_active), it lets go rather than loop — CI runs the same check.
@@ -19,7 +21,7 @@ active=$(printf '%s' "$input" | node -e 'let s="";process.stdin.on("data",d=>s+=
 # Silent and exit 0 whenever every record is accounted for — the common case.
 out=$(node "$script" --inventory 2>&1) && exit 0
 {
-  echo "BACKLOG GUARD: a filed record in OUTSTANDING.md / OUTSTANDING-ARCHIVE.md / the rulings looks lost, damaged or misfiled."
+  echo "BACKLOG GUARD: a filed record in OUTSTANDING.md / OUTSTANDING-ARCHIVE.md / the rulings looks lost, damaged or misfiled — or a document sits where the structure has no place for it (.claude/rules/doc-structure.md)."
   echo "$out" | grep -E '^\s+- |^FAIL'
   echo "Restore it from the base before stopping. If it is deliberate, declare it in the commit (a Docs-guard-allow: trailer)."
   echo "A rulings map out of step, or a replaced/spent ruling still live: node raptor-port/scripts/backlog-archive.mjs --rulings"

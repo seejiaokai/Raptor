@@ -693,6 +693,8 @@ opening its code? Open its area file first — `../.claude/rules/doc-structure.m
 | **Where each kind of new fact goes, and when it leaves** (always loaded; D140, D141) | `../.claude/rules/doc-structure.md`; the policy and tiers `docs/doc-budget.md` |
 | The history — how each past thing was found, fixed and shipped | `../HANDOFF-ARCHIVE.md` (a FROZEN snapshot as of 4 Sep 26; search it, never read it whole, never append to it); finished documents and passages moved out since, each unchanged: `docs/archive/` (its `README.md` lists them); then `git log` |
 | Probe → reference → port results | `docs/probe-sweep.md` |
+| **Every typed remark that switches a rule on** — the seed of the user guide; keep it true as rules are added | `docs/remarks-vocabulary.md` |
+| Skill-improvement observations captured during sessions (the ONE log, committed) | `../.claude/skill-observations/log.md` |
 | What changed recently | `git log --oneline` (not duplicated here) |
 | Last session's leftovers | the chat's own block under `## Now` in `../HANDOFF.md` (the old `docs/session-state.md` retired to `docs/archive/` on 24 Sep 26) |
 | The rules engine | `src/engine/` — `validate.ts` is the heart |

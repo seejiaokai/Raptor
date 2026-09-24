@@ -61,8 +61,9 @@ ruling, or an explicit no. **Not** ordinary task instructions ("run the tests", 
 
 ## Before this file existed
 
-Rulings made before 21 Sep 26 are not listed in the rulings files — they are in `raptor-port/CLAUDE.md`
-§Stable decisions, in the per-feature behaviour registers under `docs/superpowers/specs/`, and in
-the memory index. **Do not back-fill them wholesale**; add an old ruling to its area's file only when
+Rulings made before 21 Sep 26 are not ROWS in the rulings files. Since 24 Sep 26 (D140) the settled decisions of
+that time sit in their area's file, §Settled before this list (moved whole from `raptor-port/CLAUDE.md` §Stable
+decisions, which keeps only the cross-cutting ones), and others are in the per-feature behaviour registers under
+`docs/superpowers/specs/` and the memory index. **Do not back-fill them wholesale as rows**; add an old ruling to its area's file only when
 it is re-confirmed, superseded or found to be stale, so the list stays a record of live decisions
 rather than a second copy of the archive.

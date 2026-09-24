@@ -95,8 +95,8 @@ where that procedure's defaults do not fit a git repo with vendored skills:
 - **The skill's default log location does not persist on web/phone** — an
   ephemeral container has no stable folder. That is why this repo commits the
   log (§Reviews in this repo above); nothing else is needed.
-- **Overlap with this repo's own handoff machinery.** `HANDOFF.md`,
-  `docs/session-state.md` and the `session-handoff` skill already cover durable
+- **Overlap with this repo's own handoff machinery.** `HANDOFF.md` (the one
+  handoff since 24 Sep 26) and the `session-handoff` skill already cover durable
   cross-session state. task-observer's handoff-doc mode is adjacent but aimed at
   *skill* improvement, not project state — keep them distinct.
 

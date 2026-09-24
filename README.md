@@ -57,4 +57,5 @@ they need a `vite preview` and are too slow for CI.
   suite, kept **read-only** as the behavioural spec for existing features.
 - `raptor-port/CLAUDE.md` — working rules and an index to the detail docs.
 - `raptor-port/docs/` — engine rules, UI contracts, and the probe sweep.
-- `HANDOFF.md` — open work, the deploy traps, and the full file map.
+- `HANDOFF.md` — the one handoff: where things stand and what is next. Open work is `OUTSTANDING.md`; every file is
+  in `raptor-port/docs/file-map.md`; the deploy traps are in `raptor-port/docs/gates-and-deploy.md` (24 Sep 26).

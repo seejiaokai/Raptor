@@ -9,11 +9,11 @@ the read-only spec it is measured against rather than a thing to copy from.
 | file | what it is |
 |---|---|
 | `CLAUDE.md` | **The index** — working rules, and the routes to every detail doc. Start here. |
-| `../HANDOFF.md` | What is still open, and where each file lives (the full file map). |
+| `../HANDOFF.md` | Where things stand and what is next — the one handoff. Open work: `../OUTSTANDING.md`; every file: `docs/file-map.md`. |
 | `docs/engine-rules.md` | The validation rules, roles, and the seat/qualification matrices. |
 | `docs/ui-contracts.md` | The UI contracts — what each page must do, and why. |
 | `docs/probe-sweep.md` | The probe → reference → port results table. |
-| `docs/session-state.md` | The last session's leftovers — present **only** while something is pending, so its absence means nothing is. |
+| `docs/archive/` | Finished documents, moved in unchanged — among them the retired `session-state.md` (each chat's leftovers are now its block in `../HANDOFF.md`). Searched, never loaded. |
 | `PORTING.md` | Historical: the phase plan the port was built from. Kept because the probe docs still cite its decisions, not because anything is left to run. |
 
 ## Running it

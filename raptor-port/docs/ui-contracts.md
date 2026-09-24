@@ -3324,7 +3324,7 @@ an already-crowded control bar.
 
 **On the board**, a labelled `.sb-panel` — "Templates & drafts", two
 buttons — sits at the VERY TOP of the board's own content, ahead of every
-section, not on the top bar's first line (`CLAUDE.md` §Stable decisions:
+section, not on the top bar's first line (`.claude/rules/decisions/scheduler.md` §Settled → Week navigation, once `CLAUDE.md` §Stable decisions:
 that line is frozen — nothing joins it without something else leaving). A
 control that can replace the WHOLE day belongs at the top of the day's own
 content, the same reasoning the section-level `+ Wave`/`+ Block` controls
@@ -4458,7 +4458,7 @@ step by step.
 
 (The old known edge here — a recurring input chipping its first span only —
 is gone WITH its feature: the owner had the repeat-weeks field removed
-outright, 22 Aug 26. See CLAUDE.md §Stable decisions.)
+outright, 22 Aug 26. See `.claude/rules/decisions/scheduler.md` §Settled → Inputs & Admin, once CLAUDE.md §Stable decisions.)
 
 ## The Admin page (owner, 23 Aug 26)
 
