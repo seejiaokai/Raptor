@@ -52,6 +52,8 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | His ruling, in his words where short enough | What it means | Where it lives now |
 |---|---|---|---|---|
+| D160 | 24 Sep 26 | **"9 yes"** — asked whether he wants a "Reset order" line in ⚙ settings, since the Auto-sort button went on 6 Sep 26 | **BUILD A "RESET ORDER" LINE IN THE LEAVE WAR ⚙ SETTINGS** that puts a hand-arranged roster back in the default order (the store's `autoSortRoster` already does the sort). This is the "his ask" the 6 Sep entry waited for; the Auto-sort BUTTON and the on-grid strip stay gone | `.claude/rules/decisions/leave-war.md` §Settled before this list (the Rearrange entry); `OUTSTANDING.md` `[LW-RESET-ORDER]` |
+| D159 | 24 Sep 26 | **"8 leave it"** — asked whether the desktop Leave War grid should also open one step zoomed out, like the phone | **LEAVE IT: THE DESKTOP GRID OPENS AT NORMAL SIZE** (zoom 1); only the phone opens one step out (6 Sep 26). `[LW-DESKTOP-ZOOM]` closed | `.claude/rules/decisions/leave-war.md` §Settled before this list (the zoom entry); `OUTSTANDING-ARCHIVE.md` `[LW-DESKTOP-ZOOM]` |
 
 ## Settled before this list — moved from `raptor-port/CLAUDE.md` §Stable decisions (24 Sep 26)
 
@@ -75,7 +77,7 @@ decision + a pointer. Owner + date establish authority; keep them.
   follows OIL in this row at BOTH widths** (owner, 6 Sep 26 — moved off the
   month strip, where it was phone-only), and **a phone OPENS one step out**
   (`zoom` 0.8, desktop 1 — "can this be the default zoom? Like zoom 1 click
-  out"); the freed month strip holds all twelve months on ONE line on a phone
+  out"; the desktop STAYS at 1 — his "leave it", D159, 24 Sep 26); the freed month strip holds all twelve months on ONE line on a phone
   (equal-width buttons, 9px, 44px row — the 72px two-line row is gone) and the
   strip CANCELS the grid zoom (`zoom: 1/zoom` inline — navigation chrome stays
   readable at 0.8). The OIL TRACKER sheet has its OWN − / + beside RANGE with
@@ -90,7 +92,8 @@ decision + a pointer. Owner + date establish authority; keep them.
   (`.lw-rearrange-bar`, "Rearranging — drag people…", Auto-sort, Done) is
   DELETED; the toggle lights accent while on and is icon-only (⇅) on a phone.
   **No Auto-sort button anywhere** — the store's `autoSortRoster` stays for the
-  tests; don't re-add the button or the strip without his ask. In Rearrange the
+  tests; don't re-add the button or the strip without his ask. **His ask came 24 Sep 26 (D160): a "Reset order"
+  line in ⚙ Settings — not a button or a strip.** In Rearrange the
   frozen NAME column WIDENS by the grip's footprint (`.mx-outer.mx-arranging`
   re-sets `--who-w`, 136px desktop / 92px phone) so callsigns keep their at-rest
   width beside the ⠿ ("not … shortened"); the header mirror and strip geometry

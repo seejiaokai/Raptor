@@ -16,19 +16,24 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/amendment-retest -->
-### `claude/amendment-retest` — his answers to the backlog questions, then the amendment re-test, written 24 Sep 26 (late night) — verify before use
+### `claude/amendment-retest` — his answers recorded; the amendment re-test starts here, written 24 Sep 26 (late night) — verify before use
 - **Where it started:** the spring-clean chat, after PR #433 merged (the spring clean and the 24 Sep skills review are
-  live — `git log origin/main`). He asked for the whole backlog, what is done and a recommended order; his answers
-  are recorded here as they come — D147 (the order after the amendment re-test; the OIL award fix has his go).
-- **Shipped:** nothing merged from this branch yet. The amendment re-test itself has NOT started.
-- **Unfinished:** his answers to questions 5–13 of the list put to him on 24 Sep 26 (undo when someone else changed
-  last; Quals own-row for members; Tracker colours; desktop Leave War zoom; a roster "Reset order"; the Admin display
-  area; the background-command guard; the tap-after-drag quirk; the two demo-data items) — each recorded as a ruling
-  when he answers.
-- **Branch:** `claude/amendment-retest`, cut from `main` at `bff76c1b`; its PR none when written.
-- **Gates:** not run — docs only so far.
-- **Open questions for him:** questions 5–13 above.
-- **Pick up here:** record any answers he gives; then `[HUMAN-RETEST]` — the amendment system (`## Next` item 1).
+  live — `git log origin/main`). He asked for the whole backlog and a recommended order, then answered every question.
+- **Shipped:** his answers, recorded as rulings on this branch (NOT merged — they reach `main` with this branch):
+  D147 (the order after the amendment re-test; the OIL award fix has his go), D148 (Undo reverses only your own
+  changes), D149 (Quals: a member edits his own row, every column), D157 (the Tracker takes Raptor's colours fully),
+  D158 (the tap-after-drag quirk closed), D159 (desktop Leave War zoom: leave it), D160 (build a "Reset order" line),
+  D161 (Admin "Display": revisit later), D162 (build the background-command guard), D163 (the two demo-data oddities
+  left), D164 (a flagged puck does not glow). Four items archived; `[PUCK-FLAG-GLOW]` filed.
+- **Unfinished:** the amendment re-test itself has NOT started. Decided and queued as small builds, none started:
+  `[PUCK-FLAG-GLOW]`, `[TRK-PALETTE-ASK]`, `[LW-RESET-ORDER]`, `[QUALS-MEMBER-SCOPE]` (FULL tier: roles), `[BG-CWD-GUARD]`.
+- **Branch:** `claude/amendment-retest`, cut from `main` at `bff76c1b`; pushed; its PR none when written.
+- **Gates:** not run — docs only so far; `npm run docsize` OK.
+- **Open questions for him:** none.
+- **Pick up here:** `[HUMAN-RETEST]` — the amendment system, FULL tier (`raptor-port/docs/bug-check-order.md`): port
+  4173, rulings from D90 (D86). He is away ~6 hours from 24 Sep 26 night: work without waiting — file any question
+  for him in `OUTSTANDING.md` and this block rather than stopping; never merge; leave the branch pushed, ready for
+  his look and his "merge live". Reviews: Fable 5.1 and Astra, both at `--effort high`.
 <!-- /now -->
 
 ## Next, in order

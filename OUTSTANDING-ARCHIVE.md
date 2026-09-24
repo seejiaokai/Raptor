@@ -1075,3 +1075,57 @@ ceiling inside itself and had reached 961.
 - **Move finished items with `node raptor-port/scripts/backlog-archive.mjs <ID> --homes <file>`**,
   never by hand or by a one-off script. (The old "prune on write" is withdrawn — D29 rule 3.)
 
+
+*Moved here 2026-09-24 by backlog-archive.mjs ([LW-DESKTOP-ZOOM]). Forward facts: `.claude/rules/decisions/leave-war.md`.*
+
+### [LW-DESKTOP-ZOOM] The desktop Leave War grid opens at zoom 1 — his call, one line if he wants it out (moved from HANDOFF.md, 24 Sep 26)
+
+- **OWNER'S CALL — the desktop Leave War grid opens at zoom 1** (6 Sep 26; the
+  phone opens one step out because the ask came from the phone). One line in
+  `Matrix.tsx` (`zoom` initial state) if he wants the desktop out too.
+
+
+*Moved here 2026-09-24 by backlog-archive.mjs ([TRK-TAP-AFTER-DRAG]). Forward facts: `.claude/rules/decisions/tracker.md`.*
+
+### [TRK-TAP-AFTER-DRAG] The first tap on a button after dragging or pinching the chart does nothing (23 Sep 26)
+**Place:** ask him first — seen only in the test browser's touch emulation, not yet on a real iPhone. Straight
+after a one-finger drag or a pinch on the chart, the first tap on − (or the ✎ menu) is lost; the second works.
+The finger's down and up both reach the button, but no press follows. Same on the live code before the pinch
+fix; a mouse click is fine (F-D in `raptor-port/docs/handpass/2026-09-23-tracker-pinch.md`). If he has
+never noticed it on his phone, close it as an emulation quirk.
+
+
+*Moved here 2026-09-24 by backlog-archive.mjs ([DEMO-AWARD-DATES-ASK]). Forward facts: `.claude/rules/decisions/oil.md`.*
+
+### [DEMO-AWARD-DATES-ASK] Are the demo's two OIL awards meant to fall after the demo week? — ask him once (filed 24 Sep 26)
+Put to him by the OIL credit-tags chat (`HANDOFF-NEXT.md`, 24 Sep 26, archived the same day): the demo's awards
+for Dash (15 Aug) and Vector (29 Aug) are dated after the schedule's demo week (13–19 Jul) — intended? Demo data
+only, wiped before the database (D54), so not a defect under D56; one answer closes it.
+
+
+*Moved here 2026-09-24 by backlog-archive.mjs ([POSTOUT-LOST]). Forward facts: `.claude/rules/decisions/oil.md`.*
+
+### [POSTOUT-LOST] A posted-out man walks back into the squadron on a reload — **FIXED 22 Sep 26 on `claude/oil-seats-can-earn`** (not merged)
+
+**FIXED, because it caused TWO of the five defects the OIL walk left open** — the day that reopens
+asking for an amendment nobody made, and the count chip that says one more man than the war pays.
+Measured side by side they are one fault: the issued day froze 27 men behind the placeholder, the
+reload gave the live copy 28, and the difference is the man who left in January. The OIL code was
+doing exactly what D44/D45 say. Deferring this last session was right on the evidence then and
+wrong once the cause was measured. **The fix:** a posting window arriving ON the projected person
+is recorded in the store's own posting record, in the body that already lays that record back on
+(`leavewar/state/store.ts` `setPeople`) — so a window with no record behind it is a state the store
+cannot be left in. Pinned by `src/leavewar/postout-persist.test.ts` (4 new cases, red first);
+re-walked by `scripts/handpass/rw-03-pending-and-count.mjs`, four days, all clean. Full story:
+`raptor-port/docs/handpass/2026-09-22-oil-seats.md` §6a.
+
+**STILL OPEN, and still this item's:** the seed flies that man in July while the demo posts him out
+in January. He is reliably posted out now, so the contradiction is STABLE rather than intermittent.
+Demo data, breaks nothing; the dev-phase ruling says clear it rather than migrate. Decide it when
+the demo seed is next touched. *The original entry:* the window was written onto the person by the
+demo overlay and never saved, so after any reload he was available again — reaching the crew picker,
+ALL AVAIL, the manning counts and every rule that asks who is free.
+
+**Context.** `raptor-port/docs/handpass/2026-09-21-oil.md` §9 · the red team's §3 in
+`…/specs/2026-09-21-oil-fixplan-redteam-fable.md` · script `scripts/handpass/settle-d4.mjs`.
+

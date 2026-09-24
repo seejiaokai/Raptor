@@ -61,24 +61,24 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
    [REPO-PRIVATE]).
 
 **The small OIL follow-ups — ONE batch, after the OIL award fix and before the database (D147):** [OIL-READ-LEFTOVERS] (its items 1, 2, 4),
-[STORE-READER-SWEEP], [OIL-REQ-NAMEBOX] (a walk question for him), [POSTOUT-LOST] (its demo-seed half), [OIL-WORDS],
+[STORE-READER-SWEEP], [OIL-REQ-NAMEBOX] (a walk question for him), [OIL-WORDS],
 [OIL-PERSONAL-PLACEHOLDER] (FULL tier), [CROWD-SIM-BRIEF] (WALK tier), [OIL-RELINK-XWEEK].
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SMOKE-ADD-RACE]
-(before the next Tracker change that touches the smoke suite), [TRK-TAP-AFTER-DRAG] (ask him first),
-[TRK-BAKE-STALE] (low). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+(before the next Tracker change that touches the smoke suite), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
+fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
+The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] and [RULING-HOMES-AUDIT] (any time, docs only),
-[BG-CWD-GUARD] (ask him first: it adds a hook). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
+[BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
 FULL-tier build, any time).
 
 **Waiting on him — no order exists:** [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
 D147), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
 [REPO-PRIVATE]'s sharing half, [EOD] (design first; no slot
-ruled), [CRP-FLAG]'s remainder and then [FLAG-EXPORT], the [AMEND] leftovers, and the questions filed on 24 Sep 26 —
-[LW-RESET-ORDER], [LW-DESKTOP-ZOOM], [ADMIN-DISPLAY], [TRK-PALETTE-ASK],
-[DEMO-AWARD-DATES-ASK] — with [USER-GUIDE] (wanted, not urgent) and [PERF-RESIDUALS] (two of them change wording
+ruled), [CRP-FLAG]'s remainder and then [FLAG-EXPORT], the [AMEND] leftovers, [ADMIN-DISPLAY] ("next time we revisit",
+D161), with [USER-GUIDE] (wanted, not urgent) and [PERF-RESIDUALS] (two of them change wording
 or feel — his call).
 
 **Future milestones:** [DB-STEP] (with [TRK-DISK] inside it), [XFER], [RECALL], [TRK-ATTEMPTS] (low urgency).
@@ -515,30 +515,6 @@ One afternoon. **Ask him before doing it** — it changes two numbers he reads.
 **Do it as its own small change, in a FRESH chat** (agreed with him 21 Sep 26 — carried here 24 Sep 26 from
 `[OIL-NEXT-TWO]`, now archived, whose other half, his look at the award preview, closed when PR #423 merged).
 
-### [POSTOUT-LOST] A posted-out man walks back into the squadron on a reload — **FIXED 22 Sep 26 on `claude/oil-seats-can-earn`** (not merged)
-
-**FIXED, because it caused TWO of the five defects the OIL walk left open** — the day that reopens
-asking for an amendment nobody made, and the count chip that says one more man than the war pays.
-Measured side by side they are one fault: the issued day froze 27 men behind the placeholder, the
-reload gave the live copy 28, and the difference is the man who left in January. The OIL code was
-doing exactly what D44/D45 say. Deferring this last session was right on the evidence then and
-wrong once the cause was measured. **The fix:** a posting window arriving ON the projected person
-is recorded in the store's own posting record, in the body that already lays that record back on
-(`leavewar/state/store.ts` `setPeople`) — so a window with no record behind it is a state the store
-cannot be left in. Pinned by `src/leavewar/postout-persist.test.ts` (4 new cases, red first);
-re-walked by `scripts/handpass/rw-03-pending-and-count.mjs`, four days, all clean. Full story:
-`raptor-port/docs/handpass/2026-09-22-oil-seats.md` §6a.
-
-**STILL OPEN, and still this item's:** the seed flies that man in July while the demo posts him out
-in January. He is reliably posted out now, so the contradiction is STABLE rather than intermittent.
-Demo data, breaks nothing; the dev-phase ruling says clear it rather than migrate. Decide it when
-the demo seed is next touched. *The original entry:* the window was written onto the person by the
-demo overlay and never saved, so after any reload he was available again — reaching the crew picker,
-ALL AVAIL, the manning counts and every rule that asks who is free.
-
-**Context.** `raptor-port/docs/handpass/2026-09-21-oil.md` §9 · the red team's §3 in
-`…/specs/2026-09-21-oil-fixplan-redteam-fable.md` · script `scripts/handpass/settle-d4.mjs`.
-
 ### [OIL-READ-LEFTOVERS] The four the two final code reads raised and this branch did not act on (22 Sep 26)
 
 Both providers read the finished OIL branch blind to each other and returned the SAME four defects;
@@ -892,13 +868,6 @@ save or a load had started — a background notify re-rendering the controlled i
 at the failing add under load (as the 17 Sep fix did) and fix the re-render, not the wait; until then, a stop there
 is re-run once WITH this item cited, never silently.
 
-### [TRK-TAP-AFTER-DRAG] The first tap on a button after dragging or pinching the chart does nothing (23 Sep 26)
-**Place:** ask him first — seen only in the test browser's touch emulation, not yet on a real iPhone. Straight
-after a one-finger drag or a pinch on the chart, the first tap on − (or the ✎ menu) is lost; the second works.
-The finger's down and up both reach the button, but no press follows. Same on the live code before the pinch
-fix; a mouse click is fine (F-D in `raptor-port/docs/handpass/2026-09-23-tracker-pinch.md`). If he has
-never noticed it on his phone, close it as an emulation quirk.
-
 ### [TRK-BAKE-STALE] The chart-baking script no longer runs (found 23 Sep 26)
 `raptor-port/scripts/tracker/bake-user-charts.mjs` resolves `src/data/…` from `scripts/` (the folder
 does not exist — the data is `src/tracker/data/`), reads name-keyed charts (before the 13 Sep ids) and
@@ -906,19 +875,17 @@ the one-table `eventInfo` (before D126). The D120 route (export → wipe → imp
 it only if baking a chart into the shipped data comes back. **Place:** low, after `[TRK-RETEST-NOTES]`.
 
 ### [LW-RESET-ORDER] A "back to the default order" control for the Leave War roster — his call, build only if he asks (moved from HANDOFF.md, 24 Sep 26)
+**HE ASKED (D160, 24 Sep 26): build it** — a "Reset order" line in ⚙ Settings running the store's `autoSortRoster`;
+no button, no strip. WALK tier (a new control). **Place:** any time, none blocking.
 
 - **OWNER'S CALL — no "back to the default order" control since Auto-sort went
   (6 Sep 26).** A hand-arranged Leave War roster stays arranged until dragged
   back; the store's `autoSortRoster` still exists. Offered: a "Reset order" line
   in ⚙ Settings. Build only if he asks.
 
-### [LW-DESKTOP-ZOOM] The desktop Leave War grid opens at zoom 1 — his call, one line if he wants it out (moved from HANDOFF.md, 24 Sep 26)
-
-- **OWNER'S CALL — the desktop Leave War grid opens at zoom 1** (6 Sep 26; the
-  phone opens one step out because the ask came from the phone). One line in
-  `Matrix.tsx` (`zoom` initial state) if he wants the desktop out too.
-
 ### [ADMIN-DISPLAY] An Admin "Display" area of per-section fold defaults — awaiting his go-ahead, do NOT build without it (moved from HANDOFF.md, 24 Sep 26)
+**DEFERRED BY HIM (D161, 24 Sep 26): "next time we revisit this again"** — put it to him again when Admin or the
+section folds are next touched. (Its first half — the wave show/hide toggle leaving Admin — was done 30 Aug 26.)
 
 - **QUEUED, awaiting the owner's go-ahead — an Admin "Display" area (owner,
   26 Aug 26; do NOT build without his confirmation).** Remove the wave
@@ -947,15 +914,13 @@ permissions, so FULL tier. **Place:** any time, none blocking. The question as i
     places the authority-sweep fix touched.
 
 ### [TRK-PALETTE-ASK] The Tracker's own dark palette, or Raptor's? — ask him once (filed 24 Sep 26)
+**ANSWERED (D157, 24 Sep 26): Raptor's, FULLY** — backgrounds, text and the event colours (`tracker.css` variables and
+`app/core.js` `TYPE_COLOR` / `GRADE_FILL`). Shown to him first as three versions of the real chart. LOOK tier plus a
+phone look that the chart still reads at a glance. **Place:** any time, none blocking.
 From the 7 Sep 26 device pass (`HANDOFF.md` §Open, "OWNER'S DEVICE PASS", archived 24 Sep 26 in
 `raptor-port/docs/archive/handoff-2026-09-24.md`): one open question rode the retired bug-testing list's row
 #376 — whether the Tracker keeps its own dark palette or takes Raptor's. It was recorded nowhere else. Ask him
 once, in his next Tracker session; build nothing until he answers.
-
-### [DEMO-AWARD-DATES-ASK] Are the demo's two OIL awards meant to fall after the demo week? — ask him once (filed 24 Sep 26)
-Put to him by the OIL credit-tags chat (`HANDOFF-NEXT.md`, 24 Sep 26, archived the same day): the demo's awards
-for Dash (15 Aug) and Vector (29 Aug) are dated after the schedule's demo week (13–19 Jul) — intended? Demo data
-only, wiped before the database (D54), so not a defect under D56; one answer closes it.
 
 ### [DOC-POINTERS-CODE] Code comments that point at documentation moved in the spring clean (filed 24 Sep 26)
 **Place:** ride the next change that touches `raptor-port/src` anyway — a pointer-only edit there starts the full
@@ -1002,6 +967,7 @@ headings rewords nothing; anything more is a move (D138, `backlog-archive.mjs --
 run. **Place:** any time, none blocking; sooner if a chat has to read one of those sections whole.
 
 ### [BG-CWD-GUARD] A backgrounded npm command that starts at the repo root dies at once — guard it, don't re-warn (filed 24 Sep 26)
+**HIS GO (D162, 24 Sep 26): build the hook.**
 From the skills notebook, observation #42 (1 Sep 26), which the 23 Sep and 24 Sep reviews both judged a code or
 config change, not a guide change (D146). A `run_in_background` shell starts at the REPO ROOT, where there is no
 `package.json`, so a bare `npm run …` fails instantly — and the wrapper's exit code can read 0. The bold warning in
@@ -1021,3 +987,12 @@ the content unnumbered (the 21 Sep bug-check rulings are the order's own text). 
 by CONTENT once; write any that is missing into its home; add the D-number beside content that is there, so a later
 audit is mechanical — then consider making the gate require a NEW row's document homes to cite its number.
 **Place:** any time, none blocking.
+
+### [PUCK-FLAG-GLOW] A red-flagged "View as" puck glows; no flagged puck should (his ask, D164, 24 Sep 26)
+He sent two pictures: a red-flagged puck with a red glow (Ranger, the person being viewed as) and one without (Saber).
+The glow comes from `raptor-port/src/ui/scheduler.css`: `.puck.me.boxred` and `.puck.me.boxdash` add
+`0 0 10px 1px rgba(240,85,95,.7)` on top of the red ring when the View-as puck is flagged. **Do:** drop that glow, so
+a flagged View-as puck shows the same plain red ring (solid or dashed) as every other flagged puck; keep the purple
+"this is you" fill and ring. Read the precedence notes near `.puck.me` first (every puck rule carrying `!important`)
+and walk both widths with a flagged View-as puck. LOOK tier on one shared puck rule — check every surface that draws
+a puck. **Place:** any time, none blocking; a good one to ride the next scheduler change.
