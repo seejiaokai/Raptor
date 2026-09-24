@@ -95,7 +95,10 @@ const FILES = [
   /* 1240 -> 1400, 23 Sep 26 ([DOCS-GUARD] step 1). Already at 1335 through the same two merges.
      The bug-check order §7.6 requires a MISSING to be filed here during a fix, so it too carries
      declared headroom. [DOC-TRIM] owns the 600 target — as its own docs-only pass. */
-  ['OUTSTANDING.md',                     1, 1400],
+  /* 1400 -> 1150, 24 Sep 26 (the spring clean): the old priority list and plain-terms block archived whole, nine
+     finished items archived by the item mover, a live-only list written; eight items filed (1,025 lines). A tripwire
+     (D141): crossing it asks "is a finished item still sitting here?", never "cut to a number". */
+  ['OUTSTANDING.md',                     1, 1150],
   /* THE RULINGS (owner, D136 + D137, 24 Sep 26). They are MEANT to grow, so each ceiling is its target,
      and a rulings file is NEVER trimmed to fit: at a ceiling, archive what is replaced or spent
      (DECISIONS.md, step 2) and then RAISE the ceiling here, with the reason. DECISIONS.md is now only

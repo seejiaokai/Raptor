@@ -287,6 +287,8 @@ live bids and says so; an admin still gets the instruction, because for him it i
 parked — telling the man was the cheap half of that problem.
 
 ### N11 — an admin can RECORD that someone worked, on ANY day (DECISIONS D79)
+*(What a credited day says when clicked — reason, given by, days; the app's own credits too, and in the OIL tracker —
+built in PRs #422/#423, 21 Sep 26: backlog item `[LW-OIL-DETAIL]`, archived 24 Sep 26; `raptor-port/docs/ui-contracts.md`.)*
 > "Should we have an option for admin to put FO HO with the ability to input reason, given by.
 > Similar to oil tracker" — and: "the admin can also credit OIL on the leave sheet for convenience.
 > We should enable that even on any day."
@@ -353,6 +355,7 @@ An empty desk says nothing either: an empty desk owes no one.
 nothing". The rule is unchanged; the app simply stopped keeping it to itself.
 
 ### N15 — one window for an input, in every stage
+*(Built in PR #422, 21 Sep 26 — backlog item `[LW-UI-WINDOW]`, archived 24 Sep 26.)*
 > "Can u change the term Pending to Ack (which is Acknowledged). When i click on an input in the
 > leave war, it should also allow me to Have the buttons Ack, Approve, Refuse and Move … enable it
 > in all Stage on leave war … Try to keep the window the same size and squeeze the extra info and

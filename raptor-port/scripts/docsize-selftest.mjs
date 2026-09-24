@@ -158,6 +158,10 @@ mover('a clean move', true, { args: ['CHARLIE', '--homes', 'docs/home.md'], chec
   : !has(c, 'OUTSTANDING.md', '## Done') ? 'swallowed the "## Done" heading after it'
   : !has(c, 'OUTSTANDING.md', '### [DELTA]') ? 'took the next item with it' : '' })
 mover('no --homes', false, { args: ['CHARLIE'], check: c => has(c, 'OUTSTANDING.md', '[CHARLIE]') ? '' : 'moved anyway' })
+/* two items archived the same day to the same home — each note names its item, so the doubled-body check has
+   nothing to refuse (found 24 Sep 26: the second move was refused and put back) */
+mover('two items to the same home on the same day', true, { prep: c => { c.write('raptor-port/docs/superpowers/specs/facts.md', 'Where the facts of CHARLIE and of BRAVO now live.\n'); const r = spawnSync(process.execPath, ['raptor-port/scripts/backlog-archive.mjs', 'CHARLIE', '--homes', 'raptor-port/docs/superpowers/specs/facts.md'], { cwd: c.dir, encoding: 'utf8' }); if (r.status !== 0) throw new Error('the first move failed: ' + r.stderr) }, args: ['BRAVO', '--homes', 'raptor-port/docs/superpowers/specs/facts.md'], check: c =>
+  has(c, 'OUTSTANDING.md', '[BRAVO]') ? 'BRAVO is still in the backlog' : !has(c, 'OUTSTANDING-ARCHIVE.md', '([BRAVO]). Forward facts') ? 'the note does not name BRAVO' : '' })
 mover('a home that shows nothing was written there', false, { prep: c => { c.write('raptor-port/docs/superpowers/specs/other.md', 'unrelated\n'); c.commit('other') }, args: ['CHARLIE', '--homes', 'raptor-port/docs/superpowers/specs/other.md'] })
 mover('a duplicate id', false, { live: LIVE0 + '\n' + item('CHARLIE', 1).replace('Line 1 of CHARLIE', 'A second CHARLIE'), args: ['CHARLIE', '--homes', 'docs/home.md'], check: (c, r) => /heads 2 items/.test(r.stderr) ? '' : 'wrong reason' })
 mover('line endings kept byte for byte', true, { live: CRLF0, args: ['CHARLIE', '--homes', 'docs/home.md'], check: c =>

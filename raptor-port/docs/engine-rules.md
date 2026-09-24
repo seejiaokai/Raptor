@@ -1868,7 +1868,7 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   (owner, 20 Sep 26 — D142, recorded 24 Sep 26). The latest amendment, or the EOD if that is the latest,
   is what happened: a later amendment or EOD that takes a man off a past day takes that day’s OIL away
   (confirmed by him), and an issued EOD is the final word on the day. It superseded the 11 Sep "lock earned
-  OIL on an already-worked day" lean; there is no lock to build.
+  OIL on an already-worked day" lean (backlog item `[OIL]`, archived 24 Sep 26); there is no lock to build.
 - **ONLY THE ISSUED SCHEDULE PAYS, BOTH DIRECTIONS** (owner, 21 Sep 26 — R-1,
   from the cross-provider bug check; triage in
   `docs/superpowers/specs/2026-09-21-oil-bugcheck-fixplan.md`). The credit pass
@@ -2700,7 +2700,9 @@ the Originals and every AL. (The earlier sentence here said the opposite.)
 user/user; the sign-in card no longer prints them). `canEditSched()` =
 session AND admin.
 Logout closes the scheduler board (a sibling of the shell) and resets LGEDIT.
-The login is a prototype gate, not security — the deployed app is public.
+The login is a prototype gate, not security — the deployed app is public. *(Corrected 24 Sep 26: since D59
+(23 Sep 26) the repo is private and the app sits behind his Vercel sign-in — Vercel's lock, not the app's; the
+login is still no security.)*
 
 **What a member may do (owner, 5 Aug 26).** The line is *their own record vs
 the squadron's programme*, not read vs write:

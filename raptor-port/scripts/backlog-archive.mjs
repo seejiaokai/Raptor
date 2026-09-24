@@ -306,7 +306,9 @@ const eol = live.includes('\r\n') ? '\r\n' : '\n'
 const newLive = L.ls.slice(0, from).join('') + L.ls.slice(to).join('')
 /* the LOCAL date — toISOString is UTC, which read a day early on its first real run (UTC+8) */
 const now = new Date(), date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
-const note = `*Moved here ${date} by backlog-archive.mjs. Forward facts: ${homes.map(h => '`' + h + '`').join(', ')}.*${eol}${eol}`
+/* the note names the item: two items archived the same day to the same home once produced two identical note
+   lines, which the gate's doubled-body check rightly refused (found 24 Sep 26, archiving [LW-UI-WINDOW]) */
+const note = `*Moved here ${date} by backlog-archive.mjs ([${id}]). Forward facts: ${homes.map(h => '`' + h + '`').join(', ')}.*${eol}${eol}`
 const newArch = arch + (arch.endsWith('\n') ? '' : eol) + eol + note + block + (block.endsWith('\n') ? '' : eol)
 
 console.log(`[${id}]: ${to - from} lines, ${LIVE} line ${from + 1} → end of ${ARCHIVE}`)

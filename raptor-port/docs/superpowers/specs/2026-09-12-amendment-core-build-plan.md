@@ -37,6 +37,9 @@ one deliberate test-first unit rather than piecemeal:
   per-path replacement map, and the test-rewrite list), then build it test-first
   as a coherent unit. HEAVY, silent-defect, saved-data territory.
 
+*(24 Sep 26: backlog item `[BUG2]` — "verify the reopen control during version preview" — closed on Phase 2: the
+reopen control is gone, `src/ui/board.ts` "PUBLISHED DAY … no 'reopen' any more"; the item is archived.)*
+
 **Phase 2 COMPLETE + merged** (the coupled record rewrite: per-day sequence, verId
 key, stored diff, take-backs removed; three review rounds + quarantine redesign; on
 `main`). Phases 1a/1c also on `main`.
