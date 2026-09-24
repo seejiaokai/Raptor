@@ -41,7 +41,7 @@ the archives) are folded in below where they added a rule — each line names it
 | AM2 | **A day is a stack:** its issued versions (Original, AL1, AL2 …) frozen underneath, one live working copy on top. The AL number is how many times THAT day has been published since the Original. | 11–12 Sep 26 · decisions §1; brief §2 | LIVE |
 | AM3 | **Each issued version keeps its own identity, tied to its date and year** — Monday's AL1 and Tuesday's AL1 are different records; "AL1" is only the label. | 12 Sep 26 · brief §5 AM-01 | LIVE |
 | AM4 | **An issued version is never edited in place and never erased.** What went out stays exactly as it went out. Every issuance is kept as its own snapshot, forever — including one later pulled back by Unpublish (AM32). | 11 Sep 26, kept by 18 Sep 26 · decisions §1; memory `undo-of-publish-semantics` | LIVE |
-| AM5 | **Viewers see the current issued version; the working copy is the scheduler's until he publishes.** A viewer can choose to look at the working copy, but it is labelled so it can never be taken for the issued schedule ("Working draft — not issued"). | 15 Aug 26 (the view page's two entries); 12 Sep 26 (crew may see the draft, badged, the issued version stays the authority) · `ui/html.ts` `viewVerSelHTML`; brief §2 | LIVE |
+| AM5 | **Viewers see the current issued version; the working copy is the scheduler's until he publishes.** A viewer can choose to look at the working copy, but it is labelled so it can never be taken for the issued schedule ("Working draft — not issued"). *"the user can choose to see the published version, which doesn't change if there's edit from the scheduler … but it needs to state clearly what they are viewing."* | 15 Aug 26 (the view page's two entries); 12 Sep 26 (crew may see the draft, badged, the issued version stays the authority) · `ui/html.ts` `viewVerSelHTML`; ui-contracts §Day templates and Drafts; brief §2 | LIVE |
 | AM6 | **To go back to an older version's content, load it onto the working copy and publish it as the NEXT amendment.** Viewers keep seeing the current issued version until that amendment goes out. *"the view only schedule should still see AL1, it shouldn't go to Original without me publishing the working copy."* "Load onto working copy" discards unpublished edits only after a second confirming tap. | 16 Aug 26; 11 Sep 26 §10; the two-tap confirm 15 Sep 26 (A1) · engine-rules §Version snapshots; ui-contracts §Version preview | LIVE |
 | AM7 | **No "publish all days"; no two-person approval; no rule versioning.** | 7 Aug 26 · `raptor-port/CLAUDE.md` §Product invariants | LIVE |
 
@@ -68,7 +68,8 @@ the archives) are folded in below where they added a rule — each line names it
 | AM18 | **Amendment marks are a published-day thing — a draft day shows none.** *"if I have not published the schedule yet, don't show all the orange dotted lines … only once published does an AL-coloured mark make sense."* The edit is still counted. | 25 Aug 26 · ui-contracts §Amendment marks; scheduler.md §Settled (Board behaviour) | LIVE |
 | AM19 | **On the edit surfaces a pending change is DOTTED in the colour of the AL it will go out as; an issued change is SOLID in its AL's colour.** The view page keeps a neutral dashed hint for a published day's pending edit. | Aug 26 · ui-contracts §Amendment marks | LIVE |
 | AM20 | **A pending mark means "differs from what was issued", not "was touched".** Change a time and change it back, or swap two pucks and swap them back — the mark clears, in every spelling (08:00 = 0800). *"swap the pucks and swap it back… it shouldn't register."* | 16 Aug 26 · ui-contracts §The day-head version chip | LIVE |
-| AM21 | **A removal and a reorder on a published day are real amendment items**, listed as removals / reorders; a row added and removed again before the next AL is no change at all. | 12 Aug 26; 31 Aug 26 (reorders) · engine-rules §Publishing | LIVE |
+| AM21 | **A removal and a reorder on a published day are real amendment items**, listed as removals / reorders; a row added and removed again before the next AL is no change at all. *"fix it" … "a move always counts"* | 12 Aug 26; 31 Aug 26 (reorders) · engine-rules §Publishing | LIVE |
+| AM21b | **What rides an amendment and what does not:** dragging a WAVE is an amendment; dragging a SECTION or rearranging the crew panels only changes the display. Flipping a line's MAIN / SPARE badge marks it pending and rides the next AL. An accepted input's new ground row is pending and reaches the next AL. The admin's default wave order applies only when a wave is added to a day not yet signed off — it never reorders an existing or published day. | 24 Aug, 29–31 Aug 26; 15 Aug 26 (inputs) · scheduler.md §Settled; engine-rules §Accepting a personal input | LIVE |
 | AM22 | **The version tag beside the day:** grey ORIG, AL<n> coloured by its number (AL1 cyan, AL2 amber, AL3 green, AL4 white, AL5 purple, AL6 pink, AL7 orange), a dashed DRAFT before first publish; it sits just left of the "4 X 4" count and shows on the view page too. The old "✓ Published · ALn" stamp and the week's amber AL roll are gone. | 15 Sep 26 (follow-ups 2–5) · `plans-selector-followups.md`; `html.ts` `verTagHTML` | LIVE |
 | AM23 | **"N pending" counts real differences from the issued version**, and it agrees with the "Discard N edits" count and the Amendments panel. | 15 Sep 26 (A3 note) · `html.ts` `dayStatHTML` | LIVE |
 | AM24 | **"Not yet signed" shows on the working copy of a published day that has unpublished changes — never on the issued face.** The published schedule stays TRUE until the next publish. | 16 Sep 26 · memory `published-day-input-is-pending-amendment`; `html.ts` | LIVE |
@@ -94,7 +95,7 @@ the archives) are folded in below where they added a rule — each line names it
 | AM34 | **Unpublish guardrails:** scheduler/admin only; it clears that day's sign-offs (re-sign to republish); only the most recent version comes off (an AL on top comes off before the one under it). | 18 Sep 26 · same | LIVE |
 | AM35 | **The label is reused, but nothing is erased:** every issuance stays as its own snapshot; a correction of a version that had reached the shared database writes a history line ("corrected on <date> by <who>"); one that had not is fully silent. **No shared database yet, so today every correction is silent.** | 17–18 Sep 26 · same | LIVE (the logged path waits for the database) |
 | AM36 | **The only boundary is the shared database registering a publish.** An export, a print, a CSV or the session ending is NOT a boundary and does not constrain undo. | 17 Sep 26 · same; `src/state/disclosure.ts` | LIVE |
-| AM37 | **Unpublishing a day whose OIL credits are already bid against on the Leave War warns first** ("Withdraw — confirm", a second tap); unpublishing withdraws those credits until the day is republished (which is D142 at work: an unpublished day has no published version to earn from). The two-tap warning is the design's call, not his. | 18 Sep 26 (global-undo design §6.6) · `ui/interactions.ts`, `html.ts` | LIVE |
+| AM37 | **Unpublishing a day whose OIL credits are already spent warns first** — when withdrawing the day's credit would leave a man's OIL balance below zero because a bid already draws on it ("Withdraw — confirm", a second tap); unpublishing withdraws those credits until the day is republished (which is D142 at work: an unpublished day has no published version to earn from). The two-tap warning, and its "would go below zero" test, are the design's calls (reviewers Fable #5 / Codex GU-P2-009), not his. | 18 Sep 26 (global-undo design §6.6) · `ui/interactions.ts`, `html.ts`, `leavewar/sync.ts` `oilCreditBidAgainst` | LIVE |
 | AM37b | **Correcting an issued day is unpublish-and-republish under the SAME label (or, later, the end-of-day version) — neither costs an amendment number.** | 21 Sep 26 · engine-rules §Weekend/PH work earns OIL | LIVE (the end-of-day half is DEFERRED with EOD) |
 | AM37c | **What Unpublish does to the day:** unpublishing an AL puts that AL's changes back to pending on the working copy, and the version under it becomes current again; unpublishing the Original makes the day a plain draft. The button shows only on a published day, to the scheduler, for the latest version, and not while an older version is being looked at. | 18 Sep 26 (the design's reading of AM32–AM34) · global-undo design §6.5; `engine/publish.ts` `unpublishDay` | LIVE |
 
@@ -116,6 +117,7 @@ the archives) are folded in below where they added a rule — each line names it
 | AM41 | **A request a person files on an already-published day lands on the WORKING copy as a pending amendment** (the count rises; the scheduler removes it if unwanted); the issued face stays frozen. Only the interactive filing path — a week load never churns a published day. | 16 Sep 26 · memory `published-day-input-is-pending-amendment` | LIVE |
 | AM42 | **Who stood behind an ALL / ALL AVAIL puck is frozen at publication, on every day.** The working copy shows today's answer; a difference raises the ordinary pending mark; the scheduler amends or publishes the end-of-day version. | 22 Sep 26 · **D44** | LIVE |
 | AM43 | **A new absence must not silently change a published day's Unavailable list.** | 19 Sep 26 · `OUTSTANDING.md` `[PUB-UNAVAIL]` | LIVE — NOT BUILT (queued in his after-the-hunt order; walked here, not built here) |
+| AM43b | **An input that has not landed on the day still counts for its warnings** (for example one filed onto a published day and not yet published), and a removed input stays parked until it is accepted again. | 26 Aug 26 · `HANDOFF-ARCHIVE.md` | LIVE |
 | AM44 | **An issued day keeps what it went out with when a rule changes under it**, until somebody corrects and republishes it. | 22 Sep 26 · **D48** (a principle; nothing to build now) | LIVE |
 | AM45 | **An issued weekend carrying a placeholder may read "1 pending" after the OIL change — leave it; the demo data is wiped before the database.** | 23 Sep 26 · **D54** | LIVE (not a finding) |
 
@@ -126,13 +128,18 @@ the archives) are folded in below where they added a rule — each line names it
 | AM46 | **A day's OIL comes from its LATEST PUBLISHED version** — the latest amendment, or the end-of-day version if that is the latest — however long ago the day was. No lock, no clock. A later version that takes a man off a past day takes that day's OIL away from him. | 20 Sep 26 · **D142** | LIVE |
 | AM47 | **Only the issued schedule earns, in both directions:** a working-copy change moves nothing until it is published; a holiday declared after publication waits for a republication and the day says so. | 21 Sep 26 · **D2** | LIVE |
 | AM48 | **Each day's OIL is worked out from that day alone** — a change to one day never moves another day's OIL; a saved week that cannot be read never wipes credits. | 12 Sep 26 · brief §6-CORE | LIVE |
+| AM48a | **Who earned on a published day is decided at publication and frozen** — a later roster change does not reopen it; a placeholder on a published day keeps earning for the people it was issued with, the day reads pending, and republishing sweeps what no published work still earns (D46); crediting an exempt seat on a published day goes through an ordinary amendment (D24). | 21–22 Sep 26 · **D3, D46, D24** | LIVE |
+| AM48c | **Publishing a weekend or holiday keeps a clashing, undecided Leave War bid and flags the day** — it no longer throws the bid away; the admin is told. *"Keep the bid and flag the day, both ways."* | 20–21 Sep 26 (the S4 hunt's Q3) · `raptor-port/docs/archive/HANDOFF-S4-BUGHUNT.md` | LIVE — the Leave War architecture text still says the publish REPLACES the bid; the walk checks which the code does |
+| AM48d | **A worked weekend that earns nobody says so, on the day and at publish (D81); a weekend no Leave War period covers says so, and the warning is repeated in the strip shown when he publishes (D19).** | 20–22 Sep 26 · **D81, D19** | LIVE |
 | AM48b | **ALL OIL waits for publication** — the schedule's and a duty-and-commitments claim's alike. *"we make it a point to publish everyday so that silently earn nothing wont happen"* · *"ok u can set it as a reminder to all schedulers"* — the reminder is the warning on any weekend or holiday with OIL waiting to be published. Once a weekend is published, a member deleting or re-timing his own input no longer moves his credit until the day is republished. | 21 Sep 26 · engine-rules §Weekend/PH work earns OIL | LIVE |
 
 ## I. History, the changes list, export
 
 | id | the rule | when · where | status |
 |---|---|---|---|
-| AM49 | **The changes list (History) records who changed which detail, when, and what it was before**; for this session only, and an undo does not rewrite it. | 11 Aug 26 · engine-rules §The edit log | LIVE |
+| AM49 | **The changes list (History) records who changed which detail, when, and what it was before**; for this session only, and an undo does not rewrite it. On the board, History mode shows a detail's story on a tap, and the full list opens from a line under the checks panel; the surface is called "Edit history". | 11 Aug 26; 23 Aug 26 (the name) · engine-rules §The edit log; ui-contracts §History on the board | LIVE |
+| AM49b | **The board's sign-off strip reads like the edit week's (names two-up), and on a phone the board runs: sign-off, then the live checks, then the panels.** *"put it right below sign off section"* · *"make the board sign-off similar to the one in edit schedule"* | 14 Aug, 22 Aug 26 · ui-contracts | LIVE |
+| AM49c | **"Clear old clutter" deletes no saved weeks** — deleting one could lose a day's amendment history. | 19 Sep 26 · `OUTSTANDING-ARCHIVE.md` | LIVE |
 | AM50 | **Export is a scheduler-only snapshot of the PUBLISHED schedule, of the CURRENT DAY only**, and not a publication boundary. | 17 Sep 26 · `OUTSTANDING.md` `[FLAG-EXPORT]` | PARTLY BUILT — it prints the published version; still the whole week (filed, not this re-test) |
 
 ## J. Flags on the published schedule
@@ -141,6 +148,11 @@ the archives) are folded in below where they added a rule — each line names it
 |---|---|---|---|
 | AM51 | **A published day shows its warnings again** — crew rest (across days and past midnight), the 7-day run, timing clashes. Each screen flags the version it shows; a day is checked against each neighbouring day's published version if it has one, else its working copy; the issued content stays frozen. | 15–16 Sep 26 · `OUTSTANDING.md` `[CRP-FLAG]` | PARTLY BUILT (its first two parts merged 16 Sep 26; the rest is backlog, not this re-test) |
 | AM51b | **The view-only page shows the day's warnings too** — on a draft day and on the working-draft peek (its live faces); the issued face shows the flags of its issued version (AM51). | 15 Sep 26 (follow-up 6); 16 Sep 26 · `plans-selector-followups.md` item 6; `html.ts` `dayIssuedHTML` | LIVE |
+| AM51c | **A published day shows everything a draft day shows** (its warnings); **a preview of an OLD version or a parked plan shows no flags** — a past version is read, not checked. | 15 Sep 26 · `2026-09-15-crewrest-flagging-plan-v2.md` | LIVE |
+| AM51d | **A fresh draft day that breaks a published neighbour (crew rest across the two) shows the flag on both views.** | 15 Sep 26 ("owner's case") · crewrest plan v1/v2 test 4 | LIVE |
+| AM51e | **The issued face looks the same to an admin and a member** — nothing on it depends on role; **the per-day "view the working copy" choice is open to any viewer**, stamped "Working draft", showing the working copy's own flags. | 15 Sep 26 (D1, D2 of that plan — local labels, not D-numbers) · crewrest plan v2 | LIVE |
+| AM51f | **Anything that marks a day's divergence is anchored on the calendar DATE, never the weekday name** (so a Monday in one week is never confused with a Monday in another); **no wall-clock cutoff, and no coupling to EOD.** | 15 Sep 26 · crewrest plan v1 | LIVE — the build keys its in-list marks on the day's place in the week; the walk checks a week boundary |
+| AM51g | **No number or tally on the publish button, and no end-of-session "publish or discard" reminder.** | 15 Sep 26 ("owner + Fable") · crewrest plan v2 | LIVE |
 
 ## K. The end-of-day version (EOD)
 
@@ -163,12 +175,35 @@ the archives) are folded in below where they added a rule — each line names it
 | Z7 | 15 Aug 26: re-publishing a reopened day re-issues the current version in place (the old "reopen"). · 12 Sep 26: the reopen control is removed. | **18 Sep 26:** Unpublish is the one way back, for the latest version only (AM34), and each issuance is kept (AM4). |
 | Z8 | 16 Aug 26: the "✓ Published · ALn" stamp carries the version. | **15 Sep 26 (AM22):** the stamp is retired; the coloured version tag carries it. |
 | Z9 | 15 Sep 26 (the [CRP-FLAG] plan): a "Not Yet Signed" marker shown to everyone. | **16 Sep 26 (AM24):** working copy only, never on the issued face. |
+| Z10 | 12 Sep 26 (brief §2): "undo cannot cross a publish; a plan switch is a hard undo boundary". · 13 Sep 26 (Astra SEQ-002): global undo cannot cross a signed publish. | **17–18 Sep 26 (AM39–AM39c):** an undo that lands on a publish runs Unpublish. |
+| Z11 | 12 Sep 26 (EOD design): a correction after an EOD is a fresh publish of either kind · the agent's REV5-03: corrections are EOD-kind only. | **Not settled — EOD is deferred** (AM52); not walked, not asked now. |
 
-**Stale text found while sweeping — fixed in this change, per D90:** `raptor-port/docs/engine-rules.md`
-§Publishing / amendments said *"There is no `unpublishAL` — an issued AL is never withdrawn and never
-returns its changes to pending"*; since 18 Sep 26 the Unpublish button withdraws the latest version and its
-changes go back to pending. The `[AMEND]` item's summary line ("published = immutable … supersede-never-retract,
-undo cannot cross a publish") is marked the same way.
+**Considered and found NOT to clash:** the live warnings on the issued face (15 Sep 26, AM51) against D45's test
+(22 Sep 26 — "if a reader could see a different answer tomorrow with nobody having acknowledged it, the design is
+wrong"): a warning is a live overlay on the frozen document, drawn so the scheduler SEES a new clash; D45 is about
+the schedule's content and its signature changing silently. The content stays frozen (AM4).
+**Recorded but not an amendment question:** his 11 Sep 26 *"I don't really agree with how scheduling should be
+done"* (the amendment design brief) was the start of the redesign that AM1–AM6 then settled with him.
+
+**Stale text found while sweeping — each marked in place with its newer rule, per D90, in a docs-only commit of
+this branch:**
+- `raptor-port/docs/engine-rules.md` §Publishing / amendments — *"There is no `unpublishAL` — an issued AL is never
+  withdrawn and never returns its changes to pending"* (since 18 Sep 26 Unpublish withdraws the latest version and
+  its changes return to pending); §Version snapshots — *"An issued version is frozen forever, with no exception"* and
+  *"no chip on a published day no AL ever touched"*; §Availability — an input landing on a published day is *"a silent
+  no-op"* (16 Sep 26: a pending amendment on the working copy).
+- `raptor-port/docs/ui-contracts.md` — §The day-head version chip's heading ("now INSIDE the published stamp",
+  retired 15 Sep 26); §Version preview's "the week-status banner … keeps only the AL roll" (the roll went too,
+  15 Sep 26); §Day templates and Drafts' "Reopen the day first" refusal (a template on a published day is a
+  working-copy edit since Phase 2); §Accepting a personal input's published-day no-op (16 Sep 26).
+- `OUTSTANDING.md` `[AMEND]` — its "published = immutable … supersede-never-retract, undo cannot cross a publish"
+  summary and its PSF-001 line (done in the first commit).
+- `raptor-port/docs/undo-contract.md` — its head still calls the one global undo "designed, not yet built" (built
+  and live 18 Sep 26).
+- The memory index line for `undo-of-publish-semantics` ("never erase/reuse an issued version id") and the memory
+  `plans-selector-redesign-locked` (PSF-001 "open").
+- Left as they are, on purpose: the frozen archives (`HANDOFF-ARCHIVE.md`, `raptor-port/docs/archive/`) — history,
+  never edited.
 
 ## Q. Real gaps or clashes — questions for him (filed in `OUTSTANDING.md`, not asked mid-run)
 

@@ -5,7 +5,24 @@
    Pictures go to HP_SHOTS (set it per world so two walkers never share a folder).
    Reads of the book (SCHED) are for the evidence table only; no helper WRITES through window. */
 export * from '../lib.mjs'
-import { go, board, closeBoard } from '../lib.mjs'
+import { go, board as board0 } from '../lib.mjs'
+
+/** Close the scheduler board through its own ✕ (#sbClose). On a phone its label is icon-only, so the
+    shared lib's by-name lookup misses it and the board stays open over the week. */
+export async function closeBoard(page) {
+  if (!(await page.locator('#schedBoard:visible').count())) return false
+  const x = page.locator('#sbClose:visible').first()
+  if (await x.count()) { await x.click(); await page.waitForTimeout(600) }
+  else { await page.keyboard.press('Escape'); await page.waitForTimeout(500) }
+  return true
+}
+/** Open the board for day di (closing any open board first, with the phone-safe close). */
+export async function board(page, di) {
+  const openDay = await page.evaluate(() => (document.querySelector('#schedBoard') && document.querySelector('#schedBoard').offsetWidth ? window.SBDAY : null))
+  if (openDay === di) return
+  if (openDay != null) await closeBoard(page)
+  return board0(page, di)
+}
 
 /** Which surface a helper acts on: the edit week (#eWeek) or the open scheduler board. */
 const root = async (page) => (await page.locator('#schedBoard:visible').count()) ? '#schedBoard' : '#eWeek'
@@ -167,4 +184,4 @@ export async function toastText(page) {
   return page.evaluate(() => [...document.querySelectorAll('.toast, #toast, [class*=toast]')].map(e => e.innerText.trim()).filter(Boolean).join(' | '))
 }
 
-export { board, closeBoard, go }
+export { go }

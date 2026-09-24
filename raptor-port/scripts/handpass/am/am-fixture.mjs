@@ -15,7 +15,8 @@ const OUT = process.env.HP_OUT || 'C:/Users/User/projects/Raptor/raptor-port/doc
 const L = await import('./am-lib.mjs')
 const { buildSaturday } = await import('../fixture.mjs')
 const { open, editWeek, board, closeBoard, signDay, publishDay, publishAL, unpublish, head, book, editText, planMenuItems, planMenuPick, shot } = L
-const { browser, ctx, page, errors } = await open({ fresh: true })
+// NOT fresh: ?fresh=1 runs the memory backend and saves nothing, so the captured world would be empty.
+const { browser, ctx, page, errors } = await open({})
 const log = (k, v) => console.log(k.padEnd(22), typeof v === 'string' ? v : JSON.stringify(v))
 const must = (ok, what) => { if (!ok) { console.log('FIXTURE FAILED at: ' + what); throw new Error(what) } }
 

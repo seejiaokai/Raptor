@@ -16,7 +16,8 @@ data. It is the map; the full designs behind it are:
   Leave War + Tracker: the per-store `write()` seam, one-gesture-one-envelope, the causal
   both-side envelope, off-week capture. (Built; this is what added `write()`.)
 - `docs/superpowers/specs/2026-09-17-arch-stack-3-global-undo-design.md` — step 3, the one global
-  undo that will CONSUME everything below. Designed, not yet built; gated behind CMDL-FINISH.
+  undo that will CONSUME everything below. Designed, not yet built; gated behind CMDL-FINISH. *(Stale:
+  BUILT and merged live 18 Sep 26 — `OUTSTANDING.md` `[GLOBAL-UNDO]`; marked 24 Sep 26.)*
 
 The command core is `src/command/`: `commit.ts` (the engine), `types.ts` (the contracts),
 `latch.ts` (suppression contexts), `registry.ts` (the logical-record map), plus `actor.ts`,

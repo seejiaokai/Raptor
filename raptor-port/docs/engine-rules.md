@@ -2331,7 +2331,13 @@ its signatures. Later edits become pending; "Publish AL" appends a **single-day*
 `{n, keys, sign, days, n0}`, and there is no week-wide `days`/`n0` pair to recalculate
 because an AL covers exactly one day. `diff` is the canonical `dayDelta` at issue time.
 **There is no `unpublishAL`** — an issued AL is never withdrawn and never returns its
-changes to pending; a correction is the NEXT AL. Publishing is per-day; there is
+changes to pending; a correction is the NEXT AL. *(SUPERSEDED 18 Sep 26 — marked 24 Sep 26 by the
+amendment re-test, per D90: the day header's **Unpublish** button (`unpublishDay`, `state/sched-commit.ts`
+`commitUnpublish`) withdraws the LATEST issued version of a day — the AL's changes go back to pending on the
+working copy, the version under it becomes current, the withdrawn issuance is kept in `SCHED.retired`, and
+republishing reissues the SAME label; undo of a just-published day runs the same unpublish. What survives of
+the sentence: an issuance is never ERASED or edited in place. The rules, with their dates:
+`docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md` AM4, AM32–AM37c.)* Publishing is per-day; there is
 deliberately no "publish all days".
 
 Edits only become AL changes on a day that is already published — edits to
@@ -2429,7 +2435,9 @@ ascending seq]`, derived from live records — orphan-safe by construction.
 >
 > **What actually happens now.** `setDayApproved` returns immediately on `!on ||
 > SCHED.dayOK[di]`, so an `on=false` (un-approve) and a repeat approve are BOTH no-ops. The
-> function only ever FIRST-approves a draft day. **An issued version is frozen forever**,
+> function only ever FIRST-approves a draft day. *(The next sentence is SUPERSEDED 18 Sep 26 — marked
+> 24 Sep 26 per D90: Unpublish withdraws the latest issued version, which is kept as its own snapshot and
+> reissued under the same label; see §Publishing / amendments above.)* **An issued version is frozen forever**,
 > with no exception: changing a published day means editing its working copy and publishing
 > the next AL, which supersedes the old one while the old one stays immutable in history.
 > The Original is stamped once, at first publish, and never restamped — the "a rewrite
@@ -2455,7 +2463,9 @@ per day over positive safe-integer seqs, so a fresh AL cannot collide with an ex
 That derivation is the orphan guard — a stale `cur` after an undo is inert and no cleanup
 pass exists.
 The day-head shows ONE chip from it (grey ORIG when rolled back to the
-Original while ALs exist; no chip on a published day no AL ever touched);
+Original while ALs exist; no chip on a published day no AL ever touched) *(stale since 15–16 Sep 26 —
+marked 24 Sep 26: the day's version tag, `verTagHTML`, reads ORIG on every published day and sits left of
+the "4 X 4" count; register AM22)*;
 the ⓘ panel keeps the full historical AL list.
 
 > **DEAD — corrected 17 Sep 26. `restoreDayVersion` was REMOVED at Phase 2** and the

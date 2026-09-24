@@ -47,7 +47,16 @@ blind to each other, with this sheet in hand; a re-walk of what the fixes touche
 
 ## 3. Findings so far (running list — dispositions in §8)
 
-*(none yet)*
+| # | finding | found by | rule | status |
+|---|---|---|---|---|
+| F1 | The scheduler board never drew "Not yet signed" — the week head did, for the same working copy | roll-call R4 (desktop + phone); Fable 5-5; Astra F1 | AM24 | **FIXED** `7c69bd58` — one shared body (`nysMarkHTML`) for both surfaces; red first |
+| F2 | The ⓘ day panel and the plan-switch message counted raw marks; the head counts the real difference — an OIL-only change read "nothing pending" beside "Publish AL1", a filing round trip left "1 unpublished edit" | Fable 5-2; Astra F2 + rank 5 | AM23 | **FIXED** `7c69bd58` — `dayShownPendCount`, one count for all three; red first |
+| F3 | "Discard marks" was offered, and said "Pending marks cleared", when every mark sat on a published day and nothing could be cleared | Fable 5-1; Astra F3 | F-01 (Phase 2) | **FIXED** `7c69bd58` — offered only when it can clear something; says how many; red first |
+| F4 | Unpublishing AL1 re-opened a change that had already been put back to the Original's value as a dotted mark (the phantom) | Fable 5-3 (walk S1) | AM20 | **FIXED** `7c69bd58` — the re-opened marks are reconciled inside the unpublish command; red first |
+| F5 | An armed "Withdraw — confirm" (and "Discard N edits & load") survived a page change and the View-as-member flip, so the second tap after coming back skipped the warning | Fable 5-8; Astra rank 33 | the confirms' own "any navigation clears" rule | **FIXED** `7c69bd58`; red first |
+| — | The Amendments panel is hidden on a phone (≤820px) — the day head's Publish AL and the ⓘ panel carry it there, but not the approver list | roll-call R10 phone; Fable 5-4 | none found | see §8 (a question or a deliberate phone choice) |
+
+*(the walkers' own findings are added as their reports land)*
 
 ## 4. The roll-call — every place the app draws amendment state
 

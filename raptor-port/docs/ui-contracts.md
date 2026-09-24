@@ -663,7 +663,8 @@ buttons, and Publish AL is hidden under a preview (A3). RETIRED by this redesign
 `verSelHTML`/`dverSelectHTML`/`verSelBoardHTML`, the `<select data-dver>` on edit
 surfaces, the green `.livebtn` "Live copy" pill, the `.ddraft` "Publishes …"
 chip, and the week-status banner text (`Shell.tsx` `banner()` keeps only the AL
-roll). Plans are lettered A/B/C (`drafts.ts` `nextName`, C1 — lowest unused
+roll — *stale: the AL roll went too, 15 Sep 26 follow-up 2; the banner holds only the RULES MODIFIED
+stamp (marked 24 Sep 26, register AM22)*). Plans are lettered A/B/C (`drafts.ts` `nextName`, C1 — lowest unused
 letter); deleting down to ONE clears the day's plans back to "Live working copy"
 (B1). **The VIEW page keeps its own pickers unchanged** (`viewDraftSelHTML`
 `data-dver` + the `d:` frozen preview, and `viewVerSelHTML` `data-vwork`) — the
@@ -705,7 +706,7 @@ alternative must never wear the issued document's clothes, on any surface.
 Known limitation: personal-INPUTS sections and the day-info pop show LIVE
 data inside a preview — inputs are not part of the issued document.
 
-## The day-head version chip — now INSIDE the published stamp
+## The day-head version chip — now INSIDE the published stamp *(heading stale since 15 Sep 26: the stamp is retired and the version tag, `verTagHTML`, sits left of the "4 X 4" count — §Version preview; register AM22)*
 
 One `.dal` chip per day = `dayCurVer(di)`, everywhere (view page, edit week,
 and — since `dayStatHTML` became the board's own publish-strip builder too,
