@@ -8,7 +8,7 @@ import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
-import { SCHED, signOf, setDayApproved, dayDelta, dayDiscardCount, alCount, dayShownPendCount } from '../engine/publish'
+import { SCHED, signOf, setSign, setDayApproved, dayDelta, dayDiscardCount, alCount, dayShownPendCount } from '../engine/publish'
 import { validate } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
 import { initStore, writeSlot } from '../state/store'
@@ -61,6 +61,18 @@ beforeEach(() => {
   setUnpubArm(null); setRestArm(null, null)
   setPage('editsched')
   validate()
+})
+
+describe('item 5 — the working-copy marker has two states (D97, AM24)', () => {
+  it('"Not yet signed" while a sign-off is missing; "Not yet published" once all four are valid — week and board alike', () => {
+    publishDay(MON)
+    writeSlot(`d:${MON}.0.1`, 'bane')
+    for (const surf of [weekEdit, boardStrip]) expect(surf(MON).querySelector('.nysmark')?.textContent).toBe('Not yet signed')
+    for (const [r, w] of [['cur', 'ignite'], ['sked', 'bane'], ['plan', 'stiff'], ['appr', 'pump']]) setSign(MON, r, w)
+    for (const surf of [weekEdit, boardStrip]) expect(surf(MON).querySelector('.nysmark')?.textContent, 'all four valid, not gone out yet').toBe('Not yet published')
+    writeSlot(`d:${MON}.0.1`, 'glass')                     // a further change moves under the signatures (D103)
+    expect(weekEdit(MON).querySelector('.nysmark')?.textContent, 'the change wipes the four, so it is unsigned again').toBe('Not yet signed')
+  })
 })
 
 describe('item 14 — a move counts as ONE, and every count reads the one body (D109, AM23)', () => {

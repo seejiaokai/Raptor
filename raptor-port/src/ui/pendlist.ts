@@ -39,20 +39,27 @@ const names = (a: any[] | undefined) => (a || []).map(cs).filter(Boolean).join('
 
 /* the name of a place a man stands (a live, positional address) — the row's own name, not the log's "Duty · …"
    prefix, so a move reads the way he said it: "Warden: MET + NOTAM BRIEF → SODB" (D109) */
-function placeName(addr: string): string {
+function placeName(addr: string, days: any[] = DAYS): string {
   const s = String(addr || ''), c = s.indexOf(':'), p = c < 0 ? '' : s.slice(0, c), a = (c < 0 ? s : s.slice(c + 1)).split('.')
+  /* a desk's or a ground row's extras line, a sim's passengers — a place of their own (D109's counting) */
+  const extra = /\.x\d+$/.test(s) ? ' · extras' : /\.pax\./.test(s) ? ' · passengers' : ''
   try {
-    const d: any = DAYS[+a[0]!]
-    if (!p) return keyLabel(s)
-    if (p === 'd' || p === 'dr') return d.dutywaves[+a[1]!].rows[+a[2]!].role || 'duty row'
-    if (p === 'g' || p === 'gr') return d.ground[+a[1]!].prog || 'ground item'
+    const d: any = days[+a[0]!]
+    if (!p) return keyLabel(s, days)
+    if (p === 'd' || p === 'dr') return (d.dutywaves[+a[1]!].rows[+a[2]!].role || 'duty row') + extra
+    if (p === 'g' || p === 'gr') return (d.ground[+a[1]!].prog || 'ground item') + extra
     if (p === 'a' || p === 'ap') return d.allhands[+a[1]!].prog || 'programme item'
     if (p === 's' || p === 'sr') {
       const r = d.sims[a[1]!][+a[2]!], base = `${String(a[1]).toUpperCase()} ${r.label || ''}`.trim()
-      return a[3] === 'p' ? `${base} · FCP` : a[3] === 'w' ? `${base} · RCP` : base
+      return a[3] === 'p' ? `${base} · FCP` : a[3] === 'w' ? `${base} · RCP` : base + extra
     }
   } catch (_) {}
-  return keyLabel(s)
+  return keyLabel(s, days)
+}
+/* the issued day as a day list, for naming a row the live day no longer has */
+function issuedDays(di: number): any[] | null {
+  const snap: any = daySnapOf(di, dayCurVer(di)); if (!snap || !snap.d) return null
+  const arr: any[] = []; arr[di] = snap.d; return arr
 }
 /* a stored value as a reader says it. The record keeps a row's state on its name field as one composite
    (restore.ts dayKeys: "name␟cx␟…"), so a cancelled row or a flag is spelled out rather than shown raw. */
@@ -102,18 +109,24 @@ export function pendItemWords(di: number, it: PendItem): Words {
   }
   const none = { who: '', when: '' }
   const jump = !!(it.jump && it.jump.length)
-  if (it.kind === 'reseat')
-    return { where: cs(it.token) || 'Someone', from: placeName(it.from || ''), to: placeName(it.to || ''), ...byLog(), jump }
+  if (it.kind === 'reseat') {
+    /* out of a row removed since: named from the issued day, where it still stands */
+    const iss = !it.from && it.fromIssued ? issuedDays(di) : null
+    const from = it.from ? placeName(it.from) : iss ? placeName(it.fromIssued!, iss) + ' (removed)' : ''
+    return { where: cs(it.token) || 'Someone', from, to: placeName(it.to || ''), ...byLog(), jump }
+  }
   if (it.kind === 'people')
-    return { where: placeName(it.place || ''), from: names(it.off) || (it.on && it.on.length ? '' : 'crew order'), to: names(it.on) || (it.off && it.off.length ? '' : 'changed'), ...byLog(), jump }
+    return it.order
+      ? { where: placeName(it.place || ''), from: '', to: 'order changed', ...byLog(), jump }
+      : { where: placeName(it.place || ''), from: names(it.off), to: names(it.on) || (it.off && it.off.length ? 'taken off' : ''), ...byLog(), jump }
   if (it.kind === 'change')
     return { where: keyLabel(it.addr || e.addr), from: valueWords(e.addr, e.from), to: valueWords(e.addr, e.to), ...byLog(), jump }
   if (it.kind === 'add')
     return { where: keyLabel(it.addr || e.addr), from: '', to: 'added', ...none, jump }
   if (it.kind === 'delete') {
     /* the row is gone from the live day: name it from the version it was removed from */
-    const snap: any = daySnapOf(di, dayCurVer(di)), arr: any[] = []; arr[di] = snap && snap.d
-    return { where: snap ? keyLabel(e.addr, arr) : 'An item', from: '', to: 'removed', ...none, jump: false }
+    const arr = issuedDays(di)
+    return { where: arr ? keyLabel(e.addr, arr) : 'An item', from: '', to: 'removed', ...none, jump: false }
   }
   if (it.kind === 'move') {
     const k = String(e.addr || '').split('.').pop() || ''

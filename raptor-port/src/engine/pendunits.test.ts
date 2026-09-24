@@ -96,10 +96,32 @@ describe('a move counts as ONE pending change (D109, AM23)', () => {
     expect(units(was, now).length).toBe(1)
   })
 
-  it('the desk holder and an extra of one row trading places is ONE change to that box, never zero', () => {
+  it('the desk holder and an extra of one row trading places is a SWAP — two, never zero (the holder and the extras are two places)', () => {
     const was = day({ dutywaves: [block('D', [duty('SOF', 'lead', ['wing'], 'R1')], 'B1')] }), now = clone(was)
     now.dutywaves[0].rows[0].id = 'wing'; now.dutywaves[0].rows[0].more = ['lead']
-    expect(units(was, now).length).toBe(1)
+    expect(units(was, now).map(x => x.kind)).toEqual(['reseat', 'reseat'])
+  })
+
+  it('a man moved from a desk’s holder box to its own extras line is ONE move (Fable S1b — it counted nothing when the two were one place)', () => {
+    const was = day({ dutywaves: [block('D', [duty('SODB', 'tally', [], 'R1')], 'B1')] }), now = clone(was)
+    now.dutywaves[0].rows[0].id = ''; now.dutywaves[0].rows[0].more = ['tally']
+    const u = units(was, now)
+    expect(u.length).toBe(1)
+    expect(u[0].kind).toBe('reseat')
+  })
+
+  it('two men re-ordered inside one row’s crowd is ONE change — the same people, a different order (Fable S1c)', () => {
+    const was = day({ allhands: [prog('MET + NOTAM BRIEF', ['warden', 'reaper'], 'P1')] }), now = clone(was)
+    now.allhands[0].who = ['reaper', 'warden']
+    const u = units(was, now)
+    expect(u.length).toBe(1)
+    expect(u[0].order).toBe(true)
+  })
+
+  it('two men taken off one row’s crowd are TWO — a man only taken off is one (Fable S1d, Astra 5)', () => {
+    const was = day({ allhands: [prog('MET + NOTAM BRIEF', ['warden', 'reaper', 'tally'], 'P1')] }), now = clone(was)
+    now.allhands[0].who = ['tally']
+    expect(units(was, now).length).toBe(2)
   })
 
   it('a placeholder (ALL AVAIL) moved from a ground row to a programme row is ONE (D109: "or a placeholder")', () => {
@@ -116,11 +138,28 @@ describe('a move counts as ONE pending change (D109, AM23)', () => {
     expect(units(was, now).length).toBe(1)
   })
 
-  it('a man moved into a brand-new row is the row added plus him taken off his old place — two', () => {
+  it('a man moved into a brand-new row is the row added plus HIS MOVE — two, and the list can say where he went (Fable S2)', () => {
     const was = metDay(), now = clone(was)
     now.dutywaves[0].rows[0].id = ''; now.dutywaves[0].rows.push(duty('NEW DESK', 'warden', [], 'NEW'))
     const u = units(was, now)
-    expect(u.map(x => x.kind).sort()).toEqual(['add', 'people'])
+    expect(u.map(x => x.kind).sort()).toEqual(['add', 'reseat'])
+  })
+
+  it('a man moved OUT of a row that was then removed is the removal plus his move — and "from" names the removed row from the issued day', () => {
+    const was = metDay(), now = clone(was)
+    now.dutywaves[0].rows.splice(0, 1)                         // MET + NOTAM BRIEF removed
+    now.dutywaves[0].rows[0].id = 'warden'                      // Warden now on SODB
+    const u = units(was, now)
+    expect(u.map(x => x.kind).sort()).toEqual(['delete', 'reseat'])
+    const r = u.find(x => x.kind === 'reseat')!
+    expect(r.from, 'the row is gone from the live day').toBe('')
+    expect(r.fromIssued).toBe('d:0.0.0')
+  })
+
+  it('a man only in a removed row and a new row (a row replaced) is the removal and the add — no move on top', () => {
+    const was = metDay(), now = clone(was)
+    now.dutywaves[0].rows.splice(0, 1); now.dutywaves[0].rows.push(duty('MET 2', 'warden', [], 'NEWMET'))
+    expect(units(was, now).map(x => x.kind).sort()).toEqual(['add', 'delete'])
   })
 
   it('pairs by row identity, not position — a reorder then a move reads as the move', () => {

@@ -801,7 +801,7 @@ export function retireIssued(di:any,id:any,opts:any={}):string{di=+di;
   if(opts.append!==false){
     SCHED.retired[key]={id,n:+key.slice(key.lastIndexOf('~')+1),di,iso:parseVerId(id).iso,seq,
       snap:rec?(rec.snap||{d:rec.d,c:rec.c,fil:rec.fil}):null,
-      diff:(rec&&rec.diff)||[],sign:(rec&&rec.sign)||{},
+      diff:(rec&&rec.diff)||[],units:rec&&rec.units!=null?rec.units:undefined,sign:(rec&&rec.sign)||{},   // units: the item count as it went out (D109; Astra 4)
       at:new Date().toISOString(),by:opts.by??null,
       restoreSeq:opts.restoreSeq,logged:!!opts.logged};
   }

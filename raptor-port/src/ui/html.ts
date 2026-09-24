@@ -267,8 +267,15 @@ export function verTagHTML(di:any){
    board's publish strip ([HUMAN-RETEST] the amendment system, walk S5, 24 Sep 26: the board
    never drew it, so the same day read signed-clean there and "Not yet signed" on the week).
    Read on the LIVE day: inside a withDaySnap swap the day diffs against itself. */
+/* TWO STATES (owner, D97, 25 Sep 26 — "5 ok"): "Not yet signed" while any of the four is missing or no longer
+   valid; "Not yet published" once all four are valid and the change has not gone out. It used to read "Not yet
+   signed" in both, beside four green sign-offs (it never looked at them). daySigned is the ONE per-role test the
+   sign-off boxes and the Publish button read, so the marker and the boxes cannot disagree. */
 export function nysMarkHTML(di:any){
-  return (!PV&&notYetSigned(di))?`<span class="nysmark" title="This working copy has edits that have not been signed and published yet — the published schedule stays as-is until you publish">Not yet signed</span>`:''
+  if(PV||!notYetSigned(di))return ''
+  return daySigned(di)
+    ? `<span class="nysmark pub" title="All four have signed this working copy — it has not been published yet; the published schedule stays as-is until you publish">Not yet published</span>`
+    : `<span class="nysmark" title="This working copy has edits that have not been signed and published yet — the published schedule stays as-is until you publish">Not yet signed</span>`
 }
 /* THE VIEW-ONLY WEEK'S DRAFT PICKER (owner, 15 Aug 26 — "on view schedule
    mode, you can also view the different drafts"). The view page deliberately
