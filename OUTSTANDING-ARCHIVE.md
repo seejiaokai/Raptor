@@ -1151,3 +1151,49 @@ reference gate. **Mock-up** (24 Sep 26, his ask): `raptor-port/docs/mock/amend-s
 the proposal's CSS. **Waiting for his three picks:** the ghost (recommended) or Option B; how long it stays; the mark on
 the seat. **To do:** then build it FULL tier (the issued face is a published record). **Place:** after the re-test merges.
 
+
+*Moved here 2026-09-25 by backlog-archive.mjs ([AMEND-REISSUE-DOOR]). Forward facts: `.claude/rules/decisions/scheduler.md`.*
+
+### [AMEND-REISSUE-DOOR] An Unpublish made by mistake, with nothing to correct, cannot be put back once Undo is gone — a question for him (24 Sep 26)
+**CLOSED 25 Sep 26 — RULED D101: no Reissue button; Publish AL1 is the way back (walked). Nothing to build.**
+**25 Sep 26 — WALKED, and the finding does not hold.** His question ("if i unpublish and change something and
+republish, will i still see reissue AL1 button?") was first answered wrongly by the agent ("Unpublish puts the
+working copy back to the version before") — corrected to him the same hour. In the app (scratch walks, the build on
+:4173): Monday at AL1 → Unpublish → ORIG, "2 pending", "Publish AL1" (locked until signed) → sign → "Publish AL1 — 2
+changes"; and Fable's own case, a weekend AL1 adding a man who earns OIL (Wisp onto Saturday's OPS DESK) → Unpublish
+("Withdraw — confirm") → ORIG, "1 pending", Wisp still on the desk, "Publish AL1" offered. Unpublish keeps the
+withdrawn AL's changes on the working copy as pending (`unpublishDay`, AM37c), so the ordinary Publish AL1 is the way
+back, after a sign-out too. Recommended to him: drop the Reissue button; waiting on his word to close. Pictured for him
+(his ask, 25 Sep 26): `raptor-port/docs/mock/amend-answers.html` §Question 6, maker `raptor-port/scripts/handpass/am/mk-unpublish.mjs`.
+Found by the amendment re-test's final code read (Fable #4, `raptor-port/docs/handpass/2026-09-24-amendment-fable-final-read.md`).
+Unpublish is one tap on a weekday (two where OIL is bid against) and a standing action — it survives a sign-out; Undo
+does not. The engine allows the pulled-back day to go out again under the SAME label even when nothing changed (the
+"correcting" flag, GU5-001), but no screen offers it: by AM15 the publish button stays hidden when there is nothing to
+publish, so after a sign-out the only way to get AL1 back is to change something and publish that — and on a weekend
+the men's OIL stays withdrawn until then (D142). **The question:** should a day pulled back by Unpublish, with
+nothing changed, show a "Reissue AL1" button (the week head and the Amendments panel)? **The agent's recommendation:**
+yes — it is the undo of an Unpublish that outlives the session, and AM15's reason (no button with nothing to publish)
+does not reach a day whose issued version was just withdrawn. Kept as built (AM15) until he answers; the look card's
+step 3 describes today's behaviour. **Where:** `raptor-port/src/ui/html.ts` `dayStatHTML`; `raptor-port/src/engine/publish.ts`
+`pendingPublishDays`. **Place:** waiting on him.
+
+
+*Moved here 2026-09-25 by backlog-archive.mjs ([AMEND-D45-FILING]). Forward facts: `.claude/rules/decisions/scheduler.md`.*
+
+### [AMEND-D45-FILING] Does D45 also cover a leave landing on a published day? — a question for him (24 Sep 26)
+**CLOSED 25 Sep 26 — RULED D103: any pending change wipes the sign-offs, so a leave landing on a published day keeps
+wiping them (as built). The build of D103 lives in `[PENDING-SUMMARY]`.**
+**25 Sep 26 — he asked first what breaks a published day's signature and what is live on a published day; answered in
+chat from `currentBind`/`signBoundOk`/`signRoleOk` (`raptor-port/src/engine/publish.ts`).** The question stands.
+Found by the amendment re-test's rules sweep (`raptor-port/docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`
+§Q3). Two of his rulings overlap and the newer does not clearly cover the case (D90's limit), so it is asked, not
+guessed. **D45 (22 Sep 26):** *"a change in who was available never invalidates a signature — the pending mark is
+the whole mechanism"* — given about the crowd behind an ALL / ALL AVAIL puck. **PSF-001 (15 Sep 26, his "close it
+now"):** an input accepted onto a published day, or filed under Unavailable (a leave, a course), DOES clear the
+day's sign-offs, like any content change — so the working copy must be re-signed before its next amendment goes
+out. **The question, in his words' terms:** when a man's leave lands on a day already published, should the
+sign-offs for the next amendment be wiped (as today), or stay, with only the pending mark showing? **Kept as built
+until he answers** (the leave clears the sign-offs). Either answer is small to build: the signature's filing check
+(`raptor-port/src/engine/publish.ts` `currentBind` → `filingKey`). **Place:** waiting on him; ask with the
+amendment re-test's look card.
+

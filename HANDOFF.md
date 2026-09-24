@@ -16,39 +16,25 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/amendment-retest -->
-### `claude/amendment-retest` — the amendment system re-test, FULL tier, done and waiting for his look, written 24 Sep 26 (evening) — verify before use
-- **Where it started:** his message of 24 Sep 26: start `[HUMAN-RETEST]` — the amendment system — FULL tier, build the
-  behaviour register first and ask nothing it settles; he was away ~6 h: work without waiting, file questions, never
-  merge, leave the branch pushed. "Latest rule is the most correct" → D90 (recorded, `how-we-work.md`).
-- **Shipped (on the branch, NOT merged):** the register `raptor-port/docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`
-  (AM1–AM52, clashes by D90, the rule-coverage gate); the evidence sheet `raptor-port/docs/handpass/2026-09-24-amendment.md`
-  (§3 every finding and its disposition, §4 roll-call, §10 gates, §11 the two code reads, §12 the re-walk, §13 his look
-  card); fixes, each red first, in `7c69bd58`, `767799ae` and the code reads' commit after them: the board's "Not yet
-  signed", one count everywhere, Discard marks, the phantom mark and the false "changed at AL1", the confirms on every
-  navigation (page, board day, close), Undo handing back spent sign-offs and a stuck Redo, the issued face's count and
-  its ⓘ, the input put-back, the Leave War holiday advisory, the Unavailable way back, plain check headings, the board
-  preview strip, the plan editor's page, History's footnote and wrap, the sign-off line naming a signer who no longer
-  counts, the sign-offs bound to the ground programme's shown order. The PR: opened with this push — `gh pr view
-  claude/amendment-retest`; its checks run on his PC.
-- **Unfinished:** none of the re-test's own work. After his look at the mock-up: a mark for an emptied seat is declined
-  (D91, `[AMEND-EMPTY-SEAT-MARK]` archived); `[AMEND-MARK-RING-CLASH]` — his D92 (a changed puck gets a tag, never a
-  ring) is drawn (`raptor-port/docs/mock/amend-seat-marks.html`) and waits for his word; `[BOARD-RING-STROKES]` filed;
-  `[AVAILWIN-PREVIEW-BAR]`, `[AMEND-SMALL-SEEN]`; for the change-recording re-test: D148 (not built),
-  `[UNDO-ROSTER-SETTINGS]`, the Undo wording in `[AMEND-SMALL-SEEN]` item 2.
-- **Branch:** `claude/amendment-retest`, cut from `main` at `bff76c1b` (`main` had not moved when written); it also
-  carries the previous chat's recorded answers D147–D164 (docs). If it has MERGED: `git fetch origin main && git
-  checkout -B <branch> origin/main` before new work.
+### `claude/amendment-retest` — the amendment re-test (done) and his answers to it; written 25 Sep 26 — verify before use
+- **Where it started:** 24 Sep 26: `[HUMAN-RETEST]`, the amendment system, FULL tier, work without waiting. Then, on
+  25 Sep 26, his look at the re-test's leftovers: mock-ups of the real app and his answers, recorded as D91–D105.
+- **Shipped (on the branch, NOT merged):** the re-test — the register, the evidence sheet
+  `raptor-port/docs/handpass/2026-09-24-amendment.md` (§13 is his five-minute look card), every fix red first — and the
+  mock-ups `raptor-port/docs/mock/amend-seat-marks.html`, `amend-answers.html`, `pending-list.html` with their makers
+  in `raptor-port/scripts/handpass/am/`. PR #434 — open when written; check before acting.
+- **Unfinished:** none of the re-test's own work. **His decisions of 24–25 Sep 26 are ONE build batch, not yet built:**
+  `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md` (11 items: tag-only marks, board rings, the
+  "Signed ALn" line, template refusal, the two-state marker, the load fix, wipe-on-any-pending, the pending list, the
+  bubble, the phone keyboard gap). Also filed: `[AVAILWIN-PREVIEW-BAR]`, `[AMEND-SMALL-SEEN]`, `[UNDO-ROSTER-SETTINGS]`.
+- **Branch:** `claude/amendment-retest`, cut from `main` at `bff76c1b`. If it has MERGED: `git fetch origin main && git
+  checkout -B <branch> origin/main` before new work; the batch goes on a fresh branch from `main`.
 - **Gates:** see `## Gate baseline` (this branch's final code, one watched run); `npm run probes:adapted` **6 / 6** (129
   checks — the probes now fall back to Playwright's own browser, and audit-async's step 3, stale since 13 Sep 26, looks
   for the input's id) · `npm run perf` **4 / 0** (week 5134 / 5450 nodes, board 1024 / 1150).
-- **Open questions for him (filed, none blocking the merge):** `[AMEND-D45-FILING]`, `[AMEND-PHONE-APPROVER]`,
-  `[AMEND-TEMPLATE-PUBLISHED]`, `[AMEND-NYS-WORDING]`, `[AMEND-REISSUE-DOOR]`, `[AMEND-LOAD-FILING]` — each with the
-  agent's recommendation in its item. 25 Sep 26: D93–D96 recorded (tags-only approved; board rings yes; View-only Sched
-  shows who signed; templates refused on a published day). Still his: leave-wipes-sign-offs (`[AMEND-D45-FILING]`), A+B
-  or B only (`[AMEND-PHONE-APPROVER]`), the two-state marker (`[AMEND-NYS-WORDING]`), Reissue (`[AMEND-REISSUE-DOOR]`),
-  load puts the request back (`[AMEND-LOAD-FILING]`) — pictures: `raptor-port/docs/mock/amend-answers.html`.
-- **Pick up here:** his five-minute look (evidence sheet §13) and his "merge live"; then his order (D147): the absence
-  record together with `[S4-HUNT-REST]` — `[HUMAN-RETEST]` in `OUTSTANDING.md`.
+- **Open questions for him:** none from this chat — every question he was asked is answered (D91–D105) or closed.
+- **Pick up here:** his five-minute look at PR #434 (evidence sheet §13) and his "merge live"; then build the batch in
+  `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md` (FULL tier; Opus 5.5 builds, Fable and Astra read).
 <!-- /now -->
 
 ## Next, in order

@@ -71,12 +71,12 @@ first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [T
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SMOKE-ADD-RACE]
 (before the next Tracker change that touches the smoke suite), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
-The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [BOARD-KEYBOARD-GAP] (phone; small). The amendment re-test's leftovers — [PENDING-SUMMARY] (his idea, 25 Sep 26 — his word first), [AMEND-MARK-RING-CLASH] (design approved, D93 — to build) and [BOARD-RING-STROKES] (his question), [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [BOARD-KEYBOARD-GAP] (phone; small). The amendment batch, all decided 24–25 Sep 26 (D91–D105), ONE build after the re-test merges — `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`: [PENDING-SUMMARY], [AMEND-PHONE-APPROVER], [AMEND-TEMPLATE-PUBLISHED], [AMEND-NYS-WORDING], [AMEND-LOAD-FILING], [AMEND-MARK-RING-CLASH] (design approved, D93 — to build) and [BOARD-RING-STROKES] (his question), [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] and [RULING-HOMES-AUDIT] (any time, docs only),
 [BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
 FULL-tier build, any time).
 
-**Waiting on him — no order exists:** [AMEND-D45-FILING], [AMEND-PHONE-APPROVER], [AMEND-TEMPLATE-PUBLISHED], [AMEND-NYS-WORDING], [AMEND-REISSUE-DOOR] and [AMEND-LOAD-FILING] (questions from the amendment re-test, 24 Sep 26), [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
+**Waiting on him — no order exists:** [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
 D147), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
 [REPO-PRIVATE]'s sharing half, [EOD] (design first; no slot
 ruled), [CRP-FLAG]'s remainder and then [FLAG-EXPORT], the [AMEND] leftovers, [ADMIN-DISPLAY] ("next time we revisit",
@@ -1009,22 +1009,9 @@ a flagged View-as puck shows the same plain red ring (solid or dashed) as every 
 and walk both widths with a flagged View-as puck. LOOK tier on one shared puck rule — check every surface that draws
 a puck. **Place:** any time, none blocking; a good one to ride the next scheduler change.
 
-### [AMEND-D45-FILING] Does D45 also cover a leave landing on a published day? — a question for him (24 Sep 26)
-**25 Sep 26 — he asked first what breaks a published day's signature and what is live on a published day; answered in
-chat from `currentBind`/`signBoundOk`/`signRoleOk` (`raptor-port/src/engine/publish.ts`).** The question stands.
-Found by the amendment re-test's rules sweep (`raptor-port/docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`
-§Q3). Two of his rulings overlap and the newer does not clearly cover the case (D90's limit), so it is asked, not
-guessed. **D45 (22 Sep 26):** *"a change in who was available never invalidates a signature — the pending mark is
-the whole mechanism"* — given about the crowd behind an ALL / ALL AVAIL puck. **PSF-001 (15 Sep 26, his "close it
-now"):** an input accepted onto a published day, or filed under Unavailable (a leave, a course), DOES clear the
-day's sign-offs, like any content change — so the working copy must be re-signed before its next amendment goes
-out. **The question, in his words' terms:** when a man's leave lands on a day already published, should the
-sign-offs for the next amendment be wiped (as today), or stay, with only the pending mark showing? **Kept as built
-until he answers** (the leave clears the sign-offs). Either answer is small to build: the signature's filing check
-(`raptor-port/src/engine/publish.ts` `currentBind` → `filingKey`). **Place:** waiting on him; ask with the
-amendment re-test's look card.
-
 ### [AMEND-PHONE-APPROVER] On a phone, who approved each amendment is shown nowhere — a question for him (24 Sep 26)
+**DECIDED 25 Sep 26 — D102: the slim "Signed ALn" line (A) on View-only Sched, the board AND the edit week; B not taken.
+To build with the D92 batch, including keeping the Original's signers.**
 **Mock-up (25 Sep 26, his ask):** `raptor-port/docs/mock/amend-answers.html` §Question 3 (maker
 `raptor-port/scripts/handpass/am/mk-view-signers.mjs`): A — one slim "Signed ALn" line under the day head on View-only
 Sched (roles on desktop, names only on a phone); B — the ⓘ panel lists every version with its four signers. Asked: A+B
@@ -1117,28 +1104,6 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
    Fable #1's mirror; the digest keys ground rows by position). A false re-sign, never a false publish.
 **Place:** any time; items 6–8 with the Leave War links re-test (D147, last).
 
-### [AMEND-REISSUE-DOOR] An Unpublish made by mistake, with nothing to correct, cannot be put back once Undo is gone — a question for him (24 Sep 26)
-**25 Sep 26 — WALKED, and the finding does not hold.** His question ("if i unpublish and change something and
-republish, will i still see reissue AL1 button?") was first answered wrongly by the agent ("Unpublish puts the
-working copy back to the version before") — corrected to him the same hour. In the app (scratch walks, the build on
-:4173): Monday at AL1 → Unpublish → ORIG, "2 pending", "Publish AL1" (locked until signed) → sign → "Publish AL1 — 2
-changes"; and Fable's own case, a weekend AL1 adding a man who earns OIL (Wisp onto Saturday's OPS DESK) → Unpublish
-("Withdraw — confirm") → ORIG, "1 pending", Wisp still on the desk, "Publish AL1" offered. Unpublish keeps the
-withdrawn AL's changes on the working copy as pending (`unpublishDay`, AM37c), so the ordinary Publish AL1 is the way
-back, after a sign-out too. Recommended to him: drop the Reissue button; waiting on his word to close. Pictured for him
-(his ask, 25 Sep 26): `raptor-port/docs/mock/amend-answers.html` §Question 6, maker `raptor-port/scripts/handpass/am/mk-unpublish.mjs`.
-Found by the amendment re-test's final code read (Fable #4, `raptor-port/docs/handpass/2026-09-24-amendment-fable-final-read.md`).
-Unpublish is one tap on a weekday (two where OIL is bid against) and a standing action — it survives a sign-out; Undo
-does not. The engine allows the pulled-back day to go out again under the SAME label even when nothing changed (the
-"correcting" flag, GU5-001), but no screen offers it: by AM15 the publish button stays hidden when there is nothing to
-publish, so after a sign-out the only way to get AL1 back is to change something and publish that — and on a weekend
-the men's OIL stays withdrawn until then (D142). **The question:** should a day pulled back by Unpublish, with
-nothing changed, show a "Reissue AL1" button (the week head and the Amendments panel)? **The agent's recommendation:**
-yes — it is the undo of an Unpublish that outlives the session, and AM15's reason (no button with nothing to publish)
-does not reach a day whose issued version was just withdrawn. Kept as built (AM15) until he answers; the look card's
-step 3 describes today's behaviour. **Where:** `raptor-port/src/ui/html.ts` `dayStatHTML`; `raptor-port/src/engine/publish.ts`
-`pendingPublishDays`. **Place:** waiting on him.
-
 ### [BOARD-KEYBOARD-GAP] On a phone, typing on the board lets the schedule behind show above the keyboard (found 25 Sep 26)
 Reported by him from the live app on his iPhone: *"when I click on the history button and I try to type on a text area as
 shown, as the keyboard shows, u can see a small area of the edit or view only schedule behind the scheduler board."*
@@ -1153,6 +1118,9 @@ unclear whether History mode has to be on — reproduce both ways. **To do:** re
 open, or size the board to the visible area). LOOK tier, phone only. **Place:** with the board items; small.
 
 ### [PENDING-SUMMARY] Tap "N pending" to see what changed, by whom and when — his idea (25 Sep 26), waiting on his word
+**ALL FOUR PARTS DECIDED 25 Sep 26:** (1) D103 any pending change wipes the sign-offs; (2) D99 + D100 the tappable,
+scrolling list that jumps to each change (mock-up approved); (3) D104 callsigns wait for the database; (4) D105 the bubble
+stays, hover or tap, scrolling when long. To build with the D92 batch — FULL tier (sign-offs, published records).
 **Part (2) DECIDED 25 Sep 26 — D99: "N pending" is a button listing the day's waiting changes; tapping one takes the
 view to it. Parts (1), (3), (4) still his; mock-up first.**
 **APPROVED 25 Sep 26 — D100 ("looks good and function"); a long list scrolls inside the window.** **Mock-up (25 Sep 26):** `raptor-port/docs/mock/pending-list.html` (maker `raptor-port/scripts/handpass/am/mk-pending-list.mjs`)
