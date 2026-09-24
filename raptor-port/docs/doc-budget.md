@@ -13,11 +13,11 @@ So this file adds the forcing function, not a new opinion.
 
 | Tier | What is in it | Budget |
 |---|---|---|
-| **0 — always loaded**, every session, no choice | `raptor-port/CLAUDE.md`, `.claude/rules/*.md` without `paths:` — incl. the general rulings `.claude/rules/decisions/how-we-work.md` | **600 lines total.** Index and live rules ONLY. (The general rulings are over that on purpose: he wants them read every session — D137.) |
-| **1 — read at session start** | `HANDOFF.md`, `OUTSTANDING.md`, `DECISIONS.md` (the rulings map) | **HANDOFF 400. The map 80.** OUTSTANDING is a backlog: priority list + one short block per LIVE item; anything done moves out. |
-| **2 — read when working in that area** | `engine-rules.md`, `ui-contracts.md`, `feature-impact.md`, `bug-check-order.md`, `data-*.md`; and each area's rulings `.claude/rules/decisions/<area>.md`, which LOAD BY THEMSELVES when a file matching their `paths:` is read (D137) | No line budget (the rulings files: a ceiling each that RISES, never a trim — D136). Must be navigable: headed sections, no section over ~150 lines without sub-heads. |
+| **0 — always loaded**, every session, no choice | `raptor-port/CLAUDE.md` (strictly: once any file under `raptor-port/` is opened — in practice every build session; a root-only chat has only the rule files, so `.claude/rules/shipping.md` and `doc-structure.md` carry what every chat needs), `.claude/rules/*.md` without `paths:` — incl. the general rulings `.claude/rules/decisions/how-we-work.md` | **No line target (D141, 24 Sep 26) — a ceiling per file is a TRIPWIRE (§4).** Index and live rules ONLY, and only what EVERY task needs: an area’s rules and architecture live in its area file (tier 2, D140). (The general rulings are read every session on purpose — D137.) |
+| **1 — read at session start** | `HANDOFF.md`, `OUTSTANDING.md`, `DECISIONS.md` (the rulings map) | **No line target (D141) — a ceiling per file is a TRIPWIRE (§4).** OUTSTANDING is a backlog: priority list + one short block per LIVE item; anything done moves out. |
+| **2 — read when working in that area** | `engine-rules.md`, `ui-contracts.md`, `feature-impact.md`, `bug-check-order.md`, `data-*.md`; and each area's rulings `.claude/rules/decisions/<area>.md`, which LOAD BY THEMSELVES when a file matching their `paths:` is read (D137) — and, since D140, carry that area’s settled decisions and architecture too; `docs/file-map.md`; `docs/gates-and-deploy.md` | No line budget (the rulings files: a ceiling each that RISES, never a trim — D136). Must be navigable: headed sections, no section over ~150 lines without sub-heads. |
 | **3 — read only for that one task** | `docs/superpowers/specs/*`, `briefs/*`, review and scenario files | None. Never read unless the task names it. **Never linked from tier 0.** |
-| **4 — archive** | `HANDOFF-ARCHIVE.md`, superseded specs | None. Searched, never read. |
+| **4 — archive** | `HANDOFF-ARCHIVE.md`, `OUTSTANDING-ARCHIVE.md`, `DECISIONS-ARCHIVE.md`, `raptor-port/docs/archive/` (finished documents and passages), superseded specs | None. Searched, never read. |
 
 **The rule that makes tiering work: a tier-0 file may not contain a tier-2 explanation.** It carries
 the decision in one line and a pointer. That is the whole job of an index.
@@ -41,6 +41,8 @@ This is D14's substance, and it applies to every doc, every commit message and e
   reason that could change a future decision survives a trim. When in doubt, MOVE the text whole to where it is
   read less often (an area file, an archive) rather than reword it; a condensed version is checked against the
   original for meaning by a model that did not write it, before it replaces it.
+- **The whole repo reads by relevance and keeps itself tidy** (owner, D140, 24 Sep 26 — *"read only what’s applicable for the job automatically and knows how to navigate … new info going into the repo will follow this structure automatically"*). A small general layer is read every session; each area’s context loads by itself; everything else is found through the map in `raptor-port/CLAUDE.md` §Where things live. Where each new fact goes, and when it leaves: `.claude/rules/doc-structure.md` (always loaded). It is woven into his workflow — the handoff between chats, parallel worktrees, the Claudex loop (D140 point 5).
+- **No line targets — is it needed HERE, organised and clear?** (owner, D141, 24 Sep 26 — *"no hard line, more of like is this info needed etc and optimised"*). A block that the sessions reading this file do not need moves, whole, to where it is read less often (D138); a file is also judged on whether a reader can find things in it. The old fixed targets (500 / 400 / 600) are withdrawn.
 - **Chat context saved into the repo is SUMMARISED, never dumped** (owner, D69, 23 Sep 26). When a
   long session persists its working context — a handoff, a context doc, a closing note — it writes
   the decisions, the state and the next step, not the conversation. The repo must not bloat.
@@ -68,7 +70,7 @@ Stale is worse than absent — the next session trusts it.
   truncated, or when a body line is newly doubled. It runs in CI (`docs-guard.yml`, which exists
   because docs-only changes otherwise run no checks at all) and as a Stop hook at the end of every
   turn. A deliberate exception is declared in the commit: `Docs-guard-allow: [ID]`.
-- **The ceilings.** Each always-read file has a line ceiling. **Over a ceiling inside a code change
+- **The ceilings — TRIPWIRES, not targets** (D141, 24 Sep 26). Each always-read file has a line ceiling. Crossing it means "look at what in this file does not belong here and move it to its home" (`.claude/rules/doc-structure.md`) — never "cut to a number"; when what crossed it genuinely belongs, the ceiling RISES with its reason. **Over a ceiling inside a code change
   is reported and deferred, never failed** — a code change is never where docs get trimmed (D29
   rule 3). Over a ceiling on a docs-only change fails, because that change is the trim pass.
 - **The rulings.** No D-number may be lost or newly doubled across the rulings files (`DECISIONS.md`,

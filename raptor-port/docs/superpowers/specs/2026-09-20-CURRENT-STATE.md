@@ -182,6 +182,10 @@ already what happened to a bid placed afterwards. Sets aside the second half of 
 
 ## 8. THE ONE THING STILL OWED — the hand test
 
+*(24 Sep 26: the branch merged as PR #422 on 21 Sep 26, and its one uncertified test pair — the Leave War month
+window — turned out to be an app bug, fixed and merged in PR #428 (`[LW-MONTHJUMP-PHONE]`, archived). Backlog
+item `[S4-BUGHUNT-MERGED]`, which pointed here, is archived; what this branch SET ASIDE stays in §5 above.)*
+
 Every gate below is green and nothing is in flight. What has NOT happened is anybody LOOKING at
 this on screen.
 

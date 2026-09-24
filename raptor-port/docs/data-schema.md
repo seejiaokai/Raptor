@@ -571,7 +571,9 @@ Listed in the order they would bite.
    existed are back-filled by address once. Rows are STILL addressed by
    `day.section.index`, so inserting a row renumbers the ones after it
    (`keys.ts` remaps the book and the edit log to cope); the addressing
-   rewrite is the next step.
+   rewrite is the next step. *(Corrected 24 Sep 26: that rewrite SHIPPED 11 Sep 26 — the amendment
+   book now resolves rows by `rid`, translated at the screen boundary; `raptor-port/CLAUDE.md` §The
+   slot-key grammar.)*
 4. **The demo seed is code.** PEOPLE, DAYS and INPUTS are literals in
    `people.ts` / `data.ts` / `inputs.ts`. A database replaces the seed; the
    seed then becomes test fixtures only. The repository is public: no real
@@ -594,7 +596,9 @@ Listed in the order they would bite.
    The scheduler roster is the identity; the Leave War projects it (same
    ids) and a Tracker student is an enrolment id carrying `pid` where they
    were picked off that roster. Courses and syllabi are still keyed by
-   typed name, and their storage keys are those names joined with `:`. The
+   typed name, and their storage keys are those names joined with `:`
+   *(corrected 24 Sep 26: since 13 Sep 26 both are stable ids too — `COURSES`/`SYLS` entries `{id,name}`,
+   keys filed under the id; `.claude/rules/decisions/tracker.md` §Architecture)*. The
    designed model (`data-model.md`) makes Enrolment (person × course ×
    syllabus) the row and the name an attribute.
 10. **Progression is a summary, not a history.** A Tracker mark holds the
@@ -605,6 +609,11 @@ Listed in the order they would bite.
 11. **Hours are display text** (`'2.0 Hrs'`) in the event details, not a
     number, so nothing totals them. Left as-is on purpose — the owner is
     replacing the event details himself; the model types hours as a number.
+12. **Two tabs of one browser overwrite each other's whole-record writes.** A known gap of the storage
+    seam's first stage (8 Sep 26): each tab writes whole records through its own postman, so the later
+    write wins; the stage-3 "incoming" side (live-ish sync) is the fix, which the database step
+    brings. The Tracker's own case is in `docs/tracker/known-gaps.md`. *(Moved here 24 Sep 26 from
+    `HANDOFF.md`'s storage-seam story, now archived, where it was the only place it was written.)*
 
 ## Suggested first cut of tables
 

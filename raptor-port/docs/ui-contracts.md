@@ -3324,7 +3324,7 @@ an already-crowded control bar.
 
 **On the board**, a labelled `.sb-panel` — "Templates & drafts", two
 buttons — sits at the VERY TOP of the board's own content, ahead of every
-section, not on the top bar's first line (`CLAUDE.md` §Stable decisions:
+section, not on the top bar's first line (`.claude/rules/decisions/scheduler.md` §Settled → Week navigation, once `CLAUDE.md` §Stable decisions:
 that line is frozen — nothing joins it without something else leaving). A
 control that can replace the WHOLE day belongs at the top of the day's own
 content, the same reasoning the section-level `+ Wave`/`+ Block` controls
@@ -4458,7 +4458,7 @@ step by step.
 
 (The old known edge here — a recurring input chipping its first span only —
 is gone WITH its feature: the owner had the repeat-weeks field removed
-outright, 22 Aug 26. See CLAUDE.md §Stable decisions.)
+outright, 22 Aug 26. See `.claude/rules/decisions/scheduler.md` §Settled → Inputs & Admin, once CLAUDE.md §Stable decisions.)
 
 ## The Admin page (owner, 23 Aug 26)
 
@@ -7434,3 +7434,49 @@ chip-and-list disagreement Fable correction 2 exists to stop, in a new place.
 **It says WHICH of the two answers it is showing** — who was free when the day
 was issued, or who is free as things stand now — in the same words the chip's own
 title uses, from one shared body (`oilFromWords`). They were two readers once.
+
+## Device caveats — unverified on a real iPhone (moved whole from `HANDOFF.md`, 24 Sep 26)
+
+- **Unverified on a real iPhone** (no iOS device reachable from here; each is a
+  caveat, not a finding): the
+  **focus-zoom fix** (`index.html` appends
+  `maximum-scale=1` to the viewport meta at runtime on Apple touch devices only;
+  Chromium's meta stays bare, gated in `e2e/geometry.spec.ts`; the unbuilt
+  fallback is `font-size:16px` on the focused cell via a transform-scale trick),
+  and the **board's page lock** (`body.sb-lock` is `overflow:hidden`; iOS Safari
+  is the known exception for TOUCH scrolling; `overscroll-behavior:contain` on
+  `.sb-main` is the other half and does work there, so only a drag on the top
+  bar would still reach the week — contract `ui-contracts.md` §The page behind
+  the board does not scroll), the **burger drawer's page lock** (6 Sep 26 — the
+  same three halves for the drawer: `.drawer-panel` `overscroll-behavior:
+  contain` + `touch-action:pan-y`, the scrim `touch-action:none`, `body.dw-lock`;
+  the owner's report was an iOS touch swipe, which the containment and
+  touch-action are for — if it still leaks on his phone the next theory is a
+  swipe that starts on the panel when the list is NOT scrollable, and the fix
+  is a `position:fixed` body lock — §The page behind the burger drawer does not
+  scroll), the **eye in each manning row's frozen balance
+  box painting at once in Rearrange** (6 Sep 26, `.mx .counts .mrow-tools`
+  `translateZ(0)` — the owner's report that the eyes did not show on his iPhone
+  until a tap or a scroll; the same cure the (since deleted) rearrange bar got
+  on 5 Sep, which his 6 Sep screenshot showed holding; reasoned from the
+  band-overlay teardown landing in the same commit as the insert, not from a
+  device trace — `ui-contracts.md` §The controls Rearrange inserts paint on
+  their own compositor layer. If the eye still does NOT paint on his phone, the
+  next theory is that the sticky `td.bal` itself needs the promotion in
+  Rearrange — `tr[data-mrow] td.bal`, an edit-only selector — before any render
+  kick), the **manning grip inside the frozen name cell** (5 Sep 26 — in
+  Rearrange the ⠿ shares the sticky `td.who` with the label as a flex row,
+  `.mwho-row`; flex inside a sticky table cell is the WebKit-sensitive part, and
+  the counter reorder's existing `scrollLeft` self-assign repaint kick still
+  covers it — `ui-contracts.md` §On a manning row in Rearrange the GRIP sits at
+  the LEFT), and the **wider frozen name column in Rearrange** (6 Sep 26 —
+  `.mx-outer.mx-arranging` re-sets `--who-w`, so every sticky `.who`/`.bal`
+  `left`/width changes in one restyle while the phone's overlay is down; the
+  frozen header mirror re-pins on `arranging`. Chromium keeps the pair joined
+  and the mirror aligned; WebKit's sticky-offset recompute on a var change is
+  the unproven part — `ui-contracts.md` §In Rearrange the frozen name column
+  widens), and the **FIGURES DRAWER's four WebKit-sensitive parts** (6 Sep 26 —
+  the overlay's copied ROW HEIGHTS, the stuck bar's frozen COPY matching the
+  drawer's width, the FLASH painting at all, and the corner switch filling its
+  sticky cell out of flow; each with what would show and how tight the margin is
+  in `ui-contracts.md` §The figures drawer). Chromium is clean on all four.

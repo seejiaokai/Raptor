@@ -28,10 +28,16 @@
  * file's new size after every trim — zero headroom — and Fable measured seven of eight files sitting
  * at exactly zero, so every mandatory addition during a fix tripped the gate. That clause is
  * WITHDRAWN (D29 as corrected). Raise or lower a ceiling only as a deliberate, argued edit with the
- * reason in the commit, in a commit that touches no src. TARGET is where doc-budget.md says each
- * file should end up; over target is reported, never failed — [DOC-TRIM] owns that.
+ * reason in the commit, in a commit that touches no src. There are no TARGETS any more (owner, D141, 24 Sep 26):
+ * a ceiling is a tripwire — crossing it means "move what does not belong here", never "cut to a number".
  *
- * Flags: --inventory runs job 1 only (the Stop hook .claude/hooks/backlog-guard.sh uses it).
+ * JOB 1d, MISFILING (owner, D140, 24 Sep 26) — a document put where the structure has no place for it: a new
+ * root .md outside ROOT_ALLOW, a document outside the one docs tree, an always-loaded rules file nobody
+ * registered, two HANDOFF.md ## Now blocks for one branch, a new reference doc no map names. Where each fact
+ * belongs is `.claude/rules/doc-structure.md`. It runs with the inventory, so the Stop hook enforces it.
+ *
+ * Flags: --inventory runs job 1 only (the Stop hook .claude/hooks/backlog-guard.sh uses it); --moves lists
+ * every line that left a Markdown file on this branch and arrived nowhere (the reading list of a D138 check).
  * The closing report copies the `Docs:` and `docsize:` lines this prints (bug-check-order §9). */
 import { readFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
@@ -53,33 +59,52 @@ const RULINGS_DIR = '.claude/rules/decisions'
 const RULINGS_ARCHIVE = 'DECISIONS-ARCHIVE.md'
 const INVENTORY_ONLY = process.argv.includes('--inventory')
 
-/* file, tier, CEILING, TARGET (doc-budget.md's aim). Keep one row per line in exactly this shape:
-   the ceiling-change check below reads the rows back out of older versions of this file. */
+/* file, tier, CEILING. Keep one row per line in exactly this shape: the ceiling-change check below reads the
+   rows back out of older versions of this file (which also carried a fourth number, the TARGET).
+   NO TARGETS (owner, D141, 24 Sep 26 — "no hard line, more of like is this info needed etc and optimised"):
+   a ceiling is a TRIPWIRE, never a number to cut to. Crossing it means "look at what in this file does not
+   belong here and move it to its home" (`.claude/rules/doc-structure.md`); when what crossed it belongs, the
+   ceiling RISES here, with its reason, in a docs-only commit. */
 const FILES = [
   /* 1539 -> 1543, 23 Sep 26 (owner, D60): push a BRANCH freely, ASK before `main` — a rule the
-     agent must check before acting, so it belongs in the always-loaded tier. [DOC-TRIM] still owns
-     bringing this file to its 500 target. */
-  ['raptor-port/CLAUDE.md',              0, 1543,  500],
-  ['.claude/rules/raptor-executor.md',   0,  108,  108],
+     agent must check before acting, so it belongs in the always-loaded tier.
+     1543 -> 760, 24 Sep 26 (the spring clean, D140 + D141): each area's settled decisions and
+     architecture moved WHOLE to its area file, the shipping rules to .claude/rules/shipping.md, the
+     Pages-era text to raptor-port/docs/archive/ — 702 lines left, the rest is room. A tripwire, not a target. */
+  ['raptor-port/CLAUDE.md',              0,  760],
+  ['.claude/rules/raptor-executor.md',   0,  108],
   /* 63 -> 76, 23 Sep 26 (owner, D56): data-only problems are not findings, in the always-loaded
      copy so it is in force before the order is opened. */
-  ['.claude/rules/bug-check.md',         0,   76,   76],
+  ['.claude/rules/bug-check.md',         0,   76],
   /* 60 -> 100, 23 Sep 26 ([DOCS-GUARD] step 1). The file had ALREADY grown to 95 with the ceiling
      unmoved — the D53 "read it before you ask him anything" rule, a genuinely live rule — and
      nothing noticed, because this gate ran nowhere. Raised to what is true plus a little room,
      never paid for by trimming a live rule. 100 -> 125, 24 Sep 26 (owner, D136 + D137): the rule for
      keeping the rulings whole and split by area, and how a new or replaced ruling is filed, are live
      rules every session must carry — the same argument. */
-  ['.claude/rules/record-decisions.md',  0,  125,   60],
-  ['.claude/rules/plain-language.md',    0,   60,   60],
+  ['.claude/rules/record-decisions.md',  0,  125],
+  ['.claude/rules/plain-language.md',    0,   60],
+  /* NEW 24 Sep 26 (owner, D140 + D143): the two rule files every chat carries so the structure and the way a
+     change ships are in force before any project file is read. Ceilings set at what they hold plus room. */
+  ['.claude/rules/doc-structure.md',     0,  100],
+  ['.claude/rules/shipping.md',          0,  110],
   /* 961 -> 1000, 23 Sep 26 ([DOCS-GUARD] step 1). Already at 969: the two OIL merges (#424, #425)
      added lines inside code changes, which is exactly what F3 now allows and defers. HANDOFF must
      accept a known-issue entry during a fix (CLAUDE.md), so it carries declared headroom. */
-  ['HANDOFF.md',                         1, 1000,  400],
+  /* 1000 -> 250, 24 Sep 26 (the spring clean, D140): HANDOFF.md became the ONE current-state handoff — a block per
+     chat under ## Now, the order, the standing facts; its history, file map and traps moved whole to their homes
+     (86 lines left). The room is for parallel chats' blocks; a crossing means a merged block or a story is sitting
+     there (the session-handoff skill removes those), never "cut to fit". HANDOFF-NEXT.md is its three-line
+     signpost — a tight ceiling so it can never grow back into a second handoff. */
+  ['HANDOFF.md',                         1,  250],
+  ['HANDOFF-NEXT.md',                    1,   12],
   /* 1240 -> 1400, 23 Sep 26 ([DOCS-GUARD] step 1). Already at 1335 through the same two merges.
      The bug-check order §7.6 requires a MISSING to be filed here during a fix, so it too carries
      declared headroom. [DOC-TRIM] owns the 600 target — as its own docs-only pass. */
-  ['OUTSTANDING.md',                     1, 1400,  600],
+  /* 1400 -> 1150, 24 Sep 26 (the spring clean): the old priority list and plain-terms block archived whole, nine
+     finished items archived by the item mover, a live-only list written; eight items filed (1,025 lines). A tripwire
+     (D141): crossing it asks "is a finished item still sitting here?", never "cut to a number". */
+  ['OUTSTANDING.md',                     1, 1150],
   /* THE RULINGS (owner, D136 + D137, 24 Sep 26). They are MEANT to grow, so each ceiling is its target,
      and a rulings file is NEVER trimmed to fit: at a ceiling, archive what is replaced or spent
      (DECISIONS.md, step 2) and then RAISE the ceiling here, with the reason. DECISIONS.md is now only
@@ -87,15 +112,18 @@ const FILES = [
      it is tier 0; each other area loads only when a file in that area is read, so it is tier 2. Set
      24 Sep 26 at roughly two to three times each file's size on the day it was split — "increase the
      budget to be safe". DECISIONS-ARCHIVE.md has no ceiling: searched, never loaded. */
-  ['DECISIONS.md',                       1,   80,   80],
-  ['.claude/rules/decisions/how-we-work.md', 0, 150, 150],
-  ['.claude/rules/decisions/oil.md',     2,  120,  120],
-  ['.claude/rules/decisions/scheduler.md', 2, 100, 100],
-  ['.claude/rules/decisions/tracker.md', 2,  100,  100],
-  ['.claude/rules/decisions/leave-war.md', 2, 60,   60],
+  ['DECISIONS.md',                       1,   80],
+  ['.claude/rules/decisions/how-we-work.md', 0, 150],
+  ['.claude/rules/decisions/oil.md',     2,  120],
+  /* 100 -> 560, 240, 360 — 24 Sep 26 (the spring clean, D140): each area file now also carries that area's
+     settled decisions from before the rulings list and (Leave War, Tracker) its architecture, moved WHOLE from
+     raptor-port/CLAUDE.md so they load only with the area's files. Set at what they hold plus room for the
+     rulings to keep growing (D136: a rulings file is never trimmed to fit). */
+  ['.claude/rules/decisions/scheduler.md', 2, 560],
+  ['.claude/rules/decisions/tracker.md', 2,  240],
+  ['.claude/rules/decisions/leave-war.md', 2, 360],
 ]
 const RULING_CEILING = f => f === DECISIONS || f.startsWith(RULINGS_DIR + '/')
-const TIER0_TARGET = 600
 
 /* ---------- git plumbing ---------- */
 const git = (...args) => execFileSync('git', args, { cwd: REPO, encoding: 'utf8', maxBuffer: 64 << 20, stdio: ['ignore', 'pipe', 'ignore'] })
@@ -241,8 +269,13 @@ function inventory(allow) {
      that happens to exist in some other archived item would hide the cut (Astra). */
   const everLive = new Map(base.live.map(b => [b.id, b]))
   for (const c of liveCommits) for (const b of blocks(tryGit('show', `${c}:${LIVE}`) || '')) if (!everLive.has(b.id)) everLive.set(b.id, b)
+  /* [DOCSGUARD-MERGE] (fixed 24 Sep 26, Astra's red team of the spring clean): an item already in the archive
+     AT THE BASE was moved — and checked — on the base's own history. A branch that merged `main` in (D78) still
+     carries its own pre-merge commits, whose older live copy of that item is not a second move; comparing the
+     two failed a clean merge ("left OUTSTANDING.md but N lines did not arrive"). */
+  const archivedAtBase = new Set(base.arch.map(a => a.id))
   for (const [id, b0] of everLive) {
-    if (liveNowIds.has(id) || !now.arch.some(a => a.id === id) || allow.has(`[${id}]`)) continue
+    if (liveNowIds.has(id) || !now.arch.some(a => a.id === id) || archivedAtBase.has(id) || allow.has(`[${id}]`)) continue
     const b = lastLive(id) || b0
     const arrived = multiset(nonBlank(now.arch.filter(a => a.id === id).flatMap(a => a.lines)))
     const missing = [...multiset(nonBlank(b.lines))].filter(([l, n]) => (arrived.get(l) || 0) < n).map(([l]) => l)
@@ -394,9 +427,51 @@ function rulings(allow) {
   return fails
 }
 
+/* ---------- job 1d: misfiling — where a document sits (owner, D140, 24 Sep 26) ----------
+   "Teach it such that new info going into the repo will follow this structure automatically." These are not
+   SIZE checks (a size never blocks a turn — D29 rule 3, the Stop hook's own promise); they catch a document put
+   where the structure has no place for it, so they run with the inventory, at the end of every turn. Only what
+   is NEW since the base is judged, so an older file on a parallel branch never fails someone else's change.
+   Where each kind of fact belongs: `.claude/rules/doc-structure.md`. */
+/* The Markdown files the repo root may hold. A tool that truly needs another one at the root is added here, with
+   its reason, in a docs-only commit. HANDOFF-NEXT.md is the three-line signpost his opening line still reads. */
+const ROOT_ALLOW = ['README.md', 'HANDOFF.md', 'HANDOFF-NEXT.md', 'HANDOFF-ARCHIVE.md', 'OUTSTANDING.md', 'OUTSTANDING-ARCHIVE.md',
+  'DECISIONS.md', 'DECISIONS-ARCHIVE.md', 'CLAUDE.md', 'AGENTS.md']
+const HANDOFF = 'HANDOFF.md', NOW_MARK = /^<!-- now:(\S+) -->\s*$/
+function structure() {
+  const fails = [], warns = []
+  const listed = [...new Set([...(tryGit('ls-files') || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard') || '').split('\n')])].filter(f => f && existsSync(join(REPO, f)))
+  const atBase = new Set(BASE ? (tryGit('ls-tree', '-r', '--name-only', BASE) || '').split('\n').filter(Boolean) : [])
+  const isNew = f => BASE && !atBase.has(f)
+  const md = listed.filter(f => f.endsWith('.md'))
+  for (const f of md.filter(isNew)) {
+    if (!f.includes('/') && !ROOT_ALLOW.includes(f)) fails.push(`${f} is a new Markdown file at the repo root, which every chat sees — put it in its home (.claude/rules/doc-structure.md: a design or brief under raptor-port/docs/superpowers/, a handoff in HANDOFF.md ## Now, a finished document in raptor-port/docs/archive/); if a tool truly needs it at the root, add it to ROOT_ALLOW in ${SELF} with the reason`)
+    else if (f.includes('/') && !/^(raptor-port|\.claude|\.github)\//.test(f)) fails.push(`${f} is a new document outside the one docs tree — documents live under raptor-port/docs/ (.claude/rules/doc-structure.md)`)
+    /* a new top-level reference doc must be on the map, or no session will know to read it */
+    const ref = /^raptor-port\/docs\/([^/]+\.md)$/.exec(f)
+    if (ref && !readNow('raptor-port/CLAUDE.md').includes(ref[1]) && !readNow('raptor-port/docs/file-map.md').includes(ref[1])) fails.push(`${f} is a new reference doc that no map names — add it to raptor-port/CLAUDE.md §Where things live (or file it under raptor-port/docs/superpowers/ if it serves one task)`)
+  }
+  /* an always-loaded rules file is read by EVERY chat: it must be registered, with its ceiling */
+  const registered = new Set(FILES.map(r => r[0]))
+  for (const f of md.filter(f => f.startsWith('.claude/rules/') && isNew(f))) {
+    const head = readNow(f).replace(/\r/g, '')
+    const scoped = head.startsWith('---\n') && /^paths:/m.test(head.slice(4, head.indexOf('\n---', 4) + 1))
+    if (!scoped && !registered.has(f)) fails.push(`${f} loads in EVERY chat (no paths:) but is not registered in ${SELF}'s FILES — register it with a ceiling (tier 0), or give it paths: so it loads only with its area`)
+  }
+  /* HANDOFF.md ## Now: one block per branch, and a merged branch's block is stale */
+  const seen = new Map()
+  for (const l of unfenced(splitLines(readNow(HANDOFF)))) { const m = NOW_MARK.exec(l); if (m) seen.set(m[1], (seen.get(m[1]) || 0) + 1) }
+  for (const [b, n] of seen) {
+    if (n > 1) fails.push(`${HANDOFF} has ${n} ## Now blocks for ${b} — one block per branch; a chat rewrites only its own (.claude/skills/session-handoff/SKILL.md)`)
+    if (isCommit(`origin/${b}`) && isCommit('origin/main') && tryGit('merge-base', '--is-ancestor', `origin/${b}`, 'origin/main') !== null && tryGit('rev-parse', `origin/${b}`)?.trim() !== tryGit('rev-parse', 'origin/main')?.trim())
+      warns.push(`${HANDOFF} ## Now still has a block for ${b}, which is merged into main — the next handoff removes it once its open residue is filed`)
+  }
+  return { fails, warns }
+}
+
 /* ---------- job 2: the ceilings ---------- */
 const lines = t => { let n = 0; for (let i = 0; i < t.length; i++) if (t.charCodeAt(i) === 10) n++; return n }
-const ROW_RE = /^\s*\['([^']+)',\s*(\d+),\s*(\d+),\s*(\d+)\],?/gm
+const ROW_RE = /^\s*\['([^']+)',\s*(\d+),\s*(\d+)(?:,\s*(\d+))?\],?/gm
 const rowsOf = src => new Map([...src.matchAll(ROW_RE)].map(m => [m[1], +m[3]]))
 const sameRows = (a, b) => a.size === b.size && [...a].every(([f, c]) => b.get(f) === c)
 
@@ -424,27 +499,60 @@ function ceilingMovedWithCode(paths) {
 function ceilings(codeChange) {
   const fails = [], deferred = []
   let tier0 = 0
-  const overTarget = []
   const pad = (s, n) => String(s).padEnd(n)
-  console.log(`  ${pad('file', 38)} ${pad('tier', 5)} ${pad('lines', 7)} ${pad('ceiling', 8)} target`)
-  for (const [f, tier, ceiling, target] of FILES) {
+  console.log(`  ${pad('file', 38)} ${pad('tier', 5)} ${pad('lines', 7)} ceiling`)
+  for (const [f, tier, ceiling] of FILES) {
     if (!existsSync(join(REPO, f))) { console.log(`  ${pad(f, 38)} MISSING`); continue }
     const n = lines(readNow(f))
     if (tier === 0) tier0 += n
-    if (n > target) overTarget.push([f, n, target])
     let note = ''
     if (n > ceiling) {
       if (codeChange) { deferred.push(n - ceiling); note = `   OVER by ${n - ceiling} — code change: do NOT trim here (D29); deferred to its own pass` }
-      else { fails.push(`${f} is ${n - ceiling} line(s) over its ceiling of ${ceiling}${RULING_CEILING(f) ? ' — a rulings file is NEVER trimmed (D136): archive what is replaced or spent, then RAISE this ceiling with its reason' : ''}`); note = `   *** OVER CEILING by ${n - ceiling} ***` }
+      else { fails.push(`${f} is ${n - ceiling} line(s) over its ceiling of ${ceiling}${RULING_CEILING(f) ? ' — a rulings file is NEVER trimmed (D136): archive what is replaced or spent, then RAISE this ceiling with its reason' : ' — a TRIPWIRE, not a target (D141): move what does not belong here to its home (.claude/rules/doc-structure.md), or raise the ceiling with its reason if it does'}`); note = `   *** OVER CEILING by ${n - ceiling} ***` }
     }
-    console.log(`  ${pad(f, 38)} ${pad(tier, 5)} ${pad(n, 7)} ${pad(ceiling, 8)} ${target}${note}`)
+    console.log(`  ${pad(f, 38)} ${pad(tier, 5)} ${pad(n, 7)} ${ceiling}${note}`)
   }
-  console.log(`\n  tier 0, always loaded: ${tier0} lines (target ${TIER0_TARGET})`)
-  if (overTarget.length) {
-    console.log('\n  over TARGET — reported, not failed; the trim is [DOC-TRIM] in OUTSTANDING.md, as its own pass:')
-    for (const [f, n, t] of overTarget) console.log(`    ${pad(f, 38)} ${n} → ${t}`)
-  }
+  console.log(`\n  tier 0, always loaded: ${tier0} lines (no target — D141)`)
   return { fails, deferred }
+}
+
+/* ---------- --moves: did every line that left a document arrive somewhere? (D138, 24 Sep 26) ----------
+   A move is exact only if the text it took out of one file is found, the same number of times, in the
+   files it went to. This compares, across every Markdown file the change touches (committed, staged,
+   unstaged and new), each non-blank line REMOVED against the lines ADDED, and lists what left and did not
+   arrive anywhere. That list is exactly the set a meaning check must read by eye: a rewrite, a pointer
+   edit, or a real loss. A REPORT, never a failure — a deliberate rewrite is legitimate (D138 sends it to
+   two reviewers instead). */
+if (process.argv.includes('--moves')) {
+  const removed = new Map(), added = new Map(), byFile = new Map()
+  const bump = (m, l) => m.set(l, (m.get(l) || 0) + 1)
+  let file = null
+  const diff = BASE ? (tryGit('diff', '-U0', '--no-color', '--no-renames', BASE, '--', '*.md') || '') : ''
+  for (const raw of diff.split('\n')) {
+    if (raw.startsWith('+++ ') || raw.startsWith('--- ')) { if (raw.startsWith('--- ')) file = raw.slice(6); continue }
+    if (raw.startsWith('diff --git')) { file = raw.split(' b/')[1]; continue }
+    const l = raw.slice(1).replace(/\r$/, '').trimEnd()
+    if (!l.trim()) continue
+    if (raw[0] === '-') { bump(removed, l); if (!byFile.has(l)) byFile.set(l, file) }
+    else if (raw[0] === '+') bump(added, l)
+  }
+  for (const f of (tryGit('ls-files', '--others', '--exclude-standard', '--', '*.md') || '').split('\n').filter(Boolean))
+    for (const l of splitLines(readNow(f))) if (l.trim()) bump(added, l.trimEnd())
+  const lost = [...removed].filter(([l, n]) => (added.get(l) || 0) < n)
+  const fresh = [...added].filter(([l, n]) => (removed.get(l) || 0) < n)
+  const perFile = new Map()
+  for (const [l, n] of lost) { const f = byFile.get(l) || '?'; perFile.set(f, [...(perFile.get(f) || []), [l, n - (added.get(l) || 0)]]) }
+  const total = [...removed.values()].reduce((a, b) => a + b, 0)
+  console.log(`--moves, against ${BASE ? BASE.slice(0, 8) : 'NOTHING'}: ${total} non-blank line(s) left a Markdown file; ${lost.reduce((a, [, n]) => a + n, 0)} did not arrive anywhere (a rewrite, a pointer edit — or a loss):`)
+  for (const [f, ls] of perFile) {
+    console.log(`\n  ${f} — ${ls.length}`)
+    for (const [l, n] of ls) console.log(`    ${n > 1 ? `(x${n}) ` : ''}${l.length > 150 ? l.slice(0, 147) + '...' : l}`)
+  }
+  /* and the other half: lines that ARRIVED without having left anywhere — new text, a rewrite, a pointer */
+  console.log(`\n--moves: ${fresh.reduce((a, [l, n]) => a + n - (removed.get(l) || 0), 0)} non-blank line(s) are NEW — written, not moved (the rewrites and pointers a meaning check reads):`)
+  if (process.argv.includes('--verbose')) for (const [l, n] of fresh) console.log(`    ${l.length > 150 ? l.slice(0, 147) + '...' : l}`)
+  else console.log('    (add --verbose to list them)')
+  process.exit(0)
 }
 
 /* ---------- run ---------- */
@@ -456,8 +564,9 @@ if (allow.size) console.log(`  declared exceptions: ${[...allow].join(', ')}\n`)
 
 const inv = inventory(allow)
 const hm = homes(paths, allow)
-let failures = [...inv.fails.map(f => `inventory: ${f}`), ...hm.fails.map(f => `homes: ${f}`), ...rulings(allow).map(f => `rulings: ${f}`)]
-for (const w of inv.warns) console.log(`  note: ${w}`)
+const st = structure()
+let failures = [...inv.fails.map(f => `inventory: ${f}`), ...hm.fails.map(f => `homes: ${f}`), ...rulings(allow).map(f => `rulings: ${f}`), ...st.fails.map(f => `structure: ${f}`)]
+for (const w of [...inv.warns, ...st.warns]) console.log(`  note: ${w}`)
 
 let docsizeLine = null
 if (!INVENTORY_ONLY) {

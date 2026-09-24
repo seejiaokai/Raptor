@@ -46,13 +46,22 @@ did not.
    | `receiving-code-review` | finding / diagnosis / fix as three claims; two-of-a-kind; "can't happen" needs proof |
    | `executing-plans` | premise check before building (`git status -sb`, merged/behind); deviation list before review |
    | `using-git-worktrees` | the symlinked-dependencies staging trap (`--summary` check, ignore without trailing slash) |
+4. **Local lessons from the skill review of 24 Sep 26** (owner-approved, D146; the same rules as change 3 — an
+   upstream refresh overwrites these, re-apply them).
+
+   | Skill | What was added |
+   |---|---|
+   | `systematic-debugging` | Phase 1: a one-frame defect (sample per frame, pin with a `MutationObserver`); two "environmental differences" (a fresh checkout's defaults, a service that cannot answer a prompt); Red Flags: identical before/after numbers; the flaky questions: a test's leftovers as the product's bug, human pace; `condition-based-waiting.md`: "Before You Pace or Settle a Test" (human pace first, reproduce the CI's slowness) and two Common Mistakes (waiting on a proxy, reading what is not there yet) |
+   | `test-driven-development` | Verify RED: the second cure in a scenario; read the red (premises, ids not counts); a flash or a jump; failure paths injected at the call |
+   | `verification-before-completion` | three Common Failures rows (a clean verdict's scope, "removed everywhere", green elsewhere); a "long check runs" line (a gate chained into a commit); `browser-checks.md`: line positions not rects, measuring across a mode switch |
+   | `writing-plans` | Task Right-Sizing: a migration of shared records starts with its checks |
 
 ## Updating
 
 There is no auto-update. Re-clone upstream, copy `skills/` over, and re-apply
-change 1 — then change 3: `cp -a` overwrites every edited file (and keeps the
-added reference files), so diff each skill in change 3's table against the
-pre-refresh commit and carry the local lines forward:
+change 1 — then changes 3 and 4: `cp -a` overwrites every edited file (and keeps
+the added reference files), so diff each skill in the tables of changes 3 and 4
+against the pre-refresh commit and carry the local lines forward:
 
 ```sh
 git clone --depth 1 https://github.com/obra/superpowers.git /tmp/sp

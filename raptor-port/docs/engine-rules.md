@@ -397,7 +397,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
     carve-out stands: a duty post, a sim seat, a ground row, a programme item
     and the AVALON desk stay proper for him. This closed a picker/validator
     drift — the crew picker had refused him SC seats all along. Scoped to SC
-    MAIN deliberately; the owner will look at other ATT B areas later.
+    MAIN deliberately; the owner will look at other ATT B areas later — ask him before widening it
+    (his words, as `HANDOFF.md` §Open carried them until 24 Sep 26: "for now we will focus on SC MAIN
+    first").
   - Leave, medical (ATT C, HL, OML) and overseas duty still hard-flag a
     shift — those close the man's day outright.
   - **The shift has ONE voice**: shift lines are excluded from the sortie
@@ -871,7 +873,7 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   wave is (§AVALON above) and an SC desk counts as an SC seat for the spare rule
   (§the two SC SPARE rules); a template with no wave mints the PLAIN block
   it always did. The seed week has no template desk, so reference parity is
-  untouched. Do not re-add the coupling (`CLAUDE.md` §Stable decisions).
+  untouched. Do not re-add the coupling (`.claude/rules/decisions/scheduler.md` §Settled before this list → Waves & duties; it was `CLAUDE.md` §Stable decisions until 24 Sep 26).
 - Chip ranking `RANK` (highest wins): LD<DT<TT<A<SD<SB<DB<NB<CR<RUN<C<Q.
   Glyphs shorten: CR→R, RUN→7, NB/SB→B, DB/SD→D, LD→L. `A` = on shift AND down for
   a ground event/programme.
@@ -1864,6 +1866,11 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   has published nothing, so live + stash is the whole session; before
   this, navigating off a published weekend let the reverse sweep collect
   its credits.
+- **A DAY’S OIL COMES FROM ITS LATEST PUBLISHED VERSION, HOWEVER OLD THE DAY — NO LOCK, NO CLOCK**
+  (owner, 20 Sep 26 — D142, recorded 24 Sep 26). The latest amendment, or the EOD if that is the latest,
+  is what happened: a later amendment or EOD that takes a man off a past day takes that day’s OIL away
+  (confirmed by him), and an issued EOD is the final word on the day. It superseded the 11 Sep "lock earned
+  OIL on an already-worked day" lean (backlog item `[OIL]`, archived 24 Sep 26); there is no lock to build.
 - **ONLY THE ISSUED SCHEDULE PAYS, BOTH DIRECTIONS** (owner, 21 Sep 26 — R-1,
   from the cross-provider bug check; triage in
   `docs/superpowers/specs/2026-09-21-oil-bugcheck-fixplan.md`). The credit pass
@@ -1991,7 +1998,7 @@ corrupted or hand-edited storage blob.
 `SCHED.pending`, `SCHED.changes` and every AL's live `keys`.
 `shiftAircraft`/`shiftFormation`/`shiftWave` compose it. Deleting a wave no
 longer touches any duty block (owner, 13 Aug 26 — duties are decoupled from
-waves; see §the duty block, and `CLAUDE.md` §Stable decisions). `saDutyIx`
+waves; see §the duty block, and `.claude/rules/decisions/scheduler.md` §Settled before this list → Waves & duties). `saDutyIx`
 survives in `waves.ts` but the wave-delete path no longer calls it.
 
 ## Re-ordering the SECTIONS (display order, owner 29 Aug 26)
@@ -2695,7 +2702,9 @@ the Originals and every AL. (The earlier sentence here said the opposite.)
 user/user; the sign-in card no longer prints them). `canEditSched()` =
 session AND admin.
 Logout closes the scheduler board (a sibling of the shell) and resets LGEDIT.
-The login is a prototype gate, not security — the deployed app is public.
+The login is a prototype gate, not security — the deployed app is public. *(Corrected 24 Sep 26: since D59
+(23 Sep 26) the repo is private and the app sits behind his Vercel sign-in — Vercel's lock, not the app's; the
+login is still no security.)*
 
 **What a member may do (owner, 5 Aug 26).** The line is *their own record vs
 the squadron's programme*, not read vs write:

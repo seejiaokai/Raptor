@@ -10,10 +10,10 @@
  * is deferred, and a ceiling moved in a commit that touches src fails.
  *
  * Run: node scripts/docsize-selftest.mjs (CI runs it beside the gate itself). Exit 1 on any miss. */
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, copyFileSync, rmSync } from 'node:fs'
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, copyFileSync, rmSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { execFileSync, spawnSync } from 'node:child_process'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
@@ -94,8 +94,11 @@ scenario('a live id renamed while its old id survives elsewhere — undeclared',
 scenario('the same rename, declared in the commit', false, c => { c.edit('OUTSTANDING-ARCHIVE.md', t => t + '\n' + item('BRAVO', 1).replace('Line 1 of BRAVO', 'The archived record of BRAVO')); c.commit('archive a BRAVO record'); renameLive(c); c.commit('rename\n\nDocs-guard-allow: [BRAVO]') })
 scenario('over a ceiling on a docs-only change', true, c => c.edit('DECISIONS.md', t => t + 'x\n'.repeat(200)), { mustSay: 'over its ceiling' })
 scenario('over a ceiling inside a code change is deferred, not failed', false, c => { c.edit('DECISIONS.md', t => t + 'x\n'.repeat(200)); c.edit('raptor-port/src/app.ts', t => t + 'export const b = 2\n') }, { mustSay: 'deferred (D29)' })
-scenario('a ceiling moved in a commit that also touches src', true, c => { c.edit('raptor-port/scripts/docsize.mjs', t => t.replace("['DECISIONS.md',                       1,   80,", "['DECISIONS.md',                       1,  400,")); c.edit('raptor-port/src/app.ts', t => t + 'export const b = 2\n'); c.commit('sneak') }, { mustSay: 'touches raptor-port/src' })
-scenario('a ceiling moved in a docs-only commit', false, c => { c.edit('raptor-port/scripts/docsize.mjs', t => t.replace("['DECISIONS.md',                       1,   80,", "['DECISIONS.md',                       1,  400,")); c.commit('raise, with its reason') })
+/* the row's shape since D141 (24 Sep 26): file, tier, ceiling — the edit must really change the ceiling, or
+   these two scenarios would pass for the wrong reason (the "nothing changed" check below guards it) */
+const raiseDecisions = t => { const u = t.replace(/(\['DECISIONS\.md',\s+1,\s+)\d+\]/, '$1400]'); if (u === t) throw new Error('the DECISIONS.md ceiling row was not found — update this self-test'); return u }
+scenario('a ceiling moved in a commit that also touches src', true, c => { c.edit('raptor-port/scripts/docsize.mjs', raiseDecisions); c.edit('raptor-port/src/app.ts', t => t + 'export const b = 2\n'); c.commit('sneak') }, { mustSay: 'touches raptor-port/src' })
+scenario('a ceiling moved in a docs-only commit', false, c => { c.edit('raptor-port/scripts/docsize.mjs', raiseDecisions); c.commit('raise, with its reason') })
 
 scenario('a ruling number lost from its area file (F7)', true, c => c.edit(AREA, t => t.replace(/^\| D1 \|.*\n/m, '')), { mustSay: 'D1 is GONE' })
 scenario('a ruling number newly used twice (F7)', true, c => c.edit(AREA, t => t.replace('| D2 | 21 Sep 26 | b |', '| D1 | 21 Sep 26 | b |')), { mustSay: 'D1 now appears 2 times' })
@@ -124,7 +127,8 @@ scenario('a ruling added in one commit and dropped in a later one', true, c => {
 scenario('a row typed with odd spacing is failed for its shape', true, c => addD9(c, '|D9| 21 Sep 26 | z | z | this file |'), { mustSay: 'not in the shape' })
 scenario('an oddly spaced row, committed, then dropped', true, c => { addD9(c, '|D9 | 21 Sep 26 | z | z | this file |'); c.commit('file D9'); c.edit(AREA, t => t.replace(/^\|D9 \|.*\n/m, '')); setMap(c, AREA, 'D2, D1') }, { mustSay: 'D9 is GONE' })
 scenario('a mark naming a ruling that does not exist', true, c => c.edit('DECISIONS-ARCHIVE.md', t => t.replace('**REPLACED BY D1 (21 Sep 26).**', '**REPLACED BY D1370 (21 Sep 26).**')), { mustSay: 'no such ruling exists' })
-scenario('a ruling MOVED to another area, the map updated', false, c => { c.write(OTHER, AREA0.replace('general', 'other').replace(/^\| D2 .*\n/m, '')); c.edit(AREA, t => t.replace(/^\| D1 .*\n/m, '')); addOther(c, 'D1'); setMap(c, AREA, 'D2') })
+/* a real new area carries paths: (D137) — without them it would load in every chat (the misfiling check, D140) */
+scenario('a ruling MOVED to another area, the map updated', false, c => { c.write(OTHER, '---\npaths:\n  - raptor-port/src/other/**\n---\n\n' + AREA0.replace('general', 'other').replace(/^\| D2 .*\n/m, '')); c.edit(AREA, t => t.replace(/^\| D1 .*\n/m, '')); addOther(c, 'D1'); setMap(c, AREA, 'D2') })
 scenario('a register row deleted while the rule map still names it (F7)', true, c => c.edit('raptor-port/docs/superpowers/specs/x-behaviour-register.md', t => t.replace('- **X1** — the first rule.\n', '')), { mustSay: 'X1 is in' })
 
 const addRow = (c, home) => { c.edit(AREA, t => t.replace('|---|---|---|---|---|\n', `|---|---|---|---|---|\n| D3 | 21 Sep 26 | c | c | ${home} |\n`)); setMap(c, AREA, 'D3, D2, D1') }
@@ -134,11 +138,11 @@ scenario('a new ruling whose home was written in the same change', false, c => {
 scenario('a new ruling with only a future home ("on build:")', false, c => addRow(c, 'this file; on build: `OUTSTANDING.md`'))
 
 /* THE MOVER (F5): it must move exactly, refuse what it cannot do exactly, and undo itself. */
-function mover(name, expectOk, { live, prep, args, check }) {
+function mover(name, expectOk, { live, prep, node, args, check }) {
   const ctx = makeRepo(live)
   try {
     if (prep) prep(ctx)
-    const r = spawnSync(process.execPath, ['raptor-port/scripts/backlog-archive.mjs', ...args], { cwd: ctx.dir, encoding: 'utf8' })
+    const r = spawnSync(process.execPath, [...(node ? node(ctx) : []), 'raptor-port/scripts/backlog-archive.mjs', ...args], { cwd: ctx.dir, encoding: 'utf8' })
     const why = check ? check(ctx, r) : ''
     const ok = (r.status === 0) === expectOk && !why
     if (!ok) failed++
@@ -154,7 +158,11 @@ mover('a clean move', true, { args: ['CHARLIE', '--homes', 'docs/home.md'], chec
   : !has(c, 'OUTSTANDING.md', '## Done') ? 'swallowed the "## Done" heading after it'
   : !has(c, 'OUTSTANDING.md', '### [DELTA]') ? 'took the next item with it' : '' })
 mover('no --homes', false, { args: ['CHARLIE'], check: c => has(c, 'OUTSTANDING.md', '[CHARLIE]') ? '' : 'moved anyway' })
-mover('a home that shows nothing was written there', false, { prep: c => { c.write('docs/other.md', 'unrelated\n'); c.commit('other') }, args: ['CHARLIE', '--homes', 'docs/other.md'] })
+/* two items archived the same day to the same home — each note names its item, so the doubled-body check has
+   nothing to refuse (found 24 Sep 26: the second move was refused and put back) */
+mover('two items to the same home on the same day', true, { prep: c => { c.write('raptor-port/docs/superpowers/specs/facts.md', 'Where the facts of CHARLIE and of BRAVO now live.\n'); const r = spawnSync(process.execPath, ['raptor-port/scripts/backlog-archive.mjs', 'CHARLIE', '--homes', 'raptor-port/docs/superpowers/specs/facts.md'], { cwd: c.dir, encoding: 'utf8' }); if (r.status !== 0) throw new Error('the first move failed: ' + r.stderr) }, args: ['BRAVO', '--homes', 'raptor-port/docs/superpowers/specs/facts.md'], check: c =>
+  has(c, 'OUTSTANDING.md', '[BRAVO]') ? 'BRAVO is still in the backlog' : !has(c, 'OUTSTANDING-ARCHIVE.md', '([BRAVO]). Forward facts') ? 'the note does not name BRAVO' : '' })
+mover('a home that shows nothing was written there', false, { prep: c => { c.write('raptor-port/docs/superpowers/specs/other.md', 'unrelated\n'); c.commit('other') }, args: ['CHARLIE', '--homes', 'raptor-port/docs/superpowers/specs/other.md'] })
 mover('a duplicate id', false, { live: LIVE0 + '\n' + item('CHARLIE', 1).replace('Line 1 of CHARLIE', 'A second CHARLIE'), args: ['CHARLIE', '--homes', 'docs/home.md'], check: (c, r) => /heads 2 items/.test(r.stderr) ? '' : 'wrong reason' })
 mover('line endings kept byte for byte', true, { live: CRLF0, args: ['CHARLIE', '--homes', 'docs/home.md'], check: c =>
   !c.read('OUTSTANDING-ARCHIVE.md').includes('Line 6 of CHARLIE, long enough to count as a real body line for the doubling check.\r\n') ? 'the moved lines lost their CRLF'
@@ -187,7 +195,7 @@ mover('an item holding ~~~ and nested ```` code blocks moves WHOLE (A3)', true, 
   has(c, 'OUTSTANDING.md', 'Line 6 of CHARLIE') ? 'left the tail behind' : !has(c, 'OUTSTANDING-ARCHIVE.md', '## Nor is this') ? 'lost the code block' : '' })
 mover('an id already in the archive', false, { prep: c => { c.edit('OUTSTANDING-ARCHIVE.md', t => t + '\n' + item('CHARLIE', 1).replace('Line 1 of CHARLIE', 'An older CHARLIE')); c.commit('old') }, args: ['CHARLIE', '--homes', 'docs/home.md'], check: (c, r) => /already heads an item/.test(r.stderr) ? '' : 'wrong reason' })
 mover('a home that does not exist', false, { args: ['CHARLIE', '--homes', 'docs/nowhere.md'], check: (c, r) => /no such file/.test(r.stderr) ? '' : 'wrong reason' })
-mover('a Windows backslash home that was changed on the branch (A9)', true, { prep: c => c.write('docs/other.md', 'facts, written just now\n'), args: ['CHARLIE', '--homes', 'docs\\other.md'] })
+mover('a Windows backslash home that was changed on the branch (A9)', true, { prep: c => c.write('raptor-port/docs/superpowers/specs/other.md', 'facts, written just now\n'), args: ['CHARLIE', '--homes', 'raptor-port\\docs\\superpowers\\specs\\other.md'] })
 mover('a home outside the repo', false, { args: ['CHARLIE', '--homes', '../outside.md'], check: (c, r) => /inside the repo/.test(r.stderr) ? '' : 'wrong reason' })
 
 /* THE RULING MOVER (backlog-archive.mjs --rulings, D137): it moves a marked row whole, keeps the map true,
@@ -203,6 +211,82 @@ mover('--rulings puts a NEW ruling into the map', true, { prep: c => c.edit(AREA
   !c.read('DECISIONS.md').includes('general.md` | always | D9, D2, D1 |') ? 'the map does not list D9 first' : '' })
 mover('--rulings puts every file back when the inventory is not clean afterwards', false, { prep: c => { c.edit('OUTSTANDING.md', t => cut(t, 'BRAVO')[0]); c.edit(AREA, t => t.replace('| D1 | 21 Sep 26 | a |', '| D1 | 21 Sep 26 | **SPENT 21 Sep 26 — used.** a |')) }, args: ['--rulings'], check: (c, r) =>
   !has(c, AREA, '| D1 |') ? 'D1 was not put back' : has(c, 'DECISIONS-ARCHIVE.md', '| D1 |') ? 'the archive was not put back' : !/put back/.test(r.stderr) ? 'did not say so' : '' })
+
+/* ---- THE SPRING CLEAN (owner, D138 + D140, 24 Sep 26) ---- */
+
+/* [DOCSGUARD-MERGE]: a branch that merged `main` in (D78) still carries its own pre-merge commits, in which an item
+   `main` later rewrote and archived was live with its OLDER text. That is not a second move; the gate must not
+   compare the two. Replayed as a real merge graph, measured the way CI and the local run measure it — against
+   the merge base with main. */
+function mergeScenario(name, expectFail, build, mustSay) {
+  const ctx = makeRepo()
+  const g = (...a) => execFileSync('git', a, { cwd: ctx.dir, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] })
+  try {
+    build(ctx, g)
+    const r = spawnSync(process.execPath, ['raptor-port/scripts/docsize.mjs'], { cwd: ctx.dir, encoding: 'utf8', env: { ...process.env, DOCSGUARD_BASE: '', DOCSGUARD_ALLOW: '' } })
+    const out = r.stdout + r.stderr, didFail = r.status !== 0, said = !mustSay || out.includes(mustSay)
+    const ok = didFail === expectFail && said
+    if (!ok) failed++
+    console.log(`${ok ? 'PASS' : 'MISS'}  ${name} — expected ${expectFail ? 'FAIL' : 'OK'}, got ${didFail ? 'FAIL' : 'OK'}${said ? '' : ` (output lacks "${mustSay}")`}`)
+    if (!ok) console.log(out.split('\n').map(l => '      ' + l).join('\n'))
+  } finally { rmSync(ctx.dir, { recursive: true, force: true }) }
+}
+const branchThenMainArchives = (c, g) => {
+  g('checkout', '-q', '-b', 'feature')
+  c.edit('OUTSTANDING.md', t => t.replace('Line 1 of ALPHA', 'Line 1 of ALPHA, edited on the branch')); c.commit('the branch touches the backlog')
+  g('checkout', '-q', 'main')
+  c.edit('OUTSTANDING.md', t => t.replace('### [CHARLIE] The CHARLIE item — OPEN', '### [CHARLIE] The CHARLIE item — DONE').replace('Line 6 of CHARLIE', 'Closed on main: line 6 of CHARLIE')); c.commit('main closes CHARLIE')
+  const [rest, blk] = cut(c.read('OUTSTANDING.md'), 'CHARLIE'); c.write('OUTSTANDING.md', rest); c.edit('OUTSTANDING-ARCHIVE.md', t => t + '\n' + blk); c.commit('main archives CHARLIE')
+  g('checkout', '-q', 'feature')
+  g('merge', '-q', '--no-edit', 'main')
+}
+mergeScenario('[DOCSGUARD-MERGE] a branch that merged main in, where main had rewritten and archived an item', false, branchThenMainArchives)
+mergeScenario('[DOCSGUARD-MERGE] …and a real loss on that branch is still caught', true, (c, g) => { branchThenMainArchives(c, g); c.edit('OUTSTANDING.md', t => cut(t, 'BRAVO')[0]) }, '[BRAVO] is GONE')
+
+/* MISFILING (D140): a document put where the structure has no place for it fails — with the inventory, so at the end
+   of every turn — and only what is NEW since the base is judged. */
+scenario('a new Markdown file at the repo root (a plan left at the root)', true, c => c.write('PLAN.md', '# a plan\n'), { mustSay: 'new Markdown file at the repo root' })
+scenario('a new root file on the allowlist (AGENTS.md, for Codex)', false, c => c.write('AGENTS.md', '# for Codex\n'))
+scenario('a new document outside the one docs tree', true, c => c.write('docs/notes/x.md', '# x\n'), { mustSay: 'outside the one docs tree' })
+scenario('a new always-loaded rules file nobody registered', true, c => c.write('.claude/rules/new-rule.md', '# a rule for every chat\n'), { mustSay: 'loads in EVERY chat' })
+scenario('a new rules file scoped by paths: (loads only with its area)', false, c => c.write('.claude/rules/area-x.md', '---\npaths:\n  - raptor-port/src/x/**\n---\n\n# x\n'))
+const NOW = (...bs) => ['# HANDOFF', '', '## Now', '', ...bs.flatMap(b => [`<!-- now:${b} -->`, `### ${b}`, 'where it stands', '<!-- /now -->', '']), '## Next, in order', ''].join('\n')
+scenario('two ## Now blocks for one branch', true, c => c.write('HANDOFF.md', NOW('claude/x', 'claude/x')), { mustSay: '## Now blocks for claude/x' })
+scenario('one ## Now block per branch', false, c => c.write('HANDOFF.md', NOW('claude/x', 'claude/y')))
+scenario('a new top-level reference doc that no map names', true, c => c.write('raptor-port/docs/newref.md', '# new\n'), { mustSay: 'no map names' })
+scenario('a new top-level reference doc on the map', false, c => { c.write('raptor-port/docs/newref.md', '# new\n'); c.write('raptor-port/CLAUDE.md', '| the new reference | `docs/newref.md` |\n') })
+scenario('a design for one task, under superpowers/ (tier 3, no map needed)', false, c => c.write('raptor-port/docs/superpowers/specs/2026-09-24-x.md', '# x\n'))
+scenario('over a ceiling says it is a tripwire, not a target (D141)', true, c => c.edit('OUTSTANDING.md', t => t + 'x\n'.repeat(1400)), { mustSay: 'TRIPWIRE' })
+scenario('a new area rulings file with no paths: (it would load in every chat)', true, c => c.write(OTHER, '# Rulings — other\n'), { mustSay: 'loads in EVERY chat' })
+
+/* THE TEXT MOVER (backlog-archive.mjs --move, D138): exact, or nothing. */
+const SRC = 'raptor-port/docs/superpowers/specs/a.md', DST = 'raptor-port/docs/superpowers/specs/b.md'
+const SRC0 = ['# A', '', '## One', 'one body', '', '## Two', 'two body', '~~~md', '## Not a heading', '~~~', 'two tail', '', '## Three', 'three body', ''].join('\n')
+const DST0 = ['# B', '', '## Landing', 'landing body', '', '## After', 'after body', ''].join('\n')
+const TWO = '## Two\ntwo body\n~~~md\n## Not a heading\n~~~\ntwo tail\n\n'
+const docs = (c, a = SRC0, b = DST0) => { c.write(SRC, a); c.write(DST, b); c.commit('two docs') }
+const moveTwo = (...more) => ['--move', SRC, '--from', '## Two', '--section', '--dest', DST, ...more]
+mover('--move: a section, fenced heading and all, to the end of a heading\'s section, with a pointer', true, { prep: c => docs(c), args: moveTwo('--under', '## Landing', '--pointer', '- Two now lives in b.md'), check: c =>
+  c.read(DST).split(TWO).length !== 2 ? 'the section did not arrive exactly once, whole'
+  : c.read(DST).indexOf(TWO) > c.read(DST).indexOf('## After') || c.read(DST).indexOf(TWO) < c.read(DST).indexOf('landing body') ? 'it did not land inside ## Landing'
+  : c.read(SRC) !== ['# A', '', '## One', 'one body', '', '- Two now lives in b.md', '## Three', 'three body', ''].join('\n') ? 'the source is not exactly what was left plus the pointer' : '' })
+mover('--move: a start line that repeats (once in a code block) is refused', false, { prep: c => docs(c, SRC0.replace('## Three', '~~~\n## Two\n~~~\n## Three')), args: moveTwo('--no-pointer'), check: (c, r) => /matches 2/.test(r.stderr) ? '' : 'wrong reason' })
+mover('--move: a start line inside a code block is refused', false, { prep: c => docs(c), args: ['--move', SRC, '--from', '## Not a heading', '--section', '--dest', DST, '--no-pointer'], check: (c, r) => /inside a code block/.test(r.stderr) ? '' : 'wrong reason' })
+mover('--move: a heading the destination lacks is refused without --create-under', false, { prep: c => docs(c), args: moveTwo('--under', '## Nowhere', '--no-pointer'), check: (c, r) => /is not a line of/.test(r.stderr) && c.read(SRC) === SRC0 ? '' : 'wrong reason, or the source changed' })
+mover('--move: --create-under makes the heading at the end', true, { prep: c => docs(c), args: moveTwo('--under', '## Moved here', '--create-under', '--no-pointer'), check: c => c.read(DST).endsWith('## Moved here\n\n' + TWO) ? '' : 'not under a new heading at the end' })
+mover('--move: a pointer that does not name the destination is refused', false, { prep: c => docs(c), args: moveTwo('--pointer', '- moved elsewhere'), check: (c, r) => /must name the destination/.test(r.stderr) ? '' : 'wrong reason' })
+mover('--move: a pointer that would occur twice is refused', false, { prep: c => docs(c, SRC0 + '- see b.md\n'), args: moveTwo('--pointer', '- see b.md'), check: (c, r) => /more than once/.test(r.stderr) ? '' : 'wrong reason' })
+mover('--move: neither --pointer nor --no-pointer is refused', false, { prep: c => docs(c), args: moveTwo(), check: (c, r) => /usage/.test(r.stderr) ? '' : 'wrong reason' })
+mover('--move: a block holding a backlog item is refused (use the item mover)', false, { prep: c => docs(c, SRC0.replace('two body', '### [ZULU] an item')), args: moveTwo('--no-pointer'), check: (c, r) => /backlog item/.test(r.stderr) ? '' : 'wrong reason' })
+mover('--move: a block holding a ruling row is refused (use --rulings)', false, { prep: c => docs(c, SRC0.replace('two body', '| D9 | 21 Sep 26 | z | z | this file |')), args: moveTwo('--no-pointer'), check: (c, r) => /ruling row/.test(r.stderr) ? '' : 'wrong reason' })
+mover('--move: a CRLF source into an LF destination is refused', false, { prep: c => docs(c, SRC0.replace(/\n/g, '\r\n')), args: moveTwo('--no-pointer'), check: (c, r) => /line ending/.test(r.stderr) ? '' : 'wrong reason' })
+/* The failure is INJECTED, not arranged: a module loaded before the mover makes its second rename throw, after the
+   first has already replaced the source. It used to be arranged by making the destination read-only, which fails
+   only on Windows (it will not replace a read-only file); Linux replaces it anyway, so on GitHub the move went
+   through and this reported a MISS the first time the Docs guard ran it (24 Sep 26, PR #433). */
+const FAIL_SECOND_RENAME = "import fs from 'node:fs'; import { syncBuiltinESMExports } from 'node:module'; const real = fs.renameSync; let n = 0; fs.renameSync = (...a) => { if (++n === 2) { const e = new Error('the second rename, failed on purpose by the self-test'); e.code = 'EACCES'; throw e } return real(...a) }; syncBuiltinESMExports()\n"
+mover('--move: the SECOND write failing puts the first file back', false, { prep: c => { docs(c); c.write('fail-second-rename.mjs', FAIL_SECOND_RENAME) }, node: c => ['--import', pathToFileURL(join(c.dir, 'fail-second-rename.mjs')).href], args: moveTwo('--no-pointer'), check: (c, r) =>
+  c.read(SRC) !== SRC0 ? 'the source was not put back' : c.read(DST) !== DST0 ? 'the destination changed' : !/put back/.test(r.stderr) ? 'did not say so' : existsSync(join(c.dir, SRC) + '.docmove-tmp') || existsSync(join(c.dir, DST) + '.docmove-tmp') ? 'left a temporary copy' : '' })
 
 /* THE STOP HOOK (A8) — needs bash; skipped, and said so, where there is none. */
 const HOOK = join(HERE, '..', '..', '.claude', 'hooks', 'backlog-guard.sh')
@@ -225,6 +309,7 @@ hook('a lost record hands the turn back', 2, { prep: loseBravo, input: '{"stop_h
 hook('already holding the turn, with odd JSON spacing, lets go', 0, { prep: loseBravo, input: '{\n  "stop_hook_active" :\n  true\n}' })
 hook('over a line ceiling never blocks a turn', 0, { prep: c => c.edit('DECISIONS.md', t => t + 'x\n'.repeat(200)), input: '{}' })
 hook('no gate script in the project', 0, { prep: c => rmSync(join(c.dir, 'raptor-port/scripts/docsize.mjs')), input: '{}' })
+hook('a misfiled document hands the turn back (D140)', 2, { prep: c => c.write('PLAN.md', '# a plan left at the root\n'), input: '{}' })
 
 console.log(failed ? `\nSELFTEST FAILED — ${failed} scenario(s) not caught as designed.` : '\nselftest OK — every scenario behaved as designed.')
 process.exit(failed ? 1 : 0)

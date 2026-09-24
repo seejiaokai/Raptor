@@ -36,7 +36,7 @@ die with the task and belong nowhere.
 The rulings list is an INDEX, never the only home. A ruling recorded only there is still lost,
 because nobody reads an index while building. The home is the document the next session will
 actually open: the behaviour register, `engine-rules.md`, `ui-contracts.md`, the standing order,
-`CLAUDE.md` §Stable decisions. **Never `OUTSTANDING.md` alone** (D29 rule 2, 23 Sep 26): the backlog
+the area file, or `raptor-port/CLAUDE.md` if EVERY task needs it (`doc-structure.md`). **Never `OUTSTANDING.md` alone** (D29 rule 2, 23 Sep 26): the backlog
 is where finished work leaves from, so a ruling homed only there is one archive pass from lost.
 
 **Put it where it BELONGS, not where you happen to be working.** That is the specific error both

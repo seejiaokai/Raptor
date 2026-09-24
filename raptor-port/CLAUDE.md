@@ -8,6 +8,10 @@ changes after a day is signed off. No server — per-browser localStorage.
 
 This file is the INDEX. It holds the rules that apply to every task and
 routes to where the detail lives; don't duplicate that detail back here.
+Each AREA's own rules — its rulings, its settled decisions, its architecture — load by themselves
+when a file of that area is opened (`../.claude/rules/decisions/`); how a change ships
+(`../.claude/rules/shipping.md`) and where each new fact goes (`../.claude/rules/doc-structure.md`)
+load in every chat. Map: §Where things live, at the end.
 
 ## How to work here
 
@@ -170,58 +174,7 @@ barely more than one.
     words, no flourishes, no drum-roll structure, no repeating a point for
     effect. The 6 Aug rule above bans jargon; this one bans PADDING. If a
     reply is running past a screen, most of it is probably restatement.
-- **Tell him when you are DONE, with `PushNotification`** (owner, 10 Aug 26 —
-  "give me a notification so that I know when to reply"). He steps away while
-  a task runs, so send one when the work is genuinely finished — gates run,
-  PR merged, nothing left in flight — and when you are BLOCKED and waiting on
-  his answer. One line, plainly, what happened. Do NOT notify for progress
-  updates, for a quick reply he is clearly sitting there watching, or twice
-  for the same piece of work.
-  **"Done" MEANS LIVE, and the notification is the one at the END of that
-  chain** (owner, 12 Aug 26 — "ok let me know when it's live always and do
-  these steps automatically next time till it's live"). A green gate is not
-  done, a merged PR is not done, and neither is worth a notification of its
-  own. **Once he has said "merge live"** (the 2 Sep 26 rule below — never
-  before), carry it the whole way without checking in at
-  each step: gates → PR → merge when green → wait for Pages → **load the real
-  page and look at the thing you changed** (the 7 Aug standing instruction,
-  §Build & verify) → then ONE notification saying it is live. The only reasons
-  to come back sooner are a red gate you cannot fix, a genuine question, or a
-  merge he has told you to hold. Waiting is not a reason: schedule a check-in
-  (`send_later`) and let it fire, rather than reporting "still building".
-- **Ship ONCE PER SESSION, at the end — not once per idea** (owner, 10 Aug
-  26, after a session that shipped three times). Build and verify everything
-  locally as you go, then make ONE PR carrying the lot. **Since 2 Sep 26 the
-  merge itself waits for his "merge live"** (§Vercel rule below): push each
-  change to the branch and hand him the preview link, but never merge to main
-  unprompted — the one PR stays open and accumulates until he says so.
-  **Shipping is not how you test.** `npm run build && npx vite preview` is the
-  same bundle that deploys, base path and all, so every check — including
-  driving it in a browser and looking at it — happens before the PR. The
-  deployed page only adds a DELIVERY check (a stale cache, a path wrong as
-  served), which is real but rare.
-  MEASURED, which is why this rule changed: each shipment costs ~3 min of CI
-  plus the Pages rollout (HANDOFF §Deploy for the range and the ten-minute
-  ceiling) plus the live check — about 10 minutes of
-  pure waiting, three times over in one session. Batching is worth more
-  again on the build side: fifteen changes in one pass ran ~6 min each, where
-  a single change shipped alone took an hour and a half.
-- **SUPERSEDED 2 Sep 26 — NO AUTO-MERGE. Stack changes on the branch, hand
-  him the Vercel link after EACH one, and merge to main ONLY when he says
-  "merge live"** (owner: "dont automatically push to live next time. Intent to
-  work with multiple changes with vercel links then i will manually say merge
-  live then it will go to github with all the changes made"). So the loop is
-  now: change → gates green locally → commit + push to the session branch (one
-  open PR accumulates the lot) → reply with the Vercel preview link the moment
-  it is Ready (~1 min after the push — do NOT go quiet waiting on CI) → take the
-  next change. The PR's checks finish ~6 min after each push: READ their
-  conclusions on your next turn and fix a red one then — never discover it at
-  "merge live" (7 Sep 26: six red runs sat unread while the branch was being
-  tested on the preview, and the merge waited on a CI-only fix). The "Done MEANS LIVE" chain (merge on green → Pages → live-verify
-  → one notification) runs ONLY on his explicit "merge live"; a green PR
-  sitting open is the intended resting state, not a thing to finish. The 24 Aug
-  rule below is kept for its mechanics (where the link is, SSO, no PR-watching);
-  its "auto-merge is the default" clause no longer applies.
+- **Shipping — tell him when you are DONE, ship ONCE per session, NO AUTO-MERGE** (10 Aug – 2 Sep 26) — the live rules, with "done" now meaning live on Vercel (D143), are `../.claude/rules/shipping.md` (loaded in every chat); this Pages-era wording moved 24 Sep 26, whole, to `docs/archive/raptor-claude-md-2026-09-24.md`.
 - **MODELS — SUPERSEDED 23 Sep 26 by D67: Opus 5.5 PLANS and BUILDS; Fable 5.1 and Astra REVIEW the plan and the code, never the model that wrote it (both on money / published records / permissions / persistence); when ASTRA builds, Opus 5.5 reviews; a bug Opus 5.5 cannot crack escalates to Fable 5.1. The 7 Sep 26 text below is history.** (Was: MODELS (owner, 7 Sep 26) — heavy work runs on Opus 4.8; Fable 5.1 is
   budget-limited.** The owner prefers Opus 4.8 and Fable 5.1 for work ("they
   hallucinate less and are more correct"); he has plenty of Opus tokens and a
@@ -243,34 +196,7 @@ barely more than one.
   implementation itself never leaves the main session
   (`../.claude/rules/raptor-executor.md`). This settles the old conflict with
   the Delegate-frugally bullet below.
-- **Always hand him the Vercel preview link; auto-merge WAS the default until
-  2 Sep 26 (see above)** (owner, 24 Aug 26 — "always let me know once vercel
-  is ready to be tested so i can test it" → "u can auto merge unless u feel
-  like it is very critical and needs me to test it before merging" → "always
-  give me the preview link in vercel so that i can give u immediate feedback
-  and u can use it too. since its way faster than github. then in the meantime
-  i can still hand u more work"). So on EVERY change, once the branch's Vercel
-  preview is Ready (the `vercel[bot]` PR comment carries the `…vercel.app`
-  Preview URL — it is stable per branch), send him that link. It is his fast
-  feedback surface — Vercel is up in ~1–2 min where the gates plus a Pages
-  rollout run 12–15 min end to end (HANDOFF §Deploy for the rollout range and
-  the ten-minute ceiling).
-  **SUPERSEDED 2 Sep 26 — the link never gates the merge, because NOTHING merges
-  without his explicit "merge live"** (the no-auto-merge rule above). The clause
-  that stood here told you to run the "Done MEANS LIVE" chain unprompted for an
-  ordinary change and to stop only for a risky one. That applies to NO change
-  now. It was still being followed on 9 Sep 26 and got a fix merged live without
-  him (HANDOFF §Gate status) — which is why it is quoted dead rather than left
-  readable. Hand him the link, then WAIT.
-  While a preview or deploy cooks he will hand you more work — take it; do not
-  idle waiting on a rollout. Note the preview sits behind Vercel SSO, so HE can
-  open it but your headless browser cannot (it 302s to `vercel.com/sso-api`) —
-  your own fast surface stays `npm run build && vite preview` driven locally,
-  the same bundle Vercel serves — **so Vercel is HIS surface, never your drive
-  target** (this beats the older "point a browser drive at Vercel" line below;
-  newest wins). "Do NOT watch PRs" still holds (§Stable decisions has the
-  mechanism and the dated reason): unsubscribe
-  after opening; reading the preview URL off the PR once is not watching.
+- **Always hand him the Vercel preview link** (24 Aug 26) — now in `../.claude/rules/shipping.md`; this wording, with its superseded auto-merge clause, moved 24 Sep 26, whole, to `docs/archive/raptor-claude-md-2026-09-24.md`.
 - **Delegate frugally, by judgment.** The main session plans, reviews
   diffs and runs the gates first-hand. **SUPERSEDED for the claudex loop
   (owner, 17 Sep 26 — see §MODELS above): no haiku, no sonnet; a subagent
@@ -350,7 +276,7 @@ treat it as session-only. Provenance and opt-out:
 Distilled from the owner's product-standards brief; this section IS the
 standard — the full brief is deliberately not kept. Autonomy is unchanged:
 the confidence rule above still decides when to ask, and green gates ship on
-his explicit "merge live" (§the Vercel/no-auto-merge rule, 2 Sep 26) — never
+his explicit "merge live" (2 Sep 26 — `../.claude/rules/shipping.md`) — never
 unprompted.
 
 - **Ideate before building non-trivial UX.** Restate the problem BEHIND the
@@ -426,15 +352,17 @@ in what this repo actually has rather than a generic checklist:
   the builder (two unescaped sinks were found 6 Aug; assume more is
   possible). Role checks live at the PAGE and the write path, not the nav
   (`canEditSched`, `resetSession` — the 6 Aug lesson). And never present
-  the prototype auth as security: the site is public, accounts are
+  the prototype auth as security: since D59 (23 Sep 26) the repo is private and the
+  app sits behind his Vercel sign-in, but that is Vercel's lock, not the app's — accounts are
   hard-coded, and anything genuinely sensitive stays out of the demo data.
 - **Future development & DevOps.** Ship through the gated pipeline only —
   five gates in CI on every PR and push (the Tracker smoke is one of them),
   plus the two local-only gates for UI work; nothing deploys red. Write for the next session: comments say
-  WHY, `HANDOFF.md` stays true in the same PR, decisions that must not be
-  relitigated go to §Stable decisions, and the deploy traps (OIDC re-runs,
-  the ten-minute Pages ceiling, dispatch-cancels-push) are documented in
-  HANDOFF before they are ever debugged twice.
+  WHY, each fact goes to its one home in the same PR (`../.claude/rules/doc-structure.md`) —
+  a decision that must not be relitigated to its area's rulings file (`../.claude/rules/decisions/`),
+  the cross-cutting ones to §Stable decisions — and the deploy and gate traps (OIDC re-runs,
+  dispatch-cancels-push, the old ten-minute Pages ceiling) are documented in
+  `docs/gates-and-deploy.md` before they are ever debugged twice.
 
 ## Build & verify
 
@@ -527,109 +455,13 @@ changed from a/a · user/user on 24 Aug 26 (owner ask, which also removed
 the credentials hint from the sign-in card — don't re-print them there).
 The username is lowercased before matching, the PASSWORD is compared
 exactly, so `AD`/`a` works and `ad`/`A` is rejected.
-**The deployed site is reachable now, and checking work against it is a
-standing instruction (owner, 7 Aug 26).** The proxy used to answer 403 for
-`github.io`; the owner opened it, and both the page and `githubstatus.com`
-were driven end to end from the container on 7 Aug. **After every change that
-ships, load the real page and look at it** — do not report a change as live
-on the strength of a green workflow.
-
-The two checks answer different questions and neither replaces the other: the
-`vite preview` above is the bundle BEFORE it ships, and it is what you iterate
-against; the deployed page is what the squadron actually gets, and it is the
-only thing that can show a fault introduced between the build and the browser
-— a stale CDN cache, a base path wrong as served, an asset that 404s only
-under the `/Raptor/` sub-path. Sequence is: preview while building, gates,
-merge, then the live page once Pages has rolled over.
-
-**The next two blocks (reachability + the Chromium launch recipe) are
-CONTAINER-ONLY legacy** — on the Windows desktop there is no agent proxy, and
-Playwright uses its own browser via the `existsSync` fallback above. Kept for
-the measured failure signatures, which are worth recognising on sight.
-
-Reachability, and the reason if it ever closes again:
-
-```
-curl -sS -o /dev/null -w '%{http_code}\n' https://seejiaokai.github.io/Raptor/
-curl -sS "$HTTPS_PROXY/__agentproxy/status"      # logs each rejected host
-```
-
-`000` means blocked again — report the blocked host, never route around it,
-and fall back to the preview plus the workflow's job conclusions.
-
-**Driving it needs three launch settings Chromium does not take from the
-environment** (7 Aug 26 — a bare `chromium.launch()` fails with
-`ERR_CONNECTION_RESET`, which reads like the site is down and is not):
-
-```js
-chromium.launch({
-  executablePath: '/opt/pw-browsers/chromium',
-  chromiumSandbox: false,                              // sandbox + proxy = instant exit
-  proxy: { server: process.env.HTTPS_PROXY,            // NOT inherited from the env var
-           bypass: 'localhost,127.0.0.1' },            // see note below — local drives only
-  args: ['--ssl-version-max=tls1.2'],                  // TLS 1.3 handshakes get reset
-})
-```
-
-**When you drive the LOCAL `vite preview` (localhost:4173), add the
-`bypass: 'localhost,127.0.0.1'` shown above** (2 Sep 26). Without it Chromium
-routes the plain-HTTP localhost request through the agent proxy, which only
-accepts HTTPS CONNECT tunnels, so the page loads the relay's "this proxy only
-accepts HTTPS CONNECT" body (a 405) instead of the app — `#luser` never appears
-and the drive times out looking like the app is broken. The proxy itself is
-still needed for the DEPLOYED github.io page (external host); the bypass just
-keeps localhost direct. Simplest alternative for a local-only drive: omit the
-`proxy` key entirely.
-
-Those three are the whole recipe — `ignoreHTTPSErrors` is NOT needed despite
-the proxy re-signing TLS (measured both ways, 7 Aug 26: the CA is already in
-Chromium's NSS store). Do not add it reflexively; it would mask a genuine
-certificate fault later.
-The reset is worth recognising on sight: it is silent at the proxy (only
-Chromium's own telemetry shows up in the failure log), it hits every host and
-not just this one, and it is TLS, not policy — a 403 is policy, a reset is
-this. Login is `#luser` / `#lpass` / `#loginForm button[type=submit]`, same
+Login is `#luser` / `#lpass` / `#loginForm button[type=submit]`, same
 as `e2e/app.ts`, and `#vWeek .day` is the "week is up" signal. Watch console
 errors, page errors and 4xx responses on the way through; screenshot the
-element in question and LOOK at it.
+element in question and LOOK at it. *(Copied 24 Sep 26 from the container-era
+paragraph archived below, which carried them.)*
 
-Push to `main` → `.github/workflows/deploy.yml` reruns the gates and
-publishes to **https://seejiaokai.github.io/Raptor/**. Nothing deploys red.
-Since 3 Sep 26 the gates run as PARALLEL jobs (build+parity, unit ×2 by
-vitest project, geometry ×3 by Playwright project, tracker smoke) and `deploy` waits on all
-of them, so merge-to-live is bounded by the slowest leg (Leave War units,
-~5 min), not the sum (~17 min). Numbers and the why: HANDOFF §Deploy.
-
-**Two deploy channels, different jobs** (owner, 15 Aug 26 — the GitHub round
-trip felt like ~20 min per change and was unsustainable):
-
-- **Vercel is the FAST per-branch preview** — `vercel.json` at the repo root
-  builds `raptor-port` and every push to any branch/PR gets its own live URL
-  in ~1 min, no test gate in the way. This is the channel the owner taps on
-  his phone/laptop to review a change mid-session. **You cannot drive it
-  yourself** — it sits behind Vercel SSO (24 Aug 26, above; this supersedes the
-  older "point a browser drive at it" clause). Your drive surface is the local
-  `vite preview`, which is the same bundle. It is NOT gated, so a red preview
-  is still just a preview; correctness still rides the five gates below.
-- **SUPERSEDED 23 Sep 26 (D59): the repo is PRIVATE, Pages is GONE, the publish job is OFF — Vercel is the only viewer (D88 said public again; D89 reversed it the same day: it stays PRIVATE and GitHub's checks run on his own PC, a self-hosted runner — `[CI-TWO-CORES]`); `[DEPLOY-DOCS]` owns rewriting the Pages-era text in this file.** Was: **GitHub Pages stays the OFFICIAL site** — the gated `deploy.yml`, published
-  only on merge to `main`. Slower (the gates, then a Pages rollout that has
-  ranged from 5 s to 10 min and is outside our control), so it is paid ONCE
-  per session at the end, not per change — and since 2 Sep 26 only on the
-  owner's explicit "merge live". The "done means live" chain still ends here.
-
-So the loop is: iterate against the local `vite preview` (instant, what you
-drive), let the owner eyeball the Vercel preview when he wants to tap it
-himself, and ship to Pages once at the end. The CI gate was sped up on 15 Aug 26
-and again 3 Sep 26 (now parallel jobs, ~5–6 min end to end) — the numbers, the
-worker counts and the flake that set them are in HANDOFF §Deploy.
-**Docs-only changes skip the gates entirely** (`paths-ignore` in deploy.yml:
-`**.md` + `.claude/**` — verified nothing there reaches the bundle), so a
-handoff PR has NO CHECKS to wait for. **That is an exemption from the GATES,
-never from his approval: a docs-only change still merges ONLY on his explicit
-"merge live"** (corrected 17 Sep 26 — the old wording said "push, merge at once,
-done", which handed docs an approval exception he never granted). Push it and
-tell him it is ready; merging is still his call. A PR mixing
-code and docs still runs everything.
+**The deployed-site check, the container-only launch recipe, Pages publishing and the two deploy channels** (7 Aug – 17 Sep 26) — overtaken by D59 (Pages gone), D89 (checks on his PC) and D143 ("done" = live on Vercel); moved 24 Sep 26, whole, to `docs/archive/raptor-claude-md-2026-09-24.md`. What is live now: `../.claude/rules/shipping.md` (loaded in every chat) and `docs/gates-and-deploy.md`.
 
 ## Architecture rules (apply to nearly every task)
 
@@ -745,179 +577,9 @@ board, palette) are built by verbatim HTML-string builders and swapped via
 innerHTML with string-diffing — that is what preserves scroll, carets and
 the phone perf budget. Don't convert them to components.
 
-**The Leave War tab is a SECOND app with a SECOND store** (vendored 16 Aug
-26, `src/leavewar/`). It keeps its own store/notify/useVersion, its own
-`state/storage.ts` seam (NOT `HOOKS.storeBackend`), and its own vitest project
-(fixed TZ + jsdom + 20s timeout — see vite.config.ts). **IT PERSISTS — the
-17 Aug 26 "session-only" decision was SUPERSEDED by the 8 Sep 26 storage work
-(corrected here 17 Sep 26 after both reviewers found this reading as live).**
-`main.tsx` boots it on the WHITEBOARD (`lwInitStore(leavewarAdapter(wb))`), so
-on a built site a world that came back from storage keeps its wars, its OIL
-story and its inputs; `installDemoWorld` overlays the demo only on a
-first-ever boot. `memoryBackend` is now the DEV/TEST path only (`vite` dev,
-`MODE==='test'`, `?fresh=1`, or a browser whose storage can't be touched —
-`storage/boot.ts chooseBackend`). **Do not "restore" session-only behaviour or
-delete this persistence as unintended — it is deliberate.** The seam interface
-(`state/storage.ts`, `memoryBackend`/`localBackend`) stays; the shared database
-replaces the implementation behind it. What is stored: `docs/data-schema.md`. Four seams cross the boundary, and only
-four: `main.tsx` boots it once (`lwInitStore` → `installDemoWorld` →
-`wireLeaveWarSync` → a `histInit` re-baseline, in that order), `resetSession`
-derives its role from the Raptor login (`store.ts:toggleRole` — the admin's
-view-as-member flip, 27 Aug 26 — is the only other production writer, riding
-this same seam so the war always reads the session's EFFECTIVE role; on the
-Leave War itself, moving the cycle stage forward became admin-only the same
-day — members still bid), `probe-bridge.ts`
-exposes `w.lwSetRole` for its e2e suite, and **`src/leavewar/sync.ts`** — the
-sync wires (17 Aug 26; this seam also mirrors Raptor's "View as" person into
-the Leave War store's `viewer` on every Raptor notify — what lights the
-viewer's row and personalises the counter picker — a rider on this seam, not
-a fifth): Leave War's roster is a boot-time PROJECTION of
-Raptor's PEOPLE; **an absence is ONE record — the Raptor Input ([ARCH-STACK]
-step 4, 20 Sep 26; SUPERSEDES the 17 Aug two-way copy: `runInbound`,
-`runOutbound`, `retractLwRow`, `ingestFromRaptor` are deleted)**. The war
-stores only its own records — a LIST per person/date of requests, OIL credits
-and replaced-bid notices (`engine/warrecs.ts`) — and DERIVES everything it
-shows about leave, medical, courses and overseas duty from the Inputs on read
-(`sync.ts:refreshAbsences` → `state/merge.ts` → `engine/dayview.ts`: one main
-code by the agreed ladder, grey `+n` / amber `!`, charges by halves). Approving
-on the war writes the Input inside the same command (the absence door in
-`sync.ts`, installed on the store, carrying `lw` = the war id as provenance).
-The owner's clash rules run at ONE seat inside the Raptor inputs door
-(`leavewar/inputgate.ts` via `state/inputgate-hook.ts`: sick cuts leave, no
-overlapping leave / leave over a medical / leave over recorded work, a
-clashing input replaces an undecided bid with a notice) — and on undo/redo, and
-publishing a weekend/PH day replaces a clashing bid inside the publish command.
-Rules of record: `docs/superpowers/specs/2026-09-20-arch-stack-4-clash-check.md`.
-Weekend/holiday WORK — the
-PUBLISHED schedule plus acknowledged Duty-&-commitments input claims
-(`row.oil`, the OilConfirm ask-flow, 28 Aug 26) — credits OIL as a third
-derived pass (wire 4, `runOilPass` +
-`engine/oil.ts`, one ≤6h/>6h test on the day's start-to-finish ENVELOPE
-since 29 Aug 26 — gaps between events count, and the schedule half reads
-every visited week via the session stash, not just the loaded one — the
-ownership partition is by cell vocabulary, FO/HO vs
-leave codes; credits are `oil:'auto'` records with the work times). Editing
-or deleting a war-approved Input on the Inputs page needs no carry-back any
-more — the war simply re-reads it (a member's own date/type edit clears `lw`,
-so it gains the blue "filed on the Inputs page" edge, owner 19 Sep 26). The roster is a LIVE projection since 18 Aug 26: `sync.ts:reprojectRoster`
-re-projects Raptor's PEOPLE on every Raptor notify (change-guarded), so a body
-added on the Quals page reaches Leave War without a reload — a rider on this
-same seam. Its DISPLAY is categorised (`engine/people.ts:groupOf` — SXO / IP /
-OPS P by CAT / IWSO / OPS W by CAT / OCU / Personnel, colours from Raptor's
-`--q-*`), and ground crew ride it (`pers`, seat `gnd`) but are skipped by every
-manning count (`countsFor`); `categoryOf` and the thresholds are untouched.
-The PUBLISHED remarks editor (27 Aug 26) rides this same seam in the war→Raptor
-direction: `sync.ts:leaveInputAt` finds the Raptor input a war cell derives
-from (through the day view), and `RemarksSheet` saves through Raptor's own
-`setLeaveRemarks → commitInputEdit` — a remarks-only edit. A day holding more
-than one record opens the TAP LIST instead (`ui/DayList.tsx`), each record on
-its own line with its own actions. Don't add a fifth seam casually,
-and never call its `initStore` from a component — it clears the store's
-subscribers.
+**The Leave War tab is a SECOND app with a SECOND store** — its architecture (its own store and storage seam, what it persists, the one absence record, the four seams that cross the boundary and only four) moved 24 Sep 26, whole, to `../.claude/rules/decisions/leave-war.md` §Architecture, which loads with any Leave War file and with every file where it meets the rest of the app.
 
-**The Tracker tab is a THIRD app with a THIRD store** (vendored 7 Sep 26,
-`src/tracker/`, from `seejiaokai/Tracker` — plain JavaScript/JSX, `allowJs`,
-bodies are verbatim ports like `src/engine/`). Its state is module `let`s in
-`tracker/app/core.js` with its own subscribe/notify; its storage goes through
-ONE doorway, `tracker/storage.js` (inside Raptor it goes through the whiteboard
-under `raptor:tracker/…`; the bare `ocu:` localStorage path is the standalone/
-no-target fallback, and legacy `ocu:` keys are imported once — corrected
-17 Sep 26, see `docs/data-schema.md` §World 3 — the
-standalone app's SharePoint/Dataverse/Firebase layers were dropped; the shared
-database replaces this file when it arrives). **The store is the record; the
-.json file is a FORMAT, not a store** (owner, 9 Sep 26 — "I thought it should
-be auto synced … isn't it duplicating"): marks, dates, students, event
-details (PER CHART — D126) and a moved ball save themselves, ✓ Save changes writes STRUCTURE
-edits (events, prerequisites, lines, fonts) to the store and nothing else,
-and the File menu is TWO one-way moves — ⇪ Import (a file in: charts
-always, chart by chart with replace/add-as-new; students & marks only after
-an explicit yes — one button for both "a chart drawn up elsewhere" and "the
-whole export back in after the database move", owner's ask) and ⤓ Export (a
-backup before the database move, or a handover). The old model — 📁 Open binding a live file handle that Save changes
-wrote back to — is gone; don't re-add a bound file. **Nothing of it boots in
-`main.tsx`** — the screen is a lazy chunk and `core.init()` runs on the tab's
-first mount, which is also why the section is KEPT MOUNTED afterwards (the flow
-board is drawn imperatively once). **Three seams cross the boundary, and only
-three:** `resetSession` ends the Tracker's login session through `tracker/role.js`, and every Logout (`ui/logout.ts`) first asks it about unsaved chart edits (D129) (a
-no-import module — importing `core.js` there would put ~280 KB of syllabus data
-into every Raptor visit; `tracker.test.tsx` guards it); `TrackerPage.tsx` is
-the page; and **the people bridge `tracker/people.js`** (9 Sep 26, same
-no-import shape as `role.js`): `TrackerPage.tsx` wires `tracker/peoplewire.ts`
-once, which projects Raptor's `PEOPLE` into the bridge on every notify
-(signature-guarded, like Leave War's `reprojectRoster`) and hands it
-`HOOKS.whoami()`. That is how a person from the squadron roster is picked into
-a course (the Students card's `+ Add` lists the roster above the free-text box)
-and how every mark and date write is stamped `by`/`at`. **A student is an
-ENROLMENT ID (stable ids, 10 Sep 26)**: a roster entry is `{ id, name, pid? }`,
-every per-student key (`:m:`, `:d:`, `pace:`, `lulls:`, `last:`, `lastStudent`)
-takes the id, `nameOf`/`byName`/`pidOf`/`linkedPerson` read the entry, and the
-`v3:links` record is gone (folded into `pid` by `migrateIds`, once per course,
-resumable and read-back-verified — `app/ids.js` is the one converter, shared
-with Import). Same person or same name on the course = the same enrolment
-(`findEnrolment`, course-wide, hidden charts included). **A COURSE is a
-COURSE ID too (stable ids, 13 Sep 26 — ARCH-STACK 1B-i)**: `COURSES` is
-`{ id, name }[]`, `course` is the current course's id, every per-course key
-files under the id (`v3:<courseId>:…`), so **renaming a course is a label
-change that moves nothing** (`renCourse` sets the entry's name; the old
-copy-verify-delete apparatus is gone). `app/courseIds.js` is the one converter
-(mint/upgrade/reconcile), and `migrateCourseIds` re-bases a name-keyed browser
-once — resumable, read-back-verified, a `storage.list()` prefix-move with an
-explicit reserved-namespace skiplist (`courses`/`links`/`master`/`lay`/`SYLLABUS
-EDIT`) and a fail-closed preflight (a reserved or colon-bearing legacy course
-name stops the boot: `bootError` → App's reload panel, no board, no writers). It
-also translates the `v3:links` payload (keyed by course name) to the id. Import
-carries `{id,name}` courses (file v2), reconciles a file's course ids to the
-store's by name (store id wins, conflicts refused), and refuses a reserved name
-or a non-`^c[0-9a-z]+$` id at the file boundary. **A SYLLABUS is a SYLLABUS ID too
-(stable ids, 13 Sep 26 — `[TRK-CSID]` 1B-ii, DONE).** The global chart catalogue
-is `SYLS` = `{id,name,base?,userNamed?}[]` (`v3:master:sylcat`); built-ins carry a
-DETERMINISTIC shipped id from the `BUILTIN_SYL` table in `app/sylIds.js`
-(`sb2024`/`sb2026`/`sbtx2026`/`sbagaa2026`, the same on every browser — so an
-imported built-in matches by id with no reconcile), user charts a minted `sc…`
-id; grammar `^s[bc][0-9a-z]+$`. `base` (the canonical shipped SYLLABI key a
-built-in draws its def/layout/event-info from) is AUTHORITATIVE from the table,
-never trusted from a file. So **renaming a syllabus is a label change that moves
-nothing** (`renSyl` sets the entry name + `userNamed`; the old moveSylData /
-tombstone-and-shadow / SYL_ALIAS apparatus is gone), delete is a real sweep
-(records under the id removed in every course + every course's plan repaired;
-built-in tombstoned so the boot reconcile never re-offers it; hidden ≠ deleted),
-and duplicate copies the flow+layout under a fresh id with an EMPTY student layer.
-The conversion is **"keep charts, reset marks"** (owner): `migrateSylIds` (one
-converter, `app/sylIds.js` shared with Import) converts the global catalogue IN
-PLACE via a durable **payload journal** (compute-once, whole-object writes,
-`purge = sources ∖ destinations`, verify after all purges; two flags
-`kSylCatMig`/`kSylReset`) — every hand-drawn chart + layout kept, legacy layout
-event-ids translated onto the shipped ids (`padId`/`SPECIAL`, incl. `__font`) —
-and RESETS the per-(course,syllabus) student layer (rosters/marks/dates/pace/lulls
-cleared, plan `sylName→sylId`, demo pair re-seeded). Boot reconcile
-(`reconcileBuiltins`, also in `reloadFromStore`) adds newly-shipped built-ins,
-repoints `base` on a shipped rename, respects `userNamed`. `plan.sylId` replaces
-`plan.sylName`; `curSylId()` keys `kMarks`/`kDates`/`kLayout`. **Import guardrail
-(owner, §19):** charts import from ANY backup (v1/v2 name-keyed upgrade to ids on
-read, v3 reconcile by id/name); **student marks/dates/rosters/plan pointers import
-ONLY from an id-native v3 file carrying a `sylcat`** — a pre-v3 or unresolved
-student block is REFUSED with a plain message (no name→built-in guessing in the
-file path; charts still import). File version → 3. **Colon relaxed (owner):
-syllabus and chart names MAY contain a colon now** (a label, like a student name);
-COURSE names keep the refusal. A student name is a label and may carry one. The
-pencil on each Students-card chip renames that
-label (`core.js:renameStudent`, 10 Sep 26 — everyone may, like + Add and
-Remove; refuses a name another enrolment on the course already holds; the id
-and every id-keyed record are untouched). **The Tracker will be
-exported back out as a standalone app** (owner, 9 Sep 26), where students are
-typed and nothing feeds the bridge — so every Raptor-fed feature degrades to the
-old behaviour when the bridge is empty (`+ Add` with no roster IS the old
-prompt, pinned), and Raptor-specific code stays in `people.js` /
-`peoplewire.ts` / `TrackerPage.tsx` plus the one `people.length` branch. Design:
-`docs/superpowers/specs/2026-09-09-schema-hardening-design.md`; the target
-model for the database step: `docs/data-model.md`. **Everyone
-does everything — marking, charts, students, courses, syllabi AND the File menu
-(Import / Export): admin and member have the same access** (owner, D121,
-23 Sep 26, superseding the 7 Sep "file portion is the admin's"); the Tracker
-reads no role, so never add an admin gate to it. CSS is scoped under
-`#page-tracker` with five Raptor collisions reset at the top of the wrapper.
-Gaps and the carried-over traps: `docs/tracker/known-gaps.md`; the working loop
-with the owner's chart file: `scripts/tracker/bake-user-charts.mjs`.
+**The Tracker tab is a THIRD app with a THIRD store** — its architecture (its own store and storage doorway, the file is a format not a store, stable ids, the three seams, the same access for everyone — D121, the standalone export) moved 24 Sep 26, whole, to `../.claude/rules/decisions/tracker.md` §Architecture, which loads with any Tracker file and with every file where it meets the rest of the app.
 
 ## Coding conventions
 
@@ -931,17 +593,17 @@ with the owner's chart file: `scripts/tracker/bake-user-charts.mjs`.
 - **`scheduler.css` carries measured contracts, not preferences.**
 - **Every bug fix lands with a test that pins it**; new features get new
   tests. Never weaken a failing assertion — understand it.
-- **Keep `../HANDOFF.md` true in the same PR — and SHORT.** A change that
-  resolves a known issue REMOVES it from the open list (its contract goes to
-  the structured doc, its story to the commit message — never a "RESOLVED"
-  narrative left in the file); a change that creates one adds a 1–3 line
-  entry; a change that adds, removes or renames a file edits its file map.
-  `HANDOFF.md` was cut from 3,882 to ~550 lines on 4 Sep 26 and is MEANT to
-  stay near that (it had drifted back to 868 by 17 Sep 26 — trim it when you
-  touch it) because it is
-  read at the start of most sessions and every line costs every session; the
-  history is frozen in `../HANDOFF-ARCHIVE.md` (search it, never append to
-  it). Stale is worse than absent — the next session trusts it.
+- **Keep the records true in the same PR — each fact in its ONE home** (D140; the routing is
+  `../.claude/rules/doc-structure.md`, loaded in every chat). A change that adds, removes or renames a file
+  edits `docs/file-map.md`. A change that creates a known issue or leaves work open files it in
+  `../OUTSTANDING.md`, the ONE backlog; a change that resolves one moves its item out with
+  `scripts/backlog-archive.mjs` — its contract goes to the structured doc, its story to the commit message, never
+  a "RESOLVED" narrative left anywhere. Where things stand goes in the chat's own block under `## Now` in
+  `../HANDOFF.md`, which holds current state only: it is read at the start of every chat, so every line costs
+  every chat. The history is frozen in `../HANDOFF-ARCHIVE.md` (search it, never append to it); a passage no
+  longer needed where it sits moves WHOLE to `docs/archive/` (D138, D141 — the old wording of this bullet is
+  there, `raptor-claude-md-2026-09-24.md`). **A code change never trims a document** (D29): a file over its
+  ceiling is its own docs-only pass. Stale is worse than absent — the next session trusts it.
 - **Keep `docs/feature-impact.md` true in the same PR** (owner, 12 Aug 26 — the
   WALK itself is the 28 Aug standing order at the top of this file, which holds
   the surface list, the flows and the drift-seams): a feature that adds a
@@ -954,16 +616,8 @@ re-litigate it. Where a reference doc holds the full story, the line keeps the
 decision + a pointer. Owner + date establish authority; keep them.
 
 ### Pipeline & repo invariants
-- **Push a BRANCH freely; ASK before `main`** (owner, 23 Sep 26 — D60). A branch push changes
-  nothing official and gives him a Vercel link to LOOK at, so it needs no permission; `main` stays
-  gated behind his **"merge live"**. "Push" and "merge live" are NOT synonyms. The question only
-  arose because D59 took the repo private, which meters Actions minutes (D89: checks move to his PC). **Never push while a pull request's checks are running** (D151): any push restarts them and cancels the run in progress.
-- **Do NOT watch PRs** (owner, 15 Aug 26). The harness auto-watches an opened PR
-  and floods the owner's phone with CI/review/Vercel `<wake>` blocks for little
-  gain (gates + live page are checked before the PR opens; he leaves no review
-  comments). Call `unsubscribe_pr_activity` immediately after opening any PR;
-  never leave one watched. Doesn't change the ship-to-live duty. An explicit
-  "babysit this PR" ask overrides, for that PR only.
+- **Push a BRANCH freely; ASK before `main`** (D60) and **never push while a PR's checks run** (D151) — moved 24 Sep 26 to `../.claude/rules/shipping.md`, loaded in every chat.
+- **Do NOT watch PRs** (15 Aug 26) — moved 24 Sep 26 to `../.claude/rules/shipping.md` §Pull requests, loaded in every chat.
 - `reference/` is **read-only** — the spec for existing behaviour. New features go
   beyond it but must not break it.
 - The engine's original **generator is DELETED** (git history keeps it). Never
@@ -1000,519 +654,19 @@ decision + a pointer. Owner + date establish authority; keep them.
   — don't restyle the bare `.hl-grp`, History reuses it). Don't flatten tabs back
   to the chip recipe. `scheduler.css`; strip is `ui/hlchips.tsx`.
 
-### Leave War roster & display (owner, 3–4 Sep 26)
-- **Admin controls live in ONE ⚙ Settings; rearranging is on the grid.** Matrix top
-  row is now ONE line (owner, 5 Sep 26 — "all in 1 row to minimise row height
-  space"): Manning · ⚙ · Rearrange for an admin, then the OIL tracker RIGHT AFTER
-  the last control (no spring to the far edge); a member sees just Manning · OIL.
-  The old "JAN – DEC 26 · 365 days · 50 people" line was dropped (the war NAME
-  still lives in the Period picker in the page chrome). "OIL tracker" shortens to
-  "OIL" on a phone (`.rtlbl`) so the four hold one line. **The − / + ZOOM pair
-  follows OIL in this row at BOTH widths** (owner, 6 Sep 26 — moved off the
-  month strip, where it was phone-only), and **a phone OPENS one step out**
-  (`zoom` 0.8, desktop 1 — "can this be the default zoom? Like zoom 1 click
-  out"); the freed month strip holds all twelve months on ONE line on a phone
-  (equal-width buttons, 9px, 44px row — the 72px two-line row is gone) and the
-  strip CANCELS the grid zoom (`zoom: 1/zoom` inline — navigation chrome stays
-  readable at 0.8). The OIL TRACKER sheet has its OWN − / + beside RANGE with
-  the same steps and the same phone-opens-at-0.8 default (`OilTracker.tsx`).
-  Don't put the zoom back on the strip, let the strip wrap, or let it scale
-  with the grid. ⚙ opens `SettingsSheet`
-  (CONFIG: + Counter, +/− Event row, Show SANS, Reset counters + the roster GROUPS
-  editor folded in; old `⚙ Groups` button + `GroupSheet.tsx` deleted). REARRANGING
-  is STILL hands-on-grid (person rows AND category headings drag), and the top
-  row's ⇅ toggle is the ONE way in and out (owner, 6 Sep 26 — "delete this whole
-  blue section … when I click on it, it exits"): the on-grid strip
-  (`.lw-rearrange-bar`, "Rearranging — drag people…", Auto-sort, Done) is
-  DELETED; the toggle lights accent while on and is icon-only (⇅) on a phone.
-  **No Auto-sort button anywhere** — the store's `autoSortRoster` stays for the
-  tests; don't re-add the button or the strip without his ask. In Rearrange the
-  frozen NAME column WIDENS by the grip's footprint (`.mx-outer.mx-arranging`
-  re-sets `--who-w`, 136px desktop / 92px phone) so callsigns keep their at-rest
-  width beside the ⠿ ("not … shortened"); the header mirror and strip geometry
-  re-pin on `arranging`. The corner cell is empty (5 Sep 26). Don't move config
-  onto the grid or rearrange into a sheet (a Sheet's scrim swallows the drag's
-  taps), and don't push OIL back to the far edge.
-- **Who-wins follows the page order by default** (reversal of 28 Aug "two separate
-  orders"). Group higher on the page wins a tie; dragging a category reorders
-  who-wins with it (`groupPriorityIds` until `groupPriorityCustom`). A hand edit of
-  the ⚙ "Who wins" list switches to CUSTOM; "Match the page order"
-  (`clearGroupPriority`) clears it. **Standard categories OVERLAP** — a category is
-  a FIT check (`people.ts fitsCategory`), so an SXO IP fits both and IP-above-SXO
-  draws them under IP; `groupOf` = first fit down `GROUP_ORDER` (untouched page
-  unchanged). Two fits stay exclusive by design: ground crew fit only Personnel;
-  OCU fits OCU but never OPS P/W. `sxo`/`san` are never offered as qual groups (they
-  ARE the SXO cat / SANS group; a stored one is pruned). The store's
-  `autoSortRoster` buckets by live grouping (`liveAutoOrder`) — no button calls
-  it since 6 Sep 26 (above); an empty `rosterOrder` shows the same order.
-- **A chip shows only the CAT; hover/tap reveals DISPLAYED quals in group colours.**
-  Chip stays CAT-coloured (`catClass` off `groupOf`), never encodes a qual. The
-  popover (`qualpop`, screen-fixed so the frozen column can't clip it) lists ONLY
-  the qual GROUPS on the page the person matches, each pill its group colour, + SXO
-  gold when present. Undisplayed quals not listed; an empty chip is inert (no
-  `.has-quals`). Click swallowed (doesn't open figures sheet); dismissed by
-  pointer-leave, outside pointer-down, scroll, Escape, or a second tap — no scrim.
-- **A qual group's colour is the admin's PICK.** `groupColors` (persisted
-  `groupcolors`, admin-gated, `q:` ids + `#rrggbb`, dropped with the group, cleared
-  by reset); `groupColorOf` falls back to a deterministic palette (`qualSwatch`) so
-  an unpicked group is never black. ⚙ list opens a 12-dot palette (`PALETTE`);
-  built-ins/SANS keep their CSS-class CAT colours, no button. Pill text by luminance
-  (`inkFor`). Palette closes on pick / outside click / Escape (per the popup rule).
-  **NOT pruned at boot** — pruning is at read (`groupsInOrder`) and when the
-  catalogue arrives (`setQualCatalog`); a boot prune once threw away every saved
-  TF/NVG/custom group before Raptor's real column list landed (bug hunt, 4 Sep).
-- **The ⚙ groups list drags too.** Rows carry `data-grow` + a `⠿` grip wired to the
-  same `GROUP_DRAG` → `moveGroupTo` as the grid heading, so the two never disagree
-  (SANS has no grip, auto-placed at the foot). "Drop after row X" resolves from the
-  hovered row's OWN container, never a document-wide query. Every draggable list
-  shows the bar on the hovered row's bottom edge for a lower-half hover.
-- **Pilots above WSOs inside every block, ALWAYS.** `rankCompare` sorts seat before
-  `CAT_RANK`; `displayRoster` partitions each block by seat around the hand-order —
-  a drag can't carry a WSO above the pilots (single-seat blocks untouched). The
-  callsign wears a FULL-WIDTH seat-colour bar across the frozen column (pilot olive,
-  WSO green; `.cs.seat-*`, `flex:1` to the CAT chip). LW bars are DARKER than
-  Raptor's pucks — explicit deep-olive/deep-green hex in `matrix.css`, NOT
-  `var(--fcp/--rcp)` (never darken the flight line via scheduler.css); ground crew
-  keep a light bar off pure white. Phone (≤430px): bar side-padding tightens to 4px.
-- **The qual catalogue is Raptor's LoX column list, not the holders.** Column list
-  lives in `engine/qualcols.ts`; `qualCatalogue` takes keys+headings from it,
-  appending any key someone still holds after a removed column (ticks survive).
-  (The old "known gap — the column list isn't saved across reload" was SUPERSEDED
-  by the 8 Sep 26 storage work: `qualcols` is one of the durable settings keys,
-  saved and reloaded by `engine/qualcols.ts`. Corrected 17 Sep 26.)
-- **Show SANS = SANS as their own counted group at the foot.** Injects `SANS_GROUP`
-  (auto-managed, never stored) LAST on the page / FIRST in who-wins, so shown SANS
-  draw together; they still count in manning by seat+band (a group never moves a
-  count — `groups.ts` invariant).
-
-### The late-input mark (owner, 9 Aug 26 unless noted)
-Rules: `docs/engine-rules.md` §The late-input mark. Placement: `docs/ui-contracts.md`
-§The late-input mark on screen, §The LATE marks can be dropped per input.
-- **It is a MARK, not a warning** — never in the checks list, never closes a slot,
-  invisible to `validate()`. Measures the input's **last change**, not first
-  submission (an early input amended after the deadline reads late).
-- **Downchits are EXEMPT** (going DNIF isn't planned); leave and overseas duty stay
-  in scope (they're applied for). Don't re-propose either.
-- **It reads in the REMARKS cell**, not beside name/type (moved there the day after
-  it shipped) — except the board's promoted ground row (bare `<input>`, no room to
-  nest a chip) which keeps its amber row edge.
-- **The word stays a word — a compact dot was OFFERED and DECLINED.** Measured on an
-  11-input day: desktop costs nothing (666px w/ and w/o); phone costs 33px over 11
-  rows (757 vs 724) and splits long remarks mid-word ("Medic al appt"); a dot
-  measured 724 (free). Owner kept the word and the cost. Dead ends, don't retry:
-  word at END of remark saved nothing (759); turning off mid-word breaking saved
-  nothing (757). Don't "fix" the split by shrinking the badge — its WIDTH is the
-  whole cost. (These measurements live only here.)
-- **It CAN be dropped per input** (owner, 21 Aug 26; REPLACED the 20 Aug global
-  "Hide LATE marks" button, now removed). A session-only forgiven registry
-  (`LATEOFF` in `state/view.ts`) with the way back = tapping the same chip again.
-  Three fixed parts: the board's LIVE rows (Personal Inputs + Unavailable) always
-  draw a clickable `latechip` (solid shown, dim ghost dropped); the GATE is at the
-  passive printers (`ui/html.ts lateShown`, `isLateInput` still answers); the Inputs
-  page KEEPS printing it (paperwork record). Admin-only at the write path, cleared
-  on login/logout. Don't move the gate into the engine, don't bring back the global
-  button, don't silence the Inputs page.
-
-### Board behaviour
-- **No warning / advisory / note counts in the top bar** (owner, 20 Aug 26). The
-  three `pillbtn` counts are gone (each day leads with its own "N issues · N
-  warning · tap to review"). `openWarns` KEPT with no caller (reference behaviour /
-  future "expand everything"). Pinned in `app.test.tsx` — don't put the sum back.
-- **Nothing on the board re-orders itself** (owner, 10 Aug 26 — "prevent … the line
-  jumps"). Auto sort / Sort all are the only reorderers, by START TIME not role
-  rank. Don't add an automatic sort to any board list. (The Ground Programme's
-  render-time time sort predates this and stays — time-less rows sink to append.)
-- **MAIN/SPARE on a standalone line is a clickable BADGE in the remarks cell; a click
-  flips the line** (owner, 24 Aug 26; supersedes the 10 Aug ghost-text). `saRoleHTML`
-  draws it week+board (button in edit mode, chip read-only); placeholder is plain
-  `Remarks`. The flip is ENGINE-VISIBLE: `a.spare`+`a.role` flip together,
-  `scSpare`/`saExempt`/shift count follow, marks the `st:` key pending (rides next
-  AL). Next-week peek keeps role as fallback text (`saRoleText`). Don't restore the
-  placeholder or make the flip label-only. Pins: `sarole.test.tsx`.
-- **On SC, the B box is an IN-TIME; its sortie furniture is gone** (owner, 24 Aug 26,
-  SC only; AVALON/BB untouched). Board drops the SC header "in-time · N ac" note; SC
-  lines lose the blue suggested-brief ghost but KEEP the empty B box; the engine
-  reads a typed SC `f.br` as the crew's in-time (`events.ts` → `intime`,
-  `insOf` anchors crew rest on the earlier of it and shift start). Blank = byte-
-  identical to before. Extended same day: an early B on a MAIN starts the long-day/
-  duty-hours span (`workSpan` = `min(report,start)`), and anything cutting into the
-  B→start window raises the amber `SC_INTIME` advisory (already-overlapping events
-  stay with the hard-clash loop). SPARE rows have no event stream (both MAIN-only).
-  Known seam (documented, don't silently "fix"): the SC in-time shows on the board
-  only — the desktop week renders SC as SHIFT/START/END with no B, so a board value
-  isn't mirrored to the week. Owner said it'll be rare; raise mirroring only if he
-  asks. Pins: `scintime.test.ts`, `scboard.test.tsx`. Rules: `engine-rules.md`;
-  placement: `ui-contracts.md` §The B box.
-- **Amendment marks are a PUBLISHED-day thing — a draft day shows none** (owner,
-  25 Aug 26). `alAttr` emits `data-alp`/`data-aln` only when `dayApproved`; a draft
-  edit emits nothing but is still tracked in `SCHED.pending` (count/publish/History
-  unchanged — History finds cells by key+edit log). Don't re-add a draft-day mark.
-  Pinned in `publish.test.ts`/`interact.test.tsx`; `ui-contracts.md` §Amendment marks.
-- **A new flying line comes up blank** (owner, 10 Aug 26) — `+ Line` no longer copies
-  the previous callsign/mission/times. **`+ Wave` follows the same rule** (owner,
-  25 Aug 26): a plain flying wave's first line is blank (`cs/msn/to/ld` empty),
-  byte-identical to a `+ Line` add — no more `NEW / 12:00 / 13:00` seed and its green
-  suggested-brief. Standalone waves (`makeStandalone`) keep their kind-specific
-  structure (the `!kind` branch only). Pinned in `board.test.tsx`.
-
-### Waves & duties — templates and defaults
-- **Duties are decoupled from waves** (owner, 13 Aug 26; supersedes 10 Aug "AVALON
-  auto-creates its desk"). No wave auto-creates a duty desk (AVALON included);
-  deleting a wave leaves duty blocks alone. Every desk comes from the `+ Block`
-  template picker (`engine/dutytpl.ts`, persisted): a chosen template copies onto the
-  day as a block carrying the template's WAVE, if it names one (owner, 7 Sep 26 —
-  "a duty role that falls under AVALON will not have any warning … unless OL, HL,
-  OML, ATT C, OD" / "sc duties desk … not … the same time as main or spare"): the
-  editor's "For wave" picker (None / SC / AVALON / BB) → `blockFromTpl` mints `sa`
-  (+ `noconf` for AVALON and BB — BB is AVALON's twin, owner 7 Sep 26), so that
-  desk is exempt as its wave is and earns no
-  OIL, an SC desk is an SC seat for the spare rule, and a template with no wave
-  mints the PLAIN block it always did. This amends the 13 Aug "always plain"
-  clause; the decoupling itself stands. Seed week carries no template desk, parity
-  untouched. Editor `ui/DutyTplModal.tsx`. Do NOT re-add
-  `SAWAVE.autoDuty` or the wave-delete → `saDutyIx` linkage (`waveDutyBlock`/
-  `saDutyIx` remain in `waves.ts` only for old AL snapshots).
-- **Flying-wave templates + a + Wave show/hide list** (owner, 25 Aug 26). Sibling of
-  duty templates one level up: `engine/wavetpl.ts` library, `ui/WaveTplModal.tsx`
-  editor (from the + Wave pencil, `WAVEEDIT`), `+ Wave` lists templates beside its 4
-  built-in kinds. Template `{id,title,kind,lines}`: **one rule-set per template** —
-  exactly one of `fly`/`sc`/`avalon`/`bb`. Placing one mints an ordinary wave
-  (`waveFromTpl`) whose OWN kind flags drive checking — `validate.ts` never reads a
-  template, parity untouched. **A STANDBY-kind template mints the built-in's SHAPE**
-  (owner, 26 Aug 26): consecutive same-shift lines become ONE formation with a crew
-  row per line (like `makeStandalone`); a fly line stays one formation per line —
-  don't return the standby mint to 1:1. Times store raw, normalise on blur/mint/load
-  (`waveTime`, colon form `07:00`). Show/hide via a `WAVEHIDE` set (default all-shown,
-  deleted template drops its flag), persisted (`wavetpl`+`wavehide`), boot-loaded,
-  untrusted storage clamped. Don't seed built-in templates (library starts empty),
-  don't make `validate` read a template, don't move the gate off `WAVEHIDE`. Pins:
-  `wavetpl.test.ts`, `WaveTplModal.test.tsx`, `wavepicker.test.tsx`.
-  - **Manage + edit are ONE sheet, ONE gear** (owner, 30 Aug 26; folds in the 29 Aug
-    "remove it from Admin"). The + Wave menu carries a single ⚙ (`data-wvedit`) +
-    "N hidden · Manage", both opening the unified `WaveTplModal.tsx` (edits templates
-    AND shows/hides/deletes: a "Wave types" list with an EYE per built-in kind,
-    `setWaveHidden`; per template an EYE + footer Delete; built-ins hide but never
-    delete). Old `WaveManageSheet.tsx`/`WAVEMANAGE` DELETED — don't re-add it or a
-    second button. Admin's `WaveVisibility` stays REMOVED; Admin keeps only the
-    template-editor button (same sheet). Don't strand a hidden wave — the "N hidden"
-    line + eyes are the way back.
-  - **Kind-picker rule notes have ONE source, on the picker AND the Logic page**
-    (owner, 30 Aug 26). `wavetpl.kindNote(k)` is the single count-free summary of
-    each kind's checking rule, verified against `validate.ts`/`events.ts`; the editor
-    and the Logic "Wave types at a glance" group render the SAME strings. Deliberately
-    NOT `SAWAVE.note` (keeps its "2 MAIN + 2 SPARE" count for the built-in popup where
-    the count is real). When a kind's rule changes, update rule + `kindNote` + the
-    Logic "standby lines" row together (`logic.test.tsx` pins it).
-  - **The leave/absence "what each type costs" sentence has ONE source too** (owner,
-    30 Aug 26), shared by the Inputs "?" legend and the Logic type matrix.
-    `inputs.ts inputRuleText(t)`, derived from the enforced flags; both `InputsPage`
-    and `logic-html.ts` read it (they'd drifted). `inputs.test.tsx`/`logic.test.tsx`
-    guard it. Deliberately still separate, don't "helpfully" merge: `SAWAVE.note`,
-    the `satag` caption, the OIL-confirm prose (different jobs/voices).
-- **The DEFAULT arrangement is admin-set; the wave half is "new schedules only"**
-  (owner, 29 Aug 26 pt.2). Admin → Squadron config → **Default arrangement** panel,
-  two ▲▼ lists persisted on the `wavehide` footing: **section order**
-  (`engine/order.ts SEC_DEFAULT`, `secdefault`) is display-only fallback `secOrder`
-  uses for un-arranged sections (hand-arranged day still wins, canonical baseline
-  keeps 728/0); **wave order** (`engine/reorder.ts WAVE_DEFAULT`, `wavedefault`,
-  default OFF) applies ONLY at wave-add on a not-signed-off day. DON'T make the wave
-  default reorder existing/published days, and DON'T give it a display-only layer (it
-  would fight `sortWaves`). Unset = append. Pins: `arrdefaults.test.ts`,
-  `wavedefault-add.test.tsx`, `admin.test.tsx`.
-
-### Drag-reordering (sections, waves, dense rows)
-Contract: `docs/ui-contracts.md` §Dragging sections and waves, §Dense row reorder.
-- **Sections and waves re-order by IN-PLACE DRAG, not a sheet** (owner, 30 Aug 26;
-  the 29 Aug `⇅ Arrange` sheet is DELETED). One machine `ui/rowdrag.ts` (board wrap +
-  edit-week root) tells section/wave/row apart by the grip pressed and validates via
-  `applyMove`'s same-container rule. Grips draggable at EVERY width. The SECTION grip
-  is the SAME dotted `⠿` (owner, 31 Aug 26, reversing the 30 Aug drawn-rail),
-  placed INLINE at the panel header (not an overlay rail); headers set
-  `user-select:none`. Don't turn it back into a rail or drop the no-select. Don't add
-  arrows back to any of them.
-  - **Overall Notes and Common Programme are two SEPARATE draggable board sections**
-    (owner, 31 Aug 26). On the EDIT WEEK day notes still print inside the Common
-    Programme block, so the week keeps 'notes' EMPTY/skipped (keeps view week ==
-    reference byte-identical). The week's Flying-waves `.wv-sech` header stays (its
-    grip needs a header; stripped in the reference compare).
-  - **The four CREW WORKING-AID panels join the SAME draggable list** (owner, 31 Aug
-    26): Personal Inputs, Available crew, SANS availability, Unavailable are ordinary
-    section keys, each a `.sb-sec` card. **They drag on the EDIT SCHEDULER too** —
-    `dayHTML` in EDIT mode emits all ten sections through the SAME `secOrder` loop, so
-    a drag on either surface drives the ONE per-day order. The VIEW week is UNTOUCHED
-    and parity-locked (four not draggable, only Unavailable prints in its fixed tail;
-    whole change gated on `ed`, 728/0). This is a scheduler WORKSPACE arrangement, not
-    a published property. A SECTION drag is display-only (`moveSectionTo` →
-    `reorderSectionTo`, histPush, no markEdit) then offers the "Set default order?"
-    snackbar (`SecDefaultSnackbar.tsx`, promotes via the SAME `setSecDefault` as
-    Admin). A WAVE drag is a real amendment (`applyMove('mv:w…')` → `moveWave`). A held
-    drag AUTO-SCROLLS at screen edges (`pointermove` on the DOCUMENT — don't move it
-    back onto the container). Don't fold the crew panels into a fixed tail or let
-    their order reach the VIEW week. The old one-week "Apply to all days" is GONE.
-    Pins: `rowdrag.test.tsx`, `SecDefaultSnackbar.test.tsx`, `board.test.tsx`,
-    `html.test.ts`.
-- **Dense ROW reorder is by DRAG too — the ▲▼ nudge is GONE** (owner, 31 Aug 26;
-  reverses the 8 Aug "phone hides grip, shows ▲▼"). Every dense row shows its dotted
-  `⠿` at ALL widths; `sbNudge` returns '' (also ~2 nodes/row off the board budget);
-  phone grid gains a leading marker track, first box shortens by it, each box stays
-  under its heading. A same-week follow-up widened the lane 13→20px (glyph
-  left-aligned, handle clear of the first box) and shifted puck containers to span
-  track 1 (`.sb-line .sb-seatpair 1/4`, `.sb-arow.c6r>.ppl 1/3`) so crew pucks go
-  flush-left and a two-wide box's second puck clears the remarks. No puck resized.
-  **ALIGNMENT is a HARD RULE**: every grip's centre measured to delta-0 against the
-  box beside it (flying-line grip bottom-aligns `align-self:end;height:24px`; c6r/
-  notes centre naturally). Don't re-add ▲▼, don't hide the row grip on a phone, don't
-  move a grip without re-measuring delta-0. `boardMbtn mv:up/dn` stays as inert guard.
-  Pins: `rowdrag.test.tsx`, `board.test.tsx`.
-- **No ⋯ collapse of the phone row control strips** (owner, 16 Aug 26 — built +
-  rolled back same day). Row `▲▼/CX/■/✕` strips stay always-visible on a phone; the
-  `CTLOPEN` implementation is one `git revert` away — don't rebuild or re-propose.
-  Sibling touches from that batch (aircrew-tab gutter, plural warnings, week's faded
-  `Remarks` placeholder) STAND; only the ⋯ collapse was undone (and the batch's
-  4-digit board input times were later reversed by the 30 Aug hh:mm decision).
-
-### Time format
-- **EVERY time in the app reads `08:00` — colon, 24-hour, everywhere** (owner, 30 Aug
-  26, reversing their own 29 Aug "just 0800"). hh:mm is native and the reference gate
-  PINS it (`tfin.js`). Three layers: **Display** wraps every stored time in
-  `engine/time.ts fmtHM` (the ONE display fold; board renderers, week already folds
-  via `fmtT`); **Minting** `dutytpl.tplTime`/`DUTYTPL_STD`/`waveDutyBlock`/"+ In time"
-  now mint `07:00` (old templates refold on load); **Typing** every box accepts
-  `800`/`0800`/`8:00`/`08:00` (`parseHM`), shows hh:mm after commit (user never types
-  the colon). Engine untouched (readers go through `parseHM`), parity **728/0**. ONE
-  deliberate 4-digit survivor: the AREA window token (`0800-0900`, `atimeText`) — the
-  reference pins it compact; changing it needs owner sign-off. Don't add a second
-  display formatter — `fmtHM` is the one. `ui-contracts.md` §Every time reads hh:mm.
-
-### Week navigation & cross-week continuity
-- **The phone board's top bar is ONE row; the day is STEPPED BY ARROWS** (owner,
-  11–12 Aug 26). Getting the bar from 166→70px was the whole point — don't add a
-  control to its FIRST LINE without taking one off (the geometry gate counts ROWS).
-  History added an 8th button and stayed at 70px only because the same change fixed
-  `.sb-title` to shrink (`flex:1 1 0`) — that was the last free 33px; the next control
-  must displace one (the changes list is the worked alternative — it went to the
-  checks panel). `+ Line` is off the bar (every wave header has one); labels icon-only
-  under 820px. **The swipe is GONE (12 Aug); do not rebuild it** — `#sbPrevDay`/
-  `#sbNextDay` call `boardDayStep(±1)`, CONTINUOUS across weeks since 22 Aug
-  (`loadWeek`+`boardTab`; don't re-add the end-of-week `disabled`). `#sbCal` opens the
-  week picker in 'board' context. Arrows flank the DAY STRIP (bar 70→75px). Above
-  820px they aren't drawn (desktop has 7 day chips). The Mon–Sun chips became dots
-  then LEFT the phone bar on 23 Aug (freed row carries `#searchB`+`#sbHl`), removal is
-  CSS `display:none` so `dayTabsHTML`/`wireDayDots`/jsdom tests untouched. **Day name
-  is THREE letters on a phone** (12 Aug — split `Wed`+`.bl` tail, desktop still reads
-  `Wednesday` off one path; don't restore/ shorten). The DESKTOP scrub survives
-  (Mon–Sun chips): every chip keeps its footprint whatever is selected — don't grow
-  the current one. `boardTab` is view-only (must not validate; its board lane must not
-  wake EditWeek/EditRoster). `ui-contracts.md` §The board on a phone is ONE window.
-- **Week navigation is a rolling window + a calendar, and it is CONTINUOUS** (owner,
-  22–25 Aug 26). The fixed 5-chip `WEEKS` strip is gone; `weekWindow(CURWEEK)`
-  (`ui/weeknav.ts`) draws four `data-wk` buttons (prev·current·+1·+2, re-centring).
-  `WeekCal` (single-date, whole-week highlight) jumps to any day's week; it's a DAY
-  picker (loads that week AND lands that exact day) — don't turn it back into a
-  week-row picker. All week/Monday math lives in `weeknav.ts` (one drift seam). The
-  big `#vTitle`/`#vSub` were removed as clutter (cards carry dates) — don't re-add
-  them, the fixed chips, or the end-of-week clamp. `WEEKS` kept for probe-bridge/
-  reference only. Pinned mechanics:
-  - **Phone**: view/edit stepped day-to-day by SWIPE, continuous across weeks
-    (`pan.ts` edge-overswipe + `WEEKJUMP`). A wave-dense day no longer traps it
-    (owner, 23 Aug) — the `.go` block's ownership is decided at touch-END (a wave
-    already at its edge lets the gesture fall through); don't restore the touch-start
-    `.go` bail. The cross GLIDES (owner, 23 Aug, `ui/weekglide.ts:beginGlide`,
-    phone-only ≤820px, reduced-motion-aware, no-ops without layout). It slides TWO
-    FROZEN CLONES (owner, 24 Aug) — outgoing frozen on the finger's day, incoming
-    frozen on its landing day, both `overflow:hidden` so neither scrolls/flings, real
-    week painted but COVERED behind them (`pointer-events:none`, never
-    `visibility:hidden` — 5 Sep 26, a hidden week came back unpainted). Load-bearing
-    details: landing day derives from cross DIRECTION (`fwd?0:weekScrollMax`), NOT
-    live `scrollLeft`; the clone box is as TALL as the taller of the two weeks,
-    measured on both sides of the swap (5 Sep 26 — sized from the leaving week it
-    clipped a tall arriving Monday at a short week's height: the "split" / "lower
-    half black"); each clone is ONE opaque day card (`snapshot()`), inserted
-    ON-SCREEN under the leaving one and left two frames to paint before it slides;
-    real week covered so its fling/snap never shows. Clones at `z-index` 40/41,
-    BELOW the sticky `.topbar` (60) — keep them under the chrome. Don't slide the
-    live week, use a single clone, size a clone from one week, clone the whole
-    week, or start a clone off-screen.
-    Swipe NOT locked to one day (owner kept this) — no `scroll-snap-stop`; within-week
-    swipes never glide, desktop instant.
-  - **Desktop arrows are continuous across weeks** (owner, 23 Aug), landings instant.
-    They **walk EVERY live day incl Sat/Sun to the FRONT before crossing** —
-    `weekScrollMax` = "last live day at the front" (`(liveDays−1)×dayStep` clamped),
-    the next-week peek's real columns are the runway; the JS-sized trailing spacer
-    stays (`.week::after`/`--week-tail`, desktop only). Don't reintroduce a fixed
-    `calc()` spacer or the flush-right ceiling. **One press = one day even mid-glide,
-    both directions** — `panDays` counts from the COMMANDED target (`panTgt`) via a
-    BURST CORRIDOR anchored at the burst start (`panAnchor`→`panTgt` = `panBase`); a
-    manual pan or new week drops it. Don't narrow the corridor back to the last step.
-    **A park NEAR a boundary counts as ON it, and a plain horizontal wheel drops the
-    corridor** (owner, 24 Aug) — `PARK_TOL` 0.35-of-a-day decides step counting and
-    edge-cross; `onWheel` drops `panWk` on any plain horizontal tick. Don't shrink
-    `PARK_TOL` to a hairline or remove the deltaX invalidation. **The glide OWNS the
-    week while in flight** (owner, 24–25 Aug) — the proxy scrollbar and any repaint
-    are pure FOLLOWERS: `panDays` arms a short `glideEnd`/`GLIDE_MS` window (cleared on
-    land or manual pan) during which `onTrackScroll` never drives the week, and a
-    mid-glide repaint holds the glide's TARGET (`panHold` in EditWeek/ViewWeek), not
-    the captured mid-glide position; `mirrorToTrack` records `trkEcho`. Don't remove
-    the `glideEnd` guard, revert `panHold` to pinning live `sl`, or let `onTrackScroll`
-    write unconditionally. Pinned `pan.test.tsx`; `ui-contracts.md` §desktop arrow
-    glide + §spacer; `performance.md` §Single-writer during a glide.
-  - **The desktop scheduler BOARD now has week navigation** (owner, 23 Aug) — `‹ ›`
-    week-jump chips inside `#sbDays` (`data-sbweek`, `boardWeekStep`, one press = a
-    week keeping the open day); `#sbDays` is `display:none` on a phone so the phone
-    board keeps its edge arrows. The `.crew-hint` edge hint stays RETIRED.
-- **Personal INPUTS are GLOBAL, not week-scoped** (owner, 22 Aug 26). `loadWeek` swaps
-  DAYS/DATES but NOT `INPUTS`; every authored week's inputs merge into one `INPUTS`
-  at boot (idempotent, boot-only → parity 728/0). Each week's schedule shows only its
-  own (builders match by DATE). Gotcha kept in `loadWeek`: it clears every input's
-  `acc` so `autoAcceptSeedInputs` re-lands date-matching rows on the fresh days. Don't
-  re-add the `INPUTS` swap or move the `acc` clear. Flow: `feature-impact.md` §Flow E.
-- **The flagging engine reads across week boundaries** (owner, 23 Aug 26). Two rules
-  fixed to look past the loaded week: `DAYS_RUN` (`VCONF.maxRun`) walks in seeded days
-  before Monday; Monday's `CREW_REST`/`CREW_TIGHT` runs against the previous week's
-  Sunday (so `REST[0]` is real). Bounded to those lookbacks + one lookahead day (the
-  midnight-tail sliver past Sunday + the forward crew-rest trace); nothing else looks
-  further — don't widen either window without a named case. **A flag still lands on the
-  day it BREAKS**: next Monday's breach only becomes clickable when next week is
-  loaded. **The forward "Breaks Monday" trace** (owner asked from the deployed site,
-  23 Aug, reversing this entry's old "don't build a same-page hint") — a loaded week's
-  Sunday whose late finish busts next Monday draws the same trace box, off
-  `nextMondaySeed` + a phantom pass of the real `crewRestDay` (one body, two callers,
-  can't drift); it carries `di:null` (no jump target) and writes no second warning.
-  `CREW_TIGHT` never traces. Session edits ARE read now via the stash
-  (`weekctx.ts:bundle()` checks it before the pure seed); `SCHED`/publish state still
-  isn't read by these seed functions. Rules: `engine-rules.md` §validation/crew rest;
-  screen: `ui-contracts.md` §Three crew-rest rings; `feature-impact.md` Flow F.
-- **Weeks remember their edits — the per-week stash** (owner, 23 Aug 26).
-  `engine/weekstash.ts` remembers, per week-start key, the last snapshot `loadWeek`
-  handed it on the way OUT — decided parts:
-  - **SUPERSEDED 17 Sep 26 — stashed weeks PERSIST.** The 23 Aug "session memory
-    only, a reload forgets" decision (and its reasoning that `INPUTS` and Leave War
-    forget in lockstep) was overtaken by the 8 Sep 26 storage work: `persistAll`
-    writes `inputs`, `people`, the `plan` layer AND every stashed week to the
-    whiteboard, and a built site runs on the Browser backend. A reload KEEPS them.
-    Memory-only is now just dev/tests/`?fresh=1`. Don't "fix" this by removing the
-    persistence — it is deliberate; see `docs/data-schema.md`.
-  - **Pristine weeks are deliberately NOT stashed** (a persisted byte-copy of the seed
-    would outrank a later demo-week update forever). Stashed on the way out only if
-    changed since load or already carrying an entry. Don't re-add the unconditional
-    stash.
-  - **Publish state rides the restore** — the stash shares its SCHED field list with
-    `history.ts:schedFields` (the two serializers can't drift).
-  - **Seeds read the stash first** — cross-week reads go through `weekctx.ts:bundle()`,
-    stash ahead of the pure seed.
-  - **The "Sync" chip stays decorative** — per-browser, no server; don't present the
-    stash as shared/multi-device or move storage off `HOOKS.storeBackend`.
-  - Undo still re-baselines per week; the edit log stays session-only — the stash is
-    additive to both. Flow: `feature-impact.md` Flow E.
-
-### Inputs & Admin
-- **Manage users lives on the Admin tab** (owner, 23 Aug 26). Topbar `#manageUsers`
-  and `#userModal` gone; same fields/list/mutations on `ui/AdminPage.tsx` (7th nav
-  tab, ALWAYS LAST, admin-hidden like Edit — but the PAGE is the gate, `#admDeny`).
-  Don't put the button back on the topbar or add a tab after Admin.
-- **No repeat-weeks on inputs** (owner, 22 Aug 26). The "Repeat wks" field, Recurring
-  column and `recur` write are deleted — the feature never actually repeated (one
-  span stored, `recur` a label nothing expanded). A truly repeating input is a real
-  future feature (build only if he asks); a member files the same absence per week.
-  Pinned in `inputs.test.tsx`. (`reference/` keeps its own Repeat field — test-only.)
-  Moving an `Other` row to Ground/Unavailable is the `→ Ground`/`→ Unavail` buttons
-  in `html.ts` (week + board); don't add drop targets to `drag.ts` (pucks only).
-- **The calendar day popover — five owner asks** (23 Aug 26, all in `InputsCal.tsx`/
-  `scheduler.css`; `ui-contracts.md` §The Inputs month calendar):
-  - A SANS input reads its F/O/A letters on the popover row too (`isSansAvail ?
-    (sansLetters||'F/O/A') : inpLabel`) — don't put "SANS Availability" back.
-  - The day TITLE matches the date number's size (15px/700) — don't drop the explicit
-    size (without it the input takes the 16px UA default).
-  - A cell NOTE is plain text, no box (the dashed accent border is gone); on a phone a
-    muted `--edge-2` bar so it stays visible — don't re-add the dashed border.
-  - The cell mini-pucks (`.ic-pk`) are standard-olive (`--fcp`), CAT a right-edge line
-    (`--pk-cat` via `::after`), a SANS person a purple LEFT line — pseudo-elements not
-    inline box-shadows. Not the old full CAT-tint fill.
-  - `+ Pucks` opens the MULTI-SELECT picker (`.ic-pick`): category buttons
-    (`personMatchesCat` — the SAME predicate as the highlight chips, one body) light a
-    category, ✓ Add batches the ticks (`addPuckRow`/`addPuckPeople`, dedupe). A seated
-    puck removes 3 ways (✕, right-click, drag off its row). Don't restore the
-    per-person `<select>`; keep `personMatchesCat` the one predicate.
-
-### Leave War grid & scheduler render/drag performance
-Full detail for this whole group: `docs/performance.md` (Part 1 invariants + Part 2
-ledger). Read it before any layout/render/drag-touching change.
-- **The board DOM ceiling of 1150 is settled** (owner, 28 Aug 26). Raised 960→1150 in
-  PR #333 (board ~1051 nodes; timings held at 0.57× reference). Lives at
-  `DOM_CEILING` in `perf-port.cjs`. Don't re-litigate the raise or trim the board to
-  the old ceiling. (`performance.md`.)
-- **The open-bidding dates wear a glowing dark-green border on the LW grid** (owner,
-  1 Sep 26). One overlay `.lw-bidbox` (`Matrix.tsx measureBidBox`) around
-  `bidFrom..bidTo`, shown only while `stage==='open'`. Colour `rgba(74,140,100,.80)`
-  + low-opacity halo (the lighter of two faded greens he compared; deeper
-  `rgba(56,104,76,.78)` was the other) — don't brighten or swap to `--ok` without
-  asking. OUTLINE ONLY — he declined the faint-green wash (built, one-line add if he
-  asks; don't re-pitch). `ui-contracts.md` §The open-bidding box; pin
-  `e2e/leavewar.spec.ts`.
-- **The tab opens on the war being bid on, at the start of its bidding window**
-  (owner, 7 Sep 26 — "the default view … is always the start of the period in which
-  it is opened for bidding, followed by bidding closed, followed by published"). Boot
-  picks `currentId` by STAGE (open→closed→published→draft, `stages.ts
-  pickDefaultPeriodId`) on EVERY load — a remembered `current` is recorded but
-  deliberately NOT honoured at boot (owner reaffirmed 17 Sep 26; it briefly WAS
-  honoured after the 8 Sep storage seam made the tab persist, which silently
-  reopened the squadron on whatever war was last glanced at. A picker switch
-  still holds for the rest of that session). Pinned by
-  `state/store.test.ts` "records the chosen war but does NOT reopen on it".
-  The grid lands on
-  `period.ts defaultFocusDate` (`bidFrom ?? start`) once on first show
-  (`LeaveWarPage.tsx` → `focusDay` → `Matrix jumpTo`, the under-manned jump path — so
-  it preloads the target months and scrolls there), and `selectWar` lands the same way
-  on a picker switch. The column window builds AROUND that month, not month 0 — don't
-  reset it to 0 on a war change or the desktop whole-year fill drifts the landing back
-  to January (the phone's rolling window doesn't). Reads the same `stage`/`bidFrom` as
-  the open-bidding box; keep them in step. `ui-contracts.md` §The Leave War opens on
-  the war being bid on; pins `stages.test.ts` / `period.test.ts` / `leavewarpage.test.tsx`.
-- **The Leave War year grid: one draw-toward-a-target window engine** (owner, 3–5 Sep
-  26). Whole months at real widths over year-wide PLACEHOLDER cells (one empty cell
-  per side per row, as wide as the months it stands for), drawn IN PLACE while the
-  scroll is still moving. One loop `colwindow.ts stepToward` toward a per-mode TARGET:
-  phone = rolling window a few months ahead (prune at rest); desktop on-screen = whole
-  year (scrollbar slides); desktop off-screen = capped `HIDDEN_MONTHS`, drawn only
-  while idle (`state/idle.ts`). Shrinks on leave (dropped months → measured-width
-  placeholders, scroll kept), rebuilds on return; pre-warmed hidden after login
-  (`Shell.tsx`, idle-gated). Load-bearing invariants: `docs/performance.md`
-  §Leave War window engine holds them in full — the short form (don't undo): a drawn month keeps
-  its MEASURED width in the placeholder (`monthPxRef`); never draw/prune an
-  estimated-width month left of the view mid-scroll; placeholder widths are INLINE
-  styles, never a CSS custom property on `.mx-outer` or ANY grid ancestor (restyles
-  ~7k nodes; `--lwx-max` lives on the frozen bar's own box); EVERY row incl header
-  carries identical cells (the owner's iPhone/WebKit is the gate); on-screen signal is
-  `screen.ts` (a listener set, NOT the store — never repaint the grid on tab show);
-  `PersonRow` day cells stay one memoised `PersonMonth`/month; keep `.mx tbody tr
-  {position:relative}`. This reverses the 3 Sep "never fixed-width spacers" and the
-  4 Sep "desktop keeps whole year / never prune" — the reveal cost is why.
-  `ui-contracts.md` §The Leave War grid draws a window of months; HANDOFF-ARCHIVE.md
-  (the 5 Sep 26 entry); pins `colwindow.test.ts` + e2e.
-- **A dragged puck's ghost rides its own compositor layer, moved by ONE transform;
-  cell hover highlights are off in flight** (6 Sep 26). `.dragimg`/`.tdghost` carry
-  `will-change:transform` with left/top pinned at 0; `drag.ts ghostXf` writes
-  `translate(x,y)…` — no page paint (left/top moves relaid the whole page, ~170ms/
-  move). The three cell-hover rules are scoped `body:not(.tdrag)` (`.dragover` is the
-  drag's feedback). Don't move the ghost by left/top or re-enable hover under a drag.
-  Measured-and-done dead ends (don't chase): toggling ghost `pointer-events`,
-  any cursor rule on body, every re-layering ghost variant (the cost is the page's
-  ~230 compositor layers, not the ghost); the `translateZ(0)` "fix" was a broken-
-  experiment artefact, retracted. Nothing here touches native drag. `performance.md`
-  §Drag; `ui-contracts.md` §the mouse rides the pointer machine.
-- **A changed day rewrites only its changed BLOCKS, and a drop hit-tests before it
-  takes the ghost down** (6 Sep 26). `ui/dayswap.ts` parses the new day into a
-  `<template>` and replaces only the top-level/`.day-body` blocks whose CANONICAL
-  markup (freshly parsed, never the live decorated node) differs from the last write;
-  any shape mismatch falls back to whole-day replace (the old `outerHTML=`). Both
-  weeks use it (keep `prev.chunks`). `drag.ts onPointerUp` hit-tests with the ghost
-  still up, removes it after, leaves `body.tdrag/.mdrag` to `tdClear()`. Drop long
-  task ~600→400–490ms at 4×. Dead ends (don't retry): every paint-isolation variant on
-  the week (equal/worse — the ~60–100ms repaint records the two visible days); a
-  "quiet path" in `refreshHighlights` (2× slower). Don't swap by live `outerHTML`
-  comparison, match blocks by index across a count mismatch, or take the ghost down
-  before the hit-test. Pins `ui/dayswap.test.ts` (`drag.test.tsx` unchanged).
-  `performance.md`; `ui-contracts.md` §Rendering (per-block swap).
+### Moved to the area files (24 Sep 26, D140)
+Each group below now loads BY ITSELF, with its area's files (`../.claude/rules/decisions/`); its old sub-heading name is
+kept here so a pointer written before the move (a code comment, a spec) still lands. Planning in an area before
+opening its code? Open its area file first — `../.claude/rules/doc-structure.md`.
+- **Leave War roster & display** (owner, 3–4 Sep 26) — moved 24 Sep 26, whole, to `../.claude/rules/decisions/leave-war.md` §Settled before this list (loads with any Leave War file).
+- **The late-input mark** (owner, 9 Aug 26 unless noted) — moved 24 Sep 26, whole, to `../.claude/rules/decisions/scheduler.md` §Settled before this list (loads with any scheduler, board, engine or storage file).
+- **Board behaviour** — moved 24 Sep 26, whole, to `../.claude/rules/decisions/scheduler.md` §Settled before this list (loads with any scheduler, board, engine or storage file).
+- **Waves & duties — templates and defaults** — moved 24 Sep 26, whole, to `../.claude/rules/decisions/scheduler.md` §Settled before this list (loads with any scheduler, board, engine or storage file).
+- **Drag-reordering (sections, waves, dense rows)** — moved 24 Sep 26, whole, to `../.claude/rules/decisions/scheduler.md` §Settled before this list (loads with any scheduler, board, engine or storage file).
+- **Time format** — moved 24 Sep 26, whole, to `../.claude/rules/decisions/scheduler.md` §Settled before this list (loads with any scheduler, board, engine or storage file).
+- **Week navigation & cross-week continuity** — moved 24 Sep 26, whole, to `../.claude/rules/decisions/scheduler.md` §Settled before this list (loads with any scheduler, board, engine or storage file).
+- **Inputs & Admin** — moved 24 Sep 26, whole, to `../.claude/rules/decisions/scheduler.md` §Settled before this list (loads with any scheduler, board, engine or storage file).
+- **Leave War grid & scheduler render/drag performance** — moved 24 Sep 26, whole: the scheduler half to `../.claude/rules/decisions/scheduler.md` §Settled before this list, the Leave War half to `leave-war.md` (each loads with its files).
 
 ## Where things live
 
@@ -1520,7 +674,7 @@ ledger). Read it before any layout/render/drag-touching change.
 |---|---|
 | **The implementation-role policy** (approved-spec discipline, verification without self-approval, review integrity, the closing report) — auto-loads via `paths:` whenever `raptor-port/src`, `e2e`, `probes` or `scripts` are touched, so it is live during any build | `../.claude/rules/raptor-executor.md` |
 | **The plain-language rules, in force EVERY session** (unscoped, so they load before any project file is read — this file's §How to work here stays the source of truth and the why) | `../.claude/rules/plain-language.md` |
-| **EVERY RULING THE OWNER HAS MADE, and the file that carries each one** — one file per area, filed the moment he rules, before the work it implies; How we work loads every session, each other area when its files are read (D137) | `../DECISIONS.md` (the map) → `../.claude/rules/decisions/`, replaced ones `../DECISIONS-ARCHIVE.md`; the rule `../.claude/rules/record-decisions.md` |
+| **EVERY RULING THE OWNER HAS MADE, and the file that carries each one** — one file per area, filed the moment he rules, before the work it implies; How we work loads every session, each other area when its files are read (D137) — and each area file carries that area's settled decisions and architecture too (D140) | `../DECISIONS.md` (the map) → `../.claude/rules/decisions/`, replaced ones `../DECISIONS-ARCHIVE.md`; the rule `../.claude/rules/record-decisions.md` |
 | **HOW TO BUG-CHECK — the standing order** (the tiers, the roll-call, the walk, the evidence sheet, and which jobs to spend Fable/Codex on). Read before any bug check | `docs/bug-check-order.md`; the two proposals it was merged from are `docs/superpowers/briefs/2026-09-21-bugcheck-method-fable.md` and `…-codex.md` |
 | Validation, VCONF, publishing/AL, auth, history | `docs/engine-rules.md` |
 | **What is stored, every record's fields, the three storage seams** (read before the shared-database step) | `docs/data-schema.md` |
@@ -1531,11 +685,18 @@ ledger). Read it before any layout/render/drag-touching change.
 | **Storage: the whiteboard, postman, backends, boot gate** | `src/storage/` — the ONE route to a backend (whiteboard → postman → Memory/Browser backend); `src/state/persist.ts` hydrates/persists live scheduler state. **The persistence rule itself now lives in §Architecture rules ("The persistence funnel") — read it there.** **Medical documents (photos/PDFs) are too big for that text seam, so they get their OWN per-browser drawer** — IndexedDB `raptor-docs` (`src/storage/docstore.ts`), wired by `docBoot` from `main.tsx` on the browser backend only; `state/docs`' in-memory map is the sync read path, `docAdd` writes through, `docBoot` hydrates it at boot (8 Sep 26). What is stored: `docs/data-schema.md`. |
 | Rendering, drag & drop, text editing, AL marks | `docs/ui-contracts.md` |
 | **Which surfaces a feature touches + how one edit flows** | `docs/feature-impact.md` |
-| Open work, known gaps, the deploy traps, full file map | `../HANDOFF.md` (a short current-state doc — keep it that way) |
-| The history — how each past thing was found, fixed and shipped | `../HANDOFF-ARCHIVE.md` (a FROZEN snapshot as of 4 Sep 26; search it, never read it whole, never append to it) then `git log` |
+| **Where things stand and what is next — the ONE handoff** (a block per chat under `## Now`; a new chat reads it first). Since 24 Sep 26 (D140) it holds current state only | `../HANDOFF.md` |
+| **Open work — the ONE backlog** (the priority list first; a finished item leaves for its archive by script) | `../OUTSTANDING.md` (finished: `../OUTSTANDING-ARCHIVE.md`, searched) |
+| **Every source file and what it does** — edit it in the same change that adds, removes or renames a file | `docs/file-map.md` |
+| **How the gates and the deploy mislead; the checks on his PC** — read before trusting or re-running a red check | `docs/gates-and-deploy.md` |
+| **How a change ships** — the branch loop, "merge live", what "done" means (always loaded) | `../.claude/rules/shipping.md` |
+| **Where each kind of new fact goes, and when it leaves** (always loaded; D140, D141) | `../.claude/rules/doc-structure.md`; the policy and tiers `docs/doc-budget.md` |
+| The history — how each past thing was found, fixed and shipped | `../HANDOFF-ARCHIVE.md` (a FROZEN snapshot as of 4 Sep 26; search it, never read it whole, never append to it); finished documents and passages moved out since, each unchanged: `docs/archive/` (its `README.md` lists them); then `git log` |
 | Probe → reference → port results | `docs/probe-sweep.md` |
+| **Every typed remark that switches a rule on** — the seed of the user guide; keep it true as rules are added | `docs/remarks-vocabulary.md` |
+| Skill-improvement observations captured during sessions (the ONE log, committed) | `../.claude/skill-observations/log.md` |
 | What changed recently | `git log --oneline` (not duplicated here) |
-| Last session's leftovers, **if any** | `docs/session-state.md` (absent = nothing was pending) |
+| Last session's leftovers | the chat's own block under `## Now` in `../HANDOFF.md` (the old `docs/session-state.md` retired to `docs/archive/` on 24 Sep 26) |
 | The rules engine | `src/engine/` — `validate.ts` is the heart |
 | Store / UI state / undo | `src/state/` |
 | Components + HTML builders | `src/ui/` |

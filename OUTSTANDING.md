@@ -38,206 +38,63 @@ item).
 >   line — so the next session pulls the *thinking* out, not just the task title.
 >   Don't leave the reasoning only in a chat; the chat is gone next session.
 
-**Model guidance (owner's standing rule):** build / voluminous multi-file / lots
-of reading → **Opus 4.8, default**; hard-reasoning review, bug-check, verify or a
-tricky design call → **Fable 5.1, high**; mechanical / low-risk → a cheaper model.
+**Models:** Opus 5.5 plans and builds; Fable 5.1 and Astra review — never the model that wrote the thing (D67,
+`.claude/rules/decisions/how-we-work.md`). *(The 7 Sep "Opus 4.8, default" line that stood here is archived.)*
 
----
+## Priority — live items only (rewritten 24 Sep 26)
 
-## Priority — logical order (updated 13 Sep 2026)
+**Where this order comes from:** his own orders, each cited; where he has set none, the item's own "Place" line —
+said as such, never dressed up as his. One line per item, in plain words; the detail is the item below. The old
+list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
+whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
-**NEW backbone (owner, 13 Sep 26): [ARCH-STACK]** — a whole-app architectural review (both
-providers) reframed much of the backlog as ONE ordered stack (stable ids → one write/command
-layer → global undo → one-Absence-record → storage door/DB → remove quarantine). Owner's rule:
-**fix the architecture first, then individual bugs.** `[GLOBAL-UNDO]`, `[INP-CSID]`, `[TRK-CSID]`,
-`[CMDL-FINISH]`, `[DB-STEP]` are STEPS of it. STOP: interim two-system undo patches + further
-quarantine rounds.
+**His order:**
+1. **[HUMAN-RETEST]** — THE AMENDMENT SYSTEM next (D85/D86); then change-recording, the absence record and the Leave
+   War links, in an order he has NOT set — propose it and ask.
+2. **[S4-HUNT-REST]** — the bug hunt's untouched ground, in his own 1–7 order. Its place beside item 1's three is
+   not ruled (its ground IS the absence record): ask, never assume.
+3. **[BACKLOG-ORDER]** — "after the hunt" (21 Sep 26): [PUB-UNAVAIL] → [LW-LOCKMARK] → [LW-WEEKDAY-WORK] (talk to
+   him before building any of it) → [DB-STEP], then the [AMEND] work queued behind it. The architecture comes first,
+   then the individual bugs (D144): the stack ([ARCH-STACK]) resumes at [DB-STEP], with its step 6 still to come.
+4. **Before ANY collaborator is added** — an event, not a slot: take the checks runner off this repo (SEC-101, in
+   [REPO-PRIVATE]).
 
-**STACK PROGRESS (updated 18 Sep 26):** step 1 (stable ids) DONE; step 1b quick wins DONE;
-**step 2 (the one command/commit layer) DONE + LIVE** — follow-up #1 (routing every scheduler
-write, PR #409/#410) AND **`[CMDL-FINISH]`** (finishing the command layer for Leave War + Tracker:
-the causal both-side envelope, the per-record write seam, one-envelope-per-Tracker-gesture, guarded
-lw/trk stores, `TRK_RESTORING`, `sched.als` re-key, and the cross-provider inspection punch-list)
-both merged and live — PR #412 (build) + PR #415 (finish), plus the undo front-door doc #413.
-**step 3 (`[GLOBAL-UNDO]`) — PHASE 1 + PHASE 2 BUILT + MERGED LIVE (18 Sep 26).** The one global
-undo timeline is live: every Undo/Redo (scheduler/board/Leave War) drives it, plus the Unpublish
-button and off-week undo. Built test-first (Opus high), driven in the app, dual-reviewed (Fable +
-Codex) and folded in. Two `[CMDL-FINISH]` items were deferred INTO it and remain open (the Leave War
-posting-window rebuild on a postouts restore = CMDLF-002; grouping a whole Import as one undo step),
-plus the phase-2 review deferrals under the item below. **NEXT = step 4 (one Absence record) / [DB-STEP].**
+**Any time, none blocking — the small OIL follow-ups:** [OIL-READ-LEFTOVERS] (its items 1, 2, 4),
+[STORE-READER-SWEEP], [OIL-REQ-NAMEBOX] (a walk question for him), [POSTOUT-LOST] (its demo-seed half), [OIL-WORDS],
+[OIL-PERSONAL-PLACEHOLDER] (FULL tier), [CROWD-SIM-BRIEF] (WALK tier), [OIL-RELINK-XWEEK].
 
-**NEXT AFTER THE OIL BRANCH MERGES (owner, 22 Sep 26 — D24, D27, D28):**
-`[OIL-SEATS-CAN-EARN]` — one change on his principle that every seat can earn, the default decides,
-and the admin can override. It sits immediately after `[OIL-AUTO-REMOVE]` goes live and AHEAD of
-`[OIL-NEXT-TWO]`, in a FRESH chat, at FULL tier. Kept OFF `claude/oil-auto-remove-design`, which is
-at its last gate.
+**Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
+first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
+[TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SMOKE-ADD-RACE]
+(before the next Tracker change that touches the smoke suite), [TRK-TAP-AFTER-DRAG] (ask him first),
+[TRK-BAKE-STALE] (low). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+[RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] and [RULING-HOMES-AUDIT] (any time, docs only),
+[BG-CWD-GUARD] (ask him first: it adds a hook).
 
-Below is the older item ordering (kept for the non-stack items); land what's **cheap, done, or
-in-flight and risk-reducing** first.
+**Waiting on him — no order exists:** [OIL-AWARD-IS-A-GRANT] (needs his go), [OIL-EARNED-VS-GRANTED] (his figure —
+ask first), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
+[REPO-PRIVATE]'s sharing half, the GU-MAYREV product question inside [GLOBAL-UNDO], [EOD] (design first; no slot
+ruled), [CRP-FLAG]'s remainder and then [FLAG-EXPORT], the [AMEND] leftovers, and the questions filed on 24 Sep 26 —
+[LW-RESET-ORDER], [LW-DESKTOP-ZOOM], [ADMIN-DISPLAY], [QUALS-MEMBER-SCOPE], [TRK-PALETTE-ASK],
+[DEMO-AWARD-DATES-ASK] — with [USER-GUIDE] (wanted, not urgent) and [PERF-RESIDUALS] (two of them change wording
+or feel — his call).
 
-1. **[AMEND]** — the main project. Decisions resolved; brief re-frozen & re-reviewed;
-   **CORE built + round-3 in progress** on `claude/amendment-engine-core`. **[BUG2]**
-   folds in here.
-   - **[AMEND-SEL-FOLLOWUPS] — DONE + LIVE (merged 15 Sep 26, PR #405).** Archived — the
-     resolution is in `OUTSTANDING-ARCHIVE.md`. The 7 changes (incl. the signature-leak bug, taken the
-     per-plan way) were built, cross-provider bug-checked, and merged to `main`.
-   - **[REPO-CLEANUP] (owner, 15 Sep 26) — DONE (18 Sep 26). Nothing removed, by owner's choice.**
-     Step 1 (delete the handoff screenshots) was done earlier. Step 2, the repo-wide space/
-     redundancy sweep, was RUN this session and found the repo already tidy — so do NOT re-run it:
-     **zero dead source files** (all 522 checked by an import-graph scan), and only **~0.9 KB** of
-     genuinely-dead CSS (every other unused-looking class is built dynamically at runtime, e.g.
-     `seat-${seat}`, the `g-*` group family — removing them would break the app). The only real
-     weight was **~0.6 MB of design write-ups for already-shipped features**; the owner chose to
-     **KEEP them on purpose** — better for history-keeping (a note left in the tree is browsable;
-     a git-deleted one is only recoverable if you know it existed). No files removed. Archived 24 Sep 26 —
-     the full result is in `OUTSTANDING-ARCHIVE.md`.
-1b. **[TRK-SMOKE] — DONE + MERGED LIVE (17 Sep 26, PR #408, squash `93deab7` on `main`).**
-   Code-only cherry-pick; the rest of this branch stayed unmerged. It was NOT a flake: two real
-   causes. See `OUTSTANDING-ARCHIVE.md` for the
-   full diagnosis; in short — (a) the add-student box cleared its field a beat after it
-   opened, so a machine-speed fill was wiped and the add silently no-op'd; (b) a failing run
-   abandoned its preview server, and on Windows even a passing run did, so the next run
-   couldn't bind the port and failed on clean code. Both fixed, cross-provider reviewed
-   (Codex + Fable), gates green. The follow-up #1 build can run its per-phase gate set.
-1b. **[DOC-TRIM] — NEW, owner 21 Sep 26 (D14), AFTER [OIL-AUTO-REMOVE] merges.**
-   A session reads ~4,000 lines before it can work. The ratchet (`npm run docsize`) already
-   stops further growth; this is the trim itself. Do it after OIL merges, not before —
-   a third of tonight's new lines are that task's scaffolding and become archive the day it
-   closes. See the item below.
-**TOP OF THE QUEUE (updated 23 Sep 26).** **[OIL-AUTO-REMOVE] AND [OIL-SEATS-CAN-EARN] ARE BOTH
-MERGED AND LIVE.**
-1) **[ALL-AVAIL-WINDOW]** — **LIVE on `main` (23 Sep 26)**, after his look on Vercel and his "merge live"; no phone
-resize corner (D77). Archived 24 Sep 26; the built contract is `raptor-port/docs/ui-contracts.md`
-§[ALL-AVAIL-WINDOW]. 2) **[DOCS-GUARD]** LIVE 23 Sep 26 (archived);
-nothing left. 3) **[HUMAN-RETEST]** — the Tracker part MERGED 23 Sep 26 (his look done); the amendment system next. 4) **[DOC-TRIM]** — unblocked now that the OIL scaffolding has become
-archive. 5) The stack resumes at **[DB-STEP]**.
-**Small OIL follow-ups, any time, none blocking:** `[OIL-READ-LEFTOVERS]` (4 items the final reads
-raised and the branch deliberately left), `[STORE-READER-SWEEP]`, `[OIL-REQ-NAMEBOX]`,
-`[POSTOUT-LOST]`'s remaining half, `[OIL-WORDS]`, and from the window's bug check
-`[OIL-PERSONAL-PLACEHOLDER]` and `[CROWD-SIM-BRIEF]` (both further down this file).
-`[LW-MONTHJUMP-PHONE]` and `[LW-HBAR-RESYNC]` — FIXED on `claude/lw-monthjump-phone` (PR #428) with the
-owner's filmed frozen-bar jump, and archived; MERGED to `main` 23 Sep 26 on his "merge live" (look done). Left from it:
-`[LW-FROZEN-BAR-GAP]` (a one-frame blink, further down this file). **Tracker, 23 Sep 26 (night):** his
-pinch-zoom report is FIXED and MERGED on his "merge live" (`claude/tracker-pinch-anchor`, walked, gates green);
-filed from it `[TRK-PINCH-DRAGS-BALL]` (with his "left side cut off" report — FULL-tier checked and MERGED 24 Sep 26 on D133, archived; left from it `[TRK-PINCH-ASK]`), `[TRK-EDIT-SIDEWAYS]`, `[TRK-TAP-AFTER-DRAG]`. `[CI-TWO-CORES]` — DONE and
-archived: the checks run on his PC as a Windows service, its folder permissions tightened.
+**Future milestones:** [DB-STEP] (with [TRK-DISK] inside it), [XFER], [RECALL], [TRK-ATTEMPTS] (low urgency).
 
-**STALE ABOVE, CORRECTED 22 Sep 26:** the "STACK PROGRESS (updated 18 Sep 26)" block says the next
-stack item is step 4 (one Absence record). **Step 4 SHIPPED on 20 Sep 26** — `raptor-port/CLAUDE.md`
-records it (an absence is ONE record, the Raptor Input; `runInbound`/`runOutbound`/`retractLwRow`/
-`ingestFromRaptor` deleted). The stack's real next item is **[DB-STEP]**.
-**Open for the owner:** he has not picked whether to do the one cheap `CLAUDE.md` trim (~30 min,
-a move not a cut, ~700 lines off EVERY later session) as a warm-up before the scenarios, or to
-leave all of [DOC-TRIM] until after the merge. Either is fine; the ratchet already stops growth.
-
-1a. **[HUMAN-RETEST] — NEW, owner 21 Sep 26, HIGH once [OIL-AUTO-REMOVE] is closed.**
-   Re-run the hands-on pass over EVERY feature whose "bug test" was really a code review plus
-   unit tests. See the item below for the full reasoning — the short version is that the OIL
-   build passed two model reviews and 5328 tests, and the owner then found three defects in
-   minutes by opening the app, all of them surfaces that were never wired up. Any earlier
-   build checked the same way is carrying the same class of defect, unfound.
-2. **[SYNC-INTEG]** — now just the small NON-undo guardrails (medical member-filed,
-   clutter-only clear-data, Quals ✕ confirm, doc fix). Low urgency (pre-live); cheap batch.
-   *The undo/permission half was pulled out into [GLOBAL-UNDO] (owner, 13 Sep 26).*
-3. **[EOD]** — the end-of-day feature split out of [AMEND]; design-first follow-on,
-   after the core lands.
-4. **[OIL]** — depends on [AMEND]; do straight after.
-5. ~~**[TRK-CSID]** / **[INP-CSID]**~~ — **DONE + LIVE (13–14 Sep 26), both archived.** Was: the stable-id work (Tracker courses/syllabuses;
-   schedule personal inputs); independent, medium, not urgent.
-6. **[TRK-ATTEMPTS]** — small new feature, low urgency.
-7. **[RECALL]** — future feature (fresh recall from archive); design when reached.
-7a. **[CMDL-FINISH] — DONE + LIVE (18 Sep 26, PR #412 build + PR #415 finish).** The one command
-   layer is finished for **Leave War + Tracker** (causal both-side envelope, per-record write seam,
-   one-envelope-per-Tracker-gesture, guarded lw/trk stores, `TRK_RESTORING`, `sched.als` re-key,
-   cross-provider punch-list). DONE + LIVE — archived 24 Sep 26 (`OUTSTANDING-ARCHIVE.md`). Its two deferred items fold
-   into `[GLOBAL-UNDO]`.
-8. **[GLOBAL-UNDO] — PHASE 1 + PHASE 2 BUILT + MERGED LIVE (18 Sep 26).** The one-global-undo
-   re-architecture; absorbs [XWEEK-UNDO] and the whole delete/undo bug family. Live cutover done
-   (scheduler/board/Leave War undo + Unpublish + off-week). Deferred review items + the two inherited
-   [CMDL-FINISH] deferrals under the item below; the multi-user/per-session refinements land at [DB-STEP].
-9. **[DB-STEP]** / **[XFER]** — the future database milestone and multi-squadron
-   transfer; **[TRK-DISK]** (Decision A) is fixed inside [DB-STEP].
-
-**NEXT, added 21 Sep 26 — the OIL pair, ahead of the numbered list above.**
-**NEXT: a CROSS-PROVIDER BUG CHECK of the OIL build**, then the owner's "merge live". The code was
-written on Opus 5, so the check goes to **Fable 5.1 (high)** and **Astra (Codex, high)**, both, and
-each finding must come back with exact step-by-step fix instructions. Where to point them, what the
-build decided on its own, what the rules walk already found, and the ONE design question still open
-(should the green bar show on every puck a man wears, or only on the events that counted towards his
-day?) are all in `raptor-port/docs/superpowers/specs/2026-09-21-oil-build-handoff.md`.
-
-*(Done 21 Sep 2026: **[ALL-AVAIL-REDEF]** and **[OIL-AUTO-REMOVE]** — built together on branch
-`claude/oil-auto-remove-design`, MERGED 22 Sep 26 (D34); `[ALL-AVAIL-REDEF]` archived 24 Sep 26. The line that stood here
-said both "need a Codex red team before anything is written"; that was STALE the day it was
-written — Codex red-teamed the design TWICE and reviewing was closed by the owner's own cap, as
-§9 of the decisions doc records. Corrected in the build's PR. What the build had to obey, and the
-two rule clashes it found, are in
-`raptor-port/docs/superpowers/specs/2026-09-21-oil-behaviour-register.md`.)*
-
-*(Done 12 Sep 2026: **[TRK-IMPORT]** and **[TRK-LEDGER]** — both merged live, now in `OUTSTANDING-ARCHIVE.md`. [TRK-LEDGER]'s one
-inherent corner — a record deleted just after migration on a full store can be re-copied — was moved to
-`raptor-port/docs/tracker/known-gaps.md` on 22 Sep 26, because the archive is searched and never read.)*
-
----
-
-## In plain terms (quick read)
-
-One line each, no jargon:
-
-- **[AMEND] — The amendment engine rebuild (the big one).** Each day gets its own
-  amendments, published is locked, every change is a new AL, no take-backs. Decisions
-  made; now being built, phase by phase. The end-of-day "record actuals" part is split
-  off as **[EOD]** to build later.
-- **[EOD] — The end-of-day "what actually flew" record.** A quick end-of-day note of
-  what really happened (scrubs, changes), with no sign-off. Designed, but it needs its
-  own careful round before building — set aside so the main rebuild ships first.
-- **[OIL] — Don't wipe off-in-lieu someone already earned.** Removing a person by
-  amendment currently erases their weekend/holiday OIL — wrong if they'd already
-  worked the day. Lock it once the day's been worked. After the amendment rebuild.
-- **[BUG2] — Double-check one suspected bug.** A reopen button might act on the wrong
-  version while you're viewing history — Astra thinks it may not actually happen.
-  Quick check, folded into the amendment work.
-- **[SYNC-INTEG] — Small safety guardrails for leave.** Medical can only be filed by the
-  member (not created on the Leave War); the "clear old data" button only clears clutter and
-  never touches leave/balances; a warning on the Quals ✕; a doc fix. (The bigger delete/undo
-  fixes moved to [GLOBAL-UNDO].) Low urgency — we're not live yet.
-- **[CMDL-FINISH] — Finish the shared foundation for Leave War + Tracker. DONE + LIVE 18 Sep 26 (archived).**
-  The "command layer" (the app's one proper doorway for changes) was finished for the main schedule
-  but only half-done for Leave War and the Tracker — some of it was quietly left for later. Global
-  undo can't be built safely until it's finished. Found by red-teaming the undo design on paper
-  before building. This is the next build; global undo comes right after.
-- **[GLOBAL-UNDO] — One undo for the whole app, before the database step.** Today each
-  section has its own separate undo, and that's the root of the weird delete/undo bugs. One
-  shared undo (per login session, never touching another user) removes that whole class of
-  bugs instead of patching each. A step to do before going live / before the database.
-- **[RECALL] — Bring a posted-out person back, fresh.** When someone leaves the whole app
-  and returns, they come back with new quals and new leave balances (past kept as record) —
-  not their old ones. Future feature.
-- **[XWEEK-UNDO] — Undo across weeks (part of [GLOBAL-UNDO]).** If you undo something on a
-  week you're not viewing, the app takes you to that week and shows what changed. Built as
-  part of the one-global-undo step.
-- **[XFER] — Move a person to another squadron, data intact.** In the multi-squadron future,
-  transferring someone carries all their data across (unlike leaving the system, which resets).
-- **[INP-CSID] — Give leave/personal inputs a permanent hidden tag. DONE 13 Sep 26 (archived).** Like schedule rows and
-  students already have, so two look-alike entries can't cross when one is deleted.
-- **[TRK-CSID] — Give courses and syllabuses a permanent hidden tag. DONE + LIVE 13–14 Sep 26 (archived).** Students and
-  schedule rows already have one (so they survive being moved or renamed); courses
-  and syllabuses don't yet, so renaming one is riskier. Medium job, not urgent.
-- **[TRK-ATTEMPTS] — Remember a student's earlier attempts.** Today only the latest
-  grade is kept; this would keep the earlier tries too. Small new feature.
-- **[TRK-DISK] — A rare "nearly-full storage" data-loss gap.** On upgrades or renames
-  the app trusts its own memory instead of confirming the save really reached storage
-  before deleting the original. Rare, mostly self-heals. Best fixed with the database
-  step.
-- **[DB-STEP] — The big future move to a shared database.** Today everything saves
-  only in your own browser — nothing is shared across people or devices. This is the
-  large future project (Dataverse) that several parked items fold into.
+**Kept live as a warning, nothing to build:** [OIL-AUTO-REMOVE] — it warns a later session off re-doing the four
+walk defects and off assuming he looked at the walked Saturday (his look was waived).
 
 ---
 
 ## Items
 
 ### [AMEND] Amendment engine redesign — CORE BUILDING (decisions resolved)
+**STATUS 24 Sep 26 (the spring clean, from Fable's read of the code):** the core is BUILT and merged — per-day
+numbering, AM-01 version ids (`engine/verid.ts`), AM-06 signatures bound to content, Phase 2 (the reopen control
+gone). AM-02's migration was dropped on his word (14 Sep 26: reset, don't migrate). **Left:** AM-04 (frozen
+availability in the canonical content — `publish.ts` says it is not done), the publish-entry validation matrix,
+AM-09 (durable write/lease), and PSF-001 (a filing-only change publishing on stale signatures — his call). The
+heading and the lines below about "building on `claude/amendment-engine-core`" and "Opus 4.8" are history.
 Rebuild the publish/amend/version model: per-day isolated numbering (never
 week-wide), published = immutable, every change a new AL, supersede-never-retract,
 undo cannot cross a publish, load-old-version → republish-as-next-AL as the safe
@@ -245,7 +102,9 @@ recovery path.
 - **Decisions RESOLVED (owner, 12 Sep 26):** plans SURVIVE as backups; ALL FOUR roles
   re-sign every amendment; crew SEE the live draft (issued stays authority). OIL for
   this build = latest AL/Original per day, per-day, read-failure protection (the
-  worked-day lock stays **[OIL]**).
+  worked-day lock stays **[OIL]**). *(Superseded 24 Sep 26 by D142 (his ruling of 20 Sep 26): a day's OIL comes
+  from its latest published version — the latest amendment, or the EOD if that is the latest — however old the
+  day; no lock, no clock. `[OIL]` is archived.)*
 - **Reviewed:** the design brief was re-frozen (Rev 3) and re-reviewed by BOTH providers
   (converged), then Rev 4 owner additions (EOD, OIL simplification, plan names) got a
   further Astra/Codex red-team → Rev 5. Plan naming passed clean; the EOD findings
@@ -275,7 +134,9 @@ path in a clock-free app needs its own design cycle. Astra/Codex REV5 findings t
   documented trust guarantee (EOD is never the forward-plan authority).
 - **REV5-04** "worked" ≠ "marked closed": a worked-as-planned day gets no EOD and stays
   unclosed, so a later AL can still strip its OIL; legacy worked days too. Needs a
-  no-content-change closure path + treatment of unclosed/legacy worked dates.
+  no-content-change closure path + treatment of unclosed/legacy worked dates. *(Superseded in part 24 Sep 26 by
+  D142: a later published version that takes a man off a past day DOES take that day's OIL — he confirmed it —
+  so "a later AL can still strip its OIL" is the rule, not the defect. What may remain is the closure path itself.)*
 - **REV5-02** a late OIL acknowledgement (`reviseOil`→`row.oil`, no publication gate) has
   no defined transition into an immutable/closed day.
 - **REV5-03** pick ONE correction transition (corrections are EOD-kind, not signed AL).
@@ -284,23 +145,6 @@ path in a clock-free app needs its own design cycle. Astra/Codex REV5 findings t
 - **Design record:** the EOD design is preserved in §3b of `…-amendment-core-build-brief.md`;
   findings + dispositions in the review log. **Model:** design-first, red-team both
   providers again before building; then Opus build + Codex inspection.
-
-### [OIL] Lock earned OIL on an already-worked day — STANDBY (after [AMEND])
-An amendment that removes a person re-derives Leave War auto-OIL from the current
-published version and sweeps it away — correct for a **future** day, wrong for a
-**past** day already worked.
-- **Decision (owner leaning, 11 Sep 26):** earned OIL on an already-worked day is
-  **locked**; amendments only affect OIL for days not yet flown. Exception: an
-  amendment whose explicit purpose is "he didn't work it after all."
-- **Cross-feature, verified:** `src/leavewar/sync.ts` `runOilPass`/`desiredOilCells`
-  + `src/engine/oil.ts`; acknowledged claims (`row.oil`) are the only sticky source
-  today. Sequenced after [AMEND].
-- **Model:** build on Opus; a Fable-high bug-check (touches money + saved data).
-
-### [BUG2] Verify the reopen control during version preview — SMALL (folds into [AMEND])
-Astra says the original Bug 2 may **not** reproduce (EditWeek `ed=false`; SchedBoard
-`pv=true` → no controls emitted). Verify; keep the defensive handler guards.
-- **Model:** Fable, high — short, focused verification.
 
 ### [ARCH-STACK] The architectural root-cause stack — the backbone (both providers, 13 Sep 26)
 **STEP 1A DONE + LIVE (13 Sep 26, PR #396):** stable ids on the scheduler side — input filing by
@@ -384,43 +228,6 @@ what to stop):** `raptor-port/docs/superpowers/specs/2026-09-13-architecture-roo
   grade (orphaned row → `shiftHardGround` can't resolve the type; narrow — Fable inspect #2). Fix
   when landings become the one Absence record, or a cheap `srcType` on the ground row if it surfaces.
 
-### [SYNC-INTEG] Leave War ↔ inputs guardrails (NON-undo part) — small, ready
-A read-only cross-provider audit (Codex + Fable, 13 Sep 26) of DELETE/UNDO across the
-Leave War ↔ inputs ↔ documents seams found a family of data-integrity + permission
-issues. **All decisions, findings and the fix plan are in**
-`raptor-port/docs/superpowers/specs/2026-09-13-sync-delete-undo-integrity-spec.md`.
-**DECISION 13 Sep 26 (owner):** the whole UNDO/permission half of this — the delete-vs-undo
-resurrection, the undo-family bugs, and the member-undoes-admin gap — is NOT patched here;
-it is dissolved wholesale by a single **global undo re-architecture → see [GLOBAL-UNDO]**,
-done as a step BEFORE the database. Do NOT build interim two-system undo patches (they'd be
-thrown away). Rationale: pre-promulgation demo data (no live users), and the root cause is
-having two separate undo systems over shared data — remove the root, don't patch each face.
-- **MEDICAL GUARDRAIL BATCH — BUILT + ALL GATES GREEN, held for "merge live" (19 Sep 26,
-  branch `claude/sync-integ-medical-guardrails`).** THREE items built test-first on Opus 4.8:
-  (1) **P2 medical member-filed only** — the war blocks medical creation for ALL roles incl admin
-  (store write path) and the medical pickers are gone; it still DISPLAYS member-filed medical that
-  syncs in; war→Raptor no longer crosses medical; the demo's war-created medical is reset via
-  `leavewar` added to the versioned storage reset (SCHEMA_VERSION 2→3) and re-shown as a member-filed
-  example. (2) **Relaxed document prompt** — filing a medical with no certificate PROMPTS once
-  ([Upload]/[No document]) instead of hard-refusing; "No document" files it with none; the
-  replace-don't-strip guard stays (`docGate` + `DocConfirm`, wired into all three editors). (3) **P4
-  "Clear old data" is CLUTTER-ONLY** — clears only past pucks + day notes; never an input, a balance,
-  a stashed week, or the loaded week; renamed "Clear old clutter"; validates real calendar dates.
-  Process: pre-build plan red-teamed by Codex (APPROVED after 1 revise round); post-build code
-  inspected by Codex + Fable (Fable: no permission/data-loss holes; all findings folded in). Gates:
-  unit 4985/0, build, parity 728/0, e2e, smoke 425/0. **Plan + dispositions:**
-  `raptor-port/docs/superpowers/specs/2026-09-19-sync-integ-guardrails-build-plan.md`.
-  **SCOPE NOTE (owner's call):** the backlog listed "clear genuinely-empty past weeks" under P4; the
-  red-team proved dropping a stashed week can lose a day's amendment history (SYNC-003) or resurrect a
-  deliberately-emptied authored week (SYNC-005), so per the guardrail-over-cascade rule the sweep
-  drops NO stashed weeks. A narrow safe empty-week drop is a possible later follow-up.
-- **STILL OPEN in [SYNC-INTEG] (NOT in this batch):** **P6** a Quals ✕ confirm (a confirmation that
-  archiving removes the person's leave; small; superseded by the fresh-recall feature [RECALL]);
-  **P7** fix CLAUDE.md's stale "Leave War session-only" line (the 8 Sep storage work persists the LW
-  world; already corrected in raptor-port/CLAUDE.md but re-verify the root CLAUDE.md / any stale copy).
-- **Urgency:** low (pre-live). Model: Opus build, gates, no merge without "merge live".
-- **Context:** the build plan above + the 13 Sep sync spec (findings, dispositions).
-
 ### [GLOBAL-UNDO] One global per-session undo — BUILT + MERGED LIVE (18 Sep 26)
 
 Phase 1 (engine) + phase 2 (live cutover) built, five gates green, driven in the app, dual-reviewed
@@ -453,15 +260,12 @@ An admin recalls an archived person back into Quals. **Behaviour (owner, 13 Sep 
 leaving the whole app SYSTEM then being posted back = **FRESH** — new/updated quals and
 new Leave War balances; only past history stays frozen. NOT "restored exactly as they
 left." Replaces the current Quals ✕ / "Restore exactly" behaviour (see [SYNC-INTEG] P6).
+- **Absorbs `[SYNC-INTEG]` P6** (carried here 24 Sep 26, when that item was archived): a Quals ✕ confirm — a
+  confirmation that archiving someone removes their leave; small, and `QualsPage.tsx` archives with no
+  question today. Its P7 (a stale "Leave War session-only" line) is done: `raptor-port/CLAUDE.md` and the Leave
+  War's architecture say it persists.
 - **Context:** the sync spec §Parked; memories `multi-squadron-and-person-transfer`,
   `future-undo-semantics-multiuser`.
-
-### [XWEEK-UNDO] Cross-week "snap-to-page" undo — FUTURE FEATURE
-**Behaviour (owner, 13 Sep 26):** undoing something not on the current page snaps you to
-that week and shows what the undo did. Builds on Phase 2's per-week persistent undo.
-Future multi-user rules: undo is scoped to the login SESSION (logout clears it), never
-affects another user, but others see every change live from the shared DB.
-- **Context:** the sync spec §Parked; memory `future-undo-semantics-multiuser`.
 
 ### [XFER] Multi-squadron + transfer a person with their data — FUTURE MILESTONE (with [DB-STEP])
 **Behaviour (owner, 13 Sep 26):** many squadrons on one app / one backend; transferring a
@@ -485,120 +289,19 @@ retry (more likely on iPhone). Never fixed, not logged as a limitation.
 - **Fix within [DB-STEP]:** a real "it's saved" signal the delete waits for, rather
   than a piecemeal patch in three places. Or pull earlier on request.
 
-### [S4-BUGHUNT-MERGED] MERGED to main (PR #422, 21 Sep 26) — 34 commits. Kept for what it SET ASIDE.
-**Read `HANDOFF-S4-BUGHUNT.md`, then `raptor-port/docs/superpowers/specs/2026-09-20-CURRENT-STATE.md`
-and nothing else first.** That spec is the single destination: what is built, what is parked, and the
-RULES SET ASIDE today that must not be re-applied — B4's "overlap means no credit", BOTH halves of
-B5 (the bid-door refusal AND "publishing replaces an undecided bid"), §26.3's refusal of leave over
-recorded work, Q5's skip, H2 used to decide whether a medical and leave clash at all, and the August
-rules about posted-out and pre-joining rows. Several older documents still read as live and are not.
-- **Twenty fixes built and green.** The five items that were left to build are DONE, plus a sixth
-  the owner asked for in the same breath (a Post in date — the app had no joining date at all
-  before), plus two more from questions the hand test raised and he answered: an admin can now
-  RECORD that someone worked (FO/HO with reason, who said so and hours, **on any day** — his
-  ruling), and can place leave or OIL on a day outside someone's posting dates. **Three parked**
-  with their reasons, **one closed** as not a defect.
-- **The owner's three open questions are ANSWERED** and recorded in CURRENT-STATE §6. One of them
-  changed how leave is charged — it does not: he ruled the app was right and the written rule had
-  the wrong word.
-- **ALL SEVEN GATES RUN** — unit 327/5181, build, tfin 728/0, rulecheck, e2e 447/0, perf 4/0,
-  Tracker smoke 425/0 — **and the hand-testing pass in the running app is DONE.** It found one real
-  defect (the new hours box was unusable on a phone), now fixed. One test pair is not certified: see
-  the handoff's "the one thing NOT certified".
-- **`npm run perf` was dead on the Windows desktop** and silently so — it hard-coded the container's
-  Chromium path. Fixed to the repo's own fallback. If another probe "fails instantly", suspect this.
-- Came out of it and now standing: the behaviour register, `npm run rulecheck`, the rules-first red
-  team as a third review, and the CLAUDE.md standing order to sweep the rules and hand-test against
-  them on every build.
-- **TWO OWNER RULINGS — BUILT 21 Sep 26** (D80/D81, register N13/N14;
-  `specs/2026-09-20-NEXT-TASK-oil-award-and-oil-warning.md` is the record): (1) an OIL AWARD stops flagging a leave day (he did
-  NOT rule on `duty` — ask), and (2) warn, on the day AND at publish, when a worked weekend earns
-  nobody anything because the duty desk has no times. The second came from him testing DASH on SDO
-  for Sun 16 Aug and getting no credit.
-- **Both things that were to be put to the owner are ANSWERED AND BUILT.** The ruling to carry
-  forward: **OIL may be credited by hand on ANY day** — the weekend/public-holiday restriction
-  belongs to the AUTOMATIC pass, which reads the published schedule, not to a credit the squadron
-  types itself (D79, register N11).
-
-### [DOC-TRIM] The repo is too heavy to read (owner, 21 Sep 26 — D14)
-**THE RULINGS AND THE BACKLOG PASS — DONE 24 Sep 26 (D136 + D137; checked by Fable and Astra).** The rulings are split by
-area into `.claude/rules/decisions/` — How we work loads in every session, each other area by itself when its files are
-read — with `DECISIONS.md` as the map and replaced/spent rulings in `DECISIONS-ARCHIVE.md`; 14 finished items left this
-file (1,479 → ~1,200 lines). **Left here:** `raptor-port/CLAUDE.md` 1,543 → 500 and `HANDOFF.md` 983 → 400 (below);
-this file → 600 (the priority list and the plain-terms block rewritten to live items only); and pin the new rulings
-files' line endings to LF in `.gitattributes`, like `DECISIONS.md` — held back to ride the next code change, because
-a `.gitattributes` change alone starts a full check run on his PC.
-**THE SPRING CLEAN — measured and planned 24 Sep 26, NEXT (recommended BEFORE the amendment re-test; his word to start).**
-His ask: every session loads too much; make the repo clear and directed, cut clutter, and a summary must never change
-the meaning (**D138**). **Measured:** a session reads ~120k tokens before it works — always loaded ~18k (the rule files
-~5k, the general rulings ~11k, the memory index ~2k), `raptor-port/CLAUDE.md` ~29k (loads with any raptor-port file),
-`HANDOFF.md` ~46k and this file ~24k (read at start). **Disk:** the folder is 1.5 GB — 934 MB is four OLD worktrees in
-`.claude/worktrees/` (all merged into `main`; the one with "224 changes" holds only deleted copies of `.claude` files),
-`node_modules` 151 MB (needed; `npm ci` rebuilds it), the evidence pictures 160 MB (`docs/img/handpass`, 1,256 files, in
-git), `.git` 178 MB (48 MB unpacked). GitHub's copy is ~125 MB; only a fresh single-commit repo ([REPO-PRIVATE]) shrinks it.
-**The plan, in order — MOVE text whole, never reword it (D138):**
-1. **Disk, ~5 min, needs his yes:** `git worktree remove` the four old worktrees + `git worktree prune`, delete the three
-   ignored `.log` files, `git gc`. Frees ~0.95 GB on his PC; nothing in git changes.
-2. **`raptor-port/CLAUDE.md` ~29k → ~8k:** move §Stable decisions (the pre-21-Sep rulings) verbatim into the area rulings
-   files as a dated "before this list" section each (the Leave War roster → `leave-war.md`; board, waves, drag, time, week
-   navigation, inputs & admin, the late-input mark, performance → `scheduler.md`), and the long Leave War / Tracker
-   architecture paragraphs likewise — they then load only when that area is touched. Cross-cutting ones (pipeline & repo
-   invariants) stay always-loaded. Raise those files' ceilings with the reason (D136).
-3. **`HANDOFF.md` ~46k → ~10k (400 lines):** current state only; resolved stories MOVED to `HANDOFF-ARCHIVE.md`; the deploy
-   traps to a tier-2 doc; `[DEPLOY-DOCS]`'s Pages-era text corrected.
-4. **This file ~24k → ~12k (600 lines):** the priority list and plain-terms block rewritten to live items only — the old
-   block MOVED to the archive whole.
-5. **Root tidy:** the closed handoffs (`HANDOFF-OIL-WALK.md`, `HANDOFF-S4-BUGHUNT.md`) and the retired `BUG-TESTING.md` into
-   an archive folder, every pointer updated.
-6. **Leave the evidence pictures** (sessions never read them; git keeps them anyway; the [REPO-CLEANUP] keep ruling).
-7. **Checks:** `docsize` green; **Fable and Astra each given every before/after pair, asked only whether any rule,
-   condition, date or reason changed or vanished** (D138). Target ~120k → ~45–50k per session start. ~3–4 h, 1–2 sessions.
-**His words: "theres going to be alot of context for the AI to read ... reading so much context
-as an AI it starts to hallucinate."** Measured that day: **1,830 lines loaded every session**
-whatever the task, plus **2,228 more** at session start. `HANDOFF.md` states its own 550-line
-ceiling inside itself and had reached 961.
-
-- **Policy and tiers: `raptor-port/docs/doc-budget.md`. Gate: `npm run docsize`.** Ceilings keep
-  declared headroom and move only in a docs-only commit (corrected 23 Sep 26 — the zero-headroom
-  ratchet was withdrawn, D29). This item is the reduction, and it is a DOCS-ONLY pass.
-- **The one change worth doing FIRST, and on its own** (~30–45 min, compounding on every later
-  session): `CLAUDE.md` is 1,539 lines and is loaded every time. Most of that is §Stable
-  decisions — historical rulings, which are tier-2 reference, not tier-0 index. Move them to
-  `docs/stable-decisions.md` and leave ONE line per topic pointing in. Target ~500 lines.
-  Careful work: that section is the project's memory of what must not be relitigated, so move
-  it wholesale, verify nothing is dropped, then lower the ceiling — leaving headroom, never to zero.
-- **Then:** `HANDOFF.md` 961 → 400 (current state only; the stories belong in commit messages).
-  **Its "Open / deferred / queued" section is NOT a backlog** ([DOCS-GUARD] F7, 23 Sep 26): empty
-  it into this file item by item — each open thing becomes an item here or a line in a tier-2 doc —
-  so there is ONE backlog to guard, not two;
-  `OUTSTANDING.md` 1,210 → 600 (done items out, one short block per live item); `ui-contracts.md`
-  is 7,095 lines and needs no budget but does need sub-heads so a session can read one section.
-- **The writing rule that stops it recurring** is in `doc-budget.md` §2: record the DECISION,
-  not the transcript. Quote him only where the exact words are load-bearing; never quote the
-  same words in two files; a reason earns its place only if it would change a future decision.
-  This does NOT thin the reasoning — that is the plain-language rule and it still holds. It
-  stops saying the same thing three times.
-- **Move finished items with `node raptor-port/scripts/backlog-archive.mjs <ID> --homes <file>`**,
-  never by hand or by a one-off script. (The old "prune on write" is withdrawn — D29 rule 3.)
-
 ### [HUMAN-RETEST] Re-test the earlier builds the way a person uses them (owner, 21 Sep 26)
 **ORDER (D85 + D86, 23 Sep 26): TWO CHATS IN PARALLEL — THE TRACKER and THE AMENDMENT SYSTEM**, one
 feature per chat. Amendment chat: port 4173, rulings from D90. Tracker chat: port 4180, rulings from
 D120. Never two full gate runs at once (false failures under load). The order of the other three
 (change-recording, the absence record, the Leave War links) is not ruled: propose it and ask.
-**D153 (23 Sep 26): the TRACKER chat starts NOW, on its own worktree from `main`, beside the Leave War
-fix on `claude/lw-monthjump-phone`** — which still merges FIRST. Tracker chat: preview 4180, e2e
-`E2E_PORT=4182`, smoke `SMOKE_PORT=4181`, rulings from D120; never a full gate run while the Leave War
-chat or the PC runner (`gh run list`) is mid-run. **D154: a third chat builds a presentation to
-commanders and a demo video** on its own worktree (preview 4185, rulings from D170); D58 holds for the
-deck/video. **D155: the Tracker chat is PAUSED** at its own handoff — the demo video first (the Leave War
-fixes are live on `main`); it resumes on his word, bringing `main` in first (D78).
-**D135 (24 Sep 26): the demo is DONE** — the PC is no longer shared with it; D86's one-full-run-at-a-time stands.
-**D125 (23 Sep 26): the Tracker chat RESUMES** beside the demo chat, on `claude/tracker-human-retest-8d3411`
-(`main` merged in) — the demo has first call on the PC: heavy runs one at a time, only on a quiet PC, and the
-Tracker pauses at its next clean point if the demo slows.
+*(Its lines on which chat ran when — D153, D154, D155, D135, D125, every one spent — moved 24 Sep 26 to `OUTSTANDING-ARCHIVE.md`. The Tracker part is merged; the demo is done.)*
 **THE TRACKER PART IS DONE — MERGED to `main` 23 Sep 26 on his "merge live", after his look** (evidence
 `raptor-port/docs/handpass/2026-09-23-tracker.md`; rulings D120–D132). Next here: the amendment system (D86), then the three.
+**Added 24 Sep 26 (the spring clean, from `HANDOFF.md` §Open as Fable classified it):** the amendment walk includes
+unpublishing an OLDER amendment — the 11 Sep review's "BUG 1" (the day left contradictory) looks dissolved by the
+supersede-never-retract rebuild (`unpublishAL` is gone), which only a walk can confirm; and the Leave War half of
+the 7 Sep 26 device pass (the figures drawer, the bulk balance entry, the 6 Sep phone fixes) was never given his
+iPhone look — fold it into the Leave War links walk.
 **Tracker scope (D120):** his charts reach the database by export → wipe → import, so the older-data
 converters and old file formats are NOT walked; the current export → wipe → import round trip is
 walked FIRST (`docs/tracker/known-gaps.md`, head note).
@@ -756,6 +459,12 @@ private sim table and are not reachable from outside it, so a sim man behind an 
 clean. Needs the sim windows lifted into one body, as the flight ones were. WALK tier.
 
 ### [DEPLOY-DOCS] The Pages-era deploy text is stale since the repo went private (D59, 23 Sep 26)
+**STATUS 24 Sep 26: the DOCS half is DONE** in the spring clean — the Pages-era text of `raptor-port/CLAUDE.md` and
+`HANDOFF.md` moved whole to `raptor-port/docs/archive/`; the live rules are `.claude/rules/shipping.md` and
+`raptor-port/docs/gates-and-deploy.md` (its Now block); "done" means live on Vercel (D143); the "site is public"
+sentences corrected. **Left** (Astra's red team, finding 12): the header and comments of
+`.github/workflows/deploy.yml` and `raptor-port/scripts/handpass/live-check.mjs`, which still describe a Pages
+deploy — files that start the gates, so their own small change.
 
 `raptor-port/CLAUDE.md` §Build & verify and §How to work here, and `HANDOFF.md` §Deploy, still describe GitHub Pages as the official live site, the "done means live" chain ending at Pages, and `seejiaokai.github.io/Raptor` as the page to check. All of it stopped being true on 23 Sep 26: Pages is gone, the publish job is off, Vercel is the only viewer. Marked SUPERSEDED in place at the two most misleading lines; the proper rewrite is its own docs pass (D29 — never trim inside another change). **Tier: NONE.** Do it with `[DOC-TRIM]`, which owns the same two files.
 
@@ -765,20 +474,6 @@ OIL is banked TIME OFF, not pay. **Nothing on screen is wrong** — checked 22 S
 string says paid, pay or money. The shorthand is in CODE COMMENTS (`ui/oilmode.ts` ~117, 211, 294,
 455, 542, plus `engine/oil*.ts`) and some test names. **Tier: NONE.** Fold into any later pass that
 already touches those files; the definition now heads the OIL behaviour register.
-
-### [OIL-NEXT-TWO] The two the owner parked until after the bug check (21 Sep 26)
-**His words: "We can do point 2 and 3 later after the 3 things above are done."** The three being
-the browser gates, the hand test in the running app, and the cross-provider bug check on
-[OIL-AWARD-ADD]. So these are queued BEHIND that branch being finished, not forgotten.
-
-1. **[OIL-EARNED-VS-GRANTED]** — below. The recommendation put to him was DO IT, as its own small
-   change, because it changes two figures he reads and he should be looking at it deliberately
-   rather than finding it inside another job.
-2. **His own look at the Vercel preview** — build a Saturday with an award, publish it, and see
-   whether 4 reads the way he expects. Nothing merges before that.
-
-**Both belong in a FRESH chat**, agreed with him on 21 Sep: they are new work, and the point to
-switch is once [OIL-AWARD-ADD] is green or merged. The handoff note names the branch.
 
 ### [OIL-AWARD-IS-A-GRANT] An award is a ledger grant stored a second way (Fable, 21 Sep 26)
 **Raised by the [OIL-AWARD-ADD] design review as the real architectural root cause. NOT built, and
@@ -812,6 +507,8 @@ for will read "earned 4".
 **If he wants it:** `oiltracker.ts` counts `auto && !manual` as earned and `manual` as granted;
 `counters.ts` splits the +OIL part into "earned by weekend/PH work" and "awarded on the war".
 One afternoon. **Ask him before doing it** — it changes two numbers he reads.
+**Do it as its own small change, in a FRESH chat** (agreed with him 21 Sep 26 — carried here 24 Sep 26 from
+`[OIL-NEXT-TWO]`, now archived, whose other half, his look at the award preview, closed when PR #423 merged).
 
 ### [POSTOUT-LOST] A posted-out man walks back into the squadron on a reload — **FIXED 22 Sep 26 on `claude/oil-seats-can-earn`** (not merged)
 
@@ -1007,34 +704,6 @@ Its place in the order and the one-paragraph description are item 3 of `[BACKLOG
 Given a heading 23 Sep 26 ([DOCS-GUARD] F5) so the document gate counts it — it had been named in
 his order without ever having an item of its own. **Talk to him before building any of it.**
 
-### [LW-UI-WINDOW] The Leave War input window — Ack, four buttons, every stage (owner, 20–21 Sep 26)
-Four asks, given in one sitting while the OIL rulings were being built. A mock-up of all four windows
-was shown to the owner and approved before he slept (the only change he asked for: "Duty input", not
-"Duty claim", as the giver of OIL credited from an accepted input).
-1. **"Pending" becomes "Ack"** — EVERYWHERE the word shows: the decision button, the legend, the
-   corner-mark tooltips, the warning list. The button already WRITES `acknowledged`; only the label
-   was "Pending" (owner, 27 Aug 26) — so this is a rename, and it **supersedes that 27 Aug naming**
-   (`newest-instruction-wins`). Fix the stale text in the same change.
-2. **One click on an input gives all four decisions** — Ack, Approve, Refuse, and **Move** with its
-   own date box, so a single click can move an input exactly as a drag-select + Move does today.
-3. **The same window in EVERY stage** — Open for bidding, Bidding closed, Published. Same size: the
-   extra controls are squeezed in, the move date sits beside the decision buttons.
-4. **Published behaves as it does today, with the new window's controls.** An input that is approved
-   AND published: clicking it lets member and admin write REMARKS, nothing else — to change it, an
-   admin goes back to Open for bidding or Bidding closed. An input NOT yet approved on a published
-   day stays editable exactly as it is now, with the new buttons (LL / Clear / +OIL / PO / PI and the
-   rest).
-**Context:** the approved mock-up is in the 21 Sep session; re-draw from this item if it is lost.
-
-### [LW-OIL-DETAIL] What a credited OIL day says when you click it (owner, 20–21 Sep 26)
-Clicking an FO or HO shows, at the bottom of the day window: the **reason**, **given by**, and **days
-granted**. Both kinds, one shape:
-- **An award** (hand-typed) — all three editable, as the OIL tracker already allows.
-- **OIL the app credited itself** — the same three lines, filled in: the reason in the words the
-  engine already computes (`Duty`, `FLT`, `SIM`, `FLT + SIM`), the giver **"Weekend/PH"**, or
-  **"Duty input"** where the credit came from an accepted duty-and-commitments input rather than a
-  weekend. Automatic credits must also appear **in the OIL tracker like every other credit**.
-
 ### [LW-LOCKMARK] Retire the war's `source:'raptor'` lock marker — OPEN (follow-up to step 4, 20 Sep 26)
 Codex's round-2 inspection (AS4-R2-004, low): the merged view still synthesises `source:'raptor'` ("locked on
 the war") and Matrix reads it through `raptorOwns`, and the published remarks sheet finds its Input via
@@ -1082,7 +751,17 @@ save signal) and the Tracker's dropped SharePoint/Dataverse/Firebase layers.
   systematic-debugging / test-driven-development / `/code-review` / `/security-review`); and any
   Postgres-specific tuning tool does NOT apply — the DB is Dataverse, not Postgres.
 
+- **The notional TODAY stays pinned to the demo week until real data arrives**
+  (owner, 24 Aug 26). `weeknav.ts`'s `TODAY = '13/07/2026'` drives only the
+  today-ring/dot on the week pickers; every time-STAMP already reads the device
+  clock. When the demo is replaced, point that one literal (and nothing else) at
+  the device date.
+
 ### [CRP-FLAG] Live flagging on the PUBLISHED schedule — DESIGNED + RED-TEAMED, ready to build (15 Sep 26)
+**STATUS 24 Sep 26: PARTLY BUILT** — PR #406 (16 Sep 26) merged the plan's "Item 2 + 3(a)" (the two checked
+versions; the official-flags overlay). The note of what came next was lost with an old handoff line and the
+retired `docs/session-state.md`. **Before touching this, check the code against the plan's §11 test list**
+(`raptor-port/docs/superpowers/specs/2026-09-15-crewrest-flagging-plan-v2.md`). "Ready to build" above is history.
 Show live warnings (crew rest incl. cross-day/past-midnight, the 7-day work rule, timing
 clashes) on the published/signed schedule again — today publishing a day hides them. Model:
 two checked versions (signed + working); each screen flags the version it shows; check a day
@@ -1097,6 +776,10 @@ marker (everyone). Clock-free; NOT coupled to EOD.
   build; no merge without "merge live". Owner decisions are in `DECISIONS.md`.
 
 ### [FLAG-EXPORT] PDF export — print the PUBLISHED version, CURRENT DAY only + a nicer agency-facing redesign — OPEN (follow-up of [CRP-FLAG])
+**STATUS 24 Sep 26: PART DONE** — it prints the PUBLISHED version with a per-day signed/working stamp, as a
+white one-layout report (`raptor-port/src/ui/printpdf.ts`). **Left:** the current day only (it still prints the
+whole loaded week), the 1–2 sample PDFs for him to pick, and the next-week peek's label. The "functional" bullet
+below is done.
 THREE halves now (owner, 15–17 Sep 26):
 - **SCOPE — CURRENT DAY ONLY (owner, 17 Sep 26): "my end goal is to export the current day
   only's published schedule … its only purpose is to export the snapshot of the current
@@ -1215,12 +898,116 @@ does not exist — the data is `src/tracker/data/`), reads name-keyed charts (be
 the one-table `eventInfo` (before D126). The D120 route (export → wipe → import) does not need it; fix
 it only if baking a chart into the shipped data comes back. **Place:** low, after `[TRK-RETEST-NOTES]`.
 
-### [DOCSGUARD-MERGE] The docs guard reads a merged branch's pre-merge history as its own moves (23 Sep 26)
-`npm run docsize` walks every commit since the base that touched `OUTSTANDING.md`. On a branch that
-merged `main` in (D78), that includes the branch's commits from BEFORE the merge, whose copy of an item
-`main` later rewrote and archived — so it reports "left OUTSTANDING.md but N lines did not arrive" for
-a move that happened, and was checked, on `main` (`[LW-MONTHJUMP-PHONE]` on the Tracker branch). The
-Tracker branch records it with the guard's own `Docs-guard-allow:` trailer. **Fix, not done here (a
-gate is not edited to pass a change):** skip an item already archived AT THE BASE — its move was
-checked on the base's own history. **Place:** before the next branch that merges `main` in.
+### [LW-RESET-ORDER] A "back to the default order" control for the Leave War roster — his call, build only if he asks (moved from HANDOFF.md, 24 Sep 26)
 
+- **OWNER'S CALL — no "back to the default order" control since Auto-sort went
+  (6 Sep 26).** A hand-arranged Leave War roster stays arranged until dragged
+  back; the store's `autoSortRoster` still exists. Offered: a "Reset order" line
+  in ⚙ Settings. Build only if he asks.
+
+### [LW-DESKTOP-ZOOM] The desktop Leave War grid opens at zoom 1 — his call, one line if he wants it out (moved from HANDOFF.md, 24 Sep 26)
+
+- **OWNER'S CALL — the desktop Leave War grid opens at zoom 1** (6 Sep 26; the
+  phone opens one step out because the ask came from the phone). One line in
+  `Matrix.tsx` (`zoom` initial state) if he wants the desktop out too.
+
+### [ADMIN-DISPLAY] An Admin "Display" area of per-section fold defaults — awaiting his go-ahead, do NOT build without it (moved from HANDOFF.md, 24 Sep 26)
+
+- **QUEUED, awaiting the owner's go-ahead — an Admin "Display" area (owner,
+  26 Aug 26; do NOT build without his confirmation).** Remove the wave
+  Shown/Hidden toggle (`WAVEHIDE`) from Admin → Squadron config and replace it
+  with a "Display" category holding per-section open/collapsed fold defaults,
+  set separately for View schedule, Edit schedule and the Scheduler board —
+  generalising the `PIOPEN` fold idiom to every section.
+
+### [USER-GUIDE] A user guide for users and admins — wanted, not started, not urgent (moved from HANDOFF.md, 24 Sep 26)
+
+- **A USER GUIDE is wanted, for users and admins** (owner, 10 Aug 26). Not
+  started, not urgent. The half that can't be worked out by looking at the
+  screen is already collected in `docs/remarks-vocabulary.md` — **keep that
+  file true as rules are added.** Still to gather: the day/AL publishing flow,
+  the roles split, what each warning means in practice, the phone gestures.
+
+### [QUALS-MEMBER-SCOPE] May a member edit ANY row on the Quals page? — a question for him (moved from HANDOFF.md, 24 Sep 26)
+
+  - **Member Quals-editing scope** — a member in Quals editing mode can tick/edit
+    ANY row's table contents (callsign, CAT, SXO, SANS). The 5 Aug decision reads
+    that as intended, but it sits oddly beside the Inputs page's own-row-only
+    rule; if own-row-only quals is wanted, the gate belongs in the same three
+    places the authority-sweep fix touched.
+
+### [TRK-PALETTE-ASK] The Tracker's own dark palette, or Raptor's? — ask him once (filed 24 Sep 26)
+From the 7 Sep 26 device pass (`HANDOFF.md` §Open, "OWNER'S DEVICE PASS", archived 24 Sep 26 in
+`raptor-port/docs/archive/handoff-2026-09-24.md`): one open question rode the retired bug-testing list's row
+#376 — whether the Tracker keeps its own dark palette or takes Raptor's. It was recorded nowhere else. Ask him
+once, in his next Tracker session; build nothing until he answers.
+
+### [DEMO-AWARD-DATES-ASK] Are the demo's two OIL awards meant to fall after the demo week? — ask him once (filed 24 Sep 26)
+Put to him by the OIL credit-tags chat (`HANDOFF-NEXT.md`, 24 Sep 26, archived the same day): the demo's awards
+for Dash (15 Aug) and Vector (29 Aug) are dated after the schedule's demo week (13–19 Jul) — intended? Demo data
+only, wiped before the database (D54), so not a defect under D56; one answer closes it.
+
+### [DOC-POINTERS-CODE] Code comments that point at documentation moved in the spring clean (filed 24 Sep 26)
+**Place:** ride the next change that touches `raptor-port/src` anyway — a pointer-only edit there starts the full
+check run on his PC (D89, D151), which a docs pass must not do. Every one of these still LANDS today, through a
+signpost or an index left at the old place, so none is urgent; each should name the new home directly:
+- `raptor-port/e2e/leavewar.spec.ts:2387` — "BUG-TESTING.md #371" → `raptor-port/docs/archive/BUG-TESTING.md`.
+- `raptor-port/src/engine/audit-d-keyspace.test.ts:279` — "HANDOFF §Known issues" → `HANDOFF-ARCHIVE.md` (the frozen
+  4 Sep snapshot; `HANDOFF.md` §Moved says so).
+- `raptor-port/src/engine/overnight.test.ts:2` — "docs/session-state.md" → `raptor-port/docs/archive/session-state.md`.
+- `raptor-port/src/ui/html.ts:1180` and `raptor-port/src/ui/latemark.test.tsx:13` — "§Stable decisions" (the late-input
+  mark) → `.claude/rules/decisions/scheduler.md` §Settled before this list.
+- `raptor-port/src/ui/AdminPage.tsx:240, 283` — "HANDOFF" (the caveat; the parked Power Apps end state) →
+  `raptor-port/docs/architecture-direction.md` §Parked direction.
+- `raptor-port/src/engine/hooks.ts:72` — "the file map" → `raptor-port/docs/file-map.md`.
+- `raptor-port/src/testing/refwin.ts:578` — "HANDOFF.md records the same trap" → `raptor-port/docs/gates-and-deploy.md`.
+- Comments citing a §Stable decisions sub-heading by name (e.g. §Drag-reordering in `canonical.ts`, §Week navigation
+  in `weekglide.ts`) land through `raptor-port/CLAUDE.md` §Stable decisions → "Moved to the area files", which
+  keeps every old name; point them at the area file when their file is next touched.
+Found by `git grep` on 24 Sep 26 (the spring clean's red team, Fable finding 10, Astra finding 11).
+
+### [PERF-RESIDUALS] Speed wins measured and deferred — two are his call (filed 24 Sep 26)
+From `HANDOFF.md` §In flight (archived 24 Sep 26): several speed wins are measured and deferred — the seven
+day-strings sort, the JS-bound drop, hover-boundary repaints, the `body.dnd` decorations, the one `validate`
+call; two are the owner's call because they change wording or feel. The ledger and each one's measurement:
+`raptor-port/docs/performance.md` (Part 2; §Dead ends says what not to retry). **Place:** when a speed complaint
+or a board change comes near one of them; put the two that change wording or feel to him first.
+
+### [RULINGS-LF-PIN] Pin the rulings files to LF line endings, with the next change that runs the checks (filed 24 Sep 26)
+A leftover of `[DOC-TRIM]` (archived 24 Sep 26). `.gitattributes` pins `OUTSTANDING.md`, `OUTSTANDING-ARCHIVE.md`,
+`DECISIONS.md` and `HANDOFF.md` to LF ([DOCS-GUARD] F4, 23 Sep 26), so no script or editor setting can rewrite every
+line of them at once — a whole-file diff is where a destroyed record hides. The rulings split (D137) added
+`DECISIONS-ARCHIVE.md` and the area files under `.claude/rules/decisions/`, which are NOT pinned; all of them are LF
+today (checked 24 Sep 26 with `git ls-files --eol`). Add them — a pattern for the folder covers a new area file too.
+**Place:** ride the next change that starts the full checks on his PC anyway: `.gitattributes` is not on the deploy
+workflow's docs-only skip list, so a change to it alone starts a full run (D89, D151), which a docs pass must not do.
+
+### [DOC-SUBHEADS] The long reference docs need sub-headings, so a chat can read one section (filed 24 Sep 26)
+A leftover of `[DOC-TRIM]` (archived 24 Sep 26), which named it on 21 Sep 26 — `ui-contracts.md` "needs sub-heads so a
+session can read one section" — and the spring clean did not do it. The rule it breaks is tier 2's in
+`raptor-port/docs/doc-budget.md` §1: "no section over ~150 lines without sub-heads". Counted 24 Sep 26 (runs of over
+150 lines with no heading line), all in `raptor-port/docs/`: `ui-contracts.md` 13 (the longest 469 lines),
+`engine-rules.md` 5 (its §Validation runs 927 lines), `feature-impact.md` 1 (550), `performance.md` 1 (313). Adding
+headings rewords nothing; anything more is a move (D138, `backlog-archive.mjs --move`). Docs only — no full check
+run. **Place:** any time, none blocking; sooner if a chat has to read one of those sections whole.
+
+### [BG-CWD-GUARD] A backgrounded npm command that starts at the repo root dies at once — guard it, don't re-warn (filed 24 Sep 26)
+From the skills notebook, observation #42 (1 Sep 26), which the 23 Sep and 24 Sep reviews both judged a code or
+config change, not a guide change (D146). A `run_in_background` shell starts at the REPO ROOT, where there is no
+`package.json`, so a bare `npm run …` fails instantly — and the wrapper's exit code can read 0. The bold warning in
+`raptor-port/CLAUDE.md` §Build & verify is text, and it has been broken three times. **The fix is structural:** a
+`PreToolUse` hook (under `.claude/`, so no full check run) that refuses a backgrounded `npm` command without
+`cd raptor-port`, or a root `package.json` whose scripts `cd raptor-port && npm run …` (it would start the full
+checks and could change what Vercel detects). **Place:** any time, none blocking — but ask him first: a hook runs in
+every chat, and it is standing configuration.
+
+### [RULING-HOMES-AUDIT] Check once that each ruling's named home really carries it (filed 24 Sep 26)
+Found in the 24 Sep 26 skills review (D146): D16 and D17 named `raptor-port/docs/bug-check-order.md` as their home,
+and no commit had ever written them there (the review wrote them in). The document gate checks only that a named
+home EXISTS — and, for a new row, that the change touched it — never that it carries the ruling. A read-only audit
+the same day found 24 more rows whose named homes never mention their number: D5–D13, D53, D58, D63 (How we work);
+D1–D3, D15, D28, D31, D32, D43, D52 (OIL); D39, D51 (Scheduler); D64 (Tracker). Most predate the numbering and carry
+the content unnumbered (the 21 Sep bug-check rulings are the order's own text). **The job, docs only:** check each
+by CONTENT once; write any that is missing into its home; add the D-number beside content that is there, so a later
+audit is mechanical — then consider making the gate require a NEW row's document homes to cite its number.
+**Place:** any time, none blocking.

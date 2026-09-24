@@ -53,6 +53,9 @@ Skip any step = lying, not verifying
 | Pushed / committed / clean | `git status -sb` read in this turn | Remembering that you pushed |
 | Fixed everywhere it applies | The list of every place, re-checked AFTER the fix, each by opening it | The list written before building |
 | "You'll see X when you do Y" (a check step for someone else) | Did Y on the built app and saw X | Writing it from what the feature was meant to do |
+| Clean / nothing found / never happened | The verdict names what was examined AND what was not — which files, which kinds (binaries? the history?), which terms | "Clean", with its scope left for the reader to assume |
+| Removed everywhere (a name, a secret, an identifier) | A sweep for everything that identifies it — synonyms, variants, codes, not only the words you were given — and the file kinds the sweep could not read, named | A search for the literal strings you were given |
+| It passes on another machine, or in CI | That environment's own run of the exact commit | A green run on another operating system or checkout — a fault arranged through the platform (a read-only file, a lock) may fault on one only |
 
 ## Red Flags - STOP
 
@@ -104,6 +107,7 @@ Skip any step = lying, not verifying
 ✅ cmd *> run.log; $rc = $LASTEXITCODE; Get-Content run.log -Tail 20; exit $rc   (PowerShell)
 ❌ cmd | tail -5   (reports tail's exit status; the failure detail is gone and costs a full re-run)
 ❌ cmd > run.log 2>&1; tail run.log   (same trap: the last command's status is tail's)
+❌ gate | tail -4 && git add -A && git commit …   (the chain commits on tail's 0 — read the gate's exit code in its own command before you write the commit)
 ```
 The whole log stays in the file — search it when the run is red instead of
 running it again.

@@ -318,7 +318,9 @@ on the same seam — never a new stack.
 - **Conflict = refuse-whole** at first (step 3): if any target record's revision advanced past what
   the timeline expects, roll back the whole inverse and report plainly.
 - **Scope drives snap-to-context**: `scope` on every entry lets an off-screen undo navigate to where
-  the change was before repainting.
+  the change was before repainting. *(This is the owner's 13 Sep 26 "snap-to-page" undo — backlog item
+  `[XWEEK-UNDO]`, built in global undo phase 2 and archived 24 Sep 26; the one gap left, an input-only undo that
+  does not jump to its week, is `[GLOBAL-UNDO]` GU-E5.)*
 
 If a proposed feature can't be expressed as "emit/consume envelopes over this seam", that's the
 signal to stop and revisit the design — not to add a parallel mechanism.

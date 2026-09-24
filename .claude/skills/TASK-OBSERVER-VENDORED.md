@@ -89,14 +89,17 @@ where that procedure's defaults do not fit a git repo with vendored skills:
   The session-start hook's message pins the ONE log location (above). An
   upstream refresh overwrites these files: re-apply them
   (`git log -p -- .claude/skills/task-observer`).
+- **24 Sep 26 review (owner-approved, D146):** `SKILL.md` Numbering discipline item 4 gained the
+  cross-branch check's silent failure (Git Bash rewrites `rev:path` unless
+  `MSYS_NO_PATHCONV=1`) and "run it on the current branch first".
 
 ## Known caveats (not bugs)
 
 - **The skill's default log location does not persist on web/phone** — an
   ephemeral container has no stable folder. That is why this repo commits the
   log (§Reviews in this repo above); nothing else is needed.
-- **Overlap with this repo's own handoff machinery.** `HANDOFF.md`,
-  `docs/session-state.md` and the `session-handoff` skill already cover durable
+- **Overlap with this repo's own handoff machinery.** `HANDOFF.md` (the one
+  handoff since 24 Sep 26) and the `session-handoff` skill already cover durable
   cross-session state. task-observer's handoff-doc mode is adjacent but aimed at
   *skill* improvement, not project state — keep them distinct.
 

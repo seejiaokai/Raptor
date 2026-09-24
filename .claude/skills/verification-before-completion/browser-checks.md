@@ -53,6 +53,15 @@ below is a way a real session "verified" a screen change and was wrong.
   tuned to today's fonts; "no outline" is `outline-style: none`, not
   `outline-width: 0px`; compare a rect with a rect, never with a rounded
   integer.
+- "Is it on one line?" counts the distinct (rounded) `top` values of
+  `getClientRects()`, never the number of rects: a browser returns one rect
+  per inline fragment, and one line of interpolated text is several text
+  nodes. Print a new measurement's raw numbers once before trusting it.
+- Across a mode switch the view itself moves, and the framework draws the new
+  chrome only on its next render. Place and measure after the first
+  animation frame that follows the switch, and assert what stays put
+  relative to the view ("the point in the middle stays in the middle"), not
+  absolute screen positions.
 
 ## CSS Placement
 
