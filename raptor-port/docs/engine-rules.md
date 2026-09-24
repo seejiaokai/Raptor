@@ -1044,7 +1044,7 @@ flagged correctly and still swept the man out of the crew palette.
   every creation point (the two `+ Add` dialogs, the Inputs page `add`, and the
   boot/week-load `autoAcceptSeedInputs`), never on a repaint, so a manual
   removal sticks for the session. A PUBLISHED day is left alone (a late input
-  stays under Personal Inputs; the picker still warns per the bullet above).
+  stays under Personal Inputs; the picker still warns per the bullet above). *(SUPERSEDED for the interactive path 16 Sep 26 — marked 24 Sep 26 by the amendment re-test, per D90: a request a person files LIVE on a published day lands on the WORKING copy as a pending amendment — the count rises, the issued face stays frozen until the next publish; only the boot / week-load pass still leaves a published day alone. `engine/slots.ts` `autoAcceptInput(row, onApproved)`; register AM41.)*
   The boot pass is parity-safe by the demoseed rule — it runs only where the
   harness never does — and wipes its own pending/added marks so the seed's
   auto-landed rows are the week's zero-state.

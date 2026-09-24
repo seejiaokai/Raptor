@@ -117,6 +117,14 @@ AM24, AM32–AM34).
 
 - EOD — deferred, not built (register AM52).
 - A version that reached a shared database (the logged correction line, AM35) — there is no shared database.
+- Two people at once (two admins, two browsers) — D148's multi-user half and the stale-writer lease (AM-09) need
+  the shared database; one browser cannot show another's live edits.
+- The pre-Phase-2 "locked week" books — old stored data only (D56).
+- **The everything-case is NOT in the demo seed** (§7.1 asks for it): the seed week must stay unpublished, because
+  the byte-for-byte comparison with the original app (`tfin.js` 728/0, `html.test.ts`) is pinned on those days.
+  It lives instead as a recipe that builds it through the app's own controls in about a minute
+  (`scripts/handpass/am/am-fixture.mjs`), and his look card (§13) starts with the few taps that make one published
+  day with an amendment.
 
 ## 10. Gates
 
@@ -125,5 +133,19 @@ AM24, AM32–AM34).
 ## 12. Re-walk after the fixes
 
 ## 13. His five-minute look (the card handed to him)
+
+*(Draft — finalised when the re-walk is done.)* On the branch's Vercel link, signed in as admin, Edit Schedule:
+
+1. **Make one amendment.** On Monday: sign the four boxes, tap **Publish day** (the tag reads ORIG). Change one
+   time. Expect: the time dotted in cyan, "1 pending", **"Not yet signed"** beside the tag — on the week AND when
+   you open Monday's scheduler board (the board used not to show it).
+2. **Sign and publish AL1.** Expect the tag AL1 (cyan) and the time solid cyan. Open **ⓘ** on Monday: it should
+   agree with the day ("AL1 · 1 item"; no unpublished edit).
+3. **Take it back quietly.** Change the time back to what it was, then tap **Unpublish**. Expect: the tag back
+   to ORIG and **no dotted mark on the time** (it used to leave a phantom one); "Publish AL1" offered again only
+   if something still differs.
+4. **View-only Sched.** Monday shows what was issued; the picker's "Working draft — not issued" shows your
+   working copy with its stamp.
+5. **Your phone.** Open Monday's board: the same "Not yet signed", "N pending" and Unpublish as on the desktop.
 </content>
 </invoke>

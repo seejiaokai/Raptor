@@ -1600,7 +1600,7 @@ Every creation path calls it — the two board `+ Add` dialogs (via
 `commitNewInput`'s non-`toGround` branch), the Inputs page's own `add()`, and
 the boot/week-load pass (`autoAcceptSeedInputs`, `initStore`/`loadWeek`). Leave,
 medical, SANS and a PUBLISHED day are silent no-ops: a late input on an issued
-day stays under Personal Inputs (no surprise amendment), and the crew picker's
+day stays under Personal Inputs (no surprise amendment) *(SUPERSEDED for the interactive path 16 Sep 26 — marked 24 Sep 26 by the amendment re-test, per D90: a request a person files LIVE on a published day lands on the WORKING copy as a pending amendment — the count rises, the issued face stays frozen until the next publish; only the boot / week-load pass still leaves a published day alone. `engine/slots.ts` `autoAcceptInput(row, onApproved)`; register AM41.)*, and the crew picker's
 input-aware busy-check still warns about it either way (`engine-rules.md`
 §Personal input clash). The manual `Accept`/`Undo` controls and the round-trip
 are unchanged — removing an auto-landed row returns the input to Personal
