@@ -16,54 +16,43 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/amendment-retest -->
-### `claude/amendment-retest` — his answers recorded; the amendment re-test starts here, written 24 Sep 26 (late night) — verify before use
-- **Where it started:** the spring-clean chat, after PR #433 merged (the spring clean and the 24 Sep skills review are
-  live — `git log origin/main`). He asked for the whole backlog and a recommended order, then answered every question.
-- **Shipped:** his answers, recorded as rulings on this branch (NOT merged — they reach `main` with this branch):
-  D147 (the order after the amendment re-test; the OIL award fix has his go), D148 (Undo reverses only your own
-  changes), D149 (Quals: a member edits his own row, every column), D157 (the Tracker takes Raptor's colours fully),
-  D158 (the tap-after-drag quirk closed), D159 (desktop Leave War zoom: leave it), D160 (build a "Reset order" line),
-  D161 (Admin "Display": revisit later), D162 (build the background-command guard), D163 (the two demo-data oddities
-  left), D164 (a flagged puck does not glow). Four items archived; `[PUCK-FLAG-GLOW]` filed.
-- **Unfinished:** the amendment re-test itself has NOT started. Decided and queued as small builds, none started:
-  `[PUCK-FLAG-GLOW]`, `[TRK-PALETTE-ASK]`, `[LW-RESET-ORDER]`, `[QUALS-MEMBER-SCOPE]` (FULL tier: roles), `[BG-CWD-GUARD]`.
-- **Branch:** `claude/amendment-retest`, cut from `main` at `bff76c1b`; pushed; its PR none when written.
-- **Gates:** not run — docs only so far; `npm run docsize` OK.
-- **Open questions for him:** none.
-- **READ FIRST — his settled amendment rules; ask him NOTHING these already settle** (he asked, 24 Sep 26: "I don't
-  want to repeat myself"; D53 and `.claude/rules/record-decisions.md` §Read it before you ask him anything). They are
-  in four kinds of place, and the rulings file is only one of them:
-  1. `.claude/rules/decisions/scheduler.md` — the amendment rulings AND its §Settled before this list. Open it with the
-     Read tool first: it loads by itself only when a scheduler or amendment file is read. Also `oil.md` (a published
-     day and a rule change D48/D49; a day's OIL = its latest published version D142) and, already loaded,
-     `how-we-work.md` (D147 the order; D148 Undo reverses only your own changes).
-  2. This PC's memory notes (the rulings of 11–18 Sep 26 live ONLY there and in the design records):
-     `amendment-per-day-isolated` (each day its own track, never the week — "do not reopen"),
-     `published-day-input-is-pending-amendment`, `amendment-plan-activation-is-plain-edit` (no keep/revert screen),
-     `plans-selector-redesign-locked` (built and merged — do not re-open), `undo-of-publish-semantics` (the NEWEST,
-     18 Sep, wins: undo of a publish = unpublish), `future-undo-semantics-multiuser`, `oil-truth-latest-published-version`.
-  3. The design records: `raptor-port/docs/superpowers/specs/2026-09-11-amendment-model-decisions.md` (his decisions
-     and the mock-ups), the frozen spec `…/2026-09-12-amendment-core-build-brief.md`, the plan
-     `…/2026-09-12-amendment-core-build-plan.md`; `raptor-port/docs/engine-rules.md` (publishing/AL),
-     `raptor-port/docs/ui-contracts.md` §Amendment marks.
-  4. `OUTSTANDING.md` `[AMEND]` (what is left), `[HUMAN-RETEST]` (the older-amendment unpublish and BUG 1 it must
-     walk), `[EOD]`, `[CRP-FLAG]`; and `DECISIONS-ARCHIVE.md` (replaced rulings) — searched, so no replaced rule is
-     treated as live. Where two disagree, the NEWER wins (the newest-instruction rule); say which one you set aside.
-  **First job of the re-test: gather all of it into ONE amendment behaviour register** —
-  `raptor-port/docs/superpowers/specs/<date>-amendment-behaviour-register.md`, one line per rule with its date and
-  source, like the OIL register — the bug-check order's rules sweep. It becomes the list the walk tests against, and
-  the only questions left for him are real gaps or real clashes between two of his rules.
-- **Pick up here:** `[HUMAN-RETEST]` — the amendment system, FULL tier (`raptor-port/docs/bug-check-order.md`): port
-  4173, rulings from D90 (D86). He is away ~6 hours from 24 Sep 26 night: work without waiting — file any question
-  for him in `OUTSTANDING.md` and this block rather than stopping; never merge; leave the branch pushed, ready for
-  his look and his "merge live". Reviews: Fable 5.1 and Astra, both at `--effort high`.
+### `claude/amendment-retest` — the amendment system re-test, FULL tier, done and waiting for his look, written 24 Sep 26 (evening) — verify before use
+- **Where it started:** his message of 24 Sep 26: start `[HUMAN-RETEST]` — the amendment system — FULL tier, build the
+  behaviour register first and ask nothing it settles; he was away ~6 h: work without waiting, file questions, never
+  merge, leave the branch pushed. "Latest rule is the most correct" → D90 (recorded, `how-we-work.md`).
+- **Shipped (on the branch, NOT merged):** the register `raptor-port/docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`
+  (AM1–AM52, clashes by D90, the rule-coverage gate); the evidence sheet `raptor-port/docs/handpass/2026-09-24-amendment.md`
+  (§3 every finding and its disposition, §4 roll-call, §10 gates, §11 the two code reads, §12 the re-walk, §13 his look
+  card); fixes, each red first, in `7c69bd58`, `767799ae` and the code reads' commit after them: the board's "Not yet
+  signed", one count everywhere, Discard marks, the phantom mark and the false "changed at AL1", the confirms on every
+  navigation (page, board day, close), Undo handing back spent sign-offs and a stuck Redo, the issued face's count and
+  its ⓘ, the input put-back, the Leave War holiday advisory, the Unavailable way back, plain check headings, the board
+  preview strip, the plan editor's page, History's footnote and wrap, the sign-off line naming a signer who no longer
+  counts, the sign-offs bound to the ground programme's shown order. The PR: opened with this push — `gh pr view
+  claude/amendment-retest`; its checks run on his PC.
+- **Unfinished:** none of the re-test's own work. Filed, not fixed: `[AMEND-EMPTY-SEAT-MARK]` (no mark where a man is
+  taken off a desk / programme row / sim seat — needs a picture first), `[AMEND-MARK-RING-CLASH]`,
+  `[AVAILWIN-PREVIEW-BAR]`, `[AMEND-SMALL-SEEN]`; for the change-recording re-test: D148 (not built),
+  `[UNDO-ROSTER-SETTINGS]`, the Undo wording in `[AMEND-SMALL-SEEN]` item 2.
+- **Branch:** `claude/amendment-retest`, cut from `main` at `bff76c1b` (`main` had not moved when written); it also
+  carries the previous chat's recorded answers D147–D164 (docs). If it has MERGED: `git fetch origin main && git
+  checkout -B <branch> origin/main` before new work.
+- **Gates:** see `## Gate baseline` (this branch's final code, one watched run); `npm run probes:adapted` **6 / 6** (129
+  checks — the probes now fall back to Playwright's own browser, and audit-async's step 3, stale since 13 Sep 26, looks
+  for the input's id) · `npm run perf` **4 / 0** (week 5134 / 5450 nodes, board 1024 / 1150).
+- **Open questions for him (filed, none blocking the merge):** `[AMEND-D45-FILING]`, `[AMEND-PHONE-APPROVER]`,
+  `[AMEND-TEMPLATE-PUBLISHED]`, `[AMEND-NYS-WORDING]`, `[AMEND-REISSUE-DOOR]`, `[AMEND-LOAD-FILING]` — each with the
+  agent's recommendation in its item.
+- **Pick up here:** his five-minute look (evidence sheet §13) and his "merge live"; then his order (D147): the absence
+  record together with `[S4-HUNT-REST]` — `[HUMAN-RETEST]` in `OUTSTANDING.md`.
 <!-- /now -->
 
 ## Next, in order
 
-1. **`[HUMAN-RETEST]` — THE AMENDMENT SYSTEM** (D85/D86): port 4173, rulings from D90, FULL tier; the Tracker's
-   evidence sheet `raptor-port/docs/handpass/2026-09-23-tracker.md` is the worked example. Then, in his order (D147):
-   the absence record together with `[S4-HUNT-REST]`, then change-recording, then the Leave War links last.
+1. **`[HUMAN-RETEST]`** — the amendment system is DONE on `claude/amendment-retest`, waiting for his look and "merge
+   live" (evidence `raptor-port/docs/handpass/2026-09-24-amendment.md`). Next, in his order (D147): the absence record
+   together with `[S4-HUNT-REST]`, then change-recording (with D148 and `[UNDO-ROSTER-SETTINGS]`), then the Leave War
+   links last. The two evidence sheets (Tracker 23 Sep, amendment 24 Sep) are the worked examples.
 2. Then his after-the-hunt order: `[PUB-UNAVAIL]` → `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]` → the OIL award fix and the
    small OIL follow-ups as one batch (D147) → `[DB-STEP]`. The whole list: `OUTSTANDING.md`'s priority list.
 3. Filed, none blocking: `[TRK-PINCH-ASK]` (his iPhone look), `[TRK-SMOKE-ADD-RACE]`, `[TRK-RETEST-NOTES]`,
@@ -72,9 +61,10 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched on `main`'s code — 24 Sep 26, the OIL credit-tags branch, one run on a quiet PC
-(`raptor-port/docs/handpass/2026-09-24-oil-credit-tags.md` §8): unit **5819 / 5819** (358 files) · build clean ·
-tfin **728 / 0** · e2e **469 passed**, 48 skipped · smoke **442 / 0** · rulecheck OK. Restate a count only from a
+The latest counts watched — 24 Sep 26, `claude/amendment-retest`'s final code (waiting for "merge live"), one run on a
+quiet PC (`raptor-port/docs/handpass/2026-09-24-amendment.md` §10): unit **5855 / 5855** (360 files) · build clean ·
+tfin **728 / 0** · e2e **469 passed**, 48 skipped · smoke **442 / 0** · rulecheck OK · docsize OK (`OUTSTANDING.md` 2 lines
+over its tripwire, deferred by the gate to a documents-only pass, D29). Restate a count only from a
 run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his
 PC: `raptor-port/docs/gates-and-deploy.md`.
 

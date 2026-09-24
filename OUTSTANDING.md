@@ -49,8 +49,9 @@ list (13–23 Sep 26), its finished entries and the "In plain terms" block are i
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
 **His order:**
-1. **[HUMAN-RETEST]** — THE AMENDMENT SYSTEM next (D85/D86); then, in HIS order (D147, 24 Sep 26): the absence record
-   TOGETHER with [S4-HUNT-REST], then change-recording, then the Leave War links LAST (with the 7 Sep phone check).
+1. **[HUMAN-RETEST]** — the amendment system is DONE on `claude/amendment-retest`, waiting for his look and "merge
+   live"; next, in HIS order (D147, 24 Sep 26): the absence record TOGETHER with [S4-HUNT-REST], then change-recording,
+   then the Leave War links LAST (with the 7 Sep phone check).
    *(24 Sep 26: the change-recording re-test also carries [UNDO-ROSTER-SETTINGS] and D148 — both the one undo's.)*
 2. **[S4-HUNT-REST]** — the bug hunt's untouched ground, in his own 1–7 order, walked WITH the absence-record re-test
    (D147: its ground IS the absence record).
@@ -70,12 +71,12 @@ first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [T
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SMOKE-ADD-RACE]
 (before the next Tracker change that touches the smoke suite), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
-The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build). The amendment re-test's leftovers — [AMEND-EMPTY-SEAT-MARK] (after it merges; a picture first), [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build). The amendment re-test's leftovers — [AMEND-EMPTY-SEAT-MARK] and [AMEND-MARK-RING-CLASH] (after it merges; one picture first), [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] and [RULING-HOMES-AUDIT] (any time, docs only),
 [BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
 FULL-tier build, any time).
 
-**Waiting on him — no order exists:** [AMEND-D45-FILING], [AMEND-PHONE-APPROVER], [AMEND-TEMPLATE-PUBLISHED] and [AMEND-NYS-WORDING] (questions from the amendment re-test, 24 Sep 26), [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
+**Waiting on him — no order exists:** [AMEND-D45-FILING], [AMEND-PHONE-APPROVER], [AMEND-TEMPLATE-PUBLISHED], [AMEND-NYS-WORDING], [AMEND-REISSUE-DOOR] and [AMEND-LOAD-FILING] (questions from the amendment re-test, 24 Sep 26), [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
 D147), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
 [REPO-PRIVATE]'s sharing half, [EOD] (design first; no slot
 ruled), [CRP-FLAG]'s remainder and then [FLAG-EXPORT], the [AMEND] leftovers, [ADMIN-DISPLAY] ("next time we revisit",
@@ -304,7 +305,13 @@ D120. Never two full gate runs at once (false failures under load). **The order 
 War links LAST, with the 7 Sep phone check folded in.
 *(Its lines on which chat ran when — D153, D154, D155, D135, D125, every one spent — moved 24 Sep 26 to `OUTSTANDING-ARCHIVE.md`. The Tracker part is merged; the demo is done.)*
 **THE TRACKER PART IS DONE — MERGED to `main` 23 Sep 26 on his "merge live", after his look** (evidence
-`raptor-port/docs/handpass/2026-09-23-tracker.md`; rulings D120–D132). Next here: the amendment system (D86), then the three.
+`raptor-port/docs/handpass/2026-09-23-tracker.md`; rulings D120–D132).
+**THE AMENDMENT SYSTEM PART IS DONE on `claude/amendment-retest` (24 Sep 26) — waiting for his look and his "merge live"**
+(evidence `raptor-port/docs/handpass/2026-09-24-amendment.md`, his look card §13; the register
+`raptor-port/docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`; its questions `[AMEND-D45-FILING]`,
+`[AMEND-PHONE-APPROVER]`, `[AMEND-TEMPLATE-PUBLISHED]`, `[AMEND-NYS-WORDING]`, `[AMEND-REISSUE-DOOR]`,
+`[AMEND-LOAD-FILING]`). The older-amendment unpublish ("BUG 1") was walked three deep and has not come back. Next
+here, in his order (D147): the absence record with [S4-HUNT-REST], then change-recording, then the Leave War links.
 **Added 24 Sep 26 (the spring clean, from `HANDOFF.md` §Open as Fable classified it):** the amendment walk includes
 unpublishing an OLDER amendment — the 11 Sep review's "BUG 1" (the day left contradictory) looks dissolved by the
 supersede-never-retract rebuild (`unpublishAL` is gone), which only a walk can confirm; and the Leave War half of
@@ -1101,4 +1108,45 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
 7. **Leave War bid sheet:** placing an LL bid on a weekend asks "That takes Fable to -1 ANNUAL", though a weekend LL
    charges nothing (his figure stays 0).
 8. **A phone drag-off** removes a puck silently; right-click says "Fable removed".
+9. **"Sort" on the ground programme** of a published day whose rows are kept out of time order moves them in the
+   array without changing what is shown — and blanks the four sign-offs though "no changes to publish" (the final read,
+   Fable #1's mirror; the digest keys ground rows by position). A false re-sign, never a false publish.
 **Place:** any time; items 6–8 with the Leave War links re-test (D147, last).
+
+### [AMEND-REISSUE-DOOR] An Unpublish made by mistake, with nothing to correct, cannot be put back once Undo is gone — a question for him (24 Sep 26)
+Found by the amendment re-test's final code read (Fable #4, `raptor-port/docs/handpass/2026-09-24-amendment-fable-final-read.md`).
+Unpublish is one tap on a weekday (two where OIL is bid against) and a standing action — it survives a sign-out; Undo
+does not. The engine allows the pulled-back day to go out again under the SAME label even when nothing changed (the
+"correcting" flag, GU5-001), but no screen offers it: by AM15 the publish button stays hidden when there is nothing to
+publish, so after a sign-out the only way to get AL1 back is to change something and publish that — and on a weekend
+the men's OIL stays withdrawn until then (D142). **The question:** should a day pulled back by Unpublish, with
+nothing changed, show a "Reissue AL1" button (the week head and the Amendments panel)? **The agent's recommendation:**
+yes — it is the undo of an Unpublish that outlives the session, and AM15's reason (no button with nothing to publish)
+does not reach a day whose issued version was just withdrawn. Kept as built (AM15) until he answers; the look card's
+step 3 describes today's behaviour. **Where:** `raptor-port/src/ui/html.ts` `dayStatHTML`; `raptor-port/src/engine/publish.ts`
+`pendingPublishDays`. **Place:** waiting on him.
+
+### [AMEND-MARK-RING-CLASH] On the edit surfaces an amendment mark on a puck hides its dashed or dotted warning ring (found 24 Sep 26)
+Found by the amendment re-test's final code read (Fable #3). The edit week's and the board's AL-coloured mark for a
+pending puck (`#eWeek .seat[data-aln] .puck`, `#schedBoard …`, `raptor-port/src/ui/scheduler.css`) is an outline on the
+puck, and so are the sanctioned-late (dashed) and crew-rest trace (dotted) rings — the mark out-ranks them, so a
+scheduler editing a published day does not see those two rings on a man whose seat has an unpublished change. The same
+clash on the VIEW page was fixed in the re-test (its neutral hint moved onto the seat around the puck); the edit
+surfaces' mark is an established look (`raptor-port/docs/ui-contracts.md` §Amendment marks), so moving it is a visual
+change to show him first. **To do:** draw the edit surfaces' mark on the seat too (as the view page now does), or give
+the two rings a way through; a picture of both first. LOOK tier. **Place:** with [AMEND-EMPTY-SEAT-MARK] (same surfaces,
+same picture).
+
+### [AMEND-LOAD-FILING] Should "Load onto working copy" also put back an input the scheduler had taken off? — a question for him (24 Sep 26)
+Found by the amendment re-test (walker W4, F3: `raptor-port/docs/handpass/parts/2026-09-24-amendment-w4.md`; the final
+read, Fable #2). **Today, by design** (`raptor-port/src/engine/publish.ts` `dayDiscardCount`, P2-REREVIEW-08): a load
+puts back the version's CONTENT and leaves every input's filing as it is. So: take an input off a published day (its
+row goes, the input reads "removed"), then Load AL1 — the row comes back from AL1, but the input still reads
+"removed", and the day shows "1 pending · 1 input filing" against the very version just loaded. Its "→ Ground" used
+to do nothing at all; since the re-test it says the input is already on the programme. The way back today, read from the code (not walked): delete that ground row, then Accept the input — it should re-land as the issued row, and the day read as issued. **The question:** should a load
+also put such an input back on (the day then matches the loaded version exactly), or leave it removed AND leave its
+row off? **The agent's recommendation:** put it back on, as the version recorded it — "Load AL1" then means the day
+as AL1 was — and count it in the load's confirm ("N edits replaced"). **Careful when building:** the first attempt did
+it inside the general filing reconcile and, as Fable's read showed, a plan switched away and back then turned a
+deliberate removal into a fresh input that flags; do it in the load alone, from the version's own filing record
+(`snap.fil`). **Place:** waiting on him.
