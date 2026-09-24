@@ -71,7 +71,7 @@ first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [T
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SMOKE-ADD-RACE]
 (before the next Tracker change that touches the smoke suite), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
-The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build). The amendment re-test's leftovers — [AMEND-MARK-RING-CLASH] (design approved, D93 — to build) and [BOARD-RING-STROKES] (his question), [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [BOARD-KEYBOARD-GAP] (phone; small). The amendment re-test's leftovers — [PENDING-SUMMARY] (his idea, 25 Sep 26 — his word first), [AMEND-MARK-RING-CLASH] (design approved, D93 — to build) and [BOARD-RING-STROKES] (his question), [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] and [RULING-HOMES-AUDIT] (any time, docs only),
 [BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
 FULL-tier build, any time).
@@ -1131,6 +1131,40 @@ yes — it is the undo of an Unpublish that outlives the session, and AM15's rea
 does not reach a day whose issued version was just withdrawn. Kept as built (AM15) until he answers; the look card's
 step 3 describes today's behaviour. **Where:** `raptor-port/src/ui/html.ts` `dayStatHTML`; `raptor-port/src/engine/publish.ts`
 `pendingPublishDays`. **Place:** waiting on him.
+
+### [BOARD-KEYBOARD-GAP] On a phone, typing on the board lets the schedule behind show above the keyboard (found 25 Sep 26)
+Reported by him from the live app on his iPhone: *"when I click on the history button and I try to type on a text area as
+shown, as the keyboard shows, u can see a small area of the edit or view only schedule behind the scheduler board."*
+Picture: `raptor-port/docs/img/bugs/2026-09-25-board-keyboard-gap.png` — a Common Programme item name being typed on the
+board; between the board and the keyboard a strip of the week behind shows (a 14:45–15:30 row with Wildcard). **Likely
+cause, read from the code, not tried:** the board is `position:fixed; inset:0` (`raptor-port/src/ui/scheduler.css`
+`.schedboard`), sized to the page, while the phone keyboard shrinks and pans the VISIBLE area, so the page behind can
+scroll into the gap; other panels already follow the visible area (`window.visualViewport` in
+`raptor-port/src/leavewar/ui/Sheet.tsx`, `raptor-port/src/ui/histbubble.ts`). **His mention of the History button:**
+unclear whether History mode has to be on — reproduce both ways. **To do:** reproduce at phone size with the keyboard up
+(or a shrunken visual viewport); make nothing behind the board ever show (hold the page behind still while the board is
+open, or size the board to the visible area). LOOK tier, phone only. **Place:** with the board items; small.
+
+### [PENDING-SUMMARY] Tap "N pending" to see what changed, by whom and when — his idea (25 Sep 26), waiting on his word
+His words: *"why dont we just wipe the sign offs for any changes to the schedule? And any type of change to that schedule
+will show a pending. And the scheduler can click on pending and see a summary of what changed. by who & time. Would this
+be like the edit history function? (except that im thinking of changing to seeing who the member callsign is instead of
+just admin or member account, but if we just merge it into pending does it make sense? is it the same thing? And it
+should also have the function that if i enable something i can still mouse over the portion of the schedule and see the
+bubble popup"* … *"or click"*. **Four parts:** (1) every pending change wipes the sign-offs — this would replace D45's
+signature half (today a change in who is behind ALL / ALL AVAIL, an edited request's times, or a Quals/posting change
+shows pending but keeps the signatures); D45's freeze half stays; (2) tapping "N pending" opens the day's waiting changes
+with who made each and when; (3) the author shown as the person's callsign, not the shared admin/member account; (4) the
+History mode's bubble kept — hover on a desktop, tap on a phone. **The agent's answers, given in chat:** yes to all four
+as one design; pending (the NET difference from what is published — change a time and back and nothing is pending) and
+Edit history (every edit, in order) share one record, so the summary lists the net changes, each with its last author
+and time from the history, and Edit history stays the full story. **Two limits to build around:** the edit log is kept
+only while the page is open (by design until the database — `raptor-port/CLAUDE.md` §What actually persists), so
+who/when is missing for changes made before a reload, except members' requests, which carry who filed them; and one
+shared login per role means the app cannot know the person — the "View as" person can stand in until each person has
+a login at the database step. **To do:** his word on each part, a mock-up first (the house rule for a visual
+direction), then build with the amendment batch; parts (1) and (2) touch published records and sign-offs — FULL tier.
+**Place:** before [AMEND-MARK-RING-CLASH]'s build, since both reshape the same day head and marks.
 
 ### [AMEND-MARK-RING-CLASH] On the edit surfaces an amendment mark on a puck hides its dashed or dotted warning ring (found 24 Sep 26)
 Found by the amendment re-test's final code read (Fable #3). The edit week's and the board's AL-coloured mark for a
