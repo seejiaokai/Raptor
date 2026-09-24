@@ -69,7 +69,7 @@ describe('clear old clutter before a date', () => {
     expect(stashHas('05/01/2026')).toBe(true)
   })
 
-  it('clears past pucks and titles; never an input, a balance, or a stashed week', () => {
+  it('clears past pucks and titles; never an input, a balance, or a stashed week (AM49c)', () => {
     expect(clearHistoryBefore('2026-03-01')).toBe(2)
     // gone: the January puck and title (SYNC-004: real .date pucks ARE selected)
     expect(puckAt('2026-01-10')).toBe(false)

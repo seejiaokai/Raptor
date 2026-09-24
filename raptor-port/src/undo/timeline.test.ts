@@ -309,5 +309,9 @@ describe('the derived publication barrier (§6.3)', () => {
     expect(_pubBar().get('W1#0')).toBeDefined()
     // undoing the earlier edit is refused (must unpublish first)
     expect(_undoConflict(editEntry)).toMatch(/published after/i)
+    /* the refusal names the control the scheduler actually has: the day's Unpublish button
+       ([HUMAN-RETEST] amendment re-test, 24 Sep 26 — it said "take the published day back",
+       a door no screen names; register AM39c) */
+    expect(_undoConflict(editEntry)).toMatch(/Unpublish/)
   })
 })

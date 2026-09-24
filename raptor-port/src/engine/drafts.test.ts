@@ -494,7 +494,7 @@ describe('switching drafts on a PUBLISHED day — rid-native', () => {
 })
 
 describe('rename and delete', () => {
-  it('rename trims, clamps to 24, and refuses empty or a duplicate in the day', () => {
+  it('rename trims, clamps to 24, and refuses empty or a duplicate in the day (AM29)', () => {
     draftDup(0)
     const [d1, d2] = dayDrafts(0)
     expect(draftRename(0, d1.id, '  Wet weather  ')).toBe(true)
@@ -726,7 +726,7 @@ describe('reconcileIssuedMarks — a mark stranded at an address in neither docu
 })
 
 describe('signatures are PER PLAN (owner, 15 Sep 26 — item 1a)', () => {
-  it('each plan keeps its own sign-offs across switches — B signed, A empty, both green after signing both', () => {
+  it('each plan keeps its own sign-offs across switches — B signed, A empty, both green after signing both (AM12)', () => {
     draftDup(0)                                        // Plan A + Plan B (B selected/live)
     const [planA, planB] = dayDrafts(0).map((t: any) => t.id)
     /* sign the live plan (B) through the bound path */
@@ -766,7 +766,7 @@ describe('signatures are PER PLAN (owner, 15 Sep 26 — item 1a)', () => {
 })
 
 describe('a CHANGE clears the displayed sign-offs (owner, 15 Sep 26 — R1)', () => {
-  it('signShown blanks a role once an edit moves the content, and restores it on revert', () => {
+  it('signShown blanks a role once an edit moves the content, and restores it on revert (AM11)', () => {
     signBound(0)
     expect(Object.values(signShown(0)).every(v => v), 'all four show while valid').toBe(true)
     /* a real canonical edit (a day note) moves the digest with no sign slot touched */

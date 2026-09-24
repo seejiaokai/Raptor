@@ -45,7 +45,7 @@ describe('per-day sign-off (tfin B22/B24)', () => {
     expect(signMissing(0)).toEqual(['CUR CK', 'SKED CK', 'PLANNED BY', 'APPROVED BY'])
   })
 
-  it('the three scheduling roles offer ONLY appointed schedulers', () => {
+  it('the three scheduling roles offer ONLY appointed schedulers (AM16)', () => {
     expect(signPeople(true).every(id => isScheduler(id))).toBe(true)
   })
 
@@ -60,7 +60,7 @@ describe('per-day sign-off (tfin B22/B24)', () => {
     expect(signPeople(true).length).toBeGreaterThan(3)
   })
 
-  it('a name already signed stays offered even if the appointment was withdrawn', () => {
+  it('a name already signed stays offered even if the appointment was withdrawn (AM16)', () => {
     const keep = PEOPLE.ignite.quals.sched
     PEOPLE.ignite.quals.sched = false
     expect(signPeople(true, 'ignite')).toContain('ignite')
@@ -139,7 +139,7 @@ describe('publishing an AL (tfin B49 / B26)', () => {
     expect(dayPendCount(0)).toBe(1)
   })
 
-  it('a real change on a published day makes it publishable, and it needs signing', () => {
+  it('a real change on a published day makes it publishable, and it needs signing (AM10)', () => {
     sign(0); setDayApproved(0, true)
     txtSet('dn:0.0', 'AMENDED')                   // a REAL content edit → a canonical delta
     expect(dayHasChanges(0)).toBe(true)
@@ -181,7 +181,7 @@ describe('publishing an AL (tfin B49 / B26)', () => {
     expect(SCHED.als).toEqual([])
   })
 
-  it('a per-day AL takes only that day\'s changes', () => {
+  it('a per-day AL takes only that day\'s changes (AM1)', () => {
     sign(0); setDayApproved(0, true)
     sign(1); setDayApproved(1, true)
     txtSet('dn:0.0', 'A'); txtSet('dn:1.0', 'B')
@@ -193,7 +193,7 @@ describe('publishing an AL (tfin B49 / B26)', () => {
     expect(dayApproved(0) && dayApproved(1)).toBe(true)
   })
 
-  it('the published AL records a name for its day and spends the signature again', () => {
+  it('the published AL records a name for its day and spends the signature again (AM10)', () => {
     sign(0); setDayApproved(0, true)
     txtSet('dn:0.0', 'A'); sign(0)
     publishALDay(0)
@@ -223,7 +223,7 @@ describe('publishing an AL (tfin B49 / B26)', () => {
     expect(SCHED.pending['dn:1.0'], 'draft day pending must clear').toBeUndefined()
   })
 
-  it('nextSeq is per-day: the day’s max issued seq + 1', () => {
+  it('nextSeq is per-day: the day’s max issued seq + 1 (AM2)', () => {
     expect(nextSeq(0)).toBe(1)
     SCHED.als = [
       { id: 'a#1', di: 0, iso: 'a', seq: 1, snap: { d: {}, c: {} }, diff: [], sign: {} },
@@ -520,7 +520,7 @@ describe('per-day version snapshots', () => {
     expect(s.c[rk('dn:0.0')]).toBe(1)        // the AL's own mark is IN the snapshot
   })
 
-  it('dayVersions lists live, then the Original and snapshot-bearing ALs as verIds', () => {
+  it('dayVersions lists live, then the Original and snapshot-bearing ALs as verIds (AM2)', () => {
     expect(dayVersions(0)).toEqual(['live'])
     sign(0); setDayApproved(0, 1)
     const orig = dayCurVer(0)
@@ -564,7 +564,7 @@ describe('dayCurVer — the version a day is currently showing', () => {
 })
 
 describe('Phase 2 — the per-day verId record', () => {
-  it('per-day sequence: Monday-AL1 and Tuesday-AL1 are distinct verIds, both seq 1', () => {
+  it('per-day sequence: Monday-AL1 and Tuesday-AL1 are distinct verIds, both seq 1 (AM1, AM3)', () => {
     sign(0); setDayApproved(0, 1); txtSet('dn:0.0', 'A'); sign(0); const a = alIssue(0)
     sign(1); setDayApproved(1, 1); txtSet('dn:1.0', 'B'); sign(1); const b = alIssue(1)
     expect(a.seq).toBe(1); expect(b.seq).toBe(1)
@@ -587,7 +587,7 @@ describe('Phase 2 — the per-day verId record', () => {
     expect(JSON.stringify(round)).toBe(before)      // byte-identical round-trip
   })
 
-  it('the ordinary amendment flow never rewrites the Original', () => {
+  it('the ordinary amendment flow never rewrites the Original (AM4)', () => {
     const orig = DAYS[0].notes[0].t
     sign(0); setDayApproved(0, 1)
     const origId = dayCurVer(0)

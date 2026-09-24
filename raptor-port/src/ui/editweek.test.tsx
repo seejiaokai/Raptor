@@ -237,7 +237,7 @@ describe('the edit page (tfin)', () => {
      opens the plans menu, its "Issued · read-only" row (data-planpv) previews;
      the load button via routeClick. Load is a ROLLBACK onto the working copy:
      the version becomes live, the edit is discarded, nothing pends. */
-  it('the plans selector previews a published version and loads onto the working copy', async () => {
+  it('the plans selector previews a published version and loads onto the working copy (AM6)', async () => {
     /* self-contained (Phase 2 — reopen is gone, so the old shared-state dance no
        longer applies): clear any inherited state, then publish Monday's Original. */
     await act(async () => {

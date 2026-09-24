@@ -48,7 +48,7 @@ describe('version identity — the full-date id (AM-01)', () => {
     expect(tueAL1).not.toBe('1')
   })
 
-  it('the same calendar day in two different years is a different id', () => {
+  it('the same calendar day in two different years is a different id (AM3)', () => {
     const y2026 = verId(dayIso('13/07/2026', 0), 1)
     const y2027 = verId(dayIso('12/07/2027', 0), 1) // 12/07/2027 is a Monday → 2027-07-12
     expect(dayIso('12/07/2027', 0)).toBe('2027-07-12')

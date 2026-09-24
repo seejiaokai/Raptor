@@ -381,7 +381,9 @@ function undoConflict(entry: UndoEntry): string | null {
   const pubBar = computePubBar()
   for (const dk of dayKeysOf(entry)) {
     const pb = pubBar.get(dk)
-    if (pb != null && pb > entry.seq) return 'A day on this week was published after that change — take the published day back first, or edit the working copy.'
+    /* name the door the scheduler has — the day's Unpublish button (register AM39c; it said "take the
+       published day back", which no control is called — [HUMAN-RETEST] amendment re-test, 24 Sep 26) */
+    if (pb != null && pb > entry.seq) return 'A day on this week was published after that change — tap Unpublish on that day first, or edit its working copy.'
   }
   // non-linear: a newer not-undone entry shares a key (§4.3). An INELIGIBLE newer
   // entry (a deferred-collection closure) is still a hard barrier — refuse whole,

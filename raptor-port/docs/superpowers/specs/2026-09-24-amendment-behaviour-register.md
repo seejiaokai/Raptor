@@ -104,10 +104,10 @@ the archives) are folded in below where they added a rule — each line names it
 | id | the rule | when · where | status |
 |---|---|---|---|
 | AM38 | **Undo reverses only the signed-in person's OWN changes, and the list clears when they sign out.** It never greys out because someone else changed something since; if someone else has since changed the very same thing, Undo refuses and says who. | 24 Sep 26 · **D148**; undo-contract §4 | LIVE — NOT BUILT (`[GLOBAL-UNDO]` `[GU-MAYREV]`: "build it with the amendment or change-recording work") — see §Q2 |
-| AM39 | **Publishing is its own undo step**; an undo that lands before a publish runs Unpublish (AM32). Undo is refused while typing in a field. | 18 Sep 26; engine-rules §History | LIVE |
+| AM39 | **Publishing is its own undo step**; an undo that lands before a publish runs Unpublish (AM32). Undo is refused while typing in a field. | 18 Sep 26; engine-rules §History | LIVE — the "refused while typing" half has nothing to do today: the app has no undo keyboard shortcut, and pressing an Undo button takes the focus out of the field, committing it first (the half comes from the original app's shortcut) |
 | AM39b | **One Undo for the whole app that takes you to where the change was; every Undo / Redo says in a short bubble what it did** (one shared describer, never a per-feature string); **an undo that clashes with a later change is refused whole, with a plain message.** | 13 Sep 26 (snap-to-page); 17–18 Sep 26 · global-undo design; undo-contract | LIVE |
-| AM39c | **Undo cannot reach behind a publish on that day:** it says "A day on this week was published after that change — unpublish it, or edit the working copy." A redo of an undone publish lands published, with the sign-offs cleared. | 18 Sep 26 (the design's calls, A16/A22 of the sweep) · global-undo design §6; phase-2 cutover plan | LIVE |
-| AM39d | **Roster and settings edits are undoable — ordinary changes, never amendments.** | 16 Sep 26 · command-layer design | LIVE |
+| AM39c | **Undo cannot reach behind a publish on that day:** it says "A day on this week was published after that change — tap Unpublish on that day first, or edit its working copy." A redo of an undone publish lands published, with the sign-offs cleared. | 18 Sep 26 (the design's calls, A16/A22 of the sweep) · global-undo design §6; phase-2 cutover plan; `src/undo/timeline.ts` | LIVE — the message said "take the published day back first", a control no screen names; now it names the Unpublish button (re-test, 24 Sep 26) |
+| AM39d | **Roster and settings edits are undoable — ordinary changes, never amendments.** | 16 Sep 26 · command-layer design | PARTLY BUILT — they are never amendments; but the one Undo covers only the schedule, the Leave War, inputs and plans (`src/state/undo-wire.ts` `setCutoverModules`), not the roster or the settings → `OUTSTANDING.md` `[UNDO-ROSTER-SETTINGS]`, for the change-recording re-test (D147) |
 
 ## G. Inputs, availability and the issued day
 
@@ -161,6 +161,25 @@ the archives) are folded in below where they added a rule — each line names it
 | AM52 | **An EOD records what actually happened**, published on the day's own stack only when reality differed, labelled EOD, with no four-role sign-off ("recorded by …"), correctable by a later EOD. | 12 Sep 26 · brief §3b; `OUTSTANDING.md` `[EOD]` | DEFERRED — not built, not walked |
 
 ---
+
+## Coverage — which rules a test pins (the rule-coverage gate, 24 Sep 26)
+
+Every LIVE / PARTLY BUILT line above is now a rule of `raptor-port/scripts/rulecheck.mjs` (AM38, AM43 and AM52 wait
+until they are built). A read-only mapping of the existing tests found **37 pinned whole** — each of those tests
+now carries its id in its title, e.g. "… (AM16)" — **30 pinned only in part, and 2 by nothing (AM7, AM44)**; those
+32 are the gate's baseline, named there so they stay visible, and the list shrinks as each gains a whole-rule test.
+What the partial ones miss, in one line each (from the mapping): AM8 the Original's lack of AL colour · AM15 the
+draft-day line · AM17 a member TRYING to publish, sign, unpublish, load or switch (only the page gate is tested) ·
+AM19 dotted vs solid (styling) and the view page's neutral hint · AM25 the removals / reorders / filings wording ·
+AM26 plans made before the first publish surviving it · AM27 the absence of a review screen · AM28 the menu order
+and the board's Back · AM30 today's version tag on a plan preview · AM34 the admin-only refusal and the sign-off
+clearing of Unpublish · AM36 an export or a logout · AM37 the two taps driven · AM39 the typing half (moot, above) ·
+AM39b the jump and the bubble on screen · AM39c the redo half · AM39d the roster / settings undo (not built) · AM45
+D54's exact case · AM47 the late-holiday warning · AM48 one day never moving another day's OIL · AM48a D24 and
+D46's removal · AM49 the reload · AM49b the names two-up · AM50 scheduler-only and "not a boundary" · AM51 crew
+rest past midnight and timing clashes · AM51b–AM51g the drawn pages, the roles, the plan preview, the week
+boundary, the end-of-session reminder. The walk (the evidence sheet) covers many of these by hand; a test is the
+guard that keeps them.
 
 ## Z. The clashes — which rule wins (D90: the newer one)
 

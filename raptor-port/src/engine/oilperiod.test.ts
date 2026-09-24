@@ -40,7 +40,7 @@ afterEach(() => {
 const publish = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'; setDayApproved(di, true) }
 
 describe('a day whose year has no leave war period says so', () => {
-  it('names the missing period instead of promising money (D19)', () => {
+  it('names the missing period instead of promising money (D19) (AM48d)', () => {
     HOOKS.oilNoPeriod = (di: number) => (di === SAT ? '2027' : '')
     validate()
     expect(codesOn(SAT), 'the day says what is wrong').toContain('OIL_NO_PERIOD')

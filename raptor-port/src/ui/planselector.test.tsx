@@ -212,7 +212,7 @@ describe('the menu + the must-fix behaviours', () => {
     expect($('#eWeek .day[data-day="0"] [data-alpub]')).toBeTruthy()
   })
 
-  it('B1 · deleting down to one plan returns the day to "Live working copy"', async () => {
+  it('B1 · deleting down to one plan returns the day to "Live working copy" (AM29)', async () => {
     await reopen()
     draftDup(0)                                       // Plan A + Plan B (B live)
     await act(async () => { notify() })

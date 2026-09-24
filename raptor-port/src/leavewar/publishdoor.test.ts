@@ -68,7 +68,7 @@ const publish = (di: number) => {
 const recs = (p: string, d: string) => rawState().wars[0]!.recs[p]?.[d] ?? []
 
 describe('publishing weekend work FLAGS a clashing leave bid (owner, 20 Sep 26)', () => {
-  it('the bid stays live, no notice is left, the OIL credit lands, and the day flags', () => {
+  it('the bid stays live, no notice is left, the OIL credit lands, and the day flags (AM48c)', () => {
     setRole('admin')
     expect(setCell('plasma', SAT, 'LL')).toBe(true)
     publish(5)
@@ -85,7 +85,7 @@ describe('publishing weekend work FLAGS a clashing leave bid (owner, 20 Sep 26)'
     expect(v?.conflicts.length).toBeGreaterThan(0)
   })
 
-  it('the admin is told at the moment of publishing, in words that say the bid is still live', () => {
+  it('the admin is told at the moment of publishing, in words that say the bid is still live (AM48c)', () => {
     setRole('admin')
     expect(setCell('plasma', SAT, 'LL')).toBe(true)
     publish(5)
@@ -157,7 +157,7 @@ describe('publishing a weekend nobody earns OIL for', () => {
     for (const dw of (DAYS[5] as any).dutywaves ?? []) for (const r of dw.rows ?? []) { r.str = ''; r.end = '' }
   }
 
-  it('says the day earned nobody anything, and names the desk', () => {
+  it('says the day earned nobody anything, and names the desk (AM48d)', () => {
     setRole('admin')
     blankTheSaturdayDesks()
     publish(5)

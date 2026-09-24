@@ -72,7 +72,7 @@ describe('a signature binds to the content it signed (AM-06)', () => {
     expect(daySigned(0)).toBe(true)              // the still-matching signature stands
   })
 
-  it('publishing is refused while a signature is stale', () => {
+  it('publishing is refused while a signature is stale (AM10)', () => {
     signAll(0)
     editContent(0)
     setDayApproved(0, true)
@@ -134,7 +134,7 @@ describe('legacy / unbound signatures stay backward-compatible', () => {
 
 
 describe('a signature binds to the FILING axis too (owner, 15 Sep 26 - Codex PSF-001)', () => {
-  it('a filing change on a signed day invalidates it; reverting the filing restores it', () => {
+  it('a filing change on a signed day invalidates it; reverting the filing restores it (AM14)', () => {
     /* an input that covers day 0's date; acc '' is excluded from filingKey (empty ==
        absent), so signing captures the day WITHOUT it, and flipping acc to a real
        filing state is a genuine filing change dayDelta would count. */

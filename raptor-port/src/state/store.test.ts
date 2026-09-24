@@ -352,7 +352,7 @@ describe('moveSection — the section display order (owner, 29 Aug 26)', () => {
     setSession({ user: 'a', role: 'admin' })
   })
 
-  it('moveSectionTo drags one section to where another sits, spanning several positions, undoable in one step', () => {
+  it('moveSectionTo drags one section to where another sits, spanning several positions, undoable in one step (AM21b)', () => {
     expect(secOrder(DAYS[0])).toEqual(['notes', 'prog', 'waves', 'duty', 'sims', 'ground', 'inputs', 'avail', 'sans', 'unav'])
     /* drop 'ground' onto 'prog' (first) — a multi-position move the ±1
        nudge could not do in one gesture */

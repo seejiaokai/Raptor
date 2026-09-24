@@ -36,7 +36,7 @@ describe('a new wave lands in the house order', () => {
     expect(d.waves[1]).toBe(firstBefore)            // the old top wave slid down intact
   })
 
-  it('appends on a SIGNED-OFF day — the default never adds an amendment move', () => {
+  it('appends on a SIGNED-OFF day — the default never adds an amendment move (AM21b)', () => {
     setWaveDefault(['sc', 'fly', 'avalon', 'bb'])
     const g = signOf(1); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
     setDayApproved(1, true)

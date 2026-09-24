@@ -92,7 +92,7 @@ const signAndPublish = (di: number) => {
 const allSigned = (di: number) => daySigned(di)
 
 describe('D44 — a changed crowd on a published day raises the pending mark', () => {
-  it('ON A WEEKDAY, which is the half that did not exist before', () => {
+  it('ON A WEEKDAY, which is the half that did not exist before (AM42)', () => {
     puckRow(TUE)
     signAndPublish(TUE)
     expect(dayHasChanges(TUE), 'freshly published, nothing pending').toBe(false)
@@ -125,7 +125,7 @@ describe('D44 — a changed crowd on a published day raises the pending mark', (
 })
 
 describe('D45 — but it NEVER takes a signature down with it', () => {
-  it('a man files leave and every signature still stands', () => {
+  it('a man files leave and every signature still stands (AM13)', () => {
     puckRow(TUE)
     signAndPublish(TUE)
     expect(allSigned(TUE), 'signed before anything moved').toBe(true)

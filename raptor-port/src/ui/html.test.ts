@@ -619,7 +619,7 @@ describe('version dropdown and preview build', () => {
     setDayPreview(0, null)
   })
 
-  it('the day head wears ONE version tag, coloured by AL number, left of the badge', () => {
+  it('the day head wears ONE version tag, coloured by AL number, left of the badge (AM22)', () => {
     /* state from the previous test: day 0 published, AL1 issued. The green tag
        (verTagHTML) replaced the "✓ Published · ALn" stamp; it rides its own .dhver
        span now (owner, 15 Sep 26 — item 4), coloured by AL number (item 3). */
@@ -645,7 +645,7 @@ describe('version dropdown and preview build', () => {
     expect(h2).not.toContain('✓ Published')
   })
 
-  it('the version tag shows on the VIEW-only day head too (owner, 15 Sep 26 — item 5)', () => {
+  it('the version tag shows on the VIEW-only day head too (owner, 15 Sep 26 — item 5) (AM22)', () => {
     /* day 0 is published at AL2 from the test above; the view builder wears the
        same coloured tag now, so a viewer sees which version the day is issued as. */
     const v = dayHTML(0, false)
@@ -934,7 +934,7 @@ describe('a quarantined week surfaces the notice on the week AND the board (Q2R-
 
 describe('the recovery confirm shows the LIVE unpublished-edit count (P2-IMPL-09)', () => {
   const sgn = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }
-  it('the discard-and-load button reads the live delta count, not 0 (withDaySnap zeroes pending)', () => {
+  it('the discard-and-load button reads the live delta count, not 0 (withDaySnap zeroes pending) (AM23)', () => {
     /* stand alone — clear the amendment book so no earlier test's marks leak in */
     SCHED.pending = {}; SCHED.changes = {}; SCHED.als = []; SCHED.al = 0
     SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}; SCHED.drafts = {}; SCHED.curDraft = {}

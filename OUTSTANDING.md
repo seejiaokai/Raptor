@@ -51,6 +51,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 **His order:**
 1. **[HUMAN-RETEST]** — THE AMENDMENT SYSTEM next (D85/D86); then, in HIS order (D147, 24 Sep 26): the absence record
    TOGETHER with [S4-HUNT-REST], then change-recording, then the Leave War links LAST (with the 7 Sep phone check).
+   *(24 Sep 26: the change-recording re-test also carries [UNDO-ROSTER-SETTINGS] and D148 — both the one undo's.)*
 2. **[S4-HUNT-REST]** — the bug hunt's untouched ground, in his own 1–7 order, walked WITH the absence-record re-test
    (D147: its ground IS the absence record).
 3. **[BACKLOG-ORDER]** — "after the hunt" (21 Sep 26): [PUB-UNAVAIL] → [LW-LOCKMARK] → [LW-WEEKDAY-WORK] (talk to
@@ -1026,3 +1027,14 @@ to each amendment line in the ⓘ day panel (`dayInfoHTML`, `raptor-port/src/ui/
 keep the full panel desktop-only. One thing for him to weigh: the ⓘ panel is also open to members on View-only
 Sched, so they would see the approver's callsign too (the desktop panel is the scheduler's page only). **Place:**
 waiting on him; small once answered.
+
+### [UNDO-ROSTER-SETTINGS] The one Undo does not cover roster or settings edits, though his 16 Sep 26 rule says it should (found 24 Sep 26)
+Found by the amendment re-test's rule-to-test mapping (register AM39d,
+`raptor-port/docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`). His 16 Sep 26 rule, recorded in the
+command-layer design (`raptor-port/docs/superpowers/specs/2026-09-16-arch-stack-2-command-layer-design.md`): roster
+and settings edits ARE undoable — ordinary user changes, never amendments. The "never amendments" half holds; the
+"undoable" half is not built: the global undo's cutover lists only the schedule, the Leave War, inputs and plans
+(`raptor-port/src/state/undo-wire.ts`, `setCutoverModules(['sched', 'lw', 'inputs', 'plan'])`), so adding a person,
+renaming a callsign or changing a Logic setting cannot be undone. **Place:** the change-recording re-test (D147,
+second after the absence record) — it is the one undo's own subject; build it there with D148 (undo only your own
+changes). Walk it first: confirm on screen that Undo stays greyed or skips a roster / settings edit.

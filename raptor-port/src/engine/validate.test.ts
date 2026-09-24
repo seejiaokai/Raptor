@@ -678,7 +678,7 @@ describe('a weekend duty desk with no times warns on the day itself', () => {
     for (const dw of (DAYS[di] as any).dutywaves ?? []) for (const r of dw.rows ?? []) { r.str = ''; r.end = '' }
   }
 
-  it('names the desk, and says nobody earns OIL for the day', () => {
+  it('names the desk, and says nobody earns OIL for the day (AM48d)', () => {
     blank(5)                                                     // the seed Saturday
     const w = warnsOn(5)
     expect(w).toHaveLength(1)

@@ -55,7 +55,7 @@ describe('moveWave', () => {
     expect(SCHED.changes['fr:0.0.0.0']).toBe(1)
     expect(SCHED.als[0].keys).toEqual(['st:0.0.0.0', 'it:0.0'])
   })
-  it('marks the moved wave at its NEW address so the day goes out amended', () => {
+  it('marks the moved wave at its NEW address so the day goes out amended (AM21b)', () => {
     twoWaves()
     moveWave(0, 0, 1)
     expect(SCHED.pending[rk('wl:0.1')]).toBe(1)

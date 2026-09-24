@@ -324,7 +324,7 @@ describe('Phase 4b — the accepted-row deferral honours the FROZEN row, not the
    FROZEN until published: the new request does NOT appear on it, and it carries no
    "Not Yet Signed" marker (that is a working-copy affordance only). */
 describe('Decision #1 — a request filed on a published day is a working-copy pending amendment', () => {
-  it('auto-lands on the working copy (pending + Not-Yet-Signed there) while the issued face stays frozen', () => {
+  it('auto-lands on the working copy (pending + Not-Yet-Signed there) while the issued face stays frozen (AM40, AM41)', () => {
     const WK = wkFor(70)
     setCurWeek(WK)
     const dt = (DAYS[0] as any).dt
@@ -377,7 +377,7 @@ describe('Phase 5 — a view-page tap on a published-only warning focuses the OF
    belongs on the live working copy, where the divergence actually lives. (The in-list
    "goes away / new once signed" markings on the working view are the companion cue.) */
 describe('Phase 6 — "Not Yet Signed" marker (working copy only)', () => {
-  it('shows on the working face of a published day with an unpublished amendment; the ISSUED face never shows it; absent when clean', () => {
+  it('shows on the working face of a published day with an unpublished amendment; the ISSUED face never shows it; absent when clean (AM24)', () => {
     const WK = wkFor(50)
     setCurWeek(WK)
     flyMonday('waldo', '14:00', '15:25')
@@ -448,7 +448,7 @@ describe('§4 — quals and rules flag OFFICIAL immediately (unversioned); leave
 /* CODE-REVIEW ROUND 2 completions. */
 describe('CRPF-R2-001 — a fresh unaccepted commitment on an approved loaded day is excluded from OFFICIAL', () => {
   const inpFly = (b: any, id: string) => b.all.find((x: any) => x.code === 'INPUT_FLY' && (x.who || []).includes(id) && x.di === 0)
-  it('the loaded gate is membership-aware, so a new empty-acc input does not alias into OFFICIAL', () => {
+  it('the loaded gate is membership-aware, so a new empty-acc input does not alias into OFFICIAL (AM43b)', () => {
     const WK = wkFor(64)
     setCurWeek(WK)
     const dt = (DAYS[0] as any).dt

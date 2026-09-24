@@ -207,7 +207,7 @@ describe('the view-only week — unpublished days with plans', () => {
     expect(opts.some(([v]) => v === 'orig' || /^\d+$/.test(v!))).toBe(false)
   })
 
-  it('viewing a plan freezes it with the read-only banner, no switch, no controls', async () => {
+  it('viewing a plan freezes it with the read-only banner, no switch, no controls (AM31)', async () => {
     const sel = $('#vWeek select[data-dver="0"]') as unknown as HTMLSelectElement
     await pick(sel, 'd:' + dayDrafts(0)[0].id)
     const day = () => $(`#vWeek .day[data-day="0"]`)
@@ -285,7 +285,7 @@ describe('the view-only week — published days', () => {
     expect(day().className).toContain('issued')
   })
 
-  it('stored plans are hidden from viewers once the day is published', async () => {
+  it('stored plans are hidden from viewers once the day is published (AM31)', async () => {
     await act(async () => { draftDup(0); notify() })
     const day = $('#vWeek .day[data-day="0"]')
     const sel = day.querySelector('select[data-vwork="0"]') as HTMLSelectElement
@@ -361,7 +361,7 @@ describe('sign-offs: a change clears the greens, and the "nothing to publish" no
     }
   }
 
-  it('signing a published day with nothing pending pops the "no changes" note; the status line says so; no Publish button', async () => {
+  it('signing a published day with nothing pending pops the "no changes" note; the status line says so; no Publish button (AM15b)', async () => {
     await resetDrafts()
     SCHED.signBind = {}
     /* publish day 0 first — that spends its signatures, leaving it approved with 0 pending */
@@ -375,7 +375,7 @@ describe('sign-offs: a change clears the greens, and the "nothing to publish" no
     expect($(`#eWeek .day[data-day="0"] button[data-alpub]`), 'correctly NO publish button').toBeFalsy()
   })
 
-  it('a change clears the greens (R1); re-signing then reads "1 change to publish"', async () => {
+  it('a change clears the greens (R1); re-signing then reads "1 change to publish" (AM11)', async () => {
     /* state: day 0 published + fully signed, 0 pending, from the test above */
     await act(async () => { txtSet('dn:0.0', 'AMEND ONE'); notify() })
     const bar = () => $(`#eWeek .day[data-day="0"] .signoff.day-sign`)

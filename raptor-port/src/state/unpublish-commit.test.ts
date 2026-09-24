@@ -43,7 +43,7 @@ beforeEach(() => {
 afterEach(() => { unsub() })
 
 describe('unpublish an Original → a plain draft, the Original retired', () => {
-  it('drops dayOK, retires the Original as its own snapshot, declares an unpublish boundary', () => {
+  it('drops dayOK, retires the Original as its own snapshot, declares an unpublish boundary (AM4, AM32)', () => {
     sign(0); commitSetDayApproved(0, true)
     const origId = (SCHED.orig as any)[0].id
     caught = []
@@ -66,7 +66,7 @@ describe('unpublish an Original → a plain draft, the Original retired', () => 
 })
 
 describe('unpublish an AL → the working copy re-opens, Original stays current', () => {
-  it('retracts AL1, re-opens its marks as pending, cur falls back to the Original', () => {
+  it('retracts AL1, re-opens its marks as pending, cur falls back to the Original (AM37c)', () => {
     sign(0); commitSetDayApproved(0, true)
     const origId = (SCHED.orig as any)[0].id
     txtSet('dn:0.0', 'AMENDED NOTE'); sign(0); commitPublishALDay(0)
@@ -92,7 +92,7 @@ describe('unpublish an AL → the working copy re-opens, Original stays current'
    back as a dotted mark — the head, the sign line and the panel (all the canonical delta) would
    say one thing while the cell said another. */
 describe('unpublish re-opens only what still differs from the version under it (walk S1)', () => {
-  it('a change put back to the older value leaves no phantom pending mark', () => {
+  it('a change put back to the older value leaves no phantom pending mark (AM20)', () => {
     sign(0); commitSetDayApproved(0, true)                  // Original: VL takes off 12:40
     const was = (DAYS[0] as any).waves[0].formations[0].to
     txtSet('ff:0.0.0.to', '13:10'); txtSet('dn:0.0', 'AL1 NOTE')
@@ -121,7 +121,7 @@ describe('only the LATEST version is unpublishable', () => {
 })
 
 describe('same-label reissue + the correcting flag (§6.1 GU5-001)', () => {
-  it('reissues AL1 under the SAME label even when the correction nets to no delta', () => {
+  it('reissues AL1 under the SAME label even when the correction nets to no delta (AM33)', () => {
     txtSet('dn:0.0', 'NOTE-A'); sign(0); commitSetDayApproved(0, true)   // Original froze NOTE-A
     txtSet('dn:0.0', 'NOTE-B'); sign(0); commitPublishALDay(0)           // AL1: NOTE-B
     const al1 = (SCHED.als as any[])[0].id
@@ -135,7 +135,7 @@ describe('same-label reissue + the correcting flag (§6.1 GU5-001)', () => {
     expect(reAls[0].id).toBe(al1)            // SAME label
     expect((SCHED.correcting as any)[0]).toBeUndefined()   // flag cleared on reissue
   })
-  it('nextSeq frees the retracted seq so a reissue reuses the label', () => {
+  it('nextSeq frees the retracted seq so a reissue reuses the label (AM37b)', () => {
     sign(0); commitSetDayApproved(0, true)
     txtSet('dn:0.0', 'X'); sign(0); commitPublishALDay(0)
     expect(nextSeq(0)).toBe(2)               // AL1 issued → next is 2
@@ -154,7 +154,7 @@ describe('readers never pick a retired record', () => {
   })
 })
 
-describe('dissemination governs the logged flag (§6.6)', () => {
+describe('dissemination governs the logged flag (§6.6) (AM35)', () => {
   it('an undisseminated retract is logged:false (silent)', () => {
     sign(0); commitSetDayApproved(0, true)
     const origId = (SCHED.orig as any)[0].id

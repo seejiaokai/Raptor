@@ -56,7 +56,7 @@ describe('installGlobalUndo() wires the live cutover', () => {
     expect(note0()).toBe('HELLO WIRE')
   })
 
-  it('undo of a publish clears the sign-offs via the WIRED postRestore (GU5-005)', () => {
+  it('undo of a publish clears the sign-offs via the WIRED postRestore (GU5-005) (AM32)', () => {
     sign(0)
     commitSetDayApproved(0, true)
     expect(dayApproved(0)).toBe(true)
