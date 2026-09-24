@@ -16,23 +16,26 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/spring-clean -->
-### `claude/spring-clean` — the spring clean (`[DOC-TRIM]`), written 24 Sep 26 — verify before use
-- **The job** (his ask, D138–D141): every chat reads only what the job needs and finds the rest; new information
-  follows the structure by itself; nothing is reworded on the way (a move is byte for byte; a rewrite is checked
-  for meaning by Fable and Astra). Plan, both red teams and what changed after them:
-  `raptor-port/docs/superpowers/specs/2026-09-24-spring-clean-plan.md` (§7 wins over §1–§6).
-- **Done and pushed (not merged):** step 1 (four merged worktrees removed, ~1 GB freed; three empty folders stay
-  held by old chats), steps 2–5 and the "teach it" layer — `raptor-port/CLAUDE.md` 1,543 → 704 lines, `HANDOFF.md`
-  984 → ~90, `OUTSTANDING.md` 1,226 → ~1,030 (live items only), a fresh chat now reads ~58k tokens before work, not
-  ~118k; the new `.claude/rules/shipping.md` and `doc-structure.md`; the exact mover and the misfiling checks
-  (self-test 97/97); Fable's meaning check done and all nine findings fixed. Rulings D139–D144.
-- **Both meaning checks DONE and fixed (D138):** Fable (9 findings) and Astra (4 HIGH, 1 LOW — a stale OIL lock left live,
-  the performance residuals stranded in the archive, the routing of every-task rules, the Tracker's no-student-data
-  rule out of automatic reach) — reports `raptor-port/docs/superpowers/specs/2026-09-24-spring-clean-meaning-{fable,astra}.md`.
-- **Left, in order:** (1) **his approval of the session-handoff skill change** (D70 — both reviews read it; show him
-  the diff in plain words). (2) Close `[DOC-TRIM]` — rewrite it without targets (D141); its leftover is the
-  `.gitattributes` LF pin, which rides the next code change — and mark D139 SPENT. (3) Offer "merge live"; "done" =
-  live on Vercel (D143).
+### `claude/spring-clean` — the spring clean (`[DOC-TRIM]`), written 24 Sep 26 (night) — verify before use
+- **Where it started:** his ask (D138–D141, then D140's "weave it into my workflow"): every chat reads only what the
+  job needs and finds the rest, new information follows the structure by itself, nothing reworded on the way. Plan,
+  both red teams and what changed after them: `raptor-port/docs/superpowers/specs/2026-09-24-spring-clean-plan.md` (§7 wins).
+- **Shipped:** all on the branch, pushed, NOT merged, no PR yet. `raptor-port/CLAUDE.md` 1,543 → ~705 lines (area
+  decisions and architecture moved whole to the area files), `HANDOFF.md` 984 → ~90 (the one handoff),
+  `OUTSTANDING.md` live items only; `.claude/rules/shipping.md` and `doc-structure.md` (always loaded); the exact
+  mover and the misfiling checks (self-test 97/97); both meaning checks (Fable, Astra) done and fixed; the
+  session-handoff skill change approved (D145). A fresh chat reads ~58k tokens before work, not ~118k.
+- **Unfinished:** close `[DOC-TRIM]` — rewrite it without line targets (D141); its only leftover is the
+  `.gitattributes` LF pin, which rides the next code change — and mark D139 SPENT (`--rulings`). Filed, not blocking:
+  `[DOC-POINTERS-CODE]`, `[PERF-RESIDUALS]`.
+- **Branch:** `claude/spring-clean`; its PR none when written. If it has MERGED, the next chat resets before new work:
+  `git fetch origin main && git checkout -B <branch> origin/main` — otherwise it stacks commits onto
+  already-merged history.
+- **Gates:** not run — docs and the document-gate scripts only (bug-check tier NONE); `npm run docsize` OK and
+  `node raptor-port/scripts/docsize-selftest.mjs` 97/97 on the final commit.
+- **Open questions for him:** none — "merge live" is his call when he is happy.
+- **Pick up here:** close `[DOC-TRIM]` and mark D139 spent, commit, open the PR (docs only — the Docs guard runs),
+  then tell him it is ready for "merge live"; "done" = live on Vercel (D143).
 <!-- /now -->
 
 ## Next, in order
