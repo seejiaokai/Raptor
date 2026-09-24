@@ -299,7 +299,7 @@ On the branch's Vercel link, signed in as admin, Edit Schedule. About five minut
 6. **Your phone.** Open Monday's board: the same "Not yet signed", "N pending" and Unpublish as on the desktop; tap a
    sign-off box and check the name list opens (only a real iPhone proves that).
 
-**His look, 25 Sep 26:** step 6 confirmed on his own iPhone ("For 6 yes" — the board shows "Not yet signed", "2 pending" and
+**His look, 25 Sep 26:** all six steps good ("the rest of the steps are good too"); step 6 confirmed on his own iPhone ("For 6 yes" — the board shows "Not yet signed", "2 pending" and
 Unpublish, and the sign-off name list opens). Three points raised on the way, each reproduced on this branch the same
 night: a moved puck counts 2 pending (as designed — the count is the rows that differ from the issued day, AM23; put to
 him with a recommendation to keep it); Edit history on Edit Schedule jumps to the board (on `main` too — D107,
