@@ -26,12 +26,13 @@ the later merge keeps both (D78).
   984 → ~90, `OUTSTANDING.md` 1,226 → ~1,030 (live items only), a fresh chat now reads ~58k tokens before work, not
   ~118k; the new `.claude/rules/shipping.md` and `doc-structure.md`; the exact mover and the misfiling checks
   (self-test 97/97); Fable's meaning check done and all nine findings fixed. Rulings D139–D144.
-- **Left, in order:** (1) **Astra's meaning check** — it was still running when this chat filled; its report may be at
-  the scratchpad path `…/8dc6f608-…/scratchpad/astra-meaning.md` on his PC; if not, re-run it with
-  `raptor-port/docs/superpowers/briefs/2026-09-24-spring-clean-meaning-brief.md` (Codex, read-only, gpt-5.6-sol, high),
-  fix what it finds, save it beside Fable's. (2) **His approval of the session-handoff skill change** (D70 — both
-  reviews in hand first). (3) Close `[DOC-TRIM]` (rewrite it without targets — D141; its leftover is the `.gitattributes`
-  LF pin, which rides the next code change) and mark D139 SPENT. (4) Offer "merge live"; "done" = live on Vercel (D143).
+- **Both meaning checks DONE and fixed (D138):** Fable (9 findings) and Astra (4 HIGH, 1 LOW — a stale OIL lock left live,
+  the performance residuals stranded in the archive, the routing of every-task rules, the Tracker's no-student-data
+  rule out of automatic reach) — reports `raptor-port/docs/superpowers/specs/2026-09-24-spring-clean-meaning-{fable,astra}.md`.
+- **Left, in order:** (1) **his approval of the session-handoff skill change** (D70 — both reviews read it; show him
+  the diff in plain words). (2) Close `[DOC-TRIM]` — rewrite it without targets (D141); its leftover is the
+  `.gitattributes` LF pin, which rides the next code change — and mark D139 SPENT. (3) Offer "merge live"; "done" =
+  live on Vercel (D143).
 <!-- /now -->
 
 ## Next, in order

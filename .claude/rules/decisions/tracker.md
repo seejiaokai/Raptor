@@ -28,6 +28,10 @@ Tracker from anywhere else picks these up too. The general rulings are in `.clau
 **Also read** — in How we work, so already loaded: **D62** and **D63** (the Tracker's syllabus data is out of
 every privacy sweep; the aircraft type elsewhere reads "F-15" or "fighter squadron").
 
+**No student name, mark or date may enter the repository** (its seed data, `src/tracker/data/`, is verbatim course
+content only). The reason once given was "the repository is public"; it has been PRIVATE since 23 Sep 26 (D59) and
+the rule stands — collaborators will read it (`raptor-port/docs/tracker/known-gaps.md`). *(Copied here 24 Sep 26 so
+it loads with the Tracker's files.)*
 **Where the detail lives:** its architecture — §Architecture at the foot of this file (moved from
 `raptor-port/CLAUDE.md`, 24 Sep 26); its screen — `raptor-port/docs/ui-contracts.md` §The Tracker tab; its gaps and
 carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores — `raptor-port/docs/data-schema.md`

@@ -652,6 +652,13 @@ through sourcemaps for the JS split, paired A/B runs.
 
 # Where the rules live (pointer map)
 
+- **The performance thread — residuals recorded, not built.** Several speed
+  wins are measured and deferred (the seven day-strings sort, the JS-bound
+  drop, hover-boundary repaints, the `body.dnd` decorations, the one
+  `validate` call); two are the owner's call because they change wording or
+  feel. *(Copied 24 Sep 26 from `HANDOFF.md` §In flight, archived that day — its only live home; the backlog
+  item is `[PERF-RESIDUALS]`.)*
+
 - **The enforced budget:** `probes/perf-port.cjs` (`DOM_CEILING`, checks B & D) ·
   `e2e/geometry.spec.ts` (paint/geometry) · the Leave War e2e DOM band.
 - **The stable decisions:** `.claude/rules/decisions/scheduler.md` §Settled before this list (board

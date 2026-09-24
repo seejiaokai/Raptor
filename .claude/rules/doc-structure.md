@@ -27,7 +27,7 @@ The full policy and the tiers: `raptor-port/docs/doc-budget.md`. This file is it
 | a ruling — a decision, preference, correction, "leave it", "no" | its area's rulings file, the moment he says it (`record-decisions.md`) |
 | an open job, a found-not-fixed, a deferral, a question to put to him later | an `OUTSTANDING.md` item — the ONE backlog — and a line in its priority list |
 | how a rule or a surface behaves (a contract) | `engine-rules.md`, `ui-contracts.md`, `feature-impact.md`, `performance.md`, `data-schema.md` (in `raptor-port/docs/`) |
-| a rule EVERY task needs, whatever the area | `raptor-port/CLAUDE.md` — only then |
+| a rule EVERY task needs, whatever the area | an unscoped file under `.claude/rules/` (a general ruling: `decisions/how-we-work.md`) — `raptor-port/CLAUDE.md` loads only once a `raptor-port/` file is opened, so it carries the project-side copy or pointer, never the only one |
 | a rule or piece of architecture ONE area needs | that area's file under `.claude/rules/decisions/` |
 | where things stand, what this chat left, what is next | this chat's own block under `## Now` in `HANDOFF.md`, rewritten at each handoff |
 | a gate count | `HANDOFF.md` §Gate baseline — only a count from a run you watched |

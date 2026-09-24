@@ -76,7 +76,8 @@ ask first), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next 
 [REPO-PRIVATE]'s sharing half, the GU-MAYREV product question inside [GLOBAL-UNDO], [EOD] (design first; no slot
 ruled), [CRP-FLAG]'s remainder and then [FLAG-EXPORT], the [AMEND] leftovers, and the questions filed on 24 Sep 26 —
 [LW-RESET-ORDER], [LW-DESKTOP-ZOOM], [ADMIN-DISPLAY], [QUALS-MEMBER-SCOPE], [TRK-PALETTE-ASK],
-[DEMO-AWARD-DATES-ASK] — with [USER-GUIDE] (wanted, not urgent).
+[DEMO-AWARD-DATES-ASK] — with [USER-GUIDE] (wanted, not urgent) and [PERF-RESIDUALS] (two of them change wording
+or feel — his call).
 
 **Future milestones:** [DB-STEP] (with [TRK-DISK] inside it), [XFER], [RECALL], [TRK-ATTEMPTS] (low urgency).
 
@@ -101,7 +102,9 @@ recovery path.
 - **Decisions RESOLVED (owner, 12 Sep 26):** plans SURVIVE as backups; ALL FOUR roles
   re-sign every amendment; crew SEE the live draft (issued stays authority). OIL for
   this build = latest AL/Original per day, per-day, read-failure protection (the
-  worked-day lock stays **[OIL]**).
+  worked-day lock stays **[OIL]**). *(Superseded 24 Sep 26 by D142 (his ruling of 20 Sep 26): a day's OIL comes
+  from its latest published version — the latest amendment, or the EOD if that is the latest — however old the
+  day; no lock, no clock. `[OIL]` is archived.)*
 - **Reviewed:** the design brief was re-frozen (Rev 3) and re-reviewed by BOTH providers
   (converged), then Rev 4 owner additions (EOD, OIL simplification, plan names) got a
   further Astra/Codex red-team → Rev 5. Plan naming passed clean; the EOD findings
@@ -131,7 +134,9 @@ path in a clock-free app needs its own design cycle. Astra/Codex REV5 findings t
   documented trust guarantee (EOD is never the forward-plan authority).
 - **REV5-04** "worked" ≠ "marked closed": a worked-as-planned day gets no EOD and stays
   unclosed, so a later AL can still strip its OIL; legacy worked days too. Needs a
-  no-content-change closure path + treatment of unclosed/legacy worked dates.
+  no-content-change closure path + treatment of unclosed/legacy worked dates. *(Superseded in part 24 Sep 26 by
+  D142: a later published version that takes a man off a past day DOES take that day's OIL — he confirmed it —
+  so "a later AL can still strip its OIL" is the rule, not the defect. What may remain is the closure path itself.)*
 - **REV5-02** a late OIL acknowledgement (`reviseOil`→`row.oil`, no publication gate) has
   no defined transition into an immutable/closed day.
 - **REV5-03** pick ONE correction transition (corrections are EOD-kind, not signed AL).
@@ -1025,3 +1030,10 @@ signpost or an index left at the old place, so none is urgent; each should name 
   in `weekglide.ts`) land through `raptor-port/CLAUDE.md` §Stable decisions → "Moved to the area files", which
   keeps every old name; point them at the area file when their file is next touched.
 Found by `git grep` on 24 Sep 26 (the spring clean's red team, Fable finding 10, Astra finding 11).
+
+### [PERF-RESIDUALS] Speed wins measured and deferred — two are his call (filed 24 Sep 26)
+From `HANDOFF.md` §In flight (archived 24 Sep 26): several speed wins are measured and deferred — the seven
+day-strings sort, the JS-bound drop, hover-boundary repaints, the `body.dnd` decorations, the one `validate`
+call; two are the owner's call because they change wording or feel. The ledger and each one's measurement:
+`raptor-port/docs/performance.md` (Part 2; §Dead ends says what not to retry). **Place:** when a speed complaint
+or a board change comes near one of them; put the two that change wording or feel to him first.

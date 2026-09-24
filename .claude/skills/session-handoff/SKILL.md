@@ -136,7 +136,8 @@ whose branch merged is removed once its open residue is filed (Step 1). A
 "current state" section must hold nothing already done, and the staleness an
 earlier session left sits in lines your diff never touched.
 
-For each path it reports, confirm — by reading `HANDOFF.md`, not from
+For each path it reports, confirm — by reading the live record that holds it
+(`HANDOFF.md`, `OUTSTANDING.md` or `raptor-port/docs/file-map.md`), not from
 memory:
 
 - **Added / renamed / deleted source file** → is it in (or gone from) the
