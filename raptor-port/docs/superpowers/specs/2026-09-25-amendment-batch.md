@@ -30,3 +30,42 @@ back after an Unpublish, walked).
 
 **Also in the backlog, not part of this batch:** `[AMEND-SMALL-SEEN]`, `[AVAILWIN-PREVIEW-BAR]`, `[UNDO-ROSTER-SETTINGS]`,
 and his order after the re-test (D147): the absence record with `[S4-HUNT-REST]` next.
+
+## Overnight — how the batch is built while he sleeps (D112, 25 Sep 26)
+
+He sleeps about 8 hours from the handoff; the batch is built in a FRESH chat on `claude/amendment-batch` without waiting
+for him. Opus 5.5 at high effort builds; Fable 5.1 (high) and Astra review, never the builder (D67).
+
+**The order** — what later items read is built first; every fix and every item red first:
+1. **Plan and scenarios (~45 min).** Write the build plan (`raptor-port/docs/superpowers/plans/2026-09-25-amendment-batch-plan.md`).
+   Fable and Astra, blind to each other, get ONE round each (the ~3-round cap, well inside it): design the scenarios
+   with the finder brief (bug-check order §4, the D56 exclusion included) AND attack the plan. Fold the findings in.
+2. **The one counting body (items 14, then 7).** One routine lists a day's net waiting changes against the published
+   version, pairing a move into one change (D109); every count reads it — the day head, the Amendments panel, the ⓘ
+   panel, the plan-switch message, "Discard N edits". Then the sign-off binding covers everything that shows as
+   pending (D103).
+3. **The pending list and the jump (items 8, 9, 12, 10).** The list is drawn off that same body; ONE "take me to this
+   change" serves the list and Edit history and lands on the page you are on (D107); the bubble scrolls when long.
+4. **The marker (item 5).**
+5. **The marks and tags (items 1, 2, 13, 3).**
+6. **The doors (items 4, 6).**
+7. **The phone keyboard gap (item 11).** Chromium cannot show an iPhone keyboard: build from the visual viewport and
+   put it on his morning card for his own phone.
+
+**The stop rule.** About 5 hours in, or with the chat two-thirds full, STOP BUILDING: what is built gets the whole FULL
+check; what is not stays filed with where it stopped. A check is never skipped to fit an item in.
+
+**FULL tier** (bug-check order §5): the rules sweep against the register
+(`raptor-port/docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md` — AM13, AM22, AM23 and AM24 change;
+D91–D111) → gates → roll-call and door check (observation #244: a row per OPENER for anything that navigates) → the
+walk at desktop and phone, fanned out by world (D16) → fixes, red first → gates → Fable and Astra read the code,
+blind, with the evidence sheet → fixes → re-walk what they touched → gates → the evidence sheet with his look card →
+the pull request open and green. **Nothing merges:** `main` waits for his look and his "merge live".
+
+**A question** goes into `OUTSTANDING.md` with a recommendation, and the work carries on (D112). A ruled item is never
+re-decided.
+
+**If the chat fills up:** see the handoff block in `HANDOFF.md` for his answer.
+
+**In the morning he gets** ONE notification: what was built and checked, what was not and why, the pull request, the
+branch's Vercel link, and a five-minute look card.

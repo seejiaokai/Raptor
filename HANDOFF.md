@@ -15,6 +15,16 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/amendment-batch -->
+### `claude/amendment-batch` — the amendment batch, built overnight (D112); written 25 Sep 26 — verify before use
+- **Where it stands:** PR #434 (the amendment re-test) MERGED to `main` on his "merge live", 25 Sep 26. This branch is cut
+  from that `main` and carries his look's rulings D107–D111 and the ORIG mock-up (`raptor-port/docs/mock/orig-tag.html`,
+  picked: A1). No app code yet.
+- **Next:** build `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md` (14 items) in a FRESH chat, overnight,
+  without waiting for him — **D112**: follow the spec's Overnight section (its order, its stop rule, FULL tier); file a
+  question with a recommendation and carry on; never merge. *(Provisional block — the handoff rewrites it.)*
+<!-- /now -->
+
 <!-- now:claude/amendment-retest -->
 ### `claude/amendment-retest` — the amendment re-test (done) and his answers to it; written 25 Sep 26 — verify before use
 - **Where it started:** 24 Sep 26: `[HUMAN-RETEST]`, the amendment system, FULL tier, work without waiting. Then, on
