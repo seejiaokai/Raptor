@@ -11,7 +11,7 @@ import { WARN, validate, WCODE, wlbl, fltNoLen, FLT_NO_LEN_SAYS } from '../engin
 import { hhmm, fmtHM, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr, unacceptInput, TIME_TXT } from '../engine/slots'
-import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayShownPendCount, dayHasChanges, verLabel, nextSeq, dropRowMarks, protectedWeek, dayVersions } from '../engine/publish'
+import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayShownPendCount, dayHasChanges, verLabel, nextSeq, dropRowMarks, protectedWeek, dayVersions, publishReadPass } from '../engine/publish'
 import { logAction, ELOG } from '../engine/editlog'
 import { hideHistBub } from './histbubble'
 import { touchDragBusy } from './drag'
@@ -53,7 +53,7 @@ const afterSchedMutate = () => view.afterSchedMutate()
    a pure string producer, which is exactly the shape the pass requires: nothing
    inside it writes DAYS, INPUTS or PEOPLE, so the memo cannot serve a stale
    answer to validation, signing or publication — none of which run in here. */
-export function boardHTML(di: number, pv?: boolean) { return oilReadPass(() => boardHTMLBody(di, pv)) }
+export function boardHTML(di: number, pv?: boolean) { return oilReadPass(() => publishReadPass(() => boardHTMLBody(di, pv))) }
 function boardHTMLBody(di: number, pv?: boolean) {
   /* a QUARANTINED loaded week is read-only and its days are the seed placeholder;
      the board is a third surface that reached the ordinary builder and painted the
@@ -389,7 +389,8 @@ function boardHTMLBody(di: number, pv?: boolean) {
    version, the tag says what the day IS (register AM28 — the one selector both
    surfaces share, A5). The strip used to go blank here, older than the 15 Sep
    redesign that moved the two into it ([HUMAN-RETEST] walk W2-F1, 24 Sep 26). */
-export function boardSignHTML(di: number, pv?: boolean) {
+export function boardSignHTML(di: number, pv?: boolean) { return publishReadPass(() => boardSignBody(di, pv)) }   // one read of the day's comparison (publish.ts)
+function boardSignBody(di: number, pv?: boolean) {
   /* who signed the version on screen, above the sign-off boxes (D95, D102): under a preview the previewed version
      (this strip is built outside the snapshot swap, so it names it itself — Fable F8), else the published version
      the working copy sits on */

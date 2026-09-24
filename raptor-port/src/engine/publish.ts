@@ -205,7 +205,7 @@ export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
   filingDelta(di,snap.fil).forEach((e:any)=>items.push({kind:'input',addr:'',jump:[],keys:[],entry:e,axis:'filing'}));
   oilDelta(di,snap.d).forEach((e:any)=>items.push({kind:'oil',addr:'',jump:[],keys:[],entry:e,axis:'oil'}));
   return items;}
-export function dayPendingItems(di:any):PendItem[]{return dayPendingItemsIn(SCHED,di,CURWEEK);}
+export function dayPendingItems(di:any):PendItem[]{di=+di;return passMemo('pi',di,()=>dayPendingItemsIn(SCHED,di,CURWEEK));}
 /* the per-kind split of a day's items, the shape diffCounts gives a stored diff — for the
    Amendments panel's "N changes · N removals · N reorders · N input filings" */
 export function itemCounts(items:any){const d=items||[];const by=(k:any)=>d.filter((e:any)=>e.kind===k).length;
@@ -379,7 +379,22 @@ export function dayDeltaIn(sc:any,di:any,weekKey?:any):DeltaEntry[]{di=+di;
   const ver=dayCurVerIn(sc,di,weekKey), snap=ver!=null?daySnapIn(sc,di,ver,weekKey):null;
   if(!snap||!snap.d)return [];
   return canonicalDiff(snap.d,DAYS[di],di).concat(filingDelta(di,snap.fil)).concat(oilDelta(di,snap.d));}
-export function dayDelta(di:any):DeltaEntry[]{return dayDeltaIn(SCHED,di,CURWEEK);}
+export function dayDelta(di:any):DeltaEntry[]{di=+di;return passMemo('dd',di,()=>dayDeltaIn(SCHED,di,CURWEEK));}
+/* ONE REPAINT READS EACH DAY'S COMPARISON ONCE (Fable F9, 25 Sep 26 — measured: five published days signed through
+   the app's selects cost one edit ~116 ms more at the phone's 4× slowdown, because D103's binding reads the whole
+   pending comparison and a day's head, sign-off line and marker each asked for it several times). Inside
+   publishReadPass — the day and board string builders, which write nothing — the canonical comparison, the counting
+   items and the signature binding are worked out once per day and reused; keyed by the day OBJECT as well, so a
+   preview's snapshot swap (withDaySnap replaces DAYS[di]) can never read the live day's answer, or the reverse.
+   Outside a pass every call computes afresh, exactly as before. The same shape as oilev.ts oilReadPass. */
+let PUB_PASS:Map<string,{d:any,v:any}>|null=null;
+export function publishReadPass<T>(fn:()=>T):T{const outer=PUB_PASS; if(!outer)PUB_PASS=new Map();
+  try{return fn();}finally{if(!outer)PUB_PASS=null;}}
+function passMemo<T>(kind:string,di:number,calc:()=>T):T{
+  if(!PUB_PASS)return calc();
+  const k=kind+di, hit=PUB_PASS.get(k);
+  if(hit&&hit.d===DAYS[di])return hit.v;
+  const v=calc(); PUB_PASS.set(k,{d:DAYS[di],v}); return v;}
 /* the publish trigger + every publication affordance (P2-02/P2-07): a published
    day has changes iff its normalized delta is non-empty. Derived SOLELY from
    dayDelta — the one authority for eligibility, the panel counts and the stored
@@ -912,7 +927,8 @@ export function signAt(di:any){return ((SCHED.sign||{})[+di])||EMPTY_SIGN;}
    mutation path. */
 export function signBindOf(di:any){SCHED.signBind=SCHED.signBind||{}; return (SCHED.signBind[+di]=SCHED.signBind[+di]||{});}
 /* the content fingerprint a signature is bound to, as it stands right now. */
-export function currentBind(di:any){di=+di; const d=DAYS[di];
+export function currentBind(di:any){di=+di;return passMemo('cb',di,()=>currentBindNow(di));}
+function currentBindNow(di:any){ const d=DAYS[di];
   /* the OIL evidence is part of what a signature promises ([OIL-AUTO-REMOVE]
      §9.3 point 2): the preview, the amendment comparison, the signature binding
      and publication all call the SAME body, so they cannot disagree about what
