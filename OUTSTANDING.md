@@ -49,17 +49,18 @@ list (13–23 Sep 26), its finished entries and the "In plain terms" block are i
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
 **His order:**
-1. **[HUMAN-RETEST]** — THE AMENDMENT SYSTEM next (D85/D86); then change-recording, the absence record and the Leave
-   War links, in an order he has NOT set — propose it and ask.
-2. **[S4-HUNT-REST]** — the bug hunt's untouched ground, in his own 1–7 order. Its place beside item 1's three is
-   not ruled (its ground IS the absence record): ask, never assume.
+1. **[HUMAN-RETEST]** — THE AMENDMENT SYSTEM next (D85/D86); then, in HIS order (D147, 24 Sep 26): the absence record
+   TOGETHER with [S4-HUNT-REST], then change-recording, then the Leave War links LAST (with the 7 Sep phone check).
+2. **[S4-HUNT-REST]** — the bug hunt's untouched ground, in his own 1–7 order, walked WITH the absence-record re-test
+   (D147: its ground IS the absence record).
 3. **[BACKLOG-ORDER]** — "after the hunt" (21 Sep 26): [PUB-UNAVAIL] → [LW-LOCKMARK] → [LW-WEEKDAY-WORK] (talk to
-   him before building any of it) → [DB-STEP], then the [AMEND] work queued behind it. The architecture comes first,
+   him before building any of it) → then (D147) [OIL-AWARD-IS-A-GRANT] with [OIL-EARNED-VS-GRANTED], and the small OIL
+   follow-ups below as ONE batch → [DB-STEP], then the [AMEND] work queued behind it. The architecture comes first,
    then the individual bugs (D144): the stack ([ARCH-STACK]) resumes at [DB-STEP], with its step 6 still to come.
 4. **Before ANY collaborator is added** — an event, not a slot: take the checks runner off this repo (SEC-101, in
    [REPO-PRIVATE]).
 
-**Any time, none blocking — the small OIL follow-ups:** [OIL-READ-LEFTOVERS] (its items 1, 2, 4),
+**The small OIL follow-ups — ONE batch, after the OIL award fix and before the database (D147):** [OIL-READ-LEFTOVERS] (its items 1, 2, 4),
 [STORE-READER-SWEEP], [OIL-REQ-NAMEBOX] (a walk question for him), [POSTOUT-LOST] (its demo-seed half), [OIL-WORDS],
 [OIL-PERSONAL-PLACEHOLDER] (FULL tier), [CROWD-SIM-BRIEF] (WALK tier), [OIL-RELINK-XWEEK].
 
@@ -71,8 +72,8 @@ first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [T
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] and [RULING-HOMES-AUDIT] (any time, docs only),
 [BG-CWD-GUARD] (ask him first: it adds a hook).
 
-**Waiting on him — no order exists:** [OIL-AWARD-IS-A-GRANT] (needs his go), [OIL-EARNED-VS-GRANTED] (his figure —
-ask first), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
+**Waiting on him — no order exists:** [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
+D147), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
 [REPO-PRIVATE]'s sharing half, the GU-MAYREV product question inside [GLOBAL-UNDO], [EOD] (design first; no slot
 ruled), [CRP-FLAG]'s remainder and then [FLAG-EXPORT], the [AMEND] leftovers, and the questions filed on 24 Sep 26 —
 [LW-RESET-ORDER], [LW-DESKTOP-ZOOM], [ADMIN-DISPLAY], [QUALS-MEMBER-SCOPE], [TRK-PALETTE-ASK],
@@ -292,8 +293,9 @@ retry (more likely on iPhone). Never fixed, not logged as a limitation.
 ### [HUMAN-RETEST] Re-test the earlier builds the way a person uses them (owner, 21 Sep 26)
 **ORDER (D85 + D86, 23 Sep 26): TWO CHATS IN PARALLEL — THE TRACKER and THE AMENDMENT SYSTEM**, one
 feature per chat. Amendment chat: port 4173, rulings from D90. Tracker chat: port 4180, rulings from
-D120. Never two full gate runs at once (false failures under load). The order of the other three
-(change-recording, the absence record, the Leave War links) is not ruled: propose it and ask.
+D120. Never two full gate runs at once (false failures under load). **The order of the other three — SET by him
+(D147, 24 Sep 26):** the absence record, walked TOGETHER with [S4-HUNT-REST]; then change-recording; then the Leave
+War links LAST, with the 7 Sep phone check folded in.
 *(Its lines on which chat ran when — D153, D154, D155, D135, D125, every one spent — moved 24 Sep 26 to `OUTSTANDING-ARCHIVE.md`. The Tracker part is merged; the demo is done.)*
 **THE TRACKER PART IS DONE — MERGED to `main` 23 Sep 26 on his "merge live", after his look** (evidence
 `raptor-port/docs/handpass/2026-09-23-tracker.md`; rulings D120–D132). Next here: the amendment system (D86), then the three.
@@ -478,7 +480,9 @@ already touches those files; the definition now heads the OIL behaviour register
 ### [OIL-AWARD-IS-A-GRANT] An award is a ledger grant stored a second way (Fable, 21 Sep 26)
 **Raised by the [OIL-AWARD-ADD] design review as the real architectural root cause. NOT built, and
 deliberately not bundled — it moves persisted balances again and touches ~28 test files, so it is
-its own escalated session. It needs the owner's go before anything is written.**
+its own escalated session. It needs the owner's go before anything is written.** **GO GIVEN (D147, 24 Sep 26):**
+after his after-the-hunt items and BEFORE [DB-STEP], so the database stores one kind of award; [OIL-EARNED-VS-GRANTED]
+folds in (its label is still his figure — ask him when it comes); then the small OIL follow-ups as one batch.
 
 After his two rulings an award now: flags nothing, stands nobody down from flying, counts nobody on
 the duty manning, is never touched by the published schedule, and adds to the OIL balance. That is
@@ -669,7 +673,9 @@ same one, and it belongs to the Leave War e2e suite rather than to any branch.
 ### [S4-HUNT-REST] The bug hunt's untouched ground — about three quarters of it (owner, 21 Sep 26)
 The branch turned into a long detour through the rules and the five items, so most of the hunt Fable
 and Codex planned (eight batches) has never been run. The owner listed what is still untouched, and
-this is his order. **Realistically two or three sessions.**
+this is his order. **Realistically two or three sessions.** **Place (D147, 24 Sep 26):** walked TOGETHER with the
+absence-record re-test of [HUMAN-RETEST], straight after the amendment system — one pass, since this ground IS the
+absence record.
 1. **The Inputs page calendar, by DRAG.** It has 43 tests of its own behaviour, but the clash rules
    have never been tested through the drag route — dragging leave onto a pending bid, onto other
    leave at overlapping times, onto a day someone is recorded working. A door people use daily.
