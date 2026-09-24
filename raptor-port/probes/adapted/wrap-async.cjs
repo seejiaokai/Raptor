@@ -3,6 +3,10 @@
    measurements (ink via a Range, not the cell box), split across the async
    commit. */
 const { chromium } = require('playwright')
+/* the container's browser when it is there, Playwright's own otherwise (the repo's fallback — perf-port.cjs,
+   playwright.config.ts): hard-wired to the container path, these probes could not run on the Windows desktop
+   at all, which is how audit-async's stale step 3 went unnoticed (amendment re-test, 24 Sep 26) */
+const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
 const URL = process.env.PORT_URL || 'http://localhost:4173/'
 
 const JAM = 'shahdbsbsnanansjsnsnsjsjmsnsnsnsnsnsnsnnsndbdndnsnsnsnsns'
@@ -21,7 +25,7 @@ const boot = async (b, cfg) => {
 }
 
 ;(async () => {
-  const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' })
+  const b = await chromium.launch(require('fs').existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
   let pass = 0, fail = 0
   const T = (n, got, want) => {
     const ok = String(got) === String(want); ok ? pass++ : fail++
