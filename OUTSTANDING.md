@@ -74,7 +74,7 @@ The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small b
 [BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
 FULL-tier build, any time).
 
-**Waiting on him — no order exists:** [AMEND-D45-FILING] (a question from the amendment re-test, 24 Sep 26), [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
+**Waiting on him — no order exists:** [AMEND-D45-FILING] and [AMEND-PHONE-APPROVER] (questions from the amendment re-test, 24 Sep 26), [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
 D147), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
 [REPO-PRIVATE]'s sharing half, [EOD] (design first; no slot
 ruled), [CRP-FLAG]'s remainder and then [FLAG-EXPORT], the [AMEND] leftovers, [ADMIN-DISPLAY] ("next time we revisit",
@@ -1013,3 +1013,16 @@ sign-offs for the next amendment be wiped (as today), or stay, with only the pen
 until he answers** (the leave clears the sign-offs). Either answer is small to build: the signature's filing check
 (`raptor-port/src/engine/publish.ts` `currentBind` → `filingKey`). **Place:** waiting on him; ask with the
 amendment re-test's look card.
+
+### [AMEND-PHONE-APPROVER] On a phone, who approved each amendment is shown nowhere — a question for him (24 Sep 26)
+Found by the amendment re-test's roll-call (`raptor-port/docs/handpass/2026-09-24-amendment.md` §4, R10; Fable 5-4).
+The desktop's Amendments panel lists every issued amendment with its day, its item count and who APPROVED it (the
+four signers in its tooltip) and the "N days with changes to publish" summary. On a phone (≤ 820px) that panel is
+hidden on purpose (`raptor-port/src/ui/scheduler.css`, `@media (max-width:820px){.alpanel{display:none}}`); the
+phone still has each day's own "N pending" and Publish AL button, and the ⓘ day panel lists the day's amendments
+("AL1 · 1 item") — but without who approved them. **No ruling covers it either way.** **The question:** should the
+phone show who approved each amendment? **The agent's recommendation:** yes, cheaply — add "approved by <callsign>"
+to each amendment line in the ⓘ day panel (`dayInfoHTML`, `raptor-port/src/ui/html.ts`), which serves both widths;
+keep the full panel desktop-only. One thing for him to weigh: the ⓘ panel is also open to members on View-only
+Sched, so they would see the approver's callsign too (the desktop panel is the scheduler's page only). **Place:**
+waiting on him; small once answered.
