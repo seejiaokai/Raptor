@@ -1125,7 +1125,8 @@ working copy back to the version before") — corrected to him the same hour. In
 changes"; and Fable's own case, a weekend AL1 adding a man who earns OIL (Wisp onto Saturday's OPS DESK) → Unpublish
 ("Withdraw — confirm") → ORIG, "1 pending", Wisp still on the desk, "Publish AL1" offered. Unpublish keeps the
 withdrawn AL's changes on the working copy as pending (`unpublishDay`, AM37c), so the ordinary Publish AL1 is the way
-back, after a sign-out too. Recommended to him: drop the Reissue button; waiting on his word to close.
+back, after a sign-out too. Recommended to him: drop the Reissue button; waiting on his word to close. Pictured for him
+(his ask, 25 Sep 26): `raptor-port/docs/mock/amend-answers.html` §Question 6, maker `raptor-port/scripts/handpass/am/mk-unpublish.mjs`.
 Found by the amendment re-test's final code read (Fable #4, `raptor-port/docs/handpass/2026-09-24-amendment-fable-final-read.md`).
 Unpublish is one tap on a weekday (two where OIL is bid against) and a standing action — it survives a sign-out; Undo
 does not. The engine allows the pulled-back day to go out again under the SAME label even when nothing changed (the
@@ -1154,7 +1155,7 @@ open, or size the board to the visible area). LOOK tier, phone only. **Place:** 
 ### [PENDING-SUMMARY] Tap "N pending" to see what changed, by whom and when — his idea (25 Sep 26), waiting on his word
 **Part (2) DECIDED 25 Sep 26 — D99: "N pending" is a button listing the day's waiting changes; tapping one takes the
 view to it. Parts (1), (3), (4) still his; mock-up first.**
-**Mock-up (25 Sep 26):** `raptor-port/docs/mock/pending-list.html` (maker `raptor-port/scripts/handpass/am/mk-pending-list.mjs`)
+**APPROVED 25 Sep 26 — D100 ("looks good and function"); a long list scrolls inside the window.** **Mock-up (25 Sep 26):** `raptor-port/docs/mock/pending-list.html` (maker `raptor-port/scripts/handpass/am/mk-pending-list.mjs`)
 — "N pending ▾" opens the net list (where, before → after, who, when; "earlier" where the record is gone), a tap jumps.
 Part (3), asked 25 Sep 26 whether tracking by "View as" is worth it before the database: the agent recommended not.
 His words: *"why dont we just wipe the sign offs for any changes to the schedule? And any type of change to that schedule
