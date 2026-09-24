@@ -1,139 +1,165 @@
-<title>Seat Marks Mock-up</title>
+<title>Warning Ring Fix</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter+Tight:wght@400;500;600;700&display=swap">
 <style>
-  /* the app's own palette and faces (raptor-port/src/ui/scheduler.css) — the pictures are the dark app, so the
-     page commits to its dark world on purpose and paints every colour itself */
+  /* the app's own palette and faces (raptor-port/src/ui/scheduler.css). Every picture is the dark app, so the page
+     commits to that one dark look on purpose and paints every colour itself. */
   :root{color-scheme:dark;
-    --bg:#0B0D10;--panel:#14181D;--panel-2:#1A1F26;--raised:#20262E;--edge:#2A313A;--edge-2:#39424D;
-    --ink:#F1F4F7;--ink-2:#B6C0CB;--ink-3:#8A96A3;--al1:#3BC6E8;--al1-ink:#052A34;--hard:#F0555F;--ok:#57C97A}
+    --bg:#0B0D10;--panel:#14181D;--raised:#20262E;--edge:#2A313A;--edge-2:#39424D;
+    --ink:#F1F4F7;--ink-2:#B6C0CB;--ink-3:#8A96A3;
+    --al1:#3BC6E8;--al1-ink:#052A34;--al2:#E5C24A;--hard:#F0555F}
   html,body{background:var(--bg);color:var(--ink)}
   body{font-family:'Inter Tight',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:15px;line-height:1.55;
-    padding-inline:16px;padding-block:20px 48px}
-  .wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+    padding-inline:16px;padding-block:20px 56px}
+  .wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:34px}
   .lbl{font-family:'Barlow Condensed','Arial Narrow',sans-serif;text-transform:uppercase;letter-spacing:.12em;
     font-weight:700;font-size:12px;color:var(--ink-3)}
   h1{font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:800;font-size:34px;line-height:1.05;
-    letter-spacing:.02em;margin:4px 0 8px;text-wrap:balance}
-  h2{font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:800;font-size:25px;letter-spacing:.03em;
-    margin:0 0 6px;text-wrap:balance}
-  h3{font-size:15px;font-weight:700;margin:0 0 4px;color:var(--ink)}
+    letter-spacing:.02em;margin:0;text-wrap:balance}
+  h2{font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:800;font-size:25px;line-height:1.1;letter-spacing:.03em;
+    margin:0;text-wrap:balance}
+  h3{font-size:13px;font-weight:700;margin:0;color:var(--ink-2);text-transform:uppercase;letter-spacing:.08em}
   p{margin:0;max-width:68ch;color:var(--ink-2)}
-  p b{color:var(--ink);font-weight:600}
-  header{display:flex;flex-direction:column;gap:10px;border-bottom:1px solid var(--edge);padding-bottom:18px}
-  .switch{display:inline-flex;gap:4px;padding:3px;border:1px solid var(--edge-2);border-radius:8px;background:var(--panel);
-    align-self:flex-start}
-  .switch button{font:inherit;font-size:13px;font-weight:600;color:var(--ink-2);background:none;border:0;border-radius:6px;
-    padding:6px 14px;cursor:pointer}
+  p b,li b{color:var(--ink);font-weight:600}
+  header{display:flex;flex-direction:column;gap:12px;border-bottom:1px solid var(--edge);padding-bottom:20px}
+  .dropped{font-size:13.5px;color:var(--ink-3)}
+  .switch{display:inline-flex;gap:4px;padding:3px;border:1px solid var(--edge-2);border-radius:8px;background:var(--panel);align-self:flex-start}
+  .switch button{font:inherit;font-size:13px;font-weight:600;color:var(--ink-2);background:none;border:0;border-radius:6px;padding:6px 14px;cursor:pointer}
   .switch button[aria-pressed="true"]{background:var(--raised);color:var(--ink);box-shadow:inset 0 0 0 1px var(--edge-2)}
   .switch button:focus-visible{outline:2px solid var(--al1);outline-offset:2px}
-  section{display:flex;flex-direction:column;gap:16px}
-  .block{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:16px;display:flex;
-    flex-direction:column;gap:12px}
-  .pair{display:grid;grid-template-columns:1fr;gap:12px}
-  .col{display:flex;flex-direction:column;gap:6px;min-width:0}
+  .how{display:flex;flex-direction:column;gap:10px;border-left:2px solid var(--al1);padding-left:14px}
+  .key{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--ink-3)}
+  .key span{display:inline-flex;align-items:center;gap:7px}
+  .sw{display:inline-block;width:30px;height:11px;border-radius:3px;background:#6E6A2E}
+  .sw.dot{outline:1.5px dotted var(--al2);outline-offset:1px}
+  .sw.ring{box-shadow:0 0 0 2px var(--hard)}
+  .mini{font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-size:10px;font-weight:800;line-height:1;padding:1px 3px;border-radius:4px}
+  .mini.wait{color:var(--al2);border:1px dotted var(--al2);background:var(--panel)}
+  .mini.out{color:#08131b;background:var(--al2)}
+  section{display:flex;flex-direction:column;gap:14px}
+  .story{display:flex;flex-direction:column;gap:6px}
+  .surface{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:12px}
+  .pair{display:flex;flex-direction:column;gap:14px}
+  figure.shot{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+  figure.shot img{display:block;max-width:100%;height:auto;border:1px solid var(--edge);border-radius:6px;background:#000}
+  .zooms{display:flex;flex-wrap:wrap;gap:10px}
+  .zooms img{flex:0 1 auto}
+  figcaption{font-size:13px;color:var(--ink-3);max-width:75ch}
   .tag{align-self:flex-start;font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:800;font-size:12px;
     letter-spacing:.1em;text-transform:uppercase;border-radius:4px;padding:1px 7px}
   .tag.today{color:var(--ink-2);border:1px solid var(--edge-2)}
-  .tag.prop{color:var(--al1-ink);background:var(--al1)}
-  .tag.alt{color:var(--ink);border:1px dashed var(--al1)}
-  figure.shot{margin:0;display:flex;flex-direction:column;gap:5px}
-  /* the pictures were taken at twice the screen's density: shown at their natural size (up to the column's width)
-     a puck reads at about twice its size on screen, which is what a mark this small needs */
-  figure.shot img{display:block;width:auto;max-width:100%;height:auto;border:1px solid var(--edge);border-radius:6px;background:#000}
-  figcaption{font-size:12.5px;color:var(--ink-3)}
-  .wide figure.shot img{max-width:100%}
-  .note{font-size:13px;color:var(--ink-3);border-left:2px solid var(--edge-2);padding-left:10px;max-width:68ch}
-  .row3{display:grid;grid-template-columns:1fr;gap:12px}
-  .ask{border:1px solid var(--al1);background:linear-gradient(0deg,rgba(59,198,232,.06),rgba(59,198,232,.06)),var(--panel)}
+  .tag.fix{color:var(--al1-ink);background:var(--al1)}
+  .tag.plain{color:var(--ink-3);padding-inline:0}
+  .tag.alt{color:var(--ink);border:1px dashed var(--ink-3)}
+  .aside{border:1px dashed var(--edge-2);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:12px}
+  .ask{border:1px solid var(--al1);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;
+    background:linear-gradient(0deg,rgba(59,198,232,.06),rgba(59,198,232,.06)),var(--panel)}
   .ask ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px;color:var(--ink-2);max-width:72ch}
-  .ask li b{color:var(--ink)}
   .rec{color:var(--al1);font-weight:600}
-  /* the width switch: one set of pictures at a time */
-  body[data-w="desktop"] img.w-phone,body[data-w="phone"] img.w-desktop{display:none}
-  @media (max-width:720px){h1{font-size:29px}}
-  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  /* the width switch: one set of pictures at a time; the enlarged pictures belong to the desktop set */
+  body[data-w="desktop"] .w-phone,body[data-w="phone"] .w-desktop,body[data-w="phone"] .w-desktop-only{display:none}
+  @media (max-width:720px){h1{font-size:29px} h2{font-size:22px}}
 </style>
 <div class="wrap">
   <header>
-    <span class="lbl">Amendment re-test · the two marks filed for a picture first</span>
-    <h1>What a published day should show when a man is taken off — and when a mark sits on a warning ring</h1>
-    <p>These are pictures of the <b>real app</b>: your branch's build, the everything-week, Saturday already published. Each
-      "Proposed" picture is the same screen with the few lines of styling the build would add, laid on top of the live
-      page — nothing is saved. Pick the width you want to judge by:</p>
+    <span class="lbl">Amendment re-test · examples of the fix</span>
+    <h1>The red ring stays visible when a change hasn’t gone out yet</h1>
+    <p>Pictures of the <b>real app</b> — your branch, the demo week — with three changes made the way a scheduler would
+      make them. Each is shown as the app draws it today, then with the fix laid on top. Nothing in the app was changed.</p>
+    <p class="dropped">The mark for a man taken off a seat is dropped, as you said.</p>
     <div class="switch" role="group" aria-label="Picture width">
       <button id="w-desktop" type="button" aria-pressed="true" data-set="desktop">Desktop</button>
       <button id="w-phone" type="button" aria-pressed="false" data-set="phone">Phone</button>
     </div>
   </header>
 
+  <div class="how">
+    <span class="lbl">What the fix does</span>
+    <p>On the edit week and the board, a change that hasn’t gone out yet gets a <b>dotted line around the puck</b>, in the
+      next amendment’s colour. The red warning rings are drawn in the same place, so the dotted line wins and the ring
+      disappears. With the fix, <b>a red ring always keeps the puck’s edge</b>, and the waiting change shows as a small
+      <b>hollow tag</b> in the corner — the corner where a published change already carries its solid tag. A puck with no
+      warning keeps today’s dotted line.</p>
+    <div class="key" aria-hidden="true">
+      <span><i class="sw dot"></i>waiting to go out (today)</span>
+      <span><i class="sw ring"></i>a red warning ring</span>
+      <span><b class="mini wait">AL2</b>waiting, with a ring (the fix)</span>
+      <span><b class="mini out">AL2</b>gone out</span>
+    </div>
+  </div>
+
   <section>
-    <span class="lbl">1 · A man taken off a seat</span>
-    <h2>Today the desk just looks empty</h2>
-    <p>Outlaw taken off Saturday's <b>OPS DESK</b>, Torch off <b>MASS BRIEF</b>, Basher off the <b>EP-6</b> sim. The day counts
-      each change and History lists them, but the rows themselves look as if nobody had ever been there — on the week, on
-      the board, and, once published, on the schedule the squadron reads.</p>
-    <div class="block">
-      <h3>The edit week</h3>
-      <div class="pair"><div class="col"><span class="tag today">Today</span><figure class="shot "><img class="w-desktop" src="img/amend-seat-marks/desktop-1-today-week-opsdesk.png" alt="OPS DESK — a plain &quot;+ ADD&quot; (desktop)" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-1-today-week-opsdesk.png" alt="OPS DESK — a plain &quot;+ ADD&quot; (phone)" loading="lazy"><figcaption>OPS DESK — a plain "+ ADD"</figcaption></figure></div><div class="col"><span class="tag prop">Proposed</span><figure class="shot "><img class="w-desktop" src="img/amend-seat-marks/desktop-1-proposed-week-pending-opsdesk.png" alt="Outlaw faded and struck through, dotted in AL1&#x27;s colour: &quot;goes out as AL1&quot; (desktop)" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-1-proposed-week-pending-opsdesk.png" alt="Outlaw faded and struck through, dotted in AL1&#x27;s colour: &quot;goes out as AL1&quot; (phone)" loading="lazy"><figcaption>Outlaw faded and struck through, dotted in AL1's colour: "goes out as AL1"</figcaption></figure></div></div>
-      <div class="row3">
-        <figure class="shot "><img class="w-desktop" src="img/amend-seat-marks/desktop-1-proposed-week-pending-massbrief.png" alt="MASS BRIEF — Torch beside Saber (desktop)" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-1-proposed-week-pending-massbrief.png" alt="MASS BRIEF — Torch beside Saber (phone)" loading="lazy"><figcaption>MASS BRIEF — Torch beside Saber</figcaption></figure>
-        <figure class="shot "><img class="w-desktop" src="img/amend-seat-marks/desktop-1-proposed-week-pending-ep6.png" alt="EP-6 sim — Basher beside Reaper (desktop)" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-1-proposed-week-pending-ep6.png" alt="EP-6 sim — Basher beside Reaper (phone)" loading="lazy"><figcaption>EP-6 sim — Basher beside Reaper</figcaption></figure>
-        <figure class="shot alt"><img class="w-desktop" src="img/amend-seat-marks/desktop-1-optionB-week-pending-opsdesk.png" alt="Option B — the mark with no name (see below) (desktop)" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-1-optionB-week-pending-opsdesk.png" alt="Option B — the mark with no name (see below) (phone)" loading="lazy"><figcaption>Option B — the mark with no name (see below)</figcaption></figure>
-      </div>
-      <p class="note">The desk still offers "+ ADD" — the ghost is not a man, and dropping someone on the desk works exactly as today.</p>
+    <span class="lbl">Example 1 · the dotted and the solid ring</span>
+    <div class="story">
+      <h2>Monday night: Outlaw and Piston swap seats</h2>
+      <p>An amendment on a published day — the pilots of the two jets on the 19:20 RU line swap; it will go out as AL2.
+        <b>Outlaw</b>’s 20:45 landing breaks his Tuesday crew rest: the <b>dotted</b> red ring. <b>Piston</b> has a clash
+        on Monday: the <b>solid</b> red ring.</p>
     </div>
-    <div class="block">
-      <h3>The scheduler board</h3>
-      <div class="pair"><div class="col"><span class="tag today">Today</span><figure class="shot "><img class="w-desktop" src="img/amend-seat-marks/desktop-1-today-board-opsdesk.png" alt="OPS DESK — an empty box (desktop)" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-1-today-board-opsdesk.png" alt="OPS DESK — an empty box (phone)" loading="lazy"><figcaption>OPS DESK — an empty box</figcaption></figure></div><div class="col"><span class="tag prop">Proposed</span><figure class="shot "><img class="w-desktop" src="img/amend-seat-marks/desktop-1-proposed-board-pending-opsdesk.png" alt="Outlaw&#x27;s ghost, dotted AL1, the empty box beside it (desktop)" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-1-proposed-board-pending-opsdesk.png" alt="Outlaw&#x27;s ghost, dotted AL1, the empty box beside it (phone)" loading="lazy"><figcaption>Outlaw's ghost, dotted AL1, the empty box beside it</figcaption></figure></div></div>
-      <div class="pair"><div class="col"><span class="tag today">Today</span><figure class="shot "><img class="w-desktop" src="img/amend-seat-marks/desktop-1-today-board-ep6.png" alt="EP-6 — an empty rear seat (desktop)" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-1-today-board-ep6.png" alt="EP-6 — an empty rear seat (phone)" loading="lazy"><figcaption>EP-6 — an empty rear seat</figcaption></figure></div><div class="col"><span class="tag prop">Proposed</span><figure class="shot "><img class="w-desktop" src="img/amend-seat-marks/desktop-1-proposed-board-pending-ep6.png" alt="Basher&#x27;s ghost in the seat he left (desktop)" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-1-proposed-board-pending-ep6.png" alt="Basher&#x27;s ghost in the seat he left (phone)" loading="lazy"><figcaption>Basher's ghost in the seat he left</figcaption></figure></div></div>
-    </div>
-    <div class="block">
-      <h3>After AL1 goes out — View-only Sched, what the squadron sees</h3>
-      <div class="pair"><div class="col"><span class="tag today">Today</span><figure class="shot "><img class="w-desktop" src="img/amend-seat-marks/desktop-1-today-view-issued-opsdesk.png" alt="Nothing says Outlaw was taken off at AL1 (desktop)" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-1-today-view-issued-opsdesk.png" alt="Nothing says Outlaw was taken off at AL1 (phone)" loading="lazy"><figcaption>Nothing says Outlaw was taken off at AL1</figcaption></figure></div><div class="col"><span class="tag prop">Proposed</span><figure class="shot "><img class="w-desktop" src="img/amend-seat-marks/desktop-1-proposed-view-issued-opsdesk.png" alt="Solid AL1 with its tag — &quot;taken off at AL1&quot;, like any other change (desktop)" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-1-proposed-view-issued-opsdesk.png" alt="Solid AL1 with its tag — &quot;taken off at AL1&quot;, like any other change (phone)" loading="lazy"><figcaption>Solid AL1 with its tag — "taken off at AL1", like any other change</figcaption></figure></div></div>
-      <div class="pair"><div class="col"><span class="tag today">Today</span><figure class="shot "><img class="w-desktop" src="img/amend-seat-marks/desktop-1-today-view-issued-massbrief.png" alt="MASS BRIEF as issued (desktop)" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-1-today-view-issued-massbrief.png" alt="MASS BRIEF as issued (phone)" loading="lazy"><figcaption>MASS BRIEF as issued</figcaption></figure></div><div class="col"><span class="tag prop">Proposed</span><figure class="shot "><img class="w-desktop" src="img/amend-seat-marks/desktop-1-proposed-view-issued-massbrief.png" alt="Torch, taken off at AL1 (desktop)" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-1-proposed-view-issued-massbrief.png" alt="Torch, taken off at AL1 (phone)" loading="lazy"><figcaption>Torch, taken off at AL1</figcaption></figure></div></div>
-    </div>
-    <p class="note"><b>Option B</b> (the third picture in the first box) draws the mark with no name — it shows that something
-      changed on the desk, and History says who. It is lighter, but a reader of the issued schedule cannot tell who left.</p>
+    <div class="surface"><h3>The edit week</h3><div class="pair"><figure class="shot"><span class="tag today">Today</span><img class="w-desktop" src="img/amend-seat-marks/desktop-week-mon-today.png" width="538" height="111" alt="Monday night, the edit week — today" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-week-mon-today.png" width="352" height="121" alt="Monday night, the edit week — today, phone" loading="lazy"><figcaption>Outlaw shows only the amber dotted line — his red ring is hidden under it. On Piston the amber dots are drawn over his red ring.</figcaption></figure><figure class="shot"><span class="tag fix">With the fix</span><img class="w-desktop" src="img/amend-seat-marks/desktop-week-mon-fix.png" width="538" height="111" alt="Monday night, the edit week — fix" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-week-mon-fix.png" width="352" height="121" alt="Monday night, the edit week — fix, phone" loading="lazy"><figcaption>Outlaw’s dotted red ring and Piston’s solid one both show. The hollow “AL2” in the corner says the swap has not gone out yet.</figcaption></figure><figure class="shot zoom w-desktop-only"><span class="tag plain">Enlarged — today, then with the fix</span><div class="zooms"><img class="zoomimg" src="img/amend-seat-marks/zoom-week-mon-today.png" width="676" height="284" alt="Monday night, the edit week enlarged — today" loading="lazy"><img class="zoomimg" src="img/amend-seat-marks/zoom-week-mon-fix.png" width="676" height="284" alt="Monday night, the edit week enlarged — fix" loading="lazy"></div></figure></div></div>
+    <div class="surface"><h3>The board</h3><div class="pair"><figure class="shot"><span class="tag today">Today</span><img class="w-desktop" src="img/amend-seat-marks/desktop-board-mon-today.png" width="1100" height="114" alt="Monday night, the board — today" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-board-mon-today.png" width="354" height="259" alt="Monday night, the board — today, phone" loading="lazy"><figcaption>Piston’s red ring with the amber dots over it.</figcaption></figure><figure class="shot"><span class="tag fix">With the fix</span><img class="w-desktop" src="img/amend-seat-marks/desktop-board-mon-fix.png" width="1100" height="114" alt="Monday night, the board — fix" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-board-mon-fix.png" width="354" height="259" alt="Monday night, the board — fix, phone" loading="lazy"><figcaption>Piston’s ring clean, with “AL2”. Outlaw keeps the ordinary dotted line here: the board never draws his dotted ring (see “Also found”).</figcaption></figure></div></div>
   </section>
 
   <section>
-    <span class="lbl">2 · A warning ring under an amendment mark</span>
-    <h2>Today the mark hides the ring on the edit week</h2>
-    <p>On the edit week and the board, a seat with an unpublished change wears a <b>dotted mark in the next amendment's
-      colour</b>. It is drawn the same way as the <b>dashed red ring</b> (a sanctioned late show) and the <b>dotted red
-      ring</b> (this day wrecks tomorrow's crew rest) — so the mark wins and the ring disappears. The proposal moves the
-      mark to the seat around the puck: the ring stays on the puck, the mark goes round it. View-only Sched already works
-      this way since today's fixes.</p>
-    <div class="block">
-      <h3>Dashed ring — Saber</h3>
-      <div class="pair"><div class="col"><span class="tag today">Today</span><figure class="shot "><img class="w-desktop" src="img/amend-seat-marks/desktop-2-today-week-ring-dashed.png" alt="Only the dotted cyan mark (and a red edge) (desktop)" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-2-today-week-ring-dashed.png" alt="Only the dotted cyan mark (and a red edge) (phone)" loading="lazy"><figcaption>Only the dotted cyan mark (and a red edge)</figcaption></figure></div><div class="col"><span class="tag prop">Proposed</span><figure class="shot "><img class="w-desktop" src="img/amend-seat-marks/desktop-2-proposed-week-ring-dashed.png" alt="The red dashed ring on the puck, the cyan mark around the seat (desktop)" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-2-proposed-week-ring-dashed.png" alt="The red dashed ring on the puck, the cyan mark around the seat (phone)" loading="lazy"><figcaption>The red dashed ring on the puck, the cyan mark around the seat</figcaption></figure></div></div>
-      <h3>Dotted ring — Reaper</h3>
-      <div class="pair"><div class="col"><span class="tag today">Today</span><figure class="shot "><img class="w-desktop" src="img/amend-seat-marks/desktop-2-today-week-ring-dotted.png" alt="The red dotted ring is gone (desktop)" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-2-today-week-ring-dotted.png" alt="The red dotted ring is gone (phone)" loading="lazy"><figcaption>The red dotted ring is gone</figcaption></figure></div><div class="col"><span class="tag prop">Proposed</span><figure class="shot "><img class="w-desktop" src="img/amend-seat-marks/desktop-2-proposed-week-ring-dotted.png" alt="Both: red dotted on the puck, cyan dotted around it (desktop)" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-2-proposed-week-ring-dotted.png" alt="Both: red dotted on the puck, cyan dotted around it (phone)" loading="lazy"><figcaption>Both: red dotted on the puck, cyan dotted around it</figcaption></figure></div></div>
-      <p class="note">Saber's and Reaper's rings are staged for these pictures — the everything-week has no sanctioned late show on Saturday.</p>
+    <span class="lbl">Example 2 · the dashed ring</span>
+    <div class="story">
+      <h2>Tuesday morning: Bolt on a sanctioned late show</h2>
+      <p><b>Bolt</b> now comes off Monday’s SXO desk at 20:30 (it was 21:30) and flies Tuesday’s 09:40 RU line. His
+        crew’s remark says LATE SHOW and he still makes the step, so his short crew rest is sanctioned: the <b>dashed</b>
+        red ring. It will go out as AL1.</p>
     </div>
+    <div class="surface"><h3>The edit week</h3><div class="pair"><figure class="shot"><span class="tag today">Today</span><img class="w-desktop" src="img/amend-seat-marks/desktop-week-tueam-today.png" width="538" height="111" alt="Tuesday morning, the edit week — today" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-week-tueam-today.png" width="352" height="130" alt="Tuesday morning, the edit week — today, phone" loading="lazy"><figcaption>Only the cyan dotted line and a red edge — the dashed ring is hidden.</figcaption></figure><figure class="shot"><span class="tag fix">With the fix</span><img class="w-desktop" src="img/amend-seat-marks/desktop-week-tueam-fix.png" width="538" height="111" alt="Tuesday morning, the edit week — fix" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-week-tueam-fix.png" width="352" height="130" alt="Tuesday morning, the edit week — fix, phone" loading="lazy"><figcaption>The dashed ring shows, with a hollow “AL1”.</figcaption></figure><figure class="shot zoom w-desktop-only"><span class="tag plain">Enlarged — today, then with the fix</span><div class="zooms"><img class="zoomimg" src="img/amend-seat-marks/zoom-week-tueam-today.png" width="676" height="284" alt="Tuesday morning, the edit week enlarged — today" loading="lazy"><img class="zoomimg" src="img/amend-seat-marks/zoom-week-tueam-fix.png" width="676" height="284" alt="Tuesday morning, the edit week enlarged — fix" loading="lazy"></div></figure></div></div>
+    <div class="surface"><h3>The board</h3><div class="pair"><figure class="shot"><span class="tag today">Today</span><img class="w-desktop" src="img/amend-seat-marks/desktop-board-tueam-today.png" width="1100" height="114" alt="Tuesday morning, the board — today" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-board-tueam-today.png" width="354" height="259" alt="Tuesday morning, the board — today, phone" loading="lazy"><figcaption>A red ring with the cyan dots over it.</figcaption></figure><figure class="shot"><span class="tag fix">With the fix</span><img class="w-desktop" src="img/amend-seat-marks/desktop-board-tueam-fix.png" width="1100" height="114" alt="Tuesday morning, the board — fix" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-board-tueam-fix.png" width="354" height="259" alt="Tuesday morning, the board — fix, phone" loading="lazy"><figcaption>A clean red ring with “AL1”. The board draws his ring solid, not dashed — it has never drawn the dashed ring (see “Also found”).</figcaption></figure></div></div>
   </section>
 
-  <section class="block ask">
+  <section>
+    <span class="lbl">Example 3 · no warning</span>
+    <div class="story">
+      <h2>Tuesday afternoon: an everyday change</h2>
+      <p><b>Relay</b> put on the 14:40 RU line, with no warning. The fix leaves it exactly as it is today.</p>
+    </div>
+    <div class="surface"><h3>The edit week</h3><div class="pair"><figure class="shot"><span class="tag today">Today</span><img class="w-desktop" src="img/amend-seat-marks/desktop-week-tuepm-today.png" width="538" height="111" alt="Tuesday afternoon, the edit week — today" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-week-tuepm-today.png" width="352" height="120" alt="Tuesday afternoon, the edit week — today, phone" loading="lazy"><figcaption>Relay’s dotted line in AL1’s colour.</figcaption></figure><figure class="shot"><span class="tag fix">With the fix</span><img class="w-desktop" src="img/amend-seat-marks/desktop-week-tuepm-fix.png" width="538" height="111" alt="Tuesday afternoon, the edit week — fix" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-week-tuepm-fix.png" width="352" height="120" alt="Tuesday afternoon, the edit week — fix, phone" loading="lazy"><figcaption>Exactly the same: a puck with no warning keeps today’s dotted line.</figcaption></figure></div></div>
+  </section>
+
+  <section>
+    <span class="lbl">Once it goes out</span>
+    <div class="surface"><h3>Monday, after AL2 is published</h3><figure class="shot"><span class="tag plain">Published — unchanged by the fix</span><img class="w-desktop" src="img/amend-seat-marks/desktop-week-mon-issued.png" width="538" height="111" alt="Monday night after AL2 is published" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-week-mon-issued.png" width="352" height="121" alt="Monday night after AL2 is published, phone" loading="lazy"><figcaption>After AL2 goes out: the solid ring and the solid “AL2” tag, as today. Piston’s red ring takes the edge and the tag stays — the fix makes a waiting change behave the same way.</figcaption></figure></div>
+  </section>
+
+  <section class="aside">
+    <span class="lbl">Why not the first idea</span>
+    <p>The first mock-up moved the dotted line out onto the seat around the puck. Enlarged, both marks show. At real size,
+      Outlaw’s dotted red ring and the dotted line sit half a pixel apart and blur into one thick ring, and the line runs
+      into Relay’s puck beside him — the two pucks of a crew sit 3 pixels apart. Moving it further out makes that worse.</p>
+    <figure class="shot"><span class="tag alt">The first idea</span><img class="w-desktop" src="img/amend-seat-marks/desktop-week-mon-a.png" width="538" height="111" alt="The first idea, real size" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-week-mon-a.png" width="352" height="121" alt="The first idea, real size, phone" loading="lazy"><figcaption>Real size: on Outlaw the two dotted rings blur into one thick ring, and the amber line runs into Relay’s puck.</figcaption></figure><figure class="shot zoom w-desktop-only"><span class="tag plain">The first idea, enlarged</span><div class="zooms"><img class="zoomimg" src="img/amend-seat-marks/zoom-week-mon-a.png" width="676" height="284" alt="The first idea, enlarged" loading="lazy"></div><figcaption>Enlarged, both show — which is why the first mock-up looked right.</figcaption></figure>
+  </section>
+
+  <section class="aside">
+    <span class="lbl">Also found</span>
+    <p>The board draws a sanctioned late show as a plain <b>solid</b> ring, and never draws the <b>dotted</b> “this day
+      causes tomorrow’s breach” ring — the edit week draws both. The board has always worked this way; the fix doesn’t
+      change it. Filed as a question for you.</p>
+  </section>
+
+  <section class="ask">
     <span class="lbl">Your call</span>
     <ol>
-      <li><b>A man taken off a seat: the ghost (his name struck through) or Option B (the mark alone)?</b>
-        <span class="rec">My recommendation: the ghost</span> — the issued schedule then says who left, without opening History.</li>
-      <li><b>How long does the ghost stay?</b> <span class="rec">My recommendation: like every other mark</span> — it stays,
-        tagged with the amendment that took him off, until someone is put on that seat.</li>
-      <li><b>The ring: move the amendment mark onto the seat, as pictured?</b> <span class="rec">My recommendation: yes</span>
-        — and do the same for the solid mark of an issued change, so both kinds behave alike.</li>
+      <li><b>Build this fix?</b> <span class="rec">My recommendation: yes.</span> It only changes a puck that carries both a
+        red ring and a change that hasn’t gone out, on the edit week and the board.</li>
+      <li><b>Make the board draw the dashed and dotted rings, like the edit week?</b> <span class="rec">My recommendation:
+        yes</span>, as its own small job after this one.</li>
     </ol>
   </section>
 </div>
 <script>
   (function () {
     var body = document.body, pick = 'desktop'
-    try { pick = localStorage.getItem('seatmarks.w') || (matchMedia('(max-width:720px)').matches ? 'phone' : 'desktop') } catch (e) {}
+    try { pick = localStorage.getItem('ringfix.w') || (matchMedia('(max-width:720px)').matches ? 'phone' : 'desktop') } catch (e) {}
     function set(w) {
       body.setAttribute('data-w', w)
       document.querySelectorAll('.switch button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.set === w)) })
-      try { localStorage.setItem('seatmarks.w', w) } catch (e) {}
+      try { localStorage.setItem('ringfix.w', w) } catch (e) {}
     }
     document.querySelectorAll('.switch button').forEach(function (b) { b.addEventListener('click', function () { set(b.dataset.set) }) })
     set(pick === 'phone' ? 'phone' : 'desktop')

@@ -1129,3 +1129,25 @@ ALL AVAIL, the manning counts and every rule that asks who is free.
 **Context.** `raptor-port/docs/handpass/2026-09-21-oil.md` §9 · the red team's §3 in
 `…/specs/2026-09-21-oil-fixplan-redteam-fable.md` · script `scripts/handpass/settle-d4.mjs`.
 
+
+*Moved here 2026-09-24 by backlog-archive.mjs ([AMEND-EMPTY-SEAT-MARK]). Forward facts: `.claude/rules/decisions/scheduler.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [AMEND-EMPTY-SEAT-MARK] A man taken off a desk, a programme row or a sim seat leaves no amendment mark anywhere (found 24 Sep 26)
+**CLOSED 24 Sep 26 — RULED D91 ("Dont do the man taken off seat"), after he saw the mock-up: no mark is built; the
+seat reads empty, the change is counted and listed.** The rule now lives in `raptor-port/docs/ui-contracts.md`
+§Amendment marks on screen and the register's AM19.
+Found by the amendment re-test's walker W1 (`raptor-port/docs/handpass/parts/2026-09-24-amendment-w1.md` W1-2; roll-call
+R3/R5/R7). Register AM19: a pending change is dotted in its AL's colour, an issued one solid. **What a person sees:** on a
+published day, take Outlaw off the OPS DESK, Torch off a Common Programme row, Basher off a sim seat — the head counts
+each, the Amendments panel lists them, History records them, the AL's diff carries them — but the row itself looks like
+a desk that was always empty: "+ ADD" on the week, an empty box on the board, and after publishing nothing on the view
+page's issued face either (13 changes, 10 visible marks). An emptied COCKPIT seat is half covered: the week shows the
+"AL1" badge once published, but not while pending, and the board never marks it. **Why not fixed in the re-test:** an
+emptied list seat is not drawn at all (`raptor-port/src/ui/html.ts` `lSeat`, `raptor-port/src/ui/board-html.ts` `sbSeat`;
+the board's empty cockpit seat `sbSlot`), so there is nothing to carry the mark — it needs a LOOK for "somebody was
+taken off here", on three surfaces, one of them (the view week) held byte-identical to the original app by the
+reference gate. **Mock-up** (24 Sep 26, his ask): `raptor-port/docs/mock/amend-seat-marks.html`, also a private page
+(https://claude.ai/artifact/H3GvtWrSdGM7u6NRLkXAhk); its maker `raptor-port/scripts/handpass/am/mk-seat-marks.mjs` holds
+the proposal's CSS. **Waiting for his three picks:** the ghost (recommended) or Option B; how long it stays; the mark on
+the seat. **To do:** then build it FULL tier (the issued face is a published record). **Place:** after the re-test merges.
+

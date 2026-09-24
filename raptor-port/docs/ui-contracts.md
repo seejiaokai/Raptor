@@ -621,6 +621,15 @@ many pending or issued items are removals. It never paints the row that moved
 up into the deleted address. Schedule CSV export contains the resulting live
 schedule, so the removed row is absent rather than exported as a phantom line.
 
+**A man taken off a seat leaves no mark either — by ruling** (owner, 24 Sep 26 — D91:
+"Dont do the man taken off seat"). Emptying a duty desk, a Common Programme row or a
+sim seat on a published day is a pending change like any other — counted, listed in
+the Amendments panel and History, carried by the AL's comparison — but the seat simply
+reads empty on the edit week, the board and the issued face; an emptied cockpit seat
+keeps only the "ALn" badge the week already shows once it is issued. A mark for it (a
+faded, crossed-out name, or an empty marked box) was drawn in a mock-up and declined —
+it is not a defect, and is not to be re-filed as one.
+
 ## Version preview (edit week + board only)
 
 The day-head `<select data-dver>` (emitted only when `dayHTML` gets its

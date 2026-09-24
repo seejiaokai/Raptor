@@ -71,7 +71,7 @@ first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [T
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SMOKE-ADD-RACE]
 (before the next Tracker change that touches the smoke suite), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
-The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build). The amendment re-test's leftovers — [AMEND-EMPTY-SEAT-MARK] and [AMEND-MARK-RING-CLASH] (after it merges; one picture first), [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build). The amendment re-test's leftovers — [AMEND-MARK-RING-CLASH] (examples shown; on his word) and [BOARD-RING-STROKES] (his question), [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] and [RULING-HOMES-AUDIT] (any time, docs only),
 [BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
 FULL-tier build, any time).
@@ -1046,22 +1046,6 @@ renaming a callsign or changing a Logic setting cannot be undone. **Place:** the
 second after the absence record) — it is the one undo's own subject; build it there with D148 (undo only your own
 changes). Walk it first: confirm on screen that Undo stays greyed or skips a roster / settings edit.
 
-### [AMEND-EMPTY-SEAT-MARK] A man taken off a desk, a programme row or a sim seat leaves no amendment mark anywhere (found 24 Sep 26)
-Found by the amendment re-test's walker W1 (`raptor-port/docs/handpass/parts/2026-09-24-amendment-w1.md` W1-2; roll-call
-R3/R5/R7). Register AM19: a pending change is dotted in its AL's colour, an issued one solid. **What a person sees:** on a
-published day, take Outlaw off the OPS DESK, Torch off a Common Programme row, Basher off a sim seat — the head counts
-each, the Amendments panel lists them, History records them, the AL's diff carries them — but the row itself looks like
-a desk that was always empty: "+ ADD" on the week, an empty box on the board, and after publishing nothing on the view
-page's issued face either (13 changes, 10 visible marks). An emptied COCKPIT seat is half covered: the week shows the
-"AL1" badge once published, but not while pending, and the board never marks it. **Why not fixed in the re-test:** an
-emptied list seat is not drawn at all (`raptor-port/src/ui/html.ts` `lSeat`, `raptor-port/src/ui/board-html.ts` `sbSeat`;
-the board's empty cockpit seat `sbSlot`), so there is nothing to carry the mark — it needs a LOOK for "somebody was
-taken off here", on three surfaces, one of them (the view week) held byte-identical to the original app by the
-reference gate. **Mock-up** (24 Sep 26, his ask): `raptor-port/docs/mock/amend-seat-marks.html`, also a private page
-(https://claude.ai/artifact/H3GvtWrSdGM7u6NRLkXAhk); its maker `raptor-port/scripts/handpass/am/mk-seat-marks.mjs` holds
-the proposal's CSS. **Waiting for his three picks:** the ghost (recommended) or Option B; how long it stays; the mark on
-the seat. **To do:** then build it FULL tier (the issued face is a published record). **Place:** after the re-test merges.
-
 ### [AMEND-TEMPLATE-PUBLISHED] A day template applied to a published day — a question for him (24 Sep 26)
 Found by the amendment re-test's walker W2 (`raptor-port/docs/handpass/parts/2026-09-24-amendment-w2.md` W2-F2). Applying a
 day template to a published day rebuilds the day from the template's rows, and a template row is always a NEW row (a
@@ -1135,9 +1119,27 @@ puck, and so are the sanctioned-late (dashed) and crew-rest trace (dotted) rings
 scheduler editing a published day does not see those two rings on a man whose seat has an unpublished change. The same
 clash on the VIEW page was fixed in the re-test (its neutral hint moved onto the seat around the puck); the edit
 surfaces' mark is an established look (`raptor-port/docs/ui-contracts.md` §Amendment marks), so moving it is a visual
-change to show him first: the mock-up's §2 (`[AMEND-EMPTY-SEAT-MARK]`). **To do:** once he picks, draw the edit surfaces'
-mark on the seat too (as the view page now does), or give the two rings a way through. LOOK tier. **Place:** with
-[AMEND-EMPTY-SEAT-MARK] (same surfaces, same picture).
+change to show him first. **Examples shown 24 Sep 26, at his ask** — `raptor-port/docs/mock/amend-seat-marks.html`, three
+situations the app itself produced (a swap, a late show, an everyday change), its maker
+`raptor-port/scripts/handpass/am/mk-seat-marks.mjs` (the CSS as `B_CSS`). **The fix drawn is design B:** a red ring keeps the
+puck's edge (the pending outline is not drawn on a puck wearing `boxred`/`boxdash`/`boxdot`) and the waiting change shows
+as a hollow `ALn` tag in the issued tag's corner; a puck with no ring keeps today's dotted outline. **Design A** (the
+first mock-up: the mark moved onto the seat) was dropped on measurement — a seat is exactly its puck's 74×15 box and a
+crew pair sits 3px apart, so at real size (DPR 1) the mark and a dotted ring sit half a pixel apart and blur into one,
+and any larger offset runs into the next puck. The view page's neutral hint, moved onto the seat by the re-test, has
+A's geometry: check it where it can meet a ring when B is built. **To do:** on his word, build B on the edit week and
+the board, with a geometry pin (e2e) that the ring's stroke survives a pending change. LOOK tier. **Place:** next, on
+his word (the mock-up's other half, a mark for an emptied seat, was declined — D91).
+
+### [BOARD-RING-STROKES] The board draws every warning ring solid: no dashed late show, no dotted crew-rest cause (found 24 Sep 26)
+Found while making the examples for [AMEND-MARK-RING-CLASH] (the mock-up's "Also found"). **What a person sees:** on the edit
+week a crew-rest breach sanctioned by a LATE SHOW remark rings DASHED, and the day that causes tomorrow's breach rings
+DOTTED — `raptor-port/docs/ui-contracts.md` §Three crew-rest rings, "on every puck of that man on the causing day". On
+the scheduler board the same man rings SOLID for the sanctioned breach and carries no ring at all on the causing day.
+**Why:** the board's seat builders call `puck()` with `dash=false, trace=null` (`raptor-port/src/ui/board-html.ts`), so
+the two strokes never reach it; no comment, contract line or ruling found says that is deliberate. **Recommendation, put
+to him on the mock-up page:** make the board match the week (pass the day's dash and trace as the week's builder does;
+the geometry gate already measures the rings). LOOK tier. **Place:** after [AMEND-MARK-RING-CLASH]; waiting on his word.
 
 ### [AMEND-LOAD-FILING] Should "Load onto working copy" also put back an input the scheduler had taken off? — a question for him (24 Sep 26)
 Found by the amendment re-test (walker W4, F3: `raptor-port/docs/handpass/parts/2026-09-24-amendment-w4.md`; the final

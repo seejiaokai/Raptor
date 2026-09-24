@@ -1,163 +1,147 @@
-/* THE MOCK-UP for [AMEND-EMPTY-SEAT-MARK] and [AMEND-MARK-RING-CLASH] (24 Sep 26) — pictures of the REAL app
-   (the production build, the everything-week, the app's own stylesheet), first as it is today, then with the
-   proposal laid on top of the live page: the few lines of CSS and markup the build would add. Nothing here is
-   saved to the app; a reload undoes it.
-   - The ghost: where a man was taken off a desk, a Common Programme row or a sim seat, a faded puck with his name
-     struck through, carrying the amendment mark like any other change — dotted in the next AL's colour while it
-     waits, solid with its "AL1" tag once issued.
-   - The mark moves off the puck onto the seat around it, so a warning ring on the puck (dashed: sanctioned late;
-     dotted: tomorrow's crew rest) is never painted over.
-   Usage: node mk-seat-marks.mjs [desktop|phone]  (the build served on :4173) */
+/* THE MOCK-UP for [AMEND-MARK-RING-CLASH] (24 Sep 26, rebuilt the same day at his ask "Can u show me the examples
+   of the fix") — pictures of the REAL app (the production build, the everything-week, the app's own stylesheet),
+   today beside the fix, from situations the app itself produces:
+     1. Monday's night RU line: Piston and Outlaw swap seats (an amendment on a published day). Outlaw's late
+        landing breaks his Tuesday crew rest (the dotted red ring, "this day causes it"); Piston is double-booked
+        on Monday (the solid red ring).
+     2. Bolt comes off Monday's SXO desk at 20:30 (it ended 21:30) and flies Tuesday's 09:40 RU line on a LATE
+        SHOW: a crew-rest breach the scheduler sanctioned (the dashed red ring).
+     3. A WSO put on Tuesday's afternoon RU line: an everyday change with no warning, to show it is untouched
+        (the script picks the first WSO who lands there with no warning of any kind).
+   The fix drawn here is design B: a red ring keeps the puck's edge, and a pending change on a ringed puck says
+   so with a hollow "ALn" tag in the corner where an issued change keeps its solid one. Design A (the first
+   mock-up: the mark moved out onto the seat) is drawn once, for the page's "why not" box.
+   The first version of this file drew a mark for a man taken off a seat; he declined it (D91) — git history.
+   Usage, with the build served on :4173:
+     node mk-seat-marks.mjs desktop 1   the desktop pictures at real size
+     node mk-seat-marks.mjs desktop 4   the same, enlarged (the edit week's crew only)
+     node mk-seat-marks.mjs phone 3     the phone pictures */
 import { mkdirSync } from 'node:fs'
 const W = process.argv[2] || 'desktop'
+const DPR = Number(process.argv[3] || (W === 'phone' ? 3 : 1))
+const ZOOM = W === 'desktop' && DPR > 1
 const SIZE = W === 'phone' ? { width: 390, height: 844 } : { width: 1440, height: 900 }
 const OUT = 'C:/Users/User/projects/Raptor/raptor-port/docs/mock/img/amend-seat-marks'
 process.env.HP_SHOTS = OUT
 mkdirSync(OUT, { recursive: true })
 const L = await import('./w2-lib.mjs')
-const { openHi, editWeek, board, closeBoard, go, signDay, publishAL, STATE } = L
-const { browser, page, errors } = await openHi({ ...SIZE, state: STATE, dpr: 2 })
-const DI = 5
+const { openHi, editWeek, board, closeBoard, signDay, publishAL, STATE } = L
+const { browser, page, errors } = await openHi({ ...SIZE, state: STATE, dpr: DPR })
+const TAG = ZOOM ? 'zoom' : W
 
-/* THE PROPOSAL, as the build would write it */
-const PROPOSAL_CSS = `
-#eWeek .seat[data-aln],#schedBoard .seat[data-aln]{outline:1.5px dotted var(--alc);outline-offset:1px;border-radius:4px}
-.seat.mk-gone .puck{opacity:.45;filter:grayscale(1)}
-.seat.mk-gone .puck .nm{text-decoration:line-through;text-decoration-thickness:1.5px}
-.seat.mk-hole{display:inline-block;width:74px;height:15px;vertical-align:middle;border-radius:4px}
-/* a ghost is not a man: the desk still reads EMPTY, so its "+ add" keeps its outline beside the ghost */
-.page.editing .ppl[data-fill]:not(:has(.seat:not(.mk-gone) .puck)):not(:has(.itxt)) .addz{border-color:var(--edge-2);color:var(--ink-3);opacity:.9}
-.schedboard .ppl[data-fill]:not(:has(.seat:not(.mk-gone) .puck)):not(:has(.itxt)) .addz{border-color:var(--edge-2)}
-`
-async function propose() {
+/* ---- the two designs, as the build would write them ------------------------------------------------------ */
+const RINGED = '.puck:is(.boxred,.boxdash,.boxdot)'
+const B_CSS = `
+#eWeek .seat[data-aln] .puck:not(.boxred):not(.boxdash):not(.boxdot),
+#schedBoard .seat[data-aln] .puck:not(.boxred):not(.boxdash):not(.boxdot){box-shadow:none;outline:1.5px dotted var(--alc);outline-offset:1px}
+#eWeek .seat[data-aln]:has(>${RINGED})::after,#schedBoard .seat[data-aln]:has(>${RINGED})::after{
+  content:'AL' attr(data-aln);position:absolute;top:-5px;right:-3px;z-index:4;
+  font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:7.5px;font-weight:800;letter-spacing:.02em;line-height:1;
+  padding:0 2px;border-radius:4px;background:#14181D;color:var(--alc);border:1px dotted var(--alc);pointer-events:none}`
+const A_CSS = `
+#eWeek .seat[data-aln],#schedBoard .seat[data-aln]{outline:1.5px dotted var(--alc);outline-offset:3px;border-radius:5px}`
+async function design(css) {
   await page.evaluate((css) => {
-    /* take the edit surfaces' amendment mark OFF the puck — the one rule a ring cannot win against … */
+    /* take out today's rule — the pending mark drawn on the puck — keeping it to put back for "today" */
     for (const sh of document.styleSheets) {
+      if (sh.ownerNode && sh.ownerNode.id === 'mk-design') continue    // our own sheet, never the app's rule
       let rules; try { rules = sh.cssRules } catch { continue }
       for (let i = rules.length - 1; i >= 0; i--) {
         const r = rules[i]
-        if (r.selectorText && /#eWeek \.seat\[data-aln\] \.puck/.test(r.selectorText)) sh.deleteRule(i)
+        if (r.selectorText && /#eWeek \.seat\[data-aln\] \.puck/.test(r.selectorText)) { window.__todayRule = window.__todayRule || r.cssText; sh.deleteRule(i) }
       }
     }
-    /* … and put it on the seat, with the ghost's look */
-    if (!document.getElementById('mk-proposal')) {
-      const st = document.createElement('style'); st.id = 'mk-proposal'; st.textContent = css; document.head.appendChild(st)
-    }
-  }, PROPOSAL_CSS)
+    let st = document.getElementById('mk-design')
+    if (!st) { st = document.createElement('style'); st.id = 'mk-design'; document.head.appendChild(st) }
+    st.textContent = css == null ? (window.__todayRule || '') : css
+  }, css)
+  await page.waitForTimeout(120)
 }
+const DESIGNS = { today: null, fix: B_CSS }
 
-const GONE = [
-  { row: 'OPS DESK', fill: 'd:5.0.2.+', who: 'Outlaw', role: '<span class="role q-c">C</span>' },
-  { row: 'MASS BRIEF', fill: 'a:5.1.+', who: 'Torch', role: '<span class="role q-c">C</span>' },
-  { row: 'EP-6', fill: 's:5.oft.0.+', who: 'Basher', role: '<span class="role q-ins">IW</span>', sim: true },
-]
-/* where each man sat: the row's people box, found by its fill address, or — on the view page, where a frozen face
-   carries no addresses — by the row's own name */
-async function ghosts(scope, attrs, { hole = false, only = null } = {}) {
-  return page.evaluate(([scope, attrs, GONE, hole, only]) => {
-    const root = document.querySelector(scope)
-    const done = []
-    for (const g of GONE) {
-      if (only && g.row !== only) continue
-      let ppl = root && root.querySelector(`[data-fill="${g.fill}"]`)
-      if (!ppl && root) {
-        const nm = [...root.querySelectorAll('.pl-row,.ah-row,.sb-arow')].find(r => (r.querySelector('.ntx,textarea') || {}).textContent?.trim() === g.row || (r.querySelector('textarea') || {}).value === g.row)
-        ppl = nm && nm.querySelector('.ppl')
-      }
-      if (!ppl) { done.push(g.row + ': no row'); continue }
-      const seat = document.createElement('span')
-      seat.className = 'seat ' + (hole ? 'mk-hole' : 'mk-gone')
-      for (const [k, v] of Object.entries(attrs)) seat.setAttribute(k, v)
-      seat.innerHTML = hole ? '' : `<span class="puck sm"><span class="nm">${g.who}</span>${g.role}</span>`
-      const empty = g.sim ? ppl.querySelector('.sb-slot.empty[data-slot="s:5.oft.0.w"]') : null
-      if (empty) empty.replaceWith(seat)
-      else { const add = ppl.querySelector('.addz'); add ? ppl.insertBefore(seat, add) : ppl.appendChild(seat) }
-      done.push(g.row + ': ok')
-    }
-    return done
-  }, [scope, attrs, GONE, hole, only])
+/* ---- the situations, made through the app's own write path (the same one a drop or a typed box uses) ---- */
+await editWeek(page)
+const made = await page.evaluate(() => {
+  const D = window.DAYS, P = window.PEOPLE, byCs = cs => Object.keys(P).find(id => P[id].cs === cs)
+  const ru = D[0].waves[1].formations[1]
+  const piston = ru.aircraft[0].p, outlaw = ru.aircraft[1].p
+  window.setSlotVal('0.1.1.0.p', outlaw); window.setSlotVal('0.1.1.1.p', piston)      // 1: the swap
+  const bolt = byCs('Bolt')
+  window.txtSet('dr:0.1.1.end', '2030')                                              // 2: off the desk at 20:30 …
+  window.setSlotVal('1.0.1.0.p', bolt)                                              //    … on Tuesday's 09:40 line
+  window.txtSet('fr:1.0.1.0', '1A: NO AAR // LATE SHOW')                            //    … on a sanctioned late show
+  /* 3: an everyday change — the first WSO who lands on Tuesday afternoon's RU line with no warning of any kind */
+  const was = D[1].waves[1].formations[1].aircraft[1].w
+  let hex = null
+  for (const id of Object.keys(P)) {
+    const q = P[id]; if (q.special || q.pers || q.seat !== 'RCP' || id === was) continue
+    window.setSlotVal('1.1.1.1.w', id); window.validate()
+    const w = window.WARN, day = k => (w[k] && w[k][1]) || {}
+    if (!day('chip')[id] && !day('trace')[id] && !(w.sev && w.sev[1] && w.sev[1][id])) { hex = id; break }
+  }
+  window.afterSchedMutate()
+  return { piston, outlaw, bolt, hex }
+})
+await page.waitForTimeout(700)
+const check = await page.evaluate((m) => {
+  const W = window.WARN, cs = id => window.PEOPLE[id].cs
+  const seat = k => { const s = document.querySelector(`#eWeek .seat[data-slot="${k}"]`); return s ? `${cs(s.querySelector('.puck').dataset.person)} aln=${s.dataset.aln || '-'} ${s.querySelector('.puck').className}` : 'none' }
+  return { outlawTrace: !!(W.trace[0] || {})[m.outlaw], pistonChip: (W.chip[0] || {})[m.piston], boltDash: !!(W.dash[1] || {})[m.bolt],
+    boltChip: (W.chip[1] || {})[m.bolt], hex: m.hex && cs(m.hex), hexChip: (W.chip[1] || {})[m.hex] || 'none',
+    seats: ['0.1.1.0.p', '0.1.1.1.p', '1.0.1.0.p', '1.1.1.1.w'].map(seat) }
+}, made)
+console.log(JSON.stringify(check, null, 1))
+if (!check.outlawTrace || !check.pistonChip || !check.boltDash || check.hexChip !== 'none') console.log('!! a situation did not come out as intended')
+
+/* ---- the pictures ----------------------------------------------------------------------------------------- */
+const CLIPS = {                         // each picture: the seats it is about, and the day they sit on
+  mon: { di: 0, keys: ['0.1.1.0.p', '0.1.1.0.w', '0.1.1.1.p', '0.1.1.1.w'] },
+  tueam: { di: 1, keys: ['1.0.1.0.p', '1.0.1.0.w', '1.0.1.1.p', '1.0.1.1.w'] },
+  tuepm: { di: 1, keys: ['1.1.1.0.p', '1.1.1.0.w', '1.1.1.1.p', '1.1.1.1.w'] },
 }
-/* stage the clash: two real seats on the published Saturday, as if each had an unpublished change, one wearing
-   the sanctioned-late ring and one the crew-rest trace */
-async function rings(scope) {
-  return page.evaluate((scope) => {
-    const root = document.querySelector(scope)
-    const out = []
-    for (const [k, cls] of [['a:5.1.0', 'boxdash'], ['s:5.oft.0.p', 'boxdot']]) {
-      const s = root && root.querySelector(`.seat[data-slot="${k}"]`)
-      if (!s) { out.push(k + ': none'); continue }
-      s.setAttribute('data-alp', '1'); s.setAttribute('data-aln', '1')
-      s.querySelector('.puck').classList.add(cls)
-      out.push(k + ': ' + cls)
-    }
-    return out
-  }, scope)
-}
-/* a picture of the rows, with the lines around them for context */
-async function shotRows(name, scope, rows = GONE.map(g => g.row)) {
-  const box = await page.evaluate(([scope, rows]) => {
-    const root = document.querySelector(scope); if (!root) return null
-    const els = [...root.querySelectorAll('.pl-row,.ah-row,.sb-arow')].filter(r => {
-      const t = (r.querySelector('.ntx') || {}).textContent?.trim() || (r.querySelector('textarea') || {}).value
-      return rows.includes(t)
-    })
-    if (!els.length) return null
-    els[0].scrollIntoView({ block: 'center' })
+async function shoot(name, scope, keys) {
+  const box = await page.evaluate(([scope, keys, zoom]) => {
+    const seats = keys.map(k => document.querySelector(`${scope} .seat[data-slot="${k}"]`)).filter(Boolean)
+    if (!seats.length) return null
+    /* the crew alone when enlarged; the whole line (callsign, times, remarks) at real size */
+    const els = zoom ? seats : [...new Set(seats.map(s => s.closest('.form') || s.closest('.sb-line')))]
+    els[0].scrollIntoView({ block: 'center', inline: 'center' })
     const rs = els.map(e => e.getBoundingClientRect())
-    const top = Math.min(...rs.map(r => r.top)), bot = Math.max(...rs.map(r => r.bottom))
-    const left = Math.min(...rs.map(r => r.left)), right = Math.max(...rs.map(r => r.right))
-    return { top, bot, left, right, n: els.length }
-  }, [scope, rows])
-  if (!box) { console.log('NO ROWS', name); return }
-  const pad = 18
-  const x = Math.max(0, box.left - pad), y = Math.max(0, box.top - pad)
-  const w = Math.min(SIZE.width - x, box.right - box.left + 2 * pad), h = Math.min(SIZE.height - y, box.bot - box.top + 2 * pad)
-  await page.screenshot({ path: `${OUT}/${W}-${name}.png`, clip: { x, y, width: w, height: h } })
-  console.log('shot', name, JSON.stringify(box))
+    return { x: Math.min(...rs.map(r => r.left)), y: Math.min(...rs.map(r => r.top)), r: Math.max(...rs.map(r => r.right)), b: Math.max(...rs.map(r => r.bottom)) }
+  }, [scope, keys, ZOOM])
+  if (!box) { console.log('NO SEATS', name); return }
+  const pad = ZOOM ? 9 : 6
+  const x = Math.max(0, box.x - pad), y = Math.max(0, box.y - pad)
+  const width = Math.min(SIZE.width - x, box.r - box.x + 2 * pad), height = Math.min(SIZE.height - y, box.b - box.y + 2 * pad)
+  await page.screenshot({ path: `${OUT}/${TAG}-${name}.png`, clip: { x, y, width, height } })
+  console.log('shot', `${TAG}-${name}`)
 }
-/* each row on its own — the three sit in different sections, so a single frame would be mostly gaps */
-async function shotEach(prefix, scope) { for (const g of GONE) await shotRows(`${prefix}-${g.row.replace(/\W+/g, '').toLowerCase()}`, scope, [g.row]) }
-
-// ---- today: take the three men off, on the board, the way a scheduler does ---------------------------
-await editWeek(page)
-await board(page, DI)
-for (const k of ['d:5.0.2', 'a:5.1.1', 's:5.oft.0.w']) {
-  const s = page.locator(`#schedBoard .seat[data-slot="${k}"]:visible`).first()
-  await s.evaluate(e => e.scrollIntoView({ block: 'center' })); await s.click({ button: 'right' }); await page.waitForTimeout(500)
+async function weekShots(prefix) {
+  for (const [c, { di, keys }] of Object.entries(CLIPS)) {
+    for (const [d, css] of Object.entries(DESIGNS)) { await design(css); await shoot(`${prefix}-${c}-${d}`, `#eWeek .day[data-day="${di}"]`, keys) }
+  }
 }
-await shotEach('1-today-board', '#schedBoard')
-await closeBoard(page); await editWeek(page)
-await shotEach('1-today-week', '#eWeek .day[data-day="5"]')
-console.log('rings today', await rings('#eWeek .day[data-day="5"]'))
-await shotRows('2-today-week-ring-dashed', '#eWeek .day[data-day="5"]', ['MASS BRIEF'])
-await shotRows('2-today-week-ring-dotted', '#eWeek .day[data-day="5"]', ['EP-6'])
-
-// ---- the proposal, pending (dotted in AL1's colour) ------------------------------------------------------
-await propose()
-console.log('rings proposed', await rings('#eWeek .day[data-day="5"]'))
-console.log('ghosts week', await ghosts('#eWeek .day[data-day="5"]', { 'data-alp': '1', 'data-aln': '1' }))
-await shotEach('1-proposed-week-pending', '#eWeek .day[data-day="5"]')
-await shotRows('2-proposed-week-ring-dashed', '#eWeek .day[data-day="5"]', ['MASS BRIEF'])
-await shotRows('2-proposed-week-ring-dotted', '#eWeek .day[data-day="5"]', ['EP-6'])
-await board(page, DI)
-await propose()
-console.log('ghosts board', await ghosts('#schedBoard', { 'data-alp': '1', 'data-aln': '1' }))
-await shotEach('1-proposed-board-pending', '#schedBoard')
-await closeBoard(page); await editWeek(page)
-await propose()
-/* option B on its own: clear option A's ghost first — the week keeps an unchanged block on screen, injected marks and all */
-await page.evaluate(() => document.querySelectorAll('.seat.mk-gone,.seat.mk-hole').forEach(e => e.remove()))
-console.log('hole week', await ghosts('#eWeek .day[data-day="5"]', { 'data-alp': '1', 'data-aln': '1' }, { hole: true, only: 'OPS DESK' }))
-await shotRows('1-optionB-week-pending-opsdesk', '#eWeek .day[data-day="5"]', ['OPS DESK'])
-
-// ---- issued: sign, publish AL1, and look at what the squadron sees -------------------------------------
-await editWeek(page)
-await signDay(page, DI)
-console.log('publish', JSON.stringify(await publishAL(page, DI)))
-await go(page, 'viewsched')
-await page.waitForTimeout(600)
-await shotEach('1-today-view-issued', '#vWeek .day[data-day="5"]')
-console.log('ghosts view', await ghosts('#vWeek .day[data-day="5"]', { 'data-alc': '1' }))
-await shotEach('1-proposed-view-issued', '#vWeek .day[data-day="5"]')
+await weekShots('week')
+if (!ZOOM) {
+  for (const di of [0, 1]) {
+    await board(page, di)
+    for (const [c, { di: cd, keys }] of Object.entries(CLIPS)) {
+      if (cd !== di) continue
+      for (const [d, css] of Object.entries(DESIGNS)) { await design(css); await shoot(`board-${c}-${d}`, '#schedBoard', keys) }
+    }
+    await closeBoard(page); await editWeek(page)
+  }
+}
+/* design A, for the "why not" box: Outlaw and Piston on the week */
+await design(A_CSS); await shoot('week-mon-a', '#eWeek .day[data-day="0"]', CLIPS.mon.keys)
+/* once Monday's amendment goes out: the issued marks, which the fix does not touch */
+if (!ZOOM) {
+  await design(null)
+  await editWeek(page)
+  await signDay(page, 0)
+  console.log('publish', JSON.stringify(await publishAL(page, 0)))
+  await editWeek(page)
+  await shoot('week-mon-issued', '#eWeek .day[data-day="0"]', CLIPS.mon.keys)
+}
 console.log('errors', JSON.stringify(errors))
 await browser.close()
