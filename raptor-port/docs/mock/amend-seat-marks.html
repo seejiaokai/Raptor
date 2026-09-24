@@ -12,7 +12,7 @@
   html,body{background:var(--bg);color:var(--ink)}
   body{font-family:'Inter Tight',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:15px;line-height:1.55;
     padding-inline:16px;padding-block:20px 56px}
-  .wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:34px}
+  .wrap{max-width:1160px;margin:0 auto;display:flex;flex-direction:column;gap:34px}
   .lbl{font-family:'Barlow Condensed','Arial Narrow',sans-serif;text-transform:uppercase;letter-spacing:.12em;
     font-weight:700;font-size:12px;color:var(--ink-3)}
   h1{font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:800;font-size:34px;line-height:1.05;
@@ -39,11 +39,20 @@
   .mini.out{color:#08131b;background:var(--al2)}
   section{display:flex;flex-direction:column;gap:14px}
   .story{display:flex;flex-direction:column;gap:6px}
+  .steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;color:var(--ink-2);max-width:72ch}
   .surface{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:12px}
   .pair{display:flex;flex-direction:column;gap:14px}
   figure.shot{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
   figure.shot img{display:block;max-width:100%;height:auto;border:1px solid var(--edge);border-radius:6px;background:#000}
   .zooms{display:flex;flex-wrap:wrap;gap:10px}
+  .sbs{display:flex;flex-wrap:wrap;gap:14px 16px;align-items:flex-start}
+  .sbs figure.shot{flex:0 1 auto}
+  .sbs figcaption{max-width:552px}
+  details.more{border:1px solid var(--edge);border-radius:10px;background:var(--panel)}
+  details.more>summary{cursor:pointer;padding:12px 14px;font-weight:600;color:var(--ink-2)}
+  details.more>summary:focus-visible{outline:2px solid var(--al1);outline-offset:2px}
+  details.more>.inner{padding:0 14px 14px;display:flex;flex-direction:column;gap:14px}
+  .sw.amb{box-shadow:0 0 0 1.5px #E5A83B}
   .zooms img{flex:0 1 auto}
   figcaption{font-size:13px;color:var(--ink-3);max-width:75ch}
   .tag{align-self:flex-start;font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:800;font-size:12px;
@@ -64,9 +73,10 @@
 <div class="wrap">
   <header>
     <span class="lbl">Amendment re-test · examples of the fix</span>
-    <h1>The red ring stays visible when a change hasn’t gone out yet</h1>
-    <p>Pictures of the <b>real app</b> — your branch, the demo week — with three changes made the way a scheduler would
-      make them. Each is shown as the app draws it today, then with the fix laid on top. Nothing in the app was changed.</p>
+    <h1>The warning ring stays visible when a change hasn’t gone out yet</h1>
+    <p>Pictures of the <b>real app</b> — your branch, the demo week — with changes made the way a scheduler would make
+      them: first a busy day with three amendments out and a fourth waiting, then three single examples. Each is shown as
+      the app draws it today, then with the fix laid on top. Nothing in the app was changed.</p>
     <p class="dropped">The mark for a man taken off a seat is dropped, as you said.</p>
     <div class="switch" role="group" aria-label="Picture width">
       <button id="w-desktop" type="button" aria-pressed="true" data-set="desktop">Desktop</button>
@@ -77,17 +87,40 @@
   <div class="how">
     <span class="lbl">What the fix does</span>
     <p>On the edit week and the board, a change that hasn’t gone out yet gets a <b>dotted line around the puck</b>, in the
-      next amendment’s colour. The red warning rings are drawn in the same place, so the dotted line wins and the ring
-      disappears. With the fix, <b>a red ring always keeps the puck’s edge</b>, and the waiting change shows as a small
-      <b>hollow tag</b> in the corner — the corner where a published change already carries its solid tag. A puck with no
-      warning keeps today’s dotted line.</p>
+      next amendment’s colour. The warning rings are drawn in the same place — red, and the thinner amber (an advisory)
+      and grey (a note) — so the dotted line wins and the ring disappears. With the fix, <b>a warning ring always keeps
+      the puck’s edge</b>, and the waiting change shows as a small <b>hollow tag</b> in the corner — the corner where a
+      published change already carries its solid tag. A puck with no warning keeps today’s dotted line.</p>
     <div class="key" aria-hidden="true">
       <span><i class="sw dot"></i>waiting to go out (today)</span>
       <span><i class="sw ring"></i>a red warning ring</span>
+      <span><i class="sw amb"></i>an amber advisory ring</span>
       <span><b class="mini wait">AL2</b>waiting, with a ring (the fix)</span>
       <span><b class="mini out">AL2</b>gone out</span>
     </div>
   </div>
+
+  <section>
+    <span class="lbl">A busy day · AL1, AL2 and AL3 out, AL4 waiting</span>
+    <div class="story">
+      <h2>Monday, after three amendments</h2>
+      <p>Monday already had <b>AL1</b> (a change to the day note). On top of it, made and published the way a scheduler
+        would — each amendment in its own colour: AL1 blue, AL2 yellow, AL3 green, and the waiting AL4 white.</p>
+      <ul class="steps">
+        <li><b>AL2, out:</b> Piston and Outlaw swap seats on the 19:20 RU line; a remark changes on the 07:45 VL line.</li>
+        <li><b>AL3, out:</b> Rune takes Echo’s seat on the 07:45 VL line; the 19:20 RU line’s take-off moves to 19:30.</li>
+        <li><b>AL4, waiting:</b> Warden takes Saber’s seat on the 19:45 VL line — his landing breaks his Tuesday crew rest
+          (the dotted red ring). Saber moves to the 13:40 RU line and clashes with his 07:45 sortie (the solid red ring).
+          Tally moves to the 07:45 VL line and draws an advisory (the thin amber ring). Ledger takes Tally’s night seat,
+          with no warning. A remark changes.</li>
+      </ul>
+      <p>Only the three waiting pucks with a warning — Warden, Saber and Tally — look any different with the fix.</p>
+    </div>
+    <div class="surface"><h3>The edit week</h3><figure class="shot"><span class="tag plain">The top of the day — the same today and with the fix</span><img class="w-desktop" src="img/amend-seat-marks/desktop-busy-week-top.png" width="560" height="276" alt="The top of Monday" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-busy-week-top.png" width="374" height="361" alt="The top of Monday, phone" loading="lazy"><figcaption>Monday is on AL3, with five changes waiting to go out as AL4; the day note still carries AL1’s tag.</figcaption></figure><h3>Wave 1</h3><div class="sbs"><figure class="shot"><span class="tag today">Today</span><img class="w-desktop" src="img/amend-seat-marks/desktop-busy-week-w1-today.png" width="530" height="308" alt="Monday, wave 1 — today" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-busy-week-w1-today.png" width="344" height="364" alt="Monday, wave 1 — today, phone" loading="lazy"><figcaption>Saber (13:40 RU) and Tally (07:45 VL) show only the white dotted line: Saber’s red ring has the dots drawn over it, and Tally’s thin amber ring is gone.</figcaption></figure><figure class="shot"><span class="tag fix">With the fix</span><img class="w-desktop" src="img/amend-seat-marks/desktop-busy-week-w1-fix.png" width="530" height="308" alt="Monday, wave 1 — fix" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-busy-week-w1-fix.png" width="344" height="364" alt="Monday, wave 1 — fix, phone" loading="lazy"><figcaption>Saber’s red ring and Tally’s amber ring show, each with a hollow “AL4”. Rune keeps AL3’s solid green and the remark keeps AL2’s tag, as today.</figcaption></figure></div><h3>Wave 2</h3><div class="sbs"><figure class="shot"><span class="tag today">Today</span><img class="w-desktop" src="img/amend-seat-marks/desktop-busy-week-w2-today.png" width="530" height="307" alt="Monday, wave 2 — today" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-busy-week-w2-today.png" width="344" height="334" alt="Monday, wave 2 — today, phone" loading="lazy"><figcaption>Warden shows only the white dotted line — his dotted red ring is hidden.</figcaption></figure><figure class="shot"><span class="tag fix">With the fix</span><img class="w-desktop" src="img/amend-seat-marks/desktop-busy-week-w2-fix.png" width="530" height="307" alt="Monday, wave 2 — fix" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-busy-week-w2-fix.png" width="344" height="334" alt="Monday, wave 2 — fix, phone" loading="lazy"><figcaption>Warden’s dotted red ring shows, with a hollow “AL4”. Ledger has no warning and keeps the dotted line. Outlaw and Piston keep AL2’s solid marks; the take-off keeps AL3’s.</figcaption></figure></div><div class="w-desktop-only pair"><figure class="shot zoom"><span class="tag plain">Tally, 07:45 VL — the amber ring — today, then with the fix</span><div class="zooms"><img class="zoomimg" src="img/amend-seat-marks/zoom-busy-am-today.png" width="676" height="284" alt="Tally, 07:45 VL — the amber ring enlarged — today" loading="lazy"><img class="zoomimg" src="img/amend-seat-marks/zoom-busy-am-fix.png" width="676" height="284" alt="Tally, 07:45 VL — the amber ring enlarged — fix" loading="lazy"></div></figure><figure class="shot zoom"><span class="tag plain">Saber, 13:40 RU — the solid red ring — today, then with the fix</span><div class="zooms"><img class="zoomimg" src="img/amend-seat-marks/zoom-busy-ru-today.png" width="676" height="284" alt="Saber, 13:40 RU — the solid red ring enlarged — today" loading="lazy"><img class="zoomimg" src="img/amend-seat-marks/zoom-busy-ru-fix.png" width="676" height="284" alt="Saber, 13:40 RU — the solid red ring enlarged — fix" loading="lazy"></div></figure><figure class="shot zoom"><span class="tag plain">Warden, 19:45 VL — the dotted red ring — today, then with the fix</span><div class="zooms"><img class="zoomimg" src="img/amend-seat-marks/zoom-busy-night-today.png" width="676" height="284" alt="Warden, 19:45 VL — the dotted red ring enlarged — today" loading="lazy"><img class="zoomimg" src="img/amend-seat-marks/zoom-busy-night-fix.png" width="676" height="284" alt="Warden, 19:45 VL — the dotted red ring enlarged — fix" loading="lazy"></div></figure></div></div>
+    <div class="surface"><h3>The board</h3><div class="pair"><figure class="shot"><span class="tag today">Today</span><img class="w-desktop" src="img/amend-seat-marks/desktop-busy-board-w1-today.png" width="1092" height="367" alt="Monday wave 1, the board — today" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-busy-board-w1-today.png" width="346" height="705" alt="Monday wave 1, the board — today, phone" loading="lazy"><figcaption>Wave 1 on the board: Saber’s red ring under white dots; Tally’s amber ring gone.</figcaption></figure><figure class="shot"><span class="tag fix">With the fix</span><img class="w-desktop" src="img/amend-seat-marks/desktop-busy-board-w1-fix.png" width="1092" height="367" alt="Monday wave 1, the board — fix" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-busy-board-w1-fix.png" width="346" height="705" alt="Monday wave 1, the board — fix, phone" loading="lazy"><figcaption>Saber and Tally keep their rings, with “AL4”.</figcaption></figure></div><div class="pair"><figure class="shot"><span class="tag today">Today</span><img class="w-desktop" src="img/amend-seat-marks/desktop-busy-board-w2-today.png" width="1092" height="366" alt="Monday wave 2, the board — today" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-busy-board-w2-today.png" width="346" height="705" alt="Monday wave 2, the board — today, phone" loading="lazy"><figcaption>Wave 2 on the board.</figcaption></figure><figure class="shot"><span class="tag fix">With the fix</span><img class="w-desktop" src="img/amend-seat-marks/desktop-busy-board-w2-fix.png" width="1092" height="366" alt="Monday wave 2, the board — fix" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-busy-board-w2-fix.png" width="346" height="705" alt="Monday wave 2, the board — fix, phone" loading="lazy"><figcaption>The same as today: the board never draws Warden’s dotted ring (see “Also found”), so nothing here changes.</figcaption></figure></div></div>
+    <details class="more"><summary>What the squadron sees on View-only Sched — the fix doesn’t touch it</summary>
+      <div class="inner"><figure class="shot"><span class="tag plain">The top of the day</span><img class="w-desktop" src="img/amend-seat-marks/desktop-busy-view-top.png" width="560" height="165" alt="View-only Sched, the top of Monday" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-busy-view-top.png" width="374" height="206" alt="View-only Sched, the top of Monday, phone" loading="lazy"><figcaption>AL3 as issued, the day note with AL1’s tag.</figcaption></figure><figure class="shot"><span class="tag plain">Wave 1</span><img class="w-desktop" src="img/amend-seat-marks/desktop-busy-view-w1.png" width="530" height="306" alt="View-only Sched, wave 1" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-busy-view-w1.png" width="344" height="311" alt="View-only Sched, wave 1, phone" loading="lazy"><figcaption>Wave 1: AL2’s and AL3’s changes, solid, each with its tag. Nothing waiting shows here.</figcaption></figure><figure class="shot"><span class="tag plain">Wave 2</span><img class="w-desktop" src="img/amend-seat-marks/desktop-busy-view-w2.png" width="530" height="307" alt="View-only Sched, wave 2" loading="lazy"><img class="w-phone" src="img/amend-seat-marks/phone-busy-view-w2.png" width="344" height="281" alt="View-only Sched, wave 2, phone" loading="lazy"><figcaption>Wave 2.</figcaption></figure></div></details>
+  </section>
 
   <section>
     <span class="lbl">Example 1 · the dotted and the solid ring</span>
@@ -146,7 +179,7 @@
     <span class="lbl">Your call</span>
     <ol>
       <li><b>Build this fix?</b> <span class="rec">My recommendation: yes.</span> It only changes a puck that carries both a
-        red ring and a change that hasn’t gone out, on the edit week and the board.</li>
+        warning ring and a change that hasn’t gone out, on the edit week and the board.</li>
       <li><b>Make the board draw the dashed and dotted rings, like the edit week?</b> <span class="rec">My recommendation:
         yes</span>, as its own small job after this one.</li>
     </ol>

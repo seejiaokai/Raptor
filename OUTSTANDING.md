@@ -1121,9 +1121,12 @@ clash on the VIEW page was fixed in the re-test (its neutral hint moved onto the
 surfaces' mark is an established look (`raptor-port/docs/ui-contracts.md` §Amendment marks), so moving it is a visual
 change to show him first. **Examples shown 24 Sep 26, at his ask** — `raptor-port/docs/mock/amend-seat-marks.html`, three
 situations the app itself produced (a swap, a late show, an everyday change), its maker
-`raptor-port/scripts/handpass/am/mk-seat-marks.mjs` (the CSS as `B_CSS`). **The fix drawn is design B:** a red ring keeps the
-puck's edge (the pending outline is not drawn on a puck wearing `boxred`/`boxdash`/`boxdot`) and the waiting change shows
-as a hollow `ALn` tag in the issued tag's corner; a puck with no ring keeps today's dotted outline. **Design A** (the
+`raptor-port/scripts/handpass/am/mk-seat-marks.mjs` (the CSS as `B_CSS`, in `mk-seat-marks-lib.mjs`), and — at his second
+ask — a busy Monday with AL1–AL3 out and AL4 waiting (`mk-seat-marks-busy.mjs`). **The fix drawn is design B:** a warning
+ring keeps the puck's edge (the pending outline is not drawn on a puck wearing `warn`, `boxred`, `boxdash` or `boxdot`)
+and the waiting change shows as a hollow `ALn` tag in the issued tag's corner; a puck with no ring keeps today's dotted
+outline. **The busy day widened it:** the pending rule's `box-shadow:none` also wipes the thin amber (advisory) and grey
+(note) `.warn` rings today, not only the red ones — Tally in the busy day. **Design A** (the
 first mock-up: the mark moved onto the seat) was dropped on measurement — a seat is exactly its puck's 74×15 box and a
 crew pair sits 3px apart, so at real size (DPR 1) the mark and a dotted ring sit half a pixel apart and blur into one,
 and any larger offset runs into the next puck. The view page's neutral hint, moved onto the seat by the re-test, has

@@ -8,8 +8,8 @@
         SHOW: a crew-rest breach the scheduler sanctioned (the dashed red ring).
      3. A WSO put on Tuesday's afternoon RU line: an everyday change with no warning, to show it is untouched
         (the script picks the first WSO who lands there with no warning of any kind).
-   The fix drawn here is design B: a red ring keeps the puck's edge, and a pending change on a ringed puck says
-   so with a hollow "ALn" tag in the corner where an issued change keeps its solid one. Design A (the first
+   The fix drawn here is design B: a warning ring (red, amber or grey) keeps the puck's edge, and a pending change on
+   a ringed puck says so with a hollow "ALn" tag in the corner where an issued change keeps its solid one. Design A (the first
    mock-up: the mark moved out onto the seat) is drawn once, for the page's "why not" box.
    The first version of this file drew a mark for a man taken off a seat; he declined it (D91) — git history.
    Usage, with the build served on :4173:
@@ -25,38 +25,12 @@ const OUT = 'C:/Users/User/projects/Raptor/raptor-port/docs/mock/img/amend-seat-
 process.env.HP_SHOTS = OUT
 mkdirSync(OUT, { recursive: true })
 const L = await import('./w2-lib.mjs')
+const { B_CSS, A_CSS, design: lay } = await import('./mk-seat-marks-lib.mjs')
+const design = (css) => lay(page, css)
 const { openHi, editWeek, board, closeBoard, signDay, publishAL, STATE } = L
 const { browser, page, errors } = await openHi({ ...SIZE, state: STATE, dpr: DPR })
 const TAG = ZOOM ? 'zoom' : W
 
-/* ---- the two designs, as the build would write them ------------------------------------------------------ */
-const RINGED = '.puck:is(.boxred,.boxdash,.boxdot)'
-const B_CSS = `
-#eWeek .seat[data-aln] .puck:not(.boxred):not(.boxdash):not(.boxdot),
-#schedBoard .seat[data-aln] .puck:not(.boxred):not(.boxdash):not(.boxdot){box-shadow:none;outline:1.5px dotted var(--alc);outline-offset:1px}
-#eWeek .seat[data-aln]:has(>${RINGED})::after,#schedBoard .seat[data-aln]:has(>${RINGED})::after{
-  content:'AL' attr(data-aln);position:absolute;top:-5px;right:-3px;z-index:4;
-  font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:7.5px;font-weight:800;letter-spacing:.02em;line-height:1;
-  padding:0 2px;border-radius:4px;background:#14181D;color:var(--alc);border:1px dotted var(--alc);pointer-events:none}`
-const A_CSS = `
-#eWeek .seat[data-aln],#schedBoard .seat[data-aln]{outline:1.5px dotted var(--alc);outline-offset:3px;border-radius:5px}`
-async function design(css) {
-  await page.evaluate((css) => {
-    /* take out today's rule — the pending mark drawn on the puck — keeping it to put back for "today" */
-    for (const sh of document.styleSheets) {
-      if (sh.ownerNode && sh.ownerNode.id === 'mk-design') continue    // our own sheet, never the app's rule
-      let rules; try { rules = sh.cssRules } catch { continue }
-      for (let i = rules.length - 1; i >= 0; i--) {
-        const r = rules[i]
-        if (r.selectorText && /#eWeek \.seat\[data-aln\] \.puck/.test(r.selectorText)) { window.__todayRule = window.__todayRule || r.cssText; sh.deleteRule(i) }
-      }
-    }
-    let st = document.getElementById('mk-design')
-    if (!st) { st = document.createElement('style'); st.id = 'mk-design'; document.head.appendChild(st) }
-    st.textContent = css == null ? (window.__todayRule || '') : css
-  }, css)
-  await page.waitForTimeout(120)
-}
 const DESIGNS = { today: null, fix: B_CSS }
 
 /* ---- the situations, made through the app's own write path (the same one a drop or a typed box uses) ---- */

@@ -150,3 +150,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** For any mark a few pixels wide: measure the element boxes and neighbour gaps before designing; capture at the target screens' real densities (1x desktop, 3x phone) and show those at true size, with an enlarged copy only as a detail view; state on the page which pictures are real size. When a mock script swaps styles, keep the app's original rule once, skip its own injected sheet, and eyeball every "before" picture.
 
 **Principle:** Enlargement hides sub-pixel collisions; a design for a tiny mark is only proven at the pixel size people will actually see.
+
+### Observation 243: Show a fix on the busiest realistic state, not only on the case that reproduces the bug
+
+**Status:** OPEN
+**Date:** 24 Sep 26
+**Session context:** the ring-fix mock-up; the owner asked to see the fix "in a schedule that has 3 AL and multiple changes"
+**Skill:** New skill candidate: visual mock-up of a change to an existing surface (see Observations 241, 242)
+**Type:** open-source
+**Phase/Area:** choosing what the examples show
+
+**Issue:** The first examples were built around the defect as reported (a mark hiding the red rings), one situation per ring, and the fix drawn let only the red rings through. The owner's request for a busier state (several amendments out, more waiting, mixed warnings) surfaced a case the minimal examples could not: the same rule also wiped the thinner amber and grey warning rings, so the fix as drawn was incomplete. The owner, not the agent, asked for the state that exposed it.
+
+**Suggested improvement:** When mocking a fix, include one "busy" state by default — the fullest realistic mix of the elements the fix touches (every mark colour, every ring kind, issued and pending together, a plain case) — and derive the fix's scope from what the rule being changed actually affects (here: every box-shadow the rule wipes), not from the bug's first description.
+
+**Principle:** A fix scoped from the bug report covers the reported case; a fix checked against the busiest realistic state covers the rule.
