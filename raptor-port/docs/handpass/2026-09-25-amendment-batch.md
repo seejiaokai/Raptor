@@ -112,3 +112,5 @@ On the branch's Vercel link, on a day you publish yourself:
    week behind should show above the keyboard. (Chromium cannot raise an iPhone keyboard; this is the one real proof.)
 5. **One question for you:** replacing Rune with Tally in the SAME seat counts as **1** change. Keep it one?
    (Recommended: yes — it reads as one change, and it is what the day showed before.) `[MOVE-REPLACE-ONE]`
+6. **A second question:** taking an accepted request off a published day (✕ on its row) counts **2** — the row and
+   the request's filing, two lines in the list. Make it **1**? (Recommended: yes — one act, one line.) `[REQUEST-OFF-ONE]`

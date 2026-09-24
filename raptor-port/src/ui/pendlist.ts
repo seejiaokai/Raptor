@@ -25,6 +25,7 @@ import { INPUTS, inpId, inpLabel } from '../engine/inputs'
 import { dayPendingItems, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS } from '../engine/publish'
 import type { PendItem } from '../engine/publish'
 import { ELOG, elogWhen, keyLabel } from '../engine/editlog'
+import { oilEvidence } from '../engine/oilev'
 import { esc } from '../state/view'
 
 let box: HTMLDivElement | null = null
@@ -138,7 +139,47 @@ export function pendItemWords(di: number, it: PendItem): Words {
     const who = inp ? cs(inp.person) : ''
     return { where: inp ? `${who ? who + ' · ' : ''}${inpLabel(inp)}` : 'A request', from: FIL[e.from || ''] || '', to: FIL[e.to || ''] || '', ...none, jump: false }
   }
+  /* WHAT THE DAY EARNS — say WHO and WHERE when it is the crowd behind a placeholder that moved (walker B1, 25 Sep 26:
+     "What this day earns · changed" named nobody and could not be tapped, so the scheduler still had to go looking —
+     the very hunt D99 exists to end). The issued version froze who each ALL / ALL AVAIL puck stood for (D44); the
+     live evidence says who it stands for now; the difference names the row and the men. A change in the scheduler's
+     own earning decisions keeps the plain wording. */
+  const crowd = crowdChange(di)
+  if (crowd) return { ...crowd, ...none, jump: crowd.keys.length > 0 }
   return { where: 'What this day earns', from: '', to: 'changed', ...none, jump: false }
+}
+/* the rows whose placeholder crowd differs from what the day went out with: its name, who left, who joined, and the
+   row's cells to jump to */
+function crowdChange(di: number): { where: string, from: string, to: string, keys: string[] } | null {
+  const snap: any = daySnapOf(di, dayCurVer(di)); if (!snap || !snap.d) return null
+  const was: any = (snap.d.oilev && snap.d.oilev.sent) || {}, now: any = oilEvidence(di).sent || {}
+  const diff = [...new Set([...Object.keys(was), ...Object.keys(now)])].map(item => {
+    const a = new Set<string>(was[item] || []), b = new Set<string>(now[item] || [])
+    return { item, off: [...a].filter(x => !b.has(x)), on: [...b].filter(x => !a.has(x)) }
+  }).filter(x => x.off.length || x.on.length)
+  if (!diff.length) return null
+  const d: any = DAYS[di], first = rowByItem(d, di, diff[0]!.item)
+  const where = (first ? first.name : 'A placeholder') + (diff.length > 1 ? ` + ${diff.length - 1} more` : '') + ' · who it stands for'
+  const off = diff.flatMap(x => x.off), on = diff.flatMap(x => x.on)
+  return { where, from: names(off), to: on.length ? names(on) : 'no longer free', keys: first ? first.keys : [] }
+}
+/* an OIL item key (`r:<row id>`) back to its row on the live day: the row's name and its cells, puck first */
+function rowByItem(d: any, di: number, item: string): { name: string, keys: string[] } | null {
+  const rid = String(item).startsWith('r:') ? String(item).slice(2) : ''
+  if (!rid || !d) return null
+  let i = (d.ground || []).findIndex((r: any) => r && r.rid === rid)
+  if (i >= 0) return { name: d.ground[i].prog || 'ground item', keys: [`g:${di}.${i}`, `gr:${di}.${i}.prog`] }
+  i = (d.allhands || []).findIndex((r: any) => r && r.rid === rid)
+  if (i >= 0) return { name: d.allhands[i].prog || 'programme item', keys: [`a:${di}.${i}.0`, `ap:${di}.${i}.prog`] }
+  for (const [wi, b] of ((d.dutywaves || []) as any[]).entries()) {
+    const ri = (b.rows || []).findIndex((r: any) => r && r.rid === rid)
+    if (ri >= 0) return { name: b.rows[ri].role || 'duty row', keys: [`d:${di}.${wi}.${ri}`, `dr:${di}.${wi}.${ri}.role`] }
+  }
+  for (const k of Object.keys(d.sims || {})) {
+    const si = (d.sims[k] || []).findIndex((r: any) => r && r.rid === rid)
+    if (si >= 0) return { name: `${k.toUpperCase()} ${d.sims[k][si].label || ''}`.trim(), keys: [`s:${di}.${k}.${si}.x0`, `sr:${di}.${k}.${si}.label`] }
+  }
+  return null
 }
 
 /* the reading order: the day's own sections top to bottom, then what has no place on it */
@@ -159,6 +200,8 @@ export function pendListHTML(di: number): string {
   const n = items.length, seq = nextSeq(di)
   const rows = items.map((it, i) => {
     const w = pendItemWords(di, it)
+    /* a line that found its own place to go (the crowd behind a placeholder) carries it for the tap */
+    if (w.jump && !(it.jump && it.jump.length) && (w as any).keys) items[i] = { ...it, jump: (w as any).keys }
     const chg = w.from || w.to
       ? `<span class="pl-chg">${w.from ? `<s>${esc(w.from)}</s>` : ''}${w.from && w.to ? ' → ' : ''}${w.to ? `<b>${esc(w.to)}</b>` : ''}</span>` : ''
     const who = w.who ? `<span class="pl-who">${esc(w.who)}${w.when ? `<br>${esc(w.when)}` : ''}</span>` : '<span class="pl-who"></span>'

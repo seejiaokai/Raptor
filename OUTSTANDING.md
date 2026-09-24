@@ -76,7 +76,7 @@ The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small b
 [BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
 FULL-tier build, any time).
 
-**Waiting on him — no order exists:** [MOVE-REPLACE-ONE] (the amendment batch's one gap: does a replacement in one seat count one or two? built as one — a question for his morning look, D112), [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
+**Waiting on him — no order exists:** [REQUEST-OFF-ONE] (the batch walk: a request taken off a published day counts two — make it one? recommended yes), [MOVE-REPLACE-ONE] (the amendment batch's one gap: does a replacement in one seat count one or two? built as one — a question for his morning look, D112), [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
 D147), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
 [REPO-PRIVATE]'s sharing half, [EOD] (design first; no slot
 ruled), [CRP-FLAG]'s remainder and then [FLAG-EXPORT], the [AMEND] leftovers, [ADMIN-DISPLAY] ("next time we revisit",
@@ -1132,6 +1132,19 @@ a placeholder) taken off one place and put on another place of the same day into
 areas and remarks one per box. ONE counting body for every count (day head, Amendments panel, ⓘ panel, plan-switch
 message, "Discard N edits", the pending list). **Build with the amendment batch** (item 14) — the pending list's
 lines (item 8) read a move as one line. FULL tier inside the batch (the published record).
+
+### [REQUEST-OFF-ONE] Taking an accepted request off a published day counts TWO pending changes — one? A question for him (25 Sep 26)
+Found by the amendment batch's walk (walker B1, `raptor-port/docs/handpass/parts/2026-09-25-amendment-batch-b1.md`
+finding 1, picture `docs/img/handpass/2026-09-25-amendment-batch/b1/b1-d-03-list-week.png`). One tap — ✕ on Gambit's
+accepted FLY WITH row on a published Monday — reads "+2" on every surface (they all agree), and the pending list shows
+two lines: "Ground · FLY WITH · removed" and "Gambit · Fly with: on the programme → taken off". The published AL then
+says "1 removal · 1 input filing". **Not new:** before the batch the count was the record's length, also 2; D109 made a
+MOVE one change and says nothing about a request's row and its filing. Accepting a request onto a published day is
+the mirror case (a row added + its filing = 2). **The agent's recommendation: count it ONE** — one act by the
+scheduler, one line ("Gambit's Fly with taken off the programme"); what goes out (the stored diff) would stay as it
+is. **To build:** in `raptor-port/src/engine/publish.ts dayPendingItemsIn`, pair a filing entry for input X with the
+ground row add / delete whose `src` is X into one item, and word it in `raptor-port/src/ui/pendlist.ts`. **Place:** his
+morning look at the batch (the look card asks it).
 
 ### [MOVE-REPLACE-ONE] A replacement in one seat — one pending change or two? A question for him (25 Sep 26)
 Found while building D109 ("a move counts as one") overnight under D112. His words settle a man MOVED (one), a SWAP

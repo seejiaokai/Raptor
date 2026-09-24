@@ -220,3 +220,22 @@ describe('item 14 — a move counts as ONE, and every count reads the one body (
     expect(SCHED.als[0].diff.length, 'what went out is unchanged: both cells').toBe(2)
   })
 })
+
+describe('the pending list says WHO and WHERE when the crowd behind a placeholder moved (walker B1, 25 Sep 26; D99, AM53)', () => {
+  it('names the row and the man who dropped out, and the line can be tapped', async () => {
+    const { pendListHTML } = await import('./pendlist')
+    const saved = HOOKS.oilSentinel, iso = HOOKS.oilDayISO
+    ;(DAYS[MON] as any).ground.push({ prog: 'FAMILY DAY', str: '09:00', end: '17:00', who: 'allavail' })
+    HOOKS.oilDayISO = (di: number) => (di === MON ? '2026-07-13' : '')   // the day's date, as the Leave War wire supplies it
+    HOOKS.oilSentinel = () => ['bane', 'stiff']
+    try {
+      publishDay(MON)
+      HOOKS.oilSentinel = () => ['bane']                 // Stiff files leave
+      const l = el(pendListHTML(MON))
+      const t = l.textContent || ''
+      expect(t, 'the row').toContain('FAMILY DAY')
+      expect(t, 'the man who dropped out').toContain((PEOPLE as any).stiff.cs)
+      expect(l.querySelector('button.pl-item'), 'a place to go').toBeTruthy()
+    } finally { HOOKS.oilSentinel = saved; HOOKS.oilDayISO = iso }
+  })
+})
