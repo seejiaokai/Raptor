@@ -2209,9 +2209,16 @@ describe('the board carries the edit week\'s publish controls (owner ask)', () =
 
   it('a frozen version preview renders no Publish day / Publish AL controls', async () => {
     await act(async () => { view.setDayPreview(0, dayCurVer(0)); notify() })
-    expect($('#sbSignBar'), 'boardSignHTML(di, true) still returns nothing on a frozen preview').toBeFalsy()
+    /* UPDATED 24 Sep 26 ([HUMAN-RETEST] amendment re-test, walk W2-F1; register AM28): this
+       used to pin the WHOLE strip empty under a preview — older than the 15 Sep redesign that
+       moved the plans selector and the version tag into it. The locked design keeps the
+       selector (its amber "👁" label says what you are looking at) and the tag on both
+       surfaces; what a preview must never offer is unchanged and still pinned below. */
+    expect($$('#sbSign select[data-sign]').length, 'no sign-off pills on a past version').toBe(0)
+    expect($('#sbSign .planselbtn')?.textContent || '', 'the selector says what you are looking at').toMatch(/👁/)
     expect($$('#sbSign [data-beak]').length).toBe(0)
     expect($$('#sbSign [data-alpub]').length).toBe(0)
+    expect($$('#sbSign [data-unpub]').length, 'nor an Unpublish').toBe(0)
     await act(async () => {
       view.setDayPreview(0, null)
       SCHED.dayOK = {}; SCHED.orig = {}; SCHED.sign = {}

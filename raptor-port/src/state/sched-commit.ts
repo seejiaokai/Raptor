@@ -38,7 +38,7 @@ import { DAYS } from '../engine/data'
 import { INPUTS, mintInpIds } from '../engine/inputs'
 import { reconcileDayFiling } from '../engine/slots'
 import { ensureRowIds } from '../engine/rowids'
-import { SCHED, setDayApproved, publishALDay, discardPending, unpublishDay, dayCurVer, signClear } from '../engine/publish'
+import { SCHED, setDayApproved, publishALDay, discardPending, unpublishDay, dayCurVer, signClear, signClearPlans } from '../engine/publish'
 import { reconcileIssuedMarks } from '../engine/drafts'
 import { CURWEEK } from '../engine/waves'
 import { HIST, histSnap, histRestore, setSchedResync } from './history'
@@ -314,11 +314,23 @@ function publishDayOf(entry: any): number | null {
   }
   return null
 }
-export function schedPostRestore(entry: any, dir: 'undo' | 'redo'): void {
-  if (dir !== 'undo' || !entry?.boundary || entry.boundary.kind !== 'publish') return
-  const di = publishDayOf(entry)
-  if (di == null) return
-  signClear(di)
+export function schedPostRestore(entry: any, dir: 'undo' | 'redo', pulledBack: Array<{ weekId: string; di: number }> = []): void {
+  const clear = new Set<number>()
+  if (dir === 'undo' && entry?.boundary?.kind === 'publish') {
+    const di = publishDayOf(entry)
+    if (di != null) clear.add(di)
+  }
+  /* [HUMAN-RETEST] walk W3 F-w3-1 (24 Sep 26) — a restore of an OLDER step writes that step's image
+     of the whole week's sign-off record, which still carries the sign-offs a later publish spent.
+     Undoing a publish cleared them once, here; the very next Undo ("a sign-off", even on another
+     day) wrote them all back, and "Publish day" then worked with nobody re-signing. So every day
+     whose later publication has been pulled back (the timeline hands them over) is cleared again —
+     only when this restore wrote the loaded week's sign-off record (it is then enlisted). */
+  const wroteBook = (entry?.forward || []).some((ch: any) => ch.collection === 'sched.book' && ch.id === CURWEEK)
+  if (wroteBook) for (const d of pulledBack) if (d.weekId === CURWEEK) clear.add(d.di)
+  if (!clear.size) return
+  // every plan of the day re-signs, the parked ones too — the same as the Unpublish button (AM34, AM32)
+  for (const di of clear) { signClear(di); signClearPlans(di) }
   /* [GLOBAL-UNDO] Fable#1 / Codex GU-P2-004 — signClear runs AFTER schedWriteRecords'
      applyEnd() already advanced SCHED_BASELINE, so without this the lagging baseline
      stays SIGNED while live is cleared. The restore envelope still captures the clear
@@ -505,7 +517,10 @@ function commitPublish(type: string, fn: () => void, di: number): CommitResult {
       for (const id of issuedIdSet()) if (!before.has(id)) added.push(id)
       if (added.length) {
         txn.boundary({ kind: 'publish', ids: added, crossable: !added.some(issuedDisclosed) })
-        /* [ARCH-STACK] step 4 (B5) — weekend / PH work replaces a clashing leave bid */
+        /* [ARCH-STACK] step 4 (B5) — weekend / PH work meets a clashing leave bid here: since the
+           owner's 20–21 Sep 26 answer ("keep the bid and flag the day, both ways") the gate KEEPS the
+           bid and flags the day (leavewar/sync.ts publishFlagsBids; register AM48c) — it no longer
+           replaces it. (Comment corrected by the amendment re-test, 24 Sep 26.) */
         publishGate()?.(di)
       }
       applyEnd()   // SR-001: commitPublish builds its OWN Command, so it needs the shared advance too
@@ -524,7 +539,12 @@ export function commitSetDayApproved(di: number, on: any): CommitResult {
 /* publish one day's changes as its next per-day AL (appends a sched.als record +
    the publish boundary). */
 export function commitPublishALDay(di: number): CommitResult {
-  return commitPublish(SCHED_TYPES.publishAL, () => publishALDay(di), di)
+  /* the issue step freezes EVERY dotted mark on the day as "changed at ALn" (alIssue), while its
+     item count comes from the real difference — so a mark left on a detail that is back at the
+     issued value went into the published record as a change AL1 never made ([HUMAN-RETEST] walk
+     W1-1, 24 Sep 26; AM20, AM19). Drop such marks first, whatever path left them: the reconcile
+     only ever REMOVES a mark whose detail equals the issued version, so it cannot hide a change. */
+  return commitPublish(SCHED_TYPES.publishAL, () => { reconcileIssuedMarks(); publishALDay(di) }, di)
 }
 
 /* clear a never-published day's draft marks. Not a publish (mints no issued id,

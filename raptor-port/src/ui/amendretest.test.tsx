@@ -23,13 +23,16 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { DAYS } from '../engine/data'
+import { PEOPLE } from '../engine/people'
 import { INPUTS } from '../engine/inputs'
 import { SCHED, signOf, setDayApproved, dayDelta, dayPendCount } from '../engine/publish'
 import { acceptInput, unacceptInput } from '../engine/slots'
+import { inpId } from '../engine/inputs'
 import { ensureRowIds } from '../engine/rowids'
 import { validate } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
 import { initStore, notify, writeText } from '../state/store'
+import { commitPublishALDay } from '../state/sched-commit'
 import { setSession } from '../state/auth'
 import {
   setPage, DPREV, VWORK, setUnpubArm, unpubArmed, setRestArm, restArmed,
@@ -39,6 +42,16 @@ import { boardSignHTML, switchDraft } from './board'
 import { draftDup, dayDrafts } from '../engine/drafts'
 import { setOilBlanket } from './oilmode'
 import { ALPanel } from './ALPanel'
+import { readFileSync } from 'node:fs'
+import { join, dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { WCODE } from '../engine/validate'
+import { dayCurVer } from '../engine/publish'
+import { loadVersionToWorkingCopy } from '../engine/drafts'
+import { sbUnavailPanel } from './board-html'
+import { routeClick } from './interactions'
+import { DraftsModal } from './DraftsModal'
+import { setDraftsEdit } from './pops'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -205,5 +218,179 @@ describe('the one-shot confirms clear on any navigation (walk S13)', () => {
     setUnpubArm(SAT)
     setPage('editsched')
     expect(unpubArmed(SAT)).toBe(true)
+  })
+})
+
+/* ===================================================================== batch 2
+   The four walkers' findings (evidence sheet §3, W2-/W4- ids), each red first. */
+
+describe('every check the day can raise has a plain heading (W4-F5)', () => {
+  it('no warning shows its internal code as its title', () => {
+    const src = readFileSync(join(dirname(fileURLToPath(import.meta.url)), '../engine/validate.ts'), 'utf8')
+    const codes = [...new Set([...src.matchAll(/add\('(?:hard|adv|note)','([A-Z_]+)'/g)].map(m => m[1]))]
+    expect(codes.length).toBeGreaterThan(20)
+    const bare = codes.filter(c => !WCODE[c])
+    expect(bare, 'these would print their code, e.g. "OIL_UNPUBLISHED", as the heading').toEqual([])
+  })
+})
+
+/* an activity input on Monday, parked (not on the programme) — the demo boot may already
+   have landed it, so it is taken off first; either way it ends 'r' */
+const meeting = () => {
+  const inp = INPUTS.find((x: any) => x.type === 'Meeting' && x.date === 'Jul 13')!
+  if (inp.acc && inp.acc !== 'r') unacceptInput(MON, inp)
+  return inp
+}
+
+describe('an input filed under Unavailable can be taken back out (W4-F4, AM14)', () => {
+  it('its Unavailable row carries an Undo on the week and the board — never on the view page', () => {
+    const inp = meeting()
+    expect(acceptInput(MON, inp, 'u')).toBe(true)
+    const id = inpId(inp)
+    const undoIn = (html: string) => !!el(html).querySelector(`[data-acc="x"][data-acck="${id}"]`)
+    expect(undoIn(sbUnavailPanel(DAYS[MON], MON)), 'the board\'s Unavailable panel').toBe(true)
+    expect(undoIn(weekEdit(MON).innerHTML), 'the edit week\'s Unavailable section').toBe(true)
+    setPage('viewsched')
+    try { expect(undoIn(dayHTML(MON, false)), 'the view page is read-only').toBe(false) } finally { setPage('editsched') }
+  })
+  it('pressing it puts the input back among Personal Inputs, parked', () => {
+    const inp = meeting()
+    acceptInput(MON, inp, 'u')
+    const b = el(sbUnavailPanel(DAYS[MON], MON)).querySelector(`[data-acc="x"][data-acck="${inpId(inp)}"]`) as HTMLElement
+    document.body.appendChild(b)
+    try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() }
+    expect(inp.acc).toBe('r')
+  })
+})
+
+describe('taking an issued input off and putting it back is a round trip, not an amendment (W4-F2, AM20)', () => {
+  it('re-accepting restores the issued row, so nothing differs from what was issued', () => {
+    const inp = meeting()
+    expect(acceptInput(MON, inp, 'g')).toBe(true)          // on the programme
+    publishDay(MON)                                         // …and issued with it
+    expect(dayDelta(MON).length).toBe(0)
+    expect(unacceptInput(MON, inp)).toBe(true)              // taken off
+    expect(dayDelta(MON).length, 'a real removal while it is off').toBeGreaterThan(0)
+    expect(acceptInput(MON, inp, 'g')).toBe(true)          // put back
+    expect(dayDelta(MON), 'identical to the issued version again').toEqual([])
+  })
+})
+
+describe('loading a version back re-links an input whose row it brings back (W4-F3)', () => {
+  it('the input is on the programme again, and the day matches the loaded version', () => {
+    const inp = meeting()
+    acceptInput(MON, inp, 'g'); publishDay(MON)
+    unacceptInput(MON, inp)                                 // off the programme: parked 'r'
+    expect(loadVersionToWorkingCopy(MON, dayCurVer(MON))).toBe(true)
+    expect(inp.acc, 'its row is back, so it is landed').toBe('g')
+    expect(dayDelta(MON), 'nothing left to publish').toEqual([])
+  })
+  it('"→ Ground" on an input already on the programme says so instead of doing nothing', () => {
+    const inp = meeting()
+    acceptInput(MON, inp, 'g')
+    inp.acc = 'r'                                           // the stuck state a load used to leave
+    const b = document.createElement('button')
+    b.dataset.acc = 'g'; b.dataset.accd = String(MON); b.dataset.acck = inpId(inp)
+    document.body.appendChild(b)
+    const said = withToasts(() => { try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() } })
+    expect(said.join(' '), 'a refused press is never silent').toMatch(/already on the programme/i)
+  })
+})
+
+describe('the board keeps the plans selector and the version tag while you look at an issued version (W2-F1, AM28)', () => {
+  it('the amber "👁 Original" and the tag stay; the sign-offs and every publish door go', () => {
+    publishDay(MON)
+    writeText(`dn:${MON}.0`, 'A CHANGE AFTER PUBLISHING')
+    DPREV.set(MON, SCHED.orig[MON].id)
+    try {
+      const s = el(boardSignHTML(MON, true))              // exactly as SchedBoard calls it under a preview
+      expect(s.querySelector('.planselbtn')?.textContent || '', 'what you are looking at').toMatch(/👁\s*Original/)
+      expect(s.querySelector('.verchip')?.textContent, 'what the day IS').toBe('ORIG')
+      expect(s.querySelector('select[data-sign]'), 'no signing a past version').toBeNull()
+      expect(s.querySelector('[data-alpub], [data-beak], [data-unpub]'), 'no publish door under a preview').toBeNull()
+    } finally { DPREV.clear() }
+  })
+})
+
+describe('the plan editor belongs to Edit Schedule (W2-F8)', () => {
+  let host: HTMLDivElement, root: Root
+  beforeAll(() => { host = document.createElement('div'); document.body.appendChild(host); root = createRoot(host) })
+  afterAll(() => { act(() => root.unmount()); host.remove(); setDraftsEdit(null) })
+  it('it does not float over View-only Sched, where its Select could not act', async () => {
+    draftDup(MON)
+    setDraftsEdit({ di: MON })
+    setPage('editsched')
+    await act(async () => { root.render(<DraftsModal />); notify() })
+    expect(host.querySelector('#draftsModal')?.hasAttribute('hidden'), 'open on Edit Schedule').toBe(false)
+    setPage('viewsched')
+    await act(async () => { root.render(<DraftsModal />); notify() })
+    expect(host.querySelector('#draftsModal')?.hasAttribute('hidden'), 'hidden on View-only Sched').toBe(true)
+  })
+})
+
+/* walk W3 F-w3-6 (24 Sep 26). A signer's scheduler appointment withdrawn on Quals: the name stays on its
+   pill (AM16 — a signature never blanks itself on an appointment change) but no longer counts, so the
+   week showed four green names and just "1 to sign" — and a phone has no hover to say which. Correct
+   behaviour that reads as a bug says so (AM15b). */
+describe('the sign-off line names a signature that stopped counting (W3-F6, AM16, AM15b)', () => {
+  it('the week and the board say which role needs an appointed scheduler', () => {
+    sign(MON)
+    const was = PEOPLE.bane.quals.sched
+    PEOPLE.bane.quals.sched = false                        // bane signed SKED CK; his appointment is withdrawn
+    try {
+      const w = weekEdit(MON)
+      expect(w.querySelectorAll('.sgn.on').length, 'the name stays on its pill (AM16)').toBe(4)
+      expect(w.querySelector('.so-state')?.textContent).toBe('1 to sign · SKED CK needs an appointed scheduler')
+      expect(boardStrip(MON).querySelector('.so-state')?.textContent).toBe('1 to sign · SKED CK needs an appointed scheduler')
+    } finally { PEOPLE.bane.quals.sched = was }
+  })
+  it('an ordinary gap stays a count on the week — the empty pills already say which', () => {
+    signOf(MON).cur = 'ignite'
+    expect(weekEdit(MON).querySelector('.so-state')?.textContent).toBe('3 to sign')
+    expect(boardStrip(MON).querySelector('.so-state')?.textContent).toBe('3 to sign · SKED CK, PLANNED BY, APPROVED BY')
+  })
+})
+
+/* walk W1 W1-3 (24 Sep 26). The view page shows a published day's ISSUED face — frozen, and the same for
+   the squadron as for the scheduler (AM5). Working-copy state never shows there (AM24, the Z9 choice).
+   A filing-only change leaked through: the frozen copy was compared against the LIVE inputs, so the
+   issued face read "Original — as issued · 1 pending" — to members too — and its ⓘ "1 unpublished edit". */
+describe('the issued face never wears the working copy\'s pending count (W1-3, AM24, AM5)', () => {
+  it('a filing-only change: no "pending" on the view page\'s issued face, nor in the ⓘ opened there', () => {
+    const inp = meeting()
+    expect(acceptInput(MON, inp, 'g')).toBe(true)
+    publishDay(MON)
+    expect(unacceptInput(MON, inp)).toBe(true)              // a change to the working copy's filing only
+    expect(headCount(MON), 'the working copy counts it').toBeGreaterThan(0)
+    expect(weekView(MON).querySelector('.dpend'), 'the issued face stays as issued').toBeNull()
+    setPage('viewsched')
+    try {
+      expect(el(dayInfoHTML(MON)).querySelector('.dip-pend'), 'nor the ⓘ read beside it').toBeNull()
+      VWORK.add(MON)                                        // the viewer's own Working-draft peek is the working copy
+      expect(el(dayInfoHTML(MON)).querySelector('.dip-pend'), 'there it may say so').toBeTruthy()
+    } finally { VWORK.clear(); setPage('editsched') }
+  })
+})
+
+/* walk W1 W1-1 (24 Sep 26). A dotted mark left on a detail that is back at the issued value was frozen
+   by the next publish into the issued record as "changed at ALn" — while the item count (from the real
+   difference) said otherwise. The Unpublish that left one is fixed (F4); the publish step itself now
+   refuses to freeze one, whatever path leaves it (AM20, AM19). */
+describe('publishing an amendment never freezes a stale mark into the issued record (W1-1, AM20, AM19)', () => {
+  it('a mark on a detail back at its issued value does not come out as "changed at AL1"', () => {
+    publishDay(MON)
+    const g0: any = (DAYS[MON] as any).ground?.[0]
+    expect(g0, 'the demo Monday has a ground row').toBeTruthy()
+    const was = g0.prog
+    writeText(`dn:${MON}.0`, 'A REAL CHANGE')                // the real amendment
+    writeText(`gr:${MON}.0.prog`, 'MOVED ON')                 // a second edit leaves its dotted mark…
+    const k = Object.keys(SCHED.pending).find((x) => x.startsWith(`gr:${MON}.`))!
+    expect(k, 'the edit is marked').toBeTruthy()
+    g0.prog = was                                             // …and the detail goes back by a path that re-checks nothing
+    sign(MON)
+    commitPublishALDay(MON)
+    expect((SCHED.als as any[]).length, 'AL1 went out').toBe(1)
+    expect(SCHED.changes[k], 'the detail back at its issued value is not "changed at AL1"').toBeUndefined()
+    expect((SCHED.als as any[])[0].diff.length, 'one item — the real change').toBe(1)
   })
 })

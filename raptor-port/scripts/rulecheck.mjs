@@ -184,7 +184,7 @@ const RULES = {
    register's §Coverage): most are pinned in PART, AM7 and AM44 by nothing. Named-by-nothing is the honest
    state, so they are baselined here to stay visible; shrink the list as each gains a whole-rule test. */
 const BASELINE = new Set(['Q9', 'Q11', 'Q12', 'Q14', 'Q15', 'OIL19', 'OIL26',
-  'AM7', 'AM8', 'AM15', 'AM17', 'AM19', 'AM25', 'AM26', 'AM27', 'AM28', 'AM30', 'AM34', 'AM36', 'AM37', 'AM39', 'AM39b', 'AM39c', 'AM39d', 'AM44', 'AM45', 'AM47', 'AM48', 'AM48a', 'AM49', 'AM49b', 'AM50', 'AM51', 'AM51b', 'AM51c', 'AM51d', 'AM51e', 'AM51f', 'AM51g'])
+  'AM7', 'AM8', 'AM15', 'AM17', 'AM19', 'AM25', 'AM26', 'AM27', 'AM30', 'AM36', 'AM37', 'AM39', 'AM39d', 'AM44', 'AM45', 'AM48', 'AM48a', 'AM49', 'AM49b', 'AM50', 'AM51', 'AM51b', 'AM51c', 'AM51d', 'AM51e', 'AM51f', 'AM51g'])
 
 const TEST_DIRS = [join(ROOT, 'src'), join(ROOT, 'e2e')]
 const isTest = (f) => /\.(test|spec)\.(ts|tsx)$/.test(f)

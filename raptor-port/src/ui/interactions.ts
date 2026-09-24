@@ -532,6 +532,13 @@ export function routeClick(e: MouseEvent) {
       logAction(di, said)
       HOOKS.toast(said, 'ok')
       view.afterSchedMutate()
+    } else {
+      /* A REFUSED PRESS IS NEVER SILENT ([HUMAN-RETEST] walk W4-F3, 24 Sep 26): "→ Ground" on an
+         input whose row is already on the programme, or on a locked week, used to do nothing at
+         all — a control that looks dead. Say why. */
+      const cs = PEOPLE[inp.person] ? PEOPLE[inp.person].cs : inp.person
+      const onProg = dest !== 'x' && DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g && g.src === k))
+      HOOKS.toast(onProg ? `${cs}'s ${inp.type} is already on the programme` : `${cs}'s ${inp.type} can't be changed here right now`, 'warn')
     }
     return
   }

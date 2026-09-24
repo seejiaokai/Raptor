@@ -1,6 +1,6 @@
 import { DAYS } from './data'
 import { PEOPLE, nameToId, whoId, ID_BY_CS, isSpecial } from './people'
-import { SCHED, markEdit, markDeletion, deletionWasIssued, markInputFiling, markStructuralAdd, dayApproved, dropRowMarks, protectedWeek } from './publish'
+import { SCHED, markEdit, markDeletion, deletionWasIssued, markInputFiling, markStructuralAdd, dayApproved, dropRowMarks, protectedWeek, dayCurVer, daySnapOf } from './publish'
 import { parseHM, hhmm, hmOK } from './time'
 import { INPUTS, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx } from './inputs'
 import { shiftKeys } from './keys'
@@ -434,17 +434,40 @@ export function acceptInput(di:any,inp:any,dest:any){
   const key=inpId(inp);
   if(DAYS.some((dd:any)=>((dd&&dd.ground)||[]).some((r:any)=>r.src===key)))return false;
   d.ground=d.ground||[];
-  const ri=d.ground.length;
+  /* PUTTING AN ISSUED LANDING BACK IS A ROUND TRIP, NOT A NEW ROW ([HUMAN-RETEST] the amendment
+     system, walk W4-F2, 24 Sep 26; register AM20). On a published day whose CURRENT issued
+     version already carries this input's landed row, re-landing it restores THAT row's identity
+     (its rid) at the place it held — otherwise the comparison with the issued document read
+     "an issued row removed + a new row added": a two-item amendment on a day identical to what
+     was issued, and publishable on the old sign-offs (content-equal, so they still matched).
+     The values are minted from the input exactly as any landing's are, so a real difference
+     (the scheduler had retimed the issued row) still shows as the change it is. */
+  let ri=d.ground.length, rid:any=null;
+  if(dayApproved(di)){
+    const ver=dayCurVer(di), snap:any=ver!=null?daySnapOf(di,ver):null;
+    const ig:any[]=(snap&&snap.d&&snap.d.ground)||[];
+    const ix=ig.findIndex((r:any)=>r&&r.src===key&&r.rid);
+    if(ix>=0&&!(d.ground||[]).some((r:any)=>r&&r.rid===ig[ix].rid)){   /* never mint a second row with one id */ rid=ig[ix].rid; ri=Math.min(ix,d.ground.length); }
+  }
   /* who is the stable person ID (ARCH-STACK 1C, 14 Sep 26; was PEOPLE[id].cs).
      inp.person is already an id, and the renderers resolve who→id→cs (whoId), so
      the landed row prints the callsign unchanged while a rename moves nothing.
      Title is the TYPE and the submitter's remarks land in the row's rmks cell
      (owner, Aug 26): 'APPOINTMENT · dental review', not one mashed title. */
-  d.ground.push({prog:inpLabel(inp).toUpperCase(),
+  const row:any={prog:inpLabel(inp).toUpperCase(),
                  str:inp.allday?'':hhmm(inp.s), end:inp.allday?'':hhmm(inp.e),
                  who:inp.person,
-                 rmks:inp.remarks||'', src:key, srcType:inp.type});
+                 rmks:inp.remarks||'', src:key, srcType:inp.type};
+  if(rid)row.rid=rid;
+  d.ground.splice(ri,0,row);
   inp.acc='g';
+  if(rid){
+    /* the restored row is the ISSUED one, not a draft addition: mark the edit (so the funnel's
+       history + reconcile run) without registering a structural add, which would make a later
+       removal of it read as "never issued" */
+    markEdit(`gr:${di}.${ri}.prog`);
+    return true;
+  }
   /* markStructuralAdd, not trackStructuralAdd+noteChange (owner audit, 15 Aug
      26 — every OTHER new ground row gets a ~6s blue box, an accepted input's
      did not). The key is the row's first FIELD (gr:di.ri.prog), matching
@@ -578,9 +601,14 @@ export function reconcileDayFiling(di:any){
   const dt=(DAYS[+di]||{}).dt; if(dt==null)return;
   INPUTS.forEach((inp:any)=>{
     if(!inputCoversDate(inp,dt)||inputProtected(inp))return;
-    /* 'u' (a global filing DECISION with no ground row) and 'r' (dormant) are not
-       per-week ground landings — untouched. */
-    if(inp.acc==='u'||inp.acc==='r')return;
+    /* 'u' (a global filing DECISION with no ground row) is not a per-week ground landing —
+       untouched. 'r' (dormant) is untouched too UNLESS the replacement brought its row back:
+       a dormant input has no row by definition (unacceptInput removes it), so a row carrying
+       its id that a load, a plan switch or an undo put back IS its landing — "Load AL1" must put
+       the day back to AL1, input and all. Left 'r', the day read "1 input filing" against the
+       very version it had just loaded, and the input's → Ground refused silently because its
+       row was already there ([HUMAN-RETEST] amendment re-test, walk W4-F3, 24 Sep 26). */
+    if(inp.acc==='u')return;
     /* is there a ground row for this input on ANY loaded day? Scanned by content
        key directly (NOT acceptedDay, which early-returns unless acc is already
        'g' and so cannot re-derive) — the same scan reconcileLandedAcc uses. */
@@ -591,7 +619,7 @@ export function reconcileDayFiling(di:any){
        row a replacement RESTORED (a draft round-trip) is re-filed 'g' — the old
        delete-only form left it stranded, phantom-amending on the next navigation. */
     if(landed){ if(inp.acc!=='g'&&isPersonal(inp.type))inp.acc='g'; }
-    else if(inp.acc==='g')delete inp.acc;
+    else if(inp.acc==='g')delete inp.acc;   /* a dormant 'r' with no row stays parked */
   });
 }
 export function unacceptInput(di:any,inp:any){

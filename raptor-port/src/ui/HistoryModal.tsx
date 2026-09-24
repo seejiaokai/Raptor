@@ -151,8 +151,12 @@ export function HistoryModal() {
           dangerouslySetInnerHTML={{ __html: HISTGROUP ? groupedHTML(di) : flatHTML(di) }} />
         {/* The honest footnote, on the surface rather than in a doc nobody
             opens. The owner was told this before it was built; a scheduler
-            reading the list a month from now was not. */}
-        <div className="hl-foot">This browser, this sitting. It clears when you reload or log out — the schedule does the same.</div>
+            reading the list a month from now was not. Its second half used to say
+            "the schedule does the same" — true when it was written, false since the
+            8 Sep 26 storage work: a reload keeps the schedule, every version, the
+            sign-offs and the plans. Read that way it told a scheduler his unpublished
+            work dies with a reload ([HUMAN-RETEST] walk W3 F-w3-4, 24 Sep 26; AM49). */}
+        <div className="hl-foot">This browser, this sitting. The list clears when you reload or log out — the schedule itself, its versions and sign-offs are kept.</div>
       </div>
     </div>
   )

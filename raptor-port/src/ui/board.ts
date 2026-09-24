@@ -381,10 +381,15 @@ function boardHTMLBody(di: number, pv?: boolean) {
 }
 
 /* The day's sign-off bar as its own element, so the Live Checks panel can sit
-   directly below it (owner, 14 Aug 26). Empty on a frozen preview, exactly as
-   it was inline — a past version's signatures live on the AL record. */
+   directly below it (owner, 14 Aug 26). On a frozen preview the sign-off pills and
+   every publish door stay away — a past version's signatures live on the AL record —
+   but the PLANS SELECTOR and the VERSION TAG stay, as they do on the week: the
+   selector's amber "👁 AL1" says what you are looking at and is the way to another
+   version, the tag says what the day IS (register AM28 — the one selector both
+   surfaces share, A5). The strip used to go blank here, older than the 15 Sep
+   redesign that moved the two into it ([HUMAN-RETEST] walk W2-F1, 24 Sep 26). */
 export function boardSignHTML(di: number, pv?: boolean) {
-  if (pv) return ''
+  if (pv) return `<div class="signoff board-sign" id="sbSignBar"><div class="sb-pub">${planSelectorHTML(di)}${verTagHTML(di)}</div></div>`
   /* the desktop "view all changes" entry heads this element, above the
      sign-off bar, exactly as it did when both lived at the top of #sbBoard */
   /* Publish controls, "same as edit schedule" (owner ask): dayStatHTML is the

@@ -1265,9 +1265,12 @@ export function dayStatHTML(di:any,ed:any){
        PVND makes the "N pending" chip agree with the read-only bar's "Discard N
        edits" count, which A3 requires (Codex PS-006 / Fable #2). The issued
        DEFAULT face (PVQ, the view page's frozen render) is NOT an active preview:
-       it must stay byte-frozen against live edits, so it keeps dayDelta — which,
-       being the snapshot diffed against its own issued version, is 0 (no chip). */
-    const nd=(PV&&!PVQ)?PVND:dayShownPendCount(di);
+       it must stay byte-frozen against live edits, so it shows NO count at all — working-copy state never
+       shows on the issued face (AM24, AM5). It used to keep dayDelta on the promise that the snapshot
+       diffed against itself is 0 — but the input-filing half of that comparison reads the LIVE inputs,
+       so a filing-only change read "Original — as issued · 1 pending", to the squadron too
+       ([HUMAN-RETEST] walk W1-3, 24 Sep 26). */
+    const nd=PV?(PVQ?0:PVND):dayShownPendCount(di);
     /* a DRAFT preview must never wear the published day's clothes (owner,
        15 Aug 26 — "when I toggle to draft 1, it shouldn't say published"):
        under a d: preview the ✓ Published stamp and the AL chip are replaced
@@ -1801,6 +1804,12 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
            and drag.ts read it and call reassignInput (inputedit.tsx), which is the
            SAME relink commitInputEdit already does — never a second write path. */
         const seatable=!acc&&ed;
+        /* AN ACTIVITY INPUT FILED UNDER UNAVAILABLE CAN BE TAKEN BACK OUT ([HUMAN-RETEST] walk W4-F4,
+           24 Sep 26; register AM14 "…putting it back restores them"). Its only door was the Personal
+           Inputs group's → Unavail, and that group drops a filed input — so the row sat here with no
+           way back but the top-bar Undo or deleting the man's input. The same Undo the landed rows
+           carry; edit surfaces only (ed), so the view page and the parity week are untouched. */
+        const unfile=!acc&&ed&&inp.acc==='u'&&isPersonal(inp.type)&&canEditSched();
         const pk=PEOPLE[inp.person]
           ? `<span class="seat"${seatable?` data-inpseat="${esc(inpId(inp))}"`:''}>${puck(inp.person,sev(di,inp.person),true,chip(di,inp.person),false,null,oilSeatDeco(di,inp.person,'',inputItemKey(inpId(inp))).oil)}</span>`
           : `<span class="itxt">${esc(inp.person)}</span>`;
@@ -1809,7 +1818,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
         s+=`<div class="pl-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}>`
           +`<span class="nm">${inpEditLabel(inp,ed,inpLabel(inp),'ntx')}</span>${inpTimeCells(inp,ed)}`
           +`<div class="ppl one">${pk}</div>${inpRmkCell(inp,ed,d.dt)}`
-          +(acc?accCtl(di,inp):'')+`</div>`; });
+          +(acc||unfile?accCtl(di,inp):'')+`</div>`; });
       return s+`</div>`; };
     /* THE FOUR CREW WORKING-AID PANELS. In EDIT mode they join the SAME draggable
        section list as the schedule cards above (owner, 31 Aug 26 — "drag markers on
@@ -1921,7 +1930,7 @@ export function accCtl(di:any,inp:any){
   /* 'r' (removed — dormant, see engine/inputs.ts inputDormant) is NOT
      "accepted": the row was undone, so this offers Accept again, which is the
      one way back to a flagging state. Only 'g'/'u' show Undo. */
-  if(inp.acc&&inp.acc!=='r')return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="Undo — removes the ground-programme row this created">Undo</button></span>`;
+  if(inp.acc&&inp.acc!=='r')return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="${inp.acc==='u'?'Undo — takes it back out of Unavailable, into Personal Inputs':'Undo — removes the ground-programme row this created'}">Undo</button></span>`;
   const b=(dest:any,lbl:any,ttl:any)=>`<button class="accb" data-acc="${dest}" data-accd="${di}" data-acck="${k}" title="${ttl}">${lbl}</button>`;
   return `<span class="accs">`
     +(/^Other$/i.test(String(inp.type))
@@ -1935,6 +1944,13 @@ export function signoffHTML(di:any,full:any){
      reads EMPTY here (owner, 15 Sep 26 — a change clears the sign-offs). `any`
      (the Clear button) and each select's value/`.on` all follow the shown state. */
   const g=signShown(di), miss=signMissing(di), any=SIGN_ROLES.some((r:any)=>g[r[0]]);
+  /* a role whose pill still SHOWS a name yet does not count: its signer's scheduler appointment was
+     withdrawn (AM16 keeps the name — the only way a shown signature fails). The week drew four green
+     names and just "1 to sign", and a phone has no hover to say which one ([HUMAN-RETEST] walk W3
+     F-w3-6, 24 Sep 26) — so the line names it, on the week too (AM15b). An ordinary gap stays a count
+     there: its empty pill already says which. */
+  const stale=SIGN_ROLES.filter((r:any)=>r[2]&&g[r[0]]&&miss.includes(r[1])).map((r:any)=>r[1]);
+  const why=(l:any)=>stale.includes(l)?`${l} needs an appointed scheduler`:l;
   return `<span class="so-h">Sign-off</span>`
     +SIGN_ROLES.map(([k,lbl,sch]:any)=>{
       const v=g[k], ids=signPeople(sch,v);
@@ -1958,7 +1974,7 @@ export function signoffHTML(di:any,full:any){
        "can be published" wrongly implied a publish button that (correctly) is not
        there when nothing has changed. dayDelta is the ONE eligibility authority. */
     +`<span class="so-state ${miss.length?'no':'yes'}">${
-        miss.length ? `${miss.length} to sign${full?' · '+miss.join(', '):''}`
+        miss.length ? `${miss.length} to sign${full?' · '+miss.map(why).join(', '):stale.length?' · '+stale.map(why).join(', '):''}`
         : !dayApproved(di) ? 'Signed — this day can be published'
         : (()=>{const cv=dayCurVer(di); if(cv==null) return 'Signed';   // approved but no resolvable snapshot (probe/import) → no ALNaN label (Fable #3)
             const chg=dayDelta(di).length;
@@ -1977,7 +1993,12 @@ export function dayInfoHTML(di:any){
   const d=DAYS[di]; if(!d)return '';
   /* the day head's own count (AM23): a published day counts its real difference from the
      issued version, not the raw marks ([HUMAN-RETEST] walk S3, 24 Sep 26) */
-  const ok=dayApproved(di), dp=dayShownPendCount(di);
+  const ok=dayApproved(di);
+  /* …and read beside the view page's ISSUED face it counts nothing: working-copy state never shows
+     there (AM24, AM5) — it said "1 unpublished edit" to the squadron ([HUMAN-RETEST] walk W1-3,
+     24 Sep 26). The viewer's own Working-draft peek IS the working copy, so it keeps the line. */
+  const issuedFace=ok&&CURPAGE==='viewsched'&&!VWORK.has(+di);
+  const dp=issuedFace?0:dayShownPendCount(di);
   const dw=(WARN.byDay[di]&&WARN.byDay[di].warns)||[];
   const nS=(v:any)=>dw.filter((w:any)=>w.sev===v).length;
   let ac=0,forms=0,cxn=0;

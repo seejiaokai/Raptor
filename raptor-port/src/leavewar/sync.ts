@@ -1136,7 +1136,7 @@ export function publishFlagsBids(di: number): void {
        so it is the moment to tell him it cannot: no period holds this date, so
        there is nowhere for the credit to be written. The day's own warning list
        says the same thing and carries the way out. */
-    lines.push(`there is no leave war period for ${iso.slice(0, 4)}, so no OIL can be paid for this day — create the period on the Leave War`)
+    lines.push(`there is no leave war period for ${iso.slice(0, 4)}, so no OIL can be earned for this day — create the period on the Leave War`)
     HOOKS.toast(lines.join(' · '), 'warn'); return
   }
   const said: string[] = []
@@ -1428,6 +1428,7 @@ export function wireLeaveWarSync(): void {
   refreshAbsences(true)
   absencesChanged()
   runOilPass()
+  lastOilDaySig = oilDaySig()
   raptorSubscribe(() => {
     setViewer(ME)
     // Before the passes: a body added on the Quals page must be on the roster
@@ -1440,6 +1441,7 @@ export function wireLeaveWarSync(): void {
        pass reads the merged day), then the passes */
     if (refreshAbsences()) absencesChanged()
     lwSyncTurn(() => { runPoArchive(); runOilPass() })
+    lastOilDaySig = oilDaySig()
   })
   lwSubscribe(() => {
     /* The showSans switch (store.ts:setShowSans) is a Leave War write, so the
@@ -1480,6 +1482,16 @@ export function wireLeaveWarSync(): void {
        ingested cell of a long leave span is pure waste. The top-level
        notify that follows the writer's finish runs it exactly once. */
     if (SYNCING) return
+    /* A WAR CHANGE THAT MOVES WHAT A DAY OF THE LOADED WEEK EARNS RE-CHECKS THE SCHEDULE
+       ([HUMAN-RETEST] amendment re-test, walk W4-F1, 24 Sep 26; register AM47 — D2: a holiday
+       declared after publication waits for a republication AND THE DAY SAYS SO). The saying
+       is the schedule's own advisory (validate.ts: OIL_STALE_DAY / OIL_STALE_HOLIDAY /
+       OIL_NO_PERIOD / OIL_UNPUBLISHED), and nothing re-ran the checks on a Leave War write — so
+       the day read an unexplained "1 pending" until a reload. Guarded like the pending
+       signature below: only when the war's answer for some loaded day actually changed, so
+       this lane's own echo (the raptor notify → the passes → a war write) finds nothing new. */
+    const ods = oilDaySig()
+    if (ods !== lastOilDaySig) { lastOilDaySig = ods; validate(); raptorNotify() }
     const sig = INPUTS
       .filter((r: any) => oilAsks(r.type) && r.acc !== 'r' && r.iid)
       .flatMap((r: any) => {
@@ -1493,3 +1505,10 @@ export function wireLeaveWarSync(): void {
 /* the last pending-OIL signature the lw lane saw — module state, compared
    before the cross-lane notify above so it can never ping-pong */
 let lastPendingSig: string | null = null
+/* what the schedule's checks read from the war about the LOADED week: which days can earn
+   (the weekend, a PH; an Off day does not) and which have no period to earn into — the facts
+   behind the OIL advisories. One string per day, compared by the lw lane above. */
+function oilDaySig(): string {
+  return DAYS.map((_: any, di: number) => `${HOOKS.oilEarningDay(di) ? 1 : 0}:${HOOKS.oilNoPeriod(di) || ''}`).join('|')
+}
+let lastOilDaySig: string | null = null

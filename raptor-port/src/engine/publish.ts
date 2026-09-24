@@ -790,6 +790,12 @@ export function unpublishDay(di:any,opts:any={}):any{di=+di;
   const rec=seq===0?null:(SCHED.als||[]).find((a:any)=>String(a&&a.id)===String(id));
   const added:any[]=(rec&&rec.added)||[];
   retireIssued(di,id,{clearSigns:true,append:opts.append!==false,logged:!!opts.disclosed,by:opts.by});
+  /* …and EVERY plan of the day re-signs (AM34, owner 18 Sep 26: unpublish "clears that day's
+     sign-offs — re-sign on republish"). Each plan carries its own sign-offs (AM12) and a PARKED
+     plan's were never spent, so they revived the moment the day was back at the version they
+     were signed against, and could unlock a republish on signatures given before the withdrawn
+     version existed ([HUMAN-RETEST] walk W2, Fable 5-11, 24 Sep 26). */
+  signClearPlans(di);
   if(seq===0){
     // retract the Original → a plain draft (its build marks were consumed at issue)
     delete SCHED.dayOK[di];
@@ -930,6 +936,9 @@ export function signShown(di:any){const b=(SCHED.signBind||{})[+di]; const cur=s
     o[k]=(who&&b&&b[k]&&!signBoundOk(di,k,cur))?'':who;});
   return o;}
 export function signClear(di:any){SCHED.sign[+di]={cur:'',sked:'',plan:'',appr:''}; if(SCHED.signBind)SCHED.signBind[+di]={};}
+/* the PARKED plans' sign-offs (each plan stows its own, AM12) — a pulled-back day re-signs every plan,
+   by the Unpublish button and by Undo alike (AM34, AM32; walk W2 Fable 5-11 and walk W3, 24 Sep 26) */
+export function signClearPlans(di:any){((SCHED.drafts||{})[+di]||[]).forEach((t:any)=>{ if(t){ t.sign={cur:'',sked:'',plan:'',appr:''}; t.signBind={}; } });}
 export function signNames(di:any){const g=signAt(di),o:any={};SIGN_ROLES.forEach((r:any)=>{const p=PEOPLE[g[r[0]]];o[r[0]]=p?p.cs:'';});return o;}
 export function signPeople(schedOnly:any,keep?:any){
   const ids=Object.keys(PEOPLE).filter((id:any)=>!PEOPLE[id].special&&!PEOPLE[id].archived

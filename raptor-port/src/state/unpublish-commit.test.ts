@@ -6,8 +6,9 @@ import { beforeEach, afterEach, describe, expect, it } from 'vitest'
 import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
 import {
-  SCHED, signOf, dayApproved, dayHasChanges, dayVersions, daySnapOf, dayCurVer, nextSeq, dayDelta,
+  SCHED, signOf, dayApproved, dayHasChanges, dayVersions, daySnapOf, dayCurVer, nextSeq, dayDelta, setSign, daySigned,
 } from '../engine/publish'
+import { draftDup, draftSelect, dayDrafts } from '../engine/drafts'
 import { txtSet } from '../engine/slots'
 import { CURWEEK } from '../engine/waves'
 import { initStore } from './store'
@@ -103,6 +104,26 @@ describe('unpublish re-opens only what still differs from the version under it (
     expect(pend.some(k => k.startsWith('dn:0.')), 'the note still differs from the Original').toBe(true)
     expect(pend.some(k => /^ff:0\..*\.to$/.test(k)), 'the time equals the Original — no mark').toBe(false)
     expect(dayDelta(0).length).toBe(1)
+  })
+})
+
+/* [HUMAN-RETEST] walk W2 (Fable 5-11 / W2-Q1, 24 Sep 26). AM34 (owner, 18 Sep 26): unpublish
+   "clears that day's sign-offs (re-sign on republish)". Each plan carries its own sign-offs
+   (AM12), and a PARKED plan's were never spent, so after an unpublish they came back green the
+   moment the day was back at the version they were signed against — and with a change of their
+   own they unlocked "Publish AL1" on signatures given before the withdrawn AL existed. The newer,
+   specific rule (AM34) wins over the general revert rule (AM11): every plan of the day re-signs. */
+describe('unpublish clears the sign-offs of EVERY plan of the day, parked ones too (AM34)', () => {
+  const bind = (di: number) => { setSign(di, 'cur', 'ignite'); setSign(di, 'sked', 'bane'); setSign(di, 'plan', 'stiff'); setSign(di, 'appr', 'pump') }
+  it('a parked plan signed before the withdrawn AL comes back unsigned', () => {
+    bind(0); commitSetDayApproved(0, true)                 // the Original goes out (signatures spent)
+    txtSet('dn:0.0', 'PLAN A OWN CHANGE'); bind(0)          // the live day (it will be Plan A) carries a change, signed
+    draftDup(0)                                             // Plan A stowed WITH those signatures; Plan B live
+    const [a] = dayDrafts(0)
+    txtSet('dn:0.1', 'PLAN B CHANGE'); bind(0); commitPublishALDay(0)   // Plan B goes out as AL1
+    commitUnpublish(0)                                      // AL1 withdrawn: the Original is current again
+    draftSelect(0, a.id)                                    // bring the parked Plan A out
+    expect(daySigned(0), 'its pre-AL1 signatures must not unlock a republish').toBe(false)
   })
 })
 

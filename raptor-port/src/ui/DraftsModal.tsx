@@ -21,6 +21,7 @@ import { switchDraft } from './board'
 import { DRAFTSEDIT, setDraftsEdit } from './pops'
 import { useVersion } from './useStore'
 import { SESSION } from '../state/auth'
+import { CURPAGE } from '../state/view'
 
 export function DraftsModal() {
   useVersion()
@@ -40,7 +41,11 @@ export function DraftsModal() {
      and flipped to member view kept live rename/delete controls (draftRename/
      draftDelete) that carry no write-path gate. The test is `SESSION && role !==
      'admin'`, so a sessionless test/boot is not mistaken for a member. */
-  if (!open || (SESSION && SESSION.role !== 'admin')) return <div className="modal" id="draftsModal" hidden />
+  /* …and it belongs to EDIT SCHEDULE, the only page that opens it: the admin's View-as-member
+     round trip lands on View-only Sched, where the editor used to come back with a Select that
+     could not act (switchDraft needs the edit page) and said nothing ([HUMAN-RETEST] walk W2-F8,
+     24 Sep 26). Hidden there, it returns with its context when he goes back to Edit Schedule. */
+  if (!open || (SESSION && SESSION.role !== 'admin') || CURPAGE !== 'editsched') return <div className="modal" id="draftsModal" hidden />
 
   const di = open.di
   const d: any = DAYS[di]

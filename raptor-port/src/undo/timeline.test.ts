@@ -162,6 +162,34 @@ describe('redo LIFO (R3-06) + eligibility gate (§7)', () => {
     globalRedo(); expect(s.get('a')).toEqual({ v: 1 }); expect(s.get('b')).toBeUndefined()
     globalRedo(); expect(s.get('b')).toEqual({ v: 1 })
   })
+  /* walk W3 F-w3-2 (24 Sep 26): a NEW change after an undo forks the timeline — the undone step it
+     shares a record with can never come back, and must not block the redo of the new change (AM39b). */
+  it('a new change after an undo drops the undone step it replaced from Redo — never "redo that first" (AM39b)', () => {
+    const s = makeStore('S', 'settings')
+    registerUndoStore(s.store, ['settings']); setCutoverModules(['settings'])
+    edit(s.store, { module: 'settings' }, () => s.set('x', { v: 1 }))   // e1
+    globalUndo()                                                          // e1 undone
+    edit(s.store, { module: 'settings' }, () => s.set('x', { v: 2 }))   // e2 — shares x with the undone e1
+    globalUndo()                                                          // e2 undone
+    const r = globalRedo()
+    expect(r.ok).toBe(true)
+    expect(s.get('x')).toEqual({ v: 2 })                                 // the new change comes back
+    expect(undoState().canRedo).toBe(false)                              // e1 is gone for good
+  })
+  it('…and so is an undone step built on top of the dropped one; a step touching other records stays (AM39b)', () => {
+    const s = makeStore('S', 'settings')
+    registerUndoStore(s.store, ['settings']); setCutoverModules(['settings'])
+    edit(s.store, { module: 'settings' }, () => { s.set('a', { v: 1 }); s.set('b', { v: 1 }) })   // e1: a + b
+    edit(s.store, { module: 'settings' }, () => s.set('b', { v: 2 }))                            // e2: b, on top of e1
+    edit(s.store, { module: 'settings' }, () => s.set('c', { v: 1 }))                            // e3: c, independent
+    globalUndo(); globalUndo(); globalUndo()                                                        // all three undone
+    edit(s.store, { module: 'settings' }, () => s.set('a', { v: 9 }))                            // new change on a
+    // e1 shares a → dropped; e2 was built on e1's b → dropped with it; e3 (c) stays redoable
+    expect(globalRedo().ok).toBe(true)
+    expect(s.get('c')).toEqual({ v: 1 })
+    expect(s.get('b')).toBeUndefined()                                   // e2's b never resurrected half of e1
+    expect(undoState().canRedo).toBe(false)
+  })
   it('an entry whose module is not cut over is not undoable', () => {
     const s = makeStore('S', 'settings')
     registerUndoStore(s.store, ['settings'])   // registered, but NOT cut over

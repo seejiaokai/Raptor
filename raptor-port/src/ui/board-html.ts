@@ -698,7 +698,10 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
     +fld('atm','str',inpTimeText(inp,'str'),'all day')+fld('atm','end',inpTimeText(inp,'end'),'')
     +`<div class="ppl">${pk}${sbt}</div>`
     +fld('ain rmkin','rmks',inp.remarks||'','remarks')
-    +`<span class="lctl">${acc&&!modeRO?accCtl(di,inp):''}</span></div>`;
+    /* the Unavailable row of an activity input FILED there ('u') carries the Undo that takes it
+       back out — its only door otherwise (→ Unavail) lives in the Personal Inputs panel, which
+       drops a filed input ([HUMAN-RETEST] walk W4-F4, 24 Sep 26; html.ts inGrp is the week's twin) */
+    +`<span class="lctl">${(acc||(inp.acc==='u'&&isPersonal(inp.type)))&&!modeRO?accCtl(di,inp):''}</span></div>`;
 }
 /* ro (5th param, reviewer-found residual 9 Aug 26): accepting an input is a
    write — promotes it into the ground programme through the mutation funnel

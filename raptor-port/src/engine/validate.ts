@@ -29,7 +29,13 @@ export const WCODE:any={DOUBLE_BOOK:'Conflict — two events at once',DNIF_FLY:'
   SANS_AVAIL:'SANS availability — planned outside the availability filed',
   OIL_NO_TIMES:'No OIL earned — a row has no usable times',
   FLT_NO_LEN:'Flight times — take-off and landing are the same',
-  OIL_OLD_BLOCK:'Published before these seats counted — republish to credit them'};
+  OIL_OLD_BLOCK:'Published before these seats counted — republish to credit them',
+  /* the four OIL advisories printed their CODE as the heading ("OIL_UNPUBLISHED — …") —
+     [HUMAN-RETEST] amendment re-test, walk W4-F5, 24 Sep 26; pinned in ui/amendretest.test.tsx */
+  OIL_NO_PERIOD:'No OIL — no Leave War period covers this date',
+  OIL_UNPUBLISHED:'OIL waiting — this day is not published',
+  OIL_STALE_DAY:'Became a holiday after publishing — republish for its OIL',
+  OIL_STALE_HOLIDAY:'No longer a holiday — republish to withdraw its OIL'};
 /* what a flag PRINTS on the puck. The internal codes stay as they are — they
    key the colours, the ranking and the tooltips — but the squadron reads these
    at 9px on a phone, so the glyphs are short: R for crew rest, B for either
@@ -1249,7 +1255,7 @@ function validateCore(){
          clean is the lie. The way out is offered beside it, on screen. */
       const noPeriod=oilWouldEarn(di)?HOOKS.oilNoPeriod(di):'';
       if(noPeriod){
-        add('adv','OIL_NO_PERIOD',[],`There is no leave war period for ${noPeriod}, so no OIL can be paid for this day — create the period on the Leave War`);
+        add('adv','OIL_NO_PERIOD',[],`There is no leave war period for ${noPeriod}, so no OIL can be earned for this day — create the period on the Leave War`);
       }
       /* silent where the period is missing: telling him to publish would be
          telling him to do the one thing that cannot help */

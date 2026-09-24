@@ -202,6 +202,18 @@ export function lgRules(){
        documented here, which is exactly what that guard is for. */
     {sev:'adv',code:'OIL_OLD_BLOCK',
      t:()=>`A <b>weekend or public holiday you already published</b> can say it has <b>something pending</b> the first time this app counts a seat it did not count before — an <b>ALL AVAIL</b> puck on a <b>duty desk</b>, a <b>sim</b>, or an <b>extra people</b> line. Publish the day again and the men behind that puck get their OIL. An Advisory, and only on a day that has already gone out.<span class="why">The issued copy of a day is the squadron's word about what was worked, and it keeps paying exactly what it paid — nothing moves on its own. But the men behind that puck earned nothing from that seat, because the app was not counting it when the day went out, and they should have. So the day raises the ordinary pending mark and waits for the scheduler to acknowledge it, which is what publishing again does. It says this in words rather than leaving a bare "1 pending" behind, because the copy that went out never wrote down who was behind the puck — so there is no cell to mark and nothing to show in History, and a scheduler would otherwise be republishing blind. One amendment per affected day, once.</span>`},
+    /* the four OIL reminders on a weekend or holiday. They printed their internal code as their
+       heading until the amendment re-test gave them plain ones ([HUMAN-RETEST] walk W4-F5,
+       24 Sep 26) — which is what put them in front of the guard that every check is written up
+       here. Each says what the day is waiting for; none changes what anyone earns. */
+    {sev:'adv',code:'OIL_NO_PERIOD',
+     t:()=>`A <b>weekend or public holiday</b> with work on it that <b>no Leave War period covers</b> can earn nobody any OIL — the credit has nowhere to land. The day names the missing year and offers to create the period, before and after it is published.<span class="why">Publishing does not fix it, so the day keeps saying so after it goes out; a day that read clean here would be the lie (owner, 22 Sep 26).</span>`},
+    {sev:'adv',code:'OIL_UNPUBLISHED',
+     t:()=>`A <b>weekend or public holiday</b> with somebody down to earn OIL that is <b>not published yet</b> earns nobody anything until it is — the day reminds the scheduler to publish it before the day is out. Silent on an ordinary weekday, on an empty weekend, and the moment the day goes out.`},
+    {sev:'adv',code:'OIL_STALE_DAY',
+     t:()=>`A day published as an ordinary working day that the Leave War <b>later calls a public holiday</b> keeps earning what it went out with — nothing — until it is <b>published again</b>. The day says so, and its pending count shows the difference.<span class="why">Only the issued schedule earns OIL, in both directions (owner, 21 Sep 26): the published record is what happened, so today's calendar never moves it on its own — but it must never do that silently.</span>`},
+    {sev:'adv',code:'OIL_STALE_HOLIDAY',
+     t:()=>`The mirror of the one above: a day published as a <b>holiday</b> that the Leave War <b>no longer calls one</b> keeps its OIL until it is <b>published again</b>, which withdraws it. The day says so.`},
     /* the nought-minute sortie (owner's ruling D49, 22 Sep 26). The rule above
        says the credit follows the timings as scheduled; this is the one place
        where a line's timings cannot be right and the man is paid anyway. */
