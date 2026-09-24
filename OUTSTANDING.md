@@ -1074,6 +1074,7 @@ answer if templates on a published day are rare. Undo puts the day back today, s
 **Place:** waiting on him.
 
 ### [AMEND-NYS-WORDING] "Not yet signed" beside four valid sign-offs — a wording question for him (24 Sep 26)
+**DECIDED 25 Sep 26 — D97 ("5 ok"): two states, "Not yet signed" / "Not yet published"; build with the D92 batch.**
 **25 Sep 26 — found while answering him:** the marker never looks at the sign-offs (`notYetSigned` = published AND
 `dayHasChanges`), so it reads "Not yet signed" in the ORDINARY flow too — change, all four sign, not yet published.
 Recommendation put to him: two states — "Not yet signed" while any of the four is missing, "Not yet published" once
@@ -1117,9 +1118,14 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
 **Place:** any time; items 6–8 with the Leave War links re-test (D147, last).
 
 ### [AMEND-REISSUE-DOOR] An Unpublish made by mistake, with nothing to correct, cannot be put back once Undo is gone — a question for him (24 Sep 26)
-**25 Sep 26 — his question "if i unpublish and change something and republish, will i still see reissue AL1 button?"**,
-answered: no — Unpublish puts the working copy back to the version before; the button shows only while nothing has
-changed since, and any change turns it into the ordinary "Publish AL1" (a new AL1). Waiting on his yes/no.
+**25 Sep 26 — WALKED, and the finding does not hold.** His question ("if i unpublish and change something and
+republish, will i still see reissue AL1 button?") was first answered wrongly by the agent ("Unpublish puts the
+working copy back to the version before") — corrected to him the same hour. In the app (scratch walks, the build on
+:4173): Monday at AL1 → Unpublish → ORIG, "2 pending", "Publish AL1" (locked until signed) → sign → "Publish AL1 — 2
+changes"; and Fable's own case, a weekend AL1 adding a man who earns OIL (Wisp onto Saturday's OPS DESK) → Unpublish
+("Withdraw — confirm") → ORIG, "1 pending", Wisp still on the desk, "Publish AL1" offered. Unpublish keeps the
+withdrawn AL's changes on the working copy as pending (`unpublishDay`, AM37c), so the ordinary Publish AL1 is the way
+back, after a sign-out too. Recommended to him: drop the Reissue button; waiting on his word to close.
 Found by the amendment re-test's final code read (Fable #4, `raptor-port/docs/handpass/2026-09-24-amendment-fable-final-read.md`).
 Unpublish is one tap on a weekday (two where OIL is bid against) and a standing action — it survives a sign-out; Undo
 does not. The engine allows the pulled-back day to go out again under the SAME label even when nothing changed (the
