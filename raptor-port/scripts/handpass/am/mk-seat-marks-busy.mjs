@@ -1,18 +1,21 @@
 /* THE BUSY DAY for [AMEND-MARK-RING-CLASH] (24 Sep 26, his ask: "show me with the proposed fix how would it look like
-   in a schedule that has 3 AL and multiple changes"). Monday of the everything-week, which already carries AL1, taken
-   through two more amendments and a third in hand, every change made through the app's own write path and every
-   amendment signed and published through its own buttons:
-     AL2 (published)  Piston and Outlaw swap seats on the 19:20 RU line; a remark on the 07:45 VL line changes.
-     AL3 (published)  a new WSO on the 07:45 VL line; the 19:20 RU line's take-off moves to 19:30.
-     AL4 (waiting)    Warden takes Saber's seat on the 19:45 VL line — his landing breaks his Tuesday crew rest (the
-                      dotted ring); Saber moves onto the 13:40 RU line, where he clashes with his 07:45 sortie (the
-                      solid ring); a new WSO on the 19:45 VL line, with no warning; a new WSO on the 07:45 VL line
-                      who draws an advisory (the thin amber ring); a remark on the 19:45 line changes.
-   Then the flying waves are pictured today and with the fix (design B, mk-seat-marks-lib.mjs), on the edit week and
-   the board, and once as the squadron sees it on View-only Sched, which the fix does not touch.
+   in a schedule that has 3 AL and multiple changes"; redrawn the same day for D92 — "why dont u just a do solid AL3
+   chip and not box up the whole puck? people might think that behind the AL3 green ring there is a hidden warning").
+   Monday of the everything-week, which already carries AL1 (a day note), taken through two more amendments and a third
+   in hand, every change made through the app's own write path and every amendment signed and published through its
+   own buttons:
+     AL2 (out)      Piston and Outlaw swap seats on the 19:20 RU line; a remark changes on the 07:45 VL line.
+     AL3 (out)      Rune takes Echo's seat on the 07:45 VL line; Tally moves there from the 19:45 VL line and draws an
+                    ADVISORY (the thin amber ring — which today's AL3 ring covers: his point, measured below); Ledger
+                    takes her night seat; the 19:20 RU line's take-off moves to 19:30.
+     AL4 (waiting)  Warden takes Saber's seat on the 19:45 VL line — his landing breaks his Tuesday crew rest (the
+                    dotted ring); Saber moves onto the 13:40 RU line and clashes with his 07:45 sortie (the solid ring);
+                    a new WSO on the 13:40 RU line with no warning; a remark changes.
+   Then the flying waves are pictured today and with the fix (design C, mk-seat-marks-lib.mjs) on the edit week, the
+   board and View-only Sched — the fix reaches all three, since the published ring goes everywhere.
    Usage, with the build served on :4173:
      node mk-seat-marks-busy.mjs desktop 1   the desktop pictures at real size
-     node mk-seat-marks-busy.mjs desktop 4   the two lines the fix changes, enlarged
+     node mk-seat-marks-busy.mjs desktop 4   the three lines that change, enlarged
      node mk-seat-marks-busy.mjs phone 2     the phone pictures */
 import { mkdirSync } from 'node:fs'
 const W = process.argv[2] || 'desktop'
@@ -24,11 +27,12 @@ const OUT = 'C:/Users/User/projects/Raptor/raptor-port/docs/mock/img/amend-seat-
 process.env.HP_SHOTS = OUT
 mkdirSync(OUT, { recursive: true })
 const L = await import('./w2-lib.mjs')
-const { B_CSS, design: lay } = await import('./mk-seat-marks-lib.mjs')
+const { design: lay } = await import('./mk-seat-marks-lib.mjs')
 const { openHi, editWeek, board, closeBoard, signDay, publishAL, go, STATE } = L
 const { browser, page, errors } = await openHi({ ...SIZE, state: STATE, dpr: DPR })
-const design = (css) => lay(page, css)
+const design = (name) => lay(page, name)
 const TAG = ZOOM ? 'zoom' : W
+const DESIGNS = { today: 'today', fix: 'C' }      // the picture's name → the design it shows
 
 /* ---- the three rounds ------------------------------------------------------------------------------------- */
 await editWeek(page)
@@ -45,60 +49,61 @@ await page.evaluate(() => {
     }
     return null
   }
-  /* …and the first who lands there with an ADVISORY only: the thin amber ring, no red of any kind */
-  window.__amberWso = (key, skip) => {
-    const P = window.PEOPLE
-    for (const id of Object.keys(P)) {
-      const q = P[id]; if (q.special || q.pers || q.seat !== 'RCP' || skip.includes(id)) continue
-      window.setSlotVal(key, id); window.validate()
-      const w = window.WARN, sev = w.sev && w.sev[0] && w.sev[0][id]
-      if (sev && sev !== 'hard' && sev !== 'note' && !((w.trace[0] || {})[id])) return id
-    }
-    return null
-  }
 })
 const log = []
-log.push(['AL2 changes', await round(() => {
+log.push(['AL2', await round(() => {
   const ru = window.DAYS[0].waves[1].formations[1], piston = ru.aircraft[0].p, outlaw = ru.aircraft[1].p
   window.setSlotVal('0.1.1.0.p', outlaw); window.setSlotVal('0.1.1.1.p', piston)
   window.txtSet('fr:0.0.0.1', '2A: BFM-5 // SIM IF WX')
   window.afterSchedMutate(); return 'swap + remark'
 })])
 log.push(['sign', await signDay(page, 0)], ['publish', await publishAL(page, 0)])
-log.push(['AL3 changes', await round(() => {
-  const clean = window.__cleanWso
-  const was = window.DAYS[0].waves[0].formations[0].aircraft[0].w
-  const w = clean('0.0.0.0.w', [was])
+const al3 = await round(() => {
+  const D = window.DAYS, P = window.PEOPLE, byCs = cs => Object.keys(P).find(id => P[id].cs === cs)
+  const echo = D[0].waves[0].formations[0].aircraft[0].w, stat = D[0].waves[0].formations[0].aircraft[1].w
+  const rune = window.__cleanWso('0.0.0.0.w', [echo])
+  const tally = byCs('Tally')
+  window.setSlotVal('0.0.0.1.w', tally)                                     // Tally onto the 07:45 VL line …
+  const ledger = window.__cleanWso('0.1.0.1.w', [echo, stat, rune, tally])   // … and her night seat filled
   window.txtSet('ff:0.1.1.to', '19:30')
-  window.afterSchedMutate(); return { wso: w && window.PEOPLE[w].cs }
-})])
+  window.afterSchedMutate()
+  const sev = (window.WARN.sev[0] || {})[tally]
+  return { rune: P[rune].cs, tally, tallySev: sev, ledger: P[ledger].cs, used: [echo, stat, rune, tally, ledger] }
+})
+log.push(['AL3', al3])
 log.push(['sign', await signDay(page, 0)], ['publish', await publishAL(page, 0)])
-const made = await round(() => {
-  const clean = window.__cleanWso
+const made = await round((used) => {
   const P = window.PEOPLE, byCs = cs => Object.keys(P).find(id => P[id].cs === cs)
   const warden = byCs('Warden'), saber = byCs('Saber')
   window.setSlotVal('0.1.0.0.p', warden)                    // Warden takes Saber's night seat …
   window.setSlotVal('0.0.1.0.p', saber)                     // … and Saber moves onto the 13:40 RU line
-  const al3wso = window.DAYS[0].waves[0].formations[0].aircraft[0].w
-  const wso = clean('0.1.0.1.w', [al3wso, window.DAYS[0].waves[1].formations[0].aircraft[1].w])
-  const was = window.DAYS[0].waves[0].formations[0].aircraft[1].w
-  const amber = window.__amberWso('0.0.0.1.w', [was, al3wso, wso])
+  const relay = window.DAYS[0].waves[0].formations[1].aircraft[0].w
+  const wso = window.__cleanWso('0.0.1.0.w', [...used, relay])
   window.txtSet('fr:0.1.0.0', '1B: NIGHT BFM // TBC')
   window.afterSchedMutate()
-  return { warden, saber, wso, amber }
-})
+  return { warden, saber, wso }
+}, al3.used)
+/* HIS POINT, MEASURED: what colour is Tally's puck edge — the amber of her advisory, or AL3's green? */
+const edge = async () => page.evaluate((tally) => {
+  const p = document.querySelector(`#eWeek .day[data-day="0"] .seat[data-slot="0.0.0.1.w"] .puck`)
+  return p && p.dataset.person === tally ? getComputedStyle(p).boxShadow : 'not found'
+}, al3.tally)
+await design('today'); const edgeToday = await edge()
+await design('C'); const edgeFix = await edge()
+await design('today')
 const state = await page.evaluate((m) => {
   const W = window.WARN, cs = id => window.PEOPLE[id].cs
   const day = document.querySelector('#eWeek .day[data-day="0"]')
   const count = sel => day.querySelectorAll(sel).length
   const seat = k => { const s = day.querySelector(`.seat[data-slot="${k}"]`); return s ? `${cs(s.querySelector('.puck').dataset.person)} alc=${s.dataset.alc || '-'} aln=${s.dataset.aln || '-'} ${s.querySelector('.puck').className}` : 'none' }
-  return { issued: { AL1: count('[data-alc="1"]'), AL2: count('[data-alc="2"]'), AL3: count('[data-alc="3"]') }, waiting: count('[data-aln]'),
-    amber: m.amber && cs(m.amber), amberSev: m.amber && (W.sev[0] || {})[m.amber],
+  return { out: { AL1: count('[data-alc="1"]'), AL2: count('[data-alc="2"]'), AL3: count('[data-alc="3"]') }, waiting: count('[data-aln]'),
     wardenTrace: !!(W.trace[0] || {})[m.warden], saberChip: (W.chip[0] || {})[m.saber], wso: m.wso && cs(m.wso), wsoChip: (W.chip[0] || {})[m.wso] || 'none',
-    seats: ['0.1.1.0.p', '0.1.1.1.p', '0.0.0.0.w', '0.1.0.0.p', '0.0.1.0.p', '0.1.0.1.w', '0.0.0.1.w'].map(seat) }
+    seats: ['0.1.1.0.p', '0.1.1.1.p', '0.0.0.0.w', '0.0.0.1.w', '0.1.0.1.w', '0.1.0.0.p', '0.0.1.0.p', '0.0.1.0.w'].map(seat) }
 }, made)
-console.log(JSON.stringify({ log, state }, null, 1))
-if (!state.issued.AL3 || !state.wardenTrace || state.saberChip !== 'C' || state.wsoChip !== 'none' || !state.amber) console.log('!! the day did not come out as intended')
+console.log(JSON.stringify({ log, state, tallyEdge: { today: edgeToday, withFix: edgeFix } }, null, 1))
+const AMBER = 'rgb(229, 168, 59)'
+if (!state.out.AL3 || !state.wardenTrace || state.saberChip !== 'C' || state.wsoChip !== 'none' || al3.tallySev !== 'adv' ||
+    edgeToday.includes(AMBER) || !edgeFix.includes(AMBER)) console.log('!! the day did not come out as intended')
 
 /* ---- the pictures ----------------------------------------------------------------------------------------- */
 async function waveShot(name, root, i) {
@@ -123,7 +128,7 @@ async function topShot(name, dayRoot) {
   }, dayRoot)
   if (!box) { console.log('NO TOP', name); return }
   await page.screenshot({ path: `${OUT}/${TAG}-${name}.png`, clip: { x: Math.max(0, box.x - 4), y: Math.max(0, box.y - 4), width: box.w + 8, height: Math.min(SIZE.height - box.y, box.h + 8) } })
-  console.log('shot', `${TAG}-${name}`, JSON.stringify(box))
+  console.log('shot', `${TAG}-${name}`)
 }
 async function crewShot(name, keys) {        // the crew pucks of one line, enlarged
   const box = await page.evaluate((keys) => {
@@ -135,31 +140,35 @@ async function crewShot(name, keys) {        // the crew pucks of one line, enla
   await page.screenshot({ path: `${OUT}/${TAG}-${name}.png`, clip: { x: box.x - 9, y: box.y - 9, width: box.r - box.x + 18, height: box.b - box.y + 18 } })
   console.log('shot', `${TAG}-${name}`)
 }
-const WEEK = '#eWeek .day[data-day="0"] .go', BOARD = '#schedBoard .sb-go'
+const WEEK = '#eWeek .day[data-day="0"] .go', BOARD = '#schedBoard .sb-go', VIEW = '#vWeek .day[data-day="0"] .go'
 if (ZOOM) {
-  for (const d of ['today', 'fix']) {
-    await design(d === 'today' ? null : B_CSS)
-    await crewShot(`busy-night-${d}`, ['0.1.0.0.p', '0.1.0.0.w', '0.1.0.1.p', '0.1.0.1.w'])
-    await crewShot(`busy-ru-${d}`, ['0.0.1.0.p', '0.0.1.0.w', '0.0.1.1.p', '0.0.1.1.w'])
+  for (const [d, name] of Object.entries(DESIGNS)) {
+    await design(name)
     await crewShot(`busy-am-${d}`, ['0.0.0.0.p', '0.0.0.0.w', '0.0.0.1.p', '0.0.0.1.w'])
+    await crewShot(`busy-ru-${d}`, ['0.0.1.0.p', '0.0.1.0.w', '0.0.1.1.p', '0.0.1.1.w'])
+    await crewShot(`busy-night-${d}`, ['0.1.0.0.p', '0.1.0.0.w', '0.1.0.1.p', '0.1.0.1.w'])
   }
 } else {
-  await design(null)
+  await design('today')
   await topShot('busy-week-top', '#eWeek .day[data-day="0"]')       // the fix does not reach it: one picture
-  for (const d of ['today', 'fix']) {
-    await design(d === 'today' ? null : B_CSS)
+  for (const [d, name] of Object.entries(DESIGNS)) {
+    await design(name)
     for (const i of [0, 1]) await waveShot(`busy-week-w${i + 1}-${d}`, WEEK, i)
   }
   await board(page, 0)
-  for (const d of ['today', 'fix']) {
-    await design(d === 'today' ? null : B_CSS)
+  for (const [d, name] of Object.entries(DESIGNS)) {
+    await design(name)
     for (const i of [0, 1]) await waveShot(`busy-board-w${i + 1}-${d}`, BOARD, i)
   }
   await closeBoard(page)
   await go(page, 'viewsched')
   await page.waitForTimeout(700)
+  await design('today')
   await topShot('busy-view-top', '#vWeek .day[data-day="0"]')
-  for (const i of [0, 1]) await waveShot(`busy-view-w${i + 1}`, '#vWeek .day[data-day="0"] .go', i)
+  for (const [d, name] of Object.entries(DESIGNS)) {
+    await design(name)
+    for (const i of [0, 1]) await waveShot(`busy-view-w${i + 1}-${d}`, VIEW, i)
+  }
 }
 console.log('errors', JSON.stringify(errors))
 await browser.close()

@@ -8,8 +8,8 @@
         SHOW: a crew-rest breach the scheduler sanctioned (the dashed red ring).
      3. A WSO put on Tuesday's afternoon RU line: an everyday change with no warning, to show it is untouched
         (the script picks the first WSO who lands there with no warning of any kind).
-   The fix drawn here is design B: a warning ring (red, amber or grey) keeps the puck's edge, and a pending change on
-   a ringed puck says so with a hollow "ALn" tag in the corner where an issued change keeps its solid one. Design A (the first
+   The fix drawn here is design C (owner, D92): an amendment on a puck is a tag in the seat's corner and never a ring —
+   solid once it has gone out, hollow while it waits — so a warning ring always has the puck's edge to itself. Design A (the first
    mock-up: the mark moved out onto the seat) is drawn once, for the page's "why not" box.
    The first version of this file drew a mark for a man taken off a seat; he declined it (D91) — git history.
    Usage, with the build served on :4173:
@@ -25,13 +25,13 @@ const OUT = 'C:/Users/User/projects/Raptor/raptor-port/docs/mock/img/amend-seat-
 process.env.HP_SHOTS = OUT
 mkdirSync(OUT, { recursive: true })
 const L = await import('./w2-lib.mjs')
-const { B_CSS, A_CSS, design: lay } = await import('./mk-seat-marks-lib.mjs')
-const design = (css) => lay(page, css)
+const { design: lay } = await import('./mk-seat-marks-lib.mjs')
+const design = (name) => lay(page, name)
 const { openHi, editWeek, board, closeBoard, signDay, publishAL, STATE } = L
 const { browser, page, errors } = await openHi({ ...SIZE, state: STATE, dpr: DPR })
 const TAG = ZOOM ? 'zoom' : W
 
-const DESIGNS = { today: null, fix: B_CSS }
+const DESIGNS = { today: 'today', fix: 'C' }      // the picture's name → the design it shows
 
 /* ---- the situations, made through the app's own write path (the same one a drop or a typed box uses) ---- */
 await editWeek(page)
@@ -71,7 +71,7 @@ if (!check.outlawTrace || !check.pistonChip || !check.boltDash || check.hexChip 
 const CLIPS = {                         // each picture: the seats it is about, and the day they sit on
   mon: { di: 0, keys: ['0.1.1.0.p', '0.1.1.0.w', '0.1.1.1.p', '0.1.1.1.w'] },
   tueam: { di: 1, keys: ['1.0.1.0.p', '1.0.1.0.w', '1.0.1.1.p', '1.0.1.1.w'] },
-  tuepm: { di: 1, keys: ['1.1.1.0.p', '1.1.1.0.w', '1.1.1.1.p', '1.1.1.1.w'] },
+  tuepm: { di: 1, keys: ['1.1.1.0.p', '1.1.1.0.w', '1.1.1.1.p', '1.1.1.1.w'], weekOnly: true },   // the page shows it on the week only
 }
 async function shoot(name, scope, keys) {
   const box = await page.evaluate(([scope, keys, zoom]) => {
@@ -91,31 +91,33 @@ async function shoot(name, scope, keys) {
   console.log('shot', `${TAG}-${name}`)
 }
 async function weekShots(prefix) {
-  for (const [c, { di, keys }] of Object.entries(CLIPS)) {
-    for (const [d, css] of Object.entries(DESIGNS)) { await design(css); await shoot(`${prefix}-${c}-${d}`, `#eWeek .day[data-day="${di}"]`, keys) }
+  for (const [c, { di, keys, weekOnly }] of Object.entries(CLIPS)) {
+    if (weekOnly && ZOOM) continue
+    for (const [d, name] of Object.entries(DESIGNS)) { await design(name); await shoot(`${prefix}-${c}-${d}`, `#eWeek .day[data-day="${di}"]`, keys) }
   }
 }
 await weekShots('week')
 if (!ZOOM) {
   for (const di of [0, 1]) {
     await board(page, di)
-    for (const [c, { di: cd, keys }] of Object.entries(CLIPS)) {
-      if (cd !== di) continue
-      for (const [d, css] of Object.entries(DESIGNS)) { await design(css); await shoot(`board-${c}-${d}`, '#schedBoard', keys) }
+    for (const [c, { di: cd, keys, weekOnly }] of Object.entries(CLIPS)) {
+      if (cd !== di || weekOnly) continue
+      for (const [d, name] of Object.entries(DESIGNS)) { await design(name); await shoot(`board-${c}-${d}`, '#schedBoard', keys) }
     }
     await closeBoard(page); await editWeek(page)
   }
 }
 /* design A, for the "why not" box: Outlaw and Piston on the week */
-await design(A_CSS); await shoot('week-mon-a', '#eWeek .day[data-day="0"]', CLIPS.mon.keys)
-/* once Monday's amendment goes out: the issued marks, which the fix does not touch */
+await design('A'); await shoot('week-mon-a', '#eWeek .day[data-day="0"]', CLIPS.mon.keys)
+/* once Monday's amendment goes out: the published marks — a ring in the AL's colour today, the solid tag alone with
+   the fix (D92) */
 if (!ZOOM) {
-  await design(null)
+  await design('today')
   await editWeek(page)
   await signDay(page, 0)
   console.log('publish', JSON.stringify(await publishAL(page, 0)))
   await editWeek(page)
-  await shoot('week-mon-issued', '#eWeek .day[data-day="0"]', CLIPS.mon.keys)
+  for (const [d, name] of Object.entries(DESIGNS)) { await design(name); await shoot(`week-mon-issued-${d}`, '#eWeek .day[data-day="0"]', CLIPS.mon.keys) }
 }
 console.log('errors', JSON.stringify(errors))
 await browser.close()

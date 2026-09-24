@@ -1122,16 +1122,19 @@ surfaces' mark is an established look (`raptor-port/docs/ui-contracts.md` §Amen
 change to show him first. **Examples shown 24 Sep 26, at his ask** — `raptor-port/docs/mock/amend-seat-marks.html`, three
 situations the app itself produced (a swap, a late show, an everyday change), its maker
 `raptor-port/scripts/handpass/am/mk-seat-marks.mjs` (the CSS as `B_CSS`, in `mk-seat-marks-lib.mjs`), and — at his second
-ask — a busy Monday with AL1–AL3 out and AL4 waiting (`mk-seat-marks-busy.mjs`). **The fix drawn is design B:** a warning
-ring keeps the puck's edge (the pending outline is not drawn on a puck wearing `warn`, `boxred`, `boxdash` or `boxdot`)
-and the waiting change shows as a hollow `ALn` tag in the issued tag's corner; a puck with no ring keeps today's dotted
-outline. **The busy day widened it:** the pending rule's `box-shadow:none` also wipes the thin amber (advisory) and grey
-(note) `.warn` rings today, not only the red ones — Tally in the busy day. **Design A** (the
+ask — a busy Monday with AL1–AL3 out and AL4 waiting (`mk-seat-marks-busy.mjs`). **The fix is now D92 (his, 24 Sep 26) — design C:** a
+changed puck is marked by its ALn tag only, never a ring — solid once out (today's tag), hollow and dotted while waiting
+— so a puck's edge carries only warnings; the published ring `.seat[data-alc] .puck` and the waiting outline
+`#eWeek/#schedBoard .seat[data-aln] .puck` go, a hollow `.seat[data-aln]::after` tag comes in (`C_CSS`); times, areas and
+remarks keep their marks. **Why, measured:** the published ring covers the thin amber (advisory), grey (note) and thin red
+`.warn` rings today (Tally at AL3 in the busy day), and the waiting outline's `box-shadow:none` wipes them too. Design B
+(the waiting outline kept except where a ring competes) was superseded by D92 the same day. It reaches View-only Sched
+(the squadron's published face), so the bug-check order sets the tier at build. **Design A** (the
 first mock-up: the mark moved onto the seat) was dropped on measurement — a seat is exactly its puck's 74×15 box and a
 crew pair sits 3px apart, so at real size (DPR 1) the mark and a dotted ring sit half a pixel apart and blur into one,
 and any larger offset runs into the next puck. The view page's neutral hint, moved onto the seat by the re-test, has
-A's geometry: check it where it can meet a ring when B is built. **To do:** on his word, build B on the edit week and
-the board, with a geometry pin (e2e) that the ring's stroke survives a pending change. LOOK tier. **Place:** next, on
+A's geometry: check it where it can meet a ring when B is built. **To do:** on his word, build D92 on every surface that
+draws a changed puck, with a geometry pin (e2e) that every ring's stroke survives a published and a waiting change. **Place:** next, on
 his word (the mock-up's other half, a mark for an emptied seat, was declined — D91).
 
 ### [BOARD-RING-STROKES] The board draws every warning ring solid: no dashed late show, no dotted crew-rest cause (found 24 Sep 26)
