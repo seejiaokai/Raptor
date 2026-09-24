@@ -83,9 +83,9 @@ export function SchedBoard() {
     if (!open) return
     const el = document.scrollingElement || document.documentElement
     const y = el.scrollTop, x = el.scrollLeft
-    document.body.classList.add('sb-lock', 'sb-open')
+    document.body.classList.add('sb-lock', 'sb-board-up')
     return () => {
-      document.body.classList.remove('sb-lock', 'sb-open')
+      document.body.classList.remove('sb-lock', 'sb-board-up')
       el.scrollTop = y; el.scrollLeft = x
     }
   }, [open])
@@ -96,7 +96,7 @@ export function SchedBoard() {
      viewport — while a phone keyboard shrinks and pans the VISUAL one, so the page behind could scroll into the strip
      between the board and the keyboard. Two halves, each enough on its own: the board FOLLOWS the visible area (its
      top and height from window.visualViewport, re-read on every resize and pan — the History bubble's and the Leave
-     War sheet's own signal), and the page behind is not painted while the board is open (body.sb-open, CSS), so a gap
+     War sheet's own signal), and the page behind is not painted while the board is open (body.sb-board-up, CSS — never "sb-open": that is the class of the date that OPENS the board, on the click router's exclusion list, and on the body it swallowed every blank-tap clear), so a gap
      could only ever show the board's own background. A pinch zoom (scale > 1) is left alone: the board zooms with the
      page, as it always has. Chromium cannot raise an iPhone keyboard, so the real proof is his phone (the look card);
      the walk shrinks the visual viewport by script. */

@@ -177,7 +177,7 @@ describe('applyDayTpl', () => {
   /* D96 (owner, 25 Sep 26 — "4 refuse") REPLACES the Phase 2 reading (§4, P2-R3-04) that took a template on a
      published day as a working-draft edit: a template's rows are all new rows, so it read as everything removed and
      re-added and took the members' accepted requests off the programme. Refused — the day is left exactly as it was. */
-  it('a published day REFUSES a template — the day, its marks and its issued version are untouched (D96)', () => {
+  it('a published day REFUSES a template — the day, its marks and its issued version are untouched (D96, AM58)', () => {
     sign(0); setDayApproved(0, 1)
     expect(dayApproved(0)).toBe(true)
     const issued = dayCurVer(0), before = JSON.stringify(DAYS[0]), pend = JSON.stringify(SCHED.pending)

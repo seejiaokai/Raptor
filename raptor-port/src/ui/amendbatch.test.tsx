@@ -78,7 +78,7 @@ describe('item 5 — the working-copy marker has two states (D97, AM24)', () => 
   })
 })
 
-describe('item 2 — the board draws the dashed and dotted rings as the edit week does (D94)', () => {
+describe('item 2 — the board draws the dashed and dotted rings as the edit week does (D94, AM59)', () => {
   /* the three board seat builders a man can stand in: a flying seat, a duty desk, a programme crowd */
   const board = (di: number) => { setPage('editsched'); return el(boardHTML(di)) }
   const classes = (root: HTMLElement, id: string) => [...root.querySelectorAll(`.puck[data-person="${id}"]`)].map(p => p.className)
@@ -122,7 +122,7 @@ describe('item 13 — the ORIG tag is the seal (D111, AM22)', () => {
   })
 })
 
-describe('item 3 — the Signed line names who signed the version on screen (D95, D102)', () => {
+describe('item 3 — the Signed line names who signed the version on screen (D95, D102, AM57)', () => {
   const signAs = (di: number, names: string[]) => ['cur', 'sked', 'plan', 'appr'].forEach((r, i) => setSign(di, r, names[i]!))
   const line = (root: HTMLElement) => root.querySelector('.signedln')?.textContent || ''
   const cs = (id: string) => (PEOPLE as any)[id].cs

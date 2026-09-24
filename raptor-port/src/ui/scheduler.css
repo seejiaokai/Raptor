@@ -3653,7 +3653,7 @@ body.sb-lock{overflow:hidden}
 /* the page the board opens over is not painted while it is open (his keyboard-gap report, 25 Sep 26; SchedBoard.tsx):
    any strip a phone keyboard exposes shows the board's own background, never the week. visibility, not display:
    the week keeps its layout, so its scroll position and every measurement survive the board closing. */
-body.sb-open #page-editsched{visibility:hidden}
+body.sb-board-up #page-editsched{visibility:hidden}
 /* the burger drawer's own document lock (Drawer.tsx, 6 Sep 26) — its own class,
    not sb-lock: the drawer opens OVER the board (z440 over z400), and closing the
    drawer must not unlock a board that is still open under it */

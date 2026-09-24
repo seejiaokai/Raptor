@@ -69,7 +69,7 @@ beforeEach(async () => {
 
 const monHead = () => $(`#eWeek .day[data-day="${MON}"] .day-head`)
 
-describe('"N pending ▾" opens what will go out, and a row takes the view there (D99, D100, D104)', () => {
+describe('"N pending ▾" opens what will go out, and a row takes the view there (D99, D100, D104; AM53, AM54)', () => {
   it('the day head\'s count is a button on the edit week, and the list names the one change — who moved, from where to where', async () => {
     const btn = monHead()?.querySelector('[data-pendlist]') as HTMLElement
     expect(btn, 'the count is a button').toBeTruthy()
@@ -125,7 +125,7 @@ describe('"N pending ▾" opens what will go out, and a row takes the view there
   })
 })
 
-describe('Edit history keeps him on the page he is on (D107)', () => {
+describe('Edit history keeps him on the page he is on (D107, AM56)', () => {
   it('from Edit Schedule a row goes to the change on the WEEK, marks it, and does not open the board', async () => {
     await act(async () => { view.setHistMode(true); setHistList('all'); notify() })
     const row = $$('#histBody [data-hkey]').find(b => b.dataset.hkey === `d:${MON}.0.2`)
@@ -147,7 +147,7 @@ describe('a phone keyboard never shows the page behind the board (item 11, his b
       await act(async () => { openScheduler(MON); notify() })
       const b = $('#schedBoard')!
       expect(b.style.height, 'sized to what is visible').toBe('800px')
-      expect(document.body.classList.contains('sb-open'), 'the page behind is not painted').toBe(true)
+      expect(document.body.classList.contains('sb-board-up'), 'the page behind is not painted').toBe(true)
       vv.offsetTop = 120; vv.height = 420                        // the keyboard comes up and the view pans
       await act(async () => { vv.dispatchEvent(new Event('resize')); vv.dispatchEvent(new Event('scroll')) })
       expect(b.style.top).toBe('120px'); expect(b.style.height).toBe('420px')
@@ -155,7 +155,7 @@ describe('a phone keyboard never shows the page behind the board (item 11, his b
       await act(async () => { vv.dispatchEvent(new Event('resize')) })
       expect(b.style.height, 'zoomed with the page, as always').toBe('')
       await act(async () => { closeScheduler(); notify() })
-      expect(document.body.classList.contains('sb-open')).toBe(false)
+      expect(document.body.classList.contains('sb-board-up')).toBe(false)
     } finally {
       if (had) Object.defineProperty(window, 'visualViewport', had); else delete (window as any).visualViewport
     }

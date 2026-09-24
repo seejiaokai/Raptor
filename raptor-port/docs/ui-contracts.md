@@ -630,6 +630,66 @@ keeps only the "ALn" badge the week already shows once it is issued. A mark for 
 faded, crossed-out name, or an empty marked box) was drawn in a mock-up and declined —
 it is not a defect, and is not to be re-filed as one.
 
+**A CHANGED PUCK GETS A TAG, NEVER A RING — SUPERSEDES the puck half of the paragraph above** (owner, D92 + D93,
+24 Sep 26; built 25 Sep 26). "Pucks … get outlines", "painted DOTTED" and "the view-only page keeps the neutral dashed
+hint" no longer hold for a PUCK: a published change is its SOLID ALn tag in the seat's corner and nothing on the puck's
+edge; a change waiting to go out is a HOLLOW, dotted ALn tag (`.seat[data-aln]::after`), no line round the puck — on
+the edit week, the board AND View-only Sched's working-draft face (D93: "View-only Sched included"; the dashed seat
+outline the re-test had put there is gone). A puck's edge carries only its warnings — the amber, grey and red rings,
+the dashed late show, the dotted crew-rest cause. Times, areas, remarks and every other string keep the marks above,
+unchanged. The approved mock-up: `docs/mock/amend-seat-marks.html` (its `C_CSS`).
+
+## The pending list, the one jump, and what the day head says (owner, 25 Sep 26 — the amendment batch)
+
+**"N pending ▾" opens the list of what will go out (D99, D100).** On a PUBLISHED day's working copy, on the edit
+week's day head and the board's publish strip (`html.ts dayStatHTML`), for the scheduler, the count is a button
+(`data-pendlist`) — never on View-only Sched, never under a preview, never on a draft day (nothing there goes out as an
+amendment). It opens `ui/pendlist.ts`: a body-level popover (z 440, over the board's 400, under the modals' 470),
+"Waiting to go out as <ALn> · N changes", one row per change — where, before → after, and on the right who and when
+— scrolling inside itself when long, closed by a tap outside or Escape. The rows ARE `publish.ts dayPendingItems`, the
+same items the count counts, so the list and the number cannot disagree; a change with a place to go is a button, one
+without (a removal, a reorder, a filing, what the day earns) is listed but not tappable.
+
+**The counting unit (D109).** Every count of a day's waiting changes — the day head, the board strip, the ⓘ panel,
+the sign-off line's "N changes to publish", the Amendments panel, the plan-switch message, "Discard N edits", the
+publish message and an issued AL's "N items" — reads `dayPendingItems`: a man (or a placeholder) taken off one place
+and put on another of the SAME day is ONE ("Warden: MET + NOTAM BRIEF → SODB"), a swap two, a man only taken off or
+only added one, times / areas / remarks one per box, a crowd re-ordered one. A desk's holder and its extras are two
+places. What goes out (the stored diff) and the marks are unchanged. A replacement in one seat counts one — the gap
+filed as `[MOVE-REPLACE-ONE]`.
+
+**Who and when (D104).** The newest edit-log row for the change's own cells: the shared account the app records
+until the database brings personal accounts, and its clock (`elogWhen`). A change the page's record does not hold
+reads "earlier"; one with no single cell names nobody rather than guess.
+
+**One "take me to this change", on the page you are on (D107).** `interactions.ts jumpToChange` serves Edit
+history AND the pending list. With the board open: the day onto the board, the cell scrolled in, its History bubble
+pinned (the 11 Aug jump, unchanged). On Edit Schedule: it NEVER opens the board — the day on the week is stepped
+into view (a phone shows one day at a time) and the cell scrolled in, by the warning jump's own recipe
+(`highlights.ts bringIntoView`); a day under a version preview goes back to its live copy first. Either way the cell
+wears a brief ring in the colour of the AL it goes out as (`.chgflash`, ~1.4 s, then gone). A change the surface does
+not draw says so on screen, and differently from a change whose row has since gone. Edit history's rows are buttons
+where the page the jump lands on can show them (`histJumpable` on the board, `weekJumpable` on the week).
+
+**The two-state marker (D97).** Beside the version tag on a published day's working copy: "Not yet signed" while any
+of the four sign-offs is missing or no longer valid, "Not yet published" once all four are valid (`nysMarkHTML`, which
+reads `daySigned` — the same test the boxes read). Never on the issued face (AM24).
+
+**The ORIG tag is the seal (D111).** `html.ts verChipHTML` is the one drawer of a version tag; ORIG is a faint white
+wash, a thin light outline and a drawn tick in a white disc before the word — no colour, so never an AL colour or a
+warning. The mock-up: `docs/mock/orig-tag.html` (variant A1, `mk-orig-tag-refine.mjs` variant `s`).
+
+**The "Signed ALn" line (D95, D102).** `html.ts signedLineHTML`: under the day head on View-only Sched and the edit
+week, and heading the board's sign strip — "SIGNED", the version's tag and its four signers (roles on a desktop,
+names only on a phone). The version is the one ON SCREEN, passed per surface: the issued face and a preview draw
+inside the snapshot swap; a live working copy names the published version it sits on; the board's preview strip
+names DPREV's. The names come from the version's frozen record (`publish.ts verSigners` — the Original keeps its four
+since 25 Sep 26), never the live sign-off boxes. Everyone who reads the page sees it (D95).
+
+**The phone keyboard never shows the page behind the board (his bug report, 25 Sep 26).** While the board is open
+it follows the visual viewport (top and height, re-read on resize and pan; a pinch zoom is left alone) and the edit
+page behind it is not painted (`body.sb-board-up`), so a strip a keyboard exposes shows the board's own background.
+
 ## Version preview (edit week + board only)
 
 The day-head `<select data-dver>` (emitted only when `dayHTML` gets its
@@ -3093,6 +3153,10 @@ and the adapted `wrap` probe are what hold them.
 
 ## Three crew-rest rings, and the day that caused the breach (owner, 6 Aug 26)
 
+**25 Sep 26 (D94): the scheduler BOARD draws all three as the week does** — its flying, duty / sim and programme
+seats read `html.ts puckMarks`, the week's one reading of a puck's severity, printed flag (the trace's CR / 7
+caption), dash and trace. OIL-mode and exempt-seat pucks keep their own rules.
+
 One red, three strokes, in order of how directly the puck owns the problem:
 **solid** is his own breach, **dashed** is his own breach that a human
 sanctioned, **dotted** is not his breach at all — it is the day he causes
@@ -3400,7 +3464,7 @@ carries a one-line note ("This day is published — the issued versions don't
 change. Switching plans marks the differences as the next AL."), the live row's
 sublabel reads "live now — differences from `<verLabel>` go out as AL`<next>`",
 and `DraftsModal.tsx`'s note switches register the same way. `applyDayTpl`'s
-"Reopen the day first" refusal stays — templates have no rebase.
+"Reopen the day first" refusal stays — templates have no rebase. **(25 Sep 26, D96: a day template is REFUSED on a published day, at every door — the one picker draws each template disabled with the reason, `daytpl.ts DAYTPL_PUBLISHED_MSG`; saving a template stays open. A draft day takes one as before.)**
 
 **The view-only week's picker** (`viewVerSelHTML`) branches on publish
 state, and that test lives in it AND in ViewWeek's render branch — a
@@ -3883,6 +3947,11 @@ it: reload and the LoX is the default set again. `rules` is still the only
 thing this app writes to storage.
 
 ## History on the board (owner, 11 Aug 26)
+
+**25 Sep 26 (D105, D107):** the bubble stays — hover on a desktop, tap on a phone — and a long one SCROLLS inside
+itself (its list takes the pointer only once it overflows; with a mouse the whole bubble takes it, so the pointer
+can cross from the cell into it); and a tap on a change in the listed view lands on the page you are on — see
+§The pending list, the one jump, and what the day head says.
 
 A view mode on the scheduler board: with it on, a detail says who changed it,
 when, and what it was. Rules and the log itself: `docs/engine-rules.md` §The

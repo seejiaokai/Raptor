@@ -55,8 +55,11 @@ describe('an unsupported (protected) week refuses input landings/removals (P2-IM
   })
 })
 
-describe('recovery discard count is CONTENT-only, filing retained (P2-REREVIEW-08)', () => {
-  it('a filing-only change is publishable but is NOT counted as a discardable recovery edit', () => {
+/* D98 (owner, 25 Sep 26) REPLACES P2-REREVIEW-08's "recovery replaces content only": a load now puts back what the
+   version had filed too (publish.ts filingRestorePlan), so a filing it will put back IS an edit the load replaces,
+   and "Discard N edits" counts it — the confirm and the load agree, as before, on the new behaviour. */
+describe('recovery discard count counts the filings the load puts back (D98, replacing P2-REREVIEW-08)', () => {
+  it('a filing-only change is publishable AND counted as an edit the load replaces', () => {
     const inp = findInp('Meeting')!                 // covers Jul 13 (day 0)
     expect(acceptInput(0, inp, 'u')).toBe(true)      // file the person unavailable
     sign(0); setDayApproved(0, true)                 // freezes the filing fingerprint with 'u'
@@ -64,7 +67,7 @@ describe('recovery discard count is CONTENT-only, filing retained (P2-REREVIEW-0
     expect(unacceptInput(0, inp)).toBe(true)         // unfile → acc 'r': a filing-only change
     expect(inp.acc).toBe('r')
     expect(dayHasChanges(0), 'still publishable — the filing IS a real divergence').toBe(true)
-    expect(dayDiscardCount(0), 'but recovery replaces content only, so nothing is discardable').toBe(0)
+    expect(dayDiscardCount(0), 'the load puts the filing back, so it is one edit it replaces').toBe(1)
   })
 })
 

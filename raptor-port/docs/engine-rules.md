@@ -2316,6 +2316,33 @@ historical document.
 
 ## Publishing / amendments
 
+**THE AMENDMENT BATCH (25 Sep 26, built overnight under D112) — five rules of this section changed; each is a register
+line (`docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`).**
+- **The pending count's unit (D109, AM23).** Every count of a published day's waiting changes reads ONE body,
+  `publish.ts dayPendingItems`: the same comparison publication uses (`dayDeltaIn` — the canonical diff against the
+  current issued version, the filing axis, the OIL axis), counted by `canonical.ts canonicalUnits` in the unit a
+  person counts in — a man or placeholder taken off one PLACE and put on another of the same day is one item; a
+  swap two; a man only taken off or only added one; a crowd re-ordered one; a replacement in one seat one (a gap,
+  `[MOVE-REPLACE-ONE]`). A place is a seat (a flying seat, a sim's FCP / RCP, a desk's holder, a ground row's `who`)
+  or a list (a programme who-list, a desk's or ground row's extras, a sim's passengers or extras), named by row id.
+  The list is empty exactly when `dayDelta` is. The STORED diff is unchanged; an issued AL also stores `units`, its
+  item count in that unit (`alCount`).
+- **What a signature binds to (D103, AM13).** `currentBind` gains `pd`: on a published day, the whole pending
+  comparison (every `dayDelta` entry, sorted). Anything newly pending — a change in who is behind ALL / ALL AVAIL, an
+  edited request's times, a Quals or posting change, a filing — takes the four down; putting it back restores them
+  (AM11). This REPLACES D45's signature half (the OIL key still omits membership; `pd` carries it). A draft day's
+  `pd` is ''.
+- **The Original keeps its signers (D95, D102).** `setDayApproved` stores `sign:{[di]:names}` on `SCHED.orig[di]`
+  before it clears the four, as `alIssue` always did on an AL; `verSigners(di, ver)` reads any version's.
+- **A load puts back what the version filed (D98, AM6).** `loadVersionToWorkingCopy` sets every request covering the
+  day to the filing state the loaded version froze (`snap.fil`), in the load alone — never the general reconcile —
+  and only where that moves no other day (`filingRestorePlan`: 'g' only with its row on a loaded day; never away from
+  'g' while its row stands elsewhere; never to a state another published day it covers was issued with a different
+  one of). What it cannot put back is left as filed and named in the load's message; `dayDiscardCount` counts what
+  it will put back.
+- **A day template is refused on a published day (D96).** `applyDayTpl` returns false on a published day — see
+  §Day templates.
+
 **CORRECTED 17 Sep 26 — both record shapes here were stale and the third sentence
 described a removed function.** `SCHED` carries **14** fields, the set
 `state/history.ts:schedFields()` serialises: `changes`, `pending`, `added`, `als`, `al`,
@@ -2507,6 +2534,13 @@ grammar, its tests pin every prefix, and probe-bridge exports it — a new
 day field now needs a `dayKeys` line or the rebase will be blind to it.
 
 ## Day templates (`engine/daytpl.ts`, owner ask, 15 Aug 26)
+
+**REFUSED ON A PUBLISHED DAY (owner, D96, 25 Sep 26 — "4 refuse").** A template's rows are always new rows (a copy
+strips their identity), so applying one over a published day read as every row removed and re-added and took the
+members' accepted requests off the programme. `applyDayTpl` refuses a published day; `board.ts pickDayTpl` refuses
+first, before anything arms; the one picker draws each template disabled with `DAYTPL_PUBLISHED_MSG`. The Phase 2
+"working-draft rebase" on a published day described below is withdrawn by it. Saving a published day AS a template
+is still allowed.
 
 A whole-day master template: `{id, title, d}` — `dutytpl.ts`'s single duty
 block, one level up. `d` (`DayTplBlob`) is an explicit ALLOWLIST of

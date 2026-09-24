@@ -76,7 +76,7 @@ The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small b
 [BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
 FULL-tier build, any time).
 
-**Waiting on him — no order exists:** [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
+**Waiting on him — no order exists:** [MOVE-REPLACE-ONE] (the amendment batch's one gap: does a replacement in one seat count one or two? built as one — a question for his morning look, D112), [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
 D147), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
 [REPO-PRIVATE]'s sharing half, [EOD] (design first; no slot
 ruled), [CRP-FLAG]'s remainder and then [FLAG-EXPORT], the [AMEND] leftovers, [ADMIN-DISPLAY] ("next time we revisit",
@@ -1132,6 +1132,19 @@ a placeholder) taken off one place and put on another place of the same day into
 areas and remarks one per box. ONE counting body for every count (day head, Amendments panel, ⓘ panel, plan-switch
 message, "Discard N edits", the pending list). **Build with the amendment batch** (item 14) — the pending list's
 lines (item 8) read a move as one line. FULL tier inside the batch (the published record).
+
+### [MOVE-REPLACE-ONE] A replacement in one seat — one pending change or two? A question for him (25 Sep 26)
+Found while building D109 ("a move counts as one") overnight under D112. His words settle a man MOVED (one), a SWAP
+(two), a man only TAKEN OFF (one) and only ADDED (one); they do not say what a REPLACEMENT in one seat counts — Rune
+taken off VIPER 1's front seat and Tally put in it, neither moved anywhere else. Astra's reading (the scenario round,
+`raptor-port/docs/handpass/2026-09-25-amendment-batch-astra-scenarios.md` finding 1): literally a man taken off (one)
+plus a man added (one) = TWO; Fable's (`…-fable-scenarios.md` F1): one seat, one change = ONE. **Built as ONE** on a
+seat (a flying seat, a sim seat, a desk's holder, a ground row's name) — the pending list reads one line "VIPER 1 ·
+FCP: Rune → Tally" — and as one per man on a CROWD (a programme row's list, a desk's extras), where his "only taken
+off is one" governs. **The agent's recommendation: keep ONE** — a scheduler reads it as one change ("I swapped Rune
+out for Tally"), and it is the count the day showed before D109. **To change it:** `canonicalUnits` in
+`raptor-port/src/engine/canonical.ts` (the SEAT branch of the left-over events), and its test in
+`raptor-port/src/engine/pendunits.test.ts`. **Place:** his morning look at the batch (the look card asks it).
 
 ### [ORIG-TAG-STANDOUT] The ORIG tag stands out, so a published day reads as published (D108, 25 Sep 26)
 His ask in the same look: the Original's grey tag is too quiet — people should see the day is published. Changes the
