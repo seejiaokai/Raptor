@@ -21,7 +21,17 @@ the later merge keeps both (D78).
   follows the structure by itself; nothing is reworded on the way (a move is byte for byte; a rewrite is checked
   for meaning by Fable and Astra). Plan, both red teams and what changed after them:
   `raptor-port/docs/superpowers/specs/2026-09-24-spring-clean-plan.md` (§7 wins over §1–§6).
-- **State:** IN PROGRESS — see the branch's commits; not merged.
+- **Done and pushed (not merged):** step 1 (four merged worktrees removed, ~1 GB freed; three empty folders stay
+  held by old chats), steps 2–5 and the "teach it" layer — `raptor-port/CLAUDE.md` 1,543 → 704 lines, `HANDOFF.md`
+  984 → ~90, `OUTSTANDING.md` 1,226 → ~1,030 (live items only), a fresh chat now reads ~58k tokens before work, not
+  ~118k; the new `.claude/rules/shipping.md` and `doc-structure.md`; the exact mover and the misfiling checks
+  (self-test 97/97); Fable's meaning check done and all nine findings fixed. Rulings D139–D144.
+- **Left, in order:** (1) **Astra's meaning check** — it was still running when this chat filled; its report may be at
+  the scratchpad path `…/8dc6f608-…/scratchpad/astra-meaning.md` on his PC; if not, re-run it with
+  `raptor-port/docs/superpowers/briefs/2026-09-24-spring-clean-meaning-brief.md` (Codex, read-only, gpt-5.6-sol, high),
+  fix what it finds, save it beside Fable's. (2) **His approval of the session-handoff skill change** (D70 — both
+  reviews in hand first). (3) Close `[DOC-TRIM]` (rewrite it without targets — D141; its leftover is the `.gitattributes`
+  LF pin, which rides the next code change) and mark D139 SPENT. (4) Offer "merge live"; "done" = live on Vercel (D143).
 <!-- /now -->
 
 ## Next, in order
@@ -40,7 +50,7 @@ the later merge keeps both (D78).
 The latest counts watched on `main`'s code — 24 Sep 26, the OIL credit-tags branch, one run on a quiet PC
 (`raptor-port/docs/handpass/2026-09-24-oil-credit-tags.md` §8): unit **5819 / 5819** (358 files) · build clean ·
 tfin **728 / 0** · e2e **469 passed**, 48 skipped · smoke **442 / 0** · rulecheck OK. Restate a count only from a
-run you watched. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his
+run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his
 PC: `raptor-port/docs/gates-and-deploy.md`.
 
 ## Standing constraints
@@ -83,4 +93,4 @@ chat — `.claude/rules/shipping.md` (how a change ships) and `.claude/rules/doc
 | §Known issues / open work (its name before 4 Sep 26) | `HANDOFF-ARCHIVE.md` (the frozen 4 Sep snapshot) |
 | §Deploy — the traps | `raptor-port/docs/gates-and-deploy.md` §Deploy |
 | §File map | `raptor-port/docs/file-map.md` |
-| `HANDOFF-NEXT.md` | this file's `## Now` and `## Next, in order`; its merged stories → `raptor-port/docs/archive/handoff-2026-09-24.md`; "the checks run on his PC" and "how pushes cost runs" → `raptor-port/docs/gates-and-deploy.md` |
+| `HANDOFF-NEXT.md` | this file's `## Now` and `## Next, in order`; "How rulings are kept" → `DECISIONS.md` (its head) and `.claude/rules/record-decisions.md`; its merged stories → `raptor-port/docs/archive/handoff-2026-09-24.md`; "the checks run on his PC" and "how pushes cost runs" → `raptor-port/docs/gates-and-deploy.md` |

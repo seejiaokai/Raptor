@@ -293,6 +293,8 @@ this file → 600 (the priority list and the plain-terms block rewritten to live
 files' line endings to LF in `.gitattributes`, like `DECISIONS.md` — held back to ride the next code change, because
 a `.gitattributes` change alone starts a full check run on his PC.
 **THE SPRING CLEAN — measured and planned 24 Sep 26, NEXT (recommended BEFORE the amendment re-test; his word to start).**
+**STATUS 24 Sep 26 (night): BUILT on `claude/spring-clean`, pushed, not merged** — what is left is the `claude/spring-clean`
+block under `## Now` in `HANDOFF.md`. The numbers below are the plan as written; D141 (no line targets) replaced them.
 His ask: every session loads too much; make the repo clear and directed, cut clutter, and a summary must never change
 the meaning (**D138**). **Measured:** a session reads ~120k tokens before it works — always loaded ~18k (the rule files
 ~5k, the general rulings ~11k, the memory index ~2k), `raptor-port/CLAUDE.md` ~29k (loads with any raptor-port file),

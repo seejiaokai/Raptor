@@ -36,6 +36,7 @@ The full policy and the tiers: `raptor-port/docs/doc-budget.md`. This file is it
 | the story of how something was found or fixed | the commit message; a bug check's evidence sheet (`raptor-port/docs/handpass/`) |
 | a plan, design, brief, review log, scenario list (the Claudex loop's too) | `raptor-port/docs/superpowers/{specs,plans,briefs}/<date>-<name>.md`, linked from its backlog item — never the repo root |
 | a reference doc every chat of an area needs | `raptor-port/docs/`, AND a row in `raptor-port/CLAUDE.md` §Where things live (the gate checks) |
+| a one-off handoff for a big job | NOT a new root file — this chat's block in `HANDOFF.md ## Now`, plus a tier-3 doc linked from its backlog item |
 
 ## When it leaves — moved whole, never deleted, never reworded
 - A **finished backlog item** → `OUTSTANDING-ARCHIVE.md`, by `node raptor-port/scripts/backlog-archive.mjs <ID> --homes <file>`

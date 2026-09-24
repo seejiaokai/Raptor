@@ -116,7 +116,7 @@ cannot fail silently — make the bare form work, or make it refuse loudly.
 
 ### Observation 194: The handoff skill names a file the owner does not use as his entry point
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-09-24) — applied the other way round by D140: `HANDOFF.md` became the one handoff and `HANDOFF-NEXT.md` a three-line signpost to it, so his opening line still lands; the session-handoff skill writes `HANDOFF.md ## Now` (its rewrite awaits his approval, D70). The suggestion to make `HANDOFF-NEXT.md` the output is superseded.
 **Date:** 2026-09-23
 **Session context:** [ALL-AVAIL-WINDOW] build + a repo-privacy check, Raptor
 **Skill:** session-handoff (Step 1 and the template's file path)
@@ -606,7 +606,7 @@ code separately from its output, and never let the same line that runs a gate al
 
 ### Observation 228: A repo skill drifted from what sessions actually do — the handoff went to a file the skill never names
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-09-24) — a duplicate of #194, applied by the same change (the skill rewritten to the one handoff; awaits his approval, D70).
 **Date:** 2026-09-24
 **Session context:** Spring clean ([DOC-TRIM]) mapping every file a fresh chat reads
 **Skill:** session-handoff

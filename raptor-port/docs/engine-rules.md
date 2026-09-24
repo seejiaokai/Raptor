@@ -397,7 +397,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
     carve-out stands: a duty post, a sim seat, a ground row, a programme item
     and the AVALON desk stay proper for him. This closed a picker/validator
     drift — the crew picker had refused him SC seats all along. Scoped to SC
-    MAIN deliberately; the owner will look at other ATT B areas later.
+    MAIN deliberately; the owner will look at other ATT B areas later — ask him before widening it
+    (his words, as `HANDOFF.md` §Open carried them until 24 Sep 26: "for now we will focus on SC MAIN
+    first").
   - Leave, medical (ATT C, HL, OML) and overseas duty still hard-flag a
     shift — those close the man's day outright.
   - **The shift has ONE voice**: shift lines are excluded from the sortie

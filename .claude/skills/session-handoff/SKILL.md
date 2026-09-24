@@ -173,7 +173,8 @@ else:
 - `## Now` — one block per open chat's branch (Step 1);
 - `## Next, in order` — the project's order, short, pointing into
   `OUTSTANDING.md`'s priority list;
-- `## Gate baseline` — the latest watched counts (Step 3's number bullet);
+- `## Gate baseline` — the latest watched counts (Step 3's number bullet),
+  REPLACED each time, never a per-batch history;
 - `## Standing constraints`, `## Where to look`, `## Moved …` — standing
   reference; edit only when the fact itself changes.
 Open work is NOT kept here — it is `OUTSTANDING.md`, the one backlog. The file
@@ -206,7 +207,8 @@ stable structure is the point.
 - **Shipped:** <change> — PR #<n>, open/merged when written; checks green/red/not run
 - **Unfinished:** <item> — <state, what is left> (or "none"); open residue → `[ITEM-ID]` in OUTSTANDING.md
 - **Branch:** `claude/<name>`; its PR <#n or none>. If it has MERGED, the next chat resets before new work:
-  `git fetch origin main && git checkout -B <branch> origin/main`
+  `git fetch origin main && git checkout -B <branch> origin/main` — otherwise it stacks commits onto
+  already-merged history.
 - **Gates:** `npm test` · `npm run build` · `node reference/tfin.js` · `npm run test:e2e` —
   <green / red / not run, with counts>; `npm run probes:adapted` · `npm run perf` — <green / red / not run>
   (not in CI, so a UI or validation change shipped without them is Unfinished, not a footnote).

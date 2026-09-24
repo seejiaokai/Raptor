@@ -80,3 +80,4 @@ half).
   comments). Call `unsubscribe_pr_activity` immediately after opening any PR;
   never leave one watched. Doesn't change the ship-to-live duty. An explicit
   "babysit this PR" ask overrides, for that PR only.
+- Reading the preview URL off the PR once is NOT watching (24 Aug 26) — fetch the link, then unsubscribe.
