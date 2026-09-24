@@ -10,10 +10,10 @@
  * is deferred, and a ceiling moved in a commit that touches src fails.
  *
  * Run: node scripts/docsize-selftest.mjs (CI runs it beside the gate itself). Exit 1 on any miss. */
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, copyFileSync, rmSync, chmodSync, existsSync } from 'node:fs'
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, copyFileSync, rmSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { execFileSync, spawnSync } from 'node:child_process'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
@@ -138,11 +138,11 @@ scenario('a new ruling whose home was written in the same change', false, c => {
 scenario('a new ruling with only a future home ("on build:")', false, c => addRow(c, 'this file; on build: `OUTSTANDING.md`'))
 
 /* THE MOVER (F5): it must move exactly, refuse what it cannot do exactly, and undo itself. */
-function mover(name, expectOk, { live, prep, args, check }) {
+function mover(name, expectOk, { live, prep, node, args, check }) {
   const ctx = makeRepo(live)
   try {
     if (prep) prep(ctx)
-    const r = spawnSync(process.execPath, ['raptor-port/scripts/backlog-archive.mjs', ...args], { cwd: ctx.dir, encoding: 'utf8' })
+    const r = spawnSync(process.execPath, [...(node ? node(ctx) : []), 'raptor-port/scripts/backlog-archive.mjs', ...args], { cwd: ctx.dir, encoding: 'utf8' })
     const why = check ? check(ctx, r) : ''
     const ok = (r.status === 0) === expectOk && !why
     if (!ok) failed++
@@ -280,9 +280,13 @@ mover('--move: neither --pointer nor --no-pointer is refused', false, { prep: c 
 mover('--move: a block holding a backlog item is refused (use the item mover)', false, { prep: c => docs(c, SRC0.replace('two body', '### [ZULU] an item')), args: moveTwo('--no-pointer'), check: (c, r) => /backlog item/.test(r.stderr) ? '' : 'wrong reason' })
 mover('--move: a block holding a ruling row is refused (use --rulings)', false, { prep: c => docs(c, SRC0.replace('two body', '| D9 | 21 Sep 26 | z | z | this file |')), args: moveTwo('--no-pointer'), check: (c, r) => /ruling row/.test(r.stderr) ? '' : 'wrong reason' })
 mover('--move: a CRLF source into an LF destination is refused', false, { prep: c => docs(c, SRC0.replace(/\n/g, '\r\n')), args: moveTwo('--no-pointer'), check: (c, r) => /line ending/.test(r.stderr) ? '' : 'wrong reason' })
-mover('--move: the SECOND write failing puts the first file back', false, { prep: c => { docs(c); chmodSync(join(c.dir, DST), 0o444) }, args: moveTwo('--no-pointer'), check: (c, r) => {
-  chmodSync(join(c.dir, DST), 0o644)
-  return c.read(SRC) !== SRC0 ? 'the source was not put back' : c.read(DST) !== DST0 ? 'the destination changed' : !/put back/.test(r.stderr) ? 'did not say so' : existsSync(join(c.dir, SRC) + '.docmove-tmp') || existsSync(join(c.dir, DST) + '.docmove-tmp') ? 'left a temporary copy' : '' } })
+/* The failure is INJECTED, not arranged: a module loaded before the mover makes its second rename throw, after the
+   first has already replaced the source. It used to be arranged by making the destination read-only, which fails
+   only on Windows (it will not replace a read-only file); Linux replaces it anyway, so on GitHub the move went
+   through and this reported a MISS the first time the Docs guard ran it (24 Sep 26, PR #433). */
+const FAIL_SECOND_RENAME = "import fs from 'node:fs'; import { syncBuiltinESMExports } from 'node:module'; const real = fs.renameSync; let n = 0; fs.renameSync = (...a) => { if (++n === 2) { const e = new Error('the second rename, failed on purpose by the self-test'); e.code = 'EACCES'; throw e } return real(...a) }; syncBuiltinESMExports()\n"
+mover('--move: the SECOND write failing puts the first file back', false, { prep: c => { docs(c); c.write('fail-second-rename.mjs', FAIL_SECOND_RENAME) }, node: c => ['--import', pathToFileURL(join(c.dir, 'fail-second-rename.mjs')).href], args: moveTwo('--no-pointer'), check: (c, r) =>
+  c.read(SRC) !== SRC0 ? 'the source was not put back' : c.read(DST) !== DST0 ? 'the destination changed' : !/put back/.test(r.stderr) ? 'did not say so' : existsSync(join(c.dir, SRC) + '.docmove-tmp') || existsSync(join(c.dir, DST) + '.docmove-tmp') ? 'left a temporary copy' : '' })
 
 /* THE STOP HOOK (A8) — needs bash; skipped, and said so, where there is none. */
 const HOOK = join(HERE, '..', '..', '.claude', 'hooks', 'backlog-guard.sh')
