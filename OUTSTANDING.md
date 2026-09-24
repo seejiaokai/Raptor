@@ -528,6 +528,31 @@ file (1,479 → ~1,200 lines). **Left here:** `raptor-port/CLAUDE.md` 1,543 → 
 this file → 600 (the priority list and the plain-terms block rewritten to live items only); and pin the new rulings
 files' line endings to LF in `.gitattributes`, like `DECISIONS.md` — held back to ride the next code change, because
 a `.gitattributes` change alone starts a full check run on his PC.
+**THE SPRING CLEAN — measured and planned 24 Sep 26, NEXT (recommended BEFORE the amendment re-test; his word to start).**
+His ask: every session loads too much; make the repo clear and directed, cut clutter, and a summary must never change
+the meaning (**D138**). **Measured:** a session reads ~120k tokens before it works — always loaded ~18k (the rule files
+~5k, the general rulings ~11k, the memory index ~2k), `raptor-port/CLAUDE.md` ~29k (loads with any raptor-port file),
+`HANDOFF.md` ~46k and this file ~24k (read at start). **Disk:** the folder is 1.5 GB — 934 MB is four OLD worktrees in
+`.claude/worktrees/` (all merged into `main`; the one with "224 changes" holds only deleted copies of `.claude` files),
+`node_modules` 151 MB (needed; `npm ci` rebuilds it), the evidence pictures 160 MB (`docs/img/handpass`, 1,256 files, in
+git), `.git` 178 MB (48 MB unpacked). GitHub's copy is ~125 MB; only a fresh single-commit repo ([REPO-PRIVATE]) shrinks it.
+**The plan, in order — MOVE text whole, never reword it (D138):**
+1. **Disk, ~5 min, needs his yes:** `git worktree remove` the four old worktrees + `git worktree prune`, delete the three
+   ignored `.log` files, `git gc`. Frees ~0.95 GB on his PC; nothing in git changes.
+2. **`raptor-port/CLAUDE.md` ~29k → ~8k:** move §Stable decisions (the pre-21-Sep rulings) verbatim into the area rulings
+   files as a dated "before this list" section each (the Leave War roster → `leave-war.md`; board, waves, drag, time, week
+   navigation, inputs & admin, the late-input mark, performance → `scheduler.md`), and the long Leave War / Tracker
+   architecture paragraphs likewise — they then load only when that area is touched. Cross-cutting ones (pipeline & repo
+   invariants) stay always-loaded. Raise those files' ceilings with the reason (D136).
+3. **`HANDOFF.md` ~46k → ~10k (400 lines):** current state only; resolved stories MOVED to `HANDOFF-ARCHIVE.md`; the deploy
+   traps to a tier-2 doc; `[DEPLOY-DOCS]`'s Pages-era text corrected.
+4. **This file ~24k → ~12k (600 lines):** the priority list and plain-terms block rewritten to live items only — the old
+   block MOVED to the archive whole.
+5. **Root tidy:** the closed handoffs (`HANDOFF-OIL-WALK.md`, `HANDOFF-S4-BUGHUNT.md`) and the retired `BUG-TESTING.md` into
+   an archive folder, every pointer updated.
+6. **Leave the evidence pictures** (sessions never read them; git keeps them anyway; the [REPO-CLEANUP] keep ruling).
+7. **Checks:** `docsize` green; **Fable and Astra each given every before/after pair, asked only whether any rule,
+   condition, date or reason changed or vanished** (D138). Target ~120k → ~45–50k per session start. ~3–4 h, 1–2 sessions.
 **His words: "theres going to be alot of context for the AI to read ... reading so much context
 as an AI it starts to hallucinate."** Measured that day: **1,830 lines loaded every session**
 whatever the task, plus **2,228 more** at session start. `HANDOFF.md` states its own 550-line

@@ -47,6 +47,10 @@ course; an import never deletes marks). Left from it, none blocking: `[TRK-RETES
 
 ## Next, in order
 
+0. **THE SPRING CLEAN — recommended FIRST, his word to start** (he asked 24 Sep 26; D138: a summary never changes
+   the meaning). Measurements and the 7-step plan: `OUTSTANDING.md` `[DOC-TRIM]` ("THE SPRING CLEAN"). Step 1 (removing
+   four old worktrees, ~0.95 GB) needs his yes. Then the amendment re-test (item 2).
+
 1. **The presentation/demo-video work (D154) is DONE (D135, 24 Sep 26)** — the PC is no longer shared with it; D86's
    one-full-run-at-a-time and "not while the PC runner is mid-run" still stand. D58 holds (no unit designation).
 2. **`[HUMAN-RETEST]` continues — THE AMENDMENT SYSTEM is next** (the Tracker half is done): D85/D86 — port 4173,
