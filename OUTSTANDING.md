@@ -71,7 +71,7 @@ first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [T
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SMOKE-ADD-RACE]
 (before the next Tracker change that touches the smoke suite), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
-The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [BOARD-KEYBOARD-GAP] (phone; small). The amendment batch, all decided 24–25 Sep 26 (D91–D105), ONE build after the re-test merges — `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`: [PENDING-SUMMARY], [AMEND-PHONE-APPROVER], [AMEND-TEMPLATE-PUBLISHED], [AMEND-NYS-WORDING], [AMEND-LOAD-FILING], [AMEND-MARK-RING-CLASH] (design approved, D93 — to build) and [BOARD-RING-STROKES] (his question), [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [BOARD-KEYBOARD-GAP] (phone; small). The amendment batch, all decided 24–25 Sep 26 (D91–D105, D107–D108), ONE build after the re-test merges — `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`: [PENDING-SUMMARY], [AMEND-PHONE-APPROVER], [AMEND-TEMPLATE-PUBLISHED], [AMEND-NYS-WORDING], [AMEND-LOAD-FILING], [AMEND-MARK-RING-CLASH] (design approved, D93 — to build) and [BOARD-RING-STROKES] (his question), [HIST-JUMP-STAYS] and [ORIG-TAG-STANDOUT] (his look at PR #434, D107–D108; the ORIG tag waits on a mock-up), [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] and [RULING-HOMES-AUDIT] (any time, docs only),
 [BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
 FULL-tier build, any time).
@@ -1116,6 +1116,20 @@ scroll into the gap; other panels already follow the visible area (`window.visua
 unclear whether History mode has to be on — reproduce both ways. **To do:** reproduce at phone size with the keyboard up
 (or a shrunken visual viewport); make nothing behind the board ever show (hold the page behind still while the board is
 open, or size the board to the visible area). LOOK tier, phone only. **Place:** with the board items; small.
+
+### [HIST-JUMP-STAYS] A tap on a change in Edit history keeps him on Edit Schedule (D107, 25 Sep 26)
+Found in his five-minute look at PR #434 and reproduced the same night: on Edit Schedule, Edit history → tap a change
+opens the scheduler board on that day with the bubble pinned (the list's jump was built for the board on 11 Aug 26; the
+Edit history button added to Edit Schedule's top bar on 23 Aug 26 reused it). On `main` too. **His ruling (D107):** stay
+on the page you are on — take the view to the change on the week and mark it; on the board, today's jump stays.
+**Build with the amendment batch** (item 12 of `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`),
+as ONE "take me to this change" shared with the pending list's tap (item 8). WALK tier inside the batch's FULL.
+
+### [ORIG-TAG-STANDOUT] The ORIG tag stands out, so a published day reads as published (D108, 25 Sep 26)
+His ask in the same look: the Original's grey tag is too quiet — people should see the day is published. Changes the
+register's AM22 "grey ORIG" (15 Sep 26). **Mock-up first** (options on the edit week, the board and View-only Sched,
+desktop and phone; not an AL colour, not a warning colour), his pick, then build with the amendment batch (item 13).
+The tag is drawn by one routine on every surface — a shared drawer, so WALK tier at least.
 
 ### [PENDING-SUMMARY] Tap "N pending" to see what changed, by whom and when — his idea (25 Sep 26), waiting on his word
 **ALL FOUR PARTS DECIDED 25 Sep 26:** (1) D103 any pending change wipes the sign-offs; (2) D99 + D100 the tappable,
