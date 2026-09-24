@@ -1137,7 +1137,7 @@ lines (item 8) read a move as one line. FULL tier inside the batch (the publishe
 His ask in the same look: the Original's grey tag is too quiet — people should see the day is published. Changes the
 register's AM22 "grey ORIG" (15 Sep 26). **Mock-up first** (options on the edit week, the board and View-only Sched,
 desktop and phone; not an AL colour, not a warning colour), his pick, then build with the amendment batch (item 13).
-**25 Sep 26 (D110):** option A's direction — no colour, a tick — B and C out; refined variants of A drawn for his final pick.
+**25 Sep 26 (D110):** option A's direction — no colour, a tick — B and C out; refined variants of A drawn for his final pick. **Picked the same night (D111): A1, the seal** — build it (the mock-up's variant `s` in `raptor-port/scripts/handpass/am/mk-orig-tag-refine.mjs`).
 The tag is drawn by one routine on every surface — a shared drawer, so WALK tier at least.
 
 ### [PENDING-SUMMARY] Tap "N pending" to see what changed, by whom and when — his idea (25 Sep 26), waiting on his word
