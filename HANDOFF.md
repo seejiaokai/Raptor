@@ -31,7 +31,8 @@ the later merge keeps both (D78).
 - **The PR:** see the PR list for `claude/leave-late-published` (its checks run on GitHub's machines while the repo is
   public, D106). **Next:** his look (the card's four "look here" lines and Q1, Q4, Q5, Q6), then his "merge live".
 - **His questions (the card, §10):** Q1 ANSWERED — D186 "Q1 yes" (keep them frozen). Q4 the
-  app's own "till <date>" note: a stretched or trimmed leave reads pending on the published days it still covers — keep?
+  app's own "till <date>" note: a stretched or trimmed leave makes each published day it still covers show "1 pending" on
+  the admin's working copy (never on View-only Sched) — keep?
   Q5 warnings in the board's look at a published version (`OUTSTANDING.md` `[PV-NO-FLAGS]`)? Q6 the reading of "a lapsed
   qualification" (the Qualification-flag family; crew-pairing frozen) and the tight-turn note live — right?
 - **Filed this session:** `[PV-NO-FLAGS]`, `[INSIGHTS-WORKING-COPY]` (both his questions), `[QUALS-PROTO-TOAST]`,
