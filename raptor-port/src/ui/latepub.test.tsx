@@ -3,20 +3,26 @@
      · D177 ("Question 2 yes") — a leave filed after a day is published reads "1 pending", the four sign-offs fall, and
        the published face keeps what it was issued with until the next AL;
      · D178 — EVERY member input change after publishing (filed, edited, deleted, moved) is pending for the admin;
-     · D179 ("freeze everything for now", provisional) — medical and qualifications freeze too.
+     · D179 ("freeze everything for now", provisional) — medical and qualifications freeze too;
+     · D183, D184, D185 (26 Sep 26) — except what stays LIVE on the face: the dotted next-day crew-rest mark, a crew-rest
+       breach and the 7-day run on the day itself, and a lapsed qualification (not stored, not compared — so they alone
+       make nothing pending). A medical downchit stays frozen ("1 frozen still").
    Pinned through the production doors the screens call (the Inputs page's commitNewInput / commitInputEdit /
    removeInput, the reassign drag, the Quals change on PEOPLE, publishing through setDayApproved / publishALDay /
    unpublishDay) and read through every count the screens show — the week, the board, the ⓘ panel, the pending list —
    and through the issued face itself (View-only Sched's dayIssuedHTML). The plan:
    docs/superpowers/plans/2026-09-25-late-published-plan.md; the scenarios: docs/handpass/2026-09-25-late-pub-*-scenarios.md. */
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { act } from 'react'
+import { createRoot } from 'react-dom/client'
+import { ALPanel } from './ALPanel'
 import { readFileSync } from 'fs'
 import { DAYS } from '../engine/data'
 import { INPUTS, inpId } from '../engine/inputs'
-import { acceptInput, renameCallsign } from '../engine/slots'
-import { loadVersionToWorkingCopy } from '../engine/drafts'
+import { acceptInput, renameCallsign, setSlotVal } from '../engine/slots'
+import { loadVersionToWorkingCopy, inputsLeftSaid } from '../engine/drafts'
 import { SCHED, signOf, setSign, setDayApproved, dayDelta, dayDiscardCount, dayShownPendCount, dayCurVer, daySigned, dayPendingItems, publishALDay, unpublishDay } from '../engine/publish'
-import { validate, officialWarn } from '../engine/validate'
+import { validate, officialWarn, officialRaw, WARN, LIVE_ON_FACE } from '../engine/validate'
 import { initStore } from '../state/store'
 import { setSession } from '../state/auth'
 import { setPage, DPREV, VWORK, setUnpubArm, setRestArm } from '../state/view'
@@ -26,6 +32,7 @@ import { boardSignHTML } from './board'
 import { pendListHTML } from './pendlist'
 import { commitNewInput, commitInputEdit, removeInput, draftOf } from './inputedit'
 import { schedRows, publishedDays } from './export'
+import { makeStandalone } from '../engine/waves'
 import { VCONF } from '../engine/rules'
 
 const MON = 0, WED = 2
@@ -48,6 +55,15 @@ const counts = (di: number) => ({
   list: el(pendListHTML(di)).querySelectorAll('.pl-item').length,
 })
 const listText = (di: number) => el(pendListHTML(di)).querySelector('.pl-list')!.textContent || ''
+/* the Amendments panel as it renders (the same React component the Edit Schedule page mounts) */
+const alPanelText = () => {
+  const host = document.createElement('div'); document.body.appendChild(host)
+  const root = createRoot(host)
+  act(() => { root.render(<ALPanel />) })
+  const t = host.textContent || ''
+  act(() => { root.unmount() }); host.remove()
+  return t
+}
 const leaveDraft = (person: string, iso: string, remarks: string, type = 'LL') =>
   ({ person, type, allday: true, half: '', start: iso, end: '', sTime: '06:00', eTime: '18:00', remarks, sans: null, docIds: [] })
 const taipanOL = () => INPUTS.find((r: any) => r.person === 'taipan' && r.type === 'OL')!   // seed: Wed 15 Jul, all day
@@ -81,6 +97,8 @@ describe('D177 / D178 — an input change after publishing waits for the admin',
     expect(daySigned(MON), 'the four fall (D103)').toBe(false)
     expect(weekEdit(MON).textContent, 'the working copy shows it').toContain('LATE LEAVE D177')
     expect(issuedFace(MON).textContent, 'the issued face keeps what it went out with').not.toContain('LATE LEAVE D177')
+    /* the Amendments panel names it as what it is — an input change, not a "filing" (Fable's code read F6) */
+    expect(alPanelText()).toMatch(/Mon · 1 change · 1 input change(?!s)/)
     const inp = INPUTS.find((r: any) => r.remarks === 'LATE LEAVE D177')!
     expect(removeInput(inp)).toBeTruthy()
     validate()
@@ -161,6 +179,8 @@ describe('D177 / D178 — an input change after publishing waits for the admin',
     validate()
     expect(INPUTS.some((r: any) => r.remarks === 'KEEP ON LOAD'), 'the member\'s record is his').toBe(true)
     expect(dayShownPendCount(MON)).toBe(1)
+    /* …and the load's sentence says why the day still reads pending (Fable's code read F5; the plan's layer 1) */
+    expect(inputsLeftSaid(MON)).toMatch(/1 member input changed since stays pending/)
   })
 
   it('an accepted request edited after publishing is ONE change — its re-landed row folds into it', () => {
@@ -172,10 +192,12 @@ describe('D177 / D178 — an input change after publishing waits for the admin',
     validate()
     expect(dayPendingItems(MON).length, 'one act').toBe(1)
     expect(counts(MON).list).toBe(1)
+    /* the one line takes the view to the re-landed row (Fable's code read F4 — it was drawn "still") */
+    expect(el(pendListHTML(MON)).querySelector('button.pl-item'), 'a line that can be tapped').toBeTruthy()
   })
 })
 
-describe('D179 — medical and qualifications freeze too (provisional)', () => {
+describe('D179 — medical freezes (D185: "1 frozen still"); a qualification is live (D185)', () => {
   it('a downchit filed after publishing: the issued face shows no row and no DNIF; the working copy does; 1 pending', () => {
     publishDay(WED)
     const who = ((DAYS[WED] as any).waves?.[0]?.formations?.[0]?.aircraft?.[0]?.p) || 'stiff'
@@ -188,7 +210,7 @@ describe('D179 — medical and qualifications freeze too (provisional)', () => {
     expect(dnif(officialWarn()), 'the issued face flags no DNIF').toBe(false)
   })
 
-  it('a qualification change on a published day: the issued face keeps its warnings, the day reads "warnings changed"; put back → 0', () => {
+  it('a posting change on a published day: the illegal seat shows on the face at once (D185); the posting reads pending; put back → 0', () => {
     publishDay(MON); signBound(MON)
     const pilot = ((DAYS[MON] as any).waves[0].formations[0].aircraft[0].p) as string
     expect(pilot, 'a pilot in Monday\'s first front seat').toBeTruthy()
@@ -196,11 +218,12 @@ describe('D179 — medical and qualifications freeze too (provisional)', () => {
     ;(PEOPLE as any)[pilot].pers = true                        // now ground crew — cannot fly a front seat
     try {
       validate()
-      expect(dayPendingItems(MON).some((x: any) => x.kind === 'warn'), 'one "warnings changed" item').toBe(true)
-      expect(listText(MON), 'the list names what moved — the man and the warning').toMatch(/ground crew|QUAL|qualif/i)
+      expect(dayPendingItems(MON).some((x: any) => x.kind === 'warn'), 'one "what this day shows" item — his posting').toBe(true)
+      expect(listText(MON), 'the list names what moved — the man and his posting').toMatch(/ground crew/i)
       expect(daySigned(MON), 'the four fall').toBe(false)
       const qual = (b: any) => ((b.byDay[MON] && b.byDay[MON].warns) || []).some((w: any) => w.code === 'QUAL' && (w.who || []).includes(pilot))
-      expect(qual(officialWarn()), 'the issued face keeps the warnings it went out with').toBe(false)
+      expect(qual(officialWarn()), 'the illegal seat is live on the issued face (D185)').toBe(true)
+      expect(issuedFace(MON).querySelector(`.puck[data-person="${pilot}"]`)?.className, 'his puck rings red on the face').toMatch(/boxred/)
     } finally { (PEOPLE as any)[pilot].pers = was }
     validate()
     expect(dayDelta(MON), 'put back — nothing pending').toEqual([])
@@ -279,9 +302,13 @@ describe('Astra\'s code read (26 Sep 26): the face beyond the warnings freezes t
   })
 
   it('a man only on the Unavailable list is covered too: his CAT changed reads pending (Astra #2\'s worse variant)', () => {
-    publishDay(MON)
-    const onlyInput = INPUTS.map((r: any) => r.person).find((id: string) => (PEOPLE as any)[id] && !JSON.stringify(DAYS[MON]).includes(`"${id}"`) && INPUTS.some((r: any) => r.person === id && r.date === 'Jul 13'))
-    expect(onlyInput, 'a man on Monday\'s inputs and nowhere in its content').toBeTruthy()
+    /* the demo Monday has no such man (every one of its inputs' men is on its content too), so file one through the
+       Inputs page before publishing: Salsa flies Tuesday and is nowhere on Monday */
+    const onlyInput = 'salsa'
+    expect(JSON.stringify(DAYS[MON]).includes(`"${onlyInput}"`), 'Salsa is nowhere in Monday\'s content').toBe(false)
+    expect(commitNewInput(leaveDraft(onlyInput, '2026-07-13', 'ONLY UNAVAILABLE'))).toBe(true)
+    validate(); publishDay(MON)
+    expect(issuedFace(MON).textContent, 'the issued face draws him under Unavailable').toContain('ONLY UNAVAILABLE')
     const was = (PEOPLE as any)[onlyInput!].q
     ;(PEOPLE as any)[onlyInput!].q = was === 'A' ? 'B' : 'A'
     try { validate(); expect(dayShownPendCount(MON)).toBe(1) } finally { (PEOPLE as any)[onlyInput!].q = was }
@@ -308,15 +335,226 @@ describe('Astra\'s code read (26 Sep 26): the face beyond the warnings freezes t
   })
 
   it('a rename beside a real warning change: the list names only the real change (Astra #3)', () => {
+    /* Monday's first pilot (Stiff) carries frozen warnings that name him (a double booking, a missed brief, a long day,
+       double turning). He is renamed; the REAL change beside it only ADDS warnings — the long-day limit lowered on the
+       Logic page — so any "cleared" row, or a "new" row that is not a long day, is the rename leaking. (The first
+       version of this pin flipped his posting instead, which genuinely clears warnings — a ground-crewman carries no
+       brief or turning rules — so its "cleared" rows were real, not the rename.) */
     publishDay(MON)
     const pilot = ((DAYS[MON] as any).waves[0].formations[0].aircraft[0].p) as string
-    const cs0 = (PEOPLE as any)[pilot].cs, pers0 = (PEOPLE as any)[pilot].pers
+    const cs0 = (PEOPLE as any)[pilot].cs, ld = (VCONF as any).longDay
+    expect(((officialWarn().byDay[MON] || {}).warns || []).filter((w: any) => (w.who || []).includes(pilot)).length, 'his frozen warnings name him').toBeGreaterThan(1)
     try {
       renameCallsign(pilot, cs0 + 'X')
-      ;(PEOPLE as any)[pilot].pers = true
+      ;(VCONF as any).longDay = 6 * 60
       validate()
+      expect(dayPendingItems(MON).filter((x: any) => x.kind === 'warn').length, 'one item').toBe(1)
       const t = listText(MON)
       expect(t, 'no warning reads cleared merely because a callsign changed').not.toMatch(/cleared/)
-    } finally { (PEOPLE as any)[pilot].pers = pers0; renameCallsign(pilot, cs0); validate() }
+      expect(t, 'something new is named').toMatch(/long work day/)
+      expect(t.split('new').length - 1, 'every new row is a long day').toBe((t.match(/long work day/g) || []).length)
+    } finally { (VCONF as any).longDay = ld; renameCallsign(pilot, cs0); validate() }
+  })
+})
+
+/* WHAT STAYS LIVE ON A PUBLISHED FACE (owner, 26 Sep 26): D183 the dotted "breaks tomorrow's crew rest" mark; D184 the
+   7-day run warning "as well" — and, by the agent's reading, a crew-rest breach on the day itself; D185 "2 & 3 make it
+   live" — a lapsed qualification too, a medical downchit frozen still. Live means: drawn on the issued face from today's
+   judgement (the official pass), with its ring and flag, the moment it happens; NOT stored with the version and NOT
+   compared — so it alone never makes the day pending and never takes its four down. Each through a production door:
+   the schedule's write funnel (setSlotVal) on the draft day beside it, a Logic-page rule (VCONF), a Quals-page tick. */
+describe('D184 / D185 — a crew-rest breach, the 7-day run and a lapsed qualification stay live on a published face', () => {
+  const TUE = 1
+  const warnOn = (b: any, di: number, code: string, id: string) => ((b.byDay[di] && b.byDay[di].warns) || []).some((w: any) => w.code === code && (w.who || []).includes(id))
+  const puckCls = (di: number, id: string) => issuedFace(di).querySelector(`.puck[data-person="${id}"]`)?.className || ''
+
+  it('a late duty put on the DRAFT day before breaks a published day\'s crew rest: its face shows it at once, 0 pending, the four stand; put back → gone', () => {
+    /* Rocky flies Tuesday's first wave (08:40) — clear of Monday, where he is not on the programme */
+    publishDay(TUE); signBound(TUE)
+    expect(warnOn(officialWarn(), TUE, 'CREW_REST', 'rocky'), 'baseline: no breach').toBe(false)
+    const issues = () => num((issuedFace(TUE).textContent || '').match(/(\d+) issues?/)?.[0])
+    const n0 = issues()
+    const was = String((DAYS[MON] as any).dutywaves[1].rows[0].id)
+    expect(setSlotVal('d:0.1.0', 'rocky'), 'Monday\'s evening SDO desk (13:00–21:30) — through the write funnel').toBe(true)
+    validate()
+    expect(warnOn(officialWarn(), TUE, 'CREW_REST', 'rocky'), 'Tuesday\'s issued face shows the breach at once (D184)').toBe(true)
+    expect(officialWarn().sev[TUE]?.rocky, 'with its red ring').toBe('hard')
+    expect(officialWarn().chip[TUE]?.rocky, 'and its CR flag').toBe('CR')
+    expect(puckCls(TUE, 'rocky'), 'his puck on View-only Sched rings red').toMatch(/boxred/)
+    expect(issues(), 'the face\'s warning summary counts it').toBe(n0 + 1)
+    expect(dayShownPendCount(TUE), 'nothing pending on Tuesday — the breach is Monday\'s change').toBe(0)
+    expect(daySigned(TUE), 'Tuesday\'s four stand').toBe(true)
+    expect(setSlotVal('d:0.1.0', was)).toBe(true)
+    validate()
+    expect(warnOn(officialWarn(), TUE, 'CREW_REST', 'rocky'), 'put back — the breach is gone from the face').toBe(false)
+    expect(officialWarn().sev[TUE]?.rocky, 'and his ring with it').toBeFalsy()
+  })
+
+  it('the same late duty on a PUBLISHED day before: pending there; Tuesday\'s face shows the breach once Monday\'s AL goes out — never pending on Tuesday', () => {
+    publishDay(MON); publishDay(TUE); signBound(TUE)
+    expect(setSlotVal('d:0.1.0', 'rocky')).toBe(true)
+    validate()
+    expect(dayShownPendCount(MON), 'Monday reads its own change').toBe(1)
+    expect(warnOn(officialWarn(), TUE, 'CREW_REST', 'rocky'), 'Tuesday is judged against Monday as ISSUED — no breach yet').toBe(false)
+    expect(warnOn(WARN, TUE, 'CREW_REST', 'rocky'), 'the working copy shows it').toBe(true)
+    signBound(MON); publishALDay(MON); validate()
+    expect(warnOn(officialWarn(), TUE, 'CREW_REST', 'rocky'), 'Monday\'s AL1 out — Tuesday\'s face shows the breach').toBe(true)
+    expect(dayShownPendCount(TUE), 'and Tuesday still reads nothing pending').toBe(0)
+    expect(daySigned(TUE)).toBe(true)
+  })
+
+  it('the 7-day run: a lowered limit (the Logic page) shows the warning on a published day at once, 0 pending', () => {
+    publishDay(TUE); signBound(TUE)
+    const was = (VCONF as any).maxRun
+    ;(VCONF as any).maxRun = 1                                  // Monday and Tuesday in a row is now over the limit
+    try {
+      validate()
+      const run = ((officialWarn().byDay[TUE] || {}).warns || []).filter((w: any) => w.code === 'DAYS_RUN')
+      expect(run.length, 'Tuesday\'s face shows the 7-day warning at once (D184)').toBeGreaterThan(0)
+      const id = run[0].who[0]
+      expect(officialWarn().chip[TUE]?.[id], 'with the RUN flag').toBe('RUN')
+      expect(puckCls(TUE, id), 'and the red ring on View-only Sched').toMatch(/boxred/)
+      expect(dayPendingItems(TUE).some((x: any) => x.kind === 'warn'), 'not compared — nothing pending for it').toBe(false)
+      expect(daySigned(TUE)).toBe(true)
+    } finally { (VCONF as any).maxRun = was }
+    validate()
+    expect(((officialWarn().byDay[TUE] || {}).warns || []).some((w: any) => w.code === 'DAYS_RUN'), 'put back — gone').toBe(false)
+  })
+
+  it('a lapsed AAR currency (the Quals page) shows on a published day at once, with its Q flag; 0 pending', () => {
+    const ac: any = (DAYS[TUE] as any).waves[0].formations[0].aircraft[0]
+    ac.rmks = 'AAR'                                             // a day-AAR sortie before publishing — Nact is DAAR current
+    validate(); publishDay(TUE); signBound(TUE)
+    expect(warnOn(officialWarn(), TUE, 'AAR_QUAL', ac.p), 'current at publish').toBe(false)
+    const q: any = (PEOPLE as any)[ac.p].quals, was = q.daar
+    q.daar = false                                              // his DAAR lapses
+    try {
+      validate()
+      expect(warnOn(officialWarn(), TUE, 'AAR_QUAL', ac.p), 'the face shows it at once (D185)').toBe(true)
+      expect(officialWarn().chip[TUE]?.[ac.p], 'with the Q flag').toBe('Q')
+      expect(puckCls(TUE, ac.p)).toMatch(/boxred/)
+      expect(dayShownPendCount(TUE), 'a currency tick is no part of what the day went out with — 0 pending').toBe(0)
+      expect(daySigned(TUE)).toBe(true)
+    } finally { q.daar = was }
+    validate()
+    expect(warnOn(officialWarn(), TUE, 'AAR_QUAL', ac.p), 'ticked again — gone').toBe(false)
+  })
+
+  it('a lapsed SC currency shows on a published day at once; a warning that FREEZES still reads pending (the unchanged half)', () => {
+    ;(DAYS[TUE] as any).waves.push(makeStandalone('sc'))
+    const gi = (DAYS[TUE] as any).waves.length - 1
+    const man = 'bane'                                          // SC DAY current
+    expect(setSlotVal(`1.${gi}.0.0.p`, man)).toBe(true)
+    validate(); publishDay(TUE); signBound(TUE)
+    const scq = () => warnOn(officialWarn(), TUE, 'SC_QUAL', man)
+    expect(scq(), 'current at publish').toBe(false)
+    const q: any = (PEOPLE as any)[man].quals, was = { d: q.scDay, n: q.scNight }
+    q.scDay = false; q.scNight = false
+    const ld = (VCONF as any).longDay
+    try {
+      validate()
+      expect(scq(), 'the lapsed SC currency is on the face at once (D185)').toBe(true)
+      expect(dayShownPendCount(TUE), 'and nothing is pending for it').toBe(0)
+      /* a LONG DAY is not one of the live warnings: a rule change that raises one keeps the face as issued and reads
+         pending (D179 holds for it) */
+      ;(VCONF as any).longDay = 60
+      validate()
+      const faceLong = ((officialWarn().byDay[TUE] || {}).warns || []).filter((w: any) => w.code === 'LONGDAY').length
+      const nowLong = ((officialRaw().byDay[TUE] || {}).warns || []).filter((w: any) => w.code === 'LONGDAY').length
+      expect(nowLong, 'today\'s judgement raises more long days').toBeGreaterThan(faceLong)
+      expect(dayPendingItems(TUE).some((x: any) => x.kind === 'warn'), 'which freeze — "what this day shows" reads pending').toBe(true)
+      expect(daySigned(TUE), 'and the four fall').toBe(false)
+    } finally { q.scDay = was.d; q.scNight = was.n; (VCONF as any).longDay = ld }
+  })
+
+  it('every ring a live warning raises is filed live, and a man whose only warnings are live has no frozen ring (break test for the class tags)', () => {
+    /* a day carrying every live kind at once: the demo Tuesday's crew-rest breach (Casper), a ground-crew man in a front
+       seat (QUAL), a lapsed DAAR (AAR_QUAL) and a lowered run limit (DAYS_RUN) */
+    const ac: any = (DAYS[TUE] as any).waves[0].formations[0].aircraft[0]
+    ac.rmks = 'AAR'
+    const pilot2 = (DAYS[TUE] as any).waves[1].formations[0].aircraft[0].p as string
+    const q: any = (PEOPLE as any)[ac.p].quals, daar = q.daar, pers = (PEOPLE as any)[pilot2].pers, run = (VCONF as any).maxRun
+    q.daar = false; (PEOPLE as any)[pilot2].pers = true; (VCONF as any).maxRun = 1
+    try {
+      const b = validate()
+      const seen = new Set<string>()
+      b.byDay.forEach((g: any, di: number) => {
+        const byMan: Record<string, string[]> = {}
+        ;((g && g.warns) || []).forEach((w: any) => (w.who || []).forEach((id: string) => { (byMan[id] = byMan[id] || []).push(w.code) }))
+        Object.entries(byMan).forEach(([id, codes]) => {
+          codes.filter(c => LIVE_ON_FACE.has(c)).forEach(c => {
+            seen.add(c)
+            if (c === 'CREW_TIGHT') expect(b.lv.chip[di]?.[id], `${c} on ${id} (day ${di}) flags in the live class`).toBeTruthy()
+            else if (c !== 'OIL_NO_PERIOD') expect(b.lv.sev[di]?.[id], `${c} on ${id} (day ${di}) rings in the live class`).toBeTruthy()
+          })
+          if (codes.every(c => LIVE_ON_FACE.has(c))) expect(b.fz.sev[di]?.[id], `${id} (day ${di}) has only live warnings — no frozen ring`).toBeFalsy()
+        })
+      })
+      for (const c of ['CREW_REST', 'DAYS_RUN', 'QUAL', 'AAR_QUAL']) expect(seen.has(c), `the fixture raised ${c}`).toBe(true)
+    } finally { q.daar = daar; (PEOPLE as any)[pilot2].pers = pers; (VCONF as any).maxRun = run }
+  })
+})
+
+/* FABLE'S CODE READ (26 Sep 26), F1–F3: what a member's input change does on the days it did NOT change. */
+describe('Fable\'s code read: an input change reads pending only where the day\'s face moves', () => {
+  const TUE = 1, THU = 3, FRI = 4
+  /* a man on none of Monday–Friday's content and with no input that week — a clean slate for his own records */
+  const loner = () => Object.keys(PEOPLE).find((id: string) => !(PEOPLE as any)[id].special && !(PEOPLE as any)[id].pers
+    && [0, 1, 2, 3, 4].every(d => !JSON.stringify(DAYS[d]).includes(`"${id}"`)) && !INPUTS.some((r: any) => r.person === id))!
+
+  it('F1: a Mon–Tue leave stretched to Wednesday — Monday and Tuesday read nothing (their faces did not move); Wednesday reads it filed', () => {
+    const who = loner()
+    expect(who, 'a man free all week').toBeTruthy()
+    expect(commitNewInput({ ...leaveDraft(who, '2026-07-13', 'STRETCH ME'), end: '2026-07-14' })).toBe(true)
+    validate()
+    for (const d of [MON, TUE, WED]) publishDay(d)
+    signBound(MON); signBound(TUE)
+    const inp = INPUTS.find((r: any) => r.remarks === 'STRETCH ME')!
+    expect(commitInputEdit(inp, { ...draftOf(inp), end: '2026-07-15' })).toBeTruthy()
+    validate()
+    expect(dayDelta(MON), 'Monday — the same leave on its face').toEqual([])
+    expect(dayDelta(TUE), 'Tuesday — the same').toEqual([])
+    expect(daySigned(MON) && daySigned(TUE), 'their four stand').toBe(true)
+    expect(dayPendingItems(WED).length, 'Wednesday reads it').toBe(1)
+    expect(listText(WED)).toMatch(/filed/)
+    expect(issuedFace(WED).textContent, 'Wednesday\'s face keeps what it went out with').not.toContain('STRETCH ME')
+  })
+
+  it('F1: an upchit trims a Mon–Fri downchit to Wednesday — Monday and Wednesday read only the note it adds ("till …"), never the dates; Thursday and Friday lose it', () => {
+    const who = loner()
+    expect(commitNewInput({ ...leaveDraft(who, '2026-07-13', 'LONG DOWN', 'ATT C'), end: '2026-07-17' })).toBe(true)
+    validate()
+    for (const d of [MON, WED, THU, FRI]) publishDay(d)
+    expect(commitNewInput({ ...leaveDraft(who, '2026-07-16', 'FIT AGAIN', 'Upchit') })).toBe(true)
+    validate()
+    const down = INPUTS.find((r: any) => r.person === who && r.type === 'ATT C')!
+    expect(down.endDate, 'the downchit now ends Wednesday').toBe('Jul 15')
+    /* the trim writes "till 15 Jul" into the downchit's remarks, and the Unavailable block prints the remarks — so the
+       face's words DO move on Monday and Wednesday: one change each, worded as the remark alone (the dates are the
+       membership's business, Fable F1). Whether the app's own "till …" note should count is put to him (look card). */
+    for (const d of [MON, WED]) {
+      expect(dayPendingItems(d).length, `day ${d} — one change`).toBe(1)
+      const t = listText(d)
+      expect(t, 'the remark it gained').toMatch(/LONG DOWN till 15 Jul/)
+      expect(t, 'never the far end').not.toMatch(/Jul 13 –|Jul 17/)
+    }
+    expect(dayPendingItems(THU).length, 'Thursday lost it').toBe(1)
+    expect(listText(THU)).toMatch(/moved off this day/)
+    expect(dayPendingItems(FRI).length, 'Friday lost it').toBe(1)
+  })
+
+  it('F2: a medical takeover in the middle of a downchit is ONE change on the tail\'s published day, worded as one edit', () => {
+    const who = loner()
+    expect(commitNewInput({ ...leaveDraft(who, '2026-07-13', 'LONG DOWNCHIT', 'ATT C'), end: '2026-07-17' })).toBe(true)
+    validate(); publishDay(WED)
+    expect(commitNewInput({ ...leaveDraft(who, '2026-07-14', 'MO OML', 'OML') })).toBe(true)   // the MO, Tuesday
+    validate()
+    const downs = INPUTS.filter((r: any) => r.person === who && r.type === 'ATT C')
+    expect(downs.length, 'the cascade trimmed the head and minted a tail').toBe(2)
+    const items = dayPendingItems(WED)
+    expect(items.length, 'one status change for one man on Wednesday').toBe(1)
+    const t = listText(WED)
+    expect(t, 'one edit — not "moved off" and "filed"').not.toMatch(/moved off|filed/)
+    expect(t).toMatch(/LONG DOWNCHIT/)
   })
 })

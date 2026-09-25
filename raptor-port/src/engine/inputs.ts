@@ -73,9 +73,12 @@ export function inputOn(iid:any,dt:any):any{
   if(FZ&&dt!=null){const k=dateOrd(dt); const f=k!=null?FZ.get(k):undefined; if(f)return f.find((r:any)=>r.iid===iid)||null;}
   return inpById(iid);}
 /* WHAT AN INPUT SAYS ON A SCHEDULE, for "has it changed since the day was issued?" (D178: every member input change
-   counts; Fable's scenario design Q4/Q5, 25 Sep 26). What the schedule draws or judges: whose, what type, the dates (as
-   real dates — a label and its year anchor can spell one day two ways), all day / half / the times, the remarks, the
-   SANS offer. NOT the filing state (`acc` — the filing axis compares that, publish.ts filingDelta), the
+   counts; Fable's scenario design Q4/Q5, 25 Sep 26). What the schedule draws or judges ON THIS DAY: whose, what type,
+   all day / half / the times, the remarks, the SANS offer. NOT its dates (Fable's code read F1, 26 Sep 26): whether it
+   covers this day is the membership — frozenInputMatch compares the inputs covering the date on both sides — and the
+   far end of a multi-day input is another day's business; nothing a face draws or the validator judges for this day
+   reads it. With the dates in, a Mon–Tue leave stretched to Wednesday made Monday and Tuesday pending with faces
+   unchanged, and an upchit trimming a week-long downchit made every day it still covered pending. NOT the filing state (`acc` — the filing axis compares that, publish.ts filingDelta), the
    id, the lateness stamp (`mod` — the literal 'now' re-reads as today's date, and an edit that matters moves a field
    above anyway), the Leave War's provenance tag, the attached paperwork (the Inputs page's, never drawn on a
    schedule) or the OIL answer (a map over every date the input covers — Tuesday's answer must not move Monday — and
@@ -86,8 +89,8 @@ export const stableJson=(v:any):string=>{
   return '{'+Object.keys(v).filter((k:any)=>v[k]!==undefined).sort().map((k:any)=>JSON.stringify(k)+':'+stableJson(v[k])).join(',')+'}';};
 export function inpDetailKey(inp:any):string{
   if(!inp)return '';
-  const a=dateOrd(inp.date,inp.yr), b=inp.endDate?dateOrd(inp.endDate,inp.yr):a, all=!!inp.allday;
-  return stableJson({person:inp.person||'',type:inp.type||'',a:a==null?String(inp.date||''):a,b:b==null?String(inp.endDate||''):b,
+  const all=!!inp.allday;
+  return stableJson({person:inp.person||'',type:inp.type||'',
     allday:all,half:inp.half||'',s:all?null:(inp.s??null),e:all?null:(inp.e??null),remarks:inp.remarks||'',
     sans:inp.sans||null});}
 /* THE INPUTS ON A DATE THAT DIFFER FROM A VERSION'S FROZEN COPY ([LEAVE-LATE-PUBLISHED], D178): one entry per input
@@ -98,9 +101,13 @@ export function inpDetailKey(inp:any):string{
 /* BY CONTENT FIRST (Fable Q4): a Leave War move re-files a leave under a new id, and a medical downchit's cascade
    mints a tail with a new id — neither changes what the day shows, so a record that went and an identical one that came
    (same details, same filing state) are the SAME input here, and `same` lists them so the filing axis (keyed by id)
-   drops them too (publish.ts inputAxes). What is left pairs by id (an edit), then stands alone (filed / gone). An
-   UPCHIT is out altogether: it draws nothing and flags nothing — the downchit it trims is the change (Fable Q6). */
-export function frozenInputMatch(frozen:any,dt:any):{diffs:Array<{id:string,was:any,now:any}>,same:Array<[string,string]>}{
+   drops them too (publish.ts inputAxes). What is left pairs by id (an edit), then BY MAN (Fable's code read F2, 26 Sep
+   26: a medical takeover trims the old downchit and mints its tail under a new id with a machine-written "till …" in its
+   remarks — one status change for one man, which read as two lines, "moved off" and "filed"; a leftover gone and a
+   leftover filed for the same man, of the same type or both downchits, are ONE edit, carried with both records so the
+   words read one change), then stands alone (filed / gone). An UPCHIT is out altogether: it draws nothing and flags
+   nothing — the downchit it trims is the change (Fable Q6). */
+export function frozenInputMatch(frozen:any,dt:any):{diffs:Array<{id:string,was:any,now:any,nowId?:string}>,same:Array<[string,string]>}{
   if(!frozen||dt==null)return {diffs:[],same:[]};
   const W:any[]=[], N:any[]=[];
   Object.keys(frozen).forEach((id:any)=>{const w=frozen[id]; if(w&&!isUpchit(w.type))W.push({id,r:w,k:inpDetailKey(w)});});
@@ -118,7 +125,13 @@ export function frozenInputMatch(frozen:any,dt:any):{diffs:Array<{id:string,was:
      only a dormant request woken back to a live one is a change) */
   for(let i=W.length-1;i>=0;i--){const j=N.findIndex((n:any)=>n.id===W[i].id);
     if(j>=0){if(!(String(W[i].r.acc||'')==='r'&&String(N[j].r.acc||'')==='r'))out.push({id:W[i].id,was:W[i].r,now:N[j].r});W.splice(i,1);N.splice(j,1);}}
-  /* 4 — gone, or filed since; a request taken off on the one side and absent on the other shows on neither face (D174, D176) */
+  /* 4 — one man's record gone and another of his filed, of the same type or both downchits: one edit (F2). Only records
+     with no filing state (a downchit, a leave — never a request, whose filing the filing axis words by its own id, so
+     pairing two requests would read one edit AND one filing for two acts) */
+  for(let i=W.length-1;i>=0;i--){const w=W[i]; if(String(w.r.acc||'')!=='')continue;
+    const j=N.findIndex((n:any)=>String(n.r.acc||'')===''&&n.r.person===w.r.person&&(n.r.type===w.r.type||(isDownchit(n.r.type)&&isDownchit(w.r.type))));
+    if(j>=0){out.push({id:w.id,was:w.r,now:N[j].r,nowId:N[j].id});W.splice(i,1);N.splice(j,1);}}
+  /* 5 — gone, or filed since; a request taken off on the one side and absent on the other shows on neither face (D174, D176) */
   W.forEach((w:any)=>{ if(String(w.r.acc||'')!=='r')out.push({id:w.id,was:w.r,now:null}); });
   N.forEach((n:any)=>{ if(String(n.r.acc||'')!=='r')out.push({id:n.id,was:null,now:n.r}); });
   return {diffs:out,same};}

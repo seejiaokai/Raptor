@@ -24,7 +24,6 @@ import { PEOPLE } from '../engine/people'
 import { INPUTS, inpId, inpLabel, inputCoversDate } from '../engine/inputs'
 import { officialSliceNow } from '../engine/validate'
 import { dayPendingItems, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow, warnMsgKey, warnCallsigns, dayPeopleAttrs, faceRuleVals } from '../engine/publish'
-import { stableJson } from '../engine/inputs'
 import type { PendItem } from '../engine/publish'
 import { ELOG, elogWhen, keyLabel } from '../engine/editlog'
 import { oilEvidence } from '../engine/oilev'
@@ -132,14 +131,16 @@ function lastEdit(keys: string[]) {
    (the version's own, snap.inp) says what it was; the live record what it is — so a deleted leave is still named. */
 const hm = (m: any) => { const n = +m; if (!isFinite(n)) return ''; const x = ((n % 1440) + 1440) % 1440; return `${String(Math.floor(x / 60)).padStart(2, '0')}:${String(x % 60).padStart(2, '0')}` }
 const winWords = (r: any) => r.half === 'am' ? 'AM' : r.half === 'pm' ? 'PM' : r.allday ? 'all day' : (r.s != null && r.e != null ? `${hm(r.s)}–${hm(r.e)}` : 'no times')
-const dateWords = (r: any) => `${r.date || ''}${r.endDate && r.endDate !== r.date ? ` – ${r.endDate}` : ''}`
 const clip = (t: any) => { const s = String(t || ''); return s.length > 40 ? s.slice(0, 39) + '…' : s }
 function inputWords(di: number, it: PendItem): Words {
   const e: any = it.val || {}, id = String(e.addr || '').split('.').slice(1).join('.')
-  const snap: any = daySnapOf(di, dayCurVer(di)), was = (snap && snap.inp && snap.inp[id]) || null
-  const now = INPUTS.find((x: any) => inpId(x) === id) || null
+  /* the two records the comparison paired — the live one may be another record of the same man's (a medical takeover's
+     tail, Fable F2), so it comes off the item before the record by this id */
+  const snap: any = daySnapOf(di, dayCurVer(di)), was = it.was || (snap && snap.inp && snap.inp[id]) || null
+  const now = it.now || INPUTS.find((x: any) => inpId(x) === id) || null
   const here = !!now && !!DAYS[di] && inputCoversDate(now, (DAYS[di] as any).dt)
-  const none = { who: '', when: '', jump: false }
+  /* a line whose input re-landed a row on this day takes the view to it (Fable F4); a leave with no row stays still */
+  const none = { who: '', when: '', jump: !!(it.jump && it.jump.length) }
   const name = requestName(here ? now : (was || now))
   if (!was) {
     const f: any = it.inp || (it.entry && String((it.entry as any).addr || '').startsWith('inp:') ? it.entry : null)
@@ -150,7 +151,7 @@ function inputWords(di: number, it: PendItem): Words {
   const pair = (a: string, b: string) => { if (a !== b) { from.push(a); to.push(b) } }
   pair(cs(was.person), cs(now.person))
   pair(String(was.type || ''), String(now.type || ''))
-  pair(dateWords(was), dateWords(now))
+  /* no dates: whether it covers this day is filed / moved off; its far end is another day's business (Fable F1) */
   pair(winWords(was), winWords(now))
   if (String(was.remarks || '') !== String(now.remarks || '')) { from.push(`“${clip(was.remarks)}”`); to.push(`“${clip(now.remarks)}”`) }
   const earns = it.oilFold ? ' · what the day earns changes with it' : ''
@@ -158,8 +159,10 @@ function inputWords(di: number, it: PendItem): Words {
   return { where: name, from: from.join(' · '), to: to.join(' · ') + earns, ...none, edited: true } as Words
 }
 /* WHAT THE PUBLISHED DAY SHOWS, judged today, against what it went out with ([LEAVE-LATE-PUBLISHED], owner D179 — "freeze
-   everything for now"): its warnings, the next-day marks it causes, a man's CAT / seat / posting as his puck draws it,
-   the brief lead a blank line prints — anything that is not the day's own content or inputs. ONE change; each thing
+   everything for now"): its warnings that freeze, a man's CAT / seat / posting as his puck draws it, the brief lead a
+   blank line prints — anything that is not the day's own content or inputs. (What stays live — the next-day crew-rest
+   mark, D183; a crew-rest breach, the 7-day run and a lapsed qualification, D184/D185 — is in neither side, so it never
+   reads here.) ONE change; each thing
    that moved is a line of its own, named (Astra's code read #4). Warnings are matched with the men's callsigns keyed out,
    so a rename (a label) never reads as a warning cleared and another new (#3); a cleared one is worded with today's
    callsign. */
@@ -175,13 +178,6 @@ function faceWords(di: number): Words & { rows?: CrowdRow[] } {
   const rows: CrowdRow[] = []
   now.forEach((x: any) => { if (!a.has(k(x, namesNow))) rows.push({ where: String(x.msg || x.code || 'A warning'), from: '', to: 'new', keys: [] }) })
   was.forEach((x: any) => { if (!b.has(k(x, namesWas))) rows.push({ where: reword(x.msg || x.code || 'A warning'), from: '', to: 'cleared', keys: [] }) })
-  /* the next-day marks this day's end causes */
-  const ta: any = (w && w.trace) || {}, tb: any = nowSlice.trace || {}
-  new Set([...Object.keys(ta), ...Object.keys(tb)]).forEach((id: any) => {
-    const x = ta[id], y = tb[id]
-    const kx = x ? warnMsgKey(stableJson(x), namesWas) : '', ky = y ? warnMsgKey(stableJson(y), namesNow) : ''
-    if (kx !== ky) rows.push({ where: `${cs(id)} · the next day's crew-rest / run mark`, from: '', to: !x ? 'new' : !y ? 'cleared' : 'changed', keys: [] })
-  })
   /* the men as their pucks draw them */
   if (snap && snap.pa) {
     const nowPa: any = dayPeopleAttrs(snap.d, snap.inp)

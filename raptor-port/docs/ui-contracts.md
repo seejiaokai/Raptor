@@ -641,13 +641,19 @@ unchanged. The approved mock-up: `docs/mock/amend-seat-marks.html` (its `C_CSS`)
 
 ## The pending list, the one jump, and what the day head says (owner, 25 Sep 26 — the amendment batch)
 
-**An input's line, and the warnings line ([LEAVE-LATE-PUBLISHED], D177–D179, 26 Sep 26).** An input changed since the day
-was issued is ONE line — whose and what, then what moved: "Bane · LL — filed", "Taipan · OL — all day → 09:00–12:00",
-"… Bane → Hunter", "… deleted", "… moved off this day"; a request whose filing moved too keeps the request's words ("on
-the programme → deleted", D114). When the same edit moved what the day earns, the line ends "· what the day earns changes
-with it". The day's warnings judged today against the ones it went out with read "Warning · <the warning> — new /
-cleared", or "Warnings on this day" with a line per warning; a change in a man's CAT or a printed rule value that moves no
-warning reads "Warnings on this day — a ring or mark changed". None of these has a place of its own to go to (no tap).
+**An input's line, and the "what this day shows" line ([LEAVE-LATE-PUBLISHED], D177–D179, 26 Sep 26).** An input changed
+since the day was issued is ONE line — whose and what, then what moved: "Bane · LL — filed", "Taipan · OL — all day →
+09:00–12:00", "… Bane → Hunter", "… deleted", "… moved off this day" (never its dates — whether it covers the day is
+filed / moved off, and its far end is another day's business, Fable F1); a medical takeover's trimmed downchit and its
+tail read as one edit of the man's downchit (F2); a request whose filing moved too keeps the request's words ("on the
+programme → deleted", D114). When the same edit moved what the day earns, the line ends "· what the day earns changes
+with it". An input line whose edit re-landed a request's row on the day takes the view to that row (F4); one with no
+row (a leave) is a still line. What the day shows, judged today against what it went out with, is ONE line: "<the
+warning> — new / cleared", "<Callsign> · CAT A → B" (or seat, ground crew, SANS, SXO, posted out), "A blank brief — its
+suggested lead 140 min → 90 min", or "What this day shows" with a line for each (Astra's code read #4) — no tap. The
+warnings that stay LIVE on a published face (a crew-rest breach, the 7-day run, a lapsed qualification, the OIL
+warnings — D184, D185; `engine-rules.md` §Publishing) are never on it: the face shows them at once. The Amendments
+panel counts "N input changes" and names "what the published day shows changed" (F6).
 
 **"N pending ▾" opens the list of what will go out (D99, D100).** On a PUBLISHED day's working copy, on the edit
 week's day head and the board's publish strip (`html.ts dayStatHTML`), for the scheduler, the count is a button

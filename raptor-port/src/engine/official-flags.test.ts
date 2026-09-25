@@ -405,16 +405,18 @@ describe('Phase 6 — "Not Yet Signed" marker (working copy only)', () => {
 })
 
 /* §4 — REVERSED 25 Sep 26 by the owner's D179 ("freeze everything for now", provisional): a qualification or a rule
-   change used to re-flag a published day's face at once, because PEOPLE and VCONF are not part of the frozen day. Now
-   the issued face shows the warnings it went out with (the version stores them — publish.ts "THE DAY'S WARNINGS AS
-   ISSUED"), and the official pass — today's judgement of the issued day — is the DETECTOR: its difference reads ONE
-   pending change ("warnings changed"), the four fall, and the next AL takes the new warnings in. These pins keep their
-   setups and now prove both halves: the face frozen, the detector moved, the day pending. */
-describe('§4 — quals and rules: the issued face keeps its warnings; the change reads pending (D179)', () => {
+   change used to re-flag a published day's face at once, because PEOPLE and VCONF are not part of the frozen day. Then
+   the issued face showed the warnings it went out with (the version stores them — publish.ts "THE DAY'S WARNINGS AS
+   ISSUED"), and the official pass — today's judgement of the issued day — became the DETECTOR.
+   AND AGAIN 26 Sep 26 by D184 / D185 ("The 7 day warning as well"; "2 & 3 make it live"): a crew-rest breach, the 7-day
+   run and a lapsed qualification on the published day stay LIVE — the face draws them from today's judgement, and they
+   are not compared, so they alone make nothing pending. A man's CAT / posting change still reads pending through the
+   roster comparison (snap.pa); a warning that freezes (a double booking, a long day …) still reads "warnings changed". */
+describe('§4 — quals and rules on a published day: the live warnings show at once (D184/D185); what freezes reads pending', () => {
   const qual = (b: any, id: string) => b.all.find((x: any) => x.code === 'QUAL' && (x.who || []).includes(id) && x.di === 0)
   const cr = (b: any, id: string) => b.all.find((x: any) => x.code === 'CREW_REST' && (x.who || []).includes(id) && x.di === 0)
 
-  it('a QUALIFICATION change: the issued face keeps its warnings, and the day reads pending (D179)', () => {
+  it('a QUALIFICATION change: the illegal seat shows on the issued face at once (D185), and the posting change reads pending', () => {
     const WK = wkFor(70)
     setCurWeek(WK)
     const dt = (DAYS[0] as any).dt
@@ -429,12 +431,14 @@ describe('§4 — quals and rules: the issued face keeps its warnings; the chang
       const w = validate()
       expect(qual(w, PILOT), 'WORKING flags the illegal seat').toBeTruthy()
       expect(qual(officialRaw(), PILOT), 'the detector (today\'s judgement) sees the illegal seat').toBeTruthy()
-      expect(qual(officialWarn(), PILOT), 'the issued face keeps what it went out with — no QUAL').toBeFalsy()
-      expect(dayDelta(0).some((e: any) => e.kind === 'warn'), 'Monday reads "warnings changed" pending').toBe(true)
+      expect(qual(officialWarn(), PILOT), 'a lapsed qualification is LIVE on the issued face (D185)').toBeTruthy()
+      expect(officialWarn().sev[0]?.[PILOT], 'with its red ring').toBe('hard')
+      expect(officialWarn().chip[0]?.[PILOT], 'and its Q flag').toBe('Q')
+      expect(dayDelta(0).some((e: any) => e.kind === 'warn'), 'Monday reads pending — his posting changed (the roster comparison)').toBe(true)
     } finally { (PEOPLE as any)[PILOT].pers = savedPers }
   })
 
-  it('a RULE (crew-rest threshold) change: the issued face keeps its warnings, and the day reads pending (D179)', () => {
+  it('a RULE (crew-rest threshold) change: the breach shows on the issued face at once, and is not pending (D184)', () => {
     const WK = wkFor(71)
     MOCKS[shiftWeekKey(WK, -1)] = weekOf(weekDateLabels(shiftWeekKey(WK, -1)), { 6: dutyRow('waldo', '0800', '1520') })
     setCurWeek(WK)
@@ -447,8 +451,10 @@ describe('§4 — quals and rules: the issued face keeps its warnings; the chang
     try {
       expect(cr(validate(), 'waldo'), 'WORKING now breaches under the new rule').toBeTruthy()
       expect(cr(officialRaw(), 'waldo'), 'the detector re-checks the frozen day against the live rule').toBeTruthy()
-      expect(cr(officialWarn(), 'waldo'), 'the issued face keeps the warnings it went out with (D179, as D48 holds its OIL)').toBeFalsy()
-      expect(dayDelta(0).some((e: any) => e.kind === 'warn'), 'Monday reads "warnings changed" pending').toBe(true)
+      expect(cr(officialWarn(), 'waldo'), 'a crew-rest breach on the published day is LIVE on its face (D184)').toBeTruthy()
+      expect(officialWarn().sev[0]?.waldo, 'with its red ring').toBe('hard')
+      expect(officialWarn().chip[0]?.waldo, 'and its CR flag').toBe('CR')
+      expect(dayDelta(0).some((e: any) => e.kind === 'warn'), 'not compared — no "warnings changed" item').toBe(false)
     } finally { VCONF.crewRest = savedRest }
   })
 })
@@ -491,8 +497,9 @@ describe('CRPF-005 — an unresolvable published day is PROTECTED, not left as a
     expect(dayCurVer(0) == null, 'day 0 is now unresolvable').toBe(true)
     expect(cr1(w), 'WORKING still busts Tuesday off the live Monday').toBeTruthy()
     expect(cr1(officialRaw()), 'OFFICIAL protects the unresolvable Monday — no derived breach').toBeFalsy()
-    /* the issued FACE of Tuesday shows what Tuesday went out with (D179) — the breach it was published carrying */
-    expect(cr1(officialWarn()), 'Tuesday\'s issued face keeps the breach it was issued with').toBeTruthy()
+    /* a crew-rest breach is LIVE on a published face (D184): Tuesday's face follows the official pass, which protects the
+       unresolvable Monday — so no derived breach there either */
+    expect(cr1(officialWarn()), 'Tuesday\'s face follows the official pass (D184)').toBeFalsy()
   })
 })
 

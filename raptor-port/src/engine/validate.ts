@@ -67,11 +67,35 @@ export const CHIP_LABEL:any={DT:'Double turn',TT:'Tight turn',C:'Conflict (two e
   RUN:'No break day — too many days on the programme in a row',
   CP:'Crew pairing — this pairing needs approval',CPH:'Crew pairing — not an authorised pairing'};
 export const SEVWORD:any={hard:'Warning',adv:'Advisory',note:'Note'};
+/* ring precedence: red beats orange beats grey, so a person carrying both a
+   long day and a conflict still shows the conflict ring. (Module-level since 26 Sep 26 so the published face — faceWarn —
+   combines a frozen ring with a live one by the same order the day loop does.) */
+const SEVR:any={note:1,adv:2,hard:3};
+/* THE WARNINGS A PUBLISHED FACE KEEPS LIVE ([LEAVE-LATE-PUBLISHED] — every other warning shows as issued, D179):
+   · the Leave War's "no period covers this date" (Fable F5 — D179 leaves the war's reminders live, D19), and every other
+     OIL warning — they speak from what the day earns under TODAY's calendar ("started earning", "stopped being a
+     holiday", "published before the app counted", "a row has no usable times — nobody on it earns"), and on a published
+     day that moves only when the war declares or lifts a holiday, which the OIL line already reads pending (Fable's code
+     read F3, 26 Sep 26; owner D2, "the day says so"): compared too, one holiday read two changes;
+   · a crew-rest breach and the 7-day run on the day itself (owner, D184 and D185, 26 Sep 26 — "The 7 day warning as
+     well"; "2 & 3 make it live": with D183's dotted mark, "to see the break of crew rest") — and the same check's other
+     answer, "Tight turning — crew rest" (CREW_TIGHT): one crew-rest judgement answers a breach OR a tight turn, so a
+     neighbour's change that turns one into the other must not leave a frozen tight turn beside a live breach, nor read
+     pending for one answer and not the other (the agent's reading, on the look card);
+   · a lapsed qualification (D185) — read as the warnings the app marks with its Qualification flag (Q): an illegal seat,
+     SC currency, AAR currency and an AAR instructor not cleared. The crew-pairing warnings (CP / CPH — an OCU without an
+     IP, no IR examiner, an unauthorised pairing) stay frozen: put to him on the look card.
+   Not stored with the published version and not compared, so they alone never make the day pending; each is drawn
+   from the official pass — today's judgement of the issued day — with its rings and flags (the day loop files each
+   mark under the class of the warning that raised it: `fz` / `lv` below). A medical downchit stays FROZEN (D185, "1
+   frozen still"). */
+export const LIVE_ON_FACE=new Set<string>(['OIL_NO_PERIOD','OIL_STALE_DAY','OIL_STALE_HOLIDAY','OIL_OLD_BLOCK','OIL_NO_TIMES','OIL_UNPUBLISHED',
+  'CREW_REST','CREW_TIGHT','DAYS_RUN','QUAL','SC_QUAL','AAR_QUAL','AAR_INSTR']);
 /* A label may quote a live threshold: {crewRest} prints whatever crew rest is
    set to right now. Without this an edited rule leaves stale numbers behind in
    tooltips and warning lists — the engine says 10h, the chip still says 12h. */
 export const wlbl=(s:any)=>String(s==null?'':s).replace(/\{(\w+)\}/g,(m:any,k:any)=>k in VCONF?lgT(VCONF[k]):m);
-export let WARN:any={all:[],byDay:[],sev:{},chip:{},dash:{},trace:{}};
+export let WARN:any={all:[],byDay:[],sev:{},chip:{},dash:{},trace:{},fz:{sev:{},chip:{},dash:{}},lv:{sev:{},chip:{},dash:{}}};
 /* THE RUN TABLES, published like REST/EVD for the pre-drop query (5 Sep 26):
    RUNLEN[di][id] = consecutive days on the programme through day di (only
    ids ON that day), RUNSEED[id] = the count walked in from before Monday,
@@ -220,15 +244,21 @@ export const FLT_NO_LEN_SAYS=(st:any,sa?:any)=>`takes off and lands at the same 
 function validateCore(){
   const ev=collectEvents(), all:any[]=[], byDay:any[]=[], sev:any={}, chip:any={}, dash:any={}, trace:any={};
   REST={}; EVD={};
-  /* ring precedence: red beats orange beats grey, so a person carrying both a
-     long day and a conflict still shows the conflict ring. */
-  const SEVR:any={note:1,adv:2,hard:3};
-  const markRing=(di:any,id:any,s:any)=>{sev[di]=sev[di]||{}; const c=sev[di][id]; if(!c||SEVR[s]>SEVR[c])sev[di][id]=s;};
-  const markChip=(di:any,id:any,c:any)=>{chip[di]=chip[di]||{}; if(!chip[di][id]||RANK[c]>RANK[chip[di][id]])chip[di][id]=c;};
+  /* EACH MARK ALSO FILED BY ITS CLASS ([LEAVE-LATE-PUBLISHED], D184/D185, 26 Sep 26): a published face shows the rings
+     and flags it went out with, except those raised by a LIVE_ON_FACE warning, which it takes from today. A ring is the
+     worst of a man's warnings, so it cannot be split afterwards — every mark is written to the day's whole map (what
+     every surface reads, unchanged) AND to `fz` (raised by a warning that freezes) or `lv` (by one that stays live).
+     A mark site of a live warning names its code; one that names none is frozen-class. */
+  const fz:any={sev:{},chip:{},dash:{}}, lv:any={sev:{},chip:{},dash:{}};
+  const cls=(code:any)=>code&&LIVE_ON_FACE.has(code)?lv:fz;
+  const ring=(m:any,di:any,id:any,s:any)=>{m[di]=m[di]||{}; const c=m[di][id]; if(!c||SEVR[s]>SEVR[c])m[di][id]=s;};
+  const flag=(m:any,di:any,id:any,c:any)=>{m[di]=m[di]||{}; if(!m[di][id]||RANK[c]>RANK[m[di][id]])m[di][id]=c;};
+  const markRing=(di:any,id:any,s:any,code?:any)=>{ring(sev,di,id,s); ring(cls(code).sev,di,id,s);};
+  const markChip=(di:any,id:any,c:any,code?:any)=>{flag(chip,di,id,c); flag(cls(code).chip,di,id,c);};
   /* the ring STYLE, which a chip cannot carry: a sanctioned late show rings
      dashed while still counting as the hard warning it is (owner, 6 Aug 26).
      Separate from sev because it is orthogonal — same red, different stroke. */
-  const markDash=(di:any,id:any)=>{dash[di]=dash[di]||{}; dash[di][id]=true;};
+  const markDash=(di:any,id:any,code?:any)=>{dash[di]=dash[di]||{}; dash[di][id]=true; const m=cls(code).dash; m[di]=m[di]||{}; m[di][id]=true;};
   /* THE CAUSE, published on the day that CAUSED it (owner, 6 Aug 26). A crew-rest
      breach is raised on the day the man is told to report, but the day a
      scheduler can actually fix is the one BEFORE — so that day carries a
@@ -480,7 +510,7 @@ function validateCore(){
              show on the jet cannot excuse the 08:00 he reports to first. */
           const makesIt=!bl.shift&&earliest<=bl.to-VCONF.step;
           const dashed=!evBound&&!!bl.lateShow&&makesIt;
-          if(!phantom){markChip(di,id,'CR');markRing(di,id,'hard'); if(dashed)markDash(di,id);}
+          if(!phantom){markChip(di,id,'CR','CREW_REST');markRing(di,id,'hard','CREW_REST'); if(dashed)markDash(di,id,'CREW_REST');}
           const prevDi=prevSeed.di;
           /* CAUSE-FIRST, SAID ONCE (owner, 22 Aug 26 — "refine the way u
              reason the crew rest warning. Clear and concise"): one forward
@@ -512,7 +542,7 @@ function validateCore(){
              "ringed problem" here and "unringed note" there is unreadable, so
              the ring goes rather than the chip. The warning itself is
              unchanged — still filed, still counted, still clickable. */
-          if(!phantom)markChip(di,id,'TT');
+          if(!phantom)markChip(di,id,'TT','CREW_TIGHT');
           /* the sim/ground suffix is UNREACHABLE since every kind became
              rest-bearing (pfly is true whenever pe exists) — the ternary
              stays because the patched reference carries the identical line
@@ -786,7 +816,7 @@ function validateCore(){
       if(sa.seat){
         const kind=scShiftKind(sa.s,sa.e);
         if(kind&&!scQualOK(sa.id,kind)){
-          markChip(di,sa.id,'Q');markRing(di,sa.id,'hard');
+          markChip(di,sa.id,'Q','SC_QUAL');markRing(di,sa.id,'hard','SC_QUAL');
           add('hard','SC_QUAL',[sa.id],
             `${kind==='day'?'SC DAY':'SC NIGHT'} currency needed for ${sa.label} ${sa.role} (${hm24(sa.s)}–${hm24(sa.e)}) — ${p.cs} is not current`,sa.key);
         }
@@ -797,9 +827,9 @@ function validateCore(){
          drag-drop. The rear seat stays unruled, as it is on the SC spare. */
       if(sa.seat==='p'){
         const tag=`(${sa.label} ${sa.role})`;
-        if(p.pers){markChip(di,sa.id,'Q');markRing(di,sa.id,'hard');add('hard','QUAL',[sa.id],`${p.cs} is ground crew — cannot fly a front seat ${tag}`,sa.key);}
-        else if(p.seat==='RCP'){markChip(di,sa.id,'Q');markRing(di,sa.id,'hard');add('hard','QUAL',[sa.id],`${p.cs} is a WSO — cannot fly FCP ${tag}`,sa.key);}
-        else if(p.q==='IW'&&p.seat==='FCP'){markChip(di,sa.id,'Q');markRing(di,sa.id,'hard');add('hard','QUAL',[sa.id],`${p.cs} is CAT IW — a WSO category, cannot fly FCP ${tag}`,sa.key);}
+        if(p.pers){markChip(di,sa.id,'Q','QUAL');markRing(di,sa.id,'hard','QUAL');add('hard','QUAL',[sa.id],`${p.cs} is ground crew — cannot fly a front seat ${tag}`,sa.key);}
+        else if(p.seat==='RCP'){markChip(di,sa.id,'Q','QUAL');markRing(di,sa.id,'hard','QUAL');add('hard','QUAL',[sa.id],`${p.cs} is a WSO — cannot fly FCP ${tag}`,sa.key);}
+        else if(p.q==='IW'&&p.seat==='FCP'){markChip(di,sa.id,'Q','QUAL');markRing(di,sa.id,'hard','QUAL');add('hard','QUAL',[sa.id],`${p.cs} is CAT IW — a WSO category, cannot fly FCP ${tag}`,sa.key);}
       }
       /* ONE MAN IN TWO AVALON / BB PLACES IN THE SAME HOURS — MAIN + SPARE, a
          seat + the desk. NOT two desk roles (owner, 7 Sep 26 — "two avalon desk
@@ -902,7 +932,7 @@ function validateCore(){
     Object.keys(RUNLEN[idx]||{}).forEach((id:any)=>{
       const n=RUNLEN[idx][id];
       if(n>VCONF.maxRun){
-        markChip(di,id,'RUN'); markRing(di,id,'hard');
+        markChip(di,id,'RUN','DAYS_RUN'); markRing(di,id,'hard','DAYS_RUN');
         add('hard','DAYS_RUN',[id],`${PEOPLE[id]?PEOPLE[id].cs:id} is on the programme ${n} days in a row — ${VCONF.maxRun} is the limit, so a break day is due`);}
     });
     /* ---- crew rest across the day boundary -------------------------------
@@ -967,17 +997,17 @@ function validateCore(){
            a non-standard pairing that needs approval (owner, Aug 26). The seat
            and combination checks below key on FCP/RCP and never catch a 'GND'
            seat, so these two lines are the whole story for personnel. */
-        if(p&&p.pers){markChip(di,ac.p,'Q');markRing(di,ac.p,'hard');add('hard','QUAL',[ac.p],`${p.cs} is ground crew — cannot fly a front seat (${f.label})`,ac.key+'.p');}
+        if(p&&p.pers){markChip(di,ac.p,'Q','QUAL');markRing(di,ac.p,'hard','QUAL');add('hard','QUAL',[ac.p],`${p.cs} is ground crew — cannot fly a front seat (${f.label})`,ac.key+'.p');}
         if(w&&w.pers){markChip(di,ac.w,'CP');markRing(di,ac.w,'adv');add('adv','PAX_CREW',[ac.w],`${w.cs} is riding the rear seat of ${f.label} as an incentive passenger — this crew pairing needs approval`,ac.key+'.w');}
         // Q — seat qualification: a WSO can't fly FCP. The rear seat carries no
         // instructor rule: any pilot may ride the back (owner, 7 Sep 26 — "don't
         // flag out that they are in an illegal seat"; the AAR supervision rule
         // below, currency and the combination matrix are separate and still apply)
-        if(p&&p.seat==='RCP'){markChip(di,ac.p,'Q');markRing(di,ac.p,'hard');add('hard','QUAL',[ac.p],`${p.cs} is a WSO — cannot fly FCP (${f.label})`,ac.key+'.p');}
+        if(p&&p.seat==='RCP'){markChip(di,ac.p,'Q','QUAL');markRing(di,ac.p,'hard','QUAL');add('hard','QUAL',[ac.p],`${p.cs} is a WSO — cannot fly FCP (${f.label})`,ac.key+'.p');}
         /* belt and braces: CAT IW is a WSO-only category, so an IW record whose
            seat says FCP is inconsistent data — the Quals-page dropdowns never
            offer IW to a pilot, but a hand-edit could. Flag it, don't hide it. */
-        if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,ac.p,'Q');markRing(di,ac.p,'hard');add('hard','QUAL',[ac.p],`${p.cs} is CAT IW — a WSO category, cannot fly FCP (${f.label})`,ac.key+'.p');}
+        if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,ac.p,'Q','QUAL');markRing(di,ac.p,'hard','QUAL');add('hard','QUAL',[ac.p],`${p.cs} is CAT IW — a WSO category, cannot fly FCP (${f.label})`,ac.key+'.p');}
         /* AAR — the remarks call for it and the FRONT seat is not current.
            A man who is not current may still fly it as TRAINING, but only with
            someone cleared to teach that AAR sitting behind him (owner,
@@ -1003,12 +1033,12 @@ function validateCore(){
                just his seat, and ringing him alone would leave the pilot who
                is actually flying an AAR he is not current for reading clean.
                Back-seater first in `who`: the message opens with his name. */
-            markChip(di,ac.w,'Q');markRing(di,ac.w,'hard');
-            markChip(di,ac.p,'Q');markRing(di,ac.p,'hard');
+            markChip(di,ac.w,'Q','AAR_INSTR');markRing(di,ac.w,'hard','AAR_INSTR');
+            markChip(di,ac.p,'Q','AAR_INSTR');markRing(di,ac.p,'hard','AAR_INSTR');
             add('hard','AAR_INSTR',[ac.w,ac.p],
               `${w.cs} is not cleared to instruct ${ac.aar} — ${p.cs} is not ${ac.aar} current and ${f.label} remarks call for ${day} AAR`,ac.key+'.w');}
           else{
-            markChip(di,ac.p,'Q');markRing(di,ac.p,'hard');
+            markChip(di,ac.p,'Q','AAR_QUAL');markRing(di,ac.p,'hard','AAR_QUAL');
             add('hard','AAR_QUAL',[ac.p],
               `${p.cs} is not ${ac.aar} current — ${f.label} remarks call for ${day} AAR`,ac.key+'.p');}} });
       const ocus=f.fcps.filter((id:any)=>PEOPLE[id]&&isOcu(PEOPLE[id].q));
@@ -1052,7 +1082,7 @@ function validateCore(){
           const wrong=(f.allCrew||[]).filter((id:any)=>PEOPLE[id]&&!isSpecial(id)&&!scQualOK(id,kind));
           if(wrong.length){
             const win=`${hm24(f.s)}–${hm24(f.e)}`;
-            wrong.forEach((id:any)=>{markChip(di,id,'Q');markRing(di,id,'hard');});
+            wrong.forEach((id:any)=>{markChip(di,id,'Q','SC_QUAL');markRing(di,id,'hard','SC_QUAL');});
             add('hard','SC_QUAL',wrong,
               `${kind==='day'?'SC DAY':'SC NIGHT'} currency needed for ${f.label} (${win})`
               +` — ${wrong.map((id:any)=>PEOPLE[id].cs).join(', ')} ${wrong.length===1?'is':'are'} not current`,f.key);
@@ -1125,9 +1155,9 @@ function validateCore(){
            whole rule closes (ground crew hold no flying qualification at all,
            the stricter case of "not a pilot"). */
         (f.spareAcs||[]).forEach((sa:any)=>{ const sp=realP(sa.p); if(!sp)return;
-          if(sp.pers){markChip(di,sa.p,'Q');markRing(di,sa.p,'hard');add('hard','QUAL',[sa.p],`${sp.cs} is ground crew — cannot fly a front seat (${f.label} SPARE)`,sa.key+'.p');}
-          else if(sp.seat==='RCP'){markChip(di,sa.p,'Q');markRing(di,sa.p,'hard');add('hard','QUAL',[sa.p],`${sp.cs} is a WSO — cannot fly FCP (${f.label} SPARE)`,sa.key+'.p');}
-          else if(sp.q==='IW'&&sp.seat==='FCP'){markChip(di,sa.p,'Q');markRing(di,sa.p,'hard');add('hard','QUAL',[sa.p],`${sp.cs} is CAT IW — a WSO category, cannot fly FCP (${f.label} SPARE)`,sa.key+'.p');}});
+          if(sp.pers){markChip(di,sa.p,'Q','QUAL');markRing(di,sa.p,'hard','QUAL');add('hard','QUAL',[sa.p],`${sp.cs} is ground crew — cannot fly a front seat (${f.label} SPARE)`,sa.key+'.p');}
+          else if(sp.seat==='RCP'){markChip(di,sa.p,'Q','QUAL');markRing(di,sa.p,'hard','QUAL');add('hard','QUAL',[sa.p],`${sp.cs} is a WSO — cannot fly FCP (${f.label} SPARE)`,sa.key+'.p');}
+          else if(sp.q==='IW'&&sp.seat==='FCP'){markChip(di,sa.p,'Q','QUAL');markRing(di,sa.p,'hard','QUAL');add('hard','QUAL',[sa.p],`${sp.cs} is CAT IW — a WSO category, cannot fly FCP (${f.label} SPARE)`,sa.key+'.p');}});
       }
     });
     /* SANS AVAILABILITY (owner, 14 Aug 26) — a SANS body planted into a
@@ -1184,9 +1214,9 @@ function validateCore(){
        the back (owner, 14 Aug 26 — the jet's IP/IR/FI rear-seat rule used to
        be copied here, and only the jet keeps it). */
     (day.simcrew||[]).forEach((s:any)=>{ const p=realP(s.p);
-      if(p&&p.pers){markChip(di,s.p,'Q');markRing(di,s.p,'hard');add('hard','QUAL',[s.p],`${p.cs} is ground crew — cannot take the front seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.p`);}
-      if(p&&p.seat==='RCP'){markChip(di,s.p,'Q');markRing(di,s.p,'hard');add('hard','QUAL',[s.p],`${p.cs} is a WSO — cannot take the front seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.p`);}
-      if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,s.p,'Q');markRing(di,s.p,'hard');add('hard','QUAL',[s.p],`${p.cs} is CAT IW — a WSO category, cannot take the front seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.p`);}
+      if(p&&p.pers){markChip(di,s.p,'Q','QUAL');markRing(di,s.p,'hard','QUAL');add('hard','QUAL',[s.p],`${p.cs} is ground crew — cannot take the front seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.p`);}
+      if(p&&p.seat==='RCP'){markChip(di,s.p,'Q','QUAL');markRing(di,s.p,'hard','QUAL');add('hard','QUAL',[s.p],`${p.cs} is a WSO — cannot take the front seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.p`);}
+      if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,s.p,'Q','QUAL');markRing(di,s.p,'hard','QUAL');add('hard','QUAL',[s.p],`${p.cs} is CAT IW — a WSO category, cannot take the front seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.p`);}
     });
     /* A DESK WITH A MAN ON IT AND NO TIMES EARNS HIM NOTHING, AND SAYS SO
        (owner, 20 Sep 26 — "I would also like u to give the warning On the day
@@ -1331,7 +1361,7 @@ function validateCore(){
      the same closure the day loop ran, one body, now three callers */
   CREWREST_BODY=crewRestDay;
   XD_CACHE=new Map();
-  WARN={all,byDay,sev,chip,dash,trace};
+  WARN={all,byDay,sev,chip,dash,trace,fz,lv};
   return WARN;
 }
 /* ---- THE TWO DOCUMENTS (published-schedule flagging, spec §5) ---------------
@@ -1369,11 +1399,21 @@ function faceWarn(){
        official pass; not stored, not compared, so a change to the next day never makes this day pending. A mark whose
        breach is on a published next day may point at that day's frozen list, where it is absent — its row is then drawn
        without a jump (html.ts dayTraceHTML);
-     · the warnings LIVE_ON_FACE names (the Leave War's "no period covers this date" — D179 leaves the war's reminders
-       live, D19): an admin to-do, not a change to what was published; creating the period clears it on the face. */
+     · the warnings LIVE_ON_FACE names (the Leave War's "no period covers this date"; a crew-rest breach and the 7-day run
+       on the day; a lapsed qualification — D184, D185): taken from the official pass with the rings and flags they raise
+       (`off.lv`), laid over the frozen ones (the stored `w` holds only the marks of warnings that freeze). A ring is the
+       worst of a man's warnings, so each is the worse of the two by the day loop's own order (SEVR, RANK); a dash is
+       either's. A live code in a frozen list (none is ever stored — warnSliceOf) is dropped, so each has one source. */
+  const LV=off.lv||{sev:{},chip:{},dash:{}}, SORD:any={hard:0,adv:1,note:2};
+  const merge=(fr:any,lv:any,worse:any)=>{ if(!lv)return fr||null; const o:any={...(fr||{})};
+    Object.keys(lv).forEach((id:any)=>{ o[id]=o[id]==null?lv[id]:worse(o[id],lv[id]); }); return o; };
   fz.forEach(({di,w}:any)=>{ const g=reword(w,w.byDay), live=((off.byDay||[])[di]?.warns||[]).filter((x:any)=>LIVE_ON_FACE.has(x.code));
-    byDay[di]=g||live.length?{...(g||{di,dow:(DAYS[di]||{}).dow}),warns:[...((g&&g.warns)||[]),...live]}:undefined;
-    put(sev,di,w.sev); put(chip,di,w.chip); put(dash,di,w.dash); });
+    /* severity order, as the day loop sorts its list (a stable sort: frozen before live within a severity) */
+    const ws=[...((g&&g.warns)||[]).filter((x:any)=>!LIVE_ON_FACE.has(x.code)),...live].sort((a:any,b:any)=>(SORD[a.sev]??3)-(SORD[b.sev]??3));
+    byDay[di]=g||live.length?{...(g||{di,dow:(DAYS[di]||{}).dow}),warns:ws}:undefined;
+    put(sev,di,merge(w.sev,LV.sev[di],(a:any,b:any)=>SEVR[b]>SEVR[a]?b:a));
+    put(chip,di,merge(w.chip,LV.chip[di],(a:any,b:any)=>RANK[b]>RANK[a]?b:a));
+    put(dash,di,merge(w.dash,LV.dash[di],()=>true)); });
   const all:any[]=[]; byDay.forEach((g:any)=>{ if(g&&g.warns)all.push(...g.warns); });
   FACE={all,byDay,sev,chip,dash,trace}; FACE_OF=off; FACE_K=k;
   return FACE;
@@ -1381,15 +1421,14 @@ function faceWarn(){
 export function officialWarn(){ return faceWarn(); }
 /* the official pass's own bundle — today's judgement of every published day (the detector), not what their faces show */
 export function officialRaw(){ return OFFICIAL; }
-/* the warnings a published face keeps LIVE (Fable F5 — D179 leaves the Leave War's reminders live, D19) */
-export const LIVE_ON_FACE=new Set<string>(['OIL_NO_PERIOD']);
 /* the day's slice of a warning bundle — what an issued version stores, and what the detector compares: its warning list
-   (less LIVE_ON_FACE's), the rings, the flags and the dashes. NOT the next-day crew-rest / run mark (`trace`) — it stays
-   live on a published face (owner, D183, 26 Sep 26: "should be live to see the break of crew rest"). */
+   (less LIVE_ON_FACE's), and the rings, flags and dashes raised by those warnings alone (`fz` — a live warning's marks
+   are drawn from today, D184/D185). NOT the next-day crew-rest / run mark (`trace`) — it stays live on a published face
+   (owner, D183, 26 Sep 26: "should be live to see the break of crew rest"). */
 export function warnSliceOf(b:any,di:any){di=+di;
-  const g=((b&&b.byDay)||[])[di]||null;
-  return {byDay:g?{...g,warns:(g.warns||[]).filter((x:any)=>!LIVE_ON_FACE.has(x.code))}:null,sev:((b&&b.sev)||{})[di]||null,chip:((b&&b.chip)||{})[di]||null,
-    dash:((b&&b.dash)||{})[di]||null,trace:null};}
+  const g=((b&&b.byDay)||[])[di]||null, m=(b&&b.fz)||b||{};
+  return {byDay:g?{...g,warns:(g.warns||[]).filter((x:any)=>!LIVE_ON_FACE.has(x.code))}:null,sev:(m.sev||{})[di]||null,chip:(m.chip||{})[di]||null,
+    dash:(m.dash||{})[di]||null,trace:null};}
 /* the official pass's own slice for a day (the detector — today's judgement of the issued day), for the pending list's
    words */
 export function officialSliceNow(di:any){ return warnSliceOf(OFFICIAL,di); }

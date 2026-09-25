@@ -441,16 +441,21 @@ export type DaySnapshot = {
    *  D177–D179): the issued face reads these, never the live records. */
   inp?: Record<string, Input>
   /** The day's slice of the official warnings at issue — engine (`freezeWarn`, D179): the issued face shows these; the
-   *  pending comparison measures today's judgement against them. */
+   *  pending comparison measures today's judgement against them. The warnings that stay LIVE on a published face
+   *  (validate.ts `LIVE_ON_FACE` — a crew-rest breach, the 7-day run, a lapsed qualification, the war's "no period",
+   *  D184/D185) and the marks they raise are never stored here. */
   w?: WarnSlice
-  /** The men on the day as the roster drew them at issue (id → CAT, seat, posting flags) — engine (`freezeWarn`): compared
-   *  by the pending comparison, not drawn (D179; the face still draws them live — [LATE-PUB-FACE-LIVE]). */
+  /** The men on the day as the roster drew them at issue (id → CAT, seat, posting flags) — engine (`freezeWarn`): the
+   *  issued face draws each puck's CAT and seat from these (`engine/faceattrs.ts`, D179) and the pending comparison
+   *  measures today's roster against them. */
   pa?: Record<string, { q: any; seat: any; pers: boolean; san: boolean; sxo: boolean; archived: boolean }>
-  /** The rule values the issued face prints (a blank brief's lead) at issue — engine (`freezeWarn`): compared, not drawn. */
+  /** The rule values the issued face prints (a blank brief's lead) at issue — engine (`freezeWarn`): the issued face,
+   *  CSV and print read it (`engine/faceattrs.ts`, D179), and the pending comparison measures today's rule against it. */
   rv?: { briefLead: number }
 }
-/** One day's slice of the warning bundle (engine/validate.ts `warnSliceOf`): its warning list, and per person the ring
- *  severity, the printed flag, the dashed ring and the next-day crew-rest mark it causes. Empty parts are null. */
+/** One day's slice of the warning bundle (engine/validate.ts `warnSliceOf`): its warning list less the live ones, and per
+ *  person the ring severity, the printed flag and the dashed ring those warnings raise. `trace` (the next-day crew-rest
+ *  mark) is always null — it stays live (D183). Empty parts are null. */
 export type WarnSlice = {
   byDay: { di: number; dow: string; warns: any[] } | null
   sev: Record<string, string> | null

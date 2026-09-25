@@ -336,7 +336,7 @@ describe('a request taken off (or put on) a published day is ONE change — its 
     expect(alCount(SCHED.als[0])).toBe(1)
     const tag = alPanelText()
     expect(tag, "the issued AL's line").toMatch(/1 item · 1 removal/)
-    expect(tag, 'no separate filing on it').not.toMatch(/input filing/)
+    expect(tag, 'no separate filing on it').not.toMatch(/input (filing|change)/)
   })
   it('the mirror: accepting a request onto a published day is 1, and its line can be tapped to the row', async () => {
     const { pendListHTML } = await import('./pendlist')

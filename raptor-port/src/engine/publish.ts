@@ -201,8 +201,10 @@ export function dayShownPendCount(di:any){di=+di;return dayApproved(di)?dayPendi
 /* `inp`: a request's filing that belongs to this row's add / delete — the one act of taking a request off (or putting
    it on) the programme (owner, D114, 25 Sep 26: "6 yes"). The record keeps both entries; the person counts one. */
 /* `val`: an input's details changed since the day was issued — its own item, or folded into its filing's (D178); `rows`:
-   the units of the request row that edit re-landed, folded into it */
-export type PendItem = PendUnit & { axis: 'content'|'filing'|'input'|'oil'|'warn', inp?: DeltaEntry, val?: DeltaEntry, rows?: PendUnit[], oilFold?: boolean };
+   the units of the request row that edit re-landed, folded into it; `was` / `now`: the two records the details entry
+   compares — the frozen copy and the live one, which may be ANOTHER record of the same man's (a medical takeover's tail,
+   inputs.ts frozenInputMatch step 4, Fable's code read F2), so the words read one edit */
+export type PendItem = PendUnit & { axis: 'content'|'filing'|'input'|'oil'|'warn', inp?: DeltaEntry, val?: DeltaEntry, rows?: PendUnit[], oilFold?: boolean, was?: any, now?: any };
 export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
   if(!((sc&&sc.dayOK)||{})[di])return [];
   const ver=dayCurVerIn(sc,di,weekKey), snap=ver!=null?daySnapIn(sc,di,ver,weekKey):null;
@@ -229,11 +231,15 @@ export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
     if(g.fil){const pair=requestRowUnit(items,id,String(g.fil.from||''),String(g.fil.to||''),snap.d,DAYS[di]); if(pair){pair.inp=g.fil; item=pair;}}
     if(!item){item={kind:'input',addr:'',jump:[],keys:[],entry:(g.fil||g.val)!,axis:g.fil?'filing':'input'}; items.push(item);}
     if(g.val){item.val=g.val;
+      const ch=ax.changed.find((x:any)=>x.id===id); if(ch){item.was=ch.was; item.now=ch.now;}
       for(let i=items.length-1;i>=0;i--){const u:any=items[i];
         if(u===item||u.axis!=='content'||u.inp||u.val)continue;
         /* its re-landed row's own fields, and the ground programme's order when that row is all that moved in it (a
            request's new times re-sort it — the same edit) */
-        if(unitRequestSrc(u,snap.d,DAYS[di])===id||(u.kind==='move'&&/^mov:\d+\.ground$/.test(String((u.entry&&u.entry.addr)||''))&&groundOrderMovedOnlyBy(snap.d,DAYS[di],id))){items.splice(i,1);(item.rows=item.rows||[]).push(u);}}}});
+        if(unitRequestSrc(u,snap.d,DAYS[di])===id||(u.kind==='move'&&/^mov:\d+\.ground$/.test(String((u.entry&&u.entry.addr)||''))&&groundOrderMovedOnlyBy(snap.d,DAYS[di],id))){items.splice(i,1);(item.rows=item.rows||[]).push(u);
+          /* …and its place on the schedule: the one line takes the view to the row (Fable's code read F4 — the folded
+             line was drawn "still", with the row right there) */
+          item.jump=(item.jump||[]).concat(u.jump||[]); item.keys=(item.keys||[]).concat(u.keys||[]);}}}});
   /* the OIL line folds into the inputs that moved it, when they are all that moved it (oilev.ts oilMovedInputsOnly) */
   const oil=oilDelta(di,snap.d);
   if(oil.length){const w=(snap.d||{}).oilev, mem=!!(w&&(w.mem||w.earns));
@@ -275,7 +281,7 @@ function requestRowUnit(units:any[],id:string,was:string,now:string,issuedD:any,
     (u.kind==='add'&&now==='g'&&was!=='g'&&(requestRow(u,liveD)||{}).src===id)))||null;}
 export function dayPendingItems(di:any):PendItem[]{di=+di;return passMemo('pi',di,()=>dayPendingItemsIn(SCHED,di,CURWEEK));}
 /* the per-kind split of a day's items, the shape diffCounts gives a stored diff — for the
-   Amendments panel's "N changes · N removals · N reorders · N input filings" */
+   Amendments panel's "N changes · N removals · N reorders · N input changes" */
 export function itemCounts(items:any){const d=items||[];const by=(k:any)=>d.filter((e:any)=>e.kind===k).length;
   return {total:d.length,add:by('add'),del:by('delete'),chg:d.length-by('add')-by('delete')-by('move')-by('input')-by('oil')-by('warn'),mov:by('move'),inp:by('input'),oil:by('oil'),warn:by('warn')};}
 /* the marks "Discard marks" may clear: those on days never published (F-01 — a published day's
@@ -492,7 +498,7 @@ export function dayDeltaIn(sc:any,di:any,weekKey?:any):DeltaEntry[]{di=+di;
    or a cascade merely replaced by an identical one taken out of BOTH (inputs.ts frozenInputMatch) — so the count, the
    signature and eligibility read the same answer. A version issued before the freeze has no `inp` and keeps the plain
    filing axis. */
-function inputAxes(di:any,snap:any):{fil:DeltaEntry[],val:DeltaEntry[],changed:Array<{id:string,was:any,now:any}>}{di=+di;
+function inputAxes(di:any,snap:any):{fil:DeltaEntry[],val:DeltaEntry[],changed:Array<{id:string,was:any,now:any,nowId?:string}>}{di=+di;
   const fil0=filingDelta(di,snap.fil);
   if(!snap||!snap.inp)return {fil:fil0,val:[],changed:[]};
   const m=frozenInputMatch(snap.inp,(DAYS[di]||{}).dt), gone=new Set<string>();
@@ -522,13 +528,16 @@ export function dayDeltaCore(di:any):DeltaEntry[]{di=+di;return passMemo('dc',di
    rules and neighbour days — so a qualification ticked, a rule setting changed or a leave filed on the unpublished day
    beside it moved the issued face's rings and warning list with nothing pending (the sweep B2, B5; D48 for rules). Now
    each issued version keeps the day's slice of the official warnings as they stood the moment it went out (`w`: the
-   warning list, the rings, the flags, the dashes, the next-day crew-rest marks it causes), the issued face shows THAT
-   (validate.ts faceWarn), and the official pass — the same judgement, re-run on today's world — becomes the detector:
+   warning list, and the rings, flags and dashes those warnings raise), the issued face shows THAT (validate.ts
+   faceWarn), and the official pass — the same judgement, re-run on today's world — becomes the detector:
    where its slice differs from the stored one, ONE pending change reads "Warnings on this day changed" (warnDelta),
    the four fall (D103, through pendingKey) and the next AL (or Unpublish and publish again) stores the new slice. The
    official pass judges each published day with the inputs it was issued with (layer 1), so this axis never moves on
    the day's own input changes — the input axis counts those — only on what is NOT the day's: people, rules, the days
-   around it. The validator lends the two bodies through HOOKS at load (publish.ts cannot import it — validate.ts imports
+   around it. EXCEPT what stays live (validate.ts LIVE_ON_FACE — the war's "no period" reminder; a crew-rest breach, the
+   7-day run and a lapsed qualification, owner D184/D185, 26 Sep 26; and the next-day crew-rest mark, D183): not stored,
+   not compared, drawn on the face from today's judgement — so they alone never make the day pending. The validator
+   lends the two bodies through HOOKS at load (publish.ts cannot import it — validate.ts imports
    this file); unset (an engine-only test), nothing is frozen and the face reads the official pass, as before. */
 function freezeWarn(snap:any,di:number){ if(!HOOKS.issuedWarn||!snap)return; const w=HOOKS.issuedWarn(di); if(!w)return;
   /* the callsigns its warnings were worded with, by person — so a rename (a label, never a change: 14 Sep 26) reads the
@@ -563,8 +572,8 @@ export function warnCallsigns(w:any):any{const out:any={};
 export function warnMsgKey(msg:any,cs:any):string{let m=String(msg||'');
   Object.keys(cs||{}).sort((a,b)=>String(cs[b]).length-String(cs[a]).length).forEach((id:any)=>{ const c=String(cs[id]||''); if(c)m=m.split(c).join('@'+id); });
   return m;}
-/* the key a warnings slice is compared on: every warning (sorted, so the validator's order never reads as a change),
-   the rings, the flags, the dashes and the traces */
+/* the key a warnings slice is compared on: every warning that freezes (sorted, so the validator's order never reads as
+   a change) and the rings, flags and dashes they raise — a live warning's marks are in neither side (warnSliceOf) */
 export function warnSliceKey(w:any,cs?:any):string{
   if(!w)return '';
   const names=cs||w.cs||warnCallsigns(w);

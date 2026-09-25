@@ -10,7 +10,7 @@ import { PEOPLE, isSpecial } from '../engine/people'
 import { dayApproved, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek, alColor, nextSeq, daySnapOf, rowsLeftOut } from '../engine/publish'
 import { posKey } from '../engine/rowids'
 import { openPendList, closePendList } from './pendlist'
-import { draftSelect, draftVerLabel, loadVersionToWorkingCopy, LOADLEFT, LOADMOVED, ROWSLEFT, rowsLeftSaid } from '../engine/drafts'
+import { draftSelect, draftVerLabel, loadVersionToWorkingCopy, LOADLEFT, LOADMOVED, ROWSLEFT, rowsLeftSaid, inputsLeftSaid } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
@@ -1021,6 +1021,8 @@ export function routeClick(e: MouseEvent) {
       + (LOADMOVED.length ? ` · ${LOADMOVED.length} request${LOADMOVED.length === 1 ? '' : 's'} ${LOADMOVED.every(m => m.on) ? 'came back onto' : LOADMOVED.some(m => m.on) ? 'moved on or off' : 'came off'} the programme with ${LOADMOVED.length === 1 ? 'its' : 'their'} row — ${movedDays.join(', ')} ${movedDays.length === 1 ? 'reads' : 'read'} that too` : '')
       /* …and a row the version held for a request that now stands on another day stayed out — one request, one row (D175) */
       + rowsLeftSaid(ROWSLEFT)
+      /* …and a member's input changed since the day was issued, which stays pending (a member's record is his — Fable F5) */
+      + inputsLeftSaid(di)
     logAction(di, said)
     HOOKS.toast(said)
     notify(); return

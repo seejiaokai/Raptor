@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, moveKey, trackStructuralAdd, isDeleteKey, isMoveKey, protectedWeek, filingRestorePlan, rowsLeftOut, leaveRowsOut } from './publish'
+import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, moveKey, trackStructuralAdd, isDeleteKey, isMoveKey, protectedWeek, filingRestorePlan, rowsLeftOut, leaveRowsOut, dayPendingItems } from './publish'
 import { inputProtected } from './quarantine'
 import { INPUTS, inputCoversDate, inpId, inpLabel } from './inputs'
 import { PEOPLE } from './people'
@@ -95,6 +95,13 @@ const leaveOut = (di: number, nd: any) => {
 /* " · Bane · Meeting left out — it is on Tuesday's programme", one clause per request; '' when nothing was left out */
 export function rowsLeftSaid(list: Array<{ who: string, what: string, days: string[] }>): string {
   return (list || []).map(x => ` · ${x.who ? x.who + ' · ' : ''}${x.what} left out — it is on ${x.days.join(' and ')}'s programme`).join('')
+}
+/* …and the member inputs changed since the day was issued, which a load never puts back — a member's record is his, and
+   it may cover other days (AM1; the plan's layer 1, built after Fable's code read F5, 26 Sep 26): after the load the day
+   still reads them pending, so the sentence says why. Read AFTER the load. '' when there are none. */
+export function inputsLeftSaid(di: any): string {
+  const n = dayPendingItems(+di).filter((x: any) => !!x.val && !x.inp).length
+  return n ? ` · ${n} member input${n === 1 ? '' : 's'} changed since ${n === 1 ? 'stays' : 'stay'} pending — a load cannot put back a member's own record` : ''
 }
 
 /* the day's draft list — empty array (not undefined) when the day has none,
