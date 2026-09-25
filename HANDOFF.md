@@ -16,7 +16,7 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/leave-late-published -->
-### `claude/leave-late-published` — `[LEAVE-LATE-PUBLISHED]` (D177–D185): FULL check done, PR open — his look and "merge live" next; written 26 Sep 26 (morning) — verify before use
+### `claude/leave-late-published` — `[LEAVE-LATE-PUBLISHED]` (D177–D189): FULL check done, PR open — his look and "merge live" next; written 26 Sep 26 (morning, after D187's reads) — verify before use
 - **What it is:** a published day keeps what it went out with — its inputs (`snap.inp`), its warnings that freeze and
   their marks (`snap.w`), its men's CAT / seat / posting and the brief lead it prints (`snap.pa` / `snap.rv`, drawn by
   `engine/faceattrs.ts`), the roster its day panel counts (`snap.ros`); a change since reads pending (the four fall) and
@@ -26,14 +26,15 @@ the later merge keeps both (D78).
   `raptor-port/docs/engine-rules.md` §Publishing.
 - **The check (FULL):** evidence `raptor-port/docs/handpass/2026-09-26-late-pub.md` — the roll-call (21 surfaces), the
   walks (the re-walk, the host walk, four parallel walkers: Quals, Logic, neighbour day, Leave War — 593 pictures, no
-  console errors), 23 break tests, two blind reads by Fable and Astra of the first build and two of the final code (all
-  dispositioned §9), the gates (§6). His look card is §10.
+  console errors), 36 break tests, blind reads by Fable and Astra of the first build, the final code and the D187 change
+  (all dispositioned §9 — D187's nine fixed and pinned, B29–B36), the gates (§6). His look card is §10.
 - **The PR:** see the PR list for `claude/leave-late-published` (its checks run on GitHub's machines while the repo is
   public, D106). **Next:** his look (the card's four "look here" lines and Q1, Q4, Q5, Q6), then his "merge live".
 - **His questions (the card, §10) — ALL ANSWERED:** Q1 — D186 "yes" (a man's CAT and a blank brief's time stay as
   published). Q4 — D189 "follow ur recommendation" (the app's own "till" note counts: each published day a stretched leave
   still covers shows "1 pending" on the admin's working copy, never on View-only Sched). Q5 — D187 "it should" (BUILT: a
-  look at a published version wears its warnings). Q6 — D188 "yes" (the Qualification-flag reading).
+  look at a published version wears its warnings — the whole record it went out with, read only, its own ⓘ panel and
+  taps; read by both providers after the build, their findings fixed). Q6 — D188 "yes" (the Qualification-flag reading).
 - **Filed this session:** `[PV-NO-FLAGS]` (answered and built), `[INSIGHTS-WORKING-COPY]` (his question),
   `[QUALS-PROTO-TOAST]`, `[VIEW-ARROW-OVER-LIST]`, `[INPUTSCAL-TAP-FLAKY]`. Rulings this chat: D186–D189 (and D185's row
   gained the agent's widened reading, confirmed by D188). The chat's range D180–D189 is used up — a later chat on this
@@ -59,10 +60,11 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 26 Sep 26 morning, `claude/leave-late-published` (`2cfceae2`, the final code of
-`[LEAVE-LATE-PUBLISHED]`), one run on a quiet PC (`raptor-port/docs/handpass/2026-09-26-late-pub.md` §6): unit **5978 / 5978**
-(368 files, on a re-run — the first run's one miss was the flaky `[INPUTSCAL-TAP-FLAKY]`) · build clean · tfin **728 / 0** ·
-e2e **471 passed**, 48 skipped · smoke **442 / 0** · rulecheck OK · docsize OK. Restate a count only
+The latest counts watched — 26 Sep 26 morning, `claude/leave-late-published` (`09276503`, the final code of
+`[LEAVE-LATE-PUBLISHED]` with D187 and its reads' fixes), one run on a quiet PC
+(`raptor-port/docs/handpass/2026-09-26-late-pub.md` §6): unit **5988 / 5988** (368 files) · build clean · tfin **728 / 0** ·
+e2e **471 passed**, 48 skipped · smoke **442 / 0** · rulecheck OK · docsize OK. Two tests added after it (no source
+change): their file alone 45 / 45. Restate a count only
 from a run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md`
 §Build & verify; how they mislead, and the checks on his PC: `raptor-port/docs/gates-and-deploy.md`.
 

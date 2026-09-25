@@ -404,3 +404,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** For any edit script whose search text contains a backslash, write the script with the Write tool and run it; keep the assert-exactly-one-match guard in every such script.
 
 **Principle:** When a shell layer might rewrite escapes, move the program text out of the shell (a file written by a tool that does not interpret it), and keep an exact-match assertion so a mangled pattern fails loudly instead of editing nothing — or the wrong thing.
+
+### Observation 260: A pin that calls a builder differently from its real caller can pass with the fix cut out
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [LEAVE-LATE-PUBLISHED], the pins for D187's read fixes; an exempt-desk pin drew the board's duty panel with the "look" flag as its THIRD argument, while the board passes it as the FOURTH (read only) — so the pin drew the working copy and passed with the fix cut out (break test B36: 0 red). Redrawn as the board draws it, it went red.
+**Skill:** raptor-port/docs/bug-check-order.md (break tests) — no skill file yet
+**Type:** open-source
+**Phase/Area:** writing a regression test for a render fix
+
+**Issue:** The test called an internal builder directly and guessed its arguments from its signature's names (`pv`, `ro`); the real caller passes a different value in the slot the fix reads. The test asserted the right outcome of the wrong drawing, and only the break test showed it.
+
+**Suggested improvement:** When a pin calls an internal builder directly, copy the arguments from its real caller (grep the call site) and assert one fact that proves the drawing is the intended mode (here: no write surface under a look). Keep the break test for every new pin — it is what caught this.
+
+**Principle:** A test that reaches past the public door must reproduce the door's exact call, and prove it did; otherwise only cutting the fix shows whether the test was ever looking at it.

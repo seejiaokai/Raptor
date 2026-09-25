@@ -37,6 +37,8 @@ import { commitNewInput, commitInputEdit, removeInput, draftOf } from './inputed
 import { schedRows, publishedDays } from './export'
 import { makeStandalone } from '../engine/waves'
 import { VCONF } from '../engine/rules'
+import { blockFromTpl, dutyTplReset } from '../engine/dutytpl'
+import { sbDutyPanel } from './board-html'
 
 const MON = 0, WED = 2
 let pristine: any[], inputs0: string
@@ -814,5 +816,52 @@ describe('D187, after its reads — a look is the record: whole, read only, its 
       const w = displayedByDay(TUE)!.warns[+row!.dataset.wix!]
       expect(w && w.code, 'its index lands on the crew-rest breach').toBe('CREW_REST')
     } finally { DPREV.delete(0); DWOPEN.delete(0) }
+  })
+})
+
+/* THE LAST TWO OF FABLE'S READ OF D187, pinned after the walk: the board's look is the whole record, and an exempt desk
+   keeps its own rule under a look as View-only Sched draws it */
+describe('D187, the board\'s look — the whole record, and an exempt desk keeps its own rule', () => {
+  const warnsOf = (b: any, di: number) => ((b && b.byDay && b.byDay[di] && b.byDay[di].warns) || []) as any[]
+
+  it('the board\'s look lists every check, even one muted on the working copy — no "N hidden" (Fable #9)', () => {
+    publishDay(MON)
+    const ver = dayCurVer(MON)
+    const all = warnsOf(officialWarn(), MON)
+    expect(all.length, 'Monday goes out with checks').toBeGreaterThan(1)
+    WARNOFF.add(warnMuteKey(all[0]))                          // muted on the working copy
+    try {
+      let checks = ''
+      withDaySnap(MON, ver, () => withVersionFlags(MON, ver, () => { checks = boardWarnHTML(MON, true) }))
+      expect(checks, 'no "N hidden"').not.toContain('data-wmtog=')
+      expect(el(checks).querySelectorAll(`.wln[data-wdi="${MON}"][data-wix]`).length, 'every check of the record').toBe(all.length)
+      /* the control: the working board still folds the muted one away */
+      expect(boardWarnHTML(MON), 'the working board folds it').toContain('data-wmtog=')
+    } finally { WARNOFF.clear() }
+  })
+
+  it('an AVALON desk in the board\'s look stays clean while its man is double-booked elsewhere that day (Fable #7)', () => {
+    const TUE = 1, d: any = DAYS[TUE]
+    dutyTplReset()
+    const desk: any = blockFromTpl('avalon')
+    d.dutywaves = d.dutywaves || []; d.dutywaves.push(desk)
+    desk.rows[0].id = 'split'
+    const w0 = d.waves[0]
+    w0.formations[0].aircraft[0].p = 'split'
+    w0.formations[1].to = w0.formations[0].to; w0.formations[1].ld = w0.formations[0].ld
+    w0.formations[1].aircraft[0].p = 'split'
+    expect(validate().all.some((x: any) => x.di === TUE && x.code === 'DOUBLE_BOOK' && (x.who || []).includes('split')), 'double-booked on the flying line').toBe(true)
+    publishDay(TUE)
+    const ver = dayCurVer(TUE)
+    let panel = '', board = ''
+    /* the panel as the board's look draws it — read only, as board.ts passes it under a look (mvRO) */
+    withDaySnap(TUE, ver, () => withVersionFlags(TUE, ver, () => { panel = sbDutyPanel(DAYS[TUE], TUE, true, true); board = boardHTML(TUE, true) }))
+    const p = el(panel).querySelector('.puck[data-person="split"]')
+    expect(p, 'the look\'s desk draws him').toBeTruthy()
+    expect(p!.parentElement!.hasAttribute('data-slot'), 'drawn as a look (no write surface)').toBe(false)
+    expect(/warn/.test(p!.className), 'the desk copy stays clean: ' + p!.className).toBe(false)
+    /* the control: his flying seats in the same look wear the breach */
+    expect([...el(board).querySelectorAll('.puck[data-person="split"]')].some((x) => /warn hard/.test(x.className)), 'his seats ring').toBe(true)
+    dutyTplReset()
   })
 })
