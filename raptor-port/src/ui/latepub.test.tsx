@@ -16,6 +16,8 @@ import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { ALPanel } from './ALPanel'
+import { DayPop } from './Modals'
+import { setDayPop } from './pops'
 import { readFileSync } from 'fs'
 import { DAYS } from '../engine/data'
 import { INPUTS, inpId, withRemarksTail } from '../engine/inputs'
@@ -26,7 +28,7 @@ import { validate, officialWarn, officialRaw, WARN, LIVE_ON_FACE } from '../engi
 import { withChipWorld, dayPreviewHTML, withDaySnap, withVersionFlags } from './html'
 import { initStore } from '../state/store'
 import { setSession } from '../state/auth'
-import { setPage, DPREV, VWORK, setUnpubArm, setRestArm, displayedByDay } from '../state/view'
+import { setPage, DPREV, VWORK, setUnpubArm, setRestArm, displayedByDay, DWOPEN, WARNOFF, warnMuteKey, WFOCUS, setWarnFocus, setDayPreview, lookWearsFlags } from '../state/view'
 import { dayHTML, dayInfoHTML, dayIssuedHTML } from './html'
 import { PEOPLE } from '../engine/people'
 import { boardSignHTML, boardHTML, boardWarnHTML } from './board'
@@ -707,5 +709,110 @@ describe('D187 — a look at a published version wears its warnings', () => {
     expect(issues(checks), 'its checks list the version\'s').toBe(issues(issuedFace(MON).innerHTML))
     expect(checks, 'no mute on a record').not.toContain('data-woff=')
     expect(board, 'and no write surface').not.toContain('data-slot=')
+  })
+})
+
+/* THE READS OF D187 (Fable, Astra — 26 Sep 26): a look is a record — complete, read only, its own panel, its own taps */
+describe('D187, after its reads — a look is the record: whole, read only, its own panel and taps', () => {
+  const TUE = 1
+  const issues = (html: string) => { const m = /⚠ (\d+) issues?/.exec(html); return m ? +m[1] : 0 }
+  const warnsOf = (b: any, di: number) => ((b && b.byDay && b.byDay[di] && b.byDay[di].warns) || []) as any[]
+
+  it('an older version keeps the live warnings it went out with — a crew-rest breach cleared since still shows on its look', () => {
+    /* the demo Tuesday goes out with Outlaw's crew-rest breach (he lands Monday 20:45) — a LIVE warning (D184) */
+    publishDay(TUE)
+    const orig = dayCurVer(TUE)
+    const casper = (warnsOf(officialWarn(), TUE).find((w: any) => w.code === 'CREW_REST') || {}).who?.[0]
+    expect(casper, 'the Original went out with a crew-rest breach').toBeTruthy()
+    expect(warnsOf((SCHED.orig as any)[TUE].w.face ? { byDay: { [TUE]: (SCHED.orig as any)[TUE].w.face } } : null, TUE).some((w: any) => w.code === 'CREW_REST'), 'kept whole at issue').toBe(true)
+    /* Monday (a draft) lands him early — the breach clears live; AL1 goes out on Tuesday for a note */
+    const f: any = (DAYS[0] as any).waves[1].formations.find((x: any) => (x.aircraft || []).some((a: any) => a.p === casper || a.w === casper))
+    f.to = '14:00'; f.ld = '15:30'; validate()
+    ;(DAYS[TUE] as any).notes = [...((DAYS[TUE] as any).notes || []), { t: 'AL1 NOTE' }]
+    validate(); signBound(TUE); publishALDay(TUE); validate()
+    expect(warnsOf(officialWarn(), TUE).some((w: any) => w.code === 'CREW_REST' && w.who.includes(casper)), 'today: cleared').toBe(false)
+    const look = dayPreviewHTML(TUE, orig, true)
+    expect(el(look).querySelector(`.puck[data-person="${casper}"]`)?.className, 'the Original\'s look rings him as it did').toMatch(/boxred/)
+    DPREV.set(TUE, orig); setPage('editsched')
+    try { expect(displayedByDay(TUE)!.warns.some((w: any) => w.code === 'CREW_REST'), 'its list holds the breach').toBe(true) } finally { DPREV.delete(TUE) }
+  })
+
+  it('the edit week\'s look: every warning shown, no mute and no "create the period" — even one muted on the working copy', () => {
+    publishDay(MON)
+    const ver = dayCurVer(MON)
+    const w0 = warnsOf(officialWarn(), MON)[0]
+    WARNOFF.add(warnMuteKey(w0))                               // muted on the working copy
+    DWOPEN.add(MON)
+    try {
+      const look = dayPreviewHTML(MON, ver, true)
+      expect(look, 'no mute').not.toContain('data-woff=')
+      expect(look, 'no create-the-period').not.toContain('data-mkperiod=')
+      expect(look, 'no "N hidden"').not.toContain('data-wmtog=')
+      expect(el(look).querySelectorAll(`.witem[data-wdi="${MON}"][data-wix]`).length, 'the whole record (its own rows; the cross-day row is Tuesday\'s)').toBe(warnsOf(officialWarn(), MON).length)
+    } finally { WARNOFF.clear(); DWOPEN.delete(MON) }
+  })
+
+  it('the ⓘ panel beside a look describes the version on screen: its warnings, nothing pending', async () => {
+    publishDay(MON)
+    const orig = dayCurVer(MON)
+    expect(commitNewInput(leaveDraft('bane', '2026-07-13', 'PANEL LOOK'))).toBe(true)   // the working copy moves on
+    validate()
+    expect(dayShownPendCount(MON)).toBe(1)
+    setPage('editsched'); DPREV.set(MON, orig)
+    const host = document.createElement('div'); document.body.appendChild(host)
+    const root = createRoot(host)
+    try {
+      setDayPop(MON)
+      act(() => { root.render(<DayPop />) })
+      const t = host.textContent || ''
+      expect(t, 'no pending on the record').not.toMatch(/unpublished edit/)
+      expect(t, 'the version\'s warnings').toMatch(new RegExp(`${warnsOf(officialWarn(), MON).filter((w: any) => w.sev === 'hard').length} WARNING`, 'i'))
+    } finally { act(() => { root.unmount() }); host.remove(); setDayPop(null); DPREV.delete(MON) }
+  })
+
+  it('a look left on Edit Schedule never steers View-only Sched\'s taps', () => {
+    publishDay(MON)
+    const orig = dayCurVer(MON)
+    const stiff = ((DAYS[MON] as any).waves[0].formations[0].aircraft[0].p) as string
+    expect(setSlotVal('d:0.1.0', stiff)).toBe(true)
+    validate(); signBound(MON); publishALDay(MON); validate()
+    DPREV.set(MON, orig)
+    try {
+      setPage('editsched'); expect(lookWearsFlags(MON), 'the edit page wears the look').toBe(true)
+      setPage('viewsched')
+      expect(lookWearsFlags(MON)).toBe(false)
+      expect(displayedByDay(MON), 'the view page resolves its own face').toBe(officialWarn().byDay[MON])
+    } finally { DPREV.delete(MON); setPage('editsched') }
+  })
+
+  it('switching the look lets go of that day\'s focused warning (an index into another list)', () => {
+    publishDay(MON)
+    setWarnFocus({ di: MON, ix: 0, ids: [], sev: 'hard' } as any)
+    setDayPreview(MON, dayCurVer(MON))
+    expect(WFOCUS, 'the focus let go').toBe(null)
+    setWarnFocus({ di: TUE, ix: 0, ids: [], sev: 'hard' } as any)
+    setDayPreview(MON, null)
+    expect(WFOCUS && WFOCUS.di, 'another day\'s focus stays').toBe(TUE)
+    setWarnFocus(null as any)
+  })
+
+  it('the look\'s "Breaks Tuesday" row points at Tuesday\'s crew-rest warning in the list its tap reads', () => {
+    /* Tuesday goes out with a FROZEN hard warning the day loop raises after crew rest (an IRT with no IR examiner), so its
+       published face lists the frozen warnings first and the live breach after them — a different index from the working
+       list the tap reads while Tuesday is not being looked at (Fable's read of D187 #4) */
+    ;(DAYS[TUE] as any).waves[0].formations[0].msn = 'IRT'
+    validate()
+    publishDay(0); publishDay(TUE)
+    const faceIx = warnsOf(officialWarn(), TUE).findIndex((w: any) => w.code === 'CREW_REST')
+    const workIx = warnsOf(WARN, TUE).findIndex((w: any) => w.code === 'CREW_REST')
+    expect(faceIx !== workIx, `the two lists order it differently (face ${faceIx}, working ${workIx})`).toBe(true)
+    setPage('editsched'); DPREV.set(0, dayCurVer(0)); DWOPEN.add(0)
+    try {
+      const look = el(dayPreviewHTML(0, dayCurVer(0), true))
+      const row = [...look.querySelectorAll(`[data-wdi="${TUE}"][data-wix]`)][0] as HTMLElement | undefined
+      expect(row, 'the look draws the cross-day row').toBeTruthy()
+      const w = displayedByDay(TUE)!.warns[+row!.dataset.wix!]
+      expect(w && w.code, 'its index lands on the crew-rest breach').toBe('CREW_REST')
+    } finally { DPREV.delete(0); DWOPEN.delete(0) }
   })
 })

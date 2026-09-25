@@ -1433,13 +1433,19 @@ export function versionFaceWarn(di:any,ver:any):any{di=+di;
   if(ver==null||(typeof ver==='string'&&ver.slice(0,2)==='d:')||!dayApproved(di))return null;
   if(String(dayCurVer(di))===String(ver))return faceWarn();
   const s:any=daySnapOf(di,ver); if(!s||!s.w)return null;
+  /* the whole face it went out with, when the version kept it; else the frozen class alone */
+  const f:any=s.w.face;
   const off=OFFICIAL, k=`${di}=${ver}`; let m=VFACE.get(off); if(!m){m=new Map(); VFACE.set(off,m);}
   const hit=m.get(k); if(hit)return hit;
   const byDay=(off.byDay||[]).slice(), sev={...off.sev}, chip={...off.chip}, dash={...off.dash}, trace={...off.trace};
   const put=(mm:any,v:any)=>{ if(v)mm[di]=v; else delete mm[di]; };
-  const g=rewordSlice(s.w,s.w.byDay);
-  byDay[di]={...(g||{di,dow:(DAYS[di]||{}).dow}),warns:((g&&g.warns)||[]).filter((x:any)=>!LIVE_ON_FACE.has(x.code))};
-  put(sev,s.w.sev); put(chip,s.w.chip); put(dash,s.w.dash); delete trace[di];
+  if(f){ const g=rewordSlice({cs:f.cs||s.w.cs},{warns:f.warns||[]});
+    byDay[di]={di,dow:(DAYS[di]||{}).dow,warns:(g&&g.warns)||[]};
+    put(sev,f.sev); put(chip,f.chip); put(dash,f.dash); }
+  else { const g=rewordSlice(s.w,s.w.byDay);
+    byDay[di]={...(g||{di,dow:(DAYS[di]||{}).dow}),warns:((g&&g.warns)||[]).filter((x:any)=>!LIVE_ON_FACE.has(x.code))};
+    put(sev,s.w.sev); put(chip,s.w.chip); put(dash,s.w.dash); }
+  delete trace[di];
   const all:any[]=[]; byDay.forEach((gg:any)=>{ if(gg&&gg.warns)all.push(...gg.warns); });
   const b={all,byDay,sev,chip,dash,trace}; m.set(k,b); return b;}
 /* draw fn with WARN pointing at that version's warnings (versionFaceWarn); a version with none reads as before */
@@ -1471,13 +1477,27 @@ export function officialSliceNow(di:any){ return warnSliceOf(OFFICIAL,di); }
 export function withOfficialWarn(fn:any){ const w=WARN; WARN=faceWarn(); try{ return fn(); } finally{ WARN=w; } }
 /* registered with publish.ts at load: at issue, judge the week once as it now stands and keep the day's slice (a deep
    copy — the bundle is rebuilt on the next validate); on every read, today's judgement of the day for the comparison */
-HOOKS.issuedWarn=(di:number)=>{ validate(); return JSON.parse(JSON.stringify(warnSliceOf(OFFICIAL,di))); };
+HOOKS.issuedWarn=(di:number)=>{ validate(); const s=warnSliceOf(OFFICIAL,di), g=(OFFICIAL.byDay||[])[+di];
+  /* …and the WHOLE face the version showed the moment it went out — every warning, the live ones included, with every
+     ring and flag (Astra's and Fable's reads of D187: an older version's look dropped the crew-rest, 7-day, qualification
+     and OIL warnings it went out with, since only the frozen class is kept for the comparison). Never compared
+     (warnSliceKey reads byDay / sev / chip / dash only); drawn when an OLDER version is looked at. The next-day mark
+     stays out: it is always today's (D183). */
+  const warns=(g&&g.warns)||[];
+  const face={warns,sev:(OFFICIAL.sev||{})[+di]||null,chip:(OFFICIAL.chip||{})[+di]||null,dash:(OFFICIAL.dash||{})[+di]||null};
+  return JSON.parse(JSON.stringify({...s,face})); };
 /* one slice per day per official bundle, so publish.ts can key it once per validate */
 const SLICES=new WeakMap<any,Map<number,any>>();
 HOOKS.warnNow=(di:number)=>{ let m=SLICES.get(OFFICIAL); if(!m){m=new Map(); SLICES.set(OFFICIAL,m);}
   let v=m.get(+di); if(!v){v=warnSliceOf(OFFICIAL,di); m.set(+di,v);} return v; };
+/* the WORKING bundle as the last validate left it — what WARN reads outside a face or a look. A reader that must answer
+   for the working copy while a face is being drawn (WARN swapped for the render) asks this, never WARN (the tap a look's
+   cross-day row will make — Fable's read of D187 #4). */
+let WORKING_B:any=WARN;
+export function workingWarn(){ return WORKING_B; }
 export function validate(){
   const w = validateCore();          // WORKING — writes the module globals
+  WORKING_B = w;
   OFFICIAL = officialFor(w);         // aliased, or a snapshot/restore OFFICIAL run
   const hard=w.all.filter((x:any)=>x.sev==='hard').length;
   const note=w.all.filter((x:any)=>x.sev==='note').length;
@@ -1609,9 +1629,11 @@ export const traceLeads=(di:any,id:any)=>{const t=traceOf(di,id); if(!t)return n
    already navigates by, so a cross-day row and a traced puck both hand the
    ordinary jump the ordinary thing and need no navigation path of their own.
    -1 where the warning has moved under an edit: WARN is rebuilt wholesale. */
-export const traceIx=(t:any,id:any,kind?:any)=>{if(!t)return -1;
+/* `b`: the bundle the breach's day is resolved in when it is not the one being drawn (a look — the tap reads that day's
+   own displayed list, Fable's read of D187 #4) */
+export const traceIx=(t:any,id:any,kind?:any,b?:any)=>{if(!t)return -1;
   const run=kind==='RUN'; const tdi=run?(t.run&&t.run.di):t.di, code=run?'DAYS_RUN':'CREW_REST';
-  const g=WARN.byDay&&WARN.byDay[tdi];
+  const W=b||WARN; const g=W.byDay&&W.byDay[tdi];
   return (((g&&g.warns)||[]) as any[]).findIndex((w:any)=>w.code===code&&(w.who||[]).indexOf(id)>=0);};
 /* every man whose day-end breaks the NEXT day, for the day that caused it */
 export const tracesOn=(di:any)=>{const m=(WARN.trace&&WARN.trace[di])||{};

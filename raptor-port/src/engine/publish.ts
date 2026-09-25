@@ -544,6 +544,7 @@ function freezeWarn(snap:any,di:number){ if(!HOOKS.issuedWarn||!snap)return; con
   /* the callsigns its warnings were worded with, by person — so a rename (a label, never a change: 14 Sep 26) reads the
      same warning, and the face can re-word it with today's callsign (validate.ts faceWarn; Astra's plan read #6) */
   w.cs=warnCallsigns(w);
+  if(w.face)w.face.cs=warnCallsigns({byDay:{warns:w.face.warns}});
   snap.w=w;
   /* …and what else of the day's face is NOT the day's own data (Astra's plan read #3): the qualifications, seat and
      posting of every man on it (the puck's CAT letter and colour) and the rule value it prints (a blank brief's time).

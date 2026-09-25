@@ -30,13 +30,14 @@ the later merge keeps both (D78).
   dispositioned §9), the gates (§6). His look card is §10.
 - **The PR:** see the PR list for `claude/leave-late-published` (its checks run on GitHub's machines while the repo is
   public, D106). **Next:** his look (the card's four "look here" lines and Q1, Q4, Q5, Q6), then his "merge live".
-- **His questions (the card, §10):** Q1 ANSWERED — D186 "Q1 yes" (keep them frozen). Q4 the
-  app's own "till <date>" note: a stretched or trimmed leave makes each published day it still covers show "1 pending" on
-  the admin's working copy (never on View-only Sched) — keep?
-  Q5 ANSWERED — D187 "it should" (BUILT: a look at a published version wears its warnings). Q6 ANSWERED — D188 "yes".
-- **Filed this session:** `[PV-NO-FLAGS]`, `[INSIGHTS-WORKING-COPY]` (both his questions), `[QUALS-PROTO-TOAST]`,
-  `[VIEW-ARROW-OVER-LIST]`, `[INPUTSCAL-TAP-FLAKY]`. Rulings this chat: none new (D185's row gained the agent's widened
-  reading); D186 (Q1 yes), D187 (Q5), D188 (Q6). Range left: D189.
+- **His questions (the card, §10) — ALL ANSWERED:** Q1 — D186 "yes" (a man's CAT and a blank brief's time stay as
+  published). Q4 — D189 "follow ur recommendation" (the app's own "till" note counts: each published day a stretched leave
+  still covers shows "1 pending" on the admin's working copy, never on View-only Sched). Q5 — D187 "it should" (BUILT: a
+  look at a published version wears its warnings). Q6 — D188 "yes" (the Qualification-flag reading).
+- **Filed this session:** `[PV-NO-FLAGS]` (answered and built), `[INSIGHTS-WORKING-COPY]` (his question),
+  `[QUALS-PROTO-TOAST]`, `[VIEW-ARROW-OVER-LIST]`, `[INPUTSCAL-TAP-FLAKY]`. Rulings this chat: D186–D189 (and D185's row
+  gained the agent's widened reading, confirmed by D188). The chat's range D180–D189 is used up — a later chat on this
+  branch takes the next free number above `main`'s (DECISIONS.md).
 - **Usage (D182, until Monday 28 Sep 26):** unlimited — spend it on his look's follow-ups.
 - **After this merges (D180, D173):** `[ACCOUNTS]` on a new branch — its plan not started; the `OUTSTANDING.md` tidy (over
   its tripwire) on its own docs branch.

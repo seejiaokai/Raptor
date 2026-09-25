@@ -466,7 +466,7 @@ export function boardWarnHTML(di: number, look = false) {
        purpose — muting declutters the list, it does not change what the day is. */
     const muted: number[] = []
     dw.forEach((w: any, ix: number) => {
-      if (!view.warnShown(w)) { muted.push(ix); return }
+      if (!look && !view.warnShown(w)) { muted.push(ix); return }   // a look shows the whole record (D187)
       /* the selected state goes in the STRING, not on a class painted later:
          SchedBoard diffs this html against the last one to decide whether to
          re-hang the panel, so a class added afterwards is lost on the next

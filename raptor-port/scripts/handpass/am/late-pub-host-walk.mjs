@@ -340,6 +340,14 @@ async function worldH7() {
     const mute = await page.locator('#schedBoard #sbWarn .wln-mute').count()
     await screen(page, 'H7-board-look-orig')
     check('H7 the board\'s look rings the pucks and lists the version\'s checks, read only (D187)', okB && bRing === true && bIss === face && mute === 0, `ringed ${bRing}, checks ${bIss} issues, mute buttons ${mute}`)
+    /* a tap on one of the look's checks lights its crew in the look (the reads of D187: the preview used to be excluded) */
+    const hdr = page.locator('#schedBoard #sbWarn [data-sbwtog]:visible').first()
+    if (!(await page.locator('#schedBoard #sbWarn .wln[data-wix]:visible').count()) && await hdr.count()) { await hdr.click(); await page.waitForTimeout(300) }
+    const firstW = page.locator('#schedBoard #sbWarn .wln[data-wix]:visible').first()
+    let lit = 0
+    if (await firstW.count()) { await firstW.click(); await page.waitForTimeout(500); lit = await page.locator('#schedBoard .pv-frozen .puck.wfoc').count() }
+    await screen(page, 'H7-board-look-tap')
+    check('H7 a tap on a check in the board\'s look lights its crew', lit > 0, `${lit} puck(s) lit in the look`)
     await pvTap(page, MON, 'data-golive')
     /* an AL that adds a warning: a leave for Stiff on Monday, where he flies; AL1 out */
     await W4.fileInput(page, { person: stiff, type: 'LL', from: '2026-07-13', to: '2026-07-13', span: 'all', remarks: 'LOOK WALK LEAVE' })

@@ -125,7 +125,8 @@ const SIGNBIND: Spec = { dg: 'string', iso: 'string', base: 'string', rev: 'stri
 /* a warning is the validator's own record (engine/validate.ts: sev, code, who, day, di, msg, key and per-rule extras) —
    checked for shape loosely; the rings, flags, dashes and traces are per-person maps, null when empty */
 const ANYW: Spec = { $or: ['string', 'number', 'boolean', 'object'] }
-const WARNSLICE: Spec = { byDay: { $or: [{ di: 'number', dow: 'string', warns: [{ $map: ANYW }] }, 'object'] }, sev: 'object', chip: 'object', dash: 'object', trace: 'object', cs: { $opt: { $map: 'string' } } }
+const WARNSLICE: Spec = { byDay: { $or: [{ di: 'number', dow: 'string', warns: [{ $map: ANYW }] }, 'object'] }, sev: 'object', chip: 'object', dash: 'object', trace: 'object', cs: { $opt: { $map: 'string' } },
+  face: { $opt: { warns: [{ $map: ANYW }], sev: 'object', chip: 'object', dash: 'object', cs: { $opt: { $map: 'string' } } } } }   // D187: the whole face at issue
 /* the men on the day as the roster drew them, and the rule values the face prints (drawn as issued and compared — D179,
    Astra's code read #2); the roster at issue (`ros` — drawn by the day panel's "free all day", never compared) */
 const PEOPLEATTRS: Spec = { $map: { q: { $or: ['string', 'object'] }, seat: { $or: ['string', 'object'] }, pers: 'boolean', san: 'boolean', sxo: 'boolean', archived: 'boolean' } }

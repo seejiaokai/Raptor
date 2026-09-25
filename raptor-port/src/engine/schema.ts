@@ -466,6 +466,9 @@ export type WarnSlice = {
   chip: Record<string, string> | null
   dash: Record<string, boolean> | null
   trace: Record<string, any> | null
+  /** the WHOLE face the version showed at issue — every warning (the live ones too) and every mark, for a look at it once
+   *  it is superseded (D187); never compared */
+  face?: { warns: any[]; sev: Record<string, string> | null; chip: Record<string, string> | null; dash: Record<string, boolean> | null; cs?: Record<string, string> }
   /** person id → the callsign its warnings were worded with (a rename is a label, never a change) */
   cs?: Record<string, string>
 }

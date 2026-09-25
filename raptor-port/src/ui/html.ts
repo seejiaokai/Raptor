@@ -17,7 +17,7 @@ import { verSeq } from '../engine/verid'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
 import { VCONF } from '../engine/rules'
-import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWORK, CURPAGE, lateShown, restArmed, unpubArmed, notePub, stSavedOn, warnShown, WMOPEN } from '../state/view'
+import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWORK, CURPAGE, lateShown, restArmed, unpubArmed, notePub, stSavedOn, warnShown, WMOPEN, displayedBundle } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
@@ -933,8 +933,9 @@ function dayTraceHTML(di:any,pf:any){
   const rows=tracesOn(di)
     .filter(({id}:any)=>!pf||id===pf)
     .flatMap(({id,t}:any)=>[
-      ...(t.leaveBy!=null?[{id,t,kind:'CR',tdi:t.di,ix:t.di==null?-1:traceIx(t,id)}]:[]),
-      ...(t.run?[{id,t,kind:'RUN',tdi:t.run.di,ix:t.run.di==null?-1:traceIx(t,id,'RUN')}]:[]),
+      /* under a face or a look (PV + OFW) the breach's day resolves in ITS displayed list — the one its tap reads */
+      ...(t.leaveBy!=null?[{id,t,kind:'CR',tdi:t.di,ix:t.di==null?-1:traceIx(t,id,undefined,PV&&OFW?displayedBundle(t.di):undefined)}]:[]),
+      ...(t.run?[{id,t,kind:'RUN',tdi:t.run.di,ix:t.run.di==null?-1:traceIx(t,id,'RUN',PV&&OFW?displayedBundle(t.run.di):undefined)}]:[]),
     ])
     /* tdi==null is the FORWARD trace across the week edge (validate.ts's
        phantom next-Monday pass): the breach it points at lives on next
@@ -1072,7 +1073,9 @@ export function dayWarnHTML(di:any){
        markup is byte-identical to before. The ✕/↺ clicks (data-woff) and the
        reveal (data-wmtog) route through the SAME delegated handlers the board
        uses — see interactions.ts. */
-    const ed=editMode();
+    /* …never under a look at a version (PV): a record is read, not edited — no mute, no reveal, no "create the period",
+       and every warning it holds shown (Fable's and Astra's reads of D187) */
+    const ed=editMode()&&!PV;
     const row=({w,ix}:any,muted?:boolean)=>{
       const names=(w.who||[]).map((id:any)=>PEOPLE[id]?PEOPLE[id].cs:id).join(', ');
       const on=WFOCUS&&WFOCUS.di===di&&WFOCUS.ix===ix;
@@ -1086,7 +1089,7 @@ export function dayWarnHTML(di:any){
            what is missing and leaving him to find the Leave War himself is half
            an answer. The year is read from the SAME hook the warning was
            written from, never parsed back out of its sentence. */
-        +(mkPeriod(w,di)?`<button class="witem-act" data-mkperiod="${esc(mkPeriod(w,di))}" title="Creates the ${esc(mkPeriod(w,di))} leave war period in draft and takes you to the Leave War to set its bidding window">Create the ${esc(mkPeriod(w,di))} period</button>`:'')
+        +(!PV&&mkPeriod(w,di)?`<button class="witem-act" data-mkperiod="${esc(mkPeriod(w,di))}" title="Creates the ${esc(mkPeriod(w,di))} leave war period in draft and takes you to the Leave War to set its bidding window">Create the ${esc(mkPeriod(w,di))} period</button>`:'')
         +`</div>`;
     };
     /* an OFFICIAL-only warning (it clears once the day is signed): struck through,
@@ -2087,7 +2090,8 @@ export function dayInfoHTML(di:any){
      there (AM24, AM5) — it said "1 unpublished edit" to the squadron ([HUMAN-RETEST] walk W1-3,
      24 Sep 26). The viewer's own Working-draft peek IS the working copy, so it keeps the line. */
   const issuedFace=ok&&CURPAGE==='viewsched'&&!VWORK.has(+di);
-  const dp=issuedFace?0:dayShownPendCount(di);
+  /* …and nor does a look at a version (PV) — it is the record, not the working copy (Fable's and Astra's reads of D187) */
+  const dp=(issuedFace||PV)?0:dayShownPendCount(di);
   const dw=(WARN.byDay[di]&&WARN.byDay[di].warns)||[];
   const nS=(v:any)=>dw.filter((w:any)=>w.sev===v).length;
   let ac=0,forms=0,cxn=0;
@@ -2106,7 +2110,7 @@ export function dayInfoHTML(di:any){
     : `<span class="dip-none">No amendment has touched this day yet</span>`;
   /* same visibility rule as the day-head chip: name the current version once
      amendments exist, so a rolled-back day says which document it is showing */
-  const cv=dayCurVer(di);
+  const cv=(PV&&PVV!=null&&!isDraftVer(PVV))?PVV:dayCurVer(di);   // a look names the version on screen
   const atVer=(ok&&cv!=null&&(verSeq(cv)!==0||alRecs.length))?` · at ${verLabel(cv)}`:'';
   let h=`<div class="dip-stat ${ok?'ok':'draft'}">${ok?'✓ Published — APPROVED'+atVer:'Draft — not yet published'}`
     +`${dp?`<span class="dip-pend">${dp} unpublished edit${dp>1?'s':''}</span>`:''}</div>`;

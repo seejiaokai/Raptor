@@ -323,7 +323,9 @@ function sbSeat(di:any,key:any,id:any,pv?:any){
   if(oilModeOn(di)&&!PEOPLE[id].special)return oilSeatHTML(di,id,OILITEM,(oil:any)=>puck(id,null,true,null,false,null,oil));
   /* an exempt desk row rings for its OWN rule only — html.ts exemptDeskOwn,
      the one body the week's lSeat reads too */
-  const ex=pv?undefined:exemptDeskOwn(di,key,id);
+  /* exemptDeskOwn gates itself on a plain preview (PV without flags), so a look that wears its warnings keeps the desk's
+     own rule, as View-only Sched does (Fable's read of D187 #7) */
+  const ex=exemptDeskOwn(di,key,id);
   /* the same green edge the week draws, from the same body (§2.10) */
   const oilDeco=oilSeatDeco(di,id,key);
   /* the week's four marks, dashed and dotted rings included (D94); an exempt seat keeps its own rule */

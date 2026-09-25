@@ -2391,7 +2391,9 @@ stay LIVE (below), which the face draws from today and which never make the day 
   state, is ONE edit, carried with both records (a medical takeover trims the old downchit and mints its tail with
   "till …" in its remarks: one line, not "moved off" and "filed" — F2); an upchit is out (the downchit it trims is the
   change — but the trim writes "till <date>" into the downchit's remarks, which the face prints, so the days it still
-  covers read that one remark change: put to him on the look card); a request taken off on one side and absent, or
+  covers read that one remark change — kept, owner D189 ("Q4 follow ur recommendation", 26 Sep 26): the words those days
+  printed are out of date, so each reads "1 pending" on the admin's working copy while View-only Sched keeps the old words
+  until the next AL); a request taken off on one side and absent, or
   taken off on both, shows on neither face (D174, D176).
 - **One act, one item** (D109): `dayPendingItemsIn` folds an input's filing and details into ONE item, with the units of
   the request row its edit re-landed (`unitRequestSrc`), the ground programme's order when that row is all that moved in

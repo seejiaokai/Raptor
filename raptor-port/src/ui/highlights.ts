@@ -2,7 +2,7 @@
    the reference. Runs after every week render; the markup it decorates is
    the verbatim dayHTML output, so the selectors line up exactly. */
 import { PEOPLE, isSpecial } from '../engine/people'
-import { HLSET, SEARCH, SELID, WFOCUS, ARM, FRESHADD, FRESHOUT, warnFocusMap, personMatchesHL, CURPAGE, SBDAY } from '../state/view'
+import { HLSET, SEARCH, SELID, WFOCUS, ARM, FRESHADD, FRESHOUT, warnFocusMap, personMatchesHL, CURPAGE, SBDAY, lookWearsFlags } from '../state/view'
 import { ME } from '../state/auth'
 import { slotBar } from '../engine/avail'
 import { slotVal } from '../engine/slots'
@@ -68,7 +68,9 @@ export function refreshHighlights(){
        be looking at, so dimming it would fight the arm-and-plant flow. Nor a
        version preview: .pv-frozen is a published snapshot and WARN is live, so
        decorating it would put today's conflicts on last week's paper. */
-    const onBoard=wf&&warnOnBoard()&&el.closest('.sb-boardwrap')&&!el.closest('.pv-frozen');
+    /* …unless the preview is a look at a published version wearing its own warnings (D187): the focus is then one of
+       THAT version's warnings, and lighting its crew is the point (Fable's and Astra's reads) */
+    const onBoard=wf&&warnOnBoard()&&el.closest('.sb-boardwrap')&&(!el.closest('.pv-frozen')||lookWearsFlags(SBDAY));
     if(wf&&(el.closest('.week')||onBoard)){
       /* the board renders one day, so there is no .day[data-day] to read and no
          echo to paint — warnOnBoard() has already established it is WFOCUS's day */
@@ -119,7 +121,10 @@ export function refreshHighlights(){
        same address. `wf` carries the second half: it is null once the focused
        warning no longer exists (state/view.ts), so a focus that has outlived its
        cause lights nothing here either. */
-    if(el.closest('.pv-frozen,.preview'))return;
+    if(el.closest('.pv-frozen,.preview')){
+      const dd=el.closest('.pv-frozen')?SBDAY:(()=>{const x=el.closest('.day[data-day]') as any;return x?+x.dataset.day:null;})();
+      if(dd==null||!lookWearsFlags(dd))return;   // a look wearing its warnings lights its own (D187)
+    }
     el.classList.add('wfoc'); if(WFOCUS.sev!=='hard')el.classList.add('advf');
   });
   paintArm();      // every render rebuilds the slots, so the ring is re-hung here
