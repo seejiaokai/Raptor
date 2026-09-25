@@ -1,6 +1,7 @@
 import { DAYS } from '../engine/data'
 import { noteText } from '../engine/note'
 import { PEOPLE, isSpecial, whoId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
+import { personShown, briefLeadShown, withFaceAttrs } from '../engine/faceattrs'
 import { INPUTS, inputsOn, inputOnAny, withFrozenInputs, inputCoversDate, inpLabel, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
@@ -103,7 +104,7 @@ export function withDaySnap(di:any,ver:any,fn:any){
      AVAIL window through withChipWorld — reads the inputs the version was issued with (engine/inputs.ts inputsOn). A
      parked plan carries none (it is a working alternative, not a document) and reads the live inputs, as before. */
   const inp = snap.inp && snap.d && snap.d.dt != null ? { [snap.d.dt]: snap.inp } : null
-  try { return withFrozenInputs(inp, () => fn(true)) }
+  try { return withFrozenInputs(inp, () => withFaceAttrs(snap.pa, snap.rv, () => fn(true))) }
   finally { DAYS[di]=d0; SCHED.changes=c0; SCHED.pending=p0; PV=false; PVV=null; PVND=nd }
 }
 /* [ALL-AVAIL-WINDOW] — THE WORLD A COUNT CHIP WAS DRAWN IN, replayed for the
@@ -408,7 +409,9 @@ export function legendHTML(){
    Optional and absent by default, so the ten other call sites and the byte-exact
    reference parity are unchanged — five days a week nothing is emitted at all. */
 export function puck(id:any,warn:any,sm:any,flag:any,dash?:any,trace?:any,oil?:any){
-  const p=PEOPLE[id]; if(!p)return'';
+  /* as the face being drawn shows him — on an issued face, his CAT, seat and posting as it went out (engine/faceattrs.ts,
+     D179); the callsign stays live (a rename is a label) */
+  const p=personShown(id); if(!p)return'';
   if(p.special){   // sentinel puck: canonical size, no seat/qual/SANS decoration
     /* A SENTINEL WEARS THE BAR ONLY WHEN THE PEOPLE BEHIND IT AGREE (§7.6, as the
        owner refined it: "if everyone in the all avail or all puck is granted OIL,
@@ -927,7 +930,9 @@ function dayTraceHTML(di:any,pf:any){
        week's Monday, a day this week's warning list cannot address — so
        there is no warning index to resolve and none is required. Every
        other trace still drops out when its warning no longer resolves. */
-    .filter((r:any)=>r.ix>=0||r.tdi==null);
+    /* …except on a published day's face (OFW): its marks are frozen with it (D179), so the breach one points at may have
+       changed since — the row is still drawn, and it does not jump (no warning of that day's to focus) */
+    .filter((r:any)=>r.ix>=0||r.tdi==null||OFW);
   if(!rows.length)return '';
   return `<div class="dwtrace">`+rows.map(({id,t,kind,tdi,ix}:any)=>{
     const cs=PEOPLE[id]?PEOPLE[id].cs:id;
@@ -938,7 +943,8 @@ function dayTraceHTML(di:any,pf:any){
     if(kind==='RUN'){
       const r=t.run;
       const onR=r.di!=null&&WFOCUS&&WFOCUS.di===r.di&&WFOCUS.ix===ix;
-      const addrR=r.di!=null?` data-wdi="${r.di}" data-wix="${ix}" title="Jump to the day the run breaks"`
+      const addrR=r.di!=null&&ix>=0?` data-wdi="${r.di}" data-wix="${ix}" title="Jump to the day the run breaks"`
+                            :r.di!=null?` title="As published — that day has changed since"`
                             :` title="Next week's Monday — load it to see the breach itself"`;
       return `<div class="witem hard wtr${onR?' on':''}"${addrR}>`
         +`<span class="wbar"></span><span><span class="wcode">Breaks ${esc(r.dow||'next Monday')}</span>`
@@ -962,7 +968,8 @@ function dayTraceHTML(di:any,pf:any){
        warning on THIS week to focus — interactions.ts's `.witem[data-wdi]`
        branch simply never matches it, so a tap is inert rather than a
        misfire. The breach itself appears on Monday when next week loads. */
-    const addr=t.di!=null?` data-wdi="${t.di}" data-wix="${ix}"${pan} title="Jump to the line on this day that caused it"`
+    const addr=t.di!=null&&ix>=0?` data-wdi="${t.di}" data-wix="${ix}"${pan} title="Jump to the line on this day that caused it"`
+      :t.di!=null?` title="As published — that day has changed since"`
                          :` title="Next week's Monday — load it to see the breach itself"`;
     return `<div class="witem hard wtr${on?' on':''}"${addr}>`
       +`<span class="wbar"></span><span><span class="wcode">Breaks ${esc(t.dow||'the next day')}</span>`
@@ -1590,7 +1597,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
            validate() already reads it live (VCONF.briefLead). Hard-coding 140
            here left the engine flagging against the new number while the B
            column kept printing the old one. */
-        const brief=minus(f.to,VCONF.briefLead), rows=f.aircraft.length;
+        const brief=minus(f.to,briefLeadShown()), rows=f.aircraft.length;
         const areaTxt = areaText(f), timeTxt = atimeText(f);
         const fp=`ff:${di}.${gi}.${li}`;
         /* B (owner, 6 Aug 26): the scheduler can now type an INDICATED brief time

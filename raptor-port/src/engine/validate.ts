@@ -1363,15 +1363,16 @@ function faceWarn(){
   /* a warning worded with a callsign since renamed reads today's (a rename is a label, 14 Sep 26) */
   const reword=(w:any,g:any)=>{ if(!g||!w.cs)return g; const ren=Object.keys(w.cs).filter((id:any)=>PEOPLE[id]&&PEOPLE[id].cs&&PEOPLE[id].cs!==w.cs[id]);
     if(!ren.length)return g; return {...g,warns:(g.warns||[]).map((x:any)=>{ let m=String(x.msg||''); ren.forEach((id:any)=>{ m=m.split(String(w.cs[id])).join(String(PEOPLE[id].cs)); }); return {...x,msg:m}; })}; };
-  /* two things on a published day's face stay LIVE, by design (Fable's plan read F4, F5):
-     · the next-day crew-rest mark (`trace`) — it points into ANOTHER day's warning list, so it follows the world that
-       day is shown in: frozen once that day is published (its own `w`), live while it is a draft. Frozen here, every
-       edit to a draft Tuesday would un-sign a published Monday, and the mark could point at a warning that is gone.
+  /* the next-day crew-rest and run marks (`trace`) freeze with the rest (Astra's code read #1 — D179: nothing on a
+     published face moves silently). The cost Fable's plan read F4 named — an edit to a draft Tuesday that changes whether
+     a Monday man breaks its rest now reads pending on Monday — is put to him (OUTSTANDING.md [LATE-PUB-FACE-LIVE]); a
+     frozen mark whose breach has since gone is still drawn, and its row no longer jumps (html.ts dayTraceHTML).
+     One thing stays LIVE by design (Fable F5):
      · the warnings LIVE_ON_FACE names (the Leave War's "no period covers this date" — D179 leaves the war's reminders
        live, D19): an admin to-do, not a change to what was published; creating the period clears it on the face. */
   fz.forEach(({di,w}:any)=>{ const g=reword(w,w.byDay), live=((off.byDay||[])[di]?.warns||[]).filter((x:any)=>LIVE_ON_FACE.has(x.code));
     byDay[di]=g||live.length?{...(g||{di,dow:(DAYS[di]||{}).dow}),warns:[...((g&&g.warns)||[]),...live]}:undefined;
-    put(sev,di,w.sev); put(chip,di,w.chip); put(dash,di,w.dash); });
+    put(sev,di,w.sev); put(chip,di,w.chip); put(dash,di,w.dash); put(trace,di,w.trace); });
   const all:any[]=[]; byDay.forEach((g:any)=>{ if(g&&g.warns)all.push(...g.warns); });
   FACE={all,byDay,sev,chip,dash,trace}; FACE_OF=off; FACE_K=k;
   return FACE;
@@ -1382,12 +1383,11 @@ export function officialRaw(){ return OFFICIAL; }
 /* the warnings a published face keeps LIVE (Fable F5 — D179 leaves the Leave War's reminders live, D19) */
 export const LIVE_ON_FACE=new Set<string>(['OIL_NO_PERIOD']);
 /* the day's slice of a warning bundle — what an issued version stores, and what the detector compares: its warning list
-   (less LIVE_ON_FACE's), the rings, the flags and the dashes. The next-day crew-rest mark (`trace`) is not part of it —
-   it belongs to the day it points at (faceWarn, Fable F4). */
+   (less LIVE_ON_FACE's), the rings, the flags, the dashes and the next-day marks it causes (`trace`). */
 export function warnSliceOf(b:any,di:any){di=+di;
   const g=((b&&b.byDay)||[])[di]||null;
   return {byDay:g?{...g,warns:(g.warns||[]).filter((x:any)=>!LIVE_ON_FACE.has(x.code))}:null,sev:((b&&b.sev)||{})[di]||null,chip:((b&&b.chip)||{})[di]||null,
-    dash:((b&&b.dash)||{})[di]||null,trace:null};}
+    dash:((b&&b.dash)||{})[di]||null,trace:((b&&b.trace)||{})[di]||null};}
 /* the official pass's own slice for a day (the detector — today's judgement of the issued day), for the pending list's
    words */
 export function officialSliceNow(di:any){ return warnSliceOf(OFFICIAL,di); }
@@ -1406,7 +1406,10 @@ export function withOfficialWarn(fn:any){ const w=WARN; WARN=faceWarn(); try{ re
 /* registered with publish.ts at load: at issue, judge the week once as it now stands and keep the day's slice (a deep
    copy — the bundle is rebuilt on the next validate); on every read, today's judgement of the day for the comparison */
 HOOKS.issuedWarn=(di:number)=>{ validate(); return JSON.parse(JSON.stringify(warnSliceOf(OFFICIAL,di))); };
-HOOKS.warnNow=(di:number)=>warnSliceOf(OFFICIAL,di);
+/* one slice per day per official bundle, so publish.ts can key it once per validate */
+const SLICES=new WeakMap<any,Map<number,any>>();
+HOOKS.warnNow=(di:number)=>{ let m=SLICES.get(OFFICIAL); if(!m){m=new Map(); SLICES.set(OFFICIAL,m);}
+  let v=m.get(+di); if(!v){v=warnSliceOf(OFFICIAL,di); m.set(+di,v);} return v; };
 export function validate(){
   const w = validateCore();          // WORKING — writes the module globals
   OFFICIAL = officialFor(w);         // aliased, or a snapshot/restore OFFICIAL run

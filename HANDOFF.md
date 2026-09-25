@@ -16,24 +16,47 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/leave-late-published -->
-### `claude/leave-late-published` — the overnight session (D181): a member change after publishing waits for the admin (D177–D180); written 25 Sep 26 23:50 — verify before use
-- **Where it started:** PR #437 (D174–D176) MERGED 25 Sep 26 (its block removed here; its one open item,
-  `[LEAVE-LATE-PUBLISHED]`, is this block). Asked where that item goes, he answered "What can we work overnight", then
-  "Yes" to the plan: **D180** — it goes NEXT, before `[ACCOUNTS]` (D173 amended again); **D181** — tonight's one-off
-  permission to work without him (no merge, no re-deciding a ruled item; product questions filed with a recommendation;
-  may compact after saving state).
-- **The night's order (D181):** (1) `[LEAVE-LATE-PUBLISHED]` built and FULLY checked on this branch — scope
-  `raptor-port/docs/superpowers/specs/2026-09-25-published-face-live-inputs.md` (A0–A7 freeze; B1 medical, B2
-  qualifications and rule settings and B5 a neighbour day's input freeze too by D179; only B3, B4, B6 stay live);
-  pushed, PR opened, look card written, D179 put to him again; (2) if time is left, the `[ACCOUNTS]` PLAN only, red-teamed
-  by Fable and Astra, no code; (3) last, the documents-only tidy of `OUTSTANDING.md` (54 over its tripwire) on its own branch.
-- **Found on the way:** `HANDOFF.md` had lost its `## Next, in order` section, this block's end marker and the
-  `## Gate baseline` heading — one span replace in `119dff45` (D176's check) ate them, and the document gate did not
-  notice. Restored from `d13162dc`; the gap in the gate is filed as `[HANDOFF-SHAPE-GUARD]`.
-- **Progress:** rulings D180, D181 recorded. Nothing built yet.
-- **Branch:** `claude/leave-late-published` from `main` @ 5f4496a3. Rulings range for this chat: D180–D189.
-- **Gates:** `main` = PR #437's final code, whose counts are below.
-- **Pick up here:** step (1) — the plan, and Fable's and Astra's scenario lists, first.
+### `claude/leave-late-published` — `[LEAVE-LATE-PUBLISHED]` (D177–D180): built overnight (D181, spent), both reads in, fixes half-applied; written 26 Sep 26 ~01:10 — verify before use
+- **What it is:** a published version now freezes the day's inputs (`snap.inp`) and its face (`snap.w` warnings + traces,
+  `snap.pa` roster attrs, `snap.rv` the blank-brief lead); the issued face draws only frozen things (`inputsOn`,
+  `engine/faceattrs.ts`, `validate.ts faceWarn`); pending gains the input-details axis and the "what this day shows" axis
+  (kind `warn`), one item per act. Rule text: `raptor-port/docs/engine-rules.md` §Publishing "A PUBLISHED DAY KEEPS WHAT IT
+  WENT OUT WITH". Evidence so far: `raptor-port/docs/handpass/2026-09-26-late-pub.md` (walk desktop 22/22, phone 10/10 on
+  0116cc31; gates on that commit: unit 5948/5950 — two Leave War load timeouts, pass alone — e2e 471, smoke 442, tfin 728,
+  rulecheck OK, docsize OK/over-deferred).
+- **The two code reads:** `raptor-port/docs/handpass/2026-09-26-late-pub-{astra,fable}-read.md`.
+  - **Astra's 4 — APPLIED in the last commit (unwalked):** trace frozen and compared (D179 literal; Fable's F4 cost is his
+    Q2); CAT/seat/posting on pucks + the blank-brief lead frozen on the face, CSV and print (`faceattrs.ts`; D179 over the
+    7 Aug "no rule versioning" — his Q1), the Unavailable-only man in `pa`; rename-proof list words; structured "what this
+    day shows" lines; AL panel "what the published day shows changed".
+  - **2 NEW TESTS RED — fix first** (`src/ui/latepub.test.tsx`, the "Astra's code read" block): (a) "a man only on the
+    Unavailable list…" — the fixture found no such man on the demo Monday: pick one by building an input for someone not
+    on Monday (or check `DAYS[MON]` stores ids the finder misses); (b) "a rename beside a real warning change" — the list
+    shows a "cleared" row: read the actual rows and decide whether it is a genuine cleared warning (the pers flip can clear
+    one) or the rename leaking; tighten the assertion to the rename's own warning.
+  - **Fable's 6 — NOT YET APPLIED:** (1) HIGH: drop the dates `a`/`b` from `inputs.ts inpDetailKey` (coverage is the
+    membership test) and the date pair from `pendlist.ts inputWords` — a Mon–Tue leave stretched to Wed made Mon and Tue
+    pending with unchanged faces; (2) pair a leftover gone/filed input by person (same type, or both downchits) in
+    `frozenInputMatch` and carry was/now on the item so the words read one edit (a medical takeover read two lines); (3) add
+    `OIL_STALE_DAY` and `OIL_STALE_HOLIDAY` to `validate.ts LIVE_ON_FACE` (a holiday declared after publishing otherwise
+    counts twice); (4) merge folded units' `jump`/`keys` into the input item and let `inputWords` jump; (5) the load's
+    message saying a member's input change stays pending (planned, not built); (6) wording ("input filing" → change).
+    Each with a pin — his exact steps are in the Fable read.
+- **Then, in order:** unit suite → break tests (one red per wired surface: `withDaySnap` install, `inputAxes`, `faceWarn`,
+  `faceattrs`, the medical line in `inpShow`) → rebuild, re-walk (`HP_REWALK=… node scripts/handpass/am/late-pub-walk.mjs
+  desktop|phone`, add a CAT-change and a brief-lead step) → the full gates → fill the evidence sheet §5, §6, §9 and §10 (the
+  look card draft is in this block's "Questions") → open the PR (checks run on the PR only; never push while they run,
+  D151) → his look and "merge live".
+- **Questions for him (the look card, `OUTSTANDING.md` `[LATE-PUB-FACE-LIVE]` — update it: items 1–2 are now BUILT
+  frozen):** Q1 — a man's CAT on a puck and a blank brief's time now freeze on the published face (D179 read over the 7 Aug
+  "no rule versioning"): keep it? Q2 — the next-day crew-rest mark now freezes too, so editing a draft Tuesday that changes a
+  Monday man's rest makes published Monday pending and takes its four down: keep it, or let the mark follow the draft day?
+  Q3 — medical freezes (D179, provisional): is a man going unfit after publishing reading fit on the published schedule
+  until the next AL what he wants?
+- **Branch:** `claude/leave-late-published`, pushed (no PR yet). Vercel preview: https://raptor-git-claude-leave-late-published-kai-e2f5.vercel.app
+  (the last push predates Astra's fixes). Rulings this chat: D180 (the order), D181 (spent, archived). Range left: D182–D189.
+- **After this merges (D180, D173):** `[ACCOUNTS]` on a new branch — its plan not started (D181's step 2 was not reached);
+  the `OUTSTANDING.md` tidy (86 over its tripwire) on its own docs branch.
 <!-- /now -->
 
 ## Next, in order

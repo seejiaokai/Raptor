@@ -23,7 +23,8 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { INPUTS, inpId, inpLabel, inputCoversDate } from '../engine/inputs'
 import { officialSliceNow } from '../engine/validate'
-import { dayPendingItems, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow } from '../engine/publish'
+import { dayPendingItems, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow, warnMsgKey, warnCallsigns, dayPeopleAttrs, faceRuleVals } from '../engine/publish'
+import { stableJson } from '../engine/inputs'
 import type { PendItem } from '../engine/publish'
 import { ELOG, elogWhen, keyLabel } from '../engine/editlog'
 import { oilEvidence } from '../engine/oilev'
@@ -156,23 +157,53 @@ function inputWords(di: number, it: PendItem): Words {
   if (!from.length) return { where: name, from: '', to: 'changed' + earns, ...none, edited: true } as Words
   return { where: name, from: from.join(' · '), to: to.join(' · ') + earns, ...none, edited: true } as Words
 }
-/* THE DAY'S WARNINGS, judged today, against the ones it went out with ([LEAVE-LATE-PUBLISHED], owner D179 — "freeze
-   everything for now"): a qualification, a rule setting, a neighbour day — anything that is not this day's own content
-   or inputs — that would change what the published day flags. One change; each warning that would appear or clear is a
-   line of its own. */
-function warnWords(di: number): Words & { rows?: CrowdRow[] } {
-  const snap: any = daySnapOf(di, dayCurVer(di))
-  const was: any[] = (snap && snap.w && snap.w.byDay && snap.w.byDay.warns) || []
+/* WHAT THE PUBLISHED DAY SHOWS, judged today, against what it went out with ([LEAVE-LATE-PUBLISHED], owner D179 — "freeze
+   everything for now"): its warnings, the next-day marks it causes, a man's CAT / seat / posting as his puck draws it,
+   the brief lead a blank line prints — anything that is not the day's own content or inputs. ONE change; each thing
+   that moved is a line of its own, named (Astra's code read #4). Warnings are matched with the men's callsigns keyed out,
+   so a rename (a label) never reads as a warning cleared and another new (#3); a cleared one is worded with today's
+   callsign. */
+const CATW: any = { q: 'CAT', seat: 'seat', pers: 'ground crew', san: 'SANS', sxo: 'SXO', archived: 'posted out' }
+function faceWords(di: number): Words & { rows?: CrowdRow[] } {
+  const snap: any = daySnapOf(di, dayCurVer(di)), w: any = snap && snap.w
+  const was: any[] = (w && w.byDay && w.byDay.warns) || []
   const nowSlice: any = officialSliceNow(di), now: any[] = (nowSlice.byDay && nowSlice.byDay.warns) || []
-  const k = (w: any) => `${w.code}|${w.msg}`
-  const a = new Set(was.map(k)), b = new Set(now.map(k))
+  const namesWas = (w && w.cs) || warnCallsigns(w), namesNow = warnCallsigns(nowSlice)
+  const k = (x: any, names: any) => `${x.code}|${warnMsgKey(x.msg, names)}`
+  const a = new Set(was.map((x: any) => k(x, namesWas))), b = new Set(now.map((x: any) => k(x, namesNow)))
+  const reword = (m: any) => { let t = String(m || ''); Object.keys(namesWas || {}).forEach((id: any) => { const c = cs(id); if (c && namesWas[id] && c !== namesWas[id]) t = t.split(String(namesWas[id])).join(c) }); return t }
   const rows: CrowdRow[] = []
-  now.forEach((w: any) => { if (!a.has(k(w))) rows.push({ where: String(w.msg || w.code || 'A warning'), from: '', to: 'new', keys: [] }) })
-  was.forEach((w: any) => { if (!b.has(k(w))) rows.push({ where: String(w.msg || w.code || 'A warning'), from: '', to: 'cleared', keys: [] }) })
+  now.forEach((x: any) => { if (!a.has(k(x, namesNow))) rows.push({ where: String(x.msg || x.code || 'A warning'), from: '', to: 'new', keys: [] }) })
+  was.forEach((x: any) => { if (!b.has(k(x, namesWas))) rows.push({ where: reword(x.msg || x.code || 'A warning'), from: '', to: 'cleared', keys: [] }) })
+  /* the next-day marks this day's end causes */
+  const ta: any = (w && w.trace) || {}, tb: any = nowSlice.trace || {}
+  new Set([...Object.keys(ta), ...Object.keys(tb)]).forEach((id: any) => {
+    const x = ta[id], y = tb[id]
+    const kx = x ? warnMsgKey(stableJson(x), namesWas) : '', ky = y ? warnMsgKey(stableJson(y), namesNow) : ''
+    if (kx !== ky) rows.push({ where: `${cs(id)} · the next day's crew-rest / run mark`, from: '', to: !x ? 'new' : !y ? 'cleared' : 'changed', keys: [] })
+  })
+  /* the men as their pucks draw them */
+  if (snap && snap.pa) {
+    const nowPa: any = dayPeopleAttrs(snap.d, snap.inp)
+    Object.keys(snap.pa).forEach((id: any) => {
+      const o = snap.pa[id], n = nowPa[id]; if (!o || !n) return
+      Object.keys(CATW).forEach((f: any) => {
+        const x = o[f] ?? null, y = n[f] ?? null
+        if (JSON.stringify(x) === JSON.stringify(y)) return
+        const v = (z: any) => typeof z === 'boolean' ? (z ? 'yes' : 'no') : (z == null || z === '' ? '—' : String(z))
+        rows.push({ where: `${cs(id)} · ${CATW[f]}`, from: v(x), to: v(y), keys: [] })
+      })
+    })
+  }
+  /* the brief lead a blank line prints */
+  if (snap && snap.rv && snap.rv.briefLead != null) {
+    const nb = (faceRuleVals(snap.d) || {}).briefLead
+    if (nb != null && +nb !== +snap.rv.briefLead) rows.push({ where: 'A blank brief — its suggested lead', from: `${snap.rv.briefLead} min`, to: `${nb} min`, keys: [] })
+  }
   const none = { who: '', when: '', jump: false }
-  if (!rows.length) return { where: 'Warnings on this day', from: '', to: 'a ring or mark changed', ...none }
-  if (rows.length === 1) return { where: `Warning · ${rows[0]!.where}`, from: '', to: rows[0]!.to, ...none }
-  return { where: 'Warnings on this day', from: '', to: '', ...none, rows }
+  if (!rows.length) return { where: 'What this day shows', from: '', to: 'changed', ...none }
+  if (rows.length === 1) return { where: rows[0]!.where, from: rows[0]!.from, to: rows[0]!.to, ...none }
+  return { where: 'What this day shows', from: '', to: '', ...none, rows }
 }
 export function pendItemWords(di: number, it: PendItem): Words {
   const e: any = it.entry || {}
@@ -182,7 +213,7 @@ export function pendItemWords(di: number, it: PendItem): Words {
     const w = inputWords(di, it), fil = !!it.inp || String(e.addr || '').startsWith('inp:')
     if (!fil || (w as any).edited) return w
   }
-  if (it.kind === 'warn') return warnWords(di)
+  if (it.kind === 'warn') return faceWords(di)
   const byLog = (): { who: string; when: string } => {
     const r = lastEdit(it.keys || [])
     return r ? { who: r.who, when: elogWhen(r.t) } : { who: 'earlier', when: '' }

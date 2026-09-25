@@ -540,16 +540,20 @@ function freezeWarn(snap:any,di:number){ if(!HOOKS.issuedWarn||!snap)return; con
      These still DRAW live — freezing them is keeping a copy of the rules per version, which his 7 Aug 26 "no rule
      versioning" forbids; put to him (OUTSTANDING.md [LATE-PUB-FACE-LIVE]) — but they are COMPARED, so a change that
      would move the published face reads pending instead of moving it silently. */
-  snap.pa=dayPeopleAttrs(snap.d); snap.rv=faceRuleVals(); }
-/* every man on a day (a stored person id anywhere in its content), with what his puck draws from the roster */
-function dayPeopleAttrs(d:any):any{const out:any={};
+  snap.pa=dayPeopleAttrs(snap.d,snap.inp); snap.rv=faceRuleVals(snap.d); }
+/* every man an issued face draws (a stored person id anywhere in its content, and the man of every input it froze — the
+   Unavailable block's pucks, Astra's code read #2), with what his puck draws from the roster */
+export function dayPeopleAttrs(d:any,inp?:any):any{const out:any={};
   const walk=(v:any,k:string)=>{ if(k==='oilev')return;
     if(typeof v==='string'){ const p=(PEOPLE as any)[v]; if(p&&!out[v])out[v]={q:p.q??null,seat:p.seat??null,pers:!!p.pers,san:!!p.san,sxo:!!p.sxo,archived:!!p.archived}; return; }
     if(Array.isArray(v)){ v.forEach((x:any)=>walk(x,'')); return; }
     if(v&&typeof v==='object')Object.keys(v).forEach((kk:any)=>walk(v[kk],kk)); };
-  walk(d,''); return out;}
-/* the rule values an issued face prints rather than judges (the blank brief's time — html.ts, board.ts, export.ts) */
-function faceRuleVals():any{return {briefLead:(VCONF as any).briefLead};}
+  walk(d,''); Object.keys(inp||{}).forEach((id:any)=>{ const r=(inp||{})[id]; if(r&&r.person)walk(r.person,''); }); return out;}
+/* the rule values an issued face PRINTS rather than judges — the blank brief's time (html.ts, board.ts, export.ts) —
+   only on a day that prints one (a line with no B), so a rule change reads pending only where the face would move */
+export function faceRuleVals(d:any):any{
+  const blank=((d&&d.waves)||[]).some((w:any)=>((w&&w.formations)||[]).some((f:any)=>f&&!String(f.br||'').trim()));
+  return blank?{briefLead:(VCONF as any).briefLead}:{};}
 /* person id → the callsign a slice's warnings name him by */
 export function warnCallsigns(w:any):any{const out:any={};
   (((w&&w.byDay&&w.byDay.warns)||[]) as any[]).forEach((x:any)=>{ ([] as any[]).concat(x.who||[]).forEach((id:any)=>{ const p=(PEOPLE as any)[id]; if(p&&p.cs)out[id]=p.cs; }); });
@@ -565,8 +569,14 @@ export function warnSliceKey(w:any,cs?:any):string{
   if(!w)return '';
   const names=cs||w.cs||warnCallsigns(w);
   const warns=((w.byDay&&w.byDay.warns)||[]).map((x:any)=>stableJson({...x,msg:warnMsgKey(x.msg,names)})).sort();
-  return stableJson({warns,sev:w.sev||{},chip:w.chip||{},dash:w.dash||{}});}
+  const tr:any={}; Object.keys(w.trace||{}).forEach((id:any)=>{ const t=(w.trace||{})[id]; tr[id]=t&&typeof t==='object'?warnMsgKey(stableJson(t),names):t; });
+  return stableJson({warns,sev:w.sev||{},chip:w.chip||{},dash:w.dash||{},trace:tr});}
 const WKEY=new WeakMap<any,string>();
+/* today's slice — validate.ts hands back the SAME object for a day until the next validate (its memo), so its key is
+   worked out once per validate, not on every read of the count */
+const LKEY=new WeakMap<any,string>();
+function liveWarnKey(w:any):string{if(!w||typeof w!=='object')return warnSliceKey(w);
+  let k=LKEY.get(w); if(k===undefined){k=warnSliceKey(w); LKEY.set(w,k);} return k;}
 function storedWarnKey(w:any):string{let k=WKEY.get(w); if(k===undefined){k=warnSliceKey(w); WKEY.set(w,k);} return k;}
 function warnDelta(di:any):DeltaEntry[]{di=+di;
   if(!HOOKS.warnNow||!dayApproved(di))return [];
@@ -576,8 +586,8 @@ function warnDelta(di:any):DeltaEntry[]{di=+di;
   /* the face beyond the warnings, where the version recorded it: the men on it as the roster draws them, the printed
      rule values */
   const pa=snap.pa?stableJson(snap.pa):'', rv=snap.rv?stableJson(snap.rv):'';
-  const paNow=snap.pa?stableJson(dayPeopleAttrs(snap.d)):'', rvNow=snap.rv?stableJson(faceRuleVals()):'';
-  const was=storedWarnKey(snap.w)+'\n'+pa+'\n'+rv, k=warnSliceKey(now)+'\n'+paNow+'\n'+rvNow;
+  const paNow=snap.pa?stableJson(dayPeopleAttrs(snap.d,snap.inp)):'', rvNow=snap.rv?stableJson(faceRuleVals(snap.d)):'';
+  const was=storedWarnKey(snap.w)+'\n'+pa+'\n'+rv, k=liveWarnKey(now)+'\n'+paNow+'\n'+rvNow;
   return k===was?[]:[{addr:`warn:${di}`,kind:'warn',from:fp(was),to:fp(k)}];}
 /* ONE REPAINT READS EACH DAY'S COMPARISON ONCE (Fable F9, 25 Sep 26 — measured: five published days signed through
    the app's selects cost one edit ~116 ms more at the phone's 4× slowdown, because D103's binding reads the whole

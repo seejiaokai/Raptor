@@ -25,6 +25,8 @@ import { PEOPLE } from '../engine/people'
 import { boardSignHTML } from './board'
 import { pendListHTML } from './pendlist'
 import { commitNewInput, commitInputEdit, removeInput, draftOf } from './inputedit'
+import { schedRows, publishedDays } from './export'
+import { VCONF } from '../engine/rules'
 
 const MON = 0, WED = 2
 let pristine: any[], inputs0: string
@@ -195,7 +197,7 @@ describe('D179 — medical and qualifications freeze too (provisional)', () => {
     try {
       validate()
       expect(dayPendingItems(MON).some((x: any) => x.kind === 'warn'), 'one "warnings changed" item').toBe(true)
-      expect(listText(MON)).toMatch(/Warning/)
+      expect(listText(MON), 'the list names what moved — the man and the warning').toMatch(/ground crew|QUAL|qualif/i)
       expect(daySigned(MON), 'the four fall').toBe(false)
       const qual = (b: any) => ((b.byDay[MON] && b.byDay[MON].warns) || []).some((w: any) => w.code === 'QUAL' && (w.who || []).includes(pilot))
       expect(qual(officialWarn()), 'the issued face keeps the warnings it went out with').toBe(false)
@@ -255,5 +257,66 @@ describe('the reviews\' cases (Astra and Fable on the plan, 26 Sep 26)', () => {
       expect(dayDelta(MON), 'a label moves nothing').toEqual([])
       expect(daySigned(MON)).toBe(true)
     } finally { renameCallsign(pilot, was); validate() }
+  })
+})
+
+describe('Astra\'s code read (26 Sep 26): the face beyond the warnings freezes too (D179)', () => {
+  it('a man\'s CAT changed on the Quals side: the issued face\'s puck keeps the CAT it went out with; the day reads pending; put back → 0', () => {
+    publishDay(MON)
+    const pilot = ((DAYS[MON] as any).waves[0].formations[0].aircraft[0].p) as string
+    const was = (PEOPLE as any)[pilot].q, other = was === 'A' ? 'B' : 'A'
+    const chip = () => { const p = issuedFace(MON).querySelector(`.puck[data-person="${pilot}"] .role`); return p ? p.textContent : '' }
+    const c0 = chip()
+    ;(PEOPLE as any)[pilot].q = other
+    try {
+      validate()
+      expect(chip(), 'the issued face draws the CAT it went out with').toBe(c0)
+      expect(dayPendingItems(MON).some((x: any) => x.kind === 'warn'), 'Monday reads pending').toBe(true)
+      expect(listText(MON)).toMatch(/CAT/)
+    } finally { (PEOPLE as any)[pilot].q = was }
+    validate()
+    expect(dayDelta(MON)).toEqual([])
+  })
+
+  it('a man only on the Unavailable list is covered too: his CAT changed reads pending (Astra #2\'s worse variant)', () => {
+    publishDay(MON)
+    const onlyInput = INPUTS.map((r: any) => r.person).find((id: string) => (PEOPLE as any)[id] && !JSON.stringify(DAYS[MON]).includes(`"${id}"`) && INPUTS.some((r: any) => r.person === id && r.date === 'Jul 13'))
+    expect(onlyInput, 'a man on Monday\'s inputs and nowhere in its content').toBeTruthy()
+    const was = (PEOPLE as any)[onlyInput!].q
+    ;(PEOPLE as any)[onlyInput!].q = was === 'A' ? 'B' : 'A'
+    try { validate(); expect(dayShownPendCount(MON)).toBe(1) } finally { (PEOPLE as any)[onlyInput!].q = was }
+    validate()
+    expect(dayDelta(MON)).toEqual([])
+  })
+
+  it('the brief lead changed on the Logic side: a published blank brief keeps the time it printed — on the face and in the CSV; the day reads pending', () => {
+    const f: any = (DAYS[MON] as any).waves[0].formations[0]
+    f.br = ''                                                   // a blank B before publishing
+    validate(); publishDay(MON)
+    const briefOf = () => { const r = schedRows(publishedDays()).find((x: any) => x[0] === (DAYS[MON] as any).dow && x[3] === f.cs); return r ? r[5] : null }
+    const b0 = briefOf()
+    const was = (VCONF as any).briefLead
+    ;(VCONF as any).briefLead = was + 30
+    try {
+      validate()
+      expect(briefOf(), 'the published CSV keeps the brief it went out with').toBe(b0)
+      expect(dayPendingItems(MON).some((x: any) => x.kind === 'warn'), 'Monday reads pending').toBe(true)
+      expect(listText(MON)).toMatch(/suggested lead/)
+    } finally { (VCONF as any).briefLead = was }
+    validate()
+    expect(dayDelta(MON)).toEqual([])
+  })
+
+  it('a rename beside a real warning change: the list names only the real change (Astra #3)', () => {
+    publishDay(MON)
+    const pilot = ((DAYS[MON] as any).waves[0].formations[0].aircraft[0].p) as string
+    const cs0 = (PEOPLE as any)[pilot].cs, pers0 = (PEOPLE as any)[pilot].pers
+    try {
+      renameCallsign(pilot, cs0 + 'X')
+      ;(PEOPLE as any)[pilot].pers = true
+      validate()
+      const t = listText(MON)
+      expect(t, 'no warning reads cleared merely because a callsign changed').not.toMatch(/cleared/)
+    } finally { (PEOPLE as any)[pilot].pers = pers0; renameCallsign(pilot, cs0); validate() }
   })
 })

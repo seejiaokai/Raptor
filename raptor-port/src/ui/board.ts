@@ -3,6 +3,7 @@
    store's notify(). The CX-with-a-reason dialog state lives here too. */
 import { DAYS } from '../engine/data'
 import { mkNote, noteText } from '../engine/note'
+import { briefLeadShown } from '../engine/faceattrs'
 import { INPUTS, inputsOn, inputCoversDate, inpById, inpTimeText, inpId } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
@@ -194,7 +195,7 @@ function boardHTMLBody(di: number, pv?: boolean) {
          generic txtSet path below, no new wiring needed. Wrapped so the
          optional ghost never changes this row's grid-item count — see the
          mobile column notes in scheduler.css. */
-      const brief = minus(f.to, VCONF.briefLead)
+      const brief = minus(f.to, briefLeadShown())
       /* D49's MARK, ON THE LINE (owner, 22 Sep 26; the walk's rules-sweep FAIL
          3) — the board's half of the same change as the week's (ui/html.ts).
          A line typed with the same take-off and landing still earns; what was
