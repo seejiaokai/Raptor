@@ -1167,6 +1167,9 @@ leaves 'r' alone), its Accept does nothing, and deleting the request leaves the 
 'g' when its own row stands on a loaded day, or `dropInputRow` removes any row with the deleted id whatever the filing.
 
 ### [LEAVE-LATE-PUBLISHED] A leave filed after a day is published shows on its published face at once, with nothing pending — a question for him (25 Sep 26)
+**WIDENED 25 Sep 26 — D178:** EVERY member input change after publishing (filed, edited, deleted, moved) reads pending for the
+admin, and the published face keeps what it was issued with; the admin publishes an AL, or Unpublishes and publishes again
+if it affects no one. What stays live on the published schedule: the agent's recommendation put to him (D178), awaiting his word.
 **ANSWERED 25 Sep 26 — D177 ("Question 2 yes"): it reads "1 pending", the four fall, and the published face keeps what it
 was issued with until the next AL — ITS OWN BRANCH.** His follow-up ("is there anything else that does this too?") is
 answered by a sweep of the published face's readers of live inputs — **its list is this item's scope: Context
