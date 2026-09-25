@@ -329,6 +329,10 @@ describe('Astra\'s code read (26 Sep 26): the face beyond the warnings freezes t
       expect(briefOf(), 'the published CSV keeps the brief it went out with').toBe(b0)
       expect(dayPendingItems(MON).some((x: any) => x.kind === 'warn'), 'Monday reads pending').toBe(true)
       expect(listText(MON)).toMatch(/suggested lead/)
+      /* the missed-brief advisories the new lead re-words read ONE line each, "changed" — not cleared and new (the Logic
+         walker's find) */
+      expect(listText(MON), 'no warning reads cleared merely because its time moved').not.toMatch(/cleared/)
+      expect(listText(MON)).toMatch(/No time for the .* flight brief.*changed/)
     } finally { (VCONF as any).briefLead = was }
     validate()
     expect(dayDelta(MON)).toEqual([])
@@ -580,5 +584,25 @@ describe('Fable\'s code read: an input change reads pending only where the day\'
     const t = listText(WED)
     expect(t, 'one edit — not "moved off" and "filed"').not.toMatch(/moved off|filed/)
     expect(t).toMatch(/LONG DOWNCHIT/)
+  })
+})
+
+/* THE NEXT AL TAKES A RULE CHANGE IN (the Logic walker's "not walked"): a warning that freezes, moved by a rule, reads
+   pending until the admin publishes an AL; then the face shows the new warnings and nothing is pending. */
+describe('a rule change under a published day goes out with the next AL', () => {
+  it('a lowered long-day limit: pending; AL1 out → the face shows the new long days, 0 pending, the four signed for AL1', () => {
+    publishDay(MON)
+    const face = () => ((officialWarn().byDay[MON] || {}).warns || []).filter((w: any) => w.code === 'LONGDAY').length
+    const f0 = face()
+    const was = (VCONF as any).longDay
+    ;(VCONF as any).longDay = 6 * 60
+    try {
+      validate()
+      expect(face(), 'the face keeps the long days it went out with').toBe(f0)
+      expect(dayShownPendCount(MON)).toBe(1)
+      signBound(MON); publishALDay(MON); validate()
+      expect(face(), 'AL1 takes the new long days in').toBeGreaterThan(f0)
+      expect(dayDelta(MON), 'nothing pending').toEqual([])
+    } finally { (VCONF as any).longDay = was; validate() }
   })
 })

@@ -176,8 +176,17 @@ function faceWords(di: number): Words & { rows?: CrowdRow[] } {
   const a = new Set(was.map((x: any) => k(x, namesWas))), b = new Set(now.map((x: any) => k(x, namesNow)))
   const reword = (m: any) => { let t = String(m || ''); Object.keys(namesWas || {}).forEach((id: any) => { const c = cs(id); if (c && namesWas[id] && c !== namesWas[id]) t = t.split(String(namesWas[id])).join(c) }); return t }
   const rows: CrowdRow[] = []
-  now.forEach((x: any) => { if (!a.has(k(x, namesNow))) rows.push({ where: String(x.msg || x.code || 'A warning'), from: '', to: 'new', keys: [] }) })
-  was.forEach((x: any) => { if (!b.has(k(x, namesWas))) rows.push({ where: reword(x.msg || x.code || 'A warning'), from: '', to: 'cleared', keys: [] }) })
+  /* the same warning on the same men, re-worded — a rule change moved its time or its figure (the Logic walker, 26 Sep
+     26: a brief-lead change read each "No time for the flight brief" twice, cleared and new) — is ONE line, "changed",
+     in today's words */
+  const who = (x: any) => `${x.code}|${[...(x.who || [])].map(String).sort().join(',')}`
+  const added = now.filter((x: any) => !a.has(k(x, namesNow))), gone = was.filter((x: any) => !b.has(k(x, namesWas)))
+  added.forEach((x: any) => {
+    const j = gone.findIndex((y: any) => who(y) === who(x))
+    if (j >= 0) { gone.splice(j, 1); rows.push({ where: String(x.msg || x.code || 'A warning'), from: '', to: 'changed', keys: [] }) }
+    else rows.push({ where: String(x.msg || x.code || 'A warning'), from: '', to: 'new', keys: [] })
+  })
+  gone.forEach((x: any) => rows.push({ where: reword(x.msg || x.code || 'A warning'), from: '', to: 'cleared', keys: [] }))
   /* the men as their pucks draw them */
   if (snap && snap.pa) {
     const nowPa: any = dayPeopleAttrs(snap.d, snap.inp)

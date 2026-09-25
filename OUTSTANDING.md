@@ -73,7 +73,8 @@ fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-OR
 The amendment batch's look — HIS ORDER (D173): (1) [LOOK-435] — D114's full check (DONE 25 Sep 26, evidence §9; [REQUEST-OFF-ONE] archived), his look, "merge live" of PR #435 (MERGED 25 Sep 26); (2) [ACCOUNTS] on a new branch; (3) [DRAFT-PENDING] — the one changes window, on top of accounts; (4) one full check of 2 and 3. Found by D114's reads, older than it: [REQ-TWO-ROWS] and [REQ-DECLINED-PENDING] — HIS ORDER (D174, D175) — BUILT on `claude/request-one-row` (FULL check done, archived; his look and "merge live" next, BEFORE [ACCOUNTS]); its look card's two questions answered: [REQ-DECLINED-DELETED] (D176 — built there, archived) and [LEAVE-LATE-PUBLISHED] (D177 — its OWN branch; scope: the sweep in `raptor-port/docs/superpowers/specs/2026-09-25-published-face-live-inputs.md`; its place in his order to be asked — the agent recommends right after `claude/request-one-row` merges, before [ACCOUNTS]); then [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). The amendment batch (D91–D111) is BUILT on `claude/amendment-batch`, its pull request waiting for his look and "merge live" — its eleven items closed and archived 25 Sep 26 (`OUTSTANDING-ARCHIVE.md`; the spec `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`); left from that area: [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS], [RULING-HOMES-AUDIT] and [HANDOFF-SHAPE-GUARD] (any time, docs only), [LATE-PUB-FACE-LIVE] (his three questions on `[LEAVE-LATE-PUBLISHED]`'s look card),
 [BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
-FULL-tier build, any time).
+FULL-tier build, any time), and beside it [QUALS-PROTO-TOAST] (low, one line of words). The board — [PV-NO-FLAGS]
+(his question on `[LEAVE-LATE-PUBLISHED]`'s look card). View-only Sched — [VIEW-ARROW-OVER-LIST] (low, LOOK tier).
 
 **Waiting on him — no order exists:** [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
 D147), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
@@ -926,6 +927,32 @@ permissions, so FULL tier. **Place:** any time, none blocking. The question as i
     that as intended, but it sits oddly beside the Inputs page's own-row-only
     rule; if own-row-only quals is wanted, the gate belongs in the same three
     places the authority-sweep fix touched.
+
+### [PV-NO-FLAGS] The board's 👁 look at a published version shows no warnings at all — a question for him (filed 26 Sep 26)
+Found by two walkers of `[LEAVE-LATE-PUBLISHED]`'s check (Quals, Logic — evidence
+`raptor-port/docs/handpass/2026-09-26-late-pub.md` §4c): the board's plans menu → the Original (or an AL) draws the day
+with no rings, no flags and no warning bar — neither the warnings it went out with nor the ones that stay live (D184,
+D185); View-only Sched shows both. As built long before (`html.ts`: a version preview "reads and does not check" — PV;
+the same on `main`); a blank B there also prints no suggested time where View-only Sched prints one. **The question:**
+should the board's look at a published version show its warnings as View-only Sched does? **Place:** on the look card;
+if yes, a small WALK-tier build (the board's PV branch reads the face bundle, `withOfficialWarn`).
+
+### [VIEW-ARROW-OVER-LIST] The week's floating "‹" arrow covers the start of an opened warning list on a desktop (filed 26 Sep 26)
+Seen by the Leave War walker of `[LEAVE-LATE-PUBLISHED]`'s check (picture
+`raptor-port/docs/img/handpass/2026-09-26-late-pub/leavewar/desktop/desktop-LW1b-1-face-warnings.png`): on View-only
+Sched at 1440 px, a day's "⚠ N issues" list opened on the day at the left edge sits under the week's floating "‹"
+scroll arrow, which hides the first letters of the list's lines. Not new with that branch (the arrow and the list are
+unchanged there). **Do:** give the arrow room (an inset on the scroller, or the arrow above the list only while the
+pointer is near it), walk both widths with a list open on the first and last day. **Place:** low, any time.
+
+### [QUALS-PROTO-TOAST] The Quals page's "Save changes" says "prototype — writes to Dataverse in the full build" (filed 26 Sep 26)
+Found by the Quals walker of `[LEAVE-LATE-PUBLISHED]`'s check (evidence `raptor-port/docs/handpass/2026-09-26-late-pub.md`
+§4c): pressing Save changes toasts "Quals saved (prototype — writes to Dataverse in the full build)."
+(`raptor-port/src/ui/QualsPage.tsx`, the Save button). That breaks his 25 Aug 26 rule that UI copy reads production,
+never prototype (`raptor-port/CLAUDE.md` §Product bar): the database-era user would read "Qualifications saved". The same
+on `main`; out of that branch's scope. **Do:** reword the toast; keep the prototype truth as a code comment beside it;
+grep the app for other "prototype" / "full build" / "Dataverse" words on screen. LOOK tier. **Place:** low, with
+`[QUALS-MEMBER-SCOPE]` or any time.
 
 ### [TRK-PALETTE-ASK] The Tracker's own dark palette, or Raptor's? — ask him once (filed 24 Sep 26)
 **ANSWERED (D157, 24 Sep 26): Raptor's, FULLY** — backgrounds, text and the event colours (`tracker.css` variables and
