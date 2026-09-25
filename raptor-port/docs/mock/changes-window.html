@@ -1,0 +1,50 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>One changes window</title>
+<style>
+:root{--bg:#0B0D10;--ink:#E6EAEE;--ink2:#9AA4AE;--edge:#232A31;--acc:#3BC6E8}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:1180px;margin:0 auto;padding:24px 16px 60px}
+h1{font-size:22px;margin:0 0 6px} h2{font-size:17px;margin:0 0 6px;color:var(--acc)}
+p,li{color:var(--ink2);max-width:88ch} b{color:var(--ink)}
+section{border:1px solid var(--edge);border-radius:12px;padding:14px;background:#11151A;margin:18px 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+figure{margin:0} img{width:100%;height:auto;border-radius:8px;border:1px solid var(--edge);display:block}
+.phone img{max-width:360px}
+figcaption{font-size:12.5px;color:var(--ink2);margin-top:4px}
+table{width:100%;border-collapse:collapse;font-size:14px} th,td{border:1px solid var(--edge);padding:8px 10px;vertical-align:top;text-align:left}
+th{background:#0F1A20;color:var(--ink)} td{color:var(--ink2)} .rec{color:#9BE7B0;font-weight:700}
+</style></head><body><main>
+<h1>One changes window — with or without Hand over (mock-up)</h1>
+<p>Drawn on the real app. Everyone is signed in as their own callsign. The window is the ALL AVAIL window's design (move it by the grip,
+resize it by the corner, keep working behind it). Inside: <b>New to you</b> and <b>All changes</b> tabs, a <b>day picker</b> (a gold dot marks days
+with something new), and <b>Group by Who / Where</b>.</p>
+
+<section><h2>A · Without Hand over (recommended) — Rune, Tuesday not yet published</h2>
+<p>Changes by others are <b>new to you</b> (gold dot, NEW) until you press <b>"Mark all as seen"</b>. The app groups them by person and sitting on its
+own ("Hex · 25/9 15:20–15:38 · 3 changes"). No button in the day heading.</p>
+<div class="two"><figure><img src="img/changes-window/desktop-a.png" alt="desktop-a"><figcaption>Desktop</figcaption></figure><figure class="phone"><img src="img/changes-window/phone-a.png" alt="phone-a"><figcaption>Phone — the bottom panel</figcaption></figure></div></section>
+
+<section><h2>B · With Hand over, for comparison</h2>
+<p>The same window, but the groups are hand overs ("Hex · handed over · 25/9 16:00"), and every scheduler has a <b>Hand over</b> button in the day heading to press when they finish.</p>
+<img src="img/changes-window/desktop-b.png" alt="desktop-b"></section>
+
+<section><h2>What changes between A and B</h2>
+<table><tr><th></th><th>A · Without Hand over</th><th>B · With Hand over</th></tr>
+<tr><td>What you press</td><td>Nothing while working. "Mark all as seen" when you have checked others' changes.</td><td>"Hand over" every time you finish, and still read others' changes.</td></tr>
+<tr><td>If someone forgets</td><td>Nothing to forget — the app groups their changes by itself.</td><td>Their changes sit as "still working" with no hand-over date.</td></tr>
+<tr><td>What it tells others</td><td>Who changed what, and when (every line).</td><td>The same, plus "I'm done" — a signal that has no other effect.</td></tr>
+<tr><td>Day heading</td><td>Only the "N new" button.</td><td>"N new" plus a Hand over button, and a "last handed over" line.</td></tr>
+<tr><td>Once accounts exist</td><td class="rec">Fits naturally — like unread email.</td><td>Mostly a habit left over from the shared login.</td></tr></table>
+<p><b>Recommendation: A.</b> It is less to remember, nothing breaks if someone forgets, and every line already says who and when.</p></section>
+
+<section><h2>C · "All changes", grouped by Where</h2>
+<p>The same changes grouped by the day's own sections — Flying waves, Duties, Common Programme, Requests — handy to check just one part of the day.</p>
+<img src="img/changes-window/desktop-c.png" alt="desktop-c"></section>
+
+<section><h2>D · A member's view — full transparency</h2>
+<p><b>Echo</b> (a member) on View-only Sched opens Monday's <b>live working copy</b>: every change and who made it, read-only. The top line shows the
+point of it — <b>Rune took himself off the Saturday SDO desk</b> and put Hex on it, and everyone can see that. A medical input's details stay hidden
+from members (they read "a medical input").</p>
+<div class="two"><figure><img src="img/changes-window/desktop-d.png" alt="desktop-d"><figcaption>Desktop</figcaption></figure><figure class="phone"><img src="img/changes-window/phone-d.png" alt="phone-d"><figcaption>Phone</figcaption></figure></div></section>
+</main></body></html>
