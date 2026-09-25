@@ -197,13 +197,27 @@ export function dayShownPendCount(di:any){di=+di;return dayApproved(di)?dayPendi
    no two of them can disagree. It is empty exactly when dayDelta is (canonicalUnits' invariant),
    so eligibility (dayHasChanges) and the count can never read "0 pending" beside a Publish button.
    What goes out — the stored diff — and the marks on screen are unchanged (D109). */
-export type PendItem = PendUnit & { axis: 'content'|'filing'|'oil' };
+/* `inp`: a request's filing that belongs to this row's add / delete — the one act of taking a request off (or putting
+   it on) the programme (owner, D114, 25 Sep 26: "6 yes"). The record keeps both entries; the person counts one. */
+export type PendItem = PendUnit & { axis: 'content'|'filing'|'oil', inp?: DeltaEntry };
 export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
   if(!((sc&&sc.dayOK)||{})[di])return [];
   const ver=dayCurVerIn(sc,di,weekKey), snap=ver!=null?daySnapIn(sc,di,ver,weekKey):null;
   if(!snap||!snap.d)return [];
   const items:PendItem[]=canonicalUnits(snap.d,DAYS[di],di).map((u:any)=>({...u,axis:'content'}));
-  filingDelta(di,snap.fil).forEach((e:any)=>items.push({kind:'input',addr:'',jump:[],keys:[],entry:e,axis:'filing'}));
+  /* A REQUEST'S ROW AND ITS FILING ARE ONE ACT (owner, D114, 25 Sep 26). ✕ on an accepted request's row removes the
+     row AND reads the request "taken off"; accepting one onto the day adds the row AND reads it "on the programme". The
+     filing pairs with the ground row whose src is that request — removed from the issued day while the request leaves
+     'g', or added to the live day while it arrives at 'g' — so the pair is ONE item. A filing with no such row here (a
+     request filed under Unavailable, one whose row stands on another day) stays its own item. */
+  const grow=(u:any,d:any)=>{const m=/^gr:\d+\.(\d+)\.prog$/.exec(String((u.entry&&u.entry.addr)||''));return m?((d&&d.ground)||[])[+m[1]]||null:null;};
+  filingDelta(di,snap.fil).forEach((e:any)=>{
+    const id=String(e.addr||'').split('.').slice(1).join('.');
+    const pair=items.find((u:any)=>!u.inp&&u.axis==='content'&&(
+      (u.kind==='delete'&&e.from==='g'&&e.to!=='g'&&(grow(u,snap.d)||{}).src===id)||
+      (u.kind==='add'&&e.to==='g'&&e.from!=='g'&&(grow(u,DAYS[di])||{}).src===id)));
+    if(pair){pair.inp=e;return;}
+    items.push({kind:'input',addr:'',jump:[],keys:[],entry:e,axis:'filing'});});
   oilDelta(di,snap.d).forEach((e:any)=>items.push({kind:'oil',addr:'',jump:[],keys:[],entry:e,axis:'oil'}));
   return items;}
 export function dayPendingItems(di:any):PendItem[]{di=+di;return passMemo('pi',di,()=>dayPendingItemsIn(SCHED,di,CURWEEK));}
@@ -766,7 +780,10 @@ export function alIssue(di:any){di=+di;
   const diff=dayDelta(di);
   /* …and its COUNT in the unit "N pending" read a moment ago (D109): the record keeps every
      cell, the person reads "1 item" for a man moved, as the day head said */
-  const units=dayPendingItems(di).length;
+  const items=dayPendingItems(di), units=items.length;
+  /* …and its per-kind split in the same unit, for the Amendments panel's line (D114: "1 item · 1 removal", never a
+     separate "1 input filing" beside it); a record issued before falls back to its diff's split */
+  const ukinds=itemCounts(items);
   const keys=Object.keys(SCHED.pending).filter((k:any)=>keyDay(k)===di);
   /* a still-outstanding draft add on this day becomes part of the frozen
      snapshot, so it wears this AL's colour and its live-only marker is cleared. */
@@ -780,7 +797,7 @@ export function alIssue(di:any){di=+di;
   const sign=signNames(di);
   /* freeze the day AFTER its marks are on — this is the document */
   const snap=daySnap(di);
-  SCHED.als.push({id,di,iso,seq,snap,diff,units,sign:{[di]:sign},added});
+  SCHED.als.push({id,di,iso,seq,snap,diff,units,ukinds,sign:{[di]:sign},added});
   SCHED.cur=SCHED.cur||{}; SCHED.cur[di]=id;   // issuing makes it current
   signClear(di);
   reflow(); histPush();   // publishing is its own undo step, not a silent baseline shift
@@ -862,7 +879,7 @@ export function retireIssued(di:any,id:any,opts:any={}):string{di=+di;
   if(opts.append!==false){
     SCHED.retired[key]={id,n:+key.slice(key.lastIndexOf('~')+1),di,iso:parseVerId(id).iso,seq,
       snap:rec?(rec.snap||{d:rec.d,c:rec.c,fil:rec.fil}):null,
-      diff:(rec&&rec.diff)||[],units:rec&&rec.units!=null?rec.units:undefined,sign:(rec&&rec.sign)||{},   // units: the item count as it went out (D109; Astra 4)
+      diff:(rec&&rec.diff)||[],units:rec&&rec.units!=null?rec.units:undefined,ukinds:rec&&rec.ukinds?rec.ukinds:undefined,sign:(rec&&rec.sign)||{},   // units: the item count as it went out (D109; Astra 4)
       at:new Date().toISOString(),by:opts.by??null,
       restoreSeq:opts.restoreSeq,logged:!!opts.logged};
   }

@@ -98,6 +98,13 @@ function valueWords(addr: string, v: any): string {
 const FIL: any = { '': 'not on the programme', g: 'on the programme', u: 'under Unavailable', r: 'taken off' }
 
 type Words = { where: string; from: string; to: string; who: string; when: string; jump: boolean }
+/* a request's filing entry in words: whose request, what it is, where it stood → where it stands */
+function requestWords(e: any): { where: string, from: string, to: string } {
+  const id = decodeURIComponent(String(e.addr || '').split('.').slice(1).join('.'))
+  const inp = INPUTS.find((x: any) => inpId(x) === id)
+  const who = inp ? cs(inp.person) : ''
+  return { where: inp ? `${who ? who + ' · ' : ''}${inpLabel(inp)}` : 'A request', from: FIL[e.from || ''] || '', to: FIL[e.to || ''] || '' }
+}
 /* the newest edit-log row among a change's own cells */
 function lastEdit(keys: string[]) {
   const set = new Set(keys.map(String))
@@ -124,6 +131,9 @@ export function pendItemWords(di: number, it: PendItem): Words {
       : { where: placeName(it.place || ''), from: names(it.off), to: names(it.on) || (it.off && it.off.length ? 'taken off' : ''), ...byLog(), jump }
   if (it.kind === 'change')
     return { where: keyLabel(it.addr || e.addr), from: valueWords(e.addr, e.from), to: valueWords(e.addr, e.to), ...byLog(), jump }
+  /* a request's row and its filing, one act (D114): name the request — whose, what — and where it now stands */
+  if ((it.kind === 'add' || it.kind === 'delete') && it.inp)
+    return { ...requestWords(it.inp), ...none, jump: it.kind === 'add' && jump }
   if (it.kind === 'add')
     return { where: keyLabel(it.addr || e.addr), from: '', to: 'added', ...none, jump }
   if (it.kind === 'delete') {
@@ -135,12 +145,7 @@ export function pendItemWords(di: number, it: PendItem): Words {
     const k = String(e.addr || '').split('.').pop() || ''
     return { where: 'Order changed', from: '', to: MOVE_LABELS[k] ? `${MOVE_LABELS[k]}s` : 'rows', ...none, jump: false }
   }
-  if (it.kind === 'input') {
-    const id = decodeURIComponent(String(e.addr || '').split('.').slice(1).join('.'))
-    const inp = INPUTS.find((x: any) => inpId(x) === id)
-    const who = inp ? cs(inp.person) : ''
-    return { where: inp ? `${who ? who + ' · ' : ''}${inpLabel(inp)}` : 'A request', from: FIL[e.from || ''] || '', to: FIL[e.to || ''] || '', ...none, jump: false }
-  }
+  if (it.kind === 'input') return { ...requestWords(e), ...none, jump: false }
   /* WHAT THE DAY EARNS — say WHO and WHERE when it is the crowd behind a placeholder that moved (walker B1, 25 Sep 26:
      "What this day earns · changed" named nobody and could not be tapped, so the scheduler still had to go looking —
      the very hunt D99 exists to end). The issued version froze who each ALL / ALL AVAIL puck stood for (D44); the

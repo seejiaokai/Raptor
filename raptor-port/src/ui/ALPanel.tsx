@@ -67,7 +67,8 @@ export function ALPanel() {
       {SCHED.als.length
         ? <div className="al-list" dangerouslySetInnerHTML={{
           __html: SCHED.als.slice().sort((a: any, b: any) => a.iso === b.iso ? +a.seq - +b.seq : (a.iso < b.iso ? -1 : 1)).map((a: any) => {
-            const c = diffCounts(a.diff), s = (a.sign && a.sign[a.di]) || null
+            /* the split in the unit the person counted (D109, D114); an AL issued before falls back to its diff's */
+            const c = a.ukinds || diffCounts(a.diff), s = (a.sign && a.sign[a.di]) || null
             const sigTitle = s ? SIGN_ROLES.map((r: any) => r[1] + ' ' + (s[r[0]] || '—')).join(' · ') : 'signed before sign-off was introduced'
             return `<span class="al-tag" data-alc="${a.seq}" title="${esc(dowShort(a.di) + ': ' + sigTitle)}"><b>${verLabel(a.id)}</b> <i class="al-days">${dowShort(a.di)}</i> · ${alCount(a)} item${alCount(a) === 1 ? '' : 's'}${c.del ? ` · ${c.del} removal${c.del > 1 ? 's' : ''}` : ''}${c.mov ? ` · ${c.mov} reorder${c.mov > 1 ? 's' : ''}` : ''}${c.inp ? ` · ${c.inp} input filing${c.inp > 1 ? 's' : ''}` : ''}${s && s.appr ? ` · <i class="al-days">appr ${esc(s.appr)}</i>` : ''}</span>`
           }).join('')

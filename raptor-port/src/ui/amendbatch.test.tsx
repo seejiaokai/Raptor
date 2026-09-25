@@ -302,3 +302,52 @@ describe('several placeholders’ crowds moved: still ONE change, each row named
     } finally { HOOKS.oilSentinel = saved; HOOKS.oilDayISO = iso }
   })
 })
+
+describe('a request taken off (or put on) a published day is ONE change — its row and its filing are one act (owner, D114, 25 Sep 26)', () => {
+  const request = (): any => { const inp: any = { person: 'bane', date: 'Jul 13', allday: true, type: 'Meeting', remarks: 'D114 fly with', mod: '2026-07-01' }; INPUTS.push(inp); return inp }
+  it('✕ on its row: 1 on every count, one line in the list, "1 item · 1 removal" on the issued AL', async () => {
+    const { pendListHTML } = await import('./pendlist')
+    const { dayPendingItems, itemCounts } = await import('../engine/publish')
+    const inp = request()
+    acceptInput(MON, inp, 'g')                                  // its row lands on Monday
+    publishDay(MON)                                             // issued with it on the programme
+    unacceptInput(MON, inp)                                     // ✕ — the row goes, the request reads "taken off"
+    expect(dayDelta(MON).length, 'what goes out still holds both: the row and the filing').toBe(2)
+    expect(dayShownPendCount(MON)).toBe(1)
+    expect(num(weekEdit(MON).querySelector('.dpend')?.textContent), "the week's day head").toBe(1)
+    expect(num(boardStrip(MON).querySelector('.dpend')?.textContent), "the board's strip").toBe(1)
+    expect(num(el(dayInfoHTML(MON)).querySelector('.dip-pend')?.textContent), 'the ⓘ panel').toBe(1)
+    expect(itemCounts(dayPendingItems(MON)), 'a removal, not a separate filing').toMatchObject({ total: 1, del: 1, inp: 0 })
+    const l = el(pendListHTML(MON))
+    expect(l.querySelector('.pl-head')?.textContent).toMatch(/· 1 change$/)
+    expect(l.querySelectorAll('.pl-item').length, 'one line').toBe(1)
+    expect(l.textContent, 'it says whose request, taken off').toMatch(/Meeting[\s\S]*on the programme[\s\S]*taken off/)
+    sign(MON)
+    expect(alPanelText(), 'the Amendments panel').toMatch(/Mon · 1 change(?!s)/)
+    const said = withToasts(() => commitPublishALDay(MON))
+    expect(said.join(' | ')).toMatch(/Published AL1 · 1 item /)
+    expect(alCount(SCHED.als[0])).toBe(1)
+    const tag = alPanelText()
+    expect(tag, "the issued AL's line").toMatch(/1 item · 1 removal/)
+    expect(tag, 'no separate filing on it').not.toMatch(/input filing/)
+  })
+  it('the mirror: accepting a request onto a published day is 1, and its line can be tapped to the row', async () => {
+    const { pendListHTML } = await import('./pendlist')
+    const inp = request()
+    publishDay(MON)                                             // issued without it
+    acceptInput(MON, inp, 'g')
+    expect(dayDelta(MON).length, 'the row and the filing').toBe(2)
+    expect(dayShownPendCount(MON)).toBe(1)
+    const l = el(pendListHTML(MON))
+    expect(l.querySelectorAll('.pl-item').length).toBe(1)
+    expect(l.textContent).toMatch(/Meeting[\s\S]*on the programme/)
+    expect(l.querySelectorAll('button.pl-item[data-plix]').length, 'a tap to the row').toBe(1)
+  })
+  it('a filing with no row of its own on the day (filed under Unavailable) stays its own one change', () => {
+    const inp = request()
+    publishDay(MON)
+    inp.acc = 'u'
+    expect(dayShownPendCount(MON)).toBe(1)
+    expect(dayDelta(MON).map(e => e.kind), 'a filing only').toEqual(['input'])
+  })
+})

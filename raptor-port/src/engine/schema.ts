@@ -467,6 +467,9 @@ export type AlRecord = {
   /** The item count as a person counts it, frozen at issue — a man moved is one (D109, 25 Sep 26); absent on a record
    *  issued before, which falls back to the diff's length (alCount). */
   units?: number
+  /** Its per-kind split in the same unit (D114, 25 Sep 26 — a request taken off is "1 removal", not a removal and a
+   *  filing); absent on a record issued before, which falls back to the diff's split (diffCounts). */
+  ukinds?: { total: number, add: number, del: number, chg: number, mov: number, inp: number, oil: number }
   /** Signatures at issue, by day index (callsigns) — Phase 3 binds them. */
   sign: Record<number, SignSet>
 }
