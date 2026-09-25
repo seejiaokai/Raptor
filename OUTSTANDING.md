@@ -1106,6 +1106,12 @@ count, the tags and the list widen to everything since then, grouped by hand ove
 up in one tap. It resets to the default when the list is closed (a look, not a setting). With personal logins (the
 database) the default becomes "since YOU last looked". **Other options put to him:** a callsign picker on Hand over (as
 the sign-off boxes have) so each person gets "since MY last hand over"; or leave it to Edit history.
+**WITH ACCOUNTS (D166) — the mock-up `raptor-port/docs/mock/handoff-accounts.html`, put to him:** each scheduler is
+signed in as their callsign, so each sees what changed since THEIR OWN last hand over ("4 new"), grouped by who did
+it, with who and when on every line; their own not-yet-handed-over changes sit on top ("Yours · not handed over
+yet"); Hand over marks their point and greys when there is nothing new; one who never handed over this day sees what
+changed since the last hand over by anyone. This replaces the "Since" menu and the callsign picker, which were
+stand-ins for not knowing who is signed in.
 **The marks — he asked how they would look now a mark is a corner tag (D92, D93):** on a published day a waiting change
 wears a hollow dotted tag at the puck's top right naming the AL it will go out as ("AL1"). An unpublished day has no
 AL, so the tag needs another label. **The agent's recommendation:** a hollow dotted **ORIG** tag in the seal's plain

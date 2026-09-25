@@ -1,0 +1,30 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hand off with accounts</title>
+<style>
+:root{--bg:#0B0D10;--ink:#E6EAEE;--ink2:#9AA4AE;--edge:#232A31;--acc:#3BC6E8}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:1180px;margin:0 auto;padding:24px 16px 60px}
+h1{font-size:22px;margin:0 0 6px} h2{font-size:17px;margin:0 0 4px;color:var(--acc)}
+p{color:var(--ink2);max-width:84ch;margin:0 0 12px} b{color:var(--ink)}
+section{border:1px solid var(--edge);border-radius:12px;padding:14px;background:#11151A;margin:18px 0}
+.row{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:760px){.row{grid-template-columns:1fr}}
+figure{margin:0} img{width:100%;height:auto;border-radius:8px;border:1px solid var(--edge);display:block}
+.phone img{max-width:340px}
+figcaption{font-size:12.5px;color:var(--ink2);margin-top:4px}
+.note{border-left:3px solid var(--acc);padding:6px 12px;background:#0F1A20;border-radius:0 8px 8px 0}
+</style></head><body><main>
+<h1>Hand off with accounts — how it would work (mock-up)</h1>
+<p>Drawn on the real app (the demo week). Three schedulers — <b>Rune</b>, <b>Hex</b> and <b>Saber</b> — each sign in as themselves
+(the sign-in stands for the defence mail sign-in). Tuesday has never been published. Everything new is drawn in; nothing is built yet.</p>
+<section><h2>The top bar — "View as" is gone</h2><p>It shows who is signed in, as their callsign and role. Everything that records who did
+something — the change list, Edit history, the hand over — names that callsign.</p><figure><img src="img/handoff-accounts/desktop-f0.png" alt="desktop-f0"><figcaption>Desktop top bar</figcaption></figure></section>
+<section><h2>1 · Rune signs in and opens Tuesday</h2><p>His last hand over was at 14:05. Since then Hex changed three things (handed over 16:00) and Saber one (handed over 16:30). So <b>"4 new"</b> — new <i>to Rune</i> — and the list groups them by person, every line naming who changed it and when. The line under the heading shows the last hand over (Saber, 16:30) and his own (14:05).</p><div class="row"><figure><img src="img/handoff-accounts/desktop-f1.png" alt="desktop-f1"><figcaption>Edit Schedule, desktop</figcaption></figure>
+<figure class="phone"><img src="img/handoff-accounts/phone-f1.png" alt="phone-f1"><figcaption>Edit Schedule, phone</figcaption></figure></div></section><section><h2>2 · Hex signs in — he sees only what is new to HIM</h2><p>Hex handed over at 16:00, so only Saber's one change since then is new to him: <b>"1 new"</b>. Same day, different view — each person sees what changed since <i>they</i> handed over. No "Since" menu to pick from.</p><div class="row"><figure><img src="img/handoff-accounts/desktop-f2.png" alt="desktop-f2"><figcaption>Edit Schedule, desktop</figcaption></figure>
+<figure class="phone"><img src="img/handoff-accounts/phone-f2.png" alt="phone-f2"><figcaption>Edit Schedule, phone</figcaption></figure></div></section><section><h2>3 · Rune changes two things himself</h2><p>"4 new · 2 yours": his own two sit at the top under <b>"Yours · not handed over yet"</b>, the others' below. The Hand over button is live because he has something to hand over.</p><div class="row"><figure><img src="img/handoff-accounts/desktop-f3.png" alt="desktop-f3"><figcaption>Edit Schedule, desktop</figcaption></figure>
+<figure class="phone"><img src="img/handoff-accounts/phone-f3.png" alt="phone-f3"><figcaption>Edit Schedule, phone</figcaption></figure></div></section><section><h2>4 · Rune presses Hand over</h2><p>Nothing is new to him now, so the count and the tags go. The line reads "Last handed over · Rune · 16:45". Hand over greys out until he changes something again.</p><div class="row"><figure><img src="img/handoff-accounts/desktop-f4.png" alt="desktop-f4"><figcaption>Edit Schedule, desktop</figcaption></figure>
+<figure class="phone"><img src="img/handoff-accounts/phone-f4.png" alt="phone-f4"><figcaption>Edit Schedule, phone</figcaption></figure></div></section><section><h2>5 · Hex signs in again</h2><p>Everything since HIS last hand over (16:00): Rune's two (handed over 16:45) and Saber's one (16:30) — <b>"3 new"</b>.</p><div class="row"><figure><img src="img/handoff-accounts/desktop-f5.png" alt="desktop-f5"><figcaption>Edit Schedule, desktop</figcaption></figure>
+<figure class="phone"><img src="img/handoff-accounts/phone-f5.png" alt="phone-f5"><figcaption>Edit Schedule, phone</figcaption></figure></div></section>
+<p class="note"><b>The rule, in one line:</b> each person sees what changed since <i>their own</i> last hand over, grouped by who did it; their own
+unhanded changes sit on top; Hand over marks their point. A scheduler who has never handed over this day sees what changed since the last hand over by anyone.</p>
+</main></body></html>
