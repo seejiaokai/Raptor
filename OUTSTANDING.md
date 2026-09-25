@@ -71,7 +71,7 @@ first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [T
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SMOKE-ADD-RACE]
 (before the next Tracker change that touches the smoke suite), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
-The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). The amendment batch (D91–D111) is BUILT on `claude/amendment-batch`, its pull request waiting for his look and "merge live" — its eleven items closed and archived 25 Sep 26 (`OUTSTANDING-ARCHIVE.md`; the spec `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`); left from that area: [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+The amendment batch's look — [LOOK-435] (his inputs, built first, then one full check — D115) and [DRAFT-PENDING] (his answer first). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). The amendment batch (D91–D111) is BUILT on `claude/amendment-batch`, its pull request waiting for his look and "merge live" — its eleven items closed and archived 25 Sep 26 (`OUTSTANDING-ARCHIVE.md`; the spec `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`); left from that area: [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] and [RULING-HOMES-AUDIT] (any time, docs only),
 [BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
 FULL-tier build, any time).
@@ -1048,6 +1048,25 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
    array without changing what is shown — and blanks the four sign-offs though "no changes to publish" (the final read,
    Fable #1's mirror; the digest keys ground rows by position). A false re-sign, never a false publish.
 **Place:** any time; items 6–8 with the Leave War links re-test (D147, last).
+
+### [LOOK-435] His inputs from the look at PR #435 — build first, ONE full bug check at the end (D115, 25 Sep 26)
+Built on `claude/amendment-batch` before the full check (D115): **D114** (a request taken off / put on a published day
+is one change — built, red first, NOT yet walked or read), **D116** (Edit Schedule's History button a toggle like the
+board's), **D117** (the Edit history list: the whole week, a day picker), **D118** (`[DRAFT-PENDING]` — waits on his
+answer), **D119** (the pending list newest first). Then ONE FULL-tier check over all of them (the bug-check order: Fable
+and Astra's reads — the D114 brief is `raptor-port/docs/superpowers/briefs/2026-09-25-d114-read-brief.md`, widen it to
+the rest — the walk on desktop and phone, the full gates, the evidence sheet). Nothing is "ready for merge live" before
+that check. **Place:** now, on this branch.
+
+### [DRAFT-PENDING] "N pending" on a day never published — what should it compare against? A question for him (D118, 25 Sep 26)
+Today a never-published day's "N pending" counts every cell touched (the raw marks): a move reads 2, moving it back
+still 2, a new puck in a crowd 0, and it is not a button. He asked for it to behave like the published day's. **The
+catch:** nothing has gone out, so there is no issued version to compare with. **Option 1 (the agent's recommendation):**
+drop "N pending" from a never-published day — the whole day goes out when it is published, so the head says "Not yet
+published"; what he changed is Edit history's job (a toggle like the board's, D116; newest first). **Option 2:** compare
+against the day as it stood when he opened that week in this sitting — a move 1, put back 0, a new puck 1, the list
+opens like the published one — but the reference resets on a reload or a later visit. **Place:** his answer, then with
+`[LOOK-435]`.
 
 ### [CROWD-SWAP-SAYS-BUSY] Swapping two men inside one crowd warns "already on" that row — found 25 Sep 26
 Seen in the amendment batch's re-walk (`raptor-port/scripts/handpass/am/hr-03-batch-reads.mjs`, picture
