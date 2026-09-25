@@ -1054,8 +1054,8 @@ Found by Astra's and Fable's reads of the `[LEAVE-LATE-PUBLISHED]` plan; each is
 for now") meets another ruling, so each is his call (newest-instruction-wins does not settle a case the newer ruling does
 not clearly cover). **Where each stands, 26 Sep 26 (morning):** 1 and 2 are BUILT FROZEN (Astra's code read #2 —
 `engine/faceattrs.ts`: the face, the CSV and the print draw the issued CAT / seat / posting and the issued brief lead) and
-still read pending when they change — **his Q1 on the look card: keep them frozen?** (a stored rule value against the
-7 Aug 26 "no rule versioning"); 3 and 4 are SETTLED and BUILT live (D183–D185). The look card
+still read pending when they change — **SETTLED by D186 ("Q1 yes", 26 Sep 26): keep them frozen** (it narrows the
+7 Aug 26 "no rule versioning" for the one printed value); 3 and 4 are SETTLED and BUILT live (D183–D185). The look card
 (`raptor-port/docs/handpass/2026-09-26-late-pub.md` §10) carries the rest of his questions.
 1. **A man's CAT letter / seat colour on a puck** — was read live from the roster (`html.ts puck`); now drawn from
    `snap.pa`. Freezing it keeps a copy of the day's men's attributes per published version.

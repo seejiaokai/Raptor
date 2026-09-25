@@ -30,13 +30,13 @@ the later merge keeps both (D78).
   dispositioned §9), the gates (§6). His look card is §10.
 - **The PR:** see the PR list for `claude/leave-late-published` (its checks run on GitHub's machines while the repo is
   public, D106). **Next:** his look (the card's four "look here" lines and Q1, Q4, Q5, Q6), then his "merge live".
-- **His questions (the card, §10):** Q1 a man's CAT and a blank brief's time frozen on the published face — keep? Q4 the
+- **His questions (the card, §10):** Q1 ANSWERED — D186 "Q1 yes" (keep them frozen). Q4 the
   app's own "till <date>" note: a stretched or trimmed leave reads pending on the published days it still covers — keep?
   Q5 warnings in the board's look at a published version (`OUTSTANDING.md` `[PV-NO-FLAGS]`)? Q6 the reading of "a lapsed
   qualification" (the Qualification-flag family; crew-pairing frozen) and the tight-turn note live — right?
 - **Filed this session:** `[PV-NO-FLAGS]`, `[INSIGHTS-WORKING-COPY]` (both his questions), `[QUALS-PROTO-TOAST]`,
   `[VIEW-ARROW-OVER-LIST]`, `[INPUTSCAL-TAP-FLAKY]`. Rulings this chat: none new (D185's row gained the agent's widened
-  reading). Range left: D186–D189.
+  reading); D186 (Q1 yes). Range left: D187–D189.
 - **Usage (D182, until Monday 28 Sep 26):** unlimited — spend it on his look's follow-ups.
 - **After this merges (D180, D173):** `[ACCOUNTS]` on a new branch — its plan not started; the `OUTSTANDING.md` tidy (over
   its tripwire) on its own docs branch.

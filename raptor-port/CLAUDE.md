@@ -626,7 +626,8 @@ decision + a pointer. Owner + date establish authority; keep them.
   recreate or rerun it — the engine is ordinary source now; regenerating clobbers
   real work.
 - Keep `src/probe-bridge.ts` in sync when adding engine API.
-- **Product invariants** (owner, 7 Aug 26 unless noted): no rule versioning · no
+- **Product invariants** (owner, 7 Aug 26 unless noted): no rule versioning (narrowed 26 Sep 26 by D186: a
+  published day keeps the brief lead it printed, with it — one printed value, not a versioned rulebook) · no
   two-person approval · no "publish all days" · OIL is LL-equivalent · sim notes
   single-line · pucks never wrap · login page stays simple · the talon logo stays
   · a clicked warning lights its crew in the warning colours, never selection blue
