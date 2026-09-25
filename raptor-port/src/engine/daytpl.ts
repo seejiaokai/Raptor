@@ -1,6 +1,5 @@
 import { DAYS } from './data'
 import { SCHED, dayApproved, protectedWeek } from './publish'
-import { rebaseDayPending } from './drafts'
 import { keyDay } from './keys'
 import { store } from './hooks'
 import { SECTIONS } from './order'
@@ -214,11 +213,14 @@ export function moveDayTpl(from: number, to: number): boolean {
    nothing dangles at an address the swap just retired, and do NOT histPush or
    reflow here — the caller's afterSchedMutate() is the one undo step, exactly
    the contract restoreDayVersion's callers already honour.
-   REFUSES on a published day (returns false) — the caller toasts "Reopen the
-   day first": a whole-day swap under a live, issued document would silently
-   invalidate everything already signed and published about it, where every
-   other structural write on a published day instead becomes the next
-   amendment. A template replaces the DRAFT, not the record. */
+   REFUSES ON A PUBLISHED DAY (owner, D96, 25 Sep 26 — "4 refuse"): a template's rows are always NEW rows (a copy
+   strips their identity), so applying one over a published day read as every row removed and re-added ("31 changes
+   · 15 removals" for content identical to what was issued) and quietly took the members' accepted requests off the
+   programme. Refused at this engine door AND at every door that offers it, with DAYTPL_PUBLISHED_MSG on screen. A day
+   not yet published takes a template exactly as before. */
+/* the ONE sentence every door says (the bug-check order's wording roll-call: one constant, never a copy) */
+export const DAYTPL_PUBLISHED_MSG = (dow: string) =>
+  `${dow || 'This day'} is published — a template can't be applied to a published day. Edit the working copy, or Unpublish it first.`
 export function applyDayTpl(di: number, id: string): boolean {
   di = +di
   /* READ-ONLY QUARANTINE (P2-REV2-02): a whole-day template replace mutates
@@ -227,6 +229,7 @@ export function applyDayTpl(di: number, id: string): boolean {
      draft-switch / recovery paths carry; protectedWeek() addresses the loaded
      week, which is the only one applyDayTpl touches. */
   if (protectedWeek()) return false
+  if (dayApproved(di)) return false          // D96 — never over a published day (the doors say why)
   const t = DAYTPL_CFG.find(t => t.id === id)
   if (!t) return false
   const cur = DAYS[di]
@@ -248,20 +251,9 @@ export function applyDayTpl(di: number, id: string): boolean {
      ids) — applying it must still mint fresh ids, never carry the source
      day's across, so strip here too rather than trust the stored blob */
   stripRowIds(nd)
-  const wasApproved = dayApproved(di)
   DAYS[di] = nd
-  reconcileDayFiling(di)   // every replacement, approved or not (P2-QREV-07): a template's fresh rows carry no input src, so a dangling 'g' is unfiled
-  if (wasApproved) {
-    /* PUBLISHED DAY (§4, P2-R3-04): a published version is frozen — you cannot
-       "reopen" and apply over it. Applying a template is just a large
-       WORKING-DRAFT edit: the template becomes the live working draft, the
-       issued records + current pointer are UNTOUCHED, and rebaseDayPending
-       recomputes the day's pending set as the true diff vs the still-issued
-       version (exactly as loadVersionToWorkingCopy / draftSelect do on a
-       published day). Publishing it then becomes the next AL. */
-    rebaseDayPending(di)
-    return true
-  }
+  reconcileDayFiling(di)   // every replacement (P2-QREV-07): a template's fresh rows carry no input src, so a dangling 'g' is unfiled
+  /* (a PUBLISHED day took the template as a working-draft edit rebased on the issued version until D96 refused it) */
   /* NEVER-PUBLISHED DAY: no issued baseline, so retire the day's WHOLE mark
      state — pending, added AND changes. Every address the old day's marks
      pointed at may now name something else entirely (the swap does not line up

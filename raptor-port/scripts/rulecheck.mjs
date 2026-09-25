@@ -108,27 +108,27 @@ const RULES = {
   AM3: 'every issued version has its own identity tied to its date and year',
   AM4: 'an issued version is never edited in place and never erased',
   AM5: 'viewers see the issued version; the working copy is labelled when they look',
-  AM6: 'an older version comes back only by loading it and publishing the NEXT amendment',
+  AM6: 'an older version comes back only by loading it and publishing the NEXT amendment; the load puts back what it had filed too (D98)',
   AM7: 'no publish-all-days, no two-person approval, no rule versioning',
   AM8: 'first publish is "Publish day": the Original carries no amendment marks',
   AM9: 'after that, "Publish AL<n>" for that day only, only when it really differs',
   AM10: 'all four sign every publish, bound to the content they signed',
   AM11: 'a content change wipes the sign-offs; putting it back restores them',
   AM12: 'each plan carries its own sign-offs',
-  AM13: 'a change in who was available never invalidates a signature (D45)',
+  AM13: 'any change that shows as pending on a published day wipes the sign-offs (D103, replacing D45\'s signature half)',
   AM14: 'a filing-only change must be signed for too (PSF-001)',
   AM15: 'the sign-off line says what publishing will do; no button with nothing to publish',
   AM15b: '"All signed — no changes to publish right now"',
   AM16: 'only appointed schedulers sign three roles; a signed name stays offered',
   AM17: 'only the scheduler publishes, signs, unpublishes, loads or switches plans',
   AM18: 'amendment marks are a published-day thing — a draft day shows none',
-  AM19: 'pending dotted in the coming AL colour, issued solid; the view page a neutral hint',
+  AM19: 'a changed puck: a solid ALn tag once out, a hollow dotted one while waiting, never a ring; cells keep their marks (D92, D93)',
   AM20: 'a pending mark means "differs from what was issued", not "was touched"',
   AM21: 'a removal and a reorder on a published day are real amendment items',
   AM21b: 'wave drag / MAIN-SPARE flip / accepted input ride an AL; section drag does not',
-  AM22: 'the version tag: ORIG grey, ALn coloured by number, DRAFT dashed, left of the count',
-  AM23: 'every count of a day\'s unpublished changes agrees with the day head',
-  AM24: '"Not yet signed" on every working copy of a changed published day, never the issued face',
+  AM22: 'the version tag: ORIG the seal (D111), ALn coloured by number, DRAFT dashed, left of the count',
+  AM23: 'every count of a day\'s unpublished changes reads one body; a man moved is one (D109)',
+  AM24: '"Not yet signed" / "Not yet published" on every working copy of a changed published day, never the issued face (D97)',
   AM25: 'the Amendments panel: per-day publish with the kinds, the issued list with approvers',
   AM26: 'a day holds alternative plans before AND after it is published',
   AM27: 'bringing out a saved plan is plain editing — no review screen',
@@ -172,6 +172,14 @@ const RULES = {
   AM51e: 'the issued face is the same for admin and member; the working peek is open to all',
   AM51f: 'divergence is anchored on the calendar date, no clock, no EOD coupling',
   AM51g: 'no tally on the publish button, no publish-or-discard reminder',
+  /* the amendment batch (25 Sep 26, D112): the register's new lines, each named by a test */
+  AM53: '"N pending" opens the list of what will go out; a tap takes the view there (D99, D100)',
+  AM54: 'who made a change is the shared account until the database (D104)',
+  AM55: 'the change bubble stays, hover or tap; a long one scrolls inside itself (D105)',
+  AM56: 'a jump from Edit history or the pending list stays on the page you are on (D107)',
+  AM57: 'the Signed line names who signed the version on screen, the Original included (D95, D102)',
+  AM58: 'a day template is refused on a published day, with the reason at every door (D96)',
+  AM59: 'the board draws the dashed and dotted warning rings as the week does (D94)',
 }
 
 /* Rules with no test naming them on 20 Sep 26. The check fails if this set
@@ -184,7 +192,9 @@ const RULES = {
    register's §Coverage): most are pinned in PART, AM7 and AM44 by nothing. Named-by-nothing is the honest
    state, so they are baselined here to stay visible; shrink the list as each gains a whole-rule test. */
 const BASELINE = new Set(['Q9', 'Q11', 'Q12', 'Q14', 'Q15', 'OIL19', 'OIL26',
-  'AM7', 'AM8', 'AM15', 'AM17', 'AM25', 'AM26', 'AM27', 'AM30', 'AM36', 'AM37', 'AM39', 'AM39d', 'AM44', 'AM45', 'AM48', 'AM48a', 'AM49', 'AM49b', 'AM50', 'AM51', 'AM51b', 'AM51c', 'AM51d', 'AM51e', 'AM51f', 'AM51g'])
+  'AM7', 'AM8', 'AM15', 'AM17', 'AM25', 'AM26', 'AM27', 'AM30', 'AM36', 'AM37', 'AM39', 'AM39d', 'AM44', 'AM45', 'AM48', 'AM48a', 'AM49', 'AM49b', 'AM50', 'AM51b', 'AM51c', 'AM51d', 'AM51e', 'AM51f', 'AM51g',
+  /* AM55: a long bubble scrolling is layout, which the test browser does not have: the walk proves it (25 Sep 26) */
+  'AM55'])
 
 const TEST_DIRS = [join(ROOT, 'src'), join(ROOT, 'e2e')]
 const isTest = (f) => /\.(test|spec)\.(ts|tsx)$/.test(f)

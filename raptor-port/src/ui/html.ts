@@ -11,7 +11,7 @@ import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef } from '../engine/sl
    click that follows it read one test */
 import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, FLT_NO_LEN_SAYS } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
-import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayShownPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned } from '../engine/publish'
+import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayShownPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned, verSigners, publishReadPass } from '../engine/publish'
 import { verSeq } from '../engine/verid'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
@@ -75,6 +75,16 @@ const traceHit=(di:any,id:any)=>(PV&&!OFW)?null:traceOf(di,id)
 const chip=(di:any,id:any)=>{ if(PV&&!OFW)return null
   const t=traceLeads(di,id); return t?traceChip(t):chipOf(di,id) }
 const dsh=(di:any,id:any)=>(PV&&!OFW)?false:dashOf(di,id)
+/* A PUCK'S FOUR WARNING MARKS, the week's reading, for the scheduler BOARD too (owner, D94, 25 Sep 26 — "make the
+   board draw the dashed and dotted rings, like the edit week?" "1. yes"). The board drew every ring solid: its
+   seats passed no dash and no trace, so a sanctioned late show rang solid and the day causing tomorrow's crew-rest
+   breach rang not at all. ONE reading, so the two surfaces cannot drift: the severity, the printed flag (the
+   trace's CR / 7 caption where the trace owns it — traceLeads, via chip), the dash and the trace. `off` is the
+   caller's own "no marks here" (a frozen preview, a read-only row) — exactly what it gated before. */
+export function puckMarks(di:any,id:any,off?:any){
+  if(off)return {sev:null,flag:null,dash:false,trace:null}
+  return {sev:sev(di,id),flag:chip(di,id),dash:dsh(di,id),trace:traceHit(di,id)}
+}
 /* the ONE place the snapshot may stand in for the live model. finally is not
    optional: a throw mid-build with the swap live would leave the old day
    installed as the real schedule — a silent history rewrite on the next
@@ -255,10 +265,37 @@ export function verTagHTML(di:any){
   if(cv==null) return ''   // published with no snapshot — probe/import state
   /* COLOUR BY AL NUMBER (owner, 15 Sep 26 — item 3): AL1 cyan, AL2 amber, AL3
      green, … off the SAME data-alc palette the amendment marks use (one source, so
-     the tag and the marks can never drift). ORIG stays grey, DRAFT dashed. */
-  return verSeq(cv)===0
-    ? `<span class="verchip orig" title="${esc(DAYS[di]?.dow||'')} is issued as the Original">ORIG</span>`
-    : `<span class="verchip" data-alc="${verSeq(cv)}" title="${esc(DAYS[di]?.dow||'')} is issued as ${verLabel(cv)}">${verLabel(cv)}</span>`
+     the tag and the marks can never drift). DRAFT dashed. ORIG is the SEAL (D111). */
+  return verChipHTML(cv,`${esc(DAYS[di]?.dow||'')} is issued as ${verSeq(cv)===0?'the Original':verLabel(cv)}`)
+}
+/* THE ORIG TAG STANDS OUT — "A1, THE SEAL" (owner, D108 → D110 → D111, 25 Sep 26: "I think ORG indicated at the top
+   that is currently grey could stand out more, so that people know that the scheduled is published" … "A1"). A faint
+   white wash, a thin light outline and a drawn tick in a white disc before "ORIG" — no colour, so it can never read
+   as an AL colour (AL4 is white, D110: B's green read as AL3's), and the tick says the day is published. Built from
+   the mock-up's variant `s` (raptor-port/scripts/handpass/am/mk-orig-tag-refine.mjs). A drawn tick, not a typed ✓:
+   crisper at 10px. Replaces AM22's "grey ORIG" (15 Sep 26). ONE drawer for every version tag — the day head on the
+   edit week and View-only Sched, the board's strip (verTagHTML) and the Signed line (signedLineHTML). */
+const ORIG_TICK=`<svg class="vtick" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><circle cx="6" cy="6" r="6"/><path d="M3.3 6.2l1.8 1.8 3.6-3.8"/></svg>`
+export function verChipHTML(ver:any,title:string){
+  return verSeq(ver)===0
+    ? `<span class="verchip orig" title="${title}">${ORIG_TICK}ORIG</span>`
+    : `<span class="verchip" data-alc="${verSeq(ver)}" title="${title}">${verLabel(ver)}</span>`
+}
+/* THE "SIGNED ALn" LINE (owner, D95 + D102, 25 Sep 26 — "view only schedule should also see who signed off each
+   publish/amendment … doesnt take much space" · "A looks nice, just apply A concept to the scheduler board too. and
+   edit schedule"). One slim line under the day head: "SIGNED", the version's tag, and the four who signed it — the
+   role before each name on a desktop, names only on a phone (CSS). `ver` is the version ON SCREEN, passed in by
+   the caller because it differs by surface (Fable F8, Astra 7): the issued face and a preview draw inside the
+   snapshot swap (PVV); a live working copy names the published version it sits on; the board's preview strip is
+   built outside the swap and passes DPREV's version itself. The names come from that version's frozen record
+   (publish.ts verSigners) — never the live sign-off boxes, which sign the NEXT issue (AM5). Nothing for a plan or a
+   version with no signers recorded. Everyone who reads the page sees it, members included (D95). */
+export function signedLineHTML(di:any,ver:any){
+  const g=verSigners(di,ver); if(!g)return ''
+  const name=(k:any,lbl:string)=>`<span class="sl-n" title="${esc(lbl)}"><i>${esc(lbl.replace(' BY',''))}</i>${esc(g[k]||'—')}</span>`
+  return `<div class="signedln">`
+    +`<span class="sl-h">Signed</span>${verChipHTML(ver,`Signed as ${verSeq(ver)===0?'the Original':verLabel(ver)}`)}`
+    +SIGN_ROLES.map((r:any)=>name(r[0],r[1])).join('')+`</div>`
 }
 /* "NOT YET SIGNED" (owner, 16 Sep 26 — register AM24): on the WORKING copy of a published
    day whose content differs from its signed, issued version — derived from the canonical
@@ -267,8 +304,15 @@ export function verTagHTML(di:any){
    board's publish strip ([HUMAN-RETEST] the amendment system, walk S5, 24 Sep 26: the board
    never drew it, so the same day read signed-clean there and "Not yet signed" on the week).
    Read on the LIVE day: inside a withDaySnap swap the day diffs against itself. */
+/* TWO STATES (owner, D97, 25 Sep 26 — "5 ok"): "Not yet signed" while any of the four is missing or no longer
+   valid; "Not yet published" once all four are valid and the change has not gone out. It used to read "Not yet
+   signed" in both, beside four green sign-offs (it never looked at them). daySigned is the ONE per-role test the
+   sign-off boxes and the Publish button read, so the marker and the boxes cannot disagree. */
 export function nysMarkHTML(di:any){
-  return (!PV&&notYetSigned(di))?`<span class="nysmark" title="This working copy has edits that have not been signed and published yet — the published schedule stays as-is until you publish">Not yet signed</span>`:''
+  if(PV||!notYetSigned(di))return ''
+  return daySigned(di)
+    ? `<span class="nysmark pub" title="All four have signed this working copy — it has not been published yet; the published schedule stays as-is until you publish">Not yet published</span>`
+    : `<span class="nysmark" title="This working copy has edits that have not been signed and published yet — the published schedule stays as-is until you publish">Not yet signed</span>`
 }
 /* THE VIEW-ONLY WEEK'S DRAFT PICKER (owner, 15 Aug 26 — "on view schedule
    mode, you can also view the different drafts"). The view page deliberately
@@ -1304,7 +1348,15 @@ export function dayStatHTML(di:any,ed:any){
        the read-only "✓ Published"/version stamp on a published day — the
        unpublished VIEW page keeps its plain "Draft" stamp (that IS byte-parity
        with the reference on the seed week; only the published branch changed). */
-    const pendChip=nd?`<span class="dpend" title="${nd} ${ok?'change':'unpublished edit'}${nd>1?'s':''} on this day${ok?' — ahead of the issued schedule until you publish an AL':' — publish the day before publishing an AL'}">${nd}&nbsp;pending</span>`:'';
+    /* on a PUBLISHED day's working copy, on the edit surfaces, the count is a BUTTON that opens the list of what
+       will go out (owner, D99 + D100, 25 Sep 26 — ui/pendlist.ts, routed by data-pendlist in interactions.ts).
+       Never on the view page, never under a preview (its count is the live one captured before the swap, PVND,
+       and the list would read the live day while the screen shows a frozen one), never on a draft day (nothing
+       there goes out as an amendment). */
+    const pendBtn=nd&&ed&&ok&&!PV&&canEditSched();
+    const pendChip=!nd?'':pendBtn
+      ? `<button class="dpend dpendbtn" data-pendlist="${di}" aria-haspopup="dialog" title="See the ${nd} change${nd>1?'s':''} waiting to go out as AL${nextSeq(di)} on ${d.dow}, and go to each">${nd}&nbsp;pending</button>`
+      : `<span class="dpend" title="${nd} ${ok?'change':'unpublished edit'}${nd>1?'s':''} on this day${ok?' — ahead of the issued schedule until you publish an AL':' — publish the day before publishing an AL'}">${nd}&nbsp;pending</span>`;
     const sgOK=daySigned(di);
     /* THE BEAK (§9, closes BUG-2): on a NEVER-published day it first-approves
        (Publish day). On a PUBLISHED day it renders NOTHING here — a published
@@ -1364,7 +1416,7 @@ export function dayStatHTML(di:any,ed:any){
    a pure string producer, which is exactly the shape the pass requires: nothing
    inside it writes DAYS, INPUTS or PEOPLE, so the memo cannot serve a stale
    answer to validation, signing or publication — none of which run in here. */
-export function dayHTML(di:any,ed:any,vsel?:any){ return oilReadPass(()=>dayHTMLBody(di,ed,vsel)); }
+export function dayHTML(di:any,ed:any,vsel?:any){ return oilReadPass(()=>publishReadPass(()=>dayHTMLBody(di,ed,vsel))); }   // one read of each day's comparison per paint (publish.ts publishReadPass)
 function dayHTMLBody(di:any,ed:any,vsel?:any){
   /* A QUARANTINED (unreadable / preserved / unsupported) LOADED week is read-only,
      and its days are UNAPPROVED (the seed is loaded as a placeholder), so both the
@@ -1429,6 +1481,9 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
         : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}${(ed||vsel)?`<span class="dhtpl">${ed?`<button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button>`:''}${planSelectorHTML(di)}</span>`:''}<span class="dhver">${verTagHTML(di)}${nysMarkHTML(di)}</span>
       <span class="badge" title="Aircraft per wave · standalone lines after the slash">${dayCount(d)}</span>
       <span class="dstat">${(!ed&&!vsel)?viewVerSelHTML(di):''}${dayStatHTML(di,ed)}</span></div>`
+      /* who signed the version on screen (D95, D102) — the previewed / issued one inside the swap, else the
+         published version the working copy sits on; nothing on a day not yet published */
+      +(ok?signedLineHTML(di,PV?PVV:dayCurVer(di)):'')
       +pvBar
       /* THE .dhtpl SPAN carries the day's edit chrome, between the date (.dt) and
          the turn-pattern badge: the Templates button and the plans selector
@@ -1984,7 +2039,7 @@ export function signoffHTML(di:any,full:any){
         miss.length ? `${miss.length} to sign${full?' · '+miss.map(why).join(', '):stale.length?' · '+stale.map(why).join(', '):''}`
         : !dayApproved(di) ? 'Signed — this day can be published'
         : (()=>{const cv=dayCurVer(di); if(cv==null) return 'Signed';   // approved but no resolvable snapshot (probe/import) → no ALNaN label (Fable #3)
-            const chg=dayDelta(di).length;
+            const chg=dayShownPendCount(di);   // the ONE count the day head shows (D109 — a man moved is one change)
             return chg
               ? `Published at ${esc(verLabel(cv))} · ${chg} change${chg>1?'s':''} to publish — Publish AL${nextSeq(di)}`
               : `Published at ${esc(verLabel(cv))} — no changes to publish`;})()

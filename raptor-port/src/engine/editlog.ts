@@ -143,24 +143,26 @@ function jetOf(f: any, ai: any) {
   return (f && (f.aircraft || []).length > 1) ? `#${+ai + 1} ` : ''
 }
 
-export function keyLabel(key: any): string {
+/* `days` (25 Sep 26): which day list to read the names from — the live DAYS by default; the pending list
+   (ui/pendlist.ts) names a REMOVED row from the issued version it was removed from, where it still stands */
+export function keyLabel(key: any, days: any[] = DAYS): string {
   /* accepts EITHER key form (Fable #7): the stored log key is rid-anchored,
      but this reads live rows by position, so resolve a rid key to its current
      positional address first. A note / positional / gone-row key is unchanged
      by posKey (a gone row → null → keep the raw key, which falls through to the
      'Schedule' fallback below). */
-  const pk = posKey(key, DAYS)
+  const pk = posKey(key, days)
   const k = String(pk == null ? key : pk), c = k.indexOf(':')
   try {
     /* a flying seat: di.gi.li.ai.seat — named by the line it is in, then the
        jet, then the seat */
     if (c < 0) {
       const a = k.split('.')
-      const f = DAYS[+a[0]].waves[+a[1]].formations[+a[2]]
+      const f = days[+a[0]].waves[+a[1]].formations[+a[2]]
       const seat = a[4] === 'p' ? 'FCP' : a[4] === 'w' ? 'RCP' : String(a[4] || '').toUpperCase()
       return `${f.cs || 'Line'} ${f.msn || ''}`.trim() + ` · ${jetOf(f, a[3])}${seat}`
     }
-    const p = k.slice(0, c), a = k.slice(c + 1).split('.'), d = DAYS[+a[0]]
+    const p = k.slice(0, c), a = k.slice(c + 1).split('.'), d = days[+a[0]]
     const fld = (n: number) => TXT_FLD[a[n]] ? ` · ${TXT_FLD[a[n]]}` : ''
     if (NOTE_LBL[p]) return NOTE_LBL[p]
     if (p === 'd') return `Duty · ${d.dutywaves[+a[1]].rows[+a[2]].role || 'row'}`

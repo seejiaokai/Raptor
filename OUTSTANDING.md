@@ -49,8 +49,8 @@ list (13–23 Sep 26), its finished entries and the "In plain terms" block are i
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
 **His order:**
-1. **[HUMAN-RETEST]** — the amendment system is DONE on `claude/amendment-retest`, waiting for his look and "merge
-   live"; next, in HIS order (D147, 24 Sep 26): the absence record TOGETHER with [S4-HUNT-REST], then change-recording,
+1. **[HUMAN-RETEST]** — the amendment system MERGED 25 Sep 26 (PR #434); its decided batch is BUILT (overnight, D112)
+   on `claude/amendment-batch`, its pull request waiting for his look and "merge live"; next, in HIS order (D147, 24 Sep 26): the absence record TOGETHER with [S4-HUNT-REST], then change-recording,
    then the Leave War links LAST (with the 7 Sep phone check).
    *(24 Sep 26: the change-recording re-test also carries [UNDO-ROSTER-SETTINGS] and D148 — both the one undo's.)*
 2. **[S4-HUNT-REST]** — the bug hunt's untouched ground, in his own 1–7 order, walked WITH the absence-record re-test
@@ -71,7 +71,7 @@ first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [T
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SMOKE-ADD-RACE]
 (before the next Tracker change that touches the smoke suite), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
-The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [BOARD-KEYBOARD-GAP] (phone; small). The amendment batch, all decided 24–25 Sep 26 (D91–D105), ONE build after the re-test merges — `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`: [PENDING-SUMMARY], [AMEND-PHONE-APPROVER], [AMEND-TEMPLATE-PUBLISHED], [AMEND-NYS-WORDING], [AMEND-LOAD-FILING], [AMEND-MARK-RING-CLASH] (design approved, D93 — to build) and [BOARD-RING-STROKES] (his question), [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+The amendment batch's look — HIS ORDER (D173): (1) [LOOK-435] — D114's full check (DONE 25 Sep 26, evidence §9; [REQUEST-OFF-ONE] archived), his look, "merge live" of PR #435; (2) [ACCOUNTS] on a new branch; (3) [DRAFT-PENDING] — the one changes window, on top of accounts; (4) one full check of 2 and 3. Found by D114's reads, older than it: [REQ-TWO-ROWS] and [REQ-DECLINED-PENDING] — HIS ORDER (D174, D175): their own small branch right after #435 merges, BEFORE [ACCOUNTS]; [REQ-ORPHAN-ROW] (low). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). The amendment batch (D91–D111) is BUILT on `claude/amendment-batch`, its pull request waiting for his look and "merge live" — its eleven items closed and archived 25 Sep 26 (`OUTSTANDING-ARCHIVE.md`; the spec `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`); left from that area: [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] and [RULING-HOMES-AUDIT] (any time, docs only),
 [BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
 FULL-tier build, any time).
@@ -306,7 +306,7 @@ War links LAST, with the 7 Sep phone check folded in.
 *(Its lines on which chat ran when — D153, D154, D155, D135, D125, every one spent — moved 24 Sep 26 to `OUTSTANDING-ARCHIVE.md`. The Tracker part is merged; the demo is done.)*
 **THE TRACKER PART IS DONE — MERGED to `main` 23 Sep 26 on his "merge live", after his look** (evidence
 `raptor-port/docs/handpass/2026-09-23-tracker.md`; rulings D120–D132).
-**THE AMENDMENT SYSTEM PART IS DONE on `claude/amendment-retest` (24 Sep 26) — waiting for his look and his "merge live"**
+**THE AMENDMENT SYSTEM PART IS DONE — MERGED to `main` 25 Sep 26 on his "merge live" (PR #434), after his look (all six steps; his three points became D107–D109 and the batch)**
 (evidence `raptor-port/docs/handpass/2026-09-24-amendment.md`, his look card §13; the register
 `raptor-port/docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`; its questions `[AMEND-D45-FILING]`,
 `[AMEND-PHONE-APPROVER]`, `[AMEND-TEMPLATE-PUBLISHED]`, `[AMEND-NYS-WORDING]`, `[AMEND-REISSUE-DOOR]`,
@@ -721,6 +721,12 @@ carry-over rules, and which year a leave crossing 31 Dec charges. Context: clash
 
 ### [DB-STEP] The shared-database step (Dataverse) — FUTURE MILESTONE
 
+**ACCOUNTS (owner, D165, 25 Sep 26):** everyone signs in with their own defence mail account; the admin creates each
+person in the app (callsign, name, admin or member) tied to their defence mail address; "View as" goes away. Per-person
+"what changed since YOU last looked" follows (`[DRAFT-PENDING]`). The Microsoft side (access, licences, whether code
+apps are allowed in the environment, the data rules for defence data) is his helper's, briefed by
+`raptor-port/docs/handover-dataverse.md`.
+
 **THE DATA GETS WIPED ON THE WAY IN (owner, D54, 23 Sep 26 — "this app is going to get wiped of
 data before its being brought into a database as these are demo data anyway").** Stated as a PLAN,
 not an option: nothing now in the store has to survive the move. It is the 13 Sep dev-phase rule and
@@ -1009,30 +1015,6 @@ a flagged View-as puck shows the same plain red ring (solid or dashed) as every 
 and walk both widths with a flagged View-as puck. LOOK tier on one shared puck rule — check every surface that draws
 a puck. **Place:** any time, none blocking; a good one to ride the next scheduler change.
 
-### [AMEND-PHONE-APPROVER] On a phone, who approved each amendment is shown nowhere — a question for him (24 Sep 26)
-**DECIDED 25 Sep 26 — D102: the slim "Signed ALn" line (A) on View-only Sched, the board AND the edit week; B not taken.
-To build with the D92 batch, including keeping the Original's signers.**
-**Mock-up (25 Sep 26, his ask):** `raptor-port/docs/mock/amend-answers.html` §Question 3 (maker
-`raptor-port/scripts/handpass/am/mk-view-signers.mjs`): A — one slim "Signed ALn" line under the day head on View-only
-Sched (roles on desktop, names only on a phone); B — the ⓘ panel lists every version with its four signers. Asked: A+B
-(recommended) or B only. **Build gap found:** an AL record keeps its signers (`SCHED.als[].sign`), the Original does
-not — `setDayApproved` clears the sign-offs without keeping them (`raptor-port/src/engine/publish.ts`); the build stores
-them on `SCHED.orig[di]`.
-**ANSWERED 25 Sep 26 — D95, wider than asked:** View-only Sched shows who signed off each published version (the
-original and every amendment), for everyone who reads it, compactly; a mock-up first, at his ask. The recommendation
-below (the approver alone, in the ⓘ panel) is superseded by it.
-Found by the amendment re-test's roll-call (`raptor-port/docs/handpass/2026-09-24-amendment.md` §4, R10; Fable 5-4).
-The desktop's Amendments panel lists every issued amendment with its day, its item count and who APPROVED it (the
-four signers in its tooltip) and the "N days with changes to publish" summary. On a phone (≤ 820px) that panel is
-hidden on purpose (`raptor-port/src/ui/scheduler.css`, `@media (max-width:820px){.alpanel{display:none}}`); the
-phone still has each day's own "N pending" and Publish AL button, and the ⓘ day panel lists the day's amendments
-("AL1 · 1 item") — but without who approved them. **No ruling covers it either way.** **The question:** should the
-phone show who approved each amendment? **The agent's recommendation:** yes, cheaply — add "approved by <callsign>"
-to each amendment line in the ⓘ day panel (`dayInfoHTML`, `raptor-port/src/ui/html.ts`), which serves both widths;
-keep the full panel desktop-only. One thing for him to weigh: the ⓘ panel is also open to members on View-only
-Sched, so they would see the approver's callsign too (the desktop panel is the scheduler's page only). **Place:**
-waiting on him; small once answered.
-
 ### [UNDO-ROSTER-SETTINGS] The one Undo does not cover roster or settings edits, though his 16 Sep 26 rule says it should (found 24 Sep 26)
 Found by the amendment re-test's rule-to-test mapping (register AM39d,
 `raptor-port/docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`). His 16 Sep 26 rule, recorded in the
@@ -1043,37 +1025,6 @@ and settings edits ARE undoable — ordinary user changes, never amendments. The
 renaming a callsign or changing a Logic setting cannot be undone. **Place:** the change-recording re-test (D147,
 second after the absence record) — it is the one undo's own subject; build it there with D148 (undo only your own
 changes). Walk it first: confirm on screen that Undo stays greyed or skips a roster / settings edit.
-
-### [AMEND-TEMPLATE-PUBLISHED] A day template applied to a published day — a question for him (24 Sep 26)
-**DECIDED 25 Sep 26 — D96 ("4 refuse"): refused on a published day, with the reason on screen; build it with the D92
-batch.**
-Found by the amendment re-test's walker W2 (`raptor-port/docs/handpass/parts/2026-09-24-amendment-w2.md` W2-F2). Applying a
-day template to a published day rebuilds the day from the template's rows, and a template row is always a NEW row (a
-copy strips its identity — `raptor-port/src/engine/daytpl.ts`), so: (1) saving Tuesday as a template and applying it
-straight back reads **"31 changes · 15 removals"** for a day identical to what was issued — publishing that AL would
-claim every row was removed and re-added (AM20, AM23: a mark means "differs from what was issued"); (2) the day's
-ACCEPTED inputs (a Fly-with, a Meeting, an Appointment) are taken off the programme, because the template's rows carry
-no link to them — members' accepted requests quietly leave the day. **The question:** on a published day, should
-applying a template (a) be refused, (b) keep every row that matches what was issued and every accepted input, counting
-only real differences, or (c) stay as it is (the day is rebuilt, and the amendment says so)? **The agent's
-recommendation:** (b) — it keeps the amendment true and the members' requests on the programme; (a) is the cheap safe
-answer if templates on a published day are rare. Undo puts the day back today, so nothing is lost by waiting.
-**Place:** waiting on him.
-
-### [AMEND-NYS-WORDING] "Not yet signed" beside four valid sign-offs — a wording question for him (24 Sep 26)
-**DECIDED 25 Sep 26 — D97 ("5 ok"): two states, "Not yet signed" / "Not yet published"; build with the D92 batch.**
-**25 Sep 26 — found while answering him:** the marker never looks at the sign-offs (`notYetSigned` = published AND
-`dayHasChanges`), so it reads "Not yet signed" in the ORDINARY flow too — change, all four sign, not yet published.
-Recommendation put to him: two states — "Not yet signed" while any of the four is missing, "Not yet published" once
-all four are valid. Waiting on his word.
-Found by the amendment re-test's walker W4 (`raptor-port/docs/handpass/parts/2026-09-24-amendment-w4.md` §3.5, P6). His
-D45 (22 Sep 26) keeps the sign-offs valid when only who-is-available changes (a leave for a man behind an ALL AVAIL puck):
-the day then shows "1 pending", four green sign-offs, an open "Publish AL1" — and, beside the tag, **"Not yet signed"**
-(AM24, 16 Sep 26: the marker shows whenever a published day has unpublished changes). It is the rule working, but it
-reads as a contradiction. **The question:** should the marker then read something else ("Not yet published"), or hide
-while the sign-offs cover the change? **Kept as built until he answers.** Small either way (`nysMarkHTML`,
-`raptor-port/src/ui/html.ts`; `notYetSigned`, `raptor-port/src/engine/publish.ts`). **Place:** waiting on him; ask
-with the amendment re-test's look card.
 
 ### [AVAILWIN-PREVIEW-BAR] On the desktop board the ALL AVAIL window, opened from a preview, covers the preview bar (found 24 Sep 26)
 Found by the amendment re-test's walker W2 (W2-F7). Saturday's board → plans selector → Original → tap the ALL AVAIL
@@ -1104,98 +1055,134 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
    Fable #1's mirror; the digest keys ground rows by position). A false re-sign, never a false publish.
 **Place:** any time; items 6–8 with the Leave War links re-test (D147, last).
 
-### [BOARD-KEYBOARD-GAP] On a phone, typing on the board lets the schedule behind show above the keyboard (found 25 Sep 26)
-Reported by him from the live app on his iPhone: *"when I click on the history button and I try to type on a text area as
-shown, as the keyboard shows, u can see a small area of the edit or view only schedule behind the scheduler board."*
-Picture: `raptor-port/docs/img/bugs/2026-09-25-board-keyboard-gap.png` — a Common Programme item name being typed on the
-board; between the board and the keyboard a strip of the week behind shows (a 14:45–15:30 row with Wildcard). **Likely
-cause, read from the code, not tried:** the board is `position:fixed; inset:0` (`raptor-port/src/ui/scheduler.css`
-`.schedboard`), sized to the page, while the phone keyboard shrinks and pans the VISIBLE area, so the page behind can
-scroll into the gap; other panels already follow the visible area (`window.visualViewport` in
-`raptor-port/src/leavewar/ui/Sheet.tsx`, `raptor-port/src/ui/histbubble.ts`). **His mention of the History button:**
-unclear whether History mode has to be on — reproduce both ways. **To do:** reproduce at phone size with the keyboard up
-(or a shrunken visual viewport); make nothing behind the board ever show (hold the page behind still while the board is
-open, or size the board to the visible area). LOOK tier, phone only. **Place:** with the board items; small.
+### [ACCOUNTS] Accounts in the app now, shaped as the defence-mail sign-in will be (owner, D166, 25 Sep 26)
+The Admin tab creates accounts (sign-in name, admin or member, the callsign it belongs to); the sign-in screen stands
+for the defence mail sign-in; signing in makes you that callsign, so "View as" and any member preview go; the Leave
+War follows the signed-in callsign; every "who" (edit record, pending list, hand over) names the callsign. Replaces
+the fixed `ad` / `us` logins and merges Admin's "Manage users" list. The real address is tied by IT at the database
+step (D165). Permissions → FULL tier. **Place (the agent's recommendation, not yet his word):** after this round's
+smaller inputs in `[LOOK-435]` and BEFORE the hand over (D118), which then shows real callsigns and "since YOU last
+looked" from the start. **SETTLED by D173:** step 2 of the order, on a NEW branch, after PR #435 merges.
 
-### [PENDING-SUMMARY] Tap "N pending" to see what changed, by whom and when — his idea (25 Sep 26), waiting on his word
-**ALL FOUR PARTS DECIDED 25 Sep 26:** (1) D103 any pending change wipes the sign-offs; (2) D99 + D100 the tappable,
-scrolling list that jumps to each change (mock-up approved); (3) D104 callsigns wait for the database; (4) D105 the bubble
-stays, hover or tap, scrolling when long. To build with the D92 batch — FULL tier (sign-offs, published records).
-**Part (2) DECIDED 25 Sep 26 — D99: "N pending" is a button listing the day's waiting changes; tapping one takes the
-view to it. Parts (1), (3), (4) still his; mock-up first.**
-**APPROVED 25 Sep 26 — D100 ("looks good and function"); a long list scrolls inside the window.** **Mock-up (25 Sep 26):** `raptor-port/docs/mock/pending-list.html` (maker `raptor-port/scripts/handpass/am/mk-pending-list.mjs`)
-— "N pending ▾" opens the net list (where, before → after, who, when; "earlier" where the record is gone), a tap jumps.
-Part (3), asked 25 Sep 26 whether tracking by "View as" is worth it before the database: the agent recommended not.
-His words: *"why dont we just wipe the sign offs for any changes to the schedule? And any type of change to that schedule
-will show a pending. And the scheduler can click on pending and see a summary of what changed. by who & time. Would this
-be like the edit history function? (except that im thinking of changing to seeing who the member callsign is instead of
-just admin or member account, but if we just merge it into pending does it make sense? is it the same thing? And it
-should also have the function that if i enable something i can still mouse over the portion of the schedule and see the
-bubble popup"* … *"or click"*. **Four parts:** (1) every pending change wipes the sign-offs — this would replace D45's
-signature half (today a change in who is behind ALL / ALL AVAIL, an edited request's times, or a Quals/posting change
-shows pending but keeps the signatures); D45's freeze half stays; (2) tapping "N pending" opens the day's waiting changes
-with who made each and when; (3) the author shown as the person's callsign, not the shared admin/member account; (4) the
-History mode's bubble kept — hover on a desktop, tap on a phone. **The agent's answers, given in chat:** yes to all four
-as one design; pending (the NET difference from what is published — change a time and back and nothing is pending) and
-Edit history (every edit, in order) share one record, so the summary lists the net changes, each with its last author
-and time from the history, and Edit history stays the full story. **Two limits to build around:** the edit log is kept
-only while the page is open (by design until the database — `raptor-port/CLAUDE.md` §What actually persists), so
-who/when is missing for changes made before a reload, except members' requests, which carry who filed them; and one
-shared login per role means the app cannot know the person — the "View as" person can stand in until each person has
-a login at the database step. **To do:** his word on each part, a mock-up first (the house rule for a visual
-direction), then build with the amendment batch; parts (1) and (2) touch published records and sign-offs — FULL tier.
-**Place:** before [AMEND-MARK-RING-CLASH]'s build, since both reshape the same day head and marks.
+### [LOOK-435] His inputs from the look at PR #435 — the order is D173 (25 Sep 26)
+**Step 1 DONE 25 Sep 26:** D114's FULL check — evidence `raptor-port/docs/handpass/2026-09-25-amendment-batch.md` §9; two
+gaps fixed, three older findings filed (`[REQ-TWO-ROWS]`, `[REQ-DECLINED-PENDING]`, `[REQ-ORPHAN-ROW]`); waiting for his look.
+**D173 REPLACES the plan below (D115's one check at the end):** (1) D114's FULL check on PR #435, then his look and
+"merge live"; (2) `[ACCOUNTS]` on a NEW branch; (3) `[DRAFT-PENDING]` — the one changes window, which absorbs D116's
+list, D117 and D119 (not built separately); (4) one FULL check of 2 and 3. The text below is the plan as it stood.
+Built on `claude/amendment-batch` before the full check (D115): **D114** (a request taken off / put on a published day
+is one change — built, red first, NOT yet walked or read), **D116** (Edit Schedule's History button a toggle like the
+board's), **D117** (the Edit history list: the whole week, a day picker), **D118** (`[DRAFT-PENDING]` — waits on his
+answer), **D119** (the pending list newest first). Then ONE FULL-tier check over all of them (the bug-check order: Fable
+and Astra's reads — the D114 brief is `raptor-port/docs/superpowers/briefs/2026-09-25-d114-read-brief.md`, widen it to
+the rest — the walk on desktop and phone, the full gates, the evidence sheet). Nothing is "ready for merge live" before
+that check. **Place:** now, on this branch.
 
-### [AMEND-MARK-RING-CLASH] On the edit surfaces an amendment mark on a puck hides its dashed or dotted warning ring (found 24 Sep 26)
-Found by the amendment re-test's final code read (Fable #3). The edit week's and the board's AL-coloured mark for a
-pending puck (`#eWeek .seat[data-aln] .puck`, `#schedBoard …`, `raptor-port/src/ui/scheduler.css`) is an outline on the
-puck, and so are the sanctioned-late (dashed) and crew-rest trace (dotted) rings — the mark out-ranks them, so a
-scheduler editing a published day does not see those two rings on a man whose seat has an unpublished change. The same
-clash on the VIEW page was fixed in the re-test (its neutral hint moved onto the seat around the puck); the edit
-surfaces' mark is an established look (`raptor-port/docs/ui-contracts.md` §Amendment marks), so moving it is a visual
-change to show him first. **Examples shown 24 Sep 26, at his ask** — `raptor-port/docs/mock/amend-seat-marks.html`, three
-situations the app itself produced (a swap, a late show, an everyday change), its maker
-`raptor-port/scripts/handpass/am/mk-seat-marks.mjs` (the CSS as `B_CSS`, in `mk-seat-marks-lib.mjs`), and — at his second
-ask — a busy Monday with AL1–AL3 out and AL4 waiting (`mk-seat-marks-busy.mjs`). **The fix is now D92 (his, 24 Sep 26) — design C:** a
-changed puck is marked by its ALn tag only, never a ring — solid once out (today's tag), hollow and dotted while waiting
-— so a puck's edge carries only warnings; the published ring `.seat[data-alc] .puck` and the waiting outline
-`#eWeek/#schedBoard .seat[data-aln] .puck` go, a hollow `.seat[data-aln]::after` tag comes in (`C_CSS`); times, areas and
-remarks keep their marks. **Why, measured:** the published ring covers the thin amber (advisory), grey (note) and thin red
-`.warn` rings today (Tally at AL3 in the busy day), and the waiting outline's `box-shadow:none` wipes them too. Design B
-(the waiting outline kept except where a ring competes) was superseded by D92 the same day. It reaches View-only Sched
-(the squadron's published face), so the bug-check order sets the tier at build. **Design A** (the
-first mock-up: the mark moved onto the seat) was dropped on measurement — a seat is exactly its puck's 74×15 box and a
-crew pair sits 3px apart, so at real size (DPR 1) the mark and a dotted ring sit half a pixel apart and blur into one,
-and any larger offset runs into the next puck. The view page's neutral hint, moved onto the seat by the re-test, has
-A's geometry: check it where it can meet a ring when B is built. **Design APPROVED 24 Sep 26 (D93, "the fix looks good").** **To do:** build D92 on every surface that
-draws a changed puck, with a geometry pin (e2e) that every ring's stroke survives a published and a waiting change. **Place:** next, on
-his word (the mock-up's other half, a mark for an emptied seat, was declined — D91).
+### [DRAFT-PENDING] The one CHANGES WINDOW — D118, D167–D172 (25 Sep 26); step 3 of D173, after `[ACCOUNTS]`
+**WHAT IS SETTLED (read the rulings, not the working notes below):** D168 one changes window (New to you / All changes,
+a day picker, Group by Who / Where) replacing the pending list, the hand-over idea and the Edit history list; D167 its
+shape (movable, resizable, a tap takes the schedule to the change and the window stays; the phone's panel shrinks to a
+bar); D169 members read it too (medical details hidden); D170 NO Hand over button — new to you until "Mark all as
+seen", grouped by person and sitting; D171 the ways in — the day's count for everyone, an icon-only top-bar door with
+the WEEK's count for admins only; D172 the unpublished-day corner tag reads "OG", the headings unchanged. The
+mock-ups: `raptor-port/docs/mock/changes-window.html` (the design of record, option A), `changes-doors.html`,
+`tags-ticks.html`; the earlier ones (`checkpoint.html`, `handover.html`, `since.html`, `handoff-accounts.html`,
+`handoff-window.html`) show ideas later replaced. The working notes below are the path there.
+**His intent:** when another scheduler logs in, they see what changed since the last draft. Today a never-published
+day's "N pending" counts every cell touched (a move 2, put back still 2, a new puck in a crowd 0) and is not a button.
+**The agent's proposal, put to him — NOT called "Save draft" (his correction: the app already saves live, so that word
+misleads); a CHECKPOINT that records who set it last and when:** a button on a never-published day's head (beside
+Publish; its word still to be picked — "Set checkpoint" recommended). It stores the day as the checkpoint — not issued: no version, no signatures, no amendment number, nothing for members.
+"N pending" then counts the net difference from that point exactly as after a publish (the one counting body: a move 1,
+put back 0, a new puck 1), and is the same button opening the same list (newest first, D119). The next scheduler reads
+it, then sets a new checkpoint to start from there. A line under the day head names who set the checkpoint and
+when (stored with it, so it survives a reload). Before the first checkpoint the day shows no pending; publishing
+replaces the checkpoint with the Original. **Limits to tell him:** until the shared database, another scheduler sees
+it only on the same device and browser (the app keeps its data per browser); who made each change reads the shared
+account (D104), and after a reload older changes read "earlier" (the edit record lasts only while the page is open).
+With the database it carries across devices with no change, and "since YOU last looked" per person becomes possible.
+**His word: "Hand over"** (after the mock-up `raptor-port/docs/mock/checkpoint.html`). **His catch:** every scheduler
+will press Hand over after their OWN changes, so one reset point would wipe the highlights before the next person
+sees them. **The agent's proposal for that, put to him:** each hand over is KEPT (who, when, the day as it stood); the
+marks and "N pending" show what changed since the hand over BEFORE the latest one — i.e. the last person's work, plus
+anything done since — and the list splits it: "Handed over by Admin 16:00 · 3 changes" / "Since then · 1 change". So
+A builds and hands over; B changes 3 things and hands over; A opens the day and sees B's 3 highlighted; A changes 1 and
+hands over; B sees A's 1. **A guard:** Hand over is refused when nothing changed since the last one ("Nothing new to
+hand over"), so a second press can never wipe the last person's highlights. **The cost, stated:** the last person's
+highlights stay until someone else changes something and hands over — there is no "I've seen it, clear it" until
+personal logins (the database) let each person see "what changed since YOU last looked".
+**His next catch (after the storyboard `raptor-port/docs/mock/handover.html`):** with three or more schedulers, one who
+has not looked since two hand overs ago would see only the latest person's work. **The highlights are shared** (every
+scheduler sees the same ones — the app cannot tell people apart while the login is shared). **The agent's proposal:** a
+**"Since" choice** at the top of the pending list — "Since the last hand over (16:30 · Admin) ▾" by default, and every
+earlier hand over of the day in the menu ("16:00", "14:05" …), each with who and when. Pick an earlier one and the
+count, the tags and the list widen to everything since then, grouped by hand over — so whoever has been away catches
+up in one tap. It resets to the default when the list is closed (a look, not a setting). With personal logins (the
+database) the default becomes "since YOU last looked". **Other options put to him:** a callsign picker on Hand over (as
+the sign-off boxes have) so each person gets "since MY last hand over"; or leave it to Edit history.
+**WITH ACCOUNTS (D166) — the mock-up `raptor-port/docs/mock/handoff-accounts.html`, put to him:** each scheduler is
+signed in as their callsign, so each sees what changed since THEIR OWN last hand over ("4 new"), grouped by who did
+it, with who and when on every line; their own not-yet-handed-over changes sit on top ("Yours · not handed over
+yet"); Hand over marks their point and greys when there is nothing new; one who never handed over this day sees what
+changed since the last hand over by anyone. This replaces the "Since" menu and the callsign picker, which were
+stand-ins for not knowing who is signed in.
+**His question: what if a scheduler never presses Hand over? — the agent's answer, put to him:** nothing waits on
+it. The schedule is live (everyone sees the change itself at once — across devices from the database step); in the
+changes window a scheduler's changes not yet handed over show under "Saber · still working · 2 changes" (the time
+of the last one, no hand-over date), and they are NEW to everyone who has not handed over since. Hand over only does
+two things: it closes YOUR group with a date, and moves YOUR "new to you" point — it never hides anything from anyone
+else. So the greyed "nothing new to hand over" guard is no longer needed: a hand over with no changes of your own just
+says you have looked ("Hex · looked, no changes · 25/9 16:50").
+**The marks — he asked how they would look now a mark is a corner tag (D92, D93):** on a published day a waiting change
+wears a hollow dotted tag at the puck's top right naming the AL it will go out as ("AL1"). An unpublished day has no
+AL, so the tag needs another label. **The agent's recommendation:** a hollow dotted **ORIG** tag in the seal's plain
+white, with no tick — "this change goes out with the Original" (hollow = not out yet, as for an AL; the ticked seal
+means published). Other options: a hollow dotted tag with no word (a small neutral pill), or no mark at all (the
+25 Aug 26 rule: an unpublished day shows none — the list does the finding). Whatever it is must not take an AL colour
+or a warning colour. **A mock-up first** (the house rule for a visual change): the three side by side on the edit week
+and the board, desktop and phone, beside a published day's AL1 tag. **Place:** his answer, then with `[LOOK-435]`.
 
-### [BOARD-RING-STROKES] The board draws every warning ring solid: no dashed late show, no dotted crew-rest cause (found 24 Sep 26)
-**DECIDED 25 Sep 26 — D94 ("1. yes"): the board draws all three rings as the week does; build it with the D92 batch.**
-Found while making the examples for [AMEND-MARK-RING-CLASH] (the mock-up's "Also found"). **What a person sees:** on the edit
-week a crew-rest breach sanctioned by a LATE SHOW remark rings DASHED, and the day that causes tomorrow's breach rings
-DOTTED — `raptor-port/docs/ui-contracts.md` §Three crew-rest rings, "on every puck of that man on the causing day". On
-the scheduler board the same man rings SOLID for the sanctioned breach and carries no ring at all on the causing day.
-**Why:** the board's seat builders call `puck()` with `dash=false, trace=null` (`raptor-port/src/ui/board-html.ts`), so
-the two strokes never reach it; no comment, contract line or ruling found says that is deliberate. **Recommendation, put
-to him on the mock-up page:** make the board match the week (pass the day's dash and trace as the week's builder does;
-the geometry gate already measures the rings). LOOK tier. **Place:** after [AMEND-MARK-RING-CLASH]; waiting on his word.
+### [CROWD-SWAP-SAYS-BUSY] Swapping two men inside one crowd warns "already on" that row — found 25 Sep 26
+Seen in the amendment batch's re-walk (`raptor-port/scripts/handpass/am/hr-03-batch-reads.mjs`, picture
+`docs/img/handpass/2026-09-25-amendment-batch/rewalk-reads/desktop/A-2-pending-list.png`): on the board, dragging
+Reaper onto Ranger on the SAME Common Programme row swaps them (correct), and a warning toast says "Reaper — already
+on FLIGHT SAFETY STAND-DOWN 08:30–09:00" — the row he is being moved within. **Not new** — the message comes from the
+availability check (`raptor-port/src/engine/avail.ts`, the "already on" lines), which the batch did not touch; the
+swap itself and the counts are right. **The agent's reading:** a move inside the row a man is already on should not
+call him busy there — exclude the row being dropped into from his own busy check. Small, WALK tier. **Place:** with
+the board's small items ([PUCK-FLAG-GLOW]); not his call unless the fix changes what a warning says elsewhere.
 
-### [AMEND-LOAD-FILING] Should "Load onto working copy" also put back an input the scheduler had taken off? — a question for him (24 Sep 26)
-**DECIDED 25 Sep 26 — D98 (his AM20 principle: back to what was published = nothing pending): the load puts the request
-back too; build with the D92 batch.**
-**Example shown (25 Sep 26, his ask "can u explain with examples or mock ups?"):** `raptor-port/docs/mock/amend-answers.html`
-§Question 7 (maker `raptor-port/scripts/handpass/am/mk-load-input.mjs`) — the real flow, three steps; waiting on his word.
-Found by the amendment re-test (walker W4, F3: `raptor-port/docs/handpass/parts/2026-09-24-amendment-w4.md`; the final
-read, Fable #2). **Today, by design** (`raptor-port/src/engine/publish.ts` `dayDiscardCount`, P2-REREVIEW-08): a load
-puts back the version's CONTENT and leaves every input's filing as it is. So: take an input off a published day (its
-row goes, the input reads "removed"), then Load AL1 — the row comes back from AL1, but the input still reads
-"removed", and the day shows "1 pending · 1 input filing" against the very version just loaded. Its "→ Ground" used
-to do nothing at all; since the re-test it says the input is already on the programme. The way back today, read from the code (not walked): delete that ground row, then Accept the input — it should re-land as the issued row, and the day read as issued. **The question:** should a load
-also put such an input back on (the day then matches the loaded version exactly), or leave it removed AND leave its
-row off? **The agent's recommendation:** put it back on, as the version recorded it — "Load AL1" then means the day
-as AL1 was — and count it in the load's confirm ("N edits replaced"). **Careful when building:** the first attempt did
-it inside the general filing reconcile and, as Fable's read showed, a plan switched away and back then turned a
-deliberate removal into a fresh input that flags; do it in the load alone, from the version's own filing record
-(`snap.fil`). **Place:** waiting on him.
+### [REQ-TWO-ROWS] A load or a plan switch can put a request on TWO days' programmes — found by Astra's D114 read (25 Sep 26)
+**High, older than D114** (the same on `main`). A two-day request (Mon–Tue) accepted onto Monday; Monday and Tuesday
+published; ✕ on Monday's row; Accept onto Tuesday; then Monday's issued version loaded onto the working copy (or a
+parked Monday plan that holds the row switched in): the version's row comes back on Monday while Tuesday's stands —
+one request, two rows. A later ✕ removes only the first, leaving an orphan row, and Tuesday reads 2 pending.
+Reproduced 25 Sep 26 through the production functions (`acceptInput`, `unacceptInput`, `loadVersionToWorkingCopy`).
+**Why:** a whole-day replacement (`drafts.ts loadVersionToWorkingCopy`, `draftSelect`) installs the day before
+`slots.ts reconcileDayFiling`, which only asks whether a row exists ANYWHERE, never whether there are now two.
+**The agent's recommendation:** the load and the switch leave that row out and SAY so — the way the load already leaves
+a request's filing that covers another day (LOADLEFT, walker B3) — rather than refusing the whole load (Astra's
+suggestion); one day's load never moves another (AM1). Tests: the six steps → exactly one row with that `src`, Tuesday
+untouched, the message names it; the same through a plan switch. FULL tier (the load, plans, the published record).
+Astra's report: `raptor-port/docs/handpass/2026-09-25-d114-astra-read.md` Finding 2. **Place — SETTLED 25 Sep 26, D175 ("2. Ok"):** its own small branch right after PR #435 merges, before `[ACCOUNTS]`;
+the load leaves the row out and says so.
+
+### [REQ-DECLINED-PENDING] A request filed on a published day and then taken off still reads "1 pending" — a question for him (25 Sep 26)
+Found by Fable's D114 read (O1), walked 25 Sep 26 (`raptor-port/scripts/handpass/am/d114-walk.mjs` step 9, desktop and
+phone): a Meeting filed for Gambit on the published Monday lands on the working copy (16 Sep 26 rule); ✕ on its row →
+the schedule reads exactly as published, yet the day says **1 pending — "Gambit · Meeting · not on the programme →
+taken off"**, and an AL would go out carrying it. Older than D114 (the same on `main`): ✕ parks a request "taken off"
+(dormant, flags nothing — 26 Aug 26), and the comparison treats that as different from "not there when published".
+**The agent's recommendation, to put to him:** make it 0 (D98 — back to what was published shows nothing pending): a
+request that did not exist when the version was issued and is now taken off is no difference; it stays silenced as
+today. To check before building: the four sign-offs must hold on that day too (D103, AM11). Fable's report:
+`raptor-port/docs/handpass/2026-09-25-d114-fable-read.md` O1. **ANSWERED 25 Sep 26 — D174 ("1. Yes"): make it 0.** **Place:** with `[REQ-TWO-ROWS]`, on its branch (D175).
+
+### [REQ-ORPHAN-ROW] A request's row outliving the request — low (25 Sep 26)
+Two older shapes, the same on `main`: (1) Fable's O2 — a request deleted on the Inputs page while its row stands on a
+day of ANOTHER (not loaded) week: `unacceptInput` searches only the loaded days, so that row stays with a dead link and
+its day reads 1 pending; (2) seen in the D114 walk, step 8 — a published day's version loaded after one of its
+requests was deleted puts that request's row back (the version had it) while the request stays deleted: 1 pending,
+"Zenith · Meeting · on the programme → deleted", and the row validates as a real commitment. **The agent's reading:**
+(1) is a real fix (sweep the stashed week through its own write path); (2) is what "load this version" means, now
+named truthfully — leave it unless he says otherwise. Fable's report O2. **Place:** with `[REQ-TWO-ROWS]`.

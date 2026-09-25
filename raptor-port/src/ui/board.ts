@@ -11,16 +11,17 @@ import { WARN, validate, WCODE, wlbl, fltNoLen, FLT_NO_LEN_SAYS } from '../engin
 import { hhmm, fmtHM, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr, unacceptInput, TIME_TXT } from '../engine/slots'
-import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayShownPendCount, dayHasChanges, verLabel, nextSeq, dropRowMarks, protectedWeek, dayVersions } from '../engine/publish'
+import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayShownPendCount, dayHasChanges, verLabel, nextSeq, dropRowMarks, protectedWeek, dayVersions, publishReadPass } from '../engine/publish'
 import { logAction, ELOG } from '../engine/editlog'
 import { hideHistBub } from './histbubble'
 import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap } from './html'
+import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap } from './html'
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
+import { DAYTPL_PUBLISHED_MSG } from '../engine/daytpl'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
 import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit } from './pops'
 import { openAvailWinFrom } from './AvailWindow'
@@ -52,7 +53,7 @@ const afterSchedMutate = () => view.afterSchedMutate()
    a pure string producer, which is exactly the shape the pass requires: nothing
    inside it writes DAYS, INPUTS or PEOPLE, so the memo cannot serve a stale
    answer to validation, signing or publication — none of which run in here. */
-export function boardHTML(di: number, pv?: boolean) { return oilReadPass(() => boardHTMLBody(di, pv)) }
+export function boardHTML(di: number, pv?: boolean) { return oilReadPass(() => publishReadPass(() => boardHTMLBody(di, pv))) }
 function boardHTMLBody(di: number, pv?: boolean) {
   /* a QUARANTINED loaded week is read-only and its days are the seed placeholder;
      the board is a third surface that reached the ordinary builder and painted the
@@ -388,8 +389,13 @@ function boardHTMLBody(di: number, pv?: boolean) {
    version, the tag says what the day IS (register AM28 — the one selector both
    surfaces share, A5). The strip used to go blank here, older than the 15 Sep
    redesign that moved the two into it ([HUMAN-RETEST] walk W2-F1, 24 Sep 26). */
-export function boardSignHTML(di: number, pv?: boolean) {
-  if (pv) return `<div class="signoff board-sign" id="sbSignBar"><div class="sb-pub">${planSelectorHTML(di)}${verTagHTML(di)}</div></div>`
+export function boardSignHTML(di: number, pv?: boolean) { return publishReadPass(() => boardSignBody(di, pv)) }   // one read of the day's comparison (publish.ts)
+function boardSignBody(di: number, pv?: boolean) {
+  /* who signed the version on screen, above the sign-off boxes (D95, D102): under a preview the previewed version
+     (this strip is built outside the snapshot swap, so it names it itself — Fable F8), else the published version
+     the working copy sits on */
+  const signed = signedLineHTML(di, pv ? view.DPREV.get(di) : (dayApproved(di) ? dayCurVer(di) : null))
+  if (pv) return `<div class="signoff board-sign" id="sbSignBar">${signed}<div class="sb-pub">${planSelectorHTML(di)}${verTagHTML(di)}</div></div>`
   /* the desktop "view all changes" entry heads this element, above the
      sign-off bar, exactly as it did when both lived at the top of #sbBoard */
   /* Publish controls, "same as edit schedule" (owner ask): dayStatHTML is the
@@ -413,7 +419,7 @@ export function boardSignHTML(di: number, pv?: boolean) {
      beside the tag from the SAME body the week head uses (nysMarkHTML) — the board is
      the working copy too ([HUMAN-RETEST] walk S5, 24 Sep 26). */
   return histLineHTML('histln-top')
-    + `<div class="signoff board-sign" id="sbSignBar">${signoffHTML(di, true)}`
+    + `<div class="signoff board-sign" id="sbSignBar">${signed}${signoffHTML(di, true)}`
     + `<div class="sb-pub">${planSelectorHTML(di)}${verTagHTML(di)}${nysMarkHTML(di)}${dayStatHTML(di, ed)}</div></div>`
 }
 
@@ -674,18 +680,16 @@ export function dayTplArmKey(di: any, id: any): string {
   return [CURWEEK, di, id, curDraftId(di) || '', view.navGen(), JSON.stringify(t), JSON.stringify(DAYS[di])].join('␟')
 }
 /* Decide + perform a day-template pick, extracted from the menu handler so the
-   arm scoping and the slot disarm are unit-testable (P2-IMPL-10/11). Returns
-   'armed' (a published day with unpublished edits on its FIRST matching pick —
-   the caller toasts the confirm prompt), 'applied' (the template was applied), or
-   'noop' (applyDayTpl declined). A published day's apply is a WORKING-DRAFT edit
-   that publishes as the next AL (§9 / P2-R3-04); the issued records + current
-   pointer are untouched. */
-export function pickDayTpl(di: any, id: any): 'armed' | 'applied' | 'noop' {
+   slot disarm is unit-testable (P2-IMPL-11). Returns 'refused' on a PUBLISHED day (D96, 25 Sep 26 — a template is
+   refused there; the caller says DAYTPL_PUBLISHED_MSG), 'applied', or 'noop' (applyDayTpl declined). 'armed' — the
+   old confirm before a published day's working-draft apply (P2-R3-04, P2-IMPL-10) — is no longer returned. */
+export function pickDayTpl(di: any, id: any): 'armed' | 'applied' | 'noop' | 'refused' {
   di = +di
-  if (dayApproved(di) && dayHasChanges(di)) {
-    const armKey = dayTplArmKey(di, id)
-    if (DAYTPL_ARM !== armKey) { DAYTPL_ARM = armKey; return 'armed' }
-  }
+  /* D96 (25 Sep 26): a published day never takes a template — refused FIRST, before anything arms (Fable F4: the
+     old order armed on the first pick, "pick it again to confirm", then went silent on the second). The confirm
+     that used to guard a published day's working-draft edits has nothing left to guard; 'armed' is no longer
+     returned, and dayTplArmKey stays only for its own tests. */
+  if (dayApproved(di)) { DAYTPL_ARM = null; return 'refused' }
   DAYTPL_ARM = null
   /* disarm any crew slot armed on THIS day BEFORE the replacement — a whole-day
      swap leaves the slot's address occupied by a new row, so afterSchedMutate's
@@ -1468,9 +1472,14 @@ export function dayTplMenu(anchor: HTMLElement, di: any) {
   if (!canEditSched() || !HOOKS.editMode()) return
   di = +di
   const d = DAYS[di]; if (!d) return
-  const html = `<h5>Day templates — ${esc(d.dow)}</h5><div class="wm-row" style="flex-direction:column;align-items:stretch">`
+  /* a PUBLISHED day: every template is drawn but disabled, with the reason on screen (D96 — the house rule for a
+     refusal: say why, at the door); saving this day AS a template stays open */
+  const pub = dayApproved(di), why = DAYTPL_PUBLISHED_MSG(d.dow)
+  const html = `<h5>Day templates — ${esc(d.dow)}</h5>`
+    + (pub && DAYTPL_CFG.length ? `<div class="wm-note wm-refuse">${esc(why)}</div>` : '')
+    + `<div class="wm-row" style="flex-direction:column;align-items:stretch">`
     + (DAYTPL_CFG.length
-      ? DAYTPL_CFG.map((t: any) => `<button class="wm" data-daytplpick="${esc(t.id)}">${esc(t.title || 'Untitled')}<span class="wm-sub">${esc(dayTplSummary(t))}</span></button>`).join('')
+      ? DAYTPL_CFG.map((t: any) => `<button class="wm" data-daytplpick="${esc(t.id)}"${pub ? ` disabled aria-disabled="true" title="${esc(why)}"` : ''}>${esc(t.title || 'Untitled')}<span class="wm-sub">${esc(dayTplSummary(t))}</span></button>`).join('')
       : `<div class="wm-note">No saved templates yet — save this day to start the library.</div>`)
     + `</div><div class="wm-row" style="flex-direction:column;align-items:stretch">`
     + `<button class="wm" data-daytplsave="1">+ Save this day as a template</button></div>`
@@ -1492,14 +1501,11 @@ export function dayTplMenu(anchor: HTMLElement, di: any) {
     const b = e.target.closest('[data-daytplpick]'); if (!b) return
     const id = b.dataset.daytplpick
     const t = DAYTPL_CFG.find((x: any) => x.id === id)
-    /* PUBLISHED DAY (§9 / P2-R3-04): no "reopen" any more — applying a template
-       is a WORKING-DRAFT edit that publishes as the next AL (applyDayTpl leaves
-       the issued records + current pointer untouched). Because it REPLACES any
-       unpublished working-draft edits, it takes a confirming SECOND pick when
-       such edits exist (pickDayTpl arms the first, applies the second). The arm
-       key is week/draft/template/content scoped (P2-IMPL-10) and the apply
-       disarms any crew slot on the day first (P2-IMPL-11) — both in pickDayTpl. */
+    /* A PUBLISHED DAY REFUSES a template (D96, 25 Sep 26) — pickDayTpl says so before anything arms; its rows are
+       drawn disabled above, so this is the belt for a stale menu. A draft day applies it (P2-IMPL-11 disarms the day's
+       crew slot first, in pickDayTpl). */
     const r = pickDayTpl(di, id)
+    if (r === 'refused') { close(); toast(DAYTPL_PUBLISHED_MSG(d.dow)); e.stopPropagation(); return }
     if (r === 'armed') {
       close()
       toast(`Applying "${t ? t.title : 'template'}" replaces your unpublished edits on ${d.dow} — open Templates and pick it again to confirm`)
@@ -1513,9 +1519,7 @@ export function dayTplMenu(anchor: HTMLElement, di: any) {
          keyed to ONE funnel address, and a whole-day replace has no single
          address to hang a blue box on. A named toast carries the news instead. */
       notify()
-      toast(dayApproved(di)
-        ? `Applied "${t ? t.title : 'template'}" to ${d.dow}'s working draft — publish AL${nextSeq(di)} to issue it`
-        : `Applied "${t ? t.title : 'template'}" to ${d.dow}`)
+      toast(`Applied "${t ? t.title : 'template'}" to ${d.dow}`)   // only ever a draft day since D96
       logAction(di, `Day template "${t ? t.title : 'template'}" applied`)
     }
     e.stopPropagation()

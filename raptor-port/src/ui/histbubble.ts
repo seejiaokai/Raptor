@@ -28,6 +28,13 @@ import { HISTMODE, esc } from '../state/view'
 let bub: HTMLDivElement | null = null
 let anchor: HTMLElement | null = null
 let hideT: any = null
+/* the SHORT GRACE a long story gets once the pointer leaves its cell (D105 — so a mouse can reach the scrolling list):
+   running while `grace` is set; anything the pointer crosses on the way does not restart or cut it (walker B3,
+   25 Sep 26: the gap between the cell and the bubble is itself an element, and hiding on it took the bubble down on
+   the first step of every hand-like path) */
+let grace = false
+function startGrace() { if (grace) return; grace = true; clearTimeout(hideT); hideT = setTimeout(() => { grace = false; hideHistBub() }, 350) }
+function stopGrace() { if (grace) { grace = false; clearTimeout(hideT) } }
 /* EXPANDED — every change to this detail, not just the newest (owner, 11 Aug
    26). PINNED — it stays until something puts it down, rather than following
    the pointer out or timing out. The two are separate because they arrive
@@ -56,6 +63,21 @@ function box() {
   bub = document.createElement('div')
   bub.className = 'histbub'
   bub.setAttribute('role', 'status')
+  /* A LONG BUBBLE SCROLLS INSIDE ITSELF (owner, D105, 25 Sep 26 — "that bubble once past a certain size the user
+     can scroll within that bubble to see the list"). Its list takes the pointer only once it overflows (paint,
+     below), so the desktop pointer may travel from the cell INTO the bubble to scroll it: leaving the bubble is
+     what puts it down then, unless the pointer went back onto the cell it belongs to. */
+  /* the scrolling list is the only part that takes the pointer (the bubble stays pointer-events:none, the History
+     contract): entering it cancels the grace the cell's mouseout started; leaving it for anything but the list or
+     its own cell puts the bubble down */
+  bub.addEventListener('mouseover', () => { if (!HOOKS.isPhone()) stopGrace() })
+  bub.addEventListener('mouseout', (e: any) => {
+    if (pinned || HOOKS.isPhone()) return
+    const to = e.relatedTarget as HTMLElement | null
+    if (to && to.closest && to.closest('.histbub')) return
+    if (cellOf(to) === anchor) return
+    hideHistBub()
+  })
   document.body.appendChild(bub)
   return bub
 }
@@ -76,7 +98,7 @@ export function histBubRecheck() {
 }
 
 export function hideHistBub() {
-  clearTimeout(hideT)
+  clearTimeout(hideT); grace = false
   if (anchor) { restoreTitle(anchor); anchor = null }
   if (bub && bub.isConnected) bub.remove()
   bub = null
@@ -136,6 +158,16 @@ export function histJumpable(key: any) {
   const c = k.indexOf(':')
   return c < 0 ? true : !NO_BOARD_CELL.includes(k.slice(0, c))
 }
+/* …and the WEEK's answer, since the jump lands on the page you are on (owner, D107, 25 Sep 26): the week draws the
+   area strip and the in-times the board does not, and the wave label as a typed field; only the traffic is typed
+   into a modal with no cell anywhere. Anything else the week turns out not to draw is said on screen by the jump
+   itself (interactions.ts jumpToChange), never silently dropped. */
+export function weekJumpable(key: any) {
+  const k = String(key || '')
+  if (!k) return false
+  const c = k.indexOf(':')
+  return c < 0 ? true : k.slice(0, c) !== 'tr'
+}
 function keyOf(el: HTMLElement) {
   const d = el.dataset
   if (d.bfld) return d.bfld
@@ -161,6 +193,7 @@ function chgHTML(r: ELogRow) {
 }
 
 function show(el: HTMLElement) {
+  stopGrace()                    // a grace left running by the last cell's mouseout (below) must not take this one down
   const key = keyOf(el)
   if (!key) return hideHistBub()
   const row = elogFor(key)
@@ -205,6 +238,11 @@ function paint(key: string, row: ELogRow) {
     b.innerHTML += `<button class="hb-more" data-histmore aria-label="Show every change to this detail">`
       + `⌄ all ${all.length} changes</button>`
   if (anchor) place(b, anchor)
+  /* past its height the list scrolls (D105): only then does it take the pointer — a wheel or a finger on it
+     scrolls it, and everywhere else the bubble stays pointer-events:none, never taking the tap that raised it.
+     It opens on its LAST line, what the detail says now, as the collapsed tail does. */
+  const ol = b.querySelector('.hb-all') as HTMLElement | null
+  if (ol && ol.scrollHeight > ol.clientHeight + 1) { ol.classList.add('scroll'); ol.scrollTop = ol.scrollHeight }
 }
 
 /* expand/collapse in place, keeping the anchor. Pins on the way open: a phone
@@ -274,7 +312,7 @@ export function wireHistBubble(el: HTMLElement) {
   const over = (e: any) => {
     if (!HISTMODE || HOOKS.isPhone() || pinned) return
     const c = cellOf(e.target)
-    if (!c) return hideHistBub()
+    if (!c) { if (grace) return; return hideHistBub() }   // on its way to a long story's list, the grace decides
     if (c !== anchor) show(c)
   }
   const out = (e: any) => {
@@ -283,6 +321,12 @@ export function wireHistBubble(el: HTMLElement) {
        naive version flickered once per character crossing an input's text */
     const to = cellOf(e.relatedTarget)
     if (to && to === anchor) return
+    /* into the bubble's own scrolling list — to scroll a long one (D105); its mouseout puts it down */
+    const into = e.relatedTarget as HTMLElement | null
+    if (into && into.closest && into.closest('.histbub')) return
+    /* a LONG story gets a short grace, so the pointer can cross the gap between the cell and the bubble and reach
+       its list (the list is the only part that takes the pointer); a short one goes at once, as it always did */
+    if (bub && bub.querySelector('.hb-all.scroll')) { startGrace(); return }
     hideHistBub()
   }
   const tap = (e: any) => {

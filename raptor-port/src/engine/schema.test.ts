@@ -122,18 +122,19 @@ const SIGNSET: Spec = { cur: 'string', sked: 'string', plan: 'string', appr: 'st
 const SIGNBIND: Spec = { dg: 'string', iso: 'string', base: 'string', rev: 'string' }
 /* Phase 2 DaySnapshot: the frozen day, its issued-marks slice, the filing
    fingerprint, and (on SCHED.orig only) the Original's own verId. */
-const DAYSNAP: Spec = { d: DAY, c: { $map: 'number' }, fil: { $opt: { $map: 'string' } }, id: 'string?' }
+const DAYSNAP: Spec = { d: DAY, c: { $map: 'number' }, fil: { $opt: { $map: 'string' } }, id: 'string?', sign: { $opt: { $map: SIGNSET } } }   // sign: the Original's four, kept since 25 Sep 26 (D95, D102)
 /* Phase 2 AlRecord: SINGLE-DAY, keyed by its immutable verId; the canonical
    `diff` replaces the old `keys` list, and there is no n/days/n0/adds/structAdds. */
 const ANYV: Spec = { $or: ['string', 'number', 'boolean'] }
 const ALDIFF: Spec = { addr: 'string', kind: { $lit: ['add', 'delete', 'change', 'move', 'input', 'oil'] }, from: { $opt: ANYV }, to: { $opt: ANYV } }
-const AL: Spec = { id: 'string', di: 'number', iso: 'string', seq: 'number', snap: DAYSNAP, diff: [ALDIFF], sign: { $map: SIGNSET }, added: { $opt: ['string'] } }
+const UKINDS: Spec = { $opt: { total: 'number', add: 'number', del: 'number', chg: 'number', mov: 'number', inp: 'number', oil: 'number' } }   // D114
+const AL: Spec = { id: 'string', di: 'number', iso: 'string', seq: 'number', snap: DAYSNAP, diff: [ALDIFF], units: 'number?', ukinds: UKINDS, sign: { $map: SIGNSET }, added: { $opt: ['string'] } }   // units: the item count as a person counts it (D109)
 const ONE: Spec = { $lit: [1] }
 /* [GLOBAL-UNDO] §6.1 — a retired-issuance snapshot (the append-only log, keyed
    `<verId>~<n>`). snap/by may be null when the retracted record was absent. */
 const RETIRED: Spec = { $map: {
   id: 'string', n: 'number', di: 'number', iso: 'string', seq: 'number',
-  snap: { $or: [DAYSNAP, { $lit: [null] }] }, diff: [ALDIFF], sign: { $map: SIGNSET },
+  snap: { $or: [DAYSNAP, { $lit: [null] }] }, diff: [ALDIFF], units: 'number?', ukinds: UKINDS, sign: { $map: SIGNSET },
   at: 'string', by: { $or: ['string', { $lit: [null] }] }, restoreSeq: 'number?', logged: 'boolean',
 } }
 /* Phase 2: cur is a verId STRING per day (Original = `iso#0`); orig carries an id. */

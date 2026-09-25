@@ -1859,7 +1859,7 @@ test('the stores popup opened from the BOARD anchors to the board\'s own C butto
 
   const weekBtn = page.locator('#eWeek .stcfg[data-stcfg]').first()
   const boardBtn = page.locator('#schedBoard .sb-line .stcfg[data-stcfg]').first()
-  await expect(weekBtn, 'the week\'s own C button sits underneath the open board').toBeVisible()
+  await expect(weekBtn, 'the week\'s own C button sits underneath the open board').toBeAttached()   // attached, not visible: since 25 Sep 26 the page behind an open board is not painted (the phone-keyboard fix, SchedBoard.tsx) — still in the document, where a lookup finds it first, which is the precondition here
   /* both surfaces render the SAME jet's key while the board is open — the
      exact precondition the bug needed */
   expect(await boardBtn.getAttribute('data-stcfg')).toBe(await weekBtn.getAttribute('data-stcfg'))

@@ -905,7 +905,29 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
    (AL1 cyan · AL2 amber · AL3 green · …), so the tag and the amendment marks read
    the same ramp. ORIG grey, DRAFT dashed — unchanged. */
 .verchip[data-alc]{color:#08131b;background:var(--alc,#57C97A)}
-.verchip.orig{color:#08131b;background:var(--ink-3)}
+/* ORIG — THE SEAL (owner, D111, 25 Sep 26 — "A1"; html.ts verChipHTML): a faint white wash, a thin light outline, a
+   drawn tick in a white disc. No colour, so it never reads as an AL (AL4 is white — the wash is faint and the ink is
+   light, where AL4's tag is solid white with dark ink) or as a warning; replaces the grey that read as "not
+   published" (D108). */
+.verchip.orig{color:#F1F4F7;background:rgba(241,244,247,.10);box-shadow:inset 0 0 0 1px rgba(241,244,247,.85);
+  display:inline-flex;align-items:center;gap:4px;padding:1px 6px 1px 3px}
+.verchip.orig .vtick{flex:0 0 auto;display:block}
+.verchip.orig .vtick circle{fill:#F1F4F7}
+.verchip.orig .vtick path{fill:none;stroke:#0B0D10;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+/* THE "SIGNED ALn" LINE (owner, D95 + D102; html.ts signedLineHTML) — the approved mock-up's option A
+   (docs/mock/amend-answers.html §Question 3): one slim line under the day head, the role before each name on a
+   desktop, names only on a phone. On the board it heads the sign strip. */
+.signedln{display:flex;flex-wrap:wrap;align-items:center;gap:3px 10px;padding:5px 15px 6px;font-size:11px;line-height:1.3;
+  color:var(--ink-3);border-bottom:1px solid var(--edge);background:rgba(255,255,255,.012)}
+.board-sign .signedln{padding:0 0 7px;margin-bottom:7px;background:none}
+.signedln .sl-h{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.1em;font-weight:700;font-size:10px}
+.signedln .verchip{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:10px;font-weight:800;letter-spacing:.06em;
+  padding:1px 6px;border-radius:5px;white-space:nowrap}
+.signedln .verchip.orig{padding:1px 6px 1px 3px}
+.signedln .sl-n{color:var(--ink-2);font-weight:600;white-space:nowrap}
+.signedln .sl-n i{font-style:normal;font-family:'Barlow Condensed','Inter Tight',sans-serif;font-weight:700;font-size:9.5px;
+  letter-spacing:.06em;color:var(--ink-3);margin-right:4px}
+@media (max-width:820px){.signedln .sl-n i{display:none}.signedln{gap:3px 7px}}
 .verchip.draft{color:var(--ink-3);background:transparent;border:1px dashed var(--edge-2);font-weight:700}
 /* THE "NOT YET SIGNED" MARKER (published-schedule flagging, §6): a small amber pill
    in the day head, shown to EVERYONE on a published day whose live working copy
@@ -937,6 +959,47 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .day-head .dal.orig,.sb-pub .dal.orig{background:var(--ink-3)}
 .day-head .dpend,.sb-pub .dpend{font-size:10px;font-weight:700;color:#F2D699;background:rgba(229,194,74,.12);
   border:1px solid rgba(229,194,74,.4);padding:1px 7px;border-radius:999px;white-space:nowrap}
+/* "N pending ▾" — the same chip, as the button that opens the list of what will go out (owner, D99 + D100,
+   25 Sep 26; ui/pendlist.ts). A button's own font and box are reset so it reads exactly as the chip did, plus
+   the caret that says it opens. */
+.day-head .dpendbtn,.sb-pub .dpendbtn{font-family:inherit;line-height:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:3px}
+.dpendbtn:hover{background:rgba(229,194,74,.22);border-color:rgba(229,194,74,.7)}
+/* the caret is drawn, not written, so the chip still reads "N pending" to everything that reads its words */
+.dpendbtn::after{content:'▾';font-size:8px;line-height:1}
+/* THE PENDING LIST — the approved mock-up's look (docs/mock/pending-list.html), in the app's tokens. Body-level,
+   above the board (the board sheet is 400) and the History bubble (430), below the modals (470). Its own list
+   scrolls once it runs past the screen (D100); pendlist.ts caps the height to the visible area. */
+.pendlist{position:fixed;z-index:440;width:min(380px,calc(100vw - 16px));display:flex;flex-direction:column;
+  background:var(--panel);border:1px solid var(--edge-2);border-radius:10px;box-shadow:0 14px 34px -12px rgba(0,0,0,.8);
+  padding:10px 10px 8px;font-size:12px;overflow:hidden}
+.pendlist .pl-head{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--ink);margin:0 2px 8px;flex:0 0 auto}
+.pendlist .pl-head .verchip{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:10px;font-weight:800;letter-spacing:.06em;padding:1px 6px;border-radius:5px}
+.pendlist .pl-list{overflow-y:auto;overscroll-behavior:contain;min-height:0;flex:1 1 auto}
+.pendlist .pl-item{display:grid;grid-template-columns:1fr auto;gap:1px 10px;width:100%;text-align:left;
+  padding:7px 8px;border-radius:7px;background:none;border:0;font:inherit;color:inherit}
+.pendlist button.pl-item{cursor:pointer}
+.pendlist button.pl-item:hover,.pendlist button.pl-item:focus-visible{background:rgba(229,194,74,.10);outline:none}
+.pendlist .pl-item+.pl-item{border-top:1px solid var(--edge)}
+.pendlist .pl-item.still{opacity:.82}
+/* several placeholders' crowds in the one change: each row its own line, its own tap (Astra's code read, 25 Sep 26) */
+.pendlist .pl-item.pl-multi{opacity:1}
+.pendlist .pl-sub{grid-column:1/-1;display:grid;gap:1px;width:100%;text-align:left;background:none;border:0;border-left:2px solid var(--edge-2);
+  margin:4px 0 0;padding:3px 0 3px 8px;font:inherit;color:inherit;cursor:pointer;border-radius:0 5px 5px 0}
+.pendlist .pl-sub:hover,.pendlist .pl-sub:focus-visible{background:rgba(229,194,74,.10);outline:none}
+.pendlist .pl-sub:disabled{cursor:default}
+.pendlist .pl-where{font-weight:600;color:var(--ink)}
+.pendlist .pl-chg{grid-column:1/2;color:var(--ink-2)}
+.pendlist .pl-chg s{color:var(--ink-3)}
+.pendlist .pl-chg b{color:#F2D699;font-weight:600}
+.pendlist .pl-who{grid-column:2/3;grid-row:1/3;align-self:center;text-align:right;font-size:11px;color:var(--ink-3);white-space:nowrap}
+.pendlist .pl-none{color:var(--ink-3);padding:6px 8px}
+.pendlist .pl-foot{font-size:10.5px;color:var(--ink-3);margin:8px 4px 0;flex:0 0 auto}
+.pendlist .pl-foot:empty{display:none}
+/* THE BRIEF MARK a jump leaves on the change it lands on (D99, D107 — the one "take me to this change",
+   interactions.ts): a ring in the colour of the AL the day's changes go out as, fading, then gone. */
+.chgflash{animation:chgflash 1.4s ease-out 1;border-radius:5px}
+@keyframes chgflash{0%{box-shadow:0 0 0 3px var(--chgc,#E5C24A)}70%{box-shadow:0 0 0 3px var(--chgc,#E5C24A)}100%{box-shadow:0 0 0 3px transparent}}
+@media (prefers-reduced-motion:reduce){.chgflash{animation-duration:1.4s;animation-timing-function:steps(1,end)}}
 /* PUBLISH DAY is the primary action on a day, so it wears the same blue as the
    banner buttons rather than looking like one more grey chip. Published flips it
    green (and it is then the reopen control); unsigned darkens it — see the
@@ -1157,7 +1220,7 @@ body:not(.tdrag) .page.editing .acrow .seat[data-slot]:hover .puck{outline:2px s
    and a sanctioned late show rendered as a fat solid red box. Clearing the
    shadow leaves the dashed outline alone in the frame, which is the whole
    point of it. !important because `.puck.warn.hard` and the AL marks
-   (`.seat[data-alc] .puck`) both out-specify a two-class selector — exactly
+   (`.seat[data-alc] .puck`, a ring until D92 took it off, 25 Sep 26) both out-specified a two-class selector — exactly
    the reason .boxred carries one too, so the two rings keep the same
    precedence over everything they sit on. */
 .puck.boxdash{outline:2px dashed var(--hard);outline-offset:0;border-color:var(--hard)!important;box-shadow:none!important}
@@ -1636,8 +1699,14 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
 [data-alc="5"],[data-aln="5"]{--alc:#B388FF}   /* AL5 · purple */
 [data-alc="6"],[data-aln="6"]{--alc:#FF7FC4}   /* AL6 · pink */
 [data-alc="7"],[data-aln="7"]{--alc:#E5872B}   /* AL7 · orange — off green so it can't be read as AL3 */
+/* A CHANGED PUCK GETS A TAG, NEVER A RING (owner, D92 + D93, 24 Sep 26 — "why dont u just a do solid AL3 chip and
+   not box up the whole puck? people might think that behind the AL3 green ring there is a hidden warning"). A
+   puck's EDGE carries only its warnings (the amber, grey and red rings, the dashed late show, the dotted crew-rest
+   cause); the amendment is the tag in the seat's corner — SOLID once it has gone out (this rule), HOLLOW and dotted
+   while it waits (the data-aln rule below). The AL-coloured ring that used to sit here out-ranked the thin amber,
+   grey and red rings and hid them (measured: Tally at AL3, 24 Sep 26). Every surface: the edit week, the board and
+   View-only Sched. Times, areas and remarks keep their own marks (the cell rules below). */
 .seat[data-alc]{position:relative}
-.seat[data-alc] .puck{box-shadow:0 0 0 2px var(--alc)}
 .seat[data-alc]::after{content:'AL' attr(data-alc);position:absolute;top:-5px;right:-3px;z-index:4;
   font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:7.5px;font-weight:800;letter-spacing:.02em;line-height:1;
   padding:1px 3px;border-radius:4px;background:var(--alc);color:#08131b;pointer-events:none}
@@ -1665,7 +1734,9 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
    (dashed) and crew-rest (dotted) rings, which are outlines too, and hid THEM (the final read,
    Fable #3). On the seat, no ring competes. The view page only: the edit surfaces draw their own
    AL-coloured mark on the puck (below). */
-#vWeek .seat[data-alp]{outline:1.5px dashed rgba(242,214,153,.75);outline-offset:1px;border-radius:4px}
+/* …SUPERSEDED 25 Sep 26 by D93 (View-only Sched included): the dashed outline on the seat is gone with the rings; a
+   waiting change on the view page's working-draft face wears the same hollow ALn tag as the edit surfaces (below).
+   Astra's scenario read (25 Sep 26) named the outline this batch had meant to keep as the one ring left. */
 .areacell[data-alp],.timecell[data-alp],.rmkcell[data-alp],.intimes[data-alp],.sb-rcell[data-alp]{
   outline:1px dashed rgba(242,214,153,.6);outline-offset:-1px;border-radius:4px}
 /* ---- the AL preview (data-aln): pending edits on a PUBLISHED day, painted in
@@ -1676,8 +1747,13 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
    NOT see these — read-only users see issued amendments only. The id prefix is
    also what outranks the neutral [data-alp] hints above, which stay as-is for
    draft-day edits everywhere and for all pending marks on the view page. */
-#eWeek .seat[data-aln] .puck,#schedBoard .seat[data-aln] .puck{
-  box-shadow:none;outline:1.5px dotted var(--alc);outline-offset:1px}
+/* A PUCK WAITING TO GO OUT: a HOLLOW, dotted ALn tag in the seat's corner — no line round the puck (owner, D92 +
+   D93: the approved mock-up docs/mock/amend-seat-marks.html, its C_CSS). Solid = out, hollow = waiting. Unscoped:
+   data-aln is emitted only on a published day's working copy, which is the edit week, the board and View-only
+   Sched's working-draft face — never the issued face (its pending marks are zeroed by the snapshot swap). */
+.seat[data-aln]::after{content:'AL' attr(data-aln);position:absolute;top:-5px;right:-3px;z-index:4;
+  font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:7.5px;font-weight:800;letter-spacing:.02em;line-height:1;
+  padding:0 2px;border-radius:4px;background:var(--panel);color:var(--alc);border:1px dotted var(--alc);pointer-events:none}
 #eWeek :is(.areacell,.timecell,.rmkcell,.intimes)[data-aln],
 #schedBoard :is(.areacell,.timecell,.rmkcell,.intimes,.sb-rcell)[data-aln],
 #schedBoard :is(input,textarea)[data-aln]{
@@ -3580,6 +3656,10 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    in". Both surfaces: a desktop wheel over the bar did exactly the same thing.
    Set from SchedBoard.tsx while the board is open. */
 body.sb-lock{overflow:hidden}
+/* the page the board opens over is not painted while it is open (his keyboard-gap report, 25 Sep 26; SchedBoard.tsx):
+   any strip a phone keyboard exposes shows the board's own background, never the week. visibility, not display:
+   the week keeps its layout, so its scroll position and every measurement survive the board closing. */
+body.sb-board-up #page-editsched{visibility:hidden}
 /* the burger drawer's own document lock (Drawer.tsx, 6 Sep 26) — its own class,
    not sb-lock: the drawer opens OVER the board (z440 over z400), and closing the
    drawer must not unlock a board that is still open under it */
@@ -3879,7 +3959,10 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
 .wavemenu .wm-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px}
 .wavemenu button.wm{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink);border-radius:8px;
   padding:7px 11px;font-size:12px;font-weight:700;cursor:pointer;text-align:left}
-.wavemenu button.wm:hover{border-color:var(--accent);color:var(--accent)}
+.wavemenu button.wm:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+/* a row that cannot be chosen LOOKS it (walker B3, 25 Sep 26 — a template refused on a published day, D96, was drawn and
+   lit on hover exactly like a live one): dimmed, no pointer, no hover */
+.wavemenu button.wm:disabled{opacity:.45;cursor:not-allowed}
 .wavemenu button.wm.sa{border-color:rgba(178,77,234,.45);color:#DDA9F5}
 .wavemenu button.wm.sa:hover{border-color:var(--san);color:var(--san)}
 .wavemenu .wm-note{font-size:10.5px;color:var(--ink-3);line-height:1.4;margin:-4px 0 8px}
@@ -3958,6 +4041,12 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
 .hb-all{list-style:none;margin:4px 0 0;padding:0;max-height:40vh;overflow-y:auto}
 .hb-all li{padding:4px 0;border-top:1px solid var(--edge)}
 .hb-all li:first-child{border-top:none}
+/* a list past its height scrolls inside the bubble (owner, D105, 25 Sep 26): only such a list takes the pointer
+   (histbubble.ts paint adds .scroll), and it keeps the scroll to itself rather than handing it to the page */
+.hb-all.scroll{pointer-events:auto;overscroll-behavior:contain;touch-action:pan-y}
+/* (the bubble ITSELF stays pointer-events:none on every device — the History contract the geometry gate pins: it
+   never takes a tap or a hover meant for the board. A mouse reaches a long list through a short grace before the
+   bubble goes down — histbubble.ts — not by the bubble taking the pointer.) */
 .hb-all .hb-chg{display:block}
 .hb-all .hb-who{display:block;margin-top:1px}
 /* THE ONE TAPPABLE THING IN A BUBBLE THAT IS OTHERWISE pointer-events:none.

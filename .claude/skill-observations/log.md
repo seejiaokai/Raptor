@@ -165,3 +165,108 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When mocking a fix, include one "busy" state by default — the fullest realistic mix of the elements the fix touches (every mark colour, every ring kind, issued and pending together, a plain case) — and derive the fix's scope from what the rule being changed actually affects (here: every box-shadow the rule wipes), not from the bug's first description.
 
 **Principle:** A fix scoped from the bug report covers the reported case; a fix checked against the busiest realistic state covers the rule.
+
+### Observation 244: A control reused on a second surface needs its own "where does it land" row in the roll-call
+
+**Status:** OPEN
+**Date:** 25 Sep 26
+**Session context:** the owner's five-minute look at the amendment re-test (a FULL-tier bug check with a roll-call of 22 surfaces, four parallel walkers and two code reads)
+**Skill:** New skill candidate: the bug-check roll-call (the project's standing order `raptor-port/docs/bug-check-order.md` §6)
+**Type:** open-source
+**Phase/Area:** the roll-call's "can the person ACT on it there" column
+
+**Issue:** The change list's "tap a row to jump to that change" was built for one surface (the scheduler board) and later given a second opener on another page (a top-bar button on the edit page) that reused the same handler. The roll-call row for the list recorded "a value row jumps to the detail" and was walked, but nothing asked WHERE the jump lands when opened from the second page: it silently left the page the user was on and opened the board. The owner found it in minutes; every automated and model check had passed it, because the action did exactly what its code said.
+
+**Suggested improvement:** In the roll-call, give every action that NAVIGATES (a jump, a "go to", a link) one row per OPENER, with a column for "the user is still on the page they started from — YES / NO-because". Seed the list from every call site of the opener, not from the surface the feature was designed on.
+
+**Principle:** A reused handler inherits its first surface's assumptions; the roll-call has to ask each new entry point where it leaves the user.
+
+### Observation 245: A body class named like an element class silently broke every closest()-based exclusion
+
+**Status:** OPEN
+**Date:** 2026-09-25
+**Session context:** Raptor amendment batch, overnight (item 11 — hiding the page behind a full-screen overlay while it is open)
+**Skill:** New skill candidate: css-state-class-hygiene (or a rule in the executor / bug-check order)
+**Type:** open-source
+**Phase/Area:** Build — adding a state class to `document.body`
+
+**Issue:** A state class was added to `<body>` while an overlay was open, reusing a short name ("sb-open") that already existed as an ELEMENT class (the date button that opens the overlay). The app's click router decides "is this a blank tap?" with `target.closest('…, .sb-open, …')`; with the class on `<body>`, every element's `closest()` matched it, so no blank tap ever cleared the selection. Nothing errored; nine tests went red only in the full-suite run, far from the change. Bisecting three commits found it in two minutes.
+
+**Suggested improvement:** Before adding any class to `html`/`body` (or any ancestor-wide container), grep the codebase for that class name used in `closest(`, `matches(`, `querySelector` and CSS selectors; prefer a namespaced state name (`is-…`, `…-up`, `has-…`) that no element uses. When a broad full-suite failure appears with no thrown error, bisect by commit before reading code.
+
+**Principle:** A class placed on an ancestor is inherited by every `closest()` query below it — a state class on the body must never share a name with an element class that code tests ancestry against.
+
+### Observation 246: Long inline Python edit scripts in a bash heredoc corrupted quotes three times — write the script to a file
+
+**Status:** OPEN
+**Date:** 2026-09-25
+**Session context:** Raptor amendment batch, overnight — many multi-file mechanical edits done with small Python scripts
+**Skill:** New skill candidate: safe-scripted-edits (Windows + Git Bash)
+**Type:** open-source
+**Phase/Area:** Editing files with scripted find/replace
+
+**Issue:** Three times a Python script passed through a bash heredoc produced wrong text: `\'` inside a non-raw Python string wrote a bare apostrophe into a single-quoted TypeScript string (a syntax error in a test file); a regex with `\s` triggered escape warnings; one heredoc failed to parse at all ("unexpected EOF"). Each cost a re-run. Writing the script to a scratch file with the editor tool and running it by path worked every time, and the `assert s.count(old) == 1` guard caught every miss before anything was written.
+
+**Suggested improvement:** For any scripted edit longer than a few lines, or containing quotes, backslashes or regexes, write the script to a scratch file first and run it by path; keep the one-match assertion before each replacement; never embed target-language string escapes inside a non-raw host-language string.
+
+**Principle:** Two layers of quoting (shell → script → target file) multiply escaping errors; remove a layer by writing the script to a file, and guard every replacement with an exact-match count.
+
+### Observation 247: Walk scripts hard-coded their picture folder, so the re-walk could not keep the first walk's evidence
+
+**Status:** OPEN
+**Date:** 2026-09-25
+**Session context:** Raptor amendment batch — three parallel walkers, then a re-walk of the fixes
+**Skill:** raptor-port/docs/bug-check-order.md §5 (the re-walk) / the walk brief template
+**Type:** internal
+**Phase/Area:** Walk scripts and the re-walk
+
+**Issue:** The standing order says the re-walk re-runs the walk scripts into a SEPARATE output folder, so the first walk's pictures remain the defect's evidence. All three walkers wrote `process.env.HP_SHOTS = '<fixed folder>'` at the top of every script, so re-running them would have overwritten the defect pictures; each had to be patched (`process.env.HP_REWALK || '<folder>'`) before the re-walk. Separately, one walker's "fail" on re-walk was its script not finding a delete control — a not-walked step reported as a failure.
+
+**Suggested improvement:** Put in the walk brief template (and `lib.mjs`'s header): "set HP_SHOTS only if it is not already set (`process.env.HP_SHOTS ||= '<folder>'`), so a re-walk can point elsewhere"; and "a check whose own setup step could not act must report NOT WALKED, never FAIL".
+
+**Principle:** Evidence-producing scripts must let the caller choose where output goes, and must distinguish "the app did the wrong thing" from "the script could not do the thing".
+
+### Observation 248: A walk helper that taps an element's CENTRE hits whatever child sits there — and the heredoc-escape slip (#246) recurred
+
+**Status:** OPEN
+**Date:** 2026-09-25
+**Session context:** Raptor amendment batch, overnight — the re-walk of the two code reads' fixes
+**Skill:** New skill candidate: app-walk scripting (Playwright hand pass)
+**Type:** open-source
+**Phase/Area:** Driving the running app from a script
+
+**Issue:** The shared "put a man in this row" helper tapped the middle of a crowd row's drop zone. Once the row held people, the middle was a seated man's puck, so the tap selected him instead of arming the row — the add silently failed ("FAILED", or one man short), and a first reading blamed the app. Tapping the row's own "+ add" box by its coordinates armed it every time. Separately, #246's slip happened again: a regex written inside a non-raw Python string turned \b into a backspace character in the target file, so a correct result read as a failure until the file was inspected.
+
+**Suggested improvement:** Walk helpers target the AFFORDANCE (the add box, the button) by its own box, never the container's centre; a helper that fails returns why ("not armed", "nobody offered") rather than a bare FAILED. For #246, make it structural: edit scripts that contain a regex or a backslash are written with the editor tool as raw strings, never typed into a heredoc.
+
+**Principle:** Clicking a container's centre is a guess about what lies there; aim at the control itself, and make every helper failure say which step failed so the app is not blamed for the script.
+
+### Observation 249: Mock-ups injected into a live app are wiped by its own repaints — inject after the scroll, re-apply just before the picture
+
+**Status:** OPEN
+**Date:** 2026-09-25
+**Session context:** Raptor — nine owner-requested mock-ups drawn by injecting proposed markup into the real running app
+**Skill:** New skill candidate: live-app mock-ups (Playwright)
+**Type:** open-source
+**Phase/Area:** Drawing a proposed design on top of the real app
+
+**Issue:** Four times a picture came out without the injected change: a tag set on a day disappeared because the day re-rendered as it scrolled into view; a select's value set by script was redrawn back a moment later; an app toast from the set-up covered a button; a sticky header covered the top of a clipped region. Each cost a redraw and a look. What worked: scroll first, inject second, wait, re-apply the fragile part immediately before the screenshot, hide transient toasts, and frame by testing that the element's own top edge is what the page shows at that point (elementFromPoint) rather than trusting scrollIntoView.
+
+**Suggested improvement:** A mock-up helper that (1) scrolls, (2) injects, (3) re-applies the injection right before the shot, (4) hides toasts, (5) frames clear of sticky bars by elementFromPoint; and a rule to LOOK at every picture before sending, since each failure above passed the script with no error.
+
+**Principle:** A live app owns its DOM; anything drawn into it for a picture must be applied at the last moment and checked by eye, because the app's own repaints fail silently.
+
+### Observation 250: A ruling that names its surfaces — the build's tests walked every surface that reads the changed body, and missed the one that re-derives the same number itself
+
+**Status:** OPEN
+**Date:** 2026-09-25
+**Session context:** D114's FULL check (Raptor, `claude/amendment-batch`) — a request taken off a published day counts one pending change on every count
+**Skill:** New skill candidate: none — the project's bug-check order (`raptor-port/docs/bug-check-order.md` §6, the roll-call)
+**Type:** open-source
+**Phase/Area:** building a counting change; the roll-call
+
+**Issue:** The ruling listed seven surfaces by name, including the load's "Discard N edits". The build changed the one counting body and red-first-tested the day head, the board, the info panel, the list, the panel and the publish message — every surface that READS that body. "Discard N edits" computes its number in a sibling function that re-derives the same unit by itself (content units + the filings the load will put back), so it never saw the pairing and read 2 beside the day head's 1. The build's own tests were all green; the mechanical roll-call (grep every reader of the count, then check each named surface) found it in minutes, before the app was opened.
+
+**Suggested improvement:** In the roll-call step, when a ruling names surfaces, map EACH named surface to the function that computes its number, and flag any surface whose function is not the changed body — that surface needs its own red test, or the two functions must share one body.
+
+**Principle:** "Every reader of the changed function" is not the same set as "every place the number is shown". A sibling that re-derives the same quantity is a drift seam the changed function's callers list can never reveal; enumerate from the surfaces the ruling names, not from the call graph of the code you changed.

@@ -12,8 +12,8 @@ scripts: `raptor-port/scripts/handpass/am/` (shared helpers `am-lib.mjs`).
   parallel walkers (W1–W4, reports in `parts/`); every finding fixed red first or filed (§3) — `7c69bd58` (F1–F5),
   `767799ae` (the walkers' findings) and the code reads' commit after it; the gates on the final code (§10); Fable's
   and Astra's final code reads (§11); the re-walk, three rounds (§12); his look card (§13).
-- **Waiting on him:** his five-minute look and his "merge live" (the branch is pushed; never merged by the agent);
-  six questions, each filed with a recommendation (§3).
+- **Closed:** his five-minute look passed all six steps and PR #434 MERGED on his "merge live", 25 Sep 26 (§13). Every
+  question he was asked is answered (D91–D105); his look's three points are D107–D109, in the amendment batch.
 
 ## 1. The eight questions → FULL
 
@@ -298,6 +298,13 @@ On the branch's Vercel link, signed in as admin, Edit Schedule. About five minut
    picker's "Working draft — not issued" shows your working copy, clearly stamped.
 6. **Your phone.** Open Monday's board: the same "Not yet signed", "N pending" and Unpublish as on the desktop; tap a
    sign-off box and check the name list opens (only a real iPhone proves that).
+
+**His look, 25 Sep 26:** all six steps good ("the rest of the steps are good too"); step 6 confirmed on his own iPhone ("For 6 yes" — the board shows "Not yet signed", "2 pending" and
+Unpublish, and the sign-off name list opens). Three points raised on the way, each reproduced on this branch the same
+night: a moved puck counts 2 pending (as designed — the count is the rows that differ from the issued day, AM23; put to
+him with a recommendation to keep it); Edit history on Edit Schedule jumps to the board (on `main` too — D107,
+`[HIST-JUMP-STAYS]`); the grey ORIG tag should stand out (D108, `[ORIG-TAG-STANDOUT]`). None is a defect of this branch;
+the two rulings are items 12–13 of the amendment batch. The card's two questions below were answered since (D96, D97).
 
 **Two questions ride with the card** (filed, nothing waits on them): should applying a day template to an already
 published day be refused, or keep what matches (`[AMEND-TEMPLATE-PUBLISHED]`)? And should "Not yet signed" read

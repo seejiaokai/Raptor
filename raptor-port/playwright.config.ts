@@ -66,7 +66,7 @@ export default defineConfig({
     /* availwin (23 Sep 26): the [ALL-AVAIL-WINDOW] paint and reach checks —
        their own file because the window is its own surface, and in this
        project so CI's `--project=raptor` leg runs them with the rest. */
-    { name: 'raptor', testMatch: /(geometry|medical|availwin)\.spec\.ts/ },
+    { name: 'raptor', testMatch: /(geometry|medical|availwin|amendbatch)\.spec\.ts/ },   // amendbatch: the 25 Sep 26 batch's geometry (D92, D93)
     { name: 'lw-phone', testMatch: /leavewar\.spec\.ts/, use: { ...devices['iPhone 13'], browserName: 'chromium' } },
     { name: 'lw-desktop', testMatch: /leavewar\.spec\.ts/, use: { viewport: { width: 1440, height: 900 } } },
   ],

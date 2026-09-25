@@ -624,7 +624,9 @@ describe('version dropdown and preview build', () => {
        (verTagHTML) replaced the "✓ Published · ALn" stamp; it rides its own .dhver
        span now (owner, 15 Sep 26 — item 4), coloured by AL number (item 3). */
     const h = dayHTML(0, true, true)
-    expect((h.match(/class="verchip/g) || []).length).toBe(1)
+    /* the day HEAD wears one tag; the Signed line under it (D102, 25 Sep 26) carries the signed version's own */
+    const head = (x: string) => x.slice(0, x.indexOf('</div>', x.indexOf('class="day-head"')))
+    expect((head(h).match(/class="verchip/g) || []).length).toBe(1)
     expect(h).toContain('>AL1<')
     /* item 3: AL1 is cyan — the tag carries data-alc="1" (the shared AL palette) */
     expect(h).toContain('class="verchip" data-alc="1"')
@@ -637,7 +639,7 @@ describe('version dropdown and preview build', () => {
     /* a second AL replaces the tag, it does not join it — and recolours to AL2 */
     txtSet('dn:0.1', 'AL2 CHANGE'); sgn(0); alIssue(0)
     const h2 = dayHTML(0, true, true)
-    expect((h2.match(/class="verchip/g) || []).length).toBe(1)
+    expect((head(h2).match(/class="verchip/g) || []).length).toBe(1)
     expect(h2).toContain('>AL2<')
     expect(h2).toContain('class="verchip" data-alc="2"')
     expect(h2).not.toContain('>AL1<')

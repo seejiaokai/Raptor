@@ -9,7 +9,7 @@ import { SCHED, signOf, setDayApproved, dayApproved, dayCurVer } from './publish
 import {
   DAYTPL_STD, DAYTPL_CFG, dayTplAreStandard,
   tplFromDay, addDayTpl, delDayTpl, renameDayTpl, moveDayTpl,
-  applyDayTpl, dayTplSave, dayTplLoad, dayTplReset, MAX_DAYTPL,
+  applyDayTpl, dayTplSave, dayTplLoad, dayTplReset, MAX_DAYTPL, DAYTPL_PUBLISHED_MSG,
 } from './daytpl'
 import { ensureRowIds } from './rowids'
 
@@ -174,19 +174,22 @@ describe('tplFromDay — the crew-blanked mint', () => {
 })
 
 describe('applyDayTpl', () => {
-  /* Phase 2 (§4, P2-R3-04): a published version is frozen and there is no reopen,
-     so applying a template on a published day is a large WORKING-DRAFT edit — it
-     succeeds, the crewless template becomes the live draft, the issued record and
-     current pointer are UNTOUCHED, and publishing it becomes the next AL. */
-  it('a published day takes a template as a working-draft edit — the issued version is untouched', () => {
+  /* D96 (owner, 25 Sep 26 — "4 refuse") REPLACES the Phase 2 reading (§4, P2-R3-04) that took a template on a
+     published day as a working-draft edit: a template's rows are all new rows, so it read as everything removed and
+     re-added and took the members' accepted requests off the programme. Refused — the day is left exactly as it was. */
+  it('a published day REFUSES a template — the day, its marks and its issued version are untouched (D96, AM58)', () => {
     sign(0); setDayApproved(0, 1)
     expect(dayApproved(0)).toBe(true)
-    const issued = dayCurVer(0)                    // the Original verId
+    const issued = dayCurVer(0), before = JSON.stringify(DAYS[0]), pend = JSON.stringify(SCHED.pending)
     const t = addDayTpl(0)!
-    expect(applyDayTpl(0, t.id)).toBe(true)
-    expect(DAYS[0].ground[0]!.who).toBe('')        // the crewless template is now live
-    expect(dayApproved(0)).toBe(true)              // still published
-    expect(dayCurVer(0)).toBe(issued)              // viewers still see the issued version
+    expect(applyDayTpl(0, t.id)).toBe(false)
+    expect(JSON.stringify(DAYS[0]), 'the working copy is untouched').toBe(before)
+    expect(JSON.stringify(SCHED.pending)).toBe(pend)
+    expect(dayCurVer(0)).toBe(issued)
+  })
+
+  it('the refusal says why in one sentence every door shares (D96)', () => {
+    expect(DAYTPL_PUBLISHED_MSG('Mon')).toMatch(/^Mon is published — a template can't be applied to a published day/)
   })
 
   it('returns false for an unknown template id', () => {

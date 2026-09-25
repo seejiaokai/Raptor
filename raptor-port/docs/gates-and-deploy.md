@@ -11,6 +11,12 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   The way back to GitHub's own parallel jobs: the repo variable `CI_ON_GITHUB=true`. Take the runner OFF this repo
   before any collaborator is added (Astra SEC-101, `[REPO-PRIVATE]`). Where it lives and how it was set up:
   §The checks run on HIS PC, at the end of this file.
+- **While the repo is public (D106, 25 Sep 26) the checks run on GitHub's own parallel jobs** and his PC's runner is
+  stopped. **How long a run takes, measured 25 Sep 26 (PR #434):** GitHub **10 min 49 s** against his PC's last three
+  full runs, 15:19 · 14:50 · 14:25 (about 14 min 50 s) — a quarter quicker. On GitHub the checks are 9 jobs side by
+  side; 8 finished within 6½ min and `unit (raptor)` alone took the whole 10¾ min, so everything waited on it.
+  Splitting that one job in two, as the Leave War's unit tests already are, should bring a run to about 6–7 min —
+  offered to him the same day, not asked for yet.
 - **Never two full gate runs at once, and never a full local run while his PC's runner is mid-run** (D86) — look
   first: `gh run list`.
 - **Never push while a PR's checks are running** (D151, measured 23 Sep 26): GitHub judges the WHOLE pull request,

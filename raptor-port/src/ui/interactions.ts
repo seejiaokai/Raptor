@@ -7,15 +7,17 @@ import { slotVal, acceptInput, unacceptInput, txtSet } from '../engine/slots'
 import { INPUTS, DATES, withRemarksTail, inpId, defaultAllday } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
-import { dayApproved, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek } from '../engine/publish'
-import { draftSelect, draftVerLabel, loadVersionToWorkingCopy } from '../engine/drafts'
+import { dayApproved, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek, alColor, nextSeq } from '../engine/publish'
+import { posKey } from '../engine/rowids'
+import { openPendList, closePendList } from './pendlist'
+import { draftSelect, draftVerLabel, loadVersionToWorkingCopy, LOADLEFT, LOADMOVED } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { notify, loadWeek, commitSetDayApproved, commitPublishALDay } from '../state/store'
 import { schedWrite, schedWriteValue, SCHED_TYPES, commitUnpublish } from '../state/sched-commit'
 import { oilCreditBidAgainst, createOilPeriodFor } from '../leavewar/sync'
-import { scrollToWarnFocus, queueHold, warnWeekId } from './highlights'
+import { scrollToWarnFocus, queueHold, warnWeekId, bringIntoView } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
 import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
@@ -74,30 +76,70 @@ function scrollBoardWarnToSel() {
 
    `boardTab` before `notify` because the day may not be the open one — a
    change made on Thursday, read from the whole-week list on Monday's board. */
-export function jumpToChange(key: string, di: any) {
-  if (!key) return
+/* ONE "TAKE ME TO THIS CHANGE", LANDING ON THE PAGE YOU ARE ON (owner, D107, 25 Sep 26 — "when i click on
+   history on edit schedule and i click on the specific change, it jumps me to schedule board. Shouldnt it keep me
+   on edit schedule page and show me the specific area?"). Edit history's rows and the pending list's rows
+   (ui/pendlist.ts, D99) both come here, so the two can never land differently.
+     · THE BOARD IS OPEN — today's jump, unchanged: the day onto the board, the cell scrolled in, its History
+       bubble pinned open.
+     · ON THE WEEK (the board is not open) — it NEVER opens the board. The cell is found inside that day on the
+       week, the week is stepped sideways to the day if it is off screen (a phone shows one day at a time), the
+       cell scrolled in — the warning jump's own recipe, highlights.ts bringIntoView.
+   Either way the cell wears a brief mark in the colour of the AL it will go out as, so the eye finds it.
+   `key` may be a list of addresses to try in order — the change's own cell, then its row's head — for a change
+   whose own cell a surface does not draw. A change that cannot be shown says why, on screen, rather than doing
+   nothing (a tap that does nothing reads as a tap that did not register). */
+export function jumpToChange(key: string | string[], di: any) {
+  const cands = (Array.isArray(key) ? key : [key]).filter(Boolean).map(String)
+  if (!cands.length) return
   closeHistList()
+  closePendList()
   hideHistBub()
-  if (di != null && view.SBDAY !== +di) boardTab(+di)
+  const onBoard = view.SBDAY != null
+  if (onBoard && di != null && view.SBDAY !== +di) boardTab(+di)
+  /* a day being looked at as an older version draws no working cells to land on — the change lives on the live
+     copy, so go back to it first (Fable F6: the jump said "no longer on this day" about a live detail) */
+  if (!onBoard && di != null && view.DPREV.has(+di)) view.setDayPreview(+di, null)
   notify()
   setTimeout(() => {
-    const wrap = document.querySelector('.sb-boardwrap')
-    const el = wrap && findHistCell(wrap, key)
-    /* the row it addressed can have been deleted since — say so rather than
-       doing nothing, which reads as the click not registering */
-    if (!el) { HOOKS.toast('That detail is no longer on this day', 'warn'); return }
-    pinHistBubAt(el)
-    /* the bubble is already up, so the smooth scroll's own events re-anchor it
-       the whole way in (histbubble's document-level scroll listener).
-       GUARDED because jsdom does not implement scrollIntoView at all — it has
-       no scrolling to implement it with. Unguarded it threw out of this
-       deferred callback, where no test could catch it: every assertion still
-       passed and the run failed on two unhandled errors, which is a shape
-       worth recognising. Where the scroll is REAL it is measured in
-       e2e/geometry.spec.ts, which is the only place it can be. */
-    if (typeof el.scrollIntoView === 'function')
-      el.scrollIntoView({ block: 'center', behavior: 'smooth' })
+    const root: any = onBoard
+      ? document.querySelector('.sb-boardwrap')
+      : document.querySelector(`#${warnWeekId()} .day[data-day="${di}"]`)
+    let el: HTMLElement | null = null
+    if (root) for (const k of cands) { el = findHistCell(root, k); if (el) break }
+    if (!el) {
+      /* why it is not here: its row was deleted since (today's words), or this surface does not draw it */
+      const gone = cands.every(k => posKey(k, DAYS) == null)
+      HOOKS.toast(gone ? 'That detail is no longer on this day'
+        : onBoard ? 'That detail is shown on the week, not on the board'
+        : 'That detail is shown on the scheduler board — open the day there to see it', 'warn')
+      return
+    }
+    if (onBoard) {
+      pinHistBubAt(el)
+      /* the bubble is already up, so the smooth scroll's own events re-anchor it
+         the whole way in (histbubble's document-level scroll listener).
+         GUARDED because jsdom does not implement scrollIntoView at all — it has
+         no scrolling to implement it with. Unguarded it threw out of this
+         deferred callback, where no test could catch it: every assertion still
+         passed and the run failed on two unhandled errors, which is a shape
+         worth recognising. Where the scroll is REAL it is measured in
+         e2e/geometry.spec.ts, which is the only place it can be. */
+      if (typeof el.scrollIntoView === 'function')
+        el.scrollIntoView({ block: 'center', behavior: 'smooth' })
+    } else bringIntoView(root, el, warnWeekId())
+    flashChange(el, di)
   }, 0)
+}
+/* the brief mark (the approved mock-up's "marks it for a moment"): a ring in the colour of the AL the day's
+   changes go out as, fading over ~1.4 s, then gone — never left behind as a second meaning on the cell */
+function flashChange(el: HTMLElement, di: any) {
+  /* on the cell (a seat wraps its puck exactly), never the puck: every puck ring rule carries !important, which
+     an animation cannot out-rank, so a mark drawn on the puck would never show */
+  const tgt = el
+  tgt.style.setProperty('--chgc', alColor(nextSeq(+di)))
+  tgt.classList.remove('chgflash'); void tgt.offsetWidth; tgt.classList.add('chgflash')
+  setTimeout(() => { tgt.classList.remove('chgflash'); tgt.style.removeProperty('--chgc') }, 1600)
 }
 
 /* HOLD THE SCREEN STILL ON SELECTION (owner, 7 Aug 26 — "it should just turn
@@ -479,6 +521,18 @@ export function routeClick(e: MouseEvent) {
     const di = +peekDay.dataset.peekDay!
     view.setPeekLand({ di, x: peekDay.getBoundingClientRect().left })
     loadWeek(shiftWeek(CURWEEK, 1))
+    return
+  }
+
+  /* "N PENDING ▾" — the list of what will go out as the day's next AL (owner, D99 + D100, 25 Sep 26;
+     ui/pendlist.ts). Drawn by the day head on the edit week and on the board's strip (html.ts dayStatHTML),
+     so it is routed here, at the document, like data-alpub. Scheduler-only, like the button itself; a tap on a
+     row goes through the ONE jump below. */
+  const pl = t.closest('[data-pendlist]') as HTMLElement | null
+  if (pl) {
+    e.stopPropagation()
+    if (!canEditSched()) return
+    openPendList(+pl.dataset.pendlist!, pl, (keys, di) => jumpToChange(keys, di))
     return
   }
 
@@ -949,9 +1003,18 @@ export function routeClick(e: MouseEvent) {
        line. It loads onto the WORKING COPY only: the issued schedule the view
        page shows is untouched (SCHED.cur unchanged) until a new AL is published,
        which is the whole point of the reword from the old instant rollback. */
+    /* the requests the load could not put back as that version had them — each also covers another published day,
+       or its row stands on another day (D98 applied without moving another day: AM1; Fable F3) — are named, so a
+       day that still reads pending says why */
+    const left = LOADLEFT.length
+    /* …and a request whose one row the version took away is off the programme on the other days it covers too — named,
+       never silent (walker B3) */
+    const movedDays = [...new Set(LOADMOVED.flatMap(m => m.days))]
     const said = `${DAYS[di].dow}: ${verLabel(ver)} loaded onto the working copy`
       + (dayApproved(di) ? ` — viewers still see ${verLabel(dayCurVer(di))} until you publish` : '')
       + (replaced ? ` · ${replaced} unpublished edit${replaced === 1 ? '' : 's'} replaced` : '')
+      + (left ? ` · ${left} request${left === 1 ? '' : 's'} also cover${left === 1 ? 's' : ''} another day — left as filed` : '')
+      + (LOADMOVED.length ? ` · ${LOADMOVED.length} request${LOADMOVED.length === 1 ? '' : 's'} ${LOADMOVED.every(m => m.on) ? 'came back onto' : LOADMOVED.some(m => m.on) ? 'moved on or off' : 'came off'} the programme with ${LOADMOVED.length === 1 ? 'its' : 'their'} row — ${movedDays.join(', ')} ${movedDays.length === 1 ? 'reads' : 'read'} that too` : '')
     logAction(di, said)
     HOOKS.toast(said)
     notify(); return

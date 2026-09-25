@@ -124,21 +124,44 @@ describe('D44 — a changed crowd on a published day raises the pending mark', (
   })
 })
 
-describe('D45 — but it NEVER takes a signature down with it', () => {
-  it('a man files leave and every signature still stands (AM13)', () => {
+/* D103 (25 Sep 26) REPLACES D45's SIGNATURE HALF — "any change on a published day wipes the sign-offs",
+   his own idea ("why dont we just wipe the sign offs for any changes to the schedule?"). One rule: something
+   waiting means sign again. D45's other half — the crowd frozen at publication, the change shown as pending —
+   stands, and is pinned above. These were D45's "never takes a signature down" tests; they now pin the newer rule
+   (D90: the later ruling wins), with AM11's half — putting it back restores the four — beside each. */
+describe('D103 — a changed crowd on a published day wipes the sign-offs, and putting it back restores them (AM13, AM11)', () => {
+  it('a man files leave: the day reads pending AND the four must sign again (AM13)', () => {
     puckRow(TUE)
     signAndPublish(TUE)
     expect(allSigned(TUE), 'signed before anything moved').toBe(true)
     HOOKS.oilSentinel = () => ['bane']
     expect(dayHasChanges(TUE), 'the change is acknowledged through the pending mark').toBe(true)
-    expect(allSigned(TUE), 'and not by tearing up what he approved').toBe(true)
+    expect(allSigned(TUE), 'D103: something waiting means sign again').toBe(false)
+    HOOKS.oilSentinel = () => CROWD.slice()
+    expect(dayHasChanges(TUE), 'back as it went out').toBe(false)
+    expect(allSigned(TUE), 'AM11: putting it back restores the signatures').toBe(true)
   })
 
   it('the same on a weekend, where the crowd is money', () => {
     puckRow(SAT)
     signAndPublish(SAT)
     HOOKS.oilSentinel = () => ['bane']
-    expect(allSigned(SAT), 'a change in availability is not a change of mind').toBe(true)
+    expect(allSigned(SAT), 'the crowd that earns has changed — sign for the new one').toBe(false)
+    HOOKS.oilSentinel = () => CROWD.slice()
+    expect(allSigned(SAT)).toBe(true)
+  })
+
+  it('THE CONTROL: a published day with nothing waiting keeps its signatures however often it is read', () => {
+    puckRow(TUE)
+    signAndPublish(TUE)
+    for (let i = 0; i < 3; i++) expect(allSigned(TUE)).toBe(true)
+  })
+
+  it('THE CONTROL: on a day not yet published a crowd change moves no signature — nothing is pending there', () => {
+    puckRow(TUE)
+    for (const [role, who] of ROLES) setSign(TUE, role, who)
+    HOOKS.oilSentinel = () => ['bane']
+    expect(allSigned(TUE), 'a draft day has no issued version to differ from').toBe(true)
   })
 
   it('THE CONTROL: a changed OIL DECISION still does take the signature down', () => {

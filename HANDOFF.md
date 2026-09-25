@@ -15,32 +15,49 @@ the later merge keeps both (D78).
 
 ## Now
 
-<!-- now:claude/amendment-retest -->
-### `claude/amendment-retest` — the amendment re-test (done) and his answers to it; written 25 Sep 26 — verify before use
-- **Where it started:** 24 Sep 26: `[HUMAN-RETEST]`, the amendment system, FULL tier, work without waiting. Then, on
-  25 Sep 26, his look at the re-test's leftovers: mock-ups of the real app and his answers, recorded as D91–D105.
-- **Shipped (on the branch, NOT merged):** the re-test — the register, the evidence sheet
-  `raptor-port/docs/handpass/2026-09-24-amendment.md` (§13 is his five-minute look card), every fix red first — and the
-  mock-ups `raptor-port/docs/mock/amend-seat-marks.html`, `amend-answers.html`, `pending-list.html` with their makers
-  in `raptor-port/scripts/handpass/am/`. PR #434 — open when written; check before acting.
-- **Unfinished:** none of the re-test's own work. **His decisions of 24–25 Sep 26 are ONE build batch, not yet built:**
-  `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md` (11 items: tag-only marks, board rings, the
-  "Signed ALn" line, template refusal, the two-state marker, the load fix, wipe-on-any-pending, the pending list, the
-  bubble, the phone keyboard gap). Also filed: `[AVAILWIN-PREVIEW-BAR]`, `[AMEND-SMALL-SEEN]`, `[UNDO-ROSTER-SETTINGS]`.
-- **Branch:** `claude/amendment-retest`, cut from `main` at `bff76c1b`. If it has MERGED: `git fetch origin main && git
-  checkout -B <branch> origin/main` before new work; the batch goes on a fresh branch from `main`.
-- **Gates:** see `## Gate baseline` (this branch's final code, one watched run); `npm run probes:adapted` **6 / 6** (129
-  checks — the probes now fall back to Playwright's own browser, and audit-async's step 3, stale since 13 Sep 26, looks
-  for the input's id) · `npm run perf` **4 / 0** (week 5134 / 5450 nodes, board 1024 / 1150).
-- **Open questions for him:** none from this chat — every question he was asked is answered (D91–D105) or closed.
-- **Pick up here:** his five-minute look at PR #434 (evidence sheet §13) and his "merge live"; then build the batch in
-  `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md` (FULL tier; Opus 5.5 builds, Fable and Astra read).
+<!-- now:claude/amendment-batch -->
+### `claude/amendment-batch` — the amendment batch (PR #435) and his inputs from its look; written 25 Sep 26 — verify before use
+- **Where it started:** D112's overnight build of the 14-item amendment batch (FULL tier, all checked — evidence
+  `raptor-port/docs/handpass/2026-09-25-amendment-batch.md`, incl. §5a the two blind reads and the later walk of Fable's
+  three un-walked situations, 12/12 desktop and phone). Then his look began and he gave a run of inputs, each recorded:
+  D113–D119 and D165–D173. The chat was compacted once; its early context is in the evidence sheet and commit messages.
+- **Shipped (pushed to this branch, PR #435 OPEN, not merged):** the batch; **D114** (a request taken off / put on a
+  published day counts ONE — `publish.ts dayPendingItemsIn` pairs the filing with its ground row; the AL stores `ukinds`;
+  red first, the neighbouring suites green, **NOT yet fully checked**); the rulings D113–D119, D165–D173 (D115 replaced
+  by D173 and archived); seven mock-ups under `raptor-port/docs/mock/` (the design of record for the next work is
+  `changes-window.html` option A, with `changes-doors.html` and `tags-ticks.html`); `[MOVE-REPLACE-ONE]` closed (D113).
+- **Unfinished — HIS ORDER, D173:**
+  1. **D114's FULL check — DONE 25 Sep 26 (evening), waiting for his look and "merge live" of #435.** Evidence
+     `raptor-port/docs/handpass/2026-09-25-amendment-batch.md` §9 (the reads, the walk desktop + phone, break tests,
+     gates, his look card §9.11). Two gaps fixed ("Discard N edits" read 2; a deleted request's line named nobody);
+     three older findings filed — `[REQ-TWO-ROWS]` (high), `[REQ-DECLINED-PENDING]`, `[REQ-ORPHAN-ROW]` — the first two
+     are questions on his look card. `[REQUEST-OFF-ONE]` archived.
+  1b. **HIS ANSWERS (D174, D175): `[REQ-TWO-ROWS]` + `[REQ-DECLINED-PENDING]` on their own small branch once #435 has
+     merged, BEFORE accounts** — the load leaves out a row whose request stands on another day and says so; a request
+     filed since publishing and then taken off reads 0. Its own check, his look, "merge live".
+  2. **`[ACCOUNTS]` (D165, D166) on a NEW branch from `main`** once #435 has merged.
+  3. **`[DRAFT-PENDING]` — the one changes window (D118, D167–D172)** on top of accounts; it absorbs D116's list, D117
+     and D119 — do NOT build those separately.
+  4. **One FULL check of 2 and 3** (permissions → FULL tier), his look, "merge live".
+  - Also: `OUTSTANDING.md` is 17 lines over its size tripwire — a documents-only tidy (D29, D141), its own commit.
+- **Branch:** `claude/amendment-batch`; PR #435 (open when written — check before acting). Vercel preview:
+  https://raptor-git-claude-amendment-batch-kai-e2f5.vercel.app . GitHub's machines run the checks while the repo is
+  public (D106, ~11 min); never push while they run (D151).
+- **Gates:** the full set green on the D114 check's final code, 25 Sep 26 18:20 (`## Gate baseline`).
+- **Open questions for him:** none — every question put to him this chat is answered and recorded.
+- **Pick up here:** his look and "merge live" of #435 (step 1 is done — his look card is the evidence sheet §9.11;
+  its two questions answered, D174 and D175); then D175's step (1b above), then step 2, `[ACCOUNTS]` (D165, D166), on a
+  NEW branch — stacked on this one if #435 has not merged yet, taking `main` in once it has. Read the rulings D113–D119
+  and D165–D173 in `.claude/rules/decisions/scheduler.md` and `how-we-work.md` before building anything; models per his
+  rule — Opus 5.5 (high) plans and builds, Fable 5.1 and Astra review the plan and the code (permissions → both).
 <!-- /now -->
 
 ## Next, in order
 
-1. **`[HUMAN-RETEST]`** — the amendment system is DONE on `claude/amendment-retest`, waiting for his look and "merge
-   live" (evidence `raptor-port/docs/handpass/2026-09-24-amendment.md`). Next, in his order (D147): the absence record
+1. **The amendment batch and his look's inputs — HIS ORDER, D173** (the `## Now` block above): D114's full check and
+   "merge live" of PR #435 → `[ACCOUNTS]` on a new branch → the one changes window (`[DRAFT-PENDING]`) → one full check
+   → "merge live". **`[HUMAN-RETEST]`** — the amendment system MERGED 25 Sep 26 (PR #434; evidence
+   `raptor-port/docs/handpass/2026-09-24-amendment.md`). Next, in his order (D147): the absence record
    together with `[S4-HUNT-REST]`, then change-recording (with D148 and `[UNDO-ROSTER-SETTINGS]`), then the Leave War
    links last. The two evidence sheets (Tracker 23 Sep, amendment 24 Sep) are the worked examples.
 2. Then his after-the-hunt order: `[PUB-UNAVAIL]` → `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]` → the OIL award fix and the
@@ -51,10 +68,10 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 24 Sep 26, `claude/amendment-retest`'s final code (waiting for "merge live"), one run on a
-quiet PC (`raptor-port/docs/handpass/2026-09-24-amendment.md` §10): unit **5855 / 5855** (360 files) · build clean ·
-tfin **728 / 0** · e2e **469 passed**, 48 skipped · smoke **442 / 0** · rulecheck OK · docsize OK (`OUTSTANDING.md` 2 lines
-over its tripwire, deferred by the gate to a documents-only pass, D29). Restate a count only from a
+The latest counts watched — 25 Sep 26 18:20, `claude/amendment-batch` after D114's check (not yet merged), one run on a
+quiet PC (`raptor-port/docs/handpass/2026-09-25-amendment-batch.md` §9.10): unit **5910 / 5910** (363 files) · build clean ·
+tfin **728 / 0** · e2e **471 passed**, 48 skipped · smoke **442 / 0** · rulecheck OK · docsize OK. `main` (PR #434) stands at
+5855 unit and 469 e2e until the batch merges. Restate a count only from a
 run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his
 PC: `raptor-port/docs/gates-and-deploy.md`.
 

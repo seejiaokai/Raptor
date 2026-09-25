@@ -5,7 +5,7 @@ import { esc, SBDAY } from '../state/view'
 import { notify } from '../state/store'
 import { HISTLIST, setHistList, HISTGROUP, setHistGroup, HISTOPEN, toggleHistOpen, closeHistList } from './pops'
 import { jumpToChange } from './interactions'
-import { histJumpable } from './histbubble'
+import { histJumpable, weekJumpable } from './histbubble'
 import { useVersion } from './useStore'
 import { posKey } from '../engine/rowids'
 
@@ -27,9 +27,11 @@ import { posKey } from '../engine/rowids'
    the day buttons rather than inside them, and both reset when the list
    closes: a view set ten minutes ago should not be waiting for you.
 
-   EVERY ROW THAT NAMES A DETAIL IS A BUTTON, and clicking it closes the list,
-   puts that day on the board, scrolls the detail into view and pins its
-   bubble open (interactions.ts's jumpToChange). Structural entries — a line
+   EVERY ROW THAT NAMES A DETAIL IS A BUTTON, and clicking it closes the list
+   and takes the view to that detail ON THE PAGE YOU ARE ON (owner, D107,
+   25 Sep 26): on the board, that day on the board with the bubble pinned open;
+   on Edit Schedule, that day on the week, marked — never the board
+   (interactions.ts's jumpToChange). Structural entries — a line
    removed, a day rolled back — carry no key and no cell, so they render as
    plain rows rather than as buttons that would do nothing. */
 
@@ -55,13 +57,14 @@ function rowHTML(r: ELogRow, cls = 'hl-row') {
      CURRENT positional address (posKey), never the rid — no non-deterministic
      value ever reaches the DOM (RID-05). A row that no longer resolves (its row
      was deleted since the edit) is rendered without a live jump. */
-  const pk = histJumpable(r.key) ? posKey(r.key, DAYS) : null
+  /* jumpable on the page the jump will land on (D107): the board when it is open, else the week */
+  const pk = (SBDAY != null ? histJumpable(r.key) : weekJumpable(r.key)) ? posKey(r.key, DAYS) : null
   const body = r.key
     ? `<span class="hl-what">${esc(r.lbl)}</span><span class="hl-chg">${chg(r)}</span>`
     : `<span class="hl-what struct">${esc(r.lbl)}</span>`
   return pk
     ? `<button class="${cls} hit" data-hkey="${esc(pk)}" data-hdi="${r.di == null ? '' : r.di}"
-         title="Go to this detail on the board">${dow(r.di)}${body}${meta(r)}</button>`
+         title="Go to this detail">${dow(r.di)}${body}${meta(r)}</button>`
     : `<div class="${cls}">${dow(r.di)}${body}${meta(r)}</div>`
 }
 

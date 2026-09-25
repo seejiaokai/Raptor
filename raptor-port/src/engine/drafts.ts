@@ -1,5 +1,7 @@
 import { DAYS } from './data'
-import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, moveKey, trackStructuralAdd, isDeleteKey, isMoveKey, protectedWeek } from './publish'
+import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, moveKey, trackStructuralAdd, isDeleteKey, isMoveKey, protectedWeek, filingRestorePlan } from './publish'
+import { inputProtected } from './quarantine'
+import { INPUTS, inputCoversDate, inpId } from './inputs'
 import { dayKeys } from './restore'
 import { reconcileDayFiling } from './slots'
 import { keyDay } from './keys'
@@ -531,15 +533,40 @@ export function draftDelete(di: any, id: any) {
    is published — publishing the loaded-then-edited copy becomes the next AL.
    The single undo step is the UI caller's afterSchedMutate(), the same contract
    draftSelect and restoreDayVersion carry. Refuses (false) an unknown version. */
+/* the requests the last load had to leave as filed (they also cover another published day, or their row is landed
+   elsewhere) — read by the Load handler's message, right after the load */
+export let LOADLEFT: string[] = []
+/* …and the requests whose filing the load DID change although they cover another loaded day (their row went with the
+   version), with those days' short names — the message names them */
+export let LOADMOVED: Array<{ id: string, on: boolean, days: string[] }> = []
 export function loadVersionToWorkingCopy(di: any, ver: any) {
   di = +di
   if (protectedWeek()) return false   // read-only quarantine — never roll a version over a frozen day (P2-REV2-02)
   const snap = daySnapOf(di, ver)
   if (!snap) return false
+  /* which requests covering this day also cover ANOTHER loaded day, and how they are filed now — so a filing the load
+     changes there too is NAMED (walker B3, 25 Sep 26). A request's filing is one value for every day it covers: the
+     load never sets such a one (filingRestorePlan), but when the version takes away the one row a request stood on,
+     the reconcile below must take it off the programme (P2-REV2-05 — "on the programme" with no row is a lie), and
+     the other day it covers then reads that too. That is the truth, not a slip; it must not be silent. */
+  const dt0 = (DAYS[di] || {}).dt
+  const multi = INPUTS.filter((inp: any) => inputCoversDate(inp, dt0) && DAYS.some((d: any, dj: number) => dj !== di && d && inputCoversDate(inp, d.dt)))
+    .map((inp: any) => ({ inp, was: inp.acc || '' }))
   const nd = liveDay(snap.d)
   nd.today = !!(DAYS[di] && DAYS[di].today)
   DAYS[di] = nd
   reconcileDayFiling(di)   // every replacement, approved or not (P2-QREV-07)
+  /* …AND PUT BACK WHAT THAT VERSION HAD FILED (owner, D98, 25 Sep 26): a request the scheduler had taken off (or
+     filed under Unavailable, or accepted) since goes back to the state the version froze, so the day reads exactly
+     as that version — nothing pending. HERE ONLY, never in the general reconcile above: done there, a plan switched
+     away and back turned a deliberate removal into a fresh request that flags (Fable's earlier read). What cannot be
+     put back without moving another day is left as filed and named (LOADLEFT, for the caller's message). */
+  const plan = filingRestorePlan(di, snap.fil)
+  plan.put.forEach(({ inp, want }) => { if (want) inp.acc = want; else delete inp.acc })   // the plan already skips a quarantined request
+  LOADLEFT = plan.left
+  LOADMOVED = multi.filter(x => (x.inp.acc || '') !== x.was).map(x => ({ id: inpId(x.inp), on: x.inp.acc === 'g',
+    days: DAYS.map((d: any, dj: number) => (dj !== di && d && inputCoversDate(x.inp, d.dt)) ? String(d.dow || '').slice(0, 3) : '').filter(Boolean) }))
+  LOADLEFT = LOADLEFT.filter(id => !LOADMOVED.some(m => m.id === id))
   if (dayApproved(di)) {
     rebaseDayPending(di)
   } else {

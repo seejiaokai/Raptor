@@ -991,7 +991,9 @@ are kept for a period the squadron sets, then purged by a scheduled job;
    the 8 MB cap.
 3. **Auth provider** — Entra ID is assumed. How is a signed-in principal
    matched to a `Person` on first sign-in: by callsign, by an admin mapping
-   step, or automatically by email?
+   step, or automatically by email? **ANSWERED by the owner, 25 Sep 26 (D165): an
+   admin mapping step** — the admin creates the `Person` and records their defence
+   mail address; the first sign-in with it becomes that person; "View as" retires.
 4. **EditLog retention** — the app caps it at 400 rows in memory. Shared and
    durable, how long is it kept, who may read it, and is it a compliance
    record or an operational convenience?

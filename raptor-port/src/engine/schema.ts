@@ -420,7 +420,7 @@ export type SignSet = { cur: string; sked: string; plan: string; appr: string }
  *  time: the canonical digest (§5.0), the schedule date, the current issued base
  *  id, and the candidate (plan/draft) revision. A signature is content-valid only
  *  while all four still match the live day; validity is recomputed, never cleared. */
-export type SignBinding = { dg: string; iso: string; base: string; rev: string; fil: string; oil?: string }
+export type SignBinding = { dg: string; iso: string; base: string; rev: string; fil: string; oil?: string; gord?: string; pd?: string }   // pd: the whole pending comparison on a published day (D103)
 /** Per-day, per-role bindings — only roles signed through `setSign` appear. */
 export type SignBindSet = Record<number, Partial<Record<keyof SignSet, SignBinding>>>
 
@@ -434,6 +434,9 @@ export type DaySnapshot = {
   fil?: Record<string, string>
   /** The Original snapshot (SCHED.orig[di]) carries its own verId (`iso#0`); AL snapshots do not (the record does). */
   id?: string
+  /** The Original's four signers, by day index (callsigns) — kept since 25 Sep 26 (D95, D102: the Signed line); an AL
+   *  keeps its own on the record. */
+  sign?: Record<number, SignSet>
 }
 
 /** A per-day alternate draft blob — engine (drafts.ts). Since 15 Sep 26 (item 1a)
@@ -461,6 +464,12 @@ export type AlRecord = {
   snap: DaySnapshot
   /** The canonical delta vs the prior issued version, frozen at issue (replaces `keys`). */
   diff: AlDiffEntry[]
+  /** The item count as a person counts it, frozen at issue — a man moved is one (D109, 25 Sep 26); absent on a record
+   *  issued before, which falls back to the diff's length (alCount). */
+  units?: number
+  /** Its per-kind split in the same unit (D114, 25 Sep 26 — a request taken off is "1 removal", not a removal and a
+   *  filing); absent on a record issued before, which falls back to the diff's split (diffCounts). */
+  ukinds?: { total: number, add: number, del: number, chg: number, mov: number, inp: number, oil: number }
   /** Signatures at issue, by day index (callsigns) — Phase 3 binds them. */
   sign: Record<number, SignSet>
 }
