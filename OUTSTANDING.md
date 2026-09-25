@@ -1112,6 +1112,13 @@ it, with who and when on every line; their own not-yet-handed-over changes sit o
 yet"); Hand over marks their point and greys when there is nothing new; one who never handed over this day sees what
 changed since the last hand over by anyone. This replaces the "Since" menu and the callsign picker, which were
 stand-ins for not knowing who is signed in.
+**His question: what if a scheduler never presses Hand over? — the agent's answer, put to him:** nothing waits on
+it. The schedule is live (everyone sees the change itself at once — across devices from the database step); in the
+changes window a scheduler's changes not yet handed over show under "Saber · still working · 2 changes" (the time
+of the last one, no hand-over date), and they are NEW to everyone who has not handed over since. Hand over only does
+two things: it closes YOUR group with a date, and moves YOUR "new to you" point — it never hides anything from anyone
+else. So the greyed "nothing new to hand over" guard is no longer needed: a hand over with no changes of your own just
+says you have looked ("Hex · looked, no changes · 25/9 16:50").
 **The marks — he asked how they would look now a mark is a corner tag (D92, D93):** on a published day a waiting change
 wears a hollow dotted tag at the puck's top right naming the AL it will go out as ("AL1"). An unpublished day has no
 AL, so the tag needs another label. **The agent's recommendation:** a hollow dotted **ORIG** tag in the seal's plain
