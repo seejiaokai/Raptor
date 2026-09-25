@@ -72,6 +72,7 @@ read: Fable 5.1 (§8).
 | 17 Sep 26 `[TRK-SMOKE]` — the reset happens during render; the cursor timer is armed once per open and survives a refresh | Yes — both kept; their two tests still pass |
 | D87 — a test that fails on a slow machine waits on what it needs, not a fixed time | Yes — the Tx step now uses the `addStudent` helper, which checks the name landed and waits for the student to show |
 | D121 — the Tracker reads no role | Untouched |
+| D191 — a callsign typed into the roster search that matches nobody: OK adds it, and the line says so | Built, §11 |
 | D56 — a harm only in stored demo data is not a finding | Nothing here is of that kind — the old code hurt NEW typing |
 
 No clash between rulings.
@@ -135,7 +136,7 @@ Three OLDER findings nearby, none caused by this change — dispositions:
 
 | # | Finding | Reproduced? | Disposition |
 |---|---|---|---|
-| F1 (medium) | On "+ Add" the cursor starts in the roster search by design; a callsign NOT on the roster typed there shows "Nobody on the roster matches", and OK adds nobody, silently | **Yes** — the real fixed build, `fable-f1-search-typed.png` (the roster unchanged after OK, no message) | Filed `[TRK-ADD-SEARCH-OK]` — what OK should do there is his product call (add the name / refuse and point to the box below / leave it) |
+| F1 (medium) | On "+ Add" the cursor starts in the roster search by design; a callsign NOT on the roster typed there shows "Nobody on the roster matches", and OK adds nobody, silently | **Yes** — the real fixed build, `fable-f1-search-typed.png` (the roster unchanged after OK, no message) | Filed `[TRK-ADD-SEARCH-OK]` and put to him — **his answer A (D191): OK adds the name; built the same evening, §11** |
 | F2 (low) | A second question opened over an open one (Tab to a control behind the shade, then Enter) replaces it, and the first one's job waits forever | Not reproduced — read from the code (`_dlgShow` overwrites the waiting answer) | Filed `[TRK-DLG-LEFTOVERS]` item 1, with Fable's fix and test |
 | F3 (low) | Enter pressed while a phone keyboard is still composing a word submits the half-typed text | Not reproduced — needs an input method; callsigns are Latin | Filed `[TRK-DLG-LEFTOVERS]` item 2, with Fable's fix and test |
 
@@ -156,9 +157,42 @@ One run, 25 Sep 26 20:06–20:18, on port 4180, with the D175 chat running nothi
 layout run was pointed at 4180 (`E2E_PORT`) because another checkout's preview held 4173, and the suite would
 otherwise have REUSED it and tested that bundle.
 
-## 11. His look card
+## 11. D191 — a new callsign typed into the roster search (his "A", built the same evening)
+
+**What it does now.** On "+ Add" with the roster, a callsign that matches nobody, typed into the search (where the
+cursor starts), with "Or type a callsign" empty: the line reads "Nobody on the roster matches “…”. OK adds them as
+a new crew member." and OK — or Enter in the search (the agent's call: the keyboard's door to the same action, as
+Enter already picks a sole match) — adds it as an unlinked student. Unchanged, and pinned so the new half cannot
+absorb it (§8.7): a name in the box below wins and the line then makes no promise; a search that still matches
+someone adds nothing by itself.
+
+**Tier: WALK** (the shared box; one place on screen). No second model: one surface, and the ruling states the
+behaviour exactly — nothing left to turn into scenarios.
+
+| Check | Before D191 (the cursor fix only) | After |
+|---|---|---|
+| The line says OK adds it — desktop / phone | ✗ / ✗ ("Nobody on the roster matches “newguy ok”." and nothing more) | ✓ / ✓ |
+| OK adds it — desktop / phone | ✗ / ✗ (nobody added) | ✓ / ✓ |
+| Enter adds it — desktop / phone | ✗ / ✗ | ✓ / ✓ |
+| The box below wins; the line makes no promise | ✓ | ✓ |
+| A search matching someone adds nothing | ✓ | ✓ |
+| The whole cursor walk above (§5), again | ✓ | ✓ |
+
+Totals: before 45 / 8 failed (all eight are the D191 checks), after **53 / 0** (`pre191-results.json`,
+`fix2-results.json`; pictures `pre191-search-*`, `fix2-search-*`). Red first: the four D191 unit tests — the two
+new-behaviour ones failed on the code before it, the two unchanged-half ones passed on both. Break tests: B3 (OK no
+longer uses the search text) → "OK adds it" and "Enter does the same" red; B4 (the Enter branch removed) → "Enter
+does the same" red. Both restored byte for byte.
+
+**The gates, again** (21:07–21:19, port 4180, after the D175 chat's own run had finished — checked before starting):
+unit **5916 / 5916** (the four D191 tests added) · build clean · tfin **728 / 0** · e2e **471 passed**, 48 skipped · smoke
+**442 / 0** · rulecheck OK. GitHub's checks on the first push (the cursor fix) all passed, the Tracker smoke included.
+
+## 12. His look card
 
 1. On his phone, Tracker → Tx 2026 → Info → **+ Add**: tap straight into "Or type a callsign" and type a name
    quickly — every letter stays in that box, and OK adds exactly that name.
 2. **+ Add** and wait: the cursor still goes to the roster search by itself, as it always did.
 3. Rename a course or a syllabus: the old name is selected when the box opens, so typing replaces it.
+4. **+ Add**, and type a callsign that is not on the roster straight into the search: the line under it says OK adds
+   them as a new crew member, and OK (or Enter) does.

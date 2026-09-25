@@ -174,6 +174,49 @@ async function fillRun(pg, sfx) {
   ok('+ Add (the squadron roster listed)' + sfx, 'fill → OK', landed, `"${name}" ${landed ? 'was added' : 'was NOT added — OK added nobody'}`);
 }
 
+/* D191 (his "A", 25 Sep 26): a callsign NOT on the roster typed into the roster SEARCH — where + Add
+   puts the cursor — with "Or type a callsign" empty: the line says OK adds it, and OK (or Enter) does.
+   Unchanged: a name in the box below wins; a search that still matches someone adds nothing by itself. */
+async function searchRun(pg, sfx) {
+  const W = '+ Add, a new callsign in the SEARCH (D191)' + sfx;
+  const line = () => pg.evaluate(() => document.querySelector('#dlgModal .dlg-none')?.textContent || '');
+  const tag = sfx.replace(/\W/g, '').toUpperCase();
+  for (const how of ['OK', 'Enter']) {
+    const name = ('NEWGUY ' + how + tag).toUpperCase();
+    await pg.click('#addStu'); await pg.waitForSelector('#dlgFilter'); await pg.waitForTimeout(200);
+    await pg.keyboard.type(name.toLowerCase());          /* the cursor is in the search already */
+    const L = await line();
+    await shot(pg, `search${sfx}-${how.toLowerCase()}`);
+    ok(W, `says so · ${how}`, /Nobody on the roster matches/.test(L) && /OK adds them as a new crew member\./.test(L), `the line reads "${L}"`);
+    if (how === 'OK') await pg.click('#dlgOk'); else await pg.keyboard.press('Enter');
+    await drainBoxes(pg);
+    const landed = (await rosterNames(pg)).includes(name);
+    ok(W, `${how} adds it`, landed, `"${name}" ${landed ? 'was added' : 'was NOT added'}`);
+  }
+  /* the box below wins, and then the line makes no promise */
+  {
+    await pg.click('#addStu'); await pg.waitForSelector('#dlgFilter'); await pg.waitForTimeout(200);
+    await pg.keyboard.type('searchonly' + tag.toLowerCase());
+    await pg.fill('#dlgInput', 'BOXWINS' + tag);
+    const L = await line();
+    ok(W, 'the box below wins · line', !/OK adds/.test(L), `the line reads "${L}"`);
+    await pg.click('#dlgOk'); await drainBoxes(pg);
+    const r = await rosterNames(pg);
+    ok(W, 'the box below wins · OK', r.includes('BOXWINS' + tag) && !r.includes('SEARCHONLY' + tag), `added: ${r.filter(n => /BOXWINS|SEARCHONLY/.test(n)).join(', ') || 'nothing'}`);
+  }
+  /* a search that still matches someone adds nothing by itself */
+  {
+    const before = (await rosterNames(pg)).length;
+    await pg.click('#addStu'); await pg.waitForSelector('#dlgFilter'); await pg.waitForTimeout(200);
+    const label = await pg.evaluate(() => document.querySelector('#dlgList .dlg-item .dlg-lbl')?.textContent || '');
+    await pg.keyboard.type(label.slice(0, 3).toLowerCase());
+    const listed = await pg.locator('#dlgList .dlg-item').count();
+    await pg.click('#dlgOk'); await drainBoxes(pg);
+    const after = (await rosterNames(pg)).length;
+    ok(W, 'a search matching someone · OK', listed > 0 && after === before, `"${label.slice(0, 3).toLowerCase()}" lists ${listed}; roster ${before} → ${after}`);
+  }
+}
+
 /* ---- desktop: every place ---- */
 {
   const pg = await b.newPage({ viewport: { width: 1500, height: 950 } });
@@ -183,6 +226,7 @@ async function fillRun(pg, sfx) {
   const tx = await pg.evaluate(() => [...document.getElementById('sylSel').options].find(o => o.textContent.startsWith('Tx 2026'))?.value);
   await pg.selectOption('#sylSel', tx); await pg.evaluate(() => window.__coreForTests.whenLoaded()); await pg.waitForTimeout(600);
   await fillRun(pg, '');
+  await searchRun(pg, '');
   for (const P of PLACES) await walkPlace(pg, P, '');
   /* the new-event name, in Edit chart layout */
   {
@@ -233,6 +277,7 @@ async function fillRun(pg, sfx) {
   await pg.selectOption('#sylSel', tx); await pg.evaluate(() => window.__coreForTests.whenLoaded()); await pg.waitForTimeout(600);
   if (await pg.locator('button[data-view="info"]').count()) { await pg.click('button[data-view="info"]'); await pg.waitForTimeout(300); }
   await fillRun(pg, ' phone');
+  await searchRun(pg, ' phone');
   await walkPlace(pg, PLACES[0], ' phone');
   await walkPlace(pg, PLACES[1], ' phone');
   if (SHOTS) await pg.screenshot({ path: join(SHOTS, `${TAG}-phone-after.png`) });

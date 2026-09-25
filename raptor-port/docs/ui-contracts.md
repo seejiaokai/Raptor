@@ -7127,7 +7127,15 @@ screen:
   (seat, then the category when there is one). Order is OCU first, pilots
   before WSOs, then callsign — the trainees the card is for come first. The
   search narrows by callsign as you type; Enter in the search picks a sole
-  match; a click picks. A pick adds the person under their callsign
+  match; a click picks. **A callsign typed into the search that matches
+  NOBODY, with "Or type a callsign" empty, is the name to add (D191, 25 Sep
+  26):** the line under the search reads "Nobody on the roster matches “…”.
+  OK adds them as a new crew member." while that is true, and OK — or Enter in
+  the search — adds it as an unlinked student, exactly as if typed below. A
+  name in the box below always wins (the line then makes no promise); a search
+  that still matches someone adds nothing by itself. Pins: `tracker.test.tsx`
+  (the four D191 tests); the walk `scripts/handpass/trk-add-race-walk.mjs`.
+  A pick adds the person under their callsign
   (upper-cased, as every roster name is) and records the link; the free-text
   box below ("Or type a callsign") still adds an unlinked name exactly as
   before, so the old flow and the smoke suite's `#dlgInput` path are

@@ -915,6 +915,78 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     await act(async () => { root.unmount() }); host.remove()
   })
 
+  describe('a new callsign typed into the roster SEARCH — OK adds it (D191, [TRK-ADD-SEARCH-OK])', () => {
+    /* + Add opens with the cursor in the roster search. A callsign NOT on the
+       roster typed there used to show "Nobody on the roster matches" and OK then
+       closed the box having added nobody, silently — the name typed was simply
+       lost. His answer (D191, "A"): OK adds it as a new, unlinked crew member,
+       and the line says so while it is true, before OK is pressed. */
+    let fireEvent: any
+    const Live = () => { useSyncExternalStore(C.subscribe, C.getVersion); return <DlgModal /> }
+    let host: HTMLElement, root: any
+    beforeAll(async () => { ({ fireEvent } = await import('@testing-library/react')) })
+    beforeEach(async () => {
+      host = document.createElement('div'); host.className = 'host'; document.body.appendChild(host)
+      root = createRoot(host)
+      await act(async () => { root.render(<Live />) })
+    })
+    afterEach(async () => {
+      if (C.dlg) await act(async () => { C.dlgClose(null) })
+      for (const n of ['NEWGUY', 'VISITOR TWO', 'KEYBOARD GUY']) {
+        const e = C.byName(n); if (!e) continue
+        const q = C.removeStudent(e.id); await act(async () => { C.dlgClose(true) }); await q; await C.whenLoaded()
+      }
+      await act(async () => { root.unmount() }); host.remove()
+    })
+    /* hands back the add in a box: returning the bare promise from an async helper would make the caller
+       wait for the add itself — which waits for this very dialog to be answered */
+    const open = async () => { let p: Promise<any>; await act(async () => { p = C.addStudent(); await Promise.resolve() }); return { p: p! } }
+    const search = async (v: string) => { await act(async () => { fireEvent.change($('#dlgFilter')!, { target: { value: v } }) }) }
+    const none = () => ($('#dlgModal .dlg-none') as HTMLElement | null)?.textContent || ''
+
+    it('OK adds it, unlinked, and the line says so before OK is pressed', async () => {
+      const { p } = await open()
+      await search('newguy')
+      expect(none()).toContain('Nobody on the roster matches “newguy”.')
+      expect(none(), 'the line says what OK will do').toContain('OK adds them as a new crew member.')
+      await act(async () => { ($('#dlgOk') as HTMLElement).click() }); await p; await C.whenLoaded()
+      const e = C.byName('NEWGUY')
+      expect(e, 'added under the name typed, upper-cased like any typed name').toBeTruthy()
+      expect(C.pidOf(e!.id), 'a typed name links nobody').toBeNull()
+    })
+
+    it('Enter in the search does the same as OK', async () => {
+      const { p } = await open()
+      await search('Keyboard Guy')
+      await act(async () => { fireEvent.keyDown($('#dlgFilter')!, { key: 'Enter' }) })
+      expect($('#dlgModal'), 'Enter answered the box').toBeNull()
+      await p; await C.whenLoaded()
+      expect(C.byName('KEYBOARD GUY')).toBeTruthy()
+    })
+
+    it('a name in "Or type a callsign" still wins, and then the line makes no promise', async () => {
+      const { p } = await open()
+      await search('newguy')
+      await act(async () => { fireEvent.change($('#dlgInput')!, { target: { value: 'visitor two' } }) })
+      expect(none()).toContain('Nobody on the roster matches')
+      expect(none(), 'OK will not add the search text, so the line does not say it will').not.toContain('OK adds')
+      await act(async () => { ($('#dlgOk') as HTMLElement).click() }); await p; await C.whenLoaded()
+      expect(C.byName('VISITOR TWO')).toBeTruthy()
+      expect(C.byName('NEWGUY'), 'the search text is not added as well').toBeNull()
+    })
+
+    it('left as it is: a search that still matches someone adds nothing by itself — pick them, or type in the box', async () => {
+      const n = C.roster.length
+      const { p } = await open()
+      await search('bra')
+      expect(document.querySelectorAll('#dlgList .dlg-item').length, 'Bravo is still listed').toBe(1)
+      expect($('#dlgModal .dlg-none')).toBeNull()
+      await act(async () => { ($('#dlgOk') as HTMLElement).click() }); await p; await C.whenLoaded()
+      expect(C.roster.length).toBe(n)
+      expect(C.byName('BRA')).toBeNull()
+    })
+  })
+
   it('colon relaxation (§8): course names still refuse; syllabus + student names accept a colon', async () => {
     /* [TRK-CSID] 1B-ii: a syllabus is an id now and its name is a LABEL, so a
        colon is allowed (as a student name already is). Course names keep the

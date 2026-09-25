@@ -62,10 +62,18 @@ export function DlgModal() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [core.dlgSerial]);
   if (!d) return null;
-  const ok = () => core.dlgClose(d.input ? val : true);
-  const cancel = () => core.dlgClose(d.input ? null : false);
   const needle = q.trim().toLowerCase();
   const shown = list ? list.filter(it => !needle || (it.label + ' ' + (it.sub || '')).toLowerCase().includes(needle)) : [];
+  /* A callsign typed into the SEARCH that matches nobody on the roster, with
+     "Or type a callsign" left empty, IS the name to add (D191, 25 Sep 26 — his
+     "A"). + Add opens with the cursor in the search, so this is where a new
+     name is most often typed; OK used to close the box having added nobody,
+     silently ([TRK-SMOKE-ADD-RACE]'s sibling, Fable F1). A name in the box
+     below still wins, and a search that matches someone adds nothing by
+     itself — pick them. The line under the search says so while it is true. */
+  const searchAsNew = (list && d.input && needle && !shown.length && !val.trim()) ? q.trim() : '';
+  const ok = () => core.dlgClose(d.input ? (searchAsNew || val) : true);
+  const cancel = () => core.dlgClose(d.input ? null : false);
   const pick = key => core.dlgClose({ pick: key });
   return (
     <>
@@ -85,8 +93,13 @@ export function DlgModal() {
               <input id="dlgFilter" ref={filterRef} type="search" placeholder="Search by callsign" value={q}
                 onChange={e => setQ(e.target.value)}
                 /* Enter on the search box picks the one entry left — the keyboard
-                   route through a long roster */
-                onKeyDown={e => { if (e.key === 'Enter' && shown.length === 1) { e.preventDefault(); pick(shown[0].key); } }} />
+                   route through a long roster — and, with nobody left, does what
+                   OK does: adds the name typed (D191) */
+                onKeyDown={e => {
+                  if (e.key !== 'Enter') return;
+                  if (shown.length === 1) { e.preventDefault(); pick(shown[0].key); }
+                  else if (searchAsNew) { e.preventDefault(); ok(); }
+                }} />
             )}
             <div id="dlgList" role="listbox">
               {shown.map(it => (
@@ -95,7 +108,7 @@ export function DlgModal() {
                   {it.sub ? <span className="dlg-sub">{it.sub}</span> : null}
                 </button>
               ))}
-              {!shown.length && <div className="mini dlg-none">Nobody on the roster matches “{q.trim()}”.</div>}
+              {!shown.length && <div className="mini dlg-none">Nobody on the roster matches “{q.trim()}”.{searchAsNew ? ' OK adds them as a new crew member.' : ''}</div>}
             </div>
           </>
         )}
