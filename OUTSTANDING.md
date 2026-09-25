@@ -1082,6 +1082,15 @@ hands over; B sees A's 1. **A guard:** Hand over is refused when nothing changed
 hand over"), so a second press can never wipe the last person's highlights. **The cost, stated:** the last person's
 highlights stay until someone else changes something and hands over — there is no "I've seen it, clear it" until
 personal logins (the database) let each person see "what changed since YOU last looked".
+**His next catch (after the storyboard `raptor-port/docs/mock/handover.html`):** with three or more schedulers, one who
+has not looked since two hand overs ago would see only the latest person's work. **The highlights are shared** (every
+scheduler sees the same ones — the app cannot tell people apart while the login is shared). **The agent's proposal:** a
+**"Since" choice** at the top of the pending list — "Since the last hand over (16:30 · Admin) ▾" by default, and every
+earlier hand over of the day in the menu ("16:00", "14:05" …), each with who and when. Pick an earlier one and the
+count, the tags and the list widen to everything since then, grouped by hand over — so whoever has been away catches
+up in one tap. It resets to the default when the list is closed (a look, not a setting). With personal logins (the
+database) the default becomes "since YOU last looked". **Other options put to him:** a callsign picker on Hand over (as
+the sign-off boxes have) so each person gets "since MY last hand over"; or leave it to Edit history.
 **The marks — he asked how they would look now a mark is a corner tag (D92, D93):** on a published day a waiting change
 wears a hollow dotted tag at the puck's top right naming the AL it will go out as ("AL1"). An unpublished day has no
 AL, so the tag needs another label. **The agent's recommendation:** a hollow dotted **ORIG** tag in the seal's plain

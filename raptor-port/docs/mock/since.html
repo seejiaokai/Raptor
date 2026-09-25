@@ -1,0 +1,26 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Since choice mock-up</title>
+<style>
+:root{--bg:#0B0D10;--ink:#E6EAEE;--ink2:#9AA4AE;--edge:#232A31;--acc:#3BC6E8}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:1180px;margin:0 auto;padding:24px 16px 60px}
+h1{font-size:22px;margin:0 0 6px} h2{font-size:17px;margin:0 0 4px;color:var(--acc)}
+p{color:var(--ink2);max-width:82ch;margin:0 0 12px} b{color:var(--ink)}
+section{border:1px solid var(--edge);border-radius:12px;padding:14px;background:#11151A;margin:18px 0}
+.row{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:760px){.row{grid-template-columns:1fr}}
+figure{margin:0} img{width:100%;height:auto;border-radius:8px;border:1px solid var(--edge);display:block}
+.phone img{max-width:340px}
+figcaption{font-size:12.5px;color:var(--ink2);margin-top:4px}
+.note{border-left:3px solid var(--acc);padding:6px 12px;background:#0F1A20;border-radius:0 8px 8px 0}
+</style></head><body><main>
+<h1>Hand over with three schedulers — the "Since" choice (mock-up)</h1>
+<p>Drawn on the real app (the demo week). The highlights are <b>shared</b> — everyone who opens the day sees the same ones, because everyone signs in with the same login. The <b>Since</b> choice lets whoever has been away widen them to catch up.</p>
+<p class="note"><b>Who</b> reads "Admin" (the shared login) until the database brings personal logins; then it reads the
+callsign, and each person can see "what changed since YOU last looked" with no button at all.</p>
+<section><h2>1 · Scheduler C opens Tuesday — the default</h2><p>Hand overs so far: 14:05, 16:00 (B, three changes) and 16:30 (you, one change). C, away since 14:05, opens the pending list: it shows the last hand over&#39;s work (1), and at its top a <b>Since</b> choice reading "Since 16:00 · the last hand over".</p><div class="row"><figure><img src="img/since/desktop-f1.png" alt="desktop-f1"><figcaption>Edit Schedule, desktop</figcaption></figure>
+<figure class="phone"><img src="img/since/phone-f1.png" alt="phone-f1"><figcaption>Edit Schedule, phone</figcaption></figure></div></section><section><h2>2 · C taps "Since" — every hand over of the day</h2><p>Each hand over, who and when, and how many changes it would show. The menu says it resets when the list is closed — it is a quick look, it changes nothing for anyone else.</p><div class="row"><figure><img src="img/since/desktop-f2.png" alt="desktop-f2"><figcaption>Edit Schedule, desktop</figcaption></figure>
+<figure class="phone"><img src="img/since/phone-f2.png" alt="phone-f2"><figcaption>Edit Schedule, phone</figcaption></figure></div></section><section><h2>3 · C picks 14:05 — caught up in one tap</h2><p>"4 pending", four ORIG tags, and the list grouped by hand over: your one (16:30) and B&#39;s three (16:00). Close the list and it goes back to the default.</p><div class="row"><figure><img src="img/since/desktop-f3.png" alt="desktop-f3"><figcaption>Edit Schedule, desktop</figcaption></figure>
+<figure class="phone"><img src="img/since/phone-f3.png" alt="phone-f3"><figcaption>Edit Schedule, phone</figcaption></figure></div></section><section><h2>The other option, for comparison — Hand over asks who you are</h2><p>A callsign picker, like the sign-off boxes, and the line names that person. Each person could then see "since MY last hand over" — more precise, but one more thing to pick every time.</p><div class="row"><figure><img src="img/since/desktop-f4.png" alt="desktop-f4"><figcaption>Edit Schedule, desktop</figcaption></figure>
+<figure class="phone"><img src="img/since/phone-f4.png" alt="phone-f4"><figcaption>Edit Schedule, phone</figcaption></figure></div></section>
+</main></body></html>
