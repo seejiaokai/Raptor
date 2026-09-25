@@ -71,12 +71,12 @@ first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [T
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SMOKE-ADD-RACE]
 (before the next Tracker change that touches the smoke suite), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
-The amendment batch's look — [LOOK-435] (his inputs, built first, then one full check — D115), [ACCOUNTS] (D166 — before the hand over) and [DRAFT-PENDING] (the hand over, on top of accounts). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). The amendment batch (D91–D111) is BUILT on `claude/amendment-batch`, its pull request waiting for his look and "merge live" — its eleven items closed and archived 25 Sep 26 (`OUTSTANDING-ARCHIVE.md`; the spec `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`); left from that area: [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+The amendment batch's look — HIS ORDER (D173): (1) [LOOK-435] — D114's full check ([REQUEST-OFF-ONE]), his look, "merge live" of PR #435; (2) [ACCOUNTS] on a new branch; (3) [DRAFT-PENDING] — the one changes window, on top of accounts; (4) one full check of 2 and 3. The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). The amendment batch (D91–D111) is BUILT on `claude/amendment-batch`, its pull request waiting for his look and "merge live" — its eleven items closed and archived 25 Sep 26 (`OUTSTANDING-ARCHIVE.md`; the spec `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`); left from that area: [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] and [RULING-HOMES-AUDIT] (any time, docs only),
 [BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
 FULL-tier build, any time).
 
-**Waiting on him — no order exists:** [REQUEST-OFF-ONE] (the batch walk: a request taken off a published day counts two — make it one? recommended yes), [MOVE-REPLACE-ONE] (the amendment batch's one gap: does a replacement in one seat count one or two? built as one — a question for his morning look, D112), [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
+**Waiting on him — no order exists:** [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
 D147), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
 [REPO-PRIVATE]'s sharing half, [EOD] (design first; no slot
 ruled), [CRP-FLAG]'s remainder and then [FLAG-EXPORT], the [AMEND] leftovers, [ADMIN-DISPLAY] ("next time we revisit",
@@ -1062,9 +1062,12 @@ War follows the signed-in callsign; every "who" (edit record, pending list, hand
 the fixed `ad` / `us` logins and merges Admin's "Manage users" list. The real address is tied by IT at the database
 step (D165). Permissions → FULL tier. **Place (the agent's recommendation, not yet his word):** after this round's
 smaller inputs in `[LOOK-435]` and BEFORE the hand over (D118), which then shows real callsigns and "since YOU last
-looked" from the start.
+looked" from the start. **SETTLED by D173:** step 2 of the order, on a NEW branch, after PR #435 merges.
 
-### [LOOK-435] His inputs from the look at PR #435 — build first, ONE full bug check at the end (D115, 25 Sep 26)
+### [LOOK-435] His inputs from the look at PR #435 — the order is D173 (25 Sep 26)
+**D173 REPLACES the plan below (D115's one check at the end):** (1) D114's FULL check on PR #435, then his look and
+"merge live"; (2) `[ACCOUNTS]` on a NEW branch; (3) `[DRAFT-PENDING]` — the one changes window, which absorbs D116's
+list, D117 and D119 (not built separately); (4) one FULL check of 2 and 3. The text below is the plan as it stood.
 Built on `claude/amendment-batch` before the full check (D115): **D114** (a request taken off / put on a published day
 is one change — built, red first, NOT yet walked or read), **D116** (Edit Schedule's History button a toggle like the
 board's), **D117** (the Edit history list: the whole week, a day picker), **D118** (`[DRAFT-PENDING]` — waits on his
@@ -1073,7 +1076,16 @@ and Astra's reads — the D114 brief is `raptor-port/docs/superpowers/briefs/202
 the rest — the walk on desktop and phone, the full gates, the evidence sheet). Nothing is "ready for merge live" before
 that check. **Place:** now, on this branch.
 
-### [DRAFT-PENDING] "N pending" on a day never published — a handover between schedulers (D118, 25 Sep 26)
+### [DRAFT-PENDING] The one CHANGES WINDOW — D118, D167–D172 (25 Sep 26); step 3 of D173, after `[ACCOUNTS]`
+**WHAT IS SETTLED (read the rulings, not the working notes below):** D168 one changes window (New to you / All changes,
+a day picker, Group by Who / Where) replacing the pending list, the hand-over idea and the Edit history list; D167 its
+shape (movable, resizable, a tap takes the schedule to the change and the window stays; the phone's panel shrinks to a
+bar); D169 members read it too (medical details hidden); D170 NO Hand over button — new to you until "Mark all as
+seen", grouped by person and sitting; D171 the ways in — the day's count for everyone, an icon-only top-bar door with
+the WEEK's count for admins only; D172 the unpublished-day corner tag reads "OG", the headings unchanged. The
+mock-ups: `raptor-port/docs/mock/changes-window.html` (the design of record, option A), `changes-doors.html`,
+`tags-ticks.html`; the earlier ones (`checkpoint.html`, `handover.html`, `since.html`, `handoff-accounts.html`,
+`handoff-window.html`) show ideas later replaced. The working notes below are the path there.
 **His intent:** when another scheduler logs in, they see what changed since the last draft. Today a never-published
 day's "N pending" counts every cell touched (a move 2, put back still 2, a new puck in a crowd 0) and is not a button.
 **The agent's proposal, put to him — NOT called "Save draft" (his correction: the app already saves live, so that word
@@ -1139,6 +1151,8 @@ call him busy there — exclude the row being dropped into from his own busy che
 the board's small items ([PUCK-FLAG-GLOW]); not his call unless the fix changes what a warning says elsewhere.
 
 ### [REQUEST-OFF-ONE] Taking an accepted request off a published day counts TWO pending changes — one? A question for him (25 Sep 26)
+**ANSWERED 25 Sep 26 — D114 ("6 yes"): ONE.** BUILT on `claude/amendment-batch` (commit `a95afcbe`, red first; the
+neighbouring suites green) — its FULL check is step 1 of D173 (`[LOOK-435]`); close this item after it.
 Found by the amendment batch's walk (walker B1, `raptor-port/docs/handpass/parts/2026-09-25-amendment-batch-b1.md`
 finding 1, picture `docs/img/handpass/2026-09-25-amendment-batch/b1/b1-d-03-list-week.png`). One tap — ✕ on Gambit's
 accepted FLY WITH row on a published Monday — reads "+2" on every surface (they all agree), and the pending list shows
@@ -1150,17 +1164,4 @@ scheduler, one line ("Gambit's Fly with taken off the programme"); what goes out
 is. **To build:** in `raptor-port/src/engine/publish.ts dayPendingItemsIn`, pair a filing entry for input X with the
 ground row add / delete whose `src` is X into one item, and word it in `raptor-port/src/ui/pendlist.ts`. **Place:** his
 morning look at the batch (the look card asks it).
-
-### [MOVE-REPLACE-ONE] A replacement in one seat — one pending change or two? A question for him (25 Sep 26)
-Found while building D109 ("a move counts as one") overnight under D112. His words settle a man MOVED (one), a SWAP
-(two), a man only TAKEN OFF (one) and only ADDED (one); they do not say what a REPLACEMENT in one seat counts — Rune
-taken off VIPER 1's front seat and Tally put in it, neither moved anywhere else. Astra's reading (the scenario round,
-`raptor-port/docs/handpass/2026-09-25-amendment-batch-astra-scenarios.md` finding 1): literally a man taken off (one)
-plus a man added (one) = TWO; Fable's (`…-fable-scenarios.md` F1): one seat, one change = ONE. **Built as ONE** on a
-seat (a flying seat, a sim seat, a desk's holder, a ground row's name) — the pending list reads one line "VIPER 1 ·
-FCP: Rune → Tally" — and as one per man on a CROWD (a programme row's list, a desk's extras), where his "only taken
-off is one" governs. **The agent's recommendation: keep ONE** — a scheduler reads it as one change ("I swapped Rune
-out for Tally"), and it is the count the day showed before D109. **To change it:** `canonicalUnits` in
-`raptor-port/src/engine/canonical.ts` (the SEAT branch of the left-over events), and its test in
-`raptor-port/src/engine/pendunits.test.ts`. **Place:** his morning look at the batch (the look card asks it).
 

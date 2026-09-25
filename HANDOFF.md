@@ -16,33 +16,42 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/amendment-batch -->
-### `claude/amendment-batch` — the amendment batch, BUILT overnight (D112), waiting for his look and "merge live"; written 25 Sep 26 — verify before use
-- **Where it started:** his look at PR #434 passed; it MERGED to `main` 25 Sep 26 (`301a11fc`). His three points became
-  D107–D111, and D112 had a fresh chat build the whole batch overnight without him (D112 is now SPENT).
-- **Shipped (on this branch, pushed, ONE pull request open — never merged):** all 14 items of
-  `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`, FULL tier: Fable and Astra's scenario round; the
-  build, each item red first; three walkers on the production build, desktop and phone (B1 74/76, B2 138/138, B3
-  132/144 — every finding fixed and re-walked, or filed); 13 break tests; Fable and Astra's blind code reads (five
-  findings, all fixed, each break-tested, re-walked 7/7 desktop and phone). The record:
-  `raptor-port/docs/handpass/2026-09-25-amendment-batch.md` (§8 is his five-minute look card). The batch's eleven
-  backlog items are closed and archived.
-- **Unfinished:** nothing of the batch. Not walked, and why: the sheet's §7 (a REAL iPhone keyboard is the one that
-  needs him — look card step 4).
-- **Branch:** `claude/amendment-batch`, from `main` at `301a11fc`; its one PR (`gh pr list --head claude/amendment-batch`).
-  GitHub's machines run the checks while the repo is public (D106, ~11 min); never push while they run (D151).
-- **Gates:** the full set green on the final code — `## Gate baseline`.
-- **Open questions for him (on the look card, each with a recommendation, filed):** `[MOVE-REPLACE-ONE]` (a
-  replacement in one seat counts one — keep it? recommended yes); `[REQUEST-OFF-ONE]` (a request taken off a published
-  day counts two — make it one? recommended yes).
-- **Pick up here:** his look (the sheet's §8, on the branch's Vercel link) → his answers to the two questions (either
-  is a small change in `canonical.ts` / `publish.ts`, each with its test named in its backlog item) → "merge live" →
-  the merge chain in `.claude/rules/shipping.md`. Then `## Next` below.
+### `claude/amendment-batch` — the amendment batch (PR #435) and his inputs from its look; written 25 Sep 26 — verify before use
+- **Where it started:** D112's overnight build of the 14-item amendment batch (FULL tier, all checked — evidence
+  `raptor-port/docs/handpass/2026-09-25-amendment-batch.md`, incl. §5a the two blind reads and the later walk of Fable's
+  three un-walked situations, 12/12 desktop and phone). Then his look began and he gave a run of inputs, each recorded:
+  D113–D119 and D165–D173. The chat was compacted once; its early context is in the evidence sheet and commit messages.
+- **Shipped (pushed to this branch, PR #435 OPEN, not merged):** the batch; **D114** (a request taken off / put on a
+  published day counts ONE — `publish.ts dayPendingItemsIn` pairs the filing with its ground row; the AL stores `ukinds`;
+  red first, the neighbouring suites green, **NOT yet fully checked**); the rulings D113–D119, D165–D173 (D115 replaced
+  by D173 and archived); seven mock-ups under `raptor-port/docs/mock/` (the design of record for the next work is
+  `changes-window.html` option A, with `changes-doors.html` and `tags-ticks.html`); `[MOVE-REPLACE-ONE]` closed (D113).
+- **Unfinished — HIS ORDER, D173:**
+  1. **D114's FULL check on this PR** — Fable + Astra blind reads (brief
+     `raptor-port/docs/superpowers/briefs/2026-09-25-d114-read-brief.md`; Astra's first run was stopped unfinished — run
+     both fresh), the walk (desktop + phone; the counts on every surface, the list's one line, the Amendments panel's
+     "1 item · 1 removal"), the full gates, the evidence sheet's new section; then his look and "merge live" of #435.
+     Close `[REQUEST-OFF-ONE]` after it.
+  2. **`[ACCOUNTS]` (D165, D166) on a NEW branch from `main`** once #435 has merged.
+  3. **`[DRAFT-PENDING]` — the one changes window (D118, D167–D172)** on top of accounts; it absorbs D116's list, D117
+     and D119 — do NOT build those separately.
+  4. **One FULL check of 2 and 3** (permissions → FULL tier), his look, "merge live".
+  - Also: `OUTSTANDING.md` is 17 lines over its size tripwire — a documents-only tidy (D29, D141), its own commit.
+- **Branch:** `claude/amendment-batch`; PR #435 (open when written — check before acting). Vercel preview:
+  https://raptor-git-claude-amendment-batch-kai-e2f5.vercel.app . GitHub's machines run the checks while the repo is
+  public (D106, ~11 min); never push while they run (D151).
+- **Gates:** the full set green on commit `22650eb1`'s code (`## Gate baseline`); **D114's code (`a95afcbe`) has NOT
+  had a full gate run** — only the engine, state and neighbouring UI suites (2204 tests, green). Step 1 runs them.
+- **Open questions for him:** none — every question put to him this chat is answered and recorded.
+- **Pick up here:** step 1 above. Read the rulings D113–D119 and D165–D173 in `.claude/rules/decisions/scheduler.md`
+  and `how-we-work.md` before building anything; models per his rule — Opus 5.5 (high) builds, Fable 5.1 and Astra review.
 <!-- /now -->
 
 ## Next, in order
 
-1. **The amendment batch** — BUILT overnight on `claude/amendment-batch` (D112; the `## Now` block above): his look,
-   his two answers, then "merge live". **`[HUMAN-RETEST]`** — the amendment system MERGED 25 Sep 26 (PR #434; evidence
+1. **The amendment batch and his look's inputs — HIS ORDER, D173** (the `## Now` block above): D114's full check and
+   "merge live" of PR #435 → `[ACCOUNTS]` on a new branch → the one changes window (`[DRAFT-PENDING]`) → one full check
+   → "merge live". **`[HUMAN-RETEST]`** — the amendment system MERGED 25 Sep 26 (PR #434; evidence
    `raptor-port/docs/handpass/2026-09-24-amendment.md`). Next, in his order (D147): the absence record
    together with `[S4-HUNT-REST]`, then change-recording (with D148 and `[UNDO-ROSTER-SETTINGS]`), then the Leave War
    links last. The two evidence sheets (Tracker 23 Sep, amendment 24 Sep) are the worked examples.

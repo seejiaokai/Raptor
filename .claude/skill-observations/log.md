@@ -240,3 +240,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** Walk helpers target the AFFORDANCE (the add box, the button) by its own box, never the container's centre; a helper that fails returns why ("not armed", "nobody offered") rather than a bare FAILED. For #246, make it structural: edit scripts that contain a regex or a backslash are written with the editor tool as raw strings, never typed into a heredoc.
 
 **Principle:** Clicking a container's centre is a guess about what lies there; aim at the control itself, and make every helper failure say which step failed so the app is not blamed for the script.
+
+### Observation 249: Mock-ups injected into a live app are wiped by its own repaints — inject after the scroll, re-apply just before the picture
+
+**Status:** OPEN
+**Date:** 2026-09-25
+**Session context:** Raptor — nine owner-requested mock-ups drawn by injecting proposed markup into the real running app
+**Skill:** New skill candidate: live-app mock-ups (Playwright)
+**Type:** open-source
+**Phase/Area:** Drawing a proposed design on top of the real app
+
+**Issue:** Four times a picture came out without the injected change: a tag set on a day disappeared because the day re-rendered as it scrolled into view; a select's value set by script was redrawn back a moment later; an app toast from the set-up covered a button; a sticky header covered the top of a clipped region. Each cost a redraw and a look. What worked: scroll first, inject second, wait, re-apply the fragile part immediately before the screenshot, hide transient toasts, and frame by testing that the element's own top edge is what the page shows at that point (elementFromPoint) rather than trusting scrollIntoView.
+
+**Suggested improvement:** A mock-up helper that (1) scrolls, (2) injects, (3) re-applies the injection right before the shot, (4) hides toasts, (5) frames clear of sticky bars by elementFromPoint; and a rule to LOOK at every picture before sending, since each failure above passed the script with no error.
+
+**Principle:** A live app owns its DOM; anything drawn into it for a picture must be applied at the last moment and checked by eye, because the app's own repaints fail silently.

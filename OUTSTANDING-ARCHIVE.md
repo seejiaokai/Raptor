@@ -1414,3 +1414,20 @@ message, "Discard N edits", the pending list). **Build with the amendment batch*
 lines (item 8) read a move as one line. FULL tier inside the batch (the published record).
 **CLOSED 25 Sep 26 — BUILT overnight on `claude/amendment-batch` (the batch's item 14, D112), walked on the production build and read blind by Fable and Astra; the record is the evidence sheet `raptor-port/docs/handpass/2026-09-25-amendment-batch.md`, the contracts `raptor-port/docs/ui-contracts.md` and `raptor-port/docs/engine-rules.md`. Live only on his "merge live".**
 
+
+*Moved here 2026-09-25 by backlog-archive.mjs ([MOVE-REPLACE-ONE]). Forward facts: `.claude/rules/decisions/scheduler.md`, `raptor-port/docs/engine-rules.md`.*
+
+### [MOVE-REPLACE-ONE] A replacement in one seat — one pending change or two? A question for him (25 Sep 26)
+Found while building D109 ("a move counts as one") overnight under D112. His words settle a man MOVED (one), a SWAP
+(two), a man only TAKEN OFF (one) and only ADDED (one); they do not say what a REPLACEMENT in one seat counts — Rune
+taken off VIPER 1's front seat and Tally put in it, neither moved anywhere else. Astra's reading (the scenario round,
+`raptor-port/docs/handpass/2026-09-25-amendment-batch-astra-scenarios.md` finding 1): literally a man taken off (one)
+plus a man added (one) = TWO; Fable's (`…-fable-scenarios.md` F1): one seat, one change = ONE. **Built as ONE** on a
+seat (a flying seat, a sim seat, a desk's holder, a ground row's name) — the pending list reads one line "VIPER 1 ·
+FCP: Rune → Tally" — and as one per man on a CROWD (a programme row's list, a desk's extras), where his "only taken
+off is one" governs. **The agent's recommendation: keep ONE** — a scheduler reads it as one change ("I swapped Rune
+out for Tally"), and it is the count the day showed before D109. **To change it:** `canonicalUnits` in
+`raptor-port/src/engine/canonical.ts` (the SEAT branch of the left-over events), and its test in
+`raptor-port/src/engine/pendunits.test.ts`. **Place:** his morning look at the batch (the look card asks it).
+**CLOSED 25 Sep 26 — RULED D113 ("5 yes"): a replacement in one seat is ONE, as built. Nothing to build; the contracts and the register now say so.**
+

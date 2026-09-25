@@ -2324,8 +2324,10 @@ line (`docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`).**
   person counts in — a man or placeholder taken off one PLACE and put on another of the same day is one item; a
   swap two; a man only taken off or only added one; a crowd re-ordered one — and a man taken off a list WHILE the rest
   are re-ordered two (the survivors' order compared on its own, each occurrence apart; a list merely closing up adds
-  nothing — Astra's code read, 25 Sep 26); a replacement in one seat one (a gap,
-  `[MOVE-REPLACE-ONE]`). A place is a seat (a flying seat, a sim's FCP / RCP, a desk's holder, a ground row's `who`)
+  nothing — Astra's code read, 25 Sep 26); a replacement in one seat one (owner, D113,
+  25 Sep 26); a request's row and its filing one (✕ on an accepted request's row, or Accept onto a published day —
+  owner, D114: `dayPendingItemsIn` pairs the filing with the ground row whose `src` is that request; a filing with no
+  row of its own on the day stays its own item; an issued AL also stores its per-kind split, `ukinds`). A place is a seat (a flying seat, a sim's FCP / RCP, a desk's holder, a ground row's `who`)
   or a list (a programme who-list, a desk's or ground row's extras, a sim's passengers or extras), named by row id.
   The list is empty exactly when `dayDelta` is. The STORED diff is unchanged; an issued AL also stores `units`, its
   item count in that unit (`alCount`).

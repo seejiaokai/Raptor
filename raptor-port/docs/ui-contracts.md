@@ -657,8 +657,9 @@ and put on another of the SAME day is ONE ("Warden: MET + NOTAM BRIEF → SODB")
 only added one, times / areas / remarks one per box, a crowd re-ordered one, a man taken off while the rest are
 re-ordered two. When the crowds behind SEVERAL placeholders changed it is still one change (what the day earns), and
 its line lists each row on its own, each its own tap (Astra's code read, 25 Sep 26). A desk's holder and its extras are two
-places. What goes out (the stored diff) and the marks are unchanged. A replacement in one seat counts one — the gap
-filed as `[MOVE-REPLACE-ONE]`.
+places. What goes out (the stored diff) and the marks are unchanged. A replacement in one seat counts one (D113). Taking an accepted request off a published day (✕ on its row) — or
+accepting one onto it — is one change, one line naming the request ("Bane · Meeting: on the programme → taken off"),
+and the issued AL's line reads "1 item · 1 removal" (D114).
 
 **Who and when (D104).** The newest edit-log row for the change's own cells: the shared account the app records
 until the database brings personal accounts, and its clock (`elogWhen`). A change the page's record does not hold
