@@ -67,7 +67,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 [OIL-PERSONAL-PLACEHOLDER] (FULL tier), [CROWD-SIM-BRIEF] (WALK tier), [OIL-RELINK-XWEEK].
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
-first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
+first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
 The amendment batch's look — HIS ORDER (D173): (1) [LOOK-435] — D114's full check (DONE 25 Sep 26, evidence §9; [REQUEST-OFF-ONE] archived), his look, "merge live" of PR #435 (MERGED 25 Sep 26); (2) [ACCOUNTS] on a new branch; (3) [DRAFT-PENDING] — the one changes window, on top of accounts; (4) one full check of 2 and 3. Found by D114's reads, older than it: [REQ-TWO-ROWS] and [REQ-DECLINED-PENDING] — HIS ORDER (D174, D175) — BUILT on `claude/request-one-row` (FULL check done, archived; his look and "merge live" next, BEFORE [ACCOUNTS]); its look card's two questions answered: [REQ-DECLINED-DELETED] (D176 — built there, archived) and [LEAVE-LATE-PUBLISHED] (D177 — its OWN branch; scope: the sweep in `raptor-port/docs/superpowers/specs/2026-09-25-published-face-live-inputs.md`; its place in his order to be asked — the agent recommends right after `claude/request-one-row` merges, before [ACCOUNTS]); then [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). The amendment batch (D91–D111) is BUILT on `claude/amendment-batch`, its pull request waiting for his look and "merge live" — its eleven items closed and archived 25 Sep 26 (`OUTSTANDING-ARCHIVE.md`; the spec `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`); left from that area: [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
@@ -937,6 +937,16 @@ D185); View-only Sched shows both. As built long before (`html.ts`: a version pr
 the same on `main`); a blank B there also prints no suggested time where View-only Sched prints one. **The question:**
 should the board's look at a published version show its warnings as View-only Sched does? **Place:** on the look card;
 if yes, a small WALK-tier build (the board's PV branch reads the face bundle, `withOfficialWarn`).
+
+### [INPUTSCAL-TAP-FLAKY] The calendar's chip-tap test fails now and then inside the full unit run, never alone — test-only (filed 26 Sep 26)
+`raptor-port/src/ui/inputscal.test.tsx` "a real pointerdown+pointerup on an input chip sets INPEDIT to that EXACT record":
+seen twice in full runs on `claude/leave-late-published` — once by Fable's first code read (`document.elementFromPoint is
+not a function` ×7), once in the final gate run on `2cfceae2` (INPEDIT stayed null) — and green in the run before it
+(5972 / 5972) and alone 3 / 3. That branch does not touch the file or the calendar (no diff against `main`), so it is
+order- or load-dependent: some earlier file in the same worker leaves the document without `elementFromPoint`, or a
+listener behind. **Do:** find the file that runs before it in the same worker when it fails (vitest `--sequence.seed` /
+the shard order), and make the test install its own `elementFromPoint` stub and restore it, or reset what the other file
+leaves. **Place:** test-only, any time.
 
 ### [INSIGHTS-WORKING-COPY] Week Insights shows the working copy's week to everyone, members included — a question for him (filed 26 Sep 26)
 Astra's second read of `[LEAVE-LATE-PUBLISHED]` (`raptor-port/docs/handpass/2026-09-26-late-pub-astra-read2.md` #2): the

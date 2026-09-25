@@ -16,32 +16,28 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/leave-late-published -->
-### `claude/leave-late-published` — `[LEAVE-LATE-PUBLISHED]` (D177–D185): built, Fable's six applied, walking; written 26 Sep 26 morning (interim) — verify before use
-- **What it is:** a published version freezes the day's inputs (`snap.inp`) and its face (`snap.w` — the warnings that
-  freeze and the marks they raise; `snap.pa` / `snap.rv` the men's CAT/seat/posting and the brief lead, drawn by
-  `engine/faceattrs.ts`); the issued face draws only frozen things EXCEPT what stays live (D183–D185: the dotted next-day
-  mark, a crew-rest breach / tight turn, the 7-day run, the Qualification-flag warnings, every OIL warning — `validate.ts
-  LIVE_ON_FACE`; the day loop files each mark by class `fz` / `lv`; `faceWarn` lays the live ones over the frozen slice).
-  Rule text: `raptor-port/docs/engine-rules.md` §Publishing. Evidence: `raptor-port/docs/handpass/2026-09-26-late-pub.md`.
-- **Done this morning (commit fcfbf198 + uncommitted):** D184/D185 built; the two red tests fixed; Fable's six applied (F1
-  no dates in the details key; F2 one man's takeover = one edit; F3 OIL warnings live; F4 the folded line taps; F5 the
-  load's sentence + the "already at" message found by the walk; F6 "input change"); break tests B1–B16 (§5); unit suite
-  5964/5964 on the D184/D185 commit (to re-run on the final one); re-walk desktop 22/22, phone 10/10; host walk of the fixes
-  desktop 18/19 (H4 fixed after the build), phone 17/17.
-- **In flight:** four parallel walkers on 4174–4177 (Quals, Logic, neighbour day, Leave War) — their scripts
-  `raptor-port/scripts/handpass/am/late-pub-{quals,logic,neighbour,leavewar}-walk.mjs`, pictures
-  `docs/img/handpass/2026-09-26-late-pub/<route>/`. Do not rebuild while they run (they share `dist/`).
-- **Then:** reproduce their findings, fix → rebuild → re-walk the host walk (H4) → the full gates → the second read by
-  Fable and Astra (brief `raptor-port/docs/superpowers/briefs/2026-09-26-late-published-read2-brief.md`) → fix → evidence
-  sheet §4c, §6, §9, §10 (the look card) → push, open the PR.
-- **Questions for him (the look card):** Q1 a man's CAT on a puck and a blank brief's time frozen on the published face —
-  keep? Q4 the app's own "till <date>" note: a stretched or trimmed leave/downchit reads pending on the published days it
-  still covers (their printed words change) — keep (recommended) or ignore the note? Q5 "a lapsed qualification" read as
-  the Qualification-flag warnings (SC / AAR currency, AAR instructor, illegal seat); crew-pairing warnings frozen — right?
-  Q6 the crew-rest "tight turn" note live with the breach — right?
-- **Branch:** `claude/leave-late-published`, pushed to 77bbd47f (no PR yet). Rulings this chat: none new (D185's row gained
-  the agent's widened reading). Range left: D186–D189.
-- **Usage (D182, until Monday 28 Sep 26):** don't hold back — a second Fable + Astra read, parallel walkers, high thinking.
+### `claude/leave-late-published` — `[LEAVE-LATE-PUBLISHED]` (D177–D185): FULL check done, PR open — his look and "merge live" next; written 26 Sep 26 (morning) — verify before use
+- **What it is:** a published day keeps what it went out with — its inputs (`snap.inp`), its warnings that freeze and
+  their marks (`snap.w`), its men's CAT / seat / posting and the brief lead it prints (`snap.pa` / `snap.rv`, drawn by
+  `engine/faceattrs.ts`), the roster its day panel counts (`snap.ros`); a change since reads pending (the four fall) and
+  goes out with the next AL. What stays LIVE (D183–D185): the dotted next-day mark, a crew-rest breach and tight turn, the
+  7-day run, the Qualification-flag warnings, every OIL warning (`validate.ts LIVE_ON_FACE`; the day loop files each mark
+  by class `fz` / `lv`, `faceWarn` lays the live over the frozen). Medical stays frozen. Rule text:
+  `raptor-port/docs/engine-rules.md` §Publishing.
+- **The check (FULL):** evidence `raptor-port/docs/handpass/2026-09-26-late-pub.md` — the roll-call (21 surfaces), the
+  walks (the re-walk, the host walk, four parallel walkers: Quals, Logic, neighbour day, Leave War — 593 pictures, no
+  console errors), 23 break tests, two blind reads by Fable and Astra of the first build and two of the final code (all
+  dispositioned §9), the gates (§6). His look card is §10.
+- **The PR:** see the PR list for `claude/leave-late-published` (its checks run on GitHub's machines while the repo is
+  public, D106). **Next:** his look (the card's four "look here" lines and Q1, Q4, Q5, Q6), then his "merge live".
+- **His questions (the card, §10):** Q1 a man's CAT and a blank brief's time frozen on the published face — keep? Q4 the
+  app's own "till <date>" note: a stretched or trimmed leave reads pending on the published days it still covers — keep?
+  Q5 warnings in the board's look at a published version (`OUTSTANDING.md` `[PV-NO-FLAGS]`)? Q6 the reading of "a lapsed
+  qualification" (the Qualification-flag family; crew-pairing frozen) and the tight-turn note live — right?
+- **Filed this session:** `[PV-NO-FLAGS]`, `[INSIGHTS-WORKING-COPY]` (both his questions), `[QUALS-PROTO-TOAST]`,
+  `[VIEW-ARROW-OVER-LIST]`, `[INPUTSCAL-TAP-FLAKY]`. Rulings this chat: none new (D185's row gained the agent's widened
+  reading). Range left: D186–D189.
+- **Usage (D182, until Monday 28 Sep 26):** unlimited — spend it on his look's follow-ups.
 - **After this merges (D180, D173):** `[ACCOUNTS]` on a new branch — its plan not started; the `OUTSTANDING.md` tidy (over
   its tripwire) on its own docs branch.
 <!-- /now -->
@@ -62,10 +58,10 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 25 Sep 26 22:14–22:26, `claude/request-one-row` (PR #437: D174, D175, D176, with `main` after
-PR #436 merged in; MERGED 25 Sep 26 as it stood), one run on a quiet PC (`raptor-port/docs/handpass/2026-09-25-req-one-row.md` §12):
-unit **5939 / 5939** (365 files) · build clean · tfin **728 / 0** · e2e **471 passed**, 48 skipped · smoke **442 / 0** ·
-rulecheck OK · docsize OK. Restate a count only
+The latest counts watched — 26 Sep 26 morning, `claude/leave-late-published` (`2cfceae2`, the final code of
+`[LEAVE-LATE-PUBLISHED]`), one run on a quiet PC (`raptor-port/docs/handpass/2026-09-26-late-pub.md` §6): unit **5978 / 5978**
+(368 files, on a re-run — the first run's one miss was the flaky `[INPUTSCAL-TAP-FLAKY]`) · build clean · tfin **728 / 0** ·
+e2e **471 passed**, 48 skipped · smoke **442 / 0** · rulecheck OK · docsize OK. Restate a count only
 from a run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md`
 §Build & verify; how they mislead, and the checks on his PC: `raptor-port/docs/gates-and-deploy.md`.
 

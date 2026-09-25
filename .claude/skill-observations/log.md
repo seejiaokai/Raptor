@@ -389,3 +389,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In the handoff skill: a "to build" line that turns a ruling into code names says so ("the agent's reading") and the next session re-derives the list from the ruling's words against the code before building, recording any widening on the ruling's row.
 
 **Principle:** A code-name list in a handoff is a pointer to a ruling, not a replacement for it; re-derive it from the ruling at build time.
+
+### Observation 259: In this Windows Bash tool a doubled backslash inside a quoted heredoc reaches the program single
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [LEAVE-LATE-PUBLISHED] morning; Python edit scripts passed through `python - <<'EOF'` failed their exact-match assertions four times on strings holding an escaped quote (`Monday\'s` in the source).
+**Skill:** New skill candidate: repo edit-script discipline (beside the memory "Python edits turn LF into CRLF")
+**Type:** internal
+**Phase/Area:** mechanical source edits from the shell
+
+**Issue:** A quoted heredoc should pass text verbatim, but here a Python source line written with a doubled backslash arrived with one, so the literal Python saw was different from the file's text and the replacement matched nothing (the scripts asserted, so nothing was damaged — only time lost). Writing the same script with the Write tool into the scratchpad and running it worked every time.
+
+**Suggested improvement:** For any edit script whose search text contains a backslash, write the script with the Write tool and run it; keep the assert-exactly-one-match guard in every such script.
+
+**Principle:** When a shell layer might rewrite escapes, move the program text out of the shell (a file written by a tool that does not interpret it), and keep an exact-match assertion so a mangled pattern fails loudly instead of editing nothing — or the wrong thing.
