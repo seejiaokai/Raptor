@@ -723,13 +723,20 @@ React `.dver` select set `DPREV` (state/view.ts, di → `'orig'`|AL n).
 stand in for the live model: it swaps `DAYS[di]`/`SCHED.changes`/
 `SCHED.pending`, sets the PV flag, and restores everything in `finally` —
 a throw mid-build must never leave the snapshot installed as the real
-schedule. Under PV: no WARN reads (a snapshot is never validated), no
-sev/chip rings, no `data-slot`/`data-fill`/`data-drag`/`draggable` (those keys address
+schedule. Under PV: no `data-slot`/`data-fill`/`data-drag`/`draggable` (those keys address
 the LIVE model), pucks keep `data-person` so selection works, and the
 frozen `data-alc` marks come from the snapshot's own changes slice. The
 board renders `boardHTML(di, pv)` read-only (disabled fields, no mbtn/arm
 targets, no sign-off bar) inside `.pv-frozen`, and its live-checks panel
-becomes the preview banner. Belt-and-braces gates on stale markup:
+becomes the preview banner.
+**A look at a PUBLISHED version wears its warnings (owner, D187, 26 Sep 26 — "Q5 it should"; was: no WARN reads, no
+rings under PV).** The week's and the board's preview of an issued version draws that version's rings, flags and warning
+list (`html.ts withVersionFlags` → `validate.ts versionFaceWarn`): the day's CURRENT version exactly as View-only Sched
+draws it (the warnings it went out with, the live ones — D183–D185 — on top); an OLDER version the warnings IT went out
+with, without today's live ones or the next-day mark. On the board the checks list sits under the preview banner, read
+only (no mute, no "create the period" — `boardWarnHTML(di, true)`), and a tap on a warning resolves against the same list
+(`view.ts displayedBundle`). A parked plan ('d:') — and a version kept before the freeze, with no warnings stored — stays
+flag-free, as every preview was. The write surfaces stay gated on PV alone. Belt-and-braces gates on stale markup:
 `armSlot`, `boardChange`/`boardMbtn`/`boardArmClick`, `dragFrom`
 (`.preview`/`.pv-frozen`), Shell's contextmenu clear. Previews are pruned
 lazily (EditWeek/SchedBoard), on `histApply`, and on week switch.
@@ -2861,7 +2868,7 @@ Board pucks take `wfoc`/`advf`/`dim` but never `echo`: the board is one day, so
 the cross-day echo has nothing to say there. The roster palettes still keep
 their normal look (a palette puck is a drag source for a day you may not be
 looking at, so dimming it would fight arm-and-plant), and `.pv-frozen` is
-excluded — `WARN` is live and a version preview is a published snapshot.
+excluded — the preview's marks are its own version's (D187), never the live day's.
 See §Jumping from a warning to the puck that caused it.
 
 The "you" indicator (`ME`, purple) is **passive**: it marks your own view-as
@@ -7533,8 +7540,8 @@ subject tapped while it is open keeps its place. **Stacking: z-index 410** —
 above the board (400), below every dialog (420–480); the toast (540) shows over it.
 
 **It reads the world its chip was drawn in — ALL of it.** The chip says which:
-the working copy, a version preview (a past AL or a parked plan: read, not
-checked — no flags), the view page's issued face (its OFFICIAL flags), or a
+the working copy, a version preview (a published version wears its own warnings — D187; a parked plan none), the view
+page's issued face (its OFFICIAL flags), or a
 draft day the view page resolves in the official world (`data-oilver` /
 `data-oilofw`). The crowd, the flags, the figures, the puck marks and the title
 all come from that one world (`html.ts withChipWorld`), and the window names the

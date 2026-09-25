@@ -13,8 +13,9 @@ import { oilShown, oilModeOn, toggleOilMode, oilUndoBoundary } from './oilmode'
 import { wireHistBubble, hideHistBub, histBubRecheck } from './histbubble'
 import { daySnapOf, alColor, dayDiscardCount } from '../engine/publish'
 import { verSeq } from '../engine/verid'
+import { versionFaceWarn } from '../engine/validate'
 import { isDraftVer, draftVerLabel } from '../engine/drafts'
-import { withDaySnap } from './html'
+import { withDaySnap, withVersionFlags } from './html'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
 import { boardHTML, boardSignHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, boardTab, closeScheduler, CXT, cxCommit, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, boardDayStep, boardWeekStep, wireDayDots, wireParkedRosScroll, wireWarnSplit, dayTplMenu } from './board'
@@ -227,12 +228,17 @@ export function SchedBoard() {
     if (DPREV.has(di) && !daySnapOf(di, DPREV.get(di))) DPREV.delete(di)
     if (DPREV.has(di)) {
       const ver = DPREV.get(di)
-      withDaySnap(di, ver, () => {
+      /* a look at a PUBLISHED version wears that version's warnings (owner, D187 — html.ts withVersionFlags); a plan
+         stays flag-free */
+      let checks = ''
+      withDaySnap(di, ver, () => withVersionFlags(di, ver, () => {
         set(signRef.current!, 'sign', boardSignHTML(di, true))
         set(boardRef.current!, 'board', '<div class="pv-frozen">' + boardHTML(di, true) + '</div>')
-      })
-      /* the live-checks panel becomes the preview banner — a past version is
-         never validated, so live warnings against it would be nonsense.
+        if (!isDraftVer(ver) && versionFaceWarn(di, ver)) checks = boardWarnHTML(di, true)
+      }))
+      /* the live-checks panel becomes the preview banner — with, under it since D187, the checks the published version
+         shows (read only), never today's working ones. (Was: "a past version is never validated, so live warnings
+         against it would be nonsense" — still true of TODAY's warnings; the version's own are what it shows.)
          Reworded to match the week's html.ts banner in lockstep (owner, 16 Aug
          26): a DRAFT preview offers "Switch to this plan" (draftSelect via
          data-draftgo); an ISSUED preview offers "Load onto working copy" (the
@@ -253,7 +259,7 @@ export function SchedBoard() {
             + (armed
               ? `<button class="dbeak dprev-restore warn" data-restore="${di}" data-rver="${ver}" title="This discards your ${pend} unpublished edit${pend === 1 ? '' : 's'} on the working copy — the issued versions stay unchanged">Discard ${pend} edit${pend === 1 ? '' : 's'} &amp; load — confirm</button><button class="dbeak ro dprev-cancel" data-restcancel="${di}" title="Keep your current working copy">Keep editing</button>`
               : `<button class="dbeak dprev-restore" data-restore="${di}" data-rver="${ver}" title="Load this issued version onto your working copy to edit — nothing is published until you Publish AL, and the issued versions stay unchanged">Load onto working copy</button>`))
-        + `</div>`)
+        + `</div>` + checks)
     } else {
       set(signRef.current!, 'sign', boardSignHTML(di))
       set(boardRef.current!, 'board', boardHTML(di))

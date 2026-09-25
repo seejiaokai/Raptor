@@ -20,16 +20,16 @@ import { readFileSync } from 'fs'
 import { DAYS } from '../engine/data'
 import { INPUTS, inpId, withRemarksTail } from '../engine/inputs'
 import { acceptInput, renameCallsign, setSlotVal } from '../engine/slots'
-import { loadVersionToWorkingCopy, inputsLeftSaid } from '../engine/drafts'
+import { loadVersionToWorkingCopy, inputsLeftSaid, draftDup, dayDrafts } from '../engine/drafts'
 import { SCHED, signOf, setSign, setDayApproved, dayDelta, dayDiscardCount, dayShownPendCount, dayCurVer, daySigned, dayPendingItems, publishALDay, unpublishDay } from '../engine/publish'
 import { validate, officialWarn, officialRaw, WARN, LIVE_ON_FACE } from '../engine/validate'
-import { withChipWorld } from './html'
+import { withChipWorld, dayPreviewHTML, withDaySnap, withVersionFlags } from './html'
 import { initStore } from '../state/store'
 import { setSession } from '../state/auth'
-import { setPage, DPREV, VWORK, setUnpubArm, setRestArm } from '../state/view'
+import { setPage, DPREV, VWORK, setUnpubArm, setRestArm, displayedByDay } from '../state/view'
 import { dayHTML, dayInfoHTML, dayIssuedHTML } from './html'
 import { PEOPLE } from '../engine/people'
-import { boardSignHTML } from './board'
+import { boardSignHTML, boardHTML, boardWarnHTML } from './board'
 import { pendListHTML } from './pendlist'
 import { commitNewInput, commitInputEdit, removeInput, draftOf } from './inputedit'
 import { schedRows, publishedDays } from './export'
@@ -651,3 +651,61 @@ describe('the second reads: the roster a face counts, a person slot, a brief a f
   })
 })
 const TUE_ = 1
+
+/* D187 (owner, 26 Sep 26 — "Q5 it should"): the edit week's and the board's 👁 look at a published version shows its
+   warnings, as View-only Sched does — the CURRENT version exactly as View-only Sched draws it, an OLDER one as it went
+   out; a parked plan stays flag-free. Its taps resolve against the same list. */
+describe('D187 — a look at a published version wears its warnings', () => {
+  const issues = (html: string) => { const m = /⚠ (\d+) issues?/.exec(html); return m ? +m[1] : 0 }
+  const ringOn = (html: string, id: string) => { const d = el(html); const p = d.querySelector(`.puck[data-person="${id}"]`); return p ? /boxred/.test(p.className) : null }
+
+  it('the CURRENT version: the edit week\'s look shows exactly what View-only Sched shows', () => {
+    publishDay(MON)
+    const face = issuedFace(MON).innerHTML
+    const look = dayPreviewHTML(MON, dayCurVer(MON), true)
+    expect(issues(face), 'the published face counts its issues').toBeGreaterThan(0)
+    expect(issues(look), 'the look counts the same').toBe(issues(face))
+    const stiff = ((DAYS[MON] as any).waves[0].formations[0].aircraft[0].p) as string
+    expect(ringOn(look, stiff), 'and rings the same man').toBe(ringOn(face, stiff))
+    expect(ringOn(look, stiff)).toBe(true)
+    expect(look, 'still read only').not.toContain('data-slot=')
+  })
+
+  it('an OLDER version shows the warnings IT went out with — not the ones a later AL added', () => {
+    publishDay(MON)
+    const origVer = dayCurVer(MON), nOrig = (((SCHED.orig as any)[MON].w || {}).byDay || { warns: [] }).warns.length
+    const stiff = ((DAYS[MON] as any).waves[0].formations[0].aircraft[0].p) as string
+    expect(setSlotVal('d:0.1.0', stiff), 'Stiff also on the evening SDO desk — a new clash').toBe(true)
+    validate(); signBound(MON); publishALDay(MON); validate()
+    const al1 = dayCurVer(MON), nAl1 = ((((SCHED.als.find((a: any) => a.id === al1) || {}) as any).snap || {}).w?.byDay?.warns || []).length
+    expect(nAl1, 'AL1 went out with more warnings').toBeGreaterThan(nOrig)
+    expect(issues(dayPreviewHTML(MON, origVer, true)), 'the Original\'s look: its own').toBe(nOrig)
+    expect(issues(dayPreviewHTML(MON, al1, true)), 'AL1\'s look: today\'s face').toBe(issues(issuedFace(MON).innerHTML))
+    /* a tap on a warning in the Original's look resolves against the Original's list */
+    DPREV.set(MON, origVer)
+    try { expect((displayedByDay(MON)?.warns || []).length).toBe(nOrig) } finally { DPREV.delete(MON) }
+  })
+
+  it('a parked plan stays flag-free, as before', () => {
+    publishDay(MON)
+    draftDup(MON)
+    const dv = 'd:' + dayDrafts(MON)[0].id
+    const h = dayPreviewHTML(MON, dv, true)
+    expect(h).not.toContain('dwbox')
+    expect(h).not.toMatch(/boxred/)
+  })
+
+  it('the board\'s look: the pucks wear the version\'s rings, and its checks are read only', () => {
+    publishDay(MON)
+    const ver = dayCurVer(MON)
+    const stiff = ((DAYS[MON] as any).waves[0].formations[0].aircraft[0].p) as string
+    const bare = withDaySnap(MON, ver, () => boardHTML(MON, true))
+    expect(ringOn(bare, stiff), 'without the look\'s flags: none (the old preview)').toBe(false)
+    let board = '', checks = ''
+    withDaySnap(MON, ver, () => withVersionFlags(MON, ver, () => { board = boardHTML(MON, true); checks = boardWarnHTML(MON, true) }))
+    expect(ringOn(board, stiff), 'the board\'s look rings him').toBe(true)
+    expect(issues(checks), 'its checks list the version\'s').toBe(issues(issuedFace(MON).innerHTML))
+    expect(checks, 'no mute on a record').not.toContain('data-woff=')
+    expect(board, 'and no write surface').not.toContain('data-slot=')
+  })
+})

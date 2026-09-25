@@ -684,7 +684,12 @@ describe('version dropdown and preview build', () => {
     expect(origH).toContain('dprev-bar')
     expect(origH).toContain('data-restore="0"')
     expect(origH).not.toContain('data-slot=')  // no write surfaces
-    expect(origH).not.toContain('dwbox')       // no live warnings
+    /* D187 (26 Sep 26, "Q5 it should"): a look at a published version wears the warnings THAT version went out with —
+       its own stored list, never today's working one (was: no warnings at all) */
+    const origW = ((SCHED.orig[0] as any).w?.byDay?.warns || []).length
+    expect(origW, 'the Original kept its warnings when it went out').toBeGreaterThan(0)
+    expect(origH).toContain('dwbox')
+    expect(origH).toMatch(new RegExp(`⚠ ${origW} issue`))
     expect(origH).not.toContain('data-alp')    // pending is live-only state
     const al1H = dayPreviewHTML(0, al1Ver, true)
     expect(al1H).toContain('LIVE CHANGE')

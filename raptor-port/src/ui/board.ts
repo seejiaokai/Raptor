@@ -424,7 +424,9 @@ function boardSignBody(di: number, pv?: boolean) {
     + `<div class="sb-pub">${planSelectorHTML(di)}${verTagHTML(di)}${nysMarkHTML(di)}${dayStatHTML(di, ed)}</div></div>`
 }
 
-export function boardWarnHTML(di: number) {
+/* `look`: drawn under a look at a published version (D187) — the day's checks as that version shows them, read only:
+   no mute and no "create the period" (they act on today's day, not on the record) */
+export function boardWarnHTML(di: number, look = false) {
   const d = DAYS[di]
   const dw = (WARN.byDay[di] && WARN.byDay[di].warns) || []
   /* .sbwrap/.open + data-sbwtog + .sbw-car exist for the PHONE fold (owner,
@@ -448,7 +450,7 @@ export function boardWarnHTML(di: number) {
       : `No conflicts flagged for ${esc(d.dow)} ✓`)
     + `</div>`
   if (dw.length) {
-    const canMute = canEditSched()
+    const canMute = !look && canEditSched()
     const wtext = (w: any) => {
       const names = (w.who || []).map((id: any) => PEOPLE[id] ? PEOPLE[id].cs : id).join(', ')
       return `${esc(names)}${names ? ' — ' : ''}${esc(wlbl(w.msg || WCODE[w.code] || w.code || ''))}`
@@ -486,7 +488,7 @@ export function boardWarnHTML(di: number) {
            himself. Same helper as the week (mkPeriod), so the button and the
            sentence cannot name different years, and no other check grows an
            action. */
-        + (mkPeriod(w, di) ? `<button class="wln-act" data-mkperiod="${esc(mkPeriod(w, di))}" title="Creates the ${esc(mkPeriod(w, di))} leave war period in draft and takes you to the Leave War to set its bidding window">Create the ${esc(mkPeriod(w, di))} period</button>` : '')
+        + (!look && mkPeriod(w, di) ? `<button class="wln-act" data-mkperiod="${esc(mkPeriod(w, di))}" title="Creates the ${esc(mkPeriod(w, di))} leave war period in draft and takes you to the Leave War to set its bidding window">Create the ${esc(mkPeriod(w, di))} period</button>` : '')
         + `</div>`
     })
     if (muted.length) {
@@ -497,7 +499,7 @@ export function boardWarnHTML(di: number) {
         const w = dw[ix]
         wh += `<div class="wln ${w.sev} muted" data-wdi="${di}" data-wix="${ix}" title="Jump to the puck that caused this">`
           + `<span class="wln-t">${wtext(w)}</span>`
-          + `<button class="wln-mute" data-woff="${di}.${ix}" title="Show this check again">↺</button>`
+          + (look ? '' : `<button class="wln-mute" data-woff="${di}.${ix}" title="Show this check again">↺</button>`)
           + `</div>`
       })
     }

@@ -73,8 +73,7 @@ fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-OR
 The amendment batch's look — HIS ORDER (D173): (1) [LOOK-435] — D114's full check (DONE 25 Sep 26, evidence §9; [REQUEST-OFF-ONE] archived), his look, "merge live" of PR #435 (MERGED 25 Sep 26); (2) [ACCOUNTS] on a new branch; (3) [DRAFT-PENDING] — the one changes window, on top of accounts; (4) one full check of 2 and 3. Found by D114's reads, older than it: [REQ-TWO-ROWS] and [REQ-DECLINED-PENDING] — HIS ORDER (D174, D175) — BUILT on `claude/request-one-row` (FULL check done, archived; his look and "merge live" next, BEFORE [ACCOUNTS]); its look card's two questions answered: [REQ-DECLINED-DELETED] (D176 — built there, archived) and [LEAVE-LATE-PUBLISHED] (D177 — its OWN branch; scope: the sweep in `raptor-port/docs/superpowers/specs/2026-09-25-published-face-live-inputs.md`; its place in his order to be asked — the agent recommends right after `claude/request-one-row` merges, before [ACCOUNTS]); then [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). The amendment batch (D91–D111) is BUILT on `claude/amendment-batch`, its pull request waiting for his look and "merge live" — its eleven items closed and archived 25 Sep 26 (`OUTSTANDING-ARCHIVE.md`; the spec `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`); left from that area: [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS], [RULING-HOMES-AUDIT] and [HANDOFF-SHAPE-GUARD] (any time, docs only), [LATE-PUB-FACE-LIVE] (his three questions on `[LEAVE-LATE-PUBLISHED]`'s look card),
 [BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
-FULL-tier build, any time), and beside it [QUALS-PROTO-TOAST] (low, one line of words). The board — [PV-NO-FLAGS]
-(his question on `[LEAVE-LATE-PUBLISHED]`'s look card). View-only Sched — [VIEW-ARROW-OVER-LIST] (low, LOOK tier).
+FULL-tier build, any time), and beside it [QUALS-PROTO-TOAST] (low, one line of words). View-only Sched — [VIEW-ARROW-OVER-LIST] (low, LOOK tier).
 Insights — [INSIGHTS-WORKING-COPY] (a question for him, with the one changes window or any time).
 
 **Waiting on him — no order exists:** [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
@@ -930,6 +929,9 @@ permissions, so FULL tier. **Place:** any time, none blocking. The question as i
     places the authority-sweep fix touched.
 
 ### [PV-NO-FLAGS] The board's 👁 look at a published version shows no warnings at all — a question for him (filed 26 Sep 26)
+**ANSWERED AND BUILT 26 Sep 26 — D187 ("Q5 it should"):** a look at a published version wears its warnings (the current
+version as View-only Sched draws it, an older one as it went out, a plan none) — `raptor-port/docs/ui-contracts.md`
+§Version preview; pinned in `raptor-port/src/ui/latepub.test.tsx` "D187 …".
 Found by two walkers of `[LEAVE-LATE-PUBLISHED]`'s check (Quals, Logic — evidence
 `raptor-port/docs/handpass/2026-09-26-late-pub.md` §4c): the board's plans menu → the Original (or an AL) draws the day
 with no rings, no flags and no warning bar — neither the warnings it went out with nor the ones that stay live (D184,

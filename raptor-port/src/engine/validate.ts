@@ -84,7 +84,8 @@ const SEVR:any={note:1,adv:2,hard:3};
      pending for one answer and not the other (the agent's reading, on the look card);
    · a lapsed qualification (D185) — read as the warnings the app marks with its Qualification flag (Q): an illegal seat,
      SC currency, AAR currency and an AAR instructor not cleared. The crew-pairing warnings (CP / CPH — an OCU without an
-     IP, no IR examiner, an unauthorised pairing) stay frozen: put to him on the look card.
+     IP, no IR examiner, an unauthorised pairing) stay frozen — CONFIRMED by him, D188 ("Q6yes", 26 Sep 26), with the
+     tight-turn note live beside the breach.
    Not stored with the published version and not compared, so they alone never make the day pending; each is drawn
    from the official pass — today's judgement of the issued day — with its rings and flags (the day loop files each
    mark under the class of the warning that raised it: `fz` / `lv` below). A medical downchit stays FROZEN (D185, "1
@@ -1382,6 +1383,9 @@ export let OFFICIAL:any = WARN;
    Built once per official bundle and set of current versions; a version issued before the freeze (no `w`) keeps the
    official slice, as before. */
 let FACE:any=null, FACE_OF:any=null, FACE_K='';
+/* a warning worded with a callsign since renamed reads today's (a rename is a label, 14 Sep 26) */
+const rewordSlice=(w:any,g:any)=>{ if(!g||!w.cs)return g; const ren=Object.keys(w.cs).filter((id:any)=>PEOPLE[id]&&PEOPLE[id].cs&&PEOPLE[id].cs!==w.cs[id]);
+  if(!ren.length)return g; return {...g,warns:(g.warns||[]).map((x:any)=>{ let m=String(x.msg||''); ren.forEach((id:any)=>{ m=m.split(String(w.cs[id])).join(String(PEOPLE[id].cs)); }); return {...x,msg:m}; })}; };
 function faceWarn(){
   const off=OFFICIAL, fz:any[]=[];
   approvedDays().forEach((di:any)=>{ const v=dayCurVer(di), s=v!=null?daySnapOf(di,v):null; if(s&&s.w)fz.push({di,v,w:s.w}); });
@@ -1390,9 +1394,7 @@ function faceWarn(){
   if(FACE&&FACE_OF===off&&FACE_K===k)return FACE;
   const byDay=(off.byDay||[]).slice(), sev={...off.sev}, chip={...off.chip}, dash={...off.dash}, trace={...off.trace};
   const put=(m:any,di:any,v:any)=>{ if(v)m[di]=v; else delete m[di]; };
-  /* a warning worded with a callsign since renamed reads today's (a rename is a label, 14 Sep 26) */
-  const reword=(w:any,g:any)=>{ if(!g||!w.cs)return g; const ren=Object.keys(w.cs).filter((id:any)=>PEOPLE[id]&&PEOPLE[id].cs&&PEOPLE[id].cs!==w.cs[id]);
-    if(!ren.length)return g; return {...g,warns:(g.warns||[]).map((x:any)=>{ let m=String(x.msg||''); ren.forEach((id:any)=>{ m=m.split(String(w.cs[id])).join(String(PEOPLE[id].cs)); }); return {...x,msg:m}; })}; };
+  const reword=rewordSlice;
   /* two things stay LIVE on a published face, by design:
      · the next-day crew-rest and run marks (`trace`) — owner, D183, 26 Sep 26: "should be live to see the break of crew
        rest" (Fable's plan read F4; Astra's code read #1 set aside). They show the break as it stands today, drawn from the
@@ -1419,6 +1421,29 @@ function faceWarn(){
   return FACE;
 }
 export function officialWarn(){ return faceWarn(); }
+/* THE WARNINGS ONE PUBLISHED VERSION SHOWS WHEN IT IS LOOKED AT (owner, D187, 26 Sep 26 — "Q5 it should": the board's and
+   the edit week's 👁 look at a published version shows its warnings, as View-only Sched does). The day's CURRENT issued
+   version is its published face — exactly what View-only Sched draws (faceWarn: the warnings it went out with, the live
+   ones on top). An OLDER, superseded version shows the warnings IT went out with (its own `w`) — a record of what was
+   issued then; today's live warnings and the next-day mark belong to the current document, so it carries neither. A
+   parked plan ('d:'), a version issued before the freeze (no `w`) or one that no longer resolves: null — it is drawn
+   with no warnings, as before. One bundle per (official pass, day, version). */
+const VFACE=new WeakMap<any,Map<string,any>>();
+export function versionFaceWarn(di:any,ver:any):any{di=+di;
+  if(ver==null||(typeof ver==='string'&&ver.slice(0,2)==='d:')||!dayApproved(di))return null;
+  if(String(dayCurVer(di))===String(ver))return faceWarn();
+  const s:any=daySnapOf(di,ver); if(!s||!s.w)return null;
+  const off=OFFICIAL, k=`${di}=${ver}`; let m=VFACE.get(off); if(!m){m=new Map(); VFACE.set(off,m);}
+  const hit=m.get(k); if(hit)return hit;
+  const byDay=(off.byDay||[]).slice(), sev={...off.sev}, chip={...off.chip}, dash={...off.dash}, trace={...off.trace};
+  const put=(mm:any,v:any)=>{ if(v)mm[di]=v; else delete mm[di]; };
+  const g=rewordSlice(s.w,s.w.byDay);
+  byDay[di]={...(g||{di,dow:(DAYS[di]||{}).dow}),warns:((g&&g.warns)||[]).filter((x:any)=>!LIVE_ON_FACE.has(x.code))};
+  put(sev,s.w.sev); put(chip,s.w.chip); put(dash,s.w.dash); delete trace[di];
+  const all:any[]=[]; byDay.forEach((gg:any)=>{ if(gg&&gg.warns)all.push(...gg.warns); });
+  const b={all,byDay,sev,chip,dash,trace}; m.set(k,b); return b;}
+/* draw fn with WARN pointing at that version's warnings (versionFaceWarn); a version with none reads as before */
+export function withVersionWarn(di:any,ver:any,fn:any){ const f=versionFaceWarn(di,ver); if(!f)return fn(); const w=WARN; WARN=f; try{ return fn(); } finally{ WARN=w; } }
 /* the official pass's own bundle — today's judgement of every published day (the detector), not what their faces show */
 export function officialRaw(){ return OFFICIAL; }
 /* the day's slice of a warning bundle — what an issued version stores, and what the detector compares: its warning list

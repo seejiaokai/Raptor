@@ -10,7 +10,7 @@ import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef } from '../engine/sl
 /* RANK left with the focus-scoped trace: ranking the CR chip against the day's
    own worst is traceLeads' job now, in the engine, so both the chip and the
    click that follows it read one test */
-import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, FLT_NO_LEN_SAYS } from '../engine/validate'
+import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, FLT_NO_LEN_SAYS, versionFaceWarn, withVersionWarn } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
 import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayShownPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned, verSigners, publishReadPass } from '../engine/publish'
 import { verSeq } from '../engine/verid'
@@ -83,7 +83,8 @@ const dsh=(di:any,id:any)=>(PV&&!OFW)?false:dashOf(di,id)
    trace's CR / 7 caption where the trace owns it — traceLeads, via chip), the dash and the trace. `off` is the
    caller's own "no marks here" (a frozen preview, a read-only row) — exactly what it gated before. */
 export function puckMarks(di:any,id:any,off?:any){
-  if(off)return {sev:null,flag:null,dash:false,trace:null}
+  /* …except where the face being drawn wears its flags (OFW — an issued face, or a look at a published version, D187) */
+  if(off&&!OFW)return {sev:null,flag:null,dash:false,trace:null}
   return {sev:sev(di,id),flag:chip(di,id),dash:dsh(di,id),trace:traceHit(di,id)}
 }
 /* the ONE place the snapshot may stand in for the live model. finally is not
@@ -126,8 +127,18 @@ export function withChipWorld<T>(di:any,ver:any,ofw:any,fn:(ok:boolean)=>T):T{
   if(!ofw)return withDaySnap(di,ver,(ok:any)=>fn(!!ok))
   const q=PVQ,o=OFW
   PVQ=true; OFW=true
-  try{ return withDaySnap(di,ver,(ok:any)=>ok?withOfficialWarn(()=>fn(true)):fn(false)) }
+  try{ return withDaySnap(di,ver,(ok:any)=>ok?withVersionWarn(di,ver,()=>fn(true)):fn(false)) }
   finally{ PVQ=q; OFW=o }
+}
+/* A LOOK AT A PUBLISHED VERSION WEARS ITS WARNINGS (owner, D187, 26 Sep 26 — "Q5 it should"): the edit week's and the
+   board's 👁 preview of a published version draws the rings, flags and warning list that version shows
+   (engine/validate.ts versionFaceWarn — the current version as View-only Sched draws it; an older one as it went out).
+   Called INSIDE withDaySnap. OFW turns the preview's flags on — never its editing: the write surfaces stay gated on PV.
+   A parked plan, and a version with no warnings kept, stay flag-free, as every preview was before. */
+export function withVersionFlags<T>(di:any,ver:any,fn:()=>T):T{
+  if(!versionFaceWarn(di,ver))return fn()
+  const o=OFW; OFW=true
+  try{ return withVersionWarn(di,ver,fn) } finally{ OFW=o }
 }
 /* the version a day's face shows on View-only Sched when it is a published day's ISSUED face (viewDayHTML's
    first branch → dayIssuedHTML: the current issued version) — else null. A reader of that face (the ⓘ panel)
@@ -137,7 +148,7 @@ export function withChipWorld<T>(di:any,ver:any,ofw:any,fn:(ok:boolean)=>T):T{
 export function issuedFaceVer(di:any){di=+di;
   return (CURPAGE==='viewsched'&&dayApproved(di)&&!VWORK.has(di)&&!protectedWeek())?dayCurVer(di):null}
 export function dayPreviewHTML(di:any,ver:any,edFallback:any){
-  return withDaySnap(di,ver,(ok:any)=>ok?dayHTML(di,false,true):dayHTML(di,edFallback,true))
+  return withDaySnap(di,ver,(ok:any)=>ok?withVersionFlags(di,ver,()=>dayHTML(di,false,true)):dayHTML(di,edFallback,true))
 }
 /* an APPROVED day whose issued snapshot cannot be resolved — a legacy /
    unsupported book, whose 'orig'/numeric identities no longer resolve. The crew

@@ -5,7 +5,7 @@ import { keyDay } from '../engine/keys'
 import { slotVal, setSlotVal, fillSlot, armTargetExists, sentinelSeatOK } from '../engine/slots'
 import { popReorderedDay } from '../engine/reorder'
 import { slotBar, personCount } from '../engine/avail'
-import { validate, WARN, officialWarn } from '../engine/validate'
+import { validate, WARN, officialWarn, versionFaceWarn } from '../engine/validate'
 import { markEdit, daySnapOf, dayApproved } from '../engine/publish'
 import { curDraftId, reconcileIssuedMarks, isDraftVer } from '../engine/drafts'
 import { isLead, isInstr, isOcu } from '../engine/people'
@@ -537,7 +537,7 @@ export function selectPerson(id:any,inWeek?:any){
       const days:any[]=[];
       for(let di=0;di<7;di++){
         const g=displayedByDay(di);
-        const tr=(dayDisplaysOfficial(di)?officialWarn():WARN).trace;
+        const tr=displayedBundle(di).trace;
         const hasWarn=!!(g&&g.warns&&g.warns.some((w:any)=>(w.who||[]).includes(id)));
         if(hasWarn||(tr&&tr[di]&&tr[di][id]))days.push(di);
       }
@@ -578,7 +578,15 @@ export function displayedByDay(di:any){
      WORKING warning at that index (the missing-index guard cannot catch a collision).
      An edit-page 'd:' preview is ignored for APPROVED days, so draftPreview gates on
      !dayApproved; VWORK never holds a draft, so it only bites the approved case. */
-  return (dayDisplaysOfficial(di)?officialWarn():WARN).byDay[di]
+  return displayedBundle(di).byDay[di]
+}
+/* the warning bundle day di is drawn from: a look at one of its PUBLISHED versions (DPREV, not a plan) shows that
+   version's warnings (owner, D187 — validate.ts versionFaceWarn), so its taps and highlights resolve there; else the
+   page's own world, as before */
+export function displayedBundle(di:any){
+  const ver=DPREV.get(+di)
+  if(ver!=null&&!isDraftVer(ver)){ const f=versionFaceWarn(di,ver); if(f)return f; }
+  return dayDisplaysOfficial(di)?officialWarn():WARN
 }
 /* Does the VIEW page render THIS day's flags from the OFFICIAL world? The single
    source of truth for "which world day di is showing", so displayedByDay (the click/

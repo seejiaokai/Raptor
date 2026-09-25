@@ -33,11 +33,10 @@ the later merge keeps both (D78).
 - **His questions (the card, §10):** Q1 ANSWERED — D186 "Q1 yes" (keep them frozen). Q4 the
   app's own "till <date>" note: a stretched or trimmed leave makes each published day it still covers show "1 pending" on
   the admin's working copy (never on View-only Sched) — keep?
-  Q5 warnings in the board's look at a published version (`OUTSTANDING.md` `[PV-NO-FLAGS]`)? Q6 the reading of "a lapsed
-  qualification" (the Qualification-flag family; crew-pairing frozen) and the tight-turn note live — right?
+  Q5 ANSWERED — D187 "it should" (BUILT: a look at a published version wears its warnings). Q6 ANSWERED — D188 "yes".
 - **Filed this session:** `[PV-NO-FLAGS]`, `[INSIGHTS-WORKING-COPY]` (both his questions), `[QUALS-PROTO-TOAST]`,
   `[VIEW-ARROW-OVER-LIST]`, `[INPUTSCAL-TAP-FLAKY]`. Rulings this chat: none new (D185's row gained the agent's widened
-  reading); D186 (Q1 yes). Range left: D187–D189.
+  reading); D186 (Q1 yes), D187 (Q5), D188 (Q6). Range left: D189.
 - **Usage (D182, until Monday 28 Sep 26):** unlimited — spend it on his look's follow-ups.
 - **After this merges (D180, D173):** `[ACCOUNTS]` on a new branch — its plan not started; the `OUTSTANDING.md` tidy (over
   its tripwire) on its own docs branch.

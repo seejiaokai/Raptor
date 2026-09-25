@@ -2411,7 +2411,7 @@ stay LIVE (below), which the face draws from today and which never make the day 
   - a crew-rest breach and the 7-day run on the day itself (`CREW_REST`, `DAYS_RUN` — D184, D185), with the crew-rest
     check's other answer, a tight turn (`CREW_TIGHT` — one check answers breach OR tight turn, so the face never shows a
     frozen tight turn beside a live breach; the agent's reading, on the look card);
-  - a lapsed qualification (D185) — the warnings the app marks with its Qualification flag: an illegal seat (`QUAL`), SC
+  - a lapsed qualification (D185; the reading confirmed, D188) — the warnings the app marks with its Qualification flag: an illegal seat (`QUAL`), SC
     currency (`SC_QUAL`), AAR currency (`AAR_QUAL`, `AAR_INSTR`); the crew-pairing warnings stay frozen (on the look
     card). A man's CAT / seat / posting change still reads pending through `snap.pa` and still draws as issued on his
     puck — only the warning it raises is live; a currency tick is not in `snap.pa`, so a lapsed currency shows at once
