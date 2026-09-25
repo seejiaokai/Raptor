@@ -68,8 +68,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
-[TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SMOKE-ADD-RACE]
-(before the next Tracker change that touches the smoke suite), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
+[TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
 The amendment batch's look — HIS ORDER (D173): (1) [LOOK-435] — D114's full check (DONE 25 Sep 26, evidence §9; [REQUEST-OFF-ONE] archived), his look, "merge live" of PR #435 (MERGED 25 Sep 26); (2) [ACCOUNTS] on a new branch; (3) [DRAFT-PENDING] — the one changes window, on top of accounts; (4) one full check of 2 and 3. Found by D114's reads, older than it: [REQ-TWO-ROWS] and [REQ-DECLINED-PENDING] — HIS ORDER (D174, D175) — BUILT on `claude/request-one-row` (FULL check done, archived; his look and "merge live" next, BEFORE [ACCOUNTS]); on that branch's look card, two questions: [REQ-DECLINED-DELETED] (if yes, built there first) and [LEAVE-LATE-PUBLISHED] (its own branch); then [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). The amendment batch (D91–D111) is BUILT on `claude/amendment-batch`, its pull request waiting for his look and "merge live" — its eleven items closed and archived 25 Sep 26 (`OUTSTANDING-ARCHIVE.md`; the spec `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`); left from that area: [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] and [RULING-HOMES-AUDIT] (any time, docs only),
@@ -874,17 +873,14 @@ back; the finger left down after a pinch does nothing). Left: his look card, on 
 `raptor-port/docs/handpass/2026-09-23-tracker-pinch-ball.md` §12 — Safari is the one browser no walk here drives, and
 one line of the fix (the board holding both fingers) is proven only there.
 
-### [TRK-SMOKE-ADD-RACE] The smoke suite's "+ Add" step can still lose a typed name (24 Sep 26)
-**Place:** after `[TRK-PINCH-ASK]`, before the next Tracker change that touches the smoke suite. Seen twice on
-24 Sep 26: a local smoke run (check 261, an add straight after syllabus switches) and PR #431's first run on his PC
-(check 231, an add straight after a roster pick) — both at the step's own `waitForFunction` on `#dlgInput`, whose
-comment calls it "the residual behind the intermittent TRK-SMOKE timeout after the reset-on-render fix" (the 17 Sep
-fix, `[TRK-SMOKE]`). Not caused by PR #431 — its changes do not run on that desktop mouse path; the whole suite passed
-442/442 on the same code, and an isolated probe (a syllabus switch or a roster pick, then at once an add, 24 times)
-lost nothing on either PR #431's build or `main`'s. Both stops came while the PC was busy, and both straight after a
-save or a load had started — a background notify re-rendering the controlled input. **Do:** instrument the running app
-at the failing add under load (as the 17 Sep fix did) and fix the re-render, not the wait; until then, a stop there
-is re-run once WITH this item cited, never silently.
+### [TRK-DLG-LEFTOVERS] Two small gaps in the Tracker's question box (25 Sep 26)
+**Place:** low — with the next Tracker change that touches `Modals.jsx` or `core.js` `_dlgShow`. Found by Fable's read
+of `[TRK-SMOKE-ADD-RACE]` (F2, F3), both older, read from the code: (1) a second question opened while one is open
+(reachable by Tab to a control behind the shade, then Enter) replaces it, and the first one's job waits forever --
+fix: `_dlgShow` answers an open question as cancelled before showing the next; test: `uiPrompt('a')` then
+`uiPrompt('b')`, the first resolves null. (2) Enter pressed while a phone keyboard is still composing a word
+submits the half-typed text — fix: skip Enter when `e.nativeEvent.isComposing` (the text box and the search); test
+with `isComposing: true`. Detail: `raptor-port/docs/handpass/2026-09-25-trk-add-race.md` §8.
 
 ### [TRK-BAKE-STALE] The chart-baking script no longer runs (found 23 Sep 26)
 `raptor-port/scripts/tracker/bake-user-charts.mjs` resolves `src/data/…` from `scripts/` (the folder

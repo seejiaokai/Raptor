@@ -37,10 +37,24 @@ export function DlgModal() {
      every incidental re-render, and a store notify landing inside the 30ms
      window (a hint flash, a re-fit, an async save) cleared the timer and never
      re-armed it — so the first keystrokes went to the page, which owns Escape
-     and Ctrl+Z, until the user clicked into the box (TRK-SMOKE review). */
+     and Ctrl+Z, until the user clicked into the box (TRK-SMOKE review).
+     IT NEVER TAKES A CURSOR THE BOX ALREADY HAS. The 30ms is a minimum, not a
+     promise: on a busy machine the timer fires late — after the user (or the
+     smoke suite, typing at machine speed) has already clicked into "Or type a
+     callsign" and started typing. Moving the cursor then sent the rest of the
+     name into the SEARCH box, left the callsign blank, and OK added nobody,
+     silently; on the plain prompt, the select() alone made the next key wipe
+     what was typed. Three stops on GitHub's checks on 25 Sep 26, after "+ Add"
+     on Tx 2026, were this (TRK-SMOKE-ADD-RACE, D190). So the timer stands
+     down when the cursor is already in one of THIS box's typing fields; from
+     anywhere else — the button that opened it, or nowhere — it moves it as
+     before. */
+  const modalRef = useRef(null);
   useEffect(() => {
     if (!d) return;
     const t = setTimeout(() => {
+      const box = modalRef.current, has = document.activeElement;
+      if (box && has && box.contains(has) && (has.tagName === 'INPUT' || has.tagName === 'TEXTAREA')) return;
       const el = (list && d.filter) ? filterRef.current : inputRef.current;
       if (el) { el.focus(); el.select(); }
     }, 30);
@@ -48,10 +62,18 @@ export function DlgModal() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [core.dlgSerial]);
   if (!d) return null;
-  const ok = () => core.dlgClose(d.input ? val : true);
-  const cancel = () => core.dlgClose(d.input ? null : false);
   const needle = q.trim().toLowerCase();
   const shown = list ? list.filter(it => !needle || (it.label + ' ' + (it.sub || '')).toLowerCase().includes(needle)) : [];
+  /* A callsign typed into the SEARCH that matches nobody on the roster, with
+     "Or type a callsign" left empty, IS the name to add (D191, 25 Sep 26 — his
+     "A"). + Add opens with the cursor in the search, so this is where a new
+     name is most often typed; OK used to close the box having added nobody,
+     silently ([TRK-SMOKE-ADD-RACE]'s sibling, Fable F1). A name in the box
+     below still wins, and a search that matches someone adds nothing by
+     itself — pick them. The line under the search says so while it is true. */
+  const searchAsNew = (list && d.input && needle && !shown.length && !val.trim()) ? q.trim() : '';
+  const ok = () => core.dlgClose(d.input ? (searchAsNew || val) : true);
+  const cancel = () => core.dlgClose(d.input ? null : false);
   const pick = key => core.dlgClose({ pick: key });
   return (
     <>
@@ -62,7 +84,7 @@ export function DlgModal() {
           was drawn behind the window that asked it ([HUMAN-RETEST] Fable #6,
           23 Sep 26). Raptor's own overlays (400+) stay above the whole tab. */}
       <div className="overlay" id="dlgOverlay" style={{ zIndex: 100, display: 'block' }} onClick={cancel}></div>
-      <div className="modal" id="dlgModal" style={{ zIndex: 101, width: 'min(420px, 92vw)', display: 'block' }}>
+      <div className="modal" id="dlgModal" ref={modalRef} style={{ zIndex: 101, width: 'min(420px, 92vw)', display: 'block' }}>
         <div id="dlgMsg" style={{ fontSize: 13.5, whiteSpace: 'pre-wrap', marginBottom: 12 }}>{d.msg}</div>
         {list && (
           <>
@@ -71,8 +93,13 @@ export function DlgModal() {
               <input id="dlgFilter" ref={filterRef} type="search" placeholder="Search by callsign" value={q}
                 onChange={e => setQ(e.target.value)}
                 /* Enter on the search box picks the one entry left — the keyboard
-                   route through a long roster */
-                onKeyDown={e => { if (e.key === 'Enter' && shown.length === 1) { e.preventDefault(); pick(shown[0].key); } }} />
+                   route through a long roster — and, with nobody left, does what
+                   OK does: adds the name typed (D191) */
+                onKeyDown={e => {
+                  if (e.key !== 'Enter') return;
+                  if (shown.length === 1) { e.preventDefault(); pick(shown[0].key); }
+                  else if (searchAsNew) { e.preventDefault(); ok(); }
+                }} />
             )}
             <div id="dlgList" role="listbox">
               {shown.map(it => (
@@ -81,7 +108,7 @@ export function DlgModal() {
                   {it.sub ? <span className="dlg-sub">{it.sub}</span> : null}
                 </button>
               ))}
-              {!shown.length && <div className="mini dlg-none">Nobody on the roster matches “{q.trim()}”.</div>}
+              {!shown.length && <div className="mini dlg-none">Nobody on the roster matches “{q.trim()}”.{searchAsNew ? ' OK adds them as a new crew member.' : ''}</div>}
             </div>
           </>
         )}

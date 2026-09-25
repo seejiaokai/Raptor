@@ -3070,10 +3070,15 @@ await pg.selectOption('#sylSel', txOpt);
 await pg.waitForTimeout(800);
 /* The clean slate leaves Tx with nobody on it, and a tap on a ball with nobody
    to mark opens no pop-up ([HUMAN-RETEST] F9) — so put someone on Tx the way a
-   trainer does (+ Add), and the pop-up's ✎ Edit details is there to press. */
+   trainer does (+ Add), and the pop-up's ✎ Edit details is there to press.
+   Through the addStudent helper, not a bare fill + a fixed 600ms: this is the
+   step that stopped GitHub's checks three times on 25 Sep 26 — the box's late
+   cursor move sent the typed name into the roster SEARCH, OK added nobody, and
+   the ball's pop-up never came ([TRK-SMOKE-ADD-RACE], fixed in the app —
+   Modals.jsx). The helper proves the name landed in the box before OK and waits
+   for the student to show, so a lost name would stop HERE, saying so. */
 if (await pg.evaluate(() => !document.querySelectorAll('.c-students .chip').length)) {
-  await pg.click('#addStu'); await pg.waitForSelector('#dlgInput');
-  await pg.fill('#dlgInput', 'SMOKE TX'); await pg.click('#dlgOk'); await pg.waitForTimeout(600);
+  await addStudent('SMOKE TX');
 }
 await clickBall('BFM-5'); await pg.waitForTimeout(300);
 await pg.click('#popEditInfo'); await pg.waitForSelector('#infoModal');

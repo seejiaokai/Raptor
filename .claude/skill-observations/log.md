@@ -271,7 +271,21 @@ resolved statuses always carry their resolution date
 
 **Principle:** "Every reader of the changed function" is not the same set as "every place the number is shown". A sibling that re-derives the same quantity is a drift seam the changed function's callers list can never reveal; enumerate from the surfaces the ruling names, not from the call graph of the code you changed.
 
-### Observation 251: A handler's early exit is a surface — a change to the number it tests can make its sentence untrue
+### Observation 251: Slowing the whole browser does not reproduce an ORDERING race — force the order in one in-page step instead
+
+**Status:** OPEN
+**Date:** 2026-09-25
+**Session context:** Raptor `[TRK-SMOKE-ADD-RACE]` (D190) — the Tracker smoke suite's "+ Add" stopped GitHub's checks three times; the cause was a 30ms focus timer landing between the two halves of Playwright's `fill` (focus+select, then `Input.insertText` to whatever holds focus). Numbered 251 while a parallel chat (the D175 branch) may also append — the later merge renumbers per the skill's rule 4.
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** Phase 1 (reproduce) for intermittent browser-test failures
+
+**Issue:** The first reproduction attempt was the obvious one: CDP CPU throttling at 1x–12x around the failing step, ten runs, heavily instrumented. It passed every time — slowing the renderer evenly slows the app's timer and the test driver's steps together, so the one narrow interleaving never came up. What reproduced it at once, deterministically, on every surface: reading the test tool's own source to learn that `fill` is two round trips, then forcing the suspect order in ONE in-page task (open the box, put the cursor in, type — all before the timer), and only then letting the timer fire. The old build then failed 26 of 38 walk checks on ten surfaces; the fixed build passed all of them.
+
+**Suggested improvement:** In systematic-debugging's reproduction phase, for an intermittent UI failure: (1) name the two actors that race (an app timer / effect / async save vs. a multi-step driver action or a user's input); (2) read the driver's implementation to find its step boundaries; (3) force each candidate ORDER in one in-page task with a DOM observer, measuring the gap; reserve uniform slow-down for load-dependent (not order-dependent) failures.
+
+**Principle:** A load-dependent flake and an order-dependent race look the same in CI logs but need different reproductions: throttling tests "is it too slow?", forcing the order tests "is it wrong in this order?" — and only the second finds a bug whose window is a few milliseconds wide.
+### Observation 252: A handler's early exit is a surface — a change to the number it tests can make its sentence untrue
 
 **Status:** OPEN
 **Date:** 2026-09-25
@@ -286,7 +300,7 @@ resolved statuses always carry their resolution date
 
 **Principle:** A value a handler tests to decide "nothing to do" is load-bearing twice: once as a number shown, once as a decision taken. Changing what the number means can silently flip the decision; enumerate the branches on a changed quantity, not just its displays.
 
-### Observation 252: Reproduce a finding's PREMISE, not only its symptom — "nothing visible changed" must be checked against every reader of the state
+### Observation 253: Reproduce a finding's PREMISE, not only its symptom — "nothing visible changed" must be checked against every reader of the state
 
 **Status:** OPEN
 **Date:** 2026-09-25
