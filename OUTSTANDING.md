@@ -68,8 +68,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
-[TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-ADD-SEARCH-OK]
-(his answer first — A/B/C; then a small build), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
+[TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
 The amendment batch's look — HIS ORDER (D173): (1) [LOOK-435] — D114's full check (DONE 25 Sep 26, evidence §9; [REQUEST-OFF-ONE] archived), his look, "merge live" of PR #435; (2) [ACCOUNTS] on a new branch; (3) [DRAFT-PENDING] — the one changes window, on top of accounts; (4) one full check of 2 and 3. Found by D114's reads, older than it: [REQ-TWO-ROWS] and [REQ-DECLINED-PENDING] — HIS ORDER (D174, D175): their own small branch right after #435 merges, BEFORE [ACCOUNTS]; [REQ-ORPHAN-ROW] (low). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). The amendment batch (D91–D111) is BUILT on `claude/amendment-batch`, its pull request waiting for his look and "merge live" — its eleven items closed and archived 25 Sep 26 (`OUTSTANDING-ARCHIVE.md`; the spec `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`); left from that area: [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] and [RULING-HOMES-AUDIT] (any time, docs only),
@@ -873,16 +872,6 @@ The two feel questions are ANSWERED — **D134: keep both as built** (a delibera
 back; the finger left down after a pinch does nothing). Left: his look card, on his iPhone on the live app:
 `raptor-port/docs/handpass/2026-09-23-tracker-pinch-ball.md` §12 — Safari is the one browser no walk here drives, and
 one line of the fix (the board holding both fingers) is proven only there.
-
-### [TRK-ADD-SEARCH-OK] A new callsign typed into "+ Add"'s roster SEARCH adds nobody — his call (25 Sep 26)
-**Place:** his answer first (a product choice), then a small build — WALK tier (the shared question box). Found by
-Fable's read of `[TRK-SMOKE-ADD-RACE]` (F1), older than it (since the roster list, 9 Sep 26), reproduced in the real
-app: the cursor starts in the search, a callsign NOT on the roster typed there shows "Nobody on the roster matches
-“NEWGUY”", and OK closes the box having added nobody, with no message (picture
-`raptor-port/docs/img/handpass/2026-09-25-trk-add-race/fable-f1-search-typed.png`). **The question for him:** (A,
-recommended) OK adds that name as a new crew member, and the line under the search says so before OK is pressed;
-(B) OK refuses and points to "Or type a callsign"; (C) leave it. Build: `Modals.jsx` `ok`, with a test beside the
-TRK-SMOKE-ADD-RACE ones in `tracker.test.tsx`. Detail: `raptor-port/docs/handpass/2026-09-25-trk-add-race.md` §8.
 
 ### [TRK-DLG-LEFTOVERS] Two small gaps in the Tracker's question box (25 Sep 26)
 **Place:** low — with the next Tracker change that touches `Modals.jsx` or `core.js` `_dlgShow`. Found by Fable's read

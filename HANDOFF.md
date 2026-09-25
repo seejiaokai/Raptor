@@ -29,10 +29,11 @@ the later merge keeps both (D78).
   `addStudent` helper (D87). Evidence, tier WALK: `raptor-port/docs/handpass/2026-09-25-trk-add-race.md` — old build
   26 failures on all ten places, fixed build 39/39, desktop and phone.
 - **State:** DONE and checked (WALK tier) — the full set green on 4180 (`## Gate baseline`); Fable 5.1's read found
-  nothing against the fix and three OLDER gaps, filed: `[TRK-ADD-SEARCH-OK]` (a new callsign typed into the roster
-  SEARCH adds nobody — his A/B/C question) and `[TRK-DLG-LEFTOVERS]` (low). `[TRK-SMOKE-ADD-RACE]` archived.
-- **Open question for him:** `[TRK-ADD-SEARCH-OK]` A/B/C (recommended A).
-- **Pick up here:** his look (the sheet §11) and "merge live". If the D175 chat merged first, take `main` in first
+  nothing against the fix and three OLDER gaps: `[TRK-ADD-SEARCH-OK]` (a new callsign typed into the roster SEARCH
+  added nobody) — HIS ANSWER A (D191): OK adds it, the line says so; BUILT and walked on this branch (the sheet §11),
+  archived — and `[TRK-DLG-LEFTOVERS]` (low, filed). `[TRK-SMOKE-ADD-RACE]` archived.
+- **Open questions for him:** none.
+- **Pick up here:** his look (the sheet §12) and "merge live". If the D175 chat merged first, take `main` in first
   (D78) and re-run the Tracker smoke before merging.
 <!-- /now -->
 
@@ -83,15 +84,15 @@ the later merge keeps both (D78).
    links last. The two evidence sheets (Tracker 23 Sep, amendment 24 Sep) are the worked examples.
 2. Then his after-the-hunt order: `[PUB-UNAVAIL]` → `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]` → the OIL award fix and the
    small OIL follow-ups as one batch (D147) → `[DB-STEP]`. The whole list: `OUTSTANDING.md`'s priority list.
-3. Filed, none blocking: `[TRK-PINCH-ASK]` (his iPhone look), `[TRK-ADD-SEARCH-OK]` (his A/B/C first), `[TRK-DLG-LEFTOVERS]`, `[TRK-RETEST-NOTES]`,
+3. Filed, none blocking: `[TRK-PINCH-ASK]` (his iPhone look), `[TRK-DLG-LEFTOVERS]`, `[TRK-RETEST-NOTES]`,
    `[LW-FROZEN-BAR-GAP]`, `[LW-FIGSEL-SLOW]`. Everything else: `OUTSTANDING.md`'s priority list.
 4. **Before ANY collaborator:** take the checks runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).
 
 ## Gate baseline
 
-The latest counts watched — 25 Sep 26 20:18, `claude/trk-smoke-add-race-bug-007eed` (on `main` after PR #435, plus the
-question-box fix; not yet merged), one run on a quiet PC on port 4180 (`raptor-port/docs/handpass/2026-09-25-trk-add-race.md`
-§10): unit **5912 / 5912** (363 files) · build clean · tfin **728 / 0** · e2e **471 passed**, 48 skipped · smoke **442 / 0** ·
+The latest counts watched — 25 Sep 26 21:19, `claude/trk-smoke-add-race-bug-007eed` (on `main` after PR #435, plus the
+question-box fix and D191; not yet merged), one run on a quiet PC on port 4180 (`raptor-port/docs/handpass/2026-09-25-trk-add-race.md`
+§11): unit **5916 / 5916** (363 files) · build clean · tfin **728 / 0** · e2e **471 passed**, 48 skipped · smoke **442 / 0** ·
 rulecheck OK. `main` stands at 5910 unit until this merges. Restate a count only from a
 run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his
 PC: `raptor-port/docs/gates-and-deploy.md`.

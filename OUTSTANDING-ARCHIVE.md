@@ -1477,3 +1477,20 @@ save or a load had started — a background notify re-rendering the controlled i
 at the failing add under load (as the 17 Sep fix did) and fix the re-render, not the wait; until then, a stop there
 is re-run once WITH this item cited, never silently.
 
+
+*Moved here 2026-09-25 by backlog-archive.mjs ([TRK-ADD-SEARCH-OK]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-09-25-trk-add-race.md`.*
+
+### [TRK-ADD-SEARCH-OK] A new callsign typed into "+ Add"'s roster SEARCH adds nobody — his call (25 Sep 26)
+**DONE 25 Sep 26 — HIS ANSWER A (D191), built on `claude/trk-smoke-add-race-bug-007eed`, waiting for his look and "merge live".**
+The line under the search says OK adds the name, and OK (or Enter in the search) does; the box below still wins. Contract
+`raptor-port/docs/ui-contracts.md` §The Tracker tab (the + Add entry); evidence `raptor-port/docs/handpass/2026-09-25-trk-add-race.md`
+§11. The item as it was filed:
+**Place:** his answer first (a product choice), then a small build — WALK tier (the shared question box). Found by
+Fable's read of `[TRK-SMOKE-ADD-RACE]` (F1), older than it (since the roster list, 9 Sep 26), reproduced in the real
+app: the cursor starts in the search, a callsign NOT on the roster typed there shows "Nobody on the roster matches
+“NEWGUY”", and OK closes the box having added nobody, with no message (picture
+`raptor-port/docs/img/handpass/2026-09-25-trk-add-race/fable-f1-search-typed.png`). **The question for him:** (A,
+recommended) OK adds that name as a new crew member, and the line under the search says so before OK is pressed;
+(B) OK refuses and points to "Or type a callsign"; (C) leave it. Build: `Modals.jsx` `ok`, with a test beside the
+TRK-SMOKE-ADD-RACE ones in `tracker.test.tsx`. Detail: `raptor-port/docs/handpass/2026-09-25-trk-add-race.md` §8.
+
