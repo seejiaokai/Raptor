@@ -1363,16 +1363,17 @@ function faceWarn(){
   /* a warning worded with a callsign since renamed reads today's (a rename is a label, 14 Sep 26) */
   const reword=(w:any,g:any)=>{ if(!g||!w.cs)return g; const ren=Object.keys(w.cs).filter((id:any)=>PEOPLE[id]&&PEOPLE[id].cs&&PEOPLE[id].cs!==w.cs[id]);
     if(!ren.length)return g; return {...g,warns:(g.warns||[]).map((x:any)=>{ let m=String(x.msg||''); ren.forEach((id:any)=>{ m=m.split(String(w.cs[id])).join(String(PEOPLE[id].cs)); }); return {...x,msg:m}; })}; };
-  /* the next-day crew-rest and run marks (`trace`) freeze with the rest (Astra's code read #1 — D179: nothing on a
-     published face moves silently). The cost Fable's plan read F4 named — an edit to a draft Tuesday that changes whether
-     a Monday man breaks its rest now reads pending on Monday — is put to him (OUTSTANDING.md [LATE-PUB-FACE-LIVE]); a
-     frozen mark whose breach has since gone is still drawn, and its row no longer jumps (html.ts dayTraceHTML).
-     One thing stays LIVE by design (Fable F5):
+  /* two things stay LIVE on a published face, by design:
+     · the next-day crew-rest and run marks (`trace`) — owner, D183, 26 Sep 26: "should be live to see the break of crew
+       rest" (Fable's plan read F4; Astra's code read #1 set aside). They show the break as it stands today, drawn from the
+       official pass; not stored, not compared, so a change to the next day never makes this day pending. A mark whose
+       breach is on a published next day may point at that day's frozen list, where it is absent — its row is then drawn
+       without a jump (html.ts dayTraceHTML);
      · the warnings LIVE_ON_FACE names (the Leave War's "no period covers this date" — D179 leaves the war's reminders
        live, D19): an admin to-do, not a change to what was published; creating the period clears it on the face. */
   fz.forEach(({di,w}:any)=>{ const g=reword(w,w.byDay), live=((off.byDay||[])[di]?.warns||[]).filter((x:any)=>LIVE_ON_FACE.has(x.code));
     byDay[di]=g||live.length?{...(g||{di,dow:(DAYS[di]||{}).dow}),warns:[...((g&&g.warns)||[]),...live]}:undefined;
-    put(sev,di,w.sev); put(chip,di,w.chip); put(dash,di,w.dash); put(trace,di,w.trace); });
+    put(sev,di,w.sev); put(chip,di,w.chip); put(dash,di,w.dash); });
   const all:any[]=[]; byDay.forEach((g:any)=>{ if(g&&g.warns)all.push(...g.warns); });
   FACE={all,byDay,sev,chip,dash,trace}; FACE_OF=off; FACE_K=k;
   return FACE;
@@ -1383,11 +1384,12 @@ export function officialRaw(){ return OFFICIAL; }
 /* the warnings a published face keeps LIVE (Fable F5 — D179 leaves the Leave War's reminders live, D19) */
 export const LIVE_ON_FACE=new Set<string>(['OIL_NO_PERIOD']);
 /* the day's slice of a warning bundle — what an issued version stores, and what the detector compares: its warning list
-   (less LIVE_ON_FACE's), the rings, the flags, the dashes and the next-day marks it causes (`trace`). */
+   (less LIVE_ON_FACE's), the rings, the flags and the dashes. NOT the next-day crew-rest / run mark (`trace`) — it stays
+   live on a published face (owner, D183, 26 Sep 26: "should be live to see the break of crew rest"). */
 export function warnSliceOf(b:any,di:any){di=+di;
   const g=((b&&b.byDay)||[])[di]||null;
   return {byDay:g?{...g,warns:(g.warns||[]).filter((x:any)=>!LIVE_ON_FACE.has(x.code))}:null,sev:((b&&b.sev)||{})[di]||null,chip:((b&&b.chip)||{})[di]||null,
-    dash:((b&&b.dash)||{})[di]||null,trace:((b&&b.trace)||{})[di]||null};}
+    dash:((b&&b.dash)||{})[di]||null,trace:null};}
 /* the official pass's own slice for a day (the detector — today's judgement of the issued day), for the pending list's
    words */
 export function officialSliceNow(di:any){ return warnSliceOf(OFFICIAL,di); }

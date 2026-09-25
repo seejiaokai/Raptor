@@ -569,8 +569,8 @@ export function warnSliceKey(w:any,cs?:any):string{
   if(!w)return '';
   const names=cs||w.cs||warnCallsigns(w);
   const warns=((w.byDay&&w.byDay.warns)||[]).map((x:any)=>stableJson({...x,msg:warnMsgKey(x.msg,names)})).sort();
-  const tr:any={}; Object.keys(w.trace||{}).forEach((id:any)=>{ const t=(w.trace||{})[id]; tr[id]=t&&typeof t==='object'?warnMsgKey(stableJson(t),names):t; });
-  return stableJson({warns,sev:w.sev||{},chip:w.chip||{},dash:w.dash||{},trace:tr});}
+  /* the next-day crew-rest / run mark is not compared — it stays live (owner, D183) */
+  return stableJson({warns,sev:w.sev||{},chip:w.chip||{},dash:w.dash||{}});}
 const WKEY=new WeakMap<any,string>();
 /* today's slice — validate.ts hands back the SAME object for a day until the next validate (its memo), so its key is
    worked out once per validate, not on every read of the count */
