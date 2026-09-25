@@ -16,54 +16,34 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/leave-late-published -->
-### `claude/leave-late-published` — `[LEAVE-LATE-PUBLISHED]` (D177–D180): built overnight (D181, spent), both reads in, fixes half-applied; written 26 Sep 26 ~01:10 — verify before use
-- **What it is:** a published version now freezes the day's inputs (`snap.inp`) and its face (`snap.w` warnings + traces,
-  `snap.pa` roster attrs, `snap.rv` the blank-brief lead); the issued face draws only frozen things (`inputsOn`,
-  `engine/faceattrs.ts`, `validate.ts faceWarn`); pending gains the input-details axis and the "what this day shows" axis
-  (kind `warn`), one item per act. Rule text: `raptor-port/docs/engine-rules.md` §Publishing "A PUBLISHED DAY KEEPS WHAT IT
-  WENT OUT WITH". Evidence so far: `raptor-port/docs/handpass/2026-09-26-late-pub.md` (walk desktop 22/22, phone 10/10 on
-  0116cc31; gates on that commit: unit 5948/5950 — two Leave War load timeouts, pass alone — e2e 471, smoke 442, tfin 728,
-  rulecheck OK, docsize OK/over-deferred).
-- **The two code reads:** `raptor-port/docs/handpass/2026-09-26-late-pub-{astra,fable}-read.md`.
-  - **Astra's 4 — APPLIED in the last commit (unwalked):** trace frozen and compared (D179 literal; Fable's F4 cost is his
-    Q2); CAT/seat/posting on pucks + the blank-brief lead frozen on the face, CSV and print (`faceattrs.ts`; D179 over the
-    7 Aug "no rule versioning" — his Q1), the Unavailable-only man in `pa`; rename-proof list words; structured "what this
-    day shows" lines; AL panel "what the published day shows changed".
-  - **2 NEW TESTS RED — fix first** (`src/ui/latepub.test.tsx`, the "Astra's code read" block): (a) "a man only on the
-    Unavailable list…" — the fixture found no such man on the demo Monday: pick one by building an input for someone not
-    on Monday (or check `DAYS[MON]` stores ids the finder misses); (b) "a rename beside a real warning change" — the list
-    shows a "cleared" row: read the actual rows and decide whether it is a genuine cleared warning (the pers flip can clear
-    one) or the rename leaking; tighten the assertion to the rename's own warning.
-  - **Fable's 6 — NOT YET APPLIED:** (1) HIGH: drop the dates `a`/`b` from `inputs.ts inpDetailKey` (coverage is the
-    membership test) and the date pair from `pendlist.ts inputWords` — a Mon–Tue leave stretched to Wed made Mon and Tue
-    pending with unchanged faces; (2) pair a leftover gone/filed input by person (same type, or both downchits) in
-    `frozenInputMatch` and carry was/now on the item so the words read one edit (a medical takeover read two lines); (3) add
-    `OIL_STALE_DAY` and `OIL_STALE_HOLIDAY` to `validate.ts LIVE_ON_FACE` (a holiday declared after publishing otherwise
-    counts twice); (4) merge folded units' `jump`/`keys` into the input item and let `inputWords` jump; (5) the load's
-    message saying a member's input change stays pending (planned, not built); (6) wording ("input filing" → change).
-    Each with a pin — his exact steps are in the Fable read.
-- **Then, in order:** unit suite → break tests (one red per wired surface: `withDaySnap` install, `inputAxes`, `faceWarn`,
-  `faceattrs`, the medical line in `inpShow`) → rebuild, re-walk (`HP_REWALK=… node scripts/handpass/am/late-pub-walk.mjs
-  desktop|phone`, add a CAT-change, a brief-lead step, and a request edited after its deadline on a published day — no LATE
-  on the published face, LATE on the working copy, LATE on the face after the next AL) → the full gates → fill the evidence sheet §5, §6, §9 and §10 (the
-  look card draft is in this block's "Questions") → open the PR (checks run on the PR only; never push while they run,
-  D151) → his look and "merge live".
-- **Questions for him (the look card, `OUTSTANDING.md` `[LATE-PUB-FACE-LIVE]` — update it: items 1–2 are now BUILT
-  frozen):** Q1 — a man's CAT on a puck and a blank brief's time now freeze on the published face (D179 read over the 7 Aug
-  "no rule versioning"): keep it? Q2 — ANSWERED, D183: the dotted crew-rest mark stays LIVE (built back, 26 Sep 26 — not stored, not compared).
-  D184: the 7-day run warning live too (and, by the agent's reading, a crew-rest breach on the day itself) — BUILD IT
-  (`OUTSTANDING.md` `[LATE-PUB-FACE-LIVE]` item 4). D185: a lapsed qualification (`QUAL`) live too; MEDICAL STAYS FROZEN
-  (confirmed: "1 frozen still"). BUILD FIRST, before Fable's six: `LIVE_ON_FACE` +=
-  `CREW_REST`, `DAYS_RUN`, `QUAL`; `faceWarn` rebuilds each published day's `sev`/`chip`/`dash` from the frozen warnings plus the
-  live ones (a per-person ring is the worst of his warnings, so it cannot be copied whole); out of `warnSliceKey`; pins: a
-  neighbour's late duty breaking a published Monday's rest shows at once with 0 pending; a quals tick lapsing shows at once.
-  Q3 — medical freezes (D179, provisional): is a man going unfit after publishing reading fit on the published schedule
-  until the next AL what he wants?
-- **Branch:** `claude/leave-late-published`, pushed (no PR yet). Vercel preview: https://raptor-git-claude-leave-late-published-kai-e2f5.vercel.app
-  (the last push predates Astra's fixes). Rulings this chat: D180 (the order), D181 (spent, archived). Range left: D182–D189.
-- **Usage (D182, until Monday 28 Sep 26):** don't hold back — a second Fable + Astra read of the final fixes, parallel walkers, high thinking; the context window, not usage, is the limit.
-- **After this merges (D180, D173):** `[ACCOUNTS]` on a new branch — its plan not started (D181's step 2 was not reached);
-  the `OUTSTANDING.md` tidy (86 over its tripwire) on its own docs branch.
+### `claude/leave-late-published` — `[LEAVE-LATE-PUBLISHED]` (D177–D185): built, Fable's six applied, walking; written 26 Sep 26 morning (interim) — verify before use
+- **What it is:** a published version freezes the day's inputs (`snap.inp`) and its face (`snap.w` — the warnings that
+  freeze and the marks they raise; `snap.pa` / `snap.rv` the men's CAT/seat/posting and the brief lead, drawn by
+  `engine/faceattrs.ts`); the issued face draws only frozen things EXCEPT what stays live (D183–D185: the dotted next-day
+  mark, a crew-rest breach / tight turn, the 7-day run, the Qualification-flag warnings, every OIL warning — `validate.ts
+  LIVE_ON_FACE`; the day loop files each mark by class `fz` / `lv`; `faceWarn` lays the live ones over the frozen slice).
+  Rule text: `raptor-port/docs/engine-rules.md` §Publishing. Evidence: `raptor-port/docs/handpass/2026-09-26-late-pub.md`.
+- **Done this morning (commit fcfbf198 + uncommitted):** D184/D185 built; the two red tests fixed; Fable's six applied (F1
+  no dates in the details key; F2 one man's takeover = one edit; F3 OIL warnings live; F4 the folded line taps; F5 the
+  load's sentence + the "already at" message found by the walk; F6 "input change"); break tests B1–B16 (§5); unit suite
+  5964/5964 on the D184/D185 commit (to re-run on the final one); re-walk desktop 22/22, phone 10/10; host walk of the fixes
+  desktop 18/19 (H4 fixed after the build), phone 17/17.
+- **In flight:** four parallel walkers on 4174–4177 (Quals, Logic, neighbour day, Leave War) — their scripts
+  `raptor-port/scripts/handpass/am/late-pub-{quals,logic,neighbour,leavewar}-walk.mjs`, pictures
+  `docs/img/handpass/2026-09-26-late-pub/<route>/`. Do not rebuild while they run (they share `dist/`).
+- **Then:** reproduce their findings, fix → rebuild → re-walk the host walk (H4) → the full gates → the second read by
+  Fable and Astra (brief `raptor-port/docs/superpowers/briefs/2026-09-26-late-published-read2-brief.md`) → fix → evidence
+  sheet §4c, §6, §9, §10 (the look card) → push, open the PR.
+- **Questions for him (the look card):** Q1 a man's CAT on a puck and a blank brief's time frozen on the published face —
+  keep? Q4 the app's own "till <date>" note: a stretched or trimmed leave/downchit reads pending on the published days it
+  still covers (their printed words change) — keep (recommended) or ignore the note? Q5 "a lapsed qualification" read as
+  the Qualification-flag warnings (SC / AAR currency, AAR instructor, illegal seat); crew-pairing warnings frozen — right?
+  Q6 the crew-rest "tight turn" note live with the breach — right?
+- **Branch:** `claude/leave-late-published`, pushed to 77bbd47f (no PR yet). Rulings this chat: none new (D185's row gained
+  the agent's widened reading). Range left: D186–D189.
+- **Usage (D182, until Monday 28 Sep 26):** don't hold back — a second Fable + Astra read, parallel walkers, high thinking.
+- **After this merges (D180, D173):** `[ACCOUNTS]` on a new branch — its plan not started; the `OUTSTANDING.md` tidy (over
+  its tripwire) on its own docs branch.
 <!-- /now -->
 
 ## Next, in order

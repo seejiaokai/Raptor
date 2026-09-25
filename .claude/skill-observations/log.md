@@ -344,3 +344,48 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** The handoff skill re-reads HANDOFF.md's headings and markers after every write and compares them with before (one `<!-- /now -->` per `<!-- now:`, each of `## Now`, `## Next, in order`, `## Gate baseline` once, in order); the gate enforces the same (filed as OUTSTANDING.md [HANDOFF-SHAPE-GUARD]).
 
 **Principle:** A file that every session starts from needs a structural invariant checked by machine after each edit; a content check that ignores the file's skeleton lets the skeleton disappear unnoticed.
+
+### Observation 256: An OPEN observation held "in awareness" was repeated the same night it was logged
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** Morning continuation of [LEAVE-LATE-PUBLISHED]; observation 254 (a background suite run over files still being edited describes no revision) was scanned at session start, then the agent started the full unit suite in the background and applied three source edits while it ran.
+**Skill:** task-observer (Session Start Protocol step 2) and raptor-executor (verification)
+**Type:** open-source
+**Phase/Area:** applying open observations during work
+
+**Issue:** The run happened to pass (5964/5964), which made it look like evidence; by 254's own principle it describes no single revision and had to be repeated on the committed code. Scanning OPEN observations at session start did not stop the exact failure hours later, because nothing at the moment of starting a background run points back to them.
+
+**Suggested improvement:** When an OPEN observation names a trigger action ("start a background run", "replace a span in HANDOFF.md"), copy its one-line rule into the place that action is taken — here the Bash description habit: a background test run is started only on a committed, clean tree (`git status --short` empty), checked in the same command.
+
+**Principle:** A lesson scanned at the start of a session is not in force at the moment it matters; tie it to the action that triggers it, ideally as a check inside that action.
+
+### Observation 257: A break test with no red can be a redundant guard, and the order's rule "write a test" then contradicts D56
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** Break tests on [LEAVE-LATE-PUBLISHED]: cutting the medical line in `events.ts inpShow` turned nothing red, because the frozen inputs (layer 1) already keep a late downchit off the published face and out of the detector; the cut line is reached only by a version issued before the freeze — stored demo data.
+**Skill:** bug-check order (raptor-port/docs/bug-check-order.md §8 rule 4)
+**Type:** internal
+**Phase/Area:** break tests
+
+**Issue:** §8.4 says "if nothing goes red, that surface has no test, by proof — write one before continuing". Here the only test that could go red would build a pre-freeze version, which D56 forbids spending time on. The honest disposition was: name the layer that pins the behaviour (its own break test is red) and why the cut wire is unreachable for new data.
+
+**Suggested improvement:** Add to §8.4: a no-red break is either a missing test OR a redundant guard; for the second, record which other wire's break test pins the same behaviour and why the cut one is unreachable for new data — and consider deleting the redundant guard in a later, separate change.
+
+**Principle:** A break test measures whether a wire is observed, not whether it is needed; "no red" has two readings, and the disposition must say which.
+
+### Observation 258: A handoff's build list narrowed the ruling it was built from
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** Picking up [LEAVE-LATE-PUBLISHED]: HANDOFF.md said "LIVE_ON_FACE += CREW_REST, DAYS_RUN, QUAL" for his "a lapsed qualification" (D185). The code shows a lapsed SC or AAR currency raises SC_QUAL / AAR_QUAL / AAR_INSTR, not QUAL; and the crew-rest check's other answer (CREW_TIGHT) left frozen made a neighbour's change read pending on the published day.
+**Skill:** session-handoff (what a handoff's "to build" list is)
+**Type:** open-source
+**Phase/Area:** turning a ruling into a build list at handoff
+
+**Issue:** The list was written from memory of the code's names at handoff, as a finished spec. Built literally, the most literal case of his ruling (a lapsed currency) would have stayed frozen, and a new test would have shown a published day going pending for a change the ruling made live.
+
+**Suggested improvement:** In the handoff skill: a "to build" line that turns a ruling into code names says so ("the agent's reading") and the next session re-derives the list from the ruling's words against the code before building, recording any widening on the ruling's row.
+
+**Principle:** A code-name list in a handoff is a pointer to a ruling, not a replacement for it; re-derive it from the ruling at build time.

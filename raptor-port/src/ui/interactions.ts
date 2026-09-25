@@ -986,7 +986,10 @@ export function routeClick(e: MouseEvent) {
     const vsnap = daySnapOf(di, ver)
     if (String(dayCurVer(di)) === String(ver) && nd === 0 && !(vsnap && rowsLeftOut(di, vsnap.d).length)) {
       view.setDayPreview(di, null)
-      HOOKS.toast(`${DAYS[di].dow} is already at ${verLabel(ver)}`)
+      /* …and when all that is pending is a member's input, "already at" alone reads untrue beside its "1 pending": say
+         the input stays pending (Fable F5; found by the host's walk, 26 Sep 26 — the load never ran, so its own
+         sentence could not say it) */
+      HOOKS.toast(`${DAYS[di].dow} is already at ${verLabel(ver)}` + inputsLeftSaid(di))
       notify(); return
     }
     /* the confirm gate: with real unpublished divergence on the day, arm on the

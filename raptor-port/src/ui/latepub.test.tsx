@@ -18,7 +18,7 @@ import { createRoot } from 'react-dom/client'
 import { ALPanel } from './ALPanel'
 import { readFileSync } from 'fs'
 import { DAYS } from '../engine/data'
-import { INPUTS, inpId } from '../engine/inputs'
+import { INPUTS, inpId, withRemarksTail } from '../engine/inputs'
 import { acceptInput, renameCallsign, setSlotVal } from '../engine/slots'
 import { loadVersionToWorkingCopy, inputsLeftSaid } from '../engine/drafts'
 import { SCHED, signOf, setSign, setDayApproved, dayDelta, dayDiscardCount, dayShownPendCount, dayCurVer, daySigned, dayPendingItems, publishALDay, unpublishDay } from '../engine/publish'
@@ -502,7 +502,11 @@ describe('Fable\'s code read: an input change reads pending only where the day\'
   const loner = () => Object.keys(PEOPLE).find((id: string) => !(PEOPLE as any)[id].special && !(PEOPLE as any)[id].pers
     && [0, 1, 2, 3, 4].every(d => !JSON.stringify(DAYS[d]).includes(`"${id}"`)) && !INPUTS.some((r: any) => r.person === id))!
 
-  it('F1: a Mon–Tue leave stretched to Wednesday — Monday and Tuesday read nothing (their faces did not move); Wednesday reads it filed', () => {
+  /* WHAT THIS PROVES, AND WHAT IT DOES NOT (§8.3 — a fixture that writes the way the app writes): the DATES alone are no
+     detail of the day. Every door that re-dates an input in the app — the Inputs page's calendar, the Leave War's sync,
+     the medical cascade — also rewrites the "till <date>" note in its remarks (inputs.ts withRemarksTail), and the face
+     prints the remarks; that case is the next test. Here the note is left alone, as a member who typed over it would. */
+  it('F1: the dates alone — a Mon–Tue leave stretched to Wednesday with its words unchanged: Monday and Tuesday read nothing; Wednesday reads it filed', () => {
     const who = loner()
     expect(who, 'a man free all week').toBeTruthy()
     expect(commitNewInput({ ...leaveDraft(who, '2026-07-13', 'STRETCH ME'), end: '2026-07-14' })).toBe(true)
@@ -518,6 +522,26 @@ describe('Fable\'s code read: an input change reads pending only where the day\'
     expect(dayPendingItems(WED).length, 'Wednesday reads it').toBe(1)
     expect(listText(WED)).toMatch(/filed/)
     expect(issuedFace(WED).textContent, 'Wednesday\'s face keeps what it went out with').not.toContain('STRETCH ME')
+  })
+
+  it('F1, as the app writes it: the calendar rewrites "till 14 Jul" to "till 15 Jul" — the words the published Monday and Tuesday print moved, so each reads ONE change naming the words, never the dates', () => {
+    const who = loner()
+    expect(commitNewInput({ ...leaveDraft(who, '2026-07-13', withRemarksTail('Bali', '2026-07-13', '2026-07-14', 'till')), end: '2026-07-14' })).toBe(true)
+    validate()
+    for (const d of [MON, TUE, WED]) publishDay(d)
+    const inp = INPUTS.find((r: any) => r.person === who)!
+    expect(inp.remarks).toBe('Bali till 14 Jul')
+    const d0 = draftOf(inp)
+    /* the Inputs page's editor: a pick on its calendar sets the end AND rewrites the note (InputsPage.tsx withTill) */
+    expect(commitInputEdit(inp, { ...d0, end: '2026-07-15', remarks: withRemarksTail(d0.remarks, d0.start, '2026-07-15', 'till') })).toBeTruthy()
+    validate()
+    for (const d of [MON, TUE]) {
+      expect(dayPendingItems(d).length, `day ${d} — one change`).toBe(1)
+      expect(listText(d), 'the words it prints').toMatch(/Bali till 14 Jul.*Bali till 15 Jul/)
+      expect(listText(d), 'never the dates as such').not.toMatch(/Jul 13 –/)
+      expect(issuedFace(d).textContent, 'the published face keeps the words it went out with').toContain('Bali till 14 Jul')
+    }
+    expect(listText(WED)).toMatch(/filed/)
   })
 
   it('F1: an upchit trims a Mon–Fri downchit to Wednesday — Monday and Wednesday read only the note it adds ("till …"), never the dates; Thursday and Friday lose it', () => {

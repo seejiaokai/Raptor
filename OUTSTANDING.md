@@ -1000,19 +1000,20 @@ checks HANDOFF.md's shape — every `<!-- now:… -->` has its `<!-- /now -->` b
 headings `## Now`, `## Next, in order`, `## Gate baseline` are each present once, in that order. Docs/scripts only; its
 own small change (a script under the gate, so a docs-only PR).
 
-### [LATE-PUB-FACE-LIVE] Three things still DRAW live on a published day's face — questions for him on the look card (26 Sep 26)
+### [LATE-PUB-FACE-LIVE] What still DRAWS live on a published day's face — questions for him on the look card (26 Sep 26)
 Found by Astra's and Fable's reads of the `[LEAVE-LATE-PUBLISHED]` plan; each is a place where D179 ("freeze everything
 for now") meets another ruling, so each is his call (newest-instruction-wins does not settle a case the newer ruling does
-not clearly cover). **Built meanwhile:** 1 and 2 are COMPARED — a change reads "Warnings on this day · …" pending and
-takes the four down, so nothing moves silently — but the face still draws them live.
-1. **A man's CAT letter / seat colour on a puck** reads the roster live (`html.ts puck` → PEOPLE q/seat/pers/san/sxo).
-   Freezing it means keeping a copy of the roster per published version.
-2. **A printed rule value** — a blank brief's time (`VCONF.briefLead`, in `html.ts`, `board.ts`, `export.ts`). Freezing it
-   means keeping a copy of the rules per published version, which his **7 Aug 26 "no rule versioning"** invariant forbids
-   (D48 held that a marker is not versioning; a stored rule value is closer to it). **The clash to put to him:** D179 says
-   everything freezes; the 7 Aug invariant says no rule versions. Recommended: leave both drawing live and pending (as
-   built) — the admin is told, and re-issuing makes the face current.
-4. **SETTLED 26 Sep 26 — D184: the 7-day run warning (and, by the agent's reading, a crew-rest breach on the day itself) stays LIVE** — TO BUILD: `validate.ts` `LIVE_ON_FACE` gains `CREW_REST` and `DAYS_RUN`, and `faceWarn` rebuilds each published day's rings and flags from the frozen warnings plus those live ones; out of `warnSliceKey`. **D185 (26 Sep 26): a lapsed qualification live too (`QUAL` joins `LIVE_ON_FACE`); a medical downchit stays FROZEN (D179)** — confirmed by him the same minute ("1 frozen still").
+not clearly cover). **Where each stands, 26 Sep 26 (morning):** 1 and 2 are BUILT FROZEN (Astra's code read #2 —
+`engine/faceattrs.ts`: the face, the CSV and the print draw the issued CAT / seat / posting and the issued brief lead) and
+still read pending when they change — **his Q1 on the look card: keep them frozen?** (a stored rule value against the
+7 Aug 26 "no rule versioning"); 3 and 4 are SETTLED and BUILT live (D183–D185). The look card
+(`raptor-port/docs/handpass/2026-09-26-late-pub.md` §10) carries the rest of his questions.
+1. **A man's CAT letter / seat colour on a puck** — was read live from the roster (`html.ts puck`); now drawn from
+   `snap.pa`. Freezing it keeps a copy of the day's men's attributes per published version.
+2. **A printed rule value** — a blank brief's time (`VCONF.briefLead`, in `html.ts`, `board.ts`, `export.ts`); now drawn
+   from `snap.rv`. His **7 Aug 26 "no rule versioning"** invariant: D48 held that a marker is not versioning; a stored
+   rule value is closer to it — hence his question.
+4. **SETTLED 26 Sep 26 — D184: the 7-day run warning (and, by the agent's reading, a crew-rest breach on the day itself) stays LIVE**; **D185: a lapsed qualification live too; a medical downchit stays FROZEN** ("1 frozen still"). **BUILT 26 Sep 26 (morning)** — `validate.ts LIVE_ON_FACE` (`CREW_REST`, `CREW_TIGHT`, `DAYS_RUN`, `QUAL`, `SC_QUAL`, `AAR_QUAL`, `AAR_INSTR`, and every OIL warning — Fable F3), the day loop files each mark by class (`fz` / `lv`), `faceWarn` lays the live ones over the frozen slice. The reading widened at the build (the Qualification-flag family, not `QUAL` alone; the crew-rest tight turn with the breach) is on D185's row and the look card.
 3. **SETTLED 26 Sep 26 — D183: the dotted crew-rest mark stays LIVE** (not stored, not compared; built). Was: the
    next-day crew-rest mark (the dotted ring "his day-end breaks tomorrow") on a published day follows the day it
    points at — live while that day is a draft (Fable F4). Frozen, every edit to a draft Tuesday would take a published
