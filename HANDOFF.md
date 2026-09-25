@@ -55,6 +55,7 @@ the later merge keeps both (D78).
   until the next AL what he wants?
 - **Branch:** `claude/leave-late-published`, pushed (no PR yet). Vercel preview: https://raptor-git-claude-leave-late-published-kai-e2f5.vercel.app
   (the last push predates Astra's fixes). Rulings this chat: D180 (the order), D181 (spent, archived). Range left: D182–D189.
+- **Usage (D182, until Monday 28 Sep 26):** don't hold back — a second Fable + Astra read of the final fixes, parallel walkers, high thinking; the context window, not usage, is the limit.
 - **After this merges (D180, D173):** `[ACCOUNTS]` on a new branch — its plan not started (D181's step 2 was not reached);
   the `OUTSTANDING.md` tidy (86 over its tripwire) on its own docs branch.
 <!-- /now -->
