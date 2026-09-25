@@ -52,7 +52,11 @@ the later merge keeps both (D78).
   frozen):** Q1 — a man's CAT on a puck and a blank brief's time now freeze on the published face (D179 read over the 7 Aug
   "no rule versioning"): keep it? Q2 — ANSWERED, D183: the dotted crew-rest mark stays LIVE (built back, 26 Sep 26 — not stored, not compared).
   D184: the 7-day run warning live too (and, by the agent's reading, a crew-rest breach on the day itself) — BUILD IT
-  (`OUTSTANDING.md` `[LATE-PUB-FACE-LIVE]` item 4). Still open: medical and a lapsed qualification (recommended live AND pending).
+  (`OUTSTANDING.md` `[LATE-PUB-FACE-LIVE]` item 4). D185: a lapsed qualification (`QUAL`) live too; MEDICAL STAYS FROZEN
+  (the agent's reading of his "2 & 3" — confirm it with him at the look). BUILD FIRST, before Fable's six: `LIVE_ON_FACE` +=
+  `CREW_REST`, `DAYS_RUN`, `QUAL`; `faceWarn` rebuilds each published day's `sev`/`chip`/`dash` from the frozen warnings plus the
+  live ones (a per-person ring is the worst of his warnings, so it cannot be copied whole); out of `warnSliceKey`; pins: a
+  neighbour's late duty breaking a published Monday's rest shows at once with 0 pending; a quals tick lapsing shows at once.
   Q3 — medical freezes (D179, provisional): is a man going unfit after publishing reading fit on the published schedule
   until the next AL what he wants?
 - **Branch:** `claude/leave-late-published`, pushed (no PR yet). Vercel preview: https://raptor-git-claude-leave-late-published-kai-e2f5.vercel.app
