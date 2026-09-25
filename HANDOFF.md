@@ -42,8 +42,11 @@ the later merge keeps both (D78).
   public (D106, ~11 min); never push while they run (D151).
 - **Gates:** the full set green on the D114 check's final code, 25 Sep 26 18:20 (`## Gate baseline`).
 - **Open questions for him:** none — every question put to him this chat is answered and recorded.
-- **Pick up here:** step 1 above. Read the rulings D113–D119 and D165–D173 in `.claude/rules/decisions/scheduler.md`
-  and `how-we-work.md` before building anything; models per his rule — Opus 5.5 (high) builds, Fable 5.1 and Astra review.
+- **Pick up here:** his look and "merge live" of #435 (step 1 is done — his look card is the evidence sheet §9.11, with
+  two questions: `[REQ-DECLINED-PENDING]` and where `[REQ-TWO-ROWS]` goes); then step 2, `[ACCOUNTS]` (D165, D166), on a
+  NEW branch — stacked on this one if #435 has not merged yet, taking `main` in once it has. Read the rulings D113–D119
+  and D165–D173 in `.claude/rules/decisions/scheduler.md` and `how-we-work.md` before building anything; models per his
+  rule — Opus 5.5 (high) plans and builds, Fable 5.1 and Astra review the plan and the code (permissions → both).
 <!-- /now -->
 
 ## Next, in order
