@@ -189,12 +189,22 @@ Each is either pinned by a unit test that drives the same function, or left to h
 | a desk holder dragged onto his own desk's extras (1, not 2) | the drag did not land in the walk's world (B1 X-1) | `pendunits.test.ts` (holder and extras are two places) |
 | a leave deleted again → the four sign-offs return (D103, ALL AVAIL) | the walk's script could not reach the leave's ✕ on the Inputs table (B1 X-5b) | `oilmembership.test.ts` D103 block (both directions); the wipe half WAS walked |
 | a traffic / area change on a published day in the list | not in the walkers' worlds | `pendlist` words for every cell kind, unit-pinned |
-| Unpublish the Original, then re-publish: the Signed line on the re-issued Original (Fable) | found by the code read after the walk | partly: `amendbatch.test.tsx` item 3 pins that the Original keeps its four and that the line reads the exact version on screen; the re-publish itself is NOT pinned |
-| Undo straight after a publish (Fable) | found by the code read after the walk | NOT pinned by this batch — the one undo itself is unchanged by it |
-| a parked plan as the working copy with the pending list open (Fable) | found by the code read after the walk | partly: the list reads the same one body as the count, and the plan switch's count was walked (B1 plans); the open list over a parked plan is NOT pinned |
 | a two-day request with rows on BOTH days | the app lands a request as ONE row, so the shape cannot be made through the app (B3) | both shapes it can make were walked (B3 F2) and Fable's case is unit-pinned (§5a) |
 | the template refusal on the phone BOARD | the phone board has no Templates button; the phone reaches templates from the week, which was walked | — |
 | the regression sweep on a phone; phone pictures of the duty, sim, ground and programme seats | the brief asked for desktop only; the phone checks read every changed seat by computed style (16 per surface) | the computed checks |
+
+**Walked afterwards, 25 Sep 26 ~11:15 (his question "are you telling me there's a problem?")** — Fable's three
+un-walked situations, `scripts/handpass/am/hr-04-fable-three.mjs`, production build, desktop 1440×900 and phone 390×844,
+pictures `docs/img/handpass/2026-09-25-amendment-batch/rewalk-fable3/`: **12/12 on each, the browser error list empty.**
+(1) Unpublish the Original → no Signed line, no seal; re-signed by four DIFFERENT people and re-published → the seal is
+ORIG again and the Signed line names the NEW four on the week, the board and View-only Sched. (2) Undo straight after a
+publish → back to unpublished, no Signed line, no seal, and the four sign-offs CLEARED to be signed again — the owner's
+18 Sep 26 ruling (Undo of a publish IS an unpublish, and an unpublish clears the sign-offs; `undo-contract.md` §Publish
+boundary), unchanged by this batch (no undo or unpublish file differs from `main`); Redo → published again, the same
+four named. (3) + Alt Plan on the published Monday; Plan B changed → 1 pending, its list names it; opening the plans
+menu closes the list; switching to Plan A → nothing pending, no list left open; Plan A changed → its list shows only
+its own change and a tap stays on Edit Schedule; back on Plan B → Plan B's change again. Looked at:
+`phone/1-b-republished.png`, `desktop/2-a-after-undo.png`.
 
 ## 8. His five-minute look
 
