@@ -437,6 +437,21 @@ export type DaySnapshot = {
   /** The Original's four signers, by day index (callsigns) — kept since 25 Sep 26 (D95, D102: the Signed line); an AL
    *  keeps its own on the record. */
   sign?: Record<number, SignSet>
+  /** The inputs covering the day at issue, a full copy keyed by input id — engine (`daySnap`, [LEAVE-LATE-PUBLISHED],
+   *  D177–D179): the issued face reads these, never the live records. */
+  inp?: Record<string, Input>
+  /** The day's slice of the official warnings at issue — engine (`freezeWarn`, D179): the issued face shows these; the
+   *  pending comparison measures today's judgement against them. */
+  w?: WarnSlice
+}
+/** One day's slice of the warning bundle (engine/validate.ts `warnSliceOf`): its warning list, and per person the ring
+ *  severity, the printed flag, the dashed ring and the next-day crew-rest mark it causes. Empty parts are null. */
+export type WarnSlice = {
+  byDay: { di: number; dow: string; warns: any[] } | null
+  sev: Record<string, string> | null
+  chip: Record<string, string> | null
+  dash: Record<string, boolean> | null
+  trace: Record<string, any> | null
 }
 
 /** A per-day alternate draft blob — engine (drafts.ts). Since 15 Sep 26 (item 1a)
@@ -447,7 +462,7 @@ export type DaySnapshot = {
 export type DayDraft = { id: string; name: string; d: Day; sign?: SignSet; signBind?: Partial<Record<keyof SignSet, SignBinding>> }
 
 /** One canonical delta entry in an AL's frozen `diff` — engine (canonical.ts `DeltaEntry`). */
-export type AlDiffEntry = { addr: string; kind: 'add' | 'delete' | 'change' | 'move' | 'input' | 'oil'; from?: any; to?: any }
+export type AlDiffEntry = { addr: string; kind: 'add' | 'delete' | 'change' | 'move' | 'input' | 'oil' | 'warn'; from?: any; to?: any }
 
 /** One published amendment (SCHED.als[i]) — engine (`alIssue`). Phase 2: SINGLE-DAY,
  *  identified by its immutable verId; `diff` replaces the old `keys` list. */
@@ -469,7 +484,7 @@ export type AlRecord = {
   units?: number
   /** Its per-kind split in the same unit (D114, 25 Sep 26 — a request taken off is "1 removal", not a removal and a
    *  filing); absent on a record issued before, which falls back to the diff's split (diffCounts). */
-  ukinds?: { total: number, add: number, del: number, chg: number, mov: number, inp: number, oil: number }
+  ukinds?: { total: number, add: number, del: number, chg: number, mov: number, inp: number, oil: number, warn?: number }
   /** Signatures at issue, by day index (callsigns) — Phase 3 binds them. */
   sign: Record<number, SignSet>
 }

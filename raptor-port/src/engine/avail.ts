@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { INPUTS, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin, sansAvailOn, sansWindow, isPersonal, inpLabel } from './inputs'
+import { INPUTS, inputsOn, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin, sansAvailOn, sansWindow, isPersonal, inpLabel } from './inputs'
 import { PEOPLE, isSpecial, whoId, aarNeed, aarOK, scShiftKind, scQualOK } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD, VCONF } from './rules'
@@ -72,7 +72,7 @@ export function dayEngaged(d:any){const s=new Set(),add=(id:any)=>{if(id&&PEOPLE
    asks about sixty people and sixty scans of the same list is the shape this
    is replacing, not the shape to grow into. */
 export function dayAway(d:any){const all=new Set(), tw:any={};
-  INPUTS.forEach((inp:any)=>{ if(!isAway(inp)||!inputCoversDate(inp,d.dt)||!PEOPLE[inp.person])return;
+  inputsOn(d.dt).forEach((inp:any)=>{ if(!isAway(inp)||!PEOPLE[inp.person])return;
     if(awayAllDay(inp)){all.add(inp.person);return;}
     const w2=win(inp.s,inp.e); if(w2)(tw[inp.person]=tw[inp.person]||[]).push(w2); });
   return {all,tw};}
@@ -436,7 +436,7 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
     const spareLike=!!(r.sc&&r.scSpare)||!!r.avJet||!!r.avDuty;
     const flying=String(key).indexOf(':')<0;
     const kn=r.slotStart!=null&&r.slotEnd!=null;
-    const off=INPUTS.filter((x:any)=>isAway(x)&&x.person===id&&inputCoversDate(x,DAYS[r.di].dt))
+    const off=inputsOn(DAYS[r.di].dt).filter((x:any)=>isAway(x)&&x.person===id)
       .filter((x:any)=>!(spareLike&&canSpare(x.type)))
       .filter((x:any)=>!(canWork(x.type)&&!flying))
       .filter((x:any)=>!kn||awayAllDay(x)||inpHits(x,0));
@@ -449,7 +449,7 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
        all-day (or thin) record covering the whole shifted day so it always
        overlaps a past-midnight window. */
     const nd=kn&&r.slotEnd>1440&&r.di>=0?DAYS[r.di+1]:null;
-    const off2=!nd?[]:INPUTS.filter((x:any)=>isAway(x)&&x.person===id&&inputCoversDate(x,nd.dt))
+    const off2=!nd?[]:inputsOn(nd.dt).filter((x:any)=>isAway(x)&&x.person===id)
       .filter((x:any)=>!(spareLike&&canSpare(x.type)))
       .filter((x:any)=>!(canWork(x.type)&&!flying))
       .filter((x:any)=>awayAllDay(x)||inpHits(x,1440));
@@ -462,7 +462,7 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
        at a meeting the night before, and the warning list stayed silent too, so
        the two agreed only by both being wrong. */
     const pdv=kn&&r.slotStart<0&&r.di>0?DAYS[r.di-1]:null;
-    const off3=!pdv?[]:INPUTS.filter((x:any)=>isAway(x)&&x.person===id&&inputCoversDate(x,pdv.dt))
+    const off3=!pdv?[]:inputsOn(pdv.dt).filter((x:any)=>isAway(x)&&x.person===id)
       .filter((x:any)=>!(spareLike&&canSpare(x.type)))
       .filter((x:any)=>!(canWork(x.type)&&!flying))
       .filter((x:any)=>awayAllDay(x)||inpHits(x,-1440));
@@ -476,7 +476,7 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
        an ordinary all-day absence yesterday says nothing whatever about today.
        So only records whose rolled window genuinely passes midnight qualify. */
     const pdo=kn&&r.di>0?DAYS[r.di-1]:null;
-    const off4=!pdo?[]:INPUTS.filter((x:any)=>isAway(x)&&x.person===id&&inputCoversDate(x,pdo.dt))
+    const off4=!pdo?[]:inputsOn(pdo.dt).filter((x:any)=>isAway(x)&&x.person===id)
       .filter((x:any)=>!(spareLike&&canSpare(x.type)))
       .filter((x:any)=>!(canWork(x.type)&&!flying))
       .filter((x:any)=>{const w2=inpWin(x); return !!w2&&w2[1]>1440&&inpHits(x,-1440);});
@@ -559,8 +559,8 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
        midnight shifts so the two cannot disagree across a day boundary either
        (the validator's day.input carries the nx/pv tails). */
     const flying=String(key).indexOf(':')<0;
-    const cand=(dt:any,pred:(x:any)=>boolean)=>INPUTS.find((x:any)=>
-      !isAway(x)&&isPersonal(x.type)&&inpShow(x,dt)&&x.person===id&&inputCoversDate(x,dt)
+    const cand=(dt:any,pred:(x:any)=>boolean)=>inputsOn(dt).find((x:any)=>
+      !isAway(x)&&isPersonal(x.type)&&inpShow(x,dt)&&x.person===id
       &&!(canWork(x.type)&&!flying)&&pred(x));
     const iHit=(x:any,shift:number)=>{const w2=inpWin(x);
       return !!w2&&overlap(r.slotStart,r.slotEnd,w2[0]+shift,w2[1]+shift);};

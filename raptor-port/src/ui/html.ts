@@ -1,7 +1,7 @@
 import { DAYS } from '../engine/data'
 import { noteText } from '../engine/note'
 import { PEOPLE, isSpecial, whoId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
-import { INPUTS, inputCoversDate, inpLabel, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote } from '../engine/inputs'
+import { INPUTS, inputsOn, inputOnAny, withFrozenInputs, inputCoversDate, inpLabel, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
 import { parseHM, hhmm, hm24, minus } from '../engine/time'
@@ -98,7 +98,12 @@ export function withDaySnap(di:any,ver:any,fn:any){
   const d0=DAYS[di], c0=SCHED.changes, p0=SCHED.pending, nd=PVND
   DAYS[di]=snap.d; SCHED.changes=snap.c||{}; SCHED.pending={}
   PV=true; PVV=ver; PVND=nd0
-  try { return fn(true) }
+  /* …and an ISSUED version stands in its inputs too ([LEAVE-LATE-PUBLISHED], owner D177–D179): every reader of this
+     face — the Unavailable block, the ⓘ panel's counts, the LATE badge, the SANS rows, the board's panels, the ALL
+     AVAIL window through withChipWorld — reads the inputs the version was issued with (engine/inputs.ts inputsOn). A
+     parked plan carries none (it is a working alternative, not a document) and reads the live inputs, as before. */
+  const inp = snap.inp && snap.d && snap.d.dt != null ? { [snap.d.dt]: snap.inp } : null
+  try { return withFrozenInputs(inp, () => fn(true)) }
   finally { DAYS[di]=d0; SCHED.changes=c0; SCHED.pending=p0; PV=false; PVV=null; PVND=nd }
 }
 /* [ALL-AVAIL-WINDOW] — THE WORLD A COUNT CHIP WAS DRAWN IN, replayed for the
@@ -864,7 +869,7 @@ export function sansCardsHTML(rows:any[],di:any,ro?:any){
    explicit "nil" every single day. */
 export function sansSectionHTML(d:any,di:any,ed:any){
   if(!ed)return '';
-  const rows=INPUTS.filter((inp:any)=>inputCoversDate(inp,d.dt)&&isSansAvail(inp.type));
+  const rows=inputsOn(d.dt).filter((inp:any)=>isSansAvail(inp.type));
   if(!rows.length)return '';
   return `<div class="sub plist one sec sec-sans"><div class="sub-h">SANS Avail`
     +`<span class="pl-hint">press a card to edit</span></div>`
@@ -1260,7 +1265,9 @@ export function lateChip(inp:any){
    promotion or it would vanish exactly where the squadron reads the day. */
 export function srcInput(o:any){
   const k=o&&o.src; if(!k)return null;
-  return INPUTS.find((x:any)=>inpId(x)===k)||null;}
+  /* as the document being drawn holds it: on a published day's face the issued copy ([LEAVE-LATE-PUBLISHED], A4 — a
+     request edited after its deadline must not grow a LATE badge on the issued row) */
+  return inputOnAny(k);}
 export function lateTagOf(o:any){return lateTag(srcInput(o));}
 /* The board's duty/sim/ground rows are a SEVEN-item grid whose header reserves
    exactly seven tracks, and every cell is a bare <input> with nowhere to nest
@@ -1825,7 +1832,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
        man's day on their own, with nobody accepting anything, so it prints on
        every page. It replaces the old separate Leave and Downchit blocks, and
        Available / Office are gone entirely (owner request, Aug 26). */
-    const dayInputs=INPUTS.filter((inp:any)=>inputCoversDate(inp,d.dt));
+    const dayInputs=inputsOn(d.dt);
     /* personal-input groups use the SAME columnar grid as duties / sims / ground:
        Name | Start | End | People.  All-day rows span the two time columns. */
     const inGrp=(title:any,filt:any,cls:any,always?:any,acc?:any)=>{ const rows=dayInputs.filter(filt);

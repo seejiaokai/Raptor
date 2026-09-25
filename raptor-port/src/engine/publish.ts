@@ -7,13 +7,13 @@ import { logEdit } from './editlog'
 import { ridKey, posKey, ridWriteKey, ensureRowIds, RID_BOOK_VERSION } from './rowids'
 import { canonicalDiff, canonicalUnits, digest } from './canonical'
 import type { DeltaEntry, PendUnit } from './canonical'
-import { INPUTS, inpId, inputCoversDate } from './inputs'
+import { INPUTS, inpId, inputCoversDate, inpDetailKey, frozenInputMatch, stableJson } from './inputs'
 import { CURWEEK } from './waves'
 import { groundOrder } from './order'
 import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './verid'
 import { isPreservedWeek } from './weekstash'
 import { inputProtected } from './quarantine'   // functions only both ways, so the import loop is safe
-import { oilEvidence, oilEvidenceKey, oilSignKey, oilKeyNoMem, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney } from './oilev'
+import { oilEvidence, oilEvidenceKey, oilSignKey, oilKeyNoMem, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney, oilMovedInputsOnly } from './oilev'
 
 /* the reference calls straight into the UI here; the engine routes those four
    calls through injected hooks (no-ops until the app provides them) so the
@@ -199,7 +199,9 @@ export function dayShownPendCount(di:any){di=+di;return dayApproved(di)?dayPendi
    What goes out — the stored diff — and the marks on screen are unchanged (D109). */
 /* `inp`: a request's filing that belongs to this row's add / delete — the one act of taking a request off (or putting
    it on) the programme (owner, D114, 25 Sep 26: "6 yes"). The record keeps both entries; the person counts one. */
-export type PendItem = PendUnit & { axis: 'content'|'filing'|'oil', inp?: DeltaEntry };
+/* `val`: an input's details changed since the day was issued — its own item, or folded into its filing's (D178); `rows`:
+   the units of the request row that edit re-landed, folded into it */
+export type PendItem = PendUnit & { axis: 'content'|'filing'|'input'|'oil'|'warn', inp?: DeltaEntry, val?: DeltaEntry, rows?: PendUnit[] };
 export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
   if(!((sc&&sc.dayOK)||{})[di])return [];
   const ver=dayCurVerIn(sc,di,weekKey), snap=ver!=null?daySnapIn(sc,di,ver,weekKey):null;
@@ -210,13 +212,45 @@ export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
      filing pairs with the ground row whose src is that request — removed from the issued day while the request leaves
      'g', or added to the live day while it arrives at 'g' — so the pair is ONE item. A filing with no such row here (a
      request filed under Unavailable, one whose row stands on another day) stays its own item. */
-  filingDelta(di,snap.fil).forEach((e:any)=>{
-    const id=String(e.addr||'').split('.').slice(1).join('.');
-    const pair=requestRowUnit(items,id,String(e.from||''),String(e.to||''),snap.d,DAYS[di]);
-    if(pair){pair.inp=e;return;}
-    items.push({kind:'input',addr:'',jump:[],keys:[],entry:e,axis:'filing'});});
-  oilDelta(di,snap.d).forEach((e:any)=>items.push({kind:'oil',addr:'',jump:[],keys:[],entry:e,axis:'oil'}));
+  /* …AND AN INPUT'S FILING AND ITS DETAILS ARE ONE INPUT ([LEAVE-LATE-PUBLISHED], owner D178, 25 Sep 26 — every member
+     input change after publishing is pending). One item per input: a leave filed under Unavailable since (its filing
+     and its details both new) reads ONE; so does an accepted request edited after publishing, whose edit re-lands its
+     row (the row's times, words or holder move with it — commitInputEdit), and whose window moves the day's OIL block
+     when the day earns (folded below). `val` is the details entry; `rows` the re-landed row's own units. */
+  const idOf=(e:any)=>String(e.addr||'').split('.').slice(1).join('.');
+  const byId=new Map<string,{fil?:DeltaEntry,val?:DeltaEntry}>();
+  const slot=(id:string)=>{let g=byId.get(id); if(!g){g={};byId.set(id,g);} return g;};
+  const ax=inputAxes(di,snap);
+  ax.fil.forEach((e:any)=>{slot(idOf(e)).fil=e;});
+  ax.val.forEach((e:any)=>{slot(idOf(e)).val=e;});
+  byId.forEach((g,id)=>{
+    let item:any=null;
+    if(g.fil){const pair=requestRowUnit(items,id,String(g.fil.from||''),String(g.fil.to||''),snap.d,DAYS[di]); if(pair){pair.inp=g.fil; item=pair;}}
+    if(!item){item={kind:'input',addr:'',jump:[],keys:[],entry:(g.fil||g.val)!,axis:g.fil?'filing':'input'}; items.push(item);}
+    if(g.val){item.val=g.val;
+      for(let i=items.length-1;i>=0;i--){const u:any=items[i];
+        if(u===item||u.axis!=='content'||u.inp||u.val)continue;
+        if(unitRequestSrc(u,snap.d,DAYS[di])===id){items.splice(i,1);(item.rows=item.rows||[]).push(u);}}}});
+  /* the OIL line folds into the inputs that moved it, when they are all that moved it (oilev.ts oilMovedInputsOnly) */
+  const oil=oilDelta(di,snap.d);
+  if(oil.length){const w=(snap.d||{}).oilev, mem=!!(w&&(w.mem||w.earns));
+    const moved=oilMovedInputsOnly(oilEvidence(di),DAYS[di],w,snap.d,mem);
+    const who=new Set<string>(); ax.changed.forEach((x:any)=>{if(x.was)who.add(String(x.was.person)); if(x.now)who.add(String(x.now.person));});
+    const fold=!!moved&&moved.iids.every((id:string)=>{const g=byId.get(id); return !!(g&&g.val);})&&moved.people.every((p:string)=>who.has(p));
+    if(!fold)oil.forEach((e:any)=>items.push({kind:'oil',addr:'',jump:[],keys:[],entry:e,axis:'oil'}));}
+  /* …and the warnings the issued face froze, when today's judgement of the issued day differs (the live book only —
+     a stashed week has no official pass of its own) */
+  if(sc===SCHED)warnDelta(di).forEach((e:any)=>items.push({kind:'warn',addr:'',jump:[],keys:[],entry:e,axis:'warn'}));
   return items;}
+/* the request a content unit belongs to, when the unit is on a field an input's re-landing writes — its ground row's
+   words, times, remarks or holder (restore.ts dayKeys: gr:di.ri.{prog,str,end,rmks}, g:di.ri) — '' otherwise. A removal
+   reads the issued day's row, anything else the live day's. Extras (g:di.ri.xN) are a scheduler's own and never fold. */
+function unitRequestSrc(u:any,issuedD:any,liveD:any):string{
+  const a=String((u&&u.entry&&u.entry.addr)||(u&&u.addr)||'');
+  const m=/^gr:\d+\.(\d+)\.(?:prog|str|end|rmks)$/.exec(a)||/^g:\d+\.(\d+)$/.exec(a);
+  if(!m)return '';
+  const r=(((u.kind==='delete'?issuedD:liveD)||{}).ground||[])[+m[1]];
+  return r&&r.src?String(r.src):'';}
 /* THE PAIRING, ONE BODY (D114): the content unit — a ground row's add or delete — that belongs to request `id`'s filing
    moving from `was` to `now`. The delete reads the ISSUED day's row at its own index and needs the request to LEAVE
    'g'; the add reads the LIVE day's row and needs it to ARRIVE at 'g'. A unit already paired (`inp` set) is never taken
@@ -232,7 +266,7 @@ export function dayPendingItems(di:any):PendItem[]{di=+di;return passMemo('pi',d
 /* the per-kind split of a day's items, the shape diffCounts gives a stored diff — for the
    Amendments panel's "N changes · N removals · N reorders · N input filings" */
 export function itemCounts(items:any){const d=items||[];const by=(k:any)=>d.filter((e:any)=>e.kind===k).length;
-  return {total:d.length,add:by('add'),del:by('delete'),chg:d.length-by('add')-by('delete')-by('move')-by('input')-by('oil'),mov:by('move'),inp:by('input'),oil:by('oil')};}
+  return {total:d.length,add:by('add'),del:by('delete'),chg:d.length-by('add')-by('delete')-by('move')-by('input')-by('oil')-by('warn'),mov:by('move'),inp:by('input'),oil:by('oil'),warn:by('warn')};}
 /* the marks "Discard marks" may clear: those on days never published (F-01 — a published day's
    divergence is published or put back, never silently dropped). The Amendments panel enables
    its button off this, so it is never offered when it could clear nothing (walk S2). */
@@ -285,6 +319,7 @@ export function setDayApproved(di:any,on:any){
   const iso=dayIso(CURWEEK,di);
   SCHED.orig[di]={id:verId(iso,0),...daySnap(di),sign:{[di]:origSign}};
   SCHED.cur=SCHED.cur||{}; SCHED.cur[di]=verId(iso,0);
+  freezeWarn(SCHED.orig[di],di);
   if(SCHED.correcting)delete SCHED.correcting[di];   // [GLOBAL-UNDO] §6.1 — reissuing the Original closes any correction
   reflow(); histPush();
   toast(`${DAYS[di].dow} published — APPROVED`);
@@ -323,7 +358,19 @@ export function daySnap(di:any){di=+di;
      the signatures and takes this snapshot in one synchronous step, and nothing
      between them writes DAYS or INPUTS (alIssue moves SCHED marks only). */
   d.oilev=oilEvidence(di);
-  return {d,c,fil:dayFilingFingerprint(di)};}
+  return {d,c,fil:dayFilingFingerprint(di),inp:dayInputsFrozen(di)};}
+/* THE DAY'S INPUTS AS ISSUED ([LEAVE-LATE-PUBLISHED], owner D177–D179, 25 Sep 26 — "freeze everything for now"). A copy
+   of every input covering this day's date at the moment of issue, keyed by id — every field, its filing state
+   included. The issued face reads THESE (engine/inputs.ts inputsOn, installed by ui/html.ts withDaySnap and the
+   official pass, validate.ts withIssuedWeek), so a leave filed, edited, deleted or moved after publishing changes the
+   working copy only; the comparison below (inputDelta) is what tells the admin, and the next AL (or Unpublish and
+   publish again) freezes the new state. `fil` stays beside it: the filing axis, the load's put-back and the signature
+   all read it, and it is the same states these copies carry. */
+export function dayInputsFrozen(di:any):any{di=+di;
+  const dt=(DAYS[di]||{}).dt, out:any={};
+  if(dt==null)return out;
+  (INPUTS||[]).forEach((inp:any)=>{ if(inputCoversDate(inp,dt))out[inpId(inp)]=JSON.parse(JSON.stringify(inp)); });
+  return out;}
 /* ---- Phase 2: the FILING FINGERPRINT (P2-R3-01 / P2-R4-01) ------------------
    The publication delta has a fourth axis — input filings — that day content
    does NOT carry: filing an input changes INPUTS.acc, not DAYS. To detect a
@@ -428,8 +475,66 @@ export function dayDeltaIn(sc:any,di:any,weekKey?:any):DeltaEntry[]{di=+di;
   if(!((sc&&sc.dayOK)||{})[di])return [];
   const ver=dayCurVerIn(sc,di,weekKey), snap=ver!=null?daySnapIn(sc,di,ver,weekKey):null;
   if(!snap||!snap.d)return [];
-  return canonicalDiff(snap.d,DAYS[di],di).concat(filingDelta(di,snap.fil)).concat(oilDelta(di,snap.d));}
-export function dayDelta(di:any):DeltaEntry[]{di=+di;return passMemo('dd',di,()=>dayDeltaIn(SCHED,di,CURWEEK));}
+  const ax=inputAxes(di,snap);
+  return canonicalDiff(snap.d,DAYS[di],di).concat(ax.fil).concat(ax.val).concat(oilDelta(di,snap.d));}
+/* THE TWO INPUT AXES, ONE BODY: the filing (by id — D174, D176) and the details (inputDelta), with the records a move
+   or a cascade merely replaced by an identical one taken out of BOTH (inputs.ts frozenInputMatch) — so the count, the
+   signature and eligibility read the same answer. A version issued before the freeze has no `inp` and keeps the plain
+   filing axis. */
+function inputAxes(di:any,snap:any):{fil:DeltaEntry[],val:DeltaEntry[],changed:Array<{id:string,was:any,now:any}>}{di=+di;
+  const fil0=filingDelta(di,snap.fil);
+  if(!snap||!snap.inp)return {fil:fil0,val:[],changed:[]};
+  const m=frozenInputMatch(snap.inp,(DAYS[di]||{}).dt), gone=new Set<string>();
+  m.same.forEach(([a,b])=>{gone.add(a);gone.add(b);});
+  const idOf=(e:any)=>String(e.addr||'').split('.').slice(1).join('.');
+  return {fil:fil0.filter((e:any)=>!gone.has(idOf(e))),
+    val:m.diffs.map((x:any)=>({addr:`inv:${di}.${x.id}`,kind:'input' as const,from:x.was?fp(inpDetailKey(x.was)):'',to:x.now?fp(inpDetailKey(x.now)):''})),
+    changed:m.diffs};}
+/* THE INPUT DETAILS AXIS — the `val` half of inputAxes above ([LEAVE-LATE-PUBLISHED], owner D177/D178, 25 Sep 26 — "whenever there is a change, in terms of
+   input from a member … the admin should see the pending after the schedule is published"). The fifth axis beside the
+   content, the filing and the OIL block: one entry per input covering the day whose details differ from the copy the
+   current issued version froze (daySnap → snap.inp) — filed since, edited, deleted, re-dated on or off, handed to
+   another man. Its filing state is the filing axis's, so a round trip (filed, then deleted) reads nothing, and a
+   request taken off on one side and absent on the other reads nothing (D174, D176; inputs.ts frozenInputMatch). The
+   entry carries a short fingerprint of each side, so the signature binding (pendingKey, D103) moves with any edit and
+   comes back when it is put back (AM11). A version issued before this axis existed froze no inputs and is compared on
+   none (demo data, D56). */
+/* a short, stable fingerprint of a string (FNV-1a, 32-bit) */
+function fp(t:string):string{let h=0x811c9dc5; for(let i=0;i<t.length;i++){h^=t.charCodeAt(i); h=Math.imul(h,0x01000193);} return (h>>>0).toString(36);}
+export function dayDelta(di:any):DeltaEntry[]{di=+di;return passMemo('dd',di,()=>dayDeltaCore(di).concat(warnDelta(di)));}
+/* the comparison WITHOUT the warnings axis — what the official pass itself must be gated on (validate.ts
+   officialDiverges): the warnings axis reads that pass's own output, so gating the pass on it would make the validator
+   depend on itself */
+export function dayDeltaCore(di:any):DeltaEntry[]{di=+di;return passMemo('dc',di,()=>dayDeltaIn(SCHED,di,CURWEEK));}
+/* ---- THE DAY'S WARNINGS AS ISSUED ([LEAVE-LATE-PUBLISHED], owner D179, 25 Sep 26 — "freeze everything for now") ----
+   A published day's face used to be re-judged on every change: its issued content and filings, but TODAY's people,
+   rules and neighbour days — so a qualification ticked, a rule setting changed or a leave filed on the unpublished day
+   beside it moved the issued face's rings and warning list with nothing pending (the sweep B2, B5; D48 for rules). Now
+   each issued version keeps the day's slice of the official warnings as they stood the moment it went out (`w`: the
+   warning list, the rings, the flags, the dashes, the next-day crew-rest marks it causes), the issued face shows THAT
+   (validate.ts faceWarn), and the official pass — the same judgement, re-run on today's world — becomes the detector:
+   where its slice differs from the stored one, ONE pending change reads "Warnings on this day changed" (warnDelta),
+   the four fall (D103, through pendingKey) and the next AL (or Unpublish and publish again) stores the new slice. The
+   official pass judges each published day with the inputs it was issued with (layer 1), so this axis never moves on
+   the day's own input changes — the input axis counts those — only on what is NOT the day's: people, rules, the days
+   around it. The validator lends the two bodies through HOOKS at load (publish.ts cannot import it — validate.ts imports
+   this file); unset (an engine-only test), nothing is frozen and the face reads the official pass, as before. */
+function freezeWarn(snap:any,di:number){ if(!HOOKS.issuedWarn||!snap)return; const w=HOOKS.issuedWarn(di); if(w)snap.w=w; }
+/* the key a warnings slice is compared on: every warning (sorted, so the validator's order never reads as a change),
+   the rings, the flags, the dashes and the traces */
+export function warnSliceKey(w:any):string{
+  if(!w)return '';
+  const warns=((w.byDay&&w.byDay.warns)||[]).map((x:any)=>stableJson(x)).sort();
+  return stableJson({warns,sev:w.sev||{},chip:w.chip||{},dash:w.dash||{},trace:w.trace||{}});}
+const WKEY=new WeakMap<any,string>();
+function storedWarnKey(w:any):string{let k=WKEY.get(w); if(k===undefined){k=warnSliceKey(w); WKEY.set(w,k);} return k;}
+function warnDelta(di:any):DeltaEntry[]{di=+di;
+  if(!HOOKS.warnNow||!dayApproved(di))return [];
+  const ver=dayCurVer(di), snap=ver!=null?daySnapOf(di,ver):null;
+  if(!snap||!snap.w)return [];
+  const now=HOOKS.warnNow(di); if(now==null)return [];
+  const was=storedWarnKey(snap.w), k=warnSliceKey(now);
+  return k===was?[]:[{addr:`warn:${di}`,kind:'warn',from:fp(was),to:fp(k)}];}
 /* ONE REPAINT READS EACH DAY'S COMPARISON ONCE (Fable F9, 25 Sep 26 — measured: five published days signed through
    the app's selects cost one edit ~116 ms more at the phone's 4× slowdown, because D103's binding reads the whole
    pending comparison and a day's head, sign-off line and marker each asked for it several times). Inside
@@ -863,6 +968,7 @@ export function alIssue(di:any){di=+di;
   SCHED.als.push({id,di,iso,seq,snap,diff,units,ukinds,sign:{[di]:sign},added});
   SCHED.cur=SCHED.cur||{}; SCHED.cur[di]=id;   // issuing makes it current
   signClear(di);
+  freezeWarn(snap,di);
   reflow(); histPush();   // publishing is its own undo step, not a silent baseline shift
   return {seq,id,sign,count:units};
 }
@@ -941,7 +1047,7 @@ export function retireIssued(di:any,id:any,opts:any={}):string{di=+di;
   const key=`${id}~${nextRetiredN(id)}`;
   if(opts.append!==false){
     SCHED.retired[key]={id,n:+key.slice(key.lastIndexOf('~')+1),di,iso:parseVerId(id).iso,seq,
-      snap:rec?(rec.snap||{d:rec.d,c:rec.c,fil:rec.fil}):null,
+      snap:rec?(rec.snap||{d:rec.d,c:rec.c,fil:rec.fil,inp:rec.inp,w:rec.w}):null,
       diff:(rec&&rec.diff)||[],units:rec&&rec.units!=null?rec.units:undefined,ukinds:rec&&rec.ukinds?rec.ukinds:undefined,sign:(rec&&rec.sign)||{},   // units: the item count as it went out (D109; Astra 4)
       at:new Date().toISOString(),by:opts.by??null,
       restoreSeq:opts.restoreSeq,logged:!!opts.logged};

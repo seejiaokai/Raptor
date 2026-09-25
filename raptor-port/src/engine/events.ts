@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { INPUTS, inputCoversDate, inputFlags, inputDormant, inpWin, isSansAvail, inpMeta, shiftHardInput, shiftHardLabel, inpById, isDownchit, isUpchit } from './inputs'
+import { INPUTS, inputsOn, inputOn, inputCoversDate, inputFlags, inputDormant, inpWin, isSansAvail, inpMeta, shiftHardInput, shiftHardLabel, inpById, isDownchit, isUpchit } from './inputs'
 import { fileAcc, filingActive } from './world'
 import { PEOPLE, isSpecial, whoId, aarNeed } from './people'
 import { toMin, parseHM, win, overlap } from './time'
@@ -34,10 +34,12 @@ export const inpShow=(inp:any,dt:any,xweek?:any)=>{
      an approved date sees the SIGNED filing — a working-copy 'r' cannot silence a
      signed warning, and a post-publish-added input reads 'r' (absent when signed).
      Off the official run the path is the exact prior inputDormant (no id mint).
-     EXCEPTION — CURRENT SAFETY FACTS are never versioned (§4, Codex CRPF-001): a
-     medical downchit (grp 'med') flags the OFFICIAL programme the instant it is filed
-     and clears the instant it is lifted, with no publish. So medical inputs always
-     read their LIVE acc, never the frozen filing — you don't "publish" going unfit.
+     NO EXCEPTION FOR MEDICAL any more (owner, D179, 25 Sep 26 — "freeze everything for now"): a
+     medical downchit filed, lifted or trimmed after a day is published moves the working copy
+     only and shows as pending for the admin; the issued face keeps the fitness it went out
+     with until the next AL. SETS ASIDE the crew-rest plan's §4 ("current safety facts are
+     never versioned", Codex CRPF-001 — a design decision, never a ruling of his). Provisional:
+     he is to be shown it on the build and asked again.
      On the official run compute the effective acc ONCE and run the WHOLE gate on it —
      dormancy AND the accepted-row deferral (Fable FR-001). Folding only the dormancy
      check through the frozen filing but leaving the deferral (inputFlags/acceptedDay)
@@ -45,7 +47,7 @@ export const inpShow=(inp:any,dt:any,xweek?:any)=>{
      be SHOWN again beside its still-frozen snapshot row — double-speaking on the issued
      face. inp.iid is read directly, never minted (Fable FR-005): the official pass must
      not write INPUTS, and an input with no id cannot be in any frozen fingerprint. */
-  if(filingActive()&&!isDownchit(inp.type)){
+  if(filingActive()){
     const eff=inp.iid?fileAcc(dt,inp.iid,inp.acc):'r';
     if(eff==='r')return false;                    // dormant, or absent when this date was signed
     if(xweek)return true;
@@ -91,7 +93,9 @@ export function shiftHardGround(e:any){
        was the content key person|date|type|s|yr; an opaque id has no such field,
        so parsing it silently fell through to the label keywords (a 'ESCORT VISIT'
        Other stopped grading hard by its source type). */
-    const inp=inpById(row.src);
+    /* read as the document for this row's date holds it ([LEAVE-LATE-PUBLISHED], A7): on a published day's face the
+       issued copy, so retyping the request after publishing cannot flip the issued clash red ↔ amber */
+    const inp=inputOn(row.src,DAYS[+m![1]].dt);
     if(inp&&inpMeta(inp.type))return shiftHardInput(inp.type);
     /* [ARCH-STACK] step 4 §8.1 — the input is GONE (deleted after it landed):
        the row keeps the type it was landed from, so an orphaned 'Other' keeps
@@ -521,7 +525,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
        window still comes through with null s/e and stays uncheckable. */
     const mapInp=(inp:any)=>{const w2=inpWin(inp);
       return {id:inp.person,s:w2?w2[0]:null,e:w2?w2[1]:null,type:inp.type,remarks:inp.remarks};};
-    const input:any[]=INPUTS.filter((inp:any)=>inputCoversDate(inp,d.dt)&&inpShow(inp,d.dt,xweek)).map(mapInp);
+    const input:any[]=inputsOn(d.dt).filter((inp:any)=>inpShow(inp,d.dt,xweek)).map(mapInp);
     /* THE MIDNIGHT TAIL (owner, 11 Aug 26 — "the default warning engine also checks
        in the same modality for all applicable rules based on timing"). A window that
        runs past midnight — a night sortie's landing and debrief, an overnight duty
@@ -534,7 +538,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
        with no usable window stays uncheckable, exactly as its unshifted copy is.
        `nx` marks the entries as port-only for the parity excision (parity.test.ts)
        and the positive pin in the overnight suite. */
-    if(nextDt!=null)INPUTS.filter((inp:any)=>inputCoversDate(inp,nextDt)&&inpShow(inp,nextDt)).forEach((inp:any)=>{
+    if(nextDt!=null)inputsOn(nextDt).filter((inp:any)=>inpShow(inp,nextDt)).forEach((inp:any)=>{
       const m=mapInp(inp); if(m.s==null||m.e==null)return;
       input.push({...m,s:m.s+1440,e:m.e+1440,nx:true});
     });
@@ -556,7 +560,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
        ordinary daytime sortie can never match one of these — its window never
        goes negative — so this adds no warning to any day that did not earn one.
        `pv` marks them port-only for the parity excision, as `nx` does. */
-    if(prevDt!=null)INPUTS.filter((inp:any)=>inputCoversDate(inp,prevDt)&&inpShow(inp,prevDt)).forEach((inp:any)=>{
+    if(prevDt!=null)inputsOn(prevDt).filter((inp:any)=>inpShow(inp,prevDt)).forEach((inp:any)=>{
       const m=mapInp(inp); if(m.s==null||m.e==null)return;
       input.push({...m,s:m.s-1440,e:m.e-1440,pv:true});
     });

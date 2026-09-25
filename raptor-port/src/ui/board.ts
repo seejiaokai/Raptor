@@ -3,7 +3,7 @@
    store's notify(). The CX-with-a-reason dialog state lives here too. */
 import { DAYS } from '../engine/data'
 import { mkNote, noteText } from '../engine/note'
-import { INPUTS, inputCoversDate, inpById, inpTimeText, inpId } from '../engine/inputs'
+import { INPUTS, inputsOn, inputCoversDate, inpById, inpTimeText, inpId } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { waveInTime } from '../engine/events'
@@ -347,7 +347,7 @@ function boardHTMLBody(di: number, pv?: boolean) {
      the board reads the way the week does. */
   /* one pass over INPUTS for the three input-backed crew panels — the board
      rebuilds on every edit */
-  const dayInp = INPUTS.filter((i: any) => inputCoversDate(i, d.dt))
+  const dayInp = inputsOn(d.dt)
   const sect: Record<string, string> = {
     notes: sbNotesPanel(d, di, pv, mvRO), prog: sbProgPanel(d, di, pv, mvRO), waves: wavesPanel,
     duty: sbDutyPanel(d, di, pv, mvRO), sims: sbSimRowsPanel(d, di, pv, mvRO), ground: sbGroundPanel(d, di, pv, mvRO),

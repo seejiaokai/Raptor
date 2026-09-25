@@ -724,8 +724,36 @@ export function oilEvidenceKey(ev: OilEvidence | null | undefined, day?: any, me
      it is the whole of its key, and a day with no puck on it still keys to ''
      and reads exactly as before. */
   if (!ev.earns) return sent ? `${ev.iso}|||${sent}` : ''
-  const ins = ev.inputs.map(i => `${i.iid}:${i.person}:${i.type}:${i.acc}:${standEarns(standIn(day, i)) ? 'y' : 'n'}:${i.win ? i.win.join('-') : ''}:${i.ans == null ? '' : i.ans}`).join(',')
+  const ins = ev.inputs.map(i => insSeg(day, i)).join(',')
   return `${ev.iso}|${oilDecisionsKey(ev.d)}|${ins}|${sent}`
+}
+/** one input's part of the key — ONE spelling, shared with oilMovedInputsOnly below */
+const insSeg = (day: any, i: OilInputEv) => `${i.iid}:${i.person}:${i.type}:${i.acc}:${standEarns(standIn(day, i)) ? 'y' : 'n'}:${i.win ? i.win.join('-') : ''}:${i.ans == null ? '' : i.ans}`
+
+/** WHEN ONLY THE INPUTS MOVED THE OIL KEY ([LEAVE-LATE-PUBLISHED], D109 / D114's "one act, one change"). A request
+ *  edited after publishing moves its own window in the block's input projection, so the OIL comparison reads a change
+ *  beside the input comparison's — two items for one edit. This names the inputs whose part of the key moved WHEN
+ *  NOTHING ELSE did (the decisions, the crowd, whether the day earns at all), so the pending count can fold the OIL
+ *  line into those inputs' own lines; null when anything else moved, which stays its own OIL line. */
+export function oilMovedInputsOnly(now: OilEvidence | null | undefined, nowDay: any, was: OilEvidence | null | undefined, wasDay: any, mem = true): { iids: string[], people: string[] } | null {
+  if (!now || !was || !!now.earns !== !!was.earns) return null
+  if (now.earns && oilDecisionsKey(now.d) !== oilDecisionsKey(was.d)) return null
+  const iids: string[] = []
+  if (now.earns) {
+    const a = new Map(was.inputs.map(i => [String(i.iid), insSeg(wasDay, i)]))
+    const b = new Map(now.inputs.map(i => [String(i.iid), insSeg(nowDay, i)]))
+    new Set([...a.keys(), ...b.keys()]).forEach(id => { if (a.get(id) !== b.get(id)) iids.push(id) })
+  }
+  /* …and WHO a placeholder stands for (D44's frozen crowd): a leave filed by a man in ALL AVAIL's crowd takes him out
+     of it — the same act (Fable S11, Q7). The caller folds only when every man who left or joined is one whose input
+     changed. */
+  const people: string[] = []
+  if (mem) {
+    const ks = new Set([...Object.keys(was.sent || {}), ...Object.keys(now.sent || {})])
+    ks.forEach(k => { const x = new Set(Array.from((was.sent || {})[k] || [])), y = new Set(Array.from((now.sent || {})[k] || []))
+      x.forEach(p => { if (!y.has(p)) people.push(String(p)) }); y.forEach(p => { if (!x.has(p)) people.push(String(p)) }) })
+  }
+  return iids.length || people.length ? { iids, people } : null
 }
 
 /** THE SIGNATURE'S KEY — the SAME block, projected differently (D45, OSE-T-03).

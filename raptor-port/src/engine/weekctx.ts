@@ -29,7 +29,7 @@
    not off the bundle.) */
 import { weekBundle, shiftWeekKey } from './weeks-data'
 import { buildDay } from './events'
-import { INPUTS, inputCoversDate, isPersonal, inputDormant, baseYear, inpId } from './inputs'
+import { INPUTS, inputsOn, frozenInputDiffs, inputCoversDate, isPersonal, inputDormant, baseYear, inpId } from './inputs'
 import { PEOPLE, isSpecial } from './people'
 import { stashDays, stashSched } from './weekstash'
 import { getWorld, filingActive, filingHas } from './world'
@@ -133,11 +133,10 @@ function workedSet(day:any,ix:any,approved?:any){
      activity must never be counted off its input. */
   const signed=approved||(filingActive()&&filingHas(day.dt));
   if(!signed){
-    INPUTS.forEach((inp:any)=>{
+    inputsOn(day.dt).forEach((inp:any)=>{
       if(!isPersonal(inp.type))return;
       /* a REMOVED input (acc 'r' — dormant, owner 26 Aug 26) never auto-lands. */
       if(inputDormant(inp))return;
-      if(!inputCoversDate(inp,day.dt))return;
       const id=inp.person;
       if(id&&PEOPLE[id]&&!isSpecial(id))ids.add(id);
     });
@@ -290,9 +289,34 @@ export function windowDiverges(curWeek:any,maxRun:any){
          drop the signed input's contribution from OFFICIAL. */
       const dt=days.days[di]&&days.days[di].dt;
       if(dt!=null&&filingDiffers(snap.fil,dt,true))return true;   // xweek: a navigation-cleared 'g' is not a divergence (Fable FR-002)
+      /* …and its INPUTS' details ([LEAVE-LATE-PUBLISHED], D178): a leave edited or filed on a published neighbour moves no
+         content and no filing, so without this the loaded week would alias and read the edit live into its seeds */
+      if(dt!=null&&frozenInputDiffs(snap.inp,dt).length>0)return true;
     }
     return false;
   });
+}
+/* THE INPUTS each stashed neighbour approved day was issued with ([LEAVE-LATE-PUBLISHED], D177–D179), keyed by date —
+   windowFiling's twin, so the official pass's seeds read a published neighbour's leave, medical and SANS offers as
+   issued. A protected date (no readable snapshot) holds none; a version issued before the freeze holds no copy and is
+   left to the live records, as its filing is to fileAcc. */
+export function windowInputs(curWeek:any,maxRun:any){
+  const out:any={};
+  const keys=[shiftWeekKey(curWeek,-1),shiftWeekKey(curWeek,1)];
+  if(maxRun>7)keys.push(shiftWeekKey(curWeek,-2));
+  keys.forEach((v:any)=>{
+    const days=stashDays(v), sc=stashSched(v);
+    if(!days||!sc)return;
+    for(let di=0;di<7;di++){
+      if(!(sc.dayOK||{})[di])continue;
+      const ver=dayCurVerIn(sc,di,v), snap=ver!=null?daySnapIn(sc,di,ver,v):null;
+      const dt=days.days[di]&&days.days[di].dt;
+      if(dt==null)continue;
+      if(!(snap&&snap.d))out[dt]={};
+      else if(snap.inp)out[dt]=snap.inp;
+    }
+  });
+  return out;
 }
 /* THE SIGNED FILING of each stashed neighbour approved day, keyed by date
    (published-schedule flagging, §14.3 trap a). The loaded week's own filing is

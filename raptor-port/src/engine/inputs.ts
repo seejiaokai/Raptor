@@ -38,6 +38,95 @@ export function inpTimeText(inp:any,field:any){
 export function inpId(inp:any){return inp.iid||(inp.iid=newId('i'));}
 export function mintInpIds(){INPUTS.forEach(inpId);}
 export function inpById(id:any){return INPUTS.find((r:any)=>r.iid===id)||null;}
+/* THE INPUTS ON ONE DATE, AS THE DOCUMENT BEING READ HOLDS THEM ([LEAVE-LATE-PUBLISHED], owner D177–D179, 25 Sep 26 —
+   "freeze everything for now"). A published day's face keeps what it was issued with: its issued version freezes the
+   inputs covering its date (publish.ts daySnap → snap.inp), and while that face is drawn (ui/html.ts withDaySnap) or
+   judged (validate.ts withIssuedWeek — the official pass), those frozen copies ARE the inputs on that date. Before
+   this, every reader filtered the live INPUTS, so a leave filed, edited or deleted after publishing moved the published
+   face at once with nothing pending (the sweep, docs/superpowers/specs/2026-09-25-published-face-live-inputs.md A0–A7).
+   ONE reader for "the inputs on a date" — every schedule surface and validator site that used to write
+   `INPUTS.filter(inp=>inputCoversDate(inp,dt))` reads inputsOn(dt) instead (pinned by inputsOn.test.ts's grep), so a
+   frozen date answers from its version and every other date from the live records, with no reader needing to know.
+   Readers of the RECORDS themselves (the Inputs page, the medical tracker, the Leave War, the live filing and OIL
+   candidates in publish.ts / oilev.ts / weekctx.ts liveFilingAt) stay on INPUTS: they are the working world.
+   Installed only by withFrozenInputs, synchronously, restored in finally; nothing inside may write. Keyed by the
+   canonical date ordinal (dateOrd), as world.ts setFiling is, so a snapshot's label and a stash's label for the same
+   day agree. Nested installs merge (an inner one wins on its own dates) and the outer set comes back on exit. */
+let FZ:Map<number,any[]>|null=null;
+export function withFrozenInputs<T>(byDate:any,fn:()=>T):T{
+  if(!byDate||!Object.keys(byDate).length)return fn();
+  const outer=FZ, next=new Map<number,any[]>(outer||[]);
+  for(const dt of Object.keys(byDate)){const k=dateOrd(dt); if(k==null)continue;
+    /* a SHALLOW copy of each frozen record, so no reader can reach into the stored snapshot through it */
+    next.set(k,Object.keys(byDate[dt]||{}).map((id:any)=>({...byDate[dt][id]})));}
+  FZ=next;
+  try{return fn();}finally{FZ=outer;}
+}
+/* is the date `dt` answered from a frozen version right now? */
+export function inputsFrozenOn(dt:any){if(!FZ)return false;const k=dateOrd(dt);return k!=null&&FZ.has(k);}
+export function inputsOn(dt:any):any[]{
+  if(FZ){const k=dateOrd(dt); const f=k!=null?FZ.get(k):undefined; if(f)return f;}
+  return INPUTS.filter((inp:any)=>inputCoversDate(inp,dt));}
+/* one input by id, as the document for date `dt` holds it — the frozen copy on a frozen date (null when that version
+   never held it), else the live record */
+export function inputOn(iid:any,dt:any):any{
+  if(FZ&&dt!=null){const k=dateOrd(dt); const f=k!=null?FZ.get(k):undefined; if(f)return f.find((r:any)=>r.iid===iid)||null;}
+  return inpById(iid);}
+/* WHAT AN INPUT SAYS ON A SCHEDULE, for "has it changed since the day was issued?" (D178: every member input change
+   counts; Fable's scenario design Q4/Q5, 25 Sep 26). What the schedule draws or judges: whose, what type, the dates (as
+   real dates — a label and its year anchor can spell one day two ways), all day / half / the times, the remarks, the
+   SANS offer, the OIL answer. NOT the filing state (`acc` — the filing axis compares that, publish.ts filingDelta), the
+   id, the lateness stamp (`mod` — the literal 'now' re-reads as today's date, and an edit that matters moves a field
+   above anyway), the Leave War's provenance tag or the attached paperwork (the Inputs page's, never drawn on a
+   schedule). Keys sorted at every level, so the same record always reads the same. */
+export const stableJson=(v:any):string=>{
+  if(v==null||typeof v!=='object')return JSON.stringify(v===undefined?null:v);
+  if(Array.isArray(v))return '['+v.map(stableJson).join(',')+']';
+  return '{'+Object.keys(v).filter((k:any)=>v[k]!==undefined).sort().map((k:any)=>JSON.stringify(k)+':'+stableJson(v[k])).join(',')+'}';};
+export function inpDetailKey(inp:any):string{
+  if(!inp)return '';
+  const a=dateOrd(inp.date,inp.yr), b=inp.endDate?dateOrd(inp.endDate,inp.yr):a, all=!!inp.allday;
+  return stableJson({person:inp.person||'',type:inp.type||'',a:a==null?String(inp.date||''):a,b:b==null?String(inp.endDate||''):b,
+    allday:all,half:inp.half||'',s:all?null:(inp.s??null),e:all?null:(inp.e??null),remarks:inp.remarks||'',
+    sans:inp.sans||null,oil:inp.oil||null});}
+/* THE INPUTS ON A DATE THAT DIFFER FROM A VERSION'S FROZEN COPY ([LEAVE-LATE-PUBLISHED], D178): one entry per input
+   whose details moved, or which appeared or went away. An input absent on one side and TAKEN OFF ('r') on the other is
+   no difference — neither face shows it (the same rule the filing axis keeps, D174 and D176). Reads the LIVE records
+   (never inputsOn — the frozen side is `frozen`); `frozen` null = a version issued before this freeze, compared on
+   nothing (demo data only, D56). */
+/* BY CONTENT FIRST (Fable Q4): a Leave War move re-files a leave under a new id, and a medical downchit's cascade
+   mints a tail with a new id — neither changes what the day shows, so a record that went and an identical one that came
+   (same details, same filing state) are the SAME input here, and `same` lists them so the filing axis (keyed by id)
+   drops them too (publish.ts inputAxes). What is left pairs by id (an edit), then stands alone (filed / gone). An
+   UPCHIT is out altogether: it draws nothing and flags nothing — the downchit it trims is the change (Fable Q6). */
+export function frozenInputMatch(frozen:any,dt:any):{diffs:Array<{id:string,was:any,now:any}>,same:Array<[string,string]>}{
+  if(!frozen||dt==null)return {diffs:[],same:[]};
+  const W:any[]=[], N:any[]=[];
+  Object.keys(frozen).forEach((id:any)=>{const w=frozen[id]; if(w&&!isUpchit(w.type))W.push({id,r:w,k:inpDetailKey(w)});});
+  INPUTS.forEach((x:any)=>{ if(inputCoversDate(x,dt)&&!isUpchit(x.type))N.push({id:inpId(x),r:x,k:inpDetailKey(x)}); });
+  const out:any[]=[], same:any[]=[];
+  /* 1 — the same record, unchanged */
+  for(let i=W.length-1;i>=0;i--){const j=N.findIndex((n:any)=>n.id===W[i].id);
+    if(j>=0&&N[j].k===W[i].k){W.splice(i,1);N.splice(j,1);}}
+  /* 2 — a record replaced by an identical one (a move's re-file, a cascade's tail) */
+  for(let i=W.length-1;i>=0;i--){const w=W[i];
+    if(N.some((n:any)=>n.id===w.id))continue;
+    const j=N.findIndex((n:any)=>n.k===w.k&&!W.some((x:any)=>x.id===n.id)&&String(n.r.acc||'')===String(w.r.acc||''));
+    if(j>=0){same.push([w.id,N[j].id]);W.splice(i,1);N.splice(j,1);}}
+  /* 3 — the same record, edited; one taken off on BOTH sides shows on neither face, whatever was edited (D176's reading:
+     only a dormant request woken back to a live one is a change) */
+  for(let i=W.length-1;i>=0;i--){const j=N.findIndex((n:any)=>n.id===W[i].id);
+    if(j>=0){if(!(String(W[i].r.acc||'')==='r'&&String(N[j].r.acc||'')==='r'))out.push({id:W[i].id,was:W[i].r,now:N[j].r});W.splice(i,1);N.splice(j,1);}}
+  /* 4 — gone, or filed since; a request taken off on the one side and absent on the other shows on neither face (D174, D176) */
+  W.forEach((w:any)=>{ if(String(w.r.acc||'')!=='r')out.push({id:w.id,was:w.r,now:null}); });
+  N.forEach((n:any)=>{ if(String(n.r.acc||'')!=='r')out.push({id:n.id,was:null,now:n.r}); });
+  return {diffs:out,same};}
+export function frozenInputDiffs(frozen:any,dt:any):Array<{id:string,was:any,now:any}>{return frozenInputMatch(frozen,dt).diffs;}
+/* …and where the caller has a row but not its date (a request's row carries its input's id in `src`): while a frozen
+   version is being drawn, the copy that version holds (or null — it never held it); otherwise the live record */
+export function inputOnAny(iid:any):any{
+  if(FZ){for(const f of FZ.values()){const r=f.find((x:any)=>x.iid===iid); if(r)return r;} return null;}
+  return inpById(iid);}
 
 /* ---- THE INPUT TYPES ------------------------------------------------------
    The squadron books far more kinds of absence than "leave" (owner, 10 Aug 26).
@@ -558,7 +647,7 @@ export function dateIx(lbl:any,yr?:any){
    = not offered) and the ONE shared window lives in the row's own standard
    allday / half / s / e fields, read through sansWindow below. */
 export function sansAvailOn(id:any,dt:any){
-  return INPUTS.find((x:any)=>x.person===id&&isSansAvail(x.type)&&inputCoversDate(x,dt))||null;
+  return inputsOn(dt).find((x:any)=>x.person===id&&isSansAvail(x.type))||null;
 }
 /* the record's one offered window in minutes, [s,e]. AM/PM are the same
    halves the standard template writes (HALF_AM/HALF_PM in ui/inputedit.tsx —

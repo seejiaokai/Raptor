@@ -12,8 +12,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { DAYS } from './data'
 import { INPUTS } from './inputs'
 import { setCurWeek } from './waves'
-import { validate, officialWarn } from './validate'
-import { SCHED, signOf, setDayApproved, dayCurVer } from './publish'
+import { validate, officialWarn, officialRaw } from './validate'
+import { SCHED, signOf, setDayApproved, dayCurVer, dayDelta } from './publish'
 import { dayIssuedHTML, dayHTML } from '../ui/html'
 import { DWOPEN, WFOCUS, focusWarn, setPage } from '../state/view'
 import { stashPut, stashClear } from './weekstash'
@@ -117,7 +117,11 @@ describe('Phase 1 — validate() computes WORKING and OFFICIAL bundles', () => {
     flyMonday('waldo', '12:00', '13:25')
     sign(0); setDayApproved(0, true)                  // approved, working == issued
     const w = validate()
-    expect(officialWarn()).toBe(w)                    // same ref — zero cost, cannot drift
+    expect(officialRaw()).toBe(w)                     // same ref — zero cost, cannot drift
+    /* …and the issued face's frozen warnings ([LEAVE-LATE-PUBLISHED], D179) read exactly what the day went out with,
+       which on an unchanged day is WORKING's own slice — no phantom "warnings changed" */
+    expect(JSON.parse(JSON.stringify(officialWarn().byDay[0] || null))).toEqual(JSON.parse(JSON.stringify(w.byDay[0] || null)))
+    expect(dayDelta(0), 'nothing pending on the unchanged day').toEqual([])
   })
 
   it('NO APPROVED DAY — OFFICIAL aliases WORKING (nothing signed, no second document exists)', () => {
@@ -400,17 +404,17 @@ describe('Phase 6 — "Not Yet Signed" marker (working copy only)', () => {
   })
 })
 
-/* §4 — CURRENT SAFETY FACTS are never versioned: they flag OFFICIAL immediately,
-   with no re-publish. CRPF-001 (above) pins MEDICAL. These pin the other two:
-   QUALIFICATIONS and RULE (VCONF) changes — both live during the official pass
-   because PEOPLE and VCONF are not part of the frozen day snapshot. (LEAVE, by
-   contrast, IS versioned — proven by the phase-4 'file r after publish keeps the
-   OFFICIAL warning' test: you apply for leave, so it rides the signed document.) */
-describe('§4 — quals and rules flag OFFICIAL immediately (unversioned); leave does not', () => {
+/* §4 — REVERSED 25 Sep 26 by the owner's D179 ("freeze everything for now", provisional): a qualification or a rule
+   change used to re-flag a published day's face at once, because PEOPLE and VCONF are not part of the frozen day. Now
+   the issued face shows the warnings it went out with (the version stores them — publish.ts "THE DAY'S WARNINGS AS
+   ISSUED"), and the official pass — today's judgement of the issued day — is the DETECTOR: its difference reads ONE
+   pending change ("warnings changed"), the four fall, and the next AL takes the new warnings in. These pins keep their
+   setups and now prove both halves: the face frozen, the detector moved, the day pending. */
+describe('§4 — quals and rules: the issued face keeps its warnings; the change reads pending (D179)', () => {
   const qual = (b: any, id: string) => b.all.find((x: any) => x.code === 'QUAL' && (x.who || []).includes(id) && x.di === 0)
   const cr = (b: any, id: string) => b.all.find((x: any) => x.code === 'CREW_REST' && (x.who || []).includes(id) && x.di === 0)
 
-  it('a QUALIFICATION change flags a frozen published seat immediately', () => {
+  it('a QUALIFICATION change: the issued face keeps its warnings, and the day reads pending (D179)', () => {
     const WK = wkFor(70)
     setCurWeek(WK)
     const dt = (DAYS[0] as any).dt
@@ -424,11 +428,13 @@ describe('§4 — quals and rules flag OFFICIAL immediately (unversioned); leave
     try {
       const w = validate()
       expect(qual(w, PILOT), 'WORKING flags the illegal seat').toBeTruthy()
-      expect(qual(officialWarn(), PILOT), 'OFFICIAL flags the qual change immediately — no re-publish').toBeTruthy()
+      expect(qual(officialRaw(), PILOT), 'the detector (today\'s judgement) sees the illegal seat').toBeTruthy()
+      expect(qual(officialWarn(), PILOT), 'the issued face keeps what it went out with — no QUAL').toBeFalsy()
+      expect(dayDelta(0).some((e: any) => e.kind === 'warn'), 'Monday reads "warnings changed" pending').toBe(true)
     } finally { (PEOPLE as any)[PILOT].pers = savedPers }
   })
 
-  it('a RULE (crew-rest threshold) change re-flags a frozen published day immediately', () => {
+  it('a RULE (crew-rest threshold) change: the issued face keeps its warnings, and the day reads pending (D179)', () => {
     const WK = wkFor(71)
     MOCKS[shiftWeekKey(WK, -1)] = weekOf(weekDateLabels(shiftWeekKey(WK, -1)), { 6: dutyRow('waldo', '0800', '1520') })
     setCurWeek(WK)
@@ -440,7 +446,9 @@ describe('§4 — quals and rules flag OFFICIAL immediately (unversioned); leave
     VCONF.crewRest = 14 * 60                              // squadron raises crew rest 12h → 14h (clear now 05:20)
     try {
       expect(cr(validate(), 'waldo'), 'WORKING now breaches under the new rule').toBeTruthy()
-      expect(cr(officialWarn(), 'waldo'), 'OFFICIAL re-checks the frozen day against the live rule immediately').toBeTruthy()
+      expect(cr(officialRaw(), 'waldo'), 'the detector re-checks the frozen day against the live rule').toBeTruthy()
+      expect(cr(officialWarn(), 'waldo'), 'the issued face keeps the warnings it went out with (D179, as D48 holds its OIL)').toBeFalsy()
+      expect(dayDelta(0).some((e: any) => e.kind === 'warn'), 'Monday reads "warnings changed" pending').toBe(true)
     } finally { VCONF.crewRest = savedRest }
   })
 })
@@ -482,14 +490,20 @@ describe('CRPF-005 — an unresolvable published day is PROTECTED, not left as a
     const w = validate()
     expect(dayCurVer(0) == null, 'day 0 is now unresolvable').toBe(true)
     expect(cr1(w), 'WORKING still busts Tuesday off the live Monday').toBeTruthy()
-    expect(cr1(officialWarn()), 'OFFICIAL protects the unresolvable Monday — no derived breach').toBeFalsy()
+    expect(cr1(officialRaw()), 'OFFICIAL protects the unresolvable Monday — no derived breach').toBeFalsy()
+    /* the issued FACE of Tuesday shows what Tuesday went out with (D179) — the breach it was published carrying */
+    expect(cr1(officialWarn()), 'Tuesday\'s issued face keeps the breach it was issued with').toBeTruthy()
   })
 })
 
 describe('CRPF-001 — a current medical fact flags OFFICIAL immediately (§4, unversioned)', () => {
   const dnif = (b: any, id: string) => b.all.find((x: any) => x.code === 'DNIF_FLY' && (x.who || []).includes(id) && x.di === 0)
 
-  it('a downchit added after publish flags OFFICIAL even under an unrelated amendment', () => {
+  /* REVERSED 25 Sep 26 by the owner's D179 ("freeze everything for now" — medical included, provisional): §4's "current
+     safety facts are never versioned" was a design decision, never a ruling of his, and the newer word wins. A downchit
+     filed after publishing moves the WORKING copy at once and reads pending for the admin; the issued face keeps the
+     fitness it went out with until the next AL. The test keeps its setup and now pins the new rule. */
+  it('a downchit added after publish flags WORKING at once but NOT the issued face — it waits for the admin (D179)', () => {
     const WK = wkFor(60)
     setCurWeek(WK)
     const dt = (DAYS[0] as any).dt
@@ -500,7 +514,8 @@ describe('CRPF-001 — a current medical fact flags OFFICIAL immediately (§4, u
     INPUTS.push({ person: 'waldo', date: dt, allday: true, type: 'ATT C', acc: '', remarks: 'Medically down', mod: '', iid: 'iMED1' })
     const w = validate()
     expect(dnif(w, 'waldo'), 'WORKING flags the downchit').toBeTruthy()
-    expect(dnif(officialWarn(), 'waldo'), 'OFFICIAL flags medical unfitness immediately (§4) — not frozen out').toBeTruthy()
+    expect(dnif(officialWarn(), 'waldo'), 'the issued face keeps the fitness it went out with (D179)').toBeFalsy()
+    expect(dayDelta(0).some((e: any) => e.kind === 'input' && /^inv:0\./.test(e.addr)), 'the downchit reads pending on Monday').toBe(true)
   })
 })
 

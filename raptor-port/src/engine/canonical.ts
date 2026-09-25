@@ -114,7 +114,7 @@ export function digest(d: any, di: any): string {
    INPUTS. Kept deliberately separate from rebaseDayPending: that stays the
    display-mark path; this is the record's authority.
    ===================================================================== */
-export type DeltaKind = 'change' | 'add' | 'delete' | 'move' | 'input' | 'oil'
+export type DeltaKind = 'change' | 'add' | 'delete' | 'move' | 'input' | 'oil' | 'warn'
 export interface DeltaEntry { addr: string; kind: DeltaKind; from?: string; to?: string }
 
 /* every structural row with a stable id + parent, ancestor-collapsing — the

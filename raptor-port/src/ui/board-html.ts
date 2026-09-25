@@ -1,6 +1,6 @@
 /* The scheduler-board panel builders — sbInputsHTML, sbNotesPanel,
    sbProgPanel, sbSimPanel, sbSlot, labelToTitle/titleToLabel — verbatim. */
-import { INPUTS, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, isUpchit, oilAsks, sansBadge } from '../engine/inputs'
+import { INPUTS, inputsOn, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, isUpchit, oilAsks, sansBadge } from '../engine/inputs'
 import { PEOPLE, whoId } from '../engine/people'
 import { noteText } from '../engine/note'
 import { hhmm, fmtHM, parseHM } from '../engine/time'
@@ -128,7 +128,7 @@ function sbiRmk(inp:any,dt?:any){
    removed; the live Personal Inputs / Unavailable / SANS panels carry the
    data). Kept as a pure builder because probe-bridge still exposes it. */
 export function sbInputsHTML(d:any,di:any){
-  const rows=INPUTS.filter((inp:any)=>inputCoversDate(inp,d.dt));
+  const rows=inputsOn(d.dt);
   let h=`<div class="sbi-h"><b>Inputs · ${esc(d.dow)} ${esc(d.dt)}</b>`
    +`<span class="sbi-n">${rows.length} entr${rows.length===1?'y':'ies'} · morning → late</span></div>`;
   if(!rows.length)return h+`<div class="sbi-empty">No personal inputs submitted for this day.</div>`;
@@ -715,7 +715,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
    still gets the original, narrower behaviour rather than silently always
    showing the buttons. */
 export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
-  const rows=(day||INPUTS.filter((i:any)=>inputCoversDate(i,d.dt))).filter((inp:any)=>isPersonal(inp.type)&&inp.acc!=='u');
+  const rows=(day||inputsOn(d.dt)).filter((inp:any)=>isPersonal(inp.type)&&inp.acc!=='u');
   const acRo=ro??pv;
   /* PERSONAL INPUTS folds to a one-line summary by default (owner, Aug 26 — the
      block is the faded audit echo now activity inputs auto-land on ground). The
@@ -748,7 +748,7 @@ export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
    editable as the ones above since the owner asked for both (10 Aug 26). */
 export function sbUnavailPanel(d:any,di:any,day?:any,ro?:any){
   // SANS Availability is an offer, not an absence — it reads isUnavail (no Accept controls) but does not belong in this panel
-  const rows=(day||INPUTS.filter((i:any)=>inputCoversDate(i,d.dt))).filter((inp:any)=>(isUnavail(inp.type)||inp.acc==='u')&&!isSansAvail(inp.type)&&!isUpchit(inp.type));
+  const rows=(day||inputsOn(d.dt)).filter((inp:any)=>(isUnavail(inp.type)||inp.acc==='u')&&!isSansAvail(inp.type)&&!isUpchit(inp.type));
   /* + Add stays here (owner, Aug 26; reworked 19 Aug 26): the dialog now
      offers only leave/medical/OD types and carries a DATE RANGE, whose till
      date lands in remarks the way the Inputs page's calendar writes it */
@@ -772,7 +772,7 @@ export function sbUnavailPanel(d:any,di:any,day?:any,ro?:any){
    shape this panel no longer draws; a card opens the input-edit dialog
    instead, so the hint now points at that. */
 export function sbSansPanel(d:any,di:any,day?:any,ro?:any){
-  const rows=(day||INPUTS.filter((i:any)=>inputCoversDate(i,d.dt))).filter((inp:any)=>isSansAvail(inp.type));
+  const rows=(day||inputsOn(d.dt)).filter((inp:any)=>isSansAvail(inp.type));
   /* + Add (owner, 19 Aug 26 — SANS availability left the other panels' type
      lists, so it gets its own add HERE, "likewise"): opens the same dialog,
      locked to the SANS type and offering SANS aircrew only */

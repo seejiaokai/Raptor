@@ -122,12 +122,18 @@ const SIGNSET: Spec = { cur: 'string', sked: 'string', plan: 'string', appr: 'st
 const SIGNBIND: Spec = { dg: 'string', iso: 'string', base: 'string', rev: 'string' }
 /* Phase 2 DaySnapshot: the frozen day, its issued-marks slice, the filing
    fingerprint, and (on SCHED.orig only) the Original's own verId. */
-const DAYSNAP: Spec = { d: DAY, c: { $map: 'number' }, fil: { $opt: { $map: 'string' } }, id: 'string?', sign: { $opt: { $map: SIGNSET } } }   // sign: the Original's four, kept since 25 Sep 26 (D95, D102)
+/* a warning is the validator's own record (engine/validate.ts: sev, code, who, day, di, msg, key and per-rule extras) —
+   checked for shape loosely; the rings, flags, dashes and traces are per-person maps, null when empty */
+const ANYW: Spec = { $or: ['string', 'number', 'boolean', 'object'] }
+const WARNSLICE: Spec = { byDay: { $or: [{ di: 'number', dow: 'string', warns: [{ $map: ANYW }] }, 'object'] }, sev: 'object', chip: 'object', dash: 'object', trace: 'object' }
+const DAYSNAP: Spec = { d: DAY, c: { $map: 'number' }, fil: { $opt: { $map: 'string' } }, id: 'string?', sign: { $opt: { $map: SIGNSET } },   // sign: the Original's four, kept since 25 Sep 26 (D95, D102)
+  /* the day's inputs and warnings as issued ([LEAVE-LATE-PUBLISHED], D177–D179) */
+  inp: { $opt: { $map: inputSpec(true) } }, w: { $opt: WARNSLICE } }
 /* Phase 2 AlRecord: SINGLE-DAY, keyed by its immutable verId; the canonical
    `diff` replaces the old `keys` list, and there is no n/days/n0/adds/structAdds. */
 const ANYV: Spec = { $or: ['string', 'number', 'boolean'] }
-const ALDIFF: Spec = { addr: 'string', kind: { $lit: ['add', 'delete', 'change', 'move', 'input', 'oil'] }, from: { $opt: ANYV }, to: { $opt: ANYV } }
-const UKINDS: Spec = { $opt: { total: 'number', add: 'number', del: 'number', chg: 'number', mov: 'number', inp: 'number', oil: 'number' } }   // D114
+const ALDIFF: Spec = { addr: 'string', kind: { $lit: ['add', 'delete', 'change', 'move', 'input', 'oil', 'warn'] }, from: { $opt: ANYV }, to: { $opt: ANYV } }
+const UKINDS: Spec = { $opt: { total: 'number', add: 'number', del: 'number', chg: 'number', mov: 'number', inp: 'number', oil: 'number', warn: 'number?' } }   // D114; warn: the warnings item (D179)
 const AL: Spec = { id: 'string', di: 'number', iso: 'string', seq: 'number', snap: DAYSNAP, diff: [ALDIFF], units: 'number?', ukinds: UKINDS, sign: { $map: SIGNSET }, added: { $opt: ['string'] } }   // units: the item count as a person counts it (D109)
 const ONE: Spec = { $lit: [1] }
 /* [GLOBAL-UNDO] §6.1 — a retired-issuance snapshot (the append-only log, keyed

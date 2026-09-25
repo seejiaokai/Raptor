@@ -1,18 +1,18 @@
 import { PEOPLE, isSpecial, realP, whoId, isOcu, isInstr, isInstrPilot, aarOK, aarInstrOK, scShiftKind, scQualOK } from './people'
-import { isDownchit, isLeave, isUnavail, canSpare, canWork, shiftHardInput, restsInput, inpLabel, inpMeta } from './inputs'
+import { isDownchit, isLeave, isUnavail, canSpare, canWork, shiftHardInput, restsInput, inpLabel, inpMeta, withFrozenInputs } from './inputs'
 import { VCONF, SHIFT_HARD } from './rules'
 import { overlap, hm24, lgT, parseHM } from './time'
 import { collectEvents, shiftEvHard, scSeatHits, avSeatHits } from './events'
 import { HOOKS } from './hooks'
 import { sansGate, SANS_LABEL } from './avail'
-import { seedRunIn, prevSundaySeed, nextMondaySeed, nextMondayWorked, windowDiverges, windowFiling, filingDivergesAt } from './weekctx'
+import { seedRunIn, prevSundaySeed, nextMondaySeed, nextMondayWorked, windowDiverges, windowFiling, windowInputs, filingDivergesAt } from './weekctx'
 import { setWorld, setFiling, clearFiling } from './world'
 import { CURWEEK, isStandalone } from './waves'
 import { DAYS } from './data'
 import { dayOilBlind, blindDesks } from './oil'
 import { oilWouldEarn, oilOldBlockCrowd, oilEvidenceOf } from './oilev'
 import { keyDay } from './keys'
-import { SCHED, approvedDays, dayApproved, dayDelta, dayCurVer, daySnapOf } from './publish'
+import { SCHED, approvedDays, dayApproved, dayDelta, dayDeltaCore, dayCurVer, daySnapOf } from './publish'
 
 /* the reference guards its header counters with $() lookups; the engine takes
    $ from the hooks (null outside a browser) so the guarded lines stay verbatim */
@@ -1346,7 +1346,35 @@ function validateCore(){
    as WORKING (the alias — drift-proof by construction, zero cost). The DOM counters
    are emitted from WORKING only. [F-1/CRP-002, CRP-004] */
 export let OFFICIAL:any = WARN;
-export function officialWarn(){ return OFFICIAL; }
+/* WHAT THE ISSUED FACES SHOW ([LEAVE-LATE-PUBLISHED], owner D179 — publish.ts, "THE DAY'S WARNINGS AS ISSUED"): the
+   official bundle with every published day's slice replaced by the one its current issued version stored when it went
+   out. A draft day keeps the official pass's own slice (viewDayHTML: a draft judged against its published neighbours).
+   Built once per official bundle and set of current versions; a version issued before the freeze (no `w`) keeps the
+   official slice, as before. */
+let FACE:any=null, FACE_OF:any=null, FACE_K='';
+function faceWarn(){
+  const off=OFFICIAL, fz:any[]=[];
+  approvedDays().forEach((di:any)=>{ const v=dayCurVer(di), s=v!=null?daySnapOf(di,v):null; if(s&&s.w)fz.push({di,v,w:s.w}); });
+  if(!fz.length)return off;
+  const k=fz.map((x:any)=>`${x.di}=${x.v}`).join(',');
+  if(FACE&&FACE_OF===off&&FACE_K===k)return FACE;
+  const byDay=(off.byDay||[]).slice(), sev={...off.sev}, chip={...off.chip}, dash={...off.dash}, trace={...off.trace};
+  const put=(m:any,di:any,v:any)=>{ if(v)m[di]=v; else delete m[di]; };
+  fz.forEach(({di,w}:any)=>{ byDay[di]=w.byDay||undefined; put(sev,di,w.sev); put(chip,di,w.chip); put(dash,di,w.dash); put(trace,di,w.trace); });
+  const all:any[]=[]; byDay.forEach((g:any)=>{ if(g&&g.warns)all.push(...g.warns); });
+  FACE={all,byDay,sev,chip,dash,trace}; FACE_OF=off; FACE_K=k;
+  return FACE;
+}
+export function officialWarn(){ return faceWarn(); }
+/* the official pass's own bundle — today's judgement of every published day (the detector), not what their faces show */
+export function officialRaw(){ return OFFICIAL; }
+/* the day's slice of a warning bundle — what an issued version stores, and what the detector compares */
+export function warnSliceOf(b:any,di:any){di=+di;
+  return {byDay:((b&&b.byDay)||[])[di]||null,sev:((b&&b.sev)||{})[di]||null,chip:((b&&b.chip)||{})[di]||null,
+    dash:((b&&b.dash)||{})[di]||null,trace:((b&&b.trace)||{})[di]||null};}
+/* the official pass's own slice for a day (the detector — today's judgement of the issued day), for the pending list's
+   words */
+export function officialSliceNow(di:any){ return warnSliceOf(OFFICIAL,di); }
 /* THE ONE SURFACE-RESOLVED ACCESSOR (spec §5.4, F-3/CRP-007). Every warning
    reader — sevOf/chipOf/dashOf/traceOf/traceLeads/traceIx/tracesOn, dayWarnHTML,
    personWarns — reads the module WARN by name. Rendering a published day's frozen
@@ -1355,7 +1383,11 @@ export function officialWarn(){ return OFFICIAL; }
    whole surface resolves to the displayed day's version with no per-reader change.
    Synchronous, restored in finally — never left swapped. REST/EVD are NOT swapped:
    they feed the edit-page crew picker / drop probes only, never the issued face. */
-export function withOfficialWarn(fn:any){ const w=WARN; WARN=OFFICIAL; try{ return fn(); } finally{ WARN=w; } }
+export function withOfficialWarn(fn:any){ const w=WARN; WARN=faceWarn(); try{ return fn(); } finally{ WARN=w; } }
+/* registered with publish.ts at load: at issue, judge the week once as it now stands and keep the day's slice (a deep
+   copy — the bundle is rebuilt on the next validate); on every read, today's judgement of the day for the comparison */
+HOOKS.issuedWarn=(di:number)=>{ validate(); return JSON.parse(JSON.stringify(warnSliceOf(OFFICIAL,di))); };
+HOOKS.warnNow=(di:number)=>warnSliceOf(OFFICIAL,di);
 export function validate(){
   const w = validateCore();          // WORKING — writes the module globals
   OFFICIAL = officialFor(w);         // aliased, or a snapshot/restore OFFICIAL run
@@ -1384,7 +1416,7 @@ function officialDiverges(){
   if(approvedDays().some((di:any)=>{
     const ver=dayCurVer(di), snap=ver!=null?daySnapOf(di,ver):null;
     if(!snap||!snap.d)return true;
-    if(dayDelta(di).length>0)return true;
+    if(dayDeltaCore(di).length>0)return true;
     return filingDivergesAt(snap.fil,(DAYS[di]||{}).dt);
   }))return true;
   return windowDiverges(CURWEEK,VCONF.maxRun);
@@ -1416,6 +1448,12 @@ function withIssuedWeek(fn:any){
      first (windowFiling), then the loaded week's own approved days override — a date
      belongs to exactly one week, so there is no real collision, loaded simply wins. */
   const filing:any=windowFiling(CURWEEK,VCONF.maxRun);
+  /* …and the INPUTS each signed date was issued with ([LEAVE-LATE-PUBLISHED], owner D177–D179): the official pass
+     judges a published day with the leave, the medical, the SANS offer and the request it went out with, so an input
+     changed since moves only the working copy (the pending comparison says so), never the issued face's warnings.
+     Neighbour weeks first, the loaded week's own days over them, as the filing is. A protected date (no readable
+     snapshot) holds none. */
+  const frozenInp:any=windowInputs(CURWEEK,VCONF.maxRun);
   /* capture every approved day's ORIGINAL entry (pure reads) BEFORE the try, so the
      finally can always restore what it needs to. The install itself (below) runs
      INSIDE the try (Fable FR-003): if any step there ever threw — today only
@@ -1427,7 +1465,7 @@ function withIssuedWeek(fn:any){
   try{
     if(days.length){
       days.forEach(({di,snap}:any)=>{
-        if(snap){ DAYS[di]=snap.d; Object.assign(changes,snap.c||{}); if(snap.d.dt!=null)filing[snap.d.dt]=snap.fil||{}; }
+        if(snap){ DAYS[di]=snap.d; Object.assign(changes,snap.c||{}); if(snap.d.dt!=null){filing[snap.d.dt]=snap.fil||{}; if(snap.inp)frozenInp[snap.d.dt]=snap.inp;} }
         /* PROTECT: content stripped AND an EMPTY filing map installed for the date
            (Codex R2-002) — stripping the programme alone left global INPUTS still
            contributing via buildDay's day.input (fileAcc fell back to live acc). An
@@ -1435,12 +1473,12 @@ function withIssuedWeek(fn:any){
            no schedule OR commitment-input flag is derived from unavailable evidence.
            (A current medical fact still reads live, but with the seats stripped there is
            nothing for it to clash with.) */
-        else { const sdt=(DAYS[di]||{}).dt; DAYS[di]={...DAYS[di],waves:[],dutywaves:[],sims:{amt:[],oft:[]},ground:[],allhands:[]}; if(sdt!=null)filing[sdt]={}; }
+        else { const sdt=(DAYS[di]||{}).dt; DAYS[di]={...DAYS[di],waves:[],dutywaves:[],sims:{amt:[],oft:[]},ground:[],allhands:[]}; if(sdt!=null){filing[sdt]={}; frozenInp[sdt]={};} }
       });
       SCHED.changes=changes; SCHED.pending={};
     }
     setWorld('official'); setFiling(filing);
-    return fn();
+    return withFrozenInputs(frozenInp,fn);
   }
   finally{
     setWorld('working'); clearFiling();
