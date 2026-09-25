@@ -1,0 +1,236 @@
+[
+ {
+  "where": "+ Add (the squadron roster listed)",
+  "run": "fill",
+  "pass": true,
+  "extra": "fill's first step 7.6ms after the press, the letters after the gap: the text box holds \"SMOKE FILL\", the search \"\""
+ },
+ {
+  "where": "+ Add (the squadron roster listed)",
+  "run": "fill → OK",
+  "pass": true,
+  "extra": "\"SMOKE FILL\" was added"
+ },
+ {
+  "where": "+ Add (the squadron roster listed)",
+  "run": "left",
+  "pass": true,
+  "extra": "cursor in dlgFilter (the search is where it lands when nobody is typing)"
+ },
+ {
+  "where": "+ Add (the squadron roster listed)",
+  "run": "quick",
+  "pass": true,
+  "extra": "typed \"Smoke add\" (first 3 letters 3.9ms after the press): the text box holds \"Smoke add\", the search \"\", cursor in dlgInput"
+ },
+ {
+  "where": "+ Add (the squadron roster listed)",
+  "run": "quick → OK",
+  "pass": true,
+  "extra": "\"SMOKE ADD\" is there"
+ },
+ {
+  "where": "Rename a student (✎ on a chip)",
+  "run": "left",
+  "pass": true,
+  "extra": "cursor in dlgInput, text \"SMOKE FILL\" selected [0,10] (the default is selected, so typing replaces it)"
+ },
+ {
+  "where": "Rename a student (✎ on a chip)",
+  "run": "quick",
+  "pass": true,
+  "extra": "typed \"Smoke renstu\" (first 3 letters 2.2ms after the press): the text box holds \"Smoke renstu\", cursor in dlgInput"
+ },
+ {
+  "where": "Rename a student (✎ on a chip)",
+  "run": "quick → OK",
+  "pass": true,
+  "extra": "\"SMOKE RENSTU\" is there"
+ },
+ {
+  "where": "+ Add course",
+  "run": "left",
+  "pass": true,
+  "extra": "cursor in dlgInput, text \"\" selected [0,0]"
+ },
+ {
+  "where": "+ Add course",
+  "run": "quick",
+  "pass": true,
+  "extra": "typed \"Smoke addcourse\" (first 3 letters 2.9ms after the press): the text box holds \"Smoke addcourse\", cursor in dlgInput"
+ },
+ {
+  "where": "+ Add course",
+  "run": "quick → OK",
+  "pass": true,
+  "extra": "\"SMOKE ADDCOURSE\" is there"
+ },
+ {
+  "where": "Rename course",
+  "run": "left",
+  "pass": true,
+  "extra": "cursor in dlgInput, text \"SMOKE ADDCOURSE\" selected [0,15] (the default is selected, so typing replaces it)"
+ },
+ {
+  "where": "Rename course",
+  "run": "quick",
+  "pass": true,
+  "extra": "typed \"Smoke rencourse\" (first 3 letters 1.4ms after the press): the text box holds \"Smoke rencourse\", cursor in dlgInput"
+ },
+ {
+  "where": "Rename course",
+  "run": "quick → OK",
+  "pass": true,
+  "extra": "\"SMOKE RENCOURSE\" is there"
+ },
+ {
+  "where": "Duplicate syllabus",
+  "run": "left",
+  "pass": true,
+  "extra": "cursor in dlgInput, text \"Tx 2026 copy\" selected [0,12] (the default is selected, so typing replaces it)"
+ },
+ {
+  "where": "Duplicate syllabus",
+  "run": "quick",
+  "pass": true,
+  "extra": "typed \"Smoke dupsyl\" (first 3 letters 1.5ms after the press): the text box holds \"Smoke dupsyl\", cursor in dlgInput"
+ },
+ {
+  "where": "Duplicate syllabus",
+  "run": "quick → OK",
+  "pass": true,
+  "extra": "\"Smoke dupsyl\" is there"
+ },
+ {
+  "where": "Add syllabus (empty)",
+  "run": "left",
+  "pass": true,
+  "extra": "cursor in dlgInput, text \"New syllabus\" selected [0,12] (the default is selected, so typing replaces it)"
+ },
+ {
+  "where": "Add syllabus (empty)",
+  "run": "quick",
+  "pass": true,
+  "extra": "typed \"Smoke addsyl\" (first 3 letters 1.4ms after the press): the text box holds \"Smoke addsyl\", cursor in dlgInput"
+ },
+ {
+  "where": "Add syllabus (empty)",
+  "run": "quick → OK",
+  "pass": true,
+  "extra": "\"Smoke addsyl\" is there"
+ },
+ {
+  "where": "Rename syllabus",
+  "run": "left",
+  "pass": true,
+  "extra": "cursor in dlgInput, text \"Smoke addsyl\" selected [0,12] (the default is selected, so typing replaces it)"
+ },
+ {
+  "where": "Rename syllabus",
+  "run": "quick",
+  "pass": true,
+  "extra": "typed \"Smoke rensyl\" (first 3 letters 1.1ms after the press): the text box holds \"Smoke rensyl\", cursor in dlgInput"
+ },
+ {
+  "where": "Rename syllabus",
+  "run": "quick → OK",
+  "pass": true,
+  "extra": "\"Smoke rensyl\" is there"
+ },
+ {
+  "where": "New event name (+ Acad, Edit chart layout)",
+  "run": "left",
+  "pass": true,
+  "extra": "cursor in dlgInput, text \"\" selected [0,0]"
+ },
+ {
+  "where": "New event name (+ Acad, Edit chart layout)",
+  "run": "quick",
+  "pass": true,
+  "extra": "typed \"Smoke event\" (first 3 letters 1.2ms after the press): the text box holds \"Smoke event\", cursor in dlgInput"
+ },
+ {
+  "where": "New event name (+ Acad, Edit chart layout)",
+  "run": "quick → OK",
+  "pass": true,
+  "extra": "\"Smoke event\" is there"
+ },
+ {
+  "where": "desktop",
+  "run": "page errors",
+  "pass": true,
+  "extra": "none"
+ },
+ {
+  "where": "Import → Add as new → name",
+  "run": "left",
+  "pass": true,
+  "extra": "cursor in dlgInput, text \"Tx 2026 (new)\" selected [0,13] (the default is selected, so typing replaces it)"
+ },
+ {
+  "where": "Import → Add as new → name",
+  "run": "quick",
+  "pass": true,
+  "extra": "typed \"Smoke import\" (first 3 letters 2.7ms after the press): the text box holds \"Smoke import\", cursor in dlgInput"
+ },
+ {
+  "where": "Import → Add as new → name",
+  "run": "quick → OK",
+  "pass": true,
+  "extra": "\"Smoke import\" is there · the app said: Brought in Smoke import. Everyone’s marks are untouched. It is saved."
+ },
+ {
+  "where": "Import → Add as new → name",
+  "run": "chained (a real click)",
+  "pass": true,
+  "extra": "cursor in dlgInput, \"Tx 2026 (new)\" selected [0,13]"
+ },
+ {
+  "where": "+ Add (the squadron roster listed) phone",
+  "run": "fill",
+  "pass": true,
+  "extra": "fill's first step 8.4ms after the press, the letters after the gap: the text box holds \"SMOKE FILLPHONE\", the search \"\""
+ },
+ {
+  "where": "+ Add (the squadron roster listed) phone",
+  "run": "fill → OK",
+  "pass": true,
+  "extra": "\"SMOKE FILLPHONE\" was added"
+ },
+ {
+  "where": "+ Add (the squadron roster listed) phone",
+  "run": "left",
+  "pass": true,
+  "extra": "cursor in dlgFilter (the search is where it lands when nobody is typing)"
+ },
+ {
+  "where": "+ Add (the squadron roster listed) phone",
+  "run": "quick",
+  "pass": true,
+  "extra": "typed \"Smoke addphone\" (first 3 letters 4.5ms after the press): the text box holds \"Smoke addphone\", the search \"\", cursor in dlgInput"
+ },
+ {
+  "where": "+ Add (the squadron roster listed) phone",
+  "run": "quick → OK",
+  "pass": true,
+  "extra": "\"SMOKE ADDPHONE\" is there"
+ },
+ {
+  "where": "Rename a student (✎ on a chip) phone",
+  "run": "left",
+  "pass": true,
+  "extra": "cursor in dlgInput, text \"SMOKE FILLPHONE\" selected [0,15] (the default is selected, so typing replaces it)"
+ },
+ {
+  "where": "Rename a student (✎ on a chip) phone",
+  "run": "quick",
+  "pass": true,
+  "extra": "typed \"Smoke renstuphone\" (first 3 letters 2.2ms after the press): the text box holds \"Smoke renstuphone\", cursor in dlgInput"
+ },
+ {
+  "where": "Rename a student (✎ on a chip) phone",
+  "run": "quick → OK",
+  "pass": true,
+  "extra": "\"SMOKE RENSTUPHONE\" is there"
+ }
+]

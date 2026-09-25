@@ -1453,3 +1453,44 @@ ground row add / delete whose `src` is X into one item, and word it in `raptor-p
 morning look at the batch (the look card asks it).
 
 
+
+*Moved here 2026-09-25 by backlog-archive.mjs ([TRK-SMOKE-ADD-RACE]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-09-25-trk-add-race.md`.*
+
+### [TRK-SMOKE-ADD-RACE] The smoke suite's "+ Add" step can still lose a typed name (24 Sep 26)
+**DONE 25 Sep 26 (D190), on `claude/trk-smoke-add-race-bug-007eed` — waiting for his look and "merge live".** A REAL
+bug in the app: the question box's 30ms cursor move landed after typing had begun (the name went into the roster
+search, or the typed letters were selected and wiped). Fixed in `raptor-port/src/tracker/components/Modals.jsx`;
+contract `raptor-port/docs/ui-contracts.md` §The Tracker tab ("The question box never takes a cursor it already
+has"); evidence `raptor-port/docs/handpass/2026-09-25-trk-add-race.md`. Three older findings from Fable's read are
+filed as `[TRK-ADD-SEARCH-OK]` and `[TRK-DLG-LEFTOVERS]`. The history below is kept as it was.
+**Place:** NOW, on its own branch `claude/trk-smoke-add-race-bug-007eed`, in parallel with the D175 chat (HIS GO, D190,
+25 Sep 26 -- it stopped GitHub's checks three times that day at the same step, after "+ Add" on the Tx 2026 syllabus,
+each passing on a re-run; the job is whether the APP loses the typed name, and its cause). *(Was: after
+`[TRK-PINCH-ASK]`, before the next Tracker change that touches the smoke suite.)* Seen twice on
+24 Sep 26: a local smoke run (check 261, an add straight after syllabus switches) and PR #431's first run on his PC
+(check 231, an add straight after a roster pick) — both at the step's own `waitForFunction` on `#dlgInput`, whose
+comment calls it "the residual behind the intermittent TRK-SMOKE timeout after the reset-on-render fix" (the 17 Sep
+fix, `[TRK-SMOKE]`). Not caused by PR #431 — its changes do not run on that desktop mouse path; the whole suite passed
+442/442 on the same code, and an isolated probe (a syllabus switch or a roster pick, then at once an add, 24 times)
+lost nothing on either PR #431's build or `main`'s. Both stops came while the PC was busy, and both straight after a
+save or a load had started — a background notify re-rendering the controlled input. **Do:** instrument the running app
+at the failing add under load (as the 17 Sep fix did) and fix the re-render, not the wait; until then, a stop there
+is re-run once WITH this item cited, never silently.
+
+
+*Moved here 2026-09-25 by backlog-archive.mjs ([TRK-ADD-SEARCH-OK]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-09-25-trk-add-race.md`.*
+
+### [TRK-ADD-SEARCH-OK] A new callsign typed into "+ Add"'s roster SEARCH adds nobody — his call (25 Sep 26)
+**DONE 25 Sep 26 — HIS ANSWER A (D191), built on `claude/trk-smoke-add-race-bug-007eed`, waiting for his look and "merge live".**
+The line under the search says OK adds the name, and OK (or Enter in the search) does; the box below still wins. Contract
+`raptor-port/docs/ui-contracts.md` §The Tracker tab (the + Add entry); evidence `raptor-port/docs/handpass/2026-09-25-trk-add-race.md`
+§11. The item as it was filed:
+**Place:** his answer first (a product choice), then a small build — WALK tier (the shared question box). Found by
+Fable's read of `[TRK-SMOKE-ADD-RACE]` (F1), older than it (since the roster list, 9 Sep 26), reproduced in the real
+app: the cursor starts in the search, a callsign NOT on the roster typed there shows "Nobody on the roster matches
+“NEWGUY”", and OK closes the box having added nobody, with no message (picture
+`raptor-port/docs/img/handpass/2026-09-25-trk-add-race/fable-f1-search-typed.png`). **The question for him:** (A,
+recommended) OK adds that name as a new crew member, and the line under the search says so before OK is pressed;
+(B) OK refuses and points to "Or type a callsign"; (C) leave it. Build: `Modals.jsx` `ok`, with a test beside the
+TRK-SMOKE-ADD-RACE ones in `tracker.test.tsx`. Detail: `raptor-port/docs/handpass/2026-09-25-trk-add-race.md` §8.
+
