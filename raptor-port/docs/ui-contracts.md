@@ -7140,6 +7140,20 @@ screen:
   dialog render, order, narrowing, the linked chip, the refusal), the smoke
   suite (12 checks after the `addStudent` helper, incl. a real Export
   carrying `links`). Wiring: `docs/data-schema.md` §The person link.
+- **The question box never takes a cursor it already has (25 Sep 26 —
+  [TRK-SMOKE-ADD-RACE], D190).** `DlgModal` — every question the Tracker asks —
+  moves the cursor a beat after it opens (30ms): into the roster search when
+  "+ Add" lists the roster, otherwise into the text box with its default
+  selected. It stands down when the cursor is ALREADY in one of the box's
+  typing fields (an input or a textarea inside `#dlgModal`), because on a busy
+  machine the beat lands late — after someone has clicked into "Or type a
+  callsign" and started typing — and moving it then sent the rest of the name
+  into the search (OK added nobody, or a cut-off name) or selected what was
+  typed (the next key wiped it). From anywhere else — the button that opened
+  it, a button inside the box, nowhere — it moves the cursor as before. Holds
+  for all ten places the box opens with a text field (the roll-call is in
+  `docs/handpass/2026-09-25-trk-add-race.md`). Pins: `tracker.test.tsx` (the two
+  TRK-SMOKE-ADD-RACE tests); the walk `scripts/handpass/trk-add-race-walk.mjs`.
 - **What the [HUMAN-RETEST] walk settled (23 Sep 26 — rulings D122–D129;
   evidence `docs/handpass/2026-09-23-tracker.md`; pins `src/tracker/retest.test.tsx`).**
   - **Event details belong to their chart (D126).** A detail typed on Tx stays on

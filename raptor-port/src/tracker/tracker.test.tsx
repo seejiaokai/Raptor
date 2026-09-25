@@ -850,6 +850,71 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     await act(async () => { root.unmount() }); host.remove()
   })
 
+  it('a name typed into "Or type a callsign" before the box has settled stays there — the late cursor move never steals it (TRK-SMOKE-ADD-RACE)', async () => {
+    /* The + Add box with the roster moves the cursor into the search box a
+       beat after it opens (a timer). On a busy machine that beat lands late —
+       after the user (or the smoke suite, typing at machine speed) has already
+       clicked into "Or type a callsign" and started typing. The late move then
+       yanked the cursor to the search box: the rest of the name went into the
+       SEARCH, the callsign box stayed blank, and OK added nobody — silently.
+       That is the "+ Add" stop on GitHub's checks (three times on 25 Sep 26,
+       after "+ Add" on Tx 2026) and the helper's "value never landed" stops of
+       24 Sep. The late move must leave a cursor the dialog already has alone —
+       and must not select what is typed there either, or the next key would
+       overwrite it. */
+    const { fireEvent } = await import('@testing-library/react')
+    const Live = () => { useSyncExternalStore(C.subscribe, C.getVersion); return <DlgModal /> }
+    const host = document.createElement('div'); host.className = 'host'; document.body.appendChild(host)
+    const root = createRoot(host)
+    await act(async () => { root.render(<Live />) })
+    let p: Promise<any>
+    await act(async () => { p = C.addStudent(); await Promise.resolve() })   // open — the cursor timer is armed, not yet fired
+    expect($('#dlgFilter'), 'the roster version of the box, with its search').toBeTruthy()
+    const box = $('#dlgInput') as HTMLInputElement
+    /* the user is quicker than the timer: into the callsign box, and typing */
+    box.focus()
+    await act(async () => { fireEvent.change(box, { target: { value: 'SMO' } }) })
+    box.setSelectionRange(3, 3)
+    await act(async () => { await new Promise(r => setTimeout(r, 80)) })   // now the late timer fires
+    expect(document.activeElement && (document.activeElement as HTMLElement).id,
+      'the cursor stays in the box the user is typing in').toBe('dlgInput')
+    expect([box.selectionStart, box.selectionEnd], 'and what is typed there is not selected (the next key would overwrite it)').toEqual([3, 3])
+    expect(($('#dlgFilter') as HTMLInputElement).value, 'nothing went into the search').toBe('')
+    await act(async () => { fireEvent.change(box, { target: { value: 'SMOKE TX' } }) })
+    await act(async () => { ($('#dlgOk') as HTMLElement).click() }); await p!; await C.whenLoaded()
+    expect(C.roster.map((r: any) => r.name), 'OK adds the name that was typed').toContain('SMOKE TX')
+    /* and with nobody quicker than the timer it still does its job: the search box takes the cursor */
+    await act(async () => { p = C.addStudent(); await Promise.resolve() })
+    ;(document.activeElement as HTMLElement | null)?.blur?.()
+    await act(async () => { await new Promise(r => setTimeout(r, 80)) })
+    expect(document.activeElement && (document.activeElement as HTMLElement).id,
+      'left to itself, the box still puts the cursor in the search').toBe('dlgFilter')
+    await act(async () => { C.dlgClose(null) }); await p!
+    /* leave the roster as the tests around this one expect it */
+    const q = C.removeStudent(C.byName('SMOKE TX')!.id); await act(async () => { C.dlgClose(true) }); await q; await C.whenLoaded()
+    await act(async () => { root.unmount() }); host.remove()
+  })
+
+  it('only a cursor in one of the box\'s TYPING fields holds the late move off — on one of its buttons, the move still happens (TRK-SMOKE-ADD-RACE)', async () => {
+    /* The stand-down is for someone typing. A cursor resting on a button inside
+       the box (OK, Cancel, a roster entry) is nobody typing, so the box still
+       puts the cursor where typing starts. */
+    const Live = () => { useSyncExternalStore(C.subscribe, C.getVersion); return <DlgModal /> }
+    const host = document.createElement('div'); host.className = 'host'; document.body.appendChild(host)
+    const root = createRoot(host)
+    await act(async () => { root.render(<Live />) })
+    let p: Promise<any>
+    await act(async () => { p = C.uiPrompt('Name:', 'DEFAULT'); await Promise.resolve() })
+    ;($('#dlgOk') as HTMLButtonElement).focus()
+    expect(document.activeElement && (document.activeElement as HTMLElement).id).toBe('dlgOk')
+    await act(async () => { await new Promise(r => setTimeout(r, 80)) })
+    const box = $('#dlgInput') as HTMLInputElement
+    expect(document.activeElement, 'the cursor moved from the button to the text box').toBe(box)
+    expect([box.selectionStart, box.selectionEnd], 'with its default selected, so typing replaces it').toEqual([0, 7])
+    await act(async () => { C.dlgClose(null) }); await p!
+    await act(async () => { root.unmount() }); host.remove()
+  })
+
   it('colon relaxation (§8): course names still refuse; syllabus + student names accept a colon', async () => {
     /* [TRK-CSID] 1B-ii: a syllabus is an id now and its name is a LABEL, so a
        colon is allowed (as a student name already is). Course names keep the
