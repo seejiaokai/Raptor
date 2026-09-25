@@ -21,7 +21,19 @@ the later merge keeps both (D78).
   wait. It stopped GitHub's checks three times on 25 Sep 26 at the same smoke step. In PARALLEL with the D175 chat:
   port 4180, rulings D190–D199, never the full checks while that chat runs its own; the second to merge takes `main`
   in first (D78).
-- **State:** started — the ruling recorded; the investigation under way.
+- **The answer: a REAL bug in the app.** The Tracker's question box moved the cursor 30ms after opening (to the
+  roster search on "+ Add", else selecting the text box); on a busy machine that landed AFTER typing had begun, so
+  the name went into the search (OK added nobody — GitHub's stop) or the first letters were selected and wiped.
+  Fixed in `raptor-port/src/tracker/components/Modals.jsx` (the move stands down when the cursor is already in one
+  of the box's typing fields); two red-first tests in `tracker.test.tsx`; the smoke's Tx step now uses its
+  `addStudent` helper (D87). Evidence, tier WALK: `raptor-port/docs/handpass/2026-09-25-trk-add-race.md` — old build
+  26 failures on all ten places, fixed build 39/39, desktop and phone.
+- **State:** DONE and checked (WALK tier) — the full set green on 4180 (`## Gate baseline`); Fable 5.1's read found
+  nothing against the fix and three OLDER gaps, filed: `[TRK-ADD-SEARCH-OK]` (a new callsign typed into the roster
+  SEARCH adds nobody — his A/B/C question) and `[TRK-DLG-LEFTOVERS]` (low). `[TRK-SMOKE-ADD-RACE]` archived.
+- **Open question for him:** `[TRK-ADD-SEARCH-OK]` A/B/C (recommended A).
+- **Pick up here:** his look (the sheet §11) and "merge live". If the D175 chat merged first, take `main` in first
+  (D78) and re-run the Tracker smoke before merging.
 <!-- /now -->
 
 <!-- now:claude/amendment-batch -->
@@ -71,16 +83,16 @@ the later merge keeps both (D78).
    links last. The two evidence sheets (Tracker 23 Sep, amendment 24 Sep) are the worked examples.
 2. Then his after-the-hunt order: `[PUB-UNAVAIL]` → `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]` → the OIL award fix and the
    small OIL follow-ups as one batch (D147) → `[DB-STEP]`. The whole list: `OUTSTANDING.md`'s priority list.
-3. Filed, none blocking: `[TRK-PINCH-ASK]` (his iPhone look), `[TRK-SMOKE-ADD-RACE]`, `[TRK-RETEST-NOTES]`,
+3. Filed, none blocking: `[TRK-PINCH-ASK]` (his iPhone look), `[TRK-ADD-SEARCH-OK]` (his A/B/C first), `[TRK-DLG-LEFTOVERS]`, `[TRK-RETEST-NOTES]`,
    `[LW-FROZEN-BAR-GAP]`, `[LW-FIGSEL-SLOW]`. Everything else: `OUTSTANDING.md`'s priority list.
 4. **Before ANY collaborator:** take the checks runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).
 
 ## Gate baseline
 
-The latest counts watched — 25 Sep 26 18:20, `claude/amendment-batch` after D114's check (not yet merged), one run on a
-quiet PC (`raptor-port/docs/handpass/2026-09-25-amendment-batch.md` §9.10): unit **5910 / 5910** (363 files) · build clean ·
-tfin **728 / 0** · e2e **471 passed**, 48 skipped · smoke **442 / 0** · rulecheck OK · docsize OK. `main` (PR #434) stands at
-5855 unit and 469 e2e until the batch merges. Restate a count only from a
+The latest counts watched — 25 Sep 26 20:18, `claude/trk-smoke-add-race-bug-007eed` (on `main` after PR #435, plus the
+question-box fix; not yet merged), one run on a quiet PC on port 4180 (`raptor-port/docs/handpass/2026-09-25-trk-add-race.md`
+§10): unit **5912 / 5912** (363 files) · build clean · tfin **728 / 0** · e2e **471 passed**, 48 skipped · smoke **442 / 0** ·
+rulecheck OK. `main` stands at 5910 unit until this merges. Restate a count only from a
 run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his
 PC: `raptor-port/docs/gates-and-deploy.md`.
 
