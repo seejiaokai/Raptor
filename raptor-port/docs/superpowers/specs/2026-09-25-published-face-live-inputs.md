@@ -32,7 +32,7 @@ D174's absent↔'r' or D176's 'r'↔absent, so such a day forces the second vali
 (the pass reads the frozen 'r'), a cost the same day already paid on `main`. When this branch makes filing equality
 membership-aware, ONE pure helper should serve `publish.ts` and `weekctx.ts` both, with pins on `filingDivergesAt`.
 
-## (B) Live on purpose — keep, unless he says otherwise
+## (B) Live on purpose TODAY — **ALL FREEZE, D179 ("freeze everything for now", 25 Sep 26)**, B1 medical and B2 qualifications included; only B3 and B4 (a reader's own view choices) and B6 (the Leave War's reminders) stay. Provisional: show him on the build
 | # | what stays live | why |
 |---|---|---|
 | B1 | medical downchits (HL, OML, ATT B, ATT C) and upchit trims — warnings, Unavailable rows, the ⓘ count | a safety fact, never versioned (`events.ts inpShow`, `validate.ts`); D177's stated reading |

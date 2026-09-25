@@ -1169,7 +1169,9 @@ leaves 'r' alone), its Accept does nothing, and deleting the request leaves the 
 ### [LEAVE-LATE-PUBLISHED] A leave filed after a day is published shows on its published face at once, with nothing pending — a question for him (25 Sep 26)
 **WIDENED 25 Sep 26 — D178:** EVERY member input change after publishing (filed, edited, deleted, moved) reads pending for the
 admin, and the published face keeps what it was issued with; the admin publishes an AL, or Unpublishes and publishes again
-if it affects no one. What stays live on the published schedule: the agent's recommendation put to him (D178), awaiting his word.
+if it affects no one. **What stays live — D179 ("freeze everything for now"): nothing.** Medical downchits and a lapsed
+qualification freeze too (the 15 Sep 26 crew-rest plan's §4 "safety facts are never versioned" set aside); only a reader's own
+view choices stay. Provisional — show him on the build and ask again.
 **ANSWERED 25 Sep 26 — D177 ("Question 2 yes"): it reads "1 pending", the four fall, and the published face keeps what it
 was issued with until the next AL — ITS OWN BRANCH.** His follow-up ("is there anything else that does this too?") is
 answered by a sweep of the published face's readers of live inputs — **its list is this item's scope: Context

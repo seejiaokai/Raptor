@@ -25,13 +25,13 @@ the later merge keeps both (D78).
   **D176** (his answer on the look card, "make it 0") — a request taken off before publishing, then deleted or re-dated off
   the day, reads 0 too (`filingSame`'s `present`). `main` (PR #436, the Tracker chat) merged in first (D78). Evidence
   `raptor-port/docs/handpass/2026-09-25-req-one-row.md` (§1–§12: the reads, the walks 49/49 desktop + phone, break tests,
-  gates, his look card §10). All three items archived. Rulings this chat: **D176, D177, D178** (`scheduler.md`).
+  gates, his look card §10). All three items archived. Rulings this chat: **D176–D179** (`scheduler.md`).
 - **Unfinished — in order:**
   1. **His "merge live" of PR #437** — every check is done and the gates are green on the merged code.
   2. **`[LEAVE-LATE-PUBLISHED]` (D177, WIDENED by D178) on its OWN branch** — EVERY member input change after
      publishing (filed, edited, deleted, moved) reads pending, the four fall, and the published face keeps what it was
-     issued with until the next AL (or an Unpublish and publish again). What stays live: the agent's recommendation in
-     D178, awaiting his word. Scope, from the sweep he asked for:
+     issued with until the next AL (or an Unpublish and publish again). What stays live: NOTHING for now (D179 —
+     medical and qualifications freeze too; provisional, show him on the build). Scope, from the sweep he asked for:
      `raptor-port/docs/superpowers/specs/2026-09-25-published-face-live-inputs.md` (A0–A7 to freeze; B5 to put to him
      under D45; medical stays live). FULL tier. **Its place in his order is still to be asked** — the agent recommends
      right after this merges, BEFORE `[ACCOUNTS]` (it reworks the one pending comparison the changes window reads).
