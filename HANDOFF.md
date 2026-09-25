@@ -44,7 +44,8 @@ the later merge keeps both (D78).
     Each with a pin — his exact steps are in the Fable read.
 - **Then, in order:** unit suite → break tests (one red per wired surface: `withDaySnap` install, `inputAxes`, `faceWarn`,
   `faceattrs`, the medical line in `inpShow`) → rebuild, re-walk (`HP_REWALK=… node scripts/handpass/am/late-pub-walk.mjs
-  desktop|phone`, add a CAT-change and a brief-lead step) → the full gates → fill the evidence sheet §5, §6, §9 and §10 (the
+  desktop|phone`, add a CAT-change, a brief-lead step, and a request edited after its deadline on a published day — no LATE
+  on the published face, LATE on the working copy, LATE on the face after the next AL) → the full gates → fill the evidence sheet §5, §6, §9 and §10 (the
   look card draft is in this block's "Questions") → open the PR (checks run on the PR only; never push while they run,
   D151) → his look and "merge live".
 - **Questions for him (the look card, `OUTSTANDING.md` `[LATE-PUB-FACE-LIVE]` — update it: items 1–2 are now BUILT
