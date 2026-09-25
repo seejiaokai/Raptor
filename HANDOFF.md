@@ -51,7 +51,8 @@ the later merge keeps both (D78).
 - **Questions for him (the look card, `OUTSTANDING.md` `[LATE-PUB-FACE-LIVE]` — update it: items 1–2 are now BUILT
   frozen):** Q1 — a man's CAT on a puck and a blank brief's time now freeze on the published face (D179 read over the 7 Aug
   "no rule versioning"): keep it? Q2 — ANSWERED, D183: the dotted crew-rest mark stays LIVE (built back, 26 Sep 26 — not stored, not compared).
-  Open: which OTHER safety warnings he wants live — put to him in chat 26 Sep 26; record his answer.
+  D184: the 7-day run warning live too (and, by the agent's reading, a crew-rest breach on the day itself) — BUILD IT
+  (`OUTSTANDING.md` `[LATE-PUB-FACE-LIVE]` item 4). Still open: medical and a lapsed qualification (recommended live AND pending).
   Q3 — medical freezes (D179, provisional): is a man going unfit after publishing reading fit on the published schedule
   until the next AL what he wants?
 - **Branch:** `claude/leave-late-published`, pushed (no PR yet). Vercel preview: https://raptor-git-claude-leave-late-published-kai-e2f5.vercel.app
