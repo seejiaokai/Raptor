@@ -1,0 +1,55 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Checkpoint mock-up</title>
+<style>
+:root{--bg:#0B0D10;--ink:#E6EAEE;--ink2:#9AA4AE;--edge:#232A31;--acc:#3BC6E8}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:1180px;margin:0 auto;padding:24px 16px 60px}
+h1{font-size:22px;margin:0 0 6px} h2{font-size:18px;margin:34px 0 6px;color:var(--acc)} h3{font-size:15px;margin:18px 0 8px}
+p,li{color:var(--ink2);max-width:80ch} b{color:var(--ink)}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;align-items:start}
+.col{border:1px solid var(--edge);border-radius:12px;padding:12px;background:#11151A}
+.col h3{margin-top:0}
+figure{margin:0 0 12px} img{width:100%;height:auto;border-radius:8px;border:1px solid var(--edge);display:block}
+figcaption{font-size:12.5px;color:var(--ink2);margin-top:4px}
+.phone img{max-width:330px}
+</style></head><body><main>
+<h1>A checkpoint on a day not yet published — mock-up</h1>
+<p>Drawn on the real app (the demo week). <b>Tuesday</b> has never been published. The proposed parts are drawn in: the
+button beside <b>Publish day</b>, the line under the day heading naming who set the checkpoint and when, the
+<b>"3 since checkpoint ▾"</b> button (it opens the same list as a published day's pending), and an <b>ORIG</b> tag on
+two changed pucks. <b>Monday</b> is published, with a real change waiting: its AL1 tag is what the app draws today.</p>
+<p><b>When the checkpoint is set</b>, the day becomes the new starting point: the count goes back to nothing and the
+ORIG tags disappear, until the next change. "Who" reads the shared account (Admin) until the database brings personal
+logins, then the callsign.</p>
+
+<h2>1 · The button's word</h2>
+<div class="row">
+<div class="col"><h3>Option 1 — "Set checkpoint"</h3>
+<figure><img src="img/checkpoint/desktop-week-head-cp.png" alt="desktop-week-head-cp"><figcaption>Edit Schedule, desktop</figcaption></figure>
+<div class="phone"><figure><img src="img/checkpoint/phone-week-head-cp.png" alt="phone-week-head-cp"><figcaption>Edit Schedule, phone</figcaption></figure></div>
+<figure><img src="img/checkpoint/desktop-board-strip-cp.png" alt="desktop-board-strip-cp"><figcaption>The scheduler board, desktop</figcaption></figure>
+</div>
+<div class="col"><h3>Option 3 — "Hand over"</h3>
+<figure><img src="img/checkpoint/desktop-week-head-ho.png" alt="desktop-week-head-ho"><figcaption>Edit Schedule, desktop</figcaption></figure>
+<div class="phone"><figure><img src="img/checkpoint/phone-week-head-ho.png" alt="phone-week-head-ho"><figcaption>Edit Schedule, phone</figcaption></figure></div>
+<figure><img src="img/checkpoint/desktop-board-strip-ho.png" alt="desktop-board-strip-ho"><figcaption>The scheduler board, desktop</figcaption></figure>
+</div>
+</div>
+
+<h2>2 · The ORIG tag on a changed puck (Tuesday, not yet published)</h2>
+<div class="row">
+<div class="col"><h3>A — hollow, plain edge</h3>
+<figure><img src="img/checkpoint/desktop-week-tags-plain.png" alt="desktop-week-tags-plain"><figcaption>Edit Schedule, desktop — Warden and Outlaw changed</figcaption></figure>
+<div class="phone"><figure><img src="img/checkpoint/phone-board-tags-plain.png" alt="phone-board-tags-plain"><figcaption>The board, phone</figcaption></figure></div>
+</div>
+<div class="col"><h3>B — hollow, dotted edge (like a waiting AL tag)</h3>
+<figure><img src="img/checkpoint/desktop-week-tags-dotted.png" alt="desktop-week-tags-dotted"><figcaption>Edit Schedule, desktop — Warden and Outlaw changed</figcaption></figure>
+<div class="phone"><figure><img src="img/checkpoint/phone-board-tags-dotted.png" alt="phone-board-tags-dotted"><figcaption>The board, phone</figcaption></figure></div>
+</div>
+</div>
+<h3>For comparison — Monday, published, with a change waiting (today's real AL1 tag)</h3>
+<div class="row">
+<div class="col"><figure><img src="img/checkpoint/desktop-week-tags-monday-al1.png" alt="desktop-week-tags-monday-al1"><figcaption>Edit Schedule, desktop — Echo and Saber swapped, waiting to go out as AL1</figcaption></figure></div>
+<div class="col phone"><figure><img src="img/checkpoint/phone-week-tags-monday-al1.png" alt="phone-week-tags-monday-al1"><figcaption>Edit Schedule, phone</figcaption></figure></div>
+</div>
+</main></body></html>

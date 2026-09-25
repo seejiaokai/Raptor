@@ -1058,15 +1058,28 @@ and Astra's reads — the D114 brief is `raptor-port/docs/superpowers/briefs/202
 the rest — the walk on desktop and phone, the full gates, the evidence sheet). Nothing is "ready for merge live" before
 that check. **Place:** now, on this branch.
 
-### [DRAFT-PENDING] "N pending" on a day never published — what should it compare against? A question for him (D118, 25 Sep 26)
-Today a never-published day's "N pending" counts every cell touched (the raw marks): a move reads 2, moving it back
-still 2, a new puck in a crowd 0, and it is not a button. He asked for it to behave like the published day's. **The
-catch:** nothing has gone out, so there is no issued version to compare with. **Option 1 (the agent's recommendation):**
-drop "N pending" from a never-published day — the whole day goes out when it is published, so the head says "Not yet
-published"; what he changed is Edit history's job (a toggle like the board's, D116; newest first). **Option 2:** compare
-against the day as it stood when he opened that week in this sitting — a move 1, put back 0, a new puck 1, the list
-opens like the published one — but the reference resets on a reload or a later visit. **Place:** his answer, then with
-`[LOOK-435]`.
+### [DRAFT-PENDING] "N pending" on a day never published — a handover between schedulers (D118, 25 Sep 26)
+**His intent:** when another scheduler logs in, they see what changed since the last draft. Today a never-published
+day's "N pending" counts every cell touched (a move 2, put back still 2, a new puck in a crowd 0) and is not a button.
+**The agent's proposal, put to him — NOT called "Save draft" (his correction: the app already saves live, so that word
+misleads); a CHECKPOINT that records who set it last and when:** a button on a never-published day's head (beside
+Publish; its word still to be picked — "Set checkpoint" recommended). It stores the day as the checkpoint — not issued: no version, no signatures, no amendment number, nothing for members.
+"N pending" then counts the net difference from that point exactly as after a publish (the one counting body: a move 1,
+put back 0, a new puck 1), and is the same button opening the same list (newest first, D119). The next scheduler reads
+it, then sets a new checkpoint to start from there. A line under the day head names who set the checkpoint and
+when (stored with it, so it survives a reload). Before the first checkpoint the day shows no pending; publishing
+replaces the checkpoint with the Original. **Limits to tell him:** until the shared database, another scheduler sees
+it only on the same device and browser (the app keeps its data per browser); who made each change reads the shared
+account (D104), and after a reload older changes read "earlier" (the edit record lasts only while the page is open).
+With the database it carries across devices with no change, and "since YOU last looked" per person becomes possible.
+**The marks — he asked how they would look now a mark is a corner tag (D92, D93):** on a published day a waiting change
+wears a hollow dotted tag at the puck's top right naming the AL it will go out as ("AL1"). An unpublished day has no
+AL, so the tag needs another label. **The agent's recommendation:** a hollow dotted **ORIG** tag in the seal's plain
+white, with no tick — "this change goes out with the Original" (hollow = not out yet, as for an AL; the ticked seal
+means published). Other options: a hollow dotted tag with no word (a small neutral pill), or no mark at all (the
+25 Aug 26 rule: an unpublished day shows none — the list does the finding). Whatever it is must not take an AL colour
+or a warning colour. **A mock-up first** (the house rule for a visual change): the three side by side on the edit week
+and the board, desktop and phone, beside a published day's AL1 tag. **Place:** his answer, then with `[LOOK-435]`.
 
 ### [CROWD-SWAP-SAYS-BUSY] Swapping two men inside one crowd warns "already on" that row — found 25 Sep 26
 Seen in the amendment batch's re-walk (`raptor-port/scripts/handpass/am/hr-03-batch-reads.mjs`, picture
