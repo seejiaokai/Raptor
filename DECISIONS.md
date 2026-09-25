@@ -45,7 +45,7 @@ ruling, or an explicit no. **Not** ordinary task instructions ("run the tests", 
 
 | Area | File | Loads by itself | Rulings, newest first |
 |---|---|---|---|
-| How we work | `.claude/rules/decisions/how-we-work.md` | in EVERY session | D115, D106, D90, D162, D148, D147, D145, D144, D143, D141, D140, D138, D137, D136, D135, D151, D89, D87, D86, D85, D84, D78, D73, D72, D70, D69, D68, D67, D63, D62, D60, D59, D58, D57, D56, D54, D53, D30, D29, D23, D22, D17, D16, D14, D13, D12, D11, D10, D9, D8, D7, D6, D5, D4 |
+| How we work | `.claude/rules/decisions/how-we-work.md` | in EVERY session | D165, D115, D106, D90, D162, D148, D147, D145, D144, D143, D141, D140, D138, D137, D136, D135, D151, D89, D87, D86, D85, D84, D78, D73, D72, D70, D69, D68, D67, D63, D62, D60, D59, D58, D57, D56, D54, D53, D30, D29, D23, D22, D17, D16, D14, D13, D12, D11, D10, D9, D8, D7, D6, D5, D4 |
 | Tracker | `.claude/rules/decisions/tracker.md` | when a Tracker file is read (its code, docs, scripts, evidence) | D158, D157, D134, D132, D131, D130, D129, D128, D127, D126, D124, D123, D122, D121, D120, D64 |
 | Leave War | `.claude/rules/decisions/leave-war.md` | when a Leave War file is read (its code, docs, e2e, evidence) | D160, D159 |
 | Scheduler & amendments | `.claude/rules/decisions/scheduler.md` | when a scheduler, board, engine, amendment or storage file is read | D119, D118, D117, D116, D114, D113, D111, D110, D109, D108, D107, D105, D104, D103, D102, D101, D100, D99, D98, D97, D96, D95, D94, D93, D92, D91, D164, D161, D149, D77, D66, D65, D51, D50, D47, D45, D44, D41, D40, D39, D38, D37, D36, D33, D27 |

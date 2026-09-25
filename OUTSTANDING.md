@@ -721,6 +721,12 @@ carry-over rules, and which year a leave crossing 31 Dec charges. Context: clash
 
 ### [DB-STEP] The shared-database step (Dataverse) — FUTURE MILESTONE
 
+**ACCOUNTS (owner, D165, 25 Sep 26):** everyone signs in with their own defence mail account; the admin creates each
+person in the app (callsign, name, admin or member) tied to their defence mail address; "View as" goes away. Per-person
+"what changed since YOU last looked" follows (`[DRAFT-PENDING]`). The Microsoft side (access, licences, whether code
+apps are allowed in the environment, the data rules for defence data) is his helper's, briefed by
+`raptor-port/docs/handover-dataverse.md`.
+
 **THE DATA GETS WIPED ON THE WAY IN (owner, D54, 23 Sep 26 — "this app is going to get wiped of
 data before its being brought into a database as these are demo data anyway").** Stated as a PLAN,
 not an option: nothing now in the store has to survive the move. It is the 13 Sep dev-phase rule and

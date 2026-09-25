@@ -47,7 +47,12 @@ For the person designing RAPTOR's Dataverse tables. Written 10 Sep 26.
   each:
   1. the publisher prefix and naming convention;
   2. where files live (SharePoint library, Dataverse file column, or Blob);
-  3. how a signed-in person is matched to a `Person` row the first time;
+  3. how a signed-in person is matched to a `Person` row the first time — **answered by the owner, 25 Sep 26
+     (D165):** by an admin mapping step. Everyone signs in with their own defence mail (Microsoft) account;
+     the app's admin creates each `Person` (callsign, name, admin or member) and records that person's
+     defence mail address on it; the first sign-in with that address becomes that person. The app's
+     "View as" picker then goes away — every account already is a callsign. Who may enter the app at
+     all (the security group / environment roles) is set in your environment, not by the app;
   4. how long the edit log is kept and who may read it;
   5. whether the attempt-by-attempt training history is built from day one
      or after the first migration stage;
