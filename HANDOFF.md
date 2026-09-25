@@ -16,57 +16,39 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/request-one-row -->
-### `claude/request-one-row` — D175's step: a request's row and its filing on a published day (D174 + D175); written 25 Sep 26 — verify before use
-- **Where it started:** PR #435 (the amendment batch, D91–D119, D165–D173) MERGED 25 Sep 26. His order D175 put a step
-  between D173's 1 and 2: `[REQ-TWO-ROWS]` (D175) and `[REQ-DECLINED-PENDING]` (D174) on their own branch, cut from `main`.
-- **Built, FULL check done:** D174 — a request filed since the day was published and then taken off reads 0 and the four
-  sign-offs hold (`publish.ts filingSame`, read by the comparison, the load's put-back and the signature); D175 — a load or
-  a plan switch leaves out a row whose request stands on another day and every door names it (`publish.ts rowsLeftOut`,
-  `drafts.ts rowsLeftSaid`); the pending list names such a row (Fable's F3). Evidence
-  `raptor-port/docs/handpass/2026-09-25-req-one-row.md` (the reads, the walk 43/43 desktop + phone, break tests, gates,
-  his look card §10). Both items archived. Rulings: none new this chat (D176–D189 were reserved and not used).
+### `claude/request-one-row` — D175's step: a request's row and its filing on a published day (D174, D175, D176); written 25 Sep 26 — verify before use
+- **Where it started:** PR #435 (the amendment batch) MERGED 25 Sep 26. His order D175 put a step between D173's 1 and 2:
+  `[REQ-TWO-ROWS]` (D175) and `[REQ-DECLINED-PENDING]` (D174) on their own branch, cut from `main`.
+- **Built, FULL check done (PR #437):** D174 — a request filed since the day was published and then taken off reads 0 and
+  the four hold (`publish.ts filingSame`); D175 — a load or a plan switch leaves out a row whose request stands on another
+  day and every door names it (`publish.ts rowsLeftOut`, `drafts.ts rowsLeftSaid`); the pending list names such a row;
+  **D176** (his answer on the look card, "make it 0") — a request taken off before publishing, then deleted or re-dated off
+  the day, reads 0 too (`filingSame`'s `present`). `main` (PR #436, the Tracker chat) merged in first (D78). Evidence
+  `raptor-port/docs/handpass/2026-09-25-req-one-row.md` (§1–§12: the reads, the walks 49/49 desktop + phone, break tests,
+  gates, his look card §10). All three items archived. Rulings this chat: **D176, D177** (`scheduler.md`).
 - **Unfinished — in order:**
-  1. **His look and "merge live"** of this branch's PR (the look card is the evidence sheet §10). It carries **two
-     questions**: `[REQ-DECLINED-DELETED]` (recommended yes — if yes, build it HERE before merging: `publish.ts filingDelta`
-     + `filingKey`, a record "taken off" matches a request no longer covering the day) and `[LEAVE-LATE-PUBLISHED]`
-     (recommended yes — its own branch, in his order).
-  2. **`[ACCOUNTS]` (D165, D166) on a NEW branch from `main`** once this merges (D173 step 2).
-  3. **`[DRAFT-PENDING]` — the one changes window (D118, D167–D172)** on top of accounts; it absorbs D116's list, D117
+  1. **His "merge live" of PR #437** — every check is done and the gates are green on the merged code.
+  2. **`[LEAVE-LATE-PUBLISHED]` (D177) on its OWN branch** — a late leave reads "1 pending", the four fall, and the
+     published face keeps what it was issued with until the next AL. Scope, from the sweep he asked for:
+     `raptor-port/docs/superpowers/specs/2026-09-25-published-face-live-inputs.md` (A0–A7 to freeze; B5 to put to him
+     under D45; medical stays live). FULL tier. **Its place in his order is still to be asked** — the agent recommends
+     right after this merges, BEFORE `[ACCOUNTS]` (it reworks the one pending comparison the changes window reads).
+  3. **`[ACCOUNTS]` (D165, D166) on a NEW branch from `main`** (D173 step 2).
+  4. **`[DRAFT-PENDING]` — the one changes window (D118, D167–D172)** on top of accounts; it absorbs D116's list, D117
      and D119 — do NOT build those separately (D173 step 3).
-  4. **One FULL check of 2 and 3** (permissions → FULL tier), his look, "merge live" (D173 step 4).
-  - Also: `OUTSTANDING.md` is 50 lines over its size tripwire — a documents-only tidy (D29, D141), its own commit.
-- **Branch:** `claude/request-one-row` (PR: see `gh pr list --head claude/request-one-row`). Vercel preview:
+  5. **One FULL check of 3 and 4** (permissions → FULL tier), his look, "merge live" (D173 step 4).
+  - Also: `OUTSTANDING.md` is ~48 lines over its size tripwire — a documents-only tidy (D29, D141), its own commit.
+- **Branch:** `claude/request-one-row`, PR #437. Vercel preview:
   https://raptor-git-claude-request-one-row-kai-e2f5.vercel.app . GitHub's machines run the checks while the repo is
   public (D106, ~11 min); never push while they run (D151).
-- **Gates:** the full set green on the final code, 25 Sep 26 21:06 (`## Gate baseline`).
-- **Open questions for him:** the two above, on the look card.
-- **Pick up here:** his answers to the two questions and "merge live"; then step 2. Read the rulings D113–D119, D165–D175
-  in `.claude/rules/decisions/scheduler.md` and `how-we-work.md` before building; models per his rule — Opus 5.5 (high)
-  plans and builds, Fable 5.1 and Astra review the plan and the code (permissions → both).
-<!-- /now -->
+- **Gates:** the full set green on the final merged code (`## Gate baseline
 
-## Next, in order
-
-1. **The amendment work — HIS ORDER, D173 amended by D175** (the `## Now` block above): PR #435 MERGED 25 Sep 26 → D175's
-   step, `claude/request-one-row` (built and checked; his look and "merge live") → `[ACCOUNTS]` on a new branch → the one
-   changes window (`[DRAFT-PENDING]`) → one full check → "merge live". **`[HUMAN-RETEST]`** — the amendment system MERGED 25 Sep 26 (PR #434; evidence
-   `raptor-port/docs/handpass/2026-09-24-amendment.md`). Next, in his order (D147): the absence record
-   together with `[S4-HUNT-REST]`, then change-recording (with D148 and `[UNDO-ROSTER-SETTINGS]`), then the Leave War
-   links last. The two evidence sheets (Tracker 23 Sep, amendment 24 Sep) are the worked examples.
-2. Then his after-the-hunt order: `[PUB-UNAVAIL]` → `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]` → the OIL award fix and the
-   small OIL follow-ups as one batch (D147) → `[DB-STEP]`. The whole list: `OUTSTANDING.md`'s priority list.
-3. Filed, none blocking: `[TRK-PINCH-ASK]` (his iPhone look), `[TRK-DLG-LEFTOVERS]`, `[TRK-RETEST-NOTES]`,
-   `[LW-FROZEN-BAR-GAP]`, `[LW-FIGSEL-SLOW]`. Everything else: `OUTSTANDING.md`'s priority list.
-4. **Before ANY collaborator:** take the checks runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).
-
-## Gate baseline
-
-The latest counts watched — 25 Sep 26 20:54–21:06, `claude/request-one-row` (D174 + D175, not yet merged), one run on a
-quiet PC (`raptor-port/docs/handpass/2026-09-25-req-one-row.md` §11): unit **5929 / 5929** (365 files) · build clean ·
-tfin **728 / 0** · e2e **471 passed**, 48 skipped · smoke **442 / 0** · rulecheck OK · docsize OK. `main` (PR #435) stands at
-5910 unit until this branch merges. Restate a count only from a run you watched, and REPLACE the previous counts — never
-stack a history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
-`raptor-port/docs/gates-and-deploy.md`.
+The latest counts watched — 25 Sep 26 22:14–22:26, `claude/request-one-row` (PR #437: D174, D175, D176, with `main` after
+PR #436 merged in; not yet merged), one run on a quiet PC (`raptor-port/docs/handpass/2026-09-25-req-one-row.md` §12):
+unit **5939 / 5939** (365 files) · build clean · tfin **728 / 0** · e2e **471 passed**, 48 skipped · smoke **442 / 0** ·
+rulecheck OK · docsize OK. `main` (after PR #436) stands at 5916 unit until this branch merges. Restate a count only
+from a run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md`
+§Build & verify; how they mislead, and the checks on his PC: `raptor-port/docs/gates-and-deploy.md`.
 
 ## Standing constraints
 

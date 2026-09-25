@@ -190,3 +190,42 @@ checked), 4 filed (`[REQ-DECLINED-DELETED]` and `[LEAVE-LATE-PUBLISHED]` — his
      publishes the EOD version. Should a late leave **read "1 pending" and clear the sign-offs** (the published face then
      keeping what it was issued with until the next AL)? (Recommended: yes — its own small branch; the published face
      part is the bigger half.) `[LEAVE-LATE-PUBLISHED]`
+
+## 12. After his look card — `main` merged in, D176 built, D177 recorded (25 Sep 26, late evening)
+**His answers:** D176 "Question 1 make it 0" — built here; D177 "Question 2 yes" — its own branch; and his follow-up
+("is there anything else that does this too?") answered by a sweep of the published face's live readers:
+`docs/superpowers/specs/2026-09-25-published-face-live-inputs.md` (A0–A7 leaks, B1–B6 live on purpose, C frozen) —
+the scope of `[LEAVE-LATE-PUBLISHED]`.
+
+**`main` merged in** (PR #436, the Tracker chat, merged first — D78): the observation log (main's #251 kept, this
+branch's re-appended as #252, #253), HANDOFF.md (the Tracker's merged block removed, its residue filed), the backlog
+archive (both sides' items kept) reconciled; the rulings map and D190/D191 came in unchanged.
+
+**D176** — `publish.ts filingSame` gains `present`: a request the record holds "taken off", no longer in the day's filing
+(deleted, re-dated off, a two-day one shortened), is no difference; `filingKey` leaves out an 'r' its record held 'r' too.
+Red first (2 tests); the unchanged half pinned (retyped on the day → it wakes, 1); four more doors pinned from Fable's read
+(shortened, re-dated onto another published day, re-assigned — 0 on each day, the four hold). Break tests: the clause
+off → 2 red; the signature's old exclusion → 2 red. Walk: world D (taken off before publishing, published, signed,
+deleted on the Inputs page → 0 everywhere, the four hold), desktop and phone.
+
+**The two reads of D176, blind** (`2026-09-25-d176-{fable,astra}-read.md`): **no new defect** from either.
+| finding | who | disposition |
+|---|---|---|
+| a request LIVE ('' in the record) since deleted / re-dated / edited reads 0 and keeps the four while the face changes | Astra 1 (high), Fable F1 | older — D177's scope (the sweep's A1, A2); fix steps copied into the sweep document |
+| the validator's own gate (`weekctx.ts filingDiffers`) does not know D174/D176, so such a day runs the second pass | Astra 2 (low) | cost only, no wrong screen, the same day paid it on `main` (Fable: "right by design — cost only") — into D177's scope (one shared helper) |
+| the pending list cannot name a deleted "→ Unavail" request | Fable F2 (low) | filed `[REQ-DOOR-WORDS]` (3) |
+| a plan switch can bring a row back beside a "taken off" request; a later delete leaves it | Fable F3 (low, read only) | filed `[REQ-ORPHAN-ROW]` (3) |
+
+**The final walk** on the merged build with D176 (`…/final/{desktop,phone}/`): **49 / 49 PASS on both widths**, the
+browser error list empty in all eight worlds. `[REQ-DECLINED-DELETED]` archived.
+
+**Gates — one full run on the final merged code, 25 Sep 26 22:14–22:26, nothing else running on the PC:** unit
+**5939 / 5939** (365 files) · build clean · tfin **728 / 0** · e2e **471 passed**, 48 skipped · smoke **442 / 0** ·
+rulecheck OK · docsize OK.
+
+`Docs: OUTSTANDING 61 items (+2 −2, −2 all in ARCHIVE) · DECISIONS D1–D191 (new: D176, D177) · homes OK`
+`docsize: OVER by 48, deferred (D29)`
+
+Walk: `docs/handpass/2026-09-25-req-one-row.md` · 78 pictures · 22 surfaces · 15 orders (× desktop and phone; walked,
+re-walked, and walked again on the merged code) · MISSING: 3 fixed (RO-1, F3, and D176 on his word), 1 not a defect (F1),
+6 filed (`[LEAVE-LATE-PUBLISHED]` — D177's own branch; `[REQ-ORPHAN-ROW]` (1) and (3); `[REQ-DOOR-WORDS]` (1)–(3))

@@ -1531,3 +1531,18 @@ request that did not exist when the version was issued and is now taken off is n
 today. To check before building: the four sign-offs must hold on that day too (D103, AM11). Fable's report:
 `raptor-port/docs/handpass/2026-09-25-d114-fable-read.md` O1. **ANSWERED 25 Sep 26 — D174 ("1. Yes"): make it 0.** **Place:** with `[REQ-TWO-ROWS]`, on its branch (D175).
 
+
+*Moved here 2026-09-25 by backlog-archive.mjs ([REQ-DECLINED-DELETED]). Forward facts: `raptor-port/docs/engine-rules.md`, `raptor-port/docs/handpass/2026-09-25-req-one-row.md`.*
+
+### [REQ-DECLINED-DELETED] A request taken off before the day was published, then deleted, reads "1 pending" — a question for him (25 Sep 26)
+**ANSWERED — D176 ("Question 1 make it 0"); BUILT 25 Sep 26 on `claude/request-one-row`** — `publish.ts filingSame` (`present`),
+read by the comparison and the signature; `engine-rules.md` §Publishing; evidence `raptor-port/docs/handpass/2026-09-25-req-one-row.md` §12.
+Fable's G2 in D175's scenario round (`raptor-port/docs/handpass/2026-09-25-req-one-row-fable-scenarios.md`), reproduced in a
+unit probe on `8fc6dba2`: a request accepted and ✕'d before the day is published (its record holds it "taken off"), then
+deleted on the Inputs page (or re-dated off the day) → 1 pending "taken off → not on the programme", the four sign-offs
+wiped, though neither the published face nor the working copy shows anything for it. Older (the same on `main`). **The
+mirror of D174** — not what he ruled on, so it is his call. **The agent's recommendation:** 0 (D98), in `publish.ts
+filingDelta`: a record "taken off" matches a request no longer covering the day; a dormant request still there and woken
+to fresh stays a change. The signature must agree (`filingKey`). **Place:** on the look card of `claude/request-one-row`
+(D175's branch); if yes, built there before "merge live".
+

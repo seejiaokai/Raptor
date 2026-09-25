@@ -192,6 +192,23 @@ describe('D176 — a request "taken off" when the day was published, and since d
     expect(dayShownPendCount(MON)).toBe(0)
     expect(daySigned(MON)).toBe(true)
   })
+  /* the other doors a dormant request can leave the day by (Fable's D176 read, "tests worth pinning") */
+  it('a two-day dormant request shortened off Tuesday, re-dated onto another published day, or re-assigned: 0 on each day, the four hold', async () => {
+    const { commitInputEdit, draftOf, reassignInput } = await import('./inputedit')
+    const two = request(true)
+    acceptInput(MON, two, 'g'); unacceptInput(MON, two)
+    const one = request(); one.remarks = 'req one row B'
+    acceptInput(MON, one, 'g'); unacceptInput(MON, one)
+    const who = request(); who.remarks = 'req one row C'
+    acceptInput(MON, who, 'g'); unacceptInput(MON, who)
+    for (const di of [MON, TUE, 2]) { publishDay(di); for (const [r, w] of FOUR) setSign(di, r, w) }
+    const d1: any = draftOf(two); d1.end = ''                              // Mon–Tue → Mon only
+    expect(commitInputEdit(two, d1)).toBe(true)
+    const d2: any = draftOf(one); d2.start = '2026-07-15'; d2.end = ''     // Mon → Wed, published without it
+    expect(commitInputEdit(one, d2)).toBe(true)
+    reassignInput(who.iid, 'stiff')                                        // to another man, still dormant
+    for (const di of [MON, TUE, 2]) expect([di, dayShownPendCount(di), daySigned(di)]).toEqual([di, 0, true])
+  })
   /* the half the ruling leaves as it is (§8.7): the same request still on the day and woken — retyped, so it is a live
      request that flags again — IS a change */
   it('unchanged: retyped on the same day (it wakes and flags again) still counts one', async () => {
