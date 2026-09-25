@@ -71,7 +71,7 @@ first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [T
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SMOKE-ADD-RACE]
 (before the next Tracker change that touches the smoke suite), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
-The amendment batch's look — [LOOK-435] (his inputs, built first, then one full check — D115) and [DRAFT-PENDING] (his answer first). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). The amendment batch (D91–D111) is BUILT on `claude/amendment-batch`, its pull request waiting for his look and "merge live" — its eleven items closed and archived 25 Sep 26 (`OUTSTANDING-ARCHIVE.md`; the spec `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`); left from that area: [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+The amendment batch's look — [LOOK-435] (his inputs, built first, then one full check — D115), [ACCOUNTS] (D166 — before the hand over) and [DRAFT-PENDING] (the hand over, on top of accounts). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). The amendment batch (D91–D111) is BUILT on `claude/amendment-batch`, its pull request waiting for his look and "merge live" — its eleven items closed and archived 25 Sep 26 (`OUTSTANDING-ARCHIVE.md`; the spec `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`); left from that area: [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] and [RULING-HOMES-AUDIT] (any time, docs only),
 [BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
 FULL-tier build, any time).
@@ -1054,6 +1054,15 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
    array without changing what is shown — and blanks the four sign-offs though "no changes to publish" (the final read,
    Fable #1's mirror; the digest keys ground rows by position). A false re-sign, never a false publish.
 **Place:** any time; items 6–8 with the Leave War links re-test (D147, last).
+
+### [ACCOUNTS] Accounts in the app now, shaped as the defence-mail sign-in will be (owner, D166, 25 Sep 26)
+The Admin tab creates accounts (sign-in name, admin or member, the callsign it belongs to); the sign-in screen stands
+for the defence mail sign-in; signing in makes you that callsign, so "View as" and any member preview go; the Leave
+War follows the signed-in callsign; every "who" (edit record, pending list, hand over) names the callsign. Replaces
+the fixed `ad` / `us` logins and merges Admin's "Manage users" list. The real address is tied by IT at the database
+step (D165). Permissions → FULL tier. **Place (the agent's recommendation, not yet his word):** after this round's
+smaller inputs in `[LOOK-435]` and BEFORE the hand over (D118), which then shows real callsigns and "since YOU last
+looked" from the start.
 
 ### [LOOK-435] His inputs from the look at PR #435 — build first, ONE full bug check at the end (D115, 25 Sep 26)
 Built on `claude/amendment-batch` before the full check (D115): **D114** (a request taken off / put on a published day
