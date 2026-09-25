@@ -1072,6 +1072,16 @@ replaces the checkpoint with the Original. **Limits to tell him:** until the sha
 it only on the same device and browser (the app keeps its data per browser); who made each change reads the shared
 account (D104), and after a reload older changes read "earlier" (the edit record lasts only while the page is open).
 With the database it carries across devices with no change, and "since YOU last looked" per person becomes possible.
+**His word: "Hand over"** (after the mock-up `raptor-port/docs/mock/checkpoint.html`). **His catch:** every scheduler
+will press Hand over after their OWN changes, so one reset point would wipe the highlights before the next person
+sees them. **The agent's proposal for that, put to him:** each hand over is KEPT (who, when, the day as it stood); the
+marks and "N pending" show what changed since the hand over BEFORE the latest one — i.e. the last person's work, plus
+anything done since — and the list splits it: "Handed over by Admin 16:00 · 3 changes" / "Since then · 1 change". So
+A builds and hands over; B changes 3 things and hands over; A opens the day and sees B's 3 highlighted; A changes 1 and
+hands over; B sees A's 1. **A guard:** Hand over is refused when nothing changed since the last one ("Nothing new to
+hand over"), so a second press can never wipe the last person's highlights. **The cost, stated:** the last person's
+highlights stay until someone else changes something and hands over — there is no "I've seen it, clear it" until
+personal logins (the database) let each person see "what changed since YOU last looked".
 **The marks — he asked how they would look now a mark is a corner tag (D92, D93):** on a published day a waiting change
 wears a hollow dotted tag at the puck's top right naming the AL it will go out as ("AL1"). An unpublished day has no
 AL, so the tag needs another label. **The agent's recommendation:** a hollow dotted **ORIG** tag in the seal's plain

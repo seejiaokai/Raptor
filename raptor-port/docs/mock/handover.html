@@ -1,0 +1,30 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hand over mock-up</title>
+<style>
+:root{--bg:#0B0D10;--ink:#E6EAEE;--ink2:#9AA4AE;--edge:#232A31;--acc:#3BC6E8}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:1180px;margin:0 auto;padding:24px 16px 60px}
+h1{font-size:22px;margin:0 0 6px} h2{font-size:17px;margin:0 0 4px;color:var(--acc)}
+p{color:var(--ink2);max-width:82ch;margin:0 0 12px} b{color:var(--ink)}
+section{border:1px solid var(--edge);border-radius:12px;padding:14px;background:#11151A;margin:18px 0}
+.row{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:760px){.row{grid-template-columns:1fr}}
+figure{margin:0} img{width:100%;height:auto;border-radius:8px;border:1px solid var(--edge);display:block}
+.phone img{max-width:340px}
+figcaption{font-size:12.5px;color:var(--ink2);margin-top:4px}
+.note{border-left:3px solid var(--acc);padding:6px 12px;background:#0F1A20;border-radius:0 8px 8px 0}
+</style></head><body><main>
+<h1>Hand over — two schedulers on a day not yet published (mock-up)</h1>
+<p>Drawn on the real app (the demo week). Everything new is drawn in: the <b>Hand over</b> button beside Publish day, the
+line under the heading, the pending button, the dotted ORIG tags and the open list. <b>The idea:</b> every hand over is
+kept, and the highlights show what changed since the hand over <i>before</i> the latest one — the last person's work —
+so pressing Hand over after your own changes never wipes what the next person needs to see.</p>
+<p class="note"><b>Who</b> reads "Admin" (the shared login) until the database brings personal logins; then it reads the
+callsign, and each person can see "what changed since YOU last looked" with no button at all.</p>
+<section><h2>1 · You build Tuesday and press Hand over</h2><p>The line under the heading records it: handed over by Admin at 14:05. Nothing is highlighted, and <b>Hand over</b> is greyed — there is nothing new to hand over.</p><div class="row"><figure><img src="img/handover/desktop-s1.png" alt="desktop-s1"><figcaption>Edit Schedule, desktop</figcaption></figure>
+<figure class="phone"><img src="img/handover/phone-s1.png" alt="phone-s1"><figcaption>Edit Schedule, phone</figcaption></figure></div></section><section><h2>2 · Scheduler B changes three things</h2><p>"3 pending ▾" appears and the three changed pucks wear a dotted <b>ORIG</b> tag. Hand over is live again.</p><div class="row"><figure><img src="img/handover/desktop-s2.png" alt="desktop-s2"><figcaption>Edit Schedule, desktop</figcaption></figure>
+<figure class="phone"><img src="img/handover/phone-s2.png" alt="phone-s2"><figcaption>Edit Schedule, phone</figcaption></figure></div></section><section><h2>3 · B presses Hand over — this is what YOU see when you open Tuesday</h2><p>The line now reads 16:00, "showing changes since 14:05". B's three changes <b>stay highlighted</b> — pressing Hand over did not wipe them. The list groups them under B's hand over.</p><div class="row"><figure><img src="img/handover/desktop-s3.png" alt="desktop-s3"><figcaption>Edit Schedule, desktop</figcaption></figure>
+<figure class="phone"><img src="img/handover/phone-s3.png" alt="phone-s3"><figcaption>Edit Schedule, phone</figcaption></figure></div></section><section><h2>4 · You change one more thing</h2><p>"4 pending": your change sits under "Since then", B's three under their hand over — so you can tell your own work from theirs.</p><div class="row"><figure><img src="img/handover/desktop-s4.png" alt="desktop-s4"><figcaption>Edit Schedule, desktop</figcaption></figure>
+<figure class="phone"><img src="img/handover/phone-s4.png" alt="phone-s4"><figcaption>Edit Schedule, phone</figcaption></figure></div></section><section><h2>5 · You press Hand over — this is what B sees next</h2><p>Now only YOUR change is highlighted ("showing changes since 16:00"). B's earlier three are no longer marked — B made them, and you have seen them.</p><div class="row"><figure><img src="img/handover/desktop-s5.png" alt="desktop-s5"><figcaption>Edit Schedule, desktop</figcaption></figure>
+<figure class="phone"><img src="img/handover/phone-s5.png" alt="phone-s5"><figcaption>Edit Schedule, phone</figcaption></figure></div></section>
+</main></body></html>
