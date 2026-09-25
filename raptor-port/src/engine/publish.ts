@@ -333,8 +333,11 @@ export function daySnap(di:any){di=+di;
    fingerprint: per input covering this day's date, its acc state. FOUR distinct
    states — 'u' filed-unavailable, 'g' accepted-ground, 'r' removed/dormant, and
    '' fresh/unfiled — because a fresh input still flags conflicts while a 'r' one
-   is dormant, so absent→u→r is a real change even though DAYS is unchanged. This
-   is NOT AM-04's freezing of full input VALUES/identities into content. */
+   is dormant, so ''→u→r is a real change even though DAYS is unchanged. (absent→u→r
+   was one too until D174, 25 Sep 26: the published face reads a request its record
+   does not hold as dormant — world.ts fileAcc — so filed since and taken off again
+   is no change; filingSame below.) This is NOT AM-04's freezing of full input
+   VALUES/identities into content. */
 export function dayFilingFingerprint(di:any):any{di=+di;
   const dt=(DAYS[di]||{}).dt, fil:any={};
   if(dt==null)return fil;
@@ -346,14 +349,32 @@ export function dayFilingFingerprint(di:any):any{di=+di;
    leaves DAYS[di]'s digest untouched, so before this it could publish an AL on stale
    signatures and never cleared the sign-offs. Empty acc == absent, matching
    filingDelta's round-trip rule, so a no-op filing round trip does not invalidate. */
-export function filingKey(di:any):string{const f=dayFilingFingerprint(di);
-  return Object.keys(f).filter((k:any)=>f[k]).sort().map((k:any)=>`${k}=${f[k]}`).join(';');}
+/* …and on a PUBLISHED day a request its current issued version never held, now taken off, is left out of it (owner,
+   D174, 25 Sep 26): filed since and taken off again is no change (filingSame below), so the four signed before it was
+   filed hold again once it is taken off (D103, AM11) — keyed in, the round trip read unsigned beside "0 pending". */
+export function filingKey(di:any):string{di=+di;const f=dayFilingFingerprint(di), iss=issuedFilOf(di);
+  return Object.keys(f).filter((k:any)=>f[k]&&!(iss&&filingSame(iss,k,f[k])&&!Object.prototype.hasOwnProperty.call(iss,k))).sort().map((k:any)=>`${k}=${f[k]}`).join(';');}
+/* the current issued version's filing record, on a published day; null on a day not yet published (or one whose
+   issued version cannot be read) */
+function issuedFilOf(di:any):any{di=+di;if(!dayApproved(di))return null;
+  const ver=dayCurVer(di), snap=ver!=null?daySnapOf(di,ver):null;return (snap&&snap.fil)||null;}
+/* A FILING THE ISSUED RECORD NEVER HELD, NOW "TAKEN OFF", IS NO DIFFERENCE (owner, D174, 25 Sep 26 — "1. Yes": a request
+   filed on a published day and then taken off reads 0). The published face already reads a request its record does not
+   hold as dormant (world.ts fileAcc: absent → 'r'), so a request filed since and taken off (✕ on its row, or taken back
+   out from under Unavailable) shows exactly what was published: D98, nothing pending. It stays silenced, as ✕ has left
+   every request since 26 Aug 26. A request the record DID hold — waiting ('') or on the programme ('g') — and now taken
+   off still differs: the issued day showed it. Absent still matches '' as before (a request filed since and not
+   actioned, e.g. a leave). ONE rule, read by the comparison (filingDelta), the load's put-back (filingRestorePlan) and
+   the signature (filingKey), so none of them can disagree about it. */
+function filingSame(was:any,id:any,now:string):boolean{
+  const has=Object.prototype.hasOwnProperty.call(was||{},id), a=has?String(was[id]||''):'';
+  return a===now||(!has&&now==='r');}
 /* the filing axis: entries for any input whose frozen state differs from now.
-   A same-actual-state round trip (r→u→r) is a no-op; absent→u→r is a delta. */
+   A same-actual-state round trip (r→u→r) is a no-op; absent→u→r is one too since D174 (filingSame); ''→u→r is a delta. */
 function filingDelta(di:any,issuedFil:any):DeltaEntry[]{
   const now=dayFilingFingerprint(di), was=issuedFil||{}, out:DeltaEntry[]=[];
   const ids=new Set([...Object.keys(now),...Object.keys(was)]);
-  ids.forEach((id:any)=>{ const a=was[id]||'', b=now[id]||''; if(a!==b)out.push({addr:`inp:${di}.${id}`,kind:'input',from:a,to:b}); });
+  ids.forEach((id:any)=>{ const a=was[id]||'', b=now[id]||''; if(!filingSame(was,id,b))out.push({addr:`inp:${di}.${id}`,kind:'input',from:a,to:b}); });
   return out;}
 /* THE OIL EVIDENCE AXIS ([OIL-AUTO-REMOVE] §7.2 / §9.2). A mark on the day
    record is snapshot-able but NOT publishable on its own: canonicalContent is
@@ -464,9 +485,13 @@ export function dayDiscardCount(di:any):number{di=+di;
      Only those it CAN put back: one it must leave (it also covers another published day, or its row is landed
      elsewhere) is not replaced, so it is not counted. And a request's row and its filing, both put back, are ONE edit —
      the pairing the day head counts in (D114; the D114 check found this read 2 beside the day head's 1). */
-  const units:any[]=canonicalUnits(snap.d,DAYS[di],di);
-  const lone=filingRestorePlan(di,snap.fil,snap.d).put.filter((p:any)=>{
-    const u=requestRowUnit(units,inpId(p.inp),String(p.want||''),String(p.inp.acc||''),snap.d,DAYS[di]);
+  /* measured against the day as the load will LEAVE it (D175): a row whose request now stands on another day is not
+     put back, so the edit that took it off Monday is not replaced — counting it read "Discard 1 edit" for a load that
+     discards nothing */
+  const left=rowsLeftOut(di,snap.d), after=left.length?leaveRowsOut(JSON.parse(JSON.stringify(snap.d)),left.map((x:any)=>x.id)):snap.d;
+  const units:any[]=canonicalUnits(after,DAYS[di],di);
+  const lone=filingRestorePlan(di,snap.fil,after).put.filter((p:any)=>{
+    const u=requestRowUnit(units,inpId(p.inp),String(p.want||''),String(p.inp.acc||''),after,DAYS[di]);
     if(u){u.inp=true;return false;}
     return true;});
   return units.length+decDrop+lone.length;}
@@ -488,7 +513,7 @@ export function filingRestorePlan(di:any,fil:any,dayAfter?:any):{put:Array<{inp:
   (INPUTS||[]).forEach((inp:any)=>{
     if(!inputCoversDate(inp,dt))return;
     const id=inpId(inp), want=String(((fil||{})[id])||''), cur=String(inp.acc||'');
-    if(cur===want)return;
+    if(filingSame(fil,id,cur))return;   // D174: a request the version never held, taken off since, stays taken off — never back to a fresh one that flags
     if(inputProtected(inp))return;   // a quarantined week's request is never touched — in the one plan both callers read (Fable's read, #2)
     const has=(d:any)=>((d&&d.ground)||[]).some((g:any)=>g&&g.src===id);
     const landed=DAYS.some((d0:any,j:number)=>has((j===di&&dayAfter)?dayAfter:d0));
@@ -506,6 +531,24 @@ export function filingRestorePlan(di:any,fil:any,dayAfter?:any):{put:Array<{inp:
     put.push({inp,want});
   });
   return {put,left};}
+/* ONE REQUEST, ONE ROW (owner, D175, 25 Sep 26 — "2. Ok"). A whole-day replacement — loading a version onto the working
+   copy, switching to a parked plan — installs a day that may hold the row of a request that has since been put on
+   ANOTHER loaded day (✕ on Monday, Accept onto Tuesday, then Monday's older version loaded: Astra's d114 read, Finding
+   2). Installed whole, the request stood on two days' programmes, a later ✕ removed only the first, and the orphan left
+   behind read two pending. acceptInput has always kept one row per request; this is that rule for the replacements:
+   the incoming day leaves such a row OUT, and the door names it — the way the load already leaves a filing it cannot
+   set as filed (LOADLEFT), and never by moving the other day (AM1). Returns, per request, the other loaded days its row
+   stands on (by index); empty when nothing would stand twice. Pure: the load and the switch apply it (drafts.ts), and
+   the load's discard count above counts against it, so the confirm and the load agree. */
+export function rowsLeftOut(di:any,dayIn:any):Array<{id:string,days:number[],row:any}>{di=+di;const out:any[]=[];
+  ((dayIn&&dayIn.ground)||[]).forEach((r:any)=>{const id=r&&r.src; if(!id||out.some((x:any)=>x.id===String(id)))return;
+    const days=DAYS.map((d:any,dj:number)=>(dj!==di&&d&&((d.ground||[]).some((g:any)=>g&&g.src===id)))?dj:-1).filter((dj:number)=>dj>=0);
+    if(days.length)out.push({id:String(id),days,row:r});});
+  return out;}
+/* take those rows out of a day object (a clone the caller owns — never an issued snapshot or a parked plan's record) */
+export function leaveRowsOut(d:any,ids:string[]){
+  if(d&&ids.length&&Array.isArray(d.ground))d.ground=d.ground.filter((r:any)=>!(r&&r.src&&ids.includes(String(r.src))));
+  return d;}
 /* THE ONE PLACE records are found by identity (§1, P2-R2-05/P2-R3-03). `ver` is
    a verId (`iso#seq`) — the Original is `iso#0`, an AL is `iso#seq`. It also
    still resolves a `d:<id>` DRAFT blob (unchanged). It MUST validate that the

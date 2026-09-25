@@ -270,3 +270,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In the roll-call step, when a ruling names surfaces, map EACH named surface to the function that computes its number, and flag any surface whose function is not the changed body — that surface needs its own red test, or the two functions must share one body.
 
 **Principle:** "Every reader of the changed function" is not the same set as "every place the number is shown". A sibling that re-derives the same quantity is a drift seam the changed function's callers list can never reveal; enumerate from the surfaces the ruling names, not from the call graph of the code you changed.
+
+### Observation 251: A handler's early exit is a surface — a change to the number it tests can make its sentence untrue
+
+**Status:** OPEN
+**Date:** 2026-09-25
+**Session context:** Raptor — D175 (a load leaves out a request row that now stands on another day); the load's "Discard N edits" count was changed to measure against the day as the load will leave it
+**Skill:** New skill candidate: bug-check roll-call (project method `raptor-port/docs/bug-check-order.md` §6)
+**Type:** open-source
+**Phase/Area:** roll-call — which sentences a door can say
+
+**Issue:** The change made the load's discard count read 0 when the only difference left was the row the load must leave out — correct for the count. But the load handler also used that count (plus "is this the current version?") to take an early exit that says "Monday is already at Original" and does nothing. With the count now 0, the exit fired on a day that still read "1 pending", so the door said something untrue and never showed the new "left out" sentence. Every engine test passed; only the app-level test that clicked the real button and read its message caught it.
+
+**Suggested improvement:** In the roll-call, for every quantity the change alters, list not only the places that DISPLAY it but every place that BRANCHES on it (early returns, "nothing to do" / "already done" toasts, confirm gates), and check each branch's sentence is still true in the new states.
+
+**Principle:** A value a handler tests to decide "nothing to do" is load-bearing twice: once as a number shown, once as a decision taken. Changing what the number means can silently flip the decision; enumerate the branches on a changed quantity, not just its displays.

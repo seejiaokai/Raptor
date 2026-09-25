@@ -2352,6 +2352,32 @@ line (`docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`).**
 - **A day template is refused on a published day (D96).** `applyDayTpl` returns false on a published day — see
   §Day templates.
 
+**A REQUEST'S ROW AND ITS FILING ON A PUBLISHED DAY (25 Sep 26, evening — owner, D174 and D175, on their own branch
+before accounts; evidence `docs/handpass/2026-09-25-req-one-row.md`).**
+- **Filed since, then taken off, is no change (D174, AM20).** A request the current issued version's filing record does
+  NOT hold, and which is now "taken off" ('r' — ✕ on its row, or taken back out from under Unavailable), is no
+  difference: the published face already reads such a request as dormant (`world.ts fileAcc`: absent → 'r'), so the day
+  is exactly as published — 0 pending, no AL carries it. ONE rule, `publish.ts filingSame` (an absent issued entry
+  matches '' as before, and now 'r' too), read by the comparison every count reads (`filingDelta`), by the load's
+  put-back (`filingRestorePlan` — the load leaves such a request taken off, never back to a fresh one that flags), and,
+  on a published day, by the signature binding (`filingKey` leaves out an 'r' its issued record never held), so the four
+  signed before it was filed hold again once it is taken off (D103, AM11). Unchanged: the request stays dormant (✕,
+  26 Aug 26); a request the record DID hold — waiting ('') or on the programme ('g') — and now taken off still counts one
+  (the issued day showed it).
+- **One request, one row (D175, AM1).** A whole-day replacement — `loadVersionToWorkingCopy`, `draftSelect` — leaves
+  OUT of the incoming day any ground row whose request (`src`) already has a row on ANOTHER loaded day
+  (`publish.ts rowsLeftOut` / `leaveRowsOut`, before the day is installed and before the filing reconcile), and never
+  moves that other day. The issued version keeps its row for good (it is a record); a parked plan keeps it only until it
+  is switched to — from then on the live day IS that plan, without the row, and leaving it again stows it as it was left
+  (AM27: a plan is what you leave it as; Fable's G4, pinned). **Within the loaded week:** like `acceptInput`'s own guard,
+  it sees the loaded days only, so a request spanning a week boundary can still stand on both sides — the stash sweep
+  filed under `[REQ-ORPHAN-ROW]` (1) is where that closes (Fable's G3). The load's "Discard N edits" (`dayDiscardCount`) counts against the day as the load will leave it,
+  and the load no longer takes its "already at <version>" short cut when a row would be left out. Every door names each
+  request left out in its sentence (toast and Edit history) through ONE body, `drafts.ts rowsLeftSaid` — "Bane · Meeting
+  left out — it is on Tuesday's programme": the Load on the preview bar (week and board, one handler), the plans menu's
+  switch (week and board, `board.ts switchDraft`) and the preview banner's "Switch to this plan". A template needs no
+  such step (its rows carry no `src`), and undo / redo put back a whole earlier state.
+
 **CORRECTED 17 Sep 26 — both record shapes here were stale and the third sentence
 described a removed function.** `SCHED` carries **14** fields, the set
 `state/history.ts:schedFields()` serialises: `changes`, `pending`, `added`, `als`, `al`,

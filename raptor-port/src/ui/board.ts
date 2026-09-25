@@ -22,7 +22,7 @@ import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, day
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { DAYTPL_PUBLISHED_MSG } from '../engine/daytpl'
-import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
+import { dayDrafts, curDraftId, draftDup, draftSelect, ROWSLEFT, rowsLeftSaid } from '../engine/drafts'
 import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit } from './pops'
 import { openAvailWinFrom } from './AvailWindow'
 import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel, WAVE_BUILTIN, WAVETPL_CFG } from '../engine/wavetpl'
@@ -1553,7 +1553,8 @@ export function switchDraft(di: any, id: any) {
   afterSchedMutate(); notify()
   /* a whole-day swap passes no key through the funnel — the sentence is the
      record, exactly as it is for a rollback or an applied template */
-  let said = `Switched to "${t.name}" — this is now the live ${d.dow}`
+  /* a row the plan held for a request now on another day stayed out — named (D175), before the count it explains */
+  let said = `Switched to "${t.name}" — this is now the live ${d.dow}` + rowsLeftSaid(ROWSLEFT)
   if (pub && cv != null) {
     /* the day head's own count (AM23): a plan that differs only in what the day earns, or
        in a filing, is still a difference ([HUMAN-RETEST] walk S3 / Astra rank 5, 24 Sep 26) */
