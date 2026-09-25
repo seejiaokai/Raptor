@@ -71,7 +71,7 @@ first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [T
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SMOKE-ADD-RACE]
 (before the next Tracker change that touches the smoke suite), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
-The amendment batch's look — HIS ORDER (D173): (1) [LOOK-435] — D114's full check (DONE 25 Sep 26, evidence §9; [REQUEST-OFF-ONE] archived), his look, "merge live" of PR #435; (2) [ACCOUNTS] on a new branch; (3) [DRAFT-PENDING] — the one changes window, on top of accounts; (4) one full check of 2 and 3. Found by D114's reads, older than it: [REQ-TWO-ROWS] (high — its place is his call, on the look card), [REQ-DECLINED-PENDING] (a question for him, on the look card), [REQ-ORPHAN-ROW] (low). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). The amendment batch (D91–D111) is BUILT on `claude/amendment-batch`, its pull request waiting for his look and "merge live" — its eleven items closed and archived 25 Sep 26 (`OUTSTANDING-ARCHIVE.md`; the spec `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`); left from that area: [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+The amendment batch's look — HIS ORDER (D173): (1) [LOOK-435] — D114's full check (DONE 25 Sep 26, evidence §9; [REQUEST-OFF-ONE] archived), his look, "merge live" of PR #435; (2) [ACCOUNTS] on a new branch; (3) [DRAFT-PENDING] — the one changes window, on top of accounts; (4) one full check of 2 and 3. Found by D114's reads, older than it: [REQ-TWO-ROWS] and [REQ-DECLINED-PENDING] — HIS ORDER (D174, D175): their own small branch right after #435 merges, BEFORE [ACCOUNTS]; [REQ-ORPHAN-ROW] (low). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). The amendment batch (D91–D111) is BUILT on `claude/amendment-batch`, its pull request waiting for his look and "merge live" — its eleven items closed and archived 25 Sep 26 (`OUTSTANDING-ARCHIVE.md`; the spec `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`); left from that area: [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] and [RULING-HOMES-AUDIT] (any time, docs only),
 [BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
 FULL-tier build, any time).
@@ -1164,8 +1164,8 @@ Reproduced 25 Sep 26 through the production functions (`acceptInput`, `unacceptI
 a request's filing that covers another day (LOADLEFT, walker B3) — rather than refusing the whole load (Astra's
 suggestion); one day's load never moves another (AM1). Tests: the six steps → exactly one row with that `src`, Tuesday
 untouched, the message names it; the same through a plan switch. FULL tier (the load, plans, the published record).
-Astra's report: `raptor-port/docs/handpass/2026-09-25-d114-astra-read.md` Finding 2. **Place:** his call — on the
-D114 look card (recommended: its own small branch right after PR #435 merges, before `[ACCOUNTS]`).
+Astra's report: `raptor-port/docs/handpass/2026-09-25-d114-astra-read.md` Finding 2. **Place — SETTLED 25 Sep 26, D175 ("2. Ok"):** its own small branch right after PR #435 merges, before `[ACCOUNTS]`;
+the load leaves the row out and says so.
 
 ### [REQ-DECLINED-PENDING] A request filed on a published day and then taken off still reads "1 pending" — a question for him (25 Sep 26)
 Found by Fable's D114 read (O1), walked 25 Sep 26 (`raptor-port/scripts/handpass/am/d114-walk.mjs` step 9, desktop and
@@ -1176,8 +1176,7 @@ taken off"**, and an AL would go out carrying it. Older than D114 (the same on `
 **The agent's recommendation, to put to him:** make it 0 (D98 — back to what was published shows nothing pending): a
 request that did not exist when the version was issued and is now taken off is no difference; it stays silenced as
 today. To check before building: the four sign-offs must hold on that day too (D103, AM11). Fable's report:
-`raptor-port/docs/handpass/2026-09-25-d114-fable-read.md` O1. **Place:** his answer (the D114 look card), then with
-`[REQ-TWO-ROWS]`.
+`raptor-port/docs/handpass/2026-09-25-d114-fable-read.md` O1. **ANSWERED 25 Sep 26 — D174 ("1. Yes"): make it 0.** **Place:** with `[REQ-TWO-ROWS]`, on its branch (D175).
 
 ### [REQ-ORPHAN-ROW] A request's row outliving the request — low (25 Sep 26)
 Two older shapes, the same on `main`: (1) Fable's O2 — a request deleted on the Inputs page while its row stands on a
