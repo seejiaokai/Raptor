@@ -241,6 +241,7 @@ async function worldH3b() {
 
 /* ===================== H5 — the second reads: the roster a published day counts (Astra #3) ===================== */
 async function navTo(page, name) {
+  await L.closeBoard(page)                                   // the board covers the top bar
   const top = page.locator(`a[data-page="${name}"]:visible`).first()
   if (await top.count()) await top.click()
   else { await page.locator('#burger:visible').first().click(); await page.waitForTimeout(450); await page.locator(`#drawerNav a[data-page="${name}"]`).first().click() }
