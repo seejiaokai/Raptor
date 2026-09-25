@@ -1163,6 +1163,8 @@ so a request spanning a week boundary (Sun wk1 – Mon wk2) can still end with a
 the stashed weeks' `ground` by `src`, read by all four, closes both. `engine-rules.md` states the loaded-week bound.
 
 ### [REQ-DECLINED-DELETED] A request taken off before the day was published, then deleted, reads "1 pending" — a question for him (25 Sep 26)
+**ANSWERED — D176 ("Question 1 make it 0"); BUILT 25 Sep 26 on `claude/request-one-row`** — `publish.ts filingSame` (`present`),
+read by the comparison and the signature; `engine-rules.md` §Publishing; evidence `raptor-port/docs/handpass/2026-09-25-req-one-row.md` §12.
 Fable's G2 in D175's scenario round (`raptor-port/docs/handpass/2026-09-25-req-one-row-fable-scenarios.md`), reproduced in a
 unit probe on `8fc6dba2`: a request accepted and ✕'d before the day is published (its record holds it "taken off"), then
 deleted on the Inputs page (or re-dated off the day) → 1 pending "taken off → not on the programme", the four sign-offs
@@ -1173,6 +1175,9 @@ to fresh stays a change. The signature must agree (`filingKey`). **Place:** on t
 (D175's branch); if yes, built there before "merge live".
 
 ### [LEAVE-LATE-PUBLISHED] A leave filed after a day is published shows on its published face at once, with nothing pending — a question for him (25 Sep 26)
+**ANSWERED 25 Sep 26 — D177 ("Question 2 yes"): it reads "1 pending", the four fall, and the published face keeps what it
+was issued with until the next AL — ITS OWN BRANCH.** His follow-up ("is there anything else that does this too?") is
+answered by a sweep of the published face's readers of live inputs — its list is this item's scope (added below).
 Fable's code read F2 on D175's branch (`raptor-port/docs/handpass/2026-09-25-req-one-row-fable-read.md`), reproduced in a unit
 probe on `8fc6dba2`: Monday published and signed; a leave (OL) filed for Hunter on Monday → View-only Sched shows him under
 Unavailable at once (the Unavailable block reads the live inputs on every face — `raptor-port/src/ui/html.ts`), while Monday

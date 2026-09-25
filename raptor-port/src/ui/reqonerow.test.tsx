@@ -165,6 +165,46 @@ describe('D174 — a request not there when the day was published, filed since a
   })
 })
 
+describe('D176 — a request "taken off" when the day was published, and since deleted or re-dated off the day, is no change', () => {
+  /* taken off before Monday is published: its record holds it "taken off" (dormant — the published face shows nothing) */
+  const declined = () => {
+    const inp = request()
+    acceptInput(MON, inp, 'g'); unacceptInput(MON, inp)
+    expect(inp.acc).toBe('r')
+    publishDay(MON)
+    for (const [r, w] of FOUR) setSign(MON, r, w)
+    expect([dayShownPendCount(MON), daySigned(MON)]).toEqual([0, true])
+    return inp
+  }
+  it('deleted on the Inputs page: 0 on every count, and the four hold', async () => {
+    const { removeInput } = await import('./inputedit')
+    const inp = declined()
+    expect(removeInput(inp)).toBe(true)
+    expect(dayDelta(MON), 'nothing differs from what was published').toEqual([])
+    expect(counts(MON)).toEqual({ engine: 0, week: 0, board: 0, info: 0, list: 0 })
+    expect(daySigned(MON), 'the four hold').toBe(true)
+  })
+  it('re-dated off the day (to Wednesday, not published): Monday reads 0 and keeps its four', async () => {
+    const { commitInputEdit, draftOf } = await import('./inputedit')
+    const inp = declined()
+    const d: any = draftOf(inp); d.start = '2026-07-15'; d.end = ''
+    expect(commitInputEdit(inp, d)).toBe(true)
+    expect(dayShownPendCount(MON)).toBe(0)
+    expect(daySigned(MON)).toBe(true)
+  })
+  /* the half the ruling leaves as it is (§8.7): the same request still on the day and woken — retyped, so it is a live
+     request that flags again — IS a change */
+  it('unchanged: retyped on the same day (it wakes and flags again) still counts one', async () => {
+    const { commitInputEdit, draftOf } = await import('./inputedit')
+    const inp = declined()
+    const d: any = draftOf(inp); d.type = 'Training'
+    expect(commitInputEdit(inp, d)).toBe(true)
+    expect(inp.acc, 'woken').toBeUndefined()
+    expect(dayShownPendCount(MON)).toBe(1)
+    expect(daySigned(MON)).toBe(false)
+  })
+})
+
 describe('D175 — a load or a plan switch never puts a request on a second day: the row is left out, and said', () => {
   /* Astra's six steps (d114 read, Finding 2): a two-day request on Monday, both days published, ✕ on Monday, accepted
      onto Tuesday — then Monday's issued version, which still holds the row, loaded onto the working copy */

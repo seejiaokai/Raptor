@@ -2363,7 +2363,10 @@ before accounts; evidence `docs/handpass/2026-09-25-req-one-row.md`).**
   on a published day, by the signature binding (`filingKey` leaves out an 'r' its issued record never held), so the four
   signed before it was filed hold again once it is taken off (D103, AM11). Unchanged: the request stays dormant (✕,
   26 Aug 26); a request the record DID hold — waiting ('') or on the programme ('g') — and now taken off still counts one
-  (the issued day showed it).
+  (the issued day showed it). **And its mirror (D176):** a request the record holds "taken off", since deleted on the
+  Inputs page or re-dated off the day, is no difference either (`filingSame`'s `present` — the published face showed it
+  dormant, nothing shows it now), and the signature leaves out an 'r' its record held 'r' too, so the four hold; the same
+  request still on the day and woken (retyped, so it flags again) stays a change.
 - **One request, one row (D175, AM1).** A whole-day replacement — `loadVersionToWorkingCopy`, `draftSelect` — leaves
   OUT of the incoming day any ground row whose request (`src`) already has a row on ANOTHER loaded day
   (`publish.ts rowsLeftOut` / `leaveRowsOut`, before the day is installed and before the filing reconcile), and never

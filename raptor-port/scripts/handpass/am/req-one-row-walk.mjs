@@ -271,8 +271,41 @@ async function worldC() {
   await browser.close()
 }
 
+/* =============================== D — D176 =============================== */
+/* a request taken off BEFORE Monday is published (its record holds it "taken off"), then deleted on the Inputs page →
+   0 on every count, the four hold (owner, D176, 25 Sep 26 — "Question 1 make it 0") */
+async function worldD() {
+  const { browser, page, errors, CS } = await world()
+  try {
+    const id = await fileReq(page, { person: 'bane', remarks: 'D176 WALK' })
+    check('D0 lands on Monday', JSON.stringify(await rowsOf(page, id)) === '[0]', JSON.stringify(await rowsOf(page, id)))
+    await xRow(page, MON, id)
+    check('D0 taken off before publishing', (await accOf(page, id)) === 'r', await accOf(page, id))
+    const pub = await pubOnBoard(page, MON)
+    await signDay(page, MON, 0)
+    const v0 = await signVals(page, MON)
+    agree('D1 published, signed, nothing pending', await counts(page, MON), 0, 'Monday published with the request taken off')
+    await closeBoard(page)
+    await go(page, 'inputs'); await page.waitForTimeout(500)
+    if (await page.locator('#inRangeBtn').count()) { await page.locator('#inRangeBtn').click(); await page.waitForTimeout(250); await page.locator('#inRangeAll').click(); await page.waitForTimeout(400) }
+    const ix = await page.evaluate(id => window.INPUTS.findIndex(x => (x.iid || x.id) === id), id)
+    const del = page.locator(`.rmx[data-inx="${ix}"]`).first()
+    let said = 'NO ✕ ON THE INPUTS PAGE'
+    if (await del.count()) { await del.evaluate(e => e.scrollIntoView({ block: 'center' })); await del.click(); await page.waitForTimeout(700); said = (await toasts(page)).join(' / ') }
+    check('D2 deleted on the Inputs page', (await accOf(page, id)) === 'GONE', `said "${said}"`)
+    const c2 = await counts(page, MON)
+    agree('D2 deleted → 0 everywhere (D176)', c2, 0, 'the taken-off request deleted')
+    const v2 = await signVals(page, MON)
+    check('D2 the four hold', v0.length === 4 && JSON.stringify(v2) === JSON.stringify(v0), `boxes ${JSON.stringify(v2)} (signed: ${JSON.stringify(v0)})`)
+    await shotUnion(page, 'D2-after-delete-board', ['#sbSignBar'])
+  } catch (e) { check('D CRASH', false, String(e && e.stack || e)) }
+  ALL_ERRORS.push(...errors.map(e => 'D: ' + e))
+  await browser.close()
+}
+
 await worldA()
 await worldB()
 await worldC()
-check('errors', !ALL_ERRORS.length, ALL_ERRORS.length ? ALL_ERRORS.slice(0, 6).join(' | ') : 'the browser error list stayed empty in all three worlds')
+await worldD()
+check('errors', !ALL_ERRORS.length, ALL_ERRORS.length ? ALL_ERRORS.slice(0, 6).join(' | ') : 'the browser error list stayed empty in all four worlds')
 summary(`req-one-row-${W}`)

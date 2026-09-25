@@ -349,11 +349,13 @@ export function dayFilingFingerprint(di:any):any{di=+di;
    leaves DAYS[di]'s digest untouched, so before this it could publish an AL on stale
    signatures and never cleared the sign-offs. Empty acc == absent, matching
    filingDelta's round-trip rule, so a no-op filing round trip does not invalidate. */
-/* …and on a PUBLISHED day a request its current issued version never held, now taken off, is left out of it (owner,
-   D174, 25 Sep 26): filed since and taken off again is no change (filingSame below), so the four signed before it was
-   filed hold again once it is taken off (D103, AM11) — keyed in, the round trip read unsigned beside "0 pending". */
+/* …and on a PUBLISHED day a request "taken off" that its current issued version never held (D174) or held "taken off"
+   too (D176) is left out of it: neither face shows it, so it is no change (filingSame below) — the four signed before it
+   was filed hold again once it is taken off (D103, AM11), and the four signed beside it hold when it is deleted or
+   re-dated off the day. Keyed in, the round trip read unsigned beside "0 pending". A change of it that IS one (woken to
+   a live request) still moves the binding through `pd`, the whole pending comparison. */
 export function filingKey(di:any):string{di=+di;const f=dayFilingFingerprint(di), iss=issuedFilOf(di);
-  return Object.keys(f).filter((k:any)=>f[k]&&!(iss&&filingSame(iss,k,f[k])&&!Object.prototype.hasOwnProperty.call(iss,k))).sort().map((k:any)=>`${k}=${f[k]}`).join(';');}
+  return Object.keys(f).filter((k:any)=>f[k]&&!(iss&&f[k]==='r'&&filingSame(iss,k,'r'))).sort().map((k:any)=>`${k}=${f[k]}`).join(';');}
 /* the current issued version's filing record, on a published day; null on a day not yet published (or one whose
    issued version cannot be read) */
 function issuedFilOf(di:any):any{di=+di;if(!dayApproved(di))return null;
@@ -364,17 +366,21 @@ function issuedFilOf(di:any):any{di=+di;if(!dayApproved(di))return null;
    out from under Unavailable) shows exactly what was published: D98, nothing pending. It stays silenced, as ✕ has left
    every request since 26 Aug 26. A request the record DID hold — waiting ('') or on the programme ('g') — and now taken
    off still differs: the issued day showed it. Absent still matches '' as before (a request filed since and not
-   actioned, e.g. a leave). ONE rule, read by the comparison (filingDelta), the load's put-back (filingRestorePlan) and
-   the signature (filingKey), so none of them can disagree about it. */
-function filingSame(was:any,id:any,now:string):boolean{
+   actioned, e.g. a leave). AND ITS MIRROR (owner, D176, 25 Sep 26 — "Question 1 make it 0"): a request the record holds
+   "taken off", since deleted or re-dated off the day (`present` false — no longer in this day's filing), is no difference
+   either: the published face showed it dormant, and nothing shows it now. The same request still on the day and woken
+   (retyped, so it flags again) stays a change. ONE rule, read by the comparison (filingDelta), the load's put-back
+   (filingRestorePlan) and the signature (filingKey), so none of them can disagree about it. */
+function filingSame(was:any,id:any,now:string,present=true):boolean{
   const has=Object.prototype.hasOwnProperty.call(was||{},id), a=has?String(was[id]||''):'';
-  return a===now||(!has&&now==='r');}
+  return a===now||(!has&&now==='r')||(has&&a==='r'&&!present);}
 /* the filing axis: entries for any input whose frozen state differs from now.
-   A same-actual-state round trip (r→u→r) is a no-op; absent→u→r is one too since D174 (filingSame); ''→u→r is a delta. */
+   A same-actual-state round trip (r→u→r) is a no-op; absent→u→r is one too since D174, and r→gone since D176
+   (filingSame); ''→u→r is a delta. */
 function filingDelta(di:any,issuedFil:any):DeltaEntry[]{
   const now=dayFilingFingerprint(di), was=issuedFil||{}, out:DeltaEntry[]=[];
   const ids=new Set([...Object.keys(now),...Object.keys(was)]);
-  ids.forEach((id:any)=>{ const a=was[id]||'', b=now[id]||''; if(!filingSame(was,id,b))out.push({addr:`inp:${di}.${id}`,kind:'input',from:a,to:b}); });
+  ids.forEach((id:any)=>{ const a=was[id]||'', b=now[id]||''; if(!filingSame(was,id,b,Object.prototype.hasOwnProperty.call(now,id)))out.push({addr:`inp:${di}.${id}`,kind:'input',from:a,to:b}); });
   return out;}
 /* THE OIL EVIDENCE AXIS ([OIL-AUTO-REMOVE] §7.2 / §9.2). A mark on the day
    record is snapshot-able but NOT publishable on its own: canonicalContent is
