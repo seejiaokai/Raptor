@@ -134,7 +134,7 @@ export function sbInputsHTML(d:any,di:any){
   if(!rows.length)return h+`<div class="sbi-empty">No personal inputs submitted for this day.</div>`;
   const row=(inp:any)=>{
     const pk=PEOPLE[inp.person]
-      ? `<span class="seat">${puck(inp.person,sevOf(di,inp.person),true,chipOf(di,inp.person))}</span>`
+      ? `<span class="seat">${puck(inp.person,puckMarks(di,inp.person).sev,true,puckMarks(di,inp.person).flag)}</span>`
       : `<span class="itxt">${esc(inp.person)}</span>`;
     const t=inp.allday?(inp.endDate?`all day · till ${esc(inp.endDate)}`:'all day')
                       :`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
@@ -655,7 +655,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
          other puck he is on — which is the ONLY place an OD earner is visible.
          It is addressed by the claim's OWN item since O-1, so the figure shows
          here only when this claim is one of the things that earned it. */
-      : `<span class="seat"${seatable?` data-inpseat="${esc(inpId(inp))}"`:''}>${puck(inp.person,sevOf(di,inp.person),true,chipOf(di,inp.person),false,null,oilSeatDeco(di,inp.person,'',inputItemKey(inpId(inp))).oil)}</span>`)
+      : `<span class="seat"${seatable?` data-inpseat="${esc(inpId(inp))}"`:''}>${puck(inp.person,puckMarks(di,inp.person).sev,true,puckMarks(di,inp.person).flag,false,null,oilSeatDeco(di,inp.person,'',inputItemKey(inpId(inp))).oil)}</span>`)
     : `<span class="itxt">${esc(inp.person)}</span>`;
   if(RO&&!oilItem){
     const t=inp.allday?'all day':`${hhmm(inp.s)} – ${hhmm(inp.e)}`;

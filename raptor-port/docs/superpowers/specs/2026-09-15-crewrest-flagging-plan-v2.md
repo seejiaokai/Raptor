@@ -72,6 +72,12 @@ not merely the amended date.
 
 ## 4. A third kind of state — current safety facts are never versioned
 
+> **SET ASIDE 25–26 Sep 26 by the owner's D179 ("freeze everything for now", provisional — `.claude/rules/decisions/scheduler.md`).**
+> This section was a design decision, never a ruling of his; the newer word wins. A medical downchit or a lapsed
+> qualification after publishing now moves the working copy only and reads pending for the admin; the issued face keeps
+> what it went out with (`docs/engine-rules.md` §Publishing, "A PUBLISHED DAY KEEPS WHAT IT WENT OUT WITH"). Kept below
+> unchanged, as the record of the earlier design.
+
 Medical fitness and qualifications are **not** part of a schedule version — they
 flag on the OFFICIAL programme **immediately**, no publish needed (you don't
 "publish" someone going unfit or a qual lapsing). The OFFICIAL document = signed

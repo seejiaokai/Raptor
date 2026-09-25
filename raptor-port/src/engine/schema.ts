@@ -443,6 +443,11 @@ export type DaySnapshot = {
   /** The day's slice of the official warnings at issue — engine (`freezeWarn`, D179): the issued face shows these; the
    *  pending comparison measures today's judgement against them. */
   w?: WarnSlice
+  /** The men on the day as the roster drew them at issue (id → CAT, seat, posting flags) — engine (`freezeWarn`): compared
+   *  by the pending comparison, not drawn (D179; the face still draws them live — [LATE-PUB-FACE-LIVE]). */
+  pa?: Record<string, { q: any; seat: any; pers: boolean; san: boolean; sxo: boolean; archived: boolean }>
+  /** The rule values the issued face prints (a blank brief's lead) at issue — engine (`freezeWarn`): compared, not drawn. */
+  rv?: { briefLead: number }
 }
 /** One day's slice of the warning bundle (engine/validate.ts `warnSliceOf`): its warning list, and per person the ring
  *  severity, the printed flag, the dashed ring and the next-day crew-rest mark it causes. Empty parts are null. */
@@ -452,6 +457,8 @@ export type WarnSlice = {
   chip: Record<string, string> | null
   dash: Record<string, boolean> | null
   trace: Record<string, any> | null
+  /** person id → the callsign its warnings were worded with (a rename is a label, never a change) */
+  cs?: Record<string, string>
 }
 
 /** A per-day alternate draft blob — engine (drafts.ts). Since 15 Sep 26 (item 1a)

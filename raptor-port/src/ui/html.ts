@@ -183,9 +183,10 @@ export function dayIssuedHTML(di:any){
   }
   /* the issued face now OVERLAYS the OFFICIAL flags (§5.4/§8): OFW un-suppresses the
      flag helpers + warning list on this frozen face, and withOfficialWarn points the
-     warning reads at the OFFICIAL bundle — the version validated against this very
-     snapshot — so the flags match the frozen text. Content stays byte-frozen (PV) and
-     the write surfaces stay stripped (PV alone gates those). */
+     warning reads at the FACE — the warnings this version stored when it went out
+     ([LEAVE-LATE-PUBLISHED], D179: frozen, as its content is) — so the flags match the
+     frozen text. Content stays byte-frozen (PV) and the write surfaces stay stripped
+     (PV alone gates those). */
   /* the "Not Yet Signed" marker is a WORKING-COPY affordance only (owner, 16 Sep 26):
      the published/issued face stays TRUE until the working copy is published, so marking
      it "not yet signed" was confusing. dayHTML renders it only when !PV (the edit/working

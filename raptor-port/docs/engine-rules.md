@@ -2352,6 +2352,44 @@ line (`docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`).**
 - **A day template is refused on a published day (D96).** `applyDayTpl` returns false on a published day — see
   §Day templates.
 
+**A PUBLISHED DAY KEEPS WHAT IT WENT OUT WITH (26 Sep 26 — owner, D177, D178, D179 "freeze everything for now",
+provisional; `OUTSTANDING.md` `[LEAVE-LATE-PUBLISHED]`; plan `docs/superpowers/plans/2026-09-25-late-published-plan.md`).**
+Every change that would move a published day's face now waits for the admin: it reads pending, the four fall (D103), and
+the face keeps what it was issued with until the next AL (or Unpublish and publish again).
+- **What an issued version freezes, beside its content, marks, filings and OIL:** `snap.inp` — every input covering the
+  day, a full copy (`publish.ts dayInputsFrozen`); `snap.w` — the day's slice of the official warnings as they stood the
+  moment it went out (the warning list, rings, flags, dashes; `freezeWarn`, the validator judging the week once through
+  `HOOKS.issuedWarn`), with `w.cs` the callsigns its warnings were worded with; `snap.pa` / `snap.rv` — the men on the day
+  as the roster drew them and the rule values it prints (compared, not drawn — `[LATE-PUB-FACE-LIVE]`).
+- **The inputs on a date — ONE reader, `inputs.ts inputsOn(dt)`** (with `inputOn`, `inputOnAny`). While a frozen version is
+  installed (`withFrozenInputs` — by `ui/html.ts withDaySnap` for an issued version, and by `validate.ts withIssuedWeek`
+  for every approved date plus the stashed neighbours' `weekctx.ts windowInputs`) it answers from that version; otherwise
+  from the live records. Every schedule-surface and validator reader goes through it; the records' own readers (the
+  Inputs page, the medical tracker, the Leave War, the live filing and OIL candidates) stay on `INPUTS`.
+- **Medical freezes too (D179):** `events.ts inpShow` no longer exempts a downchit from the frozen filing, and the frozen
+  copies carry its dates — the crew-rest plan's "current safety facts are never versioned" (§4) is set aside.
+- **The input-details axis** (`publish.ts inputAxes` → `inputs.ts frozenInputMatch`): an input covering the day whose
+  details (`inpDetailKey`: whose, type, the real dates, all day / half / times, remarks, SANS offer — not its filing, id,
+  lateness stamp, war tag, paperwork or OIL answer) differ from the version's copy — filed since, edited, deleted,
+  re-dated on or off, handed to another man. Matched BY CONTENT first, so a record replaced by an identical one (a Leave
+  War move, a medical tail) is no change on either axis; then by id; an upchit is out (the downchit it trims is the
+  change); a request taken off on one side and absent, or taken off on both, shows on neither face (D174, D176).
+- **One act, one item** (D109): `dayPendingItemsIn` folds an input's filing and details into ONE item, with the units of
+  the request row its edit re-landed (`unitRequestSrc`), the ground programme's order when that row is all that moved in
+  it (`groundOrderMovedOnlyBy`), and the OIL line when the inputs alone moved it — crowd included
+  (`oilev.ts oilMovedInputsOnly`; the line says "what the day earns changes with it").
+- **The warnings axis** (`warnDelta`, kind `warn`): today's official judgement of the issued day against `snap.w` —
+  a quals, posting or rule change, or a neighbour day, that would change what the day flags. Kept OUT of the official
+  pass's own gate (`dayDeltaCore`), so the validator never depends on its output. The official pass reads each published
+  date's frozen inputs, so the axis never moves on the day's own input changes (those are the details axis's). Two things
+  stay LIVE by design: the next-day crew-rest mark (`trace` — it points at another day, Fable F4) and `LIVE_ON_FACE`
+  (the Leave War's "no period" advisory, D19). A rename is a label: warnings compare with callsigns keyed out
+  (`warnMsgKey`), and the face re-words a frozen warning with today's callsign.
+- **The face** (`validate.ts faceWarn`, what `officialWarn()` and `withOfficialWarn` now read): the official bundle with
+  each published day's slice replaced by its current version's `w`; `officialRaw()` is the detector.
+- **The load** ("Load onto working copy") cannot put a member's input back — it is his record, and may cover other days
+  (AM1): an input change stays pending after a load, and "Discard N edits" does not count it.
+
 **A REQUEST'S ROW AND ITS FILING ON A PUBLISHED DAY (25 Sep 26, evening — owner, D174 and D175, on their own branch
 before accounts; evidence `docs/handpass/2026-09-25-req-one-row.md`).**
 - **Filed since, then taken off, is no change (D174, AM20).** A request the current issued version's filing record does

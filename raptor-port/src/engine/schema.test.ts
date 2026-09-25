@@ -125,10 +125,12 @@ const SIGNBIND: Spec = { dg: 'string', iso: 'string', base: 'string', rev: 'stri
 /* a warning is the validator's own record (engine/validate.ts: sev, code, who, day, di, msg, key and per-rule extras) —
    checked for shape loosely; the rings, flags, dashes and traces are per-person maps, null when empty */
 const ANYW: Spec = { $or: ['string', 'number', 'boolean', 'object'] }
-const WARNSLICE: Spec = { byDay: { $or: [{ di: 'number', dow: 'string', warns: [{ $map: ANYW }] }, 'object'] }, sev: 'object', chip: 'object', dash: 'object', trace: 'object' }
+const WARNSLICE: Spec = { byDay: { $or: [{ di: 'number', dow: 'string', warns: [{ $map: ANYW }] }, 'object'] }, sev: 'object', chip: 'object', dash: 'object', trace: 'object', cs: { $opt: { $map: 'string' } } }
+/* the men on the day as the roster drew them, and the rule values the face prints (compared, not frozen — D179) */
+const PEOPLEATTRS: Spec = { $map: { q: { $or: ['string', 'object'] }, seat: { $or: ['string', 'object'] }, pers: 'boolean', san: 'boolean', sxo: 'boolean', archived: 'boolean' } }
 const DAYSNAP: Spec = { d: DAY, c: { $map: 'number' }, fil: { $opt: { $map: 'string' } }, id: 'string?', sign: { $opt: { $map: SIGNSET } },   // sign: the Original's four, kept since 25 Sep 26 (D95, D102)
   /* the day's inputs and warnings as issued ([LEAVE-LATE-PUBLISHED], D177–D179) */
-  inp: { $opt: { $map: inputSpec(true) } }, w: { $opt: WARNSLICE } }
+  inp: { $opt: { $map: inputSpec(true) } }, w: { $opt: WARNSLICE }, pa: { $opt: PEOPLEATTRS }, rv: { $opt: { briefLead: 'number' } } }
 /* Phase 2 AlRecord: SINGLE-DAY, keyed by its immutable verId; the canonical
    `diff` replaces the old `keys` list, and there is no n/days/n0/adds/structAdds. */
 const ANYV: Spec = { $or: ['string', 'number', 'boolean'] }

@@ -641,6 +641,14 @@ unchanged. The approved mock-up: `docs/mock/amend-seat-marks.html` (its `C_CSS`)
 
 ## The pending list, the one jump, and what the day head says (owner, 25 Sep 26 — the amendment batch)
 
+**An input's line, and the warnings line ([LEAVE-LATE-PUBLISHED], D177–D179, 26 Sep 26).** An input changed since the day
+was issued is ONE line — whose and what, then what moved: "Bane · LL — filed", "Taipan · OL — all day → 09:00–12:00",
+"… Bane → Hunter", "… deleted", "… moved off this day"; a request whose filing moved too keeps the request's words ("on
+the programme → deleted", D114). When the same edit moved what the day earns, the line ends "· what the day earns changes
+with it". The day's warnings judged today against the ones it went out with read "Warning · <the warning> — new /
+cleared", or "Warnings on this day" with a line per warning; a change in a man's CAT or a printed rule value that moves no
+warning reads "Warnings on this day — a ring or mark changed". None of these has a place of its own to go to (no tap).
+
 **"N pending ▾" opens the list of what will go out (D99, D100).** On a PUBLISHED day's working copy, on the edit
 week's day head and the board's publish strip (`html.ts dayStatHTML`), for the scheduler, the count is a button
 (`data-pendlist`) — never on View-only Sched, never under a preview, never on a draft day (nothing there goes out as an

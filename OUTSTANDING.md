@@ -71,7 +71,7 @@ first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [T
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
 The amendment batch's look — HIS ORDER (D173): (1) [LOOK-435] — D114's full check (DONE 25 Sep 26, evidence §9; [REQUEST-OFF-ONE] archived), his look, "merge live" of PR #435 (MERGED 25 Sep 26); (2) [ACCOUNTS] on a new branch; (3) [DRAFT-PENDING] — the one changes window, on top of accounts; (4) one full check of 2 and 3. Found by D114's reads, older than it: [REQ-TWO-ROWS] and [REQ-DECLINED-PENDING] — HIS ORDER (D174, D175) — BUILT on `claude/request-one-row` (FULL check done, archived; his look and "merge live" next, BEFORE [ACCOUNTS]); its look card's two questions answered: [REQ-DECLINED-DELETED] (D176 — built there, archived) and [LEAVE-LATE-PUBLISHED] (D177 — its OWN branch; scope: the sweep in `raptor-port/docs/superpowers/specs/2026-09-25-published-face-live-inputs.md`; its place in his order to be asked — the agent recommends right after `claude/request-one-row` merges, before [ACCOUNTS]); then [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). The amendment batch (D91–D111) is BUILT on `claude/amendment-batch`, its pull request waiting for his look and "merge live" — its eleven items closed and archived 25 Sep 26 (`OUTSTANDING-ARCHIVE.md`; the spec `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`); left from that area: [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
-[RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS], [RULING-HOMES-AUDIT] and [HANDOFF-SHAPE-GUARD] (any time, docs only),
+[RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS], [RULING-HOMES-AUDIT] and [HANDOFF-SHAPE-GUARD] (any time, docs only), [LATE-PUB-FACE-LIVE] (his three questions on `[LEAVE-LATE-PUBLISHED]`'s look card),
 [BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
 FULL-tier build, any time).
 
@@ -1000,6 +1000,24 @@ checks HANDOFF.md's shape — every `<!-- now:… -->` has its `<!-- /now -->` b
 headings `## Now`, `## Next, in order`, `## Gate baseline` are each present once, in that order. Docs/scripts only; its
 own small change (a script under the gate, so a docs-only PR).
 
+### [LATE-PUB-FACE-LIVE] Three things still DRAW live on a published day's face — questions for him on the look card (26 Sep 26)
+Found by Astra's and Fable's reads of the `[LEAVE-LATE-PUBLISHED]` plan; each is a place where D179 ("freeze everything
+for now") meets another ruling, so each is his call (newest-instruction-wins does not settle a case the newer ruling does
+not clearly cover). **Built meanwhile:** 1 and 2 are COMPARED — a change reads "Warnings on this day · …" pending and
+takes the four down, so nothing moves silently — but the face still draws them live.
+1. **A man's CAT letter / seat colour on a puck** reads the roster live (`html.ts puck` → PEOPLE q/seat/pers/san/sxo).
+   Freezing it means keeping a copy of the roster per published version.
+2. **A printed rule value** — a blank brief's time (`VCONF.briefLead`, in `html.ts`, `board.ts`, `export.ts`). Freezing it
+   means keeping a copy of the rules per published version, which his **7 Aug 26 "no rule versioning"** invariant forbids
+   (D48 held that a marker is not versioning; a stored rule value is closer to it). **The clash to put to him:** D179 says
+   everything freezes; the 7 Aug invariant says no rule versions. Recommended: leave both drawing live and pending (as
+   built) — the admin is told, and re-issuing makes the face current.
+3. **The next-day crew-rest mark** (the dotted ring "his day-end breaks tomorrow") on a published day follows the day it
+   points at — live while that day is a draft (Fable F4). Frozen, every edit to a draft Tuesday would take a published
+   Monday's four down and the mark could point at a warning that is gone. Built that way; show him and ask.
+Also outside the question, noted by the sweep: the desktop next-week preview on View-only Sched shows next week's working
+copy even for a published day (`peek.ts`) — Astra recommends the issued content there too (its own small item if he wants it).
+
 ### [RULING-HOMES-AUDIT] Check once that each ruling's named home really carries it (filed 24 Sep 26)
 Found in the 24 Sep 26 skills review (D146): D16 and D17 named `raptor-port/docs/bug-check-order.md` as their home,
 and no commit had ever written them there (the review wrote them in). The document gate checks only that a named
@@ -1176,6 +1194,11 @@ leaves 'r' alone), its Accept does nothing, and deleting the request leaves the 
 'g' when its own row stands on a loaded day, or `dropInputRow` removes any row with the deleted id whatever the filing.
 
 ### [LEAVE-LATE-PUBLISHED] A leave filed after a day is published shows on its published face at once, with nothing pending — a question for him (25 Sep 26)
+**BUILT 26 Sep 26 (overnight, D181) on `claude/leave-late-published` — its full check and his look next.** A published
+version now freezes the day's inputs (`snap.inp`) and its warnings (`snap.w`); the issued face reads only frozen things;
+the pending comparison gains the input-details axis and the warnings axis (one item per act). Plan
+`raptor-port/docs/superpowers/plans/2026-09-25-late-published-plan.md`; the reviews `raptor-port/docs/handpass/2026-09-25-late-pub-*`.
+What still draws live on the issued face, and why: `[LATE-PUB-FACE-LIVE]`.
 **WIDENED 25 Sep 26 — D178:** EVERY member input change after publishing (filed, edited, deleted, moved) reads pending for the
 admin, and the published face keeps what it was issued with; the admin publishes an AL, or Unpublishes and publishes again
 if it affects no one. **What stays live — D179 ("freeze everything for now"): nothing.** Medical downchits and a lapsed

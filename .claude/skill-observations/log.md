@@ -314,3 +314,33 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In the disposition step, split "reproduce" into two checks: (a) the observed behaviour happens, and (b) the reviewer's stated reason it is wrong holds — enumerate every reader of the state the finding says is "unchanged" / "invisible" (renderers, validators, availability, downstream consumers) and probe each. Record findings that fail (b) as "not a defect — checked", with the reader that disproves them, and pin the correct behaviour with a test so a later rule cannot absorb it.
 
 **Principle:** A finding is two claims — "this happens" and "this is wrong because…". Reproduction usually tests only the first. The second is where false positives live, and a false positive with a ready-made fix is more dangerous than a missed finding, because it arrives looking verified.
+
+### Observation 254: A background test run over files still being edited reports failures that are not there
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** Overnight build of [LEAVE-LATE-PUBLISHED] (D181); a full unit run was started in the background after step 1, and step 2's source edits were applied while it ran.
+**Skill:** New skill candidate: background verification discipline (or raptor-executor / bug-check-order §5 "between fix rounds")
+**Type:** open-source
+**Phase/Area:** verification while building
+
+**Issue:** The runner loads each test file (and its imports) when it reaches it, not at start. Source edits made during the run reached the later test files half-applied: 113 failures, every one a phantom — a clean re-run of the same code was 4 of 5,939, all expected. Only the timing showed which were real; the failure list itself looked like genuine regressions.
+
+**Suggested improvement:** When a full suite runs in the background, stage the next edits in a scratch file (a script of exact replacements) and apply them only after the run ends; or run it in a separate worktree. A run that overlapped any source edit is discarded, never triaged.
+
+**Principle:** A test result is evidence only about the exact code it loaded. If the code changed while the run was loading it, the result describes no revision at all — throw it away rather than read it.
+
+### Observation 255: The one handoff file lost a whole section to a span replace, and the document gate passed it into main
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** Picking up from HANDOFF.md at the start of the overnight session; the `## Next, in order` section, a block's end marker and the `## Gate baseline` heading were missing on main.
+**Skill:** session-handoff (and the docs gate it relies on)
+**Type:** internal
+**Phase/Area:** writing / checking HANDOFF.md
+
+**Issue:** A replacement anchored on text inside one `## Now` block ran to text in the gate-baseline paragraph, silently deleting everything between (commit 119dff45). Three later commits and a merge carried the damage; `npm run docsize` checks backlog items and rulings line by line but not the handoff file's own shape. The next chat only noticed because its own block write needed the missing end marker.
+
+**Suggested improvement:** The handoff skill re-reads HANDOFF.md's headings and markers after every write and compares them with before (one `<!-- /now -->` per `<!-- now:`, each of `## Now`, `## Next, in order`, `## Gate baseline` once, in order); the gate enforces the same (filed as OUTSTANDING.md [HANDOFF-SHAPE-GUARD]).
+
+**Principle:** A file that every session starts from needs a structural invariant checked by machine after each edit; a content check that ignores the file's skeleton lets the skeleton disappear unnoticed.

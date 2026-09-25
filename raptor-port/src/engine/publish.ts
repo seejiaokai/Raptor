@@ -1,5 +1,6 @@
 import { DAYS } from './data'
 import { PEOPLE } from './people'
+import { VCONF } from './rules'
 import { keyDay, uniqDays } from './keys'
 import { isScheduler } from './people'
 import { HOOKS } from './hooks'
@@ -147,7 +148,7 @@ export function dayALs(di:any){di=+di;return SCHED.als.filter((a:any)=>+a.di===d
 /* per-kind counts off a frozen canonical diff — for the AL history and the
    pending summary (kinds: add | delete | change | move | input). */
 export function diffCounts(diff:any){const d=diff||[];const by=(k:any)=>d.filter((e:any)=>e.kind===k).length;
-  return {total:d.length,add:by('add'),del:by('delete'),chg:by('change'),mov:by('move'),inp:by('input'),oil:by('oil')};}
+  return {total:d.length,add:by('add'),del:by('delete'),chg:by('change'),mov:by('move'),inp:by('input'),oil:by('oil'),warn:by('warn')};}
 /* the verId a day is currently showing. The stamped cur[di] counts only while
    its snapshot still resolves; otherwise fall back to the NEWEST surviving issue
    for this day by per-day SEQ, then the Original, then null (never published).
@@ -201,7 +202,7 @@ export function dayShownPendCount(di:any){di=+di;return dayApproved(di)?dayPendi
    it on) the programme (owner, D114, 25 Sep 26: "6 yes"). The record keeps both entries; the person counts one. */
 /* `val`: an input's details changed since the day was issued — its own item, or folded into its filing's (D178); `rows`:
    the units of the request row that edit re-landed, folded into it */
-export type PendItem = PendUnit & { axis: 'content'|'filing'|'input'|'oil'|'warn', inp?: DeltaEntry, val?: DeltaEntry, rows?: PendUnit[] };
+export type PendItem = PendUnit & { axis: 'content'|'filing'|'input'|'oil'|'warn', inp?: DeltaEntry, val?: DeltaEntry, rows?: PendUnit[], oilFold?: boolean };
 export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
   if(!((sc&&sc.dayOK)||{})[di])return [];
   const ver=dayCurVerIn(sc,di,weekKey), snap=ver!=null?daySnapIn(sc,di,ver,weekKey):null;
@@ -230,14 +231,18 @@ export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
     if(g.val){item.val=g.val;
       for(let i=items.length-1;i>=0;i--){const u:any=items[i];
         if(u===item||u.axis!=='content'||u.inp||u.val)continue;
-        if(unitRequestSrc(u,snap.d,DAYS[di])===id){items.splice(i,1);(item.rows=item.rows||[]).push(u);}}}});
+        /* its re-landed row's own fields, and the ground programme's order when that row is all that moved in it (a
+           request's new times re-sort it — the same edit) */
+        if(unitRequestSrc(u,snap.d,DAYS[di])===id||(u.kind==='move'&&/^mov:\d+\.ground$/.test(String((u.entry&&u.entry.addr)||''))&&groundOrderMovedOnlyBy(snap.d,DAYS[di],id))){items.splice(i,1);(item.rows=item.rows||[]).push(u);}}}});
   /* the OIL line folds into the inputs that moved it, when they are all that moved it (oilev.ts oilMovedInputsOnly) */
   const oil=oilDelta(di,snap.d);
   if(oil.length){const w=(snap.d||{}).oilev, mem=!!(w&&(w.mem||w.earns));
     const moved=oilMovedInputsOnly(oilEvidence(di),DAYS[di],w,snap.d,mem);
     const who=new Set<string>(); ax.changed.forEach((x:any)=>{if(x.was)who.add(String(x.was.person)); if(x.now)who.add(String(x.now.person));});
     const fold=!!moved&&moved.iids.every((id:string)=>{const g=byId.get(id); return !!(g&&g.val);})&&moved.people.every((p:string)=>who.has(p));
-    if(!fold)oil.forEach((e:any)=>items.push({kind:'oil',addr:'',jump:[],keys:[],entry:e,axis:'oil'}));}
+    if(!fold)oil.forEach((e:any)=>items.push({kind:'oil',addr:'',jump:[],keys:[],entry:e,axis:'oil'}));
+    /* the record keeps the OIL entry; the line the admin reads says it moves with the input (D45: he SEES it) */
+    else{const first:any=items.find((u:any)=>!!u.val); if(first)first.oilFold=true;}}
   /* …and the warnings the issued face froze, when today's judgement of the issued day differs (the live book only —
      a stashed week has no official pass of its own) */
   if(sc===SCHED)warnDelta(di).forEach((e:any)=>items.push({kind:'warn',addr:'',jump:[],keys:[],entry:e,axis:'warn'}));
@@ -245,6 +250,12 @@ export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
 /* the request a content unit belongs to, when the unit is on a field an input's re-landing writes — its ground row's
    words, times, remarks or holder (restore.ts dayKeys: gr:di.ri.{prog,str,end,rmks}, g:di.ri) — '' otherwise. A removal
    reads the issued day's row, anything else the live day's. Extras (g:di.ri.xN) are a scheduler's own and never fold. */
+/* is the ground programme's order the same on both sides once the rows landed from request `id` are left out? — then
+   its "order changed" is that request's re-landing, not a reorder of anyone else's */
+function groundOrderMovedOnlyBy(issuedD:any,liveD:any,id:string):boolean{
+  const ids=(d:any)=>(((d&&d.ground)||[]) as any[]).filter((r:any)=>r&&String(r.src||'')!==id).map((r:any)=>r.rid||'');
+  const a=ids(issuedD), b=ids(liveD), both=new Set(a.filter((x:any)=>b.includes(x)));
+  return a.filter((x:any)=>both.has(x)).join('|')===b.filter((x:any)=>both.has(x)).join('|');}
 function unitRequestSrc(u:any,issuedD:any,liveD:any):string{
   const a=String((u&&u.entry&&u.entry.addr)||(u&&u.addr)||'');
   const m=/^gr:\d+\.(\d+)\.(?:prog|str|end|rmks)$/.exec(a)||/^g:\d+\.(\d+)$/.exec(a);
@@ -519,13 +530,42 @@ export function dayDeltaCore(di:any):DeltaEntry[]{di=+di;return passMemo('dc',di
    the day's own input changes — the input axis counts those — only on what is NOT the day's: people, rules, the days
    around it. The validator lends the two bodies through HOOKS at load (publish.ts cannot import it — validate.ts imports
    this file); unset (an engine-only test), nothing is frozen and the face reads the official pass, as before. */
-function freezeWarn(snap:any,di:number){ if(!HOOKS.issuedWarn||!snap)return; const w=HOOKS.issuedWarn(di); if(w)snap.w=w; }
+function freezeWarn(snap:any,di:number){ if(!HOOKS.issuedWarn||!snap)return; const w=HOOKS.issuedWarn(di); if(!w)return;
+  /* the callsigns its warnings were worded with, by person — so a rename (a label, never a change: 14 Sep 26) reads the
+     same warning, and the face can re-word it with today's callsign (validate.ts faceWarn; Astra's plan read #6) */
+  w.cs=warnCallsigns(w);
+  snap.w=w;
+  /* …and what else of the day's face is NOT the day's own data (Astra's plan read #3): the qualifications, seat and
+     posting of every man on it (the puck's CAT letter and colour) and the rule values it prints (a blank brief's time).
+     These still DRAW live — freezing them is keeping a copy of the rules per version, which his 7 Aug 26 "no rule
+     versioning" forbids; put to him (OUTSTANDING.md [LATE-PUB-FACE-LIVE]) — but they are COMPARED, so a change that
+     would move the published face reads pending instead of moving it silently. */
+  snap.pa=dayPeopleAttrs(snap.d); snap.rv=faceRuleVals(); }
+/* every man on a day (a stored person id anywhere in its content), with what his puck draws from the roster */
+function dayPeopleAttrs(d:any):any{const out:any={};
+  const walk=(v:any,k:string)=>{ if(k==='oilev')return;
+    if(typeof v==='string'){ const p=(PEOPLE as any)[v]; if(p&&!out[v])out[v]={q:p.q??null,seat:p.seat??null,pers:!!p.pers,san:!!p.san,sxo:!!p.sxo,archived:!!p.archived}; return; }
+    if(Array.isArray(v)){ v.forEach((x:any)=>walk(x,'')); return; }
+    if(v&&typeof v==='object')Object.keys(v).forEach((kk:any)=>walk(v[kk],kk)); };
+  walk(d,''); return out;}
+/* the rule values an issued face prints rather than judges (the blank brief's time — html.ts, board.ts, export.ts) */
+function faceRuleVals():any{return {briefLead:(VCONF as any).briefLead};}
+/* person id → the callsign a slice's warnings name him by */
+export function warnCallsigns(w:any):any{const out:any={};
+  (((w&&w.byDay&&w.byDay.warns)||[]) as any[]).forEach((x:any)=>{ ([] as any[]).concat(x.who||[]).forEach((id:any)=>{ const p=(PEOPLE as any)[id]; if(p&&p.cs)out[id]=p.cs; }); });
+  return out;}
+/* a warning's words with each named man's callsign replaced by his id — the same warning under two callsigns keys the
+   same (a rename is a label) */
+export function warnMsgKey(msg:any,cs:any):string{let m=String(msg||'');
+  Object.keys(cs||{}).sort((a,b)=>String(cs[b]).length-String(cs[a]).length).forEach((id:any)=>{ const c=String(cs[id]||''); if(c)m=m.split(c).join('@'+id); });
+  return m;}
 /* the key a warnings slice is compared on: every warning (sorted, so the validator's order never reads as a change),
    the rings, the flags, the dashes and the traces */
-export function warnSliceKey(w:any):string{
+export function warnSliceKey(w:any,cs?:any):string{
   if(!w)return '';
-  const warns=((w.byDay&&w.byDay.warns)||[]).map((x:any)=>stableJson(x)).sort();
-  return stableJson({warns,sev:w.sev||{},chip:w.chip||{},dash:w.dash||{},trace:w.trace||{}});}
+  const names=cs||w.cs||warnCallsigns(w);
+  const warns=((w.byDay&&w.byDay.warns)||[]).map((x:any)=>stableJson({...x,msg:warnMsgKey(x.msg,names)})).sort();
+  return stableJson({warns,sev:w.sev||{},chip:w.chip||{},dash:w.dash||{}});}
 const WKEY=new WeakMap<any,string>();
 function storedWarnKey(w:any):string{let k=WKEY.get(w); if(k===undefined){k=warnSliceKey(w); WKEY.set(w,k);} return k;}
 function warnDelta(di:any):DeltaEntry[]{di=+di;
@@ -533,7 +573,11 @@ function warnDelta(di:any):DeltaEntry[]{di=+di;
   const ver=dayCurVer(di), snap=ver!=null?daySnapOf(di,ver):null;
   if(!snap||!snap.w)return [];
   const now=HOOKS.warnNow(di); if(now==null)return [];
-  const was=storedWarnKey(snap.w), k=warnSliceKey(now);
+  /* the face beyond the warnings, where the version recorded it: the men on it as the roster draws them, the printed
+     rule values */
+  const pa=snap.pa?stableJson(snap.pa):'', rv=snap.rv?stableJson(snap.rv):'';
+  const paNow=snap.pa?stableJson(dayPeopleAttrs(snap.d)):'', rvNow=snap.rv?stableJson(faceRuleVals()):'';
+  const was=storedWarnKey(snap.w)+'\n'+pa+'\n'+rv, k=warnSliceKey(now)+'\n'+paNow+'\n'+rvNow;
   return k===was?[]:[{addr:`warn:${di}`,kind:'warn',from:fp(was),to:fp(k)}];}
 /* ONE REPAINT READS EACH DAY'S COMPARISON ONCE (Fable F9, 25 Sep 26 — measured: five published days signed through
    the app's selects cost one edit ~116 ms more at the phone's 4× slowdown, because D103's binding reads the whole
@@ -1047,7 +1091,7 @@ export function retireIssued(di:any,id:any,opts:any={}):string{di=+di;
   const key=`${id}~${nextRetiredN(id)}`;
   if(opts.append!==false){
     SCHED.retired[key]={id,n:+key.slice(key.lastIndexOf('~')+1),di,iso:parseVerId(id).iso,seq,
-      snap:rec?(rec.snap||{d:rec.d,c:rec.c,fil:rec.fil,inp:rec.inp,w:rec.w}):null,
+      snap:rec?(rec.snap||{d:rec.d,c:rec.c,fil:rec.fil,inp:rec.inp,w:rec.w,pa:rec.pa,rv:rec.rv}):null,
       diff:(rec&&rec.diff)||[],units:rec&&rec.units!=null?rec.units:undefined,ukinds:rec&&rec.ukinds?rec.ukinds:undefined,sign:(rec&&rec.sign)||{},   // units: the item count as it went out (D109; Astra 4)
       at:new Date().toISOString(),by:opts.by??null,
       restoreSeq:opts.restoreSeq,logged:!!opts.logged};

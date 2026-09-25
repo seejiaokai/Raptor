@@ -222,6 +222,16 @@ Everything about a week's publication state, keyed by day index 0..6.
 Synthetic keys ride the same book: `del:<day>.<n>.<kind>` (a deletion),
 `mov:…` (a move), `inp:<day>.<token>` (an input filing).
 
+**A snapshot** (`SCHED.orig[di]`, `SCHED.als[].snap`) — the day as issued: `d` (the day, with its OIL evidence `d.oilev`),
+`c` (its marks), `fil` (each covering input's filing state) and, since 26 Sep 26 (`[LEAVE-LATE-PUBLISHED]`, D177–D179),
+`inp` (a full copy of every input covering the day — the issued face reads these, never the live records), `w` (the day's
+slice of the official warnings as it went out: `byDay`, `sev`, `chip`, `dash`, and `cs` the callsigns its warnings were
+worded with; the next-day crew-rest mark and the Leave War's "no period" advisory are not kept — they stay live), `pa` (the
+men on the day as the roster drew them) and `rv` (the rule values it prints). `pa` and `rv` are compared, not drawn
+(`OUTSTANDING.md` `[LATE-PUB-FACE-LIVE]`). A retired issuance keeps all of them (`publish.ts retireIssued`). Size: a copy of
+a day's few inputs and its warning list per version — measured in the evidence sheet. Declared in `src/engine/schema.ts`
+`DaySnapshot` / `WarnSlice`.
+
 ### The week record — `weekStashSnap()` / the week stash
 
 Two snapshots share one field list (`schedFields()`, `src/state/history.ts` — **14 fields**),

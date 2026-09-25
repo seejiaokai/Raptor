@@ -75,10 +75,11 @@ export function inputOn(iid:any,dt:any):any{
 /* WHAT AN INPUT SAYS ON A SCHEDULE, for "has it changed since the day was issued?" (D178: every member input change
    counts; Fable's scenario design Q4/Q5, 25 Sep 26). What the schedule draws or judges: whose, what type, the dates (as
    real dates — a label and its year anchor can spell one day two ways), all day / half / the times, the remarks, the
-   SANS offer, the OIL answer. NOT the filing state (`acc` — the filing axis compares that, publish.ts filingDelta), the
+   SANS offer. NOT the filing state (`acc` — the filing axis compares that, publish.ts filingDelta), the
    id, the lateness stamp (`mod` — the literal 'now' re-reads as today's date, and an edit that matters moves a field
-   above anyway), the Leave War's provenance tag or the attached paperwork (the Inputs page's, never drawn on a
-   schedule). Keys sorted at every level, so the same record always reads the same. */
+   above anyway), the Leave War's provenance tag, the attached paperwork (the Inputs page's, never drawn on a
+   schedule) or the OIL answer (a map over every date the input covers — Tuesday's answer must not move Monday — and
+   the day's own OIL comparison already reads it; Astra's plan read #2). Keys sorted at every level. */
 export const stableJson=(v:any):string=>{
   if(v==null||typeof v!=='object')return JSON.stringify(v===undefined?null:v);
   if(Array.isArray(v))return '['+v.map(stableJson).join(',')+']';
@@ -88,7 +89,7 @@ export function inpDetailKey(inp:any):string{
   const a=dateOrd(inp.date,inp.yr), b=inp.endDate?dateOrd(inp.endDate,inp.yr):a, all=!!inp.allday;
   return stableJson({person:inp.person||'',type:inp.type||'',a:a==null?String(inp.date||''):a,b:b==null?String(inp.endDate||''):b,
     allday:all,half:inp.half||'',s:all?null:(inp.s??null),e:all?null:(inp.e??null),remarks:inp.remarks||'',
-    sans:inp.sans||null,oil:inp.oil||null});}
+    sans:inp.sans||null});}
 /* THE INPUTS ON A DATE THAT DIFFER FROM A VERSION'S FROZEN COPY ([LEAVE-LATE-PUBLISHED], D178): one entry per input
    whose details moved, or which appeared or went away. An input absent on one side and TAKEN OFF ('r') on the other is
    no difference — neither face shows it (the same rule the filing axis keeps, D174 and D176). Reads the LIVE records

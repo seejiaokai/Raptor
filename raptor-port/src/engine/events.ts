@@ -570,7 +570,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
    past DAYS' own ends (owner ask: continuous rule reading — see weekctx.ts).
    edgeDate hands them the adjacent week's Monday/Sunday date label instead,
    and the global (date-keyed) INPUTS array already carries every authored
-   week's rows, so the tail's existing INPUTS.filter(inputCoversDate...) just
+   week's rows, so the tail's date read (inputsOn — the live records, or a published date's frozen copies) just
    starts finding matches at the week edges it could never reach before. */
 export function collectEvents(){
   return DAYS.map((d:any,di:any)=>buildDay(d,di, DAYS[di+1]?DAYS[di+1].dt:edgeDate(CURWEEK,1), DAYS[di-1]?DAYS[di-1].dt:edgeDate(CURWEEK,-1)));

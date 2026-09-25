@@ -53,6 +53,8 @@ export function ALPanel() {
                  himself the bare count read as a change nobody made. The count
                  was never wrong; it just had to say what it was. */
               if (c.oil) bits.push('what this day earns changed')
+              /* the day's warnings, judged today, differ from the ones it went out with ([LEAVE-LATE-PUBLISHED], D179) */
+              if ((c as any).warn) bits.push('warnings changed')
               return (
                 <div className="al-pubday" key={di}>
                   <span className="al-pd-lbl"><b>{dowShort(di)}</b> · {bits.join(' · ')}</span>
