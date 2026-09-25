@@ -15,6 +15,15 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/trk-smoke-add-race-bug-007eed -->
+### `claude/trk-smoke-add-race-bug-007eed` — `[TRK-SMOKE-ADD-RACE]`, HIS GO (D190); written 25 Sep 26 — verify before use
+- **The job (D190):** does the Tracker lose a name typed into the "+ Add" box (a real bug), and fix the cause, not the
+  wait. It stopped GitHub's checks three times on 25 Sep 26 at the same smoke step. In PARALLEL with the D175 chat:
+  port 4180, rulings D190–D199, never the full checks while that chat runs its own; the second to merge takes `main`
+  in first (D78).
+- **State:** started — the ruling recorded; the investigation under way.
+<!-- /now -->
+
 <!-- now:claude/amendment-batch -->
 ### `claude/amendment-batch` — the amendment batch (PR #435) and his inputs from its look; written 25 Sep 26 — verify before use
 - **Where it started:** D112's overnight build of the 14-item amendment batch (FULL tier, all checked — evidence

@@ -69,7 +69,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SMOKE-ADD-RACE]
-(before the next Tracker change that touches the smoke suite), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
+(NOW -- HIS GO, D190: its own branch, in parallel with the D175 chat), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
 The amendment batch's look — HIS ORDER (D173): (1) [LOOK-435] — D114's full check (DONE 25 Sep 26, evidence §9; [REQUEST-OFF-ONE] archived), his look, "merge live" of PR #435; (2) [ACCOUNTS] on a new branch; (3) [DRAFT-PENDING] — the one changes window, on top of accounts; (4) one full check of 2 and 3. Found by D114's reads, older than it: [REQ-TWO-ROWS] and [REQ-DECLINED-PENDING] — HIS ORDER (D174, D175): their own small branch right after #435 merges, BEFORE [ACCOUNTS]; [REQ-ORPHAN-ROW] (low). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). The amendment batch (D91–D111) is BUILT on `claude/amendment-batch`, its pull request waiting for his look and "merge live" — its eleven items closed and archived 25 Sep 26 (`OUTSTANDING-ARCHIVE.md`; the spec `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`); left from that area: [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] and [RULING-HOMES-AUDIT] (any time, docs only),
@@ -875,7 +875,10 @@ back; the finger left down after a pinch does nothing). Left: his look card, on 
 one line of the fix (the board holding both fingers) is proven only there.
 
 ### [TRK-SMOKE-ADD-RACE] The smoke suite's "+ Add" step can still lose a typed name (24 Sep 26)
-**Place:** after `[TRK-PINCH-ASK]`, before the next Tracker change that touches the smoke suite. Seen twice on
+**Place:** NOW, on its own branch `claude/trk-smoke-add-race-bug-007eed`, in parallel with the D175 chat (HIS GO, D190,
+25 Sep 26 -- it stopped GitHub's checks three times that day at the same step, after "+ Add" on the Tx 2026 syllabus,
+each passing on a re-run; the job is whether the APP loses the typed name, and its cause). *(Was: after
+`[TRK-PINCH-ASK]`, before the next Tracker change that touches the smoke suite.)* Seen twice on
 24 Sep 26: a local smoke run (check 261, an add straight after syllabus switches) and PR #431's first run on his PC
 (check 231, an add straight after a roster pick) — both at the step's own `waitForFunction` on `#dlgInput`, whose
 comment calls it "the residual behind the intermittent TRK-SMOKE timeout after the reset-on-render fix" (the 17 Sep
