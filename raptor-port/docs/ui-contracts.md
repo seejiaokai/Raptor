@@ -659,7 +659,9 @@ re-ordered two. When the crowds behind SEVERAL placeholders changed it is still 
 its line lists each row on its own, each its own tap (Astra's code read, 25 Sep 26). A desk's holder and its extras are two
 places. What goes out (the stored diff) and the marks are unchanged. A replacement in one seat counts one (D113). Taking an accepted request off a published day (✕ on its row) — or
 accepting one onto it — is one change, one line naming the request ("Bane · Meeting: on the programme → taken off"),
-and the issued AL's line reads "1 item · 1 removal" (D114).
+and the issued AL's line reads "1 item · 1 removal" (D114). A request DELETED on the Inputs page is named from its row
+(whose and what — the landing minted the row from the request) and reads "on the programme → deleted"; after a load puts its
+row back, the deletion stays one line of its own, named the same way (the D114 check, 25 Sep 26).
 
 **Who and when (D104).** The newest edit-log row for the change's own cells: the shared account the app records
 until the database brings personal accounts, and its clock (`elogWhen`). A change the page's record does not hold

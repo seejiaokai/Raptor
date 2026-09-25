@@ -2327,7 +2327,9 @@ line (`docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md`).**
   nothing — Astra's code read, 25 Sep 26); a replacement in one seat one (owner, D113,
   25 Sep 26); a request's row and its filing one (✕ on an accepted request's row, or Accept onto a published day —
   owner, D114: `dayPendingItemsIn` pairs the filing with the ground row whose `src` is that request; a filing with no
-  row of its own on the day stays its own item; an issued AL also stores its per-kind split, `ukinds`). A place is a seat (a flying seat, a sim's FCP / RCP, a desk's holder, a ground row's `who`)
+  row of its own on the day stays its own item; an issued AL also stores its per-kind split, `ukinds`; the load's "Discard N edits"
+  — `dayDiscardCount` — pairs the row it puts back with the filing it puts back through the SAME body, `requestRowUnit`,
+  so the confirm reads the day head's number: the D114 check, 25 Sep 26, found it reading 2 beside 1). A place is a seat (a flying seat, a sim's FCP / RCP, a desk's holder, a ground row's `who`)
   or a list (a programme who-list, a desk's or ground row's extras, a sim's passengers or extras), named by row id.
   The list is empty exactly when `dayDelta` is. The STORED diff is unchanged; an issued AL also stores `units`, its
   item count in that unit (`alCount`).

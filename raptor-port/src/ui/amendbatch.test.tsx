@@ -172,7 +172,8 @@ describe('item 6 — "Load onto working copy" puts back what that version had fi
     acceptInput(MON, inp, 'g'); publishDay(MON)
     unacceptInput(MON, inp)                                    // off the programme since the Original
     expect(inp.acc).toBe('r')
-    expect(dayDiscardCount(MON), '"Discard N edits": the row taken off AND its filing').toBe(2)
+    /* the row taken off AND its filing, both put back — ONE edit since D114 ("6 yes", 25 Sep 26), as the day head reads */
+    expect(dayDiscardCount(MON), '"Discard N edits": the row and its filing are one act').toBe(1)
     expect(loadVersionToWorkingCopy(MON, dayCurVer(MON))).toBe(true)
     expect(inp.acc, 'on the programme again').toBe('g')
     expect(dayDelta(MON), 'nothing pending').toEqual([])
@@ -349,5 +350,70 @@ describe('a request taken off (or put on) a published day is ONE change — its 
     inp.acc = 'u'
     expect(dayShownPendCount(MON)).toBe(1)
     expect(dayDelta(MON).map(e => e.kind), 'a filing only').toEqual(['input'])
+  })
+  /* The roll-call's MISSING row (D114-1, 25 Sep 26): the load's "Discard N edits" counted the row it puts back and the
+     filing it puts back apart, so the confirm read 2 beside the day head's 1 — D114 names that button. */
+  it('"Discard N edits" reads the same ONE, after ✕ and after Accept — and the load then puts both back', () => {
+    const inp = request()
+    acceptInput(MON, inp, 'g'); publishDay(MON); unacceptInput(MON, inp)
+    expect(dayDiscardCount(MON), '✕: beside the day head').toBe(dayShownPendCount(MON))
+    expect(dayDiscardCount(MON)).toBe(1)
+    expect(loadVersionToWorkingCopy(MON, dayCurVer(MON))).toBe(true)
+    expect(dayShownPendCount(MON), 'back to what was issued').toBe(0)
+    expect(inp.acc, 'on the programme again, with its row').toBe('g')
+    const inp2: any = { person: 'stiff', date: 'Jul 13', allday: true, type: 'Meeting', remarks: 'D114 second', mod: '2026-07-01' }
+    INPUTS.push(inp2)
+    acceptInput(MON, inp2, 'g')
+    expect(dayDiscardCount(MON), 'Accept: beside the day head').toBe(dayShownPendCount(MON))
+    expect(dayDiscardCount(MON)).toBe(1)
+  })
+  /* D114-2 (25 Sep 26): a request DELETED on the Inputs page — its row and its filing pair into one line, and with the
+     request gone the line read only "A request · on the programme → not on the programme". The row still says whose
+     and what; the line must too. */
+  it('a request deleted on the Inputs page: its one line still says whose and what, and that it was deleted', async () => {
+    const { pendListHTML } = await import('./pendlist')
+    const { removeInput } = await import('./inputedit')
+    const inp = request()
+    acceptInput(MON, inp, 'g'); publishDay(MON)
+    expect(removeInput(inp)).toBe(true)
+    expect(dayShownPendCount(MON)).toBe(1)
+    const l = el(pendListHTML(MON))
+    expect(l.querySelectorAll('.pl-item').length, 'one line').toBe(1)
+    const t = l.textContent || ''
+    expect(t, 'whose').toContain((PEOPLE as any).bane.cs)
+    expect(t, 'what').toMatch(/Meeting/)
+    expect(t, 'what happened to it').toMatch(/on the programme[\s\S]*deleted/)
+    /* the load puts the version's row back; the request itself stays deleted — its line (a filing on its own now)
+       still names it from that row (the D114 walk, step 8) */
+    expect(loadVersionToWorkingCopy(MON, dayCurVer(MON))).toBe(true)
+    expect(dayShownPendCount(MON), 'the deletion is not a thing a load can put back').toBe(1)
+    const t2 = el(pendListHTML(MON)).textContent || ''
+    expect(t2, 'named after the load too').toContain((PEOPLE as any).bane.cs)
+    expect(t2).toMatch(/Meeting[\s\S]*deleted/)
+  })
+  /* The pins Fable's read asked for (2026-09-25-d114-fable-read.md, "Test pins"): the orders the first tests did not walk. */
+  it('a two-day request, its row on Monday, ✕: Monday reads one paired change, Tuesday its own one filing', async () => {
+    const { dayPendingItems } = await import('../engine/publish')
+    const inp: any = { person: 'bane', date: 'Jul 13', endDate: 'Jul 14', allday: true, type: 'Meeting', remarks: 'D114 two-day', mod: '2026-07-01' }
+    INPUTS.push(inp)
+    acceptInput(MON, inp, 'g'); publishDay(MON); publishDay(1)
+    unacceptInput(MON, inp)
+    expect(dayPendingItems(MON).map((u: any) => [u.kind, !!u.inp]), 'Monday: the row and its filing, one').toEqual([['delete', true]])
+    expect(dayPendingItems(1).map((u: any) => u.kind), 'Tuesday: no row of its own — the filing alone').toEqual(['input'])
+  })
+  it('an AL after an AL: taken off in AL1, put back in AL2 — each AL one item, each line in its own unit', async () => {
+    const { retireIssued } = await import('../engine/publish')
+    const inp = request()
+    acceptInput(MON, inp, 'g'); publishDay(MON)
+    unacceptInput(MON, inp); sign(MON); withToasts(() => commitPublishALDay(MON))
+    acceptInput(MON, inp, 'g')                                  // a fresh row now — AL1 carries none
+    expect(dayShownPendCount(MON), 'put back after AL1: one').toBe(1)
+    sign(MON)
+    expect(withToasts(() => commitPublishALDay(MON)).join(' | ')).toMatch(/Published AL2 · 1 item /)
+    expect(SCHED.als.map((a: any) => a.ukinds), 'AL1 one removal, AL2 one addition, no separate filing').toMatchObject([{ total: 1, del: 1, inp: 0 }, { total: 1, add: 1, inp: 0 }])
+    expect(alPanelText(), "AL1's line unchanged beside AL2's").toMatch(/AL1[\s\S]*1 item · 1 removal/)
+    /* a withdrawn AL keeps its split in the record, beside its count (retireIssued) */
+    retireIssued(MON, SCHED.als[1].id)
+    expect(Object.values(SCHED.retired).map((r: any) => r.ukinds)).toContainEqual(expect.objectContaining({ total: 1, add: 1, inp: 0 }))
   })
 })

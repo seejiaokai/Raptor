@@ -22,7 +22,7 @@
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { INPUTS, inpId, inpLabel } from '../engine/inputs'
-import { dayPendingItems, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS } from '../engine/publish'
+import { dayPendingItems, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow } from '../engine/publish'
 import type { PendItem } from '../engine/publish'
 import { ELOG, elogWhen, keyLabel } from '../engine/editlog'
 import { oilEvidence } from '../engine/oilev'
@@ -98,12 +98,21 @@ function valueWords(addr: string, v: any): string {
 const FIL: any = { '': 'not on the programme', g: 'on the programme', u: 'under Unavailable', r: 'taken off' }
 
 type Words = { where: string; from: string; to: string; who: string; when: string; jump: boolean }
-/* a request's filing entry in words: whose request, what it is, where it stood → where it stands */
-function requestWords(e: any): { where: string, from: string, to: string } {
+/* a request's filing entry in words: whose request, what it is, where it stood → where it stands. A request DELETED on
+   the Inputs page is no longer there to name — its row, when the change has one, still carries whose and what (the
+   landing mints the row from the request: who, the type, the remarks), so the line names it from the row and says it was
+   deleted (the D114 check, 25 Sep 26: the one paired line read only "A request · on the programme → not on the
+   programme") */
+function requestWords(e: any, row?: any): { where: string, from: string, to: string } {
   const id = decodeURIComponent(String(e.addr || '').split('.').slice(1).join('.'))
   const inp = INPUTS.find((x: any) => inpId(x) === id)
-  const who = inp ? cs(inp.person) : ''
-  return { where: inp ? `${who ? who + ' · ' : ''}${inpLabel(inp)}` : 'A request', from: FIL[e.from || ''] || '', to: FIL[e.to || ''] || '' }
+  const from = FIL[e.from || ''] || ''
+  if (!inp) {
+    const who = row ? cs(row.who) : '', what = row ? (inpLabel({ type: row.srcType, remarks: row.rmks }) || row.prog || '') : ''
+    return { where: what ? `${who ? who + ' · ' : ''}${what}` : 'A request', from, to: 'deleted' }
+  }
+  const who = cs(inp.person)
+  return { where: `${who ? who + ' · ' : ''}${inpLabel(inp)}`, from, to: FIL[e.to || ''] || '' }
 }
 /* the newest edit-log row among a change's own cells */
 function lastEdit(keys: string[]) {
@@ -132,8 +141,11 @@ export function pendItemWords(di: number, it: PendItem): Words {
   if (it.kind === 'change')
     return { where: keyLabel(it.addr || e.addr), from: valueWords(e.addr, e.from), to: valueWords(e.addr, e.to), ...byLog(), jump }
   /* a request's row and its filing, one act (D114): name the request — whose, what — and where it now stands */
-  if ((it.kind === 'add' || it.kind === 'delete') && it.inp)
-    return { ...requestWords(it.inp), ...none, jump: it.kind === 'add' && jump }
+  if ((it.kind === 'add' || it.kind === 'delete') && it.inp) {
+    /* the row this request stood on: in the issued day for a removal, the live day for an addition */
+    const row = it.kind === 'delete' ? requestRow(it, (issuedDays(di) || [])[di]) : requestRow(it, DAYS[di])
+    return { ...requestWords(it.inp, row), ...none, jump: it.kind === 'add' && jump }
+  }
   if (it.kind === 'add')
     return { where: keyLabel(it.addr || e.addr), from: '', to: 'added', ...none, jump }
   if (it.kind === 'delete') {
@@ -145,7 +157,13 @@ export function pendItemWords(di: number, it: PendItem): Words {
     const k = String(e.addr || '').split('.').pop() || ''
     return { where: 'Order changed', from: '', to: MOVE_LABELS[k] ? `${MOVE_LABELS[k]}s` : 'rows', ...none, jump: false }
   }
-  if (it.kind === 'input') return { ...requestWords(e), ...none, jump: false }
+  if (it.kind === 'input') {
+    /* a filing on its own: a deleted request is named from a row that still carries it — on this day as it stands (a
+       load put the version's row back) or as it was issued */
+    const id = decodeURIComponent(String(e.addr || '').split('.').slice(1).join('.'))
+    const bySrc = (d: any) => ((d && d.ground) || []).find((g: any) => g && g.src === id)
+    return { ...requestWords(e, bySrc(DAYS[di]) || bySrc((issuedDays(di) || [])[di])), ...none, jump: false }
+  }
   /* WHAT THE DAY EARNS — say WHO and WHERE when it is the crowd behind a placeholder that moved (walker B1, 25 Sep 26:
      "What this day earns · changed" named nobody and could not be tapped, so the scheduler still had to go looking —
      the very hunt D99 exists to end). The issued version froze who each ALL / ALL AVAIL puck stood for (D44); the

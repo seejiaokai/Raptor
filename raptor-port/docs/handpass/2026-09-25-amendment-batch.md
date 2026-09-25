@@ -221,3 +221,67 @@ On the branch's Vercel link, on a day you publish yourself:
    (Recommended: yes — it reads as one change, and it is what the day showed before.) `[MOVE-REPLACE-ONE]`
 6. **A second question:** taking an accepted request off a published day (✕ on its row) counts **2** — the row and
    the request's filing, two lines in the list. Make it **1**? (Recommended: yes — one act, one line.) `[REQUEST-OFF-ONE]`
+
+## 9. D114's FULL check — a request taken off (or put on) a published day is ONE change (25 Sep 26, afternoon)
+
+Step 1 of his order (D173). The change: commit `a95afcbe` (`publish.ts dayPendingItemsIn` pairs a request's filing
+with the ground row whose `src` is that request; an issued AL stores `ukinds`; `pendlist.ts` words the pair as the
+request). Builder: Opus 5.5 (the earlier chat). This check: Opus 5.5 (host, walk); Fable 5.1 and Astra read, blind to
+each other (brief `docs/superpowers/briefs/2026-09-25-d114-read-brief.md`, round 2 below).
+
+### 9.1 The tier — FULL
+1 money **NO** — the stored diff (what goes out), the OIL axis and the signature binding are untouched; only the
+unit a person counts in moves · 2 published record **YES** — an issued AL now stores `ukinds` and its `units` change ·
+3 saved data **YES** — `ukinds` is persisted on every AL and every withdrawn record · 4 shared drawer **YES** — one count
+read by nine surfaces · 5 gesture **NO** — the doors (✕, Accept, Undo, → Unavail, delete) are unchanged · 6 surface
+**NO** · 7 roles **NO** · 8 warning list **NO**. → **FULL** (2, 3).
+
+### 9.2 The rules that apply
+| ruling | in plain words | where it bites here |
+|---|---|---|
+| D114 | ✕ on an accepted request's row is ONE change on every count (day head, board, ⓘ, Amendments panel, "Discard N edits", the list's ONE line, the published AL's count); the mirror (Accept) is one; a filing with no row of its own on the day stays one | the whole change |
+| D109 (AM23) | every count reads ONE body, in the unit a person counts in; the stored diff is unchanged | the pairing lives in that body — anything that counts without it disagrees |
+| D113 | a replacement in one seat is one | unchanged by this |
+| D98, AM20 | a day back to what was issued shows nothing pending; the load gets it there | ✕ then Accept again, and the load, must read 0 |
+| D103 (AM13) | anything pending wipes the four sign-offs | the binding reads the comparison, not the count — must be unchanged |
+| D99, D100, D119 | the list: what will go out, where, before → after, who and when; a tap goes there | the paired line's words and its tap |
+| D56 | a harm only in stored demo data is not a finding | an AL issued before `a95afcbe` has no `ukinds` and reads its diff's split |
+**Clashes:** none found — D114 refines D109's unit; nothing it sets aside.
+
+### 9.3 The roll-call — every place the count or its words are drawn
+| # | surface | shows the ONE count? | usable (tap) | painted with it | status |
+|---|---|---|---|---|---|
+| 1 | the edit week's day head "N pending ▾" | reads `dayShownPendCount` → the items | opens the list | the Not-yet-signed marker, the plans selector | has it |
+| 2 | the board's strip "N pending ▾" | same body | opens the list | the sign-off pills | has it |
+| 3 | the ⓘ day panel | same body | — (a panel) | the version tags | has it |
+| 4 | the Amendments panel's waiting line "Mon · N changes" | `itemCounts(dayPendingItems)` | — | Publish / sign buttons | has it |
+| 5 | the sign-off line's "N changes to publish" | `dayShownPendCount` | — | the four pills | has it |
+| 6 | the pending list: head "Waiting to go out as AL1 · N changes" and its lines | its rows ARE the items | a line taps to its row (an add); a removal has no row | the scrolled schedule behind | has it — **but see finding D114-2** |
+| 7 | "Discard N edits & load" (the week and the board, previewing a version) and the preview's "N pending" chip (PVND) | `dayDiscardCount` — content units + each filing the load puts back, **counted apart** | the confirm | the preview bar | **MISSING — finding D114-1** |
+| 8 | the publish message "Published AL1 · N items" | `alIssue units` = the items | — | a toast | has it |
+| 9 | an issued AL's line in the Amendments panel "AL1 Mon · N items · N removals" | `units` + `ukinds` stored at issue | — | the sign title | has it |
+| 10 | the plans menu / version tags "AL1 · N items" | `alCount` (units) | — | — | has it |
+| 11 | the plan-switch message "… N differences from AL1 pending" | `dayShownPendCount` | — | a toast | has it |
+| 12 | View-only Sched's working-draft peek count | `dayShownPendCount` (0 on the issued face) | — | — | has it |
+| 13 | a withdrawn AL's record (Unpublish / Undo of a publish) | `retireIssued` copies `units` and `ukinds` | — | — (read back by a re-publish / redo) | has it — not drawn by itself |
+
+### 9.4 The door check — every act that makes (or unmakes) the pair
+| act | door on screen | expected |
+|---|---|---|
+| take a request off | ✕ on its ground row (week, board); "Undo" beside it in the Personal Inputs group | 1 · one line "whose · what: on the programme → taken off" |
+| put a request on | "Accept" / "→ Ground" in the Personal Inputs group | 1 · one line, taps to the row |
+| file under Unavailable | "→ Unavail" (an Other request) | 1 — a filing with no row |
+| delete the request | ✕ on the Inputs page | 1 · **the line must still say whose and what — finding D114-2** |
+| edit the request | the Inputs page | its changed boxes only (the row keeps its id) |
+| ✕ then Accept again | the two doors | 0 (AM20) |
+| Undo / Redo of each | the top bar | back to 0 / back to 1 |
+| load the issued version | a version preview → Load | "Discard 1 edit" → 0 pending |
+| publish AL1 with it | sign, Publish | "Published AL1 · 1 item", the line "1 item · 1 removal" |
+| a request covering two days, its row on one | ✕ | 1 on each day (the other day's is a filing on its own) |
+
+### 9.5 Found before the walk, by the roll-call (reproduced in a unit probe on the exact revision)
+- **D114-1 (new in `a95afcbe`)** — "Discard N edits" (and the preview's chip) reads **2** where the day head reads **1**,
+  after ✕ and after Accept: `dayDiscardCount` adds the load's filing put-backs to the content units without the pairing.
+- **D114-2 (new in `a95afcbe`)** — a request DELETED from the Inputs page: its row and its filing pair into one line,
+  and that line reads only "A request · on the programme → not on the programme" — whose and what are lost (before, the
+  row's own line named it).

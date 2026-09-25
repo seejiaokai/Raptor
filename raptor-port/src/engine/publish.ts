@@ -210,16 +210,24 @@ export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
      filing pairs with the ground row whose src is that request — removed from the issued day while the request leaves
      'g', or added to the live day while it arrives at 'g' — so the pair is ONE item. A filing with no such row here (a
      request filed under Unavailable, one whose row stands on another day) stays its own item. */
-  const grow=(u:any,d:any)=>{const m=/^gr:\d+\.(\d+)\.prog$/.exec(String((u.entry&&u.entry.addr)||''));return m?((d&&d.ground)||[])[+m[1]]||null:null;};
   filingDelta(di,snap.fil).forEach((e:any)=>{
     const id=String(e.addr||'').split('.').slice(1).join('.');
-    const pair=items.find((u:any)=>!u.inp&&u.axis==='content'&&(
-      (u.kind==='delete'&&e.from==='g'&&e.to!=='g'&&(grow(u,snap.d)||{}).src===id)||
-      (u.kind==='add'&&e.to==='g'&&e.from!=='g'&&(grow(u,DAYS[di])||{}).src===id)));
+    const pair=requestRowUnit(items,id,String(e.from||''),String(e.to||''),snap.d,DAYS[di]);
     if(pair){pair.inp=e;return;}
     items.push({kind:'input',addr:'',jump:[],keys:[],entry:e,axis:'filing'});});
   oilDelta(di,snap.d).forEach((e:any)=>items.push({kind:'oil',addr:'',jump:[],keys:[],entry:e,axis:'oil'}));
   return items;}
+/* THE PAIRING, ONE BODY (D114): the content unit — a ground row's add or delete — that belongs to request `id`'s filing
+   moving from `was` to `now`. The delete reads the ISSUED day's row at its own index and needs the request to LEAVE
+   'g'; the add reads the LIVE day's row and needs it to ARRIVE at 'g'. A unit already paired (`inp` set) is never taken
+   twice. Both counts that meet a request's filing read this — the day's items above and the load's "Discard N edits"
+   (dayDiscardCount), which counted the row it puts back and the filing it puts back apart, reading 2 beside the day
+   head's 1 (the D114 check's roll-call, 25 Sep 26). */
+export function requestRow(u:any,d:any):any{const m=/^gr:\d+\.(\d+)\.prog$/.exec(String((u&&u.entry&&u.entry.addr)||''));return m?((d&&d.ground)||[])[+m[1]]||null:null;}
+function requestRowUnit(units:any[],id:string,was:string,now:string,issuedD:any,liveD:any):any{
+  return units.find((u:any)=>!u.inp&&(
+    (u.kind==='delete'&&was==='g'&&now!=='g'&&(requestRow(u,issuedD)||{}).src===id)||
+    (u.kind==='add'&&now==='g'&&was!=='g'&&(requestRow(u,liveD)||{}).src===id)))||null;}
 export function dayPendingItems(di:any):PendItem[]{di=+di;return passMemo('pi',di,()=>dayPendingItemsIn(SCHED,di,CURWEEK));}
 /* the per-kind split of a day's items, the shape diffCounts gives a stored diff — for the
    Amendments panel's "N changes · N removals · N reorders · N input filings" */
@@ -454,8 +462,14 @@ export function dayDiscardCount(di:any):number{di=+di;
      back what the version had filed (D98, drafts.ts loadVersionToWorkingCopy), each request filing it will put back
      is an edit it replaces too (the filing axis was excluded while the load left filings alone, P2-REREVIEW-08).
      Only those it CAN put back: one it must leave (it also covers another published day, or its row is landed
-     elsewhere) is not replaced, so it is not counted. */
-  return canonicalUnits(snap.d,DAYS[di],di).length+decDrop+filingRestorePlan(di,snap.fil,snap.d).put.length;}
+     elsewhere) is not replaced, so it is not counted. And a request's row and its filing, both put back, are ONE edit —
+     the pairing the day head counts in (D114; the D114 check found this read 2 beside the day head's 1). */
+  const units:any[]=canonicalUnits(snap.d,DAYS[di],di);
+  const lone=filingRestorePlan(di,snap.fil,snap.d).put.filter((p:any)=>{
+    const u=requestRowUnit(units,inpId(p.inp),String(p.want||''),String(p.inp.acc||''),snap.d,DAYS[di]);
+    if(u){u.inp=true;return false;}
+    return true;});
+  return units.length+decDrop+lone.length;}
 /* WHAT A LOAD CAN PUT BACK OF A VERSION'S FILINGS (owner, D98, 25 Sep 26 — "if the change results in going back to the
    same as the published schedule … it shouldnt show as pending"). For every request covering this day: the state
    the version froze (`fil`, snapshot's filing fingerprint; absent = fresh), set only where it can be true without
