@@ -285,3 +285,32 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In systematic-debugging's reproduction phase, for an intermittent UI failure: (1) name the two actors that race (an app timer / effect / async save vs. a multi-step driver action or a user's input); (2) read the driver's implementation to find its step boundaries; (3) force each candidate ORDER in one in-page task with a DOM observer, measuring the gap; reserve uniform slow-down for load-dependent (not order-dependent) failures.
 
 **Principle:** A load-dependent flake and an order-dependent race look the same in CI logs but need different reproductions: throttling tests "is it too slow?", forcing the order tests "is it wrong in this order?" — and only the second finds a bug whose window is a few milliseconds wide.
+### Observation 252: A handler's early exit is a surface — a change to the number it tests can make its sentence untrue
+
+**Status:** OPEN
+**Date:** 2026-09-25
+**Session context:** Raptor — D175 (a load leaves out a request row that now stands on another day); the load's "Discard N edits" count was changed to measure against the day as the load will leave it
+**Skill:** New skill candidate: bug-check roll-call (project method `raptor-port/docs/bug-check-order.md` §6)
+**Type:** open-source
+**Phase/Area:** roll-call — which sentences a door can say
+
+**Issue:** The change made the load's discard count read 0 when the only difference left was the row the load must leave out — correct for the count. But the load handler also used that count (plus "is this the current version?") to take an early exit that says "Monday is already at Original" and does nothing. With the count now 0, the exit fired on a day that still read "1 pending", so the door said something untrue and never showed the new "left out" sentence. Every engine test passed; only the app-level test that clicked the real button and read its message caught it.
+
+**Suggested improvement:** In the roll-call, for every quantity the change alters, list not only the places that DISPLAY it but every place that BRANCHES on it (early returns, "nothing to do" / "already done" toasts, confirm gates), and check each branch's sentence is still true in the new states.
+
+**Principle:** A value a handler tests to decide "nothing to do" is load-bearing twice: once as a number shown, once as a decision taken. Changing what the number means can silently flip the decision; enumerate the branches on a changed quantity, not just its displays.
+
+### Observation 253: Reproduce a finding's PREMISE, not only its symptom — "nothing visible changed" must be checked against every reader of the state
+
+**Status:** OPEN
+**Date:** 2026-09-25
+**Session context:** Raptor — dispositioning a blind code read of D174 (a request filed since publishing, then taken off, reads 0 pending)
+**Skill:** New skill candidate: bug-check dispositions (project method `raptor-port/docs/bug-check-order.md` §4, "what to do with what they hand back")
+**Type:** open-source
+**Phase/Area:** dispositioning reviewer findings
+
+**Issue:** A reviewer reported that a day reading "1 pending" was wrong because "the day's face is unchanged", and gave a clean, test-backed fix that would have made it 0. The symptom reproduced exactly (the count was 1). The premise did not: the request still took effect on that day through a second reader (it closed the person's hours and fed the warnings on every day it covered), so the day genuinely differed from its published version. Reproducing only the symptom would have "confirmed" the finding and shipped a fix that hid a real change.
+
+**Suggested improvement:** In the disposition step, split "reproduce" into two checks: (a) the observed behaviour happens, and (b) the reviewer's stated reason it is wrong holds — enumerate every reader of the state the finding says is "unchanged" / "invisible" (renderers, validators, availability, downstream consumers) and probe each. Record findings that fail (b) as "not a defect — checked", with the reader that disproves them, and pin the correct behaviour with a test so a later rule cannot absorb it.
+
+**Principle:** A finding is two claims — "this happens" and "this is wrong because…". Reproduction usually tests only the first. The second is where false positives live, and a false positive with a ready-made fix is more dangerous than a missed finding, because it arrives looking verified.

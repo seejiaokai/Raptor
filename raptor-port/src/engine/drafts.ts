@@ -1,7 +1,8 @@
 import { DAYS } from './data'
-import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, moveKey, trackStructuralAdd, isDeleteKey, isMoveKey, protectedWeek, filingRestorePlan } from './publish'
+import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, moveKey, trackStructuralAdd, isDeleteKey, isMoveKey, protectedWeek, filingRestorePlan, rowsLeftOut, leaveRowsOut } from './publish'
 import { inputProtected } from './quarantine'
-import { INPUTS, inputCoversDate, inpId } from './inputs'
+import { INPUTS, inputCoversDate, inpId, inpLabel } from './inputs'
+import { PEOPLE } from './people'
 import { dayKeys } from './restore'
 import { reconcileDayFiling } from './slots'
 import { keyDay } from './keys'
@@ -71,6 +72,29 @@ const signSnap = (di: number) => ({
 const restampRev = (bind: any, from: any, to: any) => {
   if (!bind) return
   for (const r of Object.keys(bind)) { if (bind[r] && bind[r].rev === from) bind[r].rev = to }
+}
+
+/* ONE REQUEST, ONE ROW (owner, D175, 25 Sep 26): the requests whose row the last whole-day replacement — a load onto
+   the working copy, or a plan switch — LEFT OUT because that request already stands on another loaded day
+   (publish.ts rowsLeftOut), with whose it is, what, and those days' names. Read by both doors' messages right after the
+   replacement, through rowsLeftSaid — the one sentence, so the load and the switch cannot word it two ways. */
+export let ROWSLEFT: Array<{ id: string, who: string, what: string, days: string[] }> = []
+const leaveOut = (di: number, nd: any) => {
+  const out = rowsLeftOut(di, nd)
+  leaveRowsOut(nd, out.map(x => x.id))
+  ROWSLEFT = out.map(x => {
+    /* named from the request; from the row itself if the request is gone (the row carries whose and what — the
+       pending list's own fallback, D114-2) */
+    const inp: any = INPUTS.find((i: any) => inpId(i) === x.id), r: any = x.row || {}
+    const pid = inp ? inp.person : r.who
+    const who = pid && (PEOPLE as any)[pid] ? (PEOPLE as any)[pid].cs : String(pid || '')
+    const what = inp ? inpLabel(inp) : (inpLabel({ type: r.srcType, remarks: r.rmks } as any) || r.prog || 'A request')
+    return { id: x.id, who, what, days: x.days.map(dj => String((DAYS[dj] || {}).dow || '')) }
+  })
+}
+/* " · Bane · Meeting left out — it is on Tuesday's programme", one clause per request; '' when nothing was left out */
+export function rowsLeftSaid(list: Array<{ who: string, what: string, days: string[] }>): string {
+  return (list || []).map(x => ` · ${x.who ? x.who + ' · ' : ''}${x.what} left out — it is on ${x.days.join(' and ')}'s programme`).join('')
 }
 
 /* the day's draft list — empty array (not undefined) when the day has none,
@@ -233,6 +257,7 @@ export function draftDup(di: any) {
    stale stow). */
 export function draftSelect(di: any, id: any) {
   di = +di
+  ROWSLEFT = []
   if (!DAYS[di]) return false
   if (protectedWeek()) return false   // read-only quarantine — never swap a frozen day (P2-REV2-02)
   const list = dayDrafts(di)
@@ -247,6 +272,10 @@ export function draftSelect(di: any, id: any) {
      id-less row; a no-op in production where the day already has its ids. */
   if (cur) { ensureRowIds(DAYS); cur.d = clone(DAYS[di]); const s = signSnap(di); cur.sign = s.sign; cur.signBind = s.signBind }
   const nd = liveDay(t.d)
+  /* a row whose request has since been put on another day stays out of the live day (D175; the caller's message names
+     it). The plan's record still holds it only until the plan is left again — the stow above then saves the plan as it
+     was left, without the row (a plan is what you leave it as; reqonerow.test.tsx pins it) */
+  leaveOut(di, nd)
   nd.today = !!(DAYS[di] && DAYS[di].today)
   DAYS[di] = nd
   /* reconcile the ground filing on EVERY replacement, approved or not (P2-QREV-07):
@@ -541,6 +570,7 @@ export let LOADLEFT: string[] = []
 export let LOADMOVED: Array<{ id: string, on: boolean, days: string[] }> = []
 export function loadVersionToWorkingCopy(di: any, ver: any) {
   di = +di
+  ROWSLEFT = []
   if (protectedWeek()) return false   // read-only quarantine — never roll a version over a frozen day (P2-REV2-02)
   const snap = daySnapOf(di, ver)
   if (!snap) return false
@@ -553,6 +583,9 @@ export function loadVersionToWorkingCopy(di: any, ver: any) {
   const multi = INPUTS.filter((inp: any) => inputCoversDate(inp, dt0) && DAYS.some((d: any, dj: number) => dj !== di && d && inputCoversDate(inp, d.dt)))
     .map((inp: any) => ({ inp, was: inp.acc || '' }))
   const nd = liveDay(snap.d)
+  /* ONE REQUEST, ONE ROW (D175): the version's row for a request that now stands on another day stays out — putting it
+     back would put that request on two days' programmes, and moving the other day is never the load's to do (AM1) */
+  leaveOut(di, nd)
   nd.today = !!(DAYS[di] && DAYS[di].today)
   DAYS[di] = nd
   reconcileDayFiling(di)   // every replacement, approved or not (P2-QREV-07)

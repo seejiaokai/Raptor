@@ -7,10 +7,10 @@ import { slotVal, acceptInput, unacceptInput, txtSet } from '../engine/slots'
 import { INPUTS, DATES, withRemarksTail, inpId, defaultAllday } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
-import { dayApproved, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek, alColor, nextSeq } from '../engine/publish'
+import { dayApproved, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek, alColor, nextSeq, daySnapOf, rowsLeftOut } from '../engine/publish'
 import { posKey } from '../engine/rowids'
 import { openPendList, closePendList } from './pendlist'
-import { draftSelect, draftVerLabel, loadVersionToWorkingCopy, LOADLEFT, LOADMOVED } from '../engine/drafts'
+import { draftSelect, draftVerLabel, loadVersionToWorkingCopy, LOADLEFT, LOADMOVED, ROWSLEFT, rowsLeftSaid } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
@@ -945,7 +945,8 @@ export function routeClick(e: MouseEvent) {
     if (!draftSelect(di, id)) { HOOKS.toast('That plan is no longer available', 'warn'); notify(); return }
     view.setDayPreview(di, null)
     view.afterSchedMutate()
-    const said = `${DAYS[di].dow} switched to plan ${nm} — this is now the live schedule`
+    /* a row the plan held for a request now on another day stayed out — named (D175) */
+    const said = `${DAYS[di].dow} switched to plan ${nm} — this is now the live schedule` + rowsLeftSaid(ROWSLEFT)
     logAction(di, said)
     HOOKS.toast(said)
     notify(); return
@@ -979,8 +980,11 @@ export function routeClick(e: MouseEvent) {
        any withDaySnap that would zero it). */
     const nd = dayDiscardCount(di)
     /* already the current version with nothing diverging — close the preview
-       without a history step */
-    if (String(dayCurVer(di)) === String(ver) && nd === 0) {
+       without a history step. NOT when the version holds a row the load must leave out (D175): the day then differs
+       from it by exactly that row, so "already at" would be untrue beside its "1 pending" — the load runs (nothing to
+       discard, so no confirm) and its sentence says which request stayed out and where it stands */
+    const vsnap = daySnapOf(di, ver)
+    if (String(dayCurVer(di)) === String(ver) && nd === 0 && !(vsnap && rowsLeftOut(di, vsnap.d).length)) {
       view.setDayPreview(di, null)
       HOOKS.toast(`${DAYS[di].dow} is already at ${verLabel(ver)}`)
       notify(); return
@@ -1015,6 +1019,8 @@ export function routeClick(e: MouseEvent) {
       + (replaced ? ` · ${replaced} unpublished edit${replaced === 1 ? '' : 's'} replaced` : '')
       + (left ? ` · ${left} request${left === 1 ? '' : 's'} also cover${left === 1 ? 's' : ''} another day — left as filed` : '')
       + (LOADMOVED.length ? ` · ${LOADMOVED.length} request${LOADMOVED.length === 1 ? '' : 's'} ${LOADMOVED.every(m => m.on) ? 'came back onto' : LOADMOVED.some(m => m.on) ? 'moved on or off' : 'came off'} the programme with ${LOADMOVED.length === 1 ? 'its' : 'their'} row — ${movedDays.join(', ')} ${movedDays.length === 1 ? 'reads' : 'read'} that too` : '')
+      /* …and a row the version held for a request that now stands on another day stayed out — one request, one row (D175) */
+      + rowsLeftSaid(ROWSLEFT)
     logAction(di, said)
     HOOKS.toast(said)
     notify(); return

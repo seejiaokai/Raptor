@@ -107,13 +107,17 @@ function requestWords(e: any, row?: any): { where: string, from: string, to: str
   const id = decodeURIComponent(String(e.addr || '').split('.').slice(1).join('.'))
   const inp = INPUTS.find((x: any) => inpId(x) === id)
   const from = FIL[e.from || ''] || ''
-  if (!inp) {
-    const who = row ? cs(row.who) : '', what = row ? (inpLabel({ type: row.srcType, remarks: row.rmks }) || row.prog || '') : ''
-    return { where: what ? `${who ? who + ' · ' : ''}${what}` : 'A request', from, to: 'deleted' }
-  }
-  const who = cs(inp.person)
-  return { where: `${who ? who + ' · ' : ''}${inpLabel(inp)}`, from, to: FIL[e.to || ''] || '' }
+  if (!inp) return { where: requestName(null, row), from, to: 'deleted' }
+  return { where: requestName(inp), from, to: FIL[e.to || ''] || '' }
 }
+/* whose · what — from the request while it exists, from its row once it is gone (the row carries who, the type and the
+   remarks). ONE body for every line that names a request, so they cannot word it two ways. */
+function requestName(inp: any, row?: any): string {
+  if (inp) { const who = cs(inp.person); return `${who ? who + ' · ' : ''}${inpLabel(inp)}` }
+  const who = row ? cs(row.who) : '', what = row ? (inpLabel({ type: row.srcType, remarks: row.rmks }) || row.prog || '') : ''
+  return what ? `${who ? who + ' · ' : ''}${what}` : 'A request'
+}
+const rowRequestName = (row: any) => requestName(INPUTS.find((x: any) => inpId(x) === row.src), row)
 /* the newest edit-log row among a change's own cells */
 function lastEdit(keys: string[]) {
   const set = new Set(keys.map(String))
@@ -146,11 +150,23 @@ export function pendItemWords(di: number, it: PendItem): Words {
     const row = it.kind === 'delete' ? requestRow(it, (issuedDays(di) || [])[di]) : requestRow(it, DAYS[di])
     return { ...requestWords(it.inp, row), ...none, jump: it.kind === 'add' && jump }
   }
-  if (it.kind === 'add')
+  /* A REQUEST'S ROW WITH NO FILING CHANGE BESIDE IT — the request moved to another day's programme (✕ here, Accept
+     there), or a load left this day's copy out because it stands elsewhere (D175): name whose and what, and where it
+     stands now, not "Ground · MEETING · item → removed" (Fable's code read F3, 25 Sep 26 — the list is where a scheduler
+     looks after the load's sentence has gone, D99) */
+  if (it.kind === 'add') {
+    const row = requestRow(it, DAYS[di])
+    if (row && row.src) return { where: rowRequestName(row), from: '', to: 'on the programme', ...none, jump }
     return { where: keyLabel(it.addr || e.addr), from: '', to: 'added', ...none, jump }
+  }
   if (it.kind === 'delete') {
     /* the row is gone from the live day: name it from the version it was removed from */
     const arr = issuedDays(di)
+    const row = requestRow(it, (arr || [])[di])
+    if (row && row.src) {
+      const dj = DAYS.findIndex((d: any, j: number) => j !== di && ((d && d.ground) || []).some((g: any) => g && g.src === row.src))
+      return { where: rowRequestName(row), from: 'on the programme', to: dj >= 0 ? `on ${DAYS[dj].dow}'s programme` : 'removed', ...none, jump: false }
+    }
     return { where: arr ? keyLabel(e.addr, arr) : 'An item', from: '', to: 'removed', ...none, jump: false }
   }
   if (it.kind === 'move') {

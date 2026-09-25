@@ -15,87 +15,42 @@ the later merge keeps both (D78).
 
 ## Now
 
-<!-- now:claude/trk-smoke-add-race-bug-007eed -->
-### `claude/trk-smoke-add-race-bug-007eed` — `[TRK-SMOKE-ADD-RACE]`, HIS GO (D190); written 25 Sep 26 — verify before use
-- **The job (D190):** does the Tracker lose a name typed into the "+ Add" box (a real bug), and fix the cause, not the
-  wait. It stopped GitHub's checks three times on 25 Sep 26 at the same smoke step. In PARALLEL with the D175 chat:
-  port 4180, rulings D190–D199, never the full checks while that chat runs its own; the second to merge takes `main`
-  in first (D78).
-- **The answer: a REAL bug in the app.** The Tracker's question box moved the cursor 30ms after opening (to the
-  roster search on "+ Add", else selecting the text box); on a busy machine that landed AFTER typing had begun, so
-  the name went into the search (OK added nobody — GitHub's stop) or the first letters were selected and wiped.
-  Fixed in `raptor-port/src/tracker/components/Modals.jsx` (the move stands down when the cursor is already in one
-  of the box's typing fields); two red-first tests in `tracker.test.tsx`; the smoke's Tx step now uses its
-  `addStudent` helper (D87). Evidence, tier WALK: `raptor-port/docs/handpass/2026-09-25-trk-add-race.md` — old build
-  26 failures on all ten places, fixed build 39/39, desktop and phone.
-- **State:** DONE and checked (WALK tier) — the full set green on 4180 (`## Gate baseline`); Fable 5.1's read found
-  nothing against the fix and three OLDER gaps: `[TRK-ADD-SEARCH-OK]` (a new callsign typed into the roster SEARCH
-  added nobody) — HIS ANSWER A (D191): OK adds it, the line says so; BUILT and walked on this branch (the sheet §11),
-  archived — and `[TRK-DLG-LEFTOVERS]` (low, filed). `[TRK-SMOKE-ADD-RACE]` archived.
-- **Open questions for him:** none.
-- **Pick up here:** his look (the sheet §12) and "merge live". If the D175 chat merged first, take `main` in first
-  (D78) and re-run the Tracker smoke before merging.
-<!-- /now -->
-
-<!-- now:claude/amendment-batch -->
-### `claude/amendment-batch` — the amendment batch (PR #435) and his inputs from its look; written 25 Sep 26 — verify before use
-- **Where it started:** D112's overnight build of the 14-item amendment batch (FULL tier, all checked — evidence
-  `raptor-port/docs/handpass/2026-09-25-amendment-batch.md`, incl. §5a the two blind reads and the later walk of Fable's
-  three un-walked situations, 12/12 desktop and phone). Then his look began and he gave a run of inputs, each recorded:
-  D113–D119 and D165–D173. The chat was compacted once; its early context is in the evidence sheet and commit messages.
-- **Shipped (pushed to this branch, PR #435 OPEN, not merged):** the batch; **D114** (a request taken off / put on a
-  published day counts ONE — `publish.ts dayPendingItemsIn` pairs the filing with its ground row; the AL stores `ukinds`;
-  red first, the neighbouring suites green, **NOT yet fully checked**); the rulings D113–D119, D165–D173 (D115 replaced
-  by D173 and archived); seven mock-ups under `raptor-port/docs/mock/` (the design of record for the next work is
-  `changes-window.html` option A, with `changes-doors.html` and `tags-ticks.html`); `[MOVE-REPLACE-ONE]` closed (D113).
-- **Unfinished — HIS ORDER, D173:**
-  1. **D114's FULL check — DONE 25 Sep 26 (evening), waiting for his look and "merge live" of #435.** Evidence
-     `raptor-port/docs/handpass/2026-09-25-amendment-batch.md` §9 (the reads, the walk desktop + phone, break tests,
-     gates, his look card §9.11). Two gaps fixed ("Discard N edits" read 2; a deleted request's line named nobody);
-     three older findings filed — `[REQ-TWO-ROWS]` (high), `[REQ-DECLINED-PENDING]`, `[REQ-ORPHAN-ROW]` — the first two
-     are questions on his look card. `[REQUEST-OFF-ONE]` archived.
-  1b. **HIS ANSWERS (D174, D175): `[REQ-TWO-ROWS]` + `[REQ-DECLINED-PENDING]` on their own small branch once #435 has
-     merged, BEFORE accounts** — the load leaves out a row whose request stands on another day and says so; a request
-     filed since publishing and then taken off reads 0. Its own check, his look, "merge live".
-  2. **`[ACCOUNTS]` (D165, D166) on a NEW branch from `main`** once #435 has merged.
-  3. **`[DRAFT-PENDING]` — the one changes window (D118, D167–D172)** on top of accounts; it absorbs D116's list, D117
-     and D119 — do NOT build those separately.
-  4. **One FULL check of 2 and 3** (permissions → FULL tier), his look, "merge live".
-  - Also: `OUTSTANDING.md` is 17 lines over its size tripwire — a documents-only tidy (D29, D141), its own commit.
-- **Branch:** `claude/amendment-batch`; PR #435 (open when written — check before acting). Vercel preview:
-  https://raptor-git-claude-amendment-batch-kai-e2f5.vercel.app . GitHub's machines run the checks while the repo is
+<!-- now:claude/request-one-row -->
+### `claude/request-one-row` — D175's step: a request's row and its filing on a published day (D174, D175, D176); written 25 Sep 26 — verify before use
+- **Where it started:** PR #435 (the amendment batch) MERGED 25 Sep 26. His order D175 put a step between D173's 1 and 2:
+  `[REQ-TWO-ROWS]` (D175) and `[REQ-DECLINED-PENDING]` (D174) on their own branch, cut from `main`.
+- **Built, FULL check done (PR #437):** D174 — a request filed since the day was published and then taken off reads 0 and
+  the four hold (`publish.ts filingSame`); D175 — a load or a plan switch leaves out a row whose request stands on another
+  day and every door names it (`publish.ts rowsLeftOut`, `drafts.ts rowsLeftSaid`); the pending list names such a row;
+  **D176** (his answer on the look card, "make it 0") — a request taken off before publishing, then deleted or re-dated off
+  the day, reads 0 too (`filingSame`'s `present`). `main` (PR #436, the Tracker chat) merged in first (D78). Evidence
+  `raptor-port/docs/handpass/2026-09-25-req-one-row.md` (§1–§12: the reads, the walks 49/49 desktop + phone, break tests,
+  gates, his look card §10). All three items archived. Rulings this chat: **D176–D179** (`scheduler.md`).
+- **Unfinished — in order:**
+  1. **His "merge live" of PR #437** — every check is done and the gates are green on the merged code.
+  2. **`[LEAVE-LATE-PUBLISHED]` (D177, WIDENED by D178) on its OWN branch** — EVERY member input change after
+     publishing (filed, edited, deleted, moved) reads pending, the four fall, and the published face keeps what it was
+     issued with until the next AL (or an Unpublish and publish again). What stays live: NOTHING for now (D179 —
+     medical and qualifications freeze too; provisional, show him on the build). Scope, from the sweep he asked for:
+     `raptor-port/docs/superpowers/specs/2026-09-25-published-face-live-inputs.md` (A0–A7 to freeze; B5 to put to him
+     under D45; medical stays live). FULL tier. **Its place in his order is still to be asked** — the agent recommends
+     right after this merges, BEFORE `[ACCOUNTS]` (it reworks the one pending comparison the changes window reads).
+  3. **`[ACCOUNTS]` (D165, D166) on a NEW branch from `main`** (D173 step 2).
+  4. **`[DRAFT-PENDING]` — the one changes window (D118, D167–D172)** on top of accounts; it absorbs D116's list, D117
+     and D119 — do NOT build those separately (D173 step 3).
+  5. **One FULL check of 3 and 4** (permissions → FULL tier), his look, "merge live" (D173 step 4).
+  - Also: `OUTSTANDING.md` is ~48 lines over its size tripwire — a documents-only tidy (D29, D141), its own commit.
+- **Branch:** `claude/request-one-row`, PR #437. Vercel preview:
+  https://raptor-git-claude-request-one-row-kai-e2f5.vercel.app . GitHub's machines run the checks while the repo is
   public (D106, ~11 min); never push while they run (D151).
-- **Gates:** the full set green on the D114 check's final code, 25 Sep 26 18:20 (`## Gate baseline`).
-- **Open questions for him:** none — every question put to him this chat is answered and recorded.
-- **Pick up here:** his look and "merge live" of #435 (step 1 is done — his look card is the evidence sheet §9.11;
-  its two questions answered, D174 and D175); then D175's step (1b above), then step 2, `[ACCOUNTS]` (D165, D166), on a
-  NEW branch — stacked on this one if #435 has not merged yet, taking `main` in once it has. Read the rulings D113–D119
-  and D165–D173 in `.claude/rules/decisions/scheduler.md` and `how-we-work.md` before building anything; models per his
-  rule — Opus 5.5 (high) plans and builds, Fable 5.1 and Astra review the plan and the code (permissions → both).
-<!-- /now -->
+- **Gates:** the full set green on the final merged code (`## Gate baseline
 
-## Next, in order
-
-1. **The amendment batch and his look's inputs — HIS ORDER, D173** (the `## Now` block above): D114's full check and
-   "merge live" of PR #435 → `[ACCOUNTS]` on a new branch → the one changes window (`[DRAFT-PENDING]`) → one full check
-   → "merge live". **`[HUMAN-RETEST]`** — the amendment system MERGED 25 Sep 26 (PR #434; evidence
-   `raptor-port/docs/handpass/2026-09-24-amendment.md`). Next, in his order (D147): the absence record
-   together with `[S4-HUNT-REST]`, then change-recording (with D148 and `[UNDO-ROSTER-SETTINGS]`), then the Leave War
-   links last. The two evidence sheets (Tracker 23 Sep, amendment 24 Sep) are the worked examples.
-2. Then his after-the-hunt order: `[PUB-UNAVAIL]` → `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]` → the OIL award fix and the
-   small OIL follow-ups as one batch (D147) → `[DB-STEP]`. The whole list: `OUTSTANDING.md`'s priority list.
-3. Filed, none blocking: `[TRK-PINCH-ASK]` (his iPhone look), `[TRK-DLG-LEFTOVERS]`, `[TRK-RETEST-NOTES]`,
-   `[LW-FROZEN-BAR-GAP]`, `[LW-FIGSEL-SLOW]`. Everything else: `OUTSTANDING.md`'s priority list.
-4. **Before ANY collaborator:** take the checks runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).
-
-## Gate baseline
-
-The latest counts watched — 25 Sep 26 21:19, `claude/trk-smoke-add-race-bug-007eed` (on `main` after PR #435, plus the
-question-box fix and D191; not yet merged), one run on a quiet PC on port 4180 (`raptor-port/docs/handpass/2026-09-25-trk-add-race.md`
-§11): unit **5916 / 5916** (363 files) · build clean · tfin **728 / 0** · e2e **471 passed**, 48 skipped · smoke **442 / 0** ·
-rulecheck OK. `main` stands at 5910 unit until this merges. Restate a count only from a
-run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his
-PC: `raptor-port/docs/gates-and-deploy.md`.
+The latest counts watched — 25 Sep 26 22:14–22:26, `claude/request-one-row` (PR #437: D174, D175, D176, with `main` after
+PR #436 merged in; not yet merged), one run on a quiet PC (`raptor-port/docs/handpass/2026-09-25-req-one-row.md` §12):
+unit **5939 / 5939** (365 files) · build clean · tfin **728 / 0** · e2e **471 passed**, 48 skipped · smoke **442 / 0** ·
+rulecheck OK · docsize OK. `main` (after PR #436) stands at 5916 unit until this branch merges. Restate a count only
+from a run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md`
+§Build & verify; how they mislead, and the checks on his PC: `raptor-port/docs/gates-and-deploy.md`.
 
 ## Standing constraints
 
