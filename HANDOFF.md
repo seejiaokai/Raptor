@@ -27,11 +27,11 @@ the later merge keeps both (D78).
   by D173 and archived); seven mock-ups under `raptor-port/docs/mock/` (the design of record for the next work is
   `changes-window.html` option A, with `changes-doors.html` and `tags-ticks.html`); `[MOVE-REPLACE-ONE]` closed (D113).
 - **Unfinished — HIS ORDER, D173:**
-  1. **D114's FULL check on this PR** — Fable + Astra blind reads (brief
-     `raptor-port/docs/superpowers/briefs/2026-09-25-d114-read-brief.md`; Astra's first run was stopped unfinished — run
-     both fresh), the walk (desktop + phone; the counts on every surface, the list's one line, the Amendments panel's
-     "1 item · 1 removal"), the full gates, the evidence sheet's new section; then his look and "merge live" of #435.
-     Close `[REQUEST-OFF-ONE]` after it.
+  1. **D114's FULL check — DONE 25 Sep 26 (evening), waiting for his look and "merge live" of #435.** Evidence
+     `raptor-port/docs/handpass/2026-09-25-amendment-batch.md` §9 (the reads, the walk desktop + phone, break tests,
+     gates, his look card §9.11). Two gaps fixed ("Discard N edits" read 2; a deleted request's line named nobody);
+     three older findings filed — `[REQ-TWO-ROWS]` (high), `[REQ-DECLINED-PENDING]`, `[REQ-ORPHAN-ROW]` — the first two
+     are questions on his look card. `[REQUEST-OFF-ONE]` archived.
   2. **`[ACCOUNTS]` (D165, D166) on a NEW branch from `main`** once #435 has merged.
   3. **`[DRAFT-PENDING]` — the one changes window (D118, D167–D172)** on top of accounts; it absorbs D116's list, D117
      and D119 — do NOT build those separately.
@@ -40,8 +40,7 @@ the later merge keeps both (D78).
 - **Branch:** `claude/amendment-batch`; PR #435 (open when written — check before acting). Vercel preview:
   https://raptor-git-claude-amendment-batch-kai-e2f5.vercel.app . GitHub's machines run the checks while the repo is
   public (D106, ~11 min); never push while they run (D151).
-- **Gates:** the full set green on commit `22650eb1`'s code (`## Gate baseline`); **D114's code (`a95afcbe`) has NOT
-  had a full gate run** — only the engine, state and neighbouring UI suites (2204 tests, green). Step 1 runs them.
+- **Gates:** the full set green on the D114 check's final code, 25 Sep 26 18:20 (`## Gate baseline`).
 - **Open questions for him:** none — every question put to him this chat is answered and recorded.
 - **Pick up here:** step 1 above. Read the rulings D113–D119 and D165–D173 in `.claude/rules/decisions/scheduler.md`
   and `how-we-work.md` before building anything; models per his rule — Opus 5.5 (high) builds, Fable 5.1 and Astra review.
@@ -63,8 +62,8 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 25 Sep 26, `claude/amendment-batch`'s final code (the amendment batch, not yet merged), one run
-on a quiet PC (`raptor-port/docs/handpass/2026-09-25-amendment-batch.md` §6): unit **5903 / 5903** (363 files) · build clean ·
+The latest counts watched — 25 Sep 26 18:20, `claude/amendment-batch` after D114's check (not yet merged), one run on a
+quiet PC (`raptor-port/docs/handpass/2026-09-25-amendment-batch.md` §9.10): unit **5910 / 5910** (363 files) · build clean ·
 tfin **728 / 0** · e2e **471 passed**, 48 skipped · smoke **442 / 0** · rulecheck OK · docsize OK. `main` (PR #434) stands at
 5855 unit and 469 e2e until the batch merges. Restate a count only from a
 run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his

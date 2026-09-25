@@ -255,3 +255,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** A mock-up helper that (1) scrolls, (2) injects, (3) re-applies the injection right before the shot, (4) hides toasts, (5) frames clear of sticky bars by elementFromPoint; and a rule to LOOK at every picture before sending, since each failure above passed the script with no error.
 
 **Principle:** A live app owns its DOM; anything drawn into it for a picture must be applied at the last moment and checked by eye, because the app's own repaints fail silently.
+
+### Observation 250: A ruling that names its surfaces — the build's tests walked every surface that reads the changed body, and missed the one that re-derives the same number itself
+
+**Status:** OPEN
+**Date:** 2026-09-25
+**Session context:** D114's FULL check (Raptor, `claude/amendment-batch`) — a request taken off a published day counts one pending change on every count
+**Skill:** New skill candidate: none — the project's bug-check order (`raptor-port/docs/bug-check-order.md` §6, the roll-call)
+**Type:** open-source
+**Phase/Area:** building a counting change; the roll-call
+
+**Issue:** The ruling listed seven surfaces by name, including the load's "Discard N edits". The build changed the one counting body and red-first-tested the day head, the board, the info panel, the list, the panel and the publish message — every surface that READS that body. "Discard N edits" computes its number in a sibling function that re-derives the same unit by itself (content units + the filings the load will put back), so it never saw the pairing and read 2 beside the day head's 1. The build's own tests were all green; the mechanical roll-call (grep every reader of the count, then check each named surface) found it in minutes, before the app was opened.
+
+**Suggested improvement:** In the roll-call step, when a ruling names surfaces, map EACH named surface to the function that computes its number, and flag any surface whose function is not the changed body — that surface needs its own red test, or the two functions must share one body.
+
+**Principle:** "Every reader of the changed function" is not the same set as "every place the number is shown". A sibling that re-derives the same quantity is a drift seam the changed function's callers list can never reveal; enumerate from the surfaces the ruling names, not from the call graph of the code you changed.

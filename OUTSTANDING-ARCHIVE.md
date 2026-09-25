@@ -1431,3 +1431,25 @@ out for Tally"), and it is the count the day showed before D109. **To change it:
 `raptor-port/src/engine/pendunits.test.ts`. **Place:** his morning look at the batch (the look card asks it).
 **CLOSED 25 Sep 26 — RULED D113 ("5 yes"): a replacement in one seat is ONE, as built. Nothing to build; the contracts and the register now say so.**
 
+
+*Moved here 2026-09-25 by backlog-archive.mjs ([REQUEST-OFF-ONE]). Forward facts: `.claude/rules/decisions/scheduler.md`, `raptor-port/docs/handpass/2026-09-25-amendment-batch.md`.*
+
+### [REQUEST-OFF-ONE] Taking an accepted request off a published day counts TWO pending changes — one? A question for him (25 Sep 26)
+**CHECKED 25 Sep 26 — FULL tier** (evidence `raptor-port/docs/handpass/2026-09-25-amendment-batch.md` §9: Fable and Astra
+blind, the walk desktop + phone, break tests): the two gaps it found — "Discard N edits" read 2, a deleted request's
+line named nobody — fixed; the older findings filed as `[REQ-TWO-ROWS]`, `[REQ-DECLINED-PENDING]`, `[REQ-ORPHAN-ROW]`.
+**ANSWERED 25 Sep 26 — D114 ("6 yes"): ONE.** BUILT on `claude/amendment-batch` (commit `a95afcbe`, red first; the
+neighbouring suites green) — its FULL check is step 1 of D173 (`[LOOK-435]`); close this item after it.
+Found by the amendment batch's walk (walker B1, `raptor-port/docs/handpass/parts/2026-09-25-amendment-batch-b1.md`
+finding 1, picture `docs/img/handpass/2026-09-25-amendment-batch/b1/b1-d-03-list-week.png`). One tap — ✕ on Gambit's
+accepted FLY WITH row on a published Monday — reads "+2" on every surface (they all agree), and the pending list shows
+two lines: "Ground · FLY WITH · removed" and "Gambit · Fly with: on the programme → taken off". The published AL then
+says "1 removal · 1 input filing". **Not new:** before the batch the count was the record's length, also 2; D109 made a
+MOVE one change and says nothing about a request's row and its filing. Accepting a request onto a published day is
+the mirror case (a row added + its filing = 2). **The agent's recommendation: count it ONE** — one act by the
+scheduler, one line ("Gambit's Fly with taken off the programme"); what goes out (the stored diff) would stay as it
+is. **To build:** in `raptor-port/src/engine/publish.ts dayPendingItemsIn`, pair a filing entry for input X with the
+ground row add / delete whose `src` is X into one item, and word it in `raptor-port/src/ui/pendlist.ts`. **Place:** his
+morning look at the batch (the look card asks it).
+
+

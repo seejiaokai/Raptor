@@ -285,3 +285,96 @@ read by nine surfaces · 5 gesture **NO** — the doors (✕, Accept, Undo, → 
 - **D114-2 (new in `a95afcbe`)** — a request DELETED from the Inputs page: its row and its filing pair into one line,
   and that line reads only "A request · on the programme → not on the programme" — whose and what are lost (before, the
   row's own line named it).
+
+### 9.6 The two reads — Fable and Astra, blind to each other (round 2 of the brief)
+Reports, unchanged: `2026-09-25-d114-fable-read.md`, `2026-09-25-d114-astra-read.md`. **Both: no new defect in
+`a95afcbe`** beyond the host's D114-1 and D114-2; both confirmed the pairing reads the issued row for a removal and the
+live row for an addition, one filing per row, the empty-list invariant, every counting surface on the one body, the
+stored diff unchanged, `ukinds` frozen, copied on withdrawal and restored by undo. Dispositions (each reproduced first):
+
+| finding | who | against `main` | disposition |
+|---|---|---|---|
+| D114-1 "Discard N edits" reads 2 beside 1 | host (roll-call) | new | **fixed** — `publish.ts requestRowUnit`, ONE pairing body read by `dayPendingItemsIn` AND `dayDiscardCount`; red first; walked red (§9.7, `d114/desktop/d114-1-discard.png`), re-walked green |
+| D114-2 a deleted request's line reads "A request" | host (roll-call) | new | **fixed** — `pendlist.ts requestWords` names it from its row (whose, what) and says "deleted"; also after a load puts its row back; red first |
+| the list is not newest-first | Astra 1 | — | **ruled** — D119 is built with the one changes window (D173 step 3), not separately |
+| a load / plan switch puts one request on two days | Astra 2 | older | **reproduced** (production functions) and **filed** `[REQ-TWO-ROWS]`, high — its place is on the look card |
+| a request filed on a published day then taken off reads 1 | Fable O1 | older | **walked** (§9.7 step 9) and **filed** `[REQ-DECLINED-PENDING]` — a question for him |
+| a deleted request's row in another week stays | Fable O2 | older, rare | **filed** `[REQ-ORPHAN-ROW]`, low (with the step-8 sight below) |
+| a weekend ✕ that earns reads 2 (the OIL line) | Fable O3 | design | not a finding — D109 / F5: what the day earns is its own item |
+| an AL issued before `a95afcbe` reads its diff's split | both | — | not a finding (D56) |
+Fable's test pins taken: the two-day request (Mon paired, Tue its own filing), an AL after an AL (`ukinds` per AL, AL1's
+line unchanged, the withdrawn record keeps the split). Not taken: the plan-switch and date-move pins — both read the
+same body and were read RIGHT by both reviewers; the plan switch is also in `[REQ-TWO-ROWS]`'s tests to come.
+
+### 9.7 The walk — `scripts/handpass/am/d114-walk.mjs`, the production build, desktop 1440×900 and phone 390×844
+Fresh world (the seed week; Monday carries three accepted requests); every step through the app's own controls; an
+assertion of the RIGHT behaviour, so the re-walk is the same script. First walk (before the fixes, desktop):
+`docs/img/handpass/2026-09-25-amendment-batch/d114/desktop/` — FAILED only on D114-1 ("Discard 2 edits" at steps 1, 6,
+8) and on its own script (step 7 did not reach the Inputs page's ✕ — the page lists a date window; fixed in the script).
+Re-walk (after the fixes): `…/d114/rewalk/{desktop,phone}/` — **every check PASS on both widths; the browser error list
+empty.**
+
+| step | what the person does | what every surface said (re-walk) |
+|---|---|---|
+| 0 | sign and publish Monday on the board | ORIG, nothing pending |
+| 1 | ✕ on Gambit's FLY WITH row | week, board, both ⓘ "1", Amendments panel "Mon · 1 change · 1 removal", sign line "1 change to publish", "Discard 1 edit"; the list ONE line "Gambit · Fly with: on the programme → taken off"; fits the phone |
+| 2 | Accept it again | nothing pending anywhere, no marker (AM20) |
+| 3 | Undo · Redo | 1 · 0 |
+| 4 | the request's own Undo button | 1 on every count |
+| 5 | sign, Publish AL1 | "Published AL1 · 1 item"; the AL's line "AL1 Mon · 1 item · 1 removal" — no "input filing" |
+| 6 | Accept it back on AL1 | 1 everywhere incl. "Discard 1 edit"; one line "taken off → on the programme", a tap that stays on Edit Schedule and marks FLY WITH in view |
+| 7 | delete Zenith's Meeting on the Inputs page | 2 everywhere; its line "Zenith · Meeting: on the programme → deleted" |
+| 8 | load AL1 | "Discard 2 edits" = the head's 2; after: Gambit's request back as AL1 had it; Zenith's row back (AL1 had it) but the request stays deleted — 1 pending, named (`[REQ-ORPHAN-ROW]` (2)) |
+| 9 | file a Meeting for Gambit on the published Monday, then ✕ it | 1 pending remains: "Gambit · Meeting: not on the programme → taken off" — `[REQ-DECLINED-PENDING]`, his question |
+
+### 9.8 Break tests — each wired piece broken once, each turned a named test red (files restored, checked byte for byte)
+| broken on purpose | went red |
+|---|---|
+| the pairing never pairs | all six D114 tests |
+| "Discard" counts the row and the filing apart | the "Discard N edits" test |
+| the Amendments panel ignores `ukinds` | the ✕ test ("1 item · 1 removal") |
+| the AL stores no `ukinds` | the ✕ test, the AL-after-AL test |
+| a withdrawn AL drops `ukinds` | the AL-after-AL test |
+| a deleted request is not named from its row | the deleted-request test |
+| the pair worded as a plain removal | the ✕, the mirror and the deleted-request tests |
+| a filing on its own not named from the row a load put back | the deleted-request test (its after-load half) |
+
+### 9.9 What was NOT walked, and why
+| not walked | why | what stands instead |
+|---|---|---|
+| a parked plan as the working copy, with the pair | the pairing reads the same body on any working copy; both reviewers read it RIGHT (Fable S3) | the D114 unit tests; `[REQ-TWO-ROWS]` adds the plan-switch walk |
+| the Amendments panel on the phone | the panel is not drawn at 390px | walked on desktop; the phone's own counts all walked |
+| a request edited on the Inputs page (date moved) | the edit re-lands through the same accept path | Fable S5 read RIGHT; unit-pinned paths |
+| a real iPhone | Chromium's phone emulation only | his look |
+
+### 9.10 Gates — one full run on the final code, 25 Sep 26 18:20–18:33, nothing else running on the PC
+| gate | result |
+|---|---|
+| unit (`npm test`) | **5910 / 5910** (363 files) |
+| build | clean |
+| the original's assertions (`node reference/tfin.js`) | **728 / 0** |
+| browser geometry (`npm run test:e2e`) | **471 passed**, 48 skipped (the same 48) |
+| the Tracker's suite (`npm run smoke:tracker`) | **442 / 0** |
+| `npm run rulecheck` | OK |
+| `npm run docsize` | OK — every record accounted for; OVER by 39 (`OUTSTANDING.md`), deferred (D29) to its own docs-only pass |
+The first run of the day (before the fixes, the D114 code as built) was the same but for one Leave War test that timed out
+while the host ran a probe beside it (`figselect.test.tsx`, the known `[LW-FIGSEL-SLOW]`); alone it passed 12 / 12.
+
+Walk: `docs/handpass/2026-09-25-amendment-batch.md` §9 · 34 pictures · 13 surfaces · 10 orders · MISSING: 2 fixed
+(D114-1, D114-2), 0 ruled, 0 filed — and 3 older findings filed (`[REQ-TWO-ROWS]`, `[REQ-DECLINED-PENDING]`,
+`[REQ-ORPHAN-ROW]`)
+
+### 9.11 His look — on the branch's Vercel link, on a day you publish yourself
+1. **Publish Monday, then ✕ Gambit's FLY WITH row on the board.** Every count says **1 pending**, and "1 pending ▾" shows
+   ONE line: "Gambit · Fly with · on the programme → taken off". Look at an older version and press Load: it asks to
+   **"Discard 1 edit"** (it used to say 2).
+2. **Press Accept on it again** (the Personal Inputs group): nothing pending — the day is back to what you published.
+3. **Take it off again and publish AL1**: "Published AL1 · 1 item"; the Amendments panel reads "AL1 Mon · 1 item ·
+   1 removal".
+4. **Two questions for you** (older faults the reviewers found — not caused by D114, the same on the live app):
+   - **A request filed on a published day, then taken off**, still says "1 pending" ("not on the programme → taken
+     off") though the schedule looks as published. Make it **0**? (Recommended: yes — your D98 rule: back to what was
+     published shows nothing pending; the request stays silenced as today.) `[REQ-DECLINED-PENDING]`
+   - **A two-day request moved from Monday to Tuesday, then Monday's older version loaded** (or an older Monday plan
+     switched in), ends up on BOTH days. Recommended fix: the load leaves that row out and says so. **When?**
+     (Recommended: its own small branch right after this one merges, before accounts.) `[REQ-TWO-ROWS]`
