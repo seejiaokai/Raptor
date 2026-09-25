@@ -313,6 +313,50 @@ async function worldH6() {
   } finally { ALL_ERRORS.push(...errors.map(e => 'H6 ' + e)); await browser.close() }
 }
 
+/* ===================== H7 — D187: a look at a published version wears its warnings ===================== */
+async function worldH7() {
+  const { browser, page, errors, CS } = await world()
+  try {
+    const stiff = await page.evaluate(() => window.DAYS[0].waves[0].formations[0].aircraft[0].p)
+    await pubOnBoard(page, MON)
+    const origVer = await page.evaluate(() => String(window.SCHED.orig[0].id))
+    const issuesIn = (sel) => page.evaluate(s => { const d = document.querySelector(s); const m = d && /⚠ (\d+) issues?/.exec(d.innerText || ''); return m ? +m[1] : 0 }, sel)
+    const ringIn = (sel, id) => page.evaluate(([s, id]) => { const p = document.querySelector(`${s} .puck[data-person="${id}"]`); return p ? /boxred/.test(p.className) : null }, [sel, id])
+    await go(page, 'viewsched'); await page.waitForTimeout(300)
+    const face = await issuesIn(`#vWeek .day[data-day="${MON}"]`)
+    /* the edit week's look at the Original (the day's current version) */
+    await editWeek(page)
+    const okW = await lookAt(page, MON, /ORIG|Original/)
+    const wSel = `#eWeek .day[data-day="${MON}"]`
+    const wIss = await issuesIn(wSel), wRing = await ringIn(wSel, stiff)
+    await shotUnion(page, 'H7-week-look-orig', [`${wSel} .day-head`, `${wSel} .dwbox, ${wSel} [data-daywarn]`]).catch(() => {})
+    check('H7 the edit week\'s look at the published version shows its warnings, as View-only Sched does (D187)', okW && face > 0 && wIss === face && wRing === true, `look ${wIss} issues, ${CS[stiff]} ringed ${wRing}; View-only Sched ${face}`)
+    await pvTap(page, MON, 'data-golive')
+    /* the board's look */
+    await board(page, MON)
+    const okB = await lookAt(page, MON, /ORIG|Original/)
+    const bRing = await ringIn('#schedBoard .pv-frozen', stiff)
+    const bIss = await issuesIn('#schedBoard #sbWarn')
+    const mute = await page.locator('#schedBoard #sbWarn .wln-mute').count()
+    await screen(page, 'H7-board-look-orig')
+    check('H7 the board\'s look rings the pucks and lists the version\'s checks, read only (D187)', okB && bRing === true && bIss === face && mute === 0, `ringed ${bRing}, checks ${bIss} issues, mute buttons ${mute}`)
+    await pvTap(page, MON, 'data-golive')
+    /* an AL that adds a warning: a leave for Stiff on Monday, where he flies; AL1 out */
+    await W4.fileInput(page, { person: stiff, type: 'LL', from: '2026-07-13', to: '2026-07-13', span: 'all', remarks: 'LOOK WALK LEAVE' })
+    await toasts(page)
+    await board(page, MON); await signDay(page, MON, 0)
+    const al = await L.publishAL(page, MON).catch(() => ({ pressed: false })); await toasts(page)
+    await go(page, 'viewsched'); await page.waitForTimeout(300)
+    const faceAl1 = await issuesIn(`#vWeek .day[data-day="${MON}"]`)
+    await editWeek(page)
+    const okO = await lookAt(page, MON, /ORIG|Original/)
+    const oIss = await issuesIn(wSel)
+    await shotUnion(page, 'H7-week-look-orig-after-al1', [`${wSel} .day-head`, `${wSel} .dwbox, ${wSel} [data-daywarn]`]).catch(() => {})
+    check('H7 an older version\'s look shows the warnings IT went out with, not AL1\'s', al.pressed && okO && faceAl1 > face && oIss === face, `AL1 ${JSON.stringify(al)}; the Original's look ${oIss} issues (went out with ${face}); AL1's face ${faceAl1}`)
+    await pvTap(page, MON, 'data-golive')
+  } finally { ALL_ERRORS.push(...errors.map(e => 'H7 ' + e)); await browser.close() }
+}
+
 /* ===================== H4 — F5, the load's message ===================== */
 async function worldH4() {
   const { browser, page, errors, CS, loner } = await world()
@@ -342,5 +386,6 @@ await worldH3b()
 if (!PHONE) await worldH4()
 await worldH5()
 await worldH6()
+await worldH7()
 check('no console errors', !ALL_ERRORS.length, ALL_ERRORS.slice(0, 5).join(' | '))
 process.exitCode = summary(`late-pub host walk (${W})`) ? 1 : 0
