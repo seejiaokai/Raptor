@@ -228,9 +228,11 @@ Synthetic keys ride the same book: `del:<day>.<n>.<kind>` (a deletion),
 slice of the official warnings as it went out: `byDay`, `sev`, `chip`, `dash`, and `cs` the callsigns its warnings were
 worded with — only the warnings that freeze and the marks THEY raise; what stays live is not kept: the next-day crew-rest
 mark, a crew-rest breach, the 7-day run, a lapsed qualification and the OIL warnings, `validate.ts LIVE_ON_FACE`, D183–D185),
-`pa` (the men on the day as the roster drew them — CAT, seat, posting) and `rv` (the rule value it prints — a blank brief's
-lead). The face, the CSV and the print draw `pa` and `rv` (`engine/faceattrs.ts`); the pending comparison measures today's
-against them. A retired issuance keeps all of them (`publish.ts retireIssued`). Size: a copy of
+`pa` (the men on the day as the roster drew them — CAT, seat, posting — every man in a person slot of its content, behind
+its placeholder pucks, or of its inputs), `rv` (the rule value it prints — a blank brief's lead) and `ros` (the aircrew
+roster at issue, for the day panel's "free all day"). The face, the CSV and the print draw `pa` and `rv`
+(`engine/faceattrs.ts`); the pending comparison measures today's `pa` against them, and `rv` where a flying line prints a
+suggested brief; `ros` is drawn, never compared. A retired issuance keeps all of them (`publish.ts retireIssued`). Size: a copy of
 a day's few inputs and its warning list per version — measured in the evidence sheet. Declared in `src/engine/schema.ts`
 `DaySnapshot` / `WarnSlice`.
 

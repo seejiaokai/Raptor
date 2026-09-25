@@ -1,4 +1,5 @@
 import { DAYS } from './data'
+import { rosterShown } from './faceattrs'
 import { INPUTS, inputsOn, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin, sansAvailOn, sansWindow, isPersonal, inpLabel } from './inputs'
 import { PEOPLE, isSpecial, whoId, aarNeed, aarOK, scShiftKind, scQualOK } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
@@ -86,11 +87,14 @@ export function availByWave(d:any){
   const wins:any[]=waveWindows(d), aw=dayAway(d), off=aw.all, eng=dayEngaged(d);
   const byWave=wins.map(()=>[] as any[]), anyWave:any[]=[];
   const bySort=(a:any,b:any)=>PEOPLE[a].cs.localeCompare(PEOPLE[b].cs);
-  Object.keys(PEOPLE).forEach((id:any)=>{
-    /* personnel (ground crew) are not aircrew — they never count toward a
-       wave's available-crew strip, even though they can be dropped into a rear
-       seat by hand. Keeping them out stops the flying counts reading high. */
-    if(PEOPLE[id].archived||PEOPLE[id].pers||off.has(id))return;
+  /* personnel (ground crew) are not aircrew — they never count toward a
+     wave's available-crew strip, even though they can be dropped into a rear
+     seat by hand. Keeping them out stops the flying counts reading high.
+     The roster is the one the face being drawn shows ([LEAVE-LATE-PUBLISHED], Astra's second read #3): an issued day
+     counts the aircrew it went out with — a man posted out (or added) since moves the working copy, not the published
+     day's "free all day" (engine/faceattrs.ts rosterShown); everywhere else it is today's, the same filter as before. */
+  rosterShown().forEach((id:any)=>{
+    if(off.has(id))return;
     /* AN ABSENCE OCCUPIES TIME EXACTLY AS A TASK DOES, so it is folded into
        the same busy list rather than checked on a second path — one overlap
        rule, not two that can drift.

@@ -23,6 +23,7 @@ import { acceptInput, renameCallsign, setSlotVal } from '../engine/slots'
 import { loadVersionToWorkingCopy, inputsLeftSaid } from '../engine/drafts'
 import { SCHED, signOf, setSign, setDayApproved, dayDelta, dayDiscardCount, dayShownPendCount, dayCurVer, daySigned, dayPendingItems, publishALDay, unpublishDay } from '../engine/publish'
 import { validate, officialWarn, officialRaw, WARN, LIVE_ON_FACE } from '../engine/validate'
+import { withChipWorld } from './html'
 import { initStore } from '../state/store'
 import { setSession } from '../state/auth'
 import { setPage, DPREV, VWORK, setUnpubArm, setRestArm } from '../state/view'
@@ -180,7 +181,7 @@ describe('D177 / D178 — an input change after publishing waits for the admin',
     expect(INPUTS.some((r: any) => r.remarks === 'KEEP ON LOAD'), 'the member\'s record is his').toBe(true)
     expect(dayShownPendCount(MON)).toBe(1)
     /* …and the load's sentence says why the day still reads pending (Fable's code read F5; the plan's layer 1) */
-    expect(inputsLeftSaid(MON)).toMatch(/1 member input changed since stays pending/)
+    expect(inputsLeftSaid(MON)).toBe(" · 1 member input change stays pending — a load cannot put back a member's own record")
   })
 
   it('an accepted request edited after publishing is ONE change — its re-landed row folds into it', () => {
@@ -606,3 +607,47 @@ describe('a rule change under a published day goes out with the next AL', () => 
     } finally { (VCONF as any).longDay = was; validate() }
   })
 })
+
+/* THE SECOND READS (26 Sep 26, morning — Astra #3, #4; Fable #1), each through the state the app writes */
+describe('the second reads: the roster a face counts, a person slot, a brief a face prints', () => {
+  const freeAll = (html: string) => { const m = /Free all day<\/span><span class="v">(\d+)/.exec(html); return m ? +m[1] : -1 }
+  const loner = () => Object.keys(PEOPLE).find((id: string) => !(PEOPLE as any)[id].special && !(PEOPLE as any)[id].pers && !(PEOPLE as any)[id].archived
+    && !JSON.stringify(DAYS[MON]).includes(`"${id}"`) && !INPUTS.some((r: any) => r.person === id))!
+
+  it('a man posted out who is nowhere on the day: the published panel keeps its "free all day", the working copy\'s drops, nothing pending (Astra #3)', () => {
+    publishDay(MON)
+    const issued = () => withChipWorld(MON, dayCurVer(MON), true, () => dayInfoHTML(MON))
+    const f0 = freeAll(issued()), w0 = freeAll(dayInfoHTML(MON))
+    expect(f0, 'the published panel counts').toBeGreaterThan(0)
+    const who = loner()
+    ;(PEOPLE as any)[who].archived = true                       // the Quals page's ✕ posts him out
+    try {
+      validate()
+      expect(freeAll(issued()), 'the published day counts the roster it went out with').toBe(f0)
+      expect(freeAll(dayInfoHTML(MON)), 'the working copy counts today\'s').toBe(w0 - 1)
+      expect(dayDelta(MON), 'not compared — a roster change is no change to the day').toEqual([])
+    } finally { (PEOPLE as any)[who].archived = false; validate() }
+  })
+
+  it('free text that spells a man\'s id is not that man: his CAT change reads nothing (Astra #4)', () => {
+    const who = loner()
+    ;(DAYS[MON] as any).ground[0].rmks = who                    // a remark that happens to read "salsa"
+    validate(); publishDay(MON)
+    expect(((SCHED.orig as any)[MON].pa || {})[who], 'not captured as a man on the day').toBeUndefined()
+    const was = (PEOPLE as any)[who].q
+    ;(PEOPLE as any)[who].q = was === 'A' ? 'B' : 'A'
+    try { validate(); expect(dayDelta(MON)).toEqual([]) } finally { (PEOPLE as any)[who].q = was; validate() }
+  })
+
+  it('a blank B on a STANDBY line only: a brief-lead change reads nothing — the face prints no brief there (Fable #1)', () => {
+    ;(DAYS[TUE_] as any).waves.forEach((w: any) => (w.formations || []).forEach((f: any) => { if (!String(f.br || '').trim()) f.br = '07:00' }))
+    ;(DAYS[TUE_] as any).waves.push(makeStandalone('sc'))
+    validate(); publishDay(TUE_)
+    expect((SCHED.orig as any)[TUE_].rv, 'its blank standby B still keeps the lead for the CSV').toEqual({ briefLead: (VCONF as any).briefLead })
+    const was = (VCONF as any).briefLead
+    ;(VCONF as any).briefLead = was + 30
+    try { validate(); expect(dayDelta(TUE_), 'no flying line prints a suggested brief').toEqual([]) }
+    finally { (VCONF as any).briefLead = was; validate() }
+  })
+})
+const TUE_ = 1

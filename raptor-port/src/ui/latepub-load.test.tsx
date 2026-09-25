@@ -71,7 +71,7 @@ describe('"Load onto working copy" says a member\'s input change stays pending (
     expect(dayShownPendCount(0)).toBe(1)
     await act(async () => { setDayPreview(0, dayCurVer(0)); notify() })
     const said = await withToasts(async () => { await click(loadBtn()) })
-    expect(said.join(' | ')).toMatch(/Monday is already at Original · 1 member input changed since stays pending/)
+    expect(said).toContain("Monday is already at Original · 1 member input change stays pending — a load cannot put back a member's own record")
     expect(dayShownPendCount(0)).toBe(1)
   })
 
@@ -84,7 +84,7 @@ describe('"Load onto working copy" says a member\'s input change stays pending (
       await click(loadBtn())                                        // arms (an edit would be discarded)
       if (loadBtn()) await click(loadBtn())                         // confirms
     })
-    expect(said.join(' | ')).toMatch(/Original loaded onto the working copy.*1 member input changed since stays pending/)
+    expect(said.join(' | ')).toMatch(/Original loaded onto the working copy.* · 1 member input change stays pending — a load cannot put back a member's own record$/)
     expect(dayShownPendCount(0), 'the scheduler\'s edit gone, the member\'s leave still waiting').toBe(1)
   })
 })

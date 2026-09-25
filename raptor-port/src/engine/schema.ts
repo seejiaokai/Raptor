@@ -450,8 +450,12 @@ export type DaySnapshot = {
    *  measures today's roster against them. */
   pa?: Record<string, { q: any; seat: any; pers: boolean; san: boolean; sxo: boolean; archived: boolean }>
   /** The rule values the issued face prints (a blank brief's lead) at issue — engine (`freezeWarn`): the issued face,
-   *  CSV and print read it (`engine/faceattrs.ts`, D179), and the pending comparison measures today's rule against it. */
+   *  CSV and print read it (`engine/faceattrs.ts`, D179), and the pending comparison measures today's rule against it —
+   *  only where a flying line prints a suggested brief (`faceRuleValsCompared`; a standby line prints none on screen). */
   rv?: { briefLead: number }
+  /** The aircrew roster at issue (ids, not posted out, not ground crew) — engine (`freezeWarn`): the issued day panel's
+   *  "free all day" counts these (`engine/faceattrs.ts rosterShown`); drawn, never compared. */
+  ros?: string[]
 }
 /** One day's slice of the warning bundle (engine/validate.ts `warnSliceOf`): its warning list less the live ones, and per
  *  person the ring severity, the printed flag and the dashed ring those warnings raise. `trace` (the next-day crew-rest

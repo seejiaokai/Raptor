@@ -101,7 +101,7 @@ export function rowsLeftSaid(list: Array<{ who: string, what: string, days: stri
    still reads them pending, so the sentence says why. Read AFTER the load. '' when there are none. */
 export function inputsLeftSaid(di: any): string {
   const n = dayPendingItems(+di).filter((x: any) => !!x.val && !x.inp).length
-  return n ? ` · ${n} member input${n === 1 ? '' : 's'} changed since ${n === 1 ? 'stays' : 'stay'} pending — a load cannot put back a member's own record` : ''
+  return n ? ` · ${n} member input change${n === 1 ? ' stays' : 's stay'} pending — a load cannot put back a member's own record` : ''
 }
 
 /* the day's draft list — empty array (not undefined) when the day has none,

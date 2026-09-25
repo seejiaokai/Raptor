@@ -75,6 +75,7 @@ The amendment batch's look — HIS ORDER (D173): (1) [LOOK-435] — D114's full 
 [BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
 FULL-tier build, any time), and beside it [QUALS-PROTO-TOAST] (low, one line of words). The board — [PV-NO-FLAGS]
 (his question on `[LEAVE-LATE-PUBLISHED]`'s look card). View-only Sched — [VIEW-ARROW-OVER-LIST] (low, LOOK tier).
+Insights — [INSIGHTS-WORKING-COPY] (a question for him, with the one changes window or any time).
 
 **Waiting on him — no order exists:** [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
 D147), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
@@ -936,6 +937,17 @@ D185); View-only Sched shows both. As built long before (`html.ts`: a version pr
 the same on `main`); a blank B there also prints no suggested time where View-only Sched prints one. **The question:**
 should the board's look at a published version show its warnings as View-only Sched does? **Place:** on the look card;
 if yes, a small WALK-tier build (the board's PV branch reads the face bundle, `withOfficialWarn`).
+
+### [INSIGHTS-WORKING-COPY] Week Insights shows the working copy's week to everyone, members included — a question for him (filed 26 Sep 26)
+Astra's second read of `[LEAVE-LATE-PUBLISHED]` (`raptor-port/docs/handpass/2026-09-26-late-pub-astra-read2.md` #2): the
+top bar's Insights (`raptor-port/src/engine/insights.ts computeInsights`, `raptor-port/src/ui/Modals.tsx insightsHTML`)
+validates and reads the WORKING week — its warnings, sorties and hours — for every role, while View-only Sched shows each
+published day as issued. So a member reading Insights sees the admin's unpublished edits (and, since that branch, a
+member's late input) counted in. The same on `main` (it always read the working copy); Fable's second read calls it the
+working copy "by design". **The question:** should Insights show the published schedule on View-only Sched / for a member,
+and the working copy on Edit Schedule? If yes, Astra's fix steps are in the read (a displayed-world model passed in; the
+issued days through `withChipWorld` / `faceWarn`). **Place:** a question for him; with the one changes window
+(`[DRAFT-PENDING]`, the next time the working-versus-published split is designed) or any time.
 
 ### [VIEW-ARROW-OVER-LIST] The week's floating "‹" arrow covers the start of an opened warning list on a desktop (filed 26 Sep 26)
 Seen by the Leave War walker of `[LEAVE-LATE-PUBLISHED]`'s check (picture

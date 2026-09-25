@@ -37,7 +37,7 @@ import { loadWeek, resetSession } from '../state/store'
 import { CURWEEK } from '../engine/waves'
 import { shiftWeek } from './weeknav'
 import { stashClear } from '../engine/weekstash'
-import { signOf, setDayApproved, dayCurVer } from '../engine/publish'
+import { signOf, setDayApproved, dayCurVer, dayPendingItems } from '../engine/publish'
 import { validate, WARN, officialWarn, withOfficialWarn } from '../engine/validate'
 import { acceptInput } from '../engine/slots'
 import { draftVerLabel } from '../engine/drafts'
@@ -522,6 +522,28 @@ describe('a published day: the window reads the record, not today (Fable S3, S5)
     const stiff = rows().find(r => r.dataset.awp === 'stiff')!
     expect(stiff, 'the issued membership').toBeTruthy()
     expect(stiff.className, "today's double-booking is not on the record").not.toMatch(/clash|flagged/)
+  })
+
+  /* [LEAVE-LATE-PUBLISHED] — Astra's second read #1, Fable's second read #2 (26 Sep 26): a man who stands on the day ONLY
+     behind the placeholder (the frozen crowd) keeps the seat he went out with in the issued window — its columns are
+     pilots and WSOs — and his seat change reads pending, as any man's on the day does */
+  it("the issued window keeps a crowd-only man in the column he went out in; his seat change reads pending", async () => {
+    const item = issuedSat()
+    const was = (PEOPLE as any).plasma.seat
+    expect(was, 'Plasma is a WSO on the roster').toBe('RCP')
+    const colOf = () => { const cols = $$('.availwin .rcol'); return cols.findIndex(c => !!c.querySelector('.rpuck[data-awp="plasma"]')) }
+    await act(async () => { view.setPage('viewsched'); notify() })
+    await click(viewChip())
+    expect(colOf(), 'issued: in the WSO column').toBe(1)
+    await act(async () => { setAvailWin(null); notify() })
+    ;(PEOPLE as any).plasma.seat = 'FCP'
+    try {
+      await act(async () => { validate(); notify() })
+      await click(viewChip())
+      expect(colOf(), 'the issued window keeps him where he went out').toBe(1)
+      expect(dayPendingItems(SAT).some((x: any) => x.kind === 'warn'), 'his seat change reads pending').toBe(true)
+    } finally { (PEOPLE as any).plasma.seat = was; await act(async () => { setAvailWin(null); validate(); notify() }) }
+    void item
   })
 
   it("the owner's debrief flag on the issued face comes from the RECORD — not from today (walk, 23 Sep 26)", async () => {

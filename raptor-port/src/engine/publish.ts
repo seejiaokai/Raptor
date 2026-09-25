@@ -9,11 +9,12 @@ import { ridKey, posKey, ridWriteKey, ensureRowIds, RID_BOOK_VERSION } from './r
 import { canonicalDiff, canonicalUnits, digest } from './canonical'
 import type { DeltaEntry, PendUnit } from './canonical'
 import { INPUTS, inpId, inputCoversDate, inpDetailKey, frozenInputMatch, stableJson } from './inputs'
-import { CURWEEK } from './waves'
+import { CURWEEK, isStandalone } from './waves'
 import { groundOrder } from './order'
 import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './verid'
 import { isPreservedWeek } from './weekstash'
 import { inputProtected } from './quarantine'   // functions only both ways, so the import loop is safe
+import { rosterIds } from './faceattrs'
 import { oilEvidence, oilEvidenceKey, oilSignKey, oilKeyNoMem, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney, oilMovedInputsOnly } from './oilev'
 
 /* the reference calls straight into the UI here; the engine routes those four
@@ -545,24 +546,49 @@ function freezeWarn(snap:any,di:number){ if(!HOOKS.issuedWarn||!snap)return; con
   w.cs=warnCallsigns(w);
   snap.w=w;
   /* …and what else of the day's face is NOT the day's own data (Astra's plan read #3): the qualifications, seat and
-     posting of every man on it (the puck's CAT letter and colour) and the rule values it prints (a blank brief's time).
-     These still DRAW live — freezing them is keeping a copy of the rules per version, which his 7 Aug 26 "no rule
-     versioning" forbids; put to him (OUTSTANDING.md [LATE-PUB-FACE-LIVE]) — but they are COMPARED, so a change that
-     would move the published face reads pending instead of moving it silently. */
-  snap.pa=dayPeopleAttrs(snap.d,snap.inp); snap.rv=faceRuleVals(snap.d); }
-/* every man an issued face draws (a stored person id anywhere in its content, and the man of every input it froze — the
-   Unavailable block's pucks, Astra's code read #2), with what his puck draws from the roster */
+     posting of every man on it (the puck's CAT letter and colour) and the rule value it prints (a blank brief's time).
+     The face, the CSV and the print DRAW these as issued (engine/faceattrs.ts — Astra's code read #2; whether to keep
+     the brief time with the day, against his 7 Aug 26 "no rule versioning", is his look card's Q1) and they are
+     COMPARED, so a change reads pending instead of moving the published face silently.
+     And the ROSTER the day went out with (`ros`, Astra's second read #3): the aircrew the day panel's "free all day"
+     counts. Drawn as issued, NOT compared — a man joining the squadron would otherwise make every published day pending
+     for a count on a panel; nothing on the published face moves either way. */
+  snap.pa=dayPeopleAttrs(snap.d,snap.inp); snap.rv=faceRuleVals(snap.d); snap.ros=rosterIds(); }
+/* every man an issued face draws, with what his puck draws from the roster: a person id in a PERSON SLOT of its content —
+   a flying seat (p, w), a sim seat or passenger (p, w, pax), a desk's holder (id), a ground or Common Programme name
+   (who), the extras beside a row (more) — never free text that happens to spell an id (a programme called "bane" is not
+   Bane — Astra's second read #4); the men behind every ALL / ALL AVAIL puck, as the day froze them (`oilev.sent` — the
+   window lists them as pucks, split by seat: Astra's second read #1); and the man of every input it froze (the Unavailable
+   block's pucks, Astra's code read #2) */
+const PERSON_SLOTS=new Set(['p','w','pax','id','who','more']);
+const attrsOf=(p:any)=>p?{q:p.q??null,seat:p.seat??null,pers:!!p.pers,san:!!p.san,sxo:!!p.sxo,archived:!!p.archived}:null;
 export function dayPeopleAttrs(d:any,inp?:any):any{const out:any={};
+  const put=(v:any)=>{ if(typeof v!=='string')return; const p=(PEOPLE as any)[v]; if(p&&!out[v])out[v]=attrsOf(p); };
+  /* an array keeps the key it sits under (a sim's pax list, a row's extras, a crowd); an object's fields carry their own */
   const walk=(v:any,k:string)=>{ if(k==='oilev')return;
-    if(typeof v==='string'){ const p=(PEOPLE as any)[v]; if(p&&!out[v])out[v]={q:p.q??null,seat:p.seat??null,pers:!!p.pers,san:!!p.san,sxo:!!p.sxo,archived:!!p.archived}; return; }
-    if(Array.isArray(v)){ v.forEach((x:any)=>walk(x,'')); return; }
+    if(typeof v==='string'){ if(PERSON_SLOTS.has(k))put(v); return; }
+    if(Array.isArray(v)){ v.forEach((x:any)=>walk(x,k)); return; }
     if(v&&typeof v==='object')Object.keys(v).forEach((kk:any)=>walk(v[kk],kk)); };
-  walk(d,''); Object.keys(inp||{}).forEach((id:any)=>{ const r=(inp||{})[id]; if(r&&r.person)walk(r.person,''); }); return out;}
+  walk(d,'');
+  const sent=(d&&d.oilev&&d.oilev.sent)||{}; Object.keys(sent).forEach((it:any)=>([] as any[]).concat(sent[it]||[]).forEach(put));
+  Object.keys(inp||{}).forEach((id:any)=>{ const r=(inp||{})[id]; if(r&&r.person)put(r.person); }); return out;}
+/* the men a version recorded, as the roster draws them TODAY — the comparison reads the version's own list of men (its
+   content is frozen, so who they are cannot move) and never re-derives it; a man deleted from the roster outright reads
+   null, which differs (his puck would vanish from the face) */
+export function peopleAttrsNow(pa:any):any{const out:any={};
+  Object.keys(pa||{}).forEach((id:any)=>{ out[id]=attrsOf((PEOPLE as any)[id]); }); return out;}
 /* the rule values an issued face PRINTS rather than judges — the blank brief's time (html.ts, board.ts, export.ts) —
-   only on a day that prints one (a line with no B), so a rule change reads pending only where the face would move */
+   only on a day that prints one (a line with no B) */
+const blankB=(w:any)=>((w&&w.formations)||[]).some((f:any)=>f&&!String(f.br||'').trim());
 export function faceRuleVals(d:any):any{
-  const blank=((d&&d.waves)||[]).some((w:any)=>((w&&w.formations)||[]).some((f:any)=>f&&!String(f.br||'').trim()));
-  return blank?{briefLead:(VCONF as any).briefLead}:{};}
+  return ((d&&d.waves)||[]).some(blankB)?{briefLead:(VCONF as any).briefLead}:{};}
+/* …and whether a change of it is a change the admin must see (Fable's second read #1): only where the SCHEDULE prints
+   a suggested brief — a blank B on a flying line. A standby line (SC / AVALON / BB) prints no brief on the face, and a
+   blank B there is its normal state (24 Aug 26), so one Logic-page change would otherwise make every published day with a
+   standby wave pending for nothing visible. The CSV does print a computed brief on a standby line; `rv` keeps it frozen
+   there all the same (it is stored whenever any line is blank), so nothing moves silently. */
+export function faceRuleValsCompared(d:any):boolean{
+  return ((d&&d.waves)||[]).some((w:any)=>!isStandalone(w)&&blankB(w));}
 /* person id → the callsign a slice's warnings name him by */
 export function warnCallsigns(w:any):any{const out:any={};
   (((w&&w.byDay&&w.byDay.warns)||[]) as any[]).forEach((x:any)=>{ ([] as any[]).concat(x.who||[]).forEach((id:any)=>{ const p=(PEOPLE as any)[id]; if(p&&p.cs)out[id]=p.cs; }); });
@@ -594,8 +620,9 @@ function warnDelta(di:any):DeltaEntry[]{di=+di;
   const now=HOOKS.warnNow(di); if(now==null)return [];
   /* the face beyond the warnings, where the version recorded it: the men on it as the roster draws them, the printed
      rule values */
-  const pa=snap.pa?stableJson(snap.pa):'', rv=snap.rv?stableJson(snap.rv):'';
-  const paNow=snap.pa?stableJson(dayPeopleAttrs(snap.d,snap.inp)):'', rvNow=snap.rv?stableJson(faceRuleVals(snap.d)):'';
+  const cmpRv=!!snap.rv&&faceRuleValsCompared(snap.d);
+  const pa=snap.pa?stableJson(snap.pa):'', rv=cmpRv?stableJson(snap.rv):'';
+  const paNow=snap.pa?stableJson(peopleAttrsNow(snap.pa)):'', rvNow=cmpRv?stableJson(faceRuleVals(snap.d)):'';
   const was=storedWarnKey(snap.w)+'\n'+pa+'\n'+rv, k=liveWarnKey(now)+'\n'+paNow+'\n'+rvNow;
   return k===was?[]:[{addr:`warn:${di}`,kind:'warn',from:fp(was),to:fp(k)}];}
 /* ONE REPAINT READS EACH DAY'S COMPARISON ONCE (Fable F9, 25 Sep 26 — measured: five published days signed through

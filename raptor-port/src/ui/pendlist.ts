@@ -23,7 +23,7 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { INPUTS, inpId, inpLabel, inputCoversDate } from '../engine/inputs'
 import { officialSliceNow } from '../engine/validate'
-import { dayPendingItems, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow, warnMsgKey, warnCallsigns, dayPeopleAttrs, faceRuleVals } from '../engine/publish'
+import { dayPendingItems, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow, warnMsgKey, warnCallsigns, peopleAttrsNow, faceRuleVals, faceRuleValsCompared } from '../engine/publish'
 import type { PendItem } from '../engine/publish'
 import { ELOG, elogWhen, keyLabel } from '../engine/editlog'
 import { oilEvidence } from '../engine/oilev'
@@ -189,9 +189,11 @@ function faceWords(di: number): Words & { rows?: CrowdRow[] } {
   gone.forEach((x: any) => rows.push({ where: reword(x.msg || x.code || 'A warning'), from: '', to: 'cleared', keys: [] }))
   /* the men as their pucks draw them */
   if (snap && snap.pa) {
-    const nowPa: any = dayPeopleAttrs(snap.d, snap.inp)
+    const nowPa: any = peopleAttrsNow(snap.pa)
     Object.keys(snap.pa).forEach((id: any) => {
-      const o = snap.pa[id], n = nowPa[id]; if (!o || !n) return
+      const o = snap.pa[id], n = nowPa[id]; if (!o) return
+      /* a man deleted from the roster outright: his puck has nothing left to draw */
+      if (!n) { rows.push({ where: `${cs(id) || id} · no longer on the roster`, from: '', to: 'removed', keys: [] }); return }
       Object.keys(CATW).forEach((f: any) => {
         const x = o[f] ?? null, y = n[f] ?? null
         if (JSON.stringify(x) === JSON.stringify(y)) return
@@ -201,7 +203,7 @@ function faceWords(di: number): Words & { rows?: CrowdRow[] } {
     })
   }
   /* the brief lead a blank line prints */
-  if (snap && snap.rv && snap.rv.briefLead != null) {
+  if (snap && snap.rv && snap.rv.briefLead != null && faceRuleValsCompared(snap.d)) {
     const nb = (faceRuleVals(snap.d) || {}).briefLead
     if (nb != null && +nb !== +snap.rv.briefLead) rows.push({ where: 'A blank brief — its suggested lead', from: `${snap.rv.briefLead} min`, to: `${nb} min`, keys: [] })
   }

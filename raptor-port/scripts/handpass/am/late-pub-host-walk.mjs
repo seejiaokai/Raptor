@@ -239,6 +239,79 @@ async function worldH3b() {
   } finally { ALL_ERRORS.push(...errors.map(e => 'H3b ' + e)); await browser.close() }
 }
 
+/* ===================== H5 — the second reads: the roster a published day counts (Astra #3) ===================== */
+async function navTo(page, name) {
+  const top = page.locator(`a[data-page="${name}"]:visible`).first()
+  if (await top.count()) await top.click()
+  else { await page.locator('#burger:visible').first().click(); await page.waitForTimeout(450); await page.locator(`#drawerNav a[data-page="${name}"]`).first().click() }
+  await page.waitForFunction(p => window.CURPAGE === p, name, { timeout: 8000 }); await page.waitForTimeout(450)
+}
+async function freeAllOn(page, where, di, shot) {
+  if (where === 'face') await go(page, 'viewsched'); else await editWeek(page)
+  await page.waitForTimeout(300)
+  const r = await W1.dayInfo(page, di)
+  const n = await page.evaluate(() => { const p = document.querySelector('#dayPop:not([hidden])'); if (!p) return null
+    const row = [...p.querySelectorAll('.dip-r')].find(r => /Free all day/.test(r.textContent || '')); return row ? +((row.querySelector('.v') || {}).textContent || 'NaN') : null })
+  if (shot) await screen(page, shot)
+  await W1.closeDayInfo(page)
+  return { n, err: r.error }
+}
+async function worldH5() {
+  const { browser, page, errors, CS, loner } = await world()
+  try {
+    await pubOnBoard(page, MON)
+    const f0 = await freeAllOn(page, 'face', MON, 'H5-face-info-before'), w0 = await freeAllOn(page, 'week', MON)
+    const seat = await page.evaluate(id => window.PEOPLE[id].seat, loner)
+    await navTo(page, 'quals')
+    const view = seat === 'RCP' ? '#qViewW' : '#qViewP'
+    if (await page.locator(`${view}:visible`).count()) { await page.click(view); await page.waitForTimeout(250) }
+    if (await page.locator('#qEdit:visible').count()) { await page.click('#qEdit'); await page.waitForTimeout(350) }
+    const x = page.locator(`#qtbl [data-arch="${loner}"]`).first()
+    if (await x.count()) { await x.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'center' })); await page.waitForTimeout(200); await x.click(); await page.waitForTimeout(400) }
+    if (await page.locator('#qSave:visible').count()) { await page.click('#qSave'); await page.waitForTimeout(350) }
+    const arch = await page.evaluate(id => !!window.PEOPLE[id].archived, loner)
+    await toasts(page)
+    note('H5 posted out on the Quals page', `${CS[loner]} (nowhere on Monday): archived=${arch}`)
+    const f1 = await freeAllOn(page, 'face', MON, 'H5-face-info-after'), w1 = await freeAllOn(page, 'week', MON)
+    check('H5 the published day panel keeps its "free all day" (Astra #3)', arch && f1.n === f0.n && f0.n > 0, `face ${f0.n} -> ${f1.n}`)
+    check('H5 the working copy counts today\'s roster', w1.n === w0.n - 1, `working ${w0.n} -> ${w1.n}`)
+    const n = await pendingOn(page, MON)
+    check('H5 nothing pending — a roster change is no change to the day', n === 0, `${n} pending`)
+  } finally { ALL_ERRORS.push(...errors.map(e => 'H5 ' + e)); await browser.close() }
+}
+
+/* ===================== H6 — the second reads: a standby line prints no brief (Fable #1) ===================== */
+async function worldH6() {
+  const { browser, page, errors } = await world()
+  try {
+    const FRI = 4
+    await board(page, FRI)
+    const add = page.locator(`#schedBoard [data-wvadd="${FRI}"]:visible`).first()
+    let added = false
+    if (await add.count()) {
+      await add.click(); await page.waitForTimeout(350)
+      const sc = page.locator('.wavemenu [data-wmkind="sc"]:visible').first()
+      if (await sc.count()) { await sc.click(); await page.waitForTimeout(600); added = true }
+    }
+    const waves = await page.evaluate(() => (window.DAYS[4].waves || []).map(w => ({ sa: !!w.standalone, blank: (w.formations || []).filter(f => !String(f.br || '').trim()).length })))
+    note('H6 Friday (no flying lines) gets an SC wave through "+ Wave"', `added=${added}; waves ${JSON.stringify(waves)}`)
+    await toasts(page)
+    await signDay(page, FRI, 0); await publishDay(page, FRI); await toasts(page)
+    const h0 = await head(page, FRI)
+    check('H6 Friday published with its standby line', /ORIG/.test(h0.tag) && waves.some(w => w.sa && w.blank), `tag "${h0.tag}"`)
+    await navTo(page, 'logic')
+    const ed = page.locator('#lgEdit:visible').first(); if (await ed.count()) { await ed.click(); await page.waitForTimeout(300) }
+    const box = page.locator('#lgBody .lgin[data-lgset="briefLead"]:visible').first()
+    let changed = false
+    if (await box.count()) { await box.evaluate(e => e.scrollIntoView({ block: 'center' })); await box.click(); await box.fill('150'); await box.press('Tab'); await page.waitForTimeout(700); changed = true }
+    const lead = await page.evaluate(() => window.VCONF.briefLead)
+    note('H6 the Logic page\'s brief lead', `changed=${changed} -> ${lead} min`)
+    const n = await pendingOn(page, FRI)
+    check('H6 Friday reads nothing — its standby line prints no brief (Fable #1)', lead === 150 && n === 0, `${n} pending`)
+    await screen(page, 'H6-fri-after-lead')
+  } finally { ALL_ERRORS.push(...errors.map(e => 'H6 ' + e)); await browser.close() }
+}
+
 /* ===================== H4 — F5, the load's message ===================== */
 async function worldH4() {
   const { browser, page, errors, CS, loner } = await world()
@@ -254,7 +327,7 @@ async function worldH4() {
     if (bar1 && /confirm/i.test(bar1.load || '')) await pvTap(page, MON, 'data-restore')
     const said = (await toasts(page)).join(' / ')
     note('H4 load', `opened ${opened}; bar "${bar0 && bar0.text}"; said "${said}"`)
-    check('H4 the load says the member\'s input stays pending (F5)', /1 member input changed since stays pending/.test(said), `"${said}"`)
+    check('H4 the load says the member\'s input stays pending (F5)', /1 member input change stays pending/.test(said), `"${said}"`)
     const n = await pendingOn(page, MON)
     check('H4 and the day still reads it', n === 1, `${n} pending`)
     await screen(page, 'H4-after-load')
@@ -266,5 +339,7 @@ await worldH2()
 await worldH3()
 await worldH3b()
 if (!PHONE) await worldH4()
+await worldH5()
+await worldH6()
 check('no console errors', !ALL_ERRORS.length, ALL_ERRORS.slice(0, 5).join(' | '))
 process.exitCode = summary(`late-pub host walk (${W})`) ? 1 : 0

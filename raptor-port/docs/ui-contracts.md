@@ -7468,7 +7468,8 @@ window breaking it, and "fixes" it.
 
 **What it is.** Tapping either counter chip — on the board **or on the week**,
 both draw it — opens one window of real pucks. Pilots in the left column, WSOs in
-the right (the same pairing the sim seat grid uses). One puck per row at every
+the right (the same pairing the sim seat grid uses) — on a published day's issued face, by the seat each man went out
+with, as his puck draws him (`engine/faceattrs.ts seatShown`, [LEAVE-LATE-PUBLISHED] 26 Sep 26). One puck per row at every
 width, because a full row per man is what gives his flag and his figure room;
 that is the whole reason it replaced the bubble of names.
 

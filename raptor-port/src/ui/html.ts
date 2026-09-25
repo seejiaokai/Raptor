@@ -104,7 +104,7 @@ export function withDaySnap(di:any,ver:any,fn:any){
      AVAIL window through withChipWorld — reads the inputs the version was issued with (engine/inputs.ts inputsOn). A
      parked plan carries none (it is a working alternative, not a document) and reads the live inputs, as before. */
   const inp = snap.inp && snap.d && snap.d.dt != null ? { [snap.d.dt]: snap.inp } : null
-  try { return withFrozenInputs(inp, () => withFaceAttrs(snap.pa, snap.rv, () => fn(true))) }
+  try { return withFrozenInputs(inp, () => withFaceAttrs({ pa: snap.pa, rv: snap.rv, ros: snap.ros }, () => fn(true))) }
   finally { DAYS[di]=d0; SCHED.changes=c0; SCHED.pending=p0; PV=false; PVV=null; PVND=nd }
 }
 /* [ALL-AVAIL-WINDOW] — THE WORLD A COUNT CHIP WAS DRAWN IN, replayed for the
@@ -930,8 +930,9 @@ function dayTraceHTML(di:any,pf:any){
        week's Monday, a day this week's warning list cannot address — so
        there is no warning index to resolve and none is required. Every
        other trace still drops out when its warning no longer resolves. */
-    /* …except on a published day's face (OFW): its marks are frozen with it (D179), so the breach one points at may have
-       changed since — the row is still drawn, and it does not jump (no warning of that day's to focus) */
+    /* …except on a published day's face (OFW), as a belt: the next-day mark and the breach it points at are both LIVE
+       there (D183, D184) and come from the same official pass, so the breach resolves; should it ever not (a published
+       next day whose issued list the mark predates), the row is still drawn and simply does not jump */
     .filter((r:any)=>r.ix>=0||r.tdi==null||OFW);
   if(!rows.length)return '';
   return `<div class="dwtrace">`+rows.map(({id,t,kind,tdi,ix}:any)=>{

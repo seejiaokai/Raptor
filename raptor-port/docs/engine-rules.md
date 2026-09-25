@@ -2363,9 +2363,14 @@ stay LIVE (below), which the face draws from today and which never make the day 
   moment it went out (the warnings that freeze, and the rings, flags and dashes THEY raise — `validate.ts warnSliceOf`
   reads the bundle's `fz` class; `freezeWarn`, the validator judging the week once through `HOOKS.issuedWarn`), with
   `w.cs` the callsigns its warnings were worded with; `snap.pa` / `snap.rv` — the men on the day as the roster drew them
-  (CAT, seat, posting — every man in its content AND every man of its frozen inputs, Astra's code read #2) and the rule
-  value it prints (a blank brief's lead): the face, the CSV and the print draw these (`engine/faceattrs.ts`), and the
-  pending comparison measures today's against them.
+  (CAT, seat, posting — every man in a PERSON SLOT of its content (a seat, a sim seat or passenger, a desk, a ground or
+  Common Programme name, the extras — never free text that spells an id), every man behind its placeholder pucks as
+  frozen, and every man of its frozen inputs; Astra's reads #2, second #1 and #4) and the rule value it prints (a blank
+  brief's lead): the face, the CSV and the print draw these (`engine/faceattrs.ts` — the ALL AVAIL window's columns and
+  order too), and the pending comparison measures today's `pa` against them, and `rv` only where a FLYING line prints a
+  suggested brief (a standby line prints none on screen — Fable's second read #1); `snap.ros` — the aircrew roster at
+  issue, which the day panel's "free all day" counts on the issued face; drawn, never compared (a man joining the squadron
+  would otherwise make every published day pending — Astra's second read #3).
 - **The inputs on a date — ONE reader, `inputs.ts inputsOn(dt)`** (with `inputOn`, `inputOnAny`). While a frozen version is
   installed (`withFrozenInputs` — by `ui/html.ts withDaySnap` for an issued version, and by `validate.ts withIssuedWeek`
   for every approved date plus the stashed neighbours' `weekctx.ts windowInputs`) it answers from that version; otherwise
