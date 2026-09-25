@@ -62,6 +62,11 @@ fileAcc`). The note is corrected in the same change.
 | 15 | View-only Sched (the issued face) | the snapshot + `fileAcc` | unchanged — never had it | unchanged | has it |
 | 16 | the stored AL (what goes out) and its item count | `dayDelta` | carries no filing for it | — | has it |
 | 17 | the "already at <version>" short cut of the load | `dayDiscardCount` + `rowsLeftOut` | — | NOT taken when a row would be left out | **found and fixed before the walk (§4)** |
+| 18 | the plan editor's "Select" (✎ → Select) — added from Astra's read | `switchDraft` | — | names it | has it — pinned by its own click test (`reqonerow-app.test.tsx`) |
+| 19 | the warning list, the rings, the availability palette — added from Astra's read | `validate()` over the live day, run by `afterSchedMutate` after every load / switch | a dormant request flags nothing (walk A2: the day's warnings did not gain it) | the one surviving row is the only tasking | has it — no second call site needed |
+| 20 | a weekend's OIL line and switches — added from Astra's read | `oilev.ts` over the live day (`liveDay` strips frozen evidence) | — | the left-out row earns nothing on its old day | has it — not walked on a weekend (§8); the day reads the removal AND what it earns, 2 (S11, D109) |
+| 21 | the Leave War OIL credit — added from Astra's read | `leavewar/sync.ts` reads ISSUED snapshots only | nothing moves before a publish | nothing moves before a publish | has it — must not move on a load or switch, and does not (read by Astra) |
+| 22 | the schedule export (CSV / print) — added from Astra's read | the live model | — | one row | has it — reads the model the walk counted |
 
 ## 4. Found before the walk
 - **RO-1 (new in this change, found by its own door test)** — with the only difference being the row the load must leave
@@ -78,7 +83,7 @@ No ruling clash. Four design gaps and fifteen scenarios; each gap reproduced or 
 | G1 a load of a version whose record never held a request that is now on the programme on this day leaves it FRESH (it warns), where that version's face read it dormant | older — the same on `main` (the reconcile unfiles it, the put-back leaves '') | **not taken, the agent's call:** a request the loaded version never knew about has not been declined by anyone; only a deliberate ✕ silences a request (26 Aug 26), and fresh is the state that warns the scheduler of the man's real commitment. The count is the same either way. Stated in the report |
 | G2 a request that was taken off when the day was published ('r' in its record) and is then DELETED (or re-dated off the day) reads "1 pending · taken off → not on the programme" and wipes the four | older — reproduced in a unit probe on this revision (1 pending, `daySigned` false) | **a question for him** (the look card, §10) and filed `[REQ-DECLINED-DELETED]` — the mirror of D174, but not what he ruled on |
 | G3 every scan sees the loaded week only, so a request spanning a week boundary can still stand on both sides after a load | older (`acceptInput` has the same bound) | **filed** into `[REQ-ORPHAN-ROW]` (1) as a third reader of its stash sweep; the limit written into `engine-rules.md` |
-| G4 a plan keeps the left-out row only until it is next left | by design (AM27) | **pinned as intended** (`reqonerow.test.tsx`), and the wording in `engine-rules.md` / `drafts.ts` corrected (it had said the plan's record keeps the row) |
+| G4 a plan keeps the left-out row only until it is next left | by design — a plan is what you leave it as | **pinned as intended** (`reqonerow.test.tsx`), and the wording in `engine-rules.md` / `drafts.ts` corrected (it had said the plan's record keeps the row) |
 Scenarios taken as tests: S2 (the confirm counts a real edit, never the left-out row), S4 (G4), S8 (the four hold on the → Unavail path). Taken into the walk: S1 (the board's banner), S3 (two of the four switch doors walked; the plan editor's Select goes through the same `switchDraft`), S10 (Undo / Redo), S14 (phone). Recorded, not findings: S9 (Unpublish of AL1 back to the Original leaves "Publish AL1" offered with 0 pending through the correction mark — existing behaviour, AM33), S11 (a weekend row reads 2: the removal and what the day earns — D109 by design), S13 (after publishing the left-out removal, ✕ on Tuesday leaves Monday a filing on its own — D114's stated reading), S15 (the member who filed sees nothing pending; Edit history keeps the trace).
 
 ## 6. The walk — `scripts/handpass/am/req-one-row-walk.mjs`, the production build on 4173, desktop 1440×900 and phone 390×844
@@ -126,3 +131,62 @@ reached) were fixed in the script, never by relaxing a check.
 | a request spanning a week boundary (G3) | outside this change — filed | `[REQ-ORPHAN-ROW]` (1) |
 | a weekend day (the OIL line) | reads 2 by design (S11) | D109; the unit suite's OIL tests |
 | a real iPhone | Chromium's phone emulation only | his look |
+
+## 9. The two code reads — Fable and Astra, blind to each other, given `8fc6dba2` and this sheet
+Brief: `docs/superpowers/briefs/2026-09-25-req-one-row-read-brief.md`. Reports, unchanged:
+`2026-09-25-req-one-row-fable-read.md`, `2026-09-25-req-one-row-astra-read.md`. **Astra: no defect in the change**; five
+roll-call rows asked for (added as §3 rows 18–22, each read present; the plan editor's Select given its own click test).
+**Fable: no missing call site and no wrong line in the change itself**; five findings, all OLDER mechanisms. Each
+reproduced first (a throwaway probe on the exact revision, deleted after):
+
+| finding | who | against `main` | disposition |
+|---|---|---|---|
+| F1 a request filed since that stands on ANOTHER day's programme reads 1 on the other days it covers, and takes their four down | Fable | older | **not a defect — checked in a probe:** an accepted request still SPEAKS on every other day it covers (`events.ts inpShow`, "every other covered day keeps the input's voice": the man's hours close, the crew picker and the warnings read it); that day's published face reads it dormant (`world.ts fileAcc`), so it IS a difference there — only a dormant (✕) request is not. Pinned the other way round in `reqonerow.test.tsx`, so D174's rule cannot swallow it (§8.7) |
+| F2 a leave filed after the day is published reads 0 pending and keeps the four, while the published face (View-only) shows it at once — and the record says it wipes them "as built" | Fable | older — reproduced (the leave on View-only, 0 pending, `daySigned` true) | **a question for him** (the look card) and filed `[LEAVE-LATE-PUBLISHED]` — it touches D44/D45 ("nothing on a published schedule changes without the scheduler acknowledging it") and the closed `[AMEND-D45-FILING]` line, which the code does not do |
+| F3 the pending list's line for a request row that now stands on another day reads "Ground · MEETING · item → removed" | Fable | older; D175's load makes it the usual end state | **fixed** — `pendlist.ts`: such a row is named whose · what, "on the programme → on Tuesday's programme" (and the other day's add, whose · what); one naming body `requestName`, shared with the request line; red first; re-walked (B2, both widths) |
+| F4 the preview banner's "Switch to this plan" and the plans menu word one act two ways (the banner lacks the pending tail) | Fable | older | **filed** `[REQ-DOOR-WORDS]` (1), low — D175's clause is in both |
+| F5 on the day whose row was left out, the request's card still offers "Undo", which removes the OTHER day's row | Fable | older | **filed** `[REQ-DOOR-WORDS]` (2), low — a label question |
+| roll-call: the plan editor's Select, the warnings, weekend OIL, the Leave War credit, the export | Astra | — | **added** (§3 rows 18–22); the Select door pinned by a click test |
+| G1's "→ Unavail" half: a load of a version that never knew the request turns a "→ Unavail" filing back into a fresh one | Fable | older | **stands with G1** — the confirm counts it ("Discard 1 edit"), so not silent; said in the report |
+Break tests for the two new pins: the list's naming off → the F3 test red; the switch sentence's clause off → both the
+switch test and the plan editor's Select test red.
+
+## 11. Gates — one full run on the final code, 25 Sep 26 20:54–21:06, nothing else running on the PC
+| gate | result |
+|---|---|
+| unit (`npx vitest run`) | **5929 / 5929** (365 files) |
+| build | clean |
+| the original's assertions (`node reference/tfin.js`) | **728 / 0** |
+| browser geometry (`npm run test:e2e`) | **471 passed**, 48 skipped (the same 48) |
+| the Tracker's suite (`npm run smoke:tracker`) | **442 / 0** |
+| `npm run rulecheck` | OK |
+| `npm run docsize` | OK — every record accounted for; OVER by 50 (`OUTSTANDING.md`), deferred (D29) |
+
+`Docs: OUTSTANDING 62 items (+3 −2, −2 all in ARCHIVE) · DECISIONS D1–D175 · homes OK`
+`docsize: OVER by 50, deferred (D29)`
+
+Walk: `docs/handpass/2026-09-25-req-one-row.md` · 50 pictures · 22 surfaces · 12 orders (× desktop and phone, walked and
+re-walked) · MISSING: 2 fixed (RO-1 the Load's "already at" short cut; F3 the list's unnamed row), 1 not a defect (F1,
+checked), 4 filed (`[REQ-DECLINED-DELETED]` and `[LEAVE-LATE-PUBLISHED]` — his two questions; `[REQ-ORPHAN-ROW]` (1) G3;
+`[REQ-DOOR-WORDS]` F4 + F5)
+
+## 10. His look — on the branch's Vercel link, on days you publish yourself
+1. **Publish Monday. On the Inputs page, file a Meeting for someone on Monday.** Monday says **1 pending** and the
+   sign-offs clear. **Then ✕ its row on the board:** Monday says **nothing pending**, and if you had signed the four
+   before, they come back. The request stays faded in Personal Inputs (it flags nothing) with Accept beside it.
+2. **A two-day Meeting (Mon–Tue), on Monday's programme. Publish Monday and Tuesday. ✕ it on Monday, then Accept it on
+   Tuesday's board.** Open Monday's Original from the plans menu and press **Load onto working copy**: it loads at once
+   and says "**… · <name> · Meeting left out — it is on Tuesday's programme**". The Meeting is only on Tuesday, and
+   Monday's "1 pending ▾" reads "<name> · Meeting — on the programme → on Tuesday's programme".
+3. **The same with a plan:** before the ✕, press "+ Alt Plan" on Monday; after moving it to Tuesday, switch Monday back to
+   the first plan — the same sentence, and the Meeting stays only on Tuesday.
+4. **Two questions for you** — older faults the reviewers found, not caused by this change, the same on the live app:
+   - **A request taken off before the day was published, then deleted on the Inputs page,** still says "1 pending"
+     ("taken off → not on the programme") and clears the sign-offs, though nothing on either schedule changed. Make it
+     **0**? (Recommended: yes — the mirror of your D174; built on this branch before "merge live" if you say yes.)
+     `[REQ-DECLINED-DELETED]`
+   - **A leave filed after a day is published shows on View-only Sched at once**, while the day says nothing is pending
+     and the sign-offs stay. Your D44/D45 say a change like this should show as pending, so the scheduler amends or
+     publishes the EOD version. Should a late leave **read "1 pending" and clear the sign-offs** (the published face then
+     keeping what it was issued with until the next AL)? (Recommended: yes — its own small branch; the published face
+     part is the bigger half.) `[LEAVE-LATE-PUBLISHED]`

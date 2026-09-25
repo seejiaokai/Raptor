@@ -2369,7 +2369,7 @@ before accounts; evidence `docs/handpass/2026-09-25-req-one-row.md`).**
   (`publish.ts rowsLeftOut` / `leaveRowsOut`, before the day is installed and before the filing reconcile), and never
   moves that other day. The issued version keeps its row for good (it is a record); a parked plan keeps it only until it
   is switched to — from then on the live day IS that plan, without the row, and leaving it again stows it as it was left
-  (AM27: a plan is what you leave it as; Fable's G4, pinned). **Within the loaded week:** like `acceptInput`'s own guard,
+  (a plan is what you leave it as; Fable's G4, pinned). **Within the loaded week:** like `acceptInput`'s own guard,
   it sees the loaded days only, so a request spanning a week boundary can still stand on both sides — the stash sweep
   filed under `[REQ-ORPHAN-ROW]` (1) is where that closes (Fable's G3). The load's "Discard N edits" (`dayDiscardCount`) counts against the day as the load will leave it,
   and the load no longer takes its "already at <version>" short cut when a row would be left out. Every door names each

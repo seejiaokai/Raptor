@@ -119,6 +119,27 @@ describe('D174 — a request not there when the day was published, filed since a
     expect(dayShownPendCount(MON), 'Monday').toBe(0)
     expect(dayShownPendCount(TUE), 'Tuesday — its published face never had it either').toBe(0)
   })
+  /* Fable's code read F1 (25 Sep 26), checked and NOT taken: an accepted request still SPEAKS on every other day it
+     covers — the man's hours close there, the crew picker and the warnings read it (events.ts inpShow: "every other
+     covered day keeps the input's voice"). Published without it, that day's face reads it dormant (world.ts fileAcc),
+     so while it stands on another day's programme it IS a difference on this one — only a dormant request (✕) is not.
+     Pinned, so D174's rule cannot swallow it (bug-check order §8.7). */
+  it('a request filed since that stands on ANOTHER day still counts on this one — it speaks here; only ✕ silences it', () => {
+    publishDay(MON); publishDay(TUE)
+    for (const di of [MON, TUE]) for (const [r, w] of FOUR) setSign(di, r, w)
+    const inp = request(true)
+    autoAcceptInput(inp, true)
+    expect(rowsOf(inp)).toEqual([MON])
+    expect([dayShownPendCount(MON), dayShownPendCount(TUE)], 'its row on Monday; its voice on Tuesday').toEqual([1, 1])
+    expect(daySigned(TUE), "Tuesday's four fall with it").toBe(false)
+    unacceptInput(MON, inp)
+    expect([dayShownPendCount(MON), dayShownPendCount(TUE)], 'taken off: silent on both (D174)').toEqual([0, 0])
+    expect([daySigned(MON), daySigned(TUE)]).toEqual([true, true])
+    expect(acceptInput(TUE, inp, 'g')).toBe(true)
+    expect([dayShownPendCount(MON), dayShownPendCount(TUE)], 'its voice on Monday; its row on Tuesday').toEqual([1, 1])
+    expect(loadVersionToWorkingCopy(MON, dayCurVer(MON))).toBe(true)
+    expect(rowsOf(inp), 'the load never moves it').toEqual([TUE])
+  })
   /* the half the ruling leaves as it is (bug-check order §8.7): pinned so the change cannot absorb it */
   it('unchanged: a request that WAS there when published — waiting, or on the programme — still counts one taken off', () => {
     const fresh = request()                         // there when published, not yet actioned: the issued face shows it
@@ -171,6 +192,20 @@ describe('D175 — a load or a plan switch never puts a request on a second day:
     expect(said).toMatch(/Tuesday/)
     expect(dayShownPendCount(MON), 'Monday as before the load').toBe(mon)
     expect(dayShownPendCount(TUE), 'Tuesday untouched (AM1)').toBe(tue)
+  })
+  /* Fable's code read F3: the pending list is where a scheduler looks after the load's sentence has gone — Monday's line
+     for the row that now stands on Tuesday read "Ground · MEETING · item → removed", naming nobody and nowhere (D99) */
+  it('the pending lists name it: Monday "whose · what: on the programme → on Tuesday\'s programme"; Tuesday whose · what', () => {
+    const inp = sixSteps()
+    loadVersionToWorkingCopy(MON, dayCurVer(MON))
+    const cs = (PEOPLE as any).bane.cs
+    const mon = el(pendListHTML(MON))
+    expect(mon.querySelectorAll('.pl-item').length).toBe(1)
+    expect(mon.querySelector('.pl-where')?.textContent, 'whose and what').toMatch(new RegExp(`${cs}[\\s\\S]*Meeting`))
+    expect(mon.querySelector('.pl-chg')?.textContent, 'where it stands now').toMatch(/on the programme[\s\S]*on Tuesday's programme/)
+    const tue = el(pendListHTML(TUE))
+    expect(tue.querySelector('.pl-where')?.textContent, "Tuesday's line names it too").toMatch(new RegExp(`${cs}[\\s\\S]*Meeting`))
+    expect(inp.acc).toBe('g')
   })
   it('then ✕ on the one row: no row left anywhere, and no day reads the orphan\'s two', () => {
     const inp = sixSteps()
@@ -225,7 +260,7 @@ describe('D175 — a load or a plan switch never puts a request on a second day:
     expect(dayShownPendCount(MON), 'the row gone from Monday against its published version').toBe(1)
     expect(dayShownPendCount(TUE), 'Tuesday untouched').toBe(tue)
   })
-  /* Fable's G4, pinned as intended: a plan is what you leave it as (AM27). Once switched to, the plan IS the live day —
+  /* Fable's G4, pinned as intended: a plan is what you leave it as. Once switched to, the plan IS the live day —
      without the row — so leaving it again stows it without the row, and it does not come back later. The issued
      version is a record and keeps its row for good. */
   it('a plan switched to and left again keeps the day as it was left — the row does not come back later', () => {

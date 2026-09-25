@@ -71,7 +71,7 @@ first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only). The Tracker — [T
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SMOKE-ADD-RACE]
 (before the next Tracker change that touches the smoke suite), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — a small build), [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
-The amendment batch's look — HIS ORDER (D173): (1) [LOOK-435] — D114's full check (DONE 25 Sep 26, evidence §9; [REQUEST-OFF-ONE] archived), his look, "merge live" of PR #435; (2) [ACCOUNTS] on a new branch; (3) [DRAFT-PENDING] — the one changes window, on top of accounts; (4) one full check of 2 and 3. Found by D114's reads, older than it: [REQ-TWO-ROWS] and [REQ-DECLINED-PENDING] — HIS ORDER (D174, D175): their own small branch right after #435 merges, BEFORE [ACCOUNTS]; [REQ-ORPHAN-ROW] (low). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). The amendment batch (D91–D111) is BUILT on `claude/amendment-batch`, its pull request waiting for his look and "merge live" — its eleven items closed and archived 25 Sep 26 (`OUTSTANDING-ARCHIVE.md`; the spec `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`); left from that area: [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+The amendment batch's look — HIS ORDER (D173): (1) [LOOK-435] — D114's full check (DONE 25 Sep 26, evidence §9; [REQUEST-OFF-ONE] archived), his look, "merge live" of PR #435 (MERGED 25 Sep 26); (2) [ACCOUNTS] on a new branch; (3) [DRAFT-PENDING] — the one changes window, on top of accounts; (4) one full check of 2 and 3. Found by D114's reads, older than it: [REQ-TWO-ROWS] and [REQ-DECLINED-PENDING] — HIS ORDER (D174, D175) — BUILT on `claude/request-one-row` (FULL check done, archived; his look and "merge live" next, BEFORE [ACCOUNTS]); on that branch's look card, two questions: [REQ-DECLINED-DELETED] (if yes, built there first) and [LEAVE-LATE-PUBLISHED] (its own branch); then [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). The amendment batch (D91–D111) is BUILT on `claude/amendment-batch`, its pull request waiting for his look and "merge live" — its eleven items closed and archived 25 Sep 26 (`OUTSTANDING-ARCHIVE.md`; the spec `raptor-port/docs/superpowers/specs/2026-09-25-amendment-batch.md`); left from that area: [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS] and [RULING-HOMES-AUDIT] (any time, docs only),
 [BG-CWD-GUARD] (his go, D162 — any time). Roles — [QUALS-MEMBER-SCOPE] (his answer D149: own row only; a small
 FULL-tier build, any time).
@@ -1152,32 +1152,6 @@ swap itself and the counts are right. **The agent's reading:** a move inside the
 call him busy there — exclude the row being dropped into from his own busy check. Small, WALK tier. **Place:** with
 the board's small items ([PUCK-FLAG-GLOW]); not his call unless the fix changes what a warning says elsewhere.
 
-### [REQ-TWO-ROWS] A load or a plan switch can put a request on TWO days' programmes — found by Astra's D114 read (25 Sep 26)
-**High, older than D114** (the same on `main`). A two-day request (Mon–Tue) accepted onto Monday; Monday and Tuesday
-published; ✕ on Monday's row; Accept onto Tuesday; then Monday's issued version loaded onto the working copy (or a
-parked Monday plan that holds the row switched in): the version's row comes back on Monday while Tuesday's stands —
-one request, two rows. A later ✕ removes only the first, leaving an orphan row, and Tuesday reads 2 pending.
-Reproduced 25 Sep 26 through the production functions (`acceptInput`, `unacceptInput`, `loadVersionToWorkingCopy`).
-**Why:** a whole-day replacement (`drafts.ts loadVersionToWorkingCopy`, `draftSelect`) installs the day before
-`slots.ts reconcileDayFiling`, which only asks whether a row exists ANYWHERE, never whether there are now two.
-**The agent's recommendation:** the load and the switch leave that row out and SAY so — the way the load already leaves
-a request's filing that covers another day (LOADLEFT, walker B3) — rather than refusing the whole load (Astra's
-suggestion); one day's load never moves another (AM1). Tests: the six steps → exactly one row with that `src`, Tuesday
-untouched, the message names it; the same through a plan switch. FULL tier (the load, plans, the published record).
-Astra's report: `raptor-port/docs/handpass/2026-09-25-d114-astra-read.md` Finding 2. **Place — SETTLED 25 Sep 26, D175 ("2. Ok"):** its own small branch right after PR #435 merges, before `[ACCOUNTS]`;
-the load leaves the row out and says so.
-
-### [REQ-DECLINED-PENDING] A request filed on a published day and then taken off still reads "1 pending" — a question for him (25 Sep 26)
-Found by Fable's D114 read (O1), walked 25 Sep 26 (`raptor-port/scripts/handpass/am/d114-walk.mjs` step 9, desktop and
-phone): a Meeting filed for Gambit on the published Monday lands on the working copy (16 Sep 26 rule); ✕ on its row →
-the schedule reads exactly as published, yet the day says **1 pending — "Gambit · Meeting · not on the programme →
-taken off"**, and an AL would go out carrying it. Older than D114 (the same on `main`): ✕ parks a request "taken off"
-(dormant, flags nothing — 26 Aug 26), and the comparison treats that as different from "not there when published".
-**The agent's recommendation, to put to him:** make it 0 (D98 — back to what was published shows nothing pending): a
-request that did not exist when the version was issued and is now taken off is no difference; it stays silenced as
-today. To check before building: the four sign-offs must hold on that day too (D103, AM11). Fable's report:
-`raptor-port/docs/handpass/2026-09-25-d114-fable-read.md` O1. **ANSWERED 25 Sep 26 — D174 ("1. Yes"): make it 0.** **Place:** with `[REQ-TWO-ROWS]`, on its branch (D175).
-
 ### [REQ-ORPHAN-ROW] A request's row outliving the request — low (25 Sep 26)
 Two older shapes, the same on `main`: (1) Fable's O2 — a request deleted on the Inputs page while its row stands on a
 day of ANOTHER (not loaded) week: `unacceptInput` searches only the loaded days, so that row stays with a dead link and
@@ -1185,4 +1159,42 @@ its day reads 1 pending; (2) seen in the D114 walk, step 8 — a published day's
 requests was deleted puts that request's row back (the version had it) while the request stays deleted: 1 pending,
 "Zenith · Meeting · on the programme → deleted", and the row validates as a real commitment. **The agent's reading:**
 (1) is a real fix (sweep the stashed week through its own write path); (2) is what "load this version" means, now
-named truthfully — leave it unless he says otherwise. Fable's report O2. **Place:** with `[REQ-TWO-ROWS]`.
+named truthfully — leave it unless he says otherwise. Fable's report O2. **Place:** low, any time after `claude/request-one-row`
+merges (the `[REQ-TWO-ROWS]` it was placed with is built there).
+**A third reader for (1)'s sweep (Fable's G3, D175's scenario round, 25 Sep 26):** every "one request, one row" check sees
+the LOADED week only — `acceptInput`'s guard, `unacceptInput`, `reconcileDayFiling` and now D175's `publish.ts rowsLeftOut` —
+so a request spanning a week boundary (Sun wk1 – Mon wk2) can still end with a row on each side after a load. One helper over
+the stashed weeks' `ground` by `src`, read by all four, closes both. `engine-rules.md` states the loaded-week bound.
+
+### [REQ-DECLINED-DELETED] A request taken off before the day was published, then deleted, reads "1 pending" — a question for him (25 Sep 26)
+Fable's G2 in D175's scenario round (`raptor-port/docs/handpass/2026-09-25-req-one-row-fable-scenarios.md`), reproduced in a
+unit probe on `8fc6dba2`: a request accepted and ✕'d before the day is published (its record holds it "taken off"), then
+deleted on the Inputs page (or re-dated off the day) → 1 pending "taken off → not on the programme", the four sign-offs
+wiped, though neither the published face nor the working copy shows anything for it. Older (the same on `main`). **The
+mirror of D174** — not what he ruled on, so it is his call. **The agent's recommendation:** 0 (D98), in `publish.ts
+filingDelta`: a record "taken off" matches a request no longer covering the day; a dormant request still there and woken
+to fresh stays a change. The signature must agree (`filingKey`). **Place:** on the look card of `claude/request-one-row`
+(D175's branch); if yes, built there before "merge live".
+
+### [LEAVE-LATE-PUBLISHED] A leave filed after a day is published shows on its published face at once, with nothing pending — a question for him (25 Sep 26)
+Fable's code read F2 on D175's branch (`raptor-port/docs/handpass/2026-09-25-req-one-row-fable-read.md`), reproduced in a unit
+probe on `8fc6dba2`: Monday published and signed; a leave (OL) filed for Hunter on Monday → View-only Sched shows him under
+Unavailable at once (the Unavailable block reads the live inputs on every face — `raptor-port/src/ui/html.ts`), while Monday
+reads 0 pending, keeps its four and offers no AL. Older (the same on `main`): a leave never takes a filing state, and the
+comparison and the signature both read an unfiled request as nothing new. **Against the record:** D44/D45 ("nothing on a
+published schedule may change without the scheduler acknowledging it"; a leave taken after publishing is what the scheduler
+amends or publishes the EOD version for), and `OUTSTANDING-ARCHIVE.md` `[AMEND-D45-FILING]`'s closing line ("a leave landing on
+a published day keeps wiping them (as built)") — the code does not. **The agent's recommendation, to put to him:** a late
+leave reads "1 pending" and takes the four down, and the published face keeps what it was issued with until the next AL;
+its own branch (the published-face half is the bigger build — every Unavailable reader on the view face). Medical is the
+standing exception (a safety fact, never versioned — `raptor-port/src/engine/events.ts`). **Place:** on the look card of
+`claude/request-one-row`; then its own branch, in his order.
+
+### [REQ-DOOR-WORDS] Two small door-wording gaps around a request's row — low (25 Sep 26)
+Fable's code read on D175's branch (F4, F5), both older: (1) one act, two sentences — the preview banner's "Switch to this plan"
+(`raptor-port/src/ui/interactions.ts`, `data-draftgo`) words the switch differently from the plans menu and the plan
+editor (`board.ts switchDraft`) and lacks its "· N differences from ORIG pending" tail; the fix is the banner calling
+`switchDraft` behind its own gate. (2) On a day whose copy of a request's row was left out (D175) — or after ✕ here and
+Accept on another day — the request's card in Personal Inputs still offers "Undo — removes the ground-programme row this
+created", and it removes the OTHER day's row (`html.ts accCtl`); a label such as "On Tuesday's programme" would say so.
+D175's own sentence is in every door. **Place:** low, with the one changes window (`[DRAFT-PENDING]`) or any time.

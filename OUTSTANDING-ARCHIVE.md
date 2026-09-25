@@ -1453,3 +1453,41 @@ ground row add / delete whose `src` is X into one item, and word it in `raptor-p
 morning look at the batch (the look card asks it).
 
 
+
+*Moved here 2026-09-25 by backlog-archive.mjs ([REQ-TWO-ROWS]). Forward facts: `raptor-port/docs/engine-rules.md`, `raptor-port/docs/handpass/2026-09-25-req-one-row.md`.*
+
+### [REQ-TWO-ROWS] A load or a plan switch can put a request on TWO days' programmes — found by Astra's D114 read (25 Sep 26)
+**BUILT 25 Sep 26 on `claude/request-one-row` (D175), FULL check done** — `publish.ts rowsLeftOut`/`leaveRowsOut`, the load and
+the switch leave the row out and every door names it (`drafts.ts rowsLeftSaid`); the rule `engine-rules.md` §Publishing
+("A REQUEST'S ROW AND ITS FILING ON A PUBLISHED DAY"); evidence `raptor-port/docs/handpass/2026-09-25-req-one-row.md`.
+**High, older than D114** (the same on `main`). A two-day request (Mon–Tue) accepted onto Monday; Monday and Tuesday
+published; ✕ on Monday's row; Accept onto Tuesday; then Monday's issued version loaded onto the working copy (or a
+parked Monday plan that holds the row switched in): the version's row comes back on Monday while Tuesday's stands —
+one request, two rows. A later ✕ removes only the first, leaving an orphan row, and Tuesday reads 2 pending.
+Reproduced 25 Sep 26 through the production functions (`acceptInput`, `unacceptInput`, `loadVersionToWorkingCopy`).
+**Why:** a whole-day replacement (`drafts.ts loadVersionToWorkingCopy`, `draftSelect`) installs the day before
+`slots.ts reconcileDayFiling`, which only asks whether a row exists ANYWHERE, never whether there are now two.
+**The agent's recommendation:** the load and the switch leave that row out and SAY so — the way the load already leaves
+a request's filing that covers another day (LOADLEFT, walker B3) — rather than refusing the whole load (Astra's
+suggestion); one day's load never moves another (AM1). Tests: the six steps → exactly one row with that `src`, Tuesday
+untouched, the message names it; the same through a plan switch. FULL tier (the load, plans, the published record).
+Astra's report: `raptor-port/docs/handpass/2026-09-25-d114-astra-read.md` Finding 2. **Place — SETTLED 25 Sep 26, D175 ("2. Ok"):** its own small branch right after PR #435 merges, before `[ACCOUNTS]`;
+the load leaves the row out and says so.
+
+
+*Moved here 2026-09-25 by backlog-archive.mjs ([REQ-DECLINED-PENDING]). Forward facts: `raptor-port/docs/engine-rules.md`, `raptor-port/docs/handpass/2026-09-25-req-one-row.md`.*
+
+### [REQ-DECLINED-PENDING] A request filed on a published day and then taken off still reads "1 pending" — a question for him (25 Sep 26)
+**BUILT 25 Sep 26 on `claude/request-one-row` (D174), FULL check done** — `publish.ts filingSame`, read by the comparison, the
+load's put-back and the signature; the rule `engine-rules.md` §Publishing; the register AM20; evidence
+`raptor-port/docs/handpass/2026-09-25-req-one-row.md`.
+Found by Fable's D114 read (O1), walked 25 Sep 26 (`raptor-port/scripts/handpass/am/d114-walk.mjs` step 9, desktop and
+phone): a Meeting filed for Gambit on the published Monday lands on the working copy (16 Sep 26 rule); ✕ on its row →
+the schedule reads exactly as published, yet the day says **1 pending — "Gambit · Meeting · not on the programme →
+taken off"**, and an AL would go out carrying it. Older than D114 (the same on `main`): ✕ parks a request "taken off"
+(dormant, flags nothing — 26 Aug 26), and the comparison treats that as different from "not there when published".
+**The agent's recommendation, to put to him:** make it 0 (D98 — back to what was published shows nothing pending): a
+request that did not exist when the version was issued and is now taken off is no difference; it stays silenced as
+today. To check before building: the four sign-offs must hold on that day too (D103, AM11). Fable's report:
+`raptor-port/docs/handpass/2026-09-25-d114-fable-read.md` O1. **ANSWERED 25 Sep 26 — D174 ("1. Yes"): make it 0.** **Place:** with `[REQ-TWO-ROWS]`, on its branch (D175).
+

@@ -274,7 +274,7 @@ export function draftSelect(di: any, id: any) {
   const nd = liveDay(t.d)
   /* a row whose request has since been put on another day stays out of the live day (D175; the caller's message names
      it). The plan's record still holds it only until the plan is left again — the stow above then saves the plan as it
-     was left, without the row (AM27; reqonerow.test.tsx pins it) */
+     was left, without the row (a plan is what you leave it as; reqonerow.test.tsx pins it) */
   leaveOut(di, nd)
   nd.today = !!(DAYS[di] && DAYS[di].today)
   DAYS[di] = nd

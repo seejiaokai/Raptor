@@ -661,7 +661,12 @@ places. What goes out (the stored diff) and the marks are unchanged. A replaceme
 accepting one onto it — is one change, one line naming the request ("Bane · Meeting: on the programme → taken off"),
 and the issued AL's line reads "1 item · 1 removal" (D114). A request DELETED on the Inputs page is named from its row
 (whose and what — the landing minted the row from the request) and reads "on the programme → deleted"; after a load puts its
-row back, the deletion stays one line of its own, named the same way (the D114 check, 25 Sep 26).
+row back, the deletion stays one line of its own, named the same way (the D114 check, 25 Sep 26). A request's row
+removed from this day while the request itself stands on ANOTHER day's programme (✕ here and Accept there, or a load /
+plan switch that left this day's copy out — D175) is named the same way and says where it stands now: "Bane · Meeting:
+on the programme → on Tuesday's programme"; the other day's added row is named too (Fable's code read F3, 25 Sep 26 —
+it read "Ground · MEETING · item → removed"). One naming body, `pendlist.ts requestName`, for every line that names a
+request.
 
 **Who and when (D104).** The newest edit-log row for the change's own cells: the shared account the app records
 until the database brings personal accounts, and its clock (`elogWhen`). A change the page's record does not hold

@@ -198,6 +198,16 @@ async function worldB() {
     const mon1 = await counts(page, MON), tue1 = await counts(page, TUE)
     check('B2 Monday unchanged by the load', num(mon1.week) === num(mon0.week) && num(mon1.board) === num(mon0.board), `before ${mon0.week}, after ${mon1.week}`)
     check('B2 Tuesday untouched (AM1)', num(tue1.week) === num(tue0.week) && num(tue1.board) === num(tue0.board), `before ${tue0.week}, after ${tue1.week}`)
+    /* Monday's pending list names it and where it stands now (Fable's code read F3) */
+    await editWeek(page)
+    const pl = page.locator(`#eWeek .day[data-day="${MON}"] [data-pendlist="${MON}"]:visible`).first()
+    if (await pl.count()) {
+      await pl.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'center' })); await pl.click(); await page.waitForTimeout(500)
+      const rows = await page.evaluate(() => [...document.querySelectorAll('#pendList .pl-item')].map(e => (e.innerText || '').replace(/\s+/g, ' ').trim()))
+      await screen(page, 'B2-pending-list')
+      check('B2 the list names it and where it is now', rows.length === 1 && new RegExp(`${CS.bane}[\\s\\S]*Meeting[\\s\\S]*on Tuesday's programme`).test(rows[0] || ''), JSON.stringify(rows))
+      await page.keyboard.press('Escape'); await page.waitForTimeout(250)
+    } else check('B2 the list names it and where it is now', false, 'no "N pending ▾" button on Monday')
     /* the sentence is in Edit history too */
     await editWeek(page)
     const hb = page.locator('#histBtn:visible').first()

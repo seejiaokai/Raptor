@@ -89,4 +89,17 @@ describe('the doors say which request\'s row they left out, and where it stands 
     expect(rowsOf(inp)).toEqual([TUE])
     expect(toasts.join(' | ')).toMatch(/switched to plan[\s\S]*Meeting left out — it is on Tuesday's programme/)
   })
+  /* the plan editor's "Select" — its own door (Astra's roll-call row, 25 Sep 26): the day's plans selector → ✎ → Select */
+  it('the plan editor\'s "Select": the same leave-out, the same sentence', async () => {
+    const inp = twoDay()
+    await act(async () => { draftDup(MON); unacceptInput(MON, inp); acceptInput(TUE, inp, 'g'); notify() })
+    const planA = dayDrafts(MON)[0]!
+    await click($$(`#eWeek [data-planmenu="${MON}"]`)[0])
+    await click($$(`.wavemenu [data-planedit="${planA.id}"]`)[0])
+    const sel = $$('#draftsModal button').find(b => b.textContent === 'Select')
+    await click(sel)
+    expect(rowsOf(inp)).toEqual([TUE])
+    expect(toasts.join(' | ')).toMatch(/Switched to "Plan A"[\s\S]*Meeting left out — it is on Tuesday's programme/)
+    await click($$('#draftsModal button').find(b => b.textContent === 'Done'))
+  })
 })
