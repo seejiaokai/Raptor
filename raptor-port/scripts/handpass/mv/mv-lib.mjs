@@ -4,12 +4,12 @@
    hold-and-drag is sent over CDP as real touch events (bug-check order §7.8), so the pointer events the app sees are
    `pointerType: touch` — the device branches the code takes. Everything drives the app's own controls; reads of the
    saved world are for the evidence table only. */
-import { WIDTH, ROOT } from './mv-env.mjs'
+import { WIDTH, ROOT, RUN } from './mv-env.mjs'
 import { existsSync, mkdirSync } from 'node:fs'
 import { chromium } from '@playwright/test'
 import { login, BASE, sheetNow } from '../ab/w3-lib.mjs'
 export * from '../ab/w3-lib.mjs'
-export { WIDTH, ROOT }
+export { WIDTH, ROOT, RUN }
 export const PHONE = WIDTH === 'phone'
 
 /** The browser, at desktop 1440×900 or a 390×844 touch phone, signed in. */
@@ -107,7 +107,7 @@ export async function fingerSwipe(page, cdp, from, to) {
     await page.waitForTimeout(12)
   }
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
-  await page.waitForTimeout(700)
+  await page.waitForTimeout(1300)                 // let the fling settle: a tap during it only stops the scroll
 }
 
 /** The move banner's words, or '' when no move is on. */
@@ -133,7 +133,8 @@ export async function gridBox(page) {
     const fr = document.querySelector('.mx .who, td.who, [data-testid^="person-"]')
     const whoR = fr ? fr.getBoundingClientRect() : null
     const b = document.querySelector('[data-testid="move-banner"]')
-    return { left: Math.round(w.left), right: Math.round(w.right), top: Math.round(w.top), bottom: Math.round(w.bottom), inner: [innerWidth, innerHeight], namesRight: whoR ? Math.round(whoR.right) : null, bannerTop: b ? Math.round(b.getBoundingClientRect().top) : null }
+    const bal = [...document.querySelectorAll('[data-testid^="bal-"]')].map(e => e.getBoundingClientRect().right).filter(x => x > 0)
+    return { left: Math.round(w.left), right: Math.round(w.right), top: Math.round(w.top), bottom: Math.round(w.bottom), inner: [innerWidth, innerHeight], namesRight: whoR ? Math.round(whoR.right) : null, daysLeft: bal.length ? Math.round(Math.max(...bal)) : null, bannerTop: b ? Math.round(b.getBoundingClientRect().top) : null }
   })
 }
 export { sheetNow }
