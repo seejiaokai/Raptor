@@ -1,0 +1,104 @@
+// A MEMBER OPENS HIS OWN OIL AWARD, READ ONLY, AT EVERY STAGE (owner, D261, 27 Sep 26 — "3 yes").
+//
+//   "Should a member be able to open his own OIL award read-only at any time, not only while bidding is open?" → yes.
+//
+// Inside the bidding window his tap on his own FO / HO opened the bid sheet, whose foot reads the award back (reason,
+// given by, days — owner, 21 Sep 26). Outside it — a locked day, bidding closed, the war published — the same tap opened
+// NOTHING (the absence-record re-test, W3-F10), though the OIL tracker shows the same facts. Now it opens a read-only
+// sheet with those three lines, and nothing to press. Another man's award stays as it was (nothing opens); an admin's
+// tap is unchanged.
+
+import { act, fireEvent, render, screen } from '@testing-library/react'
+import { beforeEach, describe, expect, it } from 'vitest'
+import { advanceStage, initStore, setManualCredit, setRole, setViewer } from '../state/store'
+import { memoryBackend } from '../state/storage'
+import { Matrix } from './Matrix'
+
+const ME = 'ramp'
+const OUTSIDE = '2026-05-06'      // after the seeded war's bidding window (1 Jan – 31 Mar)
+const INSIDE = '2026-01-06'
+
+beforeEach(() => {
+  initStore(memoryBackend())
+  setRole('admin')
+  setManualCredit(ME, OUTSIDE, 'FO', { note: 'Recall', givenBy: 'OC Ops', days: 3 })
+  setManualCredit(ME, INSIDE, 'HO', { note: 'SIM' })
+  setManualCredit('dusk', OUTSIDE, 'FO', { note: 'Not yours' })
+})
+
+const asMember = () => act(() => { setRole('member'); setViewer(ME) })
+
+/** The read-only award sheet is up, reads the award back, and offers nothing to change it. */
+function expectReadOnlyAward(why: string, given: string, days: string) {
+  expect(screen.getByTestId('award-sheet')).toBeTruthy()
+  expect(screen.getByTestId('oil-detail-why').textContent).toBe(why)
+  expect(screen.getByTestId('oil-detail-given').textContent).toBe(given)
+  expect(screen.getByTestId('oil-detail-days').textContent).toBe(days)
+  for (const t of ['bid-picker', 'bid-oil', 'oil-clear', 'bid-clear', 'bid-LL', 'decide-shift']) expect(screen.queryByTestId(t)).toBeNull()
+}
+
+describe('his own award opens read only at every stage (D261)', () => {
+  it('OPEN, on a day outside the bidding window', () => {
+    asMember()
+    render(<Matrix />)
+    expect(screen.getByTestId(`cell-${ME}-${OUTSIDE}`).className).toContain('act')   // drawn as tappable
+    fireEvent.click(screen.getByTestId(`cell-${ME}-${OUTSIDE}`))
+    expectReadOnlyAward('Recall', 'OC Ops', '3 days')
+  })
+
+  it('CLOSED', () => {
+    advanceStage()
+    asMember()
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${ME}-${INSIDE}`))
+    expectReadOnlyAward('SIM', 'Not given', 'half a day')
+  })
+
+  it('PUBLISHED', () => {
+    advanceStage(); advanceStage()
+    asMember()
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${ME}-${OUTSIDE}`))
+    expectReadOnlyAward('Recall', 'OC Ops', '3 days')
+  })
+
+  it('its ✕ closes it', () => {
+    advanceStage()
+    asMember()
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${ME}-${OUTSIDE}`))
+    fireEvent.click(screen.getByTestId('award-close'))
+    expect(screen.queryByTestId('award-sheet')).toBeNull()
+  })
+})
+
+describe('what stays as it was', () => {
+  it('ANOTHER man’s award opens nothing for a member', () => {
+    advanceStage()
+    asMember()
+    render(<Matrix />)
+    expect(screen.getByTestId(`cell-dusk-${OUTSIDE}`).className).not.toContain(' act')
+    fireEvent.click(screen.getByTestId(`cell-dusk-${OUTSIDE}`))
+    expect(screen.queryByTestId('award-sheet')).toBeNull()
+    expect(screen.queryByTestId('bid-picker')).toBeNull()
+  })
+
+  it('inside the bidding window his tap still opens the bid sheet, the award read back at its foot', () => {
+    asMember()
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${ME}-${INSIDE}`))
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
+    expect(screen.getByTestId('oil-detail-why').textContent).toBe('SIM')
+    expect(screen.queryByTestId('bid-oil')).toBeNull()          // no +OIL for a member
+    expect(screen.queryByTestId('award-sheet')).toBeNull()
+  })
+
+  it('an ADMIN’s tap on an award opens the bid sheet with its +OIL, at every stage', () => {
+    advanceStage()
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${ME}-${OUTSIDE}`))
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
+    expect(screen.getByTestId('bid-oil')).toBeTruthy()
+    expect(screen.queryByTestId('award-sheet')).toBeNull()
+  })
+})

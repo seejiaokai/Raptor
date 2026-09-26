@@ -975,27 +975,75 @@ export function RaptorSheet({
       </div>
       {/* The same three lines the day window gives for OIL, because the
           question is the same one however the day happens to open. */}
-      {creditShown && (
-        <div className="bidsheet-oil-detail" data-testid="oil-detail">
-          <div className="bidsheet-row">
-            <span className="lab">Reason</span>
-            <span className="note" data-testid="oil-detail-why">{creditShown.note?.trim() || 'Worked this day'}</span>
-          </div>
-          <div className="bidsheet-row">
-            <span className="lab">Given by</span>
-            <span className="note" data-testid="oil-detail-given">{creditShown.giver?.trim() || 'Not given'}</span>
-          </div>
-          <div className="bidsheet-row">
-            <span className="lab">Days</span>
-            <span className="note" data-testid="oil-detail-days">
-              {creditWorthText(creditShown)}
-              {creditShown.spans?.length
-                ? ` — worked ${creditShown.spans.map(([a, b]) => `${hhmm(a)}–${hhmm(b)}`).join(', ')}`
-                : ''}
-            </span>
-          </div>
-        </div>
-      )}
+      {creditShown && <OilDetailRows c={creditShown} auto />}
+    </Sheet>
+  )
+}
+
+/** THE THREE LINES AN OIL CREDIT READS BACK — reason, given by, days — for the two read-only sheets (the schedule's
+ *  own credit above; a member's own award below, D261). One body, so the two cannot word one fact two ways. `auto`: the
+ *  schedule earned it (its reason defaults to the work, and the hours it was measured over are shown); else an award,
+ *  whose reason is whatever the admin typed. */
+function OilDetailRows({ c, auto }: {
+  c: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; spans?: Array<[number, number]> }
+  auto: boolean
+}) {
+  return (
+    <div className="bidsheet-oil-detail" data-testid="oil-detail">
+      <div className="bidsheet-row">
+        <span className="lab">Reason</span>
+        <span className="note" data-testid="oil-detail-why">{c.note?.trim() || (auto ? 'Worked this day' : 'Not given')}</span>
+      </div>
+      <div className="bidsheet-row">
+        <span className="lab">Given by</span>
+        <span className="note" data-testid="oil-detail-given">{c.giver?.trim() || 'Not given'}</span>
+      </div>
+      <div className="bidsheet-row">
+        <span className="lab">Days</span>
+        <span className="note" data-testid="oil-detail-days">
+          {creditWorthText({ ...c, auto })}
+          {auto && c.spans?.length
+            ? ` — worked ${c.spans.map(([a, b]) => `${hhmm(a)}–${hhmm(b)}`).join(', ')}`
+            : ''}
+        </span>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * A MEMBER'S OWN OIL AWARD, READ ONLY (owner, D261, 27 Sep 26 — "3 yes": he opens it at every stage, not only while
+ * bidding is open). Inside the bidding window his tap opens the bid sheet, whose foot already reads the award back;
+ * everywhere else — a locked day, bidding closed, a published war — the tap used to open nothing (the absence-record
+ * re-test, W3-F10). This is that read-back on its own: the same three lines, and nothing to press but ✕ — an award is
+ * the admin's to give, change and remove (N11).
+ */
+export function AwardSheet({
+  callsign,
+  date,
+  award,
+  onClose,
+}: {
+  callsign: string
+  date: string
+  award: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string }
+  onClose: () => void
+}) {
+  return (
+    <Sheet testid="award-sheet" label="Your OIL award" onClose={onClose}>
+      <div className="bidsheet-hd">
+        <span className="who">{callsign}</span>
+        <span className="dt">{date}</span>
+        <span className="cur">{award.code} · OIL award</span>
+        <button className="x" data-testid="award-close" onClick={onClose} aria-label="Close">
+          ✕
+        </button>
+      </div>
+      <div className="bidsheet-row">
+        <span className="lab">Where it came from</span>
+        <span className="note" data-testid="award-note">Given by an admin — only an admin can change it.</span>
+      </div>
+      <OilDetailRows c={award} auto={false} />
     </Sheet>
   )
 }

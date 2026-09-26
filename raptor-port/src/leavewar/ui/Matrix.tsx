@@ -48,7 +48,7 @@ import {
   type FigureCtx,
 } from '../engine'
 import { clearRecordById, figureCtxOf, recordsAt, setBalance, setManualCredit, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostIn, postingProblem, visibleFigures, type MoveResult, type EventMoveResult } from '../state/store'
-import { BidPicker, DecisionSheet, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
+import { AwardSheet, BidPicker, DecisionSheet, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
 import { FiguresDrawer, FigureTitle, figClass, type DrawerRow } from './FiguresDrawer'
@@ -269,11 +269,22 @@ function freeHalfBeside(v: DayView | undefined): Portion | null {
   return am && !pm ? 'pm' : pm && !am ? 'am' : null
 }
 
+/** The day holds the viewer's OWN hand-given OIL award and nothing else (D261) — the one record he may always read
+ *  back, whatever the stage. A day with more on it opens the tap list, which reads the award back already; the
+ *  schedule's own credit opens the read-only sheet through `raptorOwns`. */
+function ownAwardOnly(view: DayView | undefined, viewer: string | null, personId: string): boolean {
+  return viewer !== null && personId === viewer && !!view?.main && view.main.kind === 'credit' && !view.main.auto && !view.mark
+}
+
 /** Whether a tap on this cell opens SOMETHING — the one body Matrix and the
  *  row share. Where a tap goes (bid / decide / read-only / remarks) is decided
  *  in the sheet from the same facts; this only says "there is a sheet". */
-function cellOpenable(states: States, period: Period, role: Role, viewer: string | null, deciding: boolean, grid: Grid, personId: string, date: string): boolean {
+function cellOpenable(states: States, period: Period, role: Role, viewer: string | null, deciding: boolean, grid: Grid, personId: string, date: string, view?: DayView): boolean {
   return raptorOwns(states, personId, date) ||
+    /* HIS OWN OIL AWARD, AT EVERY STAGE (owner, D261, 27 Sep 26 — "3 yes"): it opens read only (`ownAwardOnly`) where
+       nothing else would — outside the bidding window, once bidding has closed, on a published war. Another man's award
+       stays shut to a member. */
+    ownAwardOnly(view, viewer, personId) ||
     // A member may open a cell to EDIT only on their own row (the person they
     // are viewing as); an admin, any row. Without the row half a member could
     // tap an empty cell on anyone's row and bid it (owner, 27 Aug 26). The
@@ -581,7 +592,7 @@ const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, v
            an ADMIN's tap manages the POSTING (the post-out sheet after, the
            post-in sheet before), and the person's OWN tap places LEAVE. */
         const actionable =
-          (here && cellOpenable(states, period, role, viewer, deciding, grid, p.id, d.date)) || (role === 'admin' && !here) ||
+          (here && cellOpenable(states, period, role, viewer, deciding, grid, p.id, d.date, view)) || (role === 'admin' && !here) ||
           // a marked day always opens its list; leave dated outside the
           // squadron window opens for an admin and for the person themself
           (!!mark && (here || outLeave)) || (outLeave && (role === 'admin' || viewer === p.id)) ||
@@ -4142,6 +4153,18 @@ export function Matrix() {
               via: openAnyCredit.via,
             }
             : null}
+          onClose={close}
+        />
+      )}
+      {/* HIS OWN OIL AWARD, READ ONLY (owner, D261, 27 Sep 26), wherever the bid sheet will not open for him — outside
+          the bidding window, once bidding has closed, on a published war. Where it does open (inside the window) its
+          foot reads the award back already, so this stands aside. */}
+      {open && !listOpen && !canRemark && openCredit && ownAwardOnly(openView, viewer, open.id)
+        && !(canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id)) && (
+        <AwardSheet
+          callsign={open.callsign}
+          date={open.date}
+          award={{ code: openCredit.code, days: openCredit.days, note: openCredit.note, giver: creditGiver(openCredit) }}
           onClose={close}
         />
       )}
