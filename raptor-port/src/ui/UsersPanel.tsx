@@ -226,8 +226,9 @@ function AccountRow(p: { a: Account; editing: boolean; onEdit: () => void; onClo
         <span className="acc-name">{a.name}</span>
         <span className="acc-sub">
           <b>{accountCallsign(a) || 'no callsign'}</b>
-          {person && person.archived && <span className="acc-tag" title="This callsign has been archived — switch the account off if they have left">archived callsign</span>}
-          {!a.on && <span className="acc-tag">switched off</span>}
+          {person && person.archived && <span className="acc-tag" title="This callsign has been archived — suspend the account while he is away, delete it when he leaves flying">archived callsign</span>}
+          {/* D285 (26 Sep 26): "suspended" — the act D280 named, today's "switched off" in his words */}
+          {!a.on && <span className="acc-tag">suspended</span>}
           {own && <span className="acc-tag you">you</span>}
         </span>
       </button>
@@ -241,7 +242,11 @@ function AccountRow(p: { a: Account; editing: boolean; onEdit: () => void; onClo
           <RoleSelect id="accEdRole" value={role} onChange={setRole} /></div>
         <div className="acc-acts">
           <button className="abtn primary" id="accEdSave" onClick={save}>Save</button>
-          <button className="abtn" id="accEdOnOff" onClick={() => { if (done(updateAccount(a.id, { on: !a.on }), a.on ? `${a.name} switched off` : `${a.name} switched on`)) p.onClose() }}>{a.on ? 'Switch off' : 'Switch on'}</button>
+          {/* D285: "Suspend" / "Enable" (was "Switch off / on") — a man away is suspended, and enabled when he is back */}
+          <button className="abtn" id="accEdOnOff" onClick={() => {
+            const cs = accountCallsign(a) || a.name
+            if (done(updateAccount(a.id, { on: !a.on }), a.on ? `${cs} suspended` : `${cs} can sign in again`)) p.onClose()
+          }}>{a.on ? 'Suspend' : 'Enable'}</button>
           <button className="abtn" id="accEdCancel" onClick={p.onClose}>Cancel</button>
         </div>
       </div>}

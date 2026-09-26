@@ -202,3 +202,35 @@ describe('AC13 — Admin → Users (D166 (1), D204)', () => {
     expect($('[data-acct]') && $$('[data-acct]').some(r => r.textContent!.includes('ace@mail'))).toBe(true)
   })
 })
+
+/* [POST-OUT-OUTCOMES] (27 Sep 26) — D285: the account buttons read "Suspend" / "Enable" and the
+   state "suspended" (today's "Switch off / on" in his words, D280); D300: the sign-in screen says
+   each thing once. Register line PO3. */
+describe('PO3 — Suspend / Enable, "suspended", the sign-in (D285, D300)', () => {
+  it('the editor offers Suspend, then Enable; the row reads "suspended" while it is', async () => {
+    await signInAs('ad', 'a')
+    await act(async () => { setPage('admin'); notify() })
+    await click($('[data-acct="achex"] .acc-tap'))
+    expect($('#accEdOnOff').textContent).toBe('Suspend')
+    await click($('#accEdOnOff'))
+    expect(accountByName('hex')).toMatchObject({ on: false })
+    const row = () => $('[data-acct="achex"]')
+    expect(row().textContent).toContain('suspended')
+    expect(row().textContent).not.toContain('switched off')
+    await click($('[data-acct="achex"] .acc-tap'))
+    expect($('#accEdOnOff').textContent).toBe('Enable')
+    await click($('#accEdOnOff'))
+    expect(accountByName('hex')).toMatchObject({ on: true })
+    expect(row().textContent).not.toContain('suspended')
+  })
+  it('a suspended account signs in to "Your access is suspended", said once', async () => {
+    const { updateAccount } = await import('../state/accounts')
+    await signInAs('ad', 'a')
+    expect(updateAccount('achex', { on: false })).toBe(null)
+    await signInAs('hex')
+    expect($('#accessOff .acc-h').textContent).toBe('Your access is suspended')
+    expect($('#accessOff .acc-p').textContent).toBe('Ask an admin to enable it when you’re back.')
+    expect($('#accessOff').textContent).not.toContain('switched')
+    await signInAs('ad', 'a'); updateAccount('achex', { on: true })
+  })
+})
