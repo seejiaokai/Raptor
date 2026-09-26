@@ -674,3 +674,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In the RED step, read every test that passed and ask whether it passed for the right reason. For any assertion of absence, assert the precondition first in the same test (e.g. `expect(banner).toBeTruthy()` right after entering the mode, then the action, then `expect(banner).toBeNull()`). Then break the feature once (the break test) and confirm each such test goes red.
 
 **Principle:** An assertion that something is absent proves nothing unless the same test first shows it was present; a red run is judged by the tests that passed as much as by the ones that failed.
+
+### Observation 296: A guard against an accident must key on what makes it an accident, and the builder's own tests cannot see the harm of a guard they were written around
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** D262 (the Leave War's one-chip Move) — a guard against a double-click on "Move" landing the chip; numbered past every open branch's log (highest seen: 295 here, 282 elsewhere).
+**Skill:** test-driven-development (and the executor's red-first loop)
+**Type:** open-source
+**Phase/Area:** designing a guard; which tests can falsify it
+
+**Issue:** To stop a double-click's second click from landing the picked-up item, the first cut ignored EVERY click for 400 ms after the mode began. All the new unit tests passed — because every one of them, written by the same author, waited 420 ms before its deliberate click (encoding the guard's own assumption). The full browser suite then failed one OLDER test, written months before the guard, that clicks a landing day straight after "Move": a fast deliberate click was silently dropped. The accident (the second click of a double-click) differs from the deliberate act by PLACE (it lands where the first click did), not only by time; the fix keyed the guard on both.
+
+**Suggested improvement:** (1) When adding a guard that suppresses user input, write down what distinguishes the accident from the intended act (time, place, target, pointer type) and key the guard on the narrowest such property, with one test of the accident AND one test of a fast legitimate act that must still pass. (2) Run the pre-existing suites that exercise the same surface EARLY (right after the guard is added), not only at the final gate — they were written without knowledge of the guard, so they are the tests able to falsify it.
+
+**Principle:** Tests written alongside a guard inherit its assumptions and cannot expose its cost; the older tests of the same surface are the independent check, and a guard should discriminate on the property that actually defines the accident, not on a proxy like elapsed time.

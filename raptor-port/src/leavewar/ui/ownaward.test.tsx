@@ -10,7 +10,7 @@
 
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { advanceStage, initStore, setManualCredit, setRole, setViewer } from '../state/store'
+import { advanceStage, initStore, reopenStage, setManualCredit, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -60,6 +60,14 @@ describe('his own award opens read only at every stage (D261)', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${ME}-${OUTSIDE}`))
     expectReadOnlyAward('Recall', 'OC Ops', '3 days')
+  })
+
+  it('DRAFT (a war not yet shown to the squadron, if he has it on screen)', () => {
+    reopenStage()                                   // open → draft, by the admin
+    asMember()
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${ME}-${INSIDE}`))
+    expectReadOnlyAward('SIM', 'Not given', 'half a day')
   })
 
   it('its ✕ closes it', () => {
