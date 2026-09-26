@@ -16,11 +16,22 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/post-out-outcomes -->
-### `claude/post-out-outcomes` — `[POST-OUT-OUTCOMES]` planned, red team next; started before #443 merges (D301) — written 27 Sep 26, verify before use
-- **Where it stands:** cut from `claude/accounts-new-person` (PR #443). The plan (draft, red-team round 1 next):
-  `raptor-port/docs/superpowers/plans/2026-09-27-post-out-outcomes-plan.md`. Tier FULL. Built in two parts: A (accounts,
-  the callsign rule, the delete core, the member view — none of #444's files) then B (the Leave War posting outcomes, on
-  PR #444's posting code once it merges or its branch is taken in).
+### `claude/post-out-outcomes` — `[POST-OUT-OUTCOMES]` Part A built; Part B (the Leave War posting side) next, on PR #444's code — written 27 Sep 26 ~03:10, verify before use
+- **Where it stands:** cut from `claude/accounts-new-person` (PR #443). The plan, red-teamed twice (Fable + Astra; no
+  third round — the cap): `raptor-port/docs/superpowers/plans/2026-09-27-post-out-outcomes-plan.md` — its **Round 2**
+  section wins, then Round 1, then the text. Tier FULL. **Part A built and committed** (each red first; unit tests green):
+  the account words (Suspend / Enable / suspended — D285, D300); the callsign rule (an archived man's callsign free, the
+  index holds the roster only — D286; `engine/people.ts indexCallsigns`); the member view (D292; `perms.ts
+  switchRoleInForce`, `store.ts switchRoleView`); the delete (`state/person-delete.ts` — the loaded week, stashed weeks,
+  parked plans, sign boxes, planning calendar, inputs; one clock, the calendar date; Admin → Users "Delete account", asked
+  twice); Quals' Archived list (deleted man gone; Rename — D295). New styles only in `src/ui/postout.css`.
+- **Part B, next** (plan §13 and Round 1/2): take PR #444's branch in (not merged yet — 03:05), then the posting outcomes
+  (chips on the three posting doors, `runPoOutcomes`, `poOutcome`/`poDone`, `offBy`/`sanBy`, the SANS lay-on via one
+  `windowFor`, the back prompt, "Post out" / "Post in"), the war side of a delete (records from the cutoff, the `gone`
+  mark, `availableFor` by date, the OIL rule, the posting doors refusing a deleted man), Restore-as-rename (one command),
+  the Undo/Redo refusal that never walls (dead/abandoned), the Inputs "archived" group `!deleted`, the member-view Undo
+  words. Then documents, gates under the lock, the walk, both code reads, fixes, the sheet, his look card (seven
+  questions in the plan's Round 2 list).
 - **Coordination (D302 — the chats talk so they do not clash; merges stay his):** told the absence-record chat (PR #444)
   and the five-flags chat (PR #445) what this branch changes in files they also change. **Promised:** in
   `leavewar/state/store.ts` only the posting record, `setPeople`'s lay-on and a new `forgetPersonFrom`; in `engine/slots.ts`
