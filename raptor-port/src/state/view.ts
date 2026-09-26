@@ -2,7 +2,7 @@ import { DAYS } from '../engine/data'
 import { INPUTS, inpId } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { keyDay } from '../engine/keys'
-import { slotVal, setSlotVal, fillSlot, armTargetExists, sentinelSeatOK } from '../engine/slots'
+import { slotVal, setSlotVal, fillSlot, lastFilled, armTargetExists, sentinelSeatOK } from '../engine/slots'
 import { popReorderedDay } from '../engine/reorder'
 import { slotBar, personCount } from '../engine/avail'
 import { validate, WARN, officialWarn, versionFaceWarn, workingWarn } from '../engine/validate'
@@ -1074,7 +1074,10 @@ export function placeArmed(id:any){
      validate-then-ask shape as drag.ts's barDrop — and the validator rings
      the puck the same instant. */
   const warnBefore=WARN;   // the drop delta's baseline (state/dropflag.ts)
-  if(/\.\+$/.test(key))fillSlot(key,id); else setSlotVal(key,id);
+  /* the place he LANDED on — the question after the write is asked of it, not of the row's "+ add" (slots.ts
+     lastFilled; [CROWD-SWAP-SAYS-BUSY]): asked of the row, an ordinary add would read as a second copy of him */
+  let landed:any=base;
+  if(/\.\+$/.test(key)){fillSlot(key,id); landed=lastFilled()||key;} else setSlotVal(key,id);
   armDrop();
   /* a successful fill PARKS the drawer (owner, 8 Aug 26): the point of
      planting is seeing the puck land, and the open drawer covers it. */
@@ -1085,7 +1088,7 @@ export function placeArmed(id:any){
      words; slotBar's reason is the fallback, "planned" the all-clear. Same
      order as drag.ts's done(), so the two ways of planting a man agree. */
   if(flagDrop(warnBefore,keyDay(base)))return true;
-  const why=slotBar(id,base);
+  const why=slotBar(id,landed);
   if(why)toast(`${PEOPLE[id].cs} — ${why}`,'warn');
   else toast(`${PEOPLE[id].cs} planned`);
   return true;

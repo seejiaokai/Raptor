@@ -16,9 +16,10 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { INPUTS } from './inputs'
 import { slotBar } from './avail'
-import { setSlotVal } from './slots'
+import { setSlotVal, fillSlot, lastFilled } from './slots'
 import { validate, WARN } from './validate'
 import { SCHED } from './publish'
+import { makeStandalone } from './waves'
 
 const DSNAP = JSON.stringify(DAYS), ISNAP = JSON.stringify(INPUTS)
 beforeEach(() => {
@@ -48,10 +49,55 @@ describe('a man moved inside the Common Programme crowd he is on is not "already
     validate()
     expect(slotBar('beams', `a:0.${FS}.0`, undefined, `a:0.${FS}.2`)).toBe('')
   })
-  it('left as it is today: a man already in the crowd is not struck from its "+ add" for being on it', () => {
-    setSlotVal(`a:0.${FS}.1`, 'boosh')
+})
+
+/* ONE MAN, ONE PLACE ON A ROW (W3's walk of this batch, 26 Sep 26 — its F6). The fix above made a man's own row stop
+   calling him busy, and with it went the ONLY voice on putting him on a row he already stands on: Ranger dragged from
+   the crew list onto Reaper's puck in the FLIGHT SAFETY crowd Ranger was already in replaced Reaper with a second
+   Ranger, silently — on main the (accidental) busy words had said "already on FLIGHT SAFETY STAND-DOWN". Two older
+   doors (the crowd's own "+ add", by drag or by an armed tap) were silent on main too. The check: he stands on this
+   row at ANOTHER place than the one asked about, and not the place he is being moved from. Advisory like every bar
+   here — "everything plants, warning after" (owner, 13 Aug 26). */
+describe('a man put on a row he already stands on is told so', () => {
+  it("the crowd's '+ add', armed or dropped on, names the row he is already in", () => {
+    setSlotVal(`a:0.${FS}.1`, 'boosh'); validate()
+    expect(slotBar('boosh', `a:0.${FS}.+`)).toBe('already on FLIGHT SAFETY STAND-DOWN 08:30–09:00')
+  })
+  it("from the crew list onto ANOTHER man's puck in his own crowd (the walk's find): before and after the drop", () => {
+    setSlotVal(`a:0.${FS}.1`, 'beams'); validate()                     // Ranger (bane) at 0, Comet (beams) at 1
+    expect(slotBar('bane', `a:0.${FS}.1`), 'the caption before the drop').toBe('already on FLIGHT SAFETY STAND-DOWN 08:30–09:00')
+    setSlotVal(`a:0.${FS}.1`, 'bane'); validate()                      // the drop's write: Comet replaced by a second Ranger
+    expect(slotBar('bane', `a:0.${FS}.1`), 'the toast after it').toBe('already on FLIGHT SAFETY STAND-DOWN 08:30–09:00')
+  })
+  it('a move INSIDE the row stays silent: the place he leaves is his one place there', () => {
+    setSlotVal(`a:0.${FS}.1`, 'beams'); validate()
+    expect(slotBar('bane', `a:0.${FS}.1`, undefined, `a:0.${FS}.0`)).toBe('')
+    expect(slotBar('bane', `a:0.${FS}.+`, undefined, `a:0.${FS}.0`)).toBe('')
+  })
+  it('after an append the question is asked of the place he landed on (fillSlot tells it): silent once, named twice', () => {
+    expect(fillSlot(`a:0.${FS}.+`, 'boosh')).toBe(true)
+    expect(lastFilled()).toBe(`a:0.${FS}.1`)
     validate()
-    expect(slotBar('boosh', `a:0.${FS}.+`)).toBe('')
+    expect(slotBar('boosh', lastFilled()), 'a plain add says nothing').toBe('')
+    fillSlot(`a:0.${FS}.+`, 'boosh'); validate()
+    expect(lastFilled()).toBe(`a:0.${FS}.2`)
+    expect(slotBar('boosh', lastFilled()), 'a second copy is named').toBe('already on FLIGHT SAFETY STAND-DOWN 08:30–09:00')
+  })
+  it("the same for a desk's extras, a ground row's extras and a sim's seats", () => {
+    const d: any = DAYS[0], g = d.ground
+    g.push({ prog: 'ROW A', str: '1000', end: '1100', who: 'boosh' }); const a = g.length - 1
+    validate()
+    expect(slotBar('boosh', `g:0.${a}.+`)).toBe('already on ROW A 10:00–11:00')
+    expect(slotBar('beams', `g:0.${a}.+`), 'another man: nothing').toBe('')
+    d.dutywaves.push({ label: 'DESK', rows: [{ role: 'SDO', str: '1300', end: '1400', id: 'boosh', more: [] }] }); const w = d.dutywaves.length - 1
+    validate()
+    expect(slotBar('boosh', `d:0.${w}.0.+`)).toBe('already on SDO duty 13:00–14:00')
+    d.sims.oft.push({ label: 'X', str: '1500', end: '1600', p: 'boosh', w: '' }); const r = d.sims.oft.length - 1
+    validate()
+    expect(slotBar('boosh', `s:0.oft.${r}.w`)).toBe('already on Sim X 15:00–16:00')
+  })
+  it("the seed's own man, arming his own crowd, is named too", () => {
+    expect(slotBar('bane', `a:0.${FS}.+`)).toBe('already on FLIGHT SAFETY STAND-DOWN 08:30–09:00')
   })
 })
 
@@ -95,5 +141,24 @@ describe('the hover reads the week AFTER the move: the seat a man leaves is not 
     const a = g.length - 3, b = g.length - 1
     validate()
     expect(slotBar('boosh', `g:0.${b}`, undefined, `g:0.${a}`)).toBe('already on ROW C 10:00–11:00')
+  })
+})
+
+/* W3's walk of this batch (F20, 26 Sep 26), the same family on the SC shift window: dragging a man from one SC AM MAIN
+   seat to another (or front seat to rear) captioned "on SC AM 07:00–13:00 — inside this shift" — the shift he was
+   LEAVING — while the drop then said nothing. The shift-window scan read only the seat being planted into; it reads
+   the seat he is dragged from too now, like the walks above it. */
+describe('an SC shift drag reads the week after the move', () => {
+  it('MAIN seat to another MAIN seat of the same shift, and front seat to rear: clear; a plain plant still speaks', () => {
+    const d: any = DAYS[1]
+    const sc = makeStandalone('sc'); d.waves.push(sc); const gi = d.waves.length - 1
+    const A = `1.${gi}.0.0.p`, B = `1.${gi}.0.1.p`, C = `1.${gi}.0.0.w`
+    setSlotVal(A, 'boosh'); validate()
+    /* Havoc has a real SDO desk 05:30–12:00 that Tuesday, which the caption SHOULD still name — the claim is only that
+       it never names the SC shift he is leaving */
+    expect(slotBar('boosh', B, undefined, A), 'onto the other MAIN seat').not.toMatch(/SC AM/)
+    expect(slotBar('boosh', B, undefined, A), '…and names his real desk instead').toMatch(/SDO duty/)
+    expect(slotBar('boosh', C, undefined, A), "onto his own jet's rear seat").not.toMatch(/SC AM/)
+    expect(slotBar('boosh', B), 'a plain plant: he IS on the shift').toMatch(/SC AM/)
   })
 })

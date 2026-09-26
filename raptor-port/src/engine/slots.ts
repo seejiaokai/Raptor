@@ -61,6 +61,21 @@ export function rowCrew(k:any,a:any){
   (r.more||[]).forEach((v:any)=>out.push(PEOPLE[v]?v:''));
   return out;
 }
+/* EVERY PLACE ON A ROW, with who stands there — the places a seat key can name (a crowd's `a:di.ri.N`, a desk or a
+   ground row's primary seat and its `.xN` extras, a sim's `.p`/`.w`/`.pax.N`/`.xN`). `rowKey` is the ROW (keys.ts
+   seatRow). Read by avail.ts slotBar's one-man-one-place-on-a-row check ([CROWD-SWAP-SAYS-BUSY], 26 Sep 26). A flying
+   seat is its own row and has no list here. */
+export function rowPlaces(rowKey:any):any[]{
+  const s=String(rowKey),c=s.indexOf(':'); if(c<0)return [];
+  const k=s.slice(0,c),a=s.slice(c+1).split('.'),r=rowRef(k,a); if(!r)return [];
+  const out:any[]=[], add=(key:any,v:any)=>{const id=whoId(v); if(id&&PEOPLE[id])out.push({key,id});};
+  if(k==='a')whoArr(r).forEach((v:any,i:any)=>add(`${s}.${i}`,v));
+  else if(k==='g')add(s,r.who);
+  else if(k==='d')add(s,r.id);
+  else if(k==='s'){add(`${s}.p`,r.p);add(`${s}.w`,r.w);(r.pax||[]).forEach((v:any,i:any)=>add(`${s}.pax.${i}`,v));}
+  (r.more||[]).forEach((v:any,i:any)=>add(`${s}.x${i}`,v));
+  return out;
+}
 export function slotVal(key:any){
   key=String(key);const c=key.indexOf(':');
   { const m=key.match(XKEY);
@@ -185,13 +200,20 @@ export function setSlotVal(key:any,id:any):boolean{
 }
 /* dropped on a people CELL rather than on a specific puck */
 /* Same contract as setSlotVal above: `false` means REFUSED and nothing written. */
+/* WHERE A FILL LANDED ([CROWD-SWAP-SAYS-BUSY], W3's walk, 26 Sep 26). A drop on a row's "+ add" and an armed append
+   name the ROW, and fillSlot picks the place — the next index of a crowd, the first empty seat, the next extra. The
+   question asked AFTER the write ("is he on this row twice now?", avail.ts slotBar) has to be asked of that place, not
+   of the row, or every ordinary add would read as a second copy. drag.ts and view.ts placeArmed read it back. */
+let FILLED:any=null;
+export function lastFilled():any{return FILLED;}
+const putAt=(k:any,id:any):boolean=>{FILLED=k;return setSlotVal(k,id);};
 export function fillSlot(key:any,id:any):boolean{
-  key=String(key);
+  key=String(key); FILLED=null;
   /* the belt, ahead of every branch — so the append doors cannot reach a
      cockpit by a route the preflight was not asked about */
   if(!sentinelSeatOK(key,id))return false;
   if(/\.\*$/.test(key)){const b=key.slice(0,-1);            // sims: front seat, else rear
-    return setSlotVal(slotVal(b+'p')?b+'w':b+'p',id);}
+    return putAt(slotVal(b+'p')?b+'w':b+'p',id);}
   /* sims pax: append to the end of the list. This MUST be tested before the generic
      '.+' programme branch below, because 's:0.amt.1.pax.+' also ends in '.+' and
      would otherwise be written into d.allhands. */
@@ -201,10 +223,10 @@ export function fillSlot(key:any,id:any):boolean{
     /* reuse the first blanked index if there is one, so removing then re-adding a
        body doesn't grow the array forever */
     let i=r.pax.findIndex((v:any)=>!v||!PEOPLE[v]); if(i<0)i=r.pax.length;
-    return setSlotVal(`s:${a[0]}.${a[1]}.${a[2]}.pax.${i}`,id);}
+    return putAt(`s:${a[0]}.${a[1]}.${a[2]}.pax.${i}`,id);}
   if(/^a:.*\.\+$/.test(key)){const a=key.slice(key.indexOf(':')+1).split('.');   // programme: append
     const r=DAYS[+a[0]].allhands[+a[1]]; if(!r)return true;
-    return setSlotVal(`a:${a[0]}.${a[1]}.${whoArr(r).length}`,id);}
+    return putAt(`a:${a[0]}.${a[1]}.${whoArr(r).length}`,id);}
   /* every other list row: fill the first empty primary seat, else add one more.
      No limit — a duty, a ground item or a sim can carry as many bodies as the
      scheduler drops onto it. */
@@ -215,20 +237,20 @@ export function fillSlot(key:any,id:any):boolean{
     /* only a genuinely EMPTY primary seat is filled. A row carrying free text
        ("ALL PILOTS", "149") is not empty — the puck goes below it instead, or
        the text would be silently destroyed. */
-    if(k==='d'&&!String(r.id||'').trim())return setSlotVal(base,id);
-    if(k==='g'&&!String(r.who||'').trim())return setSlotVal(base,id);
+    if(k==='d'&&!String(r.id||'').trim())return putAt(base,id);
+    if(k==='g'&&!String(r.who||'').trim())return putAt(base,id);
     if(k==='s'&&!Array.isArray(r.pax)){
-      if(!PEOPLE[r.p])return setSlotVal(base+'.p',id);
-      if(!PEOPLE[r.w])return setSlotVal(base+'.w',id);}
+      if(!PEOPLE[r.p])return putAt(base+'.p',id);
+      if(!PEOPLE[r.w])return putAt(base+'.w',id);}
     if(k==='s'&&Array.isArray(r.pax)){
       let i=r.pax.findIndex((v:any)=>!v||!PEOPLE[v]);
-      if(i>=0)return setSlotVal(base+'.pax.'+i,id);}
+      if(i>=0)return putAt(base+'.pax.'+i,id);}
     r.more=r.more||[];
     let i=r.more.findIndex((v:any)=>!v||!PEOPLE[v]);
     if(i<0)i=r.more.length;
-    return setSlotVal(base+'.x'+i,id);
+    return putAt(base+'.x'+i,id);
   }
-  return setSlotVal(key,id);
+  return putAt(key,id);
 }
 /* ---------------- generic TEXT addressing (inline editing) ------------
    Every string in the day model is reachable through one key, exactly the way

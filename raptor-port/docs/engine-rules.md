@@ -1185,6 +1185,17 @@ free while the list raises the clash). And on a drag, the seat he is dragged FRO
 SC and AVALON walks already did: the hover describes the week after the move. The validator's "the seat he is
 leaving" (`crossDayIfPlaced`'s his-only-event test, `restIfPlaced`'s strip, below) compares through the same
 `seatRow`. Pins: `crowdself.test.ts`, `runtrace.test.ts`.
+**One man, one place on a row** (the walk of the same batch, W3, 26 Sep 26). Fixing that trim silenced the only voice on
+putting a man onto a row he ALREADY stands on (a crowd, a desk's or a ground row's extras, a sim's seats): Ranger dropped
+from the crew list onto Reaper's puck in the crowd Ranger was in replaced Reaper with a second Ranger, and on `main` the
+accidental busy words had warned. `slotBar` now asks it on purpose, before the busy scan: he stands on this row
+(`slots.ts rowPlaces`) at ANOTHER place than the one asked about, and not the place he is dragged from → the busy
+check's own words ("already on FLIGHT SAFETY STAND-DOWN 08:30–09:00"). A "+ add" key is a NEW place; a caller asking
+AFTER a write names the place the fill landed on (`slots.ts lastFilled` — `drag.ts` and `view.ts placeArmed`), or every
+ordinary add would read as a second copy; a crowd's or a sim box's bare row key names no place and is left to the busy
+scan. Advisory ("everything plants, warning after", 13 Aug 26) — whether a duplicate should be REFUSED is his question
+(the look card). **And the SC shift-window scan reads the seat he is dragged from too** (W3): a MAIN man dragged to
+another MAIN seat of the same shift was captioned "inside this shift" about the shift he was leaving.
 
 **A second accept that would mint a duplicate content key is refused.**
 `inpKey` is `person|date|type|start` and content keys are not unique;

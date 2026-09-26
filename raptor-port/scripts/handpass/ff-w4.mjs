@@ -887,9 +887,21 @@ SECTIONS.availwin = async () => {
     const t = tagOf(vp)
     const { browser, page, errors } = await world(vp)
     await go(page, 'editsched')
-    const put = await L.put(page, '#eWeek [data-slot="d:5.0.0.+"]', ['allavail'])
-    note(`AW.${t}.plant`, 'ALL AVAIL dropped onto the Saturday duty desk extras through the palette', put)
-    await sleep(500)
+    /* Saturday to the front through the calendar, arm its duty desk's "+ ADD", tap ALL AVAIL in the crew palette */
+    const cal = await page.evaluate(() => { const e = [...document.querySelectorAll('.page.on .wk-cal')].find(x => x.offsetWidth); const r = e.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 } })
+    await page.mouse.click(cal.x, cal.y); await page.waitForSelector('#weekCal:not([hidden]) [data-wcal]'); await page.click('#weekCal [data-wcal="2026-07-18"]'); await sleep(700)
+    const add = await page.evaluate(() => { const z = document.querySelector('#eWeek [data-fill="d:5.0.0.+"]'); if (!z) return null
+      const kids = [...z.querySelectorAll('*')].filter(e => /ADD/i.test(e.textContent || '') && !e.querySelector('*'))
+      const el = kids[kids.length - 1] || z; el.scrollIntoView({ block: 'center', inline: 'nearest' }); const r = el.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, tag: el.tagName + '.' + el.className } })
+    let planted = false
+    if (add) {
+      await sleep(200); await page.mouse.click(add.x, add.y); await sleep(400)
+      const armed = await page.evaluate(() => window.ARM && window.ARM.key)
+      const pk = await page.evaluate(() => { const e = document.querySelector('#eRoster .rpuck[data-person="allavail"]'); if (!e) return null; e.scrollIntoView({ block: 'center' }); const r = e.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 } })
+      if (pk) { await sleep(200); await page.mouse.click(pk.x, pk.y); await sleep(600) }
+      planted = await page.evaluate(() => !!document.querySelector('#eWeek .day[data-day="5"] [data-person="allavail"]'))
+      note(`AW.${t}.plant`, 'ALL AVAIL dropped onto the Saturday duty desk extras through the palette', { add, armed, planted })
+    } else note(`AW.${t}.plant`, 'no + ADD on the Saturday desk')
     for (const pg of ['editsched', 'viewsched']) {
       const p = pg === 'viewsched' ? 'view' : 'edit'
       await go(page, pg)
@@ -948,11 +960,18 @@ SECTIONS.resize = async () => {
 SECTIONS.phone = async () => {
   const { browser, ctx, page, errors } = await world(PHONE)
   const cdp = await ctx.newCDPSession(page)
-  const swipe = async (x, y, dx) => {
+  const swipe = async (x, y, dx, steps = 10, gap = 16) => {
     await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y, id: 7 }] })
-    for (let i = 1; i <= 10; i++) { await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x + dx * i / 10, y, id: 7 }] }); await sleep(16) }
+    for (let i = 1; i <= steps; i++) { await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x + dx * i / steps, y, id: 7 }] }); await sleep(gap) }
     await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
   }
+  const toMonday = async () => {
+    await toTop(page)
+    await page.evaluate(() => { const e = [...document.querySelectorAll('.page.on .filt-cal, .page.on .wknav-mbtn')].find(x => x.offsetWidth); e && e.click() })
+    await page.waitForSelector('#weekCal:not([hidden]) [data-wcal]')
+    await page.click('#weekCal [data-wcal="2026-07-13"]'); await sleep(900)
+  }
+  const frontNow = async () => { await settle(page, '#vWeek', 400); return page.evaluate(() => { const w = document.querySelector('#vWeek'); const ds = [...w.querySelectorAll('.day[data-day]')]; const f = ds.find(d => d.getBoundingClientRect().right > 60); return { week: window.CURWEEK, sl: Math.round(w.scrollLeft), front: f && f.dataset.day, frontLeft: f && Math.round(f.getBoundingClientRect().left) } }) }
   for (const pg of ['viewsched', 'editsched']) {
     const wk = WK[pg], p = pg === 'viewsched' ? 'view' : 'edit'
     await go(page, pg); await toTop(page)
@@ -984,24 +1003,25 @@ SECTIONS.phone = async () => {
   check(`F9.fwd1.gutter`, s.monLeft >= 0 && s.monLeft <= 14, 'Monday sits at the phone\'s own 12px, no wider gutter', s)
   await shot(page, `F9-phone-swipe-fwd-monday`)
   /* an ordinary within-week swipe that starts on a wave block of wave-dense Monday */
-  await toTop(page)
+  await toMonday()
   const goY = await page.evaluate(() => { const g = document.querySelector('#vWeek .day[data-day="0"] .go'); if (!g) return null; g.scrollIntoView({ block: 'center' }); const r = g.getBoundingClientRect(); return Math.round(r.top + 20) })
   await sleep(300)
   if (goY != null) {
-    await swipe(300, goY, -220)
-    await sleep(1200)
-    s = await page.evaluate((wk) => { const w = document.querySelector(wk); const ds = [...w.querySelectorAll('.day[data-day]')]; const f = ds.find(d => d.getBoundingClientRect().right > 60); return { week: window.CURWEEK, sl: Math.round(w.scrollLeft), front: f && f.dataset.day, frontLeft: f && Math.round(f.getBoundingClientRect().left) } }, wk)
-    note(`F9.within`, 'a within-week swipe that starts on a wave block (the block scrolls first, or the week steps a day — never a week cross)', s)
-    check(`F9.within.nocross`, s.week === w0, 'a within-week swipe never crosses the week', s)
+    await swipe(300, goY, -220, 20, 25)
+    await sleep(600)
+    s = await frontNow()
+    note(`F9.within`, 'a within-week swipe that starts on a wave block (the block scrolls its own columns first, or the week moves — never a week cross)', s)
+    check(`F9.within.nocross`, s.week === w0 && Math.abs(s.frontLeft) <= 14, 'a within-week swipe never crosses the week, and the week rests on a whole day, flush at the phone edge', s)
     await shot(page, `F9-phone-swipe-within`)
   } else note('F9.within', 'no wave block on Monday found')
-  /* an ordinary within-week swipe that starts on the day head (no wave block to own it): one day on, no cross */
-  await toTop(page)
+  /* an ordinary within-week swipe that starts on the day head (no wave block to own it), at a person's pace */
+  await toMonday()
   const hy = await page.evaluate(() => { const h = document.querySelector('#vWeek .day[data-day="0"] .day-head').getBoundingClientRect(); return Math.round(h.top + h.height / 2) })
-  await swipe(300, hy, -250)
-  await sleep(1200)
-  s = await page.evaluate((wk) => { const w = document.querySelector(wk); const ds = [...w.querySelectorAll('.day[data-day]')]; const f = ds.find(d => d.getBoundingClientRect().right > 60); return { week: window.CURWEEK, sl: Math.round(w.scrollLeft), front: f && f.dataset.day, frontLeft: f && Math.round(f.getBoundingClientRect().left) } }, wk)
-  check('F9.withinHead', s.week === w0 && s.front === '1' && Math.abs(s.frontLeft) <= 14, 'one within-week swipe on the head of Monday steps to Tuesday, flush at the phone edge, no week cross', s)
+  await swipe(300, hy, -250, 20, 25)
+  await sleep(600)
+  s = await frontNow()
+  note('F9.withinHead.where', 'where a paced within-week swipe from Monday came to rest (the owner kept the swipe free to travel more than a day)', s)
+  check('F9.withinHead', s.week === w0 && s.front !== '0' && Math.abs(s.frontLeft) <= 14, 'a within-week swipe on the head of Monday moves on, rests on a whole day flush at the phone edge, no week cross', s)
   await shot(page, 'F9-phone-swipe-within-head')
   /* the calendar on the phone lands the day at the phone's own padding */
   await toTop(page)
@@ -1025,3 +1045,4 @@ for (const s of (want.length ? want : order.filter(x => x !== 'probe'))) {
 const f = ROWS.filter(r => r.ok === false)
 out(`\nSUMMARY ${ROWS.filter(r => r.ok).length} pass · ${f.length} fail · ${ROWS.filter(r => r.ok === null).length} notes${f.length ? ' · FAILS: ' + f.map(r => r.id).join(', ') : ''}`)
 out(`ERRORS SEEN: ${ERRS.length ? JSON.stringify(ERRS) : 'none'}`)
+process.exit(0)

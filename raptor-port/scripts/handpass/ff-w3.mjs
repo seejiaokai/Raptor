@@ -6,7 +6,7 @@
    Every check asserts the RIGHT behaviour (PASS = correct), so re-running this IS the re-walk.
    Usage, from raptor-port/:  node scripts/handpass/ff-w3.mjs [part ...]
      parts: f4d f4p f2d f2p f3 f5 f6 f1a f1b f1c f1d f1e f20   (none = all)
-   Pictures: docs/img/handpass/2026-09-26-five-flags/w3/ · results (JSON) beside them as w3-results-<part>.json */
+   Pictures: docs/img/handpass/2026-09-26-five-flags/w3/ · every check prints PASS / FAIL / NOTE; W3_RESULTS=<folder> also writes JSON */
 process.env.HP_URL = 'http://localhost:4176'
 const SHOTS = 'C:/Users/User/projects/Raptor/.claude/worktrees/five-flags-batch-build-ef7d85/raptor-port/docs/img/handpass/2026-09-26-five-flags/w3'
 process.env.HP_SHOTS = SHOTS
@@ -770,7 +770,8 @@ for (const p of want) {
   PART = p; RES = []
   console.log(`\n===== ${p} =====`)
   await PARTS[p]()
-  writeFileSync(`${SHOTS}/w3-results-${p}.json`, JSON.stringify(RES, null, 1))
+  /* a machine-readable copy only when asked for (W3_RESULTS=<folder>), never beside the pictures */
+  if (process.env.W3_RESULTS) writeFileSync(`${process.env.W3_RESULTS}/w3-results-${p}.json`, JSON.stringify(RES, null, 1))
   const f = RES.filter(r => r.ok === false)
   console.log(`----- ${p}: ${RES.filter(r => r.ok).length} pass · ${f.length} fail · ${RES.filter(r => r.ok === null).length} notes${f.length ? ' · FAILS: ' + f.map(r => r.id).join(', ') : ''}`)
 }

@@ -221,6 +221,22 @@ describe('arm and plant, model half (tfin U, through the store)', () => {
     writeSlot('0.0.0.0.p', '')
   })
 
+  /* [CROWD-SWAP-SAYS-BUSY] W3's walk (26 Sep 26): the question after an append is asked of the PLACE the fill landed
+     on (slots.ts lastFilled), so an ordinary add to a crowd toasts "planned" and a second copy of the same man is named */
+  it('an armed crowd: an ordinary add is "planned", the same man again is named as already on the row', () => {
+    const said: any[] = []
+    const t0 = HOOKS.toast
+    HOOKS.toast = (m: any, k?: any) => { said.push([String(m), k]) }
+    try {
+      armSlot('a:0.2.+')
+      expect(placeArmed('boosh')).toBe(true)
+      expect(said.at(-1)![0], 'a plain add').toMatch(/planned$/)
+      armSlot('a:0.2.+')
+      expect(placeArmed('boosh')).toBe(true)                     // "everything plants, warning after" (13 Aug 26)
+      expect(said.at(-1), 'the second copy is named').toEqual(['Havoc — already on FLIGHT SAFETY STAND-DOWN 08:30–09:00', 'warn'])
+    } finally { HOOKS.toast = t0; disarmSlot() }
+  })
+
   it("re-planting the seat's own occupant refuses instead of toasting planned", () => {
     writeSlot('0.0.0.0.p', 'casper')
     armSlot('0.0.0.0.p')

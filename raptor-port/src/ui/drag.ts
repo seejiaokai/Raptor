@@ -4,7 +4,7 @@
    the two input methods can never drift apart. Repaint is the store's
    notify(), folded into applyDrop's done(). */
 import { PEOPLE } from '../engine/people'
-import { slotVal, setSlotVal, fillSlot, sentinelSeatOK } from '../engine/slots'
+import { slotVal, setSlotVal, fillSlot, lastFilled, sentinelSeatOK } from '../engine/slots'
 import { slotBar } from '../engine/avail'
 import { WARN } from '../engine/validate'
 import { keyDay } from '../engine/keys'
@@ -106,7 +106,9 @@ function hoverWhy(t: Element | null) {
   if (!id || (DRAG.kind === 'slot' && DRAG.key === key)) return
   /* a seat puck names the seat it is LEAVING, so the answer reads the week
      after the move (slotBar's fromKey) */
-  let why = ''; try { why = slotBar(id, String(key).replace(/\.\+$/, ''), undefined, DRAG.kind === 'slot' ? DRAG.key : undefined) } catch (_) { return }
+  /* the key as the target names it — a "+ add" keeps its `.+`, which slotBar reads as a NEW place (its one-man-one-
+     place-on-a-row check, [CROWD-SWAP-SAYS-BUSY]); it strips the `.+` itself for everything else */
+  let why = ''; try { why = slotBar(id, String(key), undefined, DRAG.kind === 'slot' ? DRAG.key : undefined) } catch (_) { return }
   if (!why) return
   el.classList.add('dragover-why')
   const c = document.createElement('span'); c.className = 'dwhy'; c.textContent = why
@@ -165,7 +167,8 @@ export function nearSeat(cell: any, x: any, y: any) {
    words, and this only sounds when the delta found nothing new. */
 export function barDrop(id: any, key: any) {
   if (!id || !key) return false
-  let why = ''; try { why = slotBar(id, String(key).replace(/\.\+$/, '')) } catch (_) { return false }
+  /* asked AFTER the write, so `key` is the place he landed on (the cell branch passes fillSlot's lastFilled) */
+  let why = ''; try { why = slotBar(id, String(key)) } catch (_) { return false }
   if (!why) return false
   toast(`${(PEOPLE[id] || {}).cs || id} — ${why}`, 'warn')
   return true
@@ -347,8 +350,10 @@ export function applyDrop(el: any, x: any, y: any) {
       HOOKS.toast(`${PEOPLE[moving] ? PEOPLE[moving].cs + ' — ' : ''}${slotBar(moving, fillKey)}`, 'warn')
       DRAG = null; dndOff(); return false
     }
-    if (DRAG.kind === 'roster') { fillSlot(fillKey, DRAG.id); asks = [[DRAG.id, fillKey]] }
-    else { const id = slotVal(DRAG.key); setSlotVal(DRAG.key, ''); fillSlot(fillKey, id); asks = [[id, fillKey]] }
+    /* the ask names the PLACE the fill landed on, not the row's "+ add": asked after the write, a row key would read an
+       ordinary add as a second copy of him ([CROWD-SWAP-SAYS-BUSY], slots.ts lastFilled) */
+    if (DRAG.kind === 'roster') { fillSlot(fillKey, DRAG.id); asks = [[DRAG.id, lastFilled() || fillKey]] }
+    else { const id = slotVal(DRAG.key); setSlotVal(DRAG.key, ''); fillSlot(fillKey, id); asks = [[id, lastFilled() || fillKey]] }
     return done(cell.dataset.fill, asks)
   }
   /* a seat puck let go anywhere else — the roster, blank page space, the

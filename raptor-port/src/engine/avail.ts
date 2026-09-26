@@ -7,7 +7,7 @@ import { SHIFT_HARD, VCONF } from './rules'
 import { isStandalone, scSpare, saExempt, saExemptKind } from './waves'
 import { WARN, restClear, dayEvents, crossDayIfPlaced } from './validate'
 import { waveWindows, inpShow, shiftEvHard, seatIntime, scSeatHit, avSeatHit } from './events'
-import { whoArr, rowRef, XKEY, sentinelSeatOK, SENTINEL_JET_BAR } from './slots'
+import { whoArr, rowRef, rowPlaces, XKEY, sentinelSeatOK, SENTINEL_JET_BAR } from './slots'
 import { keyDay, seatRow } from './keys'
 /* busy windows [s,e] for one person on a day (fly/duty/sim/ground) */
 export function personBusy(d:any,id:any){
@@ -327,6 +327,23 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
      the picker and the warning list may not drift. Anyone may be listed on an
      FYI item, absences and clashes included. */
   if(r.infoRow)return '';
+  /* ONE MAN, ONE PLACE ON A ROW ([CROWD-SWAP-SAYS-BUSY], W3's walk, 26 Sep 26). A crowd, a desk's or a ground row's
+     extras and a sim's seats each hold PEOPLE'S places, and nothing stopped the same man standing on one row twice —
+     the list, deduplicating his events, says nothing about it. Its only voice used to be the busy check below, and
+     only by accident: its programme trim missed his own row, so "already on FLIGHT SAFETY STAND-DOWN" happened to
+     warn a man dropped onto another man's puck in the crowd he was already in. Fixing that trim silenced it, so the
+     question is asked here on purpose: does he stand on this row at ANOTHER place than the one asked about, and not
+     the place he is being moved from? `here` is the place asked about — none for a "+ add" (a new place); a caller
+     asking AFTER a write names the place the fill landed on (slots.ts lastFilled), or every ordinary add would read
+     as a second copy. Advisory, like every bar here ("everything plants, warning after", owner, 13 Aug 26); the
+     words are the busy check's own, so a man reads the same sentence whichever of the two finds him. */
+  /* A crowd's or a sim box's own bare key (`a:0.2`, `s:2.oft.0`) names the ROW, not a place in it — asked by older
+     callers and tests as "this row", where the busy check below has always read him as on it, not as a second copy;
+     it is left to the busy check. (A desk's or a ground row's bare key IS its first seat, so it is a place.) */
+  {const ks=String(key), row=selfKey(key), here=/\.\+$/.test(ks)?null:ks, from=fromKey!=null?String(fromKey):null;
+   if(!(row===ks&&/^[as]:/.test(ks))&&rowPlaces(row).some((x:any)=>x.id===id&&x.key!==here&&x.key!==from)){
+     const ev=r.di>=0?dayEvents(r.di,id).find((e:any)=>selfKey(e.slot||e.key)===row):null;
+     return ev&&ev.s!=null&&ev.e!=null?`already on ${ev.label} ${hm24(ev.s)}–${hm24(ev.e)}`:'already on this row';}}
   /* Personnel (ground crew) may ride a REAR seat (an incentive ride) and do
      ground work, but never a front seat — flying or sim. Their seat is 'GND',
      so the FCP/RCP checks below never catch them; this is the whole front-seat
@@ -396,8 +413,10 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
      INPUT deliberately stays warn-not-bar here, matching the flying-seat
      modality (inputs.ts:178-181): the validator reds him after planting. */
   if(r.sc&&r.scStart!=null&&r.scEnd!=null&&r.di>=0&&!r.scSpare){
-    const self=String(key).replace(/\.\+$/,'');
-    const live=(e:any)=>shiftEvHard(e)&&e.s!=null&&e.e!=null&&e.slot!==self;
+    /* not the seat being planted into, and — on a drag — not the one he is dragged FROM (selfKeys, as the walks above
+       read it; W3's walk, 26 Sep 26: a MAIN man dragged to another MAIN seat of the same shift was captioned "inside
+       this shift" about the shift he was leaving, while the drop said nothing) */
+    const live=(e:any)=>shiftEvHard(e)&&e.s!=null&&e.e!=null&&selfKeys.indexOf(selfKey(e.slot||e.key))<0;
     /* both windows are already minutes-from-midnight of day r.di, so plain
        overlap is the whole answer here */
     let hit=dayEvents(r.di,id).find((e:any)=>live(e)&&overlap(r.scStart,r.scEnd,e.s,e.e));
