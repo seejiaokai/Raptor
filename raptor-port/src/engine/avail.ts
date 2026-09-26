@@ -375,7 +375,11 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
   /* every walk below excludes the seat being planned into AND, on a drag, the
      seat the man is leaving (fromKey) — the hover describes the week AFTER the
      move, as crossDayIfPlaced already does (reviewer, 7 Sep 26) */
-  const selfKeys=[selfKey(key),fromKey!=null?selfKey(fromKey):null];
+  /* …the seat he LEAVES only when he leaves its row: a man standing on that row twice (a second copy is warned, not
+     refused — "everything plants, warning after") still stands on it when one copy moves (Astra's read, 26 Sep 26) */
+  const fromRow=fromKey!=null?selfKey(fromKey):null;
+  const leaves=fromRow!=null&&!rowPlaces(fromRow).some((x:any)=>x.id===id&&x.key!==String(fromKey));
+  const selfKeys=[selfKey(key),leaves?fromRow:null];
   if(r.sc&&r.scStart!=null&&r.scEnd!=null&&r.di>=0){
     const hit=scSeatHit(r.di,id,r.scStart,r.scEnd,selfKeys);
     if(hit)return `already on ${hit.what} ${hm24(hit.s)}–${hm24(hit.e)}`;

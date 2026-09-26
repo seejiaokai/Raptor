@@ -162,3 +162,20 @@ describe('an SC shift drag reads the week after the move', () => {
     expect(slotBar('boosh', B), 'a plain plant: he IS on the shift').toMatch(/SC AM/)
   })
 })
+
+/* Astra's read (26 Sep 26, finding 1): the seat he is dragged FROM is excluded because he LEAVES it — but a man who
+   stands on that row twice (the app warns, and still plants the second copy — "everything plants, warning after")
+   does not leave it when ONE copy moves. The source row is excluded only when he has no other place on it. */
+describe('dragging one of two copies off a row: the copy left behind still counts', () => {
+  it('the hover still names the row a second copy of him stays on', () => {
+    DAYS[0].allhands[1].end = '0845'                                       // MET + NOTAM now overlaps the stand-down
+    setSlotVal(`a:0.${FS}.1`, 'boosh'); setSlotVal(`a:0.${FS}.2`, 'boosh')   // Havoc twice on FLIGHT SAFETY
+    validate()
+    expect(slotBar('boosh', 'a:0.1.+', undefined, `a:0.${FS}.2`)).toBe('already on FLIGHT SAFETY STAND-DOWN 08:30–09:00')
+  })
+  it('…while the one copy he has, dragged off, is still not a place he is busy', () => {
+    DAYS[0].allhands[1].end = '0845'
+    setSlotVal(`a:0.${FS}.1`, 'boosh'); validate()
+    expect(slotBar('boosh', 'a:0.1.+', undefined, `a:0.${FS}.1`)).toBe('')
+  })
+})

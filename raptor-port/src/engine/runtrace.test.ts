@@ -276,6 +276,16 @@ describe('review findings (5 Sep 26) — the question reads the week AFTER a mov
     expect(slotBar(ID, 'g:6.0'), 'the desk extra is his only Saturday event').toMatch(/7th day in a row/)
     expect(crossDayIfPlaced(ID, 'g:6.0', deskKey), 'moved off the desk extras line: six, not seven').toBe('')
   })
+  /* Astra's read (finding 1): a man on his only Saturday row TWICE (a second copy, warned but planted) does not leave
+     Saturday when one copy moves — the day stays worked, the run stays seven */
+  it('one of two copies moved off his only Saturday row: Saturday is still worked', () => {
+    workOn(ID, [0, 1, 2, 3, 4])
+    DAYS[5].allhands = [...(DAYS[5].allhands || []), { prog: 'SAT CROWD', str: '0900', end: '1000', who: [ID, ID] }]
+    validate()
+    const second = `a:5.${DAYS[5].allhands.length - 1}.1`
+    expect(crossDayIfPlaced(ID, 'g:6.0', second)).toMatch(/7th day in a row/)
+    expect(slotBar(ID, 'g:6.0', undefined, second)).toMatch(/7th day in a row/)
+  })
   it('a same-day crew-rest move: the leg being moved cannot break its own crew rest', () => {
     const d1 = DAYS[1].waves[0].formations[0]; d1.to = '20:00'; d1.ld = '23:00'; d1.br = ''
     d1.aircraft[0].p = 'split'

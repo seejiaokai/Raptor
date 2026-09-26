@@ -112,3 +112,34 @@ test('a folder that only STARTS with the name is another folder — refused', ()
 test('a chat started at the root is still refused a bare npm, as before', () => {
   for (const env of [ROOT, TREE, {}]) assert.ok(refusal(bg('npm run test:e2e'), env), JSON.stringify(env));
 });
+
+/* Astra's read (26 Sep 26, findings 2 and 3): the ORDER of the steps decides — a move after npm, or a move undone before
+   it, does not put npm inside raptor-port; and a chat started in a folder INSIDE raptor-port is already in place */
+test('a move AFTER npm, or undone before it, does not count — every npm step must run inside', () => {
+  for (const c of [
+    'npm test; cd raptor-port',
+    'cd raptor-port; cd ..; npm test',
+    'cd raptor-port && npm run build; cd .. && npm test',
+    'Push-Location raptor-port; Pop-Location; npm test',
+    '(cd raptor-port; npm run build); npm test',
+    'cd raptor-port && cd /tmp && npm test',
+  ]) assert.ok(refusal(bg(c), ROOT), c);
+});
+test('…and a line that stays inside, however many npm steps, runs', () => {
+  for (const c of [
+    'cd raptor-port && npm run build && npx vite preview --port 4176',
+    'cd raptor-port; cd scripts; npm run docsize',
+    '(cd raptor-port; npm run build)',
+    'cd raptor-port && npm test 2>&1 | tail -20',
+    'cd raptor-port && E2E_PORT=4193 npx playwright test',
+  ]) assert.equal(refusal(bg(c), ROOT), null, c);
+});
+test('a chat started in a folder INSIDE raptor-port is already in place; a lookalike start folder is not', () => {
+  const SUB = { CLAUDE_PROJECT_DIR: String.raw`C:\Users\User\projects\Raptor\raptor-port\scripts` };
+  const LIKE = { CLAUDE_PROJECT_DIR: '/c/Users/User/projects/Raptor/raptor-port-old' };
+  const CASE = { CLAUDE_PROJECT_DIR: String.raw`C:\USERS\USER\PROJECTS\RAPTOR\RAPTOR-PORT\ `.trim() };
+  assert.equal(refusal(bg('npm run docsize'), SUB), null);
+  assert.equal(refusal(bg('npm run docsize'), CASE), null);
+  assert.ok(refusal(bg('npm run docsize'), LIKE));
+  assert.ok(refusal(bg('cd ../.. && npm test'), SUB), 'and moving up out of it still refuses (`..` counts as out: an unknown folder is out)');
+});

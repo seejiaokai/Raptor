@@ -388,8 +388,9 @@ Run from `raptor-port/`, not the repo root. All FIVE, after any change:
 > FULL PATH (`cd "<repo>/raptor-port" && …`), which works whatever folder the shell starts in. This bit
 > twice (test:e2e, 30 Aug 26) and each miss wastes a full ~10-minute re-run. **Enforced since 26 Sep 26**
 > ([BG-CWD-GUARD], D162): a hook, `../.claude/hooks/bg-cwd-guard.mjs`, refuses a backgrounded `npm`/`npx`
-> that never moves into `raptor-port/` (a `cd`/`Set-Location` to any path ending in `raptor-port`, or
-> `npm --prefix …raptor-port`), and names the full path in its refusal; a chat that STARTED inside
+> step that would run outside `raptor-port/` — it follows the line step by step (a `cd`/`Set-Location`/`Push-Location`
+> into a folder that IS `raptor-port` or lies inside it, or `npm --prefix …raptor-port` on the step itself) — and names
+> the full path in its refusal; a chat that STARTED inside
 > `raptor-port` may run a bare `npm` (its background shells are already there). *(Corrected 26 Sep 26,
 > [BG-GUARD-FALSE]: this note said background shells start "at the REPO ROOT"; measured, they start in the
 > chat's starting folder — the accounts chat, started inside `raptor-port`, then found `cd raptor-port && …`

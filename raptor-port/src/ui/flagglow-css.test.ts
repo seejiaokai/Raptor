@@ -24,14 +24,17 @@ const blurOf = (layer: string) => {
   return lens.length >= 3 ? parseFloat(lens[2]!) : 0
 }
 const shadowOf = (body: string) => { const m = /(?:^|;)\s*box-shadow\s*:\s*([^;]*)/.exec(body); return m ? m[1]!.replace(/!important/, '').trim() : null }
-/* every rule whose selector draws a flag ring on a puck: .puck plus one of the three ring classes */
-const RING = /\.puck(?:\.[\w-]+)*\.box(red|dash|dot)\b/
+/* every rule whose selector draws a flag ring on a puck: the three red rings (.boxred / .boxdash / .boxdot) AND the
+   severity rings under them (.warn — amber, .warn.hard — thin red, .warn.note — grey; Astra's read, 26 Sep 26: the
+   first cut walked only the red three) */
+const RING = /\.puck(?:\.[\w-]+)*\.(box(red|dash|dot)|warn)\b/
 const ringRules = RULES.flatMap(r => r.sels.filter(s => RING.test(s)).map(s => ({ sel: s, body: r.body })))
 
 describe('D164 — no flag ring on any puck carries a glow', () => {
   it('the roll-call finds the ring rules, the "this is you" ones included', () => {
     const sels = ringRules.map(r => r.sel)
-    for (const s of ['.puck.boxred', '.puck.me.boxred', '.puck.boxdash', '.puck.me.boxdash', '.puck.boxdot', '.puck.me.boxdot'])
+    for (const s of ['.puck.boxred', '.puck.me.boxred', '.puck.boxdash', '.puck.me.boxdash', '.puck.boxdot', '.puck.me.boxdot',
+      '.puck.warn', '.puck.warn.hard', '.puck.warn.note'])
       expect(sels, `${s} is one of the rules walked`).toContain(s)
   })
   it('every ring rule draws its ring with NO blurred layer', () => {

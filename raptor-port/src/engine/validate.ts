@@ -12,6 +12,7 @@ import { DAYS } from './data'
 import { dayOilBlind, blindDesks } from './oil'
 import { oilWouldEarn, oilOldBlockCrowd, oilEvidenceOf } from './oilev'
 import { keyDay, seatRow } from './keys'
+import { rowPlaces } from './slots'
 import { SCHED, approvedDays, dayApproved, dayDelta, dayDeltaCore, dayCurVer, daySnapOf } from './publish'
 
 /* the reference guards its header counters with $() lookups; the engine takes
@@ -1691,7 +1692,7 @@ export function restIfPlaced(id:any,key:any,from?:any){
   /* the seat he is leaving (a seat-to-seat drag) comes out of whichever day
      it sits on — a leg being moved cannot break its own crew rest */
   const fk=from&&from.key;
-  const strip=(d:any)=>!fk||!d||d.di!==from.di?d:{...d,fly:(d.fly||[]).filter((e:any)=>seatRow(e.key||e.slot)!==seatRow(fk)),events:(d.events||[]).filter((e:any)=>seatRow(e.key||e.slot)!==seatRow(fk))};
+  const strip=(d:any)=>!fk||!d||d.di!==from.di||from.leaves===false?d:{...d,fly:(d.fly||[]).filter((e:any)=>seatRow(e.key||e.slot)!==seatRow(fk)),events:(d.events||[]).filter((e:any)=>seatRow(e.key||e.slot)!==seatRow(fk))};
   /* the day's two lists carry a leg in two shapes: `fly` (the crew-rest
      inputs — brief/intime/to/ld/shift, keyed by `key`) and `events` (every
      kind, keyed by `slot`); the candidate is cloned into each from a sibling
@@ -1743,7 +1744,9 @@ export function crossDayIfPlaced(id:any,key:any,fromKey?:any){
   let from:any=null;
   if(fromKey){
     const fdi=keyDay(fromKey), evs=(EVD[fdi]&&EVD[fdi][id])||[];
-    from={di:fdi,key:String(fromKey),sole:evs.length===1&&seatRow(evs[0].slot||evs[0].key)===seatRow(fromKey)};
+    /* …and he LEAVES that row only when he has no other place on it (a second copy stays — Astra's read, 26 Sep 26) */
+    const leaves=!rowPlaces(seatRow(fromKey)).some((x:any)=>x.id===id&&x.key!==String(fromKey));
+    from={di:fdi,key:String(fromKey),leaves,sole:leaves&&evs.length===1&&seatRow(evs[0].slot||evs[0].key)===seatRow(fromKey)};
   }
   let out='';
   const r=runIfPlaced(id,keyDay(key),from);
