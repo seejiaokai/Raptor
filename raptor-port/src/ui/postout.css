@@ -1,0 +1,7 @@
+/* [POST-OUT-OUTCOMES] (27 Sep 26) — the styles this build adds, in their own file so they never meet another chat's
+   edits to scheduler.css (the plan's §13, Fable F5: two branches appending to one file's end is a conflict). The
+   approved mock-up (docs/mock/post-out.html) is the contract. */
+
+/* the account editor's delete, armed by its first tap — "Tap again to delete Hex" (the approved picture 2b) */
+.abtn.danger.del-armed{background:rgba(240,85,95,.18);color:#fff;border-color:#f0555f}
+.acc-del-note{color:#FBB4B9}

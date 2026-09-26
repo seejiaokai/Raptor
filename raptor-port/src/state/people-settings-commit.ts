@@ -226,6 +226,9 @@ function commitPeopleProjectionCmd(type: string, fn: () => void): CommitResult {
    add, the posting pass or a delete ([POST-OUT-OUTCOMES], D286: who is ON the roster decides what a typed callsign
    means, so it is re-read after every change to the roster) */
 const advancePeople = () => { indexCallsigns(); rawPersistPeople(); PEOPLE_BASELINE = JSON.stringify(PEOPLE) }
+/* the same finish for a command that enlists the people store beside others (state/person-delete.ts — a delete writes
+   people, accounts, the schedule and the stash in ONE command) */
+export const finishPeopleWrite = () => advancePeople()
 
 /* [CMDL-FINISH] C10 — a durable roster write, ALWAYS through a command (never the
    old raw branch). A raw persist while a command is in flight changes PEOPLE

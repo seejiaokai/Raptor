@@ -61,7 +61,9 @@ export interface AccessRequest { id: string; name: string; cs: string; ini: stri
 export const ACCOUNT_TYPES = ['access.request', 'access.decline', 'access.approve', 'account.add', 'account.update', 'guestview.set',
   /* [ACCOUNTS-NEW-PERSON]: a person alone, a person and his account, approving with a new
      person, and the admins' bell's "seen" */
-  'person.add', 'account.addNew', 'access.approveNew', 'access.seen'] as const
+  'person.add', 'account.addNew', 'access.approveNew', 'access.seen',
+  /* [POST-OUT-OUTCOMES]: a delete — his account and his person (D287, D290; state/person-delete.ts) */
+  'person.delete'] as const
 
 /* ---- the seeds (demo data, D56 — wiped with everything else before the database) ----
    `us` stays Ranger (bane), as "View as" left every member test before; `ad` is Saber
@@ -84,7 +86,9 @@ export const MAX_SIGNIN = 80
 export { MAX_CS, MAX_INITIALS }
 export const normName = (s: any): string => String(s ?? '').trim().toLowerCase()
 const isAccountRole = (r: any): r is AccountRole => r === 'admin' || r === 'main'
-const personOk = (pid: string) => !!(PEOPLE as any)[pid] && !(PEOPLE as any)[pid].special
+/* a person an account can belong to — never a placeholder, never a man DELETED ([POST-OUT-OUTCOMES], D287, D290 —
+   kept underneath, invisible; Fable F13: the lock-out guard and the delete's own "last admin" check read this one body) */
+const personOk = (pid: string) => !!(PEOPLE as any)[pid] && !(PEOPLE as any)[pid].special && !(PEOPLE as any)[pid].deleted
 
 /* ---- load (a settings loader: runs at boot and inside every settings rollback, so it
    NEVER writes — a null key means the in-memory default) ---- */
@@ -96,6 +100,9 @@ export function accountsLoad(): void {
     const out: Account[] = []
     for (const x of Array.isArray(raw) ? raw : []) {
       if (!x || typeof x.id !== 'string' || !x.id || typeof x.pid !== 'string' || !x.pid || !isAccountRole(x.role)) continue
+      /* an account whose person is DELETED is never loaded — the delete removes it in the same command
+         ([POST-OUT-OUTCOMES], Fable F13: the invariant, stated where it is read) */
+      if ((PEOPLE as any)[x.pid] && (PEOPLE as any)[x.pid].deleted) continue
       const name = normName(x.name)
       if (!name || name.length > MAX_SIGNIN || seenId.has(x.id) || seenName.has(name) || seenPid.has(x.pid)) continue
       seenId.add(x.id); seenName.add(name); seenPid.add(x.pid)
@@ -317,6 +324,28 @@ export function requestAccess(npIn: NewPerson): string | null {
       id: 'rq' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name,
       cs: np.cs, ini: np.ini, seat: np.seat, cat: np.cat, at: Date.now(), seenBy: [],
     }]))
+}
+
+/* ---- A DELETE TAKES HIS ACCOUNT ([POST-OUT-OUTCOMES], D280, D285, D287) ----
+   "Delete account" — for a man who leaves flying for good, his account AND his person go (D287; the person is kept
+   underneath as a hidden mark, D290 — state/person-delete.ts). These two are the account half, read and written by that
+   one command. `deleteAccountProblem` — the refusals, in the app's words: not his own account (an admin never changes
+   his own — the D166 guard), and never the last admin who can sign in (ADMIN_LOCK — the same body the lock-out guard
+   reads). `dropAccountOfPid` — the mutation alone, INSIDE the delete's command (it enlists the settings store): his
+   account removed, and a request waiting under his sign-in name answered with it. */
+export function deleteAccountProblem(pid: string): string | null {
+  const a = accountOfPid(pid)
+  if (a && ownAccount(a)) return "You can't delete your own account — ask another admin"
+  if (me() != null && pid === me()) return "You can't delete yourself — ask another admin"
+  const left = ACCOUNTS_LIST.filter(x => x.pid !== pid)
+  if (!left.some(canSignInAsAdmin)) return ADMIN_LOCK
+  return null
+}
+export function dropAccountOfPid(pid: string): void {
+  const a = accountOfPid(pid)
+  if (!a) return
+  writeAccounts(ACCOUNTS_LIST.filter(x => x.id !== a.id))
+  if (requestByName(a.name)) writeReqs(ACCESS_REQS.filter(r => r.name !== a.name))
 }
 
 /* ---- A NEW PERSON WITH HIS ACCOUNT, IN ONE STEP ([ACCOUNTS-NEW-PERSON], D214, D217) ----

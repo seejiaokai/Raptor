@@ -40,6 +40,8 @@ import { SEATS, catsFor, MAX_CS, MAX_INITIALS, CALLSIGN_LABEL, CS_TOO_LONG, type
 import { SESSION } from '../state/auth'
 import { me } from '../state/perms'
 import { notify } from '../state/store'
+import { deletePerson } from '../state/person-delete'
+import './postout.css'
 
 const cs = (pid: string) => ((PEOPLE as any)[pid] ? String((PEOPLE as any)[pid].cs) : '')
 function PuckSelect(p: { id: string; value: string; keep?: string; onChange: (v: string) => void }) {
@@ -214,6 +216,8 @@ function Waiting() {
   )
 }
 
+/* D287 / D298 / D300: the delete's second tap names what goes — once, in few words (the approved picture 2b) */
+const DELETE_GOES = 'Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone.'
 function AccountRow(p: { a: Account; editing: boolean; onEdit: () => void; onClose: () => void }) {
   const { a } = p
   const person = (PEOPLE as any)[a.pid]
@@ -221,6 +225,9 @@ function AccountRow(p: { a: Account; editing: boolean; onEdit: () => void; onClo
   const [name, setName] = useState(a.name)
   const [pid, setPid] = useState(a.pid)
   const [role, setRole] = useState<AccountRole>(a.role)
+  /* the delete's first tap arms it; Cancel, closing the editor or another row disarms it (the editor unmounts) */
+  const [armDel, setArmDel] = useState(false)
+  const cs = accountCallsign(a) || a.name
   const save = () => {
     const patch: any = {}
     if (name !== a.name) patch.name = name
@@ -254,11 +261,17 @@ function AccountRow(p: { a: Account; editing: boolean; onEdit: () => void; onClo
           <button className="abtn primary" id="accEdSave" onClick={save}>Save</button>
           {/* D285: "Suspend" / "Enable" (was "Switch off / on") — a man away is suspended, and enabled when he is back */}
           <button className="abtn" id="accEdOnOff" onClick={() => {
-            const cs = accountCallsign(a) || a.name
             if (done(updateAccount(a.id, { on: !a.on }), a.on ? `${cs} suspended` : `${cs} can sign in again`)) p.onClose()
           }}>{a.on ? 'Suspend' : 'Enable'}</button>
+          {/* D285 "Delete account"; D287 — for a man who leaves flying for good: his account AND his person (kept
+              underneath as a hidden mark, D290; state/person-delete.ts); it asks twice and says what goes (D287 (3)) */}
+          <button className={'abtn danger' + (armDel ? ' del-armed' : '')} id="accEdDel" onClick={() => {
+            if (!armDel) { setArmDel(true); return }
+            if (done(deletePerson(a.pid), `${cs} deleted`)) p.onClose()
+          }}>{armDel ? `Tap again to delete ${cs}` : 'Delete account'}</button>
           <button className="abtn" id="accEdCancel" onClick={p.onClose}>Cancel</button>
         </div>
+        {armDel && <p className="adm-note acc-note acc-del-note" id="accEdDelNote">{DELETE_GOES}</p>}
       </div>}
     </div>
   )
