@@ -62,9 +62,8 @@ No `eval`, `new Function`, or equivalent execution of user-supplied rule strings
 
 ## Verification without self-approval
 
-Run the repository's real gates from `raptor-port/` (CLAUDE.md §Build & verify). A backgrounded job
-starts in the folder the chat STARTED in (usually the repo root), not where the foreground shell has moved
-to — `cd` into `raptor-port/` by its full path first or it fails instantly.
+Run the repository's real gates from `raptor-port/` (CLAUDE.md §Build & verify). A backgrounded job starts in the
+chat's STARTING folder, not the foreground's — `cd` into `raptor-port/` by its full path first or it fails instantly.
 
 Write the focused tests the plan or project testing policy requires; where that policy is silent,
 add a focused regression test for changed behaviour using the existing framework. Do not create a

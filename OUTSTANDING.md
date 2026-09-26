@@ -914,6 +914,7 @@ the one-table `eventInfo` (before D126). The D120 route (export → wipe → imp
 it only if baking a chart into the shipped data comes back. **Place:** low, after `[TRK-RETEST-NOTES]`.
 
 ### [LW-RESET-ORDER] A "back to the default order" control for the Leave War roster — his call, build only if he asks (moved from HANDOFF.md, 24 Sep 26)
+**BUILT 26 Sep 26 on `claude/five-flags-batch-build-ef7d85`** (the five-flags batch, FULL check — evidence `raptor-port/docs/handpass/2026-09-26-five-flags.md`): ⚙ Settings → "Roster order" → Reset order; it CLEARS the saved order (`resetRosterOrder`), asks once, greyed while the roster as drawn is the default. To the archive with the merge.
 **HE ASKED (D160, 24 Sep 26): build it** — a "Reset order" line in ⚙ Settings running the store's `autoSortRoster`;
 no button, no strip. WALK tier (a new control). **Place:** any time, none blocking.
 
@@ -986,6 +987,7 @@ content there too, as the published face does (D178, D179). **The question:** sh
 of a published day? **Place:** low; its own small WALK-tier build if yes.
 
 ### [BG-GUARD-FALSE] The background-command guard refuses two commands that do move into raptor-port (filed 26 Sep 26)
+**BUILT 26 Sep 26 on `claude/five-flags-batch-build-ef7d85`** (the five-flags batch): measured — a background shell starts in the chat's STARTING folder, not the foreground's; the guard lets a chat started inside `raptor-port` run a bare `npm`, names the full path in its refusal, and matches only a folder that IS `raptor-port` or lies inside it; the notes corrected. To the archive with the merge.
 Found by the accounts chat on its first background run after `[BG-CWD-GUARD]` merged (D162): the hook
 (`.claude/hooks/bg-cwd-guard.mjs`) refused `cd /c/Users/User/projects/Raptor/raptor-port && npm …` (a full path), and
 the form it asks for, `cd raptor-port && npm …`, then FAILED — this background shell started inside `raptor-port`
@@ -1016,6 +1018,7 @@ issued days through `withChipWorld` / `faceWarn`). **Place:** a question for him
 (`[DRAFT-PENDING]`, the next time the working-versus-published split is designed) or any time.
 
 ### [VIEW-ARROW-OVER-LIST] The week's floating "‹" arrow covers the start of an opened warning list on a desktop (filed 26 Sep 26)
+**BUILT 26 Sep 26 on `claude/five-flags-batch-build-ef7d85`** (the five-flags batch): the desktop week keeps 54px of room at its sides and every landing puts the day beside the arrow (`state/view.ts weekInset`). To the archive with the merge.
 Seen by the Leave War walker of `[LEAVE-LATE-PUBLISHED]`'s check (picture
 `raptor-port/docs/img/handpass/2026-09-26-late-pub/leavewar/desktop/desktop-LW1b-1-face-warnings.png`): on View-only
 Sched at 1440 px, a day's "⚠ N issues" list opened on the day at the left edge sits under the week's floating "‹"
@@ -1117,6 +1120,7 @@ audit is mechanical — then consider making the gate require a NEW row's docume
 **Place:** any time, none blocking.
 
 ### [PUCK-FLAG-GLOW] A red-flagged "View as" puck glows; no flagged puck should (his ask, D164, 24 Sep 26)
+**BUILT 26 Sep 26 on `claude/five-flags-batch-build-ef7d85`** (the five-flags batch): the "this is you" puck's solid and dashed rings lose the red glow (`scheduler.css`), pinned by a test that walks every ring rule. To the archive with the merge.
 *(Since `[ACCOUNTS]` (26 Sep 26) the purple "this is you" puck is the SIGNED-IN person's — "View as" is gone; the glow
 rule below is unchanged.)*
 He sent two pictures: a red-flagged puck with a red glow (Ranger, the person being viewed as) and one without (Saber).
@@ -1293,6 +1297,7 @@ or a warning colour. **A mock-up first** (the house rule for a visual change): t
 and the board, desktop and phone, beside a published day's AL1 tag. **Place:** his answer, then with `[LOOK-435]`.
 
 ### [CROWD-SWAP-SAYS-BUSY] Swapping two men inside one crowd warns "already on" that row — found 25 Sep 26
+**BUILT 26 Sep 26 on `claude/five-flags-batch-build-ef7d85`** (the five-flags batch): the cause was the busy check's key trim for a Common Programme row (`engine/keys.ts seatRow` now, shared with the validator's leaving-seat tests); a drag also excludes the seat he leaves. To the archive with the merge.
 Seen in the amendment batch's re-walk (`raptor-port/scripts/handpass/am/hr-03-batch-reads.mjs`, picture
 `docs/img/handpass/2026-09-25-amendment-batch/rewalk-reads/desktop/A-2-pending-list.png`): on the board, dragging
 Reaper onto Ranger on the SAME Common Programme row swaps them (correct), and a warning toast says "Reaper — already

@@ -15,6 +15,20 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/five-flags-batch-build-ef7d85 -->
+### `claude/five-flags-batch-build-ef7d85` — the five-flags batch (D164, D160, [CROWD-SWAP-SAYS-BUSY], [VIEW-ARROW-OVER-LIST], [BG-GUARD-FALSE]): BUILT, FULL check in progress — written 26 Sep 26 — verify before use
+- **Parallel** with `claude/accounts-new-person` and the absence-record re-test (his instruction, 26 Sep 26): preview port
+  4176, browser tests `E2E_PORT=4193`, rulings D270–D279; the full checks take turns through the PC-wide lock (D228,
+  `C:/Users/User/projects/Raptor/raptor-port/scripts/gatelock.mjs`). Whichever merges later takes `main` in first.
+- **Built:** the "this is you" puck's red glow gone (`scheduler.css`); ⚙ Settings → Reset order (`resetRosterOrder`,
+  clears the saved order); the busy check's one key shape (`engine/keys.ts seatRow`) and the from-seat excluded; the
+  desktop week's 54px room beside the arrows (`state/view.ts weekInset`); the background guard measured and corrected.
+- **The check:** evidence `raptor-port/docs/handpass/2026-09-26-five-flags.md`; Fable's scenarios
+  `docs/superpowers/specs/2026-09-26-five-flags-scenarios-fable.md`; the fanned-out walk's brief
+  `docs/superpowers/briefs/2026-09-26-five-flags-walk-brief.md`. Next: the walk (four walkers, under the lock) → fix →
+  Fable and Astra read the code → gates → his look card → "merge live".
+<!-- /now -->
+
 <!-- now:claude/accounts -->
 ### `claude/accounts` — `[ACCOUNTS]` (D165, D166, D200, D204, D210, D211): BUILT and FULL-checked; on its PR, waiting for his look and "merge live" — written 26 Sep 26 — verify before use
 - **What it is:** sign in as yourself (every account is one callsign; "View as" and the role toggle gone); request access /
