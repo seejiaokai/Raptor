@@ -1,4 +1,5 @@
-/* THE MOCK-UP FOR POSTING OUT, ACCOUNTS AND GUEST FLYERS (27 Sep 26) — his rulings D229, D280–D293. Pictures of the
+/* THE MOCK-UP FOR POSTING OUT, ACCOUNTS AND GUEST FLYERS (27 Sep 26) — his rulings D229, D280–D300 (D300: every drawn
+   piece says each thing once, in as few words as it reads). Pictures of the
    REAL app (the production build on 4174, a fresh demo world each time) with the proposed controls drawn into its own
    markup and classes, and — where the app can already do it — the real thing done through its own controls (a real
    post-out, a real switch-off, a real delete of a person). Nothing here is built; the page is
@@ -102,14 +103,15 @@ await step('2 accounts', async () => {
   await page.evaluate(() => {
     const b = document.getElementById('mkDel'); b.textContent = 'Tap again to delete Hex'
     b.style.cssText = 'background:rgba(240,85,95,.18);color:#fff;border-color:#f0555f'
-    b.closest('.acc-edit').insertAdjacentHTML('beforeend', '<p class="adm-note acc-note" style="color:#FBB4B9">Deletes Hex for good — his account and his Quals row; he comes off every day still to come. Days he already flew keep his puck. This cannot be undone.</p>')
+    /* D300: fewer words — what goes, what stays, once each */
+    b.closest('.acc-edit').insertAdjacentHTML('beforeend', '<p class="adm-note acc-note" style="color:#FBB4B9">Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone.</p>')
   })
   await snap(page, 'desktop-2b-delete-confirm', '[data-acct="achex"]')
   /* his sign-in, suspended — the REAL switched-off screen, its words changed */
   await signIn(page, 'hex')
   await page.evaluate(() => {
     const h = document.querySelector('#accessOff .acc-h'); if (h) h.textContent = 'Your access is suspended'
-    const p = document.querySelector('#accessOff .acc-p'); if (p) p.textContent = 'An admin has suspended this account. Ask an admin to enable it when you are back.'
+    const p = document.querySelector('#accessOff .acc-p'); if (p) p.textContent = 'Ask an admin to enable it when you’re back.'
   })
   await snap(page, 'desktop-2c-signin-suspended', '#accessOff .login-card')
 })
@@ -127,8 +129,8 @@ await step('3 back', async () => {
     /* D294 (3): the box lines up with the table's own left edge and width */
     const wb = wrap.getBoundingClientRect(), pb = wrap.parentElement.getBoundingClientRect()
     wrap.insertAdjacentHTML('beforebegin', `<div class="adm-note" style="box-sizing:border-box;margin:8px 0 8px ${Math.round(wb.left - pb.left)}px;width:${Math.round(wb.width)}px;padding:10px 12px;border:1px solid #3cc6e6;border-radius:10px;background:rgba(60,198,230,.08);color:#e8edf2;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-      <span><b>Hex is back.</b> His quals and CAT are as he left them — check them now.</span>
-      <button class="abtn primary">Check Hex's quals</button><button class="abtn">Later</button></div>`)
+      <span><b>Hex is back</b> — quals and CAT as he left them.</span>
+      <button class="abtn primary">Check his quals</button><button class="abtn">Later</button></div>`)
   })
   await snap(page, 'desktop-3-back')
 })
@@ -203,7 +205,8 @@ await step('6 names', async () => {
   if (await page.locator('#apvModeNew').count()) await page.click('#apvModeNew')
   await page.evaluate(() => {
     const n = document.getElementById('apvNote')
-    if (n) n.innerHTML = 'An archived man already has the callsign <b>Ace</b> — this is someone new. If the archived Ace is ever restored, one of the two must be renamed first.'
+    /* D300: one line — Restore handles the clash itself (D295), so the note need not */
+    if (n) n.innerHTML = 'An archived man is already <b>Ace</b> — this makes a new person.'
     document.querySelector('[data-approving]').scrollIntoView({ block: 'center' })
   })
   await snap(page, 'desktop-6a-approve-archived-name', '[data-approving]')
@@ -214,7 +217,7 @@ await step('6 names', async () => {
   await page.evaluate(() => {
     const row = [...document.querySelectorAll('[data-testid^="qarchrow-"]')].find(r => /Ace/.test(r.textContent)); if (!row) throw new Error('no Ace row')
     row.insertAdjacentHTML('afterend', `<div class="mk-rename" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 0 10px;border-bottom:1px solid #262b33">
-      <span style="color:#f0c36d;font-size:13px;flex:1 1 100%">Ace is taken on the roster — give him another callsign to restore him.</span>
+      <span style="color:#f0c36d;font-size:13px;flex:1 1 100%">Ace is taken — give him another callsign.</span>
       <input value="Ace 2" style="background:#0b0d10;border:1px solid #3cc6e6;border-radius:8px;color:#e8edf2;padding:6px 10px;font:14px system-ui;width:140px">
       <button class="abtn primary">Restore as Ace 2</button><button class="abtn">Cancel</button></div>`)
     const rs = row.querySelector('.qrestore'); if (rs) rs.insertAdjacentHTML('beforebegin', '<button class="abtn" style="margin-right:6px">Rename</button>')
@@ -258,15 +261,15 @@ await step('8 guest pucks', async () => {
     const dot = '<span style="position:absolute;top:-4px;left:-4px;width:9px;height:9px;border-radius:50%;background:#f5a524;box-shadow:0 0 0 2px #15181d"></span>'
     const row = (label, a, b) => `<div style="display:flex;align-items:center;gap:14px;margin:0 0 12px"><span style="width:250px;color:#aeb8c3;font:13px system-ui">${label}</span><span style="display:flex;gap:10px">${a}${b}</span></div>`
     const html = `<div id="mkGuests" style="position:fixed;left:40px;top:120px;z-index:999;background:#15181d;border:1px solid #262b33;border-radius:12px;padding:18px 20px;width:760px">
-      <div style="font:600 13px system-ui;color:#e8edf2;margin:0 0 14px">Two men called Viper on one schedule — ours, and a guest from the F-16 community</div>
-      ${row('Today (ours)', puck('Viper', 'C'), puck('Crusader', 'B'))}
-      ${row('A · orange corner on a guest', puck('Viper', 'C', '', tri), puck('Crusader', 'B', '', tri))}
-      ${row('B · orange line along the top', puck('Viper', 'C', '', bar), puck('Crusader', 'B', '', bar))}
-      ${row('C · orange dot on the corner', puck('Viper', 'C', '', dot), puck('Crusader', 'B', '', dot))}
-      ${chipHTML ? row('With a warning chip — A · B · C', puck('Viper', 'C', '', tri, chipHTML) + puck('Viper', 'C', '', bar, chipHTML), puck('Viper', 'C', '', dot, chipHTML)) : ''}
-      <div style="font:13px system-ui;color:#aeb8c3;margin:14px 0 8px">Where there is room — the lists, the pickers, a tap or hover — the full name:</div>
+      <div style="font:600 13px system-ui;color:#e8edf2;margin:0 0 14px">Our Viper, and a guest Viper from the F-16 community</div>
+      ${row('Ours', puck('Viper', 'C'), puck('Crusader', 'B'))}
+      ${row('A · orange corner', puck('Viper', 'C', '', tri), puck('Crusader', 'B', '', tri))}
+      ${row('B · orange line', puck('Viper', 'C', '', bar), puck('Crusader', 'B', '', bar))}
+      ${row('C · orange dot', puck('Viper', 'C', '', dot), puck('Crusader', 'B', '', dot))}
+      ${chipHTML ? row('Beside a warning chip — A · B · C', puck('Viper', 'C', '', tri, chipHTML) + puck('Viper', 'C', '', bar, chipHTML), puck('Viper', 'C', '', dot, chipHTML)) : ''}
+      <div style="font:13px system-ui;color:#aeb8c3;margin:14px 0 8px">Where there’s room (lists, pickers, a tap):</div>
       <div style="display:flex;gap:18px;align-items:center;font:13px system-ui;color:#e8edf2">
-        <span>${puck('Viper', 'C', '', tri)}</span><span><b>Viper · F-16</b> <span style="color:#aeb8c3">— a guest flyer from the F-16 community</span></span></div>
+        <span>${puck('Viper', 'C', '', tri)}</span><span><b>Viper · F-16</b></span></div>
     </div>`
     document.body.insertAdjacentHTML('beforeend', html)
   })

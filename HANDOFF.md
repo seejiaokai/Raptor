@@ -32,10 +32,10 @@ the later merge keeps both (D78).
   **Mock-up APPROVED (D299):** `raptor-port/docs/mock/post-out.html` (Artifact
   https://claude.ai/artifact/BjZgFjGxRxohuoV1vgEFjp), made by `raptor-port/scripts/handpass/am/mk-post-out.mjs`.
   Build: `[POST-OUT-OUTCOMES]` (next, D291); transfers and guests: `[XFER]` (with the database).
-- **Unfinished:** the mock-up's word trim (D300, his "too much words" / "fix this in the next chat"): the sheet's date is
-  already said once and its button reads "Post out" in the repo copy (pictures redrawn, NOT republished — the Artifact
-  still shows Version 5); cut the words on the sheet and across the page, republish to the same Artifact link, show him.
-  PR #443 awaits his look and "merge live" (`main` still `e27e15fe`, already in the branch).
+- **Done 27 Sep 26 (next chat):** the mock-up's word trim (D300) — each thing said once on the page and in every drawn
+  piece (the approval once, in the header; the table rows use his chip names; D299's stays/goes list kept whole);
+  republished to the same Artifact link as **Version 6**, with the D300 sheet pictures that Version 5 had missed.
+- **Unfinished:** PR #443 awaits his look and "merge live" (`main` still `e27e15fe`, already in the branch).
 - **Branch:** `claude/accounts-new-person`, PR #443. If it has MERGED, reset before new work:
   `git fetch origin main && git checkout -B <new-branch> origin/main`.
 - **Gates:** as above; `probes:adapted` · `perf` NOT RUN (the dense surfaces they measure are untouched).
@@ -45,7 +45,7 @@ the later merge keeps both (D78).
   taken after the step (skill-observation #280); a break test left green may be aimed at the wrong tests (#282) and runs
   in a scratch worktree (#281, `np-breaks.mjs`'s header); Bash heredocs mangle backslashes — use the Edit tool.
 - **Open questions for him:** none.
-- **Pick up here:** first the mock-up word trim (Unfinished above); after his "merge live" of PR #443, archive `[ACCOUNTS-NEW-PERSON]`
+- **Pick up here:** after his "merge live" of PR #443, archive `[ACCOUNTS-NEW-PERSON]`
   (`node raptor-port/scripts/backlog-archive.mjs ACCOUNTS-NEW-PERSON --homes raptor-port/docs/handpass/2026-09-26-accounts-new-person.md`),
   then plan `[POST-OUT-OUTCOMES]` from the approved mock-up and D229, D280–D299 (Opus 5.5 high; Fable + Astra red-team;
   FULL check).

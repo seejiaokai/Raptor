@@ -12,9 +12,9 @@
   main { max-width: 1120px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 56px; display: grid; gap: 22px; }
   header h1 { font-size: 26px; line-height: 1.2; margin: 0 0 6px; text-wrap: balance; letter-spacing: -.01em; }
   header p { color: var(--ink-2); margin: 0; max-width: 72ch; }
+  header p b { color: var(--ink); }
   .legend { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 12px; color: var(--ink-2); font-size: 13px; }
   .legend span { display: inline-flex; align-items: center; gap: 6px; }
-  .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
   section { background: var(--panel); border: 1px solid var(--edge); border-radius: 12px; padding: 18px; display: grid; gap: 12px; }
   .head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
   h2 { font-size: 17px; margin: 0; text-wrap: balance; }
@@ -29,140 +29,124 @@
   figure.phone { flex: 0 1 260px; }
   figure img { display: block; width: 100%; height: auto; border: 1px solid var(--edge); border-radius: 8px; background: #000; }
   figcaption { color: var(--ink-3); font-size: 13px; }
-  figcaption .tag { font-weight: 600; font-size: 11px; letter-spacing: .05em; text-transform: uppercase; padding: 1px 6px; border-radius: 4px; margin-right: 6px; }
-  .real { color: #0b0d10; background: var(--accent); }
-  .drawn { color: #0b0d10; background: var(--warn); }
-  .ask { border-color: var(--accent); background: linear-gradient(0deg, rgba(60,198,230,.06), rgba(60,198,230,.06)), var(--panel); }
-  .ask ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
-  .ask li { color: var(--ink-2); } .ask li b { color: var(--ink); }
+  .tag { font: 600 11px/1.4 'Inter Tight', system-ui, sans-serif; letter-spacing: .05em; text-transform: uppercase; padding: 1px 6px; border-radius: 4px; color: #0b0d10; }
+  figcaption .tag { margin-right: 6px; }
+  .real { background: var(--accent); }
+  .drawn { background: var(--warn); }
   table.what { border-collapse: collapse; width: 100%; font-size: 14px; }
   .tablewrap { overflow-x: auto; }
   table.what th, table.what td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--edge); vertical-align: top; }
   table.what th { color: var(--ink-3); font-weight: 600; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; }
   table.what td:first-child { color: var(--ink); font-weight: 600; white-space: nowrap; }
   table.what td { color: var(--ink-2); }
+  table.what td.list { font-weight: 400; white-space: normal; color: var(--ink-2); }
 </style>
 
 <main>
   <header>
-    <h1>Posting out, accounts and guest flyers — the mock-up</h1>
-    <p>Pictures of the real app (the demo world) with the new pieces drawn into it, for the rulings you gave on 26–27 Sep 26
-      (D229, D280–D299). <b>Approved 27 Sep 26 (D299)</b> — the design of record for the build.</p>
+    <h1>Posting out, accounts and guest flyers</h1>
+    <p>The real app (demo world) with the new pieces drawn in. <b>Approved 27 Sep 26 (D299)</b>; built next, once the
+      new-person work merges (D291).</p>
     <div class="legend">
-      <span><span class="tag real" style="font:600 11px 'Inter Tight',sans-serif;padding:1px 6px;border-radius:4px;color:#0b0d10;background:#3cc6e6">REAL</span> the app doing it today, through its own controls</span>
-      <span><span style="font:600 11px 'Inter Tight',sans-serif;padding:1px 6px;border-radius:4px;color:#0b0d10;background:#f0c36d">DRAWN</span> the new piece, drawn in the app's own style</span>
+      <span><span class="tag real">real</span> the app today</span>
+      <span><span class="tag drawn">drawn</span> the new piece</span>
     </div>
   </header>
 
   <section>
-    <div class="head"><h2>At a glance — what each kind of posting does on its date</h2><span class="rul">D229 · D283 · D287 · D281</span></div>
+    <div class="head"><h2>What each posting does on its date</h2><span class="rul">D229 · D281 · D283 · D287</span></div>
     <div class="tablewrap">
       <table class="what">
-        <tr><th>The posting</th><th>His row on Quals</th><th>His account</th><th>When he's back</th></tr>
-        <tr><td>Overseas to another squadron</td><td>archived</td><td>suspended</td><td>restore him, enable the account — the app prompts you to check his quals</td></tr>
-        <tr><td>Leaving flying for good</td><td>deleted</td><td>deleted</td><td>only as a new person</td></tr>
-        <tr><td>Another workplace, still flies with us</td><td>becomes SANS</td><td>stays on</td><td>—</td></tr>
-        <tr><td>Transfer to another squadron</td><td colspan="3">later, with the shared database</td></tr>
+        <tr><th>Posting</th><th>Quals row</th><th>Account</th><th>When he's back</th></tr>
+        <tr><td>Overseas Sqn</td><td>archived</td><td>suspended</td><td>as he was, with a prompt to check his quals</td></tr>
+        <tr><td>Delete</td><td>deleted</td><td>deleted</td><td>only as a new person</td></tr>
+        <tr><td>SANS</td><td>becomes SANS</td><td>stays on</td><td>—</td></tr>
+        <tr><td>Transfer to Sqn</td><td colspan="3">later, with the shared database</td></tr>
       </table>
     </div>
   </section>
 
   <section>
-    <div class="head"><h2>1 · On the Leave War, you say what the posting is</h2><span class="rul">D229 · D294 · D298 · D300</span></div>
-    <p>Tap a day on his row, then <b>PO</b>. After the date, the one "Archive on PO date" switch becomes four short
-      choices — <b>Overseas Sqn · Delete · SANS · Transfer to Sqn</b> (the last one later) — one line saying what the
-      chosen one does on that date, and a button that just reads <b>Post out</b>. Each thing is said once (D300).</p>
+    <div class="head"><h2>1 · The post-out sheet</h2><span class="rul">D229 · D294 · D298 · D300</span></div>
+    <p>Tap his day, then <b>PO</b>. The four choices replace "Archive on PO date"; one line says what happens on the date.</p>
     <div class="pics">
-      <figure class="wide"><img src="img/post-out/desktop-1-postout-sheet.png" alt="The Leave War post-out sheet asking what the posting is, with four choices"><figcaption><span class="tag drawn">drawn</span>the four choices, in your words (D294, D298) · desktop</figcaption></figure>
-      <figure class="phone"><img src="img/post-out/phone-1-postout-sheet.png" alt="The same post-out sheet on a phone"><figcaption><span class="tag drawn">drawn</span>on a phone</figcaption></figure>
+      <figure class="wide"><img src="img/post-out/desktop-1-postout-sheet.png" alt="The Leave War post-out sheet: the date, four posting choices, one line saying what happens, and a Post out button"><figcaption><span class="tag drawn">drawn</span>desktop</figcaption></figure>
+      <figure class="phone"><img src="img/post-out/phone-1-postout-sheet.png" alt="The same post-out sheet on a phone"><figcaption><span class="tag drawn">drawn</span>phone</figcaption></figure>
     </div>
   </section>
 
   <section>
-    <div class="head"><h2>2 · Overseas: archived, and his account suspended</h2><span class="rul">D280 · D285</span></div>
-    <p>On Admin → Users his account reads <b>suspended</b>. Its buttons are <b>Enable</b> and <b>Delete account</b>
-      (today's "Switch off / on" in your words). If he tries to sign in, he's told his access is suspended.</p>
+    <div class="head"><h2>2 · Overseas Sqn: account suspended</h2><span class="rul">D280 · D285</span></div>
+    <p>Admin → Users: <b>Suspend / Enable</b> (today's "Switch off / on") and <b>Delete account</b>. His sign-in says his
+      access is suspended.</p>
     <div class="pics">
       <figure class="mid"><img src="img/post-out/desktop-2-suspended.png" alt="Admin, Users: Hex's account marked suspended and archived, with Enable and Delete account buttons"><figcaption><span class="tag real">real</span>switched off · <span class="tag drawn">drawn</span>the words, Delete account</figcaption></figure>
-      <figure class="mid"><img src="img/post-out/desktop-2c-signin-suspended.png" alt="The sign-in screen: Your access is suspended"><figcaption><span class="tag real">real</span>his screen · <span class="tag drawn">drawn</span>"suspended"</figcaption></figure>
+      <figure class="mid"><img src="img/post-out/desktop-2c-signin-suspended.png" alt="The sign-in screen: Your access is suspended"><figcaption><span class="tag real">real</span>his sign-in · <span class="tag drawn">drawn</span>"suspended"</figcaption></figure>
     </div>
   </section>
 
   <section>
-    <div class="head"><h2>3 · He's back: restore him, and the app asks you to check his quals</h2><span class="rul">D284</span></div>
-    <p>His quals and CAT are kept exactly as he left them. When you restore him on Quals (and enable his account), a line
-      asks you to check them, with a button straight to his row. It changes nothing by itself.</p>
+    <div class="head"><h2>3 · Back from overseas</h2><span class="rul">D284</span></div>
+    <p>Restore him on Quals (or enable his account): his quals and CAT are as he left them, and a prompt offers to check
+      them. It changes nothing.</p>
     <div class="pics">
-      <figure class="wide"><img src="img/post-out/desktop-3-back.png" alt="Quals, WSOs: a banner saying Hex is back, check his quals, with his row outlined"><figcaption><span class="tag drawn">drawn</span>the prompt on Quals, lined up with the table (D294)</figcaption></figure>
+      <figure class="wide"><img src="img/post-out/desktop-3-back.png" alt="Quals, WSOs: a banner saying Hex is back, with a button to check his quals, and his row outlined"><figcaption><span class="tag drawn">drawn</span>the prompt, lined up with the table (D294)</figcaption></figure>
     </div>
   </section>
 
   <section>
-    <div class="head"><h2>4 · Another workplace, still flies with us: he becomes SANS</h2><span class="rul">D283</span></div>
-    <p>With <b>Show SANS off</b>, the Leave War still shows him in his old place, posted out from the date and no longer
-      tracked. With <b>Show SANS on</b>, from that day he sits in the SANS group and his leave is tracked there.</p>
+    <div class="head"><h2>4 · SANS</h2><span class="rul">D283</span></div>
+    <p><b>Show SANS off:</b> he stays in his place, posted out from the date, not tracked. <b>Show SANS on:</b> from the
+      date he's in the SANS group, tracked.</p>
     <div class="pics">
-      <figure class="wide"><img src="img/post-out/desktop-4a-sans-off.png" alt="Leave War: Hex's row posted out from 14 Oct, marked SANS"><figcaption><span class="tag real">real</span>the post-out from 14 Oct · <span class="tag drawn">drawn</span>the SANS label · Show SANS off</figcaption></figure>
-      <figure class="wide"><img src="img/post-out/desktop-4b-sans-on.png" alt="Leave War with SANS shown: Hex listed in the SANS group"><figcaption><span class="tag real">real</span>Hex made SANS on Quals, Show SANS on — the app files him in the SANS group</figcaption></figure>
+      <figure class="wide"><img src="img/post-out/desktop-4a-sans-off.png" alt="Leave War: Hex's row posted out from 14 Oct, marked SANS"><figcaption><span class="tag real">real</span>the post-out · <span class="tag drawn">drawn</span>the SANS label · Show SANS off</figcaption></figure>
+      <figure class="wide"><img src="img/post-out/desktop-4b-sans-on.png" alt="Leave War with SANS shown: Hex listed in the SANS group"><figcaption><span class="tag real">real</span>Show SANS on</figcaption></figure>
     </div>
   </section>
 
   <section>
-    <div class="head"><h2>5 · Leaving flying for good: deleted — account and person</h2><span class="rul">D287 · D290 · D297</span></div>
-    <p>Delete asks twice and says what goes. Afterwards he's on no list and his callsign is free. <b>Every day he already
-      flew keeps his puck</b>, published or not; <b>days still to come lose him</b>. Underneath, his record is kept as a
-      hidden "deleted" mark, never erased. <b>The past keeps its record of him; today and the future lose him (D299):</b></p>
+    <div class="head"><h2>5 · Delete: leaving flying for good</h2><span class="rul">D287 · D290 · D297 · D299</span></div>
+    <p>It asks twice. Underneath, his record stays as a hidden "deleted" mark, never erased.</p>
     <div class="tablewrap">
       <table class="what">
-        <tr><th>Stays — shown only where the past is shown</th><th>Goes</th></tr>
-        <tr><td style="font-weight:400;white-space:normal">his puck on every day he already flew · his past Leave War leave and OIL, in the months he was here · his past inputs (leave, medical, courses) and their documents · his signatures on published days · the change history · his Tracker record from finished courses</td>
-            <td>his account · his Quals row, from every list and picker (the Archived list too) · his callsign, free again · every day still to come · his future leave, bids and inputs · his OIL balance · his Leave War row after he left · his place on a course still running</td></tr>
+        <tr><th>Stays, shown where the past is shown</th><th>Goes</th></tr>
+        <tr><td class="list">his puck on every day he already flew, published or not · his past Leave War leave and OIL, in the months he was here · his past inputs (leave, medical, courses) and their documents · his signatures on published days · the change history · his Tracker record from finished courses</td>
+            <td class="list">his account · his Quals row, from every list and picker (Archived too) · his callsign, free again · every day still to come · his future leave, bids and inputs · his OIL balance · his Leave War row after he left · his place on a course still running</td></tr>
       </table>
     </div>
     <div class="pics">
-      <figure class="mid"><img src="img/post-out/desktop-2b-delete-confirm.png" alt="The account editor asking to tap again to delete Hex, listing what goes"><figcaption><span class="tag drawn">drawn</span>the second tap, and what goes</figcaption></figure>
-      <figure class="mid"><img src="img/post-out/desktop-5a-before-delete.png" alt="Tuesday's RU line: Drifter and Vector"><figcaption><span class="tag real">real</span>a day he already flew — his puck stays, as here</figcaption></figure>
-      <figure class="mid"><img src="img/post-out/desktop-5b-after-delete.png" alt="The same line after Vector is deleted: Drifter and an empty seat"><figcaption><span class="tag real">real</span>a day still to come — he's taken off (today's raw delete does this to every day; the build only to days to come)</figcaption></figure>
+      <figure class="mid"><img src="img/post-out/desktop-2b-delete-confirm.png" alt="The account editor asking to tap again to delete Hex, saying what goes"><figcaption><span class="tag drawn">drawn</span>the second tap</figcaption></figure>
+      <figure class="mid"><img src="img/post-out/desktop-5a-before-delete.png" alt="Tuesday's RU line: Drifter and Vector"><figcaption><span class="tag real">real</span>a day he flew: his puck stays</figcaption></figure>
+      <figure class="mid"><img src="img/post-out/desktop-5b-after-delete.png" alt="The same line after Vector is deleted: Drifter and an empty seat"><figcaption><span class="tag real">real</span>a day to come: he's taken off (today's delete does this to every day; the build, only to days to come)</figcaption></figure>
     </div>
   </section>
 
   <section>
-    <div class="head"><h2>6 · Names: an archived man's callsign can go to someone new</h2><span class="rul">D286 · D295</span></div>
-    <p>When someone asks for access with a callsign only an archived man holds, Approve opens on <b>New person</b> with a
-      line saying so. An archived man can be <b>renamed right on the archived list</b>; and if you restore him while his
-      callsign is in use, Restore asks for another callsign on the spot — one step, no juggling.</p>
+    <div class="head"><h2>6 · An archived man's callsign</h2><span class="rul">D286 · D295</span></div>
+    <p>It can go to someone new: approving his access request opens on <b>New person</b> and says so. <b>Rename</b> sits on his archived row;
+      if his callsign is taken, <b>Restore</b> asks for another on the spot.</p>
     <div class="pics">
-      <figure class="mid"><img src="img/post-out/desktop-6a-approve-archived-name.png" alt="Approve on New person for Ace, with a line saying an archived man already has the callsign Ace"><figcaption><span class="tag drawn">drawn</span>approving a new Ace</figcaption></figure>
-      <figure class="wide"><img src="img/post-out/desktop-6b-restore-rename.png" alt="Quals archived list: Ace with Rename and Restore buttons, and Restore asking for another callsign because Ace is taken"><figcaption><span class="tag drawn">drawn</span>Rename on the archived row; Restore asking for a new callsign</figcaption></figure>
+      <figure class="mid"><img src="img/post-out/desktop-6a-approve-archived-name.png" alt="Approve on New person for Ace, with a line saying an archived man is already Ace"><figcaption><span class="tag drawn">drawn</span>approving a new Ace</figcaption></figure>
+      <figure class="wide"><img src="img/post-out/desktop-6b-restore-rename.png" alt="Quals archived list: Ace with Rename and Restore buttons, and Restore asking for another callsign because Ace is taken"><figcaption><span class="tag drawn">drawn</span>Rename, and Restore asking for a callsign</figcaption></figure>
     </div>
   </section>
 
   <section>
-    <div class="head"><h2>7 · Your member view: tap your name badge</h2><span class="rul">D292</span></div>
-    <p>Tap <b>SABER · ADMIN</b> and it becomes <b>SABER · MEMBER</b>: Edit Schedule and Admin go, and you can change only
-      your own row and inputs, exactly as a member. Tap again to switch back; every sign-in starts as admin. On a phone the
-      switch is in the menu, under your name.</p>
+    <div class="head"><h2>7 · Your member view</h2><span class="rul">D292</span></div>
+    <p>Tap <b>SABER · ADMIN</b> for <b>SABER · MEMBER</b>: no Edit Schedule, no Admin, only your own row and inputs. Tap
+      again to switch back; each sign-in starts as admin. On a phone it's in the menu.</p>
     <div class="pics">
       <figure class="wide"><img src="img/post-out/desktop-7a-badge-admin.png" alt="The top bar with the SABER ADMIN badge outlined"><figcaption><span class="tag drawn">drawn</span>the badge you tap</figcaption></figure>
       <figure class="wide"><img src="img/post-out/desktop-7b-badge-member.png" alt="The top bar in the member view: SABER MEMBER, no Edit Schedule or Admin tabs"><figcaption><span class="tag drawn">drawn</span>the member view</figcaption></figure>
-      <figure class="phone"><img src="img/post-out/phone-7c-drawer-switch.png" alt="The phone menu with a Switch to the member view button under the account line"><figcaption><span class="tag drawn">drawn</span>on a phone</figcaption></figure>
+      <figure class="phone"><img src="img/post-out/phone-7c-drawer-switch.png" alt="The phone menu with a Switch to the member view button under the account line"><figcaption><span class="tag drawn">drawn</span>phone</figcaption></figure>
     </div>
   </section>
 
   <section>
-    <div class="head"><h2>8 · Guest flyers from another community — a mark on the puck</h2><span class="rul later">later · D288 · D289 · D296</span></div>
-    <p>A puck is a fixed width and already shows only about 9–10 letters, so a guest's mark can't be text. Three ways to
-      mark him without taking a letter, including next to a warning chip. Wherever there's room (lists, pickers, a tap or
-      hover) he reads in full: <b>Viper · F-16</b>.</p>
+    <div class="head"><h2>8 · Guest flyers</h2><span class="rul later">later · D288 · D289 · D296</span></div>
+    <p>A puck shows only 9–10 letters, so a guest's mark is a colour, not text.</p>
     <div class="pics">
-      <figure class="wide"><img src="img/post-out/desktop-8-guest-marks.png" alt="Pucks: ours, and three ways to mark a guest — an orange corner, an orange line along the top, an orange dot — alone and beside a warning chip"><figcaption><span class="tag drawn">drawn</span>A, B and C — <b>you chose A, the orange corner</b> (D296)</figcaption></figure>
+      <figure class="wide"><img src="img/post-out/desktop-8-guest-marks.png" alt="Pucks: ours, and three ways to mark a guest (an orange corner, an orange line, an orange dot), alone and beside a warning chip; where there is room he reads Viper · F-16"><figcaption><span class="tag drawn">drawn</span>you chose A, the orange corner (D296)</figcaption></figure>
     </div>
-  </section>
-
-  <section class="ask">
-    <div class="head"><h2>Approved</h2></div>
-    <p>You approved this on 27 Sep 26 (D299), with the short chips (D294, D298), the rename on the archived list (D295), guest
-      mark A (D296), the puck kept on days he flew (D297) and the list in section 5 (D299). It is built next, straight after
-      the new-person work merges (D291).</p>
   </section>
 </main>

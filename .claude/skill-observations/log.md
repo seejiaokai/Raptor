@@ -644,3 +644,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** Bug-check order §8.4: "a break that stays green is first a question about WHICH tests were run: search the whole suite for an assertion on that surface (especially tests that boot the real storage / wiring) and re-run the break against it before writing a new test; a break whose target text is not unique is re-targeted, never counted". The runner should refuse a non-unique match (it does: find must match exactly once).
 
 **Principle:** A negative result from fault injection is only as good as the observer you pointed at it — before concluding "no test covers this", confirm the break was run against every test able to see the layer it cut.
+
+### Observation 283: A republish must carry every file that differs from the published copy, not only this chat's
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** Trimming the approved post-out mock-up's words (D300) and republishing it to its existing Artifact link.
+**Skill:** New skill candidate: live-app mock-ups (Playwright) (see Observations 241, 242, 243, and the Playwright one)
+**Type:** open-source
+**Phase/Area:** republishing a multi-file page (the page plus its pictures)
+
+**Issue:** The previous chat redrew two pictures in the repo but did not republish (its handoff said so). This chat changed six more. Listing the Artifact's published files (with their sizes) before publishing showed the two earlier pictures were still the old ones live, so all eight went up. Had the publish carried only this chat's six, the live page would have shown the old post-out sheet under text describing the new one.
+
+**Suggested improvement:** In the mock-up workflow: before any republish, list the page's published files and compare each with the local copy (size is enough to flag a difference); pass every file that differs, whoever changed it. After a redraw, `git status` on the picture folder is the other half: it names exactly which pictures the redraw changed, so nothing unchanged is re-uploaded and nothing changed is missed.
+
+**Principle:** When a published copy and a working copy can drift across sessions, a republish is a sync of the whole set against what is live, not an upload of what this session touched.
