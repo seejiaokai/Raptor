@@ -419,3 +419,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When a pin calls an internal builder directly, copy the arguments from its real caller (grep the call site) and assert one fact that proves the drawing is the intended mode (here: no write surface under a look). Keep the break test for every new pin — it is what caught this.
 
 **Principle:** A test that reaches past the public door must reproduce the door's exact call, and prove it did; otherwise only cutting the fix shows whether the test was ever looking at it.
+
+### Observation 261: The two-provider review assumes Codex is reachable — a cloud session cannot reach it
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** Starting [ACCOUNTS] in a claude.ai cloud container: the owner asked for "Fable and Astra red-team the plan"; earlier Astra reads ran on his Windows PC (the reports cite C:/Users/... paths), and this container has no codex CLI and no OpenAI credential.
+**Skill:** New skill candidate: claudex-loop (the review routing), or the bug-check order §4a
+**Type:** internal
+**Phase/Area:** choosing reviewers before a plan read / a FULL-tier code read
+
+**Issue:** Nothing in the bug-check order, the handoff or the rulings says WHERE Astra runs, so a cloud session only finds out at the moment it needs it. The FULL tier requires both providers on permissions work, so the gap blocks "ready for merge live" late unless it is said at the start.
+
+**Suggested improvement:** In the bug-check order §4a (and any Claudex skill), add one line: "Astra runs on the owner's PC; a cloud session writes the brief to docs/superpowers/briefs/, runs Fable here, tells the owner at the start, and holds 'ready for merge live' until Astra's report is back." The handoff block should name the environment the next chat will run in.
+
+**Principle:** A review step that depends on a tool only one environment has must say which environment, or every other environment discovers the gap at the worst moment.
