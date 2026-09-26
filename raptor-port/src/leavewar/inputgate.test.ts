@@ -190,6 +190,20 @@ describe('a clashing input replaces an undecided bid (owner rule, H1, answer B, 
     expect(list.some(r => r.kind === 'notice')).toBe(false)
   })
 
+  /* the war's restore check must not refuse this one: the medical the undo takes away is the thing that replaced the
+     bid (Astra's final code read, finding 1, step 8 — the day judged as the restore leaves it) */
+  it('undoing a MEDICAL filed over a bid brings the bid back in one step, and redo takes it again', () => {
+    bid('ammo', '2026-02-10')
+    expect(file('ammo', 'ATT C', 'Feb 10')).toBe(true)
+    expect(recsAt('ammo', '2026-02-10').some(r => r.kind === 'request')).toBe(false)
+    expect(globalUndo().ok).toBe(true)
+    expect(rowsOf('ammo', 'ATT C')).toHaveLength(0)
+    expect(recsAt('ammo', '2026-02-10').filter(r => r.kind === 'request')).toHaveLength(1)
+    expect(globalRedo().ok).toBe(true)
+    expect(rowsOf('ammo', 'ATT C')).toHaveLength(1)
+    expect(recsAt('ammo', '2026-02-10').some(r => r.kind === 'request')).toBe(false)
+  })
+
   it('the bid\'s own person filing over it gets a message and no notice', () => {
     bid('ammo', '2026-02-10')
     setSession({ user: 'us', role: 'main' }); setMe('ammo')
@@ -292,6 +306,26 @@ describe('undo and redo do not put a bid back over a medical (B7, W3-F8)', () =>
     const r = globalUndo()
     expect(r.ok).toBe(false)
     expect(r.reason).toMatch(/ATT C now holds 11 Feb/)
+  })
+  /* THE SAME BID, A DIFFERENT STATE (Astra's final code read, finding 1, 26 Sep 26): a refused bid is history and a
+     medical filed beside it leaves it be — but a Redo that turns it back into an acknowledged bid made it live again on
+     the sick day. The first fix only asked about a bid that was not there at all. */
+  it('Redo that turns a refused bid back into a live one, after a medical was filed on its day, is refused by name', () => {
+    setRole('admin')
+    setCells([{ personId: 'ammo', date: '2026-02-12' }], 'LL')
+    advanceStage()
+    setBidState('ammo', '2026-02-12', 'refused')
+    setBidState('ammo', '2026-02-12', 'acknowledged')
+    const st = () => (recsAt('ammo', '2026-02-12').find((x: any) => x.kind === 'request') as any)?.state
+    expect(st()).toBe('acknowledged')
+    expect(globalUndo().ok).toBe(true)
+    expect(st()).toBe('refused')
+    expect(file('ammo', 'ATT C', 'Feb 12')).toBe(true)
+    expect(st()).toBe('refused')
+    const r = globalRedo()
+    expect(r.ok).toBe(false)
+    expect(r.reason).toMatch(/ATT C now holds 12 Feb/)
+    expect(st()).toBe('refused')
   })
 })
 

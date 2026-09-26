@@ -2167,26 +2167,35 @@ export function cellProblem(personId: string, date: string, code: string): strin
  *  there now, asks the same question the bid door asks (`barsWrite` against the absences on that day). The sentence
  *  names what now holds the day. Only a request is checked: a credit is work (it lands and flags, N2), a notice is
  *  history, and nothing else on a war day is restorable over an absence. */
-export function restoreBlocker(changes: ReadonlyArray<{ collection: string; id: string; op: string; after?: unknown }>, dir: 'undo' | 'redo'): string | null {
+export function restoreBlocker(
+  changes: ReadonlyArray<{ collection: string; id: string; op: string; after?: unknown }>, dir: 'undo' | 'redo',
+  /* THE DAY AS IT WILL STAND AFTER THIS RESTORE (Astra's final code read, finding 1, 26 Sep 26): the absences the same
+     restore leaves on each day — the bridge (sync.ts restoreAbsencesOf) works them out from the Inputs the restore
+     puts back or takes away, so undoing a filing that had replaced a bid gives the bid back in one step, and a medical
+     the restore keeps is judged at the hours it will have. Defaults to the day as it stands now. */
+  absOf: (personId: string, date: string) => readonly Contrib[] = absencesAt,
+): string | null {
   const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  /* an absence THIS SAME restore changes or removes is no blocker: undoing a filing that had replaced a bid takes the
-     filing away and gives the bid back in one step (and the Inputs side's own rules run on undo and redo for it) */
-  const moving = new Set(changes.filter(ch => ch.collection === 'inputs').map(ch => ch.id))
   for (const ch of changes) {
     if (ch.collection !== 'lw.cell' || ch.op === 'delete' || !Array.isArray(ch.after)) continue
-    const date = ch.id.slice(-10)
-    const rest = ch.id.slice(0, -11)
-    const cut = rest.indexOf(':')
-    if (cut < 0) continue
-    const warId = rest.slice(0, cut), personId = rest.slice(cut + 1)
+    /* the id read from the right, as applyLwRecord reads it — a war id may carry a colon */
+    const iDate = ch.id.lastIndexOf(':')
+    const rest = ch.id.slice(0, iDate), iPid = rest.lastIndexOf(':')
+    if (iDate < 0 || iPid < 0) continue
+    const date = ch.id.slice(iDate + 1), personId = rest.slice(iPid + 1), warId = rest.slice(0, iPid)
     const war = state.wars.find(w => w.period.id === warId)
-    const now = new Set(((war?.recs || {})[personId]?.[date] || []).map((r: WarRec) => r.id))
+    const now = new Map(((war?.recs || {})[personId]?.[date] || []).map((r: WarRec) => [r.id, r] as const))
     for (const r of ch.after as WarRec[]) {
-      if (r.kind !== 'request' || now.has(r.id) || (r as RequestRec).state === 'refused') continue
+      if (r.kind !== 'request' || (r as RequestRec).state === 'refused') continue
+      /* A bid the restore makes LIVE is asked; one already standing as the same live bid is not (the restore puts
+         nothing new on the day). A REFUSED bid made live again is asked too (finding 1: refused → Ack, Undo, a
+         medical filed, Redo — the same bid, a different state, stood on the sick day). */
+      const cur = now.get(r.id) as RequestRec | undefined
+      if (cur && cur.kind === 'request' && cur.state !== 'refused' && cur.code === (r as RequestRec).code) continue
       const cell = parseCell((r as RequestRec).code)
       if (!cell) continue
       const c: Contrib = { id: r.id, kind: 'request', code: cell.type, win: requestWin((r as RequestRec).code), state: (r as RequestRec).state }
-      const blocker = absencesAt(personId, date).find(o => !moving.has(o.id) && barsWrite(c, o))
+      const blocker = absOf(personId, date).find(o => barsWrite(c, o))
       if (!blocker) continue
       const who = state.people.find(p => p.id === personId)?.callsign ?? personId
       const name = blocker.code === 'ATTC' ? 'ATT C' : blocker.code

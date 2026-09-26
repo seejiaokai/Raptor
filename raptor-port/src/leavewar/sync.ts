@@ -168,6 +168,21 @@ export function refreshAbsencesAndRepaint(): void {
   if (!cmdDeferEffect(() => { if (getVersion() === at) absencesChanged() })) absencesChanged()
 }
 
+/** THE ABSENCES A RESTORE WILL LEAVE ON A DAY (Astra's final code read, finding 1, 26 Sep 26) — for the war's check
+ *  on what an Undo or Redo may put back (store.ts restoreBlocker). The Inputs as they will stand once this restore has
+ *  run: every input it writes, at its after-image; every one it deletes, gone; the rest as they are. An absence the
+ *  restore moves off the day, or takes away, is then no blocker, and one it keeps is judged at the hours it will
+ *  have. Without Inputs changes, the day as it stands now. */
+export function restoreAbsencesOf(changes: ReadonlyArray<{ collection: string; id: string; op: string; after?: unknown }>): (personId: string, date: string) => readonly Contrib[] {
+  const ins = changes.filter(ch => ch.collection === 'inputs')
+  if (!ins.length) return absencesAt
+  const touched = new Set(ins.map(ch => String(ch.id)))
+  const rows = INPUTS.filter((r: any) => r && !touched.has(String(r.iid)))
+  for (const ch of ins) if (ch.op !== 'delete' && ch.after && typeof ch.after === 'object') rows.push(ch.after)
+  const ix = buildAbsenceIndex(rows.filter((r: any) => r && r.person && warVisible(r.type)))
+  return (personId, date) => ix.get(personId)?.get(date) ?? []
+}
+
 /** Install the absence door (wireLeaveWarSync does; tests call it alone). */
 export function installAbsenceDoor(): void {
   setAbsenceDoor({ approve: doorApprove, decideApproved: doorDecideApproved, removeApproved: doorRemoveApproved, moveApproved: doorMoveApproved })
