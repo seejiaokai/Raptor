@@ -307,7 +307,11 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
         else { setPopPuckEdit(entry.pid); setPuckDraft(sec?.text || '') }
       }
     }
-    const offDrag = initCalDrag(el, { onTap })
+    /* a swipe that began on a chip pages the month exactly as one over empty space does (the re-walk's NEW-1) */
+    const offDrag = initCalDrag(el, {
+      onTap,
+      onSwipe: (dx, dy) => { if (Math.abs(dx) >= SWIPE_MIN && Math.abs(dx) > Math.abs(dy)) stepRef.current(dx < 0 ? 1 : -1) },
+    })
 
     /* HOLD-TO-ADD / TAP-TO-OPEN / SWIPE-TO-PAGE over empty cell space — this
        calendar's own tiny pointer machine, deliberately separate from

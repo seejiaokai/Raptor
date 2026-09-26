@@ -1,0 +1,14 @@
+NOTE  [RW-W3-08-desktop] bundle — http://localhost:4175/assets/index-KbvILaPW.js
+NOTE  [RW-W3-08-desktop] coarse-pointer — false
+NOTE  [RW-W3-08-desktop] fixture — {"razer15":true,"war27":["DRAFT","OPEN FOR BIDDING","→ OPEN FOR BIDDING"],"war":"JAN - DEC 26"}
+NOTE  [RW-W3-08-desktop] K1 — {"pickerFocusedFirst":true,"opened":"bid-picker","focusAfterClick":"BODY","warAfterArrow":"JAN - DEC 26","sheetAfterArrow":"bid-picker"}
+PASS  [RW-W3-08-desktop] K1-no-stale-sheet — expected: the picker's focus does not survive the mouse click that opens a sheet — the arrow key switches nothing; or, if it switched, the sheet closed with it | observed: {"focusAfterClick":"BODY","war":"JAN - DEC 26","sheet":"bid-picker"}
+PASS  [RW-W3-08-desktop] M1-mouse-on-picker — expected: a mouse aimed at the picker with a sheet up lands on the shade: the sheet closes, the war stays | observed: {"opened":"bid-picker","under":"DIV[sheet-scrim]","sheetAfter":"nothing","war":"JAN - DEC 26"}
+PASS  [RW-W3-08-desktop] M2-mouse-on-undo — expected: a mouse aimed at the war's Undo with a sheet up lands on the shade: the sheet closes, nothing is undone, the war stays | observed: {"opened":"bid-picker","under":"DIV[sheet-scrim]","sheetAfter":"nothing","war":"JAN - DEC 26","bid27":"request:LL/pending","fixture":{"d":"2027-01-05","placed":true}}
+PASS  [RW-W3-08-desktop] M3-mouse-on-nav — expected: a mouse aimed at "Edit Schedule" (the page with the one timeline's other Undo) with a sheet up lands on the shade: the sheet closes, the page stays | observed: {"opened":"bid-picker","under":"DIV[sheet-scrim]","sheetAfter":"nothing","page":"leavewar"}
+PASS  [RW-W3-08-desktop] M3b-undo-from-edit-schedule — expected: Edit Schedule's Undo takes back the 27 bid (the one timeline); back on the war no sheet is open | observed: {"title":"Undo — a change to the leave board","war":"JAN - DEC 27","sheet":"nothing","bid27":"-"}
+NOTE  [RW-W3-08-desktop] M3b-war-shown — {"war":"JAN - DEC 27"}
+NOTE  [RW-W3-08-desktop] MV-picker-reachable — SELECT[war-picker]
+PASS  [RW-W3-08-desktop] MV-move-mode-then-picker — expected: a war switched while a block is in move mode ends the move: no banner in 27, a click there moves nothing, the bid stays on 15 Dec | observed: {"banner":[["Tap a day to move 1 entry\nCancel"],[],[]],"tapIn27":"bid-picker","recs":{"2026-12-15":"request:LL/pending","2027-01-19":"-"},"sel":"select-sheet","pressed":true}
+NOTE  [RW-W3-08-desktop] toasts — ["Undid: a change to the leave board"]
+NOTE  [RW-W3-08-desktop] errors — []

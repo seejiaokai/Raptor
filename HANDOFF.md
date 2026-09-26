@@ -15,6 +15,36 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/absence-record-d147-af6a50 -->
+### `claude/absence-record-d147-af6a50` — `[HUMAN-RETEST]` the absence record (D147) walked and FULL-checked; his answers D260–D262 BUILT and FULL-checked on it — his look and "merge live" next — written 27 Sep 26 — verify before use
+- **The re-test** (26 Sep 26): the absence record walked the way a person uses it, every finding fixed red first, filed or
+  put to him; evidence `raptor-port/docs/handpass/2026-09-26-absence.md` (its look card §12). PR
+  [seejiaokai/Raptor#444](https://github.com/seejiaokai/Raptor/pull/444).
+- **His answers, built 27 Sep 26** (worktree `five-flags-batch-build-ef7d85`, pushed to this branch): **D260** a clear that
+  takes an OIL award names it first — a dragged block's Delete, the bid sheet's Clear (one day or a range), one Undo back;
+  **D261** a member opens his own award read only at every stage (and outside his posting dates); **D262** one chip, one
+  Move — no date box; the chip rides the grid's move mode (edge scroll at the days' edges, months keep it, an empty tap
+  outside the grid ends it, a double-click lands nothing, leaving the war ends it, one move at a time). **D263** (the
+  change history records every change to an absence) goes with `[DRAFT-PENDING]`, not here.
+- **The check (FULL):** evidence `raptor-port/docs/handpass/2026-09-27-d260-d262.md` — Fable designed the scenarios first;
+  walked at both widths (a real touch phone over CDP); 27 wires broken on purpose, each turns a named test red; Fable's and
+  Astra's blind final reads — nine findings, eight fixed red first, one left with its reason (§8); a re-walk of every fix
+  (§10); the final gates all green (§9). His look card is §11, with one question: `[LW-MOVE-TAPLIST-ASK]`.
+- **Carries the five-flags chat's `[LW-MOVE-CI-RED]` test fix** (its commit `11f26903`, cherry-picked here as `3bf23e18`,
+  tests only): three older Leave War Move tests now wait for the fill before their second drag — the GitHub failure this
+  PR met. The same change is on `claude/five-flags-batch-continue-2cfa70`; whichever merges second meets it as identical.
+- **Files this build changed that the post-out chat (`claude/post-out-outcomes`) will meet at its merge** (it asked, per
+  the owner's D302 — parallel chats message each other before changing a shared file): `BidPicker.tsx` (Move → `onMove`,
+  Clear's award ask, `AwardSheet`, `DecisionSheet` removed), `SelectSheet.tsx` (the Delete / Move row only), `store.ts`
+  (`awardsIn`; `clearCells`), `select.ts` (`wireMove`), `Matrix.tsx` (the move wiring, `ownAwardOnly`, awards outside
+  the posting dates drawn). No posting function or posting sheet was touched.
+- **Next:** his five-minute look (§11 of the D260–D262 sheet, then the re-test's own §12) → his "merge live". Then, in his
+  order (D147): change-recording, then the Leave War links.
+- **Filed from it:** `[LW-MOVE-TAPLIST-ASK]` (his question); notes in `[LW-MOVE-BENEATH]` (a bid beside an award moves by
+  no door) and `[LW-ISO-DATES]` (the award sheet's date). `[ABSENCE-ASK]` and `[LW-MOVE-ONE-CHIP]` archived; earlier:
+  `[LW-ISO-DATES]`, `[LW-MOVE-BENEATH]`, `[LW-OFFER-ONLY-TAKEABLE]`, `[PO-RESTORE-POSTING]`, `[ABSENCE-SMALL-SEEN]`.
+<!-- /now -->
+
 <!-- now:claude/accounts -->
 ### `claude/accounts` — `[ACCOUNTS]` (D165, D166, D200, D204, D210, D211): BUILT and FULL-checked; on its PR, waiting for his look and "merge live" — written 26 Sep 26 — verify before use
 - **What it is:** sign in as yourself (every account is one callsign; "View as" and the role toggle gone); request access /
@@ -90,8 +120,9 @@ the later merge keeps both (D78).
    answer his "how does a new user join" question first — answered, D204) with ITS OWN full check (D210) → the one changes
    window (`[DRAFT-PENDING]`) with its own full check →
    "merge live" (D173); beside it, he talks to the IT side (`[IT-QUESTIONS]`). Development as normal: `[HUMAN-RETEST]`'s
-   remaining three in his order (D147 — the absence record with `[S4-HUNT-REST]`, change-recording, the Leave War links
-   last), then `[PUB-UNAVAIL]` → `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]`.
+   remaining three in his order (D147 — the absence record with `[S4-HUNT-REST]` — walked, his answers D260–D262 built
+   and checked on its branch, his look next — then change-recording, the Leave War links last), then `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]` (`[PUB-UNAVAIL]`
+   closed by the absence-record re-test).
 2. **About a month before the database:** `[DB-READINESS]` with the OIL award fix and the small OIL follow-ups as ONE
    batch (D147, D203) → `[DB-STEP]` when Manfred is ready. The whole list: `OUTSTANDING.md`'s priority list.
 3. Filed, none blocking: `[TRK-PINCH-ASK]` (his iPhone look), `[TRK-DLG-LEFTOVERS]`, `[TRK-RETEST-NOTES]`,
@@ -100,13 +131,12 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 26 Sep 26 morning, `claude/leave-late-published` (`09276503`, the final code of
-`[LEAVE-LATE-PUBLISHED]` with D187 and its reads' fixes), one run on a quiet PC
-(`raptor-port/docs/handpass/2026-09-26-late-pub.md` §6): unit **5988 / 5988** (368 files) · build clean · tfin **728 / 0** ·
-e2e **471 passed**, 48 skipped · smoke **442 / 0** · rulecheck OK · docsize OK. Two tests added after it (no source
-change): their file alone 45 / 45. Restate a count only
-from a run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md`
-§Build & verify; how they mislead, and the checks on his PC: `raptor-port/docs/gates-and-deploy.md`.
+The latest counts watched — 27 Sep 26, `claude/absence-record-d147-af6a50` (D260–D262 built on the absence-record
+re-test, the reads' fixes in), one run under the PC lock (`raptor-port/docs/handpass/2026-09-27-d260-d262.md` §9): unit
+**6335 / 6335** (393 files) · build clean · tfin **728 / 0** · e2e **474 passed**, 48 skipped · smoke **443 / 0** ·
+rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
+history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
+`raptor-port/docs/gates-and-deploy.md`.
 
 ## Standing constraints
 

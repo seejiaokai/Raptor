@@ -1,0 +1,4 @@
+NOTE  [W1-10-phone] NOON-bid — {"placed":true,"pressed":true,"why":""}
+PASS  [W1-10-phone] NOON-WORDS-1200 — expected: RE-WALK (register §12, W1-F4): the tap list prints the leave as 12:00–14:00 | observed: {"lines":["LL — local leave, 12:00–14:00 · filed on the Inputs page Change it on the Inputs page.","<LL — local leave, morning · bid, not decided yet Approve Ack Refuse Clear"]}
+PASS  [W1-10-phone] NOON-WORDS — expected: the war's words for a leave typed 12:00-14:00 read 12:00-14:00, as the Inputs page does (N1 decides the half, not the time shown) | observed: {"stored":{"s":720,"e":840},"sheet":"daylist-sheet","text":"Comet Mon 24 Aug ✕ LL — local leave, 12:00–14:00 · filed on the Inputs page Change it on the Inputs page. <LL — local leave, morning · bid, not decided yet Approve Ack Refuse Clear"}
+PASS  [W1-10-phone] console-errors — expected: no console / page errors / 4xx | observed: []

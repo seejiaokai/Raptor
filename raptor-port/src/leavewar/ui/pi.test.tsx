@@ -152,3 +152,58 @@ describe('placing and managing PI from the grid', () => {
     expect(screen.queryByTestId('bid-postin')).toBeNull()
   })
 })
+
+/* A REFUSED POSTING SAYS WHY (the absence-record re-test, AB5, 26 Sep 26 — Fable F5, reproduced on screen). The store
+   refuses a window that closes before it opens (above), and every sheet swallowed the refusal: the bid sheet's
+   confirm closed as if it had worked, the posting sheets' date box snapped back, and nothing was said. The robustness
+   doctrine: a refused value is put back AND the person is told. */
+describe('a posting that would close before it opens is refused with its reason', () => {
+  it('the bid sheet: a PO dated before the PI keeps the sheet open and says why', () => {
+    const id = anId()
+    setRole('admin')
+    setPostIn(id, '2026-06-15')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${id}-2026-07-01`))
+    fireEvent.click(screen.getByTestId('bid-postout'))
+    fireEvent.change(screen.getByTestId('po-date'), { target: { value: '2026-06-01' } })
+    fireEvent.click(screen.getByTestId('po-confirm'))
+    expect(person(id).to).toBeNull()
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
+    expect(screen.getByTestId('post-err').textContent).toMatch(/Posted in on 15 Jun 26 — the post-out has to be after that day/)
+  })
+
+  it('the bid sheet: a PI dated after the PO keeps the sheet open and says why', () => {
+    const id = anId()
+    setRole('admin')
+    setPostOut(id, '2026-08-01')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${id}-2026-07-01`))
+    fireEvent.click(screen.getByTestId('bid-postin'))
+    fireEvent.change(screen.getByTestId('pi-date'), { target: { value: '2026-09-01' } })
+    fireEvent.click(screen.getByTestId('pi-confirm'))
+    expect(person(id).from).toBeNull()
+    expect(screen.getByTestId('post-err').textContent).toMatch(/Posted out from 1 Aug 26 — the post-in has to be before that day/)
+  })
+
+  it('the Post out sheet: moving the date before the PI is refused with the reason', () => {
+    const id = anId()
+    setRole('admin')
+    setPostIn(id, '2026-06-15'); setPostOut(id, '2026-08-01')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${id}-2026-08-05`))
+    fireEvent.change(screen.getByTestId('postout-date'), { target: { value: '2026-06-01' } })
+    expect(person(id).to).toBe('2026-07-31')
+    expect(screen.getByTestId('postout-err').textContent).toMatch(/Posted in on 15 Jun 26/)
+  })
+
+  it('the Post in sheet: moving the date after the PO is refused with the reason', () => {
+    const id = anId()
+    setRole('admin')
+    setPostIn(id, '2026-06-15'); setPostOut(id, '2026-08-01')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${id}-2026-06-10`))
+    fireEvent.change(screen.getByTestId('postin-date'), { target: { value: '2026-09-01' } })
+    expect(person(id).from).toBe('2026-06-15')
+    expect(screen.getByTestId('postin-err').textContent).toMatch(/Posted out from 1 Aug 26/)
+  })
+})

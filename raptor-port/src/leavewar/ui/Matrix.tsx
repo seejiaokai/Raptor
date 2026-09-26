@@ -47,8 +47,8 @@ import {
   type Figure,
   type FigureCtx,
 } from '../engine'
-import { clearRecordById, figureCtxOf, recordsAt, setBalance, setManualCredit, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostIn, setPostOut, visibleFigures, type MoveResult, type EventMoveResult } from '../state/store'
-import { BidPicker, DecisionSheet, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
+import { clearRecordById, figureCtxOf, recordsAt, setBalance, setManualCredit, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostIn, postingProblem, visibleFigures, type MoveResult, type EventMoveResult } from '../state/store'
+import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
 import { FiguresDrawer, FigureTitle, figClass, type DrawerRow } from './FiguresDrawer'
@@ -62,7 +62,7 @@ import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
 import { popAt } from './popat'
 import { clampWin, rollingTarget, stepAllowedInMotion, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
-import { touchesAM, touchesPM, type DayView } from '../engine/dayview'
+import { touchesAM, touchesPM, winsOf, type DayView } from '../engine/dayview'
 import type { Portion } from '../engine'
 import { isLwOnScreen, subLwScreen } from '../state/screen'
 import type { RecordSpans } from '../state/merge'
@@ -77,11 +77,22 @@ import { groupColorOf, inkFor } from './groupColor'
 import { SelectSheet } from './SelectSheet'
 import { BalanceBar } from './BalanceBar'
 import { RemarksSheet } from './RemarksSheet'
-import { leaveInputAt } from '../sync'
+import { leaveInputAt, postOut, undoPostOut } from '../sync'
 import { useVersion } from './useStore'
 import { DayListSheet } from './DayList'
 import type { Views } from '../engine/dayview'
 import './matrix.css'
+
+/** A posting through the store, or the sentence saying why it was refused (the absence-record re-test, AB5, 26 Sep
+ *  26): every posting door — the bid sheet's PI / PO, the two posting sheets, the drag-selection's PO — shows it and
+ *  stays open, where each used to close (or snap back) with nothing said. */
+function postOutOr(id: string, from: string, archive?: boolean): string | undefined {
+  /* through the bridge, so a Post out's own archive follows the new date and switch (Astra's final read, finding 2) */
+  return postOut(id, from, archive) ? undefined : (postingProblem(id, 'out', from) || 'That posting date was not taken.')
+}
+function postInOr(id: string, from: string): string | undefined {
+  return setPostIn(id, from) ? undefined : (postingProblem(id, 'in', from) || 'That posting date was not taken.')
+}
 
 /** A move refusal, in plain words for the move banner. */
 function moveReason(r: Exclude<MoveResult, 'moved'>): string {
@@ -250,16 +261,30 @@ function freeHalfBeside(v: DayView | undefined): Portion | null {
   if (!v) return null
   const holding = v.all.filter(c => c.kind === 'absence' || (c.kind === 'request' && c.state !== 'refused'))
   if (!holding.length) return null
-  const am = holding.some(c => touchesAM(c.win))
-  const pm = holding.some(c => touchesPM(c.win))
+  /* by the REAL hours (the absence-record re-test, W5-F4, 26 Sep 26): a medical recorded 09:00–14:00 is drawn as a
+     morning (the six-hour rule) but its hours run into the afternoon, and every clash is judged on real hours (§7) —
+     so the afternoon was offered here and then refused by the door. winsOf is what the doors read. */
+  const am = holding.some(c => winsOf(c).some(touchesAM))
+  const pm = holding.some(c => winsOf(c).some(touchesPM))
   return am && !pm ? 'pm' : pm && !am ? 'am' : null
+}
+
+/** The day holds the viewer's OWN hand-given OIL award and nothing else (D261) — the one record he may always read
+ *  back, whatever the stage. A day with more on it opens the tap list, which reads the award back already; the
+ *  schedule's own credit opens the read-only sheet through `raptorOwns`. */
+function ownAwardOnly(view: DayView | undefined, viewer: string | null, personId: string): boolean {
+  return viewer !== null && personId === viewer && !!view?.main && view.main.kind === 'credit' && !view.main.auto && !view.mark
 }
 
 /** Whether a tap on this cell opens SOMETHING — the one body Matrix and the
  *  row share. Where a tap goes (bid / decide / read-only / remarks) is decided
  *  in the sheet from the same facts; this only says "there is a sheet". */
-function cellOpenable(states: States, period: Period, role: Role, viewer: string | null, deciding: boolean, grid: Grid, personId: string, date: string): boolean {
+function cellOpenable(states: States, period: Period, role: Role, viewer: string | null, deciding: boolean, grid: Grid, personId: string, date: string, view?: DayView): boolean {
   return raptorOwns(states, personId, date) ||
+    /* HIS OWN OIL AWARD, AT EVERY STAGE (owner, D261, 27 Sep 26 — "3 yes"): it opens read only (`ownAwardOnly`) where
+       nothing else would — outside the bidding window, once bidding has closed, on a published war. Another man's award
+       stays shut to a member. */
+    ownAwardOnly(view, viewer, personId) ||
     // A member may open a cell to EDIT only on their own row (the person they
     // are viewing as); an admin, any row. Without the row half a member could
     // tap an empty cell on anyone's row and bid it (owner, 27 Aug 26). The
@@ -487,7 +512,11 @@ const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, v
            small PO tag after posting-out — and never counts for manning (the
            hatch stays). */
         const view = views[p.id]?.[d.date]
-        const outLeave = !here && !!code && !!view?.main && codeOf(view.main.code)?.spends != null
+        /* …and an OIL AWARD dated there too (Astra's final read, 3, 27 Sep 26): one may be given after a man posts out or
+           before he posts in ("Place leave or OIL here instead…", N12), and the day drew a bare PO (or blank) that
+           nobody could tap — his own award hidden from him, and from the admin's eye. It shows with the posting hatch,
+           like the leave beside it, counts nobody (the hatch stays), and his own tap opens it read only (D261). */
+        const outLeave = !here && !!code && !!view?.main && (codeOf(view.main.code)?.spends != null || view.main.kind === 'credit')
         const mark = view?.mark ?? ''
         const cls = [
           here ? '' : 'gone',
@@ -567,7 +596,7 @@ const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, v
            an ADMIN's tap manages the POSTING (the post-out sheet after, the
            post-in sheet before), and the person's OWN tap places LEAVE. */
         const actionable =
-          (here && cellOpenable(states, period, role, viewer, deciding, grid, p.id, d.date)) || (role === 'admin' && !here) ||
+          (here && cellOpenable(states, period, role, viewer, deciding, grid, p.id, d.date, view)) || (role === 'admin' && !here) ||
           // a marked day always opens its list; leave dated outside the
           // squadron window opens for an admin and for the person themself
           (!!mark && (here || outLeave)) || (outLeave && (role === 'admin' || viewer === p.id)) ||
@@ -677,7 +706,13 @@ export function Matrix() {
   // derived from the stage and the role, so a period that moves on — or a
   // role that changes — while a sheet is open cannot leave the wrong
   // controls on screen.
-  const [open, setOpen] = useState<{ id: string; callsign: string; date: string } | null>(null)
+  /* `posting` — the posting sheet the tap opened, PINNED for as long as the sheet is up (the absence-record re-test,
+     W3-F5, 26 Sep 26 — found by the war walker). The Post out sheet commits on change and stays up so the admin can
+     see the grid move behind it; moving the date PAST the tapped day made that day an in-squadron day, and the grid
+     re-chose the sheet from the day's new state, so a bid sheet appeared under his hands, one tap from placing leave.
+     Read at the tap, from the day as it stood; unset for every other sheet, which follows the day live (a PO placed
+     from the bid sheet closes that sheet — the next tap on the greyed day opens the Post out sheet). */
+  const [open, setOpen] = useState<{ id: string; callsign: string; date: string; posting?: 'po' | 'pi' } | null>(null)
   const close = () => { setOpen(null); setPlaceAt(null) }
   /* the published note editor opened FROM the tap list, for one Input */
   const [listRemark, setListRemark] = useState<{ at: string; row: any } | null>(null)
@@ -703,15 +738,17 @@ export function Matrix() {
   // undo it, owner 18 Aug 26). A day before the person joined is blank, not a
   // post-out, so it is excluded — there is nothing to undo there.
   const openPerson = open ? people.find(p => p.id === open.id) : undefined
-  const openPostedOut =
-    !!open && !!openPerson && !inSquadron(openPerson, open.date) &&
-    !(openPerson.from !== null && open.date < openPerson.from)
+  const openPostedOut = open?.posting
+    ? open.posting === 'po' && !!openPerson && openPerson.to !== null
+    : !!open && !!openPerson && !inSquadron(openPerson, open.date) &&
+      !(openPerson.from !== null && open.date < openPerson.from)
   // …and its mirror at the other end: a day BEFORE the person posted in
   // (owner, 20 Sep 26). For an ADMIN this opens the post-in sheet, exactly as
   // a posted-out day opens the post-out one; for a member it falls through to
   // the bid picker, which is answer C's "filed or bid" on a pre-joining day.
-  const openNotYetArrived =
-    !!open && !!openPerson && openPerson.from !== null && open.date < openPerson.from
+  const openNotYetArrived = open?.posting
+    ? open.posting === 'pi' && !!openPerson && openPerson.from !== null
+    : !!open && !!openPerson && openPerson.from !== null && open.date < openPerson.from
   /* "Place leave or OIL here instead" (owner, 20 Sep 26 — "we should also allow
      putting inputs when we click on days that were posted out"). An admin's tap
      on a day outside someone's time in the squadron opens the POSTING sheet,
@@ -1051,6 +1088,11 @@ export function Matrix() {
   // message lingers.
   const histEpoch = lwHistEpoch()
   useEffect(() => { setSel(null); setMoveSel(null); setMovePreview(null); setMoveErr(''); setEventMoveSel(null); setEventMovePreview(null); setEventMoveErr('') }, [period.stage, period.id, histEpoch])
+  /* ...and a WAR change closes the sheet open on the old war (the absence-record re-test, W5-F3, 26 Sep 26): left open,
+     its controls still wrote to the day it was opened on — in the war no longer on screen. The Sheet now holds the
+     keyboard too, so the switch cannot be reached from inside one; this is the second guard, for any other road to a
+     switch (an undo that snaps the war, a reload of the picker). */
+  useEffect(() => { setOpen(null); setPlaceAt(null); setEventEdit(null) }, [period.id])   // the event sheet too (Fable F4)
   // MOVE MODE is wired further down, after the `phone` breakpoint state it
   // reads to choose commit-on-click (desktop) vs preview-then-Confirm (phone).
   // The frozen-column overlay's own anchors (see the .mxband block below and
@@ -1060,6 +1102,17 @@ export function Matrix() {
   const bandRef = useRef<HTMLDivElement>(null)
   const rosterBodyRef = useRef<HTMLTableSectionElement>(null)
   const [phone, setPhone] = useState(false)
+  /* THE PHONE'S TWO-STEP FOLLOWS THE SCREEN AS IT IS NOW (Astra's final read, 4, 27 Sep 26): the move's tap handler is
+     wired once, when the move begins, and read `phone` as it was then — a move begun at desktop width and carried on
+     after the window narrowed landed at once, with no Confirm. It reads this ref at the tap instead; a change of width
+     takes down a staged landing (the effect below). */
+  const phoneRef = useRef(false)
+  phoneRef.current = phone
+  useEffect(() => {
+    setMovePreview(null); setEventMovePreview(null)
+    const w = wrapRef.current
+    if (w) clearLanding(w)
+  }, [phone])
   const [bandTop, setBandTop] = useState<number | null>(null)
 
   // FIGURE SELECT (owner, 6 Sep 26): a run of people down one figure column,
@@ -1129,6 +1182,26 @@ export function Matrix() {
     return () => { document.removeEventListener('pointerdown', onDown, true); window.removeEventListener('keydown', onKey, true) }
   }, [figSel])
 
+  /* WHAT COUNTS AS THE GRID WHILE A MOVE IS ON (D262): the card — its counts, month buttons, header, the days and the
+     figures drawer — plus the parts of it drawn fixed on top of the page (the floating date header, the desktop's
+     scrollbar at the foot of the screen). The mouse's edge scroll runs only over it; a click on an empty spot of the
+     page AROUND it ends the move. The days' left edge is the drag-select's own (past the frozen columns / drawer). */
+  const cardRef = useRef<HTMLDivElement>(null)
+  const inGrid = (t: Element): boolean =>
+    !!cardRef.current?.contains(t) || !!t.closest('[data-testid="sticky-head"], [data-testid="hscroll"]')
+  const moveLeftEdge = (): number => {
+    const w = wrapRef.current
+    return selCtxRef.current?.leftEdge?.() ?? (w ? w.getBoundingClientRect().left : -Infinity)
+  }
+  /* …and LEAVING THE LEAVE WAR ENDS IT (D262 — Fable's S9): the page is kept alive off screen, and a move left on
+     carried its ghost onto the next page and kept its listeners on every click there. Leaving is the plainest
+     "somewhere outside the grid". */
+  useEffect(() => subLwScreen(() => {
+    if (isLwOnScreen()) return
+    setMoveSel(null); setMovePreview(null); setMoveErr('')
+    setEventMoveSel(null); setEventMovePreview(null); setEventMoveErr('')
+  }), [])
+
   // MOVE MODE (owner, 27 Aug 26). The picked block is dropped onto a new day.
   // `movers` are the inputs PRESENT in the selection — the empty cells the user
   // swept up are dropped, so a loose box no longer refuses as "nothing"; the
@@ -1156,9 +1229,14 @@ export function Matrix() {
     paintLanding(w, landingFor(targetDate))
     return true
   }
+  /* A DAY IT IS ALREADY ON (D262 — Fable's S6): the move machine's delta 0 read "Nothing to move." as if the chip had
+     gone, and a phone staged a Confirm that then failed. It says where it is, and the move stays on. */
+  const onItsOwnDay = (targetDate: string): boolean => moveAnchor !== null && daysBetween(moveAnchor, targetDate) === 0
+  const ownDayWords = () => `${movers.length === 1 ? 'It is' : 'They are'} already on that day — pick another day.`
   const commitMove = (targetDate: string) => {
     const w = wrapRef.current
     if (moveAnchor === null) { setMoveSel(null); setMovePreview(null); return }
+    if (onItsOwnDay(targetDate)) { if (w) clearLanding(w); setMovePreview(null); setMoveErr(ownDayWords()); return }
     const r = moveCells(movers, daysBetween(moveAnchor, targetDate))
     if (w) clearLanding(w)
     if (r === 'moved') { setMoveSel(null); setMovePreview(null); setMoveErr('') }
@@ -1176,10 +1254,14 @@ export function Matrix() {
         // hover, so a tap stages the landing and waits for Confirm — but only a
         // landing the store would accept stages (a refused one shows its reason
         // where the Confirm button would be, never a Confirm under an error).
-        if (phone) setMovePreview(previewAt(date) ? date : null)
+        if (phoneRef.current && onItsOwnDay(date)) { clearLanding(w); setMovePreview(null); setMoveErr(ownDayWords()); return }
+        if (phoneRef.current) setMovePreview(previewAt(date) ? date : null)
         else commitMove(date)
       },
-      onCancel: () => { clearLanding(w); setMoveSel(null); setMovePreview(null) },
+      onCancel: () => { clearLanding(w); setMoveSel(null); setMovePreview(null); setMoveErr('') },
+      onOff: () => { clearLanding(w); setMoveErr('') },
+      leftEdge: moveLeftEdge,
+      isGrid: inGrid,
     })
     return () => { clearLanding(w); cleanup() }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1230,8 +1312,11 @@ export function Matrix() {
       count: 1,
       dateAt: eventMoveDateAt,
       onHover: date => previewEventAt(date),
-      onPick: date => { if (phone) setEventMovePreview(previewEventAt(date) ? date : null); else commitEventMove(date) },
-      onCancel: () => { clearLanding(w); setEventMoveSel(null); setEventMovePreview(null) },
+      onPick: date => { if (phoneRef.current) setEventMovePreview(previewEventAt(date) ? date : null); else commitEventMove(date) },
+      onCancel: () => { clearLanding(w); setEventMoveSel(null); setEventMovePreview(null); setEventMoveErr('') },
+      onOff: () => { clearLanding(w); setEventMoveErr('') },
+      leftEdge: moveLeftEdge,
+      isGrid: inGrid,
     })
     return () => { clearLanding(w); cleanup() }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1544,6 +1629,12 @@ export function Matrix() {
   // scroll-responsiveness gate exists to refuse.
   const [visWindow, setVisWindow] = useState('')
   const visSigRef = useRef<string | null>(null)
+  /* THE MONTHS ACTUALLY ON SCREEN, always (the absence-record re-test, W5-F2, 26 Sep 26 — the re-walk found its real
+     trigger). The state above is only written when the ROW SET changes, so SEP → JUL — the same people — left it at
+     September; a man then posted out from a July date was asked "is he here in September?" and his July row, with
+     everything on it, vanished until another month was pressed. The row filter reads THIS note, written at every
+     measure without a repaint; the state stays the repaint trigger, so the scroll gate's saving is kept. */
+  const visWinRef = useRef('')
   // Where a named day column sat the instant the row set changed, so the
   // repaint can put it back. Removing (or restoring) a row lets the table's
   // auto layout re-narrow every column that row's chips had widened — all of
@@ -1713,7 +1804,13 @@ export function Matrix() {
     startRowDrag,
     setWhoOpen,
     setBalOpen,
-    setOpen,
+    /* the tap pins the posting sheet it opens (W3-F5) — read off the day as it stands at the tap */
+    setOpen: v => {
+      const p = people.find(x => x.id === v.id)
+      const pre = !!p && p.from !== null && v.date < p.from
+      const posting = !p ? undefined : pre ? 'pi' as const : !inSquadron(p, v.date) ? 'po' as const : undefined
+      setOpen(posting ? { ...v, posting } : v)
+    },
     chipEnter: openQualsAt,
     chipLeave: () => setQualPop(null),
     chipClick: (p, el) => { if (qualPop?.id === p.id) setQualPop(null); else openQualsAt(p.id, el) },
@@ -2525,6 +2622,7 @@ export function Matrix() {
         .filter(x => Math.min(x.s.right, viewR) - Math.max(x.s.left, viewL) > 2)
       if (vis.length) {
         const win = `${vis[0]!.key}|${vis[vis.length - 1]!.key}`
+        visWinRef.current = win   // the true months, whether or not the rows change (W5-F2)
         const sig = people.filter(p => rowInWindow(p, win, liveRef.current.rowSpans)).map(p => p.id).join(',')
         if (sig !== visSigRef.current) {
           // Capture where the FIRST VISIBLE DAY column sits NOW; the layout
@@ -3248,7 +3346,7 @@ export function Matrix() {
     | { kind: 'catsub'; g: string; cat: string }
     | { kind: 'person'; p: Person }
   const rosterSequence = (): RSeq[] => {
-    const roster = displayRoster().filter(p => rowInWindow(p, visWindow, rowSpans))
+    const roster = displayRoster().filter(p => rowInWindow(p, visWinRef.current, rowSpans))
     const out: RSeq[] = []
     let prevG: string | null = null
     let prevCat = ''
@@ -3461,7 +3559,7 @@ export function Matrix() {
 
   return (
     <div className="stage">
-      <div className="card">
+      <div className="card" ref={cardRef}>
         {/* ONE compact row (owner, 5 Sep 26 — "all in 1 row to minimise row
             height space"): Manning · ⚙ · Rearrange on the left, OIL tracker on
             the right. The old "JAN – DEC 26 · 365 days · 50 people" line was
@@ -3671,7 +3769,10 @@ export function Matrix() {
               defs={eventDefs}
               rows={eventRows}
               editable={role === 'admin'}
-              onEdit={(line, date) => setEventEdit({ line, date })}
+              /* ONE MOVE AT A TIME (Astra's final read, 1, 27 Sep 26): with a chip picked up, a tap on an event row opened
+                 its sheet, whose Move started a SECOND move — and one click then moved both. While any move is on, the
+                 event rows open nothing. */
+              onEdit={(line, date) => { if (moveSel || eventMoveSel) return; setEventEdit({ line, date }) }}
               padL={padL}
               padR={padR}
               phL={phL}
@@ -3689,7 +3790,7 @@ export function Matrix() {
                 // rowInWindow above): the heads/counts below derive from the
                 // filtered list, so an emptied group takes its heading with
                 // it. visWindow '' (jsdom, first paint) shows everyone.
-                const roster = displayRoster().filter(p => rowInWindow(p, visWindow, rowSpans))
+                const roster = displayRoster().filter(p => rowInWindow(p, visWinRef.current, rowSpans))
                 const span = 2 + dayCols
                 let prevG: string | null = null
                 let prevCat = ''
@@ -4105,6 +4206,18 @@ export function Matrix() {
           onClose={close}
         />
       )}
+      {/* HIS OWN OIL AWARD, READ ONLY (owner, D261, 27 Sep 26), wherever the bid sheet will not open for him — outside
+          the bidding window, once bidding has closed, on a published war. Where it does open (inside the window) its
+          foot reads the award back already, so this stands aside. */}
+      {open && !listOpen && !canRemark && openCredit && ownAwardOnly(openView, viewer, open.id)
+        && !(canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id)) && (
+        <AwardSheet
+          callsign={open.callsign}
+          date={open.date}
+          award={{ code: openCredit.code, days: openCredit.days, note: openCredit.note, giver: creditGiver(openCredit) }}
+          onClose={close}
+        />
+      )}
       {/* The drag-selection sheet — batched fill / decide / delete / move over
           the whole rectangle (owner, 27 Aug 26). Independent of the single-cell
           `open`; a drag never sets `open`. */}
@@ -4114,8 +4227,8 @@ export function Matrix() {
           people={csOf}
           role={role}
           canDecide={canDecide(period.stage, role)}
-          onPostOut={role === 'admin' ? (pid, from, archive) => setPostOut(pid, from, archive) : undefined}
-          onMove={s => setMoveSel(s)}
+          onPostOut={role === 'admin' ? (pid, from, archive) => postOutOr(pid, from, archive) : undefined}
+          onMove={s => { setEventMoveSel(null); setEventMovePreview(null); setMoveSel(s) }}
           /* a PARTIAL write keeps the sheet up (keepOpen) so its "N written,
              M skipped" note is actually read — closing here killed the note
              in the same tap that set it (27 Aug 26 overnight find) */
@@ -4190,8 +4303,8 @@ export function Matrix() {
              is the day after the stored last-day-in. */
           poFrom={addDays(openPerson!.to!, 1)}
           archive={openPerson!.poArchive === true}
-          onChange={(from, archive) => setPostOut(open.id, from, archive)}
-          onUndo={() => { setPostOut(open.id, null); close() }}
+          onChange={(from, archive) => postOutOr(open.id, from, archive)}
+          onUndo={() => { undoPostOut(open.id); close() }}   // the archive the Post out made goes too (W5-F1)
           onPlace={() => setPlaceAt(openKey)}
           onClose={close}
         />
@@ -4209,7 +4322,7 @@ export function Matrix() {
              the PI date itself — the first day they ARE here — where the
              post-out sheet has to add a day to the stored last-day-in. */
           piFrom={openPerson!.from!}
-          onChange={from => setPostIn(open.id, from)}
+          onChange={from => postInOr(open.id, from)}
           onUndo={() => { setPostIn(open.id, null); close() }}
           onPlace={() => setPlaceAt(openKey)}
           onClose={close}
@@ -4305,7 +4418,7 @@ export function Matrix() {
           date={eventEdit.date}
           to={eventEdit.to}
           onClose={() => setEventEdit(null)}
-          onMove={m => { setEventEdit(null); setEventMoveSel(m) }}
+          onMove={m => { setEventEdit(null); setSel(null); setMoveSel(null); setMovePreview(null); setEventMoveSel(m) }}
         />
       )}
       {/* A manning row's explainer — every role's way in from the row's name;
@@ -4370,12 +4483,12 @@ export function Matrix() {
              date; the greyed boxes and the manpower exclusion follow from it,
              and sync.ts's auto-archive pass reads the switch. */
           onPostOut={role === 'admin'
-            ? (from, archive) => { setPostOut(open.id, from, archive); close() }
+            ? (from, archive) => { const why = postOutOr(open.id, from, archive); if (why) return why; close() }
             : undefined}
           /* Admin-only, the mirror of the above (owner, 20 Sep 26): the first
              day they ARE in the squadron. */
           onPostIn={role === 'admin'
-            ? from => { setPostIn(open.id, from); close() }
+            ? from => { const why = postInOr(open.id, from); if (why) return why; close() }
             : undefined}
           /* Admin-only: record that he WORKED this day and earned OIL (owner,
              20 Sep 26). ANY day — the weekend/public-holiday rule belongs to
@@ -4398,6 +4511,18 @@ export function Matrix() {
           decide={canDecide(period.stage, role) && !openFreeHalf && isBiddable(grid[open.id]?.[open.date])
             ? { state: stateOf(states, open.id, open.date), movedFrom: movedShown ? shiftedFrom(states, open.id, open.date) : undefined }
             : null}
+          /* ONE CHIP, ONE MOVE (owner, D262, 27 Sep 26): the sheet's Move picks the chip up into the grid's own move
+             mode — the drag-selection's, so a single chip and a block move by one machine and one set of landing
+             rules (moveCells: refused whole with its reason, the dotted mark once bidding is closed, lands
+             undecided). A day that holds nothing this screen may move says so on the sheet instead. */
+          onMove={() => {
+            const cells = [{ personId: open.id, date: open.date }]
+            if (!movableCells(cells).length) return 'There is nothing here that can be moved.'
+            setSel(null)
+            close()
+            setEventMoveSel(null); setEventMovePreview(null)
+            setMoveSel({ people: [open.id], from: open.date, to: open.date, cells })
+          }}
           creditShown={openAnyCredit
             ? {
               code: openAnyCredit.code,
@@ -4472,10 +4597,10 @@ export function Matrix() {
       {/* THE SEPARATE DECISION SHEET IS GONE (owner, 21 Sep 26). It opened
           only once bidding had closed, so the same input answered to different
           controls depending on which day of the cycle you clicked it — and
-          moving one man's one day needed a drag-select. Its three buttons and
-          its move field now live on the ONE day window above, in every stage;
-          `DecisionSheet` itself is kept exported for the tests that pin its
-          wording, but nothing in the grid opens it any more. */}
+          moving one man's one day needed a drag-select. Its three buttons now
+          live on the ONE day window above, in every stage, and its Move is the
+          grid's own move mode (D262, 27 Sep 26), which retired its date box;
+          the unmounted `DecisionSheet` went with it. */}
     </div>
   )
 }

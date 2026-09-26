@@ -77,3 +77,22 @@ describe('the drag readout is inert unless switched on', () => {
     expect(document.getElementById('dragdbg'), 'hooks inert again after detach').toBeNull()
   })
 })
+
+/* A PRESS ON A CONTROL NEVER COUNTS TOWARD THE CORNER SWITCH (the absence-record re-test's re-walk, W1's NEW-2, 26 Sep
+   26): the Inputs calendar's "previous month" arrow sits inside the top-left 64 px, so paging back five months switched
+   the readout on — a green strip over the month title and the top bar on every page until a reload. The switch is for
+   the EMPTY corner of a locked-down browser; a button, a link or a field there is the app's own. */
+describe('the corner switch counts only presses on no control', () => {
+  it('a press on a button, a link or a field in the corner does not count; bare corner does', async () => {
+    const { cornerTapCounts } = await import('./dragdbg')
+    document.body.innerHTML = '<div id="bare"></div><button id="b"><span id="in">‹</span></button><a id="l" href="#">x</a><input id="i">'
+    const at = (id: string, x = 10, y = 10) => cornerTapCounts({ clientX: x, clientY: y, target: document.getElementById(id) })
+    expect(at('bare')).toBe(true)
+    expect(at('b')).toBe(false)
+    expect(at('in')).toBe(false)
+    expect(at('l')).toBe(false)
+    expect(at('i')).toBe(false)
+    expect(at('bare', 100, 10)).toBe(false)
+    document.body.innerHTML = ''
+  })
+})

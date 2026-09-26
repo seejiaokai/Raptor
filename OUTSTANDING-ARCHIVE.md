@@ -1661,3 +1661,90 @@ app knows who is signed in, so each sign-off could be signed only by that person
 approved — his call. `[ACCOUNTS]` leaves the boxes as they are and makes the write admin-only at the command gate.
 **Place:** ask him with `[ACCOUNTS]`'s look card.
 
+
+*Moved here 2026-09-26 by backlog-archive.mjs ([S4-HUNT-REST]). Forward facts: `raptor-port/docs/handpass/2026-09-26-absence.md`, `raptor-port/docs/superpowers/plans/2026-09-26-absence-retest-plan.md`.*
+
+### [S4-HUNT-REST] The bug hunt's untouched ground — about three quarters of it (owner, 21 Sep 26)
+The branch turned into a long detour through the rules and the five items, so most of the hunt Fable
+and Codex planned (eight batches) has never been run. The owner listed what is still untouched, and
+this is his order. **Realistically two or three sessions.** **Place (D147, 24 Sep 26):** walked TOGETHER with the
+absence-record re-test of [HUMAN-RETEST], straight after the amendment system — one pass, since this ground IS the
+absence record.
+1. **The Inputs page calendar, by DRAG.** It has 43 tests of its own behaviour, but the clash rules
+   have never been tested through the drag route — dragging leave onto a pending bid, onto other
+   leave at overlapping times, onto a day someone is recorded working. A door people use daily.
+2. **The medical dialog's cascade** — a medical laid over existing leave and over other medicals:
+   how many pieces it mints, whether ONE undo puts it all back, whether cancelling leaves a
+   half-edit behind.
+3. **Bulk gestures by real drag** — select a block, then fill / approve / delete / move it, and
+   whether the "N written, M skipped" message tells the truth.
+4. **Switching wars with a sheet open**, and undo after switching.
+5. **Storage faults** — a save that fails halfway: does the app say so, and does a retry land the
+   WHOLE thing?
+6. **Phone, by finger** — drag-select and the two-step move at phone width, and a day carrying
+   eight records.
+7. **Figures on days with several records** — four records on one day, and whether the manning count
+   removes the man ONCE rather than twice.
+**DONE 26 Sep 26 — walked with the absence-record re-test** (`raptor-port/docs/handpass/2026-09-26-absence.md`; the
+walkers' sheets under `raptor-port/docs/handpass/parts/2026-09-26-absence-w{1..5}.md`): (1) the calendar by drag — W1,
+W2 (AB4, W1-F1–F3, fixed); (2) the medical cascade — W2 (AB3, AB4, fixed); (3) bulk gestures by real drag — W3 (AB2 a
+question; AB7 and W3-F3's Delete fixed; its Move half is [LW-MOVE-BENEATH]); (4) switching wars with a sheet open, and
+undo after — W3, W5 (W3-F7, W5-F3, W3-F8, fixed); (5) storage faults — the host, H3, correct; (6) phone by finger —
+W4, W1 (W4-1, W1-F1, W1-F2, fixed); (7) figures on days with several records — W4, correct (a man with four or eight
+records falls by exactly one in each head-count row).
+
+
+*Moved here 2026-09-26 by backlog-archive.mjs ([PUB-UNAVAIL]). Forward facts: `raptor-port/docs/handpass/2026-09-26-absence.md`, `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-register.md`.*
+
+### [PUB-UNAVAIL] New absence silently changes a published day's Unavailable list — NEXT AFTER step 4
+A new absence covering an already-published day changes that day's issued Unavailable list with no
+amendment, no re-sign, no history line (`html.ts:1515` reads live inputs; the filing fingerprint
+compares `acc` only). Owner (19 Sep 26): fix as its own item straight after step 4. Context: design §13.2.
+**CLOSED 26 Sep 26.** Built by [LEAVE-LATE-PUBLISHED] (D177–D179, D185: a late absence on a published day is a pending
+amendment and the issued face stays as issued); walked by the absence-record re-test, H1 — a late leave, a late
+medical, a war approval and a medical cutting issued leave each read pending on every count, drop the four sign-offs
+and leave the published face as issued; taking the late leave out again gives 0 and the sign-offs back
+(`raptor-port/docs/handpass/2026-09-26-absence.md` §3, "Walked and CORRECT"; the register
+`raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-register.md` §11).
+
+
+*Moved here 2026-09-27 by backlog-archive.mjs ([LW-MOVE-ONE-CHIP]). Forward facts: `.claude/rules/decisions/leave-war.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-MOVE-ONE-CHIP] One chip, one Move — no date box; edge scroll, months keep it, a click outside cancels (D262, 27 Sep 26)
+**His ruling (D262, `.claude/rules/decisions/leave-war.md`):** tap a single chip on the Leave War and its sheet's **Move** is
+pressable at once and picks the chip up; the date box ("the calendar") beside it goes. While moving: dragging to the grid's
+edges scrolls it; the month buttons still work and the move stays on; a click on an empty area outside the grid cancels.
+**Today:** the one-day sheet's Move is greyed until a date is typed in its date box, then moves there
+(`raptor-port/src/leavewar/ui/BidPicker.tsx`, the two `decide-shift` rows). **Build (the agent's readings in D262):** both
+one-day sheets' Moves start the grid's move mode (the drag-selection's own, `Matrix.tsx` moveSel), landing rules unchanged
+(refused whole and said; the dotted "moved" mark once bidding is closed; lands undecided); desktop lands on the click or
+release, the phone keeps tap-then-Confirm; the drag-selection's "Move…" gains the same edge scroll, months and outside-click
+cancel; a stage or war change and Undo still end it. **Tier:** WALK at least (a new gesture; a walk at both widths, both
+orders, a break test) — FULL if the landing rules are touched. **Place:** the NEXT chat, with `[ABSENCE-ASK]`'s answers (his
+word, 27 Sep 26), before this branch's "merge live" (the agent's reading). Fix what it leaves behind (D201):
+`raptor-port/docs/ui-contracts.md` §Selecting on the Leave War grid, and the tests that type a date into `shift-date`.
+
+*Moved here 2026-09-27 by backlog-archive.mjs ([ABSENCE-ASK]). Forward facts: `.claude/rules/decisions/oil.md`, `.claude/rules/decisions/scheduler.md`.*
+
+### [ABSENCE-ASK] Three questions for him from the absence-record re-test (26 Sep 26)
+Put to him with his look at the re-test (its look card, `raptor-port/docs/handpass/2026-09-26-absence.md` §12):
+1. **ANSWERED 27 Sep 26 — D260 ("B"): a dragged block's Delete removes everything in it, awards included, and its
+   confirm names each award first; the one-day Clear does the same (names it, asks once); Move and drag keep leaving
+   awards where they are. TO BUILD in the next chat (his word), with its own red-first tests and check — the agent's
+   reading: on this branch, before his "merge live".** The question as it was put: **An OIL award under Clear and bulk Delete (AB1, AB2).** The bid sheet's Clear on a day holding an award removes the
+   award, and a dragged block's Delete removes every award in it — no word in either, and the man's OIL drops. An award
+   has its own Remove (N11: an award is the admin's). An existing test pins Clear removing the award as MEANT, so which
+   is right is his: (a) Clear and Delete leave awards alone (Remove is the one door), or (b) they take them, and say so
+   in the confirm ("…and 2 OIL awards").
+2. **ANSWERED 27 Sep 26 — D263 ("2 yes"): the change history records every change to an absence (an input edited, cut, moved, deleted; the war's approve, refuse, back-to-bid, move) with who and when — built INTO the one changes window (`[DRAFT-PENDING]`), not before.** The question as it was put: **What the Edit history should record (AB8 (b)).** Today it records the schedule, and of inputs only an add or a
+   removal. Should the war's approvals and moves, and an input's edits and cuts, join it? Belongs with the one changes
+   window ([DRAFT-PENDING], D169's transparency). (AB8 (a) — the Inputs page's own Add writing no line — is fixed.)
+3. **ANSWERED 27 Sep 26 — D261 ("3 yes"): a member opens his own OIL award, read only, at every stage. TO BUILD in the next chat (his word).** The question as it was put: **A member's own award outside the bidding window (W3-F10).** Inside the window his own FO / HO opens read-only
+   (reason, given by, days); outside it, nothing opens. The OIL tracker shows the same facts. Should his own award open
+   read-only at every stage?
+**Place:** his look at the re-test; each answer becomes a ruling (D260–D269 on that branch) and, where it changes the
+app, a small build.
+**ALL THREE ANSWERED; items 1 and 3 BUILT 27 Sep 26 on that branch** (D260, D261 — evidence
+`raptor-port/docs/handpass/2026-09-27-d260-d262.md`); item 2 (D263) is built with the one changes window — its
+requirement is written in `[DRAFT-PENDING]`.
+

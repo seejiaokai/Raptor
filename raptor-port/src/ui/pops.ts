@@ -66,6 +66,13 @@ export function setInpEdit(r: any) { INPEDIT = r }
    inpById at open. One-shot: the editor clears it as it consumes it. */
 export let OILASK: string | null = null
 export function setOilAsk(iid: string | null) { OILASK = iid }
+/* A MEDICAL MOVED BY A DRAG OR A REASSIGN, waiting on its question (the absence-record re-test, AB4, 26 Sep 26): the
+   Inputs calendar's chip drag and the schedule's reassign hand a medical move that would overlap a different-type
+   medical — or an upchit — here instead of writing it, and ui/MedMoveConfirm.tsx (mounted at App level, so it opens
+   over whatever surface the gesture was on) puts the same sheet to the filer that the edit window does. `{ iid,
+   draft, ask, via: 'drag' | 'reassign', said }` — the iid, re-resolved at Save (an undo may have reminted rows). */
+export let MEDMOVE: any = null
+export function setMedMove(m: any) { MEDMOVE = m }
 /* The supporting-document viewer (owner, 27 Aug 26) — every user may view
    every input's document, so this carries only WHICH input's paperwork is on
    screen: the INPUT OBJECT, for the same reason INPEDIT holds the object —
@@ -146,6 +153,7 @@ export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'DRAFTSEDIT', reset: () => setDraftsEdit(null) },
   { name: 'INPEDIT', reset: () => setInpEdit(null) },
   { name: 'OILASK', reset: () => setOilAsk(null) },
+  { name: 'MEDMOVE', reset: () => setMedMove(null) },
   { name: 'DOCVIEW', reset: () => setDocView(null) },
   { name: 'DRAWER', reset: () => setDrawer(false) },
   { name: 'WEEKCAL', reset: () => setWeekCal(false) },

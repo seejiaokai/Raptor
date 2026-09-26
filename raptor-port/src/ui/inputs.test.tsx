@@ -12,6 +12,7 @@ import { DAYS } from '../engine/data'
 import { acceptInput, acceptedDay } from '../engine/slots'
 import { canEditSched } from '../state/auth'
 import { HIST } from '../state/history'
+import { ELOG } from '../engine/editlog'
 import { validate } from '../engine/validate'
 import { InputsPage, initialRange } from './InputsPage'
 import { PEOPLE } from '../engine/people'
@@ -1379,5 +1380,23 @@ describe('a request with an OIL day nobody has answered says so on its row', () 
     const tr = rowOf('f6ctrl')
     expect(tr).toBeTruthy()
     expect(tr!.querySelector('[data-oilask]')).toBeFalsy()
+  })
+})
+
+/* AN ADD ON THIS PAGE WRITES ITS HISTORY LINE (the absence-record re-test, AB8a, 26 Sep 26). Edit history names an
+   input ADDED and an input REMOVED (engine-rules §The edit log) — and the same add through the edit window
+   (commitNewInput) always wrote "Input added — …", while the page's OWN Add, the door people use most, wrote
+   nothing: filed here, then deleted, the history held the deletion of a leave it had never seen filed. */
+describe('Edit history hears an add made on this page', () => {
+  it('Add input writes "Input added — <callsign>, <type>, <date>"', async () => {
+    await click($('#inCal [data-cal]'))
+    await click($('#inCal [data-cal]'))
+    const before = ELOG.rows.length
+    await click($('#inAdd'))
+    const r = INPUTS[0]
+    const cs = PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person
+    const said = ELOG.rows.slice(before).map((x: any) => x.lbl || x.to || '').join(' | ')
+    expect(said).toContain(`Input added — ${cs}, ${r.type}, ${r.date}`)
+    await click(rowFor(0).querySelector('.rmx'))
   })
 })

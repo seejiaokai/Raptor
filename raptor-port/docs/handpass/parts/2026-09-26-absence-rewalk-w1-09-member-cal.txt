@@ -1,0 +1,5 @@
+filters {"person":"bane","selects":["inType=LL","inFPerson=bane","inFType=all"]}
+[["2026-07-16","Ranger Appointment"]]
+pill FILTERED: RANGER
+errors []
+TABLE [{"who":"Vector","ctl":""},{"who":"Grit","ctl":""},{"who":"Gambit","ctl":""},{"who":"Zenith","ctl":""},{"who":"Bolt","ctl":""},{"who":"Tally","ctl":""},{"who":"Quill","ctl":""},{"who":"Wisp","ctl":""},{"who":"Rebel","ctl":""},{"who":"Zulu","ctl":""},{"who":"Saint","ctl":""},{"who":"Cobra","ctl":""}]
