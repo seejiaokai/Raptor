@@ -3243,7 +3243,7 @@ ring (it keeps its own rule only to out-rank `.puck.me`'s later `!important` rin
 `.puck.me.boxdash` draws nothing behind its dashes, as `.boxdash` does; the purple fill stays. **Any other flag on his
 own puck — the dotted cause ring, the amber / thin red / grey severity rings — keeps the purple ring and loses its
 glow** (`.puck.me.warn`, `.puck.me.boxdot`, written BEFORE the red rings so a solid or dashed red ring still wins;
-Fable's read). Two glows are NOT flags and stay: the purple "this is you" glow on his UNFLAGGED puck and the clicked-warning focus (`.puck.wfoc`, a transient answer to a tap). Pinned by
+Fable's read). **TO CHANGE — D270 (27 Sep 26, "Q2 yes"):** flagged, his own puck will show the flag's own ring (amber, thin red, grey, dotted) exactly as another man's does, instead of the purple ring; the purple fill stays. Not built yet — `OUTSTANDING.md` `[ME-PUCK-SEVERITY-RING]`; until then the sentence above describes the app. Two glows are NOT flags and stay: the purple "this is you" glow on his UNFLAGGED puck and the clicked-warning focus (`.puck.wfoc`, a transient answer to a tap). Pinned by
 `src/ui/flagglow-css.test.ts`, which walks EVERY ring rule in the stylesheet for a blurred layer — a ring rule written
 later is caught the same way.
 

@@ -254,7 +254,8 @@ after F1/A4.
   ring and the grey note ring are REPLACED by the purple ring (no glow now) — only the letter chip shows the flag
   (`w1/D1-*`, the first walk, before the glow went). Same on `main`. Show the warning's ring instead of the purple one
   whenever your puck carries a flag (the purple fill still says "you")?
-  (Recommended: yes — the fill is enough to say "you".)
+  (Recommended: yes — the fill is enough to say "you".) **ANSWERED 27 Sep 26 — "Q2 yes" (D270);** built after his look at
+  the mock-up (`[ME-PUCK-SEVERITY-RING]`). Q1 and Q3: he asked for mock-ups first (27 Sep 26).
 - **Q3 — The strip beside the ‹ arrow.** The day before the front day now shows a 42px strip at the left edge, under the
   arrow (`w4/GUTTER-prevday-tail-view-1440x900.png`) — it was 8px. Keep it (it hints there is a day to the left), or
   leave that strip empty? (Recommended: keep.)

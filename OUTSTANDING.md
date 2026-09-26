@@ -1270,8 +1270,12 @@ at 0. **Place:** his answer; then a small WALK-tier build.
 The five-flags walk (W1, `raptor-port/docs/img/handpass/2026-09-26-five-flags/w1/D1-*`, `D2-*`): `.puck.me`'s purple ring
 replaces the severity ring, so only the letter chip shows the flag on his own puck (another man's shows the ring). The
 batch took the GLOW off every flagged own puck (D164); whether the severity ring should show INSTEAD of the purple ring
-is the look card's Q2 (recommended: yes — the purple fill says "you"). The same shape: in OIL mode the green OIL ring on
-his own puck is hidden under the purple ring (`w1/F9-*`). **Place:** his answer; a LOOK-tier CSS change if yes.
+is the look card's Q2 — **ANSWERED 27 Sep 26: "Q2 yes" (D270)** — flagged, his own puck shows the flag's own ring (amber,
+thin red, grey, dotted) as another man's does, the purple fill stays; unflagged, the purple ring and glow as today. **To build:**
+`scheduler.css` `.puck.me.warn` / `.puck.me.boxdot` (and its comment), `flagglow-css.test.ts`, `ui-contracts.md` (the
+"no flag ring glows" paragraph), a mock-up first (his ask, 27 Sep 26); WALK tier (a shared drawer — not LOOK). Still OPEN,
+not part of D270: in OIL mode the green OIL ring on his own puck is hidden under the purple ring (`w1/F9-*`) — ask with the
+mock-up. **Place:** on the five-flags branch before "merge live", or its own small branch after — with the mock-up.
 
 ### [ARROW-GUTTER-STRIP] The day before the front one shows a 42px strip beside the ‹ arrow — a question for him (filed 26 Sep 26)
 The five-flags walk (W4, `raptor-port/docs/img/handpass/2026-09-26-five-flags/w4/GUTTER-prevday-tail-view-1440x900.png`):
