@@ -115,16 +115,21 @@ function PersonFields(p: { idp: string; np: NewPerson; onChange: (np: NewPerson)
    (ALL / ALL AVAIL) is nobody to link, so it opens New person, which refuses it as taken.
    A person who ALREADY HAS AN ACCOUNT is not in the picker (one account per person, D166),
    so the note says so instead of asking the admin to pick him (Fable's code read #1) — it
-   does not claim the asker is someone else: it may be him on a new sign-in, which is the
-   account editor's job, not this form's */
+   does not claim the asker is someone else: it names both ways out (him on a new sign-in —
+   renaming his account's sign-in answers this request, accounts.ts updateAccount — or
+   someone else). The account is checked BEFORE archived: posting out archives a man and
+   keeps his account, and "restore to link" could never end in a link (Fable's and Astra's
+   fix checks #1 — restoring also wipes his posting-out window) */
+const SOMEONE_ELSE = 'If it is someone else, choose New person and give them another callsign or name.'
 function rosterMatch(r: AccessRequest): { pid: string; note: string } | null {
   const hit = r.cs ? nameToId(r.cs) : undefined
   const p = hit && (PEOPLE as any)[hit]
   if (!hit || !p || p.special) return null
   const same = String(p.cs).toLowerCase() === r.cs.trim().toLowerCase()
-  if (p.archived) return { pid: hit, note: `He typed ${r.cs} — ${p.cs} is archived; restore them on the Quals page to link them.` }
+  const who = `${p.cs}${p.archived ? ' (archived)' : ''}`
   const acct = accountOfPid(hit)
-  if (acct) return { pid: hit, note: `He typed ${r.cs} — ${same ? `${p.cs} already has` : `that is ${p.cs}, who already has`} an account (${acct.name}), so they can't be picked here. If this is someone else, choose New person and give them another callsign or name.` }
+  if (acct) return { pid: hit, note: `He typed ${r.cs} — ${same ? `${who} already has` : `that is ${who}, who already has`} an account (${acct.name}), so they can't be picked here. If it is them on a new sign-in, change that account's sign-in under Accounts — that answers this request. ${SOMEONE_ELSE}` }
+  if (p.archived) return { pid: hit, note: `He typed ${r.cs} — ${p.cs} is archived; restore them on the Quals page to link them. ${SOMEONE_ELSE}` }
   return { pid: hit, note: same ? `He typed ${r.cs} — ${p.cs} is on the roster. Pick them if this is them.`
     : `He typed ${r.cs} — that is ${p.cs}. Pick them if this is them.` }
 }

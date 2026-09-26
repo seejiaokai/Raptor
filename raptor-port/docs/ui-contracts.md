@@ -4622,14 +4622,17 @@ The three category panels:
   columns, filled from what he gave, the note `#apvNote` "Filled from what he gave when he signed up — change anything
   before you give access.", then "Add person and give access" `#apvGo` (one command: the person, his account, the request
   answered); **On the roster** the default when it is someone's: the picker `#apvPid` (people with no account, not
-  archived, not ALL / ALL AVAIL) NEVER pre-picked (D204), the note naming the matched person by his callsign (an archived
-  one: restore on Quals first; one who already has an account: says so, names that account's sign-in and says he can't be
-  picked here — if the asker is someone else, New person with another callsign or name; Fable's code read #1), then
+  archived, not ALL / ALL AVAIL) NEVER pre-picked (D204), the note naming the matched person by his callsign (one who
+  already has an account — archived or not, the account is checked FIRST: says so, names that account's sign-in, says he
+  can't be picked here and names both ways out: him on a new sign-in → change that account's sign-in under Accounts,
+  which answers the request; someone else → New person with another callsign or name — Fable's code read #1, both fix
+  checks #1; an archived one with no account: restore on Quals first, or New person if it is someone else), then
   "Give access"; the role `#apvRole` either way; Cancel `#apvCancel` discards edits —
   the next Approve starts again from the request; within one open, each half keeps its entries; **Decline**
   `[data-decline]`), or "Nobody is waiting for access." (`#admNoWaiting`); **Accounts** (`#accList`, one
   `[data-acct]` row each: sign-in name over the live callsign, the role pill, tags "archived callsign" / "switched off" /
-  "you"; a tap (`.acc-tap`) opens its editor `[data-editing]` — sign-in name, callsign, role, Save / Switch off-on /
+  "you"; a tap (`.acc-tap`) opens its editor `[data-editing]` — sign-in name, callsign (its picker keeps the account's
+  own person even once he is archived — never a blank "Pick…" over a hidden value; Astra's fix check #2), role, Save / Switch off-on /
   Cancel — except his OWN account, whose row is disabled; its picker reads "Callsign/Name", D219); **Add an account**
   (`#accAddBlock`: the sign-in `#accAddName`, then PERSON `#accModeRoster` | `#accModeNew`, default On the roster — **the
   ONE door for a new person**, D217: **On the roster** = the picker `#accAddPid`, the role, "Add account"; **New person** =

@@ -156,11 +156,14 @@ export function accountCallsign(a: Account | undefined): string {
   return p ? String(p.cs) : ''
 }
 /* the people an account can be linked to: on the roster, not archived, not the ALL /
-   ALL AVAIL placeholders, and without an account (`keep` is the one already linked) */
+   ALL AVAIL placeholders, and without an account (`keep` is the one already linked — kept
+   even when he has since been ARCHIVED: posting out keeps his account, and the editor's
+   picker must show who it belongs to, not a blank "Pick…" over a hidden value — Astra's
+   fix check #2; pidProblem already lets an account keep its archived person) */
 export function linkablePeople(keep?: string): string[] {
   return Object.keys(PEOPLE).filter(id => {
     const p = (PEOPLE as any)[id]
-    return p && !p.special && !p.archived && (id === keep || !accountOfPid(id))
+    return p && !p.special && (id === keep || (!p.archived && !accountOfPid(id)))
   }).sort((a, b) => String((PEOPLE as any)[a].cs).localeCompare(String((PEOPLE as any)[b].cs)))
 }
 export const isAdminAccount = (a: Account | undefined) => !!a && a.role === 'admin'

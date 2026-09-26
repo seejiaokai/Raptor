@@ -1,8 +1,8 @@
 {
-  "at": "2026-09-26T10:48:04.492Z",
+  "at": "2026-09-26T11:06:23.411Z",
   "base": "http://localhost:4174",
-  "pass": 55,
-  "total": 55,
+  "pass": 57,
+  "total": 57,
   "results": [
     {
       "id": "d-S9-card",
@@ -320,74 +320,88 @@
       "pic": "45-d-S12-undo.png"
     },
     {
+      "id": "d-FC1-archived-account",
+      "what": "Hex archived on Quals (his account kept): someone asks as \"Hex\" — the note names the account and both ways out, never \"restore to link\"",
+      "ok": true,
+      "note": "",
+      "pic": "46-d-FC1-archived-account.png"
+    },
+    {
+      "id": "d-FC2-archived-editor",
+      "what": "Hex's account editor (Hex archived): the Callsign/Name picker shows Hex, not a blank \"Pick…\"",
+      "ok": true,
+      "note": "",
+      "pic": "47-d-FC2-archived-editor.png"
+    },
+    {
       "id": "p-S9-card",
       "what": "phone: the sign-up card, four fields, the selects as wide as the boxes",
       "ok": true,
       "note": "",
-      "pic": "46-p-S9-card.png"
+      "pic": "48-p-S9-card.png"
     },
     {
       "id": "p-S9-waiting",
       "what": "phone: the waiting line",
       "ok": true,
       "note": "",
-      "pic": "47-p-S9-waiting.png"
+      "pic": "49-p-S9-waiting.png"
     },
     {
       "id": "p-S2-rail",
       "what": "phone: the Admin category list alone (\"Users · 1 waiting for access\") does NOT put the bell out",
       "ok": true,
       "note": "",
-      "pic": "48-p-S2-rail.png"
+      "pic": "50-p-S2-rail.png"
     },
     {
       "id": "p-S3-config-then-bell",
       "what": "phone: on Admin → Squadron config, the bell opens Users drilled in and puts itself out",
       "ok": true,
       "note": "",
-      "pic": "49-p-S3-config-then-bell.png"
+      "pic": "51-p-S3-config-then-bell.png"
     },
     {
       "id": "p-S15-approve",
       "what": "phone: Approve → New person, the two-column fields fit the pane (no sideways scroll)",
       "ok": true,
       "note": "",
-      "pic": "50-p-S15-approve.png"
+      "pic": "52-p-S15-approve.png"
     },
     {
       "id": "p-S15-give",
       "what": "phone: \"Add person and give access\" makes Hawk",
       "ok": true,
       "note": "",
-      "pic": "51-p-S15-give.png"
+      "pic": "53-p-S15-give.png"
     },
     {
       "id": "p-S3-quals-button",
       "what": "phone: Quals \"+ Add person\" lands drilled into Users on New person",
       "ok": true,
       "note": "",
-      "pic": "52-p-S3-quals-button.png"
+      "pic": "54-p-S3-quals-button.png"
     },
     {
       "id": "p-S5-add-form",
       "what": "phone: the New person add form fits the pane",
       "ok": true,
       "note": "",
-      "pic": "53-p-S5-add-form.png"
+      "pic": "55-p-S5-add-form.png"
     },
     {
       "id": "s-S9-card",
       "what": "a short window: the whole sign-up card reaches its Request access and Sign out",
       "ok": true,
       "note": "",
-      "pic": "54-s-S9-card.png"
+      "pic": "56-s-S9-card.png"
     },
     {
       "id": "f-S14-first-write-reload",
       "what": "a fresh world: \"Add person and account\" as its FIRST write, then a reload — Firsty on Quals, first@mail on Admin → Users, both kept; he signs in as himself",
       "ok": true,
       "note": "",
-      "pic": "55-f-S14-first-write-reload.png"
+      "pic": "57-f-S14-first-write-reload.png"
     }
   ],
   "errors": []

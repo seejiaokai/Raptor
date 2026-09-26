@@ -345,7 +345,8 @@ async function qualsRow(page, view, cs) {
   await signUp(page, 'r4@mail', { cs: freeCs, seat: 'FCP', cat: 'C' })
   await signIn(page, 'ad', 'a'); await go(page, 'admin')
   const reqId = cs => page.evaluate(c => { const r = [...document.querySelectorAll('#admWaiting [data-req]')].find(x => x.querySelector('.acc-sub b')?.textContent === c); return r ? r.getAttribute('data-req') : null }, cs)
-  const HAS = 'already has an account (us), so they can\'t be picked here. If this is someone else, choose New person and give them another callsign or name.'
+  /* both ways out named (Fable's fix check #2): him on a new sign-in, or someone else */
+  const HAS = 'already has an account (us), so they can\'t be picked here. If it is them on a new sign-in, change that account\'s sign-in under Accounts — that answers this request. If it is someone else, choose New person and give them another callsign or name.'
   /* each approve form stays OPEN for its picture (the note is the evidence); Cancel comes after */
   const openApv = async cs => { await page.click(`[data-approve="${await reqId(cs)}"]`); await page.waitForTimeout(200); await page.locator('[data-approving]').scrollIntoViewIfNeeded() }
   await step(page, 'd-S8-ranger', '"Ranger" (he already has an account): On the roster, NOT pre-picked, the picker does not offer him and the note SAYS so', async () => {
@@ -481,6 +482,33 @@ async function qualsRow(page, view, cs) {
     const still = !!(await pidOf(page, 'Undoer'))
     return cleared && back && still ? true : JSON.stringify({ cleared, back, still })
   })
+
+  /* Fable's and Astra's fix checks #1 and Astra's #2 — a person ARCHIVED who keeps his account (posting out does
+     exactly that): Hex (rocky) holds the seeded `hex` account. Archived through Quals' own ✕, then someone asks as
+     "Hex": the note names the account (never "restore to link", which could not end in a link), and Hex's account
+     editor still shows Hex in its picker. Last on the desktop, so Hex stays archived for nothing after it. */
+  await go(page, 'quals'); await page.click('#qViewA').catch(() => {})
+  if (await page.locator('#qEdit').isVisible()) { await page.click('#qEdit'); await page.waitForTimeout(300) }
+  const archOk = await page.evaluate(() => { const el = document.querySelector('#qtbl [data-arch="rocky"]'); if (!el) return 'no ✕ drawn for Hex'; el.dispatchEvent(new MouseEvent('click', { bubbles: true })); return true })
+  await page.waitForTimeout(400)
+  if (await page.locator('#qSave').isVisible().catch(() => false)) await page.click('#qSave')
+  await signUp(page, 'hexnew@mail', { cs: 'Hex', seat: 'RCP', cat: 'C' })
+  await signIn(page, 'ad', 'a'); await go(page, 'admin')
+  await step(page, 'd-FC1-archived-account', 'Hex archived on Quals (his account kept): someone asks as "Hex" — the note names the account and both ways out, never "restore to link"', async () => {
+    if (archOk !== true || !(await page.evaluate(() => !!window.PEOPLE.rocky.archived))) return `not archived: ${archOk}`
+    await openApv('Hex')
+    const note = await text(page, '#apvNote'), offered = (await page.$$eval('#apvPid option', os => os.map(o => o.textContent))).includes('Hex')
+    return note.startsWith('He typed Hex — Hex (archived) already has an account (hex)') && !/restore|Pick them/i.test(note) && !offered ? true : `${note} / offered ${offered}`
+  })
+  await page.click('#apvCancel')
+  { const id = await reqId('Hex'); if (id) { await page.click(`[data-decline="${id}"]`); await page.waitForTimeout(200) } }
+  await step(page, 'd-FC2-archived-editor', 'Hex\'s account editor (Hex archived): the Callsign/Name picker shows Hex, not a blank "Pick…"', async () => {
+    await page.click('[data-acct="achex"] .acc-tap'); await page.waitForTimeout(200)
+    await page.locator('[data-editing="achex"]').scrollIntoViewIfNeeded()
+    const v = await page.inputValue('#accEdPid'), shown = await page.$eval('#accEdPid', s => s.options[s.selectedIndex]?.textContent)
+    return v === 'rocky' && shown === 'Hex' ? true : `value "${v}", shows "${shown}"`
+  })
+  await page.click('#accEdCancel')
 
   W.errors.forEach(e => errorsAll.push(e))
   await W.browser.close()

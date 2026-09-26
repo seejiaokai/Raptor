@@ -159,11 +159,66 @@ describe('NP5 — approving: On the roster | New person, filled from what he gav
     const [a, b] = ACCESS_REQS
     await click($(`[data-approve="${a.id}"]`))
     expect(optTexts('#apvPid'), 'one account per person: the picker cannot offer him').not.toContain('Ranger')
-    expect($('#apvNote').textContent).toBe(`He typed Ranger — Ranger already has an account (${bane.name}), so they can't be picked here. If this is someone else, choose New person and give them another callsign or name.`)
+    /* both ways out are named — it may be HIM on a new sign-in (renaming his account's sign-in
+       answers this request, accounts.ts updateAccount), or someone else (Fable's fix check #2) */
+    const ways = "so they can't be picked here. If it is them on a new sign-in, change that account's sign-in under Accounts — that answers this request. If it is someone else, choose New person and give them another callsign or name."
+    expect($('#apvNote').textContent).toBe(`He typed Ranger — Ranger already has an account (${bane.name}), ${ways}`)
     expect($('#apvNote').textContent).not.toMatch(/Pick them/)
     await click($('#apvCancel'))
     await click($(`[data-approve="${b.id}"]`))
-    expect($('#apvNote').textContent).toBe(`He typed bane — that is Ranger, who already has an account (${bane.name}), so they can't be picked here. If this is someone else, choose New person and give them another callsign or name.`)
+    expect($('#apvNote').textContent).toBe(`He typed bane — that is Ranger, who already has an account (${bane.name}), ${ways}`)
+  })
+  it('ARCHIVED and holding an account: the account wins — never "restore to link", which could not work (both fix checks #1)', async () => {
+    /* Hex (rocky) holds the seeded `hex` account; posting out archives a man and keeps his account */
+    const was = (PEOPLE as any).rocky.archived
+    ;(PEOPLE as any).rocky.archived = true
+    try {
+      await signInAs('r1@mail'); ask('Hex')
+      await signInAs('r2@mail'); ask('rocky')
+      await signInAs('ad', 'a')
+      await act(async () => { setPage('admin'); notify() })
+      const [a, b] = ACCESS_REQS
+      for (const [r, typed] of [[a, 'He typed Hex — Hex (archived)'], [b, 'He typed rocky — that is Hex (archived), who']] as const) {
+        await click($(`[data-approve="${r.id}"]`))
+        expect($('#apvModeRoster').getAttribute('aria-pressed')).toBe('true')
+        expect(optTexts('#apvPid')).not.toContain('Hex')
+        const note = $('#apvNote').textContent!
+        expect(note.startsWith(typed), note).toBe(true)
+        expect(note).toMatch(/already has an account \(hex\)/)
+        expect(note).not.toMatch(/restore|Pick them/i)
+        await click($('#apvCancel'))
+      }
+    } finally { (PEOPLE as any).rocky.archived = was }
+  })
+  it('archived with NO account: "restore to link" — and the someone-else way out too (Fable\'s fix check #3)', async () => {
+    const free = linkablePeople().find(id => String((PEOPLE as any)[id].cs).toLowerCase() !== id)!
+    const fcs = String((PEOPLE as any)[free].cs)
+    ;(PEOPLE as any)[free].archived = true
+    try {
+      await signInAs('r1@mail'); ask(fcs)
+      await signInAs('ad', 'a')
+      await act(async () => { setPage('admin'); notify() })
+      await click($(`[data-approve="${ACCESS_REQS[0].id}"]`))
+      expect($('#apvNote').textContent).toBe(`He typed ${fcs} — ${fcs} is archived; restore them on the Quals page to link them. If it is someone else, choose New person and give them another callsign or name.`)
+    } finally { delete (PEOPLE as any)[free].archived }
+  })
+  it("the account editor of an ARCHIVED person still shows his callsign in its picker (Astra's fix check #2)", async () => {
+    const was = (PEOPLE as any).rocky.archived
+    ;(PEOPLE as any).rocky.archived = true
+    try {
+      await signInAs('ad', 'a')
+      await act(async () => { setPage('admin'); notify() })
+      await click($('[data-acct="achex"] .acc-tap'))
+      expect(($('#accEdPid') as HTMLSelectElement).value, 'the picker shows the person the account belongs to').toBe('rocky')
+      expect(optTexts('#accEdPid')).toContain('Hex')
+      /* changing only the sign-in keeps him — visibly and in the saved account */
+      await type($('#accEdName') as HTMLInputElement, 'hex2@mail')
+      await click($('#accEdSave'))
+      expect(accountByName('hex2@mail')).toMatchObject({ pid: 'rocky' })
+      await click($('[data-acct="achex"] .acc-tap'))
+      expect(($('#accEdPid') as HTMLSelectElement).value).toBe('rocky')
+      await type($('#accEdName') as HTMLInputElement, 'hex'); await click($('#accEdSave'))
+    } finally { (PEOPLE as any).rocky.archived = was }
   })
   it('Cancel discards edits: the next Approve starts again from what he gave; switching halves keeps each', async () => {
     await signInAs('viper3@mail'); ask('Viper')

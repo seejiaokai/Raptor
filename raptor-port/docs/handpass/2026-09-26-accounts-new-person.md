@@ -28,7 +28,7 @@ the ui-contracts passage carry the old words verbatim with the pointer (D138).
 
 ## 3. The roll-call — every place the change reaches (the plan's 29 rows)
 
-Walk pictures are in `walk2/` unless marked `walk1`. "d-" desktop 1440×900, "p-" phone 390×844, "s-" a 1440×700 window.
+Walk pictures are in `walk2/` unless marked `walk1` or `walk3`. "d-" desktop 1440×900, "p-" phone 390×844, "s-" a 1440×700 window, "f-" a fresh world. **The final build's pictures are `walk3/`** — the same steps and more, numbered differently (the step ids are the same; `walk3/walk.json` maps each to its picture).
 
 | # | Place | After the build | Walked (picture) | Unit / e2e |
 |---|---|---|---|---|
@@ -39,7 +39,7 @@ Walk pictures are in `walk2/` unless marked `walk1`. "d-" desktop 1440×900, "p-
 | 5 | The bell | lit for an unseen request (his own); tap → Users from any page; out once the list was on screen; the phone's category list does not count | YES — `06`–`08`, `33`, `34`, `36`; phone `41`, `42` | `accounts-newperson` NP6 (both widths, the page already up), `accounts.test` NP6 |
 | 6 | Waiting: the request line | "asked as Viper · JKB · WSO · CAT C · when"; personnel "· Personnel ·" | YES — `07`, `09`, `34` | NP5 |
 | 7 | Approve — New person | four fields filled; "Add person and give access" | YES — `09`, `10`; phone `43`, `44` | NP5 |
-| 8 | Approve — On the roster | the picker never pre-picked; the note naming the matched callsign | YES — `26`, `27`, `28` | NP5 |
+| 8 | Approve — On the roster | the picker never pre-picked; the note naming the matched callsign — and, for someone who already has an account, saying so (Fable read #1) | YES — `26`, `27`, `28` (these show the list after Cancel, not the note); **`walk3/31`–`34`** with the form open | NP5 (both notes) |
 | 9 | Add — On the roster | unchanged but the words | YES — `22` (gecko@mail linked later) | AC13 |
 | 10 | Add — New person with a sign-in | person + account, one step | YES — `24`, `25` | NP3 (one command; one storage group, `txn-wiring`) |
 | 11 | Add — New person, blank sign-in | roster-only person; no Role; "Add person" | YES — `19`, `20` | NP1 |
@@ -49,15 +49,15 @@ Walk pictures are in `walk2/` unless marked `walk1`. "d-" desktop 1440×900, "p-
 | 15 | Quals head + its frozen mirror | "Callsign/Name" in every view | YES — `31` (four views); the mirror is the same body (`qualsHead`) — not scrolled to | `quals.test` NP7 |
 | 16 | Quals CSV export | first head "Callsign/Name" | YES — `32` (the downloaded file read) | `quals.test` NP7 |
 | 17 | Quals table | the new person in his seat view, CAT chip, flight "-" | YES — `11`, `21`, `24` | NP1 |
-| 18 | Crew lists (edit week palette) | the new aircrew person offered | YES — `12` | — (a projection of PEOPLE) |
+| 18 | Crew lists (edit week palette, the board's Available crew) | the new aircrew person offered | YES — `12`; the board's Available crew **`walk3/13`** (Fable read #2a) | — (a projection of PEOPLE) |
 | 19 | Inputs (admin files for anyone) | the new person offered | YES — `13`, `37` (personnel too) | — |
 | 20 | Search | the new person found | YES — `14` | — |
 | 21 | Leave War roster | the new person (aircrew by CAT; personnel in Personnel) | YES — `15`, `21`, `37` | — |
 | 22 | Tracker "+ Add" | a new pilot/WSO listed; a new PERSONNEL person NOT — no-because: aircrew only by design | YES — `16`, `21` (listed), `37` (Zephyr, personnel, not listed) | — |
 | 23 | Tracker "Or type a callsign" | makes a Tracker student, not a person — no-because (D191) | NO — unchanged; not a door to the roster | — |
 | 24 | Admin's "On the roster" picker | a roster-only person linkable later | YES — `22` | — |
-| 25 | The new person signs in | lands as himself; his Quals row editable, callsign read-only (D218) | YES — `18`, `22` | NP3 |
-| 26 | A reload after each | person, account, request, "seen" kept | YES — `04`, `08`, `17` | `accounts.test` NP6 (reload), `txn-wiring` NP3 |
+| 25 | The new person signs in | lands as himself; his Quals row editable, callsign read-only (D218); his Inputs; the Leave War lights his row | YES — `18`, `22`; his Inputs **`walk3/20`**, his Leave War row **`walk3/21`** (Fable read #2b) | NP3 |
+| 26 | A reload after each | person, account, request, "seen" kept; a person + account as a fresh world's FIRST write, then a reload (§7.7) | YES — `04`, `08`, `17`; the fresh world **`walk3/55`** (Fable read #2c) | `accounts.test` NP6 (reload), `txn-wiring` NP3 |
 | 27 | Undo, Edit history | the add is not undoable, writes no history row; an earlier schedule undo still works | YES — `38` (a cleared seat, then a person added, Undo brings the seat back, the person stays) | — |
 | 28 | Member / guest / pending / switched off | no new door; the gate refuses a hand-made call | YES — member `35`; pending `05` | NP8 (`perms.test`, `accounts.test`, `roster-add.test`) |
 | 29 | Help page, Logic page | nothing describes the old form — searched: no "Add person" there | NO — searched in source, not walked | — |
@@ -96,8 +96,36 @@ Walk pictures are in `walk2/` unless marked `walk1`. "d-" desktop 1440×900, "p-
 | P1 | The sign-up card kept "Pick pilot, WSO or personnel" after he had picked Personnel (`walk2/03`) | **Fixed** — a refusal goes once a field changes; red first (`accounts-newperson` NP4), green after |
 | P2 | The New person note sat tight above Role / the button, tighter than the mock-up drew it (`walk2/09`, `19`) | **Fixed** — the mock-up's spacing (`.adm-note.acc-note`) |
 
-**Re-walk (`walk2/`, the same 47 asserted steps, the fixed build): 47/47 PASS, 0 browser errors.** P1 and P2 landed
-after walk2 and are re-walked with the reads' fixes (§8).
+**Re-walk (`walk2/`, the same 47 asserted steps, the build with W1 fixed): 47/47 PASS, 0 browser errors.** It is NOT
+the final build: P1 and P2 landed after it (Astra's read #3 — corrected here), and so did the reads' fixes (§6).
+
+**Re-walk 3 (`walk3/`, commit `67832f4c` — the reads' fixes, P1 and P2 all in): 55/55 PASS, 0 browser errors**, desktop
+1440×900, phone 390×844, a 1440×700 window and a fresh world. The 47 steps of walk2, reworded where a fix changed what
+is right, plus eight:
+
+| Step | Why it was added | Picture |
+|---|---|---|
+| `d-S8-ranger` (reworded) | Fable read #1: Ranger already has an account (`us`) — the note says so, the picker does not offer him | `31` |
+| `d-S8-ranger-new` (split out) | the same request on New person, refused as taken — its own picture | `32` |
+| `d-S8-bane` (reworded) | the hidden-id form of the same | `33` |
+| `d-S8-free` (new) | a person on Quals with NO account — the "Pick them" note, and the picker offers him | `34` |
+| `d-S4-board-avail` (new) | Fable read #2(a): roll-call row 18 names the board's Available crew — Vyper is under "Available all day" | `13` |
+| `d-S4-inputs` (widened) | the admin files a Training for Vyper through the Inputs form | `14` |
+| `d-S4-his-inputs` (new) | Fable read #2(b): signed in as Vyper, the Training reads as his, with its ✎ and ✕ | `20` |
+| `d-S4-his-leavewar` (new) | Fable read #2(b): signed in as Vyper, the Leave War lights his row | `21` |
+| `d-A1-form-clears` (new) | Astra read #1, in the running app, both directions | `26` |
+| `d-A2-cat-personnel` (new) | Astra read #2 on the admin's form; the sign-up's is inside `d-S9-seatcat` | `27`, `03` |
+| `f-S14-first-write-reload` (new world) | Fable read #2(c), roll-call row 26 and bug-check order §7.7: "Add person and account" as a fresh world's FIRST write, a reload, both kept, he signs in as himself | `55` |
+
+**The S8 pictures of walk1 and walk2 did not show the note they asserted** (the step pressed Cancel before its picture
+was taken — they show the plain waiting list). Walk3's steps leave the approve form open for the picture. P1 is seen
+fixed in `03` (no refusal left once a field changed) and P2 in `09`, `22` and phone `50` (the note's room above Role, as
+the mock-up draws it).
+
+**The two older `[ACCOUNTS]` walks (Astra read #4), moved to "On the roster" after Approve and re-run from a fresh
+world on the same build: `acc-walk.mjs` 38/38, `acc-walk2.mjs` 42/42, 0 errors** — the counts they had at the
+`[ACCOUNTS]` merge. Results and the approve pictures: `acc-rewalk/` (the other pictures were looked at and not kept —
+they repeat the `[ACCOUNTS]` evidence, 35 MB).
 
 ## 6. The two code reads (Fable 5.1 and Astra, blind to each other, with this sheet in hand)
 Both reports exist: `2026-09-26-accounts-new-person-fable-read.md` (FIX FIRST — 1 finding + 3 record items) and
@@ -112,10 +140,36 @@ Both reports exist: `2026-09-26-accounts-new-person-fable-read.md` (FIX FIRST �
 - The Quals frozen header mirror scrolled into view (15): the same `qualsHead` body as the head walked.
 - The archived-refusal door out (door check): the refusal is unit-pinned; Restore is `[ACCOUNTS]`-walked.
 - A real iPhone: the phone widths ran in Chromium; nothing here depends on touch timing (no drag, no held finger).
+- The approve note's new "already has an account" wording at phone width: the same `#apvNote` paragraph whose wrap at
+  390px is walked in phone `50` (the "Filled from…" note) and checked for sideways overflow there; words only.
+- Fable read #2's three rows are now walked (walk3 `13`, `20`, `21`, `55`) — no longer on this list.
 
 ## 9. The gates
 On the build `09cc00e3` (before the reads' fixes), one run: unit 6248 / 6248 (381 files) · build clean · tfin 728 / 0 · e2e 476
 passed, 48 skipped · smoke 443 / 0 · rulecheck OK · docsize OK. **To re-run on the final code.** probes / perf: not run.
 
 ## 10. His look — the look card
-*(written at the end)*
+
+**Look here (five minutes, on the preview; sign in `ad` / `a`):**
+1. Sign out, sign in as a new name (say `me@mail`): the card asks **Displayed callsign/name, Initials, Pilot / WSO /
+   personnel, CAT** — try Personnel (the CAT goes), and a 15-letter name (it says so, never cuts it).
+2. Send it, sign in as `ad`: **the bell** is lit; tap it — Admin → Users, the request line says what you typed.
+3. **Approve**: it opens on **New person**, filled from the request — change something, "Add person and give access".
+   Then look on Quals, the Leave War and the Inputs picker: the new person is there.
+4. Admin → Users → **Add an account** → **New person** with the sign-in left blank: "Add person" makes a roster-only
+   person (someone who won't use the app).
+5. Quals → **+ Add person**: it takes you to that form, New person chosen, the box ready to type in.
+
+**The calls I made — yours to correct** (from the plan, plus one from the fixes):
+1. The bell's tap goes to the waiting list before a bug report or an OIL question.
+2. Seat and CAT start at "Pick…" on both forms — never a silent default (the old Quals form defaulted to Pilot / OCU).
+3. With a blank sign-in the Role box hides (no account, no role).
+4. Approving: a typed callsign that is someone's opens "On the roster" with a note, never pre-picked. **New, from
+   Fable's read:** when that person already has an account, the note says so and names the account ("Ranger already has
+   an account (us), so they can't be picked here…"). If the asker really is Ranger on a new sign-in, the way is to
+   change Ranger's account's sign-in in its editor and decline the request — the note does not guess which it is.
+5. The "Add an account" heading stays over a roster-only add (the mock-up as approved).
+6. The words kept: "no callsign" / "archived callsign" tags, "tied to their callsign", "Sort by callsign".
+7. Tapping through a pre-filled New person for someone already on Quals under another callsign makes a second person —
+   the way back is Archive on Quals (there is no delete of a person).
+8. A person's seat cannot be changed after he is added (pre-existing: Quals has no seat box) — get it right at Approve.
