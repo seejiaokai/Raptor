@@ -73,13 +73,16 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 [OIL-PERSONAL-PLACEHOLDER] (FULL tier), [CROWD-SIM-BRIEF] (WALK tier), [OIL-RELINK-XWEEK].
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
-first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The background-command guard — [BG-GUARD-FALSE] (small; tooling). The Tracker — [TRK-RETEST-NOTES] and
+first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The Tracker — [TRK-RETEST-NOTES] and
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SESSION-PICK] (low, the next Tracker change), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — being built on `claude/tracker-palette`), [TRK-FLEXBAR-INK] (a question for him, on that branch's look card),
-[TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
-The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); [LOOK-435]'s steps 2–4 are items 1 above; left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). The board — [PUCK-FLAG-GLOW] (D164: a flagged puck does not glow — a small build), [CROWD-SWAP-SAYS-BUSY] (small; found by the batch's re-walk). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
+[TRK-BAKE-STALE] (low).
+The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); [LOOK-435]'s steps 2–4 are items 1 above; left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS], [RULING-HOMES-AUDIT], [HANDOFF-SHAPE-GUARD] and [BACKLOG-TIDY] (any time, docs only), [PEEK-ISSUED] (a question for him, low),
-Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words). View-only Sched — [VIEW-ARROW-OVER-LIST] (low, LOOK tier).
+Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words).
+The five-flags batch (`claude/five-flags-batch-build-ef7d85`, 26 Sep 26 — its five items archived, built there) — his three look-card questions [CROWD-DUP-REFUSE],
+[ME-PUCK-SEVERITY-RING] and [ARROW-GUTTER-STRIP] (answer, then small builds); low: [GHOST-FLAG-SHADOW], [LW-SETTINGS-SMALL],
+[ALLAVAIL-OPEN-ROW] (investigate first).
 Insights — [INSIGHTS-WORKING-COPY] (a question for him, with the one changes window or any time).
 
 **Waiting on him — no order exists:**
@@ -913,16 +916,6 @@ does not exist — the data is `src/tracker/data/`), reads name-keyed charts (be
 the one-table `eventInfo` (before D126). The D120 route (export → wipe → import) does not need it; fix
 it only if baking a chart into the shipped data comes back. **Place:** low, after `[TRK-RETEST-NOTES]`.
 
-### [LW-RESET-ORDER] A "back to the default order" control for the Leave War roster — his call, build only if he asks (moved from HANDOFF.md, 24 Sep 26)
-**BUILT 26 Sep 26 on `claude/five-flags-batch-build-ef7d85`** (the five-flags batch, FULL check — evidence `raptor-port/docs/handpass/2026-09-26-five-flags.md`): ⚙ Settings → "Roster order" → Reset order; it CLEARS the saved order (`resetRosterOrder`), asks once, greyed while the roster as drawn is the default. To the archive with the merge.
-**HE ASKED (D160, 24 Sep 26): build it** — a "Reset order" line in ⚙ Settings running the store's `autoSortRoster`;
-no button, no strip. WALK tier (a new control). **Place:** any time, none blocking.
-
-- **OWNER'S CALL — no "back to the default order" control since Auto-sort went
-  (6 Sep 26).** A hand-arranged Leave War roster stays arranged until dragged
-  back; the store's `autoSortRoster` still exists. Offered: a "Reset order" line
-  in ⚙ Settings. Build only if he asks.
-
 ### [ADMIN-DISPLAY] An Admin "Display" area of per-section fold defaults — awaiting his go-ahead, do NOT build without it (moved from HANDOFF.md, 24 Sep 26)
 **DEFERRED BY HIM (D161, 24 Sep 26): "next time we revisit this again"** — put it to him again when Admin or the
 section folds are next touched. (Its first half — the wave show/hide toggle leaving Admin — was done 30 Aug 26.)
@@ -986,16 +979,6 @@ working copy, so on View-only Sched a published next-week day shows edits not ye
 content there too, as the published face does (D178, D179). **The question:** should the peek show the published version
 of a published day? **Place:** low; its own small WALK-tier build if yes.
 
-### [BG-GUARD-FALSE] The background-command guard refuses two commands that do move into raptor-port (filed 26 Sep 26)
-**BUILT 26 Sep 26 on `claude/five-flags-batch-build-ef7d85`** (the five-flags batch): measured — a background shell starts in the chat's STARTING folder, not the foreground's; the guard lets a chat started inside `raptor-port` run a bare `npm`, names the full path in its refusal, and matches only a folder that IS `raptor-port` or lies inside it; the notes corrected. To the archive with the merge.
-Found by the accounts chat on its first background run after `[BG-CWD-GUARD]` merged (D162): the hook
-(`.claude/hooks/bg-cwd-guard.mjs`) refused `cd /c/Users/User/projects/Raptor/raptor-port && npm …` (a full path), and
-the form it asks for, `cd raptor-port && npm …`, then FAILED — this background shell started inside `raptor-port`
-already (the session's folder), not at the repo root the hook and `raptor-port/CLAUDE.md` assume. What worked:
-`cd /c/Users/User/projects/Raptor && cd raptor-port && npm …`. **Do:** accept a `cd` whose target ends in `raptor-port`
-(full or relative path), and correct the "starts at the REPO ROOT" note — a background shell starts in the session's
-current folder. **Place:** small, tooling, any time.
-
 ### [INPUTSCAL-TAP-FLAKY] The calendar's chip-tap test fails now and then inside the full unit run, never alone — test-only (filed 26 Sep 26)
 `raptor-port/src/ui/inputscal.test.tsx` "a real pointerdown+pointerup on an input chip sets INPEDIT to that EXACT record":
 seen twice in full runs on `claude/leave-late-published` — once by Fable's first code read (`document.elementFromPoint is
@@ -1016,15 +999,6 @@ working copy "by design". **The question:** should Insights show the published s
 and the working copy on Edit Schedule? If yes, Astra's fix steps are in the read (a displayed-world model passed in; the
 issued days through `withChipWorld` / `faceWarn`). **Place:** a question for him; with the one changes window
 (`[DRAFT-PENDING]`, the next time the working-versus-published split is designed) or any time.
-
-### [VIEW-ARROW-OVER-LIST] The week's floating "‹" arrow covers the start of an opened warning list on a desktop (filed 26 Sep 26)
-**BUILT 26 Sep 26 on `claude/five-flags-batch-build-ef7d85`** (the five-flags batch): the desktop week keeps 54px of room at its sides and every landing puts the day beside the arrow (`state/view.ts weekInset`). To the archive with the merge.
-Seen by the Leave War walker of `[LEAVE-LATE-PUBLISHED]`'s check (picture
-`raptor-port/docs/img/handpass/2026-09-26-late-pub/leavewar/desktop/desktop-LW1b-1-face-warnings.png`): on View-only
-Sched at 1440 px, a day's "⚠ N issues" list opened on the day at the left edge sits under the week's floating "‹"
-scroll arrow, which hides the first letters of the list's lines. Not new with that branch (the arrow and the list are
-unchanged there). **Do:** give the arrow room (an inset on the scroller, or the arrow above the list only while the
-pointer is near it), walk both widths with a list open on the first and last day. **Place:** low, any time.
 
 ### [QUALS-PROTO-TOAST] The Quals page's "Save changes" says "prototype — writes to Dataverse in the full build" (filed 26 Sep 26)
 Found by the Quals walker of `[LEAVE-LATE-PUBLISHED]`'s check (evidence `raptor-port/docs/handpass/2026-09-26-late-pub.md`
@@ -1118,18 +1092,6 @@ the content unnumbered (the 21 Sep bug-check rulings are the order's own text). 
 by CONTENT once; write any that is missing into its home; add the D-number beside content that is there, so a later
 audit is mechanical — then consider making the gate require a NEW row's document homes to cite its number.
 **Place:** any time, none blocking.
-
-### [PUCK-FLAG-GLOW] A red-flagged "View as" puck glows; no flagged puck should (his ask, D164, 24 Sep 26)
-**BUILT 26 Sep 26 on `claude/five-flags-batch-build-ef7d85`** (the five-flags batch): the "this is you" puck's solid and dashed rings lose the red glow (`scheduler.css`), pinned by a test that walks every ring rule. To the archive with the merge.
-*(Since `[ACCOUNTS]` (26 Sep 26) the purple "this is you" puck is the SIGNED-IN person's — "View as" is gone; the glow
-rule below is unchanged.)*
-He sent two pictures: a red-flagged puck with a red glow (Ranger, the person being viewed as) and one without (Saber).
-The glow comes from `raptor-port/src/ui/scheduler.css`: `.puck.me.boxred` and `.puck.me.boxdash` add
-`0 0 10px 1px rgba(240,85,95,.7)` on top of the red ring when the View-as puck is flagged. **Do:** drop that glow, so
-a flagged View-as puck shows the same plain red ring (solid or dashed) as every other flagged puck; keep the purple
-"this is you" fill and ring. Read the precedence notes near `.puck.me` first (every puck rule carrying `!important`)
-and walk both widths with a flagged View-as puck. LOOK tier on one shared puck rule — check every surface that draws
-a puck. **Place:** any time, none blocking; a good one to ride the next scheduler change.
 
 ### [UNDO-ROSTER-SETTINGS] The one Undo does not cover roster or settings edits, though his 16 Sep 26 rule says it should (found 24 Sep 26)
 Found by the amendment re-test's rule-to-test mapping (register AM39d,
@@ -1296,16 +1258,46 @@ means published). Other options: a hollow dotted tag with no word (a small neutr
 or a warning colour. **A mock-up first** (the house rule for a visual change): the three side by side on the edit week
 and the board, desktop and phone, beside a published day's AL1 tag. **Place:** his answer, then with `[LOOK-435]`.
 
-### [CROWD-SWAP-SAYS-BUSY] Swapping two men inside one crowd warns "already on" that row — found 25 Sep 26
-**BUILT 26 Sep 26 on `claude/five-flags-batch-build-ef7d85`** (the five-flags batch): the cause was the busy check's key trim for a Common Programme row (`engine/keys.ts seatRow` now, shared with the validator's leaving-seat tests); a drag also excludes the seat he leaves. To the archive with the merge.
-Seen in the amendment batch's re-walk (`raptor-port/scripts/handpass/am/hr-03-batch-reads.mjs`, picture
-`docs/img/handpass/2026-09-25-amendment-batch/rewalk-reads/desktop/A-2-pending-list.png`): on the board, dragging
-Reaper onto Ranger on the SAME Common Programme row swaps them (correct), and a warning toast says "Reaper — already
-on FLIGHT SAFETY STAND-DOWN 08:30–09:00" — the row he is being moved within. **Not new** — the message comes from the
-availability check (`raptor-port/src/engine/avail.ts`, the "already on" lines), which the batch did not touch; the
-swap itself and the counts are right. **The agent's reading:** a move inside the row a man is already on should not
-call him busy there — exclude the row being dropped into from his own busy check. Small, WALK tier. **Place:** with
-the board's small items ([PUCK-FLAG-GLOW]); not his call unless the fix changes what a warning says elsewhere.
+### [CROWD-DUP-REFUSE] A man put on a row he is already on: warn (today) or refuse? — a question for him (filed 26 Sep 26)
+From the five-flags batch's walk (W3, F6; evidence `raptor-port/docs/handpass/2026-09-26-five-flags.md` §5): the app now
+NAMES it ("already on FLIGHT SAFETY STAND-DOWN 08:30–09:00" — the caption, the toast, the struck name in the crew list)
+but still plants the second copy, per his 13 Aug 26 "everything plants, warning after". **The question (the look card,
+Q1):** refuse it instead — one man, once per row? If yes: a hard refusal beside D33's in `avail.ts slotBar`'s
+one-man-one-place check and the three doors (`drag.ts`, `view.ts placeArmed`, `fillSlot`), with the pending count left
+at 0. **Place:** his answer; then a small WALK-tier build.
+
+### [ME-PUCK-SEVERITY-RING] On his own puck, the purple "this is you" ring hides the amber / thin red / grey rings — a question for him (filed 26 Sep 26)
+The five-flags walk (W1, `raptor-port/docs/img/handpass/2026-09-26-five-flags/w1/D1-*`, `D2-*`): `.puck.me`'s purple ring
+replaces the severity ring, so only the letter chip shows the flag on his own puck (another man's shows the ring). The
+batch took the GLOW off every flagged own puck (D164); whether the severity ring should show INSTEAD of the purple ring
+is the look card's Q2 (recommended: yes — the purple fill says "you"). The same shape: in OIL mode the green OIL ring on
+his own puck is hidden under the purple ring (`w1/F9-*`). **Place:** his answer; a LOOK-tier CSS change if yes.
+
+### [ARROW-GUTTER-STRIP] The day before the front one shows a 42px strip beside the ‹ arrow — a question for him (filed 26 Sep 26)
+The five-flags walk (W4, `raptor-port/docs/img/handpass/2026-09-26-five-flags/w4/GUTTER-prevday-tail-view-1440x900.png`):
+the desktop week's 54px room ([VIEW-ARROW-OVER-LIST]) leaves the previous day's last 42px visible around the arrow (8px
+on `main`). The look card's Q3: keep (it hints at a day to the left — recommended) or leave that strip empty. Also from
+the same walk, small: straight after a window resize a day can sit partly under the ‹ until the next press (a resize
+never re-lands the week); "day a–b of 7" counts a third day that shows only ~212px at 1440. **Place:** his answer; low.
+
+### [GHOST-FLAG-SHADOW] A dragged flagged puck loses the ghost's dark "lifted" shadow (filed 26 Sep 26)
+The five-flags walk (W1, `…/w1/B2-desktop-mouse-ghost-of-saber.png`): the ghost clones the puck, and a flagged puck's red
+ring (`.puck.boxred`, `!important`) replaces the depth shadow `.dragimg.lift` adds, so the carried puck keeps its red ring
+and the cyan veil but not the shadow that makes it read as lifted. Anyone's flagged puck; the same on `main`. **Do:** carry
+the depth shadow where the ring cannot eat it (the veil is inside a clipped puck, so not there — a wrapper, or the
+ring on the veil and the shadow on the clone). LOOK tier. **Place:** low, any time.
+
+### [LW-SETTINGS-SMALL] Two small ⚙ Settings edges in the Leave War (filed 26 Sep 26)
+From the five-flags batch (Fable's read F4, W2's walk): (1) Reset order judges "the default" over the WHOLE roster while
+the grid draws only the men in the visible months, so a hand order that differs only for a posted-out man lights the
+line while the grid looks default (a press clears it, harmlessly, with an Undo step); (2) an armed "Really reset?" (either
+reset) survives a page switch while the sheet stays open. **Do, if wanted:** give `rosterFollowsDefault` the grid's window
+predicate; disarm both on leaving the page. **Place:** low, any time.
+
+### [ALLAVAIL-OPEN-ROW] An ALL AVAIL on an open-ended row shows no count chip — not yet looked at (filed 26 Sep 26)
+Seen in passing by the five-flags walk (W1): ALL AVAIL placed on DINNER WITH CMD (18:30, no end time) drew no count chip,
+so that row has no door into the ALL AVAIL window. Possibly D31's "nothing to measure" refusal, as designed — check
+against D31/D41 first. **Place:** low, investigate before building anything.
 
 ### [REQ-ORPHAN-ROW] A request's row outliving the request — low (25 Sep 26)
 Two older shapes, the same on `main`: (1) Fable's O2 — a request deleted on the Inputs page while its row stands on a

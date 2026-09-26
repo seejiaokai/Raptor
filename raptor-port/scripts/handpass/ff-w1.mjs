@@ -24,7 +24,7 @@
         (§2.1 row 18); the OIL mode (row 10)
      G  the finger ghost on a real touch phone (CDP touch events) */
 process.env.HP_URL = 'http://localhost:4176'
-process.env.HP_SHOTS = 'C:/Users/User/projects/Raptor/.claude/worktrees/five-flags-batch-build-ef7d85/raptor-port/docs/img/handpass/2026-09-26-five-flags/w1'
+process.env.HP_SHOTS = process.env.FF_SHOTS || 'C:/Users/User/projects/Raptor/.claude/worktrees/five-flags-batch-build-ef7d85/raptor-port/docs/img/handpass/2026-09-26-five-flags/w1'
 const L = await import('./am/w2-lib.mjs')      // am-lib (lib.mjs) + openHi
 const W = await import('./am/w1-lib.mjs')      // checker, toastSpy, toasts, shotUnion, shotBox, boardType
 const { open, openHi, go, board, closeBoard, editWeek, signDay, publishDay, unpublish, head, put, tap, lookAt, menuClose } = L
