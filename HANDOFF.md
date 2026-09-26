@@ -20,7 +20,8 @@ the later merge keeps both (D78).
 - **Where it stands:** built, walked, read three rounds by Fable and Astra, every finding fixed red first, re-walked
   (walk3 **58/58**, 0 browser errors), break tests **32/32 red**, the full checks green (§9 of the sheet), the PR open
   from this branch (`gh pr list --head claude/accounts-new-person`). **Next: his look (the sheet's §10 card), then his
-  "merge live"** — then archive `[ACCOUNTS-NEW-PERSON]` (`backlog-archive.mjs`) and start `[DRAFT-PENDING]`.
+  "merge live"** — then archive `[ACCOUNTS-NEW-PERSON]` (`backlog-archive.mjs`) and start **`[POST-OUT-OUTCOMES]`** (D291),
+  then `[DRAFT-PENDING]`. After the check he ruled on posting out and accounts (D229, D280–D291 — how-we-work.md).
 - **Evidence:** `raptor-port/docs/handpass/2026-09-26-accounts-new-person.md` (§3 roll-call, §5 walks, §6 the three read
   rounds and every disposition, §7 breaks, §9 gates, §10 the look card). Reads: `…-{fable,astra}-read.md` (round 1),
   `…-{fable,astra}-fixcheck.md` (round 2), `…-{fable,astra}-fixcheck2.md` (round 3 — Fable CLEAN; Astra's one fixed).
@@ -45,8 +46,9 @@ the later merge keeps both (D78).
 ## Next, in order
 
 1. **HIS ORDER to the database step, about two months away (D203, 26 Sep 26):** now `[ACCOUNTS]` (with D200, D202 —
-   answer his "how does a new user join" question first — answered, D204) with ITS OWN full check (D210) → the one changes
-   window (`[DRAFT-PENDING]`) with its own full check →
+   answer his "how does a new user join" question first — answered, D204) with ITS OWN full check (D210) → its follow-on
+   `[ACCOUNTS-NEW-PERSON]` (PR #443, waiting for his look) → **`[POST-OUT-OUTCOMES]`** (D291 — a posting out's outcomes;
+   accounts suspended and deleted) with its own full check → the one changes window (`[DRAFT-PENDING]`) with its own full check →
    "merge live" (D173); beside it, he talks to the IT side (`[IT-QUESTIONS]`). Development as normal: `[HUMAN-RETEST]`'s
    remaining three in his order (D147 — the absence record with `[S4-HUNT-REST]`, change-recording, the Leave War links
    last), then `[PUB-UNAVAIL]` → `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]`.

@@ -52,8 +52,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 1. **Now — [ACCOUNTS-NEW-PERSON]** (D214, D216, D217, D219, D220, D222 — one door for a new person on Admin → Users, the
    sign-up asking the same things, the admins' bell; the mock-up `raptor-port/docs/mock/new-person-account.html`, his
    approval first), on `claude/accounts-new-person`, its own FULL check — DONE, the PR open for his look and "merge
-   live"; then — **the agent's recommendation, his to confirm** — **[POST-OUT-OUTCOMES]** (D229, D280: a posting out
-   says which outcome; accounts suspended / deleted); then **[DRAFT-PENDING]** — the one changes window,
+   live"; then **[POST-OUT-OUTCOMES]** (D291 — D229, D280, D283–D287, D290: a posting out says which outcome;
+   accounts suspended / deleted), its own FULL check; then **[DRAFT-PENDING]** — the one changes window,
    on top of accounts, its own FULL check (D210). `[ACCOUNTS]` itself MERGED 26 Sep 26 (PR #442, his "merge live").
 2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
 3. **Development as normal — [HUMAN-RETEST]**'s remaining three, in HIS order (D147): the absence record TOGETHER with
@@ -298,7 +298,8 @@ person move between squadrons with data intact.
   War's post-out sheet will offer it as its fourth outcome (`[POST-OUT-OUTCOMES]`, D229) once this is built.
 - **D288 (27 Sep 26) — communities and guest flyers:** callsigns unique within a community (the F-15 one), not
   app-wide; a future F-16 community reuses them, and its men may fly with us as guests (tagged "Viper · F-16",
-  picked from a guest list, never by typing a bare callsign — the agent's proposal, his answers pending).
+  picked from a guest list, never by typing a bare callsign). **D289:** a community = the squadrons of one aircraft
+  type; a guest always marked — on a puck a small colour mark, never text that hides the callsign (mock-up first).
 
 ### [TRK-ATTEMPTS] Keep a student's attempt history — OPEN (small, feature)
 Remember a student's *earlier* tries at an event, not just the latest grade. More a
@@ -1197,12 +1198,10 @@ date (each also by hand); touches the Leave War (the sheet, `runPoArchive`), Qua
 D), `perms.ts` — FULL tier. **Leaving flying for good — D287, his pick "B, truly delete him":** account AND person
 deleted; every day he was on shows his seat empty, published days included (tested 26 Sep 26: nothing crashes);
 everything that is his goes too (inputs, Leave War leave and OIL — nothing left stored unseen); a day still to come
-takes him off (pending on a published day); asks twice, cannot be undone. **Put to him 27 Sep 26:** the data model
-for IT says a person is never hard-deleted (every record points at him; the database refuses) — on screen it is B
-either way; underneath, a hidden "deleted" mark (recommended) or erase the row and all that points at it? **And names — D286:** an archived man's callsign may go to a new person (today it is refused); restoring him while it
+takes him off (pending on a published day); asks twice, cannot be undone. **Underneath — D290 "hidden mark":** his
+row is kept, marked deleted and invisible everywhere (the data model's tombstone), never erased. **And names — D286:** an archived man's callsign may go to a new person (today it is refused); restoring him while it
 is in use needs one of the two renamed first (Restore says so, renames nobody). Update `roster-add.ts` (its PID-01
-header and test), `ID_BY_CS` (points at the roster's man). **Place:** the agent recommends straight after `[ACCOUNTS-NEW-PERSON]` merges, before `[DRAFT-PENDING]` — HIS to
-confirm.
+header and test), `ID_BY_CS` (points at the roster's man). **Place — D291, his "yes":** straight after `[ACCOUNTS-NEW-PERSON]` merges, before `[DRAFT-PENDING]`.
 ### [LOOK-435] His inputs from the look at PR #435 — the order is D173 (25 Sep 26)
 **Step 1 DONE 25 Sep 26:** D114's FULL check — evidence `raptor-port/docs/handpass/2026-09-25-amendment-batch.md` §9; two
 gaps fixed, three older findings filed (`[REQ-TWO-ROWS]`, `[REQ-DECLINED-PENDING]`, `[REQ-ORPHAN-ROW]`); waiting for his look.

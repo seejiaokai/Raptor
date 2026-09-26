@@ -73,9 +73,8 @@ roster, the Leave War's projected roster and the Tracker's student link all
 point at this row; no second identity is minted anywhere. **Never
 hard-deleted** — `archived` and the tombstone are the only ways out. **— NARROWED 26 Sep 26 BY D287 (owner: "truly
 delete him"): a man who leaves flying for good is DELETED — gone from every list, his seats reading empty on every day
-he was on. HOW the database does it (a tombstone — the row kept, marked deleted, invisible everywhere — or erasing the
-row and everything pointing at it) is put to him, 27 Sep 26 (`OUTSTANDING.md` `[POST-OUT-OUTCOMES]`); until he answers,
-the tombstone below is how a delete reaches the database.**
+he was on. HOW the database does it — **answered 27 Sep 26, D290 ("hidden mark"): the tombstone below** — the row kept, marked
+deleted, invisible everywhere; never erased (`OUTSTANDING.md` `[POST-OUT-OUTCOMES]`).**
 
 | Field | Type | Req | Meaning |
 |---|---|---|---|
@@ -960,7 +959,7 @@ relationship behaviours are the terms.
 
 | Parent → child | On delete | Why |
 |---|---|---|
-| `Person` → everything | **Restrict** — `Person` is never hard-deleted; `archived` + the tombstone are the only exits (**D287, 26 Sep 26: a man who leaves flying for good is deleted — the HOW is his to answer, see §3 Person**) | Every seat, mark, bid and input points at a person; history must keep pointing |
+| `Person` → everything | **Restrict** — `Person` is never hard-deleted; `archived` + the tombstone are the only exits (**D287, 26 Sep 26: a man who leaves flying for good is deleted — by the tombstone, never erased: D290, see §3 Person**) | Every seat, mark, bid and input points at a person; history must keep pointing |
 | `Course` → `Enrolment`, `CoursePlan` | **Restrict** (soft delete: `archived`) | An old intake is retired, never removed; its attempts stay reportable |
 | `Syllabus` → `TrainingEvent`, `Layout`, `Enrolment` | **Restrict** (soft delete: `tombstoned` / `hidden`) | A chart with marks against it cannot go; hide it |
 | `TrainingEvent` → `Attempt`, `EventPrerequisite` | **Restrict** (soft delete) | A mark records an attempt at *that* event |

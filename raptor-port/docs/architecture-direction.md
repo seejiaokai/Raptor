@@ -149,7 +149,8 @@ this squadron's schedule" is wider than "who belongs to it", while his leave,
 quals and account stay his own squadron's. **Callsigns are unique within a COMMUNITY, not across the app
 (D288, 27 Sep 26):** a future F-16 community will reuse callsigns the F-15 one has, and its people may fly with an
 F-15 squadron as guest flyers — so the database must never make a callsign unique app-wide; a person is known by
-his id, and a guest from another community is shown with his community beside his callsign. Nothing here
+his id, and a guest from another community is shown with his community beside his callsign (D289: a community =
+the squadrons of one aircraft type; on a puck a small colour mark, never text that hides the callsign). Nothing here
 is built before the database step (`OUTSTANDING.md` `[XFER]`).
 
 ## 4. The order of work
