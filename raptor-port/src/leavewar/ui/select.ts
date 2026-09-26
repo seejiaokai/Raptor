@@ -27,6 +27,7 @@ export type EventSelection = { line: number; from: string; to: string; dates: st
 
 /* caldrag.ts's own numbers */
 const HOLD = 180        // ms a finger must dwell before a drag arms
+const TOUCH_TAP_WAIT = 400  // ms the swallow waits for the tap a finger leaves after a drag (W4-1)
 const SLOWARM = 140     // ms down after which a slide past GIVEUP arms a
                         // SELECT instead of ceding — a slow, deliberate drag,
                         // never a quick scroll flick (owner, 27 Aug 26)
@@ -431,17 +432,39 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
   // click then opened a breakdown over a selection the user thought they had.
   // One-shot AND a 0ms sweep, so a drag that produces no trailing click never
   // leaves a listener to eat the next real one.
-  const swallowNextClick = () => {
-    const swallow = (ev: Event) => { ev.stopPropagation(); ev.preventDefault() }
-    document.addEventListener('click', swallow, { capture: true, once: true })
-    setTimeout(() => document.removeEventListener('click', swallow, true), 0)
+  //   A FINGER'S TAP COMES LATER (the absence-record re-test, W4-1, 26 Sep 26 — found by the phone walk): the tap a
+  // touch leaves behind arrives ~20–30 ms after the lift, and the 0 ms sweep had already retired the swallow — so a
+  // finger held on ONE day and lifted opened the selection sheet, and its own tap landed on the day and closed it.
+  // A touch gesture waits TOUCH_TAP_WAIT for its tap; a mouse keeps the 0 ms sweep, so a desktop's next real click is
+  // never eaten. (A second deliberate tap inside that window is not a thing a hand does.)
+  //   It also ends at the NEXT press (a new gesture beginning means the old one's tap has come or never will — a
+  // finger dragged across days sends none) and when the grid goes away, so a waiting swallow can never eat a real
+  // tap that starts fresh (the Inputs calendar's click eater, caldrag.ts, keeps the same three exits).
+  let endSwallow: (() => void) | null = null
+  const swallowNextClick = (touch: boolean) => {
+    endSwallow?.()
+    /* stopIMMEDIATEpropagation (the re-walk, 26 Sep 26 — W4's re-walker): on a touch screen the sheet this gesture just
+       opened puts its own tap shield on the document too (Sheet.tsx useGridPan), and it closes the sheet on a click
+       under it; plain stopPropagation does not stop another listener on the same node, so the swallowed tap still
+       closed the sheet 22 ms after it opened. The swallow is added first (before the sheet mounts), so it runs first. */
+    const swallow = (ev: Event) => { ev.stopImmediatePropagation(); ev.preventDefault(); off() }
+    const off = () => {
+      document.removeEventListener('click', swallow, true)
+      document.removeEventListener('pointerdown', off, true)
+      clearTimeout(timer)
+      if (endSwallow === off) endSwallow = null
+    }
+    document.addEventListener('click', swallow, true)
+    document.addEventListener('pointerdown', off, true)
+    const timer = setTimeout(off, touch ? TOUCH_TAP_WAIT : 0)
+    endSwallow = off
   }
   const finish = (commit: boolean) => {
-    const wasArmed = armed
+    const wasArmed = armed, touch = touchGesture
     // Read the selection BEFORE teardown nulls the anchor.
     const s = commit && armed && anchor !== null ? current() : null
     teardown()
-    if (wasArmed) swallowNextClick()
+    if (wasArmed) swallowNextClick(touch)
     if (s) spec.onSelect(s.payload)
     clearPaint()
   }
@@ -479,9 +502,9 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
   }
   const onCancel = (e: PointerEvent) => {
     if (e.pointerId !== pid) return   // a second pointer's cancel is not ours
-    const wasArmed = armed
+    const wasArmed = armed, touch = touchGesture
     teardown(); clearPaint()
-    if (wasArmed) swallowNextClick()
+    if (wasArmed) swallowNextClick(touch)
   }
 
   // THE SCROLL LOCK (owner, 27 Aug 26 — "when I hold then drag … I can't
@@ -524,7 +547,7 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
   }
 
   wrap.addEventListener('pointerdown', onDown)
-  return () => { wrap.removeEventListener('pointerdown', onDown); teardown(); clearPaint() }
+  return () => { wrap.removeEventListener('pointerdown', onDown); teardown(); clearPaint(); endSwallow?.() }
 }
 
 export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
@@ -719,12 +742,35 @@ export function wireFigureSelect(outer: HTMLElement, ctx: FigureSelectCtx): () =
    TAP lands it — and a swipe must scroll, never drop, so only a click that
    is NOT the tail of a scroll commits. The commit click is swallowed in the
    capture phase so the cell's own single-click sheet never opens under it. */
+/* WHAT A CLICK OUTSIDE THE GRID MUST NOT CANCEL (D262): a control of any kind, the move's own banner, and a sheet or a
+   popup and its shade — a sheet's, the Legend's, the under-manned list's (found writing the walk: a tap on the Legend's
+   shade to close it also ended the move). Pressing one is a thing a person does ON PURPOSE, never "an empty area". */
+const NOT_EMPTY = 'button, a[href], input, select, textarea, label, summary, [role="button"], [role="dialog"], [role="menu"], [role="menuitem"], [role="tab"], [contenteditable=""], [contenteditable="true"], .bidsheet, .mv-banner, [data-testid$="scrim"]'
+/* A move just begun ignores, for this long, a click on the SPOT where Move was pressed (D262, Fable's S1): the sheet's
+   Move closes the sheet on the first click of a double-click, and the second then fell on whatever day sat under the
+   button. A PLACE as well as a time (the gate run, 27 Sep 26): a time alone also dropped a deliberate click made
+   quickly on another day — a double-click's second click lands where the first did, a deliberate one elsewhere. */
+const MOVE_SETTLE = 400
+const SETTLE_PX = 12
+/* where the last press landed — read by a move as it begins (the press that pressed Move). A pointerdown or, for a
+   keyboard or test that clicks without pressing, the click itself; module-wide, passive, a plain assignment. */
+let LAST_PRESS: { x: number; y: number } | null = null
+if (typeof document !== 'undefined') {
+  const note = (e: MouseEvent) => { LAST_PRESS = { x: e.clientX, y: e.clientY } }
+  document.addEventListener('pointerdown', note as EventListener, true)
+  document.addEventListener('click', note, true)
+}
+/* The click a press-and-drag's own release (or a finger's lift) leaves behind arrives inside this — the gesture core's
+   TOUCH_TAP_WAIT and a margin; it is the drag's, not a second pick. */
+const DRAG_TAIL = 450
+
 export function wireMove(
   wrap: HTMLElement,
   opts: {
     count: number
     // Desktop only — the mouse hovering a day, so the matrix can paint the
     // landing preview live. A phone has no hover, so this never fires there.
+    // (A held drag previews through it on both — D262.)
     onHover: (targetDate: string) => void
     // A click (desktop) or tap (phone) ON a day. The matrix decides what it
     // means: a desktop click lands the block at once (the live hover was the
@@ -738,6 +784,13 @@ export function wireMove(
     // also reads an `event-<line>-<date>` cell, so a tap on the event LINE lands
     // it. Only the date is ever used, so one resolver serves both axes.
     dateAt?: (t: EventTarget | null) => string | null
+    /** Client-x where the DAYS begin — past the frozen name / counter columns or the open figures drawer (D262): the
+     *  left edge band starts there, as the drag-select's does. Absent = the wrap's own left edge. */
+    leftEdge?: () => number
+    /** Is this element part of the grid (D262)? The mouse's edge scroll runs only over the grid, and a click on an
+     *  EMPTY spot that is not — the page around it, never a control — ends the move ("unless i click on an empty
+     *  area outside the leave war grids to cancel that function"). Absent: neither. */
+    isGrid?: (t: Element) => boolean
   },
 ): () => void {
   // The ghost is a HOVER decoration, so it exists only where hover exists: a
@@ -776,6 +829,37 @@ export function wireMove(
   // full-grid querySelector scans — on every one of them; on the ~28k-node
   // grid that is exactly the per-frame work the perf notes forbid.
   let lastHover = ''
+  const hover = (date: string | null) => { if (date && date !== lastHover) { lastHover = date; opts.onHover(date) } }
+  const began = Date.now()
+  const pressedAt = LAST_PRESS
+  let dragPickedAt = -Infinity
+
+  /* THE MOUSE'S EDGE SCROLL (owner, D262, 27 Sep 26 — "when i drag to the edges of the leave war it should auto
+     scroll"). The picked-up chip FOLLOWS the mouse (the ghost), so carrying the mouse to the grid's left or right edge
+     is the drag, button held or not: the days scroll under it, at the drag-select's own speed and band, and the
+     landing preview follows the day slid under it. Sideways only — a move lands by DATE, on any row, so the page never
+     needs to run under a resting mouse to reach it (a held drag, below, still scrolls the page like the drag-select).
+     Only over the grid, so the mouse on its way to the banner or the page's own controls moves nothing; and a band the
+     mouse was ALREADY in when the move began must be left first (Fable's S2 — the sheet closes under a still mouse),
+     the drag-select's held-band rule. A button held is the drag machine's (below), never this loop's. */
+  let mx = 0, my = 0, overGrid = false, hoverRaf = 0
+  let seen = false        // a mousemove has been read since the move began
+  let bandsLive = false   // the mouse has been OUTSIDE every band since then
+  const band = (): number => {
+    if (!overGrid) return 0
+    const r = wrap.getBoundingClientRect()
+    const left = opts.leftEdge ? opts.leftEdge() : r.left
+    return mx < left + EDGE ? -1 : mx > r.right - EDGE ? 1 : 0
+  }
+  const edgeStep = () => {
+    hoverRaf = 0
+    const dir = bandsLive ? band() : 0
+    if (!dir) return
+    const before = wrap.scrollLeft
+    wrap.scrollLeft = before + dir * EDGE_STEP
+    if (wrap.scrollLeft !== before) hover(dateAt(document.elementFromPoint(mx, my)))
+    hoverRaf = requestAnimationFrame(edgeStep)
+  }
   const onMouseMove = (e: MouseEvent) => {
     if (ghost) {
       ghost.style.display = ''
@@ -783,12 +867,58 @@ export function wireMove(
       ghost.style.top = `${e.clientY + 14}px`
     }
     if (!hasHover) return
-    const date = dateAt(e.target)
-    if (date && date !== lastHover) { lastHover = date; opts.onHover(date) }
+    mx = e.clientX; my = e.clientY
+    overGrid = e.buttons === 0 && !!opts.isGrid && e.target instanceof Element && opts.isGrid(e.target)
+    const inBand = band() !== 0
+    if (!seen) { seen = true; bandsLive = !inBand } else if (!inBand) bandsLive = true
+    if (inBand && bandsLive && !hoverRaf) hoverRaf = requestAnimationFrame(edgeStep)
+    hover(dateAt(e.target))
   }
+  const onLeaveDoc = () => { overGrid = false }
+
+  /* A PRESS-AND-DRAG CARRIES IT TOO, AND LANDS ON THE LIFT (D262 — the agent's reading (c), stated to him: the desktop
+     lands on the click OR the release). The drag-select's own machine, pointed at the move: a mouse arms at a few px, a
+     finger by HOLDING (a quick swipe still scrolls the grid — that scroll is sacred), the edge bands scroll the days
+     and the page exactly as a drag-select's do, the landing preview follows the finger, and the lift picks the day it
+     is over — a desktop lands it, a phone stages it for Confirm, as a tap does. Nothing is painted by the machine
+     itself: the matrix's landing preview is the paint. The click the release leaves behind is the drag's own, not a
+     second pick (`dragPickedAt`). */
+  let dragDay: string | null = null
+  const dragOff = wireGesture<string, string>(wrap, {
+    enabled: () => true,
+    hit: t => dateAt(t),
+    current: (_anchor, x, y) => {
+      const d = dateAt(document.elementFromPoint(x, y))
+      if (d) dragDay = d
+      hover(dragDay)
+      return dragDay ? { ids: [], payload: dragDay } : null
+    },
+    onSelect: d => { dragPickedAt = Date.now(); opts.onPick(d) },
+    reset: () => { dragDay = null },
+    node: () => null, cls: 'mvdrag',
+    leftEdge: opts.leftEdge,
+  })
+
+  // A finger's long press reaches the page as a right-click on Android; only a MOUSE's right-click cancels (Fable's S11).
+  let lastPointer = 'mouse'
+  const onDown = (e: PointerEvent) => { lastPointer = e.pointerType || 'mouse' }
+
   const onClick = (e: MouseEvent) => {
     const date = dateAt(e.target)
-    if (!date) return
+    /* the second click of a double-click on Move (the same spot, straight away), or the tail of a drag already landed —
+       swallowed, never a pick */
+    const secondOfDouble = Date.now() - began < MOVE_SETTLE && !!pressedAt && Math.hypot(e.clientX - pressedAt.x, e.clientY - pressedAt.y) < SETTLE_PX
+    if (secondOfDouble || Date.now() - dragPickedAt < DRAG_TAIL) {
+      if (date) { e.stopPropagation(); e.preventDefault() }
+      return
+    }
+    if (!date) {
+      /* AN EMPTY SPOT OUTSIDE THE GRID ENDS THE MOVE (D262). Not a day and not the grid: the page around it. A control
+         (the month buttons are the grid's own anyway), a sheet or its shade is a deliberate press, and keeps it on. */
+      const t = e.target instanceof Element ? e.target : null
+      if (t && opts.isGrid && !opts.isGrid(t) && !t.closest(NOT_EMPTY)) opts.onCancel()
+      return
+    }
     e.stopPropagation(); e.preventDefault()   // never open the cell's own sheet
     opts.onPick(date)
   }
@@ -796,17 +926,23 @@ export function wireMove(
   // Right-click cancels the move on a desktop (owner, 27 Aug 26 — "if I want to
   // cancel, I can just right click to deselect what I selected"): swallow the
   // browser context menu and drop the block, the mouse equivalent of Escape.
-  const onCtx = (e: MouseEvent) => { e.preventDefault(); e.stopPropagation(); opts.onCancel() }
+  const onCtx = (e: MouseEvent) => { e.preventDefault(); e.stopPropagation(); if (lastPointer === 'mouse') opts.onCancel() }
 
   document.addEventListener('mousemove', onMouseMove)
+  document.documentElement.addEventListener('mouseleave', onLeaveDoc)
+  document.addEventListener('pointerdown', onDown, true)
   document.addEventListener('click', onClick, true)   // capture — beat React's cell onClick
   document.addEventListener('contextmenu', onCtx, true)
   document.addEventListener('keydown', onKey, true)
   return () => {
     document.removeEventListener('mousemove', onMouseMove)
+    document.documentElement.removeEventListener('mouseleave', onLeaveDoc)
+    document.removeEventListener('pointerdown', onDown, true)
     document.removeEventListener('click', onClick, true)
     document.removeEventListener('contextmenu', onCtx, true)
     document.removeEventListener('keydown', onKey, true)
+    if (hoverRaf) { cancelAnimationFrame(hoverRaf); hoverRaf = 0 }
+    dragOff()
     ghost?.remove()
   }
 }

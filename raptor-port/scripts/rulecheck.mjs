@@ -216,7 +216,7 @@ const RULES = {
 /* The AMENDMENT rules below had no test that pins them WHOLE on 24 Sep 26 (the re-test's mapping, in the
    register's §Coverage): most are pinned in PART, AM7 and AM44 by nothing. Named-by-nothing is the honest
    state, so they are baselined here to stay visible; shrink the list as each gains a whole-rule test. */
-const BASELINE = new Set(['Q9', 'Q11', 'Q12', 'Q14', 'Q15', 'OIL19', 'OIL26',
+const BASELINE = new Set(['Q9', 'Q11', 'Q12', 'Q15', 'OIL19', 'OIL26',
   'AM7', 'AM8', 'AM15', 'AM17', 'AM25', 'AM26', 'AM27', 'AM30', 'AM36', 'AM37', 'AM39', 'AM39d', 'AM44', 'AM45', 'AM48', 'AM48a', 'AM49', 'AM49b', 'AM50', 'AM51b', 'AM51c', 'AM51d', 'AM51e', 'AM51f', 'AM51g',
   /* AM55: a long bubble scrolling is layout, which the test browser does not have: the walk proves it (25 Sep 26) */
   'AM55'])

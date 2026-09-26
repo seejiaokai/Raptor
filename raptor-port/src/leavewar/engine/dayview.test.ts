@@ -177,3 +177,25 @@ describe('the pilots’ 15-day run reads annualFull (owner Q13, clash-check H4)'
     expect(dayView([ab('l', 'FCL')]).annualFull).toBe(false)
   })
 })
+
+/* THE TAIL THAT RAISES THE AMBER IS NAMED (the absence-record re-test, AB6, 26 Sep 26 — Fable F6, confirmed on screen by
+   the phone walker). A record running past midnight counts on the second date for clashes ONLY (H6): never the box,
+   never charged. So an overnight leave whose tail met a published Saturday's early duty ambered the Saturday, and its
+   tap list said "two of these can't both stand" over ONE line — the other thing was nowhere. The day now carries the
+   clashing tails so the list can name them. */
+describe('the tails from the day before that clash here (AB6)', () => {
+  it('are named apart from the day\u2019s own records — not the box, not charged', () => {
+    const tail: Contrib = { id: 'l1', kind: 'absence', code: 'LL', win: [0, 360], spill: true }
+    const credit: Contrib = { id: 'c1', kind: 'credit', code: 'FO', win: [300, 720], auto: true }
+    const v = dayView([tail, credit])
+    expect(v.amber).toBe(true)
+    expect(v.all.map(c => c.id)).toEqual(['c1'])
+    expect(v.clashTails.map(c => c.id)).toEqual(['l1'])
+    expect(v.charges).toEqual([])
+  })
+  it('a tail that clashes with nothing is not named', () => {
+    const tail: Contrib = { id: 'l1', kind: 'absence', code: 'LL', win: [0, 360], spill: true }
+    const credit: Contrib = { id: 'c1', kind: 'credit', code: 'FO', win: [420, 720], auto: true }
+    expect(dayView([tail, credit]).clashTails).toEqual([])
+  })
+})

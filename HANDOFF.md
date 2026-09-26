@@ -47,6 +47,33 @@ the later merge keeps both (D78).
 - **Rulings:** D301 (start now), D302 (chats coordinate). Range D301–D309.
 <!-- /now -->
 
+<!-- now:claude/absence-record-d147-af6a50 -->
+### `claude/absence-record-d147-af6a50` — `[HUMAN-RETEST]` the absence record, with `[S4-HUNT-REST]` (D147): walked, fixed, FULL-checked; his answers D260–D263 recorded, THREE TO BUILD NEXT — written 27 Sep 26 — verify before use
+- **What it is:** the absence record re-tested the way a person uses it — a host and five walkers at both widths (admin,
+  member, guest), a sixth for the roll-call rows nobody reached; every finding reproduced and fixed red first, filed, or
+  put to him. Plan `raptor-port/docs/superpowers/plans/2026-09-26-absence-retest-plan.md`; evidence sheet
+  `raptor-port/docs/handpass/2026-09-26-absence.md` (§3 every finding, §4 the roll-call, §6 the break tests, §8 the two
+  final code reads, §9 the gates, §11 the re-walks, §12 his look card); the register's §12 says how the absence record
+  now behaves.
+- **The check:** the break tests (two thin wires pinned); Fable's and Astra's blind final reads — six findings, all fixed
+  red first; a re-walk of every fix on the rebuilt app, and a second re-walk of what the first found (the phone hold,
+  a vanishing row, a chip swipe, the board's crew column); the gates on the final code all green (§9). PR
+  [seejiaokai/Raptor#444](https://github.com/seejiaokai/Raptor/pull/444).
+- **His answers, 27 Sep 26 (all recorded, none built — his word: "first i answer all the questions then we handoff task
+  in the next chat"):** **D260** (`oil.md`) a dragged block's Delete and the one-day Clear remove OIL awards too, naming
+  each first; awards never move. **D261** (`oil.md`) a member opens his own OIL award read only at every stage. **D262**
+  (`leave-war.md`) one chip, one Move: the one-day sheet's Move is always pressable and picks the chip up (the date box
+  goes); while moving, the grid scrolls at its edges, the month buttons keep the move on, a click outside the grid cancels
+  — `[LW-MOVE-ONE-CHIP]`. **D263** (`scheduler.md`) the change history records every change to an absence — built with
+  the one changes window, `[DRAFT-PENDING]`, NOT now.
+- **Next (the next chat):** build D260, D261, D262 ON THIS BRANCH (the agent's reading — before his "merge live"), each
+  red first, walked at both widths with pictures, the gates under the lock (D228) → his five-minute look (the sheet's §12,
+  plus the new Move) → his "merge live". Then, in his order (D147): change-recording, then the Leave War links.
+- **Filed from it:** `[LW-ISO-DATES]`, `[LW-MOVE-BENEATH]`, `[LW-OFFER-ONLY-TAKEABLE]`, `[PO-RESTORE-POSTING]`,
+  `[ABSENCE-SMALL-SEEN]`, a note in `[DRAFT-PENDING]` (the pending list's late-input line, R30), `[AMEND-SMALL-SEEN]`
+  items 4 and 6. `[S4-HUNT-REST]` and `[PUB-UNAVAIL]` archived.
+<!-- /now -->
+
 <!-- now:claude/accounts-new-person -->
 ### `claude/accounts-new-person` — `[ACCOUNTS-NEW-PERSON]` FULL check done, PR #443 waiting for his look; then his posting-out rulings (D229, D280–D299) and their APPROVED mock-up — written 27 Sep 26, verify before use
 - **Where it started:** fix the two code reads' findings (Fable 1, Astra 1, 2, 4 + the record items), break tests, re-walk,
@@ -90,8 +117,9 @@ the later merge keeps both (D78).
    `[ACCOUNTS-NEW-PERSON]` (PR #443, waiting for his look) → **`[POST-OUT-OUTCOMES]`** (D291 — a posting out's outcomes;
    accounts suspended and deleted; STARTED beside #443 before it merges, D301) with its own full check → the one changes window (`[DRAFT-PENDING]`) with its own full check →
    "merge live" (D173); beside it, he talks to the IT side (`[IT-QUESTIONS]`). Development as normal: `[HUMAN-RETEST]`'s
-   remaining three in his order (D147 — the absence record with `[S4-HUNT-REST]`, change-recording, the Leave War links
-   last), then `[PUB-UNAVAIL]` → `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]`.
+   remaining three in his order (D147 — the absence record with `[S4-HUNT-REST]` — walked, on its branch, his look
+   next — then change-recording, the Leave War links last), then `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]` (`[PUB-UNAVAIL]`
+   closed by the absence-record re-test).
 2. **About a month before the database:** `[DB-READINESS]` with the OIL award fix and the small OIL follow-ups as ONE
    batch (D147, D203) → `[DB-STEP]` when Manfred is ready. The whole list: `OUTSTANDING.md`'s priority list.
 3. Filed, none blocking: `[TRK-PINCH-ASK]` (his iPhone look), `[TRK-DLG-LEFTOVERS]`, `[TRK-RETEST-NOTES]`,
@@ -100,12 +128,12 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 26 Sep 26 evening, `claude/accounts-new-person` (`facb1bc1`, the `[ACCOUNTS-NEW-PERSON]` final
-code), one run under the PC-wide lock (`raptor-port/docs/handpass/2026-09-26-accounts-new-person.md` §9):
-unit **6259 / 6259** (381 files) · build clean · tfin **728 / 0** · e2e **476 passed**, 48 skipped · smoke **443 / 0** ·
-rulecheck OK · docsize OK. Restate a count only
-from a run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md`
-§Build & verify; how they mislead, and the checks on his PC: `raptor-port/docs/gates-and-deploy.md`.
+The latest counts watched — 27 Sep 26, `claude/absence-record-d147-af6a50` (the final code of the absence-record
+re-test), one run under the PC lock on a quiet PC (`raptor-port/docs/handpass/2026-09-26-absence.md` §9): unit
+**6274 / 6274** (388 files) · build clean · tfin **728 / 0** · e2e **474 passed**, 48 skipped · smoke **443 / 0** ·
+rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
+history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
+`raptor-port/docs/gates-and-deploy.md`.
 
 ## Standing constraints
 

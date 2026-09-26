@@ -3069,6 +3069,8 @@ empty rather than throwing.
 
 ## The edit log (`engine/editlog.ts`, owner, 11 Aug 26)
 
+**To grow (D263, 27 Sep 26):** every change to an absence — an input edited, cut, moved or deleted; the Leave War's approve, refuse, back-to-bid and move — becomes a line with who and when, built with the one changes window (`OUTSTANDING.md` `[DRAFT-PENDING]`). Today inputs leave a line only when added or removed.
+
 Who changed which detail, when, and what it was before. Distinct from
 §History above: that is the undo stack (whole-state snapshots, no
 attribution); this is a per-key record with a name and a clock on it.

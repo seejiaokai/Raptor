@@ -106,10 +106,15 @@ export function DayListSheet({
      nowhere on this sheet to appear. */
   const oilRecs = raw.filter(r => r.kind === 'credit') as CreditRec[]
   const lines = view.all.map(c => {
-    const part = partOf(c.win)
+    const row0 = c.kind === 'absence' ? INPUTS.find((r: any) => String(r.iid) === c.id) : null
+    /* PRINTED AS FILED (the absence-record re-test, W1-F4, 26 Sep 26): N1 starts a window filed at exactly 12:00 at
+       12:01, so it cannot touch the morning — the minute decides the HALF, it is not what the man filed, and this list
+       read "12:01–14:00" where the Inputs page says 12:00. The input's own stored start puts the minute back. */
+    const shownWin: Win = row0 && row0.allday === false && row0.s === 720 && c.win[0] === 721 ? [720, c.win[1]] : c.win
+    const part = partOf(shownWin)
     const partTxt = part ? `, ${part}` : ''
     if (c.kind === 'absence') {
-      const row = INPUTS.find((r: any) => String(r.iid) === c.id)
+      const row = row0
       const isLeave = codeOf(c.code)?.spends != null
       const warOwned = !!row?.lw
       const text = `${shown(notation(c))} — ${nameOf(c.code) || shown(c.code)}${partTxt} · ${warOwned ? 'approved' : 'filed on the Inputs page'}`
@@ -196,6 +201,16 @@ export function DayListSheet({
     return { key: `n-${c.id}`, cls: 'warn', text, sub: '', actions }
   })
 
+  /* THE TAIL THAT RAISES THE AMBER (the absence-record re-test, AB6, 26 Sep 26 — Fable F6, confirmed by the phone
+     walk). A record running past midnight counts on this date for clashes only (H6): it is never this day's box and
+     never charged here, so it was never listed — and an overnight leave that met this morning's published duty left
+     the clash sentence below standing over ONE line. Each clashing tail now reads as its own line, with no actions:
+     it is changed on the day it belongs to. */
+  const hm = (m: number) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`
+  const tailLines = (view.clashTails ?? []).map(c => ({
+    key: `t-${c.id}`, cls: 'warn', actions: [] as ReactElement[], sub: 'It runs on from the day before — change it there.',
+    text: `${shown(c.code)} — ${nameOf(c.code) || shown(c.code)}, from the day before till ${hm(c.win[1])}`,
+  }))
   return (
     <Sheet testid="daylist-sheet" label={`${callsign} — ${dayLabel(date)}`} onClose={onClose}>
       <div className="bidsheet-hd">
@@ -225,7 +240,7 @@ export function DayListSheet({
         </div>
       )}
       <ul className="daylist" data-testid="daylist">
-        {lines.map(l => (
+        {[...lines, ...tailLines].map(l => (
           <li key={l.key} className={`dl-line${l.cls ? ` ${l.cls}` : ''}`} data-testid={`dl-${l.key}`}>
             <div className="dl-text">
               <span className="dl-main">{l.text}</span>

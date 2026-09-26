@@ -151,7 +151,8 @@ So, exactly:
   outside the bidding window, and it counts as already approved with no admin step. `[no test names it]`
 - **Deliberate, not bugs** — one undecided plus one refused request may share a half; windows that
   only touch do not clash; a notice says "(an admin)" rather than a name, because there is no
-  login-to-person map yet.
+  login-to-person map yet. *(That last one SET ASIDE 26 Sep 26 by D166: the notice names who did it by
+  callsign — §11.)*
 
 ## 9. What nothing points at
 
@@ -484,3 +485,128 @@ within the hour, once the cost was put to him.
 *Leaves untouched:* the Inputs page, where leave is whole or half days by construction with no
 quantity to type; and the AUTOMATIC credit, where the published schedule still decides FO or HO by
 the six-hour rule.
+
+## 11. Rulings since the hunt (21–26 Sep 26) — what they did to an absence
+
+Added 26 Sep 26 by the absence-record re-test (`[HUMAN-RETEST]` with `[S4-HUNT-REST]`; the plan
+`plans/2026-09-26-absence-retest-plan.md` §3). The rules sweep's output: each later ruling that reaches an
+absence, in the words the app uses. Newest wins (D90); where one changes a line above, that line is named.
+
+- **D79–D82 (recorded 23 Sep 26)** — the ids for N11, N13, N14, N16 above. Nothing new.
+- **D142 (24 Sep 26)** — a day's OIL comes from its LATEST published version, however long ago: an AL that takes a
+  man off a worked weekend takes his credit with it (and with it the amber on a leave beside that work, N2).
+- **D163 (24 Sep 26)** — two demo oddities (awards dated after the demo week; a man flying in July though posted out
+  in January) are demo data only. Not findings.
+- **D166 (25 Sep 26; built 26 Sep in `[ACCOUNTS]`)** — the war follows the SIGNED-IN callsign, not "View as" (gone):
+  a member bids, files and clears only on HIS own row; whose bid was replaced is decided by the signed-in person, so
+  a notice now names who did it BY CALLSIGN. **Sets aside §8's "a notice says (an admin) rather than a name"** — the
+  login-to-person map exists now (`leavewar/inputgate.ts replaceBids`).
+- **D174, D176 (25 Sep 26)** — a request filed on a published day since it was published, then taken off or
+  deleted, reads nothing pending.
+- **D177, D178, D179 (25 Sep 26), D185 (26 Sep 26)** — every input change after a day is published — filed, edited,
+  deleted, moved, from any door — reads "1 pending" on the admin's working copy and drops the four sign-offs; the
+  published face (View-only Sched, the issued version) keeps what it went out with until the next AL. **A medical
+  downchit freezes too** (D179, D185) — D177's own reading that it "stays live" is set aside, marked in its row.
+  Taking a late input back out reads 0 (D98).
+- **D189 (26 Sep 26)** — stretching or trimming a leave or a downchit rewrites its "till <date>" remark, and each
+  published day it still covers reads pending for that reason.
+- **D103 (25 Sep 26)** — any change that shows as pending on a published day wipes the sign-offs.
+- **D211, D213, D215 (26 Sep 26)** — every member sees a medical input's type, remarks and documents; a guest sees a
+  medical row on View-only Sched as a member does, read only.
+- **D148 (24 Sep 26)** — undo reverses only your own changes. DECIDED, NOT BUILT: the change-recording re-test's.
+- **`[PUB-UNAVAIL]` (19 Sep 26, filed)** — "a new absence silently changes a published day's Unavailable list" is
+  what D177–D179 built against (`[LEAVE-LATE-PUBLISHED]`, PR #438). **Confirmed on screen by the re-test (H1) and
+  archived 26 Sep 26.**
+- **N5 / B8 (the hours on a hand-typed credit)** — no longer live. N13 (the same night) left an award nothing to clash
+  with and N19 (21 Sep) made it ONE number in halves; the build took the hours box away with them (the bid sheet's award
+  asks a quantity, a reason and a giver only — `leavewar/ui/BidPicker.tsx`). Found by Astra's plan read (26 Sep 26).
+  Not a finding; the re-test does not test it as live.
+
+## 12. What the re-test changed (26 Sep 26) — the absence record as it now behaves
+
+Added by the absence-record re-test when its fixes went in (evidence `docs/handpass/2026-09-26-absence.md` §3, one row per
+finding; each pinned red first by the test named there). These are the lines a later session reads as the contract; the
+questions it left for him are `OUTSTANDING.md` `[ABSENCE-ASK]`.
+
+**Every door keeps the same rules (B7):**
+- **A cut rewrites "till".** Every cut of a leave — a medical laid over it, the war's un-approve, Delete or Move of part
+  of it — gives each surviving piece its OWN last day in the remark ("till 10 Feb Bali"); one body does every cut
+  (`leavewar/sync.ts sliceInput`). **A re-dated input too** — a calendar drag, the upchit's date box, any save that
+  moves its dates rewrites the token and keeps the other words; a remarks-only edit keeps what was typed
+  (`ui/inputedit.tsx commitInputEdit`). (AB3, W3-F9, FR3; D189's words.)
+- **A medical or an upchit MOVED asks what filing it asks.** The calendar's drag and the schedule's reassign hand the
+  new dates to the same questions as the form — who holds the shared days, and the upchit's leftovers — before
+  anything is written (`ui/MedMoveConfirm.tsx`). (AB4; owner 27 Aug 26, "never resolves silently".)
+- **Undo and Redo obey the bid rule.** A bid is never made live over a medical filed since — put back, or turned from
+  refused back into a live bid; the refusal names what now holds the day ("…Warden's ATT C now holds 8 Dec, and a bid
+  can't go over it"). The day is judged as the restore will leave it, so undoing a filing that had replaced a bid still
+  gives the bid back, in one step. (W3-F8, FR1.)
+- **A dragged block's Delete takes the war's own bids beneath filed or war-approved leave**; a leave filed on the
+  Inputs page stays (it is the Inputs page's), a war-approved one goes by the door. Its Move does not yet —
+  `OUTSTANDING.md` `[LW-MOVE-BENEATH]`. (W3-F3, FR5.)
+
+**What the war's sheets say:**
+- **A posting that closes before it opens is refused AND said**, at every door — the bid sheet's PI / PO, the Post out
+  and Post in sheets' date boxes, the drag-selection's Post out: "Posted in on 6 Jul — the post-out has to be after
+  that day." The box snaps back to the date that stands. (AB5, W3-F4.)
+- **The posting sheet a tap opened stays that sheet** while its date moves, even past the day tapped. (W3-F5.)
+- **The archive a Post out makes belongs to the posting.** "Undo post out" takes it back — the man's row, bids and
+  leave come back; a date moved later, or "Archive on PO date" turned off, puts him back on the roster until the
+  posting archives him again. An archive made by hand on Quals is never taken back by a posting door. (W5-F1, F2, FR2,
+  FR4.)
+- **A tapped medical, course or OD reads "Filed on the Inputs page — change it there, not here"**; only leave says
+  "approved". (AB9.)
+- **A half is offered only when it can be taken, read off the real hours**: beside an ATT C recorded 09:00–14:00 no
+  afternoon is offered, and a refusal names a timed medical's hours. The heading speaks the box's notation ("now <LL").
+  (W5-F4, F5.)
+- **An overnight leave's tail is named on the day it ambers** ("LL — local leave, from the day before till 06:00", and under it "It runs on
+  from the day before — change it there."). A leave filed from 12:00 prints 12:00. (AB6, W1-F4; N10, N1.)
+- **Bulk Approve says an already-approved leave apart** ("1 decided. 1 already approved."), never counts it as
+  decided. (AB7.)
+- **An award's code follows its days** when they are edited on the OIL tracker or the tap list — under a day HO, a day
+  or more FO. (W3-F6; N19.)
+
+**The screen itself:**
+- **Every Leave War sheet holds the keyboard** (Tab / Shift+Tab stay in the topmost sheet), and **a war switch closes the
+  open cell** — its sheet, tap list and note editor — and the event sheet, so nothing is re-read against, or written
+  past the lock of, the war no longer on screen. (W5-F3, W3-F7, FR6.)
+- **A finger held on one day and lifted keeps the selection sheet** on a phone. (W4-1.)
+- **The Inputs calendar on a phone:** a sideways swipe pages the month; a tap on a chip opens its edit once. A member's
+  calendar does not lift another man's chip, and an input he may not change opens READ ONLY — no Delete, no Save, "Only
+  {callsign} or an admin can change this." (W1-F1, F2, F3; D166.)
+- **The Inputs page's own Add writes "Input added — …" to the Edit history**, as the edit window's already did.
+  (AB8 (a); (b) is his question.)
+- **The Inputs export carries From and To** — a multi-day input no longer exports as its first day. (AB10.)
+
+**Added by the re-walk (26 Sep 26), each red first — the evidence sheet §11:**
+- **A post-out dated in the month on screen keeps that man's row** — the grid's note of the months on screen is kept
+  true at every measure, so a month jump that shows the same people never leaves it stale (W5-F2's real cause; a real
+  browser test, `e2e/leavewar.spec.ts`).
+- **A finger held on one day and lifted keeps the selection sheet on a touch screen** — the drag's swallowed tap is
+  stopped before the open sheet's own tap shield sees it (W4-1, second fix; `holdsheet.test.tsx` mounts the real sheet on
+  a coarse pointer).
+- **A sideways swipe that starts on a calendar chip pages the month**, as one over empty space does, and never opens the
+  chip (the re-walk's NEW-1, caused by W1-F1's fix).
+- **The scheduler board's crew column is the board's own day** — a man on leave that day is never offered as free
+  (R19; on main).
+- **Every war sheet's heading speaks the box's notation** ("<C", never "*ATTC") (NF2), and **a posting refusal reads
+  day-first** ("Posted in on 8 Jul 26 — …").
+- **A dragged medical whose move kept the other medical's days says where it landed** ("Moved to 25 Jul"), and the
+  same-type refusal reads "An ATT C" (W2's re-walk).
+
+**Added by his answers to the re-test's questions (27 Sep 26), each red first — evidence
+`docs/handpass/2026-09-27-d260-d262.md`:**
+- **A clear that takes an OIL award names it first (D260).** A dragged block's Delete removes everything in it, the
+  admin's awards included — beneath any leave too — and its confirm names each award ("…including 2 OIL awards (Dash
+  1 day, Fable 1 day)"); the bid sheet's one-day Clear and its range Clear name theirs and ask once; one Undo brings
+  every award back; a member's clear takes and names none; Move and drag never take an award. A block of awards alone
+  offers Delete, never Move. On a published war the approved leave in the block stays, and the note says so. Answers
+  AB1 / AB2 (`store.ts awardsIn`, `ui/awardwords.ts`).
+- **A member opens his own award, read only, at every stage (D261).** Outside the bidding window, once bidding has
+  closed, and on a published war his tap on his own FO / HO opens "Your OIL award" — reason, given by, days, "Given by
+  an admin — only an admin can change it", nothing to press but ✕; inside the window the bid sheet reads it back as
+  before; another man's award stays shut. Answers W3-F10 (`Matrix.tsx ownAwardOnly`, `BidPicker.tsx AwardSheet`).
+- **One chip, one Move (D262).** The day sheet's Move has no date box and is never greyed; it picks the chip up into the
+  grid's move mode (the drag-selection's own — the same landing rules); while moving the grid scrolls at its edges,
+  the month buttons keep it on, an empty tap outside the grid ends it, and so does leaving the Leave War; a double-click
+  on Move lands nothing; its own day says it is already there. `ui-contracts.md` §Selecting on the Leave War grid.

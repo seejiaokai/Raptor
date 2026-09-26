@@ -1,0 +1,25 @@
+NOTE  [W1-08-member] B6-setup — {"bid":{"placed":true,"pressed":true,"why":""},"filed":1,"iid":"imuiht6fje203ud","before":{"row":["03-09:LL","03-11:LL"],"bal":{"counter":"+LVE","bal":"-2 2"}}}
+PASS  [W1-08-member] B6-moved — expected: his own leave lands on 11 Mar | observed: {"days":["2026-03-11"]}
+PASS  [W1-08-member] B6-message — expected: HE is told by a message that his own bid went ("your … bid") | observed: ["This replaces your LL bid on 11 Mar on the Leave War","Moved to 11 Mar"]
+PASS  [W1-08-member] B6-no-notice — expected: NO notice and no amber mark — he replaced his own bid (B6) | observed: {"c":{"box":"LL","mark":"","title":"","cls":"c appr raptor"},"lines":[]}
+PASS  [W1-08-member] B6-balance — expected: the balance column reads the records at once (recorded) | observed: {"before":{"counter":"+LVE","bal":"-2 2"},"after":{"counter":"+LVE","bal":"-1 1"}}
+PASS  [W1-08-member] B6-undo — expected: the member's own Undo (the war's) brings the leave back to 9 Mar and the bid back on 11 Mar | observed: {"u":{"label":"Undo — a batch of inputs","pressed":true},"row":["03-09:LL","03-11:LL"]}
+NOTE  [W1-08-member] OTHER-filter — {"opts":["all","dj","shaft","glass"]}
+PASS  [W1-08-member] OTHER-not-moved — expected: Tally's chip stays on 24 Jul (nothing moved) | observed: {"days":["2026-07-24"],"t":[]}
+PASS  [W1-08-member] OTHER-no-lift — expected: another man's chip does not lift in the member's hand (no ghost while he drags) | observed: {"inFlight":{"ghosts":0,"lit":[],"dragging":false},"who":"Tally"}
+PASS  [W1-08-member] OTHER-no-ghost-after — expected: no ghost, no lit day after the refused drop | observed: {"ghosts":0,"lit":[],"dragging":false}
+PASS  [W1-08-member] OTHER-tap-readonly — expected: a tap on another man’s chip does not hand the member a Delete / Save he may not use (the Inputs table hides ✎ / ✕ on other men’s rows) | observed: {"d":{"open":true,"title":"Tally · Jul 24","person":"","type":"LL","hint":"The person and the dates are changed on the Inputs page."},"ctrls":["inpEditClose","inpEditType","BUTTON","BUTTON","BUTTON","BUTTON","inpEditRmk","inpEditCancel"]}
+PASS  [W1-08-member] OTHER-tap-readonly-says — expected: the tap opens Tally's input READ ONLY: "Only Tally or an admin can change this.", its fields inert | observed: {"ro":{"note":"Only Tally or an admin can change this.","inert":true,"close":"Close"},"title":"Tally · Jul 24"}
+PASS  [W1-08-member] OTHER-tap-cannot-type — expected: typing into the read-only Remarks does nothing | observed: {"val":"Local leave","rmk0":"Local leave"}
+PASS  [W1-08-member] OWN-tap-editable — expected: the control: a tap on his OWN chip opens it with Delete and Save | observed: {"od":{"open":true,"title":"Ranger · Mar 9","person":"","type":"LL","hint":"The person and the dates are changed on the Inputs page."},"octrls":["inpEditClose","ALL DAY","AM","PM","CUSTOM","inpEditDel","inpEditCancel","inpEditSave"]}
+PASS  [W1-08-member] HOLD-member — expected: a member's hold opens the add dialog for 19 Aug, with no Person to pick (it is his own) | observed: {"open":true,"title":"New input · Aug 19","person":"","type":"Training","hint":"Added on Aug 19. For a multi-day span, use the Inputs page."}
+PASS  [W1-08-member] HOLD-member-own — expected: filed as Ranger's own, on 19 Aug | observed: [{"person":"bane","date":"Aug 19","type":"LL"}]
+PASS  [W1-08-member] Q14-outside-window — expected: outside the bidding window the leave shows on the war as approved (no admin step) — Q14 | observed: {"box":"LL","mark":"","title":"","cls":"c appr raptor"}
+PASS  [W1-08-member] RELOAD-member — expected: after a reload his inputs are all there, none doubled | observed: [{"iid":"imuihtz7pe9lkis","type":"LL","date":"Aug 19","endDate":"","allday":true,"s":0,"e":1439,"remarks":"","lw":""},{"iid":"imuiht6fje203ud","type":"LL","date":"Mar 9","endDate":"","allday":true,"s":0,"e":1439,"remarks":"W1 member own","lw":""},{"iid":"imuihsztgczqg4b","type":"Appointment","date":"Jul 16","endDate":"","allday":false,"s":1020,"e":1110,"remarks":"Medical / PHA","lw":""}]
+PASS  [W1-08-member] console-errors-w1 — expected: no console / page errors / 4xx (world 1) | observed: []
+NOTE  [W1-08-member] CLOSED-stage — {"admin":["OPEN FOR BIDDING","BIDDING CLOSED"],"member":"BIDDING CLOSED"}
+PASS  [W1-08-member] CLOSED-files — expected: with bidding CLOSED the member still files his own leave on the Inputs page (Q14) | observed: {"added":1,"asked":[],"toast":"","iid":"imuihudhyz1a3a2"}
+PASS  [W1-08-member] CLOSED-approved — expected: it shows on the war as approved at once | observed: {"box":"LL","mark":"","title":"","cls":"c appr raptor"}
+PASS  [W1-08-member] CLOSED-drag — expected: and he may move it on the calendar while bidding is closed | observed: {"days":["2026-08-12"],"t":["Moved to 12 Aug"]}
+PASS  [W1-08-member] CLOSED-war-follows — expected: the war follows: 12 Aug LL, 10 Aug clear | observed: {"box":"LL","mark":"","title":"","cls":"c appr raptor"}
+PASS  [W1-08-member] console-errors-w2 — expected: no console / page errors / 4xx (world 2) | observed: []

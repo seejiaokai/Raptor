@@ -12,7 +12,7 @@
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, inpType, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, oilAsks, nowStamp } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, inpType, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, remarksTailWord, oilAsks, nowStamp } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -40,7 +40,7 @@ import { CURWEEK } from '../engine/waves'
 import { keyToIso, mondayOf } from './weeknav'
 import { canEditSched } from '../state/auth'
 import { me, mayEditInputOf, mayDeleteInputOf } from '../state/perms'
-import { INPEDIT, setInpEdit, OILASK, setOilAsk } from './pops'
+import { INPEDIT, setInpEdit, OILASK, setOilAsk, setMedMove } from './pops'
 import { useVersion } from './useStore'
 import { RangeCal } from './RangeCal'
 
@@ -251,7 +251,9 @@ export function medOverlapRefusal(person: any, type: any, date: any, endDate: an
     const a = dateOrd(x.date, x.yr), b = dateOrd(x.endDate || x.date, x.yr)
     return a != null && b != null && na <= b && a <= nb
   })
-  return clash ? `A ${t} is already filed over these days — edit that entry instead, and attach the new document to it` : ''
+  /* the article follows the initials as they are said — an A-T-T C, an H-L, an O-M-L (W2's re-walk, 26 Sep 26) */
+  const an = /^[AEFHILMNORSX]/i.test(String(t)) ? 'An' : 'A'
+  return clash ? `${an} ${t} is already filed over these days — edit that entry instead, and attach the new document to it` : ''
 }
 /* An upchit is ONE date closing a real, still-open medical-down period —
    four refusals: a ranged upchit, an upchit with nothing on file to close,
@@ -1029,7 +1031,16 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     }
     if (wasAcc) unacceptInput(wasDi, r)
     r.person = draft.person; r.type = draft.type; r.allday = draft.allday
-    r.s = s; r.e = e; r.date = date; r.remarks = String(draft.remarks || '').trim(); r.mod = nowStamp()
+    /* THE REMARK'S DATE TOKEN FOLLOWS THE DATES (the absence-record re-test's final code reads — Fable F1, Astra 3,
+       26 Sep 26): "till <last day>" / "on <day>" is the app's own wording (D189). The form's pickers rewrite it as the
+       dates are picked; the calendar's drag and the upchit's date box did not, so a moved leave kept its old last day.
+       Rewritten here, the one save every door uses, ONLY when the dates changed — a remarks-only edit keeps whatever
+       was typed. Idempotent where a picker already wrote it. */
+    let rem = String(draft.remarks || '').trim()
+    const redated = date !== r.date || (endDate || '') !== (r.endDate || '')
+    const word = redated ? remarksTailWord(rem) : null
+    if (word) rem = withRemarksTail(rem, ordISO(dateOrd(date, baseYear())), ordISO(dateOrd(endDate || date, baseYear())), word)
+    r.s = s; r.e = e; r.date = date; r.remarks = rem; r.mod = nowStamp()
     /* the edit re-derived its labels against the CURRENT loaded year (fmt),
        so the anchor moves with them — an edit is a re-statement of the date */
     r.yr = baseYear()
@@ -1174,6 +1185,73 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
   return ok
 }
 
+/* ---- THE MEDICAL QUESTIONS FOLLOW A DRAG AND A REASSIGN (the absence-record re-test, AB4, 26 Sep 26 — Fable F4 and
+   Astra A, found independently) ------------------------------------------------------------------------------------
+   The edit window and the Inputs table put a different-type medical overlap to the filer (the clash sheet — "choose who
+   holds the shared days", NO default) and an upchit's effects to him (the summary sheet) BEFORE anything is written
+   (owner, 27 Aug 26). The calendar's chip drag and the schedule's reassign went straight to commitInputEdit, whose trim
+   plan then resolved the clash with the safety default (every tail kept) — silently. These three are the one body the
+   sheets' callers share: what to ask, and what each sheet's Save writes for an EDIT of an existing row. The Inputs
+   table's edit runs through them, and so does the move hand-off (ui/MedMoveConfirm.tsx), so a drag, a reassign and
+   an edit answer the same question the same way. */
+export type MedAsk =
+  | { kind: 'clash'; who: string; newType: string; span: string; clashes: any[]; a: number; b: number }
+  | { kind: 'up'; who: string; dateLabel: string; effects: { plan: any[]; leftovers: any[] } }
+
+/** What saving `draft` over the existing row `r` must put to the filer first: null when nothing (not a medical, or a
+ *  downchit that meets no different-type medical), 'refused' when the shared refusals toasted. */
+export function medAskFor(r: any, draft: any): MedAsk | null | 'refused' {
+  if (!draft || !draft.start || !(isUpchit(draft.type) || isDownchit(draft.type))) return null
+  /* the shared refusals FIRST — a bad draft toasts at once, never after a sheet was shown */
+  if (!normalizeInputDraft(draft, r)) return 'refused'
+  const who = PEOPLE[draft.person] ? PEOPLE[draft.person].cs : String(draft.person || '')
+  if (isUpchit(draft.type)) {
+    /* an upchit is NEVER saved silently: the summary runs whatever it finds */
+    const dateLabel = fmt(draft.start)
+    return { kind: 'up', who, dateLabel, effects: upchitEffects(draft.person, dateOrd(dateLabel, r.yr), r) }
+  }
+  const a = dateOrd(fmt(draft.start), r.yr)
+  const b = dateOrd(draft.end ? fmt(draft.end) : fmt(draft.start), r.yr)
+  const clashes = medClashes(draft.person, draft.type, a, b, r)
+  if (!clashes.length) return null
+  return { kind: 'clash', who, newType: draft.type,
+    span: fmt(draft.start) + (draft.end && draft.end !== draft.start ? ' – ' + fmt(draft.end) : ''), clashes, a, b }
+}
+
+/** The clash sheet's Save for an EDIT: the edited row becomes the first kept segment, the rest are minted as
+ *  siblings — all one undo step. */
+export function commitEditMedChoices(r: any, draft: any, ask: { clashes: any[]; a: number; b: number }, choices: string[], keepTail: any[]): boolean {
+  const segs = medKeptSegments(ask.a, ask.b, ask.clashes, choices)
+  if (!segs.length) return false
+  if (medSegmentsProtected({ ...draft, yr: r.yr }, segs, keepTail, ask.b, r)) { medicalLocked(); return false }
+  const g0 = segs[0]
+  const d2 = {
+    ...draft,
+    start: ordISO(g0.startOrd),
+    end: g0.endOrd > g0.startOrd ? ordISO(g0.endOrd) : '',
+    remarks: withRemarksTail(draft.remarks, ordISO(g0.startOrd), ordISO(g0.endOrd), 'till'),
+  }
+  let ok = false
+  writeInputsBatch(() => {
+    ok = commitInputEdit(r, d2, keepTail, ask.b)
+    if (ok) mintMedSegments(r, segs.slice(1), keepTail, ask.b)
+  })
+  return ok
+}
+
+/** The upchit sheet's Save for an EDIT: the edit and the ticked leftover removals as ONE undo step (the nested batch
+ *  is safe — the inner writeInputsBatch's push is a no-op under the outer). */
+export function commitEditUpchit(r: any, draft: any, removals: any[]): boolean {
+  if (medPlanProtected(removals.map((row: any) => ({ row })))) { medicalLocked(); return false }
+  let ok = false
+  writeInputsBatch(() => {
+    ok = commitInputEdit(r, draft)
+    if (ok && removals.length)
+      applyMedPlan(removals.map((lr: any) => ({ row: lr, action: 'delete', why: 'removed with the upchit' })))
+  })
+  return ok
+}
+
 /* ---- CHANGING THE PUCK (owner, 14 Aug 26 — "allow Unavailable to be
    editable too... even down to changing the puck") ---------------------
    The Unavailable row's person cell plants and drops like any other seat
@@ -1206,6 +1284,16 @@ export function reassignInput(iid: any, personId: any) {
   const was = PEOPLE[r.person] ? PEOPLE[r.person].cs : String(r.person || '')
   const draft = draftOf(r)
   draft.person = personId
+  /* a MEDICAL handed to a man who already carries a different medical there (or an upchit) is asked about first,
+     exactly as the edit window asks (AB4, 26 Sep 26 — the second door both plan reviews named): the move waits on
+     ui/MedMoveConfirm.tsx and nothing is written until it is answered */
+  const ask = medAskFor(r, draft)
+  if (ask === 'refused') return false
+  if (ask) {
+    setMedMove({ iid: r.iid, draft, ask, via: 'reassign', said: `${PEOPLE[personId].cs} is now unavailable instead of ${was}` })
+    notify()
+    return false
+  }
   if (!commitInputEdit(r, draft)) return false
   HOOKS.toast(`${PEOPLE[personId].cs} is now unavailable instead of ${was}`, 'ok')
   /* THE SECOND DOOR ONTO THE SAME BUG (Fable M2, 22 Sep 26). This helper goes
@@ -1699,6 +1787,11 @@ export function InputEditor() {
   const del = () => { if (removeInput(r)) { HOOKS.toast('Input deleted', 'ok'); close() } }
 
   const who = r && PEOPLE[r.person] ? PEOPLE[r.person].cs : (r ? String(r.person) : '')
+  /* READ ONLY for an input its reader may not change (the absence-record re-test, W1-F3, 26 Sep 26): a member reaching
+     another man's input — the calendar's chip, the day popover's row — was shown Delete and Save, each refused only
+     when pressed. The write path's own rule (perms.ts mayEditInputOf), asked before the form is drawn: he may still
+     READ it (D211 — type, remarks, documents), with nothing offered that he cannot use. */
+  const readOnly = !isNew && !!r && !mayEditInputOf(r.person)
   /* a NEW row's dates live on the DRAFT (the range picker moves them); an
      edit's stay on the row, whose dates this dialog never changes */
   const when = !r ? '' : (isNew && draft && draft.start)
@@ -1717,7 +1810,7 @@ export function InputEditor() {
           <b id="inpEditTitle">{isNew ? 'New input' : who}{when ? ' · ' + when : ''}</b>
           <button className="x" id="inpEditClose" aria-label="Close" onClick={close}>✕</button>
         </div>
-        {draft && <div className="airpop-body inped-body">
+        {draft && <div className="airpop-body inped-body" inert={readOnly || undefined}>
           {/* SCHEDULER ONLY (owner, 14 Aug 26 — "allow Unavailable to be
               editable too... even down to changing the puck"). A member
               opening their own input never reaches this dialog at all today
@@ -1867,10 +1960,11 @@ export function InputEditor() {
         <div className="airpop-foot">
           {/* nothing to delete on a row that does not exist yet (the board's
               + Add) — the button is simply absent in that mode */}
-          {!isNew && <button className="abtn danger" id="inpEditDel" onClick={del}>Delete</button>}
+          {!isNew && !readOnly && <button className="abtn danger" id="inpEditDel" onClick={del}>Delete</button>}
+          {readOnly && <span className="inped-ro" data-testid="inped-ro">Only {who || 'its owner'} or an admin can change this.</span>}
           <span style={{ flex: 1 }}></span>
-          <button className="abtn ghost" id="inpEditCancel" onClick={close}>Cancel</button>
-          <button className="abtn primary" id="inpEditSave" onClick={() => save(false)}>{isNew ? 'Add' : 'Save'}</button>
+          <button className="abtn ghost" id="inpEditCancel" onClick={close}>{readOnly ? 'Close' : 'Cancel'}</button>
+          {!readOnly && <button className="abtn primary" id="inpEditSave" onClick={() => save(false)}>{isNew ? 'Add' : 'Save'}</button>}
         </div>
       </div>
       {/* the upchit save-time summary rides OVER this dialog (its z sits one

@@ -20,9 +20,10 @@
    so it is unit-testable on its own and reusable by anything that ever wants
    to redate a chip without a drag (a keyboard move, say).
    --------------------------------------------------------------------------- */
-import { draftOf, commitInputEdit, fmtDay, askOilIfPending } from './inputedit'
+import { draftOf, commitInputEdit, fmtDay, askOilIfPending, medAskFor } from './inputedit'
 import { movePlanPuck, PLANPUCKS } from '../state/plan'
-import { writeInputs } from '../state/store'
+import { writeInputs, notify } from '../state/store'
+import { setMedMove } from './pops'
 import { canEditSched } from '../state/auth'
 import { isMe } from '../state/perms'
 import { INPUTS } from '../engine/inputs'
@@ -110,6 +111,15 @@ export function commitChipMove(entry: any, fromIso: string, toIso: string): bool
      at all") can never drift across a move */
   if (d.end) d.end = shiftIso(d.end, days)
 
+  /* A MEDICAL MOVE IS ASKED ABOUT FIRST (the absence-record re-test, AB4, 26 Sep 26 — Fable F4 and Astra A). Onto a
+     different-type medical, or an upchit anywhere, the edit window puts the question to the filer before anything is
+     written (owner, 27 Aug 26 — "never resolved silently … NO default"); this door went straight to the commit, whose
+     trim plan resolved it with its safety default. Now the move waits on the same sheet (ui/MedMoveConfirm.tsx) and
+     nothing lands until it is answered. Returns false: nothing moved YET, so the drag runs no success feedback. */
+  const ask = medAskFor(r, d)
+  if (ask === 'refused') return false
+  if (ask) { setMedMove({ iid: r.iid, draft: d, ask, via: 'drag', said: 'Moved to ' + fmtDay(d.start) }); notify(); return false }
+
   const ok = commitInputEdit(r, d)
   /* commitInputEdit already toasts every refusal it can produce (a SANS
      clash, a backwards range, a row deleted underneath the edit) — adding a
@@ -145,11 +155,22 @@ const chipSel = (e: Entry) => e.kind === 'puck' ? `[data-pid="${e.pid}"]` : `[da
    listener is what lets several calendars mount and unmount in the same
    session (tests included) without leaking state into one another. Returns
    the detach fn for React's effect cleanup. */
-export function initCalDrag(root: HTMLElement, opts: { onTap: (entry: any) => void }): () => void {
+export function initCalDrag(root: HTMLElement, opts: {
+  onTap: (entry: any) => void
+  /** a finger's release after a sideways swipe that began ON a chip — its whole travel from the press, for the
+   *  calendar to read as it reads a swipe over empty space (the re-walk's NEW-1, 26 Sep 26) */
+  onSwipe?: (dx: number, dy: number) => void
+}): () => void {
   let st: {
     entry: Entry, pointerId: number, mouse: boolean,
     x0: number, y0: number, armed: boolean,
+    /** where the finger LANDED — the wobble rule re-centres x0 / y0, so travel is read from here */
+    ox: number, oy: number,
+    /** travelled past GIVEUP from where it landed: a pan or a swipe, never a pick-up or a tap */
+    gaveUp: boolean,
     ghost: HTMLElement | null, over: HTMLElement | null, timer: any,
+    /** the reader may not move this chip — it never lifts, a tap still opens it (W1-F3) */
+    fixed: boolean,
   } | null = null
 
   function moveGhost(x: number, y: number) {
@@ -165,7 +186,7 @@ export function initCalDrag(root: HTMLElement, opts: { onTap: (entry: any) => vo
   }
 
   function arm() {
-    if (!st || st.armed) return
+    if (!st || st.armed || st.fixed) return
     st.armed = true
     const r = st.entry.el.getBoundingClientRect()
     const g = st.entry.el.cloneNode(true) as HTMLElement
@@ -231,9 +252,16 @@ export function initCalDrag(root: HTMLElement, opts: { onTap: (entry: any) => vo
       iid: chip.dataset.iid, pid: chip.dataset.pid,
       el: chip, fromIso: cell.dataset.icday!,
     }
+    /* A CHIP THE READER MAY NOT MOVE DOES NOT LIFT (the absence-record re-test, W1-F3, 26 Sep 26): a member could pick
+       up another man's chip — the ghost followed him and a day lit — and only the drop said no. The same test the drop
+       makes (commitChipMove: a scheduler moves anyone's, a member his own; a planning section is a scheduler's), asked
+       at the press, so the gesture is never offered. A tap still opens it. */
+    const row = entry.kind === 'input' ? INPUTS.find((x: any) => x.iid === entry.iid) : null
+    const fixed = !canEditSched() && (entry.kind === 'puck' || (!!row && !isMe(row.person)))
     st = {
       entry, pointerId: e.pointerId, mouse: e.pointerType === 'mouse',
-      x0: e.clientX, y0: e.clientY, armed: false, ghost: null, over: null, timer: 0,
+      x0: e.clientX, y0: e.clientY, armed: false, ghost: null, over: null, timer: 0, fixed,
+      ox: e.clientX, oy: e.clientY, gaveUp: false,
     }
     if (!st.mouse) st.timer = setTimeout(arm, HOLD)
     // mouse arms purely off movement, in onPointerMove below — no hold timer at all
@@ -254,7 +282,14 @@ export function initCalDrag(root: HTMLElement, opts: { onTap: (entry: any) => vo
          from wherever the finger actually is, and only a movement big
          enough to read as a deliberate pan gives up and lets the page
          scroll under it. */
-      if (dx > GIVEUP || dy > GIVEUP) { clearGesture(); return }
+      /* GIVEUP is read from where the finger LANDED, not from the last re-centre (the re-walk's NEW-1): re-centring
+         on every small move meant a steady sideways swipe never travelled "far", and its lift read as a tap — the
+         chip's edit opened instead of the month paging. Past it the hold is off for good, but the gesture is kept
+         so its release can be read as a swipe. (A vertical pan is the browser's — pan-y — and cancels the pointer.) */
+      if (st.gaveUp) return
+      if (Math.abs(e.clientX - st.ox) > GIVEUP || Math.abs(e.clientY - st.oy) > GIVEUP) {
+        clearTimeout(st.timer); st.gaveUp = true; return
+      }
       if (dx > SLOP || dy > SLOP) {
         st.x0 = e.clientX; st.y0 = e.clientY
         clearTimeout(st.timer); st.timer = setTimeout(arm, HOLD)
@@ -273,7 +308,7 @@ export function initCalDrag(root: HTMLElement, opts: { onTap: (entry: any) => vo
 
   function onPointerUp(e: PointerEvent) {
     if (!st || e.pointerId !== st.pointerId) return
-    const { entry, armed, x0, y0 } = st
+    const { entry, armed, x0, y0, ox, oy, gaveUp } = st
     const x = e.clientX, y = e.clientY
     const target = armed
       ? ((document.elementFromPoint(x, y) as HTMLElement | null)?.closest('[data-icday]') as HTMLElement | null)
@@ -295,9 +330,18 @@ export function initCalDrag(root: HTMLElement, opts: { onTap: (entry: any) => vo
       if (to && commitChipMove(entry, entry.fromIso, to)) markLand(`[data-icday="${to}"] ${chipSel(entry)}`)
       else if (to && to === entry.fromIso) landOn(entry.el)
       installClickEater() // a real drag happened — its own release click must not fall through to the chip
+    } else if (gaveUp) {
+      opts.onSwipe?.(x - ox, y - oy)   // the calendar decides, by the same rule as a swipe over empty space
     } else {
       const dx = Math.abs(x - x0), dy = Math.abs(y - y0)
-      if (dx <= SLOP && dy <= SLOP) opts.onTap(entry) // never armed, barely moved — a tap, routed to the calendar's own edit
+      if (dx <= SLOP && dy <= SLOP) {
+        /* A FINGER'S TAP ALSO SENDS A CLICK, after the lift (the absence-record re-test, W1-F2, 26 Sep 26): the edit
+           this tap opens was up by then, and the click landed on its dim backdrop and shut it — a flicker and nothing
+           for a chip lying outside the window's box. Eaten like the drag's own release click; a mouse has no second
+           click to eat, and its next real one must land. */
+        if (e.pointerType !== 'mouse') installClickEater()
+        opts.onTap(entry) // never armed, barely moved — a tap, routed to the calendar's own edit
+      }
     }
   }
 

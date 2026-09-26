@@ -1,0 +1,3 @@
+FAIL  [W4-1] W4-1-one-day-hold-keeps-sheet — expected: a finger held on ONE day and lifted leaves the selection sheet open for that day | observed: {"open":"nothing","log":["3ms pointerdown:touch on cell-glass-2026-08-13","607ms SELECT SHEET MOUNTED","607ms pointerup:touch on mx-wrap","636ms click:touch on cell-glass-2026-08-13","648ms SELECT SHEET GONE"]}
+PASS  [W4-1] W4-1-control-two-day-drag — expected: control: a finger drag over two days leaves the sheet open | observed: {"open":"select-sheet","log":["1709ms pointerdown:touch on cell-glass-2026-08-13","3ms pointerdown:touch on cell-glass-2026-08-13","2452ms SELECT SHEET MOUNTED","2452ms pointerup:touch on mx-wrap","746ms pointerup:touch on mx-wrap"]}
+NOTE  [W4-1] errors — []

@@ -389,6 +389,32 @@ export function Sheet({
     document.addEventListener('keydown', esc, true)
     return () => document.removeEventListener('keydown', esc, true)
   }, [panelRef])
+  /* TAB STAYS IN THE SHEET (the absence-record re-test, W5-F3, 26 Sep 26 — found by the orders walker). The scrim
+     keeps a MOUSE off the war behind an open sheet; the keyboard was never held — Tab walked out to the Period picker,
+     Stage advance and the rest, and a war switched there left this sheet open and live, its next bid landing in the war
+     no longer on screen. Tab and Shift+Tab now go round inside the topmost sheet, and focus left behind it is brought
+     in. Same guards as the Escape above: only the topmost sheet, only while the Leave War is the page showing. */
+  useEffect(() => {
+    const trap = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return
+      const pg = document.getElementById('page-leavewar')
+      if (pg && !pg.classList.contains('on')) return
+      const panel = panelRef.current
+      const all = document.querySelectorAll('.bidsheet')
+      if (!panel || (all.length && all[all.length - 1] !== panel)) return
+      const f = [...panel.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
+      )].filter(el => !el.closest('[hidden], [inert]'))
+      if (!f.length) { e.preventDefault(); return }
+      const first = f[0]!, last = f[f.length - 1]!
+      const at = document.activeElement as HTMLElement | null
+      if (!at || !panel.contains(at)) { e.preventDefault(); (e.shiftKey ? last : first).focus(); return }
+      if (!e.shiftKey && at === last) { e.preventDefault(); first.focus() }
+      else if (e.shiftKey && at === first) { e.preventDefault(); last.focus() }
+    }
+    document.addEventListener('keydown', trap, true)
+    return () => document.removeEventListener('keydown', trap, true)
+  }, [panelRef])
   return (
     <>
       {/* Not a button and not focusable: it carries nothing a screen reader

@@ -1,0 +1,23 @@
+390x844 2026-07-14 h8d2 @66,411 UNDER ALL DAY → window OPEN: Grit · Jul 13 → Jul 17 · inputs unchanged
+390x844 2026-07-15 h8d2 @154,411 UNDER AM → window OPEN: Grit · Jul 13 → Jul 17 · inputs unchanged
+390x844 2026-07-16 h8d2 @194,411 UNDER AM → window OPEN: Grit · Jul 13 → Jul 17 · inputs unchanged
+390x844 2026-07-17 h8d2 @233,411 UNDER PM → window OPEN: Grit · Jul 13 → Jul 17 · inputs unchanged
+375x667 2026-07-14 h8d2 @64,340 UNDER ALL DAY → window OPEN: Grit · Jul 13 → Jul 17 · inputs unchanged
+375x667 2026-07-15 h8d2 @149,340 UNDER AM → window OPEN: Grit · Jul 13 → Jul 17 · inputs unchanged
+375x667 2026-07-16 h8d2 @187,340 UNDER PM → window OPEN: Grit · Jul 13 → Jul 17 · inputs unchanged
+375x667 2026-07-17 h8d2 @225,340 UNDER PM → window OPEN: Grit · Jul 13 → Jul 17 · inputs unchanged
+360x740 2026-07-14 h8d2 @62,369 UNDER ALL DAY → window OPEN: Grit · Jul 13 → Jul 17 · inputs unchanged
+360x740 2026-07-15 h8d2 @113,377 UNDER AM → window OPEN: Grit · Jul 13 → Jul 17 · inputs unchanged
+360x740 2026-07-16 h8d2 @181,369 UNDER PM → window OPEN: Grit · Jul 13 → Jul 17 · inputs unchanged
+360x740 2026-07-17 h8d2 @216,369 UNDER PM → window OPEN: Grit · Jul 13 → Jul 17 · inputs unchanged
+390x700 2026-07-14 h8d2 @66,353 UNDER ALL DAY → window OPEN: Grit · Jul 13 → Jul 17 · inputs unchanged
+390x700 2026-07-15 h8d2 @154,353 UNDER AM → window OPEN: Grit · Jul 13 → Jul 17 · inputs unchanged
+390x700 2026-07-16 h8d2 @194,353 UNDER AM → window OPEN: Grit · Jul 13 → Jul 17 · inputs unchanged
+390x700 2026-07-17 h8d2 @233,353 UNDER PM → window OPEN: Grit · Jul 13 → Jul 17 · inputs unchanged
+390x844: 33 chips tapped · 4 lay under a button of the window they opened · 0 windows closed at once · 0 taps changed an input
+375x667: 33 chips tapped · 4 lay under a button of the window they opened · 0 windows closed at once · 0 taps changed an input
+360x740: 33 chips tapped · 4 lay under a button of the window they opened · 0 windows closed at once · 0 taps changed an input
+414x896: 33 chips tapped · 0 lay under a button of the window they opened · 0 windows closed at once · 0 taps changed an input
+390x700: 33 chips tapped · 4 lay under a button of the window they opened · 0 windows closed at once · 0 taps changed an input
+412x915: 33 chips tapped · 0 lay under a button of the window they opened · 0 windows closed at once · 0 taps changed an input
+errors []

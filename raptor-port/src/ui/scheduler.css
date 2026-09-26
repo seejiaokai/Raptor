@@ -2551,7 +2551,11 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    drift. Input chips stay capped at MAX_CHIPS + a "+N more" regardless (the
    owner's lesser-priority call) — this reaches the FULL-drawn sections, it
    doesn't uncap the inputs. */
-.ic-grid{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:1px;background:var(--edge)}
+/* touch-action:pan-y (the absence-record re-test, W1-F1, 26 Sep 26): a finger's VERTICAL move still scrolls the weeks,
+   but a SIDEWAYS one now reaches the calendar's own swipe-to-page (owner, 22 Aug 26). With no touch rule the browser
+   took a sideways finger as its own pan and cancelled the pointer after one move, so on a phone only the ‹ › arrows
+   paged. A chip's hold-drag sets its own `none` when it lifts. */
+.ic-grid{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:1px;background:var(--edge);touch-action:pan-y}
 /* flex-shrink:0 is load-bearing: without it the column would SHRINK a packed
    week back to fit the fixed body height (its siblings can't give more room),
    clipping the very content this is meant to reveal. Held at ≥ one viewport
@@ -5840,6 +5844,8 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .inped-ad{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-2)}
 .inped-ad input{width:auto;padding:0}
 .inped-hint{font-size:10.5px;color:var(--ink-3);line-height:1.4}
+/* the read-only edit window's one line — who can change this input (W1-F3, 26 Sep 26) */
+.inped-ro{font-size:11px;color:var(--ink-2);line-height:1.4}
 /* the Unavailable + Add's range calendar (owner, 19 Aug 26) — the same
    .rangecal the Inputs page draws, stacked over its read-out line */
 .inped-dates{display:flex;flex-direction:column;gap:5px}

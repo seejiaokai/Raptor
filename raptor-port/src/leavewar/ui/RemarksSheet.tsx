@@ -12,6 +12,7 @@
 // not move — only the note the Inputs page reads is rewritten. That commit
 // path also carries the member-own / scheduler-any gate, so this sheet's own
 // role check and the write path's cannot drift.
+import { displayCell } from '../engine'
 import { useState } from 'react'
 import { Sheet } from './Sheet'
 import { setLeaveRemarks } from '../../ui/inputedit'
@@ -39,7 +40,7 @@ export function RemarksSheet({
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
         <span className="dt">{span}</span>
-        <span className="cur">{code}</span>
+        <span className="cur">{displayCell(code)}</span>
         <button className="x" data-testid="remarks-cancel" onClick={onClose} aria-label="Close">✕</button>
       </div>
       <div className="bidsheet-row rmk-row">

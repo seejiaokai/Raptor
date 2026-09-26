@@ -1,0 +1,8 @@
+NOTE  [W6-member-pending] desktop-member-chip — {"tag":"SPAN","pendlist":null,"text":"1 pending","title":"1 change on this day — ahead of the issued schedule until you publish an AL"}
+NOTE  [W6-member-pending] desktop-member-list — null
+NOTE  [W6-member-pending] desktop-member-R30-member — {"asBuilt":"a plain label, not the list","chip":{"tag":"SPAN","pendlist":null,"text":"1 pending","title":"1 change on this day — ahead of the issued schedule until you publish an AL"},"list":null,"filed":"[DRAFT-PENDING] (D169)"}
+NOTE  [W6-member-pending] desktop-member-errors — []
+NOTE  [W6-member-pending] phone-member-chip — {"tag":"SPAN","pendlist":null,"text":"1 pending","title":"1 change on this day — ahead of the issued schedule until you publish an AL"}
+NOTE  [W6-member-pending] phone-member-list — null
+NOTE  [W6-member-pending] phone-member-R30-member — {"asBuilt":"a plain label, not the list","chip":{"tag":"SPAN","pendlist":null,"text":"1 pending","title":"1 change on this day — ahead of the issued schedule until you publish an AL"},"list":null,"filed":"[DRAFT-PENDING] (D169)"}
+NOTE  [W6-member-pending] phone-member-errors — []

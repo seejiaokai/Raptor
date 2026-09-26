@@ -101,6 +101,7 @@ import {
   isLeaveCode,
   parseCell,
   FULL,
+  winsOf,
   MAX_GIVEN_BY,
   MAX_GRANT_DAYS,
   MAX_REC_NOTE,
@@ -117,6 +118,7 @@ import {
 } from '../engine'
 import { mergeWar, absencesAt, absenceVersion, type MergedWar, type RecordSpans, type Views } from './merge'
 import { counterLabel } from '../engine/counters'
+import { creditWorth } from '../engine/credit'
 import { localBackend, memoryBackend, type StorageBackend } from './storage'
 /* [ARCH-STACK] Step 2 phase 4 — the shared command layer (see the persist()
    router below). Imported here so a Leave War user edit joins the SAME change
@@ -1538,6 +1540,27 @@ export function setPostIn(id: string, date: string | null): boolean {
   return true
 }
 
+/** WHY A POSTING DATE WOULD BE REFUSED — the sentence every posting door shows (the absence-record re-test, AB5,
+ *  26 Sep 26). `setPostOut` / `setPostIn` refuse a window that closes before it opens, and every sheet swallowed that
+ *  refusal: the bid sheet's confirm closed as though it had worked, the posting sheets' date box snapped back, the
+ *  drag-selection's sheet reported done — and nothing was said (Fable F5, reproduced on screen). The doctrine: a
+ *  refused value is put back AND the person is told. The same tests as the two writers, so the words and the refusal
+ *  cannot disagree; null when the date would be taken. Dates in the sheets' own voice (they print 2026-06-15). */
+export function postingProblem(id: string, kind: 'in' | 'out', date: string): string | null {
+  const person = state.people.find(p => p.id === id)
+  if (!person) return null
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return 'Pick a whole date first.'
+  /* the day-first date voice ("15 Jun 26" — ui/dates.ts shortDate's wording), never the stored 2026-06-15 (the
+     absence-record re-test's re-walk: this sentence first printed the machine date; `[LW-ISO-DATES]` is the rest) */
+  const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  const said = (iso: string) => `${Number(iso.slice(8, 10))} ${MON[Number(iso.slice(5, 7)) - 1]} ${iso.slice(2, 4)}`
+  if (kind === 'out' && person.from !== null && addDays(date, -1) < person.from)
+    return `Posted in on ${said(person.from)} — the post-out has to be after that day.`
+  if (kind === 'in' && person.to !== null && date > person.to)
+    return `Posted out from ${said(addDays(person.to, 1))} — the post-in has to be before that day.`
+  return null
+}
+
 /* The persisted squadron window (State.postOuts): the person as they stand
    now, kept while EITHER end is set and dropped once both are clear. One body
    so the two ends cannot disagree about when the record goes. */
@@ -2128,8 +2151,63 @@ export function cellProblem(personId: string, date: string, code: string): strin
   const staying = list.filter(r => !replaced.includes(r as RequestRec))
   const blocker = [...recContribs(staying), ...absencesAt(personId, date)].find(o => barsWrite(c, o))
   if (!blocker) return null
-  if (isSickCode(blocker.code)) return `That day is already ${blocker.code === 'ATTC' ? 'ATT C' : blocker.code} — leave can't go over a medical.`
+  if (isSickCode(blocker.code)) {
+    const name = blocker.code === 'ATTC' ? 'ATT C' : blocker.code
+    /* a medical recorded with HOURS says them (the absence-record re-test, W5-F4, 26 Sep 26): "That day is already
+       ATT C" read as the whole day to a man looking at a morning-drawn box, when the medical ran 09:00–14:00 */
+    const ws = winsOf(blocker)
+    const hm = (m: number) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`
+    if (ws.length === 1 && !(ws[0]![0] === FULL[0] && ws[0]![1] === FULL[1]))
+      return `${name} runs ${hm(ws[0]![0])}–${hm(ws[0]![1])} that day — leave can't go over a medical.`
+    return `That day is already ${name} — leave can't go over a medical.`
+  }
   return `That time is already taken by ${blocker.code} — clear it first.`
+}
+
+/** WHAT A RESTORE WOULD PUT BACK THAT THE WAR'S RULES NOW REFUSE (the absence-record re-test, W3-F8, 26 Sep 26 —
+ *  found by the war walker). A bid undone, a medical then filed on its day on the Inputs page, then Redo: the bid came
+ *  back and stood on the sick day, where filing the same medical over a live bid replaces it (the owner's bid rule;
+ *  B7 — the same rules at every door, undo and redo included). Reads the war records a restore is about to write
+ *  (`lw.cell`, id `warId:personId:date`, the day's list), and for every UNDECIDED or acknowledged request that is not
+ *  there now, asks the same question the bid door asks (`barsWrite` against the absences on that day). The sentence
+ *  names what now holds the day. Only a request is checked: a credit is work (it lands and flags, N2), a notice is
+ *  history, and nothing else on a war day is restorable over an absence. */
+export function restoreBlocker(
+  changes: ReadonlyArray<{ collection: string; id: string; op: string; after?: unknown }>, dir: 'undo' | 'redo',
+  /* THE DAY AS IT WILL STAND AFTER THIS RESTORE (Astra's final code read, finding 1, 26 Sep 26): the absences the same
+     restore leaves on each day — the bridge (sync.ts restoreAbsencesOf) works them out from the Inputs the restore
+     puts back or takes away, so undoing a filing that had replaced a bid gives the bid back in one step, and a medical
+     the restore keeps is judged at the hours it will have. Defaults to the day as it stands now. */
+  absOf: (personId: string, date: string) => readonly Contrib[] = absencesAt,
+): string | null {
+  const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  for (const ch of changes) {
+    if (ch.collection !== 'lw.cell' || ch.op === 'delete' || !Array.isArray(ch.after)) continue
+    /* the id read from the right, as applyLwRecord reads it — a war id may carry a colon */
+    const iDate = ch.id.lastIndexOf(':')
+    const rest = ch.id.slice(0, iDate), iPid = rest.lastIndexOf(':')
+    if (iDate < 0 || iPid < 0) continue
+    const date = ch.id.slice(iDate + 1), personId = rest.slice(iPid + 1), warId = rest.slice(0, iPid)
+    const war = state.wars.find(w => w.period.id === warId)
+    const now = new Map(((war?.recs || {})[personId]?.[date] || []).map((r: WarRec) => [r.id, r] as const))
+    for (const r of ch.after as WarRec[]) {
+      if (r.kind !== 'request' || (r as RequestRec).state === 'refused') continue
+      /* A bid the restore makes LIVE is asked; one already standing as the same live bid is not (the restore puts
+         nothing new on the day). A REFUSED bid made live again is asked too (finding 1: refused → Ack, Undo, a
+         medical filed, Redo — the same bid, a different state, stood on the sick day). */
+      const cur = now.get(r.id) as RequestRec | undefined
+      if (cur && cur.kind === 'request' && cur.state !== 'refused' && cur.code === (r as RequestRec).code) continue
+      const cell = parseCell((r as RequestRec).code)
+      if (!cell) continue
+      const c: Contrib = { id: r.id, kind: 'request', code: cell.type, win: requestWin((r as RequestRec).code), state: (r as RequestRec).state }
+      const blocker = absOf(personId, date).find(o => barsWrite(c, o))
+      if (!blocker) continue
+      const who = state.people.find(p => p.id === personId)?.callsign ?? personId
+      const name = blocker.code === 'ATTC' ? 'ATT C' : blocker.code
+      return `Can’t ${dir} that — ${who}’s ${name} now holds ${+date.slice(8)} ${MON[+date.slice(5, 7) - 1]}, and a bid can’t go over it.`
+    }
+  }
+  return null
 }
 
 /** What the merged view shows on top at one address. */
@@ -2267,8 +2345,26 @@ export function clearCells(cells: { personId: string; date: string }[]): RangeWr
     for (const c of cells) {
       const m = mainAt(c.personId, c.date)
       if (m && m.kind === 'absence') {
+        /* THE BIDS BENEATH FILED LEAVE GO TOO (the absence-record re-test, W3-F3, 26 Sep 26): a morning filed on the
+           Inputs page sits ABOVE an afternoon bid (the ladder), and this asked only the top record — so the bid was
+           counted "skipped, owned by Raptor" and left where it was, while Approve / Refuse / Ack in the same box already
+           reached it. Taken FIRST, whoever owns the leave on top (Fable's final code read, F3: under a leave the WAR
+           approved the bid stayed while the leave went — same gesture, two answers). A leave filed on the Inputs page
+           itself stays (it is the Inputs page's); a war-approved one goes by the door, which reads the Input by id. */
+        /* …AND THE AWARD BESIDE IT (owner, D260, 27 Sep 26 — "removes everything in the block, awards included"): an
+           award flags no leave day (N13), so a day may hold a leave and an award together, and asking only the top
+           record left the award behind whichever kind of leave was on top. The awards go by the same door as a Clear
+           (the admin's own records; `awardsIn` names them in the confirm first). */
+        const reqs = clearRequestsAt(c.personId, c.date, true)
         if (state.role === 'admin' && canDecide(state.period.stage, state.role) && warEditable(c.personId, c.date)) approved.push({ ...c, iid: m.id })
-        else skipped++
+        else {
+          if (reqs) written++
+          /* A LEAVE THE WAR APPROVED THAT STAYS IS SAID (Fable's D260 scenarios, S18): on a published war it is finished
+             paperwork, and when the award or bid beside it went the day counted only as "deleted" — the sheet closed as
+             though the leave had gone too. Leave filed on the Inputs page staying is by design and counts as nothing
+             (W3-F3). */
+          if (!reqs || m.lw) skipped++
+        }
       } else rest.push(c)
     }
     const r = writeMany(rest, '')
@@ -2279,6 +2375,40 @@ export function clearCells(cells: { personId: string; date: string }[]): RangeWr
     }
   })
   return { written, skipped }
+}
+
+/** Remove the undecided / decided REQUESTS at one address — the bid beneath an absence the war does not own (W3-F3) —
+ *  and, with `awards`, the admin's hand-given OIL awards there too (D260; the same records a Clear takes, `setCell`).
+ *  The same gates as every cell write. True when something was removed. */
+function clearRequestsAt(personId: string, date: string, awards = false): boolean {
+  if (!canEditCell(state.period, state.role, date) || !canEditRow(state.role, state.viewer, personId)) return false
+  const list = listAt(personId, date)
+  const next = list.filter(r => r.kind !== 'request' && !(awards && isAward(r)))
+  if (next.length === list.length) return false
+  return putList(personId, date, next)
+}
+
+/** A hand-given OIL award the signed-in role may remove — the admin's (N11); the schedule's own credit never. */
+const isAward = (r: WarRec): boolean => r.kind === 'credit' && r.oil === 'manual' && state.role === 'admin'
+
+/** THE OIL AWARDS A CLEAR OF THESE DAYS WOULD TAKE (owner, D260, 27 Sep 26: "the confirm names each award first").
+ *  A dragged block's Delete, the bid sheet's Clear and its range Clear all remove the awards on the days they clear —
+ *  and each used to do it silently (the absence-record re-test, AB1, AB2). The confirms read THIS before anything goes,
+ *  so what they name is exactly what the clear takes: the same gates as `setCell` (stage / window / row, a day in a
+ *  war) and the same records (an admin's hand-given credit — a member's clear takes none, and the schedule's own credit
+ *  is never cleared). In the cells' order; `days` is what each is worth (`creditWorth`). */
+export function awardsIn(cells: readonly { personId: string; date: string }[]): Array<{ personId: string; date: string; code: 'FO' | 'HO'; days: number }> {
+  const out: Array<{ personId: string; date: string; code: 'FO' | 'HO'; days: number }> = []
+  for (const { personId, date } of cells) {
+    if (!warHolding(state.wars, date)) continue
+    if (!canEditCell(state.period, state.role, date) || !canEditRow(state.role, state.viewer, personId)) continue
+    for (const r of listAt(personId, date)) {
+      if (!isAward(r)) continue
+      const c = r as CreditRec
+      out.push({ personId, date, code: c.code as 'FO' | 'HO', days: creditWorth(c) })
+    }
+  }
+  return out
 }
 
 /** An approved absence the war may change: every absence on the address was
@@ -2311,9 +2441,11 @@ function warEditable(personId: string, date: string): boolean {
  *  shown request is decided (approving turns it into an Input through the
  *  door), a shown war-approved leave is un-approved back into a request. One
  *  gesture, one envelope; a cell with nothing decidable is skipped. */
-export function setBidStates(cells: { personId: string; date: string }[], bid: BidState): { decided: number; skipped: number } {
-  if (!canDecide(state.period.stage, state.role)) return { decided: 0, skipped: cells.length }
-  let decided = 0, skipped = 0
+export function setBidStates(cells: { personId: string; date: string }[], bid: BidState): { decided: number; skipped: number; already: number } {
+  if (!canDecide(state.period.stage, state.role)) return { decided: 0, skipped: cells.length, already: 0 }
+  /* `already` (the absence-record re-test, AB7, 26 Sep 26 — Fable F7, reproduced by W3): an Approve over a leave that
+     was ALREADY approved changes nothing, and it was counted as "decided" — "3 decided" for two changes. */
+  let decided = 0, skipped = 0, already = 0
   gesture('lw.decide', () => {
     const toApprove: Array<{ personId: string; date: string; recId: string }> = []
     const toUnapprove: Array<{ personId: string; date: string; iid: string }> = []
@@ -2341,7 +2473,7 @@ export function setBidStates(cells: { personId: string; date: string }[], bid: B
           if (bid === 'approved') { toApprove.push({ personId, date, recId: m.id }); continue }
           if (decideRequest(personId, date, m.id, bid)) { decided++; wrote = true } else skipped++
         } else if (m && m.kind === 'absence' && warEditable(personId, date)) {
-          if (bid === 'approved') { decided++; continue }            // already approved: nothing to do
+          if (bid === 'approved') { already++; continue }            // already approved: nothing to do, and not a decision (AB7)
           toUnapprove.push({ personId, date, iid: m.id })
         } else skipped++
       }
@@ -2358,7 +2490,7 @@ export function setBidStates(cells: { personId: string; date: string }[], bid: B
       decided += r.done; skipped += r.skipped
     }
   })
-  return { decided, skipped }
+  return { decided, skipped, already }
 }
 
 /** Record a decision on one cell — the single-cell sibling of `setBidStates`,
@@ -3502,6 +3634,10 @@ export function editManualCredit(
       if (!isHalfStep(days)) return HALF_STEP_MSG
       if (days > MAX_GRANT_DAYS) return `That is more than ${MAX_GRANT_DAYS} days`
       next.days = days
+      /* THE CODE FOLLOWS THE NUMBER (N19 — the quantity is the fact; the absence-record re-test, W3-F6, 26 Sep 26):
+         under a day reads HO, a day or more FO, the rule the +OIL panel already keeps. An edit of the days here (the
+         OIL tracker, the tap list's Edit…) left the old code, so a 2-day award read HO on the grid. */
+      next.code = days < 1 ? 'HO' : 'FO'
     }
   }
   if (JSON.stringify(next) === JSON.stringify(had)) return null
@@ -3547,7 +3683,9 @@ export function setCellDays(personId: string, date: string, days: number | null)
   }
   const rest = { ...had }
   delete (rest as { days?: unknown }).days
-  const rec: CreditRec = days === null ? rest : { ...rest, days }
+  /* the code follows the number (N19; W3-F6 — as editManualCredit does), so a later caller of this writer cannot
+     reopen a 2-day award reading HO (Fable's final code read, N2) */
+  const rec: CreditRec = days === null ? rest : { ...rest, days, code: days < 1 ? 'HO' : 'FO' }
   if (JSON.stringify(rec) === JSON.stringify(had)) return null
   return putList(personId, date, list.map(r => (r === had ? rec : r))) ? null : 'Could not change that'
 }

@@ -1,0 +1,4 @@
+NOTE  [H6] csv-name — 142-inputs.csv
+NOTE  [H6] csv-wildcard-lines — ["\"Wildcard\",\"Jul 22\",\"Jul 22\",\"all day\",\"all day\",\"ATT C\",\"H6 sick\"","\"Wildcard\",\"Jul 20\",\"Jul 21\",\"all day\",\"all day\",\"LL\",\"H6 Bali\"","\"Wildcard\",\"Jul 23\",\"Jul 24\",\"all day\",\"all day\",\"LL\",\"H6 Bali\""]
+PASS  [H6] csv-pieces — expected: the file carries the two leave pieces and the medical, each as stored | observed: ["\"Wildcard\",\"Jul 22\",\"Jul 22\",\"all day\",\"all day\",\"ATT C\",\"H6 sick\"","\"Wildcard\",\"Jul 20\",\"Jul 21\",\"all day\",\"all day\",\"LL\",\"H6 Bali\"","\"Wildcard\",\"Jul 23\",\"Jul 24\",\"all day\",\"all day\",\"LL\",\"H6 Bali\""]
+NOTE  [H6] errors — []

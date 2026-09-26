@@ -160,6 +160,10 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   week cannot scroll to is still reachable. Drawn only when NOT armed (an armed
   slot pins the panel to its own day). Absent on the board, which passes
   `{head:false}` — the header, and so the arrows, render on the edit week alone.
+  **The board's crew column answers for the BOARD'S day** (the absence-record re-test, W6 R19, 26 Sep 26 — on
+  main it asked `paletteDay()`, the edit week's answer, so Thursday's board listed the crew of the day the week
+  behind was scrolled to and showed a man on leave Thursday as free): the armed slot's day, else the board's own
+  (`SchedBoard.tsx`; pinned by `boardcrew.test.tsx`).
 - **An explicit pick WINS over the scroll-follow** (`pan.ts:pickRosDay`). Both
   the click and the arrows route through it: it cancels any queued follow and
   suppresses a new one for ~0.5s, so the scroll the pick settles into cannot
@@ -5189,10 +5193,27 @@ BidPicker's look and vocabulary, not instead of it.
   role and stage: everyone Fills while the war is OPEN (portion + leave chips;
   admin adds the Medical row); Decide (Pending / Approve / Refuse) is the
   admin's once bidding is CLOSED **or PUBLISHED** (owner, 27 Aug 26 — the admin
-  still runs a published war); Delete (second-tap confirm — no undo here)
+  still runs a published war); Delete (second-tap confirm)
   and Move act on the editable bids the selection holds, and **show only when it
   holds one** (`movableCells(sel.cells).length`, owner 27 Aug 26 — a loose box
-  of empty cells is Fill-only, so Move never opens on nothing to move);
+  of empty cells is Fill-only, so Move never opens on nothing to move).
+  **Delete takes EVERYTHING in the block, the admin's OIL awards included, and
+  its confirm NAMES EACH AWARD before anything goes** (owner, D260, 27 Sep 26 —
+  "B"): "Delete 4 days for 10 people, including 3 OIL awards (Drifter 3 Jan 1 day,
+  Hunter 1 Jan 1 day, Hunter 4 Jan 1 day)? Tap Delete again." — the day is added
+  only when one man has two. What is named is `store.ts awardsIn` (the same gates
+  and records the clear itself uses — a member's Delete takes no award and names
+  none); the wording is `ui/awardwords.ts`, shared with the bid sheet's Clear; an
+  award beneath leave goes too, whatever the leave; one Undo brings every award
+  back. A block holding ONLY awards now offers Delete (it is not an empty box) and
+  never Move (an award is dated the day he earned it and never moves). On a
+  published war the approved leave in the block stays (finished paperwork) and the
+  note SAYS it was skipped even when the award beside it went. The bid sheet's
+  one-day **Clear**, and its range Clear, follow the same rule: on a day or span
+  holding an award the first tap names it ("Clear also takes Hunter's OIL award
+  (1 day) — tap Clear again to go ahead", the button reading "Clear — sure?"), the
+  second takes it; a changed span asks again. Pins `awardclear.test.tsx`,
+  `inputgate.test.ts`.
   Post-out shows only
   for a single-person selection. Partial writes report in the `sel-note` voice
   and keep the sheet up. The per-person negative-balance confirm the single
@@ -5234,6 +5255,38 @@ BidPicker's look and vocabulary, not instead of it.
     the raw rectangle.
   - The move itself is `moveCells(movers, delta)`, atomic — an occupied / Raptor
     / out-of-window landing refuses the whole move and says why in the banner.
+    Its OWN day says "It is already on that day — pick another day." and stages
+    no Confirm (it read "Nothing to move." — Fable's D262 scenarios, S6).
+  - **ONE CHIP, ONE MOVE** (owner, D262, 27 Sep 26 — "click on a single chip …
+    the move button should be enabled … The calendar can be removed"): the
+    one-day bid sheet's **Move** (in its decision row, the admin's in every stage
+    but a draft) is never greyed and has no date box — it PICKS THE CHIP UP into
+    this same move mode (`Matrix.tsx` sets `moveSel` to the one cell; `BidPicker`
+    `onMove`), so a single chip and a block move by one machine and one set of
+    landing rules. The old `DecisionSheet` (unmounted since 21 Sep 26) went with
+    its date box. **While a move is on** (the chip's, the drag-selection's
+    "Move…" and the event move alike — one `wireMove`): **the grid scrolls at its
+    edges** — the picked-up chip follows the mouse, so the mouse carried into the
+    36px band at the days' left edge (past the frozen columns / drawer, the
+    drag-select's `leftEdge`) or the grid's right edge scrolls the days
+    18px/frame, only while over the grid (`isGrid`: the card, the floating date
+    header, the desktop's foot scrollbar) and only once the mouse has been out of
+    every band since the move began (the sheet closes under a still mouse — Fable's
+    S2); a PRESS-AND-DRAG carries it too, on the drag-select's own gesture machine
+    (a mouse arms at 4px, a finger by holding 180ms — a quick swipe still scrolls
+    the grid), whose bands scroll both ways, and the RELEASE picks the day under
+    the pointer (desktop lands, phone stages for Confirm); **the month buttons keep
+    it on** (they are the grid's own); **a click on an EMPTY spot outside the grid
+    ends it** — never a control, the banner, a sheet, or a popup's shade (the
+    Legend's, the under-manned list's: `[data-testid$="scrim"]`); Escape and a
+    MOUSE right-click still end it, a finger's long press (Android's right-click)
+    never does; for its first 400ms a click on the SAME spot Move was pressed is
+    ignored (a double-click on Move landed the chip — S1; a place as well as a time,
+    so a quick deliberate click on another day still lands); and **leaving the Leave War ends it** (`subLwScreen` — the ghost
+    and its listeners had followed onto the next page, S9). A stage or war change
+    and Undo still end it (the existing guard). Pins `moveone.test.tsx`,
+    `movewire.test.ts`, `deciding.test.tsx`; e2e `moveOneTo` (`e2e/app.ts`);
+    walked at both widths (`docs/handpass/2026-09-27-d260-d262.md`).
   The `moved` dotted-orange edge marks the landed cells via
   the `shiftedFrom` state — but **only for a move made once bidding has CLOSED**
   (owner, 27 Aug 26): while a war is still OPEN people shuffle their own bids

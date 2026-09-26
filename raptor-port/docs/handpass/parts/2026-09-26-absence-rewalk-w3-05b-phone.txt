@@ -1,0 +1,9 @@
+NOTE  [RW-W3-05b-phone] bundle — http://localhost:4175/assets/index-KbvILaPW.js
+NOTE  [RW-W3-05b-phone] setup — {"war26":["BIDDING CLOSED","PUBLISHED"],"war27":["DRAFT","OPEN FOR BIDDING","→ OPEN FOR BIDDING"],"glass":{"rec":"-","inputs":["LL Dec 16 lw=y2026"]}}
+NOTE  [RW-W3-05b-phone] after-switch — {"openedIn26":"remarks-sheet","war":"JAN - DEC 27","underTheFingerOrMouseAtThePicker":"SELECT[war-picker]","now":"nothing","text":""}
+PASS  [RW-W3-05b-phone] sheet-closes-on-switch — expected: switching to JAN–DEC 27 closes the sheet opened on a 26 day (E1) | observed: {"now":"nothing","text":""}
+PASS  [RW-W3-05b-phone] published-leave-untouched — expected: the PUBLISHED war's approved leave cannot be taken off from a sheet left open across a war switch — it is still there on the war and on the Inputs page | observed: {"clearPressed":null,"sheetAfterClear":null,"cell":{"box":"LL","mark":"","title":"","cls":"c appr"},"glass":{"rec":"-","inputs":["LL Dec 16 lw=y2026"]},"stage26":"PUBLISHED"}
+PASS  [RW-W3-05b-phone] E3-refusal-names-the-medical — expected: a Redo that would put the bid over the medical is refused BY NAME ("…ATT C now holds 2 Feb, and a bid can’t go over it" — register §12) | observed: {"toasts":["Undid: a change to the leave board","Can’t redo that — Warden’s ATT C now holds 2 Feb, and a bid can’t go over it."]}
+PASS  [RW-W3-05b-phone] E3-redo-over-medical — expected: after the bid is undone and a medical filed on that day, Redo does not put the bid back over the medical (B7 at every door — undo and redo too); if it offers, it refuses by name | observed: {"undo":"Undo — a change to the leave board","filed":1,"redoOn":true,"title":"Redo — a change to the leave board","redo":{"pressed":true,"title":"Redo — a change to the leave board"},"recs":"-","cell":{"box":"C","mark":"","title":"","cls":"c info raptor"},"tap":{"open":"raptor-sheet","lines":[]}}
+NOTE  [RW-W3-05b-phone] toasts — []
+NOTE  [RW-W3-05b-phone] errors — []

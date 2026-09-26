@@ -570,7 +570,7 @@ check the other):
   imposes no row rule. Pinned in `store.test.ts`
   §a member edits only their own row.
 - **The 27 Aug overnight pass added three more one-body seams to watch.**
-  `canDecide` is now read by the DecisionSheet/SelectSheet AND both store
+  `canDecide` is now read by the bid sheet's decision row (the DecisionSheet it replaced was removed 27 Sep 26, D262) and the SelectSheet AND both store
   decision writers (`setBidState`/`setBidStates`) — a decision gate grown in
   only one of those places is the seam. `moveProblem` is the validation half
   of `moveCells`, read by the commit AND the landing preview (`previewAt`) —
