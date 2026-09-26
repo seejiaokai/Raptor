@@ -291,8 +291,8 @@ person move between squadrons with data intact.
   `docs/architecture-direction.md` and [DB-STEP].
 - **D281 (26 Sep 26) — the posting-out date and the neighbours:** a posting to another squadron IS this transfer — on
   the posting-out date he belongs to the other squadron, moved automatically on that date or by the admin's hand; and
-  because the squadrons are local and near each other, another squadron (e.g. 149) may PLAN a 142 man meanwhile, his
-  leave and quals staying his own squadron's (`docs/architecture-direction.md` §3, More than one squadron). The Leave
+  because the squadrons are local and near each other, another squadron (e.g. 149) may PLAN a 142 man — **normally, at
+  any time, not only during a posting (D282)** — his leave, quals and account staying his own squadron's (`docs/architecture-direction.md` §3, More than one squadron). The Leave
   War's post-out sheet will offer it as its fourth outcome (`[POST-OUT-OUTCOMES]`, D229) once this is built.
 
 ### [TRK-ATTEMPTS] Keep a student's attempt history — OPEN (small, feature)
