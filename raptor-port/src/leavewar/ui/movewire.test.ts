@@ -153,6 +153,12 @@ describe('a click while a chip is picked up (D262)', () => {
     btn.dispatchEvent(new MouseEvent('click', { bubbles: true }))
     const scrim = document.createElement('div'); scrim.setAttribute('data-testid', 'sheet-scrim'); outside.appendChild(scrim)
     scrim.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    /* the Legend's and the under-manned list's shades too (found writing the walk) */
+    const shade = document.createElement('div'); shade.setAttribute('data-testid', 'legend-scrim'); outside.appendChild(shade)
+    shade.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    /* and the move's own banner, clicked beside its buttons */
+    const bar = document.createElement('div'); bar.className = 'mv-banner'; outside.appendChild(bar)
+    bar.dispatchEvent(new MouseEvent('click', { bubbles: true }))
     expect(cancels).toBe(0)
   })
 

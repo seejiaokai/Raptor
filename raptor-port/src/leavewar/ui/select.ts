@@ -742,9 +742,10 @@ export function wireFigureSelect(outer: HTMLElement, ctx: FigureSelectCtx): () =
    TAP lands it — and a swipe must scroll, never drop, so only a click that
    is NOT the tail of a scroll commits. The commit click is swallowed in the
    capture phase so the cell's own single-click sheet never opens under it. */
-/* WHAT A CLICK OUTSIDE THE GRID MUST NOT CANCEL (D262): a control of any kind, and a sheet or its shade — pressing one
-   is a thing a person does ON PURPOSE, never "an empty area". */
-const NOT_EMPTY = 'button, a[href], input, select, textarea, label, summary, [role="button"], [role="dialog"], [role="menu"], [role="menuitem"], [role="tab"], [contenteditable=""], [contenteditable="true"], .bidsheet, [data-testid="sheet-scrim"]'
+/* WHAT A CLICK OUTSIDE THE GRID MUST NOT CANCEL (D262): a control of any kind, the move's own banner, and a sheet or a
+   popup and its shade — a sheet's, the Legend's, the under-manned list's (found writing the walk: a tap on the Legend's
+   shade to close it also ended the move). Pressing one is a thing a person does ON PURPOSE, never "an empty area". */
+const NOT_EMPTY = 'button, a[href], input, select, textarea, label, summary, [role="button"], [role="dialog"], [role="menu"], [role="menuitem"], [role="tab"], [contenteditable=""], [contenteditable="true"], .bidsheet, .mv-banner, [data-testid$="scrim"]'
 /* A move just begun ignores clicks for this long (D262, Fable's S1): the sheet's Move closes the sheet on the first
    click of a double-click, and the second then fell on whatever day sat under the button. */
 const MOVE_SETTLE = 400
