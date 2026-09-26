@@ -1147,7 +1147,8 @@ list IT builds the database's security from — matches every ruling: a member's
 table still says members only READ `Person`); the change history readable by members (D169; the table gives members no
 `EditLog` access), a medical input's details excepted; accounts tied to callsigns (D166); OIL awards written by admins only,
 who gave each and when kept (D79, D82). (3) One place in the app answers "may this person do this?", mirroring §11, with a
-test that fails when the two disagree. **HIS QUESTION (26 Sep 26), to answer before the plan:** how a new user joins —
+test that fails when the two disagree. **ANSWERED — D204 (26 Sep 26): both ways; a waiting screen, with an admin switch (off
+by default) for a read-only guest view.** The question was: how a new user joins —
 (a) the admin adds the defence mail, callsign and role first, so the first sign-in has its access at once (D165's plan);
 (b) a new user signs up (callsign, name) and the admin is notified, approves and sets member or admin; either way the
 admin can change it later. Also noted: an untagged signed-in person sees the programme as a GUEST (his parked plan of

@@ -205,7 +205,8 @@ Each stage is independently deployable and reversible; none needs the next.
   the squadron's facility-booking app, behind a go.gov.sg short link); M365
   sign-in replacing the prototype `ACCOUNTS`; an admin-managed access table
   tagging each work email to a puck and a role; anyone signed in but not yet
-  tagged sees the programme as a GUEST (no puck, no bids, no own-inputs); an
+  tagged sees the programme as a GUEST (no puck, no bids, no own-inputs) [NARROWED 26 Sep 26 by D204: he
+  sees a waiting screen and can request access; the guest view is an admin switch, off by default]; an
   upchit nudge to the person via Teams from a scheduled flow. Licensing is
   confirmed (every account is paid). Open tenant-admin questions: code apps
   enabled in the environment; Dataverse available. NOTHING of this is built —
