@@ -80,7 +80,7 @@ fully — being built on `claude/tracker-palette`), [TRK-FLEXBAR-INK] (a questio
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); [LOOK-435]'s steps 2–4 are items 1 above; left: [REQ-ORPHAN-ROW] and [REQ-DOOR-WORDS] (both low). Left from the amendment batch (D91–D111, merged): [AVAILWIN-PREVIEW-BAR] (low), [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [DOC-SUBHEADS], [RULING-HOMES-AUDIT], [HANDOFF-SHAPE-GUARD] and [BACKLOG-TIDY] (any time, docs only), [PEEK-ISSUED] (a question for him, low),
 Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words).
-The five-flags batch (`claude/five-flags-batch-build-ef7d85`, 26 Sep 26 — its five items archived, built there) — his three look-card questions [CROWD-DUP-REFUSE],
+The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his three look-card questions [CROWD-DUP-REFUSE],
 [ME-PUCK-SEVERITY-RING] and [ARROW-GUTTER-STRIP] (answer, then small builds); low: [GHOST-FLAG-SHADOW], [LW-SETTINGS-SMALL],
 [ALLAVAIL-OPEN-ROW] (investigate first).
 Insights — [INSIGHTS-WORKING-COPY] (a question for him, with the one changes window or any time).

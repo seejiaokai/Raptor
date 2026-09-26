@@ -1,6 +1,7 @@
 # Evidence sheet — the five-flags batch (26 Sep 26)
 
-Branch `claude/five-flags-batch-build-ef7d85` (from `main` at `e27e15fe`). Five backlog items as one batch, on his
+Branch `claude/five-flags-batch-build-ef7d85` (from `main` at `e27e15fe`); the re-walk after the reads and the gates
+(§5, §7) on `claude/five-flags-batch-continue-2cfa70`, started from it, which carries the PR. Five backlog items as one batch, on his
 instruction of 26 Sep 26 ("build all five as one batch (D164 and D160 are my yes), then walk and check them per the
 bug-check order"): **[PUCK-FLAG-GLOW]** (D164), **[LW-RESET-ORDER]** (D160), **[CROWD-SWAP-SAYS-BUSY]**,
 **[VIEW-ARROW-OVER-LIST]**, **[BG-GUARD-FALSE]**. Built by Opus 5.5; scenarios by Fable 5.1
@@ -92,6 +93,7 @@ the x it was clicked at), `ui/highlights.ts bringIntoView` (a warning tap, a cha
 | A copy left behind (Astra 1) | before `leaves` (red first) | `crowdself.test.ts`, `runtrace.test.ts` |
 | The severity rings in the ring test (Astra 4) | a glow added to the grey ring | `flagglow-css.test.ts` "every ring rule…" |
 | His own flagged puck's glow (Fable 1) | before `.puck.me.warn,.puck.me.boxdot` (red first) | `flagglow-css.test.ts` "the shadow that wins…" |
+| The five older browser tests' "front" (§7) | `weekInset` taken out of `bringIntoView`, on the tests as updated | `geometry.spec.ts` "the week lands on the day, on its snap point…": −54 (restored, 9 / 9 green) |
 
 ## 5. The walk
 
@@ -167,10 +169,47 @@ the real `main` words "on SC AM 07:00–13:00 — inside this shift").
 - W4: dragging the foot bar's thumb (headless Chromium draws none — its ‹ › buttons and a trackpad pan were walked);
   the ALL AVAIL window's dock (fixed top-right, above the arrows, unchanged); the no-pan check on View-only; 1920×1080
   for the warning taps, the pending jump, the chips and the board close.
-- The re-walks covered only what the fixes touched (§5, last column).
+- The re-walks covered only what the fixes touched (§5, last column). After the reads, W1's B (every surface drawing
+  a SOLID-red "you" puck), E (the member's own puck) and G (the finger ghost) were not re-run: Fable F1's new rule sits
+  BEFORE the red rings, so a solid-red "you" puck draws exactly as the first walk saw it — the ring test pins that
+  order ("the shadow that wins", `flagglow-css.test.ts`), and W1 A and F re-read the solid ring green.
 
 ## 7. The gates
-*(One full run on the final code, under the lock.)*
+One full run on the final code under the PC-wide lock (D228; `gatelock.mjs run`, 27 Sep 26, `E2E_PORT=4193`, on
+`claude/five-flags-batch-continue-2cfa70` at `a0a164a3`, the bundle the re-walk drove, `index-C-k_umJP.js`):
+
+| Gate | Result |
+|---|---|
+| unit (`vitest run`) | **6237 / 6237**, 382 files — `perms.test.ts` and `perms-scan.test.ts` among them (the server question, §1) |
+| build | clean |
+| tfin (the original's assertions) | **728 / 0** |
+| e2e | **469 passed, 5 failed**, 48 skipped — see below; after the five tests' fix, the whole suite again: **474 passed, 0 failed**, 48 skipped |
+| smoke (the Tracker) | **443 / 0** |
+| rulecheck | OK |
+| docsize | OK — `Docs: OUTSTANDING 73 items (+6 −5, −5 all in ARCHIVE) · DECISIONS D1–D222 · homes OK` |
+| the guard's own tests (`node --test .claude/hooks/bg-cwd-guard.test.mjs`, not in the gate set) | **14 / 14** |
+
+**The five that failed — all older tests of where the desktop week comes to rest, all failing on the batch's own
+change, none a wrong landing.** [VIEW-ARROW-OVER-LIST] moved "the front" 54px in from the week box's left edge, beside
+the ‹ arrow (the week's declared scroll-padding). These five still measured from the box's edge:
+- "clicking a warning … on its snap point" — the day landed **exactly 54px in** (offset 54 where it asked 0);
+- "desktop: Edit Schedule opens on the day View-only was showing", and "and back the other way" — the app carried the
+  right day (its own reading is beside the arrow); the test's reading picked up the **previous day's 42px strip** in
+  that room (his Q3) and named the day before;
+- "the week ends whole …" and "› steps one clean day at a time …" — the jammed end fronts a whole column **exactly 54px
+  in** (asked < 40 from the box's edge; they guard against a sliver of hundreds of px).
+
+**Disposition — the tests' front moved to the app's front**: each reads the same declared room the app reads
+(`getComputedStyle(week).scrollPaddingLeft`, 0 on a phone), with the assertion itself unchanged (exact 0; < 40). The
+stepping test's own "front day" reading moved with it. The five (and their phone twins, and the two "sit clear of the
+‹ arrow" tests) then ran **9 / 9**; the break test in §4 turned the snap test red (−54) with the landing broken, and
+green again once restored. Nothing in the app changed after the gate run — only `e2e/geometry.spec.ts`. The whole browser suite was
+then run again under the lock on the same bundle: **e2e 474 passed, 0 failed, 48 skipped** (3.4 min).
+
+**What this found about the method:** the walk and the new test measured the landing against the arrow; the older
+tests that measure it against the box were not run before the reads (this sheet's §7 was empty at the handoff, and the
+first full browser run on the branch was this one). The order's "gates" step between the walk's fixes and the reads
+(§5 of the order) would have shown it a round earlier.
 
 ## 8. The code reads (Fable and Astra, blind to each other, with this sheet)
 
@@ -198,7 +237,7 @@ after F1/A4.
 **Look here** (desktop, signed in as `ad`; the phone looks exactly as before):
 1. **Your own puck doesn't glow when it carries a flag.** Edit Schedule, Monday: your purple Saber puck with its red
    "C" has the same plain red ring as Ranger's beside it — no red haze; with any other flag (amber, grey, the dotted
-   "causes tomorrow's breach") it keeps its purple ring but no glow. Unflagged, it still glows purple. Before / after: `docs/img/handpass/2026-09-26-five-flags/w1/A-desktop-before-main-saber-you-glows-beside-ranger.png` → `…/A-desktop-after-branch-saber-you-beside-ranger.png`.
+   "causes tomorrow's breach") it keeps its purple ring but no glow. Unflagged, it still glows purple. Before / after: `docs/img/handpass/2026-09-26-five-flags/w1/A-desktop-before-main-saber-you-glows-beside-ranger.png` → `…/A-desktop-after-branch-saber-you-beside-ranger.png`; another flag (amber): `…/rewalk/w1/D1-desktop-as-wildcard-mon-amber-you-beside-tally.png`.
 2. **Leave War → ⚙ → "Roster order".** Greyed, "In the default order". Rearrange (⇅), drag a man down a block, open ⚙:
    Reset order lights; one tap asks "Really reset?", the second puts everyone back; Undo brings your arrangement back.
 3. **Monday's board, FLIGHT SAFETY STAND-DOWN.** Add a second man, drag one onto the other: they swap and nothing says

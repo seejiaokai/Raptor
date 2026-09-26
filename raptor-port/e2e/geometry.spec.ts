@@ -963,12 +963,15 @@ test.describe('clicking a warning brings the puck into view', () => {
       const puck = document.querySelector('#vWeek .puck.wfoc:not(.echo)') as HTMLElement
       if (!puck) return null
       const w = week.getBoundingClientRect(), p = puck.getBoundingClientRect()
+      /* the front is the room the desktop week keeps beside its ‹ arrow — its declared scroll-padding, the one
+         number state/view.ts weekInset reads ([VIEW-ARROW-OVER-LIST], 26 Sep 26); 0 where none is declared */
+      const front = parseFloat(getComputedStyle(week).scrollPaddingLeft) || 0
       return {
         inView: p.left >= w.left - 1 && p.right <= w.right + 1,
         /* the snap assertion: inline:'center' asks to rest between two snap
            points, so the browser re-snaps and can leave you a whole day past
-           the one you clicked. On the snap point, this delta is 0. */
-        dayOffset: Math.round(day.getBoundingClientRect().left - w.left),
+           the one you clicked. On the snap point — the front — this delta is 0. */
+        dayOffset: Math.round(day.getBoundingClientRect().left - w.left - front),
       }
     }, di)
     expect(m, 'a focused puck is on the page').not.toBeNull()
@@ -2744,12 +2747,15 @@ test('a promoted late input keeps the board row in register — no eighth grid i
    are not padding either: the desktop week shows several days at once and the
    phone shows one, so "the same day" means different scroll maths on each. */
 
-/* the leftmost day still on screen — the reading the app itself carries */
+/* the leftmost day still on screen — the reading the app itself carries. On the desktop "on screen" starts beside the
+   ‹ arrow, where the week keeps its room (its scroll-padding, read by state/view.ts weekLeftDay; [VIEW-ARROW-OVER-LIST],
+   26 Sep 26): the previous day's last few pixels show in that room, under the arrow, and are not the day being shown.
+   0 on a phone, which declares none. */
 async function dayOnScreen(page: any, wid: string) {
   return page.evaluate((id: string) => {
     const w = document.getElementById(id) as HTMLElement
     const ds = [...w.querySelectorAll('.day[data-day]')] as HTMLElement[]
-    const x = w.getBoundingClientRect().left + 8
+    const x = w.getBoundingClientRect().left + (parseFloat(getComputedStyle(w).scrollPaddingLeft) || 0) + 8
     const hit = ds.find(d => d.getBoundingClientRect().right > x) || ds[0]
     return +hit.dataset.day!
   }, wid)
@@ -3980,8 +3986,10 @@ test.describe('the crew-day picker', () => {
       w.dispatchEvent(new Event('scroll', { bubbles: true }))
     })
     await page.waitForTimeout(300)
+    /* "the front" is beside the ‹ arrow, where the desktop week keeps its room (its scroll-padding —
+       [VIEW-ARROW-OVER-LIST], 26 Sep 26), not the box's own edge */
     const end = await page.evaluate(() => {
-      const w = document.getElementById('eWeek')!, wl = w.getBoundingClientRect().left
+      const w = document.getElementById('eWeek')!, wl = w.getBoundingClientRect().left + (parseFloat(getComputedStyle(w).scrollPaddingLeft) || 0)
       let bd = Infinity
       for (const d of w.querySelectorAll('.day')) { const g = Math.abs(d.getBoundingClientRect().left - wl); if (g < bd) bd = g }
       return Math.round(bd)
@@ -3994,10 +4002,11 @@ test.describe('the crew-day picker', () => {
     const sunFront = await page.evaluate(() => {
       const w = document.getElementById('eWeek')!
       const sun = w.querySelector('.day[data-day="6"]') as HTMLElement
+      const front = () => w.getBoundingClientRect().left + (parseFloat(getComputedStyle(w).scrollPaddingLeft) || 0)
       w.style.scrollBehavior = 'auto'
-      w.scrollLeft += sun.getBoundingClientRect().left - w.getBoundingClientRect().left
+      w.scrollLeft += sun.getBoundingClientRect().left - front()
       return new Promise<number>(res => setTimeout(() => {
-        res(Math.round(Math.abs(sun.getBoundingClientRect().left - w.getBoundingClientRect().left)))
+        res(Math.round(Math.abs(sun.getBoundingClientRect().left - front())))
       }, 200))
     })
     expect(sunFront, 'the last live day can now sit at the front').toBeLessThan(40)
@@ -4103,9 +4112,9 @@ test.describe('the crew-day picker', () => {
       setTimeout(() => { clearInterval(iv); res() }, 3000)
     }))
 
-    // the day snapped nearest the week's left edge — the "front" day, sliver-proof
+    // the day snapped nearest the week's front — beside the ‹ arrow, its scroll-padding — the "front" day, sliver-proof
     const frontDay = () => page.evaluate(() => {
-      const w = document.getElementById('eWeek')!, wl = w.getBoundingClientRect().left
+      const w = document.getElementById('eWeek')!, wl = w.getBoundingClientRect().left + (parseFloat(getComputedStyle(w).scrollPaddingLeft) || 0)
       const days = [...w.querySelectorAll('.day[data-day]')] as HTMLElement[]
       let best = days[0], bd = Infinity
       for (const d of days) { const g = Math.abs(d.getBoundingClientRect().left - wl); if (g < bd) { bd = g; best = d } }
@@ -4140,8 +4149,10 @@ test.describe('the crew-day picker', () => {
     // the roll-over lands on Monday of the next week
     expect(steps[wrapAt], 'stepping past the last front day rolls to Monday').toBe(0)
 
-    // and the end of the week is a whole column flush at the left — never a
-    // fractional sliver of a prior day (leading pad is ~20px; a sliver was 100s).
+    // and the end of the week is a whole column flush at the front — never a
+    // fractional sliver of a prior day (a sliver was 100s). The front is beside
+    // the ‹ arrow, where the desktop week keeps its room — its scroll-padding
+    // ([VIEW-ARROW-OVER-LIST], 26 Sep 26) — not the box's own edge.
     // One settled reading at the jammed end, so the check can't catch a scroll
     // still in flight.
     await page.evaluate(() => { const w = document.getElementById('eWeek')!; w.scrollLeft = w.scrollWidth })
@@ -4149,12 +4160,12 @@ test.describe('the crew-day picker', () => {
     // at the absolute end the fronting column may be a next-week PREVIEW day —
     // the no-sliver contract holds for any column, so measure them all.
     const end = await page.evaluate(() => {
-      const w = document.getElementById('eWeek')!, wl = w.getBoundingClientRect().left
+      const w = document.getElementById('eWeek')!, wl = w.getBoundingClientRect().left + (parseFloat(getComputedStyle(w).scrollPaddingLeft) || 0)
       let bd = Infinity
       for (const d of w.querySelectorAll('.day')) { const g = Math.abs(d.getBoundingClientRect().left - wl); if (g < bd) bd = g }
       return Math.round(bd)
     })
-    expect(end, 'the last stop is a whole column flush at the left, not a sliver').toBeLessThan(40)
+    expect(end, 'the last stop is a whole column flush at the front, not a sliver').toBeLessThan(40)
   })
 })
 

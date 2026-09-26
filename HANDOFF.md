@@ -15,32 +15,32 @@ the later merge keeps both (D78).
 
 ## Now
 
-<!-- now:claude/five-flags-batch-build-ef7d85 -->
-### `claude/five-flags-batch-build-ef7d85` — the five-flags batch (D164, D160, [CROWD-SWAP-SAYS-BUSY], [VIEW-ARROW-OVER-LIST], [BG-GUARD-FALSE]): BUILT, walked, both reads done and fixed — the LAST re-walk and the full gates left — written 27 Sep 26 — verify before use
-- **Parallel** with `claude/accounts-new-person` and the absence-record re-test (`claude/absence-record-d147-af6a50`): preview
-  port 4176 (`.claude/launch.json` "raptor-walk-4"), browser tests `E2E_PORT=4193`, rulings D270–D279 (none used yet). Full
-  checks take turns through the PC-wide lock (D228, `node C:/Users/User/projects/Raptor/raptor-port/scripts/gatelock.mjs
-  take|release|status|run`). Whichever merges later takes `main` in first. Nothing to `main` without his "merge live".
-- **Built** (all committed and pushed; no PR yet): the "this is you" puck never glows when flagged (`scheduler.css`,
-  `flagglow-css.test.ts`); ⚙ Settings → Reset order (`resetRosterOrder`, `rosterFollowsDefault`; the two resets take each
-  other's question back); the busy check's one key shape (`keys.ts seatRow`), one man one place on a row (`slots.ts
-  rowPlaces`/`lastFilled`, `avail.ts`), a copy left behind still counts, the SC shift scan reads the seat he leaves; the
-  desktop week's 54px room beside the ‹ (`view.ts weekInset`, the › side measured); the background guard follows a line
-  step by step and knows where a background shell starts.
-- **The check (FULL):** evidence `raptor-port/docs/handpass/2026-09-26-five-flags.md` — §1 tier, §2 rulings, §3 roll-calls,
-  §4 break tests, §5 the walk (W1 64/0, W2 97/0, W3 123/5, W4 1838/2 — every fail fixed, reproduced, re-walked), §6 not
-  walked, §8 both reads (Astra A1–A4, Fable F1–F4: all fixed except F4, filed), §9 his look card. §7 (gates) is EMPTY.
-- **Next, in this order:** (1) `npm run build` in `raptor-port/`; (2) re-walk what the reads' fixes touched, into the
-  re-walk folder: `FF_SHOTS=<…>/docs/img/handpass/2026-09-26-five-flags/rewalk/w1 HP_URL=http://localhost:4176 node
-  scripts/handpass/ff-w1.mjs A,C,D,F` and `…/rewalk/w3 … ff-w3.mjs f1a f1b f1c f1d f1e f3 f6 f20` (single scripts need no
-  lock; W1's D pictures will now show the flagged own puck WITHOUT the purple glow — expected); (3) under the lock
-  (`gatelock.mjs run`, `E2E_PORT=4193`) the full gate set; baseline to beat: `HANDOFF.md` §Gate baseline; fill §7;
-  (4) open the PR, unsubscribe, hand him the Vercel link and the look card (§9: four looks + Q1–Q3).
-- **Open question from him, 27 Sep 26, unanswered:** *"i think my computer can handle 2 chats working"* — said while this
-  chat queued for the lock behind the absence-record chat. Ask what he means before recording it: two chats working side
-  by side is already fine (only FULL gate runs take the lock; single walk scripts do not); two FULL gate runs at once is
-  what D86 measured as giving false failures (86–97% CPU). If he wants two full runs at once, that narrows D228/D86 —
-  record it (a D270s row) and fix gatelock.mjs's one-slot lock.
+<!-- now:claude/five-flags-batch-continue-2cfa70 -->
+### `claude/five-flags-batch-continue-2cfa70` — the five-flags batch (D164, D160, [CROWD-SWAP-SAYS-BUSY], [VIEW-ARROW-OVER-LIST], [BG-GUARD-FALSE]): BUILT, FULL-checked, all gates green; its PR open for his look and "merge live" — written 27 Sep 26 — verify before use
+- **The branch:** started from `claude/five-flags-batch-build-ef7d85` (built, walked and read there, 26 Sep 26), which it
+  carries whole; the PR is from THIS branch (`gh pr list --head claude/five-flags-batch-continue-2cfa70`). The old branch
+  has no PR and nothing of its own left — delete it once this merges.
+- **Parallel** with `claude/accounts-new-person` (PR #443) and the absence-record re-test (PR #444): preview port 4176
+  (`.claude/launch.json` "raptor-walk-4"), browser tests `E2E_PORT=4193`, rulings D270–D279 (none used). Full checks take
+  turns through the PC-wide lock (D228, `node C:/Users/User/projects/Raptor/raptor-port/scripts/gatelock.mjs … run --from
+  <this worktree>/raptor-port` — without `--from` it runs the MAIN checkout's code). Whichever merges later takes `main` in
+  first. Nothing to `main` without his "merge live".
+- **Built:** his own purple puck never glows when flagged, for every kind of flag (`scheduler.css`, `flagglow-css.test.ts`);
+  ⚙ Settings → Reset order (the two resets take each other's question back); one man one place on a row, a copy left
+  behind still counts, the SC shift scan reads the seat he leaves; the desktop week's 54px room beside the ‹ (`view.ts
+  weekInset`, the › side measured); the background guard follows a line step by step.
+- **The check (FULL), done:** evidence `raptor-port/docs/handpass/2026-09-26-five-flags.md` — the walk (§5: W1 64/0, W2 97/0,
+  W3 123/5, W4 1838/2, every fail fixed or his question), both reads (§8: Astra A1–A4, Fable F1–F4 — all fixed but F4,
+  filed), the re-walk after the reads (§5: W1 34/0; W3 69/2, the two = his Q1), the gates (§7: unit 6237/6237, build,
+  tfin 728/0, e2e 474/0 after five older week-landing tests were moved to the new front — measured, not a wrong landing,
+  break-tested — smoke 443/0, rulecheck, docsize), his look card (§9: four looks + Q1–Q3).
+- **Next:** his look on the PR's Vercel link, his answers to Q1–Q3 (filed [CROWD-DUP-REFUSE], [ME-PUCK-SEVERITY-RING],
+  [ARROW-GUTTER-STRIP]), then "merge live" — one at a time with #443 and #444, the later taking `main` in first.
+- **His "2 chats" remark (27 Sep 26), still unanswered:** *"i think my computer can handle 2 chats working"*. The opening
+  line of this chat carried a blank where his answer was meant to go. Put to him in this chat's report: two chats working
+  side by side needs nothing (only full check runs queue); two full runs at once is what D86 measured as false failures —
+  recommended: keep the queue. If he wants two full runs at once, that narrows D228/D86 — record it (D270) and give
+  `gatelock.mjs` two slots.
 - **Filed from it:** [CROWD-DUP-REFUSE] (Q1), [ME-PUCK-SEVERITY-RING] (Q2), [ARROW-GUTTER-STRIP] (Q3), [GHOST-FLAG-SHADOW],
   [LW-SETTINGS-SMALL], [ALLAVAIL-OPEN-ROW]. The five items are archived (built here).
 <!-- /now -->
@@ -130,11 +130,10 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 26 Sep 26 morning, `claude/leave-late-published` (`09276503`, the final code of
-`[LEAVE-LATE-PUBLISHED]` with D187 and its reads' fixes), one run on a quiet PC
-(`raptor-port/docs/handpass/2026-09-26-late-pub.md` §6): unit **5988 / 5988** (368 files) · build clean · tfin **728 / 0** ·
-e2e **471 passed**, 48 skipped · smoke **442 / 0** · rulecheck OK · docsize OK. Two tests added after it (no source
-change): their file alone 45 / 45. Restate a count only
+The latest counts watched — 27 Sep 26, `claude/five-flags-batch-continue-2cfa70` (`a0a164a3`, the five-flags batch's final
+code, bundle `index-C-k_umJP.js`), one run under the lock (`raptor-port/docs/handpass/2026-09-26-five-flags.md` §7): unit
+**6237 / 6237** (382 files) · build clean · tfin **728 / 0** · e2e **474 passed**, 48 skipped (the whole suite again after
+five older landing tests moved to the new front — tests only) · smoke **443 / 0** · rulecheck OK · docsize OK. Restate a count only
 from a run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md`
 §Build & verify; how they mislead, and the checks on his PC: `raptor-port/docs/gates-and-deploy.md`.
 
