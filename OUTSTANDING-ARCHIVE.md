@@ -1618,3 +1618,18 @@ standing exception (a safety fact, never versioned — `raptor-port/src/engine/e
 `claude/request-one-row`; then its own branch, in his order.
 **PLACE SETTLED 25 Sep 26 — D180:** NEXT, on its own branch `claude/leave-late-published`, BEFORE `[ACCOUNTS]`; built overnight (D181).
 
+
+*Moved here 2026-09-26 by backlog-archive.mjs ([BG-CWD-GUARD]). Forward facts: `.claude/hooks/bg-cwd-guard.mjs`, `raptor-port/CLAUDE.md`.*
+
+### [BG-CWD-GUARD] A backgrounded npm command that starts at the repo root dies at once — guard it, don't re-warn (filed 24 Sep 26)
+**DONE 26 Sep 26 (branch `claude/bg-cwd-guard`):** the hook route — `.claude/hooks/bg-cwd-guard.mjs`, wired as a `PreToolUse` hook on the Bash and PowerShell tools in `.claude/settings.json`, refuses a backgrounded `npm`/`npx`/`pnpm` that never moves into `raptor-port/`, with the fix in its message; its test `node --test .claude/hooks/bg-cwd-guard.test.mjs` (5 / 5); proved live in the session that built it (refused bare, both tools; ran with `cd raptor-port &&`). The root `package.json` route was not taken (it would start the full checks and could change what Vercel detects).
+**HIS GO (D162, 24 Sep 26): build the hook.**
+From the skills notebook, observation #42 (1 Sep 26), which the 23 Sep and 24 Sep reviews both judged a code or
+config change, not a guide change (D146). A `run_in_background` shell starts at the REPO ROOT, where there is no
+`package.json`, so a bare `npm run …` fails instantly — and the wrapper's exit code can read 0. The bold warning in
+`raptor-port/CLAUDE.md` §Build & verify is text, and it has been broken three times. **The fix is structural:** a
+`PreToolUse` hook (under `.claude/`, so no full check run) that refuses a backgrounded `npm` command without
+`cd raptor-port`, or a root `package.json` whose scripts `cd raptor-port && npm run …` (it would start the full
+checks and could change what Vercel detects). **Place:** any time, none blocking — but ask him first: a hook runs in
+every chat, and it is standing configuration.
+

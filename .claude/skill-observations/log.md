@@ -420,11 +420,26 @@ resolved statuses always carry their resolution date
 
 **Principle:** A test that reaches past the public door must reproduce the door's exact call, and prove it did; otherwise only cutting the fix shows whether the test was ever looking at it.
 
-### Observation 262: A ruling that picks from a PICTURE must save the picture's recipe, or the build has to dig it out of an old chat
+### Observation 270: A hook wired as `test && run || exit 0` swallows its own refusal
 
 **Status:** OPEN
 **Date:** 2026-09-26
-**Session context:** Building [TRK-PALETTE-ASK] — the owner had chosen "C" from three pictures of the Tracker's chart in other colours (D157, 24 Sep 26). Numbered 262 because the parallel `claude/accounts` branch already holds 261.
+**Session context:** [BG-CWD-GUARD] — a PreToolUse hook that refuses a backgrounded npm command outside raptor-port (numbered 270, past 260, because two parallel chats — claude/accounts and a Tracker-colours chat — may be appending unpushed entries)
+**Skill:** repo hook wiring (.claude/settings.json; the pattern in `record-decisions.sh`'s and `task-observer`'s entries)
+**Type:** open-source
+**Phase/Area:** writing a blocking hook's settings command
+
+**Issue:** The repo's existing hook commands use `[ -f script ] && bash script || exit 0` for fail-open. That is harmless for hooks that always exit 0, but copied onto a BLOCKING hook it turns the hook's exit 2 (refuse) into exit 0 (allow): `||` fires on any non-zero exit of the script, not only on a missing file. The guard was written with `if [ -f … ] && command -v node …; then node …; else exit 0; fi` instead, and proved live (refused, then allowed).
+
+**Suggested improvement:** Where this repo documents how to add a hook (file-map row for `settings.json`, or a note beside the hooks), say: a hook that can BLOCK uses `if …; then …; else exit 0; fi`, never `&& … || exit 0`; and prove a new blocking hook live with one refused and one allowed call.
+
+**Principle:** Fail-open wrappers must distinguish "the check could not run" from "the check said no"; a shell `a && b || c` conflates them and silently disables every refusal.
+
+### Observation 271: A ruling that picks from a PICTURE must save the picture's recipe, or the build has to dig it out of an old chat
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** Building [TRK-PALETTE-ASK] — the owner had chosen "C" from three pictures of the Tracker's chart in other colours (D157, 24 Sep 26). Numbered 271–273 (first written as 262–264): the parallel `claude/accounts` branch holds 261 and `main` reached 270 (`claude/bg-cwd-guard`) before this merged.
 **Skill:** internal — the project's record-decisions rule (`.claude/rules/record-decisions.md`), and the session-handoff skill's checkpoint sweep
 **Type:** internal
 **Phase/Area:** Recording a ruling whose answer is a visual choice
@@ -435,7 +450,7 @@ resolved statuses always carry their resolution date
 
 **Principle:** A decision made by pointing at a picture is only reproducible if the picture, or the recipe that drew it, is kept with the decision; the words describing it are a summary, not the spec.
 
-### Observation 263: The permission classifier refuses edits to the rulings files, which the project's own process requires
+### Observation 272: The permission classifier refuses edits to the rulings files, which the project's own process requires
 
 **Status:** OPEN
 **Date:** 2026-09-26
@@ -450,7 +465,7 @@ resolved statuses always carry their resolution date
 
 **Principle:** A process whose first step writes to a protected location needs a stated fallback for when the write is refused; otherwise the refusal quietly removes the step.
 
-### Observation 264: A break test that puts back a RETIRED value only proves the retired list — break with another CURRENT value too
+### Observation 273: A break test that puts back a RETIRED value only proves the retired list — break with another CURRENT value too
 
 **Status:** OPEN
 **Date:** 2026-09-26
