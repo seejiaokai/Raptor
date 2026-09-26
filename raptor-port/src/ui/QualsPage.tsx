@@ -636,6 +636,10 @@ export function QualsPage() {
   })
 
   const addPerson = () => {
+    /* roster membership is the admin's, asked at the write as archive and restore do (Fable's
+       code read, 26 Sep 26: a stale element or a hand-made call reached the add, toasted
+       "added", and only then was rolled back by the command gate) */
+    if (!mayManageRoster()) return HOOKS.toast('Only an admin can add someone', 'warn')
     const cs = addP.cs.trim()
     if (!cs) return HOOKS.toast('A person needs a callsign')   // was a silent no-op
     /* TWO PEOPLE CANNOT SHARE A CALLSIGN, AND A CALLSIGN CANNOT COLLIDE WITH AN

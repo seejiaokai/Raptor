@@ -2892,8 +2892,14 @@ function ledgerSeq(): number {
 
 /** The approver stamped on a grant: the CALLSIGN of whoever is viewing
  *  (`viewer` is a person id and would leak on screen), or "admin". */
+/* the signed-in person's callsign from Raptor's whole roster, mirrored by the sync beside the
+   viewer (leavewar/sync.ts): the war's own roster leaves out a SANS man (unless shown) and an
+   archived callsign, and an admin who is either still grants — his stamp names him, never
+   "admin" (Fable's code read, 26 Sep 26; D166 (5)). View state, not persisted. */
+let VIEWER_CS: string | null = null
+export function setViewerCallsign(cs: string | null): void { VIEWER_CS = cs }
 function approverName(): string {
-  return state.people.find(p => p.id === state.viewer)?.callsign ?? 'admin'
+  return state.people.find(p => p.id === state.viewer)?.callsign ?? VIEWER_CS ?? 'admin'
 }
 
 /**

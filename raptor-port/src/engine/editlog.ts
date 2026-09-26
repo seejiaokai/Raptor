@@ -292,6 +292,12 @@ export function elogGroups(di?: any): ELogGroup[] {
    planned. The date removes that, and a tab left open past midnight stops
    silently relabelling yesterday's work as today's.
    `now` is still taken for the tests; nothing reads it any more. */
+/* WHO made a change, by his LIVE callsign ([ACCOUNTS] — D166 (5) and the one-identity rule;
+   Fable's code read, 26 Sep 26): read through the person the row keeps, so a rename since is
+   followed, as every other list follows it; the name as recorded only when the row has none. */
+export function elogWho(r: { who?: any; pid?: string | null }): string {
+  return String((r.pid && (PEOPLE as any)[r.pid] && (PEOPLE as any)[r.pid].cs) || r.who || '')
+}
 export function elogWhen(t: number, _now?: number) {
   const d = new Date(t)
   const hm = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0')

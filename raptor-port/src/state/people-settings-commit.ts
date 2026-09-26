@@ -237,14 +237,6 @@ export function persistPeopleProjection(): void {
 export function commitPeopleEdit(fn: () => void, meta?: any): CommitResult {
   return commitPeople(PEOPLE_TYPES.edit, () => { fn(); advancePeople() }, meta)
 }
-/* the ids of the people whose record differs from the last-persisted roster — the
-   Quals write function (state/quals-write.ts) refuses a member's command that changed
-   anyone but himself (D149; Astra R2-4, Fable R2-5) */
-export function changedPeopleIds(): string[] {
-  const before = JSON.parse(baseline())
-  const ids = new Set([...Object.keys(before), ...Object.keys(PEOPLE)])
-  return [...ids].filter(id => JSON.stringify(before[id]) !== JSON.stringify((PEOPLE as any)[id]))
-}
 
 /* ---- one-time registration (called from initStore, after the scheduler) --- */
 let registered = false

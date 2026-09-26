@@ -15,6 +15,22 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/accounts -->
+### `claude/accounts` — `[ACCOUNTS]` (D165, D166, D200, D204, D210, D211): BUILT and FULL-checked; on its PR, waiting for his look and "merge live" — written 26 Sep 26 — verify before use
+- **What it is:** sign in as yourself (every account is one callsign; "View as" and the role toggle gone); request access /
+  waiting / switched off / the admin's guest-view switch; Admin → Users; one permissions module (`src/state/perms.ts`)
+  mirroring `docs/data-model.md` §11 with a drift test and a source scan; D149 on Quals. Plan (3 red-team rounds):
+  `docs/superpowers/plans/2026-09-26-accounts-plan.md`; register AC1–AC15.
+- **The check:** walk 1 38/38, walk 2 40/40 (Fable's scenarios), the bridge off-host — re-walked on the final build; both
+  code reads (Fable: no blocker; Astra: four findings) answered — every finding fixed red-first or filed with its place;
+  final gates 6156 / 728 / 471 e2e / 442 Tracker, all green. Evidence sheet `docs/handpass/2026-09-26-accounts.md`
+  (§6 walk findings, §8 the reads, §9 his look card).
+- **Next:** his five-minute look (the sheet's §9, on the branch's Vercel link) → his "merge live" → then `[DRAFT-PENDING]`
+  (the one changes window) on top of accounts, with its own full check (D210).
+- **Filed from it:** `[TRK-SESSION-PICK]` (the Tracker's last pick per person); `[DB-STEP]`'s "access changes take effect
+  at once" (Astra's read, finding 1).
+<!-- /now -->
+
 <!-- now:claude/leave-late-published -->
 ### `claude/leave-late-published` — `[LEAVE-LATE-PUBLISHED]` (D177–D189): MERGED 26 Sep 26 on his "merge live" (PR #438) — this block goes at the next handoff; written 26 Sep 26 — verify before use
 - **What it is:** a published day keeps what it went out with — its inputs (`snap.inp`), its warnings that freeze and

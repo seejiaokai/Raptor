@@ -479,3 +479,33 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** Every fixture step that can refuse gets an assertion that it landed (e.g. "the fixture day is published") before the assertions that depend on it; and the red-first run (revert the fix, watch the test fail) is mandatory for every new assertion, not only new tests.
 
 **Principle:** Assert the fixture before the behaviour; a negative check ("X is not shown") passes trivially on an empty screen.
+
+### Observation 276: A results folder with a shared name is read as your own run
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [ACCOUNTS] FULL check — the gate run
+**Skill:** New skill candidate: bug-check order (raptor-port/docs/bug-check-order.md) — running the gates
+**Type:** open-source
+**Phase/Area:** reading gate results while parallel sessions share a machine
+
+**Issue:** The gates were logged to `/tmp/gates/`, a folder another session had used that morning. Its old summary file said "unit tests failed, browser tests failed", and the agent reported that to the owner as its own result before noticing the timestamps — its own run was still in progress. Corrected within a minute, but the owner was briefly told something false.
+
+**Suggested improvement:** Every gate run writes to a folder named for the run (branch + time), created fresh; a report of a gate result quotes the log's own timestamp or the run's start line. Never read a summary file you did not create in this run.
+
+**Principle:** A shared scratch location is someone else's evidence until proven otherwise; name results by the run that produced them.
+
+### Observation 277: An evidence cell that names a test must be checked against the file tree
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [ACCOUNTS] FULL check — the evidence sheet's roll-call
+**Skill:** New skill candidate: bug-check order (raptor-port/docs/bug-check-order.md) — §6 roll-call and §9 evidence
+**Type:** open-source
+**Phase/Area:** the roll-call's "proved by" column
+
+**Issue:** The roll-call row for a security-relevant surface claimed "pinned by the unit test that loads it under a non-local host". No such test existed; the claim was carried from the plan's intention into the sheet. An independent code reviewer's remark led to a search that found none; the test was then written (and the behaviour hardened).
+
+**Suggested improvement:** Before the sheet is handed to reviewers, every file or test named in a "proved by" cell is checked to exist (a one-line glob per cell, or a small script over the sheet's backticked paths). A plan's "proved by" column is a promise; the sheet's must be a fact.
+
+**Principle:** A cell that names its proof is a claim until the proof is opened; check it exists before anyone relies on it (the anti-pattern "the comment that vouches", applied to evidence).

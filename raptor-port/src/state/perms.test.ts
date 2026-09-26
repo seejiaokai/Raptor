@@ -142,7 +142,9 @@ describe('the command gate (cmdAuthorize) — every command the app registers', 
       expect(cmdAuthorize(t, actor('member', 'bane')), t).toBe(false)
     }
   })
-  it('an input write: a member\'s own, never another\'s; with no owner named, the writer decides', () => {
+  /* the GATE's own-row rule only — the input commands name no owner in production; a member is
+     held to his own inputs by the ownership invariant (accounts.test.ts AC7, the real route) */
+  it('the gate\'s input rule: an owner named must be the member; none named passes to the writer and the invariant', () => {
     expect(cmdAuthorize('inputs.write', actor('member', 'bane'), { owner: 'bane' })).toBe(true)
     expect(cmdAuthorize('inputs.write', actor('member', 'bane'), { owner: 'stiff' })).toBe(false)
     expect(cmdAuthorize('inputs.write', actor('member', 'bane'), { owners: ['bane', 'stiff'] })).toBe(false)

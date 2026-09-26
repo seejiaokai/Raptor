@@ -524,3 +524,15 @@ Reports: `docs/superpowers/specs/2026-09-26-accounts-redteam-r2-fable.md` (APPRO
 | Astra 5 — drivers that expect the bridge off localhost | **Accepted:** the helpers refuse a non-loopback URL; the dead Pages check refuses to run (§9). |
 | Astra 1 (BLOCKER) — medical visibility for members | **Ruled by him, D211 ("Keep as today"):** members see it all; the guest sees none. |
 | Fable, R1-1 note — "who" stamps forgeable on a shared browser | **Accepted:** on his look card in those words. |
+
+## Round 3 — confirmation (Astra only; APPROVE with corrections) — what was done
+
+Report: `docs/superpowers/specs/2026-09-26-accounts-redteam-r3-astra.md` (added to the repo at the accounts check).
+
+| Finding | Disposition |
+|---|---|
+| 1 MAJOR — the four named board writes are admin-only, but `sched.mutate` (where ~40 board sites end) accepts a member | **Built at the FULL check** (Fable's and Astra's code reads made the same point): the ownership invariant refuses any change a member's TOP-LEVEL `sched.mutate` makes to the schedule's records (`perms.ts SCHEDULE_RECORDS`), so the refusal rolls the schedule back to its last committed state; a member's own input's landing runs inside his input command and still lands (`accounts.test.ts` AC7, red first). The gate row stays the input rule — the invariant, which reads what the command DID, is the guard. |
+| 2 MAJOR — optional input ownership metadata | **Built:** the owners are derived from the actual before/after change of every input a member's command touches (`perms.ts ownershipViolation`, a hard invariant in `wireStore`), never from metadata alone; the ordering record is the one exception. |
+| 3 MAJOR — the reason for not covering the Leave War exhaustively | **Built instead of arguing it:** every registered Leave War type has a `COMMAND_OPS` row (the coverage test reads the registry), a member's writes to the war's management records roll back by the same invariant, and `leavewar/permsparity.test.ts` holds the war's own writers to §11. The types were not split. |
+| 4 MAJOR — the lock-out fallback could end with no usable admin | **Built:** the seed admin wins a collision on its id, its sign-in name or its person (`accounts.ts accountsLoad`; `accounts.test.ts` AC5). |
+| 5 MINOR — the Quals callsign op's invariant | **Built:** the rename goes through `renameCallsign` (unique across ids and callsigns; the callsign index kept), a refusal names the reason (`quals-write.ts`). |

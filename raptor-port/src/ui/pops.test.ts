@@ -35,3 +35,14 @@ describe('the toast ends with the session too (the walk, 26 Sep 26)', () => {
     expect(t.style.opacity).toBe('0')
   })
 })
+
+describe('the board layout ends with the session too (Astra code read, 26 Sep 26)', () => {
+  it('one person picks the desktop layout; the next person opens the standard one', async () => {
+    const board = await import('./board')
+    if (board.SBWIDE) board.toggleWide()
+    board.toggleWide()
+    expect(board.SBWIDE).toBe(true)
+    resetViewState('session')
+    expect(board.SBWIDE).toBe(false)
+  })
+})

@@ -82,6 +82,11 @@ For the person designing RAPTOR's Dataverse tables. Written 10 Sep 26.
   outside the squadron's own accounts reads it at all.
 - **No real names in the public repository.** Demo data only; anything with
   a real person in it stays in the tenant.
+- **A change to someone's access takes effect on his very next request** (added 26 Sep 26, from Astra's read
+  of `[ACCOUNTS]`). Switching an account off, demoting an admin, or tying it to a different person must stop the
+  old rights at once — in every open tab and on every device — so the server checks the CURRENT account and its
+  role on every write, never a copy the app took when he signed in. Today's app cannot: its accounts live in one
+  browser and its open tabs share nothing, so a change reaches only the next sign-in on that same browser.
 
 ## What happens next, on our side
 

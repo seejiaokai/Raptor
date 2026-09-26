@@ -366,6 +366,21 @@ describe('the callsign / initials columns', () => {
     expect($('#qCS'), 'and closes again').toBeFalsy()
   })
 
+  it('a stale Add person button pressed by a member adds nobody and says why (Fable code read, 26 Sep 26)', async () => {
+    await click($('#qAddToggle'))
+    await setV($('#qCS') as HTMLElement, 'Stale')
+    const btn = $('#qAddPerson')
+    const toasts: string[] = []
+    const origToast = HOOKS.toast
+    HOOKS.toast = (m: any) => { toasts.push(String(m)) }
+    setSession({ user: 'acus', role: 'main', pid: 'bane', name: 'us' }); setMe('bane')   // no repaint: the button is still on screen
+    try { await click(btn) } finally { HOOKS.toast = origToast; setSession({ user: 'acad', role: 'admin', pid: 'stiff', name: 'ad' }); setMe('stiff'); await act(async () => { notify() }) }
+    expect(toasts).toContain('Only an admin can add someone')
+    expect(toasts.some(t => t.includes('added'))).toBe(false)
+    expect(Object.keys(PEOPLE).some(k => PEOPLE[k].cs === 'Stale')).toBe(false)
+    await click($('#qAddToggle'))
+  })
+
   it('Add person takes callsign + initials + pilot/WSO + cat, with no name fields', async () => {
     /* the form folds behind the "+ Add person" button now (owner, 15 Aug 26) */
     expect($('#qCS'), 'the form is closed until the toggle is pressed').toBeFalsy()

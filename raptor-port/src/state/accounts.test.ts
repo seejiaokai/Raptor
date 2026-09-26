@@ -15,7 +15,11 @@ import {
 } from './accounts'
 import { me, isMe, roleOf, viewerId } from './perms'
 import { store } from '../engine/hooks'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, DATES, mintInpIds } from '../engine/inputs'
+import { DAYS } from '../engine/data'
+import { autoAcceptInput } from '../engine/slots'
+import { afterSchedMutate } from './view'
+import { resyncSchedBaseline } from './sched-commit'
 
 /* the settings are stored through storeBackend — a fake here, never real localStorage */
 const mem: Record<string, string> = {}
@@ -235,5 +239,24 @@ describe('AC7 — a member\'s command changes only his own records (perms.ts own
     writeInputs(() => { INPUTS.unshift({ iid: 'zzother', person: 'stiff', type: 'LL', date: '14/07/2026', remarks: '' } as any) })
     expect(INPUTS.some((r: any) => r.iid === 'zzother')).toBe(false)
     expect(isMe('bane')).toBe(true); expect(isMe('stiff')).toBe(false)
+  })
+  /* Fable's and Astra's code reads (26 Sep 26): the bare "the schedule changed" command is
+     the one schedule command a member's actor can open — as a top-level command it changes
+     nothing of the schedule for him; his own input's landing (inside his input command) still does */
+  it("a member's own activity input lands on the ground programme; a bare schedule change by him rolls back", () => {
+    mintInpIds(); resyncSchedBaseline()
+    signInAs('us', 'us')
+    const di = 1, before = JSON.stringify(DAYS[di].ground || [])
+    const ok = writeInputs(() => {
+      const row: any = { person: 'bane', type: 'Meeting', date: DATES[di], allday: false, s: 900, e: 960, remarks: 'walked brief', mod: '2026-01-01' }
+      INPUTS.unshift(row); autoAcceptInput(row, true)
+    })
+    expect(ok, 'his own input and its landing are one allowed command').toBe(true)
+    expect(JSON.stringify(DAYS[di].ground || [])).not.toBe(before)
+    expect(JSON.stringify(DAYS[di].ground)).toContain('bane')
+    const notes = JSON.stringify(DAYS[di].notes || [])
+    ;(DAYS[di] as any).notes = [...(DAYS[di].notes || []), { rid: 'nmember', t: 'a member writing the schedule directly' }]
+    afterSchedMutate()
+    expect(JSON.stringify(DAYS[di].notes || []), 'rolled back to the last committed schedule').toBe(notes)
   })
 })

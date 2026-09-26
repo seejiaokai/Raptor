@@ -823,7 +823,7 @@ export const VIEW_RESET: { name: string; scopes: ResetScope[]; reset: () => void
   { name:'AVAILWIN', scopes:['session','week'], reset:()=>setAvailWin(null) },
   /* week-only: the palette day and the "set default?" offer are keyed to the
      week being left; resetSession clears the offer through setPage instead */
-  { name:'ROSDAY',     scopes:['week'], reset:()=>setRosDay(0) },
+  { name:'ROSDAY',     scopes:['session','week'], reset:()=>setRosDay(0) },   // [ACCOUNTS]: the next person starts on the first day (Astra code read)
   { name:'SECDEFOFFER',scopes:['week'], reset:()=>setSecDefOffer(null) },
 ]
 /* clear every field whose policy includes `scope`. Order within a scope does

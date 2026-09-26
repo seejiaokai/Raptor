@@ -20,7 +20,7 @@
 import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, withRemarksTail, inputCoversDate, nowStamp } from '../engine/inputs'
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
-import { mayManageRoster, viewerId } from '../state/perms'
+import { mayManageRoster, viewerId, me } from '../state/perms'
 import { SESSION } from '../state/auth'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (the cross-seam roster
    writers — PO-archive, restore — emit a people change too). */
@@ -75,6 +75,7 @@ import {
   setPostOut,
   setQualCatalog,
   setViewer,
+  setViewerCallsign,
   subscribe as lwSubscribe,
 } from './state/store'
 import { HOOKS } from '../engine/hooks'
@@ -1427,6 +1428,9 @@ export function restoreArchivedPerson(id: string): boolean {
 let VIEWER_PIN: { v: string | null; s: unknown } | null = null
 export function pinViewer(v: string | null): void { VIEWER_PIN = { v, s: SESSION }; setViewer(v) }
 const mirroredViewer = (): string | null => (VIEWER_PIN && VIEWER_PIN.s === SESSION ? VIEWER_PIN.v : viewerId())
+/* and the signed-in person's callsign beside it, read off Raptor's whole roster (the war's own
+   roster may not hold him — a SANS or archived callsign): the approver stamp's fallback */
+const mirrorCallsign = (): void => { const m = me(); setViewerCallsign(m && (PEOPLE as any)[m] ? (PEOPLE as any)[m].cs : null) }
 
 export function wireLeaveWarSync(): void {
   /* The VIEWING PERSON rides this same wire (owner, 17 Aug 26 — the matrix
@@ -1437,7 +1441,7 @@ export function wireLeaveWarSync(): void {
      null only with no session. Pushing it here — once at boot, again on every Raptor
      notify below — keeps the mirror converged without a new seam; setViewer no-ops on
      a same value. */
-  setViewer(mirroredViewer())
+  setViewer(mirroredViewer()); mirrorCallsign()
   /* the absence door — the war's changes to approved leave (design §5.2) */
   installAbsenceDoor()
   runPoArchive()
@@ -1446,7 +1450,7 @@ export function wireLeaveWarSync(): void {
   runOilPass()
   lastOilDaySig = oilDaySig()
   raptorSubscribe(() => {
-    setViewer(mirroredViewer())
+    setViewer(mirroredViewer()); mirrorCallsign()
     // Before the passes: a body added on the Quals page must be on the roster
     // before inbound tries to land any of its leave (owner, 18 Aug 26).
     reprojectRoster()

@@ -25,7 +25,7 @@ import { INPUTS, inpId, inpLabel, inputCoversDate } from '../engine/inputs'
 import { officialSliceNow } from '../engine/validate'
 import { dayPendingItems, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow, warnMsgKey, warnCallsigns, peopleAttrsNow, faceRuleVals, faceRuleValsCompared } from '../engine/publish'
 import type { PendItem } from '../engine/publish'
-import { ELOG, elogWhen, keyLabel } from '../engine/editlog'
+import { ELOG, elogWhen, elogWho, keyLabel } from '../engine/editlog'
 import { oilEvidence } from '../engine/oilev'
 import { esc } from '../state/view'
 
@@ -223,7 +223,7 @@ export function pendItemWords(di: number, it: PendItem): Words {
   if (it.kind === 'warn') return faceWords(di)
   const byLog = (): { who: string; when: string } => {
     const r = lastEdit(it.keys || [])
-    return r ? { who: r.who, when: elogWhen(r.t) } : { who: 'earlier', when: '' }
+    return r ? { who: elogWho(r), when: elogWhen(r.t) } : { who: 'earlier', when: '' }
   }
   const none = { who: '', when: '' }
   const jump = !!(it.jump && it.jump.length)

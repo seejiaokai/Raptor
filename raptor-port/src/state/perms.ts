@@ -194,9 +194,12 @@ export const mayAwardOil = (): boolean => may(T.award, 'C', null, false)
 /* 3. THE COMMAND GATE ---------------------------------------------------------- */
 /* how a command's own-row rule reads its meta: 'never' — only a role that holds the
    letter outright; 'required' — the command must name its owner (meta.owner /
-   meta.owners) and the actor must be him; 'optional' — an owner named must be him,
-   none named leaves the writer's own check to decide (the Leave War's canEditRow, the
-   input writers' mayEditInputOf) */
+   meta.owners) and the actor must be him (the Quals write names its row); 'optional' — an
+   owner named must be him, none named leaves it to the writer's own check (the Leave War's
+   canEditRow, the input writers' mayEditInputOf). THE INPUT COMMANDS NAME NO OWNER (Fable's
+   code read, 26 Sep 26): what holds a member to his own inputs is the ownership invariant
+   below, which reads the people on every input the command actually changed — stronger than
+   an owner a caller claims (pinned through the real input route: accounts.test.ts AC7) */
 type OwnRule = 'never' | 'optional' | 'required'
 export interface CommandOp { table: string; act: Act; own: OwnRule }
 const op = (table: string, act: Act, own: OwnRule = 'never'): CommandOp => ({ table, act, own })
@@ -225,8 +228,11 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'sched.oil': op(T.sched, 'U'),
   'sched.draft.rename': op(T.sched, 'U'),
   'sched.draft.delete': op(T.sched, 'U'),
-  /* the afterSchedMutate backstop: an input's own landing can fire it outside a
-     command — a member's own input, so it rides the input rule */
+  /* the afterSchedMutate backstop: the one schedule command a member's actor can open (a
+     board epilogue raised outside a command lands here, whoever raised it). At the gate it
+     rides the input rule; the ownership invariant below then refuses any change it makes to
+     the schedule's own records for a member, so his schedule changes happen only as his own
+     input's landing, inside his input command (the accounts check, 26 Sep 26) */
   'sched.mutate': op(T.input, 'U', 'optional'),
   'inputs.write': op(T.input, 'U', 'optional'),
   'inputs.batch': op(T.input, 'U', 'optional'),
@@ -295,14 +301,22 @@ export function cmdAuthorize(type: string, actor: Actor, meta?: any): boolean {
                 shown) is his own view; every other war record — the war itself, the
                 ledger, balances, OIL policy, postings, config — is the admin's;
    - `settings` and `plan` (the planning calendar) — none;
-   - the schedule's records and the week stash — left to the command's TYPE: a member's
-                own input can land a row on a published day's working copy (16 Sep 26),
-                a child of his authorised input command;
+   - the schedule's records and the week stash — only as the landing of his own input,
+                a child of his authorised input command (16 Sep 26: it lands a row on a
+                published day's working copy); never by a top-level `sched.mutate`;
    - the Tracker — everyone's (D121).
    A guest, a pending person and an account switched off change NOTHING, except a
    pending person's own access request (the `accessreqs` settings record). */
 const INPUT_ORDER = '__order'
 const personOfInput = (v: any): string | null => (v && v.person != null ? String(v.person) : null)
+/* THE SCHEDULE'S OWN RECORDS. A member's change to them is legitimate only as the landing
+   of his own input — which runs INSIDE his authorised input command (a joined child). The
+   bare "the schedule changed" command (`sched.mutate`, the afterSchedMutate backstop) is the
+   one schedule command a member's actor can open, so as a TOP-LEVEL command it changes none
+   of these for him (Fable's and Astra's code reads, 26 Sep 26: the second, write-path guard
+   the UI gates stand in front of; §11 — members read the schedule only). A refusal rolls
+   the schedule back to its last committed state. */
+const SCHEDULE_RECORDS = new Set(['days', 'sched.book', 'sched.mutes', 'sched.orig', 'sched.als', 'sched.retired', 'weekstash'])
 export function ownershipViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || a.role === 'system' || a.role === 'admin') return null
@@ -314,6 +328,7 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
     }
     const pid = a.personId == null ? null : String(a.personId)
     if (!pid) return `no person to own ${where}`
+    if (env.type === 'sched.mutate' && SCHEDULE_RECORDS.has(c.collection)) return `the schedule (${where})`
     switch (c.collection) {
       case 'inputs': {
         if (c.id === INPUT_ORDER) break

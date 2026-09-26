@@ -51,6 +51,10 @@ export function isLocalHost(): boolean {
   return h === 'localhost' || h === '127.0.0.1' || h === '[::1]' || h === '::1'
 }
 export function installProbeBridge() {
+  /* the whole bridge, and every global it hangs on window, exists on the developer's PC only —
+     asked here as well as by its one caller (main.tsx), so no future caller can install it on a
+     deployed host (Fable's code read, 26 Sep 26) */
+  if (!isLocalHost()) return
   const w = window as any
   /* the engine singletons the probes read */
   w.DAYS = DAYS; w.PEOPLE = PEOPLE; w.INPUTS = INPUTS; w.VCONF = VCONF
