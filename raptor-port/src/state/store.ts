@@ -38,7 +38,8 @@ import { setSession as authSetSession, canEditSched, SESSION, ACCOUNTS, canToggl
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { endTrackerSession } from '../tracker/role.js'
 import { isHydrated, weekSwapBegin, weekSwapEnd } from './persist'
-import { deferEffect, CmdRefused } from '../command'
+import { deferEffect, CmdRefused, setPermissionResolver } from '../command'
+import { cmdAuthorize } from './perms'
 import type { EnlistableStore, RecordEntry, CommitResult } from '../command'
 import { snapshotStash, restoreStash, stashEntries, writeStashRecords } from '../engine/weekstash'
 import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, commitInputsProjection, commitInputsWith, SCHED_TYPES, resyncSchedBaseline } from './sched-commit'
@@ -691,6 +692,12 @@ export function wireStore() {
   /* phase 3: the PEOPLE + SETTINGS command layer (their own enlistable stores,
      record registry, permissions). Idempotent. */
   registerPeopleSettingsCommandLayer()
+  /* [ACCOUNTS] D200 (3): the command gate's authority is the ONE permissions matrix
+     (state/perms.ts, which mirrors data-model.md §11). From here on every non-system
+     command — the scheduler's, the roster's, the settings', undo's, the Leave War's
+     and the Tracker's — is decided by perms.ts COMMAND_OPS; a type it does not know is
+     refused. */
+  setPermissionResolver(cmdAuthorize)
   /* the reference's editMode(): the edit page is open. The reference also
      ANDed its #editToggle switch here; that toggle was removed 9 Aug 26
      (owner) — being on Edit Schedule is the intent to edit, and View-only

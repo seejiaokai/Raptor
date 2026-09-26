@@ -1,9 +1,11 @@
-/* [ARCH-STACK] Step 2 — actor derivation (design §3.5).
+/* [ARCH-STACK] Step 2 — actor derivation (design §3.5); [ACCOUNTS] 26 Sep 26.
 
-   Account id + effective role from SESSION (SESSION.role `main`->`member`);
-   ownership personId from the ME/viewer binding (auth.ts), NOT SESSION
-   (R3-006). Ownership-from-ME is defense-in-depth PARITY ONLY — ME is the
-   user-selectable View-as binding; real identity arrives with Step 5 sign-in.
+   The account id and its role from SESSION (`main` / `member` -> `member`); the
+   person from ME, which since [ACCOUNTS] is the SIGNED-IN person (resetSession sets
+   it from the account; "View as" is retired — D166), so ownership is real.
+   A person signed in without access is a session too (`guest`, `pending`, `off` —
+   D204), never the system actor: the command gate refuses every forward command
+   from them except a pending person's own access request (Astra R1-4).
 
    The system/headless actor (session:null) is used only for seed/projection/
    loadWeek and — under the SESSION=null parity harness — to keep tfin.js 728/0;
@@ -23,10 +25,15 @@ export function systemActor(): Actor {
    nothing about a headless render depends on an account. */
 export function deriveActor(): Actor {
   if (!SESSION) return systemActor()
+  const r = SESSION.role
+  const role: Actor['role'] = r === 'admin' ? 'admin'
+    : r === 'guest' || r === 'pending' || r === 'off' ? r
+    : 'member'
   return {
     id: SESSION.user,
-    role: SESSION.role === 'admin' ? 'admin' : 'member',
-    personId: ME,
+    role,
+    personId: role === 'admin' || role === 'member' ? ME : undefined,
+    principal: SESSION.name,
     session: SESSION,
   }
 }

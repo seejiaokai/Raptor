@@ -27,6 +27,7 @@ export {
 export { deriveActor, systemActor } from './actor'
 export {
   definePermission, authorize, hasPermission, anyone, adminOnly, ownOrAdmin,
+  setPermissionResolver, registeredTypes,
 } from './permissions'
 export { registerEffectContext } from './latch'
 export {

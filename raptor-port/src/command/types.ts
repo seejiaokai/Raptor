@@ -61,14 +61,19 @@ export type Scope =
   | { module: 'lw'; warId: string }
   | { module: 'trk'; courseId: string; sylId: string; student?: string }
 
-/* WHO made the change (design §3.5). Account id + effective role from SESSION
-   (SESSION.role `main`->`member`); ownership personId from the ME/viewer
-   binding (defense-in-depth parity only — real identity arrives with Step 5).
-   The system/headless actor's personId is undefined (Fable R4-6). */
+/* WHO made the change (design §3.5). Since [ACCOUNTS] (26 Sep 26, D166): the
+   account id and its role from SESSION (`main` -> `member`), and the person the
+   account belongs to — signing in makes you that callsign, so personId is the
+   real person, not a "View as" lens (retired). `guest`, `pending` and `off` are
+   people signed in without access (D204): every forward command refuses them,
+   except a pending person asking for access (`principal` = his sign-in name).
+   `system` is ONLY the explicit seed / load / projection actor, never inferred
+   for a user (Astra R1-4). Its personId is undefined (Fable R4-6). */
 export interface Actor {
   id: string
-  role: 'admin' | 'member' | 'system'
+  role: 'admin' | 'member' | 'guest' | 'pending' | 'off' | 'system'
   personId?: string
+  principal?: string
   session: any
 }
 

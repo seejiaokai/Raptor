@@ -1,0 +1,276 @@
+/* THE ONE PLACE THAT ANSWERS "MAY THIS PERSON DO THIS?" ([ACCOUNTS], D200 (3), 26 Sep 26).
+
+   Owner, D200: "one place in the app answers 'may this person do this?', mirroring that
+   table, with a test that fails when they disagree — so the server's rules at the
+   database step are a translation of an agreed list, not a hunt."
+
+   Four parts, all here:
+   1. PERMS — docs/data-model.md §11 as data. perms.test.ts reads §11 from disk and
+      fails when a row, a letter, a column or a named gap differs. Edit the two TOGETHER.
+   2. The named questions every gate asks (isAdmin, me, mayEditSched, mayEditInputOf …),
+      one-line wrappers over `allows`. A gate that reads SESSION.role, LOGINROLE or
+      compares a person with ME directly is a finding — perms-scan.test.ts fails on it.
+   3. COMMAND_OPS + cmdAuthorize — the command gate. Every registered command type maps
+      to a row of PERMS; state/store.ts installs cmdAuthorize as the command layer's
+      resolver at boot, so the command layer's authority IS this table. A type with no
+      row is refused.
+   4. The medical-detail rule (D211): every member reads a medical input in full; a
+      guest (not a member) never does.
+
+   The browser MIRRORS; the server will ENFORCE (data-model §11, "The server enforces,
+   the browser mirrors"). These checks give the right answer on screen and refuse a
+   hand-made call; they are not security against someone editing the page's code.
+
+   "No session" (SESSION null) is the headless engine — a unit test, the boot, the
+   parity harness — never a user: every question below answers it the way the gate it
+   replaced did (stated per question), so no headless test changes meaning. */
+import { SESSION, ME } from './auth'
+import type { Actor } from '../command/types'
+
+export type Act = 'C' | 'R' | 'U' | 'D'
+export type Role = 'admin' | 'member' | 'guest' | 'pending'
+export interface Cell { all: Act[]; own: Act[] }
+export interface PermRow { admin: Cell; member: Cell; guest: Cell; pending: Cell; gaps: string[] }
+
+const cell = (all: string, own = ''): Cell => ({
+  all: all.split(' ').filter(Boolean) as Act[],
+  own: own.split(' ').filter(Boolean) as Act[],
+})
+const NONE = cell('')
+const row = (admin: Cell, member: Cell, guest: Cell = NONE, pending: Cell = NONE, gaps: string[] = []): PermRow =>
+  ({ admin, member, guest, pending, gaps })
+
+/* the §11 table names, exactly as its first column reads with the backticks taken off */
+export const T = {
+  person: 'Person',
+  qualification: 'Qualification',
+  qualmark: 'QualMark',
+  setting: 'Setting, SchemaVersion',
+  user: 'User',
+  accessreq: 'AccessRequest',
+  sched: 'ScheduleWeek family, DayDraft, RowPerson',
+  amendment: 'Amendment, Signoff',
+  editlog: 'EditLog',
+  input: 'Input',
+  attachment: 'Attachment, InputAttachment',
+  war: 'LeaveWar',
+  bid: 'LeaveBid',
+  award: 'LeaveBid (a hand-typed OIL award)',
+  ledger: 'LeaveOpening, LeaveLedger, LeaveCounter',
+  profile: 'LeavePersonProfile',
+  tracker: 'Course, Syllabus, TrainingEvent, EventPrerequisite, Layout, CoursePlan, Enrolment, Attempt',
+} as const
+
+/* 1. THE MATRIX — data-model.md §11, row for row. */
+export const PERMS: Record<string, PermRow> = {
+  [T.person]: row(cell('C R U D'), cell('R', 'U'), cell('R')),
+  [T.qualification]: row(cell('C R U D'), cell('R')),
+  [T.qualmark]: row(cell('C R U D'), cell('R', 'C U D')),
+  [T.setting]: row(cell('C R U D'), cell('R')),
+  [T.user]: row(cell('C R U'), cell('', 'R')),
+  [T.accessreq]: row(cell('R D'), NONE, NONE, cell('', 'C')),
+  [T.sched]: row(cell('C R U D'), cell('R'), cell('R')),
+  [T.amendment]: row(cell('C R'), cell('R'), cell('R')),
+  [T.editlog]: row(cell('R'), cell('R'), NONE, NONE, ['DRAFT-PENDING']),
+  [T.input]: row(cell('C R U D'), cell('R', 'C R U D'), cell('R')),
+  [T.attachment]: row(cell('R'), cell('R', 'C R')),
+  [T.war]: row(cell('C R U D'), cell('R')),
+  [T.bid]: row(cell('C R U D'), cell('R', 'C U D')),
+  [T.award]: row(cell('C R U D'), cell('R'), NONE, NONE, ['OIL-AWARD-IS-A-GRANT']),
+  [T.ledger]: row(cell('C R U D'), cell('', 'R')),
+  [T.profile]: row(cell('C R U D'), cell('R')),
+  [T.tracker]: row(cell('C R U D'), cell('C R U D')),
+}
+
+/* 4. WHO READS A MEDICAL INPUT IN FULL (D211, 26 Sep 26 — "Keep as today": every member;
+   the agent's reading, on his look card: a guest, not yet a member, never). §11's
+   Input row carries it as the Guest cell's note, "(no medical detail)" — perms.test.ts
+   ties the two together. */
+export const MEDICAL_DETAIL: Role[] = ['admin', 'member']
+
+/* ---- who is signed in ------------------------------------------------------ */
+export type Who = Role | 'off' | null
+/* null = no session (the headless engine). An account's member role is 'main'; the
+   localhost probe bridge's raptorRole writes 'member' — both are a member. */
+export function roleOf(s: any = SESSION): Who {
+  if (!s) return null
+  const r = s.role
+  if (r === 'admin') return 'admin'
+  if (r === 'guest' || r === 'pending' || r === 'off') return r
+  return 'member'
+}
+const actorRole = (a: Actor): Who =>
+  a.role === 'system' ? null : a.role === 'admin' || a.role === 'member' || a.role === 'guest' || a.role === 'pending' || a.role === 'off' ? a.role : null
+
+/* whose own-row rule applies: a person's id for an admin or a member; a pending
+   principal's sign-in name for his own access request; nobody for a guest or an
+   account switched off */
+function identityOf(who: Who, s: any = SESSION): string | null {
+  if (who === 'admin' || who === 'member') return ME == null || ME === '' ? null : String(ME)
+  if (who === 'pending') return s && s.name ? String(s.name) : null
+  return null
+}
+
+/* the one rule under every question: does `who` hold `act` on `table`, for a record
+   owned by `owner`? */
+export function allows(who: Who, table: string, act: Act, owner?: string | null, identity?: string | null): boolean {
+  if (who === 'off' || who === null) return false
+  const r = PERMS[table]
+  if (!r) throw new Error(`perms: no row "${table}" in the permissions matrix`)
+  const c = r[who]
+  if (c.all.includes(act)) return true
+  if (!c.own.includes(act)) return false
+  return owner != null && owner !== '' && identity != null && identity !== '' && String(owner) === identity
+}
+/* the signed-in session's answer; headless (no session) answers `headless` */
+function may(table: string, act: Act, owner: string | null | undefined, headless: boolean): boolean {
+  const who = roleOf()
+  if (who === null) return headless
+  return allows(who, table, act, owner, identityOf(who))
+}
+
+/* 2. THE NAMED QUESTIONS ------------------------------------------------------ */
+export const isAdmin = (): boolean => roleOf() === 'admin'
+/* a signed-in admin or member — someone with access to the app's pages */
+export const isMember = (): boolean => { const w = roleOf(); return w === 'admin' || w === 'member' }
+export const isGuest = (): boolean => roleOf() === 'guest'
+/* the signed-in person (an admin or a member), or null — a guest, a pending person
+   and an account switched off are nobody's person */
+export function me(): string | null { return isMember() && ME != null && ME !== '' ? String(ME) : null }
+/* "is this the signed-in person?" — the own-row test and the "this is you" display */
+export function isMe(pid: any): boolean { const m = me(); return m != null && pid != null && String(pid) === m }
+
+/* the schedule: edit mode, the board, the week's writes. No session → false, as
+   canEditSched always answered (its callers are render and edit-mode gates). */
+export const mayEditSched = (): boolean => !!SESSION && may(T.sched, 'U', null, false)
+/* the Leave War's person as the sync mirrors it: the signed-in person; for a guest,
+   a pending person or an account switched off '' — which matches NO row (the war's
+   canEditRow reads null as "unscoped", so it must never be null for a session). No
+   session → null, the war's own headless state. */
+export function viewerId(): string | null { return SESSION ? (me() ?? '') : null }
+
+/* personal inputs (the member-own rule, 27 Aug 26). No session → true: "a sessionless
+   test/boot context is not a member and is not gated" (the gates these replace). */
+export const mayFileInputFor = (pid: any): boolean => may(T.input, 'C', pid, true)
+export const mayEditInputOf = (pid: any): boolean => may(T.input, 'U', pid, true)
+export const mayDeleteInputOf = (pid: any): boolean => may(T.input, 'D', pid, true)
+/* a medical input's type, remarks and documents (D211) */
+export function mayReadMedicalOf(_pid?: any): boolean {
+  const who = roleOf()
+  if (who === null) return true
+  return who !== 'off' && (MEDICAL_DETAIL as string[]).includes(who)
+}
+
+/* the Quals page (D149): his OWN row, every column. No session → true (the headless
+   page tests, as before). */
+export const mayEditQualsOf = (pid: any): boolean => may(T.person, 'U', pid, true)
+/* adding, archiving, restoring a person; the LoX column list. No session → true (the
+   write-path backstops these replace passed a sessionless call). */
+export const mayManageRoster = (): boolean => may(T.person, 'C', null, true) && may(T.person, 'D', null, true)
+export const mayEditQualColumns = (): boolean => may(T.qualification, 'U', null, true)
+
+/* accounts (D166, D204). No session → false: nothing headless manages accounts. */
+export const mayManageAccounts = (): boolean => may(T.user, 'U', null, false)
+export function mayRequestAccess(): boolean {
+  const who = roleOf()
+  return who === 'pending' && allows(who, T.accessreq, 'C', SESSION && SESSION.name, identityOf(who))
+}
+/* the admin-only settings (Logic's rules, templates, Admin's pages). No session →
+   true, as the write paths these replace. */
+export const mayEditSettings = (): boolean => may(T.setting, 'U', null, true)
+
+/* the Leave War — the war keeps its own role checks (a second app); these are what
+   the Raptor side asks of it, and what the parity test holds the war to */
+export const mayDecideBids = (): boolean => may(T.bid, 'U', null, false)
+export const mayAwardOil = (): boolean => may(T.award, 'C', null, false)
+
+/* 3. THE COMMAND GATE ---------------------------------------------------------- */
+/* how a command's own-row rule reads its meta: 'never' — only a role that holds the
+   letter outright; 'required' — the command must name its owner (meta.owner /
+   meta.owners) and the actor must be him; 'optional' — an owner named must be him,
+   none named leaves the writer's own check to decide (the Leave War's canEditRow, the
+   input writers' mayEditInputOf) */
+type OwnRule = 'never' | 'optional' | 'required'
+export interface CommandOp { table: string; act: Act; own: OwnRule }
+const op = (table: string, act: Act, own: OwnRule = 'never'): CommandOp => ({ table, act, own })
+
+const SETTINGS_KEYS_ALL = ['rules', 'stores', 'cxreasons', 'daytpl', 'dutytpl', 'wavetpl', 'wavehide',
+  'qualcols', 'lookahead', 'secdefault', 'wavedefault', 'accounts', 'accessreqs', 'guestview'] as const
+
+export const COMMAND_OPS: Record<string, CommandOp> = {
+  /* the scheduler — its writes are the scheduler's (admin); a joined child command is
+     never re-authorised, so a member's own input landing a row on a published day's
+     working copy runs inside the authorised inputs.write and is unaffected */
+  'sched.slot': op(T.sched, 'U'),
+  'sched.fill': op(T.sched, 'U'),
+  'sched.text': op(T.sched, 'U'),
+  'sched.delete': op(T.sched, 'U'),
+  'sched.section.move': op(T.sched, 'U'),
+  'sched.section.reorder': op(T.sched, 'U'),
+  'sched.approve': op(T.amendment, 'C'),
+  'sched.publishAL': op(T.amendment, 'C'),
+  'sched.discard': op(T.sched, 'U'),
+  'sched.unpublish': op(T.amendment, 'C'),
+  'sched.stores': op(T.sched, 'U'),
+  'sched.sign': op(T.amendment, 'C'),
+  'sched.signClear': op(T.amendment, 'C'),
+  'sched.warnMute': op(T.sched, 'U'),
+  'sched.oil': op(T.sched, 'U'),
+  'sched.draft.rename': op(T.sched, 'U'),
+  'sched.draft.delete': op(T.sched, 'U'),
+  /* the afterSchedMutate backstop: an input's own landing can fire it outside a
+     command — a member's own input, so it rides the input rule */
+  'sched.mutate': op(T.input, 'U', 'optional'),
+  'inputs.write': op(T.input, 'U', 'optional'),
+  'inputs.batch': op(T.input, 'U', 'optional'),
+  /* the roster: the Quals write names its row (D149); add / archive / restore name none */
+  'people.edit': op(T.person, 'U', 'required'),
+  /* undo: mayReverse (undo/timeline.ts) decides whose change; this keeps non-members out */
+  'undo.restore': op(T.input, 'U', 'optional'),
+  /* the Leave War (a second app): a member's own bid rides its canEditRow; deciding and
+     approved-leave moves are the admin's */
+  'lw.edit': op(T.bid, 'U', 'optional'),
+  'lw.move': op(T.bid, 'U', 'optional'),
+  'lw.ack': op(T.bid, 'U', 'optional'),
+  'lw.decide': op(T.bid, 'U'),
+  'lw.approve': op(T.bid, 'U'),
+  'lw.decideApproved': op(T.bid, 'U'),
+  'lw.removeApproved': op(T.bid, 'U'),
+  'lw.moveApproved': op(T.bid, 'U'),
+  /* the Tracker: everyone with access edits it (D121) */
+  'trk.marks': op(T.tracker, 'U'), 'trk.dates': op(T.tracker, 'U'), 'trk.roster': op(T.tracker, 'U'),
+  'trk.layout': op(T.tracker, 'U'), 'trk.syls': op(T.tracker, 'U'), 'trk.plan': op(T.tracker, 'U'),
+  'trk.pace': op(T.tracker, 'U'), 'trk.lulls': op(T.tracker, 'U'), 'trk.eventinfo': op(T.tracker, 'U'),
+  'trk.catalogue': op(T.tracker, 'U'), 'trk.courses': op(T.tracker, 'U'), 'trk.gesture': op(T.tracker, 'U'),
+  /* accounts (D166, D204): one intent per command, each writing every key it needs */
+  'access.request': op(T.accessreq, 'C', 'required'),
+  'access.decline': op(T.accessreq, 'D'),
+  'access.approve': op(T.accessreq, 'D'),
+  'account.add': op(T.user, 'C'),
+  'account.update': op(T.user, 'U'),
+  'guestview.set': op(T.setting, 'U'),
+}
+for (const k of SETTINGS_KEYS_ALL) COMMAND_OPS[`settings.${k}`] = op(T.setting, 'U')
+
+function owners(meta: any): string[] | null {
+  if (!meta) return null
+  if (Array.isArray(meta.owners)) return meta.owners.map(String)
+  if (meta.owner != null) return [String(meta.owner)]
+  return null
+}
+/* the command layer's resolver (command/permissions.ts setPermissionResolver) */
+export function cmdAuthorize(type: string, actor: Actor, meta?: any): boolean {
+  const o = COMMAND_OPS[type]
+  if (!o) return false                                   // unmapped: refused (fail closed)
+  const who = actorRole(actor)
+  if (who === null) return true                          // the system actor (authorize short-circuits it first anyway)
+  if (who === 'off') return false
+  const c = PERMS[o.table][who]
+  if (c.all.includes(o.act)) return true
+  if (!c.own.includes(o.act) || o.own === 'never') return false
+  const identity = who === 'pending' ? (actor.principal ?? null) : (actor.personId ?? null)
+  if (identity == null || identity === '') return false
+  const named = owners(meta)
+  if (!named || !named.length) return o.own === 'optional'
+  return named.every(x => x === String(identity))
+}
