@@ -1,0 +1,114 @@
+[
+ {
+  "part": "f2d",
+  "id": "F2d-0",
+  "ok": null,
+  "what": "fixture: + Item → SAFETY WALK 08:45–09:15, empty; Ranger on FLIGHT SAFETY STAND-DOWN 08:30–09:00",
+  "detail": "{\"ri\":10,\"row\":\"SAFETY WALK|08:45-09:15\"}",
+  "pic": ""
+ },
+ {
+  "part": "f2d",
+  "id": "F2d-1a",
+  "ok": true,
+  "what": "SAFETY WALK armed: Ranger is struck with \"already on FLIGHT SAFETY STAND-DOWN 08:30–09:00\"",
+  "detail": "{\"armed\":\"a:0.10.+\",\"no\":true,\"why\":\"already on FLIGHT SAFETY STAND-DOWN 08:30–09:00\"}",
+  "pic": "f2d-01-palette-armed-ranger-struck.png"
+ },
+ {
+  "part": "f2d",
+  "id": "F2d-1b",
+  "ok": true,
+  "what": "the reason is PRINTED under his name, whole",
+  "detail": "{\"line\":\"already on FLIGHT SAFETY STAND-DOWN 08:30–09:00\",\"vis\":true,\"clipped\":false,\"colLine\":\"\"}",
+  "pic": ""
+ },
+ {
+  "part": "f2d",
+  "id": "F2d-1c",
+  "ok": true,
+  "what": "the column's \"N free\" does not count him (head number = names not struck)",
+  "detail": "{\"head\":\"Pilots · 22 free\",\"notStruck\":22,\"total\":29,\"pos\":24}",
+  "pic": ""
+ },
+ {
+  "part": "f2d",
+  "id": "F2d-2a",
+  "ok": true,
+  "what": "tapping him anyway plants him (everything plants)",
+  "detail": "{\"fs\":[\"bane\"],\"sw\":[\"bane\"]}",
+  "pic": ""
+ },
+ {
+  "part": "f2d",
+  "id": "F2d-2b",
+  "ok": true,
+  "what": "the toast repeats the reason (or the validator's clash words)",
+  "detail": "[\"Ranger — FLIGHT SAFETY STAND-DOWN & SAFETY WALK clash\"]",
+  "pic": ""
+ },
+ {
+  "part": "f2d",
+  "id": "F2d-2c",
+  "ok": true,
+  "what": "Monday's warning list raises the clash between the two rows (and did not before)",
+  "detail": "{\"clash\":[\"hard|DOUBLE_BOOK|bane|FLIGHT SAFETY STAND-DOWN & SAFETY WALK clash\"],\"rangerBefore\":[\"hard|DOUBLE_BOOK|bane|VL BFM & Sim EP-4 clash\",\"adv|NO_BRIEF|bane|No time for the VL BFM flight brief — Sim EP-4 sits inside 10:20–12:40 (brief 10:20)\",\"adv|SIM_BRIEF|bane|No time for the OFT EP-4 brief — VL BFM sits inside 11:30–12:00\",\"adv|SIM_DEBRIEF|bane|No time for the OFT EP-4 debrief — VL BFM sits inside 13:30–14:00\"]}",
+  "pic": ""
+ },
+ {
+  "part": "f2d",
+  "id": "F2d-2c-wording",
+  "ok": null,
+  "what": "the clash as the warning list words it (F20: the validator's wording is untouched by this change — validate.ts's diff is the two leaving-seat helpers only)",
+  "detail": "[\"hard|DOUBLE_BOOK|bane|FLIGHT SAFETY STAND-DOWN & SAFETY WALK clash\"]",
+  "pic": ""
+ },
+ {
+  "part": "f2d",
+  "id": "F2d-2d",
+  "ok": true,
+  "what": "his puck rings red on BOTH rows",
+  "detail": "[{\"key\":\"a:0.2.0\",\"cls\":\"puck sm warn hard boxred flagnew\",\"ring\":\"rgb(240, 85, 95) 0px 0px 0px 2px\"},{\"key\":\"a:0.10.0\",\"cls\":\"puck sm warn hard boxred flagnew\",\"ring\":\"rgb(240, 85, 95) 0px 0px 0px 2px\"}]",
+  "pic": "f2d-02-planted-anyway-rings.png"
+ },
+ {
+  "part": "f2d",
+  "id": "F2d-2e",
+  "ok": null,
+  "what": "picture of the day's warning list with the clash",
+  "detail": "",
+  "pic": "f2d-03-warning-list.png"
+ },
+ {
+  "part": "f2d",
+  "id": "F2d-3a",
+  "ok": true,
+  "what": "Undo takes the plant off",
+  "detail": "[]",
+  "pic": ""
+ },
+ {
+  "part": "f2d",
+  "id": "F2d-3b",
+  "ok": true,
+  "what": "retyped to 09:00–09:30 (abutting 08:30–09:00): Ranger is NOT struck",
+  "detail": "{\"a2\":\"a:0.10.+\",\"row\":\"09:00-09:30\",\"no\":false,\"why\":\"\",\"head\":\"Pilots · 23 free\"}",
+  "pic": "f2d-04-palette-abutting-ranger-free.png"
+ },
+ {
+  "part": "f2d",
+  "id": "F2d-3c",
+  "ok": null,
+  "what": "\"N free\" with the overlap vs abutting (Ranger is one of the differences)",
+  "detail": "{\"overlap\":\"Pilots · 22 free\",\"abutting\":\"Pilots · 23 free\"}",
+  "pic": ""
+ },
+ {
+  "part": "f2d",
+  "id": "F2d-ERR",
+  "ok": true,
+  "what": "browser error list empty",
+  "detail": "[]",
+  "pic": ""
+ }
+]

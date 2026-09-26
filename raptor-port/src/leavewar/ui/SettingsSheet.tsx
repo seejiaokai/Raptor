@@ -56,6 +56,7 @@ export function SettingsSheet({
   onAddCounter,
   armCounterReset,
   onResetCounters,
+  disarmCounterReset,
   onGroupDragStart,
   onPriorityDragStart,
   draggingId,
@@ -69,6 +70,9 @@ export function SettingsSheet({
    *  sheet closes); this sheet only shows the armed/unarmed label and forwards taps. */
   armCounterReset: boolean
   onResetCounters: () => void
+  /** Take Reset counters' question back — Reset order arming does it, so two "Really reset?" never stand side by side
+   *  (W2's walk, 26 Sep 26); Matrix owns that arm. */
+  disarmCounterReset?: () => void
   /** Drag in the groups list (display order — the same write as the grid's heading
    *  grip) and in the who-wins (priority) list — both wired by Matrix to the one
    *  drag machine. */
@@ -198,7 +202,8 @@ export function SettingsSheet({
             className={`rtbtn set-danger${armCounterReset ? ' arm' : ''}`}
             data-testid="counter-reset-all"
             title="Put the built-in counters back — counters you built are discarded"
-            onClick={onResetCounters}
+            // arming (or firing) Reset counters takes Reset order's question back — one question at a time
+            onClick={() => { setArmOrder(false); onResetCounters() }}
           >{armCounterReset ? 'Really reset?' : '↺ Reset counters'}</button>
         </div>
         <div className="set-hint">Reset counters asks once before it clears your custom counters.</div>
@@ -227,7 +232,7 @@ export function SettingsSheet({
             disabled={!handOrder}
             title={handOrder ? 'Put every row back in the default order' : 'The roster is already in the default order'}
             onClick={() => {
-              if (!armOrder) { setArmOrder(true); return }
+              if (!armOrder) { setArmOrder(true); disarmCounterReset?.(); return }
               setArmOrder(false)
               resetRosterOrder()
             }}

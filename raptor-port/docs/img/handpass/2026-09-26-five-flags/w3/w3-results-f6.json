@@ -1,0 +1,74 @@
+[
+ {
+  "part": "f6",
+  "id": "F6-a",
+  "ok": false,
+  "what": "(a) palette drag of Ranger onto FLIGHT SAFETY's + add: he is never listed twice",
+  "detail": "{\"count\":2,\"crowd\":[\"bane\",\"bane\"],\"caption\":\"\",\"toasts\":[],\"rangerWarn\":[\"hard|DOUBLE_BOOK|bane|VL BFM & Sim EP-4 clash\",\"adv|NO_BRIEF|bane|No time for the VL BFM flight brief — Sim EP-4 sits inside 10:20–12:40 (brief 10:20)\",\"adv|SIM_BRIEF|bane|No time for the OFT EP-4 brief — VL BFM sits inside 11:30–12:00\",\"adv|SIM_DEBRIEF|bane|No time for the OFT EP-4 debrief — VL BFM sits inside 13:30–14:00\"]}",
+  "pic": "f6-a-after-palette-drag.png"
+ },
+ {
+  "part": "f6",
+  "id": "F6-b",
+  "ok": false,
+  "what": "(b) arm FLIGHT SAFETY's + add, tap Ranger: he is never listed twice",
+  "detail": "{\"armed\":\"a:0.2.+\",\"paletteSays\":{\"no\":false,\"why\":\"\"},\"count\":2,\"crowd\":[\"bane\",\"bane\"],\"toasts\":[\"Ranger planned\"],\"rangerWarn\":[\"hard|DOUBLE_BOOK|bane|VL BFM & Sim EP-4 clash\",\"adv|NO_BRIEF|bane|No time for the VL BFM flight brief — Sim EP-4 sits inside 10:20–12:40 (brief 10:20)\",\"adv|SIM_BRIEF|bane|No time for the OFT EP-4 brief — VL BFM sits inside 11:30–12:00\",\"adv|SIM_DEBRIEF|bane|No time for the OFT EP-4 debrief — VL BFM sits inside 13:30–14:00\"]}",
+  "pic": "f6-b-after-arm-and-tap.png"
+ },
+ {
+  "part": "f6",
+  "id": "F6-de-0",
+  "ok": null,
+  "what": "fixture for (d)/(e): FLIGHT SAFETY holds Ranger and Reaper",
+  "detail": "[\"bane\",\"dice\"]",
+  "pic": ""
+ },
+ {
+  "part": "f6",
+  "id": "F6-d",
+  "ok": false,
+  "what": "(d) palette Ranger dropped onto Reaper's seat in the crowd Ranger is already on: never a silent second copy (either one copy, or the caption / a toast says so)",
+  "detail": "{\"caption\":\"\",\"crowd\":[\"bane\",\"bane\"],\"count\":2,\"toasts\":[],\"rangerWarn\":[]}",
+  "pic": "f6-d-hover-palette-ranger-onto-reaper-in-his-own-crowd.png"
+ },
+ {
+  "part": "f6",
+  "id": "F6-d-pic",
+  "ok": null,
+  "what": "after the drop",
+  "detail": "",
+  "pic": "f6-d-after-palette-ranger-onto-reaper.png"
+ },
+ {
+  "part": "f6",
+  "id": "F6-e",
+  "ok": null,
+  "what": "a tap on Reaper's filled seat does not arm it (it selects him) — route (e) is not reachable this way",
+  "detail": "{\"armE\":null}",
+  "pic": ""
+ },
+ {
+  "part": "f6",
+  "id": "F6-de-z",
+  "ok": true,
+  "what": "back to Ranger alone before (c)",
+  "detail": "[\"bane\"]",
+  "pic": ""
+ },
+ {
+  "part": "f6",
+  "id": "F6-c",
+  "ok": true,
+  "what": "(c) published Monday, Ranger's own puck onto his own row's + add: one copy, 0 pending, no busy toast",
+  "detail": "{\"caption\":\"\",\"count\":1,\"pend\":\"\",\"toasts\":[]}",
+  "pic": "f6-c-hover-own-puck-onto-own-row.png"
+ },
+ {
+  "part": "f6",
+  "id": "F6-ERR",
+  "ok": true,
+  "what": "browser error list empty",
+  "detail": "[]",
+  "pic": ""
+ }
+]

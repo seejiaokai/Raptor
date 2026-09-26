@@ -4343,6 +4343,7 @@ export function Matrix() {
             setArmCounterReset(false)
             resetManningRules()
           }}
+          disarmCounterReset={() => setArmCounterReset(false)}
           onGroupDragStart={(e, id) => startRowDrag(e, id, GROUP_DRAG)}
           onPriorityDragStart={(e, id) => startRowDrag(e, id, GROUP_PRIO_DRAG)}
           draggingId={draggingId}

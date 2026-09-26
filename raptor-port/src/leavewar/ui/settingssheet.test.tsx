@@ -410,6 +410,22 @@ describe('⚙ Settings — Reset order', () => {
     expect(btn().disabled).toBe(true)
     expect(screen.getByTestId('roster-order-hint').textContent).toMatch(/In the default order/)
   })
+  /* W2's walk (26 Sep 26): Reset counters and Reset order could both read "Really reset?" at once — one tap never fired
+     the other, but two armed questions side by side read as one. Arming either takes the other's question back. */
+  it("arming one reset takes the other one's question back", () => {
+    setRosterOrder(['ramp', 'ace'])
+    open()
+    const counters = () => screen.getByTestId('counter-reset-all')
+    fireEvent.click(btn())
+    expect(btn().textContent).toBe('Really reset?')
+    fireEvent.click(counters())
+    expect(counters().textContent).toBe('Really reset?')
+    expect(btn().textContent, 'arming Reset counters took Reset order back').toMatch(/Reset order/)
+    fireEvent.click(btn())
+    expect(btn().textContent).toBe('Really reset?')
+    expect(counters().textContent, 'and the other way round').toMatch(/Reset counters/)
+    expect(getState().rosterOrder, 'nothing was fired').toEqual(['ramp', 'ace'])
+  })
   it('closing the sheet takes the question back', () => {
     setRosterOrder(['ramp', 'ace'])
     open()
