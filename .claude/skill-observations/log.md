@@ -629,3 +629,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In the mock-up recipe: do every scroll first, apply the injected state last, and have the capture step assert the state is still there (log a WARNING into the output, or refuse the picture) — the same way the walk scripts assert what they photograph.
 
 **Principle:** When a picture's meaning depends on state you injected, the premise is part of the picture: verify it at capture time, after anything that can repaint, or the picture silently shows something else.
+
+### Observation 297: A visual change filed as a defect by a walker was built and FULL-checked before he saw a picture — and he rejected it on sight
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** five-flags batch, item 4 ([VIEW-ARROW-OVER-LIST]): the desktop week's room beside the ‹ arrow
+**Skill:** New skill candidate: bug-check order (raptor-port/docs/bug-check-order.md) — where a mock-up sits for a change the owner did not ask for
+**Type:** open-source
+**Phase/Area:** before building a visual change
+
+**Issue:** A walker filed "the floating arrow covers the start of an opened warning list" as a defect. It was built in a batch, walked by four walkers, read by two models and taken through the full gates — five older browser tests had to be re-pointed at the new front. Shown the result full screen beside the old look, the owner chose the old one ("I still prefer these"); the whole change now comes out again. The house rule (a picture before product code for a visual direction) was read as applying to his own asks, not to a walker's finding that changes how a surface he uses every day looks.
+
+**Suggested improvement:** In the bug-check order (or the look card's rules): any item that changes the LOOK or LAYOUT of a surface he uses daily — whoever filed it, and even when it is framed as a defect — gets a full-screen before/after picture put to him before it is built. The look card then carries only questions about behaviour.
+
+**Principle:** Whether a visual change is an improvement is the user's call, not the finder's; show the whole screen before and after before paying for the build and the check.
