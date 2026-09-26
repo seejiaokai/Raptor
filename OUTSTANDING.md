@@ -51,7 +51,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 **His order — to the database step, about two months away (D203, 26 Sep 26; D173, D147 within it):**
 1. **Now — [ACCOUNTS-NEW-PERSON]** (D214, D216, D217, D219, D220, D222 — one door for a new person on Admin → Users, the
    sign-up asking the same things, the admins' bell; the mock-up `raptor-port/docs/mock/new-person-account.html`, his
-   approval first), on `claude/accounts-new-person`, its own FULL check; then **[DRAFT-PENDING]** — the one changes window,
+   approval first), on `claude/accounts-new-person`, its own FULL check — DONE, the PR open for his look and "merge
+   live"; then **[DRAFT-PENDING]** — the one changes window,
    on top of accounts, its own FULL check (D210). `[ACCOUNTS]` itself MERGED 26 Sep 26 (PR #442, his "merge live").
 2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
 3. **Development as normal — [HUMAN-RETEST]**'s remaining three, in HIS order (D147): the absence record TOGETHER with
@@ -1163,8 +1164,10 @@ only people already on Quals. **Build:** "Add an account" (and Approve, filled f
 gets a **New person** choice — callsign, **initials**, pilot / WSO / personnel, CAT — which creates his Quals row and his
 account together through the SAME add the Quals page uses (one callsign rule), as one command. Flight and quals stay on
 Quals. **Mock-up first:** `raptor-port/docs/mock/new-person-account.html` — **APPROVED 26 Sep 26 (D224)**, the design of
-record; planned (Opus 5.5), red-teamed (Fable, Astra), built and walked on `claude/accounts-new-person` (26 Sep 26); the two
-code reads say FIX FIRST — the findings and next steps are that branch's `HANDOFF.md` block. **Tier:** FULL
+record; planned (Opus 5.5), red-teamed (Fable, Astra), built and walked on `claude/accounts-new-person` (26 Sep 26); its
+FULL check DONE the same day — three read rounds by Fable and Astra, every finding fixed red first, re-walked 58/58,
+break tests 32/32, the full checks green (evidence `raptor-port/docs/handpass/2026-09-26-accounts-new-person.md`); the PR
+is open, **waiting for his look (the sheet's §10 card) and his "merge live"**. **Tier:** FULL
 (roles and saved data). **With it — D216:** a new access request lights the admins' bell (a tap → Admin → Users; out once
 he has opened it). **And the sign-up form asks the same things** (his "signs up for an account", on D214's row).
 **And D217 — one door:** a new person is created ONLY on Admin → Users (or his approved sign-up); a blank sign-in makes a

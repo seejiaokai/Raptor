@@ -599,3 +599,48 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In session-handoff's closing step (the ready-to-paste line), when the next step waits on a decision of his, give one complete line per answer ("If you approve it: …" / "If you want a change: tell me the change, then …"), never a single line with a bracketed alternative to fill in.
 
 **Principle:** A non-technical user pastes a handoff prompt exactly as given. Any placeholder or bracketed alternative in it will reach the next session unedited, so every line must already be a complete, true instruction.
+
+### Observation 280: A walk step's picture must show what the step asserted — never close the thing inside the step
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** `[ACCOUNTS-NEW-PERSON]` fix round — re-walking the approve form's note after Fable's code read #1
+**Skill:** New skill candidate / project method: `raptor-port/docs/bug-check-order.md` §7 (the walk) and the handpass drivers (`scripts/handpass/*.mjs`, the shared `step()` shape)
+**Type:** open-source
+**Phase/Area:** the scripted walk — its evidence pictures
+
+**Issue:** The walk's `step(id, what, fn)` takes its picture AFTER `fn` returns. The approve-note steps opened the approve form, read the note, then pressed Cancel inside `fn` — so the saved pictures showed the plain waiting list, not the note they asserted. Two walks (47/47) and a code reviewer then cited those pictures as the note's evidence; nobody noticed they showed nothing of it. Numbered past 279 on this branch; the two parallel worktree chats sat at 278, so a clash at merge is renumbered per the skill's parallel-branch rule.
+
+**Suggested improvement:** In bug-check order §7 (and a comment on the drivers' `step()`), one line: "a step leaves on screen what it asserted — close a dialog at the START of the next step, not inside this one; when reading a re-walk's pictures, open each picture a step's claim depends on and check it shows the claim". Optionally `step()` could take the picture before any cleanup callback the step returns.
+
+**Principle:** Evidence captured after cleanup proves nothing about the state before it — a screenshot must be taken while the asserted state is still on screen, and a reviewer citing a picture must look at it, not at its filename.
+
+### Observation 281: Break tests go in a scratch checkout while reviewers read the working copy
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** `[ACCOUNTS-NEW-PERSON]` fix round — break tests run while Fable and Astra did a read-only fix check in the background
+**Skill:** New skill candidate / project method: `raptor-port/docs/bug-check-order.md` §8.4 (red first, and the break test)
+**Type:** open-source
+**Phase/Area:** break tests run in parallel with independent code reads
+
+**Issue:** Break tests edit source on purpose. Run in the working tree while two reviewers were reading it, a reviewer could have read a deliberately broken file and reported it (or trusted it). They were run instead in a detached `git worktree` of the committed fix, with its `node_modules` a junction to the main checkout's, by one script that applies each break, runs the named test files, records the red tests and restores the file byte for byte — 27 breaks with the reviewers never exposed to one.
+
+**Suggested improvement:** Bug-check order §8.4: "break tests never run in a checkout someone else is reading — commit first, then break in a scratch worktree (a junction for the installed packages)"; keep the runner shape (find exactly once → break → run → restore → record) as a reusable script under `scripts/handpass/`.
+
+**Principle:** Deliberate fault injection must be isolated from every concurrent reader of the same files; commit the good state first so the break is always one restore away.
+
+### Observation 282: A break test that stays green may be aimed at the wrong tests — find the one that boots the real wiring before writing a new one
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** `[ACCOUNTS-NEW-PERSON]` break tests — "a new person survives a reload" (removing the roster's save inside the add command)
+**Skill:** New skill candidate / project method: `raptor-port/docs/bug-check-order.md` §8.4 (the break test)
+**Type:** open-source
+**Phase/Area:** choosing which tests a deliberate break is run against
+
+**Issue:** The break of the roster's save stayed GREEN. The rule says "nothing went red → that surface has no test, by proof — write one". But the break had been run only against the feature's own unit files, whose store has no storage behind it (the save writes to a whiteboard that is null in those tests), so they could never see it. A storage-wiring test (`txn-wiring.test.ts`, which boots the real storage stack) already asserted the saved roster — run against it, the same break went red at once. A second break matched its target text twice and was skipped rather than run. Both would have read as "tested" or "untested" wrongly without a look.
+
+**Suggested improvement:** Bug-check order §8.4: "a break that stays green is first a question about WHICH tests were run: search the whole suite for an assertion on that surface (especially tests that boot the real storage / wiring) and re-run the break against it before writing a new test; a break whose target text is not unique is re-targeted, never counted". The runner should refuse a non-unique match (it does: find must match exactly once).
+
+**Principle:** A negative result from fault injection is only as good as the observer you pointed at it — before concluding "no test covers this", confirm the break was run against every test able to see the layer it cut.

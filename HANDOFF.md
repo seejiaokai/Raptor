@@ -16,42 +16,30 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/accounts-new-person -->
-### `claude/accounts-new-person` — `[ACCOUNTS-NEW-PERSON]` (D214, D216, D217, D219, D220, D222, D224–D227): BUILT, walked, gates green; the two code reads say FIX FIRST — written 26 Sep 26, verify before use
-- **Where it started:** his "mock-up approved" (D224) → plan (Opus 5.5) → Fable + Astra red-team (both APPROVE WITH CHANGES;
-  his answers D225 initials never required, D226 14 letters said not cut, D227 each admin's own bell) → build → walk → FULL check.
-  Plan `raptor-port/docs/superpowers/plans/2026-09-26-accounts-new-person-plan.md` (§Round 1 = every red-team finding).
-- **Shipped (on the branch, NO PR yet):** the one add `state/roster-add.ts`; person + account in ONE command
-  (`commitPeopleSettingsIntent`); `CommandOp.more` + four new command types, §11 `AccessRequest` Admin R U D; the sign-up's four
-  fields; approve / add with On the roster | New person; the bell per admin (`seenBy`, `shown`); `ADMINOPEN` (one consumer,
-  AdminPage); Quals' "+ Add person" a button there; "Callsign/Name" everywhere (the CSV too); docs per plan §8. Evidence
-  `raptor-port/docs/handpass/2026-09-26-accounts-new-person.md` (§3 roll-call, §4 doors, §5 walk: walk1 42/47 → one real miss
-  fixed red-first, walk2 47/47, 0 browser errors; §6–§10 still to fill). Walk script `raptor-port/scripts/handpass/np-walk.mjs`.
-- **Unfinished — the two code reads, both FIX FIRST** (`raptor-port/docs/handpass/2026-09-26-accounts-new-person-fable-read.md`,
-  `…-astra-read.md`, blind to each other): **Fable 1** — approving: a typed callsign whose person ALREADY HAS AN ACCOUNT
-  (Ranger, Saber…) gets "Pick them" but the picker cannot offer him (fix steps in the file; the NP5 test and walk S8 pinned the
-  wrong thing); **Astra 1** — the Add form does not fully clear after success (stale hidden state); **Astra 2** — personnel
-  keep an internal CAT list, so a CAT can survive invisibly through Personnel; **Astra 4** — `acc-walk.mjs` / `acc-walk2.mjs`
-  abort at approval (they assume the old roster-only form; Approve now opens New person). Record fixes: Fable 2 (three
-  roll-call items narrowed without a §8 line — walk them or say why), Fable 3 (the plan says the ui-contracts passages were
-  MOVED; they were kept verbatim in place — correct the plan or move them), Fable 4 (`scripts/handpass/am/mk-new-person.mjs`
-  still fills `#accFull`), Astra 3 (P1/P2 landed after walk2 — re-walk them; gates and break tests into the sheet).
-- **Branch:** `claude/accounts-new-person`, pushed; no PR yet. Base `origin/main` (e27e15fe + D223's commits).
-- **Gates** (build `09cc00e3`, one run, watched): unit **6248 / 6248** (381 files) · build clean · tfin **728 / 0** · e2e **476
-  passed**, 48 skipped · smoke **443 / 0** · rulecheck OK · docsize OK. `probes:adapted` · `perf` — NOT RUN.
-- **Parallel chats (D228):** he may run two worktree chats beside this one — the absence-record re-test with `[S4-HUNT-REST]`
-  (ports 4175 / 4192, rulings D260–D269) and a small-fixes batch (`[PUCK-FLAG-GLOW]`, `[LW-RESET-ORDER]`,
-  `[CROWD-SWAP-SAYS-BUSY]`, `[VIEW-ARROW-OVER-LIST]`, `[BG-GUARD-FALSE]`; ports 4176 / 4193, rulings D270–D279). Every heavy
-  run takes the PC-wide lock first: `node raptor-port/scripts/gatelock.mjs take|release|run` (`.claude/rules/shipping.md` §The
-  checks). This chat: preview 4174 (`raptor-walk-2` in `.claude/launch.json`), browser tests `E2E_PORT=4191`. Port 4173 is held
-  by a leftover preview from an earlier chat — do not use it or kill it.
-- **Traps met:** "Nomad" and "Bolt" are demo callsigns — never use them as new names in a test (a clean-up that deletes by
-  callsign removes the seed person); a background command starts inside `raptor-port/` here, so use
-  `cd /c/Users/User/projects/Raptor && cd raptor-port && …` (`[BG-GUARD-FALSE]`); Bash heredocs mangle backslashes — write
-  edit scripts with the Write tool.
-- **Open questions for him:** none (D230 filed as spent, his "that job was done").
-- **Pick up here:** fix Fable 1 and Astra 1, 2, 4 (red first), the record items, then break tests (sheet §7), re-walk what the
-  fixes touched into `walk3/`, the gates under the lock, fill the sheet §6–§10 (the look card: the plan's "On the look card"
-  list), open the PR, send him the Vercel link — then his look and "merge live"; then `[DRAFT-PENDING]`.
+### `claude/accounts-new-person` — `[ACCOUNTS-NEW-PERSON]` (D214, D216, D217, D219, D220, D222, D224–D227): FULL check DONE — PR open, waiting for his look and "merge live" — written 26 Sep 26, verify before use
+- **Where it stands:** built, walked, read three rounds by Fable and Astra, every finding fixed red first, re-walked
+  (walk3 **58/58**, 0 browser errors), break tests **32/32 red**, the full checks green (§9 of the sheet), the PR open
+  from this branch (`gh pr list --head claude/accounts-new-person`). **Next: his look (the sheet's §10 card), then his
+  "merge live"** — then archive `[ACCOUNTS-NEW-PERSON]` (`backlog-archive.mjs`) and start `[DRAFT-PENDING]`.
+- **Evidence:** `raptor-port/docs/handpass/2026-09-26-accounts-new-person.md` (§3 roll-call, §5 walks, §6 the three read
+  rounds and every disposition, §7 breaks, §9 gates, §10 the look card). Reads: `…-{fable,astra}-read.md` (round 1),
+  `…-{fable,astra}-fixcheck.md` (round 2), `…-{fable,astra}-fixcheck2.md` (round 3 — Fable CLEAN; Astra's one fixed).
+  Walk `raptor-port/scripts/handpass/np-walk.mjs` → `docs/img/handpass/2026-09-26-accounts-new-person/walk3/`; breaks
+  `scripts/handpass/np-breaks.mjs` (run it in a scratch worktree — its header says how).
+- **What the reads changed (all on this branch):** the approve note never asks the admin to do what the screen can't —
+  someone who already has an account (archived or not) is said so, with both ways out (him on a new sign-in: change that
+  account's sign-in, another admin's job when it is your own; someone else: New person); the Add form clears whole after
+  an add; personnel hold no CAT anywhere (`catsFor`); an account's editor keeps its archived person in its picker (on
+  `main` since `[ACCOUNTS]`, fixed here); the two older `[ACCOUNTS]` walks run again (38/38, 42/42).
+- **Not run, with the reason:** `probes:adapted` and `perf` — the dense surfaces they measure (board, week, palette) are
+  untouched; a real iPhone (nothing here depends on touch timing).
+- **Parallel chats (D228):** every heavy run takes the PC-wide lock (`node raptor-port/scripts/gatelock.mjs`). This chat:
+  preview 4174 (`raptor-walk-2`), browser tests `E2E_PORT=4191`. Port 4173 is another chat's — leave it.
+- **Traps met:** "Nomad" and "Bolt" (and every seeded callsign) are demo people — never use them as new names in a test;
+  a walk step's picture is taken AFTER its step, so a step must leave on screen what it asserted (observation #280); a
+  break that stays green may be aimed at tests that cannot see the layer (#282); Bash heredocs mangle backslashes —
+  edit with the Edit tool.
+- **Open questions for him:** none — the look card §10 lists the agent's calls for him to correct.
 <!-- /now -->
 
 ## Next, in order
@@ -70,9 +58,9 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 26 Sep 26 evening, `claude/accounts-new-person` (`09cc00e3`, the `[ACCOUNTS-NEW-PERSON]` build
-before its reads' fixes), one run, the PC otherwise quiet (`raptor-port/docs/handpass/2026-09-26-accounts-new-person.md`):
-unit **6248 / 6248** (381 files) · build clean · tfin **728 / 0** · e2e **476 passed**, 48 skipped · smoke **443 / 0** ·
+The latest counts watched — 26 Sep 26 evening, `claude/accounts-new-person` (`facb1bc1`, the `[ACCOUNTS-NEW-PERSON]` final
+code), one run under the PC-wide lock (`raptor-port/docs/handpass/2026-09-26-accounts-new-person.md` §9):
+unit **6259 / 6259** (381 files) · build clean · tfin **728 / 0** · e2e **476 passed**, 48 skipped · smoke **443 / 0** ·
 rulecheck OK · docsize OK. Restate a count only
 from a run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md`
 §Build & verify; how they mislead, and the checks on his PC: `raptor-port/docs/gates-and-deploy.md`.

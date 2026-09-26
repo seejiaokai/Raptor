@@ -155,16 +155,35 @@ found the same gap** — the strongest possible pointer. Fixed in `20e3d4f4`:
 | Fable #3 — the archived, no-account note gave only Restore | yes | older | **fixed**: the someone-else sentence added; red test |
 | Astra #2 — an account's editor lost its archived person from its Callsign/Name picker (a blank "Pick…" over a hidden value) | yes — red test (jsdom's select reads '' with no matching option); walk `d-FC2` | **on `main` since `[ACCOUNTS]`** | **fixed** here (roll-call row 12, the account editor, is this build's surface): `linkablePeople(keep)` offers the account's own person first |
 
-Every round-2 fix was reproduced red first and walked (walk3 57/57). **Round 3** — a narrow read of `20e3d4f4` alone by
-both (brief `…-fixcheck2-brief.md`), because its code was written by the builder and nobody else had read it (D67):
-see below.
+Every round-2 fix was reproduced red first and walked (walk3 57/57).
+
+**Round 3 — a narrow read of `20e3d4f4` alone** (brief `…-fixcheck2-brief.md`), because its code was written by the
+builder and nobody else had read it (D67). **Fable: CLEAN** (two optional wording points) — `…-fable-fixcheck2.md`.
+**Astra: FIX FIRST** (one) — `…-astra-fixcheck2.md`. Fixed in `19ffe239`:
+
+| Finding | Reproduced | Disposition |
+|---|---|---|
+| Astra — when the typed callsign is the SIGNED-IN admin's own ("Saber" while `ad` looks), the note sent him to change "that account's sign-in": his row is locked to him and `updateAccount` refuses his own. Fable raised the same as optional | yes — red test (NP5); walk `d-FC3` | **fixed**: "It is your own account: if it is you on a new sign-in, another admin must change its sign-in under Accounts — you can't change your own." One `isOwnAccount` body serves the note and the row |
+| Fable (optional) — an archived man who is back: renaming his sign-in answers the request but leaves him archived | yes — red test | **taken**: "…that answers this request, and restore them on the Quals page if they are back." Said as the step after, never done for him (Restore wipes his posting-out window) |
+
+Both round-3 fixes are the reviewers' own exact texts, red first and walked (walk3 58/58); **not read a fourth time** —
+the bug-check order §4: call them again only when a new KIND of defect escapes, and the round-3 findings were the same
+kind (a note naming a door) in the same function.
+
+**Explicit negatives both gave (the record):** no second writer of a new person; no partial write (person, account,
+request and "seen" in one command, ids minted inside); every `CommandOp.more` checked; no new door for a member, guest,
+waiting or switched-off person; no cross-admin bell state; no remaining Quals-side person writer; no missing roster
+projection (Quals, crew lists, Inputs, the Leave War, the Tracker, search, the account picker); no reader of `catsFor`
+left with an empty list it needed; `linkablePeople(keep)` never offers a placeholder, another account's person or an
+archived person who is not the account's own; nothing that lives only in stored demo data (D56).
 
 ## 7. Break tests
 
-Each wired surface broken ONCE on purpose, on the final code (`20e3d4f4`), in a scratch worktree (never the checkout
-the reviewers were reading), its test files run, the file restored byte for byte. Runner
-`scripts/handpass/np-breaks.mjs`; results `docs/img/handpass/2026-09-26-accounts-new-person/breaks.json`. **Every
-surface went red: 30 of 30.**
+Each wired surface broken ONCE on purpose, in a scratch worktree (never the checkout the reviewers were reading), its
+test files run, the file restored byte for byte. Runner `scripts/handpass/np-breaks.mjs`; results
+`docs/img/handpass/2026-09-26-accounts-new-person/breaks.json` (all, on `20e3d4f4`) and `breaks-notes.json` (the four
+approve-note breaks re-run on the final `19ffe239`, the note's code having changed after). **Every surface went red: 32
+of 32.**
 
 | # | Surface (roll-call row) | The break | Red (a named test) |
 |---|---|---|---|
@@ -198,6 +217,8 @@ surface went red: 30 of 30.**
 | B28 | The approve note checks the account BEFORE archived (8) | archived first again | NP5 "ARCHIVED and holding an account…" |
 | B29 | The account editor keeps its archived person (12) | `keep` after the archived filter again | "the account editor of an ARCHIVED person still shows his callsign…" |
 | B30 | Sign-up: the two selects are the boxes' size (1) — a browser test | the select's padding shrunk | e2e "the sign-up card's two selects are the boxes' size and edges" (desktop AND phone) |
+| B31 | The approve note: the signed-in admin's OWN account names another admin (8) | the own-account branch skipped | NP5 "the typed callsign is the SIGNED-IN admin's own…" |
+| B32 | The approve note: an archived man who is back — restore said as the step after (8) | the clause dropped | NP5 "ARCHIVED and holding an account…" |
 
 **Two first attempts that proved nothing, and were redone:** B11 (its text matched in two functions — skipped by the
 runner, not run) → B11b; **B24 stayed GREEN** — the reload break was run against unit files whose store has no storage
@@ -218,8 +239,13 @@ did; this build's wire into them is the one add writing the roster (B12, B19, B2
 - Fable read #2's three rows are now walked (walk3 `13`, `20`, `21`, `55`) — no longer on this list.
 
 ## 9. The gates
-On the build `09cc00e3` (before the reads' fixes), one run: unit 6248 / 6248 (381 files) · build clean · tfin 728 / 0 · e2e 476
-passed, 48 skipped · smoke 443 / 0 · rulecheck OK · docsize OK. **To re-run on the final code.** probes / perf: not run.
+**On the final code (`facb1bc1` — the code of `19ffe239`), one run under the PC-wide lock (`gatelock.mjs run`, D228),
+watched:** unit **6259 / 6259** (381 files) · build clean · tfin **728 / 0** · e2e **476 passed**, 48 skipped
+(`E2E_PORT=4191`) · smoke **443 / 0** · rulecheck OK · docsize OK. `perms.test.ts` green inside the unit run (the §11
+row `AccessRequest` and the four command types unchanged by the fixes). **NOT RUN, with the reason:** `probes:adapted`
+and `perf` — they measure the dense surfaces (the board, the week, the palette), which this build does not touch.
+
+*(Earlier, on the build `09cc00e3` before the reads' fixes: unit 6248 / 6248 · tfin 728 / 0 · e2e 476 · smoke 443 / 0.)*
 
 ## 10. His look — the look card
 
