@@ -126,6 +126,20 @@ describe('the bid sheet’s Clear names the award and asks once (D260)', () => {
     expect(awardOn('ramp', '2026-01-08')).toBeUndefined()
   })
 
+  it('asked about one day, then a range picked: Clear asks again, naming the range’s awards (Fable’s S17)', () => {
+    setManualCredit('ramp', '2026-01-06', 'FO', {})
+    setManualCredit('ramp', '2026-01-08', 'HO', {})
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('cell-ramp-2026-01-06'))
+    fireEvent.click(screen.getByTestId('bid-clear'))             // asked about the one day
+    fireEvent.click(screen.getByTestId('span-range'))
+    fireEvent.click(screen.getByTestId('span-day-2026-01-08'))
+    fireEvent.click(screen.getByTestId('bid-clear'))             // the span changed: this asks, it does not take
+    expect(screen.getByTestId('span-note').textContent).toContain('2 OIL awards')
+    expect(awardOn('ramp', '2026-01-06')).toBeTruthy()
+    expect(awardOn('ramp', '2026-01-08')).toBeTruthy()
+  })
+
   it('a day with no award clears at once, as before', () => {
     setCell('ramp', '2026-01-06', 'LL')
     render(<Matrix />)

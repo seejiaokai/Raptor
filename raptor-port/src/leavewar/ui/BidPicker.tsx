@@ -15,7 +15,7 @@
 
 import { useState } from 'react'
 import { addDays, displayCell, formatCell, LEAVE_TYPES, type BidState, type CounterName, type Portion } from '../engine'
-import { awardsIn, cellProblem, clearCells, MAX_GIVEN_BY, setBidState, setBidStates, setCell, setCellRange, shiftBid } from '../state/store'
+import { awardsIn, cellProblem, clearCells, MAX_GIVEN_BY, setBidStates, setCell, setCellRange } from '../state/store'
 import { MAX_REC_NOTE } from '../engine/warrecs'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
@@ -56,6 +56,7 @@ export function BidPicker({
   credit,
   creditShown,
   decide,
+  onMove,
   onCreditClear,
   onlyPortion,
   heldBy,
@@ -119,6 +120,9 @@ export function BidPicker({
    *  once bidding had closed, so the same input answered to different controls
    *  depending on which day of the cycle you clicked it. */
   decide?: { state?: BidState; movedFrom?: string } | null
+  /** Pick this day's input up into the grid's move mode (D262) — the matrix closes the sheet and carries it. Returns
+   *  why it could not, for the sheet to say. */
+  onMove?: () => string | void
   /** Take the granted OIL off this day. */
   onCreditClear?: () => void
   onlyPortion?: Portion | null
@@ -190,9 +194,7 @@ export function BidPicker({
   const [oilDays, setOilDays] = useState(credit?.days != null ? String(credit.days) : '1')
   const oilN = Number(oilDays.trim())
   const oilCode: 'FO' | 'HO' = Number.isFinite(oilN) && oilN > 0 && oilN < 1 ? 'HO' : 'FO'
-  /* the move field, and the reason a refused move gives — a Move button that
-     simply did nothing would read as broken */
-  const [moveTo, setMoveTo] = useState('')
+  /* the reason a refused Move gives — a Move button that simply did nothing would read as broken */
   const [moveErr, setMoveErr] = useState('')
 
   /* A DECISION THAT DOES NOT LAND SAYS SO (Astra, 21 Sep 26). The first cut
@@ -372,31 +374,18 @@ export function BidPicker({
                 and they approve it on the new date — a proposal
                 with a trail, not a silent re-approval. Reaching it from ONE
                 click was the rest of his ask; it took a drag-select before,
-                which is a lot of gesture for one man's one day. */}
-            <input
-              type="date"
-              className="dateinput"
-              data-testid="shift-date"
-              value={moveTo}
-              min={dates[0]}
-              max={dates[dates.length - 1]}
-              onChange={e => { setMoveTo(e.target.value); setMoveErr('') }}
-            />
+                which is a lot of gesture for one man's one day.
+                ONE CHIP, ONE MOVE (owner, D262, 27 Sep 26 — "the move button should be enabled for me to click to
+                move the chip. The calendar can be removed"): Move is never greyed out and has no date box beside it —
+                it PICKS THE CHIP UP. The sheet closes and the grid's own move mode carries it (the drag-selection's
+                "Move…", Matrix `moveSel`): it lands on the day clicked — a phone stages it for Confirm — by the
+                landing rules as they were; the month buttons keep it; an empty spot outside the grid ends it. */}
             <button
-              className="dchip move" data-testid="decide-shift" disabled={!moveTo}
+              className="dchip move" data-testid="decide-shift"
+              title="Pick this up and put it on another day"
               onClick={() => {
-                if (!moveTo) return
-                const result = shiftBid(personId, date, moveTo)
-                if (result === 'shifted') return onClose()
-                setMoveErr(
-                  result === 'occupied'
-                    ? `${moveTo} already has something booked — clear it first.`
-                    : result === 'raptor'
-                      ? 'Raptor owns this cell; move it there instead.'
-                      : result === 'window'
-                        ? `${moveTo} is not a day this leave can land on — pick a day inside the war.`
-                        : 'There is no bid here to move.',
-                )
+                const why = onMove?.()
+                if (why) setMoveErr(why)
               }}
             >
               Move
@@ -764,143 +753,6 @@ export function BidPicker({
           </div>
         </div>
       )}
-    </Sheet>
-  )
-}
-
-/**
- * Approve or refuse a bid, once bidding has closed.
- *
- * The sheet renders only under `canDecide`, and since the 27 Aug overnight
- * pass the store's `setBidState` re-checks the same body — the role rides the
- * Raptor login now, so "there is no login" stopped being a reason to leave
- * the write path open the day the apps merged.
- *
- * Reuses the bid sheet's shell so a decision and a bid read as the same
- * object in the same place, rather than as two unrelated surfaces.
- */
-export function DecisionSheet({
-  callsign,
-  personId,
-  date,
-  code,
-  state,
-  movedFrom,
-  dates,
-  onClose,
-}: {
-  callsign: string
-  personId: string
-  date: string
-  code: string
-  state: BidState | undefined
-  /** Set when this bid has already been moved once; the date it came from. */
-  movedFrom?: string
-  /** Every date in the period, used only for the move field's bounds so a
-   *  bid cannot be moved outside the war it belongs to. */
-  dates: string[]
-  onClose: () => void
-}) {
-  const [to, setTo] = useState('')
-  // A refused move has to say WHY, or the button reads as broken. The store
-  // returns the reason; this turns it into the sentence management needs.
-  const [problem, setProblem] = useState('')
-
-  const decide = (bid: BidState) => {
-    setBidState(personId, date, bid)
-    onClose()
-  }
-
-  const move = () => {
-    if (!to) return
-    const result = shiftBid(personId, date, to)
-    if (result === 'shifted') return onClose()
-    setProblem(
-      result === 'occupied'
-        ? `${to} already has something booked — clear it first.`
-        : result === 'raptor'
-          ? 'Raptor owns this cell; move it there instead.'
-          : result === 'window'
-            ? `${to} is not a day this leave can land on — pick a day inside the war.`
-            : 'There is no bid here to move.',
-    )
-  }
-
-  return (
-    <Sheet testid="bid-picker" label="Decide a bid" onClose={onClose}>
-      <div className="bidsheet-hd">
-        <span className="who">{callsign}</span>
-        <span className="dt">{date}</span>
-        <span className="cur">
-          {displayCell(code)}{state ? ` · ${state}` : ''}{movedFrom ? ` · moved from ${movedFrom}` : ''}
-        </span>
-        <button className="x" data-testid="bid-cancel" onClick={onClose} aria-label="Cancel">
-          ✕
-        </button>
-      </div>
-      <div className="bidsheet-row">
-        <span className="lab">Decision</span>
-        {/* All three stay enabled on an already-decided bid. Management is
-            meant to try one and watch the count rows move, and a decision
-            that could not be changed back would make that a one-way door. */}
-        {/* Acknowledging is NOT a decision, and that is why it is here rather
-            than left implicit. It says "seen, not yet answered" — the state
-            between a bid arriving and a verdict — and it is what turns the
-            cell purple. Before it existed a bid was purple from the moment it
-            was typed, so the squadron could not tell an untouched input from
-            one already in hand. */}
-        {/* The visible word is "Ack" (owner, 21 Sep 26, renaming his own
-            27 Aug "Pending") — the same word the grid legend gives this purple
-            state, so the two agree. The STATE TOKEN stays 'acknowledged'
-            (persisted in BID_STATES), only the label changed; testid stays
-            decide-ack. */}
-        <button
-          className="dchip ack"
-          data-testid="decide-ack"
-          aria-pressed={state === 'acknowledged'}
-          title="Seen, not yet decided"
-          onClick={() => decide('acknowledged')}
-        >
-          Ack
-        </button>
-        <button
-          className="dchip approve"
-          data-testid="decide-approve"
-          aria-pressed={state === 'approved'}
-          onClick={() => decide('approved')}
-        >
-          Approve
-        </button>
-        <button
-          className="dchip refuse"
-          data-testid="decide-refuse"
-          aria-pressed={state === 'refused'}
-          onClick={() => decide('refused')}
-        >
-          Refuse
-        </button>
-      </div>
-
-      {/* Moving a bid is what management does instead of refusing when a week
-          goes red and refusing outright is too blunt. It lands PENDING and
-          they approve it afterwards on the new date — a move is a proposal
-          with a trail, not a silent re-approval. */}
-      <div className="bidsheet-row">
-        <span className="lab">Move to</span>
-        <input
-          type="date"
-          className="dateinput"
-          data-testid="shift-date"
-          value={to}
-          min={dates[0]}
-          max={dates[dates.length - 1]}
-          onChange={e => { setTo(e.target.value); setProblem('') }}
-        />
-        <button className="dchip move" data-testid="decide-shift" disabled={!to} onClick={move}>
-          Move
-        </button>
-        {problem && <span className="note warn" data-testid="shift-problem">{problem}</span>}
-      </div>
     </Sheet>
   )
 }

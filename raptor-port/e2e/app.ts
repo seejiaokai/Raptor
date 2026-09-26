@@ -248,6 +248,19 @@ export async function lwView(page: Page, id: string | null) {
   await page.waitForTimeout(150)
 }
 
+/* ONE CHIP, ONE MOVE (owner, D262, 27 Sep 26): with a day's sheet open, its Move picks the chip up into the grid's
+   move mode, and a click on a day lands it — a phone stages it and asks to Confirm. The move ignores clicks for its
+   first moments (a double-click on Move must land nothing), so the landing waits a beat, as a person's click would. */
+export async function moveOneTo(page: Page, targetTestid: string) {
+  await page.locator('[data-testid="decide-shift"]').click()
+  await page.locator('[data-testid="move-banner"]').waitFor({ state: 'visible' })
+  await page.waitForTimeout(450)
+  await page.locator(`[data-testid="${targetTestid}"]`).click()
+  const confirm = page.locator('[data-testid="move-confirm"]')
+  if (await confirm.isVisible().catch(() => false)) await confirm.click()
+  await page.locator('[data-testid="move-banner"]').waitFor({ state: 'detached' })
+}
+
 /* Open the Tracker tab the way a user reaches it: log in, click the tab, wait
    for the flow board's balls (7 Sep 26, the Tracker merge). The vendored
    smoke suite (scripts/tracker/smoke.mjs) has its own copy of this in plain

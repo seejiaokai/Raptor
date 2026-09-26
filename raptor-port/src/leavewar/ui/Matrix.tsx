@@ -48,7 +48,7 @@ import {
   type FigureCtx,
 } from '../engine'
 import { clearRecordById, figureCtxOf, recordsAt, setBalance, setManualCredit, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostIn, postingProblem, visibleFigures, type MoveResult, type EventMoveResult } from '../state/store'
-import { AwardSheet, BidPicker, DecisionSheet, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
+import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
 import { FiguresDrawer, FigureTitle, figClass, type DrawerRow } from './FiguresDrawer'
@@ -1167,6 +1167,26 @@ export function Matrix() {
     return () => { document.removeEventListener('pointerdown', onDown, true); window.removeEventListener('keydown', onKey, true) }
   }, [figSel])
 
+  /* WHAT COUNTS AS THE GRID WHILE A MOVE IS ON (D262): the card — its counts, month buttons, header, the days and the
+     figures drawer — plus the parts of it drawn fixed on top of the page (the floating date header, the desktop's
+     scrollbar at the foot of the screen). The mouse's edge scroll runs only over it; a click on an empty spot of the
+     page AROUND it ends the move. The days' left edge is the drag-select's own (past the frozen columns / drawer). */
+  const cardRef = useRef<HTMLDivElement>(null)
+  const inGrid = (t: Element): boolean =>
+    !!cardRef.current?.contains(t) || !!t.closest('[data-testid="sticky-head"], [data-testid="hscroll"]')
+  const moveLeftEdge = (): number => {
+    const w = wrapRef.current
+    return selCtxRef.current?.leftEdge?.() ?? (w ? w.getBoundingClientRect().left : -Infinity)
+  }
+  /* …and LEAVING THE LEAVE WAR ENDS IT (D262 — Fable's S9): the page is kept alive off screen, and a move left on
+     carried its ghost onto the next page and kept its listeners on every click there. Leaving is the plainest
+     "somewhere outside the grid". */
+  useEffect(() => subLwScreen(() => {
+    if (isLwOnScreen()) return
+    setMoveSel(null); setMovePreview(null); setMoveErr('')
+    setEventMoveSel(null); setEventMovePreview(null); setEventMoveErr('')
+  }), [])
+
   // MOVE MODE (owner, 27 Aug 26). The picked block is dropped onto a new day.
   // `movers` are the inputs PRESENT in the selection — the empty cells the user
   // swept up are dropped, so a loose box no longer refuses as "nothing"; the
@@ -1194,9 +1214,14 @@ export function Matrix() {
     paintLanding(w, landingFor(targetDate))
     return true
   }
+  /* A DAY IT IS ALREADY ON (D262 — Fable's S6): the move machine's delta 0 read "Nothing to move." as if the chip had
+     gone, and a phone staged a Confirm that then failed. It says where it is, and the move stays on. */
+  const onItsOwnDay = (targetDate: string): boolean => moveAnchor !== null && daysBetween(moveAnchor, targetDate) === 0
+  const ownDayWords = () => `${movers.length === 1 ? 'It is' : 'They are'} already on that day — pick another day.`
   const commitMove = (targetDate: string) => {
     const w = wrapRef.current
     if (moveAnchor === null) { setMoveSel(null); setMovePreview(null); return }
+    if (onItsOwnDay(targetDate)) { if (w) clearLanding(w); setMovePreview(null); setMoveErr(ownDayWords()); return }
     const r = moveCells(movers, daysBetween(moveAnchor, targetDate))
     if (w) clearLanding(w)
     if (r === 'moved') { setMoveSel(null); setMovePreview(null); setMoveErr('') }
@@ -1214,10 +1239,13 @@ export function Matrix() {
         // hover, so a tap stages the landing and waits for Confirm — but only a
         // landing the store would accept stages (a refused one shows its reason
         // where the Confirm button would be, never a Confirm under an error).
+        if (phone && onItsOwnDay(date)) { clearLanding(w); setMovePreview(null); setMoveErr(ownDayWords()); return }
         if (phone) setMovePreview(previewAt(date) ? date : null)
         else commitMove(date)
       },
-      onCancel: () => { clearLanding(w); setMoveSel(null); setMovePreview(null) },
+      onCancel: () => { clearLanding(w); setMoveSel(null); setMovePreview(null); setMoveErr('') },
+      leftEdge: moveLeftEdge,
+      isGrid: inGrid,
     })
     return () => { clearLanding(w); cleanup() }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1269,7 +1297,9 @@ export function Matrix() {
       dateAt: eventMoveDateAt,
       onHover: date => previewEventAt(date),
       onPick: date => { if (phone) setEventMovePreview(previewEventAt(date) ? date : null); else commitEventMove(date) },
-      onCancel: () => { clearLanding(w); setEventMoveSel(null); setEventMovePreview(null) },
+      onCancel: () => { clearLanding(w); setEventMoveSel(null); setEventMovePreview(null); setEventMoveErr('') },
+      leftEdge: moveLeftEdge,
+      isGrid: inGrid,
     })
     return () => { clearLanding(w); cleanup() }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -3512,7 +3542,7 @@ export function Matrix() {
 
   return (
     <div className="stage">
-      <div className="card">
+      <div className="card" ref={cardRef}>
         {/* ONE compact row (owner, 5 Sep 26 — "all in 1 row to minimise row
             height space"): Manning · ⚙ · Rearrange on the left, OIL tracker on
             the right. The old "JAN – DEC 26 · 365 days · 50 people" line was
@@ -4461,6 +4491,17 @@ export function Matrix() {
           decide={canDecide(period.stage, role) && !openFreeHalf && isBiddable(grid[open.id]?.[open.date])
             ? { state: stateOf(states, open.id, open.date), movedFrom: movedShown ? shiftedFrom(states, open.id, open.date) : undefined }
             : null}
+          /* ONE CHIP, ONE MOVE (owner, D262, 27 Sep 26): the sheet's Move picks the chip up into the grid's own move
+             mode — the drag-selection's, so a single chip and a block move by one machine and one set of landing
+             rules (moveCells: refused whole with its reason, the dotted mark once bidding is closed, lands
+             undecided). A day that holds nothing this screen may move says so on the sheet instead. */
+          onMove={() => {
+            const cells = [{ personId: open.id, date: open.date }]
+            if (!movableCells(cells).length) return 'There is nothing here that can be moved.'
+            setSel(null)
+            close()
+            setMoveSel({ people: [open.id], from: open.date, to: open.date, cells })
+          }}
           creditShown={openAnyCredit
             ? {
               code: openAnyCredit.code,
@@ -4535,10 +4576,10 @@ export function Matrix() {
       {/* THE SEPARATE DECISION SHEET IS GONE (owner, 21 Sep 26). It opened
           only once bidding had closed, so the same input answered to different
           controls depending on which day of the cycle you clicked it — and
-          moving one man's one day needed a drag-select. Its three buttons and
-          its move field now live on the ONE day window above, in every stage;
-          `DecisionSheet` itself is kept exported for the tests that pin its
-          wording, but nothing in the grid opens it any more. */}
+          moving one man's one day needed a drag-select. Its three buttons now
+          live on the ONE day window above, in every stage, and its Move is the
+          grid's own move mode (D262, 27 Sep 26), which retired its date box;
+          the unmounted `DecisionSheet` went with it. */}
     </div>
   )
 }

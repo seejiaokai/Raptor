@@ -2357,8 +2357,14 @@ export function clearCells(cells: { personId: string; date: string }[]): RangeWr
            (the admin's own records; `awardsIn` names them in the confirm first). */
         const reqs = clearRequestsAt(c.personId, c.date, true)
         if (state.role === 'admin' && canDecide(state.period.stage, state.role) && warEditable(c.personId, c.date)) approved.push({ ...c, iid: m.id })
-        else if (reqs) written++
-        else skipped++
+        else {
+          if (reqs) written++
+          /* A LEAVE THE WAR APPROVED THAT STAYS IS SAID (Fable's D260 scenarios, S18): on a published war it is finished
+             paperwork, and when the award or bid beside it went the day counted only as "deleted" — the sheet closed as
+             though the leave had gone too. Leave filed on the Inputs page staying is by design and counts as nothing
+             (W3-F3). */
+          if (!reqs || m.lw) skipped++
+        }
       } else rest.push(c)
     }
     const r = writeMany(rest, '')

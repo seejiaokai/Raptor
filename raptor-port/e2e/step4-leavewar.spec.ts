@@ -18,7 +18,7 @@
    The file name ends in `leavewar.spec.ts` so the lw-desktop / lw-phone
    projects in playwright.config.ts pick it up. */
 import { expect, test, type Page } from '@playwright/test'
-import { go, gridAtRest, login, lwRole, lwView } from './app'
+import { go, gridAtRest, login, lwRole, lwView, moveOneTo } from './app'
 
 const isPhone = () => test.info().project.name === 'lw-phone'
 const desktopOnly = () => test.skip(isPhone(), 'mouse drag-select / desktop-only path')
@@ -465,8 +465,7 @@ test('move an approved leave after bidding closes: dotted moved mark, undo, redo
   await expect(chip(page, P, from)).toHaveClass(/appr/)
 
   await tap(page, P, from)
-  await page.locator('[data-testid="shift-date"]').fill(to)
-  await page.locator('[data-testid="decide-shift"]').click()
+  await moveOneTo(page, `cell-${P}-${to}`)                   // D262: Move picks the chip up; a click lands it
   await expect(chip(page, P, from)).toHaveCount(0)
   await expect(chip(page, P, to)).toHaveClass(/appr/)
   await expect(chip(page, P, to)).toHaveClass(/moved/)

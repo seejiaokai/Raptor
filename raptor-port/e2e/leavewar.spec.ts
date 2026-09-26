@@ -20,7 +20,7 @@
    unchanged because the map preserves seat and band and the mapped
    people's own SXO flags match the seed's. */
 import { expect, test, type Locator, type Page } from '@playwright/test'
-import { go, gridAtRest, lwRole, lwView, openLeaveWar, raptorRole, scrollTo } from './app'
+import { go, gridAtRest, lwRole, lwView, moveOneTo, openLeaveWar, raptorRole, scrollTo } from './app'
 
 const CAL_MONTHS = [
   'JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
@@ -813,8 +813,7 @@ test('the Raptor mark is painted, and an ordinary bid carries none', async ({ pa
   await lwRole(page, 'admin')
   await page.locator('[data-testid="stage-advance"]').click()
   await page.locator('[data-testid="cell-slash-2026-02-03"]').click()
-  await page.locator('[data-testid="shift-date"]').fill('2026-02-06')
-  await page.locator('[data-testid="decide-shift"]').click()
+  await moveOneTo(page, 'cell-slash-2026-02-06')           // D262: Move picks the chip up; a click lands it
   const moved = await edge('[data-testid="cell-slash-2026-02-06"] .c')
   expect(parseFloat(moved.width)).toBeGreaterThan(0)
   expect(moved.style).toBe('dotted')
@@ -852,8 +851,7 @@ test('an admin moves a bid to another date, and it lands pending there', async (
   await lwRole(page, 'admin')          // advancing the cycle is admin-only (27 Aug 26)
   await page.locator('[data-testid="stage-advance"]').click()
   await page.locator('[data-testid="cell-bruise-2026-01-23"]').click()
-  await page.locator('[data-testid="shift-date"]').fill('2026-01-30')
-  await page.locator('[data-testid="decide-shift"]').click()
+  await moveOneTo(page, 'cell-bruise-2026-01-30')          // D262: Move picks the chip up; a click lands it
 
   await expect(page.locator('[data-testid="cell-bruise-2026-01-23"] .c')).toHaveCount(0)
   const moved = page.locator('[data-testid="cell-bruise-2026-01-30"] .c')

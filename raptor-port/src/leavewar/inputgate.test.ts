@@ -395,6 +395,21 @@ describe('bulk Delete and Approve over mixed days (W3-F3, AB7)', () => {
     expect(rowsOf('ammo', 'LL').some((r: any) => r.lw)).toBe(false)     // the war's own leave went
     expect(rowsOf('ammo', 'LL').some((r: any) => r.date === 'Feb 19')).toBe(true)   // the Inputs page's stayed
   })
+  /* …AND ON A PUBLISHED WAR, WHERE THE APPROVED LEAVE IS FINISHED PAPERWORK (Fable's D260 scenarios, S18): the award
+     beside it goes, the leave stays — and the count must say the leave stayed, or the sheet closes as though the whole
+     day had been deleted. Leave filed on the Inputs page staying is by design and counted as nothing (W3-F3, above). */
+  it('on a published war Delete takes the award and COUNTS the approved leave it could not take', () => {
+    setRole('admin')
+    setCells([{ personId: 'ammo', date: '2026-02-18' }], 'LL')
+    advanceStage()
+    setBidStates([{ personId: 'ammo', date: '2026-02-18' }], 'approved')
+    expect(setManualCredit('ammo', '2026-02-18', 'FO', {})).toBeNull()
+    advanceStage()                                      // published
+    const r = clearCells([{ personId: 'ammo', date: '2026-02-18' }])
+    expect(recsAt('ammo', '2026-02-18').some((x: any) => x.kind === 'credit' && x.oil === 'manual')).toBe(false)
+    expect(rowsOf('ammo', 'LL').some((x: any) => x.lw)).toBe(true)       // the published leave stays
+    expect(r).toEqual({ written: 1, skipped: 1 })
+  })
   it('Approve does not count a leave that was already approved as a decision', () => {
     setRole('admin')
     setCells([{ personId: 'ammo', date: '2026-02-16' }, { personId: 'ammo', date: '2026-02-17' }], 'LL')
