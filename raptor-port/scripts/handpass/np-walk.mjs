@@ -498,7 +498,8 @@ async function qualsRow(page, view, cs) {
     if (archOk !== true || !(await page.evaluate(() => !!window.PEOPLE.rocky.archived))) return `not archived: ${archOk}`
     await openApv('Hex')
     const note = await text(page, '#apvNote'), offered = (await page.$$eval('#apvPid option', os => os.map(o => o.textContent))).includes('Hex')
-    return note.startsWith('He typed Hex — Hex (archived) already has an account (hex)') && !/restore|Pick them/i.test(note) && !offered ? true : `${note} / offered ${offered}`
+    return note.startsWith('He typed Hex — Hex (archived) already has an account (hex)') && !/to link them|Pick them/i.test(note)
+      && /restore them on the Quals page if they are back\./.test(note) && !offered ? true : `${note} / offered ${offered}`
   })
   await page.click('#apvCancel')
   { const id = await reqId('Hex'); if (id) { await page.click(`[data-decline="${id}"]`); await page.waitForTimeout(200) } }
@@ -509,6 +510,16 @@ async function qualsRow(page, view, cs) {
     return v === 'rocky' && shown === 'Hex' ? true : `value "${v}", shows "${shown}"`
   })
   await page.click('#accEdCancel')
+  /* Astra's second fix check: the typed callsign is the SIGNED-IN admin's own — his row is locked to him */
+  await signUp(page, 'saber.new@mail', { cs: 'Saber', seat: 'FCP', cat: 'C' })
+  await signIn(page, 'ad', 'a'); await go(page, 'admin')
+  await step(page, 'd-FC3-own-account', '"Saber" asked while Saber (ad) is the admin looking: the note says another admin must change his own account — the row he cannot open is not named as his door', async () => {
+    await openApv('Saber')
+    const note = await text(page, '#apvNote'), locked = await page.locator('[data-acct="acad"] .acc-tap').isDisabled()
+    return /It is your own account: if it is you on a new sign-in, another admin must change its sign-in under Accounts/.test(note) && locked ? true : `${note} / row locked ${locked}`
+  })
+  await page.click('#apvCancel')
+  { const id = await reqId('Saber'); if (id) { await page.click(`[data-decline="${id}"]`); await page.waitForTimeout(200) } }
 
   W.errors.forEach(e => errorsAll.push(e))
   await W.browser.close()

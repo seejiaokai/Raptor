@@ -127,12 +127,85 @@ world on the same build: `acc-walk.mjs` 38/38, `acc-walk2.mjs` 42/42, 0 errors**
 `[ACCOUNTS]` merge. Results and the approve pictures: `acc-rewalk/` (the other pictures were looked at and not kept —
 they repeat the `[ACCOUNTS]` evidence, 35 MB).
 
-## 6. The two code reads (Fable 5.1 and Astra, blind to each other, with this sheet in hand)
-Both reports exist: `2026-09-26-accounts-new-person-fable-read.md` (FIX FIRST — 1 finding + 3 record items) and
-`2026-09-26-accounts-new-person-astra-read.md` (FIX FIRST — 4 findings). Each is dispositioned here when fixed (next chat).
+## 6. The code reads (Fable 5.1 and Astra, blind to each other, with this sheet in hand)
+
+**Round 1 — the build (`09cc00e3`):** `2026-09-26-accounts-new-person-fable-read.md` (FIX FIRST — 1 finding + 3 record
+items) and `…-astra-read.md` (FIX FIRST — 4 findings). Fixed in `67832f4c` (code, tests, walk scripts) and `c0c1e213`
+(the plan, documents only):
+
+| Finding | Reproduced | On `main`? | Disposition |
+|---|---|---|---|
+| Fable 1 — approving, a callsign whose person already HAS an account: "Pick them" of a man the picker cannot offer | yes — red test (NP5, Ranger); the first walk's S8 had pinned the wrong note | new in this build (the note is new) | **fixed**, red first; the note says he has an account and names it (the wording departs from Fable's on purpose — it does not claim the asker is someone else; Fable's fix check judged the caution right) |
+| Astra 1 — the Add form keeps the half not in view after an add | yes — two red tests, both directions | new | **fixed**, red first (`resetAddForm`); walk `d-A1-form-clears` |
+| Astra 2 — personnel keep an internal CAT list; a CAT rides through Personnel | yes — red unit test + three red form tests | new (`catsFor` moved here) | **fixed**, red first; walk `d-S9-seatcat`, `d-A2-cat-personnel` |
+| Astra 3 — the sheet called walk2 the fixed build; no break tests or final gates | yes (a record gap) | — | **fixed**: §5 corrected, walk3 on the final code, §7, §9 |
+| Astra 4 — `acc-walk` / `acc-walk2` abort at Approve | yes | new (Approve's default changed) | **fixed**; re-run 38/38, 42/42 |
+| Fable 2 — three roll-call rows narrowed without a §8 line | yes (a record gap) | — | **fixed** by walking them: walk3 `13`, `20`, `21`, `55` |
+| Fable 3 — the plan says the ui-contracts passages were MOVED; they were kept in place | yes | — | **fixed**: the plan corrected (`c0c1e213`) — two kept word for word with the ruling named, the third a one-sentence correction, meaning kept |
+| Fable 4 — `mk-new-person.mjs` fills `#accFull` | yes | — | **fixed**: a header says it is a record, not a tool to re-run |
+
+**Round 2 — the fix check of `67832f4c`** (brief `docs/superpowers/briefs/2026-09-26-accounts-new-person-fixcheck-brief.md`):
+`…-fable-fixcheck.md` (FIX FIRST — 1 + 2 low) and `…-astra-fixcheck.md` (FIX FIRST — 2). **Both, blind to each other,
+found the same gap** — the strongest possible pointer. Fixed in `20e3d4f4`:
+
+| Finding | Reproduced | On `main`? | Disposition |
+|---|---|---|---|
+| Both #1 — a person ARCHIVED who keeps his account got "restore them to link them": it could never end in a link, and Restore wipes his posting-out window | yes — red test (Hex archived, callsign and bare id); walk `d-FC1` archives Hex through Quals' own ✕ | older (`107943cd`); reachable with NEW data (posting out archives a man and keeps his account), so not D56 | **fixed**, red first: the account is checked first, "(archived)" shown |
+| Fable #2 — the has-an-account note gave only the someone-else way out | yes — the note had no door for "it is him on a new sign-in"; renaming his account's sign-in answers the request (`updateAccount`) | new in `67832f4c` | **fixed**: both ways out named; tests and walk carry the words |
+| Fable #3 — the archived, no-account note gave only Restore | yes | older | **fixed**: the someone-else sentence added; red test |
+| Astra #2 — an account's editor lost its archived person from its Callsign/Name picker (a blank "Pick…" over a hidden value) | yes — red test (jsdom's select reads '' with no matching option); walk `d-FC2` | **on `main` since `[ACCOUNTS]`** | **fixed** here (roll-call row 12, the account editor, is this build's surface): `linkablePeople(keep)` offers the account's own person first |
+
+Every round-2 fix was reproduced red first and walked (walk3 57/57). **Round 3** — a narrow read of `20e3d4f4` alone by
+both (brief `…-fixcheck2-brief.md`), because its code was written by the builder and nobody else had read it (D67):
+see below.
 
 ## 7. Break tests
-*(filled after the reads — each wired surface broken once on purpose, a named test must go red)*
+
+Each wired surface broken ONCE on purpose, on the final code (`20e3d4f4`), in a scratch worktree (never the checkout
+the reviewers were reading), its test files run, the file restored byte for byte. Runner
+`scripts/handpass/np-breaks.mjs`; results `docs/img/handpass/2026-09-26-accounts-new-person/breaks.json`. **Every
+surface went red: 30 of 30.**
+
+| # | Surface (roll-call row) | The break | Red (a named test) |
+|---|---|---|---|
+| B1 | Sign-up: its four labelled fields (1) | the Initials label removed | NP4 "four labelled fields, the D222 label…" |
+| B2 | Sign-up: personnel have no CAT box (1) | the CAT box always drawn | NP4 "four labelled fields…", "the sign-up: Pilot + CAT C → Personnel → WSO…" |
+| B3 | Waiting screen + the waiting list's line (2, 6) | `requestSummary` returns '' | `requestSummary — one line…`, NP4 "D225: …the waiting screen reads what he gave", NP5 |
+| B4 | The bell: each admin's own seen, D227 (5) | `unseenRequests` ignores `seenBy` | 7 tests — `accounts.test` "lights for every admin until HE has seen the list…", NP6 |
+| B5 | The bell: the phone's category list does not count (5) | Admin page `shown` without "drilled" | NP6 "phone: the category list does NOT count…" |
+| B6 | The bell: the list on screen puts it out (5) | the Users panel's seen effect never runs | 5 NP6 tests |
+| B7 | The bell's order: access before a bug report (5) | the tap skips the access branch | NP6 "first in order: before a bug report" (+2) |
+| B8 | Approve → New person: the admin's corrections win (7) | approve uses the request's fields | NP5 "a callsign on no roster opens New person… the admin corrects…" |
+| B9 | Approve → On the roster: never pre-picked, D204 (8) | the matched person pre-picked | NP5 "…NEVER pre-picked…" |
+| B10 | Approve: someone who already has an account is said so (8) | the has-an-account note skipped | NP5 "a callsign whose person ALREADY has an account…" (+1) |
+| B11b | Add → New person with a sign-in: person AND account (10) | the account write dropped | `accounts.test` "person and account together, one account.addNew command…", NP1 "with a sign-in…" |
+| B12 | Add → New person, blank sign-in (11) | the roster-only add does nothing | 4 tests — `roster-add` NP1, `accounts-newperson` NP1 |
+| B13 | The Add form clears whole after an add (9–11) | `resetAddForm` keeps the roster pick | NP1 "a New person add clears the WHOLE form…" |
+| B14 | Seat → CAT: personnel hold none (1, 7, 10) | `catsFor` gives personnel a WSO's list | 4 tests (unit + the three forms) |
+| B15 | The words: "Callsign/Name" on the New person fields (7, 10) | the label reads "Callsign" | NP7 "every picker and label asks for a callsign or name…" |
+| B16 | Quals "+ Add person" → Admin → Users (14) | the button does nothing | NP1 "opens the add form on New person, every press…", `quals.test` NP1 |
+| B17 | Quals column head (15) | the head reads "Callsign" | 6 `quals.test` tests incl. NP7 |
+| B18 | Quals CSV head (16) | the CSV head reads "Callsign" | `quals.test` NP7 "…and so does the exported LoX" |
+| B19 | The one add: PID-01 (every add) | the taken-callsign check skipped | 8 tests — `roster-add` NP2, `accounts.test` |
+| B20 | The one add: personnel stored with no CAT (17) | personnel stored with CAT C | `roster-add` "personnel land with no CAT…" |
+| B21 | The one add: 14 letters, D226 | the limit raised to 20 | `roster-add` NP2 "D226: 15 letters is refused…", NP4 |
+| B22 | The one add: initials never required, D225 | a blank refused | 9 tests |
+| B23 | The sign-up never says whether a callsign is taken (1) | the roster check run on the sign-up | 4 `accounts.test` tests incl. "never tells a person not yet let in…" |
+| B24b | A person kept across a reload (26) | the roster not saved inside the command | `txn-wiring` "the person and the account are ONE group" |
+| B25 | Permissions: approve-with-New-person writes a Person (28) | its `COMMAND_OPS` row loses Person C | `perms.test` (§11 / the command's writes) |
+| B26 | A pending "open Users" never outlives a sign-in (14) | removed from the session reset | NP1 "a pending 'open Users' never outlives a sign-in" |
+| B27 | Only an admin adds a person (28) | the function's admin check removed | 2 tests (`roster-add` NP8, `accounts.test` NP8) |
+| B28 | The approve note checks the account BEFORE archived (8) | archived first again | NP5 "ARCHIVED and holding an account…" |
+| B29 | The account editor keeps its archived person (12) | `keep` after the archived filter again | "the account editor of an ARCHIVED person still shows his callsign…" |
+| B30 | Sign-up: the two selects are the boxes' size (1) — a browser test | the select's padding shrunk | e2e "the sign-up card's two selects are the boxes' size and edges" (desktop AND phone) |
+
+**Two first attempts that proved nothing, and were redone:** B11 (its text matched in two functions — skipped by the
+runner, not run) → B11b; **B24 stayed GREEN** — the reload break was run against unit files whose store has no storage
+behind it, so they cannot see a save; B24b runs it against `txn-wiring.test.ts`, which boots the real storage, and it
+went red. The Quals button's cursor (roll-call 14) was proved red first by the build's own walk (W1, e2e "leaves the
+cursor", `Received: ""`) and is not re-broken here. **Not broken, with the reason:** the crew lists, Inputs, search,
+the Leave War and the Tracker (rows 18–22) are not wired by this build — they read the roster live, as they always
+did; this build's wire into them is the one add writing the roster (B12, B19, B20, B24b) and they are walked (walk3).
 
 ## 8. What was NOT walked, and why
 - The guest view and the switched-off screen (roll-call 3): unchanged by this build; walked by `[ACCOUNTS]`.

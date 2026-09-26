@@ -4625,8 +4625,10 @@ The three category panels:
   archived, not ALL / ALL AVAIL) NEVER pre-picked (D204), the note naming the matched person by his callsign (one who
   already has an account — archived or not, the account is checked FIRST: says so, names that account's sign-in, says he
   can't be picked here and names both ways out: him on a new sign-in → change that account's sign-in under Accounts,
-  which answers the request; someone else → New person with another callsign or name — Fable's code read #1, both fix
-  checks #1; an archived one with no account: restore on Quals first, or New person if it is someone else), then
+  which answers the request (archived: "and restore them on the Quals page if they are back" — said, never done for
+  him, Restore wipes his posting-out window); the signed-in admin's OWN account → "another admin must change its
+  sign-in", his row being locked to him; someone else → New person with another callsign or name — Fable's code read
+  #1, both fix checks; an archived one with no account: restore on Quals first, or New person if it is someone else), then
   "Give access"; the role `#apvRole` either way; Cancel `#apvCancel` discards edits —
   the next Approve starts again from the request; within one open, each half keeps its entries; **Decline**
   `[data-decline]`), or "Nobody is waiting for access." (`#admNoWaiting`); **Accounts** (`#accList`, one

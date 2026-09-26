@@ -168,6 +168,15 @@ describe('NP5 — approving: On the roster | New person, filled from what he gav
     await click($(`[data-approve="${b.id}"]`))
     expect($('#apvNote').textContent).toBe(`He typed bane — that is Ranger, who already has an account (${bane.name}), ${ways}`)
   })
+  it("the typed callsign is the SIGNED-IN admin's own: the note says another admin must change it (Astra's second fix check)", async () => {
+    await signInAs('saber.new@mail'); ask('Saber')
+    await signInAs('ad', 'a')
+    await act(async () => { setPage('admin'); notify() })
+    await click($(`[data-approve="${ACCESS_REQS[0].id}"]`))
+    const note = $('#apvNote').textContent!
+    expect(note).toBe("He typed Saber — Saber already has an account (ad), so they can't be picked here. It is your own account: if it is you on a new sign-in, another admin must change its sign-in under Accounts — you can't change your own. If it is someone else, choose New person and give them another callsign or name.")
+    expect(($('[data-acct="acad"] .acc-tap') as HTMLButtonElement).disabled, 'his own row cannot be opened — the note must not send him there').toBe(true)
+  })
   it('ARCHIVED and holding an account: the account wins — never "restore to link", which could not work (both fix checks #1)', async () => {
     /* Hex (rocky) holds the seeded `hex` account; posting out archives a man and keeps his account */
     const was = (PEOPLE as any).rocky.archived
@@ -185,7 +194,9 @@ describe('NP5 — approving: On the roster | New person, filled from what he gav
         const note = $('#apvNote').textContent!
         expect(note.startsWith(typed), note).toBe(true)
         expect(note).toMatch(/already has an account \(hex\)/)
-        expect(note).not.toMatch(/restore|Pick them/i)
+        /* never "restore … to link" (it cannot link); the returning man's restore is said as a step after */
+        expect(note).not.toMatch(/to link them|Pick them/i)
+        expect(note).toMatch(/that answers this request, and restore them on the Quals page if they are back\./)
         await click($('#apvCancel'))
       }
     } finally { (PEOPLE as any).rocky.archived = was }

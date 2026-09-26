@@ -121,6 +121,8 @@ function PersonFields(p: { idp: string; np: NewPerson; onChange: (np: NewPerson)
    keeps his account, and "restore to link" could never end in a link (Fable's and Astra's
    fix checks #1 — restoring also wipes his posting-out window) */
 const SOMEONE_ELSE = 'If it is someone else, choose New person and give them another callsign or name.'
+/* the signed-in admin's OWN account — its row cannot be opened (another admin changes it) */
+const isOwnAccount = (a: Account) => !!(SESSION && SESSION.user === a.id) || (me() != null && a.pid === me())
 function rosterMatch(r: AccessRequest): { pid: string; note: string } | null {
   const hit = r.cs ? nameToId(r.cs) : undefined
   const p = hit && (PEOPLE as any)[hit]
@@ -128,7 +130,15 @@ function rosterMatch(r: AccessRequest): { pid: string; note: string } | null {
   const same = String(p.cs).toLowerCase() === r.cs.trim().toLowerCase()
   const who = `${p.cs}${p.archived ? ' (archived)' : ''}`
   const acct = accountOfPid(hit)
-  if (acct) return { pid: hit, note: `He typed ${r.cs} — ${same ? `${who} already has` : `that is ${who}, who already has`} an account (${acct.name}), so they can't be picked here. If it is them on a new sign-in, change that account's sign-in under Accounts — that answers this request. ${SOMEONE_ELSE}` }
+  if (acct) {
+    /* the "it is him" door, said so it can be used: his OWN account's row is locked to him
+       (Astra's second fix check), and an archived man who is back still needs restoring —
+       said, never done for him: Restore wipes his posting-out window (Fable's second) */
+    const him = isOwnAccount(acct)
+      ? "It is your own account: if it is you on a new sign-in, another admin must change its sign-in under Accounts — you can't change your own."
+      : `If it is them on a new sign-in, change that account's sign-in under Accounts — that answers this request${p.archived ? ', and restore them on the Quals page if they are back' : ''}.`
+    return { pid: hit, note: `He typed ${r.cs} — ${same ? `${who} already has` : `that is ${who}, who already has`} an account (${acct.name}), so they can't be picked here. ${him} ${SOMEONE_ELSE}` }
+  }
   if (p.archived) return { pid: hit, note: `He typed ${r.cs} — ${p.cs} is archived; restore them on the Quals page to link them. ${SOMEONE_ELSE}` }
   return { pid: hit, note: same ? `He typed ${r.cs} — ${p.cs} is on the roster. Pick them if this is them.`
     : `He typed ${r.cs} — that is ${p.cs}. Pick them if this is them.` }
@@ -197,7 +207,7 @@ function Waiting() {
 function AccountRow(p: { a: Account; editing: boolean; onEdit: () => void; onClose: () => void }) {
   const { a } = p
   const person = (PEOPLE as any)[a.pid]
-  const own = (SESSION && SESSION.user === a.id) || (me() != null && a.pid === me())
+  const own = isOwnAccount(a)
   const [name, setName] = useState(a.name)
   const [pid, setPid] = useState(a.pid)
   const [role, setRole] = useState<AccountRole>(a.role)
