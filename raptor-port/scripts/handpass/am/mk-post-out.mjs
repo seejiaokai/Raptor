@@ -41,14 +41,17 @@ async function step(name, fn) { try { await fn() } catch (e) { console.log('FAIL
 const toast = (page, text, warn) => page.evaluate(({ text, warn }) => { window.toast(text, warn ? 'warn' : undefined) }, { text, warn })
 
 /* ---------- 1 · The post-out sheet: WHICH posting is it? (D229, D283) ---------- */
+/* D294 (his look at the first drawing): four SHORT chips in his words, one line under them saying what the chosen
+   one does on the date */
 const OUTCOMES = `
-  <div class="bidsheet-row postout mk-out" style="flex-direction:column;align-items:stretch;gap:6px">
-    <span class="lab">What is this posting?</span>
-    <button class="pchip on" style="text-align:left">✓ Overseas to another squadron<br><span class="note">On the date: archived on Quals · account suspended. Back later: restore and enable.</span></button>
-    <button class="pchip" style="text-align:left">Leaving flying for good<br><span class="note">On the date: deleted — account and person. Old schedules show an empty seat.</span></button>
-    <button class="pchip" style="text-align:left">Another workplace, still flies with us<br><span class="note">On the date: becomes SANS. Stays on the roster and can sign in.</span></button>
-    <button class="pchip" disabled style="text-align:left;opacity:.45">Transfer to another squadron<br><span class="note">Comes with the shared database.</span></button>
-  </div>`
+  <div class="bidsheet-row postout mk-out" style="flex-wrap:wrap;gap:6px">
+    <span class="lab">Posting</span>
+    <button class="pchip on">✓ Overseas Sqn</button>
+    <button class="pchip">Fully delete</button>
+    <button class="pchip">SANS</button>
+    <button class="pchip" disabled style="opacity:.45" title="Comes with the shared database">Transfer to Sqn</button>
+  </div>
+  <div class="bidsheet-row postout mk-out"><span class="note">On the date: archived on Quals, account suspended.</span></div>`
 async function drawSheet(page) {
   await page.evaluate(html => {
     const chip = document.querySelector('[data-testid="po-archive"]'); if (!chip) throw new Error('no po-archive')
@@ -120,7 +123,9 @@ await step('3 back', async () => {
     tr.style.outline = '2px solid #3cc6e6'; tr.style.outlineOffset = '-2px'
     tr.scrollIntoView({ block: 'center' })
     const wrap = document.querySelector('.qwrap')
-    wrap.insertAdjacentHTML('beforebegin', `<div class="adm-note" style="margin:8px 0;padding:10px 12px;border:1px solid #3cc6e6;border-radius:10px;background:rgba(60,198,230,.08);color:#e8edf2;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+    /* D294 (3): the box lines up with the table's own left edge and width */
+    const wb = wrap.getBoundingClientRect(), pb = wrap.parentElement.getBoundingClientRect()
+    wrap.insertAdjacentHTML('beforebegin', `<div class="adm-note" style="box-sizing:border-box;margin:8px 0 8px ${Math.round(wb.left - pb.left)}px;width:${Math.round(wb.width)}px;padding:10px 12px;border:1px solid #3cc6e6;border-radius:10px;background:rgba(60,198,230,.08);color:#e8edf2;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
       <span><b>Hex is back.</b> His quals and CAT are as he left them — check them now.</span>
       <button class="abtn primary">Check Hex's quals</button><button class="abtn">Later</button></div>`)
   })
@@ -201,12 +206,20 @@ await step('6 names', async () => {
     document.querySelector('[data-approving]').scrollIntoView({ block: 'center' })
   })
   await snap(page, 'desktop-6a-approve-archived-name', '[data-approving]')
-  /* Restore while the name is in use: refused, with the reason */
+  /* D295: the archived man is renamed right there — on his archived row, and Restore offers it on the spot when his
+     callsign is taken */
   await go(page, 'quals')
   await page.click('#qArchToggle'); await page.waitForTimeout(250)
-  await page.evaluate(() => { const l = document.querySelector('[data-testid="qarchlist"]'); l && l.scrollIntoView({ block: 'center' }) })
-  await toast(page, 'Ace is taken on the roster — rename one of them before restoring', true)
-  await snap(page, 'desktop-6b-restore-refused')
+  await page.evaluate(() => {
+    const row = [...document.querySelectorAll('[data-testid^="qarchrow-"]')].find(r => /Ace/.test(r.textContent)); if (!row) throw new Error('no Ace row')
+    row.insertAdjacentHTML('afterend', `<div class="mk-rename" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 0 10px;border-bottom:1px solid #262b33">
+      <span style="color:#f0c36d;font-size:13px;flex:1 1 100%">Ace is taken on the roster — give him another callsign to restore him.</span>
+      <input value="Ace 2" style="background:#0b0d10;border:1px solid #3cc6e6;border-radius:8px;color:#e8edf2;padding:6px 10px;font:14px system-ui;width:140px">
+      <button class="abtn primary">Restore as Ace 2</button><button class="abtn">Cancel</button></div>`)
+    const rs = row.querySelector('.qrestore'); if (rs) rs.insertAdjacentHTML('beforebegin', '<button class="abtn" style="margin-right:6px">Rename</button>')
+    row.parentElement.scrollIntoView({ block: 'center' })
+  })
+  await snap(page, 'desktop-6b-restore-rename', '#qArchive')
 })
 
 /* ---------- 7 · The admin's member view: tap the badge (D292) ---------- */

@@ -299,7 +299,7 @@ person move between squadrons with data intact.
 - **D288 (27 Sep 26) — communities and guest flyers:** callsigns unique within a community (the F-15 one), not
   app-wide; a future F-16 community reuses them, and its men may fly with us as guests (tagged "Viper · F-16",
   picked from a guest list, never by typing a bare callsign). **D289:** a community = the squadrons of one aircraft
-  type; a guest always marked — on a puck a small colour mark, never text that hides the callsign (mock-up first).
+  type; a guest always marked — on a puck an orange corner (D296, option A of `docs/mock/post-out.html` §8).
 
 ### [TRK-ATTEMPTS] Keep a student's attempt history — OPEN (small, feature)
 Remember a student's *earlier* tries at an event, not just the latest grade. More a
@@ -1201,7 +1201,7 @@ everything that is his goes too (inputs, Leave War leave and OIL — nothing lef
 takes him off (pending on a published day); asks twice, cannot be undone. **Underneath — D290 "hidden mark":** his
 row is kept, marked deleted and invisible everywhere (the data model's tombstone), never erased. **And names — D286:** an archived man's callsign may go to a new person (today it is refused); restoring him while it
 is in use needs one of the two renamed first (Restore says so, renames nobody). Update `roster-add.ts` (its PID-01
-header and test), `ID_BY_CS` (points at the roster's man). **Mock-up:** `raptor-port/docs/mock/post-out.html` (+ its Artifact), 27 Sep 26 — his approval awaited. **With it — D292:** the admin's member view back (tap the badge: "SABER · ADMIN" ↔ "MEMBER"; perms read the role in
+header and test), `ID_BY_CS` (points at the roster's man). **Mock-up:** `raptor-port/docs/mock/post-out.html` (+ its Artifact), 27 Sep 26 — his first look: D294 (short chips "Overseas Sqn" · "Fully delete" · "SANS" · "Transfer to Sqn"), D295 (rename an archived man directly), D296 (guest mark A). **With it — D292:** the admin's member view back (tap the badge: "SABER · ADMIN" ↔ "MEMBER"; perms read the role in
 force). **Place — D291:** straight after `[ACCOUNTS-NEW-PERSON]` merges, before `[DRAFT-PENDING]`.
 ### [LOOK-435] His inputs from the look at PR #435 — the order is D173 (25 Sep 26)
 **Step 1 DONE 25 Sep 26:** D114's FULL check — evidence `raptor-port/docs/handpass/2026-09-25-amendment-batch.md` §9; two
