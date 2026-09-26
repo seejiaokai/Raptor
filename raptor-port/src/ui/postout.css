@@ -11,6 +11,9 @@
 .qarch-rename input{background:var(--bg,#0b0d10);border:1px solid var(--accent,#3cc6e6);border-radius:8px;color:var(--ink,#e8edf2);padding:6px 10px;font:inherit;width:160px;max-width:100%}
 .qarch-rename-err{flex:1 1 100%;color:#f0c36d;font-size:13px}
 .qarchrow .qrename{margin-right:6px}
+/* the row must WRAP for the box to take its own line under it — without it the box sat beside the row and ran off a
+   phone's edge ("Restore as Hex 2" past the right of a 390px screen — found by the walk, 27 Sep 26) */
+.qarchrow{flex-wrap:wrap}
 
 /* the Leave War's post-out sheets: a Delete armed by its first tap (D287 (3)) */
 .dchip.po.del-armed{background:rgba(240,85,95,.18);color:#fff;border-color:#f0555f}
