@@ -29,7 +29,10 @@ the later merge keeps both (D78).
 - **The check (FULL):** evidence `raptor-port/docs/handpass/2026-09-27-d260-d262.md` — Fable designed the scenarios first;
   walked at both widths (a real touch phone over CDP); 27 wires broken on purpose, each turns a named test red; Fable's and
   Astra's blind final reads — nine findings, eight fixed red first, one left with its reason (§8); a re-walk of every fix
-  (§10); the gates (§9). His look card is §11, with one question: `[LW-MOVE-TAPLIST-ASK]`.
+  (§10); the final gates all green (§9). His look card is §11, with one question: `[LW-MOVE-TAPLIST-ASK]`.
+- **Carries the five-flags chat's `[LW-MOVE-CI-RED]` test fix** (its commit `11f26903`, cherry-picked here as `3bf23e18`,
+  tests only): three older Leave War Move tests now wait for the fill before their second drag — the GitHub failure this
+  PR met. The same change is on `claude/five-flags-batch-continue-2cfa70`; whichever merges second meets it as identical.
 - **Files this build changed that the post-out chat (`claude/post-out-outcomes`) will meet at its merge** (it asked, per
   the owner's D302 — parallel chats message each other before changing a shared file): `BidPicker.tsx` (Move → `onMove`,
   Clear's award ask, `AwardSheet`, `DecisionSheet` removed), `SelectSheet.tsx` (the Delete / Move row only), `store.ts`
@@ -128,9 +131,9 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 27 Sep 26, `claude/absence-record-d147-af6a50` (the final code of the absence-record
-re-test), one run under the PC lock on a quiet PC (`raptor-port/docs/handpass/2026-09-26-absence.md` §9): unit
-**6274 / 6274** (388 files) · build clean · tfin **728 / 0** · e2e **474 passed**, 48 skipped · smoke **443 / 0** ·
+The latest counts watched — 27 Sep 26, `claude/absence-record-d147-af6a50` (D260–D262 built on the absence-record
+re-test, the reads' fixes in), one run under the PC lock (`raptor-port/docs/handpass/2026-09-27-d260-d262.md` §9): unit
+**6335 / 6335** (393 files) · build clean · tfin **728 / 0** · e2e **474 passed**, 48 skipped · smoke **443 / 0** ·
 rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.
