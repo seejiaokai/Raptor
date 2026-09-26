@@ -57,9 +57,11 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
    its own small branch and check).
 2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
 3. **Development as normal — [HUMAN-RETEST]**'s remaining three, in HIS order (D147): the absence record TOGETHER with
-   **[S4-HUNT-REST]** (its ground IS the absence record), then change-recording (with [UNDO-ROSTER-SETTINGS] and D148),
-   then the Leave War links LAST (with the 7 Sep phone check). Then "after the hunt" (21 Sep 26): [PUB-UNAVAIL] →
-   [LW-LOCKMARK] → [LW-WEEKDAY-WORK] (talk to him before building any of it).
+   [S4-HUNT-REST] — **WALKED 26 Sep 26** on `claude/absence-record-d147-af6a50` (its FULL check closing there; his look,
+   its questions [ABSENCE-ASK] and "merge live" next) — then change-recording (with [UNDO-ROSTER-SETTINGS] and D148),
+   then the Leave War links LAST (with the 7 Sep phone check). Then "after the hunt" (21 Sep 26): [LW-LOCKMARK] →
+   [LW-WEEKDAY-WORK] (talk to him before building any of it) — its first, the published day's unavailable list, was
+   closed by the same re-test (built by [LEAVE-LATE-PUBLISHED]; archived).
 4. **About a month before the database (D203) — ONE batch, done last so it is done once:** **[DB-READINESS]**, with
    [OIL-AWARD-IS-A-GRANT] and [OIL-EARNED-VS-GRANTED] (D147) and the small OIL follow-ups below.
 5. **When Manfred is ready — [DB-STEP]:** the data model to him, then the one adapter to his tables; the stack
@@ -73,7 +75,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 [OIL-PERSONAL-PLACEHOLDER] (FULL tier), [CROWD-SIM-BRIEF] (WALK tier), [OIL-RELINK-XWEEK].
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
-first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The background-command guard — [BG-GUARD-FALSE] (small; tooling). The Tracker — [TRK-RETEST-NOTES] and
+first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only), [LW-ISO-DATES] and [LW-MOVE-BENEATH] (both low, from the
+absence-record re-test); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The background-command guard — [BG-GUARD-FALSE] (small; tooling). The Tracker — [TRK-RETEST-NOTES] and
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SESSION-PICK] (low, the next Tracker change), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — being built on `claude/tracker-palette`), [TRK-FLEXBAR-INK] (a question for him, on that branch's look card),
 [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
@@ -319,6 +322,13 @@ War links LAST, with the 7 Sep phone check folded in.
 `[AMEND-PHONE-APPROVER]`, `[AMEND-TEMPLATE-PUBLISHED]`, `[AMEND-NYS-WORDING]`, `[AMEND-REISSUE-DOOR]`,
 `[AMEND-LOAD-FILING]`). The older-amendment unpublish ("BUG 1") was walked three deep and has not come back. Next
 here, in his order (D147): the absence record with [S4-HUNT-REST], then change-recording, then the Leave War links.
+**THE ABSENCE RECORD PART — WALKED 26 Sep 26** on `claude/absence-record-d147-af6a50`, together with [S4-HUNT-REST]
+(all seven of its grounds) and the published day's unavailable list: a host walk and five walkers at both widths, every
+defect reproduced and fixed red first (evidence `raptor-port/docs/handpass/2026-09-26-absence.md`; plan
+`raptor-port/docs/superpowers/plans/2026-09-26-absence-retest-plan.md`). Its questions for him are [ABSENCE-ASK]; what
+it filed is [LW-ISO-DATES], [LW-MOVE-BENEATH] and a line in [AMEND-SMALL-SEEN] item 6. It closes with the final code
+reads, his look and his "merge live". **Next here: change-recording** (with [UNDO-ROSTER-SETTINGS] and D148), then the
+Leave War links.
 **Added 24 Sep 26 (the spring clean, from `HANDOFF.md` §Open as Fable classified it):** the amendment walk includes
 unpublishing an OLDER amendment — the 11 Sep review's "BUG 1" (the day left contradictory) looks dissolved by the
 supersede-never-retract rebuild (`unpublishAL` is gone), which only a walk can confirm; and the Leave War half of
@@ -514,7 +524,7 @@ seam the house rules name. [OIL-AWARD-ADD] adds a fourth reader of it rather tha
 **The shape, if it is ever done:** awards become ledger entries; the Leave War DERIVES the FO/HO
 contribution from the ledger on read, exactly the way an absence is derived from the Inputs page;
 the three cell editors become one ledger edit; a one-time conversion of stored hand-typed credits
-and of the demo seed. **Priority: after the bug hunt, and below [PUB-UNAVAIL] — it is tidiness with
+and of the demo seed. **Priority: after the bug hunt, and below [PUB-UNAVAIL] (closed 26 Sep 26) — it is tidiness with
 a real risk attached, not a hole in the paperwork.**
 **ADDED 26 Sep 26 by `[ACCOUNTS]` (D200 (2), Astra's plan read R1-8): a hand-typed award must also keep WHO ENTERED IT
 AND WHEN** — the signed-in person (by id, drawn by his live callsign) and the time, stamped by the store from the session,
@@ -671,33 +681,13 @@ LOGIN page: the sign-in form had not rendered before the fill timed out. Run on 
 six seconds. Same cause, same shape — a fixed wall-clock wait on a loaded box — so the fix is the
 same one, and it belongs to the Leave War e2e suite rather than to any branch.
 
-### [S4-HUNT-REST] The bug hunt's untouched ground — about three quarters of it (owner, 21 Sep 26)
-The branch turned into a long detour through the rules and the five items, so most of the hunt Fable
-and Codex planned (eight batches) has never been run. The owner listed what is still untouched, and
-this is his order. **Realistically two or three sessions.** **Place (D147, 24 Sep 26):** walked TOGETHER with the
-absence-record re-test of [HUMAN-RETEST], straight after the amendment system — one pass, since this ground IS the
-absence record.
-1. **The Inputs page calendar, by DRAG.** It has 43 tests of its own behaviour, but the clash rules
-   have never been tested through the drag route — dragging leave onto a pending bid, onto other
-   leave at overlapping times, onto a day someone is recorded working. A door people use daily.
-2. **The medical dialog's cascade** — a medical laid over existing leave and over other medicals:
-   how many pieces it mints, whether ONE undo puts it all back, whether cancelling leaves a
-   half-edit behind.
-3. **Bulk gestures by real drag** — select a block, then fill / approve / delete / move it, and
-   whether the "N written, M skipped" message tells the truth.
-4. **Switching wars with a sheet open**, and undo after switching.
-5. **Storage faults** — a save that fails halfway: does the app say so, and does a retry land the
-   WHOLE thing?
-6. **Phone, by finger** — drag-select and the two-step move at phone width, and a day carrying
-   eight records.
-7. **Figures on days with several records** — four records on one day, and whether the manning count
-   removes the man ONCE rather than twice.
-
 ### [BACKLOG-ORDER] The backlog proper, in the owner's order (21 Sep 26)
 After the hunt. Recorded here because he gave the ORDER, which the individual items do not carry:
 1. **[PUB-UNAVAIL]** — a published day's "not available" list changes silently. File a new absence
    over an already-published day and that day's list changes with no amendment, no re-sign and no
    line in the history. An audit hole on published paperwork; **the next one he would fix**.
+   **CLOSED 26 Sep 26** — built by [LEAVE-LATE-PUBLISHED] (D177–D179), walked correct by the absence-record re-test
+   (H1); the item is archived.
 2. **[LW-LOCKMARK] / the day-vs-record lock** — the grid locks by DAY, not by RECORD. The free-half
    fix works around this rather than fixing it. Worth doing once, properly.
 3. **[LW-WEEKDAY-WORK] — the Leave War cannot see ordinary weekday work at all.** Work only reaches
@@ -720,11 +710,6 @@ Matrix `raptorOwns` checks with per-contribution predicates, open the remarks sh
 `sourceOf`/`raptorOwns` and the synthesised `source`. Also open: a publish → undo → publish → undo → redo
 refusal ("an earlier undone change touches the same thing") that exists on `main` too (found by the step-4
 scenario tester) — the global undo timeline's own item.
-
-### [PUB-UNAVAIL] New absence silently changes a published day's Unavailable list — NEXT AFTER step 4
-A new absence covering an already-published day changes that day's issued Unavailable list with no
-amendment, no re-sign, no history line (`html.ts:1515` reads live inputs; the filing fingerprint
-compares `acc` only). Owner (19 Sep 26): fix as its own item straight after step 4. Context: design §13.2.
 
 ### [LEAVE-YEAR] Yearly leave balances and carry-over — OPEN (owner, 19 Sep 26: "we will do this next time")
 Today each person has ONE running balance per counter; leave on 1 Jan simply comes off it, and a new
@@ -1162,7 +1147,9 @@ None breaks an amendment rule; each is a line to fix or ask about, from the walk
    over the first sign-off pill of the leftmost day.
 5. **AL7 and AL8** are the same orange; the register names no colour past AL7 (ask him if it matters).
 6. **Leave War, phone:** a man's figure sheet sends the grid back to 1 January, and it stays there after the sheet
-   closes (desktop keeps its place).
+   closes (desktop keeps its place). **Its sharper form (the absence-record re-test, W4, 26 Sep 26):** for a late joiner
+   or a posted-out man, the jump takes his ROW off the screen — in January he is not in the squadron, so the row the
+   admin was working on is simply gone (`raptor-port/docs/handpass/parts/2026-09-26-absence-w4.md`, the F3 note).
 7. **Leave War bid sheet:** placing an LL bid on a weekend asks "That takes Fable to -1 ANNUAL", though a weekend LL
    charges nothing (his figure stays 0).
 8. **A phone drag-off** removes a puck silently; right-click says "Fable removed".
@@ -1331,3 +1318,38 @@ created", and it removes the OTHER day's row (`html.ts accCtl`); a label such as
 Unavailable → deleted" — Fable's D176 read F2; the name must come from the edit log's own "Input removed — …" line
 (`removeInput` writes it) or a frozen name. D175's own sentence is in every door. **Place:** low, with the one changes
 window (`[DRAFT-PENDING]`) or any time.
+
+### [LW-ISO-DATES] Three Leave War places print the raw machine date — low (the absence-record re-test, W4-2, 26 Sep 26)
+The bid sheet's header and its PI / PO buttons ("Ranger 2026-07-17", "Post in from 2026-08-10"), the selection sheet's
+header for ONE day ("Saint 2026-08-06 · 1 day" — a two-day one reads "6 Aug 26 – 7 Aug 26") and the move banner's refusal
+("That lands on 2026-08-12 which is already booked") print the stored date; the tap list beside them reads "Sat 18 Jul".
+The day-first date voice everywhere else (`raptor-port/docs/ui-contracts.md`). **Build:** one wording batch over every
+Leave War sheet together, with their tests (many tests pin these strings). Evidence
+`raptor-port/docs/handpass/parts/2026-09-26-absence-w4.md` §W4-2. **Place:** low, any time; not his ruling.
+
+### [LW-MOVE-BENEATH] A bulk Move leaves behind a bid that shares its day with leave filed on the Inputs page — low (W3-F3, 26 Sep 26)
+Found by the absence-record re-test's war walker: Ghost has a morning of leave filed on the Inputs page and an afternoon
+bid beside it; a dragged block over that day, then Move…, says "move 2 entries" and leaves his afternoon bid where it
+was. Its Delete half is FIXED on the re-test's branch (the bid beneath goes, the filed leave stays — `store.ts
+clearRequestsAt`); Move is not the same fix, because the filed leave STAYS (it is the Inputs page's) while the bid would
+travel alone, and where it lands beside another day's records is a design question (the move lands all-or-nothing on
+the TOP record today). **Build:** decide whether the bid travels alone (landing only on a day whose same half is free)
+or the whole day is refused with a sentence naming the filed leave; then red first. Evidence
+`raptor-port/docs/handpass/parts/2026-09-26-absence-w3.md` §W3-F3. **Place:** low; with [LW-LOCKMARK] (the lock by day
+vs by record is the same root).
+
+### [ABSENCE-ASK] Three questions for him from the absence-record re-test (26 Sep 26)
+Put to him with his look at the re-test (its look card, `raptor-port/docs/handpass/2026-09-26-absence.md` §12):
+1. **An OIL award under Clear and bulk Delete (AB1, AB2).** The bid sheet's Clear on a day holding an award removes the
+   award, and a dragged block's Delete removes every award in it — no word in either, and the man's OIL drops. An award
+   has its own Remove (N11: an award is the admin's). An existing test pins Clear removing the award as MEANT, so which
+   is right is his: (a) Clear and Delete leave awards alone (Remove is the one door), or (b) they take them, and say so
+   in the confirm ("…and 2 OIL awards").
+2. **What the Edit history should record (AB8 (b)).** Today it records the schedule, and of inputs only an add or a
+   removal. Should the war's approvals and moves, and an input's edits and cuts, join it? Belongs with the one changes
+   window ([DRAFT-PENDING], D169's transparency). (AB8 (a) — the Inputs page's own Add writing no line — is fixed.)
+3. **A member's own award outside the bidding window (W3-F10).** Inside the window his own FO / HO opens read-only
+   (reason, given by, days); outside it, nothing opens. The OIL tracker shows the same facts. Should his own award open
+   read-only at every stage?
+**Place:** his look at the re-test; each answer becomes a ruling (D260–D269 on that branch) and, where it changes the
+app, a small build.

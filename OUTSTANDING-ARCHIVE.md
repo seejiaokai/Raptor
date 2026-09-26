@@ -1661,3 +1661,49 @@ app knows who is signed in, so each sign-off could be signed only by that person
 approved — his call. `[ACCOUNTS]` leaves the boxes as they are and makes the write admin-only at the command gate.
 **Place:** ask him with `[ACCOUNTS]`'s look card.
 
+
+*Moved here 2026-09-26 by backlog-archive.mjs ([S4-HUNT-REST]). Forward facts: `raptor-port/docs/handpass/2026-09-26-absence.md`, `raptor-port/docs/superpowers/plans/2026-09-26-absence-retest-plan.md`.*
+
+### [S4-HUNT-REST] The bug hunt's untouched ground — about three quarters of it (owner, 21 Sep 26)
+The branch turned into a long detour through the rules and the five items, so most of the hunt Fable
+and Codex planned (eight batches) has never been run. The owner listed what is still untouched, and
+this is his order. **Realistically two or three sessions.** **Place (D147, 24 Sep 26):** walked TOGETHER with the
+absence-record re-test of [HUMAN-RETEST], straight after the amendment system — one pass, since this ground IS the
+absence record.
+1. **The Inputs page calendar, by DRAG.** It has 43 tests of its own behaviour, but the clash rules
+   have never been tested through the drag route — dragging leave onto a pending bid, onto other
+   leave at overlapping times, onto a day someone is recorded working. A door people use daily.
+2. **The medical dialog's cascade** — a medical laid over existing leave and over other medicals:
+   how many pieces it mints, whether ONE undo puts it all back, whether cancelling leaves a
+   half-edit behind.
+3. **Bulk gestures by real drag** — select a block, then fill / approve / delete / move it, and
+   whether the "N written, M skipped" message tells the truth.
+4. **Switching wars with a sheet open**, and undo after switching.
+5. **Storage faults** — a save that fails halfway: does the app say so, and does a retry land the
+   WHOLE thing?
+6. **Phone, by finger** — drag-select and the two-step move at phone width, and a day carrying
+   eight records.
+7. **Figures on days with several records** — four records on one day, and whether the manning count
+   removes the man ONCE rather than twice.
+**DONE 26 Sep 26 — walked with the absence-record re-test** (`raptor-port/docs/handpass/2026-09-26-absence.md`; the
+walkers' sheets under `raptor-port/docs/handpass/parts/2026-09-26-absence-w{1..5}.md`): (1) the calendar by drag — W1,
+W2 (AB4, W1-F1–F3, fixed); (2) the medical cascade — W2 (AB3, AB4, fixed); (3) bulk gestures by real drag — W3 (AB2 a
+question; AB7 and W3-F3's Delete fixed; its Move half is [LW-MOVE-BENEATH]); (4) switching wars with a sheet open, and
+undo after — W3, W5 (W3-F7, W5-F3, W3-F8, fixed); (5) storage faults — the host, H3, correct; (6) phone by finger —
+W4, W1 (W4-1, W1-F1, W1-F2, fixed); (7) figures on days with several records — W4, correct (a man with four or eight
+records falls by exactly one in each head-count row).
+
+
+*Moved here 2026-09-26 by backlog-archive.mjs ([PUB-UNAVAIL]). Forward facts: `raptor-port/docs/handpass/2026-09-26-absence.md`, `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-register.md`.*
+
+### [PUB-UNAVAIL] New absence silently changes a published day's Unavailable list — NEXT AFTER step 4
+A new absence covering an already-published day changes that day's issued Unavailable list with no
+amendment, no re-sign, no history line (`html.ts:1515` reads live inputs; the filing fingerprint
+compares `acc` only). Owner (19 Sep 26): fix as its own item straight after step 4. Context: design §13.2.
+**CLOSED 26 Sep 26.** Built by [LEAVE-LATE-PUBLISHED] (D177–D179, D185: a late absence on a published day is a pending
+amendment and the issued face stays as issued); walked by the absence-record re-test, H1 — a late leave, a late
+medical, a war approval and a medical cutting issued leave each read pending on every count, drop the four sign-offs
+and leave the published face as issued; taking the late leave out again gives 0 and the sign-offs back
+(`raptor-port/docs/handpass/2026-09-26-absence.md` §3, "Walked and CORRECT"; the register
+`raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-register.md` §11).
+

@@ -515,9 +515,58 @@ absence, in the words the app uses. Newest wins (D90); where one changes a line 
   medical row on View-only Sched as a member does, read only.
 - **D148 (24 Sep 26)** — undo reverses only your own changes. DECIDED, NOT BUILT: the change-recording re-test's.
 - **`[PUB-UNAVAIL]` (19 Sep 26, filed)** — "a new absence silently changes a published day's Unavailable list" is
-  what D177–D179 built against (`[LEAVE-LATE-PUBLISHED]`, PR #438). The re-test confirms it on screen before the
-  item is archived.
+  what D177–D179 built against (`[LEAVE-LATE-PUBLISHED]`, PR #438). **Confirmed on screen by the re-test (H1) and
+  archived 26 Sep 26.**
 - **N5 / B8 (the hours on a hand-typed credit)** — no longer live. N13 (the same night) left an award nothing to clash
   with and N19 (21 Sep) made it ONE number in halves; the build took the hours box away with them (the bid sheet's award
   asks a quantity, a reason and a giver only — `leavewar/ui/BidPicker.tsx`). Found by Astra's plan read (26 Sep 26).
   Not a finding; the re-test does not test it as live.
+
+## 12. What the re-test changed (26 Sep 26) — the absence record as it now behaves
+
+Added by the absence-record re-test when its fixes went in (evidence `docs/handpass/2026-09-26-absence.md` §3, one row per
+finding; each pinned red first by the test named there). These are the lines a later session reads as the contract; the
+questions it left for him are `OUTSTANDING.md` `[ABSENCE-ASK]`.
+
+**Every door keeps the same rules (B7):**
+- **A cut rewrites "till".** Every cut of a leave — a medical laid over it, the war's un-approve, Delete or Move of part
+  of it — gives each surviving piece its OWN last day in the remark ("till 10 Feb Bali"); one body does every cut
+  (`leavewar/sync.ts sliceInput`). (AB3, W3-F9; D189's words.)
+- **A medical or an upchit MOVED asks what filing it asks.** The calendar's drag and the schedule's reassign hand the
+  new dates to the same questions as the form — who holds the shared days, and the upchit's leftovers — before
+  anything is written (`ui/MedMoveConfirm.tsx`). (AB4; owner 27 Aug 26, "never resolves silently".)
+- **Undo and Redo obey the bid rule.** A bid is never put back over a medical filed since; the refusal names what now
+  holds the day ("…Warden's ATT C now holds 8 Dec, and a bid can't go over it"). Undoing a filing that had replaced a
+  bid still gives the bid back, in one step. (W3-F8.)
+- **A dragged block's Delete takes the war's own bids beneath filed leave** and leaves the filed leave (it is the Inputs
+  page's). Its Move does not yet — `OUTSTANDING.md` `[LW-MOVE-BENEATH]`. (W3-F3.)
+
+**What the war's sheets say:**
+- **A posting that closes before it opens is refused AND said**, at every door — the bid sheet's PI / PO, the Post out
+  and Post in sheets' date boxes, the drag-selection's Post out: "Posted in on 6 Jul — the post-out has to be after
+  that day." The box snaps back to the date that stands. (AB5, W3-F4.)
+- **The posting sheet a tap opened stays that sheet** while its date moves, even past the day tapped. (W3-F5.)
+- **"Undo post out" takes back the archive the Post out made** — the man's row, bids and leave come back. (W5-F1, F2.)
+- **A tapped medical, course or OD reads "Filed on the Inputs page — change it there, not here"**; only leave says
+  "approved". (AB9.)
+- **A half is offered only when it can be taken, read off the real hours**: beside an ATT C recorded 09:00–14:00 no
+  afternoon is offered, and a refusal names a timed medical's hours. The heading speaks the box's notation ("now <LL").
+  (W5-F4, F5.)
+- **An overnight leave's tail is named on the day it ambers** ("LL — local leave, from the day before till 06:00", and under it "It runs on
+  from the day before — change it there."). A leave filed from 12:00 prints 12:00. (AB6, W1-F4; N10, N1.)
+- **Bulk Approve says an already-approved leave apart** ("1 decided. 1 already approved."), never counts it as
+  decided. (AB7.)
+- **An award's code follows its days** when they are edited on the OIL tracker or the tap list — under a day HO, a day
+  or more FO. (W3-F6; N19.)
+
+**The screen itself:**
+- **Every Leave War sheet holds the keyboard** (Tab / Shift+Tab stay in the topmost sheet), and **a war switch closes the
+  open cell** — its sheet, tap list and note editor — so nothing is re-read against, or written past the lock of, the
+  war no longer on screen. (W5-F3, W3-F7.)
+- **A finger held on one day and lifted keeps the selection sheet** on a phone. (W4-1.)
+- **The Inputs calendar on a phone:** a sideways swipe pages the month; a tap on a chip opens its edit once. A member's
+  calendar does not lift another man's chip, and an input he may not change opens READ ONLY — no Delete, no Save, "Only
+  {callsign} or an admin can change this." (W1-F1, F2, F3; D166.)
+- **The Inputs page's own Add writes "Input added — …" to the Edit history**, as the edit window's already did.
+  (AB8 (a); (b) is his question.)
+- **The Inputs export carries From and To** — a multi-day input no longer exports as its first day. (AB10.)
