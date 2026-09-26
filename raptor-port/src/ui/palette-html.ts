@@ -83,7 +83,10 @@ export function armStripHTML(){
 /* the shared body of both palettes */
 export function paletteHTML(di:any,opts?:any){
   const o=opts||{}, d=DAYS[di]||{};
-  const armKey=ARM?String(ARM.key).replace(/\.\+$/,''):'';
+  /* the armed key AS ARMED — a "+ add" keeps its `.+`, which slotBar reads as a NEW place (its one-man-one-place-on-a-
+     row check, [CROWD-SWAP-SAYS-BUSY] W3's walk: a man already in the crowd struck from its own "+ add"); slotRules
+     strips the `.+` itself, and nothing else here reads more than whether a slot is armed */
+  const armKey=ARM?String(ARM.key):'';
   const eng0=d.dow?dayEngaged(d):new Set(), off=d.dow?dayOff(d):new Set();
   const sby0=d.dow?dayStandby(d):new Set();
   /* AN ARMED SLOT CHANGES WHAT THE PALETTE IS SAYING.
@@ -189,7 +192,7 @@ export function paletteHTML(di:any,opts?:any){
    step. */
 export function specialRowHTML(di:any){
   if(!SPECIALS.length)return '';
-  const armKey=ARM?String(ARM.key).replace(/\.\+$/,''):'';
+  const armKey=ARM?String(ARM.key):'';   // as armed — see paletteHTML
   return `<div class="rall"><div class="rh2">Placeholders · drag in</div>`
     +SPECIALS.map((id:any)=>{
       const why=armKey?slotBar(id,armKey):'';

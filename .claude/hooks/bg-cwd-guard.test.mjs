@@ -6,6 +6,10 @@ import { fileURLToPath } from 'node:url';
 import { refusal } from './bg-cwd-guard.mjs';
 
 const bg = (command, tool_name = 'Bash') => ({ tool_name, tool_input: { command, run_in_background: true } });
+/* the folder the chat started in ($CLAUDE_PROJECT_DIR) — passed explicitly, so no test depends on where it is run from */
+const ROOT = { CLAUDE_PROJECT_DIR: '/c/Users/User/projects/Raptor' };
+const TREE = { CLAUDE_PROJECT_DIR: String.raw`C:\Users\User\projects\Raptor\.claude\worktrees\five-flags` };
+const INSIDE = { CLAUDE_PROJECT_DIR: String.raw`C:\Users\User\projects\Raptor\raptor-port\ `.trim() };
 
 test('refuses a backgrounded npm / npx command that never moves into raptor-port', () => {
   for (const c of [
@@ -18,7 +22,7 @@ test('refuses a backgrounded npm / npx command that never moves into raptor-port
     'pnpm test',
     'cd .. && npm test',
     'npm run build > raptor-port/build.log',
-  ]) assert.ok(refusal(bg(c)), c);
+  ]) assert.ok(refusal(bg(c), ROOT), c);
 });
 
 test('lets a backgrounded command through once it moves into raptor-port', () => {
@@ -30,12 +34,12 @@ test('lets a backgrounded command through once it moves into raptor-port', () =>
     'pushd raptor-port && npm test',
     'npm --prefix raptor-port run build',
     'npm --prefix=raptor-port test',
-  ]) assert.equal(refusal(bg(c)), null, c);
+  ]) assert.equal(refusal(bg(c), ROOT), null, c);
   for (const c of [
     'Set-Location raptor-port; npm run test:e2e',
     'Set-Location -Path "raptor-port"; npx playwright test',
     'sl raptor-port; npm test',
-  ]) assert.equal(refusal(bg(c, 'PowerShell')), null, c);
+  ]) assert.equal(refusal(bg(c, 'PowerShell'), ROOT), null, c);
 });
 
 test('leaves foreground commands and non-npm background commands alone', () => {
@@ -53,10 +57,89 @@ test('lets anything unreadable through rather than blocking every command', () =
 
 test('as a hook: exit 2 with the reason to refuse, exit 0 to allow, exit 0 on garbage', () => {
   const hook = fileURLToPath(new URL('./bg-cwd-guard.mjs', import.meta.url));
-  const run = (stdin) => spawnSync(process.execPath, [hook], { input: stdin, encoding: 'utf8' });
+  const env = { ...process.env, CLAUDE_PROJECT_DIR: String.raw`C:\Users\User\projects\Raptor` };
+  const run = (stdin) => spawnSync(process.execPath, [hook], { input: stdin, encoding: 'utf8', env });
   const no = run(JSON.stringify(bg('npm run test:e2e')));
   assert.equal(no.status, 2);
-  assert.match(no.stderr, /cd raptor-port/);
+  assert.match(no.stderr, /cd "C:\/Users\/User\/projects\/Raptor\/raptor-port"/);
   assert.equal(run(JSON.stringify(bg('cd raptor-port && npm run test:e2e'))).status, 0);
   assert.equal(run('not json').status, 0);
+});
+
+/* [BG-GUARD-FALSE] (26 Sep 26): a background shell starts in the folder the CHAT started in ($CLAUDE_PROJECT_DIR), not at
+   "the repo root" and not where the foreground shell has moved to — measured the same day: a foreground `cd raptor-port`
+   then a background `pwd` printed the worktree's root. The accounts chat's session had STARTED inside raptor-port, so
+   its background shells were already there and the guard's own advice, `cd raptor-port && …`, failed. */
+test('a chat that STARTED inside raptor-port may run a bare npm in the background — it is already there', () => {
+  for (const c of ['npm run test:e2e', 'npx vitest run', 'npm run build > build.log 2>&1'])
+    assert.equal(refusal(bg(c), INSIDE), null, c);
+});
+test('the refusal names the FULL path, which works from any starting folder', () => {
+  assert.match(refusal(bg('npm test'), ROOT), /cd "\/c\/Users\/User\/projects\/Raptor\/raptor-port" && npm/);
+  assert.match(refusal(bg('npm test'), TREE), /cd "C:\/Users\/User\/projects\/Raptor\/\.claude\/worktrees\/five-flags\/raptor-port"/);
+  assert.match(refusal(bg('npm test'), TREE), /Set-Location "C:\/Users/);
+  assert.match(refusal(bg('npm test'), TREE), /STARTED in \(C:\/Users\/User\/projects\/Raptor\/\.claude\/worktrees\/five-flags\)/);
+  assert.match(refusal(bg('npm test'), {}), /<the repo>\/raptor-port/, 'no starting folder known: still a full-path shape');
+  assert.doesNotMatch(refusal(bg('npm test'), ROOT), /REPO ROOT/, 'the old, wrong note is gone');
+});
+test('the full-path forms the accounts chat reported are let through, from any starting folder', () => {
+  for (const env of [ROOT, TREE, INSIDE, {}]) for (const c of [
+    'cd /c/Users/User/projects/Raptor/raptor-port && npm run build',
+    'cd /c/Users/User/projects/Raptor && cd raptor-port && npm run build',
+    String.raw`cd C:\Users\User\projects\Raptor\raptor-port && npx vitest run`,
+    'cd "C:/Users/User/projects/Raptor/.claude/worktrees/five-flags/raptor-port" && npm test',
+    'npm --prefix "C:/Users/User/projects/Raptor/raptor-port" run build',
+  ]) assert.equal(refusal(bg(c), env), null, `${c} (${JSON.stringify(env)})`);
+});
+/* Fable's matrix (F17, 26 Sep 26): the folder must BE raptor-port or lie inside it; PowerShell's Push-Location and a
+   `cd --` are moves too */
+test('Push-Location, a `cd --`, a trailing slash, a sub-folder and a quoted path with a space move in', () => {
+  for (const c of [
+    'Push-Location raptor-port; npm test',
+    'cd -- raptor-port && npm test',
+    'cd "C:/Users/User/projects/Raptor/raptor-port/" && npm test',
+    'cd raptor-port/scripts && npm run docsize',
+    'cd "C:/My Projects/Raptor/raptor-port" && npm test',
+    'cd ./raptor-port && npm test',
+    'cd ../raptor-port && npm test',
+    'npm --prefix ./raptor-port run build',
+  ]) assert.equal(refusal(bg(c), ROOT), null, c);
+});
+test('a folder that only STARTS with the name is another folder — refused', () => {
+  for (const c of ['cd raptor-port-old && npm test', 'cd raptor-portal && npm test', 'npm --prefix raptor-port.bak run build'])
+    assert.ok(refusal(bg(c), ROOT), c);
+});
+test('a chat started at the root is still refused a bare npm, as before', () => {
+  for (const env of [ROOT, TREE, {}]) assert.ok(refusal(bg('npm run test:e2e'), env), JSON.stringify(env));
+});
+
+/* Astra's read (26 Sep 26, findings 2 and 3): the ORDER of the steps decides — a move after npm, or a move undone before
+   it, does not put npm inside raptor-port; and a chat started in a folder INSIDE raptor-port is already in place */
+test('a move AFTER npm, or undone before it, does not count — every npm step must run inside', () => {
+  for (const c of [
+    'npm test; cd raptor-port',
+    'cd raptor-port; cd ..; npm test',
+    'cd raptor-port && npm run build; cd .. && npm test',
+    'Push-Location raptor-port; Pop-Location; npm test',
+    '(cd raptor-port; npm run build); npm test',
+    'cd raptor-port && cd /tmp && npm test',
+  ]) assert.ok(refusal(bg(c), ROOT), c);
+});
+test('…and a line that stays inside, however many npm steps, runs', () => {
+  for (const c of [
+    'cd raptor-port && npm run build && npx vite preview --port 4176',
+    'cd raptor-port; cd scripts; npm run docsize',
+    '(cd raptor-port; npm run build)',
+    'cd raptor-port && npm test 2>&1 | tail -20',
+    'cd raptor-port && E2E_PORT=4193 npx playwright test',
+  ]) assert.equal(refusal(bg(c), ROOT), null, c);
+});
+test('a chat started in a folder INSIDE raptor-port is already in place; a lookalike start folder is not', () => {
+  const SUB = { CLAUDE_PROJECT_DIR: String.raw`C:\Users\User\projects\Raptor\raptor-port\scripts` };
+  const LIKE = { CLAUDE_PROJECT_DIR: '/c/Users/User/projects/Raptor/raptor-port-old' };
+  const CASE = { CLAUDE_PROJECT_DIR: String.raw`C:\USERS\USER\PROJECTS\RAPTOR\RAPTOR-PORT\ `.trim() };
+  assert.equal(refusal(bg('npm run docsize'), SUB), null);
+  assert.equal(refusal(bg('npm run docsize'), CASE), null);
+  assert.ok(refusal(bg('npm run docsize'), LIKE));
+  assert.ok(refusal(bg('cd ../.. && npm test'), SUB), 'and moving up out of it still refuses (`..` counts as out: an unknown folder is out)');
 });

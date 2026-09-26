@@ -17,6 +17,7 @@ import { SCHED } from '../engine/publish'
 import { HOOKS } from '../engine/hooks'
 import { HIST, histPush } from '../state/history'
 import * as view from '../state/view'
+import * as auth from '../state/auth'
 import { ridKey } from '../engine/rowids'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -361,6 +362,35 @@ describe('cross-day warning focus (tfin G2)', () => {
       const x = $('#vWeek .dwbox.open .daywarn'); if (!x) break
       await click(x)
     }
+  })
+})
+
+/* THE FOCUS OWNS THE PUCK, NOT THE "THIS IS YOU" PURPLE (Astra's read of D270 / D272, 27 Sep 26). Since D270 the purple
+   ring steps aside only for a RING class (a flag, the OIL glow); a clicked warning's focus is not one of them — it is kept
+   off the purple by highlights.ts adding `wfoc` and RETURNING before it would add `me`. The stylesheet test cannot see
+   that order, so it is pinned here, in the rendered week: signed in as Saber, his Monday clash focused, every puck of his
+   that the focus lights (solid on the day, dashed echoes elsewhere) wears the focus and not the purple; cleared, his
+   pucks are "you" again. */
+describe('a focused warning takes the purple "this is you" off the man it lights (D270, Astra)', () => {
+  it('signed in as Saber, his clash focused: his lit pucks wear the focus, never the purple; cleared, the purple is back', async () => {
+    const was = auth.ME
+    await act(async () => { setSession({ user: 'ad', role: 'admin' }); auth.setMe('stiff'); notify() })
+    try {
+      validate()
+      expect($$('#vWeek .puck.me[data-person="stiff"]').length, 'unfocused, Saber’s pucks are "you"').toBeGreaterThan(0)
+      await click($('#vWeek .day[data-day="0"] .daywarn'))
+      const item = $$('#vWeek .day[data-day="0"] .witem[data-wix]').find(w => /Saber/.test(w.textContent || ''))
+      expect(item, 'a Monday warning naming Saber').toBeTruthy()
+      await click(item!)
+      const lit = $$('#vWeek .puck.wfoc[data-person="stiff"]')
+      expect(lit.length, 'the focus lights Saber').toBeGreaterThan(0)
+      expect(lit.filter(x => x.classList.contains('me')).length, 'and none of his lit pucks is purple').toBe(0)
+      expect($$('#vWeek .puck.me').length, 'nothing is purple while a warning is focused').toBe(0)
+      await click($('#vWeek .dwclear'))
+      /* an OPEN strip still lights its day's crew (the strips' own rule), so "you" returns once it is folded */
+      for (let g = 0; g < 12; g++) { const x = $('#vWeek .dwbox.open .daywarn'); if (!x) break; await click(x) }
+      expect($$('#vWeek .puck.me[data-person="stiff"]').length, 'focus cleared and the strip folded: "you" again').toBeGreaterThan(0)
+    } finally { await act(async () => { setSession({ user: 'a', role: 'admin' }); auth.setMe(was); notify() }) }
   })
 })
 

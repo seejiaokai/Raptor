@@ -1175,6 +1175,34 @@ counts, because every non-shift overlap the validator finds is a hard
 `DOUBLE_BOOK`; a standby spare is exempt, being deliberately free. It is
 ADVISORY, like every other bar here — `barDrop` toasts and the drop still
 goes through.
+**Seat and event are compared as ROWS, and a drag also excludes the seat he is leaving** ([CROWD-SWAP-SAYS-BUSY],
+26 Sep 26). `selfKey` is `engine/keys.ts seatRow`, the one "which row is this" shape: a person's place (a crowd seat
+`a:0.2.1`, an extra `g:0.3.x0`, a sim seat or pax, an append box `…+`) and an event's key (the row, `a:0.2`) both come
+out as the row. Its programme trim used to take the last number off ANYTHING `a:`-shaped, so the row `a:0.2` came out
+as `a:0` — a man swapped or moved inside the crowd he was on was "already on" his own row, and arming a crowd's
+"+ add" excluded every programme row of the day (a man booked on another programme row at the same hour was offered as
+free while the list raises the clash). And on a drag, the seat he is dragged FROM (`fromKey`) is excluded too, as the
+SC and AVALON walks already did: the hover describes the week after the move. The validator's "the seat he is
+leaving" (`crossDayIfPlaced`'s his-only-event test, `restIfPlaced`'s strip, below) compares through the same
+`seatRow`. Pins: `crowdself.test.ts`, `runtrace.test.ts`.
+**One man, one place on a row** (the walk of the same batch, W3, 26 Sep 26). Fixing that trim silenced the only voice on
+putting a man onto a row he ALREADY stands on (a crowd, a desk's or a ground row's extras, a sim's seats): Ranger dropped
+from the crew list onto Reaper's puck in the crowd Ranger was in replaced Reaper with a second Ranger, and on `main` the
+accidental busy words had warned. `slotBar` now asks it on purpose, before the busy scan: he stands on this row
+(`slots.ts rowPlaces`) at ANOTHER place than the one asked about, and not the place he is dragged from → the busy
+check's own words with " · not added twice" ("already on FLIGHT SAFETY STAND-DOWN 08:30–09:00 · not added twice"). A
+"+ add" key is a NEW place; a caller asking AFTER a write names the place the fill landed on (`slots.ts lastFilled` —
+`drag.ts` and `view.ts placeArmed`), or every ordinary add would read as a second copy; a crowd's or a sim box's bare row
+key names no place and is left to the busy scan. **REFUSED since D271 (owner, 27 Sep 26 — "Q1 refused"), no longer
+advisory:** the one question is `avail.ts rowTwice` (slotBar returns its sentence, so the drag caption and the crew list's
+struck line say it before the drop), PREFLIGHTED at every door before anything is written — `drag.ts applyDrop` (a crew-list
+drop on a place or a "+ add" cell, a move from another row, BOTH ends of a swap) and `state/view.ts placeArmed` (an armed
+place, an armed "+ add"; the slot stays armed) — with `fillSlot` returning `false` as the belt behind them (never
+`setSlotVal`: a swap inside one crowd is two writes). It NARROWS "everything plants, warning after" (13 Aug 26) for this one
+case. Left as they were (his readings): a man on two DIFFERENT rows is only warned; a swap of two men inside one crowd is
+no second copy; a placeholder (ALL, ALL AVAIL) is not a man and is not held to it. Pins: `engine/crowdself.test.ts`,
+`ui/rowtwice-refusal.test.tsx` (every door, a break test each). **And the SC shift-window scan reads the seat he is dragged from too** (W3): a MAIN man dragged to
+another MAIN seat of the same shift was captioned "inside this shift" about the shift he was leaving.
 
 **A second accept that would mint a duplicate content key is refused.**
 `inpKey` is `person|date|type|start` and content keys are not unique;

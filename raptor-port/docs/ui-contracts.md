@@ -187,6 +187,12 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   (which is why the edge hint above is retired). The "day a–b of n" read-out
   (`pan.ts:dayRangeText`) counts from the day step, never `scrollWidth ÷ n`,
   because the spacer is part of `scrollWidth`. Gated in `e2e/geometry.spec.ts`.
+- **No room beside the ‹ arrow — the day at the front sits flush at the week's left edge** (owner, D275, 27 Sep 26 —
+  "I still prefer these", of the full-screen before and after). The floating ‹ arrow (`.week-nav`, fixed 8px in, 38px
+  wide) sits over the first few pixels of that day, by his choice: it can cover the start of an opened "⚠ N issues"
+  list and of the front day's first line. A 54px room was built ([VIEW-ARROW-OVER-LIST], 26 Sep 26) and taken out before
+  it merged (`[ARROW-ROOM-OUT]`); do not put it back, nor the lighter idea first named with it (the arrow fading until
+  the pointer is near), without his ask. The build's roll-call of every landing is the five-flags evidence sheet §3d.
 - **The desktop arrow glide cannot be cancelled mid-day** (owner, 23-24 Aug 26 —
   the recurring "arrows don't go day by day … stuck halfway then zoom past", and
   its 25 Aug follow-up "make sure it's not just an easy fix"). `panDays` fires a
@@ -2149,6 +2155,15 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   A palette tap ALWAYS plants: a darkened name plants too, its reason toasted
   after, mirroring drag ("everything plants, warning after") — the one
   refusal left is the seat's own occupant ("Already in that seat").
+  **AND, SINCE D271 (owner, 27 Sep 26 — "Q1 refused"), A THIRD HARD REFUSAL: ONE MAN, ONCE PER ROW.** A man
+  put on a row he already stands on — a crowd, a desk's or a ground row's extras, a sim's seats — by a drop
+  (from the crew list, onto a place or the "+ add" cell; a puck moved in from another row; either end of a
+  swap) or an armed palette tap writes nothing: the row keeps its one copy, nothing reads pending, and the
+  toast says why ("Ranger — already on FLIGHT SAFETY STAND-DOWN 08:30–09:00 · not added twice"); a tapped
+  slot stays armed. The same sentence is the drag caption and the crew list's struck line, so it is said
+  BEFORE the drop too. One body, `avail.ts rowTwice`, preflighted at every door with `fillSlot` as the belt
+  (D33's shape). Still allowed: a swap inside one crowd, a move to the end of his own crowd, and a man on two
+  DIFFERENT rows (warned, as before).
   **AND, SINCE D33/D47 (22 Sep 26), A SECOND AND HARDER ONE: ALL / ALL AVAIL
   ARE REFUSED ON FLYING-LINE COCKPIT SEATS.** `sentinelSeatOK(key,id)`
   (`engine/slots.ts`) is the one body; `SENTINEL_JET_BAR` is the one sentence,
@@ -3224,6 +3239,20 @@ only prove which CLASS was emitted, never what it draws:
   spreads 2px and dots any closer are drawn inside the solid band and vanish.
   Its total reach is still 3px, the same as the dashed ring's, so it clears the
   3px gap between the two pucks of a crew pair.
+
+**No flag ring glows — the "this is you" puck included (owner, D164, 24 Sep 26: "can u not make it glow").** Every
+flag ring — solid, dashed or dotted red, the amber / thin red / grey severity rings — is drawn with no blurred layer.
+**And on his own puck any other ring wins over the purple "this is you" ring (owner, D270 and D272, 27 Sep 26 — "Q2
+yes", "question 2 yes").** The signed-in man's puck keeps its purple FILL always; its purple RING and glow are drawn
+only while it has nothing else to say (`.puck.me:not(.warn):not(.boxred):not(.boxdash):not(.boxdot):not(.oilglow)`).
+Flagged — amber, thin red, grey, a solid or dashed red box, the dotted "causes tomorrow's breach" ring (alone, nothing
+purple behind it) — or earning in OIL Earn mode (the green OIL ring, full or half), it wears exactly the ring another
+man's puck wears there, through the same rules. Until D270 the purple ring sat on every "you" puck with `!important`,
+hid the severity rings and buried the OIL ring, and `.puck.me.boxred` / `.boxdash` / `.boxdot` / `.warn` existed only to
+fight it — they are gone. Two glows are NOT flags and stay: the purple "this is you" glow on his UNFLAGGED puck and the
+clicked-warning focus (`.puck.wfoc`, a transient answer to a tap). Pinned by `src/ui/flagglow-css.test.ts`, which walks
+every ring rule for a blurred layer AND resolves the cascade for every set of ring classes a puck can wear (severity x
+red box x trace x OIL mode), requiring his puck's winning ring to equal another man's.
 
 ### The previous-day trace: a standing MARK, an on-demand STORY
 
@@ -5712,11 +5741,24 @@ entered and left by the same header button (`roster-arrange`, `aria-pressed`),
 lit accent (`.rtbtn.on`) while on; on a phone it is the ⇅ icon alone (the word
 rides `.rtlbl`, hidden ≤430px — "just show an arrow up and down icon"), on
 desktop "⇅ Rearrange" / "⇅ Rearranging". There is no Auto-sort button anywhere
-now — the store's `autoSortRoster` remains for the tests and a future home;
+now — the store's `autoSortRoster` remains for the tests;
 don't re-add the button or the strip without his ask. Pinned in
 `settingssheet.test.tsx` (toggle on/off, no bar, no Auto-sort, ⇅ + `.rtlbl`)
 and `e2e/leavewar.spec.ts` (both projects: drag from the toggle, nothing else
 appears, the phone's word is hidden).
+
+**His ask came 24 Sep 26 (D160, "9 yes"): a RESET ORDER line in ⚙ Settings** — its own small "Roster order" tray
+between the counters and the groups, admin-only like the whole sheet (`roster-reset-order`). It **asks once**
+("Really reset?", the Reset counters idiom; closing the sheet takes the question back, and arming either reset
+takes the other's question back — one "Really reset?" at a time) and is **greyed, with a line
+saying so, while the roster already follows the default** (`roster-order-hint`) — judged by the roster AS DRAWN
+(`rosterFollowsDefault`), so a man dragged away and back reads as the default, never a press that moves nothing; a hand-arranged roster's line says
+what the default is (each group as listed, pilots above WSOs, then CAT and callsign) and that Undo brings the
+arrangement back. The store's `resetRosterOrder` CLEARS the saved order (not `autoSortRoster`'s freeze of today's
+default), so the roster goes on following the default — a man who joins later, or whose CAT changes, lands in his
+ranked place rather than sinking to the end of his seat; one step for the one Undo; no write (and no Undo step) when
+there is nothing to reset. Still no button on the grid and no strip. Pinned in `settingssheet.test.tsx` (⚙ Settings —
+Reset order), `roster.test.ts` (resetRosterOrder …) and `undoaudit.test.ts` (Reset order is ONE step …).
 
 **The − / + ZOOM pair sits in the counter block's top row after OIL at BOTH
 widths, and a phone opens ONE step out (owner, 6 Sep 26 — "Can this be the

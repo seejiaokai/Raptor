@@ -10,6 +10,21 @@ import { HOOKS } from './hooks'
 export function keyDay(key:any){const s=String(key),c=s.indexOf(':');
   const n=parseInt((c<0?s:s.slice(c+1)).split('.')[0],10);
   return Number.isFinite(n)?n:-1;}
+/* ---- WHICH ROW IS THIS — one shape for a seat key and an event's key ([CROWD-SWAP-SAYS-BUSY], 26 Sep 26) ----------
+   A seat key names a PERSON'S place (a crowd seat `a:0.2.1`, an extra `g:0.3.x0`, a sim seat `s:0.amt.1.p`, a pax
+   `s:0.amt.1.pax.2`, an append box `a:0.2.+`); an event names the ROW it came off (`a:0.2`, `g:0.3`, `s:0.amt.1`). Every
+   "is this the place he is being planted into / dragged from" question compares the two, so both go through here. A
+   flying seat is compared as it stands (a flying event stores the full seat key). The programme trim takes ONLY the
+   person index: it used to take the last number off anything `a:`-shaped, so the row `a:0.2` came out as `a:0` — a man
+   moved inside the crowd he was on was "already on" his own row, and arming a crowd's "+ add" excluded every programme
+   row of the day. Readers: avail.ts selfKey (the crew picker's busy checks), validate.ts crossDayIfPlaced / restIfPlaced
+   (the seat he is leaving). */
+export function seatRow(k:any){
+  let s=String(k==null?'':k).replace(/\.\+$/,'').replace(/\.x\d+$/,'');
+  if(s.indexOf(':')<0)return s;                              // flying: di.gi.li.ai.seat
+  s=s.replace(/\.pax\.\d+$/,'').replace(/\.(p|w)$/,'');      // a sim's two seats and its pax
+  return s.replace(/^(a:\d+\.\d+)\.\d+$/,'$1');              // programme: a place in the crowd → its row
+}
 export function uniqDays(keys:any):any[]{return [...new Set((keys||[]).map(keyDay))].filter((i:any)=>i>=0&&i<DAYS.length).sort((a:any,b:any)=>a-b);}
 /* ---------------------------------------------------------------------------
    DELETING A ROW RENUMBERS EVERYTHING AFTER IT

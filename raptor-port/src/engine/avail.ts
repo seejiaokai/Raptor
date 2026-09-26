@@ -7,8 +7,8 @@ import { SHIFT_HARD, VCONF } from './rules'
 import { isStandalone, scSpare, saExempt, saExemptKind } from './waves'
 import { WARN, restClear, dayEvents, crossDayIfPlaced } from './validate'
 import { waveWindows, inpShow, shiftEvHard, seatIntime, scSeatHit, avSeatHit } from './events'
-import { whoArr, rowRef, XKEY, sentinelSeatOK, SENTINEL_JET_BAR } from './slots'
-import { keyDay } from './keys'
+import { whoArr, rowRef, rowPlaces, XKEY, sentinelSeatOK, SENTINEL_JET_BAR } from './slots'
+import { keyDay, seatRow } from './keys'
 /* busy windows [s,e] for one person on a day (fly/duty/sim/ground) */
 export function personBusy(d:any,id:any){
   const out:any[]=[];
@@ -313,6 +313,33 @@ export function sansGate(id:any,dt:any,domain:any,s:any,e:any):any{
    that seat (a run counts the day off if it was his only event; a leg being
    moved cannot break its own crew rest), so the hover reason describes the
    schedule AFTER the move, not before. Omitted by every other caller. */
+/* ONE MAN, ONCE PER ROW — REFUSED (owner, D271, 27 Sep 26 — "Q1 refused", to the five-flags mock-up's Question 1:
+   "A man put on a row he's already on: warn, or refuse? … Recommended: refuse."). A crowd, a desk's or a ground row's
+   extras and a sim's seats each hold PEOPLE'S places; the same man on two of them says nothing a scheduler wants and
+   hides a mistake. So a drop (from the crew list or from another row) and the armed palette tap that would put him on
+   a row where he already stands WRITE NOTHING: the row keeps its one copy, nothing reads pending, and the message says
+   why — `<callsign> — ` + this sentence ("Ranger — already on FLIGHT SAFETY STAND-DOWN 08:30–09:00 · not added twice").
+   It NARROWS "everything plants, warning after" (owner, 13 Aug 26) for this one case, the second hard refusal after
+   D33's placeholder in a cockpit, and like D33's it is asked BEFORE anything is written, at every door — drag.ts
+   applyDrop (a seat, a swap, a "+ add" cell) and state/view.ts placeArmed (an armed place, an armed "+ add") — so a
+   swap's second write never runs behind a refused first one. It is also the reason the busy check below gives (slotBar),
+   so the drag caption and the crew list's struck line say it before the drop does.
+   The question: does he stand on this row at ANOTHER place than the one asked about (`key` — none for a "+ add", which
+   is a new place), and not the place he is being moved FROM (`fromKey`)? So (his readings, stated to him): a man on
+   two DIFFERENT rows is still only warned (the busy check); a swap of two men inside one crowd moves nobody onto a
+   second place and still works (D274 item 3); a man from the crew list dropped onto ANOTHER man's place in a crowd he
+   is already in — which would replace that man and leave him there twice — is refused the same way. A placeholder
+   (ALL, ALL AVAIL) is not a man and is left out (it is silent on every row it may stand on, D33). A crowd's or a sim
+   box's own bare key (`a:0.2`, `s:2.oft.0`) names the ROW, not a place, and no door asks with one; older callers and
+   tests reading it as "this row" are left to the busy check, as before. */
+export function rowTwice(id:any,key:any,fromKey?:any):string{
+  if(!id||!PEOPLE[id]||isSpecial(id))return '';
+  const ks=String(key), row=selfKey(key), here=/\.\+$/.test(ks)?null:ks, from=fromKey!=null?String(fromKey):null;
+  if(row===ks&&/^[as]:/.test(ks))return '';
+  if(!rowPlaces(row).some((x:any)=>x.id===id&&x.key!==here&&x.key!==from))return '';
+  const di=keyDay(ks), ev=di>=0?dayEvents(di,id).find((e:any)=>selfKey(e.slot||e.key)===row):null;
+  return (ev&&ev.s!=null&&ev.e!=null?`already on ${ev.label} ${hm24(ev.s)}–${hm24(ev.e)}`:'already on this row')+' · not added twice';
+}
 export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
   const p=PEOPLE[id]; if(!p)return '';
   /* THE ONE HARD REFUSAL (D33). A placeholder is silent on every seat it is
@@ -322,6 +349,9 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
      string, one source: ui cannot spell it differently. */
   if(p.special)return sentinelSeatOK(key,id)?'':SENTINEL_JET_BAR;
   const r=rules||slotRules(key);
+  /* ONE MAN, ONCE PER ROW — refused, so said before the drop as well as by it (rowTwice, above; D271). Ahead of the ⓘ
+     info-only exit: an FYI row lists anyone, absences and clashes included, but not the same man twice. */
+  {const t=rowTwice(id,key,fromKey); if(t)return t;}
   /* an ⓘ info-only row raises nothing after planting (it never enters the event
      stream), so the picker must raise nothing before it — the standing rule that
      the picker and the warning list may not drift. Anyone may be listed on an
@@ -358,7 +388,11 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
   /* every walk below excludes the seat being planned into AND, on a drag, the
      seat the man is leaving (fromKey) — the hover describes the week AFTER the
      move, as crossDayIfPlaced already does (reviewer, 7 Sep 26) */
-  const selfKeys=[selfKey(key),fromKey!=null?selfKey(fromKey):null];
+  /* …the seat he LEAVES only when he leaves its row: a man standing on that row twice (a second copy is warned, not
+     refused — "everything plants, warning after") still stands on it when one copy moves (Astra's read, 26 Sep 26) */
+  const fromRow=fromKey!=null?selfKey(fromKey):null;
+  const leaves=fromRow!=null&&!rowPlaces(fromRow).some((x:any)=>x.id===id&&x.key!==String(fromKey));
+  const selfKeys=[selfKey(key),leaves?fromRow:null];
   if(r.sc&&r.scStart!=null&&r.scEnd!=null&&r.di>=0){
     const hit=scSeatHit(r.di,id,r.scStart,r.scEnd,selfKeys);
     if(hit)return `already on ${hit.what} ${hm24(hit.s)}–${hm24(hit.e)}`;
@@ -396,8 +430,10 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
      INPUT deliberately stays warn-not-bar here, matching the flying-seat
      modality (inputs.ts:178-181): the validator reds him after planting. */
   if(r.sc&&r.scStart!=null&&r.scEnd!=null&&r.di>=0&&!r.scSpare){
-    const self=String(key).replace(/\.\+$/,'');
-    const live=(e:any)=>shiftEvHard(e)&&e.s!=null&&e.e!=null&&e.slot!==self;
+    /* not the seat being planted into, and — on a drag — not the one he is dragged FROM (selfKeys, as the walks above
+       read it; W3's walk, 26 Sep 26: a MAIN man dragged to another MAIN seat of the same shift was captioned "inside
+       this shift" about the shift he was leaving, while the drop said nothing) */
+    const live=(e:any)=>shiftEvHard(e)&&e.s!=null&&e.e!=null&&selfKeys.indexOf(selfKey(e.slot||e.key))<0;
     /* both windows are already minutes-from-midnight of day r.di, so plain
        overlap is the whole answer here */
     let hit=dayEvents(r.di,id).find((e:any)=>live(e)&&overlap(r.scStart,r.scEnd,e.s,e.e));
@@ -532,11 +568,15 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
      STANDBY spare is exempt, because he is deliberately free for anything else;
      and the seat being planned into is excluded, so an ordinary swap is silent.
      Advisory in force, like every other bar here — the name still shows with the
-     reason against it, and a drop still goes through with a warning. */
+     reason against it, and a drop still goes through with a warning.
+     …and, on a drag, the seat he is being dragged FROM is excluded too
+     ([CROWD-SWAP-SAYS-BUSY], 26 Sep 26): the SC and AVALON walks above already
+     read `selfKeys` so the hover describes the week AFTER the move (5 and 7 Sep
+     26), and this scan was the one that still told a man he was "already on" the
+     row he was leaving — a hover the drop then contradicted. */
   if(r.slotStart!=null&&r.slotEnd!=null&&r.di>=0&&!r.sc&&!spareLike0(r)){
-    const self=selfKey(key);
     const hit=dayEvents(r.di,id).find((e:any)=>e.s!=null&&e.e!=null
-      &&selfKey(e.slot||e.key)!==self&&overlap(r.slotStart,r.slotEnd,e.s,e.e));
+      &&selfKeys.indexOf(selfKey(e.slot||e.key))<0&&overlap(r.slotStart,r.slotEnd,e.s,e.e));
     if(hit)return `already on ${hit.label} ${hm24(hit.s)}–${hm24(hit.e)}`;
     /* AND THE SAME QUESTION FOR AN UNACCEPTED PERSONAL COMMITMENT (owner, Aug 26).
        An activity input (a meeting, an appointment) that is NOT on the Ground
@@ -596,11 +636,8 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
    to the same shape so "the slot I am planting into" can be excluded — without
    this a swap warns about the seat the man is being moved out of. A flying event
    already stores the full seat key, so it is compared as it stands. */
-function selfKey(k:any){
-  let s2=String(k==null?'':k).replace(/\.\+$/,'').replace(XKEY,'');
-  if(s2.indexOf(':')<0)return s2;                          // flying: di.gi.li.ai.seat
-  s2=s2.replace(/\.pax\.\d+$/,'').replace(/\.(p|w)$/,'');  // a sim's two seats and its pax
-  if(/^a:/.test(s2))s2=s2.replace(/\.\d+$/,'');            // programme: drop the person index
-  return s2;
-}
+/* The one body is engine/keys.ts seatRow, shared with the validator's "the seat he is leaving" ([CROWD-SWAP-SAYS-BUSY],
+   26 Sep 26 — its programme trim used to take the ROW's own number off an event's key, so a man moved inside his own
+   crowd was "already on" it). */
+const selfKey=seatRow;
 const spareLike0=(r:any)=>!!(r.sc&&r.scSpare)||!!r.avJet||!!r.avDuty;

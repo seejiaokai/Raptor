@@ -1661,3 +1661,119 @@ app knows who is signed in, so each sign-off could be signed only by that person
 approved — his call. `[ACCOUNTS]` leaves the boxes as they are and makes the write admin-only at the command gate.
 **Place:** ask him with `[ACCOUNTS]`'s look card.
 
+
+*Moved here 2026-09-26 by backlog-archive.mjs ([PUCK-FLAG-GLOW]). Forward facts: `raptor-port/docs/ui-contracts.md`, `.claude/rules/decisions/scheduler.md`.*
+
+### [PUCK-FLAG-GLOW] A red-flagged "View as" puck glows; no flagged puck should (his ask, D164, 24 Sep 26)
+**BUILT 26 Sep 26 on `claude/five-flags-batch-build-ef7d85`** (the five-flags batch): the "this is you" puck's solid and dashed rings lose the red glow (`scheduler.css`), pinned by a test that walks every ring rule. To the archive with the merge.
+*(Since `[ACCOUNTS]` (26 Sep 26) the purple "this is you" puck is the SIGNED-IN person's — "View as" is gone; the glow
+rule below is unchanged.)*
+He sent two pictures: a red-flagged puck with a red glow (Ranger, the person being viewed as) and one without (Saber).
+The glow comes from `raptor-port/src/ui/scheduler.css`: `.puck.me.boxred` and `.puck.me.boxdash` add
+`0 0 10px 1px rgba(240,85,95,.7)` on top of the red ring when the View-as puck is flagged. **Do:** drop that glow, so
+a flagged View-as puck shows the same plain red ring (solid or dashed) as every other flagged puck; keep the purple
+"this is you" fill and ring. Read the precedence notes near `.puck.me` first (every puck rule carrying `!important`)
+and walk both widths with a flagged View-as puck. LOOK tier on one shared puck rule — check every surface that draws
+a puck. **Place:** any time, none blocking; a good one to ride the next scheduler change.
+
+
+*Moved here 2026-09-26 by backlog-archive.mjs ([LW-RESET-ORDER]). Forward facts: `raptor-port/docs/ui-contracts.md`, `.claude/rules/decisions/leave-war.md`.*
+
+### [LW-RESET-ORDER] A "back to the default order" control for the Leave War roster — his call, build only if he asks (moved from HANDOFF.md, 24 Sep 26)
+**BUILT 26 Sep 26 on `claude/five-flags-batch-build-ef7d85`** (the five-flags batch, FULL check — evidence `raptor-port/docs/handpass/2026-09-26-five-flags.md`): ⚙ Settings → "Roster order" → Reset order; it CLEARS the saved order (`resetRosterOrder`), asks once, greyed while the roster as drawn is the default. To the archive with the merge.
+**HE ASKED (D160, 24 Sep 26): build it** — a "Reset order" line in ⚙ Settings running the store's `autoSortRoster`;
+no button, no strip. WALK tier (a new control). **Place:** any time, none blocking.
+
+- **OWNER'S CALL — no "back to the default order" control since Auto-sort went
+  (6 Sep 26).** A hand-arranged Leave War roster stays arranged until dragged
+  back; the store's `autoSortRoster` still exists. Offered: a "Reset order" line
+  in ⚙ Settings. Build only if he asks.
+
+
+*Moved here 2026-09-26 by backlog-archive.mjs ([CROWD-SWAP-SAYS-BUSY]). Forward facts: `raptor-port/docs/engine-rules.md`, `raptor-port/docs/feature-impact.md`.*
+
+### [CROWD-SWAP-SAYS-BUSY] Swapping two men inside one crowd warns "already on" that row — found 25 Sep 26
+**BUILT 26 Sep 26 on `claude/five-flags-batch-build-ef7d85`** (the five-flags batch): the cause was the busy check's key trim for a Common Programme row (`engine/keys.ts seatRow` now, shared with the validator's leaving-seat tests); a drag also excludes the seat he leaves. To the archive with the merge.
+Seen in the amendment batch's re-walk (`raptor-port/scripts/handpass/am/hr-03-batch-reads.mjs`, picture
+`docs/img/handpass/2026-09-25-amendment-batch/rewalk-reads/desktop/A-2-pending-list.png`): on the board, dragging
+Reaper onto Ranger on the SAME Common Programme row swaps them (correct), and a warning toast says "Reaper — already
+on FLIGHT SAFETY STAND-DOWN 08:30–09:00" — the row he is being moved within. **Not new** — the message comes from the
+availability check (`raptor-port/src/engine/avail.ts`, the "already on" lines), which the batch did not touch; the
+swap itself and the counts are right. **The agent's reading:** a move inside the row a man is already on should not
+call him busy there — exclude the row being dropped into from his own busy check. Small, WALK tier. **Place:** with
+the board's small items ([PUCK-FLAG-GLOW]); not his call unless the fix changes what a warning says elsewhere.
+
+
+*Moved here 2026-09-26 by backlog-archive.mjs ([VIEW-ARROW-OVER-LIST]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/feature-impact.md`.*
+
+### [VIEW-ARROW-OVER-LIST] The week's floating "‹" arrow covers the start of an opened warning list on a desktop (filed 26 Sep 26)
+**BUILT 26 Sep 26 on `claude/five-flags-batch-build-ef7d85`** (the five-flags batch): the desktop week keeps 54px of room at its sides and every landing puts the day beside the arrow (`state/view.ts weekInset`). To the archive with the merge.
+Seen by the Leave War walker of `[LEAVE-LATE-PUBLISHED]`'s check (picture
+`raptor-port/docs/img/handpass/2026-09-26-late-pub/leavewar/desktop/desktop-LW1b-1-face-warnings.png`): on View-only
+Sched at 1440 px, a day's "⚠ N issues" list opened on the day at the left edge sits under the week's floating "‹"
+scroll arrow, which hides the first letters of the list's lines. Not new with that branch (the arrow and the list are
+unchanged there). **Do:** give the arrow room (an inset on the scroller, or the arrow above the list only while the
+pointer is near it), walk both widths with a list open on the first and last day. **Place:** low, any time.
+
+
+*Moved here 2026-09-26 by backlog-archive.mjs ([BG-GUARD-FALSE]). Forward facts: `raptor-port/CLAUDE.md`, `raptor-port/docs/file-map.md`.*
+
+### [BG-GUARD-FALSE] The background-command guard refuses two commands that do move into raptor-port (filed 26 Sep 26)
+**BUILT 26 Sep 26 on `claude/five-flags-batch-build-ef7d85`** (the five-flags batch): measured — a background shell starts in the chat's STARTING folder, not the foreground's; the guard lets a chat started inside `raptor-port` run a bare `npm`, names the full path in its refusal, and matches only a folder that IS `raptor-port` or lies inside it; the notes corrected. To the archive with the merge.
+Found by the accounts chat on its first background run after `[BG-CWD-GUARD]` merged (D162): the hook
+(`.claude/hooks/bg-cwd-guard.mjs`) refused `cd /c/Users/User/projects/Raptor/raptor-port && npm …` (a full path), and
+the form it asks for, `cd raptor-port && npm …`, then FAILED — this background shell started inside `raptor-port`
+already (the session's folder), not at the repo root the hook and `raptor-port/CLAUDE.md` assume. What worked:
+`cd /c/Users/User/projects/Raptor && cd raptor-port && npm …`. **Do:** accept a `cd` whose target ends in `raptor-port`
+(full or relative path), and correct the "starts at the REPO ROOT" note — a background shell starts in the session's
+current folder. **Place:** small, tooling, any time.
+
+
+*Moved here 2026-09-27 by backlog-archive.mjs ([CROWD-DUP-REFUSE]). Forward facts: `raptor-port/docs/engine-rules.md`, `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-09-27-five-flags-answers.md`.*
+
+### [CROWD-DUP-REFUSE] A man put on a row he is already on: warn (today) or refuse? — a question for him (filed 26 Sep 26)
+From the five-flags batch's walk (W3, F6; evidence `raptor-port/docs/handpass/2026-09-26-five-flags.md` §5): the app now
+NAMES it ("already on FLIGHT SAFETY STAND-DOWN 08:30–09:00" — the caption, the toast, the struck name in the crew list)
+but still plants the second copy, per his 13 Aug 26 "everything plants, warning after". **The question (the look card,
+Q1):** refuse it instead — one man, once per row? If yes: a hard refusal beside D33's in `avail.ts slotBar`'s
+one-man-one-place check and the three doors (`drag.ts`, `view.ts placeArmed`, `fillSlot`), with the pending count left
+at 0. **Mock-up shown 27 Sep 26** (his ask, *"q1 can u show me a mock upp"*): `raptor-port/docs/mock/five-flags.html` §Question 1 —
+today vs refused. **ANSWERED 27 Sep 26 — "Q1 refused" (D271): refuse, at every door, with the reason; a man on two
+different rows stays warned; a crew-list drop onto another man's place in a crowd he is already in is refused too.**
+**Place:** built next, on `claude/five-flags-batch-continue-2cfa70` before its "merge live" (with D270, D272).
+**DONE 27 Sep 26** on that branch, FULL-checked: `raptor-port/docs/handpass/2026-09-27-five-flags-answers.md` (and Fable's F1, the request hand-over, with it).
+
+
+*Moved here 2026-09-27 by backlog-archive.mjs ([ME-PUCK-SEVERITY-RING]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-09-27-five-flags-answers.md`.*
+
+### [ME-PUCK-SEVERITY-RING] On his own puck, the purple "this is you" ring hides the amber / thin red / grey rings — a question for him (filed 26 Sep 26)
+The five-flags walk (W1, `raptor-port/docs/img/handpass/2026-09-26-five-flags/w1/D1-*`, `D2-*`): `.puck.me`'s purple ring
+replaces the severity ring, so only the letter chip shows the flag on his own puck (another man's shows the ring). The
+batch took the GLOW off every flagged own puck (D164); whether the severity ring should show INSTEAD of the purple ring
+is the look card's Q2 — **ANSWERED 27 Sep 26: "Q2 yes" (D270)** — flagged, his own puck shows the flag's own ring (amber,
+thin red, grey, dotted) as another man's does, the purple fill stays; unflagged, the purple ring and glow as today. **To build:**
+`scheduler.css` `.puck.me.warn` / `.puck.me.boxdot` (and its comment), `flagglow-css.test.ts`, `ui-contracts.md` (the
+"no flag ring glows" paragraph), a mock-up first (his ask, 27 Sep 26); WALK tier (a shared drawer — not LOOK). Still OPEN,
+not part of D270: in OIL mode the green OIL ring on his own puck is hidden under the purple ring (`w1/F9-*`) — put to him
+27 Sep 26 as Q2b on the mock-up (`raptor-port/docs/mock/five-flags.html` §Question 2, recommended: the same treatment) — **ANSWERED "question 2 yes" (D272): in OIL Earn mode his own puck shows the green
+OIL ring, the purple fill stays.** **Place:** built next, on `claude/five-flags-batch-continue-2cfa70` before its "merge
+live" (with D270, D271).
+**DONE 27 Sep 26** (D270 and D272 together), FULL-checked: `raptor-port/docs/handpass/2026-09-27-five-flags-answers.md`.
+
+
+*Moved here 2026-09-27 by backlog-archive.mjs ([ARROW-ROOM-OUT]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/feature-impact.md`, `raptor-port/docs/handpass/2026-09-27-five-flags-answers.md`.*
+
+### [ARROW-ROOM-OUT] Take the room beside the ‹ arrow back out of the desktop week — his D275 (filed 27 Sep 26)
+**Why:** shown the five-flags batch's item 4 full screen (`raptor-port/docs/mock/five-flags.html`), he chose the BEFORE
+pictures — *"I still prefer these"* (D275): the day at the front flush at the left, the ‹ arrow floating over its first few
+pixels, as on `main`. **Take out everything `[VIEW-ARROW-OVER-LIST]` added:** `scheduler.css` (`.week` back to
+`padding:2px 20px 40px`, no `scroll-padding-left`, the comment), `state/view.ts` (`weekInset` and its use in `weekLeftDay`
+and `scrollWeekToDay`), `ui/highlights.ts` (`bringIntoView` back to the box's edges), `state/weekinset.test.ts` (deleted),
+`e2e/geometry.spec.ts` (the "sit clear of the ‹ arrow" test out; the five older landing tests back to measuring from the box's
+edge — `git show main:raptor-port/e2e/geometry.spec.ts` for their words), the docs marked "TO BE TAKEN OUT — D275"
+(`ui-contracts.md`, `feature-impact.md`), `docs/file-map.md` (the test file's row), the walk scripts that assert the room
+(`scripts/handpass/ff-w4.mjs`, `ff-probe-arrow.mjs` — note them as retired). `git diff origin/main...HEAD` on those files is the
+list; the rest of the batch stays. **Check:** the week's browser tests (the whole `geometry.spec.ts`) and a look at desktop.
+**Place:** on `claude/five-flags-batch-continue-2cfa70` with D270–D272, before its "merge live".
+**DONE 27 Sep 26** on that branch, FULL-checked: `raptor-port/docs/handpass/2026-09-27-five-flags-answers.md` (W6; `geometry.spec.ts` main's again).
+

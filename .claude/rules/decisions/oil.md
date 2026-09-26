@@ -29,7 +29,7 @@ paths:
 
 **Loads by itself** whenever a session reads an OIL, Leave War, placeholder-puck or publishing file (the
 `paths:` at the top of this file). The general rulings are in `.claude/rules/decisions/how-we-work.md`, loaded in every session; the map of every ruling and how to add or retire one: `DECISIONS.md`. Newest first; each row keeps the date it was recorded.
-**Also read** — in `scheduler.md` (it loads by itself with any board or engine file): **D27, D33, D47** (where
+**Also read** — in `scheduler.md` (it loads by itself with any board or engine file): **D272** (in OIL Earn mode his own puck shows the green OIL ring, not the purple one); **D27, D33, D47** (where
 the ALL / ALL AVAIL pucks may land and where they are refused), **D36–D41, D51** (who counts as available,
 and the window that lists them), **D44, D45** (the crowd frozen at publication; the pending mark). In How we
 work, already loaded: **D54** (an issued weekend carrying a placeholder raises the mark — leave it) and **D56**.

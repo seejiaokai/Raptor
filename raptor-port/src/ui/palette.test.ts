@@ -185,3 +185,23 @@ describe('the Placeholders strip', () => {
     expect((html.match(/puck allavail/g) || []).length).toBe(2)
   })
 })
+
+/* [CROWD-SWAP-SAYS-BUSY] W3's re-walk (26 Sep 26): with a crowd's "+ add" armed, the palette asks with the key AS ARMED
+   (the `.+` kept), so a man already in that crowd is struck with the reason — the palette used to strip the `.+`, which
+   asked about "the row" and read him as simply on it. Since D271 (27 Sep 26) a tap on him there is REFUSED, so the
+   struck line says so before the tap: "· not added twice". */
+describe('an armed crowd strikes a man already in it', () => {
+  it('Ranger, on FLIGHT SAFETY STAND-DOWN, is struck from its own "+ add" with the reason', async () => {
+    const view = await import('../state/view')
+    const { setSession } = await import('../state/auth')
+    setSession({ user: 'a', role: 'admin' })                 // only an editor arms a slot
+    view.armSlot('a:0.2.+')
+    expect(view.armedKey()).toBe('a:0.2.+')
+    try {
+      const html = paletteHTML(0)
+      const m = /<span class="rpuck no[^"]*"[^>]*data-person="bane"[^>]*data-why="([^"]*)"/.exec(html)
+      expect(m, 'Ranger struck').toBeTruthy()
+      expect(m![1]).toBe('already on FLIGHT SAFETY STAND-DOWN 08:30–09:00 · not added twice')
+    } finally { view.disarmSlot() }
+  })
+})

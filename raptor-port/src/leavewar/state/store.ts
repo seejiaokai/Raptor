@@ -1638,8 +1638,9 @@ export function setPeople(people: Person[]): void {
  * person within their own group (they cannot leave the category their CAT puts
  * them in) instead of stranding a row under a duplicated heading.
  */
-export function displayRoster(): Person[] {
-  const order = state.rosterOrder.length ? state.rosterOrder : liveAutoOrder()
+export function displayRoster(saved: string[] = state.rosterOrder): Person[] {
+  /* `saved` defaults to the stored hand order; rosterFollowsDefault asks with an empty one — the default display */
+  const order = saved.length ? saved : liveAutoOrder()
   const pos = new Map(order.map((id, i) => [id, i]))
   const out: Person[] = []
   /* The groups the ADMIN configured, in their display order, and the priority
@@ -1880,10 +1881,30 @@ function liveAutoOrder(): string[] {
 
 /** Re-group everyone into the categorised order. Was the Auto-sort button's
  *  action; the button went with the on-grid rearrange bar (owner, 6 Sep 26 —
- *  "Auto sort will be removed"), so nothing in the UI calls this now — kept as
- *  the store's one "back to the default order" write (tests, a future home). */
+ *  "Auto sort will be removed"), so nothing in the UI calls this now — kept for
+ *  the tests. The UI's "back to the default order" is `resetRosterOrder` below. */
 export function autoSortRoster(): void {
   setRosterOrder(liveAutoOrder())
+}
+
+/** ⚙ Settings → Reset order (owner, D160, 24 Sep 26 — "9 yes"): put a hand-arranged roster back in the default order.
+ *  It CLEARS the saved order rather than saving today's default as a hand order (autoSortRoster's way), so the roster
+ *  goes on FOLLOWING the default: a man who joins later, or whose CAT changes, lands in his ranked place, where under a
+ *  saved order he would sink to the end of his seat (displayRoster's newcomer rule). ADMIN-gated by setRosterOrder,
+ *  the one writer; a roster already following the default is no write at all, so no empty Undo step is left behind. */
+export function resetRosterOrder(): void {
+  if (!state.rosterOrder.length) return
+  setRosterOrder([])
+}
+
+/** Does the roster, as DRAWN, stand in the default order? Judged by what the grid shows, not by whether a hand order is
+ *  saved (Fable's scenario F10, 26 Sep 26): a man dragged away and back leaves a saved order that draws exactly the
+ *  default, and Reset order there would be a press that changes nothing on screen yet leaves an Undo step behind. The
+ *  ⚙ Settings line is greyed while this is true. (A saved order equal to today's default still differs later — a man
+ *  who joins sinks to the end of his seat — and the line lights again the moment it does.) */
+export function rosterFollowsDefault(): boolean {
+  const now = displayRoster(), dflt = displayRoster([])
+  return now.length === dflt.length && now.every((p, i) => p.id === dflt[i]!.id)
 }
 
 /**

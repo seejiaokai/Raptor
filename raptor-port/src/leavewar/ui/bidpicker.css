@@ -961,6 +961,12 @@
 /* Reset counters is destructive — quiet at rest, and matrix.css `.rtbtn.arm`
    turns it red once armed. */
 .bidsheet .rtbtn.set-danger { color: var(--ink-3); }
+/* Reset order (D160) is greyed while the roster already follows the default — dimmed so a greyed button reads as
+   "nothing to do", with its hint line saying so (the zoom pair's dead end dims the same way). */
+.bidsheet .rtbtn.set-order:disabled { opacity: .45; cursor: default; }
+@media (hover: hover) {
+  .bidsheet .rtbtn.set-order:disabled:hover { border-color: var(--edge-2); }
+}
 
 /* The groups, squeezed into tight single-line rows (owner: "squeeze the data").
    No display-order grip here — reordering is on the grid; this list is add /

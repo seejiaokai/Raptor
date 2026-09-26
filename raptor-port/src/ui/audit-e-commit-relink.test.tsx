@@ -211,6 +211,46 @@ describe('the relink preserves scheduler additions (fixed 12 Aug 26)', () => {
   })
 })
 
+/* ONE MAN, ONCE PER ROW (owner, D271, 27 Sep 26 — "Q1 refused"; Fable's scenario read F1). The relink above puts the
+   scheduler's extras back onto the regenerated row — so a request re-pointed to a man who ALREADY stood on its row as
+   an extra came back with him twice: the holder AND the extra. No door asked (the Person field and the reassign drop
+   both reach here). He is kept once — as the holder, the request is his now — his extra place is left empty (held, as
+   a removed extra always is), and the toast says so. */
+describe('the relink never leaves a man on the row twice (D271)', () => {
+  beforeEach(() => setSession({ user: 'a', role: 'admin' }))     // handing a request to another man is a scheduler's edit
+  afterEach(() => setSession(null))
+  it('re-pointing the request to a man already an extra on its row keeps him once, as its holder, and says so', async () => {
+    const inp: any = plant({ person: 'stiff', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'twice', mod: '' })
+    expect(acceptInput(0, inp, 'g')).toBe(true)
+    afterSchedMutate()
+    const row = rowsFor(inp)[0].row
+    row.more = ['bane', 'boosh']                                  // Ranger and Havoc added as extras by the scheduler
+    const d = draftOf(inp); d.person = 'bane'                     // the request handed to Ranger
+    expect(commitInputEdit(inp, d)).toBe(true)
+    const fresh = rowsFor(inp)[0].row
+    const places = [fresh.who, ...(fresh.more || [])].filter(Boolean)
+    expect(fresh.who, "Ranger holds the request's row").toBe('bane')
+    expect(places.filter((v: any) => v === 'bane').length, 'Ranger once on the row').toBe(1)
+    expect(places, 'Havoc, the other extra, is kept').toContain('boosh')
+    HOOKS.toast('Input updated', 'ok')                           // the caller's own success line, straight after the save
+    await Promise.resolve()                                       // the note follows it on the next tick, so it is the one left up
+    expect(TOASTS.at(-1), 'and the app says so, last').toMatch(/^Ranger — already on this row as an extra · kept once/)
+    scrap(inp)
+  })
+  it('a hand-over to a man NOT on the row keeps every extra, and says nothing about it', async () => {
+    const inp: any = plant({ person: 'stiff', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'once', mod: '' })
+    expect(acceptInput(0, inp, 'g')).toBe(true)
+    afterSchedMutate()
+    rowsFor(inp)[0].row.more = ['boosh']
+    const d = draftOf(inp); d.person = 'bane'
+    expect(commitInputEdit(inp, d)).toBe(true)
+    expect(rowsFor(inp)[0].row.more).toEqual(['boosh'])
+    await Promise.resolve()
+    expect(TOASTS.join('|')).not.toMatch(/kept once/)
+    scrap(inp)
+  })
+})
+
 /* A 'u' FILING SURVIVES AN OFF-WEEK EDIT (P2-REV2-06). 'u' (filed unavailable)
    is a GLOBAL filing DECISION on the input itself, not a per-week ground landing
    — it has no DAYS row to relink. Keeping acc='u' across a week load (the

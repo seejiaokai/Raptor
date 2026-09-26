@@ -41,7 +41,7 @@ paths:
 Leave War file** (OIL is leave the war banks) — among them **D79, D80, D81, D82** (a hand-typed award: any
 day; never flags a leave day; a worked weekend that earns nobody says so; an award and a worked day add up),
 **D19** (a weekend no Leave War period covers says so and offers to create it) and **D21** (an Off day earns
-no OIL). **Also read** — in `how-we-work.md`: **D166** (accounts: the war follows the signed-in callsign, not "View as"). In `scheduler.md`: **D44, D45** (nothing on a published day changes without the
+no OIL). **Also read** — in `scheduler.md`: **D274** (Reset order approved as built, 27 Sep 26). In `how-we-work.md`: **D166** (accounts: the war follows the signed-in callsign, not "View as"). In `scheduler.md`: **D44, D45** (nothing on a published day changes without the
 scheduler acknowledging it; the pending mark is the mechanism).
 
 **Where the detail lives:** the grid, its sheets and its window of months — `raptor-port/docs/ui-contracts.md`
@@ -52,7 +52,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | His ruling, in his words where short enough | What it means | Where it lives now |
 |---|---|---|---|---|
-| D160 | 24 Sep 26 | **"9 yes"** — asked whether he wants a "Reset order" line in ⚙ settings, since the Auto-sort button went on 6 Sep 26 | **BUILD A "RESET ORDER" LINE IN THE LEAVE WAR ⚙ SETTINGS** that puts a hand-arranged roster back in the default order (the store's `autoSortRoster` already does the sort). This is the "his ask" the 6 Sep entry waited for; the Auto-sort BUTTON and the on-grid strip stay gone | `.claude/rules/decisions/leave-war.md` §Settled before this list (the Rearrange entry); `OUTSTANDING.md` `[LW-RESET-ORDER]` |
+| D160 | 24 Sep 26 | **"9 yes"** — asked whether he wants a "Reset order" line in ⚙ settings, since the Auto-sort button went on 6 Sep 26 | **BUILD A "RESET ORDER" LINE IN THE LEAVE WAR ⚙ SETTINGS** that puts a hand-arranged roster back in the default order (the store's `autoSortRoster` already does the sort). This is the "his ask" the 6 Sep entry waited for; the Auto-sort BUTTON and the on-grid strip stay gone | `.claude/rules/decisions/leave-war.md` §Settled before this list (the Rearrange entry); BUILT 26 Sep 26 on the branch claude/five-flags-batch-build-ef7d85: `raptor-port/src/leavewar/ui/SettingsSheet.tsx` (the "Roster order" tray), `raptor-port/src/leavewar/state/store.ts` (`resetRosterOrder` — clears the saved order), `raptor-port/docs/ui-contracts.md` (the Rearrange entry); `OUTSTANDING.md` `[LW-RESET-ORDER]` (to the archive with the merge) |
 | D159 | 24 Sep 26 | **"8 leave it"** — asked whether the desktop Leave War grid should also open one step zoomed out, like the phone | **LEAVE IT: THE DESKTOP GRID OPENS AT NORMAL SIZE** (zoom 1); only the phone opens one step out (6 Sep 26). `[LW-DESKTOP-ZOOM]` closed | `.claude/rules/decisions/leave-war.md` §Settled before this list (the zoom entry); `OUTSTANDING-ARCHIVE.md` `[LW-DESKTOP-ZOOM]` |
 
 ## Settled before this list — moved from `raptor-port/CLAUDE.md` §Stable decisions (24 Sep 26)

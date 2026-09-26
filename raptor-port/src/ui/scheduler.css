@@ -1232,7 +1232,6 @@ body:not(.tdrag) .page.editing .acrow .seat[data-slot]:hover .puck{outline:2px s
 .puck .lchip.l-cph{background:#F0555F;color:#fff}
 /* conflict / crew rest → red box around the whole puck */
 .puck.boxred{box-shadow:0 0 0 2px var(--hard)!important;border-color:var(--hard)!important}
-.puck.me.boxred{box-shadow:0 0 0 2px var(--hard),0 0 10px 1px rgba(240,85,95,.7)!important}
 /* The DASHED red box (owner, 6 Aug 26): same colour and same weight as the
    solid one — it is the same red warning, and downgrading the colour would
    read as "less of a problem" — but broken stroke, for the two cases where a
@@ -1252,7 +1251,6 @@ body:not(.tdrag) .page.editing .acrow .seat[data-slot]:hover .puck{outline:2px s
    the reason .boxred carries one too, so the two rings keep the same
    precedence over everything they sit on. */
 .puck.boxdash{outline:2px dashed var(--hard);outline-offset:0;border-color:var(--hard)!important;box-shadow:none!important}
-.puck.me.boxdash{outline:2px dashed var(--hard);box-shadow:0 0 10px 1px rgba(240,85,95,.7)!important}
 /* The DOTTED red ring (owner, 6 Aug 26): this day is the CAUSE, not the
    breach. The man flew a legal day here — the warning is raised tomorrow,
    where he is told to report short of rest — so the stroke is the lightest of
@@ -1273,7 +1271,6 @@ body:not(.tdrag) .page.editing .acrow .seat[data-slot]:hover .puck{outline:2px s
    the dots and reads distinctly lighter, which is also the right weight for
    the lightest of the three claims. */
 .puck.boxdot{outline:1.5px dotted var(--hard);outline-offset:2px}
-.puck.me.boxdot{outline:1.5px dotted var(--hard);outline-offset:2px}
 /* THE DROP-DELTA PULSE (state/dropflag.ts, 5 Sep 26): a puck a drop has just
    flagged blinks twice on its own day. Opacity only — it composites, it never
    relayouts, and it leaves every ring (boxred's !important shadow, boxdot's
@@ -1371,7 +1368,18 @@ body:not(.tdrag) .page.editing .acrow .seat[data-slot]:hover .puck{outline:2px s
    KNOWN AND WANTED CONSEQUENCE: a `me` puck in the crew palette that is busy
    or unavailable now shows the grey blend (.rpuck.busy/.no .puck), which it
    previously hid. The palette telling you you are busy is honest. */
-.puck.me{background-color:var(--me)!important;color:#fff!important;box-shadow:0 0 0 2px #F0B6FF,0 0 12px 1px rgba(155,47,174,.7)!important;z-index:2;position:relative}
+.puck.me{background-color:var(--me)!important;color:#fff!important;z-index:2;position:relative}
+/* THE "THIS IS YOU" RING STEPS ASIDE FOR ANY OTHER RING (owner, D270 and D272, 27 Sep 26 — "Q2 yes", "question 2 yes").
+   The purple FILL above always says "you"; the purple RING and its glow are drawn only while his puck has nothing else
+   to say. Flagged — the amber advisory, thin red or grey note ring, a solid or dashed red box, the dotted "causes
+   tomorrow's breach" ring — or earning in OIL Earn mode (the green OIL ring), his puck wears exactly the ring anyone
+   else's puck wears there, and wears it through the SAME rules, because this one no longer competes. Until D270 it did,
+   with !important on every "you" puck: it hid the three severity rings (only the letter chip showed the flag), drew its
+   glow round the dotted ring, and buried the OIL ring (the five-flags walk, 26 Sep 26, `w1/D1-*`, `w1/F9-*`); the
+   `.puck.me.boxred` / `.boxdash` / `.boxdot` / `.warn` rules D164 needed to fight it went with it — a flagged puck
+   never glows (D164) because no flag ring here draws a glow. Pinned by flagglow-css.test.ts, which resolves the winning
+   ring for his puck and for another man's, flag by flag, and requires them equal. */
+.puck.me:not(.warn):not(.boxred):not(.boxdash):not(.boxdot):not(.oilglow){box-shadow:0 0 0 2px #F0B6FF,0 0 12px 1px rgba(155,47,174,.7)!important}
 .puck.me .nm{color:#fff;font-weight:700}
 .puck.hl{box-shadow:0 0 0 2px var(--accent),0 0 10px -1px rgba(59,198,232,.7);border-color:var(--accent)}
 /* half-visible, not gone (owner, 7 Aug 26 — was .18, which made the rest
@@ -4234,9 +4242,10 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
      ghost's case below; the veil stays for that reason.)
    - THE MOUSE's ghost (fix wave, 7 Sep 26). It IS the puck — setDragImage and
      tdArm clone `.puck`, not the seat — so it inherits every state rule the
-     puck already wears, and five of those carry !important: `.puck.me` (the
-     View-as purple ring), `.puck.boxred` and `.puck.me.boxred` (a hard
-     conflict), `.puck.boxdash` and `.puck.me.boxdash`. No specificity beats an
+     puck already wears, and three of those carry !important: the "this is you"
+     purple ring (`.puck.me:not(…)`, unflagged only since D270, 27 Sep 26),
+     `.puck.boxred` (a hard conflict) and `.puck.boxdash` (7 Sep 26 there were
+     five — `.puck.me.boxred` / `.puck.me.boxdash` went with D270). No specificity beats an
      !important declaration, so dragging your own puck or a conflicted one
      showed the state ring and no cyan at all — and, the depth shadow being
      replaced with it, nothing that read as picked up. (`.puck.warn.hard` is the

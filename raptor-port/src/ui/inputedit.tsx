@@ -22,7 +22,7 @@ import { docAdd, docFields, docGet, rowDocIds } from '../state/docs'
 import { UploadIcon } from './icons'
 import { acceptInput, autoAcceptInput, unacceptInput, acceptedDay } from '../engine/slots'
 import { DAYS } from '../engine/data'
-import { PEOPLE, isSpecial } from '../engine/people'
+import { PEOPLE, isSpecial, whoId } from '../engine/people'
 import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { logAction, elogSweep } from '../engine/editlog'
@@ -1142,6 +1142,23 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
         else if (extras && wasAcc === 'g') {
           const nr = ((DAYS[di] || {}).ground || []).find((g: any) => g.src === inpId(r))
           if (nr) {
+            /* ONE MAN, ONCE PER ROW (owner, D271, 27 Sep 26 — "Q1 refused"; Fable's scenario read F1). The request may
+               now be a man who already stood on this row as one of the extras put back here — he would come back as the
+               holder AND an extra. Kept once, as the holder (the request is his now): his extra place is left empty,
+               held as a removed extra always is, and the toast says so. Every other door onto a row refuses a second
+               copy before writing (engine/avail.ts rowTwice); this one is a hand-over, not an add, so it keeps the
+               edit and drops the copy. */
+            /* compared through whoId, as slots.ts rowPlaces reads a place (Fable's read) */
+            if (extras.more?.length && extras.more.some((v: any) => whoId(v) === r.person)) {
+              const more = extras.more.map((v: any) => whoId(v) === r.person ? '' : v)
+              while (more.length && !more[more.length - 1]) more.pop()
+              extras.more = more
+              /* raised on the NEXT tick: the app has one toast, and every caller of this save shows its own success
+                 line straight after it returns ("Input updated", "X is now unavailable instead of Y", …), which would
+                 replace this note before it could be read (the walk, F9). After it, the note is what stays up. */
+              const note = `${PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person} — already on this row as an extra · kept once, as its holder`
+              queueMicrotask(() => HOOKS.toast(note, 'warn'))
+            }
             if (extras.more?.length) nr.more = extras.more
             if (extras.flag) nr.flag = extras.flag
             if (extras.cx) nr.cx = extras.cx

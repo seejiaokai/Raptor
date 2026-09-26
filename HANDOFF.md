@@ -15,6 +15,38 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/five-flags-batch-continue-2cfa70 -->
+### `claude/five-flags-batch-continue-2cfa70` — the five-flags batch AND his answers D270–D275: BUILT and FULL-checked (PR #445) — waiting for his look and "merge live"; the red Leave War tests' cause found and fixed (confirm on GitHub) — written 27 Sep 26 — verify before use
+- **The branch:** carries `claude/five-flags-batch-build-ef7d85` whole (that branch has no PR and nothing of its own —
+  delete it once this merges). PR #445 is from THIS branch. This chat worked in the folder
+  `.claude/worktrees/trk-smoke-add-race-bug-007eed` (the block's earlier folder, `five-flags-batch-continue-2cfa70`, is
+  another checkout at the same commit).
+- **Parallel** with `claude/accounts-new-person` (PR #443) / the post-out work on `claude/post-out-outcomes` (the main
+  checkout — its chat asked to coordinate: told the files this branch touches; it won't touch ours) and the absence-record
+  re-test (PR #444, folder `five-flags-batch-build-ef7d85`). Ports: preview 4176 (`.claude/launch.json` "raptor-walk-4"),
+  browser tests `E2E_PORT=4193`; rulings D276–D279 (none used). Full checks take turns through the PC-wide lock (D228,
+  `gatelock.mjs … run --from <this worktree>/raptor-port`). The later merge takes `main` in first. Nothing to `main`
+  without his "merge live".
+- **Done 27 Sep 26 (the evidence sheet `raptor-port/docs/handpass/2026-09-27-five-flags-answers.md`):** D275 — the room
+  beside the ‹ arrow taken out (`[ARROW-ROOM-OUT]`); D270 / D272 — his own puck wears any other ring (a flag's, the green
+  OIL one), the purple fill stays; D271 — one man, once per row, REFUSED at every door with the reason, plus Fable's F1 (a
+  request handed to a man already on its row keeps him once). FULL tier: Fable's scenarios, the roll-calls, the walk (W1
+  71/0, W3 f6–f10 all green, W6 18/0 — pictures `docs/img/handpass/2026-09-27-five-flags-answers/`), the gates (§7), Fable
+  and Astra's blind reads (no defect against the rulings; two test gaps fixed), the re-walk, the look card (§9). The three
+  items archived; four questions for him filed as `[D271-LOOK-ASKS]`.
+- **`[LW-MOVE-CI-RED]` — cause found, tests fixed:** a timing race in three Leave War tests (the second drag straight after
+  an admin's fill, which since `[ACCOUNTS]` re-renders longer on GitHub's machines); fixed with the 18 Sep stable drag
+  (`e2e/leavewar.spec.ts`). It never failed on the PC — **the proof is this branch's next GitHub runs**: green → archive it.
+  Side-findings filed: `[LW-HARNESS-VIEWER-PIN]`, `[CI-FAIL-PICTURES]` (his call — public pictures while the repo is public).
+- **Next, in order:** (1) **his look** — the card is the sheet's §9 (four things to see, four questions); his answers are
+  rulings from D276; (2) the next GitHub run of this branch: `geometry (lw-desktop)` green → archive `[LW-MOVE-CI-RED]`;
+  (3) "merge live", one at a time with #443 and #444. **The absence chat's D262 reworks `select.ts` wireMove** (PR #444) —
+  if it merges first, bring `main` in and re-run the three Move tests here; a conflict in those test lines keeps BOTH its
+  behaviour and the stable drag (told to that chat).
+- **His "2 chats" remark (27 Sep 26)** is still unanswered — put to him once; recommended: keep the one-at-a-time queue
+  for full check runs (two chats working side by side needs nothing).
+<!-- /now -->
+
 <!-- now:claude/accounts -->
 ### `claude/accounts` — `[ACCOUNTS]` (D165, D166, D200, D204, D210, D211): BUILT and FULL-checked; on its PR, waiting for his look and "merge live" — written 26 Sep 26 — verify before use
 - **What it is:** sign in as yourself (every account is one callsign; "View as" and the role toggle gone); request access /
@@ -100,11 +132,11 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 26 Sep 26 morning, `claude/leave-late-published` (`09276503`, the final code of
-`[LEAVE-LATE-PUBLISHED]` with D187 and its reads' fixes), one run on a quiet PC
-(`raptor-port/docs/handpass/2026-09-26-late-pub.md` §6): unit **5988 / 5988** (368 files) · build clean · tfin **728 / 0** ·
-e2e **471 passed**, 48 skipped · smoke **442 / 0** · rulecheck OK · docsize OK. Two tests added after it (no source
-change): their file alone 45 / 45. Restate a count only
+The latest counts watched — 27 Sep 26, `claude/five-flags-batch-continue-2cfa70` (`869c7197`, D270–D275 built on the
+five-flags batch), under the lock (`raptor-port/docs/handpass/2026-09-27-five-flags-answers.md` §7): unit **6256 / 6256**
+(382 files; the full run's one failure was `[INPUTSCAL-TAP-FLAKY]`, green on its re-run) · build clean · tfin **728 / 0** ·
+e2e **472 passed**, 48 skipped (474 − the two arrow-room tests, gone with the room) · smoke **443 / 0** · rulecheck OK ·
+docsize OK. GitHub on `869c7197`: every job green. Restate a count only
 from a run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md`
 §Build & verify; how they mislead, and the checks on his PC: `raptor-port/docs/gates-and-deploy.md`.
 
