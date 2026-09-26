@@ -72,8 +72,8 @@ Owner: **Shell**. The one identity in the application. The scheduler
 roster, the Leave War's projected roster and the Tracker's student link all
 point at this row; no second identity is minted anywhere. **Never
 hard-deleted** — `archived` and the tombstone are the only ways out. **— NARROWED 26 Sep 26 BY D287 (owner: "truly
-delete him"): a man who leaves flying for good is DELETED — gone from every list, his seats reading empty on every day
-he was on. HOW the database does it — **answered 27 Sep 26, D290 ("hidden mark"): the tombstone below** — the row kept, marked
+delete him"): a man who leaves flying for good is DELETED — gone from every list; D297 (27 Sep 26): every day he
+already flew keeps his puck, days still to come lose him. HOW the database does it — **answered 27 Sep 26, D290 ("hidden mark"): the tombstone below** — the row kept, marked
 deleted, invisible everywhere; never erased (`OUTSTANDING.md` `[POST-OUT-OUTCOMES]`).**
 
 | Field | Type | Req | Meaning |

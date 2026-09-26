@@ -101,7 +101,7 @@ await step('2 accounts', async () => {
   await page.evaluate(() => {
     const b = document.getElementById('mkDel'); b.textContent = 'Tap again to delete Hex'
     b.style.cssText = 'background:rgba(240,85,95,.18);color:#fff;border-color:#f0555f'
-    b.closest('.acc-edit').insertAdjacentHTML('beforeend', '<p class="adm-note acc-note" style="color:#FBB4B9">Deletes Hex for good — his account, his Quals row, his inputs and his Leave War leave and OIL. Old schedules show an empty seat where he flew. This cannot be undone.</p>')
+    b.closest('.acc-edit').insertAdjacentHTML('beforeend', '<p class="adm-note acc-note" style="color:#FBB4B9">Deletes Hex for good — his account and his Quals row; he comes off every day still to come. Days he already flew keep his puck. This cannot be undone.</p>')
   })
   await snap(page, 'desktop-2b-delete-confirm', '[data-acct="achex"]')
   /* his sign-in, suspended — the REAL switched-off screen, its words changed */

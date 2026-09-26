@@ -1196,7 +1196,7 @@ group that day, tracked (D283); (4) a transfer — future, `[XFER]`. Buttons: "S
 Admin → Users has "Switch off / on", no delete. **To build:** the sheet asks which outcome and the app does it on the
 date (each also by hand); touches the Leave War (the sheet, `runPoArchive`), Quals, Admin → Users, data-model §11 (`User`
 D), `perms.ts` — FULL tier. **Leaving flying for good — D287, his pick "B, truly delete him":** account AND person
-deleted; every day he was on shows his seat empty, published days included (tested 26 Sep 26: nothing crashes);
+deleted; **D297: every day he already flew keeps his puck, published or not; days still to come lose him**;
 everything that is his goes too (inputs, Leave War leave and OIL — nothing left stored unseen); a day still to come
 takes him off (pending on a published day); asks twice, cannot be undone. **Underneath — D290 "hidden mark":** his
 row is kept, marked deleted and invisible everywhere (the data model's tombstone), never erased. **And names — D286:** an archived man's callsign may go to a new person (today it is refused); restoring him while it

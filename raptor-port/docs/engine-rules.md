@@ -2315,8 +2315,8 @@ pending**: the person in the seat has not changed, only the spelling, and
 `rowCrew` diffs identically — an AL full of spelling would be noise. *(Corrected 26 Sep 26: this said "Published day
 snapshots keep the spelling they were issued with" — not so, and against D186: a published day reads the callsign
 LIVE, a rename updating it at once (`engine/faceattrs.ts` — the issued face keeps CAT, seat, ground crew, SANS and SXO,
-"the callsign stays live"). The same live read is why a person deleted outright vanishes from every day he was on,
-published ones included — `[POST-OUT-OUTCOMES]`.)*
+"the callsign stays live"). The same live read is why a person deleted outright today vanishes from every day he was on,
+published ones included; `[POST-OUT-OUTCOMES]` builds the delete so days he already flew keep his puck — D297.)*
 
 ## Publishing / amendments
 
