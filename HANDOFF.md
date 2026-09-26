@@ -16,34 +16,29 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/post-out-outcomes -->
-### `claude/post-out-outcomes` — `[POST-OUT-OUTCOMES]` Part A built; Part B (the Leave War posting side) next, on PR #444's code — written 27 Sep 26 ~03:10, verify before use
-- **Where it stands:** cut from `claude/accounts-new-person` (PR #443). The plan, red-teamed twice (Fable + Astra; no
-  third round — the cap): `raptor-port/docs/superpowers/plans/2026-09-27-post-out-outcomes-plan.md` — its **Round 2**
-  section wins, then Round 1, then the text. Tier FULL. **Part A built and committed** (each red first; unit tests green):
-  the account words (Suspend / Enable / suspended — D285, D300); the callsign rule (an archived man's callsign free, the
-  index holds the roster only — D286; `engine/people.ts indexCallsigns`); the member view (D292; `perms.ts
-  switchRoleInForce`, `store.ts switchRoleView`); the delete (`state/person-delete.ts` — the loaded week, stashed weeks,
-  parked plans, sign boxes, planning calendar, inputs; one clock, the calendar date; Admin → Users "Delete account", asked
-  twice); Quals' Archived list (deleted man gone; Rename — D295). New styles only in `src/ui/postout.css`.
-- **Part B, next** (plan §13 and Round 1/2): take PR #444's branch in (not merged yet — 03:05), then the posting outcomes
-  (chips on the three posting doors, `runPoOutcomes`, `poOutcome`/`poDone`, `offBy`/`sanBy`, the SANS lay-on via one
-  `windowFor`, the back prompt, "Post out" / "Post in"), the war side of a delete (records from the cutoff, the `gone`
-  mark, `availableFor` by date, the OIL rule, the posting doors refusing a deleted man), Restore-as-rename (one command),
-  the Undo/Redo refusal that never walls (dead/abandoned), the Inputs "archived" group `!deleted`, the member-view Undo
-  words. Then documents, gates under the lock, the walk, both code reads, fixes, the sheet, his look card (seven
-  questions in the plan's Round 2 list).
-- **Coordination (D302 — the chats talk so they do not clash; merges stay his):** told the absence-record chat (PR #444)
-  and the five-flags chat (PR #445) what this branch changes in files they also change. **Promised:** in
-  `leavewar/state/store.ts` only the posting record, `setPeople`'s lay-on and a new `forgetPersonFrom`; in `engine/slots.ts`
-  only `renameCallsign`; in `state/view.ts` only a new `BACKPROMPT`; in `Matrix.tsx` only the posting sheets' wiring;
-  CSS appended. **They promised:** #444 leaves `postOut`, `undoPostOut`, `restoreArchivedPerson`, `runPoArchive`,
-  `archivedBy`, the posting sheets and SelectSheet's PO alone (its nearby changes: BidPicker's decision row and
-  AwardSheet, SelectSheet's Delete/Move row, store `awardsIn`/`clearCells`, `select.ts`, Matrix's move wiring); its
-  rulings from D264. #445 promised it leaves `renameCallsign`, `setPeople`, postings, the role badge and the Quals
-  Archived list alone (its changes: `fillSlot`'s "one man, once per row" refusal, `placeArmed`, `weekInset` removed,
-  the `.puck.me` CSS split, `drag.ts` / `avail.ts` refusals); its rulings D276–D279.
-- **Merge order to put to him (his "merge live" each):** #443 and #445 in either order → #444 → this branch last (`main`
-  merged in first, the full checks re-run). A one-screen merge list for him in the morning is promised.
+### `claude/post-out-outcomes` — `[POST-OUT-OUTCOMES]` BUILT and FULL-checked; waiting for his look and his "merge live" (merge LAST) — written 27 Sep 26 ~06:30, verify before use
+- **Where it stands:** built on `claude/accounts-new-person` (PR #443) with PR #444's posting code merged in (`4f3c40cc`).
+  Plan `raptor-port/docs/superpowers/plans/2026-09-27-post-out-outcomes-plan.md` (Round 2 wins). **Evidence sheet — read
+  it first:** `raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md` (the roll-call, the walk's 14 finds, the two
+  code reads' 9, every one fixed red-first; the break tests; the gates; **§10 his look card — 11 questions**). Walks A–D
+  (`scripts/handpass/po-walk-{a,b,c,d}.mjs`) all pass on the fixed build; pictures `docs/img/handpass/2026-09-27-post-out-outcomes/`.
+- **What it does:** the posting sheets' four chips (Overseas Sqn · Delete · SANS · Transfer, the last not yet) and what
+  each does on its date; Suspend / Enable / Delete account; a delete kept underneath as a hidden mark (days he flew keep
+  his puck, days to come lose him, saved, never brought back by a load or Undo); an archived man's callsign free, Rename
+  and Restore-as on Quals' Archived list, the "he's back" prompt; the admin's member view (the badge; the phone drawer).
+- **Found and fixed tonight (the big ones):** a delete not saved for the week on screen (a reload brought him back); an
+  endless loop in the posting pass; a SANS posting lost when made with Show SANS on; an admin able to delete himself by a
+  posting; a half-done posting for the last admin; a spanning request left "taken off"; a phone layout overflow.
+- **Not built, said so:** the Tracker half of D299 → `[POST-OUT-TRACKER]` (his question 5).
+- **Merge order for him (his "merge live" each, one at a time — D78):** #443 (accounts-new-person) and #445 (five
+  flags) in either order → #444 (absence record) → THIS branch last: merge `main` in first (conflicts expected only in the
+  shared records: HANDOFF, the file map, the rulings map — keep both sides), then the full checks again, then his word.
+- **Coordination (D302):** told the #444 and #445 chats every shared file changed (their promises unchanged: #444 left
+  `postOut` / `undoPostOut` / the posting sheets alone — confirmed at its head `1f25cccb`; #445 left `renameCallsign`,
+  `setPeople`, the badge and the Archived list alone). Settled with #444: `Matrix.tsx`, `sync.ts`, `BidPicker.tsx` are LF
+  on `main` and on both branches (the store is CRLF) — counted in raw bytes; Git Bash's `grep -c` misreports it.
+- **Traps written down:** ports 4186/4187 on this PC are held by the old presentation server (`docs/gates-and-deploy.md`);
+  scripted edits must keep each file's own line endings (memory `python-edits-crlf-trap`).
 - **Rulings:** D301 (start now), D302 (chats coordinate). Range D301–D309.
 <!-- /now -->
 
@@ -115,7 +110,7 @@ the later merge keeps both (D78).
 1. **HIS ORDER to the database step, about two months away (D203, 26 Sep 26):** now `[ACCOUNTS]` (with D200, D202 —
    answer his "how does a new user join" question first — answered, D204) with ITS OWN full check (D210) → its follow-on
    `[ACCOUNTS-NEW-PERSON]` (PR #443, waiting for his look) → **`[POST-OUT-OUTCOMES]`** (D291 — a posting out's outcomes;
-   accounts suspended and deleted; STARTED beside #443 before it merges, D301) with its own full check → the one changes window (`[DRAFT-PENDING]`) with its own full check →
+   accounts suspended and deleted; STARTED beside #443 before it merges, D301) — BUILT and FULL-checked 27 Sep 26, his look and "merge live" next, merged LAST → the one changes window (`[DRAFT-PENDING]`) with its own full check →
    "merge live" (D173); beside it, he talks to the IT side (`[IT-QUESTIONS]`). Development as normal: `[HUMAN-RETEST]`'s
    remaining three in his order (D147 — the absence record with `[S4-HUNT-REST]` — walked, on its branch, his look
    next — then change-recording, the Leave War links last), then `[LW-LOCKMARK]` → `[LW-WEEKDAY-WORK]` (`[PUB-UNAVAIL]`
@@ -128,10 +123,9 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 27 Sep 26, `claude/absence-record-d147-af6a50` (the final code of the absence-record
-re-test), one run under the PC lock on a quiet PC (`raptor-port/docs/handpass/2026-09-26-absence.md` §9): unit
-**6274 / 6274** (388 files) · build clean · tfin **728 / 0** · e2e **474 passed**, 48 skipped · smoke **443 / 0** ·
-rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
+The latest counts watched — 27 Sep 26, `claude/post-out-outcomes` (the final code of `[POST-OUT-OUTCOMES]`), one run under
+the PC lock (`raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md` §9): unit **6469 / 6469** (399 files) · build
+clean · tfin **728 / 0** · e2e **478 passed**, 48 skipped · smoke **443 / 0** · rulecheck OK · docsize OK. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.
 

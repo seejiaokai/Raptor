@@ -54,8 +54,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
    approval first), on `claude/accounts-new-person`, its own FULL check — DONE, the PR open for his look and "merge
    live"; **[POST-OUT-OUTCOMES]** STARTED 27 Sep 26 beside it, before #443 merges (D301, amending D291), on
    `claude/post-out-outcomes` cut from `claude/accounts-new-person` (D291 — D229, D280, D283–D300: a posting out says
-   which outcome; accounts suspended / deleted), its own FULL check, its merge after #443's — BUILT, the check under way
-   (with `[POST-OUT-TRACKER]` after it, on his answer); then **[DRAFT-PENDING]** — the one changes window,
+   which outcome; accounts suspended / deleted), its own FULL check, its merge after #443's — BUILT and FULL-checked, his
+   look next (with `[POST-OUT-TRACKER]` after it, on his answer); then **[DRAFT-PENDING]** — the one changes window,
    on top of accounts, its own FULL check (D210). `[ACCOUNTS]` itself MERGED 26 Sep 26 (PR #442, his "merge live").
 2. **Now, beside the building — [IT-QUESTIONS]:** talk to the IT side (his, not code); their approvals take weeks.
 3. **Development as normal — [HUMAN-RETEST]**'s remaining three, in HIS order (D147): the absence record TOGETHER with
@@ -1201,10 +1201,11 @@ force). **Place — D291:** straight after `[ACCOUNTS-NEW-PERSON]` merges, befor
 member view, the delete, Quals' Archived list; Part B, on PR #444's posting code: the four chips on every posting door,
 the outcomes on the date, take-back, Restore and Restore-as, the "he's back" prompt, SANS with Show SANS, a deleted man
 read by date, Undo passing over a step that would bring him back). Plan: `raptor-port/docs/superpowers/plans/2026-09-27-post-out-outcomes-plan.md`;
-register PO1–PO12 (`raptor-port/docs/superpowers/specs/2026-09-26-accounts-behaviour-register.md`). **Still owed before
-"merge live":** the FULL check (gates, the walk on desktop and phone, Fable and Astra's code reads, the evidence sheet
-`raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md`) and his look — with the plan's seven questions on the look
-card. **Not built, said so:** the Tracker half of D299 (`[POST-OUT-TRACKER]`).
+register PO1–PO12 (`raptor-port/docs/superpowers/specs/2026-09-26-accounts-behaviour-register.md`). **FULL check DONE
+27 Sep 26** (the walk A–D on desktop and phone, Fable and Astra's code reads — every finding fixed red-first — and the
+gates): the evidence sheet `raptor-port/docs/handpass/2026-09-27-post-out-outcomes.md`. **Next: his look** (the look card,
+its §10 — 11 questions) **and his "merge live", merged LAST** (after #443, #445 and #444, `main` merged in first).
+**Not built, said so:** the Tracker half of D299 (`[POST-OUT-TRACKER]`).
 
 ### [POST-OUT-TRACKER] A deleted man and the Tracker's courses "still running" (D299 — approved, NOT built; filed 27 Sep 26)
 D299 lists "his place on any course still running — goes". The Tracker has no notion of a course "still running", and the

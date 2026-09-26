@@ -53,12 +53,14 @@ editor sheets' comments (D201); D286 narrows the one-callsign rule (PID-01).
 | 19 | A stashed week / a parked plan to come | gone there too | Test person-delete.test.ts |
 | 20 | Load a published version / switch a plan on a day to come | he is left out; the message says so | Walked b09 · Test person-delete.test.ts |
 | 21 | Undo after a delete | never brings him back; the greyed button says why | Walked b10 · Test timeline.test.ts |
-| 22 | His inputs: past / spanning / future | kept / ended the day before / gone | Test person-delete.test.ts |
+| 22 | His inputs: past / spanning / future (and spanning with its row landed on a day to come — R6) | kept / ended the day before, still accepted / gone | Test person-delete.test.ts |
 | 23 | Leave War grid: months he was here; after | his row with leave; no row | Walked a19, a20 |
 | 24 | Leave War OIL tracker | no row for him | Test (the `gone` guard) · **not walked** (§8) |
 | 25 | OIL pass on a published day to come | no credit for him | Test (the `creditable` date rule) |
 | 26 | Planning calendar pucks | a gap from his date | Test person-delete.test.ts |
 | 27 | Tracker Students card | **no-because:** `[POST-OUT-TRACKER]` — the Tracker's "course still running" is his to define (question 5) | — |
+| 27a | Tracker "+ Add" roster | a deleted man not offered | by construction: `peoplewire.ts` skips an archived body, and the mark sets `archived` (Fable) |
+| 34 | A posting that must wait (the last admin; a stored week) | the sheet says so first; nothing half done; his account row says why | Walked d01–d03 · Test postout-outcomes.test.ts (R1, R2) |
 | 28 | Leave War with a SANS posting, Show SANS off / on | old place, hatched / (to come) hatched with its door; (run) SANS group | Walked a12, c06, c07 · Test postout-outcomes.test.ts |
 | 29 | The badge (desktop), the drawer switch (phone) | admin: both ways; member: none | Walked c01, c02, c05, c08, c09 · Test memberview.test.tsx |
 | 30 | In the member view | no Admin, no Edit Schedule, no posting door; his admin step's Undo says "switch back" | Walked c02–c04 |
@@ -85,7 +87,7 @@ The walk scripts assert the right behaviour; each finding below was reproduced b
 | W6 | "Undo post out" when a roster man now holds his callsign closed and did nothing | Fable (scenario 2) | FIXED — it says so, and where to go · postout-outcomes.test.ts |
 | W7 | An admin could delete HIMSELF by posting himself out with Delete (the pass deleted the signed-in admin) | Fable (scenario 5) | FIXED — refused with the Admin → Users words · postout-outcomes.test.ts (red without) |
 | W8 | A deleted man's past input: the row editor's person box drew another man's name; the filter could not find his kept inputs | Fable (scenario 7) | FIXED — "Hex (deleted)" in his rows; a "Deleted" group in the filter · quals-archived.test.tsx (red without) |
-| W9 | The last-admin hold was said only once, in a passing message | Fable, Astra (scenario 1) | FIXED on the three posting sheets (`po-blocked`…) · po.test.tsx, postout-outcomes.test.ts · the account row: see §8 |
+| W9 | The last-admin hold was said only once, in a passing message | Fable, Astra (scenario 1) | FIXED on the three posting sheets (`po-blocked`…) and, after the code reads (R2), on his account row too · po.test.tsx, postout-outcomes.test.ts · walk D |
 | W10 | Tapping the armed Delete chip again on the Post out sheet turned the posting into "nothing else" | the builder, writing the test | FIXED · po.test.tsx (red without) |
 | W11 | The Delete chip and the "Tap again" button carried the same test name | the builder | FIXED (`postout-delete-go`) |
 | W12 | **Phone:** Quals' Restore-as box (and Rename's) ran off the right edge of a 390px screen | walk C (c11, first run) | FIXED (`.qarchrow` wraps) · re-walked c11 |
@@ -95,10 +97,32 @@ The walk scripts assert the right behaviour; each finding below was reproduced b
 Errors seen in the page's console during the walks: **none**.
 
 ## 6. The code reads (Fable 5.1 and Astra, blind to each other, with this sheet in hand)
-*To come — after the full gates.*
+Brief `docs/superpowers/briefs/2026-09-27-post-out-outcomes-read-brief.md`; reports
+`docs/handpass/2026-09-27-post-out-outcomes-{fable,astra}-read.md`. **Both: FIX FIRST.** Every finding below was fixed
+with a test red first (break tests in §7) — none ruled away, none filed.
+
+| # | Finding | By | Disposition |
+|---|---|---|---|
+| R1 | A posting's Delete skipped the stored-week check Admin → Users' delete runs — a delete with a week still holding him | Astra 1, Fable 4 | FIXED — the same check in the pass (scan and command); `applyDelete` refuses inside the command if a week became unreadable in between |
+| R2 | An Overseas posting for the last admin archived him first, then found his account could not be suspended — half done; said only once, by its sentence | Astra 2 | FIXED — a posting that cannot be done whole does nothing (`poHeldReason`, one answer for the pass, the three sheets and his account row); said once per posting; runs when the reason goes · walk D |
+| R3 | A SANS man the war does not show (Show SANS off), deleted: his past Leave War row was lost | Astra 3, Fable 3 | FIXED — kept for the months he was here when he has a past there (a war record or an input), either order |
+| R4 | Post out / Undo post out were recorded as a generic Leave War edit, not the posting command | Astra 4 | FIXED — always `lw.postout` |
+| R5 | Edit aircrew and the counter form stayed open with live controls after the switch to the member view | Astra 5 | FIXED — closed on the switch; not reopened on the way back |
+| R6 | A request spanning the cutoff, its row on a day to come, was left "taken off" — gone from the days before; a published day he flew read pending | Fable 1 | FIXED — the kept part stays accepted |
+| R7 | Undo post out left the posting's account suspension when the archive was made by hand | Fable 2 | FIXED — the take-back route (as moving the date already was) |
+| R8 | `applyDelete` could run outside a command | Fable 5 | FIXED — refuses outside one |
+| R9 | A posting's Delete could delete the person signed in without a word | Fable 6 | FIXED — "You have been deleted by your posting out — please sign out" |
+
+**Their explicit negatives, in short** (both reports carry the full lists): the delete is one command and now saved
+whole; issued versions are never rewritten; the load belt; ALL AVAIL and OIL by date; the four new command types and
+§11; `switchRoleInForce` gated on the account; Undo passes over a step that would bring him back; the take-back touches
+only what the posting made; the callsign index; the words as ruled.
 
 ## 7. Break tests
-Each fix went red with its line removed, then green: the load belt; the SANS-to-come window; the hand SANS tick; the
+**The code reads' fixes** (a script undid each in turn, ran its test, restored the file): R6 spanning request, R2 the
+last admin waits, R1 the stored-week check, R3 the hidden SANS man's row, R4 the posting command, R9 the self-delete
+message, R5 the member-view editors — **all red when undone.** (R7 rides R4's take-back route; its own test pins it.)
+**The walk's fixes:** each fix went red with its line removed, then green: the load belt; the SANS-to-come window; the hand SANS tick; the
 self-delete refusal; the Inputs "Deleted" group; both delete doors' save step; the armed-Delete back-out; the chips' Undo
 post out wording. **One is a belt, said so:** updating the posting record in place (`markPostingDone`) does not go red on
 its own once the SANS window is fixed — it stays as a safety belt. The endless loop's reproducer is `poarchive.test.ts`'s
@@ -110,21 +134,29 @@ not reproduce it and is labelled so).
   one body. The Inputs row editor on a deleted man's row (row 14) — pinned by a unit test of the filter, not pictured.
 - The OIL tracker's missing row, the OIL pass, ALL AVAIL by date, the planning calendar, the stash and parked plans — unit
   tests (the delete's reach is a model sweep; the walk proves the model is saved and drawn).
-- The account row's "can't be deleted yet" line (the plan's Round 2 item 3 names the account row too): **not built** —
-  the last admin who can sign in is normally the admin himself, whose own row reads "you" and cannot be opened; the three
-  posting sheets and the one-time message say it. On the look card.
 - A posting pass running under a member's session on boot (Fable 4) — the pass is a system projection whatever the
   session; unit-tested sessionless. The change history names the signed-in person for the sweep's emptied seats — on the
   look card.
 - The Tracker (row 27) — not built, `[POST-OUT-TRACKER]`.
+- The guest view, the print and the CSV of a published day after a delete — not walked; they print the ISSUED version,
+  which the delete never touches (Fable, sound by construction).
+- A tap on a deleted man's greyed day to come opens nothing and says nothing (by design — his posting is final); an admin
+  can still add leave or an award on his PAST days (as for any posted-out man). Both on the look card (10).
+- A Post IN (`setPostIn`) is still written as a plain Leave War edit, not a command of its own — as before this build;
+  not raised by the reviewers for Post in, noted here.
 
 ## 9. The gates
-Run under the shared lock (`gatelock.mjs run`, browser tests on port 4191), 27 Sep 26 ~05:05–05:25, on the branch at
-`db15e3b2` (walk C's commit; after it only documents changed): **unit 6,461 passed (399 files) · build passed · the
-original's checks 728 passed, 0 failed · browser tests 478 passed, 48 skipped, 0 failed · the Tracker smoke 443 passed,
-0 failed · rulecheck passed (171 rulings, PO1–PO12 all named) · docsize passed** (`OVER by 94, deferred (D29)` — a code
-change never trims a document). An earlier run the same night was lost to a port another server held (4186) and is
-not counted (`docs/gates-and-deploy.md`, the trap written down).
+**The final run, on the fixed code** (after the code reads' fixes and walk D — commit `90524122`; only documents changed
+after it), under the shared lock, browser tests on port 4191, 27 Sep 26 ~06:05–06:25: **unit 6,469 passed (399 files) ·
+build passed · the original's checks 728 passed, 0 failed · browser tests 478 passed, 48 skipped, 0 failed · the Tracker
+smoke 443 passed, 0 failed · rulecheck passed (171 rulings, PO1–PO12 all named) · docsize passed** (`OVER by 94, deferred
+(D29)`). The earlier green run (before the reads' fixes, 6,461 unit) is superseded by this one; a run lost to a port
+another server held (4186) is not counted (`docs/gates-and-deploy.md`).
+
+## The Walk line
+`Walk: docs/handpass/2026-09-27-post-out-outcomes.md · 50 pictures (A 23, B 11, C 13, D 3; the re-walk 47 more in
+rewalk/) · 35 roll-call rows · 14 orders and doors · MISSING: 23 fixed (W1–W13, R1–R9, the account-row placement) / 0
+ruled / 1 filed ([POST-OUT-TRACKER]) · 1 noted for him (W14)`
 
 ## 10. His look — the look card
 **What to try (about five minutes, on the preview link):** Leave War → tap Hex on today → Post out: the four chips, the one
@@ -149,8 +181,9 @@ account → it asks again → second tap. Tap your name badge ("Saber · Admin")
    today). Keep? *Kept.*
 8. **Undo and postings:** a posting out is not a step of the Undo button — its own "Undo post out" takes it back (the
    Leave War's Undo stays grey after one). Keep? *Kept, as before.*
-9. **The last admin:** a posting that would delete or suspend the last admin who can sign in waits, and the posting
-   sheets say so. His own account row does not (it reads "you" and cannot be opened). Enough? *Built so.*
+9. **The last admin:** a posting that would archive, suspend or delete the last admin who can sign in does nothing
+   at all until another admin can — never half done. The posting sheet says so before you confirm, and his account row
+   on Admin → Users says why. *Built so.*
 10. **An admin may still add leave or OIL on a deleted man's past days** (the past keeps his record). Wanted? *Allowed.*
 11. **Enable on a man who was only suspended by hand** (never archived) also shows "he's back". Keep, or only after an
     overseas posting? *Shows.*

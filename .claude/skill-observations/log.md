@@ -778,3 +778,33 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** (1) When adding a guard that suppresses user input, write down what distinguishes the accident from the intended act (time, place, target, pointer type) and key the guard on the narrowest such property, with one test of the accident AND one test of a fast legitimate act that must still pass. (2) Run the pre-existing suites that exercise the same surface EARLY (right after the guard is added), not only at the final gate — they were written without knowledge of the guard, so they are the tests able to falsify it.
 
 **Principle:** Tests written alongside a guard inherit its assumptions and cannot expose its cost; the older tests of the same surface are the independent check, and a guard should discriminate on the property that actually defines the accident, not on a proxy like elapsed time.
+
+### Observation 297: A new write path's unit tests read the live model — none read the saved copy — and the delete was never saved
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** `[POST-OUT-OUTCOMES]` FULL check, the walk of a delete from Admin → Users (numbered past 296, the highest on this branch and on PR #444's pushed head)
+**Skill:** internal — the Raptor bug-check order (`raptor-port/docs/bug-check-order.md` §8)
+**Type:** internal
+**Phase/Area:** §8 "making the checks find" — tests of a new writer
+
+**Issue:** Seventeen unit tests of a new multi-store delete all passed; every one read the live in-memory model. The walk planted a man on two future days, deleted him, reloaded — and he was back: the command never took the schedule's save step (the deferred `HOOKS.histPush`), so the week on screen was never written to storage. No test looked at what was saved, so nothing could go red.
+
+**Suggested improvement:** Add to §8: every NEW writer (a command, a pass, a door) gets at least one test that reads the SAVED copy (wire a Whiteboard with `wirePersist`, act, read `wb.get(...)`) — not only the live model. And the walk's reload step stays mandatory for any change that writes.
+
+**Principle:** A test of a write that never reads back what was persisted proves the memory, not the save; for every new writer, assert on the stored copy at least once.
+
+### Observation 298: Line endings measured with Git Bash `grep -c $'\r$'` misreport — and a normalise-to-CRLF edit rewrote three LF files
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** `[POST-OUT-OUTCOMES]`, scripted edits to Leave War files; a parallel chat then raised the same false alarm
+**Skill:** internal — memory `python-edits-crlf-trap` (the scripted-edit recipe)
+**Type:** internal
+**Phase/Area:** scripted file edits on the Windows desktop; checking a commit before push
+
+**Issue:** A script that normalised a file to LF, edited it, and wrote it back with CRLF was applied to three files that are LF on `main`, committing a 15,000-line endings-only diff. The check used (`grep -c $'\r$'` in Git Bash) reported every line of those LF files as CRLF, so it could neither prevent nor catch it; a parallel chat used the same count and warned the fix was wrong. Raw byte counting (node over `git cat-file -p`) settled it.
+
+**Suggested improvement:** In the recipe: decide each file's ending from `main`'s stored bytes before writing (node: `execFileSync('git',['cat-file','-p','origin/main:<f>']).includes(13)`), keep that ending, and before every push compare `git show --stat` with `git show --stat --ignore-cr-at-eol` — a gap is ending churn.
+
+**Principle:** Measure line endings in raw bytes, never with a tool that may translate them; and check each commit's size with and without ending differences.
