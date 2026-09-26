@@ -59,6 +59,24 @@ every result against the NEW flow.
   `w5-05-postout-file.mjs`, `w5-05b-postout-row-probe.mjs`, `w5-05d-vanish-trigger-probe.mjs`,
   `w5-06b-stale-sheet-probe.mjs`, `w5-02b-medical-hours-control.mjs`.
 
+- **W6** (NEW — the roll-call rows nobody walked; found when the roll-call was consolidated, 26 Sep 26): not a re-walk
+  but a first walk, on the rebuilt app, at BOTH widths, admin and member, of the places an absence shows that no walker
+  and no host log reached. Plan §4 and §9 say what each must show. Set the absences up through the app's own controls
+  (a leave, a half-day leave, a medical, a course, a war-approved leave; one of them filed LATE on a published day, H1's
+  recipe in `ab-h1-published-doors.mjs`), then for EACH row: does it show the absence, can the person act on it there,
+  is anything painted over it. **R12** the manning sheet and the under-manned list (tap a manning row's name — a man
+  with a leave and a medical on one day counted away ONCE; an award counts nobody). **R17** the scheduler board's
+  Unavailable and Personal Inputs panels (desktop and phone; the fold; + Add). **R18** View-only Sched's
+  working-draft view ("Working draft — not issued") on a published day carrying a late input: the face as issued, the
+  draft showing the input. **R19** the crew picker and the ALL AVAIL count / window: a man on leave or medical is not
+  offered as free and is not counted available. **R22** the schedule's export (the Unavailable on a published day, as
+  issued). **R27** the Leave War's clash strip (admin only). **R30** the pending list (tap "N pending" on a published
+  day carrying a late input: it names the input and jumps to it). **R32** the OIL question sheet (a leave filed on a
+  weekend day a man is on a named duty). **R36** print (the printed schedule of a published day carrying a late input —
+  as issued). Row R23 (Week Insights) is NOT walked: its question is the owner's (`OUTSTANDING.md`
+  `[INSIGHTS-WORKING-COPY]`). Write your scripts as `w6-*.mjs` beside the others (`AB_WHO=rewalk/w6`); the drivers and
+  the e2e tests (`raptor-port/e2e/`) and the older walk scripts (`scripts/handpass/am/`) carry the selectors.
+
 ## What you hand back
 Write `raptor-port/docs/handpass/parts/2026-09-26-absence-rewalk-wN.md`: a table — finding · what must happen now
 (register §12) · what you saw · PASS / FAIL · the pictures — at BOTH widths where the first walk had both. Then

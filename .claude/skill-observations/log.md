@@ -629,3 +629,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** Add a step to §4's list: before fixing a confirmed finding, search the tests for one that pins the opposite as intended; if one exists, the finding goes to the owner as a question (with the safe interim — e.g. make the action SAY what it removes), not into a fix.
 
 **Principle:** A reproduced behaviour that a test deliberately pins is a design disagreement; settle it with the owner, not with the reviewer's fix.
+
+### Observation 293: Scaffold the evidence sheet with every required section when the walk starts
+
+**Status:** OPEN
+**Date:** 2026-09-26
+**Session context:** [HUMAN-RETEST] the absence record, FULL tier, five walkers fanned out; numbered past the parallel branches' logs (highest seen elsewhere: 285).
+**Skill:** internal — the bug-check standing order (`raptor-port/docs/bug-check-order.md` §9) and the walker brief template
+**Type:** internal
+**Phase/Area:** the evidence sheet, written during the walk
+
+**Issue:** The sheet was opened with §0 (status), §1 (the eight answers), §2 (scope) and §3 (findings) and grew only where findings landed. The sections §9 requires — the consolidated roll-call with no blank cell, the orders walked, the break tests, errors seen, what was NOT walked, the gate counts — did not exist until the close, when they had to be assembled from six separate walk records. Each walker had kept its own roll-call rows, so nothing was lost, but the consolidated table (the owner's check 3 in §9) was a closing-time job, and a blank row could only be seen then.
+
+**Suggested improvement:** When the evidence sheet is created, lay down EVERY §9 section as an empty heading, and the roll-call table with one row per surface and its columns already drawn. Each walker's hand-back then fills rows of the ONE table (the host copies them in as each report lands), so a row nobody walked is visible as a blank during the walk, not at the report. Add the skeleton to the walker brief template.
+
+**Principle:** A required output format is scaffolded at the start, so a missing part shows as a visible gap while there is still time to fill it, instead of being discovered when the work is being closed.
