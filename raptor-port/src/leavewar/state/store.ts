@@ -1538,6 +1538,23 @@ export function setPostIn(id: string, date: string | null): boolean {
   return true
 }
 
+/** WHY A POSTING DATE WOULD BE REFUSED — the sentence every posting door shows (the absence-record re-test, AB5,
+ *  26 Sep 26). `setPostOut` / `setPostIn` refuse a window that closes before it opens, and every sheet swallowed that
+ *  refusal: the bid sheet's confirm closed as though it had worked, the posting sheets' date box snapped back, the
+ *  drag-selection's sheet reported done — and nothing was said (Fable F5, reproduced on screen). The doctrine: a
+ *  refused value is put back AND the person is told. The same tests as the two writers, so the words and the refusal
+ *  cannot disagree; null when the date would be taken. Dates in the sheets' own voice (they print 2026-06-15). */
+export function postingProblem(id: string, kind: 'in' | 'out', date: string): string | null {
+  const person = state.people.find(p => p.id === id)
+  if (!person) return null
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return 'Pick a whole date first.'
+  if (kind === 'out' && person.from !== null && addDays(date, -1) < person.from)
+    return `Posted in on ${person.from} — the post-out has to be after that day.`
+  if (kind === 'in' && person.to !== null && date > person.to)
+    return `Posted out from ${addDays(person.to, 1)} — the post-in has to be before that day.`
+  return null
+}
+
 /* The persisted squadron window (State.postOuts): the person as they stand
    now, kept while EITHER end is set and dropped once both are clear. One body
    so the two ends cannot disagree about when the record goes. */

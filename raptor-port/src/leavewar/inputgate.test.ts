@@ -12,7 +12,7 @@ import {
   ackReplacement, advanceStage, getState, setBidState, initStore as lwInitStore, lwEditLists, lwHistInit, rawState, setCell, setPeople, setRole, setViewer,
 } from './state/store'
 import { memoryBackend } from './state/storage'
-import { wireLeaveWarSync } from './sync'
+import { wireLeaveWarSync, sliceInput } from './sync'
 import { globalRedo, globalUndo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
 import { installGlobalUndo } from '../state/undo-wire'
@@ -235,5 +235,31 @@ describe('undo and redo obey the same rules (B7)', () => {
     expect(r.ok).toBe(false)
     expect(said.some(m => m.includes('already has OL on 10 Feb'))).toBe(true)
     expect(rowsOf('ammo', 'LL')).toHaveLength(0)
+  })
+})
+
+/* A CUT LEAVE SAYS ITS OWN LAST DAY (the absence-record re-test, AB3, 26 Sep 26 — Fable F3, reproduced on screen). The
+   medical trim and the war's approve-extend rewrite a remark's "till <date>" (withRemarksTail); the one body every
+   OTHER cut uses — a medical cutting leave, the war's un-approve, delete and move (sliceInput) — copied the remark
+   verbatim, so the first piece of "LL 20–24 Jul, Bali till 24 Jul" cut on the 22nd still said "till 24 Jul" on the
+   Inputs page, the week and the board. And D189 counts that token: a published day the piece covers must read the
+   words that match it. */
+describe('a cut leave says its own last day (AB3)', () => {
+  it('a medical in the middle leaves each piece "till" its OWN last day, the typist’s words kept', () => {
+    expect(file('ammo', 'LL', 'Feb 9', { endDate: 'Feb 13', remarks: 'Bali till 13 Feb' })).toBe(true)
+    expect(file('ammo', 'ATT C', 'Feb 11')).toBe(true)
+    const pieces = rowsOf('ammo', 'LL').map((r: any) => `${r.date}${r.endDate ? '-' + r.endDate : ''}: ${r.remarks}`).sort()
+    expect(pieces).toEqual(['Feb 12-Feb 13: Bali till 13 Feb', 'Feb 9-Feb 10: Bali till 10 Feb'])
+  })
+  it('a remark with no date in it is left exactly as typed', () => {
+    expect(file('ammo', 'LL', 'Feb 9', { endDate: 'Feb 13', remarks: 'Bali' })).toBe(true)
+    expect(file('ammo', 'ATT C', 'Feb 11')).toBe(true)
+    expect(rowsOf('ammo', 'LL').map((r: any) => r.remarks)).toEqual(['Bali', 'Bali'])
+  })
+  it('the war’s own cut body rewrites it too — un-approve, delete and move all go through it', () => {
+    const row = { iid: 'x1', person: 'ammo', type: 'LL', date: 'Feb 9', endDate: 'Feb 13', yr: 2026, allday: true, remarks: 'till 13 Feb Bali' }
+    expect(sliceInput(row, '2026-02-09', '2026-02-10', true).remarks).toBe('till 10 Feb Bali')
+    expect(sliceInput(row, '2026-02-12', '2026-02-12', false).remarks).toBe('till 12 Feb Bali')
+    expect(sliceInput({ ...row, remarks: 'on 9 Feb' }, '2026-02-16', '2026-02-16', false).remarks).toBe('on 16 Feb')
   })
 })

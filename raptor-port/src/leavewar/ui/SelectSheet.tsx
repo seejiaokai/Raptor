@@ -53,7 +53,7 @@ export function SelectSheet({
   /** enter move-mode (the matrix owns the ghost + the drop) */
   onMove: (sel: Selection) => void
   /** admin, single-person selections only: post that one person out */
-  onPostOut?: (personId: string, fromDate: string, archive: boolean) => void
+  onPostOut?: (personId: string, fromDate: string, archive: boolean) => string | void
   onClose: () => void
 }) {
   const [portion, setPortion] = useState<Portion>('full')
@@ -186,7 +186,12 @@ export function SelectSheet({
           </div>
           <div className="bidsheet-row postout">
             <button className="dchip po" data-testid="sel-po-confirm"
-              onClick={() => { onPostOut(sel.people[0], poDate, poArchive); onDone(true) }}>
+              onClick={() => {
+                /* a refused posting keeps the sheet and says why (AB5) — it used to report done whatever the store said */
+                const why = onPostOut(sel.people[0], poDate, poArchive)
+                if (why) { setNote(why); return }
+                onDone(true)
+              }}>
               Confirm post-out
             </button>
           </div>

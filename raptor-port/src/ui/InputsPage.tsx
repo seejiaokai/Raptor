@@ -37,7 +37,8 @@ import {
 import { DocConfirm } from './DocConfirm'
 import { docFields, docHas, rowDocIds } from '../state/docs'
 import { useVersion } from './useStore'
-import { exportCSV } from './export'
+import { exportCSV, inputRows } from './export'
+import { logAction } from '../engine/editlog'
 import { RangeCal } from './RangeCal'
 
 /* The remarks tail (owner, Aug 26; single-day "till" added 18 Aug 26). Picking
@@ -441,6 +442,12 @@ export function InputsPage() {
        with its input; the next one needs its own. */
     const finishAdd = () => {
       const row = INPUTS[0]
+      /* THE HISTORY LINE THE EDIT WINDOW'S ADD ALWAYS WROTE (AB8a, 26 Sep 26): Edit history names an input added
+         and an input removed (engine-rules §The edit log) — commitNewInput wrote "Input added — …", this page's own
+         Add, the door people use most, wrote nothing. The same sentence, once, after the write has landed (every
+         path that files reaches here only when writeInputsBatch succeeded). */
+      const cs = PEOPLE[row.person] ? PEOPLE[row.person].cs : row.person
+      logAction(null, `Input added — ${cs}, ${row.type}, ${row.date}${row.endDate ? '–' + row.endDate : ''}${row.acc === 'g' ? ' (on the Ground Programme)' : ''}`)
       setPinned(p => [row, ...p])
       setFlash(f => [row, ...f])
       setJustAddedIid(row.iid)
@@ -941,9 +948,7 @@ export function InputsPage() {
             over whatever the table is already filtered and windowed to
             (INPVIEW, state/view.ts); wherever it sits, the filters still apply */}
         <button className="abtn" id="inExport" onClick={() => {
-          const out: any[][] = [['Name', 'Date', 'Start', 'End', 'Type', 'Remarks']]
-          INPUTS.forEach((r: any) => out.push([PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person, r.date, r.allday ? 'all day' : hhmm(r.s), r.allday ? 'all day' : hhmm(r.e), r.type, r.remarks]))
-          exportCSV('142-inputs.csv', out)
+          exportCSV('142-inputs.csv', inputRows(INPUTS))   // each input's whole span (AB10) — ui/export.ts
           /* a phone browser often shows nothing at all when a download lands —
              no bar, no tray notification the user is looking at — so the tap
              otherwise reads as dead (owner audit) */

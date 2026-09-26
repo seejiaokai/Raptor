@@ -160,7 +160,17 @@ export async function inputsWindow(page, fromIso, toIso) {
     await page.waitForTimeout(150)
   }
   await walkTo(fromIso); await walkTo(toIso || fromIso)
-  if ((await btn.getAttribute('aria-expanded')) === 'true') { await btn.click(); await page.waitForTimeout(300) }
+  /* close it the way a person does: on a phone the popup sits over its own button, so tap OUTSIDE it (the app's
+     standing popup rule — a click-open popup closes on a press outside it), in the empty space below it */
+  if ((await btn.getAttribute('aria-expanded')) === 'true') {
+    const at = await page.evaluate(() => { const p = document.querySelector('#inRangePop').getBoundingClientRect(), bt = document.querySelector('#inRangeBtn'), b = bt.getBoundingClientRect()
+      /* the button itself when it is what sits under a finger (desktop); otherwise the empty space outside the popup */
+      const bx = b.left + b.width / 2, by = b.top + b.height / 2, h = document.elementFromPoint(bx, by)
+      if (h && (h === bt || bt.contains(h))) return { x: bx, y: by }
+      const below = p.bottom + 24 < innerHeight - 4
+      return { x: Math.min(innerWidth - 8, p.left + p.width / 2), y: below ? p.bottom + 24 : Math.max(4, Math.min(p.top, b.top) - 24) } })
+    await page.mouse.click(at.x, at.y); await page.waitForTimeout(300)
+  }
   return (await btn.innerText()).trim()
 }
 /** Delete one input from the Inputs table through its row's ✕ (the window must already show its date). */

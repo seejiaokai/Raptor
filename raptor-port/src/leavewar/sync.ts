@@ -17,7 +17,7 @@
 // The derived passes are reconciliation, not queues: compute the desired state,
 // diff, write only the difference; a SYNCING flag guards re-entrancy.
 
-import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, withRemarksTail, inputCoversDate, nowStamp } from '../engine/inputs'
+import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, withRemarksTail, remarksTailWord, inputCoversDate, nowStamp } from '../engine/inputs'
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { mayManageRoster, viewerId, me } from '../state/perms'
@@ -381,6 +381,14 @@ export function sliceInput(row: any, from: string, to: string, keepIid: boolean)
     if (Object.keys(m).length) out.lwMoved = m
     else delete out.lwMoved
   }
+  /* ITS WORDS FOLLOW ITS DATES (the absence-record re-test, AB3, 26 Sep 26 — Fable F3, reproduced on screen). This
+     body copied the remark verbatim, so a piece cut by a medical (the gate's sick-cuts-leave), un-approved, deleted or
+     moved by the war kept "till 24 Jul" when it now ended on the 21st — on the Inputs page, the week and the board.
+     The medical trim and the war's approve-extend already rewrite the token (withRemarksTail); now every cut does.
+     Only a remark that CARRIES the token is touched, and the typist's other words stay where they are. D189: on a
+     published day the piece still covers, the changed words are a change like any other. */
+  const word = remarksTailWord(row.remarks)
+  if (word) out.remarks = withRemarksTail(row.remarks, from, to, word)
   if (!keepIid) { delete out.iid; inpId(out) }
   return out
 }

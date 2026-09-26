@@ -47,7 +47,7 @@ import {
   type Figure,
   type FigureCtx,
 } from '../engine'
-import { clearRecordById, figureCtxOf, recordsAt, setBalance, setManualCredit, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostIn, setPostOut, visibleFigures, type MoveResult, type EventMoveResult } from '../state/store'
+import { clearRecordById, figureCtxOf, recordsAt, setBalance, setManualCredit, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostIn, setPostOut, postingProblem, visibleFigures, type MoveResult, type EventMoveResult } from '../state/store'
 import { BidPicker, DecisionSheet, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
@@ -82,6 +82,16 @@ import { useVersion } from './useStore'
 import { DayListSheet } from './DayList'
 import type { Views } from '../engine/dayview'
 import './matrix.css'
+
+/** A posting through the store, or the sentence saying why it was refused (the absence-record re-test, AB5, 26 Sep
+ *  26): every posting door — the bid sheet's PI / PO, the two posting sheets, the drag-selection's PO — shows it and
+ *  stays open, where each used to close (or snap back) with nothing said. */
+function postOutOr(id: string, from: string, archive?: boolean): string | undefined {
+  return setPostOut(id, from, archive) ? undefined : (postingProblem(id, 'out', from) || 'That posting date was not taken.')
+}
+function postInOr(id: string, from: string): string | undefined {
+  return setPostIn(id, from) ? undefined : (postingProblem(id, 'in', from) || 'That posting date was not taken.')
+}
 
 /** A move refusal, in plain words for the move banner. */
 function moveReason(r: Exclude<MoveResult, 'moved'>): string {
@@ -4114,7 +4124,7 @@ export function Matrix() {
           people={csOf}
           role={role}
           canDecide={canDecide(period.stage, role)}
-          onPostOut={role === 'admin' ? (pid, from, archive) => setPostOut(pid, from, archive) : undefined}
+          onPostOut={role === 'admin' ? (pid, from, archive) => postOutOr(pid, from, archive) : undefined}
           onMove={s => setMoveSel(s)}
           /* a PARTIAL write keeps the sheet up (keepOpen) so its "N written,
              M skipped" note is actually read — closing here killed the note
@@ -4190,7 +4200,7 @@ export function Matrix() {
              is the day after the stored last-day-in. */
           poFrom={addDays(openPerson!.to!, 1)}
           archive={openPerson!.poArchive === true}
-          onChange={(from, archive) => setPostOut(open.id, from, archive)}
+          onChange={(from, archive) => postOutOr(open.id, from, archive)}
           onUndo={() => { setPostOut(open.id, null); close() }}
           onPlace={() => setPlaceAt(openKey)}
           onClose={close}
@@ -4209,7 +4219,7 @@ export function Matrix() {
              the PI date itself — the first day they ARE here — where the
              post-out sheet has to add a day to the stored last-day-in. */
           piFrom={openPerson!.from!}
-          onChange={from => setPostIn(open.id, from)}
+          onChange={from => postInOr(open.id, from)}
           onUndo={() => { setPostIn(open.id, null); close() }}
           onPlace={() => setPlaceAt(openKey)}
           onClose={close}
@@ -4370,12 +4380,12 @@ export function Matrix() {
              date; the greyed boxes and the manpower exclusion follow from it,
              and sync.ts's auto-archive pass reads the switch. */
           onPostOut={role === 'admin'
-            ? (from, archive) => { setPostOut(open.id, from, archive); close() }
+            ? (from, archive) => { const why = postOutOr(open.id, from, archive); if (why) return why; close() }
             : undefined}
           /* Admin-only, the mirror of the above (owner, 20 Sep 26): the first
              day they ARE in the squadron. */
           onPostIn={role === 'admin'
-            ? from => { setPostIn(open.id, from); close() }
+            ? from => { const why = postInOr(open.id, from); if (why) return why; close() }
             : undefined}
           /* Admin-only: record that he WORKED this day and earned OIL (owner,
              20 Sep 26). ANY day — the weekend/public-holiday rule belongs to

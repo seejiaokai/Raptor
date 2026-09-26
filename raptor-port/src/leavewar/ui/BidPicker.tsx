@@ -79,12 +79,12 @@ export function BidPicker({
    *  — any date, not just the tapped day, and the "Archive on PO date"
    *  switch). Present only for an admin; the matrix wires it to the store and
    *  closes the sheet. A member never sees the control. */
-  onPostOut?: (fromDate: string, archive: boolean) => void
+  onPostOut?: (fromDate: string, archive: boolean) => string | void
   /** Admin-only: post this person IN from a date (owner, 20 Sep 26 — "we need
    *  a post in button just like post out"). The mirror of `onPostOut`: it sets
    *  the first day they ARE here, where the post-out sets the first day they
    *  are gone. Present only for an admin, same as its twin. */
-  onPostIn?: (date: string) => void
+  onPostIn?: (date: string) => string | void
   /** Item D (CURRENT-STATE, 20 Sep 26): the only half of this day that is
    *  free, when the other is held by a record locked to the Inputs page. The
    *  "How much" row then offers that half alone — the whole day and the held
@@ -153,6 +153,8 @@ export function BidPicker({
   // something a person LEAVES the roster into.
   const [piOpen, setPiOpen] = useState(false)
   const [piDate, setPiDate] = useState(date)
+  /* a refused posting's reason (AB5): the callbacks return it; the sheet stays open and says it */
+  const [postErr, setPostErr] = useState('')
   // The OIL-earned controls, folded behind one button like the two posting
   // ones. Folding matters more here than there: this sheet's other rows all
   // place LEAVE, and a credit is the opposite fact — the man was at work.
@@ -610,7 +612,7 @@ export function BidPicker({
               data-testid="pi-date"
               aria-label={`Post ${callsign} in from`}
               value={piDate}
-              onChange={e => setPiDate(e.target.value)}
+              onChange={e => { setPostErr(''); setPiDate(e.target.value) }}
             />
           </div>
           <div className="bidsheet-row postout">
@@ -618,7 +620,7 @@ export function BidPicker({
               className="dchip po"
               data-testid="pi-confirm"
               disabled={!piDate}
-              onClick={() => onPostIn(piDate)}
+              onClick={() => { const why = onPostIn(piDate); setPostErr(why || '') }}
             >
               Post in from {piDate || '…'}
             </button>
@@ -627,6 +629,7 @@ export function BidPicker({
               leave can still be dated there.
             </span>
           </div>
+          {postErr && <div className="bidsheet-row postout"><span className="note warn" data-testid="post-err">{postErr}</span></div>}
         </>
       )}
       {onPostOut && poOpen && (
@@ -646,7 +649,7 @@ export function BidPicker({
               data-testid="po-date"
               aria-label={`Post ${callsign} out from`}
               value={poDate}
-              onChange={e => setPoDate(e.target.value)}
+              onChange={e => { setPostErr(''); setPoDate(e.target.value) }}
             />
             <button
               className={`pchip${poArchive ? ' on' : ''}`}
@@ -665,7 +668,7 @@ export function BidPicker({
               className="dchip po"
               data-testid="po-confirm"
               disabled={!poDate}
-              onClick={() => onPostOut(poDate, poArchive)}
+              onClick={() => { const why = onPostOut(poDate, poArchive); setPostErr(why || '') }}
             >
               Post out from {poDate || '…'}
             </button>
@@ -673,6 +676,7 @@ export function BidPicker({
               Off the manpower from that day on. Past schedules keep their pucks.
             </span>
           </div>
+          {postErr && <div className="bidsheet-row postout"><span className="note warn" data-testid="post-err">{postErr}</span></div>}
         </>
       )}
 
@@ -908,12 +912,17 @@ export function RaptorSheet({
      layer down, as the "filed on the Inputs page" line this sheet used to give
      an earned credit. */
   const fromInput = creditShown?.via === 'input'
+  /* ONLY LEAVE IS "APPROVED" (the absence-record re-test, AB9, 26 Sep 26). Leave filed on the Inputs page counts as
+     already approved (Q14), and this sheet said so for EVERY Inputs-filed absence — a man's ATT C read "ATTC ·
+     approved … so it is already approved". A medical, a course or overseas duty is nobody's to approve; it keeps the
+     pointer to the Inputs page and loses leave's word. */
+  const leave = !creditShown && LEAVE_TYPES.some(t => t.type === code.replace(/\*/g, ''))
   return (
     <Sheet testid="raptor-sheet" label={creditShown ? 'OIL the app credited' : 'Leave from Raptor'} onClose={onClose}>
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
         <span className="dt">{date}</span>
-        <span className="cur">{code} · approved</span>
+        <span className="cur">{code}{creditShown || leave ? ' · approved' : ''}</span>
         <button className="x" data-testid="bid-cancel" onClick={onClose} aria-label="Close">
           ✕
         </button>
@@ -931,7 +940,9 @@ export function RaptorSheet({
             ? fromInput
               ? 'Earned off a duty input that was accepted — change that input, not the schedule.'
               : 'Earned off the published schedule — change the schedule and the OIL follows.'
-            : 'Filed on the Inputs page, so it is already approved — change it there, not here.'}
+            : leave
+              ? 'Filed on the Inputs page, so it is already approved — change it there, not here.'
+              : 'Filed on the Inputs page — change it there, not here.'}
         </span>
       </div>
       {/* The same three lines the day window gives for OIL, because the
@@ -987,13 +998,15 @@ export function PostOutSheet({
   archive: boolean
   /** Re-post with a new date and/or archive choice. Commits on change — the
    *  sheet stays up so the admin can see the grid move behind it. */
-  onChange: (fromDate: string, archive: boolean) => void
+  onChange: (fromDate: string, archive: boolean) => string | void
   onUndo: () => void
   /** Hand this day to the bid sheet instead (owner, 20 Sep 26 — "we should
    *  also allow putting inputs when we click on days that were posted out"). */
   onPlace?: () => void
   onClose: () => void
 }) {
+  /* a refused move of the date says why (AB5) — the box snaps back to the date that stands */
+  const [err, setErr] = useState('')
   return (
     <Sheet testid="postout-sheet" label="Posted out" onClose={onClose}>
       <div className="bidsheet-hd">
@@ -1020,7 +1033,7 @@ export function PostOutSheet({
           data-testid="postout-date"
           aria-label={`Move ${callsign}'s post-out date`}
           value={poFrom}
-          onChange={e => { if (e.target.value) onChange(e.target.value, archive) }}
+          onChange={e => { if (e.target.value) setErr(onChange(e.target.value, archive) || '') }}
         />
         <button
           className={`pchip${archive ? ' on' : ''}`}
@@ -1029,10 +1042,13 @@ export function PostOutSheet({
           title={archive
             ? 'On the PO date they move to the Quals archive. Their pucks on past schedules are untouched.'
             : 'They stay on the Quals roster after the PO date — for the custom cases.'}
-          onClick={() => onChange(poFrom, !archive)}
+          onClick={() => setErr(onChange(poFrom, !archive) || '')}
         >
           {archive ? '✓ ' : ''}Archive on PO date
         </button>
+      </div>
+      <div className="bidsheet-row postout">
+        {err && <span className="note warn" data-testid="postout-err">{err}</span>}
       </div>
       <div className="bidsheet-row postout">
         <button className="dchip po" data-testid="postout-undo" onClick={onUndo}>
@@ -1082,13 +1098,15 @@ export function PostInSheet({
   piFrom: string
   /** Re-post with a new date. Commits on change, like the post-out sheet, so
    *  the admin watches the grid move behind it. */
-  onChange: (date: string) => void
+  onChange: (date: string) => string | void
   onUndo: () => void
   /** Hand this day to the bid sheet instead — the mirror of the post-out
    *  sheet's, and for the same reason (owner, 20 Sep 26). */
   onPlace?: () => void
   onClose: () => void
 }) {
+  /* a refused move of the date says why (AB5) — the box snaps back to the date that stands */
+  const [err, setErr] = useState('')
   return (
     <Sheet testid="postin-sheet" label="Posted in" onClose={onClose}>
       <div className="bidsheet-hd">
@@ -1114,8 +1132,11 @@ export function PostInSheet({
           data-testid="postin-date"
           aria-label={`Move ${callsign}'s post-in date`}
           value={piFrom}
-          onChange={e => { if (e.target.value) onChange(e.target.value) }}
+          onChange={e => { if (e.target.value) setErr(onChange(e.target.value) || '') }}
         />
+      </div>
+      <div className="bidsheet-row postout">
+        {err && <span className="note warn" data-testid="postin-err">{err}</span>}
       </div>
       <div className="bidsheet-row postout">
         <button className="dchip po" data-testid="postin-undo" onClick={onUndo}>

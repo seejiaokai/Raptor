@@ -864,6 +864,10 @@ export function withRemarksTail(remark:any, startISO:any, endISO:any, single:'on
   const head=s.trim();
   return head?`${head} ${tok}`:tok;
 }
+/* Which word a remark's date token uses — 'on' or 'till' — or null when it carries none (the absence-record re-test,
+   AB3, 26 Sep 26): a leave the war or a medical CUTS keeps the typist's words but must not keep a "till" its dates no
+   longer reach, and a piece keeps the token's own word ("on 9 Feb" stays an "on"). */
+export function remarksTailWord(remark:any):'on'|'till'|null{const m=DATE_TOKEN.exec(String(remark==null?'':remark));return m?(/^on/i.test(m[0])?'on':'till'):null;}
 /* what the mark says when you hover it — plain enough for the squadron */
 export function lateNote(inp:any){
   if(!isLateInput(inp))return '';
