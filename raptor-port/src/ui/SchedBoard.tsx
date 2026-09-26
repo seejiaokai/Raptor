@@ -5,7 +5,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
-import { SBDAY, CURPAGE, DPREV, HISTMODE, toggleHistMode, esc, restArmed, HLSET, SEARCH, HLOPEN, toggleHlOpen, setSearch } from '../state/view'
+import { SBDAY, CURPAGE, DPREV, HISTMODE, toggleHistMode, esc, restArmed, HLSET, SEARCH, HLOPEN, toggleHlOpen, setSearch, ARM } from '../state/view'
 import { closeHistList, setWeekCal } from './pops'
 import { CalIcon, HistIcon, HlIcon } from './icons'
 import { HlChips } from './hlchips'
@@ -265,7 +265,10 @@ export function SchedBoard() {
       set(boardRef.current!, 'board', boardHTML(di))
       set(warnRef.current!, 'warn', boardWarnHTML(di))
     }
-    set(rosterRef.current!, 'roster', paletteHTML(paletteDay(), { head: false }))
+    /* THE BOARD'S OWN DAY (the absence-record re-test, W6 R19, 26 Sep 26 — on main): paletteDay() is the edit week's
+       answer — the armed slot's day, else the day the week behind is scrolled to — and the board draws no day name, so
+       Thursday's board listed Monday's crew: a man on leave Thursday showed free. An armed slot still wins. */
+    set(rosterRef.current!, 'roster', paletteHTML(ARM && ARM.di >= 0 ? ARM.di : di, { head: false }))
     refreshHighlights()
     /* a repaint replaces a panel's markup wholesale, so a bubble that is up
        may have just lost the cell it hangs on — re-anchor it, or take it down
