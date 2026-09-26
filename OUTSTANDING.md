@@ -76,7 +76,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **Placed by their own lines — not his rulings:** the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-FIGSEL-SLOW] and [LW-SCRUBBER-FLAKY] (test-only), [LW-ISO-DATES] and [LW-MOVE-BENEATH] (both low, from the
-absence-record re-test), [PO-RESTORE-POSTING] (low, from its final code read); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The background-command guard — [BG-GUARD-FALSE] (small; tooling). The Tracker — [TRK-RETEST-NOTES] and
+absence-record re-test), [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]); the Inputs calendar — [INPUTSCAL-TAP-FLAKY] (test-only). The background-command guard — [BG-GUARD-FALSE] (small; tooling). The Tracker — [TRK-RETEST-NOTES] and
 [TRK-EDIT-SIDEWAYS] (their gates have passed), [TRK-PINCH-ASK] (his next Tracker session), [TRK-SESSION-PICK] (low, the next Tracker change), [TRK-DLG-LEFTOVERS] (low, with the next question-box change), [TRK-PALETTE-ASK] (his answer D157: Raptor's colours
 fully — being built on `claude/tracker-palette`), [TRK-FLEXBAR-INK] (a question for him, on that branch's look card),
 [TRK-BAKE-STALE] (low). The Leave War — [LW-RESET-ORDER] (his yes, D160 — a small build).
@@ -1362,3 +1362,20 @@ on purpose — a future date, or the custom "Archive on PO date" off — loses t
 Since the re-test the Post out's own archive is marked (`PEOPLE` body `archivedBy: 'po'`). **Build:** clear the posting
 only when it made the archive (`archivedBy === 'po'`) or would re-archive him at once (switch on, date come); keep it
 otherwise; a test per case. **Place:** low, with the next posting or Quals roster change; not his ruling.
+
+### [LW-OFFER-ONLY-TAKEABLE] Two Leave War sheets offer a choice the war then refuses — low (the absence-record re-test's re-walk, W3, 26 Sep 26)
+Found by the war re-walker on the rebuilt app; no record is harmed and each refusal is said, but the principle the
+re-test applied elsewhere (item D, W5-F4: a half is offered only when it can be taken) is not kept here:
+1. **A morning the WAR approved, then a tap on that day:** the bid sheet offers Whole day (already picked) and AM, and
+   pressing LL is refused "That time is already taken by LL — clear it first." The same morning filed on the Inputs page
+   offers only PM (the free half, `Matrix.tsx freeHalfBeside`, runs only for Inputs-filed leave — `raptorOwns`).
+   Pictures: `docs/img/handpass/2026-09-26-absence/rewalk/w3/rw-w3-11-{desktop,phone}-A-whole-a-sheet`, `-A-whole-b-after-LL`,
+   `-C-inputs-filed-sheet`.
+2. **A refused bid under a medical filed since:** the tap list still offers Approve and Ack on it; both are refused in
+   words that never name the medical ("Couldn't change that", "Couldn't approve — something else is on that time"),
+   where the Undo / Redo road to the same state names it. Pictures: `rw-w3-10-{desktop,phone}-ack-b-after-press`,
+   `-approve-b-after-press`.
+**Build:** offer only the halves and decisions that can be taken, off the same question the door asks, and name the
+blocker in any refusal that remains. **Place:** low, with `[LW-LOCKMARK]` (the lock by day vs by record is the same
+root). Not checked against `main` by the walker; the free-half rule predates this branch. Evidence
+`raptor-port/docs/handpass/parts/2026-09-26-absence-rewalk-w3.md`.

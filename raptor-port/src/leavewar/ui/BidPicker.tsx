@@ -1048,9 +1048,10 @@ export function PostOutSheet({
           {archive ? '✓ ' : ''}Archive on PO date
         </button>
       </div>
-      <div className="bidsheet-row postout">
-        {err && <span className="note warn" data-testid="postout-err">{err}</span>}
-      </div>
+      {/* drawn only with something to say — an empty row left a blank band on the sheet (W3's re-walk, N4) */}
+      {err && <div className="bidsheet-row postout">
+        <span className="note warn" data-testid="postout-err">{err}</span>
+      </div>}
       <div className="bidsheet-row postout">
         <button className="dchip po" data-testid="postout-undo" onClick={onUndo}>
           Undo post out (PO)
@@ -1136,9 +1137,10 @@ export function PostInSheet({
           onChange={e => { if (e.target.value) setErr(onChange(e.target.value) || '') }}
         />
       </div>
-      <div className="bidsheet-row postout">
-        {err && <span className="note warn" data-testid="postin-err">{err}</span>}
-      </div>
+      {/* drawn only with something to say — an empty row left a blank band on the sheet (W3's re-walk, N4) */}
+      {err && <div className="bidsheet-row postout">
+        <span className="note warn" data-testid="postin-err">{err}</span>
+      </div>}
       <div className="bidsheet-row postout">
         <button className="dchip po" data-testid="postin-undo" onClick={onUndo}>
           Undo post in (PI)
