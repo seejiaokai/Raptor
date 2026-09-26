@@ -49,12 +49,16 @@ For the person designing RAPTOR's Dataverse tables. Written 10 Sep 26.
   2. where files live (SharePoint library, Dataverse file column, or Blob);
   3. how a signed-in person is matched to a `Person` row the first time — **answered by the owner, 25 Sep 26
      (D165):** by an admin mapping step. Everyone signs in with their own defence mail (Microsoft) account;
-     the app's admin creates each `Person` (callsign, name, admin or member) and records that person's
-     defence mail address on it; the first sign-in with that address becomes that person. **Built in the app
-     26 Sep 26 (`[ACCOUNTS]`):** accounts managed on Admin → Users, one per person, tied to a callsign; the
-     "View as" picker is gone; a person on no list asks for access and the admin approves (links a puck,
-     sets member or admin) or declines (D204); an admin switch, off by default, lets people waiting read the
-     published week as a guest; the app keeps no password. The `User` and `AccessRequest` tables, and the
+     the app's admin creates each `Person` (his callsign or name — ONE field, "Callsign/Name", D219 — initials,
+     pilot / WSO / personnel, CAT; admin or member) and records that person's defence mail address on it; the
+     first sign-in with that address becomes that person. **Built in the app 26 Sep 26 (`[ACCOUNTS]`,
+     `[ACCOUNTS-NEW-PERSON]`):** accounts managed on Admin → Users, one per person, tied to a callsign; the
+     "View as" picker is gone; a new person is made ONLY there — alone (someone who won't sign in) or with his
+     account, in one step (D214, D217); a person on no list asks for access giving the same (callsign/name,
+     initials, seat, CAT) and the admin approves — linking a puck, or making the new `Person` from what he gave
+     together with the `User` — sets member or admin, or declines (D204); each admin's bell lights for a new
+     request until he has seen the list (D216, D227 — a Teams message at the database step); an admin switch,
+     off by default, lets people waiting read the published week as a guest; the app keeps no password. The `User` and `AccessRequest` tables, and the
      permissions table the app mirrors (drift-tested), are `data-model.md` §3 and §11. Who may enter the app at
      all (the security group / environment roles) is set in your environment, not by the app;
   4. how long the edit log is kept and who may read it;

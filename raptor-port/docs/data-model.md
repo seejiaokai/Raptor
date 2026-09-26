@@ -659,13 +659,20 @@ Owner: **Shell**. Someone signed in with his defence mail but on no list, asking
 | Field | Type | Req | Meaning |
 |---|---|---|---|
 | `signInName` | string | yes | the principal who asked — from the sign-in, never typed. Unique while waiting |
-| `callsign` | string | yes | what he typed — text only; it never claims a `Person` (the admin picks one on approval) |
-| `name` | string | yes | what he typed |
+| `callsign` | string (≤ 14) | yes | the displayed callsign/name he typed (D219, D222) — text only; it never claims a `Person` (the admin picks one on approval, or makes a new one from it) |
+| `initials` | string (≤ 12) | no | what he typed — asked, never required (D225) |
+| `seat` | choice `FCP\|RCP\|GND` | yes | pilot, WSO or personnel (D220) |
+| `cat` | string | for aircrew | his CAT — one the seat may hold; none for personnel |
 | `requestedAt` | datetime | yes | |
+| `seenBy` | ref `User`, many | no | the admins who have had the waiting list on screen since it arrived — each admin's bell goes out for it (D216, D227) |
 
-Approving creates the `User` (linked to the person the admin picks, member or admin) and removes the request in one
-step; declining removes it. The admin sees a count of waiting requests on the Admin tab (a Teams message at the
-database step). From today: the `accessreqs` settings record. The admin's **guest switch** (people waiting may read the
+He asks for exactly what the admin's New person form asks (D214, `[ACCOUNTS-NEW-PERSON]`, 26 Sep 26). Approving either
+links the `User` to a `Person` the admin picks on the roster, or — **New person** — creates the `Person` from what he gave,
+with the admin's corrections, together with the `User`, removing the request in the same step; declining removes it. A
+`User` added or renamed onto a waiting sign-in name answers (removes) its request too. The admin sees a count of waiting
+requests on the Admin tab, and his bell lights until he has had the list on screen (a Teams message at the database step).
+From today: the `accessreqs` settings record (the typed name field of 26 Sep 26 `[ACCOUNTS]` gave way to the initials —
+D219). The admin's **guest switch** (people waiting may read the
 published week) is a `Setting` (`guestview`), off by default.
 
 ### Layout
@@ -979,12 +986,12 @@ update, delete (delete is the soft delete throughout).
 
 | Table | Admin | Member | Guest | Pending | Own-row rule and notes |
 |---|---|---|---|---|---|
-| `Person` | C R U D | R, U **own** | R (callsigns) | — | `personId` = my person: every column of his own row — CAT, initials, flight, SXO, SCHEDULER, SANS — except the callsign (D218: an admin's to change), `archived`, `special` and `id` (D149); adding, archiving and restoring a person stay the admin's |
+| `Person` | C R U D | R, U **own** | R (callsigns) | — | `personId` = my person: every column of his own row — CAT, initials, flight, SXO, SCHEDULER, SANS — except the callsign (D218: an admin's to change), `archived`, `special` and `id` (D149); adding, archiving and restoring a person stay the admin's — a person is created only on Admin → Users, alone or with his `User` in one step (D217) |
 | `Qualification` | C R U D | R | — | — | the list of qualification columns (Quals → Edit quals) |
 | `QualMark` | C R U D | R, C U D **own** | — | — | `personId` = my person — a member ticks his own quals, every one (D149) |
 | `Setting`, `SchemaVersion` | C R U D | R (`Setting` only) | — | — | the guest switch is a `Setting` (D204) |
-| `User` | C R U | R **own** | — | — | one account per person, tied to it (D166); the sign-in name (the defence mail address) unique; switched off, never deleted (`enabled`); **no password is ever stored** — the organisation's sign-in checks it; at least one enabled admin always remains; an admin never changes his own account |
-| `AccessRequest` | R D | — | — | C **own** | a person signed in but on no list asks once, with a callsign and a name as typed text (D204); an admin approves — creating the `User`, linked to a person he picks, a typed callsign never claims one — or declines, each one step |
+| `User` | C R U | R **own** | — | — | one account per person, tied to it (D166); created with a new `Person` in one step, or linked to one already on the roster (D214, D217); the sign-in name (the defence mail address) unique; switched off, never deleted (`enabled`); **no password is ever stored** — the organisation's sign-in checks it; at least one enabled admin always remains; an admin never changes his own account |
+| `AccessRequest` | R U D | — | — | C **own** | a person signed in but on no list asks once, giving what the admin's New person form asks — callsign/name, initials, seat, CAT — as typed text (D204, D214); an admin approves — creating the `User`, linked to a person he picks (a typed callsign never claims one) or to a new `Person` made from the request with his corrections — or declines, each one step; a `User` added or renamed onto a waiting sign-in name deletes its request; U — which admins have had it on screen, each admin's bell (D216, D227) |
 | ScheduleWeek family, `DayDraft`, `RowPerson` | C R U D | R | R | — | a member reads the programme; only a scheduler writes it; a guest reads what a member reads on View-only Sched — a published day as issued, another as it stands (D204, D215) |
 | `Amendment`, `Signoff` | C R | R | R (published) | — | append-only for everyone |
 | `EditLog` | R | R | — | — | written by the store, not a role; members read it, a medical change in full (D169, D211) — gap: `[DRAFT-PENDING]` (shown to admins only until the changes window); retention is Open question 4 |

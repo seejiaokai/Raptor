@@ -123,7 +123,25 @@ describe('the command gate (cmdAuthorize) — every command the app registers', 
   it('every registered command type has a row, and every row names a PERMS table', () => {
     const missing = registeredTypes().filter(t => !COMMAND_OPS[t])
     expect(missing, 'registered types with no COMMAND_OPS row').toEqual([])
-    for (const [t, o] of Object.entries(COMMAND_OPS)) expect(PERMS[o.table], `${t} → ${o.table}`).toBeTruthy()
+    for (const [t, o] of Object.entries(COMMAND_OPS)) {
+      expect(PERMS[o.table], `${t} → ${o.table}`).toBeTruthy()
+      /* [ACCOUNTS-NEW-PERSON] (Fable's plan read F11): every OTHER table a command writes is a row too */
+      for (const [mt] of o.more || []) expect(PERMS[mt], `${t} → more ${mt}`).toBeTruthy()
+    }
+  })
+  it("NP8 — a command is authorised only if EVERY table it writes allows it (Astra's plan read 1)", () => {
+    expect(COMMAND_OPS['account.addNew'].more).toEqual([[T.person, 'C'], [T.accessreq, 'D']])
+    expect(COMMAND_OPS['access.approveNew'].more).toEqual([[T.user, 'C'], [T.person, 'C']])
+    expect(COMMAND_OPS['account.update'].more, 'a rename onto a waiting name answers its request').toEqual([[T.accessreq, 'D']])
+    /* withhold ONE of the tables from the admin: the whole command is refused, not just that half */
+    const cell = PERMS[T.person].admin, was = cell.all.slice()
+    cell.all = cell.all.filter(a => a !== 'C')
+    try {
+      expect(cmdAuthorize('account.addNew', actor('admin', 'stiff'))).toBe(false)
+      expect(cmdAuthorize('access.approveNew', actor('admin', 'stiff'))).toBe(false)
+      expect(cmdAuthorize('account.add', actor('admin', 'stiff')), 'a command that does not write a Person is untouched').toBe(true)
+    } finally { cell.all = was }
+    expect(cmdAuthorize('account.addNew', actor('admin', 'stiff'))).toBe(true)
   })
   it('the Tracker\'s command types (registered on its first mount) all have rows', () => {
     const src = read('src/tracker/app/core.js')
@@ -172,7 +190,9 @@ describe('the command gate (cmdAuthorize) — every command the app registers', 
   })
   it('accounts, the guest switch and every settings key are the admin\'s', () => {
     for (const t of ['account.add', 'account.update', 'access.approve', 'access.decline', 'guestview.set',
-      'settings.accounts', 'settings.accessreqs', 'settings.guestview', 'settings.rules']) {
+      'settings.accounts', 'settings.accessreqs', 'settings.guestview', 'settings.rules',
+      /* [ACCOUNTS-NEW-PERSON] (NP8): a new person alone, with his account, by approval; the bell's seen */
+      'person.add', 'account.addNew', 'access.approveNew', 'access.seen']) {
       expect(cmdAuthorize(t, actor('admin', 'stiff')), t).toBe(true)
       expect(cmdAuthorize(t, actor('member', 'bane')), t).toBe(false)
     }

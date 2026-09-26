@@ -192,10 +192,19 @@ const RULES = {
   AC9: "the Leave War's writers agree with the permissions table",
   AC10: 'no View as, no role toggle; the badge names the signed-in person',
   AC11: 'the access screens: request, waiting, switched off',
-  AC12: 'the guest sees the published week only, no medical detail',
+  AC12: 'the guest sees what a member sees on View-only Sched, read only — medical in full (D213, D215)',
   AC13: 'Admin → Users: the waiting count, approve, add, never your own',
   AC14: 'one place answers may-this-person-do-this, and it IS data-model §11',
   AC15: 'every window closes and the undo list empties at a sign-in',
+  /* [ACCOUNTS-NEW-PERSON] (26 Sep 26) — the same register, rows NP1–NP8 */
+  NP1: 'a new person is made only on Admin → Users; Quals\' + Add person goes there (D217)',
+  NP2: 'the one add keeps the one callsign rule (PID-01); only a real archived person points at Restore',
+  NP3: 'a new person with his account is ONE step — both or neither, a refusal inside still says why',
+  NP4: 'the sign-up asks what the admin asks; initials never required; over 14 letters said, never cut',
+  NP5: 'approving offers New person filled from the request; a roster match is never picked for the admin',
+  NP6: 'a new request lights each admin\'s own bell until he has had the list on screen',
+  NP7: 'the words: Callsign/Name (Displayed callsign/name on the sign-up); Pilot, WSO, Personnel (ground crew)',
+  NP8: 'only an admin adds a person, approves or marks seen — every table the command writes',
 }
 
 /* Rules with no test naming them on 20 Sep 26. The check fails if this set

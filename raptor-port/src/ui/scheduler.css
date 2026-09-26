@@ -138,6 +138,16 @@ img,a{-webkit-user-drag:none;user-drag:none}
 .login input{width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--edge);color:var(--ink);
   font-family:'Inter Tight',sans-serif;font-size:14px;padding:11px 12px;border-radius:10px;margin-bottom:13px}
 .login input:focus{outline:2px solid var(--accent);outline-offset:0}
+/* the sign-up's two picks (pilot / WSO / personnel, CAT — [ACCOUNTS-NEW-PERSON], D214) wear the
+   boxes' own look, as the approved mock-up drew them (D224); the browser's own face is taken off
+   so a select is the same box as an input on every engine, with the caret drawn in */
+.login select{display:block;width:100%;box-sizing:border-box;-webkit-appearance:none;appearance:none;
+  background:var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%239aa4b1' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 13px center/10px 6px;
+  border:1px solid var(--edge);color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:14px;line-height:normal;
+  padding:11px 32px 11px 12px;border-radius:10px;margin:0 0 13px;cursor:pointer}
+.login select:focus{outline:2px solid var(--accent);outline-offset:0}
+/* a callsign/name past 14 letters says so at once (D226 — never quietly cut) */
+.login .cs-long{color:#FBB4B9;font-size:12px;margin:-7px 0 11px}
 .login .go{display:block;width:100%;box-sizing:border-box;-webkit-appearance:none;appearance:none;
   background:var(--accent);color:var(--accent-ink);border:none;font-size:14px;font-weight:700;
   padding:12px;border-radius:10px;cursor:pointer;margin:5px 0 0;letter-spacing:.04em}   /* margin in full: the schedule's `.go` (a flying-wave block) gives 10px sides, which pushed this button 10px right and past the card's edge — on the sign-in and Request access cards alike (26 Sep 26) */
@@ -1938,7 +1948,8 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .qadd .lab{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
 /* the seat-view strip that heads the table (owner, 15 Aug 26) — the seat
    switch is the everyday control, so it lives directly above the table it
-   filters, read as one segmented control, with Add person folded to the right. */
+   filters, read as one segmented control, with "+ Add person" to the right (a button to Admin → Users
+   since [ACCOUNTS-NEW-PERSON], D217 — the fold-open form is retired). */
 .qtablehead{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 20px 8px}
 .qtablehead .seglab{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
 .qtablehead .grow{flex:1}
@@ -5912,6 +5923,12 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 #page-admin .acc-row .ub.admin{background:rgba(59,198,232,.16);color:var(--accent)}
 #page-admin .acc-row .ub.main{background:rgba(138,150,163,.16);color:var(--ink-2)}
 #page-admin .acc-acts{display:flex;flex-wrap:wrap;gap:6px}
+/* [ACCOUNTS-NEW-PERSON]: PERSON — "On the roster" | "New person" (the approved mock-up), and a
+   callsign/name past 14 letters said at once under its box (D226) */
+#page-admin .acc-mode{margin:-6px 0 10px}
+#page-admin .cs-long{color:#FBB4B9;font-size:11.5px;line-height:1.35}
+/* the New person notes breathe before the next control, as the mock-up drew them (the walk, 26 Sep 26) */
+#page-admin .adm-note.acc-note{margin:-2px 0 12px}
 #page-admin .acc-edit{flex:1 1 100%;padding:10px 0 4px}
 #page-admin .acc-edit .mfield select,#page-admin .acc-edit .mfield input{width:100%;box-sizing:border-box}
 #page-admin #admUsers .mfield select,#page-admin #admUsers .mfield input{width:100%;box-sizing:border-box}

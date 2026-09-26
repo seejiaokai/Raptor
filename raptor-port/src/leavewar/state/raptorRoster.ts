@@ -45,7 +45,8 @@ export function projectPeople(includeSans = false): Person[] {
     if (p.san && !includeSans) continue
     // Ground crew ride the roster since 18 Aug 26 (owner: "when I add
     // personnel through quals, the new personnel will appear on leave war
-    // too"). They carry no CAT and no flying seat — `pers` marks them out of
+    // too" — the add is on Admin → Users since 26 Sep 26, D217; the same
+    // projection picks it up). They carry no CAT and no flying seat — `pers` marks them out of
     // every manning count — and their free-text label seeds from Raptor's
     // own `flight`, editable in Leave War's edit mode thereafter.
     if (p.pers || p.seat === 'GND') {

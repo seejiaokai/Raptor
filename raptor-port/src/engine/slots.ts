@@ -689,8 +689,9 @@ export function unacceptInput(di:any,inp:any){
    It marks nothing pending: no row moved, only how the person's name is spelt.
    The uniqueness guard stays: a name that already resolves to someone else — by
    callsign OR by bare id (nameToId is id-tolerant) — is refused, because
-   ID_BY_CS can point only one way; addPerson (QualsPage) enforces the same
-   guard so a new callsign can never collide with an existing id either. */
+   ID_BY_CS can point only one way; the one add (state/roster-add.ts
+   newPersonProblem — Admin → Users since [ACCOUNTS-NEW-PERSON], D217) enforces the
+   same guard so a new callsign can never collide with an existing id either. */
 export function renameCallsign(id:any,next:any){
   const p=PEOPLE[id]; if(!p)return false;
   const cs=String(next==null?'':next).trim();
