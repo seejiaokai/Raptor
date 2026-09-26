@@ -1692,7 +1692,7 @@ export function restIfPlaced(id:any,key:any,from?:any){
   /* the seat he is leaving (a seat-to-seat drag) comes out of whichever day
      it sits on — a leg being moved cannot break its own crew rest */
   const fk=from&&from.key;
-  const strip=(d:any)=>!fk||!d||d.di!==from.di||from.leaves===false?d:{...d,fly:(d.fly||[]).filter((e:any)=>seatRow(e.key||e.slot)!==seatRow(fk)),events:(d.events||[]).filter((e:any)=>seatRow(e.key||e.slot)!==seatRow(fk))};
+  const strip=(d:any)=>!fk||!d||d.di!==from.di||from.leaves===false?d:{...d,fly:(d.fly||[]).filter((e:any)=>e.id!==id||seatRow(e.key||e.slot)!==seatRow(fk)),events:(d.events||[]).filter((e:any)=>e.id!==id||seatRow(e.key||e.slot)!==seatRow(fk))};   /* his entries only (Fable's read): the day lists hold everyone's */
   /* the day's two lists carry a leg in two shapes: `fly` (the crew-rest
      inputs — brief/intime/to/ld/shift, keyed by `key`) and `events` (every
      kind, keyed by `slot`); the candidate is cloned into each from a sibling

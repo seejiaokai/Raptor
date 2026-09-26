@@ -3240,9 +3240,10 @@ only prove which CLASS was emitted, never what it draws:
 signed-in man's own puck (purple, `.puck.me`) used to lay a blurred red halo over its solid or dashed ring, so his own
 flagged puck glowed while every other flagged puck showed the plain ring. `.puck.me.boxred` now draws the plain 2px
 ring (it keeps its own rule only to out-rank `.puck.me`'s later `!important` ring at the same specificity) and
-`.puck.me.boxdash` draws nothing behind its dashes, as `.boxdash` does; the purple fill stays. Two glows are NOT flags
-and stay: the purple "this is you" glow itself (drawn on his puck flagged or not; a red ring replaces its purple ring
-when he is flagged) and the clicked-warning focus (`.puck.wfoc`, a transient answer to a tap). Pinned by
+`.puck.me.boxdash` draws nothing behind its dashes, as `.boxdash` does; the purple fill stays. **Any other flag on his
+own puck — the dotted cause ring, the amber / thin red / grey severity rings — keeps the purple ring and loses its
+glow** (`.puck.me.warn`, `.puck.me.boxdot`, written BEFORE the red rings so a solid or dashed red ring still wins;
+Fable's read). Two glows are NOT flags and stay: the purple "this is you" glow on his UNFLAGGED puck and the clicked-warning focus (`.puck.wfoc`, a transient answer to a tap). Pinned by
 `src/ui/flagglow-css.test.ts`, which walks EVERY ring rule in the stylesheet for a blurred layer — a ring rule written
 later is caught the same way.
 

@@ -1230,6 +1230,13 @@ body:not(.tdrag) .page.editing .acrow .seat[data-slot]:hover .puck{outline:2px s
    — the colour is the severity, exactly as the ring behind it. */
 .puck .lchip.l-cp{background:#E5A83B}
 .puck .lchip.l-cph{background:#F0555F;color:#fff}
+/* THE "THIS IS YOU" PUCK, FLAGGED, DOES NOT GLOW EITHER (D164 — "no flagged puck should"; Fable's read, 26 Sep 26).
+   `.puck.me` rings his own puck purple WITH a blurred purple glow; when that puck carries a flag the glow read as the
+   flag glowing — on the dotted "causes tomorrow's breach" ring, and on the amber / thin red / grey severity rings,
+   which his purple ring stands in for. Flagged, his puck keeps the purple ring and loses only the blur. BEFORE the red
+   rings on purpose: at the same specificity the later rule wins, so a solid or dashed red ring still replaces the
+   purple one. (Whether the severity ring should show instead of the purple one is his question — the look card.) */
+.puck.me.warn,.puck.me.boxdot{box-shadow:0 0 0 2px #F0B6FF!important}
 /* conflict / crew rest → red box around the whole puck */
 .puck.boxred{box-shadow:0 0 0 2px var(--hard)!important;border-color:var(--hard)!important}
 /* A FLAGGED PUCK DOES NOT GLOW (owner, D164, 24 Sep 26 — "can u not make it glow. like the 2nd puck picture"). The

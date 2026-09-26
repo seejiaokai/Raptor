@@ -152,13 +152,32 @@ the real `main` words "on SC AM 07:00–13:00 — inside this shift").
 *(One full run on the final code, under the lock.)*
 
 ## 8. The code reads (Fable and Astra, blind to each other, with this sheet)
-*(After the walk.)*
+
+Both read the finished code with this sheet in hand (brief `docs/superpowers/briefs/2026-09-26-five-flags-read-brief.md`),
+started together, neither shown the other's report. Reports kept whole: `2026-09-26-five-flags-astra-read.md`,
+`2026-09-26-five-flags-fable-read.md` (Fable read `9b7c5b94`, before Astra's fixes landed).
+
+| # | Reader | Finding | New / on main | Disposition |
+|---|---|---|---|---|
+| A1 | Astra (medium) | A man on a row TWICE (a second copy is warned, not refused) did not leave it when ONE copy was dragged off: the busy scan excluded the whole source row, and the cross-day "his only event" and the crew-rest strip read the day as vacated | new | **fixed** — excluded only when he has no other place on that row (`avail.ts`, `validate.ts` `leaves`); `crowdself.test.ts`, `runtrace.test.ts` red first. = Fable 3 |
+| A2 | Astra (medium) | The guard ignored ORDER: `npm test; cd raptor-port`, `cd raptor-port; cd ..; npm test` passed | on main | **fixed** — the line is followed step by step; every npm step must run inside (or carry its --prefix); 3 new test groups |
+| A3 | Astra (low) | A chat started INSIDE raptor-port (`raptor-port/scripts`) was refused a bare npm | on main | **fixed** — any path component exactly `raptor-port` is inside; lookalikes refused. = Fable 2 |
+| A4 | Astra (low) | `flagglow-css.test.ts` walked only the three red rings | new | **fixed** — the severity rings (`.warn`, `.warn.hard`, `.warn.note`) walked; break test red |
+| F1 | Fable (medium) | The "this is you" puck still GLOWS when flagged by the dotted cause ring (and by the amber / thin red / grey rings its purple ring stands in for); the ring test passed vacuously (it looked only at rules declaring a shadow) | on main | **fixed** — flagged, his puck keeps the purple ring without the blur (`.puck.me.warn`, `.puck.me.boxdot`, before the red rings so they still win); the test now checks the shadow that WINS for each kind of flag, red first. The item's own words ("no flagged puck should glow"). Q2 on the card (should the severity ring show instead of the purple one) is unchanged |
+| F2 | Fable (low) | = A3 | — | fixed with A3 |
+| F3 | Fable (low) | = A1, plus: the crew-rest strip removed EVERY man's entries on the from-row | new | fixed with A1; the strip now takes his entries only |
+| F4 | Fable (low) | Reset order can light for a man the grid is not drawing this month (posted out / not yet arrived — the grid filters by the visible window, the check reads the whole roster); a press changes nothing on screen | new (the line is new) | **left** — rare, harmless (the press clears a stored order that does differ for that man), and giving the sheet the grid's window would couple the two; Fable: "leaving it is defensible" |
+
+Explicit negatives from both (their reports list them): no other key-shape compare left; every landing reads the room;
+Reset order's gate, Undo, reload and war switch consistent; no other ring rule in any stylesheet; no vacuous test left
+after F1/A4.
 
 ## 9. His look — five minutes, on the branch's Vercel link, pictures first
 
 **Look here** (desktop, signed in as `ad`; the phone looks exactly as before):
-1. **Your own puck doesn't glow.** Edit Schedule, Monday: your purple Saber puck with its red "C" has the same plain red
-   ring as Ranger's beside it — no red haze. Before / after: `docs/img/handpass/2026-09-26-five-flags/w1/A-desktop-before-main-saber-you-glows-beside-ranger.png` → `…/A-desktop-after-branch-saber-you-beside-ranger.png`.
+1. **Your own puck doesn't glow when it carries a flag.** Edit Schedule, Monday: your purple Saber puck with its red
+   "C" has the same plain red ring as Ranger's beside it — no red haze; with any other flag (amber, grey, the dotted
+   "causes tomorrow's breach") it keeps its purple ring but no glow. Unflagged, it still glows purple. Before / after: `docs/img/handpass/2026-09-26-five-flags/w1/A-desktop-before-main-saber-you-glows-beside-ranger.png` → `…/A-desktop-after-branch-saber-you-beside-ranger.png`.
 2. **Leave War → ⚙ → "Roster order".** Greyed, "In the default order". Rearrange (⇅), drag a man down a block, open ⚙:
    Reset order lights; one tap asks "Really reset?", the second puts everyone back; Undo brings your arrangement back.
 3. **Monday's board, FLIGHT SAFETY STAND-DOWN.** Add a second man, drag one onto the other: they swap and nothing says
@@ -172,9 +191,9 @@ the real `main` words "on SC AM 07:00–13:00 — inside this shift").
   plants the second copy, per your 13 Aug 26 rule "everything plants, warning after". Should it REFUSE instead — one
   man, once per row? (Recommended: refuse — there is no reason to have the same man twice on one row.)
 - **Q2 — Your own puck's other warning rings.** On your purple "this is you" puck, the amber advisory ring, the thin red
-  ring and the grey note ring are REPLACED by the purple ring — only the letter chip shows the flag (`w1/D1-*`); the
-  dotted "causes tomorrow's breach" ring sits over the purple glow (`w1/C2-…-mon-dotted-you`). Same on `main`. Show the
-  warning's ring instead of the purple one whenever your puck carries a flag (the purple fill still says "you")?
+  ring and the grey note ring are REPLACED by the purple ring (no glow now) — only the letter chip shows the flag
+  (`w1/D1-*`, the first walk, before the glow went). Same on `main`. Show the warning's ring instead of the purple one
+  whenever your puck carries a flag (the purple fill still says "you")?
   (Recommended: yes — the fill is enough to say "you".)
 - **Q3 — The strip beside the ‹ arrow.** The day before the front day now shows a 42px strip at the left edge, under the
   arrow (`w4/GUTTER-prevday-tail-view-1440x900.png`) — it was 8px. Keep it (it hints there is a day to the left), or

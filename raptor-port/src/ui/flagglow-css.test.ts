@@ -53,6 +53,25 @@ describe('D164 — no flag ring on any puck carries a glow', () => {
     expect(shadowOf(ringRules.find(r => r.sel === '.puck.boxdash')!.body)).toBe('none')
     expect(shadowOf(ringRules.find(r => r.sel === '.puck.me.boxdash')!.body)).toBe('none')
   })
+  /* Fable's read (26 Sep 26): the check above looks only at rules that DECLARE a shadow, so a "this is you" ring rule
+     that declares none inherits `.puck.me`'s purple GLOW and passes unseen — the dotted ring did exactly that, and so
+     did every amber / thin-red / grey flag on his own puck. The shadow that WINS for his flagged puck is asked for:
+     the last rule naming `.puck.me.<ring>` must declare one, blur-free ("no flagged puck should glow", the item's own
+     words). The purple RING stays where no red ring replaces it; only its blur goes. */
+  it('the shadow that wins on a flagged "this is you" puck — every kind of flag — has no blur', () => {
+    for (const cls of ['boxred', 'boxdash', 'boxdot', 'warn']) {
+      const sel = `.puck.me.${cls}`
+      const mine = RULES.filter(r => r.sels.includes(sel) && shadowOf(r.body) != null)
+      expect(mine.length, `${sel} declares its own shadow (or it inherits the purple glow)`).toBeGreaterThan(0)
+      const win = shadowOf(mine[mine.length - 1]!.body)!
+      if (win !== 'none') for (const l of layers(win)) expect(blurOf(l), `${sel} — "${l}"`).toBe(0)
+    }
+  })
+  it('…and a red ring still wins over the purple one: the solid and dashed rules come AFTER the flagged-you rule', () => {
+    const at = (sel: string) => RULES.findIndex(r => r.sels.includes(sel) && shadowOf(r.body) != null)
+    expect(at('.puck.me.boxred')).toBeGreaterThan(at('.puck.me.warn'))
+    expect(at('.puck.me.boxdash')).toBeGreaterThan(at('.puck.me.warn'))
+  })
   it('what is NOT a flag keeps its glow: the "you" highlight and the clicked-warning focus', () => {
     const me = RULES.find(r => r.sels.includes('.puck.me'))!
     expect(layers(shadowOf(me.body)!).some(l => blurOf(l) > 0), 'the purple "this is you" glow stays').toBe(true)
