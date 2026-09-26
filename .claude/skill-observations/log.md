@@ -614,3 +614,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** In §5's re-walk paragraph (and the walk brief): a NOTE's words are built from what was measured (a ternary on the reading), never a fixed description; and once a reviewer's finding is fixed, the note that observed it becomes a CHECK asserting the fixed behaviour before the re-walk runs — so the re-walk proves the fix instead of printing the old story.
 
 **Principle:** Anything a script prints as a description of the screen must be computed from the screen; a hard-coded observation is a comment that vouches, and a re-run makes it lie.
+
+### Observation 296: A mock-up picture whose premise is hand-set state must check the premise at the moment it is taken
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** five-flags batch, the mock-up for his look (`raptor-port/scripts/handpass/am/mk-five-flags.mjs`)
+**Skill:** New skill candidate: the mock-up recipe (`raptor-port/docs/mock/`, `scripts/handpass/am/mk-*.mjs` — pictures of the real app with the proposal injected)
+**Type:** open-source
+**Phase/Area:** drawing a proposal onto the running app
+
+**Issue:** To picture "your own puck" for other men, the script put the app's "this is you" class on their pucks, then called the usual close-up helper — which scrolls the target into view. The scroll repainted the day and silently stripped the hand-set class, so two "today" pictures showed a plain puck beside "after" pictures that were right. The pictures looked plausible; only comparing each pair by eye caught it.
+
+**Suggested improvement:** In the mock-up recipe: do every scroll first, apply the injected state last, and have the capture step assert the state is still there (log a WARNING into the output, or refuse the picture) — the same way the walk scripts assert what they photograph.
+
+**Principle:** When a picture's meaning depends on state you injected, the premise is part of the picture: verify it at capture time, after anything that can repaint, or the picture silently shows something else.
