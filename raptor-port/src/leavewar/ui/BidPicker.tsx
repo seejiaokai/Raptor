@@ -14,7 +14,9 @@
 // rather than against a signed-in person — see `docs/known-gaps.md`.
 
 import { useState } from 'react'
-import { addDays, displayCell, formatCell, LEAVE_TYPES, type BidState, type CounterName, type Portion } from '../engine'
+import { addDays, displayCell, formatCell, LEAVE_TYPES, type BidState, type CounterName, type Portion, type PostOutcome } from '../engine'
+import { OutcomeChips, outcomeLine } from './OutcomeChips'
+import '../../ui/postout.css'
 import { awardsIn, cellProblem, clearCells, MAX_GIVEN_BY, setBidStates, setCell, setCellRange } from '../state/store'
 import { MAX_REC_NOTE } from '../engine/warrecs'
 import { RangePicker, type Range } from './RangePicker'
@@ -51,6 +53,7 @@ export function BidPicker({
   onWrote,
   wouldLeave,
   onPostOut,
+  hasAccount,
   onPostIn,
   onCredit,
   credit,
@@ -81,7 +84,9 @@ export function BidPicker({
    *  — any date, not just the tapped day, and the "Archive on PO date"
    *  switch). Present only for an admin; the matrix wires it to the store and
    *  closes the sheet. A member never sees the control. */
-  onPostOut?: (fromDate: string, archive: boolean) => string | void
+  onPostOut?: (fromDate: string, outcome: PostOutcome) => string | void
+  /** whether he has an account — the posting's one line names it only then (the sync answers it, at the seam) */
+  hasAccount?: boolean
   /** Admin-only: post this person IN from a date (owner, 20 Sep 26 — "we need
    *  a post in button just like post out"). The mirror of `onPostOut`: it sets
    *  the first day they ARE here, where the post-out sets the first day they
@@ -152,7 +157,10 @@ export function BidPicker({
   // confirm. Folding also stops a reflex tap posting someone out.
   const [poOpen, setPoOpen] = useState(false)
   const [poDate, setPoDate] = useState(date)
-  const [poArchive, setPoArchive] = useState(true)
+  /* the posting's outcome (D229) — Overseas Sqn by default, as "Archive on PO date" was on by default; a Delete's first
+     tap arms it (D287 (3): it asks twice) */
+  const [poOutcome, setPoOutcome] = useState<PostOutcome>('overseas')
+  const [delArmed, setDelArmed] = useState(false)
   // The post-IN controls, folded the same way and for the same reason. No
   // archive switch: arriving has no counterpart to it — the Quals archive is
   // something a person LEAVES the roster into.
@@ -638,7 +646,8 @@ export function BidPicker({
               disabled={!piDate}
               onClick={() => { const why = onPostIn(piDate); setPostErr(why || '') }}
             >
-              Post in from {piDate || '…'}
+              {/* D300 (the agent's reading, stated to him): "Post in", the date already in its own box */}
+              Post in
             </button>
             <span className="note">
               Their first day in the squadron. Days before it are blank and count nobody —
@@ -665,32 +674,28 @@ export function BidPicker({
               data-testid="po-date"
               aria-label={`Post ${callsign} out from`}
               value={poDate}
-              onChange={e => { setPostErr(''); setPoDate(e.target.value) }}
+              onChange={e => { setPostErr(''); setDelArmed(false); setPoDate(e.target.value) }}
             />
-            <button
-              className={`pchip${poArchive ? ' on' : ''}`}
-              data-testid="po-archive"
-              aria-pressed={poArchive}
-              title={poArchive
-                ? 'On the PO date they move to the Quals archive. Their pucks on past schedules are untouched.'
-                : 'They stay on the Quals roster after the PO date — for the custom cases.'}
-              onClick={() => setPoArchive(a => !a)}
-            >
-              {poArchive ? '✓ ' : ''}Archive on PO date
-            </button>
           </div>
+          {/* [POST-OUT-OUTCOMES] (D229, D294, D298, D300): which posting it is — four short chips; one line saying what
+              the chosen one does on the date; the button just "Post out". A Delete asks twice (D287 (3)). */}
+          <OutcomeChips value={poOutcome} testid="po"
+            onChange={o => { setPoOutcome(o); setDelArmed(false); setPostErr('') }} />
+          {outcomeLine(poOutcome, poDate, !!hasAccount) && (
+            <div className="bidsheet-row postout"><span className="note" data-testid="po-line">{outcomeLine(poOutcome, poDate, !!hasAccount)}</span></div>
+          )}
           <div className="bidsheet-row postout">
             <button
-              className="dchip po"
+              className={`dchip po${delArmed ? ' del-armed' : ''}`}
               data-testid="po-confirm"
               disabled={!poDate}
-              onClick={() => { const why = onPostOut(poDate, poArchive); setPostErr(why || '') }}
+              onClick={() => {
+                if (poOutcome === 'delete' && !delArmed) { setDelArmed(true); return }
+                const why = onPostOut(poDate, poOutcome); setPostErr(why || ''); setDelArmed(false)
+              }}
             >
-              Post out from {poDate || '…'}
+              {delArmed ? `Tap again to delete ${callsign}` : 'Post out'}
             </button>
-            <span className="note">
-              Off the manpower from that day on. Past schedules keep their pucks.
-            </span>
           </div>
           {postErr && <div className="bidsheet-row postout"><span className="note warn" data-testid="post-err">{postErr}</span></div>}
         </>
@@ -912,7 +917,8 @@ export function PostOutSheet({
   callsign,
   date,
   poFrom,
-  archive,
+  outcome,
+  hasAccount,
   onChange,
   onUndo,
   onPlace,
@@ -922,11 +928,13 @@ export function PostOutSheet({
   date: string
   /** The person's CURRENT PO date — the first day they are gone. */
   poFrom: string
-  /** Whether the auto-archive switch is on for this posting. */
-  archive: boolean
-  /** Re-post with a new date and/or archive choice. Commits on change — the
+  /** Which posting it is ([POST-OUT-OUTCOMES], D229 — the four chips). */
+  outcome: PostOutcome
+  /** whether he has an account (the line names it only then) */
+  hasAccount?: boolean
+  /** Re-post with a new date and/or outcome. Commits on change — the
    *  sheet stays up so the admin can see the grid move behind it. */
-  onChange: (fromDate: string, archive: boolean) => string | void
+  onChange: (fromDate: string, outcome: PostOutcome) => string | void
   onUndo: () => void
   /** Hand this day to the bid sheet instead (owner, 20 Sep 26 — "we should
    *  also allow putting inputs when we click on days that were posted out"). */
@@ -935,6 +943,8 @@ export function PostOutSheet({
 }) {
   /* a refused move of the date says why (AB5) — the box snaps back to the date that stands */
   const [err, setErr] = useState('')
+  /* a Delete chip does not commit on its own tap: it arms "Tap again to delete Hex" (D287 (3) — it asks twice) */
+  const [delArm, setDelArm] = useState(false)
   return (
     <Sheet testid="postout-sheet" label="Posted out" onClose={onClose}>
       <div className="bidsheet-hd">
@@ -943,12 +953,6 @@ export function PostOutSheet({
         <button className="x" data-testid="postout-cancel" onClick={onClose} aria-label="Close">
           ✕
         </button>
-      </div>
-      <div className="bidsheet-row">
-        <span className="note">
-          Posted out from {poFrom} — off the manpower from that day on.
-          {archive ? ' Moves to the Quals archive on that date.' : ' Stays on the Quals roster (custom).'}
-        </span>
       </div>
       <div className="bidsheet-row postout">
         <span className="lab">PO from</span>
@@ -961,20 +965,31 @@ export function PostOutSheet({
           data-testid="postout-date"
           aria-label={`Move ${callsign}'s post-out date`}
           value={poFrom}
-          onChange={e => { if (e.target.value) setErr(onChange(e.target.value, archive) || '') }}
+          onChange={e => { if (e.target.value) { setDelArm(false); setErr(onChange(e.target.value, outcome) || '') } }}
         />
-        <button
-          className={`pchip${archive ? ' on' : ''}`}
-          data-testid="postout-archive"
-          aria-pressed={archive}
-          title={archive
-            ? 'On the PO date they move to the Quals archive. Their pucks on past schedules are untouched.'
-            : 'They stay on the Quals roster after the PO date — for the custom cases.'}
-          onClick={() => setErr(onChange(poFrom, !archive) || '')}
-        >
-          {archive ? '✓ ' : ''}Archive on PO date
-        </button>
       </div>
+      {/* [POST-OUT-OUTCOMES] (D229, D294, D298, D300): the four chips, committed on the tap as the date is — a Delete
+          arms its second tap instead; ONE line says what happens on the date (the old two notes said it twice) */}
+      <OutcomeChips value={delArm ? 'delete' : outcome} testid="postout"
+        onChange={o => {
+          setErr('')
+          if (o === 'delete') { setDelArm(true); return }
+          /* the armed Delete tapped again is "not that after all" — back to the posting as it stands, never a change to
+             "nothing else" (the chips' un-choose would otherwise commit 'none' behind his back) */
+          if (delArm) { setDelArm(false); if (o === 'none') return }
+          setErr(onChange(poFrom, o) || '')
+        }} />
+      <div className="bidsheet-row postout">
+        <span className="note" data-testid="postout-line">{outcomeLine(delArm ? 'delete' : outcome, poFrom, !!hasAccount)}</span>
+      </div>
+      {delArm && (
+        <div className="bidsheet-row postout">
+          <button className="dchip po del-armed" data-testid="postout-delete-go"
+            onClick={() => { setDelArm(false); setErr(onChange(poFrom, 'delete') || '') }}>
+            Tap again to delete {callsign}
+          </button>
+        </div>
+      )}
       {/* drawn only with something to say — an empty row left a blank band on the sheet (W3's re-walk, N4) */}
       {err && <div className="bidsheet-row postout">
         <span className="note warn" data-testid="postout-err">{err}</span>

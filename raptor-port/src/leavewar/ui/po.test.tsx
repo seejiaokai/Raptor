@@ -11,7 +11,7 @@
 
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { getState, initStore, setPostOut, setRole } from '../state/store'
+import { getState, initStore, setAccountLookup, setPostOut, setRole } from '../state/store'
 import { countsFor, inSquadron } from '../engine'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
@@ -91,13 +91,16 @@ describe('placing and managing PO from the grid', () => {
     fireEvent.click(screen.getByTestId(`cell-${id}-${day}`))
     expect(screen.queryByTestId('po-confirm')).toBeNull()
     fireEvent.click(screen.getByTestId('bid-postout'))
-    // The date seeds with the tapped day, the archive switch is ON by default.
+    // The date seeds with the tapped day; "Overseas Sqn" — the old "Archive on PO date" — is chosen by default
+    // ([POST-OUT-OUTCOMES], D229, D294: the four chips; D300: the button just "Post out").
     expect((screen.getByTestId('po-date') as HTMLInputElement).value).toBe(day)
-    expect(screen.getByTestId('po-archive').getAttribute('aria-pressed')).toBe('true')
+    expect(screen.getByTestId('po-overseas').getAttribute('aria-pressed')).toBe('true')
+    expect(screen.getByTestId('po-confirm').textContent).toBe('Post out')
     fireEvent.click(screen.getByTestId('po-confirm'))
     const p = () => getState().people.find(x => x.id === id)!
     expect(p().to).toBe('2026-06-14')
     expect(p().poArchive).toBe(true)
+    expect(p().poOutcome).toBe('overseas')
 
     // The cell now reads as posted out (the greyed `.gone` hatch).
     expect(screen.getByTestId(`cell-${id}-${day}`).className).toContain('gone')
@@ -107,8 +110,9 @@ describe('placing and managing PO from the grid', () => {
     fireEvent.click(screen.getByTestId(`cell-${id}-${day}`))
     expect(screen.queryByTestId('bid-picker')).toBeNull()
     expect((screen.getByTestId('postout-date') as HTMLInputElement).value).toBe(day)
-    fireEvent.click(screen.getByTestId('postout-archive'))     // → custom, no auto-archive
+    fireEvent.click(screen.getByTestId('postout-overseas'))    // tapped again → none: off the manpower, nothing else
     expect(p().poArchive).toBe(false)
+    expect(p().poOutcome).toBe('none')
     // An EARLIER date: the tapped day stays struck, so the sheet stays up.
     // (Moving it past the tapped day un-strikes that cell and the sheet
     // rightly gives way to the bid picker — the sheet is derived state.)
@@ -126,7 +130,7 @@ describe('placing and managing PO from the grid', () => {
     fireEvent.click(screen.getByTestId(`cell-${id}-2026-06-15`))
     fireEvent.click(screen.getByTestId('bid-postout'))
     fireEvent.change(screen.getByTestId('po-date'), { target: { value: '2026-09-01' } })
-    fireEvent.click(screen.getByTestId('po-archive'))          // the custom case: archive off
+    fireEvent.click(screen.getByTestId('po-overseas'))         // un-chosen: the custom case, nothing but the posting
     fireEvent.click(screen.getByTestId('po-confirm'))
     const p = getState().people.find(x => x.id === id)!
     expect(p.to).toBe('2026-08-31')
@@ -173,5 +177,79 @@ describe('the Post out sheet, its date moved past the day that opened it', () =>
     expect(getState().people.find(p => p.id === id)!.to).toBe('2026-08-13')
     expect(screen.getByTestId('postout-sheet')).toBeTruthy()
     expect(screen.queryByTestId('bid-picker')).toBeNull()
+  })
+})
+
+/* THE POSTING'S FOUR CHIPS ([POST-OUT-OUTCOMES], 27 Sep 26 — owner D229, D294, D298, D300; the approved mock-up
+   docs/mock/post-out.html §1). Which posting it is — "Overseas Sqn", "Delete", "SANS", "Transfer to Sqn" — one line for
+   what happens on the date, the button just "Post out"; a Delete asks twice (D287 (3)); Transfer is drawn and not
+   pressable (D281 — with the shared database). Register PO1, PO2. */
+describe('the four posting chips', () => {
+  const open = (id: string, day: string) => {
+    fireEvent.click(screen.getByTestId(`cell-${id}-${day}`))
+    fireEvent.click(screen.getByTestId('bid-postout'))
+  }
+  it('the bid sheet: one line per chip, Transfer not pressable, SANS stored as SANS', () => {
+    const id = anId()
+    setRole('admin')
+    render(<Matrix />)
+    open(id, '2026-06-15')
+    expect(screen.getByTestId('po-line').textContent).toBe('On 15 Jun: archived on Quals.')
+    expect((screen.getByTestId('po-transfer') as HTMLButtonElement).disabled).toBe(true)
+    fireEvent.click(screen.getByTestId('po-sans'))
+    expect(screen.getByTestId('po-sans').getAttribute('aria-pressed')).toBe('true')
+    expect(screen.getByTestId('po-overseas').getAttribute('aria-pressed')).toBe('false')
+    expect(screen.getByTestId('po-line').textContent).toBe('On 15 Jun: becomes SANS.')
+    fireEvent.click(screen.getByTestId('po-confirm'))
+    expect(getState().people.find(x => x.id === id)!.poOutcome).toBe('sans')
+  })
+  it('the bid sheet: Delete asks twice — the first tap names him and writes nothing', () => {
+    const id = anId()
+    const cs = getState().people.find(x => x.id === id)!.callsign
+    setRole('admin')
+    render(<Matrix />)
+    open(id, '2026-06-15')
+    fireEvent.click(screen.getByTestId('po-delete'))
+    expect(screen.getByTestId('po-line').textContent).toBe('On 15 Jun: deleted. Days he flew keep his puck.')
+    fireEvent.click(screen.getByTestId('po-confirm'))
+    expect(screen.getByTestId('po-confirm').textContent).toBe(`Tap again to delete ${cs}`)
+    expect(getState().people.find(x => x.id === id)!.to).toBeNull()
+    fireEvent.click(screen.getByTestId('po-confirm'))
+    const p = getState().people.find(x => x.id === id)!
+    expect(p.to).toBe('2026-06-14')
+    expect(p.poOutcome).toBe('delete')
+  })
+  it('the Post out sheet: Delete arms a second tap; tapping it again backs out and changes nothing', () => {
+    const id = anId()
+    setRole('admin')
+    setPostOut(id, '2026-06-15', 'overseas')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${id}-2026-06-15`))
+    const p = () => getState().people.find(x => x.id === id)!
+    expect(screen.getByTestId('postout-line').textContent).toBe('On 15 Jun: archived on Quals.')
+    fireEvent.click(screen.getByTestId('postout-delete'))            // the chip — arms, writes nothing
+    expect(p().poOutcome).toBe('overseas')
+    expect(screen.getByTestId('postout-line').textContent).toBe('On 15 Jun: deleted. Days he flew keep his puck.')
+    expect(screen.getByTestId('postout-delete-go')).toBeTruthy()
+    fireEvent.click(screen.getByTestId('postout-delete'))            // the armed chip again: "not that after all"
+    expect(screen.queryByTestId('postout-delete-go')).toBeNull()
+    expect(p().poOutcome, 'backing out never turns the posting into "nothing else"').toBe('overseas')
+    fireEvent.click(screen.getByTestId('postout-delete'))
+    fireEvent.click(screen.getByTestId('postout-delete-go'))         // the second tap
+    expect(p().poOutcome).toBe('delete')
+    expect(p().to).toBe('2026-06-14')
+  })
+  it('the line names his account only when he has one', () => {
+    const id = anId()
+    setRole('admin')
+    setAccountLookup(x => x === id)
+    try {
+      render(<Matrix />)
+      fireEvent.click(screen.getByTestId(`cell-${id}-2026-06-15`))
+      fireEvent.click(screen.getByTestId('bid-postout'))
+      expect(screen.getByTestId('po-line').textContent).toBe('On 15 Jun: archived on Quals, account suspended.')
+      fireEvent.click(screen.getByTestId('po-delete'))
+      expect(screen.getByTestId('po-line').textContent).toBe('On 15 Jun: deleted with his account. Days he flew keep his puck.')
+    } finally { setAccountLookup(null) }
   })
 })

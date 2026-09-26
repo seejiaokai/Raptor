@@ -41,6 +41,7 @@ import { SESSION } from '../state/auth'
 import { me } from '../state/perms'
 import { notify } from '../state/store'
 import { deletePerson } from '../state/person-delete'
+import { markBack } from '../state/view'
 import './postout.css'
 
 const cs = (pid: string) => ((PEOPLE as any)[pid] ? String((PEOPLE as any)[pid].cs) : '')
@@ -261,7 +262,12 @@ function AccountRow(p: { a: Account; editing: boolean; onEdit: () => void; onClo
           <button className="abtn primary" id="accEdSave" onClick={save}>Save</button>
           {/* D285: "Suspend" / "Enable" (was "Switch off / on") — a man away is suspended, and enabled when he is back */}
           <button className="abtn" id="accEdOnOff" onClick={() => {
-            if (done(updateAccount(a.id, { on: !a.on }), a.on ? `${cs} suspended` : `${cs} can sign in again`)) p.onClose()
+            const enabling = !a.on
+            if (done(updateAccount(a.id, { on: !a.on }), a.on ? `${cs} suspended` : `${cs} can sign in again`)) {
+              /* D284: enabling his account is one of the two "he's back" acts — the Quals prompt to check his quals */
+              if (enabling) { markBack(a.pid); notify() }
+              p.onClose()
+            }
           }}>{a.on ? 'Suspend' : 'Enable'}</button>
           {/* D285 "Delete account"; D287 — for a man who leaves flying for good: his account AND his person (kept
               underneath as a hidden mark, D290; state/person-delete.ts); it asks twice and says what goes (D287 (3)) */}

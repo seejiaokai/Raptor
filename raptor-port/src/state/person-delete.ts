@@ -34,9 +34,10 @@
    cannot be read, or is byte-preserved while holding him there, REFUSES the whole delete with its reason. Nothing is
    skipped silently.
 
-   NOT HERE YET (the plan's Part B, on PR #444's posting code — docs/superpowers/plans/2026-09-27-post-out-outcomes-plan.md
-   §13): his Leave War records from the cutoff, his posting window and the war's `gone` mark, the OIL rule (a deleted man
-   earns nothing from his cutoff), and Undo / Redo refusing a restore that would put him back. Nothing merges before it. */
+   THE LEAVE WAR HALF (Part B): his war records from the cutoff go, his posting window closes the day before and he is
+   marked `gone` (leavewar/sync.ts deletePersonOnWar — the seam); a deleted man earns no OIL from his cutoff and is read
+   by date in the ALL AVAIL crowd (sync.ts creditable, availableFor). A posting's Delete runs the same mutation from the
+   posting pass (sync.ts runPoOutcomes). */
 import { PEOPLE, whoId, indexCallsigns } from '../engine/people'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
@@ -56,6 +57,7 @@ import { weekstashStore } from './store'
 import { mayDeletePerson } from './perms'
 import { deleteAccountProblem, dropAccountOfPid } from './accounts'
 import { saidOf } from './roster-add'
+import { deletePersonOnWar } from '../leavewar/sync'
 
 /* ---- the one clock and the cutoff ---- */
 export const effectiveToday = (): string => localToday()
@@ -260,6 +262,42 @@ export function applyDelete(id: string, cutoff: string): void {
   validate()
 }
 
+/* ---- UNDO AND REDO NEVER PUT HIM BACK (the plan's Round 1 and 2 — Fable F2, Astra A1 / round-2 2) ----
+   A restore image that would put a DELETED man on a day (or its sign-offs, a parked plan, a stored week, an input, the
+   planning calendar) ON OR AFTER his cutoff is refused — "Hex has been deleted — that change can't be undone" — never
+   repaired silently. The undo timeline asks it when it CHOOSES the next step (undo/timeline.ts — a refused step is
+   passed over, so the button never stalls behind it; it still guards older steps that share its records) and again just
+   before it restores. The record names are the command layer's (state/sched-commit.ts decompose): `days` `<wk>#<di>`,
+   `sched.book` `<wk>` (its `sg` sign-offs and `dr` parked plans), `inputs` `<iid>`, `plan` `all`, `weekstash` `<wk>`. */
+const holds = (v: any, id: string): boolean => { try { return JSON.stringify(v ?? null).includes(`"${id}"`) } catch (_e) { return false } }
+function weekHolds(wk: string, blob: any, id: string, cut: string): boolean {
+  if (!blob || typeof blob !== 'object') return false
+  const days = Array.isArray(blob.d) ? blob.d : []
+  for (let di = 0; di < days.length; di++) if (dayIso(wk, di) >= cut && holds(days[di], id)) return true
+  for (const di of Object.keys(blob.sg || {})) if (dayIso(wk, +di) >= cut && holds(blob.sg[di], id)) return true
+  for (const di of Object.keys(blob.dr || {})) if (dayIso(wk, +di) >= cut && holds(blob.dr[di], id)) return true
+  return false
+}
+export function deletedRestoreProblem(changes: any[]): string | null {
+  const gone = Object.keys(PEOPLE).filter(id => (PEOPLE as any)[id] && (PEOPLE as any)[id].deleted)
+  if (!gone.length) return null
+  for (const ch of changes || []) {
+    if (!ch || ch.op !== 'put') continue
+    const v = ch.after, rid = String(ch.id || '')
+    for (const id of gone) {
+      const cut = String((PEOPLE as any)[id].deletedFrom || '')
+      let hit = false
+      if (ch.collection === 'days') { const [wk, di] = rid.split('#'); hit = !!wk && dayIso(wk, +di) >= cut && holds(v, id) }
+      else if (ch.collection === 'sched.book') hit = weekHolds(rid, { sg: v && v.sg, dr: v && v.dr }, id, cut)
+      else if (ch.collection === 'weekstash') { try { hit = weekHolds(rid, typeof v === 'string' ? JSON.parse(v) : v, id, cut) } catch (_e) { hit = false } }
+      else if (ch.collection === 'inputs') { const a = v && v.person === id ? dateOrd(v.date, v.yr) : null; hit = a != null && a >= isoOrd(cut) }
+      else if (ch.collection === 'plan') hit = ((v && v.pp) || []).some((e: any) => e && e.kind === 'pucks' && String(e.iso || '') >= cut && Array.isArray(e.ids) && e.ids.includes(id))
+      if (hit) return `${(PEOPLE as any)[id].cs} has been deleted — that change can't be undone`
+    }
+  }
+  return null
+}
+
 /* ---- THE DOOR — the admin's delete (Admin → Users' "Delete account", its second tap) ----
    A string back is the refusal, said on screen; null = done. `dateIso` — the delete's own date (a posting's; blank =
    today); the cutoff is the later of it and today. */
@@ -277,6 +315,8 @@ export function deletePerson(id: string, dateIso?: string | null): string | null
       resyncSchedBaseline()
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(schedStore); txn.enlist(weekstashStore)
       applyDelete(id, cutoff)
+      /* the war half — his records from the cutoff, his window closed, `gone` (through the sync, the one seam) */
+      deletePersonOnWar(txn, id, cutoff)
       finishPeopleWrite()
       schedApplyEnd()
     },

@@ -10,6 +10,18 @@ export type Seat = 'pilot' | 'wso' | 'gnd'
 export type Band = 'instructor' | 'ops'
 export type Category = 'IP' | 'OPSP' | 'IWSO' | 'OPSW'
 
+/* the posting out's outcomes ([POST-OUT-OUTCOMES], D229) — 'transfer' is not one yet (D281: with the shared database) */
+export type PostOutcome = 'overseas' | 'delete' | 'sans' | 'none'
+export const POST_OUTCOMES: PostOutcome[] = ['overseas', 'delete', 'sans', 'none']
+/* the outcome a posting record carries, reading an older record's archive switch the old way (D56 — tolerant, never
+   migrated): switch on = overseas (archived), off = none */
+export function outcomeOf(p: { poOutcome?: any; poArchive?: boolean } | null | undefined): PostOutcome | undefined {
+  if (!p) return undefined
+  if (POST_OUTCOMES.includes(p.poOutcome)) return p.poOutcome
+  if (p.poArchive === true) return 'overseas'
+  if (p.poArchive === false) return 'none'
+  return undefined
+}
 export interface Person {
   id: string
   callsign: string
@@ -28,6 +40,18 @@ export interface Person {
    *  other than the sheet (seed, demo overlay), and the auto-archive pass in
    *  sync.ts leaves those alone. Meaningless without `to`. */
   poArchive?: boolean
+  /** WHICH posting out it is ([POST-OUT-OUTCOMES], owner D229, D294, D298 — the sheet's four chips): 'overseas'
+   *  (archived on Quals, his account suspended — the old "Archive on PO date"), 'delete' (leaving flying for good —
+   *  his account and person, D287), 'sans' (another workplace, still flies with us — SANS on the date, D283), or
+   *  'none' (off the manpower, nothing else — the old switch turned off). Written with `to` by `setPostOut`; an older
+   *  record's `poArchive` reads as 'overseas' / 'none' (tolerant — D56). */
+  poOutcome?: PostOutcome
+  /** The PO date the outcome has RUN for (sync.ts runPoOutcomes) — each effect happens once, and the app never undoes a
+   *  later hand change (Enable by hand, a SANS tick taken off). Cleared whenever the date or the outcome changes. */
+  poDone?: string
+  /** A man DELETED on the Raptor side (D287, D290): kept here as a posted-out man is, so the months he was here keep
+   *  his record (D299), but no posting door, no OIL tracker row and no writer takes him. Set only by the sync. */
+  gone?: boolean
   /** The Raptor CAT (OCU/D/C/B/A/IW/IP/IR/FI), carried through the projection
    *  so the display can group ops crew by CAT and split OCU / instructors out.
    *  Absent on the seed people (which know only band) — the display falls back

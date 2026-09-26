@@ -14,6 +14,7 @@
    the button retarget (§9) imports the same helpers.
 
    Ordinary TS/React-layer style (new file). */
+import { deletedRestoreProblem } from './person-delete'
 import {
   installUndo, registerUndoStore, setCutoverModules, setUndoHooks,
 } from '../undo'
@@ -153,6 +154,8 @@ export function installGlobalUndo(): void {
     postRestore,
     /* the war's own rules on what a restore may put back — a bid over a medical filed since (W3-F8) */
     restoreRefusal: (changes, dir) => restoreBlocker(changes as any, dir, restoreAbsencesOf(changes as any)),
+    /* [POST-OUT-OUTCOMES]: a step that would put a deleted man back is passed over, never taken (person-delete.ts) */
+    deadRefusal: (changes) => deletedRestoreProblem(changes as any),
     // currentActor OMITTED — the timeline defaults to deriveActor().
   })
 }

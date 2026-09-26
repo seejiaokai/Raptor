@@ -12,7 +12,8 @@ import { initStore, notify, resetSession } from '../state/store'
 import { storeBackend } from '../engine/hooks'
 import { PEOPLE, indexCallsigns, nameToId } from '../engine/people'
 import { accountsLoad, signIn, sessionFor } from '../state/accounts'
-import { setPage } from '../state/view'
+import { setPage, BACKPROMPT, clearBack } from '../state/view'
+import { renameCallsign } from '../engine/slots'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 const $ = (sel: string) => document.querySelector(sel) as HTMLElement
@@ -93,5 +94,50 @@ describe('PO5 — a deleted man is on no list, the Archived one included (D287, 
     Object.assign((PEOPLE as any).casper, { deleted: true, deletedFrom: '2026-09-27' })
     await act(async () => { notify() })
     expect($('[data-testid="qarchrow-casper"]')).toBeFalsy()
+  })
+})
+
+/* D286 (1) / D295 — Restore meeting a callsign a man ON THE ROSTER now holds: it never renames anyone by itself; it asks
+   for another callsign on the spot, suggesting the first free "<callsign> 2", and "Restore as …" does both in one step.
+   D284 — then "<callsign> is back — quals and CAT as he left them", with "Check his quals" (his row outlined) and
+   "Later"; it changes nothing. Register PO9, PO10. */
+describe('PO9 / PO10 — Restore, a taken callsign, and "he is back"', () => {
+  const clearPrompts = () => { for (const id of [...BACKPROMPT]) clearBack(id) }
+  it('his callsign free: Restore puts him back and the prompt asks to check his quals', async () => {
+    clearPrompts()
+    await openArchived()
+    await click($('[data-restore="casper"]'))
+    expect((PEOPLE as any).casper.archived).toBe(false)
+    expect($('[data-testid="back-casper"]').textContent).toMatch(/Outlaw is back/)
+    await click($('[data-back-check="casper"]'))
+    expect($('[data-testid="back-casper"]'), 'answered').toBeFalsy()
+    const row = $('#qtbl td.qname[data-person="casper"]')?.closest('tr')
+    expect(row?.classList.contains('back-hl'), 'his row outlined').toBe(true)
+  })
+  it('"Later" puts the prompt away and changes nothing', async () => {
+    clearPrompts()
+    await openArchived()
+    await click($('[data-restore="casper"]'))
+    await click($('[data-back-later="casper"]'))
+    expect($('[data-testid="back-casper"]')).toBeFalsy()
+    expect((PEOPLE as any).casper.archived).toBe(false)
+  })
+  it('his callsign taken: Restore asks for another (suggesting "Outlaw 2"), refuses a bad one, and restores under it', async () => {
+    clearPrompts()
+    expect(renameCallsign('bane', 'Outlaw'), 'an archived man’s callsign is free (D286)').toBe(true)
+    await openArchived()
+    await click($('[data-restore="casper"]'))
+    expect((PEOPLE as any).casper.archived, 'nothing restored yet').toBe(true)
+    expect($('[data-testid="qrestoreas-casper"]').textContent).toMatch(/Outlaw is taken/)
+    expect(($('#qRestoreCs') as HTMLInputElement).value).toBe('Outlaw 2')
+    await type($('#qRestoreCs') as HTMLInputElement, 'Christopher Tan')
+    await click($('#qRestoreGo'))
+    expect($('#qRestoreErr').textContent).toMatch(/at most 14 letters/)
+    expect((PEOPLE as any).casper.archived).toBe(true)
+    await type($('#qRestoreCs') as HTMLInputElement, 'Outlaw 2')
+    await click($('#qRestoreGo'))
+    expect((PEOPLE as any).casper.archived).toBe(false)
+    expect((PEOPLE as any).casper.cs).toBe('Outlaw 2')
+    expect($('[data-testid="back-casper"]').textContent).toMatch(/Outlaw 2 is back/)
   })
 })

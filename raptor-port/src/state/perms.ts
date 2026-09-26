@@ -307,7 +307,14 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
      parked plans, the planning calendar (the schedule family), his sign-off boxes cleared (as the sign-clear command),
      and his inputs from that day deleted or ended the day before. Every table it writes is named (D200). The Leave War
      half (his records, his posting) joins in Part B with LeavePersonProfile. */
-  'person.delete': op(T.person, 'D', 'never', [[T.user, 'D'], [T.accessreq, 'D'], [T.sched, 'U'], [T.amendment, 'C'], [T.input, 'D'], [T.input, 'U']]),
+  'person.delete': op(T.person, 'D', 'never', [[T.user, 'D'], [T.accessreq, 'D'], [T.sched, 'U'], [T.amendment, 'C'], [T.input, 'D'], [T.input, 'U'], [T.profile, 'U'], [T.bid, 'D']]),
+  /* he's back — Restore on Quals, Undo post out, Restore under another callsign (D284, D286, D295): the person restored
+     (and renamed), the account the posting suspended enabled, the posting cleared; never a member's own-row write */
+  'person.restore': op(T.person, 'U', 'never', [[T.user, 'U'], [T.profile, 'U']]),
+  /* a posting written with a take-back of what the posting made (its archive, its suspension, its SANS tick) */
+  'lw.postout': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.user, 'U']]),
+  /* the posting pass on its date — a reconciler (the system actor); every table an outcome writes is named (D200) */
+  'lw.postoutRun': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.person, 'D'], [T.user, 'U'], [T.user, 'D'], [T.sched, 'U'], [T.amendment, 'C'], [T.input, 'D'], [T.input, 'U'], [T.bid, 'D']]),
 }
 for (const k of SETTINGS_KEYS_ALL) COMMAND_OPS[`settings.${k}`] = op(T.setting, 'U')
 

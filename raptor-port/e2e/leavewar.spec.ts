@@ -4067,10 +4067,10 @@ test('posting out tags the last day, and the row leaves the months after it', as
   await page.locator('[data-testid="month-JUN"]').click()
   await page.locator('[data-testid="cell-slipway-2026-06-15"]').click()
   await page.locator('[data-testid="bid-postout"]').click()
-  // The switch is ON by default; this test flips it off (the custom case) —
-  // the store side of that choice is pinned in the unit suite.
-  await expect(page.locator('[data-testid="po-archive"]')).toHaveAttribute('aria-pressed', 'true')
-  await page.locator('[data-testid="po-archive"]').click()
+  // "Overseas Sqn" is chosen by default ([POST-OUT-OUTCOMES] — the old "Archive on PO date"); this test un-chooses
+  // it (the custom case: off the manpower, nothing else) — the store side is pinned in the unit suite.
+  await expect(page.locator('[data-testid="po-overseas"]')).toHaveAttribute('aria-pressed', 'true')
+  await page.locator('[data-testid="po-overseas"]').click()
   await page.locator('[data-testid="po-confirm"]').click()
 
   // The first day gone is hatched; the last day IN wears the PO tag.

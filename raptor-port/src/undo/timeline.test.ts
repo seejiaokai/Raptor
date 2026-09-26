@@ -343,3 +343,34 @@ describe('the derived publication barrier (§6.3)', () => {
     expect(_undoConflict(editEntry)).toMatch(/Unpublish/)
   })
 })
+
+/* [POST-OUT-OUTCOMES] (27 Sep 26). A DELETE IS FINAL (owner D287): a step whose restore would put a deleted man back
+   can never be taken, so the dispatcher PASSES OVER it — the button never stalls behind it — and says why when nothing
+   else is left (the plan's Round 2; state/person-delete.ts deletedRestoreProblem is the app's rule). And the admin's
+   member view (D292): his own admin step, refused while he is a member, tells him to switch back — it was never
+   "someone else's change" (Fable F12). Register PO12. */
+describe('a step that can never be taken, and the member view’s words', () => {
+  it('passes over a dead step to the older one; with only dead steps left it says why', () => {
+    const s = makeStore('S', 'settings'); s.set('x', { v: 1 }); s.set('y', { v: 1 })
+    registerUndoStore(s.store, ['settings']); setCutoverModules(['settings'])
+    edit(s.store, { module: 'settings' }, () => s.set('x', { v: 2 }))
+    edit(s.store, { module: 'settings' }, () => s.set('y', { v: 2 }))
+    const DEAD = 'Hex has been deleted — that change can’t be undone'
+    setUndoHooks({ currentActor: () => A('admin', 'boss'), deadRefusal: (ch) => (ch.some(c => c.id === 'y') ? DEAD : null) })
+    expect(globalUndo().ok).toBe(true)
+    expect(s.get('x')).toEqual({ v: 1 })      // the older step, reached past the dead one
+    expect(s.get('y')).toEqual({ v: 2 })      // the dead one never taken
+    const r = globalUndo()
+    expect(r.ok).toBe(false)
+    expect(r.reason).toBe(DEAD)
+  })
+  it('his own admin step, refused in the member view, says "switch back"; another member still reads "someone else"', () => {
+    const s = makeStore('S', 'settings')
+    registerUndoStore(s.store, ['settings']); setCutoverModules(['settings'])
+    edit(s.store, { module: 'settings' }, () => s.set('x', { v: 1 }), A('admin', 'boss'))
+    setUndoHooks({ currentActor: () => A('member', 'boss') })
+    expect(globalUndo().reason).toBe('Switch back to the admin view to undo that.')
+    setUndoHooks({ currentActor: () => A('member', 'pC') })
+    expect(globalUndo().reason).toMatch(/someone else/i)
+  })
+})

@@ -17,7 +17,9 @@
 // which the owner allows. The single-cell path keeps the confirm.
 
 import { useState } from 'react'
-import { formatCell, LEAVE_TYPES, type BidState, type Portion } from '../engine'
+import { formatCell, LEAVE_TYPES, type BidState, type Portion, type PostOutcome } from '../engine'
+import { OutcomeChips, outcomeLine } from './OutcomeChips'
+import '../../ui/postout.css'
 import { awardsIn, clearCells, movableCells, setBidStates, setCells } from '../state/store'
 import { awardsClause } from './awardwords'
 import { Sheet } from './Sheet'
@@ -39,6 +41,7 @@ export function SelectSheet({
   onDone,
   onMove,
   onPostOut,
+  hasAccount,
   onClose,
 }: {
   sel: Selection
@@ -55,7 +58,9 @@ export function SelectSheet({
   /** enter move-mode (the matrix owns the ghost + the drop) */
   onMove: (sel: Selection) => void
   /** admin, single-person selections only: post that one person out */
-  onPostOut?: (personId: string, fromDate: string, archive: boolean) => string | void
+  onPostOut?: (personId: string, fromDate: string, outcome: PostOutcome) => string | void
+  /** whether that one person has an account (the posting's line names it only then) */
+  hasAccount?: (personId: string) => boolean
   onClose: () => void
 }) {
   const [portion, setPortion] = useState<Portion>('full')
@@ -63,7 +68,9 @@ export function SelectSheet({
   const [confirmDel, setConfirmDel] = useState(false)
   const [poOpen, setPoOpen] = useState(false)
   const [poDate, setPoDate] = useState(sel.from)
-  const [poArchive, setPoArchive] = useState(true)
+  /* [POST-OUT-OUTCOMES]: which posting it is (D229) — Overseas Sqn by default; a Delete asks twice (D287 (3)) */
+  const [poOutcome, setPoOutcome] = useState<PostOutcome>('overseas')
+  const [delArmed, setDelArmed] = useState(false)
 
   const nPeople = sel.people.length
   const nDays = new Set(sel.cells.map(c => c.date)).size
@@ -194,21 +201,24 @@ export function SelectSheet({
         <>
           <div className="bidsheet-row postout">
             <span className="lab">PO from</span>
-            <input type="date" data-testid="sel-po-date" value={poDate} onChange={e => setPoDate(e.target.value)} />
-            <label className="poarch">
-              <input type="checkbox" data-testid="sel-po-archive" checked={poArchive} onChange={e => setPoArchive(e.target.checked)} />
-              Archive on PO date
-            </label>
+            <input type="date" data-testid="sel-po-date" value={poDate} onChange={e => { setDelArmed(false); setPoDate(e.target.value) }} />
           </div>
+          {/* the four chips and the one line, as on the bid sheet (D229, D294, D298, D300) */}
+          <OutcomeChips value={poOutcome} testid="sel-po" onChange={o => { setPoOutcome(o); setDelArmed(false) }} />
+          {outcomeLine(poOutcome, poDate, !!(hasAccount && hasAccount(sel.people[0]))) && (
+            <div className="bidsheet-row postout"><span className="note" data-testid="sel-po-line">{outcomeLine(poOutcome, poDate, !!(hasAccount && hasAccount(sel.people[0])))}</span></div>
+          )}
           <div className="bidsheet-row postout">
-            <button className="dchip po" data-testid="sel-po-confirm"
+            <button className={`dchip po${delArmed ? ' del-armed' : ''}`} data-testid="sel-po-confirm"
               onClick={() => {
+                if (poOutcome === 'delete' && !delArmed) { setDelArmed(true); return }
                 /* a refused posting keeps the sheet and says why (AB5) — it used to report done whatever the store said */
-                const why = onPostOut(sel.people[0], poDate, poArchive)
+                const why = onPostOut(sel.people[0], poDate, poOutcome)
+                setDelArmed(false)
                 if (why) { setNote(why); return }
                 onDone(true)
               }}>
-              Confirm post-out
+              {delArmed ? `Tap again to delete ${who}` : 'Post out'}
             </button>
           </div>
         </>

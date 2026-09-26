@@ -65,6 +65,11 @@ export interface UndoHooks {
      rule answers here: the sentence that refuses the restore, or null. Asked BEFORE the view snaps, so a refusal moves
      nothing. */
   restoreRefusal?(changes: Change[], dir: 'undo' | 'redo'): string | null
+  /* [POST-OUT-OUTCOMES] (the plan's Round 2, Astra round-2 2, Fable round-2 1): a step whose restore would put a DELETED
+     man back (state/person-delete.ts deletedRestoreProblem) can NEVER be taken — a delete is final — so the dispatcher
+     passes over it when it chooses the next step (it stays in the list, still guarding older steps that share its
+     records), and the button never stalls behind it. The sentence, or null. */
+  deadRefusal?(changes: Change[], dir: 'undo' | 'redo'): string | null
 }
 let hooks: UndoHooks = {}
 export function setUndoHooks(h: UndoHooks): void { hooks = h }
@@ -351,6 +356,14 @@ function keySet(entry: UndoEntry): Set<string> {
 function currentActor(): Actor {
   return hooks.currentActor ? hooks.currentActor() : deriveActor()
 }
+/* why a step is not his to reverse, in his words ([POST-OUT-OUTCOMES], D292 — Fable F12): a step he made AS ADMIN,
+   refused while he is in the member view, is his own — he is told to switch back, not that it was someone else's */
+function reverseRefusal(entry: UndoEntry, dir: 'undo' | 'redo'): string {
+  const cur = currentActor()
+  if (entry.actor.role === 'admin' && cur.role !== 'admin' && cur.personId != null && entry.actor.personId === cur.personId)
+    return `Switch back to the admin view to ${dir} that.`
+  return dir === 'undo' ? 'You can’t undo that — it was someone else’s change.' : 'You can’t redo that — it was someone else’s change.'
+}
 export function mayReverse(entry: UndoEntry, cur: Actor): boolean {
   if (cur.role === 'admin') return true
   return (
@@ -544,25 +557,45 @@ function missingStores(changes: Change[]): string[] {
 }
 
 /* ---- the dispatcher: globalUndo / globalRedo (§9) ------------------------ */
+/* a step that can never be taken (deadRefusal) — decided once and kept, since a delete is final */
+function deadFor(e: UndoEntry, dir: 'undo' | 'redo'): string | null {
+  const k = dir === 'undo' ? '__deadU' : '__deadR'
+  if ((e as any)[k]) return (e as any)[k]
+  const r = hooks.deadRefusal ? hooks.deadRefusal(dir === 'undo' ? e.inverse : e.forward, dir) : null
+  if (r) (e as any)[k] = r
+  return r
+}
+/* the sentence of the newest step passed over, when nothing else was left — said instead of "Nothing to undo" */
+let LAST_DEAD: string | null = null
 function newestUndoable(): UndoEntry | null {
+  LAST_DEAD = null
   for (let i = entries.length - 1; i >= 0; i--) {
     const e = entries[i]
-    if (!e.undone && isEligible(e)) return e
+    if (!e.undone && isEligible(e)) {
+      const dead = deadFor(e, 'undo')
+      if (dead) { if (!LAST_DEAD) LAST_DEAD = dead; continue }
+      return e
+    }
   }
   return null
 }
 function mostRecentlyUndone(): UndoEntry | null {
   let best: UndoEntry | null = null
+  LAST_DEAD = null
   for (const e of entries) {
-    if (e.undone && !e.abandoned && isEligible(e) && (best == null || (e.undoneAt ?? 0) > (best.undoneAt ?? 0))) best = e
+    if (e.undone && !e.abandoned && isEligible(e) && (best == null || (e.undoneAt ?? 0) > (best.undoneAt ?? 0))) {
+      const dead = deadFor(e, 'redo')
+      if (dead) { if (!LAST_DEAD) LAST_DEAD = dead; continue }
+      best = e
+    }
   }
   return best
 }
 
 export function globalUndo(): UndoResult {
   const entry = newestUndoable()
-  if (!entry) return { ok: false, reason: 'Nothing to undo.' }
-  if (!mayReverse(entry, currentActor())) return { ok: false, reason: 'You can’t undo that — it was someone else’s change.' }
+  if (!entry) return { ok: false, reason: LAST_DEAD || 'Nothing to undo.' }
+  if (!mayReverse(entry, currentActor())) return { ok: false, reason: reverseRefusal(entry, 'undo') }
   const conflict = undoConflict(entry)
   if (conflict) return { ok: false, reason: conflict }
   const ruleU = hooks.restoreRefusal ? hooks.restoreRefusal(entry.inverse, 'undo') : null   // W3-F8
@@ -587,8 +620,8 @@ export function globalUndo(): UndoResult {
 
 export function globalRedo(): UndoResult {
   const entry = mostRecentlyUndone()
-  if (!entry) return { ok: false, reason: 'Nothing to redo.' }
-  if (!mayReverse(entry, currentActor())) return { ok: false, reason: 'You can’t redo that — it was someone else’s change.' }
+  if (!entry) return { ok: false, reason: LAST_DEAD || 'Nothing to redo.' }
+  if (!mayReverse(entry, currentActor())) return { ok: false, reason: reverseRefusal(entry, 'redo') }
   const conflict = redoConflict(entry)
   if (conflict) return { ok: false, reason: conflict }
   const ruleR = hooks.restoreRefusal ? hooks.restoreRefusal(entry.forward, 'redo') : null   // W3-F8

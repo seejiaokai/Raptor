@@ -11,3 +11,13 @@
 .qarch-rename input{background:var(--bg,#0b0d10);border:1px solid var(--accent,#3cc6e6);border-radius:8px;color:var(--ink,#e8edf2);padding:6px 10px;font:inherit;width:160px;max-width:100%}
 .qarch-rename-err{flex:1 1 100%;color:#f0c36d;font-size:13px}
 .qarchrow .qrename{margin-right:6px}
+
+/* the Leave War's post-out sheets: a Delete armed by its first tap (D287 (3)) */
+.dchip.po.del-armed{background:rgba(240,85,95,.18);color:#fff;border-color:#f0555f}
+.po-outcomes{flex-wrap:wrap;gap:6px}
+/* a SANS posting shown in his old place with Show SANS off (D283; the approved picture 4a) */
+.po-sans-tag{margin-left:4px;font:600 9px/1 system-ui,sans-serif;padding:2px 4px;border-radius:4px;background:#7c5cc4;color:#fff;flex:none}
+
+/* Quals: "he's back" (D284; the approved picture 3 — lined up with the table, D294 (3)) and his row outlined */
+.back-prompt{box-sizing:border-box;margin:8px 0;padding:10px 12px;border:1px solid #3cc6e6;border-radius:10px;background:rgba(60,198,230,.08);color:#e8edf2;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.back-hl{outline:2px solid #3cc6e6;outline-offset:-2px}

@@ -18,7 +18,7 @@ import { DAYS } from '../engine/data'
 import { accountsLoad, signIn, sessionFor, requestAccess, setGuestView, ACCESS_REQS, accountByName } from '../state/accounts'
 import { getState as lwState } from '../leavewar/state/store'
 import { viewerId, roleOf } from '../state/perms'
-import { setPage } from '../state/view'
+import { setPage, BACKPROMPT } from '../state/view'
 import { setDayApproved, setSign, dayApproved } from '../engine/publish'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -216,6 +216,7 @@ describe('PO3 — Suspend / Enable, "suspended", the sign-in (D285, D300)', () =
     expect($('#accEdOnOff').textContent).toBe('Suspend')
     await click($('#accEdOnOff'))
     expect(accountByName('hex')).toMatchObject({ on: false })
+    expect(BACKPROMPT, 'a Suspend asks nothing').not.toContain('rocky')
     const row = () => $('[data-acct="achex"]')
     expect(row().textContent).toContain('suspended')
     expect(row().textContent).not.toContain('switched off')
@@ -224,6 +225,8 @@ describe('PO3 — Suspend / Enable, "suspended", the sign-in (D285, D300)', () =
     await click($('#accEdOnOff'))
     expect(accountByName('hex')).toMatchObject({ on: true })
     expect(row().textContent).not.toContain('suspended')
+    /* D284: an Enable is one of the two "he's back" acts — the Quals page then asks to check his quals */
+    expect(BACKPROMPT).toContain('rocky')
   })
   it('a suspended account signs in to "Your access is suspended", said once', async () => {
     const { updateAccount } = await import('../state/accounts')

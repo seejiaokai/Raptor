@@ -11,7 +11,7 @@ import { catsFor, CALLSIGN_LABEL, callsignProblem } from '../state/roster-add'
 import './postout.css'
 import { openAdminUsers } from './adminopen'
 import { updatePersonField } from '../state/quals-write'
-import { esc } from '../state/view'
+import { esc, BACKPROMPT, clearBack } from '../state/view'
 import { notify } from '../state/store'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (a roster write now
    emits a people/<personId> change). Same behaviour + the change stream. */
@@ -30,7 +30,7 @@ import { exportCSV } from './export'
    archived body has to clear their Leave War posting-out too, or the very
    next auto-archive pass would put them straight back — so the whole restore
    lives in sync.ts and this page just calls it. */
-import { restoreArchivedPerson } from '../leavewar/sync'
+import { restoreArchivedPerson, restoreArchivedAs } from '../leavewar/sync'
 
 /* Column order is the owner's, left to right (5 Aug 26): SANS, SXO, SCHEDULER,
    SC DAY, SC NIGHT, DAAR, NAAR, NVG, IMC, TF — currency and appointments
@@ -121,6 +121,16 @@ const sortKeyFor = (key: string) => SORTKEY[key] || ((p: any) => (p.quals && p.q
 const cmp = (a: any, b: any) => (a < b ? -1 : a > b ? 1 : 0)
 
 /* which people the table is showing: the seat view, then the filter box */
+/* the callsign Restore suggests when his own is taken (D295; the approved picture: "Ace 2") — the first free "<cs> N",
+   shortened to fit the 14 letters (D226 — Fable F11) */
+function nextFreeCallsign(cs: string, id: string): string {
+  for (let n = 2; n < 100; n++) {
+    const tail = ` ${n}`
+    const cand = `${cs.slice(0, 14 - tail.length).trimEnd()}${tail}`
+    if (!callsignProblem(cand, id)) return cand
+  }
+  return ''
+}
 function qualsIds(qSeatView: string, qSort: any, qSearch: string) {
   let ids = Object.keys(PEOPLE).filter(id =>
     (qSeatView === 'ALL' || PEOPLE[id].seat === qSeatView) && !PEOPLE[id].archived)
@@ -304,6 +314,28 @@ export function QualsPage() {
      count by default — it is a records drawer, not the roster */
   const [showArch, setShowArch] = useState(false)
   /* D295: the archived man being renamed on the Archived list, what is typed, and the reason a name was refused */
+  /* D295: Restore meeting a taken callsign — the man, the callsign he comes back under, the reason one was refused */
+  const [restoreAsFor, setRestoreAsFor] = useState<string | null>(null)
+  const [restoreAsTo, setRestoreAsTo] = useState('')
+  const [restoreAsErr, setRestoreAsErr] = useState('')
+  /* D284: "Check his quals" — his row, outlined (on the roster in his seat view, or on the Archived list while he is
+     still archived — an account enabled before he is restored) */
+  const [backHl, setBackHl] = useState<string | null>(null)
+  const checkBack = (id: string) => {
+    const p = PEOPLE[id]
+    clearBack(id)
+    if (p.archived) setShowArch(true)
+    else setSeat(p.pers || p.seat === 'GND' ? 'GND' : p.seat === 'RCP' ? 'RCP' : 'FCP')
+    setBackHl(id); notify()
+  }
+  useEffect(() => {
+    if (!backHl) return
+    const el = (document.querySelector(`#qtbl td.qname[data-person="${backHl}"]`)?.closest('tr')
+      || document.querySelector(`[data-testid="qarchrow-${backHl}"]`)) as HTMLElement | null
+    if (!el) return
+    el.classList.add('back-hl')
+    el.scrollIntoView?.({ block: 'center' })
+  })
   const [renaming, setRenaming] = useState<string | null>(null)
   const [renameTo, setRenameTo] = useState('')
   const [renameErr, setRenameErr] = useState('')
@@ -727,6 +759,15 @@ export function QualsPage() {
         {admin && <button className="abtn" id="qAddToggle" title="Add a new person on Admin → Users"
           onClick={() => openAdminUsers({ newPerson: true })}>+ Add person</button>}
       </div>
+      {/* D284 (26 Sep 26): he's back — restored, or his account enabled — and the admin is asked to check his quals and
+          CAT, with a way straight to his row; lined up with the table (D294 (3)). It changes nothing. */}
+      {admin && BACKPROMPT.filter(id => PEOPLE[id] && !PEOPLE[id].deleted).map(id => (
+        <div className="back-prompt" key={id} data-testid={`back-${id}`}>
+          <span><b>{PEOPLE[id].cs} is back</b> — quals and CAT as he left them.</span>
+          <button className="abtn primary" data-back-check={id} onClick={() => checkBack(id)}>Check his quals</button>
+          <button className="abtn" data-back-later={id} onClick={() => { clearBack(id); notify() }}>Later</button>
+        </div>
+      ))}
       <div className="qwrap" ref={wrapRef}>
         <table className={'qtbl' + (qEditing ? ' editing' : '') + (canEditQuals() ? ' qediting' : '')} id="qtbl" ref={tblRef}
           dangerouslySetInnerHTML={{ __html: qualsTable(cols, qSeatView, qSort, qEditing, qSearch, canEditQuals(), armDel, admin) }} />
@@ -812,10 +853,27 @@ export function QualsPage() {
                       {admin && (
                         <button className="abtn qrestore" data-restore={id}
                           onClick={() => {
+                            /* D286 (1) / D295: his callsign now held by a man on the roster — Restore never renames anyone
+                               by itself; it asks for another callsign right here, and "Restore as …" does both in one step */
+                            if (callsignProblem(p.cs, id)) { setRestoreAsFor(id); setRestoreAsTo(nextFreeCallsign(String(p.cs), id)); setRestoreAsErr(''); return }
                             if (restoreArchivedPerson(id)) HOOKS.toast(`${p.cs} restored to the roster`, 'ok')
                           }}>
                           Restore
                         </button>
+                      )}
+                      {admin && restoreAsFor === id && (
+                        <div className="qarch-rename" data-testid={`qrestoreas-${id}`}>
+                          <span className="qarch-rename-err">{p.cs} is taken — give him another callsign.</span>
+                          <input id="qRestoreCs" value={restoreAsTo} aria-label={`The callsign/name ${p.cs} comes back under`}
+                            onChange={e => { setRestoreAsTo(e.target.value); setRestoreAsErr('') }} />
+                          <button className="abtn primary" id="qRestoreGo" onClick={() => {
+                            const bad = restoreArchivedAs(id, restoreAsTo)
+                            if (bad) { setRestoreAsErr(bad); return }
+                            setRestoreAsFor(null); HOOKS.toast(`${restoreAsTo.trim()} restored to the roster`, 'ok'); notify()
+                          }}>Restore as {restoreAsTo.trim() || '…'}</button>
+                          <button className="abtn" id="qRestoreCancel" onClick={() => setRestoreAsFor(null)}>Cancel</button>
+                          {restoreAsErr && <span className="qarch-rename-err" id="qRestoreErr">{restoreAsErr}</span>}
+                        </div>
                       )}
                       {admin && renaming === id && (
                         <div className="qarch-rename" data-testid={`qrename-${id}`}>

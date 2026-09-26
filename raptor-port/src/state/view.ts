@@ -390,6 +390,13 @@ export type AvailWin = {
    as a prop, and clears this. The `seq` makes a second press a NEW intent, so it works when
    the Admin page is already on screen (on Squadron config, say) and when Quals' button is
    pressed twice. Cleared by a sign-in or sign-out (VIEW_RESET) — never inherited. */
+/* THE "HE'S BACK" PROMPT ([POST-OUT-OUTCOMES], owner D284, 26 Sep 26 — "Just maintain it, but a prompt to update it"):
+   a man back from overseas returns as he was, quals and CAT kept, and when the admin RESTORES him or ENABLES his account
+   the Quals page asks him to check them, with a way straight to his row. It changes nothing. The men waiting to be
+   checked, newest first, once each; a session list (VIEW_RESET 'session'). */
+export let BACKPROMPT: string[] = []
+export function markBack(pid: string) { if (pid && !BACKPROMPT.includes(pid)) BACKPROMPT = [pid, ...BACKPROMPT] }
+export function clearBack(pid: string) { BACKPROMPT = BACKPROMPT.filter(x => x !== pid) }
 export let ADMINOPEN: { seq: number; newPerson: boolean } | null = null
 let adminOpenSeq = 0
 export function requestAdminUsers(newPerson: boolean) { ADMINOPEN = { seq: ++adminOpenSeq, newPerson: !!newPerson } }
@@ -837,6 +844,7 @@ export const VIEW_RESET: { name: string; scopes: ResetScope[]; reset: () => void
   { name:'SECDEFOFFER',scopes:['week'], reset:()=>setSecDefOffer(null) },
   /* [ACCOUNTS-NEW-PERSON]: a pending "open Admin → Users" is the outgoing person's */
   { name:'ADMINOPEN', scopes:['session'], reset:()=>clearAdminOpen() },
+  { name:'BACKPROMPT', scopes:['session'], reset:()=>{ BACKPROMPT = [] } },
 ]
 /* clear every field whose policy includes `scope`. Order within a scope does
    not matter — each entry clears an independent field — so resetSession and

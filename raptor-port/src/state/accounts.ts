@@ -52,7 +52,10 @@ import {
 } from './roster-add'
 
 export type AccountRole = 'admin' | 'main'
-export interface Account { id: string; name: string; role: AccountRole; pid: string; on: boolean }
+/* `offBy: 'po'` — the account was SUSPENDED BY A POSTING OUT ([POST-OUT-OUTCOMES], D280 — the overseas outcome suspends
+   it on the date), so "he's back" (Restore, Undo post out) enables exactly that suspension and never one an admin made
+   by hand; any Enable or Suspend by hand drops it (the plan's Round 1, Astra A5 — a hand change is never undone) */
+export interface Account { id: string; name: string; role: AccountRole; pid: string; on: boolean; offBy?: 'po' }
 /* `seat` 'FCP' | 'RCP' | 'GND' (never '' on a request made now — the card refuses it; an
    old stored one reads '' and the admin picks at approval); `cat` '' for personnel */
 export interface AccessRequest { id: string; name: string; cs: string; ini: string; seat: string; cat: string; at: number; seenBy: string[] }
@@ -62,8 +65,10 @@ export const ACCOUNT_TYPES = ['access.request', 'access.decline', 'access.approv
   /* [ACCOUNTS-NEW-PERSON]: a person alone, a person and his account, approving with a new
      person, and the admins' bell's "seen" */
   'person.add', 'account.addNew', 'access.approveNew', 'access.seen',
-  /* [POST-OUT-OUTCOMES]: a delete — his account and his person (D287, D290; state/person-delete.ts) */
-  'person.delete'] as const
+  /* [POST-OUT-OUTCOMES]: a delete — his account and his person (D287, D290; state/person-delete.ts); he's back —
+     Restore / Undo post out (leavewar/sync.ts restoreBody); a posting write that takes back what the posting made
+     (sync.ts takeBack); the posting pass on its date (sync.ts runPoOutcomes — a reconciler) */
+  'person.delete', 'person.restore', 'lw.postout', 'lw.postoutRun'] as const
 
 /* ---- the seeds (demo data, D56 — wiped with everything else before the database) ----
    `us` stays Ranger (bane), as "View as" left every member test before; `ad` is Saber
@@ -106,7 +111,7 @@ export function accountsLoad(): void {
       const name = normName(x.name)
       if (!name || name.length > MAX_SIGNIN || seenId.has(x.id) || seenName.has(name) || seenPid.has(x.pid)) continue
       seenId.add(x.id); seenName.add(name); seenPid.add(x.pid)
-      out.push({ id: x.id, name, role: x.role, pid: x.pid, on: x.on !== false })
+      out.push({ id: x.id, name, role: x.role, pid: x.pid, on: x.on !== false, ...(x.on === false && x.offBy === 'po' ? { offBy: 'po' as const } : {}) })
     }
     /* THE WAY BACK FROM A LOCK-OUT (Fable R2-6, Astra R3-4): a stored list with no admin
        who can sign in gets the seed admin ADDED, keeping every real account — and the
@@ -269,7 +274,7 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
   if (patch.name !== undefined) { const n = normName(patch.name); const bad = nameProblem(n, a.id); if (bad) return bad; next.name = n }
   if (patch.pid !== undefined) { const bad = pidProblem(patch.pid, a.id); if (bad) return bad; next.pid = patch.pid }
   if (patch.role !== undefined) { if (!isAccountRole(patch.role)) return 'Pick member or admin'; next.role = patch.role }
-  if (patch.on !== undefined) next.on = !!patch.on
+  if (patch.on !== undefined) { next.on = !!patch.on; delete next.offBy }   // a hand Suspend / Enable is the admin's own
   const list = ACCOUNTS_LIST.map(x => x.id === a.id ? next : x)
   if (!list.some(canSignInAsAdmin)) return ADMIN_LOCK
   /* a sign-in name taken by a rename answers a request waiting under it, as adding an
@@ -340,6 +345,32 @@ export function deleteAccountProblem(pid: string): string | null {
   const left = ACCOUNTS_LIST.filter(x => x.pid !== pid)
   if (!left.some(canSignInAsAdmin)) return ADMIN_LOCK
   return null
+}
+/* THE POSTING'S SUSPENSION ([POST-OUT-OUTCOMES], D280): the overseas outcome suspends his account on the date — never
+   the last admin who can sign in ('lock': the pass skips it and says so); 'none' when there is no account or it is
+   already suspended. Mutations only — INSIDE the posting pass's command (it enlisted the settings store). */
+export function suspendForPosting(pid: string): 'done' | 'none' | 'lock' {
+  const a = accountOfPid(pid)
+  if (!a || !a.on) return 'none'
+  const list = ACCOUNTS_LIST.map(x => (x.id === a.id ? { ...x, on: false, offBy: 'po' as const } : x))
+  if (!list.some(canSignInAsAdmin)) return 'lock'
+  writeAccounts(list)
+  return 'done'
+}
+/* he is back (Restore, Undo post out) or the posting no longer suspends him today: enable the account the POSTING
+   suspended — never one suspended by hand. True when it was enabled. */
+export function enableAfterPosting(pid: string): boolean {
+  const a = accountOfPid(pid)
+  if (!a || a.on || a.offBy !== 'po') return false
+  writeAccounts(ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: true } : x)))
+  return true
+}
+export const accountSuspendedByPosting = (pid: string): boolean => { const a = accountOfPid(pid); return !!a && !a.on && a.offBy === 'po' }
+/* would removing or suspending this person's account leave no admin who can sign in? (the posting pass's own check —
+   it is not a person acting, so "yourself" never applies there) */
+export function lastAdminIfGone(pid: string): string | null {
+  const left = ACCOUNTS_LIST.filter(x => x.pid !== pid)
+  return left.some(canSignInAsAdmin) ? null : ADMIN_LOCK
 }
 export function dropAccountOfPid(pid: string): void {
   const a = accountOfPid(pid)

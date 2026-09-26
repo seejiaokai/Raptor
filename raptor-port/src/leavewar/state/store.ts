@@ -110,6 +110,9 @@ import {
   type Openings,
   type Period,
   type Person,
+  type PostOutcome,
+  POST_OUTCOMES,
+  outcomeOf,
   type Requirements,
   type Role,
   type Threshold,
@@ -1485,22 +1488,96 @@ export function setPerson(id: string, patch: Partial<Pick<Person, 'seat' | 'band
  * Raptor's projection but preserves posting-out (`from`/`to`/`poArchive`)
  * explicitly, so this window survives every Raptor notify.
  */
-export function setPostOut(id: string, fromDate: string | null, archive = true): boolean {
+export function setPostOut(id: string, fromDate: string | null, archive: boolean | PostOutcome = true): boolean {
   if (state.role !== 'admin') return false
   if (fromDate !== null && !/^\d{4}-\d{2}-\d{2}$/.test(fromDate)) return false
   const person = state.people.find(p => p.id === id)
   if (!person) return false
+  /* a DELETED man's posting is final ([POST-OUT-OUTCOMES], D287 — Fable F3): no door changes it or takes it back */
+  if (person.gone) return false
+  /* WHICH posting it is (D229, D294): the four chips' outcome; the old switch reads the old way — on = overseas
+     (archived), off = none. `poArchive` is kept in step for the readers that still name it. */
+  const outcome: PostOutcome = typeof archive === 'string' ? archive : (archive ? 'overseas' : 'none')
+  if (!POST_OUTCOMES.includes(outcome)) return false
   const to = fromDate ? addDays(fromDate, -1) : null
   /* A window that closes before it opens is not a decision, it is a typo, and
      it would hide the person on EVERY date at once (`inSquadron` answers false
      both sides). Refused here rather than clamped: silently moving the other
      end would be the app deciding a posting date for the admin. */
   if (to !== null && person.from !== null && to < person.from) return false
+  /* `poDone` — the outcome has run for this date — survives only while the date AND the outcome are unchanged: a
+     changed posting runs again on its own date (the plan's Round 2, Fable 5) */
+  const same = !!fromDate && person.to === to && outcomeOf(person) === outcome
   const people = state.people.map(p =>
-    (p.id === id ? { ...p, to, poArchive: fromDate ? archive : undefined } : p))
+    (p.id === id ? {
+      ...p, to,
+      poArchive: fromDate ? outcome === 'overseas' : undefined,
+      poOutcome: fromDate ? outcome : undefined,
+      poDone: same ? p.poDone : undefined,
+    } : p))
   state = withCurrent({ ...state, people, postOuts: windowRecord(people, id) })
   persistNotify()
   return true
+}
+
+/* does this person have an account? — the posting's one line says "account suspended" / "with his account" only then
+   ([POST-OUT-OUTCOMES]). The war never reads Raptor's accounts itself: the sync (the one seam) installs the answer. */
+let ACCOUNT_LOOKUP: ((id: string) => boolean) | null = null
+export function setAccountLookup(fn: ((id: string) => boolean) | null): void { ACCOUNT_LOOKUP = fn }
+export const hasAccount = (id: string): boolean => !!(ACCOUNT_LOOKUP && ACCOUNT_LOOKUP(id))
+
+/** THE POSTING WINDOW A STORED RECORD LAYS ON ITS PERSON — the ONE body `setPeople` and the sync's re-projection both
+ *  use ([POST-OUT-OUTCOMES]; Astra's plan read A4: two overlays laying it differently would defeat the SANS rule).
+ *  D283: a SANS posting with "Show SANS" ON lays NO window — from the date he is a SANS man, in the SANS group and
+ *  tracked there; with it OFF the window is laid — his old place, posted out, untracked. The deleted man's `gone`
+ *  rides the record. */
+export function windowFor(w: Person | undefined, showSans: boolean): Partial<Person> {
+  if (!w) return {}
+  const sansShown = outcomeOf(w) === 'sans' && showSans
+  return {
+    from: w.from, to: sansShown ? null : w.to, poArchive: w.poArchive, poOutcome: w.poOutcome, poDone: w.poDone,
+    ...(w.gone ? { gone: true } : {}),
+  }
+}
+
+/** A posting's outcome has RUN for its date (sync.ts runPoOutcomes) — recorded once, so the pass never repeats it and
+ *  never undoes a later hand change (the plan's Round 1). Quiet: inside the pass's own command. */
+export function markPostingDone(id: string, poDate: string): void {
+  if (state.people.some(p => p.id === id)) {
+    const people = state.people.map(p => (p.id === id ? { ...p, poDone: poDate } : p))
+    state = withCurrent({ ...state, people, postOuts: windowRecord(people, id) })
+  } else {
+    /* not on the war's roster (a SANS man with Show SANS off, before the keep rule has him) — the record alone */
+    const rec = state.postOuts[id]
+    if (!rec) return
+    state = withCurrent({ ...state, postOuts: { ...state.postOuts, [id]: { ...rec, poDone: poDate } } })
+  }
+  persistNotify()
+}
+
+/** A DELETED man's war half ([POST-OUT-OUTCOMES], D287, D297, D299): his records dated on or after `iso` go from every
+ *  war (requests, credits, notices — "his future leave, bids" and "his Leave War row after he left"); his posting
+ *  window closes the day before (kept if it already closes earlier); he is marked `gone` — kept as a posted-out man is,
+ *  so the months he was here keep his leave and OIL. Runs ONLY inside the delete's command (sync.ts
+ *  deletePersonOnWar enlists this store); the command's gate has decided, so no role check here. */
+export function forgetPersonFrom(id: string, iso: string): void {
+  const wars = state.wars.map(w => {
+    const pr = (w.recs as any)?.[id]
+    if (!pr) return w
+    const kept: any = {}
+    let n = 0
+    for (const d of Object.keys(pr)) { if (d < iso) kept[d] = pr[d]; else n++ }
+    if (!n) return w
+    return { ...w, recs: { ...(w.recs as any), [id]: kept } }
+  })
+  const last = addDays(iso, -1)
+  const had = state.people.some(p => p.id === id)
+  const people = had
+    ? state.people.map(p => (p.id === id ? { ...p, to: p.to !== null && p.to < last ? p.to : last, gone: true } : p))
+    : state.people
+  const postOuts = had ? windowRecord(people, id) : state.postOuts
+  state = withCurrent({ ...state, wars, people, postOuts })
+  persistNotify()
 }
 
 /**
@@ -1533,6 +1610,7 @@ export function setPostIn(id: string, date: string | null): boolean {
   if (date !== null && !/^\d{4}-\d{2}-\d{2}$/.test(date)) return false
   const person = state.people.find(p => p.id === id)
   if (!person) return false
+  if (person.gone) return false                   // a deleted man's posting is final (Fable F3)
   if (date !== null && person.to !== null && date > person.to) return false
   const people = state.people.map(p => (p.id === id ? { ...p, from: date } : p))
   state = withCurrent({ ...state, people, postOuts: windowRecord(people, id) })
@@ -1594,7 +1672,7 @@ export function setPeople(people: Person[]): void {
   const next: Person[] = people.map(p => {
     const w = po[p.id]
     const merged: Person = { ...p, ...(edits[p.id] || {}) }
-    return w ? { ...merged, from: w.from, to: w.to, poArchive: w.poArchive } : merged
+    return w ? { ...merged, ...windowFor(w, state.showSans) } : merged
   })
   const ids = new Set(next.map(p => p.id))
   /* `.to`, not merely a record (22 Sep 26). The comment above says what this is
