@@ -81,8 +81,9 @@ const FILES = [
      nothing noticed, because this gate ran nowhere. Raised to what is true plus a little room,
      never paid for by trimming a live rule. 100 -> 125, 24 Sep 26 (owner, D136 + D137): the rule for
      keeping the rulings whole and split by area, and how a new or replaced ruling is filed, are live
-     rules every session must carry — the same argument. */
-  ['.claude/rules/record-decisions.md',  0,  125],
+     rules every session must carry — the same argument. 125 -> 145, 26 Sep 26 (owner, D201): what to fix when a
+     ruling overwrites another is a live rule every session must carry, the moment a ruling is heard. */
+  ['.claude/rules/record-decisions.md',  0,  145],
   ['.claude/rules/plain-language.md',    0,   60],
   /* NEW 24 Sep 26 (owner, D140 + D143): the two rule files every chat carries so the structure and the way a
      change ships are in force before any project file is read. Ceilings set at what they hold plus room. */
@@ -103,8 +104,11 @@ const FILES = [
      declared headroom. [DOC-TRIM] owns the 600 target — as its own docs-only pass. */
   /* 1400 -> 1150, 24 Sep 26 (the spring clean): the old priority list and plain-terms block archived whole, nine
      finished items archived by the item mover, a live-only list written; eight items filed (1,025 lines). A tripwire
-     (D141): crossing it asks "is a finished item still sitting here?", never "cut to a number". */
-  ['OUTSTANDING.md',                     1, 1150],
+     (D141): crossing it asks "is a finished item still sitting here?", never "cut to a number". 1150 -> 1260,
+     26 Sep 26: two days of filing from the amendment, accounts and late-published work crossed it; the answer to
+     "what is finished here?" needs a reading of each item, so it is its own docs pass, filed as [BACKLOG-TIDY] —
+     not a trim squeezed into a rulings change (D29). */
+  ['OUTSTANDING.md',                     1, 1260],
   /* THE RULINGS (owner, D136 + D137, 24 Sep 26). They are MEANT to grow, so each ceiling is its target,
      and a rulings file is NEVER trimmed to fit: at a ceiling, archive what is replaced or spent
      (DECISIONS.md, step 2) and then RAISE the ceiling here, with the reason. DECISIONS.md is now only
