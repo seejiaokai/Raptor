@@ -118,6 +118,7 @@ import {
 } from '../engine'
 import { mergeWar, absencesAt, absenceVersion, type MergedWar, type RecordSpans, type Views } from './merge'
 import { counterLabel } from '../engine/counters'
+import { creditWorth } from '../engine/credit'
 import { localBackend, memoryBackend, type StorageBackend } from './storage'
 /* [ARCH-STACK] Step 2 phase 4 — the shared command layer (see the persist()
    router below). Imported here so a Leave War user edit joins the SAME change
@@ -2350,7 +2351,11 @@ export function clearCells(cells: { personId: string; date: string }[]): RangeWr
            reached it. Taken FIRST, whoever owns the leave on top (Fable's final code read, F3: under a leave the WAR
            approved the bid stayed while the leave went — same gesture, two answers). A leave filed on the Inputs page
            itself stays (it is the Inputs page's); a war-approved one goes by the door, which reads the Input by id. */
-        const reqs = clearRequestsAt(c.personId, c.date)
+        /* …AND THE AWARD BESIDE IT (owner, D260, 27 Sep 26 — "removes everything in the block, awards included"): an
+           award flags no leave day (N13), so a day may hold a leave and an award together, and asking only the top
+           record left the award behind whichever kind of leave was on top. The awards go by the same door as a Clear
+           (the admin's own records; `awardsIn` names them in the confirm first). */
+        const reqs = clearRequestsAt(c.personId, c.date, true)
         if (state.role === 'admin' && canDecide(state.period.stage, state.role) && warEditable(c.personId, c.date)) approved.push({ ...c, iid: m.id })
         else if (reqs) written++
         else skipped++
@@ -2366,14 +2371,38 @@ export function clearCells(cells: { personId: string; date: string }[]): RangeWr
   return { written, skipped }
 }
 
-/** Remove the undecided / decided REQUESTS at one address and nothing else — the bid beneath an absence the war does
- *  not own (W3-F3). The same gates as every cell write. True when something was removed. */
-function clearRequestsAt(personId: string, date: string): boolean {
+/** Remove the undecided / decided REQUESTS at one address — the bid beneath an absence the war does not own (W3-F3) —
+ *  and, with `awards`, the admin's hand-given OIL awards there too (D260; the same records a Clear takes, `setCell`).
+ *  The same gates as every cell write. True when something was removed. */
+function clearRequestsAt(personId: string, date: string, awards = false): boolean {
   if (!canEditCell(state.period, state.role, date) || !canEditRow(state.role, state.viewer, personId)) return false
   const list = listAt(personId, date)
-  const next = list.filter(r => r.kind !== 'request')
+  const next = list.filter(r => r.kind !== 'request' && !(awards && isAward(r)))
   if (next.length === list.length) return false
   return putList(personId, date, next)
+}
+
+/** A hand-given OIL award the signed-in role may remove — the admin's (N11); the schedule's own credit never. */
+const isAward = (r: WarRec): boolean => r.kind === 'credit' && r.oil === 'manual' && state.role === 'admin'
+
+/** THE OIL AWARDS A CLEAR OF THESE DAYS WOULD TAKE (owner, D260, 27 Sep 26: "the confirm names each award first").
+ *  A dragged block's Delete, the bid sheet's Clear and its range Clear all remove the awards on the days they clear —
+ *  and each used to do it silently (the absence-record re-test, AB1, AB2). The confirms read THIS before anything goes,
+ *  so what they name is exactly what the clear takes: the same gates as `setCell` (stage / window / row, a day in a
+ *  war) and the same records (an admin's hand-given credit — a member's clear takes none, and the schedule's own credit
+ *  is never cleared). In the cells' order; `days` is what each is worth (`creditWorth`). */
+export function awardsIn(cells: readonly { personId: string; date: string }[]): Array<{ personId: string; date: string; code: 'FO' | 'HO'; days: number }> {
+  const out: Array<{ personId: string; date: string; code: 'FO' | 'HO'; days: number }> = []
+  for (const { personId, date } of cells) {
+    if (!warHolding(state.wars, date)) continue
+    if (!canEditCell(state.period, state.role, date) || !canEditRow(state.role, state.viewer, personId)) continue
+    for (const r of listAt(personId, date)) {
+      if (!isAward(r)) continue
+      const c = r as CreditRec
+      out.push({ personId, date, code: c.code as 'FO' | 'HO', days: creditWorth(c) })
+    }
+  }
+  return out
 }
 
 /** An approved absence the war may change: every absence on the address was

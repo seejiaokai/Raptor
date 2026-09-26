@@ -8,7 +8,8 @@
 // path uses: everyone fills while the war is open (admin any stage); medical
 // and PO are the admin's; Decide (Ack/Approve/Refuse) is the admin's once
 // bidding has closed. Delete and Move act on whatever editable bids the
-// selection holds.
+// selection holds; Delete takes the admin's OIL awards in it too, and names
+// them first (owner, D260, 27 Sep 26).
 //
 // The negative-balance confirm the single sheet shows is deliberately NOT
 // carried here: it is per-person, and a block spanning ten people asking ten
@@ -17,7 +18,8 @@
 
 import { useState } from 'react'
 import { formatCell, LEAVE_TYPES, type BidState, type Portion } from '../engine'
-import { clearCells, movableCells, setBidStates, setCells } from '../state/store'
+import { awardsIn, clearCells, movableCells, setBidStates, setCells } from '../state/store'
+import { awardsClause } from './awardwords'
 import { Sheet } from './Sheet'
 import { shortSpan } from './dates'
 import type { Selection } from './select'
@@ -75,6 +77,12 @@ export function SelectSheet({
   // a purely-empty selection (Fill only) hides them, so Move never opens on
   // nothing to move (owner, 27 Aug 26).
   const hasBids = movableCells(sel.cells).length > 0
+  /* THE AWARDS THE DELETE WILL TAKE (owner, D260, 27 Sep 26 — "B": it removes everything in the block, awards included,
+     and the confirm names each award first). Read before anything goes, from the store's own question (`awardsIn` —
+     the admin's awards; a member's Delete takes none). A block of awards alone now offers Delete too: it is not an
+     empty box, and Delete is the one door to clear it; Move stays off — an award never moves (it is dated the day he
+     earned it). */
+  const awards = awardsIn(sel.cells)
 
   const skipNote = (verb: string, written: number, skipped: number) =>
     written === 0
@@ -89,7 +97,12 @@ export function SelectSheet({
   }
 
   const del = () => {
-    if (!confirmDel) { setConfirmDel(true); setNote(`Delete ${nDays === 1 ? 'this day' : `${nDays} days`} for ${who}? Tap Delete again.`); return }
+    if (!confirmDel) {
+      setConfirmDel(true)
+      const incl = awards.length ? `, including ${awardsClause(awards, people)}` : ''
+      setNote(`Delete ${nDays === 1 ? 'this day' : `${nDays} days`} for ${who}${incl}? Tap Delete again.`)
+      return
+    }
     const { written, skipped } = clearCells(sel.cells)
     if (skipped === 0) return onDone(written > 0)
     setNote(skipNote('deleted', written, skipped))
@@ -156,16 +169,17 @@ export function SelectSheet({
       )}
 
       {/* Delete + Move act on the editable bids the selection holds, so they
-          show only when it holds one (a loose box of empties is Fill-only).
-          Delete confirms on a second tap (no undo here); Move hands off to the
-          matrix's ghost/tap-to-place mode. */}
-      {hasBids && (
+          show only when it holds one (a loose box of empties is Fill-only) —
+          Delete also when it holds an award (D260), Move never for one.
+          Delete confirms on a second tap, naming every award it takes; Move
+          hands off to the matrix's ghost/tap-to-place mode. */}
+      {(hasBids || awards.length > 0) && (
         <div className="bidsheet-row">
           <span className="lab">Selected</span>
           <button className="dchip refuse" data-testid="sel-delete" onClick={del}>
             {confirmDel ? 'Delete — sure?' : 'Delete'}
           </button>
-          <button className="dchip" data-testid="sel-move" onClick={() => { onClose(); onMove(sel) }}>Move…</button>
+          {hasBids && <button className="dchip" data-testid="sel-move" onClick={() => { onClose(); onMove(sel) }}>Move…</button>}
         </div>
       )}
 

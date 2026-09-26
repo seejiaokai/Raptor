@@ -9,7 +9,7 @@ import { initStore as raptorInitStore, writeInputs } from '../state/store'
 import { setMe, setSession } from '../state/auth'
 import { projectPeople } from './state/raptorRoster'
 import {
-  ackReplacement, advanceStage, cellProblem, getState, setBidState, initStore as lwInitStore, lwEditLists, lwHistInit, rawState, setCell, setCells, clearCells, setBidStates, setPeople, setRole, setViewer,
+  ackReplacement, advanceStage, awardsIn, cellProblem, getState, setBidState, initStore as lwInitStore, lwEditLists, lwHistInit, rawState, setCell, setCells, clearCells, setBidStates, setManualCredit, setPeople, setRole, setViewer,
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { wireLeaveWarSync, sliceInput, syncAbsences } from './sync'
@@ -375,6 +375,25 @@ describe('bulk Delete and Approve over mixed days (W3-F3, AB7)', () => {
     clearCells([{ personId: 'ammo', date: '2026-02-18' }])
     expect(recsAt('ammo', '2026-02-18').some((r: any) => r.kind === 'request')).toBe(false)
     expect(rowsOf('ammo', 'LL').some((r: any) => r.lw)).toBe(false)
+  })
+  /* EVERYTHING IN THE BLOCK, AWARDS INCLUDED (owner, D260, 27 Sep 26): an award is its own record beside the day's
+     leave (N13 — it flags no leave day), so a day can hold both. Delete asked the TOP record, and under a leave the award
+     stayed while the leave went — under Inputs-filed leave too. His "B": the Delete takes every award in the block. */
+  it('Delete takes an OIL award beneath a WAR-approved leave, and beneath leave filed on the Inputs page', () => {
+    setRole('admin')
+    setCells([{ personId: 'ammo', date: '2026-02-18' }], 'LL')
+    advanceStage()
+    setBidStates([{ personId: 'ammo', date: '2026-02-18' }], 'approved')
+    expect(setManualCredit('ammo', '2026-02-18', 'FO', { days: 2 })).toBeNull()
+    expect(file('ammo', 'LL', 'Feb 19')).toBe(true)
+    expect(setManualCredit('ammo', '2026-02-19', 'HO', {})).toBeNull()
+    const awardAt = (d: string) => recsAt('ammo', d).some((r: any) => r.kind === 'credit' && r.oil === 'manual')
+    expect(awardsIn([{ personId: 'ammo', date: '2026-02-18' }, { personId: 'ammo', date: '2026-02-19' }])).toHaveLength(2)
+    clearCells([{ personId: 'ammo', date: '2026-02-18' }, { personId: 'ammo', date: '2026-02-19' }])
+    expect(awardAt('2026-02-18')).toBe(false)
+    expect(awardAt('2026-02-19')).toBe(false)
+    expect(rowsOf('ammo', 'LL').some((r: any) => r.lw)).toBe(false)     // the war's own leave went
+    expect(rowsOf('ammo', 'LL').some((r: any) => r.date === 'Feb 19')).toBe(true)   // the Inputs page's stayed
   })
   it('Approve does not count a leave that was already approved as a decision', () => {
     setRole('admin')

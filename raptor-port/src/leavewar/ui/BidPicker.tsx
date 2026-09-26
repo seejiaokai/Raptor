@@ -15,11 +15,12 @@
 
 import { useState } from 'react'
 import { addDays, displayCell, formatCell, LEAVE_TYPES, type BidState, type CounterName, type Portion } from '../engine'
-import { cellProblem, clearCells, MAX_GIVEN_BY, setBidState, setBidStates, setCell, setCellRange, shiftBid } from '../state/store'
+import { awardsIn, cellProblem, clearCells, MAX_GIVEN_BY, setBidState, setBidStates, setCell, setCellRange, shiftBid } from '../state/store'
 import { MAX_REC_NOTE } from '../engine/warrecs'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
 import { shortSpan } from './dates'
+import { awardDays, awardsClause } from './awardwords'
 import './bidpicker.css'
 import './oiltracker.css'
 import { creditWorthText } from '../engine/credit'
@@ -216,6 +217,15 @@ export function BidPicker({
     onClose()
   }
 
+  /* the Clear's own confirm (D260) — apart from `confirming`, which is the negative-balance one, keyed by leave code */
+  const [clearAsked, setClearAsked] = useState(false)
+  /** The cells a range covers, for the store's questions about them. */
+  const spanCells = (r: Range) => {
+    const out: { personId: string; date: string }[] = []
+    for (let d = r.from; d <= r.to; d = addDays(d, 1)) out.push({ personId, date: d })
+    return out
+  }
+
   /** Days this write covers — one, or the span if a range is chosen. */
   const dayCount = () => {
     if (!range) return 1
@@ -225,6 +235,22 @@ export function BidPicker({
   }
 
   const write = (code: string) => {
+    /* CLEAR NAMES THE OIL AWARD IT TAKES, AND ASKS ONCE (owner, D260, 27 Sep 26 — "B"; the absence-record re-test, AB1).
+       A Clear removes the admin's award on the day with everything else (that stands — his ruling), but it used to do
+       it silently and the man's OIL dropped. On a day — or a picked range — holding an award, the first tap names each
+       one and takes nothing; the same Clear again goes ahead. `awardsIn` is the store's own question, so what is named
+       is what goes; a member's Clear takes no award, so it never asks. */
+    if (!code) {
+      const cells = range ? spanCells(range) : [{ personId, date }]
+      const awards = awardsIn(cells)
+      if (awards.length && !clearAsked) {
+        setClearAsked(true)
+        setConfirming(null)
+        return setNote(awards.length === 1
+          ? `Clear also takes ${callsign}’s OIL award (${awardDays(awards[0]!.days)}) — tap Clear again to go ahead.`
+          : `Clear also takes ${awardsClause(awards, () => callsign)} — tap Clear again to go ahead.`)
+      }
+    } else setClearAsked(false)
     // Ask before taking someone below zero. Never REFUSE: a balance is allowed
     // to run negative and the owner was explicit that it must stay possible.
     // What was wrong was doing it silently, so this is a confirmation, not a
@@ -393,7 +419,7 @@ export function BidPicker({
           data-testid="span-one"
           className={`pchip${range ? '' : ' on'}`}
           aria-pressed={!range}
-          onClick={() => { setRange(null); setShowCal(false); setNote('') }}
+          onClick={() => { setRange(null); setShowCal(false); setNote(''); setClearAsked(false) }}
         >
           Just this day
         </button>
@@ -405,7 +431,7 @@ export function BidPicker({
           // right month AND the very next tap completes the span. The bidder
           // chose their start by opening this cell; asking for it again would
           // be the extra work this control exists to remove.
-          onClick={() => { setShowCal(true); setRange(r => r ?? { from: date, to: date }); setNote('') }}
+          onClick={() => { setShowCal(true); setRange(r => r ?? { from: date, to: date }); setNote(''); setClearAsked(false) }}
         >
           {range ? shortSpan(range.from, range.to) : 'Pick a range'}
         </button>
@@ -421,7 +447,7 @@ export function BidPicker({
             min={dates[0]}
             max={dates[dates.length - 1]}
             value={range}
-            onChange={r => { setRange(r); setNote('') }}
+            onChange={r => { setRange(r); setNote(''); setClearAsked(false) }}
           />
         </div>
       )}
@@ -473,7 +499,7 @@ export function BidPicker({
           </button>
         ))}
         <button className="tchip clear" data-testid="bid-clear" onClick={() => write('')}>
-          Clear
+          {clearAsked ? 'Clear — sure?' : 'Clear'}
         </button>
         {note && <span className="note warn" data-testid="span-note">{note}</span>}
       </div>
