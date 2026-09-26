@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { getState, groupsInOrder, initStore, setRole } from '../state/store'
+import { getState, groupsInOrder, initStore, setRole, setRosterOrder } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { LIFT_LAND_MS } from '../../ui/lift'
 import { Matrix } from './Matrix'
@@ -371,5 +371,46 @@ describe('one lift, every drag — the ⚙ lists (6 Sep 26)', () => {
     expect(row.className).not.toMatch(/\bdragging\b/)
     expect(row.classList.contains('lift')).toBe(false)
     expect(row.classList.contains('lift-land')).toBe(false)
+  })
+})
+
+/* ⚙ Settings → RESET ORDER (owner, D160, 24 Sep 26 — "9 yes" to a "Reset order" line in ⚙ Settings; no button on the
+   grid, no strip). It asks once, like Reset counters beside it — a hand arrangement of fifty rows is real work — and it
+   is greyed when the roster already follows the default, with a line saying so, so a press never looks like it did
+   nothing. The store half (clearing the saved order, admin-only, one Undo step) is pinned in roster.test.ts and
+   undoaudit.test.ts. */
+describe('⚙ Settings — Reset order', () => {
+  /* the role first: a hand order is an admin's write, and the store refuses it from anyone else */
+  beforeEach(() => { setRole('admin') })
+  const open = () => { render(<Matrix />); fireEvent.click(screen.getByTestId('settings-open')) }
+  const btn = () => screen.getByTestId('roster-reset-order') as HTMLButtonElement
+  it('is in the sheet, greyed while the roster follows the default, and says so', () => {
+    open()
+    expect(getState().rosterOrder).toEqual([])
+    expect(btn().disabled).toBe(true)
+    expect(btn().textContent).toMatch(/Reset order/)
+    expect(screen.getByTestId('roster-order-hint').textContent).toMatch(/default order/)
+  })
+  it('asks once, then puts a hand-arranged roster back in the default order', () => {
+    setRosterOrder(['ramp', 'ace'])
+    open()
+    expect(btn().disabled).toBe(false)
+    fireEvent.click(btn())
+    expect(btn().textContent).toBe('Really reset?')
+    expect(getState().rosterOrder, 'the first tap only asks').toEqual(['ramp', 'ace'])
+    fireEvent.click(btn())
+    expect(getState().rosterOrder).toEqual([])
+    expect(btn().disabled, 'greyed again once it follows the default').toBe(true)
+    expect(btn().textContent).toMatch(/Reset order/)
+  })
+  it('closing the sheet takes the question back', () => {
+    setRosterOrder(['ramp', 'ace'])
+    open()
+    fireEvent.click(btn())
+    expect(btn().textContent).toBe('Really reset?')
+    fireEvent.click(screen.getByTestId('settings-close'))
+    fireEvent.click(screen.getByTestId('settings-open'))
+    expect(btn().textContent).toMatch(/Reset order/)
+    expect(getState().rosterOrder).toEqual(['ramp', 'ace'])
   })
 })

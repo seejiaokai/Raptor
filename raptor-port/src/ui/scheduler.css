@@ -1232,7 +1232,12 @@ body:not(.tdrag) .page.editing .acrow .seat[data-slot]:hover .puck{outline:2px s
 .puck .lchip.l-cph{background:#F0555F;color:#fff}
 /* conflict / crew rest → red box around the whole puck */
 .puck.boxred{box-shadow:0 0 0 2px var(--hard)!important;border-color:var(--hard)!important}
-.puck.me.boxred{box-shadow:0 0 0 2px var(--hard),0 0 10px 1px rgba(240,85,95,.7)!important}
+/* A FLAGGED PUCK DOES NOT GLOW (owner, D164, 24 Sep 26 — "can u not make it glow. like the 2nd puck picture"). The
+   "this is you" puck used to lay a blurred red halo over this ring, so his own flagged puck glowed and everyone else's
+   did not. It keeps its own rule only because `.puck.me`'s !important ring sits later in this file at the same
+   specificity and would otherwise win: the value is the plain ring every flagged puck wears. The purple fill stays.
+   Pinned by flagglow-css.test.ts, which walks every ring rule for a blurred layer. */
+.puck.me.boxred{box-shadow:0 0 0 2px var(--hard)!important}
 /* The DASHED red box (owner, 6 Aug 26): same colour and same weight as the
    solid one — it is the same red warning, and downgrading the colour would
    read as "less of a problem" — but broken stroke, for the two cases where a
@@ -1252,7 +1257,9 @@ body:not(.tdrag) .page.editing .acrow .seat[data-slot]:hover .puck{outline:2px s
    the reason .boxred carries one too, so the two rings keep the same
    precedence over everything they sit on. */
 .puck.boxdash{outline:2px dashed var(--hard);outline-offset:0;border-color:var(--hard)!important;box-shadow:none!important}
-.puck.me.boxdash{outline:2px dashed var(--hard);box-shadow:0 0 10px 1px rgba(240,85,95,.7)!important}
+/* …and the dashed ring the same way (D164): nothing behind the dashes, as on `.puck.boxdash` — the "this is you" glow
+   here was a solid haze filling the gaps, so his own sanctioned late show read neither dashed nor plain */
+.puck.me.boxdash{outline:2px dashed var(--hard);box-shadow:none!important}
 /* The DOTTED red ring (owner, 6 Aug 26): this day is the CAUSE, not the
    breach. The man flew a legal day here — the warning is raised tomorrow,
    where he is told to report short of rest — so the stroke is the lightest of
@@ -3531,7 +3538,14 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   /* No scrollbar of its own: the pinned #hscroll at the foot of the window IS
      the week's scrollbar. (Five rules here used to try to draw a second one and
      were overridden by the earlier min-width:821px block — dead either way.) */
-  .week{scroll-snap-type:none;padding:2px 20px 40px;gap:12px}
+  /* ROOM FOR THE FLOATING ARROWS ([VIEW-ARROW-OVER-LIST], 26 Sep 26). `.week-nav` floats 8px in from each side of the
+     window, 38px wide, so it covered the first 26–38px of the day at the front — the start of an opened "⚠ N issues"
+     list, a row's name, a puck. 54px = 8 + 38 + 8 clear. The PADDING puts Monday there at rest and after every arrow
+     press (the press lands a whole day step, pan.ts panDays); the SCROLL-PADDING is the same room declared where the
+     landings can read it — a page switch, a week-jump to a day, a warning tap (state/view.ts weekInset) — and where
+     the browser's own scrollIntoView honours it. Both sides: the › arrow sits over the right edge the same way.
+     Desktop only: a phone draws no arrows and keeps its own padding. */
+  .week{scroll-snap-type:none;padding:2px 20px 40px 54px;gap:12px;scroll-padding-inline:54px}
   /* tighter day column — less width, less wasted space */
   .day{flex:0 0 552px}
   /* LET THE LAST DAYS REACH THE FRONT (owner, 23 Aug 26 — the arrows "totally

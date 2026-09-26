@@ -227,11 +227,20 @@ export function setPeekLand(v:{di:number,x:number}|null){ PEEKLAND=v }
    own sense of "the leftmost day" flips too. Null, never a guess, when there is
    no DOM (the headless state tests) or no week built yet — the caller then
    leaves the destination's own scroll alone, the pre-existing behaviour. */
+/* THE ROOM THE WEEK KEEPS AT ITS EDGES for the desktop's floating ‹ › arrows ([VIEW-ARROW-OVER-LIST], 26 Sep 26). The
+   desktop week declares it as its scroll-padding (scheduler.css, beside its padding), so "the day at the front" sits
+   beside the arrow instead of under it — read here by every landing that puts a day at the front, and by the reading of
+   which day that is. 0 on a phone (no arrows; nothing declared, `auto`), in jsdom (no computed style) and anywhere the
+   read fails. `side` 'right' is the › arrow's edge. */
+export function weekInset(el:any,side:'left'|'right'='left'):number{
+  try{const v=parseFloat((getComputedStyle(el) as any)[side==='left'?'scrollPaddingLeft':'scrollPaddingRight']);return Number.isFinite(v)&&v>0?v:0}catch(_){return 0}
+}
 export function weekLeftDay(el:any):any{
   if(!el||typeof el.querySelectorAll!=='function'||typeof el.getBoundingClientRect!=='function')return null
   const ds=Array.from(el.querySelectorAll('.day[data-day]')) as any[]
   if(!ds.length)return null
-  const vl=el.getBoundingClientRect().left
+  /* the front is beside the arrow, not the box's own edge (weekInset) */
+  const vl=el.getBoundingClientRect().left+weekInset(el)
   let best:any=ds[0], bestD=Infinity
   for(const d of ds){
     if(typeof d.getBoundingClientRect!=='function')continue
@@ -250,7 +259,8 @@ export function scrollWeekToDay(el:any,di:any){
   if(!el||di==null||typeof el.querySelector!=='function')return
   const d=el.querySelector(`.day[data-day="${di}"]`)
   if(!d||typeof d.getBoundingClientRect!=='function')return
-  el.scrollLeft+=d.getBoundingClientRect().left-el.getBoundingClientRect().left
+  /* …and lands it beside the desktop's ‹ arrow, where an arrow press lands it too (weekInset) */
+  el.scrollLeft+=d.getBoundingClientRect().left-el.getBoundingClientRect().left-weekInset(el)
 }
 /* the PEEKLAND write half — park live day `di` at viewport x `x` (not the
    week's own left edge, which is what scrollWeekToDay always targets). Same

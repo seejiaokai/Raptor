@@ -41,6 +41,7 @@ import {
   offerableGroupList,
   removeEventRow,
   resetGroups,
+  resetRosterOrder,
   setGroupColor,
   setGroupDefs,
   setShowSans,
@@ -78,7 +79,11 @@ export function SettingsSheet({
    *  so the bar is drawn on its bottom edge (the roster rows' `.after`). */
   dragAfter?: boolean
 }) {
-  const { people, qualCatalog, eventRows, showSans, groupColors } = getState()
+  const { people, qualCatalog, eventRows, showSans, groupColors, rosterOrder } = getState()
+  // a saved hand order exists — the roster no longer follows the default (Reset order has something to do)
+  const handOrder = rosterOrder.length > 0
+  // Reset order ARMS first (the Reset counters idiom); local, so closing the sheet takes the question back
+  const [armOrder, setArmOrder] = useState(false)
   const chosen = groupsInOrder()
   const offered = offerableGroupList()
   const priority = groupPriorityIds()
@@ -200,6 +205,37 @@ export function SettingsSheet({
         Showing SANS puts them on the roster as <b>their own group at the very bottom</b>,
         and on the days they are available they <b>count toward the manning numbers</b> like
         everyone else.
+      </div>
+
+      {/* ---- the roster's row order (owner, D160, 24 Sep 26 — "9 yes": a "Reset order" line HERE; the grid's old
+          Auto-sort button and strip stay gone). People are still rearranged by hand on the grid (⇅); this only
+          takes a hand arrangement back to the default. It asks once, like Reset counters above — fifty rows
+          arranged by hand are real work — and is greyed, with a line saying so, while the roster already follows
+          the default. The store clears the saved order (resetRosterOrder), so a man who joins later lands in his
+          ranked place too; the one Undo brings the arrangement back. */}
+      <div className="gs-sec">
+        Roster order
+        <span className="gs-hint">people are rearranged on the grid with ⇅</span>
+      </div>
+      <div className="set-tray">
+        <div className="set-ctrls">
+          <button
+            className={`rtbtn set-danger set-order${armOrder ? ' arm' : ''}`}
+            data-testid="roster-reset-order"
+            disabled={!handOrder}
+            title={handOrder ? 'Put every row back in the default order' : 'The roster is already in the default order'}
+            onClick={() => {
+              if (!armOrder) { setArmOrder(true); return }
+              setArmOrder(false)
+              resetRosterOrder()
+            }}
+          >{armOrder ? 'Really reset?' : '↺ Reset order'}</button>
+        </div>
+        <div className="set-hint" data-testid="roster-order-hint">
+          {handOrder
+            ? 'Arranged by hand. Reset order puts every row back in the default order — each group as listed below, pilots above WSOs, then by CAT and callsign. It asks once; Undo brings your arrangement back.'
+            : 'In the default order — each group as listed below, pilots above WSOs, then by CAT and callsign.'}
+        </div>
       </div>
 
       {/* ---- the groups shown, top to bottom ---------------------------------- */}

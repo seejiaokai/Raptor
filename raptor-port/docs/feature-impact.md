@@ -642,6 +642,17 @@ check the other):
   warning and `slotBar`'s "already on …" refusal both call it (spares are
   absent from EVD, so neither could have read the shared event stream). A
   future SC-seat rule goes through it, not beside it.
+- **"Which row is this" has ONE shape** ([CROWD-SWAP-SAYS-BUSY], 26 Sep 26). Every "not counting the place he is
+  planted into / dragged from" question compares a SEAT key (a person's place) with an EVENT's key (a row) — the
+  picker's busy walks (`avail.ts selfKey`) and the validator's leaving-seat tests (`crossDayIfPlaced`, `restIfPlaced`)
+  — and all of them go through `engine/keys.ts seatRow`. Two private trims had drifted: the programme one cut the
+  row's own number off an event's key (a man moved inside his own crowd was "already on" it), the validator's raw
+  compare never matched a crowd seat or an extra with its row. A new "exclude this place" question uses `seatRow`.
+- **The week's front edge has ONE room** ([VIEW-ARROW-OVER-LIST], 26 Sep 26). The desktop week keeps 54px at its
+  sides for the floating ‹ › arrows, declared twice in ONE rule of `scheduler.css` (`padding-left` for where Monday
+  and every arrow press land, `scroll-padding-inline` for everything else) and read in JS only through
+  `state/view.ts weekInset`. A new way of putting a day "at the front" lands it at `weekInset`, never at the week box's
+  own edge — or the day slides back under the arrow (`e2e/geometry.spec.ts` "sit clear of the ‹ arrow").
 - **Three editors over one list.** The Inputs page, the week cell and the board
   cell all edit `INPUTS`; they are kept from drifting only because all three
   funnel through `commitInputEdit`/`setInpField`. Add a fourth the same way.

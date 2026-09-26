@@ -1175,6 +1175,16 @@ counts, because every non-shift overlap the validator finds is a hard
 `DOUBLE_BOOK`; a standby spare is exempt, being deliberately free. It is
 ADVISORY, like every other bar here — `barDrop` toasts and the drop still
 goes through.
+**Seat and event are compared as ROWS, and a drag also excludes the seat he is leaving** ([CROWD-SWAP-SAYS-BUSY],
+26 Sep 26). `selfKey` is `engine/keys.ts seatRow`, the one "which row is this" shape: a person's place (a crowd seat
+`a:0.2.1`, an extra `g:0.3.x0`, a sim seat or pax, an append box `…+`) and an event's key (the row, `a:0.2`) both come
+out as the row. Its programme trim used to take the last number off ANYTHING `a:`-shaped, so the row `a:0.2` came out
+as `a:0` — a man swapped or moved inside the crowd he was on was "already on" his own row, and arming a crowd's
+"+ add" excluded every programme row of the day (a man booked on another programme row at the same hour was offered as
+free while the list raises the clash). And on a drag, the seat he is dragged FROM (`fromKey`) is excluded too, as the
+SC and AVALON walks already did: the hover describes the week after the move. The validator's "the seat he is
+leaving" (`crossDayIfPlaced`'s his-only-event test, `restIfPlaced`'s strip, below) compares through the same
+`seatRow`. Pins: `crowdself.test.ts`, `runtrace.test.ts`.
 
 **A second accept that would mint a duplicate content key is refused.**
 `inpKey` is `person|date|type|start` and content keys are not unique;

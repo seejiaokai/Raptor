@@ -33,6 +33,7 @@ import {
   removeEventBand,
   removeEventRow,
   reopenStage,
+  resetRosterOrder,
   saveManningRule,
   selectWar,
   setBidState,
@@ -201,6 +202,24 @@ describe('undo/redo — full state coverage (every editable surface)', () => {
     expect(getState().rosterOrder.length).toBeGreaterThan(0)
     lwUndo()
     expect(getState().rosterOrder.length).toBe(0)
+  })
+
+  /* ⚙ Settings → Reset order (D160): the one Undo brings a hand arrangement back; a reset with nothing to reset leaves
+     no step behind (the line is greyed then, and the store refuses the empty write besides) */
+  it('Reset order is ONE step the Undo takes back, and a no-op reset records nothing', () => {
+    setRole('admin')
+    setRosterOrder(['ramp', 'ace'])
+    lwHistInit()
+    const hand = getState().rosterOrder.slice()
+    resetRosterOrder()
+    expect(getState().rosterOrder).toEqual([])
+    expect(lwCanUndo()).toBe(true)
+    lwUndo()
+    expect(getState().rosterOrder).toEqual(hand)
+    lwHistInit()
+    setRosterOrder([]); lwHistInit()
+    resetRosterOrder()
+    expect(lwCanUndo(), 'nothing to reset, nothing to undo').toBe(false)
   })
 
   it('saving and deleting a manning counter', () => {

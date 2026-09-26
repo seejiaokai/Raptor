@@ -187,6 +187,16 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   (which is why the edge hint above is retired). The "day a–b of n" read-out
   (`pan.ts:dayRangeText`) counts from the day step, never `scrollWidth ÷ n`,
   because the spacer is part of `scrollWidth`. Gated in `e2e/geometry.spec.ts`.
+- **The day at the front sits BESIDE the floating ‹ arrow, never under it** ([VIEW-ARROW-OVER-LIST], 26 Sep 26). The
+  arrows (`.week-nav`, fixed 8px in, 38px wide) used to cover the first 26–38px of the day at the front — the first
+  letters of an opened "⚠ N issues" list, a row's name, a puck. The desktop `.week` keeps 54px of room at its left:
+  its `padding-left` (Monday at rest; every arrow press, which lands whole day steps from there) and its
+  `scroll-padding-inline` (the same room, declared where the other landings read it — `state/view.ts weekInset`:
+  `scrollWeekToDay` for a page switch's carried day and a week-jump to a day, `weekLeftDay` for "which day is at the
+  front", `ui/highlights.ts bringIntoView` for a warning or change tap that pans, whose "is it on screen" test also
+  stops at the › arrow's edge; the browser's own `scrollIntoView` honours the scroll-padding by itself). Phones draw no
+  arrows and keep their own padding (`weekInset` reads 0 there). Gated in `e2e/geometry.spec.ts` ("sit clear of the
+  ‹ arrow at every landing", 1500px and 1024px), with a break test per landing.
 - **The desktop arrow glide cannot be cancelled mid-day** (owner, 23-24 Aug 26 —
   the recurring "arrows don't go day by day … stuck halfway then zoom past", and
   its 25 Aug follow-up "make sure it's not just an easy fix"). `panDays` fires a
@@ -3225,6 +3235,16 @@ only prove which CLASS was emitted, never what it draws:
   Its total reach is still 3px, the same as the dashed ring's, so it clears the
   3px gap between the two pucks of a crew pair.
 
+**No flag ring glows — the "this is you" puck included (owner, D164, 24 Sep 26: "can u not make it glow").** The
+signed-in man's own puck (purple, `.puck.me`) used to lay a blurred red halo over its solid or dashed ring, so his own
+flagged puck glowed while every other flagged puck showed the plain ring. `.puck.me.boxred` now draws the plain 2px
+ring (it keeps its own rule only to out-rank `.puck.me`'s later `!important` ring at the same specificity) and
+`.puck.me.boxdash` draws nothing behind its dashes, as `.boxdash` does; the purple fill stays. Two glows are NOT flags
+and stay: the purple "this is you" glow itself (drawn on his puck flagged or not; a red ring replaces its purple ring
+when he is flagged) and the clicked-warning focus (`.puck.wfoc`, a transient answer to a tap). Pinned by
+`src/ui/flagglow-css.test.ts`, which walks EVERY ring rule in the stylesheet for a blurred layer — a ring rule written
+later is caught the same way.
+
 ### The previous-day trace: a standing MARK, an on-demand STORY
 
 A crew-rest breach is raised on the day the man is **told to report**. The
@@ -5712,11 +5732,22 @@ entered and left by the same header button (`roster-arrange`, `aria-pressed`),
 lit accent (`.rtbtn.on`) while on; on a phone it is the ⇅ icon alone (the word
 rides `.rtlbl`, hidden ≤430px — "just show an arrow up and down icon"), on
 desktop "⇅ Rearrange" / "⇅ Rearranging". There is no Auto-sort button anywhere
-now — the store's `autoSortRoster` remains for the tests and a future home;
+now — the store's `autoSortRoster` remains for the tests;
 don't re-add the button or the strip without his ask. Pinned in
 `settingssheet.test.tsx` (toggle on/off, no bar, no Auto-sort, ⇅ + `.rtlbl`)
 and `e2e/leavewar.spec.ts` (both projects: drag from the toggle, nothing else
 appears, the phone's word is hidden).
+
+**His ask came 24 Sep 26 (D160, "9 yes"): a RESET ORDER line in ⚙ Settings** — its own small "Roster order" tray
+between the counters and the groups, admin-only like the whole sheet (`roster-reset-order`). It **asks once**
+("Really reset?", the Reset counters idiom; closing the sheet takes the question back) and is **greyed, with a line
+saying so, while the roster already follows the default** (`roster-order-hint`); a hand-arranged roster's line says
+what the default is (each group as listed, pilots above WSOs, then CAT and callsign) and that Undo brings the
+arrangement back. The store's `resetRosterOrder` CLEARS the saved order (not `autoSortRoster`'s freeze of today's
+default), so the roster goes on following the default — a man who joins later, or whose CAT changes, lands in his
+ranked place rather than sinking to the end of his seat; one step for the one Undo; no write (and no Undo step) when
+there is nothing to reset. Still no button on the grid and no strip. Pinned in `settingssheet.test.tsx` (⚙ Settings —
+Reset order), `roster.test.ts` (resetRosterOrder …) and `undoaudit.test.ts` (Reset order is ONE step …).
 
 **The − / + ZOOM pair sits in the counter block's top row after OIL at BOTH
 widths, and a phone opens ONE step out (owner, 6 Sep 26 — "Can this be the

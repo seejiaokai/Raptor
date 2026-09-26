@@ -1880,10 +1880,20 @@ function liveAutoOrder(): string[] {
 
 /** Re-group everyone into the categorised order. Was the Auto-sort button's
  *  action; the button went with the on-grid rearrange bar (owner, 6 Sep 26 —
- *  "Auto sort will be removed"), so nothing in the UI calls this now — kept as
- *  the store's one "back to the default order" write (tests, a future home). */
+ *  "Auto sort will be removed"), so nothing in the UI calls this now — kept for
+ *  the tests. The UI's "back to the default order" is `resetRosterOrder` below. */
 export function autoSortRoster(): void {
   setRosterOrder(liveAutoOrder())
+}
+
+/** ⚙ Settings → Reset order (owner, D160, 24 Sep 26 — "9 yes"): put a hand-arranged roster back in the default order.
+ *  It CLEARS the saved order rather than saving today's default as a hand order (autoSortRoster's way), so the roster
+ *  goes on FOLLOWING the default: a man who joins later, or whose CAT changes, lands in his ranked place, where under a
+ *  saved order he would sink to the end of his seat (displayRoster's newcomer rule). ADMIN-gated by setRosterOrder,
+ *  the one writer; a roster already following the default is no write at all, so no empty Undo step is left behind. */
+export function resetRosterOrder(): void {
+  if (!state.rosterOrder.length) return
+  setRosterOrder([])
 }
 
 /**

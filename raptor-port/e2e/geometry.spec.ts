@@ -326,6 +326,59 @@ test.describe('the week pans by whole day boxes', () => {
     if (map) expect(Math.abs(map.got - map.want), 'the proxy sits where the week is').toBeLessThanOrEqual(2)
   })
 
+  /* [VIEW-ARROW-OVER-LIST] (26 Sep 26): the floating ‹ arrow (fixed, 8px in, 38px wide) sat over the first 26–38px of
+     the day at the front — an opened "⚠ N issues" list lost its first letters under it. The desktop week now keeps
+     54px of room at its left, and EVERY way a day reaches the front lands it there: at rest, an arrow press, a page
+     switch carrying the day, a warning tap that pans the week. The roll-call of landings is the test's loop. */
+  for (const vp of [DESK, { width: 1024, height: 768 }]) test(`the day at the front, and its opened warning list, sit clear of the ‹ arrow at every landing (${vp.width}px)`, async ({ page }) => {
+    {
+      await page.setViewportSize(vp)
+      await login(page)
+      const clear = (wk: string) => page.evaluate((wk) => {
+        const prev = document.getElementById('weekPrev')!.getBoundingClientRect()
+        const week = document.querySelector(wk) as HTMLElement
+        const wr = week.getBoundingClientRect()
+        /* the day at the front: the first live day whose right edge is past the week's left edge */
+        const day = [...week.querySelectorAll('.day[data-day]')].map(d => d.getBoundingClientRect()).find(r => r.right > wr.left + 60)!
+        const list = week.querySelector('.day[data-day] .dwlist') as HTMLElement | null
+        return { arrowRight: Math.round(prev.right), dayLeft: Math.round(day.left),
+          listLeft: list && list.getBoundingClientRect().width ? Math.round(list.getBoundingClientRect().left) : null }
+      }, wk)
+      for (const pg of ['viewsched', 'editsched'] as const) {
+        const wk = pg === 'viewsched' ? '#vWeek' : '#eWeek'
+        await go(page, pg)
+        const rest = await clear(wk)
+        expect(rest.dayLeft, `${vp.width} ${pg} at rest: the front day starts right of the arrow`).toBeGreaterThanOrEqual(rest.arrowRight + 4)
+        const from = await page.evaluate((wk) => (document.querySelector(wk) as HTMLElement).scrollLeft, wk)
+        await pan(page, wk, 1, from)
+        const pressed = await clear(wk)
+        expect(pressed.dayLeft, `${vp.width} ${pg} after an arrow press`).toBeGreaterThanOrEqual(pressed.arrowRight + 4)
+      }
+      /* a page switch carries the front day across (state/view.ts weekLeftDay → scrollWeekToDay) */
+      await go(page, 'viewsched')
+      const carried = await clear('#vWeek')
+      expect(carried.dayLeft, `${vp.width} a page switch lands the carried day clear of the arrow`).toBeGreaterThanOrEqual(carried.arrowRight + 4)
+      /* the day's own warning list, opened on the day at the front */
+      await scrollTo(page, '#vWeek', 0)
+      await page.click('#vWeek .day[data-day="0"] [data-daywarn]')
+      await page.waitForSelector('#vWeek .day[data-day="0"] .dwlist')
+      const listed = await clear('#vWeek')
+      expect(listed.listLeft, `${vp.width} the opened warning list starts right of the arrow`).not.toBeNull()
+      expect(listed.listLeft!, `${vp.width} …by the room the week keeps`).toBeGreaterThanOrEqual(listed.arrowRight + 4)
+      /* a warning tap that has to pan (state/ui highlights.ts bringIntoView): Monday scrolled almost off the left, so
+         the man its first warning names is out of sight; the tap brings Monday back to the front — beside the arrow */
+      const step = await page.evaluate(() => { const ds = document.querySelectorAll('#vWeek .day'); return Math.round((ds[1] as HTMLElement).offsetLeft - (ds[0] as HTMLElement).offsetLeft) })
+      await scrollTo(page, '#vWeek', step - 80)
+      expect(await clickHere(page, '#vWeek .day[data-day="0"] .dwlist .witem')).toBe(true)
+      await settleBoth(page, '#vWeek')
+      const tapped = await page.evaluate(() => {
+        const prev = document.getElementById('weekPrev')!.getBoundingClientRect()
+        return { arrowRight: Math.round(prev.right), mon: Math.round(document.querySelector('#vWeek .day[data-day="0"]')!.getBoundingClientRect().left) }
+      })
+      expect(tapped.mon, `${vp.width} a warning tap lands its day clear of the arrow`).toBeGreaterThanOrEqual(tapped.arrowRight + 4)
+    }
+  })
+
   test('an edit does not throw the week back to Monday', async ({ page }) => {
     await page.setViewportSize(DESK)
     await login(page)

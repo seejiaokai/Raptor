@@ -8,7 +8,7 @@ import { isStandalone, scSpare, saExempt, saExemptKind } from './waves'
 import { WARN, restClear, dayEvents, crossDayIfPlaced } from './validate'
 import { waveWindows, inpShow, shiftEvHard, seatIntime, scSeatHit, avSeatHit } from './events'
 import { whoArr, rowRef, XKEY, sentinelSeatOK, SENTINEL_JET_BAR } from './slots'
-import { keyDay } from './keys'
+import { keyDay, seatRow } from './keys'
 /* busy windows [s,e] for one person on a day (fly/duty/sim/ground) */
 export function personBusy(d:any,id:any){
   const out:any[]=[];
@@ -532,11 +532,15 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
      STANDBY spare is exempt, because he is deliberately free for anything else;
      and the seat being planned into is excluded, so an ordinary swap is silent.
      Advisory in force, like every other bar here — the name still shows with the
-     reason against it, and a drop still goes through with a warning. */
+     reason against it, and a drop still goes through with a warning.
+     …and, on a drag, the seat he is being dragged FROM is excluded too
+     ([CROWD-SWAP-SAYS-BUSY], 26 Sep 26): the SC and AVALON walks above already
+     read `selfKeys` so the hover describes the week AFTER the move (5 and 7 Sep
+     26), and this scan was the one that still told a man he was "already on" the
+     row he was leaving — a hover the drop then contradicted. */
   if(r.slotStart!=null&&r.slotEnd!=null&&r.di>=0&&!r.sc&&!spareLike0(r)){
-    const self=selfKey(key);
     const hit=dayEvents(r.di,id).find((e:any)=>e.s!=null&&e.e!=null
-      &&selfKey(e.slot||e.key)!==self&&overlap(r.slotStart,r.slotEnd,e.s,e.e));
+      &&selfKeys.indexOf(selfKey(e.slot||e.key))<0&&overlap(r.slotStart,r.slotEnd,e.s,e.e));
     if(hit)return `already on ${hit.label} ${hm24(hit.s)}–${hm24(hit.e)}`;
     /* AND THE SAME QUESTION FOR AN UNACCEPTED PERSONAL COMMITMENT (owner, Aug 26).
        An activity input (a meeting, an appointment) that is NOT on the Ground
@@ -596,11 +600,8 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
    to the same shape so "the slot I am planting into" can be excluded — without
    this a swap warns about the seat the man is being moved out of. A flying event
    already stores the full seat key, so it is compared as it stands. */
-function selfKey(k:any){
-  let s2=String(k==null?'':k).replace(/\.\+$/,'').replace(XKEY,'');
-  if(s2.indexOf(':')<0)return s2;                          // flying: di.gi.li.ai.seat
-  s2=s2.replace(/\.pax\.\d+$/,'').replace(/\.(p|w)$/,'');  // a sim's two seats and its pax
-  if(/^a:/.test(s2))s2=s2.replace(/\.\d+$/,'');            // programme: drop the person index
-  return s2;
-}
+/* The one body is engine/keys.ts seatRow, shared with the validator's "the seat he is leaving" ([CROWD-SWAP-SAYS-BUSY],
+   26 Sep 26 — its programme trim used to take the ROW's own number off an event's key, so a man moved inside his own
+   crowd was "already on" it). */
+const selfKey=seatRow;
 const spareLike0=(r:any)=>!!(r.sc&&r.scSpare)||!!r.avJet||!!r.avDuty;

@@ -11,7 +11,7 @@ import { CURWEEK, isStandalone } from './waves'
 import { DAYS } from './data'
 import { dayOilBlind, blindDesks } from './oil'
 import { oilWouldEarn, oilOldBlockCrowd, oilEvidenceOf } from './oilev'
-import { keyDay } from './keys'
+import { keyDay, seatRow } from './keys'
 import { SCHED, approvedDays, dayApproved, dayDelta, dayDeltaCore, dayCurVer, daySnapOf } from './publish'
 
 /* the reference guards its header counters with $() lookups; the engine takes
@@ -1691,7 +1691,7 @@ export function restIfPlaced(id:any,key:any,from?:any){
   /* the seat he is leaving (a seat-to-seat drag) comes out of whichever day
      it sits on — a leg being moved cannot break its own crew rest */
   const fk=from&&from.key;
-  const strip=(d:any)=>!fk||!d||d.di!==from.di?d:{...d,fly:(d.fly||[]).filter((e:any)=>(e.key||e.slot)!==fk),events:(d.events||[]).filter((e:any)=>(e.key||e.slot)!==fk)};
+  const strip=(d:any)=>!fk||!d||d.di!==from.di?d:{...d,fly:(d.fly||[]).filter((e:any)=>seatRow(e.key||e.slot)!==seatRow(fk)),events:(d.events||[]).filter((e:any)=>seatRow(e.key||e.slot)!==seatRow(fk))};
   /* the day's two lists carry a leg in two shapes: `fly` (the crew-rest
      inputs — brief/intime/to/ld/shift, keyed by `key`) and `events` (every
      kind, keyed by `slot`); the candidate is cloned into each from a sibling
@@ -1738,11 +1738,12 @@ export function restIfPlaced(id:any,key:any,from?:any){
 export function crossDayIfPlaced(id:any,key:any,fromKey?:any){
   const ck=`${id}|${key}|${fromKey||''}`;
   const hit=XD_CACHE.get(ck); if(hit!=null)return hit;
-  /* the seat he is leaving: its day, and whether it was his only event there */
+  /* the seat he is leaving: its day, and whether it was his only event there — compared by ROW (keys.ts seatRow): a
+     crowd seat or an extra names his place, the event names its row, and the raw compare never matched them */
   let from:any=null;
   if(fromKey){
     const fdi=keyDay(fromKey), evs=(EVD[fdi]&&EVD[fdi][id])||[];
-    from={di:fdi,key:String(fromKey),sole:evs.length===1&&(evs[0].slot||evs[0].key)===String(fromKey)};
+    from={di:fdi,key:String(fromKey),sole:evs.length===1&&seatRow(evs[0].slot||evs[0].key)===seatRow(fromKey)};
   }
   let out='';
   const r=runIfPlaced(id,keyDay(key),from);

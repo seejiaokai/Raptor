@@ -245,6 +245,24 @@ describe('review findings (5 Sep 26) — the question reads the week AFTER a mov
     expect(slotBar(ID, 'g:6.0', undefined, satKey)).toBe('')
     expect(slotBar(ID, 'g:6.0')).toMatch(/7th day in a row/)
   })
+  /* [CROWD-SWAP-SAYS-BUSY] (26 Sep 26): "his only event that day" compared the seat he is dragged from with the event's
+     key as they stood — and a seat in a Common Programme crowd (`a:5.r.0`) or an extra on a row (`g:5.r.x0`) names a
+     PERSON'S place while the event names the ROW (`a:5.r`, `g:5.r`), so the two never matched and moving him off his
+     only Saturday event still counted Saturday. One shape for both now (engine/keys.ts seatRow). */
+  it('the same when his only Saturday event is a seat in a Common Programme crowd, or an extra on a row', () => {
+    workOn(ID, [0, 1, 2, 3, 4])
+    DAYS[5].allhands = [...(DAYS[5].allhands || []), { prog: 'SAT CROWD', str: '0900', end: '1000', who: [ID] }]
+    validate()
+    const crowdKey = `a:5.${DAYS[5].allhands.length - 1}.0`
+    expect(slotBar(ID, 'g:6.0'), 'asked plainly: a seventh day').toMatch(/7th day in a row/)
+    expect(crossDayIfPlaced(ID, 'g:6.0', crowdKey), 'moved out of the crowd: six, not seven').toBe('')
+    expect(slotBar(ID, 'g:6.0', undefined, crowdKey)).toBe('')
+    DAYS[5].allhands.pop()
+    DAYS[5].ground = [...(DAYS[5].ground || []), { prog: 'SAT ROW', str: '0900', end: '1000', who: '', more: [ID] }]
+    validate()
+    const extraKey = `g:5.${DAYS[5].ground.length - 1}.x0`
+    expect(crossDayIfPlaced(ID, 'g:6.0', extraKey), 'moved off as an extra: six, not seven').toBe('')
+  })
   it('a same-day crew-rest move: the leg being moved cannot break its own crew rest', () => {
     const d1 = DAYS[1].waves[0].formations[0]; d1.to = '20:00'; d1.ld = '23:00'; d1.br = ''
     d1.aircraft[0].p = 'split'

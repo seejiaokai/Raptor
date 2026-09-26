@@ -2,15 +2,23 @@
 // PreToolUse hook — [BG-CWD-GUARD] (owner's go, D162, 24 Sep 26). Refuses a BACKGROUNDED shell command that
 // runs npm / npx without first moving into raptor-port/.
 //
-// Why a hook and not a warning: a `run_in_background` shell starts at the REPO ROOT, where there is no
-// package.json, so a bare `npm run test:e2e` dies at once (ENOENT) — and the wrapper's exit code can read 0,
-// or `npx playwright test` reports "No tests found" as a pass. The bold warning in raptor-port/CLAUDE.md
+// Why a hook and not a warning: a `run_in_background` shell starts in the folder the CHAT started in — the repo
+// root, or a worktree's root — NOT wherever the foreground shell has since moved to, and there is no package.json
+// there, so a bare `npm run test:e2e` dies at once (ENOENT) — and the wrapper's exit code can read 0, or
+// `npx playwright test` reports "No tests found" as a pass. The bold warning in raptor-port/CLAUDE.md
 // §Build & verify was broken three times (skills notebook #42, 1 Sep 26); each miss costs a ~10-minute re-run.
 // A rule that keeps failing the same way is changed into one that refuses loudly.
 //
+// [BG-GUARD-FALSE] (26 Sep 26): the note this guard was built on said background shells start "at the REPO ROOT".
+// Measured: they start in the CHAT's starting folder ($CLAUDE_PROJECT_DIR) — a chat opened inside raptor-port gets
+// shells that are ALREADY there, where the advice `cd raptor-port && …` then fails ("no such directory"). So:
+//   · a chat whose starting folder IS raptor-port may run a bare npm in the background (it is already in place);
+//   · the refusal names the FULL path, which works from any starting folder.
+// A `cd` to any path ending in raptor-port (full or relative) was always accepted, and still is.
+//
 // Foreground commands are left alone: they keep the session's own folder. Anything unreadable is let through
 // (exit 0) — a guard that breaks every command would be worse than the trap it guards.
-import { basename } from 'node:path';
+import { basename, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 // npm, npx or pnpm as a command word (start of the line, or after ; & | ( or a space), .cmd included.
@@ -20,21 +28,28 @@ const MOVES_IN = [
   /(^|[\s;&|(])(cd|pushd|chdir|set-location|sl)(\s+-\w+)*\s+["']?[^;&|\n]*raptor-port/i,
   /--prefix(=|\s+)["']?[^\s;&|]*raptor-port/i,
 ];
+/** The folder a background shell starts in — the chat's own starting folder. '' when unknown. */
+const startDir = (env) => String((env && env.CLAUDE_PROJECT_DIR) || '').replace(/[\\/]+$/, '');
 
-/** The reason to refuse, or null to let the command run. */
-export function refusal(input) {
+/** The reason to refuse, or null to let the command run. `env` is the hook's environment (tests pass their own). */
+export function refusal(input, env = process.env) {
   const ti = input && input.tool_input;
   if (!ti || ti.run_in_background !== true) return null;
   const cmd = typeof ti.command === 'string' ? ti.command : '';
   if (!RUNS_NPM.test(cmd)) return null;
   if (MOVES_IN.some((re) => re.test(cmd))) return null;
+  const start = startDir(env);
+  // started inside raptor-port: the shell is already where npm needs it
+  if (start && basename(start).toLowerCase() === 'raptor-port') return null;
+  const full = start ? join(start, 'raptor-port').replace(/\\/g, '/') : '<the repo>/raptor-port';
   return [
     'BACKGROUND-COMMAND GUARD ([BG-CWD-GUARD], D162): refused.',
-    'A background command starts at the REPO ROOT, where there is no package.json, so this npm/npx command would',
-    'fail at once — and can still report success. Move into raptor-port first, in the same command:',
-    '  Bash:       cd raptor-port && npm run test:e2e',
-    '  PowerShell: Set-Location raptor-port; npm run test:e2e',
-    '  or:         npm --prefix raptor-port run test:e2e',
+    'A background command starts in the folder this chat STARTED in' + (start ? ` (${start.replace(/\\/g, '/')})` : '') + ',',
+    'not where the foreground shell has moved to. There is no package.json there, so this npm/npx command would',
+    'fail at once — and can still report success. Move into raptor-port first, in the same command, by its FULL path:',
+    `  Bash:       cd "${full}" && npm run test:e2e`,
+    `  PowerShell: Set-Location "${full}"; npm run test:e2e`,
+    `  or:         npm --prefix "${full}" run test:e2e`,
   ].join('\n');
 }
 
