@@ -32,6 +32,8 @@ beforeEach(() => {
 const pickUp = () => {
   fireEvent.click(screen.getByTestId(PENDING))
   fireEvent.click(screen.getByTestId('decide-shift'))
+  // the precondition every "it ends" test needs — without it, "the banner is gone" passes before Move exists
+  expect(screen.getByTestId('move-banner')).toBeTruthy()
 }
 /** A deliberate click on a day, past the double-click guard that opens every move. */
 const land = async (testid: string) => {

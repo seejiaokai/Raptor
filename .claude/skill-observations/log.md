@@ -659,3 +659,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When a finding's evidence came from a device-specific walk (phone, touch, a coarse pointer), the red-first test must mount the real surface the walk saw (the sheet, the popup) and stub the environment switch the code branches on (`matchMedia('(pointer: coarse)')`), or it is renamed to say what it proves. And the re-walk of such a fix is never skipped on the strength of the unit test.
 
 **Principle:** A test proves a fix only in the environment it reproduces; when the defect was found on a specific device, the test must stand up that device's branches, or the walk remains the only proof.
+
+### Observation 295: A test of an ABSENCE passes before the feature exists unless it first asserts the precondition was reached
+
+**Status:** OPEN
+**Date:** 2026-09-27
+**Session context:** Building D260–D262 on the absence-record branch (the Leave War's one-chip Move); red-first tests written before the code. Numbered past every open branch's log (highest seen: 294 here, 282 elsewhere).
+**Skill:** test-driven-development (the "watch it fail" step)
+**Type:** open-source
+**Phase/Area:** RED — verifying the new tests fail for the right reason
+
+**Issue:** Of 27 new tests for a new "move mode", 10 passed before any code was written. Several of them asserted that something was GONE after an action ("the move banner is gone after Undo / a stage change / leaving the page / a click outside the grid"). Before the feature existed, the step that should have ENTERED move mode silently did nothing (the button was still disabled), so the banner was never there, and "gone" was trivially true. The red run looked healthy (17 red) and hid 5 tests that could never have caught their own regression.
+
+**Suggested improvement:** In the RED step, read every test that passed and ask whether it passed for the right reason. For any assertion of absence, assert the precondition first in the same test (e.g. `expect(banner).toBeTruthy()` right after entering the mode, then the action, then `expect(banner).toBeNull()`). Then break the feature once (the break test) and confirm each such test goes red.
+
+**Principle:** An assertion that something is absent proves nothing unless the same test first shows it was present; a red run is judged by the tests that passed as much as by the ones that failed.
