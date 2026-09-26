@@ -19,6 +19,12 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   offered to him the same day, not asked for yet.
 - **Never two full gate runs at once, and never a full local run while his PC's runner is mid-run** (D86) — look
   first: `gh run list`.
+- **Parallel chats take turns through ONE lock** (D228, 26 Sep 26): `node raptor-port/scripts/gatelock.mjs run` takes
+  the PC-wide lock `C:\Users\User\.raptor-gates-lock` (waiting while another chat holds it), runs the whole gate set in
+  order — unit, build, tfin, e2e, the Tracker smoke, rulecheck, docsize — into log files, prints one summary line per
+  gate and ALWAYS releases; `take` / `release` / `status` for a run done by hand (a fanned-out walk, one gate alone). The
+  e2e run takes its port from `E2E_PORT` (each parallel chat its own). The lock is a folder outside every checkout,
+  so every worktree on the PC shares it; the rule is `.claude/rules/shipping.md` §The checks.
 - **Never push while a PR's checks are running** (D151, measured 23 Sep 26): GitHub judges the WHOLE pull request,
   so once it carries code any push — even notes-only — restarts every gate and cancels the run in progress. The
   older note in the `unit (raptor)` row below ("a docs-only push … starts no new one") predates that measurement.

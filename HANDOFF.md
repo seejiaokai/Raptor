@@ -28,7 +28,13 @@ the later merge keeps both (D78).
   `raptor-port/docs/mock/new-person-account.html` (pictures by `scripts/handpass/am/mk-new-person.mjs`). **His approval first.**
 - **Next:** his "mock-up approved" (or changes) → plan (Opus 5.5) → Fable and Astra red-team → build → walk → FULL check → his look
   → "merge live"; then `[DRAFT-PENDING]`.
-- **Noticed, not this chat's:** the `claude/tracker-palette` block below says its ruling D230 was never filed — ask him.
+- **Parallel chats (D228, 26 Sep 26 — "why not both? and deconflict the full checks"):** he may run two more worktree chats
+  beside this one — the absence-record re-test with `[S4-HUNT-REST]` (ports 4175 / 4192, rulings D260–D269) and a
+  small-fixes batch (`[PUCK-FLAG-GLOW]`, `[LW-RESET-ORDER]`, `[CROWD-SWAP-SAYS-BUSY]`, `[VIEW-ARROW-OVER-LIST]`,
+  `[BG-GUARD-FALSE]`; ports 4176 / 4193, rulings D270–D279). Every heavy run takes the PC-wide lock first
+  (`raptor-port/scripts/gatelock.mjs`; `.claude/rules/shipping.md` §The checks). This chat: preview 4174, browser tests 4191.
+- **Noticed, not this chat's:** the `claude/tracker-palette` block below says its ruling D230 was never filed — asked him
+  26 Sep 26, no answer yet.
 <!-- /now -->
 
 <!-- now:claude/tracker-palette -->
