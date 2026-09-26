@@ -3023,7 +3023,8 @@ another person), which stays. Pinned in `audit-guards-inputs.test.ts`
 scheduler allowed any).
 
 **The admin's "View as member" toggle (27 Aug 26) is REMOVED — `[ACCOUNTS]`, 26 Sep 26, D166 (3): "There isint a need
-for preview as a member".** Every account is one person with one role, so the peek had nothing left to preview; the
+for preview as a member".** *(To come back — D292, 27 Sep 26: tapping the badge switches an admin to the member view
+and back, himself throughout; built with `[POST-OUT-OUTCOMES]`.)* Every account is one person with one role, so the peek had nothing left to preview; the
 badge is an inert label naming the signed-in person and role ("Saber · Admin"), and `resetSession` is the ONE production
 writer of the Leave War's role. Its absence is pinned in `ui/accounts-ui.test.tsx` (which replaced `roletoggle.test.tsx`);
 the localhost probe bridge keeps a role switch for the e2e suite and the walk. **Undo is per sign-in:** `resetSession`

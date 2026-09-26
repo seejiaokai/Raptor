@@ -5074,12 +5074,17 @@ table's action cell, ungated, opening the viewer.
 
 The far-right chip (`#roleBadge`, `.rolechip`) is an inert `<span>` for everyone, reading the signed-in callsign and
 role — "Saber · Admin", "Ranger · Member". The admin's "View as member" toggle it used to be (27 Aug 26) is REMOVED —
-"There isint a need for preview as a member" (D166 (3)) — and so are the topbar's "View as" picker (`#viewAs`) and the
+"There isint a need for preview as a member" (D166 (3); *to come back — D292, 27 Sep 26: a tap switches an admin to
+the member view and back, `[POST-OUT-OUTCOMES]`*) — and so are the topbar's "View as" picker (`#viewAs`) and the
 drawer's View-as chips (`#drawerViewAs`) and toggle (`#drawerRole`). The chip is hidden on the phone bar (as ever); the
 DRAWER's Account row reads "Signed in as <callsign> · <role>" (`#drawerAcct`) above Logout. Pinned in
 `ui/accounts-ui.test.tsx` (which replaced `roletoggle.test.tsx`).
 
 ## The access screens and the guest view (`[ACCOUNTS]`, D204, 26 Sep 26)
+
+**No "Sign up" button on the sign-in page (D293, 27 Sep 26):** whoever signs in and is on no list lands on Request access
+by itself; held in reserve only, if new people are confused once live — one line under the button, "New here? Sign in
+with your defence mail to ask for access."
 
 Someone signed in but without access sees one of three cards in the sign-in's own look (`ui/AccessScreen.tsx`, `.login`
 classes): **Request access** (`#accessRequest` — "Signed in as <name>", then what the admin's New person form asks

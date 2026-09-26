@@ -236,7 +236,7 @@ derives its role from the Raptor login (`store.ts:toggleRole` — the admin's
 view-as-member flip, 27 Aug 26 — is the only other production writer, riding
 this same seam so the war always reads the session's EFFECTIVE role; on the
 Leave War itself, moving the cycle stage forward became admin-only the same
-day — members still bid) *[AMENDED 26 Sep 26 by `[ACCOUNTS]` (D166 (3)): the toggle is gone — `resetSession` is now the
+day — members still bid) *[AMENDED 26 Sep 26 by `[ACCOUNTS]` (D166 (3)): the toggle is gone (to come back as the admin's member view, D292, 27 Sep 26) — `resetSession` is now the
 ONE production writer of the war's role]*, `probe-bridge.ts`
 exposes `w.lwSetRole` for its e2e suite *[the whole bridge on the developer's PC only since `[ACCOUNTS]`]*, and **`src/leavewar/sync.ts`** — the
 sync wires (17 Aug 26; this seam also mirrors Raptor's "View as" person *[since `[ACCOUNTS]`, 26 Sep 26 — D166 (4): the

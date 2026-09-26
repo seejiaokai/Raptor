@@ -1201,7 +1201,8 @@ everything that is his goes too (inputs, Leave War leave and OIL — nothing lef
 takes him off (pending on a published day); asks twice, cannot be undone. **Underneath — D290 "hidden mark":** his
 row is kept, marked deleted and invisible everywhere (the data model's tombstone), never erased. **And names — D286:** an archived man's callsign may go to a new person (today it is refused); restoring him while it
 is in use needs one of the two renamed first (Restore says so, renames nobody). Update `roster-add.ts` (its PID-01
-header and test), `ID_BY_CS` (points at the roster's man). **Place — D291, his "yes":** straight after `[ACCOUNTS-NEW-PERSON]` merges, before `[DRAFT-PENDING]`.
+header and test), `ID_BY_CS` (points at the roster's man). **With it — D292:** the admin's member view back (tap the badge: "SABER · ADMIN" ↔ "MEMBER"; perms read the role in
+force). **Place — D291:** straight after `[ACCOUNTS-NEW-PERSON]` merges, before `[DRAFT-PENDING]`.
 ### [LOOK-435] His inputs from the look at PR #435 — the order is D173 (25 Sep 26)
 **Step 1 DONE 25 Sep 26:** D114's FULL check — evidence `raptor-port/docs/handpass/2026-09-25-amendment-batch.md` §9; two
 gaps fixed, three older findings filed (`[REQ-TWO-ROWS]`, `[REQ-DECLINED-PENDING]`, `[REQ-ORPHAN-ROW]`); waiting for his look.
