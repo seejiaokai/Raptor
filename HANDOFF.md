@@ -16,7 +16,7 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/five-flags-batch-continue-2cfa70 -->
-### `claude/five-flags-batch-continue-2cfa70` — the five-flags batch (D164, D160, [CROWD-SWAP-SAYS-BUSY], [VIEW-ARROW-OVER-LIST], [BG-GUARD-FALSE]): BUILT, FULL-checked, all gates green; its PR open for his look and "merge live" — written 27 Sep 26 — verify before use
+### `claude/five-flags-batch-continue-2cfa70` — the five-flags batch (D164, D160, [CROWD-SWAP-SAYS-BUSY], [VIEW-ARROW-OVER-LIST], [BG-GUARD-FALSE]): BUILT, FULL-checked, all gates green (PR #445, GitHub green after one D84 re-run); Q2 answered (D270, not built), Q1 / Q3 / Q2b shown as mock-ups, his answers awaited — written 27 Sep 26 — verify before use
 - **The branch:** started from `claude/five-flags-batch-build-ef7d85` (built, walked and read there, 26 Sep 26), which it
   carries whole; the PR is from THIS branch (`gh pr list --head claude/five-flags-batch-continue-2cfa70`). The old branch
   has no PR and nothing of its own left — delete it once this merges.
@@ -34,8 +34,16 @@ the later merge keeps both (D78).
   filed), the re-walk after the reads (§5: W1 34/0; W3 69/2, the two = his Q1), the gates (§7: unit 6237/6237, build,
   tfin 728/0, e2e 474/0 after five older week-landing tests were moved to the new front — measured, not a wrong landing,
   break-tested — smoke 443/0, rulecheck, docsize), his look card (§9: four looks + Q1–Q3).
-- **Next:** his look on the PR's Vercel link, his answers to Q1–Q3 (filed [CROWD-DUP-REFUSE], [ME-PUCK-SEVERITY-RING],
-  [ARROW-GUTTER-STRIP]), then "merge live" — one at a time with #443 and #444, the later taking `main` in first.
+- **His answers so far (27 Sep 26):** Q2 **"yes"** → **D270** (his own flagged puck shows the flag's own ring; purple fill
+  stays) — recorded, carried into the docs, the build filed in `[ME-PUCK-SEVERITY-RING]`, NOT built. Q1 and Q3: *"show me a
+  mock up"*, and *"can u show mock of what u changed before and after"* → `raptor-port/docs/mock/five-flags.html` (Artifact
+  https://claude.ai/artifact/NACjL873LZ3P9VxbAJRWPZ), pictures by `scripts/handpass/am/mk-five-flags.mjs` (parts p1, q2, q1,
+  q3; the app served on :4176). It also puts Q2b (the OIL ring on his own puck, recommended: same treatment).
+- **Next:** his answers to Q1 (refuse / warn), Q2b, Q3 (keep / empty / fade) → record each (D271 on) → build D270 and his
+  answers ON THIS BRANCH (the same lines this batch changed: `scheduler.css` rings, `avail.ts`/`drag.ts`/`view.ts` one man one
+  place, `.week` room) → WALK-tier check (re-run ff-w1 C,D and ff-w3 f6 as assertions of the new behaviour; the Q3 walk) →
+  gates under the lock → his look → "merge live" — one at a time with #443 and #444, the later taking `main` in first. GitHub's
+  Leave War desktop group flaked once on the first run (the Move tests; D84 re-run passed).
 - **His "2 chats" remark (27 Sep 26), still unanswered:** *"i think my computer can handle 2 chats working"*. The opening
   line of this chat carried a blank where his answer was meant to go. Put to him in this chat's report: two chats working
   side by side needs nothing (only full check runs queue); two full runs at once is what D86 measured as false failures —
