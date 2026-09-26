@@ -51,14 +51,15 @@ const OUTCOMES = `
     <button class="pchip">SANS</button>
     <button class="pchip" disabled style="opacity:.45" title="Comes with the shared database">Transfer to Sqn</button>
   </div>
-  <div class="bidsheet-row postout mk-out"><span class="note">On the date: archived on Quals, account suspended.</span></div>`
+  <div class="bidsheet-row postout mk-out"><span class="note">On 14 Oct: archived on Quals, account suspended.</span></div>`
 async function drawSheet(page) {
   await page.evaluate(html => {
     const chip = document.querySelector('[data-testid="po-archive"]'); if (!chip) throw new Error('no po-archive')
     const row = chip.closest('.bidsheet-row'); const tmp = document.createElement('div'); tmp.innerHTML = html
     row.after(...tmp.childNodes); chip.remove()
-    const c = document.querySelector('[data-testid="po-confirm"]'); c.textContent = 'Post out from 14 Oct 2026'
-    const note = c.parentElement.querySelector('.note'); if (note) note.textContent = 'Nothing changes until that day. On it, the app does what the posting says — each step can also be done by hand.'
+    /* D300: each thing once — the date sits in its box, what happens in the one line above; the button just acts */
+    const c = document.querySelector('[data-testid="po-confirm"]'); c.textContent = 'Post out'
+    const note = c.parentElement.querySelector('.note'); if (note) note.remove()
   }, OUTCOMES)
 }
 async function openPostOut(page) {
