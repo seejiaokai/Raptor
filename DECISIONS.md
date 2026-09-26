@@ -53,7 +53,7 @@ ruling, or an explicit no. **Not** ordinary task instructions ("run the tests", 
 | Leave War | `.claude/rules/decisions/leave-war.md` | when a Leave War file is read (its code, docs, e2e, evidence) | D160, D159 |
 | Scheduler & amendments | `.claude/rules/decisions/scheduler.md` | when a scheduler, board, engine, amendment or storage file is read | D218, D212, D189, D188, D187, D186, D185, D184, D183, D179, D178, D177, D176, D175, D174, D172, D171, D170, D169, D168, D167, D119, D118, D117, D116, D114, D113, D111, D110, D109, D108, D107, D105, D103, D102, D101, D100, D99, D98, D97, D96, D95, D94, D93, D92, D91, D164, D161, D149, D77, D66, D65, D51, D50, D47, D45, D44, D41, D40, D39, D38, D37, D36, D33, D27 |
 | OIL | `.claude/rules/decisions/oil.md` | when an OIL, Leave War, placeholder-puck or publishing file is read | D163, D142, D82, D81, D80, D79, D52, D49, D48, D46, D43, D42, D35, D32, D31, D28, D26, D25, D24, D21, D20, D19, D18, D15, D3, D2, D1 |
-| Archive | `DECISIONS-ARCHIVE.md` | never — SEARCH it before telling him anything is undecided | D156, D133, D125, D155, D154, D153, D152, D150, D88, D83, D71, D61, D55, D34, D139, D146, D112, D115, D181, D202, D104 |
+| Archive | `DECISIONS-ARCHIVE.md` | never — SEARCH it before telling him anything is undecided | D156, D133, D125, D155, D154, D153, D152, D150, D88, D83, D71, D61, D55, D34, D139, D146, D112, D115, D181, D202, D104, D230 |
 
 ## Carried, still open for him
 

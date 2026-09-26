@@ -100,7 +100,8 @@ Walk pictures are in `walk2/` unless marked `walk1`. "d-" desktop 1440×900, "p-
 after walk2 and are re-walked with the reads' fixes (§8).
 
 ## 6. The two code reads (Fable 5.1 and Astra, blind to each other, with this sheet in hand)
-*(filled when both reports exist)*
+Both reports exist: `2026-09-26-accounts-new-person-fable-read.md` (FIX FIRST — 1 finding + 3 record items) and
+`2026-09-26-accounts-new-person-astra-read.md` (FIX FIRST — 4 findings). Each is dispositioned here when fixed (next chat).
 
 ## 7. Break tests
 *(filled after the reads — each wired surface broken once on purpose, a named test must go red)*
@@ -113,7 +114,8 @@ after walk2 and are re-walked with the reads' fixes (§8).
 - A real iPhone: the phone widths ran in Chromium; nothing here depends on touch timing (no drag, no held finger).
 
 ## 9. The gates
-*(the counts from the run on the final code)*
+On the build `09cc00e3` (before the reads' fixes), one run: unit 6248 / 6248 (381 files) · build clean · tfin 728 / 0 · e2e 476
+passed, 48 skipped · smoke 443 / 0 · rulecheck OK · docsize OK. **To re-run on the final code.** probes / perf: not run.
 
 ## 10. His look — the look card
 *(written at the end)*
