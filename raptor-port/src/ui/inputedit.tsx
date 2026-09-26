@@ -1776,6 +1776,11 @@ export function InputEditor() {
   const del = () => { if (removeInput(r)) { HOOKS.toast('Input deleted', 'ok'); close() } }
 
   const who = r && PEOPLE[r.person] ? PEOPLE[r.person].cs : (r ? String(r.person) : '')
+  /* READ ONLY for an input its reader may not change (the absence-record re-test, W1-F3, 26 Sep 26): a member reaching
+     another man's input — the calendar's chip, the day popover's row — was shown Delete and Save, each refused only
+     when pressed. The write path's own rule (perms.ts mayEditInputOf), asked before the form is drawn: he may still
+     READ it (D211 — type, remarks, documents), with nothing offered that he cannot use. */
+  const readOnly = !isNew && !!r && !mayEditInputOf(r.person)
   /* a NEW row's dates live on the DRAFT (the range picker moves them); an
      edit's stay on the row, whose dates this dialog never changes */
   const when = !r ? '' : (isNew && draft && draft.start)
@@ -1794,7 +1799,7 @@ export function InputEditor() {
           <b id="inpEditTitle">{isNew ? 'New input' : who}{when ? ' · ' + when : ''}</b>
           <button className="x" id="inpEditClose" aria-label="Close" onClick={close}>✕</button>
         </div>
-        {draft && <div className="airpop-body inped-body">
+        {draft && <div className="airpop-body inped-body" inert={readOnly || undefined}>
           {/* SCHEDULER ONLY (owner, 14 Aug 26 — "allow Unavailable to be
               editable too... even down to changing the puck"). A member
               opening their own input never reaches this dialog at all today
@@ -1944,10 +1949,11 @@ export function InputEditor() {
         <div className="airpop-foot">
           {/* nothing to delete on a row that does not exist yet (the board's
               + Add) — the button is simply absent in that mode */}
-          {!isNew && <button className="abtn danger" id="inpEditDel" onClick={del}>Delete</button>}
+          {!isNew && !readOnly && <button className="abtn danger" id="inpEditDel" onClick={del}>Delete</button>}
+          {readOnly && <span className="inped-ro" data-testid="inped-ro">Only {who || 'its owner'} or an admin can change this.</span>}
           <span style={{ flex: 1 }}></span>
-          <button className="abtn ghost" id="inpEditCancel" onClick={close}>Cancel</button>
-          <button className="abtn primary" id="inpEditSave" onClick={() => save(false)}>{isNew ? 'Add' : 'Save'}</button>
+          <button className="abtn ghost" id="inpEditCancel" onClick={close}>{readOnly ? 'Close' : 'Cancel'}</button>
+          {!readOnly && <button className="abtn primary" id="inpEditSave" onClick={() => save(false)}>{isNew ? 'Add' : 'Save'}</button>}
         </div>
       </div>
       {/* the upchit save-time summary rides OVER this dialog (its z sits one

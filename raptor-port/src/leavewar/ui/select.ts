@@ -27,6 +27,7 @@ export type EventSelection = { line: number; from: string; to: string; dates: st
 
 /* caldrag.ts's own numbers */
 const HOLD = 180        // ms a finger must dwell before a drag arms
+const TOUCH_TAP_WAIT = 400  // ms the swallow waits for the tap a finger leaves after a drag (W4-1)
 const SLOWARM = 140     // ms down after which a slide past GIVEUP arms a
                         // SELECT instead of ceding — a slow, deliberate drag,
                         // never a quick scroll flick (owner, 27 Aug 26)
@@ -431,17 +432,22 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
   // click then opened a breakdown over a selection the user thought they had.
   // One-shot AND a 0ms sweep, so a drag that produces no trailing click never
   // leaves a listener to eat the next real one.
-  const swallowNextClick = () => {
+  //   A FINGER'S TAP COMES LATER (the absence-record re-test, W4-1, 26 Sep 26 — found by the phone walk): the tap a
+  // touch leaves behind arrives ~20–30 ms after the lift, and the 0 ms sweep had already retired the swallow — so a
+  // finger held on ONE day and lifted opened the selection sheet, and its own tap landed on the day and closed it.
+  // A touch gesture waits TOUCH_TAP_WAIT for its tap; a mouse keeps the 0 ms sweep, so a desktop's next real click is
+  // never eaten. (A second deliberate tap inside that window is not a thing a hand does.)
+  const swallowNextClick = (touch: boolean) => {
     const swallow = (ev: Event) => { ev.stopPropagation(); ev.preventDefault() }
     document.addEventListener('click', swallow, { capture: true, once: true })
-    setTimeout(() => document.removeEventListener('click', swallow, true), 0)
+    setTimeout(() => document.removeEventListener('click', swallow, true), touch ? TOUCH_TAP_WAIT : 0)
   }
   const finish = (commit: boolean) => {
-    const wasArmed = armed
+    const wasArmed = armed, touch = touchGesture
     // Read the selection BEFORE teardown nulls the anchor.
     const s = commit && armed && anchor !== null ? current() : null
     teardown()
-    if (wasArmed) swallowNextClick()
+    if (wasArmed) swallowNextClick(touch)
     if (s) spec.onSelect(s.payload)
     clearPaint()
   }
@@ -479,9 +485,9 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
   }
   const onCancel = (e: PointerEvent) => {
     if (e.pointerId !== pid) return   // a second pointer's cancel is not ours
-    const wasArmed = armed
+    const wasArmed = armed, touch = touchGesture
     teardown(); clearPaint()
-    if (wasArmed) swallowNextClick()
+    if (wasArmed) swallowNextClick(touch)
   }
 
   // THE SCROLL LOCK (owner, 27 Aug 26 — "when I hold then drag … I can't

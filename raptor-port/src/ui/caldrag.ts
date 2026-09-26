@@ -160,6 +160,8 @@ export function initCalDrag(root: HTMLElement, opts: { onTap: (entry: any) => vo
     entry: Entry, pointerId: number, mouse: boolean,
     x0: number, y0: number, armed: boolean,
     ghost: HTMLElement | null, over: HTMLElement | null, timer: any,
+    /** the reader may not move this chip — it never lifts, a tap still opens it (W1-F3) */
+    fixed: boolean,
   } | null = null
 
   function moveGhost(x: number, y: number) {
@@ -175,7 +177,7 @@ export function initCalDrag(root: HTMLElement, opts: { onTap: (entry: any) => vo
   }
 
   function arm() {
-    if (!st || st.armed) return
+    if (!st || st.armed || st.fixed) return
     st.armed = true
     const r = st.entry.el.getBoundingClientRect()
     const g = st.entry.el.cloneNode(true) as HTMLElement
@@ -241,9 +243,15 @@ export function initCalDrag(root: HTMLElement, opts: { onTap: (entry: any) => vo
       iid: chip.dataset.iid, pid: chip.dataset.pid,
       el: chip, fromIso: cell.dataset.icday!,
     }
+    /* A CHIP THE READER MAY NOT MOVE DOES NOT LIFT (the absence-record re-test, W1-F3, 26 Sep 26): a member could pick
+       up another man's chip — the ghost followed him and a day lit — and only the drop said no. The same test the drop
+       makes (commitChipMove: a scheduler moves anyone's, a member his own; a planning section is a scheduler's), asked
+       at the press, so the gesture is never offered. A tap still opens it. */
+    const row = entry.kind === 'input' ? INPUTS.find((x: any) => x.iid === entry.iid) : null
+    const fixed = !canEditSched() && (entry.kind === 'puck' || (!!row && !isMe(row.person)))
     st = {
       entry, pointerId: e.pointerId, mouse: e.pointerType === 'mouse',
-      x0: e.clientX, y0: e.clientY, armed: false, ghost: null, over: null, timer: 0,
+      x0: e.clientX, y0: e.clientY, armed: false, ghost: null, over: null, timer: 0, fixed,
     }
     if (!st.mouse) st.timer = setTimeout(arm, HOLD)
     // mouse arms purely off movement, in onPointerMove below — no hold timer at all
@@ -307,7 +315,14 @@ export function initCalDrag(root: HTMLElement, opts: { onTap: (entry: any) => vo
       installClickEater() // a real drag happened — its own release click must not fall through to the chip
     } else {
       const dx = Math.abs(x - x0), dy = Math.abs(y - y0)
-      if (dx <= SLOP && dy <= SLOP) opts.onTap(entry) // never armed, barely moved — a tap, routed to the calendar's own edit
+      if (dx <= SLOP && dy <= SLOP) {
+        /* A FINGER'S TAP ALSO SENDS A CLICK, after the lift (the absence-record re-test, W1-F2, 26 Sep 26): the edit
+           this tap opens was up by then, and the click landed on its dim backdrop and shut it — a flicker and nothing
+           for a chip lying outside the window's box. Eaten like the drag's own release click; a mouse has no second
+           click to eat, and its next real one must land. */
+        if (e.pointerType !== 'mouse') installClickEater()
+        opts.onTap(entry) // never armed, barely moved — a tap, routed to the calendar's own edit
+      }
     }
   }
 
