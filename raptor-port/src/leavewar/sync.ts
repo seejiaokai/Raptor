@@ -1622,6 +1622,16 @@ export function restoreArchivedAs(id: string, cs: string): string | null {
  * out's own (the switch was on), the undo is the Quals page's Restore — the posting cleared and the body back, ONE
  * command; otherwise it is the date alone, as before.
  */
+/* why the posting sheet's Undo would be refused — the Post out's own archive, with his callsign now held by a man on the
+   roster (D286 (1): never renaming anyone by itself; Quals' Archived list restores him under another in one step, D295).
+   null when the Undo can go ahead. */
+export function undoPostOutProblem(id: string): string | null {
+  const body = (PEOPLE as any)[id]
+  if (!body || body.deleted) return null
+  if (body.archived && body.archivedBy === 'po' && callsignProblem(body.cs, id))
+    return `${body.cs} is taken on the roster — restore him from Quals' Archived list under another callsign`
+  return null
+}
 export function undoPostOut(id: string): boolean {
   const body = (PEOPLE as any)[id]
   /* a DELETED man's posting is final ([POST-OUT-OUTCOMES], D287 — Fable F3) */

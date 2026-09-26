@@ -1539,7 +1539,10 @@ export const postingBlocked = (id: string, outcome: PostOutcome): string | null 
  *  rides the record. */
 export function windowFor(w: Person | undefined, showSans: boolean): Partial<Person> {
   if (!w) return {}
-  const sansShown = outcomeOf(w) === 'sans' && showSans
+  /* …only once the posting has RUN (`poDone` is its date): before it, a SANS posting to come shows as any posting does —
+     hatched from its date, its Post out sheet the door to change or undo it (Fable's scenario 3, 27 Sep 26: with Show
+     SANS on, a SANS posting to come left no trace on the grid and no door) */
+  const sansShown = outcomeOf(w) === 'sans' && showSans && w.to !== null && w.poDone === addDays(w.to, 1)
   return {
     from: w.from, to: sansShown ? null : w.to, poArchive: w.poArchive, poOutcome: w.poOutcome, poDone: w.poDone,
     ...(w.gone ? { gone: true } : {}),
@@ -1549,15 +1552,13 @@ export function windowFor(w: Person | undefined, showSans: boolean): Partial<Per
 /** A posting's outcome has RUN for its date (sync.ts runPoOutcomes) — recorded once, so the pass never repeats it and
  *  never undoes a later hand change (the plan's Round 1). Quiet: inside the pass's own command. */
 export function markPostingDone(id: string, poDate: string): void {
-  if (state.people.some(p => p.id === id)) {
-    const people = state.people.map(p => (p.id === id ? { ...p, poDone: poDate } : p))
-    state = withCurrent({ ...state, people, postOuts: windowRecord(people, id) })
-  } else {
-    /* not on the war's roster (a SANS man with Show SANS off, before the keep rule has him) — the record alone */
-    const rec = state.postOuts[id]
-    if (!rec) return
-    state = withCurrent({ ...state, postOuts: { ...state.postOuts, [id]: { ...rec, poDone: poDate } } })
-  }
+  /* the RECORD is updated in place — never rebuilt from the person: a SANS posting shown with Show SANS on lays no
+     window on him (windowFor), so rebuilding it from the person threw the posting away (found 27 Sep 26 — the posting
+     could then never be taken back) */
+  const rec = state.postOuts[id]
+  if (!rec) return
+  const people = state.people.map(p => (p.id === id ? { ...p, poDone: poDate } : p))
+  state = withCurrent({ ...state, people, postOuts: { ...state.postOuts, [id]: { ...rec, poDone: poDate } } })
   persistNotify()
 }
 

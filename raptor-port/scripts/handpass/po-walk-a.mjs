@@ -88,6 +88,8 @@ async function usersRow(page, acct) {
 }
 async function archivedList(page) {
   await go(page, 'quals')
+  /* nobody archived → the Archived list's button is not drawn at all ('' — nobody is on it) */
+  if (!(await page.locator('#qArchToggle').count())) return ''
   if (!(await page.locator('[data-testid="qarchlist"]').count())) { await page.click('#qArchToggle'); await page.waitForTimeout(400) }
   return text(page, '[data-testid="qarchlist"]')
 }

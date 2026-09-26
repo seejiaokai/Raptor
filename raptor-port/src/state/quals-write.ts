@@ -64,7 +64,9 @@ export function updatePersonField(pid: string, op: QualsOp): string | null {
       p.quals[k] = next
       /* SANS and SXO are read off the RAW flags (deriveQuals copies one way) — wire the
          tick through (15 Aug / 18 Aug 26) */
-      if (k === 'san') { p.san = !!next; if (next) p.sanQ = p.sanQ || { flown: 0, carry: 0, missedQtrs: 0 } }
+      /* a hand SANS tick is the admin's own: it drops the posting's mark (`sanBy: 'po'`), so no take-back of a SANS
+         posting ever undoes it ([POST-OUT-OUTCOMES], the plan's Round 1, Astra A5 — found missing by Fable's scenarios) */
+      if (k === 'san') { p.san = !!next; delete p.sanBy; if (next) p.sanQ = p.sanQ || { flown: 0, carry: 0, missedQtrs: 0 } }
       if (k === 'sxo') p.sxo = !!next
       if (k === 'daar' && !next && p.quals.naar) { p.quals.naar = false; HOOKS.toast(`${p.cs} — NAAR removed too, it cannot stand without DAAR`) }
       if (k === 'daar' && next === true && p.quals.naar === 'I') { p.quals.naar = true; HOOKS.toast(`${p.cs} — NAAR instructor mark removed too, it cannot stand without DAAR's`) }

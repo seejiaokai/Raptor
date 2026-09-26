@@ -944,7 +944,8 @@ export function PostOutSheet({
   /** Re-post with a new date and/or outcome. Commits on change — the
    *  sheet stays up so the admin can see the grid move behind it. */
   onChange: (fromDate: string, outcome: PostOutcome) => string | void
-  onUndo: () => void
+  /** a refusal comes back as its sentence (said on the sheet, which stays up) — e.g. his callsign now held on the roster */
+  onUndo: () => string | void
   /** Hand this day to the bid sheet instead (owner, 20 Sep 26 — "we should
    *  also allow putting inputs when we click on days that were posted out"). */
   onPlace?: () => void
@@ -1007,7 +1008,7 @@ export function PostOutSheet({
         <span className="note warn" data-testid="postout-err">{err}</span>
       </div>}
       <div className="bidsheet-row postout">
-        <button className="dchip po" data-testid="postout-undo" onClick={onUndo}>
+        <button className="dchip po" data-testid="postout-undo" onClick={() => { const why = onUndo(); if (why) setErr(why) }}>
           Undo post out (PO)
         </button>
         {/* THE WAY THROUGH TO PLACING LEAVE (owner, 20 Sep 26). An admin's tap

@@ -22,8 +22,9 @@ import { getState, initStore as lwInitStore, lwStore, postingBlocked, setPeople,
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import {
-  availableFor, postOut, restoreArchivedAs, restoreArchivedPerson, runPoOutcomes, undoPostOut, wireLeaveWarSync,
+  availableFor, postOut, restoreArchivedAs, restoreArchivedPerson, runPoOutcomes, undoPostOut, undoPostOutProblem, wireLeaveWarSync,
 } from './sync'
+import { updatePersonField } from '../state/quals-write'
 
 const TODAY = '2026-07-15'
 const mem: Record<string, string> = {}
@@ -150,6 +151,46 @@ describe('PO9 — SANS: he becomes SANS on the date (D283)', () => {
     expect(postOut('rocky', TODAY, 'none')).toBe(true)
     expect(P('rocky').san).toBeFalsy()
     expect(war('rocky')!.to).toBe('2026-07-14')
+  })
+})
+
+/* FROM THE WALK'S SCENARIOS (Fable, 27 Sep 26) — three the builder's tests did not reach. */
+describe('PO9 / PO2 — SANS with Show SANS on, a hand SANS tick, and a refused Undo', () => {
+  it('a SANS posting made while Show SANS is ON keeps its record — it can still be taken back', () => {
+    expect(setShowSans(true)).toBe(true)
+    expect(postOut('rocky', TODAY, 'sans')).toBe(true)
+    expect(P('rocky').san).toBe(true)
+    expect(getState().postOuts.rocky, 'the posting record survives the outcome running').toBeTruthy()
+    expect(getState().postOuts.rocky.poOutcome).toBe('sans')
+    expect(undoPostOut('rocky')).toBe(true)
+    expect(P('rocky').san).toBeFalsy()
+  })
+  it('a SANS posting still to come shows on the grid (hatched from its date) with Show SANS on — its sheet the door', () => {
+    expect(setShowSans(true)).toBe(true)
+    expect(postOut('rocky', '2026-07-20', 'sans')).toBe(true)
+    expect(war('rocky')!.to, 'before its date: a posting like any other').toBe('2026-07-19')
+    vi.setSystemTime(new Date(2026, 6, 20, 9, 0, 0))
+    runPoOutcomes(); raptorNotify()
+    expect(P('rocky').san).toBe(true)
+    expect(war('rocky')!.to, 'once it has run: in the SANS group, tracked — no window').toBeNull()
+  })
+  it('a hand SANS tick after the outcome is the admin’s own — taking the posting back never undoes it', () => {
+    expect(postOut('rocky', TODAY, 'sans')).toBe(true)
+    expect(P('rocky').sanBy).toBe('po')
+    expect(updatePersonField('rocky', { tick: 'san' })).toBe(null)       // off by hand
+    expect(updatePersonField('rocky', { tick: 'san' })).toBe(null)       // on again by hand
+    expect(P('rocky').san).toBe(true)
+    expect(P('rocky').sanBy, 'the hand tick drops the posting’s mark').toBeUndefined()
+    expect(undoPostOut('rocky')).toBe(true)
+    expect(P('rocky').san, 'the Undo took back the posting, not his hand tick').toBe(true)
+  })
+  it('Undo post out, his callsign now a roster man’s: refused with where to go (D286 (1)), nothing changed', () => {
+    expect(postOut('bane', TODAY, 'overseas')).toBe(true)
+    expect(renameCallsign('casper', 'Ranger')).toBe(true)
+    expect(undoPostOutProblem('bane')).toMatch(/Ranger is taken on the roster — restore him from Quals' Archived list/)
+    expect(P('bane').archived).toBe(true)
+    expect(renameCallsign('casper', 'Outlaw')).toBe(true)
+    expect(undoPostOutProblem('bane'), 'free again: nothing in the way').toBe(null)
   })
 })
 

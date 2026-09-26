@@ -78,7 +78,7 @@ import { groupColorOf, inkFor } from './groupColor'
 import { SelectSheet } from './SelectSheet'
 import { BalanceBar } from './BalanceBar'
 import { RemarksSheet } from './RemarksSheet'
-import { leaveInputAt, postOut, undoPostOut } from '../sync'
+import { leaveInputAt, postOut, undoPostOut, undoPostOutProblem } from '../sync'
 import { useVersion } from './useStore'
 import { DayListSheet } from './DayList'
 import type { Views } from '../engine/dayview'
@@ -4292,7 +4292,9 @@ export function Matrix() {
           hasAccount={hasAccount(open.id)}
           blockedFor={o => postingBlocked(open.id, o)}
           onChange={(from, outcome) => postOutOr(open.id, from, outcome)}
-          onUndo={() => { undoPostOut(open.id); close() }}   // the archive the Post out made goes too (W5-F1)
+          /* the archive the Post out made goes too (W5-F1); refused, with where to go, when a man on the roster now holds
+             his callsign (D286 (1) — Fable's scenario 2: it closed and did nothing) */
+          onUndo={() => { const why = undoPostOutProblem(open.id); if (why) return why; undoPostOut(open.id); close() }}
           onPlace={() => setPlaceAt(openKey)}
           onClose={close}
         />
